@@ -137,6 +137,7 @@ private:
 	Order *controlFood();
 	Order *controlUpgrades();
 	Order *controlStrikes();
+//	Order *controlBaseDefense();
 	
 	bool addProject(Project *project);
 	void addProjects();

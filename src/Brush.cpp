@@ -65,16 +65,75 @@ void BrushTool::drawBrush(int x, int y)
 	if (figure < 4)
 	{
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 0, 0, 255);
-		else
 			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 255, 0, 0);
+		else
+			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 20, 20, 170);
 	}
 	else
 	{
 		int l = (figure-4)*32;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 0, 0, 255);
-		else
 			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 255, 0, 0);
+		else
+			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 20, 20, 170);
 	}
+}
+
+#define BRUSH_COUNT 8
+
+int BrushTool::getBrushWidth(unsigned figure)
+{
+	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 1, 3, 5, 7};
+	assert(figure < BRUSH_COUNT);
+	return dim[figure];
+}
+
+int BrushTool::getBrushHeight(unsigned figure)
+{
+	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 1, 3, 5, 7};
+	assert(figure < BRUSH_COUNT);
+	return dim[figure];
+}
+
+int BrushTool::getBrushValue(unsigned figure, int x, int y)
+{
+	int brush0[] = { 	1 };
+	int brush1[] = { 	0, 1, 0,
+						1, 1, 1,
+						0, 1, 0 };
+	int brush2[] = {	0, 1, 1, 1, 0,
+						1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1,
+						0, 1, 1, 1, 0 };
+	int brush3[] = {	0, 0, 1, 1, 1, 0, 0,
+						0, 1, 1, 1, 1, 1, 0,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						0, 1, 1, 1, 1, 1, 0,
+						0, 0, 1, 1, 1, 0, 0 };
+	int brush4[] = { 	1 };
+	int brush5[] = { 	1, 1, 1,
+						1, 1, 1,
+						1, 1, 1 };
+	int brush6[] = {	1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1 };
+	int brush7[] = {	1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1,
+						1, 1, 1, 1, 1, 1, 1, };
+	int *brushes[BRUSH_COUNT] = { brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7 };
+	
+	assert(figure<BRUSH_COUNT);
+	assert(x<getBrushHeight(figure));
+	assert(y<getBrushWidth(figure));
+	
+	return brushes[figure][y*getBrushWidth(figure)+x];
 }

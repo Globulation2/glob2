@@ -43,6 +43,17 @@ public:
 	void drawBrush(int x, int y);
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	unsigned getFigure(void) { return figure; }
+	
+	static int getBrushWidth(unsigned figure);
+	static int getBrushHeight(unsigned figure);
+	static int getBrushValue(unsigned figure, int x, int y);
 };
+/*
+class Brush
 
+class BrushAccumulator
+{
+
+};
+*/
 #endif
