@@ -1,0 +1,13 @@
+To First release :
+
+- check all TODO, FIXME, DUNNO and solve what can be solved.
+- load/save during game.
+- custom game should have a map choosing screen.
+- network must work correctly, and screen must be easy to understand.
+- stupid graphic bug in game menu must be fixed.
+- building list must be cleaner.
+- write a quick start guide.
+
+To Next version :
+
+- allies can put mark on the map.
