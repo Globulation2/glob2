@@ -35,7 +35,7 @@ public:
 
 		STARTED=11
 	};
-	MultiplayersJoin multiplayersJoin;
+	MultiplayersJoin *multiplayersJoin;
 
 private:
 	//Sprite *arch;
