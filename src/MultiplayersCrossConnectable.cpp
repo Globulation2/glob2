@@ -39,8 +39,8 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 			{
 				if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
 				{
-					int channel=getFreeChannel();
-					if (!sessionInfo.players[j].bind(socket, channel))
+					int freeChannel=getFreeChannel();
+					if (!sessionInfo.players[j].bind(socket, freeChannel))
 					{
 						printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
@@ -64,7 +64,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 
 int MultiplayersCrossConnectable::getFreeChannel()
 {
-	for (int channel=1; channel<SDLNET_MAX_UDPCHANNELS; channel++)
+	for (int channel=1; channel<SDLNET_MAX_UDPCHANNELS; channel++) // By glob2 convention, channel 0 is reserved for game host
 	{
 		bool good=true;
 		for (int i=0; i<32; i++)

@@ -112,7 +112,7 @@ bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
 	number=SDL_ReadBE32(stream);
 	numberMask=SDL_ReadBE32(stream);
 	
-	printf("versionMinor=%d.\n", versionMinor);
+	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
 	if (versionMinor<4)
 		SDL_RWread(stream, name, 16, 1);
 	else
@@ -282,14 +282,14 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 		socket=SDLNet_UDP_Open(ANY_PORT);
 	
 		if (socket!=NULL)
-			printf("Socket opened at port to player %d.\n", number);
+			fprintf(logFile, "Socket opened at port to player %d.\n", number);
 		else
-			printf("failed to open a socket to player %d.\n", number);
+			fprintf(logFile, "failed to open a socket to player %d.\n", number);
 	}
 	
 	if ((socket==NULL) || (ip.host==0))
 	{
-		printf("no socket, or no ip to bind socket to player %d\n", number);
+		fprintf(logFile, "no socket, or no ip to bind socket to player %d\n", number);
 		return false;
 	}
 		
@@ -298,22 +298,22 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 			
 	if (channel != -1)
 	{
-		printf("suceeded to bind socket to player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
-		return true;			
+		fprintf(logFile, "suceeded to bind socket to player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		return true;
 	}
 	else
 	{
-		printf("failed to bind socket to player %d.\n", number);		
+		fprintf(logFile, "failed to bind socket to player %d.\n", number);
 		return false;
 	}
 }
 
 void BasePlayer::unbind()
 {
-	//printf("BasePlayer::unbind() (channel=%d).\n", channel);
+	//fprintf(logFile, "BasePlayer::unbind() (channel=%d).\n", channel);
 	if (channel!=-1)
 	{
-		printf("Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		fprintf(logFile, "Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
 	}
@@ -332,8 +332,6 @@ bool BasePlayer::send(char *data, int size)
 
 	bool sucess;
 
-
-	
 	packet->address=ip;
 	packet->channel=channel;
 	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
@@ -347,12 +345,12 @@ bool BasePlayer::send(char *data, int size)
 	//else
 	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	//if (sucess)
-		//printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
+	//	fprintf(logFile, "suceeded to send packet to player %d (channel=%d).\n", number, channel);
 	//else
-		//printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
+	//	fprintf(logFile, "failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
 
 	if (!sucess)
-		printf("failed to send packet!\n");
+		fprintf(logFile, "failed to send packet!\n");
 	
 	SDLNet_FreePacket(packet);
 	
