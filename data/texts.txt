@@ -83,11 +83,27 @@ Verbes. wiederrufen
 Annuler réparation
 Cancel repair
 
-[unit type]
+[units type]
+type d'unités
+units type
+art die Eineiten
+[workers]
+ouvrières
+workers
+arbeiter
+[explorers]
+exploratrices
+explorers
+entdecker
+[warriors]
+guerrières
+warriors
+krieger
+[Unit type]
 Type d'unite
 Unit type
 Art der Eineit
-[worker]
+[Worker]
 Ouvrière
 Worker
 Arbeiter
@@ -419,22 +435,118 @@ Statistiken
 Nourriture
 Food left
 Nahrung
-[your units are under attack]
-Vos unites sont attaquées !
-Your unites are under attack !
-Die Einheiten werden angegriffen !
-[attacked]
-attaqué
-attacked
-unter Angriff !
-[finished]
-terminé
-finished
-vertig
-[attacked(f)]
-attaquée
-attacked
-unter Angriff !
+[the building is finished]
+le batiment est terminé
+the building is finished
+
+[the swarm is finished]
+La ruche est terminée
+The swarm is finished
+
+[the food building is finished]
+L'auberge est terminée
+The Inn is finished
+
+[the health building is finished]
+L'hopital est terminé
+The hospital is finished
+
+[the walkspeed building is finished]
+La piste de course est terminée
+The racetrack is finished
+
+[the swimspeed building is finished]
+La piscine est terminée
+The swimming pool is finished
+
+[the attack building is finished]
+Le camp d'entrainement est terminé
+The training camp is finished
+
+[the science building is finished]
+L'école est terminée
+The school is finished
+
+[the tower building is finished]
+La tour de défense est terminée
+The defense tower is finished
+
+[the exploration flag is finished]
+?? Drapeau d'exploration terminé ??
+?? Exploration flag finised ??
+
+[the war flag is finished]
+?? Drapeau de guerre terminé ??
+?? War flag under finished ??
+
+[the clearing flag is finished]
+?? Drapeau de défrichage terminé ??
+?? Clearing flag under finished ??
+
+[the stone wall is finished]
+Un élément de mur est terminé
+A part of the wall is finished
+
+[the building is under attack]
+le batiment est attaqué
+the building is under attack
+
+[the swarm is under attack]
+La ruche est attaquée
+The swarm is under attack
+
+[the food building is under attack]
+L'auberge est attaquée
+The Inn is under attack
+
+[the health building is under attack]
+L'hopital est attaqué
+The hospital is under attack
+
+[the walkspeed building is under attack]
+La piste de course est attaquée
+The racetrack is under attack
+
+[the swimspeed building is under attack]
+La piscine est attaquée
+The swimming pool is under attack
+
+[the attack building is under attack]
+Le camp d'entrainement est attaqué
+The training camp is under attack
+
+[the science building is under attack]
+L'école est attaquée
+The school is under attack
+
+[the defense building is under attack]
+Vos défenses sont attaquées
+Your defenses are under attack
+
+[the exploration flag is under attack]
+?? Drapeau d'exploration attaqué ??
+?? Exploration flag under attack ??
+
+[the war flag is under attack]
+?? Drapeau de guerre attaqué ??
+?? War flag under attack ??
+
+[the clearing flag is under attack]
+?? Drapeau de défrichage attaqué ??
+?? Clearing flag under attack ??
+
+[the stone wall is under attack]
+L'ennemi est à vos murs
+The ennemi is at your walls
+
+[Your]
+Vos
+Your
+Euren
+[are under attack(f)]
+sont attaquées
+are under attack
+sind unter Angriff !
 [ai]
 IA
 AI
