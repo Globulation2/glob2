@@ -21,7 +21,6 @@
 #define __FILEMANAGER_H
 
 #include "GAGSys.h"
-#include "Stream.h"
 #include <vector>
 #include <fstream>
 #include <string>
@@ -36,6 +35,9 @@
 
 namespace GAGCore
 {
+	class OutputStream;
+	class InputStream;
+	
 	//! File Manager (filesystem abstraction)
 	class FileManager
 	{

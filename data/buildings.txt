@@ -571,6 +571,7 @@ type swimmingpool
 
 gameSprite data/gfx/pool0b
 gameSpriteImage 0
+gameSpriteCount 2
 miniSprite data/gfx/minipool0b
 miniSpriteImage 0
 
