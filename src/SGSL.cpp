@@ -101,7 +101,6 @@ bool Story::testCondition()
 
 void Story::step()
 {
-	printf("story step\n");
 	if (testCondition())
 	{
 		line.pop_front();
@@ -129,7 +128,7 @@ bool Aquisition::newFile(const char *filename)
 		fclose(fp);
 	if ((fp = fopen(filename,"r")) == NULL)
 	{
-		fprintf(stderr,"SGSL : Impossible d'ouvrir le fichier %s en lecture\n", filename);
+		fprintf(stderr,"SGSL : Can't open file %s\n", filename);
 		return false;
 	}
 	return true;
@@ -316,7 +315,6 @@ bool Mapscript::loadScript(const char *filename, Game *game)
 {
 	if (donnees.newFile(filename))
 	{
-		printf("SGSL : script file opened\n");
 		reset();
 		this->game=game;
 		
@@ -329,10 +327,8 @@ bool Mapscript::loadScript(const char *filename, Game *game)
 				thisone.line.push_back(donnees.getToken());
 				donnees.nextToken();
 			}
-			if (donnees.getToken().type == Token::S_EOF)
-				break;
 			stories.push_back(thisone);
-			printf("SGSL : story loaded\n");
+			printf("SGSL : story loaded, %d tokens\n", thisone.line.size());
 			donnees.nextToken();
 		}
 		return true;

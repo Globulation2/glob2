@@ -809,7 +809,7 @@ void Team::step(void)
 		(*it)->turretStep();
 	}
 
-	isAlive=isEnoughFoodInSwarm || (nbUnits!=0);
+	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
 	// decount event cooldown counter
 	for (i=0; i<EVENT_TYPE_SIZE; i++)
 	{
