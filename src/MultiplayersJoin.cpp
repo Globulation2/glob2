@@ -182,7 +182,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 
 void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 {
-	if (size!=4)
+	if (size!=8)
 	{
 		fprintf(logFile, "Bad size for a Presence packet recieved!\n");
 		waitingState=WS_WAITING_FOR_PRESENCE;
@@ -191,12 +191,27 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 		return;
 	}
 	
-	fprintf(logFile, "dataPresenceRecieved\n");
+	Uint8 serverNetProtocolVersion=data[4];
+	fprintf(logFile, "dataPresenceRecieved (serverNetProtocolVersion=%d)\n", serverNetProtocolVersion);
+	
+	if (serverNetProtocolVersion!=NET_PROTOCOL_VERSION)
+	{
+		fprintf(logFile, " bad serverNetProtocolVersion!=%d)\n", NET_PROTOCOL_VERSION);
+		yog->unjoinGame();
+		waitingState=WS_TYPING_SERVER_NAME;
+		waitingTimeout=0;
+		waitingTimeoutSize=0;
+		waitingTOTL=0;
+		return;
+	}
 	
 	waitingState=WS_WAITING_FOR_SESSION_INFO;
 	waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
 	waitingTimeoutSize=LONG_NETWORK_TIMEOUT;
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
+	
+	if (shareOnYOG)
+		yog->connectedToGameHost();
 }
 
 void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress ip)
@@ -872,8 +887,6 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 		
 		case SERVER_PRESENCE :
 			dataPresenceRecieved(data, size, ip);
-			if (waitingState>=WS_WAITING_FOR_PRESENCE)
-				yog->connectedToGameHost();
 		break;
 		
 		case DATA_SESSION_INFO :
@@ -1399,7 +1412,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	packet->address=serverIP;
 	packet->len=40;
 	packet->data[0]=NEW_PLAYER_WANTS_PRESENCE;
-	packet->data[1]=0;
+	packet->data[1]=NET_PROTOCOL_VERSION;
 	packet->data[2]=0;
 	packet->data[3]=0;
 	addSint32(packet->data, (Sint32)ipFromNAT, 4);

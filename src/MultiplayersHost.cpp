@@ -369,6 +369,7 @@ void MultiplayersHost::removePlayer(int p)
 	sessionInfo.team[t].playersMask&=~sessionInfo.players[p].numberMask;
 	sessionInfo.team[t].numberOfPlayer--;
 
+	sessionInfo.players[p].unbind();
 	sessionInfo.players[p].netState=BasePlayer::PNS_BAD;
 	sessionInfo.players[p].type=BasePlayer::P_NONE;
 	sessionInfo.players[p].netTimeout=0;
@@ -376,7 +377,6 @@ void MultiplayersHost::removePlayer(int p)
 	sessionInfo.players[p].netTimeoutSize=0;// TODO : Only for debug version
 	sessionInfo.players[p].netTOTL=0;
 
-	sessionInfo.players[p].unbind();
 	int mp=sessionInfo.numberOfPlayer-1;
 	if (mp>p)
 	{
@@ -490,9 +490,12 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
 	if (size!=40)
 	{
-		fprintf(logFile, "Bad size(%d) for an Presence request from ip %s.\n", size, Utilities::stringIP(ip));
+		fprintf(logFile, " Bad size(%d) for an Presence request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
+	Uint8 playerNetProtocolVersion=data[1];
+	fprintf(logFile, " playerNetProtocolVersion=%d\n", playerNetProtocolVersion);
+	
 	int p=sessionInfo.numberOfPlayer;
 	int t=newTeamIndice();
 	assert(BasePlayer::MAX_NAME_LENGTH==32);
@@ -530,7 +533,7 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	memcpy(sessionInfo.players[p].name, data+8, 32);
 	sessionInfo.players[p].setip(ip);
 	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
-	fprintf(logFile, "this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
+	fprintf(logFile, " this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
 	yog->joinerConnected(ip);
 	// we check if this player has already a connection:
@@ -539,7 +542,7 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	{
 		if (sessionInfo.players[i].sameip(ip))
 		{
-			fprintf(logFile, "this ip(%s) is already in the player list!\n", Utilities::stringIP(ip));
+			fprintf(logFile, " this ip(%s) is already in the player list!\n", Utilities::stringIP(ip));
 
 			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
 			sessionInfo.players[i].netTimeout=0;
@@ -552,13 +555,19 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	int freeChannel=getFreeChannel();
 	if (!sessionInfo.players[p].bind(socket, freeChannel))
 	{
-		fprintf(logFile, "this ip(%s) is not bindable\n", Utilities::stringIP(ip));
+		fprintf(logFile, " this ip(%s) is not bindable\n", Utilities::stringIP(ip));
 		return;
 	}
 
-	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
+	if (playerNetProtocolVersion!=NET_PROTOCOL_VERSION)
 	{
-		fprintf(logFile, "newPlayerPresence::this ip(%s) is added in player list. (player %d), name=(%s)\n", Utilities::stringIP(ip), p, sessionInfo.players[p].name);
+		fprintf(logFile, " bad playerNetProtocolVersion!=%d\n", NET_PROTOCOL_VERSION);
+		sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
+		return;
+	}
+	else if (sessionInfo.players[p].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION))
+	{
+		fprintf(logFile, " newPlayerPresence::this ip(%s) is added in player list. (player %d), name=(%s)\n", Utilities::stringIP(ip), p, sessionInfo.players[p].name);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
@@ -1525,7 +1534,7 @@ void MultiplayersHost::sendingTime()
 			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
 			{
 				fprintf(logFile, "Lets send the presence to player %d.\n", i);
-				sessionInfo.players[i].send(SERVER_PRESENCE);
+				sessionInfo.players[i].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
 			}
 			break;
 
