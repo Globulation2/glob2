@@ -1464,6 +1464,9 @@ void Building::turretStep(void)
 
 		ressources[STONE]--;
 		shootingCooldown=SHOOTING_COOLDOWN_MAX;
+
+		// we need to be stone-feeded
+		updateCallLists();
 	}
 
 }
