@@ -84,7 +84,8 @@ int Glob2::run(int argc, char *argv[])
 
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
-	globalContainer->gfx->setCaption("Globulation 2", "glob 2");
+	if (!globalContainer->hostServer)
+		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
 	if ( SDLNet_Init() < 0 )
 	{
