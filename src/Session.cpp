@@ -384,9 +384,6 @@ void SessionGame::setMapName(const char *s)
 	assert(s[0]);
 	strncpy(mapName, s, sizeof(mapName));
 	mapName[MAP_NAME_MAX_SIZE-1]=0;
-	char *c=strrchr(mapName, '.');
-	if (c)
-		*c=0;
 }
 
 const char *SessionGame::getMapName() const
