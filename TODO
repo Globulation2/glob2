@@ -19,11 +19,14 @@ YOG:
 
 Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
+- Utiliser le gradient local si il y a une ligne directe qui y mène.
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
 - Le comportement de guerrières doit-être amélioré.
 - Des tas d'unités peuvent bloquer une unité...
+- Il y a peut-être des osciliations entre le petit et le grand gradient. (bug pas sauvable).
+
 
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?

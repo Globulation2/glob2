@@ -286,22 +286,50 @@ Building *Team::findNearestFood(Unit *unit)
 	int maxHappyness[32];
 	memset(maxHappyness, 0, 32*sizeof(int));
 	if (concurency)
-		for (int ti=0; ti<session.numberOfTeam; ti++)
-			if (ti!=teamNumber)
-			{
-				Team *t=game->teams[ti];
-				if (t->sharedVisionFood & me)
-					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
-					{
-						int h=(*bi)->aviableHappynessLevel();
-						if (h>maxHappyness[ti])
+	{
+		if (unit->performance[FLY])
+		{
+			for (int ti=0; ti<session.numberOfTeam; ti++)
+				if (ti!=teamNumber)
+				{
+					Team *t=game->teams[ti];
+					if (t->sharedVisionFood & me)
+						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
-							maxHappyness[ti]=h;
-							if (h>enemyHappyness)
-								enemyHappyness=h;
+							int h=(*bi)->aviableHappynessLevel();
+							if (h>maxHappyness[ti])
+							{
+								maxHappyness[ti]=h;
+								if (h>enemyHappyness)
+									enemyHappyness=h;
+							}
 						}
-					}
-			}
+				}
+		}
+		else
+		{
+			int x=unit->posX;
+			int y=unit->posY;
+			bool canSwim=unit->performance[SWIM];
+			for (int ti=0; ti<session.numberOfTeam; ti++)
+				if (ti!=teamNumber)
+				{
+					Team *t=game->teams[ti];
+					if (t->sharedVisionFood & me)
+						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+						{
+							int h=(*bi)->aviableHappynessLevel();
+							int dist;
+							if (h>maxHappyness[ti] && map->buildingAviable(*bi, canSwim, x, y, &dist))
+							{
+								maxHappyness[ti]=h;
+								if (h>enemyHappyness)
+									enemyHappyness=h;
+							}
+						}
+				}
+		}
+	}
 	
 	if (unit->performance[FLY])
 	{
@@ -410,11 +438,49 @@ Building *Team::findNearestFood(Unit *unit)
 					}
 				}
 			}
+		
 		if (choosen)
 			printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
 		else
-			printf("guid=%d found no ennemy building\n", unit->gid);
-		
+		{
+			printf("guid=%d found no ennemy building (enemyHappyness=%d)\n", unit->gid, enemyHappyness);
+			
+			int x=unit->posX;
+			int y=unit->posY;
+			bool canSwim=unit->performance[SWIM];
+			Building *choosen=NULL;
+			int minDist=INT_MAX;
+			for (int ti=0; ti<session.numberOfTeam; ti++)
+				if (ti!=teamNumber && concurent[ti])
+				{
+					printf(" team ti=%d suitable, nbb=%d\n", ti, canFeedUnit.size());
+					Team *t=game->teams[ti];
+					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+					{
+						Building *b=(*bi);
+						if (b->aviableHappynessLevel()>=enemyHappyness)
+						{
+							int buildingDist;
+							if (map->buildingAviable(b, canSwim, x, y, &buildingDist))
+							{
+								if (/*map->buildingAviable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
+								{
+									choosen=b;
+									minDist=buildingDist;
+								}
+								else
+									printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
+							}
+							else
+								printf(" building bgid=%d not aviable\n", b->gid);
+						}
+						else
+							printf(" building bgid=%d aviableHappynessLevel()=%d < %d\n", b->gid, b->aviableHappynessLevel(), enemyHappyness);
+					}
+				}
+				else
+					printf(" team ti=%d not suitable\n", ti);
+		}
 		return choosen;
 	}
 }

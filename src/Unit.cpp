@@ -629,11 +629,36 @@ void Unit::handleActivity(void)
 			b=owner->findNearestFood(this);
 			if (b!=NULL)
 			{
+				Team *currentTeam=owner;
+				Team *targetTeam=b->owner;
+				if (currentTeam!=targetTeam)
+				{
+					int targetID=-1;
+					for (int i=0; i<1024; i++)//we search for a free place for a unit.
+						if (targetTeam->myUnits[i]==NULL)
+						{
+							targetID=i;
+							break;
+						}
+					
+					if (targetID!=-1)
+					{
+						Sint32 currentID=Unit::GIDtoID(gid);
+						assert(currentTeam->myUnits[currentID]);
+						currentTeam->myUnits[currentID]=NULL;
+						targetTeam->myUnits[targetID]=this;
+						
+						gid=(GIDfrom(targetID, targetTeam->teamNumber));
+						owner->map->setGroundUnit(posX, posY, gid);
+						owner=targetTeam;
+					}
+				}
+				
 				destinationPurprose=FEED;
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				needToRecheckMedical=false;
-				//if (verbose)
+				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;

@@ -111,6 +111,8 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 
 	seenByMask=0;
 	
+	canFeedUnit=0;
+	canHealUnit=0;
 	foodable=0;
 	fillable=0;
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -182,6 +184,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	
 	seenByMask=SDL_ReadBE32(stream);
 	
+	canFeedUnit=0;
+	canHealUnit=0;
 	foodable=0;
 	fillable=0;
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -749,13 +753,28 @@ void Building::updateCallLists(void)
 		// this is for food handling
 		if (type->canFeedUnit)
 			if (ressources[CORN]>(int)unitsInside.size())
-				owner->canFeedUnit.push_front(this);
+			{
+				if (canFeedUnit!=1)
+				{
+					owner->canFeedUnit.push_front(this);
+					canFeedUnit=1;
+				}
+			}
 			else
-				owner->canFeedUnit.remove(this);
+			{
+				if (canFeedUnit!=2)
+				{
+					owner->canFeedUnit.remove(this);
+					canFeedUnit=2;
+				}
+			}
 
 		// this is for Unit headling
-		if (type->canHealUnit)
+		if (type->canHealUnit && canHealUnit!=1)
+		{
 			owner->canHealUnit.push_front(this);
+			canHealUnit=1;
+		}
 	}
 	else
 	{
@@ -767,10 +786,16 @@ void Building::updateCallLists(void)
 				upgrade[i]=2;
 			}
 
-		if (type->canFeedUnit)
+		if (type->canFeedUnit && canFeedUnit!=2)
+		{
 			owner->canFeedUnit.remove(this);
-		if (type->canHealUnit)
+			canFeedUnit=2;
+		}
+		if (type->canHealUnit && canHealUnit!=2)
+		{
 			owner->canHealUnit.remove(this);
+			canHealUnit=2;
+		}
 	}
 }
 
@@ -1364,7 +1389,6 @@ void Building::subscribeForInsideStep()
 				unitsInsideSubscribe.remove(u);
 				assert(u);
 				unitsInside.push_back(u);
-				printf("building gbid=%d accpeted unit guid=%d\n", gid, u->gid);
 				u->subscriptionSuccess();
 				updateCallLists();
 			}
