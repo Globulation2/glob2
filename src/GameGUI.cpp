@@ -1600,7 +1600,9 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
 			globalContainer->standardFont->popColor();*/
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
+			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
+			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
 			it->showTicks--;

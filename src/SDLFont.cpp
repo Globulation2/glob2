@@ -401,7 +401,10 @@ void SDLTTFont::pushStyle(unsigned style)
 void SDLTTFont::popStyle(void)
 {
 	if (styleStack.size() > 1)
+	{
 		styleStack.pop();
+		TTF_SetFontStyle(font, styleStack.top());
+	}
 }
 
 unsigned SDLTTFont::getStyle(void) const
