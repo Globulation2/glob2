@@ -217,18 +217,18 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
-			printf("Cmd line arguments :\n");
+			printf("Command line arguments:\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-v\tset the music volume\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
-			printf("-b/-B\tenable/disable double buffering (usefull on OS X in fullscreen)\n");
-			printf("-l\tlow speed graphics : disable some transparency effects\n");
-			printf("-h\thigh speed graphics : max of transparency effects\n");
-			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");
+			printf("-b/-B\tenable/disable double buffering (useful on OS X in fullscreen)\n");
+			printf("-l\tlow speed graphics: disable some transparency effects\n");
+			printf("-h\thigh speed graphics: max of transparency effects\n");
+			printf("-t\ttype of gfx rendere: 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
-			printf("-u\tspecify an user name\n");
+			printf("-u\tspecify a user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
 			printf("-version\tprint the version and exit\n");
