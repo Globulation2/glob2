@@ -29,7 +29,7 @@ UnitType& UnitType::operator+=(const UnitType &a)
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]+=a.performance[i];
 
-	return *this;	
+	return *this;
 }
 
 UnitType UnitType::operator+(const UnitType &a)
@@ -47,7 +47,7 @@ UnitType& UnitType::operator/=(int a)
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]/=a;
 	
-	return *this;	
+	return *this;
 }
 
 UnitType UnitType::operator/(int a)
