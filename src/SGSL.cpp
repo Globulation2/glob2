@@ -431,22 +431,23 @@ bool Story::testCondition()
 			case (Token::S_SUMMON):
 			{
 				int x, y;
-				mapscript->getFlagPos(line[lineSelector+5].msg, &x, &y);
-				int dx, dy;
-				int number =line[lineSelector+1].value;
-				int delta = (int)(sqrt(number)+1)/2;
-				for (dy=y-delta; dy<y+delta; dy++)
+				if (mapscript->getFlagPos(line[lineSelector+5].msg, &x, &y))
 				{
-					for (dx=x-delta; dx<x+delta; dx++)
+					int dx, dy;
+					int number =line[lineSelector+1].value;
+					int delta = (int)(sqrt(number)+1)/2;
+					for (dy=y-delta; dy<y+delta; dy++)
 					{
-						if (number >= 0)
+						for (dx=x-delta; dx<x+delta; dx++)
 						{
-							mapscript->game->addUnit(dx, dy, line[lineSelector+3].value, line[lineSelector+2].type-101, line[lineSelector+4].value, 0, 0, 0);
-							number --;
+							if (number >= 0)
+							{
+								mapscript->game->addUnit(dx, dy, line[lineSelector+3].value, line[lineSelector+2].type-101, line[lineSelector+4].value, 0, 0, 0);
+								number --;
+							}
 						}
 					}
-				}		
-
+				}
 				lineSelector +=5;
 				return true;
 			}
@@ -510,7 +511,7 @@ using namespace std;
 
 const char *ErrorReport::getErrorString(void)
 {
-	static const char *strings[]={ "No error", "Syntax error", "Invalid player", "Unknown error" };
+	static const char *strings[]={ "No error","Invalid Value ", "Syntax error", "Invalid player","No such file", "Unknown error" };
 	return strings[(int)type];
 }
 
@@ -633,17 +634,7 @@ Mapscript::Mapscript()
 
 Mapscript::~Mapscript(void)
 {}
-bool Mapscript::doesFlagExist(string name)
-{
-	for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
-	{
-		if ((*it).name==name)
-		{
-			return true;
-		}
-	}
-	return false;
-}
+
 
 bool Mapscript::getFlagPos(string name, int *x, int *y)
 {
@@ -840,12 +831,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
-							}
-							else if (!doesFlagExist(donnees.getToken().msg))
-							{
-								er.type=ErrorReport::ET_INVALID_FLAG_NAME;
-								break;
-							}
+							}							
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
 							if ((donnees.getToken().type != Token::S_YOU) && (donnees.getToken().type != Token::S_NOENEMY) && (donnees.getToken().type != Token::S_ALLY))

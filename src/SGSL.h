@@ -99,7 +99,6 @@ struct ErrorReport
 	{
 		ET_OK=0,
 		ET_INVALID_VALUE,
-		ET_INVALID_FLAG_NAME,
 		ET_SYNTAX_ERROR,
 		ET_INVALID_PLAYER,
 		ET_NO_SUCH_FILE,
@@ -183,7 +182,6 @@ private:
 	void reset(void);
 	bool testMainTimer(void);
 	bool getFlagPos(string name, int *x, int *y);
-	bool doesFlagExist(string name);
 	
 	int mainTimer;
 	std::deque<Story> stories;
