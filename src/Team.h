@@ -165,7 +165,9 @@ public:
 	// thoses where the 4 "call-lists" :
 	std::list<Building *> foodable;
 	std::list<Building *> fillable;
-	std::list<Building *> zonable[NB_UNIT_TYPE];
+	std::list<Building *> zonableWorkers[2]; 
+	std::list<Building *> zonableExplorer; 
+	std::list<Building *> zonableWarrior;
 	std::list<Building *> upgrade[NB_ABILITY];
 	
 	// The list of building which have one specific ability.
@@ -184,8 +186,9 @@ public:
 	std::list<Building *> buildingsTryToBuildingSiteRoom;
 
 	// The lists of building which needs specials steps() to be called.
-	std::list<Building *> swarms;
-	std::list<Building *> turrets;
+	std::list<Building *> swarms; // Have to increments "productionTimeout" every step, and maybe produce an unit.
+	std::list<Building *> turrets; // Waiting for "shootingCooldown" or "enemy unit" events to shoot.
+	std::list<Building *> clearingFlags; // Have to update the clearing gradient time to time, and request worker if there is something to clear.
 
 	std::list<Building *> virtualBuildings;
 

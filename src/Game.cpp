@@ -198,6 +198,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 						b->owner->swarms.push_back(b);
 					if (b->type->shootingRange)
 						b->owner->turrets.push_back(b);
+					if (b->type->zonable[WORKER])
+						b->owner->clearingFlags.push_back(b);
 					if (b->type->zonableForbidden)
 						map.setForbiddenArea(posX, posY, b->unitStayRange, team->me);
 					b->update();
@@ -273,6 +275,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 					}
 				}
 				else
+				{
+					if (b->type->zonable[WORKER])
+					{
+						b->updateClearingFlag(0);
+						b->updateClearingFlag(1);
+					}
 					for (int i=0; i<2; i++)
 					{
 						b->dirtyLocalGradient[i]=true;
@@ -288,6 +296,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							b->localRessources[i]=NULL;
 						}
 					}
+				}
 			}
 		}
 		break;
@@ -300,11 +309,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
-			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
+			if (b
+				&& b->buildingState==Building::ALIVE
+				&& b->type->defaultUnitStayRange
+				&& b->type->zonable[WORKER])
 			{
 				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
 					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+				b->updateClearingFlag(0);
+				b->updateClearingFlag(1);
 			}
 		}
 		break;
@@ -338,6 +352,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 					}
 				}
 				else
+				{
+					if (drop && b->type->zonable[WORKER])
+					{
+						b->updateClearingFlag(0);
+						b->updateClearingFlag(1);
+					}
 					for (int i=0; i<2; i++)
 					{
 						b->dirtyLocalGradient[i]=true;
@@ -353,6 +373,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							b->localRessources[i]=NULL;
 						}
 					}
+				}
 				
 				if (order->sender!=localPlayer)
 				{

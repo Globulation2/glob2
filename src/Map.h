@@ -367,7 +367,8 @@ public:
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
-	void updateLocalRessources(Building *building, bool canSwim); //A special gradient for clearing flags
+	//!A special gradient for clearing flags. Returns false if there is nothing to clear.
+	bool updateLocalRessources(Building *building, bool canSwim); 
 	void expandLocalGradient(Uint8 *gradient);
 	
 	bool buildingAviable(Building *building, bool canSwim, int x, int y, int *dist);

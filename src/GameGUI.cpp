@@ -200,7 +200,9 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	int posX, posY;
 	Building* selBuild=selection.building;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY)||(drop && selBuild->posX!=posX && selBuild->posY!=posY))
+	if ((selBuild->posXLocal!=posX)
+		||(selBuild->posYLocal!=posY)
+		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
 	{
 		Uint16 gid=selBuild->gid;
 		OrderMoveFlag *oms=new OrderMoveFlag(gid, posX, posY, drop);
@@ -1150,6 +1152,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	{
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
+		selectionPushedPosX=mapX;
+		selectionPushedPosY=mapY;
 		// check for flag first
 		for (std::list<Building *>::iterator virtualIt=localTeam->virtualBuildings.begin();
 				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)

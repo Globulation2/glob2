@@ -197,6 +197,7 @@ private:
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
+	Sint32 selectionPushedPosX, selectionPushedPosY;
 	//! True if the mouse's button way never relased since click im minimap.
 	bool miniMapPushed;
 	//! True if we try to put a mark in the minimap
