@@ -52,10 +52,6 @@ YOGScreen::~YOGScreen()
 	delete multiplayersJoin;
 }
 
-//TCPsocket YOGScreen::socket = NULL;
-//SDLNet_SocketSet YOGScreen::socketSet = NULL;
-//YOG YOGScreen::yog;
-
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
 // NOTE angel > WIN32 use _stricmp and not _strcasecmp sorry...
@@ -74,26 +70,6 @@ void YOGScreen::updateList(void)
 	IPs.clear();
 	gameList->clear();
 
-	// TODO : use new yog here
-	/*char data[GAME_INFO_MAX_SIZE];
-	data[0]=0;
-
-	//sendString(socket, "listenoff");
-	sendString(socket, "listgames");
-	while (strcasecmp(data, "end")!=0)
-	{
-		bool res=getString(socket, data);
-		//if (!res)
-		//	printf("WARNING : error in receive list for %s", data);
-		if ((!res) || (strcasecmp(data, "end")==0))
-			break;
-		if (data[0]!=0)
-			gameList->addText(data);
-		else
-			printf("YOG : We got null string through network during list reception, why ?\n");
-	}*/
-	//sendString(socket, "listenon");
-	
 	if (globalContainer->yog.resetGameLister())
 	{
 		do
@@ -118,55 +94,6 @@ void YOGScreen::updateList(void)
 		while (globalContainer->yog.getNextGame());
 	}
 }
-/*
-bool YOGScreen::getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE])
-{
-	if (socket)
-	{
-		int i;
-		int value;
-		char c;
-
-		i=0;
-		while ( (  (value=SDLNet_TCP_Recv(socket, &c, 1)) >0) && (i<GAME_INFO_MAX_SIZE-1))
-		{
-			if ((c==0) || (c=='\n') || (c=='\r'))
-			{
-				break;
-			}
-			else
-			{
-				data[i]=c;
-			}
-			i++;
-		}
-		data[i]=0;
-		if (value<=0)
-			return false;
-		else
-			return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool YOGScreen::sendString(TCPsocket socket, char *data)
-{
-	if (socket)
-	{
-		int len=strlen(data)+1; // add one for the terminating NULL
-		int result=SDLNet_TCP_Send(socket, data, len);
-		return (result==len);
-	}
-	else
-	{
-		return false;
-	}
-}
-*/
-
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
@@ -236,9 +163,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		//char data[GAME_INFO_MAX_SIZE];
-		//snprintf(data, GAME_INFO_MAX_SIZE, "say <%s> %s", globalContainer->settings.userName, textInput->text);
-		//sendString(socket, data);
 		globalContainer->yog.sendCommand(textInput->text);
 
 		chatWindow->addText("<");
@@ -252,24 +176,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		/*const char *listElement=gameList->getText(par1);
-		char text[GAME_INFO_MAX_SIZE];
-		strncpy(text, listElement, GAME_INFO_MAX_SIZE);
-		char *token=strtok(text, ":");
-		Uint32 ip;
-		//ip=atoi(token);
-		sscanf(token, "%x", &ip);
-
-		ip=SDL_SwapLE32(ip);
-
-		char s[128];
-		snprintf(s, 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-
-		printf("YOG : selected ip is %s\n", s);
-		*/
-		// we create a new screen to join this game:
-		
-		printf("YOG : Selected hostname is [%s]\n", selectedGameInfo->hostname);
+		printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
+		// FIXME : this is wrong, we should access list element selected with par1, 
+		// not selected game info. Luc, plz look at this
 		multiplayersJoin->tryConnection(selectedGameInfo);
 	}
 }
@@ -379,20 +288,4 @@ void YOGScreen::onTimer(Uint32 tick)
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}
-
-	// the YOG part:
-	/*if (socket)
-		if (SDLNet_CheckSockets(socketSet, 0))
-		{
-			char data[GAME_INFO_MAX_SIZE];
-			getString(socket, data);
-			if (data[0]==0)
-				printf("YOG : We got null string through network, why ?\n");
-			else
-			{
-				chatWindow->addText(data);
-				chatWindow->addText("\n");
-				chatWindow->scrollToBottom();
-			}
-		}*/
 }

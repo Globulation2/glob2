@@ -132,7 +132,6 @@ void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint
 	if (!surface)
 		return;
 
-	// TODO : do the alpha !!!
 	if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
 		return;
 
