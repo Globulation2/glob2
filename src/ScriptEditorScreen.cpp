@@ -159,7 +159,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			char* sourceCode=new char[len+1];
 			SDL_RWread(stream, sourceCode, len, 1);
 			sourceCode[len] = '\0';
-			editor->addText(sourceCode);
+			editor->setText(sourceCode);
 			delete[] sourceCode;
 			SDL_RWclose(stream);
 		}

@@ -605,6 +605,8 @@ void TextArea::layout(void)
 void TextArea::setText(const char *text)
 {
 	this->text = text;
+	if (cursorPos>this->text.length())
+		cursorPos = this->text.length();
 	layout();
 	computeAndRepaint();
 }
