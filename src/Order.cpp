@@ -630,7 +630,12 @@ Uint8 *OrderAlterateForbidden::getData(void)
 bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 {
 	if (dataLength < 10)
+	{
+		printf("OrderAlterateForbidden::setData(dataLength=%d) failure\n", dataLength);
+		for (int i=0; i<dataLength; i++)
+			printf("data[%d]=%d\n", i, data[i]);
 		return false;
+	}
 	
 	teamNumber = getUint8(data, 0);
 	type = getUint8(data, 1);
