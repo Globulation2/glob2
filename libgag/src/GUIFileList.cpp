@@ -106,7 +106,8 @@ namespace GAGGUI
 			this->generateList();
 			this->nth = -1;
 		}
-		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
+		else
+			this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 	}
 	
 	std::string FileList::fileToList(const char* fileName) const
