@@ -76,6 +76,7 @@ public:
 	Sprite *ressources;
 	Sprite *ressourceMini;
 	Sprite *bullet;
+	Sprite *bulletExplosion;
 	Sprite *units;
 	Sprite *unitmini;
 	Sprite *gamegui;

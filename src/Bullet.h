@@ -42,5 +42,10 @@ public:
 	void step(void);
 };
 
+struct BulletExplosion
+{
+	int x, y, ticksLeft;
+};
+
 #endif
  

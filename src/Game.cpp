@@ -1941,7 +1941,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawOptions);
 		}
 
-	// Let's paint the bullets:
+	// Let's paint the bullets and explosions
 	// TODO : optimise : test only possible sectors to show bullets.
 
 	Sprite *bulletSprite = globalContainer->bullet;
@@ -1953,6 +1953,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	for (int i=0; i<(map.getSectorW()*map.getSectorH()); i++)
 	{
 		Sector *s=map.getSector(i);
+		// bullets
 		for (std::list<Bullet *>::iterator it=s->bullets.begin();it!=s->bullets.end();it++)
 		{
 			int x=(*it)->px-(viewportX<<5);
@@ -1979,6 +1980,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
 				globalContainer->gfx->drawSprite(x+(balisticShift>>1), y, bulletSprite, BULLET_IMGID+1);
 			}
+		}
+		// explosions
+		for (std::list<BulletExplosion *>::iterator it=s->explosions.begin();it!=s->explosions.end();it++)
+		{
+			int x, y;
+			map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
+			Sprite *img = globalContainer->bulletExplosion;
+			int frame = globalContainer->bulletExplosion->getFrameCount() - (*it)->ticksLeft - 1;
+			int decX = globalContainer->bulletExplosion->getW(frame)>>1;
+			int decY = globalContainer->bulletExplosion->getH(frame)>>1;
+			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, img, frame);
+			std::cout << "Explosion at (" << x << "," << y << ") frame " << frame <<std::endl;
 		}
 	}
 	
