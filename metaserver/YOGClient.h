@@ -109,6 +109,9 @@ public:
 	std::list<Uint32> leftClients;
 	int leftClientsTimeout;
 	int leftClientsTOTL;
+	Uint32 leftClientPacketID;
+	int lastLeftClientNumber[4];
+	int allreadyRemovedClients;
 	
 	int timeout;
 	int TOTL;

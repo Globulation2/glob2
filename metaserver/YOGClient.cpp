@@ -48,6 +48,11 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	
 	static Uint32 clientUID=1;
 	uid=clientUID++;
+	
+	leftClientPacketID=0;
+	for (int i=0; i<4; i++)
+		lastLeftClientNumber[i]=0;
+	allreadyRemovedClients=0;
 }
 
 YOGClient::~YOGClient()
@@ -323,8 +328,13 @@ void YOGClient::sendLeftClients()
 		nbClients=32;
 	int size=4*nbClients+4;
 	Uint8 data[size];
-	addUint32(data, nbClients, 0); // This is redundancy
-	int index=4;
+	addUint32(data, nbClients, 0);
+	
+	leftClientPacketID++;
+	addUint32(data, leftClientPacketID, 4); // This is redundancy
+	lastLeftClientNumber[leftClientPacketID&0x3]=nbClients;
+	
+	int index=8;
 	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
 	{
 		addUint32(data, *uid, index);
