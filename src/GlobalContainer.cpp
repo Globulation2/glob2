@@ -227,6 +227,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.optionFlags&=~OPTION_LOW_SPEED_GFX;
 			continue;
 		}
+		if (strcmp(argv[i], "-m")==0)
+		{
+			settings.musicVolume=0;
+			continue;
+		}
 
 		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
@@ -236,6 +241,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-r/-R\tset/clear resizable window\n");
 			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-v\tset the music volume\n");
+			printf("-m\tmute the music\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
 			printf("-b/-B\tenable/disable double buffering (useful on OS X in fullscreen)\n");
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
