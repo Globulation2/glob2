@@ -153,7 +153,7 @@ void NetGame::init(void)
 			fclose(logFile);
 		logFile=NULL;
 	}
-	logFile=fopen("NetGame.log", "w");
+	logFile=globalContainer->fileManager.openFP("NetGame.log", "w");
 	if (logFile==NULL)
 		logFile=stdout;
 	assert(logFile);

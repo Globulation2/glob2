@@ -33,7 +33,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		this->savedSessionInfo=NULL;
 
 	logFile=NULL;
-	logFile=fopen("MultiplayersHost.log", "w");
+	logFile=globalContainer->fileManager.openFP("MultiplayersHost.log", "w");
 	if (logFile==NULL)
 		logFile=stdout;
 	assert(logFile);
@@ -157,7 +157,14 @@ MultiplayersHost::~MultiplayersHost()
 	if (logFile)
 	{
 		if (logFile!=stdout)
+		{
+			//TODO: make a good dumping system or remove it !
+			for (int i=0; i<MAX_WINDOW_SIZE; i++)
+				if (windowstats[i]>1)
+					fprintf(logFile, "%d \t %d.\n", i, windowstats[i]);
+			fprintf(logFile, "playerFileTra[0].packetSize=%d.\n", playerFileTra[0].packetSize);
 			fclose(logFile);
+		}
 		logFile=NULL;
 	}
 }
