@@ -14,7 +14,7 @@ pl
 [language-tr]
 Langue
 Language
-
+Sprache
 Jazyk
 Język
 [hp]
@@ -80,7 +80,7 @@ Zboże
 [Papyrus]
 Papyrus
 Papyrus
-
+Papyrus
 Papyrus
 Papyrus
 [Stone]
@@ -98,25 +98,25 @@ Algi
 [Cherry]
 Cerise
 Cherry
-
+Kirsche
 Třešně
 Wiśnie
 [Orange]
 Orange
 Orange
-
+Orange
 Pomarenče
 Pomarańcze
 [Prune]
 Prune
 Prune
-
+Pflaume
 Švestky
 Śliwki
 [Bullets]
 Boulets
 Bullets
-
+Kugeln
 Střelivo
 Amunicja
 [range]
@@ -264,7 +264,7 @@ Gasthof
 Hospoda
 Gospoda
 [health building]
-Hopital
+Hôpital
 Hospital
 Spital
 Nemocnice
@@ -282,7 +282,7 @@ Schwimmbecken
 Koupaliště
 Pływalnia
 [attack building]
-Camp d'entrainement
+Camp d'entraînement
 Camp
 Trainingslager
 Cvičiště
@@ -320,7 +320,7 @@ Flaga oczyszczania
 [forbidden flag]
 Drapeau d'interdiction
 Forbidden flag
-
+Verbotsflagge
 Zákaz vstupu 
 Flaga zakazu
 [stone wall]
@@ -330,21 +330,21 @@ Steinmauer
 Kamenná hradba
 Mur kamienny
 [wood wall]
-Mur de boid
+Mur de bois
 Wood wall
-
+Holzmauer
 Dřevěná hradba
 Palisada
 [market]
 Marché
 Market
-
+Markt
 Tržiště
 Bazar
 [exchange]
 Echange
 Exchange
-
+Handel
 Směnit
 Wymiana
 [waiting for %s]
@@ -414,10 +414,10 @@ Wiederrufen
 Zrušit
 Anuluj
 [you have lost]
-Vous avez perdu !
+Vous avez perdu!
 You have lost!
 Sie haben verloren!
-Jsi ztracen ...
+Jsi ztracen...
 Przegrałeś...
 [you have won]
 Vous avez gagné!
@@ -434,7 +434,7 @@ Kampania
 [tutorial]
 Didacticiel
 Tutorial
-
+Lernprogramm
 Tutoriál
 Samouczek
 [custom game]
@@ -492,13 +492,13 @@ Spiel anlegen
 Vytvoř hru
 Nowa gra
 [update list]
-Mettre a jour
+Mettre à jour
 Update list
 Aktualisieren
 Obnovit seznam
 Uaktualnij listę
 [connecting to]
-Connection a
+Connection à
 Connecting to
 Verbinden mit
 Připojuji se k
@@ -558,7 +558,7 @@ Spielerame
 Jméno
 Nazwa Gracza
 [svr hostname]
-Nom du serveur hote
+Nom du serveur hôte
 Server hostname
 Server-Rechnername
 Server hostname
@@ -618,7 +618,7 @@ Höhe der Karte
 Výška mapy
 Wysokość mapy
 [default terrain]
-Terrain par defaut
+Terrain par défaut
 Default terrain
 Vorgabeterrain
 Předvolená krajina
@@ -660,7 +660,7 @@ Spiel auswählen
 Výběr hry
 Wybierz grę
 [awaiting players]
-Attente des joueurs
+En attente des joueurs
 Awaiting players
 Warten auf Spieler
 Čeká se na hráče
@@ -678,7 +678,7 @@ Nahrung
 Potrava
 Pozostało jedzenia
 [the building is finished]
-Le batiment est terminé
+Le bâtiment est terminé
 The building is finished
 Das Gebäude ist fertig
 Budova je postavena ...
@@ -696,7 +696,7 @@ Der Gasthof ist fertig
 Hospoda postavena ...
 Zbudowano gospodę
 [the health building is finished]
-L'hopital est terminé
+L'hôpital est terminé
 The hospital is finished
 Das Hospital ist fertig
 Nemocnice postavena ...
@@ -714,7 +714,7 @@ Das Schwimmbecken ist fertig
 Koupaliště postaveno ...
 Zbudowano pływalnię
 [the attack building is finished]
-Le camp d'entrainement est terminé
+Le camp d'entraînement est terminé
 The training camp is finished
 Das Trainingslager ist fertig
 Cvičiště postaveno ...
@@ -752,7 +752,7 @@ Zbudowano wieżę obronną
 [the forbidden flag is finished]
 ?? Drapeau d'interdiction terminé ??
 ?? Forbidden flag finished ??
-
+?? Verbotsflagge fertig ??
 ?? Prapor zakáz vstupu připraven ??
 ?? Postawiono flagę zakazu ?? 
 [the stone wall is finished]
@@ -770,11 +770,11 @@ Zbudowano część palisady
 [the market is finished]
 Le marché est terminé
 The market is finished
-
+Der Markt ist fertig
 Tržiště postaveno ...
 Zbudowano bazar 
 [the building is under attack]
-Le batiment est attaqué
+Le bâtiment est attaqué
 The building is under attack
 Das Gebäude wird angegriffen
 Budova pod útokem
@@ -792,7 +792,7 @@ Der Gasthof wird angegriffen
 Hospoda je pod útokem
 Gospoda została zaatakowana
 [the health building is under attack]
-L'hopital est attaqué
+L'hôpital est attaqué
 The hospital is under attack
 Das Hospital wird angegriffen
 Nemocnice je pod útokem
@@ -810,7 +810,7 @@ Das Schwimmbecken wird angegriffen
 Koupaliště je pod útokem
 Pływalnia została zaatakowana
 [the attack building is under attack]
-Le camp d'entrainement est attaqué
+Le camp d'entraînement est attaqué
 The training camp is under attack
 Das Trainingslager wird angegriffen
 Cvičiště je pod útokem
@@ -848,7 +848,7 @@ Wieża obronna została zaatakowana
 [the forbidden flag is under attack]
 ?? Drapeau d'interdiction attaqué ??
 ?? Forbidden flag under attack ??
-
+?? Verbotsflagge wird angegriffen ??
 ?? Prapor zákaz vstupu v obležení nepřátel ??
 ?? Flaga zakazu została zaatakowana ??
 [the stone wall is under attack]
@@ -866,7 +866,7 @@ Palisada została zaatakowana
 [the market is under attack]
 Le marché est attaqué
 The market is under attack
-
+Der Markt wird angegriffen
 Tržiště je pod útokem
 Bazar został zaatakowany
 [Your]
@@ -888,7 +888,7 @@ Your unit got converted to another team
 Tva jednotka změnila víru v jiného hráče
 Twoja jednostka została przeciągnięta na stronę wroga
 [Another team's unit got converted to your team]
-Un unité enemie s'est convertie à votre équipe
+Une unité ennemie s'est convertie à votre équipe
 Another team's unit got converted to your team
 
 Cizí tým změnil víru v Tebe
@@ -924,7 +924,7 @@ Spieler
 Hráč
 Gracz
 [STARTING GAME ...]
-Départ du jeu... 
+Début du jeu... 
 Starting game... 
 Spielbeginn... 
 Startuji hru...
@@ -936,7 +936,7 @@ Statistiken
 Statistiky
 Statystyka
 [Buildings]
-Batiments
+Bâtiments
 Buildings
 Gebäude
 Budovy
@@ -1266,13 +1266,13 @@ Glättung
 Vyhlazení
 Wygładzanie
 [number of teams]
-nombre d'equipes
+nombre d'équipes
 number of teams
 Anzahl Mannschaften
 Počet hráčů
 Ilość drużyn
 [islands size]
-taille des iles
+taille des îles
 islands size
 Größe der Inseln
 Velikost ostrovů
@@ -1290,13 +1290,13 @@ Arbeiterinnen
 Dělníci
 Pracownicy
 [bad error in connection system]
-Mauvaise erreure dans le système de connection
+Mauvaise erreur dans le système de connection
 Bad error in connection system
 Fataler Fehler im Verbindungssystem
 Kritická chyba v systému připojení
 Bład w systemie połączeń
 [not connected]
-Pas connecté
+Non connecté
 Not connected
 Nicht angeschlossen
 Nepřipojen
@@ -1326,7 +1326,7 @@ Mit dem Server verbunden
 Server připojen
 Połączono z serwerem
 [connecting to all players]
-En train de connecter avec les joueurs
+En train de se connecter avec les joueurs
 Connecting to all players
 Verbinden mit allen Spielern
 Připojuji se ke všem hráčům
@@ -1454,7 +1454,7 @@ Prędkość gry
 [Paused]
 Pause
 Paused
-
+Pause
 Pauza
 Pauza
 [YESTS_BAD]
@@ -1464,7 +1464,7 @@ Interner Konsistenzfehler beim Verbinden.
 Vnitřní chyba spojitosti během připojovaní.
 Błąd spójności podczas łączenia.
 [YESTS_UNABLE_TO_CONNECT]
-Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
+Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
@@ -1536,7 +1536,7 @@ Sie sind als abwesend markiert.
 Jsi označen, že jsi pryč.
 Jesteś oznaczony jako nieaktywny.
 [You are no more marked as away]
-Vous êtes désormais considéré comme étant présent.
+Vous êtes à nouveau considéré comme étant présent.
 You are no longer marked as away.
 Sie sind wieder da.
 Nejsi označen, že jsi pryč.
@@ -1602,13 +1602,13 @@ Weiterspielen
 Pokračovat ve hře
 Kontynuuj grę
 [Lost : your colony is dead]
-Perdu : Votre colonie est morte
-Lost: Your colony is dead
+Perdu : votre colonie est morte
+Lost: your colony is dead
 Verloren: Ihre Kolonie ist tot
 Tvoje kolonie je zničená ...
 Przegrałeś: Twoja kolonia została wybita.
 [Won : you defeated your opponents]
-Gagné : Vous avez vaincu vos adversaires
+Gagné : vous avez vaincu vos adversaires
 Won : you defeated your opponents
 Gewonnen: Sie haben Ihre Feinde besiegt
 Tvoji nepřátelé byli poraženi ...
@@ -1626,13 +1626,13 @@ Verloren: %s hat mehr Prestige als Sie
 %s má větší prestiž než Ty ...
 Przegrałeś: %s ma większy prestiż od Twojego
 [Won : you have the biggest prestige]
-Gagné : Vous avez le plus de prestige
+Gagné : vous avez le plus de prestige
 Won : you have the biggest prestige
 Gewonnen: Sie haben das höchste Prestige
 Ty máš největší prestiž ...
 Wygrałeś: Masz największy prestiż
 [The game has not been finished]
-La partie n'a pas été finie
+La partie n'a pas été terminée
 The game has not been finished
 Das Spiel wurde nicht abgeschlossen
 Hra neskončila
@@ -1640,7 +1640,7 @@ Gra nie została skończona
 [display]
 Affichage
 Display
-
+Anzeige
 Rozlišení
 Wyświetlanie
 [username]

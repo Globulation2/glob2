@@ -3324,6 +3324,88 @@
 			settings = {
 			};
 		};
+		59C5D62C05F38CED00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = units.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D62D05F38CED00DE80AB = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D62E05F38CED00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = ressources.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D62F05F38CED00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = pal.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63005F38CED00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = buildings.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63105F38CED00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = guiscr.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63A05F38D3C00DE80AB = {
+			children = (
+				59C5D63B05F38D3C00DE80AB,
+				59C5D63C05F38D3C00DE80AB,
+				59C5D63D05F38D3C00DE80AB,
+			);
+			isa = PBXGroup;
+			name = zik;
+			path = gui/zik;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63B05F38D3C00DE80AB = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			path = intro.ogg;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63C05F38D3C00DE80AB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = Makefile.am;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59C5D63D05F38D3C00DE80AB = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			path = menu.ogg;
+			refType = 4;
+			sourceTree = "<group>";
+		};
 //590
 //591
 //592
@@ -17933,9 +18015,16 @@
 		};
 		5BE9C98403FFA23E0000000D = {
 			children = (
+				59C5D62C05F38CED00DE80AB,
+				59C5D62D05F38CED00DE80AB,
+				59C5D62E05F38CED00DE80AB,
+				59C5D62F05F38CED00DE80AB,
+				59C5D63005F38CED00DE80AB,
+				59C5D63105F38CED00DE80AB,
 				5BE9C98703FFA23E0000000D,
 				5BE9C98F03FFA23E0000000D,
 				5BE9CEBA03FFA2400000000D,
+				59C5D63A05F38D3C00DE80AB,
 			);
 			isa = PBXGroup;
 			path = data;
