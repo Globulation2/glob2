@@ -1988,6 +1988,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		updateLocalGradient(building, canSwim);
 		
 		Uint8 currentg=gradient[lx+ly*32];
+		printf("cs=%d, l=(%d, %d), currentg=%d\n", canSwim, lx, ly, currentg);
 		if (currentg>1)
 		{
 			*dist=255-currentg;
@@ -2035,7 +2036,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
-	//printf("pathfindingBuilding...\n");
+	//printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
@@ -2139,7 +2140,6 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		gradient=new Uint8[size];
 		printf("allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
-		updateGlobalGradient(building, canSwim);
 	}
 	else
 	{
@@ -2156,7 +2156,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
 					if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
-					if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
 						max=g;
 						*dx=ddx;
@@ -2194,7 +2194,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
 				if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					gradientUsable=true;
-				if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
 					max=g;
 					*dx=ddx;
@@ -2218,7 +2218,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				Uint8 g=gradient[((x+w+(ddx*2))&wMask)+w*((y+h+(ddy*2))&hMask)];
 				if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					gradientUsable=true;
-				if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
 					max=g;
 					*dx=ddx;

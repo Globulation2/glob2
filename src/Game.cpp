@@ -1269,7 +1269,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[0];
+		Building *b=teams[0]->myBuildings[1];
 		if (b)
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
@@ -1280,8 +1280,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						int lx=(x+viewportX-b->posX+15+32)&31;
 						int ly=(y+viewportY-b->posY+15+32)&31;
 						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
-						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, lx);
-						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, y);
+						globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, lx);
+						globalContainer->gfx->drawString((x<<5)+16, (y<<5)+10, globalContainer->littleFont, ly);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);

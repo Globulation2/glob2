@@ -999,7 +999,7 @@ void Building::subscribeToBringRessourcesStep()
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 		{
 			(*it)->attachedBuilding=NULL;
 			(*it)->subscribed=false;
@@ -1026,89 +1026,22 @@ void Building::subscribeToBringRessourcesStep()
 			5-if the unit is close of a needed ressource, this is better
 			*/
 			
-			//First; we look only for units with a needed ressource:
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			//First: we look only for units with a needed ressource:
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 			{
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
-				// The following "10" is totaly arbitrary between [2..100]
-				int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
+				int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
 				int x=unit->posX;
 				int y=unit->posY;
-				hungry*=hungry;
+				bool canSwim=unit->performance[SWIM];
 				if ((r>=0)&& neededRessource(r))
 				{
-					int dist=map->warpDistSquare(x, y, posX, posY);
-					int value=dist-hungry;
-					//printf("d(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
-					unit->destinationPurprose=r;
-					if (value<minValue)
+					int dist;
+					if (map->buildingAviable(this, canSwim, x, y, &dist) && dist<timeLeft)
 					{
-						minValue=value;
-						choosen=unit;
-					}
-				}
-			}
-			
-			if (choosen==NULL)
-			{
-				Uint8 needs[MAX_NB_RESSOURCES];
-				neededRessources(needs);
-				int teamNumber=owner->teamNumber;
-				
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-				{
-					Unit *unit=(*it);
-					int x=unit->posX;
-					int y=unit->posY;
-					bool canSwim=unit->performance[SWIM];
-					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
-					
-					for (int r=0; r<MAX_RESSOURCES; r++)
-					{
-						int need=needs[r];
-						if (need)
-						{
-							Sint32 tx, ty;
-							int distUnitRessource;
-							if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &tx, &ty, &distUnitRessource))
-							{
-								int distBuildingRessource=(int)sqrt((double)map->warpDistSquare(tx, ty, posX, posY));
-								int dist=distBuildingRessource+distUnitRessource;
-								
-								if (dist>=timeLeft)
-									continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
-								
-								int value=dist/need;
-								
-								if (value<minValue)
-								{
-									unit->destinationPurprose=r;
-									minValue=value;
-									choosen=unit;
-								}
-							}
-						}
-					}
-				}
-			}
-				
-			/*if (choosen==NULL)
-				for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-				{
-					Unit *unit=(*it);
-					// The following "10" is totaly arbitrary between [2..100]
-					int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
-					int x=unit->posX;
-					int y=unit->posY;
-					int dx, dy;
-					int r=-1;
-					if (map->nearestRessource(x, y, (RessourcesTypes::intResType *)&r, &dx, &dy) && neededRessource(r))
-					{
-						int dist=map->warpDistSquare(dx, dy, posX, posY);
-						dist+=(x-dx)*(x-dx)+(y-dy)*(y-dy);
-						int value=dist-hungry;
-						//printf("i(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
+						int value=dist-timeLeft;
+						//printf("d(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
 						unit->destinationPurprose=r;
 						if (value<minValue)
 						{
@@ -1117,24 +1050,122 @@ void Building::subscribeToBringRessourcesStep()
 						}
 					}
 				}
+			}
 			
+			//Second: we look for an unit whois not carying a ressource:
 			if (choosen==NULL)
 			{
-				for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				Uint8 needs[MAX_NB_RESSOURCES];
+				neededRessources(needs);
+				int teamNumber=owner->teamNumber;
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 				{
 					Unit *unit=(*it);
-					// The following "10" is totaly arbitrary between [2..100]
-					int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
-					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
-					int value=dist-hungry;
-					//printf("u(%x) dist=%d, hungry=%d, value=%d\n", (int)unit, dist, hungry, value);
-					if (value<minValue)
+					if (unit->caryedRessource<0)
 					{
-						minValue=value;
-						choosen=unit;
+						int x=unit->posX;
+						int y=unit->posY;
+						bool canSwim=unit->performance[SWIM];
+						int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+						Uint32 teamMask=owner->me;
+
+						for (int r=0; r<MAX_RESSOURCES; r++)
+						{
+							int need=needs[r];
+							if (need)
+							{
+								int rx, ry;
+								int distUnitRessource;
+								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
+								{
+									if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
+										for (int d=0; d<8; d++)
+										{
+											int ddx, ddy;
+											Unit::dxdyfromDirection(d, &ddx, &ddy);
+											if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, teamMask))
+											{
+												rx=(rx+map->getW()+ddx)&map->getMaskW();
+												ry=(ry+map->getH()+ddy)&map->getMaskH();
+												break;
+											}
+										}
+									
+									int distBuildingRessource;
+									if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
+									{
+										int dist=distBuildingRessource+distUnitRessource;
+										if (dist>=timeLeft)
+											continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
+										int value=dist/need;
+										if (value<minValue)
+										{
+											unit->destinationPurprose=r;
+											minValue=value;
+											choosen=unit;
+										}
+									}
+								}
+							}
+						}
 					}
 				}
-			}*/
+				
+				//Third: we look for an unit whois carying an unwanted ressource:
+				if (choosen==NULL)
+					for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+					{
+						Unit *unit=(*it);
+						if (unit->caryedRessource<0)
+						{
+							int x=unit->posX;
+							int y=unit->posY;
+							bool canSwim=unit->performance[SWIM];
+							int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+							Uint32 teamMask=owner->me;
+
+							for (int r=0; r<MAX_RESSOURCES; r++)
+							{
+								int need=needs[r];
+								if (need)
+								{
+									int rx, ry;
+									int distUnitRessource;
+									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
+									{
+										if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
+											for (int d=0; d<8; d++)
+											{
+												int ddx, ddy;
+												Unit::dxdyfromDirection(d, &ddx, &ddy);
+												if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, teamMask))
+												{
+													rx=(rx+map->getW()+ddx)&map->getMaskW();
+													ry=(ry+map->getH()+ddy)&map->getMaskH();
+													break;
+												}
+											}
+										
+										int distBuildingRessource;
+										if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
+										{
+											int dist=distBuildingRessource+distUnitRessource;
+											if (dist>=timeLeft)
+												continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
+											int value=dist/need;
+											if (value<minValue)
+											{
+												unit->destinationPurprose=r;
+												minValue=value;
+												choosen=unit;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+			}
 
 			if (choosen)
 			{
@@ -1143,8 +1174,6 @@ void Building::subscribeToBringRessourcesStep()
 				unitsWorkingSubscribe.remove(choosen);
 				if (!neededRessource(choosen->destinationPurprose))
 				{
-					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
-					
 					//printf("C-B(%x)gid=(%d), choosen=(%x) Ugid=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, gid, (int)choosen, (int)choosen->gid, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
@@ -1159,6 +1188,9 @@ void Building::subscribeToBringRessourcesStep()
 				}
 				else
 				{
+					//We set targetX and targetY for gameplay purpose:
+					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL);
+					
 					unitsWorking.push_back(choosen);
 					choosen->unsubscribed();
 					updateCallLists();
