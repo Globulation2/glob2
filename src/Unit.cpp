@@ -800,10 +800,17 @@ void Unit::handleActivity(void)
 			{
 				Team *currentTeam=owner;
 				Team *targetTeam=b->owner;
-				if (currentTeam!=targetTeam)
+				if (currentTeam != targetTeam)
 				{
+					// Unit conversion code
+					
+					// Send events and keep track of number of unit converted
 					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum);
+					currentTeam->unitConversionLost++;
 					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum);
+					targetTeam->unitConversionGained++;
+					
+					// Find free slot in other team
 					int targetID=-1;
 					for (int i=0; i<1024; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
@@ -812,6 +819,7 @@ void Unit::handleActivity(void)
 							break;
 						}
 
+					// If free slot, do the conversion, change owner and ID
 					if (targetID!=-1)
 					{
 						Sint32 currentID=Unit::GIDtoID(gid);

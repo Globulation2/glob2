@@ -136,6 +136,10 @@ private:
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
+	
+	//! Draw the top of screen bar, called by drawOverlayInfos
+	void drawTopScreenBar(void);
+	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
 
 	//! Draw the panel

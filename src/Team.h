@@ -212,6 +212,11 @@ public:
 	Sint32 startPosX, startPosY;
 	Sint32 startPosSet; // {0=unset, 1=any unit, 2=any building, 3=swarm building}
 	Sint32 prestige;
+	
+	// Number of unit lost due to conversion
+	Sint32 unitConversionLost;
+	// Number of unit gained due to conversion
+	Sint32 unitConversionGained;
 
 private:
 	//! was an event last tick
