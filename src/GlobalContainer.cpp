@@ -149,12 +149,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 		if (strcmp(argv[i], "-b")==0)
 		{
-			settings.screenFlags|=DrawableSurface::NO_DOUBLEBUF;
+			settings.screenFlags|=DrawableSurface::DOUBLEBUF;
 			continue;
 		}
 		if (strcmp(argv[i], "-B")==0)
 		{
-			settings.screenFlags&=~DrawableSurface::NO_DOUBLEBUF;
+			settings.screenFlags&=~DrawableSurface::DOUBLEBUF;
 			continue;
 		}
 
@@ -177,7 +177,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-r/-R\tset/clear resizable window\n");
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
-			printf("-b/-B\tdisable/enable double buffering (usefull on OS X in fullscreen)\n");
+			printf("-b/-B\tenable/disable double buffering (usefull on OS X in fullscreen)\n");
 			printf("-l\tlow speed graphics : disable some transparency effects\n");
 			printf("-h\thigh speed graphics : max of transparency effects\n");
 			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");

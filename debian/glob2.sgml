@@ -87,7 +87,7 @@ manpage.1: manpage.sgml
       because the original program does not have a manual page.</para>
 
     <para><command>&dhpackage;</command> is a Real Time Strategy game, which can be compared
-    with Warcraft and also Sim games family. The primar aim of the game is to kill your opponents,
+    with Warcraft and also Sim games family. The primary aim of the game is to kill your opponents,
     just like in warcraft-like games, and the whole control is processed through buildings, not
     units, as in Sims games family.</para>
 
@@ -132,10 +132,10 @@ manpage.1: manpage.sgml
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>-b</option>
+        <term><option>-B</option>
         </term>
         <listitem>
-          <para>Disable double buffering (useful on OS X on fullscreen).</para>
+          <para>Disable double buffering (useful on OS X with fullscreen).</para>
         </listitem>
       </varlistentry>
       <varlistentry>

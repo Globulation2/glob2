@@ -242,16 +242,16 @@ bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
 	//SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-	/*if (flags&NO_DOUBLEBUF)
-	{
-		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
-	}
-	else
+	/*if (flags&DOUBLEBUF)
 	{
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 		sdlFlags|=SDL_DOUBLEBUF;
+	}
+	else
+	{
+		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
 	}*/
-		
+
 	screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL/*sdlFlags*/);
 
 	if (!screen)

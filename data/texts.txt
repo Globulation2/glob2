@@ -1675,13 +1675,13 @@ Fullscreen
 
 [hwaccel]
 Accélération matérielle
-Hardware Acceleration
+Hardware acceleration
 
 
 
-[nodblbuff]
-Pas de doube-tampon
-No double-buffer
+[dblbuff]
+Doube-tampon
+Double-buffering
 
 
 

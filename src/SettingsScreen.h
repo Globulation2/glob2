@@ -37,7 +37,7 @@ public:
 		CANCEL = 2,
 		FULLSCREEN = 3,
 		HWACCLEL = 4,
-		NODBLBUFF = 5,
+		DBLBUFF = 5,
 		LOWQUALITY = 6
 	};
 private:
@@ -47,9 +47,9 @@ private:
 	int oldLanguage, oldScreenW, oldScreenH;
 	
 	TextButton *ok, *cancel;
-	OnOffButton *fullscreen, *hwaccel, *nodblbuff, *lowquality;
+	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality;
 	Text *title, *language, *display, *usernameText;
-	Text *fullscreenText, *hwaccelText, *nodblbuffText, *lowqualityText;
+	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText;
 
 public:
 	SettingsScreen();

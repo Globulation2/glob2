@@ -198,7 +198,7 @@ protected:
 
 public:
 	Screen();
-	
+
 	virtual ~Screen();
 
 	//! Method called for each timer's tick
