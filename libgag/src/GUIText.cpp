@@ -42,6 +42,8 @@ namespace GAGGUI
 		init();
 		assert(fontPtr);
 		assert(text);
+		
+		// If w or h is specified it means that we want the text left/top aligned in a box that is not related to the length of this->text
 		if ((w) || (hAlignFlag==ALIGN_FILL))
 		{
 			this->w=w;
@@ -103,10 +105,15 @@ namespace GAGGUI
 			// copy text
 			this->text = newText;
 		
-			if (!keepW)
-				w = fontPtr->getStringWidth(newText);
-			if (!keepH)
-				h = fontPtr->getStringHeight(newText);
+			if ((!keepW) || (!keepH))
+			{
+				parent->getSurface()->pushFontStyle(fontPtr, style);
+				if (!keepW)
+					w = fontPtr->getStringWidth(newText);
+				if (!keepH)
+					h = fontPtr->getStringHeight(newText);
+				parent->getSurface()->popFontStyle(fontPtr);
+			}
 			parent->onAction(this, TEXT_SET, 0, 0);
 		}
 	}
