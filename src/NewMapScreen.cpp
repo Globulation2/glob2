@@ -217,7 +217,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		// eUNIFORM
 		if (source==terrains)
-			descriptor.terrainType=(Map::TerrainType)terrains->getNth();
+			descriptor.terrainType=(TerrainType)terrains->getNth();
 		
 		// all
 		if (source==methodes)

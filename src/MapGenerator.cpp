@@ -42,23 +42,23 @@ void Map::controlSand(void)
 			int tt=(int)undermap[y*w+x];
 			switch (tt)
 			{
-				case Map::WATER:
+				case WATER:
 					for (int dy=-1; dy<=1; dy++)
 						for (int dx=-1; dx<=1; dx++)
 						{
 							int stt=getUMTerrain(x+dx, y+dy);
-							if (stt==Map::GRASS)
+							if (stt==GRASS)
 								goto bad;
 						}
 				break;
-				case Map::SAND:
+				case SAND:
 				continue;
-				case Map::GRASS:
+				case GRASS:
 					for (int dy=-1; dy<=1; dy++)
 						for (int dx=-1; dx<=1; dx++)
 						{
 							int stt=getUMTerrain(x+dx, y+dy);
-							if (stt==Map::WATER)
+							if (stt==WATER)
 								goto bad;
 						}
 				break;
@@ -747,8 +747,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	printf("squareSize=%d.\n", squareSize);
 	for (int team=0; team<nbTeams; team++)
 	{
-		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, Map::GRASS, squareSize);
-		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+2, Map::GRASS, squareSize);
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, GRASS, squareSize);
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+2, GRASS, squareSize);
 	}
 	
 	controlSand();
@@ -1385,8 +1385,8 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		if (session.numberOfTeam<=s)
 			addTeam();
 		int squareSize=5+descriptor.islandsSize/10;
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, squareSize);
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, squareSize);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, squareSize);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, squareSize);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
@@ -1416,8 +1416,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		if (session.numberOfTeam<=s)
 			addTeam();
 		
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, 5);
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, 5);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);

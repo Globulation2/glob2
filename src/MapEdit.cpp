@@ -44,7 +44,7 @@ MapEdit::MapEdit()
 	team=0;
 	terrainSize=1; // terrain size 1
 	level=0;
-	type=Map::WATER; // water
+	type=WATER; // water
 
 	editMode=EM_TERRAIN; // terrain
 	wasClickInMap=false;
@@ -274,7 +274,7 @@ void MapEdit::handleMapClick()
 		game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
 		if ((ax!=x)||(ay!=y)||(atype!=type))
 		{
-			game.map.setUMatPos(x, y, (Map::TerrainType)type, terrainSize);
+			game.map.setUMatPos(x, y, (TerrainType)type, terrainSize);
 			needRedraw=true;
 
 			winX=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-64;
@@ -283,9 +283,9 @@ void MapEdit::handleMapClick()
 			winH=(terrainSize+3)<<5;
 
 			int dec;
-			if ((type==Map::WATER) || (type==Map::SAND))
+			if ((type==WATER) || (type==SAND))
 			{
-				if (type==Map::WATER)
+				if (type==WATER)
 					dec=3;
 				else
 					dec=1;
@@ -305,6 +305,11 @@ void MapEdit::handleMapClick()
 				}
 				Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
 			}
+			if (type==SAND)
+				game.map.setNoRessource(x, y, terrainSize+1);
+			else
+				game.map.setNoRessource(x, y, terrainSize+3);
+			
 			updateUnits(x-(terrainSize>>1)-2, y-(terrainSize>>1)-2, terrainSize+3, terrainSize+3);
 		}
 	}
@@ -315,7 +320,6 @@ void MapEdit::handleMapClick()
 		{
 			game.map.setRessource(x, y, type, terrainSize);
 			needRedraw=true;
-
 
 			winX=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
 			winW=(terrainSize+1)<<5;
@@ -1301,7 +1305,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 	return returnCode;
 }
 /*
-int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
+int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, terrainType);
 	game.map.setGame(&game);
@@ -1389,7 +1393,7 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 	game.map.setSize(sizeX, sizeY);
 }*/
 
-int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
+int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, terrainType);
 	game.map.setGame(&game);

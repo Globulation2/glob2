@@ -42,7 +42,7 @@ public:
 	void synchronizeNow(void);
 
 public:
-	Map::TerrainType terrainType;
+	TerrainType terrainType;
 	enum Methode
 	{
 		eNONE=-1,

@@ -699,21 +699,41 @@ void Map::setUMatPos(int x, int y, TerrainType t, int size)
 		regenerateMap(x-(size>>1)-2,y-(size>>1)-2,size+3,size+3);
 }
 
+void Map::setNoRessource(int x, int y, int size)
+{
+	assert(size>=0);
+	assert(size<w);
+	assert(size<h);
+	for (int dx=x-(size>>1); dx<x+(size>>1); dx++)
+		for (int dy=y-(size>>1); dy<y+(size>>1); dy++)
+			(cases+w*(dy&hMask)+(dx&wMask))->ressource.id=NORESID;
+}
+
 void Map::setRessource(int x, int y, int type, int size)
 {
 	assert(size>=0);
 	assert(size<w);
 	assert(size<h);
-	
 	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
 		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
-		{
-			Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
-			rp->field.type=type;
-			rp->field.variety=0; // TODO: syncRand()%sizeOfVariety
-			rp->field.amount=1; // TODO: syncRand()%maxAmount
-			rp->field.animation=0;
-		}
+			if (isRessourceAllowed(dx, dy, type))
+			{
+				Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
+				rp->field.type=type;
+				rp->field.variety=0; // TODO: syncRand()%sizeOfVariety
+				rp->field.amount=1; // TODO: syncRand()%maxAmount
+				rp->field.animation=0;
+			}
+}
+
+bool Map::isRessourceAllowed(int x, int y, int type)
+{
+	if (type==WOOD || type==CORN || type==FUNGUS || type==STONE)
+		return isGrass(x, y);
+	else if (type==ALGA)
+		return isWater(x, y);
+	else
+		assert(false);
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)

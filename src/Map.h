@@ -52,6 +52,13 @@ struct Case
 	Uint16 airUnit;
 };
 
+enum TerrainType
+{
+	WATER=0,
+	SAND=1,
+	GRASS=2
+};
+
 /*! Map, handle all physical localisations
 	All size are given in 32x32 pixel cell, which is the basic game measurement unit.
 	All functions are wrap-safe, excepted the one specified otherwise.
@@ -60,12 +67,7 @@ class Map
 {
 public:
 	//! Type of terrain (used for undermap)
-	enum TerrainType
-	{
-		WATER=0,
-		SAND=1,
-		GRASS=2
-	};
+	
 
 public:
 	//! Map constructor
@@ -286,8 +288,11 @@ public:
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int size);
 	
-	//! With size==0, it will add ressource only on one case.
+	//! With size==0, it will remove no ressource. (Unaligned coordinates)
+	void setNoRessource(int x, int y, int size);
+	//! With size==0, it will add ressource only on one case. (Aligned coordinates)
 	void setRessource(int x, int y, int type, int size);
+	bool isRessourceAllowed(int x, int y, int type);
 	
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
 	void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }
@@ -341,7 +346,7 @@ public:
 
 
 public:
-	void makeHomogenMap(Map::TerrainType terrainType);
+	void makeHomogenMap(TerrainType terrainType);
 	void controlSand(void);
 	void smoothRessources(int times);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
