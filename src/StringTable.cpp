@@ -79,14 +79,32 @@ StringTable::~StringTable()
 
 */
 
+inline void terminateLine(char *s, int n)
+{
+	for (int i=0; i<n; i++)
+	{
+		char c=s[i];
+		if (c=='\n')
+		{
+			s[i]=0;
+			return;
+		}
+		else if (c=='\r')
+		{
+			s[i]=0;
+			return;
+		}
+		else if (c==0)
+			return;
+	}
+}
+
 bool StringTable::load(char *filename)
 {
 	FILE *fp;
 	char temp[1024];
-	char* tempp;
-	int n;
 
-	if ((fp=globalContainer->fileManager->openFP(filename,"r"))==NULL)
+	if ((fp=globalContainer->fileManager->openFP(filename, "r"))==NULL)
 	{
 		return false;
 	}
@@ -94,38 +112,38 @@ bool StringTable::load(char *filename)
 	{
 		actlang=0;
 		// get length
-		fgets(temp,1024,fp);
-		numberoflanguages=atoi(strtok(temp," \r\n"));
+		if (fgets(temp, 1024, fp)==NULL)
+		{
+			fclose(fp);
+			return true;
+		}
+		terminateLine(temp, 1024);
+		numberoflanguages=atoi(temp);
 		while (!feof(fp))
 		{
 			OneStringToken *myString;
 			
-			if (fgets(temp,1024,fp)==NULL)
+			if (fgets(temp, 1024, fp)==NULL)
 			{
 				fclose(fp);
 				return true;
 			}
-			tempp=strtok(temp,"\r\n");
-			if (tempp==NULL)
-			{
-				fclose(fp);
-				return true;
-			}
-			myString=new OneStringToken(tempp);
+			terminateLine(temp, 1024);
+			myString=new OneStringToken(temp);
 			
-			for (n=0; n<numberoflanguages; n++)
+			for (int n=0; n<numberoflanguages; n++)
 			{
-				if (fgets(temp,1024,fp)==NULL)
+				if (fgets(temp, 1024, fp)==NULL)
 				{
 					fclose(fp);
 					delete myString;
 					return true;
 				}
-				tempp=strtok(temp,"\r\n");
-				if (tempp==NULL)
+				terminateLine(temp, 1024);
+				if (temp==NULL)
 					myString->addData("");
 				else
-					myString->addData(tempp);
+					myString->addData(temp);
 			}
 			strings.push_back(myString);
 		}
