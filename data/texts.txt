@@ -939,4 +939,8 @@ Nein
 Sauvegarder
 Save
 Speichern
+[auto save]
+Sauvegarde automatique.game
+Auto save.game
+
 
