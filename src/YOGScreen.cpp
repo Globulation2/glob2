@@ -44,11 +44,6 @@ YOGScreen::YOGScreen()
 
 YOGScreen::~YOGScreen()
 {
-	std::vector<char *>::iterator ipIt;
-	for( ipIt=IPs.begin(); ipIt!=IPs.end(); ++ipIt)
-	{
-		delete[] (*ipIt);
-	}
 	delete multiplayersJoin;
 }
 
@@ -62,12 +57,6 @@ YOGScreen::~YOGScreen()
 
 void YOGScreen::updateList(void)
 {
-	std::vector<char *>::iterator ipIt;
-	for( ipIt=IPs.begin(); ipIt!=IPs.end(); ++ipIt)
-	{
-		delete[] (*ipIt);
-	}
-	IPs.clear();
 	gameList->clear();
 
 	if (globalContainer->yog.resetGameLister())
@@ -78,18 +67,12 @@ void YOGScreen::updateList(void)
 			const char *identifier=globalContainer->yog.getGameIdentifier();
 			const char *version=globalContainer->yog.getGameVersion();
 			const char *comment=globalContainer->yog.getGameComment();
-			const char *hostname=globalContainer->yog.getGameHostname();
+			//const char *hostname=globalContainer->yog.getGameHostname();
 			selectedGameInfo=*globalContainer->yog.getGameInfo();
 
 			char data[128];
 			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
 			gameList->addText(data);
-			
-			char *ip;
-			int ipLen=strlen(hostname);
-			ip=new char[ipLen+1];
-			strncpy(ip, hostname, ipLen+1);
-			IPs.push_back(ip);
 		}
 		while (globalContainer->yog.getNextGame());
 	}
@@ -176,7 +159,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
+		printf("YOG : Selected hostname is [%d]\n", par1);
 		if (globalContainer->yog.resetGameLister())
 		{
 			int i=0;
@@ -185,13 +168,13 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 				if (par1==i)
 				{
 					selectedGameInfo=*globalContainer->yog.getGameInfo();
+					multiplayersJoin->tryConnection(&selectedGameInfo);
 					break;
 				}
 				i++;
 			}
 			while (globalContainer->yog.getNextGame());
 		}
-		multiplayersJoin->tryConnection(&selectedGameInfo);
 	}
 }
 
