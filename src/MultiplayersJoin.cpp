@@ -178,6 +178,10 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
+	// I set my own ip to localhost:
+	sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
+	sessionInfo.players[myPlayerNumber].ip.port=localPort;
+	
 	validSessionInfo=true;
 	waitingState=WS_WAITING_FOR_CHECKSUM_CONFIRMATION;
 	waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
@@ -419,7 +423,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 		{
 			if (sessionInfo.players[p].waitForNatResolution)
 			{
-				fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
+				fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 				sessionInfo.players[p].ip=ip;
 				sessionInfo.players[p].ipFromNAT=false;
 				sessionInfo.players[p].waitForNatResolution=false;
@@ -1314,9 +1318,13 @@ bool MultiplayersJoin::tryConnection()
 	{
 		//globalContainer->yog->setGameSocket(socket);//TODO: is may be usefull in some NAT or firewall extremes configuration.
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
+		localPort=findLocalPort(socket);
 	}
 	else
+	{
 		waitingTOTL=DEFAULT_NETWORK_TOTL-1;
+		localPort=0;
+	}
 	
 	
 	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
@@ -1382,4 +1390,88 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;
 	return tryConnection();
+}
+
+Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
+{
+	Uint16 localPort=0;
+	for (int tempPort=7009; tempPort<7009+10; tempPort++) // we try 10 ports
+	{
+		// First, we create a temporaty local server (tempServer):
+		UDPsocket tempSocket;
+		tempSocket=SDLNet_UDP_Open(tempPort);
+		if (tempSocket)
+			fprintf(logFile, "findLocalPort:: Socket opened at port %d.\n", tempPort);
+		else
+		{
+			fprintf(logFile, "findLocalPort:: failed to open a socket.\n");
+			continue; // We try to open another port
+		}
+
+		// Second, we send a packet to this tempServer with loopback adress:
+		{
+			UDPpacket *packet=SDLNet_AllocPacket(4);
+
+			assert(packet);
+
+			packet->channel=-1;
+			IPaddress localAdress;
+			localAdress.host=SDL_SwapBE32(0x7F000001);
+			localAdress.port=SDL_SwapBE16(tempPort);
+			packet->address=localAdress;
+			packet->len=4;
+			packet->data[0]=LOOP_BACK_PACKET_TYPE;
+			packet->data[1]=0;
+			packet->data[2]=0;
+			packet->data[3]=0;
+			if (SDLNet_UDP_Send(socket, -1, packet)==1)
+			{
+				fprintf(logFile, "findLocalPort:: suceeded to send packet\n");
+			}
+			else
+			{
+				fprintf(logFile, "findLocalPort:: failed to send packet\n");
+				SDLNet_FreePacket(packet);
+				SDLNet_UDP_Close(tempSocket);
+				continue; // We try with another port
+			}
+			SDLNet_FreePacket(packet);
+		}
+		
+		// Three, we wait for this packet
+		{
+			assert(tempSocket);
+			UDPpacket *packet=NULL;
+			packet=SDLNet_AllocPacket(4);
+			assert(packet);
+			int count=0;
+			while (SDLNet_UDP_Recv(tempSocket, packet)!=1)
+			{
+				if (count++>=3)
+					break;
+				SDL_Delay(100);
+				fprintf(logFile, "findLocalPort::delay 100ms to wait for the loop-back packet\n");
+			}
+			if (count>=3)
+			{
+				fprintf(logFile, "findLocalPort::no Packet received !!!!\n");
+				SDLNet_FreePacket(packet);
+				SDLNet_UDP_Close(tempSocket);
+				continue; // We try with another port
+			}
+			fprintf(logFile, "findLocalPort::Packet received.\n");
+			fprintf(logFile, "findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			localPort=packet->address.port;
+
+			SDLNet_FreePacket(packet);
+		}
+		
+		// Four, we close the tempServer
+		SDLNet_UDP_Close(tempSocket);
+		
+		if (localPort)
+			break;
+	}
+	
+	return localPort;
 }

@@ -108,6 +108,7 @@ public:
 	
 	bool kicked;
 
+	Uint16 localPort;
 public:
 	MultiplayersJoin(bool shareOnYOG);
 	virtual ~MultiplayersJoin();
@@ -149,6 +150,8 @@ public:
 	bool tryConnection(YOG::GameInfo *yogGameInfo);
 	
 	void quitThisGame();
+	
+	Uint16 findLocalPort(UDPsocket socket);
 
 private:
 	FILE *logFile;
