@@ -1872,7 +1872,10 @@ void Unit::handleAction(void)
 			speed=performance[action];
 			
 			if (fly)
+			{
+				assert(owner->map->getAirUnit(posX, posY)==NOGUID);
 				owner->map->setAirUnit(posX, posY, gid);
+			}
 			else
 			{
 				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
@@ -1904,7 +1907,10 @@ void Unit::handleAction(void)
 			speed=performance[action];
 
 			if (performance[FLY])
+			{
+				assert(owner->map->getAirUnit(posX, posY)==NOGUID);
 				owner->map->setAirUnit(posX, posY, gid);
+			}
 			else
 			{
 				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
@@ -1982,7 +1988,8 @@ void Unit::setNewValidDirectionAir(void)
 	if (i==8)
 	{
 		direction=8;
-		dxdyfromDirection();
+		dx=0;
+		dy=0;
 	}
 }
 

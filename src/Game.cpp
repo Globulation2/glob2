@@ -1202,6 +1202,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int team=Unit::GIDtoTeam(gid);
 	Unit *unit=teams[team]->myUnits[id];
 	assert(unit);
+	if (!unit)
+	{
+		//printf("Error (%d, %d)\n", x, y);
+		globalContainer->gfx->drawRect((x<<5)+1, (y<<5)+1, 30, 30, 255, 255, 0);
+		return;
+	}
 	int dx=unit->dx;
 	int dy=unit->dy;
 
@@ -1373,7 +1379,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	
 	//for (int y=top; y<=bot; y++)
 	//	for (int x=left; x<=right; x++)
-	//		if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 0, 1))
+	//		if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 0, 0))
 	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
 	
 	// We draw ground units:
@@ -1398,8 +1404,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(1, 5, 0, x+viewportX, y+viewportY));
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
 					
-					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX+map.getW())&(map.getMaskW())));
-					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY+map.getH())&(map.getMaskH())));
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX)&(map.getMaskW())));
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY)&(map.getMaskH())));
 				}
 
 	// We draw debug area:
@@ -1468,7 +1474,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					{
 						if (b->globalGradient[1])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-								b->globalGradient[1][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
+								b->globalGradient[1][((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
 					}
 					else if (map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
 					{

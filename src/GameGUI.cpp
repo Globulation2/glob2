@@ -3149,8 +3149,8 @@ void GameGUI::centerViewportOnSelection(void)
 		assert(b);
 		viewportX=b->getMidX()-((globalContainer->gfx->getW()-128)>>6);
 		viewportY=b->getMidY()-((globalContainer->gfx->getH())>>6);
-		viewportX=(viewportX+game.map.getW())&game.map.getMaskW();
-		viewportY=(viewportY+game.map.getH())&game.map.getMaskH();
+		viewportX=viewportX&game.map.getMaskW();
+		viewportY=viewportY&game.map.getMaskH();
 	}
 }
 

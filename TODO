@@ -52,8 +52,6 @@ MapEditor:
 
 YOG:
 -Ajouter des chambres
--Ajouter des info de temps dans les .logs.
--Annoncer à l'utilisateur si il essaie de donner un password à un utilisateur avec password NULL.
 
 Tutorial:
 -Moins vite.
