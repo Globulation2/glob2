@@ -4,7 +4,7 @@ To First release :
 - Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 - Implémenter AICastor
 - Fixer "On the spot"
-- Un joueur qui quite doit perdre!
+- Un joueur qui quitte doit perdre!
 - Mettre une touche pour affichier la liste des messages qui ont disparu.
 - Balancer clearing attack.
 - disonnect /disconnect
@@ -13,6 +13,10 @@ To First release :
 -La sortie du gradient d'interdiction est parfois bugé!
 -Tenir compte des unités qui apportent déja quelquechose.
 -Enlever la latence des informations des drapeaux.
+
+libgag::GL:
+- fix in game menu
+- fix screen resize
 
 AICastor:
 - batiment plus près d'une ressource.
@@ -66,7 +70,6 @@ Technique :
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
-- traduction des raccourcis claviers de la GUI. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Un YOG qui tienne la route.
 
