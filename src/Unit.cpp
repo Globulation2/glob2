@@ -1447,7 +1447,9 @@ void Unit::handleDisplacement(void)
 
 void Unit::handleMovement(void)
 {
+	// clearArea code, override behaviour locally
 	if (typeNum == WORKER &&
+		medical == MED_FREE &&
 		(displacement == DIS_RANDOM
 		|| displacement == DIS_GOING_TO_FLAG
 		|| displacement == DIS_CLEARING_RESSOURCES
@@ -1460,8 +1462,8 @@ void Unit::handleMovement(void)
 		for (int tdx = -1; tdx <= 1; tdx++)
 			for (int tdy = -1; tdy <= 1; tdy++)
 			{
-				int x = (posX + tdx) & map->hMask;
-				int y = (posY + tdy) & map->wMask;
+				int x = (posX + tdx) & map->wMask;
+				int y = (posY + tdy) & map->hMask;
 				Case mapCase = map->cases[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
 					&& (mapCase.ressource.type != NO_RES_TYPE)
