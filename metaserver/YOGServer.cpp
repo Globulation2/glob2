@@ -361,7 +361,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				good=true; // ok, he's connected
 				break;
 			}
-		if (good)
+		if (good & (*sender)->messages.size()>0)
 		{
 			std::list<Message>::iterator mit=(*sender)->messages.begin();
 			if (mit->messageID==messageID)
