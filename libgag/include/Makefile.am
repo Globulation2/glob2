@@ -18,5 +18,6 @@ GUITextInput.h \
 GUISelector.h \
 GUIAnimation.h \
 GraphicContext.h \
+SDLGraphicContext.h \
 SupportFunctions.h \
 GUIMessageBox.h
