@@ -152,6 +152,7 @@ public:
 	Uint32 timer;
 	bool canSwim;
 	bool needPool;
+	bool onCritical;
 	Uint32 lastNeedPoolComputed;
 	Uint32 computeNeedPoolTimer;
 	Uint32 controlSwarmsTimer;
@@ -172,6 +173,7 @@ public:
 	Uint8 *workAbilityMap;
 	Uint8 *hydratationMap;
 	Uint8 *wheatGrowthMap;
+	Uint8 *wheatCareMap;
 	
 	Uint8 *goodBuildingMap; // TODO: remove.
 	

@@ -60,6 +60,7 @@ void AICastor::firstInit()
 	workAbilityMap=NULL;
 	hydratationMap=NULL;
 	wheatGrowthMap=NULL;
+	wheatCareMap=NULL;
 	
 	goodBuildingMap=NULL;
 	
@@ -95,6 +96,7 @@ void AICastor::init(Player *player)
 	controlSwarmsTimer=0;
 	expandFoodTimer=0;
 	hydratationMapComputed=false;
+	onCritical=true;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		delete *pi;
@@ -154,6 +156,10 @@ void AICastor::init(Player *player)
 		delete[] wheatGrowthMap;
 	wheatGrowthMap=new Uint8[size];
 	
+	if (wheatCareMap!=NULL)
+		delete[] wheatCareMap;
+	wheatCareMap=new Uint8[size];
+	
 	if (goodBuildingMap!=NULL)
 		delete[] goodBuildingMap;
 	goodBuildingMap=new Uint8[size];
@@ -196,6 +202,9 @@ AICastor::~AICastor()
 	
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
+	
+	if (wheatCareMap!=NULL)
+		delete[] wheatCareMap;
 	
 	if (goodBuildingMap!=NULL)
 		delete[] goodBuildingMap;
@@ -252,14 +261,15 @@ Order *AICastor::getOrder(void)
 	bool blocking=false;
 	bool critical=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
-	{
 		if ((*pi)->blocking)
 			blocking=true;
-		if ((*pi)->critical)
-			critical=true;
-	}
+	
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
+	
+	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
+		if ((*pi)->critical)
+			critical=true;
 	
 	if (timer>controlSwarmsTimer)
 	{
@@ -276,7 +286,10 @@ Order *AICastor::getOrder(void)
 			return order;
 	}
 	
-	if (!critical && timer>expandFoodTimer)
+	if (onCritical && !critical)
+		assert(false);
+	
+	if (!onCritical && !critical && timer>expandFoodTimer)
 	{
 		expandFoodTimer=timer+128; // each 5s
 		Order *order=expandFood();
@@ -311,7 +324,7 @@ Order *AICastor::controlSwarms(void)
 	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
 	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d\n", unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum);
 	
-	if (unitSumAll>=foodSum)
+	if (unitSumAll>=(foodSum<<1))
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
@@ -393,7 +406,6 @@ Order *AICastor::controlSwarms(void)
 		}
 	}
 	
-	
 	return NULL;
 }
 
@@ -422,6 +434,7 @@ void AICastor::addProjects(void)
 	Sint32 poolSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWIMSPEED_BUILDING, 0, true);
 	Sint32 attackSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::ATTACK_BUILDING, 0, true);
 	Sint32 speedSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WALKSPEED_BUILDING, 0, true);
+	Sint32 healSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::HEALTH_BUILDING, 0, true);
 	
 	int canFeedUnit=0;
 	int swarms=0;
@@ -431,6 +444,8 @@ void AICastor::addProjects(void)
 	int attaqueSite=0;
 	int speed=0;
 	int speedSite=0;
+	int heal=0;
+	int healSite=0;
 	
 	Building **myBuildings=team->myBuildings;
 	for (int i=0; i<1024; i++)
@@ -458,12 +473,18 @@ void AICastor::addProjects(void)
 				speed++;
 			if (b->typeNum==speedSiteTypeNum)
 				speedSite++;
+			
+			if (b->type->canHealUnit)
+				heal++;
+			if (b->typeNum==healSiteTypeNum)
+				healSite++;
 		}
 	}
 	
 	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
 	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
 	
+	onCritical=true;
 	if (canFeedUnit==0)
 	{
 		Project *project=new Project(BuildingType::FOOD_BUILDING, "food");
@@ -529,7 +550,15 @@ void AICastor::addProjects(void)
 		project->critical=true;
 		return;
 	}
+	if (heal+healSite==0)
+	{
+		Project *project=new Project(BuildingType::HEALTH_BUILDING, 1, "heal");
+		projects.push_back(project);
+		project->critical=true;
+		return;
+	}
 	// all critical projects succeded.
+	onCritical=false;
 }
 
 Order *AICastor::continueProject(Project *project)
@@ -1352,17 +1381,37 @@ void AICastor::computeWheatGrowthMap(int dw, int dh)
 	int wDec=map->wDec;
 	size_t size=w*h;
 	
-	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
+	memcpy(wheatCareMap, obstacleBuildingMap, size);
+	
+	for (size_t i=0; i<size; i++)
+		if (wheatGradient[i]==255)
+			wheatGrowthMap[i]=1+hydratationMap[i];
+	
+	map->updateGlobalGradient(wheatGrowthMap);
+	
+	//Case *cases=map->cases;
+	for (size_t i=0; i<size; i++)
+		if (wheatGrowthMap[i]==13 && wheatGradient[i]!=255)
+			wheatCareMap[i]=8;
+	
+	map->updateGlobalGradient(wheatCareMap);
 	
 	for (size_t i=0; i<size; i++)
 	{
-		Uint8 wheat=wheatGradient[i]; // [0..255]
-		if (wheat>=254)
-			wheatGrowthMap[i]=1+hydratationMap[i];
+		Uint8 care=wheatCareMap[i];
+		if (care>1)
+		{
+			care=care<<1;
+			Uint8 *p=&wheatGrowthMap[i];
+			Uint8 growth=*p;
+			if (growth>care)
+				*p=growth-care;
+			else
+				*p=1;
+		}
 	}
-	
-	map->updateGlobalGradient(wheatGrowthMap);
 	
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -1392,12 +1441,12 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	assert(bw==bh);
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
+	int wMask=map->wMask;
+	int hMask=map->hMask;
 	size_t size=w*h;
 	Uint32 *mapDiscovered=map->mapDiscovered;
 	Uint32 me=team->me;
-	printf("findGoodBuilding(%d, %d, %d)\n", typeNum, food, critical);
+	printf("findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
 	
 	// first, we auto calibrate minWork:
 	Uint32 minWork;
@@ -1428,7 +1477,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 			wheatLimit=2; // TODO: test a very bad map.
 		else
 		{
-			Uint8 maxWheat=0;
+			Uint8 maxWheat=8;
 			for (size_t i=0; i<size; i++)
 			{
 				Uint8 work=workAbilityMap[i];
@@ -1438,9 +1487,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 				if (maxWheat<wheat)
 					maxWheat=wheat;
 			}
-			wheatLimit=maxWheat/2;
-			//if (wheatLimit>7)
-			//	wheatLimit=7;
+			wheatLimit=maxWheat-4;
 			printf(" maxWheat=%d, wheatLimit=%d\n", maxWheat, wheatLimit);
 		}
 	}
@@ -1459,9 +1506,9 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 				minWheat=wheat;
 		}
 		if (critical)
-			wheatLimit=minWheat+7;
+			wheatLimit=minWheat+6;
 		else
-			wheatLimit=minWheat+4;
+			wheatLimit=minWheat+3;
 		printf(" minWheat=%d, wheatLimit=%d\n", minWheat, wheatLimit);
 	}
 	
@@ -1472,64 +1519,62 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	wheatLimit=(wheatLimit<<2);
 	printf(" minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
 	memset(goodBuildingMap, 0, size);
-	for (size_t i=0; i<size; i++)
-	{
-		size_t corner0=i;
-		size_t corner1=(i+bw-1)&(size-1);
-		size_t corner2=(i+(bw<<wDec))&(size-1);
-		size_t corner3=(i+(bw<<wDec)+bw-1)&(size-1);
-		
-		if (critical
-			&& (mapDiscovered[corner0]&me)==0
-			&& (mapDiscovered[corner1]&me)==0
-			&& (mapDiscovered[corner2]&me)==0
-			&& (mapDiscovered[corner3]&me)==0)
-			continue;
-		
-		Uint8 space=spaceForBuildingMap[corner0];
-		if (space<bw)
-			continue;
-		//goodBuildingMap[i]=1;
-		
-		Uint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
-		if (work<minWork)
-			continue;
-		//goodBuildingMap[i]=2;
-		
-		Uint16 wheat=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
-		if (food)
+	
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
 		{
-			if (wheat<wheatLimit)
+			size_t corner0=(x|(y<<wDec));
+			size_t corner1=(((x+bw-1)&wMask)|(y<<wDec));
+			size_t corner2=(x|(((y+bw-1)&hMask)<<wDec));
+			size_t corner3=(((x+bw-1)&wMask)|(((y+bw-1)&hMask)<<wDec));
+			
+			if (critical
+				&& (mapDiscovered[corner0]&me)==0
+				&& (mapDiscovered[corner1]&me)==0
+				&& (mapDiscovered[corner2]&me)==0
+				&& (mapDiscovered[corner3]&me)==0)
 				continue;
+			
+			Uint8 space=spaceForBuildingMap[corner0];
+			if (space<bw)
+				continue;
+			
+			Uint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
+			if (work<minWork)
+				continue;
+			
+			Uint16 wheat=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
+			if (food)
+			{
+				if (wheat<wheatLimit)
+					continue;
+			}
+			else if (wheat>wheatLimit)
+				continue;
+			
+			Uint8 neighbour=buildingNeighbourMap[corner0];
+			Uint8 directNeighboursCount=(neighbour>>1)&7;
+			Uint8 farNeighboursCount=(neighbour>>5)&7;
+			if ((neighbour&1)||(directNeighboursCount>1))
+				continue;
+			
+			Sint32 score;
+			if (food)
+				score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			else
+				score=(5120+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			
+			//if ((score>>9)>=255)
+			//	goodBuildingMap[corner0]=255;
+			//else
+			//	goodBuildingMap[corner0]=(score>>9);
+			
+			if (bestScore<score)
+			{
+				bestScore=score;
+				bestIndex=corner0;
+			}
 		}
-		else if (wheat>wheatLimit)
-			continue;
-		//goodBuildingMap[i]=3;
-		
-		Uint8 neighbour=buildingNeighbourMap[i];
-		Uint8 directNeighboursCount=(neighbour>>1)&7;
-		Uint8 farNeighboursCount=(neighbour>>5)&7;
-		if ((neighbour&1)||(directNeighboursCount>1))
-			continue;
-		//goodBuildingMap[i]=4;
-		
-		Sint32 score;
-		if (food)
-			score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
-		else
-			score=(5120+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
-		
-		if ((score>>9)>=255)
-			goodBuildingMap[i]=255;
-		else
-			goodBuildingMap[i]=(score>>9);
-		
-		if (bestScore<score)
-		{
-			bestScore=score;
-			bestIndex=i;
-		}
-	}
 	
 	if (bestScore>0)
 	{
