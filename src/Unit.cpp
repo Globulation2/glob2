@@ -797,6 +797,7 @@ void Unit::handleDisplacement(void)
 				int timeLeft=hungry/race->unitTypes[0][0].hungryness;
 				destinationPurprose=-1;
 				int minValue=owner->map->getW()+owner->map->getW();
+				int tx, ty;
 				Map* map=owner->map;
 				for (int r=0; r<MAX_NB_RESSOURCES; r++)
 				{
@@ -804,7 +805,7 @@ void Unit::handleDisplacement(void)
 					if (need)
 					{
 						int distToRessource;
-						if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &targetX, &targetY, &distToRessource))
+						if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &tx, &ty, &distToRessource))
 						{
 							if ((distToRessource<<1)>=timeLeft)
 								continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
@@ -812,6 +813,8 @@ void Unit::handleDisplacement(void)
 							if (value<minValue)
 							{
 								destinationPurprose=r;
+								targetX=tx;
+								targetY=ty;
 								minValue=value;
 							}
 						}
