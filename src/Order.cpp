@@ -101,6 +101,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new OrderAlterateGuardArea(netData+1, netDataLength-1);
 	}
+	case ORDER_ALTERATE_CLEAR_AREA:
+	{
+		return new OrderAlterateClearArea(netData+1, netDataLength-1);
+	}
 	case ORDER_QUITED:
 	{
 		assert(false); // Currently, QuitedOrder has to be used only between NetGame and GameGUI, but not the network.

@@ -57,6 +57,7 @@
 [market]
 [forbidden area]
 [guard area]
+[clear area]
 [Building short explanation]
 [swarm building explanation]
 [food building explanation]

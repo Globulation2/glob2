@@ -216,6 +216,7 @@ void GameGUI::adjustLocalTeam()
 	// recompute local forbidden and guard areas
 	game.map.computeLocalForbidden(localTeamNo);
 	game.map.computeLocalGuardArea(localTeamNo);
+	game.map.computeLocalClearArea(localTeamNo);
 }
 
 void GameGUI::adjustInitialViewport()
@@ -285,6 +286,8 @@ void GameGUI::brushStep(int mx, int my)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					else if (brushType == GUARD_AREA_BRUSH)
 						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+					else if (brushType == CLEAR_AREA_BRUSH)
+						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					else
 						assert(false);
 				}
@@ -299,6 +302,8 @@ void GameGUI::brushStep(int mx, int my)
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					else if (brushType == GUARD_AREA_BRUSH)
 						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+					else if (brushType == CLEAR_AREA_BRUSH)
+						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					else
 						assert(false);
 				}
@@ -316,6 +321,8 @@ void GameGUI::sendBrushOrders(void)
 			orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
 		else if (brushType == GUARD_AREA_BRUSH)
 			orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
+		else if (brushType == CLEAR_AREA_BRUSH)
+			orderQueue.push_back(new OrderAlterateClearArea(localTeamNo, brush.getType(), &brushAccumulator));
 		else
 			assert(false);
 		brushAccumulator.clear();
@@ -1726,7 +1733,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			// change the brush type (forbidden, guard) if necessary
 			if (my < YOFFSET_BRUSH+40)
-				brushType = (BrushType)(mx>>6);
+			{
+				if (mx < 44)
+					brushType = FORBIDDEN_BRUSH;
+				else if (mx < 84)
+					brushType = GUARD_AREA_BRUSH;
+				else
+					brushType = CLEAR_AREA_BRUSH;
+			}
 			// anyway, update the tool
 			brush.handleClick(mx, my-YOFFSET_BRUSH-40);
 			// set the selection
@@ -2621,11 +2635,12 @@ void GameGUI::drawPanel(void)
 		// draw flags
 		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
 		// draw choice of area
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-112, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-48, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+8, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+48, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+88, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
 		if (brush.getType() != BrushTool::MODE_NONE)
 		{
-			int decX = (brushType == GUARD_AREA_BRUSH) ? 80 : 16;
+			int decX = 8 + ((int)brushType) * 40;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 		}
 		// draw brush
@@ -2636,10 +2651,13 @@ void GameGUI::drawPanel(void)
 			int buildingInfoStart = globalContainer->gfx->getH()-50;
 			if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
 			{
-				if (mouseX < globalContainer->gfx->getW()-64)
+				mouseX -= (globalContainer->gfx->getW() - 128);
+				if (mouseX < 44)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
-				else
+				else if (mouseX < 84)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
+				else
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[clear area]");
 			}
 			else
 			{
@@ -2647,6 +2665,8 @@ void GameGUI::drawPanel(void)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
 				else if (brushType == GUARD_AREA_BRUSH)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
+				else if (brushType == CLEAR_AREA_BRUSH)
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[clear area]");
 				else
 					assert(false);
 			}
