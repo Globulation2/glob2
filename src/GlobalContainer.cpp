@@ -361,9 +361,7 @@ void GlobalContainer::load(void)
 		buildingsTypes.load("data/buildings.txt");
 
 		// load ressources types
-		printf("ping\n");
 		ressourcesTypes=deserialize<RessourcesTypes>("data/ressources.xml");
-		printf("pong\n");
 		updateLoadProgressBar(100);
 	}
 };

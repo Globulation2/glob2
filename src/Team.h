@@ -124,7 +124,9 @@ public:
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
 
+	// Pathfinding related methods:
 	void computeForbiddenArea();
+	void dirtyGlobalGradient();
 	
 	//! Compute team checksum
 	Sint32 checkSum();

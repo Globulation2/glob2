@@ -621,7 +621,10 @@ void Team::step(void)
 			if (building->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
 				if (!building->type->isVirtual)
+				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
+					map->dirtyLocalGradient(building->posX-16, building->posY-16, 31+building->type->width, 31+building->type->height, teamNumber);
+				}
 				building->buildingState=Building::DEAD;
 				prestige-=(*it)->type->prestige;
 				buildingsToBeDestroyed.push_front(building);
@@ -649,7 +652,7 @@ void Team::step(void)
 		assert(building->unitsWorkingSubscribe.size()==0);
 		assert(building->unitsInsideSubscribe.size()==0);
 		
-		//TODO: optimisation: we can avoid some of thoses remobe(Building *) by keeping a building state to detect which remove() are needed.
+		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 		subscribeForInside.remove(building);
 		subscribeToBringRessources.remove(building);
@@ -658,7 +661,11 @@ void Team::step(void)
 		delete building;
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 	}
-	buildingsToBeDestroyed.clear();
+	if (buildingsToBeDestroyed.size())
+	{
+		dirtyGlobalGradient();
+		buildingsToBeDestroyed.clear();
+	}
 	
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
 		if ((*it)->tryToBuildingSiteRoom())
@@ -732,6 +739,17 @@ void Team::computeForbiddenArea()
 		Building *b=myBuildings[id];
 		if (b && b->buildingState==Building::ALIVE && b->type->zonableForbidden)
 			map->setForbiddenArea(b->posX, b->posY, b->unitStayRange, me);
+	}
+}
+
+void Team::dirtyGlobalGradient()
+{
+	for (int id=0; id<1024; id++)
+	{
+		Building *b=myBuildings[id];
+		if (b)
+			for (int canSwim=0; canSwim<2; canSwim++)
+				b->dirtyGlobalGradient[canSwim]=true;
 	}
 }
 

@@ -195,6 +195,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 				{
+					int oldRange=b->unitStayRange;
 					int newRange=((OrderModifyFlags *)order)->range[i];
 					b->unitStayRange=newRange;
 					if (order->sender!=localPlayer)
@@ -203,7 +204,14 @@ void Game::executeOrder(Order *order, int localPlayer)
 					//b->update(); TODO: does any flags need an update ?
 					
 					if (b->type->zonableForbidden)
+					{
 						teams[team]->computeForbiddenArea();
+						if (newRange<oldRange)
+						{
+							teams[team]->dirtyGlobalGradient();
+							map.dirtyLocalGradient(b->posX-oldRange-16, b->posY-oldRange-16, 32+oldRange*2, 32+oldRange*2, team);
+						}
+					}
 				}
 			}
 		}
@@ -221,21 +229,19 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 				{
+					if (b->type->zonableForbidden)
+					{
+						int range=b->unitStayRange;
+						map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+					}
+					
 					b->posX=((OrderMoveFlags *)order)->x[i];
 					b->posY=((OrderMoveFlags *)order)->y[i];
 					
 					if (b->type->zonableForbidden)
 					{
-						//we have to recompute all forbidden area!
-						Building **myBuildings=teams[team]->myBuildings;
-						Uint32 me=teams[team]->me;
-						map.clearForbiddenArea(me);
-						for (int id=0; id<1024; id++)
-						{
-							b=myBuildings[id];
-							if (b && b->type->zonableForbidden)
-								map.setForbiddenArea(b->posX, b->posY, b->unitStayRange, me);
-						}
+						teams[team]->computeForbiddenArea();
+						teams[team]->dirtyGlobalGradient();
 					}
 					
 					if (order->sender!=localPlayer)
@@ -283,7 +289,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 				b->launchDelete();
 				assert(b->type);
 				if (b->type->zonableForbidden)
+				{
 					teams[team]->computeForbiddenArea();
+					teams[team]->dirtyGlobalGradient();
+					int range=b->unitStayRange;
+					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+				}
 			}
 		}
 		break;
@@ -1222,7 +1233,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 
 	// We draw debug area:
-	//if (false)
+	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				if (map.getForbidden(x+viewportX, y+viewportY))
@@ -1252,7 +1263,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->localGradient[1][lx+ly*32]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
 						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
-
+						globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
+						globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
