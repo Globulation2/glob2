@@ -22,7 +22,7 @@
 
 #include <vector>
 #include "EntityType.h"
-#include "UnitType.h"
+#include "UnitConsts.h"
 #include "Ressource.h"
 
 class BuildingType: public EntityType

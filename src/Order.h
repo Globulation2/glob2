@@ -21,9 +21,10 @@
 #define __ORDER_H
 
 #include <assert.h>
+#include <SDL/SDL.h>
 
 #include "NetConsts.h"
-#include "UnitType.h"
+#include "UnitConsts.h"
 
 class Order
 {

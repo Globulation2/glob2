@@ -23,7 +23,7 @@
 #include <list>
 #include <vector>
 #include "Ressource.h"
-#include "UnitType.h"
+#include "UnitConsts.h"
 #include "Bullet.h"
 
 class Unit;
