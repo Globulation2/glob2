@@ -367,7 +367,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		else
 		{
 			printf("(%d)World is desynchronized! (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
-			//assert(false/*world desynchronization*/);
+			assert(false/*world desynchronization*/);
 		}
 	}
 	checkSumsLocal[currentStep]=0;

@@ -50,6 +50,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new OrderModifyFlags(netData+4,netDataLength-4);
 	}
+	case ORDER_MOVE_FLAG:
+	{
+		return new OrderMoveFlags(netData+4,netDataLength-4);
+	}
 	case ORDER_QUITED:
 	{
 		return new QuitedOrder();
@@ -513,6 +517,76 @@ bool OrderModifyFlags::setData(const char *data, int dataLength)
 	{
 		(this->UID )[i]=getSint32(data, 8*i+0);
 		(this->range )[i]=getSint32(data, 8*i+4);
+   	}
+
+	memcpy(this->data,data,dataLength);
+	
+	return true;
+}
+
+// OrderMoveFlags' code
+
+OrderMoveFlags::OrderMoveFlags(const char *data, int dataLength)
+{
+	assert((dataLength%12)==0);
+	
+	setData(data, dataLength);
+}
+
+OrderMoveFlags::OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length)
+{
+	this->length=length;
+
+	this->UID=(Sint32 *)malloc(length*4);
+	this->x=(Sint32 *)malloc(length*4);
+	this->y=(Sint32 *)malloc(length*4);
+
+	this->data=(char *)malloc(12*length);
+
+	memcpy(this->UID,UID,length*4);
+	memcpy(this->x,x,length*4);
+	memcpy(this->y,y,length*4);
+}
+
+OrderMoveFlags::~OrderMoveFlags()
+{
+	free(UID);
+	free(x);
+	free(y);
+	free(data);
+}
+
+char *OrderMoveFlags::getData(void)
+{
+	int i;
+	for (i=0; i<(this->length); i++)
+	{
+		addSint32(data, (this->UID )[i], 12*i+0);
+		addSint32(data, (this->x )[i], 12*i+4);
+		addSint32(data, (this->y )[i], 12*i+8);
+	}
+	return data;
+}
+
+bool OrderMoveFlags::setData(const char *data, int dataLength)
+{
+	if((dataLength%12)!=0)
+		return false;
+	
+	this->length=dataLength/12;
+
+	this->UID=(Sint32 *)malloc(length*4);
+	this->x=(Sint32 *)malloc(length*4);
+	this->y=(Sint32 *)malloc(length*4);
+
+	this->data=(char *)malloc(12*length);
+
+	int i;
+	for (i=0; i<(this->length); i++)
+	{
+		(this->UID )[i]=getSint32(data, 12*i+0);
+		(this->x )[i]=getSint32(data, 12*i+4);
+		(this->y )[i]=getSint32(data, 12*i+8);
    	}
 
 	memcpy(this->data,data,dataLength);

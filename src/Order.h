@@ -199,6 +199,27 @@ class OrderModifyFlags:public OrderModify
 	Sint32 checkSum() { return ORDER_MODIFY_FLAG; }
 };
 
+class OrderMoveFlags:public OrderModify
+{
+ public:
+	OrderMoveFlags(const char *data, int dataLength);
+	OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length);
+	virtual ~OrderMoveFlags(void);
+
+	char *getData(void);
+	bool setData(const char *data, int dataLength);
+	int getDataLength(void) { return length*12; }
+	int getNumberOfBuilding(void) { return length; }
+
+	Sint32 *UID;
+	Sint32 *x;
+	Sint32 *y;
+
+	Uint8 getOrderType(void) { return ORDER_MOVE_FLAG; }
+	Sint32 checkSum() { return ORDER_MOVE_FLAG; }
+};
+
+
 
 // Misc orders
 
