@@ -23,10 +23,9 @@
 #include "Header.h"
 #include "Game.h"
 #include "GameGUI.h"
-#include "NetGame.h"
-#include "PreparationGui.h"
 
 class MultiplayersJoin;
+class NetGame;
 
 class Engine
 {

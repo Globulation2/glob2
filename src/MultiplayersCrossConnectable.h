@@ -20,7 +20,7 @@
 #ifndef __MULTIPLAYERS_CROSS_CONNECTABLE_H
 #define __MULTIPLAYERS_CROSS_CONNECTABLE_H
 
-#include "PreparationGui.h"
+#include "SessionConnection.h"
 
 class MultiplayersCrossConnectable:public SessionConnection
 {

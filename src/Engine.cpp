@@ -26,6 +26,7 @@
 #include "LoadGameScreen.h"
 #include "YOGScreen.h"
 #include "Utilities.h"
+#include "NetGame.h"
 
 Engine::Engine()
 {

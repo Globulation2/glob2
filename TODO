@@ -1,18 +1,19 @@
+Priority:
+
+- voir les nouvelles caracteristique d'un batiment quand le curseur passe sur ameliorer (par exemple en bleu).
+- afficher des boites de dialogue modale. (nct)
+
 To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
-- permettre au generateur de carte de failer.
-- verifier les espaces dans le nom des joueurs pour les messages prives.
-- voir les nouvelles caracteristique d'un batiment quand le curseur passe sur ameliorer (par exemple en bleu).
-- traduction des raccourcis claviers de la GUI.
+- traduction des raccourcis claviers de la GUI. (nct)
 - consideration des raccourcis claviers dans le jeu.
-- afficher des boites de dialogue modale.
-- network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
-- fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
+- Revoir l'allocation des unités aux batiments, le moteur du jeu. (nuage)
+- Ajouter des stats pour les unités qui crèvent de faim.
 
 To Next version :
 

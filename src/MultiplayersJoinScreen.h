@@ -20,7 +20,7 @@
 #ifndef __MULTIPLAYERJOINSCREEN_H
 #define __MULTIPLAYERJOINSCREEN_H
 
-#include "PreparationGui.h"
+#include "SessionConnection.h"
 #include "MultiplayersJoin.h"
 
 class MultiplayersJoinScreen:public Screen

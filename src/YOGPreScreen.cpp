@@ -26,8 +26,8 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[login]"), LOGIN, 13));
 
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, globalContainer->userName, true);
-	addWidget(textInput);
+	login=new TextInput(20, 435, 400, 25, globalContainer->standardFont, globalContainer->userName, true, 32);
+	addWidget(login);
 	
 	statusText=new TextArea(20, 290, 600, 50, globalContainer->standardFont);
 	addWidget(statusText);
@@ -109,7 +109,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	if (connectOnNextTimer)
 	{
-		yog->enableConnection(textInput->text);
+		yog->enableConnection(login->text);
 		connectOnNextTimer=false;
 	}
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)

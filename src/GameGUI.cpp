@@ -33,7 +33,7 @@
 InGameTextInput::InGameTextInput()
 :OverlayScreen(492, 34)
 {
-	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true);
+	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true, 256);
 	addWidget(textInput);
 }
 

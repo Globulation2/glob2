@@ -21,7 +21,7 @@
 #include "Glob2.h"
 #include <GAG.h>
 #include "Game.h"
-#include "PreparationGui.h"
+#include "SessionConnection.h"
 #include "MainMenuScreen.h"
 #include "MultiplayersOfferScreen.h"
 #include "MapEdit.h"
@@ -33,6 +33,7 @@
 #include "MultiplayersHost.h"
 #include "MultiplayersChooseMapScreen.h"
 #include "Utilities.h"
+
 
 #include <stdio.h>
 #include <sys/types.h>
