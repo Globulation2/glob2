@@ -2215,28 +2215,31 @@ void GameGUI::drawOverlayInfos(void)
 	// draw message List
 	if (game.anyPlayerWaited && game.maskAwayPlayer)
 	{
-		int nbap=0; // Number of away players
-		Uint32 pm=1;
-		Uint32 apm=game.maskAwayPlayer;
-		for(int pi=0; pi<game.session.numberOfPlayer; pi++)
+		if (game.anyPlayerWaitedTimeFor>1)
 		{
-			if (pm&apm)
-				nbap++;
-			pm=pm<<1;
-		}
-
-		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 0, 140, 127);
-		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
-		pm=1;
-		int pnb=0;
-		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
-		{
-			if (pm&apm)
+			int nbap=0; // Number of away players
+			Uint32 pm=1;
+			Uint32 apm=game.maskAwayPlayer;
+			for(int pi=0; pi<game.session.numberOfPlayer; pi++)
 			{
-				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, GAG::nsprintf(Toolkit::getStringTable()->getString("[waiting for %s]"), game.players[pi2]->name).c_str());
-				pnb++;
+				if (pm&apm)
+					nbap++;
+				pm=pm<<1;
 			}
-			pm=pm<<1;
+
+			globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 0, 140, 127);
+			globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
+			pm=1;
+			int pnb=0;
+			for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
+			{
+				if (pm&apm)
+				{
+					globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, GAG::nsprintf(Toolkit::getStringTable()->getString("[waiting for %s]"), game.players[pi2]->name).c_str());
+					pnb++;
+				}
+				pm=pm<<1;
+			}
 		}
 	}
 	else

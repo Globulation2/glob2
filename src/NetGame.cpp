@@ -63,11 +63,22 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 		for (int step=0; step<256; step++)
 			ordersQueue[p][step]=NULL;
 	
+	for (int i=0; i<10; i++)
+		latencyStats[i]=0;
 	init();
 };
 
 NetGame::~NetGame()
 {
+	int sum=0;
+	for (int i=0; i<10; i++)
+		sum+=latencyStats[i];
+	fprintf(logFile, "latencyStats: (sum=%d)\n", sum);
+	for (int i=0; i<10; i++)
+		fprintf(logFile, "latencyStats[%2d]=%5d (%4f)\n", i, latencyStats[i], (float)(100.*latencyStats[i])/(float)sum);
+	fprintf(logFile, "\n");
+	fflush(logFile);
+	
 	for (int p=0; p<32; p++)
 	{
 		for (int step=0; step<256; step++)
@@ -90,6 +101,20 @@ NetGame::~NetGame()
 
 void NetGame::init(void)
 {
+	int sum=0;
+	for (int i=0; i<10; i++)
+		sum+=latencyStats[i];
+	if (sum)
+	{
+		fprintf(logFile, "latencyStats: (sum=%d)\n", sum);
+		for (int i=0; i<10; i++)
+			fprintf(logFile, "latencyStats[%2d]=%5d (%4f)\n", i, latencyStats[i], (float)(100.*latencyStats[i])/(float)sum);
+		fprintf(logFile, "\n");
+		for (int i=0; i<10; i++)
+			latencyStats[i]=0;
+		fflush(logFile);
+	}
+		
 	executeStep=0;
 	pushStep=0+defaultLatency;
 	freeingStep=256-maxLatency-2;
@@ -765,7 +790,7 @@ void NetGame::computeMyLocalWishedLatency()
 		if (players[p]->type==Player::P_IP)
 		{
 			n++;
-			int goodOrderMarginTime=latency-((pingPongMax[p]+1)>>1);
+			int goodOrderMarginTime=latency-((1+pingPongMax[p])/2);
 			int realOrderMarginTime=orderMarginTimeMin[p];
 			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
 			if (ticksToWait<minTicksToWait)
@@ -963,6 +988,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			{
 				SubmitCheckSumOrder *cso=(SubmitCheckSumOrder *)order;
 				checkSumsRemote[orderStep]=cso->checkSumValue;
+				fprintf(logFile, "  checkSumsRemote[%d]=%x\n", orderStep, cso->checkSumValue);
 			}
 			
 			if (ordersQueue[player][orderStep])
@@ -1452,7 +1478,7 @@ int NetGame::ticksToDelay(void)
 		if (players[p]->type==Player::P_IP)
 		{
 			n++;
-			int goodOrderMarginTime=latency-((pingPongMin[p])>>1);
+			int goodOrderMarginTime=latency-((1+pingPongMax[p])/2);
 			//printf("pingPongMin[%d]=%d, ", p, pingPongMin[p]);
 			int realOrderMarginTime=orderMarginTimeMin[p];
 			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
@@ -1460,11 +1486,27 @@ int NetGame::ticksToDelay(void)
 				minTicksToWait=ticksToWait;
 		}
 	if (n==0 || minTicksToWait<0)
+	{
+		latencyStats[0]++;
 		minTicksToWait=0;
+	}
 	else
-		minTicksToWait*=minTicksToWait; //Because "Ticks" are 40ms in NetGame and "Ticks" are 1ms int SDL.
-	if (minTicksToWait>40)
-		minTicksToWait=40;
+	{
+		if (minTicksToWait>9)
+			minTicksToWait=9;
+		latencyStats[minTicksToWait]++;
+		if (minTicksToWait==1)
+			minTicksToWait=4;
+		else if (minTicksToWait==2)
+			minTicksToWait=8;
+		else if (minTicksToWait==3)
+			minTicksToWait=12;
+		else if (minTicksToWait==4)
+			minTicksToWait=16;
+		else
+			minTicksToWait=20;//Because "Ticks" are 40ms in NetGame and "Ticks" are 1ms int SDL.
+	}
+	
 	
 	int delay=minAverageWishedDelay+minTicksToWait;
 	

@@ -126,6 +126,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 	assert(order->sender<32);
 	assert(order->sender<session.numberOfPlayer);
 	bool isPlayerAlive=players[order->sender]->team->isAlive;
+	if (order->getOrderType()!=ORDER_WAITING_FOR_PLAYER)
+		anyPlayerWaitedTimeFor=0;
 	switch (order->getOrderType())
 	{
 		case ORDER_CREATE:
@@ -716,6 +718,7 @@ void Game::step(Sint32 localTeam)
 {
 	if (anyPlayerWaited)
 	{
+		anyPlayerWaitedTimeFor++;
 		//printf("waiting for player (%x,%d)\n", maskAwayPlayer, maskAwayPlayer);
 	}
 	else
