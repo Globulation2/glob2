@@ -174,7 +174,9 @@ public:
 
 	Uint32 allies; // Who do I thrust and don't fire on. mask
 	Uint32 enemies; // Who I don't thrust and fire on. mask
-	Uint32 sharedVision; // Who does I share the vision to. mask
+	Uint32 sharedVisionExchange; // Who does I share the vision of Exchange building to. mask
+	Uint32 sharedVisionFood; // Who does I share the vision of Food building to. mask
+	Uint32 sharedVisionOther; // Who does I share the vision to. mask
 	Uint32 me; // Who am I. mask.
 
 	int startPosX, startPosY;

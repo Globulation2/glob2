@@ -941,8 +941,9 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					{
 						game.teams[team]->allies^=(1<<newteam);
 						game.teams[team]->enemies^=(1<<newteam);
-						game.teams[team]->sharedVision^=(1<<newteam);
-
+						game.teams[team]->sharedVisionExchange^=(1<<newteam);
+						game.teams[team]->sharedVisionFood^=(1<<newteam);
+						game.teams[team]->sharedVisionOther^=(1<<newteam);
 					}
 				}
 			}
@@ -962,7 +963,9 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					{
 						game.teams[team]->allies^=(1<<newteam);
 						game.teams[team]->enemies^=(1<<newteam);
-						game.teams[team]->sharedVision^=(1<<newteam);
+						game.teams[team]->sharedVisionExchange^=(1<<newteam);
+						game.teams[team]->sharedVisionFood^=(1<<newteam);
+						game.teams[team]->sharedVisionOther^=(1<<newteam);
 					}
 				}
 			}

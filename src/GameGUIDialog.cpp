@@ -68,7 +68,8 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, alliedState, ALLIED+i);
 		addWidget(allied[i]);
 
-		bool visionState = (gameGUI->localTeam->sharedVision)&(1<<otherTeam);
+		// TODO : pass to three modes
+		bool visionState = (gameGUI->localTeam->sharedVisionOther)&(1<<otherTeam);
 		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, visionState, VISION+i);
 		addWidget(vision[i]);
 

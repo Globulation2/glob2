@@ -76,6 +76,7 @@ public:
 	Sint32 canHealUnit;
 	Sint32 timeToHealUnit;
 	Sint32 insideSpeed;
+	Sint32 canExchange;
 
 	Sint32 width, height; // Uint8, size in square
 	Sint32 decLeft, decTop;
@@ -90,7 +91,7 @@ public:
 
 	Sint32 unitProductionTime; // Uint8, nb tick to produce one unit
 	Sint32 ressourceForOneUnit;
-	
+
 	Sint32 maxRessource[MAX_NB_RESSOURCES];
 	Sint32 maxUnitInside;
 	Sint32 maxUnitWorking;
@@ -158,7 +159,7 @@ public:
 			
 			"foodable",
 			"fillable",
-			
+
 			"zonableWorker",
 			"zonableExplorer",
 			"zonableWarrior",
@@ -169,6 +170,7 @@ public:
 			"canHealUnit",
 			"timeToHealUnit",
 			"insideSpeed",
+			"canExchange",
 
 			"width",
 			"height",

@@ -137,7 +137,9 @@ public:
 	void updateConstructionState(void);
 	void updateBuildingSite(void);
 	void update(void);
-	
+
+	void setMapDiscovered(void);
+
 	bool tryToBuildingSiteRoom(void); //Returns true if room is found.
 	
 	bool isHardSpaceForBuildingSite(void);
@@ -152,7 +154,7 @@ public:
 	void swarmStep(void);
 	void turretStep(void);
 	void kill(void);
-	
+
 	int getMidX(void);
 	int getMidY(void);
 	int getMaxUnitStayRange(void);
@@ -165,12 +167,14 @@ public:
 
 	//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
 	Uint32 getFruits(Uint32 *mask=NULL);
-	
+
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	Sint32 checkSum();
+
+
 };
 
 #endif
