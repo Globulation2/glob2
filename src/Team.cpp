@@ -17,7 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <float.h>
+//#include <float.h>
 #include <math.h>
 
 #include <Toolkit.h>
@@ -823,7 +823,7 @@ Building *Team::findBestFoodable(Unit *unit)
 		// I'm already carying a ressource:
 		// I'll only go to a building who need this ressource, if possible.
 		Building *choosen=NULL;
-		double score=DBL_MAX;
+		Sint32 score=0x7FFFFFFF;
 		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 		{
 			Building *b=(*bi);
@@ -832,7 +832,7 @@ Building *Team::findBestFoodable(Unit *unit)
 				int buildingDist;
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
 					{
 						choosen=b;
@@ -850,7 +850,7 @@ Building *Team::findBestFoodable(Unit *unit)
 	}
 
 	Building *choosen=NULL;
-	double score=DBL_MAX;
+	Sint32 score=0x7FFFFFFF;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 		if (ri==CORN || ri>=HAPPYNESS_BASE)
 		{
@@ -864,7 +864,7 @@ Building *Team::findBestFoodable(Unit *unit)
 						int buildingDist;
 						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 						{
-							double newScore=(double)(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+							Sint32 newScore=((ressourceDist+buildingDist)<<8)/(b->maxUnitWorking-b->unitsWorking.size());
 							if (newScore<score)
 							{
 								choosen=b;
@@ -895,7 +895,7 @@ Building *Team::findBestFillable(Unit *unit)
 		// I'm already carying a ressource:
 		// I'll only go to a building who need this ressource, if possible.
 		Building *choosen=NULL;
-		double score=DBL_MAX;
+		Sint32 score=0x7FFFFFFF;
 		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 		{
 			Building *b=(*bi);
@@ -904,7 +904,7 @@ Building *Team::findBestFillable(Unit *unit)
 				int buildingDist;
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					double newScore=(double)(buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
 					{
 						choosen=b;
@@ -922,7 +922,7 @@ Building *Team::findBestFillable(Unit *unit)
 	}
 
 	Building *choosen=NULL;
-	double score=DBL_MAX;
+	Sint32 score=0x7FFFFFFF;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 	{
 		int ressourceDist;
@@ -936,8 +936,8 @@ Building *Team::findBestFillable(Unit *unit)
 					int buildingDist;
 					if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
-						double newScore=(double)(buildingDist+ressourceDist)/((double)(b->maxUnitWorking-b->unitsWorking.size())*(double)need);
-						fprintf(logFile, "[%d] newScore=%f=f(%d, %d, %d, %d, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
+						Sint32 newScore=((buildingDist+ressourceDist)<<8)/((b->maxUnitWorking-b->unitsWorking.size())*need);
+						fprintf(logFile, "[%d] newScore=%d=f(%d, %d, %d, %d, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
 						if (newScore<score)
 						{
 							choosen=b;
@@ -1006,7 +1006,7 @@ Building *Team::findBestFillable(Unit *unit)
 		return NULL;
 	
 	choosen=NULL;
-	score=DBL_MAX;
+	score=0x7FFFFFFF;
 	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
 	{
 		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
@@ -1031,7 +1031,7 @@ Building *Team::findBestFillable(Unit *unit)
 							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
 							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
 						{
-							double newScore=(double)(buildingDist+foreignBuildingDist)/(double)((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
+							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
 							if (newScore<score)
 							{
 								choosen=*bi;
@@ -1054,7 +1054,7 @@ Building *Team::findBestFillable(Unit *unit)
 Building *Team::findBestZonable(Unit *unit)
 {
 	Building *choosen=NULL;
-	double score=DBL_MAX;
+	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
 	bool canSwim=unit->performance[SWIM];
@@ -1068,7 +1068,7 @@ Building *Team::findBestZonable(Unit *unit)
 				int buildingDist;
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
 					{
 						choosen=b;
@@ -1082,10 +1082,10 @@ Building *Team::findBestZonable(Unit *unit)
 			for (std::list<Building *>::iterator bi=zonableExplorer.begin(); bi!=zonableExplorer.end(); ++bi)
 			{
 				Building *b=(*bi);
-				double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y));
-				if ((int)buildingDist<timeLeft)
+				int buildingDist2=map->warpDistSquare(b->getMidX(), b->getMidY(), x, y);
+				if (buildingDist2<(timeLeft*timeLeft))
 				{
-					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					Sint32 newScore=buildingDist2/(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
 					{
 						choosen=b;
@@ -1109,7 +1109,7 @@ Building *Team::findBestZonable(Unit *unit)
 					int buildingDist;
 					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
-						double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+						Sint32 newScore=buildingDist/(b->maxUnitWorking-b->unitsWorking.size());
 						if (newScore<score)
 						{
 							choosen=b;
@@ -1129,7 +1129,7 @@ Building *Team::findBestZonable(Unit *unit)
 Building *Team::findBestUpgrade(Unit *unit)
 {
 	Building *choosen=NULL;
-	float score=FLT_MAX;
+	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
@@ -1141,14 +1141,11 @@ Building *Team::findBestUpgrade(Unit *unit)
 				Building *b=(*bi);
 				if (b->type->level>=actLevel)
 				{
-					float newScore=(float)map->warpDistSquare(b->posX, b->posY, x, y)/(float)(b->maxUnitInside-b->unitsInside.size());
+					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
 					if (newScore<score)
 					{
 						unit->destinationPurprose=(Sint32)ability;
-						Uint32 *scoreIntPtr = (Uint32 *)&score;
-						Uint32 *newScoreIntPtr = (Uint32 *)&newScore;
-						fprintf(logFile, "[%d] score=%f, newScore=%f\n", unit->gid, score, newScore);
-						fprintf(logFile, "[%d] score=%x, newScore=%x\n", unit->gid, *scoreIntPtr, *newScoreIntPtr);
+						//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
 						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						choosen=b;
 						score=newScore;
