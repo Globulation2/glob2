@@ -47,6 +47,7 @@ public:
 		BuildingType::BuildingTypeShortNumber shortTypeNum;
 		int amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
+		bool defense; // place at incpoming places.
 		
 		std::string debugStdName;
 		const char *debugName;
@@ -169,7 +170,7 @@ private:
 	void computeEnemyPowerMap();
 	void computeEnemyRangeMap();
 	
-	Order *findGoodBuilding(Sint32 typeNum, bool food, bool critical);
+	Order *findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
 	void computeRessourcesCluster();
 	
@@ -194,6 +195,7 @@ public:
 	int strikeTeam;
 	
 	bool foodLock;
+	bool foodSurplus;
 	Uint32 foodLockStats[2];
 	bool overWorkers;
 	bool starvingWarning;
@@ -203,6 +205,7 @@ public:
 	
 	Uint32 lastFreeWorkersComputed;
 	Uint32 lastWheatCareMapComputed;
+	Uint32 lastEnemyRangeMapComputed;
 	Uint32 lastEnemyPowerMapComputed;
 	
 	Uint32 computeNeedSwimTimer;

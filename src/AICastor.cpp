@@ -72,6 +72,7 @@ void AICastor::Project::init(const char *suffix)
 	amount=1;
 	food=(this->shortTypeNum==BuildingType::SWARM_BUILDING
 		|| this->shortTypeNum==BuildingType::FOOD_BUILDING);
+	defense=(this->shortTypeNum==BuildingType::DEFENSE_BUILDING);
 	
 	debugStdName += Toolkit::getStringTable()->getString("[building name]", this->shortTypeNum);
 	debugStdName += "-";
@@ -153,6 +154,7 @@ AICastor::AICastor(Player *player)
 AICastor::AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
 	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	//logFile=stdout;
 	
 	firstInit();
 	bool goodLoad=load(stream, player, versionMinor);
@@ -169,6 +171,7 @@ void AICastor::init(Player *player)
 	needSwim=false;
 	lastFreeWorkersComputed=(Uint32)-1;
 	lastWheatCareMapComputed=(Uint32)-1;
+	lastEnemyRangeMapComputed=(Uint32)-1;
 	lastEnemyPowerMapComputed=(Uint32)-1;
 	computeNeedSwimTimer=0;
 	controlSwarmsTimer=0;
@@ -190,6 +193,7 @@ void AICastor::init(Player *player)
 	strikeTeam=0;
 	
 	foodLock=false;
+	foodSurplus=false;
 	foodLockStats[0]=0;
 	foodLockStats[1]=0;
 	overWorkers=false;
@@ -458,6 +462,11 @@ Order *AICastor::getOrder()
 		computeWheatCareMap();
 	}
 	
+	if (timer>lastEnemyRangeMapComputed+1024) // each 41s
+	{
+		computeEnemyRangeMap();
+	}
+	
 	/*if (onStrike)
 	{
 		if (timer>lastEnemyPowerMapComputed+128) // each 5s
@@ -622,6 +631,8 @@ Order *AICastor::controlSwarms()
 	foodLock=((unitSumAll+3)>=(foodSum<<1));
 	foodLockStats[foodLock]++;
 	
+	foodSurplus=(unitSumAll+4<foodSum);
+	
 	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
 	starvingWarningStats[starvingWarning]++;
 	fprintf(logFile,  "starvingWarning=%d\n", starvingWarning);
@@ -720,7 +731,7 @@ Order *AICastor::controlSwarms()
 
 Order *AICastor::expandFood()
 {
-	if (!foodLock && !enoughFreeWorkers())
+	if (foodSurplus || (!foodLock && !enoughFreeWorkers()))
 		return NULL;
 	
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
@@ -739,7 +750,7 @@ Order *AICastor::expandFood()
 	computeWorkRangeMap();
 	computeWorkAbilityMap();
 	
-	return findGoodBuilding(typeNum, true, false);
+	return findGoodBuilding(typeNum, true, false, false);
 }
 
 Order *AICastor::controlFood()
@@ -847,6 +858,26 @@ Order *AICastor::controlUpgrades()
 		return NULL;
 	if (b->type->isVirtual)
 		return NULL;
+	// Is it any repair:
+	if (!b->type->isBuildingSite)
+	{
+		if (b->type->DEFENSE_BUILDING)
+		{
+			if (b->hp*1<b->type->hpMax*4)
+				return new OrderConstruction(b->gid);
+		}
+		else if (b->type->maxUnitInside)
+		{
+			if (b->hp*3<b->type->hpMax*4)
+				return new OrderConstruction(b->gid);
+		}
+		else
+		{
+			if (b->hp*2<b->type->hpMax*4)
+				return new OrderConstruction(b->gid);
+		}
+	}
+	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
 	int level=b->type->level;
@@ -996,7 +1027,7 @@ Order *AICastor::controlStrikes()
 	for (int bi=0; bi<1024; bi++)
 	{
 		Building *b=enemyBuildings[bi];
-		if (b==NULL || ((b->seenByMask&me)==0) || b->type->isBuildingSite)
+		if (b==NULL || ((b->seenByMask&me)==0))
 			continue;
 		int x=b->posX;
 		int y=b->posY;
@@ -1004,6 +1035,8 @@ Order *AICastor::controlStrikes()
 		Uint8 workRange=workRangeMap[index];
 		Sint32 level=b->type->level;
 		Uint32 score=(1+workRange)*(1+level);
+		if (b->type->isBuildingSite)
+			score=(score>>2);
 		int shortTypeNum=b->type->shortTypeNum;
 		if (shortTypeNum==BuildingType::ATTACK_BUILDING
 			||shortTypeNum==BuildingType::SCIENCE_BUILDING)
@@ -1014,6 +1047,7 @@ Order *AICastor::controlStrikes()
 			bestBuilding=b;
 		}
 	}
+	
 	std::list<Building *> *virtualBuildings=&team->virtualBuildings;
 	if (bestBuilding!=NULL)
 	{
@@ -1341,7 +1375,7 @@ Order *AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		Order *gfbm=findGoodBuilding(typeNum, project->food, project->critical);
+		Order *gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
 		if (gfbm)
 		{
@@ -2452,6 +2486,10 @@ void AICastor::computeEnemyPowerMap()
 
 void AICastor::computeEnemyRangeMap()
 {
+	if (lastEnemyRangeMapComputed==timer)
+		return;
+	lastEnemyRangeMapComputed=timer;
+	
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -2462,17 +2500,19 @@ void AICastor::computeEnemyRangeMap()
 	Uint8 *gradient=enemyRangeMap;
 	
 	memcpy(gradient, obstacleUnitMap, size);
+	
 	for (int ti=0; ti<game->session.numberOfTeam; ti++)
 	{
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;
-		if ((team->enemies&enemyTeam->me)==0)
+		
+		if ((team->enemies & enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
 		for (int bi=0; bi<1024; bi++)
 		{
 			Building *b=enemyBuildings[bi];
-			if (b==NULL || ((b->seenByMask&me)==0))
+			if (b==NULL || ((b->seenByMask&me)==0) || b->type->isBuildingSite)
 				continue;
 			int bx=b->posX;
 			int by=b->posY;
@@ -2487,7 +2527,7 @@ void AICastor::computeEnemyRangeMap()
 	map->updateGlobalGradient(gradient);
 }
 
-Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
+Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
 {
 	int w=map->w;
 	int h=map->w;
@@ -2568,38 +2608,42 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 				&& (mapDiscovered[corner2]&me)==0
 				&& (mapDiscovered[corner3]&me)==0)
 				continue;
-			
 			//goodBuildingMap[corner0]=1;
 			
 			Uint8 space=spaceForBuildingMap[corner0];
 			if (space<bw)
 				continue;
-			
 			//goodBuildingMap[corner0]=2;
 			
 			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 			if (work<minWork)
 				continue;
-			
 			//goodBuildingMap[corner0]=3;
 			
 			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
-			if (food)
+			if (!defense)
 			{
-				if (wheatGradient<wheatGradientLimit)
-					continue;
-				//if (wheatGrowth<wheatGrowthLimit)
-				//	continue;
+				if (food)
+				{
+					if (wheatGradient<wheatGradientLimit)
+						continue;
+					//if (wheatGrowth<wheatGrowthLimit)
+					//	continue;
+				}
+				else
+				{
+					if (wheatGradient>wheatGradientLimit)
+						continue;
+					//if (wheatGrowth>wheatGrowthLimit)
+					//	continue;
+				}
 			}
-			else
-			{
-				if (wheatGradient>wheatGradientLimit)
-					continue;
-				//if (wheatGrowth>wheatGrowthLimit)
-				//	continue;
-			}
-			
 			//goodBuildingMap[corner0]=4;
+			
+			Uint32 enemyRange=enemyRangeMap[corner0]+enemyRangeMap[corner1]+enemyRangeMap[corner2]+enemyRangeMap[corner3];
+			if (enemyRange>4*(255-8))
+				continue;
+			//goodBuildingMap[corner0]=5;
 			
 			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
 			
@@ -2609,13 +2653,15 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 			if ((neighbour&1)||(directNeighboursCount>1))
 				continue;
 			
-			Sint32 score;
-			if (food)
-				score=((wheatGrowth<<8)+work+(wheatGradient>>1))*(8+(directNeighboursCount<<2)+farNeighboursCount);
-			else
-				score=(4096+work-(wheatGrowth<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			//goodBuildingMap[corner0]=6;
 			
-			// 8 + directNeighboursCount*4 + farNeighboursCount
+			Sint32 score;
+			if (defense)
+				score=(enemyRange<<9);//(/*work+*/(enemyRange<<4))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			else if (food)
+				score=((wheatGrowth<<8)+work+(wheatGradient>>1)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			else
+				score=(4096+work-(wheatGrowth<<8)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 			
 			if (score<0)
 				goodBuildingMap[corner0]=0;
