@@ -27,6 +27,8 @@
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
+	globalGradient[0]=NULL;
+	globalGradient[1]=NULL;
 	load(stream, types, owner, versionMinor);
 }
 
@@ -102,7 +104,9 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
-	Map::clearBuildingGradient(gradient);
+	Map::clearBuildingGradient(localGradient);
+	globalGradient[0]=NULL;
+	globalGradient[1]=NULL;
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -162,7 +166,13 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		assert(ressources[i]<=type->maxRessource[i]);
 	
-	Map::clearBuildingGradient(gradient);
+	for (int i=0; i<2; i++)
+		if (globalGradient[i])
+		{
+			delete globalGradient[i];
+			globalGradient[i]=NULL;
+		}
+	Map::clearBuildingGradient(localGradient);
 }
 
 void Building::save(SDL_RWops *stream)

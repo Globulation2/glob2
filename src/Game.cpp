@@ -1233,10 +1233,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		assert(teams[0]);
 		Building *b=teams[0]->myBuildings[0];
 		if (b)
-		{
-			assert(b);
-			assert(b->gid==0);
-
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
 					if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
@@ -1245,13 +1241,29 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
 						int lx=(x+viewportX-b->posX+15+32)&31;
 						int ly=(y+viewportY-b->posY+15+32)&31;
-						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->gradient[1][lx+ly*32]);
+						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->localGradient[1][lx+ly*32]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
 						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
 
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
+	}
+	// We draw debug area:
+	if (false)
+	{
+		assert(teams[0]);
+		Building *b=teams[0]->myBuildings[0];
+		int w=map.getW();
+		if (b && b->globalGradient[1])
+		{
+			for (int y=top-1; y<=bot; y++)
+				for (int x=left-1; x<=right; x++)
+				{
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->globalGradient[1][x+viewportX+(y+viewportY)*w]);
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
+				}
 
 		}
 	}
