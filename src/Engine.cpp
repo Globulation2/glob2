@@ -32,7 +32,6 @@
 #include "Engine.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LoadGameScreen.h"
 #include "LogFileManager.h"
 #include "MultiplayersHostScreen.h"
 #include "MultiplayersJoinScreen.h"
@@ -241,9 +240,9 @@ int Engine::initCustom(const std::string &gameName)
 
 int Engine::initLoadGame()
 {
-	LoadGameScreen loadGameScreen;
-	int lgs=loadGameScreen.execute(globalContainer->gfx, 40);
-	if (lgs==LoadGameScreen::CANCEL)
+	ChooseMapScreen loadGameScreen("games", "game", true);;
+	int lgs = loadGameScreen.execute(globalContainer->gfx, 40);
+	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 
 	return initCustom(loadGameScreen.sessionInfo.getFileName());
