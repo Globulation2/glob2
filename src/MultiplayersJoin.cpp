@@ -25,6 +25,11 @@
 #include "Utilities.h"
 #include "LogFileManager.h"
 
+// If you don't have SDL_net 1.2.5 some features won't be aviable.
+#ifndef INADDR_BROADCAST
+#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#endif
+
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
 {

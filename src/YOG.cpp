@@ -34,6 +34,11 @@
 #include "NetConsts.h"
 #include "LogFileManager.h"
 
+// If you don't have SDL_net 1.2.5 some features won't be aviable.
+#ifndef INADDR_BROADCAST
+#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#endif
+
 YOG::YOG(LogFileManager *logFileManager)
 {
 	socket=NULL;
