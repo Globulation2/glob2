@@ -1519,7 +1519,7 @@ void Map::clearBuildingGradient(Uint8 gradient[2][1024])
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
-	printf("updatingLocalGradient...\n");
+	printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
@@ -1704,8 +1704,8 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
-	printf("updatingGlobalGradient...\n");
 	assert(building);
+	printf("updatingGlobalGradient (gbid=%d)...\n", building->gid);
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
@@ -1974,43 +1974,44 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	Uint32 teamMask=building->owner->me;
 	Uint8 *gradient=building->localGradient[canSwim];
 	
-	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use ot the last line! (on x and y)
+	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
 	{
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
-		int max=gradient[lx+ly*32];
+		int max=0;
+		int currentg=gradient[lx+ly*32];
 		bool found=false;
+		bool gradientUsable=false;
 
-		if (max>1 && !building->dirtyLocalGradient[canSwim])
+		if (currentg>1 && !building->dirtyLocalGradient[canSwim])
 		{
-			for (int sd=1; sd>=0; sd--)
+			for (int sd=0; sd<=1; sd++)
 				for (int d=sd; d<8; d+=2)
 				{
 					int ddx, ddy;
 					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					int lxddx=lx+ddx;
+					if (lxddx<0)
+						lxddx=0;
+					else if(lxddx>31)
+						lxddx=31;
+					int lxddy=ly+ddy;
+					if (lxddy<0)
+						lxddy=0;
+					else if(lxddy>31)
+						lxddy=31;
+					Uint8 g=gradient[lxddx+32*lxddy];
+					if (g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+						gradientUsable=true;
+					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
-						int lxddx=lx+ddx;
-						if (lxddx<0)
-							lxddx=0;
-						else if(lxddx>31)
-							lxddx=31;
-						int lxddy=ly+ddy;
-						if (lxddy<0)
-							lxddy=0;
-						else if(lxddy>31)
-							lxddy=31;
-						Uint8 g=gradient[lxddx+32*lxddy];
-						if (g>max)
-						{
-							max=g;
-							*dx=ddx;
-							*dy=ddy;
-							found=true;
-						}
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
 					}
 				}
-			if (found)
+			if (found && gradientUsable)
 			{
 				//printf("...pathfindedBuilding v1\n");
 				return true;
@@ -2019,40 +2020,43 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 
 		updateLocalGradient(building, canSwim);
 
-		max=gradient[lx+ly*32];
-		if (max>1)
-			for (int sd=1; sd>=0; sd--)
+		max=0;
+		currentg=gradient[lx+ly*32];
+		found=false;
+		gradientUsable=false;
+		if (currentg>1)
+		{
+			for (int sd=0; sd<=1; sd++)
 				for (int d=sd; d<8; d+=2)
 				{
 					int ddx, ddy;
 					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					int lxddx=lx+ddx;
+					if (lxddx<0)
+						lxddx=0;
+					else if(lxddx>31)
+						lxddx=31;
+					int lxddy=ly+ddy;
+					if (lxddy<0)
+						lxddy=0;
+					else if(lxddy>31)
+						lxddy=31;
+					Uint8 g=gradient[lxddx+32*lxddy];
+					if (g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+						gradientUsable=true;
+					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
-						int lxddx=lx+ddx;
-						if (lxddx<0)
-							lxddx=0;
-						else if(lxddx>31)
-							lxddx=31;
-						int lxddy=ly+ddy;
-						if (lxddy<0)
-							lxddy=0;
-						else if(lxddy>31)
-							lxddy=31;
-						Uint8 g=gradient[lxddx+32*lxddy];
-						if (g>max)
-						{
-							max=g;
-							*dx=ddx;
-							*dy=ddy;
-							found=true;
-						}
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
 					}
 				}
-
-		if (found)
-		{
-			//printf("...pathfindedBuilding v2\n");
-			return true;
+			if (found && gradientUsable)
+			{
+				//printf("...pathfindedBuilding v2\n");
+				return true;
+			}
 		}
 	}
 	
