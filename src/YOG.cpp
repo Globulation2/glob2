@@ -40,7 +40,7 @@ YOG::YOG()
 
 YOG::~YOG()
 {
-
+	forceDisconnect();
 }
 
 bool YOG::connect(const char *serverName, int serverPort, const char *nick)
@@ -67,8 +67,6 @@ bool YOG::connect(const char *serverName, int serverPort, const char *nick)
 	sendString(command);
 	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", nick);
 	sendString(command);
-	joinChannel();
-	//joinChannel(DEFAULT_GAME_CHAN);
 	return true;
 }
 
@@ -120,6 +118,7 @@ void YOG::interpreteIRCMessage(const char *message)
 			source=NULL;
 			prefix=NULL;
 			cmd=NULL;
+			return;
 		}
 	}
 	else
@@ -135,23 +134,57 @@ void YOG::interpreteIRCMessage(const char *message)
 	if (strcasecmp(cmd, "PRIVMSG")==0)
 	{
 		char *diffusion=strtok(NULL, " :");
-		char *message=strtok(NULL, ":\0");
-		ChatMessage msg;
+		if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))
+		{
+			// filter data to game list
+			char *identifier=strtok(NULL, " :\0");
+			char *version=strtok(NULL, " :\0");
+			char *comment=strtok(NULL, ":\0");
 
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE]=0;
+			if ((source!=NULL) && (identifier!=NULL) && (version!=NULL) && (comment!=NULL))
+			{
+				GameInfo msg;
 
-		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-		msg.diffusion[IRC_CHANNEL_SIZE]=0;
+				strncpy(msg.source,  source, IRC_NICK_SIZE);
+				msg.source[IRC_NICK_SIZE]=0;
 
-		strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-		msg.message[IRC_MESSAGE_SIZE]=0;
+				strncpy(msg.identifier, identifier, GAMEINFO_ID_SIZE);
+				msg.identifier[GAMEINFO_ID_SIZE]=0;
 
-		messages.push_back(msg);
+				strncpy(msg.version, version, GAMEINFO_VERSION_SIZE);
+				msg.version[GAMEINFO_VERSION_SIZE]=0;
+
+				strncpy(msg.comment, comment, GAMEINFO_COMMENT_SIZE);
+				msg.comment[GAMEINFO_COMMENT_SIZE]=0;
+
+				msg.updatedTick=SDL_GetTicks();
+
+				gameInfos.push_back(msg);
+				// todo , search game with same source
+			}
+		}
+		else
+		{
+			// normal chat message
+			ChatMessage msg;
+
+			char *message=strtok(NULL, ":\0");
+
+			strncpy(msg.source,  source, IRC_NICK_SIZE);
+			msg.source[IRC_NICK_SIZE]=0;
+
+			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+			msg.diffusion[IRC_CHANNEL_SIZE]=0;
+
+			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+			msg.message[IRC_MESSAGE_SIZE]=0;
+
+			messages.push_back(msg);
+		}
 	}
 	else if (strcasecmp(cmd, "JOIN")==0)
 	{
-		char *diffusion=strtok(NULL, " :");
+		char *diffusion=strtok(NULL, " :\0");
 		InfoMessage msg;
 
 		msg.type=IRC_MSG_JOIN;
@@ -171,7 +204,6 @@ void YOG::interpreteIRCMessage(const char *message)
 	}
 	else if (strcasecmp(cmd, "QUIT")==0)
 	{
-		char *diffusion=strtok(NULL, " :");
 		InfoMessage msg;
 
 		msg.type=IRC_MSG_QUIT;
@@ -179,13 +211,7 @@ void YOG::interpreteIRCMessage(const char *message)
 		strncpy(msg.source,  source, IRC_NICK_SIZE);
 		msg.source[IRC_NICK_SIZE]=0;
 
-		if (diffusion)
-		{
-			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-			msg.diffusion[IRC_CHANNEL_SIZE]=0;
-		}
-		else
-			msg.diffusion[0]=0;
+		msg.diffusion[0]=0;
 
 		infoMessages.push_back(msg);
 	}
@@ -214,7 +240,19 @@ void YOG::step(void)
 		if (check==0)
 			break;
 	}
+
+	// delete timeout game
+	std::vector<GameInfo>::iterator gameToDeleteIt=gameInfos.begin();
+	while (gameToDeleteIt!=gameInfos.end())
+	{
+		if (((*gameToDeleteIt).updatedTick+RESEND_GAME_TIMEOUT)<SDL_GetTicks())
+			gameToDeleteIt=gameInfos.erase(gameToDeleteIt);
+		else
+			++gameToDeleteIt;
+	}
+
 }
+
 
 bool YOG::isChatMessage(void)
 {
@@ -237,7 +275,7 @@ const char *YOG::getChatMessageSource(void)
 		return NULL;
 }
 
-const char *YOG::getInfoMessageDiffusion(void)
+const char *YOG::getMessageDiffusion(void)
 {
 	if (messages.size()>0)
 		return messages[0].diffusion;
@@ -250,6 +288,7 @@ void YOG::freeChatMessage(void)
 	if (messages.size()>0)
 		messages.erase(messages.begin());
 }
+
 
 bool YOG::isInfoMessage(void)
 {
@@ -272,7 +311,7 @@ const char *YOG::getInfoMessageSource(void)
 		return NULL;
 }
 
-const char *YOG::getMessageDiffusion(void)
+const char *YOG::getInfoMessageDiffusion(void)
 {
 	if (infoMessages.size()>0)
 		return infoMessages[0].diffusion;
@@ -285,6 +324,7 @@ void YOG::freeInfoMessage(void)
 	if (infoMessages.size()>0)
 		infoMessages.erase(infoMessages.begin());
 }
+
 
 void YOG::sendCommand(const char *message)
 {
@@ -365,9 +405,9 @@ const char *YOG::getGameComment(void)
 
 bool YOG::getNextGame(void)
 {
+	gameInfoIt++;
 	if (gameInfoIt!=gameInfos.end())
 	{
-		gameInfoIt++;
 		return true;
 	}
 	else

@@ -33,7 +33,9 @@ class YOG
 {
 public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
-	enum { YOG_GAMEINFO_ID_SIZE = 32, YOG_GAMEINFO_VERSION_SIZE=8, YOG_GAMEINFO_COMMENT_SIZE=60 };
+	enum { GAMEINFO_ID_SIZE = 31, GAMEINFO_VERSION_SIZE=7, GAMEINFO_COMMENT_SIZE=59 };
+	enum { RESEND_GAME_TIMEOUT = 6000, RESEND_GAME_INTERVAL= 10000 };
+
 	enum InfoMessageType
 	{
 		IRC_MSG_NONE=0,
@@ -59,9 +61,9 @@ public:
 	struct GameInfo
 	{
 		char source[IRC_NICK_SIZE+1];
-		char identifier[YOG_GAMEINFO_ID_SIZE+1];
-		char version[YOG_GAMEINFO_VERSION_SIZE+1];
-		char comment[YOG_GAMEINFO_COMMENT_SIZE+1];
+		char identifier[GAMEINFO_ID_SIZE+1];
+		char version[GAMEINFO_VERSION_SIZE+1];
+		char comment[GAMEINFO_COMMENT_SIZE+1];
 		Uint32 updatedTick;
 	};
 
@@ -144,7 +146,7 @@ public:
 	//! Set the game parameters
 	void setGameParameters(const char *id, const char *version, const char *comment);
 
-	// GAME joining
+	// GAME listing
 	/*
 		Typical use :
 		if (yog.resetGameLister())
@@ -152,7 +154,7 @@ public:
 			do
 			{
 				...=yog.getGameSource();
-				...=yog.getGameIndetifier();
+				...=yog.getGameIdentifier();
 				...=yog.getGameVersion();
 				...=yog.getGameComment();
 

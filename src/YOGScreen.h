@@ -46,10 +46,6 @@ public:
 	};
 
 public:
-	//static TCPsocket socket;
-	//static YOG yog;
-
-public:
 	MultiplayersJoin *multiplayersJoin;
 
 protected:
@@ -57,8 +53,7 @@ protected:
 	TextInput *textInput;
 	TextArea *chatWindow;
 	std::vector<Uint32> IPs;
-
-	//static SDLNet_SocketSet socketSet;
+	Uint32 timerCounter; // used to update list every 32 timer call
 
 	void updateList(void);
 
@@ -71,10 +66,8 @@ public:
 	void closeConnection(void);
 	void createConnection(void);
 
-	static void openYOG(void);
-	static void closeYOG(void);
-	static bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);
-	static bool sendString(TCPsocket socket, char *data);
+	//bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);
+	//bool sendString(TCPsocket socket, char *data);
 };
 
 #endif

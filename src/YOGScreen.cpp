@@ -41,11 +41,12 @@ YOGScreen::YOGScreen()
 	addWidget(textInput);
 	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
 	addWidget(chatWindow);
+
+	timerCounter=0;
 }
 
 YOGScreen::~YOGScreen()
 {
-	closeYOG();
 	delete multiplayersJoin;
 }
 
@@ -55,50 +56,20 @@ YOGScreen::~YOGScreen()
 
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
-// NOTE angel > WIN32 use _stricmp and not _strcasecmp sorry... 
+// NOTE angel > WIN32 use _stricmp and not _strcasecmp sorry...
 #ifdef WIN32
 #	define strcasecmp _stricmp
 #	define snprintf _snprintf
 #endif
 
-void YOGScreen::openYOG(void)
-{
-	/*IPaddress ip;
-	socketSet=SDLNet_AllocSocketSet(1);
-	if(SDLNet_ResolveHost(&ip, globalContainer->metaServerName, globalContainer->metaServerPort)==-1)
-	{
-		fprintf(stderr, "YOG : ResolveHost: %s\n", SDLNet_GetError());
-		return;
-	}
-
-	socket=SDLNet_TCP_Open(&ip);
-	if(!socket)
-	{
-		fprintf(stderr, "YOG : TCP_Open: %s\n", SDLNet_GetError());
-		return;
-	}
-
-	SDLNet_TCP_AddSocket(socketSet, socket);*/
-
-	//globalContainer->yog.connect("irc.debian.org", 6667, "nct");
-}
-
-void YOGScreen::closeYOG(void)
-{
-	/*if (socket)
-	{
-		SDLNet_TCP_Close(socket);
-		socket=NULL;
-		SDLNet_FreeSocketSet(socketSet);
-	}*/
-	globalContainer->yog.forceDisconnect();
-}
-
 void YOGScreen::createConnection(void)
 {
-	//openYOG();
 	globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName);
-	updateList();
+}
+
+void YOGScreen::closeConnection(void)
+{
+	globalContainer->yog.forceDisconnect();
 }
 
 void YOGScreen::updateList(void)
@@ -106,10 +77,10 @@ void YOGScreen::updateList(void)
 	IPs.clear();
 	gameList->clear();
 
-	char data[GAME_INFO_MAX_SIZE];
+	// TODO : use new yog here
+	/*char data[GAME_INFO_MAX_SIZE];
 	data[0]=0;
 
-	// TODO : use new yog here
 	//sendString(socket, "listenoff");
 	/*sendString(socket, "listgames");
 	while (strcasecmp(data, "end")!=0)
@@ -125,13 +96,25 @@ void YOGScreen::updateList(void)
 			printf("YOG : We got null string through network during list reception, why ?\n");
 	}*/
 	//sendString(socket, "listenon");
-}
+	
+	if (globalContainer->yog.resetGameLister())
+	{
+		do
+		{
+			const char *source=globalContainer->yog.getGameSource();
+			const char *identifier=globalContainer->yog.getGameIdentifier();
+			const char *version=globalContainer->yog.getGameVersion();
+			const char *comment=globalContainer->yog.getGameComment();
 
-void YOGScreen::closeConnection(void)
-{
-	closeYOG();
+			char data[128];
+			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
+			gameList->addText(data);
+		}
+		while (globalContainer->yog.getNextGame());
+		// TODO : remove IP or update them
+	}
 }
-
+/*
 bool YOGScreen::getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE])
 {
 	if (socket)
@@ -178,12 +161,22 @@ bool YOGScreen::sendString(TCPsocket socket, char *data)
 		return false;
 	}
 }
-
+*/
 
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	if (action==SCREEN_CREATED)
+	{
+		globalContainer->yog.joinChannel(DEFAULT_CHAT_CHAN);
+		globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
+	}
+	else if (action==SCREEN_DESTROYED)
+	{
+		globalContainer->yog.quitChannel(DEFAULT_CHAT_CHAN);
+		globalContainer->yog.quitChannel(DEFAULT_GAME_CHAN);
+	}
+	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==CANCEL)
 		{
@@ -276,6 +269,13 @@ void YOGScreen::paint(int x, int y, int w, int h)
 
 void YOGScreen::onTimer(Uint32 tick)
 {
+	// update list each one or second
+	if (((timerCounter++)&0x1F)==0)
+	{
+		updateList();
+		gameList->commit();
+	}
+
 	globalContainer->yog.step();
 	while (globalContainer->yog.isChatMessage())
 	{
@@ -293,24 +293,34 @@ void YOGScreen::onTimer(Uint32 tick)
 		switch (globalContainer->yog.getInfoMessageType())
 		{
 			case YOG::IRC_MSG_JOIN:
-			chatWindow->addText(globalContainer->yog.getInfoMessageSource());
-			chatWindow->addText(" ");
-			chatWindow->addText(globalContainer->texts.getString("[has joined]"));
-			chatWindow->addText("\n");
-			globalContainer->yog.freeInfoMessage();
+			{
+				const char *diffusion=globalContainer->yog.getInfoMessageDiffusion();
+				assert(diffusion);
+				if (strncmp(diffusion, DEFAULT_GAME_CHAN, YOG::IRC_CHANNEL_SIZE)!=0)
+				{
+					chatWindow->addText(globalContainer->yog.getInfoMessageSource());
+					chatWindow->addText(" ");
+					chatWindow->addText(globalContainer->texts.getString("[has joined]"));
+					chatWindow->addText(" ");
+					chatWindow->addText(diffusion);
+					chatWindow->addText("\n");
+				}
+			}
 			break;
 
 			case YOG::IRC_MSG_QUIT:
-			chatWindow->addText(globalContainer->yog.getInfoMessageSource());
-			chatWindow->addText(" ");
-			chatWindow->addText(globalContainer->texts.getString("[has quit]"));
-			chatWindow->addText("\n");
-			globalContainer->yog.freeInfoMessage();
+			{
+				chatWindow->addText(globalContainer->yog.getInfoMessageSource());
+				chatWindow->addText(" ");
+				chatWindow->addText(globalContainer->texts.getString("[has quit]"));
+				chatWindow->addText("\n");
+			}
 			break;
 
 			default:
 			break;
 		}
+		globalContainer->yog.freeInfoMessage();
 	}
 
 	// the game connection part:

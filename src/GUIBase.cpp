@@ -74,6 +74,7 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 	dispatchPaint(gfx);
 	addUpdateRect(0, 0, gfx->getW(), gfx->getH());
 	run=true;
+	onAction(NULL, SCREEN_CREATED, 0, 0);
 	while (run)
 	{
 		// get first timer
@@ -129,6 +130,7 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 		if (frameWaitTime>0)
 			SDL_Delay(frameWaitTime);
 	}
+	onAction(NULL, SCREEN_DESTROYED, 0, 0);
 
 	return returnCode;
 }
