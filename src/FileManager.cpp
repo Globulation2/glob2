@@ -96,7 +96,7 @@ void FileManager::addDir(const char *dir)
 	char *newDir=new char[len+1];
 	strncpy(newDir, dir, len+1);
 	dirList.push_back(newDir);
-	dirListIndexCache=0;
+	dirListIndexCache=-1;
 }
 
 SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
