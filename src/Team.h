@@ -65,7 +65,7 @@ public:
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength();
-	Sint32 checkSum();
+	Uint32 checkSum();
 };
 
 class Game;
@@ -145,7 +145,7 @@ public:
 	void dirtyGlobalGradient();
 	
 	//! Compute team checksum
-	Sint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL);
+	Uint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL);
 	
 	//! Return the name of the first player in the team
 	const char *getFirstPlayerName(void);

@@ -36,7 +36,8 @@ public:
 		DEL_BUILDING=0x1,
 		DEL_GROUND_UNIT=0x2,
 		DEL_AIR_UNIT=0x4,
-		DEL_UNIT=0x6
+		DEL_UNIT=0x6,
+		DEL_FLAG=0x8
 	};
 
 public:
@@ -91,8 +92,8 @@ public:
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
-	bool removeUnitAndBuilding(int x, int y, SDL_Rect* r, unsigned flags);
-	bool removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned=DEL_UNIT|DEL_BUILDING);
+	bool removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags);
+	bool removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 
 	bool checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, int teamNumber);
 	bool checkRoomForBuilding(int x, int y, int typeNum, int teamNumber);
@@ -103,7 +104,7 @@ public:
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=true, int step=0, int stepCount=1);
-	Sint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL);
+	Uint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL);
 	
 	//! ally or disally AI following human alliances
 	void setAIAlliance(void);

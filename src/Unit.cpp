@@ -2262,9 +2262,9 @@ void Unit::integrity()
 	}
 }
 
-Sint32 Unit::checkSum()
+Uint32 Unit::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 	
 	cs^=typeNum;
 	

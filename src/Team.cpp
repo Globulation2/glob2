@@ -119,9 +119,9 @@ int BaseTeam::getDataLength()
 	return 16;
 }
 
-Sint32 BaseTeam::checkSum()
+Uint32 BaseTeam::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 
 	cs^=teamNumber;
 	cs=(cs<<31)|(cs>>1);
@@ -1289,14 +1289,14 @@ void Team::dirtyGlobalGradient()
 	}
 }
 
-Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
+Uint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [0+t*20]
+		checkSumsList->push_back(cs);// [1+t*20]
 	
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
@@ -1305,7 +1305,7 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 			cs=(cs<<31)|(cs>>1);
 		}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [1+t*20]
+		checkSumsList->push_back(cs);// [2+t*20]
 		
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
@@ -1314,7 +1314,7 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 			cs=(cs<<31)|(cs>>1);
 		}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2+t*20]
+		checkSumsList->push_back(cs);// [3+t*20]
 	
 	for (int i=0; i<NB_ABILITY; i++)
 	{
@@ -1322,16 +1322,16 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3+t*20]
+		checkSumsList->push_back(cs);// [4+t*20]
 	
 	cs^=foodable.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4+t*20]
+		checkSumsList->push_back(cs);// [5+t*20]
 	cs^=fillable.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5+t*20]
+		checkSumsList->push_back(cs);// [6+t*20]
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -1339,67 +1339,67 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [6+t*20]
+		checkSumsList->push_back(cs);// [7+t*20]
 	
 	cs^=canExchange.size();
 	cs^=canFeedUnit.size();
 	cs^=canHealUnit.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [7+t*20]
+		checkSumsList->push_back(cs);// [8+t*20]
 	
 	cs^=buildingsToBeDestroyed.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [8+t*20]
+		checkSumsList->push_back(cs);// [9+t*20]
 	cs^=buildingsTryToBuildingSiteRoom.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [9+t*20]
+		checkSumsList->push_back(cs);// [10+t*20]
 	
 	cs^=swarms.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [10+t*20]
+		checkSumsList->push_back(cs);// [11+t*20]
 	cs^=turrets.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [11+t*20]
+		checkSumsList->push_back(cs);// [12+t*20]
 
 	cs^=allies;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [12+t*20]
+		checkSumsList->push_back(cs);// [13+t*20]
 	cs^=enemies;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [13+t*20]
+		checkSumsList->push_back(cs);// [14+t*20]
 	cs^=sharedVisionExchange;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [14+t*20]
+		checkSumsList->push_back(cs);// [15+t*20]
 	cs^=sharedVisionFood;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [15+t*20]
+		checkSumsList->push_back(cs);// [16+t*20]
 	cs^=sharedVisionOther;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [16+t*20]
+		checkSumsList->push_back(cs);// [17+t*20]
 	cs^=me;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [17+t*20]
+		checkSumsList->push_back(cs);// [18+t*20]
 
 	cs^=noMoreBuildingSitesCountdown;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [18+t*20]
+		checkSumsList->push_back(cs);// [19+t*20]
 	
 	cs^=prestige;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [19+t*20]
+		checkSumsList->push_back(cs);// [20+t*20]
 	
 	return cs;
 }

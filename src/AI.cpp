@@ -64,6 +64,7 @@ AI::AI(SDL_RWops *stream, Player *player)
 	aiImplementation=NULL;
 	implementitionID=NONE;
 	this->player=player;
+	step=0;
 	load(stream);
 }
 
@@ -77,7 +78,8 @@ AI::~AI()
 Order *AI::getOrder(bool paused)
 {
 	assert(player);
-	if(paused || !player->team->isAlive)
+	step++;
+	if (paused || !player->team->isAlive)
 		return new NullOrder();
 	assert(aiImplementation);
 	return aiImplementation->getOrder();

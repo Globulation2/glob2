@@ -948,7 +948,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 	return b;
 }
 
-bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, unsigned flags)
+bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags)
 {
 	bool found=false;
 	if (flags & DEL_GROUND_UNIT)
@@ -1004,10 +1004,26 @@ bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, unsigned flags)
 			found=true;
 		}
 	}
+	if (flags & DEL_FLAG)
+	{
+		for (int ti=0; ti<session.numberOfTeam; ti++)
+			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
+				if ((*bi)->posX==x && (*bi)->posX==y)
+				{
+					teams[ti]->virtualBuildings.erase(bi);
+					delete *bi;
+					r->x=x;
+					r->y=y;
+					r->w=1;
+					r->h=1;
+					found=true;
+					break;
+				}
+	}
 	return found;
 }
 
-bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned flags)
+bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags)
 {
 	int sts=size>>1;
 	int stp=(~size)&1;
@@ -1020,7 +1036,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned f
 	
 	for (int scx=(x-sts); scx<=(x+sts-stp); scx++)
 		for (int scy=(y-sts); scy<=(y+sts-stp); scy++)
-			if (removeUnitAndBuilding((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags))
+			if (removeUnitAndBuildingAndFlags((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags))
 				if (somethingInRect)
 					Utilities::rectExtendRect(&rl, r);
 				else
@@ -2032,9 +2048,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		}*/
 }
 
-Sint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
+Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 
 	cs^=session.checkSum();
 	if (checkSumsList)
@@ -2047,7 +2063,7 @@ Sint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [1+t*10]
+		checkSumsList->push_back(cs);// [1+t*20]
 	
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfPlayer; i++)
@@ -2056,23 +2072,23 @@ Sint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2+t*10]
+		checkSumsList->push_back(cs);// [2+t*20]
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=map.checkSum(false);
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3+t*10]
+		checkSumsList->push_back(cs);// [3+t*20]
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4+t*10]
+		checkSumsList->push_back(cs);// [4+t*20]
 
 	cs^=script.checkSum();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5+t*10]
+		checkSumsList->push_back(cs);// [5+t*20]
 	
 	return cs;
 }
