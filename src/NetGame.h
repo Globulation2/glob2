@@ -93,8 +93,9 @@ private:
 	void treatData(Uint8 *data, int size, IPaddress ip);
 
 public:
-	bool stepReadyToExecute(void);
 	void receptionStep(void);
+	bool stepReadyToExecute(void);
+	bool computeNumberOfStepsToEat(void); //Return false if failed
 	void stepExecuted(void);
 	int ticksToDelay(void);
 	void setWishedDelay(int delay);
@@ -121,6 +122,7 @@ private:
 	
 	Uint32 waitingForPlayerMask;
 	bool hadToWaitThisStep;
+	int numberOfStepsToEat;
 	
 	Player *players[32];
 

@@ -633,6 +633,7 @@ Order *NetGame::getOrder(int playerNumber)
 						executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
 				assert(false);
 			}
+			
 			//else
 			//	printf("World synchronised at executeStep %d: %x==%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
 		}
@@ -1181,17 +1182,113 @@ bool NetGame::stepReadyToExecute(void)
 		if (waitingForPlayerMask==0)
 		{
 			computeMyLocalWishedLatency();
-			hadToWaitThisStep=false;
-			return true;
+			hadToWaitThisStep=!computeNumberOfStepsToEat();
 		}
+		else
+			hadToWaitThisStep=true;
 		
 		// We have to tell the others that we are still here, but we are waiting for someone:
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP)
-				sendWaitingForPlayerOrder(p);
-		hadToWaitThisStep=true;
-		return false;
+		if (waitingForPlayerMask)
+			for (int p=0; p<numberOfPlayer; p++)
+				if (players[p]->type==Player::P_IP)
+					sendWaitingForPlayerOrder(p);
+		return !hadToWaitThisStep;
 	}
+}
+
+bool NetGame::computeNumberOfStepsToEat(void)
+{
+	Uint8 targetLatency=0;// The gobaly-choosen-latency, we have to reach.
+	int n=0;
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+		{
+			Uint8 latency=wishedLatency[p];
+			if (latency)
+			{
+				n++;
+				if (latency>targetLatency)
+					targetLatency=latency;
+			}
+		}
+	Uint8 latency=pushStep-executeStep;
+
+	if (n==0)
+		targetLatency=latency;
+	else if (latency!=targetLatency)
+		fprintf(logFile, "computeNumberOfStepsToEat executeStep=%d, wishedLatency=(%d, %d), latency=%d, targetLatency=%d.\n",
+				executeStep, wishedLatency[0], wishedLatency[1], latency, targetLatency);
+
+	numberOfStepsToEat=1;
+	bool success=true;
+
+	if (targetLatency>latency)
+	{
+		bool allNullOrders=true;
+		for (int p=0; p<numberOfPlayer; p++)
+			if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+			{
+				Order *order=ordersQueue[p][executeStep];
+				if (order==NULL)
+				{
+					waitingForPlayerMask|=1<<p;
+					success=false;
+					allNullOrders=false;
+				}
+				else
+				{
+					Uint8 type=order->getOrderType();
+					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
+						allNullOrders=false;
+				}
+			}
+		if (allNullOrders)
+		{
+			numberOfStepsToEat=0;
+			 // We simply execute all thoses useless orders twice.
+			for (int p=0; p<numberOfPlayer; p++)
+				if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+				{
+					Order *order=ordersQueue[p][executeStep];
+					if (order)
+						delete order;
+					ordersQueue[p][executeStep]=NULL;
+					NullOrder *nullOrder=new NullOrder();
+					nullOrder->sender=p;
+					nullOrder->inQueue=true;
+					nullOrder->wishedLatency=0;
+					nullOrder->latencyPadding=true;
+					ordersQueue[p][executeStep]=nullOrder;
+				}
+		}
+	}
+	else if (targetLatency<latency)
+	{
+		bool allNullOrders=true;
+		for (int p=0; p<numberOfPlayer; p++)
+			if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+			{
+				Order *order=ordersQueue[p][executeStep+1];
+				if (order==NULL)
+				{
+					waitingForPlayerMask|=1<<p;
+					success=false;
+					allNullOrders=false;
+				}
+				else
+				{
+					Uint8 type=order->getOrderType();
+					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
+						allNullOrders=false;
+				}
+			}
+		if (allNullOrders)
+			numberOfStepsToEat=2; // We simply skip all thoses useless orders !
+	}
+
+	if (latency!=targetLatency)
+		fprintf(logFile, " numberOfStepsToEat=%d, success=%d\n", numberOfStepsToEat, success);
+	return success;
 }
 
 void NetGame::stepExecuted(void)
@@ -1203,92 +1300,9 @@ void NetGame::stepExecuted(void)
 	}
 	else
 	{
-		Uint8 targetLatency=0;// The gobaly-choosen-latency, we have to reach.
-		int n=0;
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-			{
-				Uint8 latency=wishedLatency[p];
-				if (latency)
-				{
-					n++;
-					if (latency>targetLatency)
-						targetLatency=latency;
-				}
-			}
-		Uint8 latency=pushStep-executeStep;
-		
-		if (n==0)
-			targetLatency=latency;
-		else if (latency!=targetLatency)
-			fprintf(logFile, "executeStep=%d, wishedLatency=(%d, %d), latency=%d, targetLatency=%d.\n", executeStep, wishedLatency[0], wishedLatency[1], latency, targetLatency);
-		
-		int timesToEatSteps=1;
-		
-		if (targetLatency>latency)
-		{
-			bool allNullOrders=true;
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-				{
-					Order *order=ordersQueue[p][executeStep];
-					if (order==NULL)
-					{
-						allNullOrders=false;
-						break;
-					}
-					Uint8 type=order->getOrderType();
-					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
-					{
-						allNullOrders=false;
-						break;
-					}
-				}
-			if (allNullOrders)
-			{
-				timesToEatSteps=0; // We simply execute all thoses useless orders twice!
-				
-				for (int p=0; p<numberOfPlayer; p++)
-					if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-					{
-						Order *order=ordersQueue[p][executeStep];
-						if (order)
-							delete order;
-						ordersQueue[p][executeStep]=NULL;
-						
-						NullOrder *nullOrder=new NullOrder();
-						nullOrder->sender=p;
-						nullOrder->inQueue=true;
-						nullOrder->wishedLatency=0;
-						nullOrder->latencyPadding=true;
-						ordersQueue[p][executeStep]=nullOrder;
-					}
-			}
-		}
-		else if (targetLatency<latency)
-		{
-			bool allNullOrders=true;
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-				{
-					Order *order=ordersQueue[p][executeStep+1];
-					if (order==NULL)
-					{
-						allNullOrders=false;
-						break;
-					}
-					Uint8 type=order->getOrderType();
-					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
-					{
-						allNullOrders=false;
-						break;
-					}
-				}
-			if (allNullOrders)
-				timesToEatSteps=2; // We simplay skip all thoses useless orders !
-		}
-		
-		for (int i=0; i<timesToEatSteps; i++)
+		assert(numberOfStepsToEat>=0);
+		assert(numberOfStepsToEat<=2);
+		for (int i=0; i<numberOfStepsToEat; i++)
 		{
 			// OK, we have executed the "executeStep"s orders, next we will get the next:
 			executeStep++;
@@ -1363,21 +1377,24 @@ void NetGame::stepExecuted(void)
 					}
 				}
 			}
+			
+			checkSumsLocal[freeingStep]=0;
+			checkSumsRemote[freeingStep]=0;
 			// OK, we just freed the "freeingStep"s orders, we have to point valid orders now:
 			freeingStep++;
 		}
 		
 		// We currently don't change latency, then we simply also increment "pushStep".
 		pushStep++;
-		
+
 		fprintf(logFile, "\n");
 		fprintf(logFile, "freeingStep=%d.\n", freeingStep);
 		fprintf(logFile, "executeStep=%d.\n", executeStep);
 		fprintf(logFile, "pushStep=%d.\n", pushStep);
-		
+
 		// let's checkout for anything wrong...
-		
-		Uint8 step=pushStep+maxLatency+2;
+
+		Uint8 step=pushStep+maxLatency+3;
 		while(step!=freeingStep)
 		{
 			for (int p=0; p<numberOfPlayer; p++)
