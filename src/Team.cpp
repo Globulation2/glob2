@@ -172,6 +172,7 @@ void Team::init(void)
 		myBuildings[i]=NULL;
 
 	startPosX=startPosY=0;
+	startPosSet=0;
 
 	subscribeForInside.clear();
 	subscribeToBringRessources.clear();
@@ -934,6 +935,10 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	me=SDL_ReadBE32(stream);
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
+	if (versionMinor>=29)
+		startPosSet=SDL_ReadBE32(stream);
+	else
+		startPosSet=0;
 
 	// load stats
 	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
@@ -1008,6 +1013,7 @@ void Team::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, me);
 	SDL_WriteBE32(stream, startPosX);
 	SDL_WriteBE32(stream, startPosY);
+	SDL_WriteBE32(stream, startPosSet);
 	
 	// save stats
 	SDL_WriteBE32(stream, stats.endOfGameStatIndex);

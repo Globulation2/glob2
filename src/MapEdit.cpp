@@ -395,6 +395,14 @@ void MapEdit::handleMapClick(int mx, int my)
 		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
 		if (unit)
 		{
+			printf("newu startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+			if (game.teams[team]->startPosSet<1)
+			{
+				game.teams[team]->startPosX=viewportX;
+				game.teams[team]->startPosY=viewportY;
+				game.teams[team]->startPosSet=1;
+			}
+			
 			game.regenerateDiscoveryMap();
 
 			winX=mx&0xFFFFFFE0;
@@ -416,10 +424,25 @@ void MapEdit::handleMapClick(int mx, int my)
 		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, team, false))
 		{
 			game.addBuilding(x, y, typeNum, team);
-			if ((type==0) && (level==0))
+			if (type==0 && level==0)
 			{
-				game.teams[team]->startPosX=tempX;
-				game.teams[team]->startPosY=tempY;
+				printf("news startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+				if (game.teams[team]->startPosSet<3)
+				{
+					game.teams[team]->startPosX=tempX;
+					game.teams[team]->startPosY=tempY;
+					game.teams[team]->startPosSet=3;
+				}
+			}
+			else
+			{
+				printf("newb startPosSet[%d]=%d\n", team, game.teams[team]->startPosSet);
+				if (game.teams[team]->startPosSet<2)
+				{
+					game.teams[team]->startPosX=tempX;
+					game.teams[team]->startPosY=tempY;
+					game.teams[team]->startPosSet=2;
+				}
 			}
 			game.regenerateDiscoveryMap();
 			winX=(x-viewportX)&game.map.getMaskW();
@@ -1032,6 +1055,7 @@ bool MapEdit::load(const char *filename)
 		return false;
 	
 	bool rv=game.load(stream);
+	
 	SDL_RWclose(stream);
 	if (!rv)
 		return false;
@@ -1229,17 +1253,13 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 					Team *t=game.teams[centeredTeam];
 					if (t)
 					{
-						Building *b=t->myBuildings[0];
-						if (b)
-						{
-							viewportX=b->getMidX()-(globalContainer->gfx->getW()>>6);
-							viewportY=b->getMidY()-(globalContainer->gfx->getH()>>6);
+						viewportX=t->startPosX-((globalContainer->gfx->getW()-128)>>6);
+						viewportY=t->startPosY-(globalContainer->gfx->getH()>>6);
 
-							viewportX&=game.map.getMaskW();
-							viewportY&=game.map.getMaskH();
+						viewportX&=game.map.getMaskW();
+						viewportY&=game.map.getMaskH();
 
-							draw();
-						}
+						draw();
 					}
 				}
 			}
