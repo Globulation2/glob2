@@ -849,10 +849,10 @@ Internal consistency error while connecting.
 
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
-Impossible to connect. Apparently the YOG metaserver is down.
+Unable to connect. Apparently the YOG metaserver is down.
 
 [YESTS_CREATED]
-Le système de connection prêt à contacter au metaserveur YOG pour se connecter.
+Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
 
 [YESTS_CONNECTING]
@@ -861,7 +861,7 @@ Etablishing the connection to the YOG metaserver...
 
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
-An administrator has just stoped the YOG metaserver.
+An administrator has just stopped the YOG metaserver.
 
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
@@ -873,11 +873,11 @@ The YOG metaserver has refused the connection because your globulation2 version 
 
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
-The YOG metaserver has refused the connection because your username is allready used by someone else.
+The YOG metaserver has refused the connection because your username is already used by someone else.
 
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
-The YOG metaserver has refused the connection without explaination!
+The YOG metaserver has refused the connection without explanation!
 
 [The player ]
 Le joueur 
