@@ -1565,17 +1565,17 @@ void GameGUI::draw(void)
 								int typeNum=buildingType->nextLevelTypeNum;
 								BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont,
-									"%s: %d", Toolkit::getStringTable()->getString("[wood]"), bt->maxRessource[0]);
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
-									"%s: %d", Toolkit::getStringTable()->getString("[stone]"), bt->maxRessource[2]);
+									"%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]);
+								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont,
+									"%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[2]);
 
 								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-42, globalContainer->littleFont,
 									"%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[3]);
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont, 
-									"%s: %d", Toolkit::getStringTable()->getString("[corn]"), bt->maxRessource[1]);
+								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont,
+									"%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]);
 
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont, 
-									"%s: %d", Toolkit::getStringTable()->getString("[fungus]"), bt->maxRessource[2]);
+								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont,
+									"%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]);
 
 								// We draw the new abilities:
 								bt=globalContainer->buildingsTypes.getBuildingType(bt->nextLevelTypeNum);
