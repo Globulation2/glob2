@@ -78,7 +78,7 @@ void AICastor::Project::init(const char *suffix)
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
 	
-	printf("new project(%s)\n", debugName);
+	//fprintf(logFile,  "new project(%s)\n", debugName);
 	
 	subPhase=0;;
 	
@@ -329,7 +329,7 @@ AICastor::~AICastor()
 
 bool AICastor::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
-	printf("AICastor::load\n");
+	fprintf(logFile,  "AICastor::load\n");
 	init(player);
 	assert(game);
 	
@@ -447,6 +447,7 @@ Order *AICastor::getOrder()
 	
 	if (timer>lastWheatCareMapComputed+256) // each 10s
 	{
+		computeObstacleUnitMap();
 		computeWheatCareMap();
 	}
 	
@@ -616,7 +617,7 @@ Order *AICastor::controlSwarms()
 	
 	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
 	starvingWarningStats[starvingWarning]++;
-	printf("starvingWarning=%d\n", starvingWarning);
+	fprintf(logFile,  "starvingWarning=%d\n", starvingWarning);
 	
 	bool realFoodLock;
 	
@@ -625,7 +626,7 @@ Order *AICastor::controlSwarms()
 	else
 		realFoodLock=((unitSumAll)>=(foodSum*2));
 	
-	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
+	fprintf(logFile,  "unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
 		unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum, foodLock, realFoodLock, foodLockStats[0], foodLockStats[1]);
 	
 	if ((timer>2048) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
@@ -683,7 +684,7 @@ Order *AICastor::controlSwarms()
 	else
 		workerGoal=4;
 	
-	printf("discovered=%d, seeable=%d, size=%d, explorerGoal=%d\n",
+	fprintf(logFile,  "discovered=%d, seeable=%d, size=%d, explorerGoal=%d\n",
 		discovered, seeable, size, explorerGoal);
 	
 	for (int bi=0; bi<1024; bi++)
@@ -858,7 +859,7 @@ Order *AICastor::controlUpgrades()
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
 	
-	printf("controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
+	fprintf(logFile,  "controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
 		bi, shortTypeNum, sumOver, upgradeAmountGoal);
 	
 	if (sumOver>=upgradeAmountGoal)
@@ -870,16 +871,16 @@ Order *AICastor::controlUpgrades()
 		int buildSum=0;
 		for (int i=0; i<4; i++)
 			buildSum+=team->stats.getWorkersLevel(i);
-		printf(" buildBase=%d, buildSum=%d\n", buildBase, buildSum);
+		fprintf(logFile,  " buildBase=%d, buildSum=%d\n", buildBase, buildSum);
 		if (buildBase>buildSum)
 			return NULL;
 		int sumEqual=0;
 		for (int li=level; li<4; li++)
 			sumEqual+=buildingLevels[shortTypeNum][0][li];
-		printf(" sumEqual=%d\n", sumEqual);
+		fprintf(logFile,  " sumEqual=%d\n", sumEqual);
 		if (sumEqual<2)
 		{
-			printf(" not another building level %d\n", level);
+			fprintf(logFile,  " not another building level %d\n", level);
 			return NULL;
 		}
 	}
@@ -894,12 +895,12 @@ Order *AICastor::controlStrikes()
 	
 	if (!onStrike)
 		return NULL;
-	printf("controlStrikes()\n");
+	fprintf(logFile,  "controlStrikes()\n");
 	
 	int warriors=team->stats.getTotalUnits(WARRIOR);
 	int warFlagsGoal=(warriors+16)/32;
 	int warFlagsReal=buildingSum[BuildingType::WAR_FLAG][0];
-	printf(" warriors=%d, warFlagsGoal=%d, warFlagsReal=%d\n", warriors, warFlagsGoal, warFlagsReal);
+	fprintf(logFile,  " warriors=%d, warFlagsGoal=%d, warFlagsReal=%d\n", warriors, warFlagsGoal, warFlagsReal);
 	
 	if (!strikeTeamSelected)
 	{
@@ -952,7 +953,7 @@ Order *AICastor::controlStrikes()
 		strikeTeam=bestTeam;
 		strikeTeamSelected=true;
 	}
-	printf(" strikeTeam=%d\n", strikeTeam);
+	fprintf(logFile,  " strikeTeam=%d\n", strikeTeam);
 	
 	// We choose the best buildings to attack:
 	
@@ -995,12 +996,12 @@ Order *AICastor::controlStrikes()
 		Sint32 x=bestBuilding->posX+1;
 		Sint32 y=bestBuilding->posY+1;
 		
-		printf(" target found bestScore=%d, p=(%d, %d)\n", bestScore, x, y);
+		fprintf(logFile,  " target found bestScore=%d, p=(%d, %d)\n", bestScore, x, y);
 		
 		if (warFlagsReal<warFlagsGoal)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
-			printf(" create\n");
+			fprintf(logFile,  " create\n");
 			return new OrderCreate(team->teamNumber, x, y, typeNum);
 		}
 		else
@@ -1021,14 +1022,14 @@ Order *AICastor::controlStrikes()
 				}
 			if (maxSqDist>2 && maxFlag!=NULL)
 			{
-				printf(" move %d\n", maxFlag->gid);
+				fprintf(logFile,  " move %d\n", maxFlag->gid);
 				return new OrderMoveFlag(maxFlag->gid, x, y, true);
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if ((*it)->type->shortTypeNum==BuildingType::WAR_FLAG
 					&& (*it)->maxUnitWorking<20)
 				{
-					printf(" modify %d\n", (*it)->gid);
+					fprintf(logFile,  " modify %d\n", (*it)->gid);
 					return new OrderModifyBuilding((*it)->gid, 20);
 				}
 		}
@@ -1038,7 +1039,7 @@ Order *AICastor::controlStrikes()
 		for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 			if ((*it)->type->shortTypeNum==BuildingType::WAR_FLAG)
 			{
-				printf(" removed %d\n", (*it)->gid);
+				fprintf(logFile,  " removed %d\n", (*it)->gid);
 				return new OrderDelete((*it)->gid);
 			}
 		strikeTeamSelected=false;
@@ -1052,7 +1053,7 @@ bool AICastor::addProject(Project *project)
 {
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
-		printf("will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
+		fprintf(logFile,  "will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
 		return false;
 	}
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
@@ -1060,7 +1061,7 @@ bool AICastor::addProject(Project *project)
 		{
 			if (project->amount<=(*pi)->amount)
 			{
-				printf("will not add project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too\n",
+				fprintf(logFile,  "will not add project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too\n",
 					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
 				(*pi)->timer=timer;
 				delete project;
@@ -1068,7 +1069,7 @@ bool AICastor::addProject(Project *project)
 			}
 			else
 			{
-				printf("adding project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too will replace it\n",
+				fprintf(logFile,  "adding project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too will replace it\n",
 					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
 				delete (*pi);
 				projects.erase(pi);
@@ -1281,7 +1282,7 @@ Order *AICastor::continueProject(Project *project)
 	
 	if (foodLock && !project->critical && project->shortTypeNum==BuildingType::SWARM_BUILDING)
 	{
-		printf("(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
+		fprintf(logFile,  "(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
 		project->timer=timer+8192; // 5min27s
 		project->blocking=false;
 		project->critical=false;
@@ -1291,7 +1292,7 @@ Order *AICastor::continueProject(Project *project)
 	{
 		// boot phase
 		project->subPhase=2;
-		printf("(%s) (boot) (switching to subphase 2)\n", project->debugName);
+		fprintf(logFile,  "(%s) (boot) (switching to subphase 2)\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -1308,8 +1309,8 @@ Order *AICastor::continueProject(Project *project)
 		computeObstacleBuildingMap();
 		computeSpaceForBuildingMap(bw);
 		computeBuildingNeighbourMap(bw, bh);
-		computeWheatGrowthMap();
 		computeObstacleUnitMap();
+		computeWheatGrowthMap();
 		computeWorkPowerMap();
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
@@ -1320,13 +1321,13 @@ Order *AICastor::continueProject(Project *project)
 		{
 			if (project->successWait>0)
 			{
-				printf("(%s) (successWait [%d])\n", project->debugName, project->successWait);
+				fprintf(logFile,  "(%s) (successWait [%d])\n", project->debugName, project->successWait);
 				project->successWait--;
 			}
 			else
 			{
 				project->subPhase=2;
-				printf("(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
+				fprintf(logFile,  "(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
 				return gfbm;
 			}
 		}
@@ -1336,7 +1337,7 @@ Order *AICastor::continueProject(Project *project)
 		}
 		else
 		{
-			printf("(%s) (give up by failures [%d, %d])\n", project->debugName, project->blocking, project->critical);
+			fprintf(logFile,  "(%s) (give up by failures [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->timer=timer+8192; // 5min27s
 			project->blocking=false;
 			project->critical=false;
@@ -1353,11 +1354,11 @@ Order *AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			printf("(%s) ([%d>=%d] building finished) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to subphase 6).\n",
 				project->debugName, real, project->amount);
 			if (!project->waitFinished)
 			{
-				printf("(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1365,17 +1366,17 @@ Order *AICastor::continueProject(Project *project)
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			printf("(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else
 		{
 			project->subPhase=3;
-			printf("(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
+			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
 				project->debugName, real, site, project->amount);
 			if (!project->waitFinished)
 			{
-				printf("(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1480,35 +1481,35 @@ Order *AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			printf("(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			printf("(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (project->multipleStart)
 		{
-			printf("(%s) (want more construction site [%d+%d>=%d])\n",
+			fprintf(logFile,  "(%s) (want more construction site [%d+%d>=%d])\n",
 				project->debugName, real, site, project->amount);
 			int isFree=getFreeWorkers();
 			if (isFree>0)
 			{
 				project->subPhase=1;
-				printf("(%s) (enough free workers) (switching back to subphase 1)\n", project->debugName);
+				fprintf(logFile,  "(%s) (enough free workers) (switching back to subphase 1)\n", project->debugName);
 			}
 			else
 			{
 				project->subPhase=5;
-				printf("(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
+				fprintf(logFile,  "(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
 			}
 		}
 		else
 		{
 			project->subPhase=5;
-			printf("(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
+			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1548,13 +1549,13 @@ Order *AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			printf("(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=2;
-			printf("(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
+			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1564,7 +1565,7 @@ Order *AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
-			printf("(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+			fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
 		}
@@ -1590,7 +1591,7 @@ Order *AICastor::continueProject(Project *project)
 				if (b && b->typeNum==typeNum && b->maxUnitWorking!=finalWorkers)
 				{
 					assert(b->type->maxUnitWorking!=0);
-					printf("(%s) (set finalWorkers [isFree=%d, current=%d, final=%d])\n",
+					fprintf(logFile,  "(%s) (set finalWorkers [isFree=%d, current=%d, final=%d])\n",
 						project->debugName, isFree, b->maxUnitWorking, finalWorkers);
 					b->maxUnitWorking=finalWorkers;
 					b->maxUnitWorkingLocal=finalWorkers;
@@ -1603,7 +1604,7 @@ Order *AICastor::continueProject(Project *project)
 		if (buildingSum[project->shortTypeNum][1]==0)
 		{
 			project->finished=true;
-			printf("(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
+			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
 		}
 	}
 	else
@@ -1642,7 +1643,7 @@ bool AICastor::enoughFreeWorkers()
 	}
 	if (oldEnough[buildsAmount]==2 || enough!=oldEnough[buildsAmount])
 	{
-		printf("enoughFreeWorkers()=%d, workersBalance=%d, totalWorkers=%d, partFree=%d, buildsAmount=%d, minBalance=%d\n",
+		fprintf(logFile,  "enoughFreeWorkers()=%d, workersBalance=%d, totalWorkers=%d, partFree=%d, buildsAmount=%d, minBalance=%d\n",
 			enough, workersBalance, totalWorkers, partFree, buildsAmount, minBalance);
 		oldEnough[buildsAmount]=enough;
 	}
@@ -1716,7 +1717,7 @@ void AICastor::computeNeedSwim()
 			extendedCount++;
 	
 	needSwim=((baseCount<<4)>(7*extendedCount));
-	printf("needSwim=%d\n", needSwim);
+	fprintf(logFile,  "needSwim=%d\n", needSwim);
 	
 	computeCanSwim();
 }
@@ -1754,7 +1755,7 @@ void AICastor::computeWarLevel()
 {
 	if (timer>strategy.warTimeTriger)
 	{
-		printf("timer=%d, strategy.warTimeTriger=%d\n", timer, strategy.warTimeTriger);
+		fprintf(logFile,  "timer=%d, strategy.warTimeTriger=%d\n", timer, strategy.warTimeTriger);
 		warTimeTrigerLevel++;
 		strategy.warTimeTriger=strategy.warTimeTriger+((1+strategy.warTimeTriger)>>1);
 	}
@@ -1784,7 +1785,7 @@ void AICastor::computeWarLevel()
 	static int oldWarLevel=-1;
 	if (oldWarLevel!=warLevel)
 	{
-		printf("warLevel=%d, warTimeTrigerLevelUse=%d, warLevelTrigerLevel=%d, warAmountTrigerLevel=%d\n",
+		fprintf(logFile,  "warLevel=%d, warTimeTrigerLevelUse=%d, warLevelTrigerLevel=%d, warAmountTrigerLevel=%d\n",
 			warLevel, warTimeTrigerLevelUse, warLevelTrigerLevel, warAmountTrigerLevel);
 		oldWarLevel=warLevel;
 	}
@@ -1803,7 +1804,7 @@ void AICastor::computeWarLevel()
 	static int oldWarPowerSum=-1;
 	if (oldWarPowerSum!=warPowerSum)
 	{
-		printf("warPowerSum=%d\n", warPowerSum);
+		fprintf(logFile,  "warPowerSum=%d\n", warPowerSum);
 		oldWarPowerSum=warPowerSum;
 	}
 	
@@ -1816,7 +1817,7 @@ void AICastor::computeWarLevel()
 			
 			strikeTimeTriger=timer+strategy.strikeTimeTriger;
 			strategy.strikeWarPowerTrigerUp=strategy.strikeWarPowerTrigerUp+strategy.strikeWarPowerTrigerUp/2;
-			printf(" strategy.strikeWarPowerTrigerUp=%d\n", strategy.strikeWarPowerTrigerUp);
+			fprintf(logFile,  " strategy.strikeWarPowerTrigerUp=%d\n", strategy.strikeWarPowerTrigerUp);
 		}
 	}
 	else if (timer>strikeTimeTriger || warPowerSum>strategy.strikeWarPowerTrigerUp)
@@ -2216,7 +2217,7 @@ void AICastor::computeWorkAbilityMap()
 
 void AICastor::computeHydratationMap()
 {
-	fprintf(logFile, "computeHydratationMap()...\n");
+fprintf(logFile,  "computeHydratationMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -2261,12 +2262,12 @@ void AICastor::computeHydratationMap()
 	for (size_t i=0; i<size; i++)
 		hydratationMap[i]=(gradient[i]>>4);
 	free(gradient);
-	fprintf(logFile, "...computeHydratationMap() done\n");
+fprintf(logFile,  "...computeHydratationMap() done\n");
 }
 
 void AICastor::computeNotGrassMap()
 {
-	fprintf(logFile, "computeNotGrassMap()...\n");
+fprintf(logFile,  "computeNotGrassMap()...\n");
 	int w=map->w;
 	int h=map->w;
 	//int wMask=map->wMask;
@@ -2284,7 +2285,7 @@ void AICastor::computeNotGrassMap()
 	}
 	
 	updateGlobalGradientNoObstacle(notGrassMap);
-	fprintf(logFile, "...computeNotGrassMap() done\n");
+fprintf(logFile,  "...computeNotGrassMap() done\n");
 }
 
 void AICastor::computeWheatCareMap()
@@ -2334,7 +2335,6 @@ void AICastor::computeWheatGrowthMap()
 		Uint8 care=wheatCareMap[i];
 		if (care>1)
 		{
-			care=(care<<1);
 			Uint8 *p=&wheatGrowthMap[i];
 			Uint8 growth=*p;
 			if (growth>care)
@@ -2475,7 +2475,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	size_t size=w*h;
 	Uint32 *mapDiscovered=map->mapDiscovered;
 	Uint32 me=team->me;
-	printf("findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
+	fprintf(logFile,  "findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
 	
 	// minWork computation:
 	Sint32 bestWorkScore=2;
@@ -2498,7 +2498,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 		if (minWork>30*4)
 			minWork=30*4;
 	}
-	printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork/4);
+	fprintf(logFile,  " bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork/4);
 	
 	// wheatGradientLimit computation:
 	Uint32 wheatGradientLimit;
@@ -2516,7 +2516,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 		else
 			wheatGradientLimit=(255-7)*4;
 	}
-	printf(" wheatGradientLimit=%d\n", wheatGradientLimit/4);
+	fprintf(logFile,  " wheatGradientLimit=%d\n", wheatGradientLimit/4);
 	
 	// we find the best place possible:
 	size_t bestIndex;
@@ -2608,15 +2608,15 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	if (bestScore>0)
 	{
 	
-		printf(" found a cool place");
-		printf("  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
+		fprintf(logFile,  " found a cool place");
+		fprintf(logFile,  "  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
 			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
 		
 		Uint8 neighbour=buildingNeighbourMap[bestIndex];
 		Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
 		Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
 			
-		printf(" directNeighboursCount=%d, farNeighboursCount=%d\n",
+		fprintf(logFile,  " directNeighboursCount=%d, farNeighboursCount=%d\n",
 			directNeighboursCount, farNeighboursCount);
 		
 		Sint32 x=(bestIndex&map->wMask);
@@ -2629,7 +2629,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 
 void AICastor::computeRessourcesCluster()
 {
-	printf("computeRessourcesCluster()\n");
+	fprintf(logFile,  "computeRessourcesCluster()\n");
 	int w=map->w;
 	int h=map->w;
 	int wMask=map->wMask;
@@ -2662,31 +2662,31 @@ void AICastor::computeRessourcesCluster()
 			}
 			else
 			{
-				printf("ressource rt=%d, at (%d, %d)\n", rt, x, y);
+				fprintf(logFile,  "ressource rt=%d, at (%d, %d)\n", rt, x, y);
 				if (rt!=old)
 				{
-					printf(" rt!=old\n");
+					fprintf(logFile,  " rt!=old\n");
 					id=1;
 					while (usedid[id])
 						id++;
 					if (id)
 						usedid[id]=true;
 					old=rt;
-					printf("  id=%d\n", id);
+					fprintf(logFile,  "  id=%d\n", id);
 				}
 				if (rc!=id)
 				{
 					if (rc==0)
 					{
 						*rcp=id;
-						printf(" wrote.\n");
+						fprintf(logFile,  " wrote.\n");
 					}
 					else
 					{
 						Uint16 oldid=id;
 						usedid[oldid]=false;
 						id=rc; // newid
-						printf(" cleaning oldid=%d to id=%d.\n", oldid, id);
+						fprintf(logFile,  " cleaning oldid=%d to id=%d.\n", oldid, id);
 						// We have to correct last ressourcesCluster values:
 						*rcp=id;
 						while (*rcp==oldid)
@@ -2705,7 +2705,7 @@ void AICastor::computeRessourcesCluster()
 	for (int id=1; id<65536; id++)
 		if (usedid[id])
 			used++;
-	printf("computeRessourcesCluster(), used=%d\n", used);
+	fprintf(logFile,  "computeRessourcesCluster(), used=%d\n", used);
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
