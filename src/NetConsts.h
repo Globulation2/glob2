@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #ifndef __NET_CONSTS_H
@@ -39,12 +38,14 @@ enum OrderTypes
 	BROADCAST_REQUEST=1,
 	BROADCAST_RESPONSE=2,
 	
-	DATA_SESSION_GAME=11,
-	DATA_SESSION_INFO=12,
+	SERVER_WATER=10,
+	SERVER_PRESENCE=11,
+	DATA_SESSION_GAME=12,
+	DATA_SESSION_INFO=13,
 	
-	DATA_BASE_PLAYER=13,
-	DATA_BASE_TEAM=14,
-	DATA_BASE_MAP=15,
+	DATA_BASE_PLAYER=15,
+	DATA_BASE_TEAM=16,
+	DATA_BASE_MAP=17,
 	
 	ORDER_CREATE=20,
 	ORDER_MODIFY_BUILDING=22,
@@ -70,6 +71,7 @@ enum OrderTypes
 	ORDER_SET_ALLIANCE=72,
 	ORDER_SUBMIT_CHECK_SUM=73,
 	
+	NEW_PLAYER_WANTS_PRESENCE=80,
 	NEW_PLAYER_WANTS_SESSION_INFO=81,
 	NEW_PLAYER_SEND_CHECKSUM_CONFIRMATION=82,
 	PLAYER_EXPLAINS_HOST_IP=83,

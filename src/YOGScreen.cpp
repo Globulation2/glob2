@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include <string.h>
@@ -27,9 +26,9 @@
 
 YOGScreen::YOGScreen()
 {
-	multiplayersJoin=new MultiplayersJoin();
-	strncpy(multiplayersJoin->serverName, "nohost", 128);
-	strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
+	multiplayersJoin=new MultiplayersJoin(true);
+	//strncpy(multiplayersJoin->serverName, "nohost", 128);
+	//strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
 
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
@@ -363,7 +362,9 @@ void YOGScreen::onTimer(Uint32 tick)
 			Engine engine;
 			engine.startMultiplayer(multiplayersJoin);
 			int rc=engine.run();
-			multiplayersJoin->init();
+			delete multiplayersJoin;
+			multiplayersJoin=new MultiplayersJoin(true);
+			assert(multiplayersJoin);
 			if (rc==-1)
 				endExecute(EXIT);
 			printf("YOG::startMultiplayer() in join ended (rc=%d).\n", rc);

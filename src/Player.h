@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #ifndef __PLAYER_H
@@ -63,8 +62,8 @@ public:
 		
 		// host choose a state for joiners between :
 		
-		PNS_PLAYER_SEND_ONE_REQUEST,
-		PNS_SERVER_SEND_SESSION_INFO,
+		PNS_PLAYER_SEND_PRESENCE_REQUEST,
+		PNS_PLAYER_SEND_SESSION_REQUEST,
 		PNS_PLAYER_SEND_CHECK_SUM,
 		
 		PNS_OK,

@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 
@@ -23,6 +22,8 @@
 #define __LAN_BROADCAST_H
 
 #include "Header.h"
+
+#ifndef MACOS_OPENTRANSPORT
 
 //Network related includes
 #include <sys/types.h>
@@ -33,6 +34,8 @@
 
 //Strange include
 #include <unistd.h>
+
+#endif //end of !MACOS_OPENTRANSPORT
 
 class LANBroadcast
 {
@@ -46,15 +49,23 @@ public:
 	Uint32 getSenderIP();
 
 private:
-	struct hostent *hostEnt;
-	struct sockaddr_in servAddr;
-	struct sockaddr_in cliAddr;
-	struct sockaddr_in senderAddr;
 	Uint16 port;
+
+
+#ifndef MACOS_OPENTRANSPORT
+private:
+	hostent *hostEnt;
+	sockaddr_in cliAddr;
+	sockaddr_in servAddr;
+	sockaddr_in senderAddr;
 	int socketDefinition;
+#endif
+
 };
 
-#endif
+
+
+#endif //end of __LAN_BROADCAST_H
 
  
 

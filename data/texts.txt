@@ -435,10 +435,14 @@ PNS_HOST
 Joueur silencieux
 Silent player
 Stiller Spieler
-[PNS_PLAYER_SEND_ONE_REQUEST]
-Une requete recue
-One request received
-Eine Anfrage bekommen
+[PNS_PLAYER_SEND_PRESENCE_REQUEST]
+Requete de presence recue
+Presence request received
+
+[PNS_PLAYER_SEND_SESSION_REQUEST]
+Requete de session recue
+Session request received
+
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyee
 Informations sended
@@ -691,13 +695,17 @@ Bad error in connection system
 Pas connecte
 Not connected
 
-[request sended, waiting for answer]
-Requete envoyee, en attente de reponse
-Request sended, waiting for answer
+[presence request sent]
+Requete pour presence envoyee ...
+Presence request sent ...
 
-[answer recieved, checksum sended]
-Reponse recue, somme de verification envoyee
-Answer recieved, checksum sended
+[session request sent]
+Requete pour la session envoyee ...
+Session request sent ...
+
+[checksum sent]
+Somme de verification envoyee ...
+Checksum sent ...
 
 [connected to server]
 Connecte au serveur
@@ -710,4 +718,8 @@ Connecting to all players
 [connected to all players]
 Connecte avec tous les joueurs
 Connected to all players
+
+[aviable lan games]
+Parties locales disponibles
+Local aviable games
 

@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,11 +15,49 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #ifndef __NETGAME_H
 #define __NETGAME_H
+
+/*
+What's in NetGame ?
+
+NetGame is used by the engine to push and pop order for every players.
+(local players, AIs and remote players)
+
+Without latency, it could be a simple list of Orders, one for each player.
+
+But the aim of NetGame is to mask the latency (and lost orders)
+for all the rest of the engine and the program.
+Then, for eah player, you have a queue of order.
+For local player and AI, you allways have "latency" orders in queue.
+You have 0 to 2*"latency" order for remote players. (With or without gaps)
+Some order may be missing, because network layer (UDP) may have lost them.
+At playersNetQueue[player][currentStep] you have all orders that have to be executed this turn.
+But if only one is missing, the engine must NOT execute any of them. (I mean NO order at all).
+Therefore, if one ore more is missig "Order *getOrder(Sint32 playerNumber)"
+will return a "WatingForPlayerOrder" for all player.
+This way the engine is protected from exectutng order asynchronously.
+
+void orderHasBeenExecuted() is only here for memory management system,
+and is not conceptualy important for network and engine.
+
+void pushOrder(Order *order, Sint32 playerNumber) has fo be called for each AI and the local player.
+
+int advance() represents the time to wait because your computer has probably
+executed mor orders than other other computer playing the same game.
+This is totaly pragamtic, and it need to be ehanced. The engine has to call
+it and slow the game if needed.
+
+NetGame also have to drop player if he is definitely unreachable.
+int countDown[32] is used that for.
+
+NetGame is not TCP/IP friendly.
+I'm really sorry, but I'm not yet able to design this.
+
+The engine has to call NetGame::step() to give him time to process.
+*/
 
 #include "GAG.h"
 #include "Order.h"
