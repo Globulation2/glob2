@@ -46,7 +46,7 @@
 //Max size is defined by games lists. ((128+32+6+4)*16)=2720
 //or unshare 256*4+4=1028
 #define YOG_MAX_PACKET_SIZE ((128+32+6+4)*16)
-#define YOG_PROTOCOL_VERSION 2
+#define YOG_PROTOCOL_VERSION 3
 
 enum clientUpdateChange
 {

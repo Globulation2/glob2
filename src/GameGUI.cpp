@@ -467,7 +467,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			if (inputText[0])
 			{
 				bool foundLocal=false;
-				if (strncmp(inputText, "/m ", 3)==0)
+				if (strncmp(inputText, "/m ", 3)==0 || strncmp(inputText, "/w ", 3)==0)
 				{
 					for (int i=0; i<game.session.numberOfPlayer; i++)
 						if (game.players[i])

@@ -52,6 +52,10 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 	messageTOTL=3;
 	
+	lastSentReceiptID=0;
+	receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+	receiptTOTL=3;
+	
 	joinersTimeout=DEFAULT_NETWORK_TIMEOUT;
 	sharingGame=NULL;
 	joinedGame=NULL;
@@ -230,6 +234,42 @@ void YOGClient::send(const Message &m)
 	lprintf("size=%d, m.textLength=%d, m.userNameLength=%d.\n", size, m.textLength, m.userNameLength);
 }
 
+void YOGClient::send(PrivateReceipt &privateReceipt)
+{
+	int size=8+privateReceipt.addr.size();
+	UDPpacket *packet=SDLNet_AllocPacket(size);
+	if (packet==NULL)
+	{
+		lprintf("Failed to allocate packet!\n");
+		return;
+	}
+	packet->len=size;
+	
+	Uint8 sdata[8];
+	sdata[0]=YMT_PRIVATE_RECEIPT;
+	sdata[1]=0;
+	sdata[2]=0;
+	sdata[3]=0;
+	sdata[4]=privateReceipt.receiptID;
+	sdata[5]=privateReceipt.messageID;
+	sdata[6]=privateReceipt.addr.size();
+	sdata[7]=0;
+	memcpy((char *)packet->data, sdata, 8);
+	
+	int addd=8;
+	for (std::list<Uint8>::iterator adi=privateReceipt.addr.begin(); adi!=privateReceipt.addr.end(); adi++)
+		packet->data[addd++]=*adi;
+
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		lprintf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
+	
+	lprintf("Sent a YMT_PRIVATE_RECEIPT. size=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", size, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
+}
+
 void YOGClient::sendGames()
 {
 	int nbGames=games.size();
@@ -323,6 +363,37 @@ void YOGClient::deliveredMessage(Uint8 messageID)
 			messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		messages.erase(mit);
 		messageTOTL=3;
+	}
+}
+
+void YOGClient::addReceipt(PrivateReceipt *privateReceipt)
+{
+	unsigned size=privateReceipts.size();
+	
+	lastSentReceiptID++;
+	if (lastSentReceiptID==0)
+		lastSentReceiptID++;
+	privateReceipt->receiptID=lastSentReceiptID;
+	privateReceipts.push_back(*privateReceipt);
+
+	if (size==0)
+		receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+	receiptTOTL=3;
+}
+
+void YOGClient::deliveredReceipt(Uint8 receiptID)
+{
+	unsigned size=privateReceipts.size();
+	if (size==0)
+		return;
+	std::list<PrivateReceipt>::iterator rit=privateReceipts.begin();
+	if (rit->receiptID==receiptID)
+	{
+		lprintf("receipt delivered to (%s), (receiptID=%d, messageID=%d) \n", userName, rit->receiptID, rit->messageID);
+		if (size>1)
+			receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+		privateReceipts.erase(rit);
+		receiptTOTL=3;
 	}
 }
 

@@ -38,9 +38,13 @@ struct Message
 	int userNameLength;
 	YOGMessageType messageType;
 	Uint8 messageID;
-	Uint8 pad1;
-	Uint8 pad2;
-	Uint8 pad3;//We need to pad to support memory alignement
+};
+
+struct PrivateReceipt
+{
+	Uint8 receiptID;
+	Uint8 messageID;
+	std::list<Uint8> addr;
 };
 
 class YOGClient;
@@ -74,12 +78,15 @@ public:
 	void send(YOGMessageType v, Uint8 *data, int size);
 	void send(YOGMessageType v, Uint8 id, Uint8 *data, int size);
 	void send(const Message &m);
+	void send(PrivateReceipt &privateReceipt);
 	
 	void sendGames();
 	void sendUnshared();
 	void addGame(Game *game);
 	void addMessage(Message *message);
 	void deliveredMessage(Uint8 messageID);
+	void addReceipt(PrivateReceipt *privateReceipt);
+	void deliveredReceipt(Uint8 receiptID);
 	void removeGame(Uint32 uid);
 	void removeUselessGames();
 	void computeGamesSize();
@@ -103,6 +110,11 @@ public:
 	Uint8 lastMessageID; // The last message id sent by YOG to client. Used to give new messages an unique id.
 	int messageTimeout;
 	int messageTOTL;
+	
+	std::list<PrivateReceipt> privateReceipts; // messages to send
+	Uint8 lastSentReceiptID;
+	int receiptTimeout;
+	int receiptTOTL;
 	
 	Game *sharingGame;
 	Game *joinedGame;
