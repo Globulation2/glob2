@@ -1125,7 +1125,8 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 	switch (key)
 	{
 		case SDLK_ESCAPE:
-			askConfirmationToQuit();
+			if (pressed)
+				askConfirmationToQuit();
 			break;
 		case SDLK_UP:
 			if (pressed)

@@ -49,7 +49,7 @@ void Button::onSDLEvent(SDL_Event *event)
 
 	HighlightableWidget::onSDLEvent(event);
 
-	if (event->type==SDL_KEYUP)
+	if (event->type==SDL_KEYDOWN)
 	{
 		Uint16 typedUnicode=event->key.keysym.unicode;
 		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
