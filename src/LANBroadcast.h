@@ -54,6 +54,10 @@
 #		ifdef linux
 //#			include <netinet/tcp.h>
 #		endif
+//TODO: ugly hack to make it work under OSX for now... 	
+#		ifndef __socklen_t_defined
+#		define socklen_t int
+#		endif
 #	endif
 #endif
 
