@@ -26,6 +26,7 @@
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
 
+class Case;
 class Game;
 class Map;
 class Order;
@@ -158,6 +159,7 @@ private:
 	void computeObstacleBuildingMap();
 	void computeSpaceForBuildingMap(int max);
 	void computeBuildingNeighbourMap(int dw, int dh);
+	void computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int bh, int dw, int dh);
 	
 	void computeWorkPowerMap();
 	void computeWorkRangeMap();
