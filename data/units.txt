@@ -51,7 +51,7 @@ hpMax = 25
 walkSpeed = 40
 swimSpeed = 44
 
-armor = 20
+armor = 5
 hpMax = 200
 *
 // cost base unit
