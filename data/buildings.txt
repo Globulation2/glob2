@@ -1269,3 +1269,44 @@ type = 13
 armor = 2
 
 *
+
+// market building site
+startImage = 26
+
+width = 3
+height = 3
+decLeft = -1
+decTop = -1
+maxWood = 4
+maxStone = 4
+hpInit = 1
+hpMax = 200
+hpInc = 25
+level = 0
+type = 14
+maxUnitWorking = 1
+isBuildingSite = 1
+fillable = 1
+
+*
+
+// market (used for exchange)
+startImage = 36
+
+width = 3
+height = 3
+decLeft = -1
+decTop = -1
+hpInit = 200
+hpMax = 200
+level = 0
+type = 14
+armor = 2
+fillable = 1
+canExchange = 1
+maxFruit0 = 10
+maxFruit1 = 10
+maxFruit2 = 10
+maxUnitWorking = 1
+
+*

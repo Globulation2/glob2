@@ -46,7 +46,7 @@
 #define YOFFSET_ICON 52
 #define YOFFSET_CARYING 34
 #define YOFFSET_BAR 30
-#define YOFFSET_INFOS 10
+#define YOFFSET_INFOS 12
 #define YOFFSET_TOWER 22
 
 #define YOFFSET_B_SEP 3
@@ -146,6 +146,7 @@ void GameGUI::init()
 	buildingsChoice.push_back(6);
 	buildingsChoice.push_back(7);
 	buildingsChoice.push_back(12);
+	buildingsChoice.push_back(14);
 
 	flagsChoice.clear();
 	flagsChoice.push_back(8);
@@ -1171,6 +1172,41 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		}
 		ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 
+		if (selBuild->type->canExchange)
+		{
+			int startY = ypos+YOFFSET_INFOS+YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
+			int endY = startY+HAPPYNESS_COUNT*YOFFSET_TEXT_PARA;
+			if ((my>startY) && (my<endY))
+			{
+				int r = (my-startY)/YOFFSET_TEXT_PARA;
+				if ((mx>92) && (mx<104))
+				{
+					if (selBuild->receiveRessourceMask & (1<<r))
+					{
+						selBuild->receiveRessourceMask &= ~(1<<r);
+					}
+					else
+					{
+						selBuild->receiveRessourceMask |= (1<<r);
+						selBuild->sendRessourceMask &= ~(1<<r);
+					}
+				}
+
+				if ((mx>110) && (mx<122))
+				{
+					if (selBuild->sendRessourceMask & (1<<r))
+					{
+						selBuild->sendRessourceMask &= ~(1<<r);
+					}
+					else
+					{
+						selBuild->sendRessourceMask |= (1<<r);
+						selBuild->receiveRessourceMask &= ~(1<<r);
+					}
+				}
+			}
+		}
+
 		if ((selBuild->type->defaultUnitStayRange) && (my>ypos+YOFFSET_TEXT_BAR) && (my<ypos+YOFFSET_TEXT_BAR+16))
 		{
 			int nbReq;
@@ -1197,6 +1233,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				}
 			}
 		}
+
+
 
 		if (selBuild->type->unitProductionTime)
 		{
@@ -1802,30 +1840,55 @@ void GameGUI::drawBuildingInfos(void)
 
 	if ((selBuild->owner->allies) &(1<<localTeamNo))
 	{
-		// swarm
-		if (buildingType->unitProductionTime)
+		// exchange building
+		if (buildingType->canExchange)
 		{
-			int Left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
-			int Elapsed=128-Left;
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, Elapsed, 7, 100, 100, 255);
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+65+12, Left, 7, 128, 128, 128);
-
-			//globalContainer->littleFont->pushColor(80, 80, 80);
-			for (int i=0; i<NB_UNIT_TYPE; i++)
+			globalContainer->littleFont->pushColor(185, 195, 21);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
+			globalContainer->littleFont->popColor();
+			ypos += YOFFSET_TEXT_PARA;
+			for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 			{
-				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+				int inId, outId;
+				if (selBuild->receiveRessourceMask & (1<<i))
+					inId = 20;
+				else
+					inId = 19;
+				if (selBuild->sendRessourceMask & (1<<i))
+					outId = 20;
+				else
+					outId = 19;
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36, ypos+2, globalContainer->gamegui, inId);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-18, ypos+2, globalContainer->gamegui, outId);
+				ypos += YOFFSET_TEXT_PARA;
 			}
-			//globalContainer->littleFont->popColor();
 		}
-
-		unsigned j = 0;
-		for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+		else
 		{
-			if (buildingType->maxRessource[i])
+			// swarm
+			if (buildingType->unitProductionTime)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]).c_str());
-				j++;
+				int Left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
+				int Elapsed=128-Left;
+				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, Elapsed, 7, 100, 100, 255);
+				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+65+12, Left, 7, 128, 128, 128);
+
+				for (int i=0; i<NB_UNIT_TYPE; i++)
+				{
+					drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+				}
+			}
+
+			unsigned j = 0;
+			for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+			{
+				if (buildingType->maxRessource[i])
+				{
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]).c_str());
+					j++;
+				}
 			}
 		}
 
@@ -1908,7 +1971,7 @@ void GameGUI::drawBuildingInfos(void)
 							}
 							blueYpos += YOFFSET_B_SEP;
 
-							j = 0;
+							unsigned j = 0;
 							for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
 							{
 								if (buildingType->maxRessource[i])

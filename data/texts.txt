@@ -317,6 +317,24 @@ Stone wall
 Steinmauer
 Hradba
 Kamienny mur
+[wood wall]
+Mur de boid
+Wood wall
+
+
+
+[market]
+Marché
+Market
+
+
+
+[exchange]
+Echange
+Exchange
+
+
+
 [waiting for %s]
 Attente de %s
 Waiting for %s

@@ -91,6 +91,6 @@ typedef EntitiesTypes<RessourceType> RessourcesTypes;
 #define ALGA 4
 #define BASIC_COUNT 5
 #define HAPPYNESS_BASE 5
-#define HAPPYNESS_COUNT MAX_RESSOURCES-BASIC_COUNT
+#define HAPPYNESS_COUNT (MAX_RESSOURCES-BASIC_COUNT)
 
 #endif
