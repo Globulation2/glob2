@@ -30,7 +30,7 @@
 
 #include "../src/YOGConsts.h"
 #include "../src/Utilities.h"
-#include "../src/Marshaling.h"
+#include "Marshaling.h"
 #include "../gnupg/sha1.c"
 
 namespace simpleClient
