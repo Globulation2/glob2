@@ -1785,12 +1785,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				int decy=(type->height*32);
 				int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
-				if (hpRatio>0.6)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
-				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
-				else
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+				if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+				{
+					if (hpRatio>0.6)
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+					else if (hpRatio>0.3)
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+					else
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+				}
 			}
 
 			// units
