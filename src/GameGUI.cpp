@@ -1432,6 +1432,10 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	else if (selBuild)
 	{
+		// Enabl this if you want blinking circle
+		//static int circleAlphaT=0;
+		//circleAlphaT++;
+		//int alpha=148+107*sin(((double)circleAlphaT)/6.0);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		int centerX, centerY;
 		game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);

@@ -47,8 +47,18 @@
 #define MAX(a, b) ((a)>(b) ? (a) : (b))
 #define MIN(a, b) ((a)<(b) ? (a) : (b))
 
+//! if defined, enable UID debug code
 //#define DBG_UID
-#undef DBG_UID
+
+//! if defined, enable pathfinding debug code
 #define DBG_PATHFINDING
+
+//! define this to true to have a verbose vPath error by default and to false otherwise
+#ifndef DBG_VPATH_OPEN
+#define DBG_VPATH_OPEN false
+#endif
+
+//! if defined, enable vPath listing
+//#define DBG_VPATH_LIST
 
 #endif 

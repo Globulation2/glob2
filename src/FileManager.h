@@ -61,9 +61,9 @@ public:
 	void addDir(const char *dir);
 
 	//! Open a file in the SDL_RWops format
-	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=true);
+	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
 	//! Open a file in the FILE* format
-	FILE *openFP(const char *filename, const char *mode, bool verboseIfNotFound=true);
+	FILE *openFP(const char *filename, const char *mode, bool verboseIfNotFound=DBG_VPATH_OPEN);
 
 	// FIXME : the following functions are not thread-safe :
 	//! must be call before directory listening, return true if success

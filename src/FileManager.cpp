@@ -84,7 +84,7 @@ void FileManager::clearFileList(void)
 	fileListIndex=-1;
 }
 
-void FileManager::addDir(const char *dir) 
+void FileManager::addDir(const char *dir)
 {
 	int len=strlen(dir);
 	char *newDir=new char[len+1];
@@ -95,6 +95,8 @@ void FileManager::addDir(const char *dir)
 
 SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verboseIfNotFound)
 {
+	std::vector<const char *>::iterator dirListIterator;
+
 	// try cache
 	if (dirListIndexCache>=0)
 	{
@@ -111,7 +113,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 
 	// other wise search
 	int index=0;
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
 		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
@@ -130,8 +132,12 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 
 	if (verboseIfNotFound)
 	{
-		fprintf(stderr, "FILE %s not found.\n", filename);
-		assert(false);
+		fprintf(stderr, "FILE %s not found in mode %s.\n", filename, mode);
+		fprintf(stderr, "Searched path :\n");
+		for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+		{
+			printf("%s\n", *dirListIterator);
+		}
 	}
 
 	return NULL;
@@ -140,6 +146,8 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 
 FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIfNotFound)
 {
+	std::vector<const char *>::iterator dirListIterator;
+
 	// try cache
 	if (dirListIndexCache>=0)
 	{
@@ -155,7 +163,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 
 	// other wise search
 	int index=0;
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
 		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
@@ -174,8 +182,12 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 
 	if (verboseIfNotFound)
 	{
-		fprintf(stderr, "FILE %s not found.\n", filename);
-		assert(false);
+		fprintf(stderr, "FILE %s not found in mode %s.\n", filename, mode);
+		fprintf(stderr, "Searched path :\n");
+		for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+		{
+			printf("%s\n", *dirListIterator);
+		}
 	}
 
 	return NULL;
@@ -190,10 +202,18 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	struct dirent *dirEntry;
 
 	if (!dir)
+	{
+#ifdef DBG_VPATH_LIST
+		fprintf(stderr, "Open dir failed for dir %s\n", realDir);
+#endif
 		return false;
+	}
 
 	while ((dirEntry=readdir(dir))!=NULL)
 	{
+#ifdef DBG_VPATH_LIST
+		fprintf(stderr, "%s\n", dirEntry->d_name);
+#endif
 		int l, nl;
 		l=strlen(extension);
 		nl=strlen(dirEntry->d_name);
@@ -232,7 +252,10 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 		int allocatedLength=strlen(virtualDir) + strlen(*dirListIterator) + 2;
 		char *dn = new char[allocatedLength];
 		snprintf(dn, allocatedLength,  "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
-		result=result||addListingForDir(dn, extension);
+#ifdef DBG_VPATH_LIST
+		fprintf(stderr, "Listing from dir %s :\n", dn);
+#endif
+		result=addListingForDir(dn, extension) || result;
 		delete[] dn;
 	}
 	// TODO : for Gabriel, sort result

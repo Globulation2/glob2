@@ -410,7 +410,7 @@ void MapEdit::loadSave(bool isLoad)
 	//DrawableSurface *backBuffer=globalContainer->gfx->createDrawableSurface();
 
 	// create dialog box
-	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen(".", "map", isLoad, "default.map");
+	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen("", "map", isLoad, "default.map");
 	gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 	//backBuffer->setRes(gameMenuScreen->getW(), gameMenuScreen->getH());
 
