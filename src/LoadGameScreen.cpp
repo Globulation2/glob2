@@ -52,6 +52,7 @@ LoadGameScreen::LoadGameScreen()
 			fileList->addText(newText);
 			delete[] newText;
 		}
+		fileList->sort();
 	}
 	addWidget(fileList);
 
