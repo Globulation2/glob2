@@ -25,6 +25,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
+#include <sstream>
 
 TeamStats::TeamStats()
 {
@@ -214,8 +215,11 @@ void TeamStats::drawText(int pos)
 		gfx->drawString(textStartPosX, textStartPosY+234, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]).c_str());
 		
 		// happyness
-		for (int i=0; i<=HAPPYNESS_COUNT; i++)
-			gfx->drawString(textStartPosX, textStartPosY+249+i*12, globalContainer->littleFont, GAG::nsprintf(strings->getString("[happyness level %d: %d]"), i, newStats.happiness[i]).c_str());
+		std::stringstream happyness;
+		happyness << strings->getString("[Happyness]") << " " << newStats.happiness[0];
+		for (int i=1; i<=HAPPYNESS_COUNT; i++)
+			happyness << '/' << newStats.happiness[i];
+		gfx->drawString(textStartPosX, textStartPosY+249, globalContainer->littleFont, happyness.str().c_str());
 	}
 }
 
