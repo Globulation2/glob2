@@ -1486,7 +1486,7 @@ int Building::getMidY(void)
 bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 {
 	for (int xi=this->posX; xi<this->posX+type->width; xi++)
-		for (int yi=this->posX; yi<this->posY+type->height; yi++)
+		for (int yi=this->posY; yi<this->posY+type->height; yi++)
 			if (owner->map->isFreeForAirUnit(xi, yi))
 			{
 				*posX=xi;
