@@ -40,7 +40,7 @@
 #ifdef WIN32
 #	include <windows.h>
 #	include <io.h>
-#include "dirent.h"
+#	include "win32_dirent.h"
 #else
 #	include <sys/types.h>
 #	include <dirent.h>
