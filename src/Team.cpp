@@ -591,11 +591,17 @@ void Team::step(void)
 		Building *building=*it;
 		if (building->unitsInside.size()==0)
 		{
-			if (!building->type->isVirtual)
-				map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-			building->buildingState=Building::DEAD;
-			prestige-=(*it)->type->prestige;
-			buildingsToBeDestroyed.push_front(building);
+			if (building->buildingState==Building::WAITING_FOR_DESTRUCTION)
+			{
+				if (!building->type->isVirtual)
+					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
+				building->buildingState=Building::DEAD;
+				prestige-=(*it)->type->prestige;
+				printf("building %d emptih and pushed to buildingsToBeDestroyed\n", building->gid); 
+				buildingsToBeDestroyed.push_front(building);
+			}
+			else
+				assert(building->buildingState==Building::DEAD);
 			
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsWaitingForDestruction.erase(ittemp);
@@ -605,6 +611,7 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
+		printf("deleting building %d\n", building->gid); 
 		if (building->type->unitProductionTime)
 			swarms.remove(building);
 		if (building->type->shootingRange)
@@ -623,6 +630,7 @@ void Team::step(void)
 		subscribeToBringRessources.remove(building);
 		subscribeForFlaging.remove(building);
 		
+		printf("deleted building %d\n", building->gid); 
 		delete building;
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 	}

@@ -505,7 +505,7 @@ bool Game::load(SDL_RWops *stream)
 		}
 		
 		//But we have to finish Team's loading:
-		for (int i=0; i<session.numberOfTeam; ++i)
+		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->update();
 		
 		// then script

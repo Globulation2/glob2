@@ -459,6 +459,7 @@ void Building::cancelConstruction(void)
 
 void Building::launchDelete(void)
 {
+	printf("launchingDelete building %d\n", gid); 
 	if (buildingState==ALIVE)
 	{
 		removeSubscribers();
@@ -469,6 +470,7 @@ void Building::launchDelete(void)
 		updateCallLists();
 		
 		owner->buildingsWaitingForDestruction.push_front(this);
+		printf("building %d pushed in buildingsWaitingForDestruction\n", gid); 
 	}
 }
 
@@ -742,7 +744,7 @@ void Building::updateBuildingSite(void)
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
 
 		// we need to do an update again
-		update(); // zzz TODO: continue here
+		updateCallLists();
 	}
 }
 
@@ -818,6 +820,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
+		updateCallLists();
 
 		// position
 		posX=newPosX;
@@ -843,8 +846,7 @@ bool Building::tryToBuildingSiteRoom(void)
 			percentUsed[i]=0;
 		}
 
-		// TODO: now we can see that the engine "genericity" is not as good as we would like to.
-		if (foodable!=2)
+		/*zzz if (foodable!=2)
 		{
 			owner->foodable.remove(this);
 			foodable=2;
@@ -857,10 +859,10 @@ bool Building::tryToBuildingSiteRoom(void)
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 			if (zonable[i]!=2)
 			{
-				owner->zonable[i].push_front(this);
+				owner->zonable[i].remove(this);
 				zonable[i]=2;
 			}
-		update();
+		update();*/
 	}
 	return isRoom;
 }
@@ -1057,7 +1059,7 @@ void Building::subscribeToBringRessourcesStep()
 				{
 					unitsWorking.push_back(choosen);
 					choosen->unsubscribed();
-					update();
+					updateCallLists();
 				}
 			}
 		}
@@ -1133,7 +1135,7 @@ void Building::subscribeForFlagingStep()
 				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
 				choosen->unsubscribed();
-				update();
+				updateCallLists();
 			}
 		}
 	}
@@ -1176,7 +1178,7 @@ void Building::subscribeForInsideStep()
 				unitsInsideSubscribe.remove(u);
 				unitsInside.push_back(u);
 				u->unsubscribed();
-				update();
+				updateCallLists();
 			}
 		}
 		
@@ -1251,7 +1253,7 @@ void Building::swarmStep(void)
 			if (u)
 			{
 				ressources[CORN]-=type->ressourceForOneUnit;
-				update(); // TODO : is there a trigger, to avoid comming back in call lists too often ?
+				updateCallLists();
 				
 				u->activity=Unit::ACT_RANDOM;
 				u->displacement=Unit::DIS_RANDOM;
@@ -1466,7 +1468,11 @@ void Building::turretStep(void)
 
 void Building::kill(void)
 {
-	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
+	if (buildingState==DEAD)
+		return;
+	
+	printf("killing building %d\n", gid); 
+	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
 		if (u->displacement==Unit::DIS_INSIDE)
@@ -1496,7 +1502,6 @@ void Building::kill(void)
 	
 	removeSubscribers();
 	
-	buildingState=WAITING_FOR_DESTRUCTION;
 	maxUnitWorking=0;
 	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
@@ -1504,9 +1509,11 @@ void Building::kill(void)
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+	
 	buildingState=DEAD;
 	owner->prestige-=type->prestige;
 	
+	printf("building %d pushed in buildingsToBeDestroyed beacuse killing\n", gid); 
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
