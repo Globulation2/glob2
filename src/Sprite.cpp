@@ -64,6 +64,23 @@ void Palette::decHue(float degree)
 	}
 }
 
+void Palette::toBlackAndWhite(void)
+{
+	int n;
+	for (n=0; n<256; n++)
+	{
+		/*int c=((int)R[n]+(int)G[n]+(int)B[n])/3;
+		R[n]=(Uint8)c;
+		G[n]=(Uint8)c;
+		B[n]=(Uint8)c;
+		colors[n]=SDL_MapRGB(format,c,c,c);*/
+		R[n]>>=1;
+		G[n]>>=1;
+		B[n]>>=1;
+		colors[n]=SDL_MapRGB(format,R[n],G[n],B[n]);
+	}
+}
+
 // r,g,b values are from 0 to 1
 // h = [0,360], s = [0,1], v = [0,1]
 //		if s == 0, then h = -1 (undefined)

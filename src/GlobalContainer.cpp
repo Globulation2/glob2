@@ -37,6 +37,8 @@ void GlobalContainer::load(void)
 	SDL_RWops *stream=SDL_RWFromFile("data/MacPal","rb");
 	macPal.load(stream, gfx.screen->format);
 	SDL_RWclose(stream);
+	ShadedPal=macPal;
+	ShadedPal.toBlackAndWhite();
 
 	// load terrain data
 	terrain.setDefaultPal(&macPal);

@@ -34,6 +34,7 @@ public:
 	MacPalGraphicArchive buildings;
 	char safer6[1024];
 	Palette macPal;
+	Palette ShadedPal;
 	char safer7[1024];
 
 	SDLGraphicContext gfx;

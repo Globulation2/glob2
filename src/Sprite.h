@@ -17,6 +17,7 @@ class Palette
 public:
 	void load(SDL_RWops *input, SDL_PixelFormat *format);
 	void decHue(float degree);
+	void toBlackAndWhite(void);
 	Uint32 colors[256];
 	Uint8 R[256];
 	Uint8 G[256];
