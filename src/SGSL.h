@@ -38,6 +38,7 @@ struct Token
 		NIL=0,
 		INT,
 		STRING,
+		LANG,
 
 		// Syntaxic token
 		S_PAROPEN=20,
@@ -72,14 +73,6 @@ struct Token
 		S_ISDEAD,
 		S_ALLY,
 		S_ENEMY,
-
-		// Language code
-		S_LANG_0,
-		S_LANG_1,
-		S_LANG_2,
-		S_LANG_3,
-		S_LANG_4,
-		S_LANG_5,
 
 		// Constants
 		// Units
