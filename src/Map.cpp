@@ -411,12 +411,12 @@ bool Map::decRessource(int x, int y)
 	RessourceType type=(RessourceType)r.field.type;
 	unsigned amount=r.field.amount;
 	assert(amount);
-	if (type==WOOD || amount==1)
+	if (type==STONE)
+		return false;
+	else if (type==WOOD || amount==1)
 		rp->id=NORESID;
 	else if (type==CORN || type==ALGA || type==FUNGUS)
 		rp->field.amount=amount-1;
-	else if (type==STONE)
-		return false;
 	else
 		assert(false);
 	return true;

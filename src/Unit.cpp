@@ -1070,6 +1070,8 @@ void Unit::handleMovement(void)
 									BuildingType *bt=owner->game->teams[team]->myBuildings[id]->type;
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
+									if (verbose)
+										printf("warrior %d found unit with newQuality=%d\n", gid, newQuality);
 									if (newQuality<quality)
 									{
 										movement=MOV_GOING_TARGET;
@@ -1090,6 +1092,8 @@ void Unit::handleMovement(void)
 									Unit *u=owner->game->teams[team]->myUnits[id];
 									int strength=u->performance[ATTACK_STRENGTH];
 									int newQuality=(x*x+y*y)/(1+strength);
+									if (verbose)
+										printf("warrior %d found building with newQuality=%d\n", gid, newQuality);
 									if (newQuality<quality)
 									{
 										movement=MOV_GOING_TARGET;
