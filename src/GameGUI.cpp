@@ -562,6 +562,25 @@ void GameGUI::processEvent(SDL_Event *event)
 					handleMenuClick(event->button.x-globalContainer->gfx->getW()+128, event->button.y, event->button.button);
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
+
+				// NOTE : if there is more than this, move to a func
+				if ((event->button.y<34) && (event->button.x<globalContainer->gfx->getW()-126) && (event->button.x>globalContainer->gfx->getW()-160))
+				{
+					if (inGameMenu==IGM_NONE)
+					{
+						gameMenuScreen=new InGameMainScreen();
+						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+						inGameMenu=IGM_MAIN;
+					}
+					// the following is commented becase we don't get click event while in menu.
+					// if this change uncomment the following code :
+					/*else
+					{
+						delete gameMenuScreen;
+						gameMenuScreen=NULL;
+						inGameMenu=IGM_NONE;
+					}*/
+				}
 			}
 			else if (button==SDL_BUTTON_MIDDLE)
 			{
@@ -1048,23 +1067,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				displayMode=STAT_VIEW;
 				statMode = STAT_GRAPH;
 			}
-			else
-			{
-				if (inGameMenu==IGM_NONE)
-				{
-					gameMenuScreen=new InGameMainScreen();
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-					inGameMenu=IGM_MAIN;
-				}
-				// the following is commented becase we don't get click event while in menu.
-				// if this change uncomment the following code :
-				/*else
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-					inGameMenu=IGM_NONE;
-				}*/
-			}
 		}
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
@@ -1285,10 +1287,10 @@ void GameGUI::draw(void)
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 1);
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
-		if (gameMenuScreen)
+		/*if (gameMenuScreen)
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);*/
 
 		for (int i=0; i<13; i++)
 		{
@@ -1352,7 +1354,7 @@ void GameGUI::draw(void)
 				globalContainer->gfx->drawRect(x, y, 32, 32, 200, 200, 140);
 			}
 		}
-		
+
 		// draw building infos
 		if (mouseX>globalContainer->gfx->getW()-128)
 		{
@@ -1824,7 +1826,7 @@ void GameGUI::drawOverlayInfos(void)
 			}
 			else
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-		
+
 			if (isRoom&&isExtendedRoom)
 				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
 			else
@@ -1894,11 +1896,11 @@ void GameGUI::drawOverlayInfos(void)
 	else
 	{
 		int ymesg=32;
-		
+
 		// show script text
 		if (game.script.isTextShown)
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", game.script.textShown.c_str());
-		
+
 		// show script counter
 		if (game.script.getMainTimer())
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, "%d", game.script.getMainTimer());
@@ -1916,7 +1918,7 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
-			
+
 			// delete old messages
 			if (!(--(it->showTicks)))
 			{
@@ -1981,13 +1983,14 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
-	
+
 	// info bar
 	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 40, 180);
-	
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 40, 180);
+
+	// draw unit stats
 	Uint8 redC[]={200, 0, 0};
 	Uint8 greenC[]={0, 200, 0};
 	Uint8 whiteC[]={200, 200, 200};
@@ -1996,7 +1999,7 @@ void GameGUI::drawOverlayInfos(void)
 	
 	int dec=(globalContainer->gfx->getW()-640)>>2;
 	dec += 20;
-	
+
 	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 	for (int i=0; i<3; i++)
 	{
@@ -2011,16 +2014,37 @@ void GameGUI::drawOverlayInfos(void)
 			memcpy(actC, greenC, sizeof(greenC));
 		else
 			memcpy(actC, whiteC, sizeof(whiteC));
-		
-		globalContainer->gfx->drawSprite(dec+2, 2, globalContainer->unitmini, i);
+
+		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
 		globalContainer->littleFont->pushColor(actC[0], actC[1], actC[2]);
-		globalContainer->gfx->drawString(dec+22, 3, globalContainer->littleFont, "%d / %d", free, tot);
+		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, "%d / %d", free, tot);
 		globalContainer->littleFont->popColor();
-		
-		dec += 118;
+
+		dec += 70;
 	}
-	
-	globalContainer->gfx->drawString(dec+22, 3, globalContainer->littleFont, "%d / %d", localTeam->prestige, game.totalPrestige);
+
+	// draw prestigestats
+	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, "%d / %d", localTeam->prestige, game.totalPrestige);
+
+	// draw window bar
+	int pos=globalContainer->gfx->getW()-128-32;
+	for (int i=0; i<pos; i+=32)
+	{
+		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
+	}
+	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
+	{
+		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+	}
+
+	// draw main menu button
+	if (gameMenuScreen)
+		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
+	else
+		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
+
+
+
 }
 
 void GameGUI::drawInGameMenu(void)
