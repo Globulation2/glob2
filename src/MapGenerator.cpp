@@ -193,7 +193,7 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				/(errBaseWater*errBaseWater+errBaseSand*errBaseSand+errBaseGrass*errBaseGrass);
 			printf("B%d-proj=%f.\n", prec, proj);
 			double corrFactor=1/proj;
-			correctionWater=(correctionWater+newCorrectionWater*corrFactor)/(1.0+corrFactor);zzz
+			correctionWater=(correctionWater+newCorrectionWater*corrFactor)/(1.0+corrFactor);
 			correctionSand =(correctionSand +newCorrectionSand *corrFactor)/(1.0+corrFactor);
 			correctionGrass=(correctionGrass+newCorrectionGrass*corrFactor)/(1.0+corrFactor);
 			/*correctionWater=(-proj*correctionWater+newCorrectionWater)/(1.0-proj);
