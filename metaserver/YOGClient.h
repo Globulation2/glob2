@@ -50,6 +50,7 @@ struct Game
 	char name[128];
 	YOGClient *host;
 	Uint32 uid;
+	std::list<YOGClient *> joiners; // Firewalls extermination system
 };
 	
 // This is an metaserver YOG client.
@@ -96,6 +97,9 @@ public:
 	int messageTOTL;
 	
 	Game *sharingGame;
+	Game *joinedGame;
+	std::list<YOGClient *> joiners; // Firewalls extermination system
+	int joinersTimeout;
 	
 	std::list<Game *> games;
 	int gamesSize;

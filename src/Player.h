@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #ifndef __PLAYER_H
@@ -49,6 +49,7 @@ public:
 	Uint32 teamNumberMask;
 
 	IPaddress ip;
+	IPaddress yogip;
 	UDPsocket socket;
 	int channel;
 	bool ipFromNAT;
@@ -60,35 +61,35 @@ public:
 	{
 		PNS_BAD=0,
 		
-		PNS_PLAYER_SILENT,
+		PNS_PLAYER_SILENT=1,
 		
 		// host choose a state for joiners between :
 		
-		PNS_PLAYER_SEND_PRESENCE_REQUEST,
-		PNS_PLAYER_SEND_SESSION_REQUEST,
-		PNS_PLAYER_SEND_CHECK_SUM,
+		PNS_PLAYER_SEND_PRESENCE_REQUEST=2,
+		PNS_PLAYER_SEND_SESSION_REQUEST=3,
+		PNS_PLAYER_SEND_CHECK_SUM=4,
 		
-		PNS_OK,
+		PNS_OK=5,
 		
-		PNS_SERVER_SEND_CROSS_CONNECTION_START,
-		PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START,
-		PNS_PLAYER_FINISHED_CROSS_CONNECTION,
+		PNS_SERVER_SEND_CROSS_CONNECTION_START=6,
+		PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START=7,
+		PNS_PLAYER_FINISHED_CROSS_CONNECTION=8,
 		
-		PNS_CROSS_CONNECTED,
+		PNS_CROSS_CONNECTED=9,
 		
-		PNS_SERVER_SEND_START_GAME,
-		PNS_PLAYER_CONFIRMED_START_GAME,
-		PNS_PLAYER_PLAYS,
+		PNS_SERVER_SEND_START_GAME=10,
+		PNS_PLAYER_CONFIRMED_START_GAME=11,
+		PNS_PLAYER_PLAYS=12,
 		
 		// joiners choose a state for joiners between :
 		
-		PNS_BINDED,
-		PNS_SENDING_FIRST_PACKET,
-		PNS_HOST,
+		PNS_BINDED=13,
+		PNS_SENDING_FIRST_PACKET=14,
+		PNS_HOST=15,
 		
 		// ai :
 		
-		PNS_AI
+		PNS_AI=16
 	};
 	
 	PlayerNetworkState netState;

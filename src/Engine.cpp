@@ -86,17 +86,17 @@ int Engine::initCampain(void)
 		playerNumber++;
 	}
 
-	gui.game.session.numberOfPlayer=playerNumber;
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
-	
-	// FIXME : delete Team that hasn't any players and defrag array
-
 	if (!wasHuman)
 	{
 		fprintf(stderr, "ENG : Error, can't find any human player\n");
 		return EE_CANT_FIND_PLAYER;
 	}
+	
+	gui.game.session.numberOfPlayer=playerNumber;
+	gui.game.renderMiniMap(gui.localTeamNo);
+	gui.adjustInitialViewport();
+	
+	// FIXME : delete Team that hasn't any players and defrag array
 
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);

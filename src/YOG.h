@@ -54,7 +54,6 @@ public:
 	struct GameInfo
 	{
 		IPaddress hostip;
-		IPaddress joinip;
 		char userName[32];
 		char name[128];
 		Uint32 uid;
@@ -87,6 +86,15 @@ public:
 		Uint32 uid;
 	};
 	
+	struct Joiner
+	{
+		int timeout;
+		int TOTL;
+		IPaddress ip;
+		Uint32 uid;
+		bool connected;
+	};
+	
 public:
 	YOG();
 	virtual ~YOG();
@@ -96,6 +104,7 @@ public:
 	void send(YOGMessageType v);
 	void send(YOGMessageType v, UDPsocket socket);
 	void send(YOGMessageType v, Uint8 id);
+	void send(UDPsocket socket, IPaddress ip, Uint8 v);
 	
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	
@@ -128,6 +137,13 @@ public:
 	void setJoinGameSocket(UDPsocket socket);
 	bool joinGameSocketSet();
 	
+	void joinerConnected(IPaddress ip); // Call this if you host a game, and someone has joined your game.
+	void connectedToGameHost(); // Call this if you are trying to join a game, and the host responded.
+	
+	IPaddress ipFromUserName(char userName[32]);
+	
+	bool isConnectedToGameHost;
+	
 	YOGGlobalState yogGlobalState;
 	int connectionTimeout;
 	int connectionTOTL;
@@ -140,6 +156,7 @@ public:
 	
 	void deconnect();
 	char userName[32];
+	Uint32 uid;
 	
 	std::list<Message> sendingMessages;
 	std::list<Message> receivedMessages;
@@ -172,6 +189,7 @@ public:
 	std::list<Client> clients;
 	bool newClientListAviable;
 	
+	std::list<Joiner> joiners;
 private:
 	bool enableLan;
 	LANBroadcast lan;

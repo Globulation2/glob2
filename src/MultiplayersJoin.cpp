@@ -179,7 +179,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	
 	fprintf(logFile, "sessionInfo.numberOfPlayer=%d, numberOfTeam=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam);
 	
-	if (ipFromNAT)
+	if (ipFromNAT || !shareOnYOG)
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			assert(!sessionInfo.players[j].waitForNatResolution);
 	else
@@ -448,6 +448,9 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 				fprintf(logFile, "(this NAT is solved)\n");
 				sessionInfo.players[p].ipFromNAT=false;
 				sessionInfo.players[p].waitForNatResolution=false;
+				
+				if (waitingTimeout>4 && waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
+					waitingTimeout=2;
 			}
 			else
 				fprintf(logFile, "\n");
@@ -565,7 +568,7 @@ void MultiplayersJoin::crossConnectionsAchievedConfirmation(IPaddress ip)
 {
 	if (waitingState>=WS_CROSS_CONNECTING_ACHIEVED)
 	{
-		fprintf(logFile, "server(%x,%d has recieved our crossConnection achieved state.\n", ip.host, ip.port);
+		fprintf(logFile, "server(%s) has recieved our crossConnection achieved state.\n", Utilities::stringIP(ip));
 		waitingState=WS_CROSS_CONNECTING_SERVER_HEARD;
 		waitingTimeout=SHORT_NETWORK_TIMEOUT;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -614,12 +617,21 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 			dataFileRecieved(data, size, ip);
 		break;
 	
-		case SERVER_WATER:
+		case SERVER_FIREWALL_EXPOSED:
+			printf("water received from ip(%s)!\n", Utilities::stringIP(ip));
 			fprintf(logFile, "water received from ip(%s)!\n", Utilities::stringIP(ip));
+			if (WS_WAITING_FOR_PRESENCE)
+			{
+				waitingTimeout=0;
+				waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
+				waitingTOTL=DEFAULT_NETWORK_TOTL;
+			}
+			globalContainer->yog->connectedToGameHost();
 		break;
 		
 		case SERVER_PRESENCE :
 			dataPresenceRecieved(data, size, ip);
+			globalContainer->yog->connectedToGameHost();
 		break;
 		
 		case DATA_SESSION_INFO :
@@ -689,9 +701,9 @@ void MultiplayersJoin::receiveTime()
 		
 		int v;
 		LANHost lanhost;
-		//fprintf(logFile, "broadcastState=%d.\n", broadcastState);
 		if (lan.receive(&v, lanhost.gameName, lanhost.serverNickName))
 		{
+			fprintf(logFile, "broadcastState=%d.\n", broadcastState);
 			fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
 			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
 				|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
@@ -756,8 +768,9 @@ void MultiplayersJoin::receiveTime()
 							Utilities::stringIP(serverNameMemory, 128, serverIP.host);
 							serverName=serverNameMemory;
 						}
-						ipFromNAT=true;
+						
 						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);
+						
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
@@ -774,6 +787,16 @@ void MultiplayersJoin::receiveTime()
 							fprintf(logFile, "MultiplayersJoin:NAT:failed to bind socket\n");
 							waitingState=WS_TYPING_SERVER_NAME;
 						}
+					}
+					if (!ipFromNAT)
+					{
+						ipFromNAT=true;
+						fprintf(logFile, "We now know that the game host is on the same LAN.\n");
+						// Now, the "ipFromNAT" players are no more "waitForNatResolution".
+						for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+							if (sessionInfo.players[j].type==BasePlayer::P_IP)
+								if (sessionInfo.players[j].ipFromNAT)
+									sessionInfo.players[j].waitForNatResolution=false;
 					}
 				}
 				else
@@ -1093,8 +1116,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	packet->data[2]=0;
 	packet->data[3]=0;
 	addSint32(packet->data, (Sint32)ipFromNAT, 4);
-	memset(packet->data+8, 0, 32);
-	strncpy((char *)(packet->data+8), playerName, 32);
+	strncpy((char *)(packet->data+8), playerName, 32); //TODO: use uid if over YOG.
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s) ipFromNAT=%d\n", Utilities::stringIP(serverIP), serverName, ipFromNAT);

@@ -38,7 +38,9 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	messageTimeout=0;
 	messageTOTL=3;
 	
+	joinersTimeout=0;
 	sharingGame=NULL;
+	joinedGame=NULL;
 	
 	timeout=0;
 	TOTL=3;
@@ -50,7 +52,10 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	unsharedTOTL=3;
 	
 	static Uint32 clientUID=1;
-	uid=clientUID++;
+	clientUID++;
+	if (clientUID==0)
+		clientUID++;
+	uid=clientUID;
 	
 	leftClientPacketID=0;
 }
@@ -214,16 +219,11 @@ void YOGClient::sendGames()
 	int index=4;
 	nbGames=0;
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
-			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port)
 		{
 			addUint32(data, (*game)->host->hostGameip.host, index);
 			index+=4;
 			addUint16(data, (*game)->host->hostGameip.port, index);
-			index+=2;
-			addUint32(data, (*game)->host->joinGameip.host, index);
-			index+=4;
-			addUint16(data, (*game)->host->joinGameip.port, index);
 			index+=2;
 			addUint32(data, (*game)->uid, index);
 			index+=4;
@@ -301,8 +301,7 @@ void YOGClient::computeGamesSize()
 {
 	gamesSize=0;
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
-			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port)
 			gamesSize++;
 }
 
@@ -311,8 +310,7 @@ void YOGClient::gamesClear()
 	// Actualy, we only remove one game.
 	gamesSize=0;
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
-			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port)
 		{
 			games.erase(game);
 			break;
