@@ -73,7 +73,7 @@ void SoundMixer::handleVoiceInsertion(int *outputSample)
 		value += (1-pv.voiceSubIndex) * pv.voiceVal0 + pv.voiceSubIndex * pv.voiceVal1;
 	
 		// increment index, keep track of stereo
-		pv.voiceSubIndex += (8000.0f/44100.0f)*0.475f;
+		pv.voiceSubIndex += (8000.0f/44100.0f)*0.5f;
 		if (pv.voiceSubIndex > 1)
 		{
 			pv.voiceSubIndex -= 1;

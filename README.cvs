@@ -1,14 +1,30 @@
 Globulation 2
 http://www.ysagoon.com/glob2
 
-
-!! WARNING !!
-The gfx, music and maps are not included in the CVS.
-To get them, run the syncdata and syncmaps scripts (execute ./syncdata and ./syncmaps 
-from glob2's base directory).
-
 GNU and UNIX
 ------------
+
+Short explanation:
+
+To compile glob2 from CVS, run:
+- ./bootstrap (creates ./configure)
+- ./configure (configure the sources)
+- ./syncdata (get the gfx and sounds)
+- ./syncmaps (get the maps)
+- make (compile)
+- make install (install, you need to be root, you can skip this if you want glob2 from src directory)
+
+To compile glob2 from CVS, you need the following libraries and programs:
+- automake
+- autoconf
+- libsdl1.2
+- libsdl-net1.2
+- libsdl-image1.2
+- libspeex
+Of course, you need the development version of the libs.
+
+
+Long explanation:
 
 If you have taken this from CVS and you want to build the package, run the
 bootstrap script first (or autoreconf).
