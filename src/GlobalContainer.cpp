@@ -342,6 +342,7 @@ void GlobalContainer::load(void)
 	{
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
+		gfx->setMinRes(640, 480);
 		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
 		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 

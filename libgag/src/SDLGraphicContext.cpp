@@ -946,6 +946,17 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 		sdlFlags|=SDL_HWSURFACE;
 	if (flags&RESIZABLE)
 		sdlFlags|=SDL_RESIZABLE;
+	
+	if (minW && (w < minW))
+	{
+		fprintf(stderr, "Toolkit : Screen width %d is too small, set to min %d\n", w, minW);
+		w = minW;
+	}
+	if (minH && (h < minH))
+	{
+		fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
+		h = minH;
+	}
 
 	surface = SDL_SetVideoMode(w, h, depth, sdlFlags);
 
@@ -964,7 +975,6 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 		return true;
 	}
 }
-
 
 void SDLGraphicContext::nextFrame(void)
 {
