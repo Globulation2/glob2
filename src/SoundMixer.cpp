@@ -67,9 +67,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 
 	assert(mixer->actTrack >= 0);
 	assert(mixer->mode != SoundMixer::MODE_STOPPED);
-  // Dejan: this is supposed to fix reported problem on Gentoo
-  // assert(nsamples == SAMPLE_COUNT_PER_SLICE);
-  assert(nsamples);
+	// Dejan: this is supposed to fix reported problem on Gentoo
+	// assert(nsamples == SAMPLE_COUNT_PER_SLICE);
+	assert(nsamples);
 
 	if (mixer->mode == SoundMixer::MODE_EARLY_CHANGE)
 	{

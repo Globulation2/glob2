@@ -36,9 +36,31 @@
 #define IRC_SERVER "irc.freenode.net"
 
 // TODO: is it anyway to do this cleaner ?
-// NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
-
 IRC *ircPtr = NULL;
+
+YOGPlayerList::YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font) :
+	List(x, y, w, h, hAlign, vAlign, font)
+{
+	networkSprite = Toolkit::getSprite("data/gui/yog");
+}
+
+YOGPlayerList::~YOGPlayerList()
+{
+	Toolkit::releaseSprite("data/gui/yog");
+}
+
+void YOGPlayerList::drawItem(int x, int y, size_t element)
+{
+	assert(networkSprite);
+	int xShift = 20;
+	if (networks[element] == ALL_NETWORK)
+		xShift = 0;
+	else if (networks[element] == YOG_NETWORK)
+		parent->getSurface()->drawSprite(x, y, networkSprite, 0);
+	else if (networks[element] == IRC_NETWORK)
+		parent->getSurface()->drawSprite(x, y, networkSprite, 1);
+	parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+}
 
 YOGScreen::YOGScreen()
 {
@@ -56,7 +78,7 @@ YOGScreen::YOGScreen()
 	joinButton=new TextButton(20, 165, 180, 25, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new List(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
+	playerList=new YOGPlayerList(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
 	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
@@ -114,21 +136,21 @@ void YOGScreen::updatePlayerList(void)
 		{
 			if (client->away)
 			{
-				listEntry = std::string("y ([") + client->userName + "])";
+				listEntry = std::string("([") + client->userName + "])";
 			}
 			else
 			{
 				
-				listEntry = std::string("y (") + client->userName + ")";
+				listEntry = std::string("(") + client->userName + ")";
 			}
 		}
 		else if (client->away)
 		{
-			listEntry = std::string("y [") + client->userName + "]";
+			listEntry = std::string("[") + client->userName + "]";
 		}
 		else
-			listEntry = std::string("y ") + client->userName;
-		playerList->addText(listEntry);
+			listEntry = client->userName;
+		playerList->addPlayer(listEntry, YOGPlayerList::YOG_NETWORK);
 	}
 	// update irc entries, remove one already on YOG
 	if (irc.initChannelUserListing(IRC_CHAN))
@@ -137,7 +159,7 @@ void YOGScreen::updatePlayerList(void)
 		{
 			const std::string &user = irc.getNextChannelUser();
 			if (user.compare(0, 5, "[YOG]") != 0)
-				playerList->addText(std::string("i ") + user);
+				playerList->addPlayer(user, YOGPlayerList::IRC_NETWORK);
 		}
 	}
 }

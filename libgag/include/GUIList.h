@@ -87,6 +87,10 @@ namespace GAGGUI
 		int getSelectionIndex(void) const;
 		//! Set the index of the current selection. Set -1 for no selection
 		void setSelectionIndex(int index);
+		
+	protected:
+		//! Draw an item of the list, called by paint
+		virtual void drawItem(int x, int y, size_t element);
 	};
 }
 

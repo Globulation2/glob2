@@ -25,15 +25,49 @@
 #include "YOG.h"
 #include "IRC.h"
 #include <GUIBase.h>
+#include <GUIList.h>
+#include <GraphicContext.h>
 using namespace GAGGUI;
 
 namespace GAGGUI
 {
-	class List;
 	class TextInput;
 	class TextArea;
 	class TextButton;
 }
+
+//! A list widget that keeps player list + the network they are using
+class YOGPlayerList : public List
+{
+public:
+	//! The type of network a player can be in
+	enum NetworkType
+	{
+		ALL_NETWORK = 0,
+		YOG_NETWORK,
+		IRC_NETWORK,
+	};
+	
+protected:
+	//! An array that contains for each player the related network
+	std::vector<NetworkType> networks;
+	//! sprite for networks
+	GAGCore::Sprite *networkSprite;
+	
+public:
+	//! Constructor, create sprites and call List constructor
+	YOGPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
+	//! Destructor, release sprites
+	virtual ~YOGPlayerList();
+		
+	//! Add a new player and its network
+	void addPlayer(const std::string &nick, NetworkType network) { addText(nick); networks.push_back(network); }
+	
+	void clear(void) { List::clear(); networks.clear(); }
+	
+protected:
+	virtual void drawItem(int x, int y, size_t element);
+};
 
 class YOGScreen:public Screen
 {
@@ -59,7 +93,7 @@ public:
 protected:
 	List *gameList;
 	TextArea *gameInfo;
-	List *playerList;
+	YOGPlayerList *playerList;
 	TextInput *textInput;
 	TextArea *chatWindow;
 	
