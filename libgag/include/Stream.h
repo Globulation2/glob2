@@ -54,6 +54,7 @@ namespace GAGCore
 		virtual void writeUint32(const Uint32 v, const char *name = NULL) = 0;
 		virtual void writeFloat(const float v, const char *name = NULL) = 0;
 		virtual void writeDouble(const double v, const char *name = NULL) = 0;
+		virtual void writeText(const std::string &v, const char *name = NULL) = 0;
 		
 		virtual void flush(void) = 0;
 		
@@ -77,6 +78,7 @@ namespace GAGCore
 		virtual Uint32 readUint32(const char *name = NULL) = 0;
 		virtual float readFloat(const char *name = NULL) = 0;
 		virtual double readDouble(const char *name = NULL) = 0;
+		virtual std::string readText(const char *name = NULL) = 0;
 		
 		virtual void readEnterSection(const char *name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
