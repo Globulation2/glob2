@@ -32,12 +32,12 @@ protected:
 	int w;
 	int h;
 	const Font *font;
-	const char *text;
+	char *text;
 	DrawableSurface *gfx;
 
 public:
 	Text(int x, int y,const Font *font, const char *text, int w=0, int h=0);
-	virtual ~Text() { }
+	virtual ~Text() { if (this->text) delete[] this->text; }
 	virtual void setText(const char *newText);
 	virtual void paint(DrawableSurface *gfx);
 };

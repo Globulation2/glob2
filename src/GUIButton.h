@@ -45,7 +45,7 @@ class TextButton:public Button
 {
 public:
 	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode);
-	virtual ~TextButton() { delete[] text; }
+	virtual ~TextButton() { if (text) delete[] text; }
 
 	virtual void paint(DrawableSurface *gfx);
 	virtual void repaint(void);

@@ -20,15 +20,23 @@
 
 #include "GUIText.h"
 
-Text::Text(int x, int y,const Font *font, const char *text, int w, int h)
+Text::Text(int x, int y, const Font *font, const char *text, int w, int h)
 {
 	this->x=x;
 	this->y=y;
 	this->font=font;
-	this->text=text;
+	this->text=NULL;
 	this->w=w;
 	this->h=h;
-	this->gfx=NULL;
+	this->gfx=NULL;	
+	if (text)
+	{
+		int textLength=strlen(text);
+		this->text=new char[textLength+1];
+		strncpy(this->text, text, textLength+1);
+	}
+	else
+		this->text=NULL;
 }
 
 void Text::setText(const char *newText)
@@ -37,9 +45,8 @@ void Text::setText(const char *newText)
 
 	assert(gfx);
 	assert(font);
-	assert(text);
 	assert(newText);
-
+	
 	// erase old
 	if (w)
 		nW=upW=w;
@@ -57,7 +64,12 @@ void Text::setText(const char *newText)
 	}
 	parent->paint(x, y, upW, upH);
 
-	this->text=newText;
+	// copy text
+	int textLength=strlen(newText);
+	if (this->text)
+		delete[] this->text;
+	this->text=new char[textLength+1];
+	strncpy(this->text, newText, textLength+1);
 
 	// draw new
 	paint(gfx);
