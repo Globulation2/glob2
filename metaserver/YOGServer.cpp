@@ -578,45 +578,21 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		if (good)
 		{
 			YOGClient *client=*sender;
-			int nbClients=(int)data[1];
-			Uint32 leftClientPacketID=getUint32(data, 4);
-			if (client->allreadyRemovedClients>0)
-			{
-				nbClients-=client->allreadyRemovedClients;
-				if (nbClients<0)
-				{
-					lprintf("Critical error (nbClients=%d, lcpid=%d, c->lcpid=%d, arcl=%d)\n", nbClients, leftClientPacketID, client->leftClientPacketID, client->allreadyRemovedClients);
-					client->allreadyRemovedClients=0;
-					break;
-				}
-				client->allreadyRemovedClients=0;
-			}
 			
-			if (leftClientPacketID!=client->leftClientPacketID)
+			Uint32 leftClientPacketID=getUint32(data, 4);
+			Uint32 diff=client->leftClientPacketID-leftClientPacketID;
+			if (diff==0 || diff==1 || diff==2 || diff==3)
 			{
-				if (leftClientPacketID+1==client->leftClientPacketID && client->lastLeftClientNumber[leftClientPacketID]==(int)data[1])
+				int rri=leftClientPacketID&0x3;
+				lprintf("client %s received a %d left client list.\n", client->userName, client->lastLeftClientsSent[rri].size());
+				for (std::list<Uint32>::iterator uid=client->lastLeftClientsSent[rri].begin(); uid!=client->lastLeftClientsSent[rri].end(); uid++)
 				{
-					lprintf("(late!) client %s received a %d left client list.\n", client->userName, nbClients);
-					client->allreadyRemovedClients=nbClients;
-				}
-				else
-				{
-					lprintf("(too late!) client %s received a %d left client list.\n", client->userName, nbClients);
-					break;
+					client->leftClients.remove(*uid);
+					//lprintf("removed uid=%d.\n", *uid);
 				}
 			}
-			lprintf("client %s received a %d left client list.\n", client->userName, nbClients);
-			for (int i=0; i<nbClients; i++)
-			{
-				std::list<Uint32>::iterator uid=client->leftClients.begin();
-				if (uid==client->leftClients.end())
-					client->leftClients.erase(uid);
-				else
-				{
-					lprintf("Critical error (nbClients=%d, lcpid=%d, c->lcpid=%d, i=%d, arcl=%d)\n", nbClients, leftClientPacketID, client->leftClientPacketID, i, client->allreadyRemovedClients);
-					break;
-				}
-			}
+			else
+				lprintf("warning! client %s sent a boguous left client list. (lcpi=%d). (c->lcpi=%d)\n", client->userName, leftClientPacketID, client->leftClientPacketID);
 			
 		}
 	}

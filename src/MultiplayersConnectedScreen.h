@@ -29,6 +29,7 @@ public:
 	enum
 	{
 		DISCONNECT = 3,
+		DISCONNECTED = 4,
 		STARTED=11
 	};
 	MultiplayersJoin *multiplayersJoin;
