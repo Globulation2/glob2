@@ -52,12 +52,17 @@ FileManager::FileManager()
     addDir(PACKAGE_DATA_DIR);
     addDir(PACKAGE_SOURCE_DIR);
 	fileListIndex=-1;
+	dirListIndexCache=-1;
+	/*totTest=0;
+	cMiss=0;
+	cHit=0;*/
 }
 
 FileManager::~FileManager()
 {
 	clearDirList();
 	clearFileList();
+	//printf("FileManager : did %d open, cache efficiency %2.1f %\n", totTest, (float)cHit*100.0f/(float)(cHit+cMiss));
 }
 
 void FileManager::clearDirList(void)
@@ -85,21 +90,40 @@ void FileManager::addDir(const char *dir)
 	char *newDir=new char[len+1];
 	strcpy(newDir, dir);
 	dirList.push_back(newDir);
+	dirListIndexCache=0;
 }
 
 SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verboseIfNotFound)
 {
+	// try cache
+	if (dirListIndexCache>=0)
 	{
-		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-		{
-			char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-			sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		char *fn = new char[strlen(filename) + strlen(dirList[dirListIndexCache]) + 2];
+		sprintf(fn, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
+		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
+		delete[] fn;
+		//totTest++;
 
-			SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
-			delete[] fn;
-			if (fp)
-				return fp;
+		if (fp)
+			return fp;
+	}
+
+	// other wise search
+	int index=0;
+	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	{
+		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
+		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+
+		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
+		//totTest++;
+		delete[] fn;
+		if (fp)
+		{
+			dirListIndexCache=index;
+			return fp;
 		}
+		index++;
 	}
 
 	if (verboseIfNotFound)
@@ -114,15 +138,34 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 
 FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIfNotFound)
 {
+	// try cache
+	if (dirListIndexCache>=0)
+	{
+		char *fn = new char[strlen(filename) + strlen(dirList[dirListIndexCache]) + 2];
+		sprintf(fn, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
+		FILE *fp =  fopen(fn, mode);
+		//totTest++;
+		delete[] fn;
+		if (fp)
+			return fp;
+	}
+
+	// other wise search
+	int index=0;
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
 		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
 		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
 		FILE *fp =  fopen(fn, mode);
+		//totTest++;
 		delete[] fn;
 		if (fp)
+		{
+			dirListIndexCache=index;
 			return fp;
+		}
+		index++;
 	}
 
 	if (verboseIfNotFound)

@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
 	
 	globalContainer->buildingsTypes.load("data/buildings.txt");
 
-
-	if ( SDLNet_Init() < 0 ) {
+	if ( SDLNet_Init() < 0 )
+	{
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDLNet_GetError());
 		exit(1);
 	}
@@ -173,6 +173,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
+
+	delete globalContainer;
 	return 0;
 }
 

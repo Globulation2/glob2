@@ -82,7 +82,6 @@ void BasePlayer::close(void)
 		if (socket)
 		{
 			SDLNet_UDP_Close(socket);
-			socket=NULL;
 			printf("Socket closed to player %d.\n", number);
 		}
 		socket=NULL;
