@@ -44,7 +44,7 @@ Settings::Settings()
 	screenDepth = 0;
 	graphicType = DrawableSurface::GC_SDL;
 	optionFlags = 0;
-	defaultLanguage = 1;
+	defaultLanguage = 0;
 	musicVolume = 255;
 }
 
