@@ -6,7 +6,7 @@ Deutsch
 [hp]
 Pt vie
 HP
-
+leben
 [heal]
 Sante
 Heal
@@ -34,7 +34,7 @@ Drinnen
 [ressources]
 Ressources
 Ressources
-
+Ressourcen
 [wood]
 Bois
 Wood
@@ -62,7 +62,7 @@ Zertoeren
 [cancel destroy]
 Annuler detsr.
 Cancel destoy
-
+Verhindern
 [wait destroy]
 Attente destruction
 Waiting destruction
@@ -126,7 +126,7 @@ Ruesche
 [food building]
 Grenier
 Food building
-
+Speicher
 [health building]
 Hopital
 Health building
@@ -150,7 +150,7 @@ Schuhle
 [defense building]
 Tourelle
 Defence Tower
-
+Panzerturm
 [exploration flag]
 Drapeau d'exploration
 Exporation flag
@@ -318,7 +318,7 @@ Beherberger Name
 [hp%d]
 Point de vie : %d
 HitPoint : %d
-
+Lebens Punkt : %d
 [carry]
 Transporte :
 Carry :
@@ -402,7 +402,7 @@ Das Gebauede ist vertig
 [ai]
 IA
 AI
-AI
+KI
 [closed]
 Ferme
 Closed
@@ -410,7 +410,7 @@ Geschlossen
 [close]
 Fermer
 Close
-
+Schliessen
 [player]
 Joueur
 Player
@@ -526,7 +526,7 @@ Baut
 [Harvest]
 Recolte
 Harvest
-
+ernte
 [At. speed]
 Vitesse at.
 At. speed
@@ -562,11 +562,11 @@ offen
 [add AI]
 ajouter IA
 add AI
- 
+KI zugeben
 [AI]
 IA
 AI
--
+KI
 [AI name 1]
 Gros mechant
 Bag Guy
@@ -574,35 +574,35 @@ Schlecht man
 [AI name 2]
 Destructeur
 Destroyer
-
+Zerstoerer
 [AI name 3]
 Born to pete la geule
 Ne pour beak your neck
-
+geboren um zu zerstoeren
 [AI name 4]
 Cassecouille
 Agressman
-
+Agressivum
 [the games]
 les parties
 the games
-
+die Spiele
 [the maps]
 les cartes
 the maps
-
+die Karten
 [was]
 auparavent
 was
-
+vorher
 [was AI]
 auparavant IA
 was AI
-
+vorher KI
 [state]
 etat
 state
-
+Zuestand
 [start]
 depart
 start
@@ -610,4 +610,4 @@ beginnen
 [not ready]
 pas pret
 not ready
-
+nicht bereit
