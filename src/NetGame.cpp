@@ -740,7 +740,13 @@ Order *NetGame::getOrder(int playerNumber)
 		if (!good)
 		{
 			fflush(logFile);
-			assert(false);
+			//assert(false);
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])
+				{
+					printf("Player %d dropped for checksum\n", pi);
+					players[pi]->type=Player::P_LOST_FINAL;
+				}
 		}
 		
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
