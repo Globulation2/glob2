@@ -42,8 +42,9 @@ private:
 	void handleMapClick(int mx, int my);
 	void handleKeyPressed(SDLKey key, bool pressed);
 
-	void load(void);
-	void save(void);
+	void load(const char *name="default.map");
+	void save(const char *name="default.map");
+	void loadSave(bool isLoad);
 
 	void updateUnits(int x, int y, int w, int h);
 

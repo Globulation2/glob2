@@ -24,7 +24,7 @@
 #include "GlobalContainer.h"
 #include "UnitType.h"
 #include "Utilities.h"
-
+#include "GameGUILoadSave.h"
 
 
 MapEdit::MapEdit()
@@ -405,15 +405,57 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 	globalContainer->gfx->drawRect(x+1, y+1, w-2, h-2, 255, 0, 0);
 }
 
+void MapEdit::loadSave(bool isLoad)
+{
+	// create backBuffer
+	//DrawableSurface *backBuffer=globalContainer->gfx->createDrawableSurface();
+
+	// create dialog box
+	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen(".", "map", isLoad, "default.map");
+	gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+	//backBuffer->setRes(gameMenuScreen->getW(), gameMenuScreen->getH());
+
+	// save screen
+	globalContainer->gfx->setClipRect();
+	//backBuffer->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, globalContainer->gfx);
+
+	// TODO : steps
+	SDL_Event event;
+	while(gameMenuScreen->endValue<0)
+	{
+		while (SDL_PollEvent(&event))
+		{
+			gameMenuScreen->translateAndProcessEvent(&event);
+		}
+		globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
+		globalContainer->gfx->updateRect(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getW(), gameMenuScreen->getH());
+	}
+
+	if (gameMenuScreen->endValue==0)
+	{
+		if (isLoad)
+			load(gameMenuScreen->fileName);
+		else
+			save(gameMenuScreen->fileName);
+	}
+
+	// clean up
+	delete gameMenuScreen;
+
+	draw();
+
+	//delete backBuffer;
+}
+
 void MapEdit::handleMenuClick(int mx, int my, int button)
 {
 	mx-=globalContainer->gfx->getW()-128;
 	if ((my>135) && (my<167))
 	{
 		if (mx<32)
-			load();
+			loadSave(true);
 		else if (mx<64)
-			save();
+			loadSave(false);
 		else if (mx<96)
 			editMode=DELETE;
 		else
@@ -541,9 +583,9 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	drawMenu();
 }
 
-void MapEdit::load(void)
+void MapEdit::load(const char *name)
 {
-	SDL_RWops *stream=globalContainer->fileManager.open("default.map","rb");
+	SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
 	if (game.load(stream)==false)
 		fprintf(stderr, "MED : Warning, Error during map load\n");
 	SDL_RWclose(stream);
@@ -558,9 +600,9 @@ void MapEdit::load(void)
 	draw();
 }
 
-void MapEdit::save(void)
+void MapEdit::save(const char *name)
 {
-	SDL_RWops *stream=globalContainer->fileManager.open("default.map","wb");
+	SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 	game.save(stream);
 	SDL_RWclose(stream);
 }
@@ -685,12 +727,12 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 			break;
 		case SDLK_s:
 		{
-			save();
+			loadSave(false);
 		}
 		break;
 		case SDLK_l:
 		{
-			load();
+			loadSave(true);
 		}
 		break;
 		default:

@@ -46,7 +46,7 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 0));
 	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), 1));
 
-	fileName=NULL;
+	fileName=fileNameEntry->getText();
 }
 
 void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -57,6 +57,10 @@ void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int
 	{
 		fileName=fileList->getText(par1);
 		fileNameEntry->setText(fileName);
+	}
+	else if (action==TEXT_MODIFFIED)
+	{
+		fileName=fileNameEntry->getText();
 	}
 }
 
