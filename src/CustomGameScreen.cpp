@@ -20,6 +20,12 @@
 #include "CustomGameScreen.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "GUIGlob2FileList.h"
+#include "GUIMapPreview.h"
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 CustomGameScreen::CustomGameScreen()
 {
@@ -198,7 +204,12 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	}
 }
 
-void CustomGameScreen::paint(int x, int y, int w, int h)
+bool CustomGameScreen::isAIactive(int i)
 {
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	return isAI[i]->getState();
+}
+
+int CustomGameScreen::getSelectedColor(int i)
+{
+	return color[i]->getSelectedColor();
 }

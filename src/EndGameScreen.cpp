@@ -19,6 +19,11 @@
 
 #include "EndGameScreen.h"
 #include <algorithm>
+#include <GUIText.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 EndGameStat::EndGameStat(int x, int y, Game *game)
 {

@@ -27,6 +27,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+#include <GUITextInput.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
+#include <SupportFunctions.h>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46

@@ -20,7 +20,7 @@
 #ifndef __GUIGLOB2FILELIST_H
 #define __GUIGLOB2FILELIST_H
 
-#include "GUIFileList.h"
+#include <GUIFileList.h>
 
 class Glob2FileList: public FileList
 {

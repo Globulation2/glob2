@@ -26,7 +26,6 @@
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIList.h>
-#include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
@@ -56,7 +55,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(mapSize);
 	methode=new Text(440, 60+128+150, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(methode);
-	
+
 	mapFileList=new List(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	if (Toolkit::getFileManager()->initDirectoryListing("maps", "map"))
 	{
@@ -91,8 +90,6 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	mapFileList->visible=mapMode;
 	gameFileList->visible=!mapMode;
 	validSessionInfo=false;
-
-	globalContainer->gfx->setClipRect();
 }
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
