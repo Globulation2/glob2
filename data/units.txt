@@ -1,0 +1,137 @@
+// min base unit:
+startImageStopWalk = 0
+startImageStopSwim = 0
+startImageStopFly = 0
+
+startImageWalk = 0
+startImageSwim = 0
+startImageFly = 0
+startImageBuild = 0
+startImageHarvest = 0
+startImageAttack = 0
+
+
+stopWalkSpeed = 8
+stopSwimSpeed = 8
+stopFlySpeed = 0
+
+walkSpeed = 16
+swimSpeed = 16
+flySpeed = 0
+
+buildSpeed = 0
+harvestSpeed = 0
+
+attackSpeed = 0
+attackForce = 0
+
+armor = 0
+hpMax = 25
+*
+// max base unit:
+walkSpeed = 48
+swimSpeed = 48
+
+armor = 20
+hpMax = 200
+*
+// cost base unit
+// images are ignored in scalar product.
+stopWalkSpeed = 0
+stopSwimSpeed = 0
+stopFlySpeed = 0
+
+walkSpeed = 5
+swimSpeed = 5
+flySpeed = 5
+
+buildSpeed = 4
+harvestSpeed = 2
+
+attackSpeed = 6
+attackForce = 8
+armor = 8
+
+hpMax = 2
+*
+// evolvables abilities
+
+startImageStopWalk = 0
+startImageStopSwim = 0
+startImageStopFly = 0
+
+startImageWalk = 0
+startImageSwim = 0
+startImageFly = 0
+startImageBuild = 0
+startImageHarvest = 0
+startImageAttack = 0
+
+
+stopWalkSpeed = 0
+stopSwimSpeed = 0
+stopFlySpeed = 0
+
+walkSpeed = 1
+swimSpeed = 1
+flySpeed = 0
+
+buildSpeed = 1
+harvestSpeed = 1
+
+attackSpeed = 1
+attackForce = 1
+
+armor = 0
+hpMax = 0
+
+*
+
+// min Worker Unit
+startImageStopWalk = 64
+startImageStopSwim = 128
+startImageWalk = 64
+startImageSwim = 128
+startImageBuild = 192
+startImageHarvest = 192
+
+buildSpeed = 8
+harvestSpeed = 16
+*
+// max Worker Unit
+buildSpeed = 32
+harvestSpeed = 64
+*
+// cost Worker Unit
+*
+
+// min Explorer Unit
+startImageStopFly = 0
+startImageFly = 0
+
+walkSpeed = 0
+swimSpeed = 0
+flySpeed = 16
+*
+// max Explorer Unit
+flySpeed = 48
+*
+// cost Explorer Unit
+*
+
+// min Warror Unit
+startImageStopWalk = 256
+startImageStopSwim = 320
+startImageWalk = 256
+startImageSwim = 320
+startImageAttack = 384
+
+attackSpeed = 16
+attackForce = 8
+*
+// max Warror Unit
+attackSpeed = 32
+attackForce = 32
+*
+// cost Warror Unit
+*

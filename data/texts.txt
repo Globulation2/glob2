@@ -1,0 +1,140 @@
+2
+[hp]
+HP
+HP
+[heal]
+Sante
+Heal
+[armor]
+Armure
+Armor
+[damage]
+Domages
+Damage
+[food]
+Nouriture
+Food
+[working]
+Travaillant
+Working
+[inside]
+Dedans
+Inside
+[ressources]
+Ressources
+Ressources
+[wood]
+Bois
+Wood
+[corn]
+Ble
+Corn
+[stone]
+Pierre
+stone
+[Alga]
+Algue
+Alga
+[range]
+Portee
+Range
+[destroy]
+Detruire
+Destroy
+[wait destroy]
+Attente destruction
+Waiting destruction
+[upgrade]
+Ameliorer
+Upgrade
+[wait upgrade]
+Attente amelioration
+Waiting upgrade
+[wait upgrade room]
+Attente place
+Waiting room
+[need room to start upgarde]
+Pas assez de place
+Not enough room
+[unit type]
+Type d'unite
+Unit type
+[worker]
+Ouvriere
+Worker
+[Explorer]
+Exploratrice
+Explorer
+[Warrior]
+Guerriere
+Warrior
+[still (w)]
+ 
+Still 
+[units working]
+  unites travaillent
+  units work
+[still one unit working]
+Une unite travaille
+Still one unit working
+[still (i)]
+ 
+Still 
+[units inside]
+  unites dedans
+  units inside
+[still one unit inside]
+Une unite dedans
+Still one unit inside
+[building name]
+Nom du batiment
+Building name
+[swarm building]
+Ruche
+Swarm
+[food building]
+Batiment de nourriture
+Food building
+[health building]
+Batiment de sante
+Health building
+[walkspeed building]
+Batiment de marche
+Walk building
+[swimspeed building]
+Batiment de nage
+Swim building
+[attack building]
+Batiment de combat
+Fighting building
+[science building]
+Batiment de science
+Research center
+[defense building]
+Tourelle
+Defence Tower
+[exploration flag]
+Drapeau d'exploration
+Exporation flag
+[war flag]
+Drapeau de guerre
+War flag
+[l units free]
+ 
+ 
+[r units free]
+  unites libres
+  units free
+[one unit free]
+Une unite libre
+One unit free
+[no unit free]
+Pas d'unites libres
+No unit free
+[l waiting for player]
+Attente du joueur 
+Waiting for player 
+[r waiting for player]
+  
+  
+

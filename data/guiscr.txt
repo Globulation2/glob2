@@ -1,0 +1,30 @@
+# Les indications sont donnees de la facon suivante:
+# 
+# nom_de_l_ecran
+# nom_du_bouton
+# position_x position_y
+# taille_x taille_y
+# 
+guiscr2
+host
+250 150
+140 60
+join
+270 230
+120 60
+cancel
+190 310
+180 60
+# 
+guiscr3
+start
+270 200
+140 60
+cancel
+210 280
+180 60
+# 
+guiscr4
+cancel
+230 280
+180 60
