@@ -1462,9 +1462,33 @@ void GameGUI::draw(void)
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, globalContainer->texts.getString("[unit type]", selUnit->typeNum));
-			
+
+			Uint8 r, g, b;
+
+			if (selUnit->hp<=selUnit->trigHP)
+				{ r=255; g=0; b=0; }
+			else
+				{ r=0; g=255; b=0; }
+
+			globalContainer->littleFont->pushColor(r, g, b);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
+			globalContainer->littleFont->popColor();
+
+			int realTrigHungry;
+			if (selUnit->caryedRessource==-1)
+				realTrigHungry=selUnit->trigHungry;
+			else
+				realTrigHungry=selUnit->trigHungryCarying;
+
+			if (selUnit->hungry<=realTrigHungry)
+				{ r=255; g=0; b=0; }
+			else
+				{ r=0; g=255; b=0; }
+
+			globalContainer->littleFont->pushColor(r, g, b);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+36, globalContainer->littleFont, "%s : %2.0f %%", globalContainer->texts.getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX);
+			globalContainer->littleFont->popColor();
+
 			if (selUnit->performance[HARVEST])
 			{
 				if (selUnit->caryedRessource>=0)
