@@ -127,7 +127,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			if (validSessionInfo)
 				endExecute(OK);
 			else
-				printf("PGU : This is not a valid map!\n");
+				std::cerr << "MultiplayersChooseMapScreen::onAction : No valid game selected" << std::endl;
 		}
 		else if (source==cancel)
 			endExecute(par1);
