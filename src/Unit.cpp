@@ -903,18 +903,8 @@ void Unit::handleDisplacement(void)
 						hungry=HUNGRY_MAX;
 						attachedBuilding->ressources[CORN]--;
 						assert(attachedBuilding->ressources[CORN]>=0);
-						fruitMask=0;
-						fruitCount=0;
-						for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
-						{
-							unsigned resId=i+HAPPYNESS_BASE;
-							if (attachedBuilding->ressources[resId])
-							{
-								attachedBuilding->ressources[resId]--;
-								fruitMask|=(1<<i);
-								fruitCount++;
-							}
-						}
+						fruitCount=attachedBuilding->getFruits(&fruitMask);
+
 						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
