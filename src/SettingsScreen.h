@@ -45,6 +45,7 @@ public:
 		HWACCLEL = 4,
 		DBLBUFF = 5,
 		LOWQUALITY = 6,
+		CUSTOMCUR = 7,
 	};
 private:
 	List *languageList;
@@ -55,10 +56,10 @@ private:
 	int oldLanguage, oldScreenW, oldScreenH, oldScreenDepth, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol;
 	
 	TextButton *ok, *cancel;
-	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality;
+	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality, *customcur;
 	Selector *musicVol;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
+	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *customcurText, *musicVolText;
 	Text *actDisplay;
 	Text *rebootWarning;
 

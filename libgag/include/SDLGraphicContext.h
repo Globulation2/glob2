@@ -122,6 +122,7 @@ namespace GAGCore
 			FULLSCREEN=2,
 			HWACCELERATED=4,
 			RESIZABLE=8,
+			CUSTOMCURSOR=16,
 		};
 		
 		enum Quality

@@ -316,3 +316,4 @@
 [audio]
 [Music volume]
 [Happyness]
+[customcur]

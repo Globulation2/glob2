@@ -198,6 +198,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.screenFlags &= ~DrawableSurface::HWACCELERATED;
 			continue;
 		}
+		
+		if (strcmp(argv[i], "-c")==0)
+		{
+			settings.screenFlags |= DrawableSurface::CUSTOMCURSOR;
+			continue;
+		}
+		if (strcmp(argv[i], "-C")==0)
+		{
+			settings.screenFlags &= ~DrawableSurface::CUSTOMCURSOR;
+			continue;
+		}
 
 		if (strcmp(argv[i], "-r")==0)
 		{
@@ -241,16 +252,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
+			printf("-t\ttype of gfx rendere: 0 = SDL, 1 = OpenGL\n");
+			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
-			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
-			printf("-v\tset the music volume\n");
-			printf("-m\tmute the music\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
 			printf("-b/-B\tenable/disable double buffering (useful on OS X in fullscreen)\n");
+			printf("-c/-C\tenable/disable custom cursor\n");
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
 			printf("-h\thigh speed graphics: max of transparency effects\n");
-			printf("-t\ttype of gfx rendere: 0 = SDL, 1 = OpenGL\n");
+			printf("-v\tset the music volume\n");
+			printf("-m\tmute the music\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");

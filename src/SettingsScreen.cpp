@@ -74,25 +74,32 @@ SettingsScreen::SettingsScreen()
 	depthList->addText("16");
 	addWidget(depthList);
 
-	fullscreen=new OnOffButton(200, 90+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(200, 90+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
 	fullscreenText=new Text(20, 90+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
 	
-	lowquality=new OnOffButton(200, 120+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	lowquality=new OnOffButton(200, 115+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	lowqualityText=new Text(20, 120+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
+	lowqualityText=new Text(20, 115+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
 	addWidget(lowqualityText);
+	
+	dblbuff=new OnOffButton(200, 140+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
+	addWidget(dblbuff);
+	dblbuffText=new Text(20, 140+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
+	addWidget(dblbuffText);
 
-	hwaccel=new OnOffButton(200, 180+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
+
+	hwaccel=new OnOffButton(200, 165+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	hwaccelText=new Text(20, 180+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
+	hwaccelText=new Text(20, 165+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
-	dblbuff=new OnOffButton(200, 150+80, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
-	addWidget(dblbuff);
-	dblbuffText=new Text(20, 150+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
-	addWidget(dblbuffText);
+	customcur=new OnOffButton(200, 190+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::CUSTOMCURSOR, CUSTOMCUR);
+	addWidget(customcur);
+	customcurText=new Text(20, 190+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[customcur]"), 160);
+	addWidget(customcurText);
+	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);
@@ -189,6 +196,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			hwaccelText->setText(Toolkit::getStringTable()->getString("[hwaccel]"));
 			dblbuffText->setText(Toolkit::getStringTable()->getString("[dblbuff]"));
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
+			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			
@@ -262,6 +270,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			else
 			{
 				globalContainer->settings.screenFlags&=~(DrawableSurface::DOUBLEBUF);
+			}
+			updateGfxCtx();
+		}
+		else if (source==customcur)
+		{
+			if (customcur->getState())
+			{
+				globalContainer->settings.screenFlags|=DrawableSurface::CUSTOMCURSOR;
+			}
+			else
+			{
+				globalContainer->settings.screenFlags&=~(DrawableSurface::CUSTOMCURSOR);
 			}
 			updateGfxCtx();
 		}

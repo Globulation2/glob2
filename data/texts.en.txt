@@ -634,3 +634,5 @@ Audio
 Volume (music)
 [Happyness]
 Happiness
+[customcur]
+Custom cursor
