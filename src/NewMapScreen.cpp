@@ -24,7 +24,7 @@ HowNewMapScreen::HowNewMapScreen()
 {
 	addWidget(new TextButton( 20, 340, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[new]"), NEW, 13));
 	addWidget(new TextButton(340, 340, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load]"), LOAD));
-	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 }
 
 void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -183,7 +183,7 @@ NewMapScreen::NewMapScreen()
 	// all
 	
 	addWidget(new TextButton( 20, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
-	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 
 	char *text= globalContainer->texts.getString("[create map]");
 	addWidget(new Text(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text));
