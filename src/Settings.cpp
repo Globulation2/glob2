@@ -41,7 +41,7 @@ Settings::Settings()
 	screenHeight=480;
 	graphicType=DrawableSurface::GC_SDL;
 	optionFlags=0;
-	defaultLanguage=0;
+	defaultLanguage=1;
 	musicVolume=255;
 }
 
