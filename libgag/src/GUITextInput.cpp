@@ -101,136 +101,155 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		SDLKey sym=event->key.keysym.sym;
 		SDLMod mod=event->key.keysym.mod;
 
-		if (sym==SDLK_RIGHT)
+		switch (sym)
 		{
-			unsigned l=text.length();
-			if (mod&KMOD_CTRL)
+			case SDLK_RIGHT:
 			{
-				bool cont=true;
-				while ((cursPos<l) && cont)
+				unsigned l=text.length();
+				if (mod&KMOD_CTRL)
 				{
-					cursPos=getNextUTF8Char(text.c_str(), cursPos);
-					switch (text[cursPos])
+					bool cont=true;
+					while ((cursPos<l) && cont)
 					{
-						case '.':
-						case ' ':
-						case '\t':
-						case ',':
-						case '\'':
-						cont=false;
-						default:
-						break;
+						cursPos=getNextUTF8Char(text.c_str(), cursPos);
+						switch (text[cursPos])
+						{
+							case '.':
+							case ' ':
+							case '\t':
+							case ',':
+							case '\'':
+							cont=false;
+							default:
+							break;
+						}
 					}
-				}
-				repaint();
-				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-			}
-			else
-			{
-				if (cursPos<l)
-				{
-					cursPos=getNextUTF8Char(text.c_str(), cursPos);
 					repaint();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
-			}
-		}
-		else if (sym==SDLK_LEFT)
-		{
-			if (mod&KMOD_CTRL)
-			{
-				bool cont=true;
-				while ((cursPos>0) && cont)
+				else
 				{
-					cursPos=getPrevUTF8Char(text.c_str(), cursPos);
-					switch (text[cursPos])
+					if (cursPos<l)
 					{
-						case '.':
-						case ' ':
-						case '\t':
-						case ',':
-						case '\'':
-						cont=false;
-						default:
-						break;
+						cursPos=getNextUTF8Char(text.c_str(), cursPos);
+						repaint();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
-				repaint();
-				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 			}
-			else
+			break;
+			
+			case SDLK_LEFT:
+			{
+				if (mod&KMOD_CTRL)
+				{
+					bool cont=true;
+					while ((cursPos>0) && cont)
+					{
+						cursPos=getPrevUTF8Char(text.c_str(), cursPos);
+						switch (text[cursPos])
+						{
+							case '.':
+							case ' ':
+							case '\t':
+							case ',':
+							case '\'':
+							cont=false;
+							default:
+							break;
+						}
+					}
+					repaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
+				else
+				{
+					if (cursPos>0)
+					{
+						cursPos=getPrevUTF8Char(text.c_str(), cursPos);
+						repaint();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					}
+				}
+			}
+			break;
+			
+			case SDLK_BACKSPACE:
 			{
 				if (cursPos>0)
 				{
-					cursPos=getPrevUTF8Char(text.c_str(), cursPos);
+					unsigned last=getPrevUTF8Char(text.c_str(), cursPos);
+	
+					text.erase(last, cursPos-last);
+	
+					cursPos=last;
+	
 					repaint();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
 			}
-		}
-		else if (sym==SDLK_BACKSPACE)
-		{
-			if (cursPos>0)
+			break;
+			
+			case SDLK_DELETE:
 			{
-				unsigned last=getPrevUTF8Char(text.c_str(), cursPos);
-
-				text.erase(last, cursPos-last);
-
-				cursPos=last;
-
-				repaint();
-				parent->onAction(this, TEXT_MODIFIED, 0, 0);
-			}
-
-		}
-		else if (sym==SDLK_DELETE)
-		{
-			if (cursPos<text.length())
-			{
-				int utf8l=getNextUTF8Char(text[cursPos]);
-
-				text.erase(cursPos, utf8l);
-
-				repaint();
-				parent->onAction(this, TEXT_MODIFIED, 0, 0);
-			}
-		}
-		else if (sym==SDLK_HOME)
-		{
-			cursPos=0;
-			repaint();
-			parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-		}
-		else if (sym==SDLK_END)
-		{
-			cursPos=text.length();
-			repaint();
-			parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-		}
-		else if (sym==SDLK_RETURN)
-		{
-			parent->onAction(this, TEXT_VALIDATED, 0, 0);
-		}
-		else if (sym==SDLK_ESCAPE)
-		{
-			parent->onAction(this, TEXT_CANCELED, 0, 0);
-		}
-		else
-		{
-			Uint16 c=event->key.keysym.unicode;
-			if (c)
-			{
-				char utf8text[4];
-				UCS16toUTF8(c, utf8text);
-				unsigned lutf8=strlen(utf8text);
-				if ((maxLength==0) || (text.length()+lutf8<maxLength))
+				if (cursPos<text.length())
 				{
-					text.insert(cursPos, utf8text);
-					cursPos+=lutf8;
-
+					int utf8l=getNextUTF8Char(text[cursPos]);
+	
+					text.erase(cursPos, utf8l);
+	
 					repaint();
-
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
+				}
+			}
+			break;
+			
+			case SDLK_HOME:
+			{
+				cursPos=0;
+				repaint();
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+			}
+			break;
+			
+			case SDLK_END:
+			{
+				cursPos=text.length();
+				repaint();
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+			}
+			break;
+			
+			case SDLK_RETURN:
+			case SDLK_KP_ENTER:
+			{
+				parent->onAction(this, TEXT_VALIDATED, 0, 0);
+			}
+			break;
+			
+			case SDLK_ESCAPE:
+			{
+				parent->onAction(this, TEXT_CANCELED, 0, 0);
+			}
+			break;
+			
+			default:
+			{
+				Uint16 c=event->key.keysym.unicode;
+				if (c)
+				{
+					char utf8text[4];
+					UCS16toUTF8(c, utf8text);
+					unsigned lutf8=strlen(utf8text);
+					if ((maxLength==0) || (text.length()+lutf8<maxLength))
+					{
+						text.insert(cursPos, utf8text);
+						cursPos+=lutf8;
+	
+						repaint();
+	
+						parent->onAction(this, TEXT_MODIFIED, 0, 0);
+					}
 				}
 			}
 		}
