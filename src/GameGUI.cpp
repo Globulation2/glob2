@@ -1731,7 +1731,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		my -= YPOS_BASE_FLAG;
 		if (my > YOFFSET_BRUSH)
 		{
-			// change the brush type (forbidden, guard) if necessary
+			// change the brush type (forbidden, guard, clear) if necessary
 			if (my < YOFFSET_BRUSH+40)
 			{
 				if (mx < 44)
@@ -2651,10 +2651,10 @@ void GameGUI::drawPanel(void)
 			int buildingInfoStart = globalContainer->gfx->getH()-50;
 			if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
 			{
-				mouseX -= (globalContainer->gfx->getW() - 128);
-				if (mouseX < 44)
+				int panelMouseX = mouseX - globalContainer->gfx->getW() + 128;
+				if (panelMouseX < 44)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
-				else if (mouseX < 84)
+				else if (panelMouseX < 84)
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
 				else
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[clear area]");
