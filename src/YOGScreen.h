@@ -31,7 +31,6 @@ public:
 	enum
 	{
 		EXIT=-1,
-		NONE=0,
 		CANCEL=2,
 		CREATE_GAME=3,
 		UPDATE_LIST=4,
@@ -49,11 +48,12 @@ public:
 
 protected:
 	List *gameList;
+	List *playerList;
 	TextInput *textInput;
 	TextArea *chatWindow;
-	Uint32 timerCounter; // used to update list every 32 timer call
 
-	void updateList(void);
+	void updateGameList(void);
+	void updatePlayerList(void);
 
 private:
 	YOG::GameInfo *selectedGameInfo;

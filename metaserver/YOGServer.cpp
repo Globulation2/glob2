@@ -20,13 +20,15 @@
 
 #include "../src/Marshaling.h"
 #include "YOGServer.h"
-#include "YOGClient.h"
+
+FILE *logServer;
+YOGClient *admin;
 
 YOGServer::YOGServer()
 {
 	socket=NULL;
 	running=false;
-	admin=NULL;
+	gameUID=1;
 }
 
 YOGServer::~YOGServer()
@@ -114,43 +116,6 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	SDLNet_FreePacket(packet);
 }
 
-void YOGServer::sendGameList(YOGClient *client)
-{
-	int nbGames=0;
-	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->gameip.host && (*game)->host->gameip.port)
-			nbGames++;
-	int size=(4+2+32+128)*nbGames+4;
-	Uint8 data[size];
-	addUint32(data, nbGames, 0); // This is redundancy
-	int index=4;
-	int tot=0;
-	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->gameip.host && (*game)->host->gameip.port)
-		{
-			addUint32(data, (*game)->host->gameip.host, index);
-			index+=4;
-			addUint16(data, (*game)->host->gameip.port, index);
-			index+=2;
-			int l;
-			l=strlen((*game)->host->userName)+1;
-			assert(l<=32);
-			//lprintf("(%s)l=%d, ", (*game)->host->userName, l);
-			memcpy(data+index, (*game)->host->userName, l);
-			index+=l;
-
-			l=strlen((*game)->name)+1;
-			//lprintf("(%s)l=%d.\n", (*game)->name, l);
-			assert(l<=128);
-			memcpy(data+index, (*game)->name, l);
-			index+=l;
-			if (++tot>=16)
-				break; //TODO: allow more than 16 shared games !
-		}
-	client->send(YMT_REQUEST_SHARED_GAMES_LIST, data, index);
-	lprintf("sent %d games list to %s\n", nbGames, client->userName);
-}
-
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 {
 	//lprintf("packet type (%d, %d) received by ip=%d.%d.%d.%d port=%d\n", data[0], data[1], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
@@ -186,12 +151,21 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			char userName[32];
 			memset(userName, 0, 32);
 			strncpy(userName, (char *)data+4, 32);
-			if (userName[31]!=0)
-				lprintf("warning, non-zero ending string!\n");
 			userName[31]=0;
 			
 			YOGClient *yogClient=new YOGClient(ip, socket, userName);
+			
+			for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+				yogClient->addClient(*c);
+			
 			clients.push_back(yogClient);
+			
+			for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); game++)
+				yogClient->addGame(*game);
+			
+			for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+				(*c)->addClient(yogClient);
+			
 			
 			if (data[1]==1)
 			{
@@ -213,10 +187,24 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				lprintf("client \"%s\" deconnected.\n", (*client)->userName);
 				if ((*client)->sharingGame)
 				{
+					Uint32 uid=(*client)->sharingGame->uid;
+					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+					{
+						(*c)->removeGame(uid);
+						(*c)->removeUselessGames();
+					}
 					games.remove((*client)->sharingGame);
 					delete (*client)->sharingGame;
 				}
 				(*client)->sharingGame=NULL;
+				
+				Uint32 uid=(*client)->uid;
+				for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+				{
+					(*c)->removeClient(uid);
+					(*c)->removeUselessClients();
+				}
+				
 				if (*client==admin)
 					admin=NULL;
 				delete (*client);
@@ -257,8 +245,6 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				lprintf("warning, non-zero ending string!\n");
 			m.text[size-4]=0;
 			m.textLength=size-4;
-			m.timeout=0;
-			m.TOTL=3;
 			strncpy(m.userName, c->userName, 32);
 			if (m.userName[31]!=0)
 				lprintf("warning, non-zero ending userName!\n");
@@ -300,6 +286,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			{
 				lprintf("message (%s) delivered to (%s)\n", mit->text, (*sender)->userName);
 				(*sender)->messages.erase(mit);
+				(*sender)->messageTOTL=3;
+				(*sender)->messageTimeout=1;//TODO:here you can improve the TCP/IP friendlyness
 			}
 		}
 	}
@@ -334,6 +322,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				lprintf("warning, non-zero ending game name!\n");
 			game->name[127]=0;
 			game->host=host;
+			game->uid=gameUID++;
 			games.push_back(game);
 			host->sharingGame=game;
 			lprintf("%s is hosting a game called %s.\n", host->userName, game->name);
@@ -370,18 +359,25 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 					break;
 				}
 			assert(good); // This is a database consistency.
+			Uint32 uid=(*game)->uid;
+			for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+			{
+				(*c)->removeGame(uid);
+				(*c)->removeUselessGames();
+			}
 			games.erase(game);
 			lprintf("%s stop hosting the game called %s.\n", host->userName, (*game)->name);
 			host->sharingGame=NULL;
+			host->gameip.host=0;
 			delete (*game);
 		}
 	}
 	break;
-	case YMT_REQUEST_SHARED_GAMES_LIST:
+	case YMT_GAMES_LIST:
 	{
-		if (size>4)
+		if (size!=4)
 		{
-			lprintf("bad message size (%d).\n", size);
+			lprintf("bad game list size (%d).\n", size);
 			break;
 		}
 		
@@ -395,7 +391,111 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				break;
 			}
 		if (good)
-			sendGameList(*sender);
+		{
+			YOGClient *c=*sender;
+			int nbGames=(int)data[1];
+			lprintf("client %s received a %d games list.\n", c->userName, nbGames);
+			for (int i=0; i<nbGames; i++)
+			{
+				std::list<Game *>::iterator game=c->games.begin();
+				lprintf("%d game %s\n", i, (*game)->name);
+				assert(game!=c->games.end());
+				c->games.erase(game);
+			}
+		}
+	}
+	break;
+	case YMT_UNSHARED_LIST:
+	{
+		if (size!=4)
+		{
+			lprintf("bad unshared list size (%d).\n", size);
+			break;
+		}
+		
+		bool good=false; // is he connected ?
+		std::list<YOGClient *>::iterator sender;
+		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				(*sender)->TOTL=3;
+				good=true;
+				break;
+			}
+		if (good)
+		{
+			YOGClient *c=*sender;
+			int nbUnshared=(int)data[1];
+			lprintf("client %s received a %d unshare list.\n", c->userName, nbUnshared);
+			for (int i=0; i<nbUnshared; i++)
+			{
+				std::list<Uint32>::iterator uid=c->unshared.begin();
+				assert(uid!=c->unshared.end());
+				c->unshared.erase(uid);
+			}
+		}
+	}
+	break;
+	case YMT_CLIENTS_LIST:
+	{
+		if (size!=4)
+		{
+			lprintf("bad client list size (%d).\n", size);
+			break;
+		}
+		
+		bool good=false; // is he connected ?
+		std::list<YOGClient *>::iterator sender;
+		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				(*sender)->TOTL=3;
+				good=true;
+				break;
+			}
+		if (good)
+		{
+			YOGClient *client=*sender;
+			int nbClients=(int)data[1];
+			lprintf("client %s received a %d client list.\n", client->userName, nbClients);
+			for (int i=0; i<nbClients; i++)
+			{
+				std::list<YOGClient *>::iterator c=client->clients.begin();
+				assert(c!=client->clients.end());
+				client->clients.erase(c);
+			}
+		}
+	}
+	break;
+	case YMT_LEFT_CLIENTS_LIST:
+	{
+		if (size!=4)
+		{
+			lprintf("bad left client list size (%d).\n", size);
+			break;
+		}
+		
+		bool good=false; // is he connected ?
+		std::list<YOGClient *>::iterator sender;
+		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				(*sender)->TOTL=3;
+				good=true;
+				break;
+			}
+		if (good)
+		{
+			YOGClient *client=*sender;
+			int nbClients=(int)data[1];
+			lprintf("client %s received a %d left client list.\n", client->userName, nbClients);
+			for (int i=0; i<nbClients; i++)
+			{
+				std::list<Uint32>::iterator uid=client->leftClients.begin();
+				assert(uid!=client->leftClients.end());
+				client->leftClients.erase(uid);
+			}
+		}
 	}
 	break;
 	case YMT_CONNECTION_PRESENCE:
@@ -424,14 +524,10 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		if (id)
 		{
-			if (logClient)
-				fclose(logClient);
 			if (logServer)
 				fclose(logServer);
 			send(ip, YMT_FLUSH_FILES);
 			char s[128];
-			snprintf(s, 128, "YOGClient%d.log", id);
-			logClient=fopen(s, "w");
 			snprintf(s, 128, "YOGServer%d.log", id);
 			logServer=fopen(s, "w");
 		}
@@ -463,24 +559,18 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_GAME_SOCKET:
 	{
-		//send(ip, YMT_GAME_SOCKET);
-		bool good=false;
 		//send(ip, YMT_GAME_SOCKET);TODO: to which socket do we send it ?
 		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
-			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)//TODO: check username too
+			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)//TODO: check username too?
 			{
 				if ((*sender)->gameip.host==0) // is it new ?
-					good=true;
+					for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+						(*client)->addGame((*sender)->sharingGame);
 				(*sender)->gameip=ip;
 				lprintf("Client %s has a gameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
 				(*sender)->send(YMT_GAME_SOCKET);
 				break;
 			}
-		if (good)
-		{
-			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
-				sendGameList(*client);
-		}
 	}
 	break;
 	}
@@ -515,22 +605,75 @@ void YOGServer::run()
 		for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 		{
 			YOGClient *c=*client;
-			if (c->messages.size()>0)
+			if (c->messages.size()>0 && c->messageTimeout--<=0)
 			{
 				std::list<Message>::iterator mit=c->messages.begin();
-				if (mit->timeout--<=0)
-					if (mit->TOTL--<=0)
-					{
-						lprintf("unable to deliver message (%s) to (%s)\n", mit->text, c->userName);
-						c->messages.erase(mit);
-						break;
-					}
-					else
-					{
-						mit->timeout=DEFAULT_NETWORK_TIMEOUT;
-						c->send(*mit);
-					}
+				if (c->messageTOTL--<=0)
+				{
+					lprintf("unable to deliver message (%s) to (%s)\n", mit->text, c->userName);
+					c->messages.erase(mit);
+					break;
+				}
+				else
+				{
+					c->messageTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->send(*mit);
+				}
 			}
+			
+			
+			if (c->sharingGame==NULL && c!=admin && c->games.size()>0 && c->gamesTimeout--<=0 )
+				if (c->gamesTOTL--<=0)
+				{
+					lprintf("unable to deliver %d games to (%s)\n", c->games.size(), c->userName);
+					c->games.clear();
+					break;
+				}
+				else
+				{
+					c->gamesTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->sendGames();
+				}
+			
+			if (c->sharingGame==NULL && c!=admin && c->unshared.size()>0 && c->unsharedTimeout--<=0 )
+				if (c->unsharedTOTL--<=0)
+				{
+					lprintf("unable to deliver unshared games to (%s)\n", c->userName);
+					c->unshared.clear();
+					break;
+				}
+				else
+				{
+					c->unsharedTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->sendUnshared();
+				}
+			
+			
+			if (c->sharingGame==NULL && c!=admin && c->clients.size()>0 && c->clientsTimeout--<=0 )
+				if (c->clientsTOTL--<=0)
+				{
+					lprintf("unable to deliver %d clients to (%s)\n", c->clients.size(), c->userName);
+					c->clients.clear();
+					break;
+				}
+				else
+				{
+					c->clientsTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->sendClients();
+				}
+			
+			if (c->sharingGame==NULL && c!=admin && c->leftClients.size()>0 && c->leftClientsTimeout--<=0 )
+				if (c->leftClientsTOTL--<=0)
+				{
+					lprintf("unable to deliver leftClients to (%s)\n", c->userName);
+					c->leftClients.clear();
+					break;
+				}
+				else
+				{
+					c->leftClientsTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->sendLeftClients();
+				}
 		}
 		
 		// We look for disconnected clients:
@@ -544,10 +687,24 @@ void YOGServer::run()
 					lprintf("Client %s timed out.\n", (*client)->userName);
 					if ((*client)->sharingGame)
 					{
+						Uint32 uid=(*client)->sharingGame->uid;
+						for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+						{
+							(*c)->removeGame(uid);
+							(*c)->removeUselessGames();
+						}
 						games.remove((*client)->sharingGame);
 						delete (*client)->sharingGame;
 					}
 					(*client)->sharingGame=NULL;
+					
+					Uint32 uid=(*client)->uid;
+					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+					{
+						(*c)->removeClient(uid);
+						(*c)->removeUselessClients();
+					}
+					
 					if (*client==admin)
 						admin=NULL;
 					delete (*client);
@@ -564,6 +721,7 @@ void YOGServer::run()
 	}
 	lprintf("YOGServer is down and exiting.\n");
 }
+
 
 void YOGServer::lprintf(const char *msg, ...)
 {
@@ -592,7 +750,7 @@ void YOGServer::lprintf(const char *msg, ...)
 
 int main(int argc, char *argv[])
 {
-	logClient=fopen("YOGClient.log", "w");
+	admin=NULL;
 	logServer=fopen("YOGServer.log", "w");
 	
 	YOGServer yogServer;

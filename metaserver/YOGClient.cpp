@@ -18,6 +18,10 @@
 */
 
 #include "YOGClient.h"
+#include "../src/Marshaling.h"
+
+extern FILE *logServer;
+extern YOGClient *admin;
 
 YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 {
@@ -29,11 +33,21 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	
 	lastSentMessageID=0;
 	lastMessageID=0;
+	messageTimeout=0;
+	messageTOTL=3;
 	
 	sharingGame=NULL;
 	
 	timeout=0;
 	TOTL=3;
+	
+	gamesTimeout=0;
+	gamesTOTL=3;
+	unsharedTimeout=0;
+	unsharedTOTL=3;
+	
+	static Uint32 clientUID=1;
+	uid=clientUID++;
 }
 
 YOGClient::~YOGClient()
@@ -49,7 +63,7 @@ void YOGClient::send(YOGMessageType v)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -57,7 +71,7 @@ void YOGClient::send(YOGMessageType v)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -70,7 +84,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -78,7 +92,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -86,7 +100,7 @@ void YOGClient::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 
 	packet->len=size;
 	memcpy((char *)packet->data, data, size);
@@ -94,7 +108,7 @@ void YOGClient::send(Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -103,7 +117,7 @@ void YOGClient::send(YOGMessageType v, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	{
@@ -120,7 +134,7 @@ void YOGClient::send(YOGMessageType v, Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -129,7 +143,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	{
@@ -146,7 +160,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -156,7 +170,7 @@ void YOGClient::send(const Message &m)
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=size;
@@ -174,6 +188,206 @@ void YOGClient::send(const Message &m)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logClient, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
+}
+
+void YOGClient::sendGames()
+{
+	int nbGames=games.size();
+	if (nbGames>16)
+		nbGames=16;
+	int size=(4+2+4+32+128)*nbGames+4;
+	Uint8 data[size];
+	addUint32(data, nbGames, 0); // This is redundancy
+	int index=4;
+	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
+		if ((*game)->host->gameip.host && (*game)->host->gameip.port)
+		{
+			addUint32(data, (*game)->host->gameip.host, index);
+			index+=4;
+			addUint16(data, (*game)->host->gameip.port, index);
+			index+=2;
+			addUint32(data, (*game)->uid, index);
+			index+=4;
+			int l;
+			l=strlen((*game)->host->userName)+1;
+			assert(l<=32);
+			//lprintf("(%s)l=%d, ", (*game)->host->userName, l);
+			memcpy(data+index, (*game)->host->userName, l);
+			index+=l;
+
+			l=strlen((*game)->name)+1;
+			//lprintf("(%s)l=%d.\n", (*game)->name, l);
+			assert(l<=128);
+			memcpy(data+index, (*game)->name, l);
+			index+=l;
+		}
+	send(YMT_GAMES_LIST, data, index);
+	lprintf("sent a %d games list to %s\n", nbGames, userName);
+}
+
+
+void YOGClient::sendUnshared()
+{
+	int nbUnshared=unshared.size();
+	if (nbUnshared>256)
+		nbUnshared=256;
+	int size=4*nbUnshared+4;
+	Uint8 data[size];
+	addUint32(data, nbUnshared, 0); // This is redundancy
+	int index=4;
+	for (std::list<Uint32>::iterator uid=unshared.begin(); uid!=unshared.end(); ++uid)
+	{
+		addUint32(data, *uid, index);
+		index+=4;
+	}
+	send(YMT_UNSHARED_LIST, data, index);
+	lprintf("sent a %d unshared list to %s\n", nbUnshared, userName);
+}
+
+void YOGClient::addGame(Game *game)
+{
+	games.push_back(game);
+	if (games.size()>256)
+		gamesTimeout=0;
+	else
+		gamesTimeout=10;
+	gamesTOTL=3;
+}
+
+void YOGClient::removeGame(Uint32 uid)
+{
+	unshared.push_back(uid);
+	if (unshared.size()>256)
+		unsharedTimeout=0;
+	else
+		unsharedTimeout=10;
+	unsharedTOTL=3;
+}
+
+void YOGClient::removeUselessGames()
+{
+	for (std::list<Uint32>::iterator uid=unshared.begin(); uid!=unshared.end(); ++uid)
+		for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
+			if ((*game)->uid==*uid)
+			{
+				games.erase(game);
+				break;
+			}
+}
+
+void YOGClient::removeUselessGamesAndUnshared()
+{
+	int size=unshared.size();
+	for (int i=0; i<size; i++)
+	{
+		for (std::list<Uint32>::iterator uid=unshared.begin(); uid!=unshared.end(); ++uid)
+			for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
+				if ((*game)->uid==*uid)
+				{
+					games.erase(game);
+					unshared.erase(uid);
+					goto doublebreak;
+				}
+		doublebreak:;
+	}
+	
+}
+
+void YOGClient::sendClients()
+{
+	int nbClients=clients.size();
+	if (nbClients>32)
+		nbClients=32;
+	int size=(32+4)*nbClients+4;
+	Uint8 data[size];
+	addUint32(data, nbClients, 0); // This is redundancy
+	int index=4;
+	for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+	{
+		addUint32(data, (*client)->uid, index);
+		index+=4;
+		int l=strlen((*client)->userName)+1;
+		assert(l<=32);
+		memcpy(data+index, (*client)->userName, l);
+		index+=l;
+		assert(index<size);
+	}
+	send(YMT_CLIENTS_LIST, data, index);
+	lprintf("sent a %d clients list to %s\n", nbClients, userName);
+}
+
+void YOGClient::sendLeftClients()
+{
+	int nbClients=leftClients.size();
+	if (nbClients>32)
+		nbClients=32;
+	int size=4*nbClients+4;
+	Uint8 data[size];
+	addUint32(data, nbClients, 0); // This is redundancy
+	int index=4;
+	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
+	{
+		addUint32(data, *uid, index);
+		lprintf("uid=%d.\n", *uid);
+		index+=4;
+	}
+	send(YMT_LEFT_CLIENTS_LIST, data, index);
+	lprintf("sent a %d left clients list to %s\n", nbClients, userName);
+}
+
+void YOGClient::addClient(YOGClient *client)
+{
+	clients.push_back(client);
+	if (clients.size()>32)
+		clientsTimeout=0;
+	else
+		clientsTimeout=10;
+	clientsTOTL=3;
+}
+
+void YOGClient::removeClient(Uint32 uid)
+{
+	leftClients.push_back(uid);
+	if (leftClients.size()>32)
+		leftClientsTimeout=0;
+	else
+		leftClientsTimeout=10;
+	leftClientsTOTL=3;
+}
+
+void YOGClient::removeUselessClients()
+{
+	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
+		for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+			if ((*client)->uid==*uid)
+			{
+				clients.erase(client);
+				break;
+			}
+}
+
+void YOGClient::lprintf(const char *msg, ...)
+{
+	va_list arglist;
+	char output[256];
+
+	va_start(arglist, msg);
+	vsnprintf(output, 256, msg, arglist);
+	va_end(arglist);
+	output[255]=0;
+	
+	if (logServer)
+		fputs(output, logServer);
+	
+	int i;
+	for (i=0; i<256; i++)
+		if (output[i]=='\n')
+		{
+			output[i]=0;
+			break;
+		}
+	if (admin)
+		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
 }

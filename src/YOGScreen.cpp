@@ -40,14 +40,16 @@ YOGScreen::YOGScreen()
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
 	
-	gameList=new List(20, 60, 600, 220, globalContainer->standardFont);
+	gameList=new List(20, 40, 400, 180, globalContainer->standardFont);
 	addWidget(gameList);
+	playerList=new List(440, 40, 180, 300, globalContainer->standardFont);
+	addWidget(playerList);
+	
+	chatWindow=new TextArea(20, 240, 400, 175, globalContainer->standardFont);
+	addWidget(chatWindow);
 	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
 	addWidget(textInput);
-	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
-	addWidget(chatWindow);
 
-	timerCounter=0;
 	selectedGameInfo=NULL;
 }
 
@@ -59,11 +61,18 @@ YOGScreen::~YOGScreen()
 }
 
 
-void YOGScreen::updateList(void)
+void YOGScreen::updateGameList(void)
 {
 	gameList->clear();
 	for (std::list<YOG::GameInfo>::iterator game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
 		gameList->addText(game->name);
+}
+
+void YOGScreen::updatePlayerList(void)
+{
+	playerList->clear();
+	for (std::list<YOG::Client>::iterator client=globalContainer->yog->clients.begin(); client!=globalContainer->yog->clients.end(); ++client)
+		playerList->addText(client->userName);
 }
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -93,8 +102,16 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			else if (rc==-1)
 				endExecute(-1);
 			// redraw all stuff
-			updateList();
-			gameList->commit();
+			if (globalContainer->yog->newGameList(true))
+			{
+				updateGameList();
+				gameList->commit();
+			}
+			if (globalContainer->yog->newPlayerList(true))
+			{
+				updatePlayerList();
+				playerList->commit();
+			}
 			dispatchPaint(gfxCtx);
 			globalContainer->yog->unshareGame(); // zzz Don't we stop sharing game when it start ?
 		}
@@ -110,13 +127,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==TEXT_VALIDATED)
 	{
 		globalContainer->yog->sendMessage(textInput->text);
-		/*
-		chatWindow->addText("<");
-		chatWindow->addText(globalContainer->settings.userName);
-		chatWindow->addText("> ");
-		chatWindow->addText(textInput->text);
-		chatWindow->addText("\n");
-		chatWindow->scrollToBottom();*/
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -149,20 +159,25 @@ void YOGScreen::paint(int x, int y, int w, int h)
 	if (y<40)
 	{
 		char *text= globalContainer->texts.getString("[yog]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
+		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, text);
 	}
 	addUpdateRect();
 }
 
 void YOGScreen::onTimer(Uint32 tick)
 {
-	// update list each one or second
 	if (globalContainer->yog->newGameList(true))
 	{
-		updateList();
+		updateGameList();
 		gameList->commit();
 	}
-
+	
+	if (globalContainer->yog->newPlayerList(true))
+	{
+		updatePlayerList();
+		playerList->commit();
+	}
+	
 	globalContainer->yog->step();
 	while (globalContainer->yog->isMessage())
 	{
@@ -174,42 +189,6 @@ void YOGScreen::onTimer(Uint32 tick)
 		chatWindow->scrollToBottom();
 		globalContainer->yog->freeMessage();
 	}
-	
-	/*zzz
-	while (globalContainer->yog->isInfoMessage())
-	{
-		switch (globalContainer->yog->getInfoMessageType())
-		{
-			case YOG::IRC_MSG_JOIN:
-			{
-				const char *diffusion=globalContainer->yog->getInfoMessageDiffusion();
-				assert(diffusion);
-				if (strncmp(diffusion, DEFAULT_GAME_CHAN, YOG::IRC_CHANNEL_SIZE)!=0)
-				{
-					chatWindow->addText(globalContainer->yog->getInfoMessageSource());
-					chatWindow->addText(" ");
-					chatWindow->addText(globalContainer->texts.getString("[has joined]"));
-					chatWindow->addText(" ");
-					chatWindow->addText(diffusion);
-					chatWindow->addText("\n");
-				}
-			}
-			break;
-
-			case YOG::IRC_MSG_QUIT:
-			{
-				chatWindow->addText(globalContainer->yog->getInfoMessageSource());
-				chatWindow->addText(" ");
-				chatWindow->addText(globalContainer->texts.getString("[has quit]"));
-				chatWindow->addText("\n");
-			}
-			break;
-
-			default:
-			break;
-		}
-		globalContainer->yog->freeInfoMessage();
-	}*/
 
 	// the game connection part:
 	multiplayersJoin->onTimer(tick);
@@ -247,8 +226,16 @@ void YOGScreen::onTimer(Uint32 tick)
 			printf("rv=%d\n", rv);
 			assert(false);
 		}
-		updateList();
-		gameList->commit();
+		if (globalContainer->yog->newGameList(true))
+		{
+			updateGameList();
+			gameList->commit();
+		}
+		if (globalContainer->yog->newPlayerList(true))
+		{
+			updatePlayerList();
+			playerList->commit();
+		}
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}

@@ -245,21 +245,17 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	{
 		printf("YOG:game %s is unshared\n", sharingGameName);
 		yogSharingState=YSS_NOT_SHARING_GAME;
-		
-		gamesTimeout=SECOND_TIMEOUT; // We wait 1 sec before requesting the game list, only to use less brandwith.
-		gamesTOTL=3;
 	}
 	break;
-	case YMT_REQUEST_SHARED_GAMES_LIST:
+	case YMT_GAMES_LIST:
 	{
 		int nbGames=(int)getUint32(data, 4);
-		if (size>48+(4+2+32+128)*nbGames)
+		if (size>48+(4+2+4+32+128)*nbGames)
 		{
 			printf("YOG::we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
 			break;
 		}
-		printf("YOG:we received the %d games list\n", nbGames);
-		games.clear();
+		printf("YOG:we received a %d games list\n", nbGames);
 		int index=8;
 		for (int i=0; i<nbGames; i++)
 		{
@@ -268,27 +264,49 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			index+=4;
 			game.ip.port=getUint16(data, index);
 			index+=2;
+			game.uid=getUint32(data, index);
+			index+=4;
 			int l;
-			l=Utilities::strnlen((char *)data+index, 32)+1;
-			//printf("l=%d.\n", l);
+			l=Utilities::strnlen((char *)data+index, 32);
 			memcpy(game.userName, data+index, l);
-			//printf("game.userName=%s.\n", game.userName);
-			//game.userName[31]=0;
+			game.userName[l-1]=0;
 			index+=l;
-			l=Utilities::strnlen((char *)data+index, 128)+1;
-			//printf("l=%d.\n", l);
+			l=Utilities::strnlen((char *)data+index, 128);
 			memcpy(game.name, data+index, l);
-			//printf("game.name=%s.\n", game.name);
-			game.name[127]=0;
+			game.name[l-1]=0;
 			index+=l;
 			assert(index<=size);
 			games.push_back(game);
-			printf("YOG::game %d name %s host = %s\n", i, game.name, game.userName);
+			printf("YOG::game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
 		}
 		assert(index==size);
-		gamesTimeout=LONG_NETWORK_TIMEOUT;
-		gamesTOTL=3;
 		newGameListAviable=true;
+		send(YMT_GAMES_LIST, nbGames);
+	}
+	break;
+	case YMT_UNSHARED_LIST:
+	{
+		int nbUnshared=(int)getUint32(data, 4);
+		if (size!=8+4*nbUnshared)
+		{
+			printf("YOG::we received a bad unshared list (size=%d!=%d)\n", size, 8+4*nbUnshared);
+			break;
+		}
+		printf("YOG:we received a %d unshared list\n", nbUnshared);
+		int index=8;
+		for (int i=0; i<nbUnshared; i++)
+		{
+			Uint32 uid=getUint32(data, index);
+			index+=4;
+			for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+				if (game->uid==uid)
+				{
+					games.erase(game);
+					break;
+				}
+		}
+		newGameListAviable=true;
+		send(YMT_UNSHARED_LIST, nbUnshared);
 	}
 	break;
 	case YMT_CONNECTION_PRESENCE:
@@ -302,6 +320,59 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		gameSocketTOTL=3;
 		gameSocketReceived=true;
 		printf("YOG::gameSocketReceived\n");
+	}
+	break;
+	case YMT_CLIENTS_LIST:
+	{
+		int nbClients=(int)getUint32(data, 4);
+		if (size>8+(4+32)*nbClients)
+		{
+			printf("YOG::we received a bad clients list (size=%d!<=%d)\n", size, 8+(4+32)*nbClients);
+			break;
+		}
+		printf("YOG:we received a %d clients list\n", nbClients);
+		int index=8;
+		for (int i=0; i<nbClients; i++)
+		{
+			Client client;
+			client.uid=getUint32(data, index);
+			index+=4;
+			int l=Utilities::strmlen((char *)data+index, 32);
+			memcpy(client.userName, data+index, l);
+			client.userName[l-1]=0;
+			index+=l;
+			assert(index<=size);
+			clients.push_back(client);
+			printf("YOG::client uid=%d name=%s\n", client.uid, client.userName);
+		}
+		newClientListAviable=true;
+		send(YMT_CLIENTS_LIST, nbClients);
+	}
+	break;
+	case YMT_LEFT_CLIENTS_LIST:
+	{
+		int nbClients=(int)getUint32(data, 4);
+		if (size>8+4*nbClients)
+		{
+			printf("YOG::we received a bad left clients list (size=%d!<=%d)\n", size, 8+4*nbClients);
+			break;
+		}
+		printf("YOG:we received a %d left clients list\n", nbClients);
+		int index=8;
+		for (int i=0; i<nbClients; i++)
+		{
+			Uint32 uid=getUint32(data, index);
+			index+=4;
+			for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
+				if (client->uid==uid)
+				{
+					printf("YOG::left client uid=%d name=%s\n", client->uid, client->userName);
+					clients.erase(client);
+					break;
+				}
+		}
+		newClientListAviable=true;
+		send(YMT_LEFT_CLIENTS_LIST, nbClients);
 	}
 	break;
 	case YMT_CLOSE_YOG:
@@ -341,18 +412,20 @@ bool YOG::enableConnection(const char *userName)
 	receivedMessages.clear();
 	lastMessageID=0;
 	
-	connectionTimeout=0+2;//2 instead of 0 to share brandwith with others timouts
+	connectionTimeout=0+4;//4 instead of 0 to share brandwith with others timouts
 	connectionTOTL=3;
 	
 	games.clear();
-	gamesTimeout=0+4;//4 instead of 0 to share brandwith with others timouts
-	gamesTOTL=3;
+	newGameListAviable=false;
 	
-	presenceTimeout=0+6;//6 instead of 0 to share brandwith with others timouts
+	presenceTimeout=0+8;//8 instead of 0 to share brandwith with others timouts
 	presenceTOTL=3;
 	
 	gameSocket=NULL;
 	gameSocketReceived=false;
+	
+	clients.clear();
+	newClientListAviable=false;
 	
 	printf("YOG::enableConnection(%s)\n", userName);
 	
@@ -419,7 +492,7 @@ void YOG::step()
 				else
 				{
 					printf("YOG::sending connection request...\n");
-					send(YMT_CONNECTING, (Uint8 *)userName, 32);
+					send(YMT_CONNECTING, (Uint8 *)userName, Utilities::strmlen(userName, 32));
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
 		}
@@ -429,21 +502,7 @@ void YOG::step()
 			switch (yogSharingState)
 			{
 			case YSS_NOT_SHARING_GAME:
-				if (!joinedGame && gamesTimeout--<=0)
-				{
-					if (gamesTOTL--<=0)
-					{
-						printf("YOG:Failed to get the shared games list!\n");
-						gamesTimeout=MAX_NETWORK_TIMEOUT;
-						gamesTOTL=3;
-					}
-					else
-					{
-						printf("YOG:Requesting the shared games list...\n");
-						send(YMT_REQUEST_SHARED_GAMES_LIST);
-						gamesTimeout=LONG_NETWORK_TIMEOUT;
-					}
-				}
+				//zzz trace joinedGame gamesTimeout gamesTOTL
 			break;
 			case YSS_STOP_SHARING_GAME:
 				// We do stop sharing game also if we are decinnecting
@@ -507,16 +566,13 @@ void YOG::step()
 			assert(yogSharingState==YSS_NOT_SHARING_GAME);
 		}
 		
-		if (yogGlobalState==YGS_PLAYING || joinedGame || yogSharingState>YSS_NOT_SHARING_GAME)
+		if (yogGlobalState>=YGS_CONNECTED && presenceTimeout--<=0)
 		{
-			if (yogGlobalState>=YGS_CONNECTED && presenceTimeout--<=0)
-			{
-				if (presenceTOTL--<=0)
-					printf("YOG::Connection lost to YOG!\n"); //TODO!
-				else
-					send(YMT_CONNECTION_PRESENCE);
-				presenceTimeout=LONG_NETWORK_TIMEOUT;
-			}
+			if (presenceTOTL--<=0)
+				printf("YOG::Connection lost to YOG!\n"); //TODO!
+			else
+				send(YMT_CONNECTION_PRESENCE);
+			presenceTimeout=LONG_NETWORK_TIMEOUT;
 		}
 		
 		if (yogSharingState==YSS_STOP_SHARING_GAME && sharingGameTimeout--<=0)
@@ -646,6 +702,18 @@ bool YOG::newGameList(bool reset)
 	{
 		if (reset)
 			newGameListAviable=false;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool YOG::newPlayerList(bool reset)
+{
+	if (newClientListAviable)
+	{
+		if (reset)
+			newClientListAviable=false;
 		return true;
 	}
 	else

@@ -55,6 +55,7 @@ public:
 		IPaddress ip;
 		char userName[32];
 		char name[128];
+		Uint32 uid;
 	};
 	
 	struct Message
@@ -70,6 +71,12 @@ public:
 		bool received;
 		char userName[32];
 		int userNameLength;
+	};
+	
+	struct Client
+	{
+		char userName[32];
+		Uint32 uid;
 	};
 	
 public:
@@ -102,6 +109,8 @@ public:
 	
 	bool newGameList(bool reset);
 	
+	bool newPlayerList(bool reset);
+	
 	void gameStarted();
 	void gameEnded();
 	
@@ -129,8 +138,6 @@ public:
 	int sharingGameTOTL;
 	
 	std::list<GameInfo> games;
-	int gamesTimeout;
-	int gamesTOTL;
 	bool newGameListAviable;
 	
 	int presenceTimeout;
@@ -139,6 +146,9 @@ public:
 	int gameSocketTimeout;
 	int gameSocketTOTL;
 	bool gameSocketReceived;
+	
+	std::list<Client> clients;
+	bool newClientListAviable;
 };
 
 #endif
