@@ -1195,15 +1195,16 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int type=r.field.type;
 					int amount=r.field.amount;
 					int variety=r.field.variety;
-					int imgid=(type*10)+(variety*5)+amount;
+					const RessourceType *rt=globalContainer->ressourcesTypes->get(type);
+					int imgid=rt->gfxId+(variety*rt->varietiesCount)+amount;
 					int dx=(sprite->getW(imgid)-32)>>1;
 					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
-					assert(type<5);
+					assert(type<(int)globalContainer->ressourcesTypes->number());
 					assert(amount>=0);
-					assert(amount<5);
+					assert(amount<rt->sizesCount);
 					assert(variety>=0);
-					assert(variety<2);
+					assert(variety<rt->varietiesCount);
 					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
 				}
 			}

@@ -59,16 +59,9 @@ enum TerrainType
 {
 	WATER=0,
 	SAND=1,
-	GRASS=2
+	GRASS=2,
 };
 
-const int RessourceTerrain[MAX_NB_RESSOURCES] = {
-	GRASS,
-	GRASS,
-	GRASS,
-	GRASS,
-	WATER
-};
 
 /*! Map, handle all physical localisations
 	All size are given in 32x32 pixel cell, which is the basic game measurement unit.
@@ -188,6 +181,20 @@ public:
 	Uint16 getTerrain(int x, int y)
 	{
 		return (*(cases+w*(y&hMask)+(x&wMask))).terrain;
+	}
+
+	//! Return the typeof terrain. If type is unregistred, returns unknown (-1).
+	int getTerrainType(int x, int y)
+	{
+		unsigned t=getTerrain(x, y);
+		if (t<16)
+			return GRASS;
+		else if ((t>=128)&&(t<128+16))
+			return SAND;
+		else if ((t>=256) && (t<256+16))
+			return WATER;
+		else
+			return -1;
 	}
 
 	Ressource getRessource(int x, int y)

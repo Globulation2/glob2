@@ -61,6 +61,8 @@ protected:
 		ITEM(bool, eternal)
 		//! If granular, we can decrement one by one. Otherwise, the ressource is fully taken
 		ITEM(bool, granular)
+		//! We given to a building, the buildings get multiplicator amount of ressource
+		ITEM(Sint32, multiplicator)
 	CLASSEND;
 public:
 	RessourceType();
@@ -84,7 +86,7 @@ public:
 	CLASSEND;
 
 public:
-	RessourceType& operator [](const unsigned i) { assert(i < res.size()); return res[i]; }
+	const RessourceType* get(const unsigned i) { assert(i < res.size()); return &res[i]; }
 	unsigned int number() { return res.size(); }
 
 	RessourcesTypes();

@@ -28,6 +28,7 @@ RessourceType::RessourceType()
 	varietiesCount=0;
 	shrinkable=0;
 	eternal=0;
+	multiplicator=1;
 }
 
 RessourcesTypes::RessourcesTypes()

@@ -74,7 +74,7 @@ public:
 	void setUserName(const char *name);
 	const char *getUsername(void) { return userName; }
 	Uint32 getGfxFlags() { return settings->screenFlags; }
-	Uint32 getOptionFlags() { return settings->screenFlags; }
+	Uint32 getOptionFlags() { return settings->optionFlags; }
 
 public:
 	FileManager *fileManager;

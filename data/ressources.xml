@@ -3,7 +3,7 @@
 <item>
  <Object></Object>
  <res>
-  <size>5</size>
+  <size>7</size>
   <element>
    <Object></Object>
    <name>wood</name>
@@ -14,6 +14,7 @@
    <shrinkable>true</shrinkable>
    <eternal>false</eternal>
    <granular>false</granular>
+   <multiplicator>1</multiplicator>
   </element>
   <element>
    <Object></Object>
@@ -25,6 +26,7 @@
    <shrinkable>true</shrinkable>
    <eternal>false</eternal>
    <granular>true</granular>
+   <multiplicator>1</multiplicator>
   </element>
   <element>
    <Object></Object>
@@ -36,6 +38,7 @@
    <shrinkable>true</shrinkable>
    <eternal>false</eternal>
    <granular>true</granular>
+   <multiplicator>1</multiplicator>
   </element>
   <element>
    <Object></Object>
@@ -47,17 +50,43 @@
    <shrinkable>false</shrinkable>
    <eternal>true</eternal>
    <granular>true</granular>
+   <multiplicator>1</multiplicator>
   </element>
   <element>
    <Object></Object>
    <name>alga</name>
-   <terrain>2</terrain>
+   <terrain>0</terrain>
    <gfxId>40</gfxId>
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>true</shrinkable>
    <eternal>false</eternal>
    <granular>false</granular>
+   <multiplicator>1</multiplicator>
+  </element>
+  <element>
+   <Object></Object>
+   <name>cherry</name>
+   <terrain>2</terrain>
+   <gfxId>50</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>1</varietiesCount>
+   <shrinkable>true</shrinkable>
+   <eternal>true</eternal>
+   <granular>true</granular>
+   <multiplicator>10</multiplicator>
+  </element>
+  <element>
+   <Object></Object>
+   <name>orange</name>
+   <terrain>2</terrain>
+   <gfxId>55</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>1</varietiesCount>
+   <shrinkable>true</shrinkable>
+   <eternal>true</eternal>
+   <granular>true</granular>
+   <multiplicator>10</multiplicator>
   </element>
  </res>
  <wood>0</wood>

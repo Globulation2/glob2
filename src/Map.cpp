@@ -107,7 +107,7 @@ void Map::clear()
 		assert(wSector==0);
 		assert(hSector==0);
 		assert(sizeSector==0);
-		
+
 		assert(stepCounter==0);
 	}
 	
@@ -145,7 +145,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWar=fogOfWarA;
 	
 	cases=new Case[size];
-	
+
 	/*Ressource initRessource;
 	initRessource.field.type=0;
 	initRessource.field.variety=0;
@@ -279,7 +279,7 @@ void Map::save(SDL_RWops *stream)
 	for (int i=0; i<size ;i++)
 	{
 		SDL_WriteBE32(stream, mapDiscovered[i]);
-		
+
 		SDL_WriteBE16(stream, cases[i].terrain);
 		SDL_WriteBE16(stream, cases[i].building);
 		
@@ -329,7 +329,8 @@ void Map::growRessources(void)
 				//int wax4=x+dway*2;
 				//int way4=y-dwax*2;
 
-				bool expand=false;
+				// alga, wood and corn are limited by near underground. Others are not.
+				bool expand=true;
 				if (r.field.type==ALGA)
 					expand=isWater(wax1, way1)&&isSand(wax2, way2);
 				else if (r.field.type==WOOD)
@@ -339,9 +340,11 @@ void Map::growRessources(void)
 
 				if (expand)
 				{
-					//if (l<4)
 					if (r.field.amount<=(int)(syncRand()&7))
+					{
+						// we grow ressource:
 						incRessource(x, y, (RessourcesTypes::intResType)r.field.type);
+					}
 					else
 					{
 						// we extand ressource:
@@ -349,8 +352,7 @@ void Map::growRessources(void)
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						if (getGroundUnit(nx, ny)==NOGUID)
-							incRessource(nx, ny, (RessourcesTypes::intResType)r.field.type);
+						incRessource(nx, ny, (RessourcesTypes::intResType)r.field.type);
 					}
 				}
 			}
@@ -409,14 +411,13 @@ bool Map::decRessource(int x, int y)
 		return false;
 
 	RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
-	RessourcesTypes *fulltypes=globalContainer->ressourcesTypes;
-	RessourceType& fulltype=(*fulltypes)[type];
+	const RessourceType *fulltype=globalContainer->ressourcesTypes->get(type);
 	unsigned amount=r.field.amount;
 	assert(amount);
 
-	if (!fulltype.shrinkable || ((fulltype.eternal) && (amount==1)))
+	if (!fulltype->shrinkable || ((fulltype->eternal) && (amount==1)))
 		return false;
-	else if (!fulltype.granular || amount==1)
+	else if (!fulltype->granular || amount==1)
 		rp->id=NORESID;
 	else
 		rp->field.amount=amount-1;
@@ -434,24 +435,21 @@ bool Map::decRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-	Ressource r=*rp;
+	Ressource &r=*rp;
+	const RessourceType *fulltype;
+
 	if (r.id==NORESID)
 	{
 		if (getBuilding(x, y)!=NOGBID)
 			return false;
 		if (getGroundUnit(x, y)!=NOGUID)
 			return false;
-		bool canGrowth;
-		if (ressourceType==WOOD || ressourceType==CORN || ressourceType==FUNGUS)
-			canGrowth=isGrass(x, y);
-		else if (ressourceType==ALGA)
-			canGrowth=isWater(x, y);
-		else
-			assert(false);
-		if (canGrowth)
+
+		fulltype=globalContainer->ressourcesTypes->get(ressourceType);
+		if (getTerrainType(x, y) == fulltype->terrain)
 		{
 			rp->field.type=(Uint8)ressourceType;
-			rp->field.variety=0; //TODO:syncRand()%maxVariety
+			rp->field.variety=syncRand()%fulltype->varietiesCount;
 			rp->field.amount=1;
 			rp->field.animation=0;
 			return true;
@@ -459,11 +457,17 @@ bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 		else
 			return false;
 	}
+	else
+	{
+		RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
+		fulltype=globalContainer->ressourcesTypes->get(type);
+	}
+
 	if (r.field.type!=ressourceType)
 		return false;
-	if (r.field.type==STONE)
+	if (!fulltype->shrinkable)
 		return false;
-	if (r.field.amount<4) //TODO: change this value with new ressources.
+	if (r.field.amount<fulltype->sizesCount-1)
 	{
 		rp->field.amount=r.field.amount+1;
 		return true;
@@ -836,12 +840,7 @@ void Map::setRessource(int x, int y, int type, int size)
 
 bool Map::isRessourceAllowed(int x, int y, int type)
 {
-	if (type==WOOD || type==CORN || type==FUNGUS || type==STONE)
-		return isGrass(x, y);
-	else if (type==ALGA)
-		return isWater(x, y);
-	else
-		assert(false);
+	return (getTerrainType(x, y)==globalContainer->ressourcesTypes->get(type)->terrain);
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
