@@ -224,6 +224,7 @@ public:
 	}
 	void setForbiddenArea(int x, int y, int r, Uint32 me);
 	void clearForbiddenArea(int x, int y, int r, Uint32 me);
+	void clearForbiddenArea(Uint32 me);
 
 	bool isWater(int x, int y)
 	{

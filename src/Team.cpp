@@ -724,6 +724,17 @@ void Team::step(void)
 	stats.step(this);
 }
 
+void Team::computeForbiddenArea()
+{
+	map->clearForbiddenArea(me);
+	for (int id=0; id<1024; id++)
+	{
+		Building *b=myBuildings[id];
+		if (b && b->buildingState==Building::ALIVE && b->type->zonableForbidden)
+			map->setForbiddenArea(b->posX, b->posY, b->unitStayRange, me);
+	}
+}
+
 Sint32 Team::checkSum()
 {
 	Sint32 cs=0;

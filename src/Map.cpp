@@ -279,8 +279,6 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<1; s++)
 				gradientUpdatedDepth[t][r][s]=0;
-	
-	printf("loaded %d gradient teams\n", sessionGame->numberOfTeam);
 
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
@@ -503,26 +501,35 @@ void Map::switchFogOfWar(void)
 
 void Map::setForbiddenArea(int x, int y, int r, Uint32 me)
 {
-	int r2=r*r;
+	int rm=(r<<1)+1;
+	int r2=rm*rm;
 	for (int yi=-r; yi<=r; yi++)
 	{
-		int yi2=yi*yi;
+		int yi2=((yi*yi)<<2);
 		for (int xi=-r; xi<=r; xi++)
-			if (yi2+xi*xi<=r2)
+			if (yi2+((xi*xi)<<2)<r2)
 				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden|=me;
 	}
 }
 
 void Map::clearForbiddenArea(int x, int y, int r, Uint32 me)
 {
-	int r2=r*r;
+	int rm=(r<<1)+1;
+	int r2=rm*rm;
 	for (int yi=-r; yi<=r; yi++)
 	{
-		int yi2=yi*yi;
+		int yi2=((yi*yi)<<2);
 		for (int xi=-r; xi<=r; xi++)
-			if (yi2+xi*xi<=r2)
+			if (yi2+((xi*xi)<<2)<r2)
 				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
 	}
+}
+
+void Map::clearForbiddenArea(Uint32 me)
+{
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+			(*(cases+w*y+x)).forbidden&=~me;
 }
 
 bool Map::decRessource(int x, int y)
