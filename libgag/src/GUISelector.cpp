@@ -22,9 +22,21 @@
 #include <Toolkit.h>
 #include <assert.h>
 
-Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue, unsigned const char *sprite, Sint32 id)
+Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned size, unsigned defaultValue, const char *sprite, Sint32 id)
 {
+	this->x=x;
+	this->y=y;
+	this->size=size;
+	assert(count>=1);
+	this->w=(count-1)*size+6;
+	this->h=size+4;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
 
+	if (sprite)
+		this->sprite=sprite;
+	this->id=id;
+	archPtr=NULL;
 }
 
 void Selector::onSDLEvent(SDL_Event *event)
