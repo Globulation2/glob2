@@ -86,6 +86,7 @@ private:
 	int viewportX, viewportY;
 	int viewportW, viewportH;
 	int viewportSpeedX[9], viewportSpeedY[9];
+	int centeredTeam; // The last centered team when the user typed "tab".
 	SDL_Rect screenClip, mapClip;
 	GraphicContext *gfx;
 
