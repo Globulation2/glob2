@@ -253,16 +253,19 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					game->numberOfTeam=(int)data[9];
 					game->fileIsAMap=(bool)data[10];
 					game->mapGenerationMethode=(int)data[11];
+					//data[12]
+					//data[13]
 					if (data[14]!=0)
 						printf("Warning, bad pad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
-					game->netProtocolVersion=(int)data[16];
-					memcpy(game->mapName, data+12, size-12);
+					game->netProtocolVersion=(int)data[15];
+					memcpy(game->mapName, data+16, size-16);
 					game->mapName[63]=0;
 					if (isSelectedGame && selectedGame==uid)
 					{
 						newSelectedGameinfoAviable=true;
 						selectedGameinfoValid=true;
 					}
+					
 					printf("new game->mapName=%s\n", game->mapName);
 				}
 	}
