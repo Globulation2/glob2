@@ -58,6 +58,10 @@ void TeamStats::step(Team *team)
 	for (std::list<Building *>::iterator bi=jobsList.begin(); bi!=jobsList.end(); bi++)
 		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	
+	std::list<Building *> attractList=team->attract[HARVEST];
+	for (std::list<Building *>::iterator bi=attractList.begin(); bi!=attractList.end(); bi++)
+		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
