@@ -26,12 +26,13 @@
 #include <GUIList.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "GUIGlob2FileList.h"
 
 LoadGameScreen::LoadGameScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	fileList=new List(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "games", "game", true);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose game]")));
@@ -48,19 +49,6 @@ LoadGameScreen::LoadGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
-	{
-		const char *fileName;
-		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
-		{
-			const char *tempFileName=Utilities::concat("games/", fileName);
-			const char *mapTempName=glob2FilenameToName(tempFileName);
-			delete[] tempFileName;
-			fileList->addText(mapTempName);
-			delete[] mapTempName;
-		}
-		fileList->sort();
-	}
 	addWidget(fileList);
 
 	validSessionInfo=false;

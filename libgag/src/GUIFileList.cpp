@@ -67,8 +67,11 @@ void FileList::generateList()
 			else
 			{
 				const char* listName = this->fileToList(fileName);
-				this->addText(listName);
-				delete[] listName;
+				if (listName)
+				{
+					this->addText(listName);
+					delete[] listName;
+				}
 			}
 		}
 		this->sort();

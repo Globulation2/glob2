@@ -1948,9 +1948,11 @@ const char *glob2FilenameToName(const char *filename)
 	SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
 	if (stream)
 	{
-		tempSession.load(stream);
-		SDL_RWclose(stream);
-		return Utilities::strdup(tempSession.getMapName());
+		if (tempSession.load(stream))
+		{
+			SDL_RWclose(stream);
+			return Utilities::strdup(tempSession.getMapName());
+		}
 	}
 	return NULL;
 }
