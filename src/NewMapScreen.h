@@ -66,8 +66,9 @@ private:
 	Ratio *islandsSize;
 	Number *beach;
 	Number *nbWorkers;
-	//! is true if first paint
-	bool firstPaint;
+	Text *numberOfTeamText, *numberOfWorkerText;
+	Text *ratioText, *waterText, *sandText, *grassText, *smoothingText;
+	Text *islandSizeText, *beachSizeText;
 
 public:
 	//! Constructor
