@@ -3617,7 +3617,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			return true;
 		}
 
-		if (currentg>1 && !building->dirtyLocalGradient[canSwim])
+		if (!building->dirtyLocalGradient[canSwim] && currentg>1)
 		{
 			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient))
 			{
