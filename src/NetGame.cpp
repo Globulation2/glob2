@@ -146,13 +146,9 @@ Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 	for (int p=0; p<numberOfPlayer; p++)
 	{
 		int type=players[p]->type;
-		if (type==Player::P_IP)
-		{
-			if (!players[p]->quitting && ordersQueue[p][executeStep]==NULL)
+		if (type==Player::P_IP && !players[p]->quitting)
+			if (ordersQueue[p][executeStep]==NULL || (lastReceivedFromMe[p]+1)==freeingStep)
 				waitingPlayersMask|=1<<p;
-			if ((lastReceivedFromMe[p]+1)==freeingStep)
-				waitingPlayersMask|=1<<p;
-		}
 		
 	}
 	return waitingPlayersMask;
@@ -231,15 +227,14 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	WaitingForPlayerOrder *wfpo=new WaitingForPlayerOrder(waitingForPlayerMask);
 	totalSize+=3+wfpo->getDataLength();
 
-	Uint8 lastReceived=lastReceivedFromMe[targetPlayer];
-	Uint8 resendStep=lastReceived+1;
-	fprintf(logFile, "resendStep[%d]=%d, v-wfpo\n", targetPlayer, resendStep);
-	if (lastReceived!=pushStep && resendStep!=pushStep) // We don't loose anything when we resend the last unreceived order!
+	Uint8 resendStep=lastReceivedFromMe[targetPlayer]+1;
+	Order *order=ordersQueue[localPlayerNumber][resendStep];
+	if (order)
 	{
-		Order *order=ordersQueue[localPlayerNumber][resendStep];
-		assert(order);
 		totalSize+=3+order->getDataLength();
+		fprintf(logFile, "resendAviable, resendStep[%d]=%d, v-wfpo\n", targetPlayer, resendStep);
 	}
+	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=localPlayerNumber;
 	data[1]=lastReceivedFromHim(targetPlayer);
@@ -252,10 +247,8 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	memcpy(data+l, wfpo->getData(), size);
 	l+=size;
 
-	if (lastReceived!=pushStep && resendStep!=pushStep)
+	if (order)
 	{
-		Order *order=ordersQueue[localPlayerNumber][resendStep];
-		assert(order);
 		int orderSize=order->getDataLength();
 		data[l++]=resendStep;
 		data[l++]=orderSize;
@@ -535,6 +528,45 @@ void NetGame::orderHasBeenExecuted(Order *order)
 	};
 }
 
+void NetGame::updateDelays(int player, Uint8 receivedStep)
+{
+	Uint8 step=pushStep-1;
+	Uint8 delay=0;
+	while (true)
+		if (step==receivedStep)
+			break;
+		else if (step==freeingStep)
+			return;
+		else
+		{
+			step--;
+			delay++;
+		}
+	Uint8 count=delaysCount[player]++;
+	recentDelays[player][count]=delay;
+	
+	Uint8 max=0;
+	Uint8 maxi;
+	for (int i=0; i<256; i++)
+	{
+		Uint8 delay=recentDelays[player][i];
+		if (delay>max)
+		{
+			max=delay;
+			maxi=i;
+		}
+	}
+	Uint8 maxb=0;
+	for (int i=0; i<256; i++)
+		if (i!=maxi)
+		{
+			Uint8 delay=recentDelays[player][i];
+			if (delay>maxb)
+				maxb=delay;
+		}
+	//printf("max=(%d, %d).\n", max, maxb);
+}
+
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 {
 	if (size<2)
@@ -547,6 +579,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	countDown[player]=0;
 	lastReceivedFromMe[player]=receivedStep;
 	fprintf(logFile, "lastReceivedFromMe[%d]=%d\n", player, receivedStep);
+	updateDelays(player, receivedStep);
 	
 	int l=2;
 	while (l<size)
@@ -775,13 +808,14 @@ bool NetGame::stepReadyToExecute(void)
 					if (players[p]->type==Player::P_IP && (myDroppingPlayersMask&(1<<p)))
 						players[p]->type=Player::P_LOST_DROPPING;
 				dropState=DS_EXCHANGING_ORDERS;
-				lastExecutedStep[localPlayerNumber]=executeStep-1;
-				for (int p=0; p<numberOfPlayer; p++)
-					lastAviableStep[localPlayerNumber][p]=lastReceivedFromHim(p);
 			}
 		}
 		if (dropState==DS_EXCHANGING_ORDERS)
 		{
+			lastExecutedStep[localPlayerNumber]=executeStep-1;
+			for (int p=0; p<numberOfPlayer; p++)
+				lastAviableStep[localPlayerNumber][p]=lastReceivedFromHim(p);
+			
 			//Uint32 myDroppingPlayersMask=droppingPlayersMask[localPlayerNumber];
 			int n=0;
 			for (int p=0; p<numberOfPlayer; p++)
@@ -809,6 +843,7 @@ bool NetGame::stepReadyToExecute(void)
 			}
 			theLastExecutedStep=les;
 			fprintf(logFile, " theLastExecutedStep=%d.\n", theLastExecutedStep);
+			
 			
 			// Has everyone all orders ?
 			bool hasAllOrder[32][32];
