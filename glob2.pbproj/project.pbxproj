@@ -13,9 +13,13 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_PROFILING_CODE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
+				OTHER_CPLUSPLUSFLAGS = "-falign-loops=16";
+				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
 			name = Development;
@@ -1562,6 +1566,11 @@
 				59CB2ACF0668A4F8004FEA35,
 				59CB2AD00668A4F8004FEA35,
 				59CB2AD50668A53B004FEA35,
+				76762A0A068EEA7A001A930B,
+				76762A0E068EF548001A930B,
+				76DB5CB206944709000A526F,
+				76DB5CB406944723000A526F,
+				76DB5CB806944734000A526F,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2023,6 +2032,8 @@
 				5B981DF5060AC97200C1AE77,
 				59CB2AAB0668A428004FEA35,
 				59CB2AAC0668A428004FEA35,
+				76762A09068EEA7A001A930B,
+				76DB5CB706944734000A526F,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5359,8 +5370,11 @@
 				5B981DF4060AC97200C1AE77,
 				5B981DEB060AC8E900C1AE77,
 				5B981DEC060AC8E900C1AE77,
+				76762A07068EEA7A001A930B,
+				76762A08068EEA7A001A930B,
 				5967D2CB05AB553A000536C3,
 				5967D2CC05AB553A000536C3,
+				76DB5CB306944723000A526F,
 				5967D2CD05AB553A000536C3,
 				5967D2CE05AB553A000536C3,
 				5967D2CF05AB553A000536C3,
@@ -5369,6 +5383,7 @@
 				5967D2D605AB553A000536C3,
 				5967D2D705AB553A000536C3,
 				5967D2D805AB553A000536C3,
+				76DB5CB106944709000A526F,
 				5967D2D905AB553A000536C3,
 				5967D2DA05AB553A000536C3,
 				5967D2DB05AB553A000536C3,
@@ -5392,6 +5407,8 @@
 				5967D2EC05AB553A000536C3,
 				5967D2ED05AB553A000536C3,
 				5967D2EE05AB553A000536C3,
+				76DB5CB506944734000A526F,
+				76DB5CB606944734000A526F,
 				5967D2EF05AB553A000536C3,
 				5967D2F005AB553A000536C3,
 				5967D2F105AB553A000536C3,
@@ -5458,6 +5475,7 @@
 				5967D32F05AB553A000536C3,
 				5967D33005AB553A000536C3,
 				5967D33105AB553A000536C3,
+				76762A0D068EF548001A930B,
 				5967D33205AB553A000536C3,
 				5967D33305AB553A000536C3,
 				5967D33405AB553A000536C3,
@@ -9733,6 +9751,114 @@
 			path = libgag;
 			refType = 4;
 			sourceTree = "<group>";
+		};
+//5B0
+//5B1
+//5B2
+//5B3
+//5B4
+//760
+//761
+//762
+//763
+//764
+		76762A07068EEA7A001A930B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = BuildingType.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76762A08068EEA7A001A930B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = BuildingType.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76762A09068EEA7A001A930B = {
+			fileRef = 76762A07068EEA7A001A930B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76762A0A068EEA7A001A930B = {
+			fileRef = 76762A08068EEA7A001A930B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76762A0D068EF548001A930B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = TerrainType.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76762A0E068EF548001A930B = {
+			fileRef = 76762A0D068EF548001A930B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DB5CB106944709000A526F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = EntitiesTypes.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76DB5CB206944709000A526F = {
+			fileRef = 76DB5CB106944709000A526F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DB5CB306944723000A526F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = ConfigFiles.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76DB5CB406944723000A526F = {
+			fileRef = 76DB5CB306944723000A526F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DB5CB506944734000A526F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = IntBuildingType.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76DB5CB606944734000A526F = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = IntBuildingType.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76DB5CB706944734000A526F = {
+			fileRef = 76DB5CB506944734000A526F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76DB5CB806944734000A526F = {
+			fileRef = 76DB5CB606944734000A526F;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 	};
 	rootObject = 08FB7793FE84155DC02AAC07;
