@@ -882,8 +882,8 @@ void MultiplayersHost::addAI(AI::ImplementitionID aiImplementationId)
 
 void MultiplayersHost::confirmPlayer(Uint8 *data, int size, IPaddress ip)
 {
-	Sint32 rcs=getSint32(data, 4);
-	Sint32 lcs=sessionInfo.checkSum();
+	Uint32 rcs=getUint32(data, 4);
+	Uint32 lcs=sessionInfo.checkSum();
 
 	int i;
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -1633,7 +1633,7 @@ void MultiplayersHost::sendingTime()
 				data[1]=0;
 				data[2]=0;
 				data[3]=0;
-				addSint32(data, sessionInfo.checkSum(), 4);
+				addUint32(data, sessionInfo.checkSum(), 4);
 				sessionInfo.players[pi].send(data, 8);
 
 				// Now that's not our problem if this packet don't success.
