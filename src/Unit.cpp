@@ -1658,36 +1658,36 @@ void Unit::escapeGroundTarget()
 	bool canSwim=performance[SWIM];
 	Uint32 teamMask=owner->me;
 	Map *map=owner->map;
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	int cDirection=direction;
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	dx=0;
 	dy=0;
@@ -1750,7 +1750,7 @@ int Unit::directionFromDxDy(int dx, int dy)
 	return tab[dy+1][dx+1];
 }
 
-void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
+/*void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
 {
 	const int tab[9][2]={	{ -1, -1},
 							{ 0, -1},
@@ -1765,7 +1765,7 @@ void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
 	assert(direction<=8);
 	*dx=tab[direction][0];
 	*dy=tab[direction][1];
-}
+}*/
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
