@@ -71,6 +71,7 @@ public:
 	void selectPreferedMovement(void);
 	void selectPreferedGroundMovement(void);
 	bool isUnitHungry(void);
+	void standardRandomActivity();
 	
 public:
 
@@ -93,21 +94,22 @@ public:
 	{
 		DIS_RANDOM=0,
 		
-		DIS_HARVESTING=1,
+		DIS_HARVESTING=2,
 		
-		DIS_FILLING_BUILDING=2,
+		DIS_FILLING_BUILDING=4,
+		DIS_EMPTYING_BUILDING=6,
 		
-		DIS_GOING_TO_FLAG=3,
-		DIS_ATTACKING_AROUND=4,
-		DIS_REMOVING_BLACK_AROUND=5,
-		DIS_CLEARING_RESSOURCES=6,
+		DIS_GOING_TO_FLAG=8,
+		DIS_ATTACKING_AROUND=10,
+		DIS_REMOVING_BLACK_AROUND=12,
+		DIS_CLEARING_RESSOURCES=14,
 		
-		DIS_GOING_TO_RESSOURCE=7,
+		DIS_GOING_TO_RESSOURCE=16,
 		
-		DIS_GOING_TO_BUILDING=8,
-		DIS_ENTERING_BUILDING=9,
-		DIS_INSIDE=10,
-		DIS_EXITING_BUILDING=11
+		DIS_GOING_TO_BUILDING=18,
+		DIS_ENTERING_BUILDING=20,
+		DIS_INSIDE=22,
+		DIS_EXITING_BUILDING=24
 	};
 	
 	enum Movement
@@ -150,9 +152,6 @@ protected:
 	
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
-	//bool valid(int x, int y);
-	//bool validHard(int x, int y);
-	//bool areOnlyUnitsInFront(int dx, int dy);
 	void flytoTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
@@ -203,8 +202,10 @@ public:
 	bool canLearn[NB_ABILITY];
 	
 	// building attraction handling
-	// FIXME : should we duplicate this
 	Building *attachedBuilding;
+	Building *targetBuilding;
+	Building *ownExchangeBuilding;
+	Building *foreingExchangeBuilding;
 	Sint32 destinationPurprose;
 	bool subscribed;
 	int caryedRessource;

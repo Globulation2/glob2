@@ -1294,9 +1294,9 @@ type = 14
 armor = 2
 fillable = 1
 canExchange = 1
-maxFruit0 = 10
-maxFruit1 = 10
-maxFruit2 = 10
+maxFruit0 = 200
+maxFruit1 = 200
+maxFruit2 = 200
 maxUnitWorking = 1
 
 *

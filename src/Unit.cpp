@@ -103,6 +103,9 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	trigHP=(hp*3)/10;
 
 	attachedBuilding=NULL;
+	targetBuilding=NULL;
+	ownExchangeBuilding=NULL;
+	foreingExchangeBuilding=NULL;
 	destinationPurprose=-1;
 	subscribed=false;
 	caryedRessource=-1;
@@ -223,17 +226,52 @@ void Unit::save(SDL_RWops *stream)
 
 void Unit::loadCrossRef(SDL_RWops *stream, Team *owner)
 {
-	Uint16 gbid=SDL_ReadBE16(stream);
+	Uint16 gbid;
+	
+	gbid=SDL_ReadBE16(stream);
 	if (gbid==NOGBID)
 		attachedBuilding=NULL;
 	else
 		attachedBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+	
+	gbid=SDL_ReadBE16(stream);
+	if (gbid==NOGBID)
+		targetBuilding=NULL;
+	else
+		targetBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+		
+	gbid=SDL_ReadBE16(stream);
+	if (gbid==NOGBID)
+		ownExchangeBuilding=NULL;
+	else
+		ownExchangeBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+	
+	gbid=SDL_ReadBE16(stream);
+	if (gbid==NOGBID)
+		foreingExchangeBuilding=NULL;
+	else
+		foreingExchangeBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
 }
 
 void Unit::saveCrossRef(SDL_RWops *stream)
 {
 	if (attachedBuilding)
 		SDL_WriteBE16(stream, attachedBuilding->gid);
+	else
+		SDL_WriteBE16(stream, NOGBID);
+		
+	if (targetBuilding)
+		SDL_WriteBE16(stream, targetBuilding->gid);
+	else
+		SDL_WriteBE16(stream, NOGBID);
+		
+	if (ownExchangeBuilding)
+		SDL_WriteBE16(stream, ownExchangeBuilding->gid);
+	else
+		SDL_WriteBE16(stream, NOGBID);
+		
+	if (foreingExchangeBuilding)
+		SDL_WriteBE16(stream, foreingExchangeBuilding->gid);
 	else
 		SDL_WriteBE16(stream, NOGBID);
 }
@@ -250,8 +288,9 @@ void Unit::subscriptionSuccess(void)
 		{
 			activity=ACT_UPGRADING;
 			displacement=DIS_GOING_TO_BUILDING;
-			targetX=attachedBuilding->getMidX();
-			targetY=attachedBuilding->getMidY();
+			assert(targetBuilding==attachedBuilding);
+			targetX=targetBuilding->getMidX();
+			targetY=targetBuilding->getMidY();
 		}
 		break;
 		case MED_FREE:
@@ -261,6 +300,7 @@ void Unit::subscriptionSuccess(void)
 				case ACT_FLAG:
 				{
 					displacement=DIS_GOING_TO_FLAG;
+					assert(targetBuilding==attachedBuilding);
 					targetX=attachedBuilding->getMidX();
 					targetY=attachedBuilding->getMidY();
 				}
@@ -268,20 +308,51 @@ void Unit::subscriptionSuccess(void)
 				case ACT_UPGRADING:
 				{
 					displacement=DIS_GOING_TO_BUILDING;
-					targetX=attachedBuilding->getMidX();
-					targetY=attachedBuilding->getMidY();
+					assert(targetBuilding==attachedBuilding);
+					targetX=targetBuilding->getMidX();
+					targetY=targetBuilding->getMidY();
 				}
 				break;
 				case ACT_FILLING:
 				{
-					if (caryedRessource==destinationPurprose)
+					assert(attachedBuilding);
+					if (ownExchangeBuilding)
 					{
-						displacement=DIS_GOING_TO_BUILDING;
-						targetX=attachedBuilding->getMidX();
-						targetY=attachedBuilding->getMidY();
+						assert(foreingExchangeBuilding);
+						if (caryedRessource>=HAPPYNESS_BASE
+							&& (foreingExchangeBuilding->receiveRessourceMask & (1<<(caryedRessource-HAPPYNESS_BASE)))
+							&& (foreingExchangeBuilding->ressources[caryedRessource]<foreingExchangeBuilding->type->maxRessource[caryedRessource]))
+						{
+							displacement=DIS_GOING_TO_BUILDING;
+							targetBuilding=foreingExchangeBuilding;
+							assert((Uint32)destinationPurprose==(ownExchangeBuilding->receiveRessourceMask & foreingExchangeBuilding->sendRessourceMask));
+							targetX=targetBuilding->getMidX();
+							targetY=targetBuilding->getMidY();
+						}
+						else
+						{
+							displacement=DIS_GOING_TO_BUILDING;
+							targetBuilding=ownExchangeBuilding;
+							targetX=targetBuilding->getMidX();
+							targetY=targetBuilding->getMidY();
+						}
 					}
 					else
-						displacement=DIS_GOING_TO_RESSOURCE;
+					{
+						if (caryedRessource==destinationPurprose)
+						{
+							displacement=DIS_GOING_TO_BUILDING;
+							targetBuilding=attachedBuilding;
+							targetX=targetBuilding->getMidX();
+							targetY=targetBuilding->getMidY();
+						}
+						else
+						{
+							displacement=DIS_GOING_TO_RESSOURCE;
+							targetBuilding=NULL;
+							owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						}
+					}
 				}
 				break;
 				case ACT_RANDOM :
@@ -397,6 +468,18 @@ bool Unit::isUnitHungry(void)
 	return (hungry<=realTrigHungry);
 }
 
+void Unit::standardRandomActivity()
+{
+	attachedBuilding=NULL;
+	targetBuilding=NULL;
+	ownExchangeBuilding=NULL;
+	foreingExchangeBuilding=NULL;
+	activity=Unit::ACT_RANDOM;
+	displacement=Unit::DIS_RANDOM;
+	needToRecheckMedical=true;
+	subscribed=false;
+}
+
 void Unit::stopAttachedForBuilding(bool goingInside)
 {
 	if (verbose)
@@ -430,6 +513,9 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	attachedBuilding->unitsWorkingSubscribe.remove(this);
 	attachedBuilding->updateCallLists();
 	attachedBuilding=NULL;
+	targetBuilding=NULL;
+	ownExchangeBuilding=NULL;
+	foreingExchangeBuilding=NULL;
 	subscribed=false;
 	assert(needToRecheckMedical);
 }
@@ -468,6 +554,9 @@ void Unit::handleMedical(void)
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
+				targetBuilding=NULL;
+				ownExchangeBuilding=NULL;
+				foreingExchangeBuilding=NULL;
 				subscribed=false;
 			}
 			
@@ -511,12 +600,17 @@ void Unit::handleActivity(void)
 					assert(b->neededRessource(destinationPurprose));
 					activity=ACT_FILLING;
 					attachedBuilding=b;
+					targetBuilding=NULL;
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
 					//b->lastWorkingSubscribe=0;
 					subscribed=true;
-					owner->subscribeToBringRessources.push_front(b);
+					if (b->subscribeToBringRessources!=1)
+					{
+						b->subscribeToBringRessources=1;
+						owner->subscribeToBringRessources.push_front(b);
+					}
 					return;
 				}
 			}
@@ -524,34 +618,44 @@ void Unit::handleActivity(void)
 			// second we look for upgrade
 			Building *b;
 			b=owner->findBestUpgrade(this);
-			if (b!=NULL)
+			if (b)
 			{
 				assert(destinationPurprose>=WALK);
 				assert(destinationPurprose<ARMOR);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
+				targetBuilding=b;
 				if (verbose)
 					printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;
 				subscribed=true;
-				owner->subscribeForInside.push_front(b);
+				if (b->subscribeForInside!=1)
+				{
+					b->subscribeForInside=1;
+					owner->subscribeForInside.push_front(b);
+				}
 				return;
 			}
 			
 			// third we go to flag
 			b=owner->findBestZonable(this);
-			if (b!=NULL)
+			if (b)
 			{
 				destinationPurprose=-1;
 				activity=ACT_FLAG;
 				attachedBuilding=b;
+				targetBuilding=b;
 				if (verbose)
 					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsWorkingSubscribe.push_front(this);
 				//b->lastWorkingSubscribe=0;
 				subscribed=true;
-				owner->subscribeForFlaging.push_front(b);
+				if (b->subscribeForFlaging!=1)
+				{
+					b->subscribeForFlaging=1;
+					owner->subscribeForFlaging.push_front(b);
+				}
 				return;
 			}
 			
@@ -560,18 +664,22 @@ void Unit::handleActivity(void)
 			{
 				// if we have a ressource
 				Building *b=owner->findBestFillable(this);
-				if (b!=NULL)
+				if (b)
 				{
-					assert(destinationPurprose>=0);
-					assert(b->neededRessource(destinationPurprose));
+					assert(b->type->canExchange || (destinationPurprose>=0 && b->neededRessource(destinationPurprose)));
 					activity=ACT_FILLING;
 					attachedBuilding=b;
+					targetBuilding=NULL;
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
 					//b->lastWorkingSubscribe=0;
 					subscribed=true;
-					owner->subscribeToBringRessources.push_front(b);
+					if (b->subscribeToBringRessources!=1)
+					{
+						b->subscribeToBringRessources=1;
+						owner->subscribeToBringRessources.push_front(b);
+					}
 					return;
 				}
 			}
@@ -585,11 +693,12 @@ void Unit::handleActivity(void)
 			{
 				Building *b;
 				b=owner->findNearestHeal(this);
-				if (b!=NULL)
+				if (b)
 				{
 					destinationPurprose=HEAL;
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
+					targetBuilding=b;
 					needToRecheckMedical=false;
 					if (verbose)
 						printf("guid=(%d) Going to heal building\n", gid);
@@ -598,7 +707,11 @@ void Unit::handleActivity(void)
 					b->unitsInsideSubscribe.push_front(this);
 					b->lastInsideSubscribe=0;
 					subscribed=true;
-					owner->subscribeForInside.push_front(b);
+					if (b->subscribeForInside!=1)
+					{
+						b->subscribeForInside=1;
+						owner->subscribeForInside.push_front(b);
+					}
 				}
 				else
 					activity=ACT_RANDOM;
@@ -621,6 +734,9 @@ void Unit::handleActivity(void)
 			attachedBuilding->unitsInsideSubscribe.remove(this);
 			attachedBuilding->updateCallLists();
 			attachedBuilding=NULL;
+			targetBuilding=NULL;
+			ownExchangeBuilding=NULL;
+			foreingExchangeBuilding=NULL;
 			subscribed=false;
 		}
 
@@ -670,13 +786,18 @@ void Unit::handleActivity(void)
 				destinationPurprose=FEED;
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
+				targetBuilding=b;
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;
 				subscribed=true;
-				owner->subscribeForInside.push_front(b);
+				if (b->subscribeForInside!=1)
+				{
+					b->subscribeForInside=1;
+					owner->subscribeForInside.push_front(b);
+				}
 			}
 			else
 				activity=ACT_RANDOM;
@@ -690,6 +811,7 @@ void Unit::handleActivity(void)
 				destinationPurprose=HEAL;
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
+				targetBuilding=b;
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to heal at building gbid=(%d)\n", gid, b->gid);
@@ -744,123 +866,269 @@ void Unit::handleDisplacement(void)
 				caryedRessource=destinationPurprose;
 				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
 				
+				targetBuilding=attachedBuilding;
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 					displacement=DIS_FILLING_BUILDING;
 				else
 				{
 					displacement=DIS_GOING_TO_BUILDING;
-					targetX=attachedBuilding->getMidX();
-					targetY=attachedBuilding->getMidY();
+					targetX=targetBuilding->getMidX();
+					targetY=targetBuilding->getMidY();
 				}
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				assert(targetBuilding);
+				if (owner->map->doesUnitTouchBuilding(this, targetBuilding->gid, &dx, &dy))
 					displacement=DIS_FILLING_BUILDING;
 			}
 			else if (displacement==DIS_FILLING_BUILDING)
 			{
-				if (attachedBuilding->ressources[caryedRessource]<attachedBuilding->type->maxRessource[caryedRessource])
+				bool loopMove=false;
+				bool exchangeReady=false;
+				assert(targetBuilding);
+				
+				if (targetBuilding==foreingExchangeBuilding)
 				{
-					if (verbose)
-						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
-					attachedBuilding->ressources[caryedRessource]+=attachedBuilding->type->multiplierRessource[caryedRessource];
-					if (attachedBuilding->ressources[caryedRessource] > attachedBuilding->type->maxRessource[caryedRessource])
-						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
-					caryedRessource=-1;
-					BuildingType *bt=attachedBuilding->type;
-					switch (attachedBuilding->constructionResultState)
+					assert(targetBuilding->type->canExchange);
+					assert(owner!=targetBuilding->owner);
+					assert(caryedRessource>=HAPPYNESS_BASE);
+					// Let's check for possible exchange ressources:
+					
+					bool goodToGive=targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource];
+					bool goodToTake=false;
+					int ressourceToTake;
+					for (int r=0; r<HAPPYNESS_COUNT; r++)
+						if ((destinationPurprose & (1<<r))
+							&& foreingExchangeBuilding->ressources[HAPPYNESS_BASE+r]>0)
+						{
+							goodToTake=true;
+							ressourceToTake=HAPPYNESS_BASE+r;
+							break;
+						}
+					
+					if (goodToGive && goodToTake)
 					{
-						case Building::NO_CONSTRUCTION:
-						break;
+						// OK, we can proceed to the exchange.
+						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+						targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
 						
-						case Building::NEW_BUILDING:
-						case Building::UPGRADE: 
-						{
-							attachedBuilding->hp+=bt->hpInc;
-						}
-						break;
+						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+					
+						if (targetBuilding->ressources[ressourceToTake]<0)
+							targetBuilding->ressources[ressourceToTake]=0;
+					
+						caryedRessource=ressourceToTake;
+						targetBuilding=ownExchangeBuilding;
 						
-						case Building::REPAIR:
-						{
-							int totRessources=0;
-							for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-								totRessources+=bt->maxRessource[i];
-							attachedBuilding->hp+=bt->hpMax/totRessources;
-						}
-						break;
-						
-						default:
-							assert(false);
-					}
-				}
-
-				attachedBuilding->update();
-				//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
-				if (!attachedBuilding)
-				{
-					if (verbose)
-						printf("guid=(%d) The building doesn't need me any more.\n", gid);
-					activity=ACT_RANDOM;
-					displacement=DIS_RANDOM;
-					subscribed=false;
-					assert(needToRecheckMedical);
-				}
-				else
-				{
-					Uint8 needs[MAX_NB_RESSOURCES];
-					attachedBuilding->neededRessources(needs);
-					int teamNumber=owner->teamNumber;
-					bool canSwim=performance[SWIM];
-					int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
-					destinationPurprose=-1;
-					int minValue=owner->map->getW()+owner->map->getW();
-					Map* map=owner->map;
-					for (int r=0; r<MAX_NB_RESSOURCES; r++)
-					{
-						int need=needs[r];
-						if (need)
-						{
-							int distToRessource;
-							if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))
-							{
-								if ((distToRessource<<1)>=timeLeft)
-									continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
-								int value=distToRessource/need;
-								if (value<minValue)
-								{
-									destinationPurprose=r;
-									minValue=value;
-								}
-							}
-						}
-					}
-
-					if (verbose)
-						printf("guid=(%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
-
-					if (destinationPurprose>=0)
-					{
-						assert(activity==ACT_FILLING);
-						int dummyDist;
-						if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
-							displacement=DIS_HARVESTING;
-						else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
-							displacement=DIS_GOING_TO_RESSOURCE;
-						else
-						{
-							assert(false);//You can remove this assert(), but *do* notice me!
-							activity=ACT_RANDOM;
-							displacement=DIS_RANDOM;
-							subscribed=false;
-							assert(needToRecheckMedical);
-						}
+						displacement=DIS_GOING_TO_BUILDING;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						exchangeReady=true;
+						if (verbose)
+							printf("guid=(%d) exchangeReady at foreingExchangeBuilding\n", gid);
 					}
 					else
 					{
 						if (verbose)
-							printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
-						stopAttachedForBuilding(false);
+							printf("guid=(%d) loopMove at foreingExchangeBuilding, caryedRessource=%d, destinationPurprose=%d, goodToGive=%d, goodToTake=%d\n", gid, caryedRessource, destinationPurprose, goodToGive, goodToTake);
+						loopMove=true;
+					}
+				}
+				else if (targetBuilding==ownExchangeBuilding)
+				{
+					// Let's grab the right ressource.
+					
+					bool goodToTake=false;
+					int ressourceToTake;
+					for (int r=0; r<HAPPYNESS_COUNT; r++)
+						if (foreingExchangeBuilding->receiveRessourceMask & (1<<r))
+						{
+							goodToTake=true;
+							ressourceToTake=HAPPYNESS_BASE+r;
+							break;
+						}
+					
+					if (goodToTake)
+					{
+						targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
+						if (targetBuilding->ressources[ressourceToTake]<0)
+							targetBuilding->ressources[ressourceToTake]=0;
+						
+						targetBuilding=foreingExchangeBuilding;
+						
+						caryedRessource=ressourceToTake;
+						displacement=DIS_GOING_TO_BUILDING;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						exchangeReady=true;
+						if (verbose)
+							printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
+					}
+				}
+				else
+				{
+					if (targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource])
+					{
+						if (verbose)
+							printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
+						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+						caryedRessource=-1;
+						BuildingType *bt=targetBuilding->type;
+						switch (targetBuilding->constructionResultState)
+						{
+							case Building::NO_CONSTRUCTION:
+							break;
+
+							case Building::NEW_BUILDING:
+							case Building::UPGRADE: 
+							{
+								attachedBuilding->hp+=bt->hpInc;
+							}
+							break;
+
+							case Building::REPAIR:
+							{
+								int totRessources=0;
+								for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+									totRessources+=bt->maxRessource[i];
+								attachedBuilding->hp+=bt->hpMax/totRessources;
+							}
+							break;
+
+							default:
+								assert(false);
+						}
+					}
+				}
+				
+				if (!loopMove && !exchangeReady)
+				{
+					attachedBuilding->update();
+					//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
+					if (!attachedBuilding)
+					{
+						if (verbose)
+							printf("guid=(%d) The building doesn't need me any more.\n", gid);
+						activity=ACT_RANDOM;
+						displacement=DIS_RANDOM;
+						subscribed=false;
+						assert(needToRecheckMedical);
+					}
+					else
+					{
+						Uint8 needs[MAX_NB_RESSOURCES];
+						attachedBuilding->neededRessources(needs);
+						int teamNumber=owner->teamNumber;
+						bool canSwim=performance[SWIM];
+						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
+						int bestRessource=-1;
+						int minValue=owner->map->getW()+owner->map->getW();
+						Map* map=owner->map;
+						for (int r=0; r<MAX_NB_RESSOURCES; r++)
+						{
+							int need=needs[r];
+							if (need)
+							{
+								int distToRessource;
+								if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))
+								{
+									if ((distToRessource<<1)>=timeLeft)
+										continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
+									int value=distToRessource/need;
+									if (value<minValue)
+									{
+										bestRessource=r;
+										minValue=value;
+									}
+								}
+							}
+						}
+
+						if (verbose)
+							printf("guid=(%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
+
+						if (bestRessource>=0)
+						{
+							destinationPurprose=bestRessource;
+							assert(activity==ACT_FILLING);
+							int dummyDist;
+							if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+								displacement=DIS_HARVESTING;
+							else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+								displacement=DIS_GOING_TO_RESSOURCE;
+							else
+							{
+								assert(false);//You can remove this assert(), but *do* notice me!
+								activity=ACT_RANDOM;
+								displacement=DIS_RANDOM;
+								subscribed=false;
+								assert(needToRecheckMedical);
+							}
+						}
+						else if (owner==targetBuilding->owner && attachedBuilding->type->canExchange && owner->openMarket())
+						{
+							if (ownExchangeBuilding)
+							{
+								assert(ownExchangeBuilding==attachedBuilding);
+								assert(foreingExchangeBuilding);
+							}
+							
+							ownExchangeBuilding=attachedBuilding;
+
+							foreingExchangeBuilding=NULL;
+							int minDist=INT_MAX;
+
+							Uint32 sendRessourceMask=ownExchangeBuilding->sendRessourceMask;
+							Uint32 receiveRessourceMask=ownExchangeBuilding->receiveRessourceMask;
+							for (int ti=0; ti<owner->game->session.numberOfTeam; ti++)
+								if (ti!=teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
+								{
+									Team *foreignTeam=owner->game->teams[ti];
+									std::list<Building *> foreignFillable=foreignTeam->fillable;
+									for (std::list<Building *>::iterator fbi=foreignFillable.begin(); fbi!=foreignFillable.end(); ++fbi)
+										if ((*fbi)->type->canExchange)
+										{
+											Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
+											Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
+											int foreignBuildingDist;
+											if ((sendRessourceMask & foreignReceiveRessourceMask)
+												&& (receiveRessourceMask & foreignSendRessourceMask)
+												&& map->buildingAviable(*fbi, canSwim, posX, posY, &foreignBuildingDist)
+												&& foreignBuildingDist<(timeLeft/2)
+												&& foreignBuildingDist<minDist)
+											{
+												foreingExchangeBuilding=*fbi;
+												minDist=foreignBuildingDist;
+												destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+											}
+										}
+								}
+
+							if (foreingExchangeBuilding)
+							{
+								assert(activity==ACT_FILLING);
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=ownExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
+							else
+							{
+								if (verbose)
+									printf("guid=(%d) can't find any suitable foreign exchange building, unsubscribing.\n", gid);
+								stopAttachedForBuilding(false);
+							}
+						}
+						else 
+						{
+							if (verbose)
+								printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
+							stopAttachedForBuilding(false);
+						}
 					}
 				}
 			}
@@ -1271,7 +1539,7 @@ void Unit::handleMovement(void)
 			{
 				movement=MOV_FLYING_TARGET;
 			}
-			else if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy))
 			{
 				if (verbose)
 					printf("guid=(%d) Unit found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
@@ -1316,6 +1584,9 @@ void Unit::handleMovement(void)
 				attachedBuilding->updateCallLists();
 				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
+				targetBuilding=NULL;
+				assert(ownExchangeBuilding==NULL);
+				assert(foreingExchangeBuilding==NULL);
 				subscribed=false;
 				assert(needToRecheckMedical);
 			}
@@ -1583,43 +1854,6 @@ void Unit::setNewValidDirectionAir(void)
 		dxdyfromDirection();
 	}
 }
-
-/*bool Unit::valid(int x, int y)
-{
-	// Is there anythig that could block an unit?
-	if (performance[FLY])
-		return owner->map->isFreeForAirUnit(x, y);
-	else
-		return owner->map->isFreeForGroundUnit(x, y, performance[SWIM], owner->me);
-}
-
-bool Unit::validHard(int x, int y)
-{
-	// Is there anythig that could block an unit? (except other units)
-	assert(!performance[FLY]);
-	return owner->map->isHardSpaceForGroundUnit(x, y, performance[SWIM], owner->me);
-}
-
-bool Unit::areOnlyUnitsInFront(int dx, int dy)
-{
-	if (!validHard(posX+dx, posY+dy))
-		return false;
-
-	int dir=directionFromDxDy(dx, dy);
-	int ldx, ldy;
-
-	dxdyfromDirection((dir+1)&7, &ldx, &ldy);
-
-	if (!validHard(posX+ldx, posY+ldy))
-		return false;
-
-	dxdyfromDirection((dir+7)&7, &ldx, &ldy);
-
-	if (!validHard(posX+ldx, posY+ldy))
-		return false;
-
-	return true;
-}*/
 
 void Unit::flytoTarget()
 {

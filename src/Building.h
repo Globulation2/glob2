@@ -74,12 +74,13 @@ public:
 	Sint32 lastInsideSubscribe;
 	
 	// optimisation and consistency
+	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
+	Sint32 subscribeForInside, subscribeToBringRessources, subscribeForFlaging; 
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit
 	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit
 	Sint32 foodable; // Included in {0: unknow, 1:allready in owner->foodable, 2:not in owner->foodable
 	Sint32 fillable; // Included in {0: unknow, 1:allready in owner->fillable, 2:not in owner->fillable
-	Sint32 zonable[NB_UNIT_TYPE]; // Included in {0: unknow, 1:allready in owner->zonable, 2:not in owner->zonable
-	
+	Sint32 zonable[NB_UNIT_TYPE]; // Included in {0: unknow, 1:allready in owner->zonable, 2:not in owner->zonable}
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity

@@ -121,6 +121,8 @@ public:
 	void setCorrectColor(float value);
 	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
 	
+	bool openMarket();
+	
 	//! Called when unit is hungry
 	Building *findNearestFood(Unit *unit);
 	//! Called when unit needs heal
@@ -167,6 +169,7 @@ public:
 	// The list of building which have one specific ability.
 	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
 	std::list<Building *> canHealUnit;
+	std::list<Building *> canExchange;
 	
 	// The lists of building with new subscribed unit:
 	std::list<Building *> subscribeForInside;

@@ -68,10 +68,10 @@ AI::~AI()
 	aiImplementation=NULL;
 }
 
-Order *AI::getOrder(void)
+Order *AI::getOrder(bool paused)
 {
 	assert(player);
-	if(!player->team->isAlive)
+	if(paused || !player->team->isAlive)
 		return new NullOrder();
 	assert(aiImplementation);
 	return aiImplementation->getOrder();

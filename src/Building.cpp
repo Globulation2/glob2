@@ -111,6 +111,9 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 
 	seenByMask=0;
 	
+	subscribeForInside=0;
+	subscribeToBringRessources=0;
+	subscribeForFlaging=0;
 	canFeedUnit=0;
 	canHealUnit=0;
 	foodable=0;
@@ -184,6 +187,9 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	
 	seenByMask=SDL_ReadBE32(stream);
 	
+	subscribeForInside=0;
+	subscribeToBringRessources=0;
+	subscribeForFlaging=0;
 	canFeedUnit=0;
 	canHealUnit=0;
 	foodable=0;
@@ -444,10 +450,7 @@ void Building::launchConstruction(void)
 			int d=u->displacement;
 			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING))
 			{
-				u->attachedBuilding=NULL;
-				u->activity=Unit::ACT_RANDOM;
-				u->displacement=Unit::DIS_RANDOM;
-				u->needToRecheckMedical=true;
+				u->standardRandomActivity();
 				unitsToRemove.push_front(u);
 			}
 		}
@@ -601,7 +604,7 @@ void Building::updateCallLists(void)
 	if (buildingState==DEAD)
 		return;
 	bool ressourceFull=isRessourceFull();
-	if (ressourceFull)
+	if (ressourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me:
 		if (foodable!=2)
@@ -662,11 +665,7 @@ void Building::updateCallLists(void)
 		{
 			// This is only a special optimisation case:
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
-			}
+				(*it)->standardRandomActivity();
 			unitsWorking.clear();
 		}
 		else
@@ -731,11 +730,8 @@ void Building::updateCallLists(void)
 					if (verbose)
 						printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
 					// We free the unit.
-					fu->activity=Unit::ACT_RANDOM;
-
+					fu->standardRandomActivity();
 					unitsWorking.erase(ittemp);
-					fu->attachedBuilding=NULL;
-					fu->needToRecheckMedical=true;
 				}
 				else
 					break;
@@ -849,11 +845,7 @@ void Building::updateBuildingSite(void)
 		// be filled (at least start to be filled).
 
 		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
-		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
-		}
+			(*it)->standardRandomActivity();
 		unitsWorking.clear();
 
 		if (type->maxUnitWorking)
@@ -872,9 +864,10 @@ void Building::updateBuildingSite(void)
 		productionTimeout=type->unitProductionTime;
 		if (type->unitProductionTime)
 			owner->swarms.push_front(this);
-
 		if (type->shootingRange)
 			owner->turrets.push_front(this);
+		if (type->canExchange)
+			owner->canExchange.push_front(this);
 
 		setMapDiscovered();
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
@@ -1065,21 +1058,11 @@ void Building::step(void)
 void Building::removeSubscribers(void)
 {
 	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-	{
-		(*it)->attachedBuilding=NULL;
-		(*it)->subscribed=false;
-		(*it)->activity=Unit::ACT_RANDOM;
-		(*it)->needToRecheckMedical=true;
-	}
+		(*it)->standardRandomActivity();
 	unitsWorkingSubscribe.clear();
 
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
-	{
-		(*it)->attachedBuilding=NULL;
-		(*it)->subscribed=false;
-		(*it)->activity=Unit::ACT_RANDOM;
-		(*it)->needToRecheckMedical=true;
-	}
+		(*it)->standardRandomActivity();
 	unitsInsideSubscribe.clear();
 }
 
@@ -1098,18 +1081,11 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	if (verbose)
-		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->subscribed=false;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
-		}
+			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
 		if (verbose)
 			printf("...fullWorking()\n");
@@ -1118,9 +1094,11 @@ void Building::subscribeToBringRessourcesStep()
 	
 	if (lastWorkingSubscribe>32)
 	{
-		lastWorkingSubscribe=0;
+		if (verbose)
+			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
+		
 			int minValue=INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
@@ -1143,7 +1121,7 @@ void Building::subscribeToBringRessourcesStep()
 					int dist;
 					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
 					{
-						int value=dist-timeLeft;
+						int value=dist-(timeLeft>>1);
 						unit->destinationPurprose=r;
 						if (value<minValue)
 						{
@@ -1180,7 +1158,129 @@ void Building::subscribeToBringRessourcesStep()
 									int distUnitBuilding;
 									if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 									{
-										int value=(distUnitRessource+distUnitBuilding)/need;
+										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
+										if (value<minValue)
+										{
+											unit->destinationPurprose=r;
+											minValue=value;
+											choosen=unit;
+											if (verbose)
+												printf(" guid=%5d, distUnitRessource=%d, distUnitBuilding=%d, need=%d, value=%d\n", choosen->gid, distUnitRessource, distUnitBuilding, need, value);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//special case for an exchange building:
+			if (choosen==NULL && type->canExchange && owner->openMarket())
+			{
+				SessionGame &session=owner->game->session;
+				// We compute all what's aviable from foreign ressources: (mask)
+				Uint32 allForeignSendRessourceMask=0;
+				Uint32 allForeignReceiveRessourceMask=0;
+				for (int ti=0; ti<session.numberOfTeam; ti++)
+					if (ti!=owner->teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
+					{
+						std::list<Building *> foreignCanExchange=owner->game->teams[ti]->canExchange;
+						for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
+						{
+							Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
+							for (int r=0; r<HAPPYNESS_COUNT; r++)
+								if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
+									sendRessourceMask&=(~(1<<r));
+							allForeignSendRessourceMask|=sendRessourceMask;
+
+							Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
+							for (int r=0; r<HAPPYNESS_COUNT; r++)
+								if ((receiveRessourceMask & (1<<r))
+									&& ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
+									receiveRessourceMask&=(~(1<<r));
+							allForeignReceiveRessourceMask|=receiveRessourceMask;
+						}
+					}
+
+				if ((allForeignSendRessourceMask & receiveRessourceMask) && (allForeignReceiveRessourceMask & sendRessourceMask))
+				{
+					if (verbose)
+						printf(" find best foreign exchangeBuilding\n");
+					
+					for (std::list<Unit *>::iterator uit=unitsWorkingSubscribe.begin(); uit!=unitsWorkingSubscribe.end(); ++uit)
+					{
+						Unit *unit=(*uit);
+						int x=unit->posX;
+						int y=unit->posY;
+						bool canSwim=unit->performance[SWIM];
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+						int buildingDist;
+						if (map->buildingAviable(this, canSwim, x, y, &buildingDist)
+							&& (buildingDist<timeLeft))
+							for (int ti=0; ti<session.numberOfTeam; ti++)
+								if (ti!=owner->teamNumber)
+								{
+									Team *foreignTeam=owner->game->teams[ti];
+									if (foreignTeam->sharedVisionExchange & owner->me)
+									{
+										std::list<Building *> foreignCanExchange=foreignTeam->canExchange;
+										for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
+										{
+											Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
+											Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
+											int foreignBuildingDist;
+											if ((sendRessourceMask & foreignReceiveRessourceMask)
+												&& (receiveRessourceMask & foreignSendRessourceMask)
+												&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist)
+												&& (buildingDist+(foreignBuildingDist<<1)<timeLeft))
+											{
+												int dist=buildingDist+foreignBuildingDist;
+												if (dist<minValue)
+												{
+													if (verbose)
+														printf(" found unit guid=%d, dist=%d\n", unit->gid, dist);
+													choosen=unit;
+													minValue=dist;
+													unit->ownExchangeBuilding=this;
+													unit->foreingExchangeBuilding=*fbi;
+													unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+												}
+											}
+										}
+									}
+								}
+					}
+				}
+			}
+
+			if (choosen==NULL)
+			{
+				Uint8 needs[MAX_NB_RESSOURCES];
+				neededRessources(needs);
+				int teamNumber=owner->teamNumber;
+				//Third: we look for an unit whois carying an unwanted ressource:
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+				{
+					Unit *unit=(*it);
+					if (unit->caryedRessource>=0)
+					{
+						int x=unit->posX;
+						int y=unit->posY;
+						bool canSwim=unit->performance[SWIM];
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+						for (int r=0; r<MAX_RESSOURCES; r++)
+						{
+							int need=needs[r];
+							if (need)
+							{
+								int distUnitRessource;
+								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
+								{
+									int distUnitBuilding;
+									if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+									{
+										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										if (value<minValue)
 										{
 											unit->destinationPurprose=r;
@@ -1193,42 +1293,6 @@ void Building::subscribeToBringRessourcesStep()
 						}
 					}
 				}
-				
-				//Third: we look for an unit whois carying an unwanted ressource:
-				if (choosen==NULL)
-					for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-					{
-						Unit *unit=(*it);
-						if (unit->caryedRessource>=0)
-						{
-							int x=unit->posX;
-							int y=unit->posY;
-							bool canSwim=unit->performance[SWIM];
-							int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
-							for (int r=0; r<MAX_RESSOURCES; r++)
-							{
-								int need=needs[r];
-								if (need)
-								{
-									int distUnitRessource;
-									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
-									{
-										int distUnitBuilding;
-										if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
-										{
-											int value=(distUnitRessource+distUnitBuilding)/need;
-											if (value<minValue)
-											{
-												unit->destinationPurprose=r;
-												minValue=value;
-												choosen=unit;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
 			}
 
 			if (choosen)
@@ -1237,28 +1301,27 @@ void Building::subscribeToBringRessourcesStep()
 					printf(" unit %d choosen.\n", choosen->gid);
 				
 				unitsWorkingSubscribe.remove(choosen);
-				if (!neededRessource(choosen->destinationPurprose))
+				if (neededRessource(choosen->destinationPurprose))
+				{
+					unitsWorking.push_back(choosen);
+					choosen->subscriptionSuccess();
+					updateCallLists();
+				}
+				else if (type->canExchange && owner->openMarket())
+				{
+					unitsWorking.push_back(choosen);
+					choosen->subscriptionSuccess();
+					updateCallLists();
+				}
+				else
 				{
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
-					
-					choosen->attachedBuilding=NULL;
-					choosen->subscribed=false;
-					choosen->activity=Unit::ACT_RANDOM;
-					choosen->needToRecheckMedical=true;
+					choosen->standardRandomActivity();
 					if (verbose)
 						printf("...!neededRessource(choosen->destinationPurprose=%d)\n", choosen->destinationPurprose);
 					return;
-				}
-				else
-				{
-					//We set targetX and targetY for gameplay purpose:
-					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL);
-					
-					unitsWorking.push_back(choosen);
-					choosen->subscriptionSuccess();
-					updateCallLists();
 				}
 			}
 		}
@@ -1268,17 +1331,12 @@ void Building::subscribeToBringRessourcesStep()
 			if (verbose)
 				printf(" unitsWorking.size()>=maxUnitWorking\n");
 			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->subscribed=false;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
-			}
+				(*it)->standardRandomActivity();
 			unitsWorkingSubscribe.clear();
 		}
+		if (verbose)
+			printf(" ...done\n");
 	}
-	if (verbose)
-		printf(" ...done\n");
 }
 
 void Building::subscribeForFlagingStep()
@@ -1287,12 +1345,7 @@ void Building::subscribeForFlagingStep()
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->subscribed=false;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
-		}
+			(*it)->standardRandomActivity();
 		unitsWorkingSubscribe.clear();
 		return;
 	}
@@ -1370,12 +1423,7 @@ void Building::subscribeForInsideStep()
 	if (fullInside())
 	{
 		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->subscribed=false;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
-		}
+			(*it)->standardRandomActivity();
 		unitsInsideSubscribe.clear();
 		return;
 	}
@@ -1422,12 +1470,7 @@ void Building::subscribeForInsideStep()
 		if ((signed)unitsInside.size()>=maxUnitInside)
 		{
 			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->subscribed=false;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
-			}
+				(*it)->standardRandomActivity();
 			unitsInsideSubscribe.clear();
 		}
 	}
@@ -1592,19 +1635,22 @@ void Building::turretStep(void)
 					if (enemies&otherTeamMask)
 					{
 						Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetID];
-						int targetTime;
-						if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
-							targetTime=0;
-						else
-							targetTime=(256-testUnit->delta)/testUnit->speed;
-						if (targetTime<bestTime)
+						if (testUnit->foreingExchangeBuilding==NULL)
 						{
-							bestTime=targetTime;
-							bestTargetX=targetX;
-							bestTargetY=targetY;
-							targetFound=true;
+							int targetTime;
+							if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
+								targetTime=0;
+							else
+								targetTime=(256-testUnit->delta)/testUnit->speed;
+							if (targetTime<bestTime)
+							{
+								bestTime=targetTime;
+								bestTargetX=targetX;
+								bestTargetY=targetY;
+								targetFound=true;
+							}
 						}
-						//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
+						//printf("found unit target: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
 						//break;
 					}
 				}
@@ -1732,10 +1778,7 @@ void Building::kill(void)
 			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
 		}
-		u->attachedBuilding=NULL;
-		u->activity=Unit::ACT_RANDOM;
-		u->displacement=Unit::DIS_RANDOM;
-		(*it)->needToRecheckMedical=true;
+		u->standardRandomActivity();
 	}
 	unitsInside.clear();
 
@@ -1743,9 +1786,7 @@ void Building::kill(void)
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
-		(*it)->attachedBuilding=NULL;
-		(*it)->activity=Unit::ACT_RANDOM;
-		(*it)->needToRecheckMedical=true;
+		(*it)->standardRandomActivity();
 	}
 	unitsWorking.clear();
 	
@@ -2037,7 +2078,7 @@ Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 void Building::integrity()
 {
 	assert(unitsWorking.size()>=0);
-	assert(unitsWorking.size()<65536);
+	assert(unitsWorking.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
@@ -2046,7 +2087,7 @@ void Building::integrity()
 	}
 
 	assert(unitsWorkingSubscribe.size()>=0);
-	assert(unitsWorkingSubscribe.size()<65536);
+	assert(unitsWorkingSubscribe.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
 		assert(*it);
@@ -2055,7 +2096,7 @@ void Building::integrity()
 	}
 	
 	assert(unitsInside.size()>=0);
-	assert(unitsInside.size()<65536);
+	assert(unitsInside.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);
@@ -2064,7 +2105,7 @@ void Building::integrity()
 	}
 
 	assert(unitsInsideSubscribe.size()>=0);
-	assert(unitsInsideSubscribe.size()<65536);
+	assert(unitsInsideSubscribe.size()<=1024);
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
 		assert(*it);
