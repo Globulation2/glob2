@@ -658,7 +658,7 @@ void Map::growRessources(void)
 {
 	for (int y=0; y<h; y++)
 	{
-		for (int x=(syncRand()&0x7); x<w; x+=(syncRand()&0xF))
+		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
 		//for (int x=0; x<w; x++)
 		{
 			//int y=syncRand()&hMask;
@@ -670,24 +670,35 @@ void Map::growRessources(void)
 			{
 				// we look around to see if there is any water :
 				// TODO: uses UnderMap.
-				static const int waterDist=0x7;
+				static const int waterDist=0xF;
 				int dwax=(syncRand()&waterDist)-(syncRand()&waterDist);
 				int dway=(syncRand()&waterDist)-(syncRand()&waterDist);
-				int wax1=x+dwax*2;
-				int way1=y+dway*2;
-				int wax2=x+dwax;
-				int way2=y+dway;
-				int wax3=x-dwax;
-				int way3=y-dway;
+				int wax1=x+dwax;
+				int way1=y+dway;
+				
+				int wax2=x-dway*2;
+				int way2=y+dwax*2;
+				
+				int wax3=x-dwax*2;
+				int way3=y-dway*2;
+				
+				int wax4=x+dway*2;
+				int way4=y-dwax*2;
+				
 				bool expand=false;
 				if (r==ALGA)
 				{
-					if ((!isWaterOrAlga(wax1, way1))&&(isWater(wax2, way2))&&(isWater(wax3, way3)))
+					if (isSand(wax1, way1))
 						expand=true;
 				}
-				else if ((r==WOOD)||(r==CORN))
+				else if (r==WOOD)
 				{
-					if (isWaterOrAlga(wax1, way1)&&(isGrass(wax2, way2))&&(isGrass(wax3, way3)))
+					if ((isWaterOrAlga(wax1, way1))&&(isGrass(wax3, way3)))
+						expand=true;
+				}
+				else if (r==CORN)
+				{
+					if ((isWaterOrAlga(wax1, way1))&&(isGrass(wax3, way3)))
 						expand=true;
 				}
 				
