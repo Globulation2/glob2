@@ -59,9 +59,10 @@ I'm really sorry, but I'm not yet able to design this.
 The engine has to call NetGame::step() to give him time to process.
 */
 
-#include "GAG.h"
-#include "Order.h"
-#include "Player.h"
+#include "Header.h"
+
+class Player;
+class Order;
 
 class NetGame
 {
