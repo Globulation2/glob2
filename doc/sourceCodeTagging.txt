@@ -1,0 +1,18 @@
+Glob2 source code tagging
+=========================
+
+Stephane Magnenat <nct@ysagoon.com>, 04.08.2004
+
+Introduction
+------------
+
+It is not always possible, even not always desirable to make the best code for the first time, but it is mandatory to remember what is test code and what is final clean code.
+
+To do this, glob2 make heavy use of tags in source code, which are simple keyword in capitals in comments.
+
+Tag list
+--------
+
+TODO	A feature or error handling code is not yet implemented
+FIXME	A bug or a ugly hack which should be fixed
+COMPAT	Map format compatibility code that should be removed on map format freeze
