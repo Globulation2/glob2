@@ -39,14 +39,20 @@ void IntBuildingType::init(void)
 	reverseConversionMap[MARKET_BUILDING] = "market";
 }
 
+
+
 int IntBuildingType::shortNumberFromType(const char *type)
 {
-	std::string stype(type);
-	if (conversionMap.find(stype) != conversionMap.end())
-		return conversionMap[stype];
+	return shortNumberFromType(std::string(type));
+}
+
+int IntBuildingType::shortNumberFromType(const std::string &s)
+{
+	if (conversionMap.find(s) != conversionMap.end())
+		return conversionMap[s];
 	else
 	{
-		std::cerr << "IntBuildingType::shortNumberFromType(" << type << ") : error : type does not exists in conversionMap" << std::endl;
+		std::cerr << "IntBuildingType::shortNumberFromType(" << s << ") : error : type does not exists in conversionMap" << std::endl;
 		assert(false);
 		return -1;
 	}

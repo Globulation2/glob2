@@ -1755,10 +1755,9 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explaination]", typeId);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explaination 2]", typeId);
 					globalContainer->littleFont->popColor();
-					int typeNum=globalContainer->buildingsTypes.getTypeNum(type.c_str(), 0, true);
-					if (typeNum!=-1)
+					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
+					if (bt)
 					{
-						BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
 							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
@@ -3129,13 +3128,13 @@ bool GameGUI::load(SDL_RWops *stream)
 		// invert value if hidden
 		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
 		{
-			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i].c_str());
+			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
 			if ((1<<id) & buildingsChoiceMask)
 				buildingsChoiceState[i] = false;
 		}
 		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
 		{
-			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i].c_str());
+			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
 			if ((1<<id) & flagsChoiceMask)
 				flagsChoiceState[i] = false;
 		}
@@ -3166,7 +3165,7 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	{
 		if (buildingsChoiceState[i] == 0)
 		{
-			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i].c_str());
+			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
 			buildingsChoiceMask |= (1<<id);
 		}
 	}
@@ -3174,7 +3173,7 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	{
 		if (flagsChoiceState[i])
 		{
-			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i].c_str());
+			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
 			flagsChoiceMask |= (1<<id);
 		}
 	}
