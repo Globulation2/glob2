@@ -17,28 +17,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Ressource.h"
+#ifndef __GRADIENT_H
+#define __GRADIENT_H
 
-RessourceType::RessourceType()
-{
-	name="undefined";
-	terrain=0;
-	gfxId=0;
-	sizesCount=0;
-	varietiesCount=0;
-	shrinkable=true;
-	expendable=true;
-	eternal=false;
-	granular=true;
-	multiplicator=1;
-	visibleToBeCollected=false;
-}
+#define BUILDING_GRADIENT_W 32
+#define BUILDING_GRADIENT_H 32
+#define BUILDING_GRADIENT_W_MASK 31
+#define BUILDING_GRADIENT_H_MASK 31
+#define BUILDING_GRADIENT_DW 16
+#define BUILDING_GRADIENT_DH 16
+#define BUILDING_GRADIENT_SIZE 1024
 
-RessourcesTypes::RessourcesTypes()
-{
-	wood=0;
-	corn=1;
-	fungus=2;
-	stone=3;
-	alga=4;
-}
+#endif

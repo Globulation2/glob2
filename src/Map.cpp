@@ -273,7 +273,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 			{
 				assert(ressourcesGradient[t][r][s]==NULL);
 				ressourcesGradient[t][r][s]=new Uint8[size];
-				initGradient(t, r, s);
+				updateGradient(t, r, s);
 			}
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -364,7 +364,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			initGradient(t, r, s);
+			updateGradient(t, r, s);
 		}
 }
 
@@ -470,7 +470,6 @@ void Map::step(void)
 				for (int s=0; s<2; s++)
 					if (!gradientUpdated[t][r][s])
 					{
-						initGradient(t, r, s);
 						updateGradient(t, r, s);
 						gradientUpdated[t][r][s]=true;
 						updated=true;
@@ -1167,8 +1166,8 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 				//}
 			}
 		
-		vx+=vddx;
-		vy+=vddy;
+		vx=(vx+vddx+w)&wMask;
+		vy=(vy+vddy+h)&hMask;
 		if (max>=254)
 		{
 			*targetX=vx;
@@ -1183,7 +1182,7 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 	}
 }
 
-void Map::initGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
@@ -1199,7 +1198,7 @@ void Map::initGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 			if (c.ressource.id==NORESID)
 			{
 				if (c.building!=NOGBID)
-				gradient[wy+x]=0;
+					gradient[wy+x]=0;
 				else if (c.forbidden&teamMask)
 					gradient[wy+x]=0;
 				else if (!canSwim && isWater(x, y))
@@ -1214,12 +1213,7 @@ void Map::initGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 			}
 		}
 	}
-}
-
-void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
-{
-	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
-	assert(gradient);
+	
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	
@@ -1434,6 +1428,201 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		*dy=0;
 	}
 	return true;
+}
+
+void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingGradient[2][BUILDING_GRADIENT_SIZE], Uint32 teamMask)
+{
+	for (int canSwim=0; canSwim<=1; canSwim++)
+	{
+		Uint8 *gradient=buildingGradient[1];
+		
+		memset(gradient, 1, BUILDING_GRADIENT_SIZE);
+		for (int dy=0; dy<posH; dy++)
+			for (int dx=0; dx<posW; dx++)
+				gradient[BUILDING_GRADIENT_DW+dx+(BUILDING_GRADIENT_DH+dy)*BUILDING_GRADIENT_W]=255;
+		
+		// Here g=Global(map axis), l=Local(map axis)
+	
+		for (int yl=0; yl<BUILDING_GRADIENT_H; yl++)
+		{
+			int wyl=BUILDING_GRADIENT_W*yl;
+			int yg=(yl+posY-BUILDING_GRADIENT_DH+h)&hMask;
+			int wyg=w*yg;
+			for (int xl=0; xl<BUILDING_GRADIENT_W; xl++)
+			{
+				int xg=(xl+posX-BUILDING_GRADIENT_DW+w)&wMask;
+				Case c=cases[wyg+xg];
+				int addrl=wyl+xl;
+				if (c.ressource.id!=NORESID)
+					gradient[addrl]=0;
+				else if (c.building!=NOGBID)
+					gradient[addrl]=0;
+				else if (c.forbidden&teamMask)
+					gradient[addrl]=0;
+				else if (!canSwim && isWater(xg, yg))
+					gradient[addrl]=0;
+			}
+		}
+		
+		//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+		// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
+		
+		static const int w=BUILDING_GRADIENT_W;
+		static const int h=BUILDING_GRADIENT_H;
+		static const int wMask=BUILDING_GRADIENT_W_MASK;
+		static const int hMask=BUILDING_GRADIENT_H_MASK;
+		
+		for (int depth=0; depth<1; depth++) // With a higher depth, we could afford more complex obstacles.
+		{
+			for (int y=0; y<h; y++)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				for (int x=0; x<w; x++)
+				{
+					Uint8 max=gradient[wy+x];
+					if (max && max!=255)
+					{
+						int xl=(x+wMask)&wMask;
+						int xr=(x+1)&wMask;
+						Uint8 side[8];
+						side[0]=gradient[wyu+xl];
+						side[1]=gradient[wyu+x ];
+						side[2]=gradient[wyu+xr];
+
+						side[3]=gradient[wy +xr];
+
+						side[4]=gradient[wyd+xr];
+						side[5]=gradient[wyd+x ];
+						side[6]=gradient[wyd+xl];
+
+						side[7]=gradient[wy +xl];
+
+						for (int i=0; i<8; i++)
+							if (side[i]>max)
+								max=side[i];
+						assert(max);
+						if (max==1)
+							gradient[wy+x]=1;
+						else
+							gradient[wy+x]=max-1;
+					}
+				}
+			}
+
+			for (int y=hMask; y>=0; y--)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				for (int x=0; x<w; x++)
+				{
+					Uint8 max=gradient[wy+x];
+					if (max && max!=255)
+					{
+						int xl=(x+wMask)&wMask;
+						int xr=(x+1)&wMask;
+						Uint8 side[8];
+						side[0]=gradient[wyu+xl];
+						side[1]=gradient[wyu+x ];
+						side[2]=gradient[wyu+xr];
+
+						side[3]=gradient[wy +xr];
+
+						side[4]=gradient[wyd+xr];
+						side[5]=gradient[wyd+x ];
+						side[6]=gradient[wyd+xl];
+
+						side[7]=gradient[wy +xl];
+
+						for (int i=0; i<8; i++)
+							if (side[i]>max)
+								max=side[i];
+						assert(max);
+						if (max==1)
+							gradient[wy+x]=1;
+						else
+							gradient[wy+x]=max-1;
+					}
+				}
+			}
+
+			for (int x=0; x<w; x++)
+			{
+				int xl=(x+wMask)&wMask;
+				int xr=(x+1)&wMask;
+				for (int y=0; y<h; y++)
+				{
+					int wy=w*y;
+					int wyu=w*((y+hMask)&hMask);
+					int wyd=w*((y+1)&hMask);
+					Uint8 max=gradient[wy+x];
+					if (max && max!=255)
+					{
+						Uint8 side[8];
+						side[0]=gradient[wyu+xl];
+						side[1]=gradient[wyu+x ];
+						side[2]=gradient[wyu+xr];
+
+						side[3]=gradient[wy +xr];
+
+						side[4]=gradient[wyd+xr];
+						side[5]=gradient[wyd+x ];
+						side[6]=gradient[wyd+xl];
+
+						side[7]=gradient[wy +xl];
+
+						for (int i=0; i<8; i++)
+							if (side[i]>max)
+								max=side[i];
+						assert(max);
+						if (max==1)
+							gradient[wy+x]=1;
+						else
+							gradient[wy+x]=max-1;
+					}
+				}
+			}
+
+			for (int x=wMask; x>0; x--)
+			{
+				int xl=(x+wMask)&wMask;
+				int xr=(x+1)&wMask;
+				for (int y=0; y<h; y++)
+				{
+					int wy=w*y;
+					int wyu=w*((y+hMask)&hMask);
+					int wyd=w*((y+1)&hMask);
+					Uint8 max=gradient[wy+x];
+					if (max && max!=255)
+					{
+						Uint8 side[8];
+						side[0]=gradient[wyu+xl];
+						side[1]=gradient[wyu+x ];
+						side[2]=gradient[wyu+xr];
+
+						side[3]=gradient[wy +xr];
+
+						side[4]=gradient[wyd+xr];
+						side[5]=gradient[wyd+x ];
+						side[6]=gradient[wyd+xl];
+
+						side[7]=gradient[wy +xl];
+
+						for (int i=0; i<8; i++)
+							if (side[i]>max)
+								max=side[i];
+						assert(max);
+						if (max==1)
+							gradient[wy+x]=1;
+						else
+							gradient[wy+x]=max-1;
+					}
+				}
+			}
+		}
+	}
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)

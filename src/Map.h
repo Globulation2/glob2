@@ -29,6 +29,7 @@
 #include "Ressource.h"
 #include <list>
 #include "Sector.h"
+#include "Gradient.h"
 
 //! No global unit identifier. This value means there is no unit. Used at Case::groundUnit or Case::airUnit.
 #define NOGUID 0xFFFF
@@ -367,9 +368,11 @@ public:
 		assert(gradient);
 		return *(gradient+(x&wMask)+(y&hMask)*w);
 	}
-	void initGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
+	
+	void updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingGradient[2][BUILDING_GRADIENT_SIZE], Uint32 teamMask);
 
 protected:
 	// private functions, used for edition
