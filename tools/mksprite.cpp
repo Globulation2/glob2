@@ -136,6 +136,7 @@ public:
 		{
 			ostringstream planeFileName;
 			planeFileName << spriteName << ".plane" << i << ".png";
+			planes[i].depth(8);
 			planes[i].write(planeFileName.str());
 		}
 	}
