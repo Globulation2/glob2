@@ -1,15 +1,19 @@
+*
 Game design, core programming and project management
 
 Stéphane Magnenat <nct[no-spam]ysagoon.com>
 Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com>
 
 
+*
 Additional programming
 
 Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
 Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (GUI, bug fix and more)
+Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (CreditScreen JJ)
 
 
+*
 Graphics
 
 Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (land, swarm, old buildings, old units)
@@ -21,11 +25,13 @@ Stéphane Magnenat <nct[no-spam]ysagoon.com> (GUI, bug fix)
 Gabriel Walt <diz[no-spam]ysagoon.com> (GUI)
 
 
+*
 Music
 
 Jacques-Paul Grivaz <>
 
 
+*
 Game Translations
 
 Michal Turek <bastard.user.from.hell[no-spam]seznam.cz> (Czech)
@@ -39,6 +45,7 @@ David Morán <> (Spanish)
 samaritan <> (Serbian)
 
 
+*
 Game Packaging
 
 Vincent Deffontaines <vincent[no-spam]gryzor.com> (Debian)
@@ -47,6 +54,7 @@ Dejan Lekic <dejan[no-spam]nu6.org> (Win32, Fedora)
 Jens Reimann <ctron[no-spam]dentrassi.de> (Fedora)
 
 
+*
 Internet
 
 Gabriel Walt <disney[no-spam]ysagoon.com> (hosting, CMS, forum)
@@ -57,6 +65,7 @@ Loki Azgorodin <> (#glob2)
 Dejan Lekic <dejan[no-spam]nu6.org> (#globulation2)
 
 
+*
 Documentation
 
 Stéphane Magnenat <nct[no-spam]ysagoon.com>
@@ -65,5 +74,6 @@ Gabriel Walt <diz[no-spam]ysagoon.com>
 Ghislain Leveque <court-jus[no-spam]court-jus.net>
 Martin Voelkle <martin.voelkle[no-spam]epfl.ch>
 
-
-
+*
+*
+*
