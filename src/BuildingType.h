@@ -68,7 +68,7 @@ public:
 	Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
 	Sint32 foodable;
 	Sint32 fillable;
-	Sint32 attract[NB_ABILITY]; // If an unit is required for a presence.
+	Sint32 zonable[NB_ABILITY]; // If an unit is required for a presence.
 	
 	Sint32 canFeedUnit;
 	Sint32 timeToFeedUnit;
@@ -158,18 +158,18 @@ public:
 			"foodable",
 			"fillable",
 			
-			"attractStopWalk",
-			"attractStopSwim",
-			"attractStopFly",
-			"attractWalk",
-			"attractSwim",
-			"attractFly",
-			"attractBuild",
-			"attractHarvest",
-			"attractAttackSpeed",
-			"attractAttackStrength",
-			"attractArmor",
-			"attractHP",
+			"zonableStopWalk",
+			"zonableStopSwim",
+			"zonableStopFly",
+			"zonableWalk",
+			"zonableSwim",
+			"zonableFly",
+			"zonableBuild",
+			"zonableHarvest",
+			"zonableAttackSpeed",
+			"zonableAttackStrength",
+			"zonableArmor",
+			"zonableHP",
 
 			"canFeedUnit",
 			"timeToFeedUnit",

@@ -140,8 +140,8 @@ OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==16);
-	
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::BuildingTypeNumber typeNumber)
@@ -183,11 +183,13 @@ OrderDelete::OrderDelete(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==2);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderDelete::OrderDelete(Uint16 gid)
 {
+	assert(gid<32768);
 	this->gid=gid;
 }
 
@@ -211,11 +213,13 @@ bool OrderDelete::setData(const Uint8 *data, int dataLength)
 OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength)
 {
 	assert(dataLength==2);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderCancelDelete::OrderCancelDelete(Uint16 gid)
 {
+	assert(gid<32768);
 	this->gid=gid;
 }
 
@@ -240,11 +244,13 @@ OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==2);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderConstruction::OrderConstruction(Uint16 gid)
 {
+	assert(gid<32768);
 	this->gid=gid;
 }
 
@@ -269,11 +275,13 @@ OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLeng
 :Order()
 {
 	assert(dataLength==2);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderCancelConstruction::OrderCancelConstruction(Uint16 gid)
 {
+	assert(gid<32768);
 	this->gid=gid;
 }
 
@@ -305,7 +313,8 @@ OrderModifyUnits::OrderModifyUnits(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%10)==0);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderModifyUnits::OrderModifyUnits(Uint16 *gid, Sint32 *trigHP, Sint32 *trigHungry, int length)
@@ -380,7 +389,8 @@ OrderModifyBuildings::OrderModifyBuildings(const Uint8 *data, int dataLength)
 	this->numberRequested=(Sint32 *)malloc(length*4);
 	this->data=(Uint8 *)malloc(6*length);
 	
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderModifyBuildings::OrderModifyBuildings(Uint16 *gid, Sint32 *numberRequested, int length)
@@ -445,7 +455,8 @@ OrderModifySwarms::OrderModifySwarms(const Uint8 *data, int dataLength)
 {
 	assert(NB_UNIT_TYPE==3);
 	assert((dataLength%14)==0);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderModifySwarms::OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], int length)
@@ -511,7 +522,8 @@ OrderModifyFlags::OrderModifyFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%8)==0);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderModifyFlags::OrderModifyFlags(Uint16 *gid, Sint32 *range, int length)
@@ -572,8 +584,8 @@ OrderMoveFlags::OrderMoveFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%10)==0);
-	
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 OrderMoveFlags::OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, int length)
@@ -670,8 +682,8 @@ MessageOrder::MessageOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength>=5);
-
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text)
@@ -717,8 +729,8 @@ SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==12);
-
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask)
@@ -756,8 +768,8 @@ SubmitCheckSumOrder::SubmitCheckSumOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
-
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 SubmitCheckSumOrder::SubmitCheckSumOrder(Sint32 checkSumValue)
@@ -789,8 +801,8 @@ MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==12);
-
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
@@ -828,8 +840,8 @@ WaitingForPlayerOrder::WaitingForPlayerOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
-
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 WaitingForPlayerOrder::WaitingForPlayerOrder(Uint32 maskAwayPlayer)
@@ -862,7 +874,8 @@ DroppingPlayerOrder::DroppingPlayerOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 DroppingPlayerOrder::DroppingPlayerOrder(Uint32 dropingPlayersMask)
@@ -892,7 +905,8 @@ RequestingDeadAwayOrder::RequestingDeadAwayOrder(const Uint8 *data, int dataLeng
 :MiscOrder()
 {
 	assert(dataLength==12);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAviableStep)
@@ -930,7 +944,8 @@ NoMoreOrdersAviable::NoMoreOrdersAviable(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==8);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 NoMoreOrdersAviable::NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep)
@@ -965,7 +980,8 @@ PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
-	setData(data, dataLength);
+	bool good=setData(data, dataLength);
+	assert(good);
 }
 
 PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)

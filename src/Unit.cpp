@@ -298,7 +298,7 @@ void Unit::unsubscribed(void)
 	}
 }
 
-bool Unit::step(void)
+void Unit::step(void)
 {
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
@@ -315,7 +315,7 @@ bool Unit::step(void)
 			enemy->hp-=degats;
 			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID);
 		}
-		else 
+		else
 		{
 			Uint16 enemyGBID=owner->map->getBuilding(posX+dx, posY+dy);
 			if (enemyGBID!=NOGBID)
@@ -347,7 +347,7 @@ bool Unit::step(void)
 	{
 		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
 		delta+=(speed-256);
-		bool b=endOfAction();
+		endOfAction();
 		if (performance[FLY])
 		{
 			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
@@ -358,10 +358,7 @@ bool Unit::step(void)
 			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
 			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
 		}
-
-		return b;
 	}
-	return false;
 }
 
 void Unit::selectPreferedMovement(void)
@@ -396,10 +393,7 @@ void Unit::handleMedical(void)
 
 	hungry-=race->unitTypes[0][0].hungryness;
 	if (hp<=trigHP)
-	{
-		//printf("I'm hurt ; healt h %d/%d\n", hp, performance[HP]);
 		medical=MED_DAMAGED;
-	}
 
 	if (isUnitHungry())
 		medical=MED_HUNGRY;
@@ -410,8 +404,6 @@ void Unit::handleMedical(void)
 	{
 		if (!isDead)
 		{
-			//printf("Unit:: Unit(uid%d)(id%d) died. dis=%d, mov=%d, ab=%x, ito=%d \n", UID, UIDtoID(UID), displacement, movement, (int)attachedBuilding, insideTimeout);
-			
 			if (attachedBuilding)
 			{
 				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
@@ -433,13 +425,8 @@ void Unit::handleMedical(void)
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 		}
-		else
-		{
-			//printf("Unit:: Unit(uid%d)(id%d) killed twice! dis=%d, mov=%d, ab=%x, ito=%d \n", UID, UIDtoID(UID), displacement, movement, (int)attachedBuilding, insideTimeout);
-		}
 		isDead=true;
 	}
-		
 
 	if (medical==MED_FREE)
 		needToRecheckMedical=true;
@@ -783,9 +770,8 @@ void Unit::handleDisplacement(void)
 				}
 				destinationPurprose=attachedBuilding->neededRessource();
 				if (verbose)
-				{
 					printf("(%d) destinationPurprose=%d.\n", gid, destinationPurprose);
-				}
+				
 				if ((destinationPurprose>=0)&&(owner->map->nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
 				{
 					newTargetWasSet();
@@ -943,7 +929,7 @@ void Unit::handleDisplacement(void)
 
 		default:
 		{
-			assert (false);
+			assert(false);
 			break;
 		}
 	}
@@ -967,7 +953,6 @@ void Unit::handleMovement(void)
 				int ldy=bposY-posY;
 				int cdx, cdy;
 				simplifyDirection(ldx, ldy, &cdx, &cdy);
-
 
 				dx=-cdy;
 				dy=cdx;
@@ -1046,9 +1031,7 @@ void Unit::handleMovement(void)
 			
 			assert(performance[FLY]);
 			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
-			{
 				movement=MOV_RANDOM;
-			}
 			break;
 		}
 
@@ -2137,43 +2120,43 @@ void Unit::gotoTarget(int targetX, int targetY)
 	int cDirection=direction;
 		
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 		
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 		
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 	
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 		
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 	
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 		
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
+		return;
 	
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
 	if (valid(posX+dx, posY+dy))
-		return;	
-			
+		return;
+	
 	dx=0;
 	dy=0;
 	direction=8;
@@ -2188,16 +2171,15 @@ void Unit::newTargetWasSet(void)
 	bypassDirection=DIR_UNSET;
 }
 
-bool Unit::endOfAction(void)
+void Unit::endOfAction(void)
 {
 	handleMedical();
 	if (isDead)
-		return true;
+		return;
 	handleActivity();
 	handleDisplacement();
 	handleMovement();
 	handleAction();
-	return false;
 }
 
 // NOTE : position 0 is top left (-1, -1) then run clockwise
@@ -2290,58 +2272,22 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 	}
 }
 
-
-void Unit::secondaryDirection(int ldx, int ldy, int *cdx, int *cdy)
-{
-	int mapw=owner->map->getW();
-	int maph=owner->map->getH();
-	if (ldx>(mapw>>1))
-		ldx-=mapw;
-	else if (ldx<-(mapw>>1))
-		ldx+=mapw;
-	if (ldy>(maph>>1))
-		ldy-=maph;
-	else if (ldy<-(maph>>1))
-		ldy+=maph;
-		
-	if ((abs(ldx)>(2*abs(ldy)))||(abs(ldy)>(2*abs(ldx))))
-	{
-		if (ldy>0)
-			*cdy= 1;
-		else
-			*cdy=-1;
-		if (ldx>0)
-			*cdx= 1;
-		else
-			*cdx=-1;
-	}
-	else
-	{
-		if (abs(ldx)>abs(ldy))
-		{
-			*cdx=sign(ldx);
-			*cdy=0;
-		}
-		else
-		{
-			*cdx=0,
-			*cdy=sign(ldy);
-		}
-	}
-}
-
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
+	assert(gid<32768);
 	return (gid%1024);
 }
 
 Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
+	assert(gid<32768);
 	return (gid/1024);
 }
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
+	assert(id<1024);
+	assert(team<32);
 	return id+team*1024;
 }
 
@@ -2396,13 +2342,11 @@ Sint32 Unit::checkSum()
 	cs^=hungry;
 	cs^=trigHungry;
 
+	for (int i=0; i<NB_ABILITY; i++)
 	{
-		for (int i=0; i<NB_ABILITY; i++)
-		{
-			cs^=performance[i];
-			cs^=level[i];
-			cs=(cs<<1)|(cs>>31);
-		}
+		cs^=performance[i];
+		cs^=level[i];
+		cs=(cs<<1)|(cs>>31);
 	}
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);

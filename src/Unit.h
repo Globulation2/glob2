@@ -42,7 +42,7 @@ public:
 	void saveCrossRef(SDL_RWops *stream);
 	
 	void unsubscribed(void);
-	bool step(void);
+	void step(void);
 	
 	void directionFromDxDy(void);
 	void dxdyfromDirection(void);
@@ -128,7 +128,8 @@ protected:
 	void handleMovement(void);
 	void handleAction(void);
 	
-	bool endOfAction(void);
+	void endOfAction(void);
+	
 	void setNewValidDirection(void);
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
@@ -139,7 +140,6 @@ protected:
 	void gotoTarget(int targetX, int targetY);
 	void newTargetWasSet(void);
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
-	void secondaryDirection(int ldx, int ldy, int *cdx, int *cdy);
 	
 public:
 	

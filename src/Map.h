@@ -133,7 +133,7 @@ public:
 			assert(id>=0);
 			assert(id<1024);
 			assert(team>=0);
-			assert(team<31);
+			assert(team<32);
 			teams[team]->myBuildings[id]->seenByMask|=sharedVision;
 		}
 	}
