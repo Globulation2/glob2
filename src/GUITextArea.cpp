@@ -92,12 +92,14 @@ void TextArea::onSDLEvent(SDL_Event *event)
 		switch (event->key.keysym.sym)
 		{
 			case SDLK_BACKSPACE:
+			if (!readOnly)
 			{
 				remText(cursorPos, 1);
 			}
 			break;
 			
 			case SDLK_DELETE:
+			if (!readOnly)
 			{
 				if (cursorPos)
 					remText(cursorPos-1, 1);
@@ -164,6 +166,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			break;
 			
 			case SDLK_LEFT:
+			if (!readOnly)
 			{
 				if (cursorPos>0)
 				{
@@ -174,6 +177,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			break;
 		
 			case SDLK_RIGHT:
+			if (!readOnly)
 			{
 				if (cursorPos<textBufferLength)
 				{
@@ -184,12 +188,14 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			break;
 			
 			case SDLK_RETURN:
+			if (!readOnly)
 			{
 				addChar('\n');
 			}
 			break;
 		
 			default:
+			if (!readOnly)
 			{
 				unsigned char c=(char)event->key.keysym.unicode;
 				if ((c>31) && (c<128))
@@ -197,6 +203,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					addChar(c);
 				}
 			}
+			break;
 		}
 	}
 	/*else if (event->type==SDL_MOUSEBUTTONDOWN)
