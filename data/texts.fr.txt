@@ -113,7 +113,9 @@ Mur de pierre
 [market]
 Marché
 [forbidden area]
-Zone interdites
+Zone interdite
+[guard area]
+Zone de garde
 [Building short explanation]
 Courte explication du bâtiment  (24 caractères max)
 [swarm building explanation]

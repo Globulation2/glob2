@@ -48,11 +48,17 @@ protected:
 	
 public:
 	BrushTool();
+	//! Draw the brush tool and its actual state at a given coordinate 
 	void draw(int x, int y);
+	//! Handle the click for giben coordinate. Select correct mode and figure, accept negative coordinates for y
 	void handleClick(int x, int y);
+	//! Deselect any brush
 	void unselect(void) { mode = MODE_NONE; }
+	//! Draw the actual brush (not the brush tool)
 	void drawBrush(int x, int y);
+	//! Return the mode of the brush
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
+	//! Return the id of the actual figure
 	unsigned getFigure(void) { return figure; }
 	
 	//! Return the full width of a brush

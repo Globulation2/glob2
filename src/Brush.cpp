@@ -48,15 +48,16 @@ void BrushTool::handleClick(int x, int y)
 {
 	if (mode == MODE_NONE)
 		mode = MODE_ADD;
-	if (y<36)
-	{
-		mode = static_cast<Mode>((x/64)+1);
-	}
-	else if (y<36+64)
-	{
-		y -= 36;
-		figure = (y/32)*4 + ((x/32)%4);
-	}
+	if (y>0)
+		if (y<36)
+		{
+			mode = static_cast<Mode>((x/64)+1);
+		}
+		else if (y<36+64)
+		{
+			y -= 36;
+			figure = (y/32)*4 + ((x/32)%4);
+		}
 }
 
 void BrushTool::drawBrush(int x, int y)
@@ -66,17 +67,17 @@ void BrushTool::drawBrush(int x, int y)
 	if (figure < 4)
 	{
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 255, 0, 0);
+			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 255, 255, 255);
 		else
-			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 20, 20, 170);
+			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 200, 200, 200);
 	}
 	else
 	{
 		int l = (figure-4)*32;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 255, 0, 0);
+			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 255, 255, 255);
 		else
-			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 20, 20, 170);
+			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 200, 200, 200);
 	}
 }
 

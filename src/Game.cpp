@@ -431,50 +431,95 @@ void Game::executeOrder(Order *order, int localPlayer)
 		case ORDER_ALTERATE_FORBIDDEN:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
-			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
-			if (oaf->type == BrushTool::MODE_ADD)
+			OrderAlterateForbidden *oaa = (OrderAlterateForbidden *)order;
+			if (oaa->type == BrushTool::MODE_ADD)
 			{
-				Uint32 teamMask = Team::teamNumberToMask(oaf->teamNumber);
-				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
-					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
+				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
 					{
-						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
-						if (oaf->mask.get(orderMaskIndex))
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
 						{
-							size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].forbidden|=teamMask;
+							map.cases[index].forbidden |= teamMask;
 							// Update local map
-							if (oaf->teamNumber == players[localPlayer]->teamNumber)
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, true);
 						}
 					}
 			}
-			else if (oaf->type == BrushTool::MODE_DEL)
+			else if (oaa->type == BrushTool::MODE_DEL)
 			{
-				Uint32 notTeamMask = ~Team::teamNumberToMask(oaf->teamNumber);
-				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
-					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
+				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
 					{
-						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
-						if (oaf->mask.get(orderMaskIndex))
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
 						{
-							size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].forbidden&=notTeamMask;
+							map.cases[index].forbidden &= notTeamMask;
 							// Update local map
-							if (oaf->teamNumber == players[localPlayer]->teamNumber)
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, false);
 						}
 					}
 					
 				// We remove, so we need to refresh the gradients, unfortunatly
-				teams[oaf->teamNumber]->dirtyGlobalGradient();
-				map.dirtyLocalGradient(oaf->x-16, oaf->x-16, 32+oaf->w, 32+oaf->h, oaf->teamNumber);
+				teams[oaa->teamNumber]->dirtyGlobalGradient();
+				map.dirtyLocalGradient(oaa->x-16, oaa->x-16, 32+oaa->w, 32+oaa->h, oaa->teamNumber);
 			}
 			else
 				assert(false);
-			map.updateForbiddenGradient(oaf->teamNumber);
+			map.updateForbiddenGradient(oaa->teamNumber);
+		}
+		break;
+		case ORDER_ALTERATE_GUARD_AREA:
+		{
+			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
+			OrderAlterateGuardArea *oaa = (OrderAlterateGuardArea *)order;
+			if (oaa->type == BrushTool::MODE_ADD)
+			{
+				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
+						{
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							// Update real map
+							map.cases[index].guardArea |= teamMask;
+							// Update local map
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
+								map.localGuardAreaMap.set(index, true);
+						}
+					}
+			}
+			else if (oaa->type == BrushTool::MODE_DEL)
+			{
+				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
+						{
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							// Update real map
+							map.cases[index].guardArea &= notTeamMask;
+							// Update local map
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
+								map.localGuardAreaMap.set(index, false);
+						}
+					}
+			}
+			else
+				assert(false);
+			map.updateGuardAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_MODIFY_SWARM:
@@ -2075,14 +2120,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 	}
 	
-	// draw forbidden arrays
-	if ((drawOptions & DRAW_FORBIDDEN_AREA) != 0)
+	// draw forbidden and guard areas
+	if ((drawOptions & DRAW_AREA) != 0)
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
 				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
 				{
-					//globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 128, 0, 0, 64);
 					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
 					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
 					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
@@ -2096,6 +2140,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 0, 0);
 					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY))
 						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
+				}
+				if (map.isGuardAreaLocal(x+viewportX, y+viewportY))
+				{
+					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), (x<<5), 32+(y<<5), 0, 0, 128);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), (x<<5), 16+(y<<5), 0, 0, 128);
+					globalContainer->gfx->drawLine(32+(x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 0, 0, 128);
+					
+					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY-1))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 0, 0, 255);
+					if (!map.isGuardAreaLocal(x+viewportX, y+viewportY+1))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 0, 0, 255);
+					
+					if (!map.isGuardAreaLocal(x+viewportX-1, y+viewportY))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 0, 0, 255);
+					if (!map.isGuardAreaLocal(x+viewportX+1, y+viewportY))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 0, 0, 255);
 				}
 			}
 

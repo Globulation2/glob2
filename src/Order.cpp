@@ -96,6 +96,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new OrderAlterateForbidden(netData+1, netDataLength-1);
 	}
+	case ORDER_ALTERATE_GUARD_AREA:
+	{
+		return new OrderAlterateGuardArea(netData+1, netDataLength-1);
+	}
 	case ORDER_QUITED:
 	{
 		assert(false); // Currently, QuitedOrder has to be used only between NetGame and GameGUI, but not the network.
@@ -579,9 +583,9 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
-// OrderAlterateForbidden' code
+// OrderAlterateArea's code
 
-OrderAlterateForbidden::OrderAlterateForbidden(const Uint8 *data, int dataLength)
+OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength)
 {
 	_data = NULL;
 	
@@ -589,7 +593,7 @@ OrderAlterateForbidden::OrderAlterateForbidden(const Uint8 *data, int dataLength
 	assert(good);
 }
 
-OrderAlterateForbidden::OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc)
+OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc)
 {
 	assert(acc);
 	_data = NULL;
@@ -606,13 +610,13 @@ OrderAlterateForbidden::OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, Bru
 	assert(h<=512);
 }
 
-OrderAlterateForbidden::~OrderAlterateForbidden(void)
+OrderAlterateArea::~OrderAlterateArea(void)
 {
 	if (_data)
 		free(_data);
 }
 
-Uint8 *OrderAlterateForbidden::getData(void)
+Uint8 *OrderAlterateArea::getData(void)
 {
 	if (_data)
 		free (_data);
@@ -629,7 +633,7 @@ Uint8 *OrderAlterateForbidden::getData(void)
 	return _data;
 }
 
-bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
+bool OrderAlterateArea::setData(const Uint8 *data, int dataLength)
 {
 	if (dataLength < 10)
 	{
@@ -652,7 +656,7 @@ bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
-int OrderAlterateForbidden::getDataLength(void)
+int OrderAlterateArea::getDataLength(void)
 {
 	int length=10+mask.getByteLength();
 	assert(length>=10);

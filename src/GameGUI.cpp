@@ -74,7 +74,7 @@
 
 #define YOFFSET_PROGRESS_BAR 10
 
-#define YOFFSET_BRUSH 64
+#define YOFFSET_BRUSH 56
 
 //! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
 extern IRC *ircPtr;
@@ -169,6 +169,7 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
+	brushType = FORBIDDEN_BRUSH;
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -208,8 +209,9 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeam);
 	teamStats=&localTeam->stats;
 	
-	// recompute local forbidden
+	// recompute local forbidden and guard areas
 	game.map.computeLocalForbidden(localTeamNo);
+	game.map.computeLocalGuardArea(localTeamNo);
 }
 
 void GameGUI::adjustInitialViewport()
@@ -255,28 +257,38 @@ void GameGUI::brushStep(int mx, int my)
 {
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-	int fig = forbiddenBrush.getFigure();
+	int fig = brush.getFigure();
 	brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, fig));
 	int startX = mapX-BrushTool::getBrushDimX(fig);
 	int startY = mapY-BrushTool::getBrushDimY(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
-	if (forbiddenBrush.getType() == BrushTool::MODE_ADD)
+	if (brush.getType() == BrushTool::MODE_ADD)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
 				{
-					game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+					if (brushType == FORBIDDEN_BRUSH)
+						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+					else if (brushType == GUARD_AREA_BRUSH)
+						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+					else
+						assert(false);
 				}
 	}
-	else if (forbiddenBrush.getType() == BrushTool::MODE_DEL)
+	else if (brush.getType() == BrushTool::MODE_DEL)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
 				{
-					game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+					if (brushType == FORBIDDEN_BRUSH)
+						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+					else if (brushType == GUARD_AREA_BRUSH)
+						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+					else
+						assert(false);
 				}
 	}
 	else
@@ -884,7 +896,12 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if (brushAccumulator.applications.size() > 0)
 				{
-					orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, forbiddenBrush.getType(), &brushAccumulator));
+					if (brushType == FORBIDDEN_BRUSH)
+						orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
+					else if (brushType == GUARD_AREA_BRUSH)
+						orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
+					else
+						assert(false);
 					brushAccumulator.applications.clear();
 				}
 			}
@@ -1632,7 +1649,12 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		my -= YPOS_BASE_FLAG;
 		if (my > YOFFSET_BRUSH)
 		{
-			forbiddenBrush.handleClick(mx, my-YOFFSET_BRUSH);
+			// change the brush type (forbidden, guard) if necessary
+			if (my < YOFFSET_BRUSH+40)
+				brushType = (BrushType)(mx>>6);
+			// anyway, update the tool
+			brush.handleClick(mx, my-YOFFSET_BRUSH-40);
+			// set the selection
 			setSelection(BRUSH_SELECTION);
 		}
 		else
@@ -2521,12 +2543,38 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
+		// draw flags
 		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
-		forbiddenBrush.draw(globalContainer->gfx->getW()-128, YPOS_BASE_FLAG+YOFFSET_BRUSH);
+		// draw choice of area
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-112, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-48, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
+		if (brush.getType() != BrushTool::MODE_NONE)
+		{
+			int decX = (brushType == GUARD_AREA_BRUSH) ? 80 : 16;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
+		}
+		// draw brush
+		brush.draw(globalContainer->gfx->getW()-128, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+		// draw brush help text
 		if ((mouseX>globalContainer->gfx->getW()-128) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 		{
-			int buildingInfoStart=globalContainer->gfx->getH()-50;
-			drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
+			int buildingInfoStart = globalContainer->gfx->getH()-50;
+			if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
+			{
+				if (mouseX < globalContainer->gfx->getW()-64)
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
+				else
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
+			}
+			else
+			{
+				if (brushType == FORBIDDEN_BRUSH)
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
+				else if (brushType == GUARD_AREA_BRUSH)
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[guard area]");
+				else
+					assert(false);
+			}
 		}
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
@@ -2718,7 +2766,7 @@ void GameGUI::drawOverlayInfos(void)
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		forbiddenBrush.drawBrush(mouseX, mouseY);
+		brush.drawBrush(mouseX, mouseY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -2947,8 +2995,7 @@ void GameGUI::drawAll(int team)
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
-								//((selectionMode==BRUSH_SELECTION) ? Game::DRAW_FORBIDDEN_AREA : 0);
-								Game::DRAW_FORBIDDEN_AREA;
+								Game::DRAW_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
@@ -3331,7 +3378,7 @@ void GameGUI::cleanOldSelection(void)
 	else if (selectionMode==UNIT_SELECTION)
 		game.selectedUnit=NULL;
 	else if (selectionMode==BRUSH_SELECTION)
-		forbiddenBrush.unselect();
+		brush.unselect();
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)

@@ -49,6 +49,6 @@
 // version 33 added Building::minLevelToFlag to allow to request a minimum level of warriors in war flags.
 // version 34 added Race::hungryness to have it cleaner.
 // version 35 saving AINumbi endian safely.
-// version 36 save number of unit lost/gained because of conversion
+// version 36 save number of unit lost/gained because of conversion and add guard areas
 
 #endif

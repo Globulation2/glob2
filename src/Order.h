@@ -298,17 +298,16 @@ protected:
 
 class BrushAccumulator;
 
-class OrderAlterateForbidden:public OrderModify
+class OrderAlterateArea:public OrderModify
 {
 public:
-	OrderAlterateForbidden(const Uint8 *data, int dataLength);
-	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc);
-	virtual ~OrderAlterateForbidden(void);
+	OrderAlterateArea(const Uint8 *data, int dataLength);
+	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc);
+	virtual ~OrderAlterateArea(void);
 	
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void);
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 	
 	Uint8 teamNumber;
 	Uint8 type;
@@ -320,6 +319,24 @@ public:
 	
 protected:
 	Uint8 *_data;
+};
+
+class OrderAlterateForbidden:public OrderAlterateArea
+{
+public:
+	OrderAlterateForbidden(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	
+	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
+};
+
+class OrderAlterateGuardArea:public OrderAlterateArea
+{
+public:
+	OrderAlterateGuardArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	
+	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
 };
 
 

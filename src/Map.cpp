@@ -84,12 +84,15 @@ Map::Map()
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 			{
-				ressourcesGradient[t][r][s]=NULL;
-				gradientUpdated[t][r][s]=false;
+				ressourcesGradient[t][r][s] = NULL;
+				gradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<32; t++)
 		for (int s=0; s<2; s++)
-			forbiddenGradient[t][s]=NULL;
+		{
+			forbiddenGradient[t][s] = NULL;
+			guardAreasGradient[t][s] = NULL;
+		}
 	
 	undermap=NULL;
 	sectors=NULL;
@@ -222,7 +225,7 @@ void Map::clear()
 					{
 						assert(ressourcesGradient[t][r][s]);
 						delete[] ressourcesGradient[t][r][s];
-						ressourcesGradient[t][r][s]=NULL;
+						ressourcesGradient[t][r][s] = NULL;
 					}
 		
 		for (int t=0; t<32; t++)
@@ -231,7 +234,10 @@ void Map::clear()
 				{
 					assert(forbiddenGradient[t][s]);
 					delete[] forbiddenGradient[t][s];
-					forbiddenGradient[t][s]=NULL;
+					forbiddenGradient[t][s] = NULL;
+					assert(guardAreasGradient[t][s]);
+					delete[] guardAreasGradient[t][s];
+					guardAreasGradient[t][s] = NULL;
 				}
 		
 		assert(undermap);
@@ -257,7 +263,10 @@ void Map::clear()
 					assert(ressourcesGradient[t][r][s]==NULL);
 		for (int t=0; t<32; t++)
 			for (int s=0; s<2; s++)
-				assert(forbiddenGradient[t][s]==NULL);
+			{
+				assert(forbiddenGradient[t][s] == NULL);
+				assert(guardAreasGradient[t][s] == NULL);
+			}
 		assert(undermap==NULL);
 		assert(sectors==NULL);
 
@@ -876,22 +885,23 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWar=fogOfWarA;
 	
 	localForbiddenMap.resize(size, false);
+	localGuardAreaMap.resize(size, false);
 	
 	cases=new Case[size];
-
 	Case initCase;
-	initCase.terrain=0; // default, not really meaningfull.
-	initCase.building=NOGBID;
+	initCase.terrain = 0; // default, not really meaningfull.
+	initCase.building = NOGBID;
 	initCase.ressource.clear();
-	initCase.groundUnit=NOGUID;
-	initCase.airUnit=NOGUID;
-	initCase.forbidden=0;
-
-	undermap=new Uint8[size];
-	memset(undermap, terrainType, size);
+	initCase.groundUnit = NOGUID;
+	initCase.airUnit = NOGUID;
+	initCase.forbidden = 0;
+	initCase.guardArea = 0;
 	
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
+	
+	undermap=new Uint8[size];
+	memset(undermap, terrainType, size);
 		
 	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
 
@@ -952,6 +962,7 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	localForbiddenMap.resize(size, false);
+	localGuardAreaMap.resize(size, false);
 	cases = new Case[size];
 	undermap = new Uint8[size];
 
@@ -966,9 +977,8 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		cases[i].terrain = stream->readUint16("terrain");
 		cases[i].building = stream->readUint16("building");
 
-		//cases[i].ressource=SDL_ReadBE32(stream);
 		stream->read(&(cases[i].ressource), 4, "ressource");
-		if (sessionGame->versionMinor<28)
+		if (sessionGame->versionMinor < 28)
 		{
 			Ressource &r=cases[i].ressource;
 			if (r.type!=NO_RES_TYPE)
@@ -982,6 +992,12 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		cases[i].airUnit = stream->readUint16("airUnit");
 
 		cases[i].forbidden = stream->readUint32("forbidden");
+		
+		if (sessionGame->versionMinor >= 36)
+			cases[i].guardArea = stream->readUint32("guardArea");
+		else
+			cases[i].guardArea = 0;
+		
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1005,9 +1021,12 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		for (int t=0; t<sessionGame->numberOfTeam; t++)
 			for (int s=0; s<2; s++)
 			{
-				assert(forbiddenGradient[t][s]==NULL);
-				forbiddenGradient[t][s]=new Uint8[size];
+				assert(forbiddenGradient[t][s] == NULL);
+				forbiddenGradient[t][s] = new Uint8[size];
 				updateForbiddenGradient(t, s);
+				assert(guardAreasGradient[t][s] == NULL);
+				guardAreasGradient[t][s] = new Uint8[size];
+				updateGuardAreasGradient(t, s);
 			}
 		this->game=game;
 	}
@@ -1071,6 +1090,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
 		stream->writeUint16(cases[i].airUnit, "airUnit");
 		stream->writeUint32(cases[i].forbidden, "forbidden");
+		stream->writeUint32(cases[i].guardArea, "guardArea");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1243,53 +1263,18 @@ void Map::computeLocalForbidden(int localTeamNo)
 	for (size_t i=0; i<size; i++)
 		if ((cases[i].forbidden & localTeamMask) != 0)
 			localForbiddenMap.set(i, true);
+		else
+			localForbiddenMap.set(i, false);
 }
 
-void Map::setForbiddenCircularArea(int x, int y, int r, Uint32 me)
+void Map::computeLocalGuardArea(int localTeamNo)
 {
-	int rm=(r<<1)+1;
-	int r2=rm*rm;
-	for (int yi=-r; yi<=r; yi++)
-	{
-		int yi2=((yi*yi)<<2);
-		for (int xi=-r; xi<=r; xi++)
-			if (yi2+((xi*xi)<<2)<r2)
-				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden|=me;
-	}
-}
-
-void Map::setForbiddenSquareArea(int x, int y, int r, Uint32 me)
-{
-	for (int yi=-r; yi<=r; yi++)
-		for (int xi=-r; xi<=r; xi++)
-			(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden|=me;
-}
-
-void Map::clearForbiddenCircularArea(int x, int y, int r, Uint32 me)
-{
-	int rm=(r<<1)+1;
-	int r2=rm*rm;
-	for (int yi=-r; yi<=r; yi++)
-	{
-		int yi2=((yi*yi)<<2);
-		for (int xi=-r; xi<=r; xi++)
-			if (yi2+((xi*xi)<<2)<r2)
-				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
-	}
-}
-
-void Map::clearForbiddenSquareArea(int x, int y, int r, Uint32 me)
-{
-	for (int yi=-r; yi<=r; yi++)
-		for (int xi=-r; xi<=r; xi++)
-			(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
-}
-
-void Map::clearForbiddenArea(Uint32 me)
-{
-	for (int y=0; y<h; y++)
-		for (int x=0; x<w; x++)
-			(*(cases+w*y+x)).forbidden&=~me;
+	int localTeamMask = 1<<localTeamNo;
+	for (size_t i=0; i<size; i++)
+		if ((cases[i].guardArea & localTeamMask) != 0)
+			localGuardAreaMap.set(i, true);
+		else
+			localGuardAreaMap.set(i, false);
 }
 
 void Map::decRessource(int x, int y)
@@ -4075,45 +4060,129 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 	}
 }
 
-void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
+bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
 {
-	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
-	assert(gradient);
-	
-	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	for (int y=0; y<h; y++)
+	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
+	Uint32 maxValue = 0;
+	int maxd = 0;
+	for (int di=0; di<8; di++)
 	{
-		int wy=(y<<wDec);
-		for (int x=0; x<w; x++)
+		// compute coordinate
+		int rx = tabClose[di][0];
+		int ry = tabClose[di][1];
+		int xg = (x+rx)&wMask;
+		int yg = (y+ry)&hMask;
+		// if not possible, continue
+		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
+			continue;
+		// check if point is better
+		size_t addr = xg+(yg<<wDec);
+		Uint8 base = gradient[addr];
+		if (base > maxValue)
 		{
-			Case c=cases[wy+x];
-			if (c.ressource.type!=NO_RES_TYPE)
-				gradient[wy+x]=0;
-			else if (c.building!=NOGBID)
-				gradient[wy+x]=0;
-			else if (!canSwim && isWater(x, y))
-				gradient[wy+x]=0;
-			else if (c.forbidden&teamMask)
-				gradient[wy+x]=1;
-			else
-				gradient[wy+x]=255;
+			maxValue = base;
+			maxd = di;
 		}
 	}
+	// if solution is found, copy it in dx, dy
+	if (maxValue > 0)
+	{
+		// if we are in area, go randomly
+		if (maxValue == 255)
+		{
+			int dir = syncRand() % 8;
+			*dx = tabClose[dir][0];
+			*dy = tabClose[dir][1];
+			// if destination is busy, return false
+			if (!isFreeForGroundUnitNoForbidden(x+*dx, y+*dy, canSwim))
+				return false;
+			
+		}
+		else
+		{
+			*dx = tabClose[maxd][0];
+			*dy = tabClose[maxd][1];
+		}
+		return true;
+	}
+	else
+		return false;
+}
+
+void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
+{
+	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
 	
+	// We set the obstacle and free places
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+	{
+		Case c=cases[i];
+		if (c.ressource.type!=NO_RES_TYPE)
+			gradient[i] = 0;
+		else if (c.building!=NOGBID)
+			gradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			gradient[i] = 0;
+		else if (c.forbidden&teamMask)
+			gradient[i] = 1;
+		else
+			gradient[i] = 255;
+	}
+	
+	// Then we propagate the gradient
 	updateGlobalGradient(gradient);
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
 {
-	for (int si=0; si<2; si++)
-		updateForbiddenGradient(teamNumber, si);
+	for (int i=0; i<2; i++)
+		updateForbiddenGradient(teamNumber, i);
 }
 
 void Map::updateForbiddenGradient()
 {
-	int numberOfTeam=game->session.numberOfTeam;
-	for (int ti=0; ti<numberOfTeam; ti++)
-		updateForbiddenGradient(ti);
+	for (int i=0; i<game->session.numberOfTeam; i++)
+		updateForbiddenGradient(i);
+}
+
+void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
+{
+	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
+	assert(gradient);
+	
+	// We set the obstacle and free places
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+	{
+		Case c=cases[i];
+		if (c.ressource.type != NO_RES_TYPE)
+			gradient[i] = 0;
+		else if (c.building != NOGBID)
+			gradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			gradient[i] = 0;
+		else if (c.guardArea & teamMask)
+			gradient[i] = 255;
+		else
+			gradient[i] = 1;
+	}
+	
+	// Then we propagate the gradient
+	updateGlobalGradient(gradient);
+}
+
+void Map::updateGuardAreasGradient(int teamNumber)
+{
+	for (int i=0; i<2; i++)
+		updateGuardAreasGradient(teamNumber, i);
+}
+
+void Map::updateGuardAreasGradient()
+{
+	for (int i=0; i<game->session.numberOfTeam; i++)
+		updateGuardAreasGradient(i);
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)

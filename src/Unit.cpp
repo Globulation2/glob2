@@ -1636,6 +1636,7 @@ void Unit::handleMovement(void)
 								}
 							}
 						}
+				// we try to go to enemy building
 				if (movement==MOV_GOING_TARGET && tempTargetBuilding!=NULL)
 				{
 					if (owner->map->pathfindBuilding(tempTargetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
@@ -1650,6 +1651,19 @@ void Unit::handleMovement(void)
 							printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
 						movement=MOV_RANDOM_GROUND;
 					}
+				}
+				// if we haven't find anything satisfactory, follow guard area gradients
+				if (movement == MOV_RANDOM_GROUND)
+				{
+					if (owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+						directionFromDxDy();
+					else
+					{
+						dx=0;
+						dy=0;
+						direction=8;
+					}
+					movement=MOV_GOING_DXDY;
 				}
 			//}
 		}
