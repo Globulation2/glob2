@@ -16,6 +16,8 @@ aclocal -I $prefix/share/aclocal
 For instance, under macOSX, replace aclocal by
 aclocal -I /usr/local/share/aclocal
 
+It doesn't currently work with automake 1.6 You should install automake 1.4 (in /usr/local/bin) and start it from there.
+
 You have to use gcc 2.95. If jou have Jaguar and gcc 3, ou'll need to redirect the compiler to gcc 2.
 To do so edit  "src/Makefile" and change the following:
 
