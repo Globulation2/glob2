@@ -2139,19 +2139,61 @@ void GameGUI::centerViewportOnSelection(void)
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 {
 	Message message;
-	
-	va_list ap;
-	va_start(ap, msgText);
-	vsnprintf (message.text, Message::MAX_DISPLAYED_MESSAGE_SIZE, msgText, ap);
-	va_end(ap);
-	message.text[Message::MAX_DISPLAYED_MESSAGE_SIZE-1]=0;
-	
 	message.showTicks=Message::DEFAULT_MESSAGE_SHOW_TICKS;
 	message.r = r;
 	message.g = g;
 	message.b = b;
-	message.a = DrawableSurface::ALPHA_OPAQUE;
+	char fullText[1024];
 	
+	va_list ap;
+	va_start(ap, msgText);
+	vsnprintf (fullText, sizeof(fullText), msgText, ap);
+	va_end(ap);
+	message.text[sizeof(fullText)-1]=0;
+	
+	char *sLine=fullText;
+	char *ptr=fullText;
+	char *lastSpace=fullText;
+	
+	globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
+	while (*ptr)
+	{
+		if (strchr(" \t\n\r", *ptr))
+			lastSpace=ptr;
+			
+		char c=*(ptr+1);
+		*(ptr+1)=0;
+		
+		if ((globalContainer->standardFont->getStringWidth(sLine)>globalContainer->gfx->getW()-128-64) || (ptr-sLine>=Message::MAX_DISPLAYED_MESSAGE_SIZE))
+		{
+			int len=lastSpace-sLine;
+			// prevent crash if line doesn't have any space
+			if (len)
+			{
+				memcpy(message.text, sLine, len);
+				message.text[len]=0;
+				messagesList.push_back(message);
+
+				sLine=lastSpace+1;
+			}
+			else
+			{
+				len=ptr-sLine;
+				memcpy(message.text, sLine, len);
+				message.text[len]=0;
+				messagesList.push_back(message);
+				
+				sLine=ptr;
+			}
+			lastSpace=sLine;
+		}
+		*(ptr+1)=c;
+		ptr++;
+	}
+	globalContainer->standardFont->popStyle();
+	
+	memcpy(message.text, sLine, ptr-sLine);
+	message.text[ptr-sLine]=0;
 	messagesList.push_back(message);
 }
 
