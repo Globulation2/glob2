@@ -42,6 +42,26 @@
 #	include <sys/time.h>
 #endif
 
+/*!	\mainpage Globulation 2 Reference documentation
+
+	\section intro Introduction
+	This is the documentation of Globulation 2 free
+	software game. It covers Glob2 itself, as well as
+	libgag (graphic and widget) and libdps (garbage collection, serialisation).
+	\section dps DPS
+	DPS stands for dynamic Dynamic Parallel Schedules.
+	It is a library developped at EPFL - LSP by
+	Sebastian Gerlach. It consists in three layers.
+	Glob2 uses only the first layer, for object
+	identification, serialisation and garbage collection.
+	For more information about DPS, please refer to its
+	<a href="http://dps.epfl.ch/">web site</a>.
+	\section feedback Feedback
+	This documentation is not yet complete, but should help to have an
+	overview of Globulation's 2 code. If you have any comments or suggestions,
+	do not hesitate to send them to <a href="mailto:glob2@ysagoon.com">glob2@ysagoon.com</a>.
+*/
+
 GlobalContainer *globalContainer=NULL;
 YOG *yog=NULL;
 
