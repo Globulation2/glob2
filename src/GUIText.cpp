@@ -18,35 +18,31 @@
 
 */
 
-#ifndef __MULTIPLAYERHOSTSCREEN_H
-#define __MULTIPLAYERHOSTSCREEN_H
+#include "GUIText.h"
 
-#include "PreparationGui.h"
-#include "MultiplayersHost.h"
-#include "MultiplayersJoin.h"
-#include "GAG.h"
-
-class MultiplayersHostScreen: public Screen
+Text::Text(int x, int y,const Font *font, const char *text, int w, int h)
 {
-public:
-	enum
-	{
-		START = 1,
-		CANCEL = 5,
+	this->x=x;
+	this->y=y;
+	this->font=font;
+	this->text=text;
+	this->w=w;
+	this->h=h;
+}
 
-		STARTED=11
-	};
+void Text::paint(DrawableSurface *gfx)
+{
+	int wDec, hDec;
 
-public:
-	MultiplayersHostScreen(SessionInfo *sessionInfo);
-	virtual ~MultiplayersHostScreen();
+	if (w)
+		wDec=(w-font->getStringWidth(text))>>1;
+	else
+		wDec=0;
 
-	void onTimer(Uint32 tick);
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
+	if (h)
+		hDec=(h-font->getStringHeight(text))>>1;
+	else
+		hDec=0;
 
-	MultiplayersHost *multiplayersHost;
-	MultiplayersJoin *multiplayersJoin;
-};
-
-#endif
+	gfx->drawString(x+wDec, y+hDec, font, text);
+}

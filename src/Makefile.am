@@ -20,11 +20,12 @@ GUIButton.cpp\
 GUIButton.h\
 GUIList.cpp\
 GUIList.h\
+GUIText.h \
+GUIText.cpp \
 GUITextInput.cpp\
 GUITextInput.h\
 GUITextArea.cpp \
 GUITextArea.h \
-GUIText.h \
 GUIMapPreview.h \
 GUIMapPreview.cpp \
 Game.cpp\

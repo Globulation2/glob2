@@ -23,18 +23,22 @@
 
 #include "GUIBase.h"
 
+//! This widget is a simple text widget
 class Text: public Widget
 {
 protected:
 	int x;
 	int y;
+	int w;
+	int h;
 	const Font *font;
 	const char *text;
+
 public:
-	Text(int x, int y, /*int w, int h,*/ const Font *font, const char *text) { this->x=x; this->y=y; this->font=font; this->text=text; }
+	Text(int x, int y,const Font *font, const char *text, int w=0, int h=0);
 	virtual ~Text() { }
 
-	virtual void paint(DrawableSurface *gfx) { gfx->drawString(x, y, font, text); }
+	virtual void paint(DrawableSurface *gfx);
 };
 
 #endif
