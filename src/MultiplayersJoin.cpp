@@ -663,6 +663,7 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 							{
 								fprintf(logFile, " player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
 								sessionInfo.players[j].setip(ip);
+								sessionInfo.players[j].waitForNatResolution=false;
 							}
 							else
 								fprintf(logFile, " player (%d) (%s) not switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
