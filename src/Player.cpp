@@ -221,8 +221,6 @@ Sint32 BasePlayer::checkSum()
 {
 	Sint32 cs=0;
 	
-	
-	cs^=type;
 	cs^=number;
 	cs^=numberMask;
 	cs^=teamNumber;

@@ -396,12 +396,13 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_SET_ALLIANCE:
 		{
-			Uint32 team=((SetAllianceOrder *)order)->teamNumber;
-			teams[team]->allies=((SetAllianceOrder *)order)->alliedMask;
-			teams[team]->enemies=((SetAllianceOrder *)order)->enemyMask;
-			teams[team]->sharedVisionExchange=((SetAllianceOrder *)order)->visionExchangeMask;
-			teams[team]->sharedVisionFood=((SetAllianceOrder *)order)->visionFoodMask;
-			teams[team]->sharedVisionOther=((SetAllianceOrder *)order)->visionOtherMask;
+			SetAllianceOrder *sao=((SetAllianceOrder *)order);
+			Uint32 team=sao->teamNumber;
+			teams[team]->allies=sao->alliedMask;
+			teams[team]->enemies=sao->enemyMask;
+			teams[team]->sharedVisionExchange=sao->visionExchangeMask;
+			teams[team]->sharedVisionFood=sao->visionFoodMask;
+			teams[team]->sharedVisionOther=sao->visionOtherMask;
 			setAIAlliance();
 		}
 		break;
@@ -1941,9 +1942,9 @@ Sint32 Game::checkSum()
 	}
 	//printf(", %x", cs);
 	cs=(cs<<31)|(cs>>1);
-	for (int i2=0; i2<session.numberOfPlayer; i2++)
+	for (int i=0; i<session.numberOfPlayer; i++)
 	{
-		cs^=players[i2]->checkSum();
+		cs^=players[i]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
 	//printf(", %x", cs);
@@ -1955,7 +1956,7 @@ Sint32 Game::checkSum()
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
-	//printf("Game::sc, sr=(%d, %d, %d).\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
+	//printf("Game::sc, sr=(%d, %d, %d).", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	//printf(", %x)\n", cs);
 	
 	return cs;

@@ -74,23 +74,15 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		// level 0 is peace, level 3 is total war
 		unsigned defaultAlliance;
 		if ((gameGUI->localTeam->allies)&(1<<otherTeam))
-		{
-			// we are allied
-			defaultAlliance=0;
-		}
+			defaultAlliance=0;// we are allied
+		else if ((gameGUI->localTeam->sharedVisionFood)&(1<<otherTeam))
+			defaultAlliance=1;
+		else if ((gameGUI->localTeam->sharedVisionExchange)&(1<<otherTeam))
+			defaultAlliance=2;
 		else if ((gameGUI->localTeam->enemies)&(1<<otherTeam))
-		{
-			// we are enemy
-			defaultAlliance=3;
-		}
+			defaultAlliance=3; // we are enemy
 		else
-		{
-			// we share exchange in both levels, but food only in 1
-			if ((gameGUI->localTeam->sharedVisionFood)&(1<<otherTeam))
-				defaultAlliance=1;
-			else
-				defaultAlliance=2;
-		}
+			assert(false);
 
 		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, defaultAlliance);
 		addWidget(alliance[i]);
