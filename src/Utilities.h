@@ -94,6 +94,7 @@ namespace Utilities
 	
 	void stringIP(char *s, int n, Uint32 ip);
 	char *stringIP(Uint32 ip);
+	char *stringIP(Uint32 host, Uint16 port);
 	char *stringIP(IPaddress ip);
 
 	//! read a string from a stream

@@ -710,12 +710,13 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 				char *userName=yog->userNameFromUID(uid);
 				if (userName)
 				{
-					fprintf(logFile, " userName=(%s), to ip=(%s)\n", userName, Utilities::stringIP(ip));
+					fprintf(logFile, " userName=(%s), proposed to ip=(%s)\n", userName, Utilities::stringIP(ip));
 					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 					{
 						//fprintf(logFile, "  type[%d]=%d\n", j, sessionInfo.players[j].type);
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
+							fprintf(logFile, "   player (%d) (%s) old ip=(%s)\n", j, userName, Utilities::stringIP(sessionInfo.players[j].ip));
 							if (((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
 								&& !sessionInfo.players[j].ipFirewallClean)
 							{
@@ -841,13 +842,41 @@ void MultiplayersJoin::serverBroadcastStopHosting(Uint8 *data, int size, IPaddre
 		fprintf(logFile, "bad state to remember serverBroadcastStopHosting (broadcastState=%d)\n", broadcastState);
 }
 
-void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress ip)
+void MultiplayersJoin::joinerBroadcastRR(Uint8 *data, int size, IPaddress ip, const char *rrName)
 {
-	if (size!=4)
+	if (size>5+32 || size<5+2)
 	{
-		fprintf(logFile, "Warning, bad size for a joinerBroadcastRequest (%d).\n", size);
+		fprintf(logFile, "Warning, bad size for a %s (%d) from ip=(%s)\n", rrName, size, Utilities::stringIP(ip));
 		return;
 	}
+	
+	char name[32];
+	memcpy(name, data+5, size-5);
+	name[size-6]=0;
+	
+	if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
+	{
+		int j=data[4];
+		if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
+		{
+			sessionInfo.players[j].waitForNatResolution=false;
+			sessionInfo.players[j].ipFromNAT=true;
+			sessionInfo.players[j].setip(ip);
+			fprintf(logFile, "%s, The player (%d) (%s) has a new ip(%s)\n", rrName, j, name, Utilities::stringIP(ip));
+		}
+	}
+	else
+		fprintf(logFile, "Warning, %s packet received while in a bad state. (ws=%d).\n", rrName, waitingState);
+}
+
+void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress ip)
+{
+	if (size>5+32 || size<5+2)
+	{
+		fprintf(logFile, "Warning, bad size for a joinerBroadcastRequest (%d) from ip=(%s)\n", size, Utilities::stringIP(ip));
+		return;
+	}
+	joinerBroadcastRR(data, size, ip, "joinerBroadcastRequest");
 	
 	int l=Utilities::strmlen(playerName, 32);
 	UDPpacket *packet=SDLNet_AllocPacket(5+l);
@@ -875,28 +904,10 @@ void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress 
 {
 	if (size>5+32 || size<5+2)
 	{
-		fprintf(logFile, "Warning, bad size for a joinerBroadcastResponse (%d).\n", size);
+		fprintf(logFile, "Warning, bad size for a joinerBroadcastResponse (%d) from ip=(%s)\n", size, Utilities::stringIP(ip));
 		return;
 	}
-	
-	char name[32];
-	memcpy(name, data+5, size-5);
-	name[size-6]=0;
-	
-	if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
-	{
-		//for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		int j=data[4];
-		if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
-		{
-			sessionInfo.players[j].waitForNatResolution=false;
-			sessionInfo.players[j].ipFromNAT=true;
-			sessionInfo.players[j].setip(ip);
-			fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", j, name, Utilities::stringIP(ip));
-		}
-	}
-	else
-		fprintf(logFile, "Warning, joinerBroadcastResponse packet received while in a bad state. (ws=%d).\n", waitingState);
+	joinerBroadcastRR(data, size, ip, "joinerBroadcastResponse");
 }
 
 void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
@@ -1658,28 +1669,31 @@ bool MultiplayersJoin::send(const int u, const int v)
 
 void MultiplayersJoin::sendBroadcastRequest(IPaddress ip)
 {
-	UDPpacket *packet=SDLNet_AllocPacket(4);
+	int l=Utilities::strmlen(playerName, 32);
+	UDPpacket *packet=SDLNet_AllocPacket(5+l);
 
 	assert(packet);
 
 	packet->channel=-1;
 	packet->address=ip;
-	packet->len=4;
+	packet->len=5+l;
 	packet->data[0]=BROADCAST_REQUEST;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
+	packet->data[4]=myPlayerNumber;
+	memcpy(packet->data+5, playerName, l);
+	
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
+		fprintf(logFile, "Succeded to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
 		broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
 	}
 	else
 	{
 		broadcastState=BS_BAD;
-		fprintf(logFile, "failed to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
+		fprintf(logFile, "Failed to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
 	}
-
 	SDLNet_FreePacket(packet);
 }
 
@@ -1757,7 +1771,10 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 	else
 		fprintf(logFile, "not enabling NAT detection. shareOnYog=%d, ipFromNAT=%d, broadcastState=%d\n", shareOnYog, ipFromNAT, broadcastState);
 	
-	return sendPresenceRequest();
+	waitingState=WS_WAITING_FOR_PRESENCE;
+	waitingTimeout=3; // We have to wait for a broadcast respons *before* we send our first presenseRequest.
+	waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
+	return true;
 }
 
 void MultiplayersJoin::quitThisGame() 

@@ -468,6 +468,18 @@ namespace Utilities
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
 	}
+	char *stringIP(Uint32 host, Uint16 port)
+	{
+		staticCounter=(staticCounter+1)&0x7;
+		Uint32 ip=SDL_SwapBE32(host);
+#ifndef WIN32
+		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(port));
+#else
+		sprintf(staticStringIP[staticCounter], "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(port));
+#endif
+		staticStringIP[staticCounter][127]=0;
+		return staticStringIP[staticCounter];
+	}
 	
 	char *stringIP(IPaddress nip)
 	{
