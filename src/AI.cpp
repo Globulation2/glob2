@@ -81,68 +81,35 @@ Order *AI::getOrder(void)
 bool AI::load(SDL_RWops *stream)
 {
 	assert(player);
-	Game *game=player->team->game;
-	if (game->session.versionMajor>=0)
+	
+	if (aiImplementation)
+		delete aiImplementation;
+	aiImplementation=NULL;
+
+	char signature[4];
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature,"AI b",4)!=0)
+		return false;
+
+	implementitionID=(ImplementitionID)SDL_ReadBE32(stream);
+
+	switch (implementitionID)
 	{
-		if (aiImplementation)
-			delete aiImplementation;
-		aiImplementation=NULL;
-		
-		if (game->session.versionMinor>=9)
-		{
-			char signature[4];
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"AI b",4)!=0)
-				return false;
-				
-			implementitionID=(ImplementitionID)SDL_ReadBE32(stream);
-			
-			switch (implementitionID)
-			{
-				case NONE:
-					assert(false);
-				break;
-				case NUMBI:
-					aiImplementation=new AINumbi(stream, player);
-				break;
-				default:
-					assert(false);
-				break;
-			}
-
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"AI e",4)!=0)
-				return false;
-		}
-		else if (game->session.versionMinor>=8)
-		{
-			char signature[4];
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GLO2",4)!=0)
-				return false;
-				
-			implementitionID=(ImplementitionID)SDL_ReadBE32(stream);
-			
-			switch (implementitionID)
-			{
-				case NONE:
-					assert(false);
-				break;
-				case NUMBI:
-					aiImplementation=new AINumbi(stream, player);
-				break;
-				default:
-					assert(false);
-				break;
-			}
-
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GLO2",4)!=0)
-				return false;
-		}
-		else
+		case NONE:
 			assert(false);
+		break;
+		case NUMBI:
+			aiImplementation=new AINumbi(stream, player);
+		break;
+		default:
+			assert(false);
+		break;
 	}
+
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature,"AI e",4)!=0)
+		return false;
+	
 	return true;
 }
 

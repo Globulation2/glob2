@@ -158,10 +158,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	type=types->buildingsTypes[typeNum];
 	owner->prestige+=type->prestige;
 	
-	if (versionMinor>=11)
-		seenByMask=SDL_ReadBE32(stream);
-	else
-		seenByMask=0; //TODO: load it!
+	seenByMask=SDL_ReadBE32(stream);
 	
 	foodable=0;
 	fillable=0;

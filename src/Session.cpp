@@ -130,47 +130,33 @@ bool SessionGame::load(SDL_RWops *stream)
 	versionMajor=SDL_ReadBE32(stream);
 	versionMinor=SDL_ReadBE32(stream);
 	
-	if (versionMinor>=9)
-	{
-		if (memcmp(signature,"SEGb",4)!=0)
-			return false;
-	}
-	else
-	{
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
-	}
+	if (memcmp(signature,"SEGb",4)!=0)
+		return false;
 	
-	if (versionMinor>1)
-	{
-		sessionInfoOffset=SDL_ReadBE32(stream);
-		gameOffset=SDL_ReadBE32(stream);
-		teamsOffset=SDL_ReadBE32(stream);
-		playersOffset=SDL_ReadBE32(stream);
-		mapOffset=SDL_ReadBE32(stream);
-	}
-	if (versionMinor>9)
-		mapScriptOffset=SDL_ReadBE32(stream);
-	if (versionMinor>6)
-		generationDescriptorOffset=SDL_ReadBE32(stream);
+	sessionInfoOffset=SDL_ReadBE32(stream);
+	gameOffset=SDL_ReadBE32(stream);
+	teamsOffset=SDL_ReadBE32(stream);
+	playersOffset=SDL_ReadBE32(stream);
+	mapOffset=SDL_ReadBE32(stream);
+	
+	mapScriptOffset=SDL_ReadBE32(stream);
+	
+	generationDescriptorOffset=SDL_ReadBE32(stream);
+	
 	numberOfPlayer=SDL_ReadBE32(stream);
 	numberOfTeam=SDL_ReadBE32(stream);
 	gameTPF=SDL_ReadBE32(stream);
 	gameLatency=SDL_ReadBE32(stream);
 
-	if (versionMinor>4)
-		fileIsAMap=SDL_ReadBE32(stream);
-	else
-		fileIsAMap=(Sint32)true;
+	fileIsAMap=SDL_ReadBE32(stream);
 	
 	if (mapGenerationDescriptor)
 		delete mapGenerationDescriptor;
 	mapGenerationDescriptor=NULL;
 	bool isDescriptor;
-	if (versionMinor>6)
-		isDescriptor=(bool)SDL_ReadBE32(stream);
-	else
-		isDescriptor=false;
+	
+	isDescriptor=(bool)SDL_ReadBE32(stream);
+	
 	if (isDescriptor)
 	{
 		SDL_RWseek(stream, generationDescriptorOffset , SEEK_SET);
@@ -180,18 +166,9 @@ bool SessionGame::load(SDL_RWops *stream)
 	else
 		mapGenerationDescriptor=NULL;
 	
-	if (versionMinor>=9)
-	{
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"SEGe",4)!=0)
-			return false;
-	}
-	else
-	{
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
-	}
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature,"SEGe",4)!=0)
+		return false;
 
 	return true;
 }
@@ -480,34 +457,16 @@ void SessionInfo::save(SDL_RWops *stream)
 
 bool SessionInfo::load(SDL_RWops *stream)
 {
-	int i;
 	char signature[4];
 
 	if (!SessionGame::load(stream))
 		return false;
 
-	if (versionMinor>1)
-		SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
+	SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
 
-	if (versionMinor>11)
-	{
-		SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
-		printf("End-user map name is %s\n", mapName);
-	}
-	else
-	{
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
-
-		// 32 is the length of the legacy map name
-		SDL_RWread(stream, mapName, 32, 1);
-
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
-	}
-
+	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
+	printf("End-user map name is %s\n", mapName);
+	
 //	if (!map.load(stream))
 //		return false;
 
@@ -516,11 +475,11 @@ bool SessionInfo::load(SDL_RWops *stream)
 		return false;
 
 
-	for (i=0; i<numberOfPlayer; ++i)
+	for (int i=0; i<numberOfPlayer; ++i)
 		if(!players[i].load(stream, versionMinor))
 			return false;
 
-	for (i=0; i<numberOfTeam; ++i)
+	for (int i=0; i<numberOfTeam; ++i)
 		if(!team[i].load(stream))
 			return false;
 

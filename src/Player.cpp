@@ -100,10 +100,7 @@ bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
 	numberMask=SDL_ReadBE32(stream);
 	
 	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
-	if (versionMinor<4)
-		SDL_RWread(stream, name, 16, 1);
-	else
-		SDL_RWread(stream, name, MAX_NAME_LENGTH, 1);
+	SDL_RWread(stream, name, MAX_NAME_LENGTH, 1);
 	
 	teamNumber=SDL_ReadBE32(stream);
 	teamNumberMask=SDL_ReadBE32(stream);
@@ -606,15 +603,12 @@ void Player::makeItAI()
 
 bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 {
-	if (versionMinor>=9)
+	char signature[4];
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature,"PLYb",4)!=0)
 	{
-		char signature[4];
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"PLYb",4)!=0)
-		{
-			fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
-			return false;
-		}
+		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
+		return false;
 	}
 	
 	// if AI, delete
@@ -643,15 +637,11 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 		team->type=BaseTeam::T_HUMAN;
 	}
 	
-	if (versionMinor>=9)
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature,"PLYe",4)!=0)
 	{
-		char signature[4];
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"PLYe",4)!=0)
-		{
-			fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
-			return false;
-		}
+		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
+		return false;
 	}
 	
 	return true;
