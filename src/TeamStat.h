@@ -79,8 +79,8 @@ public:
 	virtual ~TeamStats(void);
 	
 	void step(Team *team);
-	void drawText();
-	void drawStat();
+	void drawText(int pos);
+	void drawStat(int pos);
 	int getFreeUnits(int type);
 	int getTotalUnits(int type);
 	int getUnitsNeeded();

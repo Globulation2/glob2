@@ -36,6 +36,11 @@
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
 
+#define YPOS_BASE_DEFAULT 160
+#define YPOS_BASE_BUILDING YPOS_BASE_DEFAULT
+#define YPOS_BASE_FLAG YPOS_BASE_DEFAULT
+#define YPOS_BASE_STAT YPOS_BASE_DEFAULT
+
 //! The screen that contains the text input while typing message in game
 class InGameTextInput:public OverlayScreen
 {
@@ -73,7 +78,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 {
-	init();
+	//init();
 }
 
 GameGUI::~GameGUI()
@@ -119,6 +124,23 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
+
+	buildingsChoice.clear();
+	buildingsChoice.push_back(0);
+	buildingsChoice.push_back(1);
+	buildingsChoice.push_back(2);
+	buildingsChoice.push_back(3);
+	buildingsChoice.push_back(4);
+	buildingsChoice.push_back(5);
+	buildingsChoice.push_back(6);
+	buildingsChoice.push_back(7);
+	buildingsChoice.push_back(12);
+
+	flagsChoice.clear();
+	flagsChoice.push_back(8);
+	flagsChoice.push_back(9);
+	flagsChoice.push_back(10);
+	flagsChoice.push_back(11);
 }
 
 void GameGUI::adjustInitialViewport()
@@ -132,7 +154,7 @@ void GameGUI::adjustInitialViewport()
 	localTeam=game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats=&localTeam->stats;
-	
+
 	viewportX=localTeam->startPosX-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=localTeam->startPosY-(globalContainer->gfx->getH()>>6);
 	viewportX=(viewportX+game.map.getW())%game.map.getW();
@@ -213,7 +235,7 @@ void GameGUI::step(void)
 	viewportY+=viewportSpeedY;
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
-	
+
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 		flagSelectedStep();
 
@@ -496,7 +518,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
-				
+
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
@@ -1087,6 +1109,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
 		}
 	}
+	else if (my<128+32)
+	{
+		displayMode=DisplayMode(mx/32);
+	}
 	else if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		assert (selBuild);
@@ -1242,7 +1268,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" displacement=%d\n", selUnit->displacement);
 		printf(" movement=%d\n", selUnit->movement);
 		printf(" action=%d\n", selUnit->action);
-		
+
 		if (selUnit->attachedBuilding)
 			printf(" attachedBuilding bgid=%d\n", selUnit->attachedBuilding->gid);
 		else
@@ -1251,39 +1277,21 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" subscribed=%d\n", selUnit->subscribed);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
-	else if (my<128+32)
-	{
-		if (mx<32)
-		{
-			displayMode=BUILDING_VIEW;
-		}
-		else if (mx<64)
-		{
-			displayMode=STAT_TEXT_VIEW;
-		}
-		else if (mx<96)
-		{
-			displayMode=STAT_GRAPH_VIEW;
-		}
-	}
 	else if (displayMode==BUILDING_VIEW)
 	{
-		// NOTE : here 6 is 12 /2. 12 is the number of buildings in menu
-		if (my<128+32+(8>>1)*46)
-		{
-			int xNum=mx>>6;
-			int yNum=(my-128-32)/46;
-			typeToBuild=yNum*2+xNum;
-		}
-		else if (my<128+32+(8>>1)*46+(2*32))
-		{
-			int xNum=mx>>5;
-			int yNum=(my-(128+32+(8>>1)*46))>>5;
-			typeToBuild=yNum*4+xNum+8;
-			//printf("Num=(%d, %d), typeToBuild=%d.\n", xNum, yNum, typeToBuild);
-		}
-		if (typeToBuild>=13)
-			typeToBuild=-1;
+		int xNum=mx>>6;
+		int yNum=(my-YPOS_BASE_BUILDING)/46;
+		int id=yNum*2+xNum;
+		if (id<(int)buildingsChoice.size())
+			typeToBuild=buildingsChoice[id];
+	}
+	else if (displayMode==FLAG_VIEW)
+	{
+		int xNum=mx>>6;
+		int yNum=(my-YPOS_BASE_FLAG)/46;
+		int id=yNum*2+xNum;
+		if (id<(int)flagsChoice.size())
+			typeToBuild=flagsChoice[id];
 	}
 }
 
@@ -1303,8 +1311,127 @@ Order *GameGUI::getOrder(void)
 	}
 }
 
+void GameGUI::drawPanelButtons(int pos)
+{
+	// draw buttons
+	if (displayMode==BUILDING_VIEW)
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 1);
+	else
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 0);
+
+	if (displayMode==FLAG_VIEW)
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
+	else
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
+
+	if (displayMode==STAT_TEXT_VIEW)
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 3);
+	else
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 2);
+
+	if (displayMode==STAT_GRAPH_VIEW)
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 5);
+	else
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
+
+	// draw decoration
+}
+
+void GameGUI::drawChoice(int pos, std::vector<int> &types)
+{
+	int sel=-1;
+	int v=0;
+
+	std::vector<int>::const_iterator it=types.begin();
+	while (it!=types.end())
+	{
+		int i = *it;
+
+		if (i==typeToBuild)
+			sel=v;
+
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		assert(bt);
+		int imgid=bt->startImage;
+		int x, y;
+
+		x=((v&0x1)*64)+globalContainer->gfx->getW()-128;
+		y=((v>>1)*46)+128+32;
+		globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
+
+		Sprite *buildingSprite=globalContainer->buildings;
+		int decX, decY;
+		if (buildingSprite->getW(imgid)<=32)
+			decX=-16;
+		else if (buildingSprite->getW(imgid)>64)
+			decX=20;
+		else
+			decX=0;
+		if (buildingSprite->getH(imgid)<=32)
+			decY=-8;
+		else if (buildingSprite->getH(imgid)>64)
+			decY=26;
+		else
+			decY=0;
+
+		buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+		globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
+
+		++it;
+		v++;
+	}
+	int count = v;
+
+	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
+
+	// draw selection if needed
+	if (sel>=0)
+	{
+		int x=((sel&0x1)*64)+globalContainer->gfx->getW()-128;
+		int y=((sel>>1)*46)+128+32;
+		globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
+	}
+
+	// draw infos
+	if (mouseX>globalContainer->gfx->getW()-128)
+	{
+		if (mouseY>pos)
+		{
+			int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
+			int yNum=(mouseY-pos)/46;
+			int id=yNum*2+xNum;
+			if (id<count)
+			{
+				int typeId=types[id];
+				int buildingInfoStart=globalContainer->gfx->getH()-50;
+
+				drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[building name]", typeId);
+				int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
+				if (typeNum!=-1)
+				{
+					BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
+						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
+						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
+
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
+						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
+						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
+
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
+						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
+				}
+			}
+		}
+	}
+}
+
 void GameGUI::drawPanel(void)
 {
+	// ensure we have a valid selection and associate pointers
 	checkValidSelection();
 
 	// set the clipping rectangle
@@ -1316,6 +1443,8 @@ void GameGUI::drawPanel(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
+	// draw the buttons in the panel
+	drawPanelButtons(128);
 
 	if (displayMode==BUILDING_SELECTION_VIEW)
 	{
@@ -1642,141 +1771,19 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==BUILDING_VIEW)
 	{
-		// draw button bar
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 1);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
-		/*if (gameMenuScreen)
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
-		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);*/
-
-		for (int i=0; i<13; i++)
-		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-			assert(bt);
-			int imgid=bt->startImage;
-			int x, y;
-			if (i<8)
-			{
-				x=((i&0x1)*64)+globalContainer->gfx->getW()-128;
-				y=((i>>1)*46)+128+32;
-				globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
-			}
-			else
-			{
-				x=((i&0x3)*32)+globalContainer->gfx->getW()-128;
-				y=(((i-8)>>2)*32)+(4*46)+128+32;
-				globalContainer->gfx->setClipRect(x, y, 32, 32);
-			}
-			Sprite *buildingSprite=globalContainer->buildings;
-			int decX, decY;
-			if (i<8)
-			{
-				if (buildingSprite->getW(imgid)<=32)
-					decX=-16;
-				else if (buildingSprite->getW(imgid)>64)
-					decX=20;
-				else
-					decX=0;
-				if (buildingSprite->getH(imgid)<=32)
-					decY=-8;
-				else if (buildingSprite->getH(imgid)>64)
-					decY=26;
-				else
-					decY=0;
-			}
-			else
-			{
-				decX=0;
-				decY=0;
-			}
-			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-			globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
-		}
-
-		globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
-
-		if (typeToBuild>=0)
-		{
-			if (typeToBuild<8)
-			{
-				int x=((typeToBuild&0x1)*64)+globalContainer->gfx->getW()-128;
-				int y=((typeToBuild>>1)*46)+128+32;
-				globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
-			}
-			else
-			{
-				int x=((typeToBuild&0x3)*32)+globalContainer->gfx->getW()-128;
-				int y=(((typeToBuild-8)>>2)*32)+(4*46)+128+32;
-				globalContainer->gfx->drawRect(x, y, 32, 32, 200, 200, 140);
-			}
-		}
-
-		// draw building infos
-		if (mouseX>globalContainer->gfx->getW()-128)
-		{
-			if ((mouseY>128+32) && (mouseY<128+20+6*46))
-			{
-				int typeId=14;
-				if (mouseY<128+32+(8>>1)*46)
-				{
-					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
-					int yNum=(mouseY-128-32)/46;
-					typeId=yNum*2+xNum;
-				}
-				else if (mouseY<128+32+(8>>1)*46+(4*32))
-				{
-					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>5;
-					int yNum=(mouseY-(128+32+(8>>1)*46))>>5;
-					typeId=yNum*4+xNum+8;
-					//printf("Num=(%d, %d), typeId=%d.\n", xNum, yNum, typeId);
-				}
-				if (typeId<13)
-				{
-					int buildingInfoStart=128+32+6*46;
-
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-5, "[building name]", typeId);
-					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
-					if (typeNum!=-1)
-					{
-						BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
-
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
-
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
-					}
-				}
-			}
-		}
+		drawChoice(YPOS_BASE_BUILDING, buildingsChoice);
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
+		drawChoice(YPOS_BASE_FLAG, flagsChoice);
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
 	{
-		// draw button bar
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 3);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
-		teamStats->drawText();
+		teamStats->drawText(YPOS_BASE_STAT);
 	}
 	else if (displayMode==STAT_GRAPH_VIEW)
 	{
-		// draw button bar
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 5);
-		teamStats->drawStat();
+		teamStats->drawStat(YPOS_BASE_STAT);
 	}
 }
 
@@ -2195,7 +2202,7 @@ void GameGUI::executeOrder(Order *order)
 			MessageOrder *mo=(MessageOrder *)order;
 			int sp=mo->sender;
 			Uint32 messageOrderType=mo->messageOrderType;
-			
+
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))

@@ -30,8 +30,6 @@ Optimisation:
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.
-- Minimiser les #includes
-- Nettoyer les dependances inutiles pour gagner en temps de compillation !
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - La minimap ne tient pas compte des batiment que l'on voit sous le FOW.
