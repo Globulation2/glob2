@@ -100,7 +100,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
-		if ((strcmp(argv[i], "-host")==0) || (strcmp(argv[i], "--host")==0))
+		if (strcmp(argv[i], "-host")==0)
 		{
 			if (i+1<argc)
 			{
