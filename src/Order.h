@@ -268,6 +268,28 @@ protected:
 	Uint8 data[11];
 };
 
+class OrderAlterateForbidden:public OrderModify
+{
+public:
+	OrderAlterateForbidden(const Uint8 *data, int dataLength);
+	OrderAlterateForbidden(Uint32 team, Sint32 x, Sint32 y,  Uint32 type, Uint32 figure);
+	virtual ~OrderAlterateForbidden(void) {}
+	
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return 20; }
+	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
+	
+	Uint32 team;
+	Sint32 x;
+	Sint32 y;
+	Uint32 type;
+	Uint32 figure;
+	
+protected:
+	Uint8 data[20];
+};
+
 
 
 // Misc orders

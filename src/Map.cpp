@@ -1121,7 +1121,7 @@ void Map::switchFogOfWar(void)
 		fogOfWar=fogOfWarA;
 }
 
-void Map::setForbiddenArea(int x, int y, int r, Uint32 me)
+void Map::setForbiddenCircularArea(int x, int y, int r, Uint32 me)
 {
 	int rm=(r<<1)+1;
 	int r2=rm*rm;
@@ -1134,7 +1134,14 @@ void Map::setForbiddenArea(int x, int y, int r, Uint32 me)
 	}
 }
 
-void Map::clearForbiddenArea(int x, int y, int r, Uint32 me)
+void Map::setForbiddenSquareArea(int x, int y, int r, Uint32 me)
+{
+	for (int yi=-r; yi<=r; yi++)
+		for (int xi=-r; xi<=r; xi++)
+			(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden|=me;
+}
+
+void Map::clearForbiddenCircularArea(int x, int y, int r, Uint32 me)
 {
 	int rm=(r<<1)+1;
 	int r2=rm*rm;
@@ -1145,6 +1152,13 @@ void Map::clearForbiddenArea(int x, int y, int r, Uint32 me)
 			if (yi2+((xi*xi)<<2)<r2)
 				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
 	}
+}
+
+void Map::clearForbiddenSquareArea(int x, int y, int r, Uint32 me)
+{
+	for (int yi=-r; yi<=r; yi++)
+		for (int xi=-r; xi<=r; xi++)
+			(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
 }
 
 void Map::clearForbiddenArea(Uint32 me)

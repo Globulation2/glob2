@@ -1319,7 +1319,7 @@ void Team::computeForbiddenArea()
 	{
 		Building *b=*it;
 		if (b->buildingState==Building::ALIVE)
-			map->setForbiddenArea(b->posX, b->posY, b->unitStayRange, me);
+			map->setForbiddenCircularArea(b->posX, b->posY, b->unitStayRange, me);
 	}
 }
 

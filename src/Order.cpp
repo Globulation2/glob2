@@ -534,6 +534,46 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength)
 	return true;
 }
 
+// OrderAlterateForbidden' code
+
+OrderAlterateForbidden::OrderAlterateForbidden(const Uint8 *data, int dataLength)
+{
+	assert(dataLength==20);
+	bool good=setData(data, dataLength);
+	assert(good);
+}
+
+OrderAlterateForbidden::OrderAlterateForbidden(Uint32 team, Sint32 x, Sint32 y,  Uint32 type, Uint32 figure)
+{
+	this->team=team;
+	this->x=x;
+	this->y=y;
+	this->type=type;
+	this->figure=figure;
+}
+
+Uint8 *OrderAlterateForbidden::getData(void)
+{
+	addUint32(data, team, 0);
+	addSint32(data, x, 4);
+	addSint32(data, y, 8);
+	addUint32(data, type, 12);
+	addUint32(data, figure, 16);
+	return data;
+}
+
+bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
+{
+	if (dataLength!=20)
+		return false;
+	team=getUint32(data, 0);
+	x=getSint32(data, 4);
+	y=getSint32(data, 8);
+	type=getUint32(data, 12);
+	figure=getUint32(data, 16);
+	return true;
+}
+
 // MiscOrder's code
 
 MiscOrder::MiscOrder()

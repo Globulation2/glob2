@@ -218,7 +218,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					if (type->zonableForbidden)
 					{
 						owner->zonableForbidden.push_back(b);
-						map.setForbiddenArea(posX, posY, b->unitStayRange, team->me);
+						map.setForbiddenCircularArea(posX, posY, b->unitStayRange, team->me);
 					}
 					b->update();
 				}
@@ -404,6 +404,43 @@ void Game::executeOrder(Order *order, int localPlayer)
 					b->posYLocal=b->posY;
 				}
 			}
+		}
+		break;
+		case ORDER_ALTERATE_FORBIDDEN:
+		{
+			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
+			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
+			printf("Team is %d, pos is (%d,%d), type is %d, figure is %d\n", oaf->team, oaf->x, oaf->y, oaf->type, oaf->figure);
+			Uint32 teamMask = teams[oaf->team]->me;
+			if (oaf->type == 1)
+			{
+				// Add
+				if (oaf->figure<4)
+					map.setForbiddenCircularArea(oaf->x, oaf->y, oaf->figure, teamMask);
+				else
+					map.setForbiddenSquareArea(oaf->x, oaf->y, oaf->figure-4, teamMask);
+			}
+			else if (oaf->type == 2)
+			{
+				// Remove
+				int l;
+				if (oaf->figure<4)
+				{
+					map.clearForbiddenCircularArea(oaf->x, oaf->y, oaf->figure, teamMask);
+					l = oaf->figure;
+				}
+				else
+				{
+					map.clearForbiddenSquareArea(oaf->x, oaf->y, oaf->figure-4, teamMask);
+					l = oaf->figure-4;
+				}
+				
+				// We remove, so we need to refresh the gradients, unfortunatly
+				teams[oaf->team]->dirtyGlobalGradient();
+				map.dirtyLocalGradient(oaf->x-l-16, oaf->x-l-16, 32+l*2, 32+l*2, oaf->team);
+			}
+			else
+				assert(false);
 		}
 		break;
 		case ORDER_MODIFY_SWARM:

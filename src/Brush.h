@@ -41,6 +41,8 @@ public:
 	void handleClick(int x, int y);
 	void unselect(void) { mode = MODE_NONE; }
 	void drawBrush(int x, int y);
+	unsigned getType(void) { return static_cast<unsigned>(mode); }
+	unsigned getFigure(void) { return figure; }
 };
 
 #endif
