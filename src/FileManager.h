@@ -63,6 +63,9 @@ public:
 	//! Add a directory to the search list
 	void addDir(const char *dir);
 
+	//! Remove a file or a directory in the virtual filesystem
+	void remove(const char *filename);
+
 	//! Open a file in the SDL_RWops format
 	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
 	//! Open a file in the FILE* format
