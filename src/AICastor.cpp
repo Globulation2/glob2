@@ -91,7 +91,9 @@ void AICastor::init(Player *player)
 	timer=0;
 	canSwim=false;
 	needPool=false;
-	lastNeedPoolComputed=(Uint32)-1024;
+	computeNeedPoolTimer=0;
+	controlSwarmsTimer=0;
+	expandFoodTimer=0;
 	hydratationMapComputed=false;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
@@ -240,7 +242,6 @@ Order *AICastor::getOrder(void)
 		computeHydratationMap();
 	
 	//printf("getOrder(), %d projects\n", projects.size());
-	bool blocking=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->finished)
 		{
@@ -248,12 +249,25 @@ Order *AICastor::getOrder(void)
 			delete *pi;
 			pi=projects.erase(pi);
 		}
+	bool blocking=false;
+	bool critical=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
+	{
 		if ((*pi)->blocking)
 			blocking=true;
-	
+		if ((*pi)->critical)
+			critical=true;
+	}
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
+	
+	if (timer>controlSwarmsTimer)
+	{
+		controlSwarmsTimer=timer+256; // each 10s
+		Order *order=controlSwarms();
+		if (order)
+			return order;
+	}
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 	{
@@ -262,12 +276,149 @@ Order *AICastor::getOrder(void)
 			return order;
 	}
 	
+	if (!critical && timer>expandFoodTimer)
+	{
+		expandFoodTimer=timer+128; // each 5s
+		Order *order=expandFood();
+		if (order)
+			return order;
+	}
+	
 	return new NullOrder();
+}
+
+Order *AICastor::controlSwarms(void)
+{
+	int unitSum[NB_UNIT_TYPE];
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		unitSum[i]=0;
+	Unit **myUnits=team->myUnits;
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=myUnits[i];
+		if (u)
+			unitSum[u->typeNum]++;
+	}
+	int foodSum=0;
+	Building **myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if (b && b->type->canFeedUnit)
+			foodSum+=b->type->maxUnitInside;
+	}
+	
+	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
+	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d\n", unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum);
+	
+	if (unitSumAll>=foodSum)
+	{
+		// Stop making any units!
+		Building **myBuildings=team->myBuildings;
+		for (int bi=0; bi<1024; bi++)
+		{
+			Building *b=myBuildings[bi];
+			if (b && b->type->unitProductionTime)
+				for (int ri=0; ri<NB_UNIT_TYPE; ri++)
+					if (b->ratio[ri]!=0)
+					{
+						for (int ri=0; ri<NB_UNIT_TYPE; ri++)
+						{
+							b->ratio[ri]=0;
+							b->ratioLocal[ri]=0;
+						}
+						b->update();
+						return new OrderModifySwarm(b->gid, b->ratioLocal);
+					}
+		}
+		
+		return NULL;
+	}
+	
+	size_t size=map->w*map->h;
+	int discovered=0;
+	int seeable=0;
+	Uint32 *mapDiscovered=map->mapDiscovered;
+	Uint32 *fogOfWar=map->fogOfWar;
+	Uint32 me=team->me;
+	for (size_t i=0; i<size; i++)
+	{
+		if (mapDiscovered[i]&me!=0)
+			discovered++;
+		if (fogOfWar[i]&me!=0)
+			seeable++;
+	}
+	Sint32 explorerGoal;
+	if (unitSum[WORKER]<4)
+		explorerGoal=0;
+	else if (unitSum[EXPLORER]==0)
+		explorerGoal=1;
+	else if ((unitSum[EXPLORER]<<4)<unitSum[WORKER])
+		explorerGoal=1;
+	else
+		explorerGoal=0;
+	Sint32 workerGoal=3;
+	
+	printf("discovered=%d, seeable=%d, size=%d, explorerGoal=%d\n", discovered, seeable, size, explorerGoal);
+	
+	for (int bi=0; bi<1024; bi++)
+	{
+		Building *b=myBuildings[bi];
+		if (b && b->type->unitProductionTime)
+		{
+			if (b->ratio[EXPLORER]!=explorerGoal)
+			{
+				b->ratio[EXPLORER]=explorerGoal;
+				b->ratioLocal[EXPLORER]=explorerGoal;
+				b->ratio[WORKER]=workerGoal;
+				b->ratioLocal[WORKER]=workerGoal;
+				b->update();
+				return new OrderModifySwarm(b->gid, b->ratioLocal);
+			}
+		}
+	}
+	
+	for (int bi=0; bi<1024; bi++)
+	{
+		Building *b=myBuildings[bi];
+		if (b && b->type->unitProductionTime)
+		{
+			if (b->ratio[WORKER]!=workerGoal)
+			{
+				b->ratio[WORKER]=workerGoal;
+				b->ratioLocal[WORKER]=workerGoal;
+				b->update();
+				return new OrderModifySwarm(b->gid, b->ratioLocal);
+			}
+		}
+	}
+	
+	
+	return NULL;
+}
+
+Order *AICastor::expandFood(void)
+{
+	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
+	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
+	assert(bw==bh);
+	
+	computeCanSwim();
+	computeObstacleBuildingMap();
+	computeSpaceForBuildingMap(bw);
+	computeBuildingNeighbourMap(bw, bh);
+	computeWheatGrowthMap(bw, bh);
+	computeObstacleUnitMap();
+	computeWorkPowerMap();
+	computeWorkRangeMap();
+	computeWorkAbilityMap();
+	
+	return findGoodBuilding(typeNum, true, false);
 }
 
 void AICastor::addProjects(void)
 {
-	
 	Sint32 poolSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWIMSPEED_BUILDING, 0, true);
 	Sint32 attackSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::ATTACK_BUILDING, 0, true);
 	Sint32 speedSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WALKSPEED_BUILDING, 0, true);
@@ -318,6 +469,7 @@ void AICastor::addProjects(void)
 		Project *project=new Project(BuildingType::FOOD_BUILDING, "food");
 		projects.push_back(project);
 		
+		project->critical=true;
 		project->food=true;
 		
 		project->mainWorkers=3;
@@ -335,6 +487,7 @@ void AICastor::addProjects(void)
 		Project *project=new Project(BuildingType::SWARM_BUILDING, "swarm");
 		projects.push_back(project);
 		
+		project->critical=true;
 		project->food=true;
 		
 		project->mainWorkers=20;
@@ -349,26 +502,34 @@ void AICastor::addProjects(void)
 	}
 	if (pool+poolSite==0)
 	{
-		Uint32 time=timer-lastNeedPoolComputed;
-		printf(" time=%d\n", time);
-		if (time>1024) // every 41s
+		if (timer>computeNeedPoolTimer)
+		{
+			computeNeedPoolTimer=timer+1024;// every 41s
 			computeNeedPool();
+		}
 		if (needPool)
 		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 5, "pool");
+			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, "pool");
 			projects.push_back(project);
+			project->critical=true;
+			return;
 		}
 	}
 	if (attaque+attaqueSite==0)
 	{
-		Project *project=new Project(BuildingType::ATTACK_BUILDING, 5, "attack");
+		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, "attack");
 		projects.push_back(project);
+		project->critical=true;
+		return;
 	}
 	if (speed+speedSite==0)
 	{
-		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, 5, "speed");
+		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, 1, "speed");
 		projects.push_back(project);
+		project->critical=true;
+		return;
 	}
+	// all critical projects succeded.
 }
 
 Order *AICastor::continueProject(Project *project)
@@ -391,7 +552,7 @@ Order *AICastor::continueProject(Project *project)
 	}
 	else if (project->subPhase==1)
 	{
-		// find any good food building place
+		// find any good building place
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
 		int bw=globalContainer->buildingsTypes.get(typeNum)->width;
@@ -408,7 +569,7 @@ Order *AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		Order *gfbm=findBestBuilding(typeNum, project->food);
+		Order *gfbm=findGoodBuilding(typeNum, project->food, true);
 		project->timer=timer;
 		if (gfbm)
 		{
@@ -419,7 +580,7 @@ Order *AICastor::continueProject(Project *project)
 	}
 	else if (project->subPhase==2)
 	{
-		// Checking of any real food building site:
+		// Checking of any real building site:
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
 		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
@@ -454,7 +615,11 @@ Order *AICastor::continueProject(Project *project)
 			project->subPhase=3;
 			printf("%s (real building site found), switching to next subphase 3.\n", project->debugName);
 			if (!project->waitFinished)
+			{
+				project->blocking=false;
+				project->critical=false;
 				printf("%s (deblocking)\n", project->debugName);
+			}
 		}
 	}
 	else if (project->subPhase==3)
@@ -570,7 +735,7 @@ Order *AICastor::continueProject(Project *project)
 			computeWorkRangeMap();
 			computeWorkAbilityMap();
 			
-			Order *gfbm=findGoodBuilding(typeNum, project->food, 0);
+			Order *gfbm=findGoodBuilding(typeNum, project->food, false);
 			project->timer=timer;
 			if (gfbm)
 			{
@@ -636,8 +801,9 @@ Order *AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
-			printf("%s (deblocking)\n", project->debugName);
 			project->blocking=false;
+			project->critical=false;
+			printf("%s (deblocking)\n", project->debugName);
 		}
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
@@ -689,9 +855,10 @@ Order *AICastor::continueProject(Project *project)
 int AICastor::getFreeWorkers()
 {
 	int sum=0;
+	Unit **myUnits=team->myUnits;
 	for (int i=0; i<1024; i++)
 	{
-		Unit *u=team->myUnits[i];
+		Unit *u=myUnits[i];
 		if (u && u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM && u->typeNum==WORKER && !u->subscribed)
 			sum++;
 	}
@@ -748,7 +915,6 @@ void AICastor::computeNeedPool()
 	
 	needPool=((baseCount<<4)>(7*extendedCount));
 	printf("needPool=%d\n", needPool);
-	lastNeedPoolComputed=timer;
 	
 	computeCanSwim();
 }
@@ -1217,7 +1383,7 @@ void AICastor::computeWheatGrowthMap(int dw, int dh)
 		}
 }
 
-Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, int higherQuality)
+Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 {
 	int w=map->w;
 	int h=map->w;
@@ -1229,77 +1395,134 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, int higherQuality)
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
 	size_t size=w*h;
-	
-	printf("findGoodBuilding(%d)\n", typeNum);
-	
-	// first, we auto calibrate minWork:
-	Uint8 bestWorkScore=0;
-	for (size_t i=0; i<size; i++)
-	{
-		Uint8 work=workAbilityMap[i];
-		if (bestWorkScore<work)
-			bestWorkScore=work;
-	}
-	
-	Uint8 minWork=bestWorkScore/2;
-	if (minWork>30)
-		minWork=30;
-	printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
-	
-	// second, we auto calibrate minWheat:
-	Uint8 bestWheatScore=0;
-	for (size_t i=0; i<size; i++)
-	{
-		Uint8 work=workAbilityMap[i];
-		if (work<minWork)
-			continue;
-		Uint8 wheat=wheatGrowthMap[i];
-		if (bestWheatScore<wheat)
-			bestWheatScore=wheat;
-	}
-	Uint8 minWheat=bestWheatScore/2;
-	if (minWheat>10)
-		minWheat=10;
-	minWheat+=higherQuality;
-	printf(" bestWheatScore=%d, minWheat=%d\n", bestWheatScore, minWheat);
-	
 	Uint32 *mapDiscovered=map->mapDiscovered;
 	Uint32 me=team->me;
+	printf("findGoodBuilding(%d, %d, %d)\n", typeNum, food, critical);
+	
+	// first, we auto calibrate minWork:
+	Uint32 minWork;
+	if (critical)
+		minWork=1;
+	else
+	{
+		Uint8 bestWorkScore=2;
+		for (size_t i=0; i<size; i++)
+		{
+			if ((mapDiscovered[i]&me)==0)
+				continue;
+			Uint8 work=workAbilityMap[i];
+			if (bestWorkScore<work)
+				bestWorkScore=work;
+		}
+		minWork=bestWorkScore/2;
+		if (minWork>30)
+			minWork=30;
+		printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
+	}
+	
+	// second, we auto calibrate wheatLimit:
+	Uint16 wheatLimit;
+	if (food)
+	{
+		if (critical)
+			wheatLimit=2; // TODO: test a very bad map.
+		else
+		{
+			Uint8 maxWheat=0;
+			for (size_t i=0; i<size; i++)
+			{
+				Uint8 work=workAbilityMap[i];
+				if (work<minWork)
+					continue;
+				Uint8 wheat=wheatGrowthMap[i];
+				if (maxWheat<wheat)
+					maxWheat=wheat;
+			}
+			wheatLimit=maxWheat/2;
+			//if (wheatLimit>7)
+			//	wheatLimit=7;
+			printf(" maxWheat=%d, wheatLimit=%d\n", maxWheat, wheatLimit);
+		}
+	}
+	else
+	{
+		Uint8 minWheat=255;
+		for (size_t i=0; i<size; i++)
+		{
+			if ((mapDiscovered[i]&me)==0)
+				continue;
+			Uint8 work=workAbilityMap[i];
+			if (work<minWork)
+				continue;
+			Uint8 wheat=wheatGrowthMap[i];
+			if (minWheat>wheat)
+				minWheat=wheat;
+		}
+		if (critical)
+			wheatLimit=minWheat+7;
+		else
+			wheatLimit=minWheat+4;
+		printf(" minWheat=%d, wheatLimit=%d\n", minWheat, wheatLimit);
+	}
 	
 	// third, we find the best place possible:
 	size_t bestIndex;
 	Sint32 bestScore=0;
+	minWork=(minWork<<2);
+	wheatLimit=(wheatLimit<<2);
+	printf(" minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
+	memset(goodBuildingMap, 0, size);
 	for (size_t i=0; i<size; i++)
 	{
-		//if (   (mapDiscovered[i]&me)==0
-		//	&& (mapDiscovered[(i+bw-1)&(size-1)]&me)==0
-		//	&& (mapDiscovered[(i+(bw<<wDec))&(size-1)]&me)==0
-		//	&& (mapDiscovered[(i+(bw<<wDec)+bw-1)&(size-1)]&me)==0)
-		//	continue;
+		size_t corner0=i;
+		size_t corner1=(i+bw-1)&(size-1);
+		size_t corner2=(i+(bw<<wDec))&(size-1);
+		size_t corner3=(i+(bw<<wDec)+bw-1)&(size-1);
 		
-		Uint8 space=spaceForBuildingMap[i];
+		if (critical
+			&& (mapDiscovered[corner0]&me)==0
+			&& (mapDiscovered[corner1]&me)==0
+			&& (mapDiscovered[corner2]&me)==0
+			&& (mapDiscovered[corner3]&me)==0)
+			continue;
+		
+		Uint8 space=spaceForBuildingMap[corner0];
 		if (space<bw)
 			continue;
+		//goodBuildingMap[i]=1;
 		
-		Uint8 work=workAbilityMap[i];
+		Uint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 		if (work<minWork)
 			continue;
+		//goodBuildingMap[i]=2;
 		
-		Uint8 wheat=wheatGrowthMap[i];
-		if (wheat<minWheat)
+		Uint16 wheat=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
+		if (food)
+		{
+			if (wheat<wheatLimit)
+				continue;
+		}
+		else if (wheat>wheatLimit)
 			continue;
+		//goodBuildingMap[i]=3;
 		
 		Uint8 neighbour=buildingNeighbourMap[i];
 		Uint8 directNeighboursCount=(neighbour>>1)&7;
 		Uint8 farNeighboursCount=(neighbour>>5)&7;
 		if ((neighbour&1)||(directNeighboursCount>1))
 			continue;
+		//goodBuildingMap[i]=4;
 		
 		Sint32 score;
 		if (food)
 			score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 		else
-			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			score=(5120+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+		
+		if ((score>>9)>=255)
+			goodBuildingMap[i]=255;
+		else
+			goodBuildingMap[i]=(score>>9);
 		
 		if (bestScore<score)
 		{
@@ -1311,76 +1534,6 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, int higherQuality)
 	if (bestScore>0)
 	{
 		printf(" found a cool place, score=%d, wheat=%d, work=%d\n", bestScore, wheatGrowthMap[bestIndex], workAbilityMap[bestIndex]);
-		Sint32 x=(bestIndex&map->wMask);
-		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
-		return new OrderCreate(team->teamNumber, x, y, typeNum);
-	}
-	
-	return NULL;
-}
-
-Order *AICastor::findBestBuilding(Sint32 typeNum, bool food)
-{
-	int w=map->w;
-	int h=map->w;
-	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
-	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
-	assert(bw==bh);
-	//int hDec=map->hDec;
-	int wDec=map->wDec;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	size_t size=w*h;
-	
-	printf("findBestBuilding(%d, %d)\n", typeNum, food);
-	
-	Uint32 *mapDiscovered=map->mapDiscovered;
-	Uint32 me=team->me;
-	
-	// We find the best place possible:
-	size_t bestIndex;
-	Sint32 bestScore=0;
-	for (size_t i=0; i<size; i++)
-	{
-		if (   (mapDiscovered[i]&me)==0
-			&& (mapDiscovered[(i+bw-1)&(size-1)]&me)==0
-			&& (mapDiscovered[(i+(bw<<wDec))&(size-1)]&me)==0
-			&& (mapDiscovered[(i+(bw<<wDec)+bw-1)&(size-1)]&me)==0)
-			continue;
-		
-		Uint8 space=spaceForBuildingMap[i];
-		if (space<bw)
-			continue;
-		
-		Uint8 neighbour=buildingNeighbourMap[i];
-		Uint8 wheat=wheatGrowthMap[i];
-		Uint8 work=workAbilityMap[i];
-		Uint8 directNeighboursCount=(neighbour>>1)&7;
-		Uint8 farNeighboursCount=(neighbour>>5)&7;
-		if ((neighbour&1)||(directNeighboursCount>1))
-			continue;
-		
-		Sint32 score;
-		if (food)
-			score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
-		else
-			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
-		
-		if ((score>>7)>255)
-			goodBuildingMap[i]=255;
-		else
-			goodBuildingMap[i]=(score>>7);
-		
-		if (bestScore<score)
-		{
-			bestScore=score;
-			bestIndex=i;
-		}
-	}
-	
-	if (bestScore>0)
-	{
-		printf(" found a place, score=%d, wheat=%d, work=%d\n", bestScore, wheatGrowthMap[bestIndex], workAbilityMap[bestIndex]);
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return new OrderCreate(team->teamNumber, x, y, typeNum);

@@ -40,53 +40,46 @@ public:
 	public:
 		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName)
 		{
-			this->debugName=debugName;
-		
 			this->shortTypeNum=shortTypeNum;
-			food=false;
-			
-			mainWorkers=3;
-			foodWorkers=1;
-			otherWorkers=-1;
-			
-			multipleStart=false;
-			waitFinished=false;
-			finalWorkers=1;
-			
+			this->debugName=debugName;
 			init();
 		}
 		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 mainWorkers, const char* debugName)
 		{
-			this->debugName=debugName;
-		
 			this->shortTypeNum=shortTypeNum;
+			this->debugName=debugName;
+			init();
+			this->mainWorkers=mainWorkers;
+		}
+		void init()
+		{
+			printf("new project(%s)\n", debugName);
+			subPhase=0;;
+			
+			blocking=true;
+			critical=false;
 			food=false;
 			
-			this->mainWorkers=mainWorkers;
-			foodWorkers=-11;
+			mainWorkers=-1;
+			foodWorkers=-1;
 			otherWorkers=-1;
 			
 			multipleStart=false;
 			waitFinished=false;
 			finalWorkers=-1;
 			
-			init();
-		}
-		void init()
-		{
-			blocking=true;
-			subPhase=0;
-			printf("new project(%s)\n", debugName);
 			finished=false;
+			
 			timer=(Uint32)-1;
 		}
 		
+		BuildingType::BuildingTypeShortNumber shortTypeNum;
 		const char *debugName;
 		
 		int subPhase;
 		
 		bool blocking;
-		BuildingType::BuildingTypeShortNumber shortTypeNum;
+		bool critical;
 		bool food;
 		
 		Sint32 mainWorkers;
@@ -121,6 +114,9 @@ public:
 	Order *getOrder(void);
 	
 private:
+	Order *controlSwarms(void);
+	Order *expandFood(void);
+	
 	void addProjects(void);
 	
 	void choosePhase();
@@ -144,8 +140,7 @@ private:
 	void computeHydratationMap();
 	void computeWheatGrowthMap(int dw, int dh);
 	
-	Order *findGoodBuilding(Sint32 typeNum, bool food, int higherQuality);
-	Order *findBestBuilding(Sint32 typeNum, bool food);
+	Order *findGoodBuilding(Sint32 typeNum, bool food, bool critical);
 	
 	void computeRessourcesCluster();
 	
@@ -158,6 +153,9 @@ public:
 	bool canSwim;
 	bool needPool;
 	Uint32 lastNeedPoolComputed;
+	Uint32 computeNeedPoolTimer;
+	Uint32 controlSwarmsTimer;
+	Uint32 expandFoodTimer;
 	
 	bool hydratationMapComputed;
 	

@@ -170,11 +170,7 @@ public:
 	//! This mask represents which team's units and buildings we are allowed to see.
 	bool isFOWDiscovered(int x, int y, int visionMask)
 	{
-#ifdef DBG_ALL_MAP_DISCOVERED
-		return true;
-#else
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
-#endif
 	}
 
 	inline Uint16 getTerrain(int x, int y)
