@@ -313,6 +313,7 @@ Building *Team::findBestConstruction(Unit *unit)
 					newDist-=maxUnitWorking*maxUnitWorking;
 					if (newDist<dist)
 					{
+						unit->destinationPurprose=r;
 						choosen=building;
 						dist=newDist;
 					}
@@ -344,7 +345,10 @@ Building *Team::findBestConstruction(Unit *unit)
 		}
 		
 		if (choosen)
+		{
+			unit->destinationPurprose=r;
 			return choosen;
+		}
 	}
 	
 	// Ehanced ways to find a building has failed, choose any building aviable
@@ -364,6 +368,8 @@ Building *Team::findBestConstruction(Unit *unit)
 		}
 	}
 	
+	if (choosen)
+		unit->destinationPurprose=choosen->neededRessource();
 	return choosen;
 }
 

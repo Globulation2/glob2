@@ -287,10 +287,9 @@ int Engine::run(void)
 			// we get and push ai orders
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
-				if (gui.game.players[i]->ai)
+				if (gui.game.players[i]->ai && gui.game.players[i]->team->isAlive)
 					net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
 			}
-
 
 			//printf ("Engine::bns:%d\n", globalContainer->safe());
 
@@ -301,7 +300,8 @@ int Engine::run(void)
 
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
-				gui.executeOrder(net->getOrder(i));
+				if (gui.game.players[i]->team->isAlive)
+					gui.executeOrder(net->getOrder(i));
 			}
 
 			//printf ("Engine::bne:%d\n", globalContainer->safe());

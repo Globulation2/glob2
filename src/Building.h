@@ -119,6 +119,8 @@ public:
 	void removeSubscribers(void);
 	bool fullWorking(void);
 	bool fullInside(void);
+	void subscribeForConstructionStep(void);
+	void subscribeForFightingStep();
 	void subscribeForWorkingStep(void);
 	void subscribeForInsideStep(void);
 	void swarmStep(void);
