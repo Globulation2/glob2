@@ -2966,17 +2966,12 @@ void GameGUI::drawOverlayInfos(void)
 		{
 
 			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
-			int ray = (int)(sin((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			int ray2 = (int)(cos((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			Uint8 a;
-			/*if (ray < (Mark::DEFAULT_MARK_SHOW_TICKS>>1))
-				a = DrawableSurface::ALPHA_OPAQUE;
-			else
-			{*/
-				//float coef = (float)(it->showTicks)/(float)(Mark::DEFAULT_MARK_SHOW_TICKS);//>>1);
-				a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
-			//}
-
+			int ray = (int)(sin((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
+			//int ray2 = (int)(cos((double)(it->showTicks * 2.0)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
+			ray = (abs(ray) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
+			//ray2 = (abs(ray2) * it->showTicks) / Mark::DEFAULT_MARK_SHOW_TICKS;
+			Uint8 a = DrawableSurface::ALPHA_OPAQUE;
+			
 			int mMax;
 			int szX, szY;
 			int decX, decY;
@@ -2989,9 +2984,12 @@ void GameGUI::drawOverlayInfos(void)
 			x += globalContainer->gfx->getW()-128+14+decX;
 			y += 14+decY;
 			
-			a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
 			globalContainer->gfx->drawCircle(x, y, ray, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawHorzLine(x+ray-4+1, y, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawHorzLine(x-ray-4, y, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawVertLine(x, y+ray-4+1, 8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawVertLine(x, y-ray-4, 8, it->r, it->g, it->b, a);
+			//globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
 
 			// delete old marks
 			if (!(--(it->showTicks)))
