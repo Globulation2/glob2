@@ -35,7 +35,7 @@ public:
 	int initCampain(void);
 	int initCustom(void);
 	void startMultiplayer(SessionConnection *screen);
-	int initMutiplayerHost(void);
+	int initMutiplayerHost(bool shareOnYOG);
 	int initMutiplayerJoin(void);
 	int initMutiplayerYOG(void);
 	int run(void);

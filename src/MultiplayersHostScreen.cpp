@@ -31,12 +31,12 @@
 #include "YOGScreen.h"
 //#include "NetConsts.h"
 
-MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
+MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 
-	multiplayersHost=new MultiplayersHost(sessionInfo, true);
+	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
 	multiplayersJoin=NULL;
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
