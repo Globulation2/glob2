@@ -45,6 +45,7 @@ public:
 		WS_SERVER_START_GAME
 	};
 
+	const char *filename;
 	SDL_RWops *downloadStream;
 	int startDownloadTimeout;
 	
