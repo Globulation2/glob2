@@ -25,7 +25,7 @@
 #include "Marshaling.h"
 #include "GlobalContainer.h"
 #include <float.h>
-
+#include "LogFileManager.h"
 
 BaseTeam::BaseTeam()
 {
@@ -124,6 +124,7 @@ Sint32 BaseTeam::checkSum()
 Team::Team(Game *game)
 :BaseTeam()
 {
+	logFile = globalContainer->logFileManager->getFile("Team.log");
 	assert(game);
 	this->game=game;
 	this->map=&game->map;
@@ -133,6 +134,7 @@ Team::Team(Game *game)
 Team::Team(SDL_RWops *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
 {
+	logFile = globalContainer->logFileManager->getFile("Team.log");
 	assert(game);
 	this->game=game;
 	this->map=&game->map;
@@ -684,18 +686,19 @@ void Team::createLists(void)
 		}
 }
 
-void Team::step(void)
+void Team::intergity(void)
 {
 	for (int id=0; id<1024; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
-		{
-			assert(b->maxUnitInside>=0);
-			assert(b->maxUnitInside<65536);
-		}
+			b->integrity();
 	}
+}
 
+void Team::step(void)
+{
+	intergity();
 	int nbUnits=0;
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
@@ -704,7 +707,10 @@ void Team::step(void)
 			myUnits[i]->step();
 			if (myUnits[i]->isDead)
 			{
-				//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
+				fprintf(logFile, "unit guid=%d deleted\n", myUnits[i]->gid);
+				if (myUnits[i]->attachedBuilding)
+					fprintf(logFile, " attachedBuilding->bgid=%d\n", myUnits[i]->attachedBuilding->gid);
+				
 				delete myUnits[i];
 				myUnits[i]=NULL;
 			}
@@ -741,6 +747,8 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
+		fprintf(logFile, "building guid=%d deleted", building->gid);
+		
 		if (building->type->unitProductionTime)
 			swarms.remove(building);
 		if (building->type->shootingRange)
@@ -761,8 +769,10 @@ void Team::step(void)
 		
 		delete building;
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
-	}
 		
+		fprintf(logFile, "\n");
+	}
+	
 	if (buildingsToBeDestroyed.size())
 		buildingsToBeDestroyed.clear();
 	
@@ -784,7 +794,7 @@ void Team::step(void)
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeForInside.erase(ittemp);
 		}
-
+	
 	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()>0)

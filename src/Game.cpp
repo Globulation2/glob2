@@ -681,10 +681,11 @@ void Game::step(Sint32 localTeam)
 	{
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->step();
+		
 		map.step();
-
+		
 		syncRand();
-
+		
 		if ((stepCounter&31)==0)
 		{
 			map.switchFogOfWar();
@@ -700,11 +701,13 @@ void Game::step(Sint32 localTeam)
 					}
 				}
 		}
+		
 		if ((stepCounter&31)==0)
 		{
 			// TODO : allow visual alliances.
 			renderMiniMap(localTeam, true);
 		}
+		
 		stepCounter++;
 		if (((stepCounter+16)&31)==0)
 		{
@@ -1260,7 +1263,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, WOOD, 1, x+viewportX, y+viewportY));
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, map.getGradient(0, WOOD, 1, x+viewportX, y+viewportY));
 					
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX+map.getW())&(map.getMaskW())));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, ((y+viewportY+map.getH())&(map.getMaskH())));
