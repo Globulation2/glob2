@@ -776,7 +776,7 @@ void Game::step(Sint32 localTeam)
 				}
 		}
 		
-		if ((stepCounter&31)==2)
+		/*if ((stepCounter&31)==2)
 		{
 			renderMiniMap(localTeam, true, 0, 2);
 		}
@@ -784,7 +784,8 @@ void Game::step(Sint32 localTeam)
 		if ((stepCounter&31)==2+16)
 		{
 			renderMiniMap(localTeam, true, 1, 2);
-		}
+		}*/
+		renderMiniMap(localTeam, true, stepCounter&31, 32);
 
 		if ((stepCounter&31)==4)
 		{
@@ -1922,15 +1923,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 						{
 							pcolIndex = map.getUMTerrain((int)minidx,(int)minidy);
 						}
-						/*else if (map.isRessource((int)minidx, (int)minidy, CORN))
-							pcolIndex=4;
-						else if (map.isRessource((int)minidx, (int)minidy, STONE))
-							pcolIndex=5;
-						else if (map.isRessource((int)minidx, (int)minidy, ALGA))
-							pcolIndex=6;
-						else
-							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
-*/
+						
 						// get weight to add
 						if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							pcolAddValue=5;
