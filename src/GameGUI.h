@@ -155,7 +155,6 @@ private:
 	bool putMark;
 	Unit *selUnit;
 	Sint32 selectionUID;
-	bool needRedraw;
 	int typeToBuild;
 	bool showUnitWorkingToBuilding;
 

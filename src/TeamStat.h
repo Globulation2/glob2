@@ -45,6 +45,8 @@ struct TeamStat
 	int totalFoodCapacity;
 	int totalUnitFoodable;
 	int totalUnitFooded;
+	
+	//int totalPrestige;
 };
 
 struct TeamSmoothedStat

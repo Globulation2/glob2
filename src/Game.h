@@ -117,6 +117,8 @@ public:
 	Building *selectedBuilding;
 	
 	Sint32 stepCounter;
+	int totalPrestige;
+	bool totalPrestigeReached;
 	
 public:
 	bool makeIslandsMap(MapGenerationDescriptor &descriptor);

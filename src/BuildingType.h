@@ -106,6 +106,8 @@ public:
 	Sint32 viewingRange;
 	Sint32 regenerationSpeed;
 	
+	Sint32 prestige;
+	
 	// Number to access next upgrade in BuildingsTypes.
 	// It is computed in the second phase of the BuildingsTypes constructor after all building are read from disk.
 	Sint32 nextLevelTypeNum;
@@ -215,7 +217,9 @@ public:
 			"maxUnitStayRange",
 
 			"viewingRange",
-			"regenerationSpeed"
+			"regenerationSpeed",
+			
+			"prestige",
 		};
 		if (size)
 			*size=(sizeof(vars)/sizeof(char *));

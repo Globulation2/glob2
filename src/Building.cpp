@@ -32,9 +32,14 @@ Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32
 
 Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsTypes *types)
 {
+	// identity
+	UID=uid;
+	owner=team;
+	
 	// type
 	this->typeNum=typeNum;
 	type=types->buildingsTypes[typeNum];
+	owner->prestige+=type->prestige;
 
 	// construction state
 	buildingState=ALIVE;
@@ -54,10 +59,6 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	maxUnitWorkingPreferred=1;
 	lastInsideSubscribe=0;
 	lastWorkingSubscribe=0;
-
-	// identity
-	UID=uid;
-	owner=team;
 
 	// position
 	posX=x;
@@ -158,6 +159,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	// type
 	typeNum=SDL_ReadBE32(stream);
 	type=types->buildingsTypes[typeNum];
+	owner->prestige+=type->prestige;
 	
 	if (versionMinor>=11)
 		seenByMask=SDL_ReadBE32(stream);
@@ -425,8 +427,10 @@ void Building::cancelConstruction(void)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 	
+	owner->prestige-=type->prestige;
 	typeNum=recoverTypeNum;
 	type=recoverType;
+	owner->prestige+=type->prestige;
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -504,6 +508,7 @@ void Building::update(void)
 			if (!type->isVirtual)
 				owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
 			buildingState=DEAD;
+			owner->prestige-=type->prestige;
 			owner->buildingsToBeDestroyed.push_front(UIDtoID(UID));
 		}
 		else
@@ -686,10 +691,12 @@ void Building::update(void)
 			for(i=0; i<NB_RESSOURCES; i++)
 				ressources[i]-=type->maxRessource[i];
 			
+			owner->prestige-=type->prestige;
 			typeNum=type->nextLevelTypeNum;
 			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
 			assert(constructionResultState!=NO_CONSTRUCTION);
 			constructionResultState=NO_CONSTRUCTION;
+			owner->prestige+=type->prestige;
 			
 			// we don't need any worker any more
 			
@@ -776,6 +783,7 @@ bool Building::tryToBuildingSiteRoom(void)
 
 	if (isRoom)
 	{
+		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
 			float destructionRatio = (float)hp/(float)type->hpMax;
@@ -793,15 +801,18 @@ bool Building::tryToBuildingSiteRoom(void)
 				ressources[i]=iVal;
 			}
 		}
-			
+		
 		if (!type->isVirtual)
 		{
 			owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
 			owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
 		}
 
+		
+		owner->prestige-=type->prestige;
 		typeNum=targetLevelTypeNum;
 		type=nextBt;
+		owner->prestige+=type->prestige;
 
 		buildingState=ALIVE;
 

@@ -78,6 +78,8 @@ void Game::init()
 	selectedBuilding=NULL;
 	
 	stepCounter=0;
+	totalPrestige=0;
+	totalPrestigeReached=false;
 }
 
 void Game::setBase(const SessionInfo *initial)
@@ -399,7 +401,11 @@ bool Game::load(SDL_RWops *stream)
 			players[i]=NULL;
 		}
 	session.numberOfPlayer=0;
-		
+	
+	// clear prestige
+	totalPrestige=0;
+	totalPrestigeReached=false;
+	
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
 	if (!tempSessionInfo.load(stream))
@@ -604,6 +610,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 void Game::wonStep(void)
 {
 	int i,j;
+	totalPrestige=0;
 	for (i=0; i<session.numberOfTeam; i++)
 	{
 		bool isOtherAlive=false;
@@ -613,7 +620,11 @@ void Game::wonStep(void)
 				isOtherAlive=true;
 		}
 		teams[i]->hasWon=!isOtherAlive;
+		totalPrestige+=teams[i]->prestige;
 	}
+	// zzz be generic here
+	if (totalPrestige>=1000)
+		totalPrestigeReached=true;
 }
 
 void Game::scriptStep(void)
