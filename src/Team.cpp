@@ -585,7 +585,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			Building *b=(*bi);
 			int buildingDist;
-			if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<timeLeft && buildingDist<minDist)
+			if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<timeLeft && buildingDist<minDist)
 			{
 				choosen=b;
 				minDist=buildingDist;
@@ -645,7 +645,7 @@ Building *Team::findNearestFood(Unit *unit)
 						{
 							int h=(*bi)->aviableHappynessLevel();
 							int dist;
-							if (h>maxHappyness[ti] && map->buildingAviable(*bi, canSwim, x, y, &dist))
+							if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
 							{
 								maxHappyness[ti]=h;
 								if (h>enemyHappyness)
@@ -691,7 +691,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (b->aviableHappynessLevel()>=enemyHappyness)
 			{
 				int buildingDist;
-				if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
+				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 				{
 					choosen=b;
 					minDist=buildingDist;
@@ -755,7 +755,7 @@ Building *Team::findNearestFood(Unit *unit)
 					if (b->aviableHappynessLevel()>=enemyHappyness)
 					{
 						int buildingDist;
-						if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
+						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 						{
 							choosen=b;
 							minDist=buildingDist;
@@ -786,9 +786,9 @@ Building *Team::findNearestFood(Unit *unit)
 						if (b->aviableHappynessLevel()>=enemyHappyness)
 						{
 							int buildingDist;
-							if (map->buildingAviable(b, canSwim, x, y, &buildingDist))
+							if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
 							{
-								if (/*map->buildingAviable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
+								if (/*map->buildingAvailable(b, canSwim, x, y, &buildingDist) &&*/ buildingDist<minDist)
 								{
 									choosen=b;
 									minDist=buildingDist;
@@ -830,7 +830,7 @@ Building *Team::findBestFoodable(Unit *unit)
 			if (b->neededRessource(r))
 			{
 				int buildingDist;
-				if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
@@ -855,14 +855,14 @@ Building *Team::findBestFoodable(Unit *unit)
 		if (ri==CORN || ri>=HAPPYNESS_BASE)
 		{
 			int ressourceDist;
-			if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
+			if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 				for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 				{
 					Building *b=(*bi);
 					if (b->neededRessource(ri))
 					{
 						int buildingDist;
-						if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 						{
 							double newScore=(double)(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
 							if (newScore<score)
@@ -902,7 +902,7 @@ Building *Team::findBestFillable(Unit *unit)
 			if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
 			{
 				int buildingDist;
-				if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
 					double newScore=(double)(buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
 					if (newScore<score)
@@ -926,7 +926,7 @@ Building *Team::findBestFillable(Unit *unit)
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 	{
 		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
+		if (map->ressourceAvailable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
@@ -934,7 +934,7 @@ Building *Team::findBestFillable(Unit *unit)
 				{
 					int need=b->neededRessource(ri);
 					int buildingDist;
-					if (need && map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+					if (need && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						double newScore=(double)(buildingDist+ressourceDist)/((double)(b->maxUnitWorking-b->unitsWorking.size())*(double)need);
 						fprintf(logFile, "[%d] newScore=%f=f(%d, %d, %d, %d, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
@@ -1014,7 +1014,7 @@ Building *Team::findBestFillable(Unit *unit)
 		int buildingDist;
 		if ((sendRessourceMask & allForeignReceiveRessourceMask)
 			&& (receiveRessourceMask & allForeignSendRessourceMask)
-			&& map->buildingAviable(*bi, canSwim, x, y, &buildingDist)
+			&& map->buildingAvailable(*bi, canSwim, x, y, &buildingDist)
 			&& (buildingDist<timeLeft))
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
@@ -1028,7 +1028,7 @@ Building *Team::findBestFillable(Unit *unit)
 						int foreignBuildingDist;
 						if ((sendRessourceMask & foreignReceiveRessourceMask)
 							&& (receiveRessourceMask & foreignSendRessourceMask)
-							&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist)
+							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
 							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
 						{
 							double newScore=(double)(buildingDist+foreignBuildingDist)/(double)((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
@@ -1097,7 +1097,7 @@ Building *Team::findBestZonable(Unit *unit)
 		{
 			Building *b=(*bi);
 			int buildingDist;
-			if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+			if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 			{
 				double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
 				if (newScore<score)

@@ -359,9 +359,9 @@ public:
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 	
-	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
-	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
-	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
+	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
+	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
 	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{
@@ -383,7 +383,7 @@ public:
 	bool updateLocalRessources(Building *building, bool canSwim); 
 	void expandLocalGradient(Uint8 *gradient);
 	
-	bool buildingAviable(Building *building, bool canSwim, int x, int y, int *dist);
+	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
@@ -394,12 +394,12 @@ public:
 	
 protected:
 	// computationals pathfinding statistics:
-	int ressourceAviableCount[16][MAX_RESSOURCES];
-	int ressourceAviableCountFast[16][MAX_RESSOURCES];
-	int ressourceAviableCountFar[16][MAX_RESSOURCES];
-	int ressourceAviableCountSuccess[16][MAX_RESSOURCES];
-	int ressourceAviableCountFailureBase[16][MAX_RESSOURCES];
-	int ressourceAviableCountFailureOvercount[16][MAX_RESSOURCES];
+	int ressourceAvailableCount[16][MAX_RESSOURCES];
+	int ressourceAvailableCountFast[16][MAX_RESSOURCES];
+	int ressourceAvailableCountFar[16][MAX_RESSOURCES];
+	int ressourceAvailableCountSuccess[16][MAX_RESSOURCES];
+	int ressourceAvailableCountFailureBase[16][MAX_RESSOURCES];
+	int ressourceAvailableCountFailureOvercount[16][MAX_RESSOURCES];
 	
 	int pathToRessourceCountTot;
 	int pathToRessourceCountSuccess;
@@ -445,29 +445,29 @@ protected:
 	int globalBuildingGradientUpdate;
 	int globalBuildingGradientUpdateLocked;
 	
-	int buildingAviableCountTot;
+	int buildingAvailableCountTot;
 	
-	int buildingAviableCountClose;
-	int buildingAviableCountCloseSuccessFast;
-	int buildingAviableCountCloseSuccessAround;
-	int buildingAviableCountCloseSuccessUpdate;
-	int buildingAviableCountCloseSuccessUpdateAround;
-	int buildingAviableCountCloseFailureLocked;
-	int buildingAviableCountCloseFailureEnd;
+	int buildingAvailableCountClose;
+	int buildingAvailableCountCloseSuccessFast;
+	int buildingAvailableCountCloseSuccessAround;
+	int buildingAvailableCountCloseSuccessUpdate;
+	int buildingAvailableCountCloseSuccessUpdateAround;
+	int buildingAvailableCountCloseFailureLocked;
+	int buildingAvailableCountCloseFailureEnd;
 	
-	int buildingAviableCountIsFar;
-	int buildingAviableCountFar;
-	int buildingAviableCountFarNew;
-	int buildingAviableCountFarNewSuccessFast;
-	int buildingAviableCountFarNewSuccessClosely;
-	int buildingAviableCountFarNewFailureLocked;
-	int buildingAviableCountFarNewFailureVirtual;
-	int buildingAviableCountFarNewFailureEnd;
-	int buildingAviableCountFarOld;
-	int buildingAviableCountFarOldSuccessFast;
-	int buildingAviableCountFarOldSuccessAround;
-	int buildingAviableCountFarOldFailureLocked;
-	int buildingAviableCountFarOldFailureEnd;
+	int buildingAvailableCountIsFar;
+	int buildingAvailableCountFar;
+	int buildingAvailableCountFarNew;
+	int buildingAvailableCountFarNewSuccessFast;
+	int buildingAvailableCountFarNewSuccessClosely;
+	int buildingAvailableCountFarNewFailureLocked;
+	int buildingAvailableCountFarNewFailureVirtual;
+	int buildingAvailableCountFarNewFailureEnd;
+	int buildingAvailableCountFarOld;
+	int buildingAvailableCountFarOldSuccessFast;
+	int buildingAvailableCountFarOldSuccessAround;
+	int buildingAvailableCountFarOldFailureLocked;
+	int buildingAvailableCountFarOldFailureEnd;
 	
 	int pathfindForbiddenCount;
 	int pathfindForbiddenCountSuccess;

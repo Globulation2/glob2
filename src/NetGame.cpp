@@ -361,7 +361,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	else
 	{
 		totalSize+=12+order->getDataLength();
-		fprintf(logFile, " resendAviable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
+		fprintf(logFile, " resendAvailable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
 	}
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
@@ -1029,9 +1029,9 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (players[pi]->type==Player::P_IP && dropMask&(1<<pi))
 				{
-					lastAviableUStep[player][pi]=getUint32(data, l);
+					lastAvailableUStep[player][pi]=getUint32(data, l);
 					l+=4;
-					fprintf(logFile, "  lastAviableUStep[%d][%d]=%d.\n", player, pi, lastAviableUStep[player][pi]);
+					fprintf(logFile, "  lastAvailableUStep[%d][%d]=%d.\n", player, pi, lastAvailableUStep[player][pi]);
 				}
 		}
 		else if (orderType==ORDER_REQUESTING_AWAY)
@@ -1108,7 +1108,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			fprintf(logFile, "  gameCheckSum=%x\n", order->gameCheckSum);
 			
 			if (players[player]->type==Player::P_LOST_DROPPING && dropState==DS_ExchangingOrders)
-				lastAviableUStep[localPlayerNumber][player]=lastUsableUStepReceivedFromHim(player);
+				lastAvailableUStep[localPlayerNumber][player]=lastUsableUStepReceivedFromHim(player);
 		}
 		assert(l<=size);
 	}
@@ -1196,7 +1196,7 @@ bool NetGame::stepReadyToExecute(void)
 		{
 			lastExecutedUStep[localPlayerNumber]=executeUStep-1;
 			for (int pi=0; pi<numberOfPlayer; pi++)
-				lastAviableUStep[localPlayerNumber][pi]=lastUsableUStepReceivedFromHim(pi);
+				lastAvailableUStep[localPlayerNumber][pi]=lastUsableUStepReceivedFromHim(pi);
 			int n=0;
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if ((players[pi]->type==Player::P_IP && !players[pi]->quitting) || players[pi]->type==Player::P_LOCAL)
@@ -1235,9 +1235,9 @@ bool NetGame::stepReadyToExecute(void)
 					for (int pbi=0; pbi<numberOfPlayer; pbi++)
 						if (players[pbi]->type==Player::P_LOST_DROPPING)
 						{
-							if (lastAviableUStep[pai][pbi]<maxLastExecutedUStep)
+							if (lastAvailableUStep[pai][pbi]<maxLastExecutedUStep)
 								hasAllOrder[pai][pbi]=false;
-							fprintf(logFile, " lastAviableUStep[%d][%d]=%d\n", pai, pbi, lastAviableUStep[pai][pbi]);
+							fprintf(logFile, " lastAvailableUStep[%d][%d]=%d\n", pai, pbi, lastAvailableUStep[pai][pbi]);
 							fprintf(logFile, " hasAllOrder[%d][%d]=%d\n", pai, pbi, hasAllOrder[pai][pbi]);
 						}
 			bool sentPacketToPlayer[32];
@@ -1246,10 +1246,10 @@ bool NetGame::stepReadyToExecute(void)
 			for (int pbi=0; pbi<numberOfPlayer; pbi++)
 				if (players[pbi]->type==Player::P_LOST_DROPPING)
 				{
-					Uint32 resendingUStep=lastAviableUStep[localPlayerNumber][pbi]+1;
+					Uint32 resendingUStep=lastAvailableUStep[localPlayerNumber][pbi]+1;
 					for (int pai=0; pai<numberOfPlayer; pai++)
 						if ((players[pai]->type==Player::P_IP && !players[pai]->quitting) || players[pai]->type==Player::P_LOCAL)
-							if (lastAviableUStep[pai][pbi]>=resendingUStep)
+							if (lastAvailableUStep[pai][pbi]>=resendingUStep)
 							{
 								fprintf(logFile, " we request player=%d to send us order ustep=%d of player=%d\n", pai, resendingUStep, pbi);
 								sendRequestingDeadAwayOrder(pbi, pai, resendingUStep);

@@ -378,7 +378,7 @@ int Engine::run(void)
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute=true;
 		Sint32 ticksSpentInComputation=40;
-		Sint32 computationAviableTicks=0;
+		Sint32 computationAvailableTicks=0;
 		Sint32 ticksToDelayInside=0;
 		
 		startTick=SDL_GetTicks();
@@ -427,7 +427,7 @@ int Engine::run(void)
 							net->pushOrder(gui.game.players[i]->ai->getOrder(gui.gamePaused), i);
 					
 					ticksToDelayInside=net->ticksToDelayInside();
-					ticksDelayedInside=ticksToDelayInside+computationAviableTicks/2;
+					ticksDelayedInside=ticksToDelayInside+computationAvailableTicks/2;
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
@@ -463,17 +463,17 @@ int Engine::run(void)
 				endTick=SDL_GetTicks();
 				Sint32 spentTicks=endTick-startTick;
 				ticksSpentInComputation=spentTicks-ticksDelayedInside;
-				computationAviableTicks=40-ticksSpentInComputation;
-				Sint32 ticksToWait=computationAviableTicks+ticksToDelayInside;
+				computationAvailableTicks=40-ticksSpentInComputation;
+				Sint32 ticksToWait=computationAvailableTicks+ticksToDelayInside;
 				if (ticksToWait>0)
 					SDL_Delay(ticksToWait);
 				startTick=SDL_GetTicks();
 				
-				net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
+				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
 				gui.setCpuLoad(ticksSpentInComputation);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
-					Sint32 i=computationAviableTicks;
+					Sint32 i=computationAvailableTicks;
 					if (i<0)
 						i=0;
 					else if (i>=40)

@@ -136,7 +136,7 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	}
 	case ORDER_NO_MORE_ORDER_AVIABLES:
 	{
-		return new NoMoreOrdersAviable(netData+1, netDataLength-1);
+		return new NoMoreOrdersAvailable(netData+1, netDataLength-1);
 	}
 	case ORDER_PLAYER_QUIT_GAME :
 	{
@@ -872,18 +872,18 @@ RequestingDeadAwayOrder::RequestingDeadAwayOrder(const Uint8 *data, int dataLeng
 	assert(good);
 }
 
-RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAviableStep)
+RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAvailableStep)
 {
 	this->player=player;
 	this->missingStep=missingStep;
-	this->lastAviableStep=lastAviableStep;
+	this->lastAvailableStep=lastAvailableStep;
 }
 
 Uint8 *RequestingDeadAwayOrder::getData(void)
 {
 	addUint32(data, this->player, 0);
 	addUint32(data, this->missingStep, 4);
-	addUint32(data, this->lastAviableStep, 8);
+	addUint32(data, this->lastAvailableStep, 8);
 	return data;
 }
 
@@ -894,16 +894,16 @@ bool RequestingDeadAwayOrder::setData(const Uint8 *data, int dataLength)
 
 	this->player=getUint32(data, 0);
 	this->missingStep=getUint32(data, 4);
-	this->lastAviableStep=getUint32(data, 8);
+	this->lastAvailableStep=getUint32(data, 8);
 	
 	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
 
-// NoMoreOrdersAviable code
+// NoMoreOrdersAvailable code
 
-NoMoreOrdersAviable::NoMoreOrdersAviable(const Uint8 *data, int dataLength)
+NoMoreOrdersAvailable::NoMoreOrdersAvailable(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==8);
@@ -911,26 +911,26 @@ NoMoreOrdersAviable::NoMoreOrdersAviable(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-NoMoreOrdersAviable::NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep)
+NoMoreOrdersAvailable::NoMoreOrdersAvailable(Sint32 player, Sint32 lastAvailableStep)
 {
 	this->player=player;
-	this->lastAviableStep=lastAviableStep;
+	this->lastAvailableStep=lastAvailableStep;
 }
 
-Uint8 *NoMoreOrdersAviable::getData(void)
+Uint8 *NoMoreOrdersAvailable::getData(void)
 {
 	addUint32(data, this->player, 0);
-	addUint32(data, this->lastAviableStep, 4);
+	addUint32(data, this->lastAvailableStep, 4);
 	return data;
 }
 
-bool NoMoreOrdersAviable::setData(const Uint8 *data, int dataLength)
+bool NoMoreOrdersAvailable::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
 
 	this->player=getUint32(data, 0);
-	this->lastAviableStep=getUint32(data, 4);
+	this->lastAvailableStep=getUint32(data, 4);
 	
 	memcpy(this->data, data, dataLength);
 	
