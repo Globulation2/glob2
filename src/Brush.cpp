@@ -155,6 +155,32 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 	return (brushes[figure][y*getBrushWidth(figure)+x] != 0);
 }
 
+void BrushAccumulator::applyBrush(const BrushApplication &brush)
+{
+	// extend coordinates
+	if (applications.size() == 0)
+	{
+		//std::cout << "BrushAccumulator::applyBrush : new brush" << std::endl;
+		// first call, set coordinates
+		dim.minX = brush.x - BrushTool::getBrushDimX(brush.figure);
+		dim.maxX = brush.x + BrushTool::getBrushDimX(brush.figure) + 1;
+		dim.minY = brush.y - BrushTool::getBrushDimY(brush.figure);
+		dim.maxY = brush.y + BrushTool::getBrushDimY(brush.figure) + 1;
+	}
+	else
+	{
+		//std::cout << "BrushAccumulator::applyBrush : extend from " << getAreaSurface();
+		// other call, extend
+		dim.minX = std::min(dim.minX, brush.x - BrushTool::getBrushDimX(brush.figure));
+		dim.maxX = std::max(dim.maxX, brush.x + BrushTool::getBrushDimX(brush.figure) + 1);
+		dim.minY = std::min(dim.minY, brush.y - BrushTool::getBrushDimY(brush.figure));
+		dim.maxY = std::max(dim.maxY, brush.y + BrushTool::getBrushDimY(brush.figure) + 1);
+		//std::cout << " to " << getAreaSurface() << std::endl;
+	}
+	// and add to vector
+	applications.push_back(brush);
+}
+
 bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim)
 {
 	assert(array);
@@ -162,25 +188,16 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 
 	if (applications.size() > 0)
 	{
-		// Get dimensions
-		dim->minX = applications[0].x - BrushTool::getBrushDimX(applications[0].figure);
-		dim->maxX = applications[0].x + BrushTool::getBrushDimX(applications[0].figure) + 1;
-		dim->minY = applications[0].y - BrushTool::getBrushDimY(applications[0].figure);
-		dim->maxY = applications[0].y + BrushTool::getBrushDimY(applications[0].figure) + 1;
-		for (size_t i=1; i<applications.size(); ++i)
-		{
-			dim->minX = std::min<int>(dim->minX, applications[i].x - BrushTool::getBrushDimX(applications[i].figure));
-			dim->maxX = std::max<int>(dim->maxX, applications[i].x + BrushTool::getBrushDimX(applications[i].figure) + 1);
-			dim->minY = std::min<int>(dim->minY, applications[i].y - BrushTool::getBrushDimY(applications[i].figure));
-			dim->maxY = std::max<int>(dim->maxY, applications[i].y + BrushTool::getBrushDimY(applications[i].figure) + 1);
-		}
+		// get dimensions
+		*dim = this->dim;
 		
-		// Fill array
-		int arrayH = dim->maxY-dim->minY;
-		int arrayW = dim->maxX-dim->minX;
+		// set array size
+		int arrayH = this->dim.maxY - this->dim.minY;
+		int arrayW = this->dim.maxX - this->dim.minX;
 		size_t size = static_cast<size_t>(arrayW * arrayH);
 		array->resize(size, false);
 		
+		// fill array
 		for (size_t i=0; i<applications.size(); ++i)
 		{
 			int realXMin = applications[i].x - BrushTool::getBrushDimX(applications[i].figure);
@@ -188,11 +205,11 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 			for (int y=0; y<BrushTool::getBrushHeight(applications[i].figure); y++)
 			{
 				int realY = y + realYMin;
-				int arrayY = realY - dim->minY;
+				int arrayY = realY - this->dim.minY;
 				for (int x=0; x<BrushTool::getBrushWidth(applications[i].figure); x++)
 				{
 					int realX = x + realXMin;
-					int arrayX = realX - dim->minX;
+					int arrayX = realX - this->dim.minX;
 					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
 					if (BrushTool::getBrushValue(applications[i].figure, x, y))
 						array->set(arrayPos, true);
@@ -202,4 +219,9 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 		return true;
 	}
 	return false;
+}
+
+unsigned BrushAccumulator::getAreaSurface(void)
+{
+	return (dim.maxX - dim.minX) * (dim.maxY - dim.minY);
 }

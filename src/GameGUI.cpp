@@ -257,14 +257,22 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::brushStep(int mx, int my)
 {
+	// if we have an area over 32x32, which mean over 128 bytes, send it
+	if (brushAccumulator.getAreaSurface() > 32*32)
+	{
+		sendBrushOrders();
+	}
+	// we add brush to accumulator
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	int fig = brush.getFigure();
-	brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig));
+	// we get coordinates
 	int startX = mapX-BrushTool::getBrushDimX(fig);
 	int startY = mapY-BrushTool::getBrushDimY(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
+	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
 		for (int y=startY; y<startY+height; y++)
@@ -295,6 +303,21 @@ void GameGUI::brushStep(int mx, int my)
 	}
 	else
 		assert(false);
+}
+
+void GameGUI::sendBrushOrders(void)
+{
+	if (brushAccumulator.getApplicationCount() > 0)
+	{
+		//std::cout << "GameGUI::sendBrushOrders : sending application of size " << brushAccumulator.getAreaSurface()/8 << std::endl;
+		if (brushType == FORBIDDEN_BRUSH)
+			orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
+		else if (brushType == GUARD_AREA_BRUSH)
+			orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
+		else
+			assert(false);
+		brushAccumulator.clear();
+	}
 }
 
 void GameGUI::dragStep(void)
@@ -899,16 +922,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			// We send the order
 			else if (selectionMode==BRUSH_SELECTION)
 			{
-				if (brushAccumulator.applications.size() > 0)
-				{
-					if (brushType == FORBIDDEN_BRUSH)
-						orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, brush.getType(), &brushAccumulator));
-					else if (brushType == GUARD_AREA_BRUSH)
-						orderQueue.push_back(new OrderAlterateGuardArea(localTeamNo, brush.getType(), &brushAccumulator));
-					else
-						assert(false);
-					brushAccumulator.applications.clear();
-				}
+				sendBrushOrders();
 			}
 	
 			miniMapPushed=false;
