@@ -9,9 +9,9 @@ int main(int argc, char *argv[])
 {
 	bool success=true;
 	
-	printf("Openning a (server)socket at port 7008...\n");
+	printf("Openning a (server)socket at port 7009...\n");
 	UDPsocket serverSocket;
-	serverSocket=SDLNet_UDP_Open(7008);
+	serverSocket=SDLNet_UDP_Open(7009);
 	
 	if (!serverSocket)
 	{
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 		printf("The (another)socket is open.\n");
 	
 	ip.host=INADDR_BROADCAST;
-	ip.port=SDL_SwapBE16(7008);
+	ip.port=SDL_SwapBE16(7009);
 	printf("broadcasting adress=%d.%d.%d.%d\n", (ip.host>>24)&0xFF, (ip.host>>16)&0xFF, (ip.host>>8)&0xFF, (ip.host>>0)&0xFF);
 	
 	printf("Creating data...\n");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 		printf("Succeded to send the packet.\n");
 	
 	
-	printf("Binding the (another)socket to the broadcasting address and port 7008...\n");
+	printf("Binding the (another)socket to the broadcasting address and port 7009...\n");
 	channel=SDLNet_UDP_Bind(socket, 1, &ip);
 	
 	if (channel==-1)

@@ -21,7 +21,10 @@
 #ifndef __LAN_BROADCAST_H
 #define __LAN_BROADCAST_H
 
-#include "Header.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 #ifdef macintosh
 #define DISABLE_GLOB_LAN_BROADCAST
@@ -61,15 +64,15 @@ class LANBroadcast
 public:
 	LANBroadcast();
 	~LANBroadcast();
-	bool enable(Uint16 port);
+	bool enable(unsigned short port);
 	bool send(int v);
 	bool socketReady(void);
 	//! fill v, gameName, and serverNickName, if not NULL, with last received broadcast response.
 	bool receive(int *v, char gameName[32], char serverNickName[32]);
-	Uint32 getSenderIP();
+	unsigned int getSenderIP();
 
 private:
-	Uint16 port;
+	unsigned short port;
 
 
 #ifndef DISABLE_GLOB_LAN_BROADCAST
