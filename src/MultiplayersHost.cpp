@@ -925,9 +925,9 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		return;
 	}
 
-	int channel=getFreeChannel();
-	channel=SDLNet_UDP_Bind(socket, channel, &ip);
-	if (channel!=-1)
+	//int channel=getFreeChannel();
+	//channel=SDLNet_UDP_Bind(socket, channel, &ip);
+	//if (channel!=-1)
 	{
 		UDPpacket *packet=SDLNet_AllocPacket(68);
 		
@@ -965,7 +965,8 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		bool sucess;
 		
 		packet->address=ip;
-		packet->channel=channel;
+		//packet->channel=channel;
+		packet->channel=-1;
 		
 		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
 		// Notice that we can choose between giving a "channel", or the ip.
@@ -982,10 +983,10 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
 	}
-	else
-	{
-		fprintf(logFile, "broad:can't bind (socket=%x).\n", (int)socket);
-	}
+	//else
+	//{
+	//	fprintf(logFile, "broad:can't bind (socket=%x).\n", (int)socket);
+	//}
 }
 
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)

@@ -190,10 +190,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		{
 			Message m;
 			strncpy(m.text, (char *)data+4, 256);
-			if (m.text[size-4]!=0)
-				printf("YOG::warning, non-zero ending string!\n");
-			assert(size-4<256);
-			m.text[size-4]=0;
+			m.text[255]=0;
 			m.textLength=strlen(m.text)+1;
 			//printf("client:%s\n", s);
 			m.messageID=messageID;

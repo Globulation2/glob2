@@ -679,10 +679,10 @@ void MultiplayersJoin::receiveTime()
 						}
 						
 						serverIP.host=it->ip;
-						//serverIP.port=SDL_SwapBE16(SERVER_PORT);
+						serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
-						fprintf(logFile, "Trying NAT. serverIP.host=(%d.%d.%d.%d)(%s)\n", (it->ip>>0)&&0xFF, (it->ip>>8)&&0xFF, (it->ip>>16)&&0xFF, (it->ip>>24)&&0xFF, s);
+						fprintf(logFile, "Trying NAT. serverIP.host=(%x)(%d.%d.%d.%d:%d)(%s)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port, s);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
@@ -1029,7 +1029,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
 		char *s=SDLNet_ResolveIP(&serverIP);
-		fprintf(logFile, "succeded to send presence request packet to host=(%x)(%s) port=(%d)\n", serverIP.host, s, serverIP.port);
+		fprintf(logFile, "succeded to send presence request packet to host=(%x)(%d.%d.%d.%d:%d)(%s)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port, s);
 	}
 	else
 	{
@@ -1344,7 +1344,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	else
 	{
 		Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
-		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)%0xFF, (lip>>8)%0xFF, (lip>>16)%0xFF, (lip>>24)%0xFF);
+		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)&0xFF, (lip>>8)&0xFF, (lip>>16)&0xFF, (lip>>24)&0xFF);
 	}
 	serverIP=yogGameInfo->ip;
 	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);
