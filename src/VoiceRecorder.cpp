@@ -32,10 +32,13 @@
 #ifdef WIN32
 	// Windows audio input include
 	#undef AUDIO_RECORDER_OSS
+	#define STOP_RECORDING_TIMEOUT 3000
 #endif
 
 #ifdef macintosh
 	// Mac OS X stuff here
+	#undef AUDIO_RECORDER_OSS
+	#define STOP_RECORDING_TIMEOUT 3000
 #endif
 
 #ifdef AUDIO_RECORDER_OSS
