@@ -22,6 +22,7 @@
 #define __MULTIPLAYER_CONNECTED_SCREEN_H
 
 #include "PreparationGui.h"
+#include "MultiplayersJoin.h"
 
 class MultiplayersConnectedScreen:public Screen
 {
@@ -32,6 +33,9 @@ public:
 		STARTED=11
 	};
 	MultiplayersJoin *multiplayersJoin;
+
+private:
+	int timeCounter;
 
 public:
 	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);
