@@ -76,6 +76,7 @@ namespace GAGCore
 		clipRect.w = 0;
 		clipRect.h = 0;
 		flags = 0;
+		lockCount = 0;
 	}
 	
 	void DrawableSurface::loadImage(const char *name)
@@ -1107,8 +1108,6 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 	
-		atexit(SDL_Quit);
-		
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 		SDL_EnableUNICODE(1);
 		
@@ -1117,9 +1116,11 @@ namespace GAGCore
 	
 	GraphicContext::~GraphicContext(void)
 	{
-		fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
-		
 		TTF_Quit();
+		SDL_Quit();
+		surface = NULL;
+		
+		fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 	
 	bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)

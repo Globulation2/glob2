@@ -24,6 +24,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iostream>
 
 namespace GAGCore
 {
@@ -99,11 +100,7 @@ namespace GAGCore
 		//! Flags, can be a combination of ResolutionFlags
 		Uint32 flags;
 		
-		//! lock only if necessary
-		virtual void lock(void) { if (glSDL_MustLock(surface)) SDL_LockSurface(surface); }
-		//! unlock only if necessary
-		virtual void unlock(void) { if (glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
-		
+		int lockCount;
 	public:
 		enum GraphicContextType
 		{
@@ -154,6 +151,10 @@ namespace GAGCore
 		virtual void popFontStyle(Font *font);
 		virtual void nextFrame(void) { }
 		virtual void *getPixelPointer(void)  { return surface->pixels; }
+		//! lock only if necessary
+		virtual void lock(void) { if (glSDL_MustLock(surface)) SDL_LockSurface(surface); }
+		//! unlock only if necessary
+		virtual void unlock(void) { if (glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
 	};
 	
 	class GraphicContext:public DrawableSurface
@@ -164,11 +165,6 @@ namespace GAGCore
 	protected:
 		int minW, minH;
 				
-		//! lock only if necessary, we do not lock GL graphic context
-		virtual void lock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_LockSurface(surface); }
-		//! unlock only if necessary, we do not lock GL graphic context
-		virtual void unlock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
-	
 	public:
 		GraphicContext();
 		virtual ~GraphicContext(void);
@@ -184,6 +180,11 @@ namespace GAGCore
 	
 		virtual void nextFrame(void);
 		virtual void printScreen(const char *filename);
+		
+		//! lock only if necessary, we do not lock GL graphic context
+		virtual void lock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_LockSurface(surface); }
+		//! unlock only if necessary, we do not lock GL graphic context
+		virtual void unlock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
 	};
 	
 	union Color32

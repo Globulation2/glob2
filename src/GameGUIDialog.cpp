@@ -53,7 +53,7 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
 :OverlayScreen(globalContainer->gfx, 300, canContinue ? 150 : 100)
 {
-	addWidget(new Text(10, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", title, 280));
+	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
 	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
 		addWidget(new TextButton(10, 100, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
