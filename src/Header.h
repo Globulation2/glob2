@@ -24,6 +24,10 @@
 #define MAX_SINT32 0x7FFFFFFF
 #endif
 
+#ifndef INADDR_BROADCAST
+#define INADDR_BROADCAST 0xFFFFFFFF
+#endif
+
 #ifdef WIN32
 #	include <windows.h>
 #	include <SDL.h>
