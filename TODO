@@ -25,6 +25,10 @@ Pathfindig:
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
 
+Optimisation efficacité:
+- Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
+- Les unités qui s'allouent à un drapeau le font une par une (trop lent)
+
 Minimap:
 - Il faudrait si possible augmenter la visibilité des fruits.
 
