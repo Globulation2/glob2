@@ -3,8 +3,10 @@ bin_PROGRAMS = glob2
 glob2_SOURCES= AI.cpp \
 AI.h\
 AIImplementation.h\
-AINumbi.h \
-AINumbi.cpp \
+AINumbi.h\
+AINumbi.cpp\
+AICastor.h\
+AICastor.cpp\
 Building.cpp\
 Building.h\
 BuildingType.cpp\

@@ -131,7 +131,7 @@ private:
 	
 	Uint8 myLocalWishedLatency; // The latency we want, but the other players don't know about it yet. (caused by network latency)
 	Uint8 wishedLatency[32]; // The latency each player wants.
-	Uint8 myLocalWishedDelay; // The delay we want, but the other players don't know about it yet. (caused by a too slow computer)
+	int myLocalWishedDelay; // The delay we want, but the other players don't know about it yet. (caused by a too slow computer)
 	Uint8 recentsWishedDelay[32][64]; // The delay each player wants. (recents)
 	
 	static const int MAX_GAME_PACKET_SIZE=1500;

@@ -24,13 +24,14 @@
 #include <assert.h>
 
 #include "AINumbi.h"
+#include "AICastor.h"
 
-AI::AI(Player *player)
+/*AI::AI(Player *player)
 {
-	aiImplementation=new AINumbi(player);
+	aiImplementation=new AICastor(player);
 	this->implementitionID=NUMBI;
 	this->player=player;
-}
+}*/
 
 AI::AI(ImplementitionID implementitionID, Player *player)
 {
@@ -43,6 +44,9 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		break;
 		case NUMBI:
 			aiImplementation=new AINumbi(player);
+		break;
+		case CASTOR:
+			aiImplementation=new AICastor(player);
 		break;
 		default:
 			assert(false);
@@ -99,6 +103,9 @@ bool AI::load(SDL_RWops *stream)
 		break;
 		case NUMBI:
 			aiImplementation=new AINumbi(stream, player);
+		break;
+		case CASTOR:
+			aiImplementation=new AICastor(stream, player);
 		break;
 		default:
 			assert(false);

@@ -18,45 +18,39 @@
 */
 
 
-#ifndef __AI_H
-#define __AI_H
+#ifndef __AI_CASTOR_H
+#define __AI_CASTOR_H
 
-#include "Header.h"
+#include "BuildingType.h"
+#include "AIImplementation.h"
 
-class Player;
+class Game;
+class Map;
 class Order;
-class AIImplementation;
+class Player;
+class Team;
+class Building;
 
-class AI
+class AICastor : public AIImplementation
 {
 public:
-	enum ImplementitionID
-	{
-		NONE=0,
-		NUMBI=1,
-		CASTOR=2,
-	};
-	static const ImplementitionID toggleAI = CASTOR;
-	
-public:
-	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
-	AI(ImplementitionID implementitionID, Player *player);
-	AI(SDL_RWops *stream, Player *player);
-	~AI();
-	void init(ImplementitionID ImplementitionID, Player *player);
-	
-	AIImplementation *aiImplementation;
-	ImplementitionID implementitionID;
-	
+	AICastor(Player *player);
+	AICastor(SDL_RWops *stream, Player *player);
+	void init(Player *player);
+	~AICastor();
+
 	Player *player;
-	
+	Team *team;
+	Game *game;
+	Map *map;
+
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	
-	Order *getOrder(bool paused);
+	Order *getOrder(void);
+	
+private:
 };
-
-
 
 #endif
 

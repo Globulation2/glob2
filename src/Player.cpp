@@ -98,13 +98,26 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 
 bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
 {
+	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
+
 	type=(PlayerType)SDL_ReadBE32(stream);
+	// Compatibility
+	if (versionMinor<25)
+	{
+		if (type==3)
+			type=(PlayerType)6;
+		else if (type==4)
+			type=(PlayerType)3;
+		else if (type==5)
+			type=(PlayerType)4;
+		else
+			assert((type>=0) && (type<=2));
+	}
 	number=SDL_ReadBE32(stream);
 	numberMask=SDL_ReadBE32(stream);
-	
-	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
+
 	SDL_RWread(stream, name, MAX_NAME_LENGTH, 1);
-	
+
 	teamNumber=SDL_ReadBE32(stream);
 	teamNumberMask=SDL_ReadBE32(stream);
 
@@ -275,7 +288,7 @@ bool BasePlayer::bind(UDPsocket socket)
 		fprintf(logFile, "no socket, or no ip to bind socket to player %d\n", number);
 		return false;
 	}
-	
+
 	assert(channel==-1);
 	channel=SDLNet_UDP_Bind(socket, -1, &ip);
 	if (channel != -1)
@@ -394,9 +407,9 @@ Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, Play
 :BasePlayer(number, name, team->teamNumber, type)
 {
 	setTeam(team);
-	if (type==P_AI)
+	if (type>=P_AI)
 	{
-		ai=new AI(this);
+		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
 	}
 	else
 	{
@@ -409,7 +422,10 @@ Player::~Player()
 {
 	if (!disableRecursiveDestruction)
 		if (ai)
+		{
+			assert(type>=P_AI);
 			delete ai;
+		}
 }
 
 void Player::setTeam(Team *team)
@@ -441,9 +457,9 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	type=initial->type;
 	setTeam(teams[this->teamNumber]);
 
-	if (type==P_AI)
+	if (type>=P_AI)
 	{
-		ai=new AI(this);
+		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
 	}
 	else
 	{
@@ -456,15 +472,16 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	channel=initial->channel;
 };
 
-void Player::makeItAI()
+void Player::makeItAI(AI::ImplementitionID aiType)
 {
 	if (ai)
 	{
+		assert(type>=P_AI);
 		delete ai;
 		ai=NULL;
 	}
-	type=P_AI;
-	ai=new AI(this);
+	type=(PlayerType)(P_AI+aiType);
+	ai=new AI(aiType, this);
 	assert(ai);
 }
 
@@ -479,8 +496,11 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	}
 	
 	// if AI, delete
-	if ((type==P_AI) && (ai))
+	if (type>=P_AI)
+	{
+		assert(ai);
 		delete ai;
+	}
 
 	// base player
 	bool success=BasePlayer::load(stream, versionMinor);
@@ -494,7 +514,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	startPositionX=SDL_ReadBE32(stream);
 	startPositionY=SDL_ReadBE32(stream);
 	setTeam(teams[teamNumber]);
-	if (type==P_AI)
+	if (type>=P_AI)
 	{
 		ai=new AI(stream, this);
 	}
@@ -523,7 +543,7 @@ void Player::save(SDL_RWops *stream)
 	// player
 	SDL_WriteBE32(stream, startPositionX);
 	SDL_WriteBE32(stream, startPositionY);
-	if (type==P_AI)
+	if (type>=P_AI)
 		ai->save(stream);
 	SDL_RWwrite(stream, "PLYe", 4, 1);
 }

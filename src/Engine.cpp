@@ -167,7 +167,8 @@ int Engine::initCustom(void)
 			else
 			{
 				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", Toolkit::getStringTable()->getString("[ai]"), nbPlayer-1);
-				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], BasePlayer::P_AI);
+				// TODO : make graphic choices here
+				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], (BasePlayer::PlayerType)(BasePlayer::P_AI+1));
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;
 			gui.game.teams[teamColor]->playersMask|=(1<<nbPlayer);
@@ -225,7 +226,7 @@ int Engine::initCustom(const char *gameName)
 		printf("Engine::initCustom::player[%d].type=%d.\n", p, gui.game.players[p]->type);
 		if (gui.game.players[p]->type==BasePlayer::P_IP)
 		{
-			gui.game.players[p]->makeItAI();
+			gui.game.players[p]->makeItAI(AI::toggleAI);
 			printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
 		}
 	}

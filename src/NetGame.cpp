@@ -534,7 +534,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 {
 	assert(order);
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
-	assert(players[playerNumber]->type==Player::P_AI || players[playerNumber]->type==Player::P_LOCAL);
+	assert(players[playerNumber]->type>=Player::P_AI || players[playerNumber]->type==Player::P_LOCAL);
 	
 	//if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
 	
@@ -914,7 +914,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			if (dropState!=DS_EXCHANGING_ORDERS)
 				fprintf(logFile, "  Warning, late packet or bad packet from ip=%s, dropState=%d\n", Utilities::stringIP(ip), dropState);
 		
-		assert(players[player]->type!=Player::P_AI);
+		assert(players[player]->type<Player::P_AI);
 		assert(players[player]->type!=Player::P_LOCAL);
 
 		if (players[player]->type==Player::P_LOST_FINAL)
