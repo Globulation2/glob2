@@ -339,7 +339,7 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = InfoPlist.strings;
-			path = English.lproj/InfoPlist.strings;
+			path = Resources/InfoPlist.strings;
 			refType = 4;
 		};
 		5B5E043F03FD45FD0000000D = {
