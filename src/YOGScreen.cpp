@@ -47,6 +47,11 @@ YOGScreen::YOGScreen()
 
 YOGScreen::~YOGScreen()
 {
+	std::vector<char *>::iterator ipIt;
+	for( ipIt=IPs.begin(); ipIt!=IPs.end(); ++ipIt)
+	{
+		delete[] (*ipIt);
+	}
 	delete multiplayersJoin;
 }
 
