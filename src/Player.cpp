@@ -299,7 +299,7 @@ Player::Player(Sint32 number, const char name[16], Team *team, PlayerType type)
 :BasePlayer(number, name, team->teamNumber, type)
 {
 	if (type==P_AI)
-		ai=new AI();
+		ai=new AI(this);
 	else
 		ai=NULL;
 	this->team=team;
@@ -325,7 +325,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	team=teams[this->teamNumber];
 
 	if (type==P_AI)
-		ai=new AI();
+		ai=new AI(this);
 	
 	ip=initial->ip;
 	socket=initial->socket;
@@ -346,7 +346,7 @@ void Player::load(SDL_RWops *stream, Team *teams[32])
 	startPositionY=SDL_ReadBE32(stream);
 	team=teams[teamNumber];
 	if (type==P_AI)
-		ai=new AI(stream);
+		ai=new AI(stream, this);
 }
 
 void Player::save(SDL_RWops *stream)

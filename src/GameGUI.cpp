@@ -1138,9 +1138,10 @@ void GameGUI::drawOverlayInfos(void)
 		else
 			tempY=((mouseY+16)>>5)+viewportY;
 
-		isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 		if (bt->isVirtual)
 			isRoom=true;
+		else
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 
 		// we find last's leve type num:
 		BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
@@ -1159,9 +1160,10 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// we check room for extension
-		isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
 		if (bt->isVirtual)
 			isExtendedRoom=true;
+		else
+			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings.getSprite(bt->startImage);

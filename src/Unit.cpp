@@ -685,6 +685,8 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				caryedRessource=destinationPurprose;
+				owner->game->map.decRessource(posX+dx, posY+dy, (RessourceType)caryedRessource);
+				
 				if (owner->game->map.doesUnitTouchUID(this, attachedBuilding->UID, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
@@ -932,10 +934,10 @@ void Unit::handleMovement(void)
 					dy=cdy;
 				}
 			}
-			else if ((movement!=MOV_GOING_DXDY)||(syncRand()<0x8FFFFFFF))
+			else if ((movement!=MOV_GOING_DXDY)||((syncRand()&0xFF)<0xEF))
 			{
 				int dist[8];
-				int minDist=17;
+				int minDist=32;
 				int minDistj=8;
 				for (int j=0; j<8; j++)
 				{
@@ -959,18 +961,42 @@ void Unit::handleMovement(void)
 					if (verbose)
 						printf("dist[%d]=%d.\n", j, dist[j]);
 				}
-				int decj=syncRand()&7;
-				if (verbose)
-					printf("minDist=%d, minDistj=%d.\n", minDist, minDistj);
-				for (int j=0; j<8; j++)
+				
+				if (minDist==32)
 				{
-					int d=(decj+j)&7;
-					
-					if (dist[d]<=minDist)
+					if (verbose)
+						printf("I can''t see black.\n");
+					if ((syncRand()&0xFF)<0xEF)
 					{
 						movement=MOV_GOING_DXDY;
-						dxdyfromDirection(d, &dx, &dy);
-						break;
+					}
+					else if ((syncRand()&0xFF)<0xEF)
+					{
+						directionFromDxDy();
+						direction=(direction+((syncRand()&1)<<1)+7)&7;
+						dxdyfromDirection();
+						movement=MOV_GOING_DXDY;
+					}
+					else 
+					{
+						movement=MOV_RANDOM;
+					}
+				}
+				else
+				{
+					int decj=syncRand()&7;
+					if (verbose)
+						printf("minDist=%d, minDistj=%d.\n", minDist, minDistj);
+					for (int j=0; j<8; j++)
+					{
+						int d=(decj+j)&7;
+
+						if (dist[d]<=minDist)
+						{
+							movement=MOV_GOING_DXDY;
+							dxdyfromDirection(d, &dx, &dy);
+							break;
+						}
 					}
 				}
 			}
@@ -1305,6 +1331,7 @@ bool Unit::validMed(int x, int y)
 
 void Unit::pathFind(void)
 {
+	// TODO: do something more clever when you know you'r locked.
 	int odx=dx;
 	int ody=dy;
 	bool broken=false;
@@ -1313,6 +1340,12 @@ void Unit::pathFind(void)
 	
 	if (bypassDirection==DIR_UNSET)
 	{
+		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->game->map.isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
+		{
+			owner->game->map.nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			if (verbose)
+				printf("(%d), no ressouces here! pos=(%d, %d), target=(%d, %d).\n", UID, posX, posY, targetX, targetY);
+		}
 		// Now we first try the 3 simplest directions:
 		int ldx=targetX-posX;
 		int ldy=targetY-posY;
@@ -1360,65 +1393,6 @@ void Unit::pathFind(void)
 			return;
 		}
 		
-		if (displacement==DIS_GOING_TO_RESSOURCE)
-		{
-			owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
-			ldx=targetX-posX;
-			ldy=targetY-posY;
-			if (syncRand()<0x1FFFFFFF)
-			{
-				ldx-=dy;
-				ldy+=dx;
-			}
-			else if (syncRand()<0x2FFFFFFF)
-			{
-				ldx+=dy;
-				ldy-=dx;
-			}
-
-			if (verbose)
-				printf("(%d),rec pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", UID, posX, posY, targetX, targetY, ldx, ldy);
-
-			simplifyDirection(ldx, ldy, &cdx, &cdy);
-
-			dx=cdx;
-			dy=cdy;
-			directionFromDxDy();
-
-			int cDirection=direction;
-
-			if (direction==8)
-				return;
-
-			if (valid(posX+dx, posY+dy))
-				return;	
-
-			direction=(cDirection+1)&7;
-			dxdyfromDirection();
-			if (valid(posX+dx, posY+dy))
-				return;	
-
-			direction=(cDirection+7)&7;
-			dxdyfromDirection();
-			if (valid(posX+dx, posY+dy))
-				return;	
-
-			if (areOnlyUnitsInFront(cdx, cdy))
-			{
-				if (verbose)
-					printf("rec look at front and simply go!\n");
-				gotoTarget(targetX, targetY);
-				return;
-			}
-			if (areOnlyUnitsAround())
-			{
-				if (verbose)
-					printf("rec Simple go, only units around!\n");
-				gotoTarget(targetX, targetY);
-				return;
-			}
-		}
-		//nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
 		
 		if (verbose)
 			printf("0x%lX no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (unsigned long)this, posX, posY, cdx, cdy);
@@ -1443,7 +1417,7 @@ void Unit::pathFind(void)
 		tdx=cdx;
 		tdy=cdy;
 		c=0;
-		while(!validHard(startObstacleX+tdx, startObstacleY+tdy))
+		while(!validHard(startObstacleX+tdx, startObstacleY+tdy) && (owner->game->map.warpDistSquare(posX, posY, startObstacleX+tdx, startObstacleY+tdy)<owner->game->map.warpDistSquare(posX, posY, targetX, targetY)))
 		{
 			tdx+=cdx;
 			tdy+=cdy;
@@ -1456,7 +1430,7 @@ void Unit::pathFind(void)
 		int centerX=startObstacleX+(tdx/2);
 		int centerY=startObstacleY+(tdy/2);
 		if (verbose)
-				printf("center=(%d, %d)!\n", centerX, centerY);
+			printf("center=(%d, %d)!\n", centerX, centerY);
 		tempTargetX=centerX;
 		tempTargetY=centerY;
 		
@@ -1534,28 +1508,43 @@ void Unit::pathFind(void)
 			borderY=startObstacleY-cdy;
 			
 			if (verbose)
-					printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
-			if (lDist<=centerSquareDist)
+				printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
+			if ((lDist<=centerSquareDist)
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchUID(ptlx, ptly, attachedBuilding->UID)))
+				)
 			{
 				bypassDirection=DIR_LEFT;
-				
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				{
+					targetX=ptlx;
+					targetY=ptly;
+				}
 				if (verbose)
-						printf("0x%lX Let's turn by left. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
+					printf("0x%lX Let's turn by left. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
 				break;
 			}
-			if ((rDist<=centerSquareDist) || ((ptlx==ptrx)&&(ptly==ptry)) || ((count++)>1024) )
+			if ((rDist<=centerSquareDist)
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchUID(ptrx, ptry, attachedBuilding->UID)))
+				|| ((ptlx==ptrx)&&(ptly==ptry))
+				|| ((count++)>1024)
+				)
 			{
 				bypassDirection=DIR_RIGHT;
-				
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				{
+					targetX=ptrx;
+					targetY=ptry;
+				}
 				if (verbose)
-						printf("0x%lX Let's turn by right. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
+					printf("0x%lX Let's turn by right. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
 				break;
 			}
 
 		}
 		if (verbose)
-				printf("bypassDirection=%d\n", bypassDirection);
-	
+			printf("bypassDirection=%d\n", bypassDirection);
 	}
 	
 	if (bypassDirection!=DIR_UNSET)
@@ -1596,10 +1585,24 @@ void Unit::pathFind(void)
 			if (validHard(obstacleX, obstacleY) || (!validHard(borderX, borderY)))
 			{
 				if (verbose)
+				{
 					printf("l obstacle not hard! .n");
-				printf("l(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+					printf("l(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+				}
 				int ctpx=tempTargetX-posX;
 				int ctpy=tempTargetY-posY;
+				if ((ctpx==0)&&(ctpy==0))
+				{
+					ctpx=targetX-posX;
+					ctpy=targetY-posY;
+				}
+				if ((ctpx==0)&&(ctpy==0))
+				{
+					printf("l damn, I''m at destimation! .n");
+					gotoTarget(targetX, targetY);
+					bypassDirection=DIR_UNSET;
+					return;
+				}
 				
 				int dctpx, dctpy;
 				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
@@ -1728,11 +1731,10 @@ void Unit::pathFind(void)
 					if (verbose)
 						printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
-					
 					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-					int currentDistSquare=owner->game->map.warpDistSquare(borderX, borderY, targetX, targetY);
+					int currentDistSquare=owner->game->map.warpDistSquare(testBorderX, testBorderY, targetX, targetY);
 					
-					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist) && (centerSquareDist<currentDistSquare))
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
 						if (verbose)
 							printf("l o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
@@ -1740,6 +1742,9 @@ void Unit::pathFind(void)
 						obstacleY=testObstacleY;
 						borderX=testBorderX;
 						borderY=testBorderY;
+						
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+							break;
 					}
 					else
 						break;
@@ -1751,7 +1756,7 @@ void Unit::pathFind(void)
 		{
 			int c=0;
 			if (verbose)
-					printf("r o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
+				printf("r o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
 			int bdx;
 			int bdy;
 			int bDirection;
@@ -1761,10 +1766,24 @@ void Unit::pathFind(void)
 			if (validHard(obstacleX, obstacleY) || (!validHard(borderX, borderY)))
 			{
 				if (verbose)
+				{
 					printf("r obstacle not hard! .n");
-				printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+					printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+				}
 				int ctpx=tempTargetX-posX;
 				int ctpy=tempTargetY-posY;
+				if ((ctpx==0)&&(ctpy==0))
+				{
+					ctpx=targetX-posX;
+					ctpy=targetY-posY;
+				}
+				if ((ctpx==0)&&(ctpy==0))
+				{
+					printf("r damn, I''m at destimation! .n");
+					gotoTarget(targetX, targetY);
+					bypassDirection=DIR_UNSET;
+					return;
+				}
 				
 				int dctpx, dctpy;
 				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
@@ -1894,9 +1913,9 @@ void Unit::pathFind(void)
 						printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
 					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-					int currentDistSquare=owner->game->map.warpDistSquare(borderX, borderY, targetX, targetY);
+					int currentDistSquare=owner->game->map.warpDistSquare(testBorderX, testBorderY, targetX, targetY);
 					
-					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist) && (centerSquareDist<currentDistSquare))
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
 						if (verbose)
 							printf("r o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
@@ -1904,6 +1923,9 @@ void Unit::pathFind(void)
 						obstacleY=testObstacleY;
 						borderX=testBorderX;
 						borderY=testBorderY;
+						
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+							break;
 					}
 					else
 						break;

@@ -96,6 +96,7 @@ public:
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream, Game *game);
 	
+	void growRessources(void);
 	void step(void);
 	void switchFogOfWar(void);
 
@@ -118,12 +119,14 @@ public:
 	}
 	bool isMapDiscovered(int x, int y, int p)
 	{
+		return true;
 		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	/*void setFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))|=(1<<p); }
 	void unsetFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))&=~(1<<p); }*/
 	bool isFOW(int x, int y, int p)
 	{
+		return true;
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }
@@ -135,12 +138,17 @@ public:
 	void setTerrain(int x, int y, Uint16 t) { (*(cases+w*(y&hMask)+(x&wMask))).terrain=t; }
 	bool isWater(int x, int y);
 	bool isGrass(int x, int y);
+	bool isGrowableRessource(int x, int y);
 	bool isRessource(int x, int y);
 	bool isRessource(int x, int y, RessourceType ressourceType);
+	bool decRessource(int x, int y);
+	bool decRessource(int x, int y, RessourceType ressourceType);
 	bool isFreeForUnit(int x, int y, bool canFly);
 	bool doesUnitTouchUID(Unit *unit, Sint16 otherUID, int *dx, int *dy);
+	bool doesPosTouchUID(int x, int y, Sint16 otherUID);
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy);
 	bool doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy);
+	bool doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
 	Sint16 getUnit(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).unit; }
