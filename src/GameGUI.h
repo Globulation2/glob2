@@ -89,6 +89,7 @@ private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_keysym keySym, bool pressed);
+	void handleKeyAlways(void);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
@@ -181,7 +182,8 @@ private:
 	std::list<Order *> orderQueue;
 
 	int mouseX, mouseY;
-	int viewportSpeedX[9], viewportSpeedY[9];
+	//! for mouse motion
+	int viewportSpeedX, viewportSpeedY;
 	
 	// menu related functions
 	enum
@@ -208,7 +210,7 @@ private :
 		enum { MAX_MESSAGE_SIZE = 64 };
 		enum { MAX_DISPLAYED_MESSAGE_SIZE = MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4 }; // avoid network overflow
 		enum { DEFAULT_MESSAGE_SHOW_TICKS = 180 };
-	
+
 		// since when it is shown
 		int showTicks;
 		char text[MAX_DISPLAYED_MESSAGE_SIZE];

@@ -79,11 +79,8 @@ void GameGUI::init()
 	chatMask=0xFFFFFFFF;
 	statMode=STAT_TEXT;
 
-	for (int i=0; i<9; i++)
-	{
-		viewportSpeedX[i]=0;
-		viewportSpeedY[i]=0;
-	}
+	viewportSpeedX=0;
+	viewportSpeedY=0;
 
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
@@ -181,22 +178,20 @@ void GameGUI::step(void)
 		processEvent(&mouseMotionEvent);
 	if (wasWindowEvent)
 		processEvent(&windowEvent);
-	
+
 	int oldViewportX=viewportX;
 	int oldViewportY=viewportY;
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
-	for (int i=0; i<9; i++)
-	{
-		viewportX+=viewportSpeedX[i];
-		viewportY+=viewportSpeedY[i];
-	}
+	handleKeyAlways();
+	viewportX+=viewportSpeedX;
+	viewportY+=viewportSpeedY;
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
 	
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 		flagSelectedStep();
-	
+
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
 	{
@@ -666,7 +661,7 @@ void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 {
 	if (gain==0)
 	{
-		viewportSpeedX[0]=viewportSpeedY[0]=0;
+		viewportSpeedX=viewportSpeedY=0;
 	}
 }
 
@@ -712,102 +707,6 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 						inGameMenu=IGM_MAIN;
 					}
-				}
-				break;
-			case SDLK_UP:
-				if (pressed)
-					viewportSpeedY[1]=-1;
-				else
-					viewportSpeedY[1]=0;
-				break;
-			case SDLK_KP8:
-				if (pressed)
-					viewportSpeedY[2]=-1;
-				else
-					viewportSpeedY[2]=0;
-				break;
-			case SDLK_DOWN:
-				if (pressed)
-					viewportSpeedY[3]=1;
-				else
-					viewportSpeedY[3]=0;
-				break;
-			case SDLK_KP2:
-				if (pressed)
-					viewportSpeedY[4]=1;
-				else
-					viewportSpeedY[4]=0;
-				break;
-			case SDLK_LEFT:
-				if (pressed)
-					viewportSpeedX[1]=-1;
-				else
-					viewportSpeedX[1]=0;
-				break;
-			case SDLK_KP4:
-				if (pressed)
-					viewportSpeedX[2]=-1;
-				else
-					viewportSpeedX[2]=0;
-				break;
-			case SDLK_RIGHT:
-				if (pressed)
-					viewportSpeedX[3]=1;
-				else
-					viewportSpeedX[3]=0;
-				break;
-			case SDLK_KP6:
-				if (pressed)
-					viewportSpeedX[4]=1;
-				else
-					viewportSpeedX[4]=0;
-				break;
-			case SDLK_KP7:
-				if (pressed)
-				{
-					viewportSpeedX[5]=-1;
-					viewportSpeedY[5]=-1;
-				}
-				else
-				{
-					viewportSpeedX[5]=0;
-					viewportSpeedY[5]=0;
-				}
-				break;
-			case SDLK_KP9:
-				if (pressed)
-				{
-					viewportSpeedX[6]=1;
-					viewportSpeedY[6]=-1;
-				}
-				else
-				{
-					viewportSpeedX[6]=0;
-					viewportSpeedY[6]=0;
-				}
-				break;
-			case SDLK_KP1:
-				if (pressed)
-				{
-					viewportSpeedX[7]=-1;
-					viewportSpeedY[7]=1;
-				}
-				else
-				{
-					viewportSpeedX[7]=0;
-					viewportSpeedY[7]=0;
-				}
-				break;
-			case SDLK_KP3:
-				if (pressed)
-				{
-					viewportSpeedX[8]=1;
-					viewportSpeedY[8]=1;
-				}
-				else
-				{
-					viewportSpeedX[8]=0;
-					viewportSpeedY[8]=0;
 				}
 				break;
 			case SDLK_PLUS:
@@ -882,7 +781,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_SPACE:
 				if (pressed)
 				{
-				    int evX, evY; 
+				    int evX, evY;
 				    int sw, sh;
 					localTeam->getEventPos(&evX, &evY);
 					sw=globalContainer->gfx->getW();
@@ -903,6 +802,48 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 
 			break;
 		}
+	}
+}
+void GameGUI::handleKeyAlways(void)
+{
+	SDL_PumpEvents();
+	Uint8 *keystate = SDL_GetKeyState(NULL);
+
+	if (keystate[SDLK_UP])
+		viewportY--;
+	if (keystate[SDLK_KP8])
+		viewportY--;
+	if (keystate[SDLK_DOWN])
+		viewportY++;
+	if (keystate[SDLK_KP2])
+		viewportY++;
+	if (keystate[SDLK_LEFT])
+		viewportX--;
+	if (keystate[SDLK_KP4])
+		viewportX--;
+	if (keystate[SDLK_RIGHT])
+		viewportX++;
+	if (keystate[SDLK_KP6])
+		viewportX++;
+	if (keystate[SDLK_KP7])
+	{
+		viewportX--;
+		viewportY--;
+	}
+	if (keystate[SDLK_KP9])
+	{
+		viewportX++;
+		viewportY--;
+	}
+	if (keystate[SDLK_KP1])
+	{
+		viewportX--;
+		viewportY++;
+	}
+	if (keystate[SDLK_KP3])
+	{
+		viewportX++;
+		viewportY++;
 	}
 }
 
@@ -943,18 +884,18 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	else
 	{
 		if (mx<scrollZoneWidth)
-			viewportSpeedX[0]=-1;
+			viewportSpeedX=-1;
 		else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
-			viewportSpeedX[0]=1;
+			viewportSpeedX=1;
 		else
-			viewportSpeedX[0]=0;
+			viewportSpeedX=0;
 
 		if (my<scrollZoneWidth)
-			viewportSpeedY[0]=-1;
+			viewportSpeedY=-1;
 		else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
-			viewportSpeedY[0]=1;
+			viewportSpeedY=1;
 		else
-			viewportSpeedY[0]=0;
+			viewportSpeedY=0;
 	}
 	
 	if (panPushed)
@@ -1623,7 +1564,7 @@ void GameGUI::draw(void)
 								// We draw the ressources cost.
 								int typeNum=buildingType->nextLevelTypeNum;
 								BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont, 
+								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont,
 									"%s: %d", Toolkit::getStringTable()->getString("[wood]"), bt->maxRessource[0]);
 								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
 									"%s: %d", Toolkit::getStringTable()->getString("[stone]"), bt->maxRessource[2]);
