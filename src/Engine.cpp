@@ -376,7 +376,9 @@ int Engine::run(void)
 	bool doRunOnceAggain=true;
 	
 	// Stop music for now, next load music game
-	if (globalContainer->mix)
+	if (globalContainer->runNoX)
+		assert(globalContainer->mix==NULL);
+	else
 		globalContainer->mix->stopMusic();
 	
 	while (doRunOnceAggain)
