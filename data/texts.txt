@@ -807,5 +807,7 @@ Ein Spieler
  équipes
  teams
  Mannschaften
-
-
+[game full]
+Jeu complet
+Game full
+Spiel full

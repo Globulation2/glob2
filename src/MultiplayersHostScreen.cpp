@@ -26,15 +26,18 @@
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
-	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI));
-	
-	showsReady=false;
+	addAI=new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI);
+	addWidget(addAI);
+
 	startButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[start]"), START);
 	startButton->visible=false;
 	addWidget(startButton);
 	notReadyText=new Text(240, 420, globalContainer->standardFont, globalContainer->texts.getString("[not ready]"), 180, 40);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
+	gameFullText=new Text(2, 420, globalContainer->standardFont, globalContainer->texts.getString("[game full]"), 180, 40);
+	gameFullText->visible=false;
+	addWidget(gameFullText);
 	savedSessionInfo=NULL;
 	
 	if (!sessionInfo->fileIsAMap)
@@ -71,7 +74,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	}
 	startTimer=new Text(20, 400, globalContainer->standardFont, "");
 	addWidget(startTimer);
-	
+
 	timeCounter=0;
 }
 
@@ -183,23 +186,21 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		printf("s=%s.\n", s);
 		startTimer->setText(s);
 	}
-	
+
 	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE)
 	{
-		if (!showsReady)
+		if (notReadyText->visible)
 		{
-			notReadyText->visible=false;
+			notReadyText->hide();
 			startButton->show();
-			showsReady=true;
 		}
 	}
 	else
 	{
-		if (showsReady)
+		if (!notReadyText->visible)
 		{
-			startButton->visible=false;
+			startButton->hide();
 			notReadyText->show();
-			showsReady=false;
 		}
 	}
 
@@ -223,7 +224,14 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		case ADD_AI :
 			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
 				&&(multiplayersHost->sessionInfo.numberOfPlayer<MAX_NUMBER_OF_PLAYERS))
+			{
 				multiplayersHost->addAI();
+				if (multiplayersHost->sessionInfo.numberOfPlayer>=16)
+				{
+					addAI->hide();
+					gameFullText->show();
+				}
+			}
 		break;
 		case -1:
 			multiplayersHost->stopHosting();
@@ -232,7 +240,14 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		default:
 		{
 			if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+			{
 				multiplayersHost->kickPlayer(par1-CLOSE_BUTTONS);
+				if (multiplayersHost->sessionInfo.numberOfPlayer<16)
+				{
+					gameFullText->hide();
+					addAI->show();
+				}
+			}
 		}
 		break;
 		}
