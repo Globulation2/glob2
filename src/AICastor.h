@@ -161,6 +161,8 @@ private:
 	void computeWorkRangeMap();
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
+	void computeNotGrassMap();
+	void computeWheatCareMap();
 	void computeWheatGrowthMap();
 	
 	void computeEnemyPowerMap();
@@ -212,7 +214,7 @@ public:
 	
 	Strategy strategy;
 	
-	bool hydratationMapComputed;
+	bool hardMapComputed;
 	
 public:
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
@@ -224,6 +226,7 @@ public:
 	Uint8 *workRangeMap;
 	Uint8 *workAbilityMap;
 	Uint8 *hydratationMap;
+	Uint8 *notGrassMap;
 	Uint8 *wheatGrowthMap;
 	Uint8 *wheatCareMap;
 	
