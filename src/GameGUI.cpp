@@ -56,6 +56,11 @@
 #define YOFFSET_TEXT_PARA 14
 #define YOFFSET_TEXT_LINE 12
 
+enum GameGUIGfxId
+{
+	EXCHANGE_BUILDING_ICONS = 21
+};
+
 //! The screen that contains the text input while typing message in game
 class InGameTextInput:public OverlayScreen
 {
@@ -1960,6 +1965,7 @@ void GameGUI::drawBuildingInfos(void)
 			globalContainer->littleFont->pushColor(185, 195, 21);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
 			globalContainer->littleFont->popColor();
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
 			ypos += YOFFSET_TEXT_PARA;
 			for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 			{

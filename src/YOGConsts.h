@@ -20,11 +20,7 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
-//#define YOG_SERVER_IP "goldeneye.sked.ch"
-//#define YOG_SERVER_PORT 7007
-
-#define YOG_SERVER_IP "lsa2pc12.epfl.ch"
-//#define YOG_SERVER_IP "192.168.1.10"
+#define YOG_SERVER_IP "yog1.ysagoon.com"
 #define YOG_SERVER_PORT 7486
 
 // 1s-4s-7.5s-14.5s-22s
