@@ -189,7 +189,7 @@ void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 	sprite->draw(surface, &clipRect, x, y, index);
 }
 
-void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool lock)
 {
 	if (!surface)
 		return;
@@ -210,7 +210,8 @@ void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a
 	
 		/* Set the pixel */
 		assert(surface);
-		SDL_LockSurface(surface);
+		if (lock)
+			SDL_LockSurface(surface);
 		switch(surface->format->BitsPerPixel)
 		{
 			case 8:
@@ -259,7 +260,8 @@ void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a
 			}
 			break;
 		}
-		SDL_UnlockSurface(surface);
+		if (lock)
+			SDL_UnlockSurface(surface);
 	}
 }
 
