@@ -38,13 +38,13 @@ public:
 	class Project
 	{
 	public:
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName);
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 amount, Sint32 mainWorkers, const char* debugName);
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum);
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, int amount, Sint32 mainWorkers);
 		void init();
 
 	public:
 		BuildingType::BuildingTypeShortNumber shortTypeNum;
-		Sint32 amount; // number of buildings wanted
+		int amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
 		
 		const char *debugName;
@@ -73,7 +73,7 @@ public:
 	class Strategy
 	{
 	public:
-		class Builds
+		/*class Builds
 		{
 		public:
 			Builds();
@@ -86,18 +86,41 @@ public:
 			Sint32 defense;
 			Sint32 science;
 			Sint32 swim;
+		};*/
+		
+		struct Build
+		{
+			int baseOrder;
+			int base;
+			int workers;
+			int finalWorkers;
+			
+			int upgrade;
+			
+			int newOrder;
+			int news;
 		};
+		
 	public:
 		Strategy();
 	public:
 		bool defined;
 		
 		Sint32 successWait;
+		Sint32 isFreePart;
 		
-		Builds buildsBase, buildsNews, buildsCurrent;
+		//Builds buildsBase, buildsNews;
+		///Builds upgradeBase;
 		
-		Sint32 warLevelTriger;
+		Build build[BuildingType::NB_HARD_BUILDING];
+		
+		//std::list<Project *> projectsBase;
+		//std::list<Project *> projectsNews;
+		
 		Sint32 warTimeTriger;
+		Sint32 warLevelTriger;
+		Sint32 warAmountTriger;
+		
 		Sint32 maxAmountGoal;
 		
 		Uint8 wheatCareLimit;
@@ -122,6 +145,8 @@ public:
 	Order *getOrder(void);
 	
 private:
+	void defineStrategy();
+	
 	Order *controlSwarms();
 	Order *expandFood();
 	Order *controlFood(int index);
@@ -133,8 +158,8 @@ private:
 	
 	Order *continueProject(Project *project);
 	
+	bool enoughFreeWorkers();
 	int getFreeWorkers();
-	
 	void computeCanSwim();
 	void computeNeedSwim();
 	void computeBuildingSum();
@@ -163,10 +188,14 @@ public:
 	Uint32 timer;
 	bool canSwim;
 	bool needSwim;
-	int buildingSum[BuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
-	bool war;
+	int buildingSum[BuildingType::NB_HARD_BUILDING][2]; // [shortTypeNum][isBuildingSite]
+	int buildingLevels[BuildingType::NB_HARD_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
+	int warLevel; // 0: no war
 	bool foodLock;
-	Uint32 lastNeedPoolComputed;
+	int buildsAmount;
+	int freeWorkers; // plz use getFreeWorkers() to raise computation trigger.
+	
+	Uint32 lastFreeWorkersComputed;
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
 	Uint32 expandFoodTimer;
