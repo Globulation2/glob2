@@ -1029,12 +1029,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					id-=272;
 				}
 
-				// FIXME : do fow with the newgfx
-				/*if (map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)||(useMapDiscovered))
-					sprite->setPal(&globalContainer->macPal);
-				else
-					sprite->setPal(&globalContainer->ShadedPal);*/
-
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 				// draw Unit or Building
 				#ifdef DBG_UID

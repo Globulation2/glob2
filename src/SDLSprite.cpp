@@ -1,26 +1,115 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "SDLSprite.h"
 #include <math.h>
 #include "GlobalContainer.h"
 #include "Utilities.h"
+
+#define STATIC_PALETTE_SIZE 256
+#define COLOR_ROTATION_COUNT 32
+#define PAL_COLOR_MERGE_THRESHOLD 4
+
+struct TransformedPalEntry
+{
+	Uint16 r, g, b, na;
+};
+
+struct TransformedPal
+{
+	// datas
+	TransformedPalEntry colors[STATIC_PALETTE_SIZE];
+	// lookup infos
+	Uint8 rotr, rotg, rotb, rota;
+};
+
+struct OriginalPal
+{
+	// datas
+	Uint8 r[STATIC_PALETTE_SIZE];
+	Uint8 g[STATIC_PALETTE_SIZE];
+	Uint8 b[STATIC_PALETTE_SIZE];
+	Uint8 a[STATIC_PALETTE_SIZE];
+};
+
+//! This class contains all statically allocated color for color shifting
+struct StaticPalContainer
+{
+	OriginalPal originalPal;
+	TransformedPal rotatedPal[COLOR_ROTATION_COUNT];
+	
+	unsigned allocatedCount;
+	unsigned rotatedCount;
+	
+	//! Creator
+	StaticPalContainer();
+	
+	//! Allocate a color, return the index
+	unsigned allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+};
+
+StaticPalContainer::StaticPalContainer()
+{
+	allocatedCount = 0;
+	rotatedCount = 0;
+}
+
+unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	unsigned i = 0;
+	unsigned len = 1000000000;
+	unsigned nearestIdx = 0;
+	unsigned nlen;
+	int dr, dg, db, da;
+	
+	while (i<allocatedCount)
+	{
+		dr = (r-originalPal.r[i]);
+		dg = (g-originalPal.g[i]);
+		db = (b-originalPal.b[i]);
+		da = (a-originalPal.a[i]);
+		
+		nlen=dr*dr + dg*dg + db*db + da*da;
+		if (nlen < PAL_COLOR_MERGE_THRESHOLD)
+		{
+			return i;
+		}
+		else if (nlen < len)
+		{
+			nearestIdx = i;
+			len = nlen;
+		}
+		i++;
+	}
+	if (i<STATIC_PALETTE_SIZE)
+	{
+		originalPal.r[i]=r;
+		originalPal.g[i]=g;
+		originalPal.b[i]=b;
+		originalPal.a[i]=a;
+		allocatedCount++;
+		return i;
+	}
+	return nearestIdx;
+}
+
+// TODO : the rotation part and the render part
 
 SDLSprite::Palette::Palette()
 {
