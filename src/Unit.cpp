@@ -665,32 +665,9 @@ void Unit::handleActivity(void)
 					return;
 				}
 			}
-
-			// second we look for upgrade
-			Building *b;
-			b=owner->findBestUpgrade(this);
-			if (b)
-			{
-				assert(destinationPurprose>=WALK);
-				assert(destinationPurprose<ARMOR);
-				activity=ACT_UPGRADING;
-				attachedBuilding=b;
-				targetBuilding=b;
-				if (verbose)
-					printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-				b->unitsInsideSubscribe.push_front(this);
-				subscribed=true;
-				if (b->subscribeForInside!=1)
-				{
-					b->subscribeForInside=1;
-					owner->subscribeForInside.push_front(b);
-				}
-				if (b->subscriptionInsideTimer<=0)
-					b->subscriptionInsideTimer=1;
-				return;
-			}
 			
-			// third we go to flag
+			// second we go to flag
+			Building *b;
 			b=owner->findBestZonable(this);
 			if (b)
 			{
@@ -710,6 +687,29 @@ void Unit::handleActivity(void)
 				}
 				if (b->subscriptionWorkingTimer<=0)
 					b->subscriptionWorkingTimer=1;
+				return;
+			}
+
+			// third we look for upgrade
+			b=owner->findBestUpgrade(this);
+			if (b)
+			{
+				assert(destinationPurprose>=WALK);
+				assert(destinationPurprose<ARMOR);
+				activity=ACT_UPGRADING;
+				attachedBuilding=b;
+				targetBuilding=b;
+				if (verbose)
+					printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+				b->unitsInsideSubscribe.push_front(this);
+				subscribed=true;
+				if (b->subscribeForInside!=1)
+				{
+					b->subscribeForInside=1;
+					owner->subscribeForInside.push_front(b);
+				}
+				if (b->subscriptionInsideTimer<=0)
+					b->subscriptionInsideTimer=1;
 				return;
 			}
 			
