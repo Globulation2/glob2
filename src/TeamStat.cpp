@@ -187,7 +187,8 @@ void TeamStats::drawStat()
 		{
 			nbOk=(stats[index].needNothing*64)/stats[index].totalUnit;
 			nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
-			nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+			// to avoid some roundoff errors
+			nbNeedHeal=64-(nbOk + nbNeedFood);
 		}
 		else
 		{
