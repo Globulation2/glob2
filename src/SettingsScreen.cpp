@@ -114,15 +114,15 @@ SettingsScreen::SettingsScreen()
 	addWidget(usernameText);
 
 	// Audio part
-	audio=new Text(245, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[audio]"));
+	audio=new Text(0, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
 	addWidget(audio);
 	musicVol=new Selector(20, 80, ALIGN_RIGHT, ALIGN_BOTTOM, 256, 8, globalContainer->settings.musicVolume, 1);
 	addWidget(musicVol);
-	musicVolText=new Text(200, 100, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	musicVolText=new Text(0, 100, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
 	addWidget(musicVolText);
-	audioMute=new OnOffButton(150, 130, 20, 20, ALIGN_RIGHT, ALIGN_BOTTOM, globalContainer->settings.mute, MUTE);
+	audioMute=new OnOffButton(210, 130, 20, 20, ALIGN_RIGHT, ALIGN_BOTTOM, globalContainer->settings.mute, MUTE);
 	addWidget(audioMute);
-	audioMuteText=new Text(100, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[mute]"));
+	audioMuteText=new Text(0, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
 	addWidget(audioMuteText);
 	
 	// Screen entry/quit part
