@@ -1142,10 +1142,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		// TODO : put here the correct code to handle forbidden drawing
+		// TODO : put here the correct code to handle forbidden drawing : queuing until release, compressing and commiting
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, globalContainer->buildingsTypes.getTypeNum(11, 0, false)));
+		orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, mapX, mapY, forbiddenBrush.getType(), forbiddenBrush.getFigure()));
 	}
 	else if (putMark)
 	{
@@ -2746,7 +2746,7 @@ void GameGUI::drawAll(int team)
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
-								Game::DRAW_FORBIDDEN_AREA;
+								((selectionMode==BRUSH_SELECTION) ? Game::DRAW_FORBIDDEN_AREA : 0);
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{

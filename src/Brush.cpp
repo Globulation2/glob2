@@ -45,6 +45,8 @@ void BrushTool::draw(int x, int y)
 
 void BrushTool::handleClick(int x, int y)
 {
+	if (mode == MODE_NONE)
+		mode = MODE_ADD;
 	if (y<36)
 	{
 		mode = static_cast<Mode>((x/64)+1);

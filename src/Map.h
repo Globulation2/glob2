@@ -223,8 +223,11 @@ public:
 	{
 		(*(cases+w*(y&hMask)+(x&wMask))).forbidden=forbidden;
 	}
-	void setForbiddenArea(int x, int y, int r, Uint32 me);
-	void clearForbiddenArea(int x, int y, int r, Uint32 me);
+	
+	void setForbiddenCircularArea(int x, int y, int r, Uint32 me);
+	void setForbiddenSquareArea(int x, int y, int r, Uint32 me);
+	void clearForbiddenCircularArea(int x, int y, int r, Uint32 me);
+	void clearForbiddenSquareArea(int x, int y, int r, Uint32 me);
 	void clearForbiddenArea(Uint32 me);
 
 	inline bool isWater(int x, int y)
