@@ -1,8 +1,7 @@
 Priority:
 
-- voir les nouvelles caracteristique d'un batiment quand le curseur passe sur ameliorer (par exemple en bleu).
 - afficher des boites de dialogue modale. (nct)
-- Empêcher les longs mots de dépasser de la boîte de dialog de YOG.
+- Empêcher les longs mots de dépasser de la boîte de dialog de YOG. (nct)
 
 To First release :
 
@@ -14,7 +13,6 @@ To First release :
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
 - Revoir l'allocation des unités aux batiments, le moteur du jeu. (nuage)
-- Ajouter des stats pour les unités qui crèvent de faim.
 
 To Next version :
 

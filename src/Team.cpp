@@ -180,8 +180,8 @@ void Team::init(void)
 
 	startPosX=startPosY=0;
 	
-	subscribeForInsideStep.clear();
-	subscribeForWorkingStep.clear();
+	subscribeToBringRessources.clear();
+	subscribeForFlaging.clear();
 
 	for (i=0; i<EVENT_TYPE_SIZE; i++)
 	{
@@ -258,7 +258,7 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 	return b;
 }
 
-Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
+/*Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 {
 	Building *b=NULL;
 	float score=1e9;
@@ -290,17 +290,11 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 					b=*it;
 					score=newScore;
 				}
-				/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-				if ( newDist<dist )
-				{
-					b=*it;
-					dist=newDist;
-				}*/
 			}
 		}
 	}
 	return b;
-}
+}*/
 
 Building *Team::findBestConstruction(Unit *unit)
 {
@@ -401,36 +395,24 @@ Building *Team::findNearestAttract(int x, int y, Abilities ability)
 	float newScoreA;
 	float newScoreB;
 	Sint32 maxUnitWorking;
-	//Sint32 dist=MAX_SINT32;
-	//Sint32 newDist;
+	
+	for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
 	{
-		for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
+		// this is balance code, take user's wishes in account TODO: make this better!
+		newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+		maxUnitWorking=(*it)->maxUnitWorking;
+		if (maxUnitWorking)
+			newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+		else
+			newScoreB=1e9;
+		newScore=newScoreA+newScoreB;
+		if ( newScore<score )
 		{
-			// this is balance code, take user's wishes in account
-			newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			maxUnitWorking=(*it)->maxUnitWorking;
-			if (maxUnitWorking)
-			{
-				newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
-			}
-			else
-			{
-				newScoreB=1e9;
-			}
-			newScore=newScoreA+newScoreB;
-			if ( newScore<score )
-			{
-				b=*it;
-				score=newScore;
-			}
-			/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
-			{
-				b=*it;
-				dist=newDist;
-			}*/
+			b=*it;
+			score=newScore;
 		}
 	}
+	
 	return b;
 }
 
@@ -756,8 +738,8 @@ void Team::step(void)
 			turrets.remove(myBuildings[*it]);
 		if ( myBuildings[*it]->type->isVirtual )
 			virtualBuildings.remove(myBuildings[*it]);
-		subscribeForInsideStep.remove(myBuildings[*it]);
-		subscribeForWorkingStep.remove(myBuildings[*it]);
+		subscribeToBringRessources.remove(myBuildings[*it]);
+		subscribeForFlaging.remove(myBuildings[*it]);
 		delete myBuildings[*it];
 		myBuildings[*it]=NULL;
 	}
@@ -773,31 +755,41 @@ void Team::step(void)
 		}
 	}
 
-	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 		if ((*it)->unitsInsideSubscribe.size()>0)
 			(*it)->subscribeForInsideStep();
 
-	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 	{
-		if ( /*((*it)->fullInside()) ||*/ ((*it)->unitsInsideSubscribe.size()==0) )
+		if ((*it)->unitsInsideSubscribe.size()==0)
 		{
 			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForInsideStep.erase(ittemp);
+			it=subscribeForInside.erase(ittemp);
 		}
 	}
 
-	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+	//subscribeToBringRessourcesStep 
+	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()>0)
-			(*it)->subscribeForWorkingStep();
+			(*it)->subscribeToBringRessourcesStep();
 
-	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
-	{
-		if ( /*((*it)->fullWorking()) ||*/ ((*it)->unitsWorkingSubscribe.size()==0) )
+	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
+		if ((*it)->unitsWorkingSubscribe.size()==0)
 		{
 			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForWorkingStep.erase(ittemp);
+			it=subscribeToBringRessources.erase(ittemp);
 		}
-	}
+	//subscribeForFlagingStep
+	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
+		if ((*it)->unitsWorkingSubscribe.size()>0)
+			(*it)->subscribeForFlagingStep();
+
+	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
+		if ((*it)->unitsWorkingSubscribe.size()==0)
+		{
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForFlaging.erase(ittemp);
+		}
 	
 	bool isEnoughFoodInSwarm=false;
 	

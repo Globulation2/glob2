@@ -866,7 +866,7 @@ bool Building::fullInside(void)
 		return ((signed)unitsInside.size()>=maxUnitInside);
 }
 
-void Building::subscribeForConstructionStep()
+void Building::subscribeToBringRessourcesStep()
 {
 	std::list<Unit *>::iterator it;
 
@@ -1008,7 +1008,7 @@ void Building::subscribeForConstructionStep()
 	}
 }
 
-void Building::subscribeForFightingStep()
+void Building::subscribeForFlagingStep()
 {
 	std::list<Unit *>::iterator it;
 	lastWorkingSubscribe++;
@@ -1071,7 +1071,7 @@ void Building::subscribeForFightingStep()
 	}
 }
 
-void Building::subscribeForWorkingStep()
+/*void Building::subscribeForWorkingStep()
 {
 	// TODO : add new lists to Building, to make the difference between
 	// workers for ressources (construction and reparation), and workers
@@ -1080,7 +1080,7 @@ void Building::subscribeForWorkingStep()
 		subscribeForConstructionStep();
 	else
 		subscribeForFightingStep();
-}
+}*/
 
 void Building::subscribeForInsideStep()
 {

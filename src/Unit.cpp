@@ -491,7 +491,7 @@ void Unit::handleActivity(void)
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
-						owner->subscribeForWorkingStep.push_front(b);
+						owner->subscribeToBringRessources.push_front(b);
 						//b->update();
 						return;
 					}
@@ -499,33 +499,31 @@ void Unit::handleActivity(void)
 			}
 
 			// second we look for upgrade
+			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
 			{
-				for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
+				if (performance[abilityIterator])
 				{
-					if (performance[abilityIterator])
+					Building *b=owner->findNearestUpgrade(posX, posY, (Abilities)abilityIterator, level[abilityIterator]);
+					if ( b != NULL)
 					{
-						Building *b=owner->findNearestUpgrade(posX, posY, (Abilities)abilityIterator, level[abilityIterator]);
-						if ( b != NULL)
-						{
-							jobFound=true;
-							activity=ACT_UPGRADING;
-							displacement=DIS_GOING_TO_BUILDING;
-							destinationPurprose=(Sint32)abilityIterator;
-							
-							//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
-							
-							attachedBuilding=b;
-							targetX=attachedBuilding->getMidX();
-							targetY=attachedBuilding->getMidY();
-							newTargetWasSet();
-							b->unitsInsideSubscribe.push_front(this);
-							b->lastInsideSubscribe=0;
-							subscribed=true;
-							owner->subscribeForInsideStep.push_front(b);
-							///b->update();
-							
-							return;
-						}
+						jobFound=true;
+						activity=ACT_UPGRADING;
+						displacement=DIS_GOING_TO_BUILDING;
+						destinationPurprose=(Sint32)abilityIterator;
+
+						//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
+
+						attachedBuilding=b;
+						targetX=attachedBuilding->getMidX();
+						targetY=attachedBuilding->getMidY();
+						newTargetWasSet();
+						b->unitsInsideSubscribe.push_front(this);
+						b->lastInsideSubscribe=0;
+						subscribed=true;
+						owner->subscribeForInside.push_front(b);
+						///b->update();
+
+						return;
 					}
 				}
 			}
@@ -558,7 +556,7 @@ void Unit::handleActivity(void)
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
-						owner->subscribeForWorkingStep.push_front(b);
+						owner->subscribeToBringRessources.push_front(b);
 						//b->update();
 						return;
 					}
@@ -587,7 +585,7 @@ void Unit::handleActivity(void)
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
-						owner->subscribeForWorkingStep.push_front(b);
+						owner->subscribeForFlaging.push_front(b);
 						//b->update();
 						//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
 
@@ -622,7 +620,7 @@ void Unit::handleActivity(void)
 					b->unitsInsideSubscribe.push_front(this);
 					b->lastInsideSubscribe=0;
 					subscribed=true;
-					owner->subscribeForInsideStep.push_front(b);
+					owner->subscribeForInside.push_front(b);
 					//b->update();
 				}
 				else
@@ -668,7 +666,7 @@ void Unit::handleActivity(void)
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;
 				subscribed=true;
-				owner->subscribeForInsideStep.push_front(b);
+				owner->subscribeForInside.push_front(b);
 				if (verbose)
 					printf("Subscribed to food building %d\n", b->UID);
 				//b->update();
@@ -696,7 +694,7 @@ void Unit::handleActivity(void)
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;
 				subscribed=true;
-				owner->subscribeForInsideStep.push_front(b);
+				owner->subscribeForInside.push_front(b);
 				//b->update();
 			}
 			else
