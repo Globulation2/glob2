@@ -30,21 +30,43 @@ namespace GAGCore
 {
 	TrueTypeFont::TrueTypeFont()
 	{
-		font = NULL;
-		now = 0;
+		init();
 	}
 	
 	TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
 	{
+		init();
 		load(filename, size);
+	}
+	
+	void TrueTypeFont::init(void)
+	{
+		font = NULL;
+		now = 0;
+		cacheHit = 0;
+		cacheMiss = 0;
 	}
 	
 	TrueTypeFont::~TrueTypeFont()
 	{
 		if (font)
 		{
+			// display stats
+			float cacheTotal = static_cast<float>(cacheHit + cacheMiss);
+			if (cacheTotal > 0)
+			{
+				std::cout << "TrueTypeFont : font" <<
+					/*TTF_FontFaceFamilyName(font) << ", " <<
+					TTF_FontFaceStyleName(font) << ", " <<
+					TTF_FontHeight(font) <<*/ " had " <<
+					cacheHit + cacheMiss << " requests, " <<
+					cacheHit << " hits (" << static_cast<float>(cacheHit)/cacheTotal << "), " <<
+					cacheMiss << " misses (" << static_cast<float>(cacheMiss)/cacheTotal << ")" << std::endl;
+			}
+			// free cache
 			for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
 				SDL_FreeSurface(it->second.s);
+			// close font
 			TTF_CloseFont(font);
 		}
 	}
@@ -177,7 +199,7 @@ namespace GAGCore
 			// store in cache
 			cache[key] = data;
 			timeCache[now] = cache.find(key);
-			//std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
+			cacheMiss++;
 		}
 		else
 		{
@@ -189,6 +211,7 @@ namespace GAGCore
 			keyIt->second.lastAccessed = now;
 			// add new time association
 			timeCache[now] = keyIt;
+			cacheHit++;
 		}
 		now++;
 		return s;
