@@ -162,8 +162,14 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 				m.userNameLength=l;
 				
 				m.messageType=YMT_PRIVATE_MESSAGE;
-				
 				(*client)->messages.push_back(m);
+				
+				l=strmlen((*client)->userName, 32);
+				memcpy(m.userName, (*client)->userName, l);
+				m.userName[l-1]=0;
+				m.userNameLength=l;
+				m.messageType=YMT_PRIVATE_RECEIPT;
+				sender->messages.push_back(m);
 			}
 		}
 		break;
@@ -820,7 +826,7 @@ void YOGServer::lprintf(const char *msg, ...)
 	
 	if (logServer)
 		fputs(output, logServer);
-	printf(output);
+	//printf(output);
 	
 	int i;
 	for (i=0; i<256; i++)

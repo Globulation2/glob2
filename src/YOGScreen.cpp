@@ -185,21 +185,43 @@ void YOGScreen::onTimer(Uint32 tick)
 		switch(m->messageType)//set the text color
 		{
 		case YMT_MESSAGE:
+			chatWindow->addText("<");
+			chatWindow->addText(m->userName);
+			chatWindow->addText("> ");
+			chatWindow->addText(m->text);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
 		break;
 		case YMT_PRIVATE_MESSAGE:
+			chatWindow->addText("<");
+			chatWindow->addText(globalContainer->texts.getString("[from:]"));
+			chatWindow->addText(m->userName);
+			chatWindow->addText("> ");
+			chatWindow->addText(m->text);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
+		break;
+		case YMT_PRIVATE_RECEIPT:
+			chatWindow->addText("<");
+			chatWindow->addText(globalContainer->texts.getString("[to:]"));
+			chatWindow->addText(m->userName);
+			chatWindow->addText("> ");
+			chatWindow->addText(m->text);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
 		break;
 		case YMT_ADMIN_MESSAGE:
+			chatWindow->addText("[");
+			chatWindow->addText(m->userName);
+			chatWindow->addText("] ");
+			chatWindow->addText(m->text);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
 		break;
 		default:
 			assert(false);
 		break;
 		}
-		chatWindow->addText("<");
-		chatWindow->addText(m->userName);
-		chatWindow->addText("> ");
-		chatWindow->addText(m->text);
-		chatWindow->addText("\n");
-		chatWindow->scrollToBottom();
 		
 		globalContainer->yog->receivedMessages.erase(m);
 	}

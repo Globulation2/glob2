@@ -182,6 +182,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	case YMT_MESSAGE:
 	case YMT_PRIVATE_MESSAGE:
 	case YMT_ADMIN_MESSAGE:
+	case YMT_PRIVATE_RECEIPT:
 	{
 		Uint8 messageID=data[1];
 		send(YMT_MESSAGE, messageID);
