@@ -1656,14 +1656,15 @@ void Unit::handleMovement(void)
 				if (movement == MOV_RANDOM_GROUND)
 				{
 					if (owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+					{
 						directionFromDxDy();
+						movement=MOV_GOING_DXDY;
+					}
 					else
 					{
-						dx=0;
-						dy=0;
-						direction=8;
+						// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
+						movement=MOV_RANDOM_GROUND;
 					}
-					movement=MOV_GOING_DXDY;
 				}
 			//}
 		}
