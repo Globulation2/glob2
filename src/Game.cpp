@@ -324,23 +324,22 @@ void Game::executeOrder(Order *order, int localPlayer)
 
 bool Game::load(SDL_RWops *stream)
 {
+	assert(stream);
+
 	// delete existing teams
+	int i;
+	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			delete teams[i];
-		}
+		delete teams[i];
 	}
+	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			delete players[i];
-		}
+		delete players[i];
 	}
 
 	SessionInfo tempSessionInfo;
 	tempSessionInfo.load(stream);
-	
+
 	session.numberOfPlayer=tempSessionInfo.numberOfPlayer;
 	session.numberOfTeam=tempSessionInfo.numberOfTeam;
 
@@ -349,15 +348,15 @@ bool Game::load(SDL_RWops *stream)
 
 	memcpy(map.mapName, tempSessionInfo.map.mapName, 32);
 	// other informations are dropped
-	
+
 	//session=*((SessionGame *)(&tempSessionInfo));
-	
+
 	char signature[4];
 
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	setSyncRandSeedA(SDL_ReadBE32(stream));
 	setSyncRandSeedB(SDL_ReadBE32(stream));
 	setSyncRandSeedC(SDL_ReadBE32(stream));
@@ -365,19 +364,15 @@ bool Game::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	// recreate new teams and players
+	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			teams[i]=new Team(stream, this);
-		}
+		teams[i]=new Team(stream, this);
 	}
+	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			players[i]=new Player(stream, teams);
-		}
+		players[i]=new Player(stream, teams);
 	}
 	stepCounter=SDL_ReadBE32(stream);
 
@@ -393,11 +388,8 @@ bool Game::load(SDL_RWops *stream)
 
 void Game::save(SDL_RWops *stream)
 {
-	if (stream==NULL)
-	{
-		printf("stream is NULL!\n");
-		return;
-	}
+	assert(stream);
+
 	// first we save a session info
 	SessionInfo tempSessionInfo;
 	/*

@@ -54,12 +54,12 @@ void BasePlayer::init()
 	strcpy(name, "DEBUG PLAYER");
 	teamNumber=0;
 	teamNumberMask=0;
-	
+
 	ip.host=0;
 	ip.port=0;
 	socket=NULL;
 	channel=-1;
-	
+
 	netState=PNS_BAD;
 	netTimeout=0;
 	netTOTL=0;
@@ -77,6 +77,7 @@ void BasePlayer::close(void)
 {
 	if (destroyNet)
 	{
+		printf("I Wanna destroy net player\n");
 		unbind();
 		if (socket)
 		{
@@ -109,7 +110,7 @@ void BasePlayer::load(SDL_RWops *stream)
 	SDL_RWread(stream, name, 16, 1);
 	teamNumber=SDL_ReadBE32(stream);
 	teamNumberMask=SDL_ReadBE32(stream);
-	
+
 	ip.host=SDL_ReadBE32(stream);
 	ip.port=SDL_ReadBE32(stream);
 }
@@ -218,7 +219,7 @@ bool BasePlayer::bind()
 	
 	if ((socket==NULL) || (ip.host==0))
 	{
-		printf("no socket, or no ip to bind socket to player %d\n", number);		
+		printf("no socket, or no ip to bind socket to player %d\n", number);
 		return false;
 	}
 		
@@ -341,7 +342,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 
 	if (type==P_AI)
 		ai=new AI(this);
-	
+
 	ip=initial->ip;
 	socket=initial->socket;
 	channel=initial->channel;
@@ -350,7 +351,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 void Player::load(SDL_RWops *stream, Team *teams[32])
 {
 	// if AI, delete
-	if (type==P_AI)
+	if ((type==P_AI) && (ai))
 		delete ai;
 
 	// base player

@@ -419,7 +419,6 @@ void MapEdit::loadSave(bool isLoad)
 	globalContainer->gfx->setClipRect();
 	//backBuffer->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, globalContainer->gfx);
 
-	// TODO : steps
 	SDL_Event event;
 	while(gameMenuScreen->endValue<0)
 	{
@@ -586,16 +585,19 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 void MapEdit::load(const char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
-	if (game.load(stream)==false)
-		fprintf(stderr, "MED : Warning, Error during map load\n");
-	SDL_RWclose(stream);
+	if (stream)
+	{
+		if (game.load(stream)==false)
+			fprintf(stderr, "MED : Warning, Error during map load\n");
+		SDL_RWclose(stream);
 
-	// set the editor default values
-	team=0;
-	terrainSize=1; // terrain size 1
-	level=0;
-	type=0; // water
-	editMode=TERRAIN; // terrain
+		// set the editor default values
+		team=0;
+		terrainSize=1; // terrain size 1
+		level=0;
+		type=0; // water
+		editMode=TERRAIN; // terrain
+	}
 
 	draw();
 }
@@ -603,8 +605,11 @@ void MapEdit::load(const char *name)
 void MapEdit::save(const char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
-	game.save(stream);
-	SDL_RWclose(stream);
+	if (stream)
+	{
+		game.save(stream);
+		SDL_RWclose(stream);
+	}
 }
 
 
