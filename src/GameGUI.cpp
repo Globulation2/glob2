@@ -433,7 +433,10 @@ void GameGUI::step(void)
 	// voice step
 	OrderVoiceData *orderVoiceData;
 	while ((orderVoiceData = globalContainer->rec->getNextOrder()) != NULL)
+	{
+		orderVoiceData->recepientsMask = chatMask;
 		orderQueue.push_back(orderVoiceData);
+	}
 	
 	// music step
 	musicStep();

@@ -384,6 +384,7 @@ Uint32 NetGame::lastUsableUStepReceivedFromHim(int player)
 
 void NetGame::sendPushOrder(int targetPlayer)
 {
+	NullOrder nullOrder;
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
@@ -407,6 +408,10 @@ void NetGame::sendPushOrder(int targetPlayer)
 			assert(order);
 			assert(order->ustep==ustep);
 		}
+		// replace order by NullOrder if it is an OrderVoiceData and targetPlayer should not receive it
+		if ((order->getOrderType() == ORDER_VOICE_DATA)
+			&& (( ((OrderVoiceData *)order)->recepientsMask & (1<<targetPlayer)) == 0))
+				order = &nullOrder;
 		totalSize+=12+order->getDataLength();
 		if (ustep==executeUStep)
 		{
@@ -446,6 +451,10 @@ void NetGame::sendPushOrder(int targetPlayer)
 			assert(order);
 			assert(order->ustep==ustep);
 		}
+		// replace order by NullOrder if it is an OrderVoiceData and targetPlayer should not receive it
+		if ((order->getOrderType() == ORDER_VOICE_DATA)
+			&& (( ((OrderVoiceData *)order)->recepientsMask & (1<<targetPlayer)) == 0))
+				order = &nullOrder;
 		int orderSize=order->getDataLength();
 		addUint32(data, order->ustep, l);
 		l+=4;
