@@ -461,4 +461,6 @@ void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char
 	{
 		SDL_SetClipRect(Surface, &oc);
 	}
+	
+	SDL_FreeSurface(s);
 }
