@@ -26,6 +26,7 @@
 class Map;
 class Game;
 class Bullet;
+class Explosion;
 
 // a 16x16 piece of Map
 class Sector
@@ -40,6 +41,7 @@ public:
 	void free(void);
 
 	std::list<Bullet *> bullets;
+	std::list<BulletExplosion *> explosions;
 
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream, Game *game);
