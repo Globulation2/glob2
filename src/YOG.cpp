@@ -857,9 +857,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 bool YOG::enableConnection(const char *userName)
 {
 	memset(this->userName, 0, 32);
-	strncpy(this->userName, userName, 32);
-	this->userName[31]=0;
-	
+	strncpy(this->userName, userName, 31);
+
 	if (socket)
 		SDLNet_UDP_Close(socket);
 	
