@@ -279,6 +279,7 @@ void SettingsScreen::updateGfxCtx(void)
 	{
 		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	}
+	globalContainer->gfx->setQuality((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::HIGH_QUALITY : GraphicContext::LOW_QUALITY);
 	setVisibilityFromGraphicType();
 	actDisplay->setText(actDisplayModeToString().c_str());
 	gfxAltered = true;

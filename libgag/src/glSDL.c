@@ -1540,6 +1540,15 @@ void glSDL_SetLineStipple(int factor, Uint16 pattern)
 		glLineStipple(factor, pattern);
 	}
 }
+void glSDL_SetAntiAliasing(int quality)
+{
+	if (!USING_GLSDL)
+		return;
+	if (quality)
+		gl.Enable(GL_LINE_SMOOTH);
+	else
+		gl.Disable(GL_LINE_SMOOTH);
+}
 void glSDL_ResetRotateAngle()
 {
 	rotate_set = 0;
@@ -2326,10 +2335,10 @@ int glSDL_DrawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2,
 	gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	gl_do_blend(1);
 	gl_do_texture(0);
-	if ((y2-y1 == 0) || (x2-x1 == 0))
+	/*if ((y2-y1 == 0) || (x2-x1 == 0))
 		gl.Disable(GL_LINE_SMOOTH);
 	else
-		gl.Enable(GL_LINE_SMOOTH);
+		gl.Enable(GL_LINE_SMOOTH);*/
 
 	gl.Begin(GL_LINES);
 	if (a < 255)
@@ -2396,7 +2405,7 @@ int glSDL_DrawRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color, Uint8 a)
 	else
 		gl_do_blend(0);
 	gl_do_texture(0);
-	gl.Disable(GL_LINE_SMOOTH);
+	//gl.Disable(GL_LINE_SMOOTH);
 
 	gl.Begin(GL_LINES);
 	if (a < 255)
@@ -2484,7 +2493,7 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 	gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	gl_do_blend(1);
 	gl_do_texture(0);
-	gl.Enable(GL_LINE_SMOOTH);
+	//gl.Enable(GL_LINE_SMOOTH);
 	gl.LineWidth(2);
 
 	tot = ray;
