@@ -60,7 +60,7 @@ public:
 	bool findNewEmplacement(const int buildingType, int *posX, int *posY);
 	Order *mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
 	Order *adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
-	Order *AI::checkoutExpands(const int numbers, const int workers);
+	Order *checkoutExpands(const int numbers, const int workers);
 	
 	Order *getOrder(void);
 
