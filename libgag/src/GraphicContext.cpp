@@ -360,6 +360,9 @@ void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 
 			{
 				Uint8 na=255-a;
 				dy = y;
+				pr = r * a;
+				pg = g * a;
+				pb = b * a;
 				while (dy<y+h)
 				{
 					Uint16 *mem=((Uint16 *)surface->pixels)+dy*(surface->pitch>>1)+x;
@@ -1212,6 +1215,7 @@ bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 
 	if (!surface)
 	{
+		fprintf(stderr, "Toolkit : can't set screen to %dx%d at %d bpp\n", w, h, depth);
 		fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 		return false;
 	}

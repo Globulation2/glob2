@@ -234,7 +234,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("Command line arguments:\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
-			printf("-s\tset resolution (for instance : -s640x480)\n");
+			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-v\tset the music volume\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
 			printf("-b/-B\tenable/disable double buffering (useful on OS X in fullscreen)\n");
@@ -302,21 +302,29 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else if (argv[i][1] == 's')
 			{
 				const char *resStr=&(argv[i][2]);
-				int ix, iy;
-				sscanf(resStr, "%dx%d", &ix, &iy);
-				if (ix!=0)
+				int ix, iy, id;
+				int nscaned = sscanf(resStr, "%dx%dx%d", &ix, &iy, &id);
+				if (nscaned > 1)
 				{
-					ix&=~(0x1F);
-					if (ix<640)
-						ix=640;
-					settings.screenWidth=ix;
+					if (ix!=0)
+					{
+						ix&=~(0x1F);
+						if (ix<640)
+							ix=640;
+						settings.screenWidth = ix;
+					}
+					if (iy!=0)
+					{
+						iy&=~(0x1F);
+						if (iy<480)
+							iy=480;
+						settings.screenHeight = iy;
+					}
 				}
-				if (iy!=0)
+				if (nscaned > 2)
 				{
-					iy&=~(0x1F);
-					if (iy<480)
-						iy=480;
-					settings.screenHeight=iy;
+					if ((id == 16) || (id == 32))
+						settings.screenDepth = id;
 				}
 			}
 		}
@@ -359,7 +367,7 @@ void GlobalContainer::load(void)
 		// and set res
 		gfx = Toolkit::getGraphicContext();
 		gfx->setMinRes(640, 480);
-		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags, (DrawableSurface::GraphicContextType)settings.graphicType);
+		gfx->setRes(settings.screenWidth, settings.screenHeight, globalContainer->settings.screenDepth, settings.screenFlags, (DrawableSurface::GraphicContextType)settings.graphicType);
 		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	

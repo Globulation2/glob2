@@ -36,13 +36,14 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags=DrawableSurface::RESIZABLE;
-	screenWidth=640;
-	screenHeight=480;
-	graphicType=DrawableSurface::GC_SDL;
-	optionFlags=0;
-	defaultLanguage=1;
-	musicVolume=255;
+	screenFlags = DrawableSurface::RESIZABLE | DrawableSurface::DOUBLEBUF;
+	screenWidth = 640;
+	screenHeight = 480;
+	screenDepth = 32;
+	graphicType = DrawableSurface::GC_SDL;
+	optionFlags = 0;
+	defaultLanguage = 1;
+	musicVolume = 255;
 }
 
 #define READ_PARSED_STRING(var) \
@@ -84,6 +85,7 @@ void Settings::load(const char *filename)
 		READ_PARSED_STRING(password);
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
+		READ_PARSED_INT(screenDepth);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(graphicType);
@@ -101,6 +103,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
+		Utilities::streamprintf(stream, "screenHeight=%d\n", screenDepth);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);

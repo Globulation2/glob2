@@ -909,7 +909,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (newH<480)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
+		globalContainer->gfx->setRes(newW, newH, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	}
 }
 
