@@ -32,11 +32,9 @@ Widget::~Widget()
 
 Screen::~Screen()
 {
+	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
-		{
-			delete (*it);
-		}
+		delete (*it);
 	}
 }
 
@@ -180,12 +178,10 @@ void Screen::dispatchEvents(SDL_Event *event)
 void Screen::dispatchTimer(Uint32 tick)
 {
 	onTimer(tick);
+	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
-		{
-			if ((*it)->visible)
-				(*it)->onTimer(tick);
-		}
+		if ((*it)->visible)
+			(*it)->onTimer(tick);
 	}
 }
 
@@ -195,12 +191,10 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	gfxCtx=gfx;
 	gfxCtx->setClipRect();
 	paint();
+	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
-		{
-			if ((*it)->visible)
-				(*it)->paint(gfx);
-		}
+		if ((*it)->visible)
+			(*it)->paint(gfx);
 	}
 }
 

@@ -28,6 +28,7 @@ List::List(int x, int y, int w, int h, const Font *font)
 	this->h=h;
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
+	gfx=NULL;
 }
 
 List::~List()
@@ -66,6 +67,7 @@ void List::internalPaint(void)
 	int nextSize=textHeight;
 	int yPos=y+2;
 	int i=0;
+	assert(gfx);
 	gfx->drawRect(x, y, w, h, 180, 180, 180);
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
@@ -79,13 +81,20 @@ void List::internalPaint(void)
 void List::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
-	internalPaint();
+	if (visible)
+		internalPaint();
+}
+
+void List::setDrawableSurface(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
 }
 
 void List::repaint(void)
 {
 	parent->paint(x, y, w, h);
-	internalPaint();
+	if (visible)
+		internalPaint();
 	parent->addUpdateRect(x, y, w, h);
 }
 

@@ -203,6 +203,13 @@ void MultiplayersHost::stepHostGlobalState(void)
 
 }
 
+void MultiplayersHost::kickPlayer(int p)
+{
+	if (sessionInfo.players[p].type==BasePlayer::P_IP)
+		sessionInfo.players[p].send(SERVER_KICKED_YOU);
+	removePlayer(p);
+}
+
 void MultiplayersHost::removePlayer(int p)
 {
 	int t=sessionInfo.players[p].teamNumber;
@@ -228,6 +235,7 @@ void MultiplayersHost::removePlayer(int p)
 
 		sessionInfo.players[p]=sessionInfo.players[mp];
 
+		sessionInfo.players[p].type=sessionInfo.players[mp].type;
 		sessionInfo.players[p].netState=sessionInfo.players[mp].netState;
 		sessionInfo.players[p].netTimeout=sessionInfo.players[mp].netTimeout;
 		sessionInfo.players[p].netTimeoutSize=sessionInfo.players[mp].netTimeoutSize;

@@ -470,7 +470,8 @@ void BasePlayer::printNetState(char s[32])
 		}
 	}
 	
-	snprintf(s, 32, "%d-%s", netState, t);
+	//snprintf(s, 32, "%d-%s", netState, t);
+	snprintf(s, 32, "%s %d", globalContainer->texts.getString("[state]"), netState);
 }
 
 Player::Player()

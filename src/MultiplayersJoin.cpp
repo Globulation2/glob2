@@ -41,7 +41,6 @@ void MultiplayersJoin::init()
 
 	serverName[0]=0;
 	playerName[0]=0;
-	
 }
 
 MultiplayersJoin::~MultiplayersJoin()
@@ -364,10 +363,21 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 			checkSumConfirmationRecieved(data, size, ip);
 		break;
 
+		case SERVER_KICKED_YOU :
+			if (waitingState<WS_SERVER_START_GAME)
+			{
+				//TODO : show an explaination pannel for the joiner.
+				printf("Server kicked you.\n");
+				myPlayerNumber=-1;
+				waitingState=WS_TYPING_SERVER_NAME;
+			}
+		break;
 		case SERVER_QUIT_NEW_GAME :
 			if (waitingState<WS_SERVER_START_GAME)
 			{
+				//TODO : show an explaination pannel for the joiner.
 				printf("Server has quit.\n");
+				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;
 			}
 		break;

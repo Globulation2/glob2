@@ -33,6 +33,7 @@ public:
 	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(DrawableSurface *gfx);
+	virtual void setDrawableSurface(DrawableSurface *gfx);
 
 	void addText(const char *text, int pos);
 	void addText(const char *text);

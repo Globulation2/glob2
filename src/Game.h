@@ -37,8 +37,8 @@ public:
 
 public:
 	Game();
-	Game(const SessionInfo *initial);
-	bool loadBase(const SessionInfo *initial);
+	//Game(const SessionInfo *initial);
+	//bool loadBase(const SessionInfo *initial);
 	virtual ~Game();
 
 private:

@@ -37,7 +37,8 @@ public:
 
 		STARTED=11,
 		
-		COLOR_BUTTONS = 20
+		COLOR_BUTTONS=32,
+		CLOSE_BUTTONS=64
 	};
 	
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
@@ -58,8 +59,11 @@ public:
 
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
+	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *startTimer;
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
+	
+	SessionInfo savedSessionInfo;
 };
 
 #endif

@@ -115,7 +115,8 @@ int Engine::initCustom(void)
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
 	
-	if (!gui.game.loadBase(&(customGameScreen.sessionInfo)))
+	//if (!gui.game.loadBase(&(customGameScreen.sessionInfo)))
+	if (!gui.loadBase(&(customGameScreen.sessionInfo)))
 	{
 		printf("Engine : Can't load map\n");
 		return EE_CANCEL;
@@ -227,7 +228,7 @@ void Engine::startMultiplayer(SessionConnection *screen)
 
 	screen->sessionInfo.setLocal(p);
 
-	gui.game.loadBase(&screen->sessionInfo);
+	gui.loadBase(&screen->sessionInfo);
 
 	gui.localPlayer=p;
 	gui.localTeam=screen->sessionInfo.players[p].teamNumber;
@@ -261,7 +262,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 		return -1;
 
 	printf("Engine::the game is sharing ...\n");
-
+	
 	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
 	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 20);
 	if (rc==MultiplayersHostScreen::STARTED)
@@ -270,8 +271,10 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 			return EE_CANCEL;
 		else
 		{
-			assert(multiplayersHostScreen.multiplayersJoin->myPlayerNumber!=-1);
-			startMultiplayer(multiplayersHostScreen.multiplayersJoin);
+			if (multiplayersHostScreen.multiplayersJoin->myPlayerNumber!=-1)
+				startMultiplayer(multiplayersHostScreen.multiplayersJoin);
+			else
+				return EE_CANCEL;
 		}
 		return EE_NO_ERROR;
 	}
@@ -320,33 +323,34 @@ int Engine::run(void)
 			gui.step();
 
 			//printf ("Engine::bnp:%d\n", globalContainer->safe());
-
-			net->pushOrder(gui.getOrder(), gui.localPlayer);
-
-			// we get and push ai orders
-			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
+			if (!gui.paused)
 			{
-				if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
+				net->pushOrder(gui.getOrder(), gui.localPlayer);
+
+				// we get and push ai orders
+				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 				{
-					net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+					if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
+					{
+						net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+					}
 				}
+				//printf ("Engine::bns:%d\n", globalContainer->safe());
+
+				// we proceed network
+				net->step();
+
+				//printf ("Engine::bge:%d\n", globalContainer->safe());
+				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
+				{
+					gui.executeOrder(net->getOrder(i));
+				}
+
+				//printf ("Engine::bne:%d\n", globalContainer->safe());
+
+				// here we do the real work
+				gui.game.step(gui.localTeam);
 			}
-			//printf ("Engine::bns:%d\n", globalContainer->safe());
-
-			// we proceed network
-			net->step();
-
-			//printf ("Engine::bge:%d\n", globalContainer->safe());
-
-			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
-			{
-				gui.executeOrder(net->getOrder(i));
-			}
-
-			//printf ("Engine::bne:%d\n", globalContainer->safe());
-
-			// here we do the real work
-			gui.game.step(gui.localTeam);
 
 			//printf ("Engine::bdr:%d\n", globalContainer->safe());
 

@@ -25,14 +25,15 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27);
-	fileList=new List(20, 60, 200, 400, globalContainer->standardFont);
+	toogleButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[the games]"), TOOGLE, 13);
 	mapPreview=new MapPreview(240, 60, "net.map");
-
-	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
-
+	title=new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600);
+	
 	addWidget(ok);
 	addWidget(cancel);
+	addWidget(toogleButton);
 	addWidget(mapPreview);
+	addWidget(title);
 
 	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
 	addWidget(mapName);
@@ -43,18 +44,35 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
 	addWidget(mapSize);
 	
+	mapFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
 		{
 			char *newText=Utilities::dencat(fileName, ".map");
-			fileList->addText(newText);
+			mapFileList->addText(newText);
 			delete[] newText;
 		}
 	}
-	addWidget(fileList);
-
+	addWidget(mapFileList);
+	
+	gameFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
+	if (globalContainer->fileManager.initDirectoryListing(".", "game"))
+	{
+		const char *fileName;
+		while ((fileName=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
+		{
+			char *newText=Utilities::dencat(fileName, ".game");
+			gameFileList->addText(newText);
+			delete[] newText;
+		}
+	}
+	addWidget(gameFileList);
+	
+	mapMode=true;
+	mapFileList->visible=mapMode;
+	gameFileList->visible=!mapMode;
 	validSessionInfo=false;
 
 	globalContainer->gfx->setClipRect();
@@ -68,13 +86,25 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=fileList->getText(par1);
-		char *mapFileName=Utilities::concat(mapSelectedName, ".map");
-		mapPreview->setMapThumbnail(mapFileName);
-		printf("PGU : Loading map '%s' ...\n", mapFileName);
+		char *mapFileName=NULL;
+		if (mapMode)
+		{
+			const char *mapSelectedName=mapFileList->getText(par1);
+			mapFileName=Utilities::concat(mapSelectedName, ".map");
+			mapPreview->setMapThumbnail(mapFileName);
+			printf("PGU : Loading map '%s' ...\n", mapFileName);
+		}
+		else
+		{
+			const char *mapSelectedName=gameFileList->getText(par1);
+			mapFileName=Utilities::concat(mapSelectedName, ".game");
+			mapPreview->setMapThumbnail(mapFileName);
+			printf("PGU : Loading game '%s' ...\n", mapFileName);
+		}
+		
 		SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
 		if (stream==NULL)
-			printf("Map '%s' not found!\n", mapFileName);
+			printf("File '%s' not found!\n", mapFileName);
 		else
 		{
 			validSessionInfo=sessionInfo.load(stream);
@@ -90,6 +120,12 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				mapVersion->setText(textTemp);
 				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
 				mapSize->setText(textTemp);
+				
+				if ((sessionInfo.versionMinor<5)&&(sessionInfo.fileIsAMap))
+				{
+					sessionInfo.fileIsAMap=false;
+					printf("PGU : Old game file version: Warning, data has been modiffied because this is a game and not a map...\n");
+				}
 			}
 			else
 				printf("PGU : Warning, Error during map load\n");
@@ -105,8 +141,31 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			else
 				printf("PGU : This is not a valid map!\n");
 		}
-		else
+		else if (source==cancel)
 			endExecute(par1);
+		else if (source==toogleButton)
+		{
+			mapMode=!mapMode;
+			mapFileList->visible=mapMode;
+			gameFileList->visible=!mapMode;
+			if (mapMode)
+			{
+				mapFileList->setDrawableSurface(gfxCtx);
+				mapFileList->repaint();
+				title->setText(globalContainer->texts.getString("[choose map]"));
+				toogleButton->setText(globalContainer->texts.getString("[the games]"));
+			}
+			else
+			{
+				gameFileList->setDrawableSurface(gfxCtx);
+				gameFileList->repaint();
+				title->setText(globalContainer->texts.getString("[choose game]"));
+				toogleButton->setText(globalContainer->texts.getString("[the maps]"));
+			}
+			toogleButton->repaint();
+		}
+		else
+			assert(false);
 	}
 }
 
@@ -114,11 +173,3 @@ void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 }
-
-
-
-
-
-
-
-

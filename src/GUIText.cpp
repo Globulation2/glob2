@@ -79,21 +79,52 @@ void Text::setText(const char *newText)
 
 void Text::paint(DrawableSurface *gfx)
 {
-	int wDec, hDec;
+	if (visible)
+	{
+		int wDec, hDec;
 
-	assert(gfx);
+		assert(gfx);
 
+		this->gfx=gfx;
+
+		if (w)
+			wDec=(w-font->getStringWidth(text))>>1;
+		else
+			wDec=0;
+
+		if (h)
+			hDec=(h-font->getStringHeight(text))>>1;
+		else
+			hDec=0;
+
+		gfx->drawString(x+wDec, y+hDec, font, text);
+	}
+}
+
+void Text::setDrawableSurface(DrawableSurface *gfx)
+{
 	this->gfx=gfx;
+}
 
+void Text::repaint(void)
+{
+	int upW, upH;
+	assert(font);
 	if (w)
-		wDec=(w-font->getStringWidth(text))>>1;
+		upW=w;
 	else
-		wDec=0;
-
+	{
+		assert(font);
+		upW=font->getStringWidth(text)+2;
+	}
 	if (h)
-		hDec=(h-font->getStringHeight(text))>>1;
+		upH=h;
 	else
-		hDec=0;
-
-	gfx->drawString(x+wDec, y+hDec, font, text);
+	{
+		assert(font);
+		upH=font->getStringHeight(text);
+	}
+	parent->paint(x-1, y, upW, upH);
+	paint(gfx);
+	parent->addUpdateRect(x-1, y, upW, upH);
 }

@@ -25,7 +25,7 @@
 SessionGame::SessionGame()
 {
 	versionMajor=0;
-	versionMinor=4;
+	versionMinor=5;
 	sessionInfoOffset=0;
 	gameOffset=0;
 	teamsOffset=0;
@@ -36,6 +36,8 @@ SessionGame::SessionGame()
 	numberOfTeam=0;
 	gameTPF=40;
 	gameLatency=5;
+	
+	fileIsAMap=(Sint32)true;
 }
 
 SessionGame::SessionGame(const SessionGame &sessionGame)
@@ -46,7 +48,7 @@ SessionGame::SessionGame(const SessionGame &sessionGame)
 void SessionGame::save(SDL_RWops *stream)
 {
 	versionMajor=0;
-	versionMinor=4;
+	versionMinor=5;
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);
@@ -60,6 +62,7 @@ void SessionGame::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, numberOfTeam);
 	SDL_WriteBE32(stream, gameTPF);
 	SDL_WriteBE32(stream, gameLatency);
+	SDL_WriteBE32(stream, fileIsAMap);
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
 
@@ -85,6 +88,11 @@ bool SessionGame::load(SDL_RWops *stream)
 	gameTPF=SDL_ReadBE32(stream);
 	gameLatency=SDL_ReadBE32(stream);
 
+	if (versionMinor>4)
+		fileIsAMap=SDL_ReadBE32(stream);
+	else
+		fileIsAMap=(Sint32)true;
+	
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
@@ -104,14 +112,14 @@ void SessionInfo::draw(DrawableSurface *gfx)
 	for (int i=0; i<numberOfPlayer; i++)
 	{
 		int teamNumber;
-		getPlayerInfo(i, &teamNumber, playerInfo, sizeof(playerInfo));
+		getPlayerInfo(i, &teamNumber, playerInfo, NULL, sizeof(playerInfo));
 		BaseTeam &te=team[teamNumber];
 		gfx->drawFilledRect(22, 62+i*20, 16, 16, te.colorR, te.colorG, te.colorB);
 		gfx->drawString(40, 60+i*20, globalContainer->standardFont, playerInfo);
 	}
 }
 
-void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, int stringLen)
+void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen)
 {
 	assert(playerNumber>=0);
 	assert(playerNumber<numberOfPlayer);
@@ -122,11 +130,34 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		players[playerNumber].printip(s);
 		char t[32];
 		players[playerNumber].printNetState(t);
-		snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
+		
+		if (savedSessionInfo)
+		{
+			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
+				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
+				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, globalContainer->texts.getString("[was]"), savedSessionInfo->players[playerNumber].name, s, t);
+			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
+				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, globalContainer->texts.getString("[was AI]"), savedSessionInfo->players[playerNumber].name, s, t);
+			else
+				assert(false);
+		}
+		else
+			snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
 	}
 	else if (players[playerNumber].type==BasePlayer::P_AI)
 	{
-		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+		if (savedSessionInfo)
+		{
+			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
+				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
+				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, globalContainer->texts.getString("[was]"), savedSessionInfo->players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
+				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, globalContainer->texts.getString("[was AI]"), savedSessionInfo->players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+			else
+				assert(false);
+		}
+		else
+			snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, globalContainer->texts.getString("[AI]"));
 	}
 	else
 		assert(false);
@@ -140,6 +171,7 @@ char *SessionGame::getData()
 	addSint32(data, numberOfTeam, 12);
 	addSint32(data, gameTPF, 16);
 	addSint32(data, gameLatency, 20);
+	addSint32(data, fileIsAMap, 24);
 	
 	return data;
 }
@@ -155,6 +187,7 @@ bool SessionGame::setData(const char *data, int dataLength)
 	printf("s not=%d\n", numberOfTeam=getSint32(data, 12));
 	gameTPF=getSint32(data, 16);
 	gameLatency=getSint32(data, 20);
+	fileIsAMap=getSint32(data, 24);
 	
 	return true;
 }
@@ -162,7 +195,7 @@ bool SessionGame::setData(const char *data, int dataLength)
 
 int SessionGame::getDataLength()
 {
-	return 24;
+	return S_GAME_DATA_SIZE;
 }
 
 Sint32 SessionGame::checkSum()
@@ -275,7 +308,7 @@ char *SessionInfo::getData()
 	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
 	l+=SessionGame::getDataLength();
 	
-	assert(l==DATA_SIZE);
+	assert(l==S_INFO_DATA_SIZE);
 	return data;
 }
 
@@ -314,7 +347,7 @@ bool SessionInfo::setData(const char *data, int dataLength)
 
 int SessionInfo::getDataLength()
 {
-	return DATA_SIZE;
+	return S_INFO_DATA_SIZE;
 }
 
 Sint32 SessionInfo::checkSum()
