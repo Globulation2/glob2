@@ -784,6 +784,7 @@ void MapEdit::loadSave(bool isLoad)
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
+		loadSaveScreen->dispatchPaint();
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 	}
@@ -823,6 +824,7 @@ void MapEdit::scriptEditor(void)
 		{
 			scriptEditorScreen->translateAndProcessEvent(&event);
 		}
+		scriptEditorScreen->dispatchPaint();
 		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 	}
