@@ -1264,21 +1264,21 @@ void GameGUI::draw(void)
 				{
 					if (selBuild->buildingState==Building::ALIVE)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+10, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+45+12, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 					}
 					else
 					{
 						if (selBuild->unitsWorking.size()>1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s%d%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+10, globalContainer->littleFont, "%s%d%s",
 								globalContainer->texts.getString("[still (w)]"),
 								selBuild->unitsWorking.size(),
 								globalContainer->texts.getString("[units working]"));
 						}
 						else if (selBuild->unitsWorking.size()==1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+10, globalContainer->littleFont, 
 								globalContainer->texts.getString("[still one unit working]") );
 						}
 					}
