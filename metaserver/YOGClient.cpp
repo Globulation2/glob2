@@ -39,8 +39,12 @@ inline void standardTimeout(int *timeout, const unsigned size, const int base, c
 	}
 }
 
-YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char username[32])
+YOGClient::YOGClient(IPaddress ip, UDPsocket socket, const char username[32])
 {
+	memset(this->username, 0, 32);
+	memset(this->password, 0, 32);
+	memset(this->xorpassw, 0, 32);
+	
 	this->ip=ip;
 	hostGameip.host=0;
 	hostGameip.port=0;
@@ -87,10 +91,6 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char username[32])
 	clientsTOTL=3;
 	clientsUpdatesTimeout=DEFAULT_NETWORK_TIMEOUT;
 	clientsUpdatesTOTL=3;
-	
-	memset(username, 0, 32);
-	memset(password, 0, 32);
-	memset(xorpassw, 0, 32);
 }
 
 YOGClient::~YOGClient()

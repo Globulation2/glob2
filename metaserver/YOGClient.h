@@ -77,7 +77,7 @@ class YOGClient
 public:
 	static const int DEFAULT_NEW_MESSAGE_TIMEOUT=0;
 public:
-	YOGClient(IPaddress ip, UDPsocket socket, char userName[32]);
+	YOGClient(IPaddress ip, UDPsocket socket, const char userName[32]);
 	virtual ~YOGClient();
 
 	void send(Uint8 *data, int size);
