@@ -1,3 +1,5 @@
 After alpha6:
 -Workers won't bring fruits if some are lost.
 -Added a short building description in game gui.
+-When the game host is a router which route broadcasting packet to the upward internet, this will now work with more players behind this router.
+-When the NAT system allows external entries to be valid internal entries, this will now work with more players beyond this NAT.
