@@ -47,7 +47,7 @@ dnl Check for libvorbis
 XIPH_PATH_VORBIS
 
 dnl Open GL support
-AC_ARG_ENABLE(opengl, [  --disable-opengl        Disable the OpenGL renderer if available], echo $enable_opengl, enable_opengl="yes")
+AC_ARG_ENABLE(opengl, [  --enable-opengl        Enable the OpenGL renderer if available (default is disabled)], enable_opengl="yes", enable_opengl="no")
 if test "x$enable_opengl" = "xyes"; then
 	AC_CHECK_LIB(GL, glBegin)
 	AC_CHECK_LIB(GLU, gluOrtho2D)
