@@ -1683,7 +1683,7 @@ void GameGUI::drawAll(int team)
 {
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 	bool drawBuildingRects=(typeToBuild>=0);
-	game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
+	game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, false);
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
