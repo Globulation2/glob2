@@ -40,6 +40,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 {
 	{ INT, "int" },
 	{ STRING, "string" },
+	{ LANG, "lang" },
 
 	{ S_PAROPEN, "("},
 	{ S_PARCLOSE, ")"},
@@ -70,13 +71,6 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_ISDEAD, "isdead" },
 	{ S_ALLY, "ally" },
 	{ S_ENEMY, "enemy" },
-
-	{ S_LANG_0, "lang0" },
-	{ S_LANG_1, "lang1" },
-	{ S_LANG_2, "lang2" },
-	{ S_LANG_3, "lang3" },
-	{ S_LANG_4, "lang4" },
-	{ S_LANG_5, "lang5" },
 
 	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "Explorer" },
@@ -254,11 +248,9 @@ bool Story::testCondition(GameGUI *gui)
 			case (Token::S_SHOW):
 			{
 				unsigned lsInc=0;
-				if ((line[lineSelector+2].type >= Token::S_LANG_0) &&
-					(line[lineSelector+2].type <= Token::S_LANG_5))
+				if (line[lineSelector+2].type == Token::LANG)
 				{
-					unsigned langId = line[lineSelector+2].type - Token::S_LANG_0;
-					if (langId != globalContainer->settings.defaultLanguage)
+					if (line[lineSelector+2].value != static_cast<int>(globalContainer->settings.defaultLanguage))
 					{
 						lineSelector += 2;
 						return true;
@@ -808,7 +800,19 @@ void Aquisition::nextToken()
 		}
 		else
 		{
-			token.type=Token::getTypeByName(mot.c_str());
+			// is it a language ?
+			for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
+			{
+				if (mot == std::string(Toolkit::getStringTable()->getStringInLang("[language-code]", i)))
+				{
+					token.type = Token::LANG;
+					token.value = i;
+					return;
+				}
+			}
+			
+			// so it is another token
+			token.type = Token::getTypeByName(mot.c_str());
 		}
 	}
 	else
@@ -922,18 +926,6 @@ void Mapscript::reset(void)
 	stories.clear();
 	areas.clear();
 	flags.clear();
-
-	// fill language map
-	unsigned langCount = Toolkit::getStringTable()->getNumberOfLanguage();
-	unsigned sgslLangCount = 6;
-	assert(sgslLangCount == langCount);
-	for (unsigned i=0; i<sgslLangCount; i++)
-	{
-		unsigned j=0;
-		while (Token::table[j].type != (int)(Token::S_LANG_0+i))
-			j++;
-		Token::table[j].name = Toolkit::getStringTable()->getStringInLang("[language-code]", i);
-	}
 }
 
 bool Mapscript::testMainTimer()
@@ -1415,8 +1407,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							}
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
-							if ((donnees->getToken()->type < Token::S_LANG_0) ||
-								(donnees->getToken()->type > Token::S_LANG_5))
+							if (donnees->getToken()->type != Token::LANG)
 							{
 								er.type=ErrorReport::ET_NOT_VALID_LANG_ID;
 								break;
