@@ -683,6 +683,12 @@ Obranná věž postavena ...
 ?? Rodungsflagge fertig ??
 ?? Čistící vlajka připravena ??
 
+[the forbidden flag is finished]
+?? Drapeau d'interdiction terminé ??
+?? Forbidden flag finished ??
+
+
+
 [the stone wall is finished]
 Un élément de mur est terminé
 A part of the wall is finished
@@ -760,6 +766,12 @@ Obranná věž je pod útokem
 ?? Clearing flag under attack ??
 ?? Rodungsflagge wird angegriffen ??
 ?? Čistící vlajka v obležení nepřátel ??
+
+[the forbidden flag is under attack]
+?? Drapeau d'interdiction attaqué ??
+?? Forbidden flag under attack ??
+
+
 
 [the stone wall is under attack]
 L'ennemi est à vos murs
