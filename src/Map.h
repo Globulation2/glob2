@@ -22,7 +22,7 @@
 #define __MAP_H
 
 //! if defined, enable fow and map invisible
-#define DBG_ALL_MAP_DISCOVERED
+//#define DBG_ALL_MAP_DISCOVERED
 
 #include "GAG.h"
 #include "Unit.h"
