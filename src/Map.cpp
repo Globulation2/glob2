@@ -1701,7 +1701,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 					miniGrad[rx+ry*5]=gradient[xg+yg*w];
 				}
 					
-			if (directionFromMinigrad(miniGrad, &vddx, &vddy, false))
+			if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
 			{
 				vx=(vx+vddx)&wMask;
 				vy=(vy+vddy)&hMask;
@@ -1770,7 +1770,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 								miniGrad[rx+ry*5]=gradient[xg+yg*w];
 							}
 
-						if (directionFromMinigrad(miniGrad, &vddx, &vddy, false))
+						if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
 						{
 							vx=(vx+vddx)&wMask;
 							vy=(vy+vddy)&hMask;
@@ -1853,7 +1853,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 						miniGrad[rx+ry*5]=gradient[xg+yg*w];
 					}
 
-				if (directionFromMinigrad(miniGrad, &vddx, &vddy, false))
+				if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
 				{
 					vx=(vx+vddx)&wMask;
 					vy=(vy+vddy)&hMask;
@@ -2183,12 +2183,13 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 		updateGlobalGradient(gradient);
 }
 
-bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict)
+bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose)
 {
 	Uint8 max;
-	Uint8 maxs[8];
+	Uint8 mxd; // max in direction
+	Uint32 maxs[8];
 	
-	max=miniGrad[1+1*5];
+	max=mxd=miniGrad[1+1*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2202,8 +2203,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[0]=max;
-	max=miniGrad[3+1*5];
+	maxs[0]=(max<<8)|mxd;
+	max=mxd=miniGrad[3+1*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2217,8 +2218,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[1]=max;
-	max=miniGrad[3+3*5];
+	maxs[1]=(max<<8)|mxd;
+	max=mxd=miniGrad[3+3*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2232,8 +2233,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[2]=max;
-	max=miniGrad[1+3*5];
+	maxs[2]=(max<<8)|mxd;
+	max=mxd=miniGrad[1+3*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2247,10 +2248,10 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[3]=max;
+	maxs[3]=(max<<8)|mxd;
 	
 	
-	max=miniGrad[2+1*5];
+	max=mxd=miniGrad[2+1*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2262,8 +2263,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[4]=max;
-	max=miniGrad[3+2*5];
+	maxs[4]=(max<<8)|mxd;
+	max=mxd=miniGrad[3+2*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2275,8 +2276,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[5]=max;
-	max=miniGrad[2+3*5];
+	maxs[5]=(max<<8)|mxd;
+	max=mxd=miniGrad[2+3*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2288,8 +2289,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[6]=max;
-	max=miniGrad[1+2*5];
+	maxs[6]=(max<<8)|mxd;
+	max=mxd=miniGrad[1+2*5];
 	if (max && max!=255)
 	{
 		max=1;
@@ -2301,9 +2302,10 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			if (side[i]>max)
 				max=side[i];
 	}
-	maxs[7]=max;
+	maxs[7]=(max<<8)|mxd;
 	
 	int centerg=miniGrad[2+2*5];
+	centerg=(centerg<<8)|centerg;
 	int maxg=centerg;
 	int maxd=8;
 	bool good=false;
@@ -2332,17 +2334,20 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			}
 		}
 	
-	/*printf("miniGrad:\n");
-	for (int ry=0; ry<5; ry++)
+	if (verbose)
 	{
-		for (int rx=0; rx<5; rx++)
-			printf("%4d", miniGrad[rx+ry*5]);
-		printf("\n");
+		printf("miniGrad (%d):\n", strict);
+		for (int ry=0; ry<5; ry++)
+		{
+			for (int rx=0; rx<5; rx++)
+				printf("%4d", miniGrad[rx+ry*5]);
+			printf("\n");
+		}
+		printf("maxs:\n");
+		for (int d=0; d<8; d++)
+			printf("%4d.%4d (%d)\n", maxs[d]>>8, maxs[d]&0xFF, maxs[d]);
+		printf("maxd=%4d.%4d (%d), good=%d\n", maxd>>8, maxd&0xFF, maxd, good);
 	}
-	printf("maxs:\n");
-	for (int d=0; d<8; d++)
-		printf("%4d\n", maxs[d]);
-	printf("maxd=%4d\n", maxd);*/
 	
 	if (!good)
 		return false;
@@ -2361,7 +2366,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	return true;
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient)
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool verbose)
 {
 	Uint8 miniGrad[25];
 	miniGrad[2+2*5]=gradient[x+y*w];
@@ -2415,10 +2420,12 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 		else
 			miniGrad[rx+ry*5+12]=0;
 	}
-	return directionFromMinigrad(miniGrad, dx, dy, true);
+	if (verbose)
+		printf("directionByMinigrad global %d\n", canSwim);
+	return directionFromMinigrad(miniGrad, dx, dy, true, verbose);
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024])
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool verbose)
 {
 	Uint8 miniGrad[25];
 	for (int ry=0; ry<5; ry++)
@@ -2455,7 +2462,7 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 			assert(ly<32);
 			int g=localGradient[lx+ly*32];
 			//printf("|r=(%d, %d), b=(%d, %d), g=(%d, %d), l=(%d, %d), g=%d\n", rx, ry, bx, by, gx, gy, lx, ly, g);
-			if (g==0 || g==255 || isFreeForGroundUnit(gx, gy, canSwim, teamMask))
+			if (g==0 || g==255 || (rx==2 && ry==2) || isFreeForGroundUnit(gx, gy, canSwim, teamMask))
 				miniGrad[rx+ry*5]=g;
 			else
 				miniGrad[rx+ry*5]=0;
@@ -2469,7 +2476,9 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 				if (!isFreeForGroundUnit(gx, gy, canSwim, teamMask))
 					miniGrad[rx+ry*5]=0;
 			}
-	return directionFromMinigrad(miniGrad, dx, dy, true);
+	if (verbose)
+		printf("directionByMinigrad local %d\n", canSwim);
+	return directionFromMinigrad(miniGrad, dx, dy, true, verbose);
 }
 
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
@@ -2488,7 +2497,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		return false;
 	}
 	
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient))
+	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
 	{
 		pathToRessourceCountSuccess++;
 		//printf("...pathfindedRessource v2 %d\n", found);
@@ -3594,7 +3603,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	}
 }
 
-bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
 	pathToBuildingCountTot++;
 	//printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
@@ -3631,7 +3640,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 
 		if (!building->dirtyLocalGradient[canSwim] && currentg>1)
 		{
-			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient))
+			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, verbose))
 			{
 				pathToBuildingCountCloseSuccessBase++;
 				//printf("...pathfindedBuilding v2\n");
@@ -3654,7 +3663,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		gradientUsable=false;
 		if (currentg>1)
 		{
-			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient))
+			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, verbose))
 			{
 				pathToBuildingCountCloseSuccessUpdated++;
 				//printf("...pathfindedBuilding v4\n");
@@ -3696,7 +3705,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			return false;
 		}
 		else
-			found=directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient);
+			found=directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, verbose);
 
 		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
 		if (found)
@@ -3721,7 +3730,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
-		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient))
+		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, verbose))
 		{
 			pathToBuildingCountFarUpdateSuccess++;
 			//printf("...pathfindedBuilding v7\n");

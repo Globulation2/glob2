@@ -363,9 +363,9 @@ public:
 	
 	void updateGlobalGradient(Uint8 *gradient);
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
-	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024]);
+	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool verbose);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool verbose);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
@@ -375,7 +375,7 @@ public:
 	void expandLocalGradient(Uint8 *gradient);
 	
 	bool buildingAviable(Building *building, bool canSwim, int x, int y, int *dist);
-	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
