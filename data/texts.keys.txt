@@ -318,3 +318,4 @@
 [Happyness]
 [customcur]
 [choose campaign]
+[nick taken]
