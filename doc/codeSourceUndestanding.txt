@@ -1,0 +1,232 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+This is the first file you should read if you want to undestand the global class interactions of glob2.
+The goal is to explain the main ideas without all tricks and special cases which has to be inclused in the real code.
+It's expected that you already well know how to play.
+
+
+
+
+*1 Undestanding the basic idea of the engine:
+
+The code engine is working synchronousely. This means that there are no multithreading at all. Every 40[ms] each class which needs processing time has his .step() method called. The .step() method is called with respect of the class architecture.
+
+As explained later, this synchronous way to work will allows us to have a very low network brandwith use. The same system is used for any game, played localy or over the internet.
+
+The idea is to have basic "Orders" which define any interaction you can have with the game.
+
+Here is the simplified code of the core engine, fully aviable in "Engine::run()":
+
+GameGUI gui; // Class handling visual and interactive events. It includes other classes.
+NetGame net; // Class handling network interations, and network abstraction.
+
+while (gui.run)
+{
+	// Handle user mouse clicks and keys strokes:
+	gui.step(); 
+	
+	// Transmit the Order of the user, from the GUI to the network interface:
+	net.pushOrder(gui.getOrder(), gui.localPlayer);
+	
+	// Transmit the Order of each ai to the network interface:
+	for ("each artificial intelligence" ai)
+		net.pushOrder(ai.getOrder(), ai);
+	
+	// Send the Orders trough network to other players, and receive their.
+	net.step();
+	
+	// Really execute every Orders:
+	for ("each players" player)
+		gui.executeOrder(net.getOrder(player));
+	
+	// We draw everything on the screen:
+	gui.drawAll(gui.localTeam);
+	
+	// Sleep the right time to have 40[ms] per frame.
+	sleep();
+}
+
+A graphical dataflow of the engine would be:
+GameGUI ---(order by copy)---------> NetGame
+NetGame ---(order trough UDP/IP)---> NetGame
+NetGame ---(order by copy)---------> GameGUI
+
+Then the real "Engine::run()" is the same with some more problems handling.
+
+
+
+
+*2 Undestanding the basic class architecture
+
+This architecture is used for the execution with the .step() methods, and for the load and save with the .save() and .load() methods. This means thats all thoses methods are called recursively trough all architecture.
+
+Architectural view of most important classes with most important methods:
+
+Engine
+{
+	run();
+	
+	NetGame
+	{
+		step();
+		pushOrder();
+		getOrder();
+	}
+	
+	GameGUI
+	{
+		step();
+		load();
+		save();
+		
+		Game
+		{
+			step();
+			load();
+			save();
+			
+			Map
+			{
+				step();
+				load();
+				save();
+			}
+			
+			[32] Team
+			{
+				step();
+				load();
+				save();
+				
+				[1024] Unit
+				{
+					step();
+					load();
+					save();
+				}
+				[1024] Building
+				{
+					step();
+					load();
+					save();
+				}
+			}
+			
+			[32] Player
+			{
+				load();
+				save();
+			}
+			
+			Session
+			{
+				load();
+				save();
+				
+				[32] BasePlayer
+				{
+					load();
+					save();
+				}
+				[32] BaseTeam
+				{
+					load();
+					save();
+				}
+			}
+		}
+	}
+}
+
+
+
+
+*3 Basics of Order
+
+Take a look at src/Order.h. A typical order is "OrderCreate". What is important is that it includes everything needed to know how to add a new building site:
+Uint32 team;
+Sint32 posX;
+Sint32 posY;
+Sint32 typeNumber;
+
+The other stuff (and the super class Order) is used to serialize and deserialize the orders.
+
+
+
+
+*4 Basics of Team and Player
+
+It's important that you undestand the differences between a Team an a Player in glob2. Somehow a class Team is a "logical-player", and a Player is an human interface. We could say Player==keyboard+mouse. And a Team is a colony. We can say that a Team is a colony color.
+
+The engine treats Teams and Players separately. A map will include a given number of teams. Each teams will be controled by zero to 32 players. Each player controls one existing team.
+
+An unclontroled team will evolve with no Order executed for he team (like if the player where sleeping all the game). A team controled by more than one player will execute all orders from all controling players.
+
+Two players in a team is not an aliance. Once the game is started there is no way to separate the two players.
+
+This logicaly implies that only Teams can be allied.
+
+Take a look at Player.h and Team.h. Notice the important variables:
+
+
+BasePlayer
+{
+	PlayerType type; // AI or IP (internet) or local player
+	char name[32];
+	Sint32 teamNumber; // a reference the the team which we play in.
+	IPaddress ip; // used by network
+}
+Player:public BasePlayer
+{
+	Team *team; // a pointer to the team which we play in.
+	Game *game; // optimisation, we can access it trough *team.
+	Map *map; // optimisation, we can access it trough *game.
+	
+	AI *ai; // a pointer to the AI if the player is AI.
+}
+
+The difference between BasePlayer and Player is that the BasePlayer is serialisable. A copy of BasePlayer is included in the class "Session" in saved files. It's usefull for load and save tricks. The engine only care about the "Player" class. This is the same for BaseTeam and Team.
+
+class BaseTeam
+{
+	TeamType type; // trick used to design campains. If AI, then we haev to put an AI player to control this TEam.
+	Sint32 teamNumber; // index of the current team in the game::teams[] array.
+	Sint32 numberOfPlayer; // number of controling players
+	Uint8 colorR, colorG, colorB; // Which color is the team. (mainly globules and swarm)
+	Uint32 playersMask; // bit mask of the controling players indexes.
+	
+	Race race; // unused game engine feature, which would allow each team to customise the specifications of his units. (speeds, hp, hungryness, ...)
+}
+class Team
+{
+	Game *game; // Access to the game we are playing in.
+	Map *map; // optimisation, can me accessed trough *game.
+	
+	Unit *myUnits[1024]; // Our units! Pointer is NULL for unused slots.
+	Building *myBuildings[1024]; // Our buildings! Pointer is NULL for unused slots.
+	
+	Uint32 allies; // bit mask of the teams I thrust and don't fire on.
+}
+
+
+
+
+*5 Basics of NetGame
+

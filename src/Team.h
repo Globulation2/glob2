@@ -45,8 +45,8 @@ public:
 	virtual ~BaseTeam(void) { }
 
 	TeamType type;
-	Sint32 teamNumber;
-	Sint32 numberOfPlayer;
+	Sint32 teamNumber; // index of the current team in the game::teams[] array.
+	Sint32 numberOfPlayer; // number of controling players
 	Uint8 colorR, colorG, colorB, colorPAD;
 	Uint32 playersMask;
 	Race race;
