@@ -187,7 +187,7 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeamNo<32);
 	assert(game.session.numberOfPlayer>0);
 	assert(game.session.numberOfPlayer<32);
-	assert(localTeamNo<game.session.numberOfPlayer);
+	assert(localTeamNo<game.session.numberOfTeam);
 	
 	localTeam=game.teams[localTeamNo];
 	assert(localTeam);
