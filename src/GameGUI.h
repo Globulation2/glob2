@@ -113,6 +113,9 @@ public:
 	void setCpuLoad(int s);
 
 private:
+	// Helper function for key and menu
+	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
+	
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDLKey key, bool pressed, bool shift);

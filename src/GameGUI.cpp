@@ -1013,6 +1013,35 @@ void GameGUI::nextDisplayMode(void)
 	} while ((1<<((int)displayMode)) & hiddenGUIElements);
 }
 
+void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade)
+{
+	BuildingType *buildingType = building->type;
+	
+	// building site can't be repaired nor upgraded
+	if (buildingType->isBuildingSite)
+		return;
+	// we can upgrade or repair only building from our team
+	if (building->owner->teamNumber != localTeamNo)
+		return;
+	
+	if ((building->hp < buildingType->hpMax) && repair)
+	{
+		// repair
+		if ((building->type->regenerationSpeed == 0) &&
+			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
+			(localTeam->maxBuildLevel() >= buildingType->level))
+			orderQueue.push_back(new OrderConstruction(building->gid));
+	}
+	else if (upgrade)
+	{
+		// upgrade
+		if ((buildingType->nextLevel != -1) &&
+			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
+			(localTeam->maxBuildLevel() > buildingType->level))
+			orderQueue.push_back(new OrderConstruction(building->gid));
+	}
+}
+
 void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 {
 	int modifier;
@@ -1076,28 +1105,15 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 				}
 				break;
 			case SDLK_u:
-			case SDLK_a:
 				{
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevel!=-1) && (!selBuild->type->isBuildingSite))
-						{
-							orderQueue.push_back(new OrderConstruction(selBuild->gid));
-						}
-					}
+						repairAndUpgradeBuilding(selection.building, false, true);
 				}
 				break;
 			case SDLK_r:
 				{
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
-					{
-						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->hp<selBuild->type->hpMax) && (!selBuild->type->isBuildingSite))
-						{
-							orderQueue.push_back(new OrderConstruction(selBuild->gid));
-						}
-					}
+						repairAndUpgradeBuilding(selection.building, true, false);
 				}
 				break;
 			case SDLK_t :
@@ -1671,20 +1687,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
 			}
-			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
+			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 			{
-				if (selBuild->hp<buildingType->hpMax)
-				{
-					// repair
-					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
-						orderQueue.push_back(new OrderConstruction(selBuild->gid));
-				}
-				else if (buildingType->nextLevel!=-1)
-				{
-					// upgrade
-					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
-						orderQueue.push_back(new OrderConstruction(selBuild->gid));
-				}
+				repairAndUpgradeBuilding(selBuild, true, true);
 			}
 		}
 
