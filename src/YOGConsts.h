@@ -21,6 +21,7 @@
 #define __YOG_CONSTS_H
 
 //#define YOG_SERVER_IP "192.168.1.37"
+//#define YOG_SERVER_IP "lsa2pc35.epfl.ch"
 #define YOG_SERVER_IP "yog1.ysagoon.com"
 #define YOG_SERVER_PORT 7486
 

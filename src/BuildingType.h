@@ -130,7 +130,7 @@ public:
 	BuildingType() { init(); }
 	BuildingType(SDL_RWops *stream) { load(stream); }
 	virtual ~BuildingType() { }
-	virtual const char **getVars(int *size, Uint32 **data)
+	virtual const char **getVars(size_t *size, Uint32 **data)
 	{
 		static const char *vars[] =
 		{
