@@ -119,7 +119,7 @@ harvestSpeed = 16
 *
 // max Worker Unit
 buildSpeed = 32
-harvestSpeed = 64
+harvestSpeed = 32
 *
 // cost Worker Unit
 *
