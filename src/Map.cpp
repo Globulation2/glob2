@@ -289,7 +289,7 @@ void Map::save(SDL_RWops *stream)
 		SDL_WriteBE16(stream, cases[i].airUnit);
 		SDL_WriteBE32(stream, cases[i].forbidden);
 	}
-	
+
 	// We save sectors:
 	SDL_WriteBE32(stream, wSector);
 	SDL_WriteBE32(stream, hSector);
@@ -409,16 +409,17 @@ bool Map::decRessource(int x, int y)
 		return false;
 
 	RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
+	RessourcesTypes *fulltypes=globalContainer->ressourcesTypes;
+	RessourceType fulltype=(*fulltypes)[type];
 	unsigned amount=r.field.amount;
 	assert(amount);
-	if (type==STONE)
+
+	if (!fulltype.shrinkable || ((fulltype.eternal) && (amount==1)))
 		return false;
-	else if (type==WOOD || amount==1)
+	else if (!fulltype.granular || amount==1)
 		rp->id=NORESID;
-	else if (type==CORN || type==ALGA || type==FUNGUS)
-		rp->field.amount=amount-1;
 	else
-		assert(false);
+		rp->field.amount=amount-1;
 	return true;
 }
 
