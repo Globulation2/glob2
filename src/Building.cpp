@@ -1983,11 +1983,11 @@ void Building::turretStep(void)
 			}
 		}
 
-		Bullet *b=new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY);
+		Bullet *b = new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY, posX-1, posY-1, type->width+2, type->height+2);
 		s->bullets.push_front(b);
 
 		bullets--;
-		shootingCooldown=SHOOTING_COOLDOWN_MAX;
+		shootingCooldown = SHOOTING_COOLDOWN_MAX;
 	}
 
 }
