@@ -355,7 +355,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	Uint32 resendUStep=lastUStepReceivedFromMe[targetPlayer]+1;
 	Order *order=ordersQueue[localPlayerNumber][resendUStep&255];
 	assert(order);
-	if (order->ustep==resendUStep)
+	if (order->ustep!=resendUStep)
 	{
 		order=NULL;
 		fprintf(logFile, " resend not aviable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
