@@ -1,16 +1,25 @@
 To First release :
 
-- Nom des graphs en couleur.
+Gameplay :
+- Changer la structure de la carte :
+  * niveau 0 pas sur eau.
+  * explo sur batiments.
+- Unites tirent une pierre.
+- Tourelles tirent une pierre.
+- Drapeau d'interdiction.
+
+Technique :
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
-- consideration des raccourcis claviers dans le jeu.
 - write a quick start guide. (nct)
-- must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
+- Un YOG qui tienne la route.
 
 To Next version :
 
+- Ressuciter le concept de race.
+- Couts aleatoires des batiments.
 - Il faudrait gérer des vitesses différentes, que çe soit pour 1:le GUI, 2:le motteur 3:le réseau.
 - Il faudrait que le réseau soit plus léger, en particuler que la taille des packets soit plus optimale.
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
@@ -21,5 +30,4 @@ To Next version :
 For later later :
 
 - Infos in Map editor
-- Shortcut in Menu
 - Units have experience. (nct)
