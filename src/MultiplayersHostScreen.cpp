@@ -260,9 +260,3 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		textInput->setText("");
 	}
 }
-
-void MultiplayersHostScreen::paint(int x, int y, int w, int h)
-{
-	assert(gfxCtx);
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-}
