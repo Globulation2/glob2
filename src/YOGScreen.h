@@ -46,8 +46,8 @@ public:
 	};
 
 public:
-	static TCPsocket socket;
-	static YOG yog;
+	//static TCPsocket socket;
+	//static YOG yog;
 
 public:
 	MultiplayersJoin *multiplayersJoin;
@@ -58,7 +58,7 @@ protected:
 	TextArea *chatWindow;
 	std::vector<Uint32> IPs;
 
-	static SDLNet_SocketSet socketSet;
+	//static SDLNet_SocketSet socketSet;
 
 	void updateList(void);
 

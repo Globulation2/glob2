@@ -28,10 +28,10 @@ GlobalContainer::GlobalContainer(void)
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
-	metaServerName=NULL;
-	setMetaServerName("moneo.calodox.org");
-	metaServerPort=3000;
-	
+	settings.ircURL=NULL;
+	setIRCURL("irc.debian.org");
+	settings.ircPort=6667;
+
 	hostServer=false;
 	gfx=NULL;
 	terrain=NULL;
@@ -65,17 +65,17 @@ GlobalContainer::~GlobalContainer(void)
 		delete littleFontGreen;
 	if (gfx)
 		delete gfx;
-	if (metaServerName)
-		delete[] metaServerName;
+	if (settings.ircURL)
+		delete[] settings.ircURL;
 }
 
-void GlobalContainer::setMetaServerName(char *name)
+void GlobalContainer::setIRCURL(const char *name)
 {
-	if (metaServerName)
-		delete[] metaServerName;
+	if (settings.ircURL)
+		delete[] settings.ircURL;
 	int len=strlen(name)+1;
-	metaServerName=new char[len];
-	strncpy(metaServerName, name, len);
+	settings.ircURL=new char[len];
+	strncpy(settings.ircURL, name, len);
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
@@ -151,23 +151,23 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else if (argv[i][1] == 'm')
 			{
 				if (argv[i][2] != 0)
-					setMetaServerName(&argv[i][2]);
+					setIRCURL(&argv[i][2]);
 				else
 				{
 					i++;
 					if (i < argc)
-						setMetaServerName(argv[i]);
+						setIRCURL(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 'p')
 			{
 				if (argv[i][2] != 0)
-					metaServerPort=atoi(&argv[i][2]);
+					settings.ircPort=atoi(&argv[i][2]);
 				else
 				{
 					i++;
 					if (i < argc)
-						metaServerPort=atoi(argv[i]);
+						settings.ircPort=atoi(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 's')

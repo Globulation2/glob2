@@ -20,7 +20,7 @@
 
 #ifndef __YOG_CONNECTOR_H
 #define __YOG_CONNECTOR_H
-
+/*
 #include <vector>
 #include "Header.h"
 
@@ -45,5 +45,5 @@ public:
 	bool getString(char data[GAME_INFO_MAX_SIZE]);
 	bool sendString(char *data);
 };
-
+*/
 #endif

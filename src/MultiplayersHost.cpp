@@ -60,27 +60,29 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		// tell YOG to open the game
-		YOGConnector yogConnector;
+		// TODO : Use new yog
+		/*YOGConnector yogConnector;
 		yogConnector.open();
 		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
 		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.getMapName());
 		yogConnector.sendString(newGameText);
-		yogConnector.close();
+		yogConnector.close();*/
 	}
 }
 
 MultiplayersHost::~MultiplayersHost()
 {
-	
+
 	if (shareOnYOG)
 	{
 		// tell YOG to open the game
-		YOGConnector yogConnector;
+		/*YOGConnector yogConnector;
 		yogConnector.open();
 		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
 		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
 		yogConnector.sendString(newGameText);
-		yogConnector.close();
+		yogConnector.close();*/
+		// TODO : Use new yog
 	}
 
 	if (destroyNet)
@@ -99,7 +101,7 @@ MultiplayersHost::~MultiplayersHost()
 			NETPRINTF("Socket closed.\n");
 		}
 	}
-	
+
 	if (savedSessionInfo)
 		delete savedSessionInfo;
 }
@@ -899,13 +901,14 @@ void MultiplayersHost::stopHosting(void)
 	
 	if (shareOnYOG)
 	{
+		// TODO : Use new yog
 		// tell YOG to open the game
-		YOGConnector yogConnector;
+		/*YOGConnector yogConnector;
 		yogConnector.open();
 		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
 		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
 		yogConnector.sendString(newGameText);
-		yogConnector.close();
+		yogConnector.close();*/
 	}
 }
 

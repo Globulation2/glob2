@@ -130,65 +130,73 @@ void TextArea::onSDLEvent(SDL_Event *event)
 
 void TextArea::setText(const char *text, int ap)
 {
-	if (textBuffer)
+	assert(text);
+	if (text)
 	{
-		free(textBuffer);
-		lines.clear();
-	}
-	textBufferLength=strlen(text);
-	textBuffer=(char *)malloc(textBufferLength+1);
-	unsigned pos=0;
+		if (textBuffer)
+		{
+			free(textBuffer);
+			lines.clear();
+		}
+		textBufferLength=strlen(text);
+		textBuffer=(char *)malloc(textBufferLength+1);
+		unsigned pos=0;
 
-	char temp[1024];
-	int temppos;
-	lines.push_back(0);
-	while (pos<textBufferLength)
-	{
-		temppos=0;
-		temp[temppos]=0;
-		while ((font->getStringHeight(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
+		char temp[1024];
+		int temppos;
+		lines.push_back(0);
+		while (pos<textBufferLength)
 		{
-			textBuffer[pos]=text[pos];
-			temp[temppos]=text[pos];
-			temppos++;
-			pos++;
+			temppos=0;
 			temp[temppos]=0;
-		}
-		if (pos<textBufferLength)
-		{
-			if (text[pos]=='\n')
+			while ((font->getStringHeight(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
 			{
-				textBuffer[pos]='\n';
+				textBuffer[pos]=text[pos];
+				temp[temppos]=text[pos];
+				temppos++;
 				pos++;
+				temp[temppos]=0;
 			}
-			lines.push_back(pos);
+			if (pos<textBufferLength)
+			{
+				if (text[pos]=='\n')
+				{
+					textBuffer[pos]='\n';
+					pos++;
+				}
+				lines.push_back(pos);
+			}
+			else
+			{
+				textBuffer[pos]=0;
+			}
 		}
+		textBuffer[pos]=0;
+		if (ap==-1)
+			areaPos=0;
 		else
-		{
-			textBuffer[pos]=0;
-		}
+			areaPos=ap;
+		repaint();
 	}
-	textBuffer[pos]=0;
-	if (ap==-1)
-		areaPos=0;
-	else
-		areaPos=ap;
-	repaint();
 }
 
 void TextArea::addText(const char *text)
 {
-	char *temp;
-	int ts=strlen(text);
+	assert(text);
+	if (text)
+	{
+		char *temp;
+		int ts=strlen(text);
 
-	temp=(char *)malloc(textBufferLength+ts+1);
+		temp=(char *)malloc(textBufferLength+ts+1);
 
-	memcpy(temp,textBuffer,textBufferLength);
-	memcpy(&(temp[textBufferLength]),text,ts);
+		memcpy(temp,textBuffer,textBufferLength);
+		memcpy(&(temp[textBufferLength]),text,ts);
 
-	temp[textBufferLength+ts]=0;
+		temp[textBufferLength+ts]=0;
 
-	setText(temp,areaPos);
+		setText(temp,areaPos);
+	}
 }
 
 void TextArea::scrollDown(void)
