@@ -87,7 +87,7 @@ public:
 	void initHostGlobalState(void);
 	void reinitPlayersState();
 	void stepHostGlobalState(void);
-	void switchPlayerTeam(int p);
+	void switchPlayerTeam(int p, int newTeamNumber);
 	void kickPlayer(int p);
 	void removePlayer(int p);
 	void removePlayer(Uint8 *data, int size, IPaddress ip);

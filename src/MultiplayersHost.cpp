@@ -443,14 +443,15 @@ void MultiplayersHost::removePlayer(int p)
 	}
 }
 
-void MultiplayersHost::switchPlayerTeam(int p)
+void MultiplayersHost::switchPlayerTeam(int p, int newTeamNumber)
 {
-	Sint32 oldTeamNumber=sessionInfo.players[p].teamNumber;
-	sessionInfo.teams[oldTeamNumber].playersMask&=~sessionInfo.players[p].numberMask;
-	Sint32 newTeamNumber=(oldTeamNumber+1)%sessionInfo.numberOfTeam;
-	sessionInfo.teams[newTeamNumber].playersMask|=sessionInfo.players[p].numberMask;
+	// get actual team number for player
+	Sint32 oldTeamNumber = sessionInfo.players[p].teamNumber;
+	// remove from old team, add to new
+	sessionInfo.teams[oldTeamNumber].playersMask &= ~sessionInfo.players[p].numberMask;
+	sessionInfo.teams[newTeamNumber].playersMask |= sessionInfo.players[p].numberMask;
 	sessionInfo.players[p].setTeamNumber(newTeamNumber);
-	
+	// send changes to other players
 	reinitPlayersState();
 }
 

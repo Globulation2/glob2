@@ -360,7 +360,7 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 	else if (action==BUTTON_STATE_CHANGED)
 	{
 		if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
-				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
+				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS, par2);
 	}
 	else if (action==TEXT_VALIDATED)
 	{
