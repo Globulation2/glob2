@@ -161,6 +161,7 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 				m.userNameLength=l;
 				
 				m.messageType=YMT_PRIVATE_MESSAGE;
+				m.messageID=++(*client)->lastMessageID;
 				(*client)->messages.push_back(m);
 				
 				l=strmlen((*client)->userName, 32);
@@ -168,6 +169,7 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 				m.userName[l-1]=0;
 				m.userNameLength=l;
 				m.messageType=YMT_PRIVATE_RECEIPT;
+				m.messageID=++sender->lastMessageID;//TODO: we could save a lot of brandwith if we clervery uses "lastMessageID".
 				sender->messages.push_back(m);
 			}
 		}

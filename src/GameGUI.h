@@ -156,8 +156,6 @@ private:
 	int typeToBuild;
 	bool showUnitWorkingToBuilding;
 
-	//TeamStat stats[128];
-	//int statsPtr;
 	TeamStats *teamStats;
 	Team *localTeam;
 	StatMode statMode;

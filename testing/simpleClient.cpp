@@ -1,7 +1,7 @@
 /*
  *  Ysagoon Online Gaming
  *  Meta Server with chat for Ysagoon game (first is glob2)
- *  (c) 2002 Luc-Olivier de Charrière <nuage@ysagoon.com>
+ *  (c) 2002 Luc-Olivier de Charriï¿½e <nuage@ysagoon.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -239,22 +239,28 @@ namespace simpleClient
 				{
 					if (l>6)
 					{
-						char name[32];
-						memset(name, 0, 32);
-						strncpy(name, s+6, 32);
-						name[31]=0;
-						send(YMT_CONNECTING, 1, (Uint8 *)name, 32);
+						char data[32+4];
+						data[0]=0;
+						data[1]=0;
+						data[2]=0;
+						data[3]=1;
+						strncpy(data+4, s+6, 32);
+						data[31+4]=0;
+						send(YMT_CONNECTING, 1, (Uint8 *)data, 32+4);
 					}
 				}
 				else if (strncmp(s, "connect", 7)==0)
 				{
 					if (l>8)
 					{
-						char name[32];
-						memset(name, 0, 32);
-						strncpy(name, s+8, 32);
-						name[31]=0;
-						send(YMT_CONNECTING, (Uint8 *)name, 32);
+						char data[32+4];
+						data[0]=0;
+						data[1]=0;
+						data[2]=0;
+						data[3]=1;
+						strncpy(data+4, s+6, 32);
+						data[31+4]=0;
+						send(YMT_CONNECTING, (Uint8 *)data, 32+4);
 					}
 				}
 				else if (strncmp(s, "deconnect", 9)==0)
