@@ -127,6 +127,7 @@ public:
 	int viewportX, viewportY;
 
 private:
+	friend class InGameAlliance8Screen;
 	enum DisplayMode
 	{
 		BUILDING_AND_FLAG,
