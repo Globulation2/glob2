@@ -7,7 +7,6 @@ To First release :
 - traduction des raccourcis claviers de la GUI.
 - consideration des raccourcis claviers dans le jeu.
 - afficher des boites de dialogue modale.
-- afficher les unites qui ont faim et qui sont blessees.
 - network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
