@@ -374,7 +374,6 @@ void Unit::selectPreferedMovement(void)
 		action=WALK;
 	else
 		assert(false);
-	printf("action=%d\n", action);
 }
 
 bool Unit::isUnitHungry(void)
@@ -1408,7 +1407,7 @@ void Unit::setNewValidDirection(void)
 	if (performance[FLY])
 	{
 		int i=0;
-		while ( i<8 && owner->game->map.isFreeForAirUnit(posX+dx, posY+dy))
+		while ( i<8 && !owner->game->map.isFreeForAirUnit(posX+dx, posY+dy))
 		{
 			direction=(direction+1)&7;
 			dxdyfromDirection();
@@ -1424,7 +1423,7 @@ void Unit::setNewValidDirection(void)
 	{
 		int i=0;
 		bool swim=performance[SWIM];
-		while ( i<8 && owner->game->map.isFreeForGroundUnit(posX+dx, posY+dy, swim))
+		while ( i<8 && !owner->game->map.isFreeForGroundUnit(posX+dx, posY+dy, swim))
 		{
 			direction=(direction+1)&7;
 			dxdyfromDirection();
