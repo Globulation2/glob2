@@ -1128,7 +1128,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						else
 							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 					}
-					if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET))
+					if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVision & teams[teamSelected]->me))
 					{
 						int lsx, lsy, ldx, ldy;
 						lsx=px+16;
@@ -1246,7 +1246,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 			}
 
-			if (drawHealthFoodBar)
+			if (drawHealthFoodBar && (building->owner->sharedVision & teams[teamSelected]->me))
 			{
 				//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 				// TODO : find better color for this
