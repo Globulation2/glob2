@@ -1,3 +1,5 @@
 #!/bin/sh
-tar cvf glob2data.tar data/gfx/*.png data/fonts/*.ttf data/gui/*.png data/zik/*.ogg
-scp glob2data.tar nct@lappc22.epfl.ch:~/public_html/
+rsync -z --delete-after data/gfx/*.png nct@yog1.ysagoon.com:~/glob2data/gfx/
+rsync -z --delete-after data/fonts/*.ttf nct@yog1.ysagoon.com:~/glob2data/fonts/
+rsync -z --delete-after data/gui/*.png nct@yog1.ysagoon.com:~/glob2data/gui/
+rsync -z --delete-after data/zik/*.ogg nct@yog1.ysagoon.com:~/glob2data/zik/

@@ -123,7 +123,8 @@ maxUnitWorking 1
 
 type inn
 
-gameSpriteImage 41
+gameSprite data/gfx/inn1c
+gameSpriteImage 0
 miniSpriteImage 41
 
 fillable 1
@@ -270,7 +271,8 @@ shortTypeNum 2
 
 type hospital
 
-gameSpriteImage 41
+gameSprite data/gfx/hosp1c
+gameSpriteImage 0
 miniSpriteImage 41
 
 fillable 1
