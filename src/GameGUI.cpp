@@ -1610,7 +1610,7 @@ void GameGUI::drawUnitInfos(void)
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[SWIM])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[BUILD])
