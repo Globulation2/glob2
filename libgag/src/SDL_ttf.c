@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.c,v 1.5 2004/08/04 17:25:17 nct Exp $ */
+/* $Id: SDL_ttf.c,v 1.6 2005/02/13 23:14:48 nct Exp $ */
 
 #include <math.h>
 #include <stdio.h>
@@ -49,7 +49,7 @@
 #define FT_OPEN_STREAM ft_open_stream
 #endif
 
-#include <glSDL.h>
+#include <SDL.h>
 #include "SDL_endian.h"
 #include "SDL_ttf.h"
 
