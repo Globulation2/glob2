@@ -318,6 +318,7 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 				case SDL_VIDEORESIZE:
 				{
 					gfx->setRes(event.resize.w, event.resize.h, gfx->getDepth(), gfx->getFlags());
+					updateRects.clear();
 					dispatchPaint(gfx);
 					addUpdateRect(0, 0, gfx->getW(), gfx->getH());
 					onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
