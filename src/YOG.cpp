@@ -519,6 +519,11 @@ const char *YOG::getGameHostname(void)
 	return (*gameInfoIt).hostname;
 }
 
+const YOG::GameInfo *YOG::getGameInfo(void)
+{
+	return &(*gameInfoIt);
+}
+
 bool YOG::getNextGame(void)
 {
 	gameInfoIt++;

@@ -332,6 +332,7 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 {
+	printf("MultiplayersHost::newPlayerPresence().\n");
 	if (size!=36)
 	{
 		NETPRINTF("Bad size(%d) for an Presence request from ip %x.\n", size, ip.host);
@@ -379,7 +380,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 
 	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
 	{
-		printf("this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
+		printf("newPlayerPresence::this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
@@ -546,9 +547,9 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 		return;
 	}
 
-	if (sessionInfo.players[i].netState==BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START)
+	if (sessionInfo.players[i].netState>=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START)
 	{
-		//sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START;
+		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START;
 		sessionInfo.players[i].netTimeout=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
@@ -570,7 +571,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 		return;
 	}
 
-	if (sessionInfo.players[i].netState>=BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START)
+	if (sessionInfo.players[i].netState>=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START)
 	{
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION;
 		sessionInfo.players[i].netTimeout=0;
@@ -640,7 +641,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	channel=SDLNet_UDP_Bind(socket, channel, &ip);
 	if (channel!=-1)
 	{
-		UDPpacket *packet=SDLNet_AllocPacket(36);
+		UDPpacket *packet=SDLNet_AllocPacket(68);
 		
 		if (packet==NULL)
 		{
@@ -654,7 +655,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 			return;
 		}
 		
-		char data[36];
+		char data[68];
 		if (shareOnYOG)
 			data[0]=BROADCAST_RESPONSE_YOG;
 		else
@@ -664,11 +665,14 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		data[3]=0;
 		memset(&data[4], 0, 32);
 		strncpy(&data[4], sessionInfo.map.getMapName(), 32);
-		printf("MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-		printf("MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
-		printf("MultiplayersHost sendingB (%s).\n", &data[4]);
-		packet->len=36;
-		memcpy((char *)packet->data, data, 36);
+		memset(&data[36], 0, 32);
+		strncpy(&data[36], globalContainer->settings.userName, 32);
+		
+		//printf("MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
+		//printf("MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
+		//printf("MultiplayersHost sendingB (%s).\n", &data[4]);
+		packet->len=68;
+		memcpy((char *)packet->data, data, 68);
 		
 		bool sucess;
 		
@@ -681,7 +685,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		// This is interesting because getFreeChannel() may return -1.
 		// We have no real use of "channel".
 		if (sucess)
-			NETPRINTF("broad:sucedded to response.\n");
+			NETPRINTF("broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
 		
 		
 		SDLNet_FreePacket(packet);
@@ -698,6 +702,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
+	NETPRINTF("MultiplayersHost::treatData (%d)\n", data[0]);
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
 		NETPRINTF("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
@@ -824,7 +829,7 @@ void MultiplayersHost::onTimer(Uint32 tick)
 		packet=SDLNet_AllocPacket(MAX_PACKET_SIZE);
 		assert(packet);
 
-		if (SDLNet_UDP_Recv(socket, packet)==1)
+		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
 			NETPRINTF("Packet received.\n");
 			//NETPRINTF("packet=%d\n", (int)packet);

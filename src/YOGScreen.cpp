@@ -105,6 +105,7 @@ void YOGScreen::updateList(void)
 			const char *version=globalContainer->yog.getGameVersion();
 			const char *comment=globalContainer->yog.getGameComment();
 			const char *hostname=globalContainer->yog.getGameHostname();
+			selectedGameInfo=globalContainer->yog.getGameInfo();
 
 			char data[128];
 			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
@@ -269,14 +270,18 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		printf("YOG : selected ip is %s\n", s);
 		*/
 		// we create a new screen to join this game:
-		printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
+		
+		/*printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
 		strncpy(multiplayersJoin->serverName, IPs[par1], 128);
 		multiplayersJoin->serverName[127]=0;
 		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
 		multiplayersJoin->playerName[127]=0;
 		strncpy(multiplayersJoin->gameName, "ilesAleatoires", 32);
 		multiplayersJoin->gameName[31]=0;
-		multiplayersJoin->tryConnection();
+		multiplayersJoin->tryConnection();*/
+		
+		printf("YOG : Selected hostname is [%s]\n", selectedGameInfo->hostname);
+		multiplayersJoin->tryConnection(selectedGameInfo);
 	}
 }
 

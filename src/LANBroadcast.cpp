@@ -120,7 +120,7 @@ bool LANBroadcast::send(int v)
 		return false;
 	}
 	
-	//printf("LANBroadcast::data sent sucessfully.\n");
+	printf("LANBroadcast::data sent sucessfully v=(%d).\n", v);
 	return true;
 #endif
 }
@@ -152,7 +152,7 @@ bool LANBroadcast::socketReady()
 #endif
 }
 
-bool LANBroadcast::receive(int *v, char gameName[32])
+bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 {
 #ifdef MACOS_OPENTRANSPORT
 	return false;
@@ -162,12 +162,12 @@ bool LANBroadcast::receive(int *v, char gameName[32])
 	if (!socketReady())
 		return false;
 	
-	char data[36];
+	char data[68];
 	socklen_t senderLen;
 	//printf("sizeof(senderAddr)=%d.\n", sizeof(senderAddr));
 	//printf("sizeof(sockaddr)=%d.\n", sizeof(sockaddr));
 	senderLen = sizeof(senderAddr);
-	int n=recvfrom(socketDefinition, data, 36, 0, (struct sockaddr *) &senderAddr, &senderLen);
+	int n=recvfrom(socketDefinition, data, 68, 0, (struct sockaddr *) &senderAddr, &senderLen);
 	//printf("senderLen=%d.\n", senderLen);
 	
 	if (n<0)
@@ -176,12 +176,15 @@ bool LANBroadcast::receive(int *v, char gameName[32])
 		return false;
 	}
 	
-	if (n<32)
+	if (n<68)
 	{
 		printf("LANBroadcast::bad size for a presence response (%d).\n", n);
 		return false;
 	}
-	strncpy(gameName, &data[4], 32);
+	if (gameName)
+		strncpy(gameName, &data[4], 32);
+	if (serverNickName)
+		strncpy(serverNickName, &data[36], 32);
 	
 	//printf("senderLen=%d, n=%d\n", senderLen, n);
 	
@@ -191,10 +194,10 @@ bool LANBroadcast::receive(int *v, char gameName[32])
 	//printf("LANBroadcast::data1 recieved (%d, %d, %d, %d).\n", data[0], data[1], data[2], data[3]);
 	//printf("LANBroadcast::dataA recieved (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
 	//printf("LANBroadcast::data2 recieved (%s).\n", &data[4]);
-	printf("LANBroadcast::dataB recieved (%s).\n", gameName);
+	printf("LANBroadcast::dataB recieved gameName=(%s) serverNickName=(%s).\n", gameName, serverNickName);
 	
-	
-	*v=data[0];
+	if (v)
+		*v=data[0];
 	return true;
 #endif
 }
