@@ -118,7 +118,7 @@ void TextButton::setText(const char *text)
 {
 	int textLength=strlen(text);
 	this->text=new char[textLength+1];
-	strcpy(this->text, text);
+	strncpy(this->text, text, textLength+1);
 	decX=(w-font->getStringWidth(text))>>1;
 	decY=(h-font->getStringHeight(text))>>1;
 }

@@ -37,7 +37,7 @@ BasePlayer::BasePlayer(Sint32 number, const char name[16], Sint32 teamNumber, Pl
 	assert(teamNumber>=0);
 	assert(teamNumber<32);
 	assert(name);
-	
+
 	setNumber(number);
 	setTeamNumber(teamNumber);
 	
@@ -51,7 +51,7 @@ void BasePlayer::init()
 	type=P_IP;
 	number=0;
 	numberMask=0;
-	strcpy(name, "DEBUG PLAYER");
+	strncpy(name, "DEBUG PLAYER", MAX_NAME_LENGTH);
 	teamNumber=0;
 	teamNumberMask=0;
 

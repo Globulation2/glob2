@@ -95,7 +95,7 @@ void List::addText(const char *text, int pos)
 	{
 		int textLength=strlen(text);
 		char *newText=new char[textLength+1];
-		strcpy(newText, text);
+		strncpy(newText, text, textLength+1);
 		strings.insert(strings.begin()+pos, newText);
 	}
 }
@@ -104,7 +104,7 @@ void List::addText(const char *text)
 {
 	int textLength=strlen(text);
 	char *newText=new char[textLength+1];
-	strcpy(newText, text);
+	strncpy(newText, text, textLength+1);
 	strings.push_back(newText);
 }
 

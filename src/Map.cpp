@@ -25,7 +25,7 @@
 
 BaseMap::BaseMap()
 {
-	strcpy(mapName,"DEBUG MAP");
+	strncpy(mapName,"DEBUG MAP", 32);
 }
 
 void BaseMap::save(SDL_RWops *stream)

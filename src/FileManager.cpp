@@ -88,7 +88,7 @@ void FileManager::addDir(const char *dir)
 {
 	int len=strlen(dir);
 	char *newDir=new char[len+1];
-	strcpy(newDir, dir);
+	strncpy(newDir, dir, len+1);
 	dirList.push_back(newDir);
 	dirListIndexCache=0;
 }
@@ -113,7 +113,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	int index=0;
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
@@ -157,7 +157,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	int index=0;
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
@@ -210,8 +210,9 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 			}
 			if (!alreadyIn)
 			{
-				char *fileName=new char[strlen(dirEntry->d_name)+1];
-				strcpy(fileName, dirEntry->d_name);
+				int len=strlen(dirEntry->d_name)+1;
+				char *fileName=new char[len];
+				strncpy(fileName, dirEntry->d_name, len);
 				fileList.push_back(fileName);
 			}
 		}

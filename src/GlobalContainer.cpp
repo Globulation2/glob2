@@ -59,8 +59,9 @@ void GlobalContainer::setMetaServerName(char *name)
 {
 	if (metaServerName)
 		delete[] metaServerName;
-	metaServerName=new char[strlen(name)+1];
-	strcpy(metaServerName, name);
+	int len=strlen(name)+1;
+	metaServerName=new char[len];
+	strncpy(metaServerName, name, len);
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
