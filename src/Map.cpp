@@ -2475,7 +2475,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 			printf("...pathfindedRessource pathfindForbidden() v1\n");
 		pathToRessourceCountFailure++;
 		*stopWork=true;
-		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy, verbose);
 	}
 	if (max<2)
 	{
@@ -2515,7 +2515,7 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 	{
 		if (verbose)
 			printf(" forbidden\n");
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy))
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy, verbose))
 		{
 			if (verbose)
 				printf(" success\n");
@@ -3528,7 +3528,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int teamNumber=building->owner->teamNumber;
 		if (verbose)
 			printf(" ...pathfindForbidden(%d, %d, %d, %d)\n", teamNumber, canSwim, x, y);
-		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy, verbose);
 	}
 	Uint8 *gradient=building->localGradient[canSwim];
 	if (isInLocalGradient(x, y, bx, by))
@@ -3882,9 +3882,10 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 	}
 }
 
-bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
-	//printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
+	if (verbose)
+		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
 	pathfindForbiddenCount++;
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
@@ -3897,18 +3898,29 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 		int ry=tabClose[di][1];
 		int xg=(x+rx)&wMask;
 		int yg=(y+ry)&hMask;
+		if (verbose)
+			printf("[di=%d], r=(%d, %d), g=(%d, %d)\n", di, rx, ry, xg, yg);
 		if (getGroundUnit(xg, yg)!=NOGUID)
 			continue;
-		Uint8 base=gradient[xg+(yg<<wDec)];
+		size_t addr=xg+(yg<<wDec);
+		Uint8 base=gradient[addr];
+		if (verbose)
+			printf("gradient[%d]=%d\n", addr, gradient[addr]);
 		Uint8 option;
-		if (optionGradient)
-			option=optionGradient[xg+(yg<<wDec)];
+		if (optionGradient!=NULL)
+			option=optionGradient[addr];
 		else
 			option=0;
+		if (verbose)
+			printf("option=%d @ %p\n", option, optionGradient);
 		Uint32 value=(base<<8)|option;
+		if (verbose)
+			printf("value=%d \n", value);
 		if (maxValue<value)
 		{
 			maxValue=value;
+			if (verbose)
+				printf("new maxValue=%d \n", maxValue);
 			maxd=di;
 		}
 	}
@@ -3916,13 +3928,15 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 	{
 		*dx=tabClose[maxd][0];
 		*dy=tabClose[maxd][1];
-		//printf(" Success (%d:%d) (%d, %d)\n", (maxValue>>8), (maxValue&0xFF), *dx, *dy);
+		if (verbose)
+			printf(" Success (%d:%d) (%d, %d)\n", (maxValue>>8), (maxValue&0xFF), *dx, *dy);
 		pathfindForbiddenCountSuccess++;
 		return true;
 	}
 	else
 	{
-		//printf(" Failure (%d)\n", maxValue);
+		if (verbose)
+			printf(" Failure (%d)\n", maxValue);
 		pathfindForbiddenCountFailure++;
 		return false;
 	}

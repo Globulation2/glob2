@@ -1677,7 +1677,7 @@ void Unit::handleMovement(void)
 				movement=MOV_RANDOM_FLY;
 			else if (map->getForbidden(posX, posY)&owner->me)
 			{
-				if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+				if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
 					directionFromDxDy();
 				else
 				{
