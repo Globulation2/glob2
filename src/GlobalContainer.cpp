@@ -233,7 +233,7 @@ void GlobalContainer::initProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// load texts
-	texts.load("data/texts.txt");
+	if (!texts.load("data/texts.txt")) printf("Le fichier \"data/texts.txt\" n'est pas present !");
 	
 	if (!hostServer)
 	{
