@@ -40,21 +40,19 @@
 //#		define Win32_Winsock
 //#		include <windows.h>
 #	else // UNIX
-#			include <sys/types.h>
-#			include <sys/socket.h>
-//#			include <netinet/in.h>
-#			include <arpa/inet.h>
-#			include <netdb.h>
-			//Strange include:
-#			include <unistd.h>
+#		include <sys/types.h>
+#		include <sys/socket.h>
+#		include <netinet/in.h>
+#		include <arpa/inet.h>
+#		include <netdb.h>
+		//Strange include:
+#		include <unistd.h>
 #		ifndef __BEOS__
 //#			include <arpa/inet.h>
 #		endif
 #		ifdef linux
 //#			include <netinet/tcp.h>
 #		endif
-#	include <netdb.h>
-#	include <sys/socket.h>
 #	endif
 #endif
 
