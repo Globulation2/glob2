@@ -731,7 +731,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			showUnitWorkingToBuilding=false;
 		}
 	}
-	
+
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
@@ -1639,6 +1639,11 @@ void GameGUI::drawBuildingInfos(void)
 		title += " (";
 		title += Toolkit::getStringTable()->getString("[building site]");
 		title += ")";
+	}
+	if (buildingType->prestige)
+	{
+		title += " - ";
+		title += Toolkit::getStringTable()->getString("[Prestige]");
 	}
 	titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
 	titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
