@@ -1301,7 +1301,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, const bool useMapDiscovered)
+void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	int id=Unit::GIDtoID(gid);
 	int team=Unit::GIDtoTeam(gid);
@@ -1309,14 +1309,13 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit);
 	if (!unit)
 	{
-		//printf("Error (%d, %d)\n", x, y);
 		globalContainer->gfx->drawRect((x<<5)+1, (y<<5)+1, 30, 30, 255, 255, 0);
 		return;
 	}
 	int dx=unit->dx;
 	int dy=unit->dy;
 
-	if (!useMapDiscovered)
+	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, teams[localTeam]->me)))
 			return;
 
@@ -1369,10 +1368,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
 	}
 
-	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))
+	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
 
-	if (drawHealthFoodBar)
+	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
@@ -1383,7 +1382,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
-	if ((drawPathLines) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 		if (unit->displacement==Unit::DIS_GOING_TO_FLAG
 			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
 			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING)
@@ -1396,7 +1395,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 }
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, bool drawBuildingRects, const bool useMapDiscovered)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	int id;
 	int left=(sx>>5);
@@ -1419,7 +1418,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
 				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
 				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
-				(useMapDiscovered))
+				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
 				id=map.getTerrain(x+viewportX, y+viewportY);
@@ -1451,7 +1450,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
 				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
 				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
-				(useMapDiscovered))
+				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw ressource
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
@@ -1494,7 +1493,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			Uint16 gid=map.getGroundUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
+				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawOptions);
 		}
 	
 	// We draw debug area:
@@ -1612,7 +1611,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 				Building *building=teams[team]->myBuildings[id];
 				assert(building); // if this fails, and unwanted garbage-UID is on the ground.
-				if (useMapDiscovered
+				if (((drawOptions & DRAW_WHOLE_MAP) != 0)
 					|| Building::GIDtoTeam(gid)==localTeam
 					|| (building->seenByMask & teams[localTeam]->me)
 					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
@@ -1659,7 +1658,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			//globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid+1);
 		}
 
-		if (drawBuildingRects)
+		if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 		{
 			int batW=(type->width )<<5;
 			int batH=(type->height)<<5;
@@ -1688,7 +1687,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 		}
 
-		if (drawHealthFoodBar && (building->owner->sharedVisionOther & teams[localTeam]->me))
+		if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & teams[localTeam]->me))
 		{
 			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 			// TODO : find better color for this
@@ -1747,7 +1746,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			Uint16 gid=map.getAirUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
+				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawOptions);
 		}
 
 	// Let's paint the bullets:
@@ -1779,7 +1778,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 	
 	// draw black & shading
-	if (!useMapDiscovered)
+	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unalign lookup
 		for (int y=top-1; y<=bot; y++)
@@ -1825,20 +1824,21 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 	
 	// draw forbidden arrays
-	for (int y=top-1; y<=bot; y++)
-		for (int x=left-1; x<=right; x++)
-		{
-			unsigned i0 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-			unsigned i1 = map.isNotForbiddenLocal(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-			unsigned i2 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-			unsigned i3 = map.isNotForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-			unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
-			
-			if (shadeValue == 15)
-				globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 255, 0, 0, 127);
-			else if (shadeValue)
-				globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->forbiddenShader, shadeValue);
-		}
+	if ((drawOptions & DRAW_FORBIDDEN_AREA) != 0)
+		for (int y=top-1; y<=bot; y++)
+			for (int x=left-1; x<=right; x++)
+			{
+				unsigned i0 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+				unsigned i1 = map.isNotForbiddenLocal(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+				unsigned i2 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+				unsigned i3 = map.isNotForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+				unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
+				
+				if (shadeValue == 15)
+					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 255, 0, 0, 127);
+				else if (shadeValue)
+					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->forbiddenShader, shadeValue);
+			}
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
@@ -1861,11 +1861,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 		// flag circle:
-		if (drawHealthFoodBar || (building==selectedBuilding))
+		if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
 			globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
 		// FIXME : ugly copy past
-		if (drawHealthFoodBar)
+		if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
 		{
 			int decy=(type->height*32);
 			int healDecx=(type->width-2)*16+1;
