@@ -130,6 +130,8 @@ void Screen::addWidget(Widget *widget)
 {
 	assert(widget);
 	widget->parent=this;
+	// this option enable or disable the multiple add check
+#ifdef ENABLE_MULTIPLE_ADD_WIDGET
 	bool already=false;
 	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 		if ((*it)==widget)
@@ -138,6 +140,7 @@ void Screen::addWidget(Widget *widget)
 			break;
 		}
 	if (!already)
+#endif
 		widgets.push_back(widget);
 }
 
@@ -158,7 +161,8 @@ void Screen::dispatchEvents(SDL_Event *event)
 	onSDLEvent(event);
 	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		(*it)->onSDLEvent(event);
+		if ((*it)->visible)
+			(*it)->onSDLEvent(event);
 	}
 }
 
@@ -168,7 +172,8 @@ void Screen::dispatchTimer(Uint32 tick)
 	{
 		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 		{
-			(*it)->onTimer(tick);
+			if ((*it)->visible)
+				(*it)->onTimer(tick);
 		}
 	}
 }
@@ -182,7 +187,8 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	{
 		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 		{
-			(*it)->paint(gfx);
+			if ((*it)->visible)
+				(*it)->paint(gfx);
 		}
 	}
 }
