@@ -774,7 +774,7 @@ Building *Team::findNearestFood(Unit *unit)
 			for (int ti=0; ti<session.numberOfTeam; ti++)
 				if (ti!=teamNumber && concurent[ti])
 				{
-					printf(" team ti=%d suitable, nbb=%d\n", ti, canFeedUnit.size());
+					printf(" team ti=%d suitable, nbb=%d\n", ti, static_cast<unsigned>(canFeedUnit.size()));
 					Team *t=game->teams[ti];
 					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 					{

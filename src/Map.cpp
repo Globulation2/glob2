@@ -4008,7 +4008,7 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 		size_t addr=xg+(yg<<wDec);
 		Uint8 base=gradient[addr];
 		if (verbose)
-			printf("gradient[%d]=%d\n", addr, gradient[addr]);
+			printf("gradient[%d]=%d\n", static_cast<unsigned>(addr), gradient[addr]);
 		Uint8 option;
 		if (optionGradient!=NULL)
 			option=optionGradient[addr];

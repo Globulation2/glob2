@@ -101,8 +101,8 @@ void EntityType::dump(void)
 	size_t varSize;
 	Uint32 *startData;
 	const char **tab=getVars(&varSize, &startData);
-
-	printf("%d Elements :\n",varSize);
+	
+	printf("%d Elements :\n", static_cast<unsigned>(varSize));
 	for (size_t i=0; i<varSize;i++)
 		printf("\t%s = %d\n",tab[i],*(startData+i));
 }
