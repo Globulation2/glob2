@@ -1,22 +1,22 @@
 To First release :
 
-- check all TODO, FIXME, DUNNO and solve what can be solved.
-- balance unit allocation by demand.
-- load/save during game.
-- custom game should have a map choosing screen.
-- network must work correctly, and screen must be easy to understand.
-- stupid graphic bug in game menu must be fixed.
-- write a quick start guide.
-- fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever.
-- makes a player loose if all swarm with food is completly surrounded by ressources and no more units.
-- map must have version, and little backward compatibility should be keeped.
-- upgrade key must be inactive if no units have enough high level to build it.
+- check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
+- balance unit allocation by demand. (nct)
+- load/save during game. (nct)
+- custom game should have a map choosing screen. (nct)
+- network must work correctly, and screen must be easy to understand. (nct)
+- stupid graphic bug in game menu must be fixed. (nct)
+- write a quick start guide. (nct)
+- fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
+- makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
+- map must have version, and little backward compatibility should be keeped. (nct)
+- upgrade key must be inactive if no units have enough high level to build it. (nct)
 
 To Next version :
 
-- allies can put mark on the map.
-- units working to a building are highlight when building is selected.
-- more precise ressource handling.
-- while following pathfinded way to go to heal or food building, recheck to see if there is one nearer.
-- units have experience.
-- destruction must be cancelable.
+- allies can put mark on the map. (nct)
+- units working to a building are highlight when building is selected. (nct)
+- more precise ressource handling. (nct)
+- while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
+- units have experience. (nct)
+- destruction must be cancelable. (nct)
