@@ -44,10 +44,17 @@
 #else
 #	include <sys/types.h>
 #	include <dirent.h>
+#	include <sys/stat.h>
 #endif
 
 FileManager::FileManager()
 {
+#ifndef WIN32
+	char glob2Local[256];
+	snprintf(glob2Local, sizeof(glob2Local), "%s/.glob2", getenv("HOME"));
+	mkdir(glob2Local, S_IRWXU);
+	addDir(glob2Local);
+#endif
     addDir(".");
     addDir(PACKAGE_DATA_DIR);
     addDir(PACKAGE_SOURCE_DIR);
@@ -120,7 +127,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	std::vector<const char *>::iterator dirListIterator;
 
 	// try cache
-	if (dirListIndexCache>=0)
+	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
 		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
@@ -171,7 +178,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	std::vector<const char *>::iterator dirListIterator;
 
 	// try cache
-	if (dirListIndexCache>=0)
+	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
 		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
