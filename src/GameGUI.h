@@ -32,6 +32,26 @@
 #define MAX_WAR_FLAG_RANGE 8
 #define MAX_RATIO_RANGE 16
 
+//! The screen that contains the text input while typing message in game
+class InGameTextInput:public InGameScreen
+{
+protected:
+	//! the text input widget
+	TextInput *textInput;
+
+public:
+	//! InGameTextInput constructor
+	InGameTextInput();
+	//! InGameTextInput destructor
+	virtual ~InGameTextInput() { }
+	//! React on action from any widget
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	//! Draw the widget
+	//virtual void paint(int x, int y, int w, int h);
+	//! Return the text typed
+	const char *getText(void) const { return textInput->getText(); }
+};
+
 class GameGUI
 {
 public:
@@ -110,8 +130,6 @@ private:
 
 	Uint32 chatMask;
 
-	SDLBitmapFont *font;
-
 	std::queue<Order *> orderQueue;
 
 	int mouseX, mouseY;
@@ -151,9 +169,8 @@ private :
 	enum {
 		DEFAULT_MESSAGE_SHOW_TICKS = 100
 	};
-	bool typingMessage;
-	char typedMessage[MAX_MESSAGE_SIZE];
-	int typedChar;
+	// Typing stuff :
+	InGameTextInput *typingInputScreen;
 };
 
 #endif

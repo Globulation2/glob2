@@ -94,7 +94,6 @@ public:
 
 //! Map, handle all physical localisations
 /*!
-	Map, handle all physical localisations
 	When not specified, all size are given in 32x32 pixel cell, which is the basic
 	game measurement unit.
 	All functions are wrap-safe, excepted the one specified otherwise.
@@ -188,6 +187,8 @@ public:
 	bool isWater(int x, int y);
 	//! Return true if there is grass at position (x,y).
 	bool isGrass(int x, int y);
+	//! Return true if there is sand at position (x,y).
+	bool isSand(int x, int y) { return ((!isWater(x,y)) && (!isGrass(x,y))); }
 	//! Return true if there is a ressource that can grow at position (x,y).
 	bool isGrowableRessource(int x, int y);
 	//! Return true if there is a ressource at position (x,y).
