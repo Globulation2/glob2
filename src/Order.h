@@ -229,7 +229,7 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*8; }
+	int getDataLength(void) { return length*6; }
 	int getNumberOfBuilding(void) { return length; }
 
 	Uint16 *gid;
