@@ -20,7 +20,7 @@
 // deafault building
 startImage = 0
 hueImage = 0
-flagImage = 48
+flagImage = 33
 
 upgradeStopWalk = 0
 upgradeStopSwim = 0
@@ -117,7 +117,7 @@ regenerationSpeed = 0
 *
 
 // swarm building site
-startImage = 47
+startImage = 23
 hueImage = 1
 
 jobHarvest = 1
@@ -162,7 +162,7 @@ regenerationSpeed = 3
 *
 
 // food building site, level 0
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -182,7 +182,7 @@ isBuildingSite = 1
 *
 
 // food building, level 0
-startImage = 2
+startImage = 1
 
 jobHarvest = 1
 canFeedUnit = 1
@@ -203,7 +203,7 @@ maxUnitWorking = 1
 *
 
 // food building site, level 1
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -223,7 +223,7 @@ isBuildingSite = 1
 *
 
 // food building, level 1
-startImage = 10
+startImage = 8
 
 jobHarvest = 1
 canFeedUnit = 1
@@ -244,7 +244,7 @@ maxUnitWorking = 1
 *
 
 // food building site, level 2
-startImage = 42
+startImage = 26
 
 jobHarvest = 1
 
@@ -265,7 +265,7 @@ isBuildingSite = 1
 *
 
 // food building, level 2
-startImage = 18
+startImage = 15
 
 jobHarvest = 1
 canFeedUnit = 1
@@ -287,7 +287,7 @@ maxUnitWorking = 1
 *
 
 // health building site, level 0
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -307,7 +307,7 @@ isBuildingSite = 1
 *
 
 // health building, level 0
-startImage = 1
+startImage = 2
 
 canHealUnit = 1
 timeToHealUnit = 12
@@ -325,7 +325,7 @@ type = 2
 *
 
 // health building site, level 1
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -363,7 +363,7 @@ type = 2
 *
 
 // health building site, level 2
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -384,7 +384,7 @@ isBuildingSite = 1
 *
 
 // health building, level 2
-startImage = 17
+startImage = 16
 
 canHealUnit = 1
 timeToHealUnit = 3
@@ -403,7 +403,7 @@ type = 2
 *
 
 // Walk building site, level 0
-startImage = 45
+startImage = 28
 
 jobHarvest = 1
 
@@ -425,7 +425,7 @@ isBuildingSite = 1
 *
 
 // Walk building, level 0
-startImage = 5
+startImage = 3
 
 upgradeWalk = 1
 upgradeTimeWalk = 7
@@ -444,7 +444,7 @@ type = 3
 *
 
 // Walk building site, level 1
-startImage = 46
+startImage = 29
 
 jobHarvest = 1
 
@@ -466,7 +466,7 @@ isBuildingSite = 1
 *
 
 // Walk building, level 1
-startImage = 21
+startImage = 10
 
 upgradeWalk = 1
 upgradeTimeWalk = 7
@@ -485,7 +485,7 @@ type = 3
 *
 
 // Walk building site, level 2
-startImage = 46
+startImage = 29
 
 jobHarvest = 1
 
@@ -507,7 +507,7 @@ isBuildingSite = 1
 *
 
 // Walk building, level 2
-startImage = 29
+startImage = 17
 
 upgradeWalk = 1
 upgradeTimeWalk = 8
@@ -526,7 +526,7 @@ type = 3
 *
 
 // Swim building site, level 0
-startImage = 45
+startImage = 28
 
 jobHarvest = 1
 
@@ -547,7 +547,7 @@ isBuildingSite = 1
 *
 
 // Swim building, level 0
-startImage = 7
+startImage = 4
 
 upgradeSwim = 1
 upgradeTimeSwim = 7
@@ -566,7 +566,7 @@ type = 4
 *
 
 // Swim building site, level 1
-startImage = 46
+startImage = 11
 
 jobHarvest = 1
 
@@ -588,7 +588,7 @@ isBuildingSite = 1
 *
 
 // Swim building, level 1
-startImage = 23
+startImage = 11
 
 upgradeSwim = 1
 upgradeTimeSwim = 7
@@ -607,7 +607,7 @@ type = 4
 *
 
 // Swim building site, level 2
-startImage = 46
+startImage = 29
 
 jobHarvest = 1
 
@@ -631,7 +631,7 @@ isBuildingSite = 1
 *
 
 // Swim building, level 2
-startImage = 31
+startImage = 18
 
 upgradeSwim = 1
 upgradeTimeSwim = 8
@@ -650,7 +650,7 @@ type = 4
 *
 
 // Attack building site, level 0
-startImage = 43
+startImage = 27
 
 jobHarvest = 1
 
@@ -671,7 +671,7 @@ isBuildingSite = 1
 *
 
 // Attack building, level 0
-startImage = 14
+startImage = 5
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 4
@@ -692,7 +692,7 @@ type = 5
 *
 
 // Attack building site, level 1
-startImage = 43
+startImage = 27
 
 jobHarvest = 1
 
@@ -714,7 +714,7 @@ isBuildingSite = 1
 *
 
 // Attack building, level 1
-startImage = 22
+startImage = 12
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 7
@@ -735,7 +735,7 @@ type = 5
 *
 
 // Attack building site, level 2
-startImage = 43
+startImage = 27
 
 jobHarvest = 1
 
@@ -757,7 +757,7 @@ isBuildingSite = 1
 *
 
 // Attack building, level 2
-startImage = 38
+startImage = 19
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 7
@@ -777,7 +777,7 @@ type = 5
 *
 
 // Science building site, level 0
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -799,7 +799,7 @@ isBuildingSite = 1
 *
 
 // Science building, level 0
-startImage = 4
+startImage = 6
 
 upgradeBuild = 1
 upgradeTimeBuild = 4
@@ -820,7 +820,7 @@ type = 6
 *
 
 // Science building site, level 1
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -843,7 +843,7 @@ isBuildingSite = 1
 *
 
 // Science building, level 1
-startImage = 12
+startImage = 13
 
 upgradeBuild = 1
 upgradeTimeBuild = 12
@@ -864,7 +864,7 @@ type = 6
 *
 
 // Science building site, level 2
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -909,7 +909,7 @@ type = 6
 *
 
 // Defense building site, level 0
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -930,7 +930,7 @@ isBuildingSite = 1
 *
 
 // Defense building, level 0
-startImage = 3
+startImage = 7
 
 shootingRange = 5
 shootDamage = 30
@@ -952,7 +952,7 @@ viewingRange = 6
 *
 
 // Defense building site, level 1
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -981,7 +981,7 @@ viewingRange = 5
 *
 
 // Defense building, level 1
-startImage = 11
+startImage = 14
 
 shootingRange = 7
 shootDamage = 40
@@ -1003,7 +1003,7 @@ viewingRange = 8
 *
 
 // Defense building site, level 2
-startImage = 41
+startImage = 25
 
 jobHarvest = 1
 
@@ -1033,7 +1033,7 @@ viewingRange = 6
 *
 
 // Defense building, level 2
-startImage = 19
+startImage = 21
 
 shootingRange = 7
 shootDamage = 45
@@ -1056,7 +1056,7 @@ viewingRange = 8
 
 // Exploration Flag
 
-startImage = 50
+startImage = 30
 hueImage = 1
 
 attractFly = 1
@@ -1078,7 +1078,7 @@ defaultUnitStayRange = 10
 
 // War Flag
 
-startImage = 51
+startImage = 31
 hueImage = 1
 
 attractAttackSpeed = 1
@@ -1100,7 +1100,7 @@ defaultUnitStayRange = 4
 
 // Clearing Flag
 
-startImage = 69
+startImage = 32
 hueImage = 1
 
 attractHarvest = 1
@@ -1121,7 +1121,7 @@ defaultUnitStayRange = 5
 *
 
 // wood wall building site
-startImage = 66
+startImage = 24
 
 jobHarvest = 1
 maxWood = 1
@@ -1141,7 +1141,7 @@ isBuildingSite = 1
 *
 
 // wood wall
-startImage = 67
+startImage = 22
 
 width = 1
 height = 1
@@ -1156,7 +1156,7 @@ armor = 2
 *
 
 // stone wall building site
-startImage = 68
+startImage = 24
 
 jobHarvest = 1
 maxWood = 1
@@ -1177,7 +1177,7 @@ isBuildingSite = 1
 *
 
 // stone wall
-startImage = 69
+startImage = 22
 
 width = 1
 height = 1
