@@ -1,0 +1,634 @@
+[language]
+English
+[language-code]
+en
+[language-tr]
+Language
+[hp]
+HP
+[heal]
+Health
+[armor]
+Armour
+[damage]
+Damage
+[food]
+Food
+[working]
+Working
+[inside]
+Inside
+[ressources]
+Resources
+[Wood]
+Wood
+[Corn]
+Wheat
+[Papyrus]
+Papyrus
+[Stone]
+Stone
+[Alga]
+Algae
+[Cherry]
+Cherry
+[Orange]
+Orange
+[Prune]
+Prune
+[Clearing:]
+Clearing:
+[Min required level:]
+Minimum required level:
+[Bullets]
+Bullets
+[range]
+Range
+[destroy]
+Destroy
+[cancel destroy]
+Cancel destroy
+[wait destroy]
+Awaiting destruction
+[upgrade]
+Upgrade
+[repair]
+Repair
+[cancel upgrade]
+Cancel upgrade
+[cancel repair]
+Cancel repair
+[units type]
+unit type
+[workers]
+workers
+[explorers]
+explorers
+[warriors]
+warriors
+[Unit type]
+Unit type
+[Worker]
+Worker
+[Explorer]
+Explorer
+[Warrior]
+Warrior
+[still (w)]
+Still
+[units working]
+ units work
+[still one unit working]
+One unit still working
+[Still (i)]
+Still 
+[Still one]
+One left
+[Building name]
+Building name
+[swarm building]
+Swarm
+[food building]
+Inn
+[health building]
+Hospital
+[walkspeed building]
+Racetrack
+[swimspeed building]
+Swimming pool
+[attack building]
+Barracks
+[science building]
+School
+[defense building]
+Defence Tower
+[exploration flag]
+Exploration flag
+[war flag]
+War flag
+[clearing flag]
+Clearing flag
+[stone wall]
+Stone wall
+[market]
+Market
+[forbidden area]
+Forbidden area
+[Building short explaination]
+Building short explaination (24 chars max)
+[swarm building explaination]
+Creates new units
+[food building explaination]
+Foods your units
+[health building explaination]
+Heals your units
+[walkspeed building explaination]
+Improves the walking speed
+[swimspeed building explaination]
+Improves the swimming
+[attack building explaination]
+Improves fighting level
+[science building explaination]
+Improve the building level
+[defense building explaination]
+Attacks nearby enemy
+[exploration flag explaination]
+Attracts explorers
+[war flag explaination]
+Attracts warriors
+[clearing flag explaination]
+Clear ressources
+[stone wall explaination]
+Passive defense element
+[market explaination]
+Allows to exchange fruits
+[Building short explaination 2]
+Building short explaination 2 (24 chars max)
+[swarm building explaination 2]
+ 
+[food building explaination 2]
+ 
+[health building explaination 2]
+ 
+[walkspeed building explaination 2]
+level of your units
+[swimspeed building explaination 2]
+speed level of your units
+[attack building explaination 2]
+of your warriors
+[science building explaination 2]
+of your workers
+[defense building explaination 2]
+units or buildings
+[exploration flag explaination 2]
+ 
+[war flag explaination 2]
+ 
+[clearing flag explaination 2]
+ 
+[stone wall explaination 2]
+ 
+[market explaination 2]
+with the others
+[waiting for %s]
+Waiting for %s
+[%s has left the game]
+%s has quit the game.
+[%s has been deconnected of the game]
+%s has been disconnected.
+[load game]
+Load game
+[save game]
+Save game
+[options]
+Options
+[alliances]
+Alliances
+[return to game]
+Return to game
+[quit the game]
+Quit the game
+[ok]
+Ok
+[Cancel]
+Cancel
+[you have lost]
+You have lost!
+[you have won]
+You have won!
+[campagn]
+Campaign
+[tutorial]
+Tutorial
+[custom game]
+Custom game
+[yog]
+Ysagoon Online Gaming
+[Enter your nickname :]
+Enter your nickname :
+[Enter your password :]
+Enter your password :
+[lan]
+LAN Game
+[settings]
+Settings
+[Warning, you need to reboot the game for changes to take effect]
+Warning, you need to reboot the game for changes to take effect
+[editor]
+Editor
+[credits]
+Credits
+[quit]
+Quit
+[create game]
+Create game
+[update list]
+Update list
+[connecting to]
+Connecting to
+[connect]
+Connect
+[Disconnect]
+Disconnect
+[please wait]
+Please wait
+[loading glob2]
+Loading Globulation 2
+[host]
+Host a game
+[join a game]
+Join a game
+[join]
+Join
+[goto main menu]
+Go back to main menu
+[player name]
+Player name
+[svr hostname]
+Server hostname
+[hp]
+Hitpoint
+[carry]
+Carrying :
+[don't carry anything]
+Not carrying anything
+[level]
+Level
+[levels]
+Levels
+[building site]
+construction site
+[create map]
+Create map
+[map size x]
+Map width
+[map size y]
+Map height
+[default terrain]
+Default terrain
+[water]
+Water
+[sand]
+Sand
+[grass]
+Grass
+[teams]
+ teams
+[choose map]
+Choose a map
+[choose game]
+Choose a game
+[awaiting players]
+Awaiting players
+[stat]
+Statistics
+[food left]
+Food left
+[the building is finished]
+The building is finished
+[the swarm is finished]
+The swarm is finished
+[the food building is finished]
+The Inn is finished
+[the health building is finished]
+The hospital is finished
+[the walkspeed building is finished]
+The racetrack is finished
+[the swimspeed building is finished]
+The swimming pool is finished
+[the attack building is finished]
+The training camp is finished
+[the science building is finished]
+The school is finished
+[the tower building is finished]
+The defense tower is finished
+[the exploration flag is finished]
+?? Exploration flag finished ??
+[the war flag is finished]
+?? War flag finished ??
+[the clearing flag is finished]
+?? Clearing flag finished ??
+[the stone wall is finished]
+A wall section is finished
+[the market is finished]
+The market is finished
+[the building is under attack]
+The building is under attack
+[the swarm is under attack]
+The swarm is under attack
+[the food building is under attack]
+The Inn is under attack
+[the health building is under attack]
+The hospital is under attack
+[the walkspeed building is under attack]
+The racetrack is under attack
+[the swimspeed building is under attack]
+The swimming pool is under attack
+[the attack building is under attack]
+The training camp is under attack
+[the science building is under attack]
+The school is under attack
+[the defense building is under attack]
+Your defenses are under attack
+[the exploration flag is under attack]
+?? Exploration flag under attack ??
+[the war flag is under attack]
+?? War flag under attack ??
+[the clearing flag is under attack]
+?? Clearing flag under attack ??
+[the stone wall is under attack]
+The enemy is at your walls
+[the market is under attack]
+The market is under attack
+[Your %s are under attack]
+Your %s are under attack
+[Your unit got converted to another team]
+Your unit got converted to another team
+[Another team's unit got converted to your team]
+Another team's unit got converted to your team
+[Uncontrolled]
+Uncontrolled
+[ai]
+AI
+[closed]
+Closed
+[close]
+Close
+[player]
+Player
+[STARTING GAME ...]
+Starting game... 
+[Statistics]
+Statistics
+[Buildings]
+Buildings
+[Prestige]
+Prestige
+[Units]
+Units
+[Attack]
+Attack
+[Defense]
+Defense
+[free]
+free
+[of which]
+of which
+[are ok]
+are ok
+[are hungry]
+are hungry
+[are dying hungry]
+are starving to death
+[are wonded]
+are wounded
+[and]
+and
+[seeking a job]
+are looking for a job
+[Walk]
+Walk
+[Swim]
+Swim
+[Build]
+Build
+[Harvest]
+Harvest
+[At. speed]
+Att. speed
+[At. strength]
+Att. strength
+[Total]
+Total
+[free]
+free
+[seeking]
+seeking
+[Free]
+Free
+[hungry]
+hungry
+[starving]
+starving
+[wounded]
+wounded
+[In way]
+On the way
+[On the spot]
+Here
+[Version]
+Version
+[open]
+open
+[Add AI]
+Add AI
+[AI]
+AI
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AICastor]
+AICastor
+[AIToubib]
+AIToubib
+[the games]
+Games
+[the maps]
+Maps
+[was]
+was
+[was AI]
+was AI
+[state]
+state
+[Start]
+Start
+[not ready]
+not ready
+[has joined]
+has joined
+[has quit]
+has quit
+[yog-chat]
+#yog-en
+[speed]
+Speed
+[current speed]
+Current speed
+[attack speed]
+Attack speed
+[new]
+New
+[load]
+Load
+[handmade map]
+Handmade map
+[mapGenerationDescriptor Methodes]
+Methodes of random generated maps
+[uniform terrain]
+Uniform terrain
+[random terrain]
+Random terrain
+[islands terrain]
+Islands
+[ratios]
+Proportions
+[smoothing]
+Smoothing
+[number of teams]
+number of teams
+[islands size]
+island size
+[beach size]
+beach size
+[workers]
+Workers
+[bad error in connection system]
+Bad error in connection system
+[not connected]
+Not connected
+[presence request sent]
+Presence request sent ...
+[session request sent]
+Session request sent ...
+[checksum sent]
+Checksum sent ...
+[connected to server]
+Connected to server
+[connecting to all players]
+Connecting to all players
+[connected to all players]
+Connected to all players
+[available lan games]
+Available local games
+[login]
+Login
+[from:]
+from:
+[to:]
+to:
+[away:]
+away:
+[compile]
+Compile script
+[downloaded at]
+Downloaded at 
+[percent]
+  percent
+[download finished]
+Download finished
+[Map name: %s]
+Map name: %s.
+[one player]
+A player has joined.
+[number of players: %d]
+%d players are present.
+[number of teams: %d]
+%d teams.
+[game full]
+Game full
+[small]
+small
+[medium]
+medium
+[large]
+large
+[network latency]
+Network latency
+[game speed]
+Game speed
+[Paused]
+Paused
+[Register a new YOG user with password]
+Register a new YOG user with a password. (insecure)
+[Remember YOG password localy]
+Remember the password locally. (insecure)
+[YESTS_BAD]
+Internal consistency error while connecting.
+[YESTS_UNABLE_TO_CONNECT]
+Unable to connect. Apparently the YOG metaserver is down.
+[YESTS_CREATED]
+The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_CONNECTING]
+Establishing the connection to the YOG metaserver...
+[YESTS_DECONNECTING]
+Disconnecting from the YOG metaserver...
+[YESTS_YOG_KILLED]
+An administrator has just stopped the YOG metaserver.
+[YESTS_CONNECTION_LOST]
+The connection to YOG has been lost.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+The YOG metaserver has refused connection because your globulation2 client is obsolete.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+The YOG metaserver has refused connection because the supplied password was incorrect.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+The YOG metaserver has refused the connection without explanation!
+[The player %s has left YOG]
+%s has left YOG.
+[The player %s has joined YOG]
+%s has joined YOG.
+[You are now marked as away]
+You are marked as away.
+[You are no more marked as away]
+You are no longer marked as away.
+[YOG_HELP]
+The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
+[YOG_HELP_AWAY]
+The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
+[YOG_HELP_MSG]
+The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
+[save before quit?]
+Do you want to save before quitting?
+[Yes]
+Yes
+[No]
+No
+[Save]
+Save
+[auto save]
+Auto save
+[Total prestige reached]
+Total prestige reached
+[Continue playing]
+Continue playing
+[Lost : your colony is dead]
+Lost: your colony is dead
+[Won : you defeated your opponents]
+Won : you defeated your opponents
+[Won : your ally %s has the most prestige]
+Won: your ally %s has the biggest prestige
+[Lost : %s has more prestige than you]
+Lost : %s has more prestige than you
+[Won : you have the most prestige]
+Won : you have the biggest prestige
+[The game has not been finished]
+The game has not been finished
+[display]
+Display
+[username]
+Username
+[fullscreen]
+Fullscreen
+[hwaccel]
+Hardware acceleration
+[dblbuff]
+Double buffering
+[lowquality]
+Low quality
+[audio]
+Audio
+[Music volume]
+Volume (music)
+[Happyness]
+Happiness
