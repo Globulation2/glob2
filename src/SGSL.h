@@ -64,7 +64,9 @@ struct Token
 		S_WIN=317,
 		S_LOOSE=318,
 		S_STORY=319,
-		S_HIDE=320
+		S_HIDE=320,
+		S_MARK=321,
+		S_GOBACKTO=322
 	} type;
 
 	int value;

@@ -203,7 +203,24 @@ bool Story::testCondition()
 					}
 				}
 			}
-		
+			case (Token::S_MARK):
+			{
+				lineSelector += 1;
+				return true;
+			}
+			case (Token::S_GOBACKTO):
+			{
+				//TODO traiter les erreurs en cas de nonexistance du token !
+				int newEmplacement;
+				for (int i = lineSelector; i > 0; i--)
+				{
+					if (line[lineSelector+1].msg == line[i].msg)
+						newEmplacement = i;
+						break;
+				}
+				lineSelector = newEmplacement;
+				return true;
+			}
 			case (Token::INT):
 			{
 				internTimer--;
@@ -216,22 +233,26 @@ bool Story::testCondition()
 			//TODO make the right action ! HELP STEPH !!!
 			case (Token::S_FRIEND):
 			{
-				lineSelector +=1;
+				mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
+				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
+				lineSelector +=2;
 				return true;
 			}
 			case (Token::S_ENEMY):
 			{
-				lineSelector +=1;
+				mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
+				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
+				lineSelector +=2;
 				return true;
 			}
 			case (Token::S_ACTIVATE):
 			{
-				lineSelector +=1;
+				lineSelector ++;
 				return true;
 			}
 			case (Token::S_DEACTIVATE):
 			{
-				lineSelector +=1;
+				lineSelector ++;
 				return true;
 			}
 			
@@ -456,7 +477,7 @@ void Aquisition::nextToken()
 		{
 			token.type=Token::S_ATTACK_B;
 		}
-		else if (mot=="nbAcienceBuilding")
+		else if (mot=="nbScienceBuilding")
 		{
 			token.type=Token::S_SCIENCE_B;
 		}
@@ -467,6 +488,14 @@ void Aquisition::nextToken()
 		else if (mot == "hide")
 		{
 			token.type=Token::S_HIDE;
+		}
+		else if (mot == "mark")
+		{
+			token.type=Token::S_MARK;
+		}
+		else if (mot == "gobackto")
+		{
+			token.type=Token::S_GOBACKTO;
 		}
 		else
 		{
@@ -514,6 +543,7 @@ void Mapscript::step()
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
 	ErrorReport er;
+	er.type=ErrorReport::ET_OK;
 	if (donnees.newFile(filename))
 	{
 		reset();
@@ -523,10 +553,183 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 		while (donnees.getToken().type != Token::S_EOF)
 		{
 			Story thisone(this);
+			if (er.type != ErrorReport::ET_OK)
+				break;
 			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
 			{
-				thisone.line.push_back(donnees.getToken());
-				donnees.nextToken();
+				//VŽrification gramaticale
+				switch (donnees.getToken().type)
+				{
+					case (Token::S_SHOW):
+					case (Token::S_MARK):
+					case (Token::S_GOBACKTO):
+					{
+						cout << donnees.getToken().type << endl;
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+						if (donnees.getToken().type != Token::STRING)
+						{
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+					}
+					break;
+					case (Token::S_WAIT):
+					{
+						cout << donnees.getToken().type << endl;
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+						if ((donnees.getToken().type == Token::S_DEAD) || (donnees.getToken().type == Token::S_ALIVE))
+						{
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if (donnees.getToken().type != Token::INT)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+						}
+						else if (donnees.getToken().type == Token::S_FLAG)
+						{
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if (donnees.getToken().type != Token::INT)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if ((donnees.getToken().type != Token::S_YOU) || (donnees.getToken().type != Token::S_NOENEMY))
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+						}
+						else if (donnees.getToken().type == Token::INT)
+						{
+							cout << donnees.getToken().type;
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+						}
+						else if ((donnees.getToken().type > 100) and (donnees.getToken().type < 300))
+						{
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if (donnees.getToken().type == Token::INT)
+							{
+								thisone.line.push_back(donnees.getToken());
+								donnees.nextToken();
+								if ((donnees.getToken().type > 300) and (donnees.getToken().type < 304))
+								{
+									thisone.line.push_back(donnees.getToken());
+									donnees.nextToken();
+									if (donnees.getToken().type == Token::INT)
+									{
+										thisone.line.push_back(donnees.getToken());
+										donnees.nextToken();
+									}
+									else
+									{
+										er.type=ErrorReport::ET_SYNTAX_ERROR;
+										break;
+									}
+								}
+								else
+								{
+									er.type=ErrorReport::ET_SYNTAX_ERROR;
+									break;
+								}
+							}
+							else
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+						}
+						else
+						{
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+					}
+					break;
+					case (Token::NIL):
+					{
+						donnees.nextToken();
+					}
+					break;
+					case (Token::S_FRIEND):
+					case (Token::S_ENEMY):
+					{
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+						if (donnees.getToken().type == Token::INT)
+						{
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if (donnees.getToken().type == Token::INT)
+							{
+								thisone.line.push_back(donnees.getToken());
+								donnees.nextToken();
+							
+							}
+							else
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+						}
+						else
+						{
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+					}
+					break;
+					case (Token::S_TIMER):
+					case (Token::S_ACTIVATE):
+					case (Token::S_DEACTIVATE):
+					{
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+						if (donnees.getToken().type != Token::INT)
+						{
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+					}
+					break;
+					case (Token::S_WIN):
+					{
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+					}
+					break;
+					case (Token::S_LOOSE):
+					{
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+					}
+					break;
+					case (Token::S_EOF):
+					{
+					}
+					break;
+					default:
+						cout << donnees.getToken().type << endl;
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+				}
 			}
 			stories.push_back(thisone);
 			printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
@@ -534,7 +737,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 				cout << "Token type " << thisone.line[i].type << endl;
 			donnees.nextToken();
 		}
-		er.type=ErrorReport::ET_OK;
 	}
 	else
 	{
