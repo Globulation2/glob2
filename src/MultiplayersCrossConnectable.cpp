@@ -43,7 +43,7 @@ MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 
 void MultiplayersCrossConnectable::tryCrossConnections(void)
 {
-	bool sucess=true;
+	bool success=true;
 	Uint8 data[8];
 	data[0]=PLAYER_CROSS_CONNECTION_FIRST_MESSAGE;
 	data[1]=0;
@@ -63,7 +63,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 					{
 						fprintf(logFile, "Player %d with ip %s is not bindable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-						sucess=false;
+						success=false;
 						break;
 					}
 
@@ -71,7 +71,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 				{
 					fprintf(logFile, "Player %d with ip %s is not sendable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-					sucess=false;
+					success=false;
 					break;
 				}
 				sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;

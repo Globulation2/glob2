@@ -2506,8 +2506,8 @@ void GameGUI::drawOverlayInfos(void)
 
 		batW=(bt->width)<<5;
 		batH=sprite->getH(bt->startImage);
-		batX=(mapX-viewportX)<<5;
-		batY=((mapY-viewportY)<<5)-(batH-(bt->height<<5));
+		batX=(((mapX-viewportX)&(game.map.wMask))<<5);
+		batY=(((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
 
 		// we get extended building sizes:
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());

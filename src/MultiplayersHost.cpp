@@ -505,12 +505,12 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 
 	memcpy(packet->data, sdata, ssize);
 
-	bool sucess;
+	bool success;
 
 	packet->address=ip;
 	packet->channel=-1;
-	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	if (!sucess)
+	success=SDLNet_UDP_Send(socket, -1, packet)==1;
+	if (!success)
 		fprintf(logFile, "failed to send yogGameInfo packet!\n");
 
 	SDLNet_FreePacket(packet);
@@ -1097,13 +1097,13 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	packet->len=4+64+32;
 	memcpy(packet->data, sdata, 4+64+32);
 
-	bool sucess;
+	bool success;
 
 	packet->address=ip;
 	packet->channel=-1;
 
-	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	if (sucess)
+	success=SDLNet_UDP_Send(socket, -1, packet)==1;
+	if (success)
 		fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
 
 	SDLNet_FreePacket(packet);
@@ -1617,7 +1617,7 @@ void MultiplayersHost::sendingTime()
 				addSint32(data, sessionInfo.checkSum(), 4);
 				sessionInfo.players[pi].send(data, 8);
 
-				// Now that's not our problem if this packet don't sucess.
+				// Now that's not our problem if this packet don't success.
 				// In such a case, the client will reply.
 				sessionInfo.players[pi].netTimeout=0;
 				sessionInfo.players[pi].netTimeoutSize=SHORT_NETWORK_TIMEOUT;

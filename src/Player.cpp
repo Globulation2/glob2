@@ -407,8 +407,8 @@ Player::Player()
 Player::Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 :BasePlayer()
 {
-	bool sucess=load(stream, teams, versionMinor);
-	assert(sucess);
+	bool success=load(stream, teams, versionMinor);
+	assert(success);
 }
 
 Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type)
