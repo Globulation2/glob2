@@ -101,6 +101,10 @@ SettingsScreen::SettingsScreen()
 	oldLanguage=Toolkit::getStringTable()->getLang();
 	oldScreenW=globalContainer->settings.screenWidth;
 	oldScreenH=globalContainer->settings.screenHeight;
+	oldScreenFlags=globalContainer->settings.screenFlags;
+	oldOptionFlags=globalContainer->settings.optionFlags;
+
+	gfxAltered=false;
 }
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -111,12 +115,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			globalContainer->setUserName(userName->getText());
 
-			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
-			globalContainer->settings.screenFlags=DrawableSurface::DEFAULT;
-			globalContainer->settings.screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
-			globalContainer->settings.screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
-			globalContainer->settings.screenFlags|=dblbuff->getState() ? DrawableSurface::DOUBLEBUF : 0;
-			globalContainer->settings.musicVolume=musicVol->getValue();
 			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
 
 			globalContainer->settings.save("preferences.txt");
@@ -126,9 +124,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (par1==CANCEL)
 		{
 			Toolkit::getStringTable()->setLang(oldLanguage);
+
+			globalContainer->settings.musicVolume=oldMusicVol;
 			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
+
 			globalContainer->settings.screenWidth=oldScreenW;
 			globalContainer->settings.screenHeight=oldScreenH;
+			globalContainer->settings.screenFlags=oldScreenFlags;
+			if (gfxAltered)
+				updateGfxCtx();
+
+			globalContainer->settings.optionFlags=oldOptionFlags;
+
 			endExecute(par1);
 		}
 	}
@@ -159,12 +166,67 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			sscanf(modeList->getText(par1), "%dx%d", &w, &h);
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
+			updateGfxCtx();
 		}
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->mix->setVolume(musicVol->getValue());
+		globalContainer->settings.musicVolume=musicVol->getValue();
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
 	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (source==lowquality)
+		{
+			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
+		}
+		else if (source==fullscreen)
+		{
+			if (fullscreen->getState())
+			{
+				globalContainer->settings.screenFlags|=DrawableSurface::FULLSCREEN;
+				globalContainer->settings.screenFlags&=~(DrawableSurface::RESIZABLE);
+			}
+			else
+			{
+				globalContainer->settings.screenFlags&=(DrawableSurface::FULLSCREEN);
+				globalContainer->settings.screenFlags|=DrawableSurface::RESIZABLE;
+			}
+			updateGfxCtx();
+		}
+		else if (source==hwaccel)
+		{
+			if (hwaccel->getState())
+			{
+				globalContainer->settings.screenFlags|=DrawableSurface::HWACCELERATED;
+			}
+			else
+			{
+				globalContainer->settings.screenFlags&=~(DrawableSurface::HWACCELERATED);
+			}
+			updateGfxCtx();
+		}
+		else if (source==dblbuff)
+		{
+			if (dblbuff->getState())
+			{
+				globalContainer->settings.screenFlags|=DrawableSurface::DOUBLEBUF;
+			}
+			else
+			{
+				globalContainer->settings.screenFlags&=~(DrawableSurface::DOUBLEBUF);
+			}
+			updateGfxCtx();
+		}
+	}
+}
+
+void SettingsScreen::updateGfxCtx(void)
+{
+	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, 32, globalContainer->settings.screenFlags);
+	dispatchPaint(globalContainer->gfx);
+	addUpdateRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	gfxAltered = true;
 }
 
 int SettingsScreen::menu(void)

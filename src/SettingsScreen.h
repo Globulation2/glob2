@@ -45,13 +45,16 @@ private:
 	List *languageList;
 	List *modeList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH;
+	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldOptionFlags, oldMusicVol;
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality;
 	Selector *musicVol;
 	Text *title, *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
+
+	bool gfxAltered;
+	void updateGfxCtx(void);
 
 public:
 	SettingsScreen();
