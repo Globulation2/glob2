@@ -833,18 +833,20 @@ void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress i
 	}
 	
 	int l=Utilities::strmlen(playerName, 32);
-	UDPpacket *packet=SDLNet_AllocPacket(4+l);
+	UDPpacket *packet=SDLNet_AllocPacket(5+l);
 
 	assert(packet);
 
 	packet->channel=channel;
 	packet->address=ip;
-	packet->len=4+l;
+	packet->len=5+l;
 	packet->data[0]=BROADCAST_RESPONSE_JOINER;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	memcpy(packet->data+4, playerName, l);
+	packet->data[4]=0;
+	memcpy(packet->data+5, playerName, l);
+	
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 		fprintf(logFile, "send suceeded to send joinerBroadcastRequest packet to ip=(%s).\n", Utilities::stringIP(ip));
 	else
@@ -854,26 +856,28 @@ void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress i
 
 void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress ip)
 {
-	if (size>4+32 || size<4+2)
+	if (size>5+32 || size<5+2)
 	{
 		fprintf(logFile, "Warning, bad size for a joinerBroadcastResponse (%d).\n", size);
 		return;
 	}
 	
 	char name[32];
-	memcpy(name, data+4, size-4);
-	name[size-5]=0;
+	Uint8 playerNumber=data[4];
+	memcpy(name, data+5, size-5);
+	name[size-6]=0;
 	
 	if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
 	{
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
-			{
-				sessionInfo.players[j].waitForNatResolution=false;
-				sessionInfo.players[j].ipFromNAT=true;
-				sessionInfo.players[j].setip(ip);
-				fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", j, name, Utilities::stringIP(ip));
-			}
+		//for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		int j=playerNumber;
+		if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
+		{
+			sessionInfo.players[j].waitForNatResolution=false;
+			sessionInfo.players[j].ipFromNAT=true;
+			sessionInfo.players[j].setip(ip);
+			fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", j, name, Utilities::stringIP(ip));
+		}
 	}
 	else
 		fprintf(logFile, "Warning, joinerBroadcastResponse packet received while in a bad state. (ws=%d).\n", waitingState);
@@ -1177,7 +1181,13 @@ void MultiplayersJoin::sendingTime()
 		
 		if ((broadcastState==BS_ENABLE_YOG || broadcastState==BS_JOINED_YOG)
 			&& (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION))
-				needLocalBroadcasting=true;
+		{
+			sendBroadcastRequest(GAME_JOINER_PORT_1);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_2);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_3);
+		}
 		
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			if (sessionInfo.players[j].type==BasePlayer::P_IP)
@@ -1186,11 +1196,17 @@ void MultiplayersJoin::sendingTime()
 		
 		if (needLocalBroadcasting)
 		{
-			sendBroadcastRequest(GAME_JOINER_PORT_1);
+			// We ask the host's joiner for his ip:
+			IPaddress ip;
+			ip.host=serverIP.host;
+			ip.port=SDL_SwapBE16(GAME_JOINER_PORT_1);
+			sendBroadcastRequest(ip);
 			SDL_Delay(10);
-			sendBroadcastRequest(GAME_JOINER_PORT_2);
+			ip.port=SDL_SwapBE16(GAME_JOINER_PORT_2);
+			sendBroadcastRequest(ip);
 			SDL_Delay(10);
-			sendBroadcastRequest(GAME_JOINER_PORT_3);
+			ip.port=SDL_SwapBE16(GAME_JOINER_PORT_3);
+			sendBroadcastRequest(ip);
 		}
 	}
 	

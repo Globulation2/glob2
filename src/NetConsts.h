@@ -41,7 +41,7 @@
 
 #define MAX_PACKET_SIZE 4096
 
-#define NET_PROTOCOL_VERSION 1
+#define NET_PROTOCOL_VERSION 2
 
 enum OrderTypes
 {
