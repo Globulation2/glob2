@@ -866,57 +866,66 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	return b;
 }
 
-bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, int flags)
+bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, unsigned flags)
 {
 	bool found=false;
-	Uint16 gauid=map.getAirUnit(x, y);
-	if (gauid!=NOGUID)
+	if (flags & DEL_GROUND_UNIT)
 	{
-		int id=Unit::GIDtoID(gauid);
-		int team=Unit::GIDtoTeam(gauid);
-		map.setAirUnit(x, y, NOGUID);
-		r->x=x;
-		r->y=y;
-		r->w=1;
-		r->h=1;
-		delete (teams[team]->myUnits[id]);
-		teams[team]->myUnits[id]=NULL;
-		found=true;
+		Uint16 gauid=map.getAirUnit(x, y);
+		if (gauid!=NOGUID)
+		{
+			int id=Unit::GIDtoID(gauid);
+			int team=Unit::GIDtoTeam(gauid);
+			map.setAirUnit(x, y, NOGUID);
+			r->x=x;
+			r->y=y;
+			r->w=1;
+			r->h=1;
+			delete (teams[team]->myUnits[id]);
+			teams[team]->myUnits[id]=NULL;
+			found=true;
+		}
 	}
-	Uint16 gguid=map.getGroundUnit(x, y);
-	if (gguid!=NOGUID)
+	if (flags & DEL_AIR_UNIT)
 	{
-		int id=Unit::GIDtoID(gguid);
-		int team=Unit::GIDtoTeam(gguid);
-		map.setGroundUnit(x, y, NOGUID);
-		r->x=x;
-		r->y=y;
-		r->w=1;
-		r->h=1;
-		delete (teams[team]->myUnits[id]);
-		teams[team]->myUnits[id]=NULL;
-		found=true;
+		Uint16 gguid=map.getGroundUnit(x, y);
+		if (gguid!=NOGUID)
+		{
+			int id=Unit::GIDtoID(gguid);
+			int team=Unit::GIDtoTeam(gguid);
+			map.setGroundUnit(x, y, NOGUID);
+			r->x=x;
+			r->y=y;
+			r->w=1;
+			r->h=1;
+			delete (teams[team]->myUnits[id]);
+			teams[team]->myUnits[id]=NULL;
+			found=true;
+		}
 	}
-	Uint16 gbid=map.getBuilding(x, y);
-	if (gbid!=NOGBID)
+	if (flags & DEL_BUILDING)
 	{
-		int id=Building::GIDtoID(gbid);
-		int team=Building::GIDtoTeam(gbid);
-		Building *b=teams[team]->myBuildings[id];
-		r->x=b->posX;
-		r->y=b->posY;
-		r->w=b->type->width;
-		r->h=b->type->height;
-		if (!b->type->isVirtual)
-			map.setBuilding(r->x, r->y, r->w, r->h, NOGBID);
-		delete b;
-		teams[team]->myBuildings[id]=NULL;
-		found=true;
+		Uint16 gbid=map.getBuilding(x, y);
+		if (gbid!=NOGBID)
+		{
+			int id=Building::GIDtoID(gbid);
+			int team=Building::GIDtoTeam(gbid);
+			Building *b=teams[team]->myBuildings[id];
+			r->x=b->posX;
+			r->y=b->posY;
+			r->w=b->type->width;
+			r->h=b->type->height;
+			if (!b->type->isVirtual)
+				map.setBuilding(r->x, r->y, r->w, r->h, NOGBID);
+			delete b;
+			teams[team]->myBuildings[id]=NULL;
+			found=true;
+		}
 	}
 	return found;
 }
 
-bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
+bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned flags)
 {
 	int sts=size>>1;
 	int stp=(~size)&1;
@@ -1119,7 +1128,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (unit==selectedUnit)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
 
-	if ((mouseUnit)&&(px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))||(Unit::GIDtoTeam(gid)==teamSelected)))
+	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))||(Unit::GIDtoTeam(gid)==teamSelected)))
 		mouseUnit=unit;
 
 	if (drawHealthFoodBar)

@@ -34,7 +34,9 @@ public:
 	enum FlagForRemoval
 	{
 		DEL_BUILDING=0x1,
-		DEL_UNIT=0x2
+		DEL_GROUND_UNIT=0x2,
+		DEL_AIR_UNIT=0x4,
+		DEL_UNIT=0x6
 	};
 
 public:
@@ -86,8 +88,8 @@ public:
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int team, int typeNum);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
-	bool removeUnitAndBuilding(int x, int y, SDL_Rect* r, int flags);
-	bool removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags=DEL_UNIT|DEL_BUILDING);
+	bool removeUnitAndBuilding(int x, int y, SDL_Rect* r, unsigned flags);
+	bool removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned=DEL_UNIT|DEL_BUILDING);
 
 	bool checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team);
 	bool checkRoomForBuilding(int x, int y, int typeNum, Sint32 team);
