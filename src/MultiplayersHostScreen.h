@@ -54,6 +54,7 @@ public:
 
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
+	Text *startTimer;
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 };
 

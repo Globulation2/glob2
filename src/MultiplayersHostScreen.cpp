@@ -52,6 +52,8 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		addWidget(text[i]);
 		wasSlotUsed[i]=false;
 	}
+	startTimer=new Text(20, 400, globalContainer->standardFont, "");
+	addWidget(startTimer);
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -107,10 +109,14 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin)
 		multiplayersJoin->onTimer(tick);
 
-	// TODO: handle this in a nicer way, this should be moved in a text
-	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
-		if (multiplayersHost->startGameTimeCounter%20==0)
-			dispatchPaint(gfxCtx);
+	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
+		&& (multiplayersHost->startGameTimeCounter%20==0))
+	{
+		char s[128];
+		snprintf(s, sizeof(s), "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
+		printf("s=%s.\n", s);
+		startTimer->setText(s);
+	}
 
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
@@ -146,13 +152,4 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
-	{
-		char s[256];
-		snprintf(s, 256, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
-		int h=globalContainer->menuFont->getStringHeight(s);
-		printf("s=%s.\n", s);
-		gfxCtx->drawString(20, 460-h, globalContainer->menuFont, s);
-		addUpdateRect(20, 460-h, gfxCtx->getW()-40, h);
-	}
 }
