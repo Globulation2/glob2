@@ -928,6 +928,8 @@ void Unit::handleDisplacement(void)
 				caryedRessource=destinationPurprose;
 				fprintf(logFile, "[%d] sdp5 destinationPurprose=%d\n", gid, destinationPurprose);
 				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
+				assert(movement == MOV_HARVESTING);
+				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 				
 				targetBuilding=attachedBuilding;
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
@@ -1445,6 +1447,32 @@ void Unit::handleDisplacement(void)
 
 void Unit::handleMovement(void)
 {
+	if (typeNum == WORKER &&
+		(displacement == DIS_RANDOM
+		|| displacement == DIS_GOING_TO_FLAG
+		|| displacement == DIS_CLEARING_RESSOURCES
+		|| displacement == DIS_GOING_TO_RESSOURCE
+		|| displacement == DIS_GOING_TO_BUILDING))
+	{
+		Map *map = owner->map;
+		if (movement == MOV_HARVESTING)
+			map->decRessource(posX + dx, posY + dy);
+		for (int tdx = -1; tdx <= 1; tdx++)
+			for (int tdy = -1; tdy <= 1; tdy++)
+			{
+				int x = (posX + tdx) & map->hMask;
+				int y = (posY + tdy) & map->wMask;
+				Case mapCase = map->cases[(y << map->wDec) + x];
+				if ((mapCase.clearArea & owner->me) && (mapCase.ressource.type != NO_RES_TYPE))
+				{
+					dx = tdx;
+					dy = tdy;
+					movement = MOV_HARVESTING;
+					return;
+				}
+			}
+	}
+
 	switch (displacement)
 	{
 		case DIS_REMOVING_BLACK_AROUND:

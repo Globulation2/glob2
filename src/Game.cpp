@@ -2210,18 +2210,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
 				{
-					globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 255, 255, 0);
-					globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 255, 255, 0);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 16+(x<<5), 32+(y<<5), 64, 64, 0);
+					globalContainer->gfx->drawLine(32+(x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 64, 64, 0);
+					//globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 128, 128, 0);
+					//globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 128, 128, 0);
 					
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 255, 0);
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 128, 128, 0);
 					if (!map.isClearAreaLocal(x+viewportX, y+viewportY+1))
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 255, 0);
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 128, 128, 0);
 					
 					if (!map.isClearAreaLocal(x+viewportX-1, y+viewportY))
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 255, 0);
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 128, 128, 0);
 					if (!map.isClearAreaLocal(x+viewportX+1, y+viewportY))
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 255, 0);
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 128, 128, 0);
 				}
 			}
 
