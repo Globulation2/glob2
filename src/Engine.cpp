@@ -80,17 +80,17 @@ Engine::~Engine()
 	}
 }
 
-int Engine::initCampain()
+int Engine::initCampaign()
 {
 	ChooseMapScreen loadCampaignScreen("campaigns", "map", true);;
 	int lgs = loadCampaignScreen.execute(globalContainer->gfx, 40);
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 
-	return initCampain(glob2NameToFilename("campaigns", loadCampaignScreen.sessionInfo.getMapName().c_str(), "map"));
+	return initCampaign(glob2NameToFilename("campaigns", loadCampaignScreen.sessionInfo.getMapName().c_str(), "map"));
 }
 
-int Engine::initCampain(const std::string &mapName)
+int Engine::initCampaign(const std::string &mapName)
 {
 	if (!loadGame(mapName))
 		return EE_CANT_LOAD_MAP;
@@ -131,7 +131,7 @@ int Engine::initCampain(const std::string &mapName)
 	
 	if (!wasHuman)
 	{
-		std::cerr << " Engine::initCampain(\"" << mapName << "\") : error, can't find any human player" << std::endl;
+		std::cerr << " Engine::initCampaign(\"" << mapName << "\") : error, can't find any human player" << std::endl;
 		return EE_CANT_FIND_PLAYER;
 	}
 
@@ -347,9 +347,9 @@ int Engine::initMutiplayerJoin(void)
 
 int Engine::run(void)
 {
-	bool doRunOnceAggain=true;
+	bool doRunOnceAgain=true;
 	
-	// Stop menu musi, load game music
+	// Stop menu music, load game music
 	if (globalContainer->runNoX)
 		assert(globalContainer->mix==NULL);
 	else
@@ -357,7 +357,7 @@ int Engine::run(void)
 		globalContainer->mix->setNextTrack(2, true);
 	}
 	
-	while (doRunOnceAggain)
+	while (doRunOnceAgain)
 	{
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute=true;
@@ -472,13 +472,13 @@ int Engine::run(void)
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
 		
-		doRunOnceAggain=false;
+		doRunOnceAgain=false;
 		
 		if (gui.toLoadGameFileName[0])
 		{
 			int rv=initCustom(gui.toLoadGameFileName);
 			if (rv==EE_NO_ERROR)
-				doRunOnceAggain=true;
+				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
 		else if (gui.game.nextMap.length() > 0)
@@ -487,7 +487,7 @@ int Engine::run(void)
 			if (gui.game.isGameEnded && gui.getLocalTeam()->isAlive)
 			{
 				std::string filename = std::string("campaigns/") +  gui.game.nextMap;
-				doRunOnceAggain = (initCampain(filename.c_str()) == EE_NO_ERROR);
+				doRunOnceAgain = (initCampaign(filename.c_str()) == EE_NO_ERROR);
 			}
 		}
 	}

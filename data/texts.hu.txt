@@ -196,7 +196,7 @@ Mégsem
 Elvesztetted a játékot!
 [you have won]
 Megnyerted a játékot!
-[campagn]
+[campaign]
 Hadjárat
 [tutorial]
 Gyakorlás

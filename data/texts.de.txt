@@ -196,7 +196,7 @@ Wiederrufen
 Sie haben verloren!
 [you have won]
 Sie haben gewonnen!
-[campagn]
+[campaign]
 Feldzug
 [tutorial]
 Lernprogramm

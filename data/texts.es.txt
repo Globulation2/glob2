@@ -196,7 +196,7 @@ Cancelar
 Has perdido
 [you have won]
 Has ganado
-[campagn]
+[campaign]
 Campaña
 [tutorial]
 Tutorial

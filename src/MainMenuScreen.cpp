@@ -32,7 +32,7 @@ using namespace GAGCore;
 
 MainMenuScreen::MainMenuScreen()
 {
-	addWidget(new TextButton( 10,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campagn]"), CAMPAIN));
+	addWidget(new TextButton( 10,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
 	
 	addWidget(new TextButton( 330,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
 	

@@ -196,7 +196,7 @@ Anuluj
 Przegrałeś...
 [you have won]
 Wygrałeś !!!
-[campagn]
+[campaign]
 Kampania
 [tutorial]
 Samouczek

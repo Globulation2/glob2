@@ -198,7 +198,7 @@ Avbryt
 Du har förlorat!
 [you have won]
 Du har segrat!
-[campagn]
+[campaign]
 Fälttåg
 [tutorial]
 Handledning

@@ -196,7 +196,7 @@ sr
 Изгубили сте игру.
 [you have won]
 Добили сте игру.
-[campagn]
+[campaign]
 Кампања
 [tutorial]
 Уџбеник
