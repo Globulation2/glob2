@@ -779,7 +779,33 @@ Downloaded at
 Téléchargement terminé
 Download finished
 
+[map name:]
+Carte:
+Map name:
 
-
+[:map name]
+.
+.
+.
+[one player]
+Un joueur présent.
+One player has joined.
+Ein Spieler
+[number of players:]
+ 
+ 
+ 
+[:number of players]
+ joueurs présents.
+ players has joined.
+ Spieler
+[number of teams:]
+ 
+ 
+ 
+[:number of teams]
+ équipes
+ teams
+ Mannschaften
 
 

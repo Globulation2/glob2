@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+Â  Â  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+Â  Â  This program is free software; you can redistribute it and/or modify
+Â  Â  it under the terms of the GNU General Public License as published by
+Â  Â  the Free Software Foundation; either version 2 of the License, or
+Â  Â  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Â  Â  This program is distributed in the hope that it will be useful,
+Â  Â  but WITHOUT ANY WARRANTY; without even the implied warranty of
+Â  Â  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Â See the
+Â  Â  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Â  Â  You should have received a copy of the GNU General Public License
+Â  Â  along with this program; if not, write to the Free Software
+Â  Â  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA Â 02111-1307 Â USA
 */
 
 #include <string.h>
@@ -282,8 +282,38 @@ void YOGScreen::onTimer(Uint32 tick)
 		YOG::GameInfo *yogGameInfo=globalContainer->yog->getSelectedGameInfo();
 		if (yogGameInfo)
 		{
-			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->description);
-			gameInfo->setText(yogGameInfo->description);
+			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
+			char s[128];
+			sprintf(s, "%s%s%s\n", globalContainer->texts.getString("[map name:]"),
+				yogGameInfo->mapName,
+				globalContainer->texts.getString("[:map name]"));
+			gameInfo->setText(s);
+			
+			if (yogGameInfo->numberOfPlayer==1)
+			{
+				sprintf(s, "%s\n", globalContainer->texts.getString("[one player]")),
+				gameInfo->addText(s);
+			}
+			else
+			{
+				sprintf(s, "%s%d%s\n", globalContainer->texts.getString("[number of players:]"),
+					yogGameInfo->numberOfPlayer,
+					globalContainer->texts.getString("[:number of players]"));
+				gameInfo->addText(s);
+			}
+			sprintf(s, "%s%d%s\n", globalContainer->texts.getString("[number of teams:]"),
+				yogGameInfo->numberOfTeam,
+				globalContainer->texts.getString("[:number of teams]"));
+			gameInfo->addText(s);
+			
+			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
+				sprintf(s, "%s\n", globalContainer->texts.getString("[handmade map]"));
+			else
+				sprintf(s, "%s\n", globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
+			gameInfo->addText(s);
+			printf("yogGameInfo->mapGenerationMethode=%d.\n", yogGameInfo->mapGenerationMethode);
+			
+			//TODO: display info about yogGameInfo->fileIsAMap
 		}
 		else
 		{
