@@ -52,6 +52,7 @@ minimapR = 0
 minimapG = 0
 minimapB = 0
 gfxId = 20
+varietiesCount = 1
 expendable = 0
 granular = 1
 
