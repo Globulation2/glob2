@@ -53,8 +53,6 @@ public:
 	bool drawHealthFoodBar, drawPathLines;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
-	// how long the COU has been idle last tick
-	int lastStepTimeToWait;
 
 public:
 	GameGUI();
@@ -95,6 +93,8 @@ public:
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
 
+	// Stats for engine
+	void setLastStepTimeToWait(int s);
 
 private:
 	bool processGameMenu(SDL_Event *event);
@@ -280,6 +280,10 @@ private:
 
 	//! add a minimap mark
 	void addMark(MapMarkOrder *mmo);
+	
+	// how long the COU has been idle last tick
+	int lastStepTimeToWait;
+	int smoothedStepTimeToWait;
 };
 
 #endif

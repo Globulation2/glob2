@@ -117,6 +117,7 @@ void GameGUI::init()
 	viewportX=0;
 	viewportY=0;
 	lastStepTimeToWait=0;
+	smoothedStepTimeToWait=0;
 	mouseX=0;
 	mouseY=0;
 	displayMode=BUILDING_VIEW;
@@ -2504,12 +2505,22 @@ void GameGUI::drawOverlayInfos(void)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	
 	if (lastStepTimeToWait>0)
-		globalContainer->gfx->drawFilledRect(dec, 4, lastStepTimeToWait, 8, actC[0], actC[1], actC[2]);
+		globalContainer->gfx->drawFilledRect(dec, 4, lastStepTimeToWait, 4, actC[0], actC[1], actC[2]);
 	else
-		globalContainer->gfx->drawFilledRect(dec+lastStepTimeToWait, 4, -lastStepTimeToWait, 8, redC[0], redC[1], redC[2]);
+		globalContainer->gfx->drawFilledRect(dec+lastStepTimeToWait, 4, -lastStepTimeToWait, 4, redC[0], redC[1], redC[2]);
+	
+	if (smoothedStepTimeToWait>8)
+		memcpy(actC, greenC, sizeof(greenC));
+	else if (smoothedStepTimeToWait>0)
+		memcpy(actC, yellowC, sizeof(yellowC));
+	
+	if (smoothedStepTimeToWait>0)
+		globalContainer->gfx->drawFilledRect(dec, 8, smoothedStepTimeToWait, 4, actC[0], actC[1], actC[2]);
+	else
+		globalContainer->gfx->drawFilledRect(dec+smoothedStepTimeToWait, 8, -smoothedStepTimeToWait, 4, redC[0], redC[1], redC[2]);
+	
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
-	dec += 40;
-	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
+	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
@@ -3115,6 +3126,14 @@ void GameGUI::disableGUIElement(int id)
 	hiddenGUIElements |= (1<<id);
 	if (displayMode==id)
 		nextDisplayMode();
+}
+
+void GameGUI::setLastStepTimeToWait(int s)
+{
+	const int smoothLength = 16;
+	
+	lastStepTimeToWait = s;
+	smoothedStepTimeToWait = (smoothedStepTimeToWait*(smoothLength-1)+s)/smoothLength;
 }
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
