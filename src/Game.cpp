@@ -1333,22 +1333,25 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 	if (!useMapDiscovered)
 	{
-		for (y=top; y<=bot; y++)
-			for (x=left; x<=right; x++)
+		// we have decrease on because we do unalign lookup
+		for (y=top-1; y<=bot; y++)
+			for (x=left-1; x<=right; x++)
 			{
 				if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me)))
 				{
 					globalContainer->gfx->drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
 				}
-				else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)))
+				/*else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)))
 				{
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
-					/*for (int i=0; i<16; i++)
-					{
-						globalContainer->gfx->drawVertLine((x<<5)+(i<<1), y<<5, 32, 10, 10, 10);
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5)+(i<<1), 32, 10, 10, 10);
-					}*/
-				}
+				}*/
+				unsigned i0=!map.isFOW(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+				unsigned i1=!map.isFOW(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+				unsigned i2=!map.isFOW(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+				unsigned i3=!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+				unsigned value=i0 + (i1<<1) + (i2<<2) + (i3<<3);
+				if (value)
+					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, value);
 			}
 	}
 
