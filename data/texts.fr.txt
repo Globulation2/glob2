@@ -75,13 +75,13 @@ Exploratrice
 [Warrior]
 Guerrière
 [still (w)]
-Encore  
+Encore 
 [units working]
  unités travaillent
 [still one unit working]
 Une unité travaille encore
 [Still (i)]
-Encore
+Encore 
 [Still one]
 Encore une
 [Building name]
