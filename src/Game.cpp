@@ -244,7 +244,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int id=Building::GIDtoID(gid);
 				bool drop=((OrderMoveFlags *)order)->drop[i];
 				Building *b=teams[team]->myBuildings[id];
-				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 				{
 					if (drop && b->type->zonableForbidden)
