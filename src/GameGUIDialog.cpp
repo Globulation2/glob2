@@ -68,28 +68,16 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 250 : 500, 295)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 300 : 600, 295)
 {
 	// fill the slots
 	int i;
 	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		int otherTeam=gameGUI->game.players[i]->teamNumber;
+		int otherTeam = gameGUI->game.players[i]->teamNumber;
+		unsigned otherTeamMask = 1 << otherTeam;
 
-		// level 0 is peace, level 3 is total war
-		unsigned defaultAlliance=0;
-		if ((gameGUI->localTeam->allies)&(1<<otherTeam))
-			defaultAlliance=0;// we are allied
-		else if ((gameGUI->localTeam->sharedVisionFood)&(1<<otherTeam))
-			defaultAlliance=1;
-		else if ((gameGUI->localTeam->sharedVisionExchange)&(1<<otherTeam))
-			defaultAlliance=2;
-		else if ((gameGUI->localTeam->enemies)&(1<<otherTeam))
-			defaultAlliance=3; // we are enemy
-		else
-			assert(false);
-			
-		int xBase = (i>>3)*250;
+		int xBase = (i>>3)*300;
 		int yBase = (i&0x7)*25;
 
 		std::string pname;
@@ -109,23 +97,37 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->colorR, team->colorG, team->colorB));
 		addWidget(text);
 		
-		alliance[i]=new Selector(150+xBase, 40+yBase, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
+		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
+		
+		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
+		addWidget(normalVision[i]);
+		
+		foodVision[i]=new OnOffButton(220+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0, FOOD_VISION+i);
+		addWidget(foodVision[i]);
+		
+		marketVision[i]=new OnOffButton(244+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0, MARKET_VISION+i);
+		addWidget(marketVision[i]);
 
 		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
-		chat[i]=new OnOffButton(218+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
+		chat[i]=new OnOffButton(268+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
 	}
 	for (;i<16;i++)
 	{
-		alliance[i]=NULL;
-		chat[i]=NULL;
+		alliance[i] = NULL;
+		normalVision[i] = NULL;
+		foodVision[i] = NULL;
+		marketVision[i] = NULL;
+		chat[i] = NULL;
 	}
 
 	// add static text and images
-	addWidget(new Animation(149, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 13));
-	addWidget(new Animation(182, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 14));
-	addWidget(new Animation(220, 16, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 15));
+	addWidget(new Text(172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
+	addWidget(new Text(196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
+	addWidget(new Text(220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
+	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
+	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 	
 	if (gameGUI->game.session.numberOfPlayer<8)
 	{
@@ -134,12 +136,14 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 	else
 	{
+		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
+		addWidget(new Text(300+196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
+		addWidget(new Text(300+220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
+		addWidget(new Text(300+244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
+		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
+		
 		// add ok button
 		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-		
-		addWidget(new Animation(250+149, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 13));
-		addWidget(new Animation(250+182, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 14));
-		addWidget(new Animation(250+220, 16, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 15));
 	}
 	this->gameGUI=gameGUI;
 	dispatchInit();
@@ -149,15 +153,19 @@ void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		endValue=par1;
+		endValue = par1;
 	}
-	else if (action==VALUE_CHANGED)
+	else if (action == BUTTON_STATE_CHANGED)
 	{
-		int i;
-		for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
-			if (source==alliance[i])
+		for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+			if ((source == alliance[i]) ||
+				(source == normalVision[i]) ||
+				(source == foodVision[i]) ||
+				(source == marketVision[i]))
+			{
+				setCorrectValueForPlayer(i);
 				break;
-		setCorrectValueForPlayer(i);
+			}
 	}
 }
 
@@ -167,12 +175,15 @@ void InGameAllianceScreen::setCorrectValueForPlayer(int i)
 	assert(i<game->session.numberOfPlayer);
 	for (int j=0; j<game->session.numberOfPlayer; j++)
 	{
-		if (j!=i)
+		if (j != i)
 		{
 			// if two players are the same team, we must have the same alliance and vision
-			if (game->players[j]->teamNumber==game->players[i]->teamNumber)
+			if (game->players[j]->teamNumber == game->players[i]->teamNumber)
 			{
-				alliance[j]->setValue(alliance[i]->getValue());
+				alliance[j]->setState(alliance[i]->getState());
+				normalVision[j]->setState(normalVision[i]->getState());
+				foodVision[j]->setState(foodVision[i]->getState());
+				marketVision[j]->setState(marketVision[i]->getState());
 			}
 		}
 	}
@@ -180,60 +191,55 @@ void InGameAllianceScreen::setCorrectValueForPlayer(int i)
 
 Uint32 InGameAllianceScreen::getAlliedMask(void)
 {
-	// allied is 0
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()==0)
-			mask|=1<<i;
+		if (alliance[i]->getState())
+			mask |= 1<<i;
 	}
 	return mask;
 }
 
 Uint32 InGameAllianceScreen::getEnemyMask(void)
 {
-	// enemy is 3
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()!=0)
-			mask|=1<<i;
+		if (!alliance[i]->getState())
+			mask |= 1<<i;
 	}
 	return mask;
 }
 
 Uint32 InGameAllianceScreen::getExchangeVisionMask(void)
 {
-	// we have exchange vision in 2 and down
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()<3)
-			mask|=1<<i;
+		if (marketVision[i]->getState())
+			mask |= 1<<i;
 	}
 	return mask;
 }
 
 Uint32 InGameAllianceScreen::getFoodVisionMask(void)
 {
-	// we have food vision in 1 and down
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()<2)
-			mask|=1<<i;
+		if (foodVision[i]->getState())
+			mask |= 1<<i;
 	}
 	return mask;
 }
 
 Uint32 InGameAllianceScreen::getOtherVisionMask(void)
 {
-	// we have exchange vision in 0
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()==0)
-			mask|=1<<i;
+		if (normalVision[i]->getState())
+			mask |= 1<<i;
 	}
 	return mask;
 }
@@ -241,11 +247,11 @@ Uint32 InGameAllianceScreen::getOtherVisionMask(void)
 
 Uint32 InGameAllianceScreen::getChatMask(void)
 {
-	Uint32 mask=0;
+	Uint32 mask = 0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
 		if (chat[i]->getState())
-			mask|=1<<i;
+			mask |= 1<<i;
 	}
 	return mask;
 }
