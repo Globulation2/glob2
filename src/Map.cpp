@@ -410,7 +410,7 @@ bool Map::decRessource(int x, int y)
 
 	RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
 	RessourcesTypes *fulltypes=globalContainer->ressourcesTypes;
-	RessourceType fulltype=(*fulltypes)[type];
+	RessourceType& fulltype=(*fulltypes)[type];
 	unsigned amount=r.field.amount;
 	assert(amount);
 
