@@ -19,6 +19,7 @@
 
 #include <GUIText.h>
 #include <stdarg.h>
+#include <SupportFunctions.h>
 
 Text::Text(int x, int y, Font *font, const char *text, int w, int h)
 {
@@ -124,21 +125,42 @@ void Text::repaint(void)
 {
 	int upW, upH;
 	assert(font);
+	
+	DrawableSurface *s=parent->getSurface();
+	int rx=x, ry=y, rw=s->getW()-x, rh=s->getH()-y;
+	
 	if (w)
+	{
 		upW=w;
+	}
 	else
 	{
 		assert(font);
 		upW=font->getStringWidth(text)+2;
 	}
+	
 	if (h)
+	{
 		upH=h;
+	}
 	else
 	{
 		assert(font);
 		upH=font->getStringHeight(text);
 	}
+	
+	if (w || h)
+	{
+		SDL_Rect r = {0, 0, s->getW(), s->getH()};
+		GAG::rectClipRect(rx, ry, rw, rh, r);
+		s->setClipRect(rx, ry, rw, rh);
+	}
+	
 	parent->paint(x-1, y, upW, upH);
 	paint();
+	
+	if (w || h)
+		s->setClipRect();
+	
 	parent->addUpdateRect(x-1, y, upW, upH);
 }
