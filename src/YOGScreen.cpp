@@ -32,22 +32,22 @@ YOGScreen::YOGScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(true);
 
-	addWidget(new TextButton(440, 390, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
-	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
+	addWidget(new TextButton(440, 390, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), CANCEL, 27));
 
-	gameList=new List(20, 40, 400, 150, "standard");
+	gameList=new List(20, 40, 400, 150, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(gameList);
-	gameInfo=new TextArea(440, 40, 180, 105, globalContainer->standardFont);
+	gameInfo=new TextArea(440, 40, 180, 105, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(gameInfo);
-	joinButton=new TextButton(440, 165, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN);
+	joinButton=new TextButton(440, 165, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new List(440, 210, 180, 160, "standard");
+	playerList=new List(440, 210, 180, 160, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(playerList);
 
-	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
+	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
 	addWidget(textInput);
 
 	selectedGameInfo=NULL;

@@ -41,7 +41,7 @@ protected:
 
 public:
 	Number();
-	Number(int x, int y, int w, int h, int m, const char *font);
+	Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font);
 	virtual ~Number();
 
 	virtual void onTimer(Uint32 tick) { }

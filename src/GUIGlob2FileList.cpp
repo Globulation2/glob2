@@ -21,10 +21,10 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 
-Glob2FileList::Glob2FileList(int x, int y, int w, int h, const char *font, 
+Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
 														 const char *dir,
 														 const char *extension, const bool recurse)
-	: FileList(x, y, w, h, font, dir, extension, recurse)
+	: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse)
 {
 	this->generateList();
 }

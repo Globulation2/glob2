@@ -33,6 +33,7 @@ class GLGraphicContext: public virtual GraphicContext
 {
 private:
 	SDL_Surface *screen;
+	Uint32 flags;
 //	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
 
 public:
@@ -41,8 +42,10 @@ public:
 
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
 	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE) { }
-	virtual int getW(void) { return screen->w; }
-	virtual int getH(void) { return screen->h; }
+	virtual int getW(void) { if(screen) return screen->w; else return 0; }
+	virtual int getH(void) { if(screen) return screen->h; else return 0; }
+	virtual int getDepth(void) { if(screen) return screen->format->BitsPerPixel; else return 0; }
+	virtual int getFlags(void) { return flags; }
 	virtual void setClipRect(int x, int y, int w, int h);
 	virtual void setClipRect(void);
 	virtual void loadImage(const char *name);

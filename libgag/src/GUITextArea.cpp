@@ -18,19 +18,24 @@
 */
 
 #include <GUITextArea.h>
+#include <Toolkit.h>
 #include <assert.h>
 
-TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly, const char *text)
+TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text)
 {
-	this->readOnly=readOnly;
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
-	this->font=font;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+
+	this->readOnly=readOnly;
+	this->font=Toolkit::getFont(font);
+	assert(this->font);
 	textBuffer=NULL;
 	assert(font);
-	charHeight=font->getStringHeight((const char *)NULL);
+	charHeight=this->font->getStringHeight((const char *)NULL);
 	assert(charHeight);
 	areaHeight=(h-8)/charHeight;
 	areaPos=0;

@@ -55,6 +55,8 @@ public:
 	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE)=0;
 	virtual int getW(void)=0;
 	virtual int getH(void)=0;
+	virtual int getDepth(void)=0;
+	virtual int getFlags(void)=0;
 	virtual void setClipRect(int x, int y, int w, int h)=0;
 	virtual void setClipRect(void)=0;
 	virtual void loadImage(const char *name)=0;

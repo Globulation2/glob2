@@ -42,7 +42,7 @@ protected:
 
 public:
 	List():RectangularWidget() { fontPtr = NULL; }
-	List(int x, int y, int w, int h, const char *font);
+	List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font);
 	virtual ~List();
 
 	virtual void onTimer(Uint32 tick) { }

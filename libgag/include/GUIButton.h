@@ -30,15 +30,18 @@ protected:
 	MEMBERS
 		ITEM(Sint32, returnCode)
 		ITEM(Uint16, unicodeShortcut)
+		ITEM(Sint32, standardId)
+		ITEM(Sint32, highlightID)
+		ITEM(std::string, sprite)
 	CLASSEND;
 
+	//! cache, recomputed at least on paint
+	Sprite *archPtr;
 	bool highlighted;
-	int standardId, highlightID;
-	Sprite *arch;
 
 public:
-	Button() { highlighted=false; standardId=-1; highlightID=-1; arch=NULL; }
-	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
+	Button() { returnCode=unicodeShortcut=0; highlighted=false; standardId=-1; highlightID=-1; archPtr=NULL; }
+	Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
 	virtual ~Button() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
@@ -51,30 +54,46 @@ protected:
 
 class TextButton:public Button
 {
+protected:
+	CLASSDEF(TextButton)
+		BASECLASS(Button)
+	MEMBERS
+		ITEM(std::string, text)
+		ITEM(std::string, font)
+	CLASSEND;
+
+	// cache, recomputed at least on paint
+	Font *fontPtr;
+
 public:
-	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicodeShortcut=0);
+	TextButton() { fontPtr=NULL; }
+	TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
 	virtual ~TextButton() { }
 
 	virtual void paint(void);
-	
+
 	void setText(const char *text);
 
 protected:
 	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
-	//! Set text internally, withouh calling repaint
-	void internalSetText(const char *text);
-
-protected:
-	std::string text;
-	const Font *font;
-	int decX, decY;
 };
 
 class OnOffButton:public RectangularWidget
 {
+protected:
+	CLASSDEF(OnOffButton)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(bool, state)
+		ITEM(Sint32, returnCode)
+	CLASSEND;
+
+	bool highlighted;
+
 public:
-	OnOffButton(int x, int y, int w, int h, bool startState, int returnCode);
+	OnOffButton() { state=false; returnCode=0; highlighted=false; }
+	OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode);
 	virtual ~OnOffButton() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
@@ -87,19 +106,39 @@ protected:
 	virtual void repaint(void);
 	//! Internal paint method, call by paint and repaint
 	virtual void internalPaint(void);
-
-protected:
-	bool state;
-	int returnCode;
-	bool highlighted;
 };
 
 //! A button that can have multiple color
 class ColorButton:public RectangularWidget
 {
+protected:
+	class Color
+	{
+	public:
+		Color() { r=g=b=0; }
+		Color(int r, int g, int b) { this->r=r; this->g=g; this->b=b; }
+	public:
+		SIMPLECLASSDEF(Color)
+			ITEM(Sint32, r)
+			ITEM(Sint32, g)
+			ITEM(Sint32, b)
+		CLASSEND;
+	};
+
+	CLASSDEF(ColorButton)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(Sint32, selColor)
+		ITEM(Sint32, returnCode)
+		ITEM(std::vector<Color>, v)
+	CLASSEND;
+
+	bool highlighted;
+
 public:
+	ColorButton() { selColor=returnCode=0; }
 	//! ColorButton constructor
-	ColorButton(int x, int y, int w, int h, int returnCode);
+	ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode);
 	//! ColorButton destructor
 	virtual ~ColorButton() { }
 
@@ -108,27 +147,21 @@ public:
 	//! Inital paint call, parent is ok and no addUpdateRect is needed.
 	virtual void paint(void);
 	//! Add a color to the color list
-	virtual void addColor(int r, int g, int b) { vr.push_back(r); vg.push_back(g); vb.push_back(b); }
+	virtual void addColor(int r, int g, int b) { v.push_back(Color(r, g, b)); }
 	//! Clear the color list
-	virtual void clearColors(void) { vr.clear(); vg.clear(); vb.clear(); selColor=0; }
+	virtual void clearColors(void) { v.clear(); }
 	//! Set the color selection to default
 	virtual void setSelectedColor(int c=0) { selColor=c; repaint(); }
 	//! Return the color sel
 	virtual int getSelectedColor(void) { return selColor; }
 	//! Return the number of possible colors
-	virtual int getNumberOfColors(void) { return vr.size(); }
+	virtual int getNumberOfColors(void) { return v.size(); }
 
 protected:
 	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
 	//! Internal paint method, call by paint and repaint
 	virtual void internalPaint(void);
-
-protected:
-	int selColor;
-	std::vector<int> vr, vg, vb;
-	int returnCode;
-	bool highlighted;
 };
 
 #endif

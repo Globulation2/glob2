@@ -145,17 +145,17 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 	}
 	
-	addWidget(new Text(20, 18, "menu", titleText, 600));
+	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", titleText, 600));
 	if (allocatedText)
 		delete[] allocatedText;
 	statWidget=new EndGameStat(38, 80, &(gui->game));
 	addWidget(statWidget);
 	
 	// add buttons
-	addWidget(new TextButton(90, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 3, 13));
+	addWidget(new TextButton(90, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(150, 415, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), 3, 13));
 	
 	// add players name
 	Text *text;
@@ -189,7 +189,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
 	{
-		text=new Text(60+128*3, 80+(i*inc), "standard", teams[i].name.c_str());
+		text=new Text(60+128*3, 80+(i*inc), ALIGN_LEFT, ALIGN_LEFT, "standard", teams[i].name.c_str());
 		text->setColor(teams[i].r, teams[i].g, teams[i].b);
 		names.push_back(text);
 		addWidget(text);

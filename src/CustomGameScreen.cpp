@@ -24,19 +24,19 @@
 
 CustomGameScreen::CustomGameScreen()
 {
-	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	fileList=new Glob2FileList(20, 60, 180, 400, "standard", "maps", "map", true);
+	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "maps", "map", true);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
-	addWidget(new Text(20, 18, "menu", globalContainer->texts.getString("[choose map]"), 600));
-	mapName=new Text(440, 60+128+30, "standard", "", 180);
+	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose map]"), 600));
+	mapName=new Text(440, 60+128+30, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, "standard", "", 180);
+	mapInfo=new Text(440, 60+128+60, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, "standard", "", 180);
+	mapVersion=new Text(440, 60+128+90, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, "standard", "", 180);
+	mapSize=new Text(440, 60+128+120, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapSize);
 
 	addWidget(ok);
@@ -45,11 +45,11 @@ CustomGameScreen::CustomGameScreen()
 
 	for (int i=0; i<8; i++)
 	{
-		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, true, 10+i);
+		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, ALIGN_LEFT, ALIGN_LEFT, true, 10+i);
 		addWidget(isAI[i]);
-		color[i]=new ColorButton(265, 60+i*30, 25, 25, 20+i);
+		color[i]=new ColorButton(265, 60+i*30, 25, 25, ALIGN_LEFT, ALIGN_LEFT, 20+i);
 		addWidget(color[i]);
-		isAItext[i]=new Text(300, 60+i*30, "standard", (i==0)  ? globalContainer->texts.getString("[player]") : globalContainer->texts.getString("[ai]"));
+		isAItext[i]=new Text(300, 60+i*30, ALIGN_LEFT, ALIGN_LEFT, "standard", (i==0)  ? globalContainer->texts.getString("[player]") : globalContainer->texts.getString("[ai]"));
 		addWidget(isAItext[i]);
 	}
 

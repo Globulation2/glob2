@@ -241,7 +241,8 @@ GLGraphicContext::~GLGraphicContext(void)
 bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 {
 	Uint32 sdlFlags=SDL_OPENGL;
-	
+
+	this->flags=flags;
 	if (flags&FULLSCREEN)
 		sdlFlags|=SDL_FULLSCREEN;
 	if (flags&RESIZABLE)

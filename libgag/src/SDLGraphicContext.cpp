@@ -37,6 +37,7 @@ SDLDrawableSurface::SDLDrawableSurface()
 	clipRect.y=0;
 	clipRect.w=0;
 	clipRect.h=0;
+	flags=0;
 }
 
 void SDLDrawableSurface::loadImage(const char *name)
@@ -65,6 +66,7 @@ bool SDLDrawableSurface::setRes(int w, int h, int depth, Uint32 flags)
 	if (surface)
 		SDL_FreeSurface(surface);
 
+	this->flags=flags;
 	Uint32 sdlFlags=0;
 	if (flags&HWACCELERATED)
 		sdlFlags|=SDL_HWSURFACE;
@@ -938,7 +940,8 @@ SDLGraphicContext::~SDLGraphicContext(void)
 bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 {
 	Uint32 sdlFlags=SDL_DOUBLEBUF;
-	
+
+	this->flags=flags;
 	if (flags&NO_DOUBLEBUF)
 		sdlFlags=0;
 	if (flags&FULLSCREEN)

@@ -23,12 +23,15 @@
 #include <assert.h>
 #include <Toolkit.h>
 
-List::List(int x, int y, int w, int h, const char *font)
+List::List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	
 	this->font=font;
 	nth=-1;
 	disp=0;

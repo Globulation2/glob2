@@ -23,10 +23,13 @@
 #include <assert.h>
 #include <Toolkit.h>
 
-Text::Text(int x, int y, const char *font, const char *text, int w, int h)
+Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
 {
 	this->x=x;
 	this->y=y;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	
 	this->font=font;
 	this->text=text;
 	this->w=w;

@@ -28,16 +28,16 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 {
 	this->multiplayersJoin=multiplayersJoin;
 	
-	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Disconnect]"), DISCONNECT));
+	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Disconnect]"), DISCONNECT));
 	
-	addWidget(new Text(20, 5, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
 
-	startTimer=new Text(440, 300, "standard", "");
+	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(startTimer);
 
-	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
+	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
 	addWidget(textInput);
 	
 	timeCounter=0;

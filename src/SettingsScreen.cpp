@@ -24,16 +24,16 @@
 SettingsScreen::SettingsScreen()
 {
 	//int decX=(globalContainer->gfx->getW()-400)>>1;
-	languageList=new List(120, 60, 400, 200, "standard");
+	languageList=new List(120, 60, 400, 200, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);
-	userName=new TextInput(120, 280, 400, 30, "standard", globalContainer->getUsername(), true, 32);
+	userName=new TextInput(120, 280, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
 
-	ok=new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(380, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	title=new Text(0, 18, "menu", globalContainer->texts.getString("[settings]"), 640);
+	ok=new TextButton( 60, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
+	cancel=new TextButton(380, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	title=new Text(0, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[settings]"), 640);
 	
 	addWidget(ok);
 	addWidget(cancel);

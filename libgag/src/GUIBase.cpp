@@ -107,6 +107,12 @@ Widget::~Widget()
 	
 }
 
+
+RectangularWidget::RectangularWidget()
+{
+	x=y=w=h=hAlignFlag=vAlignFlag=0;
+}
+
 void RectangularWidget::show(void)
 {
 	assert(parent);
@@ -126,6 +132,61 @@ void RectangularWidget::setVisible(bool visible)
 	assert(parent);
 	this->visible=visible;
 	repaint();
+}
+
+void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
+{
+	assert(sx);
+	assert(sy);
+	assert(sw);
+	assert(sh);
+	assert(parent);
+	assert(parent->getSurface());
+
+	int screenw = parent->getSurface()->getW();
+	int screenh = parent->getSurface()->getH();
+
+	switch (hAlignFlag)
+	{
+		case ALIGN_LEFT:
+			*sx=x;
+			*sw=w;
+			break;
+
+		case ALIGN_RIGHT:
+			*sx=screenw-w-x;
+			*sw=w;
+			break;
+
+		case ALIGN_FILL:
+			*sx=x;
+			*sw=screenw-w-x;
+			break;
+
+		default:
+			assert(false);
+	}
+
+	switch (vAlignFlag)
+	{
+		case ALIGN_LEFT:
+			*sy=y;
+			*sh=h;
+			break;
+
+		case ALIGN_RIGHT:
+			*sy=screenh-h-y;
+			*sh=h;
+			break;
+
+		case ALIGN_FILL:
+			*sy=y;
+			*sh=screenh-h-y;
+			break;
+
+		default:
+			assert(false);
+	}
 }
 
 Screen::Screen()
@@ -189,6 +250,15 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 					windowEvent=event;
 					wasWindowEvent=true;
 				}
+				break;
+				case SDL_VIDEORESIZE:
+				{
+					gfx->setRes(event.resize.w, event.resize.h, gfx->getDepth(), gfx->getFlags());
+					dispatchPaint(gfx);
+					addUpdateRect(0, 0, gfx->getW(), gfx->getH());
+					onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
+				}
+				break;
 				default:
 				{
 					dispatchEvents(&event);
