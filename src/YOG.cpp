@@ -482,6 +482,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 				externalStatusState=YESTS_CONNECTION_REFUSED_BAD_PASSWORD;
 			else if (data[4]==YCRT_ALREADY_PASSWORD)
 				externalStatusState=YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD;
+			else if (data[4]==YCRT_NOT_CONNECTED_YET)
+				externalStatusState=YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET;
 			else if (data[4]==YCRT_ALREADY_AUTHENTICATED)
 				externalStatusState=YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED;
 			else
@@ -1061,11 +1063,14 @@ void YOG::step()
 				}
 				else
 				{
-					fprintf(logFile, "sending authentication info...newYogPassword=%d\n", newYogPassword);
+					printf("sending authentication info...userName=(%s), newYogPassword=%d\n", userName, newYogPassword);
 					UDPpacket *packet;
 					unsigned char xored[32];
 					for (int i=0; i<32; i++)
 						xored[i]=passWord[i]^xorpassw[i];
+					//printf(" passWord=[%2x %2x %2x %2x]\n", passWord[0], passWord[1], passWord[2], passWord[3]);
+					//printf(" xorpassw=[%2x %2x %2x %2x]\n", xorpassw[0], xorpassw[1], xorpassw[2], xorpassw[3]);
+					//printf(" xored   =[%2x %2x %2x %2x]\n", xored[0], xored[1], xored[2], xored[3]);
 					if (newYogPassword)
 					{
 						packet=SDLNet_AllocPacket(36);
