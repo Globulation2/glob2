@@ -285,17 +285,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						inGameMenu=IGM_ALLIANCE8;
 						gameMenuScreen=new InGameAlliance8Screen(this);
 
-						// fill the names
-						int i;
-						for (i=0; i<game.session.numberOfPlayer; i++)
-						{
-							strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
-						}
-
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 
 						// set correct values to choice boxes
 						OnOffButton *button;
+						int i;
 
 						for (i=0; i<game.session.numberOfPlayer; i++)
 						{
