@@ -42,8 +42,8 @@ YOGScreen::~YOGScreen()
 	closeYOG();
 }
 
-TCPsocket YOGScreen::socket;
-SDLNet_SocketSet YOGScreen::socketSet;
+TCPsocket YOGScreen::socket = NULL;
+SDLNet_SocketSet YOGScreen::socketSet = NULL;
 
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
@@ -121,35 +121,49 @@ void YOGScreen::closeConnection(void)
 
 bool YOGScreen::getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE])
 {
-	int i;
-	int value;
-	char c;
+	if (socket)
+		{
+		int i;
+		int value;
+		char c;
 
-	i=0;
-	while ( (  (value=SDLNet_TCP_Recv(socket, &c, 1)) >0) && (i<GAME_INFO_MAX_SIZE-1))
-	{
-		if ((c==0) || (c=='\n') || (c=='\r'))
+		i=0;
+		while ( (  (value=SDLNet_TCP_Recv(socket, &c, 1)) >0) && (i<GAME_INFO_MAX_SIZE-1))
 		{
-			break;
+			if ((c==0) || (c=='\n') || (c=='\r'))
+			{
+				break;
+			}
+			else
+			{
+				data[i]=c;
+			}
+			i++;
 		}
+		data[i]=0;
+		if (value<=0)
+			return false;
 		else
-		{
-			data[i]=c;
-		}
-		i++;
+			return true;
 	}
-	data[i]=0;
-	if (value<=0)
-		return false;
 	else
-		return true;
+	{
+		return false;
+	}
 }
 
 bool YOGScreen::sendString(TCPsocket socket, char *data)
 {
-	int len=strlen(data)+1; // add one for the terminating NULL
-	int result=SDLNet_TCP_Send(socket, data, len);
-	return (result==len);
+	if (socket)
+	{
+		int len=strlen(data)+1; // add one for the terminating NULL
+		int result=SDLNet_TCP_Send(socket, data, len);
+		return (result==len);
+	}
+	else
+	{
+		return false;
+	}
 }
 
 
