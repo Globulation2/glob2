@@ -66,7 +66,7 @@ public:
 	//! if this is not empty, then Engine should load the map with this filename.
 	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
 	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines;
+	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
 

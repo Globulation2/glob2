@@ -26,6 +26,7 @@
 #include <string>
 #include <functional>
 #include <algorithm>
+#include <sstream>
 
 #include <FileManager.h>
 #include <GraphicContext.h>
@@ -1660,6 +1661,18 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
 			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 		}
+	if (drawOptions & DRAW_ACCESSIBILITY)
+	{
+		std::ostringstream oss;
+		oss << unit->owner->teamNumber;
+		int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
+		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
+		int accessX = px+((32-accessW)>>1);
+		int accessY = py+((32-accessH)>>1);
+		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
+		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
+		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
+	}
 }
 
 struct BuildingPosComp
@@ -2056,6 +2069,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					bDiv++;
 				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
 			}
+		}
+		
+		if (drawOptions & DRAW_ACCESSIBILITY)
+		{
+			std::ostringstream oss;
+			oss << building->owner->teamNumber;
+			int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
+			int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
+			int accessX = x+(((type->width<<5)-accessW)>>1);
+			int accessY = y+(((type->height<<5)-accessH)>>1);
+			globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
+			globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
+			globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 		}
 	}
 	
