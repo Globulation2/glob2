@@ -81,6 +81,8 @@ public:
 	bool send(const int u, const int v);
 
 	bool tryConnection();
+	
+	void quitThisGame();
 };
 
 #endif

@@ -43,14 +43,14 @@ MultiplayersJoin::~MultiplayersJoin()
 {
 	if (destroyNet)
 	{
-		if (channel!=-1)
-		{
-			send(CLIENT_QUIT_NEW_GAME);
-			SDLNet_UDP_Unbind(socket, channel);
-			printf("Socket unbinded.\n");
-		}
 		if (socket)
 		{
+			if (channel!=-1)
+			{
+				send(CLIENT_QUIT_NEW_GAME);
+				SDLNet_UDP_Unbind(socket, channel);
+				printf("Socket unbinded.\n");
+			}
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
 			printf("Socket closed.\n");
@@ -712,19 +712,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 
 bool MultiplayersJoin::tryConnection()
 {
-	unCrossConnectSessionInfo();
-
-	if (channel!=-1)
-	{
-		send(CLIENT_QUIT_NEW_GAME);
-		SDLNet_UDP_Unbind(socket, channel);
-	}
-	if (socket)
-	{
-		SDLNet_UDP_Close(socket);
-		socket=NULL;
-		printf("Socket closed.\n");
-	}
+	quitThisGame();
 
 	socket=SDLNet_UDP_Open(ANY_PORT);
 
@@ -765,4 +753,26 @@ bool MultiplayersJoin::tryConnection()
 
 	waitingTOTL=DEFAULT_NETWORK_TOTL-1;
 	return sendSessionInfoRequest();
+}
+
+void MultiplayersJoin::quitThisGame()
+{
+	unCrossConnectSessionInfo();
+
+	if (socket)
+	{
+		if (channel!=-1)
+		{
+			printf("Unbinding socket.\n");
+			send(CLIENT_QUIT_NEW_GAME);
+			SDLNet_UDP_Unbind(socket, channel);
+			printf("Socket unbinded.\n");
+		}
+		printf("Closing socket.\n");
+		SDLNet_UDP_Close(socket);
+		socket=NULL;
+		printf("Socket closed.\n");
+	}
+	
+	waitingState=WS_TYPING_SERVER_NAME;
 }

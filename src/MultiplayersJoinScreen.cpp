@@ -34,7 +34,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	strncpy(multiplayersJoin.serverName, serverName->text, 128);
 	strncpy(multiplayersJoin.playerName, playerName->text, 128);
 
-	addWidget(new TextButton(150, 350, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
+	addWidget(new TextButton( 80, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
+	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
 	addWidget(serverName);
@@ -120,6 +121,10 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 			{
 				multiplayersJoin.waitingState=MultiplayersJoin::WS_TYPING_SERVER_NAME;
 			}
+		}
+		else if (par1==DISCONNECT)
+		{
+			multiplayersJoin.quitThisGame();
 		}
 		else
 		{
