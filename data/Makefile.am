@@ -1,4 +1,5 @@
 SUBDIRS=fonts gfx gui
 
 glob2datadir= $(pkgdatadir)/data
-dist_glob2data_DATA= $(wildcard $(srcdir)/*.txt)
+glob2data_DATA= $(wildcard $(srcdir)/*.txt)
+EXTRA_DIST= $(glob2data_DATA)

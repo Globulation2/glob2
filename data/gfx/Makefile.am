@@ -1,2 +1,3 @@
 glob2datagfxdir= $(pkgdatadir)/data/gfx
-dist_glob2datagfx_DATA= $(wildcard $(srcdir)/*.png)
+glob2datagfx_DATA= $(wildcard $(srcdir)/*.png)
+EXTRA_DIST= $(glob2datagfx_DATA)
