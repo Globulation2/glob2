@@ -22,14 +22,14 @@
 
 LANBroadcast::LANBroadcast()
 {
-#ifndef MACOS_OPENTRANSPORT
+#ifndef DISABLE_GLOB_LAN_BROADCAST
 	socketDefinition=0;
 #endif
 }
 
 LANBroadcast::~LANBroadcast()
 {
-#ifndef MACOS_OPENTRANSPORT
+#ifndef DISABLE_GLOB_LAN_BROADCAST
 	if (socketDefinition)
 	{
 		close(socketDefinition);
@@ -41,7 +41,7 @@ bool LANBroadcast::enable(Uint16 port)
 {
 	this->port=port;
 
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 	return false;
 #else
 	char *target="255.255.255.255";
@@ -104,7 +104,7 @@ bool LANBroadcast::enable(Uint16 port)
 
 bool LANBroadcast::send(int v)
 {
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 	return false;
 #else
 	char data[4];
@@ -127,7 +127,7 @@ bool LANBroadcast::send(int v)
 
 bool LANBroadcast::socketReady()
 {
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 	return false;
 #else
 	if (socketDefinition==0)
@@ -154,7 +154,7 @@ bool LANBroadcast::socketReady()
 
 bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 {
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 	return false;
 #else
 	if (socketDefinition==0)
@@ -204,7 +204,7 @@ bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 
 Uint32 LANBroadcast::getSenderIP()
 {
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 	return 0;
 #else
 	return senderAddr.sin_addr.s_addr;
