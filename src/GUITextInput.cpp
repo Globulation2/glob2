@@ -72,7 +72,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
 				while(textBeforeCurs[cursPos]&&(cursPos<MAX_TEXT_SIZE))
 					cursPos++;
-				while((font->getStringWidth(textBeforeCurs)>dx)&&(cursPos>0))
+				while((font->getStringWidth(textBeforeCurs+textDep)>dx)&&(cursPos>0))
 					textBeforeCurs[--cursPos]=0;
 				
 				repaint();
