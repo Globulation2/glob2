@@ -18,36 +18,24 @@
 
 */
 
-#ifndef __MULTIPLAYERJOINSCREEN_H
-#define __MULTIPLAYERJOINSCREEN_H
+#ifndef __MULTIPLAYER_CONNECTED_SCREEN_H
+#define __MULTIPLAYER_CONNECTED_SCREEN_H
 
 #include "PreparationGui.h"
-#include "MultiplayersJoin.h"
 
-class MultiplayersJoinScreen:public Screen
+class MultiplayersConnectedScreen:public Screen
 {
 public:
 	enum
 	{
-		CONNECT = 1,
-		DISCONNECT = 2,
-		QUIT = 5,
-
+		DISCONNECT = 3,
 		STARTED=11
 	};
 	MultiplayersJoin *multiplayersJoin;
 
-private:
-	//Sprite *arch;
-	Text *serverText;
-	TextInput *serverName;
-	Text *playerText;
-	TextInput *playerName;
-	bool wasVisible;
-
 public:
-	MultiplayersJoinScreen();
-	virtual ~MultiplayersJoinScreen();
+	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);
+	virtual ~MultiplayersConnectedScreen();
 	void paint(int x, int y, int w, int h);
 
 	void onTimer(Uint32 tick);

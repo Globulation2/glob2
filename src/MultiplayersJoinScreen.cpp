@@ -21,6 +21,7 @@
 #include "MultiplayersJoinScreen.h"
 #include "GlobalContainer.h"
 #include "GAG.h"
+#include "MultiplayersConnectedScreen.h"
 
 //MultiplayersJoinScreen pannel part !!
 
@@ -143,10 +144,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (par1==CONNECT)
 		{
-			if (!multiplayersJoin->tryConnection())
-			{
-				multiplayersJoin->waitingState=MultiplayersJoin::WS_TYPING_SERVER_NAME;
-			}
+			multiplayersJoin->tryConnection();
 		}
 		else if (par1==DISCONNECT)
 		{
