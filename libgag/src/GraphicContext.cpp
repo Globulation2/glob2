@@ -1234,7 +1234,7 @@ bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 	else
 	{
 		if (flags & DOUBLEBUF)
-			sdlFlags = SDL_DOUBLEBUF;
+			sdlFlags |= SDL_DOUBLEBUF;
 		if (flags & HWACCELERATED)
 			sdlFlags |= SDL_HWSURFACE;
 		if (flags & RESIZABLE)
