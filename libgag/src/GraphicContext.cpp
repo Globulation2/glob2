@@ -276,11 +276,7 @@ namespace GAGCore
 		rect.h = static_cast<Uint16>(h);
 	
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
-		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-		color |= a;
-		#else
 		color |= a<<24;
-		#endif
 		
 		#ifdef HAVE_OPENGL
 		if (glSDL_FillRect(surface, &rect, color) != 0)
