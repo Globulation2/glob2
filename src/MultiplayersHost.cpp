@@ -1085,7 +1085,9 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	sdata[1]=0;
 	sdata[2]=0;
 	sdata[3]=0;
+	memset(sdata+4, 0, 64);
 	memcpy(sdata+4, sessionInfo.getMapName(), 64);
+	memset(sdata+4+64, 0, 32);
 	memcpy(sdata+4+64, globalContainer->getUsername(), 32);
 	
 	// TODO: allow to use a game name different than mapName.
