@@ -304,7 +304,7 @@ private:
 	// Minimap marking handling
 	struct Mark
 	{
-		enum { DEFAULT_MARK_SHOW_TICKS = 40 };
+		enum { DEFAULT_MARK_SHOW_TICKS = 50 };
 		int showTicks; // since when it is shown
 		int x, y; // position
 		Uint8 r, g, b; // color
