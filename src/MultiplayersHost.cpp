@@ -699,7 +699,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 
 			bool success=sessionInfo.players[p].send(data, 12);
 			assert(success);
-			playerFileTra[p].totalLost++;
+			playerFileTra[p].totalLost++; //TODO: this doesn't seem to be a real lost! Do understand why this allways happens.
 			playerFileTra[p].totalSent++;
 			playerFileTra[p].windowstats[playerFileTra[p].windowSize]++;
 		}
@@ -773,7 +773,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				if (playerFileTra[p].window[i].index==unreceivedIndex)
 					assert(!playerFileTra[p].window[i].received);
 			
-			int totLost=0;
+			/*int totLost=0;
 			int maxTotLost=playerFileTra[p].totalReceived/200;
 			if (maxTotLost<1)
 				maxTotLost=1;
@@ -831,7 +831,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				}
 			}
 			playerFileTra[p].windowSize=windowSize;
-			fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);
+			fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);*/
 		}
 	}
 	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
@@ -1287,7 +1287,7 @@ void MultiplayersHost::sendingTime()
 			bool onlyWait=true;
 			
 			int unreceived=0;
-			Uint32 lastReceivedIndex=0; //TODO: optimisable!
+			Uint32 lastReceivedIndex=0;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 				if (playerFileTra[p].window[i].sent)
 				{
@@ -1315,11 +1315,15 @@ void MultiplayersHost::sendingTime()
 			fprintf(logFileDownload, "unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
 			fprintf(logFileDownload, "lastReceivedIndex=%d\n", lastReceivedIndex);
 			
+			int latePackets=0;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
 				{
 					if (playerFileTra[p].window[i].index<lastReceivedIndex)
+					{
 						playerFileTra[p].window[i].time+=2;//gaps are more probably lost
+						latePackets++;
+					}
 					else
 						playerFileTra[p].window[i].time++;
 				}
@@ -1327,7 +1331,7 @@ void MultiplayersHost::sendingTime()
 			Uint32 smallestIndexTimeout=0xFFFFFFFF;
 			int wisit=-1;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>LONG_NETWORK_TIMEOUT)
+				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>MAX_NETWORK_TIMEOUT)
 				{
 					Uint32 index=playerFileTra[p].window[i].index;
 					if (index<smallestIndexTimeout)
@@ -1410,7 +1414,7 @@ void MultiplayersHost::sendingTime()
 					windowSize=imaxp-1;
 				else if (imaxs>0)
 					windowSize=imaxs+1;
-					
+				
 				if (windowSize>64)
 				{
 					int maxws=playerFileTra[p].totalReceived/2;
@@ -1418,7 +1422,8 @@ void MultiplayersHost::sendingTime()
 					{
 						windowSize=maxws;
 						fprintf(logFileDownload, "maxws=%d\n", maxws);
-					}
+					}// else if (latePackets)
+					//	windowSize--;
 				}
 				
 				if (windowSize<128)
