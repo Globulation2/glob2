@@ -229,7 +229,7 @@ void GameGUI::step(void)
 			addMessage(30, 255, 30, "%s",  Toolkit::getStringTable()->getString("[the building is finished]", strDec));
 		}
 	}
-		
+
 	// do a yog step
 	yog->step();
 
@@ -265,7 +265,7 @@ void GameGUI::step(void)
 			}
 			m->gameGuiPainted=true;
 		}
-		
+
 	// do we have won or lost conditions
 	checkWonConditions();
 }
@@ -274,7 +274,7 @@ void GameGUI::synchroneStep(void)
 {
 	assert(localTeam);
 	assert(teamStats);
-	
+
 	if ((game.stepCounter&255)==79)
 	{
 		const char *name=Toolkit::getStringTable()->getString("[auto save]");
@@ -689,8 +689,13 @@ void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 
 void GameGUI::handleRightClick(void)
 {
+	// We cycle between views:
+	if ((selectMode==NO_SELECTION) && (typeToBuild<0))
+	{
+		displayMode=DisplayMode((displayMode + 1) % NB_VIEWS);
+	}
 	// We deselect all, we want no tools activated:
-	if (typeToBuild>=0)
+	else
 	{
 		selectionPushed=false;
 		selBuild=NULL;
@@ -699,12 +704,6 @@ void GameGUI::handleRightClick(void)
 		selectionGBID=NOGBID;
 		typeToBuild=-1;
 	}
-	else if (selectMode==NO_SELECTION)
-	{
-		displayMode=DisplayMode((displayMode + 1) % NB_VIEWS);
-	}
-	else
-		selectMode=NO_SELECTION;
 }
 
 void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
@@ -986,7 +985,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					selectionGUID=NOGUID;
 					selectionGBID=b->gid;
-					checkValidSelection();
+					//checkValidSelection();
 					return;
 				}
 			}
@@ -1001,7 +1000,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			selectionGUID=selUnit->gid;
 			selectionGBID=NOGBID;
 			game.selectedUnit=selUnit;
-			checkValidSelection();
+			//checkValidSelection();
 		}
 		else
 		{
@@ -1019,7 +1018,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					selectionGUID=NOGUID;
 					selectionGBID=gbid;
-					checkValidSelection();
+					//checkValidSelection();
 					showUnitWorkingToBuilding=true;
 				}
 				
@@ -1048,24 +1047,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			miniMapPushed=true;
 			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
-		}
-	}
-	else if (my<128+32)
-	{
-		if ((displayMode==BUILDING_AND_FLAG_VIEW) || (displayMode==STAT_TEXT_VIEW) || (displayMode==STAT_GRAPH_VIEW))
-		{
-			if (mx<32)
-			{
-				displayMode=BUILDING_AND_FLAG_VIEW;
-			}
-			else if (mx<64)
-			{
-				displayMode=STAT_TEXT_VIEW;
-			}
-			else if (mx<96)
-			{
-				displayMode=STAT_GRAPH_VIEW;
-			}
 		}
 	}
 	else if (selectMode==BUILDING_SELECTION)
@@ -1230,6 +1211,21 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
 		printf(" subscribed=%d\n", selUnit->subscribed);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
+	}
+	else if (my<128+32)
+	{
+		if (mx<32)
+		{
+			displayMode=BUILDING_AND_FLAG_VIEW;
+		}
+		else if (mx<64)
+		{
+			displayMode=STAT_TEXT_VIEW;
+		}
+		else if (mx<96)
+		{
+			displayMode=STAT_GRAPH_VIEW;
+		}
 	}
 	else if (displayMode==BUILDING_AND_FLAG_VIEW)
 	{
@@ -2396,7 +2392,8 @@ void GameGUI::checkValidSelection(void)
 			selBuild=game.teams[team]->myBuildings[id];
 		}
 		else
-			selBuild=NULL;
+			selectMode=NO_SELECTION;
+			//selBuild=NULL;
 		game.selectedBuilding=selBuild;
 		if (selBuild==NULL)
 		{
@@ -2404,7 +2401,7 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			displayMode=BUILDING_AND_FLAG_VIEW;
+			selectMode=NO_SELECTION;
 		}
 	}
 	else if (selectMode==UNIT_SELECTION)
@@ -2416,7 +2413,8 @@ void GameGUI::checkValidSelection(void)
 			selUnit=game.teams[team]->myUnits[id];
 		}
 		else
-			selUnit=NULL;
+			selectMode=NO_SELECTION;
+			//selUnit=NULL;
 		game.selectedUnit=selUnit;
 		if (selUnit==NULL)
 		{
@@ -2424,7 +2422,7 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			displayMode=BUILDING_AND_FLAG_VIEW;
+			selectMode=NO_SELECTION;
 		}
 	}
 	else
