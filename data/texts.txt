@@ -354,7 +354,7 @@ Ok
 Budiž
 Ok
 [Cancel]
-Annuller
+Annuler
 Cancel
 Wiederrufen
 Zrušit
