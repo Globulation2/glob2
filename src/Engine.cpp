@@ -482,10 +482,10 @@ int Engine::run(void)
 		}
 		else if (gui.game.nextMap.length() > 0)
 		{
-			// if we have won, managed to load next map, we do it again
+			// if we have won, managed to load next map, we do it again. Only campaigns can be linked, so we look into the campaigns subdirectory
 			if (gui.game.isGameEnded && gui.getLocalTeam()->isAlive)
 			{
-				std::string filename = std::string("maps/") +  gui.game.nextMap;
+				std::string filename = std::string("campaigns/") +  gui.game.nextMap;
 				doRunOnceAggain = (initCampain(filename.c_str()) == EE_NO_ERROR);
 			}
 		}

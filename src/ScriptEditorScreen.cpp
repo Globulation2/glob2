@@ -116,14 +116,14 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			if (scriptEditor->visible)
 				loadSave(true, "scripts", "sgsl");
 			else if (campaignTextEditor->visible)
-				loadSave(true, "campaign", "txt");
+				loadSave(true, "campaigns", "txt");
 		}
 		else if (par1 == SAVE)
 		{
 			if (scriptEditor->visible)
 				loadSave(false, "scripts", "sgsl");
 			else if (campaignTextEditor->visible)
-				loadSave(false, "campaign", "txt");
+				loadSave(false, "campaigns", "txt");
 		}
 		else if (par1 == TAB_SCRIPT)
 		{

@@ -23,6 +23,7 @@
 #include <sstream>
 #include <GUIButton.h>
 #include <GUIText.h>
+#include <GUITextArea.h>
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -32,31 +33,7 @@ CampaignScreen::CampaignScreen(const std::string &text)
 {
 	addWidget(new TextButton(20, 20, 70,  25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Start]"), 0, 27));
 
-	std::istringstream iss(text);
-	int yPos = 10;
-	while (!iss.eof())
-	{
-		std::string s;
-		std::getline(iss, s);
-
-		if (s.size() && s[0] != '\n')
-		{
-			if (s[0] == '*')
-			{
-				addWidget(new Text(0, yPos, ALIGN_FILL, ALIGN_TOP, "menu", s.c_str()+1));
-				yPos += 30;
-			}
-			else
-			{
-				addWidget(new Text(0, yPos, ALIGN_FILL, ALIGN_TOP, "standard", s.c_str()));
-				yPos += 14;
-			}
-		}
-		else
-		{
-			yPos += 6;
-		}
-	}
+	addWidget(new TextArea(20, 20, 20, 60, ALIGN_FILL, ALIGN_FILL, "standard", true, text.c_str()));
 }
 
 void CampaignScreen::onAction(Widget *source, Action action, int par1, int par2)
