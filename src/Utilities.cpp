@@ -57,10 +57,10 @@ Uint32 syncRand(void)
 	randa=randa<<3;
 	randa+=0x1377;
 	randa^=0xF088;
-	
+
 	randb+=0xFB34;
 	randb^=0x78F4;
-	
+
 	randc=randc+randc+randc;
 	randc^=0xEAC7;
 	
@@ -71,10 +71,10 @@ Uint32 syncRand(void)
 {
 	randa+=0x13573DB1;
 	randb+=0x7B717315;
-	
+
 	randc+=(randa&randb)^0x00000001;
 	randc=(randc<<1)|((randc>>29)&0x1);
-	
+
 	//return (randc>>3)|((randa^randb)&0xE0000000);
 	//return randc;
 	return (randc>>1)|((randa^randb)&0x80000000);

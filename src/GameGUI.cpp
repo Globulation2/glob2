@@ -1010,7 +1010,7 @@ void GameGUI::draw(void)
 			
 			// draw button, for stat			
 			drawButton(globalContainer->gfx->getW()-128+16, 128+4, buttonText, false);
-			
+
 			// draw building infos
 			if (mouseX>globalContainer->gfx->getW()-128)
 			{
@@ -1176,14 +1176,18 @@ void GameGUI::draw(void)
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFontGreen, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
-			if (selUnit->caryedRessource>=0)
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFontGreen, "%s : %2.0f %%", globalContainer->texts.getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX);
+			if (selUnit->performance[HARVEST])
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, globalContainer->littleFontGreen, globalContainer->texts.getString("[carry]"));
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+20, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
-			}
-			else
-			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, globalContainer->littleFontGreen, globalContainer->texts.getString("[don't carry anything]"));
+				if (selUnit->caryedRessource>=0)
+				{
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+48, globalContainer->littleFontGreen, globalContainer->texts.getString("[carry]"));
+					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+40, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
+				}
+				else
+				{
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+48, globalContainer->littleFontGreen, globalContainer->texts.getString("[don't carry anything]"));
+				}
 			}
 
 			/* NOTE : I have comment this debug code that isn't used anymore
