@@ -1182,10 +1182,7 @@ void Unit::handleDisplacement(void)
 									else
 									{
 										assert(false);//You can remove this assert(), but *do* notice me!
-										activity=ACT_RANDOM;
-										displacement=DIS_RANDOM;
-										subscribed=false;
-										assert(needToRecheckMedical);
+										stopAttachedForBuilding(false);
 									}
 								}
 							}
