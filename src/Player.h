@@ -124,8 +124,12 @@ public:
 	bool send(char *data, int size);
 	bool send(const int v);
 	bool send(const int u, const int v);
-	
+
+public:
 	bool destroyNet;
+
+public:
+	void printNetState(char s[128]);
 };
 
 class Player:public BasePlayer
@@ -139,7 +143,7 @@ public:
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
 	void load(SDL_RWops *stream, Team *teams[32]);
 	void save(SDL_RWops *stream);
-
+	
 public:
 	Sint32 startPositionX, startPositionY;
 

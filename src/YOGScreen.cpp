@@ -271,7 +271,6 @@ void YOGScreen::onTimer(Uint32 tick)
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			printf("YOG::unable to join DISCONNECT returned.\n");
-			dispatchPaint(gfxCtx);
 		}
 		else if (rv==MultiplayersConnectedScreen::STARTED)
 		{
@@ -282,9 +281,6 @@ void YOGScreen::onTimer(Uint32 tick)
 			if (rc==-1)
 				endExecute(EXIT);
 			printf("YOG::startMultiplayer() in join ended (rc=%d).\n", rc);
-			updateList();
-			gameList->repaint();
-			dispatchPaint(gfxCtx);
 		}
 		else if (rv==-1)
 		{
@@ -295,6 +291,9 @@ void YOGScreen::onTimer(Uint32 tick)
 			printf("rv=%d\n", rv);
 			assert(false);
 		}
+		updateList();
+		gameList->repaint();
+		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}
 	
