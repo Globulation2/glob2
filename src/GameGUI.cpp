@@ -802,11 +802,11 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym.sym, true);
+			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
-			handleKey(event->key.keysym.sym, false);
+			handleKey(event->key.keysym.sym, false, (event->key.keysym.mod & KMOD_SHIFT) != 0);
 		}
 		else if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -1013,7 +1013,7 @@ void GameGUI::nextDisplayMode(void)
 	} while ((1<<((int)displayMode)) & hiddenGUIElements);
 }
 
-void GameGUI::handleKey(SDLKey key, bool pressed)
+void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 {
 	int modifier;
 
@@ -1118,7 +1118,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			case SDLK_v :
 				if (pressed)
 					globalContainer->rec->startRecording();
-				else
+				else if (!shift)
 					globalContainer->rec->stopRecording();
 				break;
 			case SDLK_RETURN :

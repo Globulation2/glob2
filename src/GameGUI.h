@@ -115,7 +115,7 @@ public:
 private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDLKey key, bool pressed);
+	void handleKey(SDLKey key, bool pressed, bool shift);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void handleMouseMotion(int mx, int my, int button);
