@@ -1464,6 +1464,11 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw unit's image
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, ypos, globalContainer->gamegui, 18);
+	UnitType *ut=selUnit->race->getUnitType(selUnit->typeNum, 0);
+	int imgid=ut->startImage[selUnit->action];
+	Sprite *unitSprite=globalContainer->units;
+	unitSprite->setBaseColor(selUnit->owner->colorR, selUnit->owner->colorG, selUnit->owner->colorB);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+12, ypos+7, unitSprite, imgid);
 
 	// draw HP
 	if (selUnit->hp<=selUnit->trigHP)
