@@ -51,6 +51,7 @@ namespace GAGGUI
 			addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, font, captionArray[i], i));
 			dec+=20 + captionWidth[i];
 		}
+		dispatchInit();
 	}
 	
 	void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -111,6 +112,7 @@ namespace GAGGUI
 					break;
 				mbs->translateAndProcessEvent(&event);
 			}
+			mbs->dispatchPaint();
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
 		}
