@@ -1,6 +1,13 @@
 To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
+- permettre au generateur de carte de failer.
+- verifier les espaces dans le nom des joueurs pour les messages prives.
+- voir les nouvelles caracteristique d'un batiment quand le curseur passe sur ameliorer (par exemple en bleu).
+- traduction des raccourcis claviers de la GUI.
+- consideration des raccourcis claviers dans le jeu.
+- afficher des boites de dialogue modale.
+- afficher les unites qui ont faim et qui sont blessees.
 - network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
@@ -11,7 +18,6 @@ To First release :
 To Next version :
 
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
-- units have experience. (nct)
 - building finished message must contain building type. Select building when doing this. (nct)
 - makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 
@@ -19,3 +25,4 @@ For later later :
 
 - Infos in Map editor
 - Shortcut in Menu
+- Units have experience. (nct)
