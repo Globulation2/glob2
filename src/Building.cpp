@@ -522,6 +522,8 @@ void Building::cancelConstruction(void)
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
+	posXLocal=posX;
+	posYLocal=posY;
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
@@ -932,7 +934,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
-
+	
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
 
