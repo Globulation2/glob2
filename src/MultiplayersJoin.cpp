@@ -76,16 +76,8 @@ MultiplayersJoin::~MultiplayersJoin()
 	
 	if (duplicatePacketFile)
 		fprintf(logFile, " duplicatePacketFile=%d\n", duplicatePacketFile);
-	if (downloadStream)
-	{
-		fprintf(logFile, " download not finished.\n");
-		SDL_RWclose(downloadStream);
-		assert(filename);
-		assert(filename[0]);
-		globalContainer->fileManager->remove(filename);
-		downloadStream=NULL;
-		filename=NULL;
-	}
+	
+	closeDownload();
 }
 
 void MultiplayersJoin::init(bool shareOnYog)
@@ -123,34 +115,13 @@ void MultiplayersJoin::init(bool shareOnYog)
 		yogGameInfo=NULL;
 	}
 	
-	if (downloadStream)
-	{
-		fprintf(logFile, " download not finished.\n");
-		SDL_RWclose(downloadStream);
-		assert(filename);
-		assert(filename[0]);
-		globalContainer->fileManager->remove(filename);
-		downloadStream=NULL;
-		filename=NULL;
-	}
-	for (int i=0; i<PACKET_SLOTS; i++)
-	{
-		packetSlot[i].index=0;
-		packetSlot[i].received=false;
-		packetSlot[i].brandwidth=0;
-	}
-	unreceivedIndex=0;
-	endOfFileIndex=0xFFFFFFFF;
-	totalReceived=0;
-	duplicatePacketFile=0;
-	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
-	brandwidth=0;
-	receivedCounter=0;
+	closeDownload();
 	
 	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
 	assert(logFile);
 	
 	fprintf(logFile, "new MultiplayersJoin\n");
+	fprintf(logFileDownload, "new MultiplayersJoin\n");
 	
 	if (duplicatePacketFile)
 		fprintf(logFile, "duplicatePacketFile=%d\n", duplicatePacketFile);
@@ -180,6 +151,33 @@ void MultiplayersJoin::init(bool shareOnYog)
 		localPort=0;
 	}
 	fprintf(logFile, "broadcastState=%d\n", broadcastState);
+}
+
+void MultiplayersJoin::closeDownload()
+{
+	if (downloadStream)
+	{
+		fprintf(logFile, " download not finished.\n");
+		SDL_RWclose(downloadStream);
+		assert(filename);
+		assert(filename[0]);
+		globalContainer->fileManager->remove(filename);
+		downloadStream=NULL;
+		filename=NULL;
+	}
+	for (int i=0; i<PACKET_SLOTS; i++)
+	{
+		packetSlot[i].index=0;
+		packetSlot[i].received=false;
+		packetSlot[i].brandwidth=0;
+	}
+	unreceivedIndex=0;
+	endOfFileIndex=0xFFFFFFFF;
+	totalReceived=0;
+	duplicatePacketFile=0;
+	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
+	brandwidth=0;
+	receivedCounter=0;
 }
 
 void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
@@ -301,6 +299,12 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	if (sessionInfo.mapGenerationDescriptor && sessionInfo.fileIsAMap)
 	{
 		fprintf(logFile, " no need for download, we have a random map.\n");
+		closeDownload();
+	}
+	else if (downloadStream && strncmp(filename, sessionInfo.getFileName(), 64)==0)
+	{
+		fprintf(logFile, " we are already downloading the map.\n");
+		fprintf(logFileDownload, " we are already downloading the map.\n");
 	}
 	else
 	{
@@ -351,9 +355,10 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			duplicatePacketFile=0;
 			brandwidth=1;
 			receivedCounter=0;
-			downloadStream=globalContainer->fileManager->open(filename,"wb");
+			downloadStream=globalContainer->fileManager->open(filename, "wb");
 			
 			fprintf(logFile, " downloadStream=%p\n", downloadStream);
+			fprintf(logFileDownload, " downloadStream=%p\n", downloadStream);
 		}
 	}
 	
@@ -1890,7 +1895,7 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 bool MultiplayersJoin::isFileMapDownload(double &progress)
 {
 	if (endOfFileIndex>0)
-			progress=(double)unreceivedIndex/(double)endOfFileIndex;
+		progress=(double)unreceivedIndex/(double)endOfFileIndex;
 	if (downloadStream)
 		return true;
 	else
