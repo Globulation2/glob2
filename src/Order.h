@@ -200,6 +200,25 @@ public:
 	Sint32 *numberRequested;
 };
 
+class OrderModifyExchange:public OrderModify
+{
+public:
+	OrderModifyExchange(const Uint8 *data, int dataLength);
+	OrderModifyExchange(Uint16 *gid, Uint32 *receiveRessourceMask, Uint32 *sendRessourceMask, int length);
+	virtual ~OrderModifyExchange(void);
+
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return length*10; }
+	int getNumberOfBuilding(void) { return length; }
+	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
+	Sint32 checkSum() { return ORDER_MODIFY_EXCHANGE; }
+
+	Uint16 *gid;
+	Uint32 *receiveRessourceMask;
+	Uint32 *sendRessourceMask;
+};
+
 class OrderModifySwarms:public OrderModify
 {
 public:
@@ -218,7 +237,6 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_SWARM; }
 	Sint32 checkSum() { return ORDER_MODIFY_SWARM; }
 };
-
 
 class OrderModifyFlags:public OrderModify
 {

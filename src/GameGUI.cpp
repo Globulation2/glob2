@@ -1183,26 +1183,28 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				{
 					if (selBuild->receiveRessourceMask & (1<<r))
 					{
-						selBuild->receiveRessourceMask &= ~(1<<r);
+						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
 					}
 					else
 					{
-						selBuild->receiveRessourceMask |= (1<<r);
-						selBuild->sendRessourceMask &= ~(1<<r);
+						selBuild->receiveRessourceMaskLocal |= (1<<r);
+						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
+					orderQueue.push_back(new OrderModifyExchange(&selBuild->gid, &selBuild->receiveRessourceMaskLocal, &selBuild->sendRessourceMaskLocal, 1));
 				}
 
 				if ((mx>110) && (mx<122))
 				{
 					if (selBuild->sendRessourceMask & (1<<r))
 					{
-						selBuild->sendRessourceMask &= ~(1<<r);
+						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
 					else
 					{
-						selBuild->sendRessourceMask |= (1<<r);
-						selBuild->receiveRessourceMask &= ~(1<<r);
+						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
+						selBuild->sendRessourceMaskLocal |= (1<<r);
 					}
+					orderQueue.push_back(new OrderModifyExchange(&selBuild->gid, &selBuild->receiveRessourceMaskLocal, &selBuild->sendRessourceMaskLocal, 1));
 				}
 			}
 		}
@@ -1838,7 +1840,7 @@ void GameGUI::drawBuildingInfos(void)
 	ypos += YOFFSET_B_SEP;
 
 
-	if ((selBuild->owner->allies) &(1<<localTeamNo))
+	if ((selBuild->owner->sharedVisionExchange) & (1<<localTeamNo))
 	{
 		// exchange building
 		if (buildingType->canExchange)
@@ -1850,21 +1852,27 @@ void GameGUI::drawBuildingInfos(void)
 			for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+
 				int inId, outId;
-				if (selBuild->receiveRessourceMask & (1<<i))
+				if (selBuild->receiveRessourceMaskLocal & (1<<i))
 					inId = 20;
 				else
 					inId = 19;
-				if (selBuild->sendRessourceMask & (1<<i))
+				if (selBuild->sendRessourceMaskLocal & (1<<i))
 					outId = 20;
 				else
 					outId = 19;
 				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36, ypos+2, globalContainer->gamegui, inId);
 				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-18, ypos+2, globalContainer->gamegui, outId);
+
 				ypos += YOFFSET_TEXT_PARA;
 			}
 		}
-		else
+	}
+
+	if ((selBuild->owner->allies) & (1<<localTeamNo))
+	{
+		if (!buildingType->canExchange)
 		{
 			// swarm
 			if (buildingType->unitProductionTime)

@@ -66,6 +66,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new OrderModifyBuildings(netData+1, netDataLength-1);
 	}
+	case ORDER_MODIFY_EXCHANGE:
+	{
+		return new OrderModifyExchange(netData+1, netDataLength-1);
+	}
 	case ORDER_MODIFY_SWARM:
 	{
 		return new OrderModifySwarms(netData+1, netDataLength-1);
@@ -443,6 +447,86 @@ bool OrderModifyBuildings::setData(const Uint8 *data, int dataLength)
 	{
 		(this->gid)[i]=getUint16(data, 6*i+0);
 		(this->numberRequested)[i]=getSint32(data, 6*i+2);
+	}
+	
+	memcpy(this->data, data, dataLength);
+	return true;
+}
+
+// OrderModifyExchange' code
+
+OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength)
+:OrderModify()
+{
+	assert((dataLength%10)==0);
+
+	this->length=dataLength/10;
+
+	this->gid=(Uint16 *)malloc(length*2);
+	this->receiveRessourceMask=(Uint32 *)malloc(length*4);
+	this->sendRessourceMask=(Uint32 *)malloc(length*4);
+	this->data=(Uint8 *)malloc(10*length);
+
+	bool good=setData(data, dataLength);
+	assert(good);
+}
+
+OrderModifyExchange::OrderModifyExchange(Uint16 *gid, Uint32 *receiveRessourceMask, Uint32 *sendRessourceMask, int length)
+{
+	this->length=length;
+
+	this->gid=(Uint16 *)malloc(length*2);
+	this->receiveRessourceMask=(Uint32 *)malloc(length*4);
+	this->sendRessourceMask=(Uint32 *)malloc(length*4);
+	this->data=(Uint8 *)malloc(10*length);
+
+	memcpy(this->gid, gid,length*2);
+	memcpy(this->receiveRessourceMask, receiveRessourceMask, length*4);
+	memcpy(this->sendRessourceMask, sendRessourceMask, length*4);
+	memset(data, 0, length*10);
+}
+
+OrderModifyExchange::~OrderModifyExchange()
+{
+	free(data);
+	free(gid);
+	free(receiveRessourceMask);
+	free(sendRessourceMask);
+}
+
+Uint8 *OrderModifyExchange::getData(void)
+{
+	for (int i=0; i<length; i++)
+	{
+		addUint16(data, (this->gid)[i], 10*i+0);
+		addUint32(data, (this->receiveRessourceMask)[i], 10*i+2);
+		addUint32(data, (this->sendRessourceMask)[i], 10*i+6);
+	}
+	return data;
+}
+
+bool OrderModifyExchange::setData(const Uint8 *data, int dataLength)
+{
+	if ((dataLength%10)!=0)
+		return false;
+	
+	this->length=dataLength/10;
+
+	free(this->gid);
+	free(this->receiveRessourceMask);
+	free(this->sendRessourceMask);
+	free(this->data);
+
+	this->gid=(Uint16 *)malloc(length*2);
+	this->receiveRessourceMask=(Uint32 *)malloc(length*4);
+	this->sendRessourceMask=(Uint32 *)malloc(length*4);
+	this->data=(Uint8 *)malloc(10*length);
+
+	for (int i=0; i<length; i++)
+	{
+		(this->gid)[i]=getUint16(data, 10*i+0);
+		(this->receiveRessourceMask)[i]=getUint32(data, 10*i+2);
+		(this->sendRessourceMask)[i]=getUint32(data, 10*i+6);
 	}
 	
 	memcpy(this->data, data, dataLength);

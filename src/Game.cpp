@@ -184,6 +184,30 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 		}
 		break;
+		case ORDER_MODIFY_EXCHANGE:
+		{
+			if (!isPlayerAlive)
+				break;
+			for (int i=0; i<((OrderModifyExchange *)order)->getNumberOfBuilding(); i++)
+			{
+				Uint16 gid=((OrderModifyExchange *)order)->gid[i];
+				int team=Building::GIDtoTeam(gid);
+				int id=Building::GIDtoID(gid);
+				Building *b=teams[team]->myBuildings[id];
+				if ((b) && (b->buildingState==Building::ALIVE))
+				{
+					b->receiveRessourceMask=((OrderModifyExchange *)order)->receiveRessourceMask[i];
+					b->sendRessourceMask=((OrderModifyExchange *)order)->sendRessourceMask[i];
+					if (order->sender!=localPlayer)
+					{
+						b->receiveRessourceMaskLocal = b->receiveRessourceMask;
+						b->sendRessourceMaskLocal = b->sendRessourceMask;
+					}
+					b->update();
+				}
+			}
+		}
+		break;
 		case ORDER_MODIFY_FLAG:
 		{
 			if (!isPlayerAlive)
