@@ -928,11 +928,11 @@ SDLGraphicContext::~SDLGraphicContext(void)
 
 bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 {
-	Uint32 sdlFlags=SDL_DOUBLEBUF;
+	Uint32 sdlFlags=0;
 
 	this->flags=flags;
-	if (flags&NO_DOUBLEBUF)
-		sdlFlags=0;
+	if (flags&DOUBLEBUF)
+		sdlFlags=SDL_DOUBLEBUF;
 	if (flags&FULLSCREEN)
 		sdlFlags|=SDL_FULLSCREEN;
 	if (flags&HWACCELERATED)

@@ -36,7 +36,7 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags=DrawableSurface::RESIZABLE|DrawableSurface::NO_DOUBLEBUF;
+	screenFlags=DrawableSurface::RESIZABLE;
 	screenWidth=640;
 	screenHeight=480;
 	graphicType=DrawableSurface::GC_SDL;

@@ -2,10 +2,8 @@ Globulation 2
 
 Under UNIX :
 
-If you have taken this from CVS and you want to build the package;
-type this in the same directory as this file :
-
-aclocal && autoheader && automake --foreign --add-missing && autoconf
+If you have taken this from CVS and you want to build the package,
+run the bootstrap script first.
 
 Then read the INSTALL file.
 
@@ -18,27 +16,16 @@ aclocal -I /usr/local/share/aclocal
 
 It doesn't currently work with automake 1.6 You should install automake 1.4 (in /usr/local/bin) and start it from there.
 
-You have to use gcc 2.95. If jou have Jaguar and gcc 3, ou'll need to redirect the compiler to gcc 2.
-To do so edit  "src/Makefile" and change the following:
-
-...
-CCXX = /usr/bin/g++2
-...
-
-With the current version of SDL, the fullScreen doesn't work with dublebuffering. Disable it with "-f -b".
+With the current version of SDL, the fullScreen doesn't work with double buffering. Disable it with "-f -B".
 
 Under Win32 :
 
-To build the data file,s run makedata.bat in the data subdirectory, then use glob2.dsw
+To build the data files, run makedata.bat in the data subdirectory, then use glob2.dsw
 with MSDEV to build glob2.
 
 !! WARNING !!
 The gfx are no more included in the CVS.
-You have to go to download them at
-http://moneo.phear.org/~nct/glob2gfx.tar
-
-Once downloaded, untar them in the data directory :
-cd glob2/data, tar xvf glob2gfx.tar
+To get the, run the getgfx script.
 
 Have fun
 

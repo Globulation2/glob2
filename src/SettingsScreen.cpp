@@ -63,10 +63,10 @@ SettingsScreen::SettingsScreen()
 	hwaccelText=new Text(20, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
-	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
-	addWidget(nodblbuff);
-	nodblbuffText=new Text(20, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]"), 160);
-	addWidget(nodblbuffText);
+	dblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
+	addWidget(dblbuff);
+	dblbuffText=new Text(20, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
+	addWidget(dblbuffText);
 
 	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
@@ -103,7 +103,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenFlags=DrawableSurface::DEFAULT;
 			globalContainer->settings.screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
 			globalContainer->settings.screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
-			globalContainer->settings.screenFlags|=nodblbuff->getState() ? DrawableSurface::NO_DOUBLEBUF : 0;
+			globalContainer->settings.screenFlags|=dblbuff->getState() ? DrawableSurface::DOUBLEBUF : 0;
 			endExecute(par1);
 		}
 		else if (par1==CANCEL)
@@ -129,7 +129,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
 			hwaccelText->setText(Toolkit::getStringTable()->getString("[hwaccel]"));
-			nodblbuffText->setText(Toolkit::getStringTable()->getString("[nodblbuff]"));
+			dblbuffText->setText(Toolkit::getStringTable()->getString("[dblbuff]"));
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 		}
 		else if (source==modeList)
