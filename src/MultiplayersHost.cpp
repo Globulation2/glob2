@@ -47,6 +47,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	initHostGlobalState();
 
 	socket=NULL;
+	isServer=true;
 	serverIP.host=0;
 	serverIP.port=0;
 	fprintf(logFile, "Openning a socket...\n");
@@ -58,8 +59,9 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (socket)
 	{
 		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
+		serverIP.host=localAddress->host;
 		serverIP.port=localAddress->port;
-		fprintf(logFile, "Socket opened at unknow port (%d)\n", SDL_SwapBE16(serverIP.port));
+		fprintf(logFile, "Socket opened at ip (%s)\n", Utilities::stringIP(serverIP));
 	}
 	else
 		fprintf(logFile, "failed to open a socket.\n");
@@ -1525,9 +1527,9 @@ void MultiplayersHost::sendingTime()
 				}
 				if (!sessionInfo.players[i].ipFromNAT)
 				{
-					for (int p=0; p<sessionInfo.numberOfPlayer; p++)
-						if (sessionInfo.players[p].ip.host==SDL_SwapBE32(0x7F000001))
-							sessionInfo.players[p].ip.host=serverIP.host;
+					//for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+					//	if (sessionInfo.players[p].ip.host==SDL_SwapBE32(0x7F000001))
+					//		sessionInfo.players[p].ip.host=serverIP.host;
 				
 					if (shareOnYOG)
 						for (int i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -1537,7 +1539,7 @@ void MultiplayersHost::sendingTime()
 								fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
 								if (newip.host)
 								{
-									sessionInfo.players[i].ip=newip;
+									sessionInfo.players[i].setip(newip);
 									sessionInfo.players[i].ipFromNAT=false;
 								}
 							}

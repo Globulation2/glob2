@@ -100,6 +100,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	playerName[0]=0;
 	serverNickName[0]=0;
 	
+	isServer=false;
 	serverIP.host=0;
 	serverIP.port=0;
 	ipFromNAT=false;
