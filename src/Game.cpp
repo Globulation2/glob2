@@ -356,6 +356,7 @@ bool Game::isHumanAllAllied(void)
 	}
 	
 	// if there is any non-AI player with which we aren't allied, return false
+	// or if there is any player allied to AI
 	for (i=0; i<session.numberOfTeam; i++)
 	{
 		if (teams[i]->type != BaseTeam::T_AI)
