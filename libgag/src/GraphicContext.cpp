@@ -20,8 +20,12 @@
 #include <GraphicContext.h>
 #include "SDLGraphicContext.h"
 #include "GLGraphicContext.h"
+#include <Toolkit.h>
+#include <FileManager.h>
 #include <assert.h>
 #include <string>
+#include <sstream>
+#include <iostream>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -69,6 +73,38 @@ bool GraphicContext::getNextVideoMode(int *w, int *h)
 
 GraphicContext::~GraphicContext(void)
 {
+}
+
+void GraphicContext::loadSprite(const char *filename, const char *name)
+{
+	SDL_RWops *frameStream;
+	SDL_RWops *rotatedStream;
+	int i=0;
+
+	Sprite *sprite=new Sprite;
+
+	while (true)
+	{
+		std::ostringstream frameName;
+		frameName << filename << i << ".png";
+		frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb", false);
+
+		std::ostringstream frameNameRot;
+		frameNameRot << filename << i << "r.png";
+		rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb", false);
+
+		if (!((frameStream) || (rotatedStream)))
+			break;
+
+		sprite->loadFrame(frameStream, rotatedStream);
+
+		if (frameStream)
+			SDL_RWclose(frameStream);
+		if (rotatedStream)
+			SDL_RWclose(rotatedStream);
+		i++;
+	}
+	Toolkit::spriteMap[std::string(name)] = sprite;
 }
 
 int Font::getStringWidth(const int i) const

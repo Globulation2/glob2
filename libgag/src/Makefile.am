@@ -17,7 +17,7 @@ libgag_a_SOURCES = FileManager.cpp\
 	GUISelector.cpp\
 	GUIAnimation.cpp\
 	SDLFont.cpp\
-	SDLSprite.cpp\
+	Sprite.cpp\
 	GUIMessageBox.cpp \
 	SupportFunctions.cpp \
 	StringTable.cpp \
@@ -26,7 +26,6 @@ libgag_a_SOURCES = FileManager.cpp\
 EXTRA_DIST = SDLFont.h \
         SDLGraphicContext.h \
 		GLGraphicContext.h \
-        SDLSprite.h \
         SDL_ttf.h \
 		win32_dirent.cpp \
 		win32_dirent.h

@@ -61,16 +61,6 @@ public:
 
 class SDLGraphicContext:  public SDLDrawableSurface, public virtual GraphicContext
 {
-private:
-	enum ImageType
-	{
-		NORMAL,
-		OVERLAY,
-		PALETTE,
-		ROTATED
-	};
-	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
-
 public:
 	SDLGraphicContext(void);
 	virtual ~SDLGraphicContext(void);
@@ -80,7 +70,6 @@ public:
 
 	virtual void loadImage(const char *name);
 
-	virtual void loadSprite(const char *filename, const char *name);
 	virtual void loadFont(const char *filename, unsigned size, const char *name);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
 

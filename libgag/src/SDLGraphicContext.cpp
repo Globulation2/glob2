@@ -18,7 +18,6 @@
 */
 
 #include "SDLGraphicContext.h"
-#include "SDLSprite.h"
 #include "SDLFont.h"
 #include <SupportFunctions.h>
 #include <Toolkit.h>
@@ -132,7 +131,8 @@ void SDLDrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 {
 	if (!surface)
 		return;
-	((SDLSprite *)sprite)->draw(surface, &clipRect, x, y, index);
+
+	sprite->drawSDL(surface, &clipRect, x, y, index);
 }
 
 void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -1006,193 +1006,6 @@ void SDLGraphicContext::loadImage(const char *name)
 			SDL_RWclose(imageStream);
 		}
 	}
-}
-
-SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageType type)
-{
-	SDL_RWops *imageStream;
-	char temp[1024];
-
-	if (type==OVERLAY)
-	{
-		snprintf(temp, 1024,"%s%dm.png", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#ifdef LOAD_ALL_IMAGE_TYPE
-		snprintf(temp, 1024,"%s%dm.bmp", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.jpg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.jpeg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.pnm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.xpm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.lbm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.pcx", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.gif", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dm.tga", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#endif
-	}
-	else if (type==NORMAL)
-	{
-		snprintf(temp, 1024,"%s%d.png", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#ifdef LOAD_ALL_IMAGE_TYPE
-		snprintf(temp, 1024,"%s%d.bmp", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.jpg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.jpeg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.pnm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.xpm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.lbm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.pcx", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.gif", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%d.tga", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#endif
-	}
-	else if (type==PALETTE)
-	{
-		snprintf(temp, 1024,"%s%dp.png", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#ifdef LOAD_ALL_IMAGE_TYPE
-		snprintf(temp, 1024,"%s%dp.bmp", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.jpg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.jpeg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.pnm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.xpm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.lbm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.pcx", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.gif", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dp.tga", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#endif
-	}
-	else if (type==ROTATED)
-	{
-		snprintf(temp, 1024,"%s%dr.png", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#ifdef LOAD_ALL_IMAGE_TYPE
-		snprintf(temp, 1024,"%s%dr.bmp", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.jpg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.jpeg", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.pnm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.xpm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.lbm", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.pcx", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.gif", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-		snprintf(temp, 1024,"%s%dr.tga", name, number);
-		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
-			return imageStream;
-#endif
-	}
-	else
-	{
-		fprintf(stderr, "Toolkit : Passing wrong image type to SDLGraphicContext::tryOpenImage\n");
-	}
-	return NULL;
-}
-
-void SDLGraphicContext::loadSprite(const char *filename, const char *name)
-{
-	SDL_RWops *frameStream;
-	SDL_RWops *overlayStream;
-	SDL_RWops *paletizedStream;
-	SDL_RWops *rotatedStream;
-	int i=0;
-
-	SDLSprite *sprite=new SDLSprite;
-
-	while (true)
-	{
-		frameStream=tryOpenImage(filename, i, NORMAL);
-		overlayStream=tryOpenImage(filename, i, OVERLAY);
-		paletizedStream=tryOpenImage(filename, i, PALETTE);
-		rotatedStream=tryOpenImage(filename, i, ROTATED);
-
-		if (!((frameStream) || (overlayStream) || (paletizedStream) || (rotatedStream)))
-			break;
-
-		sprite->loadFrame(frameStream, overlayStream, paletizedStream, rotatedStream);
-
-		if (frameStream)
-			SDL_RWclose(frameStream);
-		if (overlayStream)
-			SDL_RWclose(overlayStream);
-		if (paletizedStream)
-			SDL_RWclose(paletizedStream);
-		if (rotatedStream)
-			SDL_RWclose(rotatedStream);
-		i++;
-	}
-	Toolkit::spriteMap[std::string(name)] = sprite;
 }
 
 void SDLGraphicContext::loadFont(const char *filename, unsigned size, const char *name)

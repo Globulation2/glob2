@@ -47,6 +47,7 @@ public:
 	static StringTable *const getStringTable(void) { return strings; }
 
 protected:
+	friend class GraphicContext;
 	friend class SDLGraphicContext;
 	friend class GLGraphicContext;
 	typedef std::map<std::string, Sprite *> SpriteMap;
