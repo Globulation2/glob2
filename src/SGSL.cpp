@@ -55,7 +55,8 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include <string>
 #include <deque>
 #include <vector>
-#include <strings.h>
+#include <string.h>
+#include <math.h>
 #include "SGSL.h"
 #include "Game.h"
 
@@ -543,6 +544,18 @@ Aquisition::Aquisition(void)
 
 #define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
 #undef getc
+
+#ifdef _MSC_VER
+const char *index(const char *str, char f)
+{
+	for(const char *a=str;*a;a++)
+	{
+		if(*a==f)
+			return a;
+	}
+	return NULL;
+}
+#endif
 
 void Aquisition::nextToken()
 {

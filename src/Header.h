@@ -63,5 +63,13 @@
 //! if defined, enable fow and map invisible
 //#define DBG_ALL_MAP_DISCOVERED
 
-
+#ifndef VARARRAY
+#ifdef _MSC_VER
+#include <malloc.h>
+#define VARARRAY(t,n,s) t *n=(t*)_alloca((s)*sizeof(t))
+#define strcasecmp _stricmp
+#else
+#define VARARRAY(t,n,s) t n[s]
+#endif
+#endif
 #endif 

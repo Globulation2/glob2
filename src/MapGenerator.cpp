@@ -103,7 +103,7 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 	int h=w;
 	int s=w*h;
 	int m=s-1;
-	int undermap[w*h];
+	VARARRAY(int,undermap,w*h);
 	
 	int totalRatio=0x7FFF;
 	int waterRatio=(int)(baseWater*((double)totalRatio));
@@ -251,9 +251,9 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass)
 {
 	int n=smooth*2+1;
-	double finalWaters[n];
-	double finalSands[n];
-	double finalGrasss[n];
+	VARARRAY(double,finalWaters,n);
+	VARARRAY(double,finalSands,n);
+	VARARRAY(double,finalGrasss,n);
 	
 	for (int i=0; i<n; i++)
 		simulateRandomMap(4, baseWater, baseSand, baseGrass, &finalWaters[i], &finalSands[i], &finalGrasss[i]);

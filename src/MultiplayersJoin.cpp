@@ -1132,7 +1132,9 @@ void MultiplayersJoin::sendingTime()
 			
 			// Let's create the packet:
 			int size=8+8*ixend;
-			Uint8 data[size];
+
+			VARARRAY(Uint8,data,size);
+
 			memset(data, 0, size);
 			data[0]=NEW_PLAYER_WANTS_FILE;
 			data[1]=(endOfFileIndex==0xFFFFFFFF);
