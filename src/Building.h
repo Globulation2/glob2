@@ -25,6 +25,7 @@
 #include "Ressource.h"
 #include "UnitType.h"
 #include "Bullet.h"
+#include "Gradient.h"
 
 class Unit;
 class Team;
@@ -108,6 +109,8 @@ public:
 	Sint32 shootingCooldown;
 	
 	Uint32 seenByMask;
+	
+	Uint8 gradient[2][BUILDING_GRADIENT_SIZE];
 
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
