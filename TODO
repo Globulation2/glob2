@@ -11,7 +11,6 @@ To First release :
 To Next version :
 
 - allies can put mark on the map. (nct)
-- units working to a building are highlight when building is selected. (nct)
 - more precise ressource handling. (nct)
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - units have experience. (nct)

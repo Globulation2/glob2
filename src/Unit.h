@@ -181,6 +181,7 @@ public:
 	// hungry : maxfood = 100000
 	Sint32 hungry; // (Uint16)
 	Sint32 trigHungry; // (Uint16)
+	Sint32 trigHungryCarying;
 	
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
