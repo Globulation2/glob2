@@ -599,6 +599,16 @@ void Team::createLists(void)
 
 void Team::step(void)
 {
+	for (int id=0; id<1024; id++)
+	{
+		Building *b=myBuildings[id];
+		if (b)
+		{
+			assert(b->maxUnitInside>=0);
+			assert(b->maxUnitInside<65536);
+		}
+	}
+
 	int nbUnits=0;
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])

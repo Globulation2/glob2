@@ -1427,6 +1427,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy)
 {
+	//printf("pathfindingRessource...\n");
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	Uint8 max=*(gradient+x+y*w);
@@ -1456,7 +1457,10 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		}
 	
 	if (found)
+	{
+		//printf("...pathfindedRessource v1\n");
 		return true;
+	}
 	
 	if (!found)
 	{
@@ -1502,6 +1506,9 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		*dx=0;
 		*dy=0;
 	}
+	
+	//printf("...pathfindedRessource v2 %d\n", found);
+	
 	return true;
 }
 
@@ -1512,6 +1519,7 @@ void Map::clearBuildingGradient(Uint8 gradient[2][1024])
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
+	printf("updatingLocalGradient...\n");
 	assert(building);
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
@@ -1690,11 +1698,13 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
+	printf("...updatedLocalGradient\n");
 }
 
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
+	printf("updatingGlobalGradient...\n");
 	assert(building);
 	int posX=building->posX;
 	int posY=building->posY;
@@ -1947,15 +1957,19 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
+	printf("...updatedGlobalGradient\n");
 }
 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
+	//printf("pathfindingBuilding...\n");
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
 	//int bw=building->type->width;
 	//int bh=building->type->height;
+	assert(x>=0);
+	assert(y>=0);
 	 
 	Uint32 teamMask=building->owner->me;
 	Uint8 *gradient=building->localGradient[canSwim];
@@ -1997,7 +2011,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					}
 				}
 			if (found)
+			{
+				//printf("...pathfindedBuilding v1\n");
 				return true;
+			}
 		}
 
 		updateLocalGradient(building, canSwim);
@@ -2033,7 +2050,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				}
 
 		if (found)
+		{
+			//printf("...pathfindedBuilding v2\n");
 			return true;
+		}
 	}
 	
 	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
@@ -2071,7 +2091,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 
 		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
 		if (found)
+		{
+			//printf("...pathfindedBuilding v3\n");
 			return true;
+		}
 	}
 	
 	updateGlobalGradient(building, canSwim);
@@ -2099,7 +2122,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			}
 
 		if (found)
+		{
+			//printf("...pathfindedBuilding v4\n");
 			return true;
+		}
 		
 		for (int sd=1; sd>=0; sd--)
 			for (int d=sd; d<8; d+=2)
@@ -2138,7 +2164,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			}
 		
 		if (found)
+		{
+			//printf("...pathfindedBuilding v5\n");
 			return true;
+		}
 	}
 	
 	printf("global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
@@ -2148,7 +2177,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 
 void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 {
-	//printf("Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
+	printf("Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
 	for (int hi=0; hi<hl; hi++)
 	{
 		int wyi=w*((y+h+hi)&hMask);
@@ -2159,7 +2188,7 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 			if (bgid!=NOGBID)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{
-					//printf("dirtying-LocalGradient bgid=%d\n", bgid);
+					printf("dirtying-LocalGradient bgid=%d\n", bgid);
 					for (int canSwim=0; canSwim<2; canSwim++)
 						game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)]->dirtyLocalGradient[canSwim]=true;
 				}

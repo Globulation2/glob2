@@ -226,6 +226,8 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 {
 	// units
 	maxUnitInside=SDL_ReadBE32(stream);
+	assert(maxUnitInside<65536);
+	
 	int nbWorking=SDL_ReadBE32(stream);
 	unitsWorking.clear();
 	for (int i=0; i<nbWorking; i++)
@@ -244,7 +246,13 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	int nbInside=SDL_ReadBE32(stream);
 	unitsInside.clear();
 	for (int i=0; i<nbInside; i++)
-		unitsInside.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
+	{
+		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		if (unit)
+			unitsInside.push_front(unit);
+		else
+			printf("Warning, file corrupted!\n");
+	}
 
 	int nbInsideSubscribe=SDL_ReadBE32(stream);
 	unitsInsideSubscribe.clear();
@@ -259,23 +267,35 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	{
+		assert(*it);
 		SDL_WriteBE16(stream, (*it)->gid);
+	}
 
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
 	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+	{
+		assert(*it);
 		SDL_WriteBE16(stream, (*it)->gid);
-
+	}
+	
 	SDL_WriteBE32(stream, lastWorkingSubscribe);
 
 	SDL_WriteBE32(stream, maxUnitWorking);
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
+	{
+		assert(*it);
 		SDL_WriteBE16(stream, (*it)->gid);
+	}
 
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+	{
+		assert(*it);
 		SDL_WriteBE16(stream, (*it)->gid);
+	}
 	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
 
@@ -357,6 +377,7 @@ void Building::launchConstruction(void)
 		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 		{
 			Unit *u=*it;
+			assert(u);
 			int d=u->displacement;
 			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING))
 			{
@@ -370,6 +391,7 @@ void Building::launchConstruction(void)
 		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); ++it)
 		{
 			Unit *u=*it;
+			assert(u);
 			unitsInside.remove(u);
 		}
 		
@@ -1229,6 +1251,7 @@ void Building::subscribeForInsideStep()
 			if (u)
 			{
 				unitsInsideSubscribe.remove(u);
+				assert(u);
 				unitsInside.push_back(u);
 				u->unsubscribed();
 				updateCallLists();
