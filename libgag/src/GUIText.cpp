@@ -71,11 +71,14 @@ namespace GAGGUI
 		assert(fontPtr);
 	}
 	
-	void Text::paint(GAGCore::DrawableSurface *gfx)
+	void Text::paint(void)
 	{
 		int wDec, hDec;
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 	
 		if (hAlignFlag==ALIGN_FILL)
 			wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;

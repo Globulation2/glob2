@@ -429,14 +429,17 @@ namespace GAGGUI
 		layout();
 	}
 	
-	void TextArea::paint(GAGCore::DrawableSurface *gfx)
+	void TextArea::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 	
 		areaHeight=(h-8)/charHeight;
-		gfx->setClipRect(x, y, w, h);
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->setClipRect(x, y, w, h);
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 		
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
@@ -444,20 +447,20 @@ namespace GAGGUI
 			if (i+areaPos<lines.size()-1)
 			{
 				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				gfx->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
 			}
 			else
 			{
 				const std::string &substr = text.substr(lines[i+areaPos]);
-				gfx->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
 			}
 		}
 	
 		if (!readOnly)
 		{
-			gfx->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
+			parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
 		}
-		gfx->setClipRect();
+		parent->getSurface()->setClipRect();
 	}
 	
 	void TextArea::compute(void)

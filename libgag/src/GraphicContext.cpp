@@ -76,7 +76,6 @@ namespace GAGCore
 		clipRect.w = 0;
 		clipRect.h = 0;
 		flags = 0;
-		partialRedraw = false;
 		locked = false;
 	}
 	
@@ -95,6 +94,7 @@ namespace GAGCore
 						SDL_FreeSurface(surface);
 					surface = SDL_DisplayFormatAlpha(temp);
 					SDL_FreeSurface(temp);
+					setClipRect();
 				}
 				SDL_RWclose(imageStream);
 			}
@@ -144,13 +144,7 @@ namespace GAGCore
 	{
 		if (!surface)
 			return;
-			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new SetClipRectCommand(x, y, w, h));
-			return;
-		}
-			
+		
 		clipRect.x = static_cast<Sint16>(x);
 		clipRect.y = static_cast<Sint16>(y);
 		clipRect.w = static_cast<Uint16>(w);
@@ -163,12 +157,6 @@ namespace GAGCore
 	{
 		if (!surface)
 			return;
-			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new SetNoClipRectCommand());
-			return;
-		}
 			
 		clipRect.x = 0;
 		clipRect.y = 0;
@@ -183,12 +171,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawSpriteCommand(x, y, sprite, index));
-			return;
-		}
-	
 		unlock();
 		sprite->draw(surface, &clipRect, x, y, index);
 	}
@@ -197,12 +179,6 @@ namespace GAGCore
 	{
 		if (!surface)
 			return;
-			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawPixelCommand(x, y, r, g, b, a));
-			return;
-		}
 			
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		#ifdef HAVE_OPENGL
@@ -271,12 +247,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawRectCommand(x, y, w, h, r, g, b, a));
-			return;
-		}
-	
 		SDL_Rect rect;
 		rect.x = static_cast<Sint16>(x);
 		rect.y = static_cast<Sint16>(y);
@@ -298,12 +268,6 @@ namespace GAGCore
 	{
 		if (!surface)
 			return;
-			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawFilledRectCommand(x, y, w, h, r, g, b, a));
-			return;
-		}
 			
 		SDL_Rect rect;
 		rect.x = static_cast<Sint16>(x);
@@ -459,12 +423,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawLineCommand(x, y, x, y+l, r, g, b, a));
-			return;
-		}
-			
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		
 		#ifdef HAVE_OPENGL
@@ -609,12 +567,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawLineCommand(x, y, x+l, y, r, g, b, a));
-			return;
-		}
-	
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 			
 		#ifdef HAVE_OPENGL
@@ -752,12 +704,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawLineCommand(x1, y1, x2, y2, r, g, b, a));
-			return;
-		}
-		
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		
 		#ifdef HAVE_OPENGL
@@ -952,12 +898,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 		
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawCircleCommand(x, y, ray, r, g, b, a));
-			return;
-		}
-		
 		Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		
 		#ifdef HAVE_OPENGL
@@ -1106,12 +1046,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawStringCommand(x, y, w, font, msg));
-			return;
-		}
-	
 		std::string output(msg);
 		FILTER_OUT_CHAR(output.c_str(), '\n');
 		FILTER_OUT_CHAR(output.c_str(), '\r');
@@ -1125,12 +1059,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new PushFontStyleCommand(font, style));
-			return;
-		}
-		
 		font->pushStyle(style);
 	}
 	
@@ -1139,12 +1067,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new PopFontStyleCommand(font));
-			return;
-		}
-		
 		font->popStyle();
 	}
 	
@@ -1153,12 +1075,6 @@ namespace GAGCore
 		if ((!surface) || (!osurface) || (!osurface->surface))
 			return;
 			
-		if ((flags & DOUBLEBUF) && partialRedraw)
-		{
-			drawCommands.push_back(new DrawSurfaceCommand(x, y, osurface));
-			return;
-		}
-	
 		SDL_Rect r;
 	
 		r.x=static_cast<Sint16>(x);
@@ -1178,7 +1094,6 @@ namespace GAGCore
 	{
 		minW = minH = 0;
 		surface = NULL;
-		partialRedraw = true;
 		locked = false;
 	
 		// Load the SDL library
@@ -1272,74 +1187,12 @@ namespace GAGCore
 		}
 	}
 	
-	void GraphicContext::drawQueudCommands(void)
-	{
-		for (size_t i=0; i<drawCommands.size(); i++)
-			drawCommands[i]->apply(this);
-	}
-	
-	void GraphicContext::clearQueudCommands(void)
-	{
-		for (size_t i=0; i<drawCommands.size(); i++)
-			delete drawCommands[i];
-		drawCommands.clear();
-	}
-	
 	void GraphicContext::nextFrame(void)
 	{
 		if (surface)
 		{
 			unlock();
-			if ((flags & DOUBLEBUF) && partialRedraw)
-			{
-				partialRedraw = false;
-				drawQueudCommands();
-				SDL_Flip(surface);
-				drawQueudCommands();
-				clearQueudCommands();
-				partialRedraw = true;
-			}
 			SDL_Flip(surface);
-		}
-	}
-	
-	void GraphicContext::updateRects(SDL_Rect *rects, int size)
-	{
-		if (surface)
-		{
-			unlock();
-			if ((flags & DOUBLEBUF) && partialRedraw)
-			{
-				partialRedraw = false;
-				drawQueudCommands();
-				SDL_Flip(surface);
-				drawQueudCommands();
-				clearQueudCommands();
-				partialRedraw = true;
-				SDL_Flip(surface);
-			}
-			else
-				SDL_UpdateRects(surface, size, rects);
-		}
-	};
-	
-	void GraphicContext::updateRect(int x, int y, int w, int h)
-	{
-		if (surface)
-		{
-			unlock();
-			if ((flags & DOUBLEBUF) && partialRedraw)
-			{
-				partialRedraw = false;
-				drawQueudCommands();
-				SDL_Flip(surface);
-				drawQueudCommands();
-				clearQueudCommands();
-				partialRedraw = true;
-				SDL_Flip(surface);
-			}
-			else
-				SDL_UpdateRect(surface, x, y, w, h);
 		}
 	}
 	
@@ -1360,12 +1213,6 @@ namespace GAGCore
 					dRect.w = static_cast<Uint16>(temp->w);
 					dRect.h = static_cast<Uint16>(temp->h);
 					SDL_BlitSurface(temp, NULL, surface, &dRect);
-					if (flags & DOUBLEBUF)
-					{
-						SDL_Flip(surface);
-						SDL_BlitSurface(temp, NULL, surface, &dRect);
-						SDL_Flip(surface);
-					}
 					SDL_FreeSurface(temp);
 				}
 				SDL_RWclose(imageStream);

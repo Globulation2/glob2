@@ -248,6 +248,11 @@ namespace GAGCore
 			rotated.push_back(NULL);
 	}
 	
+	void Sprite::setAlpha(Uint8 alpha)
+	{
+		// Use per surface alophafor RGBA surface, not supporetd by SDL RGBA blit
+	}
+	
 	int Sprite::getW(int index)
 	{
 		if (!checkBound(index))

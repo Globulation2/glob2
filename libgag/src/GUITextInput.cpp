@@ -258,7 +258,7 @@ namespace GAGGUI
 		assert(fontPtr);
 	}
 	
-	void TextInput::paint(GAGCore::DrawableSurface *gfx)
+	void TextInput::paint(void)
 	{
 		static const int r= 180;
 		static const int g= 180;
@@ -266,6 +266,9 @@ namespace GAGGUI
 	
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 	
 		recomputeTextInfos();
 	

@@ -40,7 +40,7 @@ public:
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
 	//! paint routine
-	virtual void paint(GAGCore::DrawableSurface *gfx);
+	virtual void paint(void);
 
 protected:
 	//! the type of the stat beeing drawn

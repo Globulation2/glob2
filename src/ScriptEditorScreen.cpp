@@ -144,7 +144,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->updateRect(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getW(), loadSaveScreen->getH());
+		globalContainer->gfx->nextFrame();
 	}
 
 	if (loadSaveScreen->endValue==0)

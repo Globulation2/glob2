@@ -58,7 +58,7 @@ void MapPreview::setMapThumbnail(const char *mapName)
 	//setThumbnailNameFromMapName(mapName);
 }
 
-void MapPreview::paint(GAGCore::DrawableSurface *gfx)
+void MapPreview::paint(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);

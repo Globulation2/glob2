@@ -77,7 +77,7 @@ void Glob2::drawYOGSplashScreen(void)
 		int dec=(w-size)>>1;
 		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
 	}
-	globalContainer->gfx->updateRect(0, 0, w, h);
+	globalContainer->gfx->nextFrame();
 }
 
 void Glob2::mutiplayerYOG(void)

@@ -82,20 +82,23 @@ namespace GAGGUI
 		}
 	}
 	
-	void Button::paint(GAGCore::DrawableSurface *gfx)
+	void Button::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		if (highlighted)
+		assert(parent);
+		assert(parent->getSurface());
+		
+		if (nextHighlightValue > 0)
 		{
 			if (highlightID>=0)
-				gfx->drawSprite(x, y, archPtr, highlightID);
+				parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
 		}
 		else
 		{
 			if (standardId>=0)
-				gfx->drawSprite(x, y, archPtr, standardId);
+				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
 		}
 	}
 	
@@ -117,26 +120,21 @@ namespace GAGGUI
 		assert(fontPtr);
 	}
 	
-	void TextButton::paint(GAGCore::DrawableSurface *gfx)
+	void TextButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		Button::paint(gfx);
+		assert(parent);
+		assert(parent->getSurface());
+		
+		HighlightableWidget::paint();
+		Button::paint();
 	
 		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
 		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
 	
-		gfx->drawString(x+decX, y+decY, fontPtr, text.c_str());
-		if (highlighted)
-		{
-			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			gfx->drawRect(x, y, w, h, 255, 255, 255);
-		}
-		else
-		{
-			gfx->drawRect(x, y, w, h, 180, 180, 180);
-		}
+		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
 	}
 	
 	void TextButton::setText(const char *text)
@@ -183,24 +181,21 @@ namespace GAGGUI
 		}
 	}
 	
-	void OnOffButton::paint(GAGCore::DrawableSurface *gfx)
+	void OnOffButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		if (highlighted)
-		{
-			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			gfx->drawRect(x, y, w, h, 255, 255, 255);
-		}
-		else
-			gfx->drawRect(x, y, w, h, 180, 180, 180);
+		assert(parent);
+		assert(parent->getSurface());
+		
+		HighlightableWidget::paint();
 		if (state)
 		{
-			gfx->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-			gfx->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-			gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-			gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
+			parent->getSurface()->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
+			parent->getSurface()->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
+			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
+			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
 		}
 	}
 	
@@ -266,24 +261,17 @@ namespace GAGGUI
 		}
 	}
 	
-	void ColorButton::paint(GAGCore::DrawableSurface *gfx)
+	void ColorButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		if (highlighted)
-		{
-			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			gfx->drawRect(x, y, w, h, 255, 255, 255);
-			if (v.size())
-				gfx->drawFilledRect(x+2, y+2, w-4, h-4, v[selColor].r, v[selColor].g, v[selColor].b);
-		}
-		else
-		{
-			gfx->drawRect(x, y, w, h, 180, 180, 180);
-			if (v.size())
-				gfx->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
-		}
+		assert(parent);
+		assert(parent->getSurface());
+		
+		if (v.size())
+			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
+		HighlightableWidget::paint();
 	}
 	
 	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)

@@ -85,14 +85,14 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
 	if (needUpdate)
-		globalContainer->gfx->updateRect(sx, sy, sw, sh);
+		globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::drawMiniMap(void)
 {
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, centeredTeam);
 	paintCoordinates();
-	globalContainer->gfx->updateRect(globalContainer->gfx->getW()-128, 0, 128, 128);
+	globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::renderMiniMap(void)
@@ -297,7 +297,7 @@ void MapEdit::drawMenu(void)
 
 	}
 
-	globalContainer->gfx->updateRect(menuStartW, 128, 128, globalContainer->gfx->getH()-128);
+	globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::draw(void)
@@ -517,7 +517,7 @@ void MapEdit::paintCoordinates(int mx, int my)
 		int x=baseX+64-w/2;
 		globalContainer->gfx->drawString(x, y, font, s.c_str());
 	}
-	globalContainer->gfx->updateRect(baseX, y, 128, h);
+	globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
@@ -732,7 +732,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 
 	assert(nbRefreshZones<=maxNbRefreshZones);
 	if (nbRefreshZones>0 && mayUpdate)
-		globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
+		globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::mapHasBeenModiffied(void)
@@ -785,7 +785,7 @@ void MapEdit::loadSave(bool isLoad)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->updateRect(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getW(), loadSaveScreen->getH());
+		globalContainer->gfx->nextFrame();
 	}
 
 	if (loadSaveScreen->endValue==0)
@@ -824,7 +824,7 @@ void MapEdit::scriptEditor(void)
 			scriptEditorScreen->translateAndProcessEvent(&event);
 		}
 		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
-		globalContainer->gfx->updateRect(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getW(), scriptEditorScreen->getH());
+		globalContainer->gfx->nextFrame();
 	}
 	if (scriptEditorScreen->endValue == ScriptEditorScreen::OK)
 		mapHasBeenModiffied();

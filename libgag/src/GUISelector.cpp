@@ -98,13 +98,16 @@ namespace GAGGUI
 	}
  
  
-	void Selector::paint(GAGCore::DrawableSurface *gfx)
+	void Selector::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
 		unsigned l=(count-1)*size-2;
 		unsigned hSize = std::max(size, 10u);
+		
+		assert(parent);
+		assert(parent->getSurface());
 	
 		parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+1, l, 180, 180, 180);
 		parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+2, l, 180, 180, 180);

@@ -51,11 +51,14 @@ public:
 		a=DrawableSurface::ALPHA_OPAQUE;
 	}
 	
-	void paint(GAGCore::DrawableSurface *gfx)
+	void paint(void)
 	{
 		assert(parent);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 		
 		parent->getSurface()->drawFilledRect(x, y, w, h, r, g, b);
 	}

@@ -337,19 +337,30 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	}
 }
 
+struct ProgressBar
+{
+	DrawableSurface *s;
+} progress;
+
 void GlobalContainer::updateLoadProgressBar(int value)
 {
-	static int lastX = 0;
-	gfx->drawFilledRect(((gfx->getW()-400)>>1)+(lastX<<2), (gfx->getH()>>1)+11+180, (value-lastX)<<2, 20, 10, 50, 255, 80);
-	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30+180, 402, 62);
-	lastX = value;
+	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
+	gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
+	gfx->nextFrame();
 }
 
 void GlobalContainer::initProgressBar(void)
 {
-	gfx->loadImage("data/gfx/IntroMN.png");
-	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10+180, 402, 22, 180, 180, 180);
+	progress.s = new DrawableSurface();
+	progress.s->loadImage("data/gfx/IntroMN.png");
+	progress.s->drawRect((progress.s->getW()-402)>>1, (progress.s->getH()>>1)+10+180, 402, 22, 180, 180, 180);
+	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
 	gfx->nextFrame();
+}
+
+void GlobalContainer::destroyProgressBar(void)
+{
+	delete progress.s;
 }
 
 void GlobalContainer::load(void)
@@ -437,5 +448,6 @@ void GlobalContainer::load(void)
 		brush = Toolkit::getSprite("data/gfx/brush");
 
 		updateLoadProgressBar(100);
+		destroyProgressBar();
 	}
 };
