@@ -105,6 +105,7 @@ void List::internalPaint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+	
 
 	unsigned count = (h-4) / textHeight;
 	if (strings.size() > count)
@@ -138,11 +139,14 @@ void List::internalPaint(void)
 		}
 
 		elementLength = w-22;
+		parent->getSurface()->setClipRect(x+1, y+1, w-22, h-2);
 	}
 	else
 	{
-		elementLength = w-2;
 		disp = 0;
+		
+		elementLength = w-2;
+		parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 	}
 
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
@@ -154,6 +158,8 @@ void List::internalPaint(void)
 		i++;
 		yPos+=textHeight;
 	}
+	
+	parent->getSurface()->setClipRect();
 }
 
 void List::paint(void)
