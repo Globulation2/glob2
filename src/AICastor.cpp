@@ -78,6 +78,7 @@ void AICastor::Project::init()
 	blocking=true;
 	critical=false;
 	priority=1;
+	triesLeft=64;
 	
 	mainWorkers=-1;
 	foodWorkers=-1;
@@ -95,12 +96,8 @@ void AICastor::Project::init()
 
 // AICastor::Strategy part:
 
-AICastor::Strategy::Strategy()
+AICastor::Strategy::Builds::Builds()
 {
-	defined=false;
-	
-	successWait=0;
-	
 	swarm=0;
 	speed=0;
 	attack=0;
@@ -108,38 +105,34 @@ AICastor::Strategy::Strategy()
 	defense=0;
 	science=0;
 	swim=0;
+};
+
+
+AICastor::Strategy::Builds& AICastor::Strategy::Builds::operator+=(const Builds &builds)
+{
+	swarm+=builds.swarm;
+	speed+=builds.speed;
+	attack+=builds.attack;
+	heal+=builds.heal;
+	defense+=builds.defense;
+	science+=builds.science;
+	swim+=builds.swim;
+	
+	return *this;
+}
+
+AICastor::Strategy::Strategy()
+{
+	defined=false;
+	
+	successWait=0;
 	
 	warLevelTriger=0;
 	warTimeTriger=0;
 	maxAmountGoal=0;
 	
-	foodWorkers=0;
-	swarmWorkers=0;
 	wheatCareLimit=0;
 };
-
-AICastor::Strategy& AICastor::Strategy::operator+=(const AICastor::Strategy &strategy)
-{
-	successWait+=strategy.successWait;
-	
-	swarm+=strategy.swarm;
-	speed+=strategy.speed;
-	attack+=strategy.attack;
-	heal+=strategy.heal;
-	defense+=strategy.defense;
-	science+=strategy.science;
-	swim+=strategy.swim;
-	
-	warLevelTriger+=strategy.warLevelTriger;
-	warTimeTriger+=strategy.warTimeTriger;
-	maxAmountGoal+=strategy.maxAmountGoal;
-	
-	foodWorkers+=strategy.foodWorkers;
-	swarmWorkers+=strategy.swarmWorkers;
-	wheatCareLimit+=strategy.wheatCareLimit;
-	
-	return *this;
-}
 
 // AICastor main class part:
 
@@ -196,6 +189,7 @@ void AICastor::init(Player *player)
 	
 	hydratationMapComputed=false;
 	war=false;
+	foodLock=false;
 	strategy.defined=false;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
@@ -356,39 +350,53 @@ Order *AICastor::getOrder()
 		
 		strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
 		
-		strategy.swarm=1+(syncRand()%2);
-		strategy.speed=1+(syncRand()%2);
-		strategy.attack=1+(syncRand()%4);
-		strategy.heal=1+(syncRand()%8);
-		strategy.defense=1+(syncRand()%8);
-		strategy.science=1+(syncRand()%4);
-		strategy.swim=1+(syncRand()%2);
+		strategy.buildsBase.swarm=2;
+		strategy.buildsBase.speed=2;
+		strategy.buildsBase.attack=2;
+		strategy.buildsBase.heal=4;
+		strategy.buildsBase.defense=4;
+		strategy.buildsBase.science=2;
+		strategy.buildsBase.swim=2;
 		
-		strategy.warLevelTriger=1+(syncRand()%2);
-		strategy.warTimeTriger=8192+(syncRand()%8192);
+		strategy.buildsNews.swarm=1;
+		strategy.buildsNews.speed=1;
+		strategy.buildsNews.attack=4;
+		strategy.buildsNews.heal=16;
+		strategy.buildsNews.defense=16;
+		strategy.buildsNews.science=4;
+		strategy.buildsNews.swim=1;
+		
+		strategy.warLevelTriger=2;
+		strategy.warTimeTriger=8192;
 		strategy.maxAmountGoal=10;
 		
-		strategy.foodWorkers=1; // TODO: use "critical" one new food buildings flag.
-		strategy.swarmWorkers=2;
-		strategy.wheatCareLimit=4;
+		strategy.wheatCareLimit=4; // be cautious with this. [2..6]
 		
 		printf("strategy defined:\n");
-		printf(" successWait=%d\n", strategy.swarm);
+		printf(" successWait=%d\n", strategy.successWait);
 		printf(" \n");
-		printf(" swarm=%d\n", strategy.swarm);
-		printf(" speed=%d\n", strategy.speed);
-		printf(" attack=%d\n", strategy.attack);
-		printf(" heal=%d\n", strategy.heal);
-		printf(" defense=%d\n", strategy.defense);
-		printf(" science=%d\n", strategy.science);
-		printf(" swim=%d\n", strategy.swim);
+		printf(" buildsBase:\n");
+		printf("  swarm=%d\n", strategy.buildsBase.swarm);
+		printf("  speed=%d\n", strategy.buildsBase.speed);
+		printf("  attack=%d\n", strategy.buildsBase.attack);
+		printf("  heal=%d\n", strategy.buildsBase.heal);
+		printf("  defense=%d\n", strategy.buildsBase.defense);
+		printf("  science=%d\n", strategy.buildsBase.science);
+		printf("  swim=%d\n", strategy.buildsBase.swim);
+		printf(" \n");
+		printf(" buildsNews:\n");
+		printf("  swarm=%d\n", strategy.buildsNews.swarm);
+		printf("  speed=%d\n", strategy.buildsNews.speed);
+		printf("  attack=%d\n", strategy.buildsNews.attack);
+		printf("  heal=%d\n", strategy.buildsNews.heal);
+		printf("  defense=%d\n", strategy.buildsNews.defense);
+		printf("  science=%d\n", strategy.buildsNews.science);
+		printf("  swim=%d\n", strategy.buildsNews.swim);
 		printf(" \n");
 		printf(" warLevelTriger=%d\n", strategy.warLevelTriger);
 		printf(" warTimeTriger=%d\n", strategy.warTimeTriger);
 		printf(" maxAmountGoal=%d\n", strategy.maxAmountGoal);
 		printf(" \n");
-		printf(" foodWorkers=%d\n", strategy.foodWorkers);
-		printf(" swarmWorkers=%d\n", strategy.swarmWorkers);
 		printf(" wheatCareLimit=%d\n", strategy.wheatCareLimit);
 	}
 	
@@ -478,6 +486,8 @@ Order *AICastor::controlSwarms()
 	
 	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
 	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d\n", unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum);
+	
+	foodLock=((unitSumAll+1)>=(foodSum<<1));
 	
 	if (unitSumAll>=(foodSum<<1))
 	{
@@ -644,17 +654,27 @@ Order *AICastor::controlFood(int index)
 			{
 				if (b->type->shortTypeNum==BuildingType::FOOD_BUILDING)
 				{
-					b->maxUnitWorking=strategy.foodWorkers;
-					b->maxUnitWorkingLocal=strategy.foodWorkers;
+					Sint32 workers;
+					if (foodLock && b->type->isBuildingSite)
+						workers=2;
+					else
+						workers=1;
+					b->maxUnitWorking=workers;
+					b->maxUnitWorkingLocal=workers;
 					b->update();
-					return new OrderModifyBuilding(b->gid, strategy.foodWorkers);
+					return new OrderModifyBuilding(b->gid, workers);
 				}
 				else if (b->type->shortTypeNum==BuildingType::SWARM_BUILDING)
 				{
-					b->maxUnitWorking=strategy.swarmWorkers;
-					b->maxUnitWorkingLocal=strategy.swarmWorkers;
+					Sint32 workers;
+					if (foodLock)
+						workers=1;
+					else
+						workers=2;
+					b->maxUnitWorking=workers;
+					b->maxUnitWorkingLocal=workers;
 					b->update();
-					return new OrderModifyBuilding(b->gid, strategy.swarmWorkers);
+					return new OrderModifyBuilding(b->gid, workers);
 				}
 				else
 					assert(false);
@@ -699,7 +719,7 @@ void AICastor::addProjects()
 	{
 		Project *project=new Project(BuildingType::FOOD_BUILDING, "food-boot");
 		
-		project->successWait=strategy.successWait;;
+		project->successWait=strategy.successWait;
 		project->critical=true;
 		project->priority=0;
 		
@@ -782,61 +802,69 @@ void AICastor::addProjects()
 	}
 	// all critical projects succeded.
 	
-	Strategy amountGoal;
+	strategy.buildsCurrent=strategy.buildsBase;
 	for (Sint32 i=0; i<strategy.maxAmountGoal; i++)
 	{
-		amountGoal+=strategy;
-		if (buildingSum[BuildingType::SWARM_BUILDING][0]+buildingSum[BuildingType::SWARM_BUILDING][1]<amountGoal.swarm)
+		if (buildingSum[BuildingType::SWARM_BUILDING][0]+buildingSum[BuildingType::SWARM_BUILDING][1]
+			<strategy.buildsCurrent.swarm)
 		{
-			Project *project=new Project(BuildingType::SWARM_BUILDING, amountGoal.swarm, 4, "swarm-loop");
+			Project *project=new Project(BuildingType::SWARM_BUILDING, strategy.buildsCurrent.swarm, 4, "swarm-loop");
 			project->successWait=strategy.successWait;
 			project->food=true;
 			project->finalWorkers=2;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::WALKSPEED_BUILDING][0]+buildingSum[BuildingType::WALKSPEED_BUILDING][1]<amountGoal.speed)
+		if (buildingSum[BuildingType::WALKSPEED_BUILDING][0]+buildingSum[BuildingType::WALKSPEED_BUILDING][1]
+			<strategy.buildsCurrent.speed)
 		{
-			Project *project=new Project(BuildingType::WALKSPEED_BUILDING, amountGoal.speed, 4, "walk-loop");
+			Project *project=new Project(BuildingType::WALKSPEED_BUILDING, strategy.buildsCurrent.speed, 4, "walk-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]<amountGoal.attack)
+		if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]
+			<strategy.buildsCurrent.attack)
 		{
-			Project *project=new Project(BuildingType::ATTACK_BUILDING, amountGoal.attack, 4, "attack-loop");
+			Project *project=new Project(BuildingType::ATTACK_BUILDING, strategy.buildsCurrent.attack, 4, "attack-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::HEAL_BUILDING][0]+buildingSum[BuildingType::HEAL_BUILDING][1]<amountGoal.heal)
+		if (buildingSum[BuildingType::SCIENCE_BUILDING][0]+buildingSum[BuildingType::SCIENCE_BUILDING][1]
+			<strategy.buildsCurrent.science)
 		{
-			Project *project=new Project(BuildingType::HEAL_BUILDING, amountGoal.heal, 1, "heal-loop");
+			Project *project=new Project(BuildingType::SCIENCE_BUILDING, strategy.buildsCurrent.science, 5, "science-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::DEFENSE_BUILDING][0]+buildingSum[BuildingType::DEFENSE_BUILDING][1]<amountGoal.defense)
+		if (buildingSum[BuildingType::HEAL_BUILDING][0]+buildingSum[BuildingType::HEAL_BUILDING][1]
+			<strategy.buildsCurrent.heal)
 		{
-			Project *project=new Project(BuildingType::DEFENSE_BUILDING, amountGoal.defense, 1, "defense-loop");
+			Project *project=new Project(BuildingType::HEAL_BUILDING, strategy.buildsCurrent.heal, 1, "heal-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::SCIENCE_BUILDING][0]+buildingSum[BuildingType::SCIENCE_BUILDING][1]<amountGoal.science)
+		if (buildingSum[BuildingType::DEFENSE_BUILDING][0]+buildingSum[BuildingType::DEFENSE_BUILDING][1]
+			<strategy.buildsCurrent.defense)
 		{
-			Project *project=new Project(BuildingType::SCIENCE_BUILDING, amountGoal.science, 5, "science-loop");
+			Project *project=new Project(BuildingType::DEFENSE_BUILDING, strategy.buildsCurrent.defense, 1, "defense-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
-		if (buildingSum[BuildingType::SWIMSPEED_BUILDING][0]+buildingSum[BuildingType::SWIMSPEED_BUILDING][1]<amountGoal.swim)
+		if (buildingSum[BuildingType::SWIMSPEED_BUILDING][0]+buildingSum[BuildingType::SWIMSPEED_BUILDING][1]
+			<strategy.buildsCurrent.swim)
 		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, amountGoal.swim, 3, "swim-loop");
+			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, strategy.buildsCurrent.swim, 3, "swim-loop");
 			project->successWait=strategy.successWait;
 			if (addProject(project))
 				return;
 		}
+		
+		strategy.buildsCurrent+=strategy.buildsNews;
 	}
 }
 
@@ -892,6 +920,17 @@ Order *AICastor::continueProject(Project *project)
 				//printf("(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
 				return gfbm;
 			}
+		}
+		else if (project->triesLeft>0)
+		{
+			project->triesLeft--;
+		}
+		else
+		{
+			printf("(%s) (give up [%d, %d])\n", project->debugName, project->blocking, project->critical);
+			project->timer=timer+8192; // 5min27s
+			project->blocking=false;
+			project->critical=false;
 		}
 	}
 	else if (project->subPhase==2)
@@ -1456,38 +1495,33 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			
 			// At a range of 2 space case, without corners,
 			// we increment (bit 5 to 7):
-			Uint8 inc;
-			if (neighbour)
-				inc=32;
-			else
-				inc=64;
 			for (int xi=bx-dw; xi<bx+bw+1; xi++)
 			{
 				Uint8 *p;
 				p=&gradient[(xi&wMask)+(((by-dh-2)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 			}
 			for (int yi=by-dh; yi<by+bh+1; yi++)
 			{
 				Uint8 *p;
 				p=&gradient[((bx-dw-2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 			}
 			{
 				// the same with inner inner corners:
 				Uint8 *p;
 				p=&gradient[((bx-dw-1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 				p=&gradient[((bx-dw-1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 				p=&gradient[((bx+bw+1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 				p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=inc;
+				(*p)+=32;
 			}
 		}
 	}
@@ -1748,14 +1782,14 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 		if (critical)
 			wheatGradientLimit=(255-16)*4;
 		else
-			wheatGradientLimit=(255-4)*4;
+			wheatGradientLimit=(255-3)*4;
 	}
 	else
 	{
 		if (critical)
 			wheatGradientLimit=(255-5)*4;
 		else
-			wheatGradientLimit=(255-15)*4;
+			wheatGradientLimit=(255-9)*4;
 	}
 	printf(" wheatGradientLimit=%d\n", wheatGradientLimit/4);
 	
@@ -1820,16 +1854,17 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 			
 			Uint8 neighbour=buildingNeighbourMap[corner0];
 			Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
-			Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7] doubled for non direct neighbours
+			Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
 			if ((neighbour&1)||(directNeighboursCount>1))
 				continue;
 			
 			Sint32 score;
 			if (food)
-				score=((wheatGrowth<<8)+work)*(8+(directNeighboursCount<<3)+farNeighboursCount);
+				score=((wheatGrowth<<8)+work)*(14+(directNeighboursCount<<2)+farNeighboursCount);
 			else
-				score=(4096+work-(wheatGrowth<<8))*(8+(directNeighboursCount<<3)+farNeighboursCount);
-			// 8 + directNeighboursCount*8 + farNeighboursCount*2
+				score=(4096+work-(wheatGrowth<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+			
+			// 8 + directNeighboursCount*4 + farNeighboursCount
 			
 			if (score<0)
 				goodBuildingMap[corner0]=0;
@@ -1847,7 +1882,18 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	
 	if (bestScore>0)
 	{
-		printf(" found a cool place, score=%d, wheat=%d, work=%d\n", bestScore, wheatGrowthMap[bestIndex], workAbilityMap[bestIndex]);
+	
+		printf(" found a cool placen");
+		printf("  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
+			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
+		
+		Uint8 neighbour=buildingNeighbourMap[bestIndex];
+		Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
+		Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
+			
+		printf(" directNeighboursCount=%d, farNeighboursCount=%d\n",
+			directNeighboursCount, farNeighboursCount);
+		
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return new OrderCreate(team->teamNumber, x, y, typeNum);

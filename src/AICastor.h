@@ -55,6 +55,7 @@ public:
 		bool blocking; // if true, no other project can be added..
 		bool critical; // if true, place building at any cost.
 		Sint32 priority; // the lower is the number, the higher is the priority
+		Uint32 triesLeft;
 		
 		Sint32 mainWorkers;
 		Sint32 foodWorkers;
@@ -72,28 +73,33 @@ public:
 	class Strategy
 	{
 	public:
+		class Builds
+		{
+		public:
+			Builds();
+			Builds& operator+=(const Builds &builds);
+		public:
+			Sint32 swarm;
+			Sint32 speed;
+			Sint32 attack;
+			Sint32 heal;
+			Sint32 defense;
+			Sint32 science;
+			Sint32 swim;
+		};
+	public:
 		Strategy();
-		Strategy& Strategy::operator+=(const Strategy &strategy);
-	
 	public:
 		bool defined;
 		
 		Sint32 successWait;
 		
-		Sint32 swarm;
-		Sint32 speed;
-		Sint32 attack;
-		Sint32 heal;
-		Sint32 defense;
-		Sint32 science;
-		Sint32 swim;
+		Builds buildsBase, buildsNews, buildsCurrent;
 		
 		Sint32 warLevelTriger;
 		Sint32 warTimeTriger;
 		Sint32 maxAmountGoal;
 		
-		Sint32 foodWorkers;
-		Sint32 swarmWorkers;
 		Uint8 wheatCareLimit;
 	};
 	
@@ -159,6 +165,7 @@ public:
 	bool needSwim;
 	int buildingSum[BuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
 	bool war;
+	bool foodLock;
 	Uint32 lastNeedPoolComputed;
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
