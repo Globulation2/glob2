@@ -1388,19 +1388,24 @@ void GameGUI::draw(void)
 					int yNum=(mouseY-128-32)/46;
 					int typeId=yNum*2+xNum;
 					int buildingInfoStart=128+32+6*46;
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart+2, "[building name]", typeId);
+					//drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart+2, "[building name]", typeId);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-5, "[building name]", typeId);
 					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
 					if (typeNum!=-1)
 					{
 						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+16, globalContainer->littleFont, 
-							"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);								
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+16, globalContainer->littleFont, 
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont, 
+							"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont, 
+							"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[3]);
+						
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
+							"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[4]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont, 
 							"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
+						
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont, 
-							"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+28, globalContainer->littleFont,
-							"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
+							"%s: %d", globalContainer->texts.getString("[fungus]"), bt->maxRessource[2]);
 					}
 				}
 			}
@@ -1574,14 +1579,18 @@ void GameGUI::draw(void)
 									// We draw the ressources cost.
 									int typeNum=buildingType->nextLevelTypeNum;
 									BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont, 
 										"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
+										"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
+										
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-42, globalContainer->littleFont,
+										"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
 									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont, 
 										"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
+									
 									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont, 
-										"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-18, globalContainer->littleFont,
-										"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
+										"%s: %d", globalContainer->texts.getString("[fungus]"), bt->maxRessource[2]);
 
 									// We draw the new abilities:
 									bt=globalContainer->buildingsTypes.getBuildingType(bt->nextLevelTypeNum);
