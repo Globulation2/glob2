@@ -33,19 +33,19 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addAINumbi=new TextButton(440, 285, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AINumbi]"), ADD_AI_NUMBI);
+	addAINumbi=new TextButton(20, 285, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AINumbi]"), ADD_AI_NUMBI);
 	addWidget(addAINumbi);
-	addAICastor=new TextButton(440, 335, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AICastor]"), ADD_AI_CASTOR);
+	addAICastor=new TextButton(20, 335, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AICastor]"), ADD_AI_CASTOR);
 	addWidget(addAICastor);
-	startButton=new TextButton(440, 385, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
-	addWidget(new TextButton(440, 435, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	startButton=new TextButton(20, 385, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
+	addWidget(new TextButton(20, 435, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 
 	startButton->visible=false;
 	addWidget(startButton);
-	notReadyText=new Text(440, 385, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText=new Text(20, 385, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
-	gameFullText=new Text(440, 335, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
+	gameFullText=new Text(20, 335, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
 	savedSessionInfo=NULL;
@@ -62,19 +62,19 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	multiplayersJoin=NULL;
 	this->shareOnYOG=shareOnYOG;
 
-	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
 		int dx=320*(i/8);
 		int dy=20*(i%8);
-		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_LEFT, ALIGN_LEFT, COLOR_BUTTONS+i);
+		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42+dx, 42+dy, ALIGN_LEFT, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
+		text[i]=new Text(42+dx, 42+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
 		wasSlotUsed[i]=false;
@@ -83,14 +83,14 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(440, 210, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
+	startTimer=new Text(20, 210, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
 	addWidget(startTimer);
 
 	timeCounter=0;
 
-	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
+	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 	
 	executionMode=START;

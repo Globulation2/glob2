@@ -43,7 +43,7 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(statusText);
 	
 	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
-	animation=new Animation(32, 100, ALIGN_FILL, ALIGN_TOP, "animation", 0, 20, 2);
+	animation=new Animation(32, 100, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "animation", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
 	
