@@ -1399,7 +1399,8 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 
 		// draw a white circle around units that are working at building
-		if (showUnitWorkingToBuilding)
+		if ((showUnitWorkingToBuilding)
+			&& ((selBuild->owner->allies) &(1<<localTeam)))
 		{
 			for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
 			{
