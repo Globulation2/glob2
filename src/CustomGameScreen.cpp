@@ -91,6 +91,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				int i, j;
 				for (i=0; i<8; i++)
 				{
+					color[i]->clearColors();
 					for (j=0; j<sessionInfo.numberOfTeam; j++)
 					{
 						color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
