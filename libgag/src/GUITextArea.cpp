@@ -165,13 +165,90 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			}
 			break;
 			
+			case SDLK_PAGEUP:
+			{
+				if (areaPos>0)
+				{
+					assert(lines.size()>areaHeight);
+					
+					// compute new areaPos
+					areaPos-=MIN(areaPos, areaHeight);
+
+					// if in edit mode, replace cursor
+					if (!readOnly)
+					{
+						unsigned int cursorPosX=cursorPos-lines[cursorPosY];
+						unsigned int newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
+						if (newPosY!=cursorPosY)
+						{
+							unsigned int newLineLen=lines[cursorPosY]-lines[newPosY];
+
+							if (cursorPosX<newLineLen)
+							{
+								cursorPos=lines[newPosY]+cursorPosX;
+							}
+							else
+							{
+								cursorPos=lines[newPosY]+newLineLen-1;
+							}
+
+							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+						}
+					}
+
+					computeAndRepaint();
+				}
+			}
+			break;
+			
+			case SDLK_PAGEDOWN:
+			{
+				if (lines.size()>=areaHeight)
+				{
+					if (areaPos<lines.size()-areaHeight)
+					{
+						// compute new areaPos
+						areaPos+=MIN(lines.size()-areaHeight-areaPos, areaHeight);
+						
+						// if in edit mode, replace cursor
+						if (!readOnly)
+						{
+							unsigned int cursorPosX=cursorPos-lines[cursorPosY];
+							unsigned int newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
+							if (newPosY!=cursorPosY)
+							{
+								unsigned int newLineLen;
+								if (newPosY==lines.size()-1)
+								{
+									newLineLen=textBufferLength-lines[newPosY];
+								}
+								else
+								{
+									newLineLen=lines[newPosY+1]-lines[newPosY]-1;
+								}
+								
+								if (cursorPosX<newLineLen)
+								{
+									cursorPos=lines[newPosY]+cursorPosX;
+								}
+								else
+								{
+									cursorPos=lines[newPosY]+newLineLen-1;
+								}
+								
+								parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+							}
+						}
+						
+						computeAndRepaint();
+					}
+				}
+			}
+			break;
+			
 			case SDLK_UP:
 			{
-				if (readOnly)
-				{
-					scrollUp();
-				}
-				else if (cursorPosY>0)
+				if ((!readOnly) && (cursorPosY>0))
 				{
 					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 					unsigned int newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
@@ -193,11 +270,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				
 			case SDLK_DOWN:
 			{
-				if (readOnly)
-				{
-					scrollDown();
-				}
-				else if (cursorPosY+1<lines.size())
+				if ((!readOnly) && (cursorPosY+1<lines.size()))
 				{
 					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 					unsigned int newLineLen;
@@ -290,7 +363,6 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				{
 					if (cursorPos<textBufferLength)
 					{
-						cursorPos++;
 						cursorPos=getNextUTF8Char(textBuffer, cursorPos);
 						computeAndRepaint();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
@@ -404,6 +476,14 @@ void TextArea::computeAndRepaint(void)
 				areaPos++;
 		}
 
+		// we need to assert cursorPos will point on the beginning of a valid UTF8 char
+		unsigned utf8CleanCursorPos = lines[cursorPosY];
+		while (utf8CleanCursorPos + getNextUTF8Char(textBuffer[utf8CleanCursorPos]) <= cursorPos)
+		{
+			utf8CleanCursorPos += getNextUTF8Char(textBuffer[utf8CleanCursorPos]);
+		}
+		cursorPos = utf8CleanCursorPos;
+		
 		// compute displayable cursor Pos
 		char temp[1024];
 		unsigned cursorPosX = cursorPos-lines[cursorPosY];
@@ -570,9 +650,9 @@ void TextArea::scrollDown(void)
 		if (areaPos<lines.size()-areaHeight-1)
 		{
 			areaPos++;
+			repaint();
 		}
 	}
-	repaint();
 }
 
 void TextArea::scrollUp(void)
@@ -582,9 +662,9 @@ void TextArea::scrollUp(void)
 		if (areaPos>0)
 		{
 			areaPos--;
+			repaint();
 		}
 	}
-	repaint();
 }
 
 void TextArea::scrollToBottom(void)
