@@ -2316,6 +2316,14 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
+	else if (selectionMode==RESSOURCE_SELECTION)
+	{
+		int rx = selection.ressource & game.map.getMaskW();
+		int ry = selection.ressource >> game.map.getShiftW();
+		int px, py;
+		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
+		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
+	}
 
 	// draw message List
 	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>2)
