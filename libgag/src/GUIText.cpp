@@ -110,7 +110,7 @@ void Text::internalRepaint(int x, int y, int w, int h)
 		hDec=0;
 
 	fontPtr->pushColor(cr, cg, cb, ca);
-	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, "%s", text.c_str());
+	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
 	fontPtr->popColor();
 }
 

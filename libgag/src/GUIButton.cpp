@@ -120,7 +120,7 @@ void TextButton::internalRepaint(int x, int y, int w, int h)
 	int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
 	int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
 
-	parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
+	parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
 	if (highlighted)
 	{
 		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);

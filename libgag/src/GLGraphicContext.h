@@ -63,8 +63,6 @@ public:
 	
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 
-	virtual void dbgprintf(const char *msg, ...);
-
 	virtual void loadSprite(const char *filename, const char *name);
 	virtual void loadFont(const char *filename, unsigned size, const char *name);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);

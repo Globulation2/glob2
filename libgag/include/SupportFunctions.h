@@ -22,6 +22,7 @@
 
 #include "GAGSys.h"
 #include <stdlib.h>
+#include <string>
 
 namespace GAG
 {
@@ -47,6 +48,9 @@ namespace GAG
 	float fmin(float f1, float f2, float f3);
 	//! return max of f1, f2 and f3
 	float fmax(float f1, float f2, float f3);
+
+	//! c++ version of asprintf (n for new instead of a for alloc)
+	std::string nsprintf(const char* s, ...);
 };
 
 #endif
