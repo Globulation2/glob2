@@ -1,0 +1,7 @@
+Source of files not created from us :
+
+Font :
+sans.ttf http://packages.debian.org/unstable/x11/ttf-freefont.html
+
+Emoticon for alliance :
+kopete http://kopete.kde.org/
