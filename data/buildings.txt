@@ -820,7 +820,8 @@ isBuildingSite 1
 
 type school
 
-gameSpriteImage 6
+gameSprite data/gfx/school0b
+gameSpriteImage 0
 miniSpriteImage 6
 
 upgradeBuild 1
