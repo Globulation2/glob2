@@ -93,6 +93,8 @@ MultiplayersJoinScreen.h \
 MultiplayersJoinScreen.cpp \
 MultiplayersJoin.h \
 MultiplayersJoin.cpp \
+MultiplayersConnectedScreen.h \
+MultiplayersConnectedScreen.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp
