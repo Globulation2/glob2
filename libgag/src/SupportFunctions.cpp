@@ -251,7 +251,12 @@ namespace GAG
 	std::string vnsprintf(const char* f, va_list arglist)
 	{
 		char* str;
+#ifdef __GNUC__
 		vasprintf(&str, f, arglist);
+#else
+		str = (char*)malloc(256);
+                vsnprintf(str, 256, f, arglist);
+#endif
 		std::string ret(str);
 		free(str);
 		return ret;
