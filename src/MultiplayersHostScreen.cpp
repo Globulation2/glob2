@@ -89,8 +89,8 @@ MultiplayersHostScreen::~MultiplayersHostScreen()
 
 void MultiplayersHostScreen::onTimer(Uint32 tick)
 {
-	multiplayersHost->onTimer(tick);
-
+	multiplayersHost->onTimer(tick, multiplayersJoin);
+	
 	// TODO : don't update this every step
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
@@ -150,31 +150,6 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		strncpy(multiplayersJoin->serverName, "localhost", 128);
 		multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
 		multiplayersJoin->serverIP.port=SDL_SwapBE16(SERVER_PORT);
-		
-		/*if (multiplayersHost->serverIP.host==0)
-		{
-			strncpy(multiplayersJoin->serverName, "localhost", 128);
-			multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
-			multiplayersJoin->serverIP.port=SDL_SwapBE16(SERVER_PORT);
-		}
-		else
-		{
-			char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP));//char *SDLNet_ResolveIP(IPaddress *address)
-			if (s)
-			{
-				strncpy(multiplayersJoin->serverName, s, 128);
-				multiplayersJoin->serverName[127]=0;
-			}
-			else
-			{
-				// a home made translation:
-				//zzz Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
-				//zzz snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-				//zzz multiplayersJoin->serverName[127]=0;
-				Utilities::stringIP(multiplayersJoin->serverName, 128, multiplayersHost->serverIP.host);
-			}
-			multiplayersJoin->serverIP=multiplayersHost->serverIP;
-		}*/
 		
 		multiplayersJoin->tryConnection();
 	}

@@ -65,7 +65,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		fprintf(logFile, "sharing on YOG\n");
 		globalContainer->yog->shareGame(sessionInfo->map.getMapName());
-		globalContainer->yog->setGameSocket(socket);
+		globalContainer->yog->setHostGameSocket(socket);
 	}
 	
 	stream=NULL;
@@ -1050,7 +1050,8 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
-	fprintf(logFile, "MultiplayersHost::treatData (%d)\n", data[0]);
+	if (data[0]!=NEW_PLAYER_WANTS_FILE)
+		fprintf(logFile, "\nMultiplayersHost::treatData (%d)\n", data[0]);
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
 		printf("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
@@ -1118,10 +1119,10 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 	}
 }
 
-void MultiplayersHost::onTimer(Uint32 tick)
+void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 {
 	// call yog step
-	if (shareOnYOG)
+	if (shareOnYOG && multiplayersJoin==NULL)
 		globalContainer->yog->step(); // YOG cares about firewall and NAT
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
@@ -1151,7 +1152,6 @@ void MultiplayersHost::onTimer(Uint32 tick)
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			fprintf(logFile, "Packet received.\n");
 			//fprintf(logFile, "packet=%d\n", (int)packet);
 			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
 			//fprintf(logFile, "packet->len=%d\n", packet->len);

@@ -53,7 +53,8 @@ public:
 	
 	struct GameInfo
 	{
-		IPaddress ip;
+		IPaddress hostip;
+		IPaddress joinip;
 		char userName[32];
 		char name[128];
 		Uint32 uid;
@@ -122,15 +123,18 @@ public:
 	void gameStarted();
 	void gameEnded();
 	
-	void setGameSocket(UDPsocket socket);
-	bool gameSocketSet();
+	void setHostGameSocket(UDPsocket socket);
+	bool hostGameSocketSet();
+	void setJoinGameSocket(UDPsocket socket);
+	bool joinGameSocketSet();
 	
 	YOGGlobalState yogGlobalState;
 	int connectionTimeout;
 	int connectionTOTL;
 	
 	UDPsocket socket;
-	UDPsocket gameSocket;
+	UDPsocket hostGameSocket;
+	UDPsocket joinGameSocket;
 	IPaddress serverIP;
 	Uint8 lastMessageID;
 	
@@ -158,9 +162,12 @@ public:
 	int presenceTimeout;
 	int presenceTOTL;
 	
-	int gameSocketTimeout;
-	int gameSocketTOTL;
-	bool gameSocketReceived;
+	int hostGameSocketTimeout;
+	int hostGameSocketTOTL;
+	bool hostGameSocketReceived;
+	int joinGameSocketTimeout;
+	int joinGameSocketTOTL;
+	bool joinGameSocketReceived;
 	
 	std::list<Client> clients;
 	bool newClientListAviable;

@@ -24,8 +24,6 @@
 FILE *logServer;
 YOGClient *admin;
 
-
-
 YOGServer::YOGServer()
 {
 	socket=NULL;
@@ -459,7 +457,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			games.erase(game);
 			lprintf("%s stop hosting the game called %s.\n", host->userName, (*game)->name);
 			host->sharingGame=NULL;
-			host->gameip.host=0;
+			host->hostGameip.host=0;
+			host->joinGameip.host=0;
 			delete (*game);
 		}
 	}
@@ -661,18 +660,32 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 	}
 	break;
-	case YMT_GAME_SOCKET:
+	case YMT_HOST_GAME_SOCKET:
 	{
-		//send(ip, YMT_GAME_SOCKET);TODO: to which socket do we send it ?
 		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
-			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)//TODO: check username too?
+			if ((*sender)->ip.host==ip.host && strncmp((*sender)->userName, (char *)data+4, 32)==0 && (*sender)->sharingGame)
 			{
-				if ((*sender)->gameip.host==0) // is it new ?
+				if ((*sender)->hostGameip.host==0 && (*sender)->joinGameip.host==0) // Is the game newly ready ?
 					for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 						(*client)->addGame((*sender)->sharingGame);
-				(*sender)->gameip=ip;
-				lprintf("Client %s has a gameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
-				(*sender)->send(YMT_GAME_SOCKET);
+				(*sender)->hostGameip=ip;
+				lprintf("Client %s has a hostGameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+				(*sender)->send(YMT_HOST_GAME_SOCKET);
+				break;
+			}
+	}
+	break;
+	case YMT_JOIN_GAME_SOCKET:
+	{
+		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
+			if ((*sender)->ip.host==ip.host && strncmp((*sender)->userName, (char *)data+4, 32)==0)
+			{
+				if ((*sender)->sharingGame && (*sender)->hostGameip.host==0 && (*sender)->joinGameip.host==0) // Is the game newly ready ?
+					for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+						(*client)->addGame((*sender)->sharingGame);
+				(*sender)->joinGameip=ip;
+				lprintf("Client %s has a joinGameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+				(*sender)->send(YMT_JOIN_GAME_SOCKET);
 				break;
 			}
 	}
@@ -725,19 +738,25 @@ void YOGServer::run()
 				}
 			}
 			
-			
-			if (c->sharingGame==NULL && c!=admin && c->games.size()>0 && c->gamesTimeout--<=0 )
-				if (c->gamesTOTL--<=0)
+			if (c->sharingGame==NULL && c!=admin && c->games.size()>0)
+			{
+				if (c->gamesSize>0 && c->gamesTimeout--<=0 )
 				{
-					lprintf("unable to deliver %d games to (%s)\n", c->games.size(), c->userName);
-					c->games.clear();
-					break;
+					if (c->gamesTOTL--<=0)
+					{
+						lprintf("unable to deliver %d games to (%s)\n", c->games.size(), c->userName);
+						c->gamesClear();
+						break;
+					}
+					else
+					{
+						c->gamesTimeout=DEFAULT_NETWORK_TIMEOUT;
+						c->sendGames();
+					}
 				}
 				else
-				{
-					c->gamesTimeout=DEFAULT_NETWORK_TIMEOUT;
-					c->sendGames();
-				}
+					c->computeGamesSize();
+			}
 			
 			if (c->sharingGame==NULL && c!=admin && c->unshared.size()>0 && c->unsharedTimeout--<=0 )
 				if (c->unsharedTOTL--<=0)
