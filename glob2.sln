@@ -5,12 +5,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glob2", "glob2.vcproj", "{2
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
+		Debug DX9 = Debug DX9
+		Debug SDL = Debug SDL
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug.ActiveCfg = Debug|Win32
-		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug.Build.0 = Debug|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9.ActiveCfg = Debug DX9|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9.Build.0 = Debug DX9|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL.ActiveCfg = Debug SDL|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL.Build.0 = Debug SDL|Win32
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release.ActiveCfg = Release|Win32
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release.Build.0 = Release|Win32
 	EndGlobalSection
