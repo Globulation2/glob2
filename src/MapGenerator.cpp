@@ -591,6 +591,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	int bootX[32];
 	int bootY[32];
 	int nbIslands=descriptor.nbIslands;
+	int islandsSize=((w+h)*descriptor.islandsSize)/800;
 	int minDistSquare=(w*h)/nbIslands;
 	//printf("minDistSquare=%d.\n", minDistSquare);
 	
@@ -635,7 +636,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	//	printf("boot[%d]=(%d, %d).\n", i, bootX[i], bootY[i]);
 	
 	// Three, expands islands
-	for (int s=0; s<descriptor.islandsSize; s++)
+	for (int s=0; s<islandsSize; s++)
 	{
 		for (int y=0; y<h; y+=2)
 			for (int x=0; x<w; x+=2)
@@ -877,65 +878,60 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	
 	controlSand();
 	regenerateMap(0, 0, w, h);
+}
+
+void Map::addRessources(MapGenerationDescriptor &descriptor)
+{
+	int bootX[32];
+	int bootY[32];
+	bootX=descriptor.bootX;
+	bootY=descriptor.bootY;
+	int islandsSize=((w+h)*descriptor.islandsSize)/800;
 	// let's add ressources...
-	
+	int smoothRessources=islandsSize/4;
 	for (int s=0; s<descriptor.nbIslands; s++)
 	{
-		int d, amount;
+		int d, p, amount;
 		
-		for (d=0; d<h; d++)
+		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]-d))
 				break;
 		amount=descriptor.ressource[WOOD];
-		if (amount>2*d-5)
-			d=(amount+5)/2;
-		else if (2*amount<2*d-5)
-			d-=amount/2;
-		if (amount>2*d-5)
-			amount=2*d-5;
-			
-		//printf("s=%d, d=%d, amount=%d.\n", s, d, amount);
+		amount=d-smoothRessources-2;
+		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s], bootY[s]-d, WOOD, amount);
+			setResAtPos(bootX[s], bootY[s]-p, WOOD, amount);
 		
-		for (d=0; d<w; d++)
+		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]-d, bootY[s]))
 				break;
 		amount=descriptor.ressource[CORN];
-		if (amount>2*d-1)
-			d=(amount+5)/2;
-		else if (2*amount<2*d-9)
-			d-=amount/2;
-		if (amount>2*d-1)
-			amount=2*d-1;
+		amount=d-smoothRessources-0;
+		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s]-d, bootY[s], CORN, amount);
+			setResAtPos(bootX[s]-p, bootY[s], CORN, amount);
 		
-		for (d=0; d<h; d++)
+		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]+d))
 				break;
 		amount=descriptor.ressource[STONE];
-		if (amount>2*d-9)
-			d=(amount+5)/2;
-		else if (2*amount<2*d-9)
-			d-=amount/2;
-		if (amount>2*d-9)
-			amount=2*d-9;
+		amount=d-smoothRessources-3;
+		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s], bootY[s]+d, STONE, amount);
+			setResAtPos(bootX[s], bootY[s]+p, STONE, amount);
 		
-		for (d=0; d<h; d++)
+		for (d=0; d<islandsSize; d++)
 			if (isWater(bootX[s]+d, bootY[s]))
 				break;
 		amount=descriptor.ressource[ALGA];
-		if (amount>2*d-9)
-			amount=2*d-9;
+		amount=d-smoothRessources-3;
+		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s]+d, bootY[s], ALGA, amount);
+			setResAtPos(bootX[s]+p, bootY[s], ALGA, amount);
 	}
 	
 	// Let's smooth ressources...
-	for (int s=0; s<1; s++)
+	for (int s=0; s<smoothRessources; s++)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
@@ -954,13 +950,13 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 						int nx=x+dx;
 						int ny=y+dy;
 						if (getUnit(nx, ny)==NOUID)
-						if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+						if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
 							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
 					}
 				}
 			}
-	
 }
+
 
 void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
@@ -999,6 +995,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 		case MapGenerationDescriptor::eISLANDS:
 			map.makeIslandsMap(descriptor);
 			makeIslandsMap(descriptor);
+			map.addRessources(descriptor);
 		break;
 		default:
 			assert(false);
@@ -1006,7 +1003,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 	if (session.mapGenerationDescriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
-	}
+}
 /*
 WATER=0,
 SAND=1,
