@@ -115,12 +115,18 @@ public:
 
 	void computeStat(TeamStat *stats);
 
-	Building *findNearestUpgrade(int x, int y, Abilities ability, int actLevel);
+	//! Called when unit wanna work to building. Distance is balanced with user's number of requested unit
 	Building *findNearestJob(int x, int y, Abilities ability, int actLevel);
+	//! Called when unit wanna be attracted to building. Distance is balanced with user's number of requested unit
 	Building *findNearestAttract(int x, int y, Abilities ability);
+	//! Called when unit wanna work to fill building with food. Distance is balanced with user's number of requested unit
 	Building *findNearestFillableFood(int x, int y);
 
+	//! Called when unit want upgrade a certain ability
+	Building *findNearestUpgrade(int x, int y, Abilities ability, int actLevel);
+	//! Called when unit needs heal
 	Building *findNearestHeal(int x, int y);
+	//! Called when unit is hungry
 	Building *findNearestFood(int x, int y);
 
 	//! Return the maximum build level (need at least 1 unit of this level)
