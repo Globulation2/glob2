@@ -82,6 +82,7 @@ public:
 	void removeUselessClients();
 	void removeUselessClientsAndLeftClients();
 	void lprintf(const char *msg, ...);
+	int strmlen(const char *s, int max);
 	
 	IPaddress ip;
 	IPaddress gameip;

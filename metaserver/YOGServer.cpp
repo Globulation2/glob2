@@ -24,6 +24,8 @@
 FILE *logServer;
 YOGClient *admin;
 
+
+
 YOGServer::YOGServer()
 {
 	socket=NULL;
@@ -236,29 +238,39 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			}
 		if (good)
 		{
-			// Here we have to send this message to all clients!
-			YOGClient *c=*sender;
-			c->lastSentMessageID=messageID;
-			Message m;
-			strncpy(m.text, (char *)data+4, 256);
-			if (m.text[size-4]!=0)
-				lprintf("warning, non-zero ending string!\n");
-			m.text[size-4]=0;
-			m.textLength=size-4;
-			strncpy(m.userName, c->userName, 32);
-			if (m.userName[31]!=0)
-				lprintf("warning, non-zero ending userName!\n");
-			m.userName[31]=0;
-			lprintf("%s:%s\n", m.userName, m.text);
-			m.userNameLength=strlen(m.userName)+1;
-			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
-				if ((*client)->messages.size()<(256-2))
-				{
-					m.messageID=++(*client)->lastMessageID;
-					(*client)->messages.push_back(m);
-				}
-				else
-					lprintf("Client %s is being flooded!\n", (*client)->userName);
+			char *s=(char *)data+4;
+			if (s[0]=='/')
+			{
+				// We received a command
+			}
+			else
+			{
+				// Here we have to send this message to all clients!
+				YOGClient *c=*sender;
+				c->lastSentMessageID=messageID;
+				Message m;
+				int l;
+				
+				l=strmlen(s, 256);
+				memcpy(m.text, s, l);
+				m.text[l-1]=0;
+				m.textLength=l;
+				
+				l=strmlen(c->userName, 32);
+				memcpy(m.userName, c->userName, l);
+				m.userName[l-1]=0;
+				m.userNameLength=l;
+				
+				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
+				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+					if ((*client)->messages.size()<(256-2))
+					{
+						m.messageID=++(*client)->lastMessageID;
+						(*client)->messages.push_back(m);
+					}
+					else
+						lprintf("Client %s is being flooded!\n", (*client)->userName);
+			}
 		}
 	}
 	break;
@@ -746,6 +758,14 @@ void YOGServer::lprintf(const char *msg, ...)
 		}
 	if (admin)
 		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
+}
+
+int YOGServer::strmlen(const char *s, int max)
+{
+	for (int i=0; i<max; i++)
+		if (*(s+i)==0)
+			return i+1;
+	return max;
 }
 
 int main(int argc, char *argv[])

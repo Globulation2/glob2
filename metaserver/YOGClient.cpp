@@ -211,17 +211,14 @@ void YOGClient::sendGames()
 			addUint32(data, (*game)->uid, index);
 			index+=4;
 			int l;
-			l=strlen((*game)->host->userName)+1;
-			assert(l<=32);
-			//lprintf("(%s)l=%d, ", (*game)->host->userName, l);
+			l=strmlen((*game)->host->userName, 32);
 			memcpy(data+index, (*game)->host->userName, l);
 			index+=l;
 
-			l=strlen((*game)->name)+1;
-			//lprintf("(%s)l=%d.\n", (*game)->name, l);
-			assert(l<=128);
+			l=strmlen((*game)->name, 32);
 			memcpy(data+index, (*game)->name, l);
 			index+=l;
+			lprintf("index=%d.\n", index);
 		}
 	send(YMT_GAMES_LIST, data, index);
 	lprintf("sent a %d games list to %s\n", nbGames, userName);
@@ -390,4 +387,12 @@ void YOGClient::lprintf(const char *msg, ...)
 		}
 	if (admin)
 		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
+}
+
+int YOGClient::strmlen(const char *s, int max)
+{
+	for (int i=0; i<max; i++)
+		if (*(s+i)==0)
+			return i+1;
+	return max;
 }

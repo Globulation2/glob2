@@ -45,6 +45,7 @@ public:
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	void run();
 	void lprintf(const char *msg, ...);
+	int strmlen(const char *s, int max);
 	
 	std::list<YOGClient *> clients;
 	
@@ -53,6 +54,7 @@ public:
 	
 	std::list<Game *> games;
 	Uint32 gameUID;
+	
 };
 
 #endif

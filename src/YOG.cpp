@@ -76,6 +76,7 @@ void YOG::send(YOGMessageType v, Uint8 *data, int size)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		printf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
@@ -98,6 +99,7 @@ void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		printf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOG::send(YOGMessageType v)
@@ -118,6 +120,7 @@ void YOG::send(YOGMessageType v)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		printf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOG::send(YOGMessageType v, UDPsocket socket)
@@ -138,6 +141,7 @@ void YOG::send(YOGMessageType v, UDPsocket socket)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		printf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOG::send(YOGMessageType v, Uint8 id)
@@ -158,6 +162,7 @@ void YOG::send(YOGMessageType v, Uint8 id)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		printf("Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
@@ -189,18 +194,25 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		if (!already)
 		{
 			Message m;
-			strncpy(m.text, (char *)data+4, 256);
-			m.text[255]=0;
-			m.textLength=strlen(m.text)+1;
-			//printf("client:%s\n", s);
 			m.messageID=messageID;
 			m.timeout=0;
 			m.TOTL=3;
-			strncpy(m.userName, (char *)data+4+m.textLength, 32);
-			if (m.userName[31]!=0)
+			int l;
+			
+			l=Utilities::strmlen((char *)data+4, 256);
+			memcpy(m.text, (char *)data+4, l);
+			if (m.text[l-1]!=0)
+				printf("YOG::warning, non-zero ending text message!\n");
+			m.text[255]=0;
+			m.textLength=l-1;
+			
+			l=Utilities::strmlen((char *)data+4+m.textLength, 32);
+			memcpy(m.userName, (char *)data+4+m.textLength, l);
+			if (m.userName[l-1]!=0)
 				printf("YOG::warning, non-zero ending userName!\n");
 			m.userName[31]=0;
-			m.userNameLength=strlen(m.text)+1;
+			m.userNameLength=l-1;
+			
 			printf("YOG:new message:%s:%s\n", m.userName, m.text);
 			receivedMessages.push_back(m);
 		}
@@ -255,7 +267,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			printf("YOG::we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
 			break;
 		}
-		printf("YOG:we received a %d games list\n", nbGames);
+		printf("YOG:we received a %d games list (size=%d)\n", nbGames, size);
 		int index=8;
 		for (int i=0; i<nbGames; i++)
 		{
@@ -267,16 +279,21 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			game.uid=getUint32(data, index);
 			index+=4;
 			int l;
-			l=Utilities::strnlen((char *)data+index, 32);
+			l=Utilities::strmlen((char *)data+index, 32);
 			memcpy(game.userName, data+index, l);
+			if (game.userName[l-1]!=0)
+				printf("YOG::warning, non-zero ending userName!\n");
 			game.userName[l-1]=0;
 			index+=l;
-			l=Utilities::strnlen((char *)data+index, 128);
+			l=Utilities::strmlen((char *)data+index, 128);
 			memcpy(game.name, data+index, l);
+			if (game.name[l-1]!=0)
+				printf("YOG::warning, non-zero ending game name!\n");
 			game.name[l-1]=0;
 			index+=l;
 			assert(index<=size);
 			games.push_back(game);
+			printf("index=%d.\n", index);
 			printf("YOG::game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
 		}
 		assert(index==size);
@@ -545,7 +562,9 @@ void YOG::step()
 			if (sendingMessages.size()>0)
 			{
 				std::list<Message>::iterator mit=sendingMessages.begin();
-				if (mit->timeout--<=0)
+				if (mit->text[0]==0)
+					sendingMessages.erase(mit);
+				else if (mit->timeout--<=0)
 					if (mit->TOTL--<=0)
 					{
 						printf("YOG::failed to send a message!\n");
