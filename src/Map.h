@@ -94,7 +94,7 @@ public:
 //! Map, handle all physical localisations
 /*!
 	Map, handle all physical localisations
-	When not specified, all size are given in 32x32 cell, which is the basic
+	When not specified, all size are given in 32x32 pixel cell, which is the basic
 	game measurement unit.
 	All functions are wrap-safe, excepted the one specified otherwise.
 */

@@ -1039,5 +1039,49 @@ int Map::warpDistSquare(int px, int py, int qx, int qy)
 
 void Map::saveThumbnail(SDL_RWops *stream)
 {
-	// FIXME : save thumbnail
+	bool isWater;
+	bool isSand;
+	bool isGrass;
+	bool isWood;
+	bool isCorn;
+	bool isStone;
+	bool isSeaweed;
+	int dx, dy;
+	float dMx, dMy;
+	float minidx, minidy;
+	Uint8 data[128*128];
+
+	dMx=(float)w/128.0f;
+	dMy=(float)h/128.0f;
+	for (dy=0; dy<128; dy++)
+	{
+		for (dx=0; dx<128;dx++)
+		{
+			isWater=isSand=isGrass=isWood=isCorn=isStone=isSeaweed=false;
+			for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
+			{
+				for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
+				{
+					int mdx=(int)minidx;
+					int mdy=(int)minidy;
+					if (this->isWater(mdx, mdy))
+						isWater=true;
+					else if (this->isGrass(mdx, mdy))
+						isGrass=true;
+					else if (isRessource(mdx, mdy, WOOD))
+						isWood=true;
+					else if (isRessource(mdx, mdy, CORN))
+						isCorn=true;
+					else if (isRessource(mdx, mdy, STONE))
+						isStone=true;
+					else if (isRessource(mdx, mdy, ALGA))
+						isSeaweed=true;
+					else
+						isSand=true;
+				}
+			}
+			data[dy*128+dx]=isWater+(isSand<<1)+(isGrass<<2)+(isWood<<3)+(isCorn<<4)+(isStone<<5)+(isSeaweed<<6);
+		}
+	}
+	SDL_RWwrite(stream, data, 128*128, 1);
 }
