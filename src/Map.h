@@ -388,7 +388,7 @@ public:
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
-	bool pathfindForbidden(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	void updateForbiddenGradient();
 	
@@ -469,9 +469,8 @@ protected:
 	int buildingAviableCountFarOldFailureEnd;
 	
 	int pathfindForbiddenCount;
-	int pathfindForbiddenCountFailureMini;
 	int pathfindForbiddenCountSuccess;
-	int pathfindForbiddenCountFailureFast;
+	int pathfindForbiddenCountFailure;
 
 public:
 	Case *cases;
