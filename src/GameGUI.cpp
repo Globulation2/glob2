@@ -2508,7 +2508,9 @@ void GameGUI::drawOverlayInfos(void)
 	else
 		globalContainer->gfx->drawFilledRect(dec+lastStepTimeToWait, 4, -lastStepTimeToWait, 8, redC[0], redC[1], redC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
-		
+	dec += 40;
+	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
+	
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
 	for (int i=0; i<pos; i+=32)
