@@ -143,13 +143,18 @@ void TextArea::setText(const char *text, int ap)
 
 		char temp[1024];
 		int temppos;
+		int lastWhite=-1;
 		lines.push_back(0);
+		
+		temppos=0;
+		temp[temppos]=0;
+		
 		while (pos<textBufferLength)
 		{
-			temppos=0;
-			temp[temppos]=0;
-			while ((font->getStringHeight(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
+			while ((font->getStringWidth(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
 			{
+				if (text[pos]==' ')
+					lastWhite=pos;
 				textBuffer[pos]=text[pos];
 				temp[temppos]=text[pos];
 				temppos++;
@@ -162,15 +167,30 @@ void TextArea::setText(const char *text, int ap)
 				{
 					textBuffer[pos]='\n';
 					pos++;
+					lines.push_back(pos);
+					temppos=0;
+					temp[temppos]=0;
 				}
-				lines.push_back(pos);
+				else // line overflow
+				{
+					if ((lastWhite!=-1) && (lastWhite>(int)lines[lines.size()-1]))
+					{
+						pos=lastWhite;
+						textBuffer[pos]='\n';
+						pos++;
+					}
+					lines.push_back(pos);
+					temppos=0;
+					temp[temppos]=0;
+				}
 			}
 			else
 			{
 				textBuffer[pos]=0;
 			}
 		}
-		textBuffer[pos]=0;
+		if (pos==textBufferLength)
+			textBuffer[pos]=0;
 		if (ap==-1)
 			areaPos=0;
 		else
@@ -190,11 +210,13 @@ void TextArea::addText(const char *text)
 		temp=(char *)malloc(textBufferLength+ts+1);
 
 		memcpy(temp, textBuffer, textBufferLength);
-		memcpy(&(temp[textBufferLength]), text, ts);
+		memcpy(temp+textBufferLength, text, ts);
 
 		temp[textBufferLength+ts]=0;
 
 		setText(temp, areaPos);
+		
+		free(temp);
 	}
 }
 

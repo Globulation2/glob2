@@ -247,7 +247,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		chatWindow->addText(textInput->text);
 		chatWindow->addText("\n");
 		chatWindow->scrollToBottom();
-
+		
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
