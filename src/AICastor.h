@@ -21,6 +21,7 @@
 #define __AI_CASTOR_H
 
 #include <list>
+#include <string>
 
 #include "BuildingType.h"
 #include "AIImplementation.h"
@@ -38,15 +39,16 @@ public:
 	class Project
 	{
 	public:
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum);
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, int amount, Sint32 mainWorkers);
-		void init();
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char *suffix);
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix);
+		void init(const char *suffix);
 
 	public:
 		BuildingType::BuildingTypeShortNumber shortTypeNum;
 		int amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
 		
+		std::string debugStdName;
 		const char *debugName;
 		
 		int subPhase;
@@ -73,32 +75,17 @@ public:
 	class Strategy
 	{
 	public:
-		/*class Builds
-		{
-		public:
-			Builds();
-			Builds& operator+=(const Builds &builds);
-		public:
-			Sint32 swarm;
-			Sint32 speed;
-			Sint32 attack;
-			Sint32 heal;
-			Sint32 defense;
-			Sint32 science;
-			Sint32 swim;
-		};*/
-		
 		struct Build
 		{
 			int baseOrder;
 			int base;
 			int workers;
 			int finalWorkers;
-			
-			int upgrade;
+			int upgradeBase;
 			
 			int newOrder;
 			int news;
+			int newUpgrade;
 		};
 		
 	public:
@@ -109,15 +96,9 @@ public:
 		Sint32 successWait;
 		Sint32 isFreePart;
 		
-		//Builds buildsBase, buildsNews;
-		///Builds upgradeBase;
-		
 		Build build[BuildingType::NB_HARD_BUILDING];
 		
-		//std::list<Project *> projectsBase;
-		//std::list<Project *> projectsNews;
-		
-		Sint32 warTimeTriger;
+		Uint32 warTimeTriger;
 		Sint32 warLevelTriger;
 		Sint32 warAmountTriger;
 		
@@ -149,7 +130,8 @@ private:
 	
 	Order *controlSwarms();
 	Order *expandFood();
-	Order *controlFood(int index);
+	Order *controlFood();
+	Order *controlUpgrades();
 	
 	bool addProject(Project *project);
 	void addProjects();
@@ -163,6 +145,7 @@ private:
 	void computeCanSwim();
 	void computeNeedSwim();
 	void computeBuildingSum();
+	void computeWarLevel();
 	
 	void computeObstacleUnitMap();
 	void computeObstacleBuildingMap();
@@ -191,7 +174,13 @@ public:
 	int buildingSum[BuildingType::NB_HARD_BUILDING][2]; // [shortTypeNum][isBuildingSite]
 	int buildingLevels[BuildingType::NB_HARD_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
 	int warLevel; // 0: no war
+	int warTimeTrigerLevel;
+	int warLevelTrigerLevel;
+	int warAmountTrigerLevel;
+	
 	bool foodLock;
+	int foodLockStats[2];
+	bool overWorkers;
 	int buildsAmount;
 	int freeWorkers; // plz use getFreeWorkers() to raise computation trigger.
 	
@@ -200,6 +189,8 @@ public:
 	Uint32 controlSwarmsTimer;
 	Uint32 expandFoodTimer;
 	Uint32 controlFoodTimer;
+	Uint32 controlUpgradeTimer;
+	Uint32 controlUpgradeDelay;
 	int controlFoodToogle;
 	
 	Strategy strategy;

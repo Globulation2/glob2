@@ -85,7 +85,9 @@ public:
 	void drawStat(int pos);
 	int getFreeUnits(int type);
 	int getTotalUnits(int type);
-	int getUnitsNeeded();
+	int getWorkersNeeded();
+	int getWorkersBalance();
+	int getWorkersLevel(int level);
 
 private:
 	enum {
