@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include <math.h>
 #include <assert.h>
+#include <string.h>
 
 int sign(int s)
 {

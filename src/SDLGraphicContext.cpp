@@ -34,12 +34,15 @@ void SDLDrawableSurface::loadImage(const char *name)
 		SDL_RWops *imageStream;
 		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
 		{
-			if (surface)
-				SDL_FreeSurface(surface);
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
-			surface=SDL_DisplayFormatAlpha(temp);
-			SDL_FreeSurface(temp);
+			if (temp)
+			{
+				if (surface)
+					SDL_FreeSurface(surface);
+				surface=SDL_DisplayFormatAlpha(temp);
+				SDL_FreeSurface(temp);
+			}
 			SDL_RWclose(imageStream);
 		}
 	}
@@ -780,6 +783,25 @@ void SDLGraphicContext::updateRects(SDL_Rect *rects, int size)
 void SDLGraphicContext::updateRect(int x, int y, int w, int h)
 {
 	SDL_UpdateRect(surface, x, y, w, h);
+}
+
+void SDLGraphicContext::loadImage(const char *name)
+{
+	if (name)
+	{
+		SDL_RWops *imageStream;
+		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
+		{
+			SDL_Surface *temp;
+			temp=IMG_Load_RW(imageStream, 0);
+			if (temp)
+			{
+				SDL_BlitSurface(temp, NULL, surface, NULL);
+				SDL_FreeSurface(temp);
+			}
+			SDL_RWclose(imageStream);
+		}
+	}
 }
 
 SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageType type)
