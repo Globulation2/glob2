@@ -48,6 +48,9 @@ public:
 	void run();
 	void sendGameList(YOGClient *client);
 	
+	void lprintf(const char *msg, ...);
+	YOGClient *admin;
+	
 	std::list<YOGClient *> clients;
 	
 	UDPsocket socket;

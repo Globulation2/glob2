@@ -34,6 +34,7 @@ namespace simpleClient
 	IPaddress serverIP;
 	bool running;
 	Uint8 lastMessageID=0;
+	int timeout=0;
 
 	bool init()
 	{
@@ -142,7 +143,7 @@ namespace simpleClient
 
 	void treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	{
-		printf("packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>24)&0xFF, (ip>>16)&0xFF, (ip>>8)&0xFF, (ip>>0)&0xFF, port);
+		//printf("packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>24)&0xFF, (ip>>16)&0xFF, (ip>>8)&0xFF, (ip>>0)&0xFF, port);
 		if (data[2]!=0 || data[3]!=0)
 		{
 			printf("bad packet.\n");
@@ -157,11 +158,17 @@ namespace simpleClient
 		{
 			char s[256];
 			strncpy(s, (char *)data+4, 256);
-			if (s[size-4]!=0)
-				printf("warning, non-zero ending string!\n");
-			assert(size-4<256);
-			s[size-4]=0;
-			printf("client:%s\n", s);
+			s[255]=0;
+			//printf("client:%s\n", s);
+			send(YMT_MESSAGE, data[1]);
+		}
+		break;
+		case YMT_ADMIN_MESSAGE:
+		{
+			char s[256];
+			strncpy(s, (char *)data+4, 256);
+			s[255]=0;
+			printf("dump:%s\n", s);
 		}
 		break;
 		}
@@ -188,7 +195,7 @@ namespace simpleClient
 				printf("packet->status=%d\n", packet->status);
 				printf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
 				printf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));*/
-				printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
+				//printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
 			}
 
 			// get first timer
@@ -216,6 +223,17 @@ namespace simpleClient
 				if (strncmp(s, "bad", 3)==0)
 				{
 					send(YMT_BAD);
+				}
+				else if (strncmp(s, "admin", 5)==0)
+				{
+					if (l>6)
+					{
+						char name[32];
+						memset(name, 0, 32);
+						strncpy(name, s+6, 32);
+						name[31]=0;
+						send(YMT_CONNECTING, 1, (Uint8 *)name, 32);
+					}
 				}
 				else if (strncmp(s, "connect", 7)==0)
 				{
@@ -273,6 +291,14 @@ namespace simpleClient
 			}
 
 			SDLNet_FreePacket(packet);
+			
+			if (timeout--<0)
+			{
+				timeout=20*14;
+				send(YMT_CONNECTION_PRESENCE);
+			}
+			
+			SDL_Delay(50);
 		}
 	}
 	

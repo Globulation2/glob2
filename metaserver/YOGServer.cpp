@@ -26,6 +26,7 @@ YOGServer::YOGServer()
 {
 	socket=NULL;
 	running=false;
+	admin=NULL;
 }
 
 YOGServer::~YOGServer()
@@ -43,7 +44,7 @@ bool YOGServer::init()
 	socket=SDLNet_UDP_Open(YOG_SERVER_PORT);
 	if (!socket)
 	{
-		fprintf(logServer, "failed to open socket at port %d.\n", YOG_SERVER_PORT);
+		lprintf("failed to open socket at port %d.\n", YOG_SERVER_PORT);
 		return false;
 	}
 	return true;
@@ -54,7 +55,7 @@ void YOGServer::send(IPaddress ip, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=size;
@@ -63,7 +64,7 @@ void YOGServer::send(IPaddress ip, Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logServer, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -77,7 +78,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v)
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=4;
@@ -86,7 +87,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logServer, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -100,7 +101,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to allocate packet!\n");
+		lprintf("Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=4;
@@ -109,7 +110,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		fprintf(logServer, "Failed to send the packet!\n");
+		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -134,41 +135,40 @@ void YOGServer::sendGameList(YOGClient *client)
 			int l;
 			l=strlen((*game)->host->userName)+1;
 			assert(l<=32);
-			//fprintf(logServer, "(%s)l=%d, ", (*game)->host->userName, l);
+			//lprintf("(%s)l=%d, ", (*game)->host->userName, l);
 			memcpy(data+index, (*game)->host->userName, l);
 			index+=l;
 
 			l=strlen((*game)->name)+1;
-			//fprintf(logServer, "(%s)l=%d.\n", (*game)->name, l);
+			//lprintf("(%s)l=%d.\n", (*game)->name, l);
 			assert(l<=128);
 			memcpy(data+index, (*game)->name, l);
 			index+=l;
 			if (++tot>=16)
 				break; //TODO: allow more than 16 shared games !
-			fprintf(logServer, ".");
 		}
 	client->send(YMT_REQUEST_SHARED_GAMES_LIST, data, index);
-	fprintf(logServer, "sent %d games list to %s\n", nbGames, client->userName);
+	lprintf("sent %d games list to %s\n", nbGames, client->userName);
 }
 
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 {
-	//fprintf(logServer, "packet type (%d, %d) received by ip=%d.%d.%d.%d port=%d\n", data[0], data[1], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+	//lprintf("packet type (%d, %d) received by ip=%d.%d.%d.%d port=%d\n", data[0], data[1], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
 	if (data[2]!=0 || data[3]!=0)
 	{
-		fprintf(logServer, "bad packet\n");
+		lprintf("bad packet\n");
 		return;
 	}
 	switch (data[0])
 	{
 	case YMT_BAD:
-		fprintf(logServer, "bad packet.\n");
+		lprintf("bad packet.\n");
 	break;
 	case YMT_CONNECTING:
 	{
 		if (size>4+32)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		send(ip, YMT_CONNECTING);
@@ -187,13 +187,19 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			memset(userName, 0, 32);
 			strncpy(userName, (char *)data+4, 32);
 			if (userName[31]!=0)
-				fprintf(logServer, "warning, non-zero ending string!\n");
+				lprintf("warning, non-zero ending string!\n");
 			userName[31]=0;
 			
 			YOGClient *yogClient=new YOGClient(ip, socket, userName);
 			clients.push_back(yogClient);
 			
-			fprintf(logServer, "new client connected as \"%s\", from %d.%d.%d.%d:%d\n", userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+			if (data[1]==1)
+			{
+				admin=yogClient;
+				lprintf("new admin connected as \"%s\", from %d.%d.%d.%d:%d\n", userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+			}
+			else
+				lprintf("new client connected as \"%s\", from %d.%d.%d.%d:%d\n", userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
 		}
 	}
 	break;
@@ -204,13 +210,15 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (client=clients.begin(); client!=clients.end(); ++client)
 			if ((*client)->hasip(ip))
 			{
-				fprintf(logServer, "client \"%s\" deconnected.\n", (*client)->userName);
+				lprintf("client \"%s\" deconnected.\n", (*client)->userName);
 				if ((*client)->sharingGame)
 				{
 					games.remove((*client)->sharingGame);
 					delete (*client)->sharingGame;
 				}
-					(*client)->sharingGame=NULL;
+				(*client)->sharingGame=NULL;
+				if (*client==admin)
+					admin=NULL;
 				delete (*client);
 				clients.erase(client);
 				break;
@@ -221,7 +229,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size>YOG_MAX_PACKET_SIZE)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		Uint8 messageID=data[1];
@@ -246,16 +254,16 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Message m;
 			strncpy(m.text, (char *)data+4, 256);
 			if (m.text[size-4]!=0)
-				fprintf(logServer, "warning, non-zero ending string!\n");
+				lprintf("warning, non-zero ending string!\n");
 			m.text[size-4]=0;
 			m.textLength=size-4;
 			m.timeout=0;
 			m.TOTL=3;
 			strncpy(m.userName, c->userName, 32);
 			if (m.userName[31]!=0)
-				fprintf(logServer, "warning, non-zero ending userName!\n");
+				lprintf("warning, non-zero ending userName!\n");
 			m.userName[31]=0;
-			fprintf(logServer, "%s:%s\n", m.userName, m.text);
+			lprintf("%s:%s\n", m.userName, m.text);
 			m.userNameLength=strlen(m.userName)+1;
 			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				if ((*client)->messages.size()<(256-2))
@@ -264,7 +272,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 					(*client)->messages.push_back(m);
 				}
 				else
-					fprintf(logServer, "Client %s is being flooded!\n", (*client)->userName);
+					lprintf("Client %s is being flooded!\n", (*client)->userName);
 		}
 	}
 	break;
@@ -272,7 +280,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size!=4)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		Uint8 messageID=data[1];
@@ -290,7 +298,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			std::list<Message>::iterator mit=(*sender)->messages.begin();
 			if (mit->messageID==messageID)
 			{
-				fprintf(logServer, "message (%s) delivered to (%s)\n", mit->text, (*sender)->userName);
+				lprintf("message (%s) delivered to (%s)\n", mit->text, (*sender)->userName);
 				(*sender)->messages.erase(mit);
 			}
 		}
@@ -300,7 +308,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size>4+128)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		send(ip, YMT_SHARING_GAME); // We allways confirm client that we received the packet.
@@ -323,12 +331,12 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			memset(game->name, 128, 0);
 			strncpy(game->name, (char *)data+4, 128);
 			if (game->name[127]!=0)
-				fprintf(logServer, "warning, non-zero ending game name!\n");
+				lprintf("warning, non-zero ending game name!\n");
 			game->name[127]=0;
 			game->host=host;
 			games.push_back(game);
 			host->sharingGame=game;
-			fprintf(logServer, "%s is hosting a game called %s.\n", host->userName, game->name);
+			lprintf("%s is hosting a game called %s.\n", host->userName, game->name);
 		}
 	}
 	break;
@@ -336,7 +344,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size>4)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		send(ip, YMT_STOP_SHARING_GAME); // We allways confirm client that we received the packet.
@@ -363,7 +371,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				}
 			assert(good); // This is a database consistency.
 			games.erase(game);
-			fprintf(logServer, "%s stop hosting the game called %s.\n", host->userName, (*game)->name);
+			lprintf("%s stop hosting the game called %s.\n", host->userName, (*game)->name);
 			host->sharingGame=NULL;
 			delete (*game);
 		}
@@ -373,7 +381,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size>4)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		
@@ -394,7 +402,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size>4)
 		{
-			fprintf(logServer, "bad message size (%d).\n", size);
+			lprintf("bad message size (%d).\n", size);
 			break;
 		}
 		send(ip, YMT_CONNECTION_PRESENCE);
@@ -411,19 +419,27 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int id=data[1];
 		if (size!=8 || data[4]!=0xAB || data[5]!=(0xCD&id) || data[6]!=(0xEF|id) || data[7]!=0x12)
 		{
-			fprintf(logServer, "Warning flush temptative (%d)\n", size);
+			lprintf("Warning flush temptative (%d)\n", size);
 			break;
 		}
 		if (id)
 		{
-			fclose(logClient);
-			fclose(logServer);
+			if (logClient)
+				fclose(logClient);
+			if (logServer)
+				fclose(logServer);
 			send(ip, YMT_FLUSH_FILES);
 			char s[128];
 			snprintf(s, 128, "YOGClient%d.log", id);
 			logClient=fopen(s, "w");
 			snprintf(s, 128, "YOGServer%d.log", id);
 			logServer=fopen(s, "w");
+		}
+		else
+		{
+			fclose(logServer);
+			logServer=NULL;
+			lprintf("logServer closed\n");
 		}
 	}
 	break;
@@ -432,7 +448,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int id=data[1];
 		if (size!=8 || data[4]!=0x12 || data[5]!=(0x23&id) || data[6]!=(0x34|id) || data[7]!=0x45)
 		{
-			fprintf(logServer, "Warning closing temptative (%d)\n", size);
+			lprintf("Warning closing temptative (%d)\n", size);
 			break;
 		}
 		if (id)
@@ -451,14 +467,13 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		bool good=false;
 		//send(ip, YMT_GAME_SOCKET);TODO: to which socket do we send it ?
 		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
-			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)
+			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)//TODO: check username too
 			{
-				//TODO: check username too
-				(*sender)->gameip=ip;
-				fprintf(logServer, "Client %s has a gameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
-				(*sender)->send(YMT_GAME_SOCKET);
 				if ((*sender)->gameip.host==0) // is it new ?
 					good=true;
+				(*sender)->gameip=ip;
+				lprintf("Client %s has a gameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+				(*sender)->send(YMT_GAME_SOCKET);
 				break;
 			}
 		if (good)
@@ -474,7 +489,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 void YOGServer::run()
 {
 	running=true;
-	fprintf(logServer, "YOGServer is up and running.\n");
+	lprintf("YOGServer is up and running.\n");
 	while (running)
 	{
 		UDPpacket *packet=NULL;
@@ -483,15 +498,15 @@ void YOGServer::run()
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			/*fprintf(logServer, "Packet received.\n");
-			fprintf(logServer, "packet=%d\n", (int)packet);
-			fprintf(logServer, "packet->channel=%d\n", packet->channel);
-			fprintf(logServer, "packet->len=%d\n", packet->len);
-			fprintf(logServer, "packet->maxlen=%d\n", packet->maxlen);
-			fprintf(logServer, "packet->status=%d\n", packet->status);
-			fprintf(logServer, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
-			fprintf(logServer, "SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
-			fprintf(logServer, "packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
+			/*lprintf("Packet received.\n");
+			lprintf("packet=%d\n", (int)packet);
+			lprintf("packet->channel=%d\n", packet->channel);
+			lprintf("packet->len=%d\n", packet->len);
+			lprintf("packet->maxlen=%d\n", packet->maxlen);
+			lprintf("packet->status=%d\n", packet->status);
+			lprintf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			lprintf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
+			lprintf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
 			treatPacket(packet->address, packet->data, packet->len);
 		}
 		SDLNet_FreePacket(packet);
@@ -506,7 +521,7 @@ void YOGServer::run()
 				if (mit->timeout--<=0)
 					if (mit->TOTL--<=0)
 					{
-						fprintf(logServer, "unable to deliver message (%s) to (%s)\n", mit->text, c->userName);
+						lprintf("unable to deliver message (%s) to (%s)\n", mit->text, c->userName);
 						c->messages.erase(mit);
 						break;
 					}
@@ -526,13 +541,15 @@ void YOGServer::run()
 			{
 				if (c->TOTL--<=0)
 				{
-					fprintf(logServer, "Client %s timed out.\n", (*client)->userName);
+					lprintf("Client %s timed out.\n", (*client)->userName);
 					if ((*client)->sharingGame)
 					{
 						games.remove((*client)->sharingGame);
 						delete (*client)->sharingGame;
 					}
 					(*client)->sharingGame=NULL;
+					if (*client==admin)
+						admin=NULL;
 					delete (*client);
 					clients.erase(client);
 					break;
@@ -545,15 +562,38 @@ void YOGServer::run()
 		
 		SDL_Delay(50);
 	}
-	fprintf(logServer, "YOGServer is down and exiting.\n");
+	lprintf("YOGServer is down and exiting.\n");
+}
+
+void YOGServer::lprintf(const char *msg, ...)
+{
+	va_list arglist;
+	char output[256];
+
+	va_start(arglist, msg);
+	vsnprintf(output, 256, msg, arglist);
+	va_end(arglist);
+	output[255]=0;
+	
+	if (logServer)
+		fputs(output, logServer);
+	//printf(output);
+	
+	int i;
+	for (i=0; i<256; i++)
+		if (output[i]=='\n')
+		{
+			output[i]=0;
+			break;
+		}
+	if (admin)
+		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
 }
 
 int main(int argc, char *argv[])
 {
-	//logClient=fopen("YOGClient.log", "w");
-	//logServer=fopen("YOGServer.log", "w");
-	logClient=stdout;
-	logServer=stdout;
+	logClient=fopen("YOGClient.log", "w");
+	logServer=fopen("YOGServer.log", "w");
 	
 	YOGServer yogServer;
 	if (yogServer.init())
