@@ -2120,12 +2120,12 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, false);//zzz
+		game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, false);
 	}
 	else
 	{
 		globalContainer->gfx->setClipRect();
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, false);
 	}
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
