@@ -304,18 +304,20 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
-			selColor++;
-			if (selColor>=(signed)vr.size())
-				selColor=0;
-			repaint();
 			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
-			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
 		}
 	}
 	else if (event->type==SDL_MOUSEBUTTONUP)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		{
+			selColor++;
+			if (selColor>=(signed)vr.size())
+				selColor=0;
+			repaint();
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
+			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
+		}
 	}
 }
 
