@@ -24,8 +24,11 @@
 #include "BuildingType.h"
 #include "AIImplementation.h"
 
-class Player;
+class Game;
+class Map;
 class Order;
+class Player;
+class Team;
 
 class AINumbi : public AIImplementation
 {
@@ -36,6 +39,9 @@ public:
 	~AINumbi();
 
 	Player *player;
+	Team *team;
+	Game *game;
+	Map *map;
 	
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
@@ -56,7 +62,6 @@ private:
 	int countUnits(const int medicalState);
 	Order *swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
 	void nextMainBuilding(const int buildingType);
-	bool checkUIDRoomForBuilding(int px, int py, int width, int height);
 	int nbFreeAround(const int buildingType, int posX, int posY, int width, int height);
 	bool parseBuildingType(const int buildingType);
 	void squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);

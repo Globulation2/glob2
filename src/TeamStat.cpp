@@ -91,7 +91,7 @@ void TeamStats::step(Team *team)
 
 		if (smoothedStat.totalFree>maxStat.totalFree)
 			maxStat.totalFree=smoothedStat.totalFree;
-		for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
+		for (int j=0; j<NB_UNIT_TYPE; j++)
 			if (smoothedStat.isFree[j]>maxStat.isFree[j])
 				maxStat.isFree[j]=smoothedStat.isFree[j];
 		if (smoothedStat.totalNeeded>maxStat.totalNeeded)
@@ -150,7 +150,7 @@ void TeamStats::step(Team *team)
 	
 	// We override unsmoothed stats:
 	stat.totalFree=maxStat.totalFree;
-	for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
+	for (int j=0; j<NB_UNIT_TYPE; j++)
 		stat.isFree[j]=maxStat.isFree[j];
 	stat.totalNeeded=maxStat.totalNeeded;
 }
@@ -304,17 +304,17 @@ void TeamStats::drawStat()
 	{
 		int index=(statsIndex+i+1)&0x7F;
 		
-		int free=stats[index].isFree[UnitType::WORKER]-stats[index].totalNeeded;
+		int free=stats[index].isFree[WORKER]-stats[index].totalNeeded;
 		int seeking=stats[index].totalNeeded;
 		if (free<0)
 		{
 			free=0;
-			seeking=stats[index].isFree[UnitType::WORKER];
+			seeking=stats[index].isFree[WORKER];
 		}
 		
 		int nbFree=(free*64)/maxWorker;
 		int nbSeeking=(seeking*64)/maxWorker;
-		int nbTotal=(stats[index].numberUnitPerType[UnitType::WORKER]*64)/maxWorker;
+		int nbTotal=(stats[index].numberUnitPerType[WORKER]*64)/maxWorker;
 		
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
@@ -363,12 +363,12 @@ void TeamStats::drawStat()
 	}
 }
 
-int TeamStats::getFreeUnits(UnitType::TypeNum type)
+int TeamStats::getFreeUnits(int type)
 {
 	return (stats[statsIndex].isFree[type]);
 }
 
-int TeamStats::getTotalUnits(UnitType::TypeNum type)
+int TeamStats::getTotalUnits(int type)
 {
 	return (stats[statsIndex].numberUnitPerType[type]);
 }

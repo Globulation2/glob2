@@ -17,16 +17,29 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#ifndef __BULLET_H
+#define __BULLET_H
 
-// This is the version of map and savegame format.
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 15
-// version 10 adds script saved in game
-// version 11 the gamesfiles do saves which building has been seen under fog of war.
-// version 12 saves map name into SessionGame instead of BaseMap.
-// version 13 adds construction state into buildings
-// version 14 adds the save of the end of game stats in Team
+#include "Header.h"
+
+#define SHOOTING_COOLDOWN_MAX 65536
+
+class Bullet
+{
+public:
+	Bullet(SDL_RWops *stream);
+	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY);
+	bool load(SDL_RWops *stream);
+	void save(SDL_RWops *stream);
+public:
+	Sint32 px, py; // pixel precision point of x,y
+	Sint32 speedX, speedY; //pixel precision speed.
+	Sint32 ticksLeft;
+	Sint32 shootDamage;
+	Sint32 targetX, targetY;
+public:
+	void step(void);
+};
 
 #endif
+ 

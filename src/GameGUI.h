@@ -166,8 +166,9 @@ private:
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
 	
+	Uint16 selectionGUID;
+	Uint16 selectionGBID;
 	Unit *selUnit;
-	Sint32 selectionUID;
 	int typeToBuild;
 	bool showUnitWorkingToBuilding;
 

@@ -26,9 +26,9 @@
 struct TeamStat
 {
 	int totalUnit;
-	int numberUnitPerType[UnitType::NB_UNIT_TYPE];
+	int numberUnitPerType[NB_UNIT_TYPE];
 	int totalFree;
-	int isFree[UnitType::NB_UNIT_TYPE];
+	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
 
 	int totalBuilding;
@@ -52,7 +52,7 @@ struct TeamStat
 struct TeamSmoothedStat
 {
 	int totalFree;
-	int isFree[UnitType::NB_UNIT_TYPE];
+	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
 };
 
@@ -81,8 +81,8 @@ public:
 	void step(Team *team);
 	void drawText();
 	void drawStat();
-	int getFreeUnits(UnitType::TypeNum type);
-	int getTotalUnits(UnitType::TypeNum type);
+	int getFreeUnits(int type);
+	int getTotalUnits(int type);
 	int getUnitsNeeded();
 
 private:

@@ -295,10 +295,10 @@ bool Story::testCondition()
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
 								{
-									Sint16 uid=mapscript->game->map.getUnit(dx, dy);
-									if (uid>=0)
+									Uint16 gid=mapscript->game->map.getGroundUnit(dx, dy);
+									if (gid!=NOGUID)
 									{
-										int team=Unit::UIDtoTeam(uid);
+										int team=Unit::GIDtoTeam(gid);
 										if (mapscript->game->teams[0]->teamNumber==team)
 										{
 											lineSelector +=3;
@@ -315,10 +315,10 @@ bool Story::testCondition()
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
 								{
-									Sint16 uid=mapscript->game->map.getUnit(dx, dy);
-									if (uid>=0)
+									Uint16 gid=mapscript->game->map.getGroundUnit(dx, dy);
+									if (gid!=NOGUID)
 									{
-										int team=Unit::UIDtoTeam(uid);
+										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
 										if (mapscript->game->teams[0]->allies & tm)
 										{
@@ -337,20 +337,22 @@ bool Story::testCondition()
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
 								{
-									Sint16 uid=mapscript->game->map.getUnit(dx, dy);
-									if (uid!=NOUID)
+									Uint16 gid;
+									gid=mapscript->game->map.getGroundUnit(dx, dy);
+									if (gid!=NOGUID)
 									{
-										int team;
-										if (uid<0)
-											team=Building::UIDtoTeam(uid);
-										else
-											team=Unit::UIDtoTeam(uid);
-										
+										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
 										if (mapscript->game->teams[0]->enemies & tm)
-										{
 											return false;
-										}
+									}
+									gid=mapscript->game->map.getBuilding(dx, dy);
+									if (gid!=NOGBID)
+									{
+										int team=Building::GIDtoTeam(gid);
+										Uint32 tm=1<<team;
+										if (mapscript->game->teams[0]->enemies & tm)
+											return false;
 									}
 								}
 						

@@ -9,6 +9,8 @@ Building.cpp\
 Building.h\
 BuildingType.cpp\
 BuildingType.h\
+Bullet.h\
+Bullet.cpp\
 CVS\
 Engine.cpp\
 Engine.h\
@@ -50,6 +52,9 @@ SessionConnection.cpp\
 SessionConnection.h\
 Race.cpp\
 Race.h\
+Ressource.h\
+Sector.h\
+Sector.cpp\
 Session.cpp\
 Session.h\
 StringTable.cpp\

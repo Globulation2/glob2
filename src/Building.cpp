@@ -30,10 +30,10 @@ Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32
 	load(stream, types, owner, versionMinor);
 }
 
-Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsTypes *types)
+Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types)
 {
 	// identity
-	UID=uid;
+	this->gid=gid;
 	owner=team;
 	
 	// type
@@ -84,7 +84,7 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	ratioLocal[0]=ratio[0]=1;
 	totalRatio++;
 	percentUsed[0]=0;
-	for (int i=1; i<UnitType::NB_UNIT_TYPE; i++)
+	for (int i=1; i<NB_UNIT_TYPE; i++)
 	{
 		ratioLocal[i]=ratio[i]=0;
 		//totalRatio++;
@@ -111,13 +111,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 {
 	// construction state
 	buildingState=(BuildingState)SDL_ReadBE32(stream);
-	if (versionMinor>=13)
-		constructionResultState=(ConstructionResultState)SDL_ReadBE32(stream);
-	else
-		constructionResultState=NO_CONSTRUCTION;
+	constructionResultState=(ConstructionResultState)SDL_ReadBE32(stream);
 
 	// identity
-	UID=SDL_ReadBE32(stream);
+	gid=SDL_ReadBE16(stream);
 	this->owner=owner;
 
 	// position
@@ -140,7 +137,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	// prefered parameters
 	productionTimeout=SDL_ReadBE32(stream);
 	totalRatio=SDL_ReadBE32(stream);
-	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
 		percentUsed[i]=SDL_ReadBE32(stream);
@@ -176,14 +173,12 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 
 void Building::save(SDL_RWops *stream)
 {
-	int i;
-
 	// construction state
 	SDL_WriteBE32(stream, (Uint32)buildingState);
 	SDL_WriteBE32(stream, (Uint32)constructionResultState);
 
 	// identity
-	SDL_WriteBE32(stream, UID);
+	SDL_WriteBE16(stream, gid);
 	// we drop team
 
 	// position
@@ -194,7 +189,7 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, unitStayRange);
 
 	// Building Specific
-	for (i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<NB_RESSOURCES; i++)
 		SDL_WriteBE32(stream, ressources[i]);
 
 	// quality parameters
@@ -203,7 +198,7 @@ void Building::save(SDL_RWops *stream)
 	// prefered parameters
 	SDL_WriteBE32(stream, productionTimeout);
 	SDL_WriteBE32(stream, totalRatio);
-	for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		SDL_WriteBE32(stream, ratio[i]);
 		SDL_WriteBE32(stream, percentUsed[i]);
@@ -213,7 +208,7 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, shootingCooldown);
 
 	// optimisation parameters
-	for (i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<NB_RESSOURCES; i++)
 	{
 		SDL_WriteBE32(stream, closestRessourceX[i]);
 		SDL_WriteBE32(stream, closestRessourceY[i]);
@@ -228,18 +223,17 @@ void Building::save(SDL_RWops *stream)
 
 void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 {
-	int i;
 	// units
 	maxUnitInside=SDL_ReadBE32(stream);
 	int nbWorking=SDL_ReadBE32(stream);
 	unitsWorking.clear();
-	for (i=0; i<nbWorking; i++)
-		unitsWorking.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	for (int i=0; i<nbWorking; i++)
+		unitsWorking.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
 
 	int nbWorkingSubscribe=SDL_ReadBE32(stream);
 	unitsWorkingSubscribe.clear();
-	for (i=0; i<nbWorkingSubscribe; i++)
-		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	for (int i=0; i<nbWorkingSubscribe; i++)
+		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
 
 	lastWorkingSubscribe=SDL_ReadBE32(stream);
 
@@ -248,13 +242,13 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	maxUnitWorkingLocal=maxUnitWorking;
 	int nbInside=SDL_ReadBE32(stream);
 	unitsInside.clear();
-	for (i=0; i<nbInside; i++)
-		unitsInside.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	for (int i=0; i<nbInside; i++)
+		unitsInside.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
 
 	int nbInsideSubscribe=SDL_ReadBE32(stream);
 	unitsInsideSubscribe.clear();
-	for (i=0; i<nbInsideSubscribe; i++)
-		unitsInsideSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	for (int i=0; i<nbInsideSubscribe; i++)
+		unitsInsideSubscribe.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
 	lastInsideSubscribe=SDL_ReadBE32(stream);
 }
 
@@ -266,11 +260,11 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
 	for (it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-		SDL_WriteBE32(stream, (*it)->UID);
+		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
 	for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-		SDL_WriteBE32(stream, (*it)->UID);
+		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, lastWorkingSubscribe);
 
@@ -278,23 +272,20 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
 	for (it=unitsInside.begin(); it!=unitsInside.end(); ++it)
-		SDL_WriteBE32(stream, (*it)->UID);
+		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
 	for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
-		SDL_WriteBE32(stream, (*it)->UID);
+		SDL_WriteBE16(stream, (*it)->gid);
 	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
 
 bool Building::isRessourceFull(void)
 {
 	bool isFull=true;
-	int i;
-	for (i=0; i<NB_RESSOURCES; i++)
-	{
+	for (int i=0; i<NB_RESSOURCES; i++)
 		if (ressources[i]<type->maxRessource[i])
 			isFull=false;
-	}
 	return isFull;
 }
 
@@ -303,8 +294,7 @@ int Building::neededRessource(void)
 	float minProportion=1.0;
 	int minType=-1;
 	int deci=syncRand()%NB_RESSOURCES;
-	int ib;
-	for (ib=0; ib<NB_RESSOURCES; ib++)
+	for (int ib=0; ib<NB_RESSOURCES; ib++)
 	{
 		int i=(ib+deci)%NB_RESSOURCES;
 		int maxr=type->maxRessource[i];
@@ -423,7 +413,7 @@ void Building::cancelConstruction(void)
 	constructionResultState=NO_CONSTRUCTION;
 	
 	if (!type->isVirtual)
-		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 	
@@ -436,7 +426,7 @@ void Building::cancelConstruction(void)
 	posY=midPosY+type->decTop;
 
 	if (!type->isVirtual)
-		owner->game->map.setBuilding(posX, posY, type->width, type->height, UID);
+		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
 	
 	if (type->maxUnitWorking)
 		maxUnitWorking=maxUnitWorkingPreferred;
@@ -457,7 +447,7 @@ void Building::cancelConstruction(void)
 	
 	totalRatio=0;
 	
-	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		ratio[i]=1;
 		totalRatio++;
@@ -465,7 +455,7 @@ void Building::cancelConstruction(void)
 	}
 
 	int vr=type->viewingRange;
-	owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
+	owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
 	
 	update();
 }
@@ -497,7 +487,6 @@ void Building::cancelDelete(void)
 
 void Building::update(void)
 {
-	int i;
 	if (buildingState==DEAD)
 		return;
 
@@ -506,14 +495,14 @@ void Building::update(void)
 		if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
 			if (!type->isVirtual)
-				owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+				owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 			buildingState=DEAD;
 			owner->prestige-=type->prestige;
-			owner->buildingsToBeDestroyed.push_front(UIDtoID(UID));
+			owner->buildingsToBeDestroyed.push_front(GIDtoID(gid));
 		}
 		else
 		{
-			printf("(%d)Building wait for destruction, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", UID, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
+			printf("(%d)Building wait for destruction, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
 		}
 	}
 
@@ -530,14 +519,14 @@ void Building::update(void)
 			//printf("inserted %d, w=%d\n", (int)this, type->width);
 		}
 		else
-			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", UID, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
+			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
 	}
 
 	// TODO : save the knowledge weather or not the building is already in the Call list in the building
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		// add itself in Call lists
-		for (i=0; i<NB_ABILITY; i++)
+		for (int i=0; i<NB_ABILITY; i++)
 		{
 			if (job[i]!=1 && type->job[i])
 			{
@@ -554,7 +543,7 @@ void Building::update(void)
 	else
 	{
 		// delete itself from all Call lists
-		for (i=0; i<NB_ABILITY; i++)
+		for (int i=0; i<NB_ABILITY; i++)
 		{
 			if (job[i]!=2 && type->job[i])
 			{
@@ -619,7 +608,7 @@ void Building::update(void)
 
 			if (fu!=NULL)
 			{
-				//printf("Building::update::unitsWorking::fu->UID=%d\n", fu->UID);
+				//printf("Building::update::unitsWorking::fu->gid=%d\n", fu->gid);
 				// We free the unit.
 				fu->activity=Unit::ACT_RANDOM;
 				fu->displacement=Unit::DIS_RANDOM;
@@ -638,7 +627,7 @@ void Building::update(void)
 	if ((signed)unitsInside.size()<maxUnitInside)
 	{
 		// add itself in Call lists
-		for (i=0; i<NB_ABILITY; i++)
+		for (int i=0; i<NB_ABILITY; i++)
 			if (upgrade[i]!=1 && type->upgrade[i])
 			{
 				owner->upgrade[i].push_front(this);
@@ -664,7 +653,7 @@ void Building::update(void)
 	else
 	{
 		// delete itself from all Call lists
-		for (i=0; i<NB_ABILITY; i++)
+		for (int i=0; i<NB_ABILITY; i++)
 			if (upgrade[i]!=2 && type->upgrade[i])
 			{
 				owner->upgrade[i].remove(this);
@@ -688,7 +677,7 @@ void Building::update(void)
 		if (type->isBuildingSite)
 		{
 			// we really uses the resources of the buildingsite:
-			for(i=0; i<NB_RESSOURCES; i++)
+			for(int i=0; i<NB_RESSOURCES; i++)
 				ressources[i]-=type->maxRessource[i];
 			
 			owner->prestige-=type->prestige;
@@ -733,10 +722,10 @@ void Building::update(void)
 			if (type->shootingRange)
 				owner->turrets.push_front(this);
 
-			// DUNNO : when do we update closestRessourceXY[] ?
+			// TODO: DUNNO : when do we update closestRessourceXY[] ?
 			int vr=type->viewingRange;
-			owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
-			owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, UID);
+			owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
+			owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
 
 			// we need to do an update again
 			update();
@@ -763,23 +752,8 @@ bool Building::tryToBuildingSiteRoom(void)
 
 	int newWidth=nextBt->width;
 	int newHeight=nextBt->height;
-	int lastNewPosX=newPosX+newWidth;
-	int lastNewPosY=newPosY+newHeight;
 
-	bool isRoom=true;
-
-	int i;
-	
-	for(int x=newPosX; x<lastNewPosX; x++)
-	{
-		for(int y=newPosY; y<lastNewPosY; y++)
-		{
-			// TODO : put this code in map.cpp to optimise speed.
-			Sint32 UID=owner->game->map.getUnit(x, y);
-			if ( (!owner->game->map.isGrass(x, y)) || ((UID!=this->UID) && (UID!=NOUID)) )
-				isRoom=false;
-		}
-	}
+	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight);
 
 	if (isRoom)
 	{
@@ -788,7 +762,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			float destructionRatio = (float)hp/(float)type->hpMax;
 			float fTotErr=0;
-			for (unsigned i=0; i<NB_RESSOURCES; i++)
+			for (int i=0; i<NB_RESSOURCES; i++)
 			{
 				float fVal=destructionRatio*(float)nextBt->maxRessource[i];
 				int iVal=(int)fVal;
@@ -804,8 +778,8 @@ bool Building::tryToBuildingSiteRoom(void)
 		
 		if (!type->isVirtual)
 		{
-			owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
-			owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
+			owner->map->setBuilding(posX, posY, type->decLeft, type->decLeft, NOGBID);
+			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 		}
 
 		
@@ -839,7 +813,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		productionTimeout=type->unitProductionTime;
 
 		totalRatio=0;
-		for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		for (int i=0; i<NB_UNIT_TYPE; i++)
 		{
 			ratio[i]=1;
 			totalRatio++;
@@ -879,36 +853,11 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;
 	int h=bt->height;
-	int dx, dy;
 
 	if (bt->isVirtual)
-	{
-		for (dy=y; dy<y+h; dy++)
-		{
-			for (dx=x; dx<x+w; dx++)
-			{
-				Sint32 uid=owner->game->map.getUnit(dx, dy);
-				if ((uid<0)&&(uid!=NOUID)&&(uid!=UID))
-					return false;
-			}
-		}
 		return true;
-	}
-	else
-	{
-		for (dy=y; dy<y+h; dy++)
-		{
-			for (dx=x; dx<x+w; dx++)
-			{
-				Sint32 uid=owner->game->map.getUnit(dx, dy);
-				if (((uid<0)&&(uid!=NOUID)&&(uid!=UID))||(!(owner->game->map.isGrass(dx, dy))))
-					return false;
-			}
-		}
-		return true;
-	}
-	assert(false);
-	return true;
+	
+	return owner->map->isHardSpaceForBuilding(x, y, w, h);
 }
 
 
@@ -976,9 +925,9 @@ void Building::subscribeToBringRessourcesStep()
 		//is it usefull? lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
-			int minValue=owner->game->map.getW()*owner->game->map.getW();
+			int minValue=owner->map->getW()*owner->map->getW();
 			Unit *choosen=NULL;
-			Map &map=owner->game->map;
+			Map *map=owner->map;
 			/* To choose a good unit, we get a composition of things:
 			1-the closest the unit is, the better it is.
 			2-the less the unit is hungry, the better it is.
@@ -997,7 +946,7 @@ void Building::subscribeToBringRessourcesStep()
 				hungry*=hungry;
 				if ((r>=0)&& neededRessource(r))
 				{
-					int dist=owner->game->map.warpDistSquare(x, y, posX, posY);
+					int dist=map->warpDistSquare(x, y, posX, posY);
 					int value=dist-hungry;
 					//printf("d(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
 					unit->destinationPurprose=r;
@@ -1019,9 +968,9 @@ void Building::subscribeToBringRessourcesStep()
 					int y=unit->posY;
 					int dx, dy;
 					int r=-1;
-					if (map.nearestRessource(x, y, (RessourceType *)&r, &dx, &dy) && neededRessource(r))
+					if (map->nearestRessource(x, y, (RessourceType *)&r, &dx, &dy) && neededRessource(r))
 					{
-						int dist=owner->game->map.warpDistSquare(dx, dy, posX, posY);
+						int dist=map->warpDistSquare(dx, dy, posX, posY);
 						dist+=(x-dx)*(x-dx)+(y-dy)*(y-dy);
 						int value=dist-hungry;
 						//printf("i(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
@@ -1041,7 +990,7 @@ void Building::subscribeToBringRessourcesStep()
 					Unit *unit=(*it);
 					// The following "10" is totaly arbitrary between [2..100]
 					int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
-					int dist=owner->game->map.warpDistSquare(unit->posX, unit->posY, posX, posY);
+					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 					int value=dist-hungry;
 					//printf("u(%x) dist=%d, hungry=%d, value=%d\n", (int)unit, dist, hungry, value);
 					if (value<minValue)
@@ -1060,7 +1009,7 @@ void Building::subscribeToBringRessourcesStep()
 				{
 					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
 					
-					printf("C-B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					printf("C-B(%x)gid=(%d), choosen=(%x) Ugid=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, gid, (int)choosen, (int)choosen->gid, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
@@ -1117,7 +1066,7 @@ void Building::subscribeForFlagingStep()
 		lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
-			int minValue=owner->game->map.getW()*owner->game->map.getW();
+			int minValue=owner->map->getW()*owner->map->getW();
 			Unit *choosen=NULL;
 			
 			/* To choose a good unit, we get a composition of things:
@@ -1135,7 +1084,7 @@ void Building::subscribeForFlagingStep()
 				int y=unit->posY;
 				hungry*=hungry;
 				hp*=hp;
-				int dist=owner->game->map.warpDistSquare(x, y, posX, posY);
+				int dist=owner->map->warpDistSquare(x, y, posX, posY);
 				int value=dist-hungry+hp;
 				//printf("d(%x) dist=%d, hungry=%d, hp=%d, value=%d\n", (int)unit, dist, hungry, hp, value);
 				if (value<minValue)
@@ -1179,11 +1128,11 @@ void Building::subscribeForInsideStep()
 	{
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
-			int mindist=owner->game->map.getW()*owner->game->map.getW();
+			int mindist=owner->map->getW()*owner->map->getW();
 			Unit *u=NULL;
 			for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+				int dist=owner->map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
 				if (dist<mindist)
 				{
 					mindist=dist;
@@ -1218,7 +1167,7 @@ void Building::swarmStep(void)
 	// increase HP
 	if (hp<type->hpMax)
 		hp++;
-	assert(UnitType::NB_UNIT_TYPE==3);
+	assert(NB_UNIT_TYPE==3);
 	if ((ressources[CORN]>=type->ressourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
 		productionTimeout--;
 
@@ -1228,8 +1177,7 @@ void Building::swarmStep(void)
 		float proportion;
 		float minProportion=1.0;
 		int minType=-1;
-		int i;
-		for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		for (int i=0; i<NB_UNIT_TYPE; i++)
 		{
 			if (ratio[i]!=0)
 			{
@@ -1245,8 +1193,8 @@ void Building::swarmStep(void)
 		if (minType==-1)
 			minType=0;
 		assert(minType>=0);
-		assert(minType<UnitType::NB_UNIT_TYPE);
-		if (minType<0 || minType>=UnitType::NB_UNIT_TYPE)
+		assert(minType<NB_UNIT_TYPE);
+		if (minType<0 || minType>=NB_UNIT_TYPE)
 			minType=0;
 
 		// help printf
@@ -1257,19 +1205,17 @@ void Building::swarmStep(void)
 
 		// We get the unit UnitType:
 		int posX, posY, dx, dy;
-		UnitType *ut=owner->race.getUnitType((UnitType::TypeNum)minType, 0);
-		Unit *u;
+		UnitType *ut=owner->race.getUnitType(minType, 0);
 
 		// Is there a place to exit ?
-#		ifdef WIN32
-#			pragma warning (disable : 4800)
-#		endif
-		if (findExit(&posX, &posY, &dx, &dy, ut->performance[FLY]))
-#		ifdef WIN32
-#			pragma warning (default : 4800)
-#		endif
+		bool exitFound;
+		if (ut->performance[FLY])
+			exitFound=findAirExit(&posX, &posY, &dx, &dy);
+		else
+			exitFound=findGroundExit(&posX, &posY, &dx, &dy, ut->performance[SWIM]);
+		if (exitFound)
 		{
-			u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
+			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
 			if (u)
 			{
 				ressources[CORN]-=type->ressourceForOneUnit;
@@ -1286,22 +1232,16 @@ void Building::swarmStep(void)
 				percentUsed[minType]++;
 
 				bool allDone=true;
-				for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
-				{
+				for (int i=0; i<NB_UNIT_TYPE; i++)
 					if (percentUsed[i]<ratio[i])
 						allDone=false;
-				}
 
 				if (allDone)
-				{
-					for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
+					for (int i=0; i<NB_UNIT_TYPE; i++)
 						percentUsed[i]=0;
-				}
 			}
 			else
-			{
 				printf("WARNING, no more UNIT ID free for team %d\n", owner->teamNumber);
-			}
 		}
 	}
 }
@@ -1323,7 +1263,7 @@ void Building::turretStep(void)
 	Uint32 enemies=owner->enemies;
 	bool targetFound=false;
 	int bestTime=256;
-	Map *map=&(owner->game->map);
+	Map *map=owner->map;
 	assert(map);
 
 	int targetX, targetY;
@@ -1369,11 +1309,11 @@ void Building::turretStep(void)
 				default:
 				assert(false);
 				}
-				int targetUID=map->getUnit(targetX, targetY);
-				if (targetUID>=0)
+				int targetGUID=map->getGroundUnit(targetX, targetY);
+				if (targetGUID!=NOGUID)
 				{
-					Sint32 otherTeam=Unit::UIDtoTeam(targetUID);
-					Sint32 targetID=Unit::UIDtoID(targetUID);
+					Sint32 otherTeam=Unit::GIDtoTeam(targetGUID);
+					Sint32 targetID=Unit::GIDtoID(targetGUID);
 					Uint32 otherTeamMask=1<<otherTeam;
 					if (enemies&otherTeamMask)
 					{
@@ -1394,10 +1334,11 @@ void Building::turretStep(void)
 						//break;
 					}
 				}
-				else if (targetUID!=NOUID)
+				int targetGBID=map->getBuilding(targetX, targetY);
+				if (targetGBID!=NOGBID)
 				{
-					int otherTeam=Building::UIDtoTeam(targetUID);
-					int otherID=Building::UIDtoID(targetUID);
+					int otherTeam=Building::GIDtoTeam(targetGBID);
+					int otherID=Building::GIDtoID(targetGBID);
 					Uint32 otherTeamMask=1<<otherTeam;
 					if (enemies&otherTeamMask)
 					{
@@ -1419,56 +1360,15 @@ void Building::turretStep(void)
 					}
 				}
 			}
-	/*for (i=0; i<=range && !targetFound; i++)
-	{
-		for (int k=0; k<2 && !targetFound; k++)
-		{
-			for (int l=0; l<2 && !targetFound; l++)
-			{
-				//targetX=midX+(k)*(  dir)*(pos+1)-(1-k)*(  dir)*(pos)+(l)*(1-dir)*(i+width +1)-(1-l)*(1-dir)*(i);
-				//targetY=midY+(k)*(1-dir)*(pos+1)-(1-k)*(1-dir)*(pos)+(l)*(  dir)*(i+height+1)-(1-l)*(  dir)*(i);
-				//printf("midX=%d, targetX=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midX, targetX, k, l, pos, dir, i);
-				//printf("midY=%d, targetY=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midY, targetY, k, l, pos, dir, i);
-				targetX=posX+
 
-				int targetUID=map->getUnit(targetX, targetY);
-				if (targetUID>=0)
-				{
-					int otherTeam=Unit::UIDtoTeam(targetUID);
-					Uint32 otherTeamMask=1<<otherTeam;
-					if (enemies&otherTeamMask)
-					{
-						targetFound=true;
-						//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
-						shootingStep=0;
-					}
-				}
-				else if (targetUID!=NOUID)
-				{
-					int otherTeam=Building::UIDtoTeam(targetUID);
-					int otherID=Building::UIDtoID(targetUID);
-					Uint32 otherTeamMask=1<<otherTeam;
-					if (enemies&otherTeamMask)
-					{
-						Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
-						if (!b->type->defaultUnitStayRange)
-						{
-							targetFound=true;
-							shootingStep=0;
-						}
-					}
-				}
-			}
-		}
-	}*/
 	int midX=getMidX();
 	int midY=getMidY();
 	if (targetFound)
 	{
 		shootingStep=0;
 		
-		//printf("%d found target found: (%d, %d) \n", UID, targetX, targetY);
-		Sector *s=owner->game->map.getSector(midX, midY);
+		//printf("%d found target found: (%d, %d) \n", gid, targetX, targetY);
+		Sector *s=owner->map->getSector(midX, midY);
 
 		int px, py;
 		px=((posX)<<5)+((type->width)<<4);
@@ -1477,18 +1377,18 @@ void Building::turretStep(void)
 		int speedX, speedY, ticksLeft;
 
 		// TODO : shall we really uses shootSpeed ?
-		// FIXME : is it correct this way ? IS there a function for this ?
+		// FIXME : is it correct this way ? Is there a function for this ?
 		int dpx=(bestTargetX*32)+16-4-px; // 4 is the half size of the bullet
 		int dpy=(bestTargetY*32)+16-4-py;
-		//printf("%d insert: dp=(%d, %d).\n", UID, dpx, dpy);
-		if (dpx>(owner->game->map.getW()<<4))
-			dpx=dpx-(owner->game->map.getW()<<5);
-		if (dpx<-(owner->game->map.getW()<<4))
-			dpx=dpx+(owner->game->map.getW()<<5);
-		if (dpy>(owner->game->map.getH()<<4))
-			dpy=dpy-(owner->game->map.getH()<<5);
-		if (dpy<-(owner->game->map.getH()<<4))
-			dpy=dpy+(owner->game->map.getH()<<5);
+		//printf("%d insert: dp=(%d, %d).\n", gid, dpx, dpy);
+		if (dpx>(map->getW()<<4))
+			dpx=dpx-(map->getW()<<5);
+		if (dpx<-(map->getW()<<4))
+			dpx=dpx+(map->getW()<<5);
+		if (dpy>(map->getH()<<4))
+			dpy=dpy-(map->getH()<<5);
+		if (dpy<-(map->getH()<<4))
+			dpy=dpy+(map->getH()<<5);
 
 
 		int mdp;
@@ -1523,8 +1423,8 @@ void Building::turretStep(void)
 		}
 
 		Bullet *b=new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY);
-		//printf("%d insert: pos=(%d, %d), target=(%d, %d), p=(%d, %d), dp=(%d, %d), mdp=%d, speed=(%d, %d).\n", UID, posX, posY, targetX, targetY, px, py, dpx, dpy, mdp, speedX, speedY);
-		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", UID, px, py, speedX, speedY, ticksLeft, type->shootDamage);
+		//printf("%d insert: pos=(%d, %d), target=(%d, %d), p=(%d, %d), dp=(%d, %d), mdp=%d, speed=(%d, %d).\n", gid, posX, posY, targetX, targetY, px, py, dpx, dpy, mdp, speedX, speedY);
+		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", gid, px, py, speedX, speedY, ticksLeft, type->shootDamage);
 		s->bullets.push_front(b);
 
 		shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -1540,14 +1440,15 @@ void Building::kill(void)
 		Unit *u=*it;
 		if (u->displacement==Unit::DIS_INSIDE)
 		{
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
+			//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
 		}
 
 		if (u->displacement==Unit::DIS_ENTERING_BUILDING)
 		{
-			owner->game->map.setUnit(u->posX-u->dx, u->posY-u->dy, NOUID);
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
+			if (!u->performance[FLY])
+				owner->map->setGroundUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
+			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
 		}
 		u->attachedBuilding=NULL;
@@ -1575,15 +1476,44 @@ void Building::kill(void)
 
 int Building::getMidX(void)
 {
-	return ((posX-type->decLeft)&owner->game->map.getMaskW());
+	return ((posX-type->decLeft)&owner->map->getMaskW());
 }
 
 int Building::getMidY(void)
 {
-	return ((posY-type->decTop)&owner->game->map.getMaskH());
+	return ((posY-type->decTop)&owner->map->getMaskH());
 }
 
-bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
+bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
+{
+	for (int xi=this->posX; xi<this->posX+type->width; xi++)
+		for (int yi=this->posX; yi<this->posY+type->height; yi++)
+			if (owner->map->isFreeForAirUnit(xi, yi))
+			{
+				*posX=xi;
+				*posY=yi;
+				int tdx=xi-getMidX();
+				int tdy=yi-getMidY();
+				*dx=sign(tdx);
+				if (tdx<0)
+					*dx=-1;
+				else if (tdx==0)
+					*dx=0;
+				else
+					*dx=1;
+				
+				if (tdy<0)
+					*dy=-1;
+				else if (tdy==0)
+					*dy=0;
+				else
+					*dy=1;
+				return true;
+			}
+	return false;
+}
+
+bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim)
 {
 	int testX, testY;
 	int exitQuality=0;
@@ -1595,11 +1525,11 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
 			{
-				if (owner->game->map.isFreeForUnit(testX, testY-1, canFly))
+				if (owner->map->isFreeForGroundUnit(testX, testY-1, canSwim))
 					oldQuality++;
-				if (owner->game->map.isRessource(testX, testY-1))
+				if (owner->map->isRessource(testX, testY-1))
 				{
 					if (exitQuality<1+oldQuality)
 					{
@@ -1626,11 +1556,11 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
 			{
-				if (owner->game->map.isFreeForUnit(testX, testY+1, canFly))
+				if (owner->map->isFreeForGroundUnit(testX, testY+1, canSwim))
 					oldQuality++;
-				if (owner->game->map.isRessource(testX, testY+1))
+				if (owner->map->isRessource(testX, testY+1))
 				{
 					if (exitQuality<1+oldQuality)
 					{
@@ -1657,11 +1587,11 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
 			{
-				if (owner->game->map.isFreeForUnit(testX-1, testY, canFly))
+				if (owner->map->isFreeForGroundUnit(testX-1, testY, canSwim))
 					oldQuality++;
-				if (owner->game->map.isRessource(testX-1, testY))
+				if (owner->map->isRessource(testX-1, testY))
 				{
 					if (exitQuality<1+oldQuality)
 					{
@@ -1688,11 +1618,11 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
 			{
-				if (owner->game->map.isFreeForUnit(testX+1, testY, canFly))
+				if (owner->map->isFreeForGroundUnit(testX+1, testY, canSwim))
 					oldQuality++;
-				if (owner->game->map.isRessource(testX+1, testY))
+				if (owner->map->isRessource(testX+1, testY))
 				{
 					if (exitQuality<1+oldQuality)
 					{
@@ -1716,12 +1646,12 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	}
 	if (exitQuality>0)
 	{
-		bool shouldBeTrue=owner->game->map.doesPosTouchUID(exitX, exitY, UID, dx, dy);
+		bool shouldBeTrue=owner->map->doesPosTouchBuilding(exitX, exitY, gid, dx, dy);
 		assert(shouldBeTrue);
 		*dx=-*dx;
 		*dy=-*dy;
-		*posX=exitX & owner->game->map.getMaskW();
-		*posY=exitY & owner->game->map.getMaskH();
+		*posX=exitX & owner->map->getMaskW();
+		*posY=exitY & owner->map->getMaskH();
 		return true;
 	}
 	return false;
@@ -1746,25 +1676,24 @@ void Building::computeFlagStat(int *goingTo, int *onSpot)
 	}
 }
 
-Sint32 Building::UIDtoID(Sint32 uid)
+Sint32 Building::GIDtoID(Uint16 gid)
 {
-	return (-1-uid)%512;
+	return gid%1024;
 }
 
-Sint32 Building::UIDtoTeam(Sint32 uid)
+Sint32 Building::GIDtoTeam(Uint16 gid)
 {
-	return (-1-uid)/512;
+	return gid/1024;
 }
 
-Sint32 Building::UIDfrom(Sint32 id, Sint32 team)
+Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 {
-	return -1 -id -team*512;
+	return id+team*1024;
 }
 
 Sint32 Building::checkSum()
 {
 	int cs=0;
-	int i;
 	
 	cs^=typeNum;
 
@@ -1776,7 +1705,7 @@ Sint32 Building::checkSum()
 	cs^=maxUnitInside;
 	cs^=unitsInside.size();
 	
-	cs^=UID;
+	cs^=gid;
 
 	cs^=posX;
 	cs^=posY;
@@ -1790,7 +1719,7 @@ Sint32 Building::checkSum()
 
 	cs^=productionTimeout;
 	cs^=totalRatio;
-	for (i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		cs^=ratio[i];
 		cs^=percentUsed[i];
@@ -1803,58 +1732,5 @@ Sint32 Building::checkSum()
 	return cs;
 }
 
-Bullet::Bullet(SDL_RWops *stream)
-{
-	bool good=load(stream);
-	assert(good);
-}
-
-Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY)
-{
-	this->px=px;
-	this->py=py;
-	this->speedX=speedX;
-	this->speedY=speedY;
-	this->ticksLeft=ticksLeft;
-	this->shootDamage=shootDamage;
-	this->targetX=targetX;
-	this->targetY=targetY;
-}
-
-bool Bullet::load(SDL_RWops *stream)
-{
-	px=SDL_ReadBE32(stream);
-	py=SDL_ReadBE32(stream);
-	speedX=SDL_ReadBE32(stream);
-	speedY=SDL_ReadBE32(stream);
-	ticksLeft=SDL_ReadBE32(stream);
-	shootDamage=SDL_ReadBE32(stream);
-	targetX=SDL_ReadBE32(stream);
-	targetY=SDL_ReadBE32(stream);
-	return true;
-}
-
-void Bullet::save(SDL_RWops *stream)
-{
-	SDL_WriteBE32(stream, px);
-	SDL_WriteBE32(stream, py);
-	SDL_WriteBE32(stream, speedX);
-	SDL_WriteBE32(stream, speedY);
-	SDL_WriteBE32(stream, ticksLeft);
-	SDL_WriteBE32(stream, shootDamage);
-	SDL_WriteBE32(stream, targetX);
-	SDL_WriteBE32(stream, targetY);
-}
-
-void Bullet::step(void)
-{
-	if (ticksLeft>0)
-	{
-		//printf("bullet %d stepped to p=(%d, %d), tl=%d\n", (int)this, px, py, ticksLeft);
-		px+=speedX;
-		py+=speedY;
-		ticksLeft--;
-	}
-}
 
 

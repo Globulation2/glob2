@@ -154,26 +154,26 @@ void MapEdit::drawMenu(void)
 	globalContainer->gfx->drawSprite(menuStartW+64, 275, unitSprite, 256);
 
 	// draw buildings
+	for (int i=0; i<8; i++)
 	{
-		for (int i=0; i<8; i++)
-		{
-			int typeNum;
-			if (i!=0)
-				typeNum=globalContainer->buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
-			else
-				typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-			BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-			int imgid=bt->startImage;
-			int x=((i&0x3)<<5)+menuStartW;
-			int y=((i>>2)<<5)+307;
+		int typeNum;
+		if (i!=0)
+			typeNum=globalContainer->buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
+		else
+			typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+		assert(typeNum!=-1);
+		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+		assert(bt);
+		int imgid=bt->startImage;
+		int x=((i&0x3)<<5)+menuStartW;
+		int y=((i>>2)<<5)+307;
 
-			globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
-			Sprite *buildingSprite=globalContainer->buildings;
-			//int w=buildingSprite->getW();
-			//int h=buildingSprite->getH();
-			buildingSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-			globalContainer->gfx->drawSprite(x-20, y-20, buildingSprite, imgid);
-		}
+		globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
+		Sprite *buildingSprite=globalContainer->buildings;
+		//int w=buildingSprite->getW();
+		//int h=buildingSprite->getH();
+		buildingSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+		globalContainer->gfx->drawSprite(x-20, y-20, buildingSprite, imgid);
 	}
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
@@ -197,24 +197,20 @@ void MapEdit::drawMenu(void)
 	// draw teams
 	if (game.session.numberOfTeam<=8)
 	{
+		for (int i=0; i<game.session.numberOfTeam; i++)
 		{
-			for (int i=0; i<game.session.numberOfTeam; i++)
-			{
-				int line=i/4;
-				int dec=i%4;
-				globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*26, 371+1+line*26, 24, 24, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
-			}
+			int line=i/4;
+			int dec=i%4;
+			globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*26, 371+1+line*26, 24, 24, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
 		}
 	}
 	else
 	{
+		for (int i=0; i<game.session.numberOfTeam; i++)
 		{
-			for (int i=0; i<game.session.numberOfTeam; i++)
-			{
-				int line=i/8;
-				int dec=i%8;
-				globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*13, 371+1+line*13, 11, 11, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
-			}
+			int line=i/8;
+			int dec=i%8;
+			globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*13, 371+1+line*13, 11, 11, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
 		}
 	}
 
@@ -222,14 +218,12 @@ void MapEdit::drawMenu(void)
 	if (game.session.numberOfTeam<=8)
 	{
 		int line, dec;
+		for (int i=0; i<game.session.numberOfTeam; i++)
 		{
-			for (int i=0; i<game.session.numberOfTeam; i++)
-			{
-				line=i/4;
-				dec=i%4;
-				if (game.teams[team]->allies & game.teams[i]->me)
-					globalContainer->gfx->drawFilledRect(menuStartW+20+dec*26, 379+line*26, 10, 10, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
-			}
+			line=i/4;
+			dec=i%4;
+			if (game.teams[team]->allies & game.teams[i]->me)
+				globalContainer->gfx->drawFilledRect(menuStartW+20+dec*26, 379+line*26, 10, 10, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
 		}
 
 		line=team/4;
@@ -241,14 +235,12 @@ void MapEdit::drawMenu(void)
 	else
 	{
 		int line, dec;
+		for (int i=0; i<game.session.numberOfTeam; i++)
 		{
-			for (int i=0; i<game.session.numberOfTeam; i++)
-			{
-				line=i/8;
-				dec=i%8;
-				if (game.teams[team]->allies & game.teams[i]->me)
-					globalContainer->gfx->drawFilledRect(menuStartW+16+dec*13, 375+line*13, 5, 5, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
-			}
+			line=i/8;
+			dec=i%8;
+			if (game.teams[team]->allies & game.teams[i]->me)
+				globalContainer->gfx->drawFilledRect(menuStartW+16+dec*13, 375+line*13, 5, 5, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
 		}
 
 		line=team/8;
@@ -321,7 +313,7 @@ void MapEdit::handleMapClick()
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
  		if ((ax!=x)||(ay!=y)||(atype!=type))
 		{
-			game.map.setResAtPos(x, y, type, terrainSize);
+			game.map.setRessource(x, y, type, terrainSize);
 			needRedraw=true;
 
 
@@ -369,7 +361,7 @@ void MapEdit::handleMapClick()
 
 		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, -1))
 		{
-			game.addBuilding(x, y, team, typeNum );
+			game.addBuilding(x, y, team, typeNum);
 			if ((type==0) && (level==0))
 			{
 				game.teams[team]->startPosX=tempX;
@@ -511,14 +503,21 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 		int pw=32;
 		int ph=32;
 
-		bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
+		bool isRoom;
+		if (type==EXPLORER)
+			isRoom=game.map.isFreeForAirUnit(cx, cy);
+		else
+		{
+			UnitType *ut=game.teams[team]->race.getUnitType(type, level);
+			isRoom=game.map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM]);
+		}
 
 		int imgid;
-		if (type==UnitType::WORKER)
+		if (type==WORKER)
 			imgid=64;
-		else if (type==UnitType::EXPLORER)
+		else if (type==EXPLORER)
 			imgid=0;
-		else if (type==UnitType::WARRIOR)
+		else if (type==WARRIOR)
 			imgid=256;
 		else
 		{
@@ -971,16 +970,28 @@ bool MapEdit::save(const char *filename, const char *name)
 
 void MapEdit::updateUnits(int x, int y, int w, int h)
 {
-	int uid;
-
 	for (int dy=y; dy<y+h; dy++)
 		for (int dx=x; dx<x+w; dx++)
-			if ((uid=game.map.getUnit(dx, dy))>=0)
+		{
+			Uint16 gid=game.map.getGroundUnit(dx, dy);
+			if (gid!=NOGUID)
 			{
-				int team=uid/1024;
-				int id=uid%1024;
+				int team=gid/1024;
+				int id=gid%1024;
 				game.teams[team]->myUnits[id]->selectPreferedMovement();
 			}
+		}
+	for (int dy=y; dy<y+h; dy++)
+		for (int dx=x; dx<x+w; dx++)
+		{
+			Uint16 gid=game.map.getAirUnit(dx, dy);
+			if (gid!=NOGUID)
+			{
+				int team=gid/1024;
+				int id=gid%1024;
+				game.teams[team]->myUnits[id]->selectPreferedMovement();
+			}
+		}
 }
 
 void MapEdit::handleKeyPressed(SDLKey key, bool pressed)

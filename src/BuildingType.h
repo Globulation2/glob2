@@ -23,6 +23,7 @@
 #include <vector>
 #include "EntityType.h"
 #include "UnitType.h"
+#include "Ressource.h"
 
 class BuildingType: public EntityType
 {
@@ -197,9 +198,10 @@ public:
 
 			"unitProductionTime",
 			"ressourceForOneUnit",
-
+			
 			"maxWood",
-			"maxFood",
+			"maxCorn",
+			"maxFungus",
 			"maxStone",
 			"maxAlgue",
 			"maxUnitInside",

@@ -20,6 +20,7 @@
 #include <vector>
 #include "BuildingType.h"
 #include "GlobalContainer.h"
+#include <assert.h>
 
 BuildingsTypes::BuildingsTypes() 
 {
@@ -37,6 +38,7 @@ void BuildingsTypes::load(const char *filename)
 {
 	// we load the building description now
 	SDL_RWops *stream=globalContainer->fileManager->open(filename, "r");
+	assert(NB_RESSOURCES==5); // You have to case about parsing.
 
 	bool result=true;
 	
@@ -48,6 +50,7 @@ void BuildingsTypes::load(const char *filename)
 		BuildingType *buildingType=new BuildingType();
 		*buildingType=defaultBuildingType;
 		result=buildingType->loadText(stream);
+		
 		if (result)
 			buildingsTypes.push_back(buildingType);
 		else
@@ -57,52 +60,46 @@ void BuildingsTypes::load(const char *filename)
 	SDL_RWclose(stream);
 
 	// We resolve the nextLevelTypeNum references, used for upgrade.
+	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
 	{
-		for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
-		{
-			(*it)->lastLevelTypeNum=-1;
-			(*it)->typeNum=-1;
-			(*it)->nextLevelTypeNum=-1;
-		}
+		(*it)->lastLevelTypeNum=-1;
+		(*it)->typeNum=-1;
+		(*it)->nextLevelTypeNum=-1;
 	}
 	BuildingType *bt1;
 	BuildingType *bt2;
 	int j=0;
+	for (std::vector <BuildingType *>::iterator it1=buildingsTypes.begin(); it1!=buildingsTypes.end(); ++it1)
 	{
-		for (std::vector <BuildingType *>::iterator it1=buildingsTypes.begin(); it1!=buildingsTypes.end(); ++it1)
+		bt1=*it1;
+		bt1->nextLevelTypeNum=-1;
+		bt1->typeNum=j;
+		int i=0;
+		for (std::vector <BuildingType *>::iterator it2=buildingsTypes.begin(); it2!=buildingsTypes.end(); ++it2)
 		{
-			bt1=*it1;
-			bt1->nextLevelTypeNum=-1;
-			bt1->typeNum=j;
-			int i=0;
-			{
-				for (std::vector <BuildingType *>::iterator it2=buildingsTypes.begin(); it2!=buildingsTypes.end(); ++it2)
+			bt2=*it2;
+			if (bt1!=bt2)
+				if (bt1->isBuildingSite)
 				{
-					bt2=*it2;
-					if (bt1!=bt2)
-						if (bt1->isBuildingSite)
-						{
-							if ((bt2->level==bt1->level) && (bt2->type==bt1->type) && !(bt2->isBuildingSite))
-							{
-								bt1->nextLevelTypeNum=i;
-								bt2->lastLevelTypeNum=j;
-								break;
-							}
-						}
-						else
-						{
-							if ((bt2->level==bt1->level+1) && (bt2->type==bt1->type) && (bt2->isBuildingSite))
-							{
-								bt1->nextLevelTypeNum=i;
-								bt2->lastLevelTypeNum=j;
-								break;
-							}
-						}
-					i++;
+					if ((bt2->level==bt1->level) && (bt2->type==bt1->type) && !(bt2->isBuildingSite))
+					{
+						bt1->nextLevelTypeNum=i;
+						bt2->lastLevelTypeNum=j;
+						break;
+					}
 				}
-			}
-			j++;
+				else
+				{
+					if ((bt2->level==bt1->level+1) && (bt2->type==bt1->type) && (bt2->isBuildingSite))
+					{
+						bt1->nextLevelTypeNum=i;
+						bt2->lastLevelTypeNum=j;
+						break;
+					}
+				}
+			i++;
 		}
+		j++;
 	}
 }
 
@@ -116,7 +113,7 @@ int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 			return i;
 		i++;
 	}
-	// we can arrive here if we request a flag
+	// we can reach this point if we request a flag
 	return -1;
 }
 

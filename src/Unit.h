@@ -34,7 +34,7 @@ class Unit
 
 public:
 	Unit(SDL_RWops *stream, Team *owner);
-	Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int level);
+	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
 	
 	void load(SDL_RWops *stream, Team *owner);
@@ -50,9 +50,9 @@ public:
 	static int directionFromDxDy(int dx, int dy);
 	static void dxdyfromDirection(int direction, int *dx, int *dy);
 	
-	static Sint32 UIDtoID(Sint32 uid);
-	static Sint32 UIDtoTeam(Sint32 uid);
-	static Sint32 UIDfrom(Sint32 id, Sint32 team);
+	static Sint32 GIDtoID(Uint16 gid);
+	static Sint32 GIDtoTeam(Uint16 gid);
+	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 	
 	void selectPreferedMovement(void);
 	bool isUnitHungry(void);
@@ -133,7 +133,6 @@ protected:
 	void setNewValidDirection(void);
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
-	bool validMed(int x, int y);
 	void pathFind(void);
 	void gotoTempTarget(void);
 	bool areOnlyUnitsAround(void);
@@ -146,11 +145,11 @@ protected:
 public:
 	
 	// unit specification
-	UnitType::TypeNum typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
+	Sint32 typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
 	Race *race;
 	
 	// identity
-	Sint32 UID; // team * 1024 (Uint16)
+	Uint16 gid; // team * 1024 (Uint16)
 	Team *owner; // if < 0, not allocated
 	Sint32 isDead; // (bool) if true is dead, will be garbage collected next turn
 

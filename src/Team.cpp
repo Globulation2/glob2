@@ -123,14 +123,18 @@ Sint32 BaseTeam::checkSum()
 Team::Team(Game *game)
 :BaseTeam()
 {
+	assert(game);
 	this->game=game;
+	this->map=&game->map;
 	init();
 }
 
 Team::Team(SDL_RWops *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
 {
+	assert(game);
 	this->game=game;
+	this->map=&game->map;
 	init();
 	bool success=load(stream, &(globalContainer->buildingsTypes), versionMinor);
 	assert(success);
@@ -140,22 +144,15 @@ Team::~Team()
 {
 	if (!disableRecursiveDestruction)
 	{
-		int i;
-		for (i=0; i<1024; ++i)
-		{
+		for (int i=0; i<1024; ++i)
 			if (myUnits[i])
 				delete myUnits[i];
-		}
-		for (i=0; i<512; ++i)
-		{
+		for (int i=0; i<1024; ++i)
 			if (myBuildings[i])
 				delete myBuildings[i];
-		}
-		for (i=0; i<256; ++i)
-		{
+		for (int i=0; i<256; ++i)
 			if (myBullets[i])
 				delete myBuildings[i];
-		}
 	}
 }
 
@@ -168,7 +165,7 @@ void Team::init(void)
 		myUnits[i]=NULL;
 	}
 
-	for (i=0; i<512; i++)
+	for (i=0; i<1024; i++)
 	{
 		myBuildings[i]=NULL;
 	}
@@ -269,12 +266,11 @@ Building *Team::findBestConstruction(Unit *unit)
 	int y=unit->posY;
 	int r=unit->caryedRessource;
 	int actLevel=unit->level[HARVEST];
-	Map &map=game->map;
 	
 	if (r==-1)
 	{
 		int dx, dy;
-		if (map.nearestRessource(x, y, (RessourceType *)&r, &dx, &dy))
+		if (map->nearestRessource(x, y, (RessourceType *)&r, &dx, &dy))
 		{
 			// Ressouce "r" is aviable around here.
 			// I'll try to find a building who need this ressouce.

@@ -46,7 +46,17 @@ void AINumbi::init(Player *player)
 	attackTimer=0;
 	for (int i=0; i<BuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
+	
+	assert(player);
+	
 	this->player=player;
+	this->team=player->team;
+	this->game=player->game;
+	this->map=player->map;
+	
+	assert(this->team);
+	assert(this->game);
+	assert(this->map);
 }
 
 AINumbi::~AINumbi()
@@ -55,8 +65,7 @@ AINumbi::~AINumbi()
 
 bool AINumbi::load(SDL_RWops *stream)
 {
-	assert(player);
-	Game *game=player->team->game;
+	assert(game);
 	if (game->session.versionMajor>=0)
 	{
 		if (game->session.versionMinor>=8)
@@ -237,7 +246,6 @@ Order *AINumbi::getOrder(void)
 int AINumbi::estimateFood(int x, int y)
 {
 	int rx, ry;
-	Map *map=&player->team->game->map;
 	if (map->nearestRessource(x, y, CORN, &rx, &ry))
 	{
 		rx+=map->getW();
@@ -324,7 +332,7 @@ int AINumbi::estimateFood(int x, int y)
 
 int AINumbi::countUnits(void)
 {
-	Unit **myUnits=player->team->myUnits;
+	Unit **myUnits=team->myUnits;
 	int c=0;
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
@@ -334,7 +342,7 @@ int AINumbi::countUnits(void)
 
 int AINumbi::countUnits(const int medicalState)
 {
-	Unit **myUnits=player->team->myUnits;
+	Unit **myUnits=team->myUnits;
 	int c=0;
 	for (int i=0; i<1024; i++)
 	{
@@ -347,7 +355,7 @@ int AINumbi::countUnits(const int medicalState)
 
 Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
 {
-	std::list<Building *> swarms=player->team->swarms;
+	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
 	Sint32 numberRequested=1+(nbWorkersFator/(ss+1));
 	int nbu=countUnits();
@@ -355,17 +363,17 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
 		Building *b=*it;
-		if ((b->ratio[UnitType::WORKER]!=workers)||(b->ratio[UnitType::EXPLORER]!=explorers)||(b->ratio[UnitType::WARRIOR]!=warriors))
+		if ((b->ratio[WORKER]!=workers)||(b->ratio[EXPLORER]!=explorers)||(b->ratio[WARRIOR]!=warriors))
 		{
-			b->ratioLocal[UnitType::WORKER]=workers;
-			b->ratioLocal[UnitType::EXPLORER]=explorers;
-			b->ratioLocal[UnitType::WARRIOR]=warriors;
+			b->ratioLocal[WORKER]=workers;
+			b->ratioLocal[EXPLORER]=explorers;
+			b->ratioLocal[WARRIOR]=warriors;
 
-			printf("AI: (%d) ratioLocal changed.\n", b->UID);
+			printf("AI: (%d) ratioLocal changed.\n", b->gid);
 
-			Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
-			memcpy(rdyPtr, b->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
-			return new OrderModifySwarms(&(b->UID), rdyPtr, 1);
+			Sint32 rdyPtr[1][NB_UNIT_TYPE];
+			memcpy(rdyPtr, b->ratioLocal, NB_UNIT_TYPE*sizeof(Sint32));
+			return new OrderModifySwarms(&(b->gid), rdyPtr, 1);
 		}
 
 		int f=estimateFood(b->posX, b->posY);
@@ -381,7 +389,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;
-			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
+			return new OrderModifyBuildings(&b->gid, &numberRequestedTemp, 1);
 		}
 	}
 	if (ss<minSwarmNumbers)
@@ -403,11 +411,11 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 void AINumbi::nextMainBuilding(const int buildingType)
 {
 	//printf("AI: nextMainBuilding(%d)\n", buildingType);
-	Building **myBuildings=player->team->myBuildings;
+	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[mainBuilding[buildingType]];
 	if (b==NULL)
 	{
-		for (int i=1; i<512; i++)
+		for (int i=1; i<1024; i++)
 			if ((myBuildings[i])/*&&((myBuildings[i]->type->type==buildingType)||(myBuildings[i]->type->type==0))*/)
 			{
 				b=myBuildings[i];
@@ -419,42 +427,27 @@ void AINumbi::nextMainBuilding(const int buildingType)
 			printf("AI: no more building !.\n");
 		}
 		else
-			mainBuilding[buildingType]=Building::UIDtoID(b->UID);
+			mainBuilding[buildingType]=Building::GIDtoID(b->gid);
 	}
 	else
 	{
 		//printf("AI: nextMainBuilding uid=%d\n", b->UID);
-		int id=Building::UIDtoID(b->UID);
-		for (int i=1; i<512; i++)
+		int id=Building::GIDtoID(b->gid);
+		for (int i=1; i<1024; i++)
 			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->type==buildingType)||(myBuildings[(i+id)&0xFF]->type->type==0))*/)
 			{
 				b=myBuildings[(i+id)&0xFF];
 				break;
 			}
-		mainBuilding[buildingType]=Building::UIDtoID(b->UID);
+		mainBuilding[buildingType]=Building::GIDtoID(b->gid);
 		//printf("AI: nextMainBuilding newuid=%d\n", b->UID);
 	}
 }
 
-bool AINumbi::checkUIDRoomForBuilding(int px, int py, int width, int height)
-{
-	Game *game=player->team->game;
-	for (int x=px; x<px+width; x++)
-		for (int y=py; y<py+height; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
-				return false;
-		}
-	return true;
-}
-
 int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width, int height)
 {
-	Game *game=player->team->game;
-
-	int px=posX+game->map.getW();
-	int py=posY+game->map.getH();
+	int px=posX+map->getW();
+	int py=posY+map->getH();
 	int x, y;
 	
 	int valid=256+96;
@@ -464,89 +457,65 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		y=py-r;
 		int ew=1;
 		for (x=px-ew; x<px+width+ew; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=4+(r-2)*4;
 				break;
 			}
-		}
 		y=py+height-1+r;
 		for (x=px-ew; x<px+width+ew; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=4+(r-2)*4;
 				break;
 			}
-		}
 
 		x=px-r;
 		for (y=py-ew; y<py+height+ew; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=4+(r-2)*4;
 				break;
 			}
-		}
 		x=px+width-1+r;
 		for (y=py-ew; y<py+height+ew; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=4+(r-2)*4;
 				break;
 			}
-		}
 	}
 	for (r=1; r<=1; r++)
 	{
 		y=py-r;
 		for (x=px; x<px+width; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid>0)||(uid==NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=12;
 				break;
 			}
-		}
 		y=py+height-1+r;
 		for (x=px; x<px+width; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid>0)||(uid==NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=12;
 				break;
 			}
-		}
 
 		x=px-r;
 		for (y=py; y<py+height; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid>0)||(uid==NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=12;
 				break;
 			}
-		}
 		x=px+width-1+r;
 		for (y=py; y<py+height; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid>0)||(uid==NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				valid-=12;
 				break;
 			}
-		}
 	}
 	
 	for (r=1; r<=8; r++)
@@ -554,14 +523,11 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		y=py-r;
 		bool anyBuild=false;
 		for (x=px; x<px+width; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				anyBuild=true;
 				break;
 			}
-		}
 		if (!anyBuild)
 			break;
 	}
@@ -571,14 +537,11 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		y=py+height-1+r;
 		bool anyBuild=false;
 		for (x=px; x<px+width; x++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				anyBuild=true;
 				break;
 			}
-		}
 		if (!anyBuild)
 			break;
 	}
@@ -588,14 +551,11 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		bool anyBuild=false;
 		x=px-r;
 		for (y=py; y<py+height; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				anyBuild=true;
 				break;
 			}
-		}
 		if (!anyBuild)
 			break;
 	}
@@ -605,14 +565,11 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		bool anyBuild=false;
 		x=px+width-1+r;
 		for (y=py; y<py+height; y++)
-		{
-			int uid=game->map.getUnit(x, y);
-			if ((uid<0)&&(uid!=NOUID))
+			if (!map->isFreeForBuilding(x, y))
 			{
 				anyBuild=true;
 				break;
 			}
-		}
 		if (!anyBuild)
 			break;
 	}
@@ -660,7 +617,7 @@ void AINumbi::squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int 
 
 bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 {
-	Building **myBuildings=player->team->myBuildings;
+	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[mainBuilding[buildingType]];
 	if (b==NULL)
 	{
@@ -707,8 +664,8 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		else
 			margin=2;
 
-		int bposX=b->posX+player->team->game->map.getW();
-		int bposY=b->posY+player->team->game->map.getH();
+		int bposX=b->posX+map->getW();
+		int bposY=b->posY+map->getH();
 		
 		sx=bposX-width-margin;
 		sy=bposY-height-margin;
@@ -735,17 +692,16 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 
 			//int px=b->posX+dx*(width+r);
 			//int py=b->posY+dy*(height+r);
-			if (checkUIDRoomForBuilding(px, py, width, height))
+			if (map->isFreeForBuilding(px, py, width, height))
 			{
 				int valid=nbFreeAround(buildingType, px, py, width, height);
-				if ((valid>299)&&(player->team->game->checkRoomForBuilding(px, py, typeNum, player->team->teamNumber)))
+				if ((valid>299)&&(game->checkRoomForBuilding(px, py, typeNum, player->team->teamNumber)))
 				{
-					Game *game=player->team->game;
 					int rx, ry;
-					bool nr=game->map.nearestRessource(px, py, CORN, &rx, &ry);
+					bool nr=map->nearestRessource(px, py, CORN, &rx, &ry);
 					if (nr)
 					{
-						int dist=game->map.warpDistSquare(px+1, py+1, rx, ry);
+						int dist=map->warpDistSquare(px+1, py+1, rx, ry);
 						if (((dist<=(64+width*height))&&(buildingType<=1))||((dist>=(64+width*height))&&(buildingType>1)))
 						{
 							//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);
@@ -785,15 +741,12 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 
 Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
 {
-	Unit **myUnits=player->team->myUnits;
+	Unit **myUnits=team->myUnits;
 	int ft=0;
-	{
-		for (int i=0; i<1024; i++)
-		{
-			if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
-				ft++;
-		}
-	}
+	for (int i=0; i<1024; i++)
+		if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
+			ft++;
+	
 	if (attackPhase==0)
 	{
 		if (ft>=critticalMass)
@@ -819,49 +772,52 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 			return new NullOrder();
 		}
 		
-		Game *game=player->team->game;
 		int teamNumber=player->team->teamNumber;
 		
-		{
-			for (int i=0; i<512; i++)
+		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
+			if ((*bit)->type->type==BuildingType::WAR_FLAG)
 			{
-				Building *b=player->team->myBuildings[i];
-				if ((b)&&(b->type->type==BuildingType::WAR_FLAG))
+				Building *b=*bit;
+				int gbid=map->getBuilding(b->posX, b->posY);
+				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
+					return new OrderDelete(gbid); // The target has beed sucessfuly killed.
+				
+				if (b->maxUnitWorking!=numberRequested)
 				{
-					int uid=game->map.getUnit(b->posX, b->posY);
-					if ((uid==NOUID)||(uid>=0)||(Building::UIDtoTeam(uid)==teamNumber))
-						return new OrderDelete(b->UID);
-						
-					if (b->maxUnitWorking!=numberRequested)
-					{
-						printf("AI: OrderModifyBuildings(%d, %d)", b->UID, numberRequested);
-						return new OrderModifyBuildings(&b->UID, &numberRequested, 1);
-					}
+					printf("AI: OrderModifyBuildings(%d, %d)", b->gid, numberRequested);
+					return new OrderModifyBuildings(&b->gid, &numberRequested, 1);
 				}
 			}
-		}
 		
-		
+		// We look for a specific enemy:
 		Uint32 enemies=player->team->enemies;
 		int e=-1;
-		{
-			for (int i=0; i<game->session.numberOfTeam; i++)
-				if (game->teams[i]->me & enemies)
-					e=i;
-		}
+		for (int i=0; i<game->session.numberOfTeam; i++)
+			if (game->teams[i]->me & enemies)
+				e=i;
 		if (e==-1)
 			return new NullOrder();
 		
 		int ex=-1, ey=-1;
+		for (int i=0; i<1024; i++)
 		{
-			for (int i=0; i<512; i++)
+			Building *b=game->teams[e]->myBuildings[i];
+			if (b)
 			{
-				Building *b=game->teams[e]->myBuildings[i];
-				if (b)
+				ex=b->posX;
+				ey=b->posY;
+				
+				if (syncRand()&0x1F==0)
 				{
-					ex=b->posX;
-					ey=b->posY;
-					if (syncRand()&0x1F==0)
+					bool already=false;
+					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
+						if ((*bit)->type->type==BuildingType::WAR_FLAG)
+							if ((*bit)->posX==ex &&(*bit)->posX==ex)
+							{
+								already=true;
+								break;
+							}
+					if (!already)
 						break;
 				}
 			}
@@ -869,8 +825,8 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		
 		if (ey!=-1)
 		{
-			
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+			printf("AI: OrderCreateWarFlag(%d, %d)", ex, ey);
 			return new OrderCreate(teamNumber, ex, ey, (BuildingType::BuildingTypeNumber)typeNum);
 		}
 		else
@@ -883,15 +839,9 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 	}
 	else if (attackPhase==3)
 	{
-		Building **myBuildings=player->team->myBuildings;
-		for (int i=0; i<512; i++)
-		{
-			Building *b=myBuildings[i];
-			if ((b)&&(b->type->type==BuildingType::WAR_FLAG))
-			{
-				return new OrderDelete(b->UID);
-			}
-		}
+		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
+			if ((*bit)->type->type==BuildingType::WAR_FLAG)
+				return new OrderDelete((*bit)->gid);
 		attackPhase=0;
 		critticalWarriors*=2;
 		critticalTime*=2;
@@ -907,11 +857,11 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 
 Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
 {
-	Building **myBuildings=player->team->myBuildings;
+	Building **myBuildings=team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
 	
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
 		if ((b)&&(b->type->type==buildingType))
@@ -919,14 +869,9 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 			fb++;
 			int w=workers;
 			if ((b->maxUnitWorking!=w)&&(b->type->maxUnitWorking))
-			{
-
-				//printf("AI: (%d) (%d) numberRequested changed.\n", buildingType, b->UID);
-				return new OrderModifyBuildings(&b->UID, &w, 1);
-			}
+				return new OrderModifyBuildings(&b->gid, &w, 1);
 		}
 	}
-	
 	
 	int wr=countUnits();
 	
@@ -942,7 +887,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 		if (findNewEmplacement(buildingType, &x, &y))
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
-			int teamNumber=player->team->teamNumber;
+			int teamNumber=team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 		}
 		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
@@ -955,7 +900,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 {
 	//Building **myBuildings=player->team->myBuildings;
-	std::list<Building *> swarms=player->team->swarms;
+	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
 	
 	int wr=countUnits();
@@ -967,7 +912,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
-			int teamNumber=player->team->teamNumber;
+			int teamNumber=team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 		}
 		return new NullOrder();
@@ -978,7 +923,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 
 Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
-	Building **myBuildings=player->team->myBuildings;
+	Building **myBuildings=team->myBuildings;
 	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
 	int numberUpgradingFood[4]={0, 0, 0, 0}; // number of upgrading food buildings
 	Building *foodBuilding[4]={0, 0, 0, 0};
@@ -999,7 +944,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 	int numberUpgradingDefense[4]={0, 0, 0, 0}; // number of upgrading Science buildings
 	Building *defenseBuilding[4]={0, 0, 0, 0};
 	
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
 		if (b)
@@ -1064,7 +1009,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		}
 	}
 	
-	Unit **myUnits=player->team->myUnits;
+	Unit **myUnits=team->myUnits;
 	int wun[4]={0, 0, 0, 0};//working units
 	int fun[4]={0, 0, 0, 0};//free units
 	{
@@ -1093,31 +1038,31 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberHealth[0]>numberUpgradingHealth[1])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberAttack[0]>numberUpgradingAttack[1])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberScience[0]>numberUpgradingScience[1]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberDefense[0]>numberUpgradingDefense[1])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 	}
 	
@@ -1130,31 +1075,31 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberHealth[1]>numberUpgradingHealth[2])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberAttack[1]>numberUpgradingAttack[2])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberScience[1]>numberUpgradingScience[2]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 		if (numberDefense[1]>numberUpgradingDefense[2])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderConstruction(b->UID);
+				return new OrderConstruction(b->gid);
 		}
 	}
 	
