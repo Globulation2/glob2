@@ -132,9 +132,9 @@ public:
 	void unbind();
 	
 	bool send(Uint8 *data, int size);
-	bool send(Uint8 *data, int size, const int v);
-	bool send(const int v);
-	bool send(const int u, const int v);
+	bool send(Uint8 *data, int size, const Uint8 v);
+	bool send(const Uint8 v);
+	bool send(const Uint8 u, const Uint8 v);
 
 public:
 	bool destroyNet;

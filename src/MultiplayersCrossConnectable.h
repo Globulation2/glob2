@@ -29,8 +29,11 @@ public:
 	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
 	int getFreeChannel();
+	bool sameip(IPaddress ip);
 	bool send(Uint8 *data, int size);
+	bool send(const Uint8 u, const Uint8 v);
 	void sendingTime();
+	void confirmedMessage(Uint8 *data, int size, IPaddress ip);
 	void receivedMessage(Uint8 *data, int size, IPaddress ip);
 	void sendMessage(const char *s);
 	
@@ -46,6 +49,7 @@ public:
 		int timeout;
 		int TOTL;
 		bool guiPainted;
+		bool received[33];
 	};
 	std::list<Message> sendingMessages;
 	std::list<Message> receivedMessages;
