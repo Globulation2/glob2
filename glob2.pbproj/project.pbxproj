@@ -139,6 +139,110 @@
 //592
 //593
 //594
+		59580D8806FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.list.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8906FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.it.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8A06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.pl.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8B06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.ro.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8C06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.ru.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8D06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.sr.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8E06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.keys.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D8F06FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.cz.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D9006FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.en.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D9106FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.es.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D9206FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.fr.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D9306FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.hu.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59580D9406FE163C00C94DAF = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			path = texts.de.txt;
+			refType = 4;
+			sourceTree = "<group>";
+		};
 		5967D2C005AB553A000536C3 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -1080,14 +1184,6 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = units.txt;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		59C5D62D05F38CED00DE80AB = {
-			explicitFileType = text;
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			path = texts.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6390,8 +6486,20 @@
 		5BE9C98403FFA23E0000000D = {
 			children = (
 				59C5D62C05F38CED00DE80AB,
-				59C5D62D05F38CED00DE80AB,
 				59C5D62E05F38CED00DE80AB,
+				59580D8806FE163C00C94DAF,
+				59580D8906FE163C00C94DAF,
+				59580D8A06FE163C00C94DAF,
+				59580D8B06FE163C00C94DAF,
+				59580D8C06FE163C00C94DAF,
+				59580D8D06FE163C00C94DAF,
+				59580D8E06FE163C00C94DAF,
+				59580D8F06FE163C00C94DAF,
+				59580D9006FE163C00C94DAF,
+				59580D9106FE163C00C94DAF,
+				59580D9206FE163C00C94DAF,
+				59580D9306FE163C00C94DAF,
+				59580D9406FE163C00C94DAF,
 				59C5D62F05F38CED00DE80AB,
 				59C5D63005F38CED00DE80AB,
 				5BE9C98703FFA23E0000000D,
