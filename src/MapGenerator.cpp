@@ -743,7 +743,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	}
 	
 	// Let's add some green space for teams:
-	int squareSize=5+(int)(sqrt(minDistSquare)/4.5);
+	int squareSize=5+(int)(sqrt((double)minDistSquare)/4.5);
 	printf("squareSize=%d.\n", squareSize);
 	for (int team=0; team<nbTeams; team++)
 	{
@@ -932,7 +932,7 @@ bool Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	int* bootX=descriptor.bootX;
 	int* bootY=descriptor.bootY;
 	int nbIslands=descriptor.nbTeams;
-	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(nbIslands)));
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt((double)nbIslands)));
 	if (islandsSize<8)
 		islandsSize=8;
 	int minDistSquare=(w*h)/nbIslands;
@@ -1291,7 +1291,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 	int *bootX=descriptor.bootX;
 	int *bootY=descriptor.bootY;
 	
-	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbTeams)));
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt((double)descriptor.nbTeams)));
 	if (islandsSize<8)
 		islandsSize=8;
 	// let's add ressources...

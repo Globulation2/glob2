@@ -444,7 +444,7 @@ bool Story::testCondition()
 				{
 					int dx, dy;
 					int number =line[lineSelector+1].value;
-					int delta = (int)(sqrt(number)+1)/2;
+					int delta = (int)(sqrt((double)number)+1)/2;
 					for (dy=y-delta; dy<y+delta; dy++)
 					{
 						for (dx=x-delta; dx<x+delta; dx++)

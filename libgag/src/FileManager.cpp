@@ -266,18 +266,27 @@ void FileManager::remove(const char *filename)
 bool FileManager::isDir(const char *filename)
 {
 	std::vector<const char *>::iterator dirListIterator = dirList.begin();
+#ifdef WIN32
+	struct _stat s;
+#else
 	struct stat s;
+#endif
+
 	int serr = 1;
 	while ((serr) && (dirListIterator != dirList.end()))
 	{
 		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
+#ifdef WIN32
+		serr = ::_stat(fn, &s);
+#else
 		serr = stat(fn, &s);
+#endif
 		delete[] fn;
 		dirListIterator++;
 	}
-	return S_ISDIR(s.st_mode);
+	return (s.st_mode&S_IFDIR)!=0;
 }
 
 bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
