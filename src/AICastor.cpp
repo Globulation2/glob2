@@ -145,8 +145,8 @@ void AICastor::firstInit()
 
 AICastor::AICastor(Player *player)
 {
-	logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	//logFile=stdout;
+	//logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	logFile=stdout;
 	
 	firstInit();
 	init(player);
@@ -1955,7 +1955,7 @@ void AICastor::computeObstacleBuildingMap()
 	for (size_t i=0; i<size; i++)
 	{
 		Case c=cases[i];
-		if (c.building==NOGBID)
+		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
 		else  if (c.terrain>=16) // if (!isGrass)
 			obstacleBuildingMap[i]=0;
@@ -2381,19 +2381,18 @@ void AICastor::computeWheatCareMap()
 	{
 		Case c=cases[i];
 		if (c.building!=NOGBID)
-			obstacleUnitMap[i]=0;
+			wheatCareMap[i]=0;
 		else if (c.forbidden&teamMask)
-			obstacleUnitMap[i]=0;
+			wheatCareMap[i]=0;
 		else if (c.ressource.type==CORN)
-			obstacleUnitMap[i]=1;
+			wheatCareMap[i]=1;
 		else if (c.ressource.type!=NO_RES_TYPE)
-			obstacleUnitMap[i]=0;
+			wheatCareMap[i]=0;
 		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
-			obstacleUnitMap[i]=0;
+			wheatCareMap[i]=0;
 		else
-			obstacleUnitMap[i]=1;
+			wheatCareMap[i]=1;
 	}
-	memcpy(wheatCareMap, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 		if (notGrassMap[i]==15 && wheatGradient[i]==254 && cases[i].terrain<16)
 			wheatCareMap[i]=8;
@@ -2640,17 +2639,17 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 				&& (mapDiscovered[corner2]&me)==0
 				&& (mapDiscovered[corner3]&me)==0)
 				continue;
-			//goodBuildingMap[corner0]=1;
+			goodBuildingMap[corner0]=1;
 			
 			Uint8 space=spaceForBuildingMap[corner0];
 			if (space<bw)
 				continue;
-			//goodBuildingMap[corner0]=2;
+			goodBuildingMap[corner0]=2;
 			
 			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 			if (work<minWork)
 				continue;
-			//goodBuildingMap[corner0]=3;
+			goodBuildingMap[corner0]=3;
 			
 			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
 			if (!defense)
@@ -2670,12 +2669,12 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 					//	continue;
 				}
 			}
-			//goodBuildingMap[corner0]=4;
+			goodBuildingMap[corner0]=4;
 			
 			Uint32 enemyRange=enemyRangeMap[corner0]+enemyRangeMap[corner1]+enemyRangeMap[corner2]+enemyRangeMap[corner3];
 			if (enemyRange>4*(255-8))
 				continue;
-			//goodBuildingMap[corner0]=5;
+			goodBuildingMap[corner0]=5;
 			
 			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
 			
@@ -2685,7 +2684,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 			if ((neighbour&1)||(directNeighboursCount>1))
 				continue;
 			
-			//goodBuildingMap[corner0]=6;
+			goodBuildingMap[corner0]=6;
 			
 			Sint32 score;
 			if (defense)
@@ -2695,12 +2694,12 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 			else
 				score=(4096+work-(wheatGrowth<<8)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 			
-			if (score<0)
+			/*if (score<0)
 				goodBuildingMap[corner0]=0;
 			else if ((score>>9)>=255)
 				goodBuildingMap[corner0]=255;
 			else
-				goodBuildingMap[corner0]=(score>>9);
+				goodBuildingMap[corner0]=(score>>9);*/
 			
 			if (bestScore<score)
 			{
