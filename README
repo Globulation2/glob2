@@ -13,8 +13,19 @@ Note : if SDL is not installed system wide but rather in $prefix,
 add the following flags to aclocal :
 aclocal -I $prefix/share/aclocal
 
-
 Under Win32 :
 
 To build the data file,s run makedata.bat in the data subdirectory, then use glob2.dsw
-with MSDEV to build glob2
+with MSDEV to build glob2.
+
+!! WARNING !!
+The gfx are no more included in the CVS.
+You have to go to download them at
+http://moneo.calodox.org/~nct/glob2gfx.tar
+
+Once downloaded, untar them in the data directory :
+cd glob2/data, tar xvf glob2gfx.tar
+
+Have fun
+
+Steph

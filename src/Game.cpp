@@ -1060,7 +1060,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid);
 
 				//We add a hued color over the flag
-				globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid+1);
+				//globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid+1);
 			}
 
 			if (drawBuildingRects)
@@ -1275,7 +1275,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 
 	for (n=0; n<rw+1; n++)
 	{
-	
+
 	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), ry&0x7F, 255, 255, 255);
 	
 	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), (ry+rh)&0x7F, 255, 255, 255);
