@@ -91,7 +91,7 @@ void AICastor::init(Player *player)
 	timer=0;
 	canSwim=false;
 	needPool=false;
-	lastNeedPoolComputed=(Uint32)-1;
+	lastNeedPoolComputed=(Uint32)-1024;
 	hydratationMapComputed=false;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
@@ -235,18 +235,16 @@ void AICastor::save(SDL_RWops *stream)
 Order *AICastor::getOrder(void)
 {
 	timer++;
-	if (timer&31)
-		return new NullOrder();
 	
 	if (!hydratationMapComputed)
 		computeHydratationMap();
 	
-	printf("getOrder(), %d projects\n", projects.size());
+	//printf("getOrder(), %d projects\n", projects.size());
 	bool blocking=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->finished)
 		{
-			printf(" deleting project %s\n", (*pi)->debugName);
+			printf("deleting project %s\n", (*pi)->debugName);
 			delete *pi;
 			pi=projects.erase(pi);
 		}
@@ -312,8 +310,8 @@ void AICastor::addProjects(void)
 		}
 	}
 	
-	printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
-		canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
+	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
+	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
 	
 	if (canFeedUnit==0)
 	{
@@ -376,17 +374,20 @@ void AICastor::addProjects(void)
 Order *AICastor::continueProject(Project *project)
 {
 	// Phase alpha will make a new Food Building at any price.
-	printf("(%s)(stn=%d, f=%d, w=[%d, %d, %d], ms=%d, wf=%d), sp=%d\n",
-		project->debugName,
-		project->shortTypeNum, project->food,
-		project->mainWorkers, project->foodWorkers, project->otherWorkers,
-		project->multipleStart, project->waitFinished, project->subPhase);
+	//printf("(%s)(stn=%d, f=%d, w=[%d, %d, %d], ms=%d, wf=%d), sp=%d\n",
+	//	project->debugName,
+	//	project->shortTypeNum, project->food,
+	//	project->mainWorkers, project->foodWorkers, project->otherWorkers,
+	//	project->multipleStart, project->waitFinished, project->subPhase);
+	
+	if (timer<project->timer+32)
+		return NULL;
 	
 	if (project->subPhase==0)
 	{
 		// boot phase
-		project->subPhase=3;
-		printf(" (boot), switching to subphase 3.\n");
+		project->subPhase=2;
+		printf("%s (boot), switching to subphase 2.\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -408,20 +409,15 @@ Order *AICastor::continueProject(Project *project)
 		computeWorkAbilityMap();
 		
 		Order *gfbm=findBestBuilding(typeNum, project->food);
+		project->timer=timer;
 		if (gfbm)
 		{
 			project->subPhase=2;
-			printf(" (building site placed), switching to next subphase 2.\n");
+			printf("%s (building site placed), switching to next subphase 2.\n", project->debugName);
 			return gfbm;
 		}
 	}
 	else if (project->subPhase==2)
-	{
-		// Waiting phase
-		project->subPhase=3;
-		printf(" (waiting done), switching to next subphase 3.\n");
-	}
-	else if (project->subPhase==3)
 	{
 		// Checking of any real food building site:
 		
@@ -445,26 +441,26 @@ Order *AICastor::continueProject(Project *project)
 		
 		if (count>0)
 		{
-			project->subPhase=8;
-			printf(" (building finished), switching to subphase 8.\n");
+			project->subPhase=6;
+			printf("%s (building finished), switching to subphase 6.\n", project->debugName);
 		}
 		else if (siteCount==0)
 		{
 			project->subPhase=1;
-			printf(" (no real building site found), switching back to subphase 1.\n");
+			printf("%s (no real building site found), switching back to subphase 1.\n", project->debugName);
 		}
 		else
 		{
-			project->subPhase=4;
-			printf(" (real building site found), switching to next subphase 4.\n");
+			project->subPhase=3;
+			printf("%s (real building site found), switching to next subphase 3.\n", project->debugName);
 			if (!project->waitFinished)
-				printf(" (deblocking)\n");
+				printf("%s (deblocking)\n", project->debugName);
 		}
 	}
-	else if (project->subPhase==4)
+	else if (project->subPhase==3)
 	{
 		// balance workers:
-		int isFree=team->stats.getFreeUnits(WORKER);
+		int isFree=getFreeWorkers();
 		Sint32 mainWorkers=project->mainWorkers;
 		if (isFree<=3)
 		{
@@ -494,9 +490,12 @@ Order *AICastor::continueProject(Project *project)
 				if (b->typeNum==siteTypeNum)
 				{
 					// main building
-					if (mainWorkers>=0 && b->maxUnitWorkingLocal!=mainWorkers)
+					if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
 					{
+						b->maxUnitWorking=mainWorkers;
 						b->maxUnitWorkingLocal=mainWorkers;
+						b->update();
+						project->timer=timer;
 						return new OrderModifyBuilding(b->gid, mainWorkers);
 					}
 				}
@@ -506,19 +505,25 @@ Order *AICastor::continueProject(Project *project)
 					|| b->typeNum==foodSiteTypeNum)
 				{
 					// food buildings
-					if (project->foodWorkers>=0 && b->maxUnitWorkingLocal!=project->foodWorkers)
+					if (project->foodWorkers>=0 && b->maxUnitWorking!=project->foodWorkers)
 					{
+						b->maxUnitWorking=project->foodWorkers;
 						b->maxUnitWorkingLocal=project->foodWorkers;
-						return new OrderModifyBuilding(b->gid, b->maxUnitWorkingLocal);
+						b->update();
+						project->timer=timer;
+						return new OrderModifyBuilding(b->gid, project->foodWorkers);
 					}
 				}
 				else if (b->type->maxUnitWorking!=0)
 				{
 					// others buildings:
-					if (project->otherWorkers>=0 && b->maxUnitWorkingLocal!=project->otherWorkers)
+					if (project->otherWorkers>=0 && b->maxUnitWorking!=project->otherWorkers)
 					{
+						b->maxUnitWorking=project->otherWorkers;
 						b->maxUnitWorkingLocal=project->otherWorkers;
-						return new OrderModifyBuilding(b->gid, b->maxUnitWorkingLocal);
+						b->update();
+						project->timer=timer;
+						return new OrderModifyBuilding(b->gid, project->otherWorkers);
 					}
 				}
 			}
@@ -528,31 +533,25 @@ Order *AICastor::continueProject(Project *project)
 		{
 			if (project->multipleStart)
 			{
-				project->subPhase=5;
-				printf(" (all max-unit-working set), switching to next subphase 5.\n");
+				project->subPhase=4;
+				printf("%s (all max-unit-working set), switching to next subphase 4.\n", project->debugName);
 			}
 			else
 			{
-				project->subPhase=7;
-				printf(" (all max-unit-working set), switching to next subphase 7.\n");
+				project->subPhase=5;
+				printf("%s (all max-unit-working set), switching to next subphase 5.\n", project->debugName);
 			}
 		}
 		else
 		{
-			project->subPhase=8;
-			printf(" (building finished), switching to subphase 8.\n");
+			project->subPhase=6;
+			printf("%s (building finished), switching to subphase 6.\n", project->debugName);
 		}
 	}
-	else if (project->subPhase==5)
-	{
-		// Waiting phase
-		project->subPhase=6;
-		printf(" (waiting done), switching to next subphase 6.\n");
-	}
-	else if (project->subPhase==6)
+	else if (project->subPhase==4)
 	{
 		// If enough workers are free, we start another building.
-		int isFree=team->stats.getFreeUnits(WORKER);
+		int isFree=getFreeWorkers();
 		
 		if (isFree>0)
 		{
@@ -572,23 +571,24 @@ Order *AICastor::continueProject(Project *project)
 			computeWorkAbilityMap();
 			
 			Order *gfbm=findGoodBuilding(typeNum, project->food, 0);
+			project->timer=timer;
 			if (gfbm)
 			{
-				project->subPhase=4;
-				printf(" (enough free workers and site placed), switching back to subphase 4.\n");
+				project->subPhase=3;
+				printf("%s (enough free workers and site placed), switching back to subphase 3.\n", project->debugName);
 				return gfbm;
 			}
 		}
 		
-		project->subPhase=7;
-		printf(" (no more free workers), switching to next subphase 7.\n");
+		project->subPhase=5;
+		printf("%s (no more free workers), switching to next subphase 5.\n", project->debugName);
 	}
-	else if (project->subPhase==7)
+	else if (project->subPhase==5)
 	{
 		// We simply wait for the food building to be finished,
-		// and add free workers if aviable:
+		// and add free workers if aviable and project.waitFinished:
 		
-		int isFree=team->stats.getFreeUnits(WORKER);
+		int isFree=getFreeWorkers();
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
 		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
@@ -606,37 +606,45 @@ Order *AICastor::continueProject(Project *project)
 				else if (b->typeNum==siteTypeNum)
 				{
 					siteCount++;
-					if (project->waitFinished && isFree>0 && b->maxUnitWorkingLocal<project->mainWorkers)
+					if (project->waitFinished && isFree>0 && b->maxUnitWorking<project->mainWorkers)
 					{
-						printf(" (incrementing workers) isFree=%d, local=%d\n", isFree, b->maxUnitWorkingLocal);
-						b->maxUnitWorkingLocal++;
-						return new OrderModifyBuilding(b->gid, b->maxUnitWorkingLocal);
+						printf("%s (incrementing workers) isFree=%d, current=%d\n",
+							project->debugName, isFree, b->maxUnitWorking);
+						b->maxUnitWorking++;
+						b->maxUnitWorkingLocal=b->maxUnitWorking;
+						b->update();
+						project->timer=timer;
+						return new OrderModifyBuilding(b->gid, b->maxUnitWorking);
 					}
 				}
 			}
 		}
 		if (count>0)
 		{
-			project->subPhase=8;
-			printf(" (building finished), switching to subphase 8.\n");
+			project->subPhase=6;
+			printf("%s (building finished), switching to next subphase 6.\n", project->debugName);
 		}
 		else if (siteCount==0)
 		{
-			project->subPhase=0;
-			printf(" (building site destroyed), switching back to subphase 0.\n");
+			project->subPhase=2;
+			printf("%s (building site destroyed), switching back to subphase 2.\n", project->debugName);
 		}
 	}
-	else if (project->subPhase==8)
+	else if (project->subPhase==6)
 	{
-		printf(" (deblocking)\n");
-		project->blocking=false;
-		
 		// balance final workers:
+		
+		if (project->blocking)
+		{
+			printf("%s (deblocking)\n", project->debugName);
+			project->blocking=false;
+		}
+		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
 		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
 		int siteCount=0;
 		
-		int isFree=team->stats.getFreeUnits(WORKER);
+		int isFree=getFreeWorkers();
 		Sint32 finalWorkers=project->finalWorkers;
 		if (isFree<=3)
 		{
@@ -654,11 +662,14 @@ Order *AICastor::continueProject(Project *project)
 			{
 				if (b->typeNum==siteTypeNum)
 					siteCount++;
-				else if (project->finalWorkers>=0 && b->typeNum==typeNum && b->maxUnitWorkingLocal!=finalWorkers)
+				else if (project->finalWorkers>=0 && b->typeNum==typeNum && b->maxUnitWorking!=finalWorkers)
 				{
 					assert(b->type->maxUnitWorking!=0);
+					b->maxUnitWorking=finalWorkers;
 					b->maxUnitWorkingLocal=finalWorkers;
-					return new OrderModifyBuilding(b->gid, b->maxUnitWorkingLocal);
+					b->update();
+					project->timer=timer;
+					return new OrderModifyBuilding(b->gid, finalWorkers);
 				}
 			}
 		}
@@ -666,13 +677,25 @@ Order *AICastor::continueProject(Project *project)
 		if (siteCount==0)
 		{
 			project->finished=true;
-			printf(" succeded. (all finalWorkers set)\n");
+			printf("%s succeded. (all finalWorkers set)\n", project->debugName);
 		}
 	}
 	else
 		assert(false);
 	
 	return NULL;
+}
+
+int AICastor::getFreeWorkers()
+{
+	int sum=0;
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=team->myUnits[i];
+		if (u && u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM && u->typeNum==WORKER && !u->subscribed)
+			sum++;
+	}
+	return sum;
 }
 
 void AICastor::computeCanSwim()
@@ -724,6 +747,7 @@ void AICastor::computeNeedPool()
 			extendedCount++;
 	
 	needPool=((baseCount<<4)>(7*extendedCount));
+	printf("needPool=%d\n", needPool);
 	lastNeedPoolComputed=timer;
 	
 	computeCanSwim();
@@ -948,34 +972,39 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			}
 			
 			// At a range of 2 space case, without corners,
-			// we increment (from bit 1):
+			// we increment (from bit 5):
+			Uint8 inc;
+			if (neighbour)
+				inc=32;
+			else
+				inc=64;
 			for (int xi=bx-dw; xi<bx+bw+1; xi++)
 			{
 				Uint8 *p;
 				p=&gradient[(xi&wMask)+(((by-dh-2)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 			}
 			for (int yi=by-dh; yi<by+bh+1; yi++)
 			{
 				Uint8 *p;
 				p=&gradient[((bx-dw-2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 			}
 			{
 				// the same with inner inner corners:
 				Uint8 *p;
 				p=&gradient[((bx-dw-1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 				p=&gradient[((bx-dw-1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 				p=&gradient[((bx+bw+1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 				p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=32;
+				(*p)+=inc;
 			}
 		}
 	}
@@ -1242,11 +1271,11 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, int higherQuality)
 	Sint32 bestScore=0;
 	for (size_t i=0; i<size; i++)
 	{
-		if (   (mapDiscovered[i]&me)==0
-			&& (mapDiscovered[(i+bw-1)&(size-1)]&me)==0
-			&& (mapDiscovered[(i+(bw<<wDec))&(size-1)]&me)==0
-			&& (mapDiscovered[(i+(bw<<wDec)+bw-1)&(size-1)]&me)==0)
-			continue;
+		//if (   (mapDiscovered[i]&me)==0
+		//	&& (mapDiscovered[(i+bw-1)&(size-1)]&me)==0
+		//	&& (mapDiscovered[(i+(bw<<wDec))&(size-1)]&me)==0
+		//	&& (mapDiscovered[(i+(bw<<wDec)+bw-1)&(size-1)]&me)==0)
+		//	continue;
 		
 		Uint8 space=spaceForBuildingMap[i];
 		if (space<bw)
@@ -1268,9 +1297,9 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, int higherQuality)
 		
 		Sint32 score;
 		if (food)
-			score=(((Sint32)wheat<<8)+(Sint32)work)*(4+(directNeighboursCount<<1)+farNeighboursCount);
+			score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 		else
-			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(4+(directNeighboursCount<<1)+farNeighboursCount);
+			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
 		
 		if (bestScore<score)
 		{
@@ -1333,9 +1362,9 @@ Order *AICastor::findBestBuilding(Sint32 typeNum, bool food)
 		
 		Sint32 score;
 		if (food)
-			score=(((Sint32)wheat<<8)+(Sint32)work)*(4+(directNeighboursCount<<1)+farNeighboursCount);
+			score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 		else
-			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(4+(directNeighboursCount<<1)+farNeighboursCount);
+			score=(1280+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
 		
 		if ((score>>7)>255)
 			goodBuildingMap[i]=255;

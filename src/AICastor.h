@@ -41,10 +41,7 @@ public:
 		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName)
 		{
 			this->debugName=debugName;
-			printf(" new project(%s)\n", debugName);
-			subPhase=0;
 		
-			blocking=true;
 			this->shortTypeNum=shortTypeNum;
 			food=false;
 			
@@ -56,15 +53,12 @@ public:
 			waitFinished=false;
 			finalWorkers=1;
 			
-			finished=false;
+			init();
 		}
 		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 mainWorkers, const char* debugName)
 		{
 			this->debugName=debugName;
-			printf(" new project(%s)\n", debugName);
-			subPhase=0;
 		
-			blocking=true;
 			this->shortTypeNum=shortTypeNum;
 			food=false;
 			
@@ -76,8 +70,17 @@ public:
 			waitFinished=false;
 			finalWorkers=-1;
 			
-			finished=false;
+			init();
 		}
+		void init()
+		{
+			blocking=true;
+			subPhase=0;
+			printf("new project(%s)\n", debugName);
+			finished=false;
+			timer=(Uint32)-1;
+		}
+		
 		const char *debugName;
 		
 		int subPhase;
@@ -95,6 +98,8 @@ public:
 		Sint32 finalWorkers;
 		
 		bool finished;
+		
+		Uint32 timer;
 	};
 	
 private:
@@ -122,6 +127,8 @@ private:
 	
 	Order *continueProject(Project *project);
 	
+	int getFreeWorkers();
+	
 	void computeCanSwim();
 	void computeNeedPool();
 	
@@ -146,21 +153,6 @@ public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 
 	std::list<Project *> projects;
-	
-	/*enum PhaseType
-	{
-		P_NONE=0,
-		P_BASIC_FOOD=1,
-		P_BASIC_SWARM=2,
-		P_BASIC_SWIM=3,
-		P_BASIC_ATTAQUE=4,
-		P_BASIC_SPEED=5,
-		P_END
-	};
-	
-	PhaseType phase;
-	int subPhase;
-	int scheduler;*/
 	
 	Uint32 timer;
 	bool canSwim;
