@@ -4,7 +4,7 @@ http://www.ysagoon.com/glob2
 
 !! WARNING !!
 The gfx and musics are not included in the CVS.
-To get them, run the getdata script (execute ./getdata from glob2's
+To get them, run the syncdata script (execute ./syncdata from glob2's
 base directory).
 
 
