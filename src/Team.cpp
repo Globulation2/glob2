@@ -139,6 +139,7 @@ void Team::init(void)
 	}
 	palette=globalContainer.macPal;
 	freeUnits=0;
+	startPosX=startPosY=0;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial)
@@ -379,6 +380,8 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	assert(allies==~enemies);
 	sharedVision=SDL_ReadBE32(stream);
 	me=SDL_ReadBE32(stream);
+	startPosX=SDL_ReadBE32(stream);
+	startPosY=SDL_ReadBE32(stream);
 }
 
 void Team::save(SDL_RWops *stream)
@@ -442,6 +445,8 @@ void Team::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, enemies);
 	SDL_WriteBE32(stream, sharedVision);
 	SDL_WriteBE32(stream, me);
+	SDL_WriteBE32(stream, startPosX);
+	SDL_WriteBE32(stream, startPosY);
 }
 
 void Team::step(void)

@@ -264,7 +264,7 @@ bool Game::load(SDL_RWops *stream)
 	
 	session.gameTPF=tempSessionInfo.gameTPF;
 	session.gameLatency=tempSessionInfo.gameLatency;
-	
+
 	memcpy(map.mapName, tempSessionInfo.map.mapName, 32);
 	// other informations are dropped
 	
@@ -379,7 +379,7 @@ void Game::step(Sint32 localTeam)
 		map.step();
 		// NOTE : checkWinCondition();
 		syncRand();
-		
+
 		if ((stepCounter&31)==0)
 		{
 			map.switchFogOfWar();
@@ -387,7 +387,7 @@ void Game::step(Sint32 localTeam)
 				for (int i=0; i<512; i++)
 				{
 					Building *b=teams[t]->myBuildings[i];
-					if ((b)&&(!b->type->isBuildingSite)&&(!b->type->isVirtual))
+					if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 					{
 						int sr=b->type->shootingRange;
 						if(sr)
@@ -397,7 +397,7 @@ void Game::step(Sint32 localTeam)
 					}
 				}
 		}
-		if ((stepCounter&63)==0)
+		if ((stepCounter&31)==0)
 		{
 			// TODO : allow visual alliances.
 			renderMiniMap(localTeam, true);
@@ -761,7 +761,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 	std::set<int> buildingList;
-	
+
 	// we draw the terrains, eventually with debug rects:
 	for (y=top; y<=bot; y++)
 	{
@@ -796,10 +796,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				#endif
 			}
 	}
-	
-	// we draw the units and put the buildings in a set:
+
+	// we draw the units and put the buildings in a list:
 	mouseUnit=NULL;
-	
+
 	for (y=top-1; y<=bot; y++)
 	{
 		for (x=left-1; x<=right; x++)
@@ -813,7 +813,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int team=Unit::UIDtoTeam(uid);
 
 					Unit *unit=teams[team]->myUnits[id];
-					
+
 					assert(unit);
 					if (unit==NULL)
 					{
@@ -827,7 +827,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						if ((!map.isFOW(x+viewportX, y+viewportY, teamSelected))&&(!map.isFOW(x+viewportX-dx, y+viewportY-dy, teamSelected)))
 							continue;
 					}
-					
+
 					int imgid;
 
 					UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
@@ -864,10 +864,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer.gfx.drawSprite(unitSprite, px, py);
 					if (unit==selectedUnit)
 						globalContainer.gfx.drawCircle(px+16, py+16, 16, 0, 0, 255);
-					
+
 					if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((!useMapDiscovered)||(map.isFOW(x+viewportX, y+viewportY, teamSelected))||(Unit::UIDtoTeam(uid)==teamSelected)))
 						mouseUnit=unit;
-					
+
 					if (drawHealthFoodBar)
 					{
 						drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, unit->hungry/10000, 80, 179, 223);
@@ -910,37 +910,37 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 		}
 	}
-	
+
 	std::set<Building *> flagList;
-	
+
 	for (std::set <int>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
 	{
 		int uid = *it;
-		
+
 		int id = Building::UIDtoID(uid);
 		int team = Building::UIDtoTeam(uid);
-		
+
 		Building *building=teams[team]->myBuildings[id];
-		
+
 		if (building->type->isVirtual)
 		{
 			flagList.insert(building);
 			//continue; TODO : optimise and have a bic copy-past to show "drawHealthFoodBar" information in a flag more specifically.
 		}
-		
+
 		if ((building->type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
 			continue;
 
 		int imgid=building->type->startImage;
-		
-		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);	
-		
+
+		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
+
 		if (building->type->hueImage)
 		{
 			// Here he hue all the sprite:
-			
+
 			PalSprite *buildingSprite=(PalSprite *)globalContainer.buildings.getSprite(imgid);
-			buildingSprite->setPal(&(teams[team]->palette));       	
+			buildingSprite->setPal(&(teams[team]->palette));
 			globalContainer.gfx.drawSprite(buildingSprite, x, y);
 		}
 		else
@@ -949,9 +949,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			// First the sprite
 			PalSprite *buildingSprite=(PalSprite *)globalContainer.buildings.getSprite(imgid);
-			buildingSprite->setPal(&(globalContainer.macPal));       				
+			buildingSprite->setPal(&(globalContainer.macPal));
 			globalContainer.gfx.drawSprite(buildingSprite, x, y);
-			
+
 			// Then we draw a hued flag of the team.
 			int flagImgid=building->type->flagImage;
 			//int w=building->type->width;
@@ -963,22 +963,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			//int fh=flagSprite->getH();
 			flagSprite->setPal(&(globalContainer.macPal));
 
-			
+
 			globalContainer.gfx.drawSprite(flagSprite, x/*+(w<<5)-fh*/, y+(h<<5)-fw);
-		
+
 			//We add a hued color over the flag
 			PalSprite *flagHue=(PalSprite *)globalContainer.buildings.getSprite(flagImgid+1);
 			flagHue->setPal(&(teams[team]->palette));
 
 			globalContainer.gfx.drawSprite(flagHue, x/*+(w<<5)-fh*/, y+(h<<5)-fw);
 		}
-		
+
 		if (drawHealthFoodBar)
 		{
 			int decy=(building->type->height*32);
 			int healDecx=(building->type->width-2)*16+1;
 			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-			
+
 			// TODO : find better color for this
 			// health
 			if (building->type->hpMax)
@@ -991,14 +991,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				else
 					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 0, 0);
 			}
-			
+
 			// units
-			
+
 			if (building->maxUnitInside>0)
 				drawPointBar(x+building->type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 			if (building->maxUnitWorking>0)
 				drawPointBar(x+building->type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
-			
+
 			// food
 			if ((building->type->canFeedUnit) || (building->type->unitProductionTime))
 			{
@@ -1009,14 +1009,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					bDiv++;
 				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, building->type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	// Let's paint the bullets:
 	// TODO : optimise : test only possible sectors to show bullets.
-	
+
 	PalSprite *bulletSprite=(PalSprite *)globalContainer.buildings.getSprite(BULLET_IMGID);
 	bulletSprite->setPal(&(globalContainer.macPal));       				
 
@@ -1062,44 +1062,54 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 			}
 	}
-	
+
 	for (std::set <Building *>::iterator it=flagList.begin(); it!=flagList.end(); ++it)
 	{
 		Building *building=*it;
 		int team=building->owner->teamNumber;
-		
+
 		if ((building->type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
 			continue;
 
 		int imgid=building->type->startImage;
-		
-		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);	
-		
+
+		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
+
 		// all flags are hued:
 		PalSprite *buildingSprite=(PalSprite *)globalContainer.buildings.getSprite(imgid);
-		buildingSprite->setPal(&(teams[team]->palette));       	
+		buildingSprite->setPal(&(teams[team]->palette));
 		globalContainer.gfx.drawSprite(buildingSprite, x, y);
-		
+
 		// flag circle:
 		if (drawHealthFoodBar || (building==selectedBuilding))
 			globalContainer.gfx.drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
 	}
-	
+
 }
 
-void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY)
+void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected)
 {
 	SDL_Rect minimapZone;
+	int rx, ry, rw, rh;
 	minimapZone.x=globalContainer.gfx.getW()-128;
 	minimapZone.y=0;
 	minimapZone.w=128;
 	minimapZone.h=128;
 	SDL_BlitSurface(minimap,0,globalContainer.gfx.screen, &minimapZone);
-	int rx=(viewportX*128)/map.getW();
-	int ry=(viewportY*128)/map.getH();
-	int rw=((globalContainer.gfx.getW()-128)*128)/(32*map.getW());
-	int rh=(globalContainer.gfx.getH()*128)/(32*map.getH());
+	rx=viewportX;
+	ry=viewportY;
+	if (teamSelected>=0)
+	{
+		rx=(rx-teams[teamSelected]->startPosX+map.w+(map.w>>1));
+		ry=(ry-teams[teamSelected]->startPosY+map.h+(map.h>>1));
+		rx&=map.getMaskW();
+		ry&=map.getMaskH();
+	}
+	rx=(rx*128)/map.getW();
+	ry=(ry*128)/map.getH();
+	rw=((globalContainer.gfx.getW()-128)*128)/(32*map.getW());
+	rh=(globalContainer.gfx.getH()*128)/(32*map.getH());
 	// horizontal line
 	// WARNING : ugly copy paste, does anyone have any better idea ?
 	if (globalContainer.gfx.screen->format->BitsPerPixel==16)
@@ -1158,8 +1168,21 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int S[3]= { 255, 255, 0 };
 	int pcol[3];
 
+	int decSPX, decSPY;
+
 	dMx=(float)map.getW()/128.0f;
 	dMy=(float)map.getH()/128.0f;
+
+	if (teamSelected>=0)
+	{
+		decSPX=teams[teamSelected]->startPosX+map.w/2;
+		decSPY=teams[teamSelected]->startPosY+map.h/2;
+	}
+	else
+	{
+		decSPX=0;
+		decSPY=0;
+	}
 
 	// FIXME : ugly copy past,has someone better idea ?
 	if (globalContainer.gfx.screen->format->BitsPerPixel==16)
@@ -1177,9 +1200,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				isUnitOrBuilding=false;
 
 				// compute
-				for (minidx=(dMx*dx);minidx<=(dMx*(dx+1));minidx++)
+				for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
 				{
-					for (minidy=(dMy*dy);minidy<=(dMy*(dy+1));minidy++)
+					for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
 					{
 						// FIXME : handle this in a better way
 						if (showUnitsAndBuildings)
@@ -1237,9 +1260,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				isUnitOrBuilding=false;
 
 				// compute
-				for (minidx=(dMx*dx);minidx<=(dMx*(dx+1));minidx++)
+				for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
 				{
-					for (minidy=(dMy*dy);minidy<=(dMy*(dy+1));minidy++)
+					for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
 					{
 						// FIXME : handle this in a better way
 						if (showUnitsAndBuildings)

@@ -45,14 +45,16 @@ public:
 	bool isRunning;
 	bool showExtendedInformation;
 	int localPlayer, localTeam;
+	int viewportX, viewportY;
 
 private:
+	void viewportFromMxMY(int mx, int my);
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawButton(int x, int y, const char *caption);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 	void statStep(void);
-	
+
 private:
 	enum DisplayMode
 	{
@@ -61,31 +63,30 @@ private:
 		UNIT_SELECTION_VIEW,
 		STAT_VIEW,
 	};
-	
+
 	enum StatMode
 	{
 		STAT_TEXT=0,
 		STAT_GRAPH=1,
 		NB_STAT_MODE=2
 	};
-	
+
 	DisplayMode displayMode;
 	Building *selBuild;
 	Unit *selUnit;
 	Sint32 selectionUID;
 	bool needRedraw;
 	int typeToBuild;
-	
+
 	TeamStat stats[128];
 	int statsPtr;
 	StatMode statMode;
-	
+
 	SDLBitmapFont *font;
-	
+
 	std::queue<Order *> orderQueue;
-	
+
 	int mouseX, mouseY;
-	int viewportX, viewportY;
 	int viewportSpeedX[8], viewportSpeedY[8];
 
 	static const int MAX_MESSAGE_SIZE=64; // avoid network overflow
