@@ -264,13 +264,13 @@ bool Story::testCondition(GameGUI *gui)
 
 			case (Token::S_WIN):
 			{
-				mapscript->hasWon[lineSelector+1]=true;
+				mapscript->hasWon.at(line[lineSelector+1].value)=true;
 				return false;
 			}
 
 			case (Token::S_LOOSE):
 			{
-				mapscript->hasLost[lineSelector+1]=true;
+				mapscript->hasLost.at(line[lineSelector+1].value)=true;
 				return false;
 			}
 
@@ -1733,12 +1733,12 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 {
 	if (testMainTimer())
 	{
-		return hasWon[teamNumber];
+		return hasWon.at(teamNumber);
 	}
 	return false;
 }
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)
 {
-	return hasLost[teamNumber];
+	return hasLost.at(teamNumber);
 }

@@ -780,10 +780,10 @@ void Game::step(GameGUI *gui, Sint32 localTeam)
 
 		if ((stepCounter&31)==0)
 		{
+			scriptStep(gui);
 			wonStep();
-			script.step(gui);
 		}
-		
+
 		Sint32 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&31]+=endTick-startTick;
 		stepCounter++;
