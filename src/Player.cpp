@@ -210,10 +210,9 @@ Sint32 BasePlayer::checkSum()
 	// (we could uses two differents check sums, but the framework would be heavier)
 	//cs^=netPort;
 
-	{
-		for (int i=0; i<(int)strlen(name); i++)
-			cs^=name[i];
-	}
+	for (int i=0; i<(int)strlen(name); i++)
+		cs^=name[i];
+	
 	return cs;
 }
 
