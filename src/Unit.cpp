@@ -517,7 +517,9 @@ void Unit::handleActivity(void)
 			if (performance[HARVEST])
 			{
 				Building *b;
-				b=owner->findNearestJob(posX, posY, HARVEST, level[HARVEST]);
+				
+				// if we have a ressource
+				b=owner->findBestJob(posX, posY, HARVEST, level[HARVEST]);
 				if ( b != NULL)
 				{
 					destinationPurprose=b->neededRessource();

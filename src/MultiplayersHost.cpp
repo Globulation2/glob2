@@ -66,7 +66,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG)
 		YOGConnector yogConnector;
 		yogConnector.open();
 		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
-		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
+		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.getMapName());
 		yogConnector.sendString(newGameText);
 		yogConnector.close();
 	}

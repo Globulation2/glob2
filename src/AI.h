@@ -75,9 +75,7 @@ public:
 
 
 	void save(SDL_RWops *stream);
-
-	void load(SDL_RWops *stream);
-
+	bool load(SDL_RWops *stream);
 };
 
 

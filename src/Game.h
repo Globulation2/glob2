@@ -37,8 +37,8 @@ public:
 
 public:
 	Game();
-	Game(const SessionInfo *initial);
-	void loadBase(const SessionInfo *initial);
+	Game(/*const*/ SessionInfo *initial);
+	void loadBase(/*const*/ SessionInfo *initial);
 	virtual ~Game();
 
 private:
@@ -57,7 +57,7 @@ public:
 	Uint32 maskAwayPlayer;
 public:
 
-	void setBase(const SessionInfo *initial);
+	void setBase(/*const*/ SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
 	bool load(SDL_RWops *stream); // load a saved game
     void save(SDL_RWops *stream);

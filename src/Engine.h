@@ -30,8 +30,8 @@
 class Engine
 {
 public:
-	Engine() { }
-	int init(void);
+	Engine();
+	~Engine();
 	int initCampain(void);
 	int initCustom(void);
 	void startMultiplayer(SessionConnection *screen);

@@ -28,7 +28,7 @@ CustomGameScreen::CustomGameScreen()
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL);
 	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
-	mapPreview=new MapPreview(640-20-26-128, 70, "net.map");
+	mapPreview=new MapPreview(640-20-26-128, 70, "default.map");
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
 	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
@@ -86,8 +86,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 			if (validSessionInfo)
 			{
 				// update map name & info
-				sessionInfo.map.mapName[31]=0;
-				mapName->setText(sessionInfo.map.mapName);
+				mapName->setText(sessionInfo.map.getMapName());
 				char textTemp[256];
 				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
 				mapInfo->setText(textTemp);

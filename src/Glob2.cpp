@@ -101,11 +101,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	{
 		validSessionInfo=sessionInfo.load(stream);
 		SDL_RWclose(stream);
-		if (validSessionInfo)
-		{
-			sessionInfo.map.mapName[31]=0;
-		}
-		else
+		if (!validSessionInfo)
 		{
 			printf("Glob2::runHostServer():Warning, Error during map load.\n");
 			return 0;

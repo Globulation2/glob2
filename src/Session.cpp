@@ -25,7 +25,7 @@
 SessionGame::SessionGame()
 {
 	versionMajor=0;
-	versionMinor=2;
+	versionMinor=3;
 	sessionInfoOffset=0;
 	gameOffset=0;
 	teamsOffset=0;
@@ -41,7 +41,7 @@ SessionGame::SessionGame()
 void SessionGame::save(SDL_RWops *stream)
 {
 	versionMajor=0;
-	versionMinor=2;
+	versionMinor=3;
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);

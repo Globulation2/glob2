@@ -317,8 +317,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			if (validSessionInfo)
 			{
 				// update map name & info
-				sessionInfo.map.mapName[31]=0;
-				mapName->setText(sessionInfo.map.mapName);
+				mapName->setText(sessionInfo.map.getMapName());
 				char textTemp[256];
 				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
 				mapInfo->setText(textTemp);

@@ -323,6 +323,11 @@ int Building::neededRessource(void)
 	return minType;
 }
 
+int Building::neededRessource(int r)
+{
+	return type->maxRessource[r]-ressources[r];
+}
+
 void Building::cancelUpgrade(void)
 {
 	if (!type->isVirtual)
@@ -786,15 +791,26 @@ void Building::subscribeForWorkingStep()
 	{
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
-			int mindist=owner->game->map.getW()*owner->game->map.getW();
+			int minValue=owner->game->map.getW()*owner->game->map.getW();
 			Unit *u=NULL;
 			{
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
+					/* To choos a good unit, we get a composition of things:
+					1-the closest the unit is, the better it is.
+					  (Notice that the distance factor is at square.)
+					2-the less the unit is hungry, the better it is.
+					3-if the unit has a needed ressource, this is better.
+					4-if the unit as a not needed ressource, this is worse.
+					5-if the unit is close of a needed ressource, this is better
+					*/
 					int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (dist<mindist)
+					int hungry=(*it)->hungry/(*it)->race->unitTypes[0][0].hungryness;
+					//zzz TODO: compute ressource factor.
+					int value=dist+hungry;
+					if (value<minValue)
 					{
-						mindist=dist;
+						minValue=value;
 						u=*it;
 					}
 				}
@@ -804,6 +820,10 @@ void Building::subscribeForWorkingStep()
 				unitsWorkingSubscribe.remove(u);
 				unitsWorking.push_back(u);
 				u->unsubscribed();
+				
+				// Find the most suitable job for 
+				// zzz
+				
 				update();
 			}
 		}

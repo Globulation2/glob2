@@ -54,6 +54,29 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	init();
 };
 
+NetGame::~NetGame()
+{
+	for (int step=latency; step<queueSize; step++)
+	{
+		for (int eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+		{
+			if (playersNetQueue[eachPlayers][step].order)
+			{
+				delete playersNetQueue[eachPlayers][step].order;
+				playersNetQueue[eachPlayers][step].order=NULL;
+			}
+		}
+	}
+	for (int eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+	{
+		while(localOrderQueue[eachPlayers].size()>0)
+		{
+			Order *o=localOrderQueue[eachPlayers].front();
+			delete o;
+			localOrderQueue[eachPlayers].pop();
+		}
+	}
+}
 
 void NetGame::init(void)
 {
@@ -62,64 +85,55 @@ void NetGame::init(void)
 	int step;
 	int eachPlayers;
 
+	for (int i=0; i<queueSize; i++)
 	{
-		for (int i=0; i<queueSize; i++)
-		{
-			checkSumsLocal[i]=0;
-			checkSumsRemote[i]=0;
-		}
+		checkSumsLocal[i]=0;
+		checkSumsRemote[i]=0;
 	}
+	
 
-	{
-		for (step=0; step<1; step++)//because first step will be ignored.
-		{
-			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-			{
-				playersNetQueue[eachPlayers][step].order=NULL;
-				playersNetQueue[eachPlayers][step].packetID=-1;
-				playersNetQueue[eachPlayers][step].ackID=-1;
-			}
-		}
-	}
-
-	{
-		for (step=1; step<latency; step++)
-		{
-			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-			{
-				playersNetQueue[eachPlayers][step].order=new NullOrder();
-				playersNetQueue[eachPlayers][step].packetID=step;
-				playersNetQueue[eachPlayers][step].ackID=step;
-			}
-		}
-	}
-
-	{
-		for (step=latency; step<queueSize; step++)
-		{
-			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-			{
-				playersNetQueue[eachPlayers][step].order=NULL;
-				playersNetQueue[eachPlayers][step].packetID=-1;
-				playersNetQueue[eachPlayers][step].ackID=-1;
-			}
-		}
-	}
-
+	for (step=0; step<1; step++)//because first step will be ignored.
 	{
 		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
 		{
-			lastReceivedFromHim[eachPlayers]=latency-1;
-			lastReceivedFromMe[eachPlayers]=latency-1;
-			countDown[eachPlayers]=0;
-			stayingPlayersMask[eachPlayers]=0;
-			
-			for (int player=0; player<numberOfPlayer; player++)
-				lastAviableStep[eachPlayers][player]=-1;
-			
-			while(localOrderQueue[eachPlayers].size()>0)
-				localOrderQueue[eachPlayers].pop();
+			playersNetQueue[eachPlayers][step].order=NULL;
+			playersNetQueue[eachPlayers][step].packetID=-1;
+			playersNetQueue[eachPlayers][step].ackID=-1;
 		}
+	}
+
+	for (step=1; step<latency; step++)
+	{
+		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+		{
+			playersNetQueue[eachPlayers][step].order=new NullOrder();
+			playersNetQueue[eachPlayers][step].packetID=step;
+			playersNetQueue[eachPlayers][step].ackID=step;
+		}
+	}
+
+	for (step=latency; step<queueSize; step++)
+	{
+		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+		{
+			playersNetQueue[eachPlayers][step].order=NULL;
+			playersNetQueue[eachPlayers][step].packetID=-1;
+			playersNetQueue[eachPlayers][step].ackID=-1;
+		}
+	}
+
+	for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+	{
+		lastReceivedFromHim[eachPlayers]=latency-1;
+		lastReceivedFromMe[eachPlayers]=latency-1;
+		countDown[eachPlayers]=0;
+		stayingPlayersMask[eachPlayers]=0;
+
+		for (int player=0; player<numberOfPlayer; player++)
+			lastAviableStep[eachPlayers][player]=-1;
+
+		while(localOrderQueue[eachPlayers].size()>0)
+			localOrderQueue[eachPlayers].pop();
 	}
 	
 	dropState=NO_DROP_PROCESSING;
