@@ -17,8 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <StringTable.h>
+#include <FileManager.h>
 #include <GraphicContext.h>
+#include <StringTable.h>
+#include <Toolkit.h>
 
 #include "GUIMapPreview.h"
 #include "Map.h"

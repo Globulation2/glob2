@@ -121,11 +121,17 @@ ScriptEditorScreen.h \
 ScriptEditorScreen.cpp \
 EndGameScreen.h \
 EndGameScreen.cpp \
-Gradient.h \
 Marshaling.h \
 YOGConsts.h \
 NetDefine.h \
-Version.h
+Version.h \
+RessourceType.h \
+TerrainType.h \
+UnitConsts.h \
+EntitiesTypes.h \
+BuildingsTypes.h \
+BuildingsTypes.cpp \
+RessourcesTypes.h
 
 glob2_LDADD = @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ ../libgag/src/libgag.a
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include

@@ -67,6 +67,4 @@ public:
 	}
 };
 
-typedef EntitiesTypes<RessourceType> RessourcesTypes;
-
 #endif

@@ -17,10 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <vector>
-#include "Race.h"
-#include "GlobalContainer.h"
 #include <assert.h>
+
+#include <vector>
+
+#include <FileManager.h>
+
+#include "GlobalContainer.h"
+#include "Race.h"
 
 
 Race::~Race()

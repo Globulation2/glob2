@@ -20,11 +20,14 @@
 #ifndef __TEAM_H
 #define __TEAM_H
 
-#include "Race.h"
+#include <SDL/SDL_rwops.h>
 #include <list>
+
+#include "Race.h"
 #include "TeamStat.h"
 
 class Building;
+class BuildingsTypes;
 class Map;
 class Unit;
 

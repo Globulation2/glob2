@@ -20,8 +20,8 @@
 #ifndef __BULDING_TYPE_H
 #define __BULDING_TYPE_H
 
-#include <vector>
 #include "EntityType.h"
+#include <vector>
 #include "UnitConsts.h"
 #include "Ressource.h"
 
@@ -252,15 +252,6 @@ public:
 			*data=__STARTDATA_B;
 		return vars;
 	}
-};
-
-class BuildingsTypes: public EntitiesTypes<BuildingType>
-{
-public:
-	virtual void load(const char *filename);
-	virtual ~BuildingsTypes() { }
-
-	int getTypeNum(int type, int level, bool isBuildingSite);
 };
 
 #endif

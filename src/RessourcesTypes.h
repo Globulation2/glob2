@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -17,24 +17,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ENTITY_TYPE_H
-#define __ENTITY_TYPE_H
+#ifndef __RESSOURCES_TYPES_H
+#define __RESSOURCES_TYPES_H
 
-#include <SDL/SDL_rwops.h>
+#include "EntitiesTypes.h"
+#include "RessourceType.h"
 
-class EntityType
-{
-public:
-	EntityType();
-	EntityType(SDL_RWops *stream);
-	virtual ~EntityType() { }
-	virtual const char **getVars(int *size, Uint32 **data)=0;
-	virtual void init(void);	
-	virtual void load(SDL_RWops *stream);
-	virtual bool loadText(SDL_RWops *stream);
-	virtual void save(SDL_RWops *stream);
-	virtual void dump(void);
-};
+typedef EntitiesTypes<RessourceType> RessourcesTypes;
 
 #endif
-
