@@ -7,7 +7,7 @@
 #include <math.h>
 #include "GlobalContainer.h"
 
-extern GlobalContainer globalContainer;
+
 
 // class for handling color lookup
 void Palette::load(SDL_RWops *input, SDL_PixelFormat *format)
@@ -376,7 +376,7 @@ GraphicArchive::GraphicArchive()
 void GraphicArchive::load(const char *filename)
 {
 	//int i=0;
-	SDL_RWops *stream=globalContainer.fileManager.open(filename,"rb");
+	SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
 	if (stream)
 	{
 		int endPos=SDL_RWseek(stream, 0, SEEK_END);
@@ -396,7 +396,7 @@ void GraphicArchive::load(const char *filename)
 
 void GraphicArchive::save(const char *filename)
 {
-	SDL_RWops *stream=globalContainer.fileManager.open(filename,"wb");
+	SDL_RWops *stream=globalContainer->fileManager.open(filename,"wb");
 	for (std::vector<Sprite *>::iterator it=sprites.begin(); it!=sprites.end(); it++)
 	{
 		(*it)->save(stream);

@@ -9,7 +9,7 @@
 #include "SDL_net.h"
 #include "NetConsts.h"
 
-extern GlobalContainer globalContainer;
+
 
 
 
@@ -35,7 +35,7 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new Button(330, 370, 280, 60, arch, -1, 5, 4));
 	addWidget(new Button(30, 370, 140, 60, arch, -1, 6, 5));
 
-	globalContainer.gfx.setClipRect(NULL);
+	globalContainer->gfx.setClipRect(NULL);
 }
 
 MainMenuScreen::~MainMenuScreen()
@@ -56,7 +56,7 @@ void MainMenuScreen::paint(int x, int y, int w, int h)
 
 int MainMenuScreen::menu(void)
 {
-	return MainMenuScreen().execute(&globalContainer.gfx, 20);
+	return MainMenuScreen().execute(&globalContainer->gfx, 20);
 }
 
 
@@ -78,7 +78,7 @@ MultiplayersOfferScreen::MultiplayersOfferScreen()
 	addWidget(new Button(270, 230, 220, 60, arch, -1, 2, JOIN));
 	addWidget(new Button(190, 310, 180, 60, arch, -1, 3, QUIT));
 
-	globalContainer.gfx.setClipRect(NULL);
+	globalContainer->gfx.setClipRect(NULL);
 }
 
 MultiplayersOfferScreen::~MultiplayersOfferScreen()
@@ -100,7 +100,7 @@ void MultiplayersOfferScreen::paint(int x, int y, int w, int h)
 
 int MultiplayersOfferScreen::menu(void)
 {
-	return MultiplayersOfferScreen().execute(&globalContainer.gfx, 30);
+	return MultiplayersOfferScreen().execute(&globalContainer->gfx, 30);
 }
 
 
@@ -229,7 +229,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	
 	addWidget(mapName);
 	
-	globalContainer.gfx.setClipRect(NULL);
+	globalContainer->gfx.setClipRect(NULL);
 }
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
@@ -246,7 +246,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		{
 			printf("PGU : Loading map '%s' ...\n", mapName->text);
 			
-			SDL_RWops *stream=globalContainer.fileManager.open(mapName->text,"rb");
+			SDL_RWops *stream=globalContainer->fileManager.open(mapName->text,"rb");
 			if (stream==NULL)
 				printf("Map '%s' not found!\n", mapName->text);
 			else
@@ -304,7 +304,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 	addWidget(new Button(270, 200, 140, 60, arch, -1, 1, START));
 	addWidget(new Button(210, 280, 180, 60, arch, -1, 2, CANCEL));
 
-	globalContainer.gfx.setClipRect(NULL);
+	globalContainer->gfx.setClipRect(NULL);
 
 	this->sessionInfo=*sessionInfo;
 	validSessionInfo=true;
@@ -1166,7 +1166,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	addWidget(serverName);
 	addWidget(playerName);
 	
-	globalContainer.gfx.setClipRect(NULL);
+	globalContainer->gfx.setClipRect(NULL);
 	
 	//sessionInfo
 	

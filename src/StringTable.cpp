@@ -7,7 +7,7 @@
 #include "StringTable.h"
 #include "GlobalContainer.h"
 
-extern GlobalContainer globalContainer;
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,7 +75,7 @@ bool StringTable::load(char *filename)
 	char* tempp;
 	int n;
 
-	if ((fp=globalContainer.fileManager.openFP(filename,"r"))==NULL)
+	if ((fp=globalContainer->fileManager.openFP(filename,"r"))==NULL)
 	{
 		return false;
 	}

@@ -12,13 +12,15 @@
 #include "GlobalContainer.h"
 #include "SDL_net.h"
 
-GlobalContainer globalContainer;
+GlobalContainer *globalContainer=0;
 
 int main(int argc, char *argv[])
 {
-	globalContainer.parseArgs(argc, argv);
-	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
-	globalContainer.load();
+	globalContainer = new GlobalContainer();
+
+	globalContainer->parseArgs(argc, argv);
+	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
+	globalContainer->load();
 
 	if ( SDLNet_Init() < 0 ) {
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDLNet_GetError());

@@ -8,7 +8,7 @@
 #include "GlobalContainer.h"
 #include <assert.h>
 
-extern GlobalContainer globalContainer;
+
 
 NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 {

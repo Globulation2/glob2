@@ -7,7 +7,7 @@
 #include "Race.h"
 #include "GlobalContainer.h"
 
-extern GlobalContainer globalContainer;
+
 
 Race::~Race()
 {
@@ -25,7 +25,7 @@ void Race::create(CreationType creationType)
 	UnitType evolvable;
 	UnitType costs[3];//[worker, explorer, warrior]
 	
-	SDL_RWops *stream=globalContainer.fileManager.open("data/units.txt","rb");	
+	SDL_RWops *stream=globalContainer->fileManager.open("data/units.txt","rb");	
 		
 	baseUnit[0].loadText(stream);
 	baseUnit[1]=baseUnit[0];
@@ -152,7 +152,7 @@ void Race::load(SDL_RWops *stream)
 NOTE : never use this, it is depreciated, replaced by create
 void Race::loadText(const char *filename)
 {
-	SDL_RWops *stream=globalContainer.fileManager.open(filename, "r");
+	SDL_RWops *stream=globalContainer->fileManager.open(filename, "r");
 	
     for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 		for(int j=0; j<UnitType::NB_UNIT_LEVELS; j++)

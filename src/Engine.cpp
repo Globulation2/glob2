@@ -7,7 +7,7 @@
 #include "GlobalContainer.h"
 #include "PreparationGui.h"
 
-extern GlobalContainer globalContainer;
+
 
 int Engine::init(void)
 {
@@ -18,7 +18,7 @@ int Engine::init(void)
 int Engine::initCampain(void)
 {
 	// we load map
-	SDL_RWops *stream=globalContainer.fileManager.open("default.map","rb");
+	SDL_RWops *stream=globalContainer->fileManager.open("default.map","rb");
 	if (gui.game.load(stream)==false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");
@@ -57,8 +57,8 @@ int Engine::initCampain(void)
 	}
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeam);
-	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer.gfx.getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer.gfx.getH()>>6);
+	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx.getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx.getH()>>6);
 	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
 	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
 
@@ -73,7 +73,7 @@ int Engine::initCampain(void)
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
-	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
+	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
 
 	return NO_ERROR;
 }
@@ -96,15 +96,15 @@ void Engine::startMultiplayer(SessionScreen *screen)
 	gui.localTeam=gui.localTeam % screen->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	gui.game.renderMiniMap(gui.localTeam);
-	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer.gfx.getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer.gfx.getH()>>6);
+	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx.getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx.getH()>>6);
 	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
 	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
 
 	// we create the net game
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
-	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
+	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
 
 	printf("localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
@@ -113,7 +113,7 @@ int Engine::initMutiplayerHost(void)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen;
 	
-	int mpcms = multiplayersChooseMapScreen.execute(&globalContainer.gfx, 20);
+	int mpcms = multiplayersChooseMapScreen.execute(&globalContainer->gfx, 20);
 	
 	if (mpcms == MultiplayersChooseMapScreen::CANCEL)
 		return CANCEL;
@@ -122,7 +122,7 @@ int Engine::initMutiplayerHost(void)
 	
 	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
 	multiplayersHostScreen.newHostPlayer();
-	if (multiplayersHostScreen.execute(&globalContainer.gfx, 20)==MultiplayersHostScreen::STARTED)
+	if (multiplayersHostScreen.execute(&globalContainer->gfx, 20)==MultiplayersHostScreen::STARTED)
 	{
 		if (multiplayersHostScreen.myPlayerNumber==-1)
 			return CANCEL;
@@ -139,7 +139,7 @@ int Engine::initMutiplayerJoin(void)
 {
 	MultiplayersJoinScreen multiplayersJoinScreen;
 	
-	if (multiplayersJoinScreen.execute(&globalContainer.gfx, 20)==MultiplayersJoinScreen::STARTED)
+	if (multiplayersJoinScreen.execute(&globalContainer->gfx, 20)==MultiplayersJoinScreen::STARTED)
 	{
 		startMultiplayer(&multiplayersJoinScreen);
 
@@ -156,16 +156,16 @@ int Engine::run(void)
 	Uint32 startTick, endTick, deltaTick;
 	while (gui.isRunning)
 	{
-		//printf ("Engine::begin:%d\n", globalContainer.safe());
+		//printf ("Engine::begin:%d\n", globalContainer->safe());
 		startTick=SDL_GetTicks();
 	
 		// we get and push local orders
 		
-		//printf ("Engine::bgu:%d\n", globalContainer.safe());
+		//printf ("Engine::bgu:%d\n", globalContainer->safe());
 		
 		gui.step();
 
-		//printf ("Engine::bnp:%d\n", globalContainer.safe());
+		//printf ("Engine::bnp:%d\n", globalContainer->safe());
 		
 		net->pushOrder(gui.getOrder(), gui.localPlayer);
 
@@ -176,32 +176,32 @@ int Engine::run(void)
 				net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
 		}
 		
-		//printf ("Engine::bns:%d\n", globalContainer.safe());
+		//printf ("Engine::bns:%d\n", globalContainer->safe());
 
 		// we proceed network
 		net->step();
 		
-		//printf ("Engine::bge:%d\n", globalContainer.safe());
+		//printf ("Engine::bge:%d\n", globalContainer->safe());
 		
 		for (int i2=0; i2<gui.game.session.numberOfPlayer; i2++)
 		{
 			gui.executeOrder(net->getOrder(i2));
 		}
 
-		//printf ("Engine::bne:%d\n", globalContainer.safe());
+		//printf ("Engine::bne:%d\n", globalContainer->safe());
 		
 		// here we do the real work
 		gui.game.step(gui.localTeam);
 		
-		//printf ("Engine::bdr:%d\n", globalContainer.safe());
+		//printf ("Engine::bdr:%d\n", globalContainer->safe());
 
 		// we draw
 		gui.drawAll(gui.localTeam);
 		
-		//globalContainer.gfx.drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
+		//globalContainer->gfx.drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
 		//ticknb=(ticknb+1)%(640-128);
 		
-		globalContainer.gfx.nextFrame();
+		globalContainer->gfx.nextFrame();
 		
 		endTick=SDL_GetTicks();
 		deltaTick=endTick-startTick-net->advance();
@@ -210,7 +210,7 @@ int Engine::run(void)
 		if (deltaTick<(unsigned)gui.game.session.gameTPF)
 			SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
 		
-		//printf ("Engine::end:%d\n", globalContainer.safe());
+		//printf ("Engine::end:%d\n", globalContainer->safe());
 	}
 
 	delete net;

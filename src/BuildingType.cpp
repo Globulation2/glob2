@@ -7,7 +7,7 @@
 #include "BuildingType.h"
 #include "GlobalContainer.h"
 
-extern GlobalContainer globalContainer;
+
 
 BuildingType *BuildingsTypes::getBuildingType(unsigned int typeNum)
 {
@@ -20,7 +20,7 @@ BuildingType *BuildingsTypes::getBuildingType(unsigned int typeNum)
 BuildingsTypes::BuildingsTypes(const char *filename)
 {
 	// we load the building description now
-	SDL_RWops *stream=globalContainer.fileManager.open(filename, "r");
+	SDL_RWops *stream=globalContainer->fileManager.open(filename, "r");
 
 	bool result=true;
 	
