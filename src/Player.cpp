@@ -369,10 +369,10 @@ void BasePlayer::unbind()
 
 bool BasePlayer::send(char *data, int size)
 {
+	if (ip.host==0)
+		return false;
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
-		return false;
-	if (ip.host==0)
 		return false;
 	packet->len=size;
 			

@@ -315,10 +315,14 @@ Globulation 2 Laden
 Héberger une partie
 Host a game
 Spiel unterbringen
-[join]
+[join a game]
 Joindre une partie
 Join a game
 Anschliessen an ein Spiel
+[join]
+Joindre
+Join
+Anschliessen
 [goto main menu]
 Retourner au menu principal
 Go back to main menu

@@ -34,6 +34,7 @@ public:
 		CANCEL=2,
 		CREATE_GAME=3,
 		UPDATE_LIST=4,
+		JOIN=7,
 		
 		STARTED=11
 	};
@@ -48,9 +49,12 @@ public:
 
 protected:
 	List *gameList;
+	TextArea *gameInfo;
 	List *playerList;
 	TextInput *textInput;
 	TextArea *chatWindow;
+	
+	TextButton *joinButton;
 
 	void updateGameList(void);
 	void updatePlayerList(void);
