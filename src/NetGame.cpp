@@ -742,29 +742,25 @@ Order *NetGame::getOrder(int playerNumber)
 					}
 		if (!good)
 		{
-			{
-				int ci=0;
-				std::list<Uint32> checkSumsList=checkSumsListsStorageForBuildings[executeUStep&255];
-				printf("my checkSumForBuildings at ustep=%d is:\n", executeUStep);
-				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-					printf("[%3d] %x\n", ci++, *csi);
-				fprintf(logFile, "my checkSumForBuildings at ustep=%d is:\n", executeUStep);
-				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-					fprintf(logFile, "[%3d] %x\n", ci++, *csi);
-				fflush(logFile);
-			}
-			{
-				int ci=0;
-				std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
-				printf("my checkSum at ustep=%d is:\n", executeUStep);
-				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-					printf("[%3d] %x\n", ci++, *csi);
-				fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
-				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-					fprintf(logFile, "[%3d] %x\n", ci++, *csi);
-				fflush(logFile);
-			}
-			
+			int ci=0;
+			std::list<Uint32> checkSumsList=checkSumsListsStorageForBuildings[executeUStep&255];
+			//printf("my checkSumForBuildings at ustep=%d is:\n", executeUStep);
+			//for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+			//	printf("[%3d] %x\n", ci++, *csi);
+			//ci=0;
+			fprintf(logFile, "my checkSumForBuildings at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+			ci=0;
+			checkSumsList=checkSumsListsStorage[executeUStep&255];
+			printf("my checkSum at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+				printf("[%3d] %x\n", ci++, *csi);
+			ci=0;
+			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+			fflush(logFile);
 			assert(false);
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])
@@ -819,7 +815,7 @@ void NetGame::computeMyLocalWishedLatency()
 	int maxPingPongMax=0; // max over each player.
 	static int lastMaxPingPongMax=-1;
 	for (int pi=0; pi<numberOfPlayer; pi++)
-		if (maxPingPongMax<pingPongMax[pi] && players[pi]->type==Player::P_IP)
+		if (players[pi]->type==Player::P_IP && maxPingPongMax<pingPongMax[pi])
 			maxPingPongMax=pingPongMax[pi];
 	if (maxPingPongMax!=lastMaxPingPongMax)
 	{
