@@ -2041,27 +2041,6 @@ void GameGUI::drawBuildingInfos(void)
 					maxTimeTo=std::max(maxTimeTo, buildingType->upgradeTime[i]);
 		if (maxTimeTo)
 		{
-			/*int leftMin=128;
-			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
-			{
-				Unit *u=*it;
-				assert(u);
-				if (u->displacement==Unit::DIS_INSIDE)
-				{
-					int left=(-u->insideTimeout*128+128-u->delta/2)/(1+maxTimeTo);
-					//printf("  left=%d (insideTimeout=%d, delta=%d)\n", left, u->insideTimeout, u->delta);
-					if (leftMin>left)
-						leftMin=left;
-				}
-			}
-			if (leftMin<128)
-			{
-				int left=leftMin;
-				int elapsed=128-left;
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, ypos, elapsed, 7, 100, 100, 255);
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+elapsed, ypos, left, 7, 128, 128, 128);
-			}*/
-			
 			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, ypos, 128, 7, 168, 150, 90);
 			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
 			{
@@ -2072,7 +2051,7 @@ void GameGUI::drawBuildingInfos(void)
 					int left=(-u->insideTimeout*128+128-u->delta/2)/(1+maxTimeTo);
 					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 17, 30, 64);
 					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
+					//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
 				}
 			}
 			
