@@ -22,6 +22,8 @@
 YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 {
 	this->ip=ip;
+	gameip.host=0;
+	gameip.port=0;
 	this->socket=socket;
 	memcpy(this->userName, userName, 32);
 	
@@ -56,6 +58,7 @@ void YOGClient::send(YOGMessageType v)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOGClient::send(YOGMessageType v, Uint8 id)
@@ -76,6 +79,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOGClient::send(Uint8 *data, int size)
@@ -91,6 +95,7 @@ void YOGClient::send(Uint8 *data, int size)
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }
 
 void YOGClient::send(YOGMessageType v, Uint8 *data, int size)

@@ -41,6 +41,9 @@ YOG::YOG()
 	
 	yogSharingState=YSS_NOT_SHARING_GAME;
 	sharingGameName[0]=0;
+	
+	gameSocket=NULL;
+	gameSocketReceived=false;
 }
 
 YOG::~YOG()
@@ -96,6 +99,26 @@ void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 }
 
 void YOG::send(YOGMessageType v)
+{
+	Uint8 data[4];
+	data[0]=v;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	if (packet==NULL)
+		printf("Failed to alocate packet!\n");
+
+	packet->len=4;
+	memcpy((char *)packet->data, data, 4);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		printf("Failed to send the packet!\n");
+}
+
+void YOG::send(YOGMessageType v, UDPsocket socket)
 {
 	Uint8 data[4];
 	data[0]=v;
@@ -274,6 +297,14 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		presenceTOTL=3;
 	}
 	break;
+	case YMT_GAME_SOCKET:
+	{
+		gameSocketTimeout=LONG_NETWORK_TIMEOUT;
+		gameSocketTOTL=3;
+		gameSocketReceived=true;
+		printf("YOG::gameSocketReceived\n");
+	}
+	break;
 	case YMT_CLOSE_YOG:
 		printf("YOG:: YOG is dead !\n"); //TODO: create a deconnected method
 	break;
@@ -320,6 +351,9 @@ bool YOG::enableConnection(const char *userName)
 	
 	presenceTimeout=6;//5 instead of 0 to share brandwith with others timouts
 	presenceTOTL=3;
+	
+	gameSocket=NULL;
+	gameSocketReceived=false;
 	
 	printf("YOG::enableConnection(%s)\n", userName);
 	
@@ -465,20 +499,36 @@ void YOG::step()
 			if (presenceTimeout--<=0)
 			{
 				if (presenceTOTL--<=0)
-				{
 					printf("YOG::Connection lost to YOG!\n"); //TODO!
-				}
 				else
-				{
 					send(YMT_CONNECTION_PRESENCE);
-					presenceTimeout=LONG_NETWORK_TIMEOUT;
-				}
+				presenceTimeout=LONG_NETWORK_TIMEOUT;
 			}
 		}
 		break;
 		default:
 
 		break;
+		}
+		
+		if (gameSocket && gameSocketTimeout--<=0)
+		{
+			if (gameSocketReceived)
+			{
+				send(YMT_GAME_SOCKET, gameSocket);
+				gameSocketTimeout=LONG_NETWORK_TIMEOUT;
+			}
+			else if (gameSocketTOTL--<=0)
+			{
+				printf("YOG::Unable to deliver the gameSocket to YOG!\n"); // TODO!
+				gameSocketTimeout=LONG_NETWORK_TIMEOUT;
+			}
+			else
+			{
+				printf("YOG::Sending the game socket to YOG ...\n");
+				send(YMT_GAME_SOCKET, gameSocket);
+				gameSocketTimeout=LONG_NETWORK_TIMEOUT;
+			}
 		}
 		
 		UDPpacket *packet=NULL;
@@ -520,6 +570,9 @@ void YOG::unshareGame()
 	yogSharingState=YSS_STOP_SHARING_GAME;
 	sharingGameTimeout=0;
 	sharingGameTOTL=3;
+	
+	gameSocket=NULL;
+	gameSocketReceived=false;
 }
 
 bool YOG::isMessage(void)
@@ -571,16 +624,33 @@ bool YOG::newGameList(bool reset)
 
 void YOG::gameStarted()
 {
+	printf("YOG::gameStarted()\n");
 	if (yogGlobalState==YGS_CONNECTED)
 		yogGlobalState=YGS_PLAYING;
 	else
-		printf("YOG::Warning gameStarted() in a bay state!\n");
+		printf("YOG::Warning gameStarted() in a bad yogGlobalState=%d!\n", yogGlobalState);
 }
 
 void YOG::gameEnded()
 {
+	printf("YOG::gameEnded()\n");
 	if (yogGlobalState==YGS_PLAYING)
 		yogGlobalState=YGS_CONNECTED;
 	else
-		printf("YOG::Warning gameEnded() in a bay state!\n");
+		printf("YOG::Warning gameEnded() in a bad yogGlobalState=%d!\n", yogGlobalState);
+}
+
+void YOG::setGameSocket(UDPsocket socket)
+{
+	printf("YOG::setGameSocket()\n");
+	if (yogSharingState<YSS_SHARING_GAME)
+		printf("YOG::Warning setGameSocket() in a bad yogSharingState=%d!\n", yogSharingState);
+	gameSocket=socket;
+	gameSocketTimeout=0;
+	gameSocketTOTL=3;
+}
+
+bool YOG::gameSocketSet()
+{
+	return gameSocketReceived;
 }

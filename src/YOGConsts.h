@@ -21,6 +21,7 @@
 #define __YOG_CONSTS_H
 
 #define YOG_SERVER_IP "goldeneye.sked.ch"
+//#define YOG_SERVER_IP "192.168.1.5"
 #define YOG_SERVER_PORT 7007
 
 // 1s-3.5s-7s-14s-40s

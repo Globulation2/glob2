@@ -70,6 +70,7 @@ public:
 	void send(const Message &m);
 	
 	IPaddress ip;
+	IPaddress gameip;
 	UDPsocket socket;
 	Uint8 lastSentMessageID; // The last message id that client has sent to YOG. Used to ignore doubles.
 	char userName[32];
@@ -81,6 +82,8 @@ public:
 	
 	int timeout;
 	int TOTL;
+	
+	
 public:
 	bool hasip(IPaddress &ip) {return this->ip.host==ip.host && this->ip.port==ip.port;}
 };

@@ -111,7 +111,6 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		netWindow[i].received=false;
 		netWindow[i].packetSize=0; //set 512 in release
 	}
-	localPort=0;
 	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	
 	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
@@ -1231,90 +1230,6 @@ bool MultiplayersJoin::send(const int u, const int v)
 	return true;
 }
 
-Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
-{
-	Uint16 localPort=0;
-	for (int tempPort=7008; tempPort<7008+10; tempPort++) // we try 10 ports
-	{
-		// First, we create a temporaty local server (tempServer):
-		UDPsocket tempSocket;
-		tempSocket=SDLNet_UDP_Open(tempPort);
-		if (tempSocket)
-			fprintf(logFile, "findLocalPort:: Socket opened at port %d.\n", tempPort);
-		else
-		{
-			fprintf(logFile, "findLocalPort:: failed to open a socket.\n");
-			continue; // We try to open another port
-		}
-
-		// Second, we send a packet to this tempServer with loopback adress:
-		{
-			UDPpacket *packet=SDLNet_AllocPacket(4);
-
-			assert(packet);
-
-			packet->channel=-1;
-			IPaddress localAdress;
-			localAdress.host=SDL_SwapBE32(0x7F000001);
-			localAdress.port=SDL_SwapBE16(tempPort);
-			packet->address=localAdress;
-			packet->len=4;
-			packet->data[0]=LOOP_BACK_PACKET_TYPE;
-			packet->data[1]=0;
-			packet->data[2]=0;
-			packet->data[3]=0;
-			if (SDLNet_UDP_Send(socket, -1, packet)==1)
-			{
-				fprintf(logFile, "findLocalPort:: suceeded to send packet\n");
-			}
-			else
-			{
-				fprintf(logFile, "findLocalPort:: failed to send packet\n");
-				SDLNet_FreePacket(packet);
-				SDLNet_UDP_Close(tempSocket);
-				continue; // We try with another port
-			}
-			SDLNet_FreePacket(packet);
-		}
-		
-		// Three, we wait for this packet
-		{
-			assert(tempSocket);
-			UDPpacket *packet=NULL;
-			packet=SDLNet_AllocPacket(4);
-			assert(packet);
-			int count=0;
-			while (SDLNet_UDP_Recv(tempSocket, packet)!=1)
-			{
-				if (count++>=3)
-					break;
-				SDL_Delay(100);
-				fprintf(logFile, "findLocalPort::delay 100ms to wait for the loop-back packet\n");
-			}
-			if (count>=3)
-			{
-				fprintf(logFile, "findLocalPort::no Packet received !!!!\n");
-				SDLNet_FreePacket(packet);
-				SDLNet_UDP_Close(tempSocket);
-				continue; // We try with another port
-			}
-			fprintf(logFile, "findLocalPort::Packet received.\n");
-			fprintf(logFile, "findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
-			localPort=packet->address.port;
-
-			SDLNet_FreePacket(packet);
-		}
-		
-		// Four, we close the tempServer
-		SDLNet_UDP_Close(tempSocket);
-		
-		if (localPort)
-			break;
-	}
-	
-	return localPort;
-}
-
 bool MultiplayersJoin::tryConnection()
 {
 	quitThisGame();
@@ -1334,16 +1249,20 @@ bool MultiplayersJoin::tryConnection()
 		return false;
 	}
 
-	if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
+	
+	if (!shareOnYOG)
 	{
-		fprintf(logFile, "serverName=(%s)\n", serverName);
-		fprintf(logFile, "found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
-	}
-	else
-	{
-		fprintf(logFile, "failed to find adresse\n");
-		waitingState=WS_TYPING_SERVER_NAME;
-		return false;
+		if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
+		{
+			fprintf(logFile, "serverName=(%s)\n", serverName);
+			fprintf(logFile, "found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
+		}
+		else
+		{
+			fprintf(logFile, "failed to find adresse (serverName=%s)\n", serverName);
+			waitingState=WS_TYPING_SERVER_NAME;
+			return false;
+		}
 	}
 
 	channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
@@ -1360,18 +1279,18 @@ bool MultiplayersJoin::tryConnection()
 		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
-
+	
 	if (shareOnYOG)
+	{
+		//globalContainer->yog->setGameSocket(socket);//TODO: is may be usefull in some NAT or firewall extremes configuration.
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
+	}
 	else
 		waitingTOTL=DEFAULT_NETWORK_TOTL-1;
 	
 	
 		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
 		fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
-	
-	
-	localPort=findLocalPort(socket);
 	
 	return sendPresenceRequest();
 }
