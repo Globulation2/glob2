@@ -56,6 +56,20 @@ struct TeamSmoothedStat
 	int totalNeeded;
 };
 
+struct EndOfGameStat
+{
+	enum Type
+	{
+		TYPE_UNITS = 0,
+		TYPE_BUILDINGS = 1,
+		TYPE_PRESTIGE = 2,
+		TYPE_NB_STATS = 3
+	};
+	
+	// units, buildings, prestige
+	int value[TYPE_NB_STATS];
+};
+
 class Team;
 
 class TeamStats
@@ -82,6 +96,14 @@ private:
 	
 	int smoothedIndex;
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
+	
+	friend class EndGameStat;
+	
+	enum { END_OF_GAME_STATS_SIZE=128 };
+	
+	//! Thoses stats are used when player has ned the game
+	int endOfGameStatIndex;
+	EndOfGameStat endOfGameStats[END_OF_GAME_STATS_SIZE];
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }

@@ -20,14 +20,17 @@
 #include "TeamStat.h"
 #include "GlobalContainer.h"
 #include "Team.h"
+#include "Game.h"
 
 TeamStats::TeamStats()
 {
 	statsIndex=0;
 	smoothedIndex=0;
+	endOfGameStatIndex=0;
 	
 	memset(stats, 0, sizeof(TeamStat)*STATS_SIZE);
 	memset(smoothedStats, 0, sizeof(TeamSmoothedStat)*STATS_SMOOTH_SIZE);
+	memset(endOfGameStats, 0, sizeof(EndOfGameStat)*END_OF_GAME_STATS_SIZE);
 }
 
 TeamStats::~TeamStats()
@@ -37,6 +40,19 @@ TeamStats::~TeamStats()
 
 void TeamStats::step(Team *team)
 {
+	// handle end of game stat step
+	if ((team->game->stepCounter & 0x1FF) == 0)
+	{
+		// we copy stats to end of game stat
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_UNITS] = stats[statsIndex].totalUnit;
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_BUILDINGS] = stats[statsIndex].totalBuilding;
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_PRESTIGE] = team->prestige;
+
+		endOfGameStatIndex++;
+		endOfGameStatIndex%=END_OF_GAME_STATS_SIZE;
+	}
+	
+	// handle in game stat step
 	int i;
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	memset(&smoothedStat, 0, sizeof(TeamSmoothedStat));
