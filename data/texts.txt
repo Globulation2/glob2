@@ -343,7 +343,7 @@ Ještě 1
 Jeszcze jedna
 Ancora uno
 Один остаётся
-[building name]
+[Building name]
 Nom du batiment
 Building name
 Gebäudename
@@ -463,6 +463,230 @@ Směnit
 Wymiana
 Cambio
 Обмен
+[Building short explaination]
+Courte explication du batiment  (24 caractères max)
+Building short explaination (24 chars max)
+
+
+
+
+
+[swarm building explaination]
+Crée de nouvelles unités
+Creates new units
+
+
+
+
+
+[food building explaination]
+Nourit vos unités
+Foods your units
+
+
+
+
+
+[health building explaination]
+Soigne vos unités
+Heals your units
+
+
+
+
+
+[walkspeed building explaination]
+Améliore la vitesse de
+Improves the walking
+
+
+
+
+
+[swimspeed building explaination]
+Améliore le niveau de
+Improves the swimming
+
+
+
+
+
+[attack building explaination]
+Améliore le niveau
+Improves fighting level
+
+
+
+
+
+[science building explaination]
+Améliore le niveau de
+Improve the building level
+
+
+
+
+
+[defense building explaination]
+Attaque les unité ennmies
+Attacks neraby enemy
+
+
+
+
+
+[exploration flag explaination]
+Attire des exploratrices
+Attracts explorers
+
+
+
+
+
+[war flag explaination]
+Attire des guerrières
+Attracts warriors
+
+
+
+
+
+[clearing flag explaination]
+Enlève les ressources
+Clear ressources
+
+
+
+
+
+[stone wall explaination]
+Elément passif de défense
+Passive defense element
+
+
+
+
+
+[market explaination]
+Permet d'échanger des
+Allows to exchange fruits
+
+
+
+
+
+[Building short explaination 2]
+Courte explication 2 du batiment  (24 caractères max)
+Building short explaination 2 (24 chars max)
+
+
+
+
+
+[swarm building explaination 2]
+ 
+ 
+
+
+
+
+
+[food building explaination 2]
+ 
+ 
+
+
+
+
+
+[health building explaination 2]
+ 
+ 
+
+
+
+
+
+[walkspeed building explaination 2]
+marche de vos unités
+speed level of your units
+
+
+
+
+
+[swimspeed building explaination 2]
+nage de vos unités
+speed level of your units
+
+
+
+
+
+[attack building explaination 2]
+d'attaque de vos guerrières
+of your warriors
+
+
+
+
+
+[science building explaination 2]
+construction des ouvières
+of your workers
+
+
+
+
+
+[defense building explaination 2]
+avoisinantes
+units or buildings
+
+
+
+
+
+[exploration flag explaination 2]
+ 
+ 
+
+
+
+
+
+[war flag explaination 2]
+ 
+ 
+
+
+
+
+
+[clearing flag explaination 2]
+ 
+ 
+
+
+
+
+
+[stone wall explaination 2]
+ 
+ 
+
+
+
+
+
+[market explaination 2]
+fruits avec les autres
+with the others
+
+
+
+
+
 [waiting for %s]
 Attente de %s
 Waiting for %s

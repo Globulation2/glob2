@@ -1715,7 +1715,12 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLin
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[building name]", typeId);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
+					
+					globalContainer->littleFont->pushColor(128, 128, 128);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explaination]", typeId);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explaination 2]", typeId);
+					globalContainer->littleFont->popColor();
 					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
 					if (typeNum!=-1)
 					{
@@ -1906,7 +1911,7 @@ void GameGUI::drawBuildingInfos(void)
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[building name]", buildingType->shortTypeNum);
+	title += Toolkit::getStringTable()->getString("[Building name]", buildingType->shortTypeNum);
 	{
 		title += " (";
 		const char *textT=selBuild->owner->getFirstPlayerName();
