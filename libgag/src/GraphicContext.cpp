@@ -69,13 +69,14 @@ bool GraphicContext::getNextVideoMode(int *w, int *h)
 
 DrawableSurface::DrawableSurface()
 {
-	surface=NULL;
-	clipRect.x=0;
-	clipRect.y=0;
-	clipRect.w=0;
-	clipRect.h=0;
-	flags=0;
-	partialRedraw=false;
+	surface = NULL;
+	clipRect.x = 0;
+	clipRect.y = 0;
+	clipRect.w = 0;
+	clipRect.h = 0;
+	flags = 0;
+	partialRedraw = false;
+	locked = false;
 }
 
 void DrawableSurface::loadImage(const char *name)
@@ -134,7 +135,7 @@ void DrawableSurface::setAlpha(bool usePerPixelAlpha, Uint8 alphaValue)
 
 	SDL_FreeSurface(surface);
 
-	surface=tempScreen;
+	surface = tempScreen;
 }
 
 void DrawableSurface::setClipRect(int x, int y, int w, int h)
@@ -148,10 +149,10 @@ void DrawableSurface::setClipRect(int x, int y, int w, int h)
 		return;
 	}
 		
-	clipRect.x=static_cast<Sint16>(x);
-	clipRect.y=static_cast<Sint16>(y);
-	clipRect.w=static_cast<Uint16>(w);
-	clipRect.h=static_cast<Uint16>(h);
+	clipRect.x = static_cast<Sint16>(x);
+	clipRect.y = static_cast<Sint16>(y);
+	clipRect.w = static_cast<Uint16>(w);
+	clipRect.h = static_cast<Uint16>(h);
 
 	SDL_SetClipRect(surface, &clipRect);
 }
@@ -167,10 +168,10 @@ void DrawableSurface::setClipRect(void)
 		return;
 	}
 		
-	clipRect.x=0;
-	clipRect.y=0;
-	clipRect.w=static_cast<Uint16>(surface->w);
-	clipRect.h=static_cast<Uint16>(surface->h);
+	clipRect.x = 0;
+	clipRect.y = 0;
+	clipRect.w = static_cast<Uint16>(surface->w);
+	clipRect.h = static_cast<Uint16>(surface->h);
 
 	SDL_SetClipRect(surface, &clipRect);
 }
@@ -186,10 +187,11 @@ void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 		return;
 	}
 
+	unlock();
 	sprite->draw(surface, &clipRect, x, y, index);
 }
 
-void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool lock)
+void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	if (!surface)
 		return;
@@ -210,8 +212,7 @@ void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a
 	
 		/* Set the pixel */
 		assert(surface);
-		if (lock)
-			SDL_LockSurface(surface);
+		lock();
 		switch(surface->format->BitsPerPixel)
 		{
 			case 8:
@@ -260,8 +261,6 @@ void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a
 			}
 			break;
 		}
-		if (lock)
-			SDL_UnlockSurface(surface);
 	}
 }
 
@@ -353,7 +352,7 @@ void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 
 		Uint8 dr, dg, db;
 
 		// draw
-		SDL_LockSurface(surface);
+		lock();
 		switch(surface->format->BitsPerPixel)
 		{
 			case 16:
@@ -447,7 +446,6 @@ void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 
 			}
 			break;
 		}
-		SDL_UnlockSurface(surface);
 	}
 }
 
@@ -496,8 +494,8 @@ void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 		if (l<=0)
 			return;
 		
-		SDL_LockSurface(surface);
-		/* Set the pixels */
+		// Set the pixels
+		lock();
 		switch(surface->format->BitsPerPixel)
 		{
 		case 8:
@@ -598,7 +596,6 @@ void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 			default:
 				break;
 		}
-		SDL_UnlockSurface(surface);
 	}
 }
 
@@ -647,8 +644,8 @@ void DrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 		if (l<=0)
 			return;
 	
-		SDL_LockSurface(surface);
-		/* Set the pixels */
+		// Set the pixels
+		lock();
 		switch(surface->format->BitsPerPixel)
 		{
 			case 8:
@@ -742,7 +739,6 @@ void DrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 			default:
 				break;
 		}
-		SDL_UnlockSurface(surface);
 	}
 }
 
@@ -1114,6 +1110,8 @@ void DrawableSurface::drawString(int x, int y, int w, Font *font, const char *ms
 	std::string output(msg);
 	FILTER_OUT_CHAR(output.c_str(), '\n');
 	FILTER_OUT_CHAR(output.c_str(), '\r');
+	
+	unlock();
 	font->drawString(surface, x, y, w, output.c_str(), &clipRect);
 }
 
@@ -1135,6 +1133,7 @@ void DrawableSurface::drawSurface(int x, int y, DrawableSurface *osurface)
 	r.w=static_cast<Uint16>(osurface->getW());
 	r.h=static_cast<Uint16>(osurface->getH());
 
+	unlock();
 	SDL_BlitSurface(osurface->surface, NULL, this->surface, &r);
 }
 
@@ -1146,6 +1145,7 @@ GraphicContext::GraphicContext(void)
 	minW = minH = 0;
 	surface = NULL;
 	partialRedraw = true;
+	locked = false;
 
 	// Load the SDL library
 	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO)<0 )

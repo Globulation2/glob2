@@ -125,12 +125,12 @@ void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int ind
 	if ((w<=0) || (h<=0))
 		return;
 
-	src.w=static_cast<Sint16>(w);
-	src.h=static_cast<Sint16>(h);
-	r.x=static_cast<Sint16>(x);
-	r.y=static_cast<Sint16>(y);
-	r.w=static_cast<Sint16>(w);
-	r.h=static_cast<Sint16>(h);
+	src.w = static_cast<Sint16>(w);
+	src.h = static_cast<Sint16>(h);
+	r.x = static_cast<Sint16>(x);
+	r.y = static_cast<Sint16>(y);
+	r.w = static_cast<Sint16>(w);
+	r.h = static_cast<Sint16>(h);
 
 	SDL_GetClipRect(dest, &oldr);
 	SDL_SetClipRect(dest, &newr);
@@ -155,8 +155,6 @@ void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int ind
 
 			SDL_Surface *newSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
 			
-			SDL_LockSurface(newSurface);
-
 			Uint32 *sPtr = (Uint32 *)rotated[index]->orig->pixels;
 			Uint32 *dPtr = (Uint32 *)newSurface->pixels;
 			for (int i=0; i<w*h; i++)
@@ -190,8 +188,6 @@ void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int ind
 				sPtr++;
 				dPtr++;
 			}
-			
-			SDL_UnlockSurface(newSurface);
 
 			toBlit = new Surface(newSurface);
 			rotated[index]->rotationMap[actColor] = toBlit;

@@ -2228,7 +2228,6 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	decSPX=teams[localTeam]->startPosX-map.getW()/2;
 	decSPY=teams[localTeam]->startPosY-map.getH()/2;
 
-	minimap->lock();
 	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
 		for (dx=0; dx<szX; dx++)
@@ -2343,7 +2342,7 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 				g = lg/nCount;
 				b = lb/nCount;
 			}
-			minimap->drawPixel(dx+decX, dy+decY, r, g, b, DrawableSurface::ALPHA_OPAQUE, false);
+			minimap->drawPixel(dx+decX, dy+decY, r, g, b, DrawableSurface::ALPHA_OPAQUE);
 		}
 	}
 
@@ -2351,7 +2350,6 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	{
 		minimap->drawHorzLine(decX, decY+stepStart+stepLength, szX, 100, 100, 100);
 	}
-	minimap->unlock();
 
 	/*// overdraw flags
 	if (localTeam>=0)
