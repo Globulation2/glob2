@@ -21,6 +21,8 @@
 #define __GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
+#include <map>
+#include <vector>
 
 class Font;
 class Sprite;
@@ -89,7 +91,7 @@ public:
 	virtual bool getNextVideoMode(int *w, int *h);
 	virtual void setCaption(const char *title, const char *icon)=0;
 
-	virtual void loadSprite(const char *filename, const char *name)=0;
+	virtual void loadSprite(const char *filename, const char *name);
 
 	virtual void loadFont(const char *filename, unsigned size, const char *name)=0;
 
@@ -136,14 +138,67 @@ public:
 	virtual unsigned getStyle(void) const { return 0; }
 };
 
+union Color32
+{
+	Uint32 id;
+	struct
+	{
+		Uint8 r, g, b, a;
+	} channel;
+
+	Color32() { channel.r=channel.g=channel.b=0; channel.a=DrawableSurface::ALPHA_OPAQUE; }
+	Color32(Uint8 r, Uint8 g, Uint8 b, Uint8 a=DrawableSurface::ALPHA_OPAQUE) { channel.r=r; channel.g=g; channel.b=b; channel.a=a; }
+	Color32(Uint32 v) { id=v; }
+	bool operator<(const Color32 &o) const { return id<o.id; }
+};
 
 class Sprite
 {
+protected:
+	struct Surface
+	{
+		SDL_Surface *s;
+		int t;
+
+		//! allocate the internal surface suitable for fast blit, free the source
+		Surface(SDL_Surface *source);
+		~Surface();
+	};
+
+	struct RotatedImage
+	{
+		SDL_Surface *orig;
+		typedef std::map<Color32, Surface *> RotationMap;
+		RotationMap rotationMap;
+
+		RotatedImage(SDL_Surface *s) { orig=s; }
+		~RotatedImage();
+	};
+
+	std::vector <Surface *> images;
+	std::vector <RotatedImage *> rotated;
+	Color32 actColor;
+
+	friend class GraphicContext;
+	void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
+	Surface *surfaceFromSDL(SDL_Surface *s);
+
 public:
-	virtual ~Sprite() { }
-	virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b)=0;
-	virtual int getW(int index)=0;
-	virtual int getH(int index)=0;
+	Sprite() { }
+	virtual ~Sprite();
+
+	//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
+	virtual void drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index);
+	//! Draw the sprite frame index at pos (x,y) on a GL screen with the clipping rect clip
+	virtual void drawGL(const SDL_Rect *clip, int x, int y, int index);
+
+	//! Set the (r,g,b) color to a sprite's base color
+	virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, b, b); }
+
+	//! Return the width of index frame of the sprite
+	virtual int getW(int index);
+	//! //! Return the height of index frame of the sprite
+	virtual int getH(int index);
 };
 
 

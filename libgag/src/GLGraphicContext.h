@@ -29,12 +29,13 @@
 #include <GAGSys.h>
 #include "GraphicContext.h"
 
+class GLSprite;
+
 class GLGraphicContext: public virtual GraphicContext
 {
 private:
 	SDL_Surface *screen;
 	Uint32 flags;
-//	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
 
 public:
 	GLGraphicContext(void);
@@ -62,7 +63,6 @@ public:
 	virtual void drawString(int x, int y, int w, const Font *font, const char *msg);
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);	
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
-	virtual void loadSprite(const char *filename, const char *name);
 	virtual void loadFont(const char *filename, unsigned size, const char *name);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
 
