@@ -633,6 +633,14 @@ void Unit::handleDisplacement(void)
 		case ACT_RANDOM:
 		{
 			displacement=DIS_RANDOM;
+			
+			if (medical==MED_FREE)
+			{
+				if (performance[FLY])
+					displacement=DIS_REMOVING_BLACK_AROUND;
+				else if (performance[ATTACK_SPEED])
+					displacement=DIS_ATTACKING_AROUND;
+			}
 			break;
 		}
 		
@@ -887,8 +895,121 @@ void Unit::handleMovement(void)
 {
 	switch (displacement)
 	{
+		
+		case DIS_REMOVING_BLACK_AROUND:
+		{
+			if (attachedBuilding)
+			{
+				movement=MOV_GOING_DXDY;
+				int bposX=attachedBuilding->posX;
+				int bposY=attachedBuilding->posY;
+				
+				int ldx=bposX-posX;
+				int ldy=bposY-posY;
+				int cdx, cdy;
+				simplifyDirection(ldx, ldy, &cdx, &cdy);
+				
+				
+				dx=-cdy;
+				dy=cdx;	
+				if (!owner->game->map.isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->teamNumber))
+				{
+					dx=cdx;
+					dy=cdy;
+				}
+			}
+			else if ((movement!=MOV_GOING_DXDY)||(syncRand()<0x8FFFFFFF))
+			{
+				for (int i=4; i<16; i++)
+				{
+					if ((syncRand()<0xBFFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=1;
+						dy=0;
+					}
+					if ((syncRand()<0x7FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=-1;
+						dy=0;
+					}
+					if ((syncRand()<0x3FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY+i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=0;
+						dy=1;
+					}
+					if ((syncRand()<0x1FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY-i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=0;
+						dy=-1;
+					}
+					
+					if ((syncRand()<0x0BFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY+i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=1;
+						dy=1;
+					}
+					if ((syncRand()<0x07FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY+i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=-1;
+						dy=1;
+					}
+					if ((syncRand()<0x03FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY-i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=-1;
+						dy=-1;
+					}
+					if ((syncRand()<0x01FFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY-i, owner->teamNumber)))
+					{
+						movement=MOV_GOING_DXDY;
+						dx=1;
+						dy=-1;
+					}
+				}
+			}
+			if (owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID)
+				movement=MOV_RANDOM;
+		}
+		break;
 		case DIS_ATTACKING_AROUND:
-		case DIS_REMOVING_BLACK_AROUND: // TODO : we should explore
+		{
+			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
+			{
+				movement=MOV_ATTACKING_TARGET;
+			}
+			else 
+			{
+				movement=MOV_RANDOM;
+				for (int x=-8; x<=8; x++)
+					for (int y=-8; y<=8; y++)
+					{
+						int uid=owner->game->map.getUnit(posX+x, posY+y);
+						if (uid!=NOUID)
+						{
+							int team;
+							if (uid<0)
+								team=Building::UIDtoTeam(uid);
+							else
+								team=Unit::UIDtoTeam(uid);
+							Uint32 tm=1<<team;
+							if (owner->enemies & tm)
+							{
+								movement=MOV_GOING_TARGET;
+								targetX=posX+x;
+								targetY=posY+y;
+								break;
+							}
+						}
+					}
+			}
+		}
+		break;
 		case DIS_RANDOM:
 		{
 			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
@@ -899,8 +1020,8 @@ void Unit::handleMovement(void)
 			{
 				movement=MOV_RANDOM;
 			}
-			break;
 		}
+		break;
 		
 		case DIS_GOING_TO_FLAG:
 		case DIS_GOING_TO_BUILDING:
@@ -1011,6 +1132,21 @@ void Unit::handleAction(void)
 			
 			pathFind();
 			//printf("%d d=(%d, %d)!\n", (int)this, dx, dy);
+			posX=(posX+dx)&(owner->game->map.getMaskW());
+			posY=(posY+dy)&(owner->game->map.getMaskH());
+			
+			selectPreferedMovement();
+			speed=performance[action];
+			
+			owner->game->map.setUnit(posX, posY, UID);
+			break;
+		}
+		
+		case MOV_GOING_DXDY:
+		{
+			owner->game->map.setUnit(posX, posY, NOUID);
+			
+			directionFromDxDy();
 			posX=(posX+dx)&(owner->game->map.getMaskW());
 			posY=(posY+dy)&(owner->game->map.getMaskH());
 			
@@ -1142,6 +1278,8 @@ bool Unit::validMed(int x, int y)
 
 void Unit::pathFind(void)
 {
+	int mapw=owner->game->map.w;
+	int maph=owner->game->map.h;
 	
 	if (bypassDirection==DIR_UNSET)
 	{
@@ -1149,6 +1287,9 @@ void Unit::pathFind(void)
 		int ldx=targetX-posX;
 		int ldy=targetY-posY;
 		int cdx, cdy;
+		
+		if (verbose)
+			printf("(%d), pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", UID, posX, posY, targetX, targetY, ldx, ldy);
 		
 		simplifyDirection(ldx, ldy, &cdx, &cdy);
 		
@@ -1333,9 +1474,6 @@ void Unit::pathFind(void)
 		// TODO : something if obstacle==border
 		// TODO : something if the validHard configuration uf the map has changed.
 		
-		int mapw=owner->game->map.w;
-		int maph=owner->game->map.h;
-			
 		while (obstacleX<0)
 			obstacleX+=mapw;
 		while (obstacleY<0)
@@ -1396,16 +1534,16 @@ void Unit::pathFind(void)
 			
 			bdx=obstacleX-borderX;
 			bdy=obstacleY-borderY;
+			if (abs(bdx)>1)
+				bdx=-SIGN(bdx);
+			if (abs(bdy)>1)
+				bdy=-SIGN(bdy);
 			bDirection=directionFromDxDy(bdx, bdy);
 			odx=borderX-obstacleX;
 			ody=borderY-obstacleY;
 			
 			int ldx=borderX-posX;
 			int ldy=borderY-posY;
-			if (ldx>(mapw>>1))
-				ldx=mapw-ldx;
-			if (ldy>(maph>>1))
-				ldy=maph-ldy;
 			simplifyDirection(ldx, ldy, &dx, &dy);
 			directionFromDxDy();
 			
@@ -1495,6 +1633,10 @@ void Unit::pathFind(void)
 				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
 				bdx=testObstacleX-testBorderX;
 				bdy=testObstacleY-testBorderY;
+				if (abs(bdx)>1)
+					bdx=-SIGN(bdx);
+				if (abs(bdy)>1)
+					bdy=-SIGN(bdy);
 				
 				ldx=testBorderX-posX;
 				ldy=testBorderY-posY;
@@ -1505,9 +1647,13 @@ void Unit::pathFind(void)
 				bapdx=sign(ldx);
 				bapdy=sign(ldy);
 				bDirection=directionFromDxDy(bdx, bdy);
+				if (verbose)
+					printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 				c=0;
 				if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 				{
+					if (verbose)
+						printf("l o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
 					obstacleX=testObstacleX;
 					obstacleY=testObstacleY;
 					borderX=testBorderX;
@@ -1556,16 +1702,16 @@ void Unit::pathFind(void)
 			
 			bdx=obstacleX-borderX;
 			bdy=obstacleY-borderY;
+			if (abs(bdx)>1)
+				bdx=-SIGN(bdx);
+			if (abs(bdy)>1)
+				bdy=-SIGN(bdy);
 			bDirection=directionFromDxDy(bdx, bdy);
 			odx=borderX-obstacleX;
 			ody=borderY-obstacleY;
 			
 			int ldx=borderX-posX;
 			int ldy=borderY-posY;
-			if (ldx>(mapw>>1))
-				ldx=mapw-ldx;
-			if (ldy>(maph>>1))
-				ldy=maph-ldy;
 			simplifyDirection(ldx, ldy, &dx, &dy);
 			directionFromDxDy();
 			
@@ -1621,6 +1767,16 @@ void Unit::pathFind(void)
 			
 			maxDist*=maxDist;
 			
+/*bug:
+p=(0, 8)
+r o=(1, 8) b=(128, 8)
+r d=(0, 0) bd=(1, 0) od=(127, 0) ld=(0, 0)
+r bapd=(0, 0), border-bapd=(128, 8)
+r maxDist=2
+r tobstacle=(129, 8) tborder=(128, 8) bd=(1, 0)
+r new tobstacle=(129, 8) tborder=(129, 9) bd=(1, 1)
+gotoTarget pos=(0, 8) target=(128, 8) ld=(0, 0) cd=(0, 0) d=(0, 0)*/
+			
 			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
 			int testObstacleX=obstacleX;
 			int testObstacleY=obstacleY;
@@ -1655,6 +1811,10 @@ void Unit::pathFind(void)
 				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
 				bdx=testObstacleX-testBorderX;
 				bdy=testObstacleY-testBorderY;
+				if (abs(bdx)>1)
+					bdx=-SIGN(bdx);
+				if (abs(bdy)>1)
+					bdy=-SIGN(bdy);
 				
 				ldx=testBorderX-posX;
 				ldy=testBorderY-posY;
@@ -1665,9 +1825,13 @@ void Unit::pathFind(void)
 				bapdx=sign(ldx);
 				bapdy=sign(ldy);
 				bDirection=directionFromDxDy(bdx, bdy);
+				if (verbose)
+					printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 				c=0;
 				if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 				{
+					if (verbose)
+						printf("r o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
 					obstacleX=testObstacleX;
 					obstacleY=testObstacleY;
 					borderX=testBorderX;
@@ -1919,6 +2083,12 @@ void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
+	int mapw=owner->game->map.w;
+	int maph=owner->game->map.h;
+	if (ldx>(mapw>>1))
+		ldx-=mapw;
+	if (ldy>(maph>>1))
+		ldy-=maph;
 	if (abs(ldx)>(2*abs(ldy)))
 	{
 		if ( abs(ldx)>((owner->game->map.getW())>>1) )

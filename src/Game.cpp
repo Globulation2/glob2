@@ -111,7 +111,7 @@ void Game::setBase(const SessionInfo *initial)
 	anyPlayerWaited=false;
 }
 
-void Game::executeOrder(Order *order)
+void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	switch (order->getOrderType())
@@ -146,7 +146,8 @@ void Game::executeOrder(Order *order)
 				{
 					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
 					b->maxUnitWorkingPreferred=b->maxUnitWorking;
-					b->maxUnitWorkingLocal=b->maxUnitWorking;
+					if (order->sender!=localPlayer)
+						b->maxUnitWorkingLocal=b->maxUnitWorking;
 					b->update();
 				}
 			}
@@ -163,7 +164,8 @@ void Game::executeOrder(Order *order)
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 				{
 					b->unitStayRange=((OrderModifyFlags *)order)->range[i];
-					b->unitStayRangeLocal=b->unitStayRangeLocal;
+					if (order->sender!=localPlayer)
+						b->unitStayRangeLocal=b->unitStayRangeLocal;
 					b->update();
 				}
 			}
@@ -182,7 +184,8 @@ void Game::executeOrder(Order *order)
 					for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
 					{
 						b->ratio[j]=((OrderModifySwarms *)order)->ratio[i*(UnitType::NB_UNIT_TYPE)+j];
-						b->ratioLocal=b->ratioLocal;
+						if (order->sender!=localPlayer)
+							b->ratioLocal=b->ratioLocal;
 					}
 					b->update();
 				}
