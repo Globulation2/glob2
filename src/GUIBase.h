@@ -31,17 +31,22 @@
 //! Widget reacts to SDL_Event and produce Action
 enum Action
 {
+	SCREEN_CREATED,	// after first draw
+	SCREEN_DESTROYED,	// after endExectue
+
 	BUTTON_GOT_MOUSEOVER,
 	BUTTON_LOST_MOUSEOVER,
 	BUTTON_PRESSED,
 	BUTTON_RELEASED,
 	BUTTON_SHORTCUT,
 	BUTTON_STATE_CHANGED,
+
 	TEXT_CURSOR_MOVED,
 	TEXT_MODIFFIED,
 	TEXT_ACTIVATED,
 	TEXT_VALIDATED,
 	TEXT_SET,
+
 	LIST_ELEMENT_SELECTED
 };
 
@@ -108,7 +113,7 @@ public:
 	virtual void onTimer(Uint32 tick) { }
 	//! Method called for each SDL_Event
 	virtual void onSDLEvent(SDL_Event *event) { }
-	//! Method called when a widhet produces an Action
+	//! Method called when a widget produces an Action
 	virtual void onAction(Widget *source, Action action, int par1, int par2)=0;
 	//! Full screen paint, call paint(0, 0, gfx->getW(), gfx->getH())
 	virtual void paint();
