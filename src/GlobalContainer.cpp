@@ -29,6 +29,7 @@
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
 #include "SoundMixer.h"
+#include "VoiceRecorder.h"
 #include "IntBuildingType.h"
 
 // version related stuff
@@ -89,6 +90,9 @@ GlobalContainer::~GlobalContainer(void)
 	// close sound
 	if (mix)
 		delete mix;
+		
+	if (rec)
+		delete rec;
 	
 	// release ressources
 	Toolkit::close();
@@ -416,6 +420,9 @@ void GlobalContainer::load(void)
 		mix->loadTrack("data/zik/a3.ogg");
 		mix->setNextTrack(0);
 		mix->setNextTrack(1);
+		
+		// create voice recorder
+		rec = new VoiceRecorder();
 		
 		updateLoadProgressBar(10);
 	}

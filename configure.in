@@ -14,17 +14,20 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-
 dnl Set to C for all libraries test
 AC_LANG(C)
 
-
 dnl Header files
 AC_STDC_HEADERS
+AC_FUNC_ALLOCA
+AC_HEADER_DIRENT
 AC_HAVE_HEADERS(string.h sys/time.h assert.h)
 
-
 dnl Libraries
+
+dnl Check for Speex
+AC_CHECK_HEADER(speex.h,,AC_MSG_ERROR([*** Speex header not found. Please install Speex (http://www.speex.org).]))
+AC_CHECK_LIB(speex,speex_encoder_init,,AC_MSG_ERROR([*** Speex library not found. Please install Speex (http://www.speex.org).]))
 
 dnl Check for SDL
 SDL_VERSION=1.2.0
@@ -54,11 +57,8 @@ if test "$have_opengl" = "yes"; then
 	AC_DEFINE([HAVE_OPENGL],[],[Defined when OpenGL support is present and compiled])
 fi
 
-
-dnl Check for header files
-AC_FUNC_ALLOCA
-AC_HEADER_DIRENT
-
+dnl Type of voice recorder
+AC_DEFINE([AUDIO_RECORDER_OSS],,[Set the audio input type to OSS; the UNIX Open Sound System])
 
 dnl Set the C++ after the tests
 AC_LANG(C++)

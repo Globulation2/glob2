@@ -119,6 +119,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new MessageOrder(netData+1, netDataLength-1);
 	}
+	case ORDER_VOICE_DATA:
+	{
+		return new OrderVoiceData(netData+1, netDataLength-1);
+	}
 	case ORDER_SET_ALLIANCE:
 	{
 		return new SetAllianceOrder(netData+1, netDataLength-1);
@@ -745,6 +749,58 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength)
 		return false;
 	if (textLength!=dataLength-9)
 		return false;
+	return true;
+}
+
+// OrderVoiceData's code
+
+OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength)
+:MiscOrder()
+{
+	this->data = NULL;
+	assert(dataLength >= 5);
+	bool good = setData(data, dataLength);
+	assert(good);
+}
+
+OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
+{
+	this->recepientsMask = recepientsMask;
+	this->framesDatasLength = framesDatasLength;
+	this->frameCount = frameCount;
+	
+	data = (Uint8 *)malloc(framesDatasLength+5);
+	if (framesDatas)
+		memcpy(data+5, framesDatas, framesDatasLength);
+}
+
+OrderVoiceData::~OrderVoiceData()
+{
+	assert(data);
+	free(data);
+}
+
+Uint8 *OrderVoiceData::getData(void)
+{
+	addUint32(data, recepientsMask, 0);
+	addUint8(data, frameCount, 4);
+	return data;
+}
+
+bool OrderVoiceData::setData(const Uint8 *data, int dataLength)
+{
+	assert(dataLength >= 5);
+	if (dataLength<5)
+		return false;
+		
+	this->framesDatasLength = (size_t)dataLength - 5;
+	this->recepientsMask = getUint32(data, 0);
+	this->frameCount = getUint8(data, 4);
+	
+	if (this->data != NULL)
+		free(this->data);
+	data = (Uint8 *)malloc(dataLength);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 

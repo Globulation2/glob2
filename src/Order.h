@@ -418,6 +418,26 @@ public:
 	int length;
 };
 
+//! A voice message
+class OrderVoiceData:public MiscOrder
+{
+public:
+	OrderVoiceData(const Uint8 *data, int dataLength);
+	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
+	virtual ~OrderVoiceData(void);
+
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return framesDatasLength+5; }
+	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
+	Uint8 *getFramesData(void) { return data+5; }
+
+	Uint32 recepientsMask;
+	size_t framesDatasLength;
+	Uint8 frameCount;
+	Uint8 *data;
+};
+
 class SetAllianceOrder:public MiscOrder
 {
 public:
