@@ -1635,41 +1635,6 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*my+=buildingHeight*16;
 }
 
-bool Map::nearestRessource(int x, int y, int ressourceType, int *dx, int *dy)
-{
-	for (int i=1; i<32; i++)
-	{
-		for (int j=-i; j<i; j++)
-		{
-			if (isRessource(x+i, y+j, ressourceType))
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y+j, ressourceType))
-			{
-				*dx=(x-i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y+i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y-i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y-i)&getMaskH();
-				return true;
-			}
-		}
-	}
-    return false;
-}
-
 bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
 {
 	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
@@ -1688,7 +1653,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		return false;
 }
 
-bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, Uint8 level)
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	ressourceAviableCount[teamNumber][ressourceType]++;
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
@@ -1702,7 +1667,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	}
 	if (dist)
 		*dist=255-g;
-	if (g>=level)
+	if (g>=255)
 	{
 		ressourceAviableCountFast[teamNumber][ressourceType]++;
 		*targetX=x;
@@ -1778,7 +1743,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		
 		vx=(vx+vddx)&wMask;
 		vy=(vy+vddy)&hMask;
-		if (max==255 || (max>=level && (getBuilding(vx, vy)==NOGBID)))
+		if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
 		{
 			ressourceAviableCountSuccess[teamNumber][ressourceType]++;
 			*targetX=vx;

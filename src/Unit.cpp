@@ -845,7 +845,7 @@ void Unit::handleDisplacement(void)
 						int dummyDist;
 						if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 							displacement=DIS_HARVESTING;
-						else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist, 255))
+						else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 							displacement=DIS_GOING_TO_RESSOURCE;
 						else
 						{
