@@ -180,6 +180,8 @@ bool Sector::load(SDL_RWops *stream, Game *game)
 void Sector::step(void)
 {
 	std::list<Bullet*>::iterator ittemp;
+	assert(map);
+	assert(game);
 	
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
