@@ -32,7 +32,7 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	
 	addWidget(new Text(20, 5, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
 	
-	startTimer=new Text(20, 400, globalContainer->standardFont, "");
+	startTimer=new Text(440, 300, globalContainer->standardFont, "");
 	addWidget(startTimer);
 	
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);

@@ -89,7 +89,6 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	}
 	case ORDER_NULL:
 	{
-		assert(false); // Currently, NullOrder has to be used only between NetGame and GameGUI, but not the network.
 		return new NullOrder();
 	}
 	case ORDER_TEXT_MESSAGE:
