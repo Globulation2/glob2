@@ -48,13 +48,13 @@ CustomGameScreen::CustomGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	for (int i=0; i<8; i++)
+	for (int i=0; i<16; i++)
 	{
-		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, 10+i);
+		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, 100+i);
 		addWidget(isAI[i]);
-		color[i]=new ColorButton(265, 60+i*30, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20+i);
+		color[i]=new ColorButton(265, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 200+i);
 		addWidget(color[i]);
-		isAItext[i]=new Text(300, 60+i*30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", (i==0)  ? Toolkit::getStringTable()->getString("[player]") : Toolkit::getStringTable()->getString("[ai]"));
+		isAItext[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", (i==0)  ? Toolkit::getStringTable()->getString("[player]") : Toolkit::getStringTable()->getString("[ai]"));
 		addWidget(isAItext[i]);
 	}
 
@@ -99,7 +99,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					
 					int nbTeam=sessionInfo.numberOfTeam;
 					// set the correct number of colors
-					for (int i=0; i<8; i++)
+					for (int i=0; i<16; i++)
 					{
 						color[i]->clearColors();
 						for (int j=0; j<nbTeam; j++)
@@ -128,7 +128,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 						isAItext[i]->setText(Toolkit::getStringTable()->getString("[ai]"));
 					}
 					// Close the rest
-					for (;i<8; i++)
+					for (;i<16; i++)
 					{
 						isAI[i]->setState(false);
 						isAItext[i]->setText(Toolkit::getStringTable()->getString("[closed]"));
@@ -150,7 +150,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 			isAI[0]->setState(true);
 			color[0]->setSelectedColor();
 			isAItext[0]->setText(Toolkit::getStringTable()->getString("[player]"));
-			for (int i=1;i<8; i++)
+			for (int i=1;i<16; i++)
 			{
 				isAI[i]->setState(true);
 				color[i]->setSelectedColor();
@@ -174,13 +174,13 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
-		if (par1==10)
+		if (par1==100)
 		{
 			isAI[0]->setState(true);
 		}
-		else if ((par1>10) && (par1<20))
+		else if ((par1>100) && (par1<200))
 		{
-			int n=par1-10;
+			int n=par1-100;
 			if (isAI[n]->getState())
 				isAItext[n]->setText(Toolkit::getStringTable()->getString("[ai]"));
 			else
