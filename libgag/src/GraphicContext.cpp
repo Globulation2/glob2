@@ -79,7 +79,7 @@ void GraphicContext::loadSprite(const char *filename, const char *name)
 {
 	SDL_RWops *frameStream;
 	SDL_RWops *rotatedStream;
-	int i=0;
+	unsigned i=0;
 
 	Sprite *sprite=new Sprite;
 
@@ -109,9 +109,9 @@ void GraphicContext::loadSprite(const char *filename, const char *name)
 
 int Font::getStringWidth(const int i) const
 {
-	char temp[32];
-	snprintf(temp, 32, "%d", i);
-	return getStringWidth(temp);
+	std::ostringstream temp;
+	temp << i;
+	return getStringWidth(temp.str().c_str());
 }
 
 int Font::getStringWidth(const char *string, int len) const
@@ -130,8 +130,8 @@ int Font::getStringHeight(const char *string, int len) const
 
 int Font::getStringHeight(const int i) const
 {
-	char temp[32];
-	snprintf(temp, 32, "%d", i);
-	return getStringHeight(temp);
+	std::ostringstream temp;
+	temp << i;
+	return getStringHeight(temp.str().c_str());
 }
 

@@ -151,21 +151,28 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 				float nR, nG, nB;
 				SDL_GetRGBA(*sPtr, rotated[index]->orig->format, &sR, &sG, &sB, &alpha);
 
-				GAG::RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
+				if (alpha != DrawableSurface::ALPHA_TRANSPARENT)
+				{
+					GAG::RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
 
-				float newHue = hue + hueDec;
-				if (newHue >= 360)
-					newHue -= 360;
-				if (newHue < 0)
-					newHue += 360;
+					float newHue = hue + hueDec;
+					if (newHue >= 360)
+						newHue -= 360;
+					if (newHue < 0)
+						newHue += 360;
 
-				GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
+					GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
 
-				dR = (Uint32)(255*nR);
-				dG = (Uint32)(255*nG);
-				dB = (Uint32)(255*nB);
+					dR = (Uint32)(255*nR);
+					dG = (Uint32)(255*nG);
+					dB = (Uint32)(255*nB);
 
-				*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
+					*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
+				}
+				else
+					*dPtr = 0;
+
+
 				sPtr++;
 				dPtr++;
 			}
