@@ -1796,25 +1796,28 @@ void GameGUI::drawOverlayInfos(void)
 		batH=(bt->height)<<5;
 
 		// we get extended building sizes:
-
-		exBatX=(exMapX-viewportX)<<5;
-		exBatY=(exMapY-viewportY)<<5;
-		exBatW=(lastbt->width)<<5;
-		exBatH=(lastbt->height)<<5;
-
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
 
-		if (isRoom)
+		if (!bt->isVirtual)
 		{
-			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+			exBatX=(exMapX-viewportX)<<5;
+			exBatY=(exMapY-viewportY)<<5;
+			exBatW=(lastbt->width)<<5;
+			exBatH=(lastbt->height)<<5;
+
+			if (isRoom)
+			{
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+			}
+			else
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+		
+			if (isRoom&&isExtendedRoom)
+				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
+			else
+				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
 		}
-		else
-			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-		if (isRoom&&isExtendedRoom)
-			globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
-		else
-			globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
 
 	}
 	else if (selBuild)
