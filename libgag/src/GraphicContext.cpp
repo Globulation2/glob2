@@ -112,11 +112,11 @@ bool DrawableSurface::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 	else
 		sdlFlags|=SDL_SWSURFACE;
 
-	SDL_Surface *tempScreen = SDL_CreateRGBSurface(sdlFlags, w, h, depth, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
-	assert(tempScreen);
-	surface = SDL_DisplayFormatAlpha(tempScreen);
+	SDL_Surface *temp = SDL_CreateRGBSurface(sdlFlags, w, h, depth, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
+	assert(temp);
+	surface = SDL_DisplayFormatAlpha(temp);
 	assert(surface);
-	SDL_FreeSurface(tempScreen);
+	SDL_FreeSurface(temp);
 	setClipRect();
 	return true;
 }

@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.h,v 1.3 2003/11/18 17:02:53 nct Exp $ */
+/* $Id: SDL_ttf.h,v 1.4 2004/08/01 11:48:41 nct Exp $ */
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
@@ -30,7 +30,7 @@
 #ifndef _SDL_TTF_H
 #define _SDL_TTF_H
 
-#include "SDL.h"
+#include <glSDL.h>
 #include "begin_code.h"
 
 /* Set up for C function definitions, even when using C++ */
