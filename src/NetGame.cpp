@@ -46,49 +46,59 @@ void NetGame::init(void)
 	currentStep=0;
 	int step;
 	int eachPlayers;
-	
-	for (int i=0; i<queueSize; i++)
+
 	{
-		checkSumsLocal[i]=0;
-		checkSumsRemote[i]=0;
+		for (int i=0; i<queueSize; i++)
+		{
+			checkSumsLocal[i]=0;
+			checkSumsRemote[i]=0;
+		}
 	}
-	
-	for (step=0; step<1; step++)//because first step will be ignored.
-		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-		{
-			playersNetQueue[eachPlayers][step].order=NULL;
-			playersNetQueue[eachPlayers][step].packetID=-1;
-			playersNetQueue[eachPlayers][step].ackID=-1;
-		}
-	
-	for (step=1; step<latency; step++)
-		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-		{
-			playersNetQueue[eachPlayers][step].order=new NullOrder();
-			playersNetQueue[eachPlayers][step].packetID=step;
-			playersNetQueue[eachPlayers][step].ackID=step;
-		}
-	
-	for (step=latency; step<queueSize; step++)
-		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
-		{
-			playersNetQueue[eachPlayers][step].order=NULL;
-			playersNetQueue[eachPlayers][step].packetID=-1;
-			playersNetQueue[eachPlayers][step].ackID=-1;
-		}
-	
-	for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+
 	{
-		lastReceivedFromHim[eachPlayers]=latency-1;
-		lastReceivedFromMe[eachPlayers]=latency-1;
-		countDown[eachPlayers]=0;
-		stayingPlayersMask[eachPlayers]=0;
-		
-		for (int player=0; player<numberOfPlayer; player++)
-			lastAviableStep[eachPlayers][player]=-1;
-		
-		while(localOrderQueue[eachPlayers].size()>0)
-			localOrderQueue[eachPlayers].pop();
+		for (step=0; step<1; step++)//because first step will be ignored.
+			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+			{
+				playersNetQueue[eachPlayers][step].order=NULL;
+				playersNetQueue[eachPlayers][step].packetID=-1;
+				playersNetQueue[eachPlayers][step].ackID=-1;
+			}
+	}
+
+	{
+		for (step=1; step<latency; step++)
+			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+			{
+				playersNetQueue[eachPlayers][step].order=new NullOrder();
+				playersNetQueue[eachPlayers][step].packetID=step;
+				playersNetQueue[eachPlayers][step].ackID=step;
+			}
+	}
+
+	{
+		for (step=latency; step<queueSize; step++)
+			for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+			{
+				playersNetQueue[eachPlayers][step].order=NULL;
+				playersNetQueue[eachPlayers][step].packetID=-1;
+				playersNetQueue[eachPlayers][step].ackID=-1;
+			}
+	}
+
+	{
+		for (eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+		{
+			lastReceivedFromHim[eachPlayers]=latency-1;
+			lastReceivedFromMe[eachPlayers]=latency-1;
+			countDown[eachPlayers]=0;
+			stayingPlayersMask[eachPlayers]=0;
+			
+			for (int player=0; player<numberOfPlayer; player++)
+				lastAviableStep[eachPlayers][player]=-1;
+			
+			while(localOrderQueue[eachPlayers].size()>0)
+				localOrderQueue[eachPlayers].pop();
+		}
 	}
 	
 	dropState=NO_DROP_PROCESSING;
@@ -99,29 +109,29 @@ bool NetGame::isStepReady(Sint32 step)
 {
 	int eachPlayers;
 	for (eachPlayers=0;eachPlayers<numberOfPlayer;eachPlayers++)
-	if (players[eachPlayers]->type!=Player::P_LOST_B)
-	{
-		if (smaller(lastReceivedFromHim[eachPlayers], step))
+		if (players[eachPlayers]->type!=Player::P_LOST_B)
 		{
-			//printf("player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
-			isWaitingForPlayer=true;
-			return false;
+			if (smaller(lastReceivedFromHim[eachPlayers], step))
+			{
+				//printf("player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
+				isWaitingForPlayer=true;
+				return false;
+			}
+			if (players[eachPlayers]->type==Player::P_IP)
+			if (smaller(lastReceivedFromMe[eachPlayers], step))
+			{
+				//printf("player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
+				isWaitingForPlayer=true;
+				return false;
+			}
+			
+			if ( playersNetQueue[eachPlayers][step].order==NULL)
+			{
+				//printf("player %d is not ready for step %d (noor). \n", eachPlayers, step);
+				isWaitingForPlayer=true;
+				return false;
+			}
 		}
-		if (players[eachPlayers]->type==Player::P_IP)
-		if (smaller(lastReceivedFromMe[eachPlayers], step))
-		{
-			//printf("player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
-			isWaitingForPlayer=true;
-			return false;
-		}
-		
-		if ( playersNetQueue[eachPlayers][step].order==NULL)
-		{
-			//printf("player %d is not ready for step %d (noor). \n", eachPlayers, step);
-			isWaitingForPlayer=true;
-			return false;
-		}
-	}
 
 	isWaitingForPlayer=false;
 	return true;
@@ -421,7 +431,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		//printf("(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
 		return order;
 	}
-};
+}
 
 
 void NetGame::pushOrder(Order *order, Sint32 playerNumber)
@@ -487,7 +497,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	else
 		checkSumsLocal[pushStep]=0;
 	
-};
+}
 
 void NetGame::treatData(char *data, int size, IPaddress ip)
 {
@@ -629,26 +639,30 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					// lest's remove players to drop:
 					
 					Uint32 pm=1;
-					for (int p=0; p<numberOfPlayer; p++)
 					{
-						if (pm&spm)
+						for (int p=0; p<numberOfPlayer; ++p)
 						{
-							printf("Player %d stays\n", p);
+							if (pm&spm)
+							{
+								printf("Player %d stays\n", p);
+							}
+							else if (players[p]->type==Player::P_IP)
+							{
+						       printf("Player %d lost\n", p); 
+							   players[p]->type=Player::P_LOST_A;
+							}
+							
+							pm=pm<<1;
 						}
-						else if (players[p]->type==Player::P_IP)
-						{
-					       printf("Player %d lost\n", p); 
-						   players[p]->type=Player::P_LOST_A;
-						}
-						
-						pm=pm<<1;
 					}
 					
 					// we have to inform other players about the last step we have from him.
-					
-					for (int p2=0; p2<numberOfPlayer; p2++)
-						if (p2!=localPlayerNumber)
-							stayingPlayersMask[p2]=0;
+
+					{
+						for (int p=0; p<numberOfPlayer; ++p)
+							if (p!=localPlayerNumber)
+								stayingPlayersMask[p]=0;
+					}
 					
 					dropState=NO_DROP_PROCESSING;
 					lastSmallerMspm=0;
@@ -663,11 +677,13 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					Uint32 mwspm=0xFFFF;
 					Uint32 spm=stayingPlayersMask[localPlayerNumber];
 					Uint32 pm=1;
-					for (int p=0; p<numberOfPlayer; p++)
 					{
-						if (pm&spm)
-							mwspm&=stayingPlayersMask[p];
-						pm=pm<<1;
+						for (int p=0; p<numberOfPlayer; ++p)
+						{
+							if (pm&spm)
+								mwspm&=stayingPlayersMask[p];
+							pm=pm<<1;
+						}
 					}
 					
 					printf("World is nearing a big global disconneciton...(like in reality) %x\n", mwspm);
@@ -678,11 +694,13 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					// we send it to all players:
 					Order *order=new DroppingPlayerOrder(mwspm, CROSS_SENDING_STAY_MASK);
 					pm=1;
-					for (int p2=0; p2<numberOfPlayer; p2++)
 					{
-						if (pm&mwspm)
-							sendMyOrderThroughUDP(order, -1, p2, lastReceivedFromHim[p2]);
-						pm=pm<<1;
+						for (int p=0; p<numberOfPlayer; ++p)
+						{
+							if (pm&mwspm)
+								sendMyOrderThroughUDP(order, -1, p, lastReceivedFromHim[p]);
+							pm=pm<<1;
+						}
 					}
 					delete order;
 				
@@ -812,23 +830,28 @@ void NetGame::step(void)
 
 	nextStep=(currentStep+1)%queueSize;
 	//printf("nextStep=%d, dropState=%d\n", nextStep, dropState);
-	
-	for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+	{
+		for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+		{
 			if ((players[eachPlayer]->quitting)&&(players[eachPlayer]->type!=Player::P_LOST_B))
 			{ 
 				printf("(%d) quitStep=%d, lastReceivedFromMe=%d .\n", eachPlayer, players[eachPlayer]->quitStep, lastReceivedFromMe[eachPlayer]);
 				if (!smaller(lastReceivedFromMe[eachPlayer], players[eachPlayer]->quitStep))
 					players[eachPlayer]->type=Player::P_LOST_B;
 			}
+		}
+	}
 	if (isStepReady(nextStep))
 	{
 		//printf("nextStep=%d\n", nextStep);
-		for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
 		{
-			int s=(currentStep+queueSize-latency-1)%queueSize; // the easy solution
-			//int s=(currentStep+latency+1)%queueSize; // the memory saver solution
-			delete playersNetQueue[eachPlayer][s].order;
-			playersNetQueue[eachPlayer][s].order=NULL;
+			for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+			{
+				int s=(currentStep+queueSize-latency-1)%queueSize; // the easy solution
+				//int s=(currentStep+latency+1)%queueSize; // the memory saver solution
+				delete playersNetQueue[eachPlayer][s].order;
+				playersNetQueue[eachPlayer][s].order=NULL;
+			}
 		}
 		currentStep=nextStep;
 	}
@@ -836,168 +859,200 @@ void NetGame::step(void)
 	{
 		// We have to send our orders again if anyone hasen't received it:
 		if(dropState==NO_DROP_PROCESSING)
-		for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-			if (players[eachPlayer]->type==BasePlayer::P_IP)
+		{
+			for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
 			{
-				int rst=(lastReceivedFromMe[eachPlayer]+1)%queueSize;
-				int stepToTest=(nextStep/*+lostPacketLatencyMargin*/)%queueSize;
-				assert(lostPacketLatencyMargin<queueSize);
-				
-				//printf("(%d): %d<?<%d\n", eachPlayer, lastReceivedFromMe[eachPlayer], stepToTest);
-				
-				if (smaller(lastReceivedFromMe[eachPlayer], stepToTest))
+				if (players[eachPlayer]->type==BasePlayer::P_IP)
 				{
-					//printf("resend to player %d, order %d, type %d.\n", eachPlayer, rst, playersNetQueue[localPlayerNumber][rst].order->getOrderType());
-					// then re-send directly
+					int rst=(lastReceivedFromMe[eachPlayer]+1)%queueSize;
+					int stepToTest=(nextStep/*+lostPacketLatencyMargin*/)%queueSize;
+					assert(lostPacketLatencyMargin<queueSize);
 					
-					sendMyOrderThroughUDP(playersNetQueue[localPlayerNumber][rst].order, rst, eachPlayer, lastReceivedFromHim[eachPlayer]);
-				}
-				else
-				{
+					//printf("(%d): %d<?<%d\n", eachPlayer, lastReceivedFromMe[eachPlayer], stepToTest);
 					
-					Uint32 wfpm=whoMaskAreWeWaitingFor(currentStep);
-					Order *order=new WaitingForPlayerOrder(wfpm);
-					sendMyOrderThroughUDP(order, rst, eachPlayer, lastReceivedFromHim[eachPlayer]);
-					delete order;
+					if (smaller(lastReceivedFromMe[eachPlayer], stepToTest))
+					{
+						//printf("resend to player %d, order %d, type %d.\n", eachPlayer, rst, playersNetQueue[localPlayerNumber][rst].order->getOrderType());
+						// then re-send directly
+						
+						sendMyOrderThroughUDP(playersNetQueue[localPlayerNumber][rst].order, rst, eachPlayer, lastReceivedFromHim[eachPlayer]);
+					}
+					else
+					{
+						
+						Uint32 wfpm=whoMaskAreWeWaitingFor(currentStep);
+						Order *order=new WaitingForPlayerOrder(wfpm);
+						sendMyOrderThroughUDP(order, rst, eachPlayer, lastReceivedFromHim[eachPlayer]);
+						delete order;
+					}
 				}
 			}
+		}
 		
 		
 		Order *order=NULL;
 		int ap, s;
-		for (ap=0; ap<numberOfPlayer; ap++)
-			if (players[ap]->type==BasePlayer::P_LOST_A)
-				if (nextUnrecievedStep(currentStep, ap, &s))
-				{
-					Sint32 missingStep=(s+1)%queueSize;
-					order=new RequestingDeadAwayOrder(ap, missingStep, lastReceivedFromHim[ap]);
-					printf("requesting order %d from player %d.\n", missingStep, ap);
-					break;
-				}
-		if (order)
 		{
-			for (int rp=0; rp<numberOfPlayer; rp++)
-				if (players[rp]->type==BasePlayer::P_IP)
-				{
-					printf("requesting order %d from player %d, request player %d\n", s, ap, rp);
-					int rst=(lastReceivedFromMe[rp]+1)%queueSize;
-					sendMyOrderThroughUDP(order, rst, rp, lastReceivedFromHim[rp]);
-				}
-			delete order;
-		}
-		// we look for any usefull drop:
-		for (int p=0; p<numberOfPlayer; p++)
-		{
-			countDown[p]++;
-			if(countDown[p]%10==0)
-				printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
-			int s;
-			if (nextUnrecievedStep(currentStep, p, &s))
+			for (ap=0; ap<numberOfPlayer; ap++)
 			{
-				if (((players[p]->type==BasePlayer::P_IP)||(players[p]->type==BasePlayer::P_LOST_A))&&(countDown[p]>COUNT_DOWN_DEATH))
+				if (players[ap]->type==BasePlayer::P_LOST_A)
 				{
-					Uint32 stayMask=0; // the mask of staying players
-					
-					stayMask=1<<localPlayerNumber;
-					for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-							if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&(eachPlayer!=p))
-								stayMask|=1<<eachPlayer;
-					
-					if (stayingPlayersMask[localPlayerNumber])
+					if (nextUnrecievedStep(currentStep, ap, &s))
 					{
-						stayMask&=stayingPlayersMask[localPlayerNumber];
-						stayingPlayersMask[localPlayerNumber]=stayMask;
-					}
-					
-					
-					int nbipp=0; // Number Of IP players
-					Uint32 pm=1;
-					for (int eachPlayer2=0; eachPlayer2<numberOfPlayer; eachPlayer2++)
-					{
-						printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer2, players[eachPlayer2]->type, pm, pm, stayMask, stayMask);
-						if (((players[eachPlayer2]->type==BasePlayer::P_IP)||(players[eachPlayer2]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
-						{
-							printf("m: player %d stay.\n", eachPlayer2);
-							nbipp++;
-							pm=pm<<1;
-						}
-					}
-					printf("ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
-					
-					if (nbipp>0)
-					{
-						Order *order=new DroppingPlayerOrder(stayMask, STARTING_DROPPING_PROCESS);
-						
-						for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-							if ((players[eachPlayer]->type==BasePlayer::P_IP)&&(eachPlayer!=p))
-								sendMyOrderThroughUDP(order, -1, eachPlayer, lastReceivedFromHim[eachPlayer]);
-						
-						delete order;
-						
-						if (dropState==NO_DROP_PROCESSING)
-						{
-							for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-								stayingPlayersMask[eachPlayer]=0;
-							
-							dropState=ONE_STAY_MASK_RECIEVED;
-						
-							for (int pl=0; pl<numberOfPlayer; pl++)
-								for (int q=0; q<numberOfPlayer; q++)
-									lastAviableStep[pl][q]=-1;
-							
-							stayingPlayersMask[localPlayerNumber]=stayMask;
-						}
-						else
-						{
-							
-							Uint32 nspm;// New staying player mask
-							nspm=stayingPlayersMask[localPlayerNumber] & stayMask;
-							stayingPlayersMask[localPlayerNumber]=nspm;
-							Uint32 pm=1;
-							int nbipp=0; //Number of IP players
-							for (int pl=0; pl<numberOfPlayer; pl++)
-							{
-								if (pm&nspm)
-									nbipp++;
-								pm=pm<<1;
-							}
-							
-							if (nbipp<2)
-							{
-								printf("We finally drop all IP player\n");
-								for (int pl=0; pl<numberOfPlayer; pl++)
-									if ((players[pl]->type==Player::P_LOST_A)||(players[pl]->type==Player::P_IP))
-										players[pl]->type=Player::P_LOST_B;
-								
-								for (int si=0; si<queueSize; si++)
-								{
-									checkSumsLocal[si]=0;
-									checkSumsRemote[si]=0;
-								}
-								
-								dropState=NO_DROP_PROCESSING;
-							}
-							
-						}
-						//printf("Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
-					}
-					else if (nbipp==0)
-					{
-						printf("We drop last IP player %d\n", p);
-						
-						players[p]->type=Player::P_LOST_B;
-						
-						dropState=NO_DROP_PROCESSING;
+						Sint32 missingStep=(s+1)%queueSize;
+						order=new RequestingDeadAwayOrder(ap, missingStep, lastReceivedFromHim[ap]);
+						printf("requesting order %d from player %d.\n", missingStep, ap);
+						break;
 					}
 				}
 			}
 		}
-		//else if (dropState==ONE_STAY_MASK_RECIEVED)
+		if (order)
 		{
+			{
+				for (int rp=0; rp<numberOfPlayer; rp++)
+				{
+					if (players[rp]->type==BasePlayer::P_IP)
+					{
+						printf("requesting order %d from player %d, request player %d\n", s, ap, rp);
+						int rst=(lastReceivedFromMe[rp]+1)%queueSize;
+						sendMyOrderThroughUDP(order, rst, rp, lastReceivedFromHim[rp]);
+					}
+				}
+			}
+			delete order;
+		}
+		// we look for any usefull drop:
+		{
+			for (int p=0; p<numberOfPlayer; p++)
+			{
+				countDown[p]++;
+				if(countDown[p]%10==0)
+					printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
+				int s;
+				if (nextUnrecievedStep(currentStep, p, &s))
+				{
+					if (((players[p]->type==BasePlayer::P_IP)||(players[p]->type==BasePlayer::P_LOST_A))&&(countDown[p]>COUNT_DOWN_DEATH))
+					{
+						Uint32 stayMask=0; // the mask of staying players
+						
+						stayMask=1<<localPlayerNumber;
+						{
+							for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
+									if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&(eachPlayer!=p))
+										stayMask|=1<<eachPlayer;
+						}
+						
+						if (stayingPlayersMask[localPlayerNumber])
+						{
+							stayMask&=stayingPlayersMask[localPlayerNumber];
+							stayingPlayersMask[localPlayerNumber]=stayMask;
+						}
+						
+						
+						int nbipp=0; // Number Of IP players
+						Uint32 pm=1;
+						{
+							for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
+							{
+								printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
+								if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
+								{
+									printf("m: player %d stay.\n", eachPlayer);
+									nbipp++;
+									pm=pm<<1;
+								}
+							}
+						}
+						printf("ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
+						
+						if (nbipp>0)
+						{
+							Order *order=new DroppingPlayerOrder(stayMask, STARTING_DROPPING_PROCESS);
+
+							{
+								for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+									if ((players[eachPlayer]->type==BasePlayer::P_IP)&&(eachPlayer!=p))
+										sendMyOrderThroughUDP(order, -1, eachPlayer, lastReceivedFromHim[eachPlayer]);
+							}
+							
+							delete order;
+							
+							if (dropState==NO_DROP_PROCESSING)
+							{
+								{
+									for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+										stayingPlayersMask[eachPlayer]=0;
+								}
+								
+								dropState=ONE_STAY_MASK_RECIEVED;
+
+								{
+									for (int pl=0; pl<numberOfPlayer; pl++)
+										for (int q=0; q<numberOfPlayer; q++)
+											lastAviableStep[pl][q]=-1;
+								}
+								
+								stayingPlayersMask[localPlayerNumber]=stayMask;
+							}
+							else
+							{
+								
+								Uint32 nspm;// New staying player mask
+								nspm=stayingPlayersMask[localPlayerNumber] & stayMask;
+								stayingPlayersMask[localPlayerNumber]=nspm;
+								Uint32 pm=1;
+								int nbipp=0; //Number of IP players
+								{
+									for (int pl=0; pl<numberOfPlayer; pl++)
+									{
+										if (pm&nspm)
+											nbipp++;
+										pm=pm<<1;
+									}
+								}
+								
+								if (nbipp<2)
+								{
+									printf("We finally drop all IP player\n");
+									{
+										for (int pl=0; pl<numberOfPlayer; pl++)
+											if ((players[pl]->type==Player::P_LOST_A)||(players[pl]->type==Player::P_IP))
+												players[pl]->type=Player::P_LOST_B;
+									}
+
+									{
+										for (int si=0; si<queueSize; si++)
+										{
+											checkSumsLocal[si]=0;
+											checkSumsRemote[si]=0;
+										}
+									}
+									
+									dropState=NO_DROP_PROCESSING;
+								}
+								
+							}
+							//printf("Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
+						}
+						else if (nbipp==0)
+						{
+							printf("We drop last IP player %d\n", p);
+							
+							players[p]->type=Player::P_LOST_B;
+							
+							dropState=NO_DROP_PROCESSING;
+						}
+					}
+				}
+			}
+			//else if (dropState==ONE_STAY_MASK_RECIEVED)
+			{
+				
+			}
+			
 			
 		}
-		
-		
 	}
 
-};
+}

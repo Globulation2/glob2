@@ -124,11 +124,15 @@ bool SessionInfo::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
-	for (int i=0; i<numberOfPlayer; i++)
-		players[i].load(stream);
-	for (int i2=0; i2<numberOfTeam; i2++)
-		team[i2].load(stream);
+
+	{
+		for (int i=0; i<numberOfPlayer; ++i)
+			players[i].load(stream);
+	}
+	{
+		for (int i=0; i<numberOfTeam; ++i)
+			team[i].load(stream);
+	}
 	
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
@@ -148,17 +152,21 @@ char *SessionInfo::getData()
 	
 	memcpy(l+data, map.getData(), map.getDataLength() );
 	l+=map.getDataLength();
-	
-	for (int i=0; i<32; i++)
+
 	{
-		memcpy(l+data, players[i].getData(), players[i].getDataLength() );
-		l+=players[i].getDataLength();
+		for (int i=0; i<32; ++i)
+		{
+			memcpy(l+data, players[i].getData(), players[i].getDataLength() );
+			l+=players[i].getDataLength();
+		}
 	}
-	
-	for (int i2=0; i2<32; i2++)
+
 	{
-		memcpy(l+data, team[i2].getData(), team[i2].getDataLength() );
-		l+=team[i2].getDataLength();
+		for (int i=0; i<32; ++i)
+		{
+			memcpy(l+data, team[i].getData(), team[i].getDataLength() );
+			l+=team[i].getDataLength();
+		}
 	}
 	
 	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
@@ -177,18 +185,22 @@ bool SessionInfo::setData(const char *data, int dataLength)
 	
 	map.setData(l+data, map.getDataLength());
 	l+=map.getDataLength();
-	
-	for (int i=0; i<32; i++)
+
 	{
-		players[i].setData(l+data, players[i].getDataLength());
-		l+=players[i].getDataLength();
+		for (int i=0; i<32; ++i)
+		{
+			players[i].setData(l+data, players[i].getDataLength());
+			l+=players[i].getDataLength();
+		}
 	}
-	
-	for (int i2=0; i2<32; i2++)
+
 	{
-		team[i2].setData(l+data, team[i2].getDataLength());
-		team[i2].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
-		l+=team[i2].getDataLength();
+		for (int i=0; i<32; ++i)
+		{
+			team[i].setData(l+data, team[i].getDataLength());
+			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			l+=team[i].getDataLength();
+		}
 	}
 	
 	
@@ -211,12 +223,16 @@ Sint32 SessionInfo::checkSum()
 	Sint32 cs=0;
 	
 	cs^=map.checkSum();
-	
-	for (int i=0; i<32; i++)
-		cs^=players[i].checkSum();
-	
-	for (int i2=0; i2<32; i2++)
-		cs^=team[i2].checkSum();
+
+	{
+		for (int i=0; i<32; ++i)
+			cs^=players[i].checkSum();
+	}
+
+	{
+		for (int i=0; i<32; ++i)
+			cs^=team[i].checkSum();
+	}
 	
 	cs^=SessionGame::checkSum();
 	

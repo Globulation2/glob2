@@ -7,9 +7,11 @@
 
 Screen::~Screen()
 {
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		delete (*it);
+		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+		{
+			delete (*it);
+		}
 	}
 }
 
@@ -119,9 +121,11 @@ void Screen::dispatchEvents(SDL_Event *event)
 void Screen::dispatchTimer(Uint32 tick)
 {
 	onTimer(tick);
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		(*it)->onTimer(tick);
+		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+		{
+			(*it)->onTimer(tick);
+		}
 	}
 }
 
@@ -129,9 +133,11 @@ void Screen::dispatchPaint(GraphicContext *gfx)
 {
 	gfxCtx=gfx;
 	paint();
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		(*it)->paint(gfx);
+		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+		{
+			(*it)->paint(gfx);
+		}
 	}
 }
 
@@ -140,8 +146,10 @@ void Screen::repaint(GraphicContext *gfx)
 	if (updateRects.size()>0)
 	{
 		SDL_Rect *rects=new SDL_Rect[updateRects.size()];
-		for (unsigned int i=0; i<updateRects.size(); i++)
-			rects[i]=updateRects[i];
+		{
+			for (unsigned int i=0; i<updateRects.size(); i++)
+				rects[i]=updateRects[i];
+		}
 		SDL_UpdateRects(((SDLGraphicContext *)gfx)->screen, updateRects.size(), rects);
 		delete[] rects;
 		updateRects.clear();

@@ -62,10 +62,12 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	trigHungry=10000;
 
 	// quality parameters
-	for (int i=0; i<NB_ABILITY; i++)
 	{
-		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
-		this->level[i]=level;
+		for (int i=0; i<NB_ABILITY; i++)
+		{
+			this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
+			this->level[i]=level;
+		}
 	}
 	
 	// NOTE : rewrite hp from level
@@ -135,10 +137,12 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	// quality parameters
 	
 	// quality parameters
-	for (int i=0; i<NB_ABILITY; i++)
 	{
-		performance[i]=SDL_ReadBE32(stream);
-		level[i]=SDL_ReadBE32(stream);
+		for (int i=0; i<NB_ABILITY; i++)
+		{
+			performance[i]=SDL_ReadBE32(stream);
+			level[i]=SDL_ReadBE32(stream);
+		}
 	}
 	
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
@@ -198,10 +202,12 @@ void Unit::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, trigHungry);
 
 	// quality parameters
-	for (int i=0; i<NB_ABILITY; i++)
 	{
-		SDL_WriteBE32(stream, performance[i]);
-		SDL_WriteBE32(stream, level[i]);
+		for (int i=0; i<NB_ABILITY; i++)
+		{
+			SDL_WriteBE32(stream, performance[i]);
+			SDL_WriteBE32(stream, level[i]);
+		}
 	}
 
 	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
@@ -436,32 +442,36 @@ void Unit::handleActivity(void)
 			}
 
 			// second we look for upgrade
-			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
-				if (performance[abilityIterator])
+			{
+				for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
 				{
-					Building *b=owner->findNearestUpgrade(posX, posY, (Abilities)abilityIterator, level[abilityIterator]);
-					if ( b != NULL)
+					if (performance[abilityIterator])
 					{
-						jobFound=true;
-						activity=ACT_UPGRADING;
-						displacement=DIS_GOING_TO_BUILDING;
-						destinationPurprose=abilityIterator;
-						
-						//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
-						
-						attachedBuilding=b;
-						targetX=attachedBuilding->getMidX();
-						targetY=attachedBuilding->getMidY();
-						newTargetWasSet();
-						b->unitsInsideSubscribe.push_front(this);
-						b->lastInsideSubscribe=0;
-						subscribed=true;
-						owner->subscribeForInsideStep.push_front(b);
-						///b->update();
-						
-						return;
+						Building *b=owner->findNearestUpgrade(posX, posY, (Abilities)abilityIterator, level[abilityIterator]);
+						if ( b != NULL)
+						{
+							jobFound=true;
+							activity=ACT_UPGRADING;
+							displacement=DIS_GOING_TO_BUILDING;
+							destinationPurprose=abilityIterator;
+							
+							//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
+							
+							attachedBuilding=b;
+							targetX=attachedBuilding->getMidX();
+							targetY=attachedBuilding->getMidY();
+							newTargetWasSet();
+							b->unitsInsideSubscribe.push_front(this);
+							b->lastInsideSubscribe=0;
+							subscribed=true;
+							owner->subscribeForInsideStep.push_front(b);
+							///b->update();
+							
+							return;
+						}
 					}
 				}
+			}
 			
 			// third we harvest for construction
 			if (performance[HARVEST])
@@ -494,31 +504,35 @@ void Unit::handleActivity(void)
 
 			{		
 				// fifth we go to flag
-				for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
-					if (performance[abilityIterator])
+				{
+					for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
 					{
-						Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
-						if ( b != NULL)
+						if (performance[abilityIterator])
 						{
-							jobFound=true;
-							activity=ACT_FLAG;
-							displacement=DIS_GOING_TO_FLAG;
-							destinationPurprose=abilityIterator;
+							Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
+							if ( b != NULL)
+							{
+								jobFound=true;
+								activity=ACT_FLAG;
+								displacement=DIS_GOING_TO_FLAG;
+								destinationPurprose=abilityIterator;
 
-							attachedBuilding=b;
-							targetX=attachedBuilding->getMidX();
-							targetY=attachedBuilding->getMidY();
-							newTargetWasSet();
-							b->unitsWorkingSubscribe.push_front(this);
-							b->lastWorkingSubscribe=0;
-							subscribed=true;
-							owner->subscribeForWorkingStep.push_front(b);
-							//b->update();
-							//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
-							
-							return;
+								attachedBuilding=b;
+								targetX=attachedBuilding->getMidX();
+								targetY=attachedBuilding->getMidY();
+								newTargetWasSet();
+								b->unitsWorkingSubscribe.push_front(this);
+								b->lastWorkingSubscribe=0;
+								subscribed=true;
+								owner->subscribeForWorkingStep.push_front(b);
+								//b->update();
+								//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
+								
+								return;
+							}
 						}
 					}
+				}
 			}
 			
 			if ( (!jobFound) )
@@ -925,56 +939,58 @@ void Unit::handleMovement(void)
 			}
 			else if ((movement!=MOV_GOING_DXDY)||(syncRand()<0x8FFFFFFF))
 			{
-				for (int i=4; i<16; i++)
 				{
-					if ((syncRand()<0xBFFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY, owner->teamNumber)))
+					for (int i=4; i<16; i++)
 					{
-						movement=MOV_GOING_DXDY;
-						dx=1;
-						dy=0;
-					}
-					if ((syncRand()<0x7FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=-1;
-						dy=0;
-					}
-					if ((syncRand()<0x3FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY+i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=0;
-						dy=1;
-					}
-					if ((syncRand()<0x1FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY-i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=0;
-						dy=-1;
-					}
+						if ((syncRand()<0xBFFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=1;
+							dy=0;
+						}
+						if ((syncRand()<0x7FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=-1;
+							dy=0;
+						}
+						if ((syncRand()<0x3FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY+i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=0;
+							dy=1;
+						}
+						if ((syncRand()<0x1FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY-i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=0;
+							dy=-1;
+						}
 
-					if ((syncRand()<0x0BFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY+i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=1;
-						dy=1;
-					}
-					if ((syncRand()<0x07FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY+i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=-1;
-						dy=1;
-					}
-					if ((syncRand()<0x03FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY-i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=-1;
-						dy=-1;
-					}
-					if ((syncRand()<0x01FFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY-i, owner->teamNumber)))
-					{
-						movement=MOV_GOING_DXDY;
-						dx=1;
-						dy=-1;
+						if ((syncRand()<0x0BFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY+i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=1;
+							dy=1;
+						}
+						if ((syncRand()<0x07FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY+i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=-1;
+							dy=1;
+						}
+						if ((syncRand()<0x03FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY-i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=-1;
+							dy=-1;
+						}
+						if ((syncRand()<0x01FFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY-i, owner->teamNumber)))
+						{
+							movement=MOV_GOING_DXDY;
+							dx=1;
+							dy=-1;
+						}
 					}
 				}
 			}
@@ -1286,12 +1302,14 @@ bool Unit::validMed(int x, int y)
 	else
 	{
 		int c=0;
-		for (int i=0; i<8; i++)
 		{
-			int dx, dy;
-			dxdyfromDirection(i, &dx, &dy);
-			if (valid(x+dx, x+dy))
-				c++;
+			for (int i=0; i<8; i++)
+			{
+				int dx, dy;
+				dxdyfromDirection(i, &dx, &dy);
+				if (valid(x+dx, x+dy))
+					c++;
+			}
 		}
 		return (c>=4);
 	}
@@ -1675,63 +1693,65 @@ void Unit::pathFind(void)
 			int testObstacleY=obstacleY;
 			int testBorderX=borderX;
 			int testBorderY=borderY;
-			for(int i=0; i<16 && distSq<maxDist; i++)
 			{
-				// Ok, the border is not too far.
-				
-				while (!validHard(testBorderX+bdx, testBorderY+bdy))
+				for(int i=0; i<16 && distSq<maxDist; i++)
 				{
-					testObstacleX=testBorderX+bdx;
-					testObstacleY=testBorderY+bdy;
-					if ((++c)>8)
+					// Ok, the border is not too far.
+					
+					while (!validHard(testBorderX+bdx, testBorderY+bdy))
+					{
+						testObstacleX=testBorderX+bdx;
+						testObstacleY=testBorderY+bdy;
+						if ((++c)>8)
+						{
+							if (verbose)
+								printf("l c:bad state, gotoTarget now\n");
+							gotoTarget(targetX, targetY);
+							bypassDirection=DIR_UNSET;
+							return;
+						}
+						bDirection=(bDirection+7)&7;
+						if (verbose)
+							printf("l tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
+						
+						dxdyfromDirection(bDirection, &bdx, &bdy);
+					}
+					testBorderX+=bdx;
+					testBorderY+=bdy;
+					if (verbose)
+						printf("l new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
+					distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+					bdx=testObstacleX-testBorderX;
+					bdy=testObstacleY-testBorderY;
+					if (abs(bdx)>1)
+						bdx=-SIGN(bdx);
+					if (abs(bdy)>1)
+						bdy=-SIGN(bdy);
+					
+					ldx=testBorderX-posX;
+					ldy=testBorderY-posY;
+					if (ldx>(mapw>>1))
+						ldx=mapw-ldx;
+					if (ldy>(maph>>1))
+						ldy=maph-ldy;
+					bapdx=sign(ldx);
+					bapdy=sign(ldy);
+					bDirection=directionFromDxDy(bdx, bdy);
+					if (verbose)
+						printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
+					c=0;
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
 						if (verbose)
-							printf("l c:bad state, gotoTarget now\n");
-						gotoTarget(targetX, targetY);
-						bypassDirection=DIR_UNSET;
-						return;
+							printf("l o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
+						obstacleX=testObstacleX;
+						obstacleY=testObstacleY;
+						borderX=testBorderX;
+						borderY=testBorderY;
 					}
-					bDirection=(bDirection+7)&7;
-					if (verbose)
-						printf("l tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-					
-					dxdyfromDirection(bDirection, &bdx, &bdy);
+					else
+						break;
 				}
-				testBorderX+=bdx;
-				testBorderY+=bdy;
-				if (verbose)
-					printf("l new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
-				bdx=testObstacleX-testBorderX;
-				bdy=testObstacleY-testBorderY;
-				if (abs(bdx)>1)
-					bdx=-SIGN(bdx);
-				if (abs(bdy)>1)
-					bdy=-SIGN(bdy);
-				
-				ldx=testBorderX-posX;
-				ldy=testBorderY-posY;
-				if (ldx>(mapw>>1))
-					ldx=mapw-ldx;
-				if (ldy>(maph>>1))
-					ldy=maph-ldy;
-				bapdx=sign(ldx);
-				bapdy=sign(ldy);
-				bDirection=directionFromDxDy(bdx, bdy);
-				if (verbose)
-					printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
-				c=0;
-				if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
-				{
-					if (verbose)
-						printf("l o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
-					obstacleX=testObstacleX;
-					obstacleY=testObstacleY;
-					borderX=testBorderX;
-					borderY=testBorderY;
-				}
-				else
-					break;
 			}
 			gotoTarget(borderX, borderY);
 		}
@@ -1834,63 +1854,65 @@ void Unit::pathFind(void)
 			int testObstacleY=obstacleY;
 			int testBorderX=borderX;
 			int testBorderY=borderY;
-			for(int i=0; i<16 && distSq<maxDist; i++)
 			{
-				// Ok, the border is not too far.
-				
-				while (!validHard(testBorderX+bdx, testBorderY+bdy))
+				for(int i=0; i<16 && distSq<maxDist; i++)
 				{
-					testObstacleX=testBorderX+bdx;
-					testObstacleY=testBorderY+bdy;
-					if ((++c)>8)
+					// Ok, the border is not too far.
+					
+					while (!validHard(testBorderX+bdx, testBorderY+bdy))
+					{
+						testObstacleX=testBorderX+bdx;
+						testObstacleY=testBorderY+bdy;
+						if ((++c)>8)
+						{
+							if (verbose)
+								printf("r c:bad state, gotoTarget now\n");
+							gotoTarget(targetX, targetY);
+							bypassDirection=DIR_UNSET;
+							return;
+						}
+						bDirection=(bDirection+1)&7;
+						if (verbose)
+							printf("r tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
+						
+						dxdyfromDirection(bDirection, &bdx, &bdy);
+					}
+					testBorderX+=bdx;
+					testBorderY+=bdy;
+					if (verbose)
+						printf("r new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
+					distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+					bdx=testObstacleX-testBorderX;
+					bdy=testObstacleY-testBorderY;
+					if (abs(bdx)>1)
+						bdx=-SIGN(bdx);
+					if (abs(bdy)>1)
+						bdy=-SIGN(bdy);
+					
+					ldx=testBorderX-posX;
+					ldy=testBorderY-posY;
+					if (ldx>(mapw>>1))
+						ldx=mapw-ldx;
+					if (ldy>(maph>>1))
+						ldy=maph-ldy;
+					bapdx=sign(ldx);
+					bapdy=sign(ldy);
+					bDirection=directionFromDxDy(bdx, bdy);
+					if (verbose)
+						printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
+					c=0;
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
 						if (verbose)
-							printf("r c:bad state, gotoTarget now\n");
-						gotoTarget(targetX, targetY);
-						bypassDirection=DIR_UNSET;
-						return;
+							printf("r o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
+						obstacleX=testObstacleX;
+						obstacleY=testObstacleY;
+						borderX=testBorderX;
+						borderY=testBorderY;
 					}
-					bDirection=(bDirection+1)&7;
-					if (verbose)
-						printf("r tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-					
-					dxdyfromDirection(bDirection, &bdx, &bdy);
+					else
+						break;
 				}
-				testBorderX+=bdx;
-				testBorderY+=bdy;
-				if (verbose)
-					printf("r new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
-				bdx=testObstacleX-testBorderX;
-				bdy=testObstacleY-testBorderY;
-				if (abs(bdx)>1)
-					bdx=-SIGN(bdx);
-				if (abs(bdy)>1)
-					bdy=-SIGN(bdy);
-				
-				ldx=testBorderX-posX;
-				ldy=testBorderY-posY;
-				if (ldx>(mapw>>1))
-					ldx=mapw-ldx;
-				if (ldy>(maph>>1))
-					ldy=maph-ldy;
-				bapdx=sign(ldx);
-				bapdy=sign(ldy);
-				bDirection=directionFromDxDy(bdx, bdy);
-				if (verbose)
-					printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
-				c=0;
-				if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
-				{
-					if (verbose)
-						printf("r o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
-					obstacleX=testObstacleX;
-					obstacleY=testObstacleY;
-					borderX=testBorderX;
-					borderY=testBorderY;
-				}
-				else
-					break;
 			}
 			gotoTarget(borderX, borderY);
 		}
@@ -2232,12 +2254,14 @@ Sint32 Unit::checkSum()
 
 	cs^=hungry;
 	cs^=trigHungry;
-	
-	for (int i=0; i<NB_ABILITY; i++)
+
 	{
-		cs^=performance[i];
-		cs^=level[i];
-		cs=(cs<<1)|(cs>>31);
+		for (int i=0; i<NB_ABILITY; i++)
+		{
+			cs^=performance[i];
+			cs^=level[i];
+			cs=(cs<<1)|(cs>>31);
+		}
 	}
 	
 	cs^=(attachedBuilding!=NULL);

@@ -110,8 +110,10 @@ int MultiplayersOfferScreen::menu(void)
 SessionScreen::SessionScreen()
 {
 	validSessionInfo=false;
-	for (int i=0; i<32; i++)
-		crossPacketRecieved[i]=0;
+	{
+		for (int i=0; i<32; i++)
+			crossPacketRecieved[i]=0;
+	}
 	
 	socket=NULL;
 	destroyNet=true;
@@ -139,31 +141,35 @@ void SessionScreen::paintSessionInfo(int state)
 	}
 	gfxCtx->drawFilledRect(0, 0, 640, (sessionInfo.numberOfPlayer+1)*14, 30,40,70);
 
-	for (int p=0; p<sessionInfo.numberOfPlayer; p++)
 	{
-		gfxCtx->drawString(10, 0+(14*p), font, "player %d", p);
-		gfxCtx->drawString(70, 0+(14*p), font, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
-			sessionInfo.players[p].number, sessionInfo.players[p].teamNumber, sessionInfo.players[p].netState,
-			sessionInfo.players[p].ip.host, sessionInfo.players[p].name, sessionInfo.players[p].netTOTL, crossPacketRecieved[p]);
-		
-		/*gfxCtx->drawString(70, 0+(14*p), font, "type=%d, number=%d, numberMask=%d, teamNumber=%d, teamNumberMask=%d,
-			ip=%x, name=%s",
-			sessionInfo.players[p].type, sessionInfo.players[p].number, sessionInfo.players[p].numberMask, sessionInfo.players[p].teamNumber, sessionInfo.players[p].teamNumberMask,
-			sessionInfo.players[p].ip.host, sessionInfo.players[p].name);
-		*/
+		for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+		{
+			gfxCtx->drawString(10, 0+(14*p), font, "player %d", p);
+			gfxCtx->drawString(70, 0+(14*p), font, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
+				sessionInfo.players[p].number, sessionInfo.players[p].teamNumber, sessionInfo.players[p].netState,
+				sessionInfo.players[p].ip.host, sessionInfo.players[p].name, sessionInfo.players[p].netTOTL, crossPacketRecieved[p]);
+			
+			/*gfxCtx->drawString(70, 0+(14*p), font, "type=%d, number=%d, numberMask=%d, teamNumber=%d, teamNumberMask=%d,
+				ip=%x, name=%s",
+				sessionInfo.players[p].type, sessionInfo.players[p].number, sessionInfo.players[p].numberMask, sessionInfo.players[p].teamNumber, sessionInfo.players[p].teamNumberMask,
+				sessionInfo.players[p].ip.host, sessionInfo.players[p].name);
+			*/
+		}
 	}
 	
 	gfxCtx->drawFilledRect(0, 480-(sessionInfo.numberOfTeam+1)*14, 640, (sessionInfo.numberOfTeam+1)*14, 30,70,40);
 
-	for (int t=0; t<sessionInfo.numberOfTeam; t++)
 	{
-		gfxCtx->drawString(10, 480-(14*(t+1)), font, "team %d", t);
-		gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
-			sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].color, sessionInfo.team[t].playersMask);
+		for (int t=0; t<sessionInfo.numberOfTeam; t++)
+		{
+			gfxCtx->drawString(10, 480-(14*(t+1)), font, "team %d", t);
+			gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
+				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].color, sessionInfo.team[t].playersMask);
 
-		/*gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
-			sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].color, sessionInfo.team[t].playersMask);
-		*/
+			/*gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
+				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].color, sessionInfo.team[t].playersMask);
+			*/
+		}
 	}
 }
 
@@ -182,27 +188,31 @@ void MultiplayersCrossConnectableScreen::tryCrossConnections(void)
 	data[5]=0;
 	data[6]=0;
 	data[7]=0;
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		if (crossPacketRecieved[j]<2)
+	{
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		{
-			if ( (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)&&(!sessionInfo.players[j].bind()) )
+			if (crossPacketRecieved[j]<2)
 			{
-				printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
-				sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-				sucess=false;
-				break;
-			}
-			sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
+				if ( (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)&&(!sessionInfo.players[j].bind()) )
+				{
+					printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
+					sucess=false;
+					break;
+				}
+				sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
 
-			if ( (sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(!sessionInfo.players[j].send(data, 8)) )
-			{
-				printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
-				sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-				sucess=false;
-				break;
+				if ( (sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(!sessionInfo.players[j].send(data, 8)) )
+				{
+					printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
+					sucess=false;
+					break;
+				}
+				sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
 			}
-			sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
 		}
+	}
 	
 }
 
@@ -372,9 +382,11 @@ void MultiplayersHostScreen::stepHostGlobalState(void)
 	case HGS_SHARING_SESSION_INFO :
 	{
 		bool allOK=true;
-		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-			if (sessionInfo.players[i].netState<BasePlayer::PNS_OK)
-				allOK=false;
+		{
+			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+				if (sessionInfo.players[i].netState<BasePlayer::PNS_OK)
+					allOK=false;
+		}
 		
 		if (allOK)
 		{
@@ -397,12 +409,16 @@ void MultiplayersHostScreen::stepHostGlobalState(void)
 	case HGS_WAITING_CROSS_CONNECTIONS :
 	{
 		bool allPlayersCrossConnected=true;
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			if (crossPacketRecieved[j]<3)
+		{
+			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			{
-				allPlayersCrossConnected=false;
-				break;
+				if (crossPacketRecieved[j]<3)
+				{
+					allPlayersCrossConnected=false;
+					break;
+				}
 			}
+		}
 		if (allPlayersCrossConnected && (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS))
 		{
 			printf("Great, all players are cross connected, Game could start!.\n");
@@ -420,12 +436,16 @@ void MultiplayersHostScreen::stepHostGlobalState(void)
 	case HGS_GAME_START_SENDED:
 	{
 		bool allPlayersPlaying=true;
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			if (crossPacketRecieved[j]<4)
+		{
+			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			{
-				allPlayersPlaying=false;
-				break;
+				if (crossPacketRecieved[j]<4)
+				{
+					allPlayersPlaying=false;
+					break;
+				}
 			}
+		}
 		if (allPlayersPlaying && (hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED))
 		{
 			printf("Great, all players have recieved start info.\n");
@@ -491,12 +511,14 @@ void MultiplayersHostScreen::removePlayer(int p)
 	printf("nop %d.\n", sessionInfo.numberOfPlayer);
 	// all other players are ignorant of the new situation:
 	initHostGlobalState();
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 	{
-		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-		if (sessionInfo.players[j].netTimeout>0)
-			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-		sessionInfo.players[j].netTOTL++;
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		{
+			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+			if (sessionInfo.players[j].netTimeout>0)
+				sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+			sessionInfo.players[j].netTOTL++;
+		}
 	}
 }
 
@@ -533,18 +555,22 @@ void MultiplayersHostScreen::newPlayer(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].setip(ip);
 			
 	// we check if this player has already a connection:
-			
-	for (int i=0; i<p; i++)
-		if (sessionInfo.players[i].sameip(ip))
-		{
-			printf("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
 
-			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-			sessionInfo.players[i].netTimeout=0;
-			sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
-			sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
-			return;
+	{
+		for (int i=0; i<p; i++)
+		{
+			if (sessionInfo.players[i].sameip(ip))
+			{
+				printf("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
+
+				sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+				sessionInfo.players[i].netTimeout=0;
+				sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
+				sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
+				return;
+			}
 		}
+	}
 		
 	if (!sessionInfo.players[p].bind())
 	{
@@ -585,12 +611,14 @@ void MultiplayersHostScreen::newPlayer(char *data, int size, IPaddress ip)
 		
 		// all other players are ignorant of the new situation:
 		initHostGlobalState();
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		{
-			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-			if (sessionInfo.players[j].netTimeout>0)
-				sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-			sessionInfo.players[j].netTOTL++;
+			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+			{
+				sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+				if (sessionInfo.players[j].netTimeout>0)
+					sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+				sessionInfo.players[j].netTOTL++;
+			}
 		}
 	}
 }
@@ -883,8 +911,10 @@ bool MultiplayersHostScreen::send(const int v)
 	data[1]=0;
 	data[2]=0;
 	data[3]=0;
-	for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-		sessionInfo.players[i].send(data, 4);
+	{
+		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+			sessionInfo.players[i].send(data, 4);
+	}
 	
 	return true;
 }
@@ -911,174 +941,183 @@ void MultiplayersHostScreen::sendingTime()
 	bool update=false;
 	if (hostGlobalState<HGS_GAME_START_SENDED)
 	{
-		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-			if (sessionInfo.players[i].netState==BasePlayer::PNS_BAD)
-			{
-				removePlayer(i);
-				update=true;
-			}
+		{
+			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+				if (sessionInfo.players[i].netState==BasePlayer::PNS_BAD)
+				{
+					removePlayer(i);
+					update=true;
+				}
+
+		}
 		
 		if (update)
 		{
 		
 			// all other players are ignorant of the new situation:
 			initHostGlobalState();
-			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			{
-				sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-				if (sessionInfo.players[j].netTimeout>0)
-					sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-				sessionInfo.players[j].netTOTL++;
+				for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+				{
+					sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+					if (sessionInfo.players[j].netTimeout>0)
+						sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+					sessionInfo.players[j].netTOTL++;
+				}
 			}
 		}
 	}
-	
-	for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-		if (--sessionInfo.players[i].netTimeout<0)
+
+	{ 
+		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 		{
-			update=true;
-			sessionInfo.players[i].netTimeout+=sessionInfo.players[i].netTimeoutSize;
-
-			assert(sessionInfo.players[i].netTimeoutSize);
-			
-			if (--sessionInfo.players[i].netTOTL<0)
+			if (--sessionInfo.players[i].netTimeout<0)
 			{
-				if (hostGlobalState>=HGS_GAME_START_SENDED)
+				update=true;
+				sessionInfo.players[i].netTimeout+=sessionInfo.players[i].netTimeoutSize;
+
+				assert(sessionInfo.players[i].netTimeoutSize);
+				
+				if (--sessionInfo.players[i].netTOTL<0)
 				{
-					// we only drop the players, because other player are already playing.
-					// will be done in the game!
+					if (hostGlobalState>=HGS_GAME_START_SENDED)
+					{
+						// we only drop the players, because other player are already playing.
+						// will be done in the game!
+					}
+					else
+					{
+						sessionInfo.players[i].netState=BasePlayer::PNS_BAD;
+						printf("Last timeout for player %d has been spent.\n", i);
+					}
 				}
-				else
+				
+				switch (sessionInfo.players[i].netState)
 				{
-					sessionInfo.players[i].netState=BasePlayer::PNS_BAD;
-					printf("Last timeout for player %d has been spent.\n", i);
+				case BasePlayer::PNS_BAD :
+				{
+					// we remove player out of this loop, to avoid mess.
+				}	
+				break;
+				
+				case BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST :
+				{
+					printf("Lets send the session info to player %d.\n", i);
+						
+					char *data=NULL;
+					int size=sessionInfo.getDataLength();
+						
+					data=(char *)malloc(size+8);
+					assert(data);
+						
+					data[0]=DATA_SESSION_INFO;
+					data[1]=0;
+					data[2]=0;
+					data[3]=0;
+					addSint32(data, i, 4);
+
+					memcpy(data+8, sessionInfo.getData(), size);
+						
+					sessionInfo.players[i].send(data, size+8);
 				}
-			}
-			
-			switch (sessionInfo.players[i].netState)
-			{
-			case BasePlayer::PNS_BAD :
-			{
-				// we remove player out of this loop, to avoid mess.
-			}	
-			break;
-			
-			case BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST :
-			{
-				printf("Lets send the session info to player %d.\n", i);
+				break;
 					
-				char *data=NULL;
-				int size=sessionInfo.getDataLength();
-					
-				data=(char *)malloc(size+8);
-				assert(data);
-					
-				data[0]=DATA_SESSION_INFO;
-				data[1]=0;
-				data[2]=0;
-				data[3]=0;
-				addSint32(data, i, 4);
-
-				memcpy(data+8, sessionInfo.getData(), size);
-					
-				sessionInfo.players[i].send(data, size+8);
-			}
-			break;
 				
-			
-			case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
-			{
-				printf("Lets send the confiramtion for checksum to player %d.\n", i);
-				char data[8];
-				data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
-				data[1]=0;
-				data[2]=0;
-				data[3]=0;
-				addSint32(data, sessionInfo.checkSum(), 4);
-				sessionInfo.players[i].send(data, 8);
-				
-				// Now that's not our problem if this packet don't sucess.
-				// In such a case, the client will reply.
-				sessionInfo.players[i].netTimeout=0;
-				sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
-				sessionInfo.players[i].netState=BasePlayer::PNS_OK;
-				
-				// Lets check if all players has the sessionInfo:
-				stepHostGlobalState();
-
-				printf("player %d is know ok. (%d)\n", i, sessionInfo.players[i].netState);
-			}
-			break;
-				
-			
-			case BasePlayer::PNS_OK :
-			{
-				if (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS)
+				case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
 				{
-				
-					sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
+					printf("Lets send the confiramtion for checksum to player %d.\n", i);
+					char data[8];
+					data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
+					data[1]=0;
+					data[2]=0;
+					data[3]=0;
+					addSint32(data, sessionInfo.checkSum(), 4);
+					sessionInfo.players[i].send(data, 8);
+					
+					// Now that's not our problem if this packet don't sucess.
+					// In such a case, the client will reply.
 					sessionInfo.players[i].netTimeout=0;
 					sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
-					sessionInfo.players[i].netTOTL++;
+					sessionInfo.players[i].netState=BasePlayer::PNS_OK;
+					
+					// Lets check if all players has the sessionInfo:
+					stepHostGlobalState();
+
+					printf("player %d is know ok. (%d)\n", i, sessionInfo.players[i].netState);
 				}
-				else
-					printf("Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-				// players keeps ok.
-			}
-			break;
-			
-			case BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START :
-			{
-				printf("We have to inform player %d to start cross connection.\n", i);
-				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
-			}
-			break;
-			
-			case BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START :
-			{
-				printf("Player %d is cross connecting, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
-			}
-			break;
-			
-			case BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION :
-			{
-				printf("We have to inform player %d that we recieved his crossConnection confirmation.\n", i);
-				sessionInfo.players[i].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
+				break;
+					
 				
-				sessionInfo.players[i].netState=BasePlayer::PNS_CROSS_CONNECTED;
-			}
-			break;
+				case BasePlayer::PNS_OK :
+				{
+					if (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS)
+					{
+					
+						sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
+						sessionInfo.players[i].netTimeout=0;
+						sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
+						sessionInfo.players[i].netTOTL++;
+					}
+					else
+						printf("Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					// players keeps ok.
+				}
+				break;
+				
+				case BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START :
+				{
+					printf("We have to inform player %d to start cross connection.\n", i);
+					sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
+				}
+				break;
+				
+				case BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START :
+				{
+					printf("Player %d is cross connecting, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
+				}
+				break;
+				
+				case BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION :
+				{
+					printf("We have to inform player %d that we recieved his crossConnection confirmation.\n", i);
+					sessionInfo.players[i].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
+					
+					sessionInfo.players[i].netState=BasePlayer::PNS_CROSS_CONNECTED;
+				}
+				break;
 
-			case BasePlayer::PNS_CROSS_CONNECTED :
-			{
-				printf("Player %d is cross connected ! Yahoo !, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-			}
-			break;
-			
-			case BasePlayer::PNS_SERVER_SEND_START_GAME :
-			{
-				printf("We send start game to player %d, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-				sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING);
-			}
-			break;
+				case BasePlayer::PNS_CROSS_CONNECTED :
+				{
+					printf("Player %d is cross connected ! Yahoo !, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				}
+				break;
+				
+				case BasePlayer::PNS_SERVER_SEND_START_GAME :
+				{
+					printf("We send start game to player %d, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING);
+				}
+				break;
 
-			case BasePlayer::PNS_PLAYER_CONFIRMED_START_GAME :
-			{
-				// here we could tell other players
-				printf("Player %d plays, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-			}
-			break;
-			
-			default:
-			{
-				printf("Buggy state for player %d.\n", i);
-			}
+				case BasePlayer::PNS_PLAYER_CONFIRMED_START_GAME :
+				{
+					// here we could tell other players
+					printf("Player %d plays, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				}
+				break;
+				
+				default:
+				{
+					printf("Buggy state for player %d.\n", i);
+				}
 
+				}
+				
+				
 			}
-			
-			
 		}
+	}
 	
 	if (update)
 	{
@@ -1098,10 +1137,12 @@ void MultiplayersHostScreen::startGame(void)
 {
 	printf("Lets tell all players to start game.\n");
 	startGameTimeCounter=SECOND_TIMEOUT*SECONDS_BEFORE_START_GAME;
-	for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 	{
-		sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
-		sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
+		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+		{
+			sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
+			sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
+		}
 	}
 	hostGlobalState=HGS_GAME_START_SENDED;
 	
@@ -1386,19 +1427,27 @@ void MultiplayersJoinScreen::crossConnectionFirstMessage(char *data, int size, I
 void MultiplayersJoinScreen::checkAllCrossConnected(void)
 {
 	bool allCrossConnected=true;
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		if (crossPacketRecieved[j]<2)
-		{
-			allCrossConnected=false;
-			break;
-		}
-	if (allCrossConnected)
+	{
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		{
+			if (crossPacketRecieved[j]<2)
+			{
+				allCrossConnected=false;
+				break;
+			}
+		}
+	}
+	if (allCrossConnected)
+	{
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		{
 			if ((sessionInfo.players[j].netState!=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(sessionInfo.players[j].netState!=BasePlayer::PNS_HOST))
 			{
 				allCrossConnected=false;
 				break;
 			}
+		}
+	}
 	if (allCrossConnected)
 	{
 		printf("All players are cross connected to me !!\n");
@@ -1540,7 +1589,7 @@ void MultiplayersJoinScreen::treatData(char *data, int size, IPaddress ip)
 		
 		default:
 			printf("Unknow kind of packet(%d) recieved from ip(%x,%d)!\n", data[0], ip.host, ip.port);
-	};
+	}
 }
 
 void MultiplayersJoinScreen::onTimer(Uint32 tick)

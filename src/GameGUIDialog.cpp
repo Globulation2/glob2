@@ -92,12 +92,14 @@ void InGameMainScreen::onSDLEvent(SDL_Event *event)
 InGameAlliance8Screen::InGameAlliance8Screen()
 :InGameScreen(300, 295)
 {
-	for (int i=0; i<8; i++)
 	{
-		allied[i]=new OnOffButton(230, 40+i*25, 20, 20, false, i);
-		addWidget(allied[i]);
-		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, 10+i);
-		addWidget(chat[i]);
+		for (int i=0; i<8; i++)
+		{
+			allied[i]=new OnOffButton(230, 40+i*25, 20, 20, false, i);
+			addWidget(allied[i]);
+			chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, 10+i);
+			addWidget(chat[i]);
+		}
 	}
 	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 30));
 	firstPaint=true;
@@ -122,9 +124,11 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 	{
 		gfxCtx->drawString(231, 10, &globalContainer->menuFont, "A");
 		gfxCtx->drawString(272, 10, &globalContainer->menuFont, "C");
-		for (int i=0; i<8; i++)
 		{
-			gfxCtx->drawString(10, 40+i*25, &globalContainer->menuFont, names[i]);
+			for (int i=0; i<8; i++)
+			{
+				gfxCtx->drawString(10, 40+i*25, &globalContainer->menuFont, names[i]);
+			}
 		}
 		firstPaint=false;
 	}

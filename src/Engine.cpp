@@ -31,29 +31,31 @@ int Engine::initCampain(void)
 	int playerNumber=0;
 	bool wasHuman=false;
 	char name[16];
-	for (int i=0; i<gui.game.session.numberOfTeam; i++)
 	{
-		if (gui.game.teams[i]->type==BaseTeam::T_AI)
+		for (int i=0; i<gui.game.session.numberOfTeam; i++)
 		{
-			sprintf(name, "AI Player %d", playerNumber);
-			gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
-		}
-		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
-		{
-			if (!wasHuman)
+			if (gui.game.teams[i]->type==BaseTeam::T_AI)
 			{
-				gui.localPlayer=playerNumber;
-				gui.localTeam=i;
-				sprintf(name, "Player %d", playerNumber);
-				wasHuman=true;
-				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
+				sprintf(name, "AI Player %d", playerNumber);
+				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 			}
-			else
-				continue;
+			else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
+			{
+				if (!wasHuman)
+				{
+					gui.localPlayer=playerNumber;
+					gui.localTeam=i;
+					sprintf(name, "Player %d", playerNumber);
+					wasHuman=true;
+					gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
+				}
+				else
+					continue;
+			}
+			gui.game.teams[i]->numberOfPlayer=1;
+			gui.game.teams[i]->playersMask=(1<<playerNumber);
+			playerNumber++;
 		}
-		gui.game.teams[i]->numberOfPlayer=1;
-		gui.game.teams[i]->playersMask=(1<<playerNumber);
-		playerNumber++;
 	}
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeam);
@@ -170,10 +172,12 @@ int Engine::run(void)
 		net->pushOrder(gui.getOrder(), gui.localPlayer);
 
 		// we get and push ai orders
-		for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 		{
-			if (gui.game.players[i]->ai)
-				net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
+			{
+				if (gui.game.players[i]->ai)
+					net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+			}
 		}
 		
 		//printf ("Engine::bns:%d\n", globalContainer->safe());
@@ -182,10 +186,12 @@ int Engine::run(void)
 		net->step();
 		
 		//printf ("Engine::bge:%d\n", globalContainer->safe());
-		
-		for (int i2=0; i2<gui.game.session.numberOfPlayer; i2++)
+
 		{
-			gui.executeOrder(net->getOrder(i2));
+			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
+			{
+				gui.executeOrder(net->getOrder(i));
+			}
 		}
 
 		//printf ("Engine::bne:%d\n", globalContainer->safe());

@@ -17,9 +17,11 @@ List::List(int x, int y, int w, int h, const Font *font)
 
 List::~List()
 {
-	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
 	{
-		delete (*it);
+		for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
+		{
+			delete (*it);
+		}
 	}
 }
 
