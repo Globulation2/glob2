@@ -412,6 +412,7 @@ protected:
 	
 	int pathToBuildingCountIsFar;
 	int pathToBuildingCountFar;
+	int pathToBuildingCountFarIsNew;
 	int pathToBuildingCountFarOldSuccess;
 	int pathToBuildingCountFarOldFailureLocked;
 	int pathToBuildingCountFarOldFailureBad;//-
@@ -440,7 +441,7 @@ protected:
 	int buildingAviableCountIsFar;
 	int buildingAviableCountFar;
 	int buildingAviableCountFarNew;
-	int buildingAviableCountFarNewSuccess;
+	int buildingAviableCountFarNewSuccessFast;
 	int buildingAviableCountFarNewSuccessClosely;
 	int buildingAviableCountFarNewFailureLocked;
 	int buildingAviableCountFarNewFailureVirtual;
