@@ -21,19 +21,18 @@
 #define __GUITEXTINPUT_H
 
 #include "GUIBase.h"
+#include <string>
+
+class Font;
 
 class TextInput: public RectangularWidget
 {
 protected:
-	CLASSDEF(TextInput)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(std::string, font)
-		ITEM(std::string, text)
-		ITEM(bool, activated)
-		ITEM(Uint32, cursPos)
-		ITEM(Uint32, maxLength)
-	CLASSEND;
+	std::string font;
+	std::string text;
+	bool activated;
+	Uint32 cursPos;
+	Uint32 maxLength;
 
 	// cache, recomputed at least on paint
 	Font *fontPtr;
@@ -48,8 +47,9 @@ public:
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(void);
-	virtual void setText(const char *newText);
-	virtual const char *getText(void) { return text.c_str(); }
+	void setText(const char *newText);
+	const char *getText(void) { return text.c_str(); }
+	void deactivate(void) { activated=false; }
 
 protected:
 	virtual void repaint(void);

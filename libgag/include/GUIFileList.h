@@ -23,19 +23,14 @@
 #include "FileManager.h"
 #include "GUIList.h"
 #include <string>
-#include "xmlserializer.h"
 
 class FileList: public List
 {
 protected:
-	CLASSDEF(FileList)
-		BASECLASS(List)
-	MEMBERS
-		ITEM(std::string, dir)
-		ITEM(std::string, extension)
-		ITEM(bool, recurse)
-		ITEM(std::string, current)
-	CLASSEND;
+	std::string dir;
+	std::string extension;
+	bool recurse;
+	std::string current;
 
 public:
 	FileList():List() { }

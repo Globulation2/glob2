@@ -21,18 +21,18 @@
 #define __GUIBUTTON_H
 
 #include "GUIBase.h"
+#include <string>
+
+class Sprite;
+class Font;
 
 class Button: public HighlightableWidget
 {
 protected:
-	CLASSDEF(Button)
-		BASECLASS(HighlightableWidget)
-	MEMBERS
-		ITEM(Uint16, unicodeShortcut)
-		ITEM(Sint32, standardId)
-		ITEM(Sint32, highlightID)
-		ITEM(std::string, sprite)
-	CLASSEND;
+	Uint16 unicodeShortcut;
+	Sint32 standardId;
+	Sint32 highlightID;
+	std::string sprite;
 
 	//! cache, recomputed on internalInit
 	Sprite *archPtr;
@@ -52,12 +52,8 @@ protected:
 class TextButton:public Button
 {
 protected:
-	CLASSDEF(TextButton)
-		BASECLASS(Button)
-	MEMBERS
-		ITEM(std::string, text)
-		ITEM(std::string, font)
-	CLASSEND;
+	std::string text;
+	std::string font;
 
 	// cache, recomputed on internalInit
 	Font *fontPtr;
@@ -77,11 +73,7 @@ protected:
 class OnOffButton:public HighlightableWidget
 {
 protected:
-	CLASSDEF(OnOffButton)
-		BASECLASS(HighlightableWidget)
-	MEMBERS
-		ITEM(bool, state)
-	CLASSEND;
+	bool state;
 
 public:
 	OnOffButton() { state=false; returnCode=0; highlighted=false; }
@@ -106,19 +98,13 @@ protected:
 		Color() { r=g=b=0; }
 		Color(int r, int g, int b) { this->r=r; this->g=g; this->b=b; }
 	public:
-		SIMPLECLASSDEF(Color)
-			ITEM(Sint32, r)
-			ITEM(Sint32, g)
-			ITEM(Sint32, b)
-		CLASSEND;
+		Sint32 r;
+		Sint32 g;
+		Sint32 b;
 	};
 
-	CLASSDEF(ColorButton)
-		BASECLASS(HighlightableWidget)
-	MEMBERS
-		ITEM(Sint32, selColor)
-		ITEM(std::vector<Color>, v)
-	CLASSEND;
+	Sint32 selColor;
+	std::vector<Color> v;
 
 public:
 	ColorButton() { selColor=returnCode=0; }

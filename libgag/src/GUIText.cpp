@@ -22,6 +22,7 @@
 #include <SupportFunctions.h>
 #include <assert.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 
 Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
 {

@@ -19,6 +19,7 @@
 
 #include <GUITextArea.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 #include <assert.h>
 
 TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text)

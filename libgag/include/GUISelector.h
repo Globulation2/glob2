@@ -22,19 +22,18 @@
 #define __GUISELECTOR_H
 
 #include "GUIBase.h"
+#include <string>
+
+class Sprite;
 
 class Selector: public RectangularWidget
 {
 protected:
-	CLASSDEF(Selector)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(Uint32, count)
-		ITEM(Uint32, size)
-		ITEM(Uint32, value)
-		ITEM(Sint32, id)
-		ITEM(std::string, sprite)
-	CLASSEND;
+	Uint32 count;
+	Uint32 size;
+	Uint32 value;
+	Sint32 id;
+	std::string sprite;
 
 	//! cache, recomputed on internalInit
 	Sprite *archPtr;

@@ -21,7 +21,6 @@
 #define __GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
-#include "xmlserializer.h"
 
 class Font;
 class Sprite;
@@ -102,7 +101,7 @@ public:
 	static GraphicContext *createGraphicContext(GraphicContextType type);
 };
 
-class Font : public base::Object
+class Font
 {
 public:
 	enum Style

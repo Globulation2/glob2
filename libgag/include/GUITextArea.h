@@ -23,14 +23,10 @@
 #include "GUIBase.h"
 #include <vector>
 
+class Font;
+
 class TextArea:public RectangularWidget
 {
-protected:
-	CLASSDEF(TextArea)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-	CLASSEND;
-
 public:
 	TextArea() { font=NULL; textBuffer=NULL; }
 	TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");

@@ -20,6 +20,7 @@
 #include <GUITextInput.h>
 #include <assert.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 
 TextInput::TextInput()
 {

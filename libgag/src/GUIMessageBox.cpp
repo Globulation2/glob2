@@ -22,6 +22,7 @@
 #include <GUIText.h>
 #include <GUIButton.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 
 class MessageBoxScreen:public OverlayScreen
 {

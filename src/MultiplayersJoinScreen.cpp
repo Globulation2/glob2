@@ -171,9 +171,9 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		// we desactivate others texts inputs:
 		if (source!=serverName)
-			serverName->activated=false;
+			serverName->deactivate();
 		if (source!=playerName)
-			playerName->activated=false;
+			playerName->deactivate();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{

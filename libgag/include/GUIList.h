@@ -22,18 +22,17 @@
 
 #include "GUIBase.h"
 #include <vector>
+#include <string>
+
+class Font;
 
 class List: public RectangularWidget
 {
 protected:
-	CLASSDEF(List)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(std::string, font)
-		ITEM(std::vector<std::string>, strings)
-		ITEM(Sint32, nth)
-		ITEM(Uint32, disp)
-	CLASSEND;
+	std::string font;
+	std::vector<std::string> strings;
+	Sint32 nth;
+	Uint32 disp;
 
 	//! Cached variables, do not serialise, reconstructed on paint() call
 	//! Length of the scroll box, this is a cache

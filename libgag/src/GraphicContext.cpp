@@ -21,6 +21,7 @@
 #include "SDLGraphicContext.h"
 #include "GLGraphicContext.h"
 #include <assert.h>
+#include <string>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

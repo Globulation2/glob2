@@ -22,18 +22,17 @@
 #define __GUIANIMATION_H
 
 #include "GUIBase.h"
+#include <string>
+
+class Sprite;
 
 class Animation: public RectangularWidget
 {
 protected:
-	CLASSDEF(Animation)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(Uint32, duration)
-		ITEM(Uint32, count)
-		ITEM(Sint32, start)
-		ITEM(std::string, sprite)
-	CLASSEND;
+	Uint32 duration;
+	Uint32 count;
+	Sint32 start;
+	std::string sprite;
 
 	// cache, recomputed on internalInit
 	Sprite *archPtr;

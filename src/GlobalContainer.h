@@ -20,7 +20,6 @@
 #ifndef __GLOBALCONTAINER_H
 #define __GLOBALCONTAINER_H
 
-#include <GAG.h>
 #include "Header.h"
 #include "BuildingType.h"
 #include "Ressource.h"
@@ -29,6 +28,7 @@
 
 class FileManager;
 class LogFileManager;
+class GraphicContext;
 
 class GlobalContainer
 {

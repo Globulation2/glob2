@@ -33,6 +33,7 @@
 #include "GlobalContainer.h"
 #include "NetConsts.h"
 #include "LogFileManager.h"
+#include <StringTable.h>
 
 // If you don't have SDL_net 1.2.5 some features won't be aviable.
 #ifndef INADDR_BROADCAST
