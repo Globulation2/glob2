@@ -2439,6 +2439,8 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		checkSumsList->push_back(0);// [37]
 	if (checkSumsList)
 		checkSumsList->push_back(0);// [38]
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [39]
 	
 	return cs;
 }
