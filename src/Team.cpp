@@ -1094,7 +1094,7 @@ void Team::integrity(void)
 	}
 }
 
-void Team::step(void)
+void Team::syncStep(void)
 {
 	integrity();
 	
@@ -1109,7 +1109,7 @@ void Team::step(void)
 		{
 			if (u->displacement!=Unit::DIS_EXITING_BUILDING || u->movement!=Unit::MOV_INSIDE)
 				nbUnits++;
-			u->step();
+			u->syncStep();
 			if (u->isDead)
 			{
 				fprintf(logFile, "unit guid=%d deleted\n", u->gid);

@@ -706,7 +706,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 
 }
 
-void Game::wonStep(void)
+void Game::wonSyncStep(void)
 {
 	totalPrestige=0;
 	isGameEnded=false;
@@ -730,10 +730,10 @@ void Game::wonStep(void)
 	}
 }
 
-void Game::scriptStep(GameGUI *gui)
+void Game::scriptSyncStep(GameGUI *gui)
 {
 	// do a script step
-	script.step(gui);
+	script.syncStep(gui);
 
 	// alter win/loose conditions
 	for (int i=0; i<session.numberOfTeam; i++)
@@ -748,15 +748,15 @@ void Game::scriptStep(GameGUI *gui)
 	}
 }
 
-void Game::step(GameGUI *gui, Sint32 localTeam)
+void Game::syncStep(GameGUI *gui, Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
 		Sint32 startTick=SDL_GetTicks();
 		for (int i=0; i<session.numberOfTeam; i++)
-			teams[i]->step();
+			teams[i]->syncStep();
 		
-		map.step(stepCounter);
+		map.syncStep(stepCounter);
 		
 		syncRand();
 		
@@ -780,8 +780,8 @@ void Game::step(GameGUI *gui, Sint32 localTeam)
 
 		if ((stepCounter&31)==0)
 		{
-			scriptStep(gui);
-			wonStep();
+			scriptSyncStep(gui);
+			wonSyncStep();
 		}
 
 		Sint32 endTick=SDL_GetTicks();

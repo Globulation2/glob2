@@ -42,8 +42,8 @@ class GameGUI
 {
 public:
 	Game game;
-	bool paused;
-	bool scroolLocked;
+	bool gamePaused;
+	bool hardPause;
 	bool isRunning;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
@@ -81,7 +81,7 @@ public:
 	void processEvent(SDL_Event *event);
 
 	// Engine has to call this every "real" steps. (or game steps)
-	void synchroneStep(void);
+	void syncStep(void);
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 

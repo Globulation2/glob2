@@ -1039,7 +1039,7 @@ void Map::growRessources(void)
 	}
 }
 
-void Map::step(Sint32 stepCounter)
+void Map::syncStep(Sint32 stepCounter)
 {
 	growRessources();
 	for (int i=0; i<sizeSector; i++)

@@ -108,8 +108,8 @@ GameGUI::~GameGUI()
 void GameGUI::init()
 {
 	isRunning=true;
-	paused=false;
-	scroolLocked=false;
+	gamePaused=false;
+	hardPause=false;
 	exitGlobCompletely=false;
 	toLoadGameFileName[0]=0;
 	drawHealthFoodBar=true;
@@ -359,11 +359,11 @@ void GameGUI::step(void)
 	checkWonConditions();
 	
 	
-	if (game.anyPlayerWaited)
+	if (game.anyPlayerWaited) // TODO: warning valgrind
 		game.anyPlayerWaitedTimeFor++;
 }
 
-void GameGUI::synchroneStep(void)
+void GameGUI::syncStep(void)
 {
 	assert(localTeam);
 	assert(teamStats);
@@ -380,8 +380,8 @@ void GameGUI::synchroneStep(void)
 			SDL_RWclose(stream);
 		}
 		else
-			printf("GameGUI::synchroneStep: Can't auto save map\n");
-		delete[](fileName);
+			printf("GameGUI::syncStep: Can't auto save map\n");
+		delete[] fileName;
 	}
 }
 
@@ -976,11 +976,11 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			case SDLK_p:
 			case SDLK_PAUSE:
 				if (pressed)
-					orderQueue.push_back(new PauseGameOrder(!paused));
+					orderQueue.push_back(new PauseGameOrder(!gamePaused));
 				break;
 			case SDLK_SCROLLOCK:
 				if (pressed)
-					scroolLocked=!scroolLocked;
+					hardPause=!hardPause;
 				break;
 			default:
 			break;
@@ -1436,18 +1436,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 Order *GameGUI::getOrder(void)
 {
+	Order *order;
 	if (orderQueue.size()==0)
-	{
-		Order *order=new SubmitCheckSumOrder(game.checkSum());
-		return order;
-		//return new NullOrder();
-	}
+		order=new NullOrder();
 	else
 	{
-		Order *order=orderQueue.front();
+		order=orderQueue.front();
 		orderQueue.pop_front();
-		return order;
 	}
+	order->gameCheckSum=game.checkSum();
+	return order;
 }
 
 void GameGUI::drawPanelButtons(int pos)
@@ -2555,7 +2553,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	// if paused, tint the game area
-	if (paused)
+	if (gamePaused)
 	{
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), 0, 0, 0, 127);
 		const char *s = Toolkit::getStringTable()->getString("[Paused]");
@@ -2701,7 +2699,7 @@ void GameGUI::executeOrder(Order *order)
 		case ORDER_PAUSE_GAME:
 		{
 			PauseGameOrder *pgo=(PauseGameOrder *)order;
-			paused=pgo->pause;
+			gamePaused=pgo->pause;
 		}
 		break;
 		default:
