@@ -21,6 +21,8 @@
 #include <assert.h>
 #include <GraphicContext.h>
 
+#define SCREEN_ANIMATION_FRAME_COUNT 10
+
 using namespace GAGCore;
 
 namespace GAGGUI
@@ -112,7 +114,6 @@ namespace GAGGUI
 		
 	}
 	
-	
 	RectangularWidget::RectangularWidget()
 	{
 		x=y=w=h=hAlignFlag=vAlignFlag=0;
@@ -136,6 +137,28 @@ namespace GAGGUI
 			hide();
 	}
 	
+	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
+	float splineInterpolation(float T, float V0, float V1, float x)
+	{
+		assert(T > 0);
+		float a = (-2 * (V1 - V0)) / (T * T * T);
+		float b = (3 * (V1 - V0)) / (T * T);
+		float c = 0;
+		float d = V0;
+		return a * (x * x * x) + b * (x * x) + c * x + d;
+	}
+	
+	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = -1, f'(T) = 0
+	float splineInterpolationFastStart(float T, float V0, float V1, float x)
+	{
+		assert(T > 0);
+		float a = (2 * (V0 - V1 - T / 2)) / (T * T * T);
+		float b = (1 / (2 * T)) - (3 * (V0 - V1 - T / 2)) / (T * T);
+		float c = -1;
+		float d = V0;
+		return a * (x * x * x) + b * (x * x) + c * x + d;
+	}
+	
 	void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 	{
 		assert(sx);
@@ -147,26 +170,29 @@ namespace GAGGUI
 	
 		int screenw = parent->getSurface()->getW();
 		int screenh = parent->getSurface()->getH();
+		
+		int decX = (int)splineInterpolationFastStart(SCREEN_ANIMATION_FRAME_COUNT, screenw, 0, parent->animationFrame);
+		int decY = (int)splineInterpolationFastStart(SCREEN_ANIMATION_FRAME_COUNT, screenh, 0, parent->animationFrame);
 	
 		switch (hAlignFlag)
 		{
 			case ALIGN_LEFT:
-				*sx=x;
+				*sx=x - decX;
 				*sw=w;
 				break;
 	
 			case ALIGN_RIGHT:
-				*sx=screenw-w-x;
+				*sx=screenw-w-x + decX;
 				*sw=w;
 				break;
 	
 			case ALIGN_FILL:
-				*sx=x;
+				*sx=x - decX;
 				*sw=screenw-w-x;
 				break;
 				
 			case ALIGN_SCREEN_CENTERED:
-				*sx=x+((screenw-640)>>1);
+				*sx=x+((screenw-640)>>1) - decX;
 				*sw=w;
 				break;
 	
@@ -177,12 +203,12 @@ namespace GAGGUI
 		switch (vAlignFlag)
 		{
 			case ALIGN_LEFT:
-				*sy=y;
+				*sy=y - decY;
 				*sh=h;
 				break;
 	
 			case ALIGN_RIGHT:
-				*sy=screenh-h-y;
+				*sy=screenh-h-y + decY;
 				*sh=h;
 				break;
 	
@@ -199,17 +225,6 @@ namespace GAGGUI
 			default:
 				assert(false);
 		}
-	}
-	
-	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
-	float splineInterpolation(float T, float V0, float V1, float x)
-	{
-		assert(T > 0);
-		float a = (-2 * (V1 - V0)) / (T * T * T);
-		float b = (3 * (V1 - V0)) / (T * T);
-		float c = 0;
-		float d = V0;
-		return a * (x * x * x) + b * (x * x) + c * x + d;
 	}
 	
 	HighlightableWidget::HighlightableWidget()
@@ -433,6 +448,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchInit(void)
 	{
+		animationFrame = 0;
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			(*it)->init();
@@ -450,6 +466,9 @@ namespace GAGGUI
 				(*it)->paint();
 		}
 		gfx->nextFrame();
+		
+		if (animationFrame < SCREEN_ANIMATION_FRAME_COUNT)
+			animationFrame++;
 	}
 	
 	void Screen::paint(void)
