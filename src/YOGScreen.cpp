@@ -127,7 +127,7 @@ void YOGScreen::updatePlayerList(void)
 			listEntry = std::string("y [") + client->userName + "]";
 		}
 		else
-			listEntry = client->userName;
+			listEntry = std::string("y ") + client->userName;
 		playerList->addText(listEntry);
 	}
 	// update irc entries, remove one already on YOG
@@ -135,7 +135,9 @@ void YOGScreen::updatePlayerList(void)
 	{
 		while (irc.isMoreChannelUser())
 		{
-			playerList->addText(std::string("i ") + irc.getNextChannelUser());
+			const std::string &user = irc.getNextChannelUser();
+			if (user.compare(0, 5, "[YOG]") != 0)
+				playerList->addText(std::string("i ") + user);
 		}
 	}
 }
@@ -288,10 +290,10 @@ void YOGScreen::onTimer(Uint32 tick)
 	}
 	
 	
-	// YOG
+	// YOG and IRC
 	if (yog->newGameList(true))
-		updateGameList();	
-	if (yog->newPlayerList(true))
+		updateGameList();
+	if (yog->newPlayerList(true) || irc.isChannelUserBeenModified())
 		updatePlayerList();
 	
 	//yog->step(); this yog->step() is allready done in multiplayersJoin instance.

@@ -25,6 +25,7 @@
 */
 
 #include "IRC.h"
+#include <iostream>
 
 IRC::IRC()
 {
@@ -166,13 +167,16 @@ void IRC::interpreteIRCMessage(const char *message)
 	{
 		char *diffusion=strtok(NULL, " :\0");
 		InfoMessage msg(IRC_MSG_JOIN);
-
+		
 		strncpy(msg.source,  source, IRC_NICK_SIZE);
 		msg.source[IRC_NICK_SIZE] = 0;
 		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
 		msg.diffusion[IRC_CHANNEL_SIZE] = 0;
 
 		infoMessages.push_back(msg);
+		
+		usersOnChannels[std::string(diffusion)].insert(std::string(source));
+		usersOnChannelsModified = true;
 	}
 	else if (strcasecmp(cmd, "PART")==0)
 	{
@@ -191,6 +195,9 @@ void IRC::interpreteIRCMessage(const char *message)
 		}
 
 		infoMessages.push_back(msg);
+		
+		usersOnChannels[std::string(diffusion)].erase(std::string(source));
+		usersOnChannelsModified = true;
 	}
 	else if (strcasecmp(cmd, "QUIT")==0)
 	{
@@ -227,6 +234,17 @@ void IRC::interpreteIRCMessage(const char *message)
 			msg.message[IRC_MESSAGE_SIZE] = 0;
 			
 			infoMessages.push_back(msg);
+		}
+	}
+	else if (strcasecmp(cmd, "353")==0)
+	{
+		char *diffusion = strtok(NULL, " =");
+		char *chan = strtok(NULL, " :=");
+		char *user;
+		while ((user = strtok(NULL, " :")) != NULL)
+		{
+			usersOnChannels[std::string(chan)].insert(std::string(user));
+			usersOnChannelsModified = true;
 		}
 	}
 }
@@ -436,6 +454,13 @@ bool IRC::isMoreChannelUser(void)
 const std::string &IRC::getNextChannelUser(void)
 {
 	return *nextChannelUser++;
+}
+
+bool IRC::isChannelUserBeenModified(void)
+{
+	bool ret = usersOnChannelsModified;
+	usersOnChannelsModified = false;
+	return ret;
 }
 
 bool IRC::getString(char data[IRC_MESSAGE_SIZE])
