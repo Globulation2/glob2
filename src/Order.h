@@ -380,6 +380,27 @@ class PlayerQuitsGameOrder:public MiscOrder
 };
 
 
+class PlayerExplainsHostIP:public MiscOrder
+{
+ public:
+	PlayerExplainsHostIP(const char *data, int dataLength);
+	PlayerExplainsHostIP(Uint32 host, Uint32 port);
+	virtual ~PlayerExplainsHostIP(void) { }
+
+	Uint8 getOrderType(void) { return PLAYER_EXPLAINS_HOST_IP; }
+	char *getData(void);
+	bool setData(const char *data, int dataLength);
+	int getDataLength(void) { return 8; }
+	Sint32 checkSum() { return PLAYER_EXPLAINS_HOST_IP; }
+	
+	Uint32 host;
+	Uint32 port; // Uint16
+	
+ private:
+	char data[8];
+};
+
+
 
 // Usefull function for marshalling
 
@@ -399,6 +420,27 @@ inline void addUint32(const char *data, Uint32 val, int pos)
 }
 
 inline Uint32 getUint32(const char *data, int pos)
+{
+	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
+}
+
+
+inline void addSint32(const Uint8 *data, Sint32 val, int pos)
+{
+	*((Sint32 *)(((Uint8 *)data)+pos))=SDL_SwapBE32(val);
+}
+
+inline Sint32 getSint32(const Uint8 *data, int pos)
+{
+	return (Sint32)SDL_SwapBE32( *( (Sint32 *) (((Uint8 *)data) +pos) ) );
+}
+
+inline void addUint32(const Uint8 *data, Uint32 val, int pos)
+{
+	*((Uint32 *)(((Uint8 *)data)+pos))=SDL_SwapBE32(val);
+}
+
+inline Uint32 getUint32(const Uint8 *data, int pos)
 {
 	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
 }

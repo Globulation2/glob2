@@ -17,24 +17,21 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new OrderCreate(netData+4,netDataLength-4);	  
 	}
-
 	case ORDER_DELETE:
 	{
 		return new OrderDelete(netData+4,netDataLength-4);
 	}
-	
 	case ORDER_UPGRADE:
 	{
 		return new OrderUpgrade(netData+4,netDataLength-4);
 	}
-
-	case 40:
+	case PLAYER_EXPLAINS_HOST_IP:
+	{
+		return new PlayerExplainsHostIP(netData+4,netDataLength-4);
+	}
+	case ORDER_MODIFY_UNIT:
 	{
 		assert(false);
-		//return new OrderModify(netData+4,netDataLength-4);
-	}
-	case 41:
-	{
 		return new OrderModifyUnits(netData+4,netDataLength-4);
 	}
 	case ORDER_MODIFY_BUILDING:
@@ -48,12 +45,6 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	case ORDER_MODIFY_FLAG:
 	{
 		return new OrderModifyFlags(netData+4,netDataLength-4);
-	}
-
-	case 50:
-	{
-		assert(false);
-		//return new MiscOrder(netData+4,netDataLength-4);
 	}
 	case ORDER_QUITED:
 	{
@@ -767,6 +758,40 @@ bool PlayerQuitsGameOrder::setData(const char *data, int dataLength)
 		return false;
 
 	this->player=getUint32(data, 0);
+	
+	memcpy(this->data,data,dataLength);
+	
+	return true;
+}
+// PlayerExplainsHostIP code
+
+PlayerExplainsHostIP::PlayerExplainsHostIP(const char *data, int dataLength)
+{
+	assert(dataLength==8);
+
+	setData(data, dataLength);
+}
+
+PlayerExplainsHostIP::PlayerExplainsHostIP(Uint32 host, Uint32 port)
+{
+	this->host=host;
+	this->port=port;
+}
+
+char *PlayerExplainsHostIP::getData(void)
+{
+	addUint32(data, this->host, 0);
+	addUint32(data, this->port, 4);
+	return data;
+}
+
+bool PlayerExplainsHostIP::setData(const char *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+
+	this->host=getUint32(data, 0);
+	this->port=getUint32(data, 4);
 	
 	memcpy(this->data,data,dataLength);
 	

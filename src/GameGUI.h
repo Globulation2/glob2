@@ -28,6 +28,7 @@ public:
 	int getViewportY() { return viewportY; }
 	
 	void draw(void);
+	void drawAll(void);
 	void executeOrder(Order *order);
 	
 	void load(SDL_RWops *stream);
@@ -43,7 +44,8 @@ public:
 public:
 	Game game;
 	bool isRunning;
-	bool showExtendedInformation;
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines;
 	int localPlayer, localTeam;
 	int viewportX, viewportY;
 

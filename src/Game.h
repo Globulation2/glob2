@@ -66,7 +66,7 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team);
 	bool checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team);
 	
-	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool useMapDiscovered=false);
+	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, const bool useMapDiscovered=false);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=false);
 

@@ -123,7 +123,10 @@ int Engine::initMutiplayerHost(void)
 	multiplayersHostScreen.newHostPlayer();
 	if (multiplayersHostScreen.execute(&globalContainer.gfx, 20)==MultiplayersHostScreen::STARTED)
 	{
-		startMultiplayer(&multiplayersHostScreen);
+		if (multiplayersHostScreen.myPlayerNumber==-1)
+			return CANCEL;
+		else
+			startMultiplayer(&multiplayersHostScreen);
 
 		return NO_ERROR;
 	}
@@ -192,15 +195,7 @@ int Engine::run(void)
 		//printf ("Engine::bdr:%d\n", globalContainer.safe());
 
 		// we draw
-		
-		globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
-		gui.game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(), gui.getViewportX(), gui.getViewportY(), gui.game.players[gui.localPlayer]->teamNumber, gui.showExtendedInformation, true);
-		
-		globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 0, 128, 128);
-		gui.game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, gui.getViewportX(), gui.getViewportY(), gui.game.players[gui.localPlayer]->teamNumber);
-		
-		globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW(), globalContainer.gfx.getH());
-		gui.draw();
+		gui.drawAll();
 		
 		//globalContainer.gfx.drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
 		//ticknb=(ticknb+1)%(640-128);

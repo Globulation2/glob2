@@ -753,7 +753,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool useMapDiscovered=false)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, const bool useMapDiscovered=false)
 {
 	int x, y, id;
 	int left=(sx>>5);
@@ -878,28 +878,25 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+9*hpRatio, 255, 255, 0);
 						else
 							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+9*hpRatio, 255, 0, 0);
-
-						if (unit->movement==Unit::MOV_GOING_TARGET)
+					}
+					if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET))
+					{
+						int lsx, lsy, ldx, ldy;
+						lsx=px+16;
+						lsy=py+16;
+						//#ifdef DBG_PATHFINDING
+						if (unit->bypassDirection && unit->verbose)
 						{
-							int lsx, lsy, ldx, ldy;
-							lsx=px+16;
-							lsy=py+16;
-							#ifdef DBG_PATHFINDING
-							if (unit->bypassDirection && unit->verbose)
-							{
-								unit->owner->game->map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
-								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
-								unit->owner->game->map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
-								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
-								unit->owner->game->map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
-								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
-							}
-							#endif
-							unit->owner->game->map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
-							globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
-
+							unit->owner->game->map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
+							globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
+							unit->owner->game->map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
+							globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
+							unit->owner->game->map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
+							globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
 						}
-						//assert(!unit->isDead);
+						//#endif
+						unit->owner->game->map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
+						globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 					}
 				}
 				else if (uid >= -16385)  // Then this is a building or a flag.
@@ -1284,7 +1281,6 @@ Sint32 Game::checkSum()
 
 	cs^=session.checkSum();
 	
-	//printf("g1cs=%x\n", cs);
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
@@ -1292,23 +1288,18 @@ Sint32 Game::checkSum()
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs=(cs<<31)|(cs>>1);
-	//printf("g2cs=%x\n", cs);
 	for (int i=0; i<session.numberOfPlayer; i++)
 	{
 		cs^=players[i]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
 	cs=(cs<<31)|(cs>>1);
-	//printf("g3cs=%x\n", cs);
 	cs^=map.checkSum();
 	cs=(cs<<31)|(cs>>1);
-	//printf("g4cs=%x\n", cs);
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
-	
-	//printf("g5cs=%x\n", cs);
 	
 	return cs;
 }

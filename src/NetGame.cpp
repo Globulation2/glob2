@@ -889,7 +889,8 @@ void NetGame::step(void)
 		for (int p=0; p<numberOfPlayer; p++)
 		{
 			countDown[p]++;
-			printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
+			if(countDown[p]%10==0)
+				printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
 			int s;
 			if (nextUnrecievedStep(currentStep, p, &s))
 			{
