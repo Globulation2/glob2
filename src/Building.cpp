@@ -620,8 +620,6 @@ void Building::cancelConstruction(void)
 		owner->virtualBuildings.push_back(this);
 	if (type->zonable[WORKER])
 		owner->clearingFlags.push_back(this);
-	if (type->zonableForbidden)
-		owner->zonableForbidden.push_back(this);
 	
 	totalRatio=0;
 	
@@ -1003,8 +1001,6 @@ void Building::updateBuildingSite(void)
 			owner->virtualBuildings.push_back(this);
 		if (type->zonable[WORKER])
 			owner->clearingFlags.push_back(this);
-		if (type->zonableForbidden)
-			owner->zonableForbidden.push_back(this);
 		
 		setMapDiscovered();
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);

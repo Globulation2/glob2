@@ -228,6 +228,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 						if (oc->teamNumber == players[localPlayer]->teamNumber)
 							map.localForbiddenMap.set(index, true);
 					}
+				map.updateForbiddenGradient(oc->teamNumber);
 			}
 		}
 		break;
@@ -294,7 +295,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 
 				if (b->type->zonableForbidden)
 				{
-					teams[team]->computeForbiddenArea();
 					if (newRange<oldRange)
 					{
 						teams[team]->dirtyGlobalGradient();
@@ -393,10 +393,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				if (b->type->zonableForbidden)
 				{
 					if (drop)
-					{
-						teams[team]->computeForbiddenArea();
 						teams[team]->dirtyGlobalGradient();
-					}
 				}
 				else
 				{
@@ -476,7 +473,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 			else
 				assert(false);
-			map.updateForbiddenGradient();
+			map.updateForbiddenGradient(oaf->teamNumber);
 		}
 		break;
 		case ORDER_MODIFY_SWARM:
@@ -515,7 +512,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b->type);
 				if (b->type->zonableForbidden)
 				{
-					teams[team]->computeForbiddenArea();
 					teams[team]->dirtyGlobalGradient();
 					int range=b->unitStayRange;
 					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
@@ -913,6 +909,18 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
 		{
 			fprintf(logFile, "BuildProject failure (%d, %d)\n", posX, posY);
+			Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
+			for (int y=posY; y<posY+h; y++)
+				for (int x=posX; x<posX+w; x++)
+				{
+					size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
+					// Update real map
+					map.cases[index].forbidden&=notTeamMask;
+					// Update local map
+					if (teamNumber == localTeam)
+						map.localForbiddenMap.set(index, false);
+				}
+			map.updateForbiddenGradient(teamNumber);
 			buildProjects.erase(bpi);
 			break;
 		}
@@ -932,6 +940,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 						if (teamNumber == localTeam)
 							map.localForbiddenMap.set(index, false);
 					}
+				map.updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);
 				b->update();
 				fprintf(logFile, "BuildProject success (%d, %d)\n", posX, posY);
@@ -1649,7 +1658,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(1, 5, 0, x+viewportX, y+viewportY));
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, STONE, 1, x+viewportX, y+viewportY));
+					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, STONE, 1, x+viewportX, y+viewportY));
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.forbiddenGradient[0][0][(x+viewportX)+(y+viewportY)*map.w]);
 					
 					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX)&(map.getMaskW())));
 					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY)&(map.getMaskH())));
