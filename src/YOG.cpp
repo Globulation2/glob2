@@ -284,7 +284,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		{
 			Message m;
 			m.messageID=messageID;
-			m.messageType=(YOGMessageType)data[0];
+			m.messageType=(YOGClientMessageType)data[0];
 			m.timeout=0;
 			m.TOTL=3;
 			m.gameGuiPainted=false;
@@ -356,7 +356,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					{
 						Message m;
 						m.messageID=messageID;
-						m.messageType=YMT_PRIVATE_RECEIPT;
+						m.messageType=YCMT_PRIVATE_RECEIPT;
 						m.timeout=0;
 						m.TOTL=3;
 						m.gameGuiPainted=false;
@@ -647,9 +647,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int index=6;
 		for (int i=0; i<nbClients; i++)
 		{
-			Uint32 uid=getUint32(data, index);
+			Uint32 uid=getUint32safe(data, index);
 			index+=4;
-			Uint16 change=getUint16(data, index);
+			Uint16 change=getUint16safe(data, index);
 			index+=2;
 			for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				if (client->uid==uid)
@@ -657,6 +657,12 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					if (change==CUP_LEFT)
 					{
 						fprintf(logFile, "left client uid=%d name=%s\n", client->uid, client->userName);
+						Message message;
+						message.gameGuiPainted=false;
+						message.messageType=YCMT_EVENT_MESSAGE;
+						snprintf(message.text, 256, "%s%s%s", globalContainer->texts.getString("[The player ]"),
+							client->userName, globalContainer->texts.getString("[ has left YOG]"));
+						receivedMessages.push_back(message);
 						clients.erase(client);
 					}
 					else if (change==CUP_PLAYING)

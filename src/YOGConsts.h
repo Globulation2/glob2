@@ -56,6 +56,21 @@ enum clientUpdateChange
 	CUP_NOT_PLAYING=3
 };
 
+// Those are the messages identifiers inside YOG-client.
+// It has to guarantee the binnary compatibility with YOGMessageType,
+// except for inside YOG-client only messages.
+enum YOGClientMessageType
+{
+	YCMT_BAD=0,
+	YCMT_EVENT_MESSAGE=8,
+	YCMT_MESSAGE=12,
+	YCMT_PRIVATE_MESSAGE=14,
+	YCMT_PRIVATE_RECEIPT=16,
+	YCMT_ADMIN_MESSAGE=18,
+};
+
+// Those are all the possible UDP packet identifier,
+// used to communicate betweem the YOG-client and the YOG-metaserver.
 enum YOGMessageType
 {
 	YMT_BAD=0,

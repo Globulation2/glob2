@@ -234,7 +234,7 @@ public:
 	BuildingType *getBuildingType(unsigned int typeNum);
 	
 public:
-	std::vector <BuildingType *> buildingsTypes;
+	std::vector<BuildingType *> buildingsTypes;
 };
 
 #endif

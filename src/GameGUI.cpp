@@ -216,21 +216,25 @@ void GameGUI::step(void)
 		{
 			switch(m->messageType)//set the text color
 			{
-				case YMT_MESSAGE:
+				case YCMT_MESSAGE:
 					/* We don't want YOG messages to appear while in the game.
 					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
 				break;
 
-				case YMT_PRIVATE_MESSAGE:
+				case YCMT_PRIVATE_MESSAGE:
 					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[from:]"), m->userName, m->text);
 				break;
 
-				case YMT_ADMIN_MESSAGE:
+				case YCMT_ADMIN_MESSAGE:
 					addMessage(138, 99, 255, "<%s> %s", m->userName, m->text);
 				break;
 
-				case YMT_PRIVATE_RECEIPT:
+				case YCMT_PRIVATE_RECEIPT:
 					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[to:]"), m->userName, m->text);
+				break;
+				
+				case YCMT_EVENT_MESSAGE:
+					addMessage(99, 143, 255, "%s", m->text);
 				break;
 
 				default:
