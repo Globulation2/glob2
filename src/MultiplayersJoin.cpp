@@ -432,9 +432,10 @@ void MultiplayersJoin::receiveTime()
 		
 		int v;
 		LANHost lanhost;
-		//printf("broadcastState=%d.\n", broadcastState);
+		//NETPRINTF("broadcastState=%d.\n", broadcastState);
 		if (lan.receive(&v, lanhost.gameName, lanhost.serverNickName))
 		{
+			NETPRINTF("received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
 			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
 				|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
 			{
