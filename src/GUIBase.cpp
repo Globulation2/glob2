@@ -19,6 +19,7 @@
 
 #include "GUIBase.h"
 
+// this function support base unicode (UCS16)
 void UCS16toUTF8(Uint16 ucs16, char utf8[4])
 {
 	if (ucs16<0x80)
@@ -44,6 +45,54 @@ void UCS16toUTF8(Uint16 ucs16, char utf8[4])
 		utf8[0]=0;
 		fprintf(stderr, "UCS16toUTF8 : Error, can handle UTF16 characters\n");
 	}
+}
+
+// this function support full unicode (UCS32)
+unsigned getNextUTF8Char(unsigned char c)
+{
+	if (c>0xFC)
+	{
+		return 6;
+	}
+	else if (c>0xF8)
+	{
+		return 5;
+	}
+	else if (c>0xF0)
+	{
+		return 4;
+	}
+	else if (c>0xE0)
+	{
+		return 3;
+	}
+	else if (c>0xC0)
+	{
+		return 2;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+unsigned getNextUTF8Char(const char *text, unsigned pos)
+{
+	unsigned next=pos+getNextUTF8Char(text[pos]);
+	assert(next<=strlen(text));
+	return next;
+}
+
+unsigned getPrevUTF8Char(const char *text, unsigned pos)
+{
+	// TODO : have a more efficient algo
+	unsigned last=0, i=0;
+	while (i<(unsigned)pos)
+	{
+		last=i;
+		i+=getNextUTF8Char(text[i]);
+	}
+	return last;
 }
 
 Widget::Widget()

@@ -1,6 +1,6 @@
 3
 [language]
-Français
+FranÃ§ais
 English
 Deutsch
 [hp]
@@ -8,7 +8,7 @@ Pt vie
 HP
 leben
 [heal]
-Santé
+SantÃ©
 Heal
 Gesundheit
 [armor]
@@ -40,7 +40,7 @@ Bois
 Wood
 Holz
 [corn]
-Blé
+BlÃ©
 Corn
 Weizen
 [stone]
@@ -52,11 +52,11 @@ Algue
 Alga
 Alge
 [range]
-Portée
+PortÃ©e
 Range
 Reichweite
 [destroy]
-Détruire
+DÃ©truire
 Destroy
 Zertoeren
 [cancel destroy]
@@ -68,11 +68,11 @@ Attente destruction
 Waiting destruction
 Warten auf Zerstoerung
 [upgrade]
-Améliorer
+AmÃ©liorer
 Upgrade
 Verbessern
 [cancel upgrade]
-Annuler amélioration
+Annuler amÃ©lioration
 Cancel upgrade
 Verbes. wiederrufen
 [unit type]
@@ -80,7 +80,7 @@ Type d'unite
 Unit type
 Art der Eineit
 [worker]
-Ouvrière
+OuvriÃ¨re
 Worker
 Arbeiter
 [Explorer]
@@ -88,7 +88,7 @@ Exploratrice
 Explorer
 Entdecker
 [Warrior]
-Guerrière
+GuerriÃ¨re
 Warrior
 Krieger
 [still (w)]
@@ -100,7 +100,7 @@ Noch
  units work
  Einheiten arbeiten
 [still one unit working]
-Une unité travaille
+Une unitÃ© travaille
 Still one unit working
 Eine Einheit arbeitet
 [still (i)]
@@ -108,11 +108,11 @@ Encore
 Still
 Noch
 [units inside]
- unités dedans
+ unitÃ©s dedans
  units inside
  Einheiten drinnen
 [still one unit inside]
-Une unité dedans
+Une unitÃ© dedans
 Still one unit inside
 Noch eine Einheit drinnen
 [building name]
@@ -160,7 +160,7 @@ Drapeau de guerre
 War flag
 Kampf Fahne
 [clearing flag]
-Drapeau de défrichage
+Drapeau de dÃ©frichage
 Clearing flag
 
 [wood wall]
@@ -212,7 +212,7 @@ Warten auf Spieler
 
  
 [r has left the game]
- a quitté la partie
+ a quittÃ© la partie
  has quited the game
  hat des Spiel verlassen
 [load game]
@@ -252,7 +252,7 @@ Vous avez perdu !
 You have lost !
 Sie haben verlohren !
 [you have won]
-Vous avez gagné !!!
+Vous avez gagnÃ© !!!
 You have won !!!
 Sie haben gewonnen !!!
 [campagn]
@@ -272,7 +272,7 @@ Jeu en reseau local
 LAN Game
 Lokalnetz Spiel
 [settings]
-Paramètres
+ParamÃ¨tres
 Settings
 Einstellungen
 [editor]
@@ -284,7 +284,7 @@ Quitter
 Quit
 Beenden
 [create game]
-Créer partie
+CrÃ©er partie
 Create game
 Spiel kreieren
 [update list]
@@ -300,7 +300,7 @@ Connecter
 Connect
 Verbinden
 [disconnect]
-Déconnecter
+DÃ©connecter
 Disonnect
 Verbindung unterbrechen
 [please wait]
@@ -312,7 +312,7 @@ Chargement de Globulation 2
 Loading Globulation 2
 Globulation 2 Laden
 [host]
-Héberger une partie
+HÃ©berger une partie
 Host a game
 Spiel unterbringen
 [join]
@@ -352,7 +352,7 @@ Chantier
 Building site
 Baustelle
 [create map]
-Créer carte
+CrÃ©er carte
 Create map
 Karte kreieren
 [map size x]
@@ -380,7 +380,7 @@ Herbe
 Grass
 Grass
 [teams]
- équipes
+ Ã©quipes
  teams
  Mannschaften
 [choose map]
@@ -404,11 +404,11 @@ Nourriture
 Food left
 Nahrung
 [your units are under attack]
-Vos unites sont attaquées !
+Vos unites sont attaquÃ©es !
 Your unites are under attack !
 Die Einheiten werden angegriffen !
 [your buildings are under attack]
-Vos batiments sont attaqués !
+Vos batiments sont attaquÃ©s !
 Your buildings are under attack !
 Gebaeude unter Angriff !
 [building has been finished]
@@ -420,7 +420,7 @@ IA
 AI
 KI
 [closed]
-Fermé
+FermÃ©
 Closed
 Geschlossen
 [close]
@@ -440,7 +440,7 @@ Connu
 Know
 bekannt
 [PNS_SENDING_FIRST_PACKET]
-Connecté
+ConnectÃ©
 Connected
 Verbindet
 [PNS_HOST]
@@ -452,19 +452,19 @@ Joueur silencieux
 Silent player
 Stiller Spieler
 [PNS_PLAYER_SEND_PRESENCE_REQUEST]
-Requête de présence reçue
+RequÃªte de prÃ©sence reÃ§ue
 Presence request received
 
 [PNS_PLAYER_SEND_SESSION_REQUEST]
-Requête de session reçue
+RequÃªte de session reÃ§ue
 Session request received
 
 [PNS_SERVER_SEND_SESSION_INFO]
-Informations envoyées
+Informations envoyÃ©es
 Informations sended
 Information gesendet
 [PNS_PLAYER_SEND_CHECK_SUM]
-Verification reçue
+Verification reÃ§ue
 Check received
 Pruefung bekommen
 [PNS_OK]
@@ -476,23 +476,23 @@ Debut d'interconnection
 Begin of interconnection
 Begin der Verbindung
 [PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
-Interconnection confirmée
+Interconnection confirmÃ©e
 Interconnection confirmed
 Verbindung bestaetigt
 [PNS_PLAYER_FINISHED_CROSS_CONNECTION]
-Interconnection terminée
+Interconnection terminÃ©e
 Interconnection finished
 Verbindung beendet
 [PNS_CROSS_CONNECTED]
-Interconnecté
+InterconnectÃ©
 Interconnected
 Verbunden
 [PNS_SERVER_SEND_START_GAME]
-Debut de partie envoyée
+Debut de partie envoyÃ©e
 Begin of the game sended
 Begin des Spiels gesendet
 [PNS_PLAYER_CONFIRMED_START_GAME]
-Debut de partie confirmée
+Debut de partie confirmÃ©e
 Begin of the game confirmed
 Begin des Spiels bestaetigt
 [PNS_PLAYER_PLAYS]
@@ -508,7 +508,7 @@ Statistiques
 Statistics
 Statistiken
 [Units]
-Unités
+UnitÃ©s
 Units
 Einheiten
 [free]
@@ -528,7 +528,7 @@ ont faim
 are hungry
 sind hungrig
 [are wonded]
-blessées
+blessÃ©es
 are wonded
 sind verletzt
 [and]
@@ -552,7 +552,7 @@ Construit
 Build
 Baut
 [Harvest]
-Récolte
+RÃ©colte
 Harvest
 ernte
 [At. speed]
@@ -568,7 +568,7 @@ Total/libres/recherche
 Total/free/seeking
 Total/Frei/suchen
 [Ok/hungry/wounded]
-Libre/faim/blessées
+Libre/faim/blessÃ©es
 Free/hungry/wounded
 Frei/Hungrig/Verletzt
 [in way]
@@ -604,8 +604,8 @@ Destructeur
 Destroyer
 Zerstoerer
 [AI name 3]
-Born to pète la geule
-Né pour beak your neck
+Born to pÃ¨te la geule
+NÃ© pour beak your neck
 geboren um zu zerstoeren
 [AI name 4]
 Cassecouille
@@ -628,15 +628,15 @@ auparavant IA
 was AI
 vorher KI
 [state]
-état
+Ã©tat
 state
 Zuestand
 [start]
-départ
+dÃ©part
 start
 beginnen
 [not ready]
-pas prêt
+pas prÃªt
 not ready
 nicht bereit
 [has joined]
@@ -644,7 +644,7 @@ a rejoint
 has joined
 ist angeschlossen
 [has quit]
-a quitté
+a quittÃ©
 has quit
 hat verlassen
 [yog-chat]
@@ -668,11 +668,11 @@ Charger
 Load
 
 [handmade map]
-Carte faite à la main
+Carte faite Ã  la main
 Handmade map
 
 [mapGenerationDescriptor Methodes]
-Méthodes de génération de cartes aléatoires
+MÃ©thodes de gÃ©nÃ©ration de cartes alÃ©atoires
 Methodes of random generated maps
 
 [uniform terrain]
@@ -680,7 +680,7 @@ Terrain uniforme
 Uniform terrain
 
 [random terrain]
-Terrain aléatoire
+Terrain alÃ©atoire
 Random terrain
 
 [islands terrain]
@@ -708,31 +708,31 @@ taille de la plage
 beach size
 
 [workers]
-Ouvrières
+OuvriÃ¨res
 Workers
 
 [bad error in connection system]
-Mauvaise erreure dans le système de connection
+Mauvaise erreure dans le systÃ¨me de connection
 Bad error in connection system
 
 [not connected]
-Pas connecté
+Pas connectÃ©
 Not connected
 
 [presence request sent]
-Requête pour présence envoyée ...
+RequÃªte pour prÃ©sence envoyÃ©e ...
 Presence request sent ...
 
 [session request sent]
-Requête pour la session envoyée ...
+RequÃªte pour la session envoyÃ©e ...
 Session request sent ...
 
 [checksum sent]
-Somme de contrôle envoyée ...
+Somme de contrÃ´le envoyÃ©e ...
 Checksum sent ...
 
 [connected to server]
-Connecté au serveur
+ConnectÃ© au serveur
 Connected to server
 
 [connecting to all players]
@@ -740,7 +740,7 @@ En train de connecter avec les joueurs
 Connecting to all players
 
 [connected to all players]
-Connecté avec tous les joueurs
+ConnectÃ© avec tous les joueurs
 Connected to all players
 
 [aviable lan games]
@@ -756,7 +756,7 @@ de:
 from:
 von:
 [to:]
-à:
+Ã :
 to:
 zu:
 [compile]
@@ -764,7 +764,7 @@ Compiler le script
 Compile script
 Script compilieren
 [downloaded at]
-Téléchargé à 
+TÃ©lÃ©chargÃ© Ã  
 Downloaded at 
 
 [percent]
@@ -772,7 +772,7 @@ Downloaded at
   percent
   
 [download finished]
-Téléchargement terminé
+TÃ©lÃ©chargement terminÃ©
 Download finished
 
 

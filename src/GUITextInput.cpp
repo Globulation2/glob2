@@ -100,7 +100,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				bool cont=true;
 				while ((cursPos<l) && cont)
 				{
-					cursPos++;
+					cursPos=getNextUTF8Char(text, cursPos);
 					switch (text[cursPos])
 					{
 						case '.':
@@ -120,7 +120,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				if (cursPos<l)
 				{
-					cursPos++;
+					cursPos=getNextUTF8Char(text, cursPos);
 					repaint();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
@@ -133,7 +133,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				bool cont=true;
 				while ((cursPos>0) && cont)
 				{
-					cursPos--;
+					cursPos=getPrevUTF8Char(text, cursPos);
 					switch (text[cursPos])
 					{
 						case '.':
@@ -153,7 +153,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				if (cursPos>0)
 				{
-					cursPos--;
+					cursPos=getPrevUTF8Char(text, cursPos);
 					repaint();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
@@ -164,16 +164,14 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			if (cursPos>0)
 			{
 				int l=strlen(text);
-
-				memmove( &(text[cursPos-1]), &(text[cursPos]), l-cursPos+1);
-
-				//printf("clear: l=%d, cursPos=%d, text=%s \n", l, cursPos, text);
-				cursPos--;
+				unsigned last=getPrevUTF8Char(text, cursPos);
+				
+				memmove( &(text[last]), &(text[cursPos]), l-cursPos+1);
+				
+				cursPos=last;
 
 				repaint();
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
-
-				//printf("now: l=%d, cursPos=%d, text=%s \n", strlen(text), cursPos, text);
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 
 		}
@@ -182,10 +180,12 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			int l=strlen(text);
 			if (cursPos<l)
 			{
-				memmove( &(text[cursPos]), &(text[cursPos+1]), l-cursPos);
+				int utf8l=getNextUTF8Char(text[cursPos]);
+				
+				memmove( &(text[cursPos]), &(text[cursPos+utf8l]), l-cursPos-utf8l+1);
 
 				repaint();
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 		}
 		else if (sym==SDLK_HOME)
@@ -206,22 +206,21 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		}
 		else
 		{
-			char c=event->key.keysym.unicode;
-
-			if (font->printable(c))
+			Uint16 c=event->key.keysym.unicode;
+			char utf8text[4];
+			UCS16toUTF8(c, utf8text);
+			int l=strlen(text);
+			int lutf8=strlen(utf8text);
+			if (l+lutf8<MAX_TEXT_SIZE-1)
 			{
-				int l=strlen(text);
-				if (l<MAX_TEXT_SIZE-1)
-				{
-					memmove( &(text[cursPos+1]), &(text[cursPos]), l-cursPos);
+				memmove( &(text[cursPos+lutf8]), &(text[cursPos]), l+1-cursPos);
 
-					text[cursPos]=c;
-					cursPos++;
+				memcpy( &(text[cursPos]), utf8text, lutf8);
+				cursPos+=lutf8;
 
-					repaint();
+				repaint();
 
-					parent->onAction(this, TEXT_MODIFFIED, 0, 0);
-				}
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 		}
 	}

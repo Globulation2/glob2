@@ -330,7 +330,7 @@ bool SDLTTFont::load(const char *filename, unsigned size)
 int SDLTTFont::getStringWidth(const char *string) const
 {
 	int w, h;
-	TTF_SizeText(font, string, &w, &h);
+	TTF_SizeUTF8(font, string, &w, &h);
 	return w;
 }
 
@@ -339,7 +339,7 @@ int SDLTTFont::getStringHeight(const char *string) const
 	if (string)
 	{
 		int w, h;
-		TTF_SizeText(font, string, &w, &h);
+		TTF_SizeUTF8(font, string, &w, &h);
 		return h;
 	}
 	else
@@ -438,7 +438,8 @@ void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char
 	assert(colorStack.size()>0);
 	
 	SDL_Color c = colorStack.top();
-	SDL_Surface *s=TTF_RenderText_Blended(font, text, c);
+	SDL_Surface *s;
+	s=TTF_RenderUTF8_Blended(font, text, c);
 	if (s == NULL)
 		return;
 	
