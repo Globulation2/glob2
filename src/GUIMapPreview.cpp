@@ -45,6 +45,12 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 	//lastRandomGenerationMethode=eUNIFORM;
 }
 
+MapPreview::~MapPreview()
+{
+	if (mapThumbnail)
+		delete mapThumbnail;
+}
+
 const char *MapPreview::getMethode(void)
 {
 	if (randomGenerated)

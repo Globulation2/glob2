@@ -44,7 +44,7 @@ public:
 	//! Constructor, takes position, alignement and initial map name
 	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign);
 	//! Destructor
-	virtual ~MapPreview() { }
+	virtual ~MapPreview();
 	virtual void paint(void);
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const char *mapName=NULL);

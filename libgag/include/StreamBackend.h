@@ -23,6 +23,7 @@
 #include <Types.h>
 #include <string>
 #include <stdio.h>
+#include <assert.h>
 #ifdef putc
 #undef putc
 #endif
@@ -54,19 +55,19 @@ namespace GAGCore
 		FILE *fp;
 		
 	public:
-		//! Constructor. If fp is NULL, isEndOfStream returns true and all other functions excepted destructor are invalid.
+		//! Constructor. If fp is NULL, isEndOfStream returns true and all other functions excepted destructor are invalid and will assert false if called
 		FileStreamBackend(FILE *fp) { this->fp = fp; }
 		virtual ~FileStreamBackend() { if (fp) fclose(fp); }
 		
-		virtual void write(const void *data, const size_t size) { fwrite(data, size, 1 ,fp); }
-		virtual void flush(void) { fflush(fp); }
-		virtual void read(void *data, size_t size) { fread(data, size, 1, fp); }
-		virtual void putc(int c) { fputc(c, fp); }
-		virtual int getc(void) { return fgetc(fp); }
-		virtual void seekFromStart(int displacement) { fseek(fp, displacement, SEEK_SET); }
-		virtual void seekFromEnd(int displacement) { fseek(fp, displacement, SEEK_END); }
-		virtual void seekRelative(int displacement) { fseek(fp, displacement, SEEK_CUR); }
-		virtual size_t getPosition(void) { return ftell(fp); }
+		virtual void write(const void *data, const size_t size) { assert(fp); fwrite(data, size, 1 ,fp); }
+		virtual void flush(void) { assert(fp); fflush(fp); }
+		virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+		virtual void putc(int c) { assert(fp); fputc(c, fp); }
+		virtual int getc(void) { assert(fp); return fgetc(fp); }
+		virtual void seekFromStart(int displacement) { assert(fp); fseek(fp, displacement, SEEK_SET); }
+		virtual void seekFromEnd(int displacement) { assert(fp); fseek(fp, displacement, SEEK_END); }
+		virtual void seekRelative(int displacement) { assert(fp); fseek(fp, displacement, SEEK_CUR); }
+		virtual size_t getPosition(void) { assert(fp); return ftell(fp); }
 		virtual bool isEndOfStream(void) { return (fp == NULL) || (feof(fp) != 0); }
 	};
 	
