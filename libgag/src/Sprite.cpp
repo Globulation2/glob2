@@ -89,7 +89,9 @@ namespace GAGCore
 	{
 		if (!checkBound(index))
 			return;
-			
+		
+		if (spriteAlpha == DrawableSurface::ALPHA_TRANSPARENT)
+			return;
 		// TODO : handle per surface alpha
 	
 		SDL_Rect oldr, r;
