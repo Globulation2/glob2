@@ -1,83 +1,97 @@
-5
+6
 [language]
 Français
 English
 Deutsch
 Česky
 Polski
+Italiano
 [language-code]
 fr
 en
 de
 cz
 pl
+it
 [language-tr]
 Langue
 Language
 Sprache
 Jazyk
 Język
+Lingua
 [hp]
 Pts vie
 HP
 Leben
 Životy
 Życie
+HP
 [heal]
 Santé
 Health
 Gesundheit
 Zdravý
 Leczenie
+Guarisci
 [armor]
 Armure
 Armour
 Rüstung
 Opevnění
 Zbroja
+Armatura
 [damage]
 Dommages
 Damage
 Schaden
 Poškození
 Uszkodzenia
+Danno
 [food]
 Nourriture
 Food
 Nahrung
 Potrava
 Jedzenie
+Cibo
 [working]
 Travaillant
 Working
 An der Arbeit
 Pracují
 Praca
+Al lavoro
 [inside]
 Dedans
 Inside
 Drinnen
 Uvnitř
 Wewnątrz
+Interno
 [ressources]
 Ressources
 Resources
 Ressourcen
 Prostředky
 Zasoby
+Risorse
 [Wood]
 Bois
 Wood
 Holz
 Dřevo
 Drewno
+Legno
 [Corn]
 Blé
 Wheat
 Weizen
 Obilí
 Zboże
+Frumento
 [Papyrus]
+Papyrus
 Papyrus
 Papyrus
 Papyrus
@@ -89,329 +103,384 @@ Stone
 Stein
 Kamení
 Kamień
+Pietra
 [Alga]
 Algue
 Algae
 Algen
 Řasy
 Algi
+Alghe
 [Cherry]
 Cerise
 Cherry
 Kirsche
 Třešně
 Wiśnie
+Ciliegia
 [Orange]
 Orange
 Orange
 Orange
 Pomarenče
 Pomarańcze
+Arancia
 [Prune]
 Prune
-Plum
+Prune
 Pflaume
 Švestky
 Śliwki
-[Bullets]
-Boulets
-Bullets
-Kugeln
-Střelivo
-Amunicja
-[range]
-Portée
-Range
-Reichweite
-Rozsah
-Zasięg
+Prugna
 [Clearing:]
 Défrichage de:
 Clearing:
 
 
 
+
+[Bullets]
+Boulets
+Bullets
+Kugeln
+Střelivo
+Amunicja
+Proiettili
+[range]
+Portée
+Range
+Reichweite
+Rozsah
+Zasięg
+Intervallo
 [destroy]
 Détruire
 Destroy
 Zerstören
 Zničit
 Zniszcz
+Distruggi
 [cancel destroy]
 Annuler destruction
 Cancel destruction
 Zerstörung verhindern
 Stornuj zničeni
 Przerwij niszczenie
+Annulla distruggi
 [wait destroy]
 En attente de destruction
 Awaiting destruction
 Warten auf Zerstörung
 Očekávám zničení
 Oczekiwanie na zniszczenie
+Aspetta distruggi
 [upgrade]
 Améliorer
 Upgrade
 Verbessern
 Vylepšit
 Rozbudowa
+Aggiorna
 [repair]
 Réparer
 Repair
 Reparieren
 Opravit
 Naprawa
+Ripara
 [cancel upgrade]
 Annuler amélioration
 Cancel upgrade
 Verbesserung stornieren
 Stornuj vylepšeni
 Przerwij rozbudowę
+Annulla aggiorna
 [cancel repair]
 Annuler réparation
 Cancel repair
 Reparatur stornieren
 Stornuj opravu
 Przerwij naprawę
+Annulla ripara
 [units type]
 type d'unités
 unit type
 Einheitentyp
 druh jednotek
 Typ jednostek
+Tipo di unità
 [workers]
 Ouvrières
 Workers
 Arbeiter
 Dělníci
 Pracownicy
+Operai
 [explorers]
 Exploratrices
 Explorers
 Entdecker
 Průzkumníci
 Odkrywcy
+Esploratori
 [warriors]
 Guerrières
 Warriors
 Krieger
 Válečníci
 Wojownicy
+Guerrieri
 [Unit type]
 Type d'unite
 Unit type
 Typ der Einheit
 Druh jednotky
 Typ jednostki
+Tipo di unità
 [Worker]
 Ouvrière
 Worker
 Arbeiter
 Dělník
 Pracownik
+Operaio
 [Explorer]
 Exploratrice
 Explorer
 Entdecker
 Průzkumník
 Poszukiwacz
+Esploratore
 [Warrior]
 Guerrière
 Warrior
 Krieger
 Válečník
 Wojownik
+Guerriero
 [still (w)]
 Encore 
 Still
 Noch
 Dosud 
 Ciągle
+Ancora
 [units working]
  unites travaillent
  units work
  Einheiten arbeiten
  jednotek pracuje
  jednostek pracujących
+ unit�al lavoro
 [still one unit working]
 Une unité travaille
 One unit left working
 Eine Einheit arbeitet
 Ještě 1 jednotka pracuje
 Jeszcze 1 jednostka pracująca
+Ancora un unità al lavoro
 [Still (i)]
 Encore
 Still 
 Noch 
 Dosud 
 Wciąż
+Ancora
 [Still one]
 Encore une
 One left
 Noch eine
 Ještě 1
 Jeszcze jedna
+Ancora uno
 [building name]
 Nom du batiment
 Building name
 Gebäudename
 Jméno budovy
 Nazwa budowli
+Nome della costruzione
 [swarm building]
 Ruche
 Swarm
 Stock
 Úl
 Rój
+Magazzino
 [food building]
 Auberge
 Inn
 Gasthof
 Hospoda
 Gospoda
+Mensa
 [health building]
 Hôpital
 Hospital
 Spital
 Nemocnice
 Szpital
+Ospedale
 [walkspeed building]
 Piste de course
 Racetrack
 Rennbahn
 Závodní dráha
 Tor wyścigowy
+Circuito
 [swimspeed building]
 Piscine
 Swimming pool
 Schwimmbecken
 Koupaliště
 Pływalnia
+Piscina
 [attack building]
 Camp d'entraînement
 Barracks
 Trainingslager
 Cvičiště
 Baraki
+Caserma
 [science building]
 Ecole
 School
 Schule
 Škola
 Szkoła
+Scuola
 [defense building]
 Tourelle
 Defence Tower
 Panzerturm
 Obranná věž
 Wieża obronna
+Torre di difesa
 [exploration flag]
 Drapeau d'exploration
 Exploration flag
 Entdeckerflagge
 Průzkumný prapor
-Flaga eksploracji 
+Flaga eksploracji
+Bandiera di esplorazione
 [war flag]
 Drapeau de guerre
 War flag
 Kriegsflagge
 Válečný prapor
 Flaga wojenna
+Bandiera di guerra
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
 Rodungsflagge
 Čisticí prapor
 Flaga oczyszczania
+Bandiera pulitrice
 [forbidden flag]
 Drapeau d'interdiction
 Forbidden flag
 Verbotsflagge
 Zákaz vstupu 
 Flaga zakazu
+Bandiera proibita
 [stone wall]
 Mur de pierre
 Stone wall
 Steinmauer
 Kamenná hradba
 Mur kamienny
+Muro di pietra
 [wood wall]
 Mur de bois
 Wood wall
 Holzmauer
 Dřevěná hradba
 Palisada
+Muro di legno
 [market]
 Marché
 Market
 Markt
 Tržiště
 Bazar
+Mercato
 [exchange]
 Echange
 Exchange
 Handel
 Směnit
 Wymiana
+Cambio
 [waiting for %s]
 Attente de %s
 Waiting for %s
 Warten auf %s
 Čeká se na %s
 Czeka na %s
+Aspettando %s
 [%s has left the game]
 %s a quitté la partie.
 %s has quit the game.
 %s hat das Spiel verlassen.
 %s opustil hru.
 %s opuścił grę.
+%s ha lasciato il gioco.
 [%s has been deconnected of the game]
 %s s'est fait déconnecté de la partie.
 %s has been disconnected.
 Die Verbindung zu %s wurde getrennt.
 %s byl odpojen.
 %s się rozłączył.
+%s si è disconnesso dal gioco.
 [load game]
 Charger jeu
 Load game
 Spiel laden
 Nahrát hru
 Załaduj grę
+Carica partita
 [save game]
 Sauvegarder jeu
 Save game
 Spiel speichern
 Uložit hru
 Zapisz grę
+Salva partita
 [options]
 Options
 Options
 Einstellungen
 Nastavení
 Opcje
+Opzioni
 [alliances]
 Alliances
 Alliances
 Allianzen
 Spojenectví
 Sojusze
+Alleanze
 [return to game]
 Retour au jeu
 Return to game
 Zurück zum Spiel
 Zpět do hry
 Powrót do gry
+Ritorna al gioco
 [quit the game]
 Quitter le jeu
 Quit the game
 Spiel beenden
 Opustit hru
 Zakończ grę
+Esci dal gioco
 [ok]
 Accepter
 Ok
 Ok
 Budiž
+Ok
 Ok
 [Cancel]
 Annuler
@@ -419,764 +488,892 @@ Cancel
 Wiederrufen
 Zrušit
 Anuluj
+Annulla
 [you have lost]
 Vous avez perdu!
 You have lost!
 Sie haben verloren!
 Jsi ztracen...
 Przegrałeś...
+Hai perso
 [you have won]
 Vous avez gagné!
 You have won!
 Sie haben gewonnen!
 Vyhrál jsi!
 Wygrałeś !!!
+Hai vinto!!!!
 [campagn]
 Campagne
 Campaign
 Feldzug
 Nová hra
 Kampania
+Campagna
 [tutorial]
 Didacticiel
 Tutorial
 Lernprogramm
 Tutoriál
 Samouczek
+Esercitazione
 [custom game]
 Jeu libre
 Custom game
 Freies Spiel
 Volitelná hra
 Własna gra
+Gioco personalizzato
 [yog]
 Jeu en ligne Ysagoon
 Ysagoon Online Gaming
 Ysagoon-Onlinespiel
 Ysagoon Online Gaming
 Ysagoon-Gra w Internecie
+Gioca on-line a Ysagoon
 [Enter your nickname :]
 Entrez votre pseudo :
 Enter your nickname :
 
 
 
+Inserisci il tuo soprannome :
 [Enter your password :]
 Entrez votre mot de passe :
 Enter your password :
 
 
 
+Inserisci la tua password :
 [lan]
 Jeu en réseau local
 LAN Game
 Spiel im lokalen Netz
 Síťová hra
 Gra sieciowa
+Gioca in rete (LAN)
 [settings]
 Paramètres
 Settings
 Einstellungen
 Nastavení
 Ustawienia
+Impostazioni
 [editor]
 Editeur
 Editor
 Editor
 Editor
 Edytor
+Editor
 [credits]
 Crédits
 Credits
 
 Poděkování
 O twórcach
+Credits
 [quit]
 Quitter
 Quit
 Beenden
 Konec
 Zakończ
+Esci
 [create game]
 Créer partie
 Create game
 Spiel anlegen
 Vytvoř hru
 Nowa gra
+Crea il gioco
 [update list]
 Mettre à jour
 Update list
 Aktualisieren
 Obnovit seznam
 Uaktualnij listę
+Aggiorna la lista
 [connecting to]
 Connection à
 Connecting to
 Verbinden mit
 Připojuji se k
 Połącz z
+Mi sto connettendo a
 [connect]
 Connecter
 Connect
 Verbinden
 Připojit
 Łączę
+Connesso
 [Disconnect]
 Déconnecter
 Disconnect
 Trennen
 Odpojit
 Zrywam połączenie
+Disconnettiti
 [please wait]
 Attendre SVP
 Please wait
 Bitte warten
 Čekej prosím
 Proszę czekaj
+Aspetta un momento
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
 Globulation 2 wird geladen
 Nahrávám Globulation 2
 Wczytuję Globulation 2
+Sto caricando Globulation 2
 [host]
 Héberger une partie
 Host a game
 Spiel veranstalten
 Hostuj hru
 Host w grze
+Ospita una partita
 [join a game]
 Joindre une partie
 Join a game
 Bei einem Spiel mitspielen
 Připojit se do hry
 Przyłącz się do gry
+Unisciti ad una partita
 [join]
 Joindre
 Join
 Mitspielen
 Připojit se
 Przyłącz się
+Unisci
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
 Zurück zum Hauptmenu
 Zpět do hlavního menu
 Wróć do menu głównego
+Torna al menu principale
 [player name]
 Nom du joueur
 Player name
 Spielerame
 Jméno
 Nazwa Gracza
+Nome del giocatore
 [svr hostname]
 Nom du serveur hôte
 Server hostname
 Server-Rechnername
 Server hostname
 Nazwa hosta
+Nome del server
 [hp]
 Point de vie
 Hitpoint
 Lebenspunkt
 Životy
 Punkty życia
+Punti vita
 [carry]
 Transporte :
 Carrying :
 Transportiert :
 Nesu :
 Transport :
+Trasporto :
 [don't carry anything]
 Ne transporte rien
 Not carrying anything
 Transportiert nichts
 Nic nenesu
 Nic nie transportuje
+Non Ttrasportare niente
 [level]
 Niveau
 Level
 Stufe
 Úroveň
 Poziom
+Lvivello
 [levels]
 Niveaux
 Levels
 Stufen
 Úrovně
 Poziomy
+Livelli
 [building site]
 chantier
 construction site
 baustelle
 staveniště
 plac budowy
+Sito in costruzione
 [create map]
 Créer carte
 Create map
 Karte erzeugen
 Vytvořit mapu
 Stwórz mapę
+Crea una mappa
 [map size x]
 Largeur de la carte
 Map width
 Breite der Karte
 Šířka mapy
 Szerokość mapy
+Grandezza x della mappa
 [map size y]
 Hauteur de la carte
 Map height
 Höhe der Karte
 Výška mapy
 Wysokość mapy
+Grandezza y della mappa
 [default terrain]
 Terrain par défaut
 Default terrain
 Vorgabeterrain
 Předvolená krajina
 Domyślny teren
+Terreno predefinito
 [water]
 Eau
 Water
 Wasser
 Voda
 Woda
+Acqua
 [sand]
 Sable
 Sand
 Sand
 Písek
 Piasek
+Sabbia
 [grass]
 Herbe
 Grass
 Gras
 Tráva
 Trawa
+Erba
 [teams]
  équipes
  teams
  Mannschaften
  hráčů
  zespoły
+ Squadre
 [choose map]
 Choisir une carte
 Choose a map
 Karte auswählen
 Výběr mapy
 Wybierz mapę
+Seleziona una mappa
 [choose game]
 Choisir une partie
 Choose a game
 Spiel auswählen
 Výběr hry
 Wybierz grę
+Seleziona un gioco
 [awaiting players]
 En attente des joueurs
 Awaiting players
 Warten auf Spieler
 Čeká se na hráče
 Oczekuj graczy
+In attesa di altri giocatori
 [stat]
 Statistiques
 Statistics
 Statistiken
 Statistické údaje
 Statystyki
+Statistiche
 [food left]
 Nourriture
 Food left
 Nahrung
 Potrava
 Pozostało jedzenia
+Cibo rimasto
 [the building is finished]
 Le bâtiment est terminé
 The building is finished
 Das Gebäude ist fertig
 Budova je postavena ...
 Postawiono budowlę
+L'edificio �completato
 [the swarm is finished]
 La ruche est terminée
 The swarm is finished
 Der Stock ist fertig
 Úl postaven ...
 Rój został zbudowany
+Il magazzino è completato
 [the food building is finished]
 L'auberge est terminée
 The Inn is finished
 Der Gasthof ist fertig
 Hospoda postavena ...
 Zbudowano gospodę
+La mensa è stata completata
 [the health building is finished]
 L'hôpital est terminé
 The hospital is finished
 Das Hospital ist fertig
 Nemocnice postavena ...
 Zbudowano szpital
+L'ospedale è stato completato
 [the walkspeed building is finished]
 La piste de course est terminée
 The racetrack is finished
 Die Rennbahn ist fertig
 Zavodní dráha postavena ...
 Zbudowano tor wyścigowy
+Il circuito è stato completato
 [the swimspeed building is finished]
 La piscine est terminée
 The swimming pool is finished
 Das Schwimmbecken ist fertig
 Koupaliště postaveno ...
 Zbudowano pływalnię
+La piscina è stata completata
 [the attack building is finished]
 Le camp d'entraînement est terminé
 The training camp is finished
 Das Trainingslager ist fertig
 Cvičiště postaveno ...
 Zbudowano baraki
+La caserma è stata completata
 [the science building is finished]
 L'école est terminée
 The school is finished
 Die Schule ist fertig
 Škola postavena ...
 Zbudowano szkołę
+La scuola è stata completata
 [the tower building is finished]
 La tour de défense est terminée
 The defense tower is finished
 Der Panzerturm ist fertig
 Obranná věž postavena ...
 Zbudowano wieżę obronną
+La torre da difesa è stata completata
 [the exploration flag is finished]
 ?? Drapeau d'exploration terminé ??
 ?? Exploration flag finished ??
 ?? Entdeckerflagge fertig ??
 ?? Průzkumný prapor připraven ??
 ?? Postawiono flagę eksploracji ??
+?? Bandiera d'esplorazione finita ??
 [the war flag is finished]
 ?? Drapeau de guerre terminé ??
 ?? War flag finished ??
 ?? Kriegsflagge fertig ??
 ?? Válečná prapor připraven ??
 ?? Postawiono flagę wojenną ??
+?? La bandiera da guerra finita ??
 [the clearing flag is finished]
 ?? Drapeau de défrichage terminé ??
 ?? Clearing flag finished ??
 ?? Rodungsflagge fertig ??
 ?? Čistící prapor připraven ??
 ?? Postawiono flagę ... ??
+?? La bandiera pulitrice finita ??
 [the forbidden flag is finished]
 ?? Drapeau d'interdiction terminé ??
 ?? Forbidden flag finished ??
 ?? Verbotsflagge fertig ??
 ?? Prapor zakáz vstupu připraven ??
 ?? Postawiono flagę zakazu ?? 
+?? La bandiera proibita finita ??
 [the stone wall is finished]
 Un élément de mur est terminé
 A wall section is finished
 Ein Mauerteil ist fertig
 Kus hradby hotov ...
 Zbudowano część muru
+Il muro di pietra è stato completato
 [the wood wall is finished]
 Un élément de mur est terminé
 A wall section is finished
 Ein Mauerteil ist fertig
 Kus hradby hotov ...
 Zbudowano część palisady
+Il muro di legno è stato completato
 [the market is finished]
 Le marché est terminé
 The market is finished
 Der Markt ist fertig
 Tržiště postaveno ...
 Zbudowano bazar 
+Il mercato è finito
 [the building is under attack]
 Le bâtiment est attaqué
 The building is under attack
 Das Gebäude wird angegriffen
 Budova pod útokem
 Budowla została zaatakowana
+L'edificio è sotto attacco
 [the swarm is under attack]
 La ruche est attaquée
 The swarm is under attack
 Der Stock wird angegriffen
 Úl je napaden
 Rój został zaatakowany
+Il magazzino è sotto attacco
 [the food building is under attack]
 L'auberge est attaquée
 The Inn is under attack
 Der Gasthof wird angegriffen
 Hospoda je pod útokem
 Gospoda została zaatakowana
+La mensa è sotto attacco
 [the health building is under attack]
 L'hôpital est attaqué
 The hospital is under attack
 Das Hospital wird angegriffen
 Nemocnice je pod útokem
 Szpital został zaatakowany
+L'ospedale è sotto attacco
 [the walkspeed building is under attack]
 La piste de course est attaquée
 The racetrack is under attack
 Die Rennbahn wird angegriffen
 Závodní dráha pod útokem
 Tor wyścigowy został zaatakowany
+Il circuito è sotto attacco
 [the swimspeed building is under attack]
 La piscine est attaquée
 The swimming pool is under attack
 Das Schwimmbecken wird angegriffen
 Koupaliště je pod útokem
 Pływalnia została zaatakowana
+La piscina è sotto attacco
 [the attack building is under attack]
 Le camp d'entraînement est attaqué
 The training camp is under attack
 Das Trainingslager wird angegriffen
 Cvičiště je pod útokem
 Baraki zostały zaatakowane
+La caserma è sotto attacco
 [the science building is under attack]
 L'école est attaquée
 The school is under attack
 Die Schule wird angegriffen
 Škola je pod útokem
 Szkoła została zaatakowana
+La scuola è sotto attacco
 [the defense building is under attack]
 Vos défenses sont attaquées
 Your defenses are under attack
 Ihre Befestigungen werden angegriffen
 Obranná věž je pod útokem
 Wieża obronna została zaatakowana
+La torre da difesa è sotto attacco
 [the exploration flag is under attack]
 ?? Drapeau d'exploration attaqué ??
 ?? Exploration flag under attack ??
 ?? Entdeckerflagge wird angegriffen ??
 ?? Průzkumný prapor v obležení nepřátel ??
 ?? Flaga eksploracji została zaatakowana ??
+?? La bandiera esploratrice è sotto attacco ??
 [the war flag is under attack]
 ?? Drapeau de guerre attaqué ??
 ?? War flag under attack ??
 ?? Kriegsflagge wird angegriffen ??
 ?? Válečná prapor v obležení nepřátel ??
 ?? Flaga wojenna została zaatakowana ??
+?? La bandiera da guerra è sotto attacco ??
 [the clearing flag is under attack]
 ?? Drapeau de défrichage attaqué ??
 ?? Clearing flag under attack ??
 ?? Rodungsflagge wird angegriffen ??
 ?? Čistící prapor v obležení nepřátel ??
 ?? Flaga ... została zaatakowana ??
+?? La bandiera pulitrice è sotto attacco ??
 [the forbidden flag is under attack]
 ?? Drapeau d'interdiction attaqué ??
 ?? Forbidden flag under attack ??
 ?? Verbotsflagge wird angegriffen ??
 ?? Prapor zákaz vstupu v obležení nepřátel ??
 ?? Flaga zakazu została zaatakowana ??
+?? La bandiera proibita è sotto attacco ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
 The ennemi is at your walls
 Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
 Mur został zaatakowany
+Il muro di roccia è sotto attacco
 [the wood wall is under attack]
 L'ennemi est à vos murs
 The ennemi is at your walls
 Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
 Palisada została zaatakowana
+Il muro di legno è sotto attacco
 [the market is under attack]
 Le marché est attaqué
 The market is under attack
 Der Markt wird angegriffen
 Tržiště je pod útokem
 Bazar został zaatakowany
+Il ercato è sotto attacco
 [Your]
 Vos
 Your
 Eure
 Tvoji
 Twój
+Il tuo
 [are under attack(f)]
 sont attaquées
 are under attack
 werden angegriffen
 jsou pod útokem
 jesteś atakowany(a)
+�sotto attacco
 [Your unit got converted to another team]
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
 
 Tva jednotka změnila víru v jiného hráče
 Twoja jednostka została przeciągnięta na stronę wroga
+La tua unità è stata convertita in un'altra squadra
 [Another team's unit got converted to your team]
 Une unité ennemie s'est convertie à votre équipe
 Another team's unit got converted to your team
 
 Cizí tým změnil víru v Tebe
 Jednostka wroga została przeciągnięta na Twoją stronę
+Un'altra sqadra ha convertito la tua unità
 [Uncontrolled]
 Incontrôlé
 Uncontrolled
 Unkontrolliert
 Neovládaný
 Niekontrolowany
+Incontrollato
 [ai]
 IA
 AI
 KI
 Počítač
 SI
+IA
 [closed]
 Fermé
 Closed
 Geschlossen
 Uzavřeno
 Zamknięte
+Chiuso
 [close]
 Fermer
 Close
 Schließen
 Uzavři
 Zamknij
+Chiuso
 [player]
 Joueur
 Player
 Spieler
 Hráč
 Gracz
+Giocatore
 [STARTING GAME ...]
 Début du jeu... 
 Starting game... 
 Spielbeginn... 
 Startuji hru...
 Początek gry...
+Inizio gioco...
 [Statistics]
 Statistiques
 Statistics
 Statistiken
 Statistiky
 Statystyka
+Statistiche
 [Buildings]
 Bâtiments
 Buildings
 Gebäude
 Budovy
 Budowle
+Costruzioni
 [Prestige]
 Prestige
 Prestige
 Prestige
 Prestiž
 Prestiż
+Prestigio
 [Units]
 Unités
 Units
 Einheiten
 Jednotky
 Jednostki
+Unità
 [free]
 libres
 free
 frei
 se nudí
 wolne
+liberi
 [of which]
 dont
 of which
 davon
 z toho
 z czego
+dei quali
 [are ok]
 sont ok
 are ok
 ok
 v pohodě :-)
 jest ok
+sono ok
 [are hungry]
 ont faim
 are hungry
 hungrig
 o hladu
 odczuwa głód
+hanno fame
 [are dying hungry]
 meurent de faim
 are starving to death
 verhungern
 umírají hlady
 umiera z głodu
+stanno morendo di fame
 [are wonded]
 blessées
 are wounded
 sind verletzt
 je zraněných
 rannych
+sono feriti
 [and]
 et
 and
 und
 a
 i
+e
 [seeking a job]
 cherchent du travail
 are looking for a job
 suchen Arbeit
 hledá práci
 szuka pracy
+cercano lavoro
 [Walk]
 Marche
 Walk
 Geh
 Chůze
 Chodzi
+Cammina
 [Swim]
 Nage
 Swim
 Schwimm
 Plavání
 Pływa
+Nuota
 [Build]
 Construit
 Build
 Bau
 Stavba
 Buduje
+Costruisci
 [Harvest]
 Récolte
 Harvest
 Ernte
 Těžba
 Zbiera
+Raccola
 [At. speed]
 Vitesse at.
 Att. speed
 Geschwindigkeit
 Rychlost útoku
 Prędkość ataku
+At. velocità
 [At. strength]
 Force at.
 Att. strength
 Stärke
 Síla útoku
 Siła ataku
+At. resistenza
 [Total]
 Total
 Total
 Gesamt
 Celkem
 Łącznie
+Totale
 [free]
 libres
 free
 frei
 Volný
 wolnych
+Libero
 [seeking]
 recherche
 seeking
 suchen
 Hledá
 szukających
+Ricerca
 [Free]
 Libre
 Free
 Frei
 OK
 Wolnych
+Libero
 [hungry]
 faim
 hungry
 hungrig
 Hladový
 Głodnych
+Fame
 [starving]
 trop faim
 starving
 verhungern
 Umírá hlady
 umierających z głodu
+troppa fame
 [wounded]
 blessées
 wounded
 verletzt
 Zraněných
 rannych
+ferito
 [In way]
 En chemin
 On the way
 Unterwegs
 Na cestě
 W drodze
+sulla strada
 [On the spot]
 Sur place
 Here
 Vor Ort
 Na místě
 Na miejscu
+Sul posto
 [Version]
 Version
 Version
 Version
 Verze
 Wersja
+versione
 [open]
 ouvert
 open
 offen
 Otevřít
 Otwarty
+Apri
 [Add AI]
 Ajouter IA
 Add AI
 KI hinzufügen
 Přidej počítač
 Dodaj SI
+Aggiungi un IA
 [AI]
 IA
 AI
 KI
 Počítač
 SI
+IA
 [AINone]
 AINone
 AINone
 AINone
 AINone
 AINone
+NienteIA
 [AINumbi]
 AINumbi
 AINumbi
 AINumbi
 AINumbi
 AINumbi
+IANumbi
 [AICastor]
 AICastor
 AICastor
 AICastor
 AICastor
 AICastor
+IACastor
 [the games]
 Parties
 Games
 Spiele
 Hry
 Gry
+Giochi
 [the maps]
 Cartes
 Maps
 Karten
 Mapy
 Mapy
+Mappe
 [was]
 auparavant
 was
 vorher
 byl
 był
+era
 [was AI]
 auparavant IA
 was AI
 vorher KI
 byl počítač
 był SI
+era un IA
 [state]
 état
 state
 Zustand
 stav
 stan
+stato
 [Start]
 Départ
+Start
 Start
 Start
 Start
@@ -1187,179 +1384,209 @@ not ready
 nicht bereit
 nepřipraven
 nie gotowy
+non pronto
 [has joined]
 a rejoint
 has joined
 ist angeschlossen
 připojen
 dołączył(a)
+è entrato
 [has quit]
 a quitté
 has quit
 hat verlassen
 odpojil
 wylogował się
+se ne è andato
 [yog-chat]
 #yog-fr
 #yog-en
 #yog-de
 #yog-cz
 #yog-pl
+#yog-it
 [speed]
 Vitesse
 Speed
 Geschwindigkeit
 Rychlost
 Prędkość
+Velocità
 [current speed]
 Vitesse actuelle
 Current speed
 Aktuelle Geschwindigkeit
 Současná rychlost
 Aktualna prędkość
+Velocità corrente
 [attack speed]
 Vit. attaque
 Attack speed
 Angriffsgeschw.
 Útočící rychlost
 Prędkość ataku
+Velocità d'attacco
 [new]
 Nouveau
 New
 Neu
 Nová
 Nowa
+Nuovo
 [load]
 Charger
 Load
 Laden
 Nahrát
 Ładuj
+Carica
 [handmade map]
 Carte faite à la main
 Handmade map
 Handgemachte Karte
 Ručně vyrobená mapa
 Własna mapa
+Gestisci mappa
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
 Methoden der Zufallserzeugung von Karten
 Metody náhodně vytvořených map
 Metody generowania losowych map
+Metodi di generazione casuale della mappa
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
 Einheitliche Landschaft
 Jednotná krajina
 Rodzaj terenu
+Terreno uniforme
 [random terrain]
 Terrain aléatoire
 Random terrain
 Zufallslandschaft
 Náhodná krajina
 Losowy teren
+Terreno a caso
 [islands terrain]
 Iles
 Islands
 Inseln
 Ostrovy
 Wyspy
+Terreno a isole
 [ratios]
 Proportions
 Rations
 Verhältnis
 Poměry
 Proporcje
+Razioni
 [smoothing]
 Lissage
 Smoothing
 Glättung
 Vyhlazení
 Wygładzanie
+Spianatura
 [number of teams]
 nombre d'équipes
 number of teams
 Anzahl Mannschaften
 Počet hráčů
 Ilość drużyn
+Numero di squadre
 [islands size]
 taille des îles
 islands size
 Größe der Inseln
 Velikost ostrovů
 Wielkość wysp
+Grandezza delle isole
 [beach size]
 taille de la plage
 beach size
 Größe des Strandes
 Velikost pláží
 Wielkość plaż
+Grandezza della spiaggia
 [workers]
 Ouvrières
 Workers
 Arbeiterinnen
 Dělníci
 Pracownicy
+Operai
 [bad error in connection system]
 Mauvaise erreur dans le système de connection
 Bad error in connection system
 Fataler Fehler im Verbindungssystem
 Kritická chyba v systému připojení
 Bład w systemie połączeń
+Brutto errore nel sistema di connessione
 [not connected]
 Non connecté
 Not connected
 Nicht angeschlossen
 Nepřipojen
 Nie połączony
+non connesso
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
 Präsenzanfrage gesendet ...
 Požadavek připojení odeslán ...
 Wysłano rządanie stanu ...
+Richiesta di presenza inviata ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
 Sitzungsanfrage gesendet ... 
 Požadavek na navázání relace odeslán ...
 Wysłano rządanie sesji ...
+Richiesta di sessione inviata ...
 [checksum sent]
 Somme de contrôle envoyée ...
 Checksum sent ...
 Prüfsumme gesendet ...
 Kontrolní součet odeslán ...
 Wysłano sumę kontrolną ...
+Richiesta di checksum inviata ...
 [connected to server]
 Connecté au serveur
 Connected to server
 Mit dem Server verbunden
 Server připojen
 Połączono z serwerem
+Connesso al server
 [connecting to all players]
 En train de se connecter avec les joueurs
 Connecting to all players
 Verbinden mit allen Spielern
 Připojuji se ke všem hráčům
 Łączenie z resztą graczy
+Mi sto connettendo agli altri giocatori
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
 Verbunden mit allen Spielern
 Připojen ke všem hráčům
 Połączono z resztą graczy
+Connesso a tutti i giocatori
 [aviable lan games]
 Parties locales disponibles
 Available local games
 Lokal verfügbare Spiele
 Dostupné místní hry
 Dostępne gry sieciowe
+iochi LAN diponibili
 [login]
 Login
 Login
 Login
 Přihlásit
+Login
 Login
 [from:]
 de:
@@ -1367,177 +1594,207 @@ from:
 von:
 od:
 od:
+da:
 [to:]
 à:
 to:
 auf:
 pro:
 do:
+a:
 [away:]
 absent:
 away:
 weg:
 pryč:
 zajęty:
+assente:
 [compile]
 Compiler le script
 Compile script
 Skript kompilieren
 Sestavit skript
 Kompiluj skrypt
+Compila lo script
 [downloaded at]
 Téléchargé à 
 Downloaded at 
 Heruntergeladen zu
 Stahuji
 Ściągniete z
+Scaricato a
 [percent]
   pourcent
   percent
   Prozent
   procent
   procent
+  percento
 [download finished]
 Téléchargement terminé
 Download finished
 Herunterladen abgeschlossen
 Stáhnuto
 Pobieranie zakończone
+Download completato
 [Map name: %s]
 Carte: %s.
 Map name: %s.
 Karte: %s.
 Jméno mapy: %s.
 Nazwa mapy: %s.
+Nome della mappa: %s.
 [one player]
 Un joueur présent.
 A player has joined.
 Ein Spieler spielt mit.
 Jeden hráč se připojil.
 Gracz dołaczył do gry.
+Giocatore singolo.
 [number of players: %d]
 %d joueurs présents.
 %d players has joined.
 %d Spieler spielen mit.
 %d hráčů se připojilo.
 %d graczy dołączyło do gry.
+%d numero di giocatori.
 [number of teams: %d]
 %d équipes.
 %d teams.
 %d Mannschaften.
 %d týmů.
 %d drużyny
+%d numero di sqadre.
 [game full]
 Jeu complet
 Game full
 Spiel komplett
 Plně obsazená hra
 Komplet graczy
+Gioco completo
 [small]
 faible
 small
 klein
 malá
 mała
+piccolo
 [medium]
 moyen
 medium
 mittel
 střední
 średnia
+medio
 [large]
 grand
 large
 groß
 velká
 duża
+largo
 [network latency]
 Latence du réseau
 Network latency
 Netzlatenz
 Network latency
 Opóźnienie sieci
+Latenza della rete
 [game speed]
 Vitesse du jeu
 Game speed
 Spielgeschwindigkeit
 Rychlost hry
 Prędkość gry
+Velocità di gioco
 [Paused]
 Pause
 Paused
 Pause
 Pauza
 Pauza
+Pausa
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 Register a new YOG user with password. (insecure)
 
 
 
+Registra un nuovo utente YOG con una passord. (non sicuro)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 Remember password locally. (insecure)
 
 
 
+Ricordati la password localmente. (non sicuro)
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
 Interner Konsistenzfehler beim Verbinden.
 Vnitřní chyba spojitosti během připojovaní.
 Błąd spójności podczas łączenia.
+Errore interno di connessione.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
+Non mi riesco a connettere, apparentemente il master server YOG �offline.
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 Systém připojení je připraven na kontakt s YOG metaserverem.
 System jest gotowy do połączenia z metaserwerem YOG.
+Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Etablishing the connection to the YOG metaserver...
 Verbindungsaufbau zum YOG-Metaserver...
 Navazuji spojení s YOG metaserverem...
 Nawiązuje połączenie z metaserwerem YOG...
+Mi sto connettendo al metaserver YOG...
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
 Disconnecting from YOG metaserver...
 
 Odpojuji z YOG metaserveru...
 Rozłączam z metaserwerem YOG...
+Disconnessione dal metaserver YOG in corso...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
 Ein Administrator hat gerade den YOG-Metaserver abgestellt.
 Správce zastavil YOG metaserver.
 Administrator wyłączył metaserwer YOG.
+Un amministratore ha appena fermato il metaserver YOG.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
 Die Verbindung ui YOG wurde verloren.
 Spojení s YOG metaserverem bylo ztraceno.
 Połączenie z YOG zostało utracone.
+La connessione a YOG �stat persa.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation zu alt ist. 
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 Metaserwere YOG odmówił połączenia, ponieważ Twoja wersja globulation2 jest zbyt stara, by mógł się z nią komunikować.
+Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation2 che hai installato è troppo vecchia
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Pseudo schon vergeben ist.
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 Metaserwer YOG odmówił połączenia ponieważ twój login jest już zajęty przez kogoś innego.
+Il metaserver YOG ha rifiutato la tua connessione perch�il tuo username �gi�in uso da qualcun altro.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
 The YOG metaserver has refused connection because supplied password was incorrect.
+
 
 
 
@@ -1547,178 +1804,208 @@ The YOG metaserver has refused connection because this username has no password 
 
 
 
+Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with password".
 
 
 
+Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
 The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
 
 
 
+Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel protocollo: sei già autenticato. Riprova tra 45 secondi.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 
 
 
+Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
 Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 YOG metaserver odmítnul spojení bez udání důvodu.
 Metaserver YOG odmówił połączenia bez dalszego wyjaśnienia.
+Il metaserver YOG ha respinto la connessione senza spiegazione!
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 %s has left YOG.
 Spieler %s hat YOG verlassen.
 Hráč %s se odpojil od YOG.
 Gracz %s opuścił YOG.
+Il giocatore %s se n'�andato da YOG.
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 %s has joined YOG.
 Spieler %s ist zu YOG zurückgekehrt.
 Hráč %s se připojil k YOG.
 Gracz %s przyłączył się do YOG.
+Il giocatore %s è entrato in YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as away.
 Sie sind als abwesend markiert.
 Jsi označen, že jsi pryč.
 Jesteś oznaczony jako nieaktywny.
+Adesso sei segnato come assente.
 [You are no more marked as away]
 Vous êtes à nouveau considéré comme étant présent.
 You are no longer marked as away.
 Sie sind wieder da.
 Nejsi označen, že jsi pryč.
 Już nie jesteś oznaczony jako nieaktywny.
+Non sei pi segnato come assente.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
 Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" eingeben. 
 YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <příkaz>" pro více informací o příkazu.
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
+Il sistema di messaggistica YOG ha due comandi: "msg" e "away". Scrivi "/help <comando>" per saperne di più.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
 The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explaination message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
 Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoji dočasnou nepřítomnost. Můžeš přidat i výmluvnou krátkou zprávu (důvod). Například "/away Du na cigaretu, za 5 minut sem zpátky ...", lze použít zkráceně "/a".
 Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników YOG o Twojej tymczasowej nieobecności. Możesz dodać krótką notę informacyjną. Np. "/away Jem obiad będę o 14". Możesz użyć też skrótu "/a".
+Il comando "/away [<messaggio>]" permette agli altri utenti YOG di sapere che temporaneamente ti sei assentato. Puoi aggiungere un breve messaggio di spiegazione. Per esempio "/away Sto mangiando un hamburger e torno alle 13.". Alias "/a"
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
 "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.b. "/msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
 Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný si jí nepřečte (šeptání). Například "/msg klip Nazdar :-), tak co ?", lze použít zkráceně "/m".
 Komenda "/msg <nazwa> <wiadomość>" pozwala Ci przesłać wiadomość do jednej osoby. Np. "/msg Daemon42 Twoje tłumaczenie ssie...". W skrócie "/m"
+Il comando "/msg <nome> <messaggio>" permette di spedire un messaggio solo ad una persona specifica. Per esempio: "/msg john hi john, how are you?". Alias "/m"
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
 Do you want to save before quitting?
 Möchten Sie vor dem Beenden abspeichern?
 Chceš uložit před odchodem ?
 Chcesz zapisać stan gry, przed jej zakończeniem ?
+Voui salvare prima di uscire?
 [Yes]
 Oui
 Yes
 Ja
 Ano
 Tak
+Sì
 [No]
 Non
 No
 Nein
 Ne
 Nie
+No
 [Save]
 Sauvegarder
 Save
 Speichern
 Uložit
 Zapisz
+Salva
 [auto save]
 Sauvegarde automatique
 Auto save
 autosave
 Auto save
 Autozapis
+Salvataggio automatico
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached
 Höchstmögliches Prestige erreicht
 Dosažená celková prestiž
 Osiągnięty prestiż
+Totale prestigio raggiunto
 [Continue playing]
 Continuer à jouer
 Continue playing
 Weiterspielen
 Pokračovat ve hře
 Kontynuuj grę
+Continua a giocare
 [Lost : your colony is dead]
 Perdu : votre colonie est morte
 Lost: your colony is dead
 Verloren: Ihre Kolonie ist tot
 Tvoje kolonie je zničená ...
 Przegrałeś: Twoja kolonia została wybita.
+Hai perso: la tua colonia �morta.
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
 Won : you defeated your opponents
 Gewonnen: Sie haben Ihre Feinde besiegt
 Tvoji nepřátelé byli poraženi ...
 Wygrałeś: pokonałeś swoich przeciwników
-[Won : your ally %s have the biggest prestige]
+Hai vinto: hai battuto i tuoi avversari
+[Won : your ally %s has the most prestige]
 Gagné : votre allié %s a le plus de prestige
-Won : your ally %s has the most prestige
+Won : your ally %s have the biggest prestige
 Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
 Tvůj spojenec %s má největší prestiž ...
 Wygrałeś: %s ma największy prestiż
+Hai vinto: il tuo alleato %s ha il maggior prestigio.
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
 Verloren: %s hat mehr Prestige als Sie
 %s má větší prestiž než Ty ...
 Przegrałeś: %s ma większy prestiż od Twojego
-[Won : you have the biggest prestige]
+Hai perso: %s ha pi prestigio di te
+[Won : you have the most prestige]
 Gagné : vous avez le plus de prestige
-Won : you have the most prestige
+Won : you have the biggest prestige
 Gewonnen: Sie haben das höchste Prestige
 Ty máš největší prestiž ...
 Wygrałeś: Masz największy prestiż
+Hai vinto: hai il magior prestigio
 [The game has not been finished]
 La partie n'a pas été terminée
 The game has not been finished
 Das Spiel wurde nicht abgeschlossen
 Hra neskončila
 Gra nie została skończona
+La partita non è finita
 [display]
 Affichage
 Display
 Anzeige
 Rozlišení
 Wyświetlanie
+Visualizza
 [username]
 Nom d'utilisateur
 Username
 
 Jméno uživatele
 Nazwa użytkownika
+Username
 [fullscreen]
 Plein écran
 Fullscreen
 
 Fullscreen
 Pełen ekran
+Schermo intero
 [hwaccel]
 Accélération matérielle
 Hardware acceleration
 
 Hardware akcelerace
 Dopalanie sprzętowe
+Accelerazione HardWare
 [dblbuff]
 Doube-tampon
 Double-buffering
 
+Double-buffering
 Double-buffering
 Double-buffering
 [lowquality]
@@ -1727,10 +2014,12 @@ Low quality
 
 Nízká kvalita
 Niska jakość
+Bassa qualità
 [audio]
 Audio
 Audio
 
+Audio
 Audio
 Audio
 [Music volume]
@@ -1739,9 +2028,11 @@ Volume (music)
 
 Hlasitost (hudba)
 Głośność (muzyka)
+Volume (musica)
 [Happyness]
 Satisfaction
 Happyness
 
 
 Satysfakcja
+Soddisfazione
