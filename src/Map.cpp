@@ -447,7 +447,7 @@ void Map::setBaseMap(const BaseMap *initial)
 	memcpy(mapName, initial->mapName, 32);
 }
 
-void Map::setSize(int wDec, int hDec, Game *game)
+void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER)
 {
 	if (mapDiscovered)
 		delete mapDiscovered;
@@ -485,7 +485,7 @@ void Map::setSize(int wDec, int hDec, Game *game)
 	sizeOfFogOfWar=size;
 
 	undermap=new Uint8[size];
-	memset(undermap, WATER, size);
+	memset(undermap, terrainType, size);
 
 	cases=new Case[size];
 	Case initCase;

@@ -1070,9 +1070,9 @@ int MapEdit::processEvent(const SDL_Event *event)
    	return returnCode; 		
 }
 
-int MapEdit::run(void)
+int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 {
-	game.map.setSize(7,7, &game);
+	game.map.setSize(sizeX, sizeY, &game, terrainType);
 	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();

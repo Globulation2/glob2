@@ -29,7 +29,7 @@ class MapEdit
 public:
 	MapEdit();
 	~MapEdit();
-	int run(void);
+	int run(int sizeX=7, int sizeY=7, Map::TerrainType terrainType=Map::WATER);
 
 private:
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate=true);

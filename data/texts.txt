@@ -239,3 +239,24 @@ Level
 [building site]
 Chantier
 Building site
+[create map]
+Creer carte
+Create map
+[map size x]
+Taille de la carte sur x
+Map size on x
+[map size y]
+Taille de la carte sur y
+Map size on y
+[default terrain]
+Terrain par defaut
+Default terrain
+[water]
+Eau
+Water
+[sand]
+Sable
+Sand
+[grass]
+Herbe
+Grass
