@@ -106,20 +106,19 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
 					mapSize->setText(textTemp);
 					
-					int i;
 					int nbTeam=sessionInfo.numberOfTeam;
 					// set the correct number of colors
-					for (i=0; i<8; i++)
+					for (int i=0; i<8; i++)
 					{
 						color[i]->clearColors();
 						for (int j=0; j<nbTeam; j++)
 						{
 							color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
 						}
-					color[i]->setSelectedColor();
+						color[i]->setSelectedColor();
 					}
 					// find team for human player
-					for (i=0; i<nbTeam; i++)
+					for (int i=0; i<nbTeam; i++)
 					{
 						if (sessionInfo.team[i].type==BaseTeam::T_HUMAN)
 						{
@@ -129,6 +128,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					}
 					// Fill the others
 					int c=color[0]->getSelectedColor();
+					int i;
 					for (i=1; i<nbTeam; i++)
 					{
 						c=(c+1)%nbTeam;

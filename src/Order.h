@@ -242,17 +242,18 @@ class OrderMoveFlags:public OrderModify
 {
 public:
 	OrderMoveFlags(const Uint8 *data, int dataLength);
-	OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, int length);
+	OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, bool *drop, int length);
 	virtual ~OrderMoveFlags(void);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*12; }
+	int getDataLength(void) { return length*11; }
 	int getNumberOfBuilding(void) { return length; }
 
 	Uint16 *gid;
 	Sint32 *x;
 	Sint32 *y;
+	bool *drop;
 
 	Uint8 getOrderType(void) { return ORDER_MOVE_FLAG; }
 	Sint32 checkSum() { return ORDER_MOVE_FLAG; }

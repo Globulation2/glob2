@@ -58,8 +58,7 @@ int Engine::initCampain(void)
 	int playerNumber=0;
 	bool wasHuman=false;
 	char name[BasePlayer::MAX_NAME_LENGTH];
-	int i;
-	for (i=0; i<gui.game.session.numberOfTeam; i++)
+	for (int i=0; i<gui.game.session.numberOfTeam; i++)
 	{
 		if (gui.game.teams[i]->type==BaseTeam::T_AI)
 		{

@@ -96,17 +96,16 @@ void Game::setBase(const SessionInfo *initial)
 	// the GUI asserts that we have not more team that planed on the map
 
 	// set the base team, for now the number is corect but we should check that further
-	int i;
-	for (i=0; i<session.numberOfTeam; ++i)
+	for (int i=0; i<session.numberOfTeam; i++)
 		teams[i]->setBaseTeam(&(initial->team[i]), session.fileIsAMap);
 
 	// set the base players
-	for (i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<session.numberOfPlayer; i++)
 		delete players[i];
 
 	session.numberOfPlayer=initial->numberOfPlayer;
 
-	for (i=0; i<initial->numberOfPlayer; ++i)
+	for (int i=0; i<initial->numberOfPlayer; i++)
 	{
 		players[i]=new Player();
 		players[i]->setBasePlayer(&(initial->players[i]), teams);
@@ -225,11 +224,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 				Uint16 gid=((OrderMoveFlags *)order)->gid[i];
 				int team=Building::GIDtoTeam(gid);
 				int id=Building::GIDtoID(gid);
+				bool drop=((OrderMoveFlags *)order)->drop[i];
 				Building *b=teams[team]->myBuildings[id];
 				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 				{
-					if (b->type->zonableForbidden)
+					if (drop && b->type->zonableForbidden)
 					{
 						int range=b->unitStayRange;
 						map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
@@ -238,7 +238,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					b->posX=((OrderMoveFlags *)order)->x[i];
 					b->posY=((OrderMoveFlags *)order)->y[i];
 					
-					if (b->type->zonableForbidden)
+					if (drop && b->type->zonableForbidden)
 					{
 						teams[team]->computeForbiddenArea();
 						teams[team]->dirtyGlobalGradient();
@@ -365,10 +365,9 @@ void Game::executeOrder(Order *order, int localPlayer)
 bool Game::isHumanAllAllied(void)
 {
 	Uint32 nonAIMask=0;
-	int i;
 	
 	// AIMask now have the mask of everything which isn't AI
-	for (i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<session.numberOfTeam; i++)
 	{
 		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
 		//printf("team %d is AI is %d\n", i, teams[i]->type == BaseTeam::T_AI);
@@ -376,22 +375,18 @@ bool Game::isHumanAllAllied(void)
 	
 	// if there is any non-AI player with which we aren't allied, return false
 	// or if there is any player allied to AI
-	for (i=0; i<session.numberOfTeam; i++)
-	{
+	for (int i=0; i<session.numberOfTeam; i++)
 		if (teams[i]->type != BaseTeam::T_AI)
 		{
 			if (teams[i]->allies != nonAIMask)
 				return false;
 		}
-	}
 	
 	return true;
 }
 
 void Game::setAIAlliance(void)
 {
-	int i;
-	
 	if (isHumanAllAllied())
 	{
 		printf("Game : AIs are now allied vs human\n");
@@ -400,14 +395,14 @@ void Game::setAIAlliance(void)
 		Uint32 aiMask = 0;
 		
 		// find all AI
-		for (i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<session.numberOfTeam; i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 				aiMask |= (1<<i);
 		
 		printf("AI mask : %x\n", aiMask);
 				
 		// ally them together
-		for (i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<session.numberOfTeam; i++)
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
 				teams[i]->allies = aiMask;
@@ -419,7 +414,7 @@ void Game::setAIAlliance(void)
 		printf("Game : AIs are now in ffa mode\n");
 		
 		// free for all on AI side
-		for (i=0; i<session.numberOfTeam; i++)
+		for (int i=0; i<session.numberOfTeam; i++)
 		{
 			if (teams[i]->type == BaseTeam::T_AI)
 			{
@@ -1013,7 +1008,6 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
-	int i;
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
 		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
@@ -1025,6 +1019,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 		if (orientation==LEFT_TO_RIGHT)
 		{
+			int i;
 			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
 			for (; i<maxLength; i++)
@@ -1032,6 +1027,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		}
 		else
 		{
+			int i;
 			for (i=0; i<maxLength-actLength; i++)
 				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
 			for (; i<maxLength; i++)
@@ -1049,6 +1045,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 		if (orientation==TOP_TO_BOTTOM)
 		{
+			int i;
 			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
 			for (; i<maxLength; i++)
@@ -1056,6 +1053,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		}
 		else
 		{
+			int i;
 			for (i=0; i<maxLength-actLength; i++)
 				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
 			for (; i<maxLength; i++)
@@ -1233,7 +1231,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 
 	// We draw debug area:
-	if (false)
+	//if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				if (map.getForbidden(x+viewportX, y+viewportY))
@@ -1860,11 +1858,10 @@ Sint32 Game::checkSum()
 
 Team *Game::getTeamWithMostPrestige(void)
 {
-	int i=0;
 	int maxPrestige=0;
 	Team *maxPrestigeTeam=NULL;
 	
-	for (i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<session.numberOfTeam; i++)
 	{
 		Team *t=teams[i];
 		if (t->prestige > maxPrestige)

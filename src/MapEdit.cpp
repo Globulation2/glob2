@@ -32,8 +32,7 @@ MapEdit::MapEdit()
 	// default value;
 	viewportX=0;
 	viewportY=0;
-	int i;
-	for (i=0; i<9; i++)
+	for (int i=0; i<9; i++)
 	{
 		viewportSpeedX[i]=0;
 		viewportSpeedY[i]=0;

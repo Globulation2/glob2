@@ -115,7 +115,7 @@ private:
 	void drawInGameMenu(void);
 	//! Draw the message input field
 	void drawInGameTextInput(void);
-	void moveFlag(int mx, int my);
+	void moveFlag(int mx, int my, bool drop);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
 	//! on each step, check if we have won or lost
