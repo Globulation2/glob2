@@ -43,7 +43,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	initHostGlobalState();
 
 	socket=NULL;
-	socket=SDLNet_UDP_Open(SERVER_PORT);
+	socket=SDLNet_UDP_Open(GAME_SERVER_PORT);
 
 	serverIP.host=0;
 	serverIP.port=0;
@@ -51,7 +51,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	fprintf(logFile, "Openning a socket...\n");
 	if (socket)
 	{
-		fprintf(logFile, "Socket opened at port %d.\n", SERVER_PORT);
+		fprintf(logFile, "Socket opened at port %d.\n", GAME_SERVER_PORT);
 	}
 	else
 	{
@@ -1470,7 +1470,8 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
 
 				BasePlayer *backupPlayer[32];
-				if (shareOnYOG) // Other players don't want to have LAN(NAT) IPs, but global IPs.
+				bool showsExternalIP=(shareOnYOG && !sessionInfo.players[i].ipFromNAT); // Other players don't want to have LAN(NAT) IPs, but global IPs.
+				if (showsExternalIP)
 					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 					{
 						backupPlayer[i]=(BasePlayer *)malloc(sizeof(BasePlayer));
@@ -1507,7 +1508,7 @@ void MultiplayersHost::sendingTime()
 
 				free(data);
 				
-				if (shareOnYOG)
+				if (showsExternalIP)
 					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 					{
 						sessionInfo.players[i]=*backupPlayer[i];
