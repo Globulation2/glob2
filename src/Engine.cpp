@@ -439,7 +439,7 @@ int Engine::run(void)
 			Sint32 ticksToWait=computationAviableTicks+ticksToDelay-ticksDelayedInside;
 			if (ticksToWait>0)
 				SDL_Delay(ticksToWait);
-			gui.lastStepTimeToWait = computationAviableTicks;
+			gui.setLastStepTimeToWait(computationAviableTicks);
 		}
 
 		delete net;
