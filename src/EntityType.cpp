@@ -50,7 +50,6 @@ void EntityType::load(SDL_RWops *stream)
 bool EntityType::loadText(SDL_RWops *stream)
 {
 	char temp[256];
-	int i;
 	char *token;
 	char *varname;
 	int val;
@@ -75,16 +74,13 @@ bool EntityType::loadText(SDL_RWops *stream)
 			val=atoi(token);
 		else
 			val=0;
-		{
-			for (i=0;i<varSize;i++)
+		
+		for (int i=0; i<varSize; i++)
+			if (strcmp(tab[i],varname)==0)
 			{
-				if (strcmp(tab[i],varname)==0)
-				{
-					*(startData+i)=val;
-					break;
-				}
+				*(startData+i)=val;
+				break;
 			}
-		}
 	}
 }
 

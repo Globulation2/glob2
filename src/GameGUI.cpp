@@ -57,7 +57,6 @@ GameGUI::~GameGUI()
 
 void GameGUI::init()
 {
-	int i;
 	paused=false;
 	isRunning=true;
 	exitGlobCompletely=false;
@@ -80,7 +79,7 @@ void GameGUI::init()
 	chatMask=0xFFFFFFFF;
 	statMode=STAT_TEXT;
 
-	for (i=0; i<9; i++)
+	for (int i=0; i<9; i++)
 	{
 		viewportSpeedX[i]=0;
 		viewportSpeedY[i]=0;
@@ -118,14 +117,14 @@ void GameGUI::adjustInitialViewport()
 	viewportY=(viewportY+game.map.getH())%game.map.getH();
 }
 
-void GameGUI::moveFlag(int mx, int my)
+void GameGUI::moveFlag(int mx, int my, bool drop)
 {
 	int posX, posY;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY))
+	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY)||drop)
 	{
 		Uint16 gid=selBuild->gid;
-		OrderMoveFlags *oms=new OrderMoveFlags(&gid, &posX, &posY, 1);
+		OrderMoveFlags *oms=new OrderMoveFlags(&gid, &posX, &posY, &drop, 1);
 		// First, we check if anoter move of the same flag is already in the "orderQueue".
 		bool found=false;
 		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
@@ -151,12 +150,8 @@ void GameGUI::flagSelectedStep(void)
 	int mx, my;
 	Uint8 button=SDL_GetMouseState(&mx, &my);
 	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
-	{
 		if (selBuild && selectionPushed && (selBuild->type->isVirtual))
-		{
-			moveFlag(mx, my);
-		}
-	}
+			moveFlag(mx, my, false);
 }
 
 void GameGUI::step(void)
@@ -388,9 +383,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					Uint32 teamAllianceMask=0;
 					Uint32 playerVisionMask=((InGameAlliance8Screen *)gameMenuScreen)->getVisionMask();
 					Uint32 teamVisionMask=0;
-					int i;
 
-					for (i=0; i<game.session.numberOfPlayer; i++)
+					for (int i=0; i<game.session.numberOfPlayer; i++)
 					{
 						int otherTeam=game.players[i]->teamNumber;
 						if (playerAllianceMask&(1<<i))
@@ -624,6 +618,14 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
+			if (selBuild && selectionPushed && selBuild->type->isVirtual)
+			{
+				// update flag
+				int mx, my;
+				SDL_GetMouseState(&mx, &my);
+				if (mx<globalContainer->gfx->getW()-128)
+					moveFlag(mx, my, true);
+			}
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -967,9 +969,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	if (button&SDL_BUTTON(1))
 		if (mx<globalContainer->gfx->getW()-128)
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
-			{
-				moveFlag(mx, my);
-			}
+				moveFlag(mx, my, false);
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)

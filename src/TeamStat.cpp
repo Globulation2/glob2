@@ -219,7 +219,7 @@ void TeamStats::drawStat()
 	int textStartPos=gfx->getW()-124;
 	int startPoxY=128+32;
 	
-	// compute total unites
+	// compute total units
 	/*int maxUnit=0;
 	int i;
 	for (i=0; i<STATS_SIZE; i++)

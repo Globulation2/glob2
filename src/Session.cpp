@@ -437,7 +437,6 @@ SessionInfo::SessionInfo(const SessionGame &sessionGame)
 
 void SessionInfo::save(SDL_RWops *stream)
 {
-	int i;
 	SessionGame::save(stream);
 
 	// update to this version
@@ -446,9 +445,9 @@ void SessionInfo::save(SDL_RWops *stream)
 	SDL_RWwrite(stream, mapName, MAP_NAME_MAX_SIZE, 1);
 
 	SDL_RWwrite(stream, "GLO2", 4, 1);
-	for (i=0; i<numberOfPlayer; i++)
+	for (int i=0; i<numberOfPlayer; i++)
 		players[i].save(stream);
-	for (i=0; i<numberOfTeam; i++)
+	for (int i=0; i<numberOfTeam; i++)
 		team[i].save(stream);
 
 	SDL_RWwrite(stream, "GLO2", 4, 1);

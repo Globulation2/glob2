@@ -583,24 +583,26 @@ bool OrderModifyFlags::setData(const Uint8 *data, int dataLength)
 OrderMoveFlags::OrderMoveFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert((dataLength%10)==0);
+	assert((dataLength%11)==0);
 	bool good=setData(data, dataLength);
 	assert(good);
 }
 
-OrderMoveFlags::OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, int length)
+OrderMoveFlags::OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, bool *drop, int length)
 {
 	this->length=length;
-
+	
 	this->gid=(Uint16 *)malloc(length*2);
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
+	this->drop=(bool *)malloc(length*sizeof(bool));
 
-	this->data=(Uint8 *)malloc(10*length);
+	this->data=(Uint8 *)malloc(11*length);
 
-	memcpy(this->gid,gid,length*2);
-	memcpy(this->x,x,length*4);
-	memcpy(this->y,y,length*4);
+	memcpy(this->gid, gid, length*2);
+	memcpy(this->x, x, length*4);
+	memcpy(this->y, y, length*4);
+	memcpy(this->drop, drop, length*sizeof(bool));
 }
 
 OrderMoveFlags::~OrderMoveFlags()
@@ -608,42 +610,45 @@ OrderMoveFlags::~OrderMoveFlags()
 	free(gid);
 	free(x);
 	free(y);
+	free(drop);
 	free(data);
 }
 
 Uint8 *OrderMoveFlags::getData(void)
 {
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		addUint16(data, (this->gid)[i], 10*i+0);
-		addSint32(data, (this->x )[i], 10*i+2);
-		addSint32(data, (this->y )[i], 10*i+6);
+		addUint16(data, (this->gid)[i], 11*i+0);
+		addSint32(data, (this->x)[i], 11*i+2);
+		addSint32(data, (this->y)[i], 11*i+6);
+		addUint8(data, (Uint8)((this->drop)[i]), 11*i+10);
 	}
 	return data;
 }
 
 bool OrderMoveFlags::setData(const Uint8 *data, int dataLength)
 {
-	if((dataLength%10)!=0)
+	if((dataLength%11)!=0)
 		return false;
 	
-	this->length=dataLength/10;
+	this->length=dataLength/11;
 
 	this->gid=(Uint16 *)malloc(length*2);
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
+	this->drop=(bool *)malloc(length*sizeof(bool));
 
-	this->data=(Uint8 *)malloc(10*length);
+	this->data=(Uint8 *)malloc(11*length);
 
 	for (int i=0; i<length; i++)
 	{
-		(this->gid )[i]=getUint16(data, 10*i+0);
-		(this->x )[i]=getSint32(data, 12*i+2);
-		(this->y )[i]=getSint32(data, 12*i+6);
-   	}
+		(this->gid)[i]=getUint16(data, 11*i+0);
+		(this->x)[i]=getSint32(data, 11*i+2);
+		(this->y)[i]=getSint32(data, 11*i+6);
+		(this->drop)[i]=getUint8(data, 11*i+10);
+	}
 
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
