@@ -65,8 +65,8 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 }
 
 //! Alliance screen
-InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 300, 295)
+InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 250 : 500, 295)
 {
 	// fill the slots
 	int i;
@@ -86,12 +86,15 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 			defaultAlliance=3; // we are enemy
 		else
 			assert(false);
+			
+		int xBase = (i>>3)*250;
+		int yBase = (i&0x7)*25;
 
-		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
+		alliance[i]=new Selector(150+xBase, 40+yBase, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
 		addWidget(alliance[i]);
 
 		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
-		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
+		chat[i]=new OnOffButton(218+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
 
 		std::string pname;
@@ -106,28 +109,40 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 			pname += ")";
 		}
 
-		Text *text=new Text(10, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
+		Text *text = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
 		Team *team = gameGUI->game.players[i]->team;
 		text->setColor(team->colorR, team->colorG, team->colorB);
 		addWidget(text);
 	}
-	for (;i<8;i++)
+	for (;i<16;i++)
 	{
 		alliance[i]=NULL;
 		chat[i]=NULL;
 	}
 
 	// add static text and images
-	addWidget(new Animation(200, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
-	addWidget(new Animation(233, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
-	addWidget(new Animation(271, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
-
-	// add ok button
-	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new Animation(149, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
+	addWidget(new Animation(182, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
+	addWidget(new Animation(220, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
+	
+	if (gameGUI->game.session.numberOfPlayer<8)
+	{
+		// add ok button
+		addWidget(new TextButton(10, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	}
+	else
+	{
+		addWidget(new Animation(250+149, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
+		addWidget(new Animation(250+182, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
+		addWidget(new Animation(250+220, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
+	
+		// add ok button
+		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	}
 	this->gameGUI=gameGUI;
 }
 
-void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, int par2)
+void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
@@ -143,7 +158,7 @@ void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, in
 	}
 }
 
-void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
+void InGameAllianceScreen::setCorrectValueForPlayer(int i)
 {
 	Game *game=&(gameGUI->game);
 	assert(i<game->session.numberOfPlayer);
@@ -160,7 +175,7 @@ void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
 	}
 }
 
-Uint32 InGameAlliance8Screen::getAlliedMask(void)
+Uint32 InGameAllianceScreen::getAlliedMask(void)
 {
 	// allied is 0
 	Uint32 mask=0;
@@ -172,7 +187,7 @@ Uint32 InGameAlliance8Screen::getAlliedMask(void)
 	return mask;
 }
 
-Uint32 InGameAlliance8Screen::getEnemyMask(void)
+Uint32 InGameAllianceScreen::getEnemyMask(void)
 {
 	// enemy is 3
 	Uint32 mask=0;
@@ -184,7 +199,7 @@ Uint32 InGameAlliance8Screen::getEnemyMask(void)
 	return mask;
 }
 
-Uint32 InGameAlliance8Screen::getExchangeVisionMask(void)
+Uint32 InGameAllianceScreen::getExchangeVisionMask(void)
 {
 	// we have exchange vision in 2 and down
 	Uint32 mask=0;
@@ -196,7 +211,7 @@ Uint32 InGameAlliance8Screen::getExchangeVisionMask(void)
 	return mask;
 }
 
-Uint32 InGameAlliance8Screen::getFoodVisionMask(void)
+Uint32 InGameAllianceScreen::getFoodVisionMask(void)
 {
 	// we have food vision in 1 and down
 	Uint32 mask=0;
@@ -208,7 +223,7 @@ Uint32 InGameAlliance8Screen::getFoodVisionMask(void)
 	return mask;
 }
 
-Uint32 InGameAlliance8Screen::getOtherVisionMask(void)
+Uint32 InGameAllianceScreen::getOtherVisionMask(void)
 {
 	// we have exchange vision in 0
 	Uint32 mask=0;
@@ -221,7 +236,7 @@ Uint32 InGameAlliance8Screen::getOtherVisionMask(void)
 }
 
 
-Uint32 InGameAlliance8Screen::getChatMask(void)
+Uint32 InGameAllianceScreen::getChatMask(void)
 {
 	Uint32 mask=0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)

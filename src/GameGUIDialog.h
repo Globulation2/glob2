@@ -60,7 +60,7 @@ public:
 
 class GameGUI;
 
-class InGameAlliance8Screen:public OverlayScreen
+class InGameAllianceScreen:public OverlayScreen
 {
 public:
 	enum
@@ -72,13 +72,13 @@ public:
 	};
 
 public:
-	Selector *alliance[8];
-	OnOffButton *chat[8];
+	Selector *alliance[16];
+	OnOffButton *chat[16];
 	GameGUI *gameGUI;
 
 public:
-	InGameAlliance8Screen(GameGUI *gameGUI);
-	virtual ~InGameAlliance8Screen() { }
+	InGameAllianceScreen(GameGUI *gameGUI);
+	virtual ~InGameAllianceScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	Uint32 getAlliedMask(void);
 	Uint32 getEnemyMask(void);

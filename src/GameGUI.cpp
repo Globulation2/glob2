@@ -416,16 +416,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					gameMenuScreen=NULL;
-					if (game.session.numberOfPlayer<=8)
-					{
-						inGameMenu=IGM_ALLIANCE8;
-						gameMenuScreen=new InGameAlliance8Screen(this);
-						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-					}
-					else
-					{
-						inGameMenu=IGM_NONE;
-					}
+					inGameMenu=IGM_ALLIANCE;
+					gameMenuScreen=new InGameAllianceScreen(this);
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
 				break;
@@ -460,19 +453,19 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			}
 		}
 
-		case IGM_ALLIANCE8:
+		case IGM_ALLIANCE:
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case InGameAlliance8Screen::OK :
+				case InGameAllianceScreen::OK :
 				{
 					Uint32 playerMask[5];
 					Uint32 teamMask[5];
-					playerMask[0]=((InGameAlliance8Screen *)gameMenuScreen)->getAlliedMask();
-					playerMask[1]=((InGameAlliance8Screen *)gameMenuScreen)->getEnemyMask();
-					playerMask[2]=((InGameAlliance8Screen *)gameMenuScreen)->getExchangeVisionMask();
-					playerMask[3]=((InGameAlliance8Screen *)gameMenuScreen)->getFoodVisionMask();
-					playerMask[4]=((InGameAlliance8Screen *)gameMenuScreen)->getOtherVisionMask();
+					playerMask[0]=((InGameAllianceScreen *)gameMenuScreen)->getAlliedMask();
+					playerMask[1]=((InGameAllianceScreen *)gameMenuScreen)->getEnemyMask();
+					playerMask[2]=((InGameAllianceScreen *)gameMenuScreen)->getExchangeVisionMask();
+					playerMask[3]=((InGameAllianceScreen *)gameMenuScreen)->getFoodVisionMask();
+					playerMask[4]=((InGameAllianceScreen *)gameMenuScreen)->getOtherVisionMask();
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
@@ -497,7 +490,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					
 					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
 						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
-					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
+					chatMask=((InGameAllianceScreen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
 					gameMenuScreen=NULL;
