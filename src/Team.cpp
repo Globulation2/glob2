@@ -183,8 +183,11 @@ void Team::init(void)
 	subscribeForInsideStep.clear();
 	subscribeForWorkingStep.clear();
 
-	isUnderAttack=false;
-	isUnderAttackDisplayCooldown=0;
+	isEvent=false;
+	lastEvent=NO_EVENT;
+	eventCooldown=0;
+	eventPosX=startPosX;
+	eventPosY=startPosY;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial)
@@ -511,8 +514,11 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
 
-	isUnderAttack=false;
-	isUnderAttackDisplayCooldown=0;
+	isEvent=false;
+	lastEvent=NO_EVENT;
+	eventCooldown=0;
+	eventPosX=startPosX;
+	eventPosY=startPosY;
 }
 
 void Team::save(SDL_RWops *stream)
@@ -699,9 +705,9 @@ void Team::step(void)
 	}
 
 	isAlive=isEnoughFoodInSwarm || (nbUnits!=0);
-	// decount under attack counter
-	if (isUnderAttackDisplayCooldown>0)
-		isUnderAttackDisplayCooldown--;
+	// decount event cooldown counter
+	if (eventCooldown>0)
+		eventCooldown--;
 }
 
 Sint32 Team::checkSum()

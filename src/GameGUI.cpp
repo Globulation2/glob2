@@ -127,8 +127,14 @@ void GameGUI::step(void)
 
 	statStep();
 
-	if (game.teams[localTeam]->showIsUnderAttack())
-		addMessage(globalContainer->texts.getString("[you are under attack]"));
+	if (game.teams[localTeam]->wasEvent())
+	{
+		Team::EventType teamEvent=game.teams[localTeam]->getEvent();
+		if (teamEvent==Team::IS_UNDER_ATTACK_EVENT)
+			addMessage(globalContainer->texts.getString("[you are under attack]"));
+		else if (teamEvent==Team::BUILDING_FINISHED_EVENT)
+			addMessage(globalContainer->texts.getString("[building has been finished]"));
+	}
 }
 
 void GameGUI::statStep(void)
@@ -583,9 +589,21 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					typingInputScreenPos=0;
 				}
 				break;
-			case SDLK_SPACE:
+			case SDLK_TAB:
 				if (pressed)
 					iterateSelection();
+				break;
+			case SDLK_SPACE:
+				if (pressed)
+				{
+				    int evX, evY; 
+				    int sw, sh;
+					game.teams[localTeam]->getEventPos(&evX, &evY);
+					sw=globalContainer->gfx->getW();
+					sh=globalContainer->gfx->getH();
+					viewportX=evX-((sw-128)>>6);
+					viewportY=evY-(sh>>6);
+				}
 				break;
 			default:
 

@@ -82,6 +82,13 @@ struct TeamStat
 class Team:public BaseTeam
 {
 public:
+	enum EventType
+	{
+		NO_EVENT=0,
+		IS_UNDER_ATTACK_EVENT=1,
+		BUILDING_FINISHED_EVENT=2
+	};
+public:
 	Team(Game *game);
 	Team(SDL_RWops *stream, Game *game);
 
@@ -93,10 +100,14 @@ public:
 
 	void step(void);
 
-	//! The team is now under attack
-	void setUnderAttack(void) { if (isUnderAttackDisplayCooldown==0) isUnderAttack=true; isUnderAttackDisplayCooldown=40; }
+	//! The team is now under attack or a building is finished, push event
+	void setEvent(int posX, int posY, EventType newEvent) { if ((eventCooldown==0) || (newEvent!=lastEvent)) { isEvent=true; lastEvent=newEvent; eventPosX=posX; eventPosY=posY; } eventCooldown=40; }
+	//! was an event last tick
+	bool wasEvent(void) { bool isEv=isEvent; isEvent=false; return isEv; }
 	//! we have to show "You are under attack message"
-	bool showIsUnderAttack(void) { bool isUA=isUnderAttack; isUnderAttack=false; return isUA; }
+	EventType getEvent(void) { return lastEvent; }
+	//! return event position
+	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }	
 
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
@@ -151,10 +162,14 @@ public:
 	//Sint32 newUnitUID zzz
 
 private:
-	//! team has been attacked last step
-	bool isUnderAttack;
-	//! display "You are under attack" message only when this is zero
-	int isUnderAttackDisplayCooldown;
+	//! was an event last tick
+	bool isEvent;
+	//! team got an event last step
+	EventType lastEvent;
+	//! prevent event overflow
+	int eventCooldown;
+	//! event (now only isUnderAttack) position
+	int eventPosX, eventPosY;
 
 public:
 	int freeUnits;
