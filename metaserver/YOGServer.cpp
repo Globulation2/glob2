@@ -405,6 +405,17 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			}
 			connectedClients.push_back(client);
 		}
+		// After an authentication failure, a client will stay in connectedClients[] list.
+		// Let's move obsolete connectedClients from this ip, to unconnectedClients[] list.
+		for (std::list<YOGClient *>::iterator cci=connectedClients.begin(); cci!=connectedClients.end(); ++cci)
+			if (*cci!=client && (*cci)->hasip(ip))
+			{
+				lprintf(" unconnecting client (%s) with same ip!\n", (*cci)->userName);
+				unconnectedClients.push_back(*cci);
+				std::list<YOGClient *>::iterator cciTemp=cci;
+				cci=connectedClients.erase(cciTemp);
+			}
+		
 		client->reconnected(ip);
 		if ((data[1]&1)==1 && (strncmp(userName, "admin", 32)==0))
 			lprintf("admin (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
@@ -418,6 +429,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		client->newRandomXorPassw();
 		memcpy(data+4, client->xorpassw, 32);
 		send(ip, data, 36);
+		//lprintf("sent to client (%s)\n", client->userName);
+		//lprintf( " xorpassw=[%2x %2x %2x %2x]\n",client-> xorpassw[0], client->xorpassw[1], client->xorpassw[2], client->xorpassw[3]);
 	}
 	break;
 	case YMT_AUTHENTICATING:
@@ -470,6 +483,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		YOGClient *client=connectedClient;
 		
+		lprintf("authenticating client (%s)\n", client->userName);
 		if ((data[1]&2)==0 && size==36)
 		{
 			// newYogPassword
@@ -480,6 +494,9 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Uint8 passWord[32];
 			for (int i=0; i<32; i++)
 				passWord[i]=xored[i]^client->xorpassw[i];
+			//lprintf(" passWord=[%2x %2x %2x %2x]\n", passWord[0], passWord[1], passWord[2], passWord[3]);
+			//lprintf(" xorpassw=[%2x %2x %2x %2x]\n",client-> xorpassw[0], client->xorpassw[1], client->xorpassw[2], client->xorpassw[3]);
+			//lprintf(" xored a =[%2x %2x %2x %2x]\n", xored[0], xored[1], xored[2], xored[3]);
 			//printf("newYogPassword (%s) for client (%s) \n", passWord, client->userName);
 			if (client->passWord[0]==0)
 				memcpy(client->passWord, passWord, 32);
@@ -509,6 +526,9 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Uint8 xored[32];
 			for (int i=0; i<32; i++)
 				xored[i]=client->passWord[i]^client->xorpassw[i];
+			//lprintf(" passWord=[%2x %2x %2x %2x]\n", client-> passWord[0], client-> passWord[1], client-> passWord[2], client-> passWord[3]);
+			//lprintf(" xorpassw=[%2x %2x %2x %2x]\n", client-> xorpassw[0], client->xorpassw[1], client->xorpassw[2], client->xorpassw[3]);
+			//lprintf(" xored b =[%2x %2x %2x %2x]\n", xored[0], xored[1], xored[2], xored[3]);
 			
 			unsigned char computedDigest[20];
 			SHA1_CTX context;
