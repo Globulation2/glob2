@@ -23,6 +23,7 @@
 #include "GUIBase.h"
 #include <vector>
 #include <string>
+#include <map>
 
 namespace GAGCore
 {
@@ -53,6 +54,8 @@ namespace GAGGUI
 		virtual void setCursorPos(unsigned pos);
 	
 	protected:
+		//! Lookup a string in cache for its size
+		int getStringWidth(const std::string &s);
 		//! Create the strings index table from text
 		virtual void layout(void);
 		//! we make sure the repaint will show something correct
@@ -66,6 +69,7 @@ namespace GAGGUI
 		unsigned int charHeight;
 		std::vector <size_t> lines;
 		std::string text;
+		std::map<std::string, int> stringWidthCache;
 		
 		// edit mod variables
 		// this one is the only one always valid, other are recomputed from it
