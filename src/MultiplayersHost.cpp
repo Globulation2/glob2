@@ -311,7 +311,7 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 	Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));
 	Uint32 rawPort=getUint32(data, 24);
 	Uint32 newPort=SDL_SwapBE32(getUint32(data, 24));
-	printf("Data=%x, swapedData=%x, castedData=%x, allData=%x.\n", rawPort, SDL_SwapBE32(rawPort), (Uint16)rawPort, (Uint16)SDL_SwapBE32(rawPort));
+	printf("Data=%x(%d), swapedData=%x, castedData=%x, allData=%x.\n", rawPort, rawPort, SDL_SwapBE32(rawPort), (Uint16)rawPort, (Uint16)SDL_SwapBE32(rawPort));
 	if (serverIP.host)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));	
