@@ -2713,17 +2713,20 @@ void GameGUI::drawInGameTextInput(void)
 void GameGUI::drawAll(int team)
 {
 	// draw the map
-	static const bool useMapDiscovered=false;
-	bool drawBuildingRects=(selectionMode==TOOL_SELECTION);
+	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
+								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
+								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
+								Game::DRAW_FORBIDDEN_AREA;
+	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, useMapDiscovered);
+		game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions);
 	}
 	else
 	{
 		globalContainer->gfx->setClipRect();
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, useMapDiscovered);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions);
 	}
 
 	// if paused, tint the game area

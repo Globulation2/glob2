@@ -81,7 +81,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
-	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, false, false, true, true);
+	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT);
 	if (doPaintEditMode)
 		paintEditMode(false, false);
 

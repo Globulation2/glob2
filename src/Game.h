@@ -39,6 +39,15 @@ public:
 		DEL_UNIT=0x6,
 		DEL_FLAG=0x8
 	};
+	
+	enum DrawOption
+	{
+		DRAW_HEALTH_FOOD_BAR = 0x1,
+		DRAW_PATH_LINE = 0x2,
+		DRAW_BUILDING_RECT = 0x4,
+		DRAW_FORBIDDEN_AREA = 0x8,
+		DRAW_WHOLE_MAP = 0x10
+	};
 
 public:
 	Game(GameGUI *gui);
@@ -100,8 +109,8 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, int typeNum);
 
-	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, const bool useMapDiscovered);
-	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false);
+	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam);
 	void renderMiniMap(int teamSelected, const bool useMapDiscovered=false, int step=0, int stepCount=1);
 	Uint32 checkSum(std::list<Uint32> *checkSumsList=NULL, std::list<Uint32> *checkSumsListForBuildings=NULL, std::list<Uint32> *checkSumsListForUnits=NULL);
