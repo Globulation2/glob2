@@ -1050,7 +1050,7 @@ armor = 18
 level = 2
 type = 7
 
-viewingRange = 6
+viewingRange = 8
 
 *
 
