@@ -48,9 +48,9 @@ for the parser:
 story: starts another parallel storyline, so multiple endings for a map are possible
 */
 
-#include <iostream>
-#include <string>
-#include <deque>
+#include <iostream.h>
+#include <string.h>
+#include <deque.h>
 #include "SGSL.h"
 #include "Game.h"
 
