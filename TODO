@@ -12,6 +12,8 @@ To First release :
 - AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
+- Stat screen must be internationalized and don't display NaN. (nct)
+- Have clean text in stat button (no more overdraw). (nct)
 
 To Next version :
 
@@ -21,3 +23,6 @@ To Next version :
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - units have experience. (nct)
 - destruction must be cancelable. (nct)
+- building finished message must contain building type. Select building when doing this. (nct)
+- do icons for buildings. (nct)
+- message when team is defeated. (nct)
