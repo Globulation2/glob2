@@ -1050,6 +1050,13 @@ void GameGUI::draw(void)
 
 			// building text
 			drawTextCenter(globalContainer->gfx->getW()-128, 128+8, "[building name]", selBuild->type->type);
+			if (selBuild->type->isBuildingSite)
+				drawTextCenter(globalContainer->gfx->getW()-128, 128+64+24, "[building site]");
+			// FIXME : find a clean way here
+			char *textT=globalContainer->texts.getString("[level]");
+			int decT=(128-font->getStringWidth(textT)-font->getStringWidth(" : ")-font->getStringWidth(selBuild->type->level+1))>>1;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+96+8, font, "%s : %d", textT, selBuild->type->level+1);
+
 
 			// building Infos
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
@@ -1162,7 +1169,7 @@ void GameGUI::draw(void)
 			{
 				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, font, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
+			//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, font, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
 
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)

@@ -45,6 +45,7 @@ public:
 	virtual ~SDLBitmapFont();
 	bool load(const char *filename);
 	int getStringWidth(const char *string) const;
+	int getStringWidth(int i) const;
 	int getStringHeight(const char *string) const;
 	bool printable(char c);
 

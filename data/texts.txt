@@ -3,7 +3,7 @@
 Francais
 English
 [hp]
-HP
+Pt vie
 HP
 [heal]
 Sante
@@ -90,22 +90,22 @@ Building name
 Ruche
 Swarm
 [food building]
-Batiment de nourriture
+Grenier
 Food building
 [health building]
-Batiment de sante
+Hopital
 Health building
 [walkspeed building]
 Batiment de marche
 Walk building
 [swimspeed building]
-Batiment de nage
+Piscine
 Swim building
 [attack building]
 Batiment de combat
 Fighting building
 [science building]
-Batiment de science
+Ecole
 Research center
 [defense building]
 Tourelle
@@ -120,8 +120,8 @@ War flag
  
  
 [r units free]
- unites libres
- units free
+  unites libres
+  units free
 [one unit free]
 Une unite libre
 One unit free
@@ -233,3 +233,9 @@ Carry :
 [don't carry anything]
 Ne transporte rien
 Don't carry anything
+[level]
+Niveau
+Level
+[building site]
+Chantier
+Building site
