@@ -427,7 +427,7 @@ bool Building::isRessourceFull(void)
 
 int Building::neededRessource(void)
 {
-	float minProportion=1.0;
+	Sint32 minProportion=0x7FFFFFFF;
 	int minType=-1;
 	int deci=syncRand()%MAX_RESSOURCES;
 	for (int ib=0; ib<MAX_RESSOURCES; ib++)
@@ -436,7 +436,7 @@ int Building::neededRessource(void)
 		int maxr=type->maxRessource[i];
 		if (maxr)
 		{
-			float proportion=((float)ressources[i])/((float)maxr);
+			Sint32 proportion=(ressources[i]<<16)/maxr;
 			if (proportion<minProportion)
 			{
 				minProportion=proportion;
@@ -1035,17 +1035,16 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 	int repairLevelTypeNum=type->lastLevelTypeNum;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
-
-	float destructionRatio=(float)hp/(float)type->hpMax;
-	float fTotErr=0;
+	Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		float fVal=destructionRatio*(float)repairBt->maxRessource[i];
-		int iVal=(int)fVal;
-		fTotErr+=fVal-(float)iVal;
-		if (fTotErr>1)
+		int fVal=fDestructionRatio*repairBt->maxRessource[i];
+		int iVal=(fVal>>16);
+		fTotErr+=fVal&65535;
+		if (fTotErr>=65536)
 		{
-			fTotErr-=1;
+			fTotErr-=65536;
 			iVal++;
 		}
 		ressources[i]=repairBt->maxRessource[i]-iVal;
@@ -1078,16 +1077,16 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			float destructionRatio=(float)hp/(float)type->hpMax;
-			float fTotErr=0;
+			Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+			Sint32 fTotErr=0;
 			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
-				float fVal=destructionRatio*(float)targetBt->maxRessource[i];
-				int iVal=(int)fVal;
-				fTotErr+=fVal-(float)iVal;
-				if (fTotErr>1)
+				int fVal=fDestructionRatio*targetBt->maxRessource[i];
+				int iVal=(fVal>>16);
+				fTotErr+=fVal&65535;
+				if (fTotErr>=65536)
 				{
-					fTotErr-=1;
+					fTotErr-=65536;
 					iVal++;
 				}
 				ressources[i]=iVal;
@@ -1632,21 +1631,19 @@ void Building::swarmStep(void)
 	if (productionTimeout<0)
 	{
 		// We find the kind of unit we have to create:
-		float proportion;
-		float minProportion=1.0;
+		Sint32 fProportion;
+		Sint32 fMinProportion=0x7FFFFFFF;
 		int minType=-1;
 		for (int i=0; i<NB_UNIT_TYPE; i++)
-		{
 			if (ratio[i]!=0)
 			{
-				proportion=((float)percentUsed[i])/((float)ratio[i]);
-				if (proportion<=minProportion)
+				fProportion=(percentUsed[i]<<16)/ratio[i];
+				if (fProportion<=fMinProportion)
 				{
-					minProportion=proportion;
+					fMinProportion=fProportion;
 					minType=i;
 				}
 			}
-		}
 
 		if (minType==-1)
 			minType=0;
@@ -1654,12 +1651,6 @@ void Building::swarmStep(void)
 		assert(minType<NB_UNIT_TYPE);
 		if (minType<0 || minType>=NB_UNIT_TYPE)
 			minType=0;
-
-		// help printf
-		/*printf("SWARM : prod ratio %d/%d/%d - pused %d/%d/%d, producing : %d\n",
-			ratio[0], ratio[1], ratio[2],
-			percentUsed[0], percentUsed[1], percentUsed[2],
-			minType);*/
 
 		// We get the unit UnitType:
 		int posX, posY, dx, dy;
