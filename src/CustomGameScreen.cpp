@@ -26,7 +26,8 @@ CustomGameScreen::CustomGameScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
+	fileList=new Glob2FileList(20, 60, 180, 400, globalContainer->standardFont,
+														 "maps", "map", true);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
@@ -53,6 +54,7 @@ CustomGameScreen::CustomGameScreen()
 		addWidget(isAItext[i]);
 	}
 
+	/*
 	if (globalContainer->fileManager->initDirectoryListing("maps", "map"))
 	{
 		const char *fileName;
@@ -66,6 +68,7 @@ CustomGameScreen::CustomGameScreen()
 		}
 		fileList->sort();
 	}
+	*/
 	addWidget(fileList);
 
 	validSessionInfo=false;
@@ -80,70 +83,91 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
-		const char *mapFileName=glob2NameToFilename("maps", mapSelectedName, "map");
+		if (mapSelectedName)
+		{
+			const char *mapFileName=fileList->listToFile(mapSelectedName);
 		
-		mapPreview->setMapThumbnail(mapFileName);
-		printf("CGS : Loading map '%s' ...\n", mapFileName);
-		SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
-		if (stream==NULL)
-			printf("Map '%s' not found!\n", mapFileName);
+			mapPreview->setMapThumbnail(mapFileName);
+			printf("CGS : Loading map '%s' ...\n", mapFileName);
+			SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
+			if (stream==NULL)
+				printf("Map '%s' not found!\n", mapFileName);
+			else
+			{
+				validSessionInfo=sessionInfo.load(stream);
+				SDL_RWclose(stream);
+				if (validSessionInfo)
+				{
+					// update map name & info
+					mapName->setText(sessionInfo.getMapName());
+					char textTemp[256];
+					snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
+					mapInfo->setText(textTemp);
+					snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
+					mapVersion->setText(textTemp);
+					snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
+					mapSize->setText(textTemp);
+					
+					int i;
+					int nbTeam=sessionInfo.numberOfTeam;
+					// set the correct number of colors
+					for (i=0; i<8; i++)
+					{
+						color[i]->clearColors();
+						for (int j=0; j<nbTeam; j++)
+						{
+							color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
+						}
+					color[i]->setSelectedColor();
+					}
+					// find team for human player
+					for (i=0; i<nbTeam; i++)
+					{
+						if (sessionInfo.team[i].type==BaseTeam::T_HUMAN)
+						{
+							color[0]->setSelectedColor(i);
+							break;
+						}
+					}
+					// Fill the others
+					int c=color[0]->getSelectedColor();
+					for (i=1; i<nbTeam; i++)
+					{
+						c=(c+1)%nbTeam;
+						color[i]->setSelectedColor(c);
+						isAI[i]->setState(true);
+						isAItext[i]->setText(globalContainer->texts.getString("[ai]"));
+					}
+					// Close the rest
+					for (;i<8; i++)
+					{
+						isAI[i]->setState(false);
+						isAItext[i]->setText(globalContainer->texts.getString("[closed]"));
+					}
+				}
+				else
+					printf("CGS : Warning, Error during map load\n");
+			}
+			delete[] mapFileName;
+		}
 		else
 		{
-			validSessionInfo=sessionInfo.load(stream);
-			SDL_RWclose(stream);
-			if (validSessionInfo)
+			// Reset
+			mapPreview->setMapThumbnail(NULL);
+			mapName->setText("");
+			mapInfo->setText("");
+			mapVersion->setText("");
+			mapSize->setText("");
+			isAI[0]->setState(true);
+			color[0]->setSelectedColor();
+			isAItext[0]->setText(globalContainer->texts.getString("[player]"));
+			for (int i=1;i<8; i++)
 			{
-				// update map name & info
-				mapName->setText(sessionInfo.getMapName());
-				char textTemp[256];
-				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
-				mapInfo->setText(textTemp);
-				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
-				mapVersion->setText(textTemp);
-				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
-				mapSize->setText(textTemp);
-
-				int i;
-				int nbTeam=sessionInfo.numberOfTeam;
-				// set the correct number of colors
-				for (i=0; i<8; i++)
-				{
-					color[i]->clearColors();
-					for (int j=0; j<nbTeam; j++)
-					{
-						color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
-					}
-					color[i]->setSelectedColor();
-				}
-				// find team for human player
-				for (i=0; i<nbTeam; i++)
-				{
-					if (sessionInfo.team[i].type==BaseTeam::T_HUMAN)
-					{
-						color[0]->setSelectedColor(i);
-						break;
-					}
-				}
-				// Fill the others
-				int c=color[0]->getSelectedColor();
-				for (i=1; i<nbTeam; i++)
-				{
-					c=(c+1)%nbTeam;
-					color[i]->setSelectedColor(c);
-					isAI[i]->setState(true);
-					isAItext[i]->setText(globalContainer->texts.getString("[ai]"));
-				}
-				// Close the rest
-				for (;i<8; i++)
-				{
-					isAI[i]->setState(false);
-					isAItext[i]->setText(globalContainer->texts.getString("[closed]"));
-				}
+				isAI[i]->setState(true);
+				color[i]->setSelectedColor();
+				isAItext[i]->setText(globalContainer->texts.getString("[ai]"));
 			}
-			else
-				printf("CGS : Warning, Error during map load\n");
 		}
-		delete[] mapFileName; 
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{

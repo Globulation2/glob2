@@ -3,6 +3,7 @@ noinst_LIBRARIES = libgag.a
 libgag_a_SOURCES = FileManager.cpp\
 	GUIBase.cpp\
 	GUIList.cpp\
+	GUIFileList.cpp\
 	GUIRatio.cpp\
 	GUITextArea.cpp\
 	GraphicContext.cpp\

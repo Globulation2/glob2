@@ -25,6 +25,9 @@
 #include "Utilities.h"
 #include "LogFileManager.h"
 #include <set>
+#include <string>
+#include <functional>
+#include <algorithm>
 
 Game::Game()
 {
@@ -1834,22 +1837,31 @@ const char *glob2FilenameToName(const char *filename)
 	return NULL;
 }
 
+template<typename It, typename T>
+class contains: std::unary_function<T, bool>
+{
+public:
+	contains(const It from, const It to) : from(from), to(to) {}
+	bool operator()(T d) { return (std::find(from, to, d) != to); }
+private:
+	const It from;
+	const It to;
+};
+
 const char *glob2NameToFilename(const char *dir, const char *name, const char *extension)
 {
-	int dirLen=strlen(dir);
-	int nameLen=strlen(name);
-	int extLen=strlen(extension);
-	
-	int totLen=dirLen+1+nameLen+1+extLen+1;
-	
-	char *filename = new char[totLen];
-	snprintf(filename, totLen, "%s/%s.%s", dir, name, extension);
-	
-	for (int i=dirLen+1; i<dirLen+1+nameLen; i++)
+	const char* pattern = " \t";
+	const char* endPattern = strchr(pattern, '\0');
+	std::string fileName = name;
+	//std::replace(fileName.begin(), fileName.end(), ' ', '_');
+	//std::replace(fileName.begin(), fileName.end(), '\t', '_');
+	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
+	std::string fullFileName = dir;
+	fullFileName += DIR_SEPARATOR + fileName;
+	if (extension && (*extension != '\0'))
 	{
-		if (strchr(" \t", filename[i]))
-			filename[i]='_';
+		fullFileName += '.';
+		fullFileName += extension;
 	}
-	return filename;
+	return Utilities::strdup(fullFileName.c_str());
 }
-

@@ -135,7 +135,7 @@ protected:
 //! extract the user-visible name from a glob2 map filename, return NULL if filename is an invalid glob2 map
 const char *glob2FilenameToName(const char *filename);
 //! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
-const char *glob2NameToFilename(const char *dir, const char *name, const char *extension);
+const char *glob2NameToFilename(const char *dir, const char *name, const char *extension=NULL);
 
 
 #endif 

@@ -27,6 +27,9 @@
 #ifndef DIR_SEPARATOR
 #define DIR_SEPARATOR '/'
 #endif
+#ifndef DIR_SEPARATOR_S
+#define DIR_SEPARATOR_S "/"
+#endif
 
 //! define this to true to have a verbose vPath error by default and to false otherwise
 #ifndef DBG_VPATH_OPEN
@@ -55,7 +58,7 @@ private:
 	//! clear the list of file for directory listing
 	void clearFileList(void);
 	//! internal function that does the real listing job
-	bool addListingForDir(const char *realDir, const char *extension);
+	bool addListingForDir(const char *realDir, const char *extension=NULL, const bool dirs=false);
 	//! open a file, if it is in writing, do a backup
 	SDL_RWops *openWithbackup(const char *filename, const char *mode);
 	//! open a file, if it is in writing, do a backup, fopen version
@@ -74,6 +77,8 @@ public:
 
 	//! Remove a file or a directory in the virtual filesystem
 	void remove(const char *filename);
+	//! Returns true if filename is a directory
+	bool isDir(const char *filename);
 
 	//! Open a file in the SDL_RWops format
 	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
@@ -82,7 +87,7 @@ public:
 
 	// FIXME : the following functions are not thread-safe :
 	//! must be call before directory listening, return true if success
-	bool initDirectoryListing(const char *virtualDir, const char *extension);
+	bool initDirectoryListing(const char *virtualDir, const char *extension=NULL, const bool dirs=false);
 	//! get the next name, return NULL if none
 	const char *getNextDirectoryEntry(void);
 };

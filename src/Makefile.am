@@ -16,6 +16,8 @@ EntityType.cpp\
 EntityType.h\
 Fatal.cpp\
 Fatal.h\
+GUIGlob2FileList.h \
+GUIGlob2FileList.cpp \
 GUIMapPreview.h \
 GUIMapPreview.cpp \
 Game.cpp\

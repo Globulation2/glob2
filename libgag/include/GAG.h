@@ -31,6 +31,7 @@
 #include "GUITextInput.h"
 #include "GUITextArea.h"
 #include "GUIList.h"
+#include "GUIFileList.h"
 #include "GUINumber.h"
 #include "GUIRatio.h"
 #include "GUIMessageBox.h"
