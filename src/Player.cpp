@@ -608,6 +608,8 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 
 	if (type==P_AI)
 		ai=new AI(this);
+	else
+		team->type=BaseTeam::T_HUMAN;
 
 	ip=initial->ip;
 	socket=initial->socket;
