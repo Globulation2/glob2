@@ -52,6 +52,18 @@ public:
 		YSS_HAS_GAME_SOCKET=5
 	};
 	
+	enum ExternalStatusState
+	{
+		YESTS_BAD=0,
+		YESTS_CREATED=2,
+		YESTS_CONNECTING=4,
+		YESTS_YOG_KILLED=6,
+		YESTS_CONNECTION_LOST=8,
+		YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD=10,
+		YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED=12,
+		YESTS_CONNECTION_REFUSED_UNEXPLAINED=14
+	};
+	
 	struct GameInfo
 	{
 		IPaddress hostip;
@@ -206,6 +218,10 @@ private:
 	
 public:
 	FILE *logFile;
+	
+public:
+	ExternalStatusState externalStatusState;
+	char *getStatusString();
 };
 
 #endif

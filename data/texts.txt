@@ -831,3 +831,34 @@ Netzlatenz
 Vitesse du jeu
 Game speed
 Spielgeschwindigkeit
+[YESTS_BAD]
+Erreur interne de connection
+Internal connection error
+
+[YESTS_CREATED]
+Le système de connection prêt à contacter au metaserveur YOG pour se connecter.
+The connection system is ready to contact the YOG metaserver for connection.
+
+[YESTS_CONNECTING]
+Etablissement de la connection au metaserveur YOG...
+Etablishing the connection to the YOG metaserver...
+
+[YESTS_YOG_KILLED]
+Le metaserveur YOG vient de se faire tuer!
+The YOG metaserver has just been killed!
+
+[YESTS_CONNECTION_LOST]
+La connection à YOG à été perdue.
+The connection to YOG has been lost.
+
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
+The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
+
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
+The YOG metaserver has refused the connection because your username is allready used by someone else.
+
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Le metaserveur YOG a refusé la connection pour une raison inconnue!
+The YOG metaserver has refused the connection without explaination!
