@@ -361,7 +361,6 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 		result=addListingForDir(dn, extension) || result;
 		delete[] dn;
 	}
-	// TODO : for Gabriel, sort result
 	if (result)
 		fileListIndex=0;
 	else

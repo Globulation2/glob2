@@ -108,7 +108,11 @@ bool Story::testCondition()
 				}
 				else //Test conditions
 				{
-					line.pop_front();
+					// call testTCondition
+					// if (testCondition)
+					// 		line.pop_front();
+					// else
+					// 		line.push_front(S_WAIT);
 					//Extract the right data
 					if (line.front().type==Token::INT)
 					{

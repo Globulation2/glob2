@@ -500,14 +500,13 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 
 void Game::wonStep(void)
 {
-	// TODO : handle alliance here
 	int i,j;
 	for (i=0; i<session.numberOfTeam; i++)
 	{
 		bool isOtherAlive=false;
 		for (j=0; j<session.numberOfTeam; j++)
 		{
-			if ((j!=i) && (teams[j]->isAlive))
+			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) && ((teams[j]->me) & (teams[i]->allies)) )) && (teams[j]->isAlive))
 				isOtherAlive=true;
 		}
 		teams[i]->hasWon=!isOtherAlive;
