@@ -682,7 +682,7 @@ void Game::removeTeam(void)
 			if (team->myBuildings[i])
 				if (!team->myBuildings[i]->type->isVirtual)
 					map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOGBID);
-		
+
 		for (int i=0; i<256; ++i)
 		{
 			//if (team->myBullets[i])
@@ -1148,22 +1148,42 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					id-=272;
 				}
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
-				
+			}
+	}
+
+	for (y=top; y<=bot; y++)
+	{
+		for (x=left; x<=right; x++)
+			if (
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(useMapDiscovered))
+			{
 				// draw ressource
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
 				if (r.id != NORESID)
 				{
-					sprite=globalContainer->ressources;
+					Sprite *sprite=globalContainer->ressources;
 					int type=r.field.type;
 					int amount=r.field.amount;
 					int variety=r.field.variety;
+					int imgid=(type*10)+(variety*5)+amount;
+					int dx=(sprite->getW(imgid)-32)>>1;
+					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
 					assert(type<5);
 					assert(amount>=0);
 					assert(amount<5);
 					assert(variety>=0);
 					assert(variety<2);
-					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, (type*10)+(variety*5)+amount);
+					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
 				}
 			}
 	}
