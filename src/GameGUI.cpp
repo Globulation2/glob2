@@ -143,14 +143,14 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				case 0:
 				delete gameMenuScreen;
 				inGameMenu=IGM_LOAD;
-				gameMenuScreen=new InGameLoadSaveScreen(".", "map");
+				gameMenuScreen=new InGameLoadSaveScreen(".", "game");
 				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 				return true;
 
 				case 1:
 				delete gameMenuScreen;
 				inGameMenu=IGM_SAVE;
-				gameMenuScreen=new InGameLoadSaveScreen(".", "map", false, "default.map");
+				gameMenuScreen=new InGameLoadSaveScreen(".", "game", false, "default.game");
 				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 				return true;
 
@@ -199,7 +199,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 					}
 
-
 				}
 				else
 				{
@@ -239,12 +238,43 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			}
 		}
 
+
 		case IGM_LOAD:
 		case IGM_SAVE:
 		{
 			switch (gameMenuScreen->endValue)
 			{
 				case 0:
+				{
+					const char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
+					if (inGameMenu==IGM_LOAD)
+					{
+						SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
+						if (stream)
+						{
+							if (game.load(stream)==false)
+								fprintf(stderr, "GGU : Warning, Error during map load\n");
+							else
+								this->load(stream);
+							SDL_RWclose(stream);
+						}
+						else
+							printf("GGU : Can't load map\n");
+					}
+					else
+					{
+						SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
+						if (stream)
+						{
+							game.save(stream);
+							this->save(stream);
+							SDL_RWclose(stream);
+						}
+						else
+							printf("GGU : Can't save map\n");
+					}
+				}
+
 				case 1:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
@@ -264,41 +294,44 @@ void GameGUI::processEvent(SDL_Event *event)
 {
 	// if there is a menu he get events first
 	if (inGameMenu)
-		if (processGameMenu(event))
-			return;
+	{
+		processGameMenu(event);
+	}
+	else
+	{
+		if (event->type==SDL_KEYDOWN)
+		{
+			handleKey(event->key.keysym, true);
+		}
+		else if (event->type==SDL_KEYUP)
+		{
+			handleKey(event->key.keysym, false);
+		}
+		else if (event->type==SDL_MOUSEBUTTONDOWN)
+		{
+			int button=event->button.button;
+			//int state=event->button.state;
 
-	if (event->type==SDL_KEYDOWN)
-	{
-		handleKey(event->key.keysym, true);
+			if (button==SDL_BUTTON_RIGHT)
+			{
+				handleRightClick();
+			}
+			else if (button==SDL_BUTTON_LEFT)
+			{
+				if (event->button.x>globalContainer->gfx->getW()-128)
+					handleMenuClick(event->button.x-globalContainer->gfx->getW()+128, event->button.y, event->button.button);
+				else
+					handleMapClick(event->button.x, event->button.y, event->button.button);
+			}
+		}
 	}
-	else if (event->type==SDL_KEYUP)
-	{
-		handleKey(event->key.keysym, false);
-	}
-	else if (event->type==SDL_MOUSEMOTION)
+	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
 	}
 	else if (event->type==SDL_ACTIVEEVENT)
 	{
 		handleActivation(event->active.state, event->active.gain);
-	}
-	else if (event->type==SDL_MOUSEBUTTONDOWN)
-	{
-		int button=event->button.button;
-		//int state=event->button.state;
-
-		if (button==SDL_BUTTON_RIGHT)
-		{
-			handleRightClick();
-		}
-		else if (button==SDL_BUTTON_LEFT)
-		{
-			if (event->button.x>globalContainer->gfx->getW()-128)
-				handleMenuClick(event->button.x-globalContainer->gfx->getW()+128, event->button.y, event->button.button);
-			else
-				handleMapClick(event->button.x, event->button.y, event->button.button);
-		}
 	}
 	else if (event->type==SDL_QUIT)
 	{
@@ -337,202 +370,204 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 	else
 		modifier=-1;
 
-	if (pressed && typingMessage && (font->printable(keySym.unicode)))
+	if (typingMessage)
 	{
-		if (typedChar<MAX_MESSAGE_SIZE)
-		{
-			typedMessage[typedChar++]=keySym.unicode;
-			typedMessage[typedChar]=0;
-		}
+		if (pressed)
+			if (key==SDLK_RETURN)
+			{
+				orderQueue.push(new MessageOrder(chatMask, typedMessage));
+				typedMessage[0]=0;
+				typedChar=0;
+				typingMessage=false;
+			}
+			else if (font->printable(keySym.unicode))
+			{
+				if (typedChar<MAX_MESSAGE_SIZE)
+				{
+					typedMessage[typedChar++]=keySym.unicode;
+					typedMessage[typedChar]=0;
+				}
+			}
 	}
-
-	switch (key)
+	else
 	{
-		case SDLK_ESCAPE:
-			{
-				if ((inGameMenu==IGM_NONE) && pressed)
+		switch (key)
+		{
+			case SDLK_ESCAPE:
 				{
-					gameMenuScreen=new InGameMainScreen();
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-					inGameMenu=IGM_MAIN;
+					if ((inGameMenu==IGM_NONE) && pressed)
+					{
+						gameMenuScreen=new InGameMainScreen();
+						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+						inGameMenu=IGM_MAIN;
+					}
 				}
-			}
-			break;
-		case SDLK_UP:
-			if (pressed)
-		    	viewportSpeedY[1]=-1;
-		    else
-		    	viewportSpeedY[1]=0;
-			break;
-		case SDLK_KP8:
-			if (pressed)
-		    	viewportSpeedY[2]=-1;
-		    else
-		    	viewportSpeedY[2]=0;
-			break;
-		case SDLK_DOWN:
-			if (pressed)
-		    	viewportSpeedY[3]=1;
-		    else
-		    	viewportSpeedY[3]=0;
-			break;
-		case SDLK_KP2:
-			if (pressed)
-		    	viewportSpeedY[4]=1;
-		    else
-		    	viewportSpeedY[4]=0;
-			break;
-		case SDLK_LEFT:
-			if (pressed)
-		    	viewportSpeedX[1]=-1;
-		    else
-		    	viewportSpeedX[1]=0;
-			break;
-		case SDLK_KP4:
-			if (pressed)
-		    	viewportSpeedX[2]=-1;
-		    else
-		    	viewportSpeedX[2]=0;
-			break;
-		case SDLK_RIGHT:
-			if (pressed)
-		    	viewportSpeedX[3]=1;
-		    else
-		    	viewportSpeedX[3]=0;
-			break;
-		case SDLK_KP6:
-			if (pressed)
-		    	viewportSpeedX[4]=1;
-		    else
-		    	viewportSpeedX[4]=0;
-			break;
-		case SDLK_KP7:
-			if (pressed)
-			{
-		    	viewportSpeedX[5]=-1;
-		    	viewportSpeedY[5]=-1;
-		    }
-		    else
-		    {
-		    	viewportSpeedX[5]=0;
-		    	viewportSpeedY[5]=0;
-		    }
-			break;
-		case SDLK_KP9:
-			if (pressed)
-			{
-		    	viewportSpeedX[6]=1;
-		    	viewportSpeedY[6]=-1;
-		    }
-		    else
-		    {
-		    	viewportSpeedX[6]=0;
-		    	viewportSpeedY[6]=0;
-		    }
-			break;
-		case SDLK_KP1:
-			if (pressed)
-			{
-		    	viewportSpeedX[7]=-1;
-		    	viewportSpeedY[7]=1;
-		    }
-		    else
-		    {
-		    	viewportSpeedX[7]=0;
-		    	viewportSpeedY[7]=0;
-		    }
-			break;
-		case SDLK_KP3:
-			if (pressed)
-			{
-		    	viewportSpeedX[8]=1;
-		    	viewportSpeedY[8]=1;
-		    }
-		    else
-		    {
-		    	viewportSpeedX[8]=0;
-		    	viewportSpeedY[8]=0;
-		    }
-			break;
-		case SDLK_PLUS:
-		case SDLK_KP_PLUS:
-			{
-				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+				break;
+			case SDLK_UP:
+				if (pressed)
+					viewportSpeedY[1]=-1;
+				else
+					viewportSpeedY[1]=0;
+				break;
+			case SDLK_KP8:
+				if (pressed)
+					viewportSpeedY[2]=-1;
+				else
+					viewportSpeedY[2]=0;
+				break;
+			case SDLK_DOWN:
+				if (pressed)
+					viewportSpeedY[3]=1;
+				else
+					viewportSpeedY[3]=0;
+				break;
+			case SDLK_KP2:
+				if (pressed)
+					viewportSpeedY[4]=1;
+				else
+					viewportSpeedY[4]=0;
+				break;
+			case SDLK_LEFT:
+				if (pressed)
+					viewportSpeedX[1]=-1;
+				else
+					viewportSpeedX[1]=0;
+				break;
+			case SDLK_KP4:
+				if (pressed)
+					viewportSpeedX[2]=-1;
+				else
+					viewportSpeedX[2]=0;
+				break;
+			case SDLK_RIGHT:
+				if (pressed)
+					viewportSpeedX[3]=1;
+				else
+					viewportSpeedX[3]=0;
+				break;
+			case SDLK_KP6:
+				if (pressed)
+					viewportSpeedX[4]=1;
+				else
+					viewportSpeedX[4]=0;
+				break;
+			case SDLK_KP7:
+				if (pressed)
 				{
-					int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
-				}
-			}
-			break;
-		case SDLK_MINUS:
-		case SDLK_KP_MINUS:
-			{
-				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
-				{
-					int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
-				}
-			}
-			break;
-		case SDLK_d:
-			{
-				if ((pressed) && selBuild && (selBuild->owner->teamNumber==localTeam))
-				{
-					orderQueue.push(new OrderDelete(selBuild->UID));
-				}
-			}
-			break;
-		case SDLK_u:
-		case SDLK_a:
-			{
-				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
-				{
-					orderQueue.push(new OrderUpgrade(selBuild->UID));
-				}
-			}
-			break;
-		case SDLK_p :
-			if (pressed)
-				drawPathLines=!drawPathLines;
-			break;
-		case SDLK_i :
-			if (pressed)
-				drawHealthFoodBar=!drawHealthFoodBar;
-			break;
-
-		case SDLK_RETURN :
-			if (pressed)
-			{
-				if (typingMessage)
-				{
-					orderQueue.push(new MessageOrder(chatMask, typedMessage));
-
-					typedMessage[0]=0;
-					typedChar=0;
-					typingMessage=false;
+					viewportSpeedX[5]=-1;
+					viewportSpeedY[5]=-1;
 				}
 				else
+				{
+					viewportSpeedX[5]=0;
+					viewportSpeedY[5]=0;
+				}
+				break;
+			case SDLK_KP9:
+				if (pressed)
+				{
+					viewportSpeedX[6]=1;
+					viewportSpeedY[6]=-1;
+				}
+				else
+				{
+					viewportSpeedX[6]=0;
+					viewportSpeedY[6]=0;
+				}
+				break;
+			case SDLK_KP1:
+				if (pressed)
+				{
+					viewportSpeedX[7]=-1;
+					viewportSpeedY[7]=1;
+				}
+				else
+				{
+					viewportSpeedX[7]=0;
+					viewportSpeedY[7]=0;
+				}
+				break;
+			case SDLK_KP3:
+				if (pressed)
+				{
+					viewportSpeedX[8]=1;
+					viewportSpeedY[8]=1;
+				}
+				else
+				{
+					viewportSpeedX[8]=0;
+					viewportSpeedY[8]=0;
+				}
+				break;
+			case SDLK_PLUS:
+			case SDLK_KP_PLUS:
+				{
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					}
+				}
+				break;
+			case SDLK_MINUS:
+			case SDLK_KP_MINUS:
+				{
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					}
+				}
+				break;
+			case SDLK_d:
+				{
+					if ((pressed) && selBuild && (selBuild->owner->teamNumber==localTeam))
+					{
+						orderQueue.push(new OrderDelete(selBuild->UID));
+					}
+				}
+				break;
+			case SDLK_u:
+			case SDLK_a:
+				{
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+					{
+						orderQueue.push(new OrderUpgrade(selBuild->UID));
+					}
+				}
+				break;
+			case SDLK_p :
+				if (pressed)
+					drawPathLines=!drawPathLines;
+				break;
+			case SDLK_i :
+				if (pressed)
+					drawHealthFoodBar=!drawHealthFoodBar;
+				break;
+
+			case SDLK_RETURN :
+				if (pressed)
 				{
 					typedMessage[0]=0;
 					typedChar=0;
 					typingMessage=true;
 				}
-			}
-			break;
-		case SDLK_BACKSPACE :
-			if (pressed && (typedChar>0))
-			{
-				typedChar--;
-				typedMessage[typedChar]=0;
-			}
-			break;
-		case SDLK_SPACE:
-			if (pressed)
-				iterateSelection();
-			break;
-		default:
+				break;
+			case SDLK_BACKSPACE :
+				if (pressed && (typedChar>0))
+				{
+					typedChar--;
+					typedMessage[typedChar]=0;
+				}
+				break;
+			case SDLK_SPACE:
+				if (pressed)
+					iterateSelection();
+				break;
+			default:
 
-		break;
+			break;
+		}
 	}
 }
 
