@@ -272,7 +272,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
 			printf("-h\thigh speed graphics: max of transparency effects\n");
 			printf("-v\tset the music volume\n");
-			printf("-m/-M\tmute/unmute the sound (both music and speach)\n");
+			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
