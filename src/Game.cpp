@@ -982,7 +982,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 					if (drawHealthFoodBar)
 					{
-						drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, unit->hungry/10000, 80, 179, 223);
+						drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
 						float hpRatio=(float)unit->hp/(float)unit->performance[HP];
 						if (hpRatio>0.6)
 							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
