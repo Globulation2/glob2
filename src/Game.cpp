@@ -28,7 +28,7 @@ Game::Game(const SessionInfo *initial)
 void Game::loadBase(const SessionInfo *initial)
 {
 	init();
-	SDL_RWops *stream=SDL_RWFromFile(initial->map.mapName,"rb");
+	SDL_RWops *stream=globalContainer.fileManager.open(initial->map.mapName,"rb");
 	load(stream);
 	SDL_RWclose(stream);
 	setBase(initial);

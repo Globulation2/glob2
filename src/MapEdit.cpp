@@ -536,7 +536,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 
 void MapEdit::load(void)
 {
-	SDL_RWops *stream=SDL_RWFromFile("default.map","rb");
+	SDL_RWops *stream=globalContainer.fileManager.open("default.map","rb");
 	if (game.load(stream)==false)
 		fprintf(stderr, "MED : Warning, Error during map load\n");
 	SDL_RWclose(stream);
@@ -553,7 +553,7 @@ void MapEdit::load(void)
 
 void MapEdit::save(void)
 {
-	SDL_RWops *stream=SDL_RWFromFile("default.map","wb");
+	SDL_RWops *stream=globalContainer.fileManager.open("default.map","wb");
 	game.save(stream);
 	SDL_RWclose(stream);
 }

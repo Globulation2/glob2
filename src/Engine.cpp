@@ -18,7 +18,7 @@ int Engine::init(void)
 int Engine::initCampain(void)
 {
 	// we load map
-	SDL_RWops *stream=SDL_RWFromFile("default.map","rb");
+	SDL_RWops *stream=globalContainer.fileManager.open("default.map","rb");
 	if (gui.game.load(stream)==false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");

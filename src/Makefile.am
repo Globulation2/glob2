@@ -64,7 +64,9 @@ Unit.h\
 UnitType.cpp\
 UnitType.h\
 Utilities.cpp\
-Utilities.h
+Utilities.h \
+FileManager.h \
+FileManager.cpp
 
 glob2_LDADD= @LIBS@ @SDL_LIBS@ -lSDL_net -lSDL_image
 
