@@ -604,6 +604,13 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 					fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", player, p);
 					l++;
 				}
+			if (dropState<DS_EXCHANGING_DROPPING_MASK)
+			{
+				dropState=DS_EXCHANGING_DROPPING_MASK;
+				fprintf(logFile, "dropState=DS_EXCHANGING_DROPPING_MASK, player %d request.\n", player);
+				for (int p=0; p<numberOfPlayer; p++)
+					droppingPlayersMask[p]=0;
+			}
 		}
 		else if (orderType==ORDER_REQUESTING_AWAY)
 		{
@@ -720,7 +727,7 @@ bool NetGame::stepReadyToExecute(void)
 			if (dropState<DS_EXCHANGING_DROPPING_MASK)
 			{
 				dropState=DS_EXCHANGING_DROPPING_MASK;
-				fprintf(logFile, "dropState=DS_EXCHANGING_DROPPING_MASK\n");
+				fprintf(logFile, "dropState=DS_EXCHANGING_DROPPING_MASK, I choosed.\n");
 				for (int p=0; p<numberOfPlayer; p++)
 					droppingPlayersMask[p]=0;
 			}
