@@ -220,28 +220,28 @@ int Engine::initLoadGame()
 	return EE_NO_ERROR;
 }
 
-void Engine::startMultiplayer(SessionConnection *sessionConnection)
+void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 {
-	int p=sessionConnection->myPlayerNumber;
+	int p=multiplayersJoin->myPlayerNumber;
 
-	sessionConnection->destroyNet=false;
-	for (int j=0; j<sessionConnection->sessionInfo.numberOfPlayer; j++)
-		sessionConnection->sessionInfo.players[j].destroyNet=false;
+	multiplayersJoin->destroyNet=false;
+	for (int j=0; j<multiplayersJoin->sessionInfo.numberOfPlayer; j++)
+		multiplayersJoin->sessionInfo.players[j].destroyNet=false;
 
-	sessionConnection->sessionInfo.setLocal(p);
+	multiplayersJoin->sessionInfo.setLocal(p);
 
-	gui.loadBase(&sessionConnection->sessionInfo);
+	gui.loadBase(&multiplayersJoin->sessionInfo);
 
 	gui.localPlayer=p;
-	gui.localTeamNo=sessionConnection->sessionInfo.players[p].teamNumber;
-	assert(gui.localTeamNo<sessionConnection->sessionInfo.numberOfTeam);
-	gui.localTeamNo=gui.localTeamNo % sessionConnection->sessionInfo.numberOfTeam; // Ugly relase case.
+	gui.localTeamNo=multiplayersJoin->sessionInfo.players[p].teamNumber;
+	assert(gui.localTeamNo<multiplayersJoin->sessionInfo.numberOfTeam);
+	gui.localTeamNo=gui.localTeamNo % multiplayersJoin->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 	
 	// we create the net game
-	net=new NetGame(sessionConnection->socket, gui.game.session.numberOfPlayer, gui.game.players);
+	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
 

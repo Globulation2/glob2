@@ -26,6 +26,8 @@
 #include "NetGame.h"
 #include "PreparationGui.h"
 
+class MultiplayersJoin;
+
 class Engine
 {
 public:
@@ -35,7 +37,7 @@ public:
 	int initCustom();
 	int initCustom(const char *gameName);
 	int initLoadGame();
-	void startMultiplayer(SessionConnection *sessionConnection);
+	void startMultiplayer(MultiplayersJoin *multiplayersJoin);
 	int initMutiplayerHost(bool shareOnYOG);
 	int initMutiplayerJoin();
 	int initMutiplayerYOG();

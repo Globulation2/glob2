@@ -45,7 +45,7 @@ MultiplayersJoin::~MultiplayersJoin()
 			{
 				send(CLIENT_QUIT_NEW_GAME);
 				SDLNet_UDP_Unbind(socket, channel);
-				fprintf(logFile, "~MultiplayersJoin::Socket unbinded.\n");
+				fprintf(logFile, "~MultiplayersJoin::Socket unbinded channel=%d\n", channel);
 			}
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
@@ -704,12 +704,12 @@ void MultiplayersJoin::receiveTime()
 					{
 						if ((socket)&&(channel!=-1))
 						{
-							fprintf(logFile, "MultiplayersJoin:NAT:Unbinding socket.\n");
+							fprintf(logFile, "MultiplayersJoin:NAT:Unbinding socket. channel=%d\n", channel);
 							// In improbable case that the target ip really hosted a game,
 							// we send him a quit game message
 							send(CLIENT_QUIT_NEW_GAME);
 							SDLNet_UDP_Unbind(socket, channel);
-							fprintf(logFile, "MultiplayersJoin:NAT:Socket unbinded.\n");
+							fprintf(logFile, "MultiplayersJoin:NAT:Socket unbinded, channel=%d\n", channel);
 						}
 						
 						serverIP.host=it->ip;
@@ -1348,7 +1348,7 @@ void MultiplayersJoin::quitThisGame()
 			fprintf(logFile, "Unbinding socket.\n");
 			send(CLIENT_QUIT_NEW_GAME);
 			SDLNet_UDP_Unbind(socket, channel);
-			fprintf(logFile, "MultiplayersJoin::quitThisGame::Socket unbinded.\n");
+			fprintf(logFile, "MultiplayersJoin::quitThisGame::Socket unbinded, channel=%d\n", channel);
 		}
 		fprintf(logFile, "Closing socket.\n");
 		SDLNet_UDP_Close(socket);
