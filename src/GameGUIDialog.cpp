@@ -78,7 +78,7 @@ InGameMainScreen::InGameMainScreen()
 
 void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_RELEASED)
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 		endValue=par1;
 }
 
@@ -112,7 +112,7 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 
 void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_RELEASED)
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 		endValue=par1;
 	else if (action==BUTTON_STATE_CHANGED)
 		setCorrectValueForPlayer(par1%10);

@@ -110,7 +110,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 		else
 			assert(false);
 	}
-	else if (action==BUTTON_RELEASED)
+	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==CONNECT)
 		{

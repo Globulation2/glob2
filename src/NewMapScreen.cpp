@@ -56,7 +56,7 @@ NewMapScreen::NewMapScreen()
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	int i, id;
-	if (action==BUTTON_RELEASED)
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if ((par1==OK)||(par1==CANCEL))
 			endExecute(par1);
