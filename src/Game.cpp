@@ -41,7 +41,7 @@
 
 #include "Brush.h"
 
-#define BULLET_IMGID 35
+#define BULLET_IMGID 50
 
 #define MIN_MAX_PRESIGE 500
 #define TEAM_MAX_PRESTIGE 230
@@ -1660,7 +1660,37 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		BuildingType *type=building->type;
 		Team *team=building->owner;
 
-		int imgid=type->startImage;
+		int imgid;
+		if (type->crossConnectMultiImage)
+		{
+			int add = 0;
+			Uint16 b;
+			// Up
+			b = map.getBuilding(building->posXLocal, building->posYLocal-1);
+			if ((b != NOGBID) &&
+				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+				add |= (1<<3);
+			// Bottom
+			b = map.getBuilding(building->posXLocal, building->posYLocal+building->type->height);
+			if ((b != NOGBID) &&
+				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+				add |= (1<<2);
+			// Left
+			b = map.getBuilding(building->posXLocal-1, building->posYLocal);
+			if ((b != NOGBID) &&
+				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+				add |= (1<<1);
+			// Right
+			b = map.getBuilding(building->posXLocal+building->type->width, building->posYLocal);
+			if ((b != NOGBID) &&
+				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+				add |= (1<<0);
+			imgid = type->startImage + add;
+		}
+		else
+		{
+			imgid = type->startImage;
+		}
 		int x, y;
 		int dx, dy;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);

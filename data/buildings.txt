@@ -20,8 +20,9 @@
 // default building
 startImage = 0
 hueImage = 0
-flagImage = 34
+flagImage = 49
 miniImage = 0
+crossConnectMultiImage = 0
 
 upgradeStopWalk = 0
 upgradeStopSwim = 0
@@ -132,8 +133,8 @@ prestige = 0
 *
 
 // swarm building site
-startImage = 23
-miniImage = 23
+startImage = 39
+miniImage = 39
 hueImage = 1
 
 fillable = 1
@@ -179,8 +180,8 @@ regenerationSpeed = 3
 *
 
 // food building site, level 0
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -225,8 +226,8 @@ maxUnitWorking = 1
 *
 
 // food building site, level 1
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -271,8 +272,8 @@ maxUnitWorking = 1
 *
 
 // food building site, level 2
-startImage = 26
-miniImage = 26
+startImage = 42
+miniImage = 42
 
 fillable = 1
 
@@ -319,8 +320,8 @@ maxUnitWorking = 1
 *
 
 // health building site, level 0
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -359,8 +360,8 @@ type = 2
 *
 
 // health building site, level 1
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -399,8 +400,8 @@ type = 2
 *
 
 // health building site, level 2
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -441,8 +442,8 @@ type = 2
 *
 
 // Walk building site, level 0
-startImage = 28
-miniImage = 28
+startImage = 44
+miniImage = 44
 
 fillable = 1
 
@@ -484,8 +485,8 @@ type = 3
 *
 
 // Walk building site, level 1
-startImage = 29
-miniImage = 29
+startImage = 45
+miniImage = 45
 
 fillable = 1
 
@@ -527,8 +528,8 @@ type = 3
 *
 
 // Walk building site, level 2
-startImage = 29
-miniImage = 29
+startImage = 45
+miniImage = 45
 
 fillable = 1
 
@@ -570,8 +571,8 @@ type = 3
 *
 
 // Swim building site, level 0
-startImage = 28
-miniImage = 28
+startImage = 44
+miniImage = 44
 
 fillable = 1
 
@@ -612,8 +613,8 @@ type = 4
 *
 
 // Swim building site, level 1
-startImage = 29
-miniImage = 29
+startImage = 45
+miniImage = 45
 
 fillable = 1
 
@@ -655,8 +656,8 @@ type = 4
 *
 
 // Swim building site, level 2
-startImage = 29
-miniImage = 29
+startImage = 45
+miniImage = 45
 
 fillable = 1
 
@@ -700,8 +701,8 @@ type = 4
 *
 
 // Attack building site, level 0
-startImage = 27
-miniImage = 27
+startImage = 43
+miniImage = 43
 
 fillable = 1
 
@@ -744,8 +745,8 @@ type = 5
 *
 
 // Attack building site, level 1
-startImage = 27
-miniImage = 27
+startImage = 43
+miniImage = 43
 
 fillable = 1
 
@@ -789,8 +790,8 @@ type = 5
 *
 
 // Attack building site, level 2
-startImage = 27
-miniImage = 27
+startImage = 43
+miniImage = 43
 
 fillable = 1
 
@@ -833,8 +834,8 @@ type = 5
 *
 
 // Science building site, level 0
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -878,8 +879,8 @@ type = 6
 *
 
 // Science building site, level 1
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -924,8 +925,8 @@ type = 6
 *
 
 // Science building site, level 2
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -972,8 +973,8 @@ prestige = 50
 *
 
 // Defense building site, level 0
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -1023,8 +1024,8 @@ viewingRange = 6
 *
 
 // Defense building site, level 1
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -1077,8 +1078,8 @@ viewingRange = 7
 *
 
 // Defense building site, level 2
-startImage = 25
-miniImage = 25
+startImage = 41
+miniImage = 41
 
 fillable = 1
 
@@ -1133,7 +1134,7 @@ viewingRange = 8
 
 // Exploration Flag
 
-startImage = 30
+startImage = 46
 hueImage = 1
 miniImage = -1
 
@@ -1157,7 +1158,7 @@ maxUnitStayRange = 20
 
 // War Flag
 
-startImage = 31
+startImage = 47
 hueImage = 1
 miniImage = -1
 
@@ -1181,7 +1182,7 @@ maxUnitStayRange = 8
 
 // Clearing Flag
 
-startImage = 32
+startImage = 48
 hueImage = 1
 miniImage = -1
 
@@ -1203,34 +1204,10 @@ maxUnitStayRange = 14
 
 *
 
-// Fobidden Flag
-
-startImage = 33
-hueImage = 0
-miniImage = -1
-
-zonableForbidden = 1
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-isVirtual = 1
-isCloacked =  1
-
-maxUnitWorking = 0
-
-type = 11
-
-defaultUnitStayRange = 3
-maxUnitStayRange = 20
-
-*
-
 
 // stone wall building site
-startImage = 24
-miniImage = 24
+startImage = 40
+miniImage = -1
 
 fillable = 1
 maxWood = 0
@@ -1244,15 +1221,16 @@ hpInit = 1
 hpMax = 100
 hpInc = 50
 level = 0
-type = 12
+type = 11
 maxUnitWorking = 1
 isBuildingSite = 1
 
 *
 
 // stone wall
-startImage = 22
+startImage = 23
 miniImage = -1
+crossConnectMultiImage = 1
 
 width = 1
 height = 1
@@ -1261,51 +1239,14 @@ decTop = 0
 hpInit = 100
 hpMax = 100
 level = 0
-type = 12
+type = 11
 armor = 10
 
 *
 
-// wood wall building site
-startImage = 24
-miniImage = -1
-
-fillable = 1
-maxWood = 1
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-hpInit = 1
-hpMax = 50
-hpInc = 49
-level = 0
-type = 13
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// wood wall
-startImage = 22
-miniImage = -1
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-hpInit = 50
-hpMax = 50
-level = 0
-type = 13
-armor = 2
-
-*
-
 // market building site
-startImage = 26
-miniImage = 26
+startImage = 43
+miniImage = 43
 
 width = 3
 height = 3
@@ -1317,7 +1258,7 @@ hpInit = 1
 hpMax = 200
 hpInc = 25
 level = 0
-type = 14
+type = 12
 maxUnitWorking = 1
 isBuildingSite = 1
 fillable = 1
@@ -1325,8 +1266,8 @@ fillable = 1
 *
 
 // market (used for exchange)
-startImage = 36
-miniImage = 36
+startImage = 22
+miniImage = 22
 
 width = 3
 height = 3
@@ -1335,7 +1276,7 @@ decTop = -1
 hpInit = 200
 hpMax = 200
 level = 0
-type = 14
+type = 12
 armor = 2
 fillable = 1
 canExchange = 1

@@ -166,14 +166,13 @@ void GameGUI::init()
 	buildingsChoice.push_back(5);
 	buildingsChoice.push_back(6);
 	buildingsChoice.push_back(7);
+	buildingsChoice.push_back(11);
 	buildingsChoice.push_back(12);
-	buildingsChoice.push_back(14);
 
 	flagsChoice.clear();
 	flagsChoice.push_back(8);
 	flagsChoice.push_back(9);
 	flagsChoice.push_back(10);
-	//flagsChoice.push_back(11);
 
 	hiddenGUIElements=0;
 	
