@@ -679,11 +679,43 @@ int StringAquisition::ungetChar(char c)
 Mapscript::Mapscript()
 {
 	reset();
+	sourceCode=NULL;
+	setSourceCode("no source code");
 }
 
 Mapscript::~Mapscript(void)
-{}
+{
+	if (sourceCode)
+		delete[] sourceCode;
+}
 
+bool Mapscript::load(SDL_RWops *stream)
+{
+	if (sourceCode)
+		delete[] sourceCode;
+	
+	unsigned len=SDL_ReadBE32(stream);
+	sourceCode=new char[len];
+	SDL_RWread(stream, sourceCode, len, 1);
+	return true;
+}
+
+void Mapscript::save(SDL_RWops *stream)
+{
+	unsigned len=strlen(sourceCode) +1;
+	SDL_WriteBE32(stream, len);
+	SDL_RWwrite(stream, sourceCode, len, 1);
+}
+
+void Mapscript::setSourceCode(const char *sourceCode)
+{
+	if (this->sourceCode)
+		delete[] this->sourceCode;
+		
+	unsigned len=strlen(sourceCode)+1;
+	this->sourceCode=new char[len];
+	strcpy(this->sourceCode, sourceCode);
+}
 
 bool Mapscript::getFlagPos(string name, int *x, int *y)
 {
@@ -735,7 +767,7 @@ void Mapscript::step()
 }
 
 
-ErrorReport Mapscript::compileScript(const char *sourceCode, Game *game)
+ErrorReport Mapscript::compileScript(Game *game)
 {
 	StringAquisition aquisition;
 	aquisition.open(sourceCode);

@@ -26,13 +26,14 @@
 class TextArea:public RectangularWidget
 {
 public:
-	TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true);
+	TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true, const char *text="");
 	virtual ~TextArea();
 
 	virtual void paint(void);
 	virtual void onSDLEvent(SDL_Event *event);
 
 	virtual void setText(const char *text);
+	virtual const char *getText(void) { return textBuffer; }
 	virtual void addText(const char *text);
 	virtual void addChar(const char c);
 	virtual void remText(unsigned pos, unsigned len);
@@ -42,6 +43,7 @@ public:
 
 protected:
 	virtual void internalPaint(void);
+	virtual void internalSetText(const char *text);
 	virtual void repaint(void);
 	//! we make sure the repaint will show something correct
 	virtual void computeAndRepaint(void);

@@ -21,10 +21,11 @@
 #include "GlobalContainer.h"
 
 //! Main menu screen
-ScriptEditorScreen::ScriptEditorScreen()
+ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript)
 :OverlayScreen(600, 400)
 {
-	editor = new TextArea(10, 10, 580, 340, globalContainer->standardFont, false);
+	this->mapScript=mapScript;
+	editor = new TextArea(10, 10, 580, 340, globalContainer->standardFont, false, mapScript->getSourceCode());
 	addWidget(editor);
 	addWidget(new TextButton(10, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[ok]"), OK));
 	addWidget(new TextButton(100, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[cancel]"), CANCEL));
@@ -41,6 +42,8 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else
 		{
+			if (par1 == OK)
+				mapScript->setSourceCode(editor->getText());
 			endValue=par1;
 		}
 	}

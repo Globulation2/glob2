@@ -447,24 +447,33 @@ bool Game::load(SDL_RWops *stream)
 			if (memcmp(signature,"GLO2",4)!=0)
 				return false;
 		}
-	}
-	
-	// load script the script
-	// TODO : for now it's from file, but..
-	ErrorReport er=script.loadScript("testscript.txt", this);
-	if (er.type!=ErrorReport::ET_OK)
-	{
-		if (er.type==ErrorReport::ET_NO_SUCH_FILE)
+		
+		// then script
+		ErrorReport er;
+		if (session.versionMinor>=10)
 		{
-			printf("SGSL : Can't find script file testscript.txt\n");
+			SDL_RWseek(stream, tempSessionInfo.mapScriptOffset , SEEK_SET);
+			script.load(stream);
+			er=script.compileScript(this);
 		}
 		else
 		{
-			printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
-			return false;
+			// load script the script
+			er=script.loadScript("testscript.txt", this);
+		}
+		if (er.type!=ErrorReport::ET_OK)
+		{
+			if (er.type==ErrorReport::ET_NO_SUCH_FILE)
+			{
+				printf("SGSL : Can't find script file testscript.txt\n");
+			}
+			else
+			{
+				printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+				return false;
+			}
 		}
 	}
-	
 	return true;
 }
 
@@ -530,6 +539,9 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 		map.save(stream);
 
 		SDL_RWwrite(stream, "GAMe", 4, 1);
+		
+		SAVE_OFFSET(stream, 32);
+		script.save(stream);
 	}
 	
 }

@@ -71,9 +71,11 @@ public:
 	Uint32 playersOffset;
 	//! Offset of map (terrain) data from beginning of file
 	Uint32 mapOffset;
+	//! Offset of map script data from beginning of file
+	Uint32 mapScriptOffset;
 	//! Offset of generationDescriptor data from beginning of file
 	Uint32 generationDescriptorOffset;
-
+	
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
 
@@ -87,7 +89,7 @@ public:
 	MapGenerationDescriptor *mapGenerationDescriptor;
 protected:
 	//! Serialized form of SessionGame
-	enum {S_GAME_ONLY_DATA_SIZE=32};
+	enum {S_GAME_ONLY_DATA_SIZE=36};
 	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
 	char data[S_GAME_DATA_SIZE];
 };

@@ -716,11 +716,9 @@ void MapEdit::loadSave(bool isLoad)
 void MapEdit::scriptEditor(void)
 {
 	// create dialog box
-	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen();
+	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen(&(game.script));
 	scriptEditorScreen->dispatchPaint(scriptEditorScreen->getSurface());
 	
-	// TODO : load script
-
 	// save screen
 	globalContainer->gfx->setClipRect();
 
@@ -734,9 +732,6 @@ void MapEdit::scriptEditor(void)
 		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
 		globalContainer->gfx->updateRect(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getW(), scriptEditorScreen->getH());
 	}
-	
-	// TODO : save script
-
 	// clean up
 	delete scriptEditorScreen;
 

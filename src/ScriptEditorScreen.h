@@ -22,6 +22,7 @@
 
 #include "GAG.h"
 #include "GameGUIDialog.h"
+#include "SGSL.h"
 
 class ScriptEditorScreen:public OverlayScreen
 {
@@ -35,9 +36,10 @@ public:
 	
 private:
 	TextArea *editor;
+	Mapscript *mapScript;
 	
 public:
-	ScriptEditorScreen();
+	ScriptEditorScreen(Mapscript *mapScript);
 	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
