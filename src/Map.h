@@ -248,8 +248,8 @@ public:
 		Ressource r=getRessource(x, y);
 		if (r.id==NORESID)
 			return false;
-		Uint8 v=r.field.variety;
-		return (v<5 && v!=3);
+		Uint8 t=r.field.type;
+		return (t<5 && t!=3);
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
@@ -392,6 +392,7 @@ protected:
 	int pathToRessourceCountFailure;
 	
 	int localRessourcesUpdateCount;
+	
 	int pathfindLocalRessourceCount;
 	int pathfindLocalRessourceCountWait;
 	int pathfindLocalRessourceCountSuccessBase;
@@ -418,6 +419,11 @@ protected:
 	int pathToBuildingCountFarFailure;
 	int pathToBuildingCountFarSuccessFar;
 	
+	int localBuildingGradientUpdate;
+	int localBuildingGradientUpdateLocked;
+	int globalBuildingGradientUpdate;
+	int globalBuildingGradientUpdateLocked;
+	
 	int buildingAviableCountTot;
 	
 	int buildingAviableCountClose;
@@ -425,21 +431,21 @@ protected:
 	int buildingAviableCountCloseSuccessClosely;
 	int buildingAviableCountCloseSuccessUpdate;
 	int buildingAviableCountCloseSuccessUpdateClosely;
-	int buildingAviableCountCloseFailure;
+	int buildingAviableCountCloseFailureLocked;
+	int buildingAviableCountCloseFailureEnd;
 	
 	int buildingAviableCountIsFar;
 	int buildingAviableCountFar;
 	int buildingAviableCountFarNew;
 	int buildingAviableCountFarNewSuccess;
 	int buildingAviableCountFarNewSuccessClosely;
-	int buildingAviableCountFarNewFailure;
+	int buildingAviableCountFarNewFailureLocked;
+	int buildingAviableCountFarNewFailureEnd;
 	int buildingAviableCountFarOld;
 	int buildingAviableCountFarOldSuccess;
 	int buildingAviableCountFarOldSuccessClosely;
-	int buildingAviableCountFarOldFailure;
-	
-	int localBuildingGradientUpdate;
-	int globalBuildingGradientUpdate;
+	int buildingAviableCountFarOldFailureLocked;
+	int buildingAviableCountFarOldFailureEnd;
 
 protected:
 	// private functions, used for edition

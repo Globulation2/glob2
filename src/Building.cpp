@@ -121,6 +121,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
+		locked[i]=false;
 	}
 	localRessourcesCleanTime=0;
 }
@@ -195,6 +196,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 			localRessources[i]=NULL;
 		}
 		dirtyLocalGradient[i]=true;
+		locked[i]=false;
 	}
 	localRessourcesCleanTime=0;
 }
