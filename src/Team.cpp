@@ -301,7 +301,7 @@ Building *Team::findBestFoodable(Unit *unit)
 		int ressourceDist;
 		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist) && (ressourceDist<timeLeft))
 		{
-			if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
+			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
 				for (int d=0; d<8; d++)
 				{
 					int ddx, ddy;
@@ -312,7 +312,7 @@ Building *Team::findBestFoodable(Unit *unit)
 						ry=(ry+map->getH()+ddy)&map->getMaskH();
 						break;
 					}
-				}
+				}*/
 			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 			{
 				Building *b=(*bi);
@@ -385,7 +385,7 @@ Building *Team::findBestFillable(Unit *unit)
 		int ressourceDist;
 		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist) && (ressourceDist<timeLeft))
 		{
-			if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
+			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
 				for (int d=0; d<8; d++)
 				{
 					int ddx, ddy;
@@ -396,8 +396,7 @@ Building *Team::findBestFillable(Unit *unit)
 						ry=(ry+map->getH()+ddy)&map->getMaskH();
 						break;
 					}
-				}
-			
+				}*/
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
