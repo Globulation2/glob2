@@ -1,0 +1,4 @@
+#!/bin/sh
+cd data
+wget http://www.ysagoon.com/glob2/glob2gfx.tar
+tar xvf glob2gfx.tar
