@@ -1070,7 +1070,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			newW=256;
 		if (newH<288)
 			newH=288;
-		globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->graphicFlags);
 		regenerateClipRect();
 		draw();
 	}
@@ -1105,11 +1105,11 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 		// we get all pending events but for mousemotion we only keep the last one
 		while (SDL_PollEvent(&event))
 		{
-			if (event.type==SDL_VIDEORESIZE)
+			/*if (event.type==SDL_VIDEORESIZE)
 			{
 				// we don't want video resize
-			}
-			else if (event.type==SDL_MOUSEMOTION)
+			}*/
+			if (event.type==SDL_MOUSEMOTION)
 			{
 				mouseMotionEvent=event;
 				wasMouseMotion=true;
@@ -1128,18 +1128,6 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 			returnCode=processEvent(&event) == -1 ? -1 : returnCode;
 		if (wasWindowEvent)
 			returnCode=processEvent(&event) == -1 ? -1 : returnCode;
-			/*
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type!=SDL_VIDEORESIZE)
-				while (SDL_PollEvent(&event))
-				{
-					if (event.type==SDL_VIDEORESIZE)
-						break;
-				}
-
-			
-		}*/
 
 		// redraw on scroll
 		bool doRedraw=false;
