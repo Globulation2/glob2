@@ -95,6 +95,8 @@ protected:
 	
 	//! all users on each connected channels
 	std::map<std::string, std::set<std::string> > usersOnChannels;
+	//! true if usersOnChannels has been modified
+	bool usersOnChannelsModified;
 	//! iterator after the last channel user
 	std::set<std::string>::const_iterator endChannelUser;
 	//! iterator to the next channel user
@@ -168,6 +170,8 @@ public:
 	bool isMoreChannelUser(void);
 	//! Return the next channel user on the current channel iterator. initChannelUserListing has to be called once before calling this method. Returned string has to be copied before next call to this function or next call to initChannelUserListing or next call to step.
 	const std::string &getNextChannelUser(void);
+	//! Returns true if user on channel list has been modified since last call. Reset the modification flag to false.
+	bool isChannelUserBeenModified(void);
 
 private:
 	//! Send a string in IRC format
