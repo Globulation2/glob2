@@ -500,11 +500,11 @@ void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddr
 	if ((p>=0)&&(p<32))
 	{
 		crossPacketRecieved[p]=2;
-		fprintf(logFile, "crossConnectionSecondMessage packet recieved (%d)\n", p);
+		fprintf(logFile, "crossConnectionSecondMessage packet recieved (player=%d)\n", p);
 		checkAllCrossConnected();
 	}
 	else
-		fprintf(logFile, "Dangerous crossConnectionSecondMessage packet recieved (%d)!\n", p);
+		fprintf(logFile, "Dangerous crossConnectionSecondMessage packet recieved (player=%d)!\n", p);
 
 }
 
@@ -961,7 +961,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_CROSS_CONNECTING:
 		{
-			fprintf(logFile, "We tell the server that we heard about croos connection start.\n");
+			fprintf(logFile, "We tell the server that we heard about cross connection start.\n");
 			if (!send(PLAYERS_CONFIRM_START_CROSS_CONNECTIONS))
 			{
 				send(CLIENT_QUIT_NEW_GAME);
