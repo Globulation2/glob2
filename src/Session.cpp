@@ -650,4 +650,3 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 			}
 	return team;
 }
-
