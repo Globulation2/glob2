@@ -17,23 +17,23 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-This is the first file you should read if you want to undestand the global class interactions of glob2. The goal is to explain the main ideas without all tricks and special cases which has to be inclused in the real code. It's expected that you already know how to play, and that you know C++.
+This is the first file you should read if you want to undestand the global class interactions in glob2. Its goal is to explain the main ideas without all the tricks and special cases which are requiered in the real code. It is expected that you already know how to play, and that you know C++.
 
 
 
 
 *1 Undestanding the basic idea of the engine:
 
-The code engine is working synchronousely. This means that there are no multithreading at all. Every 40[ms] each class which needs processing time has his .step() method called. The .step() method is called with respect of the class architecture.
+The core engine is working synchronously. This means that there is no multithreading at all. Every 40[ms], each class which needs processing time has its .step() method called. The .step() method is called with respect of the class architecture.
 
-As explained later, this synchronous way to work will allows us to have a very low network brandwith use. The same system is used for any game, played localy or over the internet.
+As explained later, this synchronous way to work allows us to have a very low network brandwidth use. The same system is used for any server-less game, played locally or over the internet.
 
-The idea is to have basic "Orders" which define any interaction you can have with the game.
+The idea is to transmit all command through basic "Orders" which define any interaction you can have with the game.
 
-Here is the simplified code of the core engine, fully aviable in "Engine::run()":
+Here is the simplified code of the core engine, fully available in "Engine::run()":
 
 GameGUI gui; // Class handling visual and interactive events. It includes other classes.
-NetGame net; // Class handling network interations, and network abstraction.
+NetGame net; // Class handling network abstraction and interations;
 
 while (gui.run)
 {
@@ -43,18 +43,18 @@ while (gui.run)
 	// Transmit the Order of the user, from the GUI to the network interface:
 	net.pushOrder(gui.getOrder(), gui.localPlayer);
 	
-	// Transmit the Order of each ai to the network interface:
+	// Transmit the Order of each AI to the network interface:
 	for ("each artificial intelligence" ai)
 		net.pushOrder(ai.getOrder(), ai);
 	
-	// Send the Orders trough network to other players, and receive their.
+	// Send the Orders through network to other players, and receive theirs.
 	net.step();
 	
-	// Really execute every Orders:
+	// Really execute every Order:
 	for ("each players" player)
 		gui.executeOrder(net.getOrder(player));
 	
-	// We draw everything on the screen:
+	// Draw everything on the screen:
 	gui.drawAll(gui.localTeam);
 	
 	// Sleep the right time to have 40[ms] per frame.
@@ -66,14 +66,14 @@ GameGUI ---(order by copy)---------> NetGame
 NetGame ---(order trough UDP/IP)---> NetGame
 NetGame ---(order by copy)---------> GameGUI
 
-Then the real "Engine::run()" is the same with some more problems handling.
+Then the real "Engine::run()" is the same with some more error handling code.
 
 
 
 
-*2 Undestanding the basic class architecture
+*2 Understanding the basic class architecture
 
-This architecture is used for the execution with the .step() methods, and for the load and save with the .save() and .load() methods. This means thats all thoses methods are called recursively trough all architecture.
+This architecture is used for the execution with the .step() methods, and for the load and save with the .save() and .load() methods. This means thats all thoses methods are called recursively through the architecture.
 
 Architectural view of most important classes with most important methods:
 
@@ -158,7 +158,7 @@ Engine
 
 *3 Basics of Order
 
-Take a look at src/Order.h. A typical order is "OrderCreate". What is important is that it includes everything needed to know how to add a new building site:
+Take a look at src/Order.h. A typical order is "OrderCreate". The important point is that it includes everything needed to know how to add a new building site:
 Uint32 team;
 Sint32 posX;
 Sint32 posY;
@@ -166,22 +166,22 @@ Sint32 typeNumber;
 
 The other stuff (and the super class Order) is used to serialize and deserialize the orders.
 
-There is altough the "NullOrder" which means that the player is doing nothing. It's important for the network, beacuse we have to distinguish it from "we don't know what he is doing."
+There is also the "NullOrder" which means that the player isn't doing anything. It's important for the network, because we have to distinguish it from "we don't know what he is doing."
 
 
 
 
 *4 Basics of Team and Player
 
-It's important that you undestand the differences between a Team an a Player in glob2. Somehow a class Team is a "logical-player", and a Player is an human interface. We could say Player==keyboard+mouse. And a Team is a colony. We can say that a Team is a colony color.
+It's important to undestand the differences between a Team and a Player in glob2. Somehow a class Team is a "logical-player", and a Player is a human interface. We could say Player==keyboard+mouse and Team is a colony (which has a unique color).
 
-The engine treats Teams and Players separately. A map will include a given number of teams. Each teams will be controled by zero to 32 players. Each player controls one existing team.
+The engine handle Teams and Players separately. A map will include a given number of teams. Each team will be controlled by zero to 32 players. Each player controls one existing team.
 
-An unclontroled team will evolve with no Order executed for he team (like if the player where sleeping all the game). A team controled by more than one player will execute all orders from all controling players.
+An uncontrolled team will evolve with no Order executed for it (like if all its players where sleeping during all the game). A team controlled by more than one player will execute all orders from all controlling players.
 
-Two players in a team is not an aliance. Once the game is started there is no way to separate the two players.
+Two players in a team is not an alliance. Once the game is started there is no way to separate the two players.
 
-This logicaly implies that only Teams can be allied.
+This logically implies that only Teams can be allied.
 
 Take a look at Player.h and Team.h. Notice the important variables:
 
@@ -190,14 +190,14 @@ BasePlayer
 {
 	PlayerType type; // AI or IP (internet) or local player
 	char name[32];
-	Sint32 teamNumber; // a reference the the team which we play in.
+	Sint32 teamNumber; // a reference to the team which we play in.
 	IPaddress ip; // used by network
 }
 Player:public BasePlayer
 {
 	Team *team; // a pointer to the team which we play in.
-	Game *game; // optimisation, we can access it trough *team.
-	Map *map; // optimisation, we can access it trough *game.
+	Game *game; // optimisation, we can access it through *team.
+	Map *map; // optimisation, we can access it through *game.
 	
 	AI *ai; // a pointer to the AI if the player is AI.
 }
@@ -206,21 +206,21 @@ The difference between BasePlayer and Player is that the BasePlayer is serialisa
 
 class BaseTeam
 {
-	TeamType type; // trick used to design campains. If AI, then we haev to put an AI player to control this TEam.
+	TeamType type; // trick used to design campains. If AI, then we have to put an AI player to control this team.
 	Sint32 teamNumber; // index of the current team in the game::teams[] array.
-	Sint32 numberOfPlayer; // number of controling players
-	Uint8 colorR, colorG, colorB; // Which color is the team. (mainly globules and swarm)
-	Uint32 playersMask; // bit mask of the controling players indexes.
+	Sint32 numberOfPlayer; // number of controlling players
+	Uint8 colorR, colorG, colorB; // color of the team. (mainly globules and swarm)
+	Uint32 playersMask; // bit mask of the controlling players indexes.
 	
-	Race race; // unused game engine feature, which would allow each team to customise the specifications of his units. (speeds, hp, hungryness, ...)
+	Race race; // unused game engine feature, which would allow each team to customise the specifications of its units. (speeds, hp, hungryness, ...)
 }
 class Team
 {
-	Game *game; // Access to the game we are playing in.
-	Map *map; // optimisation, can me accessed trough *game.
+	Game *game; // access to the game we are playing in.
+	Map *map; // optimisation, can be accessed trough *game.
 	
-	Unit *myUnits[1024]; // Our units! Pointer is NULL for unused slots.
-	Building *myBuildings[1024]; // Our buildings! Pointer is NULL for unused slots.
+	Unit *myUnits[1024]; // our units! Pointer is NULL for unused slots.
+	Building *myBuildings[1024]; // our buildings! Pointer is NULL for unused slots.
 	
 	Uint32 allies; // bit mask of the teams I thrust and don't fire on.
 }
@@ -230,27 +230,27 @@ class Team
 
 *5 Basics of network, and consequences for the core engine.
 
-To minimise network brandwith, we have choosed to have a shared network system, and not a client-server architecture. Then it works this way: every computer of a glob2 net game will compute everything, and they will all compute exactly the same things. This means that every single data and every "if" will be taken the same way in the core engine.
+To minimise network brandwidth, we have choosen to have a shared network system, and not a client-server architecture. It works this way: every computer of a glob2 net game will compute everything, and they will all compute exactly the same things. This means that every single data and every "if" will be taken the same way in the core engine.
 
-This implies that we have to use only deterministic algorithms in the core engine. This excludes the use or the C rand() function. Instead we use Utilities::syncRand() which will provide pseudo-random number, but in a way every computer will get the same pseudo-random number. This altough excludes the use of some standard containers. We noticed that std::bag is not deterministic.
+This implies that we have to use only deterministics algorithms in the core engine. This excludes the use or the C rand() function. Instead we use Utilities::syncRand() which will provide pseudo-random numbers, but in a way every computer will get the same pseudo-random number. This although excludes the use of some standard containers. We noticed that std::set is not deterministic.
 
 
 
 
 *5 Basics of NetGame
 
-As described in the basic engine description, NetGame receive Orders from Engine, send them trough network and, give back Orders to Engine. From the NetGame point of view, the dataflow graph would be:
+As described in the basic engine description, NetGame receive Orders from Engine, send them though network and give back Orders to Engine. From the NetGame point of view, the dataflow graph would be:
 ---(order)---> NetGame ---(order)--->
 
-This may look very easy, but it's a very very tricky job. Because there are the folowing problems:
+This may look very easy, but it's a very very tricky job, because of the following issues:
 - We have to handle latency of the network. A typical world-round ping is about 300[ms], but we want a frame every 40[ms]. Therefor we can't simply wait every frame for every packets.
 - Latency is not deterministic. (a packet may arrives much later!)
 - To ensure lowest latency we have to use UDP/IP. Then the network may loose packets.
 - Some people are using NAT/PAT or firewalls.
 - Orders given to the Engine have to be deterministic!
-- Connection may be broken. (a player may be physicaly disconnected)
+- Connection may be broken. (a player may be physically disconnected)
 
-We designed the folowwing: each player has a FIFO stack. In the real code, the size of the stack is variable, but we'll start explaining it with a static size. For instance, let's say the stack has a size of 8, and that we have two players playing with an average latency of 100[ms]. Let's say that we are player 0, and player 1 is over the internet. Before the game starts, NetGame get informed of the fact that we have two players playing over the internet. Therefor it fills the stacks this ways:
+We designed the following: each player has a FIFO stack. In the real code, the size of the stack is variable, but we'll start explaining it with a static size. For instance, let's say the stack has a size of 8, and that we have two players playing with an average latency of 100[ms]. Let's say that we are player 0, and player 1 is over the internet. Before the game starts, NetGame get informed of the fact that we have two players playing over the internet. Therefor it fills the stacks this ways:
 
     Player 0    Player 1
     (local)     (remote)
@@ -272,9 +272,9 @@ We designed the folowwing: each player has a FIFO stack. In the real code, the s
 15 [NULL     ] [NULL     ]
 ...
 
-For easyer memory management and other tricks the FIFO is implemented as a 256 Order* static array. It's named "ordersQueue". A "pushUStep" describes the place where you push a new order. And a "executeUStep" describes the place where you get orders.
+For easier memory management and other tricks the FIFO is implemented as a 256 Order* static array. It is named "ordersQueue". A "pushUStep" describes the place where you push a new order. And a "executeUStep" describes the place where you get orders.
 
-On our computer, at the first loop of the engine, NetGame receive the first order, let's call it "OS8P0". ("O" for Order, "S8" for Step 8, "P0" for Player 0). On the other computer far away, the NetGame receive another order, let's call it "OS8P1". Both computer send thoses pushed orders at once. But it will take time untill they arrives. Then after pushStep("OrderS8P0") is called, we have localy:
+On our computer, at the first loop of the engine, NetGame receive the first order, let's call it "OS8P0". ("O" for Order, "S8" for Step 8, "P0" for Player 0). On the other computer far away, the NetGame receive another order, let's call it "OS8P1". Both computer send thoses pushed orders at once. But it will take time until they arrive. Then after pushStep("OrderS8P0") is called, we have locally:
 
     Player 0    Player 1
     (local)     (remote)
@@ -296,12 +296,12 @@ On our computer, at the first loop of the engine, NetGame receive the first orde
 15 [NULL     ] [NULL     ]
 ...
 
-Because of the internet latency, the "OS8P1" has ne been received yet. Then the net.step() will not receive anything. We could draw the network status this way:
+Because of the internet latency, the "OS8P1" has not been received yet. Then the net.step() will not receive anything. We could draw the network status this way:
 Player 0 ----(OS8P0)------------100[ms]left----> Player 1
 Player 0 <----100[ms]left------------(OS8P1)---- Player 1
 
 
-Next, the engine will request an order with the net.getOrder(0) and net.getOrder(1), once for each player. Then the Engine gets a "NullOrder" for each player. After that we have localy:
+Next, the engine will request an order with the net.getOrder(0) and net.getOrder(1), once for each player. Then the Engine gets a "NullOrder" for each player. After that we have locally:
 
     Player 0    Player 1
     (local)     (remote)
@@ -324,7 +324,7 @@ Next, the engine will request an order with the net.getOrder(0) and net.getOrder
 
 Notice that only the "excuteUStep" has changed. For some tricks, the NullOrder are not freed of memory. (This will be usefull in case of packed-lost and player disconnected, at recovery time.)
 
-Now, from the NetGame point of view, the first loops of the Engine is completed. Now 40[ms] has gone.
+Now, from the NetGame point of view, the first loop of the Engine is completed. Now 40[ms] has gone.
 
 After net.pushStep("OS9P0", 0), the Order "OS9P0" is sent to the other player. And the other player is sending us the Order "OS9P1". We have localy:
 
@@ -374,7 +374,7 @@ After net.getOrder(0) and net.GetOrder(1), a "NullOrder" is givent to the Engine
 14 [NULL     ] [NULL     ]
 15 [NULL     ] [NULL     ]
 
-This is the end of the second loop of the engine. Another 40[ms] has gone, for a total fof 80[ms]. The first packed with the first order "OS8P1" will not arives. We after all the thrird loop, the FIFO is:
+This is the end of the second loop of the engine. Another 40[ms] has gone, for a total fof 80[ms]. The first packet with the first order "OS8P1" will not arrive. We after all the third loop, the FIFO is:
 
     Player 0    Player 1
     (local)     (remote)
@@ -407,7 +407,7 @@ Player 0 <----100[ms]left-----------(OS10P1)---- Player 1
 
 Where the Order "OS10P0" has beed added. Plus "executeUStep" and "pushUStep" has been incremented. Now we start the fourth step, after a total of 120[ms]. Now the first packed is in the ethernet card, waiting to be read.
 
-After the net.pushOrder("OS11P0", 0), we have another order trough network, and the FIFO would looks like:
+After the net.pushOrder("OS11P0", 0), we have another order through network, and the FIFO would looks like:
 
     Player 0    Player 1
     (local)     (remote)
@@ -428,7 +428,7 @@ After the net.pushOrder("OS11P0", 0), we have another order trough network, and 
 14 [NULL     ] [NULL     ]
 15 [NULL     ] [NULL     ]
 
-At the net.step(), we'll receive a packet with the "OS8P1" order. It's taged with a UStep, which is an "universal step". It's an Uint32, and the 8 lower bits is the index in the FIFO. This way, NetGame can put it at the right place. The player number is also included in the Order. Then the FIFO will be:
+At the net.step(), we'll receive a packet with the "OS8P1" order. It's taged with a UStep, which is an "universal step". It is an Uint32, and the 8 lower bits are the index in the FIFO. This way, NetGame can put it at the right place. The player number is also included in the Order. Then the FIFO will be:
 
     Player 0    Player 1
     (local)     (remote)
@@ -451,6 +451,6 @@ At the net.step(), we'll receive a packet with the "OS8P1" order. It's taged wit
 
 This way, when the "executeUStep" will reach the UStep 8, NetGame will be able to provide an order for each players. And the game will be able to run smoothly.
 
-I hope this is clear. All other things are here for packet lost, deconnections troubles, latency changing, and slower computers handling.
+I hope this is clear. All other things are here for packet lost, disconnections troubles, latency changing, and slower computers handling.
 
 
