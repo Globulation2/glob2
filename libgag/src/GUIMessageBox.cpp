@@ -35,8 +35,7 @@ public:
 MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
 :OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
 {
-	int w=titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth;
-	addWidget(new Text(0, 20, ALIGN_LEFT, ALIGN_LEFT, font, title, w));
+	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
 
 	int dec;
 	if (titleWidth>totCaptionWidth)
