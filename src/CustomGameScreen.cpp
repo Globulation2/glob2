@@ -89,14 +89,40 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				mapInfo->setText(textTemp);
 
 				int i, j;
+				int nbTeam=sessionInfo.numberOfTeam;
+				// set the correct number of colors
 				for (i=0; i<8; i++)
 				{
 					color[i]->clearColors();
-					for (j=0; j<sessionInfo.numberOfTeam; j++)
+					for (j=0; j<nbTeam; j++)
 					{
 						color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
 					}
 					color[i]->setSelectedColor();
+				}
+				// find team for human player
+				for (i=0; i<nbTeam; i++)
+				{
+					if (sessionInfo.team[i].type==BaseTeam::T_HUMAN)
+					{
+						color[0]->setSelectedColor(i);
+						break;
+					}
+				}
+				// Fill the others
+				int c=color[0]->getSelectedColor();
+				for (i=1; i<nbTeam; i++)
+				{
+					c=(c+1)%nbTeam;
+					color[i]->setSelectedColor(c);
+					isAI[i]->setState(true);
+					isAItext[i]->setText(globalContainer->texts.getString("[ai]"));
+				}
+				// Close the rest
+				for (;i<8; i++)
+				{
+					isAI[i]->setState(false);
+					isAItext[i]->setText(globalContainer->texts.getString("[closed]"));
 				}
 			}
 			else
