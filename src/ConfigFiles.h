@@ -147,10 +147,14 @@ public:
 					stream->putback(c);
 					std::string variable, value;
 					*stream >> variable;
+					if (stream->bad())
+					{
+						std::cerr << "ConfigVector::load(" << fileName << ") : error : incomplete entry at end of file" << std::endl;
+						assert(false);
+					}
 					*stream >> value;
 					
-					if (stream->good())
-						b.lines[variable] = value;
+					b.lines[variable] = value;
 				}
 			}
 		}
@@ -171,7 +175,7 @@ public:
 		}
 		else
 		{
-			std::cerr << typeid(*this).name() << "::get(" << id << ") : warning : id is not valid, returning default" << std::endl;
+			std::cerr << "ConfigVector::get(" << id << ") : warning : id is not valid, returning default" << std::endl;
 			return &defaultEntry;
 		}
 	}

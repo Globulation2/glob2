@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <SDL_image.h>
 #include <algorithm>
+#include <iostream>
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
@@ -68,8 +69,7 @@ Sprite::RotatedImage::~RotatedImage()
 
 void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
-	if ((index<0) || (index>=(int)images.size()))
-		fprintf(stderr, "GAG : Can load index %d of %u\n", index, images.size());
+	checkBound(index);
 	assert(index>=0);
 	assert(index<(int)images.size());
 
@@ -239,7 +239,7 @@ void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
 		}
 		else
 		{
-			fprintf(stderr, "GAG : Warning, rotated image is in wrong for (%d) bpp istead of 32\n", sprite->format->BitsPerPixel);
+			std::cerr << "GAG : Sprite::loadFrame(stream, stream) : warning, rotated image is in wrong depth (" << sprite->format->BitsPerPixel << " instead of 32)" << std::endl;
 			rotated.push_back(NULL);
 		}
 	}
@@ -249,8 +249,7 @@ void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
 
 int Sprite::getW(int index)
 {
-	assert(index>=0);
-	assert(index<getFrameCount());
+	checkBound(index);
 	if (images[index])
 		return images[index]->s->w;
 	else if (rotated[index])
@@ -261,8 +260,7 @@ int Sprite::getW(int index)
 
 int Sprite::getH(int index)
 {
-	assert(index>=0);
-	assert(index<getFrameCount());
+	checkBound(index);
 	if (images[index])
 		return images[index]->s->h;
 	else if (rotated[index])
@@ -274,4 +272,24 @@ int Sprite::getH(int index)
 int Sprite::getFrameCount(void)
 {
 	return std::max(images.size(), rotated.size());
+}
+
+void Sprite::checkBound(int index)
+{
+	if ((index < 0) || (index >= getFrameCount()))
+	{
+		Toolkit::SpriteMap::const_iterator i = Toolkit::spriteMap.begin();
+		while (i != Toolkit::spriteMap.end())
+		{
+			if (i->second == this)
+			{
+				std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : out of bound access for " << i->first << std::endl;
+				assert(false);
+				return;
+			}
+			++i;
+		}
+		std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : sprite is not in the sprite server" << std::endl;
+		assert(false);
+	}
 }
