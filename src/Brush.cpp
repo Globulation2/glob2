@@ -66,18 +66,20 @@ void BrushTool::drawBrush(int x, int y)
 	y &= ~0x1f;
 	if (figure < 4)
 	{
+		int r = (getBrushWidth(figure) + getBrushHeight(figure)) * 8;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 255, 255, 255);
+			globalContainer->gfx->drawCircle(x+16, y+16, r, 255, 255, 255);
 		else
-			globalContainer->gfx->drawCircle(x+16, y+16, figure*32+16, 200, 200, 200);
+			globalContainer->gfx->drawCircle(x+16, y+16, r, 200, 200, 200);
 	}
 	else
 	{
-		int l = (figure-4)*32;
+		int w = getBrushWidth(figure) * 16;
+		int h = getBrushHeight(figure) * 16;
 		if (mode == MODE_ADD)
-			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 255, 255, 255);
+			globalContainer->gfx->drawRect(x-w+16, y-h+16, 2*w, 2*h, 255, 255, 255);
 		else
-			globalContainer->gfx->drawRect(x-l, y-l, 2*l+32, 2*l+32, 200, 200, 200);
+			globalContainer->gfx->drawRect(x-w+16, y-h+16, 2*w, 2*h, 200, 200, 200);
 	}
 }
 
@@ -85,14 +87,14 @@ void BrushTool::drawBrush(int x, int y)
 
 int BrushTool::getBrushWidth(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 1, 3, 5, 7};
+	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 5, 5, 3, 5};
 	assert(figure < BRUSH_COUNT);
 	return dim[figure];
 }
 
 int BrushTool::getBrushHeight(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 1, 3, 5, 7};
+	int dim[BRUSH_COUNT] = { 1, 3, 5, 7, 5, 5, 3, 5};
 	assert(figure < BRUSH_COUNT);
 	return dim[figure];
 }
@@ -126,22 +128,24 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 						1, 1, 1, 1, 1, 1, 1,
 						0, 1, 1, 1, 1, 1, 0,
 						0, 0, 1, 1, 1, 0, 0 };
-	int brush4[] = { 	1 };
-	int brush5[] = { 	1, 1, 1,
+	int brush4[] = { 	1, 0, 1, 0, 1,
+						0, 1, 0, 1, 0,
+						1, 0, 1, 0, 1,
+						0, 1, 0, 1, 0,
+						1, 0, 1, 0, 1 };
+	int brush5[] = { 	1, 0, 1, 0, 1,
+						0, 0, 0, 0, 0,
+						1, 0, 1, 0, 1,
+						0, 0, 0, 0, 0,
+						1, 0, 1, 0, 1 };
+	int brush6[] = { 	1, 1, 1,
 						1, 1, 1,
 						1, 1, 1 };
-	int brush6[] = {	1, 1, 1, 1, 1,
+	int brush7[] = {	1, 1, 1, 1, 1,
 						1, 1, 1, 1, 1,
 						1, 1, 1, 1, 1,
 						1, 1, 1, 1, 1,
 						1, 1, 1, 1, 1 };
-	int brush7[] = {	1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1, 1, 1, };
 	int *brushes[BRUSH_COUNT] = { brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7 };
 	
 	assert(figure<BRUSH_COUNT);
