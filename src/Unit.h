@@ -20,8 +20,11 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-#include "UnitType.h"
+#include <assert.h>
 #include <string.h>
+#include <SDL/SDL_rwops.h>
+
+#include "UnitConsts.h"
 
 class Team;
 class Race;

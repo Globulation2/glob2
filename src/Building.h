@@ -25,7 +25,6 @@
 #include "Ressource.h"
 #include "UnitType.h"
 #include "Bullet.h"
-#include "Gradient.h"
 
 class Unit;
 class Team;

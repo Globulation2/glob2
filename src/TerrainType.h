@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -17,38 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SECTOR_H
-#define __SECTOR_H
+#ifndef __TERRAIN_TYPE_H
+#define __TERRAIN_TYPE_H
 
-#include <list>
-#include <SDL/SDL_rwops.h>
-
-class Map;
-class Game;
-class Bullet;
-
-// a 16x16 piece of Map
-class Sector
+enum TerrainType
 {
-public:
-	Sector() {}
-	Sector(Game *);
-	virtual ~Sector(void);
-	// !This call is needed to use the Sector!
-	void setGame(Game *game);
-
-	void free(void);
-
-	std::list<Bullet *> bullets;
-
-	void save(SDL_RWops *stream);
-	bool load(SDL_RWops *stream, Game *game);
-
-	void step(void);
-private:
-	Map *map;
-	Game *game;
+	WATER=0,
+	SAND=1,
+	GRASS=2,
 };
 
 #endif
- 

@@ -20,11 +20,12 @@
 #ifndef __GAME_GUI_H
 #define __GAME_GUI_H
 
-#include "Header.h"
-#include "Order.h"
-#include "Game.h"
 #include <queue>
 #include <valarray>
+
+#include "Header.h"
+#include "Game.h"
+#include "Order.h"
 
 class TeamStats;
 class OverlayScreen;

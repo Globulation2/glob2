@@ -26,12 +26,15 @@
 #include <algorithm>
 #include <string.h>
 #include <math.h>
-#include "SGSL.h"
-#include "GameGUI.h"
-#include "Utilities.h"
-#include "GlobalContainer.h"
+
 #include <Toolkit.h>
 #include <StringTable.h>
+
+#include "GameGUI.h"
+#include "GlobalContainer.h"
+#include "SGSL.h"
+#include "Unit.h"
+#include "Utilities.h"
 
 Token::TokenSymbolLookupTable Token::table[] =
 {

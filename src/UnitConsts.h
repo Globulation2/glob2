@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -17,15 +17,39 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GRADIENT_H
-#define __GRADIENT_H
+#ifndef __UNIT_CONSTS_H
+#define __UNIT_CONSTS_H
 
-/*#define BUILDING_GRADIENT_W 32
-#define BUILDING_GRADIENT_H 32
-#define BUILDING_GRADIENT_W_MASK 31
-#define BUILDING_GRADIENT_H_MASK 31
-#define BUILDING_GRADIENT_DW 16
-#define BUILDING_GRADIENT_DH 16
-#define BUILDING_GRADIENT_SIZE 1024*/
+enum Abilities
+{
+	STOP_WALK=0,
+	STOP_SWIM=1,
+	STOP_FLY=2,
+	
+	WALK=3,
+	SWIM=4,
+	FLY=5,
+	BUILD=6,
+	HARVEST=7,
+	ATTACK_SPEED=8,
+	
+	ATTACK_STRENGTH=9,
+	ARMOR=10,
+	HP=11,
+	
+	HEAL=12,
+	FEED=13
+};
+const int NB_MOVE=9;
+const int NB_ABILITY=12;
+
+
+const int WORKER=0;
+const int EXPLORER=1;
+const int WARRIOR=2;
+const int NB_UNIT_TYPE=3;
+
+const int NB_UNIT_LEVELS=4;
 
 #endif
+ 

@@ -17,15 +17,17 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Building.h"
-#include "BuildingType.h"
-#include "Team.h"
-#include "Game.h"
-#include "Utilities.h"
-#include "GlobalContainer.h"
 #include <list>
 #include <math.h>
+
+#include "Building.h"
+#include "BuildingType.h"
+#include "Game.h"
+#include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include "Team.h"
+#include "Unit.h"
+#include "Utilities.h"
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {

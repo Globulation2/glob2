@@ -17,15 +17,18 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "TeamStat.h"
-#include "Team.h"
-#include "Game.h"
-#include "GlobalContainer.h"
+#include <sstream>
+
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
-#include <sstream>
+
+#include "Game.h"
+#include "GlobalContainer.h"
+#include "Team.h"
+#include "TeamStat.h"
+#include "Unit.h"
 
 TeamStats::TeamStats()
 {

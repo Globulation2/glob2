@@ -17,9 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Sector.h"
 #include "Bullet.h"
 #include "Game.h"
+#include "Sector.h"
+#include "Unit.h"
 
 Sector::Sector(Game *game)
 {

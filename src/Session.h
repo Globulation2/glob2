@@ -20,8 +20,9 @@
 #ifndef __SESSION_H
 #define __SESSION_H
 
-#include "Player.h"
 #include "MapGenerationDescriptor.h"
+#include "Player.h"
+#include "Team.h"
 
 //! Save in stream at offset the actual file pos
 #define SAVE_OFFSET(stream, offset) \
