@@ -48,6 +48,8 @@ public:
 	SessionInfo sessionInfo;
 
 protected:
+	//! Title of the screen, depends on the directory given in parameter
+	Text *title;
 	//! The ok button
 	Button *ok;
 	//! The cancel button

@@ -33,8 +33,8 @@ namespace GAGGUI
 }
 class MapPreview;
 
-
-class MultiplayersChooseMapScreen:public Screen
+//! This class is very similar to ChooseMapScreen but implements a dual list to be able to load both map and games from the same screen
+class MultiplayersChooseMapScreen : public Screen
 {
 public:
 	enum
