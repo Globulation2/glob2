@@ -191,7 +191,6 @@ void YOGScreen::paint(int x, int y, int w, int h)
 		char *text= globalContainer->texts.getString("[yog]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
 	}
-	//sendString(socket, "listenon");
 	addUpdateRect();
 }
 
