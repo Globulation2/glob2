@@ -217,8 +217,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 						for (int i=0; i<2; i++)
 						{
 							b->dirtyLocalGradient[i]=true;
-							delete b->globalGradient[i];
-							b->globalGradient[i]=NULL;
+							if (b->globalGradient[i])
+							{
+								delete b->globalGradient[i];
+								b->globalGradient[i]=NULL;
+							}
+							if (b->localRessources[i])
+							{
+								delete b->localRessources[i];
+								b->localRessources[i]=NULL;
+							}
 						}
 				}
 			}
@@ -263,6 +271,11 @@ void Game::executeOrder(Order *order, int localPlayer)
 							{
 								delete[] b->globalGradient[i];
 								b->globalGradient[i]=NULL;
+							}
+							if (b->localRessources[i])
+							{
+								delete b->localRessources[i];
+								b->localRessources[i]=NULL;
 							}
 						}
 					
@@ -1293,6 +1306,26 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
 	}
+	
+	// We draw debug area:
+	if (false)
+	{
+		assert(teams[0]);
+		Building *b=NULL;
+		//b=teams[0]->myBuildings[0];
+		if (teams[0]->virtualBuildings.size())
+			b=*teams[0]->virtualBuildings.begin();
+		if (b && b->localRessources[1])
+			for (int y=top-1; y<=bot; y++)
+				for (int x=left-1; x<=right; x++)
+					if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
+					{
+						int lx=(x+viewportX-b->posX+15+32)&31;
+						int ly=(y+viewportY-b->posY+15+32)&31;
+						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localRessources[1][lx+ly*32]);
+					}
+	}
+	
 	// We draw debug area:
 	if (false)
 	{

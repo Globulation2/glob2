@@ -1116,49 +1116,17 @@ void Unit::handleMovement(void)
 				movement=MOV_HARVESTING;
 			else
 			{
-				Uint32 teamNumber=owner->teamNumber;
 				bool canSwim=performance[SWIM];
 				assert(attachedBuilding);
-				int range=attachedBuilding->unitStayRange;
-				int min=range+1;
-				int destinationPurprose=-1;
-				for (int r=0; r<MAX_RESSOURCES; r++)
+				if (attachedBuilding->localRessources[canSwim]==NULL)
+					map->updateLocalRessources(attachedBuilding, canSwim);
+				if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 				{
-					int dist;
-					if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &dist) && dist<=min)
-						destinationPurprose=r;
-				}
-				if (destinationPurprose>=0)
-				{
-					int dummyDist;
-					if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist, 255))
-					{
-						if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy))
-						{
-							if (verbose)
-								printf("Unit gid=%d found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
-							directionFromDxDy();
-							movement=MOV_GOING_DXDY;
-						}
-						else
-						{
-							if (verbose)
-								printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
-
-							assert(false);//You can remove this assert(), but *do* notice me!
-							movement=MOV_RANDOM;
-						}
-					}
-					else
-					{
-						assert(false);//You can remove this assert(), but *do* notice me!
-						movement=MOV_RANDOM;
-					}
+					directionFromDxDy();
+					movement=MOV_GOING_DXDY;
 				}
 				else
 					movement=MOV_RANDOM;
-				
-				
 			}
 		}
 		break;

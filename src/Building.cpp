@@ -29,8 +29,11 @@
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	globalGradient[0]=NULL;
-	globalGradient[1]=NULL;
+	for (int i=0; i<2; i++)
+	{
+		globalGradient[i]=NULL;
+		localRessources[i]=NULL;
+	}
 	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
 }
@@ -116,6 +119,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	for (int i=0; i<2; i++)
 	{
 		globalGradient[i]=NULL;
+		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 	}
 }
@@ -183,6 +187,11 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		{
 			delete[] globalGradient[i];
 			globalGradient[i]=NULL;
+		}
+		if (localRessources[i])
+		{
+			delete[] localRessources[i];
+			localRessources[i]=NULL;
 		}
 		dirtyLocalGradient[i]=true;
 	}
