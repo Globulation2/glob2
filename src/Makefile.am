@@ -91,8 +91,6 @@ MultiplayersOfferScreen.h\
 MultiplayersOfferScreen.cpp \
 YOGScreen.h \
 YOGScreen.cpp \
-YOGConnector.h \
-YOGConnector.cpp \
 SettingsScreen.h \
 SettingsScreen.cpp \
 MultiplayersHostScreen.h \

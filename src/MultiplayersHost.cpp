@@ -21,7 +21,6 @@
 #include "MultiplayersHost.h"
 #include "GlobalContainer.h"
 #include "GAG.h"
-#include "YOGConnector.h"
 #include "NetDefine.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
