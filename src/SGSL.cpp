@@ -84,12 +84,10 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_SCIENCE_B, "School" },
 	{ S_DEFENCE_B, "Tower" },
 	{ S_MARKET_B, "Market"},
-	{ S_WOODWALL_B, "WoodWall"},
 	{ S_WALL_B, "Wall"},
 	{ S_EXPLOR_F, "ExplorationFlag"},
 	{ S_FIGHT_F, "WarFlag"},
 	{ S_CLEARING_F, "ClearingFlag"},
-	{ S_FORBIDDEN_F, "ForbiddenFlag"},
 	{ S_ALLIANCESCREEN, "AllianceScreen"},
 	{ S_BUILDINGTAB, "BuildingTab"},
 	{ S_FLAGTAB, "FlagTab"},
@@ -359,7 +357,7 @@ bool Story::testCondition(GameGUI *gui)
 				{
 					gui->enableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
 				}
-				else if (object <= Token::S_FORBIDDEN_F)
+				else if (object <= Token::S_CLEARING_F)
 				{
 					gui->enableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}
@@ -381,7 +379,7 @@ bool Story::testCondition(GameGUI *gui)
 				{
 					gui->disableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
 				}
-				else if (object <= Token::S_FORBIDDEN_F)
+				else if (object <= Token::S_CLEARING_F)
 				{
 					gui->disableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}

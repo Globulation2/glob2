@@ -1748,7 +1748,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					int typeId = IntBuildingType::shortNumberFromType(type.c_str());
+					int typeId = IntBuildingType::shortNumberFromType(type);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
 					
 					globalContainer->littleFont->pushColor(128, 128, 128);
