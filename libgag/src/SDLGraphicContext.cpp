@@ -393,15 +393,15 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 
 	SDL_LockSurface(surface);
 	/* Set the pixels */
-    switch(surface->format->BitsPerPixel)
+	switch(surface->format->BitsPerPixel)
 	{
-        case 8:
+	case 8:
 		{
 			Uint8 *bits = ((Uint8 *)surface->pixels)+y*surface->pitch+x;
 			for (int n=l-1; n>=0; --n)
 			{
 				*bits = (Uint8)pixel;
-				bits+=surface->pitch;
+				bits += surface->pitch;
 			}
 		}
 		break;
@@ -409,14 +409,37 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 		{
 			int increment=(surface->pitch>>1);
 			Uint16 *bits = ((Uint16 *)surface->pixels)+y*increment+x;
-			for (int n=l-1; n>=0; --n)
+			
+			if (a == ALPHA_OPAQUE)
 			{
-				*bits = (Uint16)pixel;
-				bits+=increment;
+				for (int n=l-1; n>=0; --n)
+				{
+					*bits = (Uint16)pixel;
+					bits += increment;
+				}
+			}
+			else
+			{
+				Uint8 dr, dg, db, sa;
+				Uint32 nr, ng, nb;
+				Uint32 na = 255-a;
+				Uint32 ar = a*r;
+				Uint32 ag = a*g;
+				Uint32 ab = a*b;
+				
+				for (int n=l-1; n>=0; --n)
+				{
+					SDL_GetRGBA(*bits, surface->format, &dr, &dg, &db, &sa);
+					nr = (ar+na*dr)>>8;
+					ng = (ag+na*dg)>>8;
+					nb = (ab+na*db)>>8;
+					*bits = (Uint16)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					bits += increment;
+				}
 			}
 		}
 		break;
-        case 24:
+		case 24:
 		{
 			 /* Format/endian independent */
 			Uint8 *bits = ((Uint8 *)surface->pixels)+y*surface->pitch+x*3;
@@ -429,18 +452,41 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 				*((bits)+surface->format->Rshift/8) = nr;
 				*((bits)+surface->format->Gshift/8) = ng;
 				*((bits)+surface->format->Bshift/8) = nb;
-				bits+=surface->pitch;
-            }
+				bits += surface->pitch;
+			}
 		}
 		break;
-        case 32:
+		case 32:
 		{
 			int increment=(surface->pitch>>2);
 			Uint32 *bits = ((Uint32 *)surface->pixels)+y*increment+x;
-			for (int n=l-1; n>=0; --n)
+			
+			if (a == ALPHA_OPAQUE)
 			{
-                *((Uint32 *)(bits)) = (Uint32)pixel;
-				bits+=increment;
+				for (int n=l-1; n>=0; --n)
+				{
+					*((Uint32 *)(bits)) = (Uint32)pixel;
+					bits += increment;
+				}
+			}
+			else
+			{
+				Uint8 dr, dg, db, sa;
+				Uint32 nr, ng, nb;
+				Uint32 na = 255-a;
+				Uint32 ar = a*r;
+				Uint32 ag = a*g;
+				Uint32 ab = a*b;
+				
+				for (int n=l-1; n>=0; --n)
+				{
+					SDL_GetRGBA(*bits, surface->format, &dr, &dg, &db, &sa);
+					nr = (ar+na*dr)>>8;
+					ng = (ag+na*dg)>>8;
+					nb = (ab+na*db)>>8;
+					*bits = (Uint32)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					bits += increment;
+				}
 			}
 		}
 		break;
@@ -496,16 +542,38 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 			Uint8 *bits= ((Uint8 *)surface->pixels)+y*surface->pitch+x;
 			for (int n=l-1; n>=0; --n)
 			{
-                *bits++ = (Uint8)pixel;
+				*bits++ = (Uint8)pixel;
 			}
 		}
 		break;
         case 16:
 		{
 			Uint16 *bits= ((Uint16 *)surface->pixels)+y*(surface->pitch>>1)+x;
-			for (int n=l-1; n>=0; --n)
+			
+			if (a == ALPHA_OPAQUE)
 			{
-                *bits++ = (Uint16)pixel;
+				for (int n=l-1; n>=0; --n)
+				{
+					*bits++ = (Uint16)pixel;
+				}
+			}
+			else
+			{
+				Uint8 dr, dg, db, sa;
+				Uint32 nr, ng, nb;
+				Uint32 na = 255-a;
+				Uint32 ar = a*r;
+				Uint32 ag = a*g;
+				Uint32 ab = a*b;
+				
+				for (int n=l-1; n>=0; --n)
+				{
+					SDL_GetRGBA(*bits, surface->format, &dr, &dg, &db, &sa);
+					nr = (ar+na*dr)>>8;
+					ng = (ag+na*dg)>>8;
+					nb = (ab+na*db)>>8;
+					*bits++ = (Uint16)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+				}
 			}
 		}
 		break;
@@ -516,12 +584,12 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 			Uint8 *bits= ((Uint8 *)surface->pixels)+y*surface->pitch+x*3;
 			for (int n=l-1; n>=0; --n)
 			{
-                nr = (pixel>>surface->format->Rshift)&0xFF;
-                ng = (pixel>>surface->format->Gshift)&0xFF;
-                nb = (pixel>>surface->format->Bshift)&0xFF;
-                *((bits)+surface->format->Rshift/8) = nr;
-                *((bits)+surface->format->Gshift/8) = ng;
-                *((bits)+surface->format->Bshift/8) = nb;
+				nr = (pixel>>surface->format->Rshift)&0xFF;
+				ng = (pixel>>surface->format->Gshift)&0xFF;
+				nb = (pixel>>surface->format->Bshift)&0xFF;
+				*((bits)+surface->format->Rshift/8) = nr;
+				*((bits)+surface->format->Gshift/8) = ng;
+				*((bits)+surface->format->Bshift/8) = nb;
 				bits+=3;
             }
 		}
@@ -529,11 +597,32 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
         case 32:
 		{
 			Uint32 *bits= ((Uint32 *)surface->pixels)+y*(surface->pitch>>2)+x;
-			for (int n=l-1; n>=0; --n)
+			
+			if (a == ALPHA_OPAQUE)
 			{
-                *bits++ = (Uint32)pixel;
+				for (int n=l-1; n>=0; --n)
+				{
+					*bits++ = (Uint32)pixel;
+				}
 			}
-
+			else
+			{
+				Uint8 dr, dg, db, sa;
+				Uint32 nr, ng, nb;
+				Uint32 na = 255-a;
+				Uint32 ar = a*r;
+				Uint32 ag = a*g;
+				Uint32 ab = a*b;
+				
+				for (int n=l-1; n>=0; --n)
+				{
+					SDL_GetRGBA(*bits, surface->format, &dr, &dg, &db, &sa);
+					nr = (ar+na*dr)>>8;
+					ng = (ag+na*dg)>>8;
+					nb = (ab+na*db)>>8;
+					*bits++ = (Uint32)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+				}
+			}
 		}
 		break;
 		default:

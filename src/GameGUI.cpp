@@ -2051,15 +2051,27 @@ void GameGUI::drawBuildingInfos(void)
 					int dividend=-u->insideTimeout*128+128-u->delta/2;
 					int divisor=1+maxTimeTo;
 					int left=dividend/divisor;
-					int alpha=((dividend%divisor)*256)/divisor;
-					//printf("dividend=%d, divisor=%d, left=%d, alpha=%d\n", dividend, divisor, left, alpha);
-					if (alpha>255)
-						alpha=255;
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 63, 111, 149, alpha);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149, 255-alpha);
-					//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 17, 30, 64);
-					//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149);
-					//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
+					int alpha=((dividend%divisor)*255)/divisor;
+					printf("dividend=%d, divisor=%d, left=%d, alpha=%d\n", dividend, divisor, left, alpha);
+					
+					if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+					{
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 17, 30, 64);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
+					}
+					else
+					{
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-2, ypos, 7, 17, 30, 64, alpha);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 17, 30, 64);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 17, 30, 64);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+2, ypos, 7, 17, 30, 64, 255-alpha);
+						
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 63, 111, 149, alpha);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149);
+						globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 63, 111, 149, 255-alpha);
+					}
 				}
 			}
 			
