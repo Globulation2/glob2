@@ -845,7 +845,8 @@ shortTypeNum 6
 
 type school
 
-gameSpriteImage 41
+gameSprite data/gfx/school1c
+gameSpriteImage 0
 miniSpriteImage 41
 
 fillable 1
