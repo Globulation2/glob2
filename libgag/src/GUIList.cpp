@@ -221,7 +221,7 @@ namespace GAGGUI
 	
 		while ((nextSize<h-4) && ((size_t)i<strings.size()))
 		{
-			parent->getSurface()->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
+			drawItem(x+2, yPos, static_cast<size_t>(i+disp));
 			if (i+static_cast<int>(disp) == nth)
 				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 			nextSize+=textHeight;
@@ -230,6 +230,11 @@ namespace GAGGUI
 		}
 		
 		parent->getSurface()->setClipRect();
+	}
+	
+	void List::drawItem(int x, int y, size_t element)
+	{
+		parent->getSurface()->drawString(x, y, fontPtr, (strings[element]).c_str());
 	}
 	
 	void List::addText(const std::string &text, size_t pos)
