@@ -2020,7 +2020,7 @@ void Map::updateGlobalGradientSmall(Uint8 *gradient)
 	// make the first list:
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] == 255)
+			if (gradient[(y << wDec) | x] >= 3)
 				listedAddr[listCountWrite++] = (y << wDec) | x;
 	
 	size_t listCountRead = 0;
@@ -2062,6 +2062,7 @@ void Map::updateGlobalGradientSmall(Uint8 *gradient)
 			}
 		}
 	}
+	assert(listCountWrite<size);
 	delete[] listedAddr;
 }
 void Map::updateGlobalGradientBig(Uint8 *gradient)
@@ -2072,7 +2073,7 @@ void Map::updateGlobalGradientBig(Uint8 *gradient)
 	// make the first list:
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (gradient[(y << wDec) | x] == 255)
+			if (gradient[(y << wDec) | x] >= 3)
 				listedAddr[listCountWrite++] = (y << wDec) | x;
 	
 	size_t listCountRead = 0;
@@ -2114,6 +2115,7 @@ void Map::updateGlobalGradientBig(Uint8 *gradient)
 			}
 		}
 	}
+	assert(listCountWrite<size);
 	delete[] listedAddr;
 }
 

@@ -177,7 +177,8 @@ private:
 	
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
-
+	void updateGlobalGradient(Uint8 *gradient);
+	
 	std::list<Project *> projects;
 	
 	Uint32 timer;
