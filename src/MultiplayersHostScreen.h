@@ -20,10 +20,17 @@
 #ifndef __MULTIPLAYERHOSTSCREEN_H
 #define __MULTIPLAYERHOSTSCREEN_H
 
-#include "SessionConnection.h"
-#include "MultiplayersHost.h"
-#include "MultiplayersJoin.h"
-#include "GAG.h"
+
+#include <GUIBase.h>
+
+class Text;
+class TextArea;
+class TextInput;
+class TextButton;
+class ColorButton;
+class SessionInfo;
+class MultiplayersHost;
+class MultiplayersJoin;
 
 class MultiplayersHostScreen: public Screen
 {
@@ -39,12 +46,12 @@ public:
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64
 	};
-	
+
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
-	
+
 private:
 	int timeCounter;
-	
+
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);
 	virtual ~MultiplayersHostScreen();
@@ -62,14 +69,14 @@ public:
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *startTimer;
-	
+
 	TextInput *textInput;
 	TextArea *chatWindow;
-	
+
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
-	
+
 	SessionInfo *savedSessionInfo;
 };
 
