@@ -55,10 +55,12 @@ protected:
 		ITEM(Sint32, sizesCount)
 		//! The number of veriety this ressource has
 		ITEM(Sint32, varietiesCount)
-		//! Does this ressource shrinks when harvested
-		ITEM(Sint32, shrinkable)
-		//! ~Can we fully harvest this ressource
-		ITEM(Sint32, eternal)
+		//! Does this ressource shrinks when harvested. A non-shrinkable ressource is by definition eternal.
+		ITEM(bool, shrinkable)
+		//! If ethernal, a ressource cannot be fully harvested. There is always an amout of 1.
+		ITEM(bool, eternal)
+		//! If granular, we can decrement one by one. Otherwise, the ressource is fully taken
+		ITEM(bool, granular)
 	CLASSEND;
 public:
 	RessourceType();
