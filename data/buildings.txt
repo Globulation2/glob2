@@ -1110,6 +1110,7 @@ type defencetower
 
 gameSprite data/gfx/defencetower1b
 gameSpriteImage 0
+gameSpriteCount 3
 miniSprite data/gfx/minidefencetower1b
 miniSpriteImage 0
 
