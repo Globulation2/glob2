@@ -932,7 +932,8 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 				Order *order=ordersQueue[player][orderStep];
 				if (order->getOrderType()!=orderType)
 					fclose(logFile);
-				assert(order->getOrderType()==orderType);
+				if (orderType!=ORDER_WAITING_FOR_PLAYER)
+					assert(order->getOrderType()==orderType);
 				delete order;
 				ordersQueue[player][orderStep]=NULL;
 			}
