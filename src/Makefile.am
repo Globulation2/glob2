@@ -134,6 +134,8 @@ BuildingsTypes.cpp \
 RessourcesTypes.h \
 GameUtilities.h \
 GameUtilities.cpp \
+BitArray.h \
+BitArray.cpp \
 Brush.h \
 Brush.cpp
 

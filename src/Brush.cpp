@@ -18,6 +18,7 @@
 */
 
 #include "Brush.h"
+#include "BitArray.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 
@@ -95,7 +96,18 @@ int BrushTool::getBrushHeight(unsigned figure)
 	return dim[figure];
 }
 
-int BrushTool::getBrushValue(unsigned figure, int x, int y)
+int BrushTool::getBrushDimX(unsigned figure)
+{
+	return (getBrushWidth(figure) - 1) >> 1;
+}
+
+int BrushTool::getBrushDimY(unsigned figure)
+{
+	return (getBrushHeight(figure) - 1) >> 1;
+}
+
+
+bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 {
 	int brush0[] = { 	1 };
 	int brush1[] = { 	0, 1, 0,
@@ -135,5 +147,53 @@ int BrushTool::getBrushValue(unsigned figure, int x, int y)
 	assert(x<getBrushHeight(figure));
 	assert(y<getBrushWidth(figure));
 	
-	return brushes[figure][y*getBrushWidth(figure)+x];
+	return (brushes[figure][y*getBrushWidth(figure)+x] != 0);
+}
+
+bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim)
+{
+	assert(array);
+	assert(dim);
+
+	if (applications.size() > 0)
+	{
+		// Get dimensions
+		dim->minX = applications[0].x - BrushTool::getBrushDimX(applications[0].figure);
+		dim->maxX = applications[0].x + BrushTool::getBrushDimX(applications[0].figure) + 1;
+		dim->minY = applications[0].y - BrushTool::getBrushDimY(applications[0].figure);
+		dim->maxY = applications[0].y + BrushTool::getBrushDimY(applications[0].figure) + 1;
+		for (size_t i=1; i<applications.size(); ++i)
+		{
+			dim->minX = std::min<int>(dim->minX, applications[i].x - BrushTool::getBrushDimX(applications[i].figure));
+			dim->maxX = std::max<int>(dim->maxX, applications[i].x + BrushTool::getBrushDimX(applications[i].figure) + 1);
+			dim->minY = std::min<int>(dim->minY, applications[i].y - BrushTool::getBrushDimY(applications[i].figure));
+			dim->maxY = std::max<int>(dim->maxY, applications[i].y + BrushTool::getBrushDimY(applications[i].figure) + 1);
+		}
+		
+		// Fill array
+		int arrayH = dim->maxY-dim->minY;
+		int arrayW = dim->maxX-dim->minX;
+		size_t size = static_cast<size_t>(arrayW * arrayH);
+		array->resize(size, false);
+		
+		for (size_t i=0; i<applications.size(); ++i)
+		{
+			int realXMin = applications[i].x - BrushTool::getBrushDimX(applications[i].figure);
+			int realYMin = applications[i].y - BrushTool::getBrushDimY(applications[i].figure);
+			for (int y=0; y<BrushTool::getBrushHeight(applications[i].figure); y++)
+			{
+				int realY = y + realYMin;
+				int arrayY = realY - dim->minY;
+				for (int x=0; x<BrushTool::getBrushWidth(applications[i].figure); x++)
+				{
+					int realX = x + realXMin;
+					int arrayX = realX - dim->minX;
+					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
+					array->set(arrayPos, BrushTool::getBrushValue(applications[i].figure, x, y));
+				}
+			}
+		}
+		return true;
+	}
+	return false;
 }

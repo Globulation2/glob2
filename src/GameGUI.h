@@ -144,8 +144,8 @@ private:
 	void drawInGameTextInput(void);
 
 	void moveFlag(int mx, int my, bool drop);
-	//! Of viewport have moved and a flag is selected, update it's position
-	void flagSelectedStep(void);
+	//! One viewport has moved and a flag or a brush is selected, update its position
+	void dragStep(void);
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
 
@@ -188,6 +188,7 @@ private:
 	
 	// Brushes
 	BrushTool forbiddenBrush;
+	BrushAccumulator brushAccumulator;
 
 	// What's visible or hidden on GUI
 	std::vector<int> buildingsChoice;

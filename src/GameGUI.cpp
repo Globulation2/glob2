@@ -230,17 +230,26 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	}
 }
 
-void GameGUI::flagSelectedStep(void)
+void GameGUI::dragStep(void)
 {
-	// update flag
-	if (selectionMode == BUILDING_SELECTION)
+	int mx, my;
+	Uint8 button = SDL_GetMouseState(&mx, &my);
+	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
 	{
-		int mx, my;
-		Building* selBuild=selection.building;
-		Uint8 button=SDL_GetMouseState(&mx, &my);
-		if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
+		// Update flag
+		if (selectionMode == BUILDING_SELECTION)
+		{
+			Building* selBuild=selection.building;
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 				moveFlag(mx, my, false);
+		}
+		// Update brush
+		else if (selectionMode==BRUSH_SELECTION)
+		{
+			int mapX, mapY;
+			game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
+			brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, forbiddenBrush.getFigure()));
+		}
 	}
 }
 
@@ -283,7 +292,7 @@ void GameGUI::step(void)
 	viewportY&=game.map.getMaskH();
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
-		flagSelectedStep();
+		dragStep();
 
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
@@ -777,6 +786,16 @@ void GameGUI::processEvent(SDL_Event *event)
 				if (mx<globalContainer->gfx->getW()-128)
 					moveFlag(mx, my, true);
 			}
+			// We send the order
+			else if (selectionMode==BRUSH_SELECTION)
+			{
+				if (brushAccumulator.applications.size() > 0)
+				{
+					orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, forbiddenBrush.getType(), &brushAccumulator));
+					brushAccumulator.applications.clear();
+				}
+			}
+	
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
@@ -1107,10 +1126,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		viewportY=(panViewY+dy)&game.map.getMaskH();
 	}
 
-	if (button&SDL_BUTTON(1))
-		if (mx<globalContainer->gfx->getW()-128)
-			if ((selectionMode==BUILDING_SELECTION) && selectionPushed && (selection.building->type->isVirtual))
-				moveFlag(mx, my, false);
+	dragStep();
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
@@ -1142,10 +1158,9 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		// TODO : put here the correct code to handle forbidden drawing : queuing until release, compressing and commiting
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		orderQueue.push_back(new OrderAlterateForbidden(localTeamNo, mapX, mapY, forbiddenBrush.getType(), forbiddenBrush.getFigure()));
+		brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, forbiddenBrush.getFigure()));
 	}
 	else if (putMark)
 	{

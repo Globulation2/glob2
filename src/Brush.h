@@ -20,6 +20,17 @@
 #ifndef __BRUSH_H
 #define __BRUSH_H
 
+#include <vector>
+
+//! A click of the brush tool to the map
+struct BrushApplication
+{
+	BrushApplication(int x, int y, int figure) { this->x=x; this->y=y; this->figure=figure; }
+	int x;
+	int y;
+	int figure;
+};
+
 //! A brush tool is the GUI and the settings container for a brush's operations
 class BrushTool
 {
@@ -44,16 +55,34 @@ public:
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	unsigned getFigure(void) { return figure; }
 	
+	//! Return the full width of a brush
 	static int getBrushWidth(unsigned figure);
+	//! Return the full height of a brush
 	static int getBrushHeight(unsigned figure);
-	static int getBrushValue(unsigned figure, int x, int y);
+	//! Return the half width minus 1 of a brush (its "ray" in x)
+	static int getBrushDimX(unsigned figure);
+	//! Return the half height minus 1 of a brush (its "ray" in y)
+	static int getBrushDimY(unsigned figure);
+	//! Return the value of a pixel of a given brush
+	static bool getBrushValue(unsigned figure, int x, int y);
 };
-/*
-class Brush
+
+namespace Utilities
+{
+	class BitArray;
+}
 
 class BrushAccumulator
 {
+public:
+	struct AreaDimensions
+	{
+		unsigned minX, minY, maxX, maxY;
+	};
+	
+	std::vector<BrushApplication> applications;
 
+	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
 };
-*/
+
 #endif
