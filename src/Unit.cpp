@@ -893,6 +893,8 @@ void Unit::handleDisplacement(void)
 			targetY=attachedBuilding->posY;
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
+			if (verbose)
+				printf("guid=%d, distance=%d, range=%d\n", gid, distance, range);
 			if (distance<=range)
 			{
 				if (typeNum==WORKER)
