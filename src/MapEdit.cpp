@@ -301,10 +301,9 @@ void MapEdit::handleMapClick(void)
 
 void MapEdit::handleMapClick(int mx, int my)
 {
-	int winX=0, winW=globalContainer->gfx->getW()-128, winY=0, winH=globalContainer->gfx->getH();
 	static int ax=0, ay=0, atype=0;
 	int x=ax, y=ay;
-	bool needRedraw=false;
+	bool mapModified=false;
 
 	if (editMode==EM_TERRAIN)
 	{
@@ -312,13 +311,6 @@ void MapEdit::handleMapClick(int mx, int my)
 		if ((ax!=x)||(ay!=y)||(atype!=type))
 		{
 			game.map.setUMatPos(x, y, (TerrainType)type, terrainSize);
-			needRedraw=true;
-
-			winX=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-64;
-			winW=(terrainSize+3)<<5;
-			winY=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-64;
-			winH=(terrainSize+3)<<5;
-
 			int dec;
 			if ((type==WATER) || (type==SAND))
 			{
@@ -326,21 +318,7 @@ void MapEdit::handleMapClick(int mx, int my)
 					dec=3;
 				else
 					dec=1;
-
-				int delX, delY, delW, delH;
-				delX=0;
-				delY=0;
-				delW=0;
-				delH=0;
-
-				SDL_Rect r;
-				if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize+dec, &r, Game::DEL_BUILDING))
-				{
-					game.map.mapCaseToDisplayable(r.x, r.y, &delX, &delY, viewportX, viewportY);
-					delW=r.w<<5;
-					delH=r.h<<5;
-				}
-				Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
+				game.removeUnitAndBuildingAndFlags(x, y, terrainSize+dec, Game::DEL_BUILDING);
 			}
 			if (type==SAND)
 				game.map.setNoRessource(x, y, terrainSize+1);
@@ -348,6 +326,7 @@ void MapEdit::handleMapClick(int mx, int my)
 				game.map.setNoRessource(x, y, terrainSize+3);
 			
 			updateUnits(x-(terrainSize>>1)-2, y-(terrainSize>>1)-2, terrainSize+3, terrainSize+3);
+			mapModified = true;
 		}
 	}
 	else if (editMode==EM_RESSOURCE)
@@ -356,23 +335,8 @@ void MapEdit::handleMapClick(int mx, int my)
  		if ((ax!=x)||(ay!=y)||(atype!=type))
 		{
 			game.map.setRessource(x, y, type, terrainSize);
-			needRedraw=true;
-
-			winX=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-			winW=(terrainSize+1)<<5;
-			winY=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-			winH=(terrainSize+1)<<5;
-
-			int delX, delY, delW, delH;
-
-			SDL_Rect r;
-			if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize, &r, Game::DEL_BUILDING|Game::DEL_UNIT))
-			{
-				game.map.mapCaseToDisplayable(r.x, r.y, &delX, &delY, viewportX, viewportY);
-				delW=r.w<<5;
-				delH=r.h<<5;
-				Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
-			}
+			game.removeUnitAndBuildingAndFlags(x, y, terrainSize, Game::DEL_BUILDING|Game::DEL_UNIT);
+			mapModified = true;
 		}
 	}
 	else if (editMode==EM_UNIT)
@@ -389,14 +353,8 @@ void MapEdit::handleMapClick(int mx, int my)
 				game.teams[team]->startPosY=viewportY;
 				game.teams[team]->startPosSet=1;
 			}
-			
 			game.regenerateDiscoveryMap();
-
-			winX=mx&0xFFFFFFE0;
-			winY=my&0xFFFFFFE0;
-			winW=32;
-			winH=32;
-			needRedraw=true;
+			mapModified = true;
 		}
 	}
 	else if (editMode==EM_BUILDING)
@@ -432,37 +390,28 @@ void MapEdit::handleMapClick(int mx, int my)
 				}
 			}
 			game.regenerateDiscoveryMap();
-			winX=(x-viewportX)&game.map.getMaskW();
-			winY=(y-viewportY)&game.map.getMaskH();
-			winW=bt->width<<5;
-			winH=bt->height<<5;
-			needRedraw=true;
+			mapModified = true;
 		}
 	}
 	else if (editMode==EM_DELETE)
 	{
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
-		SDL_Rect r;
-		if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize, &r))
+		if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize))
 		{
 			game.regenerateDiscoveryMap();
-			game.map.mapCaseToDisplayable(r.x, r.y, &winX, &winY, viewportX, viewportY);
-			winW=r.w<<5;
-			winH=r.h<<5;
-
-			needRedraw=true;
+			mapModified = true;
 		}
 	}
 
-	if (needRedraw)
+	if (mapModified)
 	{
 		mapHasBeenModiffied();
 		renderMiniMap();
 	}
 
-	atype=type;
-	ax=x;
-	ay=y;
+	atype = type;
+	ax = x;
+	ay = y;
 }
 
 void MapEdit::paintCoordinates(void)
@@ -1085,7 +1034,11 @@ void MapEdit::updateUnits(int x, int y, int w, int h)
 				int id=Unit::GIDtoID(gid);
 				assert(game.teams[team]);
 				assert(game.teams[team]->myUnits[id]);
-				game.teams[team]->myUnits[id]->selectPreferedMovement();
+				// remove non-flying units that can't swim if there is water
+				if (!game.teams[team]->myUnits[id]->performance[FLY] && game.map.isWater(dx, dy) && !game.teams[team]->myUnits[id]->performance[SWIM])
+					game.removeUnitAndBuildingAndFlags(dx, dy, Game::DEL_UNIT);
+				else
+					game.teams[team]->myUnits[id]->selectPreferedMovement();
 			}
 		}
 	for (int dy=y; dy<y+h; dy++)

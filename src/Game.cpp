@@ -1291,7 +1291,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 	return b;
 }
 
-bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags)
+bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 {
 	bool found=false;
 	if (flags & DEL_GROUND_UNIT)
@@ -1302,10 +1302,6 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 			int id=Unit::GIDtoID(gauid);
 			int team=Unit::GIDtoTeam(gauid);
 			map.setAirUnit(x, y, NOGUID);
-			r->x=x;
-			r->y=y;
-			r->w=1;
-			r->h=1;
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
 			found=true;
@@ -1319,10 +1315,6 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 			int id=Unit::GIDtoID(gguid);
 			int team=Unit::GIDtoTeam(gguid);
 			map.setGroundUnit(x, y, NOGUID);
-			r->x=x;
-			r->y=y;
-			r->w=1;
-			r->h=1;
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
 			found=true;
@@ -1336,12 +1328,8 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 			int id=Building::GIDtoID(gbid);
 			int team=Building::GIDtoTeam(gbid);
 			Building *b=teams[team]->myBuildings[id];
-			r->x=b->posX;
-			r->y=b->posY;
-			r->w=b->type->width;
-			r->h=b->type->height;
 			if (!b->type->isVirtual)
-				map.setBuilding(r->x, r->y, r->w, r->h, NOGBID);
+				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
 			delete b;
 			teams[team]->myBuildings[id]=NULL;
 			found=true;
@@ -1356,10 +1344,6 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 					teams[ti]->virtualBuildings.erase(bi);
 					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;;
 					delete *bi;
-					r->x=x;
-					r->y=y;
-					r->w=1;
-					r->h=1;
 					found=true;
 					break;
 				}
@@ -1367,27 +1351,16 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 	return found;
 }
 
-bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags)
+bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags)
 {
-	int sts=size>>1;
-	int stp=(~size)&1;
-	SDL_Rect rl;
-	r->x=x;
-	r->y=y;
-	r->w=0;
-	r->h=0;
-	bool somethingInRect=false;
+	int sts = size>>1;
+	int stp = (~size)&1;
+	bool somethingInRect = false;
 	
 	for (int scx=(x-sts); scx<=(x+sts-stp); scx++)
 		for (int scy=(y-sts); scy<=(y+sts-stp); scy++)
-			if (removeUnitAndBuildingAndFlags((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags))
-				if (somethingInRect)
-					Utilities::rectExtendRect(&rl, r);
-				else
-				{
-					*r=rl;
-					somethingInRect=true;
-				}
+			if (removeUnitAndBuildingAndFlags((scx&(map.getMaskW())), (scy&(map.getMaskH())), flags))
+				somethingInRect = true;
 	
 	return somethingInRect;
 }

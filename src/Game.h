@@ -117,8 +117,8 @@ public:
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
-	bool removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags);
-	bool removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
+	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
+	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 
 	bool checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
 	bool checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow=true);
