@@ -22,6 +22,7 @@
 #include "GlobalContainer.h"
 #include "NetDefine.h"
 #include <assert.h>
+#include "Marshaling.h"
 
 NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 {

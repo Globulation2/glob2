@@ -28,7 +28,7 @@
 #include "MapEdit.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
-#include "YOGScreen.h"
+#include "YOGPreScreen.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
 #include "MultiplayersHost.h"
@@ -67,13 +67,24 @@ void Glob2::drawYOGSplashScreen(void)
 
 void Glob2::mutiplayerYOG(void)
 {
-	YOGScreen yogScreen;
+	printf("Glob2:: starting YOGPreScreen...\n");
+	YOGPreScreen yogPreScreen;
+	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 50);
+	if (yogReturnCode==YOGPreScreen::CANCEL)
+		return;
+	if (yogReturnCode==-1)
+	{
+		isRunning=false;
+		return;
+	}
+	printf("Glob2::YOGPreScreen has ended ...\n");
+	/*YOGScreen yogScreen;
 	drawYOGSplashScreen();
 	
 	// try to open YOG
 	if (globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
 	{
-		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
+		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 50);
 		globalContainer->yog.forceDisconnect();
 		printf("Engine::yogReturnCode=%d\n", yogReturnCode);
 		if (yogReturnCode==YOGScreen::CANCEL)
@@ -84,12 +95,13 @@ void Glob2::mutiplayerYOG(void)
 			return;
 		}
 		printf("Engine::YOG game has ended ...\n");
-	}
+	}*/
 }
 
 int Glob2::runHostServer(int argc, char *argv[])
 {
-	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->settings.userName);
+	//TODO: reimplément runHostServer !!! zzz
+	/*printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->settings.userName);
 	if (!globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
 	{
 		printf("Glob2::runHostServer():connection to YOG failed!\n");
@@ -142,7 +154,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 		// Watch stdin (fd 0) to see when it has input.
 		FD_ZERO(&rfds);
 		FD_SET(0, &rfds);
-		// Wait up to one second. */
+		// Wait up to one second.
 		tv.tv_sec = 0;
 		tv.tv_usec = 0;
 		
@@ -180,9 +192,9 @@ int Glob2::runHostServer(int argc, char *argv[])
 		if (frameWaitTime>0)
 			SDL_Delay(frameWaitTime);
 	}
-	/*multiplayersHost->onTimer(tick);
-	multiplayersHost->startGame();
-	multiplayersHost->stopHosting();*/
+	//multiplayersHost->onTimer(tick);
+	//multiplayersHost->startGame();
+	//multiplayersHost->stopHosting();
 	
 	
 	delete multiplayersHost;
@@ -190,7 +202,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	printf("Glob2::runHostServer(): disconnecting YOG.\n");
 	globalContainer->yog.forceDisconnect();
 	
-	printf("Glob2::runHostServer():end.\n");
+	printf("Glob2::runHostServer():end.\n");*/
 
 	return 0;
 }
@@ -302,13 +314,13 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::GAME_SETUP:
 			{
 				SettingsScreen settingsScreen;
-				settingsScreen.execute(globalContainer->gfx, 20);
+				settingsScreen.execute(globalContainer->gfx, 50);
 			}
 			break;
 			case MainMenuScreen::EDITOR:
 			{
 				HowNewMapScreen howNewMapScreen;
-				int rc=howNewMapScreen.execute(globalContainer->gfx, 20);
+				int rc=howNewMapScreen.execute(globalContainer->gfx, 50);
 				if (rc==HowNewMapScreen::NEW)
 				{
 					NewMapScreen newMapScreen;
@@ -325,7 +337,7 @@ int Glob2::run(int argc, char *argv[])
 				else if (rc==HowNewMapScreen::LOAD)
 				{
 					MultiplayersChooseMapScreen multiplayersChooseMapScreen;
-					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
+					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
 					if (rc==MultiplayersChooseMapScreen::OK)
 					{
 						MapEdit mapEdit;

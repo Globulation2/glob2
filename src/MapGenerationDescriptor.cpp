@@ -19,6 +19,7 @@
 
 #include "MapGenerationDescriptor.h"
 #include "Utilities.h"
+#include "Marshaling.h"
 
 MapGenerationDescriptor::MapGenerationDescriptor()
 {

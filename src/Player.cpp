@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "NetConsts.h"
 #include "GlobalContainer.h"
+#include "Marshaling.h"
 
 BasePlayer::BasePlayer()
 {

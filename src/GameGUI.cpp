@@ -23,6 +23,7 @@
 #include "GameGUIDialog.h"
 #include "GameGUILoadSave.h"
 #include "Utilities.h"
+#include "YOG.h"
 
 
 InGameTextInput::InGameTextInput()
@@ -196,24 +197,22 @@ void GameGUI::step(void)
 		addMessage(globalContainer->texts.getString("[building has been finished]"));
 		
 	// do a yog step
-	globalContainer->yog.step();
+	globalContainer->yog->step();
 
 	// display chat messages
-	while (globalContainer->yog.isChatMessage())
+	while (globalContainer->yog->isMessage())
 	{
-		char msg[YOG::IRC_MESSAGE_SIZE+1];
-		snprintf(msg, YOG::IRC_MESSAGE_SIZE, "<%s @ %s> %s", 
-			globalContainer->yog.getChatMessageSource(),
-			globalContainer->yog.getMessageDiffusion(),
-			globalContainer->yog.getChatMessage());
-		msg[YOG::IRC_MESSAGE_SIZE]=0;
+		char msg[YOG::MAX_MESSAGE_SIZE];
+		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "%s:%s", globalContainer->yog->getMessageSource(), globalContainer->yog->getMessage());
+		msg[YOG::MAX_MESSAGE_SIZE]=0;
 		addMessage(msg);
-		globalContainer->yog.freeChatMessage();
+		globalContainer->yog->freeMessage();
 	}
 	
 	// discard chat infos
-	while(globalContainer->yog.isInfoMessage())
-		globalContainer->yog.freeInfoMessage();
+	/*TODO:is is still a use for info messages ?
+	while(globalContainer->yog->isInfoMessage())
+		globalContainer->yog->freeInfoMessage();*/
 }
 
 void GameGUI::synchroneStep(void)
@@ -423,7 +422,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				break;
 				
 				case '/':
-				globalContainer->yog.sendCommand(inputText);
+				globalContainer->yog->sendMessage(inputText);
 				break;
 				
 				default:

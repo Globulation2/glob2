@@ -67,6 +67,8 @@ namespace Utilities
 	
 	Sint32 log2(Sint32 a);
 	Sint32 power2(Sint32 a);
+	
+	int strnlen(const char *s, int max);
 };
 
 #endif

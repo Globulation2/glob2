@@ -20,7 +20,7 @@
 #ifndef __NET_CONSTS_H
 #define __NET_CONSTS_H
 
-#define SERVER_PORT 7007
+#define SERVER_PORT 7008
 #define ANY_PORT 0
 
 // 1s-3.5s-7s-14s

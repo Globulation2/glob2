@@ -24,29 +24,7 @@
 #include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
 
-YOGScreen::YOGScreen()
-{
-	multiplayersJoin=new MultiplayersJoin(true);
-
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
-	addWidget(new TextButton(440, 300, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[update list]"), UPDATE_LIST));
-
-	gameList=new List(20, 60, 600, 220, globalContainer->standardFont);
-	addWidget(gameList);
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
-	addWidget(textInput);
-	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
-	addWidget(chatWindow);
-
-	timerCounter=0;
-}
-
-YOGScreen::~YOGScreen()
-{
-	delete multiplayersJoin;
-}
-
+// TODO: is it anyway to do this cleaner ?
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
 // NOTE angel > WIN32 use _stricmp and not _strcasecmp sorry...
@@ -55,43 +33,42 @@ YOGScreen::~YOGScreen()
 #	define snprintf _snprintf
 #endif
 
+YOGScreen::YOGScreen()
+{
+	multiplayersJoin=new MultiplayersJoin(true);
+
+	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
+	
+	gameList=new List(20, 60, 600, 220, globalContainer->standardFont);
+	addWidget(gameList);
+	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
+	addWidget(textInput);
+	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
+	addWidget(chatWindow);
+
+	timerCounter=0;
+	selectedGameInfo=NULL;
+}
+
+YOGScreen::~YOGScreen()
+{
+	delete multiplayersJoin;
+	if (selectedGameInfo)
+		delete selectedGameInfo;
+}
+
+
 void YOGScreen::updateList(void)
 {
 	gameList->clear();
-
-	if (globalContainer->yog.resetGameLister())
-	{
-		do
-		{
-			const char *source=globalContainer->yog.getGameSource();
-			const char *identifier=globalContainer->yog.getGameIdentifier();
-			const char *version=globalContainer->yog.getGameVersion();
-			const char *comment=globalContainer->yog.getGameComment();
-			//const char *hostname=globalContainer->yog.getGameHostname();
-			selectedGameInfo=*globalContainer->yog.getGameInfo();
-
-			char data[128];
-			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
-			gameList->addText(data);
-		}
-		while (globalContainer->yog.getNextGame());
-	}
+	for (std::list<YOG::GameInfo>::iterator game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
+		gameList->addText(game->name);
 }
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==SCREEN_CREATED)
-	{
-		globalContainer->yog.setChatChannel(globalContainer->texts.getString("[yog-chat]"));
-		globalContainer->yog.joinChannel();
-		globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
-	}
-	else if (action==SCREEN_DESTROYED)
-	{
-		globalContainer->yog.quitChannel();
-		globalContainer->yog.quitChannel(DEFAULT_GAME_CHAN);
-	}
-	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==CANCEL)
 		{
@@ -101,39 +78,25 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (par1==CREATE_GAME)
 		{
 			multiplayersJoin->quitThisGame();
-
 			Engine engine;
-
-			// quit chat
-			globalContainer->yog.quitChannel();
 			// host game and wait for players
 			int rc=engine.initMutiplayerHost(true);
-			// quit game listing
-			globalContainer->yog.quitChannel(DEFAULT_GAME_CHAN);
-
 			// execute game
 			if (rc==Engine::EE_NO_ERROR)
 			{
+				globalContainer->yog->gameStarted();
 				if (engine.run()==-1)
 					endExecute(EXIT);
 					//run=false;
+				globalContainer->yog->gameEnded();
 			}
 			else if (rc==-1)
 				endExecute(-1);
-
-			// rejoin chat and game listing
-			globalContainer->yog.joinChannel();
-			globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
-
 			// redraw all stuff
 			updateList();
 			gameList->commit();
 			dispatchPaint(gfxCtx);
-		}
-		else if (par1==UPDATE_LIST)
-		{
-			updateList();
-			gameList->commit();
+			globalContainer->yog->unshareGame();
 		}
 		else if (par1==-1)
 		{
@@ -146,35 +109,37 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		globalContainer->yog.sendCommand(textInput->text);
-
+		globalContainer->yog->sendMessage(textInput->text);
+		/*
 		chatWindow->addText("<");
 		chatWindow->addText(globalContainer->settings.userName);
 		chatWindow->addText("> ");
 		chatWindow->addText(textInput->text);
 		chatWindow->addText("\n");
-		chatWindow->scrollToBottom();
-		
+		chatWindow->scrollToBottom();*/
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		printf("YOG : Selected hostname is [%d]\n", par1);
-		if (globalContainer->yog.resetGameLister())
+		printf("YOG : LIST_ELEMENT_SELECTED\n");
+		if (!globalContainer->yog->newGameList(false))
 		{
+			std::list<YOG::GameInfo>::iterator game;
 			int i=0;
-			do
-			{
-				if (par1==i)
-				{
-					selectedGameInfo=*globalContainer->yog.getGameInfo();
-					multiplayersJoin->tryConnection(&selectedGameInfo);
+			for (game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
+				if (i==par1)
 					break;
-				}
-				i++;
+				else
+					i++;
+			printf("i=%d\n", i);
+			if (game!=globalContainer->yog->games.end())
+			{
+				selectedGameInfo=new YOG::GameInfo(*game);
+				multiplayersJoin->tryConnection(selectedGameInfo);
 			}
-			while (globalContainer->yog.getNextGame());
 		}
+		else
+			;//TODO: a better communication system between YOG and YOGScreen!
 	}
 }
 
@@ -192,35 +157,36 @@ void YOGScreen::paint(int x, int y, int w, int h)
 void YOGScreen::onTimer(Uint32 tick)
 {
 	// update list each one or second
-	if (((timerCounter++)&0x1F)==0)
+	if (globalContainer->yog->newGameList(true))
 	{
 		updateList();
 		gameList->commit();
 	}
 
-	globalContainer->yog.step();
-	while (globalContainer->yog.isChatMessage())
+	globalContainer->yog->step();
+	while (globalContainer->yog->isMessage())
 	{
 		chatWindow->addText("<");
-		chatWindow->addText(globalContainer->yog.getChatMessageSource());
+		chatWindow->addText(globalContainer->yog->getMessageSource());
 		chatWindow->addText("> ");
-		chatWindow->addText(globalContainer->yog.getChatMessage());
+		chatWindow->addText(globalContainer->yog->getMessage());
 		chatWindow->addText("\n");
 		chatWindow->scrollToBottom();
-		globalContainer->yog.freeChatMessage();
+		globalContainer->yog->freeMessage();
 	}
-
-	while (globalContainer->yog.isInfoMessage())
+	
+	/*zzz
+	while (globalContainer->yog->isInfoMessage())
 	{
-		switch (globalContainer->yog.getInfoMessageType())
+		switch (globalContainer->yog->getInfoMessageType())
 		{
 			case YOG::IRC_MSG_JOIN:
 			{
-				const char *diffusion=globalContainer->yog.getInfoMessageDiffusion();
+				const char *diffusion=globalContainer->yog->getInfoMessageDiffusion();
 				assert(diffusion);
 				if (strncmp(diffusion, DEFAULT_GAME_CHAN, YOG::IRC_CHANNEL_SIZE)!=0)
 				{
-					chatWindow->addText(globalContainer->yog.getInfoMessageSource());
+					chatWindow->addText(globalContainer->yog->getInfoMessageSource());
 					chatWindow->addText(" ");
 					chatWindow->addText(globalContainer->texts.getString("[has joined]"));
 					chatWindow->addText(" ");
@@ -232,7 +198,7 @@ void YOGScreen::onTimer(Uint32 tick)
 
 			case YOG::IRC_MSG_QUIT:
 			{
-				chatWindow->addText(globalContainer->yog.getInfoMessageSource());
+				chatWindow->addText(globalContainer->yog->getInfoMessageSource());
 				chatWindow->addText(" ");
 				chatWindow->addText(globalContainer->texts.getString("[has quit]"));
 				chatWindow->addText("\n");
@@ -242,8 +208,8 @@ void YOGScreen::onTimer(Uint32 tick)
 			default:
 			break;
 		}
-		globalContainer->yog.freeInfoMessage();
-	}
+		globalContainer->yog->freeInfoMessage();
+	}*/
 
 	// the game connection part:
 	multiplayersJoin->onTimer(tick);
@@ -251,7 +217,7 @@ void YOGScreen::onTimer(Uint32 tick)
 	{
 		printf("YOG::joining because state=%d.\n", multiplayersJoin->waitingState);
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
-		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 20);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 50);
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			printf("YOG::unable to join DISCONNECT returned.\n");
@@ -260,7 +226,9 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			Engine engine;
 			engine.startMultiplayer(multiplayersJoin);
+			globalContainer->yog->gameStarted();
 			int rc=engine.run();
+			globalContainer->yog->gameEnded();
 			delete multiplayersJoin;
 			multiplayersJoin=new MultiplayersJoin(true);
 			assert(multiplayersJoin);

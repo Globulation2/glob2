@@ -27,7 +27,7 @@ SettingsScreen::SettingsScreen()
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);
-	userName=new TextInput(120, 280, 400, 30, globalContainer->standardFont, globalContainer->settings.userName, true);
+	userName=new TextInput(120, 280, 400, 30, globalContainer->standardFont, globalContainer->userName, true);
 	addWidget(userName);
 	
 	ok    =new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
@@ -43,7 +43,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==OK)
-			strncpy(globalContainer->settings.userName, userName->text, BasePlayer::MAX_NAME_LENGTH);
+			globalContainer->setUserName(userName->text);
 		else if (par1==CANCEL)
 			globalContainer->texts.setLang(oldLanguage);
 		else

@@ -31,7 +31,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	multiplayersJoin->serverName[127]=0;
 	addWidget(serverName);
 
-	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
+	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false);
 	strncpy(multiplayersJoin->playerName, playerName->text, 32);
 	multiplayersJoin->playerName[31]=0;
 	addWidget(playerName);
@@ -112,7 +112,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
-		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 20);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 50);
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			dispatchPaint(gfxCtx);

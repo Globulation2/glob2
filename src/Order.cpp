@@ -18,6 +18,7 @@
 */
 
 #include "Order.h"
+#include "Marshaling.h"
 
 Order::Order(void)
 {

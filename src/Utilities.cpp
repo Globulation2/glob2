@@ -419,6 +419,14 @@ namespace Utilities
 		assert(a<32);
 		return 1<<a;
 	}
+	
+	int strnlen(const char *s, int max)
+	{
+		for (int i=0; i<max; i++)
+			if (*(s+i)==0)
+				return i;
+		return max;
+	}
 }
 
 

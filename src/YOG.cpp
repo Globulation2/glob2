@@ -1,642 +1,586 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
-    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-/*
-	TODO to finish :
-	
-	DONE - implement a way to activate new game claiming
-	DONE - call yog.step from main game, multiplayerhost,
-	and yogscreen
-	DONE - do a lookup from nick to IP using IRC whois
-	command (need to parse the command).
-	TODO - clean and test all stuff
-
-*/
-
+ *  Ysagoon Online Gaming
+ *  Meta Server with chat for Ysagoon game (first is glob2)
+ *  (c) 2002 Luc-Olivier de Charrière <nuage@ysagoon.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+ 
+// TODO:remove useless includes
+#include <SDL/SDL.h>
+#include <SDL/SDL_endian.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_net.h>
+#include <stdio.h>
+#include <assert.h>
+#include <sys/types.h>
+#include <string.h>
+#include "YOGConsts.h"
 #include "YOG.h"
-#define DEFAULT_FW_CHAN "#yog-fw"
+#include "Marshaling.h"
+#include "Utilities.h"
+#include "GlobalContainer.h"
 
 YOG::YOG()
 {
 	socket=NULL;
-	socketSet=NULL;
-	isSharedGame=false;
-	sharedGame[0]=0;
+	yogGlobalState=YGS_NOT_CONNECTING;
+	lastMessageID=0;
+	
+	yogSharingState=YSS_NOT_SHARING_GAME;
+	sharingGameName[0]=0;
 }
 
 YOG::~YOG()
 {
-	forceDisconnect();
+	if (socket)
+		SDLNet_UDP_Close(socket);
+	
+	//TODO: check connection with YOGServer.
 }
 
-bool YOG::connect(const char *serverName, int serverPort, const char *nick)
+void YOG::send(YOGMessageType v, Uint8 *data, int size)
 {
-	IPaddress ip;
-	socketSet=SDLNet_AllocSocketSet(1);
-	if(SDLNet_ResolveHost(&ip, (char *)serverName, serverPort)==-1)
+	UDPpacket *packet=SDLNet_AllocPacket(size+4);
+	if (packet==NULL)
+		printf("Failed to alocate packet!\n");
 	{
-		fprintf(stderr, "YOG : ResolveHost: %s\n", SDLNet_GetError());
-		return false;
+		Uint8 data[4];
+		data[0]=v;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		memcpy((char *)packet->data, data, 4);
+	}
+	packet->len=size+4;
+	memcpy((char *)packet->data+4, data, size);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		printf("Failed to send the packet!\n");
+}
+
+void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size+4);
+	if (packet==NULL)
+		printf("Failed to alocate packet!\n");
+	{
+		Uint8 data[4];
+		data[0]=v;
+		data[1]=id;
+		data[2]=0;
+		data[3]=0;
+		memcpy((char *)packet->data, data, 4);
+	}
+	packet->len=size+4;
+	memcpy((char *)packet->data+4, data, size);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		printf("Failed to send the packet!\n");
+}
+
+void YOG::send(YOGMessageType v)
+{
+	Uint8 data[4];
+	data[0]=v;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	if (packet==NULL)
+		printf("Failed to alocate packet!\n");
+
+	packet->len=4;
+	memcpy((char *)packet->data, data, 4);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		printf("Failed to send the packet!\n");
+}
+
+void YOG::send(YOGMessageType v, Uint8 id)
+{
+	Uint8 data[4];
+	data[0]=v;
+	data[1]=id;
+	data[2]=0;
+	data[3]=0;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	if (packet==NULL)
+		printf("Failed to alocate packet!\n");
+
+	packet->len=4;
+	memcpy((char *)packet->data, data, 4);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		printf("Failed to send the packet!\n");
+}
+
+void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
+{
+	printf("YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>24)&0xFF, (ip>>16)&0xFF, (ip>>8)&0xFF, (ip>>0)&0xFF, port);
+	if (data[2]!=0 || data[3]!=0)
+	{
+		printf("bad packet.\n");
+		return;
+	}
+	printf("YOG::data=[%d.%d.%d.%d]\n", data[0], data[1], data[2], data[3]);
+	switch (data[0])
+	{
+	case YMT_BAD:
+		printf("YOG::bad packet.\n");
+	break;
+	case YMT_MESSAGE:
+	{
+		Uint8 messageID=data[1];
+		send(YMT_MESSAGE, messageID);
+		
+		bool already=false;
+		for (std::list<Message>::iterator mit=receivedMessages.begin(); mit!=receivedMessages.end(); ++mit)
+			if (mit->messageID==messageID)
+			{
+				already=true;
+				break;
+			}
+		if (!already)
+		{
+			Message m;
+			strncpy(m.text, (char *)data+4, 256);
+			if (m.text[size-4]!=0)
+				printf("YOG::warning, non-zero ending string!\n");
+			assert(size-4<256);
+			m.text[size-4]=0;
+			m.textLength=strlen(m.text)+1;
+			//printf("client:%s\n", s);
+			m.messageID=messageID;
+			m.timeout=0;
+			m.TOTL=3;
+			strncpy(m.userName, (char *)data+4+m.textLength, 32);
+			if (m.userName[31]!=0)
+				printf("YOG::warning, non-zero ending userName!\n");
+			m.userName[31]=0;
+			m.userNameLength=strlen(m.text)+1;
+			printf("YOG:new message:%s:%s\n", m.userName, m.text);
+			receivedMessages.push_back(m);
+		}
+	}
+	break;
+	case YMT_SEND_MESSAGE:
+	{
+		if (sendingMessages.size()>0)
+		{
+			Uint8 messageID=data[1];
+			std::list<Message>::iterator mit=sendingMessages.begin();
+			if (mit->messageID==messageID)
+			{
+				printf("YOG::Message (%d) has arrived (%s)\n", messageID, mit->text);
+				sendingMessages.erase(mit);
+				break;
+			}
+			else
+				printf("YOG::Warning, message (%d) confirmed, but message (%d) is being sended!\n", messageID, mit->messageID);
+		}
+	}
+	break;
+	case YMT_CONNECTING:
+	{
+		printf("YOG:connected\n");
+		yogGlobalState=YGS_CONNECTED;
+	}
+	break;
+	case YMT_DECONNECTING:
+	{
+		printf("YOG:deconnected\n");
+		yogGlobalState=YGS_NOT_CONNECTING;
+	}
+	break;
+	case YMT_SHARING_GAME:
+	{
+		printf("YOG:game %s is shared\n", sharingGameName);
+		yogSharingState=YSS_SHARED_GAME;
+	}
+	break;
+	case YMT_STOP_SHARING_GAME:
+	{
+		printf("YOG:game %s is unshared\n", sharingGameName);
+		yogSharingState=YSS_NOT_SHARING_GAME;
+		
+		gamesTimeout=SECOND_TIMEOUT; // We wait 1 sec before requesting the game list, only to use less brandwith.
+		gamesTOTL=3;
+	}
+	break;
+	case YMT_REQUEST_SHARED_GAMES_LIST:
+	{
+		int nbGames=(int)getUint32(data, 4);
+		if (size>48+(4+2+32+128)*nbGames)
+		{
+			printf("YOG::we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
+			break;
+		}
+		printf("YOG:we received the %d games list\n", nbGames);
+		games.clear();
+		int index=8;
+		for (int i=0; i<nbGames; i++)
+		{
+			GameInfo game;
+			game.ip.host=getUint32(data, index);
+			index+=4;
+			game.ip.port=getUint16(data, index);
+			index+=2;
+			int l;
+			l=Utilities::strnlen((char *)data+index, 32)+1;
+			//printf("l=%d.\n", l);
+			memcpy(game.userName, data+index, l);
+			//printf("game.userName=%s.\n", game.userName);
+			//game.userName[31]=0;
+			index+=l;
+			l=Utilities::strnlen((char *)data+index, 128)+1;
+			//printf("l=%d.\n", l);
+			memcpy(game.name, data+index, l);
+			//printf("game.name=%s.\n", game.name);
+			game.name[127]=0;
+			index+=l;
+			assert(index<=size);
+			games.push_back(game);
+			printf("YOG::game %d name %s host = %s\n", i, game.name, game.userName);
+		}
+		assert(index==size);
+		gamesTimeout=LONG_NETWORK_TIMEOUT;
+		gamesTOTL=3;
+		newGameListAviable=true;
+	}
+	break;
+	case YMT_CONNECTION_PRESENCE:
+	{
+		presenceTOTL=3;
+	}
+	break;
+	case YMT_CLOSE_YOG:
+		printf("YOG:: YOG is dead !\n"); //TODO: create a deconnected method
+	break;
 	}
 
-	socket=SDLNet_TCP_Open(&ip);
-	if(!socket)
+}
+
+bool YOG::enableConnection(const char *userName)
+{
+	memset(this->userName, 0, 32);
+	strncpy(this->userName, userName, 32);
+	this->userName[31]=0;
+	
+	if (socket)
+		SDLNet_UDP_Close(socket);
+	
+	socket=SDLNet_UDP_Open(0);
+	if (!socket)
 	{
-		fprintf(stderr, "YOG : TCP_Open: %s\n", SDLNet_GetError());
+		printf("YOG::failed to open a socket!\n");
 		return false;
 	}
-
-	SDLNet_TCP_AddSocket(socketSet, socket);
-
-	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef Glob2_User", nick);
-	sendString(command);
-	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", nick);
-	sendString(command);
-
-	strncpy(this->nick, nick, IRC_NICK_SIZE);
-	this->nick[IRC_NICK_SIZE]=0;
-
+	
+	int rv=SDLNet_ResolveHost(&serverIP, YOG_SERVER_IP, YOG_SERVER_PORT);
+	if (rv==-1)
+	{
+		printf("YOG::failed to resolve YOG host name!\n");
+		return false;
+	}
+	
+	globalContainer->pushUserName(this->userName);
+	
+	yogGlobalState=YGS_CONNECTING;
+	sendingMessages.clear();
+	receivedMessages.clear();
+	lastMessageID=0;
+	
+	connectionTimeout=2;//2 instead of 0 to share brandwith with others timouts
+	connectionTOTL=3;
+	
+	games.clear();
+	gamesTimeout=4;//4 instead of 0 to share brandwith with others timouts
+	gamesTOTL=3;
+	
+	presenceTimeout=6;//5 instead of 0 to share brandwith with others timouts
+	presenceTOTL=3;
+	
+	printf("YOG::enableConnection(%s)\n", userName);
+	
 	return true;
 }
 
-void YOG::forceDisconnect(void)
+void YOG::deconnect()
 {
-	if (socket)
+	globalContainer->popUserName();
+	
+	if (yogGlobalState>=YGS_CONNECTING)
+		yogGlobalState=YGS_DECONNECTING;
+	else
+		yogGlobalState=YGS_NOT_CONNECTING;;
+	connectionTimeout=0;
+	connectionTOTL=3;
+	
+	if (yogSharingState>=YSS_SHARING_GAME)
 	{
-		SDLNet_TCP_Close(socket);
-		socket=NULL;
-	}
-	if (socketSet)
-	{
-		SDLNet_FreeSocketSet(socketSet);
-		socketSet=NULL;
+		yogSharingState=YSS_STOP_SHARING_GAME;
+		sharingGameTimeout=0;
+		sharingGameTOTL=3;
 	}
 }
 
-void YOG::interpreteIRCMessage(const char *message)
+void YOG::step()
 {
-	char tempMessage[IRC_MESSAGE_SIZE];
-	char *prefix;
-	char *cmd;
-	char *source;
-
-	strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
-
-	// get informations about packet, homemade parser
-	if (tempMessage[0]==':')
+	if (socket)
 	{
-		int i=1;
-		while ((tempMessage[i]!=' ') && (tempMessage[i]!='!') && (tempMessage[i]!=0))
-			i++;
-		if (tempMessage[i]=='!')
+		switch(yogGlobalState)
 		{
-			tempMessage[i]=0;
-			source=tempMessage+1;
-			prefix=strtok(&tempMessage[i+1], " ");
-			cmd=strtok(NULL, " ");
-		}
-		else if (tempMessage[i]==' ')
+		case YGS_DECONNECTING:
 		{
-			tempMessage[i]=0;
-			source=tempMessage+1;
-			cmd=strtok(&tempMessage[i+1], " ");
-			prefix=NULL;
-		}
-		else
-		{
-			source=NULL;
-			prefix=NULL;
-			cmd=NULL;
-			return;
-		}
-	}
-	else
-	{
-		source=NULL;
-		prefix=NULL;
-		cmd=strtok(tempMessage, " ");
-	}
-
-	// this is a debug printf to reverse engineer IRC protocol
-	//printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
-
-	if (strcasecmp(cmd, "PRIVMSG")==0)
-	{
-		char *diffusion=strtok(NULL, " :");
-		if ((diffusion) && (strncmp(diffusion, DEFAULT_FW_CHAN, IRC_CHANNEL_SIZE)==0))
-		{
-			char *nick=strtok(NULL, " :\0");
-			char *port=strtok(NULL, " :\0");
-
-			if ((nick) && (port) && (prefix) && (strncmp(this->nick, nick, IRC_NICK_SIZE)==0))
-			{
-				FirewallActivation fwAct;
-
-				char *startIp;
-				if ((startIp=strrchr(prefix, '@'))!=NULL)
+			if (yogSharingState<=YSS_NOT_SHARING_GAME && connectionTimeout--<=0)
+				if (connectionTOTL--<=0)
 				{
-					startIp++;
-					strncpy(fwAct.hostname, startIp, FW_ACT_HOSTNAME_SIZE+prefix-startIp);
+					yogGlobalState=YGS_NOT_CONNECTING;
+					printf("YOG::unable to deconnect!\n");
 				}
 				else
 				{
-					strncpy(fwAct.hostname, prefix, FW_ACT_HOSTNAME_SIZE);
+					printf("YOG::sending deconnection request...\n");
+					send(YMT_DECONNECTING);
+					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
-				fwAct.hostname[FW_ACT_HOSTNAME_SIZE]=0;
-
-				fwAct.port=atoi(port);
-
-				firewallActivations.push_back(fwAct);
-				//printf("YOG : UDP : %s request UDP packet on port %d\n", fwAct.hostname, fwAct.port);
-			}
 		}
-		else if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))
+		break;
+		case YGS_CONNECTING:
 		{
-			// filter data to game list
-			char *identifier=strtok(NULL, " :\0");
-			char *version=strtok(NULL, " :\0");
-			char *comment=strtok(NULL, ":\0");
-
-			if ((source!=NULL) && (identifier!=NULL) && (version!=NULL) && (comment!=NULL))
-			{
-				GameInfo msg;
-
-				strncpy(msg.source,  source, IRC_NICK_SIZE);
-				msg.source[IRC_NICK_SIZE]=0;
-
-				strncpy(msg.identifier, identifier, GAMEINFO_ID_SIZE);
-				msg.identifier[GAMEINFO_ID_SIZE]=0;
-
-				strncpy(msg.version, version, GAMEINFO_VERSION_SIZE);
-				msg.version[GAMEINFO_VERSION_SIZE]=0;
-
-				strncpy(msg.comment, comment, GAMEINFO_COMMENT_SIZE);
-				msg.comment[GAMEINFO_COMMENT_SIZE]=0;
-
-				if (prefix)
+			if (connectionTimeout--<=0)
+				if (connectionTOTL--<=0)
 				{
-					char *startIp;
-					if ((startIp=strrchr(prefix, '@'))!=NULL)
+					yogGlobalState=YGS_UNABLE_TO_CONNECT;
+					printf("YOG::unable to connect!\n");
+				}
+				else
+				{
+					printf("YOG::sending connection request...\n");
+					send(YMT_CONNECTING, (Uint8 *)userName, 32);
+					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
+				}
+		}
+		break;
+		case YGS_CONNECTED:
+		{
+			switch (yogSharingState)
+			{
+			case YSS_NOT_SHARING_GAME:
+				if (gamesTimeout--<=0)
+				{
+					if (gamesTOTL--<=0)
 					{
-						startIp++;
-						strncpy(msg.hostname, startIp, GAMEINFO_HOSTNAME_SIZE+prefix-startIp);
+						printf("YOG:Failed to get the shared games list!\n");
+						gamesTimeout=MAX_NETWORK_TIMEOUT;
+						gamesTOTL=3;
 					}
 					else
 					{
-						strncpy(msg.hostname, prefix, GAMEINFO_HOSTNAME_SIZE);
-					}
-					msg.hostname[GAMEINFO_HOSTNAME_SIZE]=0;
-				}
-				else
-				{
-					msg.hostname[0]=0;
-				}
-
-				msg.updatedTick=SDL_GetTicks();
-
-				// search game with same source, and replace it
-				std::vector<GameInfo>::iterator alreadyExists;
-				bool isNew=true;
-
-				for (alreadyExists=gameInfos.begin(); alreadyExists!=gameInfos.end(); ++alreadyExists)
-				{
-					if (strncmp((*alreadyExists).source,  msg.source, IRC_NICK_SIZE)==0)
-					{
-						(*alreadyExists)=msg;
-						isNew=false;
-						break;
+						printf("YOG:Requesting the shared games list...\n");
+						send(YMT_REQUEST_SHARED_GAMES_LIST);
+						gamesTimeout=LONG_NETWORK_TIMEOUT;
 					}
 				}
-
-				if (isNew)
-					gameInfos.push_back(msg);
-			}
-		}
-		else
-		{
-			// normal chat message
-			ChatMessage msg;
-
-			char *message=strtok(NULL, "\0");
-			message=strchr(message, ':');
-
-			if (message && (*(++message)))
-			{
-				strncpy(msg.source,  source, IRC_NICK_SIZE);
-				msg.source[IRC_NICK_SIZE]=0;
-
-				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-				msg.diffusion[IRC_CHANNEL_SIZE]=0;
-
-				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-				msg.message[IRC_MESSAGE_SIZE]=0;
-
-				messages.push_back(msg);
-			}
-		}
-	}
-	else if (strcasecmp(cmd, "JOIN")==0)
-	{
-		char *diffusion=strtok(NULL, " :\0");
-		InfoMessage msg;
-
-		msg.type=IRC_MSG_JOIN;
-
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE]=0;
-
-		if (diffusion)
-		{
-			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-			msg.diffusion[IRC_CHANNEL_SIZE]=0;
-		}
-		else
-			msg.diffusion[0]=0;
-
-		infoMessages.push_back(msg);
-	}
-	else if (strcasecmp(cmd, "QUIT")==0)
-	{
-		InfoMessage msg;
-
-		msg.type=IRC_MSG_QUIT;
-
-		strncpy(msg.source,  source, IRC_NICK_SIZE);
-		msg.source[IRC_NICK_SIZE]=0;
-
-		msg.diffusion[0]=0;
-
-		infoMessages.push_back(msg);
-	}
-}
-
-void YOG::step(void)
-{
-	if (!socket)
-		return;
-
-	while (1)
-	{
-		int check=SDLNet_CheckSockets(socketSet, 0);
-		if (check==1)
-		{
-			char data[IRC_MESSAGE_SIZE];
-			bool res=getString(data);
-			if (res)
-			{
-				printf("YOG (IRC) has received [%s]\n", data);
-				interpreteIRCMessage(data);
-			}
-			else
-			{
-				printf("YOG (IRC) has received an error\n");
-				break;
-			}
-		}
-		if (check==-1)
-			printf("YOG (IRC) has a select error\n");
-		if (check==0)
 			break;
-	}
-
-	// delete timeout game
-	std::vector<GameInfo>::iterator gameToDeleteIt=gameInfos.begin();
-	while (gameToDeleteIt!=gameInfos.end())
-	{
-		if (((*gameToDeleteIt).updatedTick+RESEND_GAME_TIMEOUT)<SDL_GetTicks())
-			gameToDeleteIt=gameInfos.erase(gameToDeleteIt);
-		else
-			++gameToDeleteIt;
-	}
-
-	// resend game if timout between two send has elapsed
-	if (isSharedGame)
-	{
-		if (sharedGameLastUpdated+RESEND_GAME_INTERVAL<SDL_GetTicks())
-		{
-			sendString(sharedGame);
-			sharedGameLastUpdated=SDL_GetTicks();
-		}
-	}
-}
-
-
-bool YOG::isChatMessage(void)
-{
-	return messages.size()>0;
-}
-
-const char *YOG::getChatMessage(void)
-{
-	if (messages.size()>0)
-		return messages[0].message;
-	else
-		return NULL;
-}
-
-const char *YOG::getChatMessageSource(void)
-{
-	if (messages.size()>0)
-		return messages[0].source;
-	else
-		return NULL;
-}
-
-const char *YOG::getMessageDiffusion(void)
-{
-	if (messages.size()>0)
-		return messages[0].diffusion;
-	else
-		return NULL;
-}
-
-void YOG::freeChatMessage(void)
-{
-	if (messages.size()>0)
-		messages.erase(messages.begin());
-}
-
-
-bool YOG::isInfoMessage(void)
-{
-	return infoMessages.size()>0;
-}
-
-const YOG::InfoMessageType YOG::getInfoMessageType(void)
-{
-	if (infoMessages.size()>0)
-		return infoMessages[0].type;
-	else
-		return IRC_MSG_NONE;
-}
-
-const char *YOG::getInfoMessageSource(void)
-{
-	if (infoMessages.size()>0)
-		return infoMessages[0].source;
-	else
-		return NULL;
-}
-
-const char *YOG::getInfoMessageDiffusion(void)
-{
-	if (infoMessages.size()>0)
-		return infoMessages[0].diffusion;
-	else
-		return NULL;
-}
-
-void YOG::freeInfoMessage(void)
-{
-	if (infoMessages.size()>0)
-		infoMessages.erase(infoMessages.begin());
-}
-
-
-void YOG::sendCommand(const char *message)
-{
-	char command[IRC_MESSAGE_SIZE];
-	if (message[0]=='/')
-	{
-		char tempMessage[IRC_MESSAGE_SIZE];
-		strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
-		char *cmd=strtok(tempMessage, " \t");
-		char *arg1=strtok(NULL, " \t");
-		char *arg2=strtok(NULL, "\0");
-		printf ("c = [%s] a1 = [%s] a2 = [%s]\n", cmd, arg1, arg2);
-		if ((strcasecmp(cmd, "/msg")==0) && arg1 && arg2)
-		{
-			snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", arg1, arg2);
-			sendString(command);
-		}
-		else if ((strcasecmp(cmd, "/whois")==0) && arg1)
-		{
-			snprintf(command, IRC_MESSAGE_SIZE, "WHOIS %s", arg1);
-			sendString(command);
-		}
-		else if ((strcasecmp(cmd, "/join")==0) && arg1)
-		{
-			joinChannel(arg1);
-		}
-		else if ((strcasecmp(cmd, "/part")==0) && arg1)
-		{
-			quitChannel(arg1);
-		}
-	}
-	else
-	{
-		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", chatChan, message);
-		printf("YOG::sendString(%s).\n", command);
-		sendString(command);
-	}
-}
-
-void YOG::setChatChannel(const char *chan)
-{
-	strncpy(chatChan, chan, IRC_CHANNEL_SIZE);
-	chatChan[IRC_CHANNEL_SIZE]=0;
-}
-
-void YOG::joinChannel(const char *channel)
-{
-	char command[IRC_MESSAGE_SIZE];
-	
-	if (channel==NULL)
-		channel=chatChan;
-	snprintf(command, IRC_MESSAGE_SIZE, "JOIN %s", channel);
-	sendString(command);
-}
-
-void YOG::quitChannel(const char *channel)
-{
-	char command[IRC_MESSAGE_SIZE];
-
-	if (channel==NULL)
-		channel=chatChan;
-	snprintf(command, IRC_MESSAGE_SIZE, "PART %s", channel);
-	sendString(command);
-}
-
-
-void YOG::unshareGame(void)
-{
-	isSharedGame=false;
-	quitChannel(DEFAULT_FW_CHAN);
-}
-
-void YOG::shareGame(const char *id, const char *version, const char *comment)
-{
-	isSharedGame=true;
-	sharedGameLastUpdated=SDL_GetTicks();
-	snprintf(sharedGame, sizeof(sharedGame), "PRIVMSG %s :%s %s %s", DEFAULT_GAME_CHAN, id, version, comment);
-	printf("YOG::shareGame(%s)\n", sharedGame);
-	sendString(sharedGame);
-	joinChannel(DEFAULT_FW_CHAN);
-}
-
-
-bool YOG::resetGameLister(void)
-{
-	gameInfoIt=gameInfos.begin();
-	return (gameInfos.size()!=0);
-}
-
-const char *YOG::getGameSource(void)
-{
-	return (*gameInfoIt).source;
-}
-
-const char *YOG::getGameIdentifier(void)
-{
-	return (*gameInfoIt).identifier;
-}
-
-const char *YOG::getGameVersion(void)
-{
-	return (*gameInfoIt).version;
-}
-
-const char *YOG::getGameComment(void)
-{
-	return (*gameInfoIt).comment;
-}
-
-const char *YOG::getGameHostname(void)
-{
-	return (*gameInfoIt).hostname;
-}
-
-const YOG::GameInfo *YOG::getGameInfo(void)
-{
-	return &(*gameInfoIt);
-}
-
-bool YOG::getNextGame(void)
-{
-	gameInfoIt++;
-	if (gameInfoIt!=gameInfos.end())
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-
-bool YOG::isFirewallActivation()
-{
-	return (firewallActivations.size()>0);
-}
-
-Uint16 YOG::getFirewallActivationPort(void)
-{
-	if (firewallActivations.size()>0)
-		return firewallActivations[0].port;
-	else
-		return 0;
-}
-
-char *YOG::getFirewallActivationHostname(void)
-{
-	if (firewallActivations.size()>0)
-		return firewallActivations[0].hostname;
-	else
-		return NULL;
-}
-
-bool YOG::getNextFirewallActivation(void)
-{
-	firewallActivations.erase(firewallActivations.begin());
-	if (firewallActivations.size()>0)
-		return true;
-	else
-		return false;
-}
-
-void YOG::sendFirewallActivation(const char *nick, Uint16 port)
-{
-	joinChannel(DEFAULT_FW_CHAN);
-
-	char activationMssage[IRC_MESSAGE_SIZE];
-	snprintf(activationMssage, sizeof(activationMssage), "PRIVMSG %s :%s %d", DEFAULT_FW_CHAN, nick, port);
-	sendString(activationMssage);
-
-	quitChannel(DEFAULT_FW_CHAN);
-}
-
-bool YOG::getString(char data[IRC_MESSAGE_SIZE])
-{
-	if (socket)
-	{
-		int i;
-		int value;
-		char c;
-
-		i=0;
-		while ( (  (value=SDLNet_TCP_Recv(socket, &c, 1)) >0) && (i<IRC_MESSAGE_SIZE-1))
-		{
-			if (c=='\r')
+			case YSS_STOP_SHARING_GAME:
+				if (sharingGameTimeout--<=0)
+				{
+					if (sharingGameTOTL--<=0)
+					{
+						printf("YOG::failed to unshare game!\n");
+						yogSharingState=YSS_NOT_SHARING_GAME;
+					}
+					else
+					{
+						send(YMT_STOP_SHARING_GAME);
+						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
+					}
+				}
+			break;
+			case YSS_SHARING_GAME:
+				if (sharingGameTimeout--<=0)
+				{
+					if (sharingGameTOTL--<=0)
+					{
+						printf("YOG::failed to share game!\n");
+						yogSharingState=YSS_NOT_SHARING_GAME;
+					}
+					else
+					{
+						printf("YOG::sending share game info... (%s)\n", sharingGameName);
+						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
+						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, strlen(sharingGameName)+1);
+					}
+				}
+			break;
+			case YSS_SHARED_GAME:
+				//cool
+			break;
+			default:
+				printf("YOG::warning, bad yogSharingState!\n");
+			break;
+			} // end switch yogSharingState
+			
+			if (sendingMessages.size()>0)
 			{
-				value=SDLNet_TCP_Recv(socket, &c, 1);
-				if (value<=0)
-					return false;
-				else if (c=='\n')
-					break;
+				std::list<Message>::iterator mit=sendingMessages.begin();
+				if (mit->timeout--<=0)
+					if (mit->TOTL--<=0)
+					{
+						printf("YOG::failed to send a message!\n");
+						sendingMessages.erase(mit);
+						//break;
+					}
+					else
+					{
+						mit->timeout=DEFAULT_NETWORK_TIMEOUT;
+						send(YMT_SEND_MESSAGE, mit->messageID, (Uint8 *)mit->text, mit->textLength);
+					}
+			}
+		} // end case YGS_CONNECTED
+		case YGS_PLAYING:
+		{
+			if (presenceTimeout--<=0)
+			{
+				if (presenceTOTL--<=0)
+				{
+					printf("YOG::Connection lost to YOG!\n"); //TODO!
+				}
 				else
-					return false;
+				{
+					send(YMT_CONNECTION_PRESENCE);
+					presenceTimeout=LONG_NETWORK_TIMEOUT;
+				}
 			}
-			else
-			{
-				data[i]=c;
-			}
-			i++;
 		}
-		data[i]=0;
-		if (value<=0)
-			return false;
-		else
-			return true;
-	}
-	else
-	{
-		return false;
+		break;
+		default:
+
+		break;
+		}
+		
+		UDPpacket *packet=NULL;
+		packet=SDLNet_AllocPacket(YOG_MAX_PACKET_SIZE);
+		assert(packet);
+		while (SDLNet_UDP_Recv(socket, packet)==1)
+		{
+			treatPacket(packet->address.host, packet->address.port, packet->data, packet->len);
+			/*printf("Packet received.\n");
+			printf("packet=%d\n", (int)packet);
+			printf("packet->channel=%d\n", packet->channel);
+			printf("packet->len=%d\n", packet->len);
+			printf("packet->maxlen=%d\n", packet->maxlen);
+			printf("packet->status=%d\n", packet->status);
+			printf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			printf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
+			printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
+		}
+		SDLNet_FreePacket(packet);
+
+		
+
+
 	}
 }
 
-bool YOG::sendString(char *data)
+void YOG::shareGame(const char *gameName)
 {
-	if (socket)
+	yogSharingState=YSS_SHARING_GAME;
+	strncpy(sharingGameName, gameName, 128);
+	sharingGameName[127]=0;
+	sharingGameTimeout=0;
+	sharingGameTOTL=3;
+	printf("YOG::shareGame\n");
+}
+
+void YOG::unshareGame()
+{
+	yogSharingState=YSS_STOP_SHARING_GAME;
+	sharingGameTimeout=0;
+	sharingGameTOTL=3;
+}
+
+bool YOG::isMessage(void)
+{
+	return (receivedMessages.size()>0);
+}
+
+const char *YOG::getMessage(void)
+{
+	return receivedMessages.begin()->text;
+}
+
+const char *YOG::getMessageSource(void)
+{
+	return receivedMessages.begin()->userName;
+}
+
+void YOG::freeMessage(void)
+{
+	receivedMessages.erase(receivedMessages.begin());
+}
+
+void YOG::sendMessage(const char *message)
+{
+	lastMessageID++;
+	Message m;
+	m.messageID=lastMessageID;
+	strncpy(m.text, message, MAX_MESSAGE_SIZE);
+	m.text[MAX_MESSAGE_SIZE-1]=0;
+	m.timeout=0;
+	m.TOTL=3;
+	m.textLength=strlen(m.text)+1;
+	m.userName[0]=0;
+	m.userNameLength=0;
+	sendingMessages.push_back(m);
+}
+
+bool YOG::newGameList(bool reset)
+{
+	if (newGameListAviable)
 	{
-		char ircMsg[IRC_MESSAGE_SIZE];
-		snprintf(ircMsg, IRC_MESSAGE_SIZE-1, "%s", data);
-		int len=strlen(ircMsg);
-		ircMsg[len]='\r';
-		ircMsg[len+1]='\n';
-		len+=2;
-		int result=SDLNet_TCP_Send(socket, ircMsg, len);
-		return (result==len);
+		if (reset)
+			newGameListAviable=false;
+		return true;
 	}
 	else
-	{
 		return false;
-	}
+}
+
+void YOG::gameStarted()
+{
+	if (yogGlobalState==YGS_CONNECTED)
+		yogGlobalState=YGS_PLAYING;
+	else
+		printf("YOG::Warning gameStarted() in a bay state!\n");
+}
+
+void YOG::gameEnded()
+{
+	if (yogGlobalState==YGS_PLAYING)
+		yogGlobalState=YGS_CONNECTED;
+	else
+		printf("YOG::Warning gameEnded() in a bay state!\n");
 }

@@ -151,7 +151,7 @@ public:
 	Uint16 findLocalPort(UDPsocket socket);
 	
 	bool tryConnection();
-	bool tryConnection(const YOG::GameInfo *yogGameInfo);
+	bool tryConnection(YOG::GameInfo *yogGameInfo);
 	
 	void quitThisGame();
 

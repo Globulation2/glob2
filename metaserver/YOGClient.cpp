@@ -19,32 +19,26 @@
 
 #include "YOGClient.h"
 
-YOGClient::YOGClient(IPaddress ip, UDPsocket socket)
+YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 {
 	this->ip=ip;
 	this->socket=socket;
+	memcpy(this->userName, userName, 32);
+	
+	lastSentMessageID=0;
+	lastMessageID=0;
+	
+	sharingGame=NULL;
+	
+	timeout=0;
+	TOTL=3;
 }
 
 YOGClient::~YOGClient()
 {
 }
 
-void YOGClient::send(Uint8 *data, int size)
-{
-	UDPpacket *packet=SDLNet_AllocPacket(size);
-	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
-
-	packet->len=size;
-	memcpy((char *)packet->data, data, size);
-	packet->address=ip;
-	packet->channel=-1;
-	int rv=SDLNet_UDP_Send(socket, -1, packet);
-	if (rv!=1)
-		printf("Failed to send the packet!\n");
-}
-
-void YOGClient::send(char v)
+void YOGClient::send(YOGMessageType v)
 {
 	Uint8 data[4];
 	data[0]=v;
@@ -53,7 +47,7 @@ void YOGClient::send(char v)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to alocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -61,5 +55,120 @@ void YOGClient::send(char v)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logClient, "Failed to send the packet!\n");
+}
+
+void YOGClient::send(YOGMessageType v, Uint8 id)
+{
+	Uint8 data[4];
+	data[0]=v;
+	data[1]=id;
+	data[2]=0;
+	data[3]=0;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	if (packet==NULL)
+		fprintf(logClient, "Failed to alocate packet!\n");
+
+	packet->len=4;
+	memcpy((char *)packet->data, data, 4);
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logClient, "Failed to send the packet!\n");
+}
+
+void YOGClient::send(Uint8 *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size);
+	if (packet==NULL)
+		fprintf(logClient, "Failed to alocate packet!\n");
+
+	packet->len=size;
+	memcpy((char *)packet->data, data, size);
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logClient, "Failed to send the packet!\n");
+}
+
+void YOGClient::send(YOGMessageType v, Uint8 *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size+4);
+	if (packet==NULL)
+	{
+		fprintf(logClient, "Failed to alocate packet!\n");
+		return;
+	}
+	{
+		Uint8 data[4];
+		data[0]=v;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		memcpy((char *)packet->data, data, 4);
+	}
+	packet->len=size+4;
+	memcpy((char *)packet->data+4, data, size);
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
+}
+
+void YOGClient::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size+4);
+	if (packet==NULL)
+	{
+		fprintf(logClient, "Failed to alocate packet!\n");
+		return;
+	}
+	{
+		Uint8 data[4];
+		data[0]=v;
+		data[1]=id;
+		data[2]=0;
+		data[3]=0;
+		memcpy((char *)packet->data, data, 4);
+	}
+	packet->len=size+4;
+	memcpy((char *)packet->data+4, data, size);
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
+}
+
+void YOGClient::send(const Message &m)
+{
+	int size=4+m.textLength+m.userNameLength;
+	UDPpacket *packet=SDLNet_AllocPacket(size);
+	if (packet==NULL)
+	{
+		fprintf(logClient, "Failed to alocate packet!\n");
+		return;
+	}
+	packet->len=size;
+	{
+		Uint8 data[4];
+		data[0]=YMT_MESSAGE;
+		data[1]=m.messageID;
+		data[2]=0;
+		data[3]=0;
+		memcpy((char *)packet->data, data, 4);
+	}
+	memcpy((char *)packet->data+4, m.text, m.textLength);
+	memcpy((char *)packet->data+4+m.textLength, m.userName, m.userNameLength);
+	packet->address=ip;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logClient, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
 }

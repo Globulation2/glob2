@@ -61,5 +61,5 @@ void MainMenuScreen::paint(int x, int y, int w, int h)
 
 int MainMenuScreen::menu(void)
 {
-	return MainMenuScreen().execute(globalContainer->gfx, 20);
+	return MainMenuScreen().execute(globalContainer->gfx, 50);
 }
