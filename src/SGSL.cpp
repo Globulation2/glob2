@@ -53,13 +53,15 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_ALLIANCE, "alliance"},
 	{ S_GUIENABLE, "guiEnable"},
 	{ S_GUIDISABLE, "guiDisable"},
-	{ S_SUMMON, "summon" },
+	{ S_SUMMONUNITS, "summonUnits" },
+	{ S_SUMMONFLAG, "summonFlag" },
+	{ S_DESTROYFLAG, "destroyFlag" },
 	{ S_WIN, "win" },
 	{ S_LOOSE, "loose" },
 	{ S_LABEL, "label" },
 	{ S_JUMP, "jump" },
-	{ S_SETFLAG, "setFlag"},
-	{ S_FLAG, "flag" },
+	{ S_SETAREA, "setArea"},
+	{ S_AREA, "area" },
 	{ S_ISDEAD, "isdead" },
 	{ S_ALLY, "ally" },
 	{ S_ENEMY, "enemy" },
@@ -363,16 +365,16 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_SUMMON):
+			case (Token::S_SUMMONUNITS):
 			{
-				const std::string& flagName = line[++lineSelector].msg;
+				const std::string& areaName = line[++lineSelector].msg;
 				int globulesAmount = line[++lineSelector].value;
 				int type = line[++lineSelector].type - Token::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
 
-				FlagMap::const_iterator fi;
-				if ((fi = mapscript->flags.find(flagName)) != mapscript->flags.end())
+				AreaMap::const_iterator fi;
+				if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
 				{
 					int number = globulesAmount;
 					int maxTest = number * 3;
@@ -401,16 +403,54 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_SETFLAG):
+			case Token::S_SUMMONFLAG:
 			{
-				Flag flag;
+				const std::string& flagName = line[++lineSelector].msg;
+				int x = line[++lineSelector].value;
+				int y = line[++lineSelector].value;
+				int r = line[++lineSelector].value;
+				int unitCount = line[++lineSelector].value;
+				int team = line[++lineSelector].value;
+
+				int typeNum = globalContainer->buildingsTypes.getTypeNum(9, 0, false);
+
+				Building *b = game->addBuilding(x, y, typeNum, team);
+
+				b->unitStayRange = r;
+				b->maxUnitWorking = unitCount;
+
+				mapscript->flags[flagName] = b;
+
+				return true;
+			}
+
+			case Token::S_DESTROYFLAG:
+			{
+				const std::string& flagName = line[++lineSelector].msg;
+				BuildingMap::iterator i;
+				if ((i = mapscript->flags.find(flagName)) != mapscript->flags.end())
+				{
+					i->second->launchDelete();
+					mapscript->flags.erase(i);
+				}
+				else
+				{
+					std::cerr << "SGSL : Unexistant flag " << flagName << " destroyed !" << std::endl;
+				}
+
+				return true;
+			}
+
+			case (Token::S_SETAREA):
+			{
+				Area flag;
 
 				std::string name = line[++lineSelector].msg;
 				flag.x = line[++lineSelector].value;
 				flag.y = line[++lineSelector].value;
 				flag.r = line[++lineSelector].value;
 
-				mapscript->flags[name] = flag;
+				mapscript->areas[name] = flag;
 
 				return true;
 			}
@@ -455,13 +495,13 @@ bool Story::testCondition(GameGUI *gui)
 						//Execution Error, this chouldn't happoen !!!
 						assert(false);
 						break;
-					case (Token::S_FLAG):
+					case (Token::S_AREA):
 					{
 						int incL = 0;
 						execLine++;
 
-						FlagMap::const_iterator fi;
-						if ((fi = mapscript->flags.find(line[execLine].msg)) == mapscript->flags.end())
+						AreaMap::const_iterator fi;
+						if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
 							assert(false);
 
 						Uint32 testMask;
@@ -560,8 +600,8 @@ const char *ErrorReport::getErrorString(void)
 		"Syntax error",
 		"Invalid team",
 		"No such file",
-		"Flag name not defined",
-		"Flag name already defined",
+		"Area name not defined",
+		"Area name already defined",
 		"Label not defined",
 		"Missing \"(\"",
 		"Missing \")\"",
@@ -829,6 +869,7 @@ void Mapscript::reset(void)
 	isTextShown = false;
 	mainTimer=0;
 	stories.clear();
+	areas.clear();
 	flags.clear();
 }
 
@@ -964,8 +1005,8 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
-				// summon | summon(flag_name , globules_amount , globule_type , globule_level , team_int)
-				case (Token::S_SUMMON):
+				// summonUnits(flag_name , globules_amount , globule_type , globule_level , team_int)
+				case (Token::S_SUMMONUNITS):
 				{
 					//<-summon
 					thisone.line.push_back(*donnees->getToken());
@@ -978,9 +1019,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (flags.find(donnees->getToken()->msg) == flags.end())
+					else if (areas.find(donnees->getToken()->msg) == areas.end())
 					{
-						er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
+						er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
@@ -1045,77 +1086,163 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				}
 				break;
 
-				// setflag | setflag("flag_name" , x , y , r )
-				case (Token::S_SETFLAG):
+				// setArea(string name, int x , int y , int r)
+				case (Token::S_SETAREA):
 				{
-					Flag flag;
-					thisone.line.push_back(*donnees->getToken()); //<-setflag
+					Area area;
+					thisone.line.push_back(*donnees->getToken());
 
-					// flagname
 					CHECK_PAROPEN;
-					NEXT_TOKEN;//<-"flagName"
+					NEXT_TOKEN; // <- string name
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (flags.find(donnees->getToken()->msg) != flags.end())
+					else if (areas.find(donnees->getToken()->msg) != areas.end())
 					{
-						er.type=ErrorReport::ET_DUPLICATED_FLAG_NAME;
+						er.type=ErrorReport::ET_DUPLICATED_AREA_NAME;
 						break;
 					}
 					std::string name=donnees->getToken()->msg;
 					thisone.line.push_back(*donnees->getToken());
 
-					// x
 					CHECK_SEMICOL;
-					NEXT_TOKEN; //<- x
+					NEXT_TOKEN; // <- int x
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					flag.x=donnees->getToken()->value;
+					area.x=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
 
-					// y
 					CHECK_SEMICOL;
-					NEXT_TOKEN;//<- y
+					NEXT_TOKEN; //<- int y
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					flag.y=donnees->getToken()->value;
+					area.y=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
 
-					// r
 					CHECK_SEMICOL;
-					NEXT_TOKEN; //<- r
+					NEXT_TOKEN; // <- int r
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					flag.r=donnees->getToken()->value;
+					area.r=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
 
-					// add
-					flags[name] = flag;
+					areas[name] = area;
 
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
 
+				// summonFlag(string name, int x, int y, int r, int unitcount, int team)
+				case (Token::S_SUMMONFLAG):
+				{
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PAROPEN;
+					NEXT_TOKEN; // <- string name
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::STRING)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_SEMICOL;
+					NEXT_TOKEN; // <- int x
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_SEMICOL;
+					NEXT_TOKEN; // <- int y
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_SEMICOL;
+					NEXT_TOKEN; // <- int r
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_SEMICOL;
+					NEXT_TOKEN; // <- int unitcount
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_SEMICOL;
+					NEXT_TOKEN; // <- int team
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					{
+						er.type=ErrorReport::ET_INVALID_TEAM;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+				}
+				break;
+
+				// destroyFlag(string name)
+				case (Token::S_DESTROYFLAG):
+				{
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PAROPEN;
+					NEXT_TOKEN; // <- string name
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::STRING)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+				}
+
 				// Alliance
 				case (Token::S_ALLIANCE):
 				{
-					thisone.line.push_back(*donnees->getToken()); //<-setflag
+					thisone.line.push_back(*donnees->getToken()); //<-SETAREA
 
 					// team 1
 					CHECK_PAROPEN;
@@ -1287,8 +1414,8 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
 					}
-					// flag ("flagname" , who*)
-					if (donnees->getToken()->type == Token::S_FLAG && !enter)
+					// area ("areaname" , who*)
+					if (donnees->getToken()->type == Token::S_AREA && !enter)
 					{
 						enter = true;
 						thisone.line.push_back(*donnees->getToken());
@@ -1301,9 +1428,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (flags.find(donnees->getToken()->msg) == flags.end())
+						else if (areas.find(donnees->getToken()->msg) == areas.end())
 						{
-							er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
+							er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
@@ -1386,19 +1513,19 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
-						//Optional "flagName"
+						//Optional "areaName"
 						if (donnees->getToken()->type != Token::S_PARCLOSE)
 						{
 							NEXT_TOKEN;
-							//there is a flagName
+							//there is a areaName
 							if (donnees->getToken()->type != Token::STRING)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (flags.find(donnees->getToken()->msg) == flags.end())
+							else if (areas.find(donnees->getToken()->msg) == areas.end())
 							{
-								er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
+								er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 								break;
 							}
 							thisone.line.push_back(*donnees->getToken());
