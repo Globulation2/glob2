@@ -241,7 +241,7 @@ Map::Map()
 Map::~Map(void)
 {
 	if (mapDiscovered)
-		delete mapDiscovered;
+		delete[] mapDiscovered;
 	if (fogOfWarA)
 		delete[] fogOfWarA;
 	if (fogOfWarB)
