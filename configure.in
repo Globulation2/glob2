@@ -1,9 +1,10 @@
 AC_PREREQ(2.59)
 AC_INIT([Globulation 2], 0.8.6, [glob2-devel@nongnu.org], glob2)
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_SRCDIR([src/Game.cpp])
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
 
