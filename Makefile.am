@@ -1,3 +1,3 @@
-SUBDIRS=libgag src doc tools data maps
-EXTRA_DIST=glob2.dsp glob2.dsw Doxyfile
+SUBDIRS=libgag src doc data maps
+EXTRA_DIST=glob2.sln glob2.vcproj Doxyfile
 
