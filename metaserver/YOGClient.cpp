@@ -274,7 +274,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 				return;
 			}
 			int l=Utilities::strmlen(*message, 64);
-			printf("*message=(%s)\n", *message);
+			lprintf("*message=(%s)\n", *message);
 			memcpy(sdata+index, *message, l);
 			index+=l;
 			message++;
