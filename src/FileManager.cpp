@@ -97,14 +97,9 @@ SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		FILE *fp = fopen(filename, "rb");
-		if (fp)
-		{
-			fclose(fp);
-			char backupText[512];
-			snprintf(backupText, sizeof(backupText), "%s~", filename);
-			rename(filename, backupText);
-		}
+		char backupText[512];
+		snprintf(backupText, sizeof(backupText), "%s~", filename);
+		rename(filename, backupText);
 	}
 	return SDL_RWFromFile(filename, mode);
 }
@@ -113,14 +108,9 @@ FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		FILE *fp = fopen(filename, "rb");
-		if (fp)
-		{
-			fclose(fp);
-			char backupText[512];
-			snprintf(backupText, sizeof(backupText), "%s~", filename);
-			rename(filename, backupText);
-		}
+		char backupText[512];
+		snprintf(backupText, sizeof(backupText), "%s~", filename);
+		rename(filename, backupText);
 	}
 	return fopen(filename, mode);
 }
