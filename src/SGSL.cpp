@@ -68,6 +68,9 @@ bool Story::testcondition()
 						line.pop_front();
 			cout<< line.front().msg;
 			return true;
+			
+		default:
+			return false;
 	}
 
 	return false;
@@ -293,6 +296,7 @@ bool Mapscript::loadscript(const char *filename)
 {
 	if (donnees.newFile(filename))
 	{
+		stories.clear();
 		donnees.nextToken();
 		while (donnees.getToken().type != Token::S_EOF)
 		{
