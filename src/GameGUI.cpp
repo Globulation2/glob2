@@ -893,6 +893,13 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		if (isRoom)
 			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
 	}
+	else if (putMark)
+	{
+		int markx, marky;
+		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
+		orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+		putMark = false;
+	}
 	else
 	{
 		int mapX, mapY;
