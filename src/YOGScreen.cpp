@@ -23,6 +23,7 @@
 #include "YOGScreen.h"
 #include "GlobalContainer.h"
 #include "MultiplayersConnectedScreen.h"
+#include "Engine.h"
 
 YOGScreen::YOGScreen()
 {
@@ -178,13 +179,40 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_RELEASED)
 	{
-		if (par1==UPDATE_LIST)
+		if (par1==CANCEL)
+		{
+			multiplayersJoin->quitThisGame();
+			endExecute(CANCEL);
+		}
+		else if (par1==CREATE_GAME)
+		{
+			multiplayersJoin->quitThisGame();
+			Engine engine;
+			int rc=engine.initMutiplayerHost();
+			if (rc==Engine::NO_ERROR)
+			{
+				if (engine.run()==-1)
+					endExecute(EXIT);
+					//run=false;
+			}
+			else if (rc==-1)
+				endExecute(-1);
+			printf("YOG::initMutiplayerHost() ended.\n");
+			dispatchPaint(gfxCtx);
+		}
+		else if (par1==UPDATE_LIST)
 		{
 			updateList();
 			gameList->repaint();
 		}
+		else if (par1==-1)
+		{
+			multiplayersJoin->quitThisGame();
+			endExecute(-1);
+		}
 		else
-			endExecute(par1);
+			assert(false);
+			
 	}
 	else if (action==TEXT_VALIDATED)
 	{
@@ -244,7 +272,13 @@ void YOGScreen::onTimer(Uint32 tick)
 		}
 		else if (rv==MultiplayersConnectedScreen::STARTED)
 		{
+			delete multiplayersConnectedScreen;
 			endExecute(STARTED);
+		}
+		else if (rv==-1)
+		{
+			delete multiplayersConnectedScreen;
+			endExecute(-1);
 		}
 		else
 		{

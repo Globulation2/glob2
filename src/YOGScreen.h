@@ -31,11 +31,13 @@ class YOGScreen:public Screen
 public:
 	enum
 	{
-		CANCEL =2,
-		CREATE_GAME = 2,
-		UPDATE_LIST=3,
+		EXIT=-1,
+		CANCEL=2,
+		CREATE_GAME=3,
+		UPDATE_LIST=4,
 		
-		STARTED =11
+		STARTED=11,
+		
 	};
 
 	enum

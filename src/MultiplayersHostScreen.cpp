@@ -91,6 +91,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 			multiplayersHost->stopHosting();
 			endExecute(par1);
 		break;
+		case -1:
+			multiplayersHost->stopHosting();
+			endExecute(par1);
+		break;
 		}
 	}
 }
