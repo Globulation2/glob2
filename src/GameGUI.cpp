@@ -2372,6 +2372,7 @@ void GameGUI::centerViewportOnSelection(void)
 	{
 		assert (selBuild);
 		Building *b=game.teams[Building::UIDtoTeam(selectionUID)]->myBuildings[Building::UIDtoID(selectionUID)];
+		assert(b);
 		viewportX=b->getMidX()-((globalContainer->gfx->getW()-128)>>6);
 		viewportY=b->getMidY()-((globalContainer->gfx->getH())>>6);
 		viewportX=(viewportX+game.map.getW())&game.map.getMaskW();
