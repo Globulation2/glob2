@@ -1871,26 +1871,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		// draw building
 		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
 
-		/* As new graphics are progressing, small colored flags have been disabled.
-		if (!type->hueImage)
-		{
-			// Here we draw the sprite with a flag:
-			// Then we draw a hued flag of the team.
-			int flagImgid=type->flagImage;
-			//int w=building->type->width;
-			int h=type->height;
-
-			//We draw the flag at left bottom corner on the building
-			int fw=buildingSprite->getW(flagImgid);
-			//int fh=flagSprite->getH();
-
-			globalContainer->gfx->drawSprite(x+(w<<5)-fh, y+(h<<5)-fw, buildingSprite, flagImgid);
-			
-			//We add a hued color over the flag
-			//globalContainer->gfx->drawSprite(x+(w<<5)-fh, y+(h<<5)-fw, buildingSprite, flagImgid+1);
-		}
-		*/
-
 		if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 		{
 			int batW=(type->width )<<5;
@@ -1956,13 +1936,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 
 			// units
-
 			if (building->maxUnitInside>0)
 				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 			if (building->maxUnitWorking>0)
 				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
 
-			// food
+			// food (for inns)
 			if ((type->canFeedUnit) || (type->unitProductionTime))
 			{
 				// compute bar size, prevent oversize
@@ -1971,6 +1950,17 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
 					bDiv++;
 				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+			}
+			
+			// bullets (for defence towers)
+			if (type->maxBullets)
+			{
+				// compute bar size, prevent oversize
+				int bDiv=1;
+				assert(type->height!=0);
+				while ( ((type->maxBullets*3+1)/bDiv)>((type->height*32)-10))
+					bDiv++;
+				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
 			}
 		}
 	}
