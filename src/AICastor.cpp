@@ -165,13 +165,13 @@ void AICastor::init(Player *player)
 	canSwim=false;
 	needSwim=false;
 	lastFreeWorkersComputed=(Uint32)-1;
+	lastWheatCareMapComputed=(Uint32)-1;
 	computeNeedSwimTimer=0;
 	controlSwarmsTimer=0;
 	expandFoodTimer=0;
 	controlFoodTimer=0;
 	controlUpgradeTimer=0;
 	controlUpgradeDelay=32;
-	controlFoodToogle=false;
 	
 	hydratationMapComputed=false;
 	warLevel=0;
@@ -182,6 +182,9 @@ void AICastor::init(Player *player)
 	foodLockStats[0]=0;
 	foodLockStats[1]=0;
 	overWorkers=false;
+	starvingWarning=false;
+	starvingWarningStats[0]=0;
+	starvingWarningStats[1]=0;
 	buildsAmount=0;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
@@ -356,7 +359,6 @@ Order *AICastor::getOrder()
 	
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
-	
 	Sint32 priority=0x7FFFFFFF;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if (priority>(*pi)->priority && (*pi)->critical)
@@ -413,6 +415,13 @@ Order *AICastor::getOrder()
 		Order *order=expandFood();
 		if (order)
 			return order;
+	}
+	
+	if (timer>lastWheatCareMapComputed+256) // each 10s
+	{
+		computeObstacleBuildingMap();
+		computeObstacleUnitMap();
+		computeWheatGrowthMap();
 	}
 	
 	if (priority>0)
@@ -472,12 +481,12 @@ void AICastor::defineStrategy()
 	strategy.build[BuildingType::DEFENSE_BUILDING].finalWorkers=1;
 	
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].upgradeBase=1;
+	strategy.build[BuildingType::SCIENCE_BUILDING].upgradeBase=2;
 	strategy.build[BuildingType::SWARM_BUILDING].upgradeBase=0;
 	strategy.build[BuildingType::ATTACK_BUILDING].upgradeBase=2;
 	strategy.build[BuildingType::DEFENSE_BUILDING].upgradeBase=1;
 	strategy.build[BuildingType::FOOD_BUILDING].upgradeBase=2;
-	strategy.build[BuildingType::HEAL_BUILDING].upgradeBase=1;
+	strategy.build[BuildingType::HEAL_BUILDING].upgradeBase=2;
 	strategy.build[BuildingType::SWIMSPEED_BUILDING].upgradeBase=0;
 	strategy.build[BuildingType::WALKSPEED_BUILDING].upgradeBase=0;
 	
@@ -518,6 +527,9 @@ void AICastor::defineStrategy()
 	strategy.warTimeTriger=8192;
 	strategy.warAmountTriger=3;
 	
+	strategy.strikeWarPowerTriger=4096;
+	strategy.strikeTimeTriger=32768;
+	
 	strategy.maxAmountGoal=10;
 	
 	strategy.wheatCareLimit=4; // be cautious with this. [2..6]
@@ -551,8 +563,12 @@ Order *AICastor::controlSwarms()
 	foodLock=((unitSumAll+3)>=(foodSum<<1));
 	foodLockStats[foodLock]++;
 	
+	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
+	starvingWarningStats[starvingWarning]++;
+	printf("starvingWarning=%d\n", starvingWarning);
+	
 	bool realFoodLock;
-		
+	
 	if (warriorGoal>1)
 		realFoodLock=((unitSumAll)>=(foodSum*3));
 	else
@@ -561,7 +577,7 @@ Order *AICastor::controlSwarms()
 	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
 		unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum, foodLock, realFoodLock, foodLockStats[0], foodLockStats[1]);
 	
-	if (realFoodLock)
+	if (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0])
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
@@ -657,7 +673,8 @@ Order *AICastor::expandFood()
 	computeObstacleBuildingMap();
 	computeSpaceForBuildingMap(bw);
 	computeBuildingNeighbourMap(bw, bh);
-	computeWheatGrowthMap(bw, bh);
+	computeObstacleUnitMap();
+	computeWheatGrowthMap();
 	computeObstacleUnitMap();
 	computeWorkPowerMap();
 	computeWorkRangeMap();
@@ -727,9 +744,9 @@ Order *AICastor::controlFood()
 		{
 			Sint32 workers;
 			if (foodLock && b->type->isBuildingSite)
-				workers=2;
+				workers=2+b->type->level;
 			else
-				workers=1;
+				workers=1+b->type->level;
 			b->maxUnitWorking=workers;
 			b->maxUnitWorkingLocal=workers;
 			b->update();
@@ -755,6 +772,8 @@ Order *AICastor::controlFood()
 
 Order *AICastor::controlUpgrades()
 {
+	//printf("controlUpgrades(), controlUpgradeTimer=%d, controlUpgradeDelay=%d, buildsAmount=%d\n",
+	//	controlUpgradeTimer, controlUpgradeDelay, buildsAmount);
 	if (controlUpgradeDelay!=0)
 	{
 		controlUpgradeDelay--;
@@ -772,7 +791,7 @@ Order *AICastor::controlUpgrades()
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
 	int level=b->type->level;
-	int upgradeLevelGoal=((buildsAmount-1)>>1);
+	int upgradeLevelGoal=((buildsAmount+1)>>1);
 	if (upgradeLevelGoal>3)
 		upgradeLevelGoal=3;
 	if (level>=upgradeLevelGoal)
@@ -805,8 +824,8 @@ Order *AICastor::controlUpgrades()
 			return NULL;
 		int sumEqual=0;
 		for (int li=level; li<4; li++)
-			for (int si=0; si<2; si++)
-				sumEqual+=buildingLevels[shortTypeNum][si][li];
+			sumEqual+=buildingLevels[shortTypeNum][0][li];
+		printf(" sumEqual=%d\n", sumEqual);
 		if (sumEqual<2)
 		{
 			printf(" not another building level %d\n", level);
@@ -853,6 +872,8 @@ void AICastor::addProjects()
 {
 	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
 	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
+	
+	buildsAmount=-1;
 	
 	if (buildingSum[BuildingType::FOOD_BUILDING][0]==0)
 	{
@@ -958,7 +979,11 @@ void AICastor::addProjects()
 			if (bpi==strategy.build[bi].baseOrder)
 				if (buildingSum[bi][0]+buildingSum[bi][1]<strategy.build[bi].base)
 				{
-					if (bi==BuildingType::SWARM_BUILDING && foodLock)
+					if (bi==BuildingType::SWARM_BUILDING
+						&& (foodLock
+							|| foodLockStats[1]>foodLockStats[0]
+							|| starvingWarning
+							|| starvingWarningStats[1]>starvingWarningStats[0]))
 						continue;
 					Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
 						strategy.build[bi].base, strategy.build[bi].workers, "base");
@@ -1000,10 +1025,14 @@ void AICastor::addProjects()
 				if (bi==strategy.build[bpi].newOrder)
 					if (buildingSum[bi][0]+buildingSum[bi][1]<amountGoal[bi])
 					{
-						if (bi==BuildingType::SWARM_BUILDING && (foodLockStats[1]>foodLockStats[0] || foodLock))
+						if (bi==BuildingType::SWARM_BUILDING
+							&& (foodLock
+								|| foodLockStats[1]>foodLockStats[0]
+								|| starvingWarning
+								|| starvingWarningStats[1]>starvingWarningStats[0]))
 							continue;
 						Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
-							amountGoal[bi], strategy.build[bi].workers, "loop");
+							amountGoal[bi], strategy.build[bi].workers+agi, "loop");
 						project->successWait=strategy.successWait;
 						project->finalWorkers=strategy.build[bi].finalWorkers;
 						if (addProject(project))
@@ -1067,7 +1096,7 @@ Order *AICastor::continueProject(Project *project)
 		computeObstacleBuildingMap();
 		computeSpaceForBuildingMap(bw);
 		computeBuildingNeighbourMap(bw, bh);
-		computeWheatGrowthMap(bw, bh);
+		computeWheatGrowthMap();
 		computeObstacleUnitMap();
 		computeWorkPowerMap();
 		computeWorkRangeMap();
@@ -1494,7 +1523,7 @@ void AICastor::computeBuildingSum()
 		if (b)
 		{
 			if (b->buildingState==Building::WAITING_FOR_CONSTRUCTION && b->constructionResultState==Building::UPGRADE)
-				buildingLevels[b->type->shortTypeNum][b->type->isBuildingSite][b->type->level+1]++;
+				buildingLevels[b->type->shortTypeNum][1][b->type->level+1]++;
 			else
 				buildingLevels[b->type->shortTypeNum][b->type->isBuildingSite][b->type->level]++;
 		}
@@ -1539,12 +1568,59 @@ void AICastor::computeWarLevel()
 	else
 		warAmountTrigerLevel=0;
 	warLevel=warTimeTrigerLevelUse+warLevelTrigerLevel+warAmountTrigerLevel;
+	
 	static int oldWarLevel=-1;
 	if (oldWarLevel!=warLevel)
 	{
 		printf("warLevel=%d, warTimeTrigerLevelUse=%d, warLevelTrigerLevel=%d, warAmountTrigerLevel=%d\n",
 			warLevel, warTimeTrigerLevelUse, warLevelTrigerLevel, warAmountTrigerLevel);
 		oldWarLevel=warLevel;
+	}
+	
+	if (warLevel==0)
+		return;
+	
+	if (timer>strategy.strikeTimeTriger)
+	{
+		strikeTimeTrigerLevel++;
+		strategy.strikeTimeTriger=strategy.strikeTimeTriger+((1+strategy.strikeTimeTriger)>>1);
+	}
+	int strikeTimeTrigerLevelUse=strikeTimeTrigerLevel;
+	if (strikeTimeTrigerLevelUse>3)
+		strikeTimeTrigerLevelUse=3;
+	
+	int warPowerSum=0;
+	Unit **myUnits=team->myUnits;
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=myUnits[i];
+		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
+			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH];
+	}
+	static int oldWarPowerSum=-1;
+	if (oldWarPowerSum!=warPowerSum)
+	{
+		printf("warPowerSum=%d\n", warPowerSum);
+		oldWarPowerSum=warPowerSum;
+	}
+	
+	if (warPowerSum>strategy.strikeWarPowerTriger)
+	{
+		strikeWarPowerTrigerLevel++;
+		strategy.strikeWarPowerTriger=strategy.strikeWarPowerTriger+((1+strategy.strikeWarPowerTriger)>>1);
+	}
+	int strikeWarPowerTrigerLevelUse=strikeWarPowerTrigerLevel;
+	if (strikeWarPowerTrigerLevelUse>3)
+		strikeWarPowerTrigerLevelUse=3;
+	
+	strikeLevel=strikeTimeTrigerLevel+strikeWarPowerTrigerLevel;
+	
+	static int oldStrikeLevel=-1;
+	if (oldStrikeLevel!=strikeLevel)
+	{
+		printf("strikeLevel=%d, strikeTimeTrigerLevel=%d, strikeWarPowerTrigerLevel=%d\n",
+			strikeLevel, strikeTimeTrigerLevel, strikeWarPowerTrigerLevel);
+		oldStrikeLevel=strikeLevel;
 	}
 }
 
@@ -1966,7 +2042,7 @@ void AICastor::computeHydratationMap()
 	printf("...computeHydratationMap() done\n");
 }
 
-void AICastor::computeWheatGrowthMap(int dw, int dh)
+void AICastor::computeWheatGrowthMap()
 {
 	int w=map->w;
 	int h=map->w;
@@ -1988,7 +2064,7 @@ void AICastor::computeWheatGrowthMap(int dw, int dh)
 	
 	Case *cases=map->cases;
 	for (size_t i=0; i<size; i++)
-		if (wheatGrowthMap[i]==13 && wheatGradient[i]==254 && cases[i].terrain<16)
+		if (wheatGrowthMap[i]>=13 && wheatGradient[i]==254 && cases[i].terrain<16)
 			wheatCareMap[i]=8;
 	
 	map->updateGlobalGradient(wheatCareMap);
@@ -2007,6 +2083,7 @@ void AICastor::computeWheatGrowthMap(int dw, int dh)
 				(*p)=1;
 		}
 	}
+	lastWheatCareMapComputed=timer;
 }
 
 Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
@@ -2133,7 +2210,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 			
 			Sint32 score;
 			if (food)
-				score=((wheatGrowth<<8)+work+wheatGradient)*(8+(directNeighboursCount<<2)+farNeighboursCount);
+				score=((wheatGrowth<<8)+work+(wheatGradient>>2))*(8+(directNeighboursCount<<2)+farNeighboursCount);
 			else
 				score=(4096+work-(wheatGrowth<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
 			
@@ -2285,6 +2362,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 				side[1]=gradient[wyu+x ];
 				side[2]=gradient[wyu+xr];
 				side[3]=gradient[wy +xl];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2315,6 +2393,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 				side[1]=gradient[wyd+x ];
 				side[2]=gradient[wyd+xl];
 				side[3]=gradient[wy +xl];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2343,6 +2422,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 				side[1]=gradient[wyd+xl];
 				side[2]=gradient[wy +xl];
 				side[3]=gradient[wyu+x ];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2371,6 +2451,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 				side[1]=gradient[wy +xr];
 				side[2]=gradient[wyd+xr];
 				side[3]=gradient[wyu+x ];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)

@@ -102,6 +102,9 @@ public:
 		Sint32 warLevelTriger;
 		Sint32 warAmountTriger;
 		
+		Uint32 strikeTimeTriger;
+		Sint32 strikeWarPowerTriger;
+		
 		Sint32 maxAmountGoal;
 		
 		Uint8 wheatCareLimit;
@@ -157,7 +160,7 @@ private:
 	void computeWorkRangeMap();
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
-	void computeWheatGrowthMap(int dw, int dh);
+	void computeWheatGrowthMap();
 	
 	Order *findGoodBuilding(Sint32 typeNum, bool food, bool critical);
 	
@@ -178,20 +181,27 @@ public:
 	int warLevelTrigerLevel;
 	int warAmountTrigerLevel;
 	
+	int strikeLevel; // 0: no strike
+	int strikeTimeTrigerLevel;
+	int strikeWarPowerTrigerLevel;
+	
 	bool foodLock;
-	int foodLockStats[2];
+	Uint32 foodLockStats[2];
 	bool overWorkers;
+	bool starvingWarning;
+	Uint32 starvingWarningStats[2];
 	int buildsAmount;
 	int freeWorkers; // plz use getFreeWorkers() to raise computation trigger.
 	
 	Uint32 lastFreeWorkersComputed;
+	Uint32 lastWheatCareMapComputed;
+	
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
 	Uint32 expandFoodTimer;
 	Uint32 controlFoodTimer;
 	Uint32 controlUpgradeTimer;
 	Uint32 controlUpgradeDelay;
-	int controlFoodToogle;
 	
 	Strategy strategy;
 	

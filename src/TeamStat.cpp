@@ -408,3 +408,8 @@ int TeamStats::getWorkersLevel(int level)
 {
 	return (stats[statsIndex].upgradeState[BUILD][level]);
 }
+
+int TeamStats::getStarvingUnits()
+{
+	return (stats[statsIndex].needFoodCritical);
+}
