@@ -478,6 +478,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			else
 				assert(false);
 			map.updateForbiddenGradient(oaa->teamNumber);
+			map.updateGuardAreasGradient(oaa->teamNumber);
 		}
 		break;
 		case ORDER_ALTERATE_GUARD_AREA:
