@@ -797,6 +797,15 @@ int MapEdit::processEvent(const SDL_Event *event)
 			renderMiniMap();
 		}
 	}
+	else if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		int mx=event->button.x;
+		int my=event->button.y;
+		if ((Utilities::ptInRect(mx, my, &mapClip)) && (event->button.button==SDL_BUTTON_LEFT))
+		{
+			wasClickInMap=true;
+		}
+	}
 	else if ((event->type==SDL_ACTIVEEVENT) && (event->active.gain==0))
 	{
 		viewportSpeedX[0]=viewportSpeedY[0]=0;
@@ -868,7 +877,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			if (event->motion.state&SDL_BUTTON(1))
 			{
-				wasClickInMap=true;
+				//wasClickInMap=true;
 				handleMapClick(mx, my);
 			}
 			if ( (editMode==EM_TERRAIN) || (editMode==EM_RESSOURCE) || (editMode==EM_DELETE) )
