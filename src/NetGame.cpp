@@ -279,7 +279,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 {
 	assert(players[targetPlayer]->type==Player::P_IP || (players[targetPlayer]->type==Player::P_LOST_FINAL && players[targetPlayer]->quitting));
 	assert(targetPlayer!=localPlayerNumber);
-	fprintf(logFile, "sendWaitingForPlayerOrder\n");
+	fprintf(logFile, "sendWaitingForPlayerOrder (%x)\n", waitingForPlayerMask);
 
 	WaitingForPlayerOrder *wfpo=new WaitingForPlayerOrder(waitingForPlayerMask);
 	int totalSize=3+5+wfpo->getDataLength();
@@ -1221,6 +1221,12 @@ bool NetGame::computeNumberOfStepsToEat(void)
 
 	numberOfStepsToEat=1;
 	bool success=true;
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->quitting && (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL))
+		{
+			fprintf(logFile, " player %d quitting, no latency changing aviable\n", p);
+			return true;
+		}
 
 	if (targetLatency>latency)
 	{
@@ -1287,7 +1293,7 @@ bool NetGame::computeNumberOfStepsToEat(void)
 	}
 
 	if (latency!=targetLatency)
-		fprintf(logFile, " numberOfStepsToEat=%d, success=%d\n", numberOfStepsToEat, success);
+		fprintf(logFile, " numberOfStepsToEat=%d, success=%d, waitingForPlayerMask=%x\n", numberOfStepsToEat, success, waitingForPlayerMask);
 	return success;
 }
 
