@@ -1469,7 +1469,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			r=200;
 			g=255;
 			b=200;
-			minimap->drawPixel(fx, fy, r, g, b);
+			minimap->drawPixel((fx*100)/map.getW(), (fy*100)/map.getH(), r, g, b);
 		}
 }
 
