@@ -496,7 +496,8 @@ void GLGraphicContext::loadImage(const char *name)
 	return NULL;
 }
 */
-Sprite *GLGraphicContext::loadSprite(const char *name)
+
+void GLGraphicContext::loadSprite(const char *filename, const char *name)
 {
 	/*SDL_RWops *frameStream;
 	SDL_RWops *overlayStream;
@@ -530,25 +531,33 @@ Sprite *GLGraphicContext::loadSprite(const char *name)
 	}
 
 	return sprite;*/
-	return NULL;
 }
 
-Font *GLGraphicContext::loadFont(const char *name, unsigned size)
+void GLGraphicContext::loadFont(const char *filename, unsigned size, const char *name)
 {
+	Font *rf = NULL;
+	
 	SDLTTFont *ttf=new SDLTTFont();
 	if (ttf->load(name, size))
-		return ttf;
+		rf = ttf;
 	else
 		delete ttf;
+	
+	if (!rf)
+	{
+		SDLBitmapFont *font=new SDLBitmapFont();
+		if (font->load(name))
+			rf = font;
+		else
+			delete font;
+	}
 		
-	SDLBitmapFont *font=new SDLBitmapFont();
-	if (font->load(name))
-		return font;
-	else
-		delete font;
-		
-	fprintf(stderr, "GAG : Can't load font %s\n", name);
-	return NULL;
+	fprintf(stderr, "GAG : Can't load font %s from %s\n", name, filename);
+	
+	if (rf)
+	{
+		fontMap[std::string(name)] = rf;
+	}
 }
 
 DrawableSurface *GLGraphicContext::createDrawableSurface(const char *name)

@@ -32,7 +32,7 @@ namespace GAG
 
 	//! Close gag, must be called after any call to GAG
 	void close(void);
-};
+}
 
 #endif
  

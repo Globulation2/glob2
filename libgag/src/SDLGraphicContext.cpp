@@ -21,7 +21,7 @@
 #include "SDLSprite.h"
 #include "SDLFont.h"
 #include <SupportFunctions.h>
-#include <Environment.h>
+#include <Toolkit.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>
@@ -44,7 +44,7 @@ void SDLDrawableSurface::loadImage(const char *name)
 	if (name)
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=GAG::fileManager->open(name, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(name, "rb", false))!=NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
@@ -911,12 +911,12 @@ SDLGraphicContext::SDLGraphicContext(void)
 	// Load the SDL library
 	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO)<0 )
 	{
-		fprintf(stderr, "GAG : Initialisation Error : %s\n", SDL_GetError());
+		fprintf(stderr, "Toolkit : Initialisation Error : %s\n", SDL_GetError());
 		exit(1);
 	}
 	else
 	{
-		fprintf(stderr, "GAG : Initialized : Graphic Context created\n");
+		fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 	}
 
 	atexit(SDL_Quit);
@@ -930,7 +930,7 @@ SDLGraphicContext::SDLGraphicContext(void)
 
 SDLGraphicContext::~SDLGraphicContext(void)
 {
-	fprintf(stderr, "GAG : Graphic Context destroyed\n");
+	fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	
 	TTF_Quit();
 }
@@ -952,16 +952,16 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 
 	if (!surface)
 	{
-		fprintf(stderr, "GAG : %s\n", SDL_GetError());
+		fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 		return false;
 	}
 	else
 	{
 		setClipRect();
 		if (flags&FULLSCREEN)
-			fprintf(stderr, "GAG : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
+			fprintf(stderr, "Toolkit : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
 		else
-			fprintf(stderr, "GAG : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
+			fprintf(stderr, "Toolkit : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
 		return true;
 	}
 }
@@ -970,7 +970,7 @@ void SDLGraphicContext::dbgprintf(const char *msg, ...)
 {
 	va_list arglist;
 
-	fprintf(stderr,"GAG : DBG : ");
+	fprintf(stderr,"Toolkit : DBG : ");
 
 	va_start(arglist, msg);
     vfprintf(stderr, msg, arglist );
@@ -1002,7 +1002,7 @@ void SDLGraphicContext::loadImage(const char *name)
 	if ((name) && (surface))
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=GAG::fileManager->open(name, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(name, "rb", false))!=NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
@@ -1029,151 +1029,151 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageTy
 	if (type==OVERLAY)
 	{
 		snprintf(temp, 1024,"%s%dm.png", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%dm.bmp", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.jpg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.jpeg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.pnm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.xpm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.lbm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.pcx", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.gif", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.tga", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else if (type==NORMAL)
 	{
 		snprintf(temp, 1024,"%s%d.png", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%d.bmp", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.jpg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.jpeg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.pnm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.xpm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.lbm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.pcx", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.gif", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.tga", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else if (type==PALETTE)
 	{
 		snprintf(temp, 1024,"%s%dp.png", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%dp.bmp", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.jpg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.jpeg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.pnm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.xpm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.lbm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.pcx", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.gif", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.tga", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else if (type==ROTATED)
 	{
 		snprintf(temp, 1024,"%s%dr.png", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%dr.bmp", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.jpg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.jpeg", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.pnm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.xpm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.lbm", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.pcx", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.gif", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dr.tga", name, number);
-		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else
 	{
-		fprintf(stderr, "GAG : Passing wrong image type to SDLGraphicContext::tryOpenImage\n");
+		fprintf(stderr, "Toolkit : Passing wrong image type to SDLGraphicContext::tryOpenImage\n");
 	}
 	return NULL;
 }
 
-Sprite *SDLGraphicContext::loadSprite(const char *name)
+void SDLGraphicContext::loadSprite(const char *filename, const char *name)
 {
 	SDL_RWops *frameStream;
 	SDL_RWops *overlayStream;
@@ -1205,26 +1205,34 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 			SDL_RWclose(rotatedStream);
 		i++;
 	}
-
-	return sprite;
+	Toolkit::spriteMap[std::string(name)] = sprite;
 }
 
-Font *SDLGraphicContext::loadFont(const char *name, unsigned size)
+void SDLGraphicContext::loadFont(const char *filename, unsigned size, const char *name)
 {
+	Font *rf = NULL;
+	
 	SDLTTFont *ttf=new SDLTTFont();
 	if (ttf->load(name, size))
-		return ttf;
+		rf = ttf;
 	else
 		delete ttf;
+	
+	if (!rf)
+	{
+		SDLBitmapFont *font=new SDLBitmapFont();
+		if (font->load(name))
+			rf = font;
+		else
+			delete font;
+	}
 		
-	SDLBitmapFont *font=new SDLBitmapFont();
-	if (font->load(name))
-		return font;
-	else
-		delete font;
-		
-	fprintf(stderr, "GAG : Can't load font %s\n", name);
-	return NULL;
+	fprintf(stderr, "Toolkit : Can't load font %s from %s\n", name, filename);
+	
+	if (rf)
+	{
+		Toolkit::fontMap[std::string(name)] = rf;
+	}
 }
 
 DrawableSurface *SDLGraphicContext::createDrawableSurface(const char *name)

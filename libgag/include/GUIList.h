@@ -25,8 +25,26 @@
 
 class List: public RectangularWidget
 {
+protected:
+	CLASSDEF(List)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(base::Ptr<Font>, font)
+		ITEM(Sint32, textHeight)
+		ITEM(Sint32, nth)
+		ITEM(Uint32, disp)
+		ITEM(std::vector<std::string>, strings)
+		//! Pos of the scroll box
+		ITEM(Uint32, blockPos)
+	CLASSEND;
+
+	//! Cached variables, do not serialise, reconstructed on paint() call
+	//! Length of the scroll box, this is a cache
+	unsigned blockLength;
+
 public:
-	List(int x, int y, int w, int h, const Font *font);
+	List():RectangularWidget() { font = NULL; }
+	List(int x, int y, int w, int h, base::Ptr<Font> font);
 	virtual ~List();
 
 	virtual void onTimer(Uint32 tick) { }
@@ -37,33 +55,21 @@ public:
 	void addText(const char *text);
 	void removeText(int pos);
 	void clear(void);
-	char *getText(int pos) const;
-	char *get(void) const;
+	const char *getText(int pos) const;
+	const char *get(void) const;
 	//! Call this after all add has been done
 	void commit(void) { repaint(); }
 	//! Sorts the list (override it if you don't like it)
-	virtual void sort(void); 
+	virtual void sort(void);
 
 	//! Called when selection changes (default: signal parent)
 	virtual void selectionChanged();
-	
+
 	int getNth(void) const;
 	void setNth(int nth);
 
-protected:
 	virtual void repaint(void);
 	virtual void internalPaint(void);
-
-protected:
-	int textHeight;
-	const Font *font;
-	std::vector<char *> strings;
-	int nth;
-	unsigned disp;
-	//! Length of the scroll box, this is a cache
-	unsigned blockLength;
-	//! Pos of the scroll box
-	unsigned blockPos;
 };
 
 #endif

@@ -24,7 +24,22 @@
 
 class TextInput: public RectangularWidget
 {
+protected:
+	CLASSDEF(TextInput)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(base::Ptr<Font>, font)
+		ITEM(std::string, textLength)
+		ITEM(bool, activated)
+		ITEM(Uint32, cursPos)
+	CLASSEND;
+
+	// cache, recomputed on paint
+	unsigned textDep;
+	int cursorScreenPos;
+
 public:
+	TextInput() { textDep=0; cursorScreenPos=0; }
 	TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated, unsigned textLength=512);
 	virtual ~TextInput() { delete[] text; }
 
@@ -35,18 +50,8 @@ public:
 	virtual const char *getText(void) { return text; }
 
 protected:
-	const Font *font;
-	unsigned cursPos;
-	unsigned textDep;
-	int cursorScreenPos;
 	virtual void repaint(void);
 	void recomputeTextInfos(void);
-	
-public:
-	char *text;
-	unsigned textLength;
-	
-	bool activated;
 };
 
 #endif 

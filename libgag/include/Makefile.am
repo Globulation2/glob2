@@ -1,4 +1,7 @@
-EXTRA_DIST = Environment.h \
+SUBDIRS=dps
+
+EXTRA_DIST = xmlserializer.h \
+Toolkit.h \
 FileManager.h \
 GAG.h \
 GAGSys.h \

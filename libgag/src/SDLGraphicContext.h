@@ -77,8 +77,8 @@ public:
 	virtual void dbgprintf(const char *msg, ...);
 	virtual void loadImage(const char *name);
 
-	virtual Sprite *loadSprite(const char *name);
-	virtual Font *loadFont(const char *name, unsigned size);
+	virtual void loadSprite(const char *filename, const char *name);
+	virtual void loadFont(const char *filename, unsigned size, const char *name);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
 
 	virtual void nextFrame(void);

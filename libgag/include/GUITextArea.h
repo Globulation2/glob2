@@ -25,7 +25,14 @@
 
 class TextArea:public RectangularWidget
 {
+protected:
+	CLASSDEF(TextArea)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+	CLASSEND;
+
 public:
+	TextArea() { font=NULL; textBuffer=NULL; }
 	TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true, const char *text="");
 	virtual ~TextArea();
 

@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <assert.h>
 
-List::List(int x, int y, int w, int h, const Font *font)
+List::List(int x, int y, int w, int h, base::Ptr<Font> font)
 {
 	this->x=x;
 	this->y=y;
@@ -38,18 +38,11 @@ List::List(int x, int y, int w, int h, const Font *font)
 
 List::~List()
 {
-	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
-	{
-		delete[] (*it);
-	}
+
 }
 
 void List::clear(void)
 {
-	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
-	{
-		delete[] (*it);
-	}
 	strings.clear();
 	nth=-1;
 }
@@ -206,7 +199,7 @@ void List::internalPaint(void)
 
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		parent->getSurface()->drawString(x+2, yPos, font, "%s", strings[i+disp]);
+		parent->getSurface()->drawString(x+2, yPos, font, "%s", (strings[i+disp]).c_str());
 		if (i+(int)disp==nth)
 			parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 		nextSize+=textHeight;
@@ -243,14 +236,9 @@ void List::addText(const char *text, int pos)
 	}
 }
 
-struct strcasecmp_functor : public std::binary_function<char *, char *, bool>
-{
-	bool operator()(char * x, char * y) { return (strcasecmp(x, y)<0); }
-};
-
 void List::sort(void)
 {
-	std::sort(strings.begin(), strings.end(), strcasecmp_functor());
+	std::sort(strings.begin(), strings.end());
 }
 
 void List::addText(const char *text)
@@ -265,25 +253,23 @@ void List::removeText(int pos)
 {
 	if ((pos>=0) && (pos<(int)strings.size()))
 	{
-		char *text=strings[pos];
-		delete[] text;
 		strings.erase(strings.begin()+pos);
 		if (pos<nth)
 			nth--;
 	}
 }
 
-char *List::getText(int pos) const
+const char *List::getText(int pos) const
 {
 	if ((pos>=0) && (pos<(int)strings.size()))
 	{
-		return strings[pos];
+		return strings[pos].c_str();
 	}
 	else
 		return NULL;
 }
 
-char *List::get(void) const
+const char *List::get(void) const
 {
 	return getText(nth);
 }

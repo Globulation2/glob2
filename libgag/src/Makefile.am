@@ -1,6 +1,9 @@
 noinst_LIBRARIES = libgag.a
 
-libgag_a_SOURCES = FileManager.cpp\
+libgag_a_SOURCES = base.cpp\
+	baseserial.cpp\
+	xmlserializer.cpp\
+	FileManager.cpp\
 	GUIBase.cpp\
 	GUIList.cpp\
 	GUIFileList.cpp\

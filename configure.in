@@ -74,6 +74,7 @@ data/gui/Makefile
 maps/Makefile
 libgag/Makefile
 libgag/include/Makefile
+libgag/include/dps/Makefile
 libgag/src/Makefile
 ] )
 

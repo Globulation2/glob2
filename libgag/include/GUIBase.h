@@ -23,6 +23,7 @@
 #include "GAGSys.h"
 #include "GraphicContext.h"
 #include <vector>
+#include "dps/base.h"
 
 //! if defined, widget added twice are handeld correctly
 #define ENABLE_MULTIPLE_ADD_WIDGET
@@ -60,7 +61,7 @@ enum Action
 	TEXT_SET,
 
 	LIST_ELEMENT_SELECTED,
-	
+
 	NUMBER_ELEMENT_SELECTED,
 	RATIO_CHANGED
 };
@@ -68,8 +69,15 @@ enum Action
 class Screen;
 
 //! A widget is a GUI block element
-class Widget
+class Widget : public base::Object
 {
+	CLASSDEFNOREG(Widget)
+		BASECLASS(base::Object)
+	MEMBERS
+		//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
+		ITEM(bool, visible)
+	CLASSEND;
+
 public:
 	//! Widget constructor
 	Widget();
@@ -83,9 +91,6 @@ public:
 	//! Drawing methode of the widget, called on a clean screen and doesn't need to do any addUpdateRect()
 	virtual void paint(void)=0;
 
-	//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
-	bool visible;
-
 protected:
 	friend class Screen;
 	//! Return true if (px,py) is in the rect (x,y)-(x+w,y+h)
@@ -97,6 +102,16 @@ protected:
 //! The parent for all standards widgets like Button, texts, etc...
 class RectangularWidget:public Widget
 {
+protected:
+	CLASSDEFNOREG(RectangularWidget)
+		BASECLASS(Widget)
+	MEMBERS
+		ITEM(Sint32, x)
+		ITEM(Sint32, y)
+		ITEM(Sint32, w)
+		ITEM(Sint32, h)
+	CLASSEND;
+
 public:
 	//! RectangularWidget destructor
 	virtual ~RectangularWidget() { }
@@ -109,18 +124,30 @@ public:
 	virtual void setVisible(bool visible);
 
 protected:
-
 	//! Repaint the widget in its environment
 	virtual void repaint(void)=0;
-
-protected:
-	//! Coordinates and size
-	int x, y, w, h;
 };
 
 //! The screen is the widget container and has a background
-class Screen
+class Screen : public base::Object
 {
+protected:
+	CLASSDEFNOREG(Screen)
+		BASECLASS(base::Object)
+	MEMBERS
+		//! the widgets
+		ITEM(std::vector<base::Ptr<Widget> >, widgets)
+	CLASSEND;
+
+	//! true while execution is running, no need for serialisation
+	bool run;
+	//! the return code, no need for serialisation
+	Sint32 returnCode;
+	//! the rectangle to be updated on repaint, no need for serialisation
+	std::vector<SDL_Rect> updateRects;
+	//! the associated drawable surface, set from the parent after construction
+	DrawableSurface *gfxCtx;
+
 public:
 	virtual ~Screen();
 
@@ -146,9 +173,9 @@ public:
 	//! Next update will include the (x,y)-(x+w,y+h) rect
 	void addUpdateRect(int x, int y, int w, int h);
 	//! Add widget, added widget are garbage collected
-	void addWidget(Widget *widget);
+	void addWidget(base::Ptr<Widget> widget);
 	//! Remove widget, note that removed widget are not garbage collected
-	void removeWidget(Widget *widget);
+	void removeWidget(base::Ptr<Widget> widget);
 	//! Call onSDLEvent on each widget after having called onSDLEvent on the screen itself
 	void dispatchEvents(SDL_Event *event);
 	//! Call onTimer on each widget after having called onTimer on the screen itself
@@ -163,18 +190,6 @@ public:
 	int getW(void) { if (gfxCtx) return gfxCtx->getW(); else return 0; }
 	//! Return the height of the screen
 	int getH(void) { if (gfxCtx) return gfxCtx->getH(); else return 0; }
-
-protected:
-	//! true while execution is running
-	bool run;
-	//! the return code
-	int returnCode;
-	//! the widgets
-	std::vector<Widget *> widgets;
-	//! the rectangle to be updated on repaint
-	std::vector<SDL_Rect> updateRects;
-	//! the associated drawable surface
-	DrawableSurface *gfxCtx;
 };
 
 
@@ -199,5 +214,4 @@ public:
 	virtual void paint(int x, int y, int w, int h);
 };
 
-
-#endif 
+#endif

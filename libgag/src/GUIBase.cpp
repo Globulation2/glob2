@@ -130,7 +130,7 @@ void RectangularWidget::setVisible(bool visible)
 
 Screen::~Screen()
 {
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		delete (*it);
 	}
@@ -235,14 +235,14 @@ void Screen::addUpdateRect(int x, int y, int w, int h)
 	updateRects.push_back(r);
 }
 
-void Screen::addWidget(Widget *widget)
+void Screen::addWidget(base::Ptr<Widget> widget)
 {
 	assert(widget);
 	widget->parent=this;
 	// this option enable or disable the multiple add check
 #ifdef ENABLE_MULTIPLE_ADD_WIDGET
 	bool already=false;
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 		if ((*it)==widget)
 		{
 			already=true;
@@ -253,11 +253,11 @@ void Screen::addWidget(Widget *widget)
 		widgets.push_back(widget);
 }
 
-void Screen::removeWidget(Widget *widget)
+void Screen::removeWidget(base::Ptr<Widget> widget)
 {
 	assert(widget);
 	assert(widget->parent==this);
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 		if ((*it)==widget)
 		{
 			widgets.erase(it);
@@ -268,7 +268,7 @@ void Screen::removeWidget(Widget *widget)
 void Screen::dispatchEvents(SDL_Event *event)
 {
 	onSDLEvent(event);
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		if ((*it)->visible)
 			(*it)->onSDLEvent(event);
@@ -278,7 +278,7 @@ void Screen::dispatchEvents(SDL_Event *event)
 void Screen::dispatchTimer(Uint32 tick)
 {
 	onTimer(tick);
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		if ((*it)->visible)
 			(*it)->onTimer(tick);
@@ -291,7 +291,7 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	gfxCtx=gfx;
 	gfxCtx->setClipRect();
 	paint();
-	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		if ((*it)->visible)
 			(*it)->paint();
