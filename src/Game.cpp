@@ -32,6 +32,9 @@
 
 #define BULLET_IMGID 35
 
+#define MIN_MAX_PRESIGE 500
+#define TEAM_MAX_PRESTIGE 230
+
 Game::Game()
 {
 	init();
@@ -84,13 +87,15 @@ void Game::init()
 
 	stepCounter=0;
 	totalPrestige=0;
-	maxPresige=0;
+	prestigeToReach=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
 }
 
 void Game::setBase(const SessionInfo *initial)
 {
+	// This function reset some team info and overwrite the players
+
 	assert(initial);
 	assert(initial->numberOfTeam==session.numberOfTeam);
 	// TODO, we should be able to play with less team than planed on the map
@@ -116,7 +121,7 @@ void Game::setBase(const SessionInfo *initial)
 
 	session.gameTPF=initial->gameTPF;
 	session.gameLatency=initial->gameLatency;
-	
+
 	anyPlayerWaited=false;
 }
 
@@ -150,7 +155,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					posY+=map.getH();
 				posX&=map.getMaskW();
 				posY&=map.getMaskH();
-				
+
 				Building *b=addBuilding(posX, posY, team, typeNumber);
 				assert(b);
 				if (b)
@@ -504,12 +509,12 @@ bool Game::load(SDL_RWops *stream)
 			players[i]=NULL;
 		}
 	session.numberOfPlayer=0;
-	
+
 	// clear prestige
 	totalPrestige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
-	
+
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
 	printf("Loading map header\n");
@@ -577,7 +582,7 @@ bool Game::load(SDL_RWops *stream)
 			fprintf(logFile, "Game::load::end\n");
 			return false;
 		}
-		
+
 		//But we have to finish Team's loading:
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->update();
@@ -601,6 +606,9 @@ bool Game::load(SDL_RWops *stream)
 			}
 		}
 	}
+
+	// Compute new max prestige
+	prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
 
 	return true;
 }
@@ -689,7 +697,7 @@ void Game::wonStep(void)
 		isGameEnded|=teams[i]->hasWon;
 		totalPrestige+=teams[i]->prestige;
 	}
-	if (totalPrestige >= maxPresige)
+	if (totalPrestige >= prestigeToReach)
 	{
 		totalPrestigeReached=true;
 		isGameEnded=true;
@@ -786,34 +794,31 @@ void Game::removeTeam(void)
 {
 	if (session.numberOfTeam>0)
 	{
-		// TODO : remove stuff left on the map in a cleany way
 		Team *team=teams[--session.numberOfTeam];
 
-		for (int i=0; i<1024; ++i)
-			if (team->myUnits[i])
-				if (team->myUnits[i]->performance[FLY])
-					map.setAirUnit(team->myUnits[i]->posX, team->myUnits[i]->posY, NOGUID);
-				else
-					map.setGroundUnit(team->myUnits[i]->posX, team->myUnits[i]->posY, NOGUID);
-
-		for (int i=0; i<1024; ++i)
-			if (team->myBuildings[i])
-				if (!team->myBuildings[i]->type->isVirtual)
-					map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOGBID);
-
-		for (int i=0; i<256; ++i)
-		{
-			//if (team->myBullets[i])
-			// TODO : handle bullets destruction
-		}
+		team->clearMap();
 
 		delete team;
 
 		assert (session.numberOfTeam!=0);
 		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
-		
+
 		map.removeTeam();
+	}
+}
+
+void Game::cleanUncontrolledTeams(void)
+{
+	for (int t=0; t<session.numberOfTeam; t++)
+	{
+		Team *team = teams[t];
+		if (team->playersMask==0)
+		{
+			team->clearMap();
+			team->clearLists();
+			team->clearMem();
+		}
 	}
 }
 

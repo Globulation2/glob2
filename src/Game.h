@@ -81,6 +81,8 @@ public:
 	// add & remove teams, used by the map editor and the random map generator
 	void addTeam(void);
 	void removeTeam(void);
+	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
+	void cleanUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);
 
 	//void addUnit(int x, int y, int team, int type, int level);
@@ -120,7 +122,7 @@ public:
 	
 	Sint32 stepCounter;
 	int totalPrestige;
-	int maxPresige;
+	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
 	
