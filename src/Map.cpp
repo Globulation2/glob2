@@ -130,10 +130,9 @@ Sector::~Sector(void)
 
 void Sector::free(void)
 {
-	{
-		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-			delete (*it);
-	}
+	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
+		delete (*it);
+	
 	bullets.clear();
 	game=NULL;
 	map=NULL;
@@ -143,26 +142,26 @@ void Sector::save(SDL_RWops *stream)
 {
 	SDL_WriteBE32(stream, bullets.size());
 	// we write the number of bullets here
-	{
-		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-			(*it)->save(stream);
-	}
+	
+	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
+		(*it)->save(stream);
+	
 }
 
-void Sector::load(SDL_RWops *stream, Game *game)
+bool Sector::load(SDL_RWops *stream, Game *game)
 {
 	int nbUsed;
 
 	free();
 	nbUsed=SDL_ReadBE32(stream);
+	for (int i=0; i<nbUsed; i++)
 	{
-		for (int i=0; i<nbUsed; i++)
-		{
-			bullets.push_front(new Bullet(stream));
-		}
+		bullets.push_front(new Bullet(stream));
 	}
+	
 	this->game=game;
 	this->map=&(game->map);
+	return true;
 }
 
 void Sector::step(void)
@@ -648,12 +647,11 @@ bool Map::load(SDL_RWops *stream, Game *game)
 			}
 #		endif
 
+		for (int i=0;i<size;++i)
 		{
-			for (int i=0;i<size;++i)
-			{
-				// TODO : make a bool sector.load to allow errors.
-				sectors[i].load(stream, game);
-			}
+			// TODO : make a bool sector.load to allow errors.
+			if (!sectors[i].load(stream, game))
+				return false;
 		}
 
 		SDL_RWread(stream, signature, 4, 1);

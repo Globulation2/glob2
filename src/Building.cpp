@@ -465,7 +465,38 @@ void Building::update(void)
 
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
+			
+			// First choice: free an unit who has a not needed ressource..
+			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 			{
+				int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+				int r=(*it)->caryedRessource;
+				if ( (r>=0) && (!neededRessource(r)) )
+					if (newDistSquare>maxDistSquare)
+					{
+						maxDistSquare=newDistSquare;
+						fu=(*it);
+						ittemp=it;
+					}
+			}
+			
+			// Second choice: free an unit who has no ressource..
+			if (fu==NULL)
+				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+				{
+					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+					int r=(*it)->caryedRessource;
+					if (r<0)
+						if (newDistSquare>maxDistSquare)
+						{
+							maxDistSquare=newDistSquare;
+							fu=(*it);
+							ittemp=it;
+						}
+				}
+			
+			// Third choice: free any unit..
+			if (fu==NULL)
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 				{
 					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
@@ -476,7 +507,6 @@ void Building::update(void)
 						ittemp=it;
 					}
 				}
-			}
 
 			if (fu!=NULL)
 			{
@@ -549,6 +579,20 @@ void Building::update(void)
 			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
 
 			// we don't need any worker any more
+			
+			// Notice that we could avoid freeing thoses units,
+			// this would keep the units working to the same building,
+			// and then ensure that all newly contructed food building to
+			// be filled (at least start to be filled).int maxDistSquare=0;
+
+			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+			{
+				(*it)->attachedBuilding=NULL;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
+			}
+			unitsWorking.clear();
+			
 			if (type->maxUnitWorking)
 				maxUnitWorking=maxUnitWorkingPreferred;
 			else
@@ -1464,7 +1508,8 @@ Sint32 Building::checkSum()
 
 Bullet::Bullet(SDL_RWops *stream)
 {
-	load(stream);
+	bool good=load(stream);
+	assert(good);
 }
 
 Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY)
@@ -1479,7 +1524,7 @@ Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksL
 	this->targetY=targetY;
 }
 
-void Bullet::load(SDL_RWops *stream)
+bool Bullet::load(SDL_RWops *stream)
 {
 	px=SDL_ReadBE32(stream);
 	py=SDL_ReadBE32(stream);
@@ -1489,6 +1534,7 @@ void Bullet::load(SDL_RWops *stream)
 	shootDamage=SDL_ReadBE32(stream);
 	targetX=SDL_ReadBE32(stream);
 	targetY=SDL_ReadBE32(stream);
+	return true;
 }
 
 void Bullet::save(SDL_RWops *stream)

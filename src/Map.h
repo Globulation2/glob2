@@ -63,7 +63,7 @@ public:
 	std::list<Bullet *> bullets;
 
 	void save(SDL_RWops *stream);
-	void load(SDL_RWops *stream, Game *game);
+	bool load(SDL_RWops *stream, Game *game);
 	
 	void step(void);
 	

@@ -304,8 +304,7 @@ int Engine::run(void)
 
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
-				if (gui.game.players[i]->team->isAlive)
-					gui.executeOrder(net->getOrder(i));
+				gui.executeOrder(net->getOrder(i));
 			}
 
 			//printf ("Engine::bne:%d\n", globalContainer->safe());
