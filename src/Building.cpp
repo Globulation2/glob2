@@ -1629,85 +1629,10 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	return false;
 }
 
-/*bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
-{
-	int testX, testY;
-	bool found=false;
-
-	if (!found)
-	{
-		testY=this->posY-1;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-		{
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
-			{
-				found=true;
-				break;
-			}
-		}
-	}
-
-	if (!found)
-	{
-		testY=this->posY+type->height;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-		{
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
-			{
-				found=true;
-				break;
-			}
-		}
-	}
-
-	if (!found)
-	{
-		testX=this->posX-1;
-		{
-			for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			{
-				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
-				{
-					found=true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (!found)
-	{
-		testX=this->posX+type->width;
-		{
-			for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			{
-				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
-				{
-					found=true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (found)
-	{
-		bool shouldBeTrue=owner->game->map.doesPosTouchUID(testX, testY, UID, dx, dy);
-		assert(shouldBeTrue);
-		*dx=-*dx;
-		*dy=-*dy;
-		*posX=testX & owner->game->map.getMaskW();
-		*posY=testY & owner->game->map.getMaskH();
-		return true;
-	}
-	return false;
-}*/
-
-void Building::computeFlagStat(int *goingTo, int *attacking, int *removingBlack)
+void Building::computeFlagStat(int *goingTo, int *onSpot)
 {
 	*goingTo=0;
-	*attacking=0;
-	*removingBlack=0;
+	*onSpot=0;
 
 	for (std::list<Unit *>::iterator unitIt=unitsWorking.begin(); unitIt!=unitsWorking.end(); ++unitIt)
 	{
@@ -1715,9 +1640,11 @@ void Building::computeFlagStat(int *goingTo, int *attacking, int *removingBlack)
 		if (unit->displacement==Unit::DIS_GOING_TO_FLAG)
 			(*goingTo)++;
 		else if (unit->displacement==Unit::DIS_ATTACKING_AROUND)
-			(*attacking)++;
+			(*onSpot)++;
 		else if (unit->displacement==Unit::DIS_REMOVING_BLACK_AROUND)
-			(*removingBlack)++;
+			(*onSpot)++;
+		else if (unit->displacement==Unit::DIS_CLEARING_RESSOURCES)
+			(*onSpot)++;
 	}
 }
 
