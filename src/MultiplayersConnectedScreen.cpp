@@ -35,7 +35,7 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	
 	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Disconnect]"), DISCONNECT));
 
-	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
 	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(startTimer);
