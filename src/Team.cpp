@@ -198,7 +198,7 @@ void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
 void Team::setCorrectColor(float value)
 {
 	float r, g, b;
-	HSVtoRGB(&r, &g, &b, value, 1.0f, 1.0f);
+	HSVtoRGB(&r, &g, &b, value, 0.8f, 0.9f);
 	this->colorR=(Uint8)(255.0f*r);
 	this->colorG=(Uint8)(255.0f*g);
 	this->colorB=(Uint8)(255.0f*b);

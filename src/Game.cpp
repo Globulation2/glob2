@@ -261,7 +261,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					t->swarms.remove(b);
 				if (b->type->shootingRange)
 					t->turrets.remove(b);
-				
+
 				b->removeSubscribers();
 				b->buildingState=Building::WAITING_FOR_UPGRADE;
 				b->maxUnitWorkingLocal=0;
@@ -1094,21 +1094,34 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			if (drawHealthFoodBar)
 			{
-				int decy=(type->height*32);
-				int healDecx=(type->width-2)*16+1;
 				//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-
 				// TODO : find better color for this
 				// health
 				if (type->hpMax)
 				{
+					int maxWidth, actWidth, addDec;
 					float hpRatio=(float)building->hp/(float)type->hpMax;
-					if (hpRatio>0.6)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
-					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+					if (type->width==1)
+					{
+						maxWidth=8;
+						actWidth=1+(int)(8.0f*hpRatio);
+						addDec=2;
+					}
 					else
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+					{
+						maxWidth=16;
+						actWidth=1+(int)(15.0f*hpRatio);
+						addDec=7;
+					}
+					int decy=(type->height*32);
+					int healDecx=(type->width-(maxWidth>>3))*16+addDec;
+
+					if (hpRatio>0.6)
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+					else if (hpRatio>0.3)
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+					else
+						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
 				}
 
 				// units
