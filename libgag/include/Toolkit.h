@@ -56,6 +56,7 @@ protected:
 	friend class GraphicContext;
 	friend class SDLGraphicContext;
 	friend class GLGraphicContext;
+	friend class Sprite;
 	
 	typedef std::map<std::string, Sprite *> SpriteMap;
 	typedef std::map<std::string, Font *> FontMap;

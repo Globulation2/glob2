@@ -189,6 +189,7 @@ protected:
 	friend class GraphicContext;
 	void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 	Surface *surfaceFromSDL(SDL_Surface *s);
+	void checkBound(int index);
 
 public:
 	Sprite() { }
