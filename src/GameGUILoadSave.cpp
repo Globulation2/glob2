@@ -27,6 +27,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 {
 	this->isLoad=isLoad;
 	this->extension=Utilities::concat(".", extension);
+	this->directory=Utilities::concat(directory, "/");
 
 	fileList=new List(10, 40, 280, 145, globalContainer->standardFont);
 
@@ -56,7 +57,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	else
 		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 300));
 
-	fileName=Utilities::concat(fileNameEntry->getText(), this->extension);
+	fileName=Utilities::concat(directory, fileNameEntry->getText(), this->extension);
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
@@ -64,6 +65,7 @@ LoadSaveScreen::~LoadSaveScreen()
 {
 	delete[] fileName;
 	delete[] extension;
+	free(directory);
 }
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -85,14 +87,14 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 		const char *s=fileList->getText(par1);
 		assert(fileName);
 		delete[] fileName;
-		fileName=Utilities::concat(s, extension);
+		fileName=Utilities::concat(directory, s, this->extension);
 		fileNameEntry->setText(s);
 	}
 	else if (action==TEXT_MODIFIED)
 	{
 		assert(fileName);
 		delete[] fileName;
-		fileName=Utilities::concat(fileNameEntry->getText(), extension);
+		fileName=Utilities::concat(directory, fileNameEntry->getText(), this->extension);
 	}
 }
 

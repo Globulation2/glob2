@@ -30,6 +30,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager=GAG::fileManager;
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
+	fileManager->addWriteSubdir("logs");
 	logFileManager=new LogFileManager(fileManager);
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
