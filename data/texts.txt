@@ -1012,9 +1012,9 @@ Sauvegarder
 Save
 Speichern
 [auto save]
-Sauvegarde automatique.game
-Auto save.game
-
+games/Sauvegarde automatique.game
+games/Auto save.game
+games/autosave.game
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached

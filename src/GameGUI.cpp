@@ -286,9 +286,7 @@ void GameGUI::synchroneStep(void)
 	if ((game.stepCounter&255)==79)
 	{
 		const char *name=globalContainer->texts.getString("[auto save]");
-		char *fileName=Utilities::concat("games/", name);
 		SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
-		delete[] fileName;
 		if (stream)
 		{
 			save(stream, name);
