@@ -62,7 +62,7 @@
 //#define DBG_VPATH_LIST
 
 //! if defined, enable fow and map invisible
-#define DBG_ALL_MAP_DISCOVERED
+//#define DBG_ALL_MAP_DISCOVERED
 
 
 #endif 
