@@ -31,6 +31,11 @@
 #include <map>
 #include <cctype>
 
+// shake player each 20 minuts
+#define PLAYER_SHAKING_TIME 20
+// react once on 8 times
+#define PROB_PSM 7 
+
 namespace Utilities
 {
 	int strmlen(const char *s, int max)
@@ -51,16 +56,30 @@ namespace simpleClient
 	int timeout=0;
 	int TOTL=3;
 	bool connected=false;
+	unsigned now=0;
+	
+	struct PlayerInfo
+	{
+		unsigned lastLogin; // not used now
+		unsigned lastSpoken;
+		unsigned lastShaked;
+		
+		PlayerInfo() { lastLogin=lastSpoken=lastShaked=0; }
+	};
+	
+	typedef std::map<std::string, PlayerInfo> PlayersMap;
+	PlayersMap players;
 	
 	typedef std::map<std::string, std::string> StringMap;
 	StringMap sm;
+	StringMap psm;
 	std::string me;
 	
 	void initSM()
 	{
 		sm["yog"] = "Yes, this is YOG, Ysagoon Online Game";
 		sm["hello"] = "Hi, how are you today ?";
-		sm["hi,"] = "Hello, how do you feel ?";
+		sm["hi!"] = "Hello, how do you feel ?";
 		sm[" bot"] = "Yes, I'm a bot, but I'm nice :-)";
 		sm["robot"] = "Do you like Asimov ?";
 		sm[" you"] = "I'm fine, thanks.";
@@ -72,6 +91,20 @@ namespace simpleClient
 		sm[" globulation"] = "Globulation 1 was cool, but the 2 is better !";
 		sm[" glob2"] = "Glob2 is my favourite game ;-)";
 		sm[" human"] = "I like humans";
+		sm[" game"] = "You should play games on YOG, it is cool";
+		sm["tcho"] = "Salut, noble barbare";
+		sm["trt"] = "What do you mean by trt, dejan ?";
+		sm["good "] = "Fine, thanks !";
+		sm["and you"] = "I'm not leaking ;-)";
+		sm["is anyone"] = "Yes, I'm here, even if I'm only a bot.";
+		sm["is there anyone"] = "Yes, I'm here, I'm a nice bot.";
+		sm["chaterYog"] = "I'm chaterYog, perhaps you'll feel happy speaking with me. I'm nice and trustable";
+	}
+	
+	void initPSM()
+	{
+		psm["lol"] = ";-)";
+		psm["play"] = "I am not sufficiently advanced to play.";
 	}
 
 	bool init()
@@ -204,18 +237,36 @@ namespace simpleClient
 			std::string msgLower = msg;
 			transform (msgLower.begin(), msgLower.end(), msgLower.begin(), tolower);
 			
+			printf("user is %s msg is %s\n", user.c_str(), msg.c_str());
 			if (user != me)
 			{
-				printf("user is %s msg is %s\n", user.c_str(), msg.c_str());
+				players[user].lastSpoken = now;
+				players[user].lastShaked = now;
+				
 				for (StringMap::const_iterator i=sm.begin(); i!=sm.end(); ++i)
 				{
 					if (msgLower.find(i->first) != std::string::npos)
 					{
-						lastMessageID++;
-						send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)i->second.c_str(), i->second.length()+1);
+						send(YMT_SEND_MESSAGE, lastMessageID++, (Uint8 *)i->second.c_str(), i->second.length()+1);
+					}
+				}
+				
+				if (rand()%PROB_PSM)
+				{
+					for (StringMap::const_iterator i=psm.begin(); i!=psm.end(); ++i)
+					{
+						if (msgLower.find(i->first) != std::string::npos)
+						{
+							send(YMT_SEND_MESSAGE, lastMessageID++, (Uint8 *)i->second.c_str(), i->second.length()+1);
+						}
 					}
 				}
 			}
+		}
+		break;
+		case YMT_UPDATE_CLIENTS_LIST:
+		{
+			// TODO
 		}
 		break;
 		case YMT_ADMIN_MESSAGE:
@@ -248,6 +299,14 @@ namespace simpleClient
 		strncpy(data+4, me.c_str(), 32);
 		data[31+4]=0;
 		send(YMT_CONNECTING, (Uint8 *)data, 32+4);
+	}
+	
+	void shakePlayer(const char *p, const char *s)
+	{
+		char buffer[256];
+		snprintf(buffer, 256, "%s%s", p, s);
+		buffer[255]=0;
+		send(YMT_SEND_MESSAGE, lastMessageID++, (Uint8 *)buffer, strlen(buffer)+1);
 	}
 	
 	void run()
@@ -287,7 +346,24 @@ namespace simpleClient
 					send(YMT_CONNECTION_PRESENCE);
 			}
 			
+			for (PlayersMap::iterator i=players.begin(); i!=players.end(); i++)
+			{
+				if (now > i->second.lastShaked + 25*60*PLAYER_SHAKING_TIME)
+				{
+					i->second.lastShaked=now;
+					
+					switch (rand()&3)
+					{
+						case 0: shakePlayer(i->first.c_str(), ", where are you ?"); break;
+						case 1: shakePlayer(i->first.c_str(), ", are you sleeping ?"); break;
+						case 2: shakePlayer(i->first.c_str(), ", are you alive ?"); break;
+						case 3: shakePlayer(i->first.c_str(), ", please, speak to me :-)"); break;
+					}
+				}
+			}
+			
 			SDL_Delay(40);
+			now ++ ;
 		}
 	}
 	
@@ -310,6 +386,8 @@ int main(int argc, char *argv[])
 	printf("* loading map...\n");
 	
 	simpleClient::initSM();
+	
+	simpleClient::initPSM();
 	
 	printf("* connecting...\n");
 	
