@@ -51,7 +51,8 @@ MultiplayersJoin::~MultiplayersJoin()
 	
 	if (logFile)
 	{
-		fclose(logFile);
+		if (logFile!=stdout)
+			fclose(logFile);
 		logFile=NULL;
 	}
 	if (downloadStream)
@@ -117,10 +118,13 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	
 	if (logFile)
 	{
-		fclose(logFile);
+		if (logFile!=stdout)
+			fclose(logFile);
 		logFile=NULL;
 	}
 	logFile=fopen("MultiplayersJoin.log", "w");
+	if (logFile==NULL)
+		logFile=stdout;
 	assert(logFile);
 }
 

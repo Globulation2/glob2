@@ -87,7 +87,8 @@ NetGame::~NetGame()
 	
 	if (logFile)
 	{
-		fclose(logFile);
+		if (logFile!=stdout)
+			fclose(logFile);
 		logFile=NULL;
 	}
 }
@@ -148,10 +149,13 @@ void NetGame::init(void)
 	
 	if (logFile)
 	{
-		fclose(logFile);
+		if (logFile!=stdout)
+			fclose(logFile);
 		logFile=NULL;
 	}
 	logFile=fopen("NetGame.log", "w");
+	if (logFile==NULL)
+		logFile=stdout;
 	assert(logFile);
 };
 
