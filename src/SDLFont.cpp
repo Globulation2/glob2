@@ -127,7 +127,7 @@ void SDLBitmapFont::getPixel(Sint32 x, Sint32 y, Uint8 *r, Uint8 *g, Uint8 *b)
 
 	Uint8 *row = (Uint8 *)picture->pixels + y*picture->pitch + x*picture->format->BytesPerPixel;
 
-	Uint32 pixel;
+	Uint32 pixel=0;
 
 	switch (bpp)
 	{

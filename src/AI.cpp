@@ -678,7 +678,7 @@ Order *AI::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberReque
 		if (e==-1)
 			return new NullOrder();
 		
-		int ex, ey=-1;
+		int ex=-1, ey=-1;
 		{
 			for (int i=0; i<512; i++)
 			{

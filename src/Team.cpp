@@ -261,7 +261,7 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 {
 	Building *b=NULL;
-	float score=1000.0f;
+	float score=1e9;
 	float newScore;
 	float newScoreA;
 	float newScoreB;
@@ -279,6 +279,10 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 				if (maxUnitWorking)
 				{
 					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+				}
+				else
+				{
+					newScoreB=1e9;
 				}
 				newScore=newScoreA+newScoreB;
 				if ( newScore<score )
@@ -392,7 +396,7 @@ Building *Team::findBestConstruction(Unit *unit)
 Building *Team::findNearestAttract(int x, int y, Abilities ability)
 {
 	Building *b=NULL;
-	float score=1000.0f;
+	float score=1e9;
 	float newScore;
 	float newScoreA;
 	float newScoreB;
@@ -408,6 +412,10 @@ Building *Team::findNearestAttract(int x, int y, Abilities ability)
 			if (maxUnitWorking)
 			{
 				newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+			}
+			else
+			{
+				newScoreB=1e9;
 			}
 			newScore=newScoreA+newScoreB;
 			if ( newScore<score )
@@ -431,7 +439,7 @@ Building *Team::findNearestFillableFood(int x, int y)
 	Building *b=NULL;
 	//Sint32 dist=MAX_SINT32;
 	//Sint32 newDist;
-	float score=1000.0f;
+	float score=1e9;
 	float newScore;
 	float newScoreA;
 	float newScoreB;
@@ -447,6 +455,10 @@ Building *Team::findNearestFillableFood(int x, int y)
 				if (maxUnitWorking)
 				{
 					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+				}
+				else
+				{
+					newScoreB=1e9;
 				}
 				newScore=newScoreA+newScoreB;
 				if ( newScore<score )

@@ -932,7 +932,7 @@ void Building::subscribeForConstructionStep()
 					int x=unit->posX;
 					int y=unit->posY;
 					int dx, dy;
-					int r;
+					int r=-1;
 					if (map.nearestRessource(x, y, &(RessourceType)r, &dx, &dy)&& neededRessource(r))
 					{
 						int dist=owner->game->map.warpDistSquare(dx, dy, posX, posY);
@@ -1249,8 +1249,8 @@ void Building::turretStep(void)
 	bool targetFound=false;
 	Map *map=&(owner->game->map);
 
-	int targetX;
-	int targetY;
+	int targetX=-1;
+	int targetY=-1;
 	for (int i=0; i<=range && !targetFound; i++)
 		for (int j=0; j<=i && !targetFound; j++)
 			//for (int k=0; k<8; k++)
@@ -1289,6 +1289,8 @@ void Building::turretStep(void)
 				targetX=posX+i+1;
 				targetY=posY+j+1;
 				break;
+				default:
+				assert(false);
 				}
 				int targetUID=map->getUnit(targetX, targetY);
 				if (targetUID>=0)

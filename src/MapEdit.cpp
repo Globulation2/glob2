@@ -298,6 +298,8 @@ void MapEdit::handleMapClick()
 					dec=1;
 
 				int delX, delY, delW, delH;
+				delW=0;
+				delH=0;
 
 				SDL_Rect r;
 				if (game.removeUnitAndBuilding(x, y, terrainSize+dec, &r, Game::DEL_BUILDING))
@@ -515,6 +517,12 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 			imgid=0;
 		else if (type==UnitType::WARRIOR)
 			imgid=256;
+		else
+		{
+			// TODO : we should do something generic here
+			imgid=0;
+			assert(false);
+		}
 
 		Sprite *unitSprite=globalContainer->units;
 		unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
