@@ -316,7 +316,14 @@ void Unit::subscriptionSuccess(void)
 				case ACT_FILLING:
 				{
 					assert(attachedBuilding);
-					if (ownExchangeBuilding)
+					if (caryedRessource==destinationPurprose)
+					{
+						displacement=DIS_GOING_TO_BUILDING;
+						targetBuilding=attachedBuilding;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+					}
+					else if (ownExchangeBuilding)
 					{
 						assert(foreingExchangeBuilding);
 						if (caryedRessource>=HAPPYNESS_BASE
@@ -339,19 +346,9 @@ void Unit::subscriptionSuccess(void)
 					}
 					else
 					{
-						if (caryedRessource==destinationPurprose)
-						{
-							displacement=DIS_GOING_TO_BUILDING;
-							targetBuilding=attachedBuilding;
-							targetX=targetBuilding->getMidX();
-							targetY=targetBuilding->getMidY();
-						}
-						else
-						{
-							displacement=DIS_GOING_TO_RESSOURCE;
-							targetBuilding=NULL;
-							owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
-						}
+						displacement=DIS_GOING_TO_RESSOURCE;
+						targetBuilding=NULL;
+						owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 					}
 				}
 				break;
