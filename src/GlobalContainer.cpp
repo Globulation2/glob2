@@ -88,7 +88,6 @@ GlobalContainer::~GlobalContainer(void)
 		Toolkit::releaseSprite("terrain");
 		Toolkit::releaseSprite("black");
 		Toolkit::releaseSprite("shading");
-		Toolkit::releaseSprite("redshading");
 		Toolkit::releaseSprite("ressources");
 		Toolkit::releaseSprite("units");
 		Toolkit::releaseSprite("buildings");
@@ -414,10 +413,6 @@ void GlobalContainer::load(void)
 		gfx->loadSprite("data/gfx/shade", "shading");
 		terrainShader=Toolkit::getSprite("shading");
 		
-		// load red shader for interdiction area
-		gfx->loadSprite("data/gfx/redshade", "redshading");
-		forbiddenShader=Toolkit::getSprite("redshading");
-
 		updateLoadProgressBar(30);
 		// load ressources
 		gfx->loadSprite("data/gfx/ressource", "ressources");

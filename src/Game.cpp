@@ -1899,18 +1899,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
 				}
 			}
-			/*{
-				unsigned i0 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-				unsigned i1 = map.isNotForbiddenLocal(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-				unsigned i2 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-				unsigned i3 = map.isNotForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-				unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
-				
-				if (shadeValue == 15)
-					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 255, 0, 0, 127);
-				else if (shadeValue)
-					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->forbiddenShader, shadeValue);
-			}*/
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
