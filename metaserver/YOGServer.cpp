@@ -560,7 +560,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_LEFT_CLIENTS_LIST:
 	{
-		if (size!=4)
+		if (size!=8)
 		{
 			lprintf("bad left client list size (%d).\n", size);
 			break;
@@ -579,13 +579,45 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		{
 			YOGClient *client=*sender;
 			int nbClients=(int)data[1];
+			Uint32 leftClientPacketID=getUint32(data, 4);
+			if (client->allreadyRemovedClients>0)
+			{
+				nbClients-=client->allreadyRemovedClients;
+				if (nbClients<0)
+				{
+					lprintf("Critical error (nbClients=%d, lcpid=%d, c->lcpid=%d, arcl=%d)\n", nbClients, leftClientPacketID, client->leftClientPacketID, client->allreadyRemovedClients);
+					client->allreadyRemovedClients=0;
+					break;
+				}
+				client->allreadyRemovedClients=0;
+			}
+			
+			if (leftClientPacketID!=client->leftClientPacketID)
+			{
+				if (leftClientPacketID+1==client->leftClientPacketID && client->lastLeftClientNumber[leftClientPacketID]==(int)data[1])
+				{
+					lprintf("(late!) client %s received a %d left client list.\n", client->userName, nbClients);
+					client->allreadyRemovedClients=nbClients;
+				}
+				else
+				{
+					lprintf("(too late!) client %s received a %d left client list.\n", client->userName, nbClients);
+					break;
+				}
+			}
 			lprintf("client %s received a %d left client list.\n", client->userName, nbClients);
 			for (int i=0; i<nbClients; i++)
 			{
 				std::list<Uint32>::iterator uid=client->leftClients.begin();
-				assert(uid!=client->leftClients.end());
-				client->leftClients.erase(uid);
+				if (uid==client->leftClients.end())
+					client->leftClients.erase(uid);
+				else
+				{
+					lprintf("Critical error (nbClients=%d, lcpid=%d, c->lcpid=%d, i=%d, arcl=%d)\n", nbClients, leftClientPacketID, client->leftClientPacketID, i, client->allreadyRemovedClients);
+					break;
+				}
 			}
+			
 		}
 	}
 	break;
@@ -753,18 +785,31 @@ void YOGServer::run()
 					c->sendClients();
 				}
 			
-			if (c->sharingGame==NULL && c!=admin && c->leftClients.size()>0 && c->leftClientsTimeout--<=0 )
-				if (c->leftClientsTOTL--<=0)
+			if (c->sharingGame==NULL && c!=admin)
+			{
+				if (c->leftClients.size()>0)
 				{
-					lprintf("unable to deliver leftClients to (%s)\n", c->userName);
-					c->leftClients.clear();
-					break;
+					if (c->leftClientsTimeout--<=0)
+					{
+						if (c->leftClientsTOTL--<=0)
+						{
+							lprintf("unable to deliver leftClients to (%s)\n", c->userName);
+							c->leftClients.clear();
+							break;
+						}
+						else
+						{
+							c->leftClientsTimeout=DEFAULT_NETWORK_TIMEOUT;
+							c->sendLeftClients();
+						}
+					}
 				}
 				else
 				{
-					c->leftClientsTimeout=DEFAULT_NETWORK_TIMEOUT;
-					c->sendLeftClients();
+					c->leftClientsTimeout=0;
+					c->leftClientsTOTL=3;
 				}
+			}
 		}
 		
 		// We look for disconnected clients:

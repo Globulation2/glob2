@@ -379,13 +379,16 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	case YMT_LEFT_CLIENTS_LIST:
 	{
 		int nbClients=(int)getUint32(data, 4);
-		if (size>8+4*nbClients)
+		if (size>12+4*nbClients)
 		{
 			printf("YOG::we received a bad left clients list (size=%d!<=%d)\n", size, 8+4*nbClients);
 			break;
 		}
 		printf("YOG:we received a %d left clients list\n", nbClients);
-		int index=8;
+		
+		Uint32 leftClientPacketID=getUint32(data, 8);
+		
+		int index=12;
 		for (int i=0; i<nbClients; i++)
 		{
 			Uint32 uid=getUint32(data, index);
@@ -399,11 +402,14 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 				}
 		}
 		newClientListAviable=true;
-		send(YMT_LEFT_CLIENTS_LIST, nbClients);
+		
+		Uint8 data[4];
+		addUint32(data, leftClientPacketID, 0);
+		send(YMT_LEFT_CLIENTS_LIST, nbClients, data, 4);
 	}
 	break;
 	case YMT_CLOSE_YOG:
-		printf("YOG:: YOG is dead !\n"); //TODO: create a deconnected method
+		printf("YOG:: YOG is dead (killed)!\n"); //TODO: create a deconnected method
 	break;
 	}
 
