@@ -622,6 +622,8 @@ Uint8 *OrderAlterateArea::getData(void)
 		free (_data);
 	this->_data = (Uint8 *)malloc(getDataLength());
 	
+	printf("Serializing OrderAlterateArea::getData to size %d\n", getDataLength());
+	
 	addUint8(_data, teamNumber, 0);
 	addUint8(_data, type, 1);
 	addSint16(_data, x, 2);
@@ -637,7 +639,7 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength)
 {
 	if (dataLength < 10)
 	{
-		printf("OrderAlterateForbidden::setData(dataLength=%d) failure\n", dataLength);
+		printf("OrderAlterateArea::setData(dataLength=%d) failure\n", dataLength);
 		for (int i=0; i<dataLength; i++)
 			printf("data[%d]=%d\n", i, data[i]);
 		return false;

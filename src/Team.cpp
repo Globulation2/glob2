@@ -631,19 +631,20 @@ Building *Team::findNearestHeal(Unit *unit)
 {
 	if (unit->performance[FLY])
 	{
-		int x=unit->posX;
-		int y=unit->posY;
-		int timeLeft=unit->hungry/race.hungryness;
-		Building *choosen=NULL;
-		int minDist=INT_MAX;
+		int x = unit->posX;
+		int y = unit->posY;
+		int timeLeft = unit->hungry/race.hungryness;
+		int timeLeftSquare = timeLeft*timeLeft;
+		Building *choosen = NULL;
+		int minDistSquare = INT_MAX;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-			if (buildingDist<timeLeft && buildingDist<minDist)
+			int buildingDistSquare=map->warpDistSquare(x, y, b->posX, b->posY);
+			if (buildingDistSquare<timeLeftSquare && buildingDistSquare<minDistSquare)
 			{
 				choosen=b;
-				minDist=buildingDist;
+				minDistSquare=buildingDistSquare;
 			}
 		}
 		return choosen;

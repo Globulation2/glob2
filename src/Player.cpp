@@ -331,6 +331,7 @@ bool BasePlayer::send(Uint8 *data, int size)
 	if (socket==NULL)
 		return false;
 	UDPpacket *packet=SDLNet_AllocPacket(size);
+	assert(packet);
 	if (packet==NULL)
 		return false;
 	packet->len=size;
