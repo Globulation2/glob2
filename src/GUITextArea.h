@@ -7,6 +7,7 @@
 #define __GUITEXTAREA_H
 
 #include "GUIBase.h"
+#include <vector>
 
 class TextArea:public Widget
 {
@@ -36,7 +37,7 @@ protected:
 	unsigned int areaHeight;
 	unsigned int areaPos;
 	unsigned int charHeight;
-	vector <unsigned int> lines;
+	std::vector <unsigned int> lines;
 };
 
 #endif

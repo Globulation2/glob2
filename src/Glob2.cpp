@@ -79,15 +79,18 @@ int main(int argc, char *argv[])
 				YOGScreen yogScreen;
 				drawYOGSplashScreen();
 				yogScreen.createConnection();
-				int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
-				yogScreen.closeConnection();
-				if (yogReturnCode==1)
+				if (yogScreen.socket!=NULL)
 				{
-					// TODO : join game in joyScreen.ip;
-				}
-				else if (yogReturnCode==2)
-				{
-					// TODO : create game
+					int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
+					yogScreen.closeConnection();
+					if (yogReturnCode==1)
+					{
+						// TODO : join game in joyScreen.ip;
+					}
+					else if (yogReturnCode==2)
+					{
+						// TODO : create game
+					}
 				}
 			}
 			break;

@@ -289,14 +289,14 @@ void GlobalStuff::handleConnection(Connection *connection)
 		{
 			for (map<Uint32, Game *>::iterator it=games.begin(); it!=games.end(); ++it)
 			{
-				snprintf(data, GAME_INFO_MAX_SIZE, "0x%x:%s\n", (*it).first, (*it).second->info);
+				snprintf(data, GAME_INFO_MAX_SIZE, "0x%x:%s", (*it).first, (*it).second->info);
 				if (sendString(connection->socket, data)==false)
 				{
 					handleCloseConnection(connection);
 					return;
 				}
 			}
-			snprintf(data, GAME_INFO_MAX_SIZE, "end\n");
+			snprintf(data, GAME_INFO_MAX_SIZE, "end");
 			if (sendString(connection->socket, data)==false)
 				handleCloseConnection(connection);
 		}
@@ -428,7 +428,7 @@ bool GlobalStuff::getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE])
 
 bool GlobalStuff::sendString(TCPsocket socket, char *data)
 {
-	int len=strlen(data)+1; // add one for the terminating NULL
+	int len=strlen(data)+1;
 	int result=SDLNet_TCP_Send(socket, data, len);
 	return (result==len);
 }
