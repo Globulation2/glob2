@@ -402,7 +402,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			connectedClients.push_back(client);
 		}
 		client->reconnected(ip);
-		if ((data[1]&1==1) && (strncmp(userName, "admin", 32)==0))
+		if ((data[1]&1)==1 && (strncmp(userName, "admin", 32)==0))
 			lprintf("admin (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
 		else
 			lprintf("client (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
@@ -466,7 +466,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		YOGClient *client=connectedClient;
 		
-		if ((data[1]&2==0) && size==36)
+		if ((data[1]&2)==0 && size==36)
 		{
 			// newYogPassword
 			// We received xored (password):
@@ -495,7 +495,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				return;
 			}
 		}
-		else if ((data[1]&2==2) && size==24)
+		else if ((data[1]&2)==2 && size==24)
 		{
 			// hashed
 			// We received hashed:
@@ -560,7 +560,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		connectedClients.erase(cci);
 		
-		if ((data[1]&1==1) && (strncmp(client->userName, "admin", 32)==0))
+		if ((data[1]&1)==1 && strncmp(client->userName, "admin", 32)==0)
 		{
 			admin=client;
 			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
