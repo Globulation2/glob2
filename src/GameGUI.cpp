@@ -403,14 +403,18 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					typingMessage=true;
 				}
 			}
-		break;
+			break;
 		case SDLK_BACKSPACE :
 			if (pressed && (typedChar>0))
 			{
 				typedChar--;
 				typedMessage[typedChar]=0;
 			}
-		break;
+			break;
+		case SDLK_SPACE:
+			if (pressed)
+				iterateSelection();
+			break;
 		default:
 
 		break;
@@ -1325,3 +1329,42 @@ void GameGUI::checkValidSelection(void)
 		//displayMode=BUILDING_AND_FLAG;
 	}
 }
+
+void GameGUI::iterateSelection(void)
+{
+	if (displayMode==BUILDING_SELECTION_VIEW)
+	{
+		assert (selBuild);
+		int pos=Building::UIDtoID(selectionUID);
+		int team=Building::UIDtoTeam(selectionUID);
+		int i=pos;
+		while (i<pos+512)
+		{
+			i++;
+			Building *b=game.teams[team]->myBuildings[i&0x1FF];
+			if (b && b->typeNum==selBuild->typeNum)
+			{
+				selBuild=b;
+				selectionUID=b->UID;
+				centerViewportOnSelection();
+				break;
+			}
+		}
+	}
+}
+
+void GameGUI::centerViewportOnSelection(void)
+{
+	if (selectionUID<0)
+	{
+		assert (selBuild);
+		Building *b=game.teams[Building::UIDtoTeam(selectionUID)]->myBuildings[Building::UIDtoID(selectionUID)];
+		viewportX=b->posX-((globalContainer->gfx.getW()-128)>>6);
+		viewportY=b->posY-((globalContainer->gfx.getH())>>6);
+		viewportX-=b->type->decLeft;
+		viewportY-=b->type->decTop;
+		viewportX=(viewportX+game.map.getW())&game.map.getMaskW();
+		viewportY=(viewportY+game.map.getH())&game.map.getMaskH();
+	}
+}
+
