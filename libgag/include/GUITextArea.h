@@ -28,6 +28,7 @@
 namespace GAGCore
 {
 	class Font;
+	class Sprite;
 }
 
 namespace GAGGUI
@@ -36,7 +37,7 @@ namespace GAGGUI
 	{
 	public:
 		TextArea() { font=NULL; }
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *spritelocation="" , const char *text="");
 		virtual ~TextArea();
 	
 		virtual void onSDLEvent(SDL_Event *event);
@@ -46,6 +47,8 @@ namespace GAGGUI
 		virtual void setText(const char *text);
 		virtual const char *getText(void) { return text.c_str(); }
 		virtual void addText(const char *text);
+		virtual void addImage(int frame);
+		virtual void addNoImage();
 		virtual void addChar(const char c);
 		virtual void remText(unsigned pos, unsigned len);
 		virtual void scrollDown(void);
@@ -67,13 +70,18 @@ namespace GAGGUI
 	
 	protected:
 		bool readOnly;
+		std::string spritelocation;
+		int spriteWidth;
 		GAGCore::Font *font;
 		size_t areaHeight;
 		size_t areaPos;
 		unsigned int charHeight;
 		std::vector <size_t> lines;
+		std::vector <int> lines_frames;
+		std::vector <int> frames;
 		std::string text;
 		std::map<std::string, int> stringWidthCache;
+		GAGCore::Sprite *sprite;
 		
 		// edit mod variables
 		// this one is the only one always valid, other are recomputed from it
