@@ -177,7 +177,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					{
 						b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
 						b->maxUnitWorkingPreferred=b->maxUnitWorking;
-						if (order->sender!=localPlayer)
+						//if (order->sender!=localPlayer)
 							b->maxUnitWorkingLocal=b->maxUnitWorking;
 						b->update();
 					}
@@ -197,8 +197,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 					if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 					{
 						b->unitStayRange=((OrderModifyFlags *)order)->range[i];
-						if (order->sender!=localPlayer)
-							b->unitStayRangeLocal=b->unitStayRangeLocal;
+						//if (order->sender!=localPlayer)
+							b->unitStayRangeLocal=b->unitStayRange;
 						b->update();
 					}
 				}

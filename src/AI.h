@@ -58,6 +58,7 @@ public:
 
 	int estimateFood(int x, int y);
 	int countUnits(void);
+	int countUnits(const int medicalState);
 	Order *swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
 	void nextMainBuilding(const int buildingType);
 	bool checkUIDRoomForBuilding(int px, int py, int width, int height);
@@ -68,6 +69,7 @@ public:
 	Order *mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
 	Order *adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
 	Order *checkoutExpands(const int numbers, const int workers);
+	Order *mayUpgrade(const int ptrigger, const int ntrigger);
 	
 	Order *getOrder(void);
 

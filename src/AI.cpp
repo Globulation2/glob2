@@ -69,46 +69,54 @@ int AI::estimateFood(int x, int y)
 		int h=0;
 		int i;
 		int rxl, rxr, ryt, ryb;
+		int hole;
 		
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx+i, ry, (RessourceType)CORN))
 				w++;
-			else
+			else if (hole--<0)
 				break;
 		rxr=rx+i;
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx-i, ry, (RessourceType)CORN))
 				w++;
-			else
+			else if (hole--<0)
 				break;
 		rxl=rx-i;
 		
 		rx=((rxr+rxl)>>1);
 		
+		
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx, ry+i, (RessourceType)CORN)||map->isRessource(rx+1, ry+i, (RessourceType)CORN))
 				h++;
-			else
+			else if (hole--<0)
 				break;
 		ryb=ry+i;
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx, ry-i, (RessourceType)CORN)||map->isRessource(rx+1, ry-i, (RessourceType)CORN))
 				h++;
-			else
+			else if (hole--<0)
 				break;
 		ryt=ry-i;
 		
 		ry=((ryt+ryb)>>1);
 		w=0;
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx+i, ry, (RessourceType)CORN)||map->isRessource(rx+i, ry+1, (RessourceType)CORN))
 				w++;
-			else
+			else if (hole--<0)
 				break;
+		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx-i, ry, (RessourceType)CORN)||map->isRessource(rx-i, ry+1, (RessourceType)CORN))
 				w++;
-			else
+			else if (hole--<0)
 				break;
 		
 		//printf("r=(%d, %d), w=%d, h=%d, s=%d.\n", rx, ry, w, h, w*h);
@@ -124,8 +132,21 @@ int AI::countUnits(void)
 	Unit **myUnits=player->team->myUnits;
 	int c=0;
 	for (int i=0; i<1024; i++)
-		if ((myUnits[i])&&(myUnits[i]->medical==0))
+		if (myUnits[i])
 			c++;
+	return c;
+}
+
+int AI::countUnits(const int medicalState)
+{
+	Unit **myUnits=player->team->myUnits;
+	int c=0;
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=myUnits[i];
+		if (u &&(u->medical==medicalState))
+			c++;
+	}
 	return c;
 }
 
@@ -154,14 +175,15 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 
 		int f=estimateFood(b->posX, b->posY);
 		int numberRequestedTemp=numberRequested;
-		if (f<(nbu*4))
-		{
-			//printf("AI: (%d)not enough food (%d<%d).\n", b->UID, f, (nbu*2));
+		int numberRequestedLoca=b->maxUnitWorkingLocal;
+		if (f<(nbu*3-1))
 			numberRequestedTemp=0;
-		}
-		if (b->maxUnitWorkingLocal!=numberRequestedTemp)
+		else if (numberRequestedLoca==0)
+			if (f<(nbu*5+1))
+				numberRequestedTemp=0;
+		if (numberRequestedLoca!=numberRequestedTemp)
 		{
-			printf("AI: (%d) numberRequested changed to %d.\n", b->UID, numberRequestedTemp);
+			printf("AI: (%d) numberRequested changed to %d (f=%d).\n", b->UID, numberRequestedTemp, f);
 			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
 		}
 	}
@@ -631,6 +653,8 @@ Order *AI::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberReque
 				{
 					ex=b->posX;
 					ey=b->posY;
+					if (syncRand()&0x1F==0)
+						break;
 				}
 			}
 		}
@@ -686,7 +710,7 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 			{
 				fb++;
 				int w=workers;
-				if (b->maxUnitWorkingLocal!=w)
+				if ((b->maxUnitWorkingLocal!=w)&&(b->type->maxUnitWorking))
 				{
 					
 					//printf("AI: (%d) (%d) numberRequested changed.\n", buildingType, b->UID);
@@ -695,7 +719,13 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 			}
 		}
 	}
+	
 	int wr=countUnits();
+	
+	if (buildingType==BuildingType::FOOD_BUILDING)
+		wr+=2*countUnits(Unit::MED_HUNGRY);
+	else if (buildingType==BuildingType::HEALTH_BUILDING)
+		wr+=4*countUnits(Unit::MED_DAMAGED);
 	
 	if (fb<((wr/numbers)+numbersInc))
 	{
@@ -749,6 +779,190 @@ Order *AI::checkoutExpands(const int numbers, const int workers)
 		return new NullOrder();
 }
 
+Order *AI::mayUpgrade(const int ptrigger, const int ntrigger)
+{
+	Building **myBuildings=player->team->myBuildings;
+	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingFood[4]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *foodBuilding[4]={0, 0, 0, 0};
+	
+	int numberHealth[4]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingHealth[4]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *healthBuilding[4]={0, 0, 0, 0};
+	
+	int numberAttack[4]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingAttack[4]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *attackBuilding[4]={0, 0, 0, 0};
+	
+	int numberScience[4]={0, 0, 0, 0}; // number of Science buildings
+	int numberUpgradingScience[4]={0, 0, 0, 0}; // number of upgrading Science buildings
+	Building *scienceBuilding[4]={0, 0, 0, 0};
+	
+	int numberDefense[4]={0, 0, 0, 0}; // number of Defense buildings
+	int numberUpgradingDefense[4]={0, 0, 0, 0}; // number of upgrading Science buildings
+	Building *defenseBuilding[4]={0, 0, 0, 0};
+	
+	for (int i=0; i<512; i++)
+	{
+		Building *b=myBuildings[i];
+		if (b)
+		{
+			BuildingType *bt=b->type;
+			int l=bt->level;
+			if (bt->type==BuildingType::FOOD_BUILDING)
+			{
+				if (bt->isBuildingSite)
+					numberUpgradingFood[l]++;
+				else
+				{
+					numberFood[l]++;
+					if (syncRand()&1)
+						foodBuilding[l]=b;
+				}
+			}
+			else if (bt->type==BuildingType::HEALTH_BUILDING)
+			{
+				if (bt->isBuildingSite)
+					numberUpgradingHealth[l]++;
+				else
+				{
+					numberHealth[l]++;
+					if (syncRand()&1)
+						healthBuilding[l]=b;
+				}
+			}
+			else if (bt->type==BuildingType::ATTACK_BUILDING)
+			{
+				if (bt->isBuildingSite)
+					numberUpgradingAttack[l]++;
+				else
+				{
+					numberAttack[l]++;
+					if (syncRand()&1)
+						attackBuilding[l]=b;
+				}
+			}
+			else if (bt->type==BuildingType::SCIENCE_BUILDING)
+			{
+				if (bt->isBuildingSite)
+					numberUpgradingScience[l]++;
+				else
+				{
+					numberScience[l]++;
+					if (syncRand()&1)
+						scienceBuilding[l]=b;
+				}
+			}
+			else if (bt->type==BuildingType::DEFENSE_BUILDING)
+			{
+				if (bt->isBuildingSite)
+					numberUpgradingDefense[l]++;
+				else
+				{
+					numberDefense[l]++;
+					if (syncRand()&1)
+						defenseBuilding[l]=b;
+				}
+			}
+		}
+	}
+	
+	Unit **myUnits=player->team->myUnits;
+	int wun[4]={0, 0, 0, 0};//working units
+	int fun[4]={0, 0, 0, 0};//free units
+	{
+		for (int i=0; i<1024; i++)
+		{
+			Unit *u=myUnits[i];
+			if (u)
+			{
+				int l=u->level[BUILD];
+				if (u->activity==Unit::ACT_RANDOM)
+					fun[l]++;
+				wun[l]++;
+			}
+		}
+	}
+	
+	//printf("sbu=(%d, %d, %d, %d) wun=(%d, %d, %d, %d)\n", sbu[0], sbu[1], sbu[2], sbu[3], wun[0], wun[1], wun[2], wun[3]);
+	
+	// We calculate if we may upgrade to leverl 1:
+	int potential=wun[1]+wun[2]+wun[3]+4*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
+	int now=fun[1]+fun[2]+fun[3];
+	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, ptrigger, now, ntrigger);
+	if ((potential>ptrigger)&&(now>ntrigger))
+	{
+		if (numberFood[0]>numberUpgradingFood[1])
+		{
+			Building *b=foodBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberHealth[0]>numberUpgradingHealth[1])
+		{
+			Building *b=healthBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberAttack[0]>numberUpgradingAttack[1])
+		{
+			Building *b=attackBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberScience[0]>numberUpgradingScience[1]+1)
+		{
+			Building *b=scienceBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberDefense[0]>numberUpgradingDefense[1])
+		{
+			Building *b=defenseBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+	}
+	
+	// We calculate if we may upgrade to leverl 2:
+	potential=wun[2]+wun[3]+4*(numberScience[1]+numberScience[2]+numberScience[3]);
+	now=fun[2]+fun[3];
+	if ((potential>ptrigger)&&(now>ntrigger))
+	{
+		if (numberFood[1]>numberUpgradingFood[2])
+		{
+			Building *b=foodBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberHealth[1]>numberUpgradingHealth[2])
+		{
+			Building *b=healthBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberAttack[1]>numberUpgradingAttack[2])
+		{
+			Building *b=attackBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberScience[1]>numberUpgradingScience[2]+1)
+		{
+			Building *b=scienceBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+		if (numberDefense[1]>numberUpgradingDefense[2])
+		{
+			Building *b=defenseBuilding[0];
+			if (b)
+				return new OrderUpgrade(b->UID);
+		}
+	}
+	
+	return new NullOrder();
+}
 
 Order *AI::getOrder(void)
 {
@@ -780,7 +994,7 @@ Order *AI::getOrder(void)
 		if (phase==0)
 		{
 			// rush for food building, explore for room.
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 4, 7, 1, 0);
@@ -791,7 +1005,7 @@ Order *AI::getOrder(void)
 		else if (phase==1)
 		{
 			// rush for food building
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 5, 14, 0, 0);
@@ -802,7 +1016,7 @@ Order *AI::getOrder(void)
 		else if (phase<4)
 		{
 			// mainly produce units, improve health and science if possible
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 9, 14, 0, 0);
@@ -811,7 +1025,7 @@ Order *AI::getOrder(void)
 				case 2:
 					return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
 				case 3:
-					return adjustBuildings(45, 1, 2, BuildingType::SCIENCE_BUILDING);
+					return adjustBuildings(40, 1, 2, BuildingType::SCIENCE_BUILDING);
 				case 4:
 					return adjustBuildings(70, 1, 0, BuildingType::WALKSPEED_BUILDING);
 				case 5:
@@ -823,48 +1037,52 @@ Order *AI::getOrder(void)
 		else if (phase<6)
 		{
 			// mainly produce units, improve health and science if possible
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 9, 14, 1, 0);
 				case 1:
-					return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
+					return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 				case 2:
-					return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
+					return adjustBuildings(37, 1, 1, BuildingType::HEALTH_BUILDING);
 				case 3:
-					return adjustBuildings(45, 1, 2, BuildingType::SCIENCE_BUILDING);
+					return adjustBuildings(32, 1, 2, BuildingType::SCIENCE_BUILDING);
 				case 4:
 					return adjustBuildings(25, 1, 1, BuildingType::DEFENSE_BUILDING);
+				case 5:
+					return mayUpgrade(16, 8);
 			}
 		}
 		else if (phase<8)
 		{
 			// improve science now
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 4, 14, 0, 0);
 				case 1:
-					return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
+					return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 				case 2:
-					return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
+					return adjustBuildings(34, 2, 1, BuildingType::HEALTH_BUILDING);
 				case 3:
-					return adjustBuildings(45, 1, 4, BuildingType::SCIENCE_BUILDING);
+					return adjustBuildings(32, 2, 4, BuildingType::SCIENCE_BUILDING);
+				case 4:
+					return mayUpgrade(16, 4);
 			}
 		}
 		else if (phase<10)
 		{
 			// produce good units, defend too.
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 9, 14, 1, 1);
 				case 1:
-					return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
+					return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 				case 2:
-					return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
+					return adjustBuildings(32, 2, 1, BuildingType::HEALTH_BUILDING);
 				case 3:
-					return adjustBuildings(45, 1, 3, BuildingType::SCIENCE_BUILDING);
+					return adjustBuildings(40, 2, 3, BuildingType::SCIENCE_BUILDING);
 				case 4:
 					return adjustBuildings(70, 1, 5, BuildingType::WALKSPEED_BUILDING);
 				case 5:
@@ -873,6 +1091,8 @@ Order *AI::getOrder(void)
 					return adjustBuildings(70, 1, 3, BuildingType::ATTACK_BUILDING);
 				case 7:
 					return checkoutExpands(80, 5);
+				case 8:
+					return mayUpgrade(16, 4);
 			}
 		}
 		else
@@ -883,11 +1103,11 @@ Order *AI::getOrder(void)
 				case 0:
 					return swarmsForWorkers(1, 10, 3, 1, 14);
 				case 1:
-					return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
+					return adjustBuildings(6, 2, 1, BuildingType::FOOD_BUILDING);
 				case 2:
-					return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
+					return adjustBuildings(37, 2, 1, BuildingType::HEALTH_BUILDING);
 				case 3:
-					return adjustBuildings(45, 1, 2, BuildingType::SCIENCE_BUILDING);
+					return adjustBuildings(38, 2, 2, BuildingType::SCIENCE_BUILDING);
 				case 4:
 					return adjustBuildings(70, 2, 5, BuildingType::WALKSPEED_BUILDING);
 				case 5:
@@ -898,6 +1118,8 @@ Order *AI::getOrder(void)
 					return mayAttack(critticalWarriors, critticalTime, 10);
 				case 8:
 					return checkoutExpands(40, 5);
+				case 9:
+					return mayUpgrade(16, 4);
 			}
 		}
 	}
