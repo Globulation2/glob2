@@ -27,6 +27,7 @@
 #include "YOGScreen.h"
 #include "Utilities.h"
 #include "NetGame.h"
+#include "EndGameScreen.h"
 
 Engine::Engine()
 {
@@ -406,6 +407,10 @@ int Engine::run(void)
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
 	}
+	
+	// Display End Game Screen
+	EndGameScreen endGameScreen(&gui);
+	endGameScreen.execute(globalContainer->gfx, 40);
 	
 	return EE_NO_ERROR;
 }

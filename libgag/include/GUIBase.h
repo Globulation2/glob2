@@ -133,7 +133,7 @@ public:
 	//! Full screen paint, call paint(0, 0, gfx->getW(), gfx->getH())
 	virtual void paint();
 	//! Real paint methode, the screen draws itself here
-	virtual void paint(int x, int y, int w, int h)=0;
+	virtual void paint(int x, int y, int w, int h);
 	//! Wrapper methode, call paint(x, y, w, h)
 	virtual void paint(SDL_Rect *r) { paint(r->x, r->y, r->w, r->h); }
 

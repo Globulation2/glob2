@@ -603,6 +603,14 @@ Begins des Spiels...
 Statistiques
 Statistics
 Statistiken
+[Buildings]
+Batiments
+Buildings
+
+[Prestige]
+Prestige
+Prestige
+
 [Units]
 Unités
 Units
@@ -1019,4 +1027,7 @@ Speichern
 Sauvegarde automatique.game
 Auto save.game
 
+[game over]
+Jeu terminé
+Game over
 

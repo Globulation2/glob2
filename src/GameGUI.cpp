@@ -1853,7 +1853,6 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			if (pm&apm)
 			{
-
 				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, globalContainer->texts.getString("[waiting for %s]"), game.players[pi2]->name);
 				pnb++;
 			}

@@ -313,6 +313,11 @@ void Screen::repaint(DrawableSurface *gfx)
 	}
 }
 
+void Screen::paint(int x, int y, int w, int h)
+{
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+}
+
 // Overlay screen, used for non full frame dialog
 
 OverlayScreen::OverlayScreen(GraphicContext *parentCtx, int w, int h)
