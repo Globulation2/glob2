@@ -32,71 +32,78 @@ struct Token
 {
 	enum TokenType
 	{
+		// Data Types
 		NIL=0,
-		INT=1,
-		STRING=2,
-		//Units
-		S_WORKER=101,
-		S_EXPLORER=102,
-		S_WARRIOR=103,
-		//Buildings
-		S_SWARM_B=201,
-		S_FOOD_B=202,
-		S_HEALTH_B=203,
-		S_WALKSPEED_B=204,
-		S_SWIMSPEED_B=205,
-		S_ATTACK_B=206,
-		S_SCIENCE_B=207,
-		S_DEFENCE_B=208,
-		S_MARKET_B=209,
-		S_WALL_B=210,
-		//FLAGS
-		S_EXPLOR_F=220,
-		S_FIGHT_F=221,
-		S_CLEARING_F=222,
-		S_FORBIDDEN_F=223,
-		//GUI
-		S_ALIANCESCREEN=250,
-		S_BUILDINGTAB=251,
-		S_FLAGTAB=252,
-		S_TEXTSTATTAB=253,
-		S_GFXSTATTAB=254,
+		INT,
+		STRING,
+
+		// Syntaxic token
+		S_PAROPEN=20,
+		S_PARCLOSE,
+		S_SEMICOL,
+		S_STORY,
+		S_EOF,
+
+		// Language keywords
+		S_EQUAL=30,
+		S_HIGHER,
+		S_LOWER,
+		S_NOT,
+
+		// Functions
+		S_WAIT=50,
+		S_TIMER,
+		S_SHOW,
+		S_HIDE,
+		S_ALLIANCE,
+		S_GUIENABLE,
+		S_GUIDISABLE,
+		S_SUMMON,
+		S_WIN,
+		S_LOOSE,
+
+		// Constants
+		// Units
+		S_WORKER=100,
+		S_EXPLORER,
+		S_WARRIOR,
+		// Buildings
+		S_SWARM_B,
+		S_FOOD_B,
+		S_HEALTH_B,
+		S_WALKSPEED_B,
+		S_SWIMSPEED_B,
+		S_ATTACK_B,
+		S_SCIENCE_B,
+		S_DEFENCE_B,
+		S_MARKET_B,
+		S_WALL_B,
+		// Flags
+		S_EXPLOR_F,
+		S_FIGHT_F,
+		S_CLEARING_F,
+		S_FORBIDDEN_F,
+		// GUI elements that can be disabled or enabled
+		S_BUILDINGTAB,
+		S_FLAGTAB,
+		S_TEXTSTATTAB,
+		S_GFXSTATTAB,
+		S_ALLIANCESCREEN,
+
 		//SGSL
-		S_EQUAL=301,
-		S_HIGHER=302,
-		S_LOWER=303,
-		S_EOF=304,
-		S_WAIT=305,
-		S_TIMER=306,
-		S_SHOW=307,
-		
-		S_ACTIVATE=308,
-		S_DEACTIVATE=309,
 		S_FRIEND=310,
 		S_YOU=315,
-		
+
 		S_ENEMY=311,
 		S_ISDEAD=312,
 		S_FLAG=314,
 		S_NOENEMY=316,
-		S_WIN=317,
-		S_LOOSE=318,
-		S_STORY=319,
-		S_HIDE=320,
 		S_LABEL=321,
 		S_JUMP=322,
 		S_SETFLAG=323,
 		S_ALLY=324,
-		S_SUMMON=345,
-		S_NOT=346,
-		S_PAROPEN=347,
-		S_PARCLOSE=348,
-		S_SEMICOL=349,
-		S_ALIANCE=350,
-		S_GUIENABLE=351,
-		S_GUIDISABLE=351
 	} type;
-	
+
 	struct TokenSymbolLookupTable
 	{
 		TokenType type;
@@ -220,10 +227,9 @@ public:
 	Sint32 checkSum() { return lineSelector; }
 
 private:
-	bool conditionTesterBuildings();
-	bool conditionTesterGlobules();
+	bool conditionTester(int pc, bool l);
 	bool testCondition();
-	int valueOfVariable(Token nameOfVariable,int numberOfPlayer, int level);
+	int valueOfVariable(Token::TokenType type, int playerNumber, int level);
 	int lineSelector;
 	Mapscript *mapscript;
 	int internTimer;
