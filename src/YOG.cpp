@@ -64,12 +64,12 @@ YOG::YOG(LogFileManager *logFileManager)
 	
 	uid=0;
 	
-	if (logFileManager)
+	/*if (logFileManager)
 	{
 		logFile=logFileManager->getFile("YOG.log");
 		assert(logFile);
 	}
-	else
+	else*/
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
 	
@@ -333,7 +333,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint8 messageID=data[5];
 		Uint8 sizeAddrs=data[6];
 		fprintf(logFile, "YMT_PRIVATE_RECEIPT packet receiptID=%d, messageID=%d, sizeAddrs=%d\n", receiptID, messageID, sizeAddrs);
-		if (size-8>=(2+64)*sizeAddrs)
+		if (size-8>(2+64)*sizeAddrs)
 		{
 			fprintf(logFile, "bad size for a YMT_PRIVATE_RECEIPT packet (size=%d), (ip=%s)\n", size, Utilities::stringIP(ip));
 			break;

@@ -243,7 +243,7 @@ namespace simpleClient
 						data[0]=0;
 						data[1]=0;
 						data[2]=0;
-						data[3]=3;
+						data[3]=4;
 						strncpy(data+4, s+6, 32);
 						data[31+4]=0;
 						send(YMT_CONNECTING, 1, (Uint8 *)data, 32+4);

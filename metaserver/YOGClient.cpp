@@ -428,7 +428,7 @@ void YOGClient::deliveredReceipt(Uint8 receiptID)
 			receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		for (std::list<char *>::iterator message=rit->awayMessages.begin(); message!=rit->awayMessages.end(); message++)
 		{
-			printf("*message=(%s), *message=(%x)\n", *message, (int)*message);
+			lprintf("*message=(%s), *message=(%x)\n", *message, (int)*message);
 			free(*message);
 		}
 		privateReceipts.erase(rit);
