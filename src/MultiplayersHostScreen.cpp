@@ -120,6 +120,8 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		}
 	}
 
+//#define GLOB2_AUTO_JOIN_YOUR_HOST_GAME
+#ifdef GLOB2_AUTO_JOIN_YOUR_HOST_GAME
 	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
 	{
 		multiplayersJoin=new MultiplayersJoin(false);
@@ -142,6 +144,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 
 		multiplayersJoin->tryConnection();
 	}
+#endif
 
 	if ((multiplayersJoin)&&(!multiplayersJoin->kicked))
 		multiplayersJoin->onTimer(tick);

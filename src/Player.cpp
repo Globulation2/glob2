@@ -353,6 +353,33 @@ bool BasePlayer::send(char *data, int size)
 	return sucess;
 }
 
+bool BasePlayer::send(char *data, int size, const int v)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size+4);
+	if (packet==NULL)
+		return false;
+	if (ip.host==0)
+		return false;
+	packet->len=size;
+			
+	memcpy(4+(char *)packet->data, data, size);
+
+	packet->data[0]=v;
+	packet->data[1]=0;
+	packet->data[2]=0;
+	packet->data[3]=0;
+	
+	bool sucess;
+
+	packet->address=ip;
+	packet->channel=channel;
+	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	
+	SDLNet_FreePacket(packet);
+	
+	return sucess;
+}
+
 bool BasePlayer::send(const int v)
 {
 	char data[4];

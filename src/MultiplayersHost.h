@@ -39,17 +39,6 @@ public:
 
 	enum{SECONDS_BEFORE_START_GAME=5};
 	
-	/*enum NetWindowState
-	{
-		WS_BAD=0,
-
-		WS_LOST=1,
-		WS_UNSENT=2,
-		WS_SENT=3,
-		WS_RECEIVED=4
-	};*/
-	
-	
 	enum{NET_WINDOW_SIZE=256};
 	struct NetWindowSlot
 	{
@@ -60,7 +49,6 @@ public:
 		int time;
 		int packetSize;
 	};
-	
 	struct PlayerFileTransmission
 	{
 		bool wantsFile;
@@ -68,7 +56,6 @@ public:
 		int packetSize;
 		int windowSize;
 	};
-	
 	PlayerFileTransmission playerFileTra[32];
 	
 public:
@@ -81,6 +68,7 @@ public:
 	
 	//! A stream to the map (or saved game) file.
 	SDL_RWops *stream;
+	Uint32 fileSize;
 
 public:
 	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo);

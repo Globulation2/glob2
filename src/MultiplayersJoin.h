@@ -46,6 +46,20 @@ public:
 		WS_SERVER_START_GAME
 	};
 
+	SDL_RWops *downloadStream;
+	int startDownloadTimeout;
+	
+	enum{NET_WINDOW_SIZE=256};
+	struct NetWindowSlot
+	{
+		//NetWindowState state;
+		Uint32 index;
+		bool received;
+		int packetSize;
+	};
+	NetWindowSlot netWindow[256];
+	Uint32 unreceivedIndex;
+	
 private:
 	LANBroadcast lan;
 	enum BroadcastState
@@ -102,7 +116,9 @@ private:
 public:
 	void dataPresenceRecieved(char *data, int size, IPaddress ip);
 	void dataSessionInfoRecieved(char *data, int size, IPaddress ip);
+	void dataFileRecieved(char *data, int size, IPaddress ip);
 	void checkSumConfirmationRecieved(char *data, int size, IPaddress ip);
+	
 
 	void unCrossConnectSessionInfo(void);
 	void tryCrossConnections(void);
@@ -124,6 +140,7 @@ public:
 	bool sendPresenceRequest();
 	bool sendSessionInfoRequest();
 	bool sendSessionInfoConfirmation();
+	bool send(char *data, int size);
 	bool send(const int v);
 	bool send(const int u, const int v);
 
