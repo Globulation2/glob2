@@ -20,8 +20,8 @@
 #ifndef __GAG_H
 #define __GAG_H
 
-#include "GAGSys.h"
 #include "xmlserializer.h"
+#include "GAGSys.h"
 #include "FileManager.h"
 #include "GraphicContext.h"
 #include "SupportFunctions.h"
