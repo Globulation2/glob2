@@ -154,7 +154,7 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 		// store in cache
 		cache[key] = data;
 		timeCache[now] = cache.find(key);
-		std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
+		//std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
 	}
 	else
 	{
