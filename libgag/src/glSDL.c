@@ -867,7 +867,7 @@ SDL_Surface *glSDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 #else
 	gl.GetIntegerv(GL_MAX_TEXTURE_SIZE, &maxtexsize);
 #endif
-	DBG(fprintf(stderr, "glSDL/wrapper: Max texture size: %d\n", maxtexsize));
+	DBG(fprintf(stderr, "glSDL/wrapper: Max texture size: %d\n", (int)maxtexsize));
 
 	init_formats();
 	gl_reset();
@@ -2031,7 +2031,7 @@ void glSDL_Invalidate(SDL_Surface *surface, SDL_Rect *area)
 
 static int InitTexture(SDL_Surface *datasurf, glSDL_TexInfo *txi, int tex)
 {
-	gl.GenTextures(1, (unsigned int *)&txi->texture[tex]);
+	gl.GenTextures(1, (GLuint *)&txi->texture[tex]);
 	gl.BindTexture(GL_TEXTURE_2D, txi->texture[tex]);
 	gl.PixelStorei(GL_UNPACK_ROW_LENGTH, datasurf->pitch /
 			datasurf->format->BytesPerPixel);
@@ -2260,7 +2260,7 @@ static void UnloadTexture(glSDL_TexInfo *txi)
 {
 	int i;
 	for(i = 0; i < txi->textures; ++i)
-		gl.DeleteTextures(1, (unsigned int *)&txi->texture[i]);
+		gl.DeleteTextures(1, (GLuint *)&txi->texture[i]);
 	memset(&txi->invalid_area, 0, sizeof(txi->invalid_area));
 }
 
