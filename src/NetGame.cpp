@@ -103,21 +103,21 @@ bool NetGame::isStepReady(Sint32 step)
 	{
 		if (smaller(lastReceivedFromHim[eachPlayers], step))
 		{
-			printf("player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
+			//printf("player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
 			isWaitingForPlayer=true;
 			return false;
 		}
 		if (players[eachPlayers]->type==Player::P_IP)
 		if (smaller(lastReceivedFromMe[eachPlayers], step))
 		{
-			printf("player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
+			//printf("player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
 			isWaitingForPlayer=true;
 			return false;
 		}
 		
 		if ( playersNetQueue[eachPlayers][step].order==NULL)
 		{
-			printf("player %d is not ready for step %d (noor). \n", eachPlayers, step);
+			//printf("player %d is not ready for step %d (noor). \n", eachPlayers, step);
 			isWaitingForPlayer=true;
 			return false;
 		}

@@ -753,7 +753,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, const bool useMapDiscovered=false)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false)
 {
 	int x, y, id;
 	int left=(sx>>5);
@@ -918,21 +918,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		int team = Building::UIDtoTeam(uid);
 
 		Building *building=teams[team]->myBuildings[id];
+		BuildingType *type=building->type;
 
-		if (building->type->isVirtual)
+		if (type->isVirtual)
 		{
 			flagList.insert(building);
-			//continue; TODO : optimise and have a bic copy-past to show "drawHealthFoodBar" information in a flag more specifically.
+			//continue; TODO : optimise and have a big copy-past to show "drawHealthFoodBar" information in a flag more specifically.
 		}
 
-		if ((building->type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
+		if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
 			continue;
 
-		int imgid=building->type->startImage;
+		int imgid=type->startImage;
 
 		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
 
-		if (building->type->hueImage)
+		if (type->hueImage)
 		{
 			// Here he hue all the sprite:
 
@@ -950,9 +951,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer.gfx.drawSprite(buildingSprite, x, y);
 
 			// Then we draw a hued flag of the team.
-			int flagImgid=building->type->flagImage;
+			int flagImgid=type->flagImage;
 			//int w=building->type->width;
-			int h=building->type->height;
+			int h=type->height;
 
 			//We draw the flag at left bottom corner on the building
 			PalSprite *flagSprite=(PalSprite *)globalContainer.buildings.getSprite(flagImgid);
@@ -969,18 +970,47 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			globalContainer.gfx.drawSprite(flagHue, x/*+(w<<5)-fh*/, y+(h<<5)-fw);
 		}
-
+		
+		if (drawBuildingRects)
+		{
+			int batW=(type->width )<<5;
+			int batH=(type->height)<<5;
+			int typeNum=building->typeNum;
+			globalContainer.gfx.drawRect(x, y, batW, batH, 255, 255, 255, 127);
+			
+			BuildingType *lastbt=buildingsTypes.getBuildingType(typeNum);
+			int lastTypeNum=typeNum;
+			int max=0;
+			while(lastbt->nextLevelTypeNum>=0)
+			{
+				lastTypeNum=lastbt->nextLevelTypeNum;
+				lastbt=buildingsTypes.getBuildingType(lastTypeNum);
+				if (max++>200)
+				{
+					printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+					assert(false);
+					break;
+				}
+			}
+			int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
+			int exBatY=y+((lastbt->decTop-type->decTop)<<5);
+			int exBatW=(lastbt->width)<<5;
+			int exBatH=(lastbt->height)<<5;
+			
+			globalContainer.gfx.drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
+		}
+		
 		if (drawHealthFoodBar)
 		{
-			int decy=(building->type->height*32);
-			int healDecx=(building->type->width-2)*16+1;
+			int decy=(type->height*32);
+			int healDecx=(type->width-2)*16+1;
 			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 
 			// TODO : find better color for this
 			// health
-			if (building->type->hpMax)
+			if (type->hpMax)
 			{
-				float hpRatio=(float)building->hp/(float)building->type->hpMax;
+				float hpRatio=(float)building->hp/(float)type->hpMax;
 				if (hpRatio>0.6)
 					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 78, 187, 78);
 				else if (hpRatio>0.3)
@@ -992,19 +1022,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			// units
 
 			if (building->maxUnitInside>0)
-				drawPointBar(x+building->type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 			if (building->maxUnitWorking>0)
-				drawPointBar(x+building->type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
 
 			// food
-			if ((building->type->canFeedUnit) || (building->type->unitProductionTime))
+			if ((type->canFeedUnit) || (type->unitProductionTime))
 			{
 				// compute bar size, prevent oversize
 				int bDiv=1;
-				assert(building->type->height!=0);
-				while ( ((building->type->maxRessource[CORN]*3+1)/bDiv)>((building->type->height*32)-10))
+				assert(type->height!=0);
+				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
 					bDiv++;
-				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, building->type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
 			}
 
 		}
@@ -1063,12 +1093,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	for (std::set <Building *>::iterator it=flagList.begin(); it!=flagList.end(); ++it)
 	{
 		Building *building=*it;
+		BuildingType *type=building->type;
 		int team=building->owner->teamNumber;
 
-		if ((building->type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
+		if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
 			continue;
 
-		int imgid=building->type->startImage;
+		int imgid=type->startImage;
 
 		map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
 
@@ -1098,8 +1129,8 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	ry=viewportY;
 	if (teamSelected>=0)
 	{
-		rx=(rx-teams[teamSelected]->startPosX+map.w+(map.w>>1));
-		ry=(ry-teams[teamSelected]->startPosY+map.h+(map.h>>1));
+		rx=(rx-teams[teamSelected]->startPosX+map.w-(map.w>>1));
+		ry=(ry-teams[teamSelected]->startPosY+map.h-(map.h>>1));
 		rx&=map.getMaskW();
 		ry&=map.getMaskH();
 	}

@@ -953,6 +953,7 @@ void GameGUI::draw(void)
 			if (max++>200)
 			{
 				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+				assert(false);
 				break;
 			}
 		}
@@ -1006,13 +1007,14 @@ void GameGUI::draw(void)
 	}
 }
 
-void GameGUI::drawAll(void)
+void GameGUI::drawAll(int team)
 {
 	globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
-	game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(),viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, true);
-
+	bool drawBuildingRects=(typeToBuild>=0);
+	game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(),viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
+	
 	globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 0, 128, 128);
-	game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, viewportX, viewportY);
+	game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, viewportX, viewportY, team);
 
 	globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW(), globalContainer.gfx.getH());
 	draw();
