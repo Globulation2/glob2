@@ -756,7 +756,7 @@ void Game::step(Sint32 localTeam)
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->step();
 		
-		map.step();
+		map.step(stepCounter);
 		
 		syncRand();
 		
@@ -776,15 +776,6 @@ void Game::step(Sint32 localTeam)
 				}
 		}
 		
-		/*if ((stepCounter&31)==2)
-		{
-			renderMiniMap(localTeam, true, 0, 2);
-		}
-
-		if ((stepCounter&31)==2+16)
-		{
-			renderMiniMap(localTeam, true, 1, 2);
-		}*/
 		renderMiniMap(localTeam, true, stepCounter&31, 32);
 
 		if ((stepCounter&31)==4)

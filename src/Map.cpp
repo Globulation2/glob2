@@ -55,8 +55,6 @@ Map::Map()
 	hSector=0;
 	sizeSector=0;
 	
-	stepCounter=0;
-	
 	//Gradients stats:
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -207,8 +205,6 @@ void Map::clear()
 		assert(wSector==0);
 		assert(hSector==0);
 		assert(sizeSector==0);
-
-		assert(stepCounter==0);
 	}
 	
 	w=h=0;
@@ -217,8 +213,6 @@ void Map::clear()
 	wDec=hDec=0;
 	wSector=hSector=0;
 	sizeSector=0;
-
-	stepCounter=0;
 	
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -790,8 +784,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	regenerateMap(0, 0, w, h);
 
-	stepCounter=0;
-
 	wSector=w>>4;
 	hSector=h>>4;
 	sizeSector=wSector*hSector;
@@ -1051,7 +1043,7 @@ void Map::growRessources(void)
 	}
 }
 
-void Map::step(void)
+void Map::step(Sint32 stepCounter)
 {
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
@@ -1085,8 +1077,6 @@ void Map::step(void)
 						gradientUpdatedDepth[t][r][s]=0;
 		}
 	}
-	
-	stepCounter++;
 }
 
 void Map::switchFogOfWar(void)
