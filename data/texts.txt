@@ -5,19 +5,19 @@ English
 Deutsch
 Česky
 [hp]
-Pt vie
+Pts vie
 HP
-leben
+Leben
 Životy
 [heal]
 Santé
-Heal
+Health
 Gesundheit
 Zdravý
 [armor]
 Armure
-Armor
-Ruestung
+Armour
+Rüstung
 Opevnění
 [damage]
 Dommages
@@ -25,14 +25,14 @@ Damage
 Schaden
 Poškození
 [food]
-Nouriture
+Nourriture
 Food
 Nahrung
 Potrava
 [working]
 Travaillant
 Working
-Arbeiter
+An der Arbeit
 Pracují
 [inside]
 Dedans
@@ -41,7 +41,7 @@ Drinnen
 Uvnitř
 [ressources]
 Ressources
-Ressources
+Resources
 Ressourcen
 Prostředky
 [wood]
@@ -51,18 +51,18 @@ Holz
 Dřevo
 [corn]
 Blé
-Corn
+Wheat
 Weizen
 Obilí
 [stone]
 Pierre
-stone
+Stone
 Stein
 Kamení
 [Alga]
 Algue
-Alga
-Alge
+Algae
+Algen
 Řasy
 [range]
 Portée
@@ -72,17 +72,17 @@ Rozsah
 [destroy]
 Détruire
 Destroy
-Zertoeren
+Zerstören
 Zničit
 [cancel destroy]
-Annuler detsruction
+Annuler destruction
 Cancel destroy
-Verhindern
+Zerstörung verhindern
 Stornuj zničeni
 [wait destroy]
-Attente destruction
-Waiting destruction
-Warten auf Zerstoerung
+En attente de destruction
+Awaiting destruction
+Warten auf Zerstörung
 Očekávám zničení
 [upgrade]
 Améliorer
@@ -92,42 +92,42 @@ Vylepšit
 [repair]
 Réparer
 Repair
-
+Reparieren
 Opravit
 [cancel upgrade]
 Annuler amélioration
 Cancel upgrade
-Verbes. wiederrufen
+Verbesserung stornieren
 Stornuj vylepšeni
 [cancel repair]
 Annuler réparation
 Cancel repair
-
+Reparatur stornieren
 Stornuj opravu
 [units type]
 type d'unités
-units type
-art die Eineiten
+unit type
+Einheitentyp
 druh jednotek
 [workers]
-ouvrières
-workers
-arbeiter
-dělníci
+Ouvrières
+Workers
+Arbeiter
+Dělníci
 [explorers]
-exploratrices
-explorers
-entdecker
-průzkumníci
+Exploratrices
+Explorers
+Entdecker
+Průzkumníci
 [warriors]
-guerrières
-warriors
-krieger
-válečníci
+Guerrières
+Warriors
+Krieger
+Válečníci
 [Unit type]
 Type d'unite
 Unit type
-Art der Eineit
+Typ der Einheit
 Druh jednotky
 [Worker]
 Ouvrière
@@ -156,7 +156,7 @@ Dosud
  jednotek pracuje
 [still one unit working]
 Une unité travaille
-Still one unit working
+One unit left working
 Eine Einheit arbeitet
 Ještě 1 jednotka pracuje
 [still (i)]
@@ -171,23 +171,23 @@ Dosud
  jednotek uvnitř
 [still one unit inside]
 Une unité dedans
-Still one unit inside
+One unit left inside
 Noch eine Einheit drinnen
 Ještě 1 jednotka uvnitř
 [building name]
 Nom du batiment
 Building name
-Namen des Gebaeude
+Gebäudename
 Jméno budovy
 [swarm building]
 Ruche
 Swarm
-Ruesche
+Stock
 Úl
 [food building]
 Auberge
 Inn
-gasthof
+Gasthof
 Hospoda
 [health building]
 Hopital
@@ -207,12 +207,12 @@ Koupaliště
 [attack building]
 Camp d'entrainement
 Camp
-Kampfgebaeude
+Trainingslager
 Cvičiště
 [science building]
 Ecole
 School
-Schuhle
+Schule
 Škola
 [defense building]
 Tourelle
@@ -222,22 +222,22 @@ Obranná věž
 [exploration flag]
 Drapeau d'exploration
 Exploration flag
-Entdecker Fahne
+Entdeckerflagge
 Průzkumná vlajka
 [war flag]
 Drapeau de guerre
 War flag
-Kampf Fahne
+Kriegsflagge
 Válečná vlajka
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
-Entfernungs Fahne
+Rodungsflagge
 Čistící vlajka
 [stone wall]
 Mur de pierre
 Stone wall
-
+Steinmauer
 Hradba
 [waiting for %s]
 Attente de %s
@@ -246,23 +246,23 @@ Warten auf %s
 Čeká se na %s
 [%s has left the game]
 %s a quitté la partie.
-%s has quited the game.
-%s hat des Spiel verlassen.
+%s has quit the game.
+%s hat das Spiel verlassen.
 %s opustil hru.
 [%s has been deconnected of the game]
 %s s'est fait déconnecté de la partie.
 %s has been disconnected.
-%s has been deconnected.
+Die Verbindung zu %s wurde getrennt.
 %s byl odpojen.
 [load game]
 Charger jeu
-Load Game
+Load game
 Spiel laden
 Nahrát hru
 [save game]
 Sauvegarder jeu
-Save Game
-Speil Speichern
+Save game
+Spiel speichern
 Uložit hru
 [options]
 Options
@@ -277,12 +277,12 @@ Spojenectví
 [return to game]
 Retour au jeu
 Return to game
-Zurueck zum Spiel
+Zurück zum Spiel
 Zpět do hry
 [quit the game]
 Quitter le jeu
 Quit the game
-Spiel Beenden
+Spiel beenden
 Opustit hru
 [ok]
 Accepter
@@ -290,24 +290,24 @@ Ok
 Ok
 Budiž
 [Cancel]
-Annuler
+Annuller
 Cancel
 Wiederrufen
 Zrušit
 [you have lost]
 Vous avez perdu !
-You have lost !
-Sie haben verlohren !
+You have lost!
+Sie haben verloren!
 Jsi ztracen ...
 [you have won]
-Vous avez gagné !!!
-You have won !!!
-Sie haben gewonnen !!!
-Vyhrál jsi :-)
+Vous avez gagné!
+You have won!
+Sie haben gewonnen!
+Vyhrál jsi!
 [campagn]
 Campagne
 Campaign
-Kampagne
+Feldzug
 Nová hra
 [custom game]
 Jeu libre
@@ -317,12 +317,12 @@ Volitelná hra
 [yog]
 Jeu en ligne Ysagoon
 Ysagoon Online Gaming
-Ysagoon Online Spiel
+Ysagoon-Onlinespiel
 Ysagoon Online Gaming
 [lan]
 Jeu en réseau local
 LAN Game
-Lokalnetz Spiel
+Spiel im lokalen Netz
 Síťová hra
 [settings]
 Paramètres
@@ -342,17 +342,17 @@ Konec
 [create game]
 Créer partie
 Create game
-Spiel kreieren
+Spiel anlegen
 Vytvoř hru
 [update list]
 Mettre a jour
 Update list
-Wiederaufbau
+Aktualisieren
 Obnovit seznam
 [connecting to]
 Connection a
 Connecting to
-Verbinden an
+Verbinden mit
 Připojuji se k
 [connect]
 Connecter
@@ -362,52 +362,52 @@ Připojit
 [Disconnect]
 Déconnecter
 Disonnect
-Verbindung unterbrechen
+Trennen
 Odpojit
 [please wait]
 Attendre SVP
 Please wait
-Warten bitte
+Bitte warten
 Čekej prosím
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
-Globulation 2 Laden
+Globulation 2 wird geladen
 Nahrávám Globulation 2
 [host]
 Héberger une partie
 Host a game
-Spiel unterbringen
+Spiel veranstalten
 Hostuj hru
 [join a game]
 Joindre une partie
 Join a game
-Anschliessen an ein Spiel
+Bei einem Spiel mitspielen
 Připojit se do hry
 [join]
 Joindre
 Join
-Anschliessen
+Mitspielen
 Připojit se
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
-Zurueck zum Haubtmenu
+Zurück zum Hauptmenu
 Zpět do hlavního menu
 [player name]
 Nom du joueur
 Player name
-Name
+Spielerame
 Jméno
 [svr hostname]
 Nom du serveur hote
 Server hostname
-Beherberger Name
+Server-Rechnername
 Server hostname
 [hp]
 Point de vie
 HitPoint
-Lebens Punkt
+Lebenspunkt
 Životy
 [carry]
 Transporte :
@@ -422,12 +422,12 @@ Nic nenesu
 [level]
 Niveau
 Level
-Niveau
+Stufe
 Úroveň
 [levels]
 Niveaux
 Levels
-Level
+Stufen
 Úrovně
 [building site]
 Chantier
@@ -437,22 +437,22 @@ Staveniště
 [create map]
 Créer carte
 Create map
-Karte kreieren
+Karte erzeugen
 Vytvořit mapu
 [map size x]
 Largeur de la carte
-Width of the map
+Map width
 Breite der Karte
 Šířka mapy
 [map size y]
 Hauteur de la carte
-Height of the map
+Map height
 Höhe der Karte
 Výška mapy
 [default terrain]
 Terrain par defaut
 Default terrain
-Start Terrain
+Vorgabeterrain
 Předvolená krajina
 [water]
 Eau
@@ -467,7 +467,7 @@ Písek
 [grass]
 Herbe
 Grass
-Grass
+Gras
 Tráva
 [teams]
  équipes
@@ -477,12 +477,12 @@ Tráva
 [choose map]
 Choisir une carte
 Choose a map
-Karte auswaelen
+Karte auswählen
 Výběr mapy
 [choose game]
 Choisir une partie
 Choose a game
-Spiel auswaelen
+Spiel auswählen
 Výběr hry
 [awaiting players]
 Attente des joueurs
@@ -491,7 +491,7 @@ Warten auf Spieler
 Čeká se na hráče
 [stat]
 Statistiques
-Statistic
+Statistics
 Statistiken
 Statistické údaje
 [food left]
@@ -500,149 +500,149 @@ Food left
 Nahrung
 Potrava
 [the building is finished]
-le batiment est terminé
-the building is finished
-
-budova je postavena ...
+Le batiment est terminé
+The building is finished
+Das Gebäude ist fertig
+Budova je postavena ...
 [the swarm is finished]
 La ruche est terminée
 The swarm is finished
-
+Der Stock ist fertig
 Úl postaven ...
 [the food building is finished]
 L'auberge est terminée
 The Inn is finished
-
+Der Gasthof ist fertig
 Hospoda postavena ...
 [the health building is finished]
 L'hopital est terminé
 The hospital is finished
-
+Das Hospital ist fertig
 Nemocnice postavena ...
 [the walkspeed building is finished]
 La piste de course est terminée
 The racetrack is finished
-
+Die Rennbahn ist fertig
 Zavodní dráha postavena ...
 [the swimspeed building is finished]
 La piscine est terminée
 The swimming pool is finished
-
+Das Schwimmbecken ist fertig
 Koupaliště postaveno ...
 [the attack building is finished]
 Le camp d'entrainement est terminé
 The training camp is finished
-
+Das Trainingslager ist fertig
 Cvičiště postaveno ...
 [the science building is finished]
 L'école est terminée
 The school is finished
-
+Die Schule ist fertig
 Škola postavena ...
 [the tower building is finished]
 La tour de défense est terminée
 The defense tower is finished
-
+Der Panzerturm ist fertig
 Obranná věž postavena ...
 [the exploration flag is finished]
 ?? Drapeau d'exploration terminé ??
-?? Exploration flag finised ??
-
+?? Exploration flag finished ??
+?? Entdeckerflagge fertig ??
 ?? Průzkumná vlajka připravena ??
 [the war flag is finished]
 ?? Drapeau de guerre terminé ??
-?? War flag under finished ??
-
+?? War flag finished ??
+?? Kriegsflagge fertig ??
 ?? Válečná vlajka připravena ??
 [the clearing flag is finished]
 ?? Drapeau de défrichage terminé ??
-?? Clearing flag under finished ??
-
+?? Clearing flag finished ??
+?? Rodungsflagge fertig ??
 ?? Čistící vlajka připravena ??
 [the stone wall is finished]
 Un élément de mur est terminé
 A part of the wall is finished
-
+Ein Mauerteil ist fertig
 Kus hradby hotov ...
 [the building is under attack]
-le batiment est attaqué
-the building is under attack
-
-budova pod útokem
+Le batiment est attaqué
+The building is under attack
+Das Gebäude wird angegriffen
+Budova pod útokem
 [the swarm is under attack]
 La ruche est attaquée
 The swarm is under attack
-
-Úl je napaden (!)
+Der Stock wird angegriffen
+Úl je napaden
 [the food building is under attack]
 L'auberge est attaquée
 The Inn is under attack
-
+Der Gasthof wird angegriffen
 Hospoda pod útokem
 [the health building is under attack]
 L'hopital est attaqué
 The hospital is under attack
-
+Das Hospital wird angegriffen
 Nemocnice pod útokem
 [the walkspeed building is under attack]
 La piste de course est attaquée
 The racetrack is under attack
-
+Die Rennbahn wird angegriffen
 Závodní dráha pod útokem
 [the swimspeed building is under attack]
 La piscine est attaquée
 The swimming pool is under attack
-
+Das Schwimmbecken wird angegriffen
 Koupaliště pod útokem
 [the attack building is under attack]
 Le camp d'entrainement est attaqué
 The training camp is under attack
-
+Das Trainingslager wird angegriffen
 Cvičiště pod útokem
 [the science building is under attack]
 L'école est attaquée
 The school is under attack
-
+Die Schule wird angegriffen
 Škola pod útokem
 [the defense building is under attack]
 Vos défenses sont attaquées
 Your defenses are under attack
-
+Ihre Befestigungen werden angegriffen
 Obranná věž je pod útokem
 [the exploration flag is under attack]
 ?? Drapeau d'exploration attaqué ??
 ?? Exploration flag under attack ??
-
+?? Entdeckerflagge wird angegriffen ??
 ?? Průzkumná vlajka v obležení nepřátel ??
 [the war flag is under attack]
 ?? Drapeau de guerre attaqué ??
 ?? War flag under attack ??
-
+?? Kriegsflagge wird angegriffen ??
 ?? Válečná vlajka v obležení nepřátel ??
 [the clearing flag is under attack]
 ?? Drapeau de défrichage attaqué ??
 ?? Clearing flag under attack ??
-
+?? Rodungsflagge wird angegriffen ??
 ?? Čistící vlajka v obležení nepřátel ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
 The ennemi is at your walls
-
+Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
 [Your]
 Vos
 Your
-Euren
+Eure
 Tvoji
 [are under attack(f)]
 sont attaquées
 are under attack
-sind unter Angriff !
+werden angegriffen
 jsou pod útokem
 [Uncontrolled]
 Incontrôlé
 Uncontrolled
-
+Unkontrolliert
 Neovládaný
 [ai]
 IA
@@ -657,7 +657,7 @@ Uzavřeno
 [close]
 Fermer
 Close
-Schliessen
+Schließen
 Uzavři
 [player]
 Joueur
@@ -666,18 +666,18 @@ Spieler
 Hráč
 [PNS_BAD]
 Inconnu
-Unknow
-unbekannt
+Unknowb
+Unbekannt
 Neznámý
 [PNS_BINDED]
 Connu
-Know
-bekannt
+Known
+Bekannt
 Známý
 [PNS_SENDING_FIRST_PACKET]
 Connecté
 Connected
-Verbindet
+Verbunden
 Připojeno
 [PNS_HOST]
 PNS_HOST
@@ -692,22 +692,22 @@ Tichý hráč
 [PNS_PLAYER_SEND_PRESENCE_REQUEST]
 Requête de présence reçue
 Presence request received
-Presenz Anfrage bekommen
+Präsenzanfrage erhalten
 Požadavek připojení přijat
 [PNS_PLAYER_SEND_SESSION_REQUEST]
 Requête de session reçue
 Session request received
-Session Anfrage bekommen
+Sitzungsanfrage bekommen
 Požadavek na navázání relace přijat
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyées
 Informations sended
-Information gesendet
+Informationen gesendet
 Informace poslány
 [PNS_PLAYER_SEND_CHECK_SUM]
 Verification reçue
 Check received
-Pruefung bekommen
+Kontrolle erhalten
 Kontrola přijata
 [PNS_OK]
 OK
@@ -717,12 +717,12 @@ OK
 [PNS_SERVER_SEND_CROSS_CONNECTION_START]
 Debut d'interconnection
 Begin of interconnection
-Begin der Verbindung
+Beginn der Verbindung
 Začátek spojení
 [PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
 Interconnection confirmée
 Interconnection confirmed
-Verbindung bestaetigt
+Verbindung bestätigt
 Spojení ověřeno
 [PNS_PLAYER_FINISHED_CROSS_CONNECTION]
 Interconnection terminée
@@ -737,12 +737,12 @@ Spojen
 [PNS_SERVER_SEND_START_GAME]
 Debut de partie envoyée
 Begin of the game sended
-Begin des Spiels gesendet
+Spielbeginn gesendet
 Počátek hry odeslán
 [PNS_PLAYER_CONFIRMED_START_GAME]
 Debut de partie confirmée
 Begin of the game confirmed
-Begin des Spiels bestaetigt
+Spielbeginn bestätigt
 Počátek hry potvrzen
 [PNS_PLAYER_PLAYS]
 Joue
@@ -752,7 +752,7 @@ Hraje
 [STARTING GAME ...]
 Départ du jeu... 
 Starting game... 
-Begins des Spiels... 
+Spielbeginn... 
 Startuji hru... 
 [Statistics]
 Statistiques
@@ -762,12 +762,12 @@ Statistiky
 [Buildings]
 Batiments
 Buildings
-
+Gebäude
 Budovy
 [Prestige]
 Prestige
 Prestige
-
+Prestige
 Prestiž
 [Units]
 Unités
@@ -787,17 +787,17 @@ z toho
 [are ok]
 sont ok
 are ok
-sind ok
+ok
 v pohodě :-)
 [are hungry]
 ont faim
 are hungry
-sind hungrig
+hungrig
 o hladu
 [are dying hungry]
 meurent de faim
 starve to death
-
+verhungern
 umírají hlady
 [are wonded]
 blessées
@@ -812,27 +812,27 @@ a
 [seeking a job]
 cherchent du travail
 look for a job
-suchen ein Arbeit
+suchen Arbeit
 hledá práci
 [Walk]
 Marche
 Walk
-Gehe
+Geh
 Chůze
 [Swim]
 Nage
 Swim
-Schwimmt
+Schwimm
 Plavání
 [Build]
 Construit
 Build
-Baut
+Bau
 Stavba
 [Harvest]
 Récolte
 Harvest
-ernte
+Ernte
 Těžba
 [At. speed]
 Vitesse at.
@@ -842,12 +842,12 @@ Rychlost útoku
 [At. strength]
 Force at.
 At. strength
-Staerke
+Stärke
 Síla útoku
 [Total]
 Total
 Total
-Total
+Gesamt
 Celkem
 [free]
 libres
@@ -862,22 +862,22 @@ Hledá
 [Free]
 Libre
 Free
-
+Frei
 OK
 [hungry]
 faim
 hungry
-
+hungrig
 Hladový
 [starving]
 trop faim
 starving
-
+verhungern
 Umírá hlady
 [wounded]
 blessées
 wounded
-
+verletzt
 Zraněných
 [in way]
 en chemin
@@ -887,7 +887,7 @@ na cestě
 [on the spot]
 sur place
 on the spot
-Vorort
+vor Ort
 na místě
 [Version]
 Version
@@ -902,7 +902,7 @@ Otevřít
 [Add AI]
 Ajouter IA
 Add AI
-KI zugeben
+KI hinzufügen
 Přidej počítač
 [AI]
 IA
@@ -911,23 +911,23 @@ KI
 Počítač
 [AI name 1]
 Gros mechant
-Bag Guy
-Schlecht man
-Bag Guy
+Bad Guy
+Böser Bube
+Bad Guy
 [AI name 2]
 Destructeur
 Destroyer
-Zerstoerer
+Zerstörer
 Destroyer
 [AI name 3]
 Born to pète la geule
-Né pour beak your neck
-geboren um zu zerstoeren
-Né pour beak your neck
+Né pour break your neck
+Born to polier your Fresse
+Né pour break your neck
 [AI name 4]
 Tape-Sytème
 Agressman
-Agressivum
+Agressor
 Agressman
 [the games]
 Parties
@@ -952,12 +952,12 @@ byl počítač
 [state]
 état
 state
-Zuestand
+Zustand
 stav
 [Start]
 Départ
 Start
-Beginnen
+Start
 Start
 [not ready]
 pas prêt
@@ -987,12 +987,12 @@ Rychlost
 [current speed]
 Vitesse actuelle
 Current speed
-Jetzige Geschwindigkeit
+Aktuelle Geschwindigkeit
 Současná rychlost
 [attack speed]
 Vit. attaque
 Attack speed
-Angriffs gesch.
+Angriffsgeschw.
 Útočící rychlost
 [new]
 Nouveau
@@ -1012,17 +1012,17 @@ Ručně vyrobená mapa
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
-Zufallsgenerierte Karten
+Methoden der Zufallserzeugung von Karten
 Metody náhodně vytvořených map
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
-Uniforme Landschaft
+Einheitliche Landschaft
 Jednotná krajina
 [random terrain]
 Terrain aléatoire
 Random terrain
-Zufalls Landschaft
+Zufallslandschaft
 Náhodná krajina
 [islands terrain]
 Iles
@@ -1042,27 +1042,27 @@ Vyhlazení
 [number of teams]
 nombre d'equipes
 number of teams
-Anzahl Manschaften
+Anzahl Mannschaften
 počet hráčů
 [islands size]
 taille des iles
 islands size
-Grösse der Inseln
+Größe der Inseln
 velikost ostrovů
 [beach size]
 taille de la plage
 beach size
-Grösse des Strandes
+Größe des Strandes
 velikost pláží
 [workers]
 Ouvrières
 Workers
-Arbeiter
+Arbeiterinnen
 Dělníci
 [bad error in connection system]
 Mauvaise erreure dans le système de connection
 Bad error in connection system
-Schlechter
+Fataler Fehler im Verbindungssystem
 Kritická chyba v systému připojení
 [not connected]
 Pas connecté
@@ -1072,12 +1072,12 @@ Nepřipojen
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
-Présenzanfrage gesendet ...
+Präsenzanfrage gesendet ...
 Požadavek připojení odeslán ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
-Sessionanfrage gesendet ... 
+Sitzungsanfrage gesendet ... 
 Požadavek na navázání relace odeslán ...
 [checksum sent]
 Somme de contrôle envoyée ...
@@ -1087,22 +1087,22 @@ Kontrolní součet odeslán ...
 [connected to server]
 Connecté au serveur
 Connected to server
-Angeschlossen an Server
+Mit dem Server verbunden
 Server připojen
 [connecting to all players]
 En train de connecter avec les joueurs
 Connecting to all players
-Anschliessen an alle Spieler
+Verbinden mit allen Spielern
 Připojuji se ke všem hráčům
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
-Angeschlossen an alle Spieler
+Verbunden mit allen Spielern
 Připojen ke všem hráčům
 [aviable lan games]
 Parties locales disponibles
 Local aviable games
-Lokalvorhandene Spiele
+Lokal verfügbare Spiele
 Dostupné místní hry
 [login]
 Login
@@ -1117,7 +1117,7 @@ od:
 [to:]
 à:
 to:
-zu:
+auf:
 pro:
 [away:]
 absent:
@@ -1127,22 +1127,22 @@ pryč:
 [compile]
 Compiler le script
 Compile script
-Script compilieren
+Skript kompilieren
 Sestavit skript
 [downloaded at]
 Téléchargé à 
 Downloaded at 
-Runtergeladen zu
+Heruntergeladen zu
 Stahuji 
 [percent]
   pourcent
   percent
-  prozent
+  Prozent
   procent
 [download finished]
 Téléchargement terminé
 Download finished
-Runterladen fertig
+Herunterladen abgeschlossen
 Stáhnuto
 [Map name: %s]
 Carte: %s.
@@ -1152,12 +1152,12 @@ Jméno mapy: %s.
 [one player]
 Un joueur présent.
 One player has joined.
-Ein Spieler.
+Ein Spieler spielt mit.
 Jeden hráč se připojil.
 [number of players: %d]
 %d joueurs présents.
 %d players has joined.
-%d Spieler.
+%d Spieler spielen mit.
 %d hráčů se připojilo.
 [number of teams: %d]
 %d équipes.
@@ -1167,7 +1167,7 @@ Jeden hráč se připojil.
 [game full]
 Jeu complet
 Game full
-Spiel full
+Spiel komplett
 Plně obsazená hra
 [small]
 faible
@@ -1177,12 +1177,12 @@ malá
 [medium]
 moyen
 medium
-mittle
+mittel
 střední
 [large]
 grand
 large
-gross
+groß
 velká
 [network latency]
 Latence du réseau
@@ -1197,62 +1197,62 @@ Rychlost hry
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
-Interner koherenz Fehler bei der Anschliessung
+Interner Konsistenzfehler beim Verbinden.
 Vnitřní chyba spojitosti během připojovaní.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
-Anschliessen unmöglich. Anscheinend ist der YOG Metaserver nicht verfügbar.
+Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
-Das System ist bereit sich an YOG anzuschliessen
+Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Etablishing the connection to the YOG metaserver...
-Anschluss an YOG Metaserver im Aufbau...
+Verbindungsaufbau zum YOG-Metaserver...
 Navazuji spojení s YOG metaserverem...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
-Der Administrator hat gerade YOG abgestellt.
+Ein Administrator hat gerade den YOG-Metaserver abgestellt.
 Správce zastavil YOG metaserver.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
-Der Anschluss an YOG wurde verlohren.
+Die Verbindung ui YOG wurde verloren.
 Spojení s YOG metaserverem bylo ztraceno.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
-Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihre Version von Globulation zu alt ist. 
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation zu alt ist. 
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
-Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihr Pseudo schohn gebraucht wird.
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Pseudo schon vergeben ist.
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
-Der YOG Metaserver hat den Anschluss ohne Erklärung nicht akzeptiert.
+Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
 YOG metaserver odmítnul spojení bez udání důvodu.
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 The player %s has left YOG.
-Der Spieler %s hat YOG verlassen.
+Spieler %s hat YOG verlassen.
 Hráč %s se odpojil od YOG.
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 The player %s has joined YOG.
-%s
+Spieler %s ist zu YOG zurückgekehrt.
 Hráč %s se připojil k YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as being away.
-Sie sind weg.
+Sie sind als abwesend markiert.
 Jsi označen, že jsi pryč.
 [You are no more marked as away]
 Vous êtes désormais considéré comme étant présent.
@@ -1262,22 +1262,22 @@ Nejsi označen, že jsi pryč.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
-Das YOG Nachrigten System kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" tippen. 
+Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" eingeben. 
 YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <příkaz>" pro více informací o příkazu.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
 The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/away I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
-Der Befehl "/away (<Nachricht>)" zeigt anderen YOG Spieler dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen. z.b. "Ich drinke ein Bier, bin um eins zurück !". Alias "/a"
+Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
 Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoji dočasnou nepřítomnost. Můžeš přidat i výmluvnou krátkou zprávu (důvod). Například "/away Du na cigaretu, za 5 minut sem zpátky ...", lze použít zkráceně "/a".
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
-Der "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine speziefische Person zu senden. z.b. "msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
+"/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.b. "/msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
 Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný si jí nepřečte (šeptání). Například "/msg klip Nazdar :-), tak co ?", lze použít zkráceně "/m".
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
 Do you want to save before quitting ?
-
+Möchten Sie vor dem Beenden abspeichern?
 
 [Yes]
 Oui
@@ -1302,40 +1302,40 @@ games/Auto save.game
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached
-
+Höchstmögliches Prestige erreicht
 Dosažená celková prestiž
 [Continue playing]
 Continuer à jouer
 Continue playing
-
+Weiterspielen
 Pokračovat ve hře
 [Lost : your colony is dead]
 Perdu : Votre colonie est morte
-Lost : Your colony is dead
-
+Lost: Your colony is dead
+Verloren: Ihre Kolonie ist tot
 Tvoje kolonie je zničená ... 
 [Won : you defeated your opponents]
 Gagné : Vous avez vaincu vos adversaires
 Won : you defeated your opponents
-
+Gewonnen: Sie haben Ihre Feinde besiegt
 Tvoji nepřátelé byli poraženi ...
 [Won : your ally %s have the biggest prestige]
 Gagné : votre allié %s a le plus de prestige
 Won : your ally %s have the biggest prestige
-%s
+Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
 Tvůj spojenec %s má největší prestiž ...
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
-%s
+Verloren: %s hat mehr Prestige als Sie
 %s má větší prestiž než Ty ...
 [Won : you have the biggest prestige]
 Gagné : Vous avez le plus de prestige
 Won : you have the biggest prestige
-
+Gewonnen: Sie haben das höchste Prestige
 Ty máš největší prestiž ...
 [The game has not been finished]
 La partie n'a pas été finie
 The game has not been finished
-
+Das Spiel wurde nicht abgeschlossen
 Hra neskončila
