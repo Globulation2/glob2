@@ -168,6 +168,7 @@ void Team::init(void)
 
 	startPosX=startPosY=0;
 
+	subscribeForInside.clear();
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
 
@@ -271,6 +272,37 @@ Building *Team::findNearestHeal(Unit *unit)
 
 Building *Team::findNearestFood(Unit *unit)
 {
+	SessionGame &session=game->session;
+	
+	bool concurency=false;
+	for (int ti=0; ti<session.numberOfTeam; ti++)
+		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me))
+		{
+			concurency=true;
+			break;
+		}
+	
+	int enemyHappyness=0;
+	int maxHappyness[32];
+	memset(maxHappyness, 0, 32*sizeof(int));
+	if (concurency)
+		for (int ti=0; ti<session.numberOfTeam; ti++)
+			if (ti!=teamNumber)
+			{
+				Team *t=game->teams[ti];
+				if (t->sharedVisionFood & me)
+					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+					{
+						int h=(*bi)->aviableHappynessLevel();
+						if (h>maxHappyness[ti])
+						{
+							maxHappyness[ti]=h;
+							if (h>enemyHappyness)
+								enemyHappyness=h;
+						}
+					}
+			}
+	
 	if (unit->performance[FLY])
 	{
 		int x=unit->posX;
@@ -280,14 +312,18 @@ Building *Team::findNearestFood(Unit *unit)
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-			if (buildingDist<minDist)
+			if (b->aviableHappynessLevel()>=enemyHappyness)
 			{
-				choosen=b;
-				minDist=buildingDist;
+				int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
+				if (buildingDist<minDist)
+				{
+					choosen=b;
+					minDist=buildingDist;
+				}
 			}
 		}
-		return choosen;
+		if (choosen)
+			return choosen;
 	}
 	else
 	{
@@ -299,13 +335,86 @@ Building *Team::findNearestFood(Unit *unit)
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			int buildingDist;
-			if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
+			if (b->aviableHappynessLevel()>=enemyHappyness)
 			{
-				choosen=b;
-				minDist=buildingDist;
+				int buildingDist;
+				if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
+				{
+					choosen=b;
+					minDist=buildingDist;
+				}
 			}
 		}
+		if (choosen)
+			return choosen;
+	}
+	
+	if (!concurency)
+		return NULL;
+	
+	bool concurent[32];
+	memset(concurent, 0, 32*sizeof(bool));
+		
+	for (int ti=0; ti<session.numberOfTeam; ti++)
+		if (ti!=teamNumber)
+			concurent[ti]=(game->teams[ti]->sharedVisionFood & me) && (maxHappyness[ti]>=enemyHappyness);
+	
+	if (unit->performance[FLY])
+	{
+		int x=unit->posX;
+		int y=unit->posY;
+		Building *choosen=NULL;
+		int minDist=INT_MAX;
+		for (int ti=0; ti<session.numberOfTeam; ti++)
+			if (ti!=teamNumber && concurent[ti])
+			{
+				Team *t=game->teams[ti];
+				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				{
+					Building *b=(*bi);
+					if (b->aviableHappynessLevel()>=enemyHappyness)
+					{
+						int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
+						if (buildingDist<minDist)
+						{
+							choosen=b;
+							minDist=buildingDist;
+						}
+					}
+				}
+			}
+		return choosen;
+	}
+	else
+	{
+		int x=unit->posX;
+		int y=unit->posY;
+		bool canSwim=unit->performance[SWIM];
+		Building *choosen=NULL;
+		int minDist=INT_MAX;
+		for (int ti=0; ti<session.numberOfTeam; ti++)
+			if (ti!=teamNumber && concurent[ti])
+			{
+				Team *t=game->teams[ti];
+				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
+				{
+					Building *b=(*bi);
+					if (b->aviableHappynessLevel()>=enemyHappyness)
+					{
+						int buildingDist;
+						if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
+						{
+							choosen=b;
+							minDist=buildingDist;
+						}
+					}
+				}
+			}
+		if (choosen)
+			printf("guid=%d found gbui=%d\n", unit->gid, choosen->gid);
+		else
+			printf("guid=%d found no ennemy building\n", unit->gid);
+		
 		return choosen;
 	}
 }
@@ -584,13 +693,28 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 			myBuildings[i]=NULL;
 	}
 
+	subscribeForInside.clear();
+	subscribeToBringRessources.clear();
+	subscribeForFlaging.clear();
+	
 	// resolve cross reference
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
 			myUnits[i]->loadCrossRef(stream, this);
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
+		{
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
+			if (myBuildings[i]->unitsInsideSubscribe.size())
+				subscribeForInside.push_back(myBuildings[i]);
+			if (myBuildings[i]->unitsWorkingSubscribe.size())
+			{
+				if (myBuildings[i]->type->defaultUnitStayRange)
+					subscribeToBringRessources.push_back(myBuildings[i]);
+				else
+					subscribeForFlaging.push_back(myBuildings[i]);
+			}
+		}
 
 	allies=SDL_ReadBE32(stream);
 	enemies=SDL_ReadBE32(stream);
