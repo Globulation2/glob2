@@ -138,6 +138,7 @@ void AICastor::firstInit()
 	
 	goodBuildingMap=NULL;
 	
+	enemyWarriorsMap=NULL;
 	enemyPowerMap=NULL;
 	enemyRangeMap=NULL;
 	
