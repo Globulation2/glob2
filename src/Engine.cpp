@@ -386,7 +386,10 @@ int Engine::run(void)
 		{
 			// We allways allow the user ot use the gui:
 			if (globalContainer->runNoX)
-				gui.checkWonConditions();
+			{
+				if (gui.getLocalTeam()->isAlive==false || gui.getLocalTeam()->hasWon==true || gui.game.totalPrestigeReached)
+					gui.isRunning=false;
+			}
 			else
 				gui.step();
 			
@@ -434,12 +437,7 @@ int Engine::run(void)
 					gui.game.syncStep(gui.localTeamNo);
 			}
 
-			if (globalContainer->runNoX)
-			{
-				if (gui.hasEndOfGameDialogBeenShown)
-					gui.isRunning=false;
-			}
-			else
+			if (!globalContainer->runNoX)
 			{
 				// we draw
 				gui.drawAll(gui.localTeamNo);
