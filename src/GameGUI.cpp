@@ -72,8 +72,9 @@ GameGUI::~GameGUI()
 
 void GameGUI::step(void)
 {
-	SDL_Event event, mouseMotionEvent;
+	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
+	bool wasWindowEvent=false;
 
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
@@ -83,6 +84,11 @@ void GameGUI::step(void)
 			mouseMotionEvent=event;
 			wasMouseMotion=true;
 		}
+		else if (event.type==SDL_ACTIVEEVENT)
+		{
+			windowEvent=event;
+			wasWindowEvent=true;
+		}
 		else
 		{
 			processEvent(&event);
@@ -90,6 +96,8 @@ void GameGUI::step(void)
 	}
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);
+	if (wasWindowEvent)
+		processEvent(&windowEvent);
 
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
@@ -238,6 +246,10 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
 	}
+	else if (event->type==SDL_ACTIVEEVENT)
+	{
+		handleActivation(event->active.state, event->active.gain);
+	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		int button=event->button.button;
@@ -259,6 +271,14 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 		//isRunning=false;
+	}
+}
+
+void GameGUI::handleActivation(Uint8 state, Uint8 gain)
+{
+	if (gain==0)
+	{
+		viewportSpeedX[0]=viewportSpeedY[0]=0;
 	}
 }
 
