@@ -67,7 +67,7 @@ void GameGUI::init()
 	viewportY=0;
 	mouseX=0;
 	mouseY=0;
-	displayMode=BUILDING_AND_FLAG;
+	displayMode=BUILDING_AND_FLAG_VIEW;
 	typeToBuild=-1;
 	selBuild=NULL;
 	selectionPushed=false;
@@ -77,7 +77,6 @@ void GameGUI::init()
 	selectionGUID=NOGUID;
 	selectionGBID=NOGBID;
 	chatMask=0xFFFFFFFF;
-	statMode=STAT_TEXT;
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
@@ -86,12 +85,12 @@ void GameGUI::init()
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
 	typingInputScreenPos=0;
-	
+
 	messagesList.clear();
 	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
-	
+
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
 }
@@ -477,7 +476,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
 				return true;
-				
+
 				default:
 				return false;
 			}
@@ -592,7 +591,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
+				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) &&
 					(selBuild->buildingState==Building::ALIVE))
 				{
 					if ((selBuild->type->maxUnitWorking) &&
@@ -690,13 +689,9 @@ void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 void GameGUI::handleRightClick(void)
 {
 	// We deselect all, we want no tools activated:
-	if ((displayMode==BUILDING_AND_FLAG) && (typeToBuild<0))
+	displayMode=BUILDING_AND_FLAG_VIEW;
+	if (typeToBuild>=0)
 	{
-		displayMode=STAT_VIEW;
-	}
-	else //(typeToBuild>=0)
-	{
-		displayMode=BUILDING_AND_FLAG;
 		selectionPushed=false;
 		selBuild=NULL;
 		selUnit=NULL;
@@ -1051,25 +1046,23 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (my<128+32)
 	{
-		if ((displayMode==BUILDING_AND_FLAG) || (displayMode==STAT_VIEW))
+		if ((displayMode==BUILDING_AND_FLAG_VIEW) || (displayMode==STAT_TEXT_VIEW) || (displayMode==STAT_GRAPH_VIEW))
 		{
 			if (mx<32)
 			{
-				displayMode=BUILDING_AND_FLAG;
+				displayMode=BUILDING_AND_FLAG_VIEW;
 			}
 			else if (mx<64)
 			{
-				displayMode=STAT_VIEW;
-				statMode = STAT_TEXT;
+				displayMode=STAT_TEXT_VIEW;
 			}
 			else if (mx<96)
 			{
-				displayMode=STAT_VIEW;
-				statMode = STAT_GRAPH;
+				displayMode=STAT_GRAPH_VIEW;
 			}
 		}
 	}
-	else if (displayMode==BUILDING_AND_FLAG)
+	else if (displayMode==BUILDING_AND_FLAG_VIEW)
 	{
 		// NOTE : here 6 is 12 /2. 12 is the number of buildings in menu
 		if (my<128+32+(8>>1)*46)
@@ -1088,7 +1081,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (typeToBuild>=13)
 			typeToBuild=-1;
 	}
-	else if (displayMode==STAT_VIEW)
+	/*else if (displayMode==STAT_VIEW)
 	{
 		// we loop betweek states:
 		switch (statMode) {
@@ -1102,7 +1095,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			statMode = STAT_TEXT;
 			break;
 		}
-	}
+	}*/
 	else if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		assert (selBuild);
@@ -1296,7 +1289,7 @@ void GameGUI::draw(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
-	if (displayMode==BUILDING_AND_FLAG)
+	if (displayMode==BUILDING_AND_FLAG_VIEW)
 	{
 		// draw button bar
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 1);
@@ -1736,30 +1729,21 @@ void GameGUI::draw(void)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, globalContainer->littleFont, "ndToRckMed=%d", selUnit->needToRecheckMedical);
 		*/
 	}
-	else if (displayMode==STAT_VIEW)
+	else if (displayMode==STAT_TEXT_VIEW)
 	{
-		// draw menu button
-		/*if (gameMenuScreen)
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
-		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);*/
-
-		if (statMode==STAT_TEXT)
-		{
-			// draw button bar
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 3);
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
-			teamStats->drawText();
-		}
-		else
-		{
-			// draw button bar
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 5);
-			teamStats->drawStat();
-		}
+		// draw button bar
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 3);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
+		teamStats->drawText();
+	}
+	else if (displayMode==STAT_GRAPH_VIEW)
+	{
+		// draw button bar
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 5);
+		teamStats->drawStat();
 	}
 }
 
@@ -2429,7 +2413,7 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			displayMode=BUILDING_AND_FLAG;
+			displayMode=BUILDING_AND_FLAG_VIEW;
 		}
 	}
 	else if (displayMode==UNIT_SELECTION_VIEW)
@@ -2449,7 +2433,7 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			displayMode=BUILDING_AND_FLAG;
+			displayMode=BUILDING_AND_FLAG_VIEW;
 		}
 	}
 	else
@@ -2460,7 +2444,7 @@ void GameGUI::checkValidSelection(void)
 		selectionGBID=NOGBID;
 		game.selectedUnit=NULL;
 		game.selectedBuilding=NULL;
-		//displayMode=BUILDING_AND_FLAG;
+		//displayMode=BUILDING_AND_FLAG_VIEW;
 	}
 }
 
