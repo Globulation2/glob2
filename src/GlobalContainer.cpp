@@ -441,6 +441,8 @@ void GlobalContainer::load(void)
 		updateLoadProgressBar(45);
 		// load terrain data
 		terrain = Toolkit::getSprite("data/gfx/terrain");
+		terrainWater = Toolkit::getSprite("data/gfx/water");
+		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
 		
 		// black for unexplored terrain
 		terrainBlack = Toolkit::getSprite("data/gfx/black");

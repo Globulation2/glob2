@@ -4236,6 +4236,10 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
 		The index in the following table is :
 		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
 		where k is the number of different possibilites.
+		
+		H = grass
+		S = sand
+		E = water
 	*/
 	const Uint16 terrainLookupTable[81][2] =
 	{
