@@ -487,7 +487,7 @@ void MultiplayersJoin::receiveTime()
 		if (broadcastState==BS_ENABLE_YOG)
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 				if (strncmp(it->gameName, gameName, 32)==0)
-					if (serverIP.host!=it->ip)
+					if (serverIP.host!=SDL_SwapBE32(it->ip))
 					{
 						serverIP.host=SDL_SwapBE32(it->ip);
 						serverIP.port=SDL_SwapBE16(SERVER_PORT);
