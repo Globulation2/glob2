@@ -566,7 +566,7 @@ type = 4
 *
 
 // Swim building site, level 1
-startImage = 11
+startImage = 29
 
 jobHarvest = 1
 
