@@ -1527,10 +1527,10 @@ void Unit::handleMovement(void)
 			//{
 				int quality=INT_MAX; // Smaller is better.
 				movement=MOV_RANDOM_GROUND;
-				targetBuilding=NULL;
 				if (verbose)
 					printf("guid=(%d) selecting movement\n", gid);
 				
+				Building *tempTargetBuilding=NULL;
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
 						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
@@ -1565,7 +1565,7 @@ void Unit::handleMovement(void)
 										else
 										{
 											movement=MOV_GOING_TARGET;
-											targetBuilding=b;
+											tempTargetBuilding=b;
 										}
 										targetX=posX+x;
 										targetY=posY+y;
@@ -1599,7 +1599,7 @@ void Unit::handleMovement(void)
 											else
 											{
 												movement=MOV_GOING_TARGET;
-												targetBuilding=NULL;
+												tempTargetBuilding=NULL;
 											}
 											targetX=posX+x;
 											targetY=posY+y;
@@ -1609,9 +1609,9 @@ void Unit::handleMovement(void)
 								}
 							}
 						}
-				if (movement==MOV_GOING_TARGET && targetBuilding!=NULL)
+				if (movement==MOV_GOING_TARGET && tempTargetBuilding!=NULL)
 				{
-					if (owner->map->pathfindBuilding(targetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
+					if (owner->map->pathfindBuilding(tempTargetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
 					{
 						if (verbose)
 							printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, targetBuilding->gid, dx, dy);

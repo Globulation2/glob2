@@ -1418,8 +1418,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
 			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
 			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND
-				&& (unit->movement==Unit::MOV_GOING_DXDY
-					|| unit->movement==Unit::MOV_ATTACKING_TARGET)))
+				&& (unit->movement==Unit::MOV_GOING_DXDY)))
 		{
 			int lsx, lsy, ldx, ldy;
 			lsx=px+16;
