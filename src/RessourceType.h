@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charriï¿½e
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ public:
 	RessourceType() { init(); }
 	RessourceType(SDL_RWops *stream) { load(stream); }
 	virtual ~RessourceType() { }
-	virtual const char **getVars(int *size, Uint32 **data)
+	virtual const char **getVars(size_t *size, Uint32 **data)
 	{
 		static const char *vars[] =
 		{
