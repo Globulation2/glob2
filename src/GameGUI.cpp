@@ -1876,8 +1876,9 @@ void GameGUI::drawOverlayInfos(void)
 		else
 			memcpy(actC, whiteC, sizeof(whiteC));
 		
+		globalContainer->gfx->drawSprite(dec+2, 2, globalContainer->unitmini, i);
 		globalContainer->littleFont->pushColor(actC[0], actC[1], actC[2]);
-		globalContainer->gfx->drawString(dec, 3, globalContainer->littleFont, "%d / %d", free, tot);
+		globalContainer->gfx->drawString(dec+22, 3, globalContainer->littleFont, "%d / %d", free, tot);
 		globalContainer->littleFont->popColor();
 		
 		dec += 148;

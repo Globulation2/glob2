@@ -267,6 +267,7 @@ void GlobalContainer::load(void)
 
 		updateLoadProgressBar(40);
 		// load units
+		unitmini=gfx->loadSprite("data/gfx/unitmini");
 		units=gfx->loadSprite("data/gfx/unit");
 
 		updateLoadProgressBar(70);
