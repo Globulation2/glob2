@@ -185,7 +185,7 @@ void Engine::startMultiplayer(SessionConnection *screen)
 	printf("Engine::localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
 
-int Engine::initMutiplayerHost(void)
+int Engine::initMutiplayerHost(bool shareOnYOG)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen;
 
@@ -198,7 +198,7 @@ int Engine::initMutiplayerHost(void)
 
 	printf("Engine::the game is sharing ...\n");
 
-	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
+	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
 	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 20);
 	if (rc==MultiplayersHostScreen::STARTED)
 	{

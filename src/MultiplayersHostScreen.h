@@ -38,7 +38,7 @@ public:
 	};
 
 public:
-	MultiplayersHostScreen(SessionInfo *sessionInfo);
+	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);
 	virtual ~MultiplayersHostScreen();
 
 	void onTimer(Uint32 tick);

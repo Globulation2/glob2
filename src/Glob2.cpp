@@ -143,7 +143,7 @@ int Glob2::run(int argc, char *argv[])
 					case MultiplayersOfferScreen::HOST :
 					{
 						Engine engine;
-						int rc=engine.initMutiplayerHost();
+						int rc=engine.initMutiplayerHost(false);
 						if (rc==Engine::NO_ERROR)
 						{
 							if (engine.run()==-1)
