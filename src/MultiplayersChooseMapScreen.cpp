@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "YOG.h"
+#include "Game.h"
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
@@ -55,9 +56,11 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
 		{
-			char *newText=Utilities::dencat(fileName, ".map");
-			mapFileList->addText(newText);
-			delete[] newText;
+			const char *tempFileName=Utilities::concat("maps/", fileName);
+			const char *mapTempName=glob2FilenameToName(tempFileName);
+			delete[] tempFileName;
+			mapFileList->addText(mapTempName);
+			delete[] mapTempName;
 		}
 		mapFileList->sort();
 	}
@@ -93,22 +96,21 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		char *mapFileName=NULL;
+		const char *mapSelectedName=mapFileList->getText(par1);
+		const char *mapFileName;
 		if (mapMode)
 		{
-			const char *mapSelectedName=mapFileList->getText(par1);
-			mapFileName=Utilities::concat("maps/", mapSelectedName, ".map");
-			mapPreview->setMapThumbnail(mapFileName);
+			mapFileName=glob2NameToFilename("maps", mapSelectedName, "map");
 			printf("PGU : Loading map '%s' ...\n", mapFileName);
 		}
 		else
 		{
-			const char *mapSelectedName=gameFileList->getText(par1);
-			mapFileName=Utilities::concat("games/", mapSelectedName, ".game");
-			mapPreview->setMapThumbnail(mapFileName);
+			mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
 			printf("PGU : Loading game '%s' ...\n", mapFileName);
-		}
 		
+		}
+		mapPreview->setMapThumbnail(mapFileName);
+
 		SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
 		if (stream==NULL)
 			printf("File '%s' not found!\n", mapFileName);

@@ -691,7 +691,7 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 void MapEdit::loadSave(bool isLoad)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("maps", "map", isLoad, game.session.getMapName());
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("maps", "map", isLoad, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
 
 	// save screen
@@ -712,11 +712,11 @@ void MapEdit::loadSave(bool isLoad)
 	{
 		if (isLoad)
 		{
-			load(loadSaveScreen->fileName);
+			load(loadSaveScreen->getFileName());
 		}
 		else
 		{
-			if (save(loadSaveScreen->fileName))
+			if (save(loadSaveScreen->getFileName(), loadSaveScreen->getName()))
 				hasMapBeenModiffied=false;
 		}
 	}
@@ -924,9 +924,11 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	drawMenu();
 }
 
-bool MapEdit::load(const char *name)
+bool MapEdit::load(const char *filename)
 {
-	SDL_RWops *stream=globalContainer->fileManager->open(name,"rb");
+	assert(filename);
+	
+	SDL_RWops *stream=globalContainer->fileManager->open(filename,"rb");
 	if (!stream)
 		return false;
 	
@@ -948,16 +950,15 @@ bool MapEdit::load(const char *name)
 	return rv;
 }
 
-bool MapEdit::save(const char *name)
+bool MapEdit::save(const char *filename, const char *name)
 {
-	SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
+	assert(filename);
+	assert(name);
+	
+	SDL_RWops *stream=globalContainer->fileManager->open(filename,"wb");
 	if (stream)
 	{
-		printf("Map name to save is %s\n", name);
-		char *mapName = strchr(name, '/');
-		assert(mapName);
-		mapName++;
-		game.save(stream, true, mapName);
+		game.save(stream, true, name);
 		SDL_RWclose(stream);
 		return true;
 	}

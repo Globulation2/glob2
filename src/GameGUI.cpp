@@ -438,7 +438,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->fileName;
+					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
 						strncpy(toLoadGameFileName, locationName, sizeof(toLoadGameFileName));
@@ -450,9 +450,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						SDL_RWops *stream=globalContainer->fileManager->open(locationName,"wb");
 						if (stream)
 						{
-							char *name = strchr(locationName, '/');
+							const char *name = ((LoadSaveScreen *)gameMenuScreen)->getName();
 							assert(name);
-							name++;
 							save(stream, name);
 							SDL_RWclose(stream);
 						}
@@ -2202,6 +2201,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s[0]);
 		printf("GameGUI::loadBase::s=%s.\n", s);
 		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
+		delete[] s;
 		if (!load(stream))
 			return false;
 		SDL_RWclose(stream);

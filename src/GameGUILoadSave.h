@@ -31,21 +31,31 @@ public:
 		OK = 0,
 		CANCEL = 1
 	};
-	char *fileName;
-
+	
 private:
 	List *fileList;
 	TextInput *fileNameEntry;
 	bool isLoad;
 	const char *extension;
 	char *directory;
+	const char *fileName;
+	const char*(*filenameToNameFunc)(const char *filename);
+	const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
+	
+private:
+	//! create a filename from user friendly's name
+	void generateFileName(void);
 
 public:
 	//! Constructor : directory and extension must be given without the / and the .
-	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);
+	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL,
+		const char*(*filenameToNameFunc)(const char *filename)=NULL,
+		const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension)=NULL);
 	virtual ~LoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
+	const char *getFileName(void) { return fileName; }
+	const char *getName(void) { return fileNameEntry->getText(); }
 };
 
 #endif

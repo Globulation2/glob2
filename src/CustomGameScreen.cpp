@@ -20,6 +20,7 @@
 #include "CustomGameScreen.h"
 #include "GlobalContainer.h"
 #include "Utilities.h"
+#include "Game.h"
 
 CustomGameScreen::CustomGameScreen()
 {
@@ -57,13 +58,11 @@ CustomGameScreen::CustomGameScreen()
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
 		{
-			int textLength=strlen(fileName)-strlen(".map");
-			assert(textLength>0);
-			char *newText=new char[textLength+1];
-			memcpy(newText, fileName, textLength+1);
-			newText[textLength]=0;
-			fileList->addText(newText);
-			delete[] newText;
+			const char *tempFileName=Utilities::concat("maps/", fileName);
+			const char *mapTempName=glob2FilenameToName(tempFileName);
+			delete[] tempFileName;
+			fileList->addText(mapTempName);
+			delete[] mapTempName;
 		}
 		fileList->sort();
 	}
@@ -81,7 +80,8 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
-		const char *mapFileName=Utilities::concat("maps/", mapSelectedName, ".map");
+		const char *mapFileName=glob2NameToFilename("maps", mapSelectedName, "map");
+		
 		mapPreview->setMapThumbnail(mapFileName);
 		printf("CGS : Loading map '%s' ...\n", mapFileName);
 		SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");

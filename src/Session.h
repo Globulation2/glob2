@@ -62,10 +62,11 @@ public:
 
 	// internal and external map/game/file name manipulation
 	//! Safely copy s to mapName[] and remove the extention if needed.
+	//! Set the user-friendly name of the map
 	void setMapName(const char *s);
+	//! Return the user-friendly name of the map
 	const char *getMapName() const;
-	const char *getMapFileName() const;
-	const char *getGameFileName() const;
+	//! Return the filename of the map, including std directories. Return string must be freed by caller using delete[]
 	const char *getFileName(void) const;
 
 public:
@@ -106,10 +107,6 @@ public:
 protected:
 	//! Name of map or game, serialized
 	char mapName[MAP_NAME_MAX_SIZE];
-	char mapFileName[MAP_NAME_MAX_SIZE+8];//This is not saved in file
-	char gameFileName[MAP_NAME_MAX_SIZE+10];//This is not saved in file
-	
-	void regenerateInternalMapNames();
 
 	//! Serialized form of SessionGame
 	enum {S_GAME_ONLY_DATA_SIZE=32+MAP_NAME_MAX_SIZE};
@@ -118,6 +115,8 @@ protected:
 protected:
 	FILE *logFile;
 };
+
+// zzz : Correct all sizes
 
 //! The session that indirectly derive from Order.
 //! This session will go through the network at connection time

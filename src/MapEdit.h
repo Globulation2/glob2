@@ -53,9 +53,9 @@ private:
 	
 	void handleKeyPressed(SDLKey key, bool pressed);
 public:
-	bool load(const char *name);
+	bool load(const char *filename);
 private:
-	bool save(const char *name);
+	bool save(const char *filename, const char *name);
 	// execute the load/save dialog
 	void loadSave(bool isLoad);
 	// execute the script editor dialog

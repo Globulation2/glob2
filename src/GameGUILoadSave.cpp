@@ -22,12 +22,24 @@
 #include "Utilities.h"
 
 //! Load/Save screen
-LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName)
+LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
+		const char*(*filenameToNameFunc)(const char *filename),
+		const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
 :OverlayScreen(globalContainer->gfx, 300, 275)
 {
 	this->isLoad=isLoad;
-	this->extension=Utilities::concat(".", extension);
-	this->directory=Utilities::concat(directory, "/");
+	if (nameToFilenameFunc)
+	{
+		this->extension=Utilities::strdup(extension);
+		this->directory=Utilities::strdup(directory);
+	}
+	else
+	{
+		this->extension=Utilities::concat(".", extension);
+		this->directory=Utilities::concat(directory, "/");
+	}
+	this->filenameToNameFunc=filenameToNameFunc;
+	this->nameToFilenameFunc=nameToFilenameFunc;
 
 	fileList=new List(10, 40, 280, 145, globalContainer->standardFont);
 
@@ -36,9 +48,23 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
 		{
-			char *mapTempName=Utilities::dencat(fileName,this->extension);
-			fileList->addText(mapTempName);
-			delete[] mapTempName;
+			const char *mapTempName;
+			if (filenameToNameFunc && nameToFilenameFunc)
+			{
+				const char *tempFileName=Utilities::concat(directory, "/", fileName);
+				mapTempName=filenameToNameFunc(tempFileName);
+				delete[] tempFileName;
+			}
+			else
+			{
+				mapTempName=Utilities::dencat(fileName, this->extension);
+			}
+
+			if (mapTempName)
+			{
+				fileList->addText(mapTempName);
+				delete[] mapTempName;
+			}
 		}
 		fileList->sort();
 	}
@@ -57,15 +83,18 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	else
 		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 300));
 
-	fileName=Utilities::concat(this->directory, fileNameEntry->getText(), this->extension);
+	generateFileName();
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
 LoadSaveScreen::~LoadSaveScreen()
 {
+	assert(fileName);
 	delete[] fileName;
+	assert(extension);
 	delete[] extension;
-	free(directory);
+	assert(directory);
+	delete[] directory;
 }
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -87,15 +116,23 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 		const char *s=fileList->getText(par1);
 		assert(fileName);
 		delete[] fileName;
-		fileName=Utilities::concat(directory, s, this->extension);
 		fileNameEntry->setText(s);
+		generateFileName();
 	}
 	else if (action==TEXT_MODIFIED)
 	{
 		assert(fileName);
 		delete[] fileName;
-		fileName=Utilities::concat(directory, fileNameEntry->getText(), this->extension);
+		generateFileName();
 	}
+}
+
+void LoadSaveScreen::generateFileName(void)
+{
+	if (nameToFilenameFunc)
+		fileName=nameToFilenameFunc(this->directory, fileNameEntry->getText(), this->extension);
+	else
+		fileName=Utilities::concat(this->directory, fileNameEntry->getText(), this->extension);
 }
 
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)

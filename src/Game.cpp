@@ -413,6 +413,7 @@ bool Game::load(SDL_RWops *stream)
 	
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
+	printf("Loading map header\n");
 	if (!tempSessionInfo.load(stream))
 	{
 		fprintf(logFile, "Game::load::tempSessionInfo.load\n");
@@ -1812,3 +1813,36 @@ Team *Game::getTeamWithMostPrestige(void)
 	}
 	return maxPrestigeTeam;
 }
+
+const char *glob2FilenameToName(const char *filename)
+{
+	SessionInfo tempSession;
+	SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
+	if (stream)
+	{
+		tempSession.load(stream);
+		SDL_RWclose(stream);
+		return Utilities::strdup(tempSession.getMapName());
+	}
+	return NULL;
+}
+
+const char *glob2NameToFilename(const char *dir, const char *name, const char *extension)
+{
+	int dirLen=strlen(dir);
+	int nameLen=strlen(name);
+	int extLen=strlen(extension);
+	
+	int totLen=dirLen+1+nameLen+1+extLen+1;
+	
+	char *filename = new char[totLen];
+	snprintf(filename, totLen, "%s/%s.%s", dir, name, extension);
+	
+	for (int i=dirLen+1; i<dirLen+1+nameLen; i++)
+	{
+		if (strchr(" \t", filename[i]))
+			filename[i]='_';
+	}
+	return filename;
+}
+
