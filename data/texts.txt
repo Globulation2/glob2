@@ -287,6 +287,12 @@ Clearing flag
 Rodungsflagge
 Čistící vlajka
 Flaga usuwania
+[forbidden flag]
+Drapeau d'interdiction
+Forbidden flag
+
+
+
 [stone wall]
 Mur de pierre
 Stone wall

@@ -51,7 +51,10 @@ void BuildingsTypes::load(const char *filename)
 		*buildingType=defaultBuildingType;
 		result=buildingType->loadText(stream);
 		if (result)
+		{
 			buildingsTypes.push_back(buildingType);
+			//buildingType->dump();
+		}
 		else
 			delete buildingType;
 	}

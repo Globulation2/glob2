@@ -1133,13 +1133,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int yNum=(my-128-32)/46;
 			typeToBuild=yNum*2+xNum;
 		}
-		else if (my<128+32+(8>>1)*46+((4>>2)*32))
+		else if (my<128+32+(8>>1)*46+(2*32))
 		{
 			int xNum=mx>>5;
 			int yNum=(my-(128+32+(8>>1)*46))>>5;
 			typeToBuild=yNum*4+xNum+8;
+			//printf("Num=(%d, %d), typeToBuild=%d.\n", xNum, yNum, typeToBuild);
 		}
-		if (typeToBuild>=12)
+		if (typeToBuild>=13)
 			typeToBuild=-1;
 	}
 	else if (displayMode==STAT_VIEW)
@@ -1345,10 +1346,11 @@ void GameGUI::draw(void)
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);
 
-		for (int i=0; i<12; i++)
+		for (int i=0; i<13; i++)
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 			BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+			assert(bt);
 			int imgid=bt->startImage;
 			int x, y;
 			if (i<8)
@@ -1360,7 +1362,7 @@ void GameGUI::draw(void)
 			else
 			{
 				x=((i&0x3)*32)+globalContainer->gfx->getW()-128;
-				y=(((i-8)>>2)*46)+(4*46)+128+32;
+				y=(((i-8)>>2)*32)+(4*46)+128+32;
 				globalContainer->gfx->setClipRect(x, y, 32, 32);
 			}
 			Sprite *buildingSprite=globalContainer->buildings;
@@ -1402,7 +1404,7 @@ void GameGUI::draw(void)
 			else
 			{
 				int x=((typeToBuild&0x3)*32)+globalContainer->gfx->getW()-128;
-				int y=(((typeToBuild-8)>>2)*46)+(4*46)+128+32;
+				int y=(((typeToBuild-8)>>2)*32)+(4*46)+128+32;
 				globalContainer->gfx->drawRect(x, y, 32, 32, 200, 200, 140);
 			}
 		}
@@ -1419,13 +1421,14 @@ void GameGUI::draw(void)
 					int yNum=(mouseY-128-32)/46;
 					typeId=yNum*2+xNum;
 				}
-				else if (mouseY<128+32+(8>>1)*46+((4>>2)*32))
+				else if (mouseY<128+32+(8>>1)*46+(4*32))
 				{
 					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>5;
 					int yNum=(mouseY-(128+32+(8>>1)*46))>>5;
 					typeId=yNum*4+xNum+8;
+					//printf("Num=(%d, %d), typeId=%d.\n", xNum, yNum, typeId);
 				}
-				if (typeId<12)
+				if (typeId<13)
 				{
 					int buildingInfoStart=128+32+6*46;
 
