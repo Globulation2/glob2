@@ -168,6 +168,20 @@ public:
 		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=(1<<p);
 		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=(1<<p);
 	}
+	void setMapBuldingsDiscovered(int x, int y, int p, Team *teams[32])
+	{
+		Sint16 uid=(cases+w*(y&hMask)+(x&wMask))->unit;
+		if (uid<0 && uid!=NOUID)
+		{
+			int id = Building::UIDtoID(uid);
+			int team = Building::UIDtoTeam(uid);
+			assert(id>=0);
+			assert(id<512);
+			assert(team>=0);
+			assert(team<32);
+			teams[team]->myBuildings[id]->seenByMask|=(1<<p);
+		}
+	}
 	//! Set map to undiscovered state at position (x,y) for the shared vision mask of team ps
 	void unsetMapDiscovered(int x, int y, int p)
 	{
@@ -197,6 +211,7 @@ public:
 	}
 	//! Set map to discovered state at rect (x,y) - (x+w, y+h) for team p
 	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }
+	void setMapBuldingsDiscovered(int x, int y, int w, int h, int p, Team *teams[32]) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapBuldingsDiscovered(dx, dy, p, teams); }
 	//! Set map to undiscovered state at rect (x,y) - (x+w, y+h) for team p
 	void unsetMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) unsetMapDiscovered(dx, dy, p); }
 	//! Set all map to undiscovered state

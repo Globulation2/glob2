@@ -645,10 +645,13 @@ void MultiplayersJoin::receiveTime()
 					}
 				if (!already)
 				{
+					fprintf(logFile, "added (%d.%d.%d.%d) LANHosts\n", (lanhost.ip>>24)&0xFF, (lanhost.ip>>16)&0xFF, (lanhost.ip>>8)&0xFF, (lanhost.ip>>0)&0xFF);
 					LANHosts.push_front(lanhost);
 					listHasChanged=true;
 				}
 			}
+			else
+				fprintf(logFile, "bad state to rember broadcasting\n");
 		}
 
 		for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
@@ -658,7 +661,7 @@ void MultiplayersJoin::receiveTime()
 				std::list<LANHost>::iterator ittemp=it;
 				it=LANHosts.erase(ittemp);
 				listHasChanged=true;
-				//fprintf(logFile, "removed (%x).\n", SDL_SwapBE32(ittemp->ip));
+				fprintf(logFile, "removed (%d.%d.%d.%d) LANHosts\n", (lanhost.ip>>24)&0xFF, (lanhost.ip>>16)&0xFF, (lanhost.ip>>8)&0xFF, (lanhost.ip>>0)&0xFF);
 			}
 		}
 		

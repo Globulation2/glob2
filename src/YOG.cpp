@@ -463,11 +463,17 @@ void YOG::deconnect()
 {
 	globalContainer->popUserName();
 	
-	if (yogGlobalState>=YGS_CONNECTING)
+	if (yogGlobalState>=YGS_CONNECTED)
 	{
 		yogGlobalState=YGS_DECONNECTING;
 		connectionTimeout=0;
 		connectionTOTL=3;
+	}
+	else if (yogGlobalState>=YGS_CONNECTING)
+	{
+		yogGlobalState=YGS_DECONNECTING;
+		connectionTimeout=0;
+		connectionTOTL=1;
 	}
 	
 	if (yogSharingState>=YSS_SHARING_GAME)

@@ -86,7 +86,7 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
 
-
+	seenByMask=0;
 
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
@@ -150,6 +150,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	// type
 	typeNum=SDL_ReadBE32(stream);
 	type=types->buildingsTypes[typeNum];
+	
+	seenByMask=0; //TODO: load it!
 }
 
 void Building::save(SDL_RWops *stream)
