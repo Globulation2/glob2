@@ -425,7 +425,6 @@ int Team::maxBuildLevel(void)
 
 bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
-	int i;
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
@@ -435,7 +434,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 		return false;
 
 	// normal load
-	for (i=0; i< 1024; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myUnits[i])
 			delete myUnits[i];
@@ -451,7 +450,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	turrets.clear();
 	virtualBuildings.clear();
 	prestige=0;
-	for (i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myBuildings[i])
 			delete myBuildings[i];
@@ -472,10 +471,10 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	}
 
 	// resolve cross reference
-	for (i=0; i< 1024; i++)
+	for (int i=0; i<1024; i++)
 		if (myUnits[i])
 			myUnits[i]->loadCrossRef(stream, this);
-	for (i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
 
@@ -487,19 +486,16 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
 	
-	if (versionMinor>=14)
+	// load stats
+	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
+	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
 	{
-		// load stats
-		stats.endOfGameStatIndex=SDL_ReadBE32(stream);
-		for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
-		{
-			stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
-			stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
-			stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
-		}
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
 	}
 
-	for (i=0; i<EVENT_TYPE_SIZE; i++)
+	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 	{
 		isEvent[i]=false;
 		eventCooldown[i]=0;
@@ -513,7 +509,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 
 void Team::update()
 {
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
 			myBuildings[i]->update();
 }
@@ -524,7 +520,7 @@ void Team::save(SDL_RWops *stream)
 	BaseTeam::save(stream);
 
 	// saving team
-	for (int i=0; i< 1024; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myUnits[i])
 		{
@@ -537,7 +533,7 @@ void Team::save(SDL_RWops *stream)
 		}
 	}
 
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myBuildings[i])
 		{
@@ -551,12 +547,12 @@ void Team::save(SDL_RWops *stream)
 	}
 	
 	// save cross reference
-	for (int i=0; i< 1024; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myUnits[i])
 			myUnits[i]->saveCrossRef(stream);
 	}
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (myBuildings[i])
 			myBuildings[i]->saveCrossRef(stream);
@@ -590,7 +586,7 @@ void Team::createLists(void)
 	turrets.clear();
 	virtualBuildings.clear();
 	
-	for (int i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
 		{
 			if (myBuildings[i]->type->unitProductionTime)
@@ -731,40 +727,37 @@ Sint32 Team::checkSum()
 	// Let's avoid to have too much calculation
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)1cs=%x\n", teamNumber, cs);
+	for (int i=0; i<1024; i++)
 	{
-		for (int i=0; i<1024; i++)
+		if (myUnits[i])
 		{
-			if (myUnits[i])
-			{
-				cs^=myUnits[i]->checkSum();
-				cs=(cs<<31)|(cs>>1);
-			}
+			cs^=myUnits[i]->checkSum();
+			cs=(cs<<31)|(cs>>1);
 		}
 	}
+	
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)2cs=%x\n", teamNumber, cs);
+	for (int i=0; i<1024; i++)
 	{
-		for (int i=0; i<512; i++)
+		if (myBuildings[i])
 		{
-			if (myBuildings[i])
-			{
-				cs^=myBuildings[i]->checkSum();
-				cs=(cs<<31)|(cs>>1);
-			}
+			cs^=myBuildings[i]->checkSum();
+			cs=(cs<<31)|(cs>>1);
 		}
 	}
+	
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)3cs=%x\n", teamNumber, cs);
+	for (int i=0; i<NB_ABILITY; i++)
 	{
-		for (int i=0; i<NB_ABILITY; i++)
-		{
-			cs^=upgrade[i].size();
-			cs=(cs<<31)|(cs>>1);
-			cs^=job[i].size();
-			cs^=attract[i].size();
+		cs^=upgrade[i].size();
+		cs=(cs<<31)|(cs>>1);
+		cs^=job[i].size();
+		cs^=attract[i].size();
 
-		}
 	}
+	
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)4cs=%x\n", teamNumber, cs);
 	cs^=canFeedUnit.size();

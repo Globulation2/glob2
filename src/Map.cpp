@@ -416,7 +416,7 @@ bool Map::isFreeForGroundUnit(int x, int y, bool canSwim)
 
 bool Map::isFreeForAirUnit(int x, int y)
 {
-	return (getAirUnit(x, y)!=NOGUID);
+	return (getAirUnit(x, y)==NOGUID);
 }
 
 bool Map::isFreeForBuilding(int x, int y)

@@ -680,11 +680,9 @@ void Game::step(Sint32 localTeam)
 
 		if ((stepCounter&31)==0)
 		{
-			int i, t;
 			map.switchFogOfWar();
-			for (t=0; t<session.numberOfTeam; t++)
-			{
-				for (i=0; i<512; i++)
+			for (int t=0; t<session.numberOfTeam; t++)
+				for (int i=0; i<1024; i++)
 				{
 					Building *b=teams[t]->myBuildings[i];
 					if (b)
@@ -695,7 +693,6 @@ void Game::step(Sint32 localTeam)
 						map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, teams[t]->sharedVision);
 					}
 				}
-			}
 		}
 		if ((stepCounter&31)==0)
 		{
@@ -747,26 +744,23 @@ void Game::removeTeam(void)
 void Game::regenerateDiscoveryMap(void)
 {
 	map.unsetMapDiscovered();
+	for (int t=0; t<session.numberOfTeam; t++)
 	{
-		for (int t=0; t<session.numberOfTeam; t++)
+		for (int i=0; i<1024; i++)
 		{
-			int i;
-			for (i=0; i<1024; i++)
+			Unit *u=teams[t]->myUnits[i];
+			if (u)
 			{
-				Unit *u=teams[t]->myUnits[i];
-				if (u)
-				{
-					map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVision);
-				}
+				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVision);
 			}
-			for (i=0; i<512; i++)
+		}
+		for (int i=0; i<1024; i++)
+		{
+			Building *b=teams[t]->myBuildings[i];
+			if (b)
 			{
-				Building *b=teams[t]->myBuildings[i];
-				if (b)
-				{
-					int vr=b->type->viewingRange;
-					map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, teams[t]->sharedVision);
-				}
+				int vr=b->type->viewingRange;
+				map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, teams[t]->sharedVision);
 			}
 		}
 	}
