@@ -1549,9 +1549,12 @@
 		};
 		5BCF4C5F045EF9980000000D = {
 			fileEncoding = 30;
+			indentWidth = 2;
 			isa = PBXFileReference;
 			path = GameGUI.cpp;
 			refType = 4;
+			tabWidth = 2;
+			usesTabs = 1;
 		};
 		5BCF4C60045EF9980000000D = {
 			fileEncoding = 30;
