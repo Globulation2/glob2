@@ -784,7 +784,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				
 				if (b->maxUnitWorking!=numberRequested)
 				{
-					printf("AI: OrderModifyBuildings(%d, %d)", b->gid, numberRequested);
+					printf("AI: OrderModifyBuildings(%d, %d)\n", b->gid, numberRequested);
 					return new OrderModifyBuildings(&b->gid, &numberRequested, 1);
 				}
 			}
@@ -826,7 +826,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		if (ey!=-1)
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
-			printf("AI: OrderCreateWarFlag(%d, %d)", ex, ey);
+			printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
 			return new OrderCreate(teamNumber, ex, ey, (BuildingType::BuildingTypeNumber)typeNum);
 		}
 		else

@@ -16,8 +16,7 @@ Technique :
 	changer le nom de: teamSelected
 	optimiser les boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
-- Optimiser owner->game->map en owner->map
-- merger "zonable" et "attract"
+- Refaire le pathfinding.
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
 - write a quick start guide. (nct)
