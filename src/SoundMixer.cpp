@@ -246,14 +246,13 @@ SoundMixer::~SoundMixer()
 	if (soundEnabled)
 	{
 		SDL_PauseAudio(1);
-
-		for(unsigned i=0; i<tracks.size(); i++)
-		{
-			ov_clear(tracks[i]);
-			delete tracks[i];
-		}
-		
 		SDL_CloseAudio();
+	}
+	
+	for (size_t i=0; i<tracks.size(); i++)
+	{
+		ov_clear(tracks[i]);
+		delete tracks[i];
 	}
 }
 
