@@ -77,7 +77,7 @@ public:
 	void step(Sint32 localTeam);
 
 	// Editor stuff
-	// add & remove teams, used by the map editor
+	// add & remove teams, used by the map editor and the random map generator
 	void addTeam(void);
 	void removeTeam(void);
 	void regenerateDiscoveryMap(void);

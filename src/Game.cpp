@@ -685,6 +685,27 @@ void Game::step(Sint32 localTeam)
 	}
 }
 
+void Game::addTeam(void)
+{
+	if (session.numberOfTeam<32)
+	{
+		teams[session.numberOfTeam]=new Team(this);
+		teams[session.numberOfTeam]->teamNumber=session.numberOfTeam;
+		teams[session.numberOfTeam]->race.create(Race::USE_DEFAULT);
+		teams[session.numberOfTeam]->setCorrectMasks();
+
+		session.numberOfTeam++;
+		for (int i=0; i<session.numberOfTeam; i++)
+		{
+			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
+		}
+		
+		map.addTeam();
+	}
+	else
+		assert(false);
+}
+
 void Game::removeTeam(void)
 {
 	if (session.numberOfTeam>0)
@@ -715,6 +736,8 @@ void Game::removeTeam(void)
 		assert (session.numberOfTeam!=0);
 		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
+		
+		map.removeTeam();
 	}
 }
 
@@ -782,26 +805,6 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	teams[team]->myUnits[id]->delta=delta;
 	teams[team]->myUnits[id]->selectPreferedMovement();
 	return teams[team]->myUnits[id];
-}
-
-void Game::addTeam(void)
-{
-	if (session.numberOfTeam<32)
-	{
-		teams[session.numberOfTeam]=new Team(this);
-		teams[session.numberOfTeam]->teamNumber=session.numberOfTeam;
-		teams[session.numberOfTeam]->race.create(Race::USE_DEFAULT);
-		teams[session.numberOfTeam]->setCorrectMasks();
-
-		session.numberOfTeam++;
-		int i;
-		for (i=0; i<session.numberOfTeam; i++)
-		{
-			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
-		}
-	}
-	else
-		assert(false);
 }
 
 Building *Game::addBuilding(int x, int y, int team, int typeNum)
@@ -1169,7 +1172,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					sprite=globalContainer->ressources;
 					id-=272;
 				}
+				
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
+				
 			}
 
 	for (int y=top; y<=bot; y++)
@@ -1208,14 +1213,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 			}
 
-	// We draw forbidden area:
-	//for (int y=top-1; y<=bot; y++)
-	//	for (int x=left-1; x<=right; x++)
-	//		if (map.getForbidden(x+viewportX, y+viewportY))
-	//		{
-	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
-	//			globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-	//		}
+	// We draw debug area:
+	for (int y=top-1; y<=bot; y++)
+		for (int x=left-1; x<=right; x++)
+			//if (map.getForbidden(x+viewportX, y+viewportY))
+			{
+				if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
+					globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
+				//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
+				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
+				globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
+				globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
+			}
 	
 	// We draw ground units:
 	mouseUnit=NULL;

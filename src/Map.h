@@ -89,6 +89,11 @@ public:
 	bool load(SDL_RWops *stream, SessionGame *sessionGame, Game *game=NULL);
 	//! Save a map
 	void save(SDL_RWops *stream);
+	
+	// add & remove teams, used by the map editor and the random map generator
+	// Have to be called *after* session.numberOfTeam has been changed.
+	void addTeam(void);
+	void removeTeam(void);
 
 	//! Grow ressources on map
 	void growRessources(void);
@@ -267,7 +272,7 @@ public:
 	bool incRessource(int x, int y, RessourcesTypes::intResType ressourceType);
 	
 	//! Return true if unit can go to position (x,y)
-	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 me);
+	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
 	bool isFreeForAirUnit(int x, int y);
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);
@@ -340,17 +345,37 @@ public:
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 	
+	// All "nearestRessource" is legacy code, since we implemented the gradient system.
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
 	bool nearestRessource(int x, int y, RessourcesTypes::intResType  ressourceType, int *dx, int *dy);
 	bool nearestRessource(int x, int y, RessourcesTypes::intResType *ressourceType, int *dx, int *dy);
 	//! Only returns ressource into the circle (fx, fy, fsr).
 	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
+	
+	bool ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y);
+	bool ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	
+	/*Uint8 distToRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
+	{
+		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+		assert(gradient);
+		return 254-*(gradient+(x&wMask)+(y&hMask)*w);
+	}*/
+	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
+	{
+		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+		assert(gradient);
+		return *(gradient+(x&wMask)+(y&hMask)*w);
+	}
+	void initGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
 
 protected:
 	// private functions, used for edition
 
 	void regenerateMap(int x, int y, int w, int h);
-
+	
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br);
 
     // here we handle terrain
@@ -359,6 +384,10 @@ protected:
 	Uint32 *mapDiscovered;
 	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
 	Case *cases;
+	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
+	//255=ressource, 0=obstacle, the higher it is, the closest it is from the ressouce.
+	Uint8 *ressourcesGradient[32][MAX_NB_RESSOURCES][2];
+	bool gradientUpdated[32][MAX_NB_RESSOURCES][2]; //Used for scheduling computation time.
 	Uint8 *undermap;
 	Sint32 w, h; //in cases
 	int size;

@@ -33,6 +33,13 @@ Map::Map()
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
 	cases=NULL;
+	for (int t=0; t<32; t++)
+		for (int r=0; r<MAX_NB_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+			{
+				ressourcesGradient[t][r][s]=NULL;
+				gradientUpdated[t][r][s]=false;
+			}
 	undermap=NULL;
 	sectors=NULL;
 	
@@ -76,6 +83,15 @@ void Map::clear()
 		assert(cases);
 		delete[] cases;
 		cases=NULL;
+		for (int t=0; t<32; t++)
+			if (ressourcesGradient[t][0][0])
+				for (int r=0; r<MAX_RESSOURCES; r++)
+					for (int s=0; s<2; s++)
+					{
+						assert(ressourcesGradient[t][r][s]);
+						delete ressourcesGradient[t][r][s];
+						ressourcesGradient[t][r][s]=NULL;
+					}
 		
 		assert(undermap);
 		delete[] undermap;
@@ -94,9 +110,13 @@ void Map::clear()
 		assert(fogOfWarA==NULL);
 		assert(fogOfWarB==NULL);
 		assert(cases==NULL);
+		for (int t=0; t<32; t++)
+			for (int r=0; r<MAX_RESSOURCES; r++)
+				for (int s=0; s<2; s++)
+					assert(ressourcesGradient[t][r][s]==NULL);
 		assert(undermap==NULL);
 		assert(sectors==NULL);
-		
+
 		assert(w==0);
 		assert(h==0);
 		assert(size==0);
@@ -119,6 +139,11 @@ void Map::clear()
 	sizeSector=0;
 
 	stepCounter=0;
+	
+	for (int t=0; t<32; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+				gradientUpdated[t][r][s]=false;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -164,6 +189,9 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	for (int i=0; i<size; i++)
 		cases[i]=initCase;
+		
+	//numberOfTeam=0, then ressourcesGradient[][][] is emptih. This is done by clear();
+	
 	regenerateMap(0, 0, w, h);
 	
 	stepCounter=0;
@@ -219,6 +247,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	fogOfWarB=new Uint32[size];
 	fogOfWar=fogOfWarA;
 	cases=new Case[size];
+	
 	undermap=new Uint8[size];
 	
 	// We read what's inside the map:
@@ -237,6 +266,21 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 
 		cases[i].forbidden=SDL_ReadBE32(stream);
 	}
+	
+	for (int t=0; t<sessionGame->numberOfTeam; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+			{
+				assert(ressourcesGradient[t][r][s]==NULL);
+				ressourcesGradient[t][r][s]=new Uint8[size];
+				initGradient(t, r, s);
+			}
+	for (int t=0; t<32; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<1; s++)
+				gradientUpdated[t][r][s]=false;
+	
+	printf("loaded %d gradient teams\n", sessionGame->numberOfTeam);
 
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
@@ -297,6 +341,56 @@ void Map::save(SDL_RWops *stream)
 		sectors[i].save(stream);
 
 	SDL_RWwrite(stream, "MapE", 4, 1);
+}
+
+void Map::addTeam(void)
+{
+	int numberOfTeam=game->session.numberOfTeam;
+	int oldNumberOfTeam=numberOfTeam-1;
+	assert(numberOfTeam>0);
+	
+	for (int t=0; t<oldNumberOfTeam; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+				assert(ressourcesGradient[t][r][s]);
+	for (int t=oldNumberOfTeam; t<32; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+				assert(ressourcesGradient[t][r][s]==NULL);
+	
+	int t=oldNumberOfTeam;
+	for (int r=0; r<MAX_RESSOURCES; r++)
+		for (int s=0; s<2; s++)
+		{
+			assert(ressourcesGradient[t][r][s]==NULL);
+			ressourcesGradient[t][r][s]=new Uint8[size];
+			initGradient(t, r, s);
+		}
+}
+
+void Map::removeTeam(void)
+{
+	int numberOfTeam=game->session.numberOfTeam;
+	int oldNumberOfTeam=numberOfTeam+1;
+	assert(numberOfTeam<32);
+	
+	for (int t=0; t<oldNumberOfTeam; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+				assert(ressourcesGradient[t][r][s]);
+	for (int t=oldNumberOfTeam; t<32; t++)
+		for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int s=0; s<2; s++)
+				assert(ressourcesGradient[t][r][s]==NULL);
+	
+	int t=numberOfTeam;
+	for (int r=0; r<MAX_RESSOURCES; r++)
+		for (int s=0; s<2; s++)
+		{
+			assert(ressourcesGradient[t][r][s]);
+			delete[] ressourcesGradient[t][r][s];
+			ressourcesGradient[t][r][s]=NULL;
+		}
 }
 
 // TODO: completely recreate:
@@ -365,6 +459,32 @@ void Map::step(void)
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
+	
+	// We only update one gradient per step:
+	bool updated=false;
+	while (!updated)
+	{
+		int numberOfTeam=game->session.numberOfTeam;
+		for (int t=0; t<numberOfTeam; t++)
+			for (int r=0; r<MAX_RESSOURCES; r++)
+				for (int s=0; s<2; s++)
+					if (!gradientUpdated[t][r][s])
+					{
+						initGradient(t, r, s);
+						updateGradient(t, r, s);
+						gradientUpdated[t][r][s]=true;
+						updated=true;
+						goto tripleBreak;
+					}
+		tripleBreak:
+		if (!updated)
+		{
+			for (int t=0; t<numberOfTeam; t++)
+				for (int r=0; r<MAX_RESSOURCES; r++)
+					for (int s=0; s<2; s++)
+						gradientUpdated[t][r][s]=false;
+		}
+	}
 	
 	stepCounter++;
 }
@@ -475,24 +595,24 @@ bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 	return false;
 }
 
-bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 me)
+bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask)
 {
-	if (isRessource(x, y))
+	if (isRessource(x+w, y+h))
 		return false;
-	if (getBuilding(x, y)!=NOGBID)
+	if (getBuilding(x+w, y+h)!=NOGBID)
 		return false;
-	if (getGroundUnit(x, y)!=NOGUID)
+	if (getGroundUnit(x+w, y+h)!=NOGUID)
 		return false;
-	if (!canSwim && isWater(x, y))
+	if (!canSwim && isWater(x+w, y+h))
 		return false;
-	if (getForbidden(x, y)&me)
+	if (getForbidden(x+w, y+h)&teamMask)
 		return false;
 	return true;
 }
 
 bool Map::isFreeForAirUnit(int x, int y)
 {
-	return (getAirUnit(x, y)==NOGUID);
+	return (getAirUnit(x+w, y+h)==NOGUID);
 }
 
 bool Map::isFreeForBuilding(int x, int y)
@@ -1000,6 +1120,321 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
     return false;
 }
 
+bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
+{
+	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
+	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
+}
+
+bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+{
+	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(gradient);
+	int wy=w*y;
+	Uint8 g=gradient[wy+x];
+	if (g<2)
+		return false;
+	if (dist)
+		*dist=255-g;
+		
+	int vx=x;
+	int vy=y;
+	//Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	
+	while (true)
+	{
+		Uint8 max=gradient[vx+w*vy];
+		bool found=false;
+		int vddx, vddy;
+		
+		for (int sd=1; sd>=0; sd--)
+			for (int d=sd; d<8; d+=2)
+			{
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				
+				//if (isFreeForGroundUnit(vx+w+ddx, vy+h+ddy, canSwim, teamMask))
+				//if (isRessource(x, y) || (getBuilding(x, y)!=NOGBID) || (!canSwim && isWater(x, y)) || (getForbidden(x, y)&teamMask))
+				//{
+					Uint8 g=*(gradient+((vx+w+ddx)&wMask)+((vy+h+ddy)&hMask)*w);
+					if (g>max)
+					{
+						max=g;
+						vddx=ddx;
+						vddy=ddy;
+						found=true;
+					}
+				//}
+			}
+		
+		vx+=vddx;
+		vy+=vddy;
+		if (max>=254)
+		{
+			*targetX=vx;
+			*targetY=vy;
+			return true;
+		}
+		if (!found)
+		{
+			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+			return false;
+		}
+	}
+}
+
+void Map::initGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+{
+	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(gradient);
+	
+	memset(gradient, 1, size);
+	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	for (int y=0; y<h; y++)
+	{
+		int wy=w*y;
+		for (int x=0; x<w; x++)
+		{
+			Case c=cases[wy+x];
+			if (c.ressource.id==NORESID)
+			{
+				if (c.building!=NOGBID)
+				gradient[wy+x]=0;
+				else if (c.forbidden&teamMask)
+					gradient[wy+x]=0;
+				else if (!canSwim && isWater(x, y))
+					gradient[wy+x]=0;
+			}
+			else
+			{
+				if (c.ressource.field.type==ressourceType)
+					gradient[wy+x]=255;
+				else
+					gradient[wy+x]=0;
+			}
+		}
+	}
+}
+
+void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+{
+	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(gradient);
+	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
+	
+	for (int depth=0; depth<1; depth++) // With a higher depth, we could afford more complex obstacles.
+	{
+		for (int y=0; y<h; y++)
+		{
+			int wy=w*y;
+			int wyu=w*((y+hMask)&hMask);
+			int wyd=w*((y+1)&hMask);
+			for (int x=0; x<w; x++)
+			{
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					int xl=(x+wMask)&wMask;
+					int xr=(x+1)&wMask;
+					Uint8 side[8];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyu+x ];
+					side[2]=gradient[wyu+xr];
+
+					side[3]=gradient[wy +xr];
+
+					side[4]=gradient[wyd+xr];
+					side[5]=gradient[wyd+x ];
+					side[6]=gradient[wyd+xl];
+
+					side[7]=gradient[wy +xl];
+
+					for (int i=0; i<8; i++)
+						if (side[i]>max)
+							max=side[i];
+					assert(max);
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int y=hMask; y>=0; y--)
+		{
+			int wy=w*y;
+			int wyu=w*((y+hMask)&hMask);
+			int wyd=w*((y+1)&hMask);
+			for (int x=0; x<w; x++)
+			{
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					int xl=(x+wMask)&wMask;
+					int xr=(x+1)&wMask;
+					Uint8 side[8];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyu+x ];
+					side[2]=gradient[wyu+xr];
+
+					side[3]=gradient[wy +xr];
+
+					side[4]=gradient[wyd+xr];
+					side[5]=gradient[wyd+x ];
+					side[6]=gradient[wyd+xl];
+
+					side[7]=gradient[wy +xl];
+
+					for (int i=0; i<8; i++)
+						if (side[i]>max)
+							max=side[i];
+					assert(max);
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int x=0; x<w; x++)
+		{
+			int xl=(x+wMask)&wMask;
+			int xr=(x+1)&wMask;
+			for (int y=0; y<h; y++)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					Uint8 side[8];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyu+x ];
+					side[2]=gradient[wyu+xr];
+
+					side[3]=gradient[wy +xr];
+
+					side[4]=gradient[wyd+xr];
+					side[5]=gradient[wyd+x ];
+					side[6]=gradient[wyd+xl];
+
+					side[7]=gradient[wy +xl];
+
+					for (int i=0; i<8; i++)
+						if (side[i]>max)
+							max=side[i];
+					assert(max);
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int x=wMask; x>0; x--)
+		{
+			int xl=(x+wMask)&wMask;
+			int xr=(x+1)&wMask;
+			for (int y=0; y<h; y++)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					Uint8 side[8];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyu+x ];
+					side[2]=gradient[wyu+xr];
+
+					side[3]=gradient[wy +xr];
+
+					side[4]=gradient[wyd+xr];
+					side[5]=gradient[wyd+x ];
+					side[6]=gradient[wyd+xl];
+
+					side[7]=gradient[wy +xl];
+
+					for (int i=0; i<8; i++)
+						if (side[i]>max)
+							max=side[i];
+					assert(max);
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+	}
+}
+
+bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(gradient);
+	Uint8 max=*(gradient+x+y*w);
+	bool found=false;
+	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	if (max<2)
+		return false;
+	max=0;
+	
+	// We don't use for (int d=0; d<8; d++), this way units won't take two diagonals if not needed.
+	
+	for (int sd=1; sd>=0; sd--)
+		for (int d=sd; d<8; d+=2)
+		{
+			int ddx, ddy;
+			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+			{
+				Uint8 g=*(gradient+((x+w+ddx)&wMask)+((y+h+ddy)&hMask)*w);
+				if (g>max)
+				{
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
+				}
+			}
+		}
+	
+	if (found)
+		return true;
+	
+	for (int sd=0; sd<2; sd++)
+		for (int d=sd; d<8; d+=2)
+		{
+			int ddx, ddy;
+			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+			{
+				Uint8 g=*(gradient+((x+w+ddx)&wMask)+((y+h+ddy)&hMask)*w);
+				if (g>=max)
+				{
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
+				}
+			}
+		}
+	
+	if (!found)
+	{
+		printf("locked at (%d, %d)\n", x, y);
+		*dx=0;
+		*dy=0;
+	}
+	return true;
+}
 
 void Map::regenerateMap(int x, int y, int w, int h)
 {

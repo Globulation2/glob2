@@ -23,6 +23,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include <list>
+#include <math.h>
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -100,10 +101,6 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		zonable[i]=0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
-	// optimisation parameters
-	// FIXME: we don't know it this would be usefull or not !
-	// Now, it's not used.
-	//Sint32 closestRessourceX[MAX_NB_RESSOURCES], closestRessourceY[MAX_NB_RESSOURCES];
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -145,16 +142,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);
 
-	// optimisation parameters
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-	{
-		closestRessourceX[i]=SDL_ReadBE32(stream);
-		closestRessourceY[i]=SDL_ReadBE32(stream);
-	}
-
 	// type
 	typeNum=SDL_ReadBE32(stream);
 	type=types->buildingsTypes[typeNum];
+	assert(type);
 	owner->prestige+=type->prestige;
 	
 	seenByMask=SDL_ReadBE32(stream);
@@ -165,6 +156,9 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		zonable[i]=0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
+	
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+		assert(ressources[i]<=type->maxRessource[i]);
 }
 
 void Building::save(SDL_RWops *stream)
@@ -202,13 +196,6 @@ void Building::save(SDL_RWops *stream)
 
 	SDL_WriteBE32(stream, shootingStep);
 	SDL_WriteBE32(stream, shootingCooldown);
-
-	// optimisation parameters
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-	{
-		SDL_WriteBE32(stream, closestRessourceX[i]);
-		SDL_WriteBE32(stream, closestRessourceY[i]);
-	}
 
 	// type
 	SDL_WriteBE32(stream, typeNum);
@@ -278,7 +265,7 @@ void Building::saveCrossRef(SDL_RWops *stream)
 
 bool Building::isRessourceFull(void)
 {
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_RESSOURCES; i++)
 		if (ressources[i]<type->maxRessource[i])
 			return false;
 	return true;
@@ -288,10 +275,10 @@ int Building::neededRessource(void)
 {
 	float minProportion=1.0;
 	int minType=-1;
-	int deci=syncRand()%MAX_NB_RESSOURCES;
-	for (int ib=0; ib<MAX_NB_RESSOURCES; ib++)
+	int deci=syncRand()%MAX_RESSOURCES;
+	for (int ib=0; ib<MAX_RESSOURCES; ib++)
 	{
-		int i=(ib+deci)%MAX_NB_RESSOURCES;
+		int i=(ib+deci)%MAX_RESSOURCES;
 		int maxr=type->maxRessource[i];
 		if (maxr)
 		{
@@ -304,6 +291,17 @@ int Building::neededRessource(void)
 		}
 	}
 	return minType;
+}
+
+void Building::neededRessources(Uint8 needs[MAX_NB_RESSOURCES])
+{
+	for (int r=0; r<MAX_NB_RESSOURCES; r++)
+	{
+		int max=type->maxRessource[r];
+		int cur=ressources[r];
+		assert(cur<=max);
+		needs[r]=max-cur;
+	}
 }
 
 int Building::neededRessource(int r)
@@ -483,28 +481,6 @@ void Building::cancelDelete(void)
 	updateCallLists();
 }
 
-void Building::updateConstructionState(void)
-{
-	if (buildingState==DEAD)
-		return;
-	
-	if ((buildingState==WAITING_FOR_CONSTRUCTION) || (buildingState==WAITING_FOR_CONSTRUCTION_ROOM))
-	{
-		if (!isHardSpaceForBuildingSite())
-		{
-			cancelConstruction();
-		}
-		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
-		{
-			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
-			owner->buildingsTryToBuildingSiteRoom.push_front(this);
-			//printf("inserted %d in buildingsTryToBuildingSiteRoom\n", gid);
-		}
-		else
-			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
-	}
-}
-
 void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)
@@ -630,13 +606,11 @@ void Building::updateCallLists(void)
 
 				if (fu!=NULL)
 				{
-					//printf("Building::update::unitsWorking::fu->gid=%d\n", fu->gid);
+					printf("Building::we free the unit gid=%d\n", fu->gid);
 					// We free the unit.
 					fu->activity=Unit::ACT_RANDOM;
-					// fu->displacement=Unit::DIS_RANDOM; TODO: why was this here?
 
 					unitsWorking.erase(ittemp);
-					//update(); // TODO: why was this here?
 					fu->attachedBuilding=NULL;
 					fu->needToRecheckMedical=true;
 				}
@@ -683,6 +657,28 @@ void Building::updateCallLists(void)
 	}
 }
 
+void Building::updateConstructionState(void)
+{
+	if (buildingState==DEAD)
+		return;
+	
+	if ((buildingState==WAITING_FOR_CONSTRUCTION) || (buildingState==WAITING_FOR_CONSTRUCTION_ROOM))
+	{
+		if (!isHardSpaceForBuildingSite())
+		{
+			cancelConstruction();
+		}
+		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
+		{
+			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
+			owner->buildingsTryToBuildingSiteRoom.push_front(this);
+			//printf("inserted %d in buildingsTryToBuildingSiteRoom\n", gid);
+		}
+		else
+			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
+	}
+}
+
 void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
@@ -690,7 +686,7 @@ void Building::updateBuildingSite(void)
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		// we really uses the resources of the buildingsite:
-		for(int i=0; i<MAX_NB_RESSOURCES; i++)
+		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
 		owner->prestige-=type->prestige;
@@ -784,7 +780,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			float destructionRatio = (float)hp/(float)type->hpMax;
 			float fTotErr=0;
-			for (int i=0; i<MAX_NB_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
 				float fVal=destructionRatio*(float)nextBt->maxRessource[i];
 				int iVal=(int)fVal;
@@ -935,12 +931,10 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	std::list<Unit *>::iterator it;
-
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
-		for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 		{
 			(*it)->attachedBuilding=NULL;
 			(*it)->subscribed=false;
@@ -966,7 +960,9 @@ void Building::subscribeToBringRessourcesStep()
 			4-if the unit as a not needed ressource, this is worse.
 			5-if the unit is close of a needed ressource, this is better
 			*/
-			for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			
+			//First; we look only for units with a needed ressource:
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
@@ -990,6 +986,49 @@ void Building::subscribeToBringRessourcesStep()
 			}
 			
 			if (choosen==NULL)
+			{
+				Uint8 needs[MAX_NB_RESSOURCES];
+				neededRessources(needs);
+				int teamNumber=owner->teamNumber;
+				
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					Unit *unit=(*it);
+					int x=unit->posX;
+					int y=unit->posY;
+					bool canSwim=unit->performance[SWIM];
+					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					
+					for (int r=0; r<MAX_RESSOURCES; r++)
+					{
+						int need=needs[r];
+						if (need)
+						{
+							Sint32 tx, ty;
+							int distUnitRessource;
+							if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &tx, &ty, &distUnitRessource))
+							{
+								int distBuildingRessource=(int)sqrt((double)map->warpDistSquare(tx, ty, posX, posY));
+								int dist=distBuildingRessource+distUnitRessource;
+								
+								if (dist>=timeLeft)
+									continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
+								
+								int value=dist/need;
+								
+								if (value<minValue)
+								{
+									unit->destinationPurprose=r;
+									minValue=value;
+									choosen=unit;
+								}
+							}
+						}
+					}
+				}
+			}
+				
+			/*if (choosen==NULL)
 				for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
@@ -1030,17 +1069,18 @@ void Building::subscribeToBringRessourcesStep()
 						choosen=unit;
 					}
 				}
-			}
+			}*/
 
 			if (choosen)
 			{
-				//printf("f(%x) choosen.\n", (int)choosen);
+				//printf("unit %d choosen.\n", choosen->gid);
+				
 				unitsWorkingSubscribe.remove(choosen);
 				if (!neededRessource(choosen->destinationPurprose))
 				{
 					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
 					
-					printf("C-B(%x)gid=(%d), choosen=(%x) Ugid=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, gid, (int)choosen, (int)choosen->gid, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					//printf("C-B(%x)gid=(%d), choosen=(%x) Ugid=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, gid, (int)choosen, (int)choosen->gid, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
@@ -1063,7 +1103,7 @@ void Building::subscribeToBringRessourcesStep()
 		
 		if ((signed)unitsWorking.size()>=maxUnitWorking)
 		{
-			for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
 				(*it)->attachedBuilding=NULL;
 				(*it)->subscribed=false;
@@ -1077,11 +1117,10 @@ void Building::subscribeToBringRessourcesStep()
 
 void Building::subscribeForFlagingStep()
 {
-	std::list<Unit *>::iterator it;
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
-		for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 		{
 			(*it)->attachedBuilding=NULL;
 			(*it)->subscribed=false;
@@ -1105,7 +1144,7 @@ void Building::subscribeForFlagingStep()
 			2-the less the unit is hungry, the better it is.
 			2-the more hp the unit has, the better it is.
 			*/
-			for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
 				Unit *unit=(*it);
 				// The following "10" is totaly arbitrary between [2..100]
@@ -1140,11 +1179,10 @@ void Building::subscribeForFlagingStep()
 
 void Building::subscribeForInsideStep()
 {
-	std::list<Unit *>::iterator it;
 	lastInsideSubscribe++;
 	if (fullInside())
 	{
-		for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 		{
 			(*it)->attachedBuilding=NULL;
 			(*it)->subscribed=false;
@@ -1161,7 +1199,7 @@ void Building::subscribeForInsideStep()
 		{
 			int mindist=owner->map->getW()*owner->map->getW();
 			Unit *u=NULL;
-			for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
 				int dist=owner->map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
 				if (dist<mindist)
@@ -1181,7 +1219,7 @@ void Building::subscribeForInsideStep()
 		
 		if ((signed)unitsInside.size()>=maxUnitInside)
 		{
-			for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
 				(*it)->attachedBuilding=NULL;
 				(*it)->subscribed=false;
@@ -1762,7 +1800,7 @@ Sint32 Building::checkSum()
 
 	cs^=unitStayRange;
 
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=ressources[i];
 
 	cs^=hp;
