@@ -148,6 +148,7 @@ public:
 	
 	int getMidX(void);
 	int getMidY(void);
+	int getMaxUnitStayRange(void);
 	bool findExit(int *posX, int *posY, int *dx, int *dy, bool canFly);
 
 	//! get flag from units attached to flag

@@ -1073,6 +1073,7 @@ maxUnitWorking = 1
 type = 8
 
 defaultUnitStayRange = 10
+maxUnitStayRange = 20
 
 *
 
@@ -1095,6 +1096,7 @@ maxUnitWorking = 1
 type = 9
 
 defaultUnitStayRange = 4
+maxUnitStayRange = 8
 
 *
 
@@ -1117,6 +1119,7 @@ maxUnitWorking = 1
 type = 10
 
 defaultUnitStayRange = 3
+maxUnitStayRange = 14
 
 *
 
