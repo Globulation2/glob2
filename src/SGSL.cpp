@@ -418,6 +418,9 @@ bool Story::testCondition(GameGUI *gui)
 
 				b->unitStayRange = r;
 				b->maxUnitWorking = unitCount;
+				b->maxUnitWorkingPreferred = unitCount;
+				b->maxUnitWorkingLocal = unitCount;
+				b->update();
 
 				mapscript->flags[flagName] = b;
 
