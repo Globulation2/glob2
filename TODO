@@ -5,13 +5,12 @@ To First release :
 - Implémenter AICastor
 - Fixer "On the spot"
 - Un joueur qui quite doit perdre!
-- Difficile de downloader à plus que 1 joiner.
 - Mettre une touche pour affichier la liste des messages qui ont disparu.
 - Balancer clearing attack.
 - disonnect /disconnect
 
+-La sortie du gradient d'interdiction est parfois bugé!
 -Mettre un petit texte d'info pour chaque batiment.
--Faire un gradient dand les "forbiddeanMask".
 -Tenir compte des unités qui apportent déja quelquechose.
 -Enlever la latence des informations des drapeaux.
 
@@ -44,7 +43,6 @@ NetGame:
 
 IngameGUI:
 -On ne sait pas qui est mort.
--Cliquer sur ses propres batiments sous le noir facilement.
 
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
@@ -62,7 +60,6 @@ Optimisation:
 - Utliser de Uint32 pour les ressource inexsitantes, sans endiansafe!
 
 Optimisation efficacité:
-- Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
 - Utiliser la gradient du batiment comme option en alant chercher une ressource.
 - Sortir du côté ou il y a le moins de ressources.
 
@@ -83,7 +80,8 @@ Propreté du code:
 - Enlever les Load::(stream) tant que le chargement peut échouer.
 
 MapEditor:
-- http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
+http://ysagoon.com/phpBB2/viewtopic.php?t=96&sid=9ac6bca65604e5ddbca49e44e6af49b0
+http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
 
 YOG:
 - Afficher un message d'erreur lorsque les version des parties sont différentes.
