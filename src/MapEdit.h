@@ -42,8 +42,7 @@ private:
 	void drawMiniMap(void);
 	void renderMiniMap(void);
 	void drawMenu(void);
-	void draw(void);
-
+	
 	int processEvent(const SDL_Event *event);
 	void askConfirmationToQuit(void);
 	void handleMenuClick(int mx, int my, int button);

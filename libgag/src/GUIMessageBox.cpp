@@ -98,10 +98,13 @@ namespace GAGGUI
 	
 		MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
 	
-		mbs->dispatchPaint();
-	
-		// save screen
+		// save screen in a temporary surface
 		parentCtx->setClipRect();
+		DrawableSurface *background = new DrawableSurface();
+		background->setRes(parentCtx->getW(), parentCtx->getH());
+		background->drawSurface(0, 0, parentCtx);
+		
+		mbs->dispatchPaint();
 	
 		SDL_Event event;
 		while(mbs->endValue<0)
@@ -113,6 +116,7 @@ namespace GAGGUI
 				mbs->translateAndProcessEvent(&event);
 			}
 			mbs->dispatchPaint();
+			parentCtx->drawSurface(0, 0, background);
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
 		}
@@ -125,6 +129,10 @@ namespace GAGGUI
 	
 		// clean up
 		delete mbs;
+		
+		// restore screen and destroy temporary surface
+		parentCtx->drawSurface(0, 0, background);
+		delete background;
 	
 		return retVal;
 	}

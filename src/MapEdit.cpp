@@ -85,22 +85,17 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		paintEditMode(false, false);
 
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-
-	if (needUpdate)
-		globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::drawMiniMap(void)
 {
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, centeredTeam);
 	paintCoordinates();
-	globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::renderMiniMap(void)
 {
 	game.renderMiniMap(centeredTeam, true);
-	drawMiniMap();
 }
 
 void MapEdit::drawMenu(void)
@@ -296,17 +291,7 @@ void MapEdit::drawMenu(void)
 		dec=team%8;
 		globalContainer->gfx->drawRect(menuStartW+12+dec*13, 402+line*13, 13, 13, 255, 0, 0);
 		globalContainer->gfx->drawRect(menuStartW+13+dec*13, 403+line*13, 11, 11, 0, 0, 0);
-
 	}
-
-	globalContainer->gfx->nextFrame();
-}
-
-void MapEdit::draw(void)
-{
-	drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-	renderMiniMap();
-	drawMenu();
 }
 
 void MapEdit::handleMapClick(void)
@@ -471,9 +456,8 @@ void MapEdit::handleMapClick(int mx, int my)
 
 	if (needRedraw)
 	{
-		drawMap(winX, winY, winW, winH, true, false);
 		mapHasBeenModiffied();
-		//renderMiniMap();
+		renderMiniMap();
 	}
 
 	atype=type;
@@ -519,7 +503,6 @@ void MapEdit::paintCoordinates(int mx, int my)
 		int x=baseX+64-w/2;
 		globalContainer->gfx->drawString(x, y, font, s.c_str());
 	}
-	globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
@@ -731,10 +714,6 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 		globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 		oldBrush=EM_BUILDING;
 	}
-
-	assert(nbRefreshZones<=maxNbRefreshZones);
-	if (nbRefreshZones>0 && mayUpdate)
-		globalContainer->gfx->nextFrame();
 }
 
 void MapEdit::mapHasBeenModiffied(void)
@@ -787,6 +766,9 @@ void MapEdit::loadSave(bool isLoad)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();
+		drawMenu();
+		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
+		drawMiniMap();
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 	}
@@ -807,7 +789,7 @@ void MapEdit::loadSave(bool isLoad)
 	// clean up
 	delete loadSaveScreen;
 
-	draw();
+	renderMiniMap();
 }
 
 void MapEdit::scriptEditor(void)
@@ -827,6 +809,9 @@ void MapEdit::scriptEditor(void)
 			scriptEditorScreen->translateAndProcessEvent(&event);
 		}
 		scriptEditorScreen->dispatchPaint();
+		drawMenu();
+		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
+		drawMiniMap();
 		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 	}
@@ -836,7 +821,7 @@ void MapEdit::scriptEditor(void)
 	// clean up
 	delete scriptEditorScreen;
 
-	draw();
+	renderMiniMap();
 }
 
 void MapEdit::askConfirmationToQuit()
@@ -852,7 +837,9 @@ void MapEdit::askConfirmationToQuit()
 		if (res==1) // no, quit
 			isRunning=false;
 		else if (res==2) // cancel, don't quit
-			draw();
+		{
+		
+		}
 		else if (res==0) // save if needed
 		{
 			loadSave(false);
@@ -943,7 +930,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 				game.removeTeam();
 				if (team>=game.session.numberOfTeam)
 					team--;
-				draw();
+				renderMiniMap();;
 			}
 		}
 		else if (mx>=116)
@@ -952,7 +939,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 			if (game.session.numberOfTeam<32)
 			{
 				game.addTeam();
-				draw();
+				renderMiniMap();;
 			}
 		}
 		else
@@ -968,7 +955,6 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x, screenClip.y, screenClip.w-128,screenClip.h, true, true);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -1003,7 +989,6 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -1043,8 +1028,6 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 				level=2;
 		}
 	}
-
-	drawMenu();
 }
 
 bool MapEdit::load(const char *filename)
@@ -1069,7 +1052,7 @@ bool MapEdit::load(const char *filename)
 	type = 0; // water
 	editMode = EM_TERRAIN; // terrain
 
-	draw();
+	renderMiniMap();
 	return true;
 }
 
@@ -1260,8 +1243,6 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 
 						viewportX&=game.map.getMaskW();
 						viewportY&=game.map.getMaskH();
-
-						draw();
 					}
 				}
 			}
@@ -1333,15 +1314,12 @@ int MapEdit::processEvent(const SDL_Event *event)
 				{
 					minimapPushed=true;
 					viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-					drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, false);
-					drawMiniMap();
 				}
 			}
 			else if (Utilities::ptInRect(mx, my, &mapClip))
 			{
 				handleMapClick(mx, my);
 				pushedBrush=editMode;
-				paintEditMode(mx, my, true, true);
 				wasClickInMap=true;
 			}
 		}
@@ -1349,9 +1327,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			// We relase tools, like in game:
 			editMode=EM_NONE;
-			paintEditMode(mx, my, true, true);
 			minimapPushed=false;
-			drawMenu();
 		}
 	}
 	else if ((event->type==SDL_ACTIVEEVENT) && (event->active.gain==0))
@@ -1369,8 +1345,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			// handle viewport reset
 			viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, false);
-			drawMiniMap();
 		}
 		else
 		{
@@ -1392,12 +1366,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 			if (pushedBrush!=EM_NONE)
 				handleMapClick(mx, my);
-
-			paintEditMode(mx, my, true, true);
 		}
-
-		paintCoordinates(mx, my);
-
 	}
 	else if (event->type==SDL_KEYDOWN)
 	{
@@ -1417,7 +1386,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 			newH=288;
 		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 		regenerateClipRect();
-		draw();
 	}
 	else if (event->type==SDL_QUIT)
 	{
@@ -1529,7 +1497,10 @@ int MapEdit::run(void)
 
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
-	draw();
+	renderMiniMap();
+	drawMenu();
+	drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
+	drawMiniMap();
 
 	isRunning=true;
 	int returnCode=0;
@@ -1589,11 +1560,10 @@ int MapEdit::run(void)
 		viewportX&=game.map.getMaskW();
 		viewportY&=game.map.getMaskH();
 
-		if (doRedraw)
-		{
-			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-			drawMiniMap();
-		}
+		drawMenu();
+		drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
+		drawMiniMap();
+		globalContainer->gfx->nextFrame();
 
 		endTick=SDL_GetTicks();
 		deltaTick=endTick-startTick;
