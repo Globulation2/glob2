@@ -20,9 +20,14 @@
 #ifndef __MULTIPLAYERS_CHOOSE_MAP_SCREEN_H
 #define __MULTIPLAYERS_CHOOSE_MAP_SCREEN_H
 
-#include "GAG.h"
 #include "Session.h"
-#include "GUIMapPreview.h"
+#include <GUIBase.h>
+
+class Button;
+class List;
+class Text;
+class TextButton;
+class MapPreview;
 
 class MultiplayersChooseMapScreen:public Screen
 {
@@ -52,7 +57,6 @@ public:
 	virtual ~MultiplayersChooseMapScreen();
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void onTimer(Uint32 tick);
-	void paint(int x, int y, int w, int h);
 };
 
 #endif
