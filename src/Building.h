@@ -148,7 +148,8 @@ public:
 
 	bool isRessourceFull(void);
 	int neededRessource(void);
-	void neededRessources(Uint8 needs[MAX_NB_RESSOURCES]);
+	void neededRessources(int needs[MAX_NB_RESSOURCES]);
+	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
 	int neededRessource(int r);
 	void launchConstruction(void);
 	void cancelConstruction(void);

@@ -1114,8 +1114,8 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						Uint8 needs[MAX_NB_RESSOURCES];
-						attachedBuilding->neededRessources(needs);
+						int needs[MAX_NB_RESSOURCES];
+						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
 						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
@@ -1129,7 +1129,7 @@ void Unit::handleDisplacement(void)
 							for (int r=0; r<MAX_NB_RESSOURCES; r++)
 							{
 								int need=needs[r];
-								if (need)
+								if (need>0)
 								{
 									int distToRessource;
 									if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))

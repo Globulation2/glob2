@@ -436,16 +436,30 @@ int Building::neededRessource(void)
 	return minType;
 }
 
-void Building::neededRessources(Uint8 needs[MAX_NB_RESSOURCES])
+void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 {
 	for (int r=0; r<MAX_NB_RESSOURCES; r++)
+		needs[r]=type->maxRessource[r]-ressources[r];
+}
+
+void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
+{
+	 // we balance the system with Units working on it:
+	for (int r=0; r<MAX_NB_RESSOURCES; r++)
+		needs[r]=(type->maxRessource[r]-ressources[r]);
+	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
+		if ((*ui)->destinationPurprose>=0)
+		{
+			assert((*ui)->destinationPurprose<MAX_NB_RESSOURCES);
+			needs[(*ui)->destinationPurprose]--;
+		}
+	for (int i=0; i<20; i++)
 	{
-		int max=type->maxRessource[r];
-		int cur=ressources[r];
-		if (max>cur)
-			needs[r]=max-cur;
-		else
-			needs[r]=0;
+		for (int r=0; r<MAX_NB_RESSOURCES; r++)
+			if (needs[r]>0)
+				return;
+		for (int r=0; r<MAX_NB_RESSOURCES; r++)
+			needs[r]+=(type->maxRessource[r]-ressources[r]);
 	}
 }
 
@@ -1252,8 +1266,8 @@ void Building::subscribeToBringRessourcesStep()
 			//Second: we look for an unit whois not carying a ressource:
 			if (choosen==NULL)
 			{
-				Uint8 needs[MAX_NB_RESSOURCES];
-				neededRessources(needs);
+				int needs[MAX_NB_RESSOURCES];
+				wishedRessources(needs);
 				int teamNumber=owner->teamNumber;
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 				{
@@ -1267,7 +1281,7 @@ void Building::subscribeToBringRessourcesStep()
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
 							int need=needs[r];
-							if (need)
+							if (need>0)
 							{
 								int distUnitRessource;
 								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
@@ -1375,8 +1389,8 @@ void Building::subscribeToBringRessourcesStep()
 
 			if (choosen==NULL)
 			{
-				Uint8 needs[MAX_NB_RESSOURCES];
-				neededRessources(needs);
+				int needs[MAX_NB_RESSOURCES];
+				wishedRessources(needs);
 				int teamNumber=owner->teamNumber;
 				//Third: we look for an unit whois carying an unwanted ressource:
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
@@ -1391,7 +1405,7 @@ void Building::subscribeToBringRessourcesStep()
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
 							int need=needs[r];
-							if (need)
+							if (need>0)
 							{
 								int distUnitRessource;
 								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
