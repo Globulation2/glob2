@@ -18,7 +18,7 @@
 
 */
 
-#include "dirent.h"
+#include "win32_dirent.h"
 #include <errno.h>
 #include <io.h>
 #include <stdlib.h>
