@@ -1565,7 +1565,9 @@ void GameGUI::draw(void)
 				{ r=255; g=50; b=50; }
 				
 			globalContainer->littleFont->pushColor(r, g, b);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124+64, 128+4, globalContainer->littleFont, "%s", selUnit->owner->getFirstPlayerName());
+			const char *textT=selUnit->owner->getFirstPlayerName();
+			assert(textT);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124+64, 128+4, globalContainer->littleFont, "%s", textT);
 			globalContainer->littleFont->popColor();
 			
 			

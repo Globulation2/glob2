@@ -659,6 +659,8 @@ void Game::step(Sint32 localTeam)
 				for (i=0; i<512; i++)
 				{
 					Building *b=teams[t]->myBuildings[i];
+					if (b)
+						assert(b->owner==teams[t]);
 					if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 					{
 						int vr=b->type->viewingRange;
