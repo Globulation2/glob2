@@ -32,6 +32,7 @@ GlobalContainer::GlobalContainer(void)
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
+	optionFlags=0;
 
 	// set default values in settings or load them
 	char *userName;
@@ -144,6 +145,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			graphicFlags|=DrawableSurface::NO_DOUBLEBUF;
 			continue;
 		}
+		
+		if (strcmp(argv[i], "-l")==0)
+		{
+			optionFlags|=OPTION_LOW_SPEED_GFX;
+			continue;
+		}
 
 		if (strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
@@ -154,6 +161,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-b\tdisable double buffering (usefull on OS X in fullscreen)\n");
+			printf("-l\rlow speed graphics : disable some transparency effects\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");

@@ -29,7 +29,8 @@ class LogFileManager;
 class GlobalContainer
 {
 public:
-	enum{USERNAME_MAX_LENGTH=32};
+	enum { USERNAME_MAX_LENGTH=32 };
+	enum { OPTION_LOW_SPEED_GFX=0x1 };
 	
 public:
 	GlobalContainer(void);
@@ -53,6 +54,9 @@ public:
 
 	char userNameMemory[USERNAME_MAX_LENGTH];
 	const char *userName;
+	
+	// This is a mask of command line specific options
+	Uint32 optionFlags;
 
 	FileManager *fileManager;
 	LogFileManager *logFileManager;
