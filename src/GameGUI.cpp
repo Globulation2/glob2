@@ -152,7 +152,6 @@ void GameGUI::flagSelectedStep(void)
 
 void GameGUI::step(void)
 {
-
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
@@ -195,6 +194,7 @@ void GameGUI::step(void)
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 		flagSelectedStep();
 	
+	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
 		addMessage(globalContainer->texts.getString("[your units are under attack]"), 200, 30, 30);
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))

@@ -46,6 +46,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	}
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG, savedSessionInfo);
 	multiplayersJoin=NULL;
+	this->shareOnYOG=shareOnYOG;
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
 
@@ -122,7 +123,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	
 	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
 	{
-		multiplayersJoin=new MultiplayersJoin(false);
+		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
 		strncpy(multiplayersJoin->playerName, globalContainer->userName, 32);
 		multiplayersJoin->playerName[37]=0;
@@ -139,6 +140,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
 			multiplayersJoin->serverName[127]=0;
 		}
+		multiplayersJoin->serverIP=multiplayersHost->serverIP;
 
 		multiplayersJoin->tryConnection();
 	}
