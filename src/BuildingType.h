@@ -46,16 +46,13 @@ public:
 		EXPLORATION_FLAG=8,
 		WAR_FLAG=9,
 		CLEARING_FLAG=10,
-		FORBIDDEN_FLAG=11,
 
-		STONE_WALL=12,
-		WOOD_WALL=13,
+		STONE_WALL=11,
 
-		MARKET_BUILDING=14,
+		MARKET_BUILDING=12,
 
 		NB_BUILDING
 	};
-	static const int NB_HARD_BUILDING=8;
 
 #define __STARTDATA_B ((Uint32*)&startImage)
 
@@ -240,7 +237,7 @@ public:
 			"hpInc",
 			"armor",
 			"level",
-			"type",
+			"shortTypeNum",
 			"isBuildingSite",
 
 			"defaultUnitStayRange",

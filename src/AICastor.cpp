@@ -1010,6 +1010,8 @@ Order *AICastor::controlUpgrades()
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
+	if (shortTypeNum<NB_HARD_BUILDING)
+		return NULL;
 	int level=b->type->level;
 	int upgradeLevelGoal=((buildsAmount+1)>>1);
 	if (upgradeLevelGoal>3)
@@ -1021,7 +1023,6 @@ Order *AICastor::controlUpgrades()
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[shortTypeNum][si][li];
 	
-	assert(shortTypeNum<8);
 	int upgradeAmountGoal=strategy.build[shortTypeNum].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
@@ -1375,8 +1376,8 @@ void AICastor::addProjects()
 	if (!enoughFreeWorkers())
 		return;
 	
-	for (int bpi=0; bpi<BuildingType::NB_HARD_BUILDING; bpi++)
-		for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+	for (int bpi=0; bpi<NB_HARD_BUILDING; bpi++)
+		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			if (bpi==strategy.build[bi].baseOrder)
 				if (buildingSum[bi][0]+buildingSum[bi][1]<strategy.build[bi].base)
 				{
@@ -1395,7 +1396,7 @@ void AICastor::addProjects()
 				}
 	buildsAmount=1;
 	
-	for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 	{
 		int upgradeSum=0;
 		for (int li=1; li<4; li++)
@@ -1405,12 +1406,12 @@ void AICastor::addProjects()
 	}
 	buildsAmount=2;
 	
-	int amountGoal[BuildingType::NB_HARD_BUILDING];
-	for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+	int amountGoal[NB_HARD_BUILDING];
+	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		amountGoal[bi]=strategy.build[bi].base;
 	
-	int upgradeGoal[BuildingType::NB_HARD_BUILDING];
-	for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+	int upgradeGoal[NB_HARD_BUILDING];
+	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		upgradeGoal[bi]=strategy.build[bi].baseUpgrade;
 	
 	for (Sint32 agi=1; agi<4; agi++)
@@ -1418,11 +1419,11 @@ void AICastor::addProjects()
 		buildsAmount=0+(agi<<1);
 		if (!enoughFreeWorkers())
 			return;
-		for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			amountGoal[bi]+=strategy.build[bi].news;
 		
-		for (int bpi=0; bpi<BuildingType::NB_HARD_BUILDING; bpi++)
-			for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+		for (int bpi=0; bpi<NB_HARD_BUILDING; bpi++)
+			for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 				if (bi==strategy.build[bpi].newOrder)
 					if (buildingSum[bi][0]+buildingSum[bi][1]<amountGoal[bi])
 					{
@@ -1441,9 +1442,9 @@ void AICastor::addProjects()
 					}
 		buildsAmount=1+(agi<<1);
 		
-		for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			upgradeGoal[bi]+=strategy.build[bi].newUpgrade;
-		for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
+		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		{
 			int upgradeSum=0;
 			for (int li=agi; li<4; li++)
