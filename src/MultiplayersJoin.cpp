@@ -636,14 +636,16 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress ip)
 {
 	int v=data[0];
-	if (size!=68)
+	if (size>4+64+32)
 	{
 		fprintf(logFile, "Warning, bad size for a gameHostBroadcastResponse (size=%d, v=%d).\n", size, v);
 		return;
 	}
 	LANHost lanhost;
-	strncpy(lanhost.gameName, &data[4], 32);
-	strncpy(lanhost.serverNickName, &data[36], 32);
+	int gnl=Utilities::strmlen(data+4, 64);
+	memcpy(lanhost.gameName, data+4, gnl);
+	int snnl=Utilities::strmlen(data+4+gnl, 32);
+	memcpy(lanhost.serverNickName, data+4+gnl, snnl);
 	
 	fprintf(logFile, "broadcastState=%d.\n", broadcastState);
 	fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
@@ -656,7 +658,7 @@ void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress i
 		//We ckeck if this host is already in the list:
 		bool already=false;
 		for (std::list<LANHost>::iterator it=lanHosts.begin(); it!=lanHosts.end(); ++it)
-			if (strncmp(lanhost.gameName, it->gameName, 32)==0)
+			if (strncmp(lanhost.gameName, it->gameName, 64)==0)
 			{
 				already=true;
 				it->timeout=2*DEFAULT_NETWORK_TIMEOUT;

@@ -479,9 +479,9 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 		addSint8(sdata, (Sint8)sessionInfo.mapGenerationDescriptor->methode, 11);
 	else
 		addSint8(sdata, (Sint8)MapGenerationDescriptor::eNONE, 11);
-	strncpy(sdata+12, sessionInfo.getMapName(), 128);
-	int ssize=Utilities::strmlen(sdata+12, 128)+12;
-	assert(ssize<128+12);
+	strncpy(sdata+12, sessionInfo.getMapName(), 64);
+	int ssize=Utilities::strmlen(sdata+12, 64)+12;
+	assert(ssize<64+12);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
 	if (packet==NULL)
 		return;
@@ -1029,7 +1029,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		return;
 	}
 
-	UDPpacket *packet=SDLNet_AllocPacket(68);
+	UDPpacket *packet=SDLNet_AllocPacket(4+64+32);
 
 	if (packet==NULL)
 	{
@@ -1043,7 +1043,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		return;
 	}
 
-	char sdata[68];
+	char sdata[4+64+32];
 	if (shareOnYOG)
 		sdata[0]=BROADCAST_RESPONSE_YOG;
 	else
@@ -1051,16 +1051,17 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	sdata[1]=0;
 	sdata[2]=0;
 	sdata[3]=0;
-	memset(&sdata[4], 0, 32);
-	strncpy(&sdata[4], sessionInfo.getMapName(), 32);
-	memset(&sdata[36], 0, 32);
-	strncpy(&sdata[36], globalContainer->userName, 32);
+	// TODO: allow to use a game name different than mapName.
+	int mnl=Utilities::strmlen(sessionInfo.getMapName(), 64);
+	memcpy(sdata+4, sessionInfo.getMapName(), mnl);
+	int unl=Utilities::strmlen(globalContainer->userName, 32);
+	memcpy(sdata+4+mnl, globalContainer->userName, unl);
 
 	//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
 	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.getMapName());
 	//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
-	packet->len=68;
-	memcpy((char *)packet->data, sdata, 68);
+	packet->len=4+mnl+unl;
+	memcpy((char *)packet->data, sdata, 4+mnl+unl);
 
 	bool sucess;
 
