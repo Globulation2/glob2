@@ -35,6 +35,8 @@
 	#pragma warning (disable : 4250)
 	#undef max
 	#undef min
+	#define HAVE_OPENGL
+	#define _USE_MATH_DEFINES // To get M_PI
 #endif
 
 #ifdef HAVE_CONFIG_H

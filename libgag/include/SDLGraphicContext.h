@@ -137,7 +137,7 @@ namespace GAGCore
 	class DrawableSurface
 	{
 	protected:
-		friend class Color;
+		friend struct Color;
 		friend class GraphicContext;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
