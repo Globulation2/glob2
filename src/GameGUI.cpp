@@ -1174,12 +1174,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	if (selectionMode==TOOL_SELECTION)
 	{
 		// we get the type of building
-		int mapX, mapY;
-
-		Sint32 typeNum;
-
 		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, true);
+		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, true);
 		if (typeNum==-1)
 		{
 			typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
@@ -1189,9 +1185,11 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
+		int mapX, mapY;
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		bool isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
+		//bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
 		if (isRoom)
 			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
@@ -2435,18 +2433,9 @@ void GameGUI::drawOverlayInfos(void)
 		// we check for room
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
-
-		if (bt->width&0x1)
-			tempX=((mouseX)>>5)+viewportX;
-		else
-			tempX=((mouseX+16)>>5)+viewportX;
-
-		if (bt->height&0x1)
-			tempY=((mouseY)>>5)+viewportY;
-		else
-			tempY=((mouseY+16)>>5)+viewportY;
-
-		isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
+		//isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
 		// we find last's leve type num:
 		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);

@@ -185,28 +185,47 @@ void Game::executeOrder(Order *order, int localPlayer)
 	{
 		case ORDER_CREATE:
 		{
+			OrderCreate *oc=(OrderCreate *)order;
 			if (!isPlayerAlive)
 				break;
 
-			int posX=((OrderCreate *)order)->posX;
-			int posY=((OrderCreate *)order)->posY;
-			int teamNumber=((OrderCreate *)order)->team;
-			assert(teamNumber==team->teamNumber);
-			Sint32 typeNum=((OrderCreate *)order)->typeNum;
-			bool isVirtual=globalContainer->buildingsTypes.get(typeNum)->isVirtual;
+			int posX=(oc->posX)&map.getMaskW();
+			int posY=(oc->posY)&map.getMaskH();;
+			assert(oc->teamNumber==team->teamNumber);
+			BuildingType *bt=globalContainer->buildingsTypes.get(oc->typeNum);
+			bool isVirtual=bt->isVirtual;
+			int w=bt->width;
+			int h=bt->height;
 			if (!isVirtual && (team->noMoreBuildingSitesCountdown>0))
 				break;
-			if (isVirtual || checkRoomForBuilding(posX, posY, typeNum, teamNumber))
+			bool isRoom=checkRoomForBuilding(posX, posY, oc->typeNum, oc->teamNumber);
+			if (isVirtual || isRoom)
 			{
-				posX&=map.getMaskW();
-				posY&=map.getMaskH();
-				Building *b=addBuilding(posX, posY, typeNum, teamNumber);
+				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
 				if (b)
 				{
-					fprintf(logFile, "ORDER_CREATE");
+					fprintf(logFile, "ORDER_CREATE (%d, %d)\n", posX, posY);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
 				}
+			}
+			else if (!isVirtual && !isRoom && map.isHardSpaceForBuilding(posX, posY, w, h))
+			{
+				BuildProject buildProject;
+				buildProject.posX=posX;
+				buildProject.posY=posY;
+				fprintf(logFile, "new BuildProject (%d, %d)\n", posX, posY);
+				buildProject.teamNumber=oc->teamNumber;
+				buildProject.typeNum=oc->typeNum;
+				buildProjects.push_back(buildProject);
+				Uint32 teamMask=Team::teamNumberToMask(oc->teamNumber);
+				for (int y=posY; y<posY+h; y++)
+					for (int x=posX; x<posX+w; x++)
+					{
+						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
+						map.cases[index].forbidden|=teamMask;
+						map.localForbiddenMap.set(index, true);
+					}
 			}
 		}
 		break;
@@ -397,39 +416,41 @@ void Game::executeOrder(Order *order, int localPlayer)
 			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
 			if (oaf->type == BrushTool::MODE_ADD)
 			{
-				Uint32 teamMask = teams[oaf->team]->me;
+				Uint32 teamMask = teams[oaf->teamNumber]->me;
 				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
 					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
 					{
 						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
 						if (oaf->mask.get(orderMaskIndex))
 						{
+							size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden |= teamMask;
+							map.cases[index].forbidden|=teamMask;
 							// Update local map
-							map.localForbiddenMap.set(map.w*(y&map.hMask)+(x&map.wMask), true);
+							map.localForbiddenMap.set(index, true);
 						}
 					}
 			}
 			else if (oaf->type == BrushTool::MODE_DEL)
 			{
-				Uint32 notTeamMask = ~teams[oaf->team]->me;
+				Uint32 notTeamMask = ~teams[oaf->teamNumber]->me;
 				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
 					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
 					{
 						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
 						if (oaf->mask.get(orderMaskIndex))
 						{
+							size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden &= notTeamMask;
+							map.cases[index].forbidden&=notTeamMask;
 							// Update local map
-							map.localForbiddenMap.set(map.w*(y&map.hMask)+(x&map.wMask), false);
+							map.localForbiddenMap.set(index, false);
 						}
 					}
 					
 				// We remove, so we need to refresh the gradients, unfortunatly
-				teams[oaf->team]->dirtyGlobalGradient();
-				map.dirtyLocalGradient(oaf->x-16, oaf->x-16, 32+oaf->w, 32+oaf->h, oaf->team);
+				teams[oaf->teamNumber]->dirtyGlobalGradient();
+				map.dirtyLocalGradient(oaf->x-16, oaf->x-16, 32+oaf->w, 32+oaf->h, oaf->teamNumber);
 			}
 			else
 				assert(false);
@@ -856,6 +877,48 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 
 }
 
+void Game::buildProjectSyncStep(void)
+{
+	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end(); bpi++)
+	{
+		int posX=bpi->posX&map.getMaskW();
+		int posY=bpi->posY&map.getMaskH();
+		int teamNumber=bpi->teamNumber;
+		Sint32 typeNum=(bpi->typeNum);
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		int w=bt->width;
+		int h=bt->height;
+		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
+		{
+			fprintf(logFile, "BuildProject failure (%d, %d)\n", posX, posY);
+			buildProjects.erase(bpi);
+			break;
+		}
+		if (checkRoomForBuilding(posX, posY, typeNum, teamNumber))
+		{
+			Building *b=addBuilding(posX, posY, typeNum, teamNumber);
+			if (b)
+			{
+				Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
+				for (int y=posY; y<posY+h; y++)
+					for (int x=posX; x<posX+w; x++)
+					{
+						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
+						// Update real map
+						map.cases[index].forbidden&=notTeamMask;
+						// Update local map
+						map.localForbiddenMap.set(index, false);
+					}
+				b->owner->addToStaticAbilitiesLists(b);
+				b->update();
+				fprintf(logFile, "BuildProject success (%d, %d)\n", posX, posY);
+				buildProjects.erase(bpi);
+				break;
+			}
+		}
+	}
+}
+
 void Game::wonSyncStep(void)
 {
 	totalPrestige=0;
@@ -932,6 +995,9 @@ void Game::syncStep(Sint32 localTeam)
 		if (!globalContainer->runNoX)
 			renderMiniMap(localTeam, false, stepCounter%25, 25);
 
+		if ((stepCounter&15)==1)
+			buildProjectSyncStep();
+		
 		if ((stepCounter&31)==0)
 		{
 			scriptSyncStep();

@@ -159,9 +159,9 @@ OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNum)
+OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum)
 {
-	this->team=team;
+	this->teamNumber=teamNumber;
 	this->posX=posX;
 	this->posY=posY;
 	this->typeNum=typeNum;
@@ -169,7 +169,7 @@ OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNum)
 
 Uint8 *OrderCreate::getData(void)
 {
-	addUint32(data, this->team, 0);
+	addSint32(data, this->teamNumber, 0);
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
 	addSint32(data, this->typeNum, 12);
@@ -182,7 +182,7 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	if (dataLength!=getDataLength())
 		return false;
 	
-	this->team=getSint32(data, 0);
+	this->teamNumber=getSint32(data, 0);
 	this->posX=getSint32(data, 4);
 	this->posY=getSint32(data, 8);
 	this->typeNum=getSint32(data, 12);
@@ -549,14 +549,14 @@ OrderAlterateForbidden::OrderAlterateForbidden(const Uint8 *data, int dataLength
 	assert(good);
 }
 
-OrderAlterateForbidden::OrderAlterateForbidden(Uint8 team, Uint8 type, BrushAccumulator *acc)
+OrderAlterateForbidden::OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc)
 {
 	assert(acc);
 	_data = NULL;
 	
 	BrushAccumulator::AreaDimensions dim;
 	acc->getBitmap(&mask, &dim);
-	this->team = team;
+	this->teamNumber = teamNumber;
 	this->type = type;
 	x = dim.minX;
 	y = dim.minY;
@@ -576,7 +576,7 @@ Uint8 *OrderAlterateForbidden::getData(void)
 		free (_data);
 	this->_data = (Uint8 *)malloc(getDataLength());
 	
-	addUint8(_data, team, 0);
+	addUint8(_data, teamNumber, 0);
 	addUint8(_data, type, 1);
 	addSint16(_data, x, 2);
 	addSint16(_data, y, 4);
@@ -592,7 +592,7 @@ bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 	if (dataLength < 10)
 		return false;
 	
-	team = getUint8(data, 0);
+	teamNumber = getUint8(data, 0);
 	type = getUint8(data, 1);
 	x = getSint16(data, 2);
 	y = getSint16(data, 4);
