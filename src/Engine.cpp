@@ -37,6 +37,7 @@
 #include "NetGame.h"
 #include "Utilities.h"
 #include "YOGScreen.h"
+#include "SoundMixer.h"
 
 
 Engine::Engine()
@@ -374,6 +375,9 @@ int Engine::run(void)
 {
 	bool doRunOnceAggain=true;
 	
+	// Stop music for now, next load music game
+	globalContainer->mix->stopMusic();
+	
 	while (doRunOnceAggain)
 	{
 		//int ticknb=0;
@@ -386,7 +390,7 @@ int Engine::run(void)
 		startTick=SDL_GetTicks();
 		while (gui.isRunning)
 		{
-			// We allways allow the user ot use the gui:
+			// We always allow the user to use the gui:
 			if (globalContainer->runNoX)
 			{
 				if (!gui.getLocalTeam()->isAlive)
@@ -508,9 +512,10 @@ int Engine::run(void)
 	{
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
-		if (endGameScreen.execute(globalContainer->gfx, 40)==-1)
-			return -1;
-		else
-			return EE_NO_ERROR;
+		int result = endGameScreen.execute(globalContainer->gfx, 40);
+		// Restart menu music
+		globalContainer->mix->setNextTrack(1);
+		// Return
+		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
 }
