@@ -75,6 +75,7 @@ DrawableSurface::DrawableSurface()
 	clipRect.w=0;
 	clipRect.h=0;
 	flags=0;
+	partialRedraw=false;
 }
 
 void DrawableSurface::loadImage(const char *name)
@@ -138,26 +139,38 @@ void DrawableSurface::setAlpha(bool usePerPixelAlpha, Uint8 alphaValue)
 
 void DrawableSurface::setClipRect(int x, int y, int w, int h)
 {
+	if (!surface)
+		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new SetClipRectCommand(x, y, w, h));
+		return;
+	}
+		
 	clipRect.x=static_cast<Sint16>(x);
 	clipRect.y=static_cast<Sint16>(y);
 	clipRect.w=static_cast<Uint16>(w);
 	clipRect.h=static_cast<Uint16>(h);
-
-	if (!surface)
-		return;
 
 	SDL_SetClipRect(surface, &clipRect);
 }
 
 void DrawableSurface::setClipRect(void)
 {
+	if (!surface)
+		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new SetNoClipRectCommand());
+		return;
+	}
+		
 	clipRect.x=0;
 	clipRect.y=0;
 	clipRect.w=static_cast<Uint16>(surface->w);
 	clipRect.h=static_cast<Uint16>(surface->h);
-
-	if (!surface)
-		return;
 
 	SDL_SetClipRect(surface, &clipRect);
 }
@@ -166,6 +179,12 @@ void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawSpriteCommand(x, y, sprite, index));
+		return;
+	}
 
 	sprite->draw(surface, &clipRect, x, y, index);
 }
@@ -174,6 +193,12 @@ void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawPixelCommand(x, y, r, g, b, a));
+		return;
+	}
 		
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 	#ifdef HAVE_OPENGL
@@ -242,6 +267,12 @@ void DrawableSurface::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uin
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawRectCommand(x, y, w, h, r, g, b, a));
+		return;
+	}
 
 	SDL_Rect rect;
 	rect.x = static_cast<Sint16>(x);
@@ -264,6 +295,12 @@ void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawFilledRectCommand(x, y, w, h, r, g, b, a));
+		return;
+	}
 		
 	SDL_Rect rect;
 	rect.x = static_cast<Sint16>(x);
@@ -417,6 +454,12 @@ void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 	if (!surface)
 		return;
 		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawLineCommand(x, y, x, y+l, r, g, b, a));
+		return;
+	}
+		
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 	
 	#ifdef HAVE_OPENGL
@@ -561,6 +604,12 @@ void DrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawLineCommand(x, y, x+l, y, r, g, b, a));
+		return;
+	}
 
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		
@@ -699,6 +748,12 @@ void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g,
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawLineCommand(x1, y1, x2, y2, r, g, b, a));
+		return;
+	}
 	
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 	
@@ -893,11 +948,17 @@ void DrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 
 {
 	if (!surface)
 		return;
-		
+	
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawCircleCommand(x, y, ray, r, g, b, a));
+		return;
+	}
+	
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 	
 	#ifdef HAVE_OPENGL
-	if (glSDL_DrawCircle(surface, x, y, r, color, a) != 0)
+	if (glSDL_DrawCircle(surface, x, y, ray, color, a) != 0)
 	#endif
 	{
 
@@ -1041,6 +1102,12 @@ void DrawableSurface::drawString(int x, int y, int w, Font *font, const char *ms
 {
 	if (!surface)
 		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new DrawStringCommand(x, y, w, font, msg));
+		return;
+	}
 
 	std::string output(msg);
 	FILTER_OUT_CHAR(output.c_str(), '\n');
@@ -1048,23 +1115,25 @@ void DrawableSurface::drawString(int x, int y, int w, Font *font, const char *ms
 	font->drawString(surface, x, y, w, output.c_str(), &clipRect);
 }
 
-void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
+void DrawableSurface::drawSurface(int x, int y, DrawableSurface *osurface)
 {
-	if (!surface)
+	if ((!surface) || (!osurface) || (!osurface->surface))
 		return;
-
-	DrawableSurface *sdlsurface=dynamic_cast<DrawableSurface *>(surface);
-	if ((sdlsurface) && (sdlsurface->surface))
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
 	{
-		SDL_Rect r;
-
-		r.x=static_cast<Sint16>(x);
-		r.y=static_cast<Sint16>(y);
-		r.w=static_cast<Uint16>(surface->getW());
-		r.h=static_cast<Uint16>(surface->getH());
-
-		SDL_BlitSurface(sdlsurface->surface, NULL, this->surface, &r);
+		drawCommands.push_back(new DrawSurfaceCommand(x, y, osurface));
+		return;
 	}
+
+	SDL_Rect r;
+
+	r.x=static_cast<Sint16>(x);
+	r.y=static_cast<Sint16>(y);
+	r.w=static_cast<Uint16>(osurface->getW());
+	r.h=static_cast<Uint16>(osurface->getH());
+
+	SDL_BlitSurface(osurface->surface, NULL, this->surface, &r);
 }
 
 
@@ -1073,7 +1142,8 @@ void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
 GraphicContext::GraphicContext(void)
 {
 	minW = minH = 0;
-	surface=NULL;
+	surface = NULL;
+	partialRedraw = true;
 
 	// Load the SDL library
 	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO)<0 )
@@ -1120,6 +1190,7 @@ bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 	{
 		sdlFlags |= SDL_GLSDL;
 		sdlFlags |= SDL_HWSURFACE;
+		sdlFlags |= SDL_DOUBLEBUF;
 	}
 	
 	if (minW && (w < minW))
@@ -1151,22 +1222,72 @@ bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 	}
 }
 
+void GraphicContext::drawQueudCommands(void)
+{
+	for (size_t i=0; i<drawCommands.size(); i++)
+		drawCommands[i]->apply(this);
+}
+
+void GraphicContext::clearQueudCommands(void)
+{
+	for (size_t i=0; i<drawCommands.size(); i++)
+		delete drawCommands[i];
+	drawCommands.clear();
+}
+
 void GraphicContext::nextFrame(void)
 {
 	if (surface)
+	{
+		if ((flags & DOUBLEBUF) && partialRedraw)
+		{
+			partialRedraw = false;
+			drawQueudCommands();
+			SDL_Flip(surface);
+			drawQueudCommands();
+			clearQueudCommands();
+			partialRedraw = true;
+		}
 		SDL_Flip(surface);
+	}
 }
 
 void GraphicContext::updateRects(SDL_Rect *rects, int size)
 {
 	if (surface)
-		SDL_UpdateRects(surface, size, rects);
+	{
+		if ((flags & DOUBLEBUF) && partialRedraw)
+		{
+			partialRedraw = false;
+			drawQueudCommands();
+			SDL_Flip(surface);
+			drawQueudCommands();
+			clearQueudCommands();
+			partialRedraw = true;
+			SDL_Flip(surface);
+		}
+		else
+			SDL_UpdateRects(surface, size, rects);
+	}
 };
 
 void GraphicContext::updateRect(int x, int y, int w, int h)
 {
 	if (surface)
-		SDL_UpdateRect(surface, x, y, w, h);
+	{
+		if ((flags & DOUBLEBUF) && partialRedraw)
+		{
+			partialRedraw = false;
+			drawQueudCommands();
+			SDL_Flip(surface);
+			drawQueudCommands();
+			clearQueudCommands();
+			partialRedraw = true;
+			SDL_Flip(surface);
+		}
+		else
+			SDL_UpdateRect(surface, x, y, w, h);
+	}
 }
 
 void GraphicContext::loadImage(const char *name)

@@ -2468,7 +2468,7 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 	fy = y;
 	fray = ray;
 
-	gl.Begin(GL_POLYGON);
+	gl.Begin(GL_POINTS);
 	if (a < 255)
 		gl.Color4ub(r, g, b, a);
 	else
