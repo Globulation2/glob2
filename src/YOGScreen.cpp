@@ -82,7 +82,7 @@ YOGScreen::YOGScreen()
 	playerList=new YOGPlayerList(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
-	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard", true, "data/gui/yog");
+	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard", true, "", "data/gui/yog");
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);

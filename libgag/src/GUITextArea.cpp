@@ -31,40 +31,37 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *spritelocation, const char *text)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text, const char *spritelocation)
 	{
-		this->x=x;
-		this->y=y;
-		this->w=w;
-		this->h=h;
-		this->hAlignFlag=hAlign;
-		this->vAlignFlag=vAlign;
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+		this->hAlignFlag = hAlign;
+		this->vAlignFlag = vAlign;
 		
-		this->readOnly=readOnly;
-		this->sprite=sprite;
+		this->readOnly = readOnly;
+		this->sprite = NULL;
+		this->spriteWidth = 0;
 		// TODO : clean this and store text font
-		this->font=Toolkit::getFont(font);
+		this->font = Toolkit::getFont(font);
 		assert(this->font);
 		assert(font);
-		charHeight=this->font->getStringHeight((const char *)NULL);
+		charHeight = this->font->getStringHeight((const char *)NULL);
 		assert(charHeight);
-		areaHeight=(h-8)/charHeight;
+		areaHeight = (h-8)/charHeight;
 		areaPos=0;
 		
-		cursorPos=0;
-		cursorPosY=0;
-		cursorScreenPosY=0;
-	
-		this->text = text;
-
-		spriteWidth = 0;
+		cursorPos = 0;
+		cursorPosY = 0;
+		cursorScreenPosY = 0;
 		
-		this->sprite = Toolkit::getSprite(spritelocation);
+		this->text = text;
+		
+		if (spritelocation)
+			sprite = Toolkit::getSprite(spritelocation);
 		if (sprite)
-		{
-			spriteWidth=this->sprite->getW(0);	
-	
-		}
+			spriteWidth = sprite->getW(0);	
 	}
 
 	TextArea::~TextArea(void)
@@ -688,7 +685,8 @@ namespace GAGGUI
 
 	void TextArea::addImage(int frame)
 	{
-		assert(frame<=sprite->getFrameCount()-1);
+		assert(sprite),
+		assert(frame <= sprite->getFrameCount()-1);
 		this->frames.push_back(frame);
 	}
 	
