@@ -1403,7 +1403,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 {
 	Uint16 localPort=0;
-	for (int tempPort=7009; tempPort<7009+10; tempPort++) // we try 10 ports
+	for (int tempPort=7010; tempPort<7010+10010; tempPort+=1001) // we try 10 ports, strategically separated
 	{
 		// First, we create a temporaty local server (tempServer):
 		UDPsocket tempSocket;
