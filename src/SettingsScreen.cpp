@@ -59,45 +59,26 @@ SettingsScreen::SettingsScreen()
 	}
 	addWidget(modeList);
 	
-	#ifdef HAVE_OPENGL
-	rendererList = new List(175, 90, 50, 45, ALIGN_RIGHT, ALIGN_TOP, "standard");
-	rendererList->addText("SDL");
-	rendererList->addText("GL");
-	addWidget(rendererList);
-	#else
-	rendererList = NULL;
-	#endif
-	
-	depthList = new List(110, 90, 50, 65, ALIGN_RIGHT, ALIGN_TOP, "standard");
-	depthList->addText("auto");
-	depthList->addText("32");
-	depthList->addText("16");
-	addWidget(depthList);
-
-	fullscreen=new OnOffButton(200, 90+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(200, 90, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	fullscreenText=new Text(20, 90+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
+	fullscreenText=new Text(20, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
 	
-	lowquality=new OnOffButton(200, 115+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
-	addWidget(lowquality);
-	lowqualityText=new Text(20, 115+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
-	addWidget(lowqualityText);
+	#ifdef HAVE_OPENGL
+	#endif
+	usegpu=new OnOffButton(200, 90 + 30, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
+	addWidget(usegpu);
+	usegpuText=new Text(20, 90 + 30, ALIGN_RIGHT, ALIGN_TOP, "standard", "OpenGL", 160);
+	addWidget(usegpuText);
 	
-	dblbuff=new OnOffButton(200, 140+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
-	addWidget(dblbuff);
-	dblbuffText=new Text(20, 140+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
-	addWidget(dblbuffText);
+	lowquality=new OnOffButton(200, 90 + 60, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	addWidget(lowquality);
+	lowqualityText=new Text(20, 90 + 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
+	addWidget(lowqualityText);
 
-
-	hwaccel=new OnOffButton(200, 165+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
-	addWidget(hwaccel);
-	hwaccelText=new Text(20, 165+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
-	addWidget(hwaccelText);
-
-	customcur=new OnOffButton(200, 190+80, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::CUSTOMCURSOR, CUSTOMCUR);
+	customcur=new OnOffButton(200, 90 + 90, 20, 20, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
 	addWidget(customcur);
-	customcurText=new Text(20, 190+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[customcur]"), 160);
+	customcurText=new Text(20, 90 + 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[customcur]"), 160);
 	addWidget(customcurText);
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
@@ -136,9 +117,7 @@ SettingsScreen::SettingsScreen()
 	oldLanguage = Toolkit::getStringTable()->getLang();
 	oldScreenW = globalContainer->settings.screenWidth;
 	oldScreenH = globalContainer->settings.screenHeight;
-	oldScreenDepth = globalContainer->settings.screenDepth;
 	oldScreenFlags = globalContainer->settings.screenFlags;
-	oldGraphicType = globalContainer->settings.graphicType;
 	oldOptionFlags = globalContainer->settings.optionFlags;
 	oldMusicVol = globalContainer->settings.musicVolume;
 	oldMute = globalContainer->settings.mute;
@@ -166,9 +145,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			globalContainer->settings.screenWidth = oldScreenW;
 			globalContainer->settings.screenHeight = oldScreenH;
-			globalContainer->settings.screenDepth = oldScreenDepth;
 			globalContainer->settings.screenFlags = oldScreenFlags;
-			globalContainer->settings.graphicType = oldGraphicType;
 			if (gfxAltered)
 				updateGfxCtx();
 
@@ -196,8 +173,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audio->setText(Toolkit::getStringTable()->getString("[audio]"));
 
 			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
-			hwaccelText->setText(Toolkit::getStringTable()->getString("[hwaccel]"));
-			dblbuffText->setText(Toolkit::getStringTable()->getString("[dblbuff]"));
+			//usegpuText->setText(Toolkit::getStringTable()->getString("[opengl]"));
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 
@@ -212,19 +188,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h);
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
-			updateGfxCtx();
-		}
-		else if (source==rendererList)
-		{
-			globalContainer->settings.graphicType = par1;
-			updateGfxCtx();
-		}
-		else if (source==depthList)
-		{
-			if (par1 == 0)
-				globalContainer->settings.screenDepth = 0;
-			else
-				globalContainer->settings.screenDepth = atoi(depthList->getText(par1).c_str());
 			updateGfxCtx();
 		}
 	}
@@ -243,37 +206,25 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if (fullscreen->getState())
 			{
-				globalContainer->settings.screenFlags|=DrawableSurface::FULLSCREEN;
-				globalContainer->settings.screenFlags&=~(DrawableSurface::RESIZABLE);
+				globalContainer->settings.screenFlags |= GraphicContext::FULLSCREEN;
+				globalContainer->settings.screenFlags &= ~(GraphicContext::RESIZABLE);
 			}
 			else
 			{
-				globalContainer->settings.screenFlags&=~(DrawableSurface::FULLSCREEN);
-				globalContainer->settings.screenFlags|=DrawableSurface::RESIZABLE;
+				globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
+				globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
 			}
 			updateGfxCtx();
 		}
-		else if ((source==hwaccel) && (globalContainer->settings.graphicType != DrawableSurface::GC_GL))
+		else if (source==usegpu)
 		{
-			if (hwaccel->getState())
+			if (usegpu->getState())
 			{
-				globalContainer->settings.screenFlags|=DrawableSurface::HWACCELERATED;
+				globalContainer->settings.screenFlags |= GraphicContext::USEGPU;
 			}
 			else
 			{
-				globalContainer->settings.screenFlags&=~(DrawableSurface::HWACCELERATED);
-			}
-			updateGfxCtx();
-		}
-		else if ((source==dblbuff) && (globalContainer->settings.graphicType != DrawableSurface::GC_GL))
-		{
-			if (dblbuff->getState())
-			{
-				globalContainer->settings.screenFlags|=DrawableSurface::DOUBLEBUF;
-			}
-			else
-			{
-				globalContainer->settings.screenFlags&=~(DrawableSurface::DOUBLEBUF);
+				globalContainer->settings.screenFlags &= ~(GraphicContext::USEGPU);
 			}
 			updateGfxCtx();
 		}
@@ -281,11 +232,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if (customcur->getState())
 			{
-				globalContainer->settings.screenFlags|=DrawableSurface::CUSTOMCURSOR;
+				globalContainer->settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
 			}
 			else
 			{
-				globalContainer->settings.screenFlags&=~(DrawableSurface::CUSTOMCURSOR);
+				globalContainer->settings.screenFlags &= ~(GraphicContext::CUSTOMCURSOR);
 			}
 			updateGfxCtx();
 		}
@@ -299,20 +250,13 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void SettingsScreen::setVisibilityFromGraphicType(void)
 {
-	dblbuff->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
-	dblbuffText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
-	hwaccel->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
-	hwaccelText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
-	rebootWarning->visible = globalContainer->settings.graphicType == DrawableSurface::GC_GL;
+	rebootWarning->visible = globalContainer->settings.screenFlags & GraphicContext::USEGPU;
 }
 
 void SettingsScreen::updateGfxCtx(void)
 {
-	if (globalContainer->settings.graphicType != DrawableSurface::GC_GL)
-	{
-		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
-	}
-	globalContainer->gfx->setQuality((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
+	if ((globalContainer->settings.screenFlags & GraphicContext::USEGPU) == 0)
+		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenFlags);
 	setVisibilityFromGraphicType();
 	actDisplay->setText(actDisplayModeToString().c_str());
 	gfxAltered = true;
@@ -322,16 +266,10 @@ std::string SettingsScreen::actDisplayModeToString(void)
 {
 	std::ostringstream oss;
 	oss << globalContainer->settings.screenWidth << "x" << globalContainer->settings.screenHeight;
-	if (globalContainer->settings.screenDepth == 0)
-		oss << " auto depth";
-	else
-		oss << " " << globalContainer->settings.screenDepth << " bpp";
-	if (globalContainer->settings.graphicType == DrawableSurface::GC_SDL)
-		oss << " SDL";
-	else if (globalContainer->settings.graphicType == DrawableSurface::GC_GL)
+	if (globalContainer->settings.screenFlags & GraphicContext::USEGPU)
 		oss << " GL";
 	else
-		assert(false);
+		oss << " SDL";
 	return oss.str();
 }
 

@@ -217,7 +217,7 @@ LAN Game
 [settings]
 Settings
 [Warning, you need to reboot the game for changes to take effect]
-Warning, you need to reboot the game for changes to take effect
+Warning, you need to restart the game for changes to take effect
 [editor]
 Editor
 [credits]

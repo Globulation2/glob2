@@ -23,7 +23,7 @@
 
 
 #ifndef DX9_BACKEND	// TODO:Die!
-#include <glSDL.h>
+#include <SDL.h>
 #include <SDL_endian.h>
 #include <SDL_image.h>
 #include <SDL_net.h>

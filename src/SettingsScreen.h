@@ -42,26 +42,23 @@ public:
 		OK = 1,
 		CANCEL = 2,
 		FULLSCREEN = 3,
-		HWACCLEL = 4,
-		DBLBUFF = 5,
-		LOWQUALITY = 6,
-		CUSTOMCUR = 7,
-		MUTE = 8,
+		USEGL = 4,
+		LOWQUALITY = 5,
+		CUSTOMCUR = 6,
+		MUTE = 7,
 	};
 private:
 	List *languageList;
 	List *modeList;
-	List *rendererList;
-	List *depthList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH, oldScreenDepth, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute;
+	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute;
 	
 	TextButton *ok, *cancel;
-	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality, *customcur;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur;
 	Selector *musicVol;
 	OnOffButton *audioMute;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText;
 	Text *actDisplay;
 	Text *rebootWarning;
 

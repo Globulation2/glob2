@@ -31,6 +31,8 @@ struct SDL_Surface;
 
 namespace GAGCore
 {
+	class DrawableSurface;
+	
 	//! An implementation of Font using SDL_TTF
 	class TrueTypeFont:public Font
 	{
@@ -52,12 +54,13 @@ namespace GAGCore
 	protected:
 		//! Init internal variables
 		void init(void);
-		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
+		virtual void drawString(DrawableSurface *surface, int x, int y, int w, const char *text, Uint8 alpha);
+		virtual void drawString(DrawableSurface *surface, float x, float y, float w, const char *text, Uint8 alpha);
 		virtual void pushStyle(Style style);
 		virtual void popStyle(void);
 		
 		//! If text is cached, returns its surface. If it is not, create, cache and return surface
-		SDL_Surface *getStringCached(const char *text);
+		DrawableSurface *getStringCached(const char *text);
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
 		
@@ -75,7 +78,7 @@ namespace GAGCore
 		
 		struct CacheData
 		{
-			SDL_Surface *s;
+			DrawableSurface *s;
 			unsigned lastAccessed;
 		};
 		

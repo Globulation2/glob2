@@ -82,7 +82,8 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 	
-		parent->getSurface()->pushFontStyle(fontPtr, style);
+		
+		fontPtr->pushStyle(style);
 		
 		if (hAlignFlag==ALIGN_FILL)
 			wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
@@ -95,7 +96,7 @@ namespace GAGGUI
 			hDec=0;
 	
 		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
-		parent->getSurface()->popFontStyle(fontPtr);
+		fontPtr->popStyle();
 	}
 	
 	void Text::setText(const char *newText)
@@ -107,12 +108,12 @@ namespace GAGGUI
 		
 			if ((!keepW) || (!keepH))
 			{
-				parent->getSurface()->pushFontStyle(fontPtr, style);
+				fontPtr->pushStyle(style);
 				if (!keepW)
 					w = fontPtr->getStringWidth(newText);
 				if (!keepH)
 					h = fontPtr->getStringHeight(newText);
-				parent->getSurface()->popFontStyle(fontPtr);
+				fontPtr->popStyle();
 			}
 			parent->onAction(this, TEXT_SET, 0, 0);
 		}

@@ -279,11 +279,11 @@ namespace GAGGUI
 		
 		if (password)
 		{
-			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, pwd.c_str());
+			parent->getSurface()->drawString(x+2, y+3, fontPtr, pwd.c_str(), w-6);
 		}
 		else
 		{
-			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, text.c_str()+textDep);
+			parent->getSurface()->drawString(x+2, y+3, fontPtr, text.c_str()+textDep, w-6);
 		}
 	
 		// we draw the cursor:

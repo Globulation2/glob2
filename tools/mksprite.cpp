@@ -37,7 +37,7 @@ struct Frame
 vector<Frame> frames;
 vector<Image> planes;
 
-const unsigned initialTexSize = 256;
+unsigned initialTexSize = 256;
 
 class Layouter
 {
@@ -173,7 +173,7 @@ public:
 
 void usage(const char *exeName)
 {
-	cerr << "Usage:\n" << exeName << " [sprite name] [frame images] ..." << endl;
+	cerr << "Usage:\n" << exeName << " (-maxtexturesize) [sprite name] [frame images] ..." << endl;
 }
 
 int main(int argc, char *argv[])
@@ -182,6 +182,13 @@ int main(int argc, char *argv[])
 	{
 		usage(argv[0]);
 		return 1;
+	}
+	if (argv[1][0] == '-')
+	{
+		initialTexSize = atoi(&argv[1][1]);
+		cout << "Changing initialTexSize to " << initialTexSize << endl;
+		argc--;
+		argv++;
 	}
 	Layouter l;
 	try

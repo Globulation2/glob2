@@ -180,9 +180,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
-	DrawableSurface *background = new DrawableSurface();
-	background->setRes(globalContainer->gfx->getW(), globalContainer->gfx->getH());
-	background->drawSurface(0, 0,globalContainer->gfx);
+	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	background->drawSurface(0, 0, globalContainer->gfx);
 
 	SDL_Event event;
 	while(loadSaveScreen->endValue<0)

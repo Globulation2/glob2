@@ -233,7 +233,7 @@ namespace GAGGUI
 		//! Int to say when we have finished
 		int endValue;
 		//! Displacement from top-left corner of screen
-		unsigned decX, decY;
+		int decX, decY;
 	
 	public:
 		//! Constructor, take the context in which the overlay must be create and its dimensions in w and h

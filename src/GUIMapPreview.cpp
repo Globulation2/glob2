@@ -115,8 +115,7 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		lastH = map.getH();
 		
 		// create thumbnail
-		mapThumbnail = new DrawableSurface;
-		mapThumbnail->setRes(128, 128);
+		mapThumbnail = new DrawableSurface(128, 128);
 		mapThumbnail->drawFilledRect(x, y, 128, 128, 0, 0, 0);
 
 		// TODO : put this thumbnail code in a function
@@ -144,7 +143,6 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		dMx=(float)mMax/128.0f;
 		dMy=(float)mMax/128.0f;
 
-		mapThumbnail->lock();
 		for (dy=0; dy<szY; dy++)
 		{
 			for (dx=0; dx<szX; dx++)
@@ -186,7 +184,6 @@ void MapPreview::setMapThumbnail(const char *mapName)
 				mapThumbnail->drawPixel(dx+decX, dy+decY, r, g, b);
 			}
 		}
-		mapThumbnail->unlock();
 	}
 }
 

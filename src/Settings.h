@@ -30,10 +30,8 @@ public:
 	std::string password;
 	int screenWidth;
 	int screenHeight;
-	int screenDepth;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
-	Uint32 graphicType;
 	Uint32 defaultLanguage;
 	Uint32 musicVolume;
 	int mute;

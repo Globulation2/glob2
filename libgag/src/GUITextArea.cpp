@@ -457,7 +457,7 @@ namespace GAGGUI
 			if (i+areaPos<lines.size()-1)
 			{
 				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), w-8-spriteWidth, font, substr.c_str());
+				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
 				
 				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{
@@ -467,7 +467,7 @@ namespace GAGGUI
 			else
 			{
 				const std::string &substr = text.substr(lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), w-8-spriteWidth, font, substr.c_str());
+				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
 				
 				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
 				{

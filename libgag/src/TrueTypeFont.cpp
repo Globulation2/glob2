@@ -65,7 +65,7 @@ namespace GAGCore
 			}
 			// free cache
 			for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
-				SDL_FreeSurface(it->second.s);
+				delete it->second.s;
 			// close font
 			TTF_CloseFont(font);
 		}
@@ -88,11 +88,11 @@ namespace GAGCore
 	
 	int TrueTypeFont::getStringWidth(const char *string)
 	{
-		SDL_Surface *s = getStringCached(string);
+		DrawableSurface *s = getStringCached(string);
 		int w;
 		if (s)
 		{
-			w = s->w;
+			w = s->getW();
 			cleanupCache();
 		}
 		else
@@ -105,10 +105,10 @@ namespace GAGCore
 		int h;
 		if (string)
 		{
-			SDL_Surface *s = getStringCached(string);
+			DrawableSurface *s = getStringCached(string);
 			if (s)
 			{
-				h = s->h;
+				h = s->getH();
 				cleanupCache();
 			}
 			else
@@ -129,7 +129,7 @@ namespace GAGCore
 			styleStack.pop();
 		pushStyle(style);
 	}
-	#include <iostream>
+	
 	void TrueTypeFont::pushStyle(Style style)
 	{
 		assert(font);
@@ -156,7 +156,7 @@ namespace GAGCore
 		return styleStack.top();
 	}
 	
-	SDL_Surface *TrueTypeFont::getStringCached(const char *text)
+	DrawableSurface *TrueTypeFont::getStringCached(const char *text)
 	{
 		assert(text);
 		assert(font);
@@ -167,17 +167,17 @@ namespace GAGCore
 		key.style = styleStack.top();
 		
 		CacheData data;
-		SDL_Surface *s;
+		DrawableSurface *s;
 		
 		std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
 		if (keyIt == cache.end())
 		{
 			// create bitmap
 			SDL_Color c;
-			c.r = styleStack.top().r;
-			c.g = styleStack.top().g;
-			c.b = styleStack.top().b;
-			c.unused = styleStack.top().a;
+			c.r = styleStack.top().color.r;
+			c.g = styleStack.top().color.g;
+			c.b = styleStack.top().color.b;
+			c.unused = styleStack.top().color.a;
 			
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
 			if (temp == NULL)
@@ -185,7 +185,7 @@ namespace GAGCore
 			
 			// create key
 			data.lastAccessed = now;
-			data.s = s = SDL_DisplayFormatAlpha(temp);
+			data.s = s = new DrawableSurface(temp);
 			assert(s);
 			SDL_FreeSurface(temp);
 			
@@ -215,50 +215,59 @@ namespace GAGCore
 		// when cache is too big, remove the first element
 		if (cache.size() >= MAX_CACHE_SIZE)
 		{
-			SDL_FreeSurface(timeCache.begin()->second->second.s);
+			delete timeCache.begin()->second->second.s;
 			cache.erase(timeCache.begin()->second);
 			timeCache.erase(timeCache.begin());
 		}
 	}
 	
-	void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip)
+	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const char *text, Uint8 alpha)
 	{
-		SDL_Surface *s = getStringCached(text);
+		// get
+		DrawableSurface *s = getStringCached(text);
+		if (s == NULL)
+			return;
 		
 		// render
-		if (s)
+		if (w)
 		{
-			SDL_Rect sr;
-			sr.x = 0;
-			sr.y = 0;
-			sr.w = static_cast<Uint16>(s->w);
-			sr.h = static_cast<Uint16>(s->h);
-		
-			SDL_Rect r;
-			r.x = static_cast<Sint16>(x);
-			r.y = static_cast<Sint16>(y);
-			if (w)
-				r.w = static_cast<Uint16>(w);
-			else
-				r.w = static_cast<Uint16>(s->w);
-			r.h = static_cast<Uint16>(s->h);
-		
-			SDL_Rect oc;
-			if (clip)
-			{
-				SDL_GetClipRect(Surface, &oc);
-				sdcRects(&sr, &r, *clip);
-				SDL_SetClipRect(Surface, &r);
-			}
-		
-			SDL_BlitSurface(s, &sr, Surface, &r);
-		
-			if (clip)
-			{
-				SDL_SetClipRect(Surface, &oc);
-			}
+			int rx, ry, rw, rh;
+			surface->getClipRect(&rx, &ry, &rw, &rh);
+			int nrw = std::min(rw, x + w - rx);
+			surface->setClipRect(rx, ry, nrw, rh);
+			surface->drawSurface(x, y, s, alpha);
+			surface->setClipRect(rx, ry, rw, rh);
 			
-			cleanupCache();
 		}
+		else
+			surface->drawSurface(x, y, s, alpha);
+		
+		// cleanup
+		cleanupCache();
+	}
+	
+	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const char *text, Uint8 alpha)
+	{
+		// get
+		DrawableSurface *s = getStringCached(text);
+		if (s == NULL)
+			return;
+		
+		// render
+		if (w != 0.0f)
+		{
+			int rx, ry, rw, rh;
+			surface->getClipRect(&rx, &ry, &rw, &rh);
+			int nrw = std::min(rw, (int)x + (int)w - rx);
+			surface->setClipRect(rx, ry, nrw, rh);
+			surface->drawSurface(x, y, s, alpha);
+			surface->setClipRect(rx, ry, rw, rh);
+			
+		}
+		else
+			surface->drawSurface(x, y, s, alpha);
+		
+		// cleanup
+		cleanupCache();
 	}
 }
