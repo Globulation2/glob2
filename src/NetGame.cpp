@@ -412,7 +412,13 @@ void NetGame::sendPushOrder(int targetPlayer)
 		}
 		ustep--;
 	}
-	assert(totalSize<=576);// don't send anything biger too keep low brandwidth.
+	
+	// don't send packet over MTU
+	if (totalSize > MAX_GAME_PACKET_SIZE)
+	{
+		fprintf(stderr, "NetGame::sendPushOrder : attempting to send packet size over MTU size (%d bytes when limit is %d bytes)\n", totalSize, MAX_GAME_PACKET_SIZE);
+		assert(false);
+	}
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=0; //pad

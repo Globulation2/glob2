@@ -153,7 +153,8 @@ private:
 	int myLocalWishedDelay; // The delay we want, but the other players don't know about it yet. (caused by a too slow computer)
 	Uint8 recentsWishedDelay[32][256]; // The delay each player wants. (recents)
 	
-	static const int MAX_GAME_PACKET_SIZE=1500;
+	// Max packet size to send for NetGame. Set to the size of the internet MTU minus IP (20 bytes) and UDP (8 bytes) headers
+	static const int MAX_GAME_PACKET_SIZE = 1500 - 20 - 8;
 	static const int countDownMax=400; //400[t]x40[ms/t]=16'000[ms]
 	
 	Order *ordersQueue[32][256];
