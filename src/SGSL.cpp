@@ -193,9 +193,11 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	int level, teamNumber, amount;
 
 	type = line[pc++].type;
+	teamNumber = line[pc++].value;
 	if (l)
 		level = line[pc++].value;
-	teamNumber = line[pc++].value;
+	else
+		level = -1;
 	operation = line[pc++].type;
 	amount = line[pc].value;
 
@@ -204,7 +206,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
-			std::cout << "SGSL : conditionTester : testing "
+			std::cout << "SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " >? " << amount << std::endl;
@@ -212,7 +214,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_LOWER):
 		{
-			std::cout << "SGSL : conditionTester : testing "
+			std::cout << "SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " <? " << amount << std::endl;
@@ -220,7 +222,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_EQUAL):
 		{
-			std::cout << "SGSL : conditionTester : testing "
+			std::cout << "SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " =? " << amount << std::endl;
