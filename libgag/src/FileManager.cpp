@@ -230,8 +230,8 @@ void FileManager::remove(const char *filename)
 	{
 		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
 		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
-		remove(fn);
+		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
+		std::remove(fn);
 	}
 }
 

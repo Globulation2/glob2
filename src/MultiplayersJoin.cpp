@@ -42,6 +42,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	logFileDownload=globalContainer->logFileManager->getFile("MultiplayersJoinDownload.log");
 	assert(logFile);
 	duplicatePacketFile=0;
+	filename=NULL;
 	init(shareOnYOG);
 }
 
@@ -75,9 +76,12 @@ MultiplayersJoin::~MultiplayersJoin()
 	if (downloadStream)
 	{
 		fprintf(logFile, " download not finished.\n");
-		//TODO: delete/remove the incomplete file !
 		SDL_RWclose(downloadStream);
+		assert(filename);
+		assert(filename[0]);
+		globalContainer->fileManager->remove(filename);
 		downloadStream=NULL;
+		filename=NULL;
 	}
 }
 
@@ -117,9 +121,12 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	if (downloadStream)
 	{
 		fprintf(logFile, " download not finished.\n");
-		//TODO: delete/remove the incomplete file !
 		SDL_RWclose(downloadStream);
+		assert(filename);
+		assert(filename[0]);
+		globalContainer->fileManager->remove(filename);
 		downloadStream=NULL;
+		filename=NULL;
 	}
 	unreceivedIndex=0;
 	endOfFileIndex=0xFFFFFFFF;
@@ -235,7 +242,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	}
 	else
 	{
-		const char *filename=NULL;
+		filename=NULL;
 		
 		fprintf(logFile, "we may need to download, we don't have a random map.\n");
 		if (sessionInfo.fileIsAMap)
