@@ -72,7 +72,7 @@ YOGPreScreen::YOGPreScreen()
 
 YOGPreScreen::~YOGPreScreen()
 {
-	Toolkit::releaseSprite("animation");
+	Toolkit::releaseSprite("data/gfx/rotatingEarth");
 }
 
 void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)

@@ -69,7 +69,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
-	Toolkit::releaseSprite("editor");
+	Toolkit::releaseSprite("data/gui/editor");
 }
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode)
