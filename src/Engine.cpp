@@ -123,9 +123,6 @@ int Engine::initCampain(const char *mapName)
 
 	gui.game.session.numberOfPlayer=playerNumber;
 	
-	// set the correct alliance
-	gui.game.setAIAlliance();
-
 	// We do some cosmetic fix
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
