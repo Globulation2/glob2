@@ -665,6 +665,7 @@ void MultiplayersJoin::receiveTime()
 		if (broadcastState==BS_ENABLE_YOG)
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 				if (strncmp(it->serverNickName, serverNickName, 32)==0)
+				{
 					if (serverIP.host!=it->ip)
 					{
 						if ((socket)&&(channel!=-1))
@@ -681,7 +682,7 @@ void MultiplayersJoin::receiveTime()
 						//serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
-						fprintf(logFile, "Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
+						fprintf(logFile, "Trying NAT. serverIP.host=(%d.%d.%d.%d)(%s)\n", (it->ip>>0)&&0xFF, (it->ip>>8)&&0xFF, (it->ip>>16)&&0xFF, (it->ip>>24)&&0xFF, s);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
@@ -695,6 +696,7 @@ void MultiplayersJoin::receiveTime()
 							waitingState=WS_TYPING_SERVER_NAME;
 						}
 					}
+				}
 				else
 				{
 					fprintf(logFile, "MultiplayersJoin:NAT: (%s)!=(%s)\n", it->serverNickName, serverNickName);
@@ -704,7 +706,7 @@ void MultiplayersJoin::receiveTime()
 
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
-	// call yog step TODO: avoit Host AND Join to call yog.step()
+	// call yog step TODO: avoit Host AND Join to 
 	if (shareOnYOG)
 		globalContainer->yog->step(); // YOG cares about firewall and NAT
 	
@@ -1342,7 +1344,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	else
 	{
 		Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
-		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>24)%0xFF, (lip>>16)%0xFF, (lip>>8)%0xFF, (lip>>0)%0xFF);
+		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)%0xFF, (lip>>8)%0xFF, (lip>>16)%0xFF, (lip>>24)%0xFF);
 	}
 	serverIP=yogGameInfo->ip;
 	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);

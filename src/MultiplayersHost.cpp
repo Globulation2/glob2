@@ -1037,7 +1037,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%d.%d.%d.%d:%d).\n", data[0], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
 		};
 	}
 	else

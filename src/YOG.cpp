@@ -162,7 +162,7 @@ void YOG::send(YOGMessageType v, Uint8 id)
 
 void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 {
-	printf("YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>24)&0xFF, (ip>>16)&0xFF, (ip>>8)&0xFF, (ip>>0)&0xFF, port);
+	printf("YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>0)&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, port);
 	if (data[2]!=0 || data[3]!=0)
 	{
 		printf("bad packet.\n");
@@ -367,11 +367,19 @@ void YOG::deconnect()
 	globalContainer->popUserName();
 	
 	if (yogGlobalState>=YGS_CONNECTING)
+	{
 		yogGlobalState=YGS_DECONNECTING;
+		connectionTimeout=0;
+		connectionTOTL=3;
+	}
 	else if (yogGlobalState!=YGS_DECONNECTING)
+	{
+		yogGlobalState=YGS_DECONNECTING;
+		connectionTimeout=0;
+		connectionTOTL=3;
 		printf("YOG::deconnect() in a bad state (yogGlobalState=%d).\n", yogGlobalState);
-	connectionTimeout=0;
-	connectionTOTL=3;
+		assert(false);
+	}
 	
 	if (yogSharingState>=YSS_SHARING_GAME)
 	{
