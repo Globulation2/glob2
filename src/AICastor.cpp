@@ -2729,7 +2729,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool 
 	fprintf(logFile,  " wheatGradientLimit=%d\n", wheatGradientLimit/4);
 	
 	// we find the best place possible:
-	size_t bestIndex;
+	size_t bestIndex=0;
 	Sint32 bestScore=0;
 	
 	//wheatLimit=(wheatLimit<<2);

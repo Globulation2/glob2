@@ -1119,7 +1119,7 @@ void Unit::handleDisplacement(void)
 						{
 							int bestRessource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
-							bool takeInExchangeBuilding;
+							bool takeInExchangeBuilding=false;
 							Map* map=owner->map;
 							for (int r=0; r<MAX_NB_RESSOURCES; r++)
 							{

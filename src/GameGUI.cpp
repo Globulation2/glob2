@@ -791,7 +791,7 @@ void GameGUI::processEvent(SDL_Event *event)
 					printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
 					printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
 					printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
-					printf(" unitsInsideSubscribe=%d,\n", selBuild->unitsInsideSubscribe.size());
+					printf(" unitsInsideSubscribe=%d,\n", static_cast<unsigned>(selBuild->unitsInsideSubscribe.size()));
 					
 				}
 				else
