@@ -144,6 +144,10 @@ namespace GAGCore
 		SDL_GetClipRect(dest, &oldr);
 		SDL_SetClipRect(dest, &newr);
 	
+		#ifdef HAVE_OPENGL
+		glSDL_SetBltAlpha(spriteAlpha);
+		#endif
+			
 		if (images[index])
 			SDL_BlitSurface(images[index]->s, &src, dest, &r);
 	
@@ -205,6 +209,11 @@ namespace GAGCore
 			{
 				toBlit = it->second;
 			}
+			
+			#ifdef HAVE_OPENGL
+			glSDL_SetBltAlpha(spriteAlpha);
+			#endif
+		
 			SDL_BlitSurface(toBlit->s, &src, dest, &r);
 		}
 	

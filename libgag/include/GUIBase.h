@@ -32,17 +32,22 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	// transform an ucs 16 unicode char to an utf8 one
+	// some support functions
+
+	//! transform an ucs 16 unicode char to an utf8 one
 	void UCS16toUTF8(Uint16 ucs16, char utf8[4]);
 	
-	// return the number of char to go to the next utf8 one in the string
+	//! return the number of char to go to the next utf8 one in the string
 	unsigned getNextUTF8Char(unsigned char c);
 	
-	// return pos of the next UTF8 char in text
+	//! return pos of the next UTF8 char in text
 	unsigned getNextUTF8Char(const char *text, unsigned pos);
 	
-	// return pos of the previous UTF8 char in text
+	//! return pos of the previous UTF8 char in text
 	unsigned getPrevUTF8Char(const char *text, unsigned pos);
+	
+	//! Interpolate from V0 on time 0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
+	float splineInterpolation(float T, float V0, float V1, float x);
 	
 	//! Widget reacts to SDL_Event and produce Action
 	enum Action

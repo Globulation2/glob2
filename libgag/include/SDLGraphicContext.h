@@ -100,7 +100,7 @@ namespace GAGCore
 		SDL_Rect clipRect;
 		//! Flags, can be a combination of ResolutionFlags
 		Uint32 flags;
-		
+		//! number of times locked has been called
 		int lockCount;
 	public:
 		enum GraphicContextType
@@ -163,6 +163,7 @@ namespace GAGCore
 		//! lock only if necessary
 		virtual void lock(void)
 		{
+			lockCount++;
 			#ifdef HAVE_OPENGL
 			if (glSDL_MustLock(surface))
 			#else
@@ -173,12 +174,16 @@ namespace GAGCore
 		//! unlock only if necessary
 		virtual void unlock(void)
 		{
-			#ifdef HAVE_OPENGL
-			if (glSDL_MustLock(surface))
-			#else
-			if (SDL_MUSTLOCK(surface))
-			#endif
-				SDL_UnlockSurface(surface);
+			if (lockCount > 0)
+			{
+				lockCount--;
+				#ifdef HAVE_OPENGL
+				if (glSDL_MustLock(surface))
+				#else
+				if (SDL_MUSTLOCK(surface))
+				#endif
+					SDL_UnlockSurface(surface);
+			}
 		}
 	};
 	
@@ -223,6 +228,7 @@ namespace GAGCore
 		//! lock only if necessary, we do not lock GL graphic context
 		virtual void lock(void)
 		{
+			lockCount++;
 			#ifdef HAVE_OPENGL
 			if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
 			#else
@@ -233,12 +239,16 @@ namespace GAGCore
 		//! unlock only if necessary, we do not lock GL graphic context
 		virtual void unlock(void)
 		{
-			#ifdef HAVE_OPENGL
-			if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
-			#else
-			if (SDL_MUSTLOCK(surface))
-			#endif
-				SDL_UnlockSurface(surface);
+			if (lockCount > 0)
+			{
+				lockCount--;
+				#ifdef HAVE_OPENGL
+				if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
+				#else
+				if (SDL_MUSTLOCK(surface))
+				#endif
+					SDL_UnlockSurface(surface);
+			}
 		}
 	};
 	

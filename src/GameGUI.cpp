@@ -151,6 +151,7 @@ void GameGUI::init()
 	selection.build = 0;
 	selection.building = NULL;
 	selection.unit = NULL;
+	highlightSelection = 0.0f;
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=false;
@@ -2760,6 +2761,12 @@ void GameGUI::drawOverlayInfos(void)
 			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
 		else
 			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+			
+		// modifiy highlight given room
+		if (isRoom)
+			highlightSelection = std::min(highlightSelection + 0.1f, 1.0f);
+		else
+			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
 		
 		// we get the screen dimensions of the building
 		int batW = (bt->width)<<5;
@@ -2770,7 +2777,8 @@ void GameGUI::drawOverlayInfos(void)
 		// we draw the building
 		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage);
+		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
 		
 		if (!bt->isVirtual)
 		{

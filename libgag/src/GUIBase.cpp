@@ -137,7 +137,6 @@ namespace GAGGUI
 			hide();
 	}
 	
-	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
 	float splineInterpolation(float T, float V0, float V1, float x)
 	{
 		assert(T > 0);
