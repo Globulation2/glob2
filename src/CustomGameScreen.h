@@ -44,9 +44,9 @@ private:
 	Button *ok, *cancel;
 	Glob2FileList *fileList;
 	MapPreview *mapPreview;
-	OnOffButton *isAI[8];
-	ColorButton *color[8];
-	Text *isAItext[8];
+	OnOffButton *isAI[16];
+	ColorButton *color[16];
+	Text *isAItext[16];
 	Text *mapName, *mapInfo, *mapVersion, *mapSize;
 	bool validSessionInfo;
 
