@@ -235,6 +235,7 @@ void GameGUI::step(void)
 			break;
 			
 			default:
+				printf("m->messageType=%d\n", m->messageType);
 				assert(false);
 			break;
 		}
