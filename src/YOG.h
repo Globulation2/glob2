@@ -102,10 +102,6 @@ public:
 	void unjoinGame();
 	bool joinedGame;
 	
-	bool isMessage(void);
-	const char *getMessage(void);
-	const char *getMessageSource(void);
-	void freeMessage(void);
 	void sendMessage(const char *message);
 	
 	bool newGameList(bool reset);

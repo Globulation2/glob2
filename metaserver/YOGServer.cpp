@@ -195,17 +195,24 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			lprintf("bad message size (%d).\n", size);
 			break;
 		}
-		send(ip, YMT_CONNECTING);
 		bool connected=false;
+		bool sameName=false;
 		std::list<YOGClient *>::iterator client;
 		for (client=clients.begin(); client!=clients.end(); ++client)
 			if ((*client)->hasip(ip))
 			{
 				(*client)->TOTL=3;
 				connected=true;
-				break;
 			}
-		if (!connected)
+			else if (strncmp((*client)->userName, (char *)data+4, 32)==0)
+				sameName=true;
+		
+		if (sameName)
+			send(ip, YMT_CONNECTION_REFUSED);
+		else
+			send(ip, YMT_CONNECTING);
+		
+		if (!connected && !sameName)
 		{
 			char userName[32];
 			memset(userName, 0, 32);

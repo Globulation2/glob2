@@ -1237,36 +1237,99 @@ void Building::turretStep(void)
 		return;
 	}
 
-	unsigned range=type->shootingRange;
-	if (shootingStep>=2*range)
-		shootingStep=0;
-	else
-		shootingStep++;
-
-	int pos=shootingStep>>1;
-	int dir=shootingStep&0X1;
-	int midX=getMidX();
-	int midY=getMidY();
+	assert(type->width ==2);
+	assert(type->height==2);
+	
+	int range=type->shootingRange;
+	shootingStep=(shootingStep+1)&0x7;
+	
 	Uint32 enemies=owner->enemies;
 	bool targetFound=false;
-	int width =type->width &0x1;
-	int height=type->height&0x1;
 	Map *map=&(owner->game->map);
 
 	int targetX;
 	int targetY;
-	unsigned i;
-
-	for (i=0; i<=range && !targetFound; i++)
+	for (int i=0; i<=range && !targetFound; i++)
+		for (int j=0; j<=i && !targetFound; j++)
+			//for (int k=0; k<8; k++)
+			{
+				switch (shootingStep)
+				{
+				case 0:
+				targetX=posX-j;
+				targetY=posY-i;
+				break;
+				case 1:
+				targetX=posX+j+1;
+				targetY=posY-i;
+				break;
+				case 2:
+				targetX=posX-j;
+				targetY=posY+i+1;
+				break;
+				case 3:
+				targetX=posX+j+1;
+				targetY=posY+i+1;
+				break;
+				case 4:
+				targetX=posX-i;
+				targetY=posY-j;
+				break;
+				case 5:
+				targetX=posX+i+1;
+				targetY=posY-j;
+				break;
+				case 6:
+				targetX=posX-i;
+				targetY=posY+j+1;
+				break;
+				case 7:
+				targetX=posX+i+1;
+				targetY=posY+j+1;
+				break;
+				}
+				int targetUID=map->getUnit(targetX, targetY);
+				if (targetUID>=0)
+				{
+					int otherTeam=Unit::UIDtoTeam(targetUID);
+					Uint32 otherTeamMask=1<<otherTeam;
+					if (enemies&otherTeamMask)
+					{
+						targetFound=true;
+						//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
+						shootingStep=0;
+						break;
+					}
+				}
+				else if (targetUID!=NOUID)
+				{
+					int otherTeam=Building::UIDtoTeam(targetUID);
+					int otherID=Building::UIDtoID(targetUID);
+					Uint32 otherTeamMask=1<<otherTeam;
+					if (enemies&otherTeamMask)
+					{
+						Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
+						if (!b->type->defaultUnitStayRange)
+						{
+							targetFound=true;
+							shootingStep=0;
+							break;
+						}
+					}
+				}
+			}
+				
+	/*for (i=0; i<=range && !targetFound; i++)
 	{
 		for (int k=0; k<2 && !targetFound; k++)
 		{
 			for (int l=0; l<2 && !targetFound; l++)
 			{
-				targetX=midX+(k)*(  dir)*(pos+1)-(1-k)*(  dir)*(pos)+(l)*(1-dir)*(i+width +1)-(1-l)*(1-dir)*(i);
-				targetY=midY+(k)*(1-dir)*(pos+1)-(1-k)*(1-dir)*(pos)+(l)*(  dir)*(i+height+1)-(1-l)*(  dir)*(i);
+				//targetX=midX+(k)*(  dir)*(pos+1)-(1-k)*(  dir)*(pos)+(l)*(1-dir)*(i+width +1)-(1-l)*(1-dir)*(i);
+				//targetY=midY+(k)*(1-dir)*(pos+1)-(1-k)*(1-dir)*(pos)+(l)*(  dir)*(i+height+1)-(1-l)*(  dir)*(i);
 				//printf("midX=%d, targetX=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midX, targetX, k, l, pos, dir, i);
 				//printf("midY=%d, targetY=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midY, targetY, k, l, pos, dir, i);
+				targetX=posX+
 
 				int targetUID=map->getUnit(targetX, targetY);
 				if (targetUID>=0)
@@ -1297,8 +1360,9 @@ void Building::turretStep(void)
 				}
 			}
 		}
-	}
-
+	}*/
+	int midX=getMidX();
+	int midY=getMidY();
 	if (targetFound)
 	{
 		//printf("%d found target found: (%d, %d) \n", UID, targetX, targetY);
