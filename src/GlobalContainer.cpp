@@ -170,7 +170,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("This program and all related materials are GPL, see COPYING for details.\n");
 			printf("(C) 2001-2004 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
 			printf("See AUTHORS for a full list.\n\n");
-			printf("Type %s -h for a list of command line options.\n\n", argv[0]);
+			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
 			exit(0);
 		}
 		if (strcmp(argv[i], "-f")==0)
@@ -233,7 +233,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			continue;
 		}
 
-		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
+		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
