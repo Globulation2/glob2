@@ -1337,8 +1337,10 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int alga[3]= { 41, 157, 165 };
 	int Player[3]= { 10, 240, 20 };
 	int Enemy[3]={ 220, 25, 30 };
+	int Ally[3]={ 255, 196, 0 };
 	int pcol[7];
 	int pcolIndex, pcolAddValue;
+	int teamId;
 
 	int decSPX, decSPY;
 
@@ -1379,17 +1381,17 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 						{
 							// TODO : use ally mask
 							if (u>=0)
-							{
-								if (Unit::UIDtoTeam(u)==teamSelected)
-									isMeUnitOrBuilding=true;
-								else if (map.isFOW((int)minidx, (int)minidy, teamSelected))
-									isEnemyUnitOrBuilding=true;
-							}
+								teamId=Unit::UIDtoTeam(u);
 							else
+								teamId=Building::UIDtoTeam(u);
+
+							if (teamId==teamSelected)
+								isMeUnitOrBuilding=true;
+							else if (map.isFOW((int)minidx, (int)minidy, teamSelected))
 							{
-								if (Building::UIDtoTeam(u)==teamSelected)
-									isMeUnitOrBuilding=true;
-								else if (map.isFOW((int)minidx, (int)minidy, teamSelected))
+								if ((teams[teamSelected]->allies) & (teams[teamId]->me))
+									isAllyUnitOrBuilding=true;
+								else
 									isEnemyUnitOrBuilding=true;
 							}
 						}
@@ -1452,6 +1454,12 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				g=Enemy[1];
 				b=Enemy[2];
 			}
+			else if (isAllyUnitOrBuilding)
+			{
+				r=Ally[0];
+				g=Ally[1];
+				b=Ally[2];
+			}
 			else
 			{
 				nCount*=5;
@@ -1487,7 +1495,7 @@ Sint32 Game::checkSum()
 	// TODO : add checkSum() in heritated objets too.
 
 	cs^=session.checkSum();
-	
+
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
