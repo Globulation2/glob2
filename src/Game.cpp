@@ -1876,7 +1876,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			for (int x=left; x<right; x++)
 			{
 				if (map.isForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me))
-					globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 255, 0, 0, 80);
+				{
+					//globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 128, 0, 0, 64);
+					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
+					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
+					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
+					
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1, teams[localTeam]->me))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY+1, teams[localTeam]->me))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 0, 0);
+					
+					if (!map.isForbiddenLocal(x+viewportX-1, y+viewportY, teams[localTeam]->me))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 0, 0);
+					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY, teams[localTeam]->me))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
+				}
 			}
 			/*{
 				unsigned i0 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
@@ -1962,7 +1977,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				if (players[1] && players[1]->ai)
 				{
 					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
-					Uint8 *gradient=ai->wheatGrowthMap;
+					Uint8 *gradient=ai->buildingNeighbourMap;
 					
 					assert(gradient);
 					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
