@@ -866,7 +866,7 @@ void NetGame::step(void)
 				{
 					int rst=(lastReceivedFromMe[eachPlayer]+1)%queueSize;
 					int stepToTest=(nextStep/*+lostPacketLatencyMargin*/)%queueSize;
-					assert(lostPacketLatencyMargin<queueSize);
+					assert(lostPacketLatencyMargin<(int)queueSize);
 					
 					//printf("(%d): %d<?<%d\n", eachPlayer, lastReceivedFromMe[eachPlayer], stepToTest);
 					

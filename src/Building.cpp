@@ -381,7 +381,7 @@ void Building::update(void)
 		}
 		else
 		{
-			printf("(%d)Building wait for destruction, uws=%d, uis=%d, uwss=%d, uiss=%d.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
+			printf("(%d)Building wait for destruction, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
 		}
 	}
 
@@ -398,7 +398,7 @@ void Building::update(void)
 			//printf("inserted %d, w=%d\n", (int)this, type->width);
 		}
 		else
-			printf("(%d)Building wait for upgrade, uws=%d, uis=%d, uwss=%d, uiss=%d.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
+			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
 	}
 
 	// TODO : save the knowledge weather or not the building is already in the Call list in the building

@@ -375,7 +375,7 @@ GraphicArchive::GraphicArchive()
 
 void GraphicArchive::load(const char *filename)
 {
-	int i=0;
+	//int i=0;
 	SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
 	if (stream)
 	{
