@@ -79,7 +79,7 @@ void AICastor::Project::init(const char *suffix)
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
 	
-	//fprintf(logFile,  "new project(%s)\n", debugName);
+	//printf("new project(%s)\n", debugName);
 	
 	subPhase=0;;
 	
@@ -869,6 +869,7 @@ Order *AICastor::controlFood()
 			b->maxUnitWorking=0;
 			b->maxUnitWorkingLocal=0;
 			b->update();
+			printf("controlFood(), worstCare=%d\n", worstCare);
 			return new OrderModifyBuilding(b->gid, 0);
 		}
 	}
@@ -1183,8 +1184,8 @@ bool AICastor::addProject(Project *project)
 		{
 			if (project->amount<=(*pi)->amount)
 			{
-				fprintf(logFile,  "will not add project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too\n",
-					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
+				//fprintf(logFile,  "will not add project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too\n",
+				//	project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
 				(*pi)->timer=timer;
 				delete project;
 				return false;
@@ -1217,7 +1218,6 @@ void AICastor::addProjects()
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		project->priority=0;
-		
 		project->food=true;
 		
 		project->mainWorkers=3;
@@ -1260,7 +1260,7 @@ void AICastor::addProjects()
 		}
 		if (needSwim)
 		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 4, "boot");
+			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 2, "boot");
 			project->successWait=strategy.successWait;
 			project->critical=true;
 			project->priority=0;
@@ -1270,7 +1270,7 @@ void AICastor::addProjects()
 	}
 	if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 5, "boot");
+		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 2, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
@@ -1920,31 +1920,22 @@ void AICastor::computeObstacleUnitMap()
 	int h=map->h;
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
-	//size_t size=w*h;
+	size_t size=w*h;
 	Case *cases=map->cases;
 	Uint32 teamMask=team->me;
-		
-	for (int y=0; y<h; y++)
+	for (size_t i=0; i<size; i++)
 	{
-		int wy=w*y;
-		for (int x=0; x<w; x++)
-		{
-			int wyx=wy+x;
-			Case c=cases[wyx];
-			if (c.building==NOGBID)
-			{
-				if (c.ressource.type!=NO_RES_TYPE)
-					obstacleUnitMap[wyx]=0;
-				else if (c.forbidden&teamMask)
-					obstacleUnitMap[wyx]=0;
-				else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
-					obstacleUnitMap[wyx]=0;
-				else
-					obstacleUnitMap[wyx]=1;
-			}
-			else
-				obstacleUnitMap[wyx]=0;
-		}
+		Case c=cases[i];
+		if (c.building!=NOGBID)
+			obstacleUnitMap[i]=0;
+		else if (c.ressource.type!=NO_RES_TYPE)
+			obstacleUnitMap[i]=0;
+		else if (c.forbidden&teamMask)
+			obstacleUnitMap[i]=0;
+		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
+			obstacleUnitMap[i]=0;
+		else
+			obstacleUnitMap[i]=1;
 	}
 	//printf("...computeObstacleUnitMap() done\n");
 }
@@ -1959,28 +1950,19 @@ void AICastor::computeObstacleBuildingMap()
 	//int hMask=map->hMask;
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
-	//size_t size=w*h;
+	size_t size=w*h;
 	Case *cases=map->cases;
-	
-	for (int y=0; y<h; y++)
+	for (size_t i=0; i<size; i++)
 	{
-		int wy=w*y;
-		for (int x=0; x<w; x++)
-		{
-			int wyx=wy+x;
-			Case c=cases[wyx];
-			if (c.building==NOGBID)
-			{
-				if (c.terrain>=16) // if (!isGrass)
-					obstacleBuildingMap[wyx]=0;
-				else if (c.ressource.type!=NO_RES_TYPE)
-					obstacleBuildingMap[wyx]=0;
-				else
-					obstacleBuildingMap[wyx]=1;
-			}
-			else
-				obstacleBuildingMap[wyx]=0;
-		}
+		Case c=cases[i];
+		if (c.building==NOGBID)
+			obstacleBuildingMap[i]=0;
+		else  if (c.terrain>=16) // if (!isGrass)
+			obstacleBuildingMap[i]=0;
+		else if (c.ressource.type!=NO_RES_TYPE)
+			obstacleBuildingMap[i]=0;
+		else
+			obstacleBuildingMap[i]=1;
 	}
 	//printf("...computeObstacleBuildingMap() done\n");
 }
@@ -2394,6 +2376,23 @@ void AICastor::computeWheatCareMap()
 	size_t size=w*h;
 	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	Case *cases=map->cases;
+	Uint32 teamMask=team->me;
+	for (size_t i=0; i<size; i++)
+	{
+		Case c=cases[i];
+		if (c.building!=NOGBID)
+			obstacleUnitMap[i]=0;
+		else if (c.forbidden&teamMask)
+			obstacleUnitMap[i]=0;
+		else if (c.ressource.type==CORN)
+			obstacleUnitMap[i]=1;
+		else if (c.ressource.type!=NO_RES_TYPE)
+			obstacleUnitMap[i]=0;
+		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
+			obstacleUnitMap[i]=0;
+		else
+			obstacleUnitMap[i]=1;
+	}
 	memcpy(wheatCareMap, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 		if (notGrassMap[i]==15 && wheatGradient[i]==254 && cases[i].terrain<16)
