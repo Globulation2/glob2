@@ -285,7 +285,7 @@ namespace GAGGUI
 		if (actHighlight > 0)
 		{
 			unsigned val = static_cast<unsigned>(255.0 * actHighlight);
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, val, val, val);
+			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255, val);
 		}
 	}
 	
