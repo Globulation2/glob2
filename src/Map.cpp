@@ -773,31 +773,31 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initRessource.field.amount=0;
 	initRessource.field.animation=0;*/
 	Case initCase;
-	initCase.terrain=0; // default, not really meanfull.
+	initCase.terrain=0; // default, not really meaningfull.
 	initCase.building=NOGBID;
 	initCase.ressource.id=NORESID;
 	initCase.groundUnit=NOGUID;
 	initCase.airUnit=NOGUID;
 	initCase.forbidden=0;
-	
+
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
 	
 	for (int i=0; i<size; i++)
 		cases[i]=initCase;
 		
-	//numberOfTeam=0, then ressourcesGradient[][][] is emptih. This is done by clear();
-	
+	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
+
 	regenerateMap(0, 0, w, h);
-	
+
 	stepCounter=0;
 
 	wSector=w>>4;
 	hSector=h>>4;
 	sizeSector=wSector*hSector;
-	
+
 	sectors=new Sector[sizeSector];
-	
+
 	arraysBuilt=true;
 }
 
@@ -817,7 +817,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 {
 	assert(sessionGame);
 	assert(sessionGame->versionMinor>=16);
-	
+
 	clear();
 
 	char signature[4];
@@ -837,7 +837,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	hMask=h-1;
 	size=w*h;
 
-	// We alocate memory:
+	// We allocate memory:
 	mapDiscovered=new Uint32[size];
 	fogOfWarA=new Uint32[size];
 	fogOfWarB=new Uint32[size];
