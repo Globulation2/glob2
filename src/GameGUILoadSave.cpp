@@ -84,7 +84,6 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 		addWidget(new Text(0, 5, "menu", globalContainer->texts.getString("[save game]"), 300));
 
 	generateFileName();
-	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
 LoadSaveScreen::~LoadSaveScreen()

@@ -216,7 +216,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				char utf8text[4];
 				UCS16toUTF8(c, utf8text);
 				unsigned lutf8=strlen(utf8text);
-				if (text.length()+lutf8<maxLength)
+				if ((maxLength==0) || (text.length()+lutf8<maxLength))
 				{
 					text.insert(cursPos, utf8text);
 					cursPos+=lutf8;
