@@ -1333,7 +1333,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	//	for (int x=left; x<=right; x++)
 	//		if (map.getBuilding(x+viewportX, y+viewportY)!=NOGBID)
 	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
-			
+	
+	for (int y=top; y<=bot; y++)
+		for (int x=left; x<=right; x++)
+			if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 0, 1))
+				globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
+	
 	// We draw ground units:
 	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
@@ -1353,8 +1358,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
-					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, map.getGradient(0, WOOD, 1, x+viewportX, y+viewportY));
+					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
 					
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX+map.getW())&(map.getMaskW())));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY+map.getH())&(map.getMaskH())));

@@ -366,6 +366,9 @@ public:
 	
 	void updateGlobalGradient(Uint8 *gradient);
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
+	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool *gradientUsable);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool *gradientUsable);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
@@ -388,8 +391,7 @@ protected:
 	int ressourceAviableCountFailure[16][MAX_RESSOURCES];
 	
 	int pathToRessourceCountTot;
-	int pathToRessourceCountSuccessClose;
-	int pathToRessourceCountSuccessFar;
+	int pathToRessourceCountSuccess;
 	int pathToRessourceCountFailure;
 	
 	int localRessourcesUpdateCount;
