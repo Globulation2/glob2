@@ -177,7 +177,9 @@ public:
 	void computeFlagStat(int *goingTo, int *onSpot);
 
 	//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
-	Uint32 getFruits(Uint32 *mask=NULL);
+	Uint32 eatOnce(Uint32 *mask=NULL);
+	
+	int aviableHappynessLevel();
 
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);
@@ -185,7 +187,7 @@ public:
 
 	void integrity();
 	Sint32 checkSum();
-	bool verbose;
+	int verbose;
 
 protected:
 	FILE *logFile;

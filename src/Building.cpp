@@ -1364,6 +1364,7 @@ void Building::subscribeForInsideStep()
 				unitsInsideSubscribe.remove(u);
 				assert(u);
 				unitsInside.push_back(u);
+				printf("building gbid=%d accpeted unit guid=%d\n", gid, u->gid);
 				u->subscriptionSuccess();
 				updateCallLists();
 			}
@@ -1917,8 +1918,10 @@ void Building::computeFlagStat(int *goingTo, int *onSpot)
 	}
 }
 
-Uint32 Building::getFruits(Uint32 *mask)
+Uint32 Building::eatOnce(Uint32 *mask)
 {
+	ressources[CORN]--;
+	assert(ressources[CORN]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPYNESS_COUNT; i++)
@@ -1934,6 +1937,18 @@ Uint32 Building::getFruits(Uint32 *mask)
 	if (mask)
 		*mask=fruitMask;
 	return fruitCount;
+}
+
+int Building::aviableHappynessLevel()
+{
+	int inside=(int)unitsInside.size();
+	if (ressources[CORN]<=inside)
+		return 0;
+	int happyness=1;
+	for (int i=0; i<HAPPYNESS_COUNT; i++)
+		if (ressources[i+HAPPYNESS_BASE]>inside)
+			happyness++;
+	return happyness;
 }
 
 Sint32 Building::GIDtoID(Uint16 gid)

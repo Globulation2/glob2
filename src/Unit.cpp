@@ -438,6 +438,8 @@ void Unit::handleMedical(void)
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 	
+	if (verbose)
+		printf("guid=(%d) handleMedical...\n", gid);
 	hungry-=race->unitTypes[0][0].hungryness;
 	if (hungry<=0)
 		hp--;
@@ -484,6 +486,10 @@ void Unit::handleActivity(void)
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
+	
+	if (verbose)
+		printf("guid=(%d) handleActivity (medical=%d) (needToRecheckMedical=%d) (attachedBuilding=%p)...\n",
+			gid, medical, needToRecheckMedical, attachedBuilding);
 	
 	if (medical==MED_FREE)
 	{
@@ -627,7 +633,7 @@ void Unit::handleActivity(void)
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				needToRecheckMedical=false;
-				if (verbose)
+				//if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
 				b->lastInsideSubscribe=0;
@@ -870,9 +876,7 @@ void Unit::handleDisplacement(void)
 					if (destinationPurprose==FEED)
 					{
 						hungry=HUNGRY_MAX;
-						attachedBuilding->ressources[CORN]--;
-						assert(attachedBuilding->ressources[CORN]>=0);
-						fruitCount=attachedBuilding->getFruits(&fruitMask);
+						fruitCount=attachedBuilding->eatOnce(&fruitMask);
 						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}

@@ -650,12 +650,14 @@ void GameGUI::processEvent(SDL_Event *event)
 				{
 					Building* selBuild=selection.building;
 					assert (selBuild);
-					selBuild->verbose=!selBuild->verbose;
+					selBuild->verbose=(selBuild->verbose+1)%3;
 					printf("building gid=(%d) verbose %d\n", selBuild->gid, selBuild->verbose);
 					printf(" pos=(%d, %d)\n", selBuild->posX, selBuild->posY);
 					printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
 					printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
 					printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
+					printf(" unitsInsideSubscribe=%d,\n", selBuild->unitsInsideSubscribe.size());
+					
 				}
 				else
 				{

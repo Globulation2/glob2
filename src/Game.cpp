@@ -1381,11 +1381,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				for (int y=top-1; y<=bot; y++)
 					for (int x=left-1; x<=right; x++)
 					{
-						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-							b->globalGradient[1][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
+						if (selectedBuilding->verbose==1)
+						{
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
+								b->globalGradient[1][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
+						}
+						else if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
+						{
+							int lx=(x+viewportX-b->posX+15+32)&31;
+							int ly=(y+viewportY-b->posY+15+32)&31;
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
+						}
+						
 						globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
 						globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
 					}
+					
 		}
 
 	// We draw ground buildings:
