@@ -305,7 +305,17 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Uint32 team=((SetAllianceOrder *)order)->teamNumber;
 			teams[team]->allies=((SetAllianceOrder *)order)->allianceMask;
 			teams[team]->enemies=~teams[team]->allies;
-			teams[team]->sharedVision=((SetAllianceOrder *)order)->visionMask;
+			// this is what we let see to others
+			Uint32 sharedVisionFromOrder=((SetAllianceOrder *)order)->visionMask;
+			int i;
+			for (i=0; i<session.numberOfTeam; i++)
+			{
+				// if team i can see us
+				if (sharedVisionFromOrder&(1<<i))
+					teams[i]->sharedVision|=(1<<team);
+				else
+					teams[i]->sharedVision&=~(1<<team);
+			}
 		}
 		break;
 		case ORDER_WAITING_FOR_PLAYER:
