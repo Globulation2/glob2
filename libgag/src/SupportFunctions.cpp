@@ -24,7 +24,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-namespace GAG
+namespace GAGCore
 {
 	bool ptInRect(int x, int y, SDL_Rect *r)
 	{

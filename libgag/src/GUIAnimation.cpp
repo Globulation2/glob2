@@ -22,53 +22,58 @@
 #include <GraphicContext.h>
 #include <assert.h>
 
-Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count, Sint32 duration)
+using namespace GAGCore;
+
+namespace GAGGUI
 {
-	this->x=x;
-	this->y=y;
-	this->hAlignFlag=hAlign;
-	this->vAlignFlag=vAlign;
-	this->start=start;
-	this->count=count;
-	this->duration=duration;
-	pos=start;
-	durationLeft=duration;
-
-	assert(sprite);
-	this->sprite=sprite;
-	archPtr=Toolkit::getSprite(sprite);
-	assert(archPtr);
-
-	this->w=archPtr->getW(start);
-	this->h=archPtr->getH(start);
-}
-
-void Animation::internalInit(int x, int y, int w, int h)
-{
-	archPtr=Toolkit::getSprite(sprite.c_str());
-	assert(archPtr);
-	pos=start;
-	durationLeft=duration;
-}
-
-void Animation::internalRepaint(int x, int y, int w, int h)
-{
-	int dW=(w-archPtr->getW(pos))>>1;
-	int dH=(h-archPtr->getH(pos))>>1;
-	parent->getSurface()->drawSprite(x+dW, y+dH, archPtr, pos);
-}
-
-void Animation::onTimer(Uint32 tick)
-{
-	if (count>1)
+	Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count, Sint32 duration)
 	{
-		if (--durationLeft==0)
+		this->x=x;
+		this->y=y;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+		this->start=start;
+		this->count=count;
+		this->duration=duration;
+		pos=start;
+		durationLeft=duration;
+	
+		assert(sprite);
+		this->sprite=sprite;
+		archPtr=Toolkit::getSprite(sprite);
+		assert(archPtr);
+	
+		this->w=archPtr->getW(start);
+		this->h=archPtr->getH(start);
+	}
+	
+	void Animation::internalInit(int x, int y, int w, int h)
+	{
+		archPtr=Toolkit::getSprite(sprite.c_str());
+		assert(archPtr);
+		pos=start;
+		durationLeft=duration;
+	}
+	
+	void Animation::internalRepaint(int x, int y, int w, int h)
+	{
+		int dW=(w-archPtr->getW(pos))>>1;
+		int dH=(h-archPtr->getH(pos))>>1;
+		parent->getSurface()->drawSprite(x+dW, y+dH, archPtr, pos);
+	}
+	
+	void Animation::onTimer(Uint32 tick)
+	{
+		if (count>1)
 		{
-			pos++;
-			if (pos==start+count)
-				pos=start;
-			repaint();
-			durationLeft=duration;
+			if (--durationLeft==0)
+			{
+				pos++;
+				if (pos==start+count)
+					pos=start;
+				repaint();
+				durationLeft=duration;
+			}
 		}
 	}
 }

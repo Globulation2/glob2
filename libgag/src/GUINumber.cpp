@@ -23,141 +23,140 @@
 #include <GraphicContext.h>
 #include <sstream>
 
-Number::Number()
-{
-	x = y = w = h = m = nth = 0;
-}
+using namespace GAGCore;
 
-Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
+namespace GAGGUI
 {
-	assert(font);
-	this->fontPtr=Toolkit::getFont(font);
-	assert(fontPtr);
-	textHeight=this->fontPtr->getStringHeight((const char *)NULL);
-	
-	this->x=x;
-	this->y=y;
-	this->w=w;
-	this->h=h;
-	this->hAlignFlag=hAlign;
-	this->vAlignFlag=vAlign;
-
-	if (m<1)
-		m=h;
-	this->m=m;
-	nth=0;
-}
-
-Number::~Number()
-{
-	// Let's sing.
-}
-
-void Number::onSDLEvent(SDL_Event *event)
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	
-	if (event->type==SDL_MOUSEBUTTONDOWN)
+	Number::Number()
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		x = y = w = h = m = nth = 0;
+	}
+	
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
+	{
+		assert(font);
+		this->fontPtr=Toolkit::getFont(font);
+		assert(fontPtr);
+		textHeight=this->fontPtr->getStringHeight((const char *)NULL);
+		
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		if (m<1)
+			m=h;
+		this->m=m;
+		nth=0;
+	}
+	
+	Number::~Number()
+	{
+		// Let's sing.
+	}
+	
+	void Number::onSDLEvent(SDL_Event *event)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
+		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
-			if (event->button.x-x<m)
+			if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 			{
-				// a "Less" click
-				if (nth>0)
+				if (event->button.x-x<m)
 				{
-					nth--;
-					if (numbers.size()>0)
+					// a "Less" click
+					if (nth>0)
 					{
+						nth--;
+						if (numbers.size()>0)
+						{
+							repaint();
+							parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+						}
+					}
+				}
+				else if (x+w-event->button.x<m)
+				{
+					// a "More" click
+					if (nth<((int)numbers.size()-1))
+					{
+						nth++;
 						repaint();
 						parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 					}
 				}
 			}
-			else if (x+w-event->button.x<m)
-			{
-				// a "More" click
-				if (nth<((int)numbers.size()-1))
-				{
-					nth++;
-					repaint();
-					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
-				}
-			}
 		}
 	}
-}
-
-void Number::internalRepaint(int x, int y, int w, int h)
-{
-	assert(parent);
-	assert(parent->getSurface());
-	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-	parent->getSurface()->drawVertLine(x+m, y, h, 255, 255, 255);
-	parent->getSurface()->drawVertLine(x+w-m, y, h, 255, 255, 255);
 	
-	assert(nth>=0);
-	assert(nth<(int)numbers.size());
-	int dy=(h-textHeight)/2;
-	if (nth<(int)numbers.size())
+	void Number::internalRepaint(int x, int y, int w, int h)
 	{
-		// We center the string
-		std::stringstream s;
-		s << numbers[nth];
-		int tw=fontPtr->getStringWidth(s.str().c_str());
-		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
+		assert(parent);
+		assert(parent->getSurface());
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+m, y, h, 255, 255, 255);
+		parent->getSurface()->drawVertLine(x+w-m, y, h, 255, 255, 255);
 		
-		// We center the string
-		/*std::strstream s;
-		s << numbers[nth];
-		int tw=fontPtr->getStringWidth(s.str());
-		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str());
-		s.freeze(0);*/
-	}
-	int dx1=(m-fontPtr->getStringWidth("-"))/2;
-	parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
-	int dx2=(m-fontPtr->getStringWidth("+"))/2;
-	parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
-}
-
-void Number::add(int number)
-{
-	numbers.push_back(number);
-}
-
-void Number::clear(void)
-{
-	numbers.clear();
-}
-
-void Number::setNth(int nth)
-{
-	assert((nth>0)&&(nth<(int)numbers.size()));
-	if ((nth>0)&&(nth<(int)numbers.size()))
-		this->nth=nth;
-}
-
-void Number::set(int number)
-{
-	for (int i=0; i<(int)numbers.size(); i++)
-		if (numbers[i]==number)
+		assert(nth>=0);
+		assert(nth<(int)numbers.size());
+		int dy=(h-textHeight)/2;
+		if (nth<(int)numbers.size())
 		{
-			nth=i;
-			break;
+			// We center the string
+			std::stringstream s;
+			s << numbers[nth];
+			int tw=fontPtr->getStringWidth(s.str().c_str());
+			parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
+
 		}
-}
-
-int Number::getNth(void)
-{
-	return nth;
-}
-
-int Number::get(void)
-{
-	assert(nth<(int)numbers.size());
-	if (nth<(int)numbers.size())
-		return numbers[nth];
-	else
-		return 0;
+		int dx1=(m-fontPtr->getStringWidth("-"))/2;
+		parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
+		int dx2=(m-fontPtr->getStringWidth("+"))/2;
+		parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
+	}
+	
+	void Number::add(int number)
+	{
+		numbers.push_back(number);
+	}
+	
+	void Number::clear(void)
+	{
+		numbers.clear();
+	}
+	
+	void Number::setNth(int nth)
+	{
+		assert((nth>0)&&(nth<(int)numbers.size()));
+		if ((nth>0)&&(nth<(int)numbers.size()))
+			this->nth=nth;
+	}
+	
+	void Number::set(int number)
+	{
+		for (int i=0; i<(int)numbers.size(); i++)
+			if (numbers[i]==number)
+			{
+				nth=i;
+				break;
+			}
+	}
+	
+	int Number::getNth(void)
+	{
+		return nth;
+	}
+	
+	int Number::get(void)
+	{
+		assert(nth<(int)numbers.size());
+		if (nth<(int)numbers.size())
+			return numbers[nth];
+		else
+			return 0;
+	}
 }

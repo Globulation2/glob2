@@ -24,140 +24,145 @@
 #include <iostream>
 #include <Toolkit.h>
 
-FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
-									 const char *dir,
-									 const char *extension, const bool recurse)
-	: List(x, y, w, h, hAlign, vAlign, font),
-		dir(dir),
-		extension(extension), recurse(recurse), 
-		current("")
+using namespace GAGCore;
+
+namespace GAGGUI
 {
-	// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
-	// For now: call it explicitly from the child's constructor or the program
-	//this->generateList();
-}
-
-FileList::~FileList()
-{}
-
-void FileList::generateList()
-{
-	// we free the current list
-	this->strings.clear();
-
-	std::string fullDir = this->dir;
-	// we add the parent directory
-	if (! this->current.empty())
+	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+										const char *dir,
+										const char *extension, const bool recurse)
+		: List(x, y, w, h, hAlign, vAlign, font),
+			dir(dir),
+			extension(extension), recurse(recurse), 
+			current("")
 	{
-		this->addText("../");
-		fullDir += DIR_SEPARATOR + this->current;
+		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
+		// For now: call it explicitly from the child's constructor or the program
+		//this->generateList();
 	}
-	// we add the other files
-	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
+	
+	FileList::~FileList()
+	{}
+	
+	void FileList::generateList()
 	{
-		const char* fileName;
-		while ((fileName=(Toolkit::getFileManager()->getNextDirectoryEntry()))!=NULL)
+		// we free the current list
+		this->strings.clear();
+	
+		std::string fullDir = this->dir;
+		// we add the parent directory
+		if (! this->current.empty())
 		{
-			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
-			if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
+			this->addText("../");
+			fullDir += DIR_SEPARATOR + this->current;
+		}
+		// we add the other files
+		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
+		{
+			const char* fileName;
+			while ((fileName=(Toolkit::getFileManager()->getNextDirectoryEntry()))!=NULL)
 			{
-				std::string dirName = std::string(fileName) + DIR_SEPARATOR;
-				this->addText(dirName.c_str());
-			}
-			else
-			{
-				const char* listName = this->fileToList(fileName);
-				if (listName)
+				std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
+				if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
 				{
-					this->addText(listName);
-					delete[] listName;
+					std::string dirName = std::string(fileName) + DIR_SEPARATOR;
+					this->addText(dirName.c_str());
+				}
+				else
+				{
+					const char* listName = this->fileToList(fileName);
+					if (listName)
+					{
+						this->addText(listName);
+						delete[] listName;
+					}
 				}
 			}
+			this->sort();
 		}
-		this->sort();
 	}
-}
-
-void FileList::selectionChanged()
-{
-	std::string selName = this->strings[this->nth];
-	std::string::iterator last = selName.end();
-	last--;
-	// this will only work if only the directories have a trailing DIR_SEPARATOR
-	if (*last == DIR_SEPARATOR)
+	
+	void FileList::selectionChanged()
 	{
-		selName.erase(last);
-		// parent directory, unstack a folder
-		if (selName == "..")
+		std::string selName = this->strings[this->nth];
+		std::string::iterator last = selName.end();
+		last--;
+		// this will only work if only the directories have a trailing DIR_SEPARATOR
+		if (*last == DIR_SEPARATOR)
 		{
-			std::string::size_type lastDirSep = this->current.find_last_of(DIR_SEPARATOR);
-			if (lastDirSep == std::string::npos)
-				lastDirSep = 0;
-			this->current.erase(lastDirSep, this->current.length());
+			selName.erase(last);
+			// parent directory, unstack a folder
+			if (selName == "..")
+			{
+				std::string::size_type lastDirSep = this->current.find_last_of(DIR_SEPARATOR);
+				if (lastDirSep == std::string::npos)
+					lastDirSep = 0;
+				this->current.erase(lastDirSep, this->current.length());
+			}
+			// child directory, stack selection
+			else {
+				if (! current.empty())
+					this->current += DIR_SEPARATOR;
+				this->current += selName;
+			}
+			this->generateList();
+			this->nth = -1;
 		}
-		// child directory, stack selection
-		else {
-			if (! current.empty())
-				this->current += DIR_SEPARATOR;
-			this->current += selName;
+		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
+	}
+	
+	const char* FileList::fileToList(const char* fileName) const
+	{
+		// this default behaviour is probably not what you want
+		std::cout << "FileList::fileToList !!!" << std::endl;
+		std::string listName(fileName);
+		if (! extension.empty())
+			listName.resize(listName.size() - (extension.size() + 1));
+		return newstrdup(listName.c_str());
+	}
+	
+	const char* FileList::listToFile(const char* listName) const
+	{
+		// this default behaviour is probably not what you want
+		std::cout << "FileList::listToFile !!!" << std::endl;
+		std::string fileName(listName);
+		if (! this->extension.empty())
+		{
+			fileName += "." + extension;
 		}
-		this->generateList();
-		this->nth = -1;
+		return newstrdup(fileName.c_str());
 	}
-	this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
-}
-
-const char* FileList::fileToList(const char* fileName) const
-{
-	// this default behaviour is probably not what you want
-	std::cout << "FileList::fileToList !!!" << std::endl;
-	std::string listName(fileName);
-	if (! extension.empty())
-		listName.resize(listName.size() - (extension.size() + 1));
-	return GAG::newstrdup(listName.c_str());
-}
-
-const char* FileList::listToFile(const char* listName) const
-{
-	// this default behaviour is probably not what you want
-	std::cout << "FileList::listToFile !!!" << std::endl;
-	std::string fileName(listName);
-	if (! this->extension.empty())
+	
+	const char* FileList::fullDir() const
 	{
-		fileName += "." + extension;
+		std::string fullDir = this->dir;
+		if (! this->current.empty())
+			fullDir += DIR_SEPARATOR + this->current;
+		return newstrdup(fullDir.c_str());
 	}
-	return GAG::newstrdup(fileName.c_str());
-}
-
-const char* FileList::fullDir() const
-{
-	std::string fullDir = this->dir;
-	if (! this->current.empty())
-		fullDir += DIR_SEPARATOR + this->current;
-	return GAG::newstrdup(fullDir.c_str());
-}
-
-const char* FileList::fullName(const char* fileName) const
-{
-	const char* fullDir = this->fullDir();
-	std::string fullName = fullDir;
-	fullName += DIR_SEPARATOR;
-	fullName += fileName;
-	delete[] fullDir;
-	return GAG::newstrdup(fullName.c_str());
-}
-
-struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>
-{
-	bool operator()(std::string x, std::string y)
+	
+	const char* FileList::fullName(const char* fileName) const
 	{
-		bool xIsNotDir = (x[x.length()-1] != DIR_SEPARATOR);
-		bool yIsNotDir = (y[y.length()-1] != DIR_SEPARATOR);
-		return ((xIsNotDir == yIsNotDir)?(x<y):xIsNotDir<yIsNotDir);
+		const char* fullDir = this->fullDir();
+		std::string fullName = fullDir;
+		fullName += DIR_SEPARATOR;
+		fullName += fileName;
+		delete[] fullDir;
+		return newstrdup(fullName.c_str());
 	}
-};
-
-void FileList::sort(void)
-{
-	std::sort(strings.begin(), strings.end(), strfilecmp_functor());
+	
+	struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>
+	{
+		bool operator()(std::string x, std::string y)
+		{
+			bool xIsNotDir = (x[x.length()-1] != DIR_SEPARATOR);
+			bool yIsNotDir = (y[y.length()-1] != DIR_SEPARATOR);
+			return ((xIsNotDir == yIsNotDir)?(x<y):xIsNotDir<yIsNotDir);
+		}
+	};
+	
+	void FileList::sort(void)
+	{
+		std::sort(strings.begin(), strings.end(), strfilecmp_functor());
+	}
 }

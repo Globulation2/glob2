@@ -25,7 +25,7 @@
 #include <string>
 #include <stdarg.h>
 
-namespace GAG
+namespace GAGCore
 {
 	// rectangle
 	//! return true if (x,y) is in r

@@ -21,13 +21,16 @@
 #define __NEWMAPSCREEN_H
 
 #include <GUIBase.h>
-
+using namespace GAGGUI;
 #include "MapGenerationDescriptor.h"
 
-class Number;
-class Text;
-class Ratio;
-class List;
+namespace GAGGUI
+{
+	class Number;
+	class Text;
+	class Ratio;
+	class List;
+}
 
 //! This screen allows to choose how to make a new map
 class HowNewMapScreen:public Screen

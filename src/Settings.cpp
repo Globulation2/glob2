@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include <stdlib.h>
 #include <GAG.h>
+using namespace GAGCore;
 #include <map>
 
 Settings::Settings()

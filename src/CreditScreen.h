@@ -20,7 +20,8 @@
 #ifndef __CREDIT_SCREEN_H
 #define __CREDIT_SCREEN_H
 
-#include "GAG.h"
+#include <GUIBase.h>
+using namespace GAGGUI;
 
 class CreditScreen:public Screen
 {

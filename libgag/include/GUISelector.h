@@ -23,35 +23,41 @@
 #include "GUIBase.h"
 #include <string>
 
-class Sprite;
-
-class Selector: public RectangularWidget
+namespace GAGCore
 {
-protected:
-	Uint32 count;
-	Uint32 markStep;
-	Uint32 size;
-	Uint32 value;
-	Sint32 id;
-	std::string sprite;
+	class Sprite;
+}
 
-	//! cache, recomputed on internalInit
-	Sprite *archPtr;
-
-public:
-	Selector() { count=0; value=0; id=0; archPtr=NULL; }
-	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned markStep=1, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
-	virtual ~Selector() { }
-
-	virtual void onSDLEvent(SDL_Event *event);
-	virtual Uint32 getValue(void) { return value; }
-	virtual void setValue(Uint32 v) { this->value=v; repaint(); }
-	virtual Uint32 getCount(void) { return count; }
-
-protected:
-	virtual void internalInit(int x, int y, int w, int h);
-	virtual void internalRepaint(int x, int y, int w, int h);
-	void clipValue(int v);
-};
+namespace GAGGUI
+{
+	class Selector: public RectangularWidget
+	{
+	protected:
+		Uint32 count;
+		Uint32 markStep;
+		Uint32 size;
+		Uint32 value;
+		Sint32 id;
+		std::string sprite;
+	
+		//! cache, recomputed on internalInit
+		GAGCore::Sprite *archPtr;
+	
+	public:
+		Selector() { count=0; value=0; id=0; archPtr=NULL; }
+		Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned markStep=1, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
+		virtual ~Selector() { }
+	
+		virtual void onSDLEvent(SDL_Event *event);
+		virtual Uint32 getValue(void) { return value; }
+		virtual void setValue(Uint32 v) { this->value=v; repaint(); }
+		virtual Uint32 getCount(void) { return count; }
+	
+	protected:
+		virtual void internalInit(int x, int y, int w, int h);
+		virtual void internalRepaint(int x, int y, int w, int h);
+		void clipValue(int v);
+	};
+}
 
 #endif

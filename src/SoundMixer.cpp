@@ -20,6 +20,7 @@
 #include "SoundMixer.h"
 #include <Toolkit.h>
 #include <FileManager.h>
+using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
 #include <iostream>

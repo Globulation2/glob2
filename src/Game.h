@@ -24,9 +24,13 @@
 #include "Session.h"
 #include "SGSL.h"
 
+namespace GAGCore
+{
+	class DrawableSurface;
+}
+using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
-class DrawableSurface;
 class BuilgingType;
 
 class Game

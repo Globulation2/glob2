@@ -29,47 +29,50 @@
 
 struct SDL_Surface;
 
-class TrueTypeFont:public Font
+namespace GAGCore
 {
-public:
-	TrueTypeFont();
-	TrueTypeFont(const char *filename, unsigned size);
-	virtual ~TrueTypeFont();
-	bool load(const char *filename, unsigned size);
-	
-	int getStringWidth(const char *string, Shape shape) const;
-	int getStringHeight(const char *string, Shape shape) const;
-	
-	// Style and color
-	virtual void setStyle(Style style);
-	virtual Style getStyle(void) const;
-	
-protected:
-	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
-	virtual void pushStyle(Style style);
-	virtual void popStyle(void);
-	
-protected:
-	TTF_Font *font;
-	std::stack<Style> styleStack;
-	
-	struct CacheKey
+	class TrueTypeFont:public Font
 	{
-		std::string text;
-		Style style;
+	public:
+		TrueTypeFont();
+		TrueTypeFont(const char *filename, unsigned size);
+		virtual ~TrueTypeFont();
+		bool load(const char *filename, unsigned size);
 		
-		bool operator<(const CacheKey &o) const { if (text == o.text) return (style < o.style); else return (text < o.text);  }
+		int getStringWidth(const char *string, Shape shape) const;
+		int getStringHeight(const char *string, Shape shape) const;
+		
+		// Style and color
+		virtual void setStyle(Style style);
+		virtual Style getStyle(void) const;
+		
+	protected:
+		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
+		virtual void pushStyle(Style style);
+		virtual void popStyle(void);
+		
+	protected:
+		TTF_Font *font;
+		std::stack<Style> styleStack;
+		
+		struct CacheKey
+		{
+			std::string text;
+			Style style;
+			
+			bool operator<(const CacheKey &o) const { if (text == o.text) return (style < o.style); else return (text < o.text);  }
+		};
+		
+		struct CacheData
+		{
+			SDL_Surface *s;
+			unsigned lastAccessed;
+		};
+		
+		unsigned now;
+		std::map<CacheKey, CacheData> cache;
+		std::map<unsigned, std::map<CacheKey, CacheData>::iterator> timeCache;
 	};
-	
-	struct CacheData
-	{
-		SDL_Surface *s;
-		unsigned lastAccessed;
-	};
-	
-	unsigned now;
-	std::map<CacheKey, CacheData> cache;
-	std::map<unsigned, std::map<CacheKey, CacheData>::iterator> timeCache;
-};
+}
 
 #endif

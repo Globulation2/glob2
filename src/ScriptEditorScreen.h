@@ -21,9 +21,11 @@
 #define __SCRIPT_EDITOR_SCREEN_H
 
 #include "GameGUIDialog.h"
-
-class TextArea;
-class Text;
+namespace GAGGUI
+{
+	class TextArea;
+	class Text;
+}
 class Game;
 class Mapscript;
 

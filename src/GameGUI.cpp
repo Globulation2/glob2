@@ -1759,17 +1759,17 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					if (bt)
 					{
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
+							GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
+							GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
 
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
+							GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
+							GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
 
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
-							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
+							GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
 					}
 				}
 			}
@@ -1842,7 +1842,7 @@ void GameGUI::drawUnitInfos(void)
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+14, ypos+7+4, unitSprite, imgid);
 
 	// draw HP
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[hp]")).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[hp]")).c_str());
 
 	if (selUnit->hp<=selUnit->trigHP)
 		{ r=255; g=0; b=0; }
@@ -1850,10 +1850,10 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selUnit->hp, selUnit->performance[HP]).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%d/%d", selUnit->hp, selUnit->performance[HP]).c_str());
 	globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[food]")).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[food]")).c_str());
 
 	// draw food
 	if (selUnit->isUnitHungry())
@@ -1862,7 +1862,7 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAG::nsprintf("%2.0f %% (%d)", ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAGCore::nsprintf("%2.0f %% (%d)", ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount).c_str());
 	globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 
 	ypos += YOFFSET_ICON+10;
@@ -1883,41 +1883,41 @@ void GameGUI::drawUnitInfos(void)
 	}
 	ypos += YOFFSET_CARYING+10;
 
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[current speed]"), selUnit->speed).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[current speed]"), selUnit->speed).c_str());
 	ypos += YOFFSET_TEXT_PARA+10;
 
 	if (selUnit->typeNum!=EXPLORER)
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]"), selUnit->speed).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]"), selUnit->speed).c_str());
 	ypos += YOFFSET_TEXT_PARA;
 
 	if (selUnit->performance[WALK])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[SWIM])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[BUILD])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[HARVEST])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_SPEED])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_STRENGTH])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]).c_str());
 
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
 {
-	std::string s = GAG::nsprintf("%d", v);
+	std::string s = GAGCore::nsprintf("%d", v);
 	int len = globalContainer->littleFont->getStringWidth(s.c_str());
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
@@ -1929,7 +1929,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+(i&0x1)*64, 256+172-42+y*12,
 			font,
-			GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[ressources]", i), ressources[i]).c_str());
+			GAGCore::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[ressources]", i), ressources[i]).c_str());
 	}
 }
 
@@ -1972,7 +1972,7 @@ void GameGUI::drawBuildingInfos(void)
 	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
 	{
 		const char *textT = Toolkit::getStringTable()->getString("[level]");
-		title += GAG::nsprintf("%s %d", textT, buildingType->level+1);
+		title += GAGCore::nsprintf("%s %d", textT, buildingType->level+1);
 	}
 	if (buildingType->isBuildingSite)
 	{
@@ -2026,7 +2026,7 @@ void GameGUI::drawBuildingInfos(void)
 			{ r=0; g=255; b=0; }
 
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, r, g, b));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selBuild->hp, buildingType->hpMax).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%d/%d", selBuild->hp, buildingType->hpMax).c_str());
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 	}
 
@@ -2038,13 +2038,13 @@ void GameGUI::drawBuildingInfos(void)
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 		if (selBuild->buildingState==Building::ALIVE)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selBuild->unitsInside.size(), selBuild->maxUnitInside).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%d/%d", selBuild->unitsInside.size(), selBuild->maxUnitInside).c_str());
 		}
 		else
 		{
 			if (selBuild->unitsInside.size()>1)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%s%d",
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%s%d",
 					Toolkit::getStringTable()->getString("[Still (i)]"),
 					selBuild->unitsInside.size()).c_str());
 			}
@@ -2064,14 +2064,14 @@ void GameGUI::drawBuildingInfos(void)
 		selBuild->computeFlagStat(&goingTo, &onSpot);
 		// display flag stat
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAG::nsprintf("%s", Toolkit::getStringTable()->getString("[In way]")).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s", Toolkit::getStringTable()->getString("[In way]")).c_str());
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d", goingTo).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%d", goingTo).c_str());
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE,
-		globalContainer->littleFont, GAG::nsprintf("%s", Toolkit::getStringTable()->getString("[On the spot]")).c_str());
+		globalContainer->littleFont, GAGCore::nsprintf("%s", Toolkit::getStringTable()->getString("[On the spot]")).c_str());
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d", onSpot).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAGCore::nsprintf("%d", onSpot).c_str());
 	}
 
 	ypos += YOFFSET_ICON+YOFFSET_B_SEP;
@@ -2088,14 +2088,14 @@ void GameGUI::drawBuildingInfos(void)
 				globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, working);
 				globalContainer->gfx->popFontStyle(globalContainer->littleFont);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d/%d", (int)selBuild->unitsWorking.size(), selBuild->maxUnitWorkingLocal).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAGCore::nsprintf("%d/%d", (int)selBuild->unitsWorking.size(), selBuild->maxUnitWorkingLocal).c_str());
 				drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
 			else
 			{
 				if (selBuild->unitsWorking.size()>1)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s%d%s",
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s%d%s",
 						Toolkit::getStringTable()->getString("[still (w)]"),
 						selBuild->unitsWorking.size(),
 						Toolkit::getStringTable()->getString("[units working]")).c_str());
@@ -2120,7 +2120,7 @@ void GameGUI::drawBuildingInfos(void)
 			globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, range);
 			globalContainer->gfx->popFontStyle(globalContainer->littleFont);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d", selBuild->unitStayRange).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAGCore::nsprintf("%d", selBuild->unitStayRange).c_str());
 			drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -2175,15 +2175,15 @@ void GameGUI::drawBuildingInfos(void)
 	// other infos
 	if (buildingType->armor)
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[armor]"), buildingType->armor).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[armor]"), buildingType->armor).c_str());
 		ypos+=YOFFSET_TEXT_LINE;
 	}
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
 	if (buildingType->shootDamage)
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+1, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[damage]"), buildingType->shootDamage).c_str());
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+12, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[range]"), buildingType->shootingRange).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+1, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[damage]"), buildingType->shootDamage).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+12, globalContainer->littleFont, GAGCore::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[range]"), buildingType->shootingRange).c_str());
 		ypos += YOFFSET_TOWER;
 	}
 
@@ -2252,7 +2252,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 			int inId, outId;
 			if (selBuild->receiveRessourceMaskLocal & (1<<i))
@@ -2296,13 +2296,13 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAGCore::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]).c_str());
 					j++;
 				}
 			}
 			if (buildingType->maxBullets)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[Bullets]"), selBuild->bullets, buildingType->maxBullets).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAGCore::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[Bullets]"), selBuild->bullets, buildingType->maxBullets).c_str());
 				j++;
 			}
 		}
@@ -2447,7 +2447,7 @@ void GameGUI::drawRessourceInfos(void)
 		{
 			int sizesCount=rt->sizesCount;
 			int amount=r.amount;
-			const std::string amountS = GAG::nsprintf("%d/%d", amount, sizesCount);
+			const std::string amountS = GAGCore::nsprintf("%d/%d", amount, sizesCount);
 			int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 		}
@@ -2547,7 +2547,7 @@ void GameGUI::drawOverlayInfos(void)
 				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
 				
 				globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, GAG::nsprintf("%d.%d", localTeam->noMoreBuildingSitesCountdown/40, (localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, GAGCore::nsprintf("%d.%d", localTeam->noMoreBuildingSitesCountdown/40, (localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 			}
 			else
@@ -2656,7 +2656,7 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			if (pm&apm)
 			{
-				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, GAG::nsprintf(Toolkit::getStringTable()->getString("[waiting for %s]"), game.players[pi2]->name).c_str());
+				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, GAGCore::nsprintf(Toolkit::getStringTable()->getString("[waiting for %s]"), game.players[pi2]->name).c_str());
 				pnb++;
 			}
 			pm=pm<<1;
@@ -2682,7 +2682,7 @@ void GameGUI::drawOverlayInfos(void)
 		// show script counter
 		if (game.script.getMainTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, GAG::nsprintf("%d", game.script.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, GAGCore::nsprintf("%d", game.script.getMainTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -2786,14 +2786,14 @@ void GameGUI::drawOverlayInfos(void)
 
 		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d", free, tot).c_str());
+		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d", free, tot).c_str());
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 
 		dec += 70;
 	}
 
 	// draw prestigestats
-	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
+	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
 	
 	// draw network latency
 	dec += 110;

@@ -23,56 +23,59 @@
 #include <string>
 #include <map>
 
-class Sprite;
-class Font;
-class FileManager;
-class StringTable;
-class GraphicContext;
-
-//! Toolkit is a ressource server
-class Toolkit
+namespace GAGCore
 {
-private:
-	// Private constructor, we do not want the user to create a Tookit, it is a static thing
-	Toolkit() { }
+	class Sprite;
+	class Font;
+	class FileManager;
+	class StringTable;
+	class GraphicContext;
 	
-public:
-	//! Initialize gag, must be called before any call to GAG
-	static void init(const char *gameName);
-	//! Initialize the graphic part
-	static void initGraphic(void);
-
-	//! Close gag, must be called after any call to GAG
-	static void close(void);
-
-	static Sprite *getSprite(const char *name);
-	static void releaseSprite(const char *name);
+	//! Toolkit is a ressource server
+	class Toolkit
+	{
+	private:
+		// Private constructor, we do not want the user to create a Tookit, it is a static thing
+		Toolkit() { }
+		
+	public:
+		//! Initialize gag, must be called before any call to GAG
+		static void init(const char *gameName);
+		//! Initialize the graphic part
+		static void initGraphic(void);
 	
-	static void loadFont(const char *filename, unsigned size, const char *name);
-	static Font *getFont(const char *name);
-	static void releaseFont(const char *name);
+		//! Close gag, must be called after any call to GAG
+		static void close(void);
 	
-	static FileManager *getFileManager(void) { return fileManager; }
-	static StringTable *const getStringTable(void) { return strings; }
-	static GraphicContext *getGraphicContext(void) { return gc; }
-
-protected:
-	friend class Sprite;
+		static Sprite *getSprite(const char *name);
+		static void releaseSprite(const char *name);
+		
+		static void loadFont(const char *filename, unsigned size, const char *name);
+		static Font *getFont(const char *name);
+		static void releaseFont(const char *name);
+		
+		static FileManager *getFileManager(void) { return fileManager; }
+		static StringTable *const getStringTable(void) { return strings; }
+		static GraphicContext *getGraphicContext(void) { return gc; }
 	
-	typedef std::map<std::string, Sprite *> SpriteMap;
-	typedef std::map<std::string, Font *> FontMap;
-	
-	//! All loaded sprites
-	static SpriteMap spriteMap;
-	//! All loaded fonts
-	static FontMap fontMap;
-	//! The virtual file system
-	static FileManager *fileManager;
-	//! The table of strings
-	static StringTable *strings;
-	//! The actual graphic context
-	static GraphicContext *gc;
-};
+	protected:
+		friend class Sprite;
+		
+		typedef std::map<std::string, Sprite *> SpriteMap;
+		typedef std::map<std::string, Font *> FontMap;
+		
+		//! All loaded sprites
+		static SpriteMap spriteMap;
+		//! All loaded fonts
+		static FontMap fontMap;
+		//! The virtual file system
+		static FileManager *fileManager;
+		//! The table of strings
+		static StringTable *strings;
+		//! The actual graphic context
+		static GraphicContext *gc;
+	};
+}
 
 #endif
  

@@ -21,6 +21,7 @@
 #include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+using namespace GAGCore;
 
 #include "GUIMapPreview.h"
 #include "Map.h"

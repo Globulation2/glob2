@@ -22,8 +22,12 @@
 
 #include "GameGUI.h"
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class Text;
+namespace GAGGUI
+{
+	class Text;
+}
 
 //! Widget to display stats at end of game
 class EndGameStat: public RectangularWidget

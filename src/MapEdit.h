@@ -20,6 +20,14 @@
 #ifndef __GLOB2EDIT_H
 #define __GLOB2EDIT_H
 
+#include "Game.h"
+namespace GAGCore
+{
+	class Sprite;
+	class Font;
+}
+using namespace GAGCore;
+
 class MapEdit
 {
 public:

@@ -20,14 +20,17 @@
 #ifndef __MULTIPLAYERHOSTSCREEN_H
 #define __MULTIPLAYERHOSTSCREEN_H
 
-
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class Text;
-class TextArea;
-class TextInput;
-class TextButton;
-class ColorButton;
+namespace GAGGUI
+{
+	class Text;
+	class TextArea;
+	class TextInput;
+	class TextButton;
+	class ColorButton;
+}
 class SessionInfo;
 class MultiplayersHost;
 class MultiplayersJoin;

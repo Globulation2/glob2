@@ -20,13 +20,15 @@
 #include "MultiplayersConnectedScreen.h"
 #include "MultiplayersJoin.h"
 #include "Order.h"
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+using namespace GAGCore;
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <GUITextArea.h>
-#include <GraphicContext.h>
-#include <Toolkit.h>
-#include <StringTable.h>
+using namespace GAGGUI;
 
 // Sutpid widget for color rectangles
 class ColorRect: public RectangularWidget

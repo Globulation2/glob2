@@ -22,51 +22,57 @@
 
 #include "GUIBase.h"
 
-class Font;
-
-class Ratio: public RectangularWidget
+namespace GAGCore
 {
-public:
-	Ratio() { fontPtr=NULL; }
-	Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
-	virtual ~Ratio();
+	class Font;
+}
 
-	virtual void onTimer(Uint32 tick);
-	virtual void onSDLEvent(SDL_Event *event);
-
-	void set(int value);
-	int getMax(void);
-	int get(void);
-
-	void setScale(float start, float ratio);
+namespace GAGGUI
+{
+	class Ratio: public RectangularWidget
+	{
+	public:
+		Ratio() { fontPtr=NULL; }
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
+		virtual ~Ratio();
 	
-protected:
-	virtual void internalRepaint(int x, int y, int w, int h);
-
-protected:
-	int textHeight;
-	Font *fontPtr;
-
-	//! This is the wheight of the scrool bar
-	int size;
-	//! The current value of the scrool bar
-	int value;
-	int oldValue;
-	//! The max value of the scrool bar
-	int max;
-
-	//! If scrool bar is pressed
-	bool pressed;
-	//! The mouse position when button was pressed
-	int px, py;
-	//! The value before the button was pressed
-	int pValue;
-
-	float start;
-	float ratio;
-
-	bool needRefresh;
-};
+		virtual void onTimer(Uint32 tick);
+		virtual void onSDLEvent(SDL_Event *event);
+	
+		void set(int value);
+		int getMax(void);
+		int get(void);
+	
+		void setScale(float start, float ratio);
+		
+	protected:
+		virtual void internalRepaint(int x, int y, int w, int h);
+	
+	protected:
+		int textHeight;
+		GAGCore::Font *fontPtr;
+	
+		//! This is the wheight of the scrool bar
+		int size;
+		//! The current value of the scrool bar
+		int value;
+		int oldValue;
+		//! The max value of the scrool bar
+		int max;
+	
+		//! If scrool bar is pressed
+		bool pressed;
+		//! The mouse position when button was pressed
+		int px, py;
+		//! The value before the button was pressed
+		int pValue;
+	
+		float start;
+		float ratio;
+	
+		bool needRefresh;
+	};
+}
 
 #endif
 

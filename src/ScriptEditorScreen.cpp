@@ -17,18 +17,20 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GAG.h"
 #include "ScriptEditorScreen.h"
 #include "SGSL.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUILoadSave.h"
 #include "Utilities.h"
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <SupportFunctions.h>
+using namespace GAGCore;
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUIButton.h>
-#include <Toolkit.h>
-#include <StringTable.h>
+using namespace GAGGUI;
 
 #include <algorithm>
 
@@ -72,7 +74,7 @@ bool ScriptEditorScreen::testCompile(void)
 	else
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(GAG::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
+		compilationResult->setText(GAGCore::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
 		editor->setCursorPos(er.pos);
 		return false;
 	}
@@ -152,7 +154,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			if (!stream)
 			{
 				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-				compilationResult->setText(GAG::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
+				compilationResult->setText(GAGCore::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}
 			SDL_RWseek(stream, 0, SEEK_END);
@@ -171,7 +173,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			if (!stream)
 			{
 				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-				compilationResult->setText(GAG::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
+				compilationResult->setText(GAGCore::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}
 			const char* sourceCode=editor->getText();

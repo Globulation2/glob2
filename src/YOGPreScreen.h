@@ -21,13 +21,17 @@
 #define __YOG_PRE_SCREEN_H
 
 #include <GUIBase.h>
+using namespace GAGGUI;
 #include "YOG.h"
 
-class OnOffButton;
-class Text;
-class TextInput;
-class TexTArea;
-class Animation;
+namespace GAGGUI
+{
+	class OnOffButton;
+	class Text;
+	class TextInput;
+	class TextArea;
+	class Animation;
+}
 
 class YOGPreScreen:public Screen
 {

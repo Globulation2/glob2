@@ -21,14 +21,18 @@
 #define __SETTINGSSCREEN_H
 
 #include <GUIBase.h>
+using namespace GAGGUI;
 #include <string>
 
-class List;
-class TextInput;
-class TextButton;
-class OnOffButton;
-class Text;
-class Selector;
+namespace GAGGUI
+{
+	class List;
+	class TextInput;
+	class TextButton;
+	class OnOffButton;
+	class Text;
+	class Selector;
+}
 
 class SettingsScreen:public Screen
 {

@@ -19,6 +19,7 @@
 
 #include "LogFileManager.h"
 #include "FileManager.h"
+using namespace GAGCore;
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>

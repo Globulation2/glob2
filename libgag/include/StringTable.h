@@ -24,36 +24,39 @@
 #include <map>
 #include <string>
 
-class OneStringToken
+namespace GAGCore
 {
-public:
-	std::vector<std::string> data;
-};
-
-class StringTable
-{
-public:
-	StringTable();
-	~StringTable();
-	void setLang(int l) { actLang = l; }
-	void setDefaultLang(int l) { defaultLang = l; }
-	int getLang(void) { return actLang; }
-	int getNumberOfLanguage(void) { return languageCount; }
-	bool load(char *filename);
-	const char *getString(const char *stringname, int index = -1) const;
-	const char *getStringInLang(const char *stringname, int lang) const;
-	void print();
-
-private:
-	std::vector<OneStringToken *> strings;
-	std::map<std::string, size_t> stringAccess;
-	int actLang;
-	int defaultLang;
-	int languageCount;
+	class OneStringToken
+	{
+	public:
+		std::vector<std::string> data;
+	};
 	
-public:
-	enum {AI_NAME_SIZE=4};
-};
+	class StringTable
+	{
+	public:
+		StringTable();
+		~StringTable();
+		void setLang(int l) { actLang = l; }
+		void setDefaultLang(int l) { defaultLang = l; }
+		int getLang(void) { return actLang; }
+		int getNumberOfLanguage(void) { return languageCount; }
+		bool load(char *filename);
+		const char *getString(const char *stringname, int index = -1) const;
+		const char *getStringInLang(const char *stringname, int lang) const;
+		void print();
+	
+	private:
+		std::vector<OneStringToken *> strings;
+		std::map<std::string, size_t> stringAccess;
+		int actLang;
+		int defaultLang;
+		int languageCount;
+		
+	public:
+		enum {AI_NAME_SIZE=4};
+	};
+}
 
 #endif
 

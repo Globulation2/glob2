@@ -27,12 +27,17 @@
 #include "RessourcesTypes.h"
 #include "Settings.h"
 
-class FileManager;
-class LogFileManager;
-class GraphicContext;
+namespace GAGCore
+{
+	class FileManager;
+	class GraphicContext;
+	class Sprite;
+	class Font;
+}
+using namespace GAGCore;
+
 class SoundMixer;
-class Sprite;
-class Font;
+class LogFileManager;
 
 class GlobalContainer
 {

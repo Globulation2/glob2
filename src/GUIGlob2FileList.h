@@ -21,6 +21,7 @@
 #define __GUIGLOB2FILELIST_H
 
 #include <GUIFileList.h>
+using namespace GAGGUI;
 
 class Glob2FileList: public FileList
 {

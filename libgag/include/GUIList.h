@@ -24,51 +24,57 @@
 #include <vector>
 #include <string>
 
-class Font;
-
-class List: public RectangularWidget
+namespace GAGCore
 {
-protected:
-	std::string font;
-	std::vector<std::string> strings;
-	Sint32 nth;
-	size_t disp;
+	class Font;
+}
 
-	//! Cached variables, do not serialise, reconstructed on paint() call
-	//! Length of the scroll box, this is a cache
-	unsigned blockLength, blockPos, textHeight;
-	Font *fontPtr;
-
-public:
-	List():RectangularWidget() { fontPtr = NULL; }
-	List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font);
-	virtual ~List();
-
-	virtual void onTimer(Uint32 tick) { }
-	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(void);
-
-	void addText(const char *text, int pos);
-	void addText(const char *text);
-	void removeText(int pos);
-	bool isText(const char *text) const;
-	void clear(void);
-	const char *getText(int pos) const;
-	const char *get(void) const;
-	//! Call this after all add has been done
-	void commit(void) { repaint(); }
-	//! Sorts the list (override it if you don't like it)
-	virtual void sort(void);
-
-	//! Called when selection changes (default: signal parent)
-	virtual void selectionChanged();
-
-	int getNth(void) const;
-	void setNth(int nth);
-
-	virtual void repaint(void);
-	virtual void internalPaint(void);
-};
+namespace GAGGUI
+{
+	class List: public RectangularWidget
+	{
+	protected:
+		std::string font;
+		std::vector<std::string> strings;
+		Sint32 nth;
+		size_t disp;
+	
+		//! Cached variables, do not serialise, reconstructed on paint() call
+		//! Length of the scroll box, this is a cache
+		unsigned blockLength, blockPos, textHeight;
+		GAGCore::Font *fontPtr;
+	
+	public:
+		List():RectangularWidget() { fontPtr = NULL; }
+		List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font);
+		virtual ~List();
+	
+		virtual void onTimer(Uint32 tick) { }
+		virtual void onSDLEvent(SDL_Event *event);
+		virtual void paint(void);
+	
+		void addText(const char *text, int pos);
+		void addText(const char *text);
+		void removeText(int pos);
+		bool isText(const char *text) const;
+		void clear(void);
+		const char *getText(int pos) const;
+		const char *get(void) const;
+		//! Call this after all add has been done
+		void commit(void) { repaint(); }
+		//! Sorts the list (override it if you don't like it)
+		virtual void sort(void);
+	
+		//! Called when selection changes (default: signal parent)
+		virtual void selectionChanged();
+	
+		int getNth(void) const;
+		void setNth(int nth);
+	
+		virtual void repaint(void);
+		virtual void internalPaint(void);
+	};
+}
 
 #endif
 

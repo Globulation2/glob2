@@ -22,4 +22,8 @@
 
 #include <SDL.h>
 
+namespace GAGCore
+{
+}
+
 #endif

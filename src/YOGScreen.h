@@ -24,11 +24,15 @@
 #include <vector>
 #include "YOG.h"
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class List;
-class TextInput;
-class TextArea;
-class TextButton;
+namespace GAGGUI
+{
+	class List;
+	class TextInput;
+	class TextArea;
+	class TextButton;
+}
 
 class YOGScreen:public Screen
 {

@@ -21,6 +21,7 @@
 #define __FILEMANAGER_H
 
 #include "GAGSys.h"
+#include "Stream.h"
 #include <vector>
 #include <fstream>
 #include <string>
@@ -33,58 +34,64 @@
 #define DIR_SEPARATOR_S "/"
 #endif
 
-
-//! File Manager (filesystem abstraction)
-class FileManager
+namespace GAGCore
 {
-private:
-	//! List of directory where to search for requested file
-	std::vector<std::string> dirList;
-	//! List of file relative to virtual base address after call to initDirectoryListing
-	std::vector<std::string> fileList;
-	//! Index in the dirFileList vector
-	int fileListIndex;
-
-private:
-	//! clear the list of file for directory listing
-	void clearFileList(void);
-	//! internal function that does the real listing job
-	bool addListingForDir(const char *realDir, const char *extension=NULL, const bool dirs=false);
-	//! open a file, if it is in writing, do a backup
-	SDL_RWops *openWithbackup(const char *filename, const char *mode);
-	//! open a file, if it is in writing, do a backup, fopen version
-	FILE *openWithbackupFP(const char *filename, const char *mode);
-
-public:
-	//! FileManager constructor
-	FileManager(const char *gameName);
-	//! FileManager destructor
-	virtual ~FileManager();
-
-	//! Add a directory to the search list
-	void addDir(const char *dir);
-	//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
-	void addWriteSubdir(const char *subdir);
-
-	//! Remove a file or a directory in the virtual filesystem
-	void remove(const char *filename);
-	//! Returns true if filename is a directory
-	bool isDir(const char *filename);
-
-	//! Open a file in the SDL_RWops format
-	SDL_RWops *open(const char *filename, const char *mode="rb");
-	//! Open a file in the FILE* format
-	FILE *openFP(const char *filename, const char *mode="rb");
-	//! Open a file in the c++ stream format for reading
-	std::ifstream *openIFStream(const std::string &fileName);
-	//! Return the checksum of a file
-	Uint32 checksum(const char *filename);
-
-	// FIXME : the following functions are not thread-safe :
-	//! must be call before directory listening, return true if success
-	bool initDirectoryListing(const char *virtualDir, const char *extension=NULL, const bool dirs=false);
-	//! get the next name, return NULL if none
-	const char *getNextDirectoryEntry(void);
-};
+	//! File Manager (filesystem abstraction)
+	class FileManager
+	{
+	private:
+		//! List of directory where to search for requested file
+		std::vector<std::string> dirList;
+		//! List of file relative to virtual base address after call to initDirectoryListing
+		std::vector<std::string> fileList;
+		//! Index in the dirFileList vector
+		int fileListIndex;
+	
+	private:
+		//! clear the list of file for directory listing
+		void clearFileList(void);
+		//! internal function that does the real listing job
+		bool addListingForDir(const char *realDir, const char *extension=NULL, const bool dirs=false);
+		//! open a file, if it is in writing, do a backup
+		SDL_RWops *openWithbackup(const char *filename, const char *mode);
+		//! open a file, if it is in writing, do a backup, fopen version
+		FILE *openWithbackupFP(const char *filename, const char *mode);
+	
+	public:
+		//! FileManager constructor
+		FileManager(const char *gameName);
+		//! FileManager destructor
+		virtual ~FileManager();
+	
+		//! Add a directory to the search list
+		void addDir(const char *dir);
+		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
+		void addWriteSubdir(const char *subdir);
+	
+		//! Remove a file or a directory in the virtual filesystem
+		void remove(const char *filename);
+		//! Returns true if filename is a directory
+		bool isDir(const char *filename);
+	
+		//! Open an output stream
+		OutputStream *openOutputStream(const char *filename);
+		//! Open an input stream
+		InputStream *openInputStream(const char *filename);
+		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
+		SDL_RWops *open(const char *filename, const char *mode="rb");
+		//! Open a file in the FILE* format
+		FILE *openFP(const char *filename, const char *mode="rb");
+		//! Open a file in the c++ stream format for reading
+		std::ifstream *openIFStream(const std::string &fileName);
+		//! Return the checksum of a file
+		Uint32 checksum(const char *filename);
+	
+		// FIXME : the following functions are not thread-safe :
+		//! must be call before directory listening, return true if success
+		bool initDirectoryListing(const char *virtualDir, const char *extension=NULL, const bool dirs=false);
+		//! get the next name, return NULL if none
+		const char *getNextDirectoryEntry(void);
+	};
+}
 
 #endif

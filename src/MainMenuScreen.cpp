@@ -22,6 +22,13 @@
 #include "Version.h"
 #include "YOGConsts.h"
 #include "NetConsts.h"
+#include <GUIButton.h>
+#include <GUIText.h>
+using namespace GAGGUI;
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <SupportFunctions.h>
+using namespace GAGCore;
 
 MainMenuScreen::MainMenuScreen()
 {
@@ -41,7 +48,7 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton(20, 420, 280,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[credits]"), CREDITS));
 	addWidget(new TextButton(340, 420, 280,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	
-	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAG::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
+	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAGCore::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
 
 	//background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
 }

@@ -26,193 +26,196 @@
 
 #define MAX_CACHE_SIZE 128
 
-TrueTypeFont::TrueTypeFont()
+namespace GAGCore
 {
-	font = NULL;
-	now = 0;
-}
-
-TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
-{
-	load(filename, size);
-}
-
-TrueTypeFont::~TrueTypeFont()
-{
-	if (font)
+	TrueTypeFont::TrueTypeFont()
 	{
-		for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
-			SDL_FreeSurface(it->second.s);
-		TTF_CloseFont(font);
+		font = NULL;
+		now = 0;
 	}
-}
-
-bool TrueTypeFont::load(const char *filename, unsigned size)
-{
-	SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
-	if (fontStream)
+	
+	TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
 	{
-		font = TTF_OpenFontRW(fontStream, 1, size);
+		load(filename, size);
+	}
+	
+	TrueTypeFont::~TrueTypeFont()
+	{
 		if (font)
 		{
-			setStyle(Style(STYLE_NORMAL, 255, 255, 255));
-			return true;
+			for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
+				SDL_FreeSurface(it->second.s);
+			TTF_CloseFont(font);
 		}
 	}
-	return false;
-}
-
-int TrueTypeFont::getStringWidth(const char *string, Shape shape) const
-{
-	int w, h;
-	int oldShape = TTF_GetFontStyle(font);
-	TTF_SetFontStyle(font, shape);
-	TTF_SizeUTF8(font, string, &w, &h);
-	TTF_SetFontStyle(font, oldShape);
-	return w;
-}
-
-int TrueTypeFont::getStringHeight(const char *string, Shape shape) const
-{
-	int height;
-	int oldShape = TTF_GetFontStyle(font);
-	TTF_SetFontStyle(font, shape);
-	if (string)
+	
+	bool TrueTypeFont::load(const char *filename, unsigned size)
+	{
+		SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
+		if (fontStream)
+		{
+			font = TTF_OpenFontRW(fontStream, 1, size);
+			if (font)
+			{
+				setStyle(Style(STYLE_NORMAL, 255, 255, 255));
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	int TrueTypeFont::getStringWidth(const char *string, Shape shape) const
 	{
 		int w, h;
+		int oldShape = TTF_GetFontStyle(font);
+		TTF_SetFontStyle(font, shape);
 		TTF_SizeUTF8(font, string, &w, &h);
-		height = h;
+		TTF_SetFontStyle(font, oldShape);
+		return w;
 	}
-	else
+	
+	int TrueTypeFont::getStringHeight(const char *string, Shape shape) const
 	{
-		height = TTF_FontHeight(font);
+		int height;
+		int oldShape = TTF_GetFontStyle(font);
+		TTF_SetFontStyle(font, shape);
+		if (string)
+		{
+			int w, h;
+			TTF_SizeUTF8(font, string, &w, &h);
+			height = h;
+		}
+		else
+		{
+			height = TTF_FontHeight(font);
+		}
+		TTF_SetFontStyle(font, oldShape);
+		return height;
 	}
-	TTF_SetFontStyle(font, oldShape);
-	return height;
-}
-
-void TrueTypeFont::setStyle(Style style)
-{
-	assert(font);
 	
-	while (styleStack.size() > 0)
-		styleStack.pop();
-	pushStyle(style);
-}
-#include <iostream>
-void TrueTypeFont::pushStyle(Style style)
-{
-	assert(font);
-	
-	styleStack.push(style);
-	TTF_SetFontStyle(font, style.shape);
-}
-
-void TrueTypeFont::popStyle(void)
-{
-	assert(font);
-	
-	if (styleStack.size() > 1)
+	void TrueTypeFont::setStyle(Style style)
 	{
-		styleStack.pop();
-		TTF_SetFontStyle(font, styleStack.top().shape);
-	}
-}
-
-Font::Style TrueTypeFont::getStyle(void) const
-{
-	assert(font);
-	
-	return styleStack.top();
-}
-
-void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip)
-{
-	assert(text);
-	assert(font);
-	assert(styleStack.size()>0);
-	
-	CacheKey key;
-	key.text = text;
-	key.style = styleStack.top();
-	
-	CacheData data;
-	SDL_Surface *s;
-	
-	std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
-	if (keyIt == cache.end())
-	{
-		// create bitmap
-		SDL_Color c;
-		c.r = styleStack.top().r;
-		c.g = styleStack.top().g;
-		c.b = styleStack.top().b;
-		c.unused = styleStack.top().a;
+		assert(font);
 		
-		SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
-		if (temp == NULL)
-			return;
+		while (styleStack.size() > 0)
+			styleStack.pop();
+		pushStyle(style);
+	}
+	#include <iostream>
+	void TrueTypeFont::pushStyle(Style style)
+	{
+		assert(font);
 		
-		// create key
-		data.lastAccessed = now;
-		data.s = s = SDL_DisplayFormatAlpha(temp);
-		assert(s);
-		SDL_FreeSurface(temp);
-		
-		// store in cache
-		cache[key] = data;
-		timeCache[now] = cache.find(key);
-		//std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
-	}
-	else
-	{
-		// get surface
-		s = keyIt->second.s;
-		// erase old time association
-		timeCache.erase(keyIt->second.lastAccessed);
-		// set new time
-		keyIt->second.lastAccessed = now;
-		// add new time association
-		timeCache[now] = keyIt;
-	}
-	now++;
-	
-	// render
-	SDL_Rect sr;
-	sr.x = 0;
-	sr.y = 0;
-	sr.w = static_cast<Uint16>(s->w);
-	sr.h = static_cast<Uint16>(s->h);
-
-	SDL_Rect r;
-	r.x = static_cast<Sint16>(x);
-	r.y = static_cast<Sint16>(y);
-	if (w)
-		r.w = static_cast<Uint16>(w);
-	else
-		r.w = static_cast<Uint16>(s->w);
-	r.h = static_cast<Uint16>(s->h);
-
-	SDL_Rect oc;
-	if (clip)
-	{
-		SDL_GetClipRect(Surface, &oc);
-		GAG::sdcRects(&sr, &r, *clip);
-		SDL_SetClipRect(Surface, &r);
-	}
-
-	SDL_BlitSurface(s, &sr, Surface, &r);
-
-	if (clip)
-	{
-		SDL_SetClipRect(Surface, &oc);
+		styleStack.push(style);
+		TTF_SetFontStyle(font, style.shape);
 	}
 	
-	// when cache is too big, remove the first element
-	if (cache.size() >= MAX_CACHE_SIZE)
+	void TrueTypeFont::popStyle(void)
 	{
-		SDL_FreeSurface(timeCache.begin()->second->second.s);
-		cache.erase(timeCache.begin()->second);
-		timeCache.erase(timeCache.begin());
+		assert(font);
+		
+		if (styleStack.size() > 1)
+		{
+			styleStack.pop();
+			TTF_SetFontStyle(font, styleStack.top().shape);
+		}
+	}
+	
+	Font::Style TrueTypeFont::getStyle(void) const
+	{
+		assert(font);
+		
+		return styleStack.top();
+	}
+	
+	void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip)
+	{
+		assert(text);
+		assert(font);
+		assert(styleStack.size()>0);
+		
+		CacheKey key;
+		key.text = text;
+		key.style = styleStack.top();
+		
+		CacheData data;
+		SDL_Surface *s;
+		
+		std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
+		if (keyIt == cache.end())
+		{
+			// create bitmap
+			SDL_Color c;
+			c.r = styleStack.top().r;
+			c.g = styleStack.top().g;
+			c.b = styleStack.top().b;
+			c.unused = styleStack.top().a;
+			
+			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
+			if (temp == NULL)
+				return;
+			
+			// create key
+			data.lastAccessed = now;
+			data.s = s = SDL_DisplayFormatAlpha(temp);
+			assert(s);
+			SDL_FreeSurface(temp);
+			
+			// store in cache
+			cache[key] = data;
+			timeCache[now] = cache.find(key);
+			//std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
+		}
+		else
+		{
+			// get surface
+			s = keyIt->second.s;
+			// erase old time association
+			timeCache.erase(keyIt->second.lastAccessed);
+			// set new time
+			keyIt->second.lastAccessed = now;
+			// add new time association
+			timeCache[now] = keyIt;
+		}
+		now++;
+		
+		// render
+		SDL_Rect sr;
+		sr.x = 0;
+		sr.y = 0;
+		sr.w = static_cast<Uint16>(s->w);
+		sr.h = static_cast<Uint16>(s->h);
+	
+		SDL_Rect r;
+		r.x = static_cast<Sint16>(x);
+		r.y = static_cast<Sint16>(y);
+		if (w)
+			r.w = static_cast<Uint16>(w);
+		else
+			r.w = static_cast<Uint16>(s->w);
+		r.h = static_cast<Uint16>(s->h);
+	
+		SDL_Rect oc;
+		if (clip)
+		{
+			SDL_GetClipRect(Surface, &oc);
+			sdcRects(&sr, &r, *clip);
+			SDL_SetClipRect(Surface, &r);
+		}
+	
+		SDL_BlitSurface(s, &sr, Surface, &r);
+	
+		if (clip)
+		{
+			SDL_SetClipRect(Surface, &oc);
+		}
+		
+		// when cache is too big, remove the first element
+		if (cache.size() >= MAX_CACHE_SIZE)
+		{
+			SDL_FreeSurface(timeCache.begin()->second->second.s);
+			cache.erase(timeCache.begin()->second);
+			timeCache.erase(timeCache.begin());
+		}
 	}
 }

@@ -23,38 +23,44 @@
 #include "GUIBase.h"
 #include <string>
 
-class Font;
-
-class TextInput: public RectangularWidget
+namespace GAGCore
 {
-protected:
-	std::string font;
-	std::string text;
-	bool activated;
-	size_t cursPos;
-	size_t maxLength;
-	bool password;
+	class Font;
+}
 
-	// cache, recomputed at least on paint
-	Font *fontPtr;
-	unsigned textDep;
-	int cursorScreenPos;
-	std::string pwd;
-
-public:
-	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false);
-	virtual ~TextInput() { }
-
-	virtual void onTimer(Uint32 tick);
-	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(void);
-	void setText(const char *newText);
-	const char *getText(void) { return text.c_str(); }
-	void deactivate(void) { activated=false; repaint(); }
-
-protected:
-	virtual void repaint(void);
-	void recomputeTextInfos(void);
-};
+namespace GAGGUI
+{
+	class TextInput: public RectangularWidget
+	{
+	protected:
+		std::string font;
+		std::string text;
+		bool activated;
+		size_t cursPos;
+		size_t maxLength;
+		bool password;
+	
+		// cache, recomputed at least on paint
+		GAGCore::Font *fontPtr;
+		unsigned textDep;
+		int cursorScreenPos;
+		std::string pwd;
+	
+	public:
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false);
+		virtual ~TextInput() { }
+	
+		virtual void onTimer(Uint32 tick);
+		virtual void onSDLEvent(SDL_Event *event);
+		virtual void paint(void);
+		void setText(const char *newText);
+		const char *getText(void) { return text.c_str(); }
+		void deactivate(void) { activated=false; repaint(); }
+	
+	protected:
+		virtual void repaint(void);
+		void recomputeTextInfos(void);
+	};
+}
 
 #endif 

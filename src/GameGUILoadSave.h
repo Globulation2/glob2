@@ -21,10 +21,14 @@
 #define __GAME_GUI_LOAD_SAVE_H
 
 #include <GUIBase.h>
+using namespace GAGGUI;
 #include "GameGUIDialog.h"
 
-class List;
-class TextInput;
+namespace GAGGUI
+{
+	class List;
+	class TextInput;
+}
 
 class LoadSaveScreen:public OverlayScreen
 {
