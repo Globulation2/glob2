@@ -103,6 +103,8 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 
 	receiveRessourceMask=0;
 	sendRessourceMask=0;
+	receiveRessourceMaskLocal=0;
+	sendRessourceMaskLocal=0;
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -166,6 +168,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 
 	receiveRessourceMask=SDL_ReadBE32(stream);
 	sendRessourceMask=SDL_ReadBE32(stream);
+	receiveRessourceMaskLocal=receiveRessourceMask;
+	sendRessourceMaskLocal=sendRessourceMask;
 
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);

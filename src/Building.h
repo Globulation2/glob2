@@ -108,6 +108,8 @@ public:
 	// exchange building
 	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
+	Uint32 receiveRessourceMaskLocal;
+	Uint32 sendRessourceMaskLocal;
 
 	// turrets
 	Uint32 shootingStep;
