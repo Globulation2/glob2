@@ -72,9 +72,11 @@ public:
 	std::list<Unit *> unitsInsideSubscribe;
 	Sint32 lastInsideSubscribe;
 	
-	// optimisation / consistency
-	Sint32 job[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->job[i], 2:not in owner->job[i]}
-	Sint32 attract[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->attract[i], 2:not in owner->attract[i]}
+	// optimisation and consistency
+	Sint32 foodable; // Included in {0: unknow, 1:allready in owner->foodable, 2:not in owner->foodable
+	Sint32 fillable; // Included in {0: unknow, 1:allready in owner->fillable, 2:not in owner->fillable
+	Sint32 zonable[NB_UNIT_TYPE]; // Included in {0: unknow, 1:allready in owner->zonable, 2:not in owner->zonable
+	
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity

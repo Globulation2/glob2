@@ -457,13 +457,12 @@ void Unit::handleActivity(void)
 		{
 			// look for a "job"
 			// else keep walking around
-
 			bool jobFound=false;
 			
-			// first we look for a food building to fill:
+			// first we look for a food building to fill, because it is the first priority.
 			if (performance[HARVEST])
 			{
-				Building *b=owner->findNearestFillableFood(posX, posY);
+				Building *b=owner->findBestFoodable(this);
 				if (b != NULL)
 				{
 					jobFound=owner->map->nearestRessource(posX, posY, CORN, &targetX, &targetY);
@@ -487,42 +486,60 @@ void Unit::handleActivity(void)
 			}
 
 			// second we look for upgrade
-			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
+			Building *b;
+			b=owner->findBestUpgrade(this);
+			if (b != NULL)
 			{
-				if (performance[abilityIterator])
-				{
-					Building *b=owner->findNearestUpgrade(posX, posY, (Abilities)abilityIterator, level[abilityIterator]);
-					if ( b != NULL)
-					{
-						jobFound=true;
-						activity=ACT_UPGRADING;
-						displacement=DIS_GOING_TO_BUILDING;
-						destinationPurprose=(Sint32)abilityIterator;
+				jobFound=true;
+				activity=ACT_UPGRADING;
+				displacement=DIS_GOING_TO_BUILDING;
+				
+				assert(destinationPurprose>=WALK);
+				assert(destinationPurprose<ARMOR);
+				//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
 
-						//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
+				attachedBuilding=b;
+				targetX=attachedBuilding->getMidX();
+				targetY=attachedBuilding->getMidY();
+				newTargetWasSet();
+				b->unitsInsideSubscribe.push_front(this);
+				b->lastInsideSubscribe=0;
+				subscribed=true;
+				owner->subscribeForInside.push_front(b);
+				///b->update();
 
-						attachedBuilding=b;
-						targetX=attachedBuilding->getMidX();
-						targetY=attachedBuilding->getMidY();
-						newTargetWasSet();
-						b->unitsInsideSubscribe.push_front(this);
-						b->lastInsideSubscribe=0;
-						subscribed=true;
-						owner->subscribeForInside.push_front(b);
-						///b->update();
-
-						return;
-					}
-				}
+				return;
 			}
 			
-			// third we harvest for construction
+			// third we go to flag
+			b=owner->findBestZonable(this);
+			if (b != NULL)
+			{
+				jobFound=true;
+				activity=ACT_FLAG;
+				displacement=DIS_GOING_TO_FLAG;
+				destinationPurprose=-1;
+
+				attachedBuilding=b;
+				targetX=attachedBuilding->getMidX();
+				targetY=attachedBuilding->getMidY();
+				newTargetWasSet();
+				//printf("f(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
+				b->unitsWorkingSubscribe.push_front(this);
+				b->lastWorkingSubscribe=0;
+				subscribed=true;
+				owner->subscribeForFlaging.push_front(b);
+				//b->update();
+				//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
+
+				return;
+			}
+			
+			// fourth we harvest for construction, or other lower priority.
 			if (performance[HARVEST])
 			{
-				Building *b;
-				
 				// if we have a ressource
-				b=owner->findBestConstruction(this);
+				Building *b=owner->findBestFillable(this);
 				if (b != NULL)
 				{
 					//do not do this (it's done in findBestConstruction() much nicer)
@@ -550,38 +567,6 @@ void Unit::handleActivity(void)
 					}
 				}
 			}
-
-			
-			// fifth we go to flag
-			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
-			{
-				if (performance[abilityIterator])
-				{
-					Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
-					if ( b != NULL)
-					{
-						jobFound=true;
-						activity=ACT_FLAG;
-						displacement=DIS_GOING_TO_FLAG;
-						destinationPurprose=abilityIterator;
-
-						attachedBuilding=b;
-						targetX=attachedBuilding->getMidX();
-						targetY=attachedBuilding->getMidY();
-						newTargetWasSet();
-						//printf("f(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
-						b->unitsWorkingSubscribe.push_front(this);
-						b->lastWorkingSubscribe=0;
-						subscribed=true;
-						owner->subscribeForFlaging.push_front(b);
-						//b->update();
-						//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
-
-						return;
-					}
-				}
-			}
-			
 			
 			if ( (!jobFound) )
 			{
@@ -593,7 +578,7 @@ void Unit::handleActivity(void)
 			{
 				Building *b;
 				b=owner->findNearestHeal(posX, posY);
-				if ( b != NULL)
+				if (b != NULL)
 				{
 					//printf("Going to heal building\n");
 					activity=ACT_UPGRADING;

@@ -95,12 +95,12 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 
 	seenByMask=0;
 	
+	foodable=0;
+	fillable=0;
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		zonable[i]=0;
 	for (int i=0; i<NB_ABILITY; i++)
-	{
-		job[i]=0;
-		attract[i]=0;
 		upgrade[i]=0;
-	}
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
 	// Now, it's not used.
@@ -163,12 +163,12 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	else
 		seenByMask=0; //TODO: load it!
 	
+	foodable=0;
+	fillable=0;
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		zonable[i]=0;
 	for (int i=0; i<NB_ABILITY; i++)
-	{
-		job[i]=0;
-		attract[i]=0;
 		upgrade[i]=0;
-	}
 }
 
 void Building::save(SDL_RWops *stream)
@@ -521,41 +521,70 @@ void Building::update(void)
 			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
 	}
 
+	
+	{
+		if (unitsWorking.size()<(unsigned)maxUnitWorking)
+		{
+			// We need units:
+			
+		}
+		else
+		{
+		
+		}
+	}
 	// TODO : save the knowledge weather or not the building is already in the Call list in the building
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		// add itself in Call lists
-		for (int i=0; i<NB_ABILITY; i++)
+		if (foodable!=1 && type->foodable)
 		{
-			if (job[i]!=1 && type->job[i])
-			{
-				owner->job[i].push_front(this);
-				job[i]=1;
-			}
-			if (attract[i]!=1 && type->attract[i])
-			{
-				owner->attract[i].push_front(this);
-				attract[i]=1;
-			}
+			owner->foodable.push_front(this);
+			foodable=1;
 		}
+		if (fillable!=1 && type->fillable)
+		{
+			owner->fillable.push_front(this);
+			fillable=1;
+		}
+		for (int i=0; i<NB_UNIT_TYPE; i++)
+			if (zonable[i]!=1 && type->attract[i])
+			{
+				owner->zonable[i].push_front(this);
+				zonable[i]=1;
+			}
+		for (int i=0; i<NB_ABILITY; i++)
+			if (upgrade[i]!=1 && type->upgrade[i])
+			{
+				owner->upgrade[i].push_front(this);
+				upgrade[i]=1;
+			}
 	}
 	else
 	{
 		// delete itself from all Call lists
-		for (int i=0; i<NB_ABILITY; i++)
+		if (foodable!=2 && type->foodable)
 		{
-			if (job[i]!=2 && type->job[i])
-			{
-				owner->job[i].remove(this);
-				job[i]=2;
-			}
-			if (attract[i]!=2 && type->attract[i])
-			{
-				owner->attract[i].remove(this);
-				attract[i]=2;
-			}
+			owner->foodable.remove(this);
+			foodable=2;
 		}
-
+		if (fillable!=2 && type->fillable)
+		{
+			owner->fillable.remove(this);
+			fillable=2;
+		}
+		for (int i=0; i<NB_UNIT_TYPE; i++)
+			if (zonable[i]!=2)
+			{
+				owner->zonable[i].remove(this);
+				zonable[i]=2;
+			}
+		for (int i=0; i<NB_ABILITY; i++)
+			if (upgrade[i]!=2)
+			{
+				owner->upgrade[i].remove(this);
+				upgrade[i]=2;
+			}
 		while (unitsWorking.size()>(unsigned)maxUnitWorking) // TODO : the same with insides units
 		{
 			int maxDistSquare=0;
@@ -668,11 +697,22 @@ void Building::update(void)
 	// this is for ressource gathering
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
-		if (job[HARVEST]!=2)
+		if (foodable!=2)
 		{
-			owner->job[HARVEST].remove(this);
-			job[HARVEST]=2;
+			owner->foodable.remove(this);
+			foodable=2;
 		}
+		if (fillable!=2)
+		{
+			owner->fillable.remove(this);
+			fillable=2;
+		}
+		for (int i=0; i<NB_UNIT_TYPE; i++)
+			if (zonable[i]!=2)
+			{
+				owner->zonable[i].push_front(this);
+				zonable[i]=2;
+			}
 		if (type->isBuildingSite)
 		{
 			// we really uses the resources of the buildingsite:
@@ -820,11 +860,22 @@ bool Building::tryToBuildingSiteRoom(void)
 		}
 
 		// TODO: now we can see that the engine "genericity" is not as good as we would like to.
-		if (job[HARVEST]!=2)
+		if (foodable!=2)
 		{
-			owner->job[HARVEST].remove(this);
-			job[HARVEST]=2;
+			owner->foodable.remove(this);
+			foodable=2;
 		}
+		if (fillable!=2)
+		{
+			owner->fillable.remove(this);
+			fillable=2;
+		}
+		for (int i=0; i<NB_UNIT_TYPE; i++)
+			if (zonable[i]!=2)
+			{
+				owner->zonable[i].push_front(this);
+				zonable[i]=2;
+			}
 		update();
 	}
 	return isRoom;

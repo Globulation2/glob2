@@ -65,17 +65,26 @@ void TeamStats::step(Team *team)
 		}
 	}
 	
-	std::list<Building *> upgradesList=team->upgrade[HARVEST];
-	for (std::list<Building *>::iterator bi=upgradesList.begin(); bi!=upgradesList.end(); bi++)
-		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
-	
-	std::list<Building *> jobsList=team->job[HARVEST];
-	for (std::list<Building *>::iterator bi=jobsList.begin(); bi!=jobsList.end(); bi++)
-		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
-	
-	std::list<Building *> attractList=team->attract[HARVEST];
-	for (std::list<Building *>::iterator bi=attractList.begin(); bi!=attractList.end(); bi++)
-		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	{
+		std::list<Building *> foodable=team->foodable;
+		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); bi++)
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	}
+	{
+		std::list<Building *> fillable=team->fillable;
+		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); bi++)
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	}
+	{
+		std::list<Building *> zonable=team->zonable[WORKER];
+		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); bi++)
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	}
+	{
+		std::list<Building *> upgrade=team->upgrade[HARVEST];
+		for (std::list<Building *>::iterator bi=upgrade.begin(); bi!=upgrade.end(); bi++)
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	}
 	
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;

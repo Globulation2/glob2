@@ -66,8 +66,10 @@ public:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
 	Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
-	Sint32 job[NB_ABILITY]; // If an unit is required for a job.
+	Sint32 foodable;
+	Sint32 fillable;
 	Sint32 attract[NB_ABILITY]; // If an unit is required for a presence.
+	
 	Sint32 canFeedUnit;
 	Sint32 timeToFeedUnit;
 	Sint32 canHealUnit;
@@ -153,18 +155,8 @@ public:
 			"upgradeTimeArmor",
 			"upgradeTimeHP",
 			
-			"jobStopWalk",
-			"jobStopSwim",
-			"jobStopFly",
-			"jobWalk",
-			"jobSwim",
-			"jobFly",
-			"jobBuild",
-			"jobHarvest",
-			"jobAttackSpeed",
-			"jobAttackStrength",
-			"jobArmor",
-			"jobHP",
+			"foodable",
+			"fillable",
 			
 			"attractStopWalk",
 			"attractStopSwim",

@@ -17,6 +17,7 @@ Technique :
 	optimiser les boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - Optimiser owner->game->map en owner->map
+- merger "zonable" et "attract"
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
 - write a quick start guide. (nct)
