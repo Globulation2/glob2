@@ -1404,8 +1404,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					for (int x=left-1; x<=right; x++)
 						if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
 						{
-							int lx=(x+viewportX-b->posX+15+32)&31;
-							int ly=(y+viewportY-b->posY+15+32)&31;
+							int lx=(x+viewportX-b->posX+15)&31;
+							int ly=(y+viewportY-b->posY+15)&31;
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localRessources[1][lx+ly*32]);
 						}
 		}
@@ -1436,8 +1436,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					}
 					else if (map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
 					{
-						int lx=(x+viewportX-b->posX+15+32)&31;
-						int ly=(y+viewportY-b->posY+15+32)&31;
+						int lx=(x+viewportX-b->posX+15)&31;
+						int ly=(y+viewportY-b->posY+15)&31;
 						if (!b->dirtyLocalGradient[0])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[0][lx+ly*32]);
 					}

@@ -376,8 +376,8 @@ public:
 	void updateGlobalGradient(Uint8 *gradient);
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool *gradientUsable);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool *gradientUsable);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient);
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024]);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
@@ -421,9 +421,9 @@ protected:
 	int pathToBuildingCountClose;
 	int pathToBuildingCountCloseSuccessStand;
 	int pathToBuildingCountCloseSuccessBase;
-	int pathToBuildingCountCloseSuccessAround;
+	int pathToBuildingCountCloseSuccessAround;//-
 	int pathToBuildingCountCloseSuccessUpdated;
-	int pathToBuildingCountCloseSuccessUpdatedAround;
+	int pathToBuildingCountCloseSuccessUpdatedAround;//-
 	int pathToBuildingCountCloseFailureLocked;
 	int pathToBuildingCountCloseFailureEnd;
 	
@@ -431,7 +431,7 @@ protected:
 	int pathToBuildingCountFar;
 	int pathToBuildingCountFarOldSuccess;
 	int pathToBuildingCountFarOldFailureLocked;
-	int pathToBuildingCountFarOldFailureBad;
+	int pathToBuildingCountFarOldFailureBad;//-
 	int pathToBuildingCountFarOldFailureUnusable;
 	int pathToBuildingCountFarUpdateSuccess;
 	int pathToBuildingCountFarUpdateSuccessAround;
