@@ -52,22 +52,15 @@ public:
 	void save(SDL_RWops *stream);
 
 	void processEvent(SDL_Event *event);
+
+private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_keysym keySym, bool pressed);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
-
-public:
-	Game game;
-	bool isRunning;
-	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines;
-	int localPlayer, localTeam;
-	int viewportX, viewportY;
-
-private:
+	void handleActivation(Uint8 state, Uint8 gain);
 	void viewportFromMxMY(int mx, int my);
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawButton(int x, int y, const char *caption);
@@ -79,6 +72,14 @@ private:
 	void drawOverlayInfos(void);
 	void drawInGameMenu(void);
 	bool hasLocalTeamWon(void);
+
+public:
+	Game game;
+	bool isRunning;
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines;
+	int localPlayer, localTeam;
+	int viewportX, viewportY;
 
 private:
 	enum DisplayMode

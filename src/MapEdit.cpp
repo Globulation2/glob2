@@ -760,6 +760,10 @@ int MapEdit::run(void)
 					handleMapClick(mx, my);
 				}
 			}
+			else if ((event.type==SDL_ACTIVEEVENT) && (event.active.gain==0))
+			{
+				viewportSpeedX[0]=viewportSpeedY[0]=0;
+			}
 			else if (event.type==SDL_MOUSEMOTION)
 			{
 				int mx=event.motion.x;
