@@ -105,7 +105,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 	switch (hostGlobalState)
 	{
 	case HGS_BAD :
-		printf("This is a bad hostGlobalState case. Should no happend!\n");
+		printf("This is a bad hostGlobalState case. Should not happend!\n");
 	break;
 	case HGS_SHARING_SESSION_INFO :
 	{
@@ -308,21 +308,23 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 
 	if (serverIP.host)
 	{
-		if (serverIP.host!=SDL_SwapBE32(getUint32(data, 20)))
+		Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));
+		Uint16 newPort=SDL_SwapBE16(getUint32(data, 24));
+		if (serverIP.host!=newHost)
 		{
-			printf("Bad ip(%x) received by(%x:%d)!\n", serverIP.host, ip.host, ip.port);
+			printf("Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
 			return;
 		}
-		if (serverIP.port!=SDL_SwapBE32(getUint32(data, 24)))
+		if (serverIP.port!=newPort)
 		{
-			printf("Bad port(%d) received by(%x:%d)!\n", serverIP.port, ip.host, ip.port);
+			printf("Bad port received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.port, newPort);
 			return;
 		}
 	}
 	else
 	{
 		serverIP.host=SDL_SwapBE32(getUint32(data, 20));
-		serverIP.port=SDL_SwapBE32(getUint32(data, 24));
+		serverIP.port=SDL_SwapBE16(getUint32(data, 24));
 		printf("I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
 	}
 
