@@ -258,16 +258,21 @@ void TextInput::recomputeTextInfos(void)
 	{
 		pwd.clear();
 		unsigned l = text.length();
-		unsigned p = 0, op = p;
+		unsigned p = 0, op = 0;
 		unsigned compCursPos = 0;
 		unsigned pwdCursPos = 0;
-		while ((p = getNextUTF8Char(text.c_str(), op)) < l)
+		if (l)
 		{
-			if (compCursPos < cursPos)
-				pwdCursPos++;
-			compCursPos += (p - op);
-			pwd += "*";
-			op = p;
+			do
+			{
+				p = getNextUTF8Char(text.c_str(), op);
+				if (compCursPos < cursPos)
+					pwdCursPos++;
+				compCursPos += (p - op);
+				pwd += "*";
+				op = p;
+			}
+			while(p<l);
 		}
 		cursorScreenPos=fontPtr->getStringWidth(pwd.c_str(), pwdCursPos);
 	}
