@@ -1068,7 +1068,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 	
 	//printf("sbu=(%d, %d, %d, %d) wun=(%d, %d, %d, %d)\n", sbu[0], sbu[1], sbu[2], sbu[3], wun[0], wun[1], wun[2], wun[3]);
 	
-	// We calculate if we may upgrade to leverl 1:
+	// We calculate if we may upgrade to level 1:
 	int potential=wun[1]+wun[2]+wun[3]+4*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
 	int now=fun[1]+fun[2]+fun[3];
 	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, ptrigger, now, ntrigger);

@@ -51,7 +51,7 @@ private:
 	Text *playerText;
 	TextInput *playerName;
 	Text *statusText;
-	Text *aviableGamesText;
+	Text *availableGamesText;
 	int oldStatus;
 	List *lanServers;
 	bool wasVisible;

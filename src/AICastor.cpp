@@ -1712,7 +1712,7 @@ Order *AICastor::continueProject(Project *project)
 	else if (project->subPhase==5)
 	{
 		// We simply wait for the building to be finished,
-		// and add free workers if aviable and project.waitFinished:
+		// and add free workers if available and project.waitFinished:
 		
 		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{

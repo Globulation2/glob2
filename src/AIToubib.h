@@ -44,9 +44,9 @@ public:
 	Map *map;
 	
 
-	//! Load AI saved from a stream
+	//! Load saved AI state from a stream
 	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	//! Save AI to a save stream
+	//! Save AI state to a stream
 	void save(SDL_RWops *stream);
 	
 	//! return a new order in response to last events

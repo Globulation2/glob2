@@ -138,7 +138,7 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new RequestingDeadAwayOrder(netData+1, netDataLength-1);
 	}
-	case ORDER_NO_MORE_ORDER_AVIABLES:
+	case ORDER_NO_MORE_ORDER_AVAILABLES:
 	{
 		return new NoMoreOrdersAvailable(netData+1, netDataLength-1);
 	}

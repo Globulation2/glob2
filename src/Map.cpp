@@ -1547,8 +1547,8 @@ bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *d
 	return false;
 }
 
-//! This method gives a good direction to hit for a warrior, and return fase is nothing was found.
-//! Currently, it chooses to hit any turret if aviable, then units, then other buildings.
+//! This method gives a good direction to hit for a warrior, and return false if nothing was found.
+//! Currently, it chooses to hit any turret if available, then units, then other buildings.
 bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 {
 	int x=unit->posX;

@@ -22,7 +22,7 @@
 
 /*
 What's in AI ?
-AI represents teh behaviour of an artificial intelligence player.
+AI represents the behaviour of an artificial intelligence player.
 The main methode is Order *getOrder() which return the order to be used by the AI's team.
 */
 

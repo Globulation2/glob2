@@ -1070,7 +1070,7 @@ Impostazioni
 Opciones
 Beállítások
 [Warning, you need to reboot the game for changes to take effect]
-Attention, il faut rédemarrer le jeu pour que les changements soient pris en compte
+Attention, il faut relancer le jeu pour que les changements soient pris en compte
 Warning, you need to reboot the game for changes to take effect
 
 
@@ -2509,7 +2509,7 @@ Connesso a tutti i giocatori
 Соедининение с игроками установлено
 Conectados todos los jugadores
 Csatlakozott a játékosokhoz
-[aviable lan games]
+[available lan games]
 Parties locales disponibles
 Available local games
 Lokal verfügbare Spiele

@@ -617,7 +617,7 @@ Building *Team::findNearestFood(Unit *unit)
 					if ((t->sharedVisionFood & me) && !(t->allies & me))
 						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
-							int h=(*bi)->aviableHappynessLevel();
+							int h=(*bi)->availableHappynessLevel();
 							if (h>maxHappyness[ti])
 							{
 								maxHappyness[ti]=h;
@@ -639,7 +639,7 @@ Building *Team::findNearestFood(Unit *unit)
 					if ((t->sharedVisionFood & me) && !(t->allies & me))
 						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
-							int h=(*bi)->aviableHappynessLevel();
+							int h=(*bi)->availableHappynessLevel();
 							int dist;
 							if (h>maxHappyness[ti] && map->buildingAvailable(*bi, canSwim, x, y, &dist))
 							{
@@ -661,7 +661,7 @@ Building *Team::findNearestFood(Unit *unit)
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			if (b->aviableHappynessLevel()>=enemyHappyness)
+			if (b->availableHappynessLevel()>=enemyHappyness)
 			{
 				int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
 				if (buildingDist<minDist)
@@ -684,7 +684,7 @@ Building *Team::findNearestFood(Unit *unit)
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
-			if (b->aviableHappynessLevel()>=enemyHappyness)
+			if (b->availableHappynessLevel()>=enemyHappyness)
 			{
 				int buildingDist;
 				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
@@ -721,7 +721,7 @@ Building *Team::findNearestFood(Unit *unit)
 				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 				{
 					Building *b=(*bi);
-					if (b->aviableHappynessLevel()>=enemyHappyness)
+					if (b->availableHappynessLevel()>=enemyHappyness)
 					{
 						int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
 						if (buildingDist<minDist)
@@ -748,7 +748,7 @@ Building *Team::findNearestFood(Unit *unit)
 				for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 				{
 					Building *b=(*bi);
-					if (b->aviableHappynessLevel()>=enemyHappyness)
+					if (b->availableHappynessLevel()>=enemyHappyness)
 					{
 						int buildingDist;
 						if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
@@ -779,7 +779,7 @@ Building *Team::findNearestFood(Unit *unit)
 					for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 					{
 						Building *b=(*bi);
-						if (b->aviableHappynessLevel()>=enemyHappyness)
+						if (b->availableHappynessLevel()>=enemyHappyness)
 						{
 							int buildingDist;
 							if (map->buildingAvailable(b, canSwim, x, y, &buildingDist))
@@ -793,10 +793,10 @@ Building *Team::findNearestFood(Unit *unit)
 									printf(" building bgid=%d buildingDist=%d, minDist=%d\n", b->gid, buildingDist, minDist);
 							}
 							else
-								printf(" building bgid=%d not aviable\n", b->gid);
+								printf(" building bgid=%d not available\n", b->gid);
 						}
 						else
-							printf(" building bgid=%d aviableHappynessLevel()=%d < %d\n", b->gid, b->aviableHappynessLevel(), enemyHappyness);
+							printf(" building bgid=%d availableHappynessLevel()=%d < %d\n", b->gid, b->availableHappynessLevel(), enemyHappyness);
 					}
 				}
 				else
@@ -952,7 +952,7 @@ Building *Team::findBestFillable(Unit *unit)
 		return NULL;
 	
 	SessionGame &session=game->session;
-	// We compute all what's aviable from foreign ressources: (mask)
+	// We compute all what's available from foreign ressources: (mask)
 	Uint32 allForeignSendRessourceMask=0;
 	Uint32 allForeignReceiveRessourceMask=0;
 	for (int ti=0; ti<session.numberOfTeam; ti++)
@@ -979,7 +979,7 @@ Building *Team::findBestFillable(Unit *unit)
 	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
 		return NULL;
 	
-	// We compute all what's aviable from our own ressources: (mask)
+	// We compute all what's available from our own ressources: (mask)
 	Uint32 allOwnSendRessourceMask=0;
 	Uint32 allOwnReceiveRessourceMask=0;
 	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
