@@ -314,16 +314,18 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
 		if (stream)
 		{
+			SDL_RWclose(stream);
 			fprintf(logFile, " we have the file.\n");
 			Uint32 myFileCheckSum=globalContainer->fileManager->checksum(filename);
 			if (serverFileCheckSum==myFileCheckSum)
 			{
 				fprintf(logFile, "  we don't need to download, we have the correct file! checksum (%x)\n", serverFileCheckSum);
-				SDL_RWclose(stream);
 				filename.erase();
 			}
 			else
-				fprintf(logFile, "  we need to download, we have an outdated file! %x!=%x\n", myFileCheckSum, serverFileCheckSum);
+			{
+				fprintf(logFile, "  we need to download, we have an outdated file! (l=)%x!=%x(=r)\n", myFileCheckSum, serverFileCheckSum);
+			}
 		}
 		else
 			fprintf(logFile, " we need to download, we don't have the file!\n");
