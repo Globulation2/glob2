@@ -26,6 +26,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
 {
 	yogGameInfo=NULL;
+	downloadStream=NULL;
 	init(shareOnYOG);
 }
 
@@ -84,6 +85,19 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		yogGameInfo=NULL;
 	}
 	
+	if (downloadStream)
+	{
+		SDL_RWclose(downloadStream);
+		downloadStream=NULL;
+	}
+	unreceivedIndex=0;
+	for (int i=0; i<NET_WINDOW_SIZE; i++)
+	{
+		netWindow[i].index=0;
+		netWindow[i].received=false;
+		netWindow[i].packetSize=0; //set 512 in release
+	}
+	
 	localPort=0;
 }
 
@@ -133,6 +147,109 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
 	waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
+	
+	//do we need to download the file from host ? :
+	if (sessionInfo.mapGenerationDescriptor && sessionInfo.fileIsAMap)
+	{
+		printf("MultiplayersJoin::no need for download, we have a random map.\n");
+	}
+	else
+	{
+		const char *filename=NULL;
+		
+		printf("MultiplayersJoin::we may need to download, we don't have a random map.\n");
+		if (sessionInfo.fileIsAMap)
+			filename=sessionInfo.map.getMapFileName();
+		else
+			filename=sessionInfo.map.getGameFileName();
+		
+		assert(filename);
+		assert(filename[0]);
+		printf("MultiplayersJoin::filename=%s.\n", filename);
+		SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
+		if (stream)
+		{
+			printf("MultiplayersJoin::we don't need to download, we do have the file!\n");
+			SDL_RWclose(stream);
+			filename=NULL;
+		}
+		else
+		{
+			printf("MultiplayersJoin::we do need to download, we don't have the file!\n");
+		}
+		
+		if (filename)
+		{
+			if (downloadStream)
+				SDL_RWclose(downloadStream);
+			downloadStream=globalContainer->fileManager.open(filename,"wb");
+		}
+	}
+	
+	startDownloadTimeout=0;
+}
+
+void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
+{
+	if (downloadStream==NULL)
+	{
+		printf("MultiplayersJoin:: we received an unwanted data file !!!.\n");
+		return;
+	}
+	printf("dwi=(%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
+	int windowIndex=(int)getSint32(data, 4);
+	Uint32 writingIndex=getUint32(data, 8);
+	int writingSize=size-12;
+	NETPRINTF("MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
+	
+	if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
+	{
+		printf("MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
+		return;
+	}
+	
+	if (writingSize==0)
+	{
+		printf("end of the file !!!.\n");
+		SDL_RWclose(downloadStream);
+		downloadStream=NULL;
+	}
+	else
+	{
+		SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
+		SDL_RWwrite(downloadStream, data+12, writingSize, 1);
+
+		netWindow[windowIndex].index=writingIndex;
+		netWindow[windowIndex].received=true;
+		netWindow[windowIndex].packetSize=writingSize;
+
+		printf("unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
+		if (unreceivedIndex==writingIndex)
+		{
+			unreceivedIndex=writingIndex+writingSize;
+			//This was maybe a gap:
+			bool hit=true;
+			while (hit)
+			{
+				NETPRINTF("MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
+				hit=false;
+				for (int i=0; i<NET_WINDOW_SIZE; i++)
+					if (netWindow[windowIndex].received)
+					{
+						Uint32 index=netWindow[windowIndex].index;
+						Uint32 packetSize=netWindow[windowIndex].packetSize;
+						if (unreceivedIndex==index)
+						{
+							unreceivedIndex=index+packetSize;
+							hit=true;
+						}
+					}
+			}
+		}
+		
+		startDownloadTimeout=0;
+	}
+	
 }
 
 void MultiplayersJoin::checkSumConfirmationRecieved(char *data, int size, IPaddress ip)
@@ -357,6 +474,11 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	}
 	switch (data[0])
 	{
+		case FULL_FILE_DATA:
+			printf("part of map received from ip(%x,%d)!\n", ip.host, ip.port);
+			dataFileRecieved(data, size, ip);
+		break;
+	
 		case SERVER_WATER:
 			printf("water received from ip(%x,%d)!\n", ip.host, ip.port);
 		break;
@@ -502,6 +624,10 @@ void MultiplayersJoin::receiveTime()
 							waitingState=WS_TYPING_SERVER_NAME;
 						}
 					}
+				else
+				{
+					NETPRINTF("MultiplayersJoin:NAT: (%s)!=(%s)\n", it->serverNickName, serverNickName);
+				}
 	}
 }
 
@@ -609,6 +735,54 @@ void MultiplayersJoin::sendingTime()
 		else
 			broadcastState=BS_BAD;
 	}
+	
+	if ( (waitingState!=WS_TYPING_SERVER_NAME) && downloadStream && (startDownloadTimeout--<0) )
+	{
+		/*unreceivedIndex=0;
+		for (int i=0; i<NET_WINDOW_SIZE; i++)
+		{
+			netWindow[i].index=0;
+			netWindow[i].received=false;
+			netWindow[i].packetSize=0; //set 512 in release
+		}*/
+		
+		Uint32 firstReceived[16];
+		for (int j=0; j<16; j++)
+		{
+			firstReceived[j]=0xFFFFFFFF;
+			for (int i=0; i<NET_WINDOW_SIZE; i++)
+				if (netWindow[i].received)
+				{
+					Uint32 index=netWindow[i].index;
+					if (index<firstReceived[j])
+						if (j)
+						{
+							if (index>firstReceived[j-1])
+								firstReceived[j]=index;
+						}
+						else
+							firstReceived[j]=index;
+				}
+		}
+		//TODO: calculate what we need !
+		char data[72];
+		memset(data, 0, 72);
+		
+		data[0]=NEW_PLAYER_WANTS_FILE;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		
+		addUint32(data, unreceivedIndex, 4);
+		//for (int ri=0; ri<16; ri++)
+		//	addUint32(data, firstReceived[ri], 8+ri*4);
+		
+		send(data, 72);
+		NETPRINTF("MultiplayersJoin::sending download request\n");
+		NETPRINTF("MultiplayersJoin::(%d; %d)\n", unreceivedIndex, firstReceived[0]);
+		
+		startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
+	}
 
 	if ((waitingState!=WS_TYPING_SERVER_NAME)&&(--waitingTimeout<0))
 	{
@@ -625,6 +799,9 @@ void MultiplayersJoin::sendingTime()
 		}
 		else
 			NETPRINTF("TOTL %d\n", waitingTOTL);
+			
+		
+			
 		switch (waitingState)
 		{
 		case WS_TYPING_SERVER_NAME:
@@ -874,6 +1051,33 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	waitingTimeout=LONG_NETWORK_TIMEOUT;
 	waitingTimeoutSize=LONG_NETWORK_TIMEOUT;
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
+	
+	return true;
+}
+
+bool MultiplayersJoin::send(char *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size);
+
+	assert(packet);
+
+	packet->channel=channel;
+	packet->address=serverIP;
+	packet->len=size;
+	memcpy(packet->data, data, size);
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
+	{
+		NETPRINTF("MultiplayersJoin::send suceeded to send packet\n");
+	}
+	else
+	{
+		NETPRINTF("MultiplayersJoin::send failed to send packet (channel=%d)\n", channel);
+		SDLNet_FreePacket(packet);
+		return false;
+	}
+
+	SDLNet_FreePacket(packet);
+
 	return true;
 }
 
@@ -892,7 +1096,7 @@ bool MultiplayersJoin::send(const int v)
 	packet->data[3]=0;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		NETPRINTF("suceeded to send packet v=%d\n", v);
+		NETPRINTF("MultiplayersJoin::send suceeded to send packet v=%d\n", v);
 		//NETPRINTF("packet->channel=%d\n", packet->channel);
 		//NETPRINTF("packet->len=%d\n", packet->len);
 		//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
@@ -903,7 +1107,7 @@ bool MultiplayersJoin::send(const int v)
 	}
 	else
 	{
-		NETPRINTF("failed to send packet (v=%d) (channel=%d)\n", v, channel);
+		NETPRINTF("MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		SDLNet_FreePacket(packet);
 		return false;
 	}
@@ -931,7 +1135,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 	packet->data[7]=0;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		NETPRINTF("suceeded to send packet v=%d\n", v);
+		NETPRINTF("MultiplayersJoin::send suceeded to send packet v=%d\n", v);
 		//NETPRINTF("packet->channel=%d\n", packet->channel);
 		//NETPRINTF("packet->len=%d\n", packet->len);
 		//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
@@ -942,7 +1146,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 	}
 	else
 	{
-		NETPRINTF("failed to send packet (v=%d) (channel=%d)\n", v, channel);
+		NETPRINTF("MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		SDLNet_FreePacket(packet);
 		return false;
 	}

@@ -122,6 +122,7 @@ public:
 	void unbind();
 	
 	bool send(char *data, int size);
+	bool send(char *data, int size, const int v);
 	bool send(const int v);
 	bool send(const int u, const int v);
 
