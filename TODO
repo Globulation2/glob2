@@ -23,6 +23,7 @@ Pathfindig:
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
 - Le comportement de guerrières doit-être amélioré.
+- Des tas d'unités peuvent bloquer une unité...
 
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
