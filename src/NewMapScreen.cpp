@@ -54,14 +54,17 @@ NewMapScreen::NewMapScreen()
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	int i, id;
 	if (action==BUTTON_RELEASED)
 	{
-		int i, id;
 		if (par1==0)
 		{
 			endExecute(0);
 		}
-		else if ((par1>=10) && (par1<20))
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if ((par1>=10) && (par1<20))
 		{
 			id=par1-10;
 			for (i=0; i<4; i++)
