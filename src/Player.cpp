@@ -77,7 +77,6 @@ void BasePlayer::close(void)
 {
 	if (destroyNet)
 	{
-		printf("I Wanna destroy net player\n");
 		unbind();
 		if (socket)
 		{
@@ -86,6 +85,7 @@ void BasePlayer::close(void)
 		}
 		socket=NULL;
 		channel=-1;
+		destroyNet=false;
 	}
 }
 

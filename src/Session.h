@@ -49,6 +49,7 @@ public:
 	Sint32 gameTPF;//Tick per frame.
 	Sint32 gameLatency;
 private:
+	//! Serialized form of SessionGame
 	char data[16];
 };
 
@@ -72,8 +73,9 @@ public:
 	BaseMap map;
 	BasePlayer players[32];
 	BaseTeam team[32];
-	
+
 private:
+	//! Serialized form of SessionInfo
 	char data[1968];
 };
 

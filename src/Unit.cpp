@@ -1134,7 +1134,7 @@ void Unit::handleMovement(void)
 			}
 			break;
 		}
-		
+
 		case DIS_GOING_TO_RESSOURCE:
 		{
 			movement=MOV_GOING_TARGET;
@@ -1376,7 +1376,7 @@ void Unit::pathFind(void)
 		directionFromDxDy();
 		
 		int cDirection=direction;
-		
+
 		if (direction==8)
 			return;
 		
@@ -1561,7 +1561,7 @@ void Unit::pathFind(void)
 		if (verbose)
 			printf("bypassDirection=%d\n", bypassDirection);
 	}
-	
+
 	if (bypassDirection!=DIR_UNSET)
 	{
 		while (obstacleX<0)
@@ -1624,10 +1624,18 @@ void Unit::pathFind(void)
 
 				obstacleX=posX;
 				obstacleY=posY;
+				int ci=0;
 				while(validHard(obstacleX, obstacleY))
 				{
 					obstacleX+=dctpx;
 					obstacleY+=dctpy;
+					if (ci++>8)
+					{
+						printf("(%d) The obstacle suddenly disappeared\n", UID);
+						gotoTarget(targetX, targetY);
+						bypassDirection=DIR_UNSET;
+						return;
+					}
 				}
 				borderX=obstacleX-dctpx;
 				borderY=obstacleY-dctpy;
@@ -1748,7 +1756,7 @@ void Unit::pathFind(void)
 					c=0;
 					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
 					int currentDistSquare=owner->game->map.warpDistSquare(testBorderX, testBorderY, targetX, targetY);
-					
+
 					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
 						if (verbose)
@@ -1782,7 +1790,7 @@ void Unit::pathFind(void)
 			{
 				if (verbose)
 				{
-					printf("r obstacle not hard! .n");
+					printf("r obstacle not hard! \n");
 					printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
 				}
 				int ctpx=tempTargetX-posX;
@@ -1794,7 +1802,7 @@ void Unit::pathFind(void)
 				}
 				if ((ctpx==0)&&(ctpy==0))
 				{
-					printf("r damn, I''m at destimation! .n");
+					printf("r damn, I''m at destimation! \n");
 					gotoTarget(targetX, targetY);
 					bypassDirection=DIR_UNSET;
 					return;
@@ -1805,10 +1813,18 @@ void Unit::pathFind(void)
 
 				obstacleX=posX;
 				obstacleY=posY;
+				int ci=0;
 				while(validHard(obstacleX, obstacleY))
 				{
 					obstacleX+=dctpx;
 					obstacleY+=dctpy;
+					if (ci++>8)
+					{
+						printf("(%d) The obstacle suddenly disappeared\n", UID);
+						gotoTarget(targetX, targetY);
+						bypassDirection=DIR_UNSET;
+						return;
+					}
 				}
 
 				borderX=obstacleX-dctpx;

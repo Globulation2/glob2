@@ -607,6 +607,10 @@ void MapEdit::save(const char *name)
 	SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 	if (stream)
 	{
+		strncpy(game.map.mapName, name, 32);
+		char *c=strrchr(game.map.mapName, '.');
+		if (c)
+			*c=0;
 		game.save(stream);
 		SDL_RWclose(stream);
 		char text[256];

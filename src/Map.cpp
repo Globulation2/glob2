@@ -1049,7 +1049,7 @@ void Map::saveThumbnail(SDL_RWops *stream)
 	int dx, dy;
 	float dMx, dMy;
 	float minidx, minidy;
-	Uint8 data[128*128];
+	Uint8 tempdata[128*128];
 
 	dMx=(float)w/128.0f;
 	dMy=(float)h/128.0f;
@@ -1080,8 +1080,8 @@ void Map::saveThumbnail(SDL_RWops *stream)
 						isSand=true;
 				}
 			}
-			data[dy*128+dx]=isWater+(isSand<<1)+(isGrass<<2)+(isWood<<3)+(isCorn<<4)+(isStone<<5)+(isSeaweed<<6);
+			tempdata[dy*128+dx]=isWater+(isSand<<1)+(isGrass<<2)+(isWood<<3)+(isCorn<<4)+(isStone<<5)+(isSeaweed<<6);
 		}
 	}
-	SDL_RWwrite(stream, data, 128*128, 1);
+	SDL_RWwrite(stream, tempdata, 128*128, 1);
 }
