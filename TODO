@@ -10,15 +10,40 @@ To First release :
 - Balancer clearing attack.
 - disonnect /disconnect
 
+-Faire un gradient dand les "forbiddeanMask".
+-Tenir compte des unités qui apportent déja quelquechose.
+-Enlever la latence des informations des drapeaux.
+
+AICastor:
+- batiment plus près d'une ressource.
+- giveUp + delay pour les Projects
+- wheatExploitCareMap pour éviter de mettre trop de batiments à la même place.
+- permettre de mettre les batiment !food par plus de deux.
+- mettre un "critical on food" pour produir plus de greniers.
+- gestion des upgrades.
+- amener les explos aux bons endroits.
+- refaire wheatCareMap.
+- vérifier les upgrades
+- ajouer des forbidden flags pour chaque wheatCareMap==8. ?
+- mieux placer les tourelles.
+Done:
+- si hp<50%, alors réparer ?
+- ne plus construire de food buildings lorsuque les unités ne sont pas assez rapidement produites.
+- finir les enemis.
+
 Wishlists:
 http://ysagoon.com/phpBB2/viewtopic.php?t=42&sid=755083a5e3af8f0caf75558feb7e0e15
 http://ysagoon.com/phpBB2/viewtopic.php?t=45&sid=755083a5e3af8f0caf75558feb7e0e15
+-Pouvoir replanter/transferer des ressources.
+-Ajouter des routes.
+-avoir des mini icones pour voir ce que transportent les ouvrières
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
 
 IngameGUI:
 -On ne sait pas qui est mort.
+-Cliquer sur ses propres batiments sous le noir facilement.
 
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
@@ -37,6 +62,8 @@ Optimisation:
 
 Optimisation efficacité:
 - Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
+- Utiliser la gradient du batiment comme option en alant chercher une ressource.
+- Sortir du côté ou il y a le moins de ressources.
 
 Technique :
 - optimiser l'affichage des boulets
