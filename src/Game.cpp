@@ -1158,7 +1158,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int amount=r.field.amount;
 					int variety=r.field.variety;
 					assert(type>=0);
-					assert(type<4);
+					assert(type<5);
 					assert(amount>=0);
 					assert(amount<5);
 					assert(variety>=0);
