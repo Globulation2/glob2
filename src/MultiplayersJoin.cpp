@@ -27,7 +27,7 @@
 
 // If you don't have SDL_net 1.2.5 some features won't be aviable.
 #ifndef INADDR_BROADCAST
-#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#define INADDR_BROADCAST ()
 #endif
 
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
@@ -554,9 +554,9 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 				sessionInfo.players[p].ipFirewallClean=true;
 			}
 		}
-		else
+		else if (sessionInfo.players[p].ip.port!=ip.port)
 		{
-			fprintf(logFile, " warning, a different ip.host recevied! p=(%d) current ip=(%s), received ip=(%s)\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
+			fprintf(logFile, " warning, a different ip recevied! p=(%d) current ip=(%s), received ip=(%s)\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 			return;
 		}
 		
