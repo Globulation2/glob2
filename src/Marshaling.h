@@ -136,5 +136,17 @@ inline Uint8 getUint8(const char *data, int pos)
 	return *(((Uint8 *)data)+pos);
 }
 
+// 8 bit, Sint8* version:
+
+inline void addSint8(const char *data, Sint8 val, int pos)
+{
+	*(((Uint8 *)data)+pos)=val;
+}
+
+inline Sint8 getSint8(const char *data, int pos)
+{
+	return *(((Sint8 *)data)+pos);
+}
+
 #endif
  

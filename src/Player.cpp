@@ -148,47 +148,91 @@ Uint8 BasePlayer::getOrderType()
 	return DATA_BASE_PLAYER;
 }
 
-char *BasePlayer::getData()
+char *BasePlayer::getData(bool compressed)
 {
-	addSint32(data, (Sint32)type, 0);
-	addSint32(data, number, 4);
-	addSint32(data, numberMask, 8);
-	addSint32(data, teamNumber, 12);
-	addSint32(data, teamNumberMask, 16);
-	Uint32 netHost=SDL_SwapBE32((Uint32)ip.host);
-	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
-	addUint32(data, netHost, 20);
-	addUint32(data, netPort, 24);
-	addSint32(data, (Sint32)ipFromNAT, 28);
-	
-	memcpy(data+32, name, MAX_NAME_LENGTH);
+	if (compressed)
+	{
+		// we start with alignement-needed variables:
+		Uint32 netHost=SDL_SwapBE32((Uint32)ip.host);
+		Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
+		addSint32(data, netHost, 0);
+		addSint32(data, netPort, 4);
+		
+		addSint8(data, (Sint8)type, 8);
+		addSint8(data, (Sint8)number, 9);
+		assert(numberMask==(Uint32)(1<<number));
+		addSint8(data, (Sint8)teamNumber, 10);
+		assert(teamNumberMask==(Uint32)(1<<teamNumber));
+		
+		addSint8(data, (Sint8)ipFromNAT, 11);
+
+		memcpy(data+12, name, MAX_NAME_LENGTH);
+	}
+	else
+	{
+		addSint32(data, (Sint32)type, 0);
+		addSint32(data, number, 4);
+		addSint32(data, numberMask, 8);
+		addSint32(data, teamNumber, 12);
+		addSint32(data, teamNumberMask, 16);
+		Uint32 netHost=SDL_SwapBE32((Uint32)ip.host);
+		Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
+		addUint32(data, netHost, 20);
+		addUint32(data, netPort, 24);
+		addSint32(data, (Sint32)ipFromNAT, 28);
+
+		memcpy(data+32, name, MAX_NAME_LENGTH);
+	}
 	return data;
 }
 
-bool BasePlayer::setData(const char *data, int dataLength)
+bool BasePlayer::setData(const char *data, int dataLength, bool compressed)
 {
-	if (dataLength!=getDataLength())
+	if (dataLength!=getDataLength(compressed))
 		return false;
 	
-	type=(BasePlayer::PlayerType)getSint32(data, 0);
-	number=getSint32(data, 4);
-	numberMask=getSint32(data, 8);
-	teamNumber=getSint32(data, 12);
-	teamNumberMask=getSint32(data, 16);
-	Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32(data, 20));
-	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 24));
-	ip.host=newHost;
-	ip.port=newPort;
-	ipFromNAT=(bool)getSint32(data, 28);
-	
-	memcpy(name, data+32, MAX_NAME_LENGTH);
+	if (compressed)
+	{
+		Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32(data, 0));
+		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 4));
+		ip.host=newHost;
+		ip.port=newPort;
+		
+		type=(BasePlayer::PlayerType)getSint8(data, 8);
+		number=(Sint32)getSint8(data, 9);
+		numberMask=1<<number;
+		teamNumber=(Sint32)getSint8(data, 10);
+		teamNumberMask=1<<teamNumber;
+		
+		ipFromNAT=(bool)getSint8(data, 11);
+
+		memcpy(name, data+12, MAX_NAME_LENGTH);
+	}
+	else
+	{
+		type=(BasePlayer::PlayerType)getSint32(data, 0);
+		number=getSint32(data, 4);
+		numberMask=getSint32(data, 8);
+		teamNumber=getSint32(data, 12);
+		teamNumberMask=getSint32(data, 16);
+		Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32(data, 20));
+		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 24));
+		ip.host=newHost;
+		ip.port=newPort;
+		ipFromNAT=(bool)getSint32(data, 28);
+
+		memcpy(name, data+32, MAX_NAME_LENGTH);
+	}
 	
 	return true;
 }
 
-int BasePlayer::getDataLength()
+int BasePlayer::getDataLength(bool compressed)
 {
-	return (32+MAX_NAME_LENGTH);
+	if (compressed)
+		return 12+MAX_NAME_LENGTH;
+	else
+		return 32+MAX_NAME_LENGTH;
 }
 
 Sint32 BasePlayer::checkSum()

@@ -171,7 +171,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 
 	unCrossConnectSessionInfo();
 
-	if (!sessionInfo.setData(data+8, size-8))
+	if (!sessionInfo.setData(data+8, size-8, true))
 	{
 		fprintf(logFile, "Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;

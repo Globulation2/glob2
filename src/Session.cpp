@@ -43,6 +43,8 @@ SessionGame::SessionGame()
 	fileIsAMap=(Sint32)true;
 	
 	mapGenerationDescriptor=NULL;
+	
+	logFile=globalContainer->logFileManager.getFile("SessionGame.log");
 }
 
 SessionGame::~SessionGame(void)
@@ -255,61 +257,122 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		assert(false);
 }
 
-char *SessionGame::getData()
+char *SessionGame::getData(bool compressed)
 {
-	addSint32(data, versionMajor, 0);
-	addSint32(data, versionMinor, 4);
-	addSint32(data, numberOfPlayer, 8);
-	addSint32(data, numberOfTeam, 12);
-	addSint32(data, gameTPF, 16);
-	addSint32(data, gameLatency, 20);
-	addSint32(data, fileIsAMap, 24);
-	if (mapGenerationDescriptor)
+	if (compressed)
 	{
-		addSint32(data, 1, 28);
-		assert(mapGenerationDescriptor->getDataLength()==MapGenerationDescriptor::DATA_SIZE);
-		memcpy(data+32, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
+		fprintf(logFile, "getData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
+			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
+		addSint8(data, (Sint8)versionMajor, 0);
+		addSint8(data, (Sint8)versionMinor, 1);
+		addSint8(data, (Sint8)numberOfPlayer, 2);
+		addSint8(data, (Sint8)numberOfTeam, 3);
+		addSint8(data, (Sint8)gameTPF, 4);
+		addSint8(data, (Sint8)gameLatency, 5);
+		addSint8(data, (Sint8)fileIsAMap, 6);
+		if (mapGenerationDescriptor)
+		{
+			addSint8(data, 1, 7);
+			// TODO: make a compression for mapGenerationDescriptor
+			assert(mapGenerationDescriptor->getDataLength()==MapGenerationDescriptor::DATA_SIZE);
+			memcpy(data+8, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
+		}
+		else
+			addSint8(data, 0, 7);
 	}
 	else
-		addSint32(data, 0, 28);
-	
+	{
+		addSint32(data, versionMajor, 0);
+		addSint32(data, versionMinor, 4);
+		addSint32(data, numberOfPlayer, 8);
+		addSint32(data, numberOfTeam, 12);
+		addSint32(data, gameTPF, 16);
+		addSint32(data, gameLatency, 20);
+		addSint32(data, fileIsAMap, 24);
+		if (mapGenerationDescriptor)
+		{
+			addSint32(data, 1, 28);
+			assert(mapGenerationDescriptor->getDataLength()==MapGenerationDescriptor::DATA_SIZE);
+			memcpy(data+32, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
+		}
+		else
+			addSint32(data, 0, 28);
+	}
 	return data;
 }
 
-bool SessionGame::setData(const char *data, int dataLength)
+bool SessionGame::setData(const char *data, int dataLength, bool compressed)
 {
-	if (dataLength!=SessionGame::getDataLength())
-		return false;
-
-	versionMajor=getSint32(data, 0);
-	versionMinor=getSint32(data, 4);
-	numberOfPlayer=getSint32(data, 8);
-	numberOfTeam=getSint32(data, 12);
-	gameTPF=getSint32(data, 16);
-	gameLatency=getSint32(data, 20);
-	fileIsAMap=getSint32(data, 24);
-	if (mapGenerationDescriptor)
-		delete mapGenerationDescriptor;
-	mapGenerationDescriptor=NULL;
-	bool isDescriptor=getSint32(data, 28);
-	if (isDescriptor)
+	if (compressed)
 	{
-		mapGenerationDescriptor=new MapGenerationDescriptor();
-		mapGenerationDescriptor->setData(data+32, MapGenerationDescriptor::DATA_SIZE);
+		if (dataLength!=SessionGame::getDataLength(true))
+			return false;
+
+		versionMajor=getSint8(data, 0);
+		versionMinor=getSint8(data, 1);
+		numberOfPlayer=getSint8(data, 2);
+		numberOfTeam=getSint8(data, 3);
+		gameTPF=getSint8(data, 4);
+		gameLatency=getSint8(data, 5);
+		fileIsAMap=getSint8(data, 6);
+		if (mapGenerationDescriptor)
+			delete mapGenerationDescriptor;
+		mapGenerationDescriptor=NULL;
+		bool isDescriptor=getSint8(data, 7);
+		if (isDescriptor)
+		{
+			mapGenerationDescriptor=new MapGenerationDescriptor();
+			mapGenerationDescriptor->setData(data+8, MapGenerationDescriptor::DATA_SIZE);
+		}
+		else
+			mapGenerationDescriptor=NULL;
+		fprintf(logFile, "setData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
+			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
 	}
 	else
+	{
+		if (dataLength!=SessionGame::getDataLength())
+			return false;
+
+		versionMajor=getSint32(data, 0);
+		versionMinor=getSint32(data, 4);
+		numberOfPlayer=getSint32(data, 8);
+		numberOfTeam=getSint32(data, 12);
+		gameTPF=getSint32(data, 16);
+		gameLatency=getSint32(data, 20);
+		fileIsAMap=getSint32(data, 24);
+		if (mapGenerationDescriptor)
+			delete mapGenerationDescriptor;
 		mapGenerationDescriptor=NULL;
-	
+		bool isDescriptor=getSint32(data, 28);
+		if (isDescriptor)
+		{
+			mapGenerationDescriptor=new MapGenerationDescriptor();
+			mapGenerationDescriptor->setData(data+32, MapGenerationDescriptor::DATA_SIZE);
+		}
+		else
+			mapGenerationDescriptor=NULL;
+	}
 	return true;
 }
 
 
-int SessionGame::getDataLength()
+int SessionGame::getDataLength(bool compressed)
 {
-	if (mapGenerationDescriptor)
-		return S_GAME_DATA_SIZE;
+	if (compressed)
+	{
+		if (mapGenerationDescriptor)
+			return 8+mapGenerationDescriptor->getDataLength();
+		else
+			return 8;
+	}
 	else
-		return S_GAME_ONLY_DATA_SIZE;
+	{
+		if (mapGenerationDescriptor)
+			return S_GAME_DATA_SIZE;
+		else
+			return S_GAME_ONLY_DATA_SIZE;
+	}
 }
 
 Sint32 SessionGame::checkSum()
@@ -406,68 +469,144 @@ Uint8 SessionInfo::getOrderType()
 	return DATA_SESSION_INFO;
 }
 
-char *SessionInfo::getData()
+char *SessionInfo::getData(bool compressed)
 {
-	int l=0;
-	int i;
-	
-	memcpy(l+data, map.getData(), map.getDataLength() );
-	l+=map.getDataLength();
-
-	for (i=0; i<32; ++i)
+	if (compressed)
 	{
-		assert(players[i].getDataLength()==64);
-		memcpy(l+data, players[i].getData(), players[i].getDataLength() );
-		l+=players[i].getDataLength();
-	}
+		int l=0;
 
-	for (i=0; i<32; ++i)
-	{
-		assert(team[i].getDataLength()==16);
-		memcpy(l+data, team[i].getData(), team[i].getDataLength() );
-		l+=team[i].getDataLength();
+		// TODO: make a compressed version for map data.
+		memcpy(l+data, map.getData(), map.getDataLength() );
+		l+=map.getDataLength();
+		fprintf(logFile, "getData::mapName=%s\n", map.getMapName());
+
+		memcpy(l+data, SessionGame::getData(true), SessionGame::getDataLength(true));
+		l+=SessionGame::getDataLength(true);
+		
+		for (int i=0; i<numberOfPlayer; ++i)
+		{
+			assert(players[i].getDataLength(true)==44);
+			memcpy(l+data, players[i].getData(true), players[i].getDataLength(true));
+			l+=players[i].getDataLength(true);
+		}
+
+		for (int i=0; i<numberOfTeam; ++i)
+		{
+			assert(team[i].getDataLength()==16);
+			// TODO: make a compressed version for team data.
+			memcpy(l+data, team[i].getData(), team[i].getDataLength());
+			l+=team[i].getDataLength();
+		}
+
+		assert(l==getDataLength(true));
+		return data;
 	}
-	
-	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
-	l+=SessionGame::getDataLength();
-	
-	assert(l==getDataLength());
-	return data;
+	else
+	{
+		int l=0;
+
+		memcpy(l+data, map.getData(), map.getDataLength() );
+		l+=map.getDataLength();
+
+		for (int i=0; i<32; ++i)
+		{
+			assert(players[i].getDataLength()==64);
+			memcpy(l+data, players[i].getData(), players[i].getDataLength());
+			l+=players[i].getDataLength();
+		}
+
+		for (int i=0; i<32; ++i)
+		{
+			assert(team[i].getDataLength()==16);
+			memcpy(l+data, team[i].getData(), team[i].getDataLength());
+			l+=team[i].getDataLength();
+		}
+
+		memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength());
+		l+=SessionGame::getDataLength();
+
+		assert(l==getDataLength());
+		return data;
+	}
 }
 
-bool SessionInfo::setData(const char *data, int dataLength)
+bool SessionInfo::setData(const char *data, int dataLength, bool compressed)
 {
-	int l=0;
-	int i;
-
-	map.setData(l+data, map.getDataLength());
-	l+=map.getDataLength();
-
-	for (i=0; i<32; ++i)
+	if (compressed)
 	{
-		players[i].setData(l+data, players[i].getDataLength());
-		l+=players[i].getDataLength();
-	}
+		int l=0;
+		
+		map.setData(l+data, map.getDataLength());
+		l+=map.getDataLength();
+		fprintf(logFile, "setData::mapName=%s\n", map.getMapName());
 
-	for (i=0; i<32; ++i)
+		bool good=SessionGame::setData(l+data, SessionGame::getDataLength(true), true);
+		l+=SessionGame::getDataLength(true);
+		if (!good)
+			return false;
+		
+		for (int i =0; i<numberOfPlayer; ++i)
+		{
+			players[i].setData(l+data, players[i].getDataLength(true), true);
+			l+=players[i].getDataLength(true);
+		}
+
+		for (int i=0; i<numberOfTeam; ++i)
+		{
+			team[i].setData(l+data, team[i].getDataLength());
+			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			l+=team[i].getDataLength();
+		}
+
+		if(l!=getDataLength(true))
+			return false;
+
+		return true;
+	}
+	else
 	{
-		team[i].setData(l+data, team[i].getDataLength());
-		team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
-		l+=team[i].getDataLength();
-	}
+		int l=0;
 
-	SessionGame::setData(l+data, SessionGame::getDataLength() );
-	l+=SessionGame::getDataLength();
-	
-	if(l!=getDataLength())
-		return false;
-	
-	return true;
+		map.setData(l+data, map.getDataLength());
+		l+=map.getDataLength();
+
+		for (int i=0; i<32; ++i)
+		{
+			players[i].setData(l+data, players[i].getDataLength());
+			l+=players[i].getDataLength();
+		}
+
+		for (int i=0; i<32; ++i)
+		{
+			team[i].setData(l+data, team[i].getDataLength());
+			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			l+=team[i].getDataLength();
+		}
+
+		bool good=SessionGame::setData(l+data, SessionGame::getDataLength());
+		l+=SessionGame::getDataLength();
+		if (!good)
+			return false;
+			
+		if(l!=getDataLength())
+			return false;
+
+		return true;
+	}
 }
 
-int SessionInfo::getDataLength()
+int SessionInfo::getDataLength(bool compressed)
 {
-	return S_INFO_ONLY_DATA_SIZE+SessionGame::getDataLength();
+	if (compressed)
+	{
+		if (numberOfPlayer>0)
+			assert(players[0].getDataLength(true)==44);
+		if (numberOfTeam>0)
+			assert(team[0].getDataLength()==16);
+		return map.getDataLength()+SessionGame::getDataLength(true)+numberOfPlayer*44+numberOfTeam*16;
+	}
+	else
+		return S_INFO_ONLY_DATA_SIZE+SessionGame::getDataLength();
 }
 
 Sint32 SessionInfo::checkSum()
