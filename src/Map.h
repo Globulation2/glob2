@@ -55,6 +55,7 @@ struct Case
 	Uint16 airUnit;
 
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
+	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
 };
 
 
@@ -180,12 +181,27 @@ public:
 		return localForbiddenMap.get(w*(y&hMask)+(x&wMask));
 	}
 	
+	//! Return true if the position (x,y) is a guard area set by the user
+	bool isGuardAreaLocal(int x, int y)
+	{
+		return localGuardAreaMap.get(w*(y&hMask)+(x&wMask));
+	}
+	
 	//! Compute localForbiddenMap from cases array
 	void computeLocalForbidden(int localTeamNo);
+	//! Compute localGuardAreaMap from cases array
+	void computeLocalGuardArea(int localTeamNo);
 
+	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y)
 	{
 		return (*(cases+w*(y&hMask)+(x&wMask))).terrain;
+	}
+	
+	//! Return the terrain for a gievn position in case array
+	inline Uint16 getTerrain(unsigned pos)
+	{
+		return (cases+pos)->terrain;
 	}
 
 	//! Return the typeof terrain. If type is unregistred, returns unknown (-1).
@@ -227,15 +243,15 @@ public:
 		(*(cases+w*(y&hMask)+(x&wMask))).forbidden=forbidden;
 	}
 	
-	void setForbiddenCircularArea(int x, int y, int r, Uint32 me);
-	void setForbiddenSquareArea(int x, int y, int r, Uint32 me);
-	void clearForbiddenCircularArea(int x, int y, int r, Uint32 me);
-	void clearForbiddenSquareArea(int x, int y, int r, Uint32 me);
-	void clearForbiddenArea(Uint32 me);
-
-	inline bool isWater(int x, int y)
+	bool isWater(int x, int y)
 	{
-		int t=getTerrain(x, y)-256;
+		int t = getTerrain(x, y)-256;
+		return ((t>=0) && (t<16));
+	}
+	
+	bool isWater(unsigned pos)
+	{
+		int t = getTerrain(pos)-256;
 		return ((t>=0) && (t<16));
 	}
 
@@ -392,9 +408,16 @@ public:
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
+	//! Find the best direction toward gaurd area, return true if one has been found, false otherwise
+	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	void updateForbiddenGradient(int teamNumber);
 	void updateForbiddenGradient();
+	//! Update the guard area gradient
+	void updateGuardAreasGradient(int teamNumber, bool canSwim);
+	void updateGuardAreasGradient(int teamNumber);
+	void updateGuardAreasGradient();
 	
 protected:
 	// computationals pathfinding statistics:
@@ -498,14 +521,23 @@ public:
 	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
 	//! true = forbidden
 	Utilities::BitArray localForbiddenMap;
+	//! true = guard area
+	Utilities::BitArray localGuardAreaMap;
 	
 public:
+	// Used to go to ressources
 	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
 	//255=ressource, 0=obstacle, the higher it is, the closest it is from the ressouce.
 	Uint8 *ressourcesGradient[32][MAX_NB_RESSOURCES][2];
 	
+	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim][int mapX][int mapY]
 	Uint8 *forbiddenGradient[32][2];
+	
+	// Used to attrack idle warriors into guard areas
+	//[int team][bool unitCanSwim][int mapX][int mapY]
+	Uint8 *guardAreasGradient[32][2];
+	
 protected:
 	//Used for scheduling computation time.
 	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];

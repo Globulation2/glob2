@@ -114,6 +114,8 @@ Stone wall
 Market
 [forbidden area]
 Forbidden area
+[guard area]
+Guard area
 [Building short explanation]
 Building short explanation (24 chars max)
 [swarm building explanation]

@@ -209,7 +209,12 @@ private:
 	void checkSelection(void);
 	
 	// Brushes
-	BrushTool forbiddenBrush;
+	enum BrushType
+	{
+		FORBIDDEN_BRUSH = 0,
+		GUARD_AREA_BRUSH = 1
+	} brushType;
+	BrushTool brush;
 	BrushAccumulator brushAccumulator;
 
 	// What's visible or hidden on GUI
