@@ -1692,7 +1692,7 @@ void GameGUI::drawOverlayInfos(void)
 			ymesg+=32;
 		
 		// display messages
-		for (std::list <Message>::iterator it=messagesList.end(); it!=messagesList.begin();)
+		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
 			/*globalContainer->standardFont->pushColor(0, 0, 0);
 			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
@@ -1706,14 +1706,13 @@ void GameGUI::drawOverlayInfos(void)
 			ymesg+=20;
 			
 			// delete old messages
-			if (!(--it->showTicks))
+			if (!(--(it->showTicks)))
 			{
 				it=messagesList.erase(it);
-				--it;
 			}
 			else
 			{
-				--it;
+				++it;
 			}
 			
 		}
@@ -1759,7 +1758,7 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->drawCircle(x, y, (ray*11)/8, it->r, it->g, it->b, a);
 			
 			// delete old marks
-			if (!(--it->showTicks))
+			if (!(--(it->showTicks)))
 			{
 				it=markList.erase(it);
 			}
@@ -2122,7 +2121,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	message.b = b;
 	message.a = DrawableSurface::ALPHA_OPAQUE;
 	
-	messagesList.push_front(message);
+	messagesList.push_back(message);
 }
 
 void GameGUI::addMark(MapMarkOrder *mmo)
