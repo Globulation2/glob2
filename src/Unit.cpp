@@ -90,7 +90,7 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	// warriors wait more tiem before going to eat
 	hungry=HUNGRY_MAX;
 	if (performance[ATTACK_SPEED])
-		trigHungry=(hubgry*2)/10;
+		trigHungry=(hungry*2)/10;
 	else
 		trigHungry=(hungry*5)/20;
 
