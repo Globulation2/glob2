@@ -18,6 +18,14 @@
 */
 
 #include "NewMapScreen.h"
+#include <GUIText.h>
+#include <GUINumber.h>
+#include <GUIRatio.h>
+#include <GUIButton.h>
+#include <GUIList.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 HowNewMapScreen::HowNewMapScreen()
 {
@@ -35,10 +43,6 @@ void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-void HowNewMapScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-}
 
 NewMapScreen::NewMapScreen()
 {
@@ -103,7 +107,7 @@ NewMapScreen::NewMapScreen()
 	nbWorkers->setNth(descriptor.nbWorkers-1);
 	nbWorkers->visible=false;
 	addWidget(nbWorkers);
-	
+
 	numberOfTeamText=new Text(430, 100, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
 	numberOfTeamText->visible=false;
 	addWidget(numberOfTeamText);
@@ -264,7 +268,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.waterRatio=waterRatio->get();
 		descriptor.sandRatio=sandRatio->get();
 		descriptor.grassRatio=grassRatio->get();
-		
+
 		//eISLANDS
 		descriptor.islandsSize=islandsSize->get();
 	}
@@ -272,9 +276,4 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		
 	}
-}
-
-void NewMapScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 }

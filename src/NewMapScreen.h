@@ -22,7 +22,12 @@
 
 #include "Map.h"
 #include "MapGenerationDescriptor.h"
-#include <GAG.h>
+#include <GUIBase.h>
+
+class Number;
+class Text;
+class Ratio;
+class List;
 
 //! This screen allows to choose how to make a new map
 class HowNewMapScreen:public Screen
@@ -42,8 +47,6 @@ public:
 	virtual ~HowNewMapScreen() { }
 	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
-	//! Paint handler
-	void paint(int x, int y, int w, int h);
 };
 
 //! This screen allows to choose the size of the map and the default background
@@ -78,8 +81,6 @@ public:
 	virtual ~NewMapScreen() { }
 	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
-	//! Paint handler
-	void paint(int x, int y, int w, int h);
 };
 
 #endif
