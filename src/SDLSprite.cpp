@@ -22,6 +22,149 @@
 #include <math.h>
 #include "GlobalContainer.h"
 
+SDLSprite::Palette::Palette()
+{
+	FILE *palFP=globalContainer->fileManager.openFP("data/pal.txt", "rb");
+	assert (palFP);
+	if (palFP)
+	{
+		char temp[256];
+		int i;
+		int r, g, b;
+		fgets(temp, 256, palFP);
+		assert(strcmp(temp, "GIMP Palette\n")==0);
+		for (i=0; i<256; i++)
+		{
+			fgets(temp, 256, palFP);
+			sscanf(temp, "%d %d %d", &r, &g, &b);
+			origR[i]=r;
+			origG[i]=g;
+			origB[i]=b;
+		}
+	}
+	rTransformed=0;
+	gTransformed=255;
+	bTransformed=0;
+}
+
+void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
+{
+	if ((r!=rTransformed) || (g!=gTransformed) || (b!=bTransformed))
+	{
+		float hue, lum, sat;
+		float baseHue;
+		float hueDec;
+		float nR, nG, nB;
+		int i;
+		RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+		RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
+		hueDec=hue-baseHue;
+		for (i=0; i<256; i++)
+		{
+			RGBtoHSV( ((float)origR[i])/255, ((float)origG[i])/255, ((float)origB[i])/255, &hue, &sat, &lum);
+			HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
+			colors[i]=((Uint32)(255*nR)<<16)+((Uint32)(255*nG)<<8)+(Uint32)(255*nB);
+		}
+		rTransformed=r;
+		gTransformed=g;
+		bTransformed=b;
+	}
+}
+
+void SDLSprite::Palette::RGBtoHSV( float r, float g, float b, float *h, float *s, float *v )
+{
+	float min, max, delta;
+	min = fmin( r, g, b );
+	max = fmax( r, g, b );
+	*v = max;				// v
+	delta = max - min;
+	if( max != 0 )
+		*s = delta / max;		// s
+	else {
+		// r = g = b = 0		// s = 0, v is undefined
+		*s = 0;
+		*h = -1;
+		return;
+	}
+	if( r == max )
+		*h = ( g - b ) / delta;		// between yellow & magenta
+	else if( g == max )
+		*h = 2 + ( b - r ) / delta;	// between cyan & yellow
+	else
+		*h = 4 + ( r - g ) / delta;	// between magenta & cyan
+	*h *= 60;				// degrees
+	if( *h < 0 )
+		*h += 360;
+}
+
+void SDLSprite::Palette::HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
+{
+	int i;
+	float f, p, q, t;
+	if( s == 0 ) {
+		// achromatic (grey)
+		*r = *g = *b = v;
+		return;
+	}
+	h /= 60;			// sector 0 to 5
+	i = (int)floor( h );
+	f = h - i;			// factorial part of h
+	p = v * ( 1 - s );
+	q = v * ( 1 - s * f );
+	t = v * ( 1 - s * ( 1 - f ) );
+	switch( i ) {
+		case 0:
+			*r = v;
+			*g = t;
+			*b = p;
+			break;
+		case 1:
+			*r = q;
+			*g = v;
+			*b = p;
+			break;
+		case 2:
+			*r = p;
+			*g = v;
+			*b = t;
+			break;
+		case 3:
+			*r = p;
+			*g = q;
+			*b = v;
+			break;
+		case 4:
+			*r = t;
+			*g = p;
+			*b = v;
+			break;
+		default:		// case 5:
+			*r = v;
+			*g = p;
+			*b = q;
+			break;
+	}
+}
+
+float SDLSprite::Palette::fmin(float f1, float f2, float f3)
+{
+	if ((f1<=f2) && (f1<=f3))
+		return f1;
+	else if (f2<=f3)
+		return f2;
+	else
+		return f3;
+}
+
+float SDLSprite::Palette::fmax(float f1, float f2, float f3)
+{
+	if ((f1>=f2) && (f1>=f3))
+		return f1;
+	else if (f2>=f3)
+		return f2;
+	else
+		return f3;
+}
 
 void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
@@ -128,6 +271,36 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 			sy++;
 		}
 	}
+
+	if ((paletizeds[index]) && (paletizeds[index]->format->BitsPerPixel==8) && (dest->format->BitsPerPixel==32))
+	{
+		int dx, dy;
+		int sy;
+		Uint8 color;
+		// as all this is a hack to support legacy gfx, 0 is the colorkey
+		Uint8 key=0;
+		Uint8 *sPtr;
+		Uint32 *dPtr;
+
+		sy=src.y;
+		for (dy=r.y; dy<r.y+r.h; dy++)
+		{
+			sPtr=((Uint8 *)paletizeds[index]->pixels)+sy*paletizeds[index]->pitch+src.x;
+			dPtr=((Uint32 *)(dest->pixels))+dy*(dest->pitch>>2)+r.x;
+			dx=w;
+			do
+			{
+				color=*sPtr;
+				if (color!=key)
+					*dPtr=pal.colors[color];
+				dPtr++;
+				sPtr++;
+			}
+			while (--dx);
+			sy++;
+		}
+	}
+
 	SDL_UnlockSurface(dest);
 	SDL_SetClipRect(dest, &oldr);
 }
@@ -145,9 +318,14 @@ SDLSprite::~SDLSprite()
 		if (*masksIt)
 			SDL_FreeSurface((*masksIt));
 	}
+	for (std::vector <SDL_Surface *>::iterator paletizedsIt=paletizeds.begin(); paletizedsIt!=paletizeds.end(); ++paletizedsIt)
+	{
+		if (*paletizedsIt)
+			SDL_FreeSurface((*paletizedsIt));
+	}
 }
 
-void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream)
+void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_RWops *paletizedStream)
 {
 	if (frameStream)
 	{
@@ -160,7 +338,6 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream)
 	else
 		images.push_back(NULL);
 
-
 	if (overlayStream)
 	{
 		SDL_Surface *sprite;
@@ -169,6 +346,15 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream)
 	}
 	else
 		masks.push_back(NULL);
+
+	if (paletizedStream)
+	{
+		SDL_Surface *sprite;
+		sprite=IMG_Load_RW(paletizedStream, 0);
+		paletizeds.push_back(sprite);
+	}
+	else
+		paletizeds.push_back(NULL);
 }
 
 int SDLSprite::getW(int index)
@@ -179,6 +365,8 @@ int SDLSprite::getW(int index)
 		return images[index]->w;
 	else if (masks[index])
 		return masks[index]->w;
+	else if (paletizeds[index])
+		return paletizeds[index]->w;
 	else
 		return 0;
 }
@@ -191,6 +379,8 @@ int SDLSprite::getH(int index)
 		return images[index]->h;
 	else if (masks[index])
 		return masks[index]->h;
+	else if (paletizeds[index])
+		return paletizeds[index]->h;
 	else
 		return 0;
 }

@@ -658,12 +658,12 @@ void SDLGraphicContext::updateRect(int x, int y, int w, int h)
 	SDL_UpdateRect(surface, x, y, w, h);
 }
 
-SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool overlay)
+SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageType type)
 {
 	SDL_RWops *imageStream;
 	char temp[1024];
 
-	if (overlay)
+	if (type==OVERLAY)
 	{
 		sprintf(temp, "%s%dm.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
@@ -698,7 +698,7 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool ov
 			return imageStream;
 #endif
 	}
-	else
+	else if (type==NORMAL)
 	{
 		sprintf(temp, "%s%d.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
@@ -733,6 +733,41 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool ov
 			return imageStream;
 #endif
 	}
+	else
+	{
+		sprintf(temp, "%s%dp.png", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+#ifdef LOAD_ALL_IMAGE_TYPE
+		sprintf(temp, "%s%dp.bmp", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.jpg", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.jpeg", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.pnm", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.xpm", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.lbm", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.pcx", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.gif", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+		sprintf(temp, "%s%dp.tga", name, number);
+		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+			return imageStream;
+#endif
+	}
 	return NULL;
 }
 
@@ -740,24 +775,28 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 {
 	SDL_RWops *frameStream;
 	SDL_RWops *overlayStream;
+	SDL_RWops *paletizedStream;
 	int i=0;
 
 	SDLSprite *sprite=new SDLSprite;
 
 	while (true)
 	{
-		frameStream=tryOpenImage(name, i, false);
-		overlayStream=tryOpenImage(name, i, true);
+		frameStream=tryOpenImage(name, i, NORMAL);
+		overlayStream=tryOpenImage(name, i, OVERLAY);
+		paletizedStream=tryOpenImage(name, i, PALETTE);
 
-		if (!((frameStream) || (overlayStream)))
+		if (!((frameStream) || (overlayStream) || (paletizedStream)))
 			break;
 
-		sprite->loadFrame(frameStream, overlayStream);
+		sprite->loadFrame(frameStream, overlayStream, paletizedStream);
 
 		if (frameStream)
 			SDL_RWclose(frameStream);
 		if (overlayStream)
 			SDL_RWclose(overlayStream);
+		if (paletizedStream)
+			SDL_RWclose(paletizedStream);
 		i++;
 	}
 

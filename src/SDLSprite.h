@@ -30,24 +30,48 @@ class SDLGraphicContext;
 class SDLSprite:public Sprite
 {
 protected:
+	// palette, inner class for legacy graphic
+	// class for handling color lookup
+	class Palette
+	{
+	public:
+		Palette();
+		void setColor(Uint8 r, Uint8 g, Uint8 b);
+		Uint8 origR[256];
+		Uint8 origG[256];
+		Uint8 origB[256];
+		Uint32 colors[256];
+		Uint8 rTransformed, gTransformed, bTransformed;
+	public:
+		static void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v );
+		static void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
+	private:
+		static float fmin(float f1, float f2, float f3);
+		static float fmax(float f1, float f2, float f3);
+	};
+
+	Palette pal;
+
+protected:
 	std::vector <SDL_Surface *> images;
 	std::vector <SDL_Surface *> masks;
+	std::vector <SDL_Surface *> paletizeds;
 	Uint8 bcR, bcG, bcB;
 	bool usebaseColor;
 
 protected:
 	friend class SDLGraphicContext;
-	void loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream);
+	void loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream=NULL, SDL_RWops *paletizedStream=NULL);
 
 public:
 	SDLSprite() { usebaseColor=false; }
 	virtual ~SDLSprite();
 	virtual void draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index);
-	virtual void enableBaseColor(Uint8 r, Uint8 g, Uint8 b) { bcR=r; bcG=g; bcB=b; usebaseColor=true; }
+	virtual void enableBaseColor(Uint8 r, Uint8 g, Uint8 b) { bcR=r; bcG=g; bcB=b; usebaseColor=true; pal.setColor(r, g, b); }
 	virtual void disableBaseColor(void) { usebaseColor=false; }
 	virtual int getW(int index);
 	virtual int getH(int index);
 };
 
 #endif
- 
+

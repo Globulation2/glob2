@@ -56,7 +56,13 @@ public:
 class SDLGraphicContext:  public SDLDrawableSurface, public virtual GraphicContext
 {
 private:
-	SDL_RWops *tryOpenImage(const char *name, int number, bool overlay);
+	enum ImageType
+	{
+		NORMAL,
+		OVERLAY,
+		PALETTE
+	};
+	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
 
 public:
 	SDLGraphicContext(void);
