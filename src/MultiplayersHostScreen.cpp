@@ -21,6 +21,7 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "YOGScreen.h"
+#include "Utilities.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
@@ -126,7 +127,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
 		strncpy(multiplayersJoin->playerName, globalContainer->userName, 32);
-		multiplayersJoin->playerName[37]=0;
+		multiplayersJoin->playerName[31]=0;
+		strncpy(multiplayersJoin->serverNickName, globalContainer->userName, 32);
+		multiplayersJoin->serverNickName[31]=0;
 		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address)
 		if (s)
 		{
@@ -136,12 +139,13 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		else
 		{
 			// a home made translation:
-			Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
-			snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-			multiplayersJoin->serverName[127]=0;
+			//zzz Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
+			//zzz snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+			//zzz multiplayersJoin->serverName[127]=0;
+			Utilities::stringIP(multiplayersJoin->serverName, 128, multiplayersHost->serverIP.host);
 		}
 		multiplayersJoin->serverIP=multiplayersHost->serverIP;
-
+		
 		multiplayersJoin->tryConnection();
 	}
 

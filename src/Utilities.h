@@ -70,6 +70,10 @@ namespace Utilities
 	
 	int strnlen(const char *s, int max);
 	int strmlen(const char *s, int max);
+	
+	void stringIP(char *s, int n, Uint32 ip);
+	char *stringIP(Uint32 ip);
+	char *stringIP(IPaddress ip);
 };
 
 #endif

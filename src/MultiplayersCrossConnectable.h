@@ -25,13 +25,15 @@
 class MultiplayersCrossConnectable:public SessionConnection
 {
 public:
-	MultiplayersCrossConnectable():SessionConnection() { }
+	MultiplayersCrossConnectable();
 	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
 	int getFreeChannel();
 	
 public:
 	IPaddress serverIP;
+	bool ipFromNAT;
+	
 };
 
 

@@ -90,7 +90,7 @@ public:
 	void send(YOGMessageType v, UDPsocket socket);
 	void send(YOGMessageType v, Uint8 id);
 	
-	void treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size);
+	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	
 	bool enableConnection(const char *userName);
 	void step();

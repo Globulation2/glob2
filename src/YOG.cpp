@@ -170,9 +170,9 @@ void YOG::send(YOGMessageType v, Uint8 id)
 	SDLNet_FreePacket(packet);
 }
 
-void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
+void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 {
-	fprintf(logFile, "YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>0)&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, port);
+	fprintf(logFile, "YOG::packet received by ip=%s\n", Utilities::stringIP(ip));
 	if (data[2]!=0 || data[3]!=0)
 	{
 		fprintf(logFile, "bad packet.\n");
@@ -654,7 +654,7 @@ void YOG::step()
 		assert(packet);
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			treatPacket(packet->address.host, packet->address.port, packet->data, packet->len);
+			treatPacket(packet->address, packet->data, packet->len);
 			/*fprintf(logFile, "Packet received.\n");
 			fprintf(logFile, "packet=%d\n", (int)packet);
 			fprintf(logFile, "packet->channel=%d\n", packet->channel);
