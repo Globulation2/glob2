@@ -29,30 +29,6 @@ Game::Game()
 {
 	init();
 }
-/*
-Game::Game(const SessionInfo *initial)
-{
-	loadBase(initial);
-}
-
-bool Game::loadBase(const SessionInfo *initial)
-{
-	init();
-	const char *s=NULL;
-	if (initial->fileIsAMap)
-		s=initial->map.getMapFileName();
-	else
-		s=initial->map.getGameFileName();
-	assert(s);
-	assert(s[0]);
-	printf("Game::loadBase::s=%s.\n", s);
-	SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
-	if (!load(stream))
-		return false;
-	SDL_RWclose(stream);
-	setBase(initial);
-	return true;
-}*/
 
 Game::~Game()
 {
@@ -114,15 +90,11 @@ void Game::setBase(const SessionInfo *initial)
 	// set the base team, for now the number is corect but we should check that further
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)
-	{
 		teams[i]->setBaseTeam(&(initial->team[i]), session.fileIsAMap);
-	}
 
 	// set the base players
 	for (i=0; i<session.numberOfPlayer; ++i)
-	{
 		delete players[i];
-	}
 
 	session.numberOfPlayer=initial->numberOfPlayer;
 
@@ -131,9 +103,6 @@ void Game::setBase(const SessionInfo *initial)
 		players[i]=new Player();
 		players[i]->setBasePlayer(&(initial->players[i]), teams);
 	}
-
-	// set the base map
-	//map.setBaseMap(&(initial->map));
 
 	session.gameTPF=initial->gameTPF;
 	session.gameLatency=initial->gameLatency;
@@ -547,10 +516,9 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
 
+	// A typical use case: You have loaded a map, and you want to save your game.
+	// In this case, the file is no more a map, but a game.
 	tempSessionInfo.fileIsAMap=(Sint32)fileIsAMap;
-	/*tempSessionInfo.map=map;
-	if (name)
-		tempSessionInfo.map.setMapName(name);*/
 	tempSessionInfo.setMapName(name);
 
 	for (i=0; i<session.numberOfTeam; ++i)
@@ -569,6 +537,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 	
 	if (session.mapGenerationDescriptor && session.fileIsAMap)
 	{
+		// In this case, the map is fully determinated by the mapGenerationDescriptor.
 		//printf("giga compression system activated.\n");
 	}
 	else
@@ -1002,15 +971,6 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 
 	return isRoom;
 }
-
-/*bool Game::checkRoomForUnit(int x, int y)
-{
-	bool isRoom=true;
-	//Check if there is neither ressouce nor other unit, nor building.
-	if (map.isRessource(x, y) || (map.getUnit(x, y)!=NOUID))
-		isRoom=false;
-	return isRoom;
-}*/
 
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
  int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
@@ -1745,8 +1705,6 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 Sint32 Game::checkSum()
 {
 	Sint32 cs=0;
-
-	// TODO : add checkSum() in heritated objets too.
 
 	cs^=session.checkSum();
 	//printf("cs=(%x", cs);
