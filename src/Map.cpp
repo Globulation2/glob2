@@ -827,7 +827,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		fprintf(stderr, "Map:: Failed to find signature at the beginning of Map.\n");
 		return false;
 	}
-	
+
 	// We load and compute size:
 	wDec=SDL_ReadBE32(stream);
 	hDec=SDL_ReadBE32(stream);
@@ -836,33 +836,36 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	wMask=w-1;
 	hMask=h-1;
 	size=w*h;
-	
+
 	// We alocate memory:
 	mapDiscovered=new Uint32[size];
 	fogOfWarA=new Uint32[size];
 	fogOfWarB=new Uint32[size];
 	fogOfWar=fogOfWarA;
+	memset(fogOfWarA, 0, size*sizeof(Uint32));
+	memset(fogOfWarB, 0, size*sizeof(Uint32));
+
 	cases=new Case[size];
-	
+
 	undermap=new Uint8[size];
-	
+
 	// We read what's inside the map:
 	SDL_RWread(stream, undermap, size, 1);
 	for (int i=0; i<size; i++)
 	{
 		mapDiscovered[i]=SDL_ReadBE32(stream);
-		
+
 		cases[i].terrain=SDL_ReadBE16(stream);
 		cases[i].building=SDL_ReadBE16(stream);
-		
+
 		cases[i].ressource.id=SDL_ReadBE32(stream);
-		
+
 		cases[i].groundUnit=SDL_ReadBE16(stream);
 		cases[i].airUnit=SDL_ReadBE16(stream);
 
 		cases[i].forbidden=SDL_ReadBE32(stream);
 	}
-	
+
 	for (int t=0; t<sessionGame->numberOfTeam; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
@@ -876,9 +879,6 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 			for (int s=0; s<1; s++)
 				gradientUpdatedDepth[t][r][s]=0;
 
-	memset(fogOfWarA, 0, size*sizeof(Uint32));
-	memset(fogOfWarB, 0, size*sizeof(Uint32));
-	
 	if (game)
 		this->game=game;
 	
