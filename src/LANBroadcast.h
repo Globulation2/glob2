@@ -23,7 +23,14 @@
 
 #include "Header.h"
 
-/* Include system network headers */
+#ifdef macintosh
+#ifndef MACOS_OPENTRANSPORT
+#define MACOS_OPENTRANSPORT
+#endif
+#endif
+
+
+// Include system network headers
 #ifdef MACOS_OPENTRANSPORT
 
 
@@ -31,7 +38,7 @@
 #	if defined(__WIN32__) || defined(WIN32)
 //#		define Win32_Winsock
 //#		include <windows.h>
-#	else /* UNIX */
+#	else // UNIX
 #			include <sys/types.h>
 #			include <sys/socket.h>
 //#			include <netinet/in.h>
@@ -47,8 +54,8 @@
 #		endif
 #	include <netdb.h>
 #	include <sys/socket.h>
-#	endif /* WIN32 */
-#endif /* Open Transport */
+#	endif
+#endif
 
 
 class LANBroadcast
