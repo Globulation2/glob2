@@ -48,7 +48,9 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	this->socket=socket;
 	
 	assert(localPlayerNumber!=-1);
-		
+	
+	logFile=NULL;
+	
 	init();
 };
 
@@ -81,6 +83,12 @@ NetGame::~NetGame()
 				players[eachPlayers]->channel=-1;
 		SDLNet_UDP_Close(socket);
 		socket=NULL;
+	}
+	
+	if (logFile)
+	{
+		fclose(logFile);
+		logFile=NULL;
 	}
 }
 
@@ -137,6 +145,14 @@ void NetGame::init(void)
 	
 	dropState=NO_DROP_PROCESSING;
 	printQueue("init::");
+	
+	if (logFile)
+	{
+		fclose(logFile);
+		logFile=NULL;
+	}
+	logFile=fopen("NetGame.log", "w");
+	assert(logFile);
 };
 
 
@@ -149,21 +165,21 @@ bool NetGame::isStepReady(Sint32 step)
 		{
 			if (smaller(lastReceivedFromHim[eachPlayers], step))
 			{
-				NETPRINTF("player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
+				fprintf(logFile, "player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
 				isWaitingForPlayer=true;
 				return false;
 			}
 			if (players[eachPlayers]->type==Player::P_IP)
 				if (smaller(lastReceivedFromMe[eachPlayers], step))
 				{
-					NETPRINTF("player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
+					fprintf(logFile, "player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
 					isWaitingForPlayer=true;
 					return false;
 				}
 			
 			if ( playersNetQueue[eachPlayers][step].order==NULL)
 			{
-				NETPRINTF("player %d is not ready for step %d (noor). \n", eachPlayers, step);
+				fprintf(logFile, "player %d is not ready for step %d (noor). \n", eachPlayers, step);
 				isWaitingForPlayer=true;
 				return false;
 			}
@@ -261,7 +277,7 @@ bool NetGame::nextUnrecievedStep(int currentStep, int *player, int *step)
 	if ((players[wfp]->type!=Player::P_IP)&&(players[wfp]->type!=Player::P_LOST_A))
 		return false;
 	
-	//NETPRINTF("wfp=%d, st=%d.\n", wfp, st);
+	//fprintf(logFile, "wfp=%d, st=%d.\n", wfp, st);
 	
 	*player=wfp;
 	*step=st;
@@ -309,7 +325,7 @@ Uint32 NetGame::whoMaskAreWeWaitingFor(Sint32 step)
 			waitingPlayersMask |= 1<<eachPlayers;
 	}
 	
-	//NETPRINTF("step=%d, waitingPlayersMask=%x(%d)\n", step, waitingPlayersMask, waitingPlayersMask);
+	//fprintf(logFile, "step=%d, waitingPlayersMask=%x(%d)\n", step, waitingPlayersMask, waitingPlayersMask);
 	
 	return waitingPlayersMask;
 };
@@ -382,7 +398,7 @@ void NetGame::sendMyOrderThroughUDP(Order *order, Sint32 orderStep, Sint32 targe
 	data[14]=0;
 	data[15]=7;
 	
-	//NETPRINTF("sending(%d; %d; %d; %d)\n", orderStep, lastReceivedFromHim[targetPlayer], localPlayerNumber, order->getOrderType());
+	//fprintf(logFile, "sending(%d; %d; %d; %d)\n", orderStep, lastReceivedFromHim[targetPlayer], localPlayerNumber, order->getOrderType());
 	
 	memcpy(data+16, order->getData(), order->getDataLength());
 	
@@ -398,9 +414,9 @@ void NetGame::printQueue(char *str)
 		{
 			int s=(currentStep+queueSize+i)%queueSize;
 			if (playersNetQueue[eachPlayer][s].order)
-				NETPRINTF("%s [%d] inQueue=%d, type=%d, order=%x.\n", str, s, playersNetQueue[eachPlayer][s].order->inQueue, playersNetQueue[eachPlayer][s].order->getOrderType(), (int)playersNetQueue[eachPlayer][s].order);
+				fprintf(logFile, "%s [%d] inQueue=%d, type=%d, order=%x.\n", str, s, playersNetQueue[eachPlayer][s].order->inQueue, playersNetQueue[eachPlayer][s].order->getOrderType(), (int)playersNetQueue[eachPlayer][s].order);
 			else
-				NETPRINTF("%s [%d] NULL.\n", str, s);
+				fprintf(logFile, "%s [%d] NULL.\n", str, s);
 		}*/
 }
 
@@ -413,7 +429,7 @@ void NetGame::orderHasBeenExecuted(Order *order)
 	assert(order);
 	if (!order->inQueue)
 	{
-		NETPRINTF("deleting order type %d.\n", order->getOrderType());
+		fprintf(logFile, "deleting order type %d.\n", order->getOrderType());
 		delete order;
 	};
 }
@@ -423,7 +439,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	printQueue("getOrder::");
 
-	//NETPRINTF("acs=(%x, %x).\n", checkSumsLocal[currentStep], checkSumsRemote[currentStep]);
+	//fprintf(logFile, "acs=(%x, %x).\n", checkSumsLocal[currentStep], checkSumsRemote[currentStep]);
 	if (checkSumsLocal[currentStep]&&checkSumsRemote[currentStep])
 	{
 		if (checkSumsLocal[currentStep]==checkSumsRemote[currentStep])
@@ -443,7 +459,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	// do we have orders from every player now?
 	if ((players[playerNumber]->quitting)&&(players[playerNumber]->type==Player::P_LOST_B))
 	{
-		NETPRINTF("new QuitedOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
+		fprintf(logFile, "new QuitedOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
 		Order *order=new QuitedOrder();
 		order->sender=playerNumber;
 		order->inQueue=false;
@@ -454,12 +470,12 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		Order *order=new WaitingForPlayerOrder(whoMaskAreWeWaitingFor((currentStep+1)%queueSize));
 		order->sender=playerNumber;
 		order->inQueue=false;
-		NETPRINTF("new WaitingForPlayerOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
+		fprintf(logFile, "new WaitingForPlayerOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
 		return order;
 	}
 	else if (players[playerNumber]->type==Player::P_LOST_B)
 	{
-		NETPRINTF ("new NullOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
+		fprintf(logFile, "new NullOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
 		Order *order=new NullOrder();
 		order->sender=playerNumber;
 		order->inQueue=false;
@@ -468,7 +484,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	else
 	{
 		// we get the order:
-		//NETPRINTF("playerNumber=%d, packetID=%d, ackID=%d, order=%d.\n", playerNumber, playersNetQueue[playerNumber][currentStep].packetID, playersNetQueue[playerNumber][currentStep].ackID, playersNetQueue[playerNumber][currentStep].order);
+		//fprintf(logFile, "playerNumber=%d, packetID=%d, ackID=%d, order=%d.\n", playerNumber, playersNetQueue[playerNumber][currentStep].packetID, playersNetQueue[playerNumber][currentStep].ackID, playersNetQueue[playerNumber][currentStep].order);
 		Order *order=playersNetQueue[playerNumber][currentStep].order;
 		// NetGame will free the object and step will delete its reference from list,
 		// when new orders will come.
@@ -481,7 +497,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 				PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
 				int ap=pqgo->player;
 				//players[ap]->type=Player::P_LOST_B; only when all order are cross recieved.
-				NETPRINTF("players %d quitting\n", ap);
+				fprintf(logFile, "players %d quitting\n", ap);
 				players[ap]->quitting=true;
 				players[ap]->quitStep=currentStep;
 				int s=lastReceivedFromHim[ap];
@@ -502,9 +518,9 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		
 		order->sender=playerNumber;
 		if ((order->getOrderType()!=51)&&(order->getOrderType()!=73))
-			NETPRINTF("(%d)getOrder, player(%d), type(%d).\n",currentStep, playerNumber,order->getOrderType());
+			fprintf(logFile, "(%d)getOrder, player(%d), type(%d).\n",currentStep, playerNumber,order->getOrderType());
 		//if (order->getOrderType()!=73)
-		//	NETPRINTF("(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
+		//	fprintf(logFile, "(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
 		order->inQueue=true;
 		return order;
 	}
@@ -521,25 +537,25 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	// will be used [latency] steps later
 	int pushStep=(currentStep+latency)%queueSize;
 	if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
-		NETPRINTF("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
+		fprintf(logFile, "NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
 	if (playersNetQueue[playerNumber][pushStep].order)
 	{
 		if (((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))
 		{
 			delete order;
-			//NETPRINTF("deleting order\n");
+			//fprintf(logFile, "deleting order\n");
 		}
 		else
 		{
 			localOrderQueue[playerNumber].push_back(order);
-			//NETPRINTF("storing order\n");
+			//fprintf(logFile, "storing order\n");
 		}
 		
 		return;
 	}
 	else if ((localOrderQueue[playerNumber].size()>0)&&((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))
 	{
-		//NETPRINTF("deleting useless order\n");
+		//fprintf(logFile, "deleting useless order\n");
 		delete order;
 		order=localOrderQueue[playerNumber].front();
 		localOrderQueue[playerNumber].pop_front();
@@ -582,7 +598,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 		if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
 		{
 			checkSumsLocal[pushStep]=((SubmitCheckSumOrder*)order)->checkSumValue;
-			//NETPRINTF("(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
+			//fprintf(logFile, "(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
 		}
 		else
 			checkSumsLocal[pushStep]=0;
@@ -610,7 +626,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 	//assert(players[pl]->type==Player::P_IP); // TODO : CARE : this is an eays way to kill a client !
 	
 	if(players[pl]->type==Player::P_LOST_A)
-		NETPRINTF("Packet recieved (%d, %d, %d, %d).\n", st, sr, pl, data[12]);
+		fprintf(logFile, "Packet recieved (%d, %d, %d, %d).\n", st, sr, pl, data[12]);
 	countDown[pl]=0;
 	
 	if (sr>=0)
@@ -624,7 +640,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		
 		checkSumsRemote[st]=cso->checkSumValue;
 		
-		//NETPRINTF("(%d)submit remote cs=%x\n", st, checkSumsRemote[st]);
+		//fprintf(logFile, "(%d)submit remote cs=%x\n", st, checkSumsRemote[st]);
 	}
 	
 	if (type==ORDER_WAITING_FOR_PLAYER)
@@ -633,7 +649,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		
 		/*WaitingForPlayerOrder *fwpo=(WaitingForPlayerOrder *)o;
 		Uint32 mawp=fwpo->maskAwayPlayer;
-		NETPRINTF("(%d)player %d, is waiting for mawp=%x\n", st, pl, mawp);*/
+		fprintf(logFile, "(%d)player %d, is waiting for mawp=%x\n", st, pl, mawp);*/
 		delete o;
 	}
 	else if (type==ORDER_DROPPING_PLAYER)
@@ -648,7 +664,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 			{
 				if (stayingPlayersMask[localPlayerNumber]!=spm)
 				{
-					NETPRINTF("we start a new droping process, ds=%d, spm=%x(%d)\n", ds, spm, spm);
+					fprintf(logFile, "we start a new droping process, ds=%d, spm=%x(%d)\n", ds, spm, spm);
 					dropState=ONE_STAY_MASK_RECIEVED;
 				
 					for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
@@ -666,12 +682,12 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					sendMyOrderThroughUDP(order, -1, pl, lastReceivedFromHim[pl]);
 					delete order;
 					
-					NETPRINTF("resending spm=%x to player %d,\n", spm, pl);
+					fprintf(logFile, "resending spm=%x to player %d,\n", spm, pl);
 				}
 			}
 			else
 			{
-				NETPRINTF("Only one dropping process can be running at one time\n");
+				fprintf(logFile, "Only one dropping process can be running at one time\n");
 			}
 			
 			if (dropState<ALL_STAY_MASK_RECIEVED)
@@ -693,7 +709,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		}
 		else if (ds==CROSS_SENDING_STAY_MASK)
 		{
-			NETPRINTF("player %d send us an cross sending stay mask, ds=%d, spm=%x(%d)\n", pl, ds, spm, spm);
+			fprintf(logFile, "player %d send us an cross sending stay mask, ds=%d, spm=%x(%d)\n", pl, ds, spm, spm);
 			
 			stayingPlayersMask[pl]=spm;
 			Uint32 smallerSpm=stayingPlayersMask[localPlayerNumber]&spm;
@@ -707,7 +723,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 			{
 				if (pm&smallerSpm)
 				{
-					NETPRINTF("%d;", p);
+					fprintf(logFile, "%d;", p);
 					if (stayingPlayersMask[p]==0)
 						allRecived=false;
 					if (stayingPlayersMask[p]!=smallerSpm)
@@ -715,16 +731,16 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 				}
 				pm=pm<<1;
 			}
-			NETPRINTF("\n");
+			fprintf(logFile, "\n");
 			
-			NETPRINTF("allRecived=%d, allSames=%d, smp=%x(%d), smallerSpm=%x(%d)\n", allRecived, allSames, spm, spm, smallerSpm, smallerSpm);
+			fprintf(logFile, "allRecived=%d, allSames=%d, smp=%x(%d), smallerSpm=%x(%d)\n", allRecived, allSames, spm, spm, smallerSpm, smallerSpm);
 			if (allRecived)
 			{
 				static Uint32 lastSmallerMspm=0;
 				static int lastTime=0;
 				if (allSames)
 				{
-					NETPRINTF("we reached the ALL_STAY_MASK_RECIEVED drop State.\n");
+					fprintf(logFile, "we reached the ALL_STAY_MASK_RECIEVED drop State.\n");
 					
 					dropState=ALL_STAY_MASK_RECIEVED;
 					
@@ -736,11 +752,11 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 						{
 							if (pm&spm)
 							{
-								NETPRINTF("Player %d stays\n", p);
+								fprintf(logFile, "Player %d stays\n", p);
 							}
 							else if (players[p]->type==Player::P_IP)
 							{
-						       NETPRINTF("Player %d lost\n", p); 
+						       fprintf(logFile, "Player %d lost\n", p); 
 							   players[p]->type=Player::P_LOST_A;
 							}
 							
@@ -778,7 +794,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 						}
 					}
 					
-					NETPRINTF("World is nearing a big global disconneciton...(like in reality) %x\n", mwspm);
+					fprintf(logFile, "World is nearing a big global disconneciton...(like in reality) %x\n", mwspm);
 					
 					// we copy it as the main StayPlayerMask:
 					stayingPlayersMask[localPlayerNumber]=mwspm;
@@ -815,13 +831,13 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		if ((players[ap]->type==Player::P_LOST_A)||(players[ap]->type==Player::P_LOST_B)||(players[ap]->type==Player::P_IP))
 		{
 			lastAviableStep[ap][pl]=las;
-			NETPRINTF ("player %d wants order %d of lost_a player %d\n", pl, ms, ap);
+			fprintf(logFile, "player %d wants order %d of lost_a player %d\n", pl, ms, ap);
 			
 			// we do fake a send from th away-player (ap).
 			Order *order=playersNetQueue[ap][ms].order;
 			if (order)
 			{
-				NETPRINTF ("sending an order by substitution of the rightfull player\n");
+				fprintf(logFile, "sending an order by substitution of the rightfull player\n");
 				char *data=(char *)malloc(order->getDataLength()+16);
 				
 				addSint32(data, ms, 0);
@@ -840,14 +856,14 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 			}
 			else if (players[ap]->type==Player::P_LOST_A)
 			{
-				NETPRINTF("no order avaible for resending a\n");
+				fprintf(logFile, "no order avaible for resending a\n");
 				Order *order=new NoMoreOrdersAviable(ap, lastReceivedFromHim[ap]);
 				int rst=(lastReceivedFromMe[pl]+1)%queueSize;
 				sendMyOrderThroughUDP(order, rst, pl, lastReceivedFromHim[pl]);
 			}
 			else if (players[ap]->type==Player::P_LOST_B)
 			{
-				NETPRINTF("no order avaible for resending b\n");
+				fprintf(logFile, "no order avaible for resending b\n");
 				Order *order=new RequestingDeadAwayOrder(ap, ms, lastReceivedFromHim[ap]);
 				int rst=(lastReceivedFromMe[pl]+1)%queueSize;
 				sendMyOrderThroughUDP(order, rst, pl, lastReceivedFromHim[pl]);
@@ -862,7 +878,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 			
 			if (allSame)
 			{
-				NETPRINTF("the last step %d of player %d is spent, now this is a realy LOST_B player.\n", lastReceivedFromHim[ap], ap);
+				fprintf(logFile, "the last step %d of player %d is spent, now this is a realy LOST_B player.\n", lastReceivedFromHim[ap], ap);
 				players[ap]->type=Player::P_LOST_B;
 
 				int s=lastReceivedFromHim[ap];
@@ -906,15 +922,15 @@ void NetGame::step(void)
 		
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			//NETPRINTF("Packet recieved.\n");
-			//NETPRINTF("packet=%d\n", (int)packet);
-			//NETPRINTF("packet->channel=%d\n", packet->channel);
-			//NETPRINTF("packet->len=%d\n", packet->len);
-			//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-			//NETPRINTF("packet->status=%d\n", packet->status);
-			//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			//fprintf(logFile, "Packet recieved.\n");
+			//fprintf(logFile, "packet=%d\n", (int)packet);
+			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+			//fprintf(logFile, "packet->len=%d\n", packet->len);
+			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+			//fprintf(logFile, "packet->status=%d\n", packet->status);
+			//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 			
-			//NETPRINTF("packet->data(%d)=%s\n", packet->data[0], packet->data);
+			//fprintf(logFile, "packet->data(%d)=%s\n", packet->data[0], packet->data);
 			
 			treatData((char *)(packet->data), packet->len, packet->address);
 		}
@@ -927,17 +943,17 @@ void NetGame::step(void)
 	int nextStep;
 
 	nextStep=(currentStep+1)%queueSize;
-	NETPRINTF("nextStep=%d, dropState=%d\n", nextStep, dropState);
+	fprintf(logFile, "nextStep=%d, dropState=%d\n", nextStep, dropState);
 	
 	for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
 	{
 		if ((players[eachPlayer]->quitting)&&(players[eachPlayer]->type!=Player::P_LOST_B))
 		{ 
-			NETPRINTF("player=%d quitStep=%d, lastReceivedFromMe=%d .\n", eachPlayer, players[eachPlayer]->quitStep, lastReceivedFromMe[eachPlayer]);
+			fprintf(logFile, "player=%d quitStep=%d, lastReceivedFromMe=%d .\n", eachPlayer, players[eachPlayer]->quitStep, lastReceivedFromMe[eachPlayer]);
 			if (!smaller(lastReceivedFromMe[eachPlayer], players[eachPlayer]->quitStep))
 			{
 				players[eachPlayer]->type=Player::P_LOST_B;
-				NETPRINTF("player=%d is now P_LOST_B because %d !< %d\n", eachPlayer, lastReceivedFromMe[eachPlayer], players[eachPlayer]->quitStep);
+				fprintf(logFile, "player=%d is now P_LOST_B because %d !< %d\n", eachPlayer, lastReceivedFromMe[eachPlayer], players[eachPlayer]->quitStep);
 			}
 		}
 	}
@@ -970,11 +986,11 @@ void NetGame::step(void)
 					int stepToTest=(nextStep/*+lostPacketLatencyMargin*/)%queueSize;
 					assert(lostPacketLatencyMargin<(int)queueSize);
 					
-					//NETPRINTF("(%d): %d<?<%d\n", eachPlayer, lastReceivedFromMe[eachPlayer], stepToTest);
+					//fprintf(logFile, "(%d): %d<?<%d\n", eachPlayer, lastReceivedFromMe[eachPlayer], stepToTest);
 					
 					if (smaller(lastReceivedFromMe[eachPlayer], stepToTest))
 					{
-						//NETPRINTF("resend to player %d, order %d, type %d.\n", eachPlayer, rst, playersNetQueue[localPlayerNumber][rst].order->getOrderType());
+						//fprintf(logFile, "resend to player %d, order %d, type %d.\n", eachPlayer, rst, playersNetQueue[localPlayerNumber][rst].order->getOrderType());
 						// then re-send directly
 						
 						sendMyOrderThroughUDP(playersNetQueue[localPlayerNumber][rst].order, rst, eachPlayer, lastReceivedFromHim[eachPlayer]);
@@ -1002,7 +1018,7 @@ void NetGame::step(void)
 				{
 					Sint32 missingStep=(s+1)%queueSize;
 					order=new RequestingDeadAwayOrder(ap, missingStep, lastReceivedFromHim[ap]);
-					NETPRINTF("requesting order %d from player %d.\n", missingStep, ap);
+					fprintf(logFile, "requesting order %d from player %d.\n", missingStep, ap);
 					break;
 				}
 			}
@@ -1013,7 +1029,7 @@ void NetGame::step(void)
 			{
 				if (players[rp]->type==BasePlayer::P_IP)
 				{
-					NETPRINTF("requesting order %d from player %d, request player %d\n", s, ap, rp);
+					fprintf(logFile, "requesting order %d from player %d, request player %d\n", s, ap, rp);
 					int rst=(lastReceivedFromMe[rp]+1)%queueSize;
 					sendMyOrderThroughUDP(order, rst, rp, lastReceivedFromHim[rp]);
 				}
@@ -1026,7 +1042,7 @@ void NetGame::step(void)
 		{
 			countDown[p]++;
 			if (countDown[p]%10==0)
-				NETPRINTF("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
+				fprintf(logFile, "countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
 			int s;
 			if (nextUnrecievedStep(currentStep, p, &s))
 			{
@@ -1053,16 +1069,16 @@ void NetGame::step(void)
 
 					for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
 					{
-						NETPRINTF("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
+						fprintf(logFile, "players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
 						if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
 						{
-							NETPRINTF("m: player %d stay.\n", eachPlayer);
+							fprintf(logFile, "m: player %d stay.\n", eachPlayer);
 							nbipp++;
 						}
 						pm=pm<<1;
 					}
 
-					NETPRINTF("ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
+					fprintf(logFile, "ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
 
 					if (nbipp>0)
 					{
@@ -1110,7 +1126,7 @@ void NetGame::step(void)
 
 							if (nbipp<2)
 							{
-								NETPRINTF("We finally drop all IP player\n");
+								fprintf(logFile, "We finally drop all IP player\n");
 
 								for (int pl=0; pl<numberOfPlayer; pl++)
 									if ((players[pl]->type==Player::P_LOST_A)||(players[pl]->type==Player::P_IP))
@@ -1127,11 +1143,11 @@ void NetGame::step(void)
 							}
 
 						}
-						//NETPRINTF("Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
+						//fprintf(logFile, "Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
 					}
 					else if (nbipp==0)
 					{
-						NETPRINTF("We drop last IP player %d\n", p);
+						fprintf(logFile, "We drop last IP player %d\n", p);
 
 						players[p]->type=Player::P_LOST_B;
 
