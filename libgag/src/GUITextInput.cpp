@@ -269,7 +269,6 @@ void TextInput::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
-	printf("textDep is %d, text is %s\n", textDep, text.c_str());
 	parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, "%s", text.c_str()+textDep);
 
 	// we draw the cursor:

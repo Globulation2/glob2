@@ -446,22 +446,32 @@ void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char
 	s=TTF_RenderUTF8_Blended(font, text, c);
 	if (s == NULL)
 		return;
-	
+
+	SDL_Rect sr;
+	sr.x=0;
+	sr.y=0;
+	sr.w=s->w;
+	sr.h=s->h;
+
 	SDL_Rect r;
 	r.x=x;
 	r.y=y;
-	r.w=w;
+	if (w)
+		r.w=w;
+	else
+		r.w=s->w;
 	r.h=s->h;
-	
+
 	SDL_Rect oc;
 	if (clip)
 	{
 		SDL_GetClipRect(Surface, &oc);
-		SDL_SetClipRect(Surface, clip);
+		GAG::sdcRects(&sr, &r, *clip);
+		SDL_SetClipRect(Surface, &r);
 	}
-	
-	SDL_BlitSurface(s, NULL, Surface, &r);
-	
+
+	SDL_BlitSurface(s, &sr, Surface, &r);
+
 	if (clip)
 	{
 		SDL_SetClipRect(Surface, &oc);

@@ -68,24 +68,16 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
-	if (terrain)
-		delete terrain;
-	if (terrainShader)
-		delete terrainShader;
-	if (terrainBlack)
-		delete terrainBlack;
-	if (ressources)
-		delete ressources;
-	if (units)
-		delete units;
-	if (buildings)
-		delete buildings;
-	if (menuFont)
-		delete menuFont;
-	if (standardFont)
-		delete standardFont;
-	if (littleFont)
-		delete littleFont;
+	Toolkit::releaseSprite("terrain");
+	Toolkit::releaseSprite("shading");
+	Toolkit::releaseSprite("black");
+	Toolkit::releaseSprite("ressources");
+	Toolkit::releaseSprite("units");
+	Toolkit::releaseSprite("buildings");
+	Toolkit::releaseSprite("gamegui");
+	Toolkit::releaseFont("menu");
+	Toolkit::releaseFont("standard");
+	Toolkit::releaseFont("little");
 	if (gfx)
 		delete gfx;
 }
