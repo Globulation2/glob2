@@ -993,11 +993,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, unit->hungry/10000, 80, 179, 223);
 						float hpRatio=(float)unit->hp/(float)unit->performance[HP];
 						if (hpRatio>0.6)
-							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+9*hpRatio, 78, 187, 78);
+							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
 						else if (hpRatio>0.3)
-							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+9*hpRatio, 255, 255, 0);
+							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 255, 0);
 						else
-							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+9*hpRatio, 255, 0, 0);
+							drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 					}
 					if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET))
 					{
@@ -1125,11 +1125,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				{
 					float hpRatio=(float)building->hp/(float)type->hpMax;
 					if (hpRatio>0.6)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 78, 187, 78);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
 					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 255, 0);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
 					else
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 0, 0);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
 				}
 
 				// units
@@ -1242,11 +1242,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				{
 					float hpRatio=(float)building->hp/(float)type->hpMax;
 					if (hpRatio>0.6)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 78, 187, 78);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
 					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 255, 0);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
 					else
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 0, 0);
+						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
 				}
 
 				// units
@@ -1395,7 +1395,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				{
 					if (showUnitsAndBuildings)
 					{
-						u=map.getUnit(minidx, minidy);
+						u=map.getUnit((Sint16)minidx, (Sint16)minidy);
 						if (u!=NOUID)
 						{
 							// TODO : use ally mask
@@ -1403,23 +1403,23 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 							{
 								if (Unit::UIDtoTeam(u)==teamSelected)
 									isMeUnitOrBuilding=true;
-								else if (map.isFOW(minidx, minidy, teamSelected))
+								else if (map.isFOW((int)minidx, (int)minidy, teamSelected))
 									isEnemyUnitOrBuilding=true;
 							}
 							else
 							{
 								if (Building::UIDtoTeam(u)==teamSelected)
 									isMeUnitOrBuilding=true;
-								else if (map.isFOW(minidx, minidy, teamSelected))
+								else if (map.isFOW((int)minidx, (int)minidy, teamSelected))
 									isEnemyUnitOrBuilding=true;
 							}
 						}
 					}
 					if (teamSelected<0)
 						pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
-					else if (map.isMapDiscovered(minidx, minidy, teamSelected))
+					else if (map.isMapDiscovered((int)minidx, (int)minidy, teamSelected))
 					{
-						if (map.isFOW(minidx, minidy, teamSelected))
+						if (map.isFOW((int)minidx, (int)minidy, teamSelected))
 							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
 						else
 							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=2;

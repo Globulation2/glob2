@@ -1433,7 +1433,7 @@ void Unit::pathFind(void)
 		//nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
 		
 		if (verbose)
-			printf("%d no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (int)this, posX, posY, cdx, cdy);
+			printf("0x%lX no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (unsigned long)this, posX, posY, cdx, cdy);
 		
 		// we look for a center:
 		int tdx=cdx;
@@ -1546,13 +1546,13 @@ void Unit::pathFind(void)
 			borderY=startObstacleY-cdy;
 			
 			if (verbose)
-					printf("%d pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (int)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
+					printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
 			if (lDist<=centerSquareDist)
 			{
 				bypassDirection=DIR_LEFT;
 				
 				if (verbose)
-						printf("%d Let's turn by left. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (int)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
+						printf("0x%lX Let's turn by left. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
 				break;
 			}
 			if ((rDist<=centerSquareDist) || ((ptlx==ptrx)&&(ptly==ptry)) || ((count++)>1024) )
@@ -1560,7 +1560,7 @@ void Unit::pathFind(void)
 				bypassDirection=DIR_RIGHT;
 				
 				if (verbose)
-						printf("%d Let's turn by right. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (int)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
+						printf("0x%lX Let's turn by right. cd=(%d, %d) o=(%d, %d) b=(%d, %d)\n", (unsigned long)this, cdx, cdy, obstacleX, obstacleY, borderX, borderY);
 				break;
 			}
 
@@ -2037,7 +2037,7 @@ void Unit::gotoTarget(int targetX, int targetY)
 	dy=0;
 	direction=8;
 	if (verbose)
-		printf("%d: goto failed pos=(%d, %d) \n", (int)this, posX, posY);
+		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
 }
 
 void Unit::newTargetWasSet(void)
