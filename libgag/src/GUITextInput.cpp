@@ -22,15 +22,6 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-TextInput::TextInput()
-{
-	activated=false;
-	cursPos=0;
-	textDep=0;
-	cursorScreenPos=0;
-	maxLength=0;
-}
-
 TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, unsigned maxLength)
 {
 	this->x=x;

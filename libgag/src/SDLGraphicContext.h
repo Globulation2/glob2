@@ -57,6 +57,7 @@ public:
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);
 	virtual void updateRects(SDL_Rect *rects, int size) { }
 	virtual void updateRect(int x, int y, int w, int h) { }
+	virtual void *getPixelPointer(void) { return surface->pixels; }
 };
 
 class SDLGraphicContext:  public SDLDrawableSurface, public virtual GraphicContext
