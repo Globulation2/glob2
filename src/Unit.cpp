@@ -415,7 +415,7 @@ void Unit::handleMedical(void)
 				attachedBuilding->unitsWorkingSubscribe.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				// NOTE : we should NOT be in the building
-				attachedBuilding->update();
+				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
 				subscribed=false;
 			}
@@ -605,7 +605,7 @@ void Unit::handleActivity(void)
 			attachedBuilding->unitsInside.remove(this);
 			attachedBuilding->unitsWorkingSubscribe.remove(this);
 			attachedBuilding->unitsInsideSubscribe.remove(this);
-			attachedBuilding->update();
+			attachedBuilding->updateCallLists();
 			attachedBuilding=NULL;
 			subscribed=false;
 		}
@@ -797,7 +797,7 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_RANDOM;
 					attachedBuilding->unitsWorking.remove(this);
 					attachedBuilding->unitsWorkingSubscribe.remove(this);
-					attachedBuilding->update();
+					attachedBuilding->updateCallLists();
 					attachedBuilding=NULL;
 					subscribed=false;
 
@@ -919,7 +919,7 @@ void Unit::handleDisplacement(void)
 				displacement=DIS_RANDOM;
 				attachedBuilding->unitsWorking.remove(this);
 				attachedBuilding->unitsWorkingSubscribe.remove(this);
-				attachedBuilding->update();
+				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
 				subscribed=false;
 			}
@@ -1187,7 +1187,7 @@ void Unit::handleMovement(void)
 
 				attachedBuilding->unitsInside.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
-				attachedBuilding->update();
+				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
 				subscribed=false;
 			}
