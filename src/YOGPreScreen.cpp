@@ -31,24 +31,25 @@
 
 YOGPreScreen::YOGPreScreen()
 {
-	addWidget(new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[yog]")));
+	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
-	login=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
+	login=new TextInput(20, 430, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(login);
+	addWidget(new Text(20, 395, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
 	
-	statusText=new TextArea(20, 290, 600, 50, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	statusText=new TextArea(20, 250, 600, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
-	oldYOGExternalStatusState=YOG::YESTS_BAD;
 	
-	endExecutionValue=EXECUTING;
-	connectOnNextTimer=false;
-
 	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
 	animation=new Animation(32, 100, ALIGN_FILL, ALIGN_TOP, "animation", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
+	
+	oldYOGExternalStatusState=YOG::YESTS_BAD;
+	endExecutionValue=EXECUTING;
+	connectOnNextTimer=false;
 }
 
 YOGPreScreen::~YOGPreScreen()

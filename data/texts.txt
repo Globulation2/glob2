@@ -449,6 +449,12 @@ Ysagoon Online Gaming
 Ysagoon-Onlinespiel
 Ysagoon Online Gaming
 Ysagoon-Gra w Internecie
+[Enter your nickname :]
+Entrer votre pseudo :
+Enter your nickname :
+
+
+
 [lan]
 Jeu en réseau local
 LAN Game
