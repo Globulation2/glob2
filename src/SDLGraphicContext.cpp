@@ -205,7 +205,7 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 	if (!surface)
 		return;
 
-	if (a==ALPHA_OPAQUE)
+	if ((a==ALPHA_OPAQUE) || (surface->format->BitsPerPixel==8))
 	{
 		SDL_Rect rect;
 		rect.x=x;
@@ -216,15 +216,133 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 	}
 	else
 	{
-		// TODO : write a fast version
-		int dx, dy;
-		for (dy=y; dy<y+h; dy++)
+		// do clipping
+		if (x<0)
 		{
-			for (dx=x; dx<x+w; dx++)
-			{
-				drawPixel(dx, dy, r, g, b, a);
-			}
+			w+=x;
+			x=0;
 		}
+		if (y<0)
+		{
+			h+=y;
+			y=0;
+		}
+		if (x+w>=surface->w)
+		{
+			w=surface->w-x;
+		}
+		if (y+h>=surface->h)
+		{
+			h=surface->h-y;
+		}
+		if ((w<=0) || (h<=0))
+			return;
+
+		int dw, dy;
+
+		// pre-multiply
+		unsigned pr, pg, pb;
+		pr=r*a;
+		pg=r*g;
+		pb=r*b;
+		Uint8 dr, dg, db;
+
+		// draw
+		SDL_LockSurface(surface);
+		switch(surface->format->BitsPerPixel)
+		{
+			case 16:
+			{
+				Uint8 na=255-a;
+				dy = y;
+				while (dy<y+h)
+				{
+					Uint16 *mem=((Uint16 *)surface->pixels)+dy*(surface->pitch>>1)+x;
+
+					dw=w;
+					while (dw)
+					{
+						SDL_GetRGB(*mem, surface->format, &dr, &dg, &db);
+						r=(pr+na*dr)>>8;
+						g=(pg+na*dg)>>8;
+						b=(pb+na*db)>>8;
+						*mem = (Uint16)SDL_MapRGB(surface->format, r, g, b);
+						mem++;
+						--dw;
+					}
+					dy++;
+				}
+			}
+			break;
+			case 24:
+			{
+				Uint8 na=255-a;
+				dy = y;
+				while (dy<y+h)
+				{
+					Uint8 *bits=((Uint8 *)surface->pixels+dy*surface->pitch+x);
+
+					dw=w;
+					while (dw)
+					{
+						dr = *((bits)+surface->format->Rshift/8);
+						dg = *((bits)+surface->format->Gshift/8);
+						db = *((bits)+surface->format->Bshift/8);
+
+						dr=(pr+na*dr)>>8;
+						dg=(pg+na*dg)>>8;
+						db=(pb+na*db)>>8;
+
+						*((bits)+surface->format->Rshift/8) = dr;
+						*((bits)+surface->format->Gshift/8) = dg;
+						*((bits)+surface->format->Bshift/8) = db;
+
+						bits+=3;
+						--dw;
+					}
+					dy++;
+				}
+			}
+			break;
+			case 32:
+			{
+				dy = y;
+				Uint32 na=255-a;
+
+				Uint32 val[3];
+				val[0]=r;
+				val[1]=g;
+				val[2]=b;
+
+				Uint32 idx[3];
+				idx[surface->format->Rshift/8]=0;
+				idx[surface->format->Gshift/8]=1;
+				idx[surface->format->Bshift/8]=2;
+
+				Uint32 prb=(val[idx[0]]|(val[idx[2]]<<16))*a;
+				Uint32 pga=(val[idx[1]]|0x00FF0000)*a;
+				while (dy<y+h)
+				{
+					Uint32 *mem=((Uint32 *)surface->pixels)+dy*(surface->pitch>>2)+x;
+
+					dw=w;
+					while (dw)
+					{
+						Uint32 val=*mem;
+						Uint32 nrb=(val&0x00FF00FF)*na;
+						Uint32 nga=((val>>8)&0x00FF00FF)*na;
+						nrb+=prb;
+						nga+=pga;
+						*mem=((nrb>>8)&0x00FF00FF)|(nga&0xFF00FF00);
+						mem++;
+						--dw;
+					}
+					dy++;
+				}
+			}
+			break;
+		}
+		SDL_UnlockSurface(surface);
 	}
 }
 
@@ -285,7 +403,7 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 			Uint16 *bits = ((Uint16 *)surface->pixels)+y*increment+x;
 			for (int n=l-1; n>=0; --n)
 			{
-                *bits = (Uint16)pixel;
+				*bits = (Uint16)pixel;
 				bits+=increment;
 			}
 		}
@@ -294,15 +412,15 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 		{
 			 /* Format/endian independent */
 			Uint8 *bits = ((Uint8 *)surface->pixels)+y*surface->pitch+x*3;
-            Uint8 nr, ng, nb;
+			Uint8 nr, ng, nb;
 			for (int n=l-1; n>=0; --n)
 			{
-                nr = (pixel>>surface->format->Rshift)&0xFF;
-                ng = (pixel>>surface->format->Gshift)&0xFF;
-                nb = (pixel>>surface->format->Bshift)&0xFF;
-                *((bits)+surface->format->Rshift/8) = nr;
-                *((bits)+surface->format->Gshift/8) = ng;
-                *((bits)+surface->format->Bshift/8) = nb;
+				nr = (pixel>>surface->format->Rshift)&0xFF;
+				ng = (pixel>>surface->format->Gshift)&0xFF;
+				nb = (pixel>>surface->format->Bshift)&0xFF;
+				*((bits)+surface->format->Rshift/8) = nr;
+				*((bits)+surface->format->Gshift/8) = ng;
+				*((bits)+surface->format->Bshift/8) = nb;
 				bits+=surface->pitch;
             }
 		}
