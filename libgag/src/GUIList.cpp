@@ -145,16 +145,19 @@ void List::selectionChanged()
 
 void List::internalPaint(void)
 {
+	assert(parent);
+	assert(parent->getSurface());
+	fontPtr = Toolkit::getFont(font.c_str());
+	assert(fontPtr);
+	textHeight = fontPtr->getStringHeight((const char *)NULL);
+
 	int nextSize=textHeight;
 	int yPos=y+2;
 	int i=0;
 	unsigned elementLength;
 
-	assert(parent);
-	assert(parent->getSurface());
-	assert(fontPtr);
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-	
+
 	unsigned count = (h-4) / textHeight;
 	if (strings.size() > count)
 	{
@@ -217,10 +220,6 @@ void List::internalPaint(void)
 
 void List::paint(void)
 {
-	fontPtr = Toolkit::getFont(font.c_str());
-	textHeight = fontPtr->getStringHeight((const char *)NULL);
-	assert(fontPtr);
-
 	if (visible)
 		internalPaint();
 }
