@@ -20,8 +20,6 @@ YOGScreen::YOGScreen()
 	addWidget(textInput);
 	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
 	addWidget(chatWindow);
-
-	createList();
 }
 
 YOGScreen::~YOGScreen()
@@ -47,7 +45,7 @@ void YOGScreen::closeConnection(void)
 #define snprintf _snprintf
 #endif
 
-void YOGScreen::createList(void)
+void YOGScreen::createConnection(void)
 {
 	IPs.clear();
 	gameList->clear();
@@ -156,7 +154,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		char data[GAME_INFO_MAX_SIZE];
 		getString(socket, data);
 		if (data[0]==0)
-			printf("We got null string through newtork, why ?\n");
+			printf("We got null string through network, why ?\n");
 		else
 		{
 			chatWindow->addText(data);
