@@ -211,50 +211,35 @@ void GameGUI::step(void)
 	globalContainer->yog->step();
 
 	// display yog chat messages
-	while (globalContainer->yog->receivedMessages.size()>0)
-	{
-		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
-		Uint8 r=255, g=255, b=255;
-		
-		switch(m->messageType)//set the text color
+	for (std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin(); m!=globalContainer->yog->receivedMessages.end(); ++m)
+		if (!m->gameGuiPainted)
 		{
-			case YMT_MESSAGE:
-				r = 99;
-				g = 143;
-				b = 255;
-				addMessage(r, g, b, "<%s> %s", m->userName, m->text);
-			break;
-			
-			case YMT_PRIVATE_MESSAGE:
-				r = 99;
-				g = 255;
-				b = 242;
-				addMessage(r, g, b, "<%s%s> %s", globalContainer->texts.getString("[from:]"), m->userName, m->text);
-			break;
-			
-			case YMT_ADMIN_MESSAGE:
-				r = 138;
-				g = 99;
-				b = 255;
-				addMessage(r, g, b, "<%s> %s", m->userName, m->text);
-			break;
-			
-			case YMT_PRIVATE_RECEIPT:
-				r = 99;
-				g = 255;
-				b = 242;
-				addMessage(r, g, b, "<%s%s> %s", globalContainer->texts.getString("[to:]"), m->userName, m->text);
-			break;
-			
-			default:
-				printf("m->messageType=%d\n", m->messageType);
-				assert(false);
-			break;
+			switch(m->messageType)//set the text color
+			{
+				case YMT_MESSAGE:
+					/* We don't want YOG messages to appear while in the game.
+					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
+				break;
+
+				case YMT_PRIVATE_MESSAGE:
+					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[from:]"), m->userName, m->text);
+				break;
+
+				case YMT_ADMIN_MESSAGE:
+					addMessage(138, 99, 255, "<%s> %s", m->userName, m->text);
+				break;
+
+				case YMT_PRIVATE_RECEIPT:
+					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[to:]"), m->userName, m->text);
+				break;
+
+				default:
+					printf("m->messageType=%d\n", m->messageType);
+					assert(false);
+				break;
+			}
+			m->gameGuiPainted=true;
 		}
-		
-		
-		globalContainer->yog->receivedMessages.erase(m);
-	}
 }
 
 void GameGUI::synchroneStep(void)

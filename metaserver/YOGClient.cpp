@@ -23,13 +23,13 @@
 extern FILE *logServer;
 extern YOGClient *admin;
 
-inline void standardTimeout(int *timeout, const unsigned size, const int base)
+inline void standardTimeout(int *timeout, const unsigned size, const int base, const int div)
 {
 	if (size==1)
 		*timeout=16;
 	else
 	{
-		int targetTimeout=16-size/base;
+		int targetTimeout=base-size/div;
 		if (targetTimeout<0)
 			*timeout=0;
 		else if (*timeout>targetTimeout)
@@ -288,14 +288,46 @@ void YOGClient::addGame(Game *game)
 {
 	games.push_back(game);
 	computeGamesSize();
-	standardTimeout(&gamesTimeout, gamesSize, 1);
+	standardTimeout(&gamesTimeout, gamesSize, 16, 1);
 	gamesTOTL=3;
+}
+
+void YOGClient::addMessage(Message *message)
+{
+	unsigned size=messages.size();
+	if (size<256)
+	{
+		lastMessageID++;
+		if (lastMessageID==0)
+			lastMessageID++;
+		message->messageID=lastMessageID;
+		messages.push_back(*message);
+		standardTimeout(&messageTimeout, size, 4, 64);
+		messageTOTL=3;
+	}
+	else
+		lprintf("Warning!, client (%s) is being flooded!\n", userName);
+}
+
+void YOGClient::deleteMessage(Uint8 messageID)
+{
+	unsigned size=messages.size();
+	if (size==0)
+		return;
+	std::list<Message>::iterator mit=messages.begin();
+	if (mit->messageID==messageID)
+	{
+		lprintf("message (%s) delivered to (%s)\n", mit->text, userName);
+		messages.erase(mit);
+		standardTimeout(&messageTimeout, size, 4, 64);//TODO:here we can improve the TCP/IP friendlyness
+		messageTOTL=3;
+	}
 }
 
 void YOGClient::removeGame(Uint32 uid)
 {
 	unshared.push_back(uid);
-	standardTimeout(&unsharedTimeout, unshared.size(), 16);
+	standardTimeout(&unsharedTimeout, unshared.size(), 16, 16);
 	unsharedTOTL=3;
 }
 
@@ -400,7 +432,7 @@ void YOGClient::addClient(YOGClient *client)
 			return;
 		}
 	clients.push_back(client);
-	standardTimeout(&clientsTimeout, clients.size(), 2);
+	standardTimeout(&clientsTimeout, clients.size(), 16, 2);
 	clientsTOTL=3;
 }
 
@@ -442,7 +474,7 @@ void YOGClient::removeClient(Uint32 uid)
 			importance+=2;
 		else
 			importance++;
-	standardTimeout(&clientsUpdatesTimeout, importance, 4);
+	standardTimeout(&clientsUpdatesTimeout, importance, 16, 4);
 	clientsUpdatesTOTL=3;
 }
 
@@ -483,7 +515,7 @@ void YOGClient::updateClient(Uint32 uid, bool playing)
 			importance+=2;
 		else
 			importance++;
-	standardTimeout(&clientsUpdatesTimeout, importance, 4);
+	standardTimeout(&clientsUpdatesTimeout, importance, 16, 4);
 	clientsUpdatesTOTL=3;
 }
 
@@ -496,7 +528,8 @@ void YOGClient::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	//printf("%s", output);
+	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
+		printf("%s", output);
 	
 	if (logServer)
 		fputs(output, logServer);
