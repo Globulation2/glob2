@@ -5,7 +5,7 @@
  * (c) David Olofson, 2001-2004
  * (c) Bram Thijssen, 2004 (glSDL_SetLineWidth, glSDL_SetLineStipple, 
  *                          glSDL_DrawLine, glSDL_DrawRect).
- * (c) Stephane Magnenat, 2004 (glSDL_SetPixel, glSDL_DrawCircle).
+ * (c) Stephane Magnenat, 2004 (glSDL_SetPixel, glSDL_DrawCircle and multiple fix)
  * This code is released under the terms of the GNU LGPL.
  */
 
