@@ -63,6 +63,7 @@ public:
 
 class Game;
 
+//! This structure handle stats for a team
 struct TeamStat
 {
 	int totalUnit;
@@ -100,6 +101,7 @@ public:
 	void load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
 	void save(SDL_RWops *stream);
 
+	//! Do a step for each unit, building and bullet in team.
 	void step(void);
 
 	//! The team is now under attack or a building is finished, push event
@@ -109,12 +111,13 @@ public:
 	//! we have to show "You are under attack message"
 	EventType getEvent(void) { return lastEvent; }
 	//! return event position
-	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }	
+	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }
 
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
 
+	//! Compute stats about the team
 	void computeStat(TeamStat *stats);
 
 	//! Called when unit wanna work to building. Distance is balanced with user's number of requested unit
@@ -133,7 +136,8 @@ public:
 
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
-	
+
+	//! Compute team checksum
 	Sint32 checkSum();
 
 private:
