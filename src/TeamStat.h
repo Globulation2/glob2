@@ -98,6 +98,7 @@ private:
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
 	
 	friend class EndGameStat;
+	friend class EndGameScreen;
 	
 	enum { END_OF_GAME_STATS_SIZE=128 };
 	

@@ -47,11 +47,23 @@ protected:
 	Game *game;
 };
 
+struct TeamEntry
+{
+	std::string name;
+	int endVal[EndOfGameStat::TYPE_NB_STATS];
+	Uint32 r, g, b, a;
+};
+
 class EndGameScreen:public Screen
 {
 protected:
-	GameGUI *gui;
+	std::vector<TeamEntry> teams;
+	std::vector<Text *> names;
 	EndGameStat *statWidget;
+
+protected:
+	//! resort players
+	void EndGameScreen::sortAndSet(EndOfGameStat::Type type);
 	
 public:
 	EndGameScreen(GameGUI *gui);
