@@ -28,7 +28,6 @@ public:
 	MultiplayersCrossConnectable();
 	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
-	int getFreeChannel();
 	bool sameip(IPaddress ip);
 	bool send(Uint8 *data, int size);
 	bool send(const Uint8 u, const Uint8 v);

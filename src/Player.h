@@ -84,8 +84,6 @@ public:
 		
 		// joiners choose a state for joiners between :
 		
-		PNS_NOT_BINDED=20,
-		PNS_BINDED=21,
 		PNS_SENDING_FIRST_PACKET=22,
 		PNS_HOST=23,
 		
@@ -129,7 +127,7 @@ public:
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
 	bool sameip(IPaddress ip);
-	bool bind(UDPsocket socket, int channel);
+	bool bind(UDPsocket socket);
 	void unbind();
 	
 	bool send(Uint8 *data, int size);
@@ -140,9 +138,6 @@ public:
 public:
 	bool destroyNet;
 	bool disableRecursiveDestruction;
-
-public:
-	void printNetState(char s[128]);
 	
 public:
 	FILE *logFile;

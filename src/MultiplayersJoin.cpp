@@ -493,11 +493,8 @@ void MultiplayersJoin::unCrossConnectSessionInfo()
 {
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 	{
-		if (sessionInfo.players[j].netState>=BasePlayer::PNS_BINDED)
-		{
-			sessionInfo.players[j].unbind();
-			sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-		}
+		sessionInfo.players[j].unbind();
+		sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 		crossPacketRecieved[j]=0;
 	}
 }
@@ -544,19 +541,14 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 				waitingTimeout=2;
 		}
 		
-		if (sessionInfo.players[p].netState<BasePlayer::PNS_BINDED)
-		{
-			int freeChannel=getFreeChannel();
-			if (!sessionInfo.players[p].bind(socket, freeChannel))
+		if (sessionInfo.players[p].channel==-1)
+			if (!sessionInfo.players[p].bind(socket))
 			{
 				fprintf(logFile, " Player %d with ip %s is not bindable!\n", p, Utilities::stringIP(sessionInfo.players[p].ip));
 				sessionInfo.players[p].netState=BasePlayer::PNS_BAD;
 			}
-			else
-				sessionInfo.players[p].netState=BasePlayer::PNS_BINDED;
-		}
 		
-		if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
+		if (sessionInfo.players[p].channel!=-1)
 		{
 			if (crossPacketRecieved[p]<1)
 				crossPacketRecieved[p]=1;
@@ -675,7 +667,7 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 					fprintf(logFile, " userName=(%s), ip=(%s)", userName, Utilities::stringIP(ip));
 					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 					{
-						printf("  type[%d]=%d\n", j, sessionInfo.players[j].type);
+						fprintf(logFile, "  type[%d]=%d\n", j, sessionInfo.players[j].type);
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
 							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
@@ -1491,7 +1483,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=8;
 	packet->data[0]=NEW_PLAYER_SEND_CHECKSUM_CONFIRMATION;
@@ -1502,7 +1494,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	fprintf(logFile, "cs=%x.\n", cs);
 	addSint32(packet->data, cs, 4);
 
-	if (SDLNet_UDP_Send(socket, channel, packet)==1)
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 		fprintf(logFile, "suceeded to send confirmation packet\n");
 	else
 	{
