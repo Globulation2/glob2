@@ -143,7 +143,9 @@ GameUtilities.cpp \
 BitArray.h \
 BitArray.cpp \
 Brush.h \
-Brush.cpp
+Brush.cpp \
+IRC.h \
+IRC.cpp
 
 glob2_LDADD = @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ ../libgag/src/libgag.a
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include
