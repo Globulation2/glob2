@@ -152,7 +152,10 @@ public:
 
 	std::list<Building *> virtualBuildings;
 
-	Uint32 allies, enemies, sharedVision, me; //mask
+	Uint32 allies; // Who do I thrust and don't fire on. mask
+	Uint32 enemies; // Who I don't thrust and fire on. mask
+	Uint32 sharedVision; // Who does I share the vision to. mask
+	Uint32 me; // Who am I. mask.
 
 	int startPosX, startPosY;
 

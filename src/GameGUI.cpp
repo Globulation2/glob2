@@ -286,7 +286,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						for (i=0; i<game.session.numberOfPlayer; i++)
 						{
 							int otherTeam=game.players[i]->teamNumber;
-							Team *otherTeamPtr=game.teams[otherTeam];
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
 							assert(button);
@@ -297,7 +296,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
 							assert(button);
-							bool state=(otherTeamPtr->sharedVision)&(1<<localTeamNo);
+							bool state=localTeam->sharedVision&(1<<i);
 							button->setState(state);
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
