@@ -12,8 +12,20 @@ Then read the INSTALL file.
 Note : if SDL is not installed system wide but rather in $prefix,
 add the following flags to aclocal :
 aclocal -I $prefix/share/aclocal
+
 Under macOSX:
 aclocal -I /usr/local/share/aclocal
+
+You have to use gcc 2.95. If jou have Jaguar and gcc 3, ou'll need to reinstall MaxOS 10.1.x on another disk and install the old gcc 2.95. Then edit 
+"src/Makefile" and change the following:
+...
+CCXX = /path/to/partition/with/OS10.1.x/usr/bin/c++
+...
+CPPFLAGS = -DDISABLE_GLOB_LAN_BROADCAST
+...
+glob2_LDADD = (...) /path/to/partition/with/OS10.1.x/usr/lib/gcc/darwin/2.95.2/libcc_dynamic.a 
+/path/to/partition/with/OS10.1.x/usr/lib/gcc/darwin/2.95.2/libstdc++.a
+
 
 Under Win32 :
 
