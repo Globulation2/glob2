@@ -23,7 +23,7 @@
 #include "GlobalContainer.h"
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 5
+#define VERSION_MINOR 7
 
 SessionGame::SessionGame()
 {
@@ -34,6 +34,7 @@ SessionGame::SessionGame()
 	teamsOffset=0;
 	playersOffset=0;
 	mapOffset=0;
+	generationDescriptorOffset=0;
 
 	numberOfPlayer=0;
 	numberOfTeam=0;
@@ -41,11 +42,49 @@ SessionGame::SessionGame()
 	gameLatency=5;
 	
 	fileIsAMap=(Sint32)true;
+	
+	mapGenerationDescriptor=NULL;
+}
+
+SessionGame::~SessionGame(void)
+{
+	if (mapGenerationDescriptor)
+		delete mapGenerationDescriptor;
+	mapGenerationDescriptor=NULL;
 }
 
 SessionGame::SessionGame(const SessionGame &sessionGame)
 {
 	*this=sessionGame;
+	
+	//mapGenerationDescriptor=NULL;
+	//if (sessionGame.mapGenerationDescriptor)
+	//	mapGenerationDescriptor=new MapGenerationDescriptor(*sessionGame.mapGenerationDescriptor);
+}
+
+SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
+{
+	//memcpy(this, &sessionGame, sizeof(*this));
+	
+	versionMajor=sessionGame.versionMajor;
+	versionMinor=sessionGame.versionMinor;
+	sessionInfoOffset=sessionGame.sessionInfoOffset;
+	gameOffset=sessionGame.gameOffset;
+	teamsOffset=sessionGame.teamsOffset;
+	playersOffset=sessionGame.playersOffset;
+	mapOffset=sessionGame.mapOffset;
+	generationDescriptorOffset=sessionGame.generationDescriptorOffset;
+	numberOfPlayer=sessionGame.numberOfPlayer;
+	numberOfTeam=sessionGame.numberOfTeam;
+	gameTPF=sessionGame.gameTPF;
+	gameLatency=sessionGame.gameLatency;
+	fileIsAMap=sessionGame.fileIsAMap;
+	
+	mapGenerationDescriptor=NULL;
+	if (sessionGame.mapGenerationDescriptor)
+		mapGenerationDescriptor=new MapGenerationDescriptor(*sessionGame.mapGenerationDescriptor);
+	
+	return *this;
 }
 
 void SessionGame::save(SDL_RWops *stream)
@@ -56,16 +95,25 @@ void SessionGame::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);
 	// save 0, will be rewritten after
-	SDL_WriteBE32(stream, 0);
-	SDL_WriteBE32(stream, 0);
-	SDL_WriteBE32(stream, 0);
-	SDL_WriteBE32(stream, 0);
-	SDL_WriteBE32(stream, 0);
+	SDL_WriteBE32(stream, 0);//sessionInfoOffset
+	SDL_WriteBE32(stream, 0);//gameOffset
+	SDL_WriteBE32(stream, 0);//teamsOffset
+	SDL_WriteBE32(stream, 0);//playersOffset
+	SDL_WriteBE32(stream, 0);//mapOffset
+	SDL_WriteBE32(stream, 0);//generationDescriptorOffset
 	SDL_WriteBE32(stream, numberOfPlayer);
 	SDL_WriteBE32(stream, numberOfTeam);
 	SDL_WriteBE32(stream, gameTPF);
 	SDL_WriteBE32(stream, gameLatency);
 	SDL_WriteBE32(stream, fileIsAMap);
+	if (mapGenerationDescriptor)
+	{
+		SDL_WriteBE32(stream, (Sint32)true);
+		SAVE_OFFSET(stream, 32);
+		mapGenerationDescriptor->save(stream);
+	}
+	else
+		SDL_WriteBE32(stream, (Sint32)false);
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
 
@@ -86,6 +134,8 @@ bool SessionGame::load(SDL_RWops *stream)
 		playersOffset=SDL_ReadBE32(stream);
 		mapOffset=SDL_ReadBE32(stream);
 	}
+	if (versionMinor>6)
+		generationDescriptorOffset=SDL_ReadBE32(stream);
 	numberOfPlayer=SDL_ReadBE32(stream);
 	numberOfTeam=SDL_ReadBE32(stream);
 	gameTPF=SDL_ReadBE32(stream);
@@ -95,6 +145,23 @@ bool SessionGame::load(SDL_RWops *stream)
 		fileIsAMap=SDL_ReadBE32(stream);
 	else
 		fileIsAMap=(Sint32)true;
+	
+	if (mapGenerationDescriptor)
+		delete mapGenerationDescriptor;
+	mapGenerationDescriptor=NULL;
+	bool isDescriptor;
+	if (versionMinor>6)
+		isDescriptor=(bool)SDL_ReadBE32(stream);
+	else
+		isDescriptor=false;
+	if (isDescriptor)
+	{
+		SDL_RWseek(stream, generationDescriptorOffset , SEEK_SET);
+		mapGenerationDescriptor=new MapGenerationDescriptor();
+		mapGenerationDescriptor->load(stream);
+	}
+	else
+		mapGenerationDescriptor=NULL;
 	
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
@@ -175,6 +242,14 @@ char *SessionGame::getData()
 	addSint32(data, gameTPF, 16);
 	addSint32(data, gameLatency, 20);
 	addSint32(data, fileIsAMap, 24);
+	if (mapGenerationDescriptor)
+	{
+		addSint32(data, 1, 28);
+		assert(mapGenerationDescriptor->getDataLength()==MapGenerationDescriptor::DATA_SIZE);
+		memcpy(data+32, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
+	}
+	else
+		addSint32(data, 0, 28);
 	
 	return data;
 }
@@ -186,11 +261,22 @@ bool SessionGame::setData(const char *data, int dataLength)
 
 	versionMajor=getSint32(data, 0);
 	versionMinor=getSint32(data, 4);
-	printf("s nop=%d\n", numberOfPlayer=getSint32(data, 8));
-	printf("s not=%d\n", numberOfTeam=getSint32(data, 12));
+	numberOfPlayer=getSint32(data, 8);
+	numberOfTeam=getSint32(data, 12);
 	gameTPF=getSint32(data, 16);
 	gameLatency=getSint32(data, 20);
 	fileIsAMap=getSint32(data, 24);
+	if (mapGenerationDescriptor)
+		delete mapGenerationDescriptor;
+	mapGenerationDescriptor=NULL;
+	bool isDescriptor=getSint32(data, 28);
+	if (isDescriptor)
+	{
+		mapGenerationDescriptor=new MapGenerationDescriptor();
+		mapGenerationDescriptor->setData(data+32, MapGenerationDescriptor::DATA_SIZE);
+	}
+	else
+		mapGenerationDescriptor=NULL;
 	
 	return true;
 }
@@ -198,7 +284,10 @@ bool SessionGame::setData(const char *data, int dataLength)
 
 int SessionGame::getDataLength()
 {
-	return S_GAME_DATA_SIZE;
+	if (mapGenerationDescriptor)
+		return S_GAME_DATA_SIZE;
+	else
+		return S_GAME_ONLY_DATA_SIZE;
 }
 
 Sint32 SessionGame::checkSum()
@@ -214,19 +303,28 @@ Sint32 SessionGame::checkSum()
 	cs^=gameLatency;
 	cs=(cs<<31)|(cs>>1);
 	
+	if (mapGenerationDescriptor)
+	{
+		cs=(cs<<31)|(cs>>1);
+		cs^=mapGenerationDescriptor->checkSum();
+	}
+	//printf("versionMajor=%d, versionMinor=%d, numberOfPlayer=%d, numberOfTeam=%d, gameTPF=%d, gameLatency=%d.\n", 
+	//	versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency);
+	//printf("mapGenerationDescriptor=%x", mapGenerationDescriptor);
+	
+	//printf("SessionGame::sc=%x.\n", cs);
+	
 	return cs;
 }
 
 SessionInfo::SessionInfo()
 :SessionGame()
 {
-
 }
 
 SessionInfo::SessionInfo(const SessionGame &sessionGame)
 :SessionGame(sessionGame)
 {
-
 }
 
 void SessionInfo::save(SDL_RWops *stream)
@@ -307,19 +405,16 @@ char *SessionInfo::getData()
 		memcpy(l+data, team[i].getData(), team[i].getDataLength() );
 		l+=team[i].getDataLength();
 	}
-
+	
 	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
 	l+=SessionGame::getDataLength();
 	
-	assert(l==S_INFO_DATA_SIZE);
+	assert(l==getDataLength());
 	return data;
 }
 
 bool SessionInfo::setData(const char *data, int dataLength)
 {
-	if (dataLength!=SessionInfo::getDataLength())
-		return false;
-
 	int l=0;
 	int i;
 
@@ -350,7 +445,7 @@ bool SessionInfo::setData(const char *data, int dataLength)
 
 int SessionInfo::getDataLength()
 {
-	return S_INFO_DATA_SIZE;
+	return S_INFO_ONLY_DATA_SIZE+SessionGame::getDataLength();
 }
 
 Sint32 SessionInfo::checkSum()
@@ -370,6 +465,7 @@ Sint32 SessionInfo::checkSum()
 	}
 	
 	cs^=SessionGame::checkSum();
+	printf("SessionInfo::sc=%x.\n", cs);
 	
 	return cs;
 }

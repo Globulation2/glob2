@@ -300,7 +300,7 @@ void MapEdit::handleMapClick(int mx, int my)
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
  		if ((ax!=x)||(ay!=y)||(atype!=type))
 		{
-			game.map.setResAtPos(x,y,type,terrainSize);
+			game.map.setResAtPos(x, y, type, terrainSize);
 			needRedraw=true;
 
 
@@ -1177,10 +1177,10 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 }
 */
 
-void MapEdit::resize(int sizeX, int sizeY)
+/*void MapEdit::resize(int sizeX, int sizeY)
 {
 	game.map.setSize(sizeX, sizeY);
-}
+}*/
 
 int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 {

@@ -107,8 +107,8 @@ public:
 	Building *selectedBuilding;
 	
 	Sint32 stepCounter;
-	
 public:
+	void makeIslandsMap(MapGenerationDescriptor &descriptor);
 	void generateMap(MapGenerationDescriptor &descriptor);
 };
 

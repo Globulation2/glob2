@@ -434,6 +434,24 @@ bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy)
 	return false;
 }
 
+bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	int tdx, tdy;
+	
+	for (tdx=-1; tdx<=1; tdx++)
+		for (tdy=-1; tdy<=1; tdy++)
+			if (isRessource(x+tdx, y+tdy))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+			
+	return false;
+}
+
 bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy)
 {
 	int x=unit->posX;
@@ -534,6 +552,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	if (undermap)
 		delete[] undermap;
 
+	assert(wDec<32);
+	assert(hDec<32);
 	this->wDec=wDec;
 	this->hDec=hDec;
 	w=1<<wDec;
@@ -876,6 +896,7 @@ void Map::regenerateMap(int x, int y, int w, int h)
 
 void Map::setResAtPos(int x, int y, int type, int size)
 {
+	assert(size>=0);
 	int dx, dy;
 	if (type<3)
 	{
@@ -1061,35 +1082,33 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 
 bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
 {
+	for (int i=1; i<32; i++)
 	{
-		for (int i=1; i<32; i++)
+		for (int j=-i; j<i; j++)
 		{
-			for (int j=-i; j<i; j++)
+			if (isRessource(x+i, y+j, ressourceType))
 			{
-				if (isRessource(x+i, y+j, ressourceType))
-				{
-					*dx=(x+i)&getMaskW();
-					*dy=(y+j)&getMaskH();
-					return true;
-				}
-				if (isRessource(x-i, y+j, ressourceType))
-				{
-					*dx=(x-i)&getMaskW();
-					*dy=(y+j)&getMaskH();
-					return true;
-				}
-				if (isRessource(x+j, y+i, ressourceType))
-				{
-					*dx=(x+j)&getMaskW();
-					*dy=(y+i)&getMaskH();
-					return true;
-				}
-				if (isRessource(x+j, y-i, ressourceType))
-				{
-					*dx=(x+j)&getMaskW();
-					*dy=(y-i)&getMaskH();
-					return true;
-				}
+				*dx=(x+i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x-i, y+j, ressourceType))
+			{
+				*dx=(x-i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y+i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y+i)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y-i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y-i)&getMaskH();
+				return true;
 			}
 		}
 	}
@@ -1098,41 +1117,72 @@ bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, i
 
 bool Map::nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy)
 {
+	for (int i=1; i<32; i++)
 	{
-		for (int i=1; i<32; i++)
+		for (int j=-i; j<i; j++)
 		{
-			for (int j=-i; j<i; j++)
+			if (isRessource(x+i, y+j, ressourceType))
 			{
-				if (isRessource(x+i, y+j, ressourceType))
-				{
-					*dx=(x+i)&getMaskW();
-					*dy=(y+j)&getMaskH();
-					return true;
-				}
-				if (isRessource(x-i, y+j, ressourceType))
-				{
-					*dx=(x-i)&getMaskW();
-					*dy=(y+j)&getMaskH();
-					return true;
-				}
-				if (isRessource(x+j, y+i, ressourceType))
-				{
-					*dx=(x+j)&getMaskW();
-					*dy=(y+i)&getMaskH();
-					return true;
-				}
-				if (isRessource(x+j, y-i, ressourceType))
-				{
-					*dx=(x+j)&getMaskW();
-					*dy=(y-i)&getMaskH();
-					return true;
-				}
+				*dx=(x+i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x-i, y+j, ressourceType))
+			{
+				*dx=(x-i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y+i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y+i)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y-i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y-i)&getMaskH();
+				return true;
 			}
 		}
 	}
     return false;
 }
 
+bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy)
+{
+	fsr*=fsr;
+	for (int i=1; i<32; i++)
+		for (int j=-i; j<i; j++)
+		{
+			if (isRessource(x+i, y+j) && warpDistSquare(x+i, y+j, fx, fy)<=fsr)
+			{
+				*dx=(x+i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x-i, y+j) && warpDistSquare(x-i, y+j, fx, fy)<=fsr)
+			{
+				*dx=(x-i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y+i) && warpDistSquare(x+j, y+i, fx, fy)<=fsr)
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y+i)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y-i) && warpDistSquare(x+j, y-i, fx, fy)<=fsr)
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y-i)&getMaskH();
+				return true;
+			}
+		}
+    return false;
+}
 Sint32 Map::checkSum()
 {
 	return BaseMap::checkSum();

@@ -60,6 +60,7 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 InGameLoadSaveScreen::~InGameLoadSaveScreen()
 {
 	delete[] fileName;
+	delete[] extension;
 }
 
 void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)

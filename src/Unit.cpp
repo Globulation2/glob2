@@ -918,6 +918,8 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_REMOVING_BLACK_AROUND;
 				else if (destinationPurprose==ATTACK_SPEED)
 					displacement=DIS_ATTACKING_AROUND;
+				else if (destinationPurprose==HARVEST)
+					displacement=DIS_CLEARING_RESSOURCES;
 				else
 					assert(false);
 			}
@@ -1062,6 +1064,10 @@ void Unit::handleMovement(void)
 					for (int y=-8; y<=8; y++)
 						if (owner->game->map.isFOW(posX+x, posY+y, owner->sharedVision))
 						{
+							if (attachedBuilding&&
+								owner->game->map.warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
+									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
+								continue;
 							int uid=owner->game->map.getUnit(posX+x, posY+y);
 							if (uid!=NOUID)
 							{
@@ -1087,6 +1093,34 @@ void Unit::handleMovement(void)
 								}
 							}
 						}
+					
+			}
+			break;
+		}
+		
+		case DIS_CLEARING_RESSOURCES:
+		{
+			if (movement==MOV_HARVESTING)
+				owner->game->map.decRessource(posX+dx, posY+dy);
+			
+			if (owner->game->map.doesUnitTouchRessource(this, &dx, &dy))
+			{	
+				movement=MOV_HARVESTING;
+			}
+			else if (owner->game->map.nearestRessourceInCircle(posX, posY,
+				attachedBuilding->posX, attachedBuilding->posY, attachedBuilding->unitStayRange,
+				&targetX, &targetY))
+			{
+				newTargetWasSet();
+				//printf("pos=(%d, %d), flag=(%d, %d), range=%d, target=(%d, %d), wds=%d.\n", posX, posY,
+				//	attachedBuilding->posX, attachedBuilding->posY, attachedBuilding->unitStayRange,
+				//	targetX, targetY,
+				//	owner->game->map.warpDistSquare(attachedBuilding->posX, attachedBuilding->posY, targetX, targetY));
+				movement=MOV_GOING_TARGET;
+			}
+			else
+			{
+				movement=MOV_RANDOM;
 			}
 			break;
 		}

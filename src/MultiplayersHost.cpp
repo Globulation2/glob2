@@ -370,6 +370,8 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 
 	if ( sessionInfo.players[p].send(sessionInfo.getData(), sessionInfo.getDataLength()) )
 	{
+		// TODO : the player allways recieve a sessionInfo with one missing player !
+		// We have to add it before sending the sessionInfo !
 		NETPRINTF("this ip(%x:%d) is added in player list.\n", ip.host, ip.port);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
@@ -443,7 +445,7 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 
 	if (rcs!=lcs)
 	{
-		NETPRINTF("this ip(%x:%d) is has confirmed a wrong check sum !.\n", ip.host, ip.port);
+		printf("this ip(%x:%d) is has confirmed a wrong check sum !.\n", ip.host, ip.port);
 		NETPRINTF("rcs=%x, lcs=%x.\n", rcs, lcs);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
 		sessionInfo.players[i].netTimeout=0;

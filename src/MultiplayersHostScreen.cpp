@@ -45,8 +45,6 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		// We erase players info.
 		sessionInfo->numberOfPlayer=0;
 	}
-	printf("MultiplayersHostScreen::sessionInfo->fileIsAMap=%d.\n", sessionInfo->fileIsAMap);
-	
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG, savedSessionInfo);
 	multiplayersJoin=NULL;
 

@@ -773,10 +773,13 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 		int typeNum;
 
-		// try to get the nuilding site, if it doesn't exists, get the finished building (for flags)
+		// try to get the building site, if it doesn't exists, get the finished building (for flags)
 		typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, true);
 		if (typeNum==-1)
+		{
 			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
+			assert(globalContainer->buildingsTypes.buildingsTypes[typeNum]->isVirtual);
+		}
 		assert (typeNum!=-1);
 
 		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
@@ -955,12 +958,15 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_EXPLO_FLAG_RANGE)/94;
 				else if (selBuild->type->type==BuildingType::WAR_FLAG)
 					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_WAR_FLAG_RANGE)/94;
+				else if (selBuild->type->type==BuildingType::CLEARING_FLAG)
+					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_CLEARING_FLAG_RANGE)/94;
 				else
 					assert(false);
 				orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
 			{
+				// TODO : check in orderQueue to avoid useless orders.
 				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
 				{
 					if(selBuild->unitStayRangeLocal<MAX_EXPLO_FLAG_RANGE)
@@ -972,6 +978,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				else if (selBuild->type->type==BuildingType::WAR_FLAG)
 				{
 					if(selBuild->unitStayRangeLocal<MAX_WAR_FLAG_RANGE)
+					{
+						nbReq=(selBuild->unitStayRangeLocal+=1);
+						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					}
+				}
+				else if (selBuild->type->type==BuildingType::CLEARING_FLAG)
+				{
+					if(selBuild->unitStayRangeLocal<MAX_CLEARING_FLAG_RANGE)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
 						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
@@ -1283,6 +1297,8 @@ void GameGUI::draw(void)
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
 					else if (selBuild->type->type==BuildingType::WAR_FLAG)
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
+					else if (selBuild->type->type==BuildingType::CLEARING_FLAG)
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_CLEARING_FLAG_RANGE);
 					else
 						assert(false);
 				}
@@ -1674,7 +1690,14 @@ void GameGUI::executeOrder(Order *order)
 
 bool GameGUI::loadBase(const SessionInfo *initial)
 {
-	if (initial->fileIsAMap)
+	if (initial->mapGenerationDescriptor && initial->fileIsAMap)
+	{
+		initial->mapGenerationDescriptor->synchronizeNow();
+		game.generateMap(*initial->mapGenerationDescriptor);
+		game.setBase(initial);
+		return true;
+	}
+	else if (initial->fileIsAMap)
 	{
 		const char *s=initial->map.getMapFileName();
 		assert(s);

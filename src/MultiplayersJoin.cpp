@@ -79,18 +79,11 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	myPlayerNumber=pn;
 	NETPRINTF("dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
 
-
-	if (size!=sessionInfo.getDataLength()+8)
-	{
-		NETPRINTF("Bad size for a sessionInfo packet recieved!\n");
-		return;
-	}
-
 	unCrossConnectSessionInfo();
 
 	if (!sessionInfo.setData(data+8, size-8))
 	{
-		NETPRINTF("Bad content for a sessionInfo packet recieved!\n");
+		NETPRINTF("Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;
 	}
 
@@ -634,6 +627,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	packet->data[2]=0;
 	packet->data[3]=0;
 	Sint32 cs=sessionInfo.checkSum();
+	printf("MultiplayersJoin::cs=%x.\n", cs);
 	addSint32((char *)(packet->data), cs, 4);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)

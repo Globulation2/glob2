@@ -76,7 +76,10 @@ NetGame::~NetGame()
 	
 	if (socket)
 	{
-		// TODO : are player's sockets already closed ?
+		// We have to prevents players to close the same socket:
+		for (int eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
+			if (players[eachPlayers]->socket==socket)
+				players[eachPlayers]->channel=-1;
 		SDLNet_UDP_Close(socket);
 		socket=NULL;
 	}
@@ -426,7 +429,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	{
 		if (checkSumsLocal[currentStep]==checkSumsRemote[currentStep])
 		{
-			//NETPRINTF("(%d)World is synchronized.   (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
+			//printf("(%d)World is synchronized.   (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
 		}
 		else
 		{

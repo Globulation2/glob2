@@ -159,14 +159,14 @@ Entdecker Fahne
 Drapeau de guerre
 War flag
 Kampf Fahne
+[clearing flag]
+Drapeau de defrichage
+Clearing flag
+
 [wood wall]
 Mur de bois
 Wood wall
 Holzmauer
-[stone wall]
-Mur de pierre
-Stone wall
-Steinmauer
 [l units free]
  
 
@@ -647,11 +647,31 @@ Uniform terrain
 Terrain aleatoire
 Random terrain
 
-[Ratios]
+[islands terrain]
+Iles
+Islands
+
+[ratios]
 Proportions
 Rations
 
-[Smoothing]
+[smoothing]
 Lissage
 Smoothing
+
+[islands number]
+nombre d'iles
+islands number
+
+[islands size]
+taille des iles
+islands size
+
+[beach size]
+taille de la plage
+beach size
+
+[workers]
+Ouvrieres
+Workers
 

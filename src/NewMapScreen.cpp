@@ -45,8 +45,6 @@ void HowNewMapScreen::paint(int x, int y, int w, int h)
 NewMapScreen::NewMapScreen()
 {
 	firstPaint=true;
-	sizeX=7;
-	sizeY=7;
 
 	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
 	
@@ -55,7 +53,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeX->add(128);
 	mapSizeX->add(256);
 	mapSizeX->add(512);
-	mapSizeX->setNth(sizeX-6);
+	mapSizeX->setNth(descriptor.wDec-6);
 	addWidget(mapSizeX);
 	
 	mapSizeY=new Number(20, 75, 100, 20, 20, globalContainer->menuFont);
@@ -63,12 +61,13 @@ NewMapScreen::NewMapScreen()
 	mapSizeY->add(128);
 	mapSizeY->add(256);
 	mapSizeY->add(512);
-	mapSizeY->setNth(sizeY-6);
+	mapSizeY->setNth(descriptor.hDec-6);
 	addWidget(mapSizeY);
 	
 	methodes=new List(20, 100, 280, 300, globalContainer->menuFont);
 	methodes->addText(globalContainer->texts.getString("[uniform terrain]"));
 	methodes->addText(globalContainer->texts.getString("[random terrain]"));
+	methodes->addText(globalContainer->texts.getString("[islands terrain]"));
 	methodes->setNth(0);
 	addWidget(methodes);
 	
@@ -104,6 +103,45 @@ NewMapScreen::NewMapScreen()
 	smooth->visible=false;
 	addWidget(smooth);
 	
+	nbIslands=new Number(320, 100, 114, 18, 18, globalContainer->menuFont);
+	nbIslands->add(1);
+	nbIslands->add(2);
+	nbIslands->add(3);
+	nbIslands->add(4);
+	nbIslands->add(5);
+	nbIslands->add(6);
+	nbIslands->add(7);
+	nbIslands->add(8);
+	nbIslands->setNth(descriptor.nbIslands-1);
+	nbIslands->visible=false;
+	addWidget(nbIslands);
+	
+	islandsSize=new Ratio(320, 120, 114, 18, 40, descriptor.islandsSize, globalContainer->menuFont);
+	islandsSize->visible=false;
+	addWidget(islandsSize);
+	
+	beach=new Number(320, 140, 114, 18, 18, globalContainer->menuFont);
+	beach->add(0);
+	beach->add(1);
+	beach->add(2);
+	beach->setNth(descriptor.beach);
+	beach->visible=false;
+	addWidget(beach);
+	
+	nbWorkers=new Number(320, 160, 114, 18, 18, globalContainer->menuFont);
+	nbWorkers->add(1);
+	nbWorkers->add(2);
+	nbWorkers->add(3);
+	nbWorkers->add(4);
+	nbWorkers->add(5);
+	nbWorkers->add(6);
+	nbWorkers->add(7);
+	nbWorkers->add(8);
+	nbWorkers->setNth(descriptor.nbWorkers-1);
+	nbWorkers->visible=false;
+	addWidget(nbWorkers);
+	
+	
 	addWidget(new TextButton( 20, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
 	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
 }
@@ -117,16 +155,24 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
 	{
-		sizeX=mapSizeX->getNth()+6;
-		sizeY=mapSizeY->getNth()+6;
+		descriptor.wDec=mapSizeX->getNth()+6;
+		descriptor.hDec=mapSizeY->getNth()+6;
 		
+		//eRANDOM
 		descriptor.smooth=smooth->getNth()+1;
+		
+		//eISLANDS
+		descriptor.beach=beach->getNth();
+		descriptor.nbIslands=nbIslands->getNth()+1;
+		descriptor.nbWorkers=nbWorkers->getNth()+1;
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
+		//eUNIFORM
 		if (source==terrains)
 			descriptor.terrainType=(Map::TerrainType)terrains->getNth();
 		
+		//all
 		if (source==methodes)
 		{
 			MapGenerationDescriptor::Methode old=descriptor.methode;
@@ -141,6 +187,11 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				grassRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				smooth->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				
+				nbIslands->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				islandsSize->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				beach->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				nbWorkers->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				
 				dispatchPaint(gfxCtx);
 				addUpdateRect(320, 100, 320, 300);
 			}
@@ -148,9 +199,13 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==RATIO_CHANGED)
 	{
+		//eRANDOM
 		descriptor.waterRatio=waterRatio->get();
 		descriptor.sandRatio=sandRatio->get();
 		descriptor.grassRatio=grassRatio->get();
+		
+		//eISLANDS
+		descriptor.islandsSize=islandsSize->get();
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
@@ -174,10 +229,18 @@ void NewMapScreen::paint(int x, int y, int w, int h)
 	
 	if (descriptor.methode==MapGenerationDescriptor::eRANDOM)
 	{
-		gfxCtx->drawString(320, 100, globalContainer->menuFont, globalContainer->texts.getString("[Ratios]"));
+		gfxCtx->drawString(320, 100, globalContainer->menuFont, globalContainer->texts.getString("[ratios]"));
 		gfxCtx->drawString(500, 120, globalContainer->menuFont, globalContainer->texts.getString("[water]"));
 		gfxCtx->drawString(500, 140, globalContainer->menuFont, globalContainer->texts.getString("[sand]"));
 		gfxCtx->drawString(500, 160, globalContainer->menuFont, globalContainer->texts.getString("[grass]"));
-		gfxCtx->drawString(500, 180, globalContainer->menuFont, globalContainer->texts.getString("[Smoothing]"));
+		gfxCtx->drawString(500, 180, globalContainer->menuFont, globalContainer->texts.getString("[smoothing]"));
+	}
+	
+	if (descriptor.methode==MapGenerationDescriptor::eISLANDS)
+	{
+		gfxCtx->drawString(450, 100, globalContainer->menuFont, globalContainer->texts.getString("[islands number]"));
+		gfxCtx->drawString(450, 120, globalContainer->menuFont, globalContainer->texts.getString("[islands size]"));
+		gfxCtx->drawString(450, 140, globalContainer->menuFont, globalContainer->texts.getString("[beach size]"));
+		gfxCtx->drawString(450, 160, globalContainer->menuFont, globalContainer->texts.getString("[workers]"));
 	}
 }

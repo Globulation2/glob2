@@ -230,6 +230,8 @@ public:
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID);
 	//! Return true if (x,y) has contact with otherUID. If true, put contact direction in dx, dy
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy);
+	//! Return true if unit has contact with ressource of any ressourceType. If true, put contact direction in dx, dy
+	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy);
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
@@ -271,6 +273,7 @@ public:
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
 	bool nearestRessource(int x, int y, RessourceType  ressourceType, int *dx, int *dy);
 	bool nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy);
+	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
 
 protected:
 	// private functions, used for edition
@@ -302,6 +305,7 @@ public:
 	void makeHomogenMap(Map::TerrainType terrainType);
 	void controlSand(void);
 	void makeRandomMap(MapGenerationDescriptor &descriptor);
+	void makeIslandsMap(MapGenerationDescriptor &descriptor);
 };
 
 #endif
