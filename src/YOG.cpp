@@ -67,8 +67,8 @@ YOG::YOG(LogFileManager *logFileManager)
 	else
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
-	//zzz enableLan=lan.enable(SERVER_PORT);
-	//fprintf(logFile, "enableLan=%d.\n", enableLan);
+	
+	enableLan=true;
 	
 }
 
@@ -887,30 +887,6 @@ void YOG::step()
 			selectedGameinfoTimeout=DEFAULT_NETWORK_TIMEOUT;
 			sendGameinfoRequest();
 		}
-		/*zzz if (isSelectedGame)
-		{
-			int v;
-			char gameName[128];
-			char serverNickName[32];
-			if (lan.receive(&v, gameName, serverNickName))
-			{
-				fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, gameName, serverNickName);
-				for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
-					if ((strncmp(gameName, game->name, 128)==0)
-						&& (strncmp(serverNickName, game->userName, 32)==0))
-					{
-						fprintf(logFile, "Solved a NAT from (%s) to (%s).\n", Utilities::stringIP(game->hostip), Utilities::stringIP(lan.getSenderIP()));
-						game->hostip.host=lan.getSenderIP();
-						game->hostip.port=SDL_SwapBE16(SERVER_PORT);
-						game->natSolved=true;
-						if (game->uid==selectedGame)
-						{
-							selectedGameinfoTOTL++;
-							selectedGameinfoTimeout=2;
-						}
-					}
-			}
-		}*/
 		
 		if (hostGameSocket && joiners.size()>0)
 			for (std::list<Joiner>::iterator joiner=joiners.begin(); joiner!=joiners.end(); ++joiner)
@@ -966,14 +942,10 @@ void YOG::sendGameinfoRequest()
 			if (!sucess)
 				fprintf(logFile, "failed to send packet!\n");
 			else
-				printf("sendGameinfoRequest() to ip=%s\n",  Utilities::stringIP(game->hostip));
+				fprintf(logFile, "sendGameinfoRequest() to ip=%s\n",  Utilities::stringIP(game->hostip));
 			SDLNet_FreePacket(packet);
-			
 			if (!game->natSolved && enableLan)
 			{
-				//zzz lan.send(BROADCAST_REQUEST);
-				//printf("BROADCAST_REQUEST\n");
-				
 				UDPpacket *packet=SDLNet_AllocPacket(4);
 
 				assert(packet);
@@ -998,6 +970,8 @@ void YOG::sendGameinfoRequest()
 				}
 				SDLNet_FreePacket(packet);
 			}
+			else
+				fprintf(logFile, "No broadcasting now, game->natSolved=%d, enableLan=%d.\n", game->natSolved, enableLan);
 			break;
 		}
 	
