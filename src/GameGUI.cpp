@@ -2375,7 +2375,7 @@ void GameGUI::drawOverlayInfos(void)
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
-				yinc += 22;
+				yinc += 20;
 			}
 		}
 
@@ -2386,17 +2386,17 @@ void GameGUI::drawOverlayInfos(void)
 			yinc = std::max(yinc, 32);
 		}
 
-		ymesg += yinc;
+		ymesg += yinc+2;
 		
 		// display messages
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text);
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
-			ymesg+=20;
+			ymesg += 20;
 
 			// delete old messages
 			if (!(--(it->showTicks)))
@@ -3140,7 +3140,8 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 	if (lastLine.length())
 		lastLine += " ";
 	lastLine += lastWord;
-	output->push_back(lastLine);
+	if (lastLine.length())
+		output->push_back(lastLine);
 }
 
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
@@ -3158,50 +3159,18 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	va_end(ap);
 	fullText[1023]=0;
 	
-	char *sLine=fullText;
-	char *ptr=fullText;
-	char *lastSpace=fullText;
+	std::string fullTextStr(fullText);
+	std::vector<std::string> messages;
 	
 	globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
-	while (*ptr)
-	{
-		if (strchr(" \t\n\r", *ptr))
-			lastSpace=ptr;
-			
-		char c=*(ptr+1);
-		*(ptr+1)=0;
-		
-		if ((globalContainer->standardFont->getStringWidth(sLine)>globalContainer->gfx->getW()-128-64) || (ptr-sLine>=Message::MAX_DISPLAYED_MESSAGE_SIZE))
-		{
-			int len=lastSpace-sLine;
-			// prevent crash if line doesn't have any space
-			if (len)
-			{
-				memcpy(message.text, sLine, len);
-				message.text[len]=0;
-				messagesList.push_back(message);
-
-				sLine=lastSpace+1;
-			}
-			else
-			{
-				len=ptr-sLine;
-				memcpy(message.text, sLine, len);
-				message.text[len]=0;
-				messagesList.push_back(message);
-				
-				sLine=ptr;
-			}
-			lastSpace=sLine;
-		}
-		*(ptr+1)=c;
-		ptr++;
-	}
+	setMultiLine(fullTextStr, &messages);
 	globalContainer->standardFont->popStyle();
 	
-	memcpy(message.text, sLine, ptr-sLine);
-	message.text[ptr-sLine]=0;
-	messagesList.push_back(message);
+	for (unsigned i=0; i<messages.size(); i++)
+	{
+		message.text = messages[i];
+		messagesList.push_back(message);
+	}
 }
 
 void GameGUI::addMark(MapMarkOrder *mmo)
