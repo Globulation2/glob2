@@ -39,6 +39,13 @@ protected:
 	Uint32 flags;
 	//! if true, we only want to redraw part of screen at each frame. The backend has to queue commands to correcly handle double buffering
 	bool partialRedraw;
+	//! if true, surface is locked and suitable for direct pixel access
+	bool locked;
+	
+	//! lock only if necessary
+	void lock(void) { if (!locked) { SDL_LockSurface(surface); locked = true; } }
+	//! unlock only if necessary
+	void unlock(void) { if (locked) { SDL_UnlockSurface(surface); locked = false; } }
 	
 	//! A delayed drawing command that can be applyed to the surface
 	class DrawCommand
@@ -182,7 +189,7 @@ public:
 	virtual void setClipRect(void);
 	virtual void loadImage(const char *name);
 	virtual void drawSprite(int x, int y, Sprite *sprite, int index=0);
-	virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE, bool lock=true);
+	virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
@@ -196,8 +203,6 @@ public:
 	virtual void updateRects(SDL_Rect *rects, int size) { }
 	virtual void updateRect(int x, int y, int w, int h) { }
 	virtual void *getPixelPointer(void)  { return surface->pixels; }
-	virtual void lock(void) { SDL_LockSurface(surface); }
-	virtual void unlock(void) { SDL_LockSurface(surface); }
 };
 
 class GraphicContext:public DrawableSurface

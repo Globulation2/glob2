@@ -121,9 +121,9 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 
 	// add static text and images
-	addWidget(new Animation(149, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
-	addWidget(new Animation(182, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
-	addWidget(new Animation(220, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
+	addWidget(new Animation(149, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 13));
+	addWidget(new Animation(182, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 14));
+	addWidget(new Animation(220, 16, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 15));
 	
 	if (gameGUI->game.session.numberOfPlayer<8)
 	{
@@ -132,9 +132,9 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 	else
 	{
-		addWidget(new Animation(250+149, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
-		addWidget(new Animation(250+182, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
-		addWidget(new Animation(250+220, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
+		addWidget(new Animation(250+149, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 13));
+		addWidget(new Animation(250+182, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 14));
+		addWidget(new Animation(250+220, 16, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 15));
 	
 		// add ok button
 		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
