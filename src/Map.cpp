@@ -469,7 +469,7 @@ void Map::setBaseMap(const BaseMap *initial)
 	memcpy(mapName, initial->mapName, 32);
 }
 
-void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER)
+void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType)
 {
 	if (mapDiscovered)
 		delete mapDiscovered;

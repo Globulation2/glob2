@@ -39,7 +39,7 @@ int Engine::initCampain(void)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");
 		SDL_RWclose(stream);
-		return CANT_LOAD_MAP;
+		return EE_CANT_LOAD_MAP;
 	}
 	SDL_RWclose(stream);
 
@@ -88,7 +88,7 @@ int Engine::initCampain(void)
 	if (!wasHuman)
 	{
 		fprintf(stderr, "ENG : Error, can't find any human player\n");
-		return CANT_FIND_PLAYER;
+		return EE_CANT_FIND_PLAYER;
 	}
 
 	// we create the net game
@@ -96,7 +96,7 @@ int Engine::initCampain(void)
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
 
-	return NO_ERROR;
+	return EE_NO_ERROR;
 }
 
 int Engine::initCustom(void)
@@ -106,12 +106,12 @@ int Engine::initCustom(void)
 	int cgs = customGameScreen.execute(globalContainer->gfx, 20);
 
 	if (cgs == CustomGameScreen::CANCEL)
-		return CANCEL;
+		return EE_CANCEL;
 
 	gui.game.loadBase(&(customGameScreen.sessionInfo));
 	int nbTeam=gui.game.session.numberOfTeam;
 	if (nbTeam==0)
-		return CANCEL;
+		return EE_CANCEL;
 
 	char name[16];
 	int i;
@@ -192,7 +192,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
 
 	if (mpcms==MultiplayersChooseMapScreen::CANCEL)
-		return CANCEL;
+		return EE_CANCEL;
 	if (mpcms==-1)
 		return -1;
 
@@ -203,20 +203,20 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	if (rc==MultiplayersHostScreen::STARTED)
 	{
 		if (multiplayersHostScreen.multiplayersJoin==NULL)
-			return CANCEL;
+			return EE_CANCEL;
 		else
 		{
 			assert(multiplayersHostScreen.multiplayersJoin->myPlayerNumber!=-1);
 			startMultiplayer(multiplayersHostScreen.multiplayersJoin);
 		}
-		return NO_ERROR;
+		return EE_NO_ERROR;
 	}
 	else if (rc==-1)
 		return -1;
 		
 	printf("Engine::initMutiplayerHost() rc=%d\n", rc);
 
-	return CANCEL;
+	return EE_CANCEL;
 }
 
 int Engine::initMutiplayerJoin(void)
@@ -228,12 +228,12 @@ int Engine::initMutiplayerJoin(void)
 	{
 		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);
 
-		return NO_ERROR;
+		return EE_NO_ERROR;
 	}
 	else if (rc==-1)
 		return -1;
 
-	return CANCEL;
+	return EE_CANCEL;
 }
 
 int Engine::run(void)
@@ -308,5 +308,5 @@ int Engine::run(void)
 	if (gui.exitGlobCompletely)
 		return -1;
 	else
-		return NO_ERROR;
+		return EE_NO_ERROR;
 }

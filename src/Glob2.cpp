@@ -18,6 +18,8 @@
 
 */
 
+
+
 #include "Glob2.h"
 #include "GAG.h"
 #include "Game.h"
@@ -31,10 +33,12 @@
 #include "MultiplayersHost.h"
 
 #include <stdio.h>
-#include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
 
+#ifndef WIN32
+#	include <unistd.h>
+#	include <sys/time.h>
+#endif
 
 GlobalContainer *globalContainer=0;
 
@@ -214,7 +218,7 @@ int Glob2::run(int argc, char *argv[])
 			case 0:
 			{
 				Engine engine;
-				if (engine.initCampain()==Engine::NO_ERROR)
+				if (engine.initCampain()==Engine::EE_NO_ERROR)
 					if (engine.run()==-1)
 						isRunning=false;
 			}
@@ -222,7 +226,7 @@ int Glob2::run(int argc, char *argv[])
 			case 1:
 			{
 				Engine engine;
-				if (engine.initCustom()==Engine::NO_ERROR)
+				if (engine.initCustom()==Engine::EE_NO_ERROR)
 					if (engine.run()==-1)
 						isRunning=false;
 			}
@@ -240,7 +244,7 @@ int Glob2::run(int argc, char *argv[])
 					{
 						Engine engine;
 						int rc=engine.initMutiplayerHost(false);
-						if (rc==Engine::NO_ERROR)
+						if (rc==Engine::EE_NO_ERROR)
 						{
 							if (engine.run()==-1)
 								isRunning=false;
@@ -255,7 +259,7 @@ int Glob2::run(int argc, char *argv[])
 						Engine engine;
 						printf("join\n");
 						int rc=engine.initMutiplayerJoin();
-						if (rc==Engine::NO_ERROR)
+						if (rc==Engine::EE_NO_ERROR)
 						{
 							if (engine.run()==-1)
 								isRunning=false;

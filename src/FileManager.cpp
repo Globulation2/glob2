@@ -32,7 +32,6 @@
 #		define PACKAGE_DATA_DIR ".."
 #		define PACKAGE_SOURCE_DIR "../.."
 #	else
-#
 #		define PACKAGE_DATA_DIR ".."
 #		define PACKAGE_SOURCE_DIR "../.."
 #	endif
@@ -40,6 +39,7 @@
 
 // include for directory listing
 #ifdef WIN32
+#	include <windows.h>
 #	include <io.h>
 #else
 #	include <sys/types.h>
@@ -195,9 +195,85 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 
 bool FileManager::addListingForDir(const char *realDir, const char *extension)
 {
-#ifdef WIN32
-	// TODO : put Win32 directory listing (findfirst, findnext) here
-#else
+	// angel > ca fait un peu chier votre system de flat directory mais bon...
+#ifdef WIN32 
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind = NULL;
+	BOOL b = TRUE;
+	// temp for the paths
+	char temp[MAX_PATH];
+	char real[MAX_PATH];
+	memset(real, 0, MAX_PATH);
+
+	if (!realDir)
+		return false;
+
+	if (!strncmp(realDir, "../", 3))
+		return true;
+
+	if (!strcmp(realDir, "./.") || !strcmp(realDir, "./"))
+		memcpy(real, ".", 1);
+	else
+		memcpy(real, realDir, strlen(realDir) + 1);
+
+	// search for the subdirectories
+	memset(temp, 0, MAX_PATH);
+	sprintf(temp, "%s%c*", real, DIR_SEPARATOR);
+	hFind = FindFirstFile(temp, &wfd);
+	while (b) {
+		if (!strncmp(wfd.cFileName, "..", 2))
+		{
+			b = FindNextFile(hFind, &wfd);
+			continue;
+		}
+		if (!strncmp(wfd.cFileName, ".", 1))
+		{
+			b = FindNextFile(hFind, &wfd);
+			continue;
+		}
+		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			memset(temp, 0, MAX_PATH);
+			sprintf(temp, "%s%c%s", real, DIR_SEPARATOR, wfd.cFileName);
+			addListingForDir(temp, extension);
+		}
+		b = FindNextFile(hFind, &wfd);
+	}
+
+	b = TRUE;
+	// search for the files...
+	memset(temp, 0, MAX_PATH);
+	if (extension)
+		sprintf(temp, "%s%c*.%s", real,DIR_SEPARATOR, extension);
+	else
+		sprintf(temp, "%s%c*", real, DIR_SEPARATOR);
+	hFind = FindFirstFile(temp, &wfd);
+	if (hFind == INVALID_HANDLE_VALUE) return true;
+	while (b) {
+		if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		{
+			// test if name already exists in vector
+			bool alreadyIn=false;
+			for (std::vector<const char *>::iterator fileListIterator=fileList.begin(); (fileListIterator!=fileList.end())&&(alreadyIn==false); ++fileListIterator)
+			{
+				memset(temp, 0, MAX_PATH);
+				sprintf(temp, "%s%c%s", real, DIR_SEPARATOR, wfd.cFileName);
+				if (strcmp(temp, *fileListIterator)==0)
+					alreadyIn=true;
+			}
+			if (!alreadyIn)
+			{
+				int len=strlen(wfd.cFileName) + strlen(real) + 2;
+				char *fileName=new char[len];
+				memset(fileName, 0, len);
+				sprintf(fileName, "%s%c%s", real, DIR_SEPARATOR, wfd.cFileName);
+				fileList.push_back(fileName);
+			}
+		}
+		b = FindNextFile(hFind, &wfd);
+	}
+	
+#else // angel > plus Win32 (unix et autres system primates...)
 	DIR *dir=opendir(realDir);
 	struct dirent *dirEntry;
 
@@ -239,7 +315,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	}
 
 	closedir(dir);
-#endif
+#endif // angel > end of bordel
 	return true;
 }
 

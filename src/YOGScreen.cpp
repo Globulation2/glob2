@@ -190,7 +190,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			
 			Engine engine;
 			int rc=engine.initMutiplayerHost(true);
-			if (rc==Engine::NO_ERROR)
+			if (rc==Engine::EE_NO_ERROR)
 			{
 				if (engine.run()==-1)
 					endExecute(EXIT);
