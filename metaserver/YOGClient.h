@@ -62,7 +62,8 @@ struct ClientUpdate
 // This is an metaserver YOG client.
 class YOGClient
 {
-
+public:
+	static const int DEFAULT_NEW_MESSAGE_TIMEOUT=4;
 public:
 	YOGClient(IPaddress ip, UDPsocket socket, char userName[32]);
 	virtual ~YOGClient();
@@ -78,7 +79,7 @@ public:
 	void sendUnshared();
 	void addGame(Game *game);
 	void addMessage(Message *message);
-	void deleteMessage(Uint8 messageID);
+	void deliveredMessage(Uint8 messageID);
 	void removeGame(Uint32 uid);
 	void removeUselessGames();
 	void computeGamesSize();

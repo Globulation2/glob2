@@ -49,7 +49,7 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	
 	lastSentMessageID=0;
 	lastMessageID=0;
-	messageTimeout=DEFAULT_NETWORK_TIMEOUT;
+	messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 	messageTOTL=3;
 	
 	joinersTimeout=DEFAULT_NETWORK_TIMEOUT;
@@ -301,15 +301,16 @@ void YOGClient::addMessage(Message *message)
 		if (lastMessageID==0)
 			lastMessageID++;
 		message->messageID=lastMessageID;
+		if (size==0)
+			messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		messages.push_back(*message);
-		standardTimeout(&messageTimeout, size, 4, 64);
 		messageTOTL=3;
 	}
 	else
 		lprintf("Warning!, client (%s) is being flooded!\n", userName);
 }
 
-void YOGClient::deleteMessage(Uint8 messageID)
+void YOGClient::deliveredMessage(Uint8 messageID)
 {
 	unsigned size=messages.size();
 	if (size==0)
@@ -318,8 +319,9 @@ void YOGClient::deleteMessage(Uint8 messageID)
 	if (mit->messageID==messageID)
 	{
 		lprintf("message (%s) delivered to (%s)\n", mit->text, userName);
+		if (size>1)
+			messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		messages.erase(mit);
-		standardTimeout(&messageTimeout, size, 4, 64);//TODO:here we can improve the TCP/IP friendlyness
 		messageTOTL=3;
 	}
 }

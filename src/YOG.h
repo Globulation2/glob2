@@ -164,6 +164,7 @@ public:
 	
 	std::list<Message> sendingMessages;
 	std::list<Message> receivedMessages;
+	std::list<Message> recentlyReceivedMessages;
 	
 	YOGSharingState yogSharingState;
 	char sharingGameName[64];
