@@ -104,6 +104,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
 			globalContainer->settings.screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
 			globalContainer->settings.screenFlags|=dblbuff->getState() ? DrawableSurface::DOUBLEBUF : 0;
+
+			// save user preference
+			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
+			globalContainer->settings.save("preferences.txt");
+
 			endExecute(par1);
 		}
 		else if (par1==CANCEL)

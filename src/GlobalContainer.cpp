@@ -59,10 +59,6 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
-	// save user preference
-	settings.defaultLanguage = Toolkit::getStringTable()->getLang();
-	settings.save("preferences.txt");
-
 	// releasing ressources
 	Toolkit::releaseSprite("terrain");
 	Toolkit::releaseSprite("shading");
