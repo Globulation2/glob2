@@ -25,14 +25,16 @@
 SettingsScreen::SettingsScreen()
 {
 	// language part
-	addWidget(new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[language]")));
+	language=new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
+	addWidget(language);
 	languageList=new List(20, 90, 160, 160, ALIGN_LEFT, ALIGN_TOP, "standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 		languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
 	addWidget(languageList);
 
 	// graphics part
-	addWidget(new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]")));
+	display=new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
+	addWidget(display);
 	modeList=new List(245, 90, 100, 160, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
@@ -46,24 +48,29 @@ SettingsScreen::SettingsScreen()
 
 	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	addWidget(new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]")));
+	fullscreenText=new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"));
+	addWidget(fullscreenText);
 
 	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	addWidget(new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]")));
+	hwaccelText=new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"));
+	addWidget(hwaccelText);
 
 	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
 	addWidget(nodblbuff);
-	addWidget(new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]")));
+	nodblbuffText=new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]"));
+	addWidget(nodblbuffText);
 
 	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	addWidget(new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]")));
+	lowqualityText=new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"));
+	addWidget(lowqualityText);
 
 	// Username part
 	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
-	addWidget(new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[username]")));
+	usernameText=new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[username]"));
+	addWidget(usernameText);
 
 	// Screen entry/quit part
 	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
@@ -107,7 +114,16 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			Toolkit::getStringTable()->setLang(par1);
 			ok->setText(Toolkit::getStringTable()->getString("[ok]"));
 			cancel->setText(Toolkit::getStringTable()->getString("[Cancel]"));
+
 			title->setText(Toolkit::getStringTable()->getString("[settings]"));
+			language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
+			display->setText(Toolkit::getStringTable()->getString("[display]"));
+			usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
+
+			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
+			hwaccelText->setText(Toolkit::getStringTable()->getString("[hwaccel]"));
+			nodblbuffText->setText(Toolkit::getStringTable()->getString("[nodblbuff]"));
+			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 		}
 		else if (source==modeList)
 		{
