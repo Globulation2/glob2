@@ -80,7 +80,9 @@ public:
 	Map map;
 	SDL_Surface *minimap;
 	
+	/* <leto> I moved this to globalContainer.
 	static BuildingsTypes buildingsTypes;
+	*/
 
 public:
 	int mouseX, mouseY;

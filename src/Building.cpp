@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include <list>
+#include "GlobalContainer.h"
 
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
@@ -274,7 +275,7 @@ void Building::cancelUpgrade(void)
 		if (lastLevelTypeNum!=-1)
 		{
 			typeNum=lastLevelTypeNum;
-			type=Game::buildingsTypes.getBuildingType(lastLevelTypeNum);
+			type=globalContainer->buildingsTypes.getBuildingType(lastLevelTypeNum);
 		}
 		else
 			assert(false);
@@ -478,7 +479,7 @@ void Building::update(void)
 				ressources[i]-=type->maxRessource[i];
 
 			typeNum=type->nextLevelTypeNum;
-			type=Game::buildingsTypes.getBuildingType(type->nextLevelTypeNum);
+			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
 
 			// we don't need any worker any more
 			if (type->maxUnitWorking)
@@ -520,7 +521,7 @@ bool Building::tryToUpgradeRoom(void)
 	int midPosY=posY-type->decTop;
 
 	int nextLevelTypeNum=type->nextLevelTypeNum;
-	BuildingType *nextBt=Game::buildingsTypes.getBuildingType(type->nextLevelTypeNum);
+	BuildingType *nextBt=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
 	int newPosX=midPosX+nextBt->decLeft;
 	int newPosY=midPosY+nextBt->decTop;
 
@@ -589,7 +590,7 @@ bool Building::isHardSpace(void)
 	int nltn=type->nextLevelTypeNum;
 	if (nltn==-1)
 		return true;
-	BuildingType *bt=Game::buildingsTypes.getBuildingType(nltn);
+	BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(nltn);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;

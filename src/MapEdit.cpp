@@ -125,10 +125,10 @@ void MapEdit::drawMenu(void)
 	{
 		int typeNum;
 		if (i!=0)
-			typeNum=game.buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
+			typeNum=globalContainer->buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
 		else
-			typeNum=game.buildingsTypes.getTypeNum(i, 0, false);
-		BuildingType *bt=game.buildingsTypes.getBuildingType(typeNum);
+			typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 		int imgid=bt->startImage;
 		int x=((i&0x3)<<5)+menuStartW;
 		int y=((i>>2)<<5)+307;
@@ -330,8 +330,8 @@ void MapEdit::handleMapClick(int mx, int my)
 	else if (editMode==BUILDING)
 	{
 		//game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
-		int typeNum=game.buildingsTypes.getTypeNum(type, level, false);
-		BuildingType *bt=game.buildingsTypes.getBuildingType(typeNum);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mx, my, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
@@ -824,8 +824,8 @@ int MapEdit::run(void)
 					int batX, batY, batW, batH;
 
 					// we get the type of building
-					int typeNum=game.buildingsTypes.getTypeNum(type, level, false);
-					BuildingType *bt=game.buildingsTypes.getBuildingType(typeNum);
+					int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+					BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 					
 					// we check for room
 					int tempX, tempY;
@@ -867,7 +867,7 @@ int MapEdit::run(void)
 						int max=0;
 						while(nnbt->nextLevelTypeNum!=-1)
 						{
-							nnbt=game.buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+							nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
 							if (max++>200)
 							{
 								printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
