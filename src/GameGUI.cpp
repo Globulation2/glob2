@@ -568,7 +568,8 @@ void GameGUI::processEvent(SDL_Event *event)
 				if (strncmp(message, "/m ", 3)==0)
 				{
 					for (int i=0; i<game.session.numberOfPlayer; i++)
-						if (game.players[i])
+						if (game.players[i] &&
+							(game.players[i]->type==Player::P_AI||game.players[i]->type==Player::P_IP||game.players[i]->type==Player::P_LOCAL))
 						{
 							char *name=game.players[i]->name;
 							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
