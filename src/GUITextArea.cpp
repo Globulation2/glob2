@@ -91,18 +91,21 @@ void TextArea::onSDLEvent(SDL_Event *event)
 	{
 		switch (event->key.keysym.sym)
 		{
-			case SDLK_BACKSPACE:
+			case SDLK_DELETE:
 			if (!readOnly)
 			{
 				remText(cursorPos, 1);
 			}
 			break;
 			
-			case SDLK_DELETE:
+			case SDLK_BACKSPACE:
 			if (!readOnly)
 			{
 				if (cursorPos)
-					remText(cursorPos-1, 1);
+				{
+					cursorPos--;
+					remText(cursorPos, 1);
+				}
 			}
 			break;
 			
@@ -410,7 +413,7 @@ void TextArea::remText(unsigned pos, unsigned len)
 		char *temp=(char *)malloc(newLen+1);
 		
 		memcpy(temp, textBuffer, pos);
-		memcpy(temp, textBuffer+pos, textBufferLength-len-pos);
+		memcpy(temp+pos, textBuffer+pos+len, textBufferLength-len-pos);
 		temp[newLen] = 0;
 		
 		// make sure the cursor isn't past the end now
