@@ -451,7 +451,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_SHARING_GAME:
 	{
-		if (size>4+128)
+		if (size>4+64)
 		{
 			lprintf("bad message size (%d).\n", size);
 			break;
@@ -474,11 +474,10 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		{
 			YOGClient *host=*sender;
 			Game *game=new Game();
-			memset(game->name, 128, 0);
-			strncpy(game->name, (char *)data+4, 128);
-			if (game->name[127]!=0)
+			strncpy(game->name, (char *)data+4, 64);
+			if (game->name[63]!=0)
 				lprintf("warning, non-zero ending game name!\n");
-			game->name[127]=0;
+			game->name[63]=0;
 			game->host=host;
 			gameUID++;
 			if (gameUID==0)
