@@ -251,7 +251,7 @@ void TextArea::computeAndRepaint(void)
 	if (!readOnly)
 	{
 		// increment it (if needed)
-		while ((cursorPosY < lines.size()-1)  && (lines[cursorPosY+1] < cursorPos))
+		while ((cursorPosY < lines.size()-1)  && (lines[cursorPosY+1] <= cursorPos))
 			cursorPosY++;
 
 		// decrement it (if needed)
