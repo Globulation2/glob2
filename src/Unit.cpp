@@ -955,10 +955,13 @@ void Unit::handleDisplacement(void)
 			targetX=attachedBuilding->posX;
 			targetY=attachedBuilding->posY;
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
-			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
+			int usr=attachedBuilding->unitStayRange;
+			int usr2=usr*usr;
 			if (verbose)
-				printf("guid=(%d) ACT_FLAG distance=%d, range=%d\n", gid, distance, range);
-			if (distance<=range)
+				printf("guid=(%d) ACT_FLAG distance=%d, usr2=%d\n", gid, distance, usr2);
+			
+			displacement=DIS_GOING_TO_FLAG;
+			if (distance<=usr2)
 			{
 				if (typeNum==WORKER)
 					displacement=DIS_CLEARING_RESSOURCES;
@@ -969,8 +972,28 @@ void Unit::handleDisplacement(void)
 				else
 					assert(false);
 			}
-			else
-				displacement=DIS_GOING_TO_FLAG;
+			else if (typeNum==WORKER)
+			{
+				int usr2plus=1+(usr+1)*(usr+1);
+				if (distance<=usr2plus)
+				{
+					Map *map=owner->map;
+					for (int tdx=-1; tdx<=1; tdx++)
+						for (int tdy=-1; tdy<=1; tdy++)
+						{
+							int x=posX+tdx;
+							int y=posY+tdy;
+							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2 && map->isRemovableRessource(x, y))
+							{
+								dx=tdx;
+								dy=tdy;
+								displacement=DIS_CLEARING_RESSOURCES;
+								//movement=MOV_HARVESTING;
+								return;
+							}
+						}
+				}
+			}
 		}
 		break;
 
