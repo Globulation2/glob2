@@ -116,6 +116,7 @@ void GameGUI::init()
 	drawPathLines=false;
 	viewportX=0;
 	viewportY=0;
+	lastStepTimeToWait=0;
 	mouseX=0;
 	mouseY=0;
 	displayMode=BUILDING_VIEW;
@@ -2462,6 +2463,7 @@ void GameGUI::drawOverlayInfos(void)
 	Uint8 redC[]={200, 0, 0};
 	Uint8 greenC[]={0, 200, 0};
 	Uint8 whiteC[]={200, 200, 200};
+	Uint8 yellowC[]={200, 200, 0};
 	Uint8 actC[3];
 	int free, tot;
 
@@ -2493,7 +2495,20 @@ void GameGUI::drawOverlayInfos(void)
 
 	// draw prestigestats
 	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
-
+	
+	// draw network latency
+	dec += 120;
+	if (lastStepTimeToWait>8)
+		memcpy(actC, greenC, sizeof(greenC));
+	else if (lastStepTimeToWait>0)
+		memcpy(actC, yellowC, sizeof(yellowC));
+	
+	if (lastStepTimeToWait>0)
+		globalContainer->gfx->drawFilledRect(dec, 4, lastStepTimeToWait, 8, actC[0], actC[1], actC[2]);
+	else
+		globalContainer->gfx->drawFilledRect(dec+lastStepTimeToWait, 4, -lastStepTimeToWait, 8, redC[0], redC[1], redC[2]);
+	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
+		
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
 	for (int i=0; i<pos; i+=32)
