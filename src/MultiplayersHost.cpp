@@ -779,7 +779,16 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 					nbPacketsLost++;
 			}
 			if (nbPacketsLost==0)
-				playerFileTra[p].brandwidth+=nbPacketsReceived;
+			{
+				int brandwidth=playerFileTra[p].brandwidth;
+				if (brandwidth<4)
+					brandwidth++;
+				else
+					brandwidth+=nbPacketsReceived/2;
+				if (playerFileTra[p].brandwidth!=brandwidth)
+					fprintf(logFileDownload, "new brandwidth=%d.\n", brandwidth);
+				playerFileTra[p].brandwidth=brandwidth;
+			}
 		}
 	}
 	else
@@ -1269,7 +1278,7 @@ void MultiplayersHost::sendingTime()
 			int brandwidth=playerFileTra[p].brandwidth;
 			if (nbPacketsLost>playerFileTra[p].lastNbPacketsLost)
 			{
-				brandwidth-=(nbPacketsLost-playerFileTra[p].lastNbPacketsLost);
+				brandwidth-=2*(nbPacketsLost-playerFileTra[p].lastNbPacketsLost);
 				if (brandwidth<1)
 					brandwidth=1;
 				if (playerFileTra[p].brandwidth!=brandwidth)

@@ -91,7 +91,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	{
 		printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;
-		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 50);
+		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 40);
 		if (yogReturnCode==YOGScreen::CANCEL)
 		{
 			yog->deconnect();
