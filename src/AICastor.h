@@ -110,8 +110,6 @@ public:
 		Sint32 strikeWarPowerTrigerDown;
 		
 		Sint32 maxAmountGoal;
-		
-		Uint8 wheatCareLimit;
 	};
 	
 private:
@@ -195,8 +193,9 @@ public:
 	bool strikeTeamSelected;
 	int strikeTeam;
 	
-	bool foodLock;
-	bool foodSurplus;
+	bool foodWarning; // true if wwe are aproaching a foodLock
+	bool foodLock; // we stop producing any unit until we get more food buildings
+	bool foodSurplus; // we have too many food buildings
 	Uint32 foodLockStats[2];
 	bool overWorkers;
 	bool starvingWarning;
@@ -205,7 +204,7 @@ public:
 	int freeWorkers; // plz use getFreeWorkers() to raise computation trigger.
 	
 	Uint32 lastFreeWorkersComputed;
-	Uint32 lastWheatCareMapComputed;
+	Uint32 lastWheatGrowthMapComputed;
 	Uint32 lastEnemyRangeMapComputed;
 	Uint32 lastEnemyPowerMapComputed;
 	
@@ -233,7 +232,8 @@ public:
 	Uint8 *hydratationMap;
 	Uint8 *notGrassMap;
 	Uint8 *wheatGrowthMap;
-	Uint8 *wheatCareMap;
+	Uint8 *oldWheatGradient[4];  // [0] is the most recent
+	Uint8 *wheatCareMap[2];
 	
 	Uint8 *goodBuildingMap; // TODO: remove.
 	
