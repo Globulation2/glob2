@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="libgag\include;C:\Stuff\Repository\Include"
+				AdditionalIncludeDirectories="libgag\include;WinSDLBuild\Include;WinSDLBuild\Include\freetype2;WinSDLBuild\Include\SDL"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -33,10 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
+				AdditionalLibraryDirectories="WinSDLBuild\Lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/glob2.pdb"
 				SubSystem="1"
@@ -73,7 +73,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="libgag\include;C:\Stuff\Repository\Include"
+				AdditionalIncludeDirectories="libgag\include;WinSDLBuild\Include;WinSDLBuild\Include\freetype2;WinSDLBuild\Include\SDL"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -87,10 +87,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
+				AdditionalLibraryDirectories="WinSDLBuild\Lib"
 				GenerateDebugInformation="FALSE"
 				SubSystem="1"
 				OptimizeReferences="2"
