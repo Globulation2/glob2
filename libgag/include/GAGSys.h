@@ -33,7 +33,8 @@
 	#define S_IFDIR _S_IFDIR
 	#pragma warning (disable : 4786)
 	#pragma warning (disable : 4250)
-#undef max
+	#undef max
+	#undef min
 #endif
 
 #include <SDL/SDL.h>

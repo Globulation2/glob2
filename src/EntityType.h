@@ -90,7 +90,7 @@ public:
 		}
 	}
 
-	unsigned size(void) { return entitiesTypes.size(); }
+	size_t size(void) { return entitiesTypes.size(); }
 	
 	void dump(void)
 	{

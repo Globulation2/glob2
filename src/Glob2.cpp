@@ -166,7 +166,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 		if (retval)
 		{
 			fgets(s, 32, stdin);
-			int l=strlen(s);
+			size_t l=strlen(s);
 			if ((l>1)&&(s[l-1]=='\n'))
 				s[l-1]=0;
 			
