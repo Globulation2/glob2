@@ -3515,9 +3515,9 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
 	pathToBuildingCountTot++;
+	assert(building);
 	if (verbose)
 		printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
-	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
 	assert(x>=0);
