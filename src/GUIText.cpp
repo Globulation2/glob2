@@ -41,37 +41,45 @@ Text::Text(int x, int y, Font *font, const char *text, int w, int h)
 		this->text=NULL;
 }
 
-void Text::setText(const char *newText)
+void Text::setText(const char *newText, ...)
 {
-	int upW, upH, nW, nH;
-
 	assert(parent);
 	assert(font);
 	assert(newText);
 	
+	va_list arglist;
+	char output[1024];
+	int upW, upH, nW, nH;
+
+	// handle printf-like outputs
+	va_start(arglist, newText);
+	vsnprintf(output, 1024, newText, arglist);
+	va_end(arglist);
+	output[1023]=0;
+
 	// erase old
 	if (w)
 		nW=upW=w;
 	else
 	{
 		upW=font->getStringWidth(text)+5;
-		nW=font->getStringWidth(newText);
+		nW=font->getStringWidth(output);
 	}
 	if (h)
 		nH=upH=h;
 	else
 	{
 		upH=font->getStringHeight(text);
-		nH=font->getStringHeight(newText);
+		nH=font->getStringHeight(output);
 	}
 	parent->paint(x, y, upW, upH);
 
 	// copy text
-	int textLength=strlen(newText);
+	int textLength=strlen(output)+1;
 	if (this->text)
 		delete[] this->text;
-	this->text=new char[textLength+1];
-	strncpy(this->text, newText, textLength+1);
+	this->text=new char[textLength];
+	strcpy(this->text, output);
 
 	// draw new
 	paint();
