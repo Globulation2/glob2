@@ -347,7 +347,7 @@ int Engine::run(void)
 				networkReadyToExecute=net->stepReadyToExecute();
 
 				// We get all currents orders from the network and execute them:
-				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
+				for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 				{
 					Order *order=net->getOrder(i);
 					gui.executeOrder(order);
@@ -371,9 +371,15 @@ int Engine::run(void)
 			globalContainer->gfx->nextFrame();
 
 			endTick=SDL_GetTicks();
-			Sint32 deltaTick=endTick-startTick-net->ticksToDelay();
-			if (deltaTick<gui.game.session.gameTPF)
-				SDL_Delay(gui.game.session.gameTPF-deltaTick);
+			Sint32 spentTick=endTick-startTick;
+			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
+			if (leftTicks<0)
+				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.
+			else
+			{
+				net->setWishedDelay(0);
+				SDL_Delay(leftTicks+net->ticksToDelay());//We may need to wait a bit more, to wait other computers which are slower.
+			}
 		}
 
 		delete net;

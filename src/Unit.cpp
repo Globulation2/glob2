@@ -931,7 +931,7 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_EXITING_BUILDING)
 			{
-				// we wants to get out, so we still stay in displacement==DIS_EXITING_BUILDING.
+				// we want to get out, so we still stay in displacement==DIS_EXITING_BUILDING.
 			}
 			else
 				displacement=DIS_RANDOM;

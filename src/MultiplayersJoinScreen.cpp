@@ -56,7 +56,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 
 	wasVisible=false;
 
-	oldStatus=MultiplayersJoin::WS_BAD; //We wants redraw at first show.
+	oldStatus=MultiplayersJoin::WS_BAD; //We want redraw at first show.
 }
 
 MultiplayersJoinScreen::~MultiplayersJoinScreen()

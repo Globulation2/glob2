@@ -94,6 +94,10 @@ void NetGame::init(void)
 	myLocalWishedLatency=defaultLatency;
 	for (int p=0; p<numberOfPlayer; p++)
 		wishedLatency[p]=defaultLatency;
+	myLocalWishedDelay=0;
+	for (int p=0; p<numberOfPlayer; p++)
+		for (int i=0; i<64; i++)
+			recentsWishedDelay[p][i]=0;
 	
 	waitingForPlayerMask=0;
 	
@@ -214,7 +218,7 @@ void NetGame::sendPushOrder(int targetPlayer)
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
-	int totalSize=4;
+	int totalSize=5;
 	Uint8 step=pushStep;
 	int n;
 	for (n=0; n<ordersByPackets; n++) //TODO: only send twice small orders. This means if size<=16
@@ -242,10 +246,12 @@ void NetGame::sendPushOrder(int targetPlayer)
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
 	data[3]=myLocalWishedLatency;
+	data[4]=myLocalWishedDelay;
 	fprintf(logFile, "sendPushOrder.\n");
 	fprintf(logFile, " myLocalWishedLatency=%d.\n", myLocalWishedLatency);
+	fprintf(logFile, " myLocalWishedDelay=%d.\n", myLocalWishedDelay);
 	fprintf(logFile, " lastReceivedFromHim(%d)=%d\n", targetPlayer, lastReceivedFromHim(targetPlayer));
-	int l=4;
+	int l=5;
 	step=pushStep;
 	for (int i=0; i<n; i++)
 	{
@@ -280,7 +286,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	assert(players[targetPlayer]->type==Player::P_IP || (players[targetPlayer]->type==Player::P_LOST_FINAL && players[targetPlayer]->quitting));
 	assert(targetPlayer!=localPlayerNumber);
 
-	int totalSize=4;
+	int totalSize=5;
 	WaitingForPlayerOrder *wfpo=new WaitingForPlayerOrder(waitingForPlayerMask);
 	totalSize+=3+wfpo->getDataLength();
 
@@ -297,8 +303,9 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
 	data[3]=myLocalWishedLatency;
+	data[4]=myLocalWishedDelay;
 
-	int l=4;
+	int l=5;
 	int size=wfpo->getDataLength();
 	data[l++]=executeStep;
 	data[l++]=size;
@@ -334,7 +341,7 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	for (int p=0; p<numberOfPlayer; p++)
 		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
 			n++;
-	int totalSize=12+n;
+	int totalSize=13+n;
 	fprintf(logFile, "sending ORDER_DROPPING_PLAYER to player %d, myDroppingPlayersMask=%x, executeStep=%d, n=%d\n", targetPlayer, droppingPlayersMask[localPlayerNumber], executeStep, n);
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
@@ -342,19 +349,20 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
 	data[3]=myLocalWishedLatency;
+	data[4]=myLocalWishedDelay;
 	
-	data[4]=executeStep;
-	data[5]=5+n;
-	data[6]=ORDER_DROPPING_PLAYER;
-	data[7]=askForReply;
-	addUint32(data, droppingPlayersMask[localPlayerNumber], 8);
+	data[5]=executeStep;
+	data[6]=5+n;
+	data[7]=ORDER_DROPPING_PLAYER;
+	data[8]=askForReply;
+	addUint32(data, droppingPlayersMask[localPlayerNumber], 9);
 	
 	int l=0;
 	for (int p=0; p<numberOfPlayer; p++)
 		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
 		{
-			data[12+l]=lastReceivedFromHim(p);
-			fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", p, data[12+l]);
+			data[13+l]=lastReceivedFromHim(p);
+			fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", p, data[13+l]);
 			l++;
 		}
 	
@@ -368,19 +376,20 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 
-	Uint8 *data=(Uint8 *)malloc(8);
+	Uint8 *data=(Uint8 *)malloc(9);
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
 	data[3]=myLocalWishedLatency;
+	data[4]=myLocalWishedDelay;
 	
-	data[4]=resendingStep;
-	data[5]=1;
-	data[6]=ORDER_REQUESTING_AWAY;
+	data[5]=resendingStep;
+	data[6]=1;
+	data[7]=ORDER_REQUESTING_AWAY;
 	
-	data[7]=missingPlayer;
+	data[8]=missingPlayer;
 	
-	players[targetPlayer]->send(data, 8);
+	players[targetPlayer]->send(data, 9);
 
 	free(data);
 }
@@ -390,7 +399,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
-	int totalSize=4;
+	int totalSize=5;
 	Uint8 step=resendingStep;
 	int nbp=0;
 	for (int n=0; n<ordersByPackets; n++)
@@ -410,9 +419,10 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 	data[1]=missingPlayer;
 	data[2]=0;
 	data[3]=0;
+	data[4]=0;
 	
 	fprintf(logFile, "sendDeadAwayOrder missingPlayer=%d, targetPlayer=%d.\n", missingPlayer, targetPlayer);
-	int l=4;
+	int l=5;
 	step=resendingStep;
 	for (int n=0; n<ordersByPackets; n++)
 	{
@@ -458,6 +468,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	order->sender=playerNumber;
 	order->inQueue=true;
 	order->wishedLatency=myLocalWishedLatency;
+	order->wishedDelay=myLocalWishedDelay;
 	ordersQueue[playerNumber][pushStep]=order;
 	
 	if (localPlayerNumber==playerNumber && (pushStep&1==1))
@@ -601,8 +612,10 @@ Order *NetGame::getOrder(int playerNumber)
 			players[ap]->quitStep=executeStep;
 		}
 		
-		fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, wishedLatency[playerNumber]);
 		wishedLatency[playerNumber]=order->wishedLatency;
+		recentsWishedDelay[playerNumber][executeStep&63]=order->wishedDelay;
+		fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, order->wishedLatency);
+		fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
 		
 		return order;
 	}
@@ -662,6 +675,99 @@ void NetGame::updateDelays(int player, Uint8 receivedStep)
 	countDown[player]=0;
 }
 
+void NetGame::computeMyLocalWishedLatency()
+{
+	//for (int p=0; p<numberOfPlayer; p++)
+	//	if (players[p]->type==Player::P_IP)
+	//		printf("pingPongMax[%d]=%d, ", p, pingPongMax[p]);
+	
+	// First, the Order Margin Times:
+	
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			int delay=0;
+			Uint8 step=executeStep;
+			while (ordersQueue[p][step])
+			{
+				step++;
+				delay++;
+				assert(delay<255);
+			}
+
+			int count=orderMarginTimeCount[p];
+			recentOrderMarginTime[p][count]=delay;
+			orderMarginTimeCount[p]=(count+1)&63;
+			//printf("delay=%d, ", delay);
+			
+			int min=255;
+			int max=0;
+			for (int i=0; i<64; i++)
+			{
+				int delay=recentOrderMarginTime[p][i];
+				if (delay<min)
+					min=delay;
+				if (delay>max)
+					max=delay;
+			}
+			orderMarginTimeMin[p]=min;
+			orderMarginTimeMax[p]=max;
+			//printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
+		}
+	
+	
+	Uint8 latency=pushStep-executeStep;
+	//printf("latency=%d, ", latency);
+	
+	/*int minTicksToWait=255;
+	int n=0;
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			n++;
+			int goodOrderMarginTime=latency-((pingPongMax[p]+1)>>1);
+			int realOrderMarginTime=orderMarginTimeMin[p]-1;
+			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
+			if (ticksToWait<minTicksToWait)
+				minTicksToWait=ticksToWait;
+		}
+	if (n==0)
+	{
+		myLocalWishedLatency=1;
+		printf("myLocalWishedLatency=1.\n");
+		return 0;
+	}
+	printf("minTicksToWait=%d, ", minTicksToWait);*/
+	
+	int maxPingPong=0;
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			int pingPong=pingPongMax[p];
+			if (pingPong>maxPingPong)
+				maxPingPong=pingPong;
+		}
+	//printf("maxPingPong=%d, ", maxPingPong);
+	
+	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
+	if (goodLatency<1)
+		goodLatency=1;
+	/*if (minTicksToWait>0)
+		goodLatency+=((minTicksToWait+1)>>1);*/
+	//printf("goodLatency=%d, ", goodLatency);
+	
+	if (goodLatency<latency)
+		myLocalWishedLatency=latency-1;
+	else if (goodLatency>latency)
+		myLocalWishedLatency=latency+1;
+	else
+		myLocalWishedLatency=latency;
+	
+	//WARNING: debugg only!: myLocalWishedLatency=1+(rand()&15);
+	
+	//printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
+}
+
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 {
 	if (data[0]!=MULTIPLE_ORDERS)
@@ -669,7 +775,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		fprintf(logFile, "Other packet data[0]=%d packet received from %s, v1\n", data[0], Utilities::stringIP(ip));
 		return;
 	}
-	if (size<4)
+	if (size<5)
 	{
 		fprintf(logFile, "Warning, dangerous too small packet received from %s, v2\n", Utilities::stringIP(ip));
 		return;
@@ -681,11 +787,12 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	assert(player<32);
 	lastReceivedFromMe[player]=receivedStep;
 	Uint8 receivedWishedLatency=data[3];
+	Uint8 receivedWishedDelay=data[4];
 	
-	fprintf(logFile, "treatData, receivedWishedLatency=%d\n", receivedWishedLatency);
+	fprintf(logFile, "treatData, receivedWishedLatency=%d, receivedWishedDelay=%d\n", receivedWishedLatency, receivedWishedDelay);
 	fprintf(logFile, " lastReceivedFromMe[%d]=%d\n", player, receivedStep);
 	
-	int l=4;
+	int l=5;
 	while (l<size)
 	{
 		if (size-l<3)
@@ -799,6 +906,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 					order->sender=player;
 					order->inQueue=true;
 					order->wishedLatency=receivedWishedLatency;
+					order->wishedDelay=receivedWishedDelay;
 					ordersQueue[player][orderStep]=order;
 					
 					lastAviableStep[localPlayerNumber][player]=lastReceivedFromHim(player);
@@ -835,6 +943,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			order->sender=player;
 			order->inQueue=true;
 			order->wishedLatency=receivedWishedLatency;
+			order->wishedDelay=receivedWishedDelay;
 			ordersQueue[player][orderStep]=order;
 		}
 		
@@ -1032,6 +1141,7 @@ bool NetGame::stepReadyToExecute(void)
 		fprintf(logFile, "waitingForPlayerMask=%x\n", waitingForPlayerMask);
 		if (waitingForPlayerMask==0)
 		{
+			computeMyLocalWishedLatency();
 			hadToWaitThisStep=false;
 			return true;
 		}
@@ -1254,100 +1364,21 @@ void NetGame::stepExecuted(void)
 
 int NetGame::ticksToDelay(void)
 {
-	//for (int p=0; p<numberOfPlayer; p++)
-	//	if (players[p]->type==Player::P_IP)
-	//		printf("pingPongMax[%d]=%d, ", p, pingPongMax[p]);
-	
-	// First, the Order Margin Times:
+	//We simply compute the max of wished delays:
+	int maxWishedDelay=0;
 	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			int delay=0;
-			Uint8 step=executeStep;
-			while (ordersQueue[p][step])
-			{
-				step++;
-				delay++;
-				assert(delay<255);
-			}
-
-			int count=orderMarginTimeCount[p];
-			recentOrderMarginTime[p][count]=delay;
-			orderMarginTimeCount[p]=(count+1)&63;
-			//printf("delay=%d, ", delay);
-			
-			int min=255;
-			int max=0;
+		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
 			for (int i=0; i<64; i++)
-			{
-				int delay=recentOrderMarginTime[p][i];
-				if (delay<min)
-					min=delay;
-				if (delay>max)
-					max=delay;
-			}
-			orderMarginTimeMin[p]=min;
-			orderMarginTimeMax[p]=max;
-			//printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
-		}
+				if (maxWishedDelay<recentsWishedDelay[p][i])
+					maxWishedDelay=recentsWishedDelay[p][i];
+	printf(logFile, "maxWishedDelay=%d\n", maxWishedDelay);
 	
-	
-	Uint8 latency=pushStep-executeStep;
-	//printf("latency=%d, ", latency);
-	
-	int minTicksToWait=255;
-	int n=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			n++;
-			int goodOrderMarginTime=latency-((pingPongMax[p]+1)>>1);
-			int realOrderMarginTime=orderMarginTimeMin[p]-1;
-			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
-			if (ticksToWait<minTicksToWait)
-				minTicksToWait=ticksToWait;
-		}
-	if (n==0)
-	{
-		myLocalWishedLatency=1;
-		return 0;
-	}
-	//printf("minTicksToWait=%d, ", minTicksToWait);
-	
-	int maxPingPong=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			int pingPong=pingPongMax[p];
-			if (pingPong>maxPingPong)
-				maxPingPong=pingPong;
-		}
-	//printf("maxPingPong=%d, ", maxPingPong);
-	
-	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
-	if (goodLatency<1)
-		goodLatency=1;
-	if (minTicksToWait>0)
-		goodLatency+=((minTicksToWait+1)>>1);
-	//printf("goodLatency=%d, ", goodLatency);
-	
-	if (goodLatency<latency)
-		myLocalWishedLatency=latency-1;
-	else if (goodLatency>latency)
-		myLocalWishedLatency=latency+1;
-	else
-		myLocalWishedLatency=latency;
-	
-	//WARNING: debugg only!: myLocalWishedLatency=1+(rand()&15);
-	
-	//printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
-	
-	if (minTicksToWait<=0)
-		return 0;
-	int delay=10*minTicksToWait;
-	if (delay>40)
-		delay=40;
-	return delay;
+	return maxWishedDelay;
+}
+
+void NetGame::setWishedDelay(int delay)
+{
+	myLocalWishedDelay=delay;
 }
 
 
