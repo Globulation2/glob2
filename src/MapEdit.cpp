@@ -25,6 +25,7 @@
 #include "Utilities.h"
 #include "GameGUILoadSave.h"
 #include "ScriptEditorScreen.h"
+#include <math.h>
 
 
 MapEdit::MapEdit()
@@ -120,11 +121,27 @@ void MapEdit::drawMenu(void)
 	globalContainer->gfx->drawSprite(menuStartW+96, 173, menu, 8);
 	// ressources
 	globalContainer->gfx->drawFilledRect(menuStartW+0, 205, 128, 32, 0, 0, 0);
-	for (unsigned i=0; i<globalContainer->ressourcesTypes->number(); i++)
+	unsigned resCount=globalContainer->ressourcesTypes->number();
+	unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
+	unsigned i;
+	unsigned resWidth=126/halfResCount;
+	for (i=0; i<halfResCount; i++)
 	{
-		globalContainer->gfx->setClipRect(menuStartW+2+i*25, 206, 24, 30);
-		globalContainer->gfx->drawSprite(menuStartW+2+i*25, 205, menu, RessourceTerrain[i]+5);
-		globalContainer->gfx->drawSprite(menuStartW+2+i*25, 205, globalContainer->ressources, i*10);
+		const RessourceType *rt=globalContainer->ressourcesTypes->get(i);
+		unsigned t=rt->terrain;
+		unsigned img=rt->gfxId+rt->sizesCount-1;
+		globalContainer->gfx->setClipRect(menuStartW+1+i*resWidth, 206, resWidth, 15);
+		globalContainer->gfx->drawSprite(menuStartW+1+i*resWidth, 205, menu, t+5);
+		globalContainer->gfx->drawSprite(menuStartW+1+i*resWidth-8, 205-8, globalContainer->ressources, img);
+	}
+	for (;i<resCount; i++)
+	{
+		const RessourceType *rt=globalContainer->ressourcesTypes->get(i);
+		unsigned t=rt->terrain;
+		unsigned img=rt->gfxId+rt->sizesCount-1;
+		globalContainer->gfx->setClipRect(menuStartW+1+(i-halfResCount)*resWidth, 206+16, resWidth, 15);
+		globalContainer->gfx->drawSprite(menuStartW+1+(i-halfResCount)*resWidth, 205+16, menu, t+5);
+		globalContainer->gfx->drawSprite(menuStartW+1+(i-halfResCount)*resWidth-8, 205+8, globalContainer->ressources, img);
 	}
 	globalContainer->gfx->setClipRect();
 
@@ -195,7 +212,13 @@ void MapEdit::drawMenu(void)
 	if (editMode==EM_TERRAIN)
 		drawSelRect(menuStartW+(type*32), 173, 32, 32);
 	else if (editMode==EM_RESSOURCE)
-		drawSelRect(menuStartW+(type*25)+2, 205, 25, 32);
+	{
+		//drawSelRect(menuStartW+(type*25)+2, 205, 25, 32);
+		if (type<(int)halfResCount)
+			drawSelRect(menuStartW+(type*resWidth)+2, 205, resWidth, 16);
+		else
+			drawSelRect(menuStartW+((type-halfResCount)*resWidth)+2, 205+16, resWidth, 16);
+	}
 	else if (editMode==EM_UNIT)
 		drawSelRect(menuStartW+(type*32), 275, 32, 32);
 	else if (editMode==EM_BUILDING)
@@ -826,11 +849,21 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	else if ((my>205) && (my<237))
 	{
 		editMode=EM_RESSOURCE;
-		type=(mx-2)/25;
+
+		unsigned resCount=globalContainer->ressourcesTypes->number();
+		unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
+		unsigned resWidth=126/halfResCount;
+
+		if ((my-205)<16)
+			type=(mx-2)/resWidth;
+		else
+			type=halfResCount+(mx-2)/resWidth;
+
 		if (type<0)
 			type=0;
-		else if (type>4)
-			type=4;
+		else if (type>(int)resCount-1)
+			type=resCount-1;
+
 	}
 	else if ((my>237) && (my<269))
 	{

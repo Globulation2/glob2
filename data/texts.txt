@@ -1631,3 +1631,39 @@ The game has not been finished
 Das Spiel wurde nicht abgeschlossen
 Hra neskončila
 Gra nie została jeszcze zakończona
+[display]
+Affichage
+Display
+
+
+
+[username]
+Nom d'utilisateur
+Username
+
+
+
+[fullscreen]
+Plein écran
+Fullscreen
+
+
+
+[hwaccel]
+Accélération matériel
+Hardware Acceleration
+
+
+
+[nodblbuff]
+Pas de doube-tampon
+No double-buffer
+
+
+
+[lowquality]
+Basse qualité
+Low quality
+
+
+

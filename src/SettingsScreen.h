@@ -28,15 +28,20 @@ public:
 	enum
 	{
 		OK = 1,
-		CANCEL = 2
+		CANCEL = 2,
+		FULLSCREEN = 3,
+		HWACCLEL = 4,
+		NODBLBUFF = 5,
+		LOWQUALITY = 6
 	};
 private:
 	List *languageList;
 	List *modeList;
 	TextInput *userName;
-	int oldLanguage;
+	int oldLanguage, oldScreenW, oldScreenH;
 	
 	TextButton *ok, *cancel;
+	OnOffButton *fullscreen, *hwaccel, *nodblbuff, *lowquality;
 	Text *title;
 
 public:

@@ -24,14 +24,16 @@
 
 SettingsScreen::SettingsScreen()
 {
-	languageList=new List(20, 60, 200, 200, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	// language part
+	addWidget(new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", globalContainer->texts.getString("[language]")));
+	languageList=new List(20, 90, 160, 160, ALIGN_LEFT, ALIGN_TOP, "standard");
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);
-	userName=new TextInput(120, 280, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
-	addWidget(userName);
 
-	modeList=new List(20, 60, 200, 200, ALIGN_RIGHT, ALIGN_LEFT, "standard");
+	// graphics part
+	addWidget(new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[display]")));
+	modeList=new List(245, 90, 100, 160, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
 	while(globalContainer->gfx->getNextVideoMode(&w, &h))
@@ -42,15 +44,38 @@ SettingsScreen::SettingsScreen()
 	}
 	addWidget(modeList);
 
-	ok=new TextButton( 60, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(380, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	title=new Text(0, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[settings]"), 640);
-	
+	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	addWidget(fullscreen);
+	addWidget(new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[fullscreen]")));
+
+	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
+	addWidget(hwaccel);
+	addWidget(new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[hwaccel]")));
+
+	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
+	addWidget(nodblbuff);
+	addWidget(new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[nodblbuff]")));
+
+	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	addWidget(lowquality);
+	addWidget(new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[lowquality]")));
+
+	// Username part
+	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
+	addWidget(userName);
+	addWidget(new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->texts.getString("[username]")));
+
+	// Screen entry/quit part
+	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
 	addWidget(ok);
+	cancel=new TextButton(60, 20, 200, 40, ALIGN_RIGHT, ALIGN_BOTTOM, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
+	title=new Text(0, 18, ALIGN_FILL, ALIGN_TOP, "menu", globalContainer->texts.getString("[settings]"));
 	addWidget(title);
 
 	oldLanguage=globalContainer->texts.getLang();
+	oldScreenW=globalContainer->settings->screenWidth;
+	oldScreenH=globalContainer->settings->screenHeight;
 }
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -58,12 +83,22 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==OK)
+		{
 			globalContainer->setUserName(userName->getText());
+			globalContainer->settings->optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
+			globalContainer->settings->screenFlags=DrawableSurface::DEFAULT;
+			globalContainer->settings->screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
+			globalContainer->settings->screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
+			globalContainer->settings->screenFlags|=nodblbuff->getState() ? DrawableSurface::NO_DOUBLEBUF : 0;
+			endExecute(par1);
+		}
 		else if (par1==CANCEL)
+		{
 			globalContainer->texts.setLang(oldLanguage);
-		else
-			assert(false);
-		endExecute(par1);
+			globalContainer->settings->screenWidth=oldScreenW;
+			globalContainer->settings->screenHeight=oldScreenH;
+			endExecute(par1);
+		}
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
