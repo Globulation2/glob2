@@ -33,10 +33,12 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addAI=new TextButton(440, 335, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Add AI]"), ADD_AI);
+	addAINumbi=new TextButton(440, 285, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AINumbi]"), ADD_AI_NUMBI);
+	addWidget(addAINumbi);
+	addAICastor=new TextButton(440, 335, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AICastor]"), ADD_AI_CASTOR);
+	addWidget(addAICastor);
 	startButton=new TextButton(440, 385, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	addWidget(new TextButton(440, 435, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	addWidget(addAI);
 
 	startButton->visible=false;
 	addWidget(startButton);
@@ -81,7 +83,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
+	startTimer=new Text(440, 210, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(startTimer);
 
 	timeCounter=0;
@@ -313,14 +315,16 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 			else
 				endExecute(par1);
 		break;
-		case ADD_AI :
+		case ADD_AI_NUMBI :
+		case ADD_AI_CASTOR :
 			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
 				&&(multiplayersHost->sessionInfo.numberOfPlayer<MAX_NUMBER_OF_PLAYERS))
 			{
-				multiplayersHost->addAI();
+				multiplayersHost->addAI((AI::ImplementitionID)(par1-ADD_AI_NUMBI+AI::NUMBI));
 				if (multiplayersHost->sessionInfo.numberOfPlayer>=16)
 				{
-					addAI->hide();
+					addAINumbi->hide();
+					addAICastor->hide();
 					gameFullText->show();
 				}
 			}
@@ -340,7 +344,8 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 				if (multiplayersHost->sessionInfo.numberOfPlayer<16)
 				{
 					gameFullText->hide();
-					addAI->show();
+					addAINumbi->show();
+					addAICastor->show();
 				}
 			}
 		}

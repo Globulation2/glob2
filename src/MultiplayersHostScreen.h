@@ -39,7 +39,8 @@ public:
 	{
 		START = 1,
 		CANCEL = 5,
-		ADD_AI = 7,
+		ADD_AI_NUMBI = 7,
+		ADD_AI_CASTOR = 8,
 
 		STARTED=11,
 		
@@ -65,7 +66,7 @@ public:
 	bool shareOnYOG;
 
 	TextButton *startButton;
-	TextButton *addAI;
+	TextButton *addAINumbi, *addAICastor;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];

@@ -809,7 +809,7 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL;
 }
 
-void MultiplayersHost::addAI()
+void MultiplayersHost::addAI(AI::ImplementitionID aiImplementationId)
 {
 	int p=sessionInfo.numberOfPlayer;
 	int t=newTeamIndice();
@@ -817,11 +817,11 @@ void MultiplayersHost::addAI()
 		t=savedSessionInfo->getAITeamNumber(&sessionInfo, t);
 	
 	sessionInfo.players[p].init();
-	sessionInfo.players[p].type=BasePlayer::P_AI;
+	sessionInfo.players[p].type=(BasePlayer::PlayerType)(BasePlayer::P_AI+aiImplementationId);
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
 	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
-	strncpy(sessionInfo.players[p].name, Toolkit::getStringTable()->getString("[AI]", abs(rand())%Toolkit::getStringTable()->AI_NAME_SIZE), BasePlayer::MAX_NAME_LENGTH);
+	strncpy(sessionInfo.players[p].name, Toolkit::getStringTable()->getString("[AI]", aiImplementationId), BasePlayer::MAX_NAME_LENGTH);
 	
 	sessionInfo.numberOfPlayer++;
 	sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;

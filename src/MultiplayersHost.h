@@ -94,7 +94,7 @@ public:
 	void newPlayerPresence(Uint8 *data, int size, IPaddress ip);
 	void playerWantsSession(Uint8 *data, int size, IPaddress ip);
 	void playerWantsFile(Uint8 *data, int size, IPaddress ip);
-	void addAI();
+	void addAI(AI::ImplementitionID aiImplementationId);
 	void confirmPlayer(Uint8 *data, int size, IPaddress ip);
 	void confirmStartCrossConnection(Uint8 *data, int size, IPaddress ip);
 	void confirmStillCrossConnecting(Uint8 *data, int size, IPaddress ip);

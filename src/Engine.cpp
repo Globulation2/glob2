@@ -108,6 +108,8 @@ int Engine::initCampain(void)
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 			}
 		}
+		else
+			assert(false);
 		gui.game.teams[i]->numberOfPlayer=1;
 		gui.game.teams[i]->playersMask=(1<<playerNumber);
 		playerNumber++;
