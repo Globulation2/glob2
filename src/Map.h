@@ -370,6 +370,8 @@ public:
 		return *(gradient+(x&wMask)+(y&hMask)*w);
 	}
 	
+	void updateGlobalGradientSmall(Uint8 *gradient);
+	void updateGlobalGradientBig(Uint8 *gradient);
 	void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);

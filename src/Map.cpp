@@ -2014,14 +2014,9 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 	return false;
 }
 
-void Map::updateGlobalGradient(Uint8 *gradient)
+void Map::updateGlobalGradientSmall(Uint8 *gradient)
 {
-	// array.listed.b method:
-	//Uint32 startTick=SDL_GetTicks();
-	
-	assert(size <= 65536);
-	
-	VARARRAY(Uint16,listedAddr,size);
+	Uint16 *listedAddr = new Uint16[size];
 	size_t listCountWrite = 0;
 	
 	// make the first list:
@@ -2069,12 +2064,67 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
+	delete[] listedAddr;
+}
+void Map::updateGlobalGradientBig(Uint8 *gradient)
+{
+	size_t *listedAddr = new size_t[size];
+	size_t listCountWrite = 0;
 	
-	//Uint32 endTick=SDL_GetTicks();
-	//Uint32 ticks=endTick-startTick;
+	// make the first list:
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			if (gradient[(y << wDec) | x] == 255)
+				listedAddr[listCountWrite++] = (y << wDec) | x;
 	
-	//gradientTicksSum+=ticks;
-	//gradientTicksSumCount++;
+	size_t listCountRead = 0;
+	while (listCountRead < listCountWrite)
+	{
+		size_t deltaAddrG = listedAddr[listCountRead++];
+		
+		size_t y = deltaAddrG >> wDec;
+		size_t x = deltaAddrG & wMask;
+		
+		size_t yu = ((y - 1) & hMask);
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+		
+		Uint8 g = gradient[(y << wDec) | x] - 1;
+		
+		size_t deltaAddrC[8];
+		Uint8 *addr;
+		Uint8 side;
+		
+		deltaAddrC[0] = (yu << wDec) | xl;
+		deltaAddrC[1] = (yu << wDec) | x ;
+		deltaAddrC[2] = (yu << wDec) | xr;
+		deltaAddrC[3] = (y  << wDec) | xr;
+		deltaAddrC[4] = (yd << wDec) | xr;
+		deltaAddrC[5] = (yd << wDec) | x ;
+		deltaAddrC[6] = (yd << wDec) | xl;
+		deltaAddrC[7] = (y  << wDec) | xl;
+		for (int ci=0; ci<8; ci++)
+		{
+			addr = &gradient[deltaAddrC[ci]];
+			side = *addr;
+			if (side > 0 && side < g)
+			{
+				*addr = g;
+				if (g > 2)
+					listedAddr[listCountWrite++] = deltaAddrC[ci];
+			}
+		}
+	}
+	delete[] listedAddr;
+}
+
+void Map::updateGlobalGradient(Uint8 *gradient)
+{
+	if (size<=65536)
+		updateGlobalGradientSmall(gradient);
+	else
+		updateGlobalGradientBig(gradient);
 }
 
 /*void Map::updateGlobalGradient(Uint8 *gradient)
