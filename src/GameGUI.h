@@ -100,9 +100,13 @@ private:
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
+
 public:
 	// Engine has to call this every "real" steps. (or game steps)
 	void synchroneStep(void);
+	//! return the local team of the player who is running glob2
+	Team *getLocalTeam(void) { return localTeam; }
+	
 private:
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
@@ -114,7 +118,7 @@ private:
 	void moveFlag(int mx, int my);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
-
+	
 public:
 	Game game;
 	bool paused;

@@ -1015,7 +1015,23 @@ Speichern
 Sauvegarde automatique.game
 Auto save.game
 
-[game over]
-Jeu terminé
-Game over
+[Lost : your colony is dead]
+Perdu : Votre colonie est morte
+Lost : Your colony is dead
+
+[Won : you defeated your opponents]
+Gagné : Vous avez vaincu vos adversaires
+Won : you defeated your opponents
+
+[Lost : %s has more prestige than you]
+Perdu : %s a plus de prestige que vous
+Lost : %s has more prestige than you
+%s
+[Won : you have the biggest prestige]
+Gagné : Vous avez le plus de prestige
+Won : you have the biggest prestige
+
+[The game has not been finished]
+La partie n'a pas été finie
+The game has not been finished
 

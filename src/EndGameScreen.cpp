@@ -96,7 +96,30 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	this->gui=gui;
 	
 	// title & graph
-	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[game over]"), 600));
+	const char *titleText;
+	if (!gui->getLocalTeam()->isAlive)
+	{
+		titleText=globalContainer->texts.getString("[Lost : your colony is dead]");
+	}
+	else if (!gui->game.isGameEnded)
+	{
+		titleText=globalContainer->texts.getString("[The game has not been finished]");
+	}
+	else if (!gui->game.totalPrestigeReached)
+	{
+		titleText=globalContainer->texts.getString("[Won : you defeated your opponents]");
+	}
+	else
+	{
+		Team *t=gui->game.getTeamWithMostPrestige();
+		assert(t);
+		if (t==gui->getLocalTeam())
+			titleText=globalContainer->texts.getString("[Won : you have the biggest prestige]");
+		else
+			titleText=globalContainer->texts.getString("[Lost : %s has more prestige than you]");
+	}
+	
+	addWidget(new Text(20, 18, globalContainer->menuFont, titleText, 600));
 	statWidget=new EndGameStat(208, 80, &(gui->game));
 	addWidget(statWidget);
 	

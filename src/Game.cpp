@@ -80,6 +80,7 @@ void Game::init()
 	stepCounter=0;
 	totalPrestige=0;
 	totalPrestigeReached=false;
+	isGameEnded=false;
 }
 
 void Game::setBase(const SessionInfo *initial)
@@ -405,6 +406,7 @@ bool Game::load(SDL_RWops *stream)
 	// clear prestige
 	totalPrestige=0;
 	totalPrestigeReached=false;
+	isGameEnded=false;
 	
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
@@ -611,6 +613,8 @@ void Game::wonStep(void)
 {
 	int i,j;
 	totalPrestige=0;
+	isGameEnded=false;
+	
 	for (i=0; i<session.numberOfTeam; i++)
 	{
 		bool isOtherAlive=false;
@@ -620,11 +624,15 @@ void Game::wonStep(void)
 				isOtherAlive=true;
 		}
 		teams[i]->hasWon=!isOtherAlive;
+		isGameEnded|=teams[i]->hasWon;
 		totalPrestige+=teams[i]->prestige;
 	}
 	// zzz be generic here
 	if (totalPrestige>=1000)
+	{
 		totalPrestigeReached=true;
+		isGameEnded=true;
+	}
 }
 
 void Game::scriptStep(void)
@@ -1782,4 +1790,22 @@ Sint32 Game::checkSum()
 	//printf(", %x)\n", cs);
 	
 	return cs;
+}
+
+Team *Game::getTeamWithMostPrestige(void)
+{
+	int i=0;
+	int maxPrestige=0;
+	Team *maxPrestigeTeam=NULL;
+	
+	for (i=0; i<session.numberOfTeam; i++)
+	{
+		Team *t=teams[i];
+		if (t->prestige > maxPrestige)
+		{
+			maxPrestigeTeam=t;
+			maxPrestige=t->prestige;
+		}
+	}
+	return maxPrestigeTeam;
 }

@@ -119,6 +119,9 @@ public:
 	Sint32 stepCounter;
 	int totalPrestige;
 	bool totalPrestigeReached;
+	bool isGameEnded;
+	
+	Team *getTeamWithMostPrestige(void);
 	
 public:
 	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
