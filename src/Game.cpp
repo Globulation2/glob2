@@ -1023,6 +1023,7 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
  int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
+	int i;
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
 		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
@@ -1034,12 +1035,16 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 		if (orientation==LEFT_TO_RIGHT)
 		{
-			for (int i=0; i<actLength; i++)
+			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+			for (; i<maxLength; i++)
+				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
 		}
 		else
 		{
-			for (int i=maxLength-actLength; i<maxLength; i++)
+			for (i=0; i<maxLength-actLength; i++)
+				globalContainer->gfx->drawRect(x+i*3, y, 4, barWidth+2, r/3, g/3, b/3);
+			for (; i<maxLength; i++)
 				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
 		}
 	}
@@ -1050,18 +1055,20 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		for (int i=0; i<maxLength+1; i++)
 			globalContainer->gfx->drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
 		*/
-
-
-	globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
 
 		if (orientation==TOP_TO_BOTTOM)
 		{
-			for (int i=0; i<actLength; i++)
+			for (i=0; i<actLength; i++)
 				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+			for (; i<maxLength; i++)
+				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
 		}
 		else
 		{
-			for (int i=maxLength-actLength; i<maxLength; i++)
+			for (i=0; i<maxLength-actLength; i++)
+				globalContainer->gfx->drawRect(x, y+i*3, 4, barWidth+2, r/3, g/3, b/3);
+			for (; i<maxLength; i++)
 				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
 		}
 	}
