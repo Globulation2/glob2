@@ -77,7 +77,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
-	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team);
+	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, false, false, true, true);
 	if (doPaintEditMode)
 		paintEditMode(false, false);
 
