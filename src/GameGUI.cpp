@@ -313,7 +313,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen=new LoadSaveScreen("games", "game");
+					gameMenuScreen=new LoadSaveScreen("games", "game", true, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
@@ -322,7 +322,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen=new LoadSaveScreen("games", "game", false, game.session.getMapName());
+					gameMenuScreen=new LoadSaveScreen("games", "game", false, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
