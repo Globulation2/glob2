@@ -191,7 +191,7 @@ public:
 			"maxAlgue",
 			"maxFruit0",
 			"maxFruit1",
-			"maxRes7",
+			"maxFruit2",
 			"maxRes8",
 			"maxRes9",
 			"maxRes10",

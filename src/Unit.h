@@ -182,7 +182,8 @@ public:
 	Sint32 trigHungry; // (Uint16)
 	Sint32 trigHungryCarying;
 	Uint32 fruitMask;
-	
+	UInt32 fruitCount;
+
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
 	Sint32 level[NB_ABILITY];

@@ -75,7 +75,7 @@ public:
 class RessourcesTypes : public base::Object
 {
 public:
-	typedef Sint32 intResType;
+	typedef Uint32 intResType;
 
 public:
 	CLASSDEF(RessourcesTypes)
@@ -87,6 +87,8 @@ public:
 		ITEM(intResType, fungus)
 		ITEM(intResType, stone)
 		ITEM(intResType, alga)
+		ITEM(intResType, happynessBase)
+		ITEM(intResType, happynessCount)
 	CLASSEND;
 
 public:
@@ -103,5 +105,7 @@ public:
 #define FUNGUS (globalContainer->ressourcesTypes->fungus)
 #define STONE (globalContainer->ressourcesTypes->stone)
 #define ALGA (globalContainer->ressourcesTypes->alga)
+#define HAPPYNESS_BASE (globalContainer->ressourcesTypes->happynessBase)
+#define HAPPYNESS_COUNT (globalContainer->ressourcesTypes->happynessCount)
 
 #endif
