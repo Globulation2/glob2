@@ -135,7 +135,7 @@ private:
 	Uint8 recentsWishedDelay[32][64]; // The delay each player wants. (recents)
 	
 	static const int MAX_GAME_PACKET_SIZE=1500;
-	static const int COUNT_DOWN_DEATH=100;
+	static const int COUNT_DOWN_DEATH=400;
 	
 	Order *ordersQueue[32][256];
 	Uint8 lastReceivedFromMe[32];
