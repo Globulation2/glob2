@@ -371,7 +371,29 @@ void MultiplayersHost::removePlayer(int p)
 	fprintf(logFile, "player %d quited the game, from team %d.\n", p, t);
 	sessionInfo.team[t].playersMask&=~sessionInfo.players[p].numberMask;
 	sessionInfo.team[t].numberOfPlayer--;
-
+	
+	if (playerFileTra[p].wantsFile)
+	{
+		playerFileTra[p].wantsFile=false;
+		playerFileTra[p].receivedFile=false;
+		playerFileTra[p].unreceivedIndex=0;
+		playerFileTra[p].brandwidth=0;
+		playerFileTra[p].lastNbPacketsLost=0;
+		for (int i=0; i<PACKET_SLOTS; i++)
+		{
+			playerFileTra[p].packetSlot[i].index=0;
+			playerFileTra[p].packetSlot[i].sent=false;
+			playerFileTra[p].packetSlot[i].received=false;
+			playerFileTra[p].packetSlot[i].brandwidth=0;
+			playerFileTra[p].packetSlot[i].time=0;
+		}
+		playerFileTra[p].time=0;
+		playerFileTra[p].latency=32;
+		playerFileTra[p].totalSent=0;
+		playerFileTra[p].totalLost=0;
+		playerFileTra[p].totalReceived=0;
+	}
+	
 	sessionInfo.players[p].unbind();
 	sessionInfo.players[p].netState=BasePlayer::PNS_BAD;
 	sessionInfo.players[p].type=BasePlayer::P_NONE;
