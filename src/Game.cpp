@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "Game.h"
@@ -1004,7 +1004,17 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	for (y=top; y<=bot; y++)
 	{
 		for (x=left; x<=right; x++)
-			if ((map.isMapDiscovered(x+viewportX, y+viewportY,  teams[teamSelected]->me)||(useMapDiscovered)))
+			if (
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(useMapDiscovered))
 			{
 				// draw terrain
 				id=map.getTerrain(x+viewportX, y+viewportY);
@@ -1329,7 +1339,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	}
 
-	// draw shading
+	// draw black & shading
 
 	if (!useMapDiscovered)
 	{
@@ -1337,21 +1347,42 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		for (y=top-1; y<=bot; y++)
 			for (x=left-1; x<=right; x++)
 			{
-				if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me)))
+				unsigned i0, i1, i2, i3;
+				
+				/*if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me)))
 				{
 					globalContainer->gfx->drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
 				}
-				/*else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)))
+				else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)))
 				{
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
 				}*/
-				unsigned i0=!map.isFOW(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-				unsigned i1=!map.isFOW(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-				unsigned i2=!map.isFOW(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
-				unsigned i3=!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
-				unsigned value=i0 + (i1<<1) + (i2<<2) + (i3<<3);
-				if (value)
-					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, value);
+				
+				// first draw black
+				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
+				if (blackValue==15)
+					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
+				else if (blackValue)
+					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainBlack, blackValue);
+				
+				// then if it isn't full black, draw shade
+				if (blackValue!=15)
+				{
+					i0=!map.isFOW(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+					i1=!map.isFOW(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
+					i2=!map.isFOW(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+					i3=!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
+					
+					if (shadeValue==15)
+						globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0, 127);
+					else if (shadeValue)
+						globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
+				}
 			}
 	}
 
