@@ -431,14 +431,6 @@ Rodungsflagge
 Flaga oczyszczania
 Bandiera pulitrice
 Флаг очистки
-[forbidden flag]
-Drapeau d'interdiction
-Forbidden flag
-Verbotsflagge
-Zákaz vstupu 
-Flaga zakazu
-Bandiera proibita
-Флаг запрета
 [stone wall]
 Mur de pierre
 Stone wall
@@ -447,14 +439,6 @@ Kamenná hradba
 Mur kamienny
 Muro di pietra
 Каменная стена
-[wood wall]
-Mur de bois
-Wood wall
-Holzmauer
-Dřevěná hradba
-Palisada
-Muro di legno
-Забор
 [market]
 Marché
 Market
@@ -1015,14 +999,6 @@ La torre da difesa è stata completata
 ?? Postawiono flagę ... ??
 ?? La bandiera pulitrice finita ??
 ?? Флаг очистки установлен ??
-[the forbidden flag is finished]
-?? Drapeau d'interdiction terminé ??
-?? Forbidden flag finished ??
-?? Verbotsflagge fertig ??
-?? Prapor zakáz vstupu připraven ??
-?? Postawiono flagę zakazu ?? 
-?? La bandiera proibita finita ??
-?? Флаг запрета установлен ??
 [the stone wall is finished]
 Un élément de mur est terminé
 A wall section is finished
@@ -1031,14 +1007,6 @@ Kus hradby hotov ...
 Zbudowano część muru
 Il muro di pietra è stato completato
 Каменная стена построена
-[the wood wall is finished]
-Un élément de mur est terminé
-A wall section is finished
-Ein Mauerteil ist fertig
-Kus hradby hotov ...
-Zbudowano część palisady
-Il muro di legno è stato completato
-Забор построен
 [the market is finished]
 Le marché est terminé
 The market is finished
@@ -1143,14 +1111,6 @@ La torre da difesa è sotto attacco
 ?? Flaga ... została zaatakowana ??
 ?? La bandiera pulitrice è sotto attacco ??
 ?? Флаг очистки атакован ??
-[the forbidden flag is under attack]
-?? Drapeau d'interdiction attaqué ??
-?? Forbidden flag under attack ??
-?? Verbotsflagge wird angegriffen ??
-?? Prapor zákaz vstupu v obležení nepřátel ??
-?? Flaga zakazu została zaatakowana ??
-?? La bandiera proibita è sotto attacco ??
-?? Флаг запрета атакован ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
 The enemy is at your walls
@@ -1159,14 +1119,6 @@ Nepřítel utočí na hradby
 Mur został zaatakowany
 Il muro di roccia è sotto attacco
 Каменная стена атакована
-[the wood wall is under attack]
-L'ennemi est à vos murs
-The enemy is at your walls
-Der Feind steht vor Ihren Mauern
-Nepřítel utočí na hradby
-Palisada została zaatakowana
-Il muro di legno è sotto attacco
-Забор атакован
 [the market is under attack]
 Le marché est attaqué
 The market is under attack

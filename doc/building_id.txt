@@ -31,27 +31,27 @@ Level 2
 
 Autre
 
-22 : Mur
+22 : marche
+23-38 : Mur
 
 Building Site
 
-23 : Ruche
-24 : 1x1 (Mur)
-25 : 2x2
-26 : 3x3
-27 : 4x4
-28 : 6x6
-29 : 8x8
+39 : Ruche
+40 : 1x1 (Mur)
+41 : 2x2
+42 : 3x3
+43 : 4x4
+44 : 6x6
+45 : 8x8
 
 Flag
 
-30 : Exploration
-31 : Guerre
-32 : Defrichage
-33 : Interdiction
+46 : Exploration
+47 : Guerre
+48 : Defrichage
 
 Misc
 
-34 : petit drapeau
-35 : boulet
-36 : marche
+49 : petit drapeau
+50 : boulet
+

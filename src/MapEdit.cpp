@@ -56,8 +56,7 @@ MapEdit::MapEdit()
 	// load menu
 	globalContainer->gfx->loadSprite("data/gui/editor", "editor");
 	menu=Toolkit::getSprite("editor");
-	// TODO FIXME here:
-	font=globalContainer->littleFont; //globalContainer->gfx->loadFont("data/fonts/arial8black.png");
+	font=globalContainer->littleFont;
 
 	// static-like variables:
 	savedMx=0;
@@ -72,7 +71,6 @@ MapEdit::MapEdit()
 MapEdit::~MapEdit()
 {
 	Toolkit::releaseSprite("editor");
-	//delete font;
 }
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode)
@@ -193,29 +191,31 @@ void MapEdit::drawMenu(void)
 			typeNum=globalContainer->buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
 		else
 			typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-		assert(typeNum!=-1);
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-		assert(bt);
-		int imgid=bt->startImage;
-		int x=((i&0x3)<<5)+menuStartW;
-		int y=((i>>2)<<5)+306;
-		if (i==12)
+		if (typeNum != -1)
 		{
-			x=96+menuStartW;
-			y=274;
+			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+			assert(bt);
+			int imgid=bt->startImage;
+			int x=((i&0x3)<<5)+menuStartW;
+			int y=((i>>2)<<5)+306;
+			if (i==12)
+			{
+				x=96+menuStartW;
+				y=274;
+			}
+	
+			globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
+			Sprite *buildingSprite=globalContainer->buildings;
+			int w=buildingSprite->getW(imgid);
+			int h=buildingSprite->getH(imgid);
+			int decW=20, decH=20;
+			if (w<=32)
+				decW=0;
+			if (h<=32)
+				decH=0;
+			buildingSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+			globalContainer->gfx->drawSprite(x-decW, y-decH, buildingSprite, imgid);
 		}
-
-		globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
-		Sprite *buildingSprite=globalContainer->buildings;
-		int w=buildingSprite->getW(imgid);
-		int h=buildingSprite->getH(imgid);
-		int decW=20, decH=20;
-		if (w<=32)
-			decW=0;
-		if (h<=32)
-			decH=0;
-		buildingSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-		globalContainer->gfx->drawSprite(x-decW, y-decH, buildingSprite, imgid);
 	}
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
@@ -906,7 +906,6 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 			type=0;
 		else if (type>(int)resCount-1)
 			type=resCount-1;
-
 	}
 	else if ((my>236) && (my<268))
 	{

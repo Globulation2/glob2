@@ -63,6 +63,8 @@ public:
 	Sint32 hueImage; // bool. The way we show the building's team (false=we draw a flag, true=we hue all the sprite)
 	Sint32 flagImage;
 	Sint32 miniImage;
+	// If true, mean we have a wall-like building
+	Sint32 crossConnectMultiImage;
 	//Sint32 nbDifferentImages;
 	//Sint32 timeBetweenImages;
 
@@ -138,6 +140,7 @@ public:
 			"hueImage",
 			"flagImage",
 			"miniImage",
+			"crossConnectMultiImage",
 
 			"upgradeStopWalk",
 			"upgradeStopSwim",
