@@ -26,6 +26,7 @@
 #include "Building.h"
 #include <list>
 #include "Order.h"
+#include "TeamStat.h"
 
 class BaseTeam: public Order
 {
@@ -170,6 +171,8 @@ public:
 	bool isAlive;
 	//! called by game, set to true if all others team has won or if script has forced
 	bool hasWon;
+	//! the stat for this team. It is computed every step, so it is always updated.
+	TeamStat latestStat;
 };
 
 #endif

@@ -191,6 +191,7 @@ void Team::init(void)
 	eventPosY=startPosY;
 	isAlive=true;
 	hasWon=false;
+	memset(&latestStat, 0, sizeof(TeamStat));
 }
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
@@ -719,6 +720,8 @@ void Team::step(void)
 {
 	int nbUnits=0;
 	int i;
+	
+	memset(&latestStat, 0, sizeof(TeamStat));
 	for (i=0; i<1024; i++)
 	{
 		if (myUnits[i])
@@ -730,6 +733,33 @@ void Team::step(void)
 				//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
 				delete myUnits[i];
 				myUnits[i]=NULL;
+			}
+			else
+			{
+				// stat part
+				// FIXME : this can slow down game, do only every n tick
+				Unit *u=myUnits[i];
+				latestStat.totalUnit++;
+				latestStat.numberPerType[u->typeNum]++;
+				
+				if (u->medical==Unit::MED_HUNGRY)
+					latestStat.needFood++;
+				else if (u->medical==Unit::MED_DAMAGED)
+					latestStat.needHeal++;
+				else
+				{
+					latestStat.needNothing++;
+					if (u->activity==Unit::ACT_RANDOM)
+					{
+						latestStat.isFree[(int)u->typeNum]++;
+						latestStat.totalFree++;
+					}
+				}
+				for (int j=0; j<NB_ABILITY; j++)
+				{
+					if (u->performance[j])
+						latestStat.upgradeState[j][u->level[j]]++;
+				}
 			}
 		}
 	
