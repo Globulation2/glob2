@@ -3,7 +3,11 @@ AM_INIT_AUTOMAKE(glob2, 0.1)
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
-LIBS="-lpng $LIBS"
+CFLAGS="`freetype-config --cflags` $CFLAGS"
+LIBS="-lpng $LIBS `freetype-config --libs`"
+
+dnl CXXFLAGS="-g -Wall $CXXFLAGS"
+dnl LIBS="-lpng $LIBS"
 
 dnl Programs 
 AC_PROG_CC
