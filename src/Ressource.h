@@ -23,7 +23,7 @@
 #include <SDL.h>
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
-#define NORESID 0xFFFFFFFF
+#define NO_RES_TYPE 0xFF
 
 //! A union is used so a ressource can be accessed as a whole 32 bit unsigned int as well as 4 bytes defining its components (type, ...).
 struct Ressource
@@ -33,8 +33,9 @@ struct Ressource
 	Uint8 amount;
 	Uint8 animation;
 	
-	Ressource(Uint32 i=NORESID) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
-	operator Uint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
+	void clear() {type=0xFF; variety=0xFF;  amount=0xFF;  animation=0xFF; }
+	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
+	Uint32 getUint32() { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
 
 #define MAX_NB_RESSOURCES 15

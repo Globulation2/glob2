@@ -24,13 +24,14 @@
 #include <SDL.h>
 
 #include "NetConsts.h"
+#include "Ressource.h"
 #include "UnitConsts.h"
 
 class Order
 {
 public:
  	Order(void);
-	virtual ~Order(void) { }
+	virtual ~Order(void) {}
 	virtual Uint8 getOrderType(void)=0;
 
 	static Order *getOrder(const Uint8 *netData, int netDataLength);
@@ -38,8 +39,6 @@ public:
 	virtual Uint8 *getData(void)=0;
 	virtual bool setData(const Uint8 *data, int dataLength)=0;
 	virtual int getDataLength(void)=0;
-	
-	virtual Sint32 checkSum()=0;
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
 	Uint8 wishedLatency;
@@ -56,12 +55,11 @@ class OrderCreate:public Order
 public:
 	OrderCreate(const Uint8 *data, int dataLength);
 	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNumber);
-	virtual ~OrderCreate(void) { }
+	virtual ~OrderCreate(void) {}
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 16; }
-	Sint32 checkSum() { return ORDER_CREATE; }
 
 	Uint32 team;
 	Sint32 posX;
@@ -80,12 +78,11 @@ class OrderDelete:public Order
 public:
 	OrderDelete(const Uint8 *data, int dataLength);
 	OrderDelete(Uint16 gid);
-	virtual ~OrderDelete(void) { }
+	virtual ~OrderDelete(void) {}
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 2; }
-	Sint32 checkSum() { return ORDER_DELETE; }
 
 	Uint16 gid;
 
@@ -98,12 +95,11 @@ class OrderCancelDelete:public Order
 public:
 	OrderCancelDelete(const Uint8 *data, int dataLength);
 	OrderCancelDelete(Uint16 gid);
-	virtual ~OrderCancelDelete(void) { }
+	virtual ~OrderCancelDelete(void) {}
 	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 2; }
-	Sint32 checkSum() { return ORDER_CANCEL_DELETE; }
 
 	Uint16 gid;
 
@@ -111,18 +107,16 @@ protected:
 	Uint8 data[2];
 };
 
-
-class OrderConstruction:public Order
+class OrderConstruction:public Order //! Means Upgarde or Repair Order
 {
 public:
 	OrderConstruction(const Uint8 *data, int dataLength);
 	OrderConstruction(Uint16 gid);
-	virtual ~OrderConstruction(void) { }
+	virtual ~OrderConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 2; }
-	Sint32 checkSum() { return ORDER_CONSTRUCTION; }
 
 	Uint16 gid;
 
@@ -135,12 +129,11 @@ class OrderCancelConstruction:public Order
 public:
 	OrderCancelConstruction(const Uint8 *data, int dataLength);
 	OrderCancelConstruction(Uint16 gid);
-	virtual ~OrderCancelConstruction(void) { }
+	virtual ~OrderCancelConstruction(void) {}
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 2; }
-	Sint32 checkSum() { return ORDER_CANCEL_CONSTRUCTION; }
 
 	Uint16 gid;
 
@@ -155,127 +148,124 @@ class OrderModify:public Order
 {
 public:
  	OrderModify();
-	virtual ~OrderModify(void) { }
-
-	Uint8 getOrderType(void) { return 40; }
- protected:
-	Uint8 *data;
-	int length;
+	virtual ~OrderModify(void) {}
 };
 
-class OrderModifyUnits:public OrderModify
+class OrderModifyBuilding:public OrderModify
 {
 public:
-	OrderModifyUnits(const Uint8 *data, int dataLength);
-	OrderModifyUnits(Uint16 *gid, Sint32 *trigHP, Sint32 *trigHungry, int length);
-	virtual ~OrderModifyUnits(void);
-	
-	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*12; }
-	int getNumberOfUnit(void) { return length; }
-	Uint8 getOrderType(void) { return ORDER_MODIFY_UNIT; }
-	Sint32 checkSum() { return ORDER_MODIFY_UNIT; }
-
-	Uint16 *gid;
-	Sint32 *trigHP;
-	Sint32 *trigHungry;
-};
-
-class OrderModifyBuildings:public OrderModify
-{
-public:
-	OrderModifyBuildings(const Uint8 *data, int dataLength);
-	OrderModifyBuildings(Uint16 *gid, Sint32 *numberRequested, int length);
-	virtual ~OrderModifyBuildings(void);
+	OrderModifyBuilding(const Uint8 *data, int dataLength);
+	OrderModifyBuilding(Uint16 gid, Uint16 numberRequested);
+	virtual ~OrderModifyBuilding(void) {}
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*6; }
-	int getNumberOfBuilding(void) { return length; }
+	int getDataLength(void) { return 4; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_BUILDING; }
-	Sint32 checkSum() { return ORDER_MODIFY_BUILDING; }
 
-	Uint16 *gid;
-	Sint32 *numberRequested;
+	Uint16 gid;
+	Uint16 numberRequested;
+	
+protected:
+	Uint8 data[4];
 };
 
 class OrderModifyExchange:public OrderModify
 {
 public:
 	OrderModifyExchange(const Uint8 *data, int dataLength);
-	OrderModifyExchange(Uint16 *gid, Uint32 *receiveRessourceMask, Uint32 *sendRessourceMask, int length);
-	virtual ~OrderModifyExchange(void);
+	OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask);
+	virtual ~OrderModifyExchange(void) {}
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*10; }
-	int getNumberOfBuilding(void) { return length; }
+	int getDataLength(void) { return 10; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
-	Sint32 checkSum() { return ORDER_MODIFY_EXCHANGE; }
 
-	Uint16 *gid;
-	Uint32 *receiveRessourceMask;
-	Uint32 *sendRessourceMask;
+	Uint16 gid;
+	Uint32 receiveRessourceMask;
+	Uint32 sendRessourceMask;
+	
+protected:
+	Uint8 data[10];
 };
 
-class OrderModifySwarms:public OrderModify
+class OrderModifySwarm:public OrderModify
 {
 public:
-	OrderModifySwarms(const Uint8 *data, int dataLength);
-	OrderModifySwarms(Uint16 *gid, Sint32 *ratios, int length);
-	virtual ~OrderModifySwarms(void);
+	OrderModifySwarm(const Uint8 *data, int dataLength);
+	OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE]);
+	virtual ~OrderModifySwarm(void) {}
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { assert(NB_UNIT_TYPE==3); return length*14; }
-	int getNumberOfSwarm(void) { return length; }
-
-	Uint16 *gid;
-	Sint32 *ratio;
-
+	int getDataLength(void) { return 2+4*NB_UNIT_TYPE; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_SWARM; }
-	Sint32 checkSum() { return ORDER_MODIFY_SWARM; }
+
+	Uint16 gid;
+	Sint32 ratio[NB_UNIT_TYPE];
+
+protected:
+	Uint8 data[10];
 };
 
-class OrderModifyFlags:public OrderModify
+class OrderModifyFlag:public OrderModify
 {
 public:
-	OrderModifyFlags(const Uint8 *data, int dataLength);
-	OrderModifyFlags(Uint16 *gid, Sint32 *range, int length);
-	virtual ~OrderModifyFlags(void);
+	OrderModifyFlag(const Uint8 *data, int dataLength);
+	OrderModifyFlag(Uint16 gid, Sint32 range);
+	virtual ~OrderModifyFlag(void) {}
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*6; }
-	int getNumberOfBuilding(void) { return length; }
-
-	Uint16 *gid;
-	Sint32 *range;
-
+	int getDataLength(void) { return 6; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_FLAG; }
-	Sint32 checkSum() { return ORDER_MODIFY_FLAG; }
+
+	Uint16 gid;
+	Sint32 range;
+
+protected:
+	Uint8 data[6];
 };
 
-class OrderMoveFlags:public OrderModify
+class OrderModifyClearingFlag:public OrderModify
 {
 public:
-	OrderMoveFlags(const Uint8 *data, int dataLength);
-	OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, bool *drop, int length);
-	virtual ~OrderMoveFlags(void);
+	OrderModifyClearingFlag(const Uint8 *data, int dataLength);
+	OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT]);
+	virtual ~OrderModifyClearingFlag(void);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*11; }
-	int getNumberOfBuilding(void) { return length; }
+	int getDataLength(void) { return 2+BASIC_COUNT; }
+	Uint8 getOrderType(void) { return ORDER_MODIFY_CLEARING_FLAG; }
 
-	Uint16 *gid;
-	Sint32 *x;
-	Sint32 *y;
-	bool *drop;
+	Uint16 gid;
+	bool clearingRessources[BASIC_COUNT];
 
+protected:
+	Uint8 *data;
+};
+
+class OrderMoveFlag:public OrderModify
+{
+public:
+	OrderMoveFlag(const Uint8 *data, int dataLength);
+	OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop);
+	virtual ~OrderMoveFlag(void) {}
+
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return 11; }
 	Uint8 getOrderType(void) { return ORDER_MOVE_FLAG; }
-	Sint32 checkSum() { return ORDER_MOVE_FLAG; }
+
+	Uint16 gid;
+	Sint32 x;
+	Sint32 y;
+	bool drop;
+
+protected:
+	Uint8 data[11];
 };
 
 
@@ -287,8 +277,6 @@ class MiscOrder:public Order
 public:
 	MiscOrder();
 	virtual ~MiscOrder(void) { }
-
-	Uint8 getOrderType(void) { return 50; }
 };
 
 class NullOrder:public MiscOrder
@@ -298,11 +286,9 @@ public:
 	virtual ~NullOrder(void) { }
 
 	Uint8 *getData(void) { return NULL; }
-	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
+	bool setData(const Uint8 *data, int dataLength) { return true; }
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_NULL; }
-	Sint32 checkSum() { return ORDER_NULL; }
-	
 };
 
 //! only used as a communication channel between NetGame and GameGUI.
@@ -313,10 +299,9 @@ public:
 	virtual ~QuitedOrder(void) { }
 
 	Uint8 *getData(void) { return NULL; }
-	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
+	bool setData(const Uint8 *data, int dataLength) { return true; }
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_QUITED; }
-	Sint32 checkSum() { return ORDER_QUITED; }
 };
 
 //! only used as a communication channel between NetGame and GameGUI.
@@ -327,10 +312,9 @@ public:
 	virtual ~DeconnectedOrder(void) { }
 
 	Uint8 *getData(void) { return NULL; }
-	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
+	bool setData(const Uint8 *data, int dataLength) { return true; }
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_DECONNECTED; }
-	Sint32 checkSum() { return ORDER_DECONNECTED; }
 };
 
 class MessageOrder:public MiscOrder
@@ -343,9 +327,8 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length; }
-	char *getText(void) { return (char *)(data+8); }
+	char *getText(void) { return (char *)(data+9); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
-	Sint32 checkSum() { return ORDER_TEXT_MESSAGE; }
 
 	Uint32 recepientsMask;
 	enum MessageOrderType
@@ -373,7 +356,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 24; }
-	Sint32 checkSum() { return ORDER_SET_ALLIANCE; }
 
 	Uint32 teamNumber;
 	Uint32 alliedMask;
@@ -397,7 +379,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 12; }
-	Sint32 checkSum() { return ORDER_MAP_MARK; }
 
 	Uint32 teamNumber;
 	Sint32 x;
@@ -420,7 +401,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_WAITING_FOR_PLAYER; }
 
 	Uint32 maskAwayPlayer;
 	
@@ -439,7 +419,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 1; }
-	Sint32 checkSum() { return ORDER_PAUSE_GAME; }
 
 	bool pause;
 	
@@ -458,7 +437,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_DROPPING_PLAYER; }
 	
 	Uint32 dropingPlayersMask;
 	
@@ -477,7 +455,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 12; }
-	Sint32 checkSum() { return ORDER_REQUESTING_AWAY; }
 	
 	Sint32 player;
 	Sint32 missingStep;
@@ -498,7 +475,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 8; }
-	Sint32 checkSum() { return ORDER_NO_MORE_ORDER_AVIABLES; }
 
 	Sint32 player;
 	Sint32 lastAviableStep;
@@ -518,7 +494,6 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_PLAYER_QUIT_GAME; }
 	
 	Sint32 player;
 	

@@ -1379,7 +1379,8 @@ void Unit::handleDisplacement(void)
 						{
 							int x=posX+tdx;
 							int y=posY+tdy;
-							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2 && map->isRemovableRessource(x, y))
+							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2
+								&& map->isRessource(x, y, attachedBuilding->clearingRessources))
 							{
 								dx=tdx;
 								dy=tdy;
@@ -1605,7 +1606,7 @@ void Unit::handleMovement(void)
 				{
 					int x=posX+tdx;
 					int y=posY+tdy;
-					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRemovableRessource(x, y))
+					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessource(x, y, attachedBuilding->clearingRessources))
 					{
 						dx=tdx;
 						dy=tdy;

@@ -125,6 +125,12 @@ Range
 Reichweite
 Rozsah
 Zasięg
+[Clearing:]
+Défrichage de:
+Clearing:
+
+
+
 [destroy]
 Détruire
 Destroy

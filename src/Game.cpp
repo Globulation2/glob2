@@ -44,8 +44,8 @@
 
 Game::Game()
 {
-	init();
 	logFile = globalContainer->logFileManager->getFile("Game.log");
+	init();
 }
 
 Game::~Game()
@@ -104,6 +104,7 @@ void Game::init()
 	}
 	
 	setSyncRandSeed();
+	fprintf(logFile, "setSyncRandSeed(%d, %d, %d)\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	
 	mouseX=0;
 	mouseY=0;
@@ -208,20 +209,18 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			for (int i=0; i<((OrderModifyBuildings *)order)->getNumberOfBuilding(); i++)
+			OrderModifyBuilding *omb=(OrderModifyBuilding *)order;
+			Uint16 gid=omb->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if ((b) && (b->buildingState==Building::ALIVE))
 			{
-				Uint16 gid=((OrderModifyBuildings *)order)->gid[i];
-				int team=Building::GIDtoTeam(gid);
-				int id=Building::GIDtoID(gid);
-				Building *b=teams[team]->myBuildings[id];
-				if ((b) && (b->buildingState==Building::ALIVE))
-				{
-					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
-					b->maxUnitWorkingPreferred=b->maxUnitWorking;
-					if (order->sender!=localPlayer)
-						b->maxUnitWorkingLocal=b->maxUnitWorking;
-					b->update();
-				}
+				b->maxUnitWorking=omb->numberRequested;
+				b->maxUnitWorkingPreferred=b->maxUnitWorking;
+				if (order->sender!=localPlayer)
+					b->maxUnitWorkingLocal=b->maxUnitWorking;
+				b->update();
 			}
 		}
 		break;
@@ -229,23 +228,21 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			for (int i=0; i<((OrderModifyExchange *)order)->getNumberOfBuilding(); i++)
+			OrderModifyExchange *ome=(OrderModifyExchange *)order;
+			Uint16 gid=ome->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if ((b) && (b->buildingState==Building::ALIVE))
 			{
-				Uint16 gid=((OrderModifyExchange *)order)->gid[i];
-				int team=Building::GIDtoTeam(gid);
-				int id=Building::GIDtoID(gid);
-				Building *b=teams[team]->myBuildings[id];
-				if ((b) && (b->buildingState==Building::ALIVE))
+				b->receiveRessourceMask=ome->receiveRessourceMask;
+				b->sendRessourceMask=ome->sendRessourceMask;
+				if (order->sender!=localPlayer)
 				{
-					b->receiveRessourceMask=((OrderModifyExchange *)order)->receiveRessourceMask[i];
-					b->sendRessourceMask=((OrderModifyExchange *)order)->sendRessourceMask[i];
-					if (order->sender!=localPlayer)
-					{
-						b->receiveRessourceMaskLocal = b->receiveRessourceMask;
-						b->sendRessourceMaskLocal = b->sendRessourceMask;
-					}
-					b->update();
+					b->receiveRessourceMaskLocal=b->receiveRessourceMask;
+					b->sendRessourceMaskLocal=b->sendRessourceMask;
 				}
+				b->update();
 			}
 		}
 		break;
@@ -253,46 +250,61 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			for (int i=0; i<((OrderModifyFlags *)order)->getNumberOfBuilding(); i++)
+			OrderModifyFlag *omf=(OrderModifyFlag *)order;
+			Uint16 gid=omf->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 			{
-				Uint16 gid=((OrderModifyFlags *)order)->gid[i];
-				int team=Building::GIDtoTeam(gid);
-				int id=Building::GIDtoID(gid);
-				Building *b=teams[team]->myBuildings[id];
-				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
-				{
-					int oldRange=b->unitStayRange;
-					int newRange=((OrderModifyFlags *)order)->range[i];
-					b->unitStayRange=newRange;
-					if (order->sender!=localPlayer)
-						b->unitStayRangeLocal=newRange;
+				int oldRange=b->unitStayRange;
+				int newRange=omf->range;
+				b->unitStayRange=newRange;
+				if (order->sender!=localPlayer)
+					b->unitStayRangeLocal=newRange;
 
-					if (b->type->zonableForbidden)
+				if (b->type->zonableForbidden)
+				{
+					teams[team]->computeForbiddenArea();
+					if (newRange<oldRange)
 					{
-						teams[team]->computeForbiddenArea();
-						if (newRange<oldRange)
+						teams[team]->dirtyGlobalGradient();
+						map.dirtyLocalGradient(b->posX-oldRange-16, b->posY-oldRange-16, 32+oldRange*2, 32+oldRange*2, team);
+					}
+				}
+				else
+					for (int i=0; i<2; i++)
+					{
+						b->dirtyLocalGradient[i]=true;
+						b->locked[i]=false;
+						if (b->globalGradient[i])
 						{
-							teams[team]->dirtyGlobalGradient();
-							map.dirtyLocalGradient(b->posX-oldRange-16, b->posY-oldRange-16, 32+oldRange*2, 32+oldRange*2, team);
+							delete b->globalGradient[i];
+							b->globalGradient[i]=NULL;
+						}
+						if (b->localRessources[i])
+						{
+							delete b->localRessources[i];
+							b->localRessources[i]=NULL;
 						}
 					}
-					else
-						for (int i=0; i<2; i++)
-						{
-							b->dirtyLocalGradient[i]=true;
-							b->locked[i]=false;
-							if (b->globalGradient[i])
-							{
-								delete b->globalGradient[i];
-								b->globalGradient[i]=NULL;
-							}
-							if (b->localRessources[i])
-							{
-								delete b->localRessources[i];
-								b->localRessources[i]=NULL;
-							}
-						}
-				}
+			}
+		}
+		break;
+		case ORDER_MODIFY_CLEARING_FLAG:
+		{
+			if (!isPlayerAlive)
+				break;
+			OrderModifyClearingFlag *omcf=(OrderModifyClearingFlag *)order;
+			Uint16 gid=omcf->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
+			{
+				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+				if (order->sender!=localPlayer)
+					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
 			}
 		}
 		break;
@@ -300,54 +312,52 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			for (int i=0; i<((OrderMoveFlags *)order)->getNumberOfBuilding(); i++)
+			OrderMoveFlag *omf=(OrderMoveFlag *)order;
+			Uint16 gid=omf->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			bool drop=omf->drop;
+			Building *b=teams[team]->myBuildings[id];
+			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 			{
-				Uint16 gid=((OrderMoveFlags *)order)->gid[i];
-				int team=Building::GIDtoTeam(gid);
-				int id=Building::GIDtoID(gid);
-				bool drop=((OrderMoveFlags *)order)->drop[i];
-				Building *b=teams[team]->myBuildings[id];
-				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
+				if (drop && b->type->zonableForbidden)
 				{
-					if (drop && b->type->zonableForbidden)
+					int range=b->unitStayRange;
+					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+				}
+				
+				b->posX=omf->x;
+				b->posY=omf->y;
+				
+				if (b->type->zonableForbidden)
+				{
+					if (drop)
 					{
-						int range=b->unitStayRange;
-						map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+						teams[team]->computeForbiddenArea();
+						teams[team]->dirtyGlobalGradient();
 					}
-					
-					b->posX=((OrderMoveFlags *)order)->x[i];
-					b->posY=((OrderMoveFlags *)order)->y[i];
-					
-					if (b->type->zonableForbidden)
+				}
+				else
+					for (int i=0; i<2; i++)
 					{
-						if (drop)
+						b->dirtyLocalGradient[i]=true;
+						b->locked[i]=false;
+						if (b->globalGradient[i])
 						{
-							teams[team]->computeForbiddenArea();
-							teams[team]->dirtyGlobalGradient();
+							delete[] b->globalGradient[i];
+							b->globalGradient[i]=NULL;
+						}
+						if (b->localRessources[i])
+						{
+							delete b->localRessources[i];
+							b->localRessources[i]=NULL;
 						}
 					}
-					else
-						for (int i=0; i<2; i++)
-						{
-							b->dirtyLocalGradient[i]=true;
-							b->locked[i]=false;
-							if (b->globalGradient[i])
-							{
-								delete[] b->globalGradient[i];
-								b->globalGradient[i]=NULL;
-							}
-							if (b->localRessources[i])
-							{
-								delete b->localRessources[i];
-								b->localRessources[i]=NULL;
-							}
-						}
-					
-					if (order->sender!=localPlayer)
-					{
-						b->posXLocal=b->posX;
-						b->posYLocal=b->posY;
-					}
+				
+				if (order->sender!=localPlayer)
+				{
+					b->posXLocal=b->posX;
+					b->posYLocal=b->posY;
 				}
 			}
 		}
@@ -356,23 +366,21 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			for (int i=0; i<((OrderModifySwarms *)order)->getNumberOfSwarm(); i++)
+			OrderModifySwarm *oms=(OrderModifySwarm *)order;
+			Uint16 gid=oms->gid;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			assert(b);
+			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
 			{
-				Uint16 gid=((OrderModifySwarms *)order)->gid[i];
-				int team=Building::GIDtoTeam(gid);
-				int id=Building::GIDtoID(gid);
-				Building *b=teams[team]->myBuildings[id];
-				assert(b);
-				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
+				for (int j=0; j<NB_UNIT_TYPE; j++)
 				{
-					for (int j=0; j<NB_UNIT_TYPE; j++)
-					{
-						b->ratio[j]=((OrderModifySwarms *)order)->ratio[i*NB_UNIT_TYPE+j];
-						if (order->sender!=localPlayer)
-							b->ratioLocal[j]=b->ratio[j];
-					}
-					b->update();
+					b->ratio[j]=oms->ratio[j];
+					if (order->sender!=localPlayer)
+						b->ratioLocal[j]=b->ratio[j];
 				}
+				b->update();
 			}
 		}
 		break;
@@ -1336,7 +1344,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				// draw ressource
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
-				if (r != NORESID)
+				if (r.type!=NO_RES_TYPE)
 				{
 					Sprite *sprite=globalContainer->ressources;
 					int type=r.type;
@@ -1938,14 +1946,14 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 					if (useMapDiscovered || map.isMapDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 					{
 						// get color to add
-						Ressource r = map.getRessource((int)minidx, (int)minidy);
-						if (r != NORESID)
+						Ressource r=map.getRessource((int)minidx, (int)minidy);
+						if (r.type!=NO_RES_TYPE)
 						{
-							pcolIndex = r.type + 3;
+							pcolIndex=r.type + 3;
 						}
 						else
 						{
-							pcolIndex = map.getUMTerrain((int)minidx,(int)minidy);
+							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
 						}
 						
 						// get weight to add

@@ -93,6 +93,8 @@ public:
 	// Flag usefull :
 	Uint32 unitStayRange; // (Uint8)
 	Uint32 unitStayRangeLocal;
+	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
+	bool clearingRessourcesLocal[BASIC_COUNT];
 
 	// Building specific :
 	Sint32 ressources[MAX_NB_RESSOURCES]; // Ammount stocked, or used for building building.

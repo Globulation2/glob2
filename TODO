@@ -3,6 +3,7 @@ To First release :
 -les guerrières ne sont toujours pas intelligentes.
 -Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 -Avec des explo seulement, on n'a pas perdu.
+-Pourqoi ça marche mal sans ruche ?
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
@@ -25,6 +26,7 @@ Pathfindig:
 
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
+- Utliser de Uint32 pour les ressource inexsitantes, sans endiansafe!
 
 Optimisation efficacité:
 - Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
@@ -44,7 +46,20 @@ Propreté du code:
 - Est-ce que on veux remettre une interface "Serialisable", après avoir enlevé "Order" dans certins objets ?
 
 MapEditor:
-http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
+-http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
+-La génération automatique est de nouveau cassée!
+
+YOG:
+-Ajouter des chambres
+-Ajouter des info de temps dans les .logs.
+-Annoncer à l'utilisateur si il essaie de donner un password à un utilisateur avec password NULL.
+
+Tutorial:
+-Moins vite.
+-Plus gros.
+
+SGSL:
+-lire "sgslLangCount" depuis texts.txt
 
 To Next version :
 
