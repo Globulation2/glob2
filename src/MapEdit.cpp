@@ -953,6 +953,19 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 						game.teams[team]->sharedVisionFood^=(1<<newteam);
 						game.teams[team]->sharedVisionOther^=(1<<newteam);
 					}
+					else if (button==SDL_BUTTON_MIDDLE)
+					{
+						if (game.teams[team]->type == BaseTeam::T_AI)
+						{
+							game.teams[team]->type = BaseTeam::T_HUMAN;
+							printf("MapEdit : switching team %d to human\n", team);
+						}
+						else
+						{
+							game.teams[team]->type = BaseTeam::T_AI;
+							printf("MapEdit : switching team %d to null AI\n", team);
+						}
+					}
 				}
 			}
 			else
@@ -974,6 +987,19 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 						game.teams[team]->sharedVisionExchange^=(1<<newteam);
 						game.teams[team]->sharedVisionFood^=(1<<newteam);
 						game.teams[team]->sharedVisionOther^=(1<<newteam);
+					}
+					else if (button==SDL_BUTTON_MIDDLE)
+					{
+						if (game.teams[team]->type == BaseTeam::T_AI)
+						{
+							game.teams[team]->type = BaseTeam::T_HUMAN;
+							printf("MapEdit : switching team %d to human\n", team);
+						}
+						else
+						{
+							game.teams[team]->type = BaseTeam::T_AI;
+							printf("MapEdit : switching team %d to null AI\n", team);
+						}
 					}
 				}
 			}

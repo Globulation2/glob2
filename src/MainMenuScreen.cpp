@@ -27,6 +27,8 @@ MainMenuScreen::MainMenuScreen()
 {
 	addWidget(new TextButton( 20,  20, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campagn]"), CAMPAIN));
 	
+	addWidget(new TextButton( 340,  20, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[tutorial]"), TUTORIAL));
+	
 	addWidget(new TextButton( 20, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
 	addWidget(new TextButton(340, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
 	

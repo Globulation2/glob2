@@ -431,6 +431,12 @@ Campaign
 Feldzug
 Nová hra
 Kampania
+[tutorial]
+Didacticiel
+Tutorial
+
+
+
 [custom game]
 Jeu libre
 Custom game

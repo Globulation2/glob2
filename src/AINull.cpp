@@ -17,35 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAIN_MENU_SCREEN_H
-#define __MAIN_MENU_SCREEN_H
+#include "AINull.h"
+#include "Order.h"
 
-#include "GAG.h"
-
-class MainMenuScreen:public Screen
+Order *AINull::getOrder(void)
 {
-public:
-	enum
-	{
-		CAMPAIN,
-		TUTORIAL,
-		LOAD_GAME,
-		CUSTOM,
-		MULTIPLAYERS_YOG,
-		MULTIPLAYERS_LAN,
-		GAME_SETUP,
-		EDITOR,
-		CREDITS,
-		QUIT,
-	};
-private:
-	DrawableSurface *background;
-public:
-	MainMenuScreen();
-	virtual ~MainMenuScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	static int menu(void);
-};
-
-#endif
+	return new NullOrder();
+}

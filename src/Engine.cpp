@@ -69,11 +69,11 @@ Engine::~Engine()
 	}
 }
 
-int Engine::initCampain(void)
+int Engine::initCampain(const char *mapName)
 {
 	// we load map
-	SDL_RWops *stream=Toolkit::getFileManager()->open("default.map","rb");
-	if (gui.game.load(stream)==false)
+	SDL_RWops *stream=Toolkit::getFileManager()->open(mapName,"rb");
+	if (gui.load(stream)==false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");
 		SDL_RWclose(stream);
@@ -114,7 +114,7 @@ int Engine::initCampain(void)
 		gui.game.teams[i]->playersMask=(1<<playerNumber);
 		playerNumber++;
 	}
-
+	
 	if (!wasHuman)
 	{
 		fprintf(stderr, "ENG : Error, can't find any human player\n");
@@ -122,6 +122,11 @@ int Engine::initCampain(void)
 	}
 
 	gui.game.session.numberOfPlayer=playerNumber;
+	
+	// set the correct alliance
+	gui.game.setAIAlliance();
+
+	// We do some cosmetic fix
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 

@@ -453,7 +453,7 @@ bool SessionInfo::load(SDL_RWops *stream)
 			return false;
 
 	for (int i=0; i<numberOfTeam; ++i)
-		if(!team[i].load(stream))
+		if(!team[i].load(stream, versionMinor))
 			return false;
 
 	SDL_RWread(stream, signature, 4, 1);
