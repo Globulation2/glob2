@@ -24,15 +24,15 @@
 #include "Utilities.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
-{
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL));
-	addAI=new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Add AI]"), ADD_AI);
+{	
+	addAI=new TextButton(440, 345, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Add AI]"), ADD_AI);
+	startButton=new TextButton(440, 390, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Start]"), START);
+	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL));
 	addWidget(addAI);
 
-	startButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Start]"), START);
 	startButton->visible=false;
 	addWidget(startButton);
-	notReadyText=new Text(240, 420, globalContainer->standardFont, globalContainer->texts.getString("[not ready]"), 180, 40);
+	notReadyText=new Text(440, 390, globalContainer->menuFont, globalContainer->texts.getString("[not ready]"), 180, 25);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
 	gameFullText=new Text(2, 420, globalContainer->standardFont, globalContainer->texts.getString("[game full]"), 180, 40);
@@ -52,18 +52,18 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	multiplayersJoin=NULL;
 	this->shareOnYOG=shareOnYOG;
 
-	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
 		int j;
-		color[i]=new ColorButton(22, 62+i*20, 16, 16, COLOR_BUTTONS+i);
+		color[i]=new ColorButton(22, 42+i*20, 16, 16, COLOR_BUTTONS+i);
 		for (j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42, 62+i*20, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
+		text[i]=new Text(42, 42+i*20, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(520, 62+i*20, 100, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(520, 42+i*20, 100, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 		
 		wasSlotUsed[i]=false;
@@ -76,6 +76,11 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	addWidget(startTimer);
 
 	timeCounter=0;
+	
+	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
+	addWidget(chatWindow);
+	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
+	addWidget(textInput);
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -182,6 +187,19 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			notReadyText->show();
 		}
 	}
+	
+	if (multiplayersHost->receivedMessages.size())
+		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersHost->receivedMessages.begin(); mit!=multiplayersHost->receivedMessages.end(); ++mit)
+			if (!mit->guiPainted)
+			{
+				chatWindow->addText("<");
+				chatWindow->addText(mit->userName);
+				chatWindow->addText("> ");
+				chatWindow->addText(mit->text);
+				chatWindow->addText("\n");
+				chatWindow->scrollToBottom();
+				mit->guiPainted=true;
+			}
 
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
@@ -235,6 +253,11 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
+	}
+	else if (action==TEXT_VALIDATED)
+	{
+		multiplayersHost->sendMessage(textInput->text);
+		textInput->setText("");
 	}
 }
 

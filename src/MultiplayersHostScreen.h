@@ -63,6 +63,10 @@ public:
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *startTimer;
+	
+	TextInput *textInput;
+	TextArea *chatWindow;
+	
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameFullText;
