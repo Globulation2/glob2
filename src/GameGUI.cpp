@@ -71,11 +71,6 @@ GameGUI::GameGUI()
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
 	typingInputScreenPos=0;
-
-	recentFreeUnitsIt=0;
-
-	for (i=0; i<nbRecentFreeUnits; i++)
-		recentFreeUnits[i]=0;
 }
 
 GameGUI::~GameGUI()
@@ -104,6 +99,7 @@ void GameGUI::step(void)
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
+	int i;
 
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
@@ -132,12 +128,10 @@ void GameGUI::step(void)
 	int oldViewportY=viewportY;
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
+	for (i=0; i<9; i++)
 	{
-		for (int i=0; i<9; i++)
-		{
-			viewportX+=viewportSpeedX[i];
-			viewportY+=viewportSpeedY[i];
-		}
+		viewportX+=viewportSpeedX[i];
+		viewportY+=viewportSpeedY[i];
 	}
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
@@ -147,24 +141,13 @@ void GameGUI::step(void)
 
 	statStep();
 
-	if (game.teams[localTeam]->wasEvent())
-	{
-		Team::EventType teamEvent=game.teams[localTeam]->getEvent();
-		switch (teamEvent)
-		{
-			case Team::UNIT_UNDER_ATTACK_EVENT:
-			addMessage(globalContainer->texts.getString("[your units are under attack]"));
-			break;
-			case Team::BUILDING_UNDER_ATTACK_EVENT:
-			addMessage(globalContainer->texts.getString("[your buildings are under attack]"));
-			break;
-			case Team::BUILDING_FINISHED_EVENT:
-			addMessage(globalContainer->texts.getString("[building has been finished]"));
-			break;
-			default:
-			break;
-		}
-	}
+	if (game.teams[localTeam]->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
+		addMessage(globalContainer->texts.getString("[your units are under attack]"));
+	if (game.teams[localTeam]->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
+		addMessage(globalContainer->texts.getString("[your buildings are under attack]"));
+	if (game.teams[localTeam]->wasEvent(Team::BUILDING_FINISHED_EVENT))
+		addMessage(globalContainer->texts.getString("[building has been finished]"));
+
 }
 
 void GameGUI::statStep(void)

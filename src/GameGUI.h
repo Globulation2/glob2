@@ -151,14 +151,6 @@ private:
 	int mouseX, mouseY;
 	int viewportSpeedX[9], viewportSpeedY[9];
 	
-	// statistics related:
-	enum
-	{
-		nbRecentFreeUnits=32
-	};
-	int recentFreeUnits[nbRecentFreeUnits];
-	int recentFreeUnitsIt;
-
 	// menu related functions
 	enum
 	{
@@ -186,7 +178,7 @@ private :
 		DEFAULT_MESSAGE_SHOW_TICKS = 100,
 	};
 	//! add a message to the window message list
-	void addMessage(const char *msgText)
+	void addMessage(const char *msgText, int category=0)
 	{
 		Message message;
 		message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;

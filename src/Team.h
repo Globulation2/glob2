@@ -68,10 +68,10 @@ class Team:public BaseTeam
 public:
 	enum EventType
 	{
-		NO_EVENT=0,
-		UNIT_UNDER_ATTACK_EVENT=1,
-		BUILDING_UNDER_ATTACK_EVENT=2,
-		BUILDING_FINISHED_EVENT=3
+		UNIT_UNDER_ATTACK_EVENT=0,
+		BUILDING_UNDER_ATTACK_EVENT=1,
+		BUILDING_FINISHED_EVENT=2,
+		EVENT_TYPE_SIZE=3
 	};
 public:
 	Team(Game *game);
@@ -87,11 +87,9 @@ public:
 	void step(void);
 
 	//! The team is now under attack or a building is finished, push event
-	void setEvent(int posX, int posY, EventType newEvent) { if ((eventCooldown==0) || (newEvent!=lastEvent)) { isEvent=true; lastEvent=newEvent; eventPosX=posX; eventPosY=posY; } eventCooldown=40; }
+	void setEvent(int posX, int posY, EventType newEvent) { if (eventCooldown[newEvent]==0)  { isEvent[newEvent]=true; eventPosX=posX; eventPosY=posY; } eventCooldown[newEvent]=50; }
 	//! was an event last tick
-	bool wasEvent(void) { bool isEv=isEvent; isEvent=false; return isEv; }
-	//! we have to show "You are under attack message"
-	EventType getEvent(void) { return lastEvent; }
+	bool wasEvent(EventType type) { bool isEv=isEvent[type]; isEvent[type]=false; return isEv; }
 	//! return event position
 	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }
 
@@ -121,7 +119,6 @@ public:
 
 private:
 	void init(void);
-	void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 
 public:
 	Game *game;
@@ -157,12 +154,10 @@ public:
 
 private:
 	//! was an event last tick
-	bool isEvent;
-	//! team got an event last step
-	EventType lastEvent;
+	bool isEvent[EVENT_TYPE_SIZE];
 	//! prevent event overflow
-	int eventCooldown;
-	//! event (now only isUnderAttack) position
+	int eventCooldown[EVENT_TYPE_SIZE];
+	//! event position
 	int eventPosX, eventPosY;
 
 public:

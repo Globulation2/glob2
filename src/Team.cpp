@@ -133,27 +133,21 @@ Team::Team(SDL_RWops *stream, Game *game)
 
 Team::~Team()
 {
+	int i;
+	for (i=0; i<1024; ++i)
 	{
-		for (int i=0; i<1024; ++i)
-		{
-			if (myUnits[i])
-				delete myUnits[i];
-		}
+		if (myUnits[i])
+			delete myUnits[i];
 	}
-
+	for (i=0; i<512; ++i)
 	{
-		for (int i=0; i<512; ++i)
-		{
-			if (myBuildings[i])
-				delete myBuildings[i];
-		}
+		if (myBuildings[i])
+			delete myBuildings[i];
 	}
+	for (i=0; i<256; ++i)
 	{
-		for (int i=0; i<256; ++i)
-		{
-			if (myBullets[i])
-				delete myBuildings[i];
-		}
+		if (myBullets[i])
+			delete myBuildings[i];
 	}
 }
 
@@ -181,9 +175,11 @@ void Team::init(void)
 	subscribeForInsideStep.clear();
 	subscribeForWorkingStep.clear();
 
-	isEvent=false;
-	lastEvent=NO_EVENT;
-	eventCooldown=0;
+	for (i=0; i<EVENT_TYPE_SIZE; i++)
+	{
+		isEvent[i]=false;
+		eventCooldown[i]=0;
+	}
 	eventPosX=startPosX;
 	eventPosY=startPosY;
 }
@@ -217,60 +213,12 @@ void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
 void Team::setCorrectColor(float value)
 {
 	float r, g, b;
-	HSVtoRGB(&r, &g, &b, value, 0.8f, 0.9f);
+	Utilities::HSVtoRGB(&r, &g, &b, value, 0.8f, 0.9f);
 	this->colorR=(Uint8)(255.0f*r);
 	this->colorG=(Uint8)(255.0f*g);
 	this->colorB=(Uint8)(255.0f*b);
 }
 
-void Team::HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
-{
-	int i;
-	float f, p, q, t;
-	if( s == 0 ) {
-		// achromatic (grey)
-		*r = *g = *b = v;
-		return;
-	}
-	h /= 60;			// sector 0 to 5
-	i = (int)floor( h );
-	f = h - i;			// factorial part of h
-	p = v * ( 1 - s );
-	q = v * ( 1 - s * f );
-	t = v * ( 1 - s * ( 1 - f ) );
-	switch( i ) {
-		case 0:
-			*r = v;
-			*g = t;
-			*b = p;
-			break;
-		case 1:
-			*r = q;
-			*g = v;
-			*b = p;
-			break;
-		case 2:
-			*r = p;
-			*g = v;
-			*b = t;
-			break;
-		case 3:
-			*r = p;
-			*g = q;
-			*b = v;
-			break;
-		case 4:
-			*r = t;
-			*g = p;
-			*b = v;
-			break;
-		default:		// case 5:
-			*r = v;
-			*g = p;
-			*b = q;
-			break;
-	}
-}
 
 Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel)
 {
@@ -471,6 +419,7 @@ int Team::maxBuildLevel(void)
 
 void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 {
+	int i;
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsToBeUpgraded.clear();
 	
@@ -478,48 +427,44 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	BaseTeam::load(stream);
 
 	// normal load
+	for (i=0; i< 1024; i++)
 	{
-		for (int i=0; i< 1024; i++)
-		{
-			if (myUnits[i])
-				delete myUnits[i];
+		if (myUnits[i])
+			delete myUnits[i];
 
-			Uint32 isUsed=SDL_ReadBE32(stream);
-			if (isUsed)
-			{
-				myUnits[i]=new Unit(stream, this);
-			}
-			else
-				myUnits[i]=NULL;
+		Uint32 isUsed=SDL_ReadBE32(stream);
+		if (isUsed)
+		{
+			myUnits[i]=new Unit(stream, this);
 		}
+		else
+			myUnits[i]=NULL;
 	}
 
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
+	for (i=0; i<512; i++)
 	{
-		for (int i=0; i<512; i++)
-		{
-			if (myBuildings[i])
-				delete myBuildings[i];
+		if (myBuildings[i])
+			delete myBuildings[i];
 
-			Uint32 isUsed=SDL_ReadBE32(stream);
-			if (isUsed)
-			{
-				myBuildings[i]=new Building(stream, buildingstypes, this);
-				if (myBuildings[i]->type->unitProductionTime)
-					swarms.push_front(myBuildings[i]);
-				if (myBuildings[i]->type->shootingRange)
-					turrets.push_front(myBuildings[i]);
-				if (myBuildings[i]->type->isVirtual)
-					virtualBuildings.push_front(myBuildings[i]);
-			}
-			else
-				myBuildings[i]=NULL;
+		Uint32 isUsed=SDL_ReadBE32(stream);
+		if (isUsed)
+		{
+			myBuildings[i]=new Building(stream, buildingstypes, this);
+			if (myBuildings[i]->type->unitProductionTime)
+				swarms.push_front(myBuildings[i]);
+			if (myBuildings[i]->type->shootingRange)
+				turrets.push_front(myBuildings[i]);
+			if (myBuildings[i]->type->isVirtual)
+				virtualBuildings.push_front(myBuildings[i]);
 		}
+		else
+			myBuildings[i]=NULL;
 	}
 
-	/*for (int i=0; i<256; i++)
+	/*for (i=0; i<256; i++)
 	{
 		if (myBullets[i])
 			delete myBullets[i];
@@ -532,21 +477,17 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	}*/
 
 	// resolve cross reference
+	for (i=0; i< 1024; i++)
 	{
-		for (int i=0; i< 1024; i++)
-		{
-			if (myUnits[i])
-				myUnits[i]->loadCrossRef(stream, this);
-		}
+		if (myUnits[i])
+			myUnits[i]->loadCrossRef(stream, this);
 	}
+	for (i=0; i<512; i++)
 	{
-		for (int i=0; i<512; i++)
+		if (myBuildings[i])
 		{
-			if (myBuildings[i])
-			{
-				myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
-				myBuildings[i]->update();
-			}
+			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
+			myBuildings[i]->update();
 		}
 	}
 
@@ -558,9 +499,11 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
 
-	isEvent=false;
-	lastEvent=NO_EVENT;
-	eventCooldown=0;
+	for (i=0; i<EVENT_TYPE_SIZE; i++)
+	{
+		isEvent[i]=false;
+		eventCooldown[i]=0;
+	}
 	eventPosX=startPosX;
 	eventPosY=startPosY;
 }
@@ -741,8 +684,11 @@ void Team::step(void)
 
 	isAlive=isEnoughFoodInSwarm || (nbUnits!=0);
 	// decount event cooldown counter
-	if (eventCooldown>0)
-		eventCooldown--;
+	for (i=0; i<EVENT_TYPE_SIZE; i++)
+	{
+		if (eventCooldown[i]>0)
+			eventCooldown[i]--;
+	}
 }
 
 Sint32 Team::checkSum()
