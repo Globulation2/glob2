@@ -19,7 +19,7 @@
 */
 
 #include "GlobalContainer.h"
-#include "SDL.h"
+#include "Header.h"
 #include <string.h>
 #include "NonANSICStdWrapper.h"
 

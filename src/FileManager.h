@@ -21,7 +21,7 @@
 #ifndef __FILEMANAGER_H
 #define __FILEMANAGER_H
 
-#include <SDL.h>
+#include "Header.h"
 #include <vector>
 
 #ifndef DIR_SEPARATOR
