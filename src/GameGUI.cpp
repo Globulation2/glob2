@@ -2615,7 +2615,7 @@ void GameGUI::drawOverlayInfos(void)
 		free = teamStats->getFreeUnits(i);
 		// worker is a special case
 		if (i==0)
-			free -= teamStats->getUnitsNeeded();
+			free -= teamStats->getWorkersNeeded();
 		tot = teamStats->getTotalUnits(i);
 		if (free<0)
 			memcpy(actC, redC, sizeof(redC));

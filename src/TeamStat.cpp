@@ -394,7 +394,17 @@ int TeamStats::getTotalUnits(int type)
 	return (stats[statsIndex].numberUnitPerType[type]);
 }
 
-int TeamStats::getUnitsNeeded()
+int TeamStats::getWorkersNeeded()
 {
 	return (stats[statsIndex].totalNeeded);
+}
+
+int TeamStats::getWorkersBalance()
+{
+	return (stats[statsIndex].isFree[0]-stats[statsIndex].totalNeeded);
+}
+
+int TeamStats::getWorkersLevel(int level)
+{
+	return (stats[statsIndex].upgradeState[BUILD][level]);
 }
