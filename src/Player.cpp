@@ -23,6 +23,7 @@
 #include "Marshaling.h"
 #include "LogFileManager.h"
 #include <StringTable.h>
+#include "Utilities.h"
 
 BasePlayer::BasePlayer()
 {
@@ -289,7 +290,7 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 	
 	if (channel != -1)
 	{
-		fprintf(logFile, "suceeded to bind socket to player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		fprintf(logFile, "suceeded to bind socket to player %d, socket=(%x), channel=(%d), ip=(%s).\n", number, (int)socket, channel, Utilities::stringIP(ip));
 		return true;
 	}
 	else
@@ -309,6 +310,8 @@ void BasePlayer::unbind()
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
 		netState=PNS_NOT_BINDED;
+		ip.host=0;
+		ip.port=0;
 	}
 }
 
