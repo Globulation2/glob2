@@ -1800,7 +1800,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 	float minidx, minidy;
 	int r, g, b;
 	int nCount;
-	bool isMeUnitOrBuilding, isEnemyUnitOrBuilding, isAllyUnitOrBuilding;
+	int UnitOrBuildingIndex = -1;
 	assert(localTeam>=-1);
 	assert(localTeam<32);
 
@@ -1810,9 +1810,14 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		{ 0, 90, 0 }, // Grass
 	};
 
-	int Player[3]= { 10, 240, 20 };
-	int Enemy[3]={ 220, 25, 30 };
-	int Ally[3]={ 255, 196, 0 };
+	int buildingsUnitsColor[6][3] = {
+		{ 10, 240, 20 }, // self
+		{ 220, 25, 30 }, // ally
+		{ 220, 25, 30 }, // enemy
+		{ 10, 240, 20 }, // self FOW
+		{ 220, 25, 30 }, // ally FOW
+		{ 220, 25, 30 }, // enemy FOW
+	};
 
 	int pcol[3+MAX_RESSOURCES];
 	int pcolIndex, pcolAddValue;
@@ -1849,10 +1854,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		{
 			memset(pcol, 0, sizeof(pcol));
 			nCount=0;
-			isMeUnitOrBuilding=false;
-			isEnemyUnitOrBuilding=false;
-			isAllyUnitOrBuilding=false;
-
+			
 			// compute
 			for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
 			{
@@ -1871,15 +1873,15 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 							teamId=gid/1024;
 							if (teamId==localTeam)
 							{
-								isMeUnitOrBuilding=true;
+								UnitOrBuildingIndex = 0;
 								goto unitOrBuildingFound;
 							}
 							else if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							{
 								if ((teams[localTeam]->allies) & (teams[teamId]->me))
-									isAllyUnitOrBuilding=true;
+									UnitOrBuildingIndex = 1;
 								else
-									isEnemyUnitOrBuilding=true;
+									UnitOrBuildingIndex = 2;
 								goto unitOrBuildingFound;
 							}
 						}
@@ -1931,23 +1933,12 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 			// Yes I know, this is *ugly*, but this piece of code *needs* speedup
 			unitOrBuildingFound:
 
-			if (isMeUnitOrBuilding)
+			if (UnitOrBuildingIndex >= 0)
 			{
-				r=Player[0];
-				g=Player[1];
-				b=Player[2];
-			}
-			else if (isEnemyUnitOrBuilding)
-			{
-				r=Enemy[0];
-				g=Enemy[1];
-				b=Enemy[2];
-			}
-			else if (isAllyUnitOrBuilding)
-			{
-				r=Ally[0];
-				g=Ally[1];
-				b=Ally[2];
+				r = buildingsUnitsColor[UnitOrBuildingIndex][0];
+				g = buildingsUnitsColor[UnitOrBuildingIndex][1];
+				b = buildingsUnitsColor[UnitOrBuildingIndex][2];
+				UnitOrBuildingIndex = -1;
 			}
 			else
 			{
