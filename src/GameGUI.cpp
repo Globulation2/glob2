@@ -201,11 +201,25 @@ void GameGUI::step(void)
 	
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
-		addMessage(200, 30, 30, globalContainer->texts.getString("[your units are under attack]"));
+		addMessage(200, 30, 30, "%s", globalContainer->texts.getString("[your units are under attack]"));
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-		addMessage(255, 0, 0, globalContainer->texts.getString("[your buildings are under attack]"));
+	{
+		Sint32 UID=localTeam->getEventId();
+		int team=Building::UIDtoTeam(UID);
+		int id=Building::UIDtoID(UID);
+		Building *b=game.teams[team]->myBuildings[id];
+		int strDec=b->type->type;
+		addMessage(255, 0, 0, "%s %s", globalContainer->texts.getString("[building name]", strDec), globalContainer->texts.getString("[attacked]"));
+	}
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
-		addMessage(30, 255, 30, globalContainer->texts.getString("[building has been finished]"));
+	{
+		Sint32 UID=localTeam->getEventId();
+		int team=Building::UIDtoTeam(UID);
+		int id=Building::UIDtoID(UID);
+		Building *b=game.teams[team]->myBuildings[id];
+		int strDec=b->type->type;
+		addMessage(30, 255, 30, "%s %s",  globalContainer->texts.getString("[building name]", strDec), globalContainer->texts.getString("[finished]"));
+	}
 		
 	// do a yog step
 	yog->step();
