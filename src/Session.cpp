@@ -99,18 +99,28 @@ Uint8 SessionGame::getOrderType()
 
 void SessionInfo::draw(DrawableSurface *gfx)
 {
+	char playerInfo[128];
 	gfx->drawFilledRect(20, 60, gfx->getW()-40, 20*numberOfPlayer, 0, 0, 0);
 	for (int i=0; i<numberOfPlayer; i++)
 	{
-		char s[32];
-		players[i].printip(s);
-		char t[32];
-		players[i].printNetState(t);
-		BaseTeam &te=team[players[i].teamNumber];
+		int teamNumber;
+		getPlayerInfo(i, &teamNumber, playerInfo, sizeof(playerInfo));
+		BaseTeam &te=team[teamNumber];
 		gfx->drawFilledRect(22, 62+i*20, 16, 16, te.colorR, te.colorG, te.colorB);
-		gfx->drawString(40, 60+i*20, globalContainer->standardFont, "%s : %s (%s)", players[i].name, s, t);
+		gfx->drawString(40, 60+i*20, globalContainer->standardFont, playerInfo);
 	}
+}
 
+void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, int stringLen)
+{
+	assert(playerNumber>=0);
+	assert(playerNumber<numberOfPlayer);
+	*teamNumber=players[playerNumber].teamNumber;
+	char s[32];
+	players[playerNumber].printip(s);
+	char t[32];
+	players[playerNumber].printNetState(t);
+	snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
 }
 
 char *SessionGame::getData()

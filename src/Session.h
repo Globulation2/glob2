@@ -104,7 +104,9 @@ public:
 
 	//! draw a list of players
 	void draw(DrawableSurface *gfx);
-	
+	//! get information on player in a nice string
+	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, int stringLen);
+
 public:
 	BaseMap map;
 	BasePlayer players[32];

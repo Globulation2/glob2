@@ -52,7 +52,7 @@ void Text::setText(const char *newText)
 		nW=upW=w;
 	else
 	{
-		upW=font->getStringWidth(text);
+		upW=font->getStringWidth(text)+5;
 		nW=font->getStringWidth(newText);
 	}
 	if (h)

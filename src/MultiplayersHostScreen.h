@@ -51,8 +51,10 @@ public:
 
 	MultiplayersHost *multiplayersHost;
 	MultiplayersJoin *multiplayersJoin;
-	
+
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
+	Text *text[MAX_NUMBER_OF_PLAYERS];
+	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 };
 
 #endif
