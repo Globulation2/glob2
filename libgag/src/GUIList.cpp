@@ -20,6 +20,7 @@
 #include <GUIList.h>
 #include <functional>
 #include <algorithm>
+#include <assert.h>
 
 List::List(int x, int y, int w, int h, const Font *font)
 {

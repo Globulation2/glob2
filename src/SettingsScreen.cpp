@@ -19,6 +19,7 @@
 
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include <assert.h>
 
 SettingsScreen::SettingsScreen()
 {

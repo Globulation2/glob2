@@ -20,6 +20,7 @@
 #include <GUIText.h>
 #include <stdarg.h>
 #include <SupportFunctions.h>
+#include <assert.h>
 
 Text::Text(int x, int y, Font *font, const char *text, int w, int h)
 {
@@ -89,7 +90,7 @@ void Text::setText(const char *newText, ...)
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
-void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE)
+void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	cr = r;
 	cg = g;

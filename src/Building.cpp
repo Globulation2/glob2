@@ -1008,7 +1008,7 @@ void Building::subscribeToBringRessourcesStep()
 					int y=unit->posY;
 					int dx, dy;
 					int r=-1;
-					if (map.nearestRessource(x, y, &(RessourceType)r, &dx, &dy)&& neededRessource(r))
+					if (map.nearestRessource(x, y, (RessourceType *)&r, &dx, &dy) && neededRessource(r))
 					{
 						int dist=owner->game->map.warpDistSquare(dx, dy, posX, posY);
 						dist+=(x-dx)*(x-dx)+(y-dy)*(y-dy);

@@ -18,6 +18,7 @@
 */
 
 #include <GUITextInput.h>
+#include <assert.h>
 
 TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated, unsigned textLength)
 {
