@@ -101,6 +101,19 @@ void TeamStats::step(Team *team)
 		}
 	}
 	
+	for (i=0; i<512; i++)
+	{
+		if (team->myBuildings[i])
+		{
+			stat.totalBuilding++;
+			stat.numberBuildingPerType[team->myBuildings[i]->type->type]++;
+			int tabLevel=((team->myBuildings[i]->type->level)<<1)+team->myBuildings[i]->type->isBuildingSite;
+			assert(tabLevel>=0);
+			assert(tabLevel<=5);
+			stat.numberBuildingPerTypePerLevel[team->myBuildings[i]->type->type][tabLevel]++;
+		}
+	}
+	
 	// We override unsmoothed stats:
 	stat.totalFree=maxStat.totalFree;
 	for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
