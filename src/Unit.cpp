@@ -1679,13 +1679,13 @@ void Unit::handleMovement(void)
 			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
 			{
 				if (verbose)
-					printf("guid=(%d) Unit found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+					printf("guid=(%d) Unit found path b pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				movement=MOV_GOING_DXDY;
 			}
 			else
 			{
 				if (verbose)
-					printf("guid=(%d) Unit failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+					printf("guid=(%d) Unit failed path b pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				stopAttachedForBuilding(true);
 				movement=MOV_RANDOM_GROUND;
 			}
@@ -1741,17 +1741,17 @@ void Unit::handleMovement(void)
 			int teamNumber=owner->teamNumber;
 			bool canSwim=performance[SWIM]>0;
 			bool stopWork;
-			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy, &stopWork))
+			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
 			{
 				if (verbose)
-					printf("guid=(%d) Unit found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
+					printf("guid=(%d) Unit found path r pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
 				directionFromDxDy();
 				movement=MOV_GOING_DXDY;
 			}
 			else
 			{
 				if (verbose)
-					printf("guid=(%d) Unit failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
+					printf("guid=(%d) Unit failed path r pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
 
 				if (stopWork)
 					stopAttachedForBuilding(false);
@@ -1845,20 +1845,6 @@ void Unit::handleAction(void)
 			speed=performance[FLY];
 
 			owner->map->setAirUnit(posX, posY, gid);
-			break;
-		}
-		
-		case MOV_ESCAPING_FORBIDDEN:
-		{
-			assert(!performance[FLY]);
-			owner->map->setGroundUnit(posX, posY, NOGUID);
-			escapeGroundTarget();
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-			selectPreferedGroundMovement();
-			speed=performance[action];
-			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-			owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
 

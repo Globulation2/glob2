@@ -2333,7 +2333,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 		printf("maxs:\n");
 		for (int d=0; d<8; d++)
 			printf("%4d.%4d (%d)\n", maxs[d]>>8, maxs[d]&0xFF, maxs[d]);
-		printf("maxd=%4d.%4d (%d), good=%d\n", maxd>>8, maxd&0xFF, maxd, good);
+		printf("max=%4d.%4d (%d), d=%d, good=%d\n", maxs[maxd]>>8, maxs[maxd]&0xFF, maxs[maxd], maxd, good);
 	}
 	
 	if (!good)
@@ -2468,31 +2468,45 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 	return directionFromMinigrad(miniGrad, dx, dy, true, verbose);
 }
 
-bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
+bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose)
 {
 	pathToRessourceCountTot++;
-	//printf("pathfindingRessource...\n");
+	if (verbose)
+		printf("pathfindingRessource...\n");
 	assert(ressourceType<MAX_RESSOURCES);
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	Uint8 max=gradient[x+y*w];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	if (max<2)
+	if (max==0)
 	{
+		if (verbose)
+			printf("...pathfindedRessource pathfindForbidden() v1\n");
 		pathToRessourceCountFailure++;
 		*stopWork=true;
 		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
 	}
+	if (max<2)
+	{
+		if (verbose)
+			printf("...pathfindedRessource failure v2\n");
+		pathToRessourceCountFailure++;
+		*stopWork=true;
+		return false;
+	}
 	
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
+	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, verbose))
 	{
 		pathToRessourceCountSuccess++;
-		//printf("...pathfindedRessource v2 %d\n", found);
+		if (verbose)
+			printf("...pathfindedRessource success v3\n");
 		return true;
 	}
 	else
 	{
 		pathToRessourceCountFailure++;
+		if (verbose)
+			printf("...pathfindedRessource failure locked v4\n");
 		printf("locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		fprintf(logFile, "locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		*stopWork=false;
@@ -3439,25 +3453,22 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
 	pathToBuildingCountTot++;
-	//printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
+	if (verbose)
+		printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
 	assert(x>=0);
 	assert(y>=0);
-	 
 	Uint32 teamMask=building->owner->me;
-	int teamNumber=building->owner->teamNumber;
-	
-	Uint8 *gradient;
-	
-	gradient=forbiddenGradient[teamNumber][canSwim];
-	assert(gradient);
-	if (gradient[x+y*w]!=255)
+	if (cases[x+y*w].forbidden&teamMask!=0)
+	{
+		int teamNumber=building->owner->teamNumber;
+		if (verbose)
+			printf(" ...pathfindForbidden(%d, %d, %d, %d)\n", teamNumber, canSwim, x, y);
 		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
-	
-	gradient=building->localGradient[canSwim];
-	
+	}
+	Uint8 *gradient=building->localGradient[canSwim];
 	if (isInLocalGradient(x, y, bx, by))
 	{
 		pathToBuildingCountClose++;
@@ -3473,7 +3484,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			*dx=0;
 			*dy=0;
 			pathToBuildingCountCloseSuccessStand++;
-			//printf("...pathfindedBuilding v1\n");
+			if (verbose)
+				printf("...pathfindedBuilding v1\n");
 			return true;
 		}
 
@@ -3482,7 +3494,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, verbose))
 			{
 				pathToBuildingCountCloseSuccessBase++;
-				//printf("...pathfindedBuilding v2\n");
+				if (verbose)
+					printf("...pathfindedBuilding v2\n");
 				return true;
 			}
 		}
@@ -3491,7 +3504,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		if (building->locked[canSwim])
 		{
 			pathToBuildingCountCloseFailureLocked++;
-			//printf("a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			if (verbose)
+				printf("a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			fprintf(logFile, "a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
@@ -3505,7 +3519,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, verbose))
 			{
 				pathToBuildingCountCloseSuccessUpdated++;
-				//printf("...pathfindedBuilding v4\n");
+				if (verbose)
+					printf("...pathfindedBuilding v4\n");
 				return true;
 			}
 		}

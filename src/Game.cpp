@@ -1627,18 +1627,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
 				{
-					if (b->verbose==1)
+					if (b->verbose==1 || b->verbose==2)
 					{
-						if (b->globalGradient[1])
+						if (b->globalGradient[b->verbose&1])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-								b->globalGradient[1][((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
+								b->globalGradient[b->verbose&1][((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
 					}
-					else if (map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
+					else if ((b->verbose==3 || b->verbose==4) && map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
 					{
 						int lx=(x+viewportX-b->posX+15)&31;
 						int ly=(y+viewportY-b->posY+15)&31;
-						if (!b->dirtyLocalGradient[1])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
+						if (!b->dirtyLocalGradient[b->verbose&1])
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[b->verbose&1][lx+ly*32]);
 					}
 
 					globalContainer->littleFont->pushColor(192, 192, 192);
@@ -1980,10 +1980,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
-				if (players[1] && players[1]->ai)
+				//if (players[1] && players[1]->ai)
 				{
 					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
 					Uint8 *gradient=ai->buildingNeighbourMap;
+					//Uint8 *gradient=map.forbiddenGradient[1][0];
 					
 					assert(gradient);
 					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
