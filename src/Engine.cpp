@@ -61,7 +61,7 @@ Engine::~Engine()
 			fprintf(logFile, "*");
 		fprintf(logFile, "\n");
 	}
-	
+
 	if (net)
 	{
 		delete net;
@@ -123,8 +123,6 @@ int Engine::initCampain(void)
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 
-	// FIXME : delete Team that hasn't any players and defrag array
-
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
@@ -141,8 +139,7 @@ int Engine::initCustom(void)
 
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
-	
-	//if (!gui.game.loadBase(&(customGameScreen.sessionInfo)))
+
 	if (!gui.loadBase(&(customGameScreen.sessionInfo)))
 	{
 		printf("Engine : Can't load map\n");
@@ -177,16 +174,19 @@ int Engine::initCustom(void)
 			nbPlayer++;
 		}
 	}
-	// TODO : destroy team that have no attached player
-	// should be in game.defragTeamArray();
-
 	gui.game.session.numberOfPlayer=nbPlayer;
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
+
+	// We remove uncontrolled stuff from map
+	gui.game.cleanUncontrolledTeams();
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
 
+	// We do some cosmetic fix
+	gui.game.renderMiniMap(gui.localTeamNo);
+	gui.adjustInitialViewport();
+
+	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return EE_NO_ERROR;
@@ -230,12 +230,14 @@ int Engine::initCustom(const char *gameName)
 		}
 	}
 
+	// We do some cosmetic fix
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
 
+	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return EE_NO_ERROR;
@@ -243,7 +245,6 @@ int Engine::initCustom(const char *gameName)
 
 int Engine::initLoadGame()
 {
-	// TODO: It's maybe cleaner to only use a string instead of all sessionInfo.
 	LoadGameScreen loadGameScreen;
 	int lgs=loadGameScreen.execute(globalContainer->gfx, 40);
 	if (lgs==LoadGameScreen::CANCEL)
@@ -269,12 +270,16 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	assert(gui.localTeamNo<multiplayersJoin->sessionInfo.numberOfTeam);
 	gui.localTeamNo=gui.localTeamNo % multiplayersJoin->sessionInfo.numberOfTeam; // Ugly relase case.
 
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
-	
+	// We remove uncontrolled stuff from map
+	gui.game.cleanUncontrolledTeams();
+
 	// set the correct alliance
 	gui.game.setAIAlliance();
-	
+
+	// We do some cosmetic fix
+	gui.game.renderMiniMap(gui.localTeamNo);
+	gui.adjustInitialViewport();
+
 	// we create the net game
 	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
@@ -314,7 +319,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	}
 	else if (rc==-1)
 		return -1;
-		
+
 	printf("Engine::initMutiplayerHost() rc=%d\n", rc);
 
 	return EE_CANCEL;

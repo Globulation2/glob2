@@ -149,12 +149,7 @@ Team::~Team()
 {
 	if (!disableRecursiveDestruction)
 	{
-		for (int i=0; i<1024; ++i)
-			if (myUnits[i])
-				delete myUnits[i];
-		for (int i=0; i<1024; ++i)
-			if (myBuildings[i])
-				delete myBuildings[i];
+		clearMem();
 	}
 }
 
@@ -762,7 +757,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	subscribeForInside.clear();
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
-	
+
 	// resolve cross reference
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
@@ -790,7 +785,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	me=SDL_ReadBE32(stream);
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
-	
+
 	// load stats
 	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
 	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
@@ -808,7 +803,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	eventPosX=startPosX;
 	eventPosY=startPosY;
 	isAlive=true;
-	
+
 	return true;
 }
 
@@ -877,7 +872,6 @@ void Team::save(SDL_RWops *stream)
 
 void Team::createLists(void)
 {
-	// TODO : are thoses assert() right ?
 	assert(swarms.size()==0);
 	assert(turrets.size()==0);
 	assert(virtualBuildings.size()==0);
@@ -899,6 +893,61 @@ void Team::createLists(void)
 		}
 }
 
+void Team::clearLists(void)
+{
+	foodable.clear();
+	fillable.clear();
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		zonable[i].clear();
+	for (int i=0; i<NB_ABILITY; i++)
+		upgrade[i].clear();
+	canFeedUnit.clear();
+	canHealUnit.clear();
+	subscribeForInside.clear();
+	subscribeToBringRessources.clear();
+	subscribeForFlaging.clear();
+	buildingsWaitingForDestruction.clear();
+	buildingsToBeDestroyed.clear();
+	buildingsTryToBuildingSiteRoom.clear();
+	swarms.clear();
+	turrets.clear();
+	virtualBuildings.clear();
+}
+
+void Team::clearMap(void)
+{
+	assert(map);
+
+	for (int i=0; i<1024; ++i)
+		if (myUnits[i])
+			if (myUnits[i]->performance[FLY])
+				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			else
+				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+
+	for (int i=0; i<1024; ++i)
+		if (myBuildings[i])
+			if (!myBuildings[i]->type->isVirtual)
+				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
+
+}
+
+void Team::clearMem(void)
+{
+	for (int i=0; i<1024; ++i)
+		if (myUnits[i])
+		{
+			delete myUnits[i];
+			myUnits[i] = NULL;
+		}
+	for (int i=0; i<1024; ++i)
+		if (myBuildings[i])
+		{
+			delete myBuildings[i];
+			myBuildings[i] = NULL;
+		}
+}
+
 void Team::integrity(void)
 {
 	for (int id=0; id<1024; id++)
@@ -913,7 +962,7 @@ void Team::integrity(void)
 		assert((*it)->type);
 		assert((*it)->type->isVirtual);
 	}
-	
+
 	for (int i=0; i<1024; i++)
 	{
 		Unit *u=myUnits[i];

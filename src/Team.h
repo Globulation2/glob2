@@ -94,7 +94,14 @@ public:
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
 	void createLists(void);
 
-	//! Check some aviable integrity constraints
+	//! Used to clear all call lists,
+	void clearLists(void);
+	//! Used to clear all buildings and units of this team on the map
+	void clearMap(void);
+	//! Used to delete buildings
+	void clearMem(void);
+
+	//! Check some available integrity constraints
 	void integrity(void);
 	
 	//! Do a step for each unit, building and bullet in team.

@@ -474,6 +474,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					
 					// we have a special cases for uncontroled Teams:
+					// FIXME : remove this
 					for (int ti=0; ti<game.session.numberOfTeam; ti++)
 						if (game.teams[ti]->playersMask==0)
 							teamMask[1]|=(1<<ti); // we want to hit them.
@@ -2280,7 +2281,6 @@ void GameGUI::drawOverlayInfos(void)
 			{
 				++it;
 			}
-
 		}
 
 		// display map mark
@@ -2376,7 +2376,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// draw prestigestats
-	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d", localTeam->prestige, game.totalPrestige).c_str());
+	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
 
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
