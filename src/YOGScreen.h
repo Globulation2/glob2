@@ -42,15 +42,17 @@ public:
 	};
 
 public:
-	Uint32 IP;
-	TCPsocket socket;
+	static TCPsocket socket;
 
-private:
+protected:
 	List *gameList;
 	TextInput *textInput;
 	TextArea *chatWindow;
 	std::vector<Uint32> IPs;
-	SDLNet_SocketSet socketSet;
+
+	static SDLNet_SocketSet socketSet;
+
+	void updateList(void);
 
 public:
 	YOGScreen();
@@ -61,9 +63,10 @@ public:
 	void closeConnection(void);
 	void createConnection(void);
 
-private:
-	bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);
-	bool sendString(TCPsocket socket, char *data);
+	static void openYOG(void);
+	static void closeYOG(void);
+	static bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);
+	static bool sendString(TCPsocket socket, char *data);
 };
 
 #endif

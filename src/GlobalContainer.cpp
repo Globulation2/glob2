@@ -183,17 +183,20 @@ void GlobalContainer::load(void)
 	// load shader for unvisible terrain
 	terrainShader=gfx->loadSprite("data/gfx/shade");
 
-	updateLoadProgressBar(40);
+	updateLoadProgressBar(30);
 	// load ressources
 	ressources=gfx->loadSprite("data/gfx/ressource");
 
-	updateLoadProgressBar(50);
+	updateLoadProgressBar(40);
 	// load units
 	units=gfx->loadSprite("data/gfx/unit");
 
-	updateLoadProgressBar(80);
+	updateLoadProgressBar(70);
 	// load buildings
 	buildings=gfx->loadSprite("data/gfx/building");
 
+	updateLoadProgressBar(90);
+	// load buildings types
+	globalContainer->buildingsTypes.load("data/buildings.txt");
 	updateLoadProgressBar(100);
 };

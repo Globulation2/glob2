@@ -39,10 +39,10 @@ public:
 	void removeText(int pos);
 	void clear(void);
 	const char *getText(int pos);
+	virtual void repaint(void);
 
 protected:
 	virtual void internalPaint(void);
-	virtual void repaint(void);
 
 protected:
 	DrawableSurface *gfx;
