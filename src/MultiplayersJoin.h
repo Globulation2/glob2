@@ -79,6 +79,9 @@ private:
 	int broadcastTimeout;
 	
 public:
+	bool ipFromNAT; //This means: did I found the game host server's ip from a broadcasting ?
+	
+public:
 	bool listHasChanged;
 	struct LANHost
 	{
