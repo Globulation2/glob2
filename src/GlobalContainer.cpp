@@ -195,16 +195,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 void GlobalContainer::updateLoadProgressBar(int value)
 {
-	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10, 402, 22, 180, 180, 180);
-	gfx->drawFilledRect((gfx->getW()-400)>>1, (gfx->getH()>>1)+11, value<<2, 20, 255, 255, 255);
-	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30, 402, 62);
+	static int lastX=0;
+	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10+180, 402, 22, 180, 180, 180);
+	gfx->drawFilledRect(((gfx->getW()-400)>>1)+(lastX<<2), (gfx->getH()>>1)+11+180, (value-lastX)<<2, 20, 10, 50, 255, 80);
+	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30+180, 402, 62);
+	lastX=value;
 }
 
 void GlobalContainer::initProgressBar(void)
 {
-	char *text;
-	text=texts.getString("[loading glob2]");
-	gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, text);
+	//char *text;
+	//text=texts.getString("[loading glob2]");
+	gfx->loadImage("data/gfx/IntroMN.png");
+	gfx->updateRect(0, 0, 0, 0);
+	//gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, text);
 }
 
 void GlobalContainer::load(void)
@@ -219,7 +223,7 @@ void GlobalContainer::load(void)
 	if (!userName)
 		userName="player";
 	strncpy(settings.userName, userName, BasePlayer::MAX_NAME_LENGTH);
-		
+
 	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
 	// TODO : loading code for username and others options
 
@@ -231,33 +235,33 @@ void GlobalContainer::load(void)
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
 		gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
-		
+
 		// load fonts
 		menuFont=gfx->loadFont("data/fonts/arial24white.png");
 		standardFont=gfx->loadFont("data/fonts/arial14white.png");
 		littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
-		
+
 		initProgressBar();
-		
+
 		updateLoadProgressBar(10);
 		// load terrain data
 		terrain=gfx->loadSprite("data/gfx/terrain");
-		
+
 		// load shader for unvisible terrain
 		terrainShader=gfx->loadSprite("data/gfx/shade");
-		
+
 		updateLoadProgressBar(30);
 		// load ressources
 		ressources=gfx->loadSprite("data/gfx/ressource");
-		
+
 		updateLoadProgressBar(40);
 		// load units
 		units=gfx->loadSprite("data/gfx/unit");
-		
+
 		updateLoadProgressBar(70);
 		// load buildings
 		buildings=gfx->loadSprite("data/gfx/building");
-		
+
 		updateLoadProgressBar(90);
 		// load buildings types
 		globalContainer->buildingsTypes.load("data/buildings.txt");
