@@ -41,7 +41,7 @@ public:
 	void loadCrossRef(SDL_RWops *stream, Team *owner);
 	void saveCrossRef(SDL_RWops *stream);
 	
-	void unsubscribed(void); //used by buidings to units they have choosed.
+	void subscriptionSuccess(void); //Called by the building the unit has subscribed to.
 	void step(void);
 	
 	void directionFromDxDy(void);
@@ -68,8 +68,7 @@ public:
 	enum Activity
 	{
 		ACT_RANDOM,
-		ACT_HARVESTING,
-		ACT_BUILDING,
+		ACT_FILLING,
 		ACT_FLAG,
 		ACT_UPGRADING
 	};
@@ -79,7 +78,8 @@ public:
 		DIS_RANDOM,
 		
 		DIS_HARVESTING,
-		DIS_BUILDING,
+		
+		DIS_FILLING_BUILDING,
 		
 		DIS_GOING_TO_FLAG,
 		DIS_ATTACKING_AROUND,
@@ -87,7 +87,6 @@ public:
 		DIS_CLEARING_RESSOURCES,
 		
 		DIS_GOING_TO_RESSOURCE,
-		DIS_GIVING_TO_BUILDING,
 		
 		DIS_GOING_TO_BUILDING,
 		DIS_ENTERING_BUILDING,
@@ -101,8 +100,7 @@ public:
 		MOV_GOING_TARGET,
 		MOV_GOING_DXDY,
 		MOV_HARVESTING,
-		MOV_GIVING,
-		MOV_BUILDING,
+		MOV_FILLING,
 		MOV_ENTERING_BUILDING,
 		MOV_INSIDE,
 		MOV_EXITING_BUILDING,
@@ -134,11 +132,8 @@ protected:
 	void setNewValidDirection(void);
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
-	void pathFind(void);
-	bool areOnlyUnitsAround(void);
 	bool areOnlyUnitsInFront(int dx, int dy);
-	void gotoTarget(int targetX, int targetY);
-	void newTargetWasSet(void);
+	void gotoTarget();
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 	
 public:
@@ -168,10 +163,6 @@ public:
 	Movement movement;
 	Abilities action;
 	Sint32 targetX, targetY;
-	Sint32 tempTargetX, tempTargetY;
-	BypassDirection bypassDirection;
-	Sint32 obstacleX, obstacleY;
-	Sint32 borderX, borderY;
 
 	// trigger parameters
 	Sint32 hp; // (Uint8)

@@ -1098,7 +1098,6 @@ void Building::subscribeToBringRessourcesStep()
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
 						int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
-						Uint32 teamMask=owner->me;
 
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
@@ -1109,18 +1108,6 @@ void Building::subscribeToBringRessourcesStep()
 								int distUnitRessource;
 								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
 								{
-									/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
-										for (int d=0; d<8; d++)
-										{
-											int ddx, ddy;
-											Unit::dxdyfromDirection(d, &ddx, &ddy);
-											if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, teamMask))
-											{
-												rx=(rx+map->getW()+ddx)&map->getMaskW();
-												ry=(ry+map->getH()+ddy)&map->getMaskH();
-												break;
-											}
-										}*/
 									int distBuildingRessource;
 									if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
 									{
@@ -1152,7 +1139,6 @@ void Building::subscribeToBringRessourcesStep()
 							int y=unit->posY;
 							bool canSwim=unit->performance[SWIM];
 							int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
-							Uint32 teamMask=owner->me;
 
 							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
@@ -1163,18 +1149,6 @@ void Building::subscribeToBringRessourcesStep()
 									int distUnitRessource;
 									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
 									{
-										/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
-											for (int d=0; d<8; d++)
-											{
-												int ddx, ddy;
-												Unit::dxdyfromDirection(d, &ddx, &ddy);
-												if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, teamMask))
-												{
-													rx=(rx+map->getW()+ddx)&map->getMaskW();
-													ry=(ry+map->getH()+ddy)&map->getMaskH();
-													break;
-												}
-											}*/
 										int distBuildingRessource;
 										if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
 										{
@@ -1221,7 +1195,7 @@ void Building::subscribeToBringRessourcesStep()
 					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL, 255);
 					
 					unitsWorking.push_back(choosen);
-					choosen->unsubscribed();
+					choosen->subscriptionSuccess();
 					updateCallLists();
 				}
 			}
@@ -1296,7 +1270,7 @@ void Building::subscribeForFlagingStep()
 				//printf("f(%x) choosen.\n", (int)choosen);
 				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
-				choosen->unsubscribed();
+				choosen->subscriptionSuccess();
 				updateCallLists();
 			}
 		}
@@ -1339,7 +1313,7 @@ void Building::subscribeForInsideStep()
 				unitsInsideSubscribe.remove(u);
 				assert(u);
 				unitsInside.push_back(u);
-				u->unsubscribed();
+				u->subscriptionSuccess();
 				updateCallLists();
 			}
 		}
