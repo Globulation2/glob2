@@ -115,7 +115,7 @@ void Text::paint(void)
 			hDec=0;
 
 		font->pushColor(cr, cg, cb, ca);
-		parent->getSurface()->drawString(x+wDec, y+hDec, font, text);
+		parent->getSurface()->drawString(x+wDec, y+hDec, font, "%s", text);
 		font->popColor();
 	}
 }

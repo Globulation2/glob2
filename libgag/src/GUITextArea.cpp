@@ -58,7 +58,7 @@ void TextArea::internalPaint(void)
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
 			assert(i+areaPos<lines.size());
-			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, (textBuffer+lines[i+areaPos]));
+			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", (textBuffer+lines[i+areaPos]));
 		}
 	}
 	if (!readOnly)
