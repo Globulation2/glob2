@@ -340,7 +340,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 void GlobalContainer::updateLoadProgressBar(int value)
 {
 	static int lastX = 0;
-	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10+180, 402, 22, 180, 180, 180);
 	gfx->drawFilledRect(((gfx->getW()-400)>>1)+(lastX<<2), (gfx->getH()>>1)+11+180, (value-lastX)<<2, 20, 10, 50, 255, 80);
 	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30+180, 402, 62);
 	lastX = value;
@@ -349,6 +348,7 @@ void GlobalContainer::updateLoadProgressBar(int value)
 void GlobalContainer::initProgressBar(void)
 {
 	gfx->loadImage("data/gfx/IntroMN.png");
+	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10+180, 402, 22, 180, 180, 180);
 	gfx->nextFrame();
 }
 
@@ -375,12 +375,6 @@ void GlobalContainer::load(void)
 		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	
-	// load buildings types
-	buildingsTypes.load();
-	IntBuildingType::init();
-	// load ressources types
-	ressourcesTypes.load("data/ressources.txt");
-	
 	if (!runNoX)
 	{
 		initProgressBar();
@@ -394,8 +388,20 @@ void GlobalContainer::load(void)
 		mix->loadTrack("data/zik/a3.ogg");
 		mix->setNextTrack(0);
 		mix->setNextTrack(1);
-
+		
 		updateLoadProgressBar(10);
+	}
+	
+	// load buildings types
+	buildingsTypes.load();
+	IntBuildingType::init();
+	// load ressources types
+	ressourcesTypes.load("data/ressources.txt");
+	
+	if (!runNoX)
+	{
+		updateLoadProgressBar(35);
+		
 		// load fonts
 		Toolkit::loadFont("data/fonts/sans.ttf", 22, "menu");
 		Toolkit::loadFont("data/fonts/sans.ttf", 14, "standard");
@@ -404,7 +410,7 @@ void GlobalContainer::load(void)
 		standardFont = Toolkit::getFont("standard");
 		littleFont = Toolkit::getFont("little");
 
-		updateLoadProgressBar(30);
+		updateLoadProgressBar(45);
 		// load terrain data
 		terrain = Toolkit::getSprite("data/gfx/terrain");
 		
@@ -414,7 +420,7 @@ void GlobalContainer::load(void)
 		// load shader for unvisible terrain
 		terrainShader = Toolkit::getSprite("data/gfx/shade");
 		
-		updateLoadProgressBar(50);
+		updateLoadProgressBar(65);
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");

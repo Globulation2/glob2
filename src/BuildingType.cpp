@@ -18,8 +18,15 @@
 */
 
 #include "BuildingType.h"
+#include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <assert.h>
+
+BuildingType::BuildingType()
+{
+	gameSpritePtr = NULL;
+	miniSpritePtr = NULL;
+}
 
 void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 {
@@ -145,6 +152,10 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(prestige, "prestige");
 	
 	// regenerate local parameters
-	gameSpritePtr = Toolkit::getSprite(gameSprite.c_str());
-	miniSpritePtr = Toolkit::getSprite(miniSprite.c_str());
+	if ((!globalContainer->runNoX) && (type != "null"))
+	{
+		gameSpritePtr = Toolkit::getSprite(gameSprite.c_str());
+		if (miniSpriteImage >= 0)
+			miniSpritePtr = Toolkit::getSprite(miniSprite.c_str());
+	}
 }

@@ -21,10 +21,10 @@
 
 type null
 
-gameSprite data/gfx/building
+gameSprite ERROR_NO_GAME_SPRITE_DEFINED
 gameSpriteImage 0
 gameSpriteCount 1
-miniSprite data/gfx/buildingmini
+miniSprite ERROR_NO_MINI_SPRITE_DEFINED
 miniSpriteImage 0
 
 hueImage 0
