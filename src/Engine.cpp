@@ -175,9 +175,9 @@ int Engine::initCustom(void)
 			}
 			else
 			{
-				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", Toolkit::getStringTable()->getString("[ai]"), nbPlayer-1);
-				// TODO : make graphic choices here
-				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], (BasePlayer::PlayerType)(BasePlayer::P_AI+1));
+				AI::ImplementitionID iid=customGameScreen.getAiImplementation(i);
+				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", Toolkit::getStringTable()->getString("[AI]", iid), nbPlayer-1);
+				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], Player::playerTypeFromImplementitionID(iid));
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;
 			gui.game.teams[teamColor]->playersMask|=(1<<nbPlayer);
@@ -363,6 +363,7 @@ int Engine::run(void)
 		bool networkReadyToExecute=true;
 		Sint32 ticksSpentInComputation=40;
 		Sint32 computationAviableTicks=0;
+		Sint32 ticksToDelayInside=0;
 		
 		startTick=SDL_GetTicks();
 		while (gui.isRunning)
@@ -390,7 +391,8 @@ int Engine::run(void)
 						if (gui.game.players[i]->ai)
 							net->pushOrder(gui.game.players[i]->ai->getOrder(gui.gamePaused), i);
 					
-					ticksDelayedInside=net->ticksToDelayInside()+computationAviableTicks/2;
+					ticksToDelayInside=net->ticksToDelayInside();
+					ticksDelayedInside=ticksToDelayInside+computationAviableTicks/2;
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
@@ -424,8 +426,8 @@ int Engine::run(void)
 			endTick=SDL_GetTicks();
 			Sint32 spentTicks=endTick-startTick;
 			ticksSpentInComputation=spentTicks-ticksDelayedInside;
-			computationAviableTicks=gui.game.session.gameTPF-ticksSpentInComputation;
-			Sint32 ticksToWait=computationAviableTicks-ticksDelayedInside;
+			computationAviableTicks=40-ticksSpentInComputation;
+			Sint32 ticksToWait=computationAviableTicks+ticksToDelayInside;
 			if (ticksToWait>0)
 				SDL_Delay(ticksToWait);
 			startTick=SDL_GetTicks();
