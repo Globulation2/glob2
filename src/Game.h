@@ -48,6 +48,14 @@ public:
 		DRAW_FORBIDDEN_AREA = 0x8,
 		DRAW_WHOLE_MAP = 0x10
 	};
+	
+	struct BuildProject
+	{
+		int posX;
+		int posY;
+		int teamNumber;
+		int typeNum;
+	};
 
 public:
 	Game(GameGUI *gui);
@@ -82,6 +90,7 @@ public:
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream, bool fileIsAMap, const char *name);
 
+	void buildProjectSyncStep(void);
 	//! look for each team if it has won or not
 	void wonSyncStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed
@@ -126,6 +135,7 @@ public:
 	DrawableSurface *minimap;
 	Mapscript script;
 	GameGUI *gui;
+	std::list<BuildProject> buildProjects;
 
 public:
 	int mouseX, mouseY;

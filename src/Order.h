@@ -55,14 +55,14 @@ class OrderCreate:public Order
 {
 public:
 	OrderCreate(const Uint8 *data, int dataLength);
-	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNum);
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum);
 	virtual ~OrderCreate(void) {}
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 16; }
 
-	Uint32 team;
+	Sint32 teamNumber;
 	Sint32 posX;
 	Sint32 posY;
 	Sint32 typeNum;
@@ -275,7 +275,7 @@ class OrderAlterateForbidden:public OrderModify
 {
 public:
 	OrderAlterateForbidden(const Uint8 *data, int dataLength);
-	OrderAlterateForbidden(Uint8 team, Uint8 type, BrushAccumulator *acc);
+	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc);
 	virtual ~OrderAlterateForbidden(void);
 	
 	Uint8 *getData(void);
@@ -283,7 +283,7 @@ public:
 	int getDataLength(void) { return 10+mask.getByteLength(); }
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 	
-	Uint8 team;
+	Uint8 teamNumber;
 	Uint8 type;
 	Sint16 x;
 	Sint16 y;
