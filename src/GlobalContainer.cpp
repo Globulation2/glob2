@@ -180,6 +180,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
 			printf("-s\tset resolution (for instance : -s640x480)\n");
+			printf("-v\tset the music volume\n");
 			printf("-a/-A\tset/clear hardware accelerated gfx\n");
 			printf("-b/-B\tenable/disable double buffering (usefull on OS X in fullscreen)\n");
 			printf("-l\tlow speed graphics : disable some transparency effects\n");
@@ -228,6 +229,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					i++;
 					if (i < argc)
 						settings.graphicType=(DrawableSurface::GraphicContextType)atoi(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 'v')
+			{
+				if (argv[i][2] != 0)
+					settings.musicVolume=atoi(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						settings.musicVolume=atoi(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 's')
