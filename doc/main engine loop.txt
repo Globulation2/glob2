@@ -1,0 +1,36 @@
+Game.tick:
+{
+	gui.step();
+	net.pushOrder(gui.getOrder(), localplayer);
+
+	for each AI
+	{
+		net.pushOrder(ai.getOrder(), ai);
+	}
+
+	net.step()
+
+	for each player
+	{
+		game.executeOrder(net(player).getOrder());
+	}
+
+	for each team
+	{
+		for each Building
+		{
+			building.step();
+		}
+		for each Unit
+		{
+			unit.step();
+		}
+		for each Bullet
+		{
+			bullet.step();
+		}
+		checkWinCondition();
+	}
+
+	draw();
+}

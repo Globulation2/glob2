@@ -1,0 +1,1064 @@
+// deafault building
+startImage = 0
+hueImage = 0
+flagImage = 48
+
+upgradeStopWalk = 0
+upgradeStopSwim = 0
+upgradeStopFly = 0
+upgradeWalk = 0
+upgradeSwim = 0
+upgradeFly = 0
+upgradeBuild = 0
+upgradeHarvest = 0
+upgradeAttackSpeed = 0
+upgradeAttackStrength = 0
+upgradeArmor = 0
+upgradeHP = 0
+
+upgradeTimeStopWalk = 0
+upgradeTimeStopSwim = 0
+upgradeTimeStopFly = 0
+upgradeTimeWalk = 0
+upgradeTimeSwim = 0
+upgradeTimeFly = 0
+upgradeTimeBuild = 0
+upgradeTimeHarvest = 0
+upgradeTimeAttackSpeed = 0
+upgradeTimeAttackStrength = 0
+upgradeTimeArmor = 0
+upgradeTimeHP = 0
+
+jobStopWalk = 0
+jobStopSwim = 0
+jobStopFly = 0
+jobWalk = 0
+jobSwim = 0
+jobFly = 0
+jobBuild = 0
+jobHarvest = 0
+jobAttackSpeed = 0
+jobAttackStrength = 0
+jobArmor = 0
+jobHP = 0
+
+attractStopWalk = 0
+attractStopSwim = 0
+attractStopFly = 0
+attractWalk = 0
+attractSwim = 0
+attractFly = 0
+attractBuild = 0
+attractHarvest = 0
+attractAttackSpeed = 0
+attractAttackStrength = 0
+attractArmor = 0
+attractHP = 0
+
+canFeedUnit = 0
+timeToFeedUnit = 0
+canHealUnit = 0
+timeToHealUnit = 0
+insideSpeed = 256
+
+width = 0
+height = 0
+decLeft = 0
+decTop = 0
+isVirtual = 0
+isCloacked = 0
+shootingRange = 0
+shootDamage = 0
+shootSpeed = 0
+shootRythme = 0
+
+unitProductionTime = 0
+ressourceForOneUnit = 0
+
+maxWood = 0
+maxFood = 0
+maxStone = 0
+maxAlgue = 0
+maxUnitInside = 0
+maxUnitWorking = 0
+
+hpInit = 0
+hpMax = 0
+hpInc = 0
+armor = 0
+level = 0
+type = 0
+isBuildingSite = 0
+
+defaultUnitStayRange = 0
+
+*
+
+// swarm building site
+startImage = 47
+hueImage = 1
+
+jobHarvest = 1
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxFood = 10
+hpInit = 1
+hpMax = 700
+hpInc = 70
+level = 0
+type = 0
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// swarm
+startImage = 0
+hueImage = 1
+
+jobHarvest = 1
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+unitProductionTime = 150
+ressourceForOneUnit = 5
+maxFood = 20
+hpInit = 700
+hpMax = 700
+level = 0
+type = 0
+maxUnitWorking = 1
+
+*
+
+// food building site, level 0
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 3
+hpInit = 1
+hpMax = 100
+hpInc = 33
+level = 0
+type = 1
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// food building, level 0
+startImage = 2
+
+jobHarvest = 1
+canFeedUnit = 1
+timeToFeedUnit = 800
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxFood = 10
+maxUnitInside = 4
+hpInit = 100
+hpMax = 100
+level = 0
+type = 1
+maxUnitWorking = 1
+
+*
+
+// food building site, level 1
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 8
+hpInit = 100
+hpMax = 250
+hpInc = 18
+level = 1
+type = 1
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// food building, level 1
+startImage = 10
+
+jobHarvest = 1
+canFeedUnit = 1
+timeToFeedUnit = 500
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxFood = 30
+maxUnitInside = 7
+hpInit = 250
+hpMax = 250
+level = 1
+type = 1
+maxUnitWorking = 1
+
+*
+
+// food building site, level 2
+startImage = 42
+
+jobHarvest = 1
+
+width = 3
+height = 3
+decLeft = -1
+decTop = -1
+maxWood = 7
+maxStone = 5
+hpInit = 250
+hpMax = 350
+hpInc = 11
+level = 2
+type = 1
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// food building, level 2
+startImage = 18
+
+jobHarvest = 1
+canFeedUnit = 1
+timeToFeedUnit = 300
+
+width = 3
+height = 3
+decLeft = -1
+decTop = -1
+maxFood = 50
+maxUnitInside = 17
+hpInit = 350
+hpMax = 350
+armor = 1
+level = 2
+type = 1
+maxUnitWorking = 1
+
+*
+
+// health building site, level 0
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 3
+hpInit = 1
+hpMax = 130
+hpInc = 43
+level = 0
+type = 2
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// health building, level 0
+startImage = 1
+
+canHealUnit = 1
+timeToHealUnit = 1200
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 2
+hpInit = 130
+hpMax = 130
+level = 0
+type = 2
+
+*
+
+// health building site, level 1
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 8
+hpInit = 100
+hpMax = 250
+hpInc = 18
+level = 1
+type = 2
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// health building, level 1
+startImage = 9
+
+canHealUnit = 1
+timeToHealUnit = 700
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 5
+hpInit = 250
+hpMax = 250
+level = 1
+type = 2
+
+*
+
+// health building site, level 2
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 3
+maxStone = 5
+hpInit = 250
+hpMax = 350
+hpInc = 11
+level = 2
+type = 2
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// health building, level 2
+startImage = 17
+
+canHealUnit = 1
+timeToHealUnit = 300
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 7
+hpInit = 350
+hpMax = 350
+armor = 1
+level = 2
+type = 2
+
+*
+
+// Walk building site, level 0
+startImage = 45
+
+jobHarvest = 1
+
+width = 6
+height = 6
+decLeft = -3
+decTop = -3
+maxWood = 6
+maxStone = 1
+hpInit = 1
+hpMax = 270
+hpInc = 38
+armor = 0
+level = 0
+type = 3
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Walk building, level 0
+startImage = 5
+
+upgradeWalk = 1
+upgradeTimeWalk = 1000
+
+width = 6
+height = 6
+decLeft = -3
+decTop = -3
+maxUnitInside = 4
+hpInit = 270
+hpMax = 270
+armor = 1
+level = 0
+type = 3
+
+*
+
+// Walk building site, level 1
+startImage = 46
+
+jobHarvest = 1
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxWood = 10
+maxStone = 5
+hpInit = 270
+hpMax = 400
+hpInc = 8
+armor = 1
+level = 1
+type = 3
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Walk building, level 1
+startImage = 21
+
+upgradeWalk = 1
+upgradeTimeWalk = 1000
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxUnitInside = 7
+hpInit = 400
+hpMax = 400
+armor = 3
+level = 1
+type = 3
+
+*
+
+// Walk building site, level 2
+startImage = 46
+
+jobHarvest = 1
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxWood = 15
+maxStone = 5
+hpInit = 400
+hpMax = 600
+hpInc = 10
+armor = 3
+level = 2
+type = 3
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Walk building, level 2
+startImage = 29
+
+upgradeWalk = 1
+upgradeTimeWalk = 1000
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxUnitInside = 9
+hpInit = 600
+hpMax = 600
+armor = 4
+level = 2
+type = 3
+
+*
+
+// Swim building site, level 0
+startImage = 45
+
+jobHarvest = 1
+
+width = 6
+height = 6
+decLeft = -3
+decTop = -3
+maxWood = 8
+hpInit = 1
+hpMax = 300
+hpInc = 37
+armor = 0
+level = 0
+type = 4
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Swim building, level 0
+startImage = 7
+
+upgradeSwim = 1
+upgradeTimeSwim = 900
+
+width = 6
+height = 6
+decLeft = -3
+decTop = -3
+maxUnitInside = 3
+hpInit = 300
+hpMax = 300
+armor = 0
+level = 0
+type = 4
+
+*
+
+// Swim building site, level 1
+startImage = 46
+
+jobHarvest = 1
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxFood = 6
+maxWood = 12
+hpInit = 300
+hpMax = 400
+hpInc = 5
+armor = 0
+level = 1
+type = 4
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Swim building, level 1
+startImage = 23
+
+upgradeSwim = 1
+upgradeTimeSwim = 1100
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxUnitInside = 7
+hpInit = 400
+hpMax = 400
+armor = 0
+level = 1
+type = 4
+
+*
+
+// Swim building site, level 2
+startImage = 46
+
+jobHarvest = 1
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxFood = 4
+maxWood = 8
+maxStone = 6
+maxAlgue = 8
+hpInit = 400
+hpMax = 600
+hpInc = 7
+armor = 0
+level = 2
+type = 4
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Swim building, level 2
+startImage = 31
+
+upgradeSwim = 1
+upgradeTimeSwim = 900
+
+width = 8
+height = 8
+decLeft = -4
+decTop = -4
+maxUnitInside = 11
+hpInit = 600
+hpMax = 600
+armor = 1
+level = 2
+type = 4
+
+*
+
+// Attack building site, level 0
+startImage = 43
+
+jobHarvest = 1
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxWood = 7
+hpInit = 1
+hpMax = 220
+hpInc = 31
+armor = 0
+level = 0
+type = 5
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Attack building, level 0
+startImage = 14
+
+upgradeAttackStrength = 1
+upgradeTimeAttackStrength = 600
+upgradeAttackSpeed = 1
+upgradeTimeAttackSpeed = 500
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxUnitInside = 2
+hpInit = 220
+hpMax = 220
+armor = 1
+level = 0
+type = 5
+
+*
+
+// Attack building site, level 1
+startImage = 43
+
+jobHarvest = 1
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxStone = 10
+maxWood = 3
+hpInit = 220
+hpMax = 400
+hpInc = 13
+armor = 1
+level = 1
+type = 5
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Attack building, level 1
+startImage = 22
+
+upgradeAttackStrength = 1
+upgradeTimeAttackStrength = 500
+upgradeAttackSpeed = 1
+upgradeTimeAttackSpeed = 300
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxUnitInside = 4
+hpInit = 400
+hpMax = 400
+armor = 4
+level = 1
+type = 5
+
+*
+
+// Attack building site, level 2
+startImage = 43
+
+jobHarvest = 1
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxWood = 10
+maxStone = 10
+hpInit = 400
+hpMax = 650
+hpInc = 12
+armor = 4
+level = 2
+type = 5
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Attack building, level 2
+startImage = 38
+
+upgradeAttackStrength = 1
+upgradeTimeAttackStrength = 1000
+upgradeAttackSpeed = 1
+upgradeTimeAttackSpeed = 500
+
+width = 4
+height = 4
+decLeft = -2
+decTop = -2
+maxUnitInside = 5
+hpInit = 650
+hpMax = 650
+armor = 7
+level = 2
+type = 5
+*
+
+// Science building site, level 0
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 7
+maxAlgue = 2
+hpInit = 1
+hpMax = 180
+hpInc = 20
+armor = 0
+level = 0
+type = 6
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Science building, level 0
+startImage = 4
+
+upgradeBuild = 1
+upgradeTimeBuild = 700
+upgradeHarvest = 1
+upgradeTimeHarvest = 300
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 4
+hpInit = 180
+hpMax = 180
+armor = 0
+level = 0
+type = 6
+
+*
+
+// Science building site, level 1
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxStone = 5
+maxWood = 5
+maxAlgue = 12
+hpInit = 180
+hpMax = 260
+hpInc = 3
+armor = 0
+level = 1
+type = 6
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Science building, level 1
+startImage = 12
+
+upgradeBuild = 1
+upgradeTimeBuild = 1200
+upgradeHarvest = 1
+upgradeTimeHarvest = 700
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 7
+hpInit = 260
+hpMax = 260
+armor = 1
+level = 1
+type = 6
+
+*
+
+// Science building site, level 2
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxFood = 4
+maxWood = 5
+maxStone = 5
+maxAlgue = 14
+hpInit = 260
+hpMax = 350
+hpInc = 3
+armor = 1
+level = 2
+type = 6
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Science building, level 2
+startImage = 20
+
+upgradeBuild = 1
+upgradeTimeBuild = 700
+upgradeHarvest = 1
+upgradeTimeHarvest = 300
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxUnitInside = 9
+hpInit = 350
+hpMax = 350
+armor = 2
+level = 2
+type = 6
+
+*
+
+// Defense building site, level 0
+startImage = 41
+
+jobHarvest = 1
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 6
+hpInit = 1
+hpMax = 200
+hpInc = 33
+armor = 0
+level = 0
+type = 7
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Defense building, level 0
+startImage = 3
+
+shootingRange = 5
+shootDamage = 30
+shootSpeed = 4700
+shootRythme = 1800
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+hpInit = 200
+hpMax = 200
+armor = 8
+level = 0
+type = 7
+
+*
+
+// Defense building site, level 1
+startImage = 41
+
+jobHarvest = 1
+
+shootingRange = 5
+shootDamage = 30
+shootSpeed = 4700
+shootRythme = 150
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 3
+maxStone = 6
+hpInit = 200
+hpMax = 300
+hpInc = 11
+armor = 8
+level = 1
+type = 7
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Defense building, level 1
+startImage = 11
+
+shootingRange = 6
+shootDamage = 40
+shootSpeed = 5700
+shootRythme = 2000
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+hpInit = 300
+hpMax = 300
+armor = 12
+level = 1
+type = 7
+
+*
+
+// Defense building site, level 2
+startImage = 41
+
+jobHarvest = 1
+
+shootingRange = 6
+shootDamage = 40
+shootSpeed = 5700
+shootRythme = 200
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+maxWood = 5
+maxStone = 5
+maxAlgue = 3
+hpInit = 300
+hpMax = 450
+hpInc = 11
+armor = 12
+level = 2
+type = 7
+maxUnitWorking = 1
+isBuildingSite = 1
+
+*
+
+// Defense building, level 2
+startImage = 19
+
+shootingRange = 8
+shootDamage = 45
+shootSpeed = 8000
+shootRythme = 2200
+
+width = 2
+height = 2
+decLeft = -1
+decTop = -1
+hpInit = 450
+hpMax = 450
+armor = 18
+level = 2
+type = 7
+
+*
+
+// Exploration Flag
+
+startImage = 50
+hueImage = 1
+
+attractFly = 1
+
+width = 1
+height =  1
+decLeft = 0
+decTop =  0
+isVirtual = 1
+isCloacked = 1
+
+maxUnitWorking = 1
+
+type = 8
+
+defaultUnitStayRange = 1
+
+*
+
+// War Flag
+
+startImage = 51
+hueImage = 1
+
+attractAttackSpeed = 1
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+isVirtual = 1
+isCloacked =  1
+
+maxUnitWorking = 1
+
+type = 9
+
+defaultUnitStayRange = 1
+
+*
