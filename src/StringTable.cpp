@@ -124,10 +124,7 @@ bool StringTable::load(char *filename)
 			OneStringToken *myString;
 			
 			if (fgets(temp, 1024, fp)==NULL)
-			{
-				fclose(fp);
-				return true;
-			}
+				break;
 			terminateLine(temp, 1024);
 			myString=new OneStringToken(temp);
 			
@@ -135,9 +132,8 @@ bool StringTable::load(char *filename)
 			{
 				if (fgets(temp, 1024, fp)==NULL)
 				{
-					fclose(fp);
 					delete myString;
-					return true;
+					goto doublebreak;
 				}
 				terminateLine(temp, 1024);
 				if (temp==NULL)
@@ -147,7 +143,42 @@ bool StringTable::load(char *filename)
 			}
 			strings.push_back(myString);
 		}
+		doublebreak:
 		fclose(fp);
+		
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		{
+			char *s=(*it)->name;
+			int l=strlen(s);
+			bool lcwp=false;
+			int baseCount=0;
+			for (int c=0; c<l; c++)
+			{
+				if (lcwp && s[c]!=' ' && s[c]!='%')
+					baseCount++;
+				lcwp=(s[c]=='%');
+			}
+			for (int i=0; i<(int)((*it)->data.size()); i++)
+			{
+				char *s=(*it)->data[i];
+				int l=strlen(s);
+				bool lcwp=false;
+				int count=0;
+				for (int c=0; c<l; c++)
+				{
+					if (lcwp && s[c]!=' ' && s[c]!='%')
+						count++;
+					lcwp=(s[c]=='%');
+				}
+				if (baseCount!=count)
+				{
+					printf("name=%d(%s), trad=%d(%s), doesn\'t match!\n", baseCount, (*it)->name, count, (*it)->data[i]);
+					assert(false);
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 }
