@@ -19,6 +19,7 @@
 
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
+#include "Version.h"
 
 MainMenuScreen::MainMenuScreen()
 {
@@ -57,6 +58,7 @@ void MainMenuScreen::paint(int x, int y, int w, int h)
 	gfxCtx->setClipRect(x, y, w, h);
 	gfxCtx->drawSurface(0, 0, background);
 	gfxCtx->setClipRect();
+	gfxCtx->drawString(w-70, h-18, globalContainer->standardFont, "V %d.%d", VERSION_MAJOR, VERSION_MINOR);
 }
 
 int MainMenuScreen::menu(void)
