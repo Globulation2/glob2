@@ -139,6 +139,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			continue;
 		}
 
+		if (strcmp(argv[i], "-b")==0)
+		{
+			graphicFlags|=DrawableSurface::NO_DOUBLEBUF;
+			continue;
+		}
+
 		if (strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
@@ -147,6 +153,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-r\tset resizable window\n");
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a\tset hardware accelerated gfx\n");
+			printf("-b\tdisable double buffering (usefull on OS X in fullscreen)\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");

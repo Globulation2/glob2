@@ -42,9 +42,10 @@ public:
 	enum ResolutionFlags
 	{
 		DEFAULT=0,
-		FULLSCREEN=1,
-		HWACCELERATED=2,
-		RESIZABLE=4
+		NO_DOUBLEBUF=1,
+		FULLSCREEN=2,
+		HWACCELERATED=4,
+		RESIZABLE=8
 	};
 
 public:
