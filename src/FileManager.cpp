@@ -221,14 +221,14 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	return NULL;
 }
 
-void FileManage::remove(const char *filename)
+void FileManager::remove(const char *filename)
 {
 	std::vector<const char *>::iterator dirListIterator;
 
 	// other wise search
 	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
+		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 		remove(fn);
