@@ -568,7 +568,7 @@ void Team::step(void)
 	{
 		for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
 		{
-			if ( ((*it)->fullInside()) || ((*it)->unitsInsideSubscribe.size()==0) )
+			if ( /*((*it)->fullInside()) ||*/ ((*it)->unitsInsideSubscribe.size()==0) )
 			{
 				std::list<Building *>::iterator ittemp=it;
 				it=subscribeForInsideStep.erase(ittemp);
@@ -583,7 +583,7 @@ void Team::step(void)
 	{
 		for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
 		{
-			if ( ((*it)->fullWorking()) || ((*it)->unitsWorkingSubscribe.size()==0) )
+			if ( /*((*it)->fullWorking()) ||*/ ((*it)->unitsWorkingSubscribe.size()==0) )
 			{
 				std::list<Building *>::iterator ittemp=it;
 				it=subscribeForWorkingStep.erase(ittemp);

@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "Unit.h"
 #include "Game.h"
+#include "Utilities.h"
 
 BaseMap::BaseMap()
 {
@@ -108,7 +109,6 @@ void Sector::save(SDL_RWops *stream)
 			(*it)->save(stream);
 	}
 }
-
 
 void Sector::load(SDL_RWops *stream, Game *game)
 {
@@ -222,6 +222,15 @@ bool Map::isGrass(int x, int y)
 	return (getTerrain(x, y)<16);
 }
 
+bool Map::isGrowableRessource(int x, int y)
+{
+	int d=getTerrain(x, y)-272;
+	int r=d/10;
+	if ((d<0)||(d>=40))
+		return false;
+	return (r!=STONE);
+}
+
 bool Map::isRessource(int x, int y)
 {
 	return (getTerrain(x, y)>=272);
@@ -235,6 +244,57 @@ bool Map::isRessource(int x, int y, RessourceType ressourceType)
 		return false;
 	else
 		return ( (d/10) == ressourceType );
+}
+
+bool Map::decRessource(int x, int y)
+{
+	int d=getTerrain(x, y)-272;
+	if ((d<0)||(d>=40))
+		return false;
+	int r=d/10;
+	int l=d%5;
+	if ((r==CORN)||(r==STONE)) // those are the slow-consuming ressources.
+	{
+		if (l>0)
+			setTerrain(x, y, d+271);
+		else if (l==0)
+			setTerrain(x, y, syncRand()&0xF);
+	}
+	else if (r==WOOD)
+		setTerrain(x, y, syncRand()&0xF);
+	else if (r==ALGA)
+		setTerrain(x, y, 256+(syncRand()&0xF));
+	else
+		assert(false);
+	return true;
+}
+
+bool Map::decRessource(int x, int y, RessourceType ressourceType)
+{
+	int d=getTerrain(x, y)-272;
+	if ((d<0)||(d>=40))
+		return false;
+	int r=d/10;
+	int l=d%5;
+	if (r==ressourceType)
+	{
+		if ((r==CORN)||(r==STONE)) // those are the slow-consuming ressources.
+		{
+			if (l>0)
+				setTerrain(x, y, d+271);
+			else if (l==0)
+				setTerrain(x, y, syncRand()&0xF);
+		}
+		else if (r==WOOD)
+			setTerrain(x, y, syncRand()&0xF);
+		else if (r==ALGA)
+			setTerrain(x, y, 256+(syncRand()&0xF));
+		else
+			assert(false);
+		return true;
+	}
+	else
+		return false;
 }
 
 bool Map::isFreeForUnit(int x, int y, bool canFly)
@@ -260,6 +320,16 @@ bool Map::doesUnitTouchUID(Unit *unit, Sint16 otherUID, int *dx, int *dy)
 	return false;
 }
 
+bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID)
+{
+	int tdx, tdy;
+	for (tdx=-1; tdx<=1; tdx++)
+		for (tdy=-1; tdy<=1; tdy++)
+			if (getUnit(x+tdx, y+tdy)==otherUID)
+				return true;
+	return false;
+}
+
 bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy)
 {
 	int tdx, tdy;
@@ -280,6 +350,22 @@ bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *d
 {
 	int x=unit->posX;
 	int y=unit->posY;
+	int tdx, tdy;
+	
+	for (tdx=-1; tdx<=1; tdx++)
+		for (tdy=-1; tdy<=1; tdy++)
+			if (isRessource(x+tdx, y+tdy,ressourceType))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+			
+	return false;
+}
+
+bool Map::doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+{
 	int tdx, tdy;
 	
 	for (tdx=-1; tdx<=1; tdx++)
@@ -523,13 +609,203 @@ void Map::save(SDL_RWops *stream)
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
+void Map::growRessources(void)
+{
+	{
+		for (int x=(syncRand()&0x7); x<w; x+=(syncRand()&0xF))
+		{
+			int y=syncRand()&hMask;
+
+			int d=getTerrain(x, y)-272;
+			int r=d/10;
+			int l=d%5;
+			if ((d>=0)&&(d<40))
+			{
+				if((r==WOOD)||(r==CORN)||(r==ALGA))
+				{
+					//if (l<4)
+					if (l<=(int)(syncRand()&3))
+						setTerrain(x, y, d+273);
+					else 
+					{
+						// we extand ressource:
+						int dx, dy;
+						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
+						int nx=x+dx;
+						int ny=y+dy;
+						if (getUnit(nx, ny)==NOUID)
+						if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+						{
+							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+							
+							/*int rrx=x-(dx<<1);
+							int rry=y-(dy<<1);
+							
+							int d=getTerrain(rrx, rry)-272;
+							if ((d<0)||(d>=40))
+								continue;
+							int r=d/10;
+							if (r!=STONE)
+							{
+								if (r==ALGA)
+									setTerrain(rrx, rry, 256+(syncRand()&0xF));
+								else
+									setTerrain(rrx, rry, syncRand()&0xF);
+							}*/
+						}
+						
+					}
+				}
+			}
+		}
+	}
+	/*if ((syncRand()&0xF)==0)
+	{
+		{
+			int cnt=0;
+			for (int y=0; y<h; y++)
+				for (int x=0; x<w; x++)
+				{
+					if (isGrowableRessource(x, y))
+					{
+						cnt++;
+						if (cnt>7)
+						{
+							for (int ri=2; ri<=5; ri++)
+							{
+								int d=getTerrain(x+w-ri, y)-272;
+								if ((d<0)||(d>=40))
+									continue;
+								int r=d/10;
+								int l=d%5;
+								if (r==STONE)
+									continue;
+								if (l>0)
+									setTerrain(x+w-ri, y, d+271);
+								else if (l==0)
+								{
+									if (r==ALGA)
+										setTerrain(x+w-ri, y, 256+(syncRand()&0xF));
+									else
+										setTerrain(x+w-ri, y, syncRand()&0xF);
+								}
+							}
+							//decRessource(x+w-3, y);
+						}
+					}
+					else
+						cnt=0;
+				}
+		}
+		
+		{
+			int cnt=0;
+			for (int x=0; x<w; x++)
+				for (int y=0; y<h; y++)
+				{
+					if (isGrowableRessource(x, y))
+					{
+						cnt++;
+						if (cnt>7)
+						{
+							for (int ri=2; ri<=5; ri++)
+							{
+								int d=getTerrain(x, y+h-ri)-272;
+								if ((d<0)||(d>=40))
+									continue;
+								int r=d/10;
+								int l=d%5;
+								if (r==STONE)
+									continue;
+								if (l>0)
+									setTerrain(x, y+h-ri, d+271);
+								else if (l==0)
+								{
+									if (r==ALGA)
+										setTerrain(x, y+h-ri, 256+(syncRand()&0xF));
+									else
+										setTerrain(x, y+h-ri, syncRand()&0xF);
+								}
+							}
+							//decRessource(x+w-3, y);
+						}
+					}
+					else
+						cnt=0;
+				}
+		}
+	}*/
+	
+	/*{
+		for (int x=0; x<w; x+=16)
+			for (int y=0; y<h; y+=16)
+			{
+				bool allResources=true;
+				for (int dy=0; dy<16; dy++)
+					for (int dx=0; dx<16; dx++)
+					{
+						if (!isGrowableRessource(x+dx, y+dy))
+						{
+							allResources=false;
+							dy=16;
+							break;
+						}
+					}
+				if (allResources)
+				{
+					for (int dy=0; dy<16; dy++)
+						for (int dx=0; dx<16; dx++)
+							decRessource(x+dx, y+dy);
+				}
+			}
+	}*/
+	
+	/*{
+		int sx=syncRand()&wMask;
+		int sy=syncRand()&hMask;
+		int d=getTerrain(sx, sy)-272;
+		int r=d/10;
+		int l=d%5;
+		if ((d>=0)&&(d<312)&&(l==4)&&(r!=STONE))
+		{
+			bool allPlacesR=true;
+			for (int y=0; y<8; y++)
+				for (int x=0; x<8; x++)
+				{
+					int dl=getTerrain(sx+x, sy+y)-272;
+					int rl=dl/10;
+					int ll=dl%5;
+					if ((rl!=r)||(ll!=4))
+					{
+						allPlacesR=false;
+						x=4;
+						break;
+					}
+				}
+			if (allPlacesR)
+			{
+				if (r==ALGA)
+				{
+					for (int y=2; y<6; y++)
+						for (int x=2; x<6; x++)
+							setTerrain(sx+x, sy+y, 256+(syncRand()&0xF));
+				}
+				else
+				{
+					for (int y=2; y<6; y++)
+						for (int x=2; x<6; x++)
+							setTerrain(sx+x, sy+y, 0+(syncRand()&0xF));
+				}
+			}
+		}
+	}*/
+}
 
 void Map::step(void)
 {
-	{
-		for (int i=0; i<(wSector*hSector); i++)
-			sectors[i].step();
-	}
+	growRessources();
+	for (int i=0; i<(wSector*hSector); i++)
+		sectors[i].step();
 	
 	stepCounter++;
 }
@@ -813,7 +1089,6 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*mx+=buildingWidth*16;
 	*my+=buildingHeight*16;
 }
-
 
 bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
 {

@@ -22,17 +22,21 @@ int distSquare(int x1, int y1, int x2, int y2)
 	return (dx*dx+dy*dy);
 }
 
-Uint32 randa=1;
-Uint32 randb=1;
-Uint32 randc=0;
+Uint32 randa=0x8FD2B1A1;
+Uint32 randb=0XF7F513DE;
+Uint32 randc=0x13DA757F;
 
-/*Uint32 syncRand(void)
+/*
+bad results:
+Uint32 syncRand(void)
 {
 	randValue+=3753454343u;
 	randValue%=2657467897u;
 	return randValue;
 }*/
 
+/*
+bad results:
 Uint32 syncRand(void)
 {
 	randa=randa<<3;
@@ -47,12 +51,25 @@ Uint32 syncRand(void)
 	
 	return ( randc^randa^randb );
 }
+*/
+Uint32 syncRand(void)
+{
+	randa+=0x13573DB1;
+	randb+=0x7B717315;
+	
+	randc+=(randa&randb)^0x00000001;
+	randc=(randc<<1)|((randc>>29)&0x1);
+	
+	//return (randc>>3)|((randa^randb)&0xE0000000);
+	//return randc;
+	return (randc>>1)|((randa^randb)&0x80000000);
+}
 
 void setSyncRandSeed()
 {
-	randa=0x1AE7;
-	randb=0xBC24;
-	randc=0xD3F5;
+	randa=0x8FD2B1A1;
+	randb=0XF7F513DE;
+	randc=0x13DA757F;
 }
 void setSyncRandSeedA(Uint32 seed)
 {

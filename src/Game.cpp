@@ -134,7 +134,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
 				|| checkRoomForBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->typeNumber, ((OrderCreate *)order)->team))
 			{
-				Building *b=addBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->team, ((OrderCreate *)order)->typeNumber );
+				int posX=((OrderCreate *)order)->posX;
+				int posY=((OrderCreate *)order)->posY;
+				if(posX<0)
+					posX+=map.w;
+				if(posY<0)
+					posY+=map.h;
+				posX&=map.wMask;
+				posY&=map.hMask;
+				
+				Building *b=addBuilding( posX, posY, ((OrderCreate *)order)->team, ((OrderCreate *)order)->typeNumber );
 				if (b)
 				{
 					if (b->type->unitProductionTime)
