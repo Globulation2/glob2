@@ -21,15 +21,46 @@
 #include "GlobalContainer.h"
 
 //! Main menu screen
-ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript)
+ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 :OverlayScreen(600, 400)
 {
 	this->mapScript=mapScript;
-	editor = new TextArea(10, 10, 580, 340, globalContainer->standardFont, false, mapScript->getSourceCode());
+	this->game=game;
+	editor = new TextArea(10, 10, 580, 320, globalContainer->standardFont, false, mapScript->getSourceCode());
 	addWidget(editor);
+	compilationResult=new Text(10, 335, globalContainer->standardFont);
+	addWidget(compilationResult);
 	addWidget(new TextButton(10, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[ok]"), OK));
 	addWidget(new TextButton(100, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 	addWidget(new TextButton(190, 360, 400, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[compile]"), COMPILE));
+}
+
+bool ScriptEditorScreen::testCompile(void)
+{
+	const char *backup=mapScript->getSourceCode();
+	char *temp=new char[strlen(backup+1)];
+	strcpy(temp, backup);
+	
+	mapScript->setSourceCode(editor->getText());
+	ErrorReport er=mapScript->compileScript(game);
+	
+	mapScript->setSourceCode(temp);
+	delete[] temp;
+
+	if (er.type==ErrorReport::ET_OK)
+	{
+		compilationResult->setColor(100, 255, 100);
+		compilationResult->setText("Compilation success");
+		return true;
+	}
+	else
+	{
+		compilationResult->setColor(255, 50, 50);
+		compilationResult->setText("Compilation failure");
+		printf("SGSL : %d:%d: %s\n", er.line+1, er.col, er.getErrorString());
+		// TODO : print clean error message
+		return false;
+	}
 }
 
 void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -38,13 +69,20 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		if (par1 == COMPILE)
 		{
-			// TODO : handle compile
+			testCompile();
 		}
 		else
 		{
 			if (par1 == OK)
-				mapScript->setSourceCode(editor->getText());
-			endValue=par1;
+			{
+				if (testCompile())
+				{
+					mapScript->setSourceCode(editor->getText());
+					endValue=par1;
+				}
+			}
+			else
+				endValue=par1;
 		}
 	}
 }
