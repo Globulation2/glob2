@@ -20,7 +20,9 @@ int main(int argc, char *argv[])
 	globalContainer->buildingsTypes.load("data/buildings.txt");
 
 	globalContainer->parseArgs(argc, argv);
+	globalContainer->gfx.setCaption("Globulation 2", "glob 2");
 	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
+
 	globalContainer->load();
 
 	if ( SDLNet_Init() < 0 ) {

@@ -1374,6 +1374,32 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			ptr+=bpp;
 		}
 	}
+
+	// overdraw flags
+	if (teamSelected>=0)
+		for (std::list<Building *>::iterator virtualIt=teams[teamSelected]->virtualBuildings.begin();
+				virtualIt!=teams[teamSelected]->virtualBuildings.end(); ++virtualIt)
+		{
+			int fx, fy;
+			fx=(*virtualIt)->posX-decSPX+map.getW();
+			fx&=map.getMaskW();
+			fy=(*virtualIt)->posY-decSPY+map.getH();
+			fy&=map.getMaskH();
+			r=100;
+			g=255;
+			b=100;
+			printf("flag : %d %d\n", fx, fy);
+			ptr=((Uint8 *)minimap->pixels)+fy*minimap->pitch+fx*bpp;
+			switch (bpp)
+			{
+			case 1:
+				*ptr=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
+			case 2:
+				*((Uint16 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
+			case 4:
+				*((Uint32 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
+			}
+		}
 }
 
 Sint32 Game::checkSum()

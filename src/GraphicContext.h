@@ -25,6 +25,7 @@ public:
 	virtual ~GraphicContext(void) { }
 
 	virtual bool setRes(int w, int h, int depth=16, Uint32 flags=SDL_SWSURFACE)=0;
+	virtual void setCaption(const char *title, const char *icon)=0;
 
 	virtual void dbgprintf(const char *msg, ...)=0;
 
@@ -113,6 +114,7 @@ public:
 	virtual ~SDLGraphicContext(void);
 
 	virtual bool setRes(int w, int h, int depth=16, Uint32 flags=SDL_SWSURFACE);
+	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 
 	virtual void dbgprintf(const char *msg, ...);
 
