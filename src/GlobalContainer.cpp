@@ -17,16 +17,18 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GlobalContainer.h"
-#include "Header.h"
 #include <string.h>
-#include "NonANSICStdWrapper.h"
-#include "Player.h"
-#include "FileManager.h"
-#include "LogFileManager.h"
-#include "SoundMixer.h"
+
 #include <Toolkit.h>
 #include <GAG.h>
+
+#include "FileManager.h"
+#include "GlobalContainer.h"
+#include "Header.h"
+#include "LogFileManager.h"
+#include "NonANSICStdWrapper.h"
+#include "Player.h"
+#include "SoundMixer.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H

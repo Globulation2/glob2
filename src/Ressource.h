@@ -20,8 +20,7 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#include "EntityType.h"
-#include <assert.h>
+#include <SDL.h>
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
 #define NORESID 0xFFFFFFFF
@@ -37,52 +36,6 @@ struct Ressource
 	Ressource(Uint32 i=NORESID) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
 	operator Uint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
-
-class RessourceType: public EntityType
-{
-public:
-#define __STARTDATA_R ((Uint32*)&terrain)
-	Sint32 terrain;
-	Sint32 gfxId;
-	Sint32 sizesCount;
-	Sint32 varietiesCount;
-	Sint32 shrinkable;
-	Sint32 expendable;
-	Sint32 eternal;
-	Sint32 granular;
-	Sint32 visibleToBeCollected;
-	Sint32 minimapR, minimapG, minimapB;
-
-public:
-	RessourceType() { init(); }
-	RessourceType(SDL_RWops *stream) { load(stream); }
-	virtual ~RessourceType() { }
-	virtual const char **getVars(int *size, Uint32 **data)
-	{
-		static const char *vars[] =
-		{
-			"terrain",
-			"gfxId",
-			"sizesCount",
-			"varietiesCount",
-			"shrinkable",
-			"expendable",
-			"eternal",
-			"granular",
-			"visibleToBeCollected",
-			"minimapR",
-			"minimapG",
-			"minimapB",
-		};
-		if (size)
-			*size=(sizeof(vars)/sizeof(char *));
-		if (data)
-			*data=__STARTDATA_R;
-		return vars;
-	}
-};
-
-typedef EntitiesTypes<RessourceType> RessourcesTypes;
 
 #define MAX_NB_RESSOURCES 15
 #define MAX_RESSOURCES 8
