@@ -64,6 +64,7 @@ public:
 		int mapGenerationMethode;
 		char mapName[128];
 		bool natSolved;
+		Uint32 huid; //the uid of the game host
 	};
 	struct Message
 	{
