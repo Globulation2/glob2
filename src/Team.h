@@ -199,8 +199,9 @@ public:
 	Uint32 sharedVisionOther; // Who does I share the vision to. mask
 	Uint32 me; // Who am I. mask.
 
-	int startPosX, startPosY;
-	int prestige;
+	Sint32 startPosX, startPosY;
+	Sint32 startPosSet; // {0=unset, 1=any unit, 2=any building, 3=swarm building}
+	Sint32 prestige;
 
 private:
 	//! was an event last tick
