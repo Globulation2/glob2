@@ -56,6 +56,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	this->socket=socket;
 	
 	logFile=globalContainer->logFileManager->getFile("NetGame.log");
+	logFileEnd=globalContainer->logFileManager->getFile("NetGameEnd.log");
 	
 	assert(logFile);
 	
@@ -63,40 +64,13 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 		for (int stepi=0; stepi<256; stepi++)
 			ordersQueue[pi][stepi]=NULL;
 	
-	for (int di=0; di<40; di++)
-	{
-		delayInsideStats[di]=0;
-		wishedDelayStats[di]=0;
-		maxMedianWishedDelayStats[di]=0;
-	}
+	initStats();
 	init();
 };
 
 NetGame::~NetGame()
 {
-	int sum=0;
-	for (int i=0; i<40; i++)
-		sum+=delayInsideStats[i];
-	fprintf(logFile, "delayInsideStats: (sum=%d)\n", sum);
-	for (int i=0; i<40; i++)
-		fprintf(logFile, "delayInsideStats[%2d]=%5d (%4f%%)\n", i, delayInsideStats[i], (float)(100.*delayInsideStats[i])/(float)sum);
-	fprintf(logFile, "\n");
-	
-	sum=0;
-	for (int i=0; i<40; i++)
-		sum+=wishedDelayStats[i];
-	fprintf(logFile, "wishedDelayStats: (sum=%d)\n", sum);
-	for (int i=0; i<40; i++)
-		fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f%%)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
-	fprintf(logFile, "\n");
-	
-	sum=0;
-	for (int i=0; i<40; i++)
-		sum+=maxMedianWishedDelayStats[i];
-	fprintf(logFile, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
-	for (int i=0; i<40; i++)
-		fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f%%)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
-	fprintf(logFile, "\n");
+	dumpStats();
 	
 	fflush(logFile);
 	
@@ -120,39 +94,8 @@ NetGame::~NetGame()
 
 void NetGame::init(void)
 {
-	int sum=0;
-	for (int i=0; i<40; i++)
-		sum+=delayInsideStats[i];
-	if (sum)
-	{
-		fprintf(logFile, "delayInsideStats: (sum=%d)\n", sum);
-		for (int i=0; i<40; i++)
-			fprintf(logFile, "delayInsideStats[%2d]=%5d (%4f)\n", i, delayInsideStats[i], (float)(100.*delayInsideStats[i])/(float)sum);
-		fprintf(logFile, "\n");
-		for (int i=0; i<40; i++)
-			delayInsideStats[i]=0;
-	}
-	sum=0;
-	for (int i=0; i<40; i++)
-		sum+=wishedDelayStats[i];
-	if (sum)
-	{
-		fprintf(logFile, "wishedDelayStats: (sum=%d)\n", sum);
-		for (int i=0; i<40; i++)
-			fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
-		fprintf(logFile, "\n");
-	}
-	sum=0;
-	for (int i=0; i<40; i++)
-		sum+=maxMedianWishedDelayStats[i];
-	if (sum)
-	{
-		fprintf(logFile, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
-		for (int i=0; i<40; i++)
-			fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
-		fprintf(logFile, "\n");
-	}
-	fflush(logFile);
+	dumpStats();
+	initStats();
 	
 	executeUStep=0;
 	pushUStep=0+defaultLatency;
@@ -210,12 +153,193 @@ void NetGame::init(void)
 		dropStatusCommuniquedToGui[pi]=false;
 		
 		// And all player's ping are equals.
-		for (int ri=0; ri<256; ri++)
+		for (int ri=0; ri<1024; ri++)
 			recentsPingPong[pi][ri]=40*defaultLatency;
 	}
 	
 	dropState=DS_NoDropProcessing;
 };
+
+void NetGame::initStats(void)
+{
+	for (int di=0; di<40; di++)
+	{
+		delayInsideStats[di]=0;
+		wishedDelayStats[di]=0;
+		maxMedianWishedDelayStats[di]=0;
+		goodLatencyStats[di]=0;
+	}
+	for (int pi=0; pi<32; pi++)
+		duplicatedPacketStats[pi]=0;
+	for (int pi=0; pi<32; pi++)
+		for (int ti=0; ti<1024; ti++)
+			pingPongStats[pi][ti]=0;
+}
+
+void NetGame::dumpStats(void)
+{
+	int sum=0;
+	for (int di=0; di<40; di++)
+		sum+=delayInsideStats[di];
+	if (sum)
+	{
+		fprintf(logFileEnd, "delayInsideStats: (sum=%d)\n", sum);
+		for (int di=0; di<40; di++)
+		{
+			int value=delayInsideStats[di];
+			int highIntPercent=(100*value)/sum;
+			int lowIntPercent=((1000*value)/sum)%10;
+			fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", di, value, highIntPercent, lowIntPercent);
+			float fPercent=(float)(100.*value)/(float)sum;
+			for (int i=0; i<(int)(fPercent+.5); i++)
+				fprintf(logFileEnd, "*");
+			fprintf(logFileEnd, "\n");
+		}
+		fprintf(logFileEnd, "\n");
+	}
+	sum=0;
+	for (int di=0; di<40; di++)
+		sum+=wishedDelayStats[di];
+	if (sum)
+	{
+		fprintf(logFileEnd, "wishedDelayStats: (sum=%d)\n", sum);
+		for (int di=0; di<40; di++)
+		{
+			int value=wishedDelayStats[di];
+			int highIntPercent=(100*value)/sum;
+			int lowIntPercent=((1000*value)/sum)%10;
+			fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", di, value, highIntPercent, lowIntPercent);
+			float fPercent=(float)(100.*value)/(float)sum;
+			for (int i=0; i<(int)(fPercent+.5); i++)
+				fprintf(logFileEnd, "*");
+			fprintf(logFileEnd, "\n");
+		}
+		fprintf(logFileEnd, "\n");
+	}
+	sum=0;
+	for (int di=0; di<40; di++)
+		sum+=maxMedianWishedDelayStats[di];
+	if (sum)
+	{
+		fprintf(logFileEnd, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
+		for (int di=0; di<40; di++)
+		{
+			int value=maxMedianWishedDelayStats[di];
+			int highIntPercent=(100*value)/sum;
+			int lowIntPercent=((1000*value)/sum)%10;
+			fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", di, value, highIntPercent, lowIntPercent);
+			float fPercent=(float)(100.*value)/(float)sum;
+			for (int i=0; i<(int)(fPercent+.5); i++)
+				fprintf(logFileEnd, "*");
+			fprintf(logFileEnd, "\n");
+		}
+		fprintf(logFileEnd, "\n");
+	}
+	sum=0;
+	for (int di=0; di<40; di++)
+		sum+=goodLatencyStats[di];
+	if (sum)
+	{
+		fprintf(logFileEnd, "goodLatencyStats: (sum=%d)\n", sum);
+		for (int di=0; di<40; di++)
+		{
+			int value=goodLatencyStats[di];
+			int highIntPercent=(100*value)/sum;
+			int lowIntPercent=((1000*value)/sum)%10;
+			fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", di, value, highIntPercent, lowIntPercent);
+			float fPercent=(float)(100.*value)/(float)sum;
+			for (int i=0; i<(int)(fPercent+.5); i++)
+				fprintf(logFileEnd, "*");
+			fprintf(logFileEnd, "\n");
+		}
+		fprintf(logFileEnd, "\n");
+	}
+	
+	sum=0;
+	for (int pi=0; pi<32; pi++)
+		sum+=duplicatedPacketStats[pi];
+	if (sum)
+	{
+		fprintf(logFileEnd, "duplicatedPacketStats: (sum=%d)\n", sum);
+		for (int pi=0; pi<32; pi++)
+		{
+			int value=duplicatedPacketStats[pi];
+			int highIntPercent=(100*value)/sum;
+			int lowIntPercent=((1000*value)/sum)%10;
+			fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", pi, value, highIntPercent, lowIntPercent);
+			float fPercent=(float)(100.*value)/(float)sum;
+			for (int i=0; i<(int)(fPercent+.5); i++)
+				fprintf(logFileEnd, "*");
+			fprintf(logFileEnd, "\n");
+		}
+		fprintf(logFileEnd, "\n");
+	}
+	for (int pi=0; pi<32; pi++)
+	{
+		sum=0;
+		for (int ti=0; ti<1024; ti++)
+			sum+=pingPongStats[pi][ti];
+		if (sum)
+		{
+			fprintf(logFileEnd, "pingPongStatsShort[%d]: (sum=%d)\n", pi, sum);
+			
+			for (int yi=0; yi<(1024/80); yi++)
+			{
+				int localSum=0;
+				for (int xi=0; xi<80; xi++)
+					localSum+=pingPongStats[pi][xi+(yi*80)];
+				
+				int value=localSum;
+				int highIntPercent=(100*value)/sum;
+				int lowIntPercent=((1000*value)/sum)%10;
+				fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", yi, value, highIntPercent, lowIntPercent);
+				float fPercent=(float)(100.*value)/(float)sum;
+				for (int i=0; i<(int)(fPercent+.5); i++)
+					fprintf(logFileEnd, "*");
+				fprintf(logFileEnd, "\n");
+			}
+			{
+				int localSum=0;
+				for (int xi=(1024-(1024%80)); xi<1024; xi++)
+					localSum+=pingPongStats[pi][xi];
+				int value=localSum;
+				int highIntPercent=(100*value)/sum;
+				int lowIntPercent=((1000*value)/sum)%10;
+				fprintf(logFileEnd, " [   +]=%7d (%2d.%1d%%) ", value, highIntPercent, lowIntPercent);
+				float fPercent=(float)(100.*value)/(float)sum;
+				for (int i=0; i<(int)(fPercent+.5); i++)
+					fprintf(logFileEnd, "*");
+				fprintf(logFileEnd, "\n");
+			}
+			
+			fprintf(logFileEnd, "\n");
+		}
+	}
+	for (int pi=0; pi<32; pi++)
+	{
+		sum=0;
+		for (int ti=0; ti<1024; ti++)
+			sum+=pingPongStats[pi][ti];
+		if (sum)
+		{
+			fprintf(logFileEnd, "pingPongStats[%d]: (sum=%d)\n", pi, sum);
+			for (int ti=0; ti<1024; ti++)
+			{
+				int value=pingPongStats[pi][ti];
+				int highIntPercent=(100*value)/sum;
+				int lowIntPercent=((1000*value)/sum)%10;
+				fprintf(logFileEnd, " [%4d]=%7d (%2d.%1d%%) ", ti, value, highIntPercent, lowIntPercent);
+				float fPercent=(float)(100.*value)/(float)sum;
+				for (int i=0; i<(int)(fPercent+.5); i++)
+					fprintf(logFileEnd, "*");
+				fprintf(logFileEnd, "\n");
+			}
+			fprintf(logFileEnd, "\n");
+		}
+	}
+	
+	fflush(logFileEnd);
+}
 
 Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 {
@@ -827,12 +951,12 @@ void NetGame::computeMyLocalWishedLatency()
 			// We compute the pingPongMax[pi] and pingPongMin[pi]:
 			int min=INT_MAX;
 			int max=0;
-			for (int ri=0; ri<256; ri++)
+			for (int ri=0; ri<1024; ri++)
 			{
 				int delay=recentsPingPong[pi][ri];
-				if (delay<min)
+				if (min>delay)
 					min=delay;
-				if (delay>max)
+				if (max<delay)
 					max=delay;
 			}
 			pingPongMin[pi]=min;
@@ -853,6 +977,11 @@ void NetGame::computeMyLocalWishedLatency()
 	int goodLatency=ordersByPackets+1+maxPingPongMax/80;
 	if (goodLatency<1)
 		goodLatency=1;
+	
+	if (goodLatency<40)
+		goodLatencyStats[goodLatency]++;
+	else
+		goodLatencyStats[39]++;
 	
 	Uint8 latency=pushUStep-executeUStep;
 	
@@ -920,7 +1049,11 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	if (sdlTicksStart)
 	{
 		Uint32 pingPong=SDL_GetTicks()-sdlTicksStart;
-		recentsPingPong[player][receivedUStep&255]=pingPong;
+		recentsPingPong[player][receivedUStep&1023]=pingPong;
+		if (pingPong<1024)
+			pingPongStats[player][pingPong]++;
+		else
+			pingPongStats[player][1023]++;
 		fprintf(logFile, " pingPong=%d\n", pingPong);
 	}
 	lastSdlTickReceivedFromHim[player]=getUint32(data, 12);
@@ -1088,6 +1221,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			else if (oldOrder->ustep==orderUStep)
 			{
 				fprintf(logFile, "  Warning, duplicated packet. player=%d, orderUStep=%d, v-n\n", player, orderUStep);
+				duplicatedPacketStats[player]++;
 				if (oldOrder->getOrderType()!=order->getOrderType())
 				{
 					fprintf(logFile, "  Error, oldOrderType=%d, newOrderType=%d\n", oldOrder->getOrderType(), order->getOrderType());

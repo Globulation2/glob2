@@ -87,6 +87,8 @@ public:
 	NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32]);
 	~NetGame();
 	void init(void);
+	void dumpStats();
+	void initStats();
 	
 private:
 	Uint32 whoMaskAreWeWaitingFor(void); // Uses executeUStep
@@ -170,7 +172,7 @@ private:
 	Uint32 lastAvailableUStep[32][32];
 	
 	// We want tu update latency automatically:
-	int recentsPingPong[32][256]; // The 256 last ping+pong times. [ms]
+	int recentsPingPong[32][1024]; // [player][id++] The 1024 last ping+pong times. [ms]
 	
 	UDPsocket socket;
 
@@ -180,10 +182,15 @@ private:
 	std::list<Uint32> checkSumsListsStorageForUnits[256];
 	
 	FILE *logFile;
+	FILE *logFileEnd;
 protected:
 	int delayInsideStats[40];
 	int wishedDelayStats[40];
 	int maxMedianWishedDelayStats[40];
+	int goodLatencyStats[40];
+	int duplicatedPacketStats[32];
+	
+	int pingPongStats[32][1024]; //[player][ms]
 };
 
 #endif
