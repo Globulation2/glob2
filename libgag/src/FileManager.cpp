@@ -259,10 +259,28 @@ void FileManager::remove(const char *filename)
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
 		std::remove(fn);
+		delete[] fn;
 	}
 }
 
-bool FileManager::addListingForDir(const char *realDir, const char *extension)
+bool FileManager::isDir(const char *filename)
+{
+	std::vector<const char *>::iterator dirListIterator = dirList.begin();
+	struct stat s;
+	int serr = 1;
+	while ((serr) && (dirListIterator != dirList.end()))
+	{
+		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
+		char *fn = new char[allocatedLength];
+		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
+		serr = stat(fn, &s);
+		delete[] fn;
+		dirListIterator++;
+	}
+	return S_ISDIR(s.st_mode);
+}
+
+bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
 {
 	/*
 #ifdef WIN32 
@@ -342,7 +360,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 		b = FindNextFile(hFind, &wfd);
 	}
 	
-#else // angel > plus Win32 (system primate)
+#else // angel > plus system primate
 	*/
 	DIR *dir=opendir(realDir);
 	struct dirent *dirEntry;
@@ -360,12 +378,29 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 #ifdef DBG_VPATH_LIST
 		fprintf(stderr, "%s\n", dirEntry->d_name);
 #endif
-		int l, nl;
-		l=strlen(extension);
-		nl=strlen(dirEntry->d_name);
-		if ((nl>l) &&
-			(dirEntry->d_name[nl-l-1]=='.') &&
-			(strcmp(extension,dirEntry->d_name+(nl-l))==0))
+		// there might be a way to optimize the decision of the ok
+		bool ok = true;
+		// hide hidden stuff
+		if (dirEntry->d_name[0] == '.')
+		{
+			ok = false;
+		}
+		// take directories if asked
+		else if (dirEntry->d_type == DT_DIR)
+		{
+			ok = dirs;
+		}
+		// check extension if provided
+		else if (extension) 
+		{
+			int l, nl;
+			l=strlen(extension);
+			nl=strlen(dirEntry->d_name);
+			ok = ((nl>l) &&
+			      (dirEntry->d_name[nl-l-1]=='.') &&
+			      (strcmp(extension,dirEntry->d_name+(nl-l))==0));
+		}
+		if (ok)
 		{
 			// test if name already exists in vector
 			bool alreadyIn=false;
@@ -385,11 +420,11 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	}
 
 	closedir(dir);
-//#endif // angel > end of comentaire primate
+//#endif // angel > end of comentaire de primate
 	return true;
 }
 
-bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension)
+bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension, const bool dirs)
 {
 	bool result=false;
 	clearFileList();
@@ -401,7 +436,7 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 #ifdef DBG_VPATH_LIST
 		fprintf(stderr, "GAG : Listing from dir %s :\n", dn);
 #endif
-		result=addListingForDir(dn, extension) || result;
+		result=addListingForDir(dn, extension, dirs) || result;
 		delete[] dn;
 	}
 	if (result)

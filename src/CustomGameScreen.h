@@ -22,6 +22,7 @@
 
 #include "GAG.h"
 #include "Session.h"
+#include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 
 class CustomGameScreen:public Screen
@@ -36,7 +37,7 @@ public:
 
 private:
 	Button *ok, *cancel;
-	List *fileList;
+	Glob2FileList *fileList;
 	MapPreview *mapPreview;
 	OnOffButton *isAI[8];
 	ColorButton *color[8];

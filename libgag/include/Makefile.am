@@ -5,6 +5,7 @@ GAGSys.h \
 GUIBase.h \
 GUIButton.h \
 GUIList.h \
+GUIFileList.h\
 GUINumber.h \
 GUIRatio.h \
 GUIText.h \

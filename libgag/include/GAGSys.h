@@ -59,4 +59,11 @@
 #endif
 #endif
 
+//! strdup function using new
+inline char* newstrdup(const char* str)
+{
+	char* newStr = new char[strlen(str)+1];
+	return strcpy(newStr, str);
+}
+
 #endif 

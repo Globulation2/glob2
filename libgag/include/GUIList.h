@@ -41,7 +41,11 @@ public:
 	char *get(void) const;
 	//! Call this after all add has been done
 	void commit(void) { repaint(); }
-	void sort(void);
+	//! Sorts the list (override it if you don't like it)
+	virtual void sort(void); 
+
+	//! Called when selection changes (default: signal parent)
+	virtual void selectionChanged();
 	
 	int getNth(void) const;
 	void setNth(int nth);

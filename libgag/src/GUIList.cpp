@@ -111,9 +111,12 @@ void List::onSDLEvent(SDL_Event *event)
 				id+=disp;
 				if ((id>=0) &&(id<(int)strings.size()))
 				{
-					nth=id;
-					repaint();
-					parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
+					if (this->nth != id) 
+					{
+						nth=id;
+						this->selectionChanged();
+						repaint();
+					}
 				}
 			}
 		}
@@ -140,6 +143,12 @@ void List::onSDLEvent(SDL_Event *event)
 		}
 	}
 }
+
+void List::selectionChanged()
+{
+	this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
+}
+
 
 void List::internalPaint(void)
 {
