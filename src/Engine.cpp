@@ -195,7 +195,7 @@ int Engine::run(void)
 		//printf ("Engine::bdr:%d\n", globalContainer.safe());
 
 		// we draw
-		gui.drawAll();
+		gui.drawAll(gui.localTeam);
 		
 		//globalContainer.gfx.drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
 		//ticknb=(ticknb+1)%(640-128);
@@ -204,8 +204,8 @@ int Engine::run(void)
 		
 		endTick=SDL_GetTicks();
 		deltaTick=endTick-startTick-net->advance();
-		if (net->advance())
-			printf("advance=%d\n", net->advance());
+		//if (net->advance())
+		//	printf("advance=%d\n", net->advance());
 		if (deltaTick<(unsigned)gui.game.session.gameTPF)
 			SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
 		
