@@ -153,9 +153,10 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	hungry=SDL_ReadBE32(stream);
 	trigHungry=SDL_ReadBE32(stream);
 	trigHungryCarying=(trigHungry*4)/10;
+	fruitMask=SDL_ReadBE32(stream);
 
 	// quality parameters
-	
+
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
 	{
@@ -166,7 +167,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
 	subscribed=(bool)SDL_ReadBE32(stream);
-	
+
 	caryedRessource=(Sint32)SDL_ReadBE32(stream);
 	verbose=false;
 }
@@ -215,6 +216,7 @@ void Unit::save(SDL_RWops *stream)
 	// hungry
 	SDL_WriteBE32(stream, hungry);
 	SDL_WriteBE32(stream, trigHungry);
+	SDL_WriteBE32(stream, fruitMask);
 
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)

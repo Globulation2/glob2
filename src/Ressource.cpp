@@ -26,9 +26,12 @@ RessourceType::RessourceType()
 	gfxId=0;
 	sizesCount=0;
 	varietiesCount=0;
-	shrinkable=0;
-	eternal=0;
+	shrinkable=true;
+	expendable=true;
+	eternal=false;
+	granular=true;
 	multiplicator=1;
+	visibleToBeCollected=false;
 }
 
 RessourcesTypes::RessourcesTypes()

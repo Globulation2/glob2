@@ -22,7 +22,7 @@
 
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 17
+#define VERSION_MINOR 18
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -30,5 +30,6 @@
 // version 14 adds the save of the end of game stats in Team.
 // version 15 and 16 remove old compatibility because of major core engine changes.
 // version 17 change the ressource system, move sore hardcoded ressource stuff to external file.
+// version 18 adds fruit mask for unit happyness.
 
 #endif

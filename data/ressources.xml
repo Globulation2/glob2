@@ -16,6 +16,7 @@
    <eternal>false</eternal>
    <granular>false</granular>
    <multiplicator>1</multiplicator>
+   <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -29,6 +30,7 @@
    <eternal>false</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
+   <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -42,6 +44,7 @@
    <eternal>false</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
+   <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -55,6 +58,7 @@
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
+   <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -68,6 +72,7 @@
    <eternal>false</eternal>
    <granular>false</granular>
    <multiplicator>1</multiplicator>
+   <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -81,6 +86,7 @@
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>10</multiplicator>
+   <visibleToBeCollected>true<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -94,6 +100,7 @@
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>10</multiplicator>
+   <visibleToBeCollected>true<visibleToBeCollected>
   </element>
  </res>
  <wood>0</wood>
