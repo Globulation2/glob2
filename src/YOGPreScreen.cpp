@@ -50,7 +50,7 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(newYogPassword);
 	addWidget(newYogPasswordText);
 	
-	statusText=new TextArea(20, 230, 600, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	statusText=new TextArea(20, 205, 600, 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
 	
 	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
