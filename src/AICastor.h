@@ -53,10 +53,7 @@ public:
 private:
 	void choosePhase();
 	
-	Order *phaseBasic(BuildingType::BuildingTypeShortNumber shortTypeNum, bool food, Sint32 mainWorkers, Sint32 foodWorkers, Sint32 otherWorkers, bool multipleStart);
-	//Order *phaseAlpha(); // get any food building
-	//Order *phaseBeta(); // get any swarm
-	//Order *phaseGamma(); // get some of the best food building aviable
+	Order *phaseBasic(BuildingType::BuildingTypeShortNumber shortTypeNum, bool food, Sint32 mainWorkers, Sint32 foodWorkers, Sint32 otherWorkers, bool multipleStart, Sint32 finalWorkers);
 	
 	
 	void computeCanSwim();
@@ -86,9 +83,11 @@ private:
 	enum PhaseType
 	{
 		P_NONE=0,
-		P_ALPHA=1,
-		P_BETA=2,
-		P_GAMMA=3,
+		P_BASIC_FOOD=1,
+		P_BASIC_SWARM=2,
+		P_BASIC_SWIM=3,
+		P_BASIC_ATTAQUE=4,
+		P_BASIC_SPEED=5,
 		P_END
 	};
 	
