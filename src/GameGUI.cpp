@@ -246,7 +246,7 @@ void GameGUI::brushStep(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
 				{
-					game.map.localForbiddenMap[game.map.w*(y&game.map.hMask)+(x&game.map.wMask)] = 0;
+					game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 				}
 	}
 	else if (forbiddenBrush.getType() == BrushTool::MODE_DEL)
@@ -255,7 +255,7 @@ void GameGUI::brushStep(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
 				{
-					game.map.localForbiddenMap[game.map.w*(y&game.map.hMask)+(x&game.map.wMask)] = 0xFF;
+					game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 				}
 	}
 	else
@@ -2789,7 +2789,8 @@ void GameGUI::drawAll(int team)
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
-								((selectionMode==BRUSH_SELECTION) ? Game::DRAW_FORBIDDEN_AREA : 0);
+								//((selectionMode==BRUSH_SELECTION) ? Game::DRAW_FORBIDDEN_AREA : 0);
+								Game::DRAW_FORBIDDEN_AREA;
 	
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{

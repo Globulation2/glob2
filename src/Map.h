@@ -21,7 +21,6 @@
 #define __MAP_H
 
 #include <list>
-#include <valarray>
 #include <assert.h>
 
 #include "Building.h"
@@ -29,6 +28,7 @@
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
+#include "BitArray.h"
 
 class Unit;
 
@@ -177,7 +177,7 @@ public:
 	//! Return true if the position (x,y) is a forbidden area set by the user
 	bool isForbiddenLocal(int x, int y, int teamMask)
 	{
-		return localForbiddenMap[w*(y&hMask)+(x&wMask)] == 0;
+		return localForbiddenMap.get(w*(y&hMask)+(x&wMask));
 	}
 	
 	//! Compute localForbiddenMap from cases array
@@ -484,8 +484,8 @@ public:
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
 	Uint32 *mapDiscovered;
 	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
-	//! Array, 0 = forbidden, 0xFF = allowed
-	std::valarray<Uint8> localForbiddenMap;
+	//! true = forbidden
+	Utilities::BitArray localForbiddenMap;
 	
 public:
 	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
