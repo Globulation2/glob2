@@ -1,16 +1,23 @@
 Main developpers (including design, code and graphics) :
 
 Stephane Magnenat <nct@ysagoon.com>
-Luc-Olivier de Charriere <luc-olivier.decharriere@epfl.ch>
+Luc-Olivier de Charriere <nuage@ysagoon.com>
 
 Contributors :
 
-coding :
-Julien Pilet <leto@calodox.org>
-Frederic Dubouchet <angel@calodox.org>
+* Coding :
+  Julien Pilet <leto@calodox.org>
+  Frederic Dubouchet <angel@calodox.org>
+  Sebastian Gerlach <minas@calodox.org>
+ 
+* Czech translation :
+  Michal
 
-beta testing & graphic :
-Gabriel Walt <disney@ysagoon.com>
+* Debian packages :
+  Gryzor
 
-conceptual consulting for version 1.0 :
-Cecile Grivaz <kat@ysagoon.com>
+* Beta testing & graphic :
+  Gabriel Walt <disney@ysagoon.com>
+
+* Conceptual consulting for version 1.0 :
+  Cecile Grivaz <kat@ysagoon.com>
