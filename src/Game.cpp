@@ -1430,16 +1430,16 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				{
 					if (b->verbose==1)
 					{
-						if (b->globalGradient[0])
+						if (b->globalGradient[1])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-								b->globalGradient[0][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
+								b->globalGradient[1][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
 					}
 					else if (map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
 					{
 						int lx=(x+viewportX-b->posX+15)&31;
 						int ly=(y+viewportY-b->posY+15)&31;
-						if (!b->dirtyLocalGradient[0])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[0][lx+ly*32]);
+						if (!b->dirtyLocalGradient[1])
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
 					}
 
 					globalContainer->littleFont->pushColor(192, 192, 192);

@@ -86,9 +86,7 @@ Map::Map()
 	pathToBuildingCountClose=0;
 	pathToBuildingCountCloseSuccessStand=0;
 	pathToBuildingCountCloseSuccessBase=0;
-	pathToBuildingCountCloseSuccessAround=0;
 	pathToBuildingCountCloseSuccessUpdated=0;
-	pathToBuildingCountCloseSuccessUpdatedAround=0;
 	pathToBuildingCountCloseFailureLocked=0;
 	pathToBuildingCountCloseFailureEnd=0;
 	
@@ -361,9 +359,7 @@ void Map::clear()
 		int pathToBuildingCountCloseSuccessTot=
 			+pathToBuildingCountCloseSuccessStand
 			+pathToBuildingCountCloseSuccessBase
-			+pathToBuildingCountCloseSuccessAround
-			+pathToBuildingCountCloseSuccessUpdated
-			+pathToBuildingCountCloseSuccessUpdatedAround;
+			+pathToBuildingCountCloseSuccessUpdated;
 	
 		fprintf(logFile, "|-  pathToBuildingCountCloseSuccessTot=%d (%f %% of tot) (%f %% of close)\n",
 			pathToBuildingCountCloseSuccessTot,
@@ -382,23 +378,11 @@ void Map::clear()
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountCloseSuccessTot);
 		
-		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
-			pathToBuildingCountCloseSuccessAround,
-			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountTot,
-			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountClose,
-			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountCloseSuccessTot);
-		
 		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessUpdated=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessUpdated,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountCloseSuccessTot);
-		
-		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessUpdatedAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
-			pathToBuildingCountCloseSuccessUpdatedAround,
-			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountTot,
-			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountClose,
-			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountCloseSuccessTot);
 		
 		int pathToBuildingCountCloseFailure=
 			+pathToBuildingCountCloseFailureLocked
@@ -457,10 +441,10 @@ void Map::clear()
 			+pathToBuildingCountFarOldFailureBad
 			+pathToBuildingCountFarOldFailureUnusable;
 		fprintf(logFile, "|-   pathToBuildingCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old))\n",
-			pathToBuildingCountFarOldSuccess,
-			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountTot,
-			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountFar,
-			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountFarOld);
+			pathToBuildingCountFarOldFailure,
+			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountTot,
+			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountFar,
+			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountFarOld);
 		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure))\n",
 			pathToBuildingCountFarOldFailureLocked,
 			100.*(double)pathToBuildingCountFarOldFailureLocked/(double)pathToBuildingCountTot,
@@ -534,9 +518,7 @@ void Map::clear()
 	pathToBuildingCountClose=0;
 	pathToBuildingCountCloseSuccessStand=0;
 	pathToBuildingCountCloseSuccessBase=0;
-	pathToBuildingCountCloseSuccessAround=0;
 	pathToBuildingCountCloseSuccessUpdated=0;
-	pathToBuildingCountCloseSuccessUpdatedAround=0;
 	pathToBuildingCountCloseFailureLocked=0;
 	pathToBuildingCountCloseFailureEnd=0;
 	
@@ -2384,26 +2366,57 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient)
 {
 	Uint8 miniGrad[25];
-	for (int ry=0; ry<5; ry++)
-		for (int rx=0; rx<5; rx++)
-		{
-			int xg=(x+rx-2)&wMask;
-			int yg=(y+ry-2)&hMask;
-			int g=gradient[xg+yg*w];
-			if (g==0 || g==255 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
-				miniGrad[rx+ry*5]=g;
-			else
-				miniGrad[rx+ry*5]=0;
-		}
-	for (int ry=1; ry<=3; ry++)
-		for (int rx=1; rx<=3; rx++)
-			if (miniGrad[rx+ry*5]==255)
-			{
-				int xg=(x+rx-2)&wMask;
-				int yg=(y+ry-2)&hMask;
-				if (!isFreeForGroundUnit(xg, yg, canSwim, teamMask))
-					miniGrad[rx+ry*5]=0;
-			}
+	miniGrad[2+2*5]=gradient[x+y*w];
+	static const int tabFar[16][2]={
+		{-2, -2},
+		{-1, -2},
+		{ 0, -2},
+		{ 1, -2},
+		{ 2, -2},
+		{ 2, -1},
+		{ 2,  0},
+		{ 2,  1},
+		{ 2,  2},
+		{ 1,  2},
+		{ 0,  2},
+		{-1,  2},
+		{-2,  2},
+		{-2,  1},
+		{-2,  0},
+		{-2, -1}};
+	for (int di=0; di<16; di++)
+	{
+		int rx=tabFar[di][0];
+		int ry=tabFar[di][1];
+		int xg=(x+rx)&wMask;
+		int yg=(y+ry)&hMask;
+		int g=gradient[xg+yg*w];
+		if (g==0 || g==255 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
+			miniGrad[rx+ry*5+12]=g;
+		else
+			miniGrad[rx+ry*5+12]=0;
+	}
+	static const int tabClose[8][2]={
+		{-1, -1},
+		{ 0, -1},
+		{ 1, -1},
+		{ 1,  0},
+		{ 1,  1},
+		{ 0,  1},
+		{-1,  1},
+		{-1,  0}};
+	for (int di=0; di<8; di++)
+	{
+		int rx=tabClose[di][0];
+		int ry=tabClose[di][1];
+		int xg=(x+rx)&wMask;
+		int yg=(y+ry)&hMask;
+		int g=gradient[xg+yg*w];
+		if (g==0 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
+			miniGrad[rx+ry*5+12]=g;
+		else
+			miniGrad[rx+ry*5+12]=0;
+	}
 	return directionFromMinigrad(miniGrad, dx, dy, true);
 }
 
