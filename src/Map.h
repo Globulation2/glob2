@@ -492,6 +492,7 @@ public:
 	Sint32 checkSum(bool heavy);
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //The distance between (px, py) and (qx, qy), warp-safe, but not rooted.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
+	bool isInLocalGradient(int ux, int uy, int bx, int by); //Return true if the unit @(ux, uy) is close enough of building @(bx, by).
 
 public:
 	void makeHomogenMap(TerrainType terrainType);

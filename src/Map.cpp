@@ -2923,7 +2923,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	
 	Uint8 *gradient=building->localGradient[canSwim];
 	
-	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
+	if (isInLocalGradient(x, y, bx, by))
 	{
 		buildingAviableCountClose++;
 		int lx=(x-bx+15+32)&31;
@@ -3118,7 +3118,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	Uint32 teamMask=building->owner->me;
 	Uint8 *gradient=building->localGradient[canSwim];
 	
-	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
+	if (isInLocalGradient(x, y, bx, by))
 	{
 		pathToBuildingCountClose++;
 		int lx=(x-bx+15+32)&31;
@@ -3416,7 +3416,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	
 	Uint8 *gradient=building->localRessources[canSwim];
 	assert(gradient);
-	assert(warpDistMax(x, y, bx, by)<16);
+	assert(isInLocalGradient(x, y, bx, by));
 	
 	int lx=(x-bx+15+32)&31;
 	int ly=(y-by+15+32)&31;
@@ -3749,4 +3749,43 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 		return dx;
 	else
 		return dy;
+}
+
+bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
+{
+	Sint32 dx=abs(ux-bx);
+	Sint32 dy=abs(uy-by);
+	dx&=wMask;
+	dy&=hMask;
+	if (dx>(w>>1))
+		dx=abs(w-dx);
+	if (dy>(h>>1))
+		dy=abs(h-dy);
+	if (dx>dy)
+	{
+		if (dx<15)
+			return true;
+		if (dx>15)
+			return false;
+		
+		return ((bx+15) & wMask)==(ux & wMask);
+	}
+	else if (dx<dy)
+	{
+		if (dy<15)
+			return true;
+		if (dy>15)
+			return false;
+		
+		return ((by+15) & wMask)==(uy & wMask);
+	}
+	else
+	{
+		if (dx<15)
+			return true;
+		if (dx>15)
+			return false;
+		
+		return (((bx+15) & wMask)==(ux & wMask)) && (((by+15) & wMask)==(uy & wMask));
+	}
 }
