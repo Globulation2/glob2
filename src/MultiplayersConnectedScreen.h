@@ -38,6 +38,10 @@ private:
 	double progress, lastProgress;
 public:
 	Text *startTimer;
+	
+private:
+	TextInput *textInput;
+	TextArea *chatWindow;
 
 public:
 	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);

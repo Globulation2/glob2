@@ -123,7 +123,7 @@ void NetGame::init(void)
 			ordersQueue[p][step]=order;
 		}
 		
-		// We have to create the first unsended orders:
+		// We have to create the first unsent orders:
 		for (int step=0; step<pushStep; step++)
 		{
 			Order *order=new NullOrder();
@@ -132,7 +132,7 @@ void NetGame::init(void)
 			ordersQueue[p][step]=order;
 		}
 		
-		// We write that the first unsended orders are received:
+		// We write that the first unsent orders are received:
 		lastReceivedFromMe[p]=pushStep-1;
 		
 		// At the beginning, no-one is late:

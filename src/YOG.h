@@ -91,9 +91,6 @@ public:
 		YOGClientMessageType messageType;
 		bool gameGuiPainted;
 		Uint8 messageID;
-		Uint8 pad1;
-		Uint8 pad2;
-		Uint8 pad3;//We need to pad to support memory alignement
 	};
 	
 	struct Client

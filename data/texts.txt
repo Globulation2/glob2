@@ -287,7 +287,7 @@ Verbinden an
 Connecter
 Connect
 Verbinden
-[disconnect]
+[Disconnect]
 Déconnecter
 Disonnect
 Verbindung unterbrechen
@@ -720,7 +720,7 @@ Born to pète la geule
 Né pour beak your neck
 geboren um zu zerstoeren
 [AI name 4]
-Cassecouille
+Tape-Sytème
 Agressman
 Agressivum
 [the games]

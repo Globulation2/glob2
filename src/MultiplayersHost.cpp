@@ -431,7 +431,7 @@ void MultiplayersHost::removePlayer(Uint8 *data, int size, IPaddress ip)
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a quit game !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sent a quit game !!!\n", ip.host, ip.port);
 		return;
 	}
 	removePlayer(i);
@@ -582,7 +582,7 @@ void MultiplayersHost::playerWantsSession(Uint8 *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a Session request !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a Session request !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -644,8 +644,8 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a File request !!!\n", Utilities::stringIP(ip));
-		fprintf(logFileDownload, "An unknow player (%s) has sended a File request !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a File request !!!\n", Utilities::stringIP(ip));
+		fprintf(logFileDownload, "An unknow player (%s) has sent a File request !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -838,7 +838,7 @@ void MultiplayersHost::confirmPlayer(Uint8 *data, int size, IPaddress ip)
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a checksum !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a checksum !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -871,7 +871,7 @@ void MultiplayersHost::confirmStartCrossConnection(Uint8 *data, int size, IPaddr
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a confirmStartCrossConnection !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a confirmStartCrossConnection !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -895,7 +895,7 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a confirmStillCrossConnecting !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a confirmStillCrossConnecting !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -919,7 +919,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(Uint8 *data, int size, IPa
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%s) has sended a confirmCrossConnectionAchieved !!!\n", Utilities::stringIP(ip));
+		fprintf(logFile, "An unknow player (%s) has sent a confirmCrossConnectionAchieved !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -1097,6 +1097,10 @@ void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
 		case PLAYERS_CROSS_CONNECTIONS_ACHIEVED:
 			confirmCrossConnectionAchieved(data, size, ip);
 		break;
+		
+		case ORDER_TEXT_MESSAGE:
+			receivedMessage(data, size, ip);
+		break;
 
 		default:
 			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%s).\n", data[0], Utilities::stringIP(ip));
@@ -1230,6 +1234,8 @@ void MultiplayersHost::sendBroadcastLanGameHosting(Uint16 port, bool create)
 
 void MultiplayersHost::sendingTime()
 {
+	MultiplayersCrossConnectable::sendingTime();
+	
 	bool update=false;
 	if (hostGlobalState<HGS_GAME_START_SENDED)
 	{
@@ -1330,7 +1336,7 @@ void MultiplayersHost::sendingTime()
 				assert(mini<PACKET_SLOTS);
 				bool sent=playerFileTra[p].packetSlot[mini].sent;
 				bool received=playerFileTra[p].packetSlot[mini].received;
-				Uint32 sendingIndex;
+				Uint32 sendingIndex=0;
 				if ((sent && received) || !sent)
 				{
 					// This not a lost packet, we have to find a packet to send:

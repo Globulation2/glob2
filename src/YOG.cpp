@@ -423,7 +423,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 				break;
 			}
 			else
-				fprintf(logFile, "Warning, message (%d) confirmed, but message (%d) is being sended!\n", messageID, mit->messageID);
+				fprintf(logFile, "Warning, message (%d) confirmed, but message (%d) is being sent!\n", messageID, mit->messageID);
 		}
 	}
 	break;

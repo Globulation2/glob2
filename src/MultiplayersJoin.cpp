@@ -858,6 +858,10 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 			serverAskForBeginning(data, size, ip);
 		break;
 		
+		case ORDER_TEXT_MESSAGE:
+			receivedMessage(data, size, ip);
+		break;
+		
 		case BROADCAST_REQUEST:
 			joinerBroadcastRequest(data, size, ip);
 		break;
@@ -1043,6 +1047,8 @@ char *MultiplayersJoin::getStatusString()
 
 void MultiplayersJoin::sendingTime()
 {
+	MultiplayersCrossConnectable::sendingTime();
+	
 	if (waitingState>WS_WAITING_FOR_SESSION_INFO)
 	{
 		if (broadcastState==BS_ENABLE_LAN)

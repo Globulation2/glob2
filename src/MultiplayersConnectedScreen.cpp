@@ -28,12 +28,17 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 {
 	this->multiplayersJoin=multiplayersJoin;
 	
-	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
+	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Disconnect]"), DISCONNECT));
 	
-	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
 	
 	startTimer=new Text(20, 400, globalContainer->standardFont, "");
 	addWidget(startTimer);
+	
+	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
+	addWidget(chatWindow);
+	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
+	addWidget(textInput);
 	
 	timeCounter=0;
 	progress=0;
@@ -57,6 +62,8 @@ void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
 
 void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 {
+	assert(multiplayersJoin);
+	
 	multiplayersJoin->onTimer(tick);
 	
 	if (multiplayersJoin->waitingState<MultiplayersJoin::WS_WAITING_FOR_PRESENCE)
@@ -100,6 +107,19 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			endExecute(STARTED);
 		}
 	}
+	
+	if (multiplayersJoin->receivedMessages.size())
+		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersJoin->receivedMessages.begin(); mit!=multiplayersJoin->receivedMessages.end(); ++mit)
+			if (!mit->guiPainted)
+			{
+				chatWindow->addText("<");
+				chatWindow->addText(mit->userName);
+				chatWindow->addText("> ");
+				chatWindow->addText(mit->text);
+				chatWindow->addText("\n");
+				chatWindow->scrollToBottom();
+				mit->guiPainted=true;
+			}
 }
 
 void MultiplayersConnectedScreen::onSDLEvent(SDL_Event *event)
@@ -114,15 +134,23 @@ void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int pa
 	{
 		if (par1==DISCONNECT)
 		{
+			assert(multiplayersJoin);
 			multiplayersJoin->quitThisGame();
 			endExecute(DISCONNECT);
 		}
 		else if (par1==-1)
 		{
+			assert(multiplayersJoin);
 			multiplayersJoin->quitThisGame();
 			endExecute(-1);
 		}
 		else
 			assert(false);
+	}
+	else if (action==TEXT_VALIDATED)
+	{
+		assert(multiplayersJoin);
+		multiplayersJoin->sendMessage(textInput->text);
+		textInput->setText("");
 	}
 }
