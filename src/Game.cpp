@@ -1319,20 +1319,27 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 		rx&=map.getMaskW();
 		ry&=map.getMaskH();
 	}
-	rx=(rx*100)/map.getW();
-	ry=(ry*100)/map.getH();
-	rw=((globalContainer->gfx->getW()-128)*100)/(32*map.getW());
-	rh=(globalContainer->gfx->getH()*100)/(32*map.getH());
+
+	// get data for minimap
+	int mMax;
+	int szX, szY;
+	int decX, decY;
+	Utilities::computeMinimapData(100, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
+
+	rx=(rx*100)/mMax;
+	ry=(ry*100)/mMax;
+	rw=((globalContainer->gfx->getW()-128)*100)/(32*mMax);
+	rh=(globalContainer->gfx->getH()*100)/(32*mMax);
 
 	for (n=0; n<rw+1; n++)
 	{
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100), 14+(ry%100), 255, 255, 255);
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100), 14+((ry+rh)%100), 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100)+decX, 14+(ry%100)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100)+decX, 14+((ry+rh)%100)+decY, 255, 255, 255);
 	}
 	for (n=0; n<rh+1; n++)
 	{
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%100), 14+((ry+n)%100), 255, 255, 255);
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%100), 14+((ry+n)%100), 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%100)+decX, 14+((ry+n)%100)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%100)+decX, 14+((ry+n)%100)+decY, 255, 255, 255);
 	}
 }
 
@@ -1362,8 +1369,14 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 
 	int decSPX, decSPY;
 
-	dMx=(float)map.getW()/100.0f;
-	dMy=(float)map.getH()/100.0f;
+	// get data
+	int mMax;
+	int szX, szY;
+	int decX, decY;
+	Utilities::computeMinimapData(100, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
+
+	dMx=(float)mMax/100.0f;
+	dMy=(float)mMax/100.0f;
 
 	if (teamSelected>=0)
 	{
@@ -1376,9 +1389,10 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 		decSPY=0;
 	}
 
-	for (dy=0; dy<100; dy++)
+	minimap->drawFilledRect(0,0,100,100,0,0,0);
+	for (dy=0; dy<szY; dy++)
 	{
-		for (dx=0; dx<100; dx++)
+		for (dx=0; dx<szX; dx++)
 		{
 			for (int i=0; i<7; i++)
 				pcol[i]=0;
@@ -1397,7 +1411,6 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 						u=map.getUnit((Sint16)minidx, (Sint16)minidy);
 						if (u!=NOUID)
 						{
-							// TODO : use ally mask
 							if (u>=0)
 								teamId=Unit::UIDtoTeam(u);
 							else
@@ -1485,7 +1498,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 			}
-			minimap->drawPixel(dx, dy, r, g, b);
+			minimap->drawPixel(dx+decX, dy+decY, r, g, b);
 		}
 	}
 
@@ -1502,7 +1515,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			r=200;
 			g=255;
 			b=200;
-			minimap->drawPixel((fx*100)/map.getW(), (fy*100)/map.getH(), r, g, b);
+			minimap->drawPixel(((fx*100)/mMax)+decX, ((fy*100)/mMax)+decY, r, g, b);
 		}
 }
 

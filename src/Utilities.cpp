@@ -328,6 +328,27 @@ namespace Utilities
 		else
 			return f3;
 	}
+
+	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY)
+	{
+		// get data
+		if (mW>mH)
+		{
+			*maxSize=mW;
+			*sizeX=resolution;
+			*decX=0;
+			*sizeY=(mH*resolution)/mW;
+			*decY=(resolution-*sizeY)>>1;
+		}
+		else
+		{
+			*maxSize=mH;
+			*sizeX=(mW*resolution)/mH;
+			*decX=(resolution-*sizeX)>>1;
+			*sizeY=resolution;
+			*decY=0;
+		}
+	}
 }
 
 

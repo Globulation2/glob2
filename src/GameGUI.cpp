@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include "GameGUIDialog.h"
 #include "GameGUILoadSave.h"
+#include "Utilities.h"
 
 
 InGameTextInput::InGameTextInput()
@@ -661,12 +662,16 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 
 void GameGUI::viewportFromMxMY(int mx, int my)
 {
-	mx-=14;
-	my-=14;
-	mx=(mx*128)/100;
-	my=(my*128)/100;
-	viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
-	viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
+	// get data for minimap
+	int mMax;
+	int szX, szY;
+	int decX, decY;
+	Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+
+	mx-=14+decX;
+	my-=14+decY;
+	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
 	viewportX+=game.teams[localTeam]->startPosX+(game.map.getW()>>1);
 	viewportY+=game.teams[localTeam]->startPosY+(game.map.getH()>>1);
 	if (viewportX<0)

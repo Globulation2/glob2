@@ -761,12 +761,16 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 
 void MapEdit::viewportFromMxMY(int mx, int my)
 {
-	mx-=14;
-	my-=14;
-	mx=(mx*128)/100;
-	my=(my*128)/100;
-	viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
-	viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
+	// get data for minimap
+	int mMax;
+	int szX, szY;
+	int decX, decY;
+	Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+
+	mx-=14+decX;
+	my-=14+decY;
+	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
 	if (viewportX<0)
 		viewportX+=game.map.getW();
 	if (viewportY<0)
@@ -1032,7 +1036,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 				}
 
-				printf("bat rect %d,%d,%d,%d\n", batX, batY, batW, batH);
 				refreshZones[nbRefreshZones].x=batX;
 				refreshZones[nbRefreshZones].y=batY;
 				refreshZones[nbRefreshZones].w=batW;

@@ -59,6 +59,8 @@ namespace Utilities
 	//! return max of f1, f2 and f3
 	float fmax(float f1, float f2, float f3);
 
+	//! data for computing minimap
+	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY);
 };
 
 #endif

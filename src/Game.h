@@ -84,8 +84,6 @@ public:
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=false);
-
-
 	Sint32 checkSum();
 
 public:
