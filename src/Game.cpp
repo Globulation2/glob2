@@ -689,7 +689,7 @@ void Game::wonStep(void)
 		isGameEnded|=teams[i]->hasWon;
 		totalPrestige+=teams[i]->prestige;
 	}
-	// zzz be generic here
+	// TODO: be generic here
 	if (totalPrestige>=1000)
 	{
 		totalPrestigeReached=true;

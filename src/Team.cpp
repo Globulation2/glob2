@@ -931,7 +931,8 @@ void Team::step(void)
 		Unit *u=myUnits[i];
 		if (u)
 		{
-			nbUnits++;
+			if (u->displacement!=Unit::DIS_EXITING_BUILDING || u->movement!=Unit::MOV_INSIDE)
+				nbUnits++;
 			u->step();
 			if (u->isDead)
 			{
@@ -1064,6 +1065,8 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
 
+	
+	
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
 	// decount event cooldown counter
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)

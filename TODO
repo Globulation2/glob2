@@ -1,5 +1,9 @@
 To First release :
 
+Gameplay:
+-Est-ce que le prestige fixé à 1000 peut-être variable ?
+-Ne pas tenir compte des batiments enfermés pour la victoire / défaite.
+
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 - Les viewportX/Y ils n'ont pas l'air de se charger correctement dans l'éditeur (la touche "tab" bug),
