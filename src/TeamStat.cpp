@@ -55,6 +55,9 @@ void TeamStats::step(Team *team)
 		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_UNITS] = stats[statsIndex].totalUnit;
 		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_BUILDINGS] = stats[statsIndex].totalBuilding;
 		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_PRESTIGE] = team->prestige;
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_HP] = stats[statsIndex].totalHP;
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_ATTACK] = stats[statsIndex].totalAttackPower;
+		endOfGameStats[endOfGameStatIndex].value[EndOfGameStat::TYPE_DEFENSE] = stats[statsIndex].totalDefensePower;
 
 		endOfGameStatIndex++;
 		endOfGameStatIndex%=END_OF_GAME_STATS_SIZE;
@@ -144,6 +147,8 @@ void TeamStats::step(Team *team)
 				if (u->performance[j])
 					stat.upgradeState[j][u->level[j]]++;
 			}
+			if (u->typeNum==WARRIOR)
+				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH];
 			
 			stat.happiness[u->fruitCount]++;
 		}
@@ -151,14 +156,18 @@ void TeamStats::step(Team *team)
 
 	for (int i=0; i<1024; i++)
 	{
-		if (team->myBuildings[i])
+		Building *b = team->myBuildings[i];
+		if (b)
 		{
-			stat.totalBuilding++;
-			stat.numberBuildingPerType[team->myBuildings[i]->type->shortTypeNum]++;
-			int tabLevel=((team->myBuildings[i]->type->level)<<1)+1-team->myBuildings[i]->type->isBuildingSite;
-			assert(tabLevel>=0);
-			assert(tabLevel<=5);
-			stat.numberBuildingPerTypePerLevel[team->myBuildings[i]->type->shortTypeNum][tabLevel]++;
+			stat.numberBuildingPerType[b->type->shortTypeNum]++;
+			int longLevel=b->getLongLevel();
+			assert(longLevel>=0);
+			assert(longLevel<=5);
+			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
+			stat.totalHP+=b->hp;
+			stat.totalDefensePower+=b->type->shootDamage*b->type->shootRythme;
+			if (!b->type->isBuildingSite)
+				stat.totalBuilding++;
 		}
 	}
 	
@@ -413,3 +422,36 @@ int TeamStats::getStarvingUnits()
 {
 	return (stats[statsIndex].needFoodCritical);
 }
+
+bool TeamStats::load(SDL_RWops *stream, Sint32 versionMinor)
+{
+	endOfGameStatIndex=SDL_ReadBE32(stream);
+	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	{
+		endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
+		endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
+		endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
+		if (versionMinor > 31)
+		{
+			endOfGameStats[i].value[EndOfGameStat::TYPE_HP]=SDL_ReadBE32(stream);
+			endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK]=SDL_ReadBE32(stream);
+			endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE]=SDL_ReadBE32(stream);
+		}
+	}
+	return true;
+}
+
+void TeamStats::save(SDL_RWops *stream)
+{
+	SDL_WriteBE32(stream, endOfGameStatIndex);
+	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	{
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]);
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]);
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]);
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_HP]);
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK]);
+		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE]);
+	}
+}
+

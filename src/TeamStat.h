@@ -31,7 +31,7 @@ struct TeamStat
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
 
-	int totalBuilding;
+	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[BuildingType::NB_BUILDING];
 	int numberBuildingPerTypePerLevel[BuildingType::NB_BUILDING][6];
 
@@ -45,9 +45,11 @@ struct TeamStat
 	int totalFoodCapacity;
 	int totalUnitFoodable;
 	int totalUnitFooded;
-	
-	//int totalPrestige;
-	
+
+	int totalHP;
+	int totalAttackPower;
+	int totalDefensePower;
+		
 	int happiness[HAPPYNESS_COUNT+1];
 };
 
@@ -65,7 +67,10 @@ struct EndOfGameStat
 		TYPE_UNITS = 0,
 		TYPE_BUILDINGS = 1,
 		TYPE_PRESTIGE = 2,
-		TYPE_NB_STATS = 3
+		TYPE_HP = 3,
+		TYPE_ATTACK = 4,
+		TYPE_DEFENSE = 5,
+		TYPE_NB_STATS = 6
 	};
 	
 	// units, buildings, prestige
@@ -112,6 +117,9 @@ private:
 	
 	int endOfGameStatIndex;
 	EndOfGameStat endOfGameStats[END_OF_GAME_STATS_SIZE];
+	
+	bool load(SDL_RWops *stream, Sint32 versionMinor);
+	void save(SDL_RWops *stream);
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
