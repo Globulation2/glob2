@@ -36,12 +36,12 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 {
 	if (type==GC_SDL)
 	{
-		return new SDLGraphicContext;
+		return new SDLGraphicContext();
 	}
 #ifdef HAVE_LIBGL
 	else if (type==GC_GL)
 	{
-		return new GLGraphicContext;
+		return new GLGraphicContext();
 	}
 #endif
 	else

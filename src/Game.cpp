@@ -888,6 +888,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 {
+	printf("addBuilding(x=%d, y=%d, typeNum=%d, teamNumber=%d)\n", x, y, typeNum, teamNumber);
 	Team *team=teams[teamNumber];
 	assert(team);
 

@@ -1390,7 +1390,7 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		assert(good);
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
-		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], s, typeNum);
+		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
 		{
@@ -1423,7 +1423,7 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 			return false;
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
-		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], s, typeNum);
+		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
 			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)

@@ -1511,6 +1511,7 @@ int NetGame::ticksToDelay(void)
 			if (maxMedianWishedDelay<medianWishedDelay)
 				maxMedianWishedDelay=medianWishedDelay;
 	}
+	assert(maxMedianWishedDelay<40);
 	maxMedianWishedDelayStats[maxMedianWishedDelay]++;
 	//fprintf(logFile, "maxMedianWishedDelay=%d\n", maxMedianWishedDelay);
 	
@@ -1568,7 +1569,9 @@ void NetGame::setLeftTicks(int leftTicks)
 	else
 		myLocalWishedDelay=4-leftTicks;
 	
-	if (myLocalWishedDelay>39)
+	if (myLocalWishedDelay<0)
+		myLocalWishedDelay=0;
+	else if (myLocalWishedDelay>39)
 		myLocalWishedDelay=39;
 	wishedDelayStats[myLocalWishedDelay]++;
 }
