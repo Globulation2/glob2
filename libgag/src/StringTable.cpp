@@ -92,7 +92,10 @@ namespace GAGCore
 		{
 			while (!inputLineStream->isEndOfStream())
 			{
-				keys.push_back(inputLineStream->readLine());
+				std::string s = inputLineStream->readLine();
+				if ((s.length() < 2) && (s[0] != '[') && (s[s.length()-1] != ']'))
+					std::cerr << "StringTable::load(" << filename << ") : keys must be in bracket. Key " << s << " invalid" << std::endl;
+				keys.push_back(s);
 			}
 			delete inputLineStream;
 		}
@@ -223,7 +226,7 @@ namespace GAGCore
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
-				return "ERROR : NO STRING";
+				return stringname;
 			}
 			else
 			{
@@ -256,7 +259,7 @@ namespace GAGCore
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
-				return "ERROR : NO STRING";
+				return stringname;
 			}
 			else
 			{
