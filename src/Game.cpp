@@ -786,7 +786,7 @@ void Game::syncStep(GameGUI *gui, Sint32 localTeam)
 				}
 		}
 		
-		renderMiniMap(localTeam, true, stepCounter%25, 25);
+		renderMiniMap(localTeam, false, stepCounter%25, 25);
 
 		if ((stepCounter&31)==0)
 		{
@@ -1832,7 +1832,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 		}
 }
 
-void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, int stepCount)
+void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, int stepCount)
 {
 	float dMx, dMy;
 	int dx, dy;
@@ -1840,7 +1840,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 	int r, g, b;
 	int nCount;
 	int UnitOrBuildingIndex = -1;
-	assert(localTeam>=-1);
+	assert(localTeam>=0);
 	assert(localTeam<32);
 
 	int terrainColor[3][3] = {
@@ -1876,16 +1876,8 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 	dMx=(float)mMax/100.0f;
 	dMy=(float)mMax/100.0f;
 
-	if (localTeam>=0)
-	{
-		decSPX=teams[localTeam]->startPosX+map.getW()/2;
-		decSPY=teams[localTeam]->startPosY+map.getH()/2;
-	}
-	else
-	{
-		decSPX=0;
-		decSPY=0;
-	}
+	decSPX=teams[localTeam]->startPosX+map.getW()/2;
+	decSPY=teams[localTeam]->startPosY+map.getH()/2;
 
 	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
@@ -1899,69 +1891,49 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 			{
 				for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
 				{
-					if (showUnitsAndBuildings)
-					{
-						Uint16 gid;
-						bool seenUnderFOW = false;
+					Uint16 gid;
+					bool seenUnderFOW = false;
 
-						gid=map.getAirUnit((Sint16)minidx, (Sint16)minidy);
-						if (gid==NOGUID)
-							gid=map.getGroundUnit((Sint16)minidx, (Sint16)minidy);
-						if (gid==NOGUID)
-						{
-							gid=map.getBuilding((Sint16)minidx, (Sint16)minidy);
-							if (gid!=NOGUID)
-							{
-								if (teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & teams[localTeam]->me)
-								{
-									seenUnderFOW = true;
-								}
-							}
-						}
+					gid=map.getAirUnit((Sint16)minidx, (Sint16)minidy);
+					if (gid==NOGUID)
+						gid=map.getGroundUnit((Sint16)minidx, (Sint16)minidy);
+					if (gid==NOGUID)
+					{
+						gid=map.getBuilding((Sint16)minidx, (Sint16)minidy);
 						if (gid!=NOGUID)
 						{
-							teamId=gid/1024;
-							if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
+							if (teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & teams[localTeam]->me)
 							{
-								if (teamId==localTeam)
-									UnitOrBuildingIndex = 0;
-								else if ((teams[localTeam]->allies) & (teams[teamId]->me))
-									UnitOrBuildingIndex = 1;
-								else
-									UnitOrBuildingIndex = 2;
-								goto unitOrBuildingFound;
-							}
-							else if (seenUnderFOW)
-							{
-								if (teamId==localTeam)
-									UnitOrBuildingIndex = 3;
-								else if ((teams[localTeam]->allies) & (teams[teamId]->me))
-									UnitOrBuildingIndex = 4;
-								else
-									UnitOrBuildingIndex = 5;
-								goto unitOrBuildingFound;
+								seenUnderFOW = true;
 							}
 						}
 					}
-					if (localTeam<0)
+					if (gid!=NOGUID)
 					{
-						// get color to add
-						Ressource r = map.getRessource((int)minidx, (int)minidy);
-						if (r != NORESID)
+						teamId=gid/1024;
+						if (useMapDiscovered || map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 						{
-							pcolIndex = r.type + 3;
+							if (teamId==localTeam)
+								UnitOrBuildingIndex = 0;
+							else if ((teams[localTeam]->allies) & (teams[teamId]->me))
+								UnitOrBuildingIndex = 1;
+							else
+								UnitOrBuildingIndex = 2;
+							goto unitOrBuildingFound;
 						}
-						else
+						else if (seenUnderFOW)
 						{
-							pcolIndex = map.getUMTerrain((int)minidx,(int)minidy);
+							if (teamId==localTeam)
+								UnitOrBuildingIndex = 3;
+							else if ((teams[localTeam]->allies) & (teams[teamId]->me))
+								UnitOrBuildingIndex = 4;
+							else
+								UnitOrBuildingIndex = 5;
+							goto unitOrBuildingFound;
 						}
-
-						// get weight to add
-						pcolAddValue=5;
-
-						pcol[pcolIndex]+=pcolAddValue;
 					}
-					else if (map.isMapDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
+					
+					if (useMapDiscovered || map.isMapDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 					{
 						// get color to add
 						Ressource r = map.getRessource((int)minidx, (int)minidy);
@@ -1975,7 +1947,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 						}
 						
 						// get weight to add
-						if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
+						if (useMapDiscovered || map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							pcolAddValue=5;
 						else
 							pcolAddValue=3;

@@ -1113,7 +1113,7 @@ bool Map::decRessource(int x, int y)
 	unsigned amount=r.amount;
 	assert(amount);
 
-	if (!fulltype->shrinkable || ((fulltype->eternal) && (amount==1)))
+	if (!fulltype->shrinkable || ((fulltype->eternal) && (amount==0)))
 		return false;
 	else if (!fulltype->granular || amount==1)
 		*rp=NORESID;

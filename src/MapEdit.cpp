@@ -92,14 +92,14 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 void MapEdit::drawMiniMap(void)
 {
-	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY);
+	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, centeredTeam);
 	paintCoordinates();
 	globalContainer->gfx->updateRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 }
 
 void MapEdit::renderMiniMap(void)
 {
-	game.renderMiniMap(-1);
+	game.renderMiniMap(centeredTeam, true);
 	drawMiniMap();
 }
 
@@ -464,7 +464,7 @@ void MapEdit::paintCoordinates(void)
 void MapEdit::paintCoordinates(int mx, int my)
 {
 	int baseX = globalContainer->gfx->getW()-128;
-	int h=font->getStringHeight("(888,888)");
+	int h=font->getStringHeight("(888,888)")-2;
 	int y=128-h;
 	globalContainer->gfx->drawFilledRect(baseX, y, 128, h, 0, 0, 0);
 	if ((mx < baseX) || (my < 128))
@@ -1218,12 +1218,14 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 				int numberOfTeam=game.session.numberOfTeam;
 				if (numberOfTeam>0)
 				{
-					centeredTeam=centeredTeam%numberOfTeam;
 					if (SDL_GetModState()&KMOD_SHIFT)
 						centeredTeam=team;
 					else
+					{
+						centeredTeam=(centeredTeam+1)%numberOfTeam;
 						team=centeredTeam;
-						
+					}
+					assert(centeredTeam>=0 && centeredTeam<numberOfTeam);
 					Team *t=game.teams[centeredTeam];
 					if (t)
 					{
@@ -1239,7 +1241,6 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 							draw();
 						}
 					}
-					centeredTeam++;
 				}
 			}
 		}
@@ -1260,8 +1261,10 @@ void MapEdit::viewportFromMxMY(int mx, int my)
 
 	mx-=14+decX;
 	my-=14+decY;
-	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
-	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
+	viewportX=game.teams[centeredTeam]->startPosX+(game.map.getW()>>1)
+		+((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=game.teams[centeredTeam]->startPosY+(game.map.getH()>>1)
+		+((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
 	
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
