@@ -170,7 +170,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int team=Building::GIDtoTeam(gid);
 				int id=Building::GIDtoID(gid);
 				Building *b=teams[team]->myBuildings[id];
-				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE))
 				{
 					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
