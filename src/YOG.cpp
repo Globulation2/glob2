@@ -77,6 +77,8 @@ YOG::YOG(LogFileManager *logFileManager)
 	unjoining=false;
 	
 	connectionLost=false;
+	
+	externalStatusState=YESTS_CREATED;
 }
 
 YOG::~YOG()
@@ -417,6 +419,13 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_CONNECTION_REFUSED:
 	{
 		fprintf(logFile, "connection refused! (sameName=%d, YOG_PROTOCOL_VERSION=%d, PROTOCOL_VERSION=%d)\n", data[4], data[5], YOG_PROTOCOL_VERSION);
+		
+		if (data[5]!=YOG_PROTOCOL_VERSION)
+			externalStatusState=YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD;
+		else if (data[4])
+			externalStatusState=YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED;
+		else
+			externalStatusState=YESTS_CONNECTION_REFUSED_UNEXPLAINED;
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
@@ -485,7 +494,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					break;
 				}
 			
-			int l=Utilities::strmlen((char *)data+index, 64);//TODO: set game's name's length to 64 everywhere !
+			int l=Utilities::strmlen((char *)data+index, 64);
 			memcpy(game.name, data+index, l);
 			if (game.name[l-1]!=0)
 				fprintf(logFile, "warning, non-zero ending game name!\n");
@@ -673,7 +682,10 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 	break;
 	case YMT_CLOSE_YOG:
-		fprintf(logFile, " YOG is dead (killed)!\n"); //TODO: create a deconnected method
+	{
+		fprintf(logFile, " YOG is dead (killed)!\n");
+		externalStatusState=YESTS_YOG_KILLED;
+	}
 	break;
 	case YMT_PLAYERS_WANTS_TO_JOIN:
 	{
@@ -793,6 +805,7 @@ bool YOG::enableConnection(const char *userName)
 	globalContainer->pushUserName(this->userName);
 	
 	yogGlobalState=YGS_CONNECTING;
+	externalStatusState=YESTS_CONNECTING;
 	sendingMessages.clear();
 	receivedMessages.clear();
 	lastMessageID=0;
@@ -990,7 +1003,8 @@ void YOG::step()
 		{
 			if (presenceTOTL--<=0)
 			{
-				fprintf(logFile, "Connection lost to YOG!\n"); //TODO!
+				fprintf(logFile, "Connection lost to YOG!\n");
+				externalStatusState=YESTS_CONNECTION_LOST;
 				connectionLost=true;
 			}
 			else
@@ -1385,3 +1399,43 @@ IPaddress YOG::ipFromUserName(char userName[32])
 	ip.port=0;
 	return ip;
 }
+
+char *YOG::getStatusString()
+{
+	char *s;
+	switch (externalStatusState)
+	{
+	case YESTS_BAD:
+		s=globalContainer->texts.getString("[YESTS_BAD]");
+	break;
+	case YESTS_CREATED:
+		s=globalContainer->texts.getString("[YESTS_CREATED]");
+	break;
+	case YESTS_CONNECTING:
+		s=globalContainer->texts.getString("[YESTS_CONNECTING]");
+	break;
+	case YESTS_YOG_KILLED:
+		s=globalContainer->texts.getString("[YESTS_YOG_KILLED]");
+	break;
+	case YESTS_CONNECTION_LOST:
+		s=globalContainer->texts.getString("[YESTS_CONNECTION_LOST]");
+	break;
+	case YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD:
+		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]");
+	break;
+	case YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED:
+		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]");
+	break;
+	case YESTS_CONNECTION_REFUSED_UNEXPLAINED:
+		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]");
+	break;
+	default:
+		assert(false);
+	break;
+	}
+	int l=strlen(s)+1;
+	char *t=new char[l];
+	strncpy(t, s, l);
+	return t;
+}
+

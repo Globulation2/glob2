@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charri�e
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,10 @@ YOGPreScreen::YOGPreScreen()
 
 	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, globalContainer->userName, true);
 	addWidget(textInput);
+	
+	statusText=new TextArea(20, 290, 600, 50, globalContainer->standardFont);
+	addWidget(statusText);
+	oldYOGExternalStatusState=YOG::YESTS_BAD;
 	
 	endExecutionValue=EXECUTING;
 }
@@ -94,6 +98,13 @@ void YOGPreScreen::onTimer(Uint32 tick)
 			endExecutionValue=-1;
 		}
 		printf("YOGPreScreen:: YOGScreen has ended ...\n");
+	}
+	else if (globalContainer->yog->externalStatusState!=oldYOGExternalStatusState)
+	{
+		char *s=globalContainer->yog->getStatusString();
+		statusText->setText(s);
+		delete[] s;
+		oldYOGExternalStatusState=globalContainer->yog->externalStatusState;
 	}
 	
 }
