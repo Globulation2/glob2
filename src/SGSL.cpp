@@ -129,7 +129,6 @@ bool Story::testCondition()
 		{
 			case (Token::S_SHOW):
 			{
-                //TODO: STEPH: integrate into the GUI show while isTextShown is true
 				mapscript->isTextShown = true;
 				lineSelector++;
 				mapscript->textShown = line[lineSelector].msg;
@@ -177,7 +176,7 @@ bool Story::testCondition()
 					}
 					case (Token::S_ALIVE):
 					{
-					if (mapscript->game->teams[line[lineSelector+2].value]->isAlive)
+						if (mapscript->game->teams[line[lineSelector+2].value]->isAlive)
 						{
 							lineSelector+=2;
 							return true;
@@ -498,14 +497,13 @@ void Mapscript::reset(void)
 
 bool Mapscript::testMainTimer()
 { 
-	//TODO afficher le main timer
-	if (mainTimer)
-		mainTimer--;
 	return (mainTimer <= 0);
 }
 
 void Mapscript::step()
 {
+	if (mainTimer)
+		mainTimer--;
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
 		(*it).step();

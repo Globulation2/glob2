@@ -136,6 +136,8 @@ public:
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
+	int getMainTimer(void) { return mainTimer; }
+	
 	bool isTextShown;
 	string textShown;
 	
