@@ -35,6 +35,7 @@ GlobalContainer::GlobalContainer(void)
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
+	graphicType=DrawableSurface::GC_SDL;
 	optionFlags=0;
 
 	// set default values in settings or load them
@@ -164,7 +165,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-b\tdisable double buffering (usefull on OS X in fullscreen)\n");
-			printf("-l\rlow speed graphics : disable some transparency effects\n");
+			printf("-l\tlow speed graphics : disable some transparency effects\n");
+			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
@@ -197,6 +199,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					i++;
 					if (i < argc)
 						setUserName(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 't')
+			{
+				if (argv[i][2] != 0)
+					graphicType=(DrawableSurface::GraphicContextType)atoi(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						graphicType=(DrawableSurface::GraphicContextType)atoi(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 's')
@@ -254,7 +267,7 @@ void GlobalContainer::load(void)
 	if (!hostServer)
 	{
 		// create graphic context
-		gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
+		gfx=GraphicContext::createGraphicContext(graphicType);
 		gfx->setRes(graphicWidth, graphicHeight, 32, graphicFlags);
 
 		// load fonts

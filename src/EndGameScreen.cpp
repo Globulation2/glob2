@@ -45,7 +45,7 @@ void EndGameStat::repaint(void)
 	assert(parent->getSurface());
 	
 	// draw background
-	parent->getSurface()->drawFilledRect(x, y, 128*3, 256, 249, 247, 219);
+	parent->getSurface()->drawRect(x, y, 128*3, 256, 180, 180, 180);
 	
 	// find maximum
 	int team, pos, maxValue=0;

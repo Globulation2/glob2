@@ -31,7 +31,15 @@ class GlobalContainer
 public:
 	enum { USERNAME_MAX_LENGTH=32 };
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
-	
+
+private:
+	void initProgressBar(void);
+	void updateLoadProgressBar(int value);
+
+	// private gfx info
+	Uint32 graphicFlags;
+	int graphicWidth, graphicHeight;
+	DrawableSurface::GraphicContextType graphicType;
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
@@ -39,19 +47,12 @@ public:
 	void parseArgs(int argc, char *argv[]);
 	void load(void);
 	
-public:
 	void setUserName(const char *name);
 	void pushUserName(const char *name);
 	void popUserName();
-
-private:
-	void initProgressBar(void);
-	void updateLoadProgressBar(int value);
+	Uint32 getGfxFlag() { return graphicFlags; }
 
 public:
-	Uint32 graphicFlags;
-	int graphicWidth, graphicHeight;
-
 	char userNameMemory[USERNAME_MAX_LENGTH];
 	const char *userName;
 	

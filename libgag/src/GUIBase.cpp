@@ -324,7 +324,7 @@ OverlayScreen::OverlayScreen(GraphicContext *parentCtx, int w, int h)
 {
 	gfxCtx=parentCtx->createDrawableSurface();
 	gfxCtx->setRes(w, h);
-	gfxCtx->setAlpha(false, 160);
+	gfxCtx->setAlpha(false, 180);
 	decX=(parentCtx->getW()-w)>>1;
 	decY=(parentCtx->getH()-h)>>1;
 	endValue=-1;
@@ -357,7 +357,8 @@ void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 
 void OverlayScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 140);
+	//gfxCtx->drawFilledRect(x, y, w, h, 15, 44, 79);
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 40);
 }
 
 
