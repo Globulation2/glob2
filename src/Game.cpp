@@ -1814,9 +1814,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		{ 10, 240, 20 }, // self
 		{ 220, 25, 30 }, // ally
 		{ 220, 25, 30 }, // enemy
-		{ 10, 240, 20 }, // self FOW
-		{ 220, 25, 30 }, // ally FOW
-		{ 220, 25, 30 }, // enemy FOW
+		{ (10*3)/5, (240*3)/5, (20*3)/5 }, // self FOW
+		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // ally FOW
+		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
 	int pcol[3+MAX_RESSOURCES];
@@ -1863,25 +1863,43 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 					if (showUnitsAndBuildings)
 					{
 						Uint16 gid;
+						bool seenUnderFOW = false;
+
 						gid=map.getAirUnit((Sint16)minidx, (Sint16)minidy);
 						if (gid==NOGUID)
 							gid=map.getGroundUnit((Sint16)minidx, (Sint16)minidy);
 						if (gid==NOGUID)
+						{
 							gid=map.getBuilding((Sint16)minidx, (Sint16)minidy);
+							if (gid!=NOGUID)
+							{
+								if (teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & teams[localTeam]->me)
+								{
+									seenUnderFOW = true;
+								}
+							}
+						}
 						if (gid!=NOGUID)
 						{
 							teamId=gid/1024;
-							if (teamId==localTeam)
+							if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							{
-								UnitOrBuildingIndex = 0;
-								goto unitOrBuildingFound;
-							}
-							else if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
-							{
-								if ((teams[localTeam]->allies) & (teams[teamId]->me))
+								if (teamId==localTeam)
+									UnitOrBuildingIndex = 0;
+								else if ((teams[localTeam]->allies) & (teams[teamId]->me))
 									UnitOrBuildingIndex = 1;
 								else
 									UnitOrBuildingIndex = 2;
+								goto unitOrBuildingFound;
+							}
+							else if (seenUnderFOW)
+							{
+								if (teamId==localTeam)
+									UnitOrBuildingIndex = 3;
+								else if ((teams[localTeam]->allies) & (teams[teamId]->me))
+									UnitOrBuildingIndex = 4;
+								else
+									UnitOrBuildingIndex = 5;
 								goto unitOrBuildingFound;
 							}
 						}
@@ -1986,7 +2004,11 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 			r=210;
 			g=255;
 			b=210;
-			minimap->drawPixel(((fx*100)/mMax)+decX, ((fy*100)/mMax)+decY, r, g, b);
+			fx = ((fx*szX)/mMax);
+			fy = ((fy*szY)/mMax);
+
+			if ((fy>=stepStart) && (fy<stepStart+stepLength))
+				minimap->drawPixel(fx+decX, fy+decY, r, g, b);
 		}
 }
 
