@@ -2324,7 +2324,7 @@ Sint32 Unit::checkSum()
 		}
 	}
 	
-	cs^=(attachedBuilding!=NULL);
+	cs^=(attachedBuilding!=NULL ? 1:0);
 	cs^=destinationPurprose;
 	//printf("%d,3,%x***\n", UID, cs);
 	

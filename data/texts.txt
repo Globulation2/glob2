@@ -178,7 +178,7 @@ Vous avez gagne !!!
 You have won !!!
 [campagn]
 Campagne
-Campagn
+Campaign
 [custom game]
 Jeu libre
 Custom game

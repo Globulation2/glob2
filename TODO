@@ -11,6 +11,11 @@ To First release :
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Stat screen must be internationalized and don't display NaN. (nct)
 
+Bug to fix :
+- some people doesn't begin in center of map ???
+- tree and (alos corn) grow to fast
+- when there is one team alive, this team has won 
+
 To Next version :
 
 - allies can put mark on the map. (nct)
