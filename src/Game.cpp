@@ -327,7 +327,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 bool Game::load(SDL_RWops *stream)
 {
 	assert(stream);
-	
+
 	// delete existing teams
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)
@@ -390,6 +390,8 @@ bool Game::load(SDL_RWops *stream)
 
 void Game::save(SDL_RWops *stream)
 {
+	int i;
+
 	assert(stream);
 
 	// first we save a session info
@@ -409,17 +411,15 @@ void Game::save(SDL_RWops *stream)
 	
 	tempSessionInfo.map=map;
 
+
+	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			tempSessionInfo.team[i]=*teams[i];
-		}
+		tempSessionInfo.team[i]=*teams[i];
 	}
+
+	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			tempSessionInfo.players[i]=*players[i];
-		}
+		tempSessionInfo.players[i]=*players[i];
 	}
 	
 	tempSessionInfo.save(stream);
@@ -432,19 +432,16 @@ void Game::save(SDL_RWops *stream)
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 
+	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			teams[i]->save(stream);
-		}
+		teams[i]->save(stream);
 	}
+
+	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			players[i]->save(stream);
-		}
+		players[i]->save(stream);
 	}
-	
+		
 	SDL_WriteBE32(stream, stepCounter);
 	
 	map.save(stream);

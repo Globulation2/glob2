@@ -43,6 +43,9 @@ public:
 	virtual Sint32 checkSum();
 	
 public:
+	Sint32 versionMajor;
+	Sint32 versionMinor;
+
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
 
@@ -50,7 +53,7 @@ public:
 	Sint32 gameLatency;
 private:
 	//! Serialized form of SessionGame
-	char data[16];
+	char data[24];
 };
 
 class SessionInfo:public SessionGame
