@@ -153,11 +153,14 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 				compilationResult->setText("Loading script from %s failed", loadSaveScreen->getName());
 				return;
 			}
-			unsigned len=SDL_ReadBE32(stream);
-			char* sourceCode=new char[len];
+			SDL_RWseek(stream, 0, SEEK_END);
+			unsigned len=SDL_RWtell(stream);
+			SDL_RWseek(stream, 0, SEEK_SET);
+			char* sourceCode=new char[len+1];
 			SDL_RWread(stream, sourceCode, len, 1);
+			sourceCode[len] = '\0';
 			editor->addText(sourceCode);
-			delete sourceCode;
+			delete[] sourceCode;
 			SDL_RWclose(stream);
 		}
 		else
@@ -170,9 +173,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 				return;
 			}
 			const char* sourceCode=editor->getText();
-			unsigned len=strlen(sourceCode)+1;
-			SDL_WriteBE32(stream, len);
-			SDL_RWwrite(stream, sourceCode, len, 1);
+			SDL_RWwrite(stream, sourceCode, strlen(sourceCode), 1);
 			SDL_RWclose(stream);
 		}
 	}
