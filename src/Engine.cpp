@@ -427,7 +427,12 @@ int Engine::run(void)
 
 				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.session.numberOfPlayer; i++)
-					gui.executeOrder(net->getOrder(i));
+				{
+					Order *order=net->getOrder(i);
+					gui.executeOrder(order);
+					if (order->needToBeFreedByEngine)
+						delete order;
+				}
 				net->stepExecuted();
 
 				// here we do the real work

@@ -52,6 +52,8 @@ public:
 	bool latencyPadding; // True if this order has been added to increase latency.
 	Uint32 ustep;
 	Uint32 gameCheckSum;
+	
+	bool needToBeFreedByEngine; // set to true when it's not in NetGame::ordersQueue, in which case it is regulary freed by NetGame.
 };
 
 

@@ -32,6 +32,7 @@ Order::Order(void)
 	latencyPadding=false;
 	ustep=0;
 	gameCheckSum=0;
+	needToBeFreedByEngine=false;
 }
 
 Order *Order::getOrder(const Uint8 *netData, int netDataLength)

@@ -3190,7 +3190,6 @@ void GameGUI::executeOrder(Order *order)
 			if (order->sender==localPlayer)
 				isRunning=false;
 			game.executeOrder(order, localPlayer);
-			delete order;
 		}
 		break;
 		case ORDER_DECONNECTED :
@@ -3198,7 +3197,6 @@ void GameGUI::executeOrder(Order *order)
 			int qp=order->sender;
 			addMessage(200, 200, 200, Toolkit::getStringTable()->getString("[%s has been deconnected of the game]"), game.players[qp]->name);
 			game.executeOrder(order, localPlayer);
-			delete order;
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME :
