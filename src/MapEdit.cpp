@@ -120,9 +120,10 @@ void MapEdit::drawMenu(void)
 	globalContainer->gfx->drawSprite(menuStartW+96, 173, menu, 8);
 	// ressources
 	globalContainer->gfx->drawFilledRect(menuStartW+0, 205, 128, 32, 0, 0, 0);
-	for (int i=0; i<5; i++)
+	for (int i=0; i<NB_RESSOURCES; i++)
 	{
 		globalContainer->gfx->setClipRect(menuStartW+2+i*25, 206, 24, 30);
+		globalContainer->gfx->drawSprite(menuStartW+2+i*25, 205, menu, RessourceTerrain[i]+5);
 		globalContainer->gfx->drawSprite(menuStartW+2+i*25, 205, globalContainer->ressources, i*10);
 	}
 	globalContainer->gfx->setClipRect();
