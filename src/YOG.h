@@ -211,6 +211,7 @@ public:
 	std::list<Joiner> joiners;
 	
 	bool unjoining;
+	bool unjoiningConfirmed;
 	int unjoinTimeout;
 	
 	bool connectionLost;

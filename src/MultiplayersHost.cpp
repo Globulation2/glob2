@@ -1693,9 +1693,7 @@ void MultiplayersHost::stopHosting(void)
 	send(SERVER_QUIT_NEW_GAME);
 	
 	if (shareOnYOG)
-	{
 		yog->unshareGame();
-	}
 }
 
 void MultiplayersHost::startGame(void)

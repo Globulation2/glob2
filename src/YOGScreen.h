@@ -35,7 +35,6 @@ class YOGScreen:public Screen
 public:
 	enum
 	{
-		EXIT=-1,
 		CANCEL=2,
 		CREATE_GAME=3,
 		UPDATE_LIST=4,
@@ -66,6 +65,7 @@ protected:
 
 private:
 	YOG::GameInfo *selectedGameInfo;
+	int executionMode;
 
 public:
 	YOGScreen();
