@@ -161,6 +161,8 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 				m.userName[l-1]=0;
 				m.userNameLength=l;
 				
+				m.messageType=YMT_PRIVATE_MESSAGE;
+				
 				(*client)->messages.push_back(m);
 			}
 		}
@@ -297,19 +299,6 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			
 			YOGClient *c=*sender;
 			c->lastSentMessageID=messageID;
-			Message m;
-			int l;
-
-			l=strmlen(s, 256);
-			memcpy(m.text, s, l);
-			m.text[l-1]=0;
-			m.textLength=l;
-
-			l=strmlen(c->userName, 32);
-			memcpy(m.userName, c->userName, l);
-			m.userName[l-1]=0;
-			m.userNameLength=l;
-			
 			if (s[0]=='/')
 			{
 				// We received a command
@@ -317,6 +306,23 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			}
 			else
 			{
+				Message m;
+				int l;
+
+				l=strmlen(s, 256);
+				memcpy(m.text, s, l);
+				m.text[l-1]=0;
+				m.textLength=l;
+
+				l=strmlen(c->userName, 32);
+				memcpy(m.userName, c->userName, l);
+				m.userName[l-1]=0;
+				m.userNameLength=l;
+				if (c==admin)
+					m.messageType=YMT_ADMIN_MESSAGE;
+				else
+					m.messageType=YMT_MESSAGE;
+				
 				// Here we have to send this message to all clients!
 				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
 				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
