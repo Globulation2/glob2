@@ -81,8 +81,7 @@ inline Uint32 getUint32(const char *data, int pos)
 	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
 }
 
-
-// 16 bit:
+// 16 bit, Uint8* version:
 
 inline void addSint16(const Uint8 *data, Sint16 val, int pos)
 {
@@ -99,18 +98,24 @@ inline Sint16 getSint16(const Uint8 *data, int pos)
 	return (Sint16)SDL_SwapBE16(*((Sint16 *)(data+pos)));
 }
 
-inline Sint16 getUint16(const Uint8 *data, int pos)
+inline Uint16 getUint16(const Uint8 *data, int pos)
 {
 	return (Uint16)SDL_SwapBE16(*((Uint16 *)(data+pos)));
 }
 
-inline Sint16 getUint16safe(const Uint8 *data, int pos)
+inline Uint16 getUint16safe(const Uint8 *data, int pos)
 {
 	Uint8 temp[2];
 	memcpy(temp, data+pos, 2);
 	return (Uint16)SDL_SwapBE16(*((Uint16 *)temp));
 }
 
+// 16 bit, char* version:
+
+inline Uint16 getUint16(const char *data, int pos)
+{
+	return (Uint16)SDL_SwapBE16(*((Uint16 *)(data+pos)));
+}
 
 // 8 bit, Uint8* version:
 

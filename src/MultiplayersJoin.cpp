@@ -1269,13 +1269,13 @@ bool MultiplayersJoin::sendPresenceRequest()
 
 bool MultiplayersJoin::sendSessionInfoRequest()
 {
-	UDPpacket *packet=SDLNet_AllocPacket(12);
+	UDPpacket *packet=SDLNet_AllocPacket(10);
 
 	assert(packet);
 
 	packet->channel=channel;
 	packet->address=serverIP;
-	packet->len=12;
+	packet->len=10;
 	packet->data[0]=NEW_PLAYER_WANTS_SESSION_INFO;
 	packet->data[1]=0;
 	packet->data[2]=0;
@@ -1283,11 +1283,11 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 
 	memset(packet->data+4, 0, 8);
 
-	Uint32 netHost=SDL_SwapBE32((Uint32)serverIP.host);
-	Uint32 netPort=(Uint32)SDL_SwapBE16(serverIP.port);
+	Uint32 netHost=SDL_SwapBE32(serverIP.host);
+	Uint16 netPort=SDL_SwapBE16(serverIP.port);
 	fprintf(logFile, "sendSessionInfoRequest() serverIP=%s\n", Utilities::stringIP(serverIP));
 	addUint32(packet->data, netHost, 4);
-	addUint32(packet->data, netPort, 8);
+	addUint16(packet->data, netPort, 8);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
