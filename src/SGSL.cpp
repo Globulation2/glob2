@@ -76,6 +76,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_LANG_2, "lang2" },
 	{ S_LANG_3, "lang3" },
 	{ S_LANG_4, "lang4" },
+	{ S_LANG_5, "lang5" },
 
 	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "Explorer" },
@@ -254,7 +255,7 @@ bool Story::testCondition(GameGUI *gui)
 			{
 				unsigned lsInc=0;
 				if ((line[lineSelector+2].type >= Token::S_LANG_0) &&
-					(line[lineSelector+2].type <= Token::S_LANG_4))
+					(line[lineSelector+2].type <= Token::S_LANG_5))
 				{
 					unsigned langId = line[lineSelector+2].type - Token::S_LANG_0;
 					if (langId != globalContainer->settings.defaultLanguage)
@@ -924,7 +925,7 @@ void Mapscript::reset(void)
 
 	// fill language map
 	unsigned langCount = Toolkit::getStringTable()->getNumberOfLanguage();
-	unsigned sgslLangCount = 5;
+	unsigned sgslLangCount = 6;
 	assert(sgslLangCount == langCount);
 	for (unsigned i=0; i<sgslLangCount; i++)
 	{
@@ -1415,7 +1416,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
 							if ((donnees->getToken()->type < Token::S_LANG_0) ||
-								(donnees->getToken()->type > Token::S_LANG_4))
+								(donnees->getToken()->type > Token::S_LANG_5))
 							{
 								er.type=ErrorReport::ET_NOT_VALID_LANG_ID;
 								break;

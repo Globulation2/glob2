@@ -79,6 +79,7 @@ struct Token
 		S_LANG_2,
 		S_LANG_3,
 		S_LANG_4,
+		S_LANG_5,
 
 		// Constants
 		// Units
