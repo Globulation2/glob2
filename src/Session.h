@@ -49,9 +49,14 @@ public:
 	void save(SDL_RWops *stream);
 
 	virtual Uint8 getOrderType();
-	virtual char *getData();
-	bool setData(const char *data, int dataLength);
-	virtual int getDataLength();
+	
+	virtual char *getData(bool compressed);
+	virtual bool setData(const char *data, int dataLength, bool compressed);
+	virtual int getDataLength(bool compressed);
+	
+	virtual char *getData() { return SessionGame::getData(false); }
+	virtual bool setData(const char *data, int dataLength) { return SessionGame::setData(data, dataLength, false); }
+	virtual int getDataLength() { return SessionGame::getDataLength(false); }
 	
 	virtual Sint32 checkSum();
 	
@@ -92,6 +97,8 @@ protected:
 	enum {S_GAME_ONLY_DATA_SIZE=32};
 	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
 	char data[S_GAME_DATA_SIZE];
+protected:
+	FILE *logFile;
 };
 
 //! The session that indirectly derive from Order.
@@ -106,9 +113,15 @@ public:
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
-	char *getData();
-	bool setData(const char *data, int dataLength);
-	int getDataLength();
+	
+	char *getData(bool compressed);
+	bool setData(const char *data, int dataLength, bool compressed);
+	int getDataLength(bool compressed);
+	
+	char *getData() { return SessionInfo::getData(false); }
+	bool setData(const char *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
+	int getDataLength() { return SessionInfo::getDataLength(false); }
+	
 	Sint32 checkSum();
 	
 	bool setLocal(int p);

@@ -1467,7 +1467,7 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
 
 				char *data=NULL;
-				int size=sessionInfo.getDataLength();
+				int size=sessionInfo.getDataLength(true);
 
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
@@ -1481,7 +1481,7 @@ void MultiplayersHost::sendingTime()
 				data[3]=0;
 				addSint32(data, i, 4);
 
-				memcpy(data+8, sessionInfo.getData(), size);
+				memcpy(data+8, sessionInfo.getData(true), size);
 
 				sessionInfo.players[i].send(data, size+8);
 				

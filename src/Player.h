@@ -112,9 +112,15 @@ public:
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
-	char *getData();
-	bool setData(const char *data, int dataLength);
-	int getDataLength();
+	
+	char *getData(bool compressed);
+	bool setData(const char *data, int dataLength, bool compressed);
+	int getDataLength(bool compressed);
+	
+	char *getData() { return getData(false); }
+	bool setData(const char *data, int dataLength) { return setData(data, dataLength, false); }
+	int getDataLength() { return getDataLength(false); }
+	
 	virtual Sint32 checkSum();
 	
 	void setip(Uint32 host, Uint16 port);
