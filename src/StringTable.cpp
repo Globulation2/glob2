@@ -151,28 +151,54 @@ bool StringTable::load(char *filename)
 			char *s=(*it)->name;
 			int l=strlen(s);
 			bool lcwp=false;
-			int baseCount=0;
-			for (int c=0; c<l; c++)
+			int baseCountS=0;
+			int baseCountD=0;
+			for (int j=0; j<l; j++)
 			{
-				if (lcwp && s[c]!=' ' && s[c]!='%')
-					baseCount++;
-				lcwp=(s[c]=='%');
+				char c=s[j];
+				if (lcwp && c!=' ' && c!='%')
+				{
+					if (c=='s')
+						baseCountS++;
+					else if (c=='d')
+						baseCountD++;
+					else
+					{
+						printf("text=(%s), %s\n", s, "Only %d and %s are supported in translations!");
+						assert(false);
+						return false;
+					}
+				}
+				lcwp=(c=='%');
 			}
 			for (int i=0; i<(int)((*it)->data.size()); i++)
 			{
 				char *s=(*it)->data[i];
 				int l=strlen(s);
 				bool lcwp=false;
-				int count=0;
-				for (int c=0; c<l; c++)
+				int countS=0;
+				int countD=0;
+				for (int j=0; j<l; j++)
 				{
-					if (lcwp && s[c]!=' ' && s[c]!='%')
-						count++;
-					lcwp=(s[c]=='%');
+					char c=s[j];
+					if (lcwp && c!=' ' && c!='%')
+					{
+						if (c=='s')
+							countS++;
+						else if (c=='d')
+							countD++;
+						else
+						{
+							printf("translation=(%s), %s\n", s, "Only %s and %d are supported in translations!");
+							assert(false);
+							return false;
+						}
+					}
+					lcwp=(c=='%');
 				}
-				if (baseCount!=count)
+				if (baseCountS!=countS ||baseCountD!=countD)
 				{
-					printf("name=%d(%s), trad=%d(%s), doesn\'t match!\n", baseCount, (*it)->name, count, (*it)->data[i]);
+					printf("text=[%d:%d](%s), translation=[%d:%d](%s), doesn\'t match!\n", baseCountS, baseCountD, (*it)->name, countS, countD, s);
 					assert(false);
 					return false;
 				}

@@ -322,21 +322,25 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
 			char s[128];
-			sprintf(s, globalContainer->texts.getString("[Map name: %s\n]"), yogGameInfo->mapName);
+			sprintf(s, globalContainer->texts.getString("[Map name: %s]"), yogGameInfo->mapName);
 			gameInfo->setText(s);
+			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->numberOfPlayer==1)
 			{
-				sprintf(s, "%s\n", globalContainer->texts.getString("[one player]")),
+				sprintf(s, "%s", globalContainer->texts.getString("[one player]")),
 				gameInfo->addText(s);
 			}
 			else
 			{
-				sprintf(s, globalContainer->texts.getString("[number of players: %s\n]"), yogGameInfo->numberOfPlayer);
+				sprintf(s, globalContainer->texts.getString("[number of players: %d]"), yogGameInfo->numberOfPlayer);
 				gameInfo->addText(s);
 			}
-			sprintf(s, globalContainer->texts.getString("[number of teams: %s\n]"), yogGameInfo->numberOfTeam);
+			gameInfo->addChar('\n');
+			
+			sprintf(s, globalContainer->texts.getString("[number of teams: %d]"), yogGameInfo->numberOfTeam);
 			gameInfo->addText(s);
+			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
 				sprintf(s, "%s\n", globalContainer->texts.getString("[handmade map]"));
