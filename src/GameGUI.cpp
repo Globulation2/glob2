@@ -1187,9 +1187,12 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 		int mapX, mapY;
 		int tempX, tempY;
+		bool isRoom;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		bool isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
-		//bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		if (bt->isVirtual)
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		else
+			isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
 
 		if (isRoom)
 			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
@@ -2434,8 +2437,10 @@ void GameGUI::drawOverlayInfos(void)
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
-		//isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		if (bt->isVirtual)
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+		else
+			isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
 
 		// we find last's leve type num:
 		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
