@@ -598,6 +598,7 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	}
 	eventPosX=startPosX;
 	eventPosY=startPosY;
+	isAlive=true;
 }
 
 void Team::save(SDL_RWops *stream)
