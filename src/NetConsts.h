@@ -23,7 +23,7 @@
 #define SERVER_PORT 7008
 #define ANY_PORT 0
 
-// 1s-3.5s-7s-14s
+// 1s-4s-7.5s-14.5s-40s
 #ifndef SECOND_TIMEOUT
 
 #define SECOND_TIMEOUT 20

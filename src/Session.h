@@ -128,7 +128,7 @@ public:
 	const char *getFileName(void) const;
 protected:
 	//! Serialized form of SessionInfo
-	enum {S_INFO_ONLY_DATA_SIZE=2464};
+	enum {S_INFO_ONLY_DATA_SIZE=2592};
 	enum {S_INFO_DATA_SIZE=S_INFO_ONLY_DATA_SIZE+S_GAME_DATA_SIZE};
 	char data[S_INFO_DATA_SIZE];
 };

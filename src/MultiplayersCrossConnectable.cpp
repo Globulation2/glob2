@@ -42,32 +42,31 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		if (sessionInfo.players[j].type==BasePlayer::P_IP)
-		{
-			if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
-			{
-				if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
+			if (!sessionInfo.players[j].waitForNatResolution)
+				if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
 				{
-					int freeChannel=getFreeChannel();
-					if (!sessionInfo.players[j].bind(socket, freeChannel))
+					if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
 					{
-						printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+						int freeChannel=getFreeChannel();
+						if (!sessionInfo.players[j].bind(socket, freeChannel))
+						{
+							printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+							sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
+							sucess=false;
+							break;
+						}
+					}
+					sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
+
+					if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
+					{
+						printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 						sucess=false;
 						break;
 					}
+					sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
 				}
-				sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
-
-				if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
-				{
-					printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
-					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-					sucess=false;
-					break;
-				}
-				sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
-			}
-		}
 }
 
 int MultiplayersCrossConnectable::getFreeChannel()
