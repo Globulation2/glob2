@@ -143,6 +143,7 @@ void NetGame::init(void)
 		for (int i=0; i<64; i++)
 			recentsPingPong[p][i]=defaultLatency;
 		pingPongCount[p]=0;
+		recentsPingPong[p][pingPongCount[p]]=0;
 		pingPongMax[p]=defaultLatency;
 		
 		for (int i=0; i<64; i++)
@@ -612,10 +613,9 @@ void NetGame::updateDelays(int player, Uint8 receivedStep)
 			assert(delay<255);
 		}
 		
-		int count=(orderMarginTimeCount[player]+1)&63;
-		orderMarginTimeCount[player]=count;
-		
+		int count=orderMarginTimeCount[player];
 		recentOrderMarginTime[player][count]=delay;
+		orderMarginTimeCount[player]=(count+1)&63;
 		
 		int min=255;
 		int max=0;
@@ -648,10 +648,11 @@ void NetGame::updateDelays(int player, Uint8 receivedStep)
 				delay++;
 			}
 		
-		int count=(pingPongCount[player]+1)&63;
+		int count=pingPongCount[player];
+		recentsPingPong[player][count]+=delay;
+		count=(count+1)&63;
+		recentsPingPong[player][count]=0;
 		pingPongCount[player]=count;
-		
-		recentsPingPong[player][count]=delay;
 		
 		int max=0;
 		for (int i=0; i<64; i++)
@@ -1051,7 +1052,12 @@ bool NetGame::stepReadyToExecute(void)
 
 void NetGame::stepExecuted(void)
 {
-	if (!hadToWaitThisStep)
+	if (hadToWaitThisStep)
+	{
+		for (int p=0; p<numberOfPlayer; p++)
+			recentsPingPong[p][pingPongCount[p]]++;
+	}
+	else
 	{
 		Uint8 targetLatency=0;// The gobaly-choosen-latency, we have to reach.
 		int n=0;
@@ -1263,7 +1269,7 @@ int NetGame::ticksToDelay(void)
 		{
 			n++;
 			int goodOrderMarginTime=latency-(pingPongMax[p]>>1);
-			int realOrderMarginTime=orderMarginTimeMin[p];
+			int realOrderMarginTime=orderMarginTimeMin[p]-1;
 			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
 			if (ticksToWait<minTicksToWait)
 				minTicksToWait=ticksToWait;
@@ -1283,6 +1289,7 @@ int NetGame::ticksToDelay(void)
 			if (pingPong>maxPingPong)
 				maxPingPong=pingPong;
 		}
+	printf("maxPingPong=%d.\n", maxPingPong);
 	
 	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
 	if (goodLatency<1)
@@ -1304,9 +1311,9 @@ int NetGame::ticksToDelay(void)
 	
 	if (minTicksToWait<=0)
 		return 0;
-	int delay=10*minTicksToWait;
-	if (delay>40)
-		delay=40;
+	int delay=20*minTicksToWait;
+	if (delay>80)
+		delay=80;
 	return delay;
 }
 
