@@ -1,9 +1,20 @@
 Globulation 2
+http://www.ysagoon.com/glob2
 
-Under UNIX :
+This game is still in heavy development:
+- graphics are not definitive
+- there is a lot of debug output
+- display is slow
+- it crashes sometimes
+
+If you get a crash, submit a bug report with the last lines of the output as well as the log files (in ${HOME}/.glob2/log) as attachement.
+Please use Savannah (http://sv.gnu.org/projects/glob2) for bug reports.
+
+
+GNU and UNIX
 
 If you have taken this from CVS and you want to build the package,
-run the bootstrap script first.
+run the bootstrap script first (you might use autoreconf if you have it).
 
 Then read the INSTALL file.
 
@@ -11,22 +22,24 @@ Note : if SDL is not installed system wide but rather in $prefix,
 add the following flags to aclocal :
 aclocal -I $prefix/share/aclocal
 
-Under macOSX, replace aclocal by
+
+MacOS X
+
+Replace aclocal by
 aclocal -I /usr/local/share/aclocal
 
-It doesn't currently work with automake 1.6 You should install automake 1.4 (in /usr/local/bin) and start it from there.
 
-With the current version of SDL, the fullScreen doesn't work with double buffering. Disable it with "-f -B".
-
-Under Win32 :
+Microsoft Windows
 
 To build the data files, run makedata.bat in the data subdirectory, then use glob2.dsw
 with MSDEV to build glob2.
 
+
 !! WARNING !!
 The gfx are no more included in the CVS.
-To get the, run the getgfx script.
+To get them, run the getgfx script.
 
-Have fun
 
-Steph
+Have fun,
+
+The Globulation 2 Team
