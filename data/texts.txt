@@ -268,7 +268,7 @@ Jeu en ligne Ysagoon
 Ysagoon Online Gaming
 Ysagoon Olnine Spiel
 [lan]
-Jeu en reseau local
+Jeu en réseau local
 LAN Game
 Lokalnetz Spiel
 [settings]
