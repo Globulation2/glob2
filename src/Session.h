@@ -147,7 +147,7 @@ public:
 public:
 //	BaseMap map;
 	BasePlayer players[32];
-	BaseTeam team[32];
+	BaseTeam teams[32];
 
 protected:
 	//! Serialized form of SessionInfo

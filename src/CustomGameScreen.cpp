@@ -120,13 +120,13 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					{
 						color[i]->clearColors();
 						for (int j=0; j<nbTeam; j++)
-							color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
+							color[i]->addColor(sessionInfo.teams[j].colorR, sessionInfo.teams[j].colorG, sessionInfo.teams[j].colorB);
 						color[i]->setSelectedColor();
 					}
 					// find team for human player
 					for (int i=0; i<nbTeam; i++)
 					{
-						if (sessionInfo.team[i].type==BaseTeam::T_HUMAN)
+						if (sessionInfo.teams[i].type==BaseTeam::T_HUMAN)
 						{
 							color[0]->setSelectedColor(i);
 							break;

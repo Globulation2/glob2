@@ -147,7 +147,7 @@ void Game::setBase(const SessionInfo *initial)
 
 	// set the base team, for now the number is corect but we should check that further
 	for (int i=0; i<session.numberOfTeam; i++)
-		teams[i]->setBaseTeam(&(initial->team[i]), session.fileIsAMap);
+		teams[i]->setBaseTeam(&(initial->teams[i]), session.fileIsAMap);
 
 	// set the base players
 	for (int i=0; i<session.numberOfPlayer; i++)
@@ -851,8 +851,8 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 
 	for (int i=0; i<session.numberOfTeam; ++i)
 	{
-		tempSessionInfo.team[i]=*teams[i];
-		tempSessionInfo.team[i].disableRecursiveDestruction=true;
+		tempSessionInfo.teams[i]=*teams[i];
+		tempSessionInfo.teams[i].disableRecursiveDestruction=true;
 	}
 
 	for (int i=0; i<session.numberOfPlayer; ++i)
@@ -1066,19 +1066,20 @@ void Game::removeTeam(void)
 
 		assert (session.numberOfTeam!=0);
 		for (int i=0; i<session.numberOfTeam; ++i)
-			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
+			teams[i]->setCorrectColor(((float)i*360.0f)/(float)session.numberOfTeam);
 
 		map.removeTeam();
 	}
 }
 
-void Game::cleanUncontrolledTeams(void)
+void Game::clearingUncontrolledTeams(void)
 {
-	for (int t=0; t<session.numberOfTeam; t++)
+	for (int ti=0; ti<session.numberOfTeam; ti++)
 	{
-		Team *team = teams[t];
+		Team *team=teams[ti];
 		if (team->playersMask==0)
 		{
+			fprintf(logFile, "clearing team %d\n", ti);
 			team->clearMap();
 			team->clearLists();
 			team->clearMem();

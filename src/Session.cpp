@@ -422,7 +422,7 @@ void SessionInfo::save(SDL_RWops *stream)
 	for (int i=0; i<numberOfPlayer; i++)
 		players[i].save(stream);
 	for (int i=0; i<numberOfTeam; i++)
-		team[i].save(stream);
+		teams[i].save(stream);
 
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
@@ -449,7 +449,7 @@ bool SessionInfo::load(SDL_RWops *stream)
 			return false;
 
 	for (int i=0; i<numberOfTeam; ++i)
-		if(!team[i].load(stream, versionMinor))
+		if(!teams[i].load(stream, versionMinor))
 			return false;
 
 	SDL_RWread(stream, signature, 4, 1);
@@ -482,10 +482,10 @@ Uint8 *SessionInfo::getData(bool compressed)
 
 		for (int i=0; i<numberOfTeam; ++i)
 		{
-			assert(team[i].getDataLength()==16);
+			assert(teams[i].getDataLength()==16);
 			// TODO: make a compressed version for team data.
-			memcpy(l+data, team[i].getData(), team[i].getDataLength());
-			l+=team[i].getDataLength();
+			memcpy(l+data, teams[i].getData(), teams[i].getDataLength());
+			l+=teams[i].getDataLength();
 		}
 
 		assert(l==getDataLength(true));
@@ -504,9 +504,9 @@ Uint8 *SessionInfo::getData(bool compressed)
 
 		for (int i=0; i<32; ++i)
 		{
-			assert(team[i].getDataLength()==16);
-			memcpy(l+data, team[i].getData(), team[i].getDataLength());
-			l+=team[i].getDataLength();
+			assert(teams[i].getDataLength()==16);
+			memcpy(l+data, teams[i].getData(), teams[i].getDataLength());
+			l+=teams[i].getDataLength();
 		}
 
 		memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength());
@@ -536,9 +536,9 @@ bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 
 		for (int i=0; i<numberOfTeam; ++i)
 		{
-			team[i].setData(l+data, team[i].getDataLength());
-			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
-			l+=team[i].getDataLength();
+			teams[i].setData(l+data, teams[i].getDataLength());
+			teams[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			l+=teams[i].getDataLength();
 		}
 
 		if(l!=getDataLength(true))
@@ -558,9 +558,9 @@ bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 
 		for (int i=0; i<32; ++i)
 		{
-			team[i].setData(l+data, team[i].getDataLength());
-			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
-			l+=team[i].getDataLength();
+			teams[i].setData(l+data, teams[i].getDataLength());
+			teams[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+			l+=teams[i].getDataLength();
 		}
 
 		bool good=SessionGame::setData(l+data, SessionGame::getDataLength());
@@ -582,7 +582,7 @@ int SessionInfo::getDataLength(bool compressed)
 		if (numberOfPlayer>0)
 			assert(players[0].getDataLength(true)==44);
 		if (numberOfTeam>0)
-			assert(team[0].getDataLength()==16);
+			assert(teams[0].getDataLength()==16);
 		return SessionGame::getDataLength(true)+numberOfPlayer*44+numberOfTeam*16;
 	}
 	else
@@ -601,7 +601,7 @@ Uint32 SessionInfo::checkSum()
 		cs^=players[i].checkSum();
 	
 	for (int i=0; i<numberOfTeam; ++i)
-		cs^=team[i].checkSum();
+		cs^=teams[i].checkSum();
 	
 	cs^=SessionGame::checkSum();
 	//fprintf(logFile, "SessionInfo::sc=%x.\n", cs);

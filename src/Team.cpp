@@ -197,6 +197,7 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	numberOfPlayer=initial->numberOfPlayer;
 	playersMask=initial->playersMask;
 	race=initial->race;
+	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 	
 	// This case is a bit hard to understand.
 	// When you load a teamed saved game, you don't want to change your aliances.
@@ -1253,7 +1254,7 @@ void Team::syncStep(void)
 		Unit *u=myUnits[i];
 		if (u)
 		{
-			if (u->typeNum!=EXPLORER/* && (u->displacement!=Unit::DIS_EXITING_BUILDING || u->movement!=Unit::MOV_INSIDE)*/)
+			if (u->typeNum!=EXPLORER)
 			{
 				nbUsefullUnits++;
 				if (u->medical==Unit::MED_FREE)
@@ -1393,7 +1394,18 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 		(*it)->clearingFlagsStep();
 	
-	isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
+	bool isDying= !isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0));
+	if (isAlive && isDying)
+	{
+		isAlive=false;
+		fprintf(logFile, "Team %d is dead:\n", teamNumber);
+		fprintf(logFile, " isEnoughFoodInSwarm=%d\n", isEnoughFoodInSwarm);
+		fprintf(logFile, " nbUsefullUnitsAlone=%d\n", nbUsefullUnitsAlone);
+		fprintf(logFile, " nbUsefullUnits=%d\n", nbUsefullUnits);
+		fprintf(logFile, "  canFeedUnit=%d\n", canFeedUnit.size());
+		fprintf(logFile, "  canHealUnit.size()=%d\n", canHealUnit.size());
+	}
+	//isAlive=isAlive && (isEnoughFoodInSwarm || nbUsefullUnitsAlone!=0 || (nbUsefullUnits!=0 && (canFeedUnit.size()>0 || canHealUnit.size()>0)));
 	// decount event cooldown counter
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		if (eventCooldown[i]>0)

@@ -126,7 +126,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		{
 			text[i]->setText(multiplayersJoin->sessionInfo.players[i].name);
 			text[i]->show();
-			const BaseTeam &t = multiplayersJoin->sessionInfo.team[multiplayersJoin->sessionInfo.players[i].teamNumber];
+			const BaseTeam &t = multiplayersJoin->sessionInfo.teams[multiplayersJoin->sessionInfo.players[i].teamNumber];
 			color[i]->setColor(t.colorR, t.colorG, t.colorB);
 			color[i]->show();
 		}

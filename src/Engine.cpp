@@ -194,7 +194,7 @@ int Engine::initCustom(void)
 	gui.game.session.numberOfPlayer=nbPlayer;
 
 	// We remove uncontrolled stuff from map
-	gui.game.cleanUncontrolledTeams();
+	gui.game.clearingUncontrolledTeams();
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
@@ -296,7 +296,7 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	gui.localTeamNo=gui.localTeamNo % multiplayersJoin->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	// We remove uncontrolled stuff from map
-	gui.game.cleanUncontrolledTeams();
+	gui.game.clearingUncontrolledTeams();
 
 	// set the correct alliance
 	gui.game.setAIAlliance();
