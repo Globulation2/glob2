@@ -81,10 +81,12 @@ int record(void *pointer)
 		#ifdef WIN32
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Win32 yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : windows code
+		break; // while no code, break
 		#endif
 		#ifdef __APPLE__
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Mac yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : Mac OS X code
+		break; // while no code, break
 		#endif
 		#ifdef AUDIO_RECORDER_OSS
 		// OSS, Open Sound System
