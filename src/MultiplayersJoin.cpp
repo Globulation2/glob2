@@ -1013,7 +1013,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 
 char *MultiplayersJoin::getStatusString()
 {
-	char *s;
+	const char *s;
 	switch (waitingState)
 	{
 		case WS_BAD:

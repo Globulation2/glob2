@@ -31,10 +31,13 @@ SettingsScreen::SettingsScreen()
 	userName=new TextInput(120, 280, 400, 30, globalContainer->standardFont, globalContainer->userName, true, 32);
 	addWidget(userName);
 	
-	ok    =new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
+	ok=new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(380, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	title=new Text(0, 18, globalContainer->menuFont, globalContainer->texts.getString("[settings]"), 640);
+	
 	addWidget(ok);
 	addWidget(cancel);
+	addWidget(title);
 	
 	oldLanguage=globalContainer->texts.getLang();
 }
@@ -56,18 +59,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		globalContainer->texts.setLang(par1);
 		ok->setText(globalContainer->texts.getString("[ok]"));
 		cancel->setText(globalContainer->texts.getString("[Cancel]"));
+		title->setText(globalContainer->texts.getString("[settings]"));
 	}
-}
-
-void SettingsScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (y<40)
-	{
-		char *text=globalContainer->texts.getString("[settings]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, "%s", text);
-	}
-	addUpdateRect(x, y, w, h);
 }
 
 int SettingsScreen::menu(void)

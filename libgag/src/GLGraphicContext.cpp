@@ -50,12 +50,12 @@ int roundToNextPowerOfTwo(int v)
 
 void GLGraphicContext::setClipRect(int x, int y, int w, int h)
 {
-	//glScissor(x, y, w, h);
+	glScissor(x, y, w, h);
 }
 
 void GLGraphicContext::setClipRect(void)
 {
-	//glScissor(0, 0, screen->w, screen->h);
+	glScissor(0, 0, screen->w, screen->h);
 }
 
 void GLGraphicContext::drawSprite(int x, int y, Sprite *sprite, int index)
@@ -70,51 +70,63 @@ void GLGraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	glColor4ub(r, g, b, a);
 	glBegin(GL_POINTS);
-	glVertex2i(x, y);
+	glVertex2f(x+0.5, y+0.5);
 	glEnd();
 }
 
 void GLGraphicContext::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	glDisable(GL_LINE_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glColor4ub(r, g, b, a);
 	glBegin(GL_POLYGON);
-	glVertex2i(x, y);
-	glVertex2i(x, y+h);
-	glVertex2i(x+w, y+h);
-	glVertex2i(x+w, y);
+	glVertex2f(x+0.49, y+0.49);
+	glVertex2f(x+0.49, y+h-0.49);
+	glVertex2f(x+w-0.49, y+h-0.49);
+	glVertex2f(x+w-0.49, y+0.49);
 	glEnd();
 }
 
 void GLGraphicContext::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	glDisable(GL_LINE_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColor4ub(r, g, b, a);
 	glBegin(GL_QUADS);
-	glVertex2i(x, y);
-	glVertex2i(x, y+h);
-	glVertex2i(x+w, y+h);
-	glVertex2i(x+w, y);
+	glVertex2f(x, y);
+	glVertex2f(x, y+h);
+	glVertex2f(x+w, y+h);
+	glVertex2f(x+w, y);
 	glEnd();
 }
 
+bool disableSmooth=false;
+
 void GLGraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	drawLine(x, y, x, y+l, r, g, b, a);
+	glDisable(GL_LINE_SMOOTH);
+	disableSmooth=true;
+	drawLine(x, y, x, y+l-1, r, g, b, a);
+	disableSmooth=false;
 }
 
 void GLGraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	drawLine(x, y, x+l, y, r, g, b, a);
+	glDisable(GL_LINE_SMOOTH);
+	disableSmooth=true;
+	drawLine(x, y, x+l-1, y, r, g, b, a);
+	disableSmooth=false;
 }
 
 void GLGraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!disableSmooth)
+		glEnable(GL_LINE_SMOOTH);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glColor4ub(r, g, b, a);
 	glBegin(GL_LINES);
-	glVertex2i(x1, y1);
-	glVertex2i(x2, y2);
+	glVertex2f(x1+0.5, y1+0.5);
+	glVertex2f(x2+0.5, y2+0.5);
 	glEnd();
 }
 
@@ -123,8 +135,8 @@ void GLGraphicContext::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8
 	unsigned i;
 	unsigned tot=ray;
 	
-	double fx=(double)x;
-	double fy=(double)y;
+	double fx=(double)x+0.5;
+	double fy=(double)y+0.5;
 	double fr=(double)ray;
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -269,10 +281,10 @@ bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 		printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
 		printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
 		printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
-			
+		
 		gluOrtho2D(0, w, h, 0);
-		glEnable(GL_LINE_SMOOTH);
 		glDisable(GL_DITHER);
+		glEnable(GL_SCISSOR_TEST);
 		return true;
 	}
 }

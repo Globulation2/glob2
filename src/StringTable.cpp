@@ -223,7 +223,7 @@ void StringTable::print()
 	}
 }
 
-char *StringTable::getString(const char *stringname)
+const char *StringTable::getString(const char *stringname)
 {
 	if (actlang<numberoflanguages)
 	{
@@ -231,7 +231,13 @@ char *StringTable::getString(const char *stringname)
 		{
 			if (strcmp(stringname, (*it)->name)==0)
 			{
-				return ((*it)->data[actlang]);
+				const char *s=(*it)->data[actlang];
+				assert(s);
+				if (s[0]==0)
+					s=(*it)->data[0];
+				
+				assert(s);
+				return s;
 			}
 		}
 		return "ERROR : NO STRING";
@@ -242,7 +248,7 @@ char *StringTable::getString(const char *stringname)
 	}
 }
 
-char *StringTable::getStringInLang(const char *stringname, int lang)
+const char *StringTable::getStringInLang(const char *stringname, int lang)
 {
 	if ((lang<numberoflanguages) && (lang>=0))
 	{
@@ -261,7 +267,7 @@ char *StringTable::getStringInLang(const char *stringname, int lang)
 	}
 }
 
-char *StringTable::getString(const char *stringname, int index)
+const char *StringTable::getString(const char *stringname, int index)
 {
 	if (actlang<numberoflanguages)
 	{
@@ -269,7 +275,17 @@ char *StringTable::getString(const char *stringname, int index)
 		{
 			if (strcmp(stringname, strings[i]->name)==0)
 			{
-				return (strings[i+index+1]->data[actlang]);
+				OneStringToken *token=strings[i+index+1];
+				assert(token);
+				
+				const char *s=token->data[actlang];
+				assert(s);
+				
+				if (s[0]==0)
+					s=token->data[0];
+					
+				assert(s);
+				return s;
 			}
 		}
 		return "ERROR : NO STRING";

@@ -36,12 +36,12 @@ private:
 	int oldLanguage;
 	
 	TextButton *ok, *cancel;
+	Text *title;
 
 public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
 	static int menu(void);
 };
 

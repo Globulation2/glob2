@@ -104,8 +104,8 @@ struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
 	// title & graph
-	char *titleText;
-	bool allocatedText=false;
+	const char *titleText;
+	char *allocatedText=NULL;
 	
 	if (!gui->getLocalTeam()->isAlive)
 	{
@@ -139,14 +139,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			assert(strText);
 			assert(playerText);
 			int len=strlen(strText)+strlen(playerText)-1;
-			titleText=new char[len];
-			snprintf(titleText, len, strText, playerText);
+			allocatedText=new char[len];
+			snprintf(allocatedText, len, strText, playerText);
+			titleText=allocatedText;
 		}
 	}
 	
 	addWidget(new Text(20, 18, globalContainer->menuFont, titleText, 600));
 	if (allocatedText)
-		delete[] titleText;
+		delete[] allocatedText;
 	statWidget=new EndGameStat(38, 80, &(gui->game));
 	addWidget(statWidget);
 	

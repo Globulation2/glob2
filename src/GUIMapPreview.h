@@ -44,7 +44,7 @@ public:
 	int getLastWidth(void) { return lastW; }
 	//! Returns last map height
 	int getLastHeight(void) { return lastH; }
-	char *getMethode(void);
+	const char *getMethode(void);
 protected:
 	//! internal paint routine
 	void repaint(void);
