@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ namespace GAGCore
 		std::string s;
 		while (1)
 		{
-			int c = backend->getc();
+			int c = backend->getc();			if(c=='\r')				continue;
 			if ((c >= 0) && (c != '\n'))
 				s += c;
 			else
