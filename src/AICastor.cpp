@@ -369,7 +369,14 @@ Order *AICastor::getOrder()
 	
 	if (!strategy.defined)
 		defineStrategy();
-	
+		
+	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
+	{
+		Order *order = controlBaseDefense();
+		if (order)
+			return order;
+	}*/
+		
 	//printf("getOrder(), %d projects\n", projects.size());
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->finished)
@@ -889,6 +896,23 @@ Order *AICastor::controlUpgrades()
 }
 
 
+// WARNING : Using wasEvent is *NOT* safe, and will *NOT* work through the network
+/*Order *AICastor::controlBaseDefense()
+{
+	int freeWarriors = team->stats.getFreeUnits(WARRIOR);
+	if (team->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) && (freeWarriors>0))
+	{
+		int x, y;
+		team->getEventPos(&x, &y);
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+		fprintf(logFile, "controlBaseDefense()\n I'm, under attack !\n Defense war flag set at (%d,%d)\n", x, y);
+		onStrike = true;
+		return new OrderCreate(team->teamNumber, x, y, typeNum);
+	}
+	return NULL;
+}*/
+
+
 Order *AICastor::controlStrikes()
 {
 	controlStrikesTimer=timer+64;
@@ -1048,6 +1072,8 @@ Order *AICastor::controlStrikes()
 	
 	return NULL;
 }
+
+
 
 bool AICastor::addProject(Project *project)
 {
