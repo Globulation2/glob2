@@ -29,6 +29,14 @@
 class SoundMixer
 {
 public:
+	enum MusicMode
+	{
+		MODE_STOPPED = 0,
+		MODE_NORMAL,
+		MODE_EARLY_CHANGE,
+		MODE_STOP,
+		MODE_START
+	} mode;
 	std::vector<OggVorbis_File *> tracks;
 	int actTrack, nextTrack;
 	bool earlyChange;
@@ -48,6 +56,8 @@ public:
 	void setNextTrack(unsigned i, bool earlyChange=false);
 
 	void setVolume(unsigned volume);
+	
+	void stopMusic(void);
 };
 
 #endif

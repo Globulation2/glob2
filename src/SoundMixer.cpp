@@ -25,7 +25,7 @@
 #include <iostream>
 #include <SDL_endian.h>
 
-#define SAMPLE_COUNT_PER_SLICE 4096
+#define SAMPLE_COUNT_PER_SLICE 8192
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define OGG_BYTEORDER 0
@@ -39,12 +39,12 @@ static void initInterpolationTable(void)
 {
 	double l = static_cast<double>(SAMPLE_COUNT_PER_SLICE-1);
 	double m = 65535;
-	double a = - (2 * m * m) / (l * l * l);
-	double b = (3 * m * m) / (l * l);
+	double a = - (2) / (l * l * l);
+	double b = (3) / (l * l);
 	for (unsigned i=0; i<SAMPLE_COUNT_PER_SLICE; i++)
 	{
 		double x = static_cast<double>(i);
-		double v = a * (x * x * x) + b * (x* x);
+		double v = m * (a * (x * x * x) + b * (x* x));
 		interpolationTable[i] = static_cast<int>(v);
 	}
 }
@@ -57,8 +57,10 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	int vol = static_cast<int>(mixer->volume);
 
 	assert(mixer->actTrack >= 0);
+	assert(mixer->mode != SoundMixer::MODE_STOPPED);
+	assert(nsamples == SAMPLE_COUNT_PER_SLICE);
 
-	if (mixer->earlyChange)
+	if (mixer->mode == SoundMixer::MODE_EARLY_CHANGE)
 	{
 		Sint16 *track0 = reinterpret_cast<Sint16 *>(alloca(len));
 		Sint16 *track1 = reinterpret_cast<Sint16 *>(alloca(len));
@@ -115,13 +117,13 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			Sint16 t0 = track0[i];
 			Sint16 t1 = track1[i];
 			int intI = interpolationTable[i];
-			int val = (intI*t0+(65535-intI*t1))>>16;
+			int val = (intI*t0+((65535-intI)*t1))>>16;
 			mix[i] = (val * vol)>>8;
 		}
 
 		// clear change
 		mixer->actTrack = mixer->nextTrack;
-		mixer->earlyChange = false;
+		mixer->mode = SoundMixer::MODE_NORMAL;
 	}
 	else
 	{
@@ -147,11 +149,36 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			}
 		}
 
-		// volume
-		for (unsigned i=0; i<nsamples; i++)
+		// volume & fading
+		if (mixer->mode == SoundMixer::MODE_NORMAL)
 		{
-			Sint16 t = mix[i];
-			mix[i] = (t * vol)>>8;
+			for (unsigned i=0; i<nsamples; i++)
+			{
+				int t = mix[i];
+				mix[i] = (t * vol) >> 8;
+			}
+		}
+		else if (mixer->mode == SoundMixer::MODE_START)
+		{
+			for (unsigned i=0; i<nsamples; i++)
+			{
+				int t = mix[i];
+				t = (interpolationTable[i]*t) >> 16;
+				mix[i] = (t * vol) >> 8;
+			}
+			mixer->mode = SoundMixer::MODE_NORMAL;
+		}
+		else if (mixer->mode == SoundMixer::MODE_STOP)
+		{
+			for (unsigned i=0; i<nsamples; i++)
+			{
+				int t = mix[i];
+				int intI = interpolationTable[i];
+				t = ((65535-intI)*t) >> 16;
+				mix[i] = (t * vol) >> 8;
+			}
+			mixer->mode = SoundMixer::MODE_STOPPED;
+			SDL_PauseAudio(1);
 		}
 	}
 }
@@ -163,7 +190,7 @@ void SoundMixer::openAudio(void)
 	as.freq = 44100;
 	as.format = AUDIO_S16SYS;
 	as.channels = 2;
-	as.samples = SAMPLE_COUNT_PER_SLICE;
+	as.samples = SAMPLE_COUNT_PER_SLICE>>1;
 	as.callback = mixaudio;
 	as.userdata = this;
 	
@@ -177,6 +204,7 @@ void SoundMixer::openAudio(void)
 	else
 	{
 		soundEnabled = true;
+		mode = MODE_STOPPED;
 	}
 }
 
@@ -184,8 +212,10 @@ SoundMixer::SoundMixer(unsigned volume)
 {
 	actTrack = -1;
 	nextTrack = -1;
-	earlyChange = false;
 	this->volume = volume;
+	mode = MODE_STOPPED;
+	
+	initInterpolationTable();
 	
 	if (volume == 0)
 	{
@@ -193,13 +223,10 @@ SoundMixer::SoundMixer(unsigned volume)
 		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
 		return;
 	}
-	
 	else
 	{
 		openAudio();
 	}
-
-	initInterpolationTable();
 }
 
 SoundMixer::~SoundMixer()
@@ -220,9 +247,6 @@ SoundMixer::~SoundMixer()
 
 int SoundMixer::loadTrack(const char *name)
 {
-	if (!soundEnabled)
-		return -1;
-
 	FILE* fp = Toolkit::getFileManager()->openFP(name);
 	if (!fp)
 	{
@@ -244,17 +268,24 @@ int SoundMixer::loadTrack(const char *name)
 
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
-	if ((soundEnabled) && (i<tracks.size()))
+	if ((soundEnabled) && (volume) && (i<tracks.size()))
 	{
+		// Select next tracks
 		if (actTrack >= 0)
 			nextTrack = i;
 		else
-			actTrack = i;
-
-		this->earlyChange = earlyChange;
-
-		if ((SDL_GetAudioStatus() != SDL_AUDIO_PLAYING) && (volume))
+			nextTrack = actTrack = i;
+		
+		// Select mode
+		if (mode == MODE_STOPPED)
+		{
 			SDL_PauseAudio(0);
+			mode = MODE_START;
+		}
+		else if (earlyChange)
+		{
+			mode = MODE_EARLY_CHANGE;
+		}
 	}
 }
 
@@ -269,9 +300,19 @@ void SoundMixer::setVolume(unsigned volume)
 			if (!soundEnabled)
 				openAudio();
 			if (actTrack>=0)
+			{
 				SDL_PauseAudio(0);
+				mode = MODE_START;
+			}
 		}
 		if (volume == 0)
-			SDL_PauseAudio(1);
+			stopMusic();
 	}
 }
+
+void SoundMixer::stopMusic(void)
+{
+	mode = MODE_STOP;
+}
+
+
