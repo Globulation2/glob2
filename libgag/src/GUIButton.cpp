@@ -84,15 +84,11 @@ void Button::internalRepaint(int x, int y, int w, int h)
 	{
 		if (highlightID>=0)
 			parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
-		else
-			parent->paint(x, y, w, h);
 	}
 	else
 	{
 		if (standardId>=0)
 			parent->getSurface()->drawSprite(x, y, archPtr, standardId);
-		else
-			parent->paint(x, y, w, h);
 	}
 }
 

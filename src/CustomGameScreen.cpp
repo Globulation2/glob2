@@ -29,19 +29,19 @@
 
 CustomGameScreen::CustomGameScreen()
 {
-	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "maps", "map", true);
-	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
+	ok=new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "maps", "map", true);
+	mapPreview=new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL);
 
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose map]")));
-	mapName=new Text(440, 60+128+30, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]")));
+	mapName=new Text(440, 60+128+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
+	mapInfo=new Text(440, 60+128+60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
+	mapVersion=new Text(440, 60+128+90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
+	mapSize=new Text(440, 60+128+120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapSize);
 
 	addWidget(ok);
@@ -50,11 +50,11 @@ CustomGameScreen::CustomGameScreen()
 
 	for (int i=0; i<8; i++)
 	{
-		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, ALIGN_LEFT, ALIGN_LEFT, true, 10+i);
+		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, 10+i);
 		addWidget(isAI[i]);
-		color[i]=new ColorButton(265, 60+i*30, 25, 25, ALIGN_LEFT, ALIGN_LEFT, 20+i);
+		color[i]=new ColorButton(265, 60+i*30, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20+i);
 		addWidget(color[i]);
-		isAItext[i]=new Text(300, 60+i*30, ALIGN_LEFT, ALIGN_LEFT, "standard", (i==0)  ? Toolkit::getStringTable()->getString("[player]") : Toolkit::getStringTable()->getString("[ai]"));
+		isAItext[i]=new Text(300, 60+i*30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", (i==0)  ? Toolkit::getStringTable()->getString("[player]") : Toolkit::getStringTable()->getString("[ai]"));
 		addWidget(isAItext[i]);
 	}
 
