@@ -1,18 +1,14 @@
 To First release :
 
 - les guerrières ne sont toujours pas intelligentes.
-- Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
-- Implémenter AICastor
 - Fixer "On the spot"
 - Un joueur qui quitte doit perdre!
 - Mettre une touche pour affichier la liste des messages qui ont disparu.
 - Balancer clearing attack.
-- disonnect /disconnect
 
 -Optimiser les boulets.
 -La sortie du gradient d'interdiction est parfois bugé!
 -Tenir compte des unités qui apportent déja quelquechose.
--Enlever la latence des informations des drapeaux.
 
 libgag::GL:
 - fix in game menu
@@ -43,9 +39,6 @@ http://ysagoon.com/phpBB2/viewtopic.php?t=45&sid=755083a5e3af8f0caf75558feb7e0e1
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
 
-IngameGUI:
--On ne sait pas qui est mort.
-
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 
@@ -53,7 +46,6 @@ Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Utiliser le gradient local si il y a une ligne directe qui y mène.
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
-- Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
 - Le comportement de guerrières doit-être amélioré.
 - Des tas d'unités peuvent bloquer une unité...
@@ -74,11 +66,6 @@ Technique :
 
 Options:
 - glob2 --benchmark
-
-Propreté du code:
-- Est-ce que on veux remettre une interface "Serialisable", après avoir enlevé "Order" dans certins objets ?
-- (Traduction) Regarder si il y a des %s/%d à rajouter au lieu de deux traductions. GameGUI::addMessage()
-- Enlever les Load::(stream) tant que le chargement peut échouer.
 
 MapEditor:
 http://ysagoon.com/phpBB2/viewtopic.php?t=96&sid=9ac6bca65604e5ddbca49e44e6af49b0

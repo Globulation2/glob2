@@ -2270,19 +2270,19 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 
 void Building::computeFlagStat(int *goingTo, int *onSpot)
 {
-	*goingTo=0;
-	*onSpot=0;
+	*goingTo = 0;
+	*onSpot = 0;
 
 	for (std::list<Unit *>::iterator unitIt=unitsWorking.begin(); unitIt!=unitsWorking.end(); ++unitIt)
 	{
-		Unit *unit=*unitIt;
-		if (unit->displacement==Unit::DIS_GOING_TO_FLAG)
+		Unit *unit = *unitIt;
+		if (unit->displacement == Unit::DIS_GOING_TO_FLAG)
 			(*goingTo)++;
-		else if (unit->displacement==Unit::DIS_ATTACKING_AROUND)
+		else if (unit->displacement == Unit::DIS_ATTACKING_AROUND)
 			(*onSpot)++;
-		else if (unit->displacement==Unit::DIS_REMOVING_BLACK_AROUND)
+		else if (unit->displacement == Unit::DIS_REMOVING_BLACK_AROUND)
 			(*onSpot)++;
-		else if (unit->displacement==Unit::DIS_CLEARING_RESSOURCES)
+		else if (unit->displacement == Unit::DIS_CLEARING_RESSOURCES)
 			(*onSpot)++;
 	}
 }
