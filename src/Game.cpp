@@ -133,12 +133,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	bool isPlayerAlive=players[order->sender]->team->isAlive;
+	if (!isPlayerAlive)
+		break;
 	switch (order->getOrderType())
 	{
 		case ORDER_CREATE:
 		{
-			if (!isPlayerAlive)
-				break;
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
 			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
@@ -169,21 +169,19 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
+			for (int i=0; i<((OrderModifyBuildings *)order)->getNumberOfBuilding(); i++)
 			{
-				for (int i=0; i<((OrderModifyBuildings *)order)->getNumberOfBuilding(); i++)
+				Sint32 UID=((OrderModifyBuildings *)order)->UID[i];
+				int team=Building::UIDtoTeam(UID);
+				int id=Building::UIDtoID(UID);
+				Building *b=teams[team]->myBuildings[id];
+				if ((b) && (b->buildingState==Building::ALIVE))
 				{
-					Sint32 UID=((OrderModifyBuildings *)order)->UID[i];
-					int team=Building::UIDtoTeam(UID);
-					int id=Building::UIDtoID(UID);
-					Building *b=teams[team]->myBuildings[id];
-					if ((b) && (b->buildingState==Building::ALIVE))
-					{
-						b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
-						b->maxUnitWorkingPreferred=b->maxUnitWorking;
-						if (order->sender!=localPlayer)
-							b->maxUnitWorkingLocal=b->maxUnitWorking;
-						b->update();
-					}
+					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
+					b->maxUnitWorkingPreferred=b->maxUnitWorking;
+					if (order->sender!=localPlayer)
+						b->maxUnitWorkingLocal=b->maxUnitWorking;
+					b->update();
 				}
 			}
 		}
@@ -234,23 +232,21 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
+			for (int i=0; i<((OrderModifySwarms *)order)->getNumberOfSwarm(); i++)
 			{
-				for (int i=0; i<((OrderModifySwarms *)order)->getNumberOfSwarm(); i++)
+				Sint32 UID=((OrderModifySwarms *)order)->UID[i];
+				int team=Building::UIDtoTeam(UID);
+				int id=Building::UIDtoID(UID);
+				Building *b=teams[team]->myBuildings[id];
+				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
 				{
-					Sint32 UID=((OrderModifySwarms *)order)->UID[i];
-					int team=Building::UIDtoTeam(UID);
-					int id=Building::UIDtoID(UID);
-					Building *b=teams[team]->myBuildings[id];
-					if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
+					for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
 					{
-						for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
-						{
-							b->ratio[j]=((OrderModifySwarms *)order)->ratio[i*(UnitType::NB_UNIT_TYPE)+j];
-							if (order->sender!=localPlayer)
-								b->ratioLocal[j]=b->ratio[j]; 
-						}
-						b->update();
+						b->ratio[j]=((OrderModifySwarms *)order)->ratio[i*(UnitType::NB_UNIT_TYPE)+j];
+						if (order->sender!=localPlayer)
+							b->ratioLocal[j]=b->ratio[j];
 					}
+					b->update();
 				}
 			}
 		}

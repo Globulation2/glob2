@@ -330,14 +330,10 @@ int Building::neededRessource(int r)
 
 void Building::cancelUpgrade(void)
 {
-	if (!type->isVirtual)
-		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
-	int midPosX=posX-type->decLeft;
-	int midPosY=posY-type->decTop;
-	
 	if (type->isBuildingSite)
 	{
 		int lastLevelTypeNum=type->lastLevelTypeNum;
+		
 		if (lastLevelTypeNum!=-1)
 		{
 			typeNum=lastLevelTypeNum;
@@ -356,7 +352,17 @@ void Building::cancelUpgrade(void)
 		buildingState=Building::ALIVE;
 	}
 	else
+	{
+		// Congratulation, you have managed to click "cancel upgrade"
+		// when the building upgrade" was already canceled.
+		return;
 		assert(false);
+	}
+	
+	if (!type->isVirtual)
+		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+	int midPosX=posX-type->decLeft;
+	int midPosY=posY-type->decTop;
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -373,6 +379,7 @@ void Building::cancelUpgrade(void)
 
 	if (hp>=type->hpInit)
 		hp=type->hpInit;
+	
 	productionTimeout=type->unitProductionTime;
 
 	if (type->unitProductionTime)
@@ -381,13 +388,12 @@ void Building::cancelUpgrade(void)
 		owner->turrets.push_front(this);
 	
 	totalRatio=0;
+	
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 	{
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-		{
-			ratio[i]=1;
-			totalRatio++;
-			percentUsed[i]=0;
-		}
+		ratio[i]=1;
+		totalRatio++;
+		percentUsed[i]=0;
 	}
 
 	int vr=type->viewingRange;
@@ -616,17 +622,15 @@ bool Building::tryToUpgradeRoom(void)
 	int lastNewPosY=newPosY+newHeight;
 
 	bool isRoom=true;
-
+	
+	for(int x=newPosX; x<lastNewPosX; x++)
 	{
-		for(int x=newPosX; x<lastNewPosX; x++)
+		for(int y=newPosY; y<lastNewPosY; y++)
 		{
-			for(int y=newPosY; y<lastNewPosY; y++)
-			{
-				// TODO : put this code in map.cpp to optimise speed.
-				Sint32 UID=owner->game->map.getUnit(x, y);
-				if ( (!owner->game->map.isGrass(x, y)) || ((UID!=this->UID) && (UID!=NOUID)) )
-					isRoom=false;
-			}
+			// TODO : put this code in map.cpp to optimise speed.
+			Sint32 UID=owner->game->map.getUnit(x, y);
+			if ( (!owner->game->map.isGrass(x, y)) || ((UID!=this->UID) && (UID!=NOUID)) )
+				isRoom=false;
 		}
 	}
 
@@ -658,7 +662,7 @@ bool Building::tryToUpgradeRoom(void)
 		unitStayRangeLocal=unitStayRange;
 
 		// quality parameters
-		hp=type->hpInit; // (Uint16)
+		// hp=type->hpInit; // (Uint16)
 
 		// prefered parameters
 		productionTimeout=type->unitProductionTime;
@@ -769,19 +773,17 @@ bool Building::fullInside(void)
 		return ((signed)unitsInside.size()>=maxUnitInside);
 }
 
-void Building::subscribeForWorkingStep()
+void Building::subscribeForConstructionStep()
 {
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 		{
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->subscribed=false;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
-			}
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
 		}
 		unitsWorkingSubscribe.clear();
 		return;
@@ -789,12 +791,13 @@ void Building::subscribeForWorkingStep()
 	
 	if (lastWorkingSubscribe>32)
 	{
+		//is it usefull? lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int minValue=owner->game->map.getW()*owner->game->map.getW();
 			Unit *choosen=NULL;
 			Map &map=owner->game->map;
-			/* To choos a good unit, we get a composition of things:
+			/* To choose a good unit, we get a composition of things:
 			1-the closest the unit is, the better it is.
 			2-the less the unit is hungry, the better it is.
 			3-if the unit has a needed ressource, this is better.
@@ -805,7 +808,8 @@ void Building::subscribeForWorkingStep()
 			{
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
-				int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+				// The following "10" is totaly arbitrary between [2..100]
+				int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
 				int x=unit->posX;
 				int y=unit->posY;
 				hungry*=hungry;
@@ -827,7 +831,8 @@ void Building::subscribeForWorkingStep()
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
-					int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					// The following "10" is totaly arbitrary between [2..100]
+					int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
 					int x=unit->posX;
 					int y=unit->posY;
 					int dx, dy;
@@ -851,7 +856,8 @@ void Building::subscribeForWorkingStep()
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
-					int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					// The following "10" is totaly arbitrary between [2..100]
+					int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
 					int dist=owner->game->map.warpDistSquare(unit->posX, unit->posY, posX, posY);
 					int value=dist-hungry;
 					//printf("u(%x) dist=%d, hungry=%d, value=%d\n", (int)unit, dist, hungry, value);
@@ -866,31 +872,135 @@ void Building::subscribeForWorkingStep()
 			{
 				//printf("f(%x) choosen.\n", (int)choosen);
 				unitsWorkingSubscribe.remove(choosen);
-				unitsWorking.push_back(choosen);
-				choosen->unsubscribed();
 				if (!neededRessource(choosen->destinationPurprose))
 				{
-					assert(false);
-					choosen->destinationPurprose=neededRessource();
+					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
+					
+					printf("B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					// This unit may no more be needed here.
+					// Let's remove it from this subscribing list.
+					lastWorkingSubscribe=0;
+					
+					choosen->attachedBuilding=NULL;
+					choosen->subscribed=false;
+					choosen->activity=Unit::ACT_RANDOM;
+					choosen->needToRecheckMedical=true;
+					
+					return;
 				}
-				update();
+				else
+				{
+					unitsWorking.push_back(choosen);
+					choosen->unsubscribed();
+					update();
+				}
 			}
 		}
 		
 		if ((signed)unitsWorking.size()>=maxUnitWorking)
 		{
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-				{
-					(*it)->attachedBuilding=NULL;
-					(*it)->subscribed=false;
-					(*it)->activity=Unit::ACT_RANDOM;
-					(*it)->needToRecheckMedical=true;
-				}
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
 			}
 			unitsWorkingSubscribe.clear();
 		}
 	}
+}
+
+void Building::subscribeForFightingStep()
+{
+	lastWorkingSubscribe++;
+	if (fullWorking())
+	{
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
+		unitsWorkingSubscribe.clear();
+		return;
+	}
+	
+	if (lastWorkingSubscribe>32)
+	{
+		lastWorkingSubscribe=0;
+		if ((signed)unitsWorking.size()<maxUnitWorking)
+		{
+			int minValue=owner->game->map.getW()*owner->game->map.getW();
+			Unit *choosen=NULL;
+			
+			/* To choose a good unit, we get a composition of things:
+			1-the closest the unit is, the better it is.
+			2-the less the unit is hungry, the better it is.
+			2-the more hp the unit has, the better it is.
+			*/
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			{
+				Unit *unit=(*it);
+				// The following "10" is totaly arbitrary between [2..100]
+				int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
+				int hp=(10*unit->hp)/unit->race->unitTypes[0][0].performance[HP];
+				int x=unit->posX;
+				int y=unit->posY;
+				hungry*=hungry;
+				hp*=hp;
+				int dist=owner->game->map.warpDistSquare(x, y, posX, posY);
+				int value=dist-hungry+hp;
+				//printf("d(%x) dist=%d, hungry=%d, hp=%d, value=%d\n", (int)unit, dist, hungry, hp, value);
+				if (value<minValue)
+				{
+					minValue=value;
+					choosen=unit;
+				}
+				
+			}
+			
+			if (choosen)
+			{
+				//printf("f(%x) choosen.\n", (int)choosen);
+				unitsWorkingSubscribe.remove(choosen);
+				if (!neededRessource(choosen->destinationPurprose))
+				{
+					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
+
+					printf("B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					// This unit may no more be needed here.
+					// Let's remove it from this subscribing list.
+					lastWorkingSubscribe=0;
+
+					choosen->attachedBuilding=NULL;
+					choosen->subscribed=false;
+					choosen->activity=Unit::ACT_RANDOM;
+					choosen->needToRecheckMedical=true;
+
+					return;
+				}
+				else
+				{
+					unitsWorking.push_back(choosen);
+					choosen->unsubscribed();
+					update();
+				}
+			}
+		}
+	}
+}
+
+void Building::subscribeForWorkingStep()
+{
+	// TODO : add new lists to Building, to make the difference between
+	// workers for ressources (construction and reparation), and workers
+	// for the building (Fighters).
+	if (!isRessourceFull())
+		subscribeForConstructionStep();
+	else
+		subscribeForFightingStep();
 }
 
 void Building::subscribeForInsideStep()
@@ -917,15 +1027,13 @@ void Building::subscribeForInsideStep()
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
 			Unit *u=NULL;
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+				if (dist<mindist)
 				{
-					int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (dist<mindist)
-					{
-						mindist=dist;
-						u=*it;
-					}
+					mindist=dist;
+					u=*it;
 				}
 			}
 			if (u)
@@ -939,14 +1047,12 @@ void Building::subscribeForInsideStep()
 		
 		if ((signed)unitsInside.size()>=maxUnitInside)
 		{
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-				{
-					(*it)->attachedBuilding=NULL;
-					(*it)->subscribed=false;
-					(*it)->activity=Unit::ACT_RANDOM;
-					(*it)->needToRecheckMedical=true;
-				}
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
 			}
 			unitsInsideSubscribe.clear();
 		}

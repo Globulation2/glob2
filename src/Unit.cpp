@@ -471,6 +471,7 @@ void Unit::handleActivity(void)
 							printf("(%d)Going to harvest for filling building\n", UID);
 						destinationPurprose=(int)CORN;
 						attachedBuilding=b;
+						//printf("g(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
@@ -522,8 +523,11 @@ void Unit::handleActivity(void)
 				b=owner->findBestConstruction(this);
 				if ( b != NULL)
 				{
-					destinationPurprose=b->neededRessource();
-					assert(destinationPurprose>=0); // zzz this does fail !
+					//do not do this (it's done in findBestConstruction() much nicer)
+					//destinationPurprose=b->neededRessource();
+					assert(destinationPurprose>=0);
+					assert(b->neededRessource(destinationPurprose));
+					
 					jobFound=owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
 					if (jobFound)
 					{
@@ -534,6 +538,7 @@ void Unit::handleActivity(void)
 						//printf("(%x)Going to harvest to build building\n", (int)this);
 						
 						attachedBuilding=b;
+						//printf("c(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
@@ -544,38 +549,37 @@ void Unit::handleActivity(void)
 				}
 			}
 
-			{		
-				// fifth we go to flag
+			
+			// fifth we go to flag
+			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
+			{
+				if (performance[abilityIterator])
 				{
-					for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
+					Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
+					if ( b != NULL)
 					{
-						if (performance[abilityIterator])
-						{
-							Building *b=owner->findNearestAttract(posX, posY, (Abilities)abilityIterator);
-							if ( b != NULL)
-							{
-								jobFound=true;
-								activity=ACT_FLAG;
-								displacement=DIS_GOING_TO_FLAG;
-								destinationPurprose=abilityIterator;
+						jobFound=true;
+						activity=ACT_FLAG;
+						displacement=DIS_GOING_TO_FLAG;
+						destinationPurprose=abilityIterator;
 
-								attachedBuilding=b;
-								targetX=attachedBuilding->getMidX();
-								targetY=attachedBuilding->getMidY();
-								newTargetWasSet();
-								b->unitsWorkingSubscribe.push_front(this);
-								b->lastWorkingSubscribe=0;
-								subscribed=true;
-								owner->subscribeForWorkingStep.push_front(b);
-								//b->update();
-								//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
-								
-								return;
-							}
-						}
+						attachedBuilding=b;
+						targetX=attachedBuilding->getMidX();
+						targetY=attachedBuilding->getMidY();
+						newTargetWasSet();
+						//printf("f(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
+						b->unitsWorkingSubscribe.push_front(this);
+						b->lastWorkingSubscribe=0;
+						subscribed=true;
+						owner->subscribeForWorkingStep.push_front(b);
+						//b->update();
+						//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
+
+						return;
 					}
 				}
 			}
+			
 			
 			if ( (!jobFound) )
 			{

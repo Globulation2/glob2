@@ -73,20 +73,37 @@ int AI::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, (RessourceType)CORN))
+			if (map->isRessource(rx+i, ry, (RessourceType)CORN)||map->isRessource(rx+i, ry-1, (RessourceType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, (RessourceType)CORN))
+			if (map->isRessource(rx-i, ry, (RessourceType)CORN)||map->isRessource(rx-i, ry-1, (RessourceType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxl=rx-i;
 		
 		rx=((rxr+rxl)>>1);
+		
+		hole=2;
+		for (i=0; i<32; i++)
+			if (map->isRessource(rx, ry+i, (RessourceType)CORN)||map->isRessource(rx-1, ry+i, (RessourceType)CORN))
+				h++;
+			else if (hole--<0)
+				break;
+		ryb=ry+i;
+		hole=2;
+		for (i=0; i<32; i++)
+			if (map->isRessource(rx, ry-i, (RessourceType)CORN)||map->isRessource(rx-1, ry-i, (RessourceType)CORN))
+				h++;
+			else if (hole--<0)
+				break;
+		ryt=ry-i;
+		
+		ry=((ryb+ryt)>>1);
 		
 		
 		hole=2;
@@ -181,16 +198,26 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 		else if (numberRequestedLoca==0)
 			if (f<(nbu*5+1))
 				numberRequestedTemp=0;
+		
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
-			printf("AI: (%d) numberRequested changed to %d (f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, f, nbu);
+			printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
+			b->maxUnitWorkingLocal=numberRequestedTemp;
 			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
 		}
 	}
 	if (ss<minSwarmNumbers)
 	{
+		printf("AI: not enough swarms (%d<%d).\n", ss, minSwarmNumbers);
+		// TODO !
 		// assert(false);
-		// TODO!
+		/*int x, y;
+		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
+		{
+			int typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
+			int teamNumber=player->team->teamNumber;
+			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+		}*/
 	}
 	return new NullOrder();
 }
@@ -702,23 +729,23 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 	Building **myBuildings=player->team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
+	
+	for (int i=0; i<512; i++)
 	{
-		for (int i=0; i<512; i++)
+		Building *b=myBuildings[i];
+		if ((b)&&(b->type->type==buildingType))
 		{
-			Building *b=myBuildings[i];
-			if ((b)&&(b->type->type==buildingType))
+			fb++;
+			int w=workers;
+			if ((b->maxUnitWorkingLocal!=w)&&(b->type->maxUnitWorking))
 			{
-				fb++;
-				int w=workers;
-				if ((b->maxUnitWorkingLocal!=w)&&(b->type->maxUnitWorking))
-				{
-					
-					//printf("AI: (%d) (%d) numberRequested changed.\n", buildingType, b->UID);
-					return new OrderModifyBuildings(&b->UID, &w, 1);
-				}
+
+				//printf("AI: (%d) (%d) numberRequested changed.\n", buildingType, b->UID);
+				return new OrderModifyBuildings(&b->UID, &w, 1);
 			}
 		}
 	}
+	
 	
 	int wr=countUnits();
 	
@@ -746,28 +773,17 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 
 Order *AI::checkoutExpands(const int numbers, const int workers)
 {
-	Building **myBuildings=player->team->myBuildings;
-	//Unit **myUnits=player->team->myUnits;
-	int fb=0;
-	for (int i=0; i<512; i++)
-	{
-		Building *b=myBuildings[i];
-		if ((b)&&(b->type->type==0))
-		{
-			fb++;
-			int w=workers;
-			if (b->maxUnitWorkingLocal!=w)
-				return new OrderModifyBuildings(&b->UID, &w, 1);
-		}
-	}
+	//Building **myBuildings=player->team->myBuildings;
+	std::list<Building *> swarms=player->team->swarms;
+	int ss=swarms.size();
 	
 	int wr=countUnits();
 
-	if (fb<=(wr/numbers))
+	if (ss<=(wr/numbers))
 	{
-		printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", fb, (wr/numbers), wr, numbers);
+		printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", ss, (wr/numbers), wr, numbers);
 		int x, y;
-		if (findNewEmplacement(0, &x, &y))
+		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
 			int teamNumber=player->team->teamNumber;
