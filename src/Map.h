@@ -61,6 +61,14 @@ enum TerrainType
 	GRASS=2
 };
 
+const int RessourceTerrain[NB_RESSOURCES] = {
+	GRASS,
+	GRASS,
+	GRASS,
+	GRASS,
+	WATER
+};
+
 /*! Map, handle all physical localisations
 	All size are given in 32x32 pixel cell, which is the basic game measurement unit.
 	All functions are wrap-safe, excepted the one specified otherwise.
