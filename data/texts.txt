@@ -354,7 +354,7 @@ Niveau
 [levels]
 Niveaux
 Levels
-
+Level
 [building site]
 Chantier
 Building site
@@ -366,11 +366,11 @@ Karte kreieren
 [map size x]
 Largeur de la carte
 Width of the map
-
+Breite der Karte
 [map size y]
 Hauteur de la carte
 Height of the map
-
+Höhe der Karte
 [default terrain]
 Terrain par defaut
 Default terrain
@@ -666,7 +666,7 @@ Geschwindigkeit
 [current speed]
 Vitesse actuelle
 Current speed
-
+Jetzige Geschwindigkeit
 [attack speed]
 Vit. attaque
 Attack speed
@@ -774,7 +774,7 @@ zu:
 [away:]
 absent:
 away:
-
+weg:
 [compile]
 Compiler le script
 Compile script
@@ -846,64 +846,65 @@ Spielgeschwindigkeit
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
-
+Interner koherenz Fehler bei der Anschliessung
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
-
+Anschliessen unmöglich. Anscheinend ist der YOG Metaserver nicht verfügbar.
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
-
+Das System ist bereit sich an YOG anzuschliessen
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Etablishing the connection to the YOG metaserver...
-
+Anschluss an YOG Metaserver im Aufbau...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
-
+Der Administrator hat gerade YOG abgestellt.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
-
+Der Anschluss an YOG wurde verlohren.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
-
+Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihre Version von Globulation zu alt ist. 
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
-
+Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihr Pseudo schohn gebraucht wird.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
-
+Der YOG Metaserver hat den Anschluss ohne Erklärung nicht akzeptiert.
 [The player ]
 Le joueur 
 The player
-
+Der Spieler
 [ has left YOG]
  a quité YOG.
  has left YOG.
- 
+ hat YOG verlassen.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as being away.
-
+Sie sind weg.
 [You are no more marked as away]
 Vous êtes désormais considéré comme étant présent.
 You are no longer marked as away.
-
+Sie sind wieder da.
 [YOG_HELP]
-Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help commande" pour en savoir plus.
-The YOG messaging system have two commands, "msg" and "away". Type "/help command" to know more about one of them.
- 
+Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
+The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
+Das YOG Nachrigten System kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" tippen. 
 [YOG_HELP_AWAY]
-La commande "/away (message)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
-The "/away (message)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/m I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
-
+La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
+The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/m I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
+Der Befehl "/away (<Nachricht>)" zeigt anderen YOG Spieler dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen. z.b. "Ich drinke ein Bier, bin um eins zurück !". Alias "/a"
 [YOG_HELP_MSG]
-La commande "/msg nom message" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
-The "/msg name message" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/a".
+La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
+The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
+Der "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine speziefische Person zu senden. z.b. "msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
 
