@@ -908,9 +908,17 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 
 Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 {
-	//Building **myBuildings=player->team->myBuildings;
-	std::list<Building *> swarms=team->swarms;
-	int ss=swarms.size();
+	//std::list<Building *> swarms=team->swarms;
+	//int ss=swarms.size();
+	
+	Building **myBuildings=team->myBuildings;
+	int ss=0;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if ((b)&&(b->type->type==0))
+			ss++;
+	}
 	
 	int wr=countUnits();
 
