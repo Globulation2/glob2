@@ -113,7 +113,9 @@ Kamenná hradba
 [market]
 Tržiště
 [forbidden area]
-
+Vstup zakázán
+[guard area]
+Hlídáná oblast
 [Building short explanation]
 Krátké vysvětlení (24 znaků max)
 [swarm building explanation]
@@ -213,7 +215,7 @@ Síťová hra
 [settings]
 Nastavení
 [Warning, you need to reboot the game for changes to take effect]
-
+Varovaní, hra potřebuje znova spustit, aby se uplatinily provedené změny.
 [editor]
 Editor
 [credits]
