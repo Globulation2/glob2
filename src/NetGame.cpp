@@ -27,6 +27,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Player.h"
+#include "Team.h"
 
 NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 {
@@ -790,6 +791,7 @@ Order *NetGame::getOrder(int playerNumber)
 		if (canQuit)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
+			players[playerNumber]->team->checkControllingPlayers();
 			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me, quited\\n", playerNumber);
 			order=new QuitedOrder();
 			dropStatusCommuniquedToGui[playerNumber]=true;
@@ -825,6 +827,7 @@ Order *NetGame::getOrder(int playerNumber)
 		if (executeUStep>=players[playerNumber]->quitUStep+latency)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
+			players[playerNumber]->team->checkControllingPlayers();
 			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, quited\n", playerNumber);
 			assert(executeUStep==players[playerNumber]->quitUStep+latency);
 		}
@@ -847,6 +850,7 @@ Order *NetGame::getOrder(int playerNumber)
 		if (players[playerNumber]->type==Player::P_LOST_DROPPING && executeUStep==players[playerNumber]->lastUStepToExecute)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
+			players[playerNumber]->team->checkControllingPlayers();
 			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, dropped, executeUStep=%d\n", playerNumber, executeUStep);
 		}
 		
@@ -918,6 +922,7 @@ Order *NetGame::getOrder(int playerNumber)
 				{
 					fprintf(logFile, "Player %d dropped for checksum\n", pi);
 					players[pi]->type=Player::P_LOST_FINAL;
+					players[pi]->team->checkControllingPlayers();
 				}
 		}
 		
@@ -1337,7 +1342,10 @@ bool NetGame::stepReadyToExecute(void)
 				fprintf(logFile, "iAgreeWithEveryone, myDroppingPlayersMask=%x.\n", myDroppingPlayersMask);
 				for (int pi=0; pi<numberOfPlayer; pi++)
 					if (players[pi]->type==Player::P_IP && !players[pi]->quitting && (myDroppingPlayersMask&(1<<pi)))
+					{
 						players[pi]->type=Player::P_LOST_DROPPING;
+						players[pi]->team->checkControllingPlayers();
+					}
 				dropState=DS_ExchangingOrders;
 			}
 		}
@@ -1429,7 +1437,10 @@ bool NetGame::stepReadyToExecute(void)
 				if (maxLastExecutedUStep==executeUStep-1)
 					for (int pi=0; pi<numberOfPlayer; pi++)
 						if (players[pi]->type==Player::P_LOST_DROPPING)
+						{
 							players[pi]->type=Player::P_LOST_FINAL;
+							players[pi]->team->checkControllingPlayers();
+						}
 				fprintf(logFile, " we have all needed orders.\n");
 				dropState=DS_NoDropProcessing;
 			}
