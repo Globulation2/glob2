@@ -913,6 +913,17 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					viewportY=evY-(sh>>6);
 				}
 				break;
+			case SDLK_HOME:
+				if (pressed)
+				{
+					int evX = localTeam->startPosX;
+					int evY = localTeam->startPosY;
+				    int sw = globalContainer->gfx->getW();
+					int sh = globalContainer->gfx->getH();
+					viewportX = evX-((sw-128)>>6);
+					viewportY = evY-(sh>>6);
+				}
+				break;
 			case SDLK_w:
 			case SDLK_PAUSE:
 				if (pressed)
