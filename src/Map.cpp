@@ -4085,28 +4085,22 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 		}
 	}
 	// if solution is found, copy it in dx, dy
-	if (maxValue > 0)
+	if ((maxValue > 0) && (maxValue < 255))
 	{
-		// if we are in area, go randomly
-		if (maxValue == 255)
-		{
-			int dir = syncRand() % 8;
-			*dx = tabClose[dir][0];
-			*dy = tabClose[dir][1];
-			// if destination is busy, return false
-			if (!isFreeForGroundUnitNoForbidden(x+*dx, y+*dy, canSwim))
-				return false;
-			
-		}
-		else
-		{
-			*dx = tabClose[maxd][0];
-			*dy = tabClose[maxd][1];
-		}
-		return true;
+		*dx = tabClose[maxd][0];
+		*dy = tabClose[maxd][1];
 	}
 	else
-		return false;
+	{
+		// if we are in area, or no area is defined, go randomly
+		int dir = syncRand() % 8;
+		*dx = tabClose[dir][0];
+		*dy = tabClose[dir][1];
+		// if destination is busy, return false
+		if (!isFreeForGroundUnitNoForbidden(x+*dx, y+*dy, canSwim))
+			return false;
+	}
+	return true;
 }
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
