@@ -126,7 +126,6 @@ Team::Team(Game *game)
 Team::Team(SDL_RWops *stream, Game *game)
 :BaseTeam()
 {
-	isAlive=true;
 	this->game=game;
 	init();
 	load(stream, &(globalContainer->buildingsTypes));
@@ -183,6 +182,7 @@ void Team::init(void)
 	}
 	eventPosX=startPosX;
 	eventPosY=startPosY;
+	isAlive=true;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial)
