@@ -360,13 +360,13 @@ Créer carte
 Create map
 Karte kreieren
 [map size x]
-Taille de la carte sur x
-Map size on x
-Groesse auf x
+Largeur de la carte
+Width of the map
+
 [map size y]
-Taille de la carte sur y
-Map size on y
-Groesse auf y
+Hauteur de la carte
+Height of the map
+
 [default terrain]
 Terrain par defaut
 Default terrain

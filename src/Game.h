@@ -119,9 +119,9 @@ public:
 	
 	Sint32 stepCounter;
 public:
-	void makeIslandsMap(MapGenerationDescriptor &descriptor);
-	void makeRandomMap(MapGenerationDescriptor &descriptor);
-	void generateMap(MapGenerationDescriptor &descriptor);
+	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
+	bool makeRandomMap(MapGenerationDescriptor &descriptor);
+	bool generateMap(MapGenerationDescriptor &descriptor);
 };
 
 #endif 

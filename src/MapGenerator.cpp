@@ -308,7 +308,7 @@ void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double
 	*finalGrass=medianFinalGrass;
 }
 
-void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
+bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	int waterRatio=descriptor.waterRatio;
 	int sandRatio =descriptor.sandRatio ;
@@ -670,10 +670,13 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)((double)w*(double)h*(double)grassCount)/(double)((double)nbTeams*(double)totalCount));
 	printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
+	if (minDistSquare<=0)
+		return false;
 	assert(minDistSquare>0);
 	int* bootX=descriptor.bootX;
 	int* bootY=descriptor.bootY;
 	
+	//TODO: First pass to find the number of aviable places.
 	for (int team=0; team<nbTeams; team++)
 	{
 		int maxSurface=0;
@@ -726,6 +729,8 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 		
+		if (maxSurface<=0)
+			return false;
 		assert(maxSurface);
 		bootX[team]=maxX;
 		bootY[team]=maxY;
@@ -748,6 +753,8 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	controlSand();
 	regenerateMap(0, 0, w, h);
+	
+	return true;
 }
 
 void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
@@ -914,7 +921,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 	smoothRessources(maxAmount*3);
 }
 
-void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
+bool Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
 	// First, fill with water:
 	for (int y=0; y<h; y++)
@@ -1276,6 +1283,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	
 	//controlSand();
 	regenerateMap(0, 0, w, h);
+	return true;
 }
 
 void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
@@ -1370,7 +1378,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 	this->smoothRessources(smoothRessources*2);
 }
 
-void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
+bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
@@ -1390,14 +1398,17 @@ void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		for (int i=0; i<descriptor.nbWorkers; i++)
 		{
 			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			if (u==NULL)
+				return false;
 			assert(u);
 		}
 		teams[s]->createLists();
 	}
 	map.smoothRessources(descriptor.islandsSize/10);
+	return true;
 }
 
-void Game::makeRandomMap(MapGenerationDescriptor &descriptor)
+bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
@@ -1418,13 +1429,16 @@ void Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		for (int i=0; i<descriptor.nbWorkers; i++)
 		{
 			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			if (u==NULL)
+				return false;
 			assert(u);
 		}
 		teams[s]->createLists();
 	}
+	return true;
 }
 
-void Game::generateMap(MapGenerationDescriptor &descriptor)
+bool Game::generateMap(MapGenerationDescriptor &descriptor)
 {
 	printf("Generating map, please wait ....\n");
 	descriptor.synchronizeNow();
@@ -1437,14 +1451,18 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 			addTeam();
 		break;
 		case MapGenerationDescriptor::eRANDOM:
-			map.makeRandomMap(descriptor);
+			if (!map.makeRandomMap(descriptor))
+				return false;
 			map.addRessourcesRandomMap(descriptor);
-			makeRandomMap(descriptor);
+			if (!makeRandomMap(descriptor))
+				return false;
 		break;
 		case MapGenerationDescriptor::eISLANDS:
-			map.makeIslandsMap(descriptor);
+			if (!map.makeIslandsMap(descriptor))
+				return false;
 			map.addRessourcesIslandsMap(descriptor);
-			makeIslandsMap(descriptor);
+			if (!makeIslandsMap(descriptor))
+				return false;
 		break;
 		default:
 			assert(false);
@@ -1453,6 +1471,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
 	printf(".... map generated.\n");
+	return true;
 }
 /*
 WATER=0,
