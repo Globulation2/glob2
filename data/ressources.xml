@@ -122,6 +122,8 @@
  <fungus>2</fungus>
  <stone>3</stone>
  <alga>4</alga>
+ <happynessBase>5</happynessBase>
+ <happynessCount>3</happynessCount>
 </item>
  <refs>
   <ref type="RessourcesTypes"/>

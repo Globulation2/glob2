@@ -1438,17 +1438,17 @@ void GameGUI::draw(void)
 					{
 						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont, 
-							"%s: %d", Toolkit::getStringTable()->getString("[wood]"), bt->maxRessource[0]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont, 
-							"%s: %d", Toolkit::getStringTable()->getString("[stone]"), bt->maxRessource[3]);
+							"%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
+							"%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]);
 
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
 							"%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont, 
-							"%s: %d", Toolkit::getStringTable()->getString("[corn]"), bt->maxRessource[1]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
+							"%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]);
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont, 
-							"%s: %d", Toolkit::getStringTable()->getString("[fungus]"), bt->maxRessource[2]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
+							"%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]);
 					}
 				}
 			}
