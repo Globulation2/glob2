@@ -48,7 +48,7 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	maxUnitWorkingPreferred=1;
 	lastInsideSubscribe=0;
 	lastWorkingSubscribe=0;
-	
+
 	// identity
 	UID=uid;
 	owner=team;
@@ -84,8 +84,8 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	}
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
-	
-	
+
+
 
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
@@ -384,8 +384,9 @@ void Building::cancelUpgrade(void)
 			percentUsed[i]=0;
 		}
 	}
-	
-	owner->game->map.setMapDiscovered(posX-1, posY-1, type->width+2, type->height+2, owner->teamNumber);
+
+	int vr=type->viewingRange;
+	owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 	
 	update();
 }
@@ -575,13 +576,14 @@ void Building::update(void)
 			productionTimeout=type->unitProductionTime;
 			if (type->unitProductionTime)
 				owner->swarms.push_front(this);
-			
+
 			if (type->shootingRange)
 				owner->turrets.push_front(this);
 
 			// DUNNO : when do we update closestRessourceXY[] ?
-			owner->game->map.setMapDiscovered(posX-1, posY-1, type->width+2, type->height+2, owner->teamNumber);
-			
+			int vr=type->viewingRange;
+			owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
+
 			// we need to do an update again
 			update();
 		}

@@ -111,6 +111,9 @@ isBuildingSite = 0
 
 defaultUnitStayRange = 0
 
+viewingRange = 1
+regenerationSpeed = 0
+
 *
 
 // swarm building site
@@ -152,6 +155,9 @@ hpMax = 700
 level = 0
 type = 0
 maxUnitWorking = 1
+
+viewingRange = 4
+regenerationSpeed = 3
 
 *
 
@@ -941,6 +947,8 @@ armor = 8
 level = 0
 type = 7
 
+viewingRange = 6
+
 *
 
 // Defense building site, level 1
@@ -968,6 +976,8 @@ type = 7
 maxUnitWorking = 1
 isBuildingSite = 1
 
+viewingRange = 5 
+
 *
 
 // Defense building, level 1
@@ -987,6 +997,8 @@ hpMax = 300
 armor = 12
 level = 1
 type = 7
+
+viewingRange = 8
 
 *
 
@@ -1016,6 +1028,8 @@ type = 7
 maxUnitWorking = 1
 isBuildingSite = 1
 
+viewingRange = 6
+
 *
 
 // Defense building, level 2
@@ -1035,6 +1049,8 @@ hpMax = 450
 armor = 18
 level = 2
 type = 7
+
+viewingRange = 6
 
 *
 
