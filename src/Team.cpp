@@ -190,6 +190,7 @@ void Team::init(void)
 	eventPosX=startPosX;
 	eventPosY=startPosY;
 	isAlive=true;
+	hasWon=false;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)

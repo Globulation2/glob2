@@ -108,7 +108,6 @@ private:
 	void drawInGameMenu(void);
 	//! Draw the message input field
 	void drawInGameTextInput(void);
-	bool hasLocalTeamWon(void);
 	void moveFlag(int mx, int my);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
