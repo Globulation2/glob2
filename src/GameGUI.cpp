@@ -2324,7 +2324,7 @@ void GameGUI::drawBuildingInfos(void)
 	if (buildingType->canExchange && ((selBuild->owner->sharedVisionExchange)&(1<<localTeamNo)))
 	{
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 121));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[market]"));
 		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
 		ypos += YOFFSET_TEXT_PARA;
