@@ -213,7 +213,7 @@ void SessionInfo::draw(DrawableSurface *gfx)
 		getPlayerInfo(i, &teamNumber, playerInfo, NULL, sizeof(playerInfo));
 		BaseTeam &te=team[teamNumber];
 		gfx->drawFilledRect(22, 62+i*20, 16, 16, te.colorR, te.colorG, te.colorB);
-		gfx->drawString(40, 60+i*20, globalContainer->standardFont, playerInfo);
+		gfx->drawString(40, 60+i*20, globalContainer->standardFont, "%s", playerInfo);
 	}
 }
 

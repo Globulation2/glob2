@@ -1359,7 +1359,7 @@ void GameGUI::draw(void)
 						else if (selBuild->unitsWorking.size()==1)
 						{
 							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+10, globalContainer->littleFont, 
-								globalContainer->texts.getString("[still one unit working]") );
+								"%s", globalContainer->texts.getString("[still one unit working]") );
 						}
 					}
 				}
@@ -1512,7 +1512,7 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, globalContainer->texts.getString("[unit type]", selUnit->typeNum));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", selUnit->typeNum));
 			
 			/*
 			const char *teamOfUnitName = 
@@ -1529,7 +1529,7 @@ void GameGUI::draw(void)
 				{ r=0; g=255; b=0; }
 
 			globalContainer->littleFont->pushColor(r, g, b);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[hp]"), selUnit->hp);
 			globalContainer->littleFont->popColor();
 
 			if (selUnit->isUnitHungry())
@@ -1545,12 +1545,12 @@ void GameGUI::draw(void)
 			{
 				if (selUnit->caryedRessource>=0)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, globalContainer->texts.getString("[carry]"));
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, "%s", globalContainer->texts.getString("[carry]"));
 					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
 				}
 				else
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, globalContainer->texts.getString("[don't carry anything]"));
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, "%s", globalContainer->texts.getString("[don't carry anything]"));
 				}
 			}
 			
@@ -1724,11 +1724,13 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	if (localTeam->isAlive==false)
 	{
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, globalContainer->texts.getString("[you have lost]"));
+		// TODO : draw won screen
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, "%s", globalContainer->texts.getString("[you have lost]"));
 	}
 	else if (localTeam->hasWon==true)
 	{
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, globalContainer->texts.getString("[you have won]"));
+		// TODO : draw lost screen
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, "%s", globalContainer->texts.getString("[you have won]"));
 	}
 
 	// draw message List
@@ -1766,11 +1768,11 @@ void GameGUI::drawOverlayInfos(void)
 		
 		// show script text
 		if (game.script.isTextShown)
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, game.script.textShown.c_str());
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", game.script.textShown.c_str());
 		
 		// show script counter
 		if (game.script.getMainTimer())
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont,"%d", game.script.getMainTimer());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, "%d", game.script.getMainTimer());
 		
 		// if either script text or script timer has been shown, increment line count
 		if (game.script.isTextShown || game.script.getMainTimer())
@@ -1781,7 +1783,7 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text);
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
@@ -2099,7 +2101,7 @@ void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLooku
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
+	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup)
@@ -2116,7 +2118,7 @@ void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageL
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
+	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
@@ -2133,7 +2135,7 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
+	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
@@ -2146,7 +2148,7 @@ void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
 		text=globalContainer->texts.getString(caption, i);
 
 	int dec=(128-globalContainer->littleFont->getStringWidth(text))>>1;
-	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, text);
+	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, "%s", text);
 }
 
 void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, int max)

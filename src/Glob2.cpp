@@ -61,7 +61,7 @@ void Glob2::drawYOGSplashScreen(void)
 	{
 		int size=globalContainer->menuFont->getStringWidth(text[i]);
 		int dec=(w-size)>>1;
-		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
+		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, "%s", text[i]);
 	}
 	globalContainer->gfx->updateRect(0, 0, w, h);
 }

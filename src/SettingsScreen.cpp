@@ -64,7 +64,7 @@ void SettingsScreen::paint(int x, int y, int w, int h)
 	if (y<40)
 	{
 		char *text=globalContainer->texts.getString("[settings]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
+		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, "%s", text);
 	}
 	addUpdateRect(x, y, w, h);
 }
