@@ -145,13 +145,14 @@ void TeamStats::drawText()
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=&(globalContainer->texts);
-	int textStartPos=gfx->getW()-124;
+	int textStartPosX=gfx->getW()-124;
+	int textStartPosY=128+32;
 	
 	TeamStat &newStats=stats[statsIndex];
 	
 	// general
-	gfx->drawString(textStartPos, 132, font, "%s", strings->getString("[Statistics]"));
-	gfx->drawString(textStartPos, 132+17, font, "%d %s", newStats.totalUnit, strings->getString("[Units]"));
+	gfx->drawString(textStartPosX, textStartPosY, font, "%s", strings->getString("[Statistics]"));
+	gfx->drawString(textStartPosX, textStartPosY+17, font, "%d %s", newStats.totalUnit, strings->getString("[Units]"));
 	if (newStats.totalUnit)
 	{
 		// worker
@@ -162,30 +163,30 @@ void TeamStats::drawText()
 			free=0;
 			seeking=newStats.isFree[0];
 		}
-		gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[workers]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos+5, 132+46, font, "%s %d %s", strings->getString("[of which]"), free, strings->getString("[free]"));
-		gfx->drawString(textStartPos+5, 132+56, font, "%s %d %s", strings->getString("[and]"), seeking, strings->getString("[seeking a job]"));
+		gfx->drawString(textStartPosX, textStartPosY+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[workers]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX+5, textStartPosY+46, font, "%s %d %s", strings->getString("[of which]"), free, strings->getString("[free]"));
+		gfx->drawString(textStartPosX+5, textStartPosY+56, font, "%s %d %s", strings->getString("[and]"), seeking, strings->getString("[seeking a job]"));
 		
 		// explorer
-		gfx->drawString(textStartPos, 132+73, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[explorers]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos+5, 132+85, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[1], strings->getString("[free]"));
+		gfx->drawString(textStartPosX, textStartPosY+73, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[explorers]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX+5, textStartPosY+85, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[1], strings->getString("[free]"));
 		// warrior
-		gfx->drawString(textStartPos, 132+102, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[2], strings->getString("[warriors]"), ((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos+5, 132+114, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[2], strings->getString("[free]"));
+		gfx->drawString(textStartPosX, textStartPosY+102, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[2], strings->getString("[warriors]"), ((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX+5, textStartPosY+114, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[2], strings->getString("[free]"));
 
 		// living state 
-		gfx->drawString(textStartPos, 132+131, font, "%d %s (%.0f %%)", newStats.needNothing, strings->getString("[are ok]"), ((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos, 132+143, font, "%d %s (%.0f %%)", newStats.needFood, strings->getString("[are hungry]"), ((float)newStats.needFood)*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos, 132+155, font, "%d %s (%.0f %%)", newStats.needFoodCritical, strings->getString("[are dying hungry]"), ((float)newStats.needFoodCritical)*100.0f/((float)newStats.totalUnit));
-		gfx->drawString(textStartPos, 132+167, font, "%d %s (%.0f %%)", newStats.needHeal, strings->getString("[are wonded]"), ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX, textStartPosY+131, font, "%d %s (%.0f %%)", newStats.needNothing, strings->getString("[are ok]"), ((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX, textStartPosY+143, font, "%d %s (%.0f %%)", newStats.needFood, strings->getString("[are hungry]"), ((float)newStats.needFood)*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX, textStartPosY+155, font, "%d %s (%.0f %%)", newStats.needFoodCritical, strings->getString("[are dying hungry]"), ((float)newStats.needFoodCritical)*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPosX, textStartPosY+167, font, "%d %s (%.0f %%)", newStats.needHeal, strings->getString("[are wonded]"), ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
 
 		// upgrade state
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+196, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+208, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+220, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+232, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+244, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
+		gfx->drawString(textStartPosX, textStartPosY+184, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
+		gfx->drawString(textStartPosX, textStartPosY+196, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
+		gfx->drawString(textStartPosX, textStartPosY+208, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
+		gfx->drawString(textStartPosX, textStartPosY+220, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
+		gfx->drawString(textStartPosX, textStartPosY+232, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
+		gfx->drawString(textStartPosX, textStartPosY+244, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
 	}	
 }
 
@@ -198,6 +199,7 @@ void TeamStats::drawStat()
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=&(globalContainer->texts);
 	int textStartPos=gfx->getW()-124;
+	int startPoxY=128+32;
 	
 	// compute total unites
 	/*int maxUnit=0;
@@ -216,9 +218,9 @@ void TeamStats::drawStat()
 		return;
 
 	// captions
-	gfx->drawString(textStartPos, 132, font, "%s", strings->getString("[Statistics]"));
-	gfx->drawString(textStartPos, 132+16, font, "%s",  strings->getString("[Total/free/seeking]"));
-	gfx->drawString(textStartPos, 132+100, font, "%s", strings->getString("[Ok/hungry/wounded]"));
+	gfx->drawString(textStartPos, startPoxY, font, "%s", strings->getString("[Statistics]"));
+	gfx->drawString(textStartPos, startPoxY+16, font, "%s",  strings->getString("[Total/free/seeking]"));
+	gfx->drawString(textStartPos, startPoxY+100, font, "%s", strings->getString("[Ok/hungry/wounded]"));
 
 	// graph
 	for (int i=0; i<128; i++)
@@ -237,9 +239,9 @@ void TeamStats::drawStat()
 		int nbSeeking=(seeking*64)/maxWorker;
 		int nbTotal=(stats[index].numberUnitPerType[UnitType::WORKER]*64)/maxWorker;
 		
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
 
 		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
@@ -277,10 +279,10 @@ void TeamStats::drawStat()
 		{
 			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
 	}
 }
 
