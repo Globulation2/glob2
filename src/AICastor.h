@@ -38,46 +38,11 @@ public:
 	class Project
 	{
 	public:
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName)
-		{
-			this->shortTypeNum=shortTypeNum;
-			this->debugName=debugName;
-			init();
-		}
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 amount, Sint32 mainWorkers, const char* debugName)
-		{
-			this->shortTypeNum=shortTypeNum;
-			this->debugName=debugName;
-			init();
-			this->amount=amount;
-			this->mainWorkers=mainWorkers;
-		}
-		void init()
-		{
-			amount=1;
-			food=false;
-			
-			printf("new project(%s)\n", debugName);
-			
-			subPhase=0;;
-			
-			blocking=true;
-			critical=false;
-			priority=1;
-			
-			mainWorkers=-1;
-			foodWorkers=-1;
-			otherWorkers=-1;
-			
-			multipleStart=false;
-			waitFinished=false;
-			finalWorkers=-1;
-			
-			finished=false;
-			
-			timer=(Uint32)-1;
-		}
-		
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName);
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 amount, Sint32 mainWorkers, const char* debugName);
+		void init();
+
+	public:
 		BuildingType::BuildingTypeShortNumber shortTypeNum;
 		Sint32 amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
@@ -86,6 +51,7 @@ public:
 		
 		int subPhase;
 		
+		Uint32 successWait; // wait a number of success in the hope to find a better one just a bit later.
 		bool blocking; // if true, no other project can be added..
 		bool critical; // if true, place building at any cost.
 		Sint32 priority; // the lower is the number, the higher is the priority
@@ -103,10 +69,18 @@ public:
 		Uint32 timer;
 	};
 	
-	struct Strategy
+	class Strategy
 	{
+	public:
+		Strategy();
+		Strategy& Strategy::operator+=(const Strategy &strategy);
+	
+	public:
 		bool defined;
 		
+		Sint32 successWait;
+		
+		Sint32 swarm;
 		Sint32 speed;
 		Sint32 attack;
 		Sint32 heal;
@@ -116,6 +90,11 @@ public:
 		
 		Sint32 warLevelTriger;
 		Sint32 warTimeTriger;
+		Sint32 maxAmountGoal;
+		
+		Sint32 foodWorkers;
+		Sint32 swarmWorkers;
+		Uint8 wheatCareLimit;
 	};
 	
 private:
@@ -139,6 +118,7 @@ public:
 private:
 	Order *controlSwarms();
 	Order *expandFood();
+	Order *controlFood(int index);
 	
 	bool addProject(Project *project);
 	void addProjects();
@@ -183,6 +163,8 @@ public:
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
 	Uint32 expandFoodTimer;
+	Uint32 controlFoodTimer;
+	int controlFoodToogle;
 	
 	Strategy strategy;
 	
