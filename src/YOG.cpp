@@ -530,6 +530,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		fprintf(logFile, "game %s is unshared\n", sharingGameName);
 		yogSharingState=YSS_NOT_SHARING_GAME;
+		isSelectedGame=false;
 	}
 	break;
 	case YMT_STOP_PLAYING_GAME:
@@ -537,6 +538,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		fprintf(logFile, "game is unjoined\n");
 		unjoining=false;
 		unjoiningConfirmed=true;
+		isSelectedGame=false;
 	}
 	break;
 	case YMT_GAMES_LIST:
