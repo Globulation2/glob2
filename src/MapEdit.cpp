@@ -67,7 +67,6 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate)
 
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
-
 	if (needUpdate)
 		globalContainer->gfx->updateRect(sx, sy, sw, sh);
 }
@@ -990,6 +989,8 @@ int MapEdit::processEvent(const SDL_Event *event)
 				globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
 
 				Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+				assert(batW>=0);
+				assert(batH>=0);
 
 				if (isRoom)
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
@@ -1012,9 +1013,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 					}
 					int typeNum=nnbt->typeNum;
 
-					tempX+=((-bt->decLeft+nnbt->decLeft)<<5);
-					tempY+=((-bt->decTop +nnbt->decTop )<<5);
-
 					isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
 
 					batX=(mapX-viewportX)<<5;
@@ -1023,6 +1021,8 @@ int MapEdit::processEvent(const SDL_Event *event)
 					batH=(nnbt->height)<<5;
 
 					Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+					assert(batW>=0);
+					assert(batH>=0);
 
 					if (isRoom)
 						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
@@ -1031,6 +1031,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 				}
 
+				printf("bat rect %d,%d,%d,%d\n", batX, batY, batW, batH);
 				refreshZones[nbRefreshZones].x=batX;
 				refreshZones[nbRefreshZones].y=batY;
 				refreshZones[nbRefreshZones].w=batW;
