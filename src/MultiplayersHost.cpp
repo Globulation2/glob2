@@ -1464,7 +1464,7 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST :
 			{
-				fprintf(logFile, "Lets send the session info to player %d.\n", i);
+				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
 
 				char *data=NULL;
 				int size=sessionInfo.getDataLength();
