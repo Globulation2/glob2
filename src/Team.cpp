@@ -35,7 +35,7 @@ BaseTeam::BaseTeam()
 	colorB=0;
 	colorPAD=0;
 	playersMask=0;
-	type=T_HUMAM;
+	type=T_HUMAN;
 }
 
 void BaseTeam::load(SDL_RWops *stream)

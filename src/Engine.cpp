@@ -55,7 +55,7 @@ int Engine::initCampain(void)
 			snprintf(name, 16, "AI Player %d", playerNumber);
 			gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 		}
-		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
+		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAN)
 		{
 			if (!wasHuman)
 			{

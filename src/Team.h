@@ -34,7 +34,7 @@ public:
 	enum TeamType
 	{
 		T_AI,
-		T_HUMAM
+		T_HUMAN
 	};
 
 	BaseTeam();
