@@ -794,9 +794,9 @@ Order *AICastor::controlSwarms()
 	Uint32 me=team->me;
 	for (size_t i=0; i<size; i++)
 	{
-		if (mapDiscovered[i]&me!=0)
+		if (((mapDiscovered[i]) & me)!=0)
 			discovered++;
-		if (fogOfWar[i]&me!=0)
+		if (((fogOfWar[i]) & me)!=0)
 			seeable++;
 	}
 	Sint32 explorerGoal;
@@ -1823,7 +1823,7 @@ bool AICastor::enoughFreeWorkers()
 		memset(oldEnough, 2, 1024);
 		first=false;
 	}
-	if (oldEnough[buildsAmount]==2 || enough!=oldEnough[buildsAmount])
+	if ((oldEnough[buildsAmount]==2) || (enough!=oldEnough[buildsAmount]))
 	{
 		fprintf(logFile,  "enoughFreeWorkers()=%d, workersBalance=%d, totalWorkers=%d, partFree=%d, buildsAmount=%d, minBalance=%d\n",
 			enough, workersBalance, totalWorkers, partFree, buildsAmount, minBalance);
@@ -2656,8 +2656,6 @@ void AICastor::computeEnemyWarriorsMap()
 	Uint8 *gradient=enemyWarriorsMap;
 	
 	memcpy(gradient, obstacleUnitMap, size);
-	Case *cases=cases;
-	Uint32 enemies=enemies;
 	for (size_t i=0; i<size; i++)
 	{
 		if ((map->fogOfWar[i]&team->me)==0)

@@ -1620,7 +1620,7 @@ char *YOG::userNameFromUID(Uint32 uid)
 
 char *YOG::getStatusString(ExternalStatusState externalStatusState)
 {
-	const char *s;
+	const char *s="internal error";
 	switch (externalStatusState)
 	{
 	case YESTS_BAD:

@@ -58,27 +58,27 @@ GlobalContainer::GlobalContainer(void)
 
 	// load user preference
 	settings.load();
-	userName=settings.username.c_str();
+	userName = settings.username.c_str();
 
-	runNoX=false;
-	runNoXGameName[0]=0;
+	runNoX = false;
+	runNoXGameName[0] = 0;
 	
-	hostServer=false;
-	hostServerMapName[0]=0;
-	hostServerUserName[0]=0;
-	hostServerPassWord[0]=0;
+	hostServer = false;
+	hostServerMapName[0] = 0;
+	hostServerUserName[0] = 0;
+	hostServerPassWord[0] = 0;
 	
-	gfx=NULL;
-	mix=NULL;
-	terrain=NULL;
-	terrainShader=NULL;
-	terrainBlack=NULL;
-	ressources=NULL;
-	units=NULL;
+	gfx = NULL;
+	mix = NULL;
+	terrain = NULL;
+	terrainShader = NULL;
+	terrainBlack = NULL;
+	ressources = NULL;
+	units = NULL;
 
-	menuFont=NULL;
-	standardFont=NULL;
-	littleFont=NULL;
+	menuFont = NULL;
+	standardFont = NULL;
+	littleFont = NULL;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -99,17 +99,17 @@ GlobalContainer::~GlobalContainer(void)
 void GlobalContainer::setUserName(const char *name)
 {
 	settings.username.assign(name, USERNAME_MAX_LENGTH);
-	userName=settings.username.c_str();
+	userName = settings.username.c_str();
 }
 
 void GlobalContainer::pushUserName(const char *name)
 {
-	userName=name;
+	userName = name;
 }
 
 void GlobalContainer::popUserName()
 {
-	userName=settings.username.c_str();
+	userName = settings.username.c_str();
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
@@ -121,7 +121,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			if (i+1<argc)
 			{
 				strncpy(runNoXGameName, argv[i+1], 32);
-				runNoX=true;
+				runNoX = true;
 				i++;
 			}
 			else
@@ -139,10 +139,10 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				strncpy(hostServerMapName, argv[i+1], 32);
 				strncpy(hostServerUserName, argv[i+2], 32);
 				strncpy(hostServerPassWord, argv[i+3], 32);
-				runNoX=true;
-				hostServer=true;
+				runNoX = true;
+				hostServer = true;
 				pushUserName(argv[i+2]);
-				i+=3;
+				i += 3;
 				pushUserName(hostServerUserName);
 			}
 			else
@@ -175,56 +175,56 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		if (strcmp(argv[i], "-f")==0)
 		{
-			settings.screenFlags|=DrawableSurface::FULLSCREEN;
+			settings.screenFlags |= DrawableSurface::FULLSCREEN;
 			continue;
 		}
 		if (strcmp(argv[i], "-F")==0)
 		{
-			settings.screenFlags&=~DrawableSurface::FULLSCREEN;
+			settings.screenFlags &= ~DrawableSurface::FULLSCREEN;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-a")==0)
 		{
-			settings.screenFlags|=DrawableSurface::HWACCELERATED;
+			settings.screenFlags |= DrawableSurface::HWACCELERATED;
 			continue;
 		}
 		if (strcmp(argv[i], "-A")==0)
 		{
-			settings.screenFlags&=~DrawableSurface::HWACCELERATED;
+			settings.screenFlags &= ~DrawableSurface::HWACCELERATED;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-r")==0)
 		{
-			settings.screenFlags|=DrawableSurface::RESIZABLE;
+			settings.screenFlags |= DrawableSurface::RESIZABLE;
 			continue;
 		}
 		if (strcmp(argv[i], "-R")==0)
 		{
-			settings.screenFlags&=~DrawableSurface::RESIZABLE;
+			settings.screenFlags &= ~DrawableSurface::RESIZABLE;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-b")==0)
 		{
-			settings.screenFlags|=DrawableSurface::DOUBLEBUF;
+			settings.screenFlags |= DrawableSurface::DOUBLEBUF;
 			continue;
 		}
 		if (strcmp(argv[i], "-B")==0)
 		{
-			settings.screenFlags&=~DrawableSurface::DOUBLEBUF;
+			settings.screenFlags &= ~DrawableSurface::DOUBLEBUF;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-l")==0)
 		{
-			settings.optionFlags|=OPTION_LOW_SPEED_GFX;
+			settings.optionFlags |= OPTION_LOW_SPEED_GFX;
 			continue;
 		}
 		if (strcmp(argv[i], "-h")==0)
 		{
-			settings.optionFlags&=~OPTION_LOW_SPEED_GFX;
+			settings.optionFlags &= ~OPTION_LOW_SPEED_GFX;
 			continue;
 		}
 		if (strcmp(argv[i], "-m")==0)
@@ -339,20 +339,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 void GlobalContainer::updateLoadProgressBar(int value)
 {
-	static int lastX=0;
+	static int lastX = 0;
 	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10+180, 402, 22, 180, 180, 180);
 	gfx->drawFilledRect(((gfx->getW()-400)>>1)+(lastX<<2), (gfx->getH()>>1)+11+180, (value-lastX)<<2, 20, 10, 50, 255, 80);
 	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30+180, 402, 62);
-	lastX=value;
+	lastX = value;
 }
 
 void GlobalContainer::initProgressBar(void)
 {
-	//char *text;
-	//text=texts.getString("[loading glob2]");
 	gfx->loadImage("data/gfx/IntroMN.png");
-	gfx->updateRect(0, 0, 0, 0);
-	//gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, "%s", text);
+	gfx->nextFrame();
 }
 
 void GlobalContainer::load(void)

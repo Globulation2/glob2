@@ -75,7 +75,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		int otherTeam=gameGUI->game.players[i]->teamNumber;
 
 		// level 0 is peace, level 3 is total war
-		unsigned defaultAlliance;
+		unsigned defaultAlliance=0;
 		if ((gameGUI->localTeam->allies)&(1<<otherTeam))
 			defaultAlliance=0;// we are allied
 		else if ((gameGUI->localTeam->sharedVisionFood)&(1<<otherTeam))

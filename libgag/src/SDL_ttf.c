@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.c,v 1.4 2004/08/01 11:48:41 nct Exp $ */
+/* $Id: SDL_ttf.c,v 1.5 2004/08/04 17:25:17 nct Exp $ */
 
 #include <math.h>
 #include <stdio.h>
@@ -853,6 +853,7 @@ int TTF_SizeUNICODE(TTF_Font *font, const Uint16 *text, int *w, int *h)
 
 	/* Load each character and sum it's bounding box */
 	x= 0;
+	z= 0;
 	for ( ch=text; *ch; ++ch ) {
 		Uint16 c = *ch;
 		if ( c == UNICODE_BOM_NATIVE ) {

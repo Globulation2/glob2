@@ -528,7 +528,7 @@ bool Story::testCondition(GameGUI *gui)
 						if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
 							assert(false);
 
-						Uint32 testMask;
+						Uint32 testMask = 0;
 						if (line[lineSelector+3+negate].type==Token::INT)
 						{
 							testMask = 1<<(line[lineSelector+3+negate].value);

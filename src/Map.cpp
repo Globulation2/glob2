@@ -3523,7 +3523,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	assert(x>=0);
 	assert(y>=0);
 	Uint32 teamMask=building->owner->me;
-	if (cases[x+y*w].forbidden&teamMask!=0)
+	if (((cases[x+y*w].forbidden) & teamMask)!=0)
 	{
 		int teamNumber=building->owner->teamNumber;
 		if (verbose)
@@ -3891,7 +3891,7 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 	assert(gradient);
 	
 	Uint32 maxValue=0;
-	int maxd;
+	int maxd=0;
 	for (int di=0; di<8; di++)
 	{
 		int rx=tabClose[di][0];
