@@ -49,4 +49,14 @@
 #define MIN(a, b) ((a)<(b) ? (a) : (b))
 #endif
 
+#ifndef VARARRAY
+#ifdef _MSC_VER
+#include <malloc.h>
+#define VARARRAY(t,n,s) t *n=(t*)_alloca((s)*sizeof(t))
+#define strcasecmp _stricmp
+#else
+#define VARARRAY(t,n,s) t n[s]
+#endif
+#endif
+
 #endif 

@@ -769,7 +769,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int index=4;
 		int sendSize=4*n+4;
 		int sendIndex=4;
-		Uint8 sendData[sendSize];
+		VARARRAY(Uint8,sendData,sendSize);
 		sendData[0]=YMT_PLAYERS_WANTS_TO_JOIN;
 		sendData[1]=0;
 		sendData[2]=0;
@@ -979,7 +979,7 @@ void YOG::step()
 					
 					UDPpacket *packet=SDLNet_AllocPacket(8+tl);
 					assert(packet);
-					Uint8 sdata[8+tl];
+					VARARRAY(Uint8,sdata,8+tl);
 					sdata[0]=YMT_CONNECTING;
 					sdata[1]=0;
 					sdata[2]=0;

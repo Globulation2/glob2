@@ -248,11 +248,8 @@ SDLSprite::Palette::Palette()
 		int r, g, b;
 		fgets(temp, 256, palFP);
 		// angel > Y a surement une meilleur methode mais je la connais pas...
-#		ifdef WIN32
-			assert(strcmp(temp, "GIMP Palette\r\n")==0);
-#		else
-			assert(strcmp(temp, "GIMP Palette\n")==0);
-#		endif
+		// Minas > C'est du binaire... Donc y'a pas de cas particulier ici!
+		assert(strcmp(temp, "GIMP Palette\n")==0);
 		for (i=0; i<256; i++)
 		{
 			fgets(temp, 256, palFP);

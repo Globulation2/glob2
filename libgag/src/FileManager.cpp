@@ -40,6 +40,7 @@
 #ifdef WIN32
 #	include <windows.h>
 #	include <io.h>
+#include "dirent.h"
 #else
 #	include <sys/types.h>
 #	include <dirent.h>
@@ -259,6 +260,7 @@ void FileManager::remove(const char *filename)
 
 bool FileManager::addListingForDir(const char *realDir, const char *extension)
 {
+	/*
 #ifdef WIN32 
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind = NULL;
@@ -337,6 +339,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	}
 	
 #else // angel > plus Win32 (system primate)
+	*/
 	DIR *dir=opendir(realDir);
 	struct dirent *dirEntry;
 
@@ -378,7 +381,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	}
 
 	closedir(dir);
-#endif // angel > end of comentaire primate
+//#endif // angel > end of comentaire primate
 	return true;
 }
 

@@ -72,7 +72,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				// we move cursor:
 				int dx=event->button.x-x-1;
 
-				char textBeforeCurs[textLength];
+				VARARRAY(char,textBeforeCurs,textLength);
 				strncpy(textBeforeCurs, text, textLength);
 				while(textBeforeCurs[cursPos]&&(cursPos<textLength))
 					cursPos++;
@@ -239,7 +239,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 
 void TextInput::recomputeTextInfos(void)
 {
-	char temp[textLength];
+	VARARRAY(char,temp,textLength);
 	
 #define TEXTBOXSIDEPAD 30
 
@@ -287,7 +287,7 @@ void TextInput::paint(void)
 	// we draw the cursor:
 	if(activated)
 	{
-		char textBeforeCurs[textLength];
+		VARARRAY(char,textBeforeCurs,textLength);
 		strncpy(textBeforeCurs, text, textLength);
 		textBeforeCurs[cursPos]=0;
 		//int wbc=font->getStringWidth(textBeforeCurs);
