@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.c,v 1.1 2002/12/08 18:23:10 nct Exp $ */
+/* $Id: SDL_ttf.c,v 1.2 2002/12/10 22:03:36 nuage Exp $ */
 
 #include <math.h>
 #include <stdio.h>
@@ -51,6 +51,10 @@
 #define CACHED_METRICS	0x10
 #define CACHED_BITMAP	0x01
 #define CACHED_PIXMAP	0x02
+
+#ifndef FT_OPEN_STREAM
+#define FT_OPEN_STREAM ft_open_stream
+#endif
 
 /* Cached glyph information */
 typedef struct cached_glyph {
