@@ -350,9 +350,6 @@ public:
 	// All "nearestRessource" is legacy code, since we implemented the gradient system.
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
 	bool nearestRessource(int x, int y, int  ressourceType, int *dx, int *dy);
-	bool nearestRessource(int x, int y, int *ressourceType, int *dx, int *dy);
-	//! Only returns ressource into the circle (fx, fy, fsr).
-	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
 	
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);

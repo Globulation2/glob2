@@ -1667,75 +1667,6 @@ bool Map::nearestRessource(int x, int y, int ressourceType, int *dx, int *dy)
     return false;
 }
 
-bool Map::nearestRessource(int x, int y, int *ressourceType, int *dx, int *dy)
-{
-	for (int i=1; i<32; i++)
-	{
-		for (int j=-i; j<i; j++)
-		{
-			if (isRessource(x+i, y+j, ressourceType))
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y+j, ressourceType))
-			{
-				*dx=(x-i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y+i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y-i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y-i)&getMaskH();
-				return true;
-			}
-		}
-	}
-    return false;
-}
-
-bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy)
-{
-	fsr*=fsr;
-	for (int i=1; i<32; i++)
-		for (int j=-i; j<i; j++)
-		{
-			if (isRemovableRessource(x+i, y+j) && warpDistSquare(x+i, y+j, fx, fy)<=fsr)
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRemovableRessource(x-i, y+j) && warpDistSquare(x-i, y+j, fx, fy)<=fsr)
-			{
-				*dx=(x-i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRemovableRessource(x+j, y+i) && warpDistSquare(x+j, y+i, fx, fy)<=fsr)
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRemovableRessource(x+j, y-i) && warpDistSquare(x+j, y-i, fx, fy)<=fsr)
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y-i)&getMaskH();
-				return true;
-			}
-		}
-    return false;
-}
-
 bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
 {
 	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
@@ -1865,6 +1796,9 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
+	
 	//start(2/4, 3/4)
 	for (int yi=(3*(h>>1)); yi<(h+3*(h>>1)); yi++)
 	{
@@ -2023,163 +1957,8 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 		}
 	}
 	
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
-	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
-	
-	
 	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
-	{
 		updateGlobalGradient(gradient);
-		
-		/*for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyu=(((yi+hMask)&hMask)<<wDec);
-			for (int x=0; x<w; x++)
-			{
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					int xl=(x+wMask)&wMask;
-					int xr=(x+1)&wMask;
-					
-					Uint8 side[4];
-					side[0]=gradient[wyu+xl];
-					side[1]=gradient[wyu+x ];
-					side[2]=gradient[wyu+xr];
-					side[3]=gradient[wy +xl];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-		
-		for (int y=0; y<h; y++)
-		{
-			int wy=(y<<wDec);
-			int wyu=(((y+hMask)&hMask)<<wDec);
-			for (int x=0; x<w; x++)
-			{
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					int xl=(x+wMask)&wMask;
-					int xr=(x+1)&wMask;
-					
-					Uint8 side[4];
-					side[0]=gradient[wyu+xl];
-					side[1]=gradient[wyu+x ];
-					side[2]=gradient[wyu+xr];
-					side[3]=gradient[wy +xl];
-					//side[4]=gradient[wy +xr];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int y=hMask; y>=0; y--)
-		{
-			int wy=(y<<wDec);
-			int wyd=(((y+1)&hMask)<<wDec);
-			for (int x=0; x<w; x++)
-			{
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					int xl=(x+wMask)&wMask;
-					int xr=(x+1)&wMask;
-					
-					Uint8 side[4];
-					side[0]=gradient[wyd+xr];
-					side[1]=gradient[wyd+x ];
-					side[2]=gradient[wyd+xl];
-					side[3]=gradient[wy +xl];
-					//side[4]=gradient[wy +xr];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int x=0; x<w; x++)
-		{
-			int xl=(x+wMask)&wMask;
-			for (int y=0; y<h; y++)
-			{
-				int wy=(y<<wDec);
-				int wyu=(((y+hMask)&hMask)<<wDec);
-				int wyd=(((y+1)&hMask)<<wDec);
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					Uint8 side[4];
-					side[0]=gradient[wyu+xl];
-					side[1]=gradient[wyd+xl];
-					side[2]=gradient[wy +xl];
-					side[3]=gradient[wyu+x ];
-					//side[4]=gradient[wyd+x ];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int x=wMask; x>=0; x--)
-		{
-			int xr=(x+1)&wMask;
-			for (int y=0; y<h; y++)
-			{
-				int wy=(y<<wDec);
-				int wyu=(((y+hMask)&hMask)<<wDec);
-				int wyd=(((y+1)&hMask)<<wDec);
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					Uint8 side[4];
-					side[0]=gradient[wyu+xr];
-					side[1]=gradient[wy +xr];
-					side[2]=gradient[wyd+xr];
-					side[3]=gradient[wyu+x ];
-					//side[4]=gradient[wyd+x ];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}*/
-	}
 }
 
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
@@ -2759,7 +2538,9 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 		}
 	}
 	
-	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
+	updateGlobalGradient(gradient);
+	
+	/*for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 	
 		for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
@@ -2878,7 +2659,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 				}
 			}
 		}
-	}
+	}*/
 	
 	/*for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
 	{

@@ -507,7 +507,7 @@ void Unit::handleActivity(void)
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
-					b->lastWorkingSubscribe=0;
+					//b->lastWorkingSubscribe=0;
 					subscribed=true;
 					owner->subscribeToBringRessources.push_front(b);
 					return;
@@ -542,7 +542,7 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsWorkingSubscribe.push_front(this);
-				b->lastWorkingSubscribe=0;
+				//b->lastWorkingSubscribe=0;
 				subscribed=true;
 				owner->subscribeForFlaging.push_front(b);
 				return;
@@ -562,7 +562,7 @@ void Unit::handleActivity(void)
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
-					b->lastWorkingSubscribe=0;
+					//b->lastWorkingSubscribe=0;
 					subscribed=true;
 					owner->subscribeToBringRessources.push_front(b);
 					return;

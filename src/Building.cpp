@@ -1064,7 +1064,7 @@ void Building::subscribeToBringRessourcesStep()
 	
 	if (lastWorkingSubscribe>32)
 	{
-		//is it usefull? lastWorkingSubscribe=0;
+		lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int minValue=INT_MAX;
@@ -1185,7 +1185,6 @@ void Building::subscribeToBringRessourcesStep()
 				unitsWorkingSubscribe.remove(choosen);
 				if (!neededRessource(choosen->destinationPurprose))
 				{
-					
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
