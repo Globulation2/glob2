@@ -311,7 +311,6 @@ void YOGScreen::onTimer(Uint32 tick)
 			else
 				sprintf(s, "%s\n", globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
 			gameInfo->addText(s);
-			printf("yogGameInfo->mapGenerationMethode=%d.\n", yogGameInfo->mapGenerationMethode);
 			
 			//TODO: display info about yogGameInfo->fileIsAMap
 		}
