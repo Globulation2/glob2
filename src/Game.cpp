@@ -1946,20 +1946,30 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
-				//if (players[1] && players[1]->ai)
-				{
-					AICastor *ai=(AICastor *)players[2]->ai->aiImplementation;
-					Uint8 *gradient=ai->goodBuildingMap;
-					//Uint8 *gradient=map.forbiddenGradient[1][0];
-					
-					assert(gradient);
-					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
-					Uint8 value=gradient[addr];
-					if (value)
-						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
-					
-					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 0, x+viewportX, y+viewportY));
-				}
+				for (int pi=0; pi<session.numberOfPlayer; pi++)
+					if (players[pi] && players[pi]->ai && players[pi]->ai->implementitionID==AI::CASTOR)
+					{
+						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
+						Uint8 *gradient=ai->wheatCareMap[0];
+						//Uint8 *gradient=map.forbiddenGradient[1][0];
+						
+						assert(gradient);
+						size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
+						Uint8 value=gradient[addr];
+						if (value)
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, value);
+						
+						Uint8 *gradient2=ai->wheatCareMap[1];
+						assert(gradient2);
+						Uint8 value2=gradient2[addr];
+						if (value2)
+						{
+							globalContainer->littleFont->pushColor(192, 192, 192);
+							globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, value2);
+							globalContainer->littleFont->popColor();
+						}
+						break;
+					}
 }
 
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam)
