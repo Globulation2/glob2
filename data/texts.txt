@@ -278,3 +278,6 @@ Awaiting players
 [stat]
 Statistiques
 Statistic
+[food left]
+Nourriture
+Food left
