@@ -146,23 +146,20 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		else if (source==toogleButton)
 		{
 			mapMode=!mapMode;
-			mapFileList->visible=mapMode;
-			gameFileList->visible=!mapMode;
 			if (mapMode)
 			{
-				mapFileList->setDrawableSurface(gfxCtx);
-				mapFileList->repaint();
+				gameFileList->visible=false;
+				mapFileList->setVisible(true);
 				title->setText(globalContainer->texts.getString("[choose map]"));
 				toogleButton->setText(globalContainer->texts.getString("[the games]"));
 			}
 			else
 			{
-				gameFileList->setDrawableSurface(gfxCtx);
-				gameFileList->repaint();
+				mapFileList->visible=false;
+				gameFileList->setVisible(true);
 				title->setText(globalContainer->texts.getString("[choose game]"));
 				toogleButton->setText(globalContainer->texts.getString("[the maps]"));
 			}
-			toogleButton->repaint();
 		}
 		else
 			assert(false);

@@ -30,6 +30,27 @@ Widget::~Widget()
 	
 }
 
+void RectangularWidget::show(void)
+{
+	assert(parent);
+	visible=true;
+	repaint();
+}
+
+void RectangularWidget::hide(void)
+{
+	assert(parent);
+	visible=false;
+	repaint();
+}
+
+void RectangularWidget::setVisible(bool visible)
+{
+	assert(parent);
+	this->visible=visible;
+	repaint();
+}
+
 Screen::~Screen()
 {
 	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
@@ -194,7 +215,7 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		if ((*it)->visible)
-			(*it)->paint(gfx);
+			(*it)->paint();
 	}
 }
 

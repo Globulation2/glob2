@@ -24,23 +24,19 @@
 #include "GUIBase.h"
 
 //! This widget is a simple text widget
-class Text: public Widget
+class Text: public RectangularWidget
 {
 protected:
-	int x;
-	int y;
-	int w;
-	int h;
 	const Font *font;
 	char *text;
-	DrawableSurface *gfx;
 
 public:
 	Text(int x, int y, const Font *font, const char *text, int w=0, int h=0);
 	virtual ~Text() { if (this->text) delete[] this->text; }
 	virtual void setText(const char *newText);
-	virtual void paint(DrawableSurface *gfx);
-	virtual void setDrawableSurface(DrawableSurface *gfx);
+	virtual void paint(void);
+
+protected:
 	virtual void repaint(void);
 };
 

@@ -83,17 +83,17 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			int teamNumber;
 			char playerInfo[128];
 			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, &savedSessionInfo, 128);
-			text[i]->setDrawableSurface(gfxCtx);
 			text[i]->setText(playerInfo);
-			color[i]->setDrawableSurface(gfxCtx);
 			color[i]->setSelectedColor(teamNumber);
-			kickButton[i]->setDrawableSurface(gfxCtx);
 			if (!wasSlotUsed[i])
 			{
-				text[i]->visible=true;
+				/*text[i]->visible=true;
 				color[i]->visible=true;
 				kickButton[i]->visible=true;
-				kickButton[i]->repaint();
+				kickButton[i]->repaint();*/
+				text[i]->show();
+				color[i]->show();
+				kickButton[i]->show();
 			}
 			wasSlotUsed[i]=true;
 		}
@@ -102,18 +102,22 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			if (wasSlotUsed[i])
 			{
 				
-				text[i]->visible=false;
+				text[i]->hide();
+				color[i]->hide();
+				kickButton[i]->hide();
+				/*visible=false;
 				color[i]->visible=false;
 				kickButton[i]->visible=false;
-				
+*/
+
 				wasSlotUsed[i]=false;
-				
+
 				//text[i]->setText(globalContainer->texts.getString("[open]"));
 				//color[i]->setSelectedColor(0);
-				
-				text[i]->repaint();
+
+				/*text[i]->repaint();
 				color[i]->repaint();
-				kickButton[i]->repaint();
+				kickButton[i]->repaint();*/
 				
 			}
 		}

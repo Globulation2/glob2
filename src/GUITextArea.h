@@ -24,13 +24,13 @@
 #include "GUIBase.h"
 #include <vector>
 
-class TextArea:public Widget
+class TextArea:public RectangularWidget
 {
 public:
 	TextArea(int x, int y, int w, int h, const Font *font);
 	virtual ~TextArea();
 
-	virtual void paint(DrawableSurface *gfx);
+	virtual void paint(void);
 	virtual void onSDLEvent(SDL_Event *event);
 
 	virtual void setText(const char *text, int ap=-1);
@@ -44,8 +44,6 @@ protected:
 	virtual void repaint(void);
 
 protected:
-	int x, y, w, h;
-	DrawableSurface *gfx;
 	const Font *font;
 	char *textBuffer;
 	unsigned int textBufferLength;

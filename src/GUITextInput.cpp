@@ -28,8 +28,7 @@ TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *t
 	this->h=h;
 	
 	this->font=font;
-	this->gfx=NULL;
-	
+
 	if (text)
 		strncpy(this->text, text, MAX_TEXT_SIZE);
 	else
@@ -221,19 +220,19 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				}
 			}
 		}
-
 	}
 }
 
-void TextInput::paint(DrawableSurface *gfx)
+void TextInput::paint(void)
 {
-	this->gfx=gfx;
-
 	static const int r= 180;
 	static const int g= 180;
 	static const int b= 180;
-	gfx->drawRect(x, y, w, h, r, g, b);
-	gfx->drawString(x+2, y+2, font, text);
+	
+	assert(parent);
+	assert(parent->getSurface());
+	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
+	parent->getSurface()->drawString(x+2, y+2, font, text);
 
 	// we draw the cursor:
 	if(activated)
@@ -243,15 +242,15 @@ void TextInput::paint(DrawableSurface *gfx)
 		textBeforeCurs[cursPos]=0;
 		int wbc=font->getStringWidth(textBeforeCurs);
 		int hbc=font->getStringHeight(textBeforeCurs);
-		gfx->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
+		parent->getSurface()->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
 	}
 }
 
 void TextInput::repaint(void)
 {
-	assert(gfx);
+	assert(parent);
 	parent->paint(x, y, w, h);
-	paint(gfx);
+	paint();
 	parent->addUpdateRect(x, y, w, h);
 }
 

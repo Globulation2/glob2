@@ -61,7 +61,7 @@ public:
 	//! Method called for each SDL_Event
 	virtual void onSDLEvent(SDL_Event *event) { }
 	//! Drawing methode of the widget, called on a clean screen and doesn't need to do any addUpdateRect()
-	virtual void paint(DrawableSurface *gfx)=0;
+	virtual void paint(void)=0;
 
 	//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
 	bool visible;
@@ -72,6 +72,30 @@ protected:
 	bool isPtInRect(int px, int py, int x, int y, int w, int h) { if ((px>x) && (py>y) && (px<x+w) && (py<y+h)) return true; else return false; }
 	//! Screen that contains the widget
 	Screen *parent;
+};
+
+//! The parent for all standards widgets like Button, texts, etc...
+class RectangularWidget:public Widget
+{
+public:
+	//! RectangularWidget destructor
+	virtual ~RectangularWidget() { }
+
+	//! Show the widget
+	virtual void show(void);
+	//! Hide the widget
+	virtual void hide(void);
+	//! Show or hide the widget, depending on visible
+	virtual void setVisible(bool visible);
+
+protected:
+
+	//! Repaint the widget in its environment
+	virtual void repaint(void)=0;
+
+protected:
+	//! Coordinates and size
+	int x, y, w, h;
 };
 
 //! The screen is the widget container and has a background

@@ -23,7 +23,7 @@
 
 #include "GUIBase.h"
 
-class TextInput: public Widget
+class TextInput: public RectangularWidget
 {
 public:
 	TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated);
@@ -31,17 +31,14 @@ public:
 
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(DrawableSurface *gfx);
+	virtual void paint(void);
 	virtual void setText(const char *newText);
 	virtual /*const*/ char *getText(void) { return text; }
 
 protected:
-	int x, y, w, h;
 	const Font *font;
-	DrawableSurface *gfx;
 	int cursPos;
-
-	void repaint(void);
+	virtual void repaint(void);
 	
 public:
 	enum {

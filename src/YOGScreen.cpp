@@ -204,13 +204,13 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			else if (rc==-1)
 				endExecute(-1);
 			updateList();
-			gameList->repaint();
+			gameList->commit();
 			dispatchPaint(gfxCtx);
 		}
 		else if (par1==UPDATE_LIST)
 		{
 			updateList();
-			gameList->repaint();
+			gameList->commit();
 		}
 		else if (par1==-1)
 		{
@@ -318,7 +318,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			assert(false);
 		}
 		updateList();
-		gameList->repaint();
+		gameList->commit();
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}

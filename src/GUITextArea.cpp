@@ -28,7 +28,6 @@ TextArea::TextArea(int x, int y, int w, int h, const Font *font)
 	this->h=h;
 	this->font=font;
 	textBuffer=NULL;
-	gfx=NULL;
 	assert(font);
 	charHeight=font->getStringHeight(NULL);
 	assert(charHeight);
@@ -45,14 +44,15 @@ TextArea::~TextArea(void)
 
 void TextArea::internalPaint(void)
 {
-	assert(gfx);
-	gfx->drawRect(x, y, w, h, 180, 180, 180);
+	assert(parent);
+	assert(parent->getSurface());
+	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	if (textBuffer)
 	{
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
 			assert(i+areaPos<lines.size());
-			gfx->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
+			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
 		}
 	}
 	/*if (areaPos>0)
@@ -65,9 +65,8 @@ void TextArea::internalPaint(void)
 	}*/
 }
 
-void TextArea::paint(DrawableSurface *gfx)
+void TextArea::paint(void)
 {
-	this->gfx=gfx;
 	internalPaint();
 }
 

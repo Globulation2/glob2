@@ -27,15 +27,13 @@ MapPreview::MapPreview(int x, int y, const char *mapName)
 {
 	this->x=x;
 	this->y=y;
-	this->gfx=NULL;
 	this->mapName=mapName;
 	lastW=0;
 	lastH=0;
 }
 
-void MapPreview::paint(DrawableSurface *gfx)
+void MapPreview::paint(void)
 {
-	this->gfx=gfx;
 	repaint();
 }
 
@@ -48,7 +46,8 @@ void MapPreview::setMapThumbnail(const char *mapName)
 
 void MapPreview::repaint(void)
 {
-	assert(gfx);
+	assert(parent);
+	assert(parent->getSurface());
 	if (mapName!=0)
 	{
 		SDL_RWops *stream=globalContainer->fileManager.open(mapName, "rb", false);
@@ -61,7 +60,7 @@ void MapPreview::repaint(void)
 				Map map;
 				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
 				map.load(stream); // TODO: check if the loading is sucessfull
-				gfx->drawFilledRect(x,y,128,128,0,0,0);
+				parent->getSurface()->drawFilledRect(x,y,128,128,0,0,0);
 
 				lastW=map.getW();
 				lastH=map.getH();
@@ -128,7 +127,7 @@ void MapPreview::repaint(void)
 						g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 						b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 
-						gfx->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
+						parent->getSurface()->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
 					}
 				}
 
@@ -176,7 +175,7 @@ void MapPreview::repaint(void)
 							pixel>>=1;
 						}
 						assert(accI);
-						gfx->drawPixel(x+dx, y+dy, (Uint8)(accR/accI), (Uint8)(accG/accI), (Uint8)(accB/accI));
+						parent->getSurface()->drawPixel(x+dx, y+dy, (Uint8)(accR/accI), (Uint8)(accG/accI), (Uint8)(accB/accI));
 					}
 				}
 			}
@@ -186,7 +185,7 @@ void MapPreview::repaint(void)
 		}
 	}
 	parent->paint(x, y, 128, 128);
-	gfx->drawLine(x, y, x+128, y+128, 255, 0, 0);
-	gfx->drawLine(x+128, y, x, y+128, 255, 0, 0);
+	parent->getSurface()->drawLine(x, y, x+128, y+128, 255, 0, 0);
+	parent->getSurface()->drawLine(x+128, y, x, y+128, 255, 0, 0);
 	parent->addUpdateRect(x, y, 128, 128);
 }

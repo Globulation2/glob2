@@ -23,24 +23,24 @@
 
 #include "GUIBase.h"
 
-class Button: public Widget
+class Button: public RectangularWidget
 {
 public:
 	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
 	virtual ~Button() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(DrawableSurface *gfx);
-	virtual void setDrawableSurface(DrawableSurface *gfx);
+	virtual void paint(void);
+
+protected:
+	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
 
 protected:
-	int x, y, w, h;
 	Sprite *arch;
 	int standardId, highlightID, returnCode;
 	Uint16 unicodeShortcut;
 	bool highlighted;
-	DrawableSurface *gfx;
 };
 
 class TextButton:public Button
@@ -49,10 +49,15 @@ public:
 	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicodeiShortcut=0);
 	virtual ~TextButton() { if (text) delete[] text; }
 
-	virtual void paint(DrawableSurface *gfx);
-	virtual void repaint(void);
-
+	virtual void paint(void);
+	
 	void setText(const char *text);
+
+protected:
+	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
+	virtual void repaint(void);
+	//! Set text internally, withouh calling repaint
+	void internalSetText(const char *text);
 
 protected:
 	char *text;
@@ -60,31 +65,31 @@ protected:
 	int decX, decY;
 };
 
-class OnOffButton:public Widget
+class OnOffButton:public RectangularWidget
 {
 public:
 	OnOffButton(int x, int y, int w, int h, bool startState, int returnCode);
 	virtual ~OnOffButton() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(DrawableSurface *gfx);
+	virtual void paint(void);
 	virtual bool getState(void) { return state; }
 	virtual void setState(bool newState);
 
 protected:
-	virtual void internalPaint(void);
+	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
+	//! Internal paint method, call by paint and repaint
+	virtual void internalPaint(void);
 
 protected:
-	int x, y, w, h;
 	bool state;
 	int returnCode;
 	bool highlighted;
-	DrawableSurface *gfx;
 };
 
 //! A button that can have multiple color
-class ColorButton:public Widget
+class ColorButton:public RectangularWidget
 {
 public:
 	//! ColorButton constructor
@@ -95,8 +100,7 @@ public:
 	//! Process SDL event
 	virtual void onSDLEvent(SDL_Event *event);
 	//! Inital paint call, parent is ok and no addUpdateRect is needed.
-	virtual void paint(DrawableSurface *gfx);
-	virtual void setDrawableSurface(DrawableSurface *gfx);
+	virtual void paint(void);
 	//! Add a color to the color list
 	virtual void addColor(int r, int g, int b) { vr.push_back(r); vg.push_back(g); vb.push_back(b); }
 	//! Clear the color list
@@ -107,20 +111,18 @@ public:
 	virtual int getSelectedColor(void) { return selColor; }
 	//! Return the number of possible colors
 	virtual int getNumberOfColors(void) { return vr.size(); }
-	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
-	virtual void repaint(void);
 
 protected:
+	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
+	virtual void repaint(void);
 	//! Internal paint method, call by paint and repaint
 	virtual void internalPaint(void);
 
 protected:
-	int x, y, w, h;
 	int selColor;
 	std::vector<int> vr, vg, vb;
 	int returnCode;
 	bool highlighted;
-	DrawableSurface *gfx;
 };
 
 #endif
