@@ -134,6 +134,7 @@ public:
 	void serverAskForBeginning(char *data, int size, IPaddress ip);
 	
 	void serverBroadcastResponse(char *data, int size, IPaddress ip);
+	void serverBroadcastStopHosting(char *data, int size, IPaddress ip);
 	void joinerBroadcastRequest(char *data, int size, IPaddress ip);
 	void joinerBroadcastResponse(char *data, int size, IPaddress ip);
 	
@@ -149,7 +150,8 @@ public:
 	bool send(char *data, int size);
 	bool send(const int v);
 	bool send(const int u, const int v);
-	void sendBroadcast(Uint16 port);
+	void sendBroadcastRequest(IPaddress ip);
+	void sendBroadcastRequest(Uint16 port);
 	
 	bool tryConnection(bool isHostToo);
 	bool tryConnection(YOG::GameInfo *yogGameInfo);

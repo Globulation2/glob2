@@ -110,6 +110,7 @@ public:
 	void sendingTime();
 	bool send(const int v);
 	bool send(const int u, const int v);
+	void sendBroadcastLanGameHosting(Uint16 port, bool create);
 	void stopHosting(void);
 	void startGame(void);
 
