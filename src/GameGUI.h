@@ -151,6 +151,10 @@ private:
 	void dragStep(void);
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
+	
+	//! given the game state, change the music
+	void musicStep(void);
+	
 	friend class InGameAllianceScreen;
 
 	//! Display mode

@@ -39,6 +39,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "YOG.h"
+#include "SoundMixer.h"
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
@@ -375,7 +376,10 @@ void GameGUI::step(void)
 			addMessage(30, 255, 30, "%s",  Toolkit::getStringTable()->getString("[the building is finished]", strDec));
 		}
 	}
-
+	
+	// music step
+	musicStep();
+	
 	// do a yog step
 	yog->step();
 
@@ -417,6 +421,39 @@ void GameGUI::step(void)
 	
 	if (game.anyPlayerWaited) // TODO: warning valgrind
 		game.anyPlayerWaitedTimeFor++;
+}
+
+void GameGUI::musicStep(void)
+{
+	static unsigned warTimeout = 0;
+	static unsigned buildingTimeout = 0;
+	
+	// something bad happened
+	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT) ||
+		localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) ||
+		localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
+	{
+	   warTimeout = 200;
+	   globalContainer->mix->setNextTrack(4, true);
+	}
+	
+	// something good happened
+	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT) ||
+		localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
+	{
+		buildingTimeout = 150;
+		globalContainer->mix->setNextTrack(3, true);
+	}
+	
+	// if end of special thing
+	if ((buildingTimeout == 1) || (warTimeout == 1))
+		globalContainer->mix->setNextTrack(2, true);
+	
+	// decay variables
+	if (warTimeout > 0)
+		warTimeout--;
+	if (buildingTimeout > 0)
+		buildingTimeout--;
 }
 
 void GameGUI::syncStep(void)

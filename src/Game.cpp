@@ -984,11 +984,19 @@ void Game::scriptSyncStep()
 	}
 }
 
+void Game::clearEventsStep(void)
+{
+	// We clear all events
+	for (int i=0; i<session.numberOfTeam; i++)
+		teams[i]->clearEvents();
+}
+
 void Game::syncStep(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
 		Sint32 startTick=SDL_GetTicks();
+		
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->syncStep();
 		
