@@ -54,9 +54,10 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 			mapFileList->addText(newText);
 			delete[] newText;
 		}
+		mapFileList->sort();
 	}
 	addWidget(mapFileList);
-	
+
 	gameFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
 	if (globalContainer->fileManager.initDirectoryListing(".", "game"))
 	{
@@ -67,6 +68,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 			gameFileList->addText(newText);
 			delete[] newText;
 		}
+		gameFileList->sort();
 	}
 	addWidget(gameFileList);
 	

@@ -28,9 +28,7 @@
 class Player;
 
 class AI
-
 {
-
 public:
 
 	AI(Player *player);
@@ -72,7 +70,6 @@ public:
 	Order *mayUpgrade(const int ptrigger, const int ntrigger);
 	
 	Order *getOrder(void);
-
 
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream);

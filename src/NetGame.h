@@ -55,7 +55,7 @@ private:
 	Sint32 localPlayerNumber;
 	Sint32 currentStep;
 	Player *players[32];
-	
+
 	enum {queueSize=256};//256
 	enum {latency=10};
 	enum {lostPacketLatencyMargin=2};
@@ -94,8 +94,11 @@ private:
 	UDPsocket socket;
 	
 	int time;
-	
+
 public:
+	bool isNowWaiting();
+
+private:
 	Sint32 checkSumsLocal[queueSize];
 	Sint32 checkSumsRemote[queueSize];
 };

@@ -35,7 +35,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	// we initialize and copy stuff
 	this->numberOfPlayer=numberOfPlayer;
 	memcpy(this->players, players, numberOfPlayer*sizeof(Player *));
-	
+
 	// we find local player
 	localPlayerNumber=-1;
 	int n;
@@ -294,7 +294,7 @@ bool NetGame::nextUnrecievedStep(int currentStep, int player, int *step)
 Uint32 NetGame::whoMaskAreWeWaitingFor(Sint32 step)
 {
 	Uint32 waitingPlayersMask=0;
-	
+
 	for (int eachPlayers=0; eachPlayers<numberOfPlayer; eachPlayers++)
 	{
 		/*if (smaller(lastReceivedFromHim[eachPlayers], step))
@@ -394,23 +394,23 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 {
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 
+	NETPRINTF("acs=(%x, %x).\n", checkSumsLocal[currentStep], checkSumsRemote[currentStep]);
 	if (checkSumsLocal[currentStep]&&checkSumsRemote[currentStep])
 	{
 		if (checkSumsLocal[currentStep]==checkSumsRemote[currentStep])
 		{
-			//NETPRINTF("(%d)World is synchronized.   (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
+			NETPRINTF("(%d)World is synchronized.   (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
 		}
 		else
 		{
-			NETPRINTF("(%d)World is desynchronized! (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
+			printf("(%d)World is desynchronized! (rsc=%x, lcs=%x)\n", currentStep, checkSumsRemote[currentStep], checkSumsLocal[currentStep]);
 			assert(false/*world desynchronization*/);
 		}
 	}
 	checkSumsLocal[currentStep]=0;
 	checkSumsRemote[currentStep]=0;
-	checkSumsRemote[(currentStep-1-latency)%queueSize]=0;// in case a checkSumPacket arrived very late!
-	
-	
+	checkSumsRemote[(currentStep+queueSize-1-latency)%queueSize]=0;// in case a checkSumPacket arrived very late!
+
 	// do we have orders from every player now?
 	if (isWaitingForPlayer)
 	{
@@ -466,6 +466,8 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		}
 		
 		order->sender=playerNumber;
+		if ((order->getOrderType()!=51)&&(order->getOrderType()!=73))
+		NETPRINTF("(%d)getOrder, player(%d), type(%d).\n",currentStep, playerNumber,order->getOrderType());
 		//if (order->getOrderType()!=73)
 		//	NETPRINTF("(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
 		return order;
@@ -482,7 +484,8 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	
 	// will be used [latency] steps later
 	int pushStep=(currentStep+latency)%queueSize;
-	//NETPRINTF("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
+	if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
+	NETPRINTF("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
 	if (playersNetQueue[playerNumber][pushStep].order)
 	{
 		if (((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))
@@ -531,13 +534,16 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	
 	// push in private queue
 	confirmNewStepRecievedFromHim(pushStep, playerNumber);
-	if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
+	if (localPlayerNumber==playerNumber)
 	{
-		checkSumsLocal[pushStep]=((SubmitCheckSumOrder*)order)->checkSumValue;
-		//NETPRINTF("(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
+		if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
+		{
+			checkSumsLocal[pushStep]=((SubmitCheckSumOrder*)order)->checkSumValue;
+			NETPRINTF("(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
+		}
+		else
+			checkSumsLocal[pushStep]=0;
 	}
-	else
-		checkSumsLocal[pushStep]=0;
 	
 }
 
@@ -554,7 +560,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		return;
 	
 	// TODO : check if the ip the the right alowed player to send an order.
-	
+
 	int st=getSint32(data, 0);
 	int sr=getSint32(data, 4);
 	int pl=getSint32(data, 8);
@@ -705,7 +711,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 							if (p!=localPlayerNumber)
 								stayingPlayersMask[p]=0;
 					}
-					
+
 					dropState=NO_DROP_PROCESSING;
 					lastSmallerMspm=0;
 				}
@@ -814,7 +820,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 			{
 				NETPRINTF("the last step %d of player %d is spent, now this is a realy LOST_B player.\n", lastReceivedFromHim[ap], ap);
 				players[ap]->type=Player::P_LOST_B;
-				
+
 				int s=lastReceivedFromHim[ap];
 				for (int si=0; si<=(2*latency); si++)
 				{
@@ -835,7 +841,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		//confirmNewStepRecievedFromHim(sr, pl);
 		confirmNewStepRecievedFromHim(st, pl);
 	}
-	
+
 }
 
 void NetGame::step(void)
@@ -1094,4 +1100,9 @@ void NetGame::step(void)
 		}
 	}
 
+}
+
+bool NetGame::isNowWaiting()
+{
+	return isWaitingForPlayer;
 }
