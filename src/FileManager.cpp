@@ -4,6 +4,7 @@
  */
 
 #include "FileManager.h"
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,8 +12,13 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #else
-#define PACKAGE_DATA_DIR ".."
-#define PACKAGE_SOURCE_DIR "../.."
+#	ifdef WIN32
+#		define PACKAGE_DATA_DIR ".."
+#		define PACKAGE_SOURCE_DIR "../.."
+#	else
+#		define PACKAGE_DATA_DIR ".."
+#		define PACKAGE_SOURCE_DIR "../.."
+#	endif
 #endif
 
 FileManager::FileManager()
@@ -26,7 +32,7 @@ FileManager::~FileManager()
 {
     for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
     {
-        delete[] (*dirListIterator);
+        delete[] const_cast<char*>(*dirListIterator);
     }
 }
 
