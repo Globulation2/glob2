@@ -530,21 +530,45 @@ void GameGUI::processEvent(SDL_Event *event)
 			else if (button==4)
 			{
 				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
-					(selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE) &&
-					(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					(selBuild->buildingState==Building::ALIVE))
 				{
-					int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					if ((selBuild->type->maxUnitWorking) &&
+						(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
+						!(SDL_GetModState()&KMOD_SHIFT))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					}
+					else if ((selBuild->type->defaultUnitStayRange) &&
+						(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
+						(SDL_GetModState()&KMOD_SHIFT))
+					{
+						// zzz
+						int nbReq=(selBuild->unitStayRangeLocal+=1);
+						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					}
 				}
 			}
 			else if (button==5)
 			{
 				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
-					(selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE) &&
-					(selBuild->maxUnitWorkingLocal>0))
+					(selBuild->buildingState==Building::ALIVE))
 				{
-					int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					if ((selBuild->type->maxUnitWorking) &&
+						(selBuild->maxUnitWorkingLocal>0)&&
+						!(SDL_GetModState()&KMOD_SHIFT))
+					{
+						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					}
+					else if ((selBuild->type->defaultUnitStayRange) &&
+						(selBuild->unitStayRangeLocal>0) &&
+						(SDL_GetModState()&KMOD_SHIFT))
+					{
+						// zzz
+						int nbReq=(selBuild->unitStayRangeLocal-=1);
+						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					}
 				}
 			}
 		}
@@ -1084,46 +1108,17 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			else if (mx<128-16)
 			{
-				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
-					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_EXPLO_FLAG_RANGE)/94;
-				else if (selBuild->type->type==BuildingType::WAR_FLAG)
-					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_WAR_FLAG_RANGE)/94;
-				else if (selBuild->type->type==BuildingType::CLEARING_FLAG)
-					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_CLEARING_FLAG_RANGE)/94;
-				else
-					assert(false);
+				nbReq=selBuild->unitStayRangeLocal=((mx-16)*(unsigned)selBuild->type->maxUnitStayRange)/94;
 				orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
 			{
 				// TODO : check in orderQueue to avoid useless orders.
-				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
+				if (selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange)
 				{
-					if(selBuild->unitStayRangeLocal<MAX_EXPLO_FLAG_RANGE)
-					{
-						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
-					}
+					nbReq=(selBuild->unitStayRangeLocal+=1);
+					orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 				}
-				else if (selBuild->type->type==BuildingType::WAR_FLAG)
-				{
-					if(selBuild->unitStayRangeLocal<MAX_WAR_FLAG_RANGE)
-					{
-						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
-					}
-				}
-				else if (selBuild->type->type==BuildingType::CLEARING_FLAG)
-				{
-					if(selBuild->unitStayRangeLocal<MAX_CLEARING_FLAG_RANGE)
-					{
-						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
-					}
-				}
-				else
-					assert(false);
-
 			}
 		}
 
@@ -1457,14 +1452,7 @@ void GameGUI::draw(void)
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+92, globalContainer->littleFont, "%d %s", onSpot, globalContainer->texts.getString("[on the spot]"));
 
 					// display range box
-					if (buildingType->type==BuildingType::EXPLORATION_FLAG)
-						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
-					else if (buildingType->type==BuildingType::WAR_FLAG)
-						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
-					else if (buildingType->type==BuildingType::CLEARING_FLAG)
-						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_CLEARING_FLAG_RANGE);
-					else
-						assert(false);
+					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
 				}
 				
 				// repair and upgrade

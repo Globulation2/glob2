@@ -162,15 +162,15 @@ void TeamStats::drawText()
 			free=0;
 			seeking=newStats.isFree[0];
 		}
-		gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[worker]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[workers]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+46, font, "%s %d %s", strings->getString("[of which]"), free, strings->getString("[free]"));
 		gfx->drawString(textStartPos+5, 132+56, font, "%s %d %s", strings->getString("[and]"), seeking, strings->getString("[seeking a job]"));
 		
 		// explorer
-		gfx->drawString(textStartPos, 132+73, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[Explorer]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+73, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[explorers]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+85, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[1], strings->getString("[free]"));
 		// warrior
-		gfx->drawString(textStartPos, 132+102, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[2], strings->getString("[Warrior]"), ((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+102, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[2], strings->getString("[warriors]"), ((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+114, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[2], strings->getString("[free]"));
 
 		// living state 

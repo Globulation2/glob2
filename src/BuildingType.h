@@ -101,6 +101,7 @@ public:
 
 	// Flag usefull
 	Sint32 defaultUnitStayRange;
+	Sint32 maxUnitStayRange;
 
 	Sint32 viewingRange;
 	Sint32 regenerationSpeed;
@@ -211,6 +212,7 @@ public:
 			"isBuildingSite",
 
 			"defaultUnitStayRange",
+			"maxUnitStayRange",
 
 			"viewingRange",
 			"regenerationSpeed"

@@ -27,11 +27,10 @@
 #include <queue>
 class TeamStats;
 
+//! max unit working at a building
 #define MAX_UNIT_WORKING 20
-#define MAX_EXPLO_FLAG_RANGE 20
-#define MAX_WAR_FLAG_RANGE 8
+//! range of ratio for swarm
 #define MAX_RATIO_RANGE 16
-#define MAX_CLEARING_FLAG_RANGE 14
 
 //! The screen that contains the text input while typing message in game
 class InGameTextInput:public OverlayScreen
