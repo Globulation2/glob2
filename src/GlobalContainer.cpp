@@ -279,7 +279,7 @@ void GlobalContainer::load(void)
 
 		updateLoadProgressBar(90);
 		// load buildings types
-		globalContainer->buildingsTypes.load("data/buildings.txt");
+		buildingsTypes.load("data/buildings.txt");
 		updateLoadProgressBar(100);
 	}
 };

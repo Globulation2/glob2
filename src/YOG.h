@@ -87,7 +87,7 @@ public:
 		bool received;
 		char userName[32];
 		int userNameLength;
-		YOGMessageType messageType;
+		YOGClientMessageType messageType;
 		bool gameGuiPainted;
 		Uint8 messageID;
 		Uint8 pad1;
