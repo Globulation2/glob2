@@ -261,9 +261,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					game->numberOfTeam=(int)(Sint8)data[9];
 					game->fileIsAMap=(bool)data[10];
 					game->mapGenerationMethode=(int)(Sint8)data[11];
-					//data[12]
-					//data[13]
-					if (data[14]!=0)
+					if (data[12]!=0 || data[13]!=0 || data[14]!=0)
 						printf("Warning, bad pad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
 					game->netProtocolVersion=(int)(Sint8)data[15];
 					memcpy(game->mapName, data+16, size-16);
@@ -919,7 +917,7 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 		return false;
 	}
 	
-	fprintf(logFile, "resolving YOG host name...\n");
+	fprintf(logFile, "\nresolving YOG host name...\n");
 	int rv=SDLNet_ResolveHost(&serverIP, YOG_SERVER_IP, YOG_SERVER_PORT);
 	if (rv==-1)
 	{
@@ -1088,13 +1086,16 @@ void YOG::step()
 						packet->data[2]=0;
 						packet->data[3]=0;
 						
-						SHA1_CONTEXT hd;
-						sha1_init(&hd);
-						sha1_write(&hd, xored, 32);
-						sha1_final(&hd);
-						Uint8 *hashed=sha1_read(&hd);
+						unsigned char computedDigest[20];
+						SHA1_CTX context;
+						SHA1Init(&context);
+						SHA1Update(&context, xored, 32);
+						SHA1Final(computedDigest, &context);
 						
-						memcpy(packet->data+4, (Uint8 *)hashed, 20);
+						//printf("passWord=[%2x], xorpassw=[%2x], xored=[%2x], computedDigest=[%2x]\n",
+						//	passWord[0], xorpassw[0], xored[0], computedDigest[0]);
+						
+						memcpy(packet->data+4, (Uint8 *)computedDigest, 20);
 						packet->len=24;
 					}
 					packet->address=serverIP;

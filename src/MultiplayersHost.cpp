@@ -489,8 +489,8 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 		sdata[11]=(Uint8)sessionInfo.mapGenerationDescriptor->methode;
 	else
 		sdata[11]=(Uint8)MapGenerationDescriptor::eNONE;
-	sdata[12]='n'; // pad and trick to show a pseudo game name
-	sdata[13]='a'; // pad and trick to show a pseudo game name
+	sdata[12]=0; // pad and trick to show a pseudo game name
+	sdata[13]=0; // pad and trick to show a pseudo game name
 	sdata[14]=0; // pad
 	sdata[15]=NET_PROTOCOL_VERSION;
 	strncpy((char *)(sdata+16), sessionInfo.getMapName(), 64);

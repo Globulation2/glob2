@@ -281,6 +281,7 @@ void YOGServer::deconnectClient(YOGClient *client)
 		admin=NULL;
 	
 	client->deconnected();
+	printf("total number of clients = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authentifiedClients.size());
 }
 
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
@@ -398,7 +399,10 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				unconnectedClients.erase(uci);
 			}
 			else
+			{
 				client=new YOGClient(ip, socket, userName);
+				lprintf("new client (%s) uid=%d from (%s)\n", client->userName, client->uid, Utilities::stringIP(ip));
+			}
 			connectedClients.push_back(client);
 		}
 		client->reconnected(ip);
@@ -499,34 +503,24 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		{
 			// hashed
 			// We received hashed:
-			Uint8 receivedHashed[20];
-			memcpy(receivedHashed, (char *)data+4, 20);
+			Uint8 receivedDigest[20];
+			memcpy(receivedDigest, (char *)data+4, 20);
 			// We compute hashed:
 			Uint8 xored[32];
 			for (int i=0; i<32; i++)
 				xored[i]=client->passWord[i]^client->xorpassw[i];
 			
-			/*printf("passWord=");
-			for (int i=0; i<32; i+=4)
-				printf("[%2d %2d %2d %2d] ", client->passWord[i], client->passWord[i+1], client->passWord[i+2], client->passWord[i+3]);
-			printf("\n");
-			printf("xorpassw=");
-			for (int i=0; i<32; i+=4)
-				printf("[%2d %2d %2d %2d] ", client->xorpassw[i], client->xorpassw[i+1], client->xorpassw[i+2], client->xorpassw[i+3]);
-			printf("\n");
-			printf("xored   =");
-			for (int i=0; i<32; i+=4)
-				printf("[%2d %2d %2d %2d] ", xored[i], xored[i+1], xored[i+2], xored[i+3]);
-			printf("\n");*/
+			unsigned char computedDigest[20];
+			SHA1_CTX context;
+			SHA1Init(&context);
+			SHA1Update(&context, xored, 32);
+			SHA1Final(computedDigest, &context);
 			
-			SHA1_CONTEXT hd;
-			sha1_init(&hd);
-			sha1_write(&hd, xored, 32);
-			sha1_final(&hd);
-			Uint8 *computedHashed=sha1_read(&hd);
+			//printf("passWord=[%2x], xorpassw=[%2x], xored=[%2x], computedDigest=[%2x], receivedDigest=[%2x]\n",
+			//	client->passWord[0], client->xorpassw[0], xored[0], computedDigest[0], receivedDigest[0]);
 			
 			// We compare:
-			if (memcmp(computedHashed, receivedHashed, 20)!=0)
+			if (memcmp(computedDigest, receivedDigest, 20)!=0)
 			{
 				Uint8 data[8];
 				data[0]=YMT_CONNECTION_REFUSED;

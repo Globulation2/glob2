@@ -672,12 +672,6 @@ void YOGClient::reconnected(IPaddress ip)
 	unsharedTimeout=DEFAULT_NETWORK_TIMEOUT;
 	unsharedTOTL=3;
 	
-	static Uint32 clientUID=1;
-	clientUID++;
-	if (clientUID==0)
-		clientUID++;
-	uid=clientUID;
-	
 	clientsPacketID=0;
 	clientsUpdatePacketID=0;
 	playing=false;
@@ -705,7 +699,7 @@ void YOGClient::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
+	if (strncmp(YOG_SERVER_IP, "192.168", 7)==0)
 		printf("%s", output);
 	
 	if (logServerFile)
