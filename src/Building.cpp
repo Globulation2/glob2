@@ -70,8 +70,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorking=type->maxUnitWorking;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitWorkingPreferred=1;
-	lastInsideSubscribe=0;
-	subscriptionTimer=0;
+	subscriptionInsideTimer=0;
+	subscriptionWorkingTimer=0;
 
 	// position
 	posX=x;
@@ -388,7 +388,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsWorkingSubscribe.push_front(unit);
 	}
 
-	subscriptionTimer = stream->readSint32("subscriptionTimer");
+	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
 	maxUnitWorkingLocal = maxUnitWorking;
@@ -416,7 +416,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		assert(unit);
 		unitsInsideSubscribe.push_front(unit);
 	}
-	lastInsideSubscribe = stream->readSint32("lastInsideSubscribe");
+	subscriptionInsideTimer = stream->readSint32("subscriptionInsideTimer");
 	
 	stream->readLeaveSection();
 }
@@ -454,7 +454,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 	
-	stream->writeSint32(subscriptionTimer, "subscriptionTimer");
+	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	
@@ -481,7 +481,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		oss << "unitsInsideSubscribe[" << i++ << "]";
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
-	stream->writeSint32(lastInsideSubscribe, "lastInsideSubscribe");
+	stream->writeSint32(subscriptionInsideTimer, "subscriptionInsideTimer");
 	
 	stream->writeLeaveSection();
 }
@@ -545,6 +545,7 @@ void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 
 int Building::neededRessource(int r)
 {
+	assert(r>=0);
 	int need=type->maxRessource[r]-ressources[r]+1-type->multiplierRessource[r];
 	if (need>0)
 		return need;
@@ -1288,8 +1289,8 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	if (subscriptionTimer>0)
-		subscriptionTimer++;
+	if (subscriptionWorkingTimer>0)
+		subscriptionWorkingTimer++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
@@ -1300,7 +1301,7 @@ void Building::subscribeToBringRessourcesStep()
 		return;
 	}
 	
-	if (subscriptionTimer>32)
+	if (subscriptionWorkingTimer>32)
 	{
 		if (verbose)
 			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
@@ -1510,43 +1511,20 @@ void Building::subscribeToBringRessourcesStep()
 			{
 				if (verbose)
 					printf(" unit %d choosen.\n", choosen->gid);
-				
 				unitsWorkingSubscribe.remove(choosen);
-				if (neededRessource(choosen->destinationPurprose))
-				{
-					unitsWorking.push_back(choosen);
-					choosen->subscriptionSuccess();
-					updateCallLists();
-				}
-				else if (type->canExchange && owner->openMarket())
-				{
-					unitsWorking.push_back(choosen);
-					choosen->subscriptionSuccess();
-					updateCallLists();
-				}
-				else
-				{
-					// This unit may no more be needed here.
-					// Let's remove it from this subscribing list.
-					choosen->standardRandomActivity();
-					if (verbose)
-						printf("...!neededRessource(choosen->destinationPurprose=%d)\n", choosen->destinationPurprose);
-					return;
-				}
+				unitsWorking.push_back(choosen);
+				choosen->subscriptionSuccess();
 			}
 			else
 				break;
 		}
 		
-		//if ((Sint32)unitsWorking.size()>=maxUnitWorking)
-		{
-			//if (verbose)
-			//	printf(" unitsWorking.size()>=maxUnitWorking\n");
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-				(*it)->standardRandomActivity();
-			unitsWorkingSubscribe.clear();
-			subscriptionTimer=0;
-		}
+		updateCallLists();
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			(*it)->standardRandomActivity();
+		unitsWorkingSubscribe.clear();
+		subscriptionWorkingTimer=0;
+		
 		if (verbose)
 			printf(" ...done\n");
 	}
@@ -1554,8 +1532,8 @@ void Building::subscribeToBringRessourcesStep()
 
 void Building::subscribeForFlagingStep()
 {
-	if (subscriptionTimer>0)
-		subscriptionTimer++;
+	if (subscriptionWorkingTimer>0)
+		subscriptionWorkingTimer++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
@@ -1564,7 +1542,7 @@ void Building::subscribeForFlagingStep()
 		return;
 	}
 	
-	if (subscriptionTimer>32)
+	if (subscriptionWorkingTimer>32)
 	{
 		while (((Sint32)unitsWorking.size()<maxUnitWorking) && !unitsWorkingSubscribe.empty())
 		{
@@ -1626,25 +1604,23 @@ void Building::subscribeForFlagingStep()
 				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
 				choosen->subscriptionSuccess();
-				updateCallLists();
 			}
 			else
 				break;
 		}
 		
-		//if ((Sint32)unitsWorking.size()>=maxUnitWorking)
-		{
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
-				(*it)->standardRandomActivity();
-			unitsWorkingSubscribe.clear();
-			subscriptionTimer=0;
-		}
+		updateCallLists();
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			(*it)->standardRandomActivity();
+		unitsWorkingSubscribe.clear();
+		subscriptionWorkingTimer=0;
 	}
 }
 
 void Building::subscribeForInsideStep()
 {
-	lastInsideSubscribe++;
+	if (subscriptionInsideTimer>0)
+		subscriptionInsideTimer++;
 	if (fullInside())
 	{
 		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
@@ -1653,12 +1629,12 @@ void Building::subscribeForInsideStep()
 		return;
 	}
 	
-	if (lastInsideSubscribe>32)
+	if (subscriptionInsideTimer>32)
 	{
-		if ((signed)unitsInside.size()<maxUnitInside)
+		while (((Sint32)unitsInside.size()<maxUnitInside) && !unitsInsideSubscribe.empty())
 		{
 			int mindist=INT_MAX;
-			Unit *u=NULL;
+			Unit *choosen=NULL;
 			Map *map=owner->map;
 			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
@@ -1669,7 +1645,7 @@ void Building::subscribeForInsideStep()
 					if (dist<mindist)
 					{
 						mindist=dist;
-						u=*it;
+						choosen=*it;
 					}
 				}
 				else
@@ -1678,26 +1654,24 @@ void Building::subscribeForInsideStep()
 					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<mindist))
 					{
 						mindist=dist;
-						u=*it;
+						choosen=*it;
 					}
 				}
 			}
-			if (u)
+			if (choosen)
 			{
-				unitsInsideSubscribe.remove(u);
-				assert(u);
-				unitsInside.push_back(u);
-				u->subscriptionSuccess();
-				updateCallLists();
+				unitsInsideSubscribe.remove(choosen);
+				unitsInside.push_back(choosen);
+				choosen->subscriptionSuccess();
 			}
+			else
+				break;
 		}
 		
-		if ((signed)unitsInside.size()>=maxUnitInside)
-		{
-			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
-				(*it)->standardRandomActivity();
-			unitsInsideSubscribe.clear();
-		}
+		updateCallLists();
+		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			(*it)->standardRandomActivity();
+		unitsInsideSubscribe.clear();
 	}
 }
 

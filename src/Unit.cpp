@@ -660,8 +660,8 @@ void Unit::handleActivity(void)
 						b->subscribeToBringRessources=1;
 						owner->subscribeToBringRessources.push_front(b);
 					}
-					if (b->subscriptionTimer<=0)
-						b->subscriptionTimer=1;
+					if (b->subscriptionWorkingTimer<=0)
+						b->subscriptionWorkingTimer=1;
 					return;
 				}
 			}
@@ -683,9 +683,10 @@ void Unit::handleActivity(void)
 				if (b->subscribeForInside!=1)
 				{
 					b->subscribeForInside=1;
-					b->lastInsideSubscribe=0;
 					owner->subscribeForInside.push_front(b);
 				}
+				if (b->subscriptionInsideTimer<=0)
+					b->subscriptionInsideTimer=1;
 				return;
 			}
 			
@@ -707,8 +708,8 @@ void Unit::handleActivity(void)
 					b->subscribeForFlaging=1;
 					owner->subscribeForFlaging.push_back(b);
 				}
-				if (b->subscriptionTimer<=0)
-					b->subscriptionTimer=1;
+				if (b->subscriptionWorkingTimer<=0)
+					b->subscriptionWorkingTimer=1;
 				return;
 			}
 			
@@ -732,8 +733,8 @@ void Unit::handleActivity(void)
 						b->subscribeToBringRessources=1;
 						owner->subscribeToBringRessources.push_front(b);
 					}
-					if (b->subscriptionTimer<=0)
-						b->subscriptionTimer=1;
+					if (b->subscriptionWorkingTimer<=0)
+						b->subscriptionWorkingTimer=1;
 					return;
 				}
 			}
@@ -760,13 +761,14 @@ void Unit::handleActivity(void)
 					targetX=attachedBuilding->getMidX();
 					targetY=attachedBuilding->getMidY();
 					b->unitsInsideSubscribe.push_front(this);
-					b->lastInsideSubscribe=0;
 					subscribed=true;
 					if (b->subscribeForInside!=1)
 					{
 						b->subscribeForInside=1;
 						owner->subscribeForInside.push_front(b);
 					}
+					if (b->subscriptionInsideTimer<=0)
+						b->subscriptionInsideTimer=1;
 				}
 				else
 					activity=ACT_RANDOM;
@@ -855,13 +857,14 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
-				b->lastInsideSubscribe=0;
 				subscribed=true;
 				if (b->subscribeForInside!=1)
 				{
 					b->subscribeForInside=1;
 					owner->subscribeForInside.push_front(b);
 				}
+				if (b->subscriptionInsideTimer<=0)
+					b->subscriptionInsideTimer=1;
 			}
 			else
 				activity=ACT_RANDOM;
@@ -881,9 +884,14 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) Subscribed to heal at building gbid=(%d)\n", gid, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
-				b->lastInsideSubscribe=0;
 				subscribed=true;
-				owner->subscribeForInside.push_front(b);
+				if (b->subscribeForInside!=1)
+				{
+					b->subscribeForInside=1;
+					owner->subscribeForInside.push_front(b);
+				}
+				if (b->subscriptionInsideTimer<=0)
+					b->subscriptionInsideTimer=1;
 			}
 			else
 				activity=ACT_RANDOM;
