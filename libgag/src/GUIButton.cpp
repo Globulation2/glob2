@@ -294,8 +294,8 @@ namespace GAGGUI
 				if (event->button.button == SDL_BUTTON_LEFT)
 				{
 					textIndex++;
-					if (textIndex>=texts.size())
-						textIndex=0;
+					if (textIndex >= texts.size())
+						textIndex = 0;
 					setText(texts.at(textIndex));
 	
 					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
@@ -303,9 +303,10 @@ namespace GAGGUI
 				}
 				else if (event->button.button == SDL_BUTTON_RIGHT)
 				{
-					textIndex--;
-					if (textIndex<0)
-						textIndex=texts.size()-1;
+					if (textIndex > 0)
+						textIndex--;
+					else
+						textIndex = texts.size()-1;
 					setText(texts.at(textIndex));
 					
 					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
