@@ -1295,7 +1295,7 @@ void GameGUI::draw(void)
 					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 					{
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", i));
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[unit type]", i));
 					}
 				}
 
@@ -1372,7 +1372,7 @@ void GameGUI::draw(void)
 							int typeNum=selBuild->type->nextLevelTypeNum;
 							BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-24, globalContainer->littleFont, 
-								"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);								
+								"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);
 							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-24, globalContainer->littleFont, 
 								"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
 							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-12, globalContainer->littleFont, 
