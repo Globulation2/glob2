@@ -135,6 +135,7 @@ void GlobalContainer::load(void)
 {
 	// set default values in settings or load them
 	strncpy(settings.userName, getenv("USER"), BasePlayer::MAX_NAME_LENGTH);
+	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
 	// TODO : loading code
 
 	// create graphic context

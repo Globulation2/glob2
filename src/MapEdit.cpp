@@ -663,6 +663,10 @@ int MapEdit::run(void)
 				if (my<128)
 				{
 					mx=mx-globalContainer->gfx->getW()+128;
+					mx-=14;
+					my-=14;
+					mx=(mx*128)/100;
+					my=(my*128)/100;
 					viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
 					viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
 					if (viewportX<0)

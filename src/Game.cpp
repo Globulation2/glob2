@@ -53,7 +53,7 @@ void Game::init()
 {
 	// init minimap
 	minimap=globalContainer->gfx->createDrawableSurface();
-	minimap->setRes(128, 128);
+	minimap->setRes(100, 100);
 
 	session.numberOfTeam=0;
 	session.numberOfPlayer=0;
@@ -328,7 +328,7 @@ bool Game::load(SDL_RWops *stream)
 	
 	session.numberOfPlayer=tempSessionInfo.numberOfPlayer;
 	session.numberOfTeam=tempSessionInfo.numberOfTeam;
-	
+
 	session.gameTPF=tempSessionInfo.gameTPF;
 	session.gameLatency=tempSessionInfo.gameLatency;
 
@@ -1276,7 +1276,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected)
 {
 	// draw the prerendered minimap
-	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-128, 0, minimap);
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 50, 50, 50);
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 50, 50, 50);
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 50, 50, 50);
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 50, 50, 50);
+	globalContainer->gfx->drawRect(globalContainer->gfx->getW()-115, 13, 102, 102, 200, 200, 200);
+	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-114, 14, minimap);
 
 	// draw screen lines
 	int rx, ry, rw, rh, n;
@@ -1289,23 +1294,20 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 		rx&=map.getMaskW();
 		ry&=map.getMaskH();
 	}
-	rx=(rx*128)/map.getW();
-	ry=(ry*128)/map.getH();
-	rw=((globalContainer->gfx->getW()-128)*128)/(32*map.getW());
-	rh=(globalContainer->gfx->getH()*128)/(32*map.getH());
+	rx=(rx*100)/map.getW();
+	ry=(ry*100)/map.getH();
+	rw=((globalContainer->gfx->getW()-128)*100)/(32*map.getW());
+	rh=(globalContainer->gfx->getH()*100)/(32*map.getH());
 
 	for (n=0; n<rw+1; n++)
 	{
-
-	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), ry&0x7F, 255, 255, 255);
-	
-	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), (ry+rh)&0x7F, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100), 14+(ry%100), 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100), 14+((ry+rh)%100), 255, 255, 255);
 	}
 	for (n=0; n<rh+1; n++)
 	{
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+(rx&0x7F), (ry+n)&0x7F, 255, 255, 255);
-	
-	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+rw)&0x7F), (ry+n)&0x7F, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%100), 14+((ry+n)%100), 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%100), 14+((ry+n)%100), 255, 255, 255);
 	}
 }
 
@@ -1322,14 +1324,19 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int H[3]= { 0, 90, 0 };
 	int E[3]= { 0, 40, 120 };
 	int S[3]= { 170, 170, 0 };
+	int wood[3]= { 0, 60, 0 };
+	int corn[3]= { 211, 207, 167 };
+	int stone[3]= { 104, 112, 124 };
+	int alga[3]= { 41, 157, 165 };
 	int Player[3]= { 10, 240, 20 };
 	int Enemy[3]={ 220, 25, 30 };
-	int pcol[3];
+	int pcol[7];
+	int pcolIndex, pcolAddValue;
 
 	int decSPX, decSPY;
 
-	dMx=(float)map.getW()/128.0f;
-	dMy=(float)map.getH()/128.0f;
+	dMx=(float)map.getW()/100.0f;
+	dMy=(float)map.getH()/100.0f;
 
 	if (teamSelected>=0)
 	{
@@ -1342,13 +1349,12 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 		decSPY=0;
 	}
 
-	for (dy=0; dy<128; dy++)
+	for (dy=0; dy<100; dy++)
 	{
-		for (dx=0; dx<128; dx++)
+		for (dx=0; dx<100; dx++)
 		{
-			pcol[0]=0;
-			pcol[1]=0;
-			pcol[2]=0;
+			for (int i=0; i<7; i++)
+				pcol[i]=0;
 			nCount=0;
 			isMeUnitOrBuilding=false;
 			isEnemyUnitOrBuilding=false;
@@ -1382,13 +1388,45 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 						}
 					}
 					if (teamSelected<0)
-						pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
+					{
+						// get color to add
+						if (map.isRessource((int)minidx, (int)minidy, WOOD))
+							pcolIndex=3;
+						else if (map.isRessource((int)minidx, (int)minidy, CORN))
+							pcolIndex=4;
+						else if (map.isRessource((int)minidx, (int)minidy, STONE))
+							pcolIndex=5;
+						else if (map.isRessource((int)minidx, (int)minidy, ALGA))
+							pcolIndex=6;
+						else
+							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
+
+						// get weight to add
+						pcolAddValue=5;
+
+						pcol[pcolIndex]+=pcolAddValue;
+					}
 					else if (map.isMapDiscovered((int)minidx, (int)minidy, teamSelected))
 					{
-						if (map.isFOW((int)minidx, (int)minidy, teamSelected))
-							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
+						// get color to add
+						if (map.isRessource((int)minidx, (int)minidy, WOOD))
+							pcolIndex=3;
+						else if (map.isRessource((int)minidx, (int)minidy, CORN))
+							pcolIndex=4;
+						else if (map.isRessource((int)minidx, (int)minidy, STONE))
+							pcolIndex=5;
+						else if (map.isRessource((int)minidx, (int)minidy, ALGA))
+							pcolIndex=6;
 						else
-							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=2;
+							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
+
+						// get weight to add
+						if (map.isFOW((int)minidx, (int)minidy, teamSelected))
+							pcolAddValue=5;
+						else
+							pcolAddValue=3;
+
+						pcol[pcolIndex]+=pcolAddValue;
 					}
 
 					nCount++;
@@ -1409,13 +1447,10 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			}
 			else
 			{
-				nCount*=3;
-			
-	r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-			
-	g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-			
-	b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+				nCount*=5;
+				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
+				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
+				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 			}
 			minimap->drawPixel(dx, dy, r, g, b);
 		}
