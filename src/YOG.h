@@ -34,6 +34,7 @@ public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
 	enum { GAMEINFO_ID_SIZE = 31, GAMEINFO_VERSION_SIZE=7, GAMEINFO_COMMENT_SIZE=59, GAMEINFO_HOSTNAME_SIZE=127 };
 	enum { RESEND_GAME_TIMEOUT =30000, RESEND_GAME_INTERVAL= 10000 };
+	enum { FW_ACT_HOSTNAME_SIZE = 127 };
 
 	enum InfoMessageType
 	{
@@ -67,6 +68,12 @@ public:
 		Uint32 updatedTick;
 	};
 
+	struct FirewallActivation
+	{
+		char hostname[FW_ACT_HOSTNAME_SIZE+1];
+		Uint16 port;
+	};
+
 protected:
 	//! the socket that we use to connect to IRC
 	TCPsocket socket;
@@ -76,8 +83,11 @@ protected:
 	//! pending messages
 	std::deque<ChatMessage> messages;
 
-	//! pending info message
+	//! pending info messages
 	std::deque<InfoMessage> infoMessages;
+
+	//! pending firewall activations
+	std::deque<FirewallActivation> firewallActivations;
 	
 	//! games infos
 	std::vector<GameInfo> gameInfos;
@@ -186,6 +196,32 @@ public:
 	const char *getGameHostname(void);
 	//! Returns true and get next game if there is another game in list, false otherwise
 	bool getNextGame(void);
+
+	// FIREWALL overriding
+	/*
+		Typical use :
+		if (yog.isFirewallActivation())
+		{
+			do
+			{
+				...=yog.getFirewallActivationHostname();
+				...=yog.getFirewallActivationPort();
+
+				// use code that do something usefull with firewall activation
+			}
+			while (yog.getNextFirewallActivation())
+		}
+	*/
+	//! Return true if there is any firewall activation pending
+	bool isFirewallActivation();
+	//! Return the port to send to a firewall activation packet
+	Uint16 getFirewallActivationPort(void);
+	//! Return the hostname to send to a firewall activation packet
+	const char *getFirewallActivationHostname(void);
+	//! Return true and get next firewall activation if there is at least one in list, false otherwise
+	bool getNextFirewallActivation(void);
+	//! Send a firewall activation request
+	void sendFirewallActivation(const char *ip, Uint16 port);
 
 private:
 	//! Send a string in IRC format

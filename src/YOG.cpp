@@ -31,6 +31,7 @@
 */
 
 #include "YOG.h"
+#define DEFAULT_FW_CHAN "#yog-fw"
 
 YOG::YOG()
 {
@@ -136,7 +137,20 @@ void YOG::interpreteIRCMessage(const char *message)
 	if (strcasecmp(cmd, "PRIVMSG")==0)
 	{
 		char *diffusion=strtok(NULL, " :");
-		if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))
+		if ((diffusion) && (strncmp(diffusion, DEFAULT_FW_CHAN, IRC_CHANNEL_SIZE)==0))
+		{
+			char *hostname=strtok(NULL, " \0");
+			char *port=strtok(NULL, " \0");
+
+			FirewallActivation fwAct;
+
+			strncpy(fwAct.hostname, hostname, FW_ACT_HOSTNAME_SIZE);
+			fwAct.hostname[FW_ACT_HOSTNAME_SIZE]=0;
+			fwAct.port=atoi(port);
+
+			firewallActivations.push_back(fwAct);
+		}
+		else if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))
 		{
 			// filter data to game list
 			char *identifier=strtok(NULL, " :\0");
@@ -493,6 +507,44 @@ bool YOG::getNextGame(void)
 	{
 		return false;
 	}
+}
+
+
+bool YOG::isFirewallActivation()
+{
+	return (firewallActivations.size()>0);
+}
+
+Uint16 YOG::getFirewallActivationPort(void)
+{
+	if (firewallActivations.size()>0)
+		return firewallActivations[0].port;
+	else
+		return 0;
+}
+
+const char *YOG::getFirewallActivationHostname(void)
+{
+	if (firewallActivations.size()>0)
+		return firewallActivations[0].hostname;
+	else
+		return NULL;
+}
+
+bool YOG::getNextFirewallActivation(void)
+{
+	firewallActivations.erase(firewallActivations.begin());
+	if (firewallActivations.size()>0)
+		return true;
+	else
+		return false;
+}
+
+void YOG::sendFirewallActivation(const char *ip, Uint16 port)
+{
+	char activationMssage[IRC_MESSAGE_SIZE];
+	snprintf(activationMssage, sizeof(activationMssage), "PRIVMSG %s :%s %d", DEFAULT_FW_CHAN, ip, port);
+	sendString(activationMssage);
 }
 
 bool YOG::getString(char data[IRC_MESSAGE_SIZE])
