@@ -23,6 +23,7 @@
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include <algorithm>
 
 Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
 {
@@ -65,9 +66,9 @@ Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const c
 	ca = DrawableSurface::ALPHA_OPAQUE;
 }
 
-void Text::setText(const char *newText, ...)
+void Text::setText(const char *newText)
 {
-	va_list arglist;
+/*	va_list arglist;
 	char output[1024];
 
 	// handle printf-like outputs
@@ -75,30 +76,37 @@ void Text::setText(const char *newText, ...)
 	vsnprintf(output, 1024, newText, arglist);
 	va_end(arglist);
 	output[1023]=0;
-
-	if (!keepW)
-		w=MAX(w, fontPtr->getStringWidth(output));
-	if (!keepH)
-		h=MAX(h, fontPtr->getStringHeight(output));
-
-	// copy text
-	this->text = output;
-
-	repaint();
-
-	if (!keepW)
-		w=fontPtr->getStringWidth(output);
-	if (!keepH)
-		h=fontPtr->getStringHeight(output);
-	parent->onAction(this, TEXT_SET, 0, 0);
+*/
+	if (this->text != newText)
+	{
+		if (!keepW)
+			w = std::max<int>(w, fontPtr->getStringWidth(newText));
+		if (!keepH)
+			h = std::max<int>(h, fontPtr->getStringHeight(newText));
+		
+		// copy text
+		this->text = newText;
+	
+		repaint();
+	
+		if (!keepW)
+			w = fontPtr->getStringWidth(newText);
+		if (!keepH)
+			h = fontPtr->getStringHeight(newText);
+		parent->onAction(this, TEXT_SET, 0, 0);
+	}
 }
 
 void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	cr = r;
-	cg = g;
-	cb = b;
-	ca = a;
+	if ((cr!=r) || (cg!=g) || (cb!=b) || (ca!=a))
+	{
+		cr = r;
+		cg = g;
+		cb = b;
+		ca = a;
+		repaint();
+	}
 }
 
 void Text::internalRepaint(int x, int y, int w, int h)

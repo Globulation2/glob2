@@ -238,7 +238,7 @@ int Glob2::run(int argc, char *argv[])
 		delete yog;
 		delete globalContainer;
 		Toolkit::close();
-		return 0;
+		return ret;
 	}
 
 	isRunning=true;

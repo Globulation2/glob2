@@ -70,7 +70,7 @@ bool ScriptEditorScreen::testCompile(void)
 	else
 	{
 		compilationResult->setColor(255, 50, 50);
-		compilationResult->setText("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString());
+		compilationResult->setText(GAG::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
 		editor->setCursorPos(er.pos);
 		return false;
 	}
@@ -150,7 +150,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			if (!stream)
 			{
 				compilationResult->setColor(255, 50, 50);
-				compilationResult->setText("Loading script from %s failed", loadSaveScreen->getName());
+				compilationResult->setText(GAG::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}
 			SDL_RWseek(stream, 0, SEEK_END);
@@ -169,7 +169,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			if (!stream)
 			{
 				compilationResult->setColor(255, 50, 50);
-				compilationResult->setText("Saving script to %s failed", loadSaveScreen->getName());
+				compilationResult->setText(GAG::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}
 			const char* sourceCode=editor->getText();

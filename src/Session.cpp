@@ -25,7 +25,6 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
@@ -185,7 +184,7 @@ Uint8 SessionGame::getOrderType()
 {
 	return DATA_SESSION_GAME;
 }
-
+/*
 void SessionInfo::draw(DrawableSurface *gfx)
 {
 	char playerName[32];
@@ -200,7 +199,7 @@ void SessionInfo::draw(DrawableSurface *gfx)
 		gfx->drawString(40+dx, 40+dy, globalContainer->standardFont, playerName);
 	}
 }
-
+*/
 void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen)
 {
 	assert(playerNumber>=0);

@@ -26,6 +26,7 @@
 
 class MapGenerationDescriptor;
 class GameGUI;
+class DrawableSurface;
 
 class Game
 {

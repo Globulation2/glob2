@@ -72,7 +72,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		for (int j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42+dx, 42+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
+		text[i]=new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard",  Toolkit::getStringTable()->getString("[open]"));
 		addWidget(text[i]);
 		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);

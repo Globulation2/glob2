@@ -26,6 +26,7 @@
 class Text;
 class TextInput;
 class TextArea;
+class ColorRect;
 
 class MultiplayersConnectedScreen:public Screen
 {
@@ -47,6 +48,8 @@ public:
 private:
 	TextInput *textInput;
 	TextArea *chatWindow;
+	Text *text[16];
+	ColorRect *color[16];
 
 public:
 	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);
