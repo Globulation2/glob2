@@ -31,7 +31,10 @@
 	#include <config.h>
 #endif
 
-extern SDLGraphicContext *screen;
+#ifdef HAVE_LIBGL
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+#endif
 
 Sprite::Surface::Surface(SDL_Surface *source)
 {
@@ -42,7 +45,7 @@ Sprite::Surface::Surface(SDL_Surface *source)
 
 	this->t = -1;
 	#ifdef HAVE_LIBGL
-	// TODO : if we use GL (check on graphicContext, allocate GL texture)
+	initTexture();
 	#endif
 }
 
@@ -50,10 +53,24 @@ Sprite::Surface::~Surface()
 {
 	SDL_FreeSurface(s);
 	#ifdef HAVE_LIBGL
-	if (t>=0)
-	{
-		// TODO : GL free texture code
-	}
+	glDeleteTextures(1, (unsigned int *)&t);
+	#endif
+}
+
+void Sprite::Surface::initTexture(void)
+{
+	#ifdef HAVE_LIBGL
+	glGenTextures(1, (unsigned int *)&t);
+	glBindTexture(GL_TEXTURE_2D, t);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, s->pitch /
+			s->format->BytesPerPixel);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0,
+			s->format->Amask ? GL_RGBA8 : GL_RGB8,
+			s->w, s->h, 0,
+			s->format->Amask ? GL_RGBA : GL_RGB,
+			GL_UNSIGNED_BYTE, NULL);
 	#endif
 }
 
@@ -66,12 +83,9 @@ Sprite::RotatedImage::~RotatedImage()
 	}
 }
 
-
 void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
 	checkBound(index);
-	assert(index>=0);
-	assert(index<(int)images.size());
 
 	SDL_Rect oldr, r;
 	SDL_Rect newr=*clip;
@@ -191,16 +205,54 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	SDL_SetClipRect(dest, &oldr);
 }
 
-void Sprite::drawGL(const SDL_Rect *clip, int x, int y, int index)
+void Sprite::drawGL(int x, int y, int index)
 {
 	#ifdef HAVE_LIBGL
-	// TODO : GL drawing code
-	/*glBegin(GL_POLYGON);
-	glVertex2f(x+0.49, y+0.49);
-	glVertex2f(x+0.49, y+h-0.49);
-	glVertex2f(x+w-0.49, y+h-0.49);
-	glVertex2f(x+w-0.49, y+0.49);
-	glEnd();*/
+	checkBound(index);
+	
+	glEnable(GL_TEXTURE_2D);
+	
+	if (images[index])
+	{
+		int w = images[index]->s->w;
+		int h = images[index]->s->h;
+		
+		glBindTexture(GL_TEXTURE_2D, images[index]->t);
+		glBegin(GL_QUADS);
+		//glColor4ub(255, 255, 255, alpha);
+		glTexCoord2i(0, 0);
+		glVertex2i(x, y);
+		glTexCoord2i(0, h);
+		glVertex2i(x, y+h);
+		glTexCoord2i(w, h);
+		glVertex2i(x+w, y+h);
+		glTexCoord2i(w, 0);
+		glVertex2i(x+w, y);
+		glEnd();
+	}
+	
+	if (rotated[index])
+	{
+		// TODO : update the rotation cache independently of the rendering backend then uncomment this
+		/*int w = rotated[index]->orig->w;
+		int h = rotated[index]->origorigh;
+		
+		glBindTexture(GL_TEXTURE_2D, rotated[index]->t);
+		glBegin(GL_QUADS);
+		//glColor4ub(255, 255, 255, alpha);
+		glTexCoord2i(0, 0);
+		glVertex2i(x, y);
+		glTexCoord2i(0, h);
+		glVertex2i(x, y+h);
+		glTexCoord2i(w, h);
+		glVertex2i(x+w, y+h);
+		glTexCoord2i(w, 0);
+		glVertex2i(x+w, y);
+		glEnd();*/
+	}
+	
+	glDisable(GL_TEXTURE_2D);
+	
 	#endif
 }
 

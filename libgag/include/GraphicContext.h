@@ -170,6 +170,8 @@ protected:
 		//! allocate the internal surface suitable for fast blit, free the source
 		Surface(SDL_Surface *source);
 		~Surface();
+		//! of GL is enabled, upload the texture to GfxCard
+		void initTexture(void);
 	};
 
 	struct RotatedImage
@@ -198,7 +200,7 @@ public:
 	//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
 	virtual void drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index);
 	//! Draw the sprite frame index at pos (x,y) on a GL screen with the clipping rect clip
-	virtual void drawGL(const SDL_Rect *clip, int x, int y, int index);
+	virtual void drawGL(int x, int y, int index);
 
 	//! Set the (r,g,b) color to a sprite's base color
 	virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, g, b); }
