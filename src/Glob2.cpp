@@ -16,7 +16,8 @@ GlobalContainer globalContainer;
 
 int main(int argc, char *argv[])
 {
-	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE/*SDL_FULLSCREEN*/);
+	globalContainer.parseArgs(argc, argv);
+	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
 	globalContainer.load();
 
 	if ( SDLNet_Init() < 0 ) {
