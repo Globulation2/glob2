@@ -29,6 +29,7 @@
 class FileManager;
 class LogFileManager;
 class GraphicContext;
+class SoundMixer;
 
 class GlobalContainer
 {
@@ -59,6 +60,7 @@ public:
 	LogFileManager *logFileManager;
 
 	GraphicContext *gfx;
+	SoundMixer *mix;
 	Sprite *terrain;
 	Sprite *terrainShader;
 	Sprite *terrainBlack;

@@ -1,4 +1,0 @@
-#!/bin/sh
-rm -f glob2gfx.tar
-wget http://lappc22.epfl.ch/~nct/glob2gfx.tar
-tar xvf glob2gfx.tar

@@ -25,6 +25,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include <map>
 #include <stdio.h>
 #include "Marshaling.h"
 
@@ -64,6 +65,10 @@ struct Token
 		S_LABEL,
 		S_JUMP,
 		S_SETFLAG,
+		S_FLAG,
+		S_ISDEAD,
+		S_ALLY,
+		S_ENEMY,
 
 		// Constants
 		// Units
@@ -95,15 +100,6 @@ struct Token
 		S_TEXTSTATTAB,
 		S_GFXSTATTAB,
 		S_ALLIANCESCREEN,
-
-		//SGSL
-		S_FRIEND=310,
-		S_YOU=315,
-		S_ENEMY=311,
-		S_ISDEAD=312,
-		S_FLAG=314,
-		S_NOENEMY=316,
-		S_ALLY=324,
 	} type;
 
 	struct TokenSymbolLookupTable
@@ -135,14 +131,16 @@ struct ErrorReport
 		ET_OK=0,
 		ET_INVALID_VALUE,
 		ET_SYNTAX_ERROR,
-		ET_INVALID_PLAYER,
+		ET_INVALID_TEAM,
 		ET_NO_SUCH_FILE,
-		ET_INVALID_FLAG_NAME,
-		ET_DOUBLE_FLAG_NAME,
+		ET_UNDEFINED_FLAG_NAME,
+		ET_DUPLICATED_FLAG_NAME,
+		ET_UNDEFINED_LABEL,
 		ET_MISSING_PAROPEN,
 		ET_MISSING_PARCLOSE,
 		ET_MISSING_SEMICOL,
 		ET_MISSING_ARGUMENT,
+		ET_INVALID_ALLIANCE_LEVEL,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
@@ -157,7 +155,7 @@ struct ErrorReport
 	const char *getErrorString(void);
 };
 
-//Text parser, returns tokens
+// Text parser, returns tokens
 class Aquisition
 {
 public:
@@ -181,7 +179,7 @@ private:
 	bool newLine;
 };
 
-//File parser
+// File parser
 class FileAquisition: public Aquisition
 {
 public:
@@ -216,7 +214,7 @@ class Mapscript;
 class GameGUI;
 class Game;
 
-//Independant story line
+// Independant story line
 class Story
 {
 public:
@@ -225,7 +223,7 @@ public:
 
 public:
 	std::deque<Token> line;
-	bool hasWon, hasLost;
+	std::map<std::string, int> labels;
 
 	void step(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
@@ -233,7 +231,7 @@ public:
 private:
 	bool conditionTester(const Game *game, int pc, bool l);
 	bool testCondition(GameGUI *gui);
-	int valueOfVariable(const Game *game, Token::TokenType type, int playerNumber, int level);
+	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
 	int lineSelector;
 	Mapscript *mapscript;
 	int internTimer;
@@ -242,8 +240,9 @@ private:
 struct Flag
 {
 	int x, y, r;
-	std::string name;
 };
+
+typedef std::map<std::string, Flag> FlagMap;
 
 class Mapscript
 {
@@ -276,12 +275,14 @@ private:
 
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
 	bool testMainTimer(void);
-	bool doesFlagExist(std::string name);
-	bool getFlagPos(std::string name, int *x, int *y, int *r);
 
 	int mainTimer;
+	std::vector<bool> hasWon, hasLost;
+
 	std::deque<Story> stories;
-	std::vector<Flag> flags;
+
+	FlagMap flags;
+
 	char *sourceCode;
 };
 

@@ -1,0 +1,3 @@
+#!/bin/sh
+tar cvf glob2data.tar data/gfx/*.png data/fonts/*.ttf data/gui/*.png data/zik/*.ogg
+scp glob2data.tar nct@lappc22.epfl.ch:~/public_html/

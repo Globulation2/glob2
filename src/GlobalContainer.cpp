@@ -24,8 +24,10 @@
 #include "Player.h"
 #include "FileManager.h"
 #include "LogFileManager.h"
+#include "SoundMixer.h"
 #include <Toolkit.h>
 #include <GAG.h>
+
 
 GlobalContainer::GlobalContainer(void)
 {
@@ -43,6 +45,7 @@ GlobalContainer::GlobalContainer(void)
 
 	hostServer=false;
 	gfx=NULL;
+	mix=NULL;
 	terrain=NULL;
 	terrainShader=NULL;
 	terrainBlack=NULL;
@@ -72,6 +75,8 @@ GlobalContainer::~GlobalContainer(void)
 	Toolkit::releaseFont("little");
 	if (gfx)
 		delete gfx;
+	if (mix)
+		delete mix;
 }
 
 void GlobalContainer::setUserName(const char *name)
@@ -281,6 +286,13 @@ void GlobalContainer::load(void)
 		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
 		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
 		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
+
+		// create mixer
+		mix = new SoundMixer;
+		mix->loadTrack("data/zik/intro.ogg");
+		mix->loadTrack("data/zik/menu.ogg");
+		mix->setNextTrack(0);
+		mix->setNextTrack(1);
 
 		// load fonts
 		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");

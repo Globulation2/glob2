@@ -19,43 +19,51 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-/*
- TODO: Check for label/Jump coherency !
-
-for the parser:
-story: starts another parallel storyline, so multiple endings for a map are possible
-*/
-
 #include <iostream>
 #include <string>
 #include <deque>
 #include <vector>
+#include <algorithm>
 #include <string.h>
 #include <math.h>
 #include "SGSL.h"
 #include "GameGUI.h"
 #include "Utilities.h"
-
+#include "GlobalContainer.h"
 
 Token::TokenSymbolLookupTable Token::table[] =
 {
-	{ S_WAIT, "wait" },
+	{ INT, "int" },
+	{ STRING, "string" },
+
+	{ S_PAROPEN, "("},
+	{ S_PARCLOSE, ")"},
+	{ S_SEMICOL, ","},
+	{ S_STORY, "story" },
+
 	{ S_EQUAL, "=" },
 	{ S_HIGHER, ">" },
 	{ S_LOWER, "<" },
+	{ S_NOT, "not" },
+
+	{ S_WAIT, "wait" },
 	{ S_TIMER, "timer" },
 	{ S_SHOW, "show" },
-	
-	{ S_FRIEND, "friend" },
-	{ S_YOU, "you" },
-	{ S_NOENEMY, "noenemy" },
-
-	{ S_ENEMY, "enemy" },
-	{ S_ISDEAD, "isdead" },
-	{ S_FLAG, "flag" },
+	{ S_HIDE, "hide" },
+	{ S_ALLIANCE, "alliance"},
+	{ S_GUIENABLE, "guiEnable"},
+	{ S_GUIDISABLE, "guiDisable"},
+	{ S_SUMMON, "summon" },
 	{ S_WIN, "win" },
 	{ S_LOOSE, "loose" },
-	{ S_STORY, "story" },
+	{ S_LABEL, "label" },
+	{ S_JUMP, "jump" },
+	{ S_SETFLAG, "setFlag"},
+	{ S_FLAG, "flag" },
+	{ S_ISDEAD, "isdead" },
+	{ S_ALLY, "ally" },
+	{ S_ENEMY, "enemy" },
+
 	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "Explorer" },
 	{ S_WARRIOR, "Warrior" },
@@ -79,28 +87,17 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_FLAGTAB, "FlagTab"},
 	{ S_TEXTSTATTAB, "TextStatTab"},
 	{ S_GFXSTATTAB, "GfxStatTab"},
-	{ S_HIDE, "hide" },
-	{ S_LABEL, "label" },
-	{ S_JUMP, "jump" },
-	{ S_SETFLAG, "setFlag"},
-	{ S_ALLY, "ally" },
-	{ S_SUMMON, "summon" },
-	{ S_NOT, "not" },
-	{ S_PAROPEN, "("},
-	{ S_PARCLOSE, ")"},
-	{ S_SEMICOL, ","},
-	{ S_ALLIANCE, "alliance"},
-	{ S_GUIENABLE, "guiEnable"},
-	{ S_GUIDISABLE, "guiDisable"},
-	{ INT, "int" },
-	{ STRING, "string" },
-	{ NIL, NULL }
+
+	// NIL must be at the end because it is a stop condition... not very clean
+	{ NIL, NULL },
 };
 
 Token::TokenType Token::getTypeByName(const char *name)
 {
 	int i = 0;
 	TokenType type=NIL;
+
+	std::cout << "Getting token for " << name << std::endl;
 
 	if (name != NULL)
 		while (table[i].type != NIL)
@@ -137,8 +134,6 @@ Story::Story(Mapscript *mapscript)
 {
 	lineSelector = 0;
 	internTimer=0;
-	hasWon=false;
-	hasLost=false;
 	this->mapscript=mapscript;
 }
 
@@ -148,9 +143,9 @@ Story::~Story()
 }
 
 //get values from the game
-int Story::valueOfVariable(const Game *game, Token::TokenType type, int playerNumber, int level)
+int Story::valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level)
 {
-	TeamStat *latestStat=game->teams[playerNumber]->stats.getLatestStat();
+	TeamStat *latestStat=game->teams[teamNumber]->stats.getLatestStat();
 	switch(type)
 	{
 		case(Token::S_WORKER):
@@ -185,12 +180,12 @@ int Story::valueOfVariable(const Game *game, Token::TokenType type, int playerNu
 bool Story::conditionTester(const Game *game, int pc, bool l)
 {
 	Token::TokenType type, operation;
-	int level, playerNumber, amount;
+	int level, teamNumber, amount;
 
 	type = line[pc++].type;
 	if (l)
 		level = line[pc++].value;
-	playerNumber = line[pc++].value;
+	teamNumber = line[pc++].value;
 	operation = line[pc++].type;
 	amount = line[pc].value;
 
@@ -198,15 +193,15 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
-			return (valueOfVariable(game, type, playerNumber, level) > amount);
+			return (valueOfVariable(game, type, teamNumber, level) > amount);
 		}
 		case (Token::S_LOWER):
 		{
-			return (valueOfVariable(game, type, playerNumber, level) < amount);
+			return (valueOfVariable(game, type, teamNumber, level) < amount);
 		}
 		case (Token::S_EQUAL):
 		{
-			return (valueOfVariable(game, type, playerNumber, level) == amount);
+			return (valueOfVariable(game, type, teamNumber, level) == amount);
 		}
 		default:
 			return false;
@@ -219,34 +214,210 @@ bool Story::testCondition(GameGUI *gui)
 {
 	Game *game = &gui->game;
 
-	/* Not up-to date */
 	if (line.size())
 		switch (line[lineSelector].type)
 		{
 			case (Token::S_SHOW):
 			{
+				unsigned lsInc=0;
+				if (line[lineSelector+2].type == Token::INT)
+				{
+					if ((unsigned)line[lineSelector+2].value != globalContainer->settings.defaultLanguage)
+					{
+						lineSelector += 2;
+						return true;
+					}
+					lsInc = 1;
+				}
 				mapscript->isTextShown = true;
-				lineSelector++;
-				mapscript->textShown = line[lineSelector].msg;
+				mapscript->textShown = line[++lineSelector].msg;
+				lineSelector += lsInc;
 				return true;
 			}
 
 			case (Token::S_WIN):
 			{
-				hasWon=true;
+				mapscript->hasWon[lineSelector+1]=true;
 				return false;
 			}
 
 			case (Token::S_LOOSE):
 			{
-				hasLost=true;
+				mapscript->hasLost[lineSelector+1]=true;
 				return false;
 			}
 
 			case (Token::S_TIMER):
 			{
+				mapscript->mainTimer=line[++lineSelector].value;
+				return true;
+			}
+
+			case (Token::S_ALLIANCE):
+			{
+				int team1 = line[++lineSelector].value;
+				int team2 = line[++lineSelector].value;
+				int level = line[++lineSelector].value;
+
+				// Who do I thrust and don't fire on.
+				Uint32 allies[4] = { 0, 0, 0, 1};
+				// Who I don't thrust and fire on.
+				Uint32 enemies[4] = { 1, 0, 0, 0};
+				// Who does I share the vision of Exchange building to.
+				Uint32 sharedVisionExchange[4] = { 0, 1, 1, 1};
+				// Who does I share the vision of Food building to.
+				Uint32 sharedVisionFood[4] = { 0, 0, 1, 1};
+				// Who does I share the vision to.
+				Uint32 sharedVisionOther[4] = { 0, 0, 0, 1};
+
+				if (allies[level])
+					gui->game.teams[team1]->allies |= 1<<team2;
+				else
+					gui->game.teams[team1]->allies &= ~(1<<team2);
+
+				if (enemies[level])
+					gui->game.teams[team1]->enemies |= 1<<team2;
+				else
+					gui->game.teams[team1]->enemies &= ~(1<<team2);
+
+				if (sharedVisionExchange[level])
+					gui->game.teams[team1]->sharedVisionExchange |= 1<<team2;
+				else
+					gui->game.teams[team1]->sharedVisionExchange &= ~(1<<team2);
+
+				if (sharedVisionFood[level])
+					gui->game.teams[team1]->sharedVisionFood |= 1<<team2;
+				else
+					gui->game.teams[team1]->sharedVisionFood &= ~(1<<team2);
+
+				if (sharedVisionOther[level])
+					gui->game.teams[team1]->sharedVisionOther |= 1<<team2;
+				else
+					gui->game.teams[team1]->sharedVisionOther &= ~(1<<team2);
+
+				return true;
+			}
+
+			case (Token::S_LABEL):
+			{
 				lineSelector++;
-				mapscript->mainTimer=line[lineSelector].value;
+				return true;
+			}
+
+			case (Token::S_JUMP):
+			{
+				lineSelector = labels[line[lineSelector+1].msg];
+				return true;
+			}
+
+			case (Token::INT):
+			{
+				internTimer--;
+				if (internTimer==0)
+					return true;
+				else
+					return false;
+			}
+
+			case (Token::S_GUIENABLE):
+			{
+				Token::TokenType object = line[++lineSelector].type;
+				if (object <= Token::S_WARRIOR)
+				{
+					// Units : TODO
+				}
+				else if (object <= Token::S_WALL_B)
+				{
+					gui->enableBuildingsChoice(object - Token::S_SWARM_B);
+				}
+				else if (object <= Token::S_FORBIDDEN_F)
+				{
+					gui->enableFlagsChoice(object - Token::S_EXPLOR_F);
+				}
+				else if (object <= Token::S_ALLIANCESCREEN)
+				{
+					gui->enableGUIElement(object - Token::S_BUILDINGTAB);
+				}
+				return true;
+			}
+
+			case (Token::S_GUIDISABLE):
+			{
+				Token::TokenType object = line[++lineSelector].type;
+				if (object <= Token::S_WARRIOR)
+				{
+					// Units : TODO
+				}
+				else if (object <= Token::S_WALL_B)
+				{
+					gui->disableBuildingsChoice(object - Token::S_SWARM_B);
+				}
+				else if (object <= Token::S_FORBIDDEN_F)
+				{
+					gui->disableFlagsChoice(object - Token::S_EXPLOR_F);
+				}
+				else if (object <= Token::S_ALLIANCESCREEN)
+				{
+					gui->disableGUIElement(object - Token::S_BUILDINGTAB);
+				}
+				return true;
+			}
+
+			case (Token::S_SUMMON):
+			{
+				const std::string& flagName = line[++lineSelector].msg;
+				int globulesAmount = line[++lineSelector].value;
+				int type = line[++lineSelector].type - Token::S_WORKER;
+				int level = line[++lineSelector].value;
+				int team = line[++lineSelector].value;
+
+				FlagMap::const_iterator fi;
+				if ((fi = mapscript->flags.find(flagName)) != mapscript->flags.end())
+				{
+					int number = globulesAmount;
+					int maxTest = number * 3;
+
+					while ((number>0) && (maxTest>0))
+					{
+						int x = fi->second.x;
+						int y = fi->second.y;
+						int r = fi->second.r;
+						int dx=(syncRand()%(2*r))+1;
+						int dy=(syncRand()%(2*r))+1;
+						dx-=r;
+						dy-=r;
+
+						if (dx*dx+dy*dy<r*r)
+						{
+							if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
+							{
+								number --;
+							}
+						}
+
+						maxTest--;
+					}
+				}
+				return true;
+			}
+
+			case (Token::S_SETFLAG):
+			{
+				Flag flag;
+
+				std::string name = line[++lineSelector].msg;
+				flag.x = line[++lineSelector].value;
+				flag.y = line[++lineSelector].value;
+				flag.r = line[++lineSelector].value;
+
+				mapscript->flags[name] = flag;
+
+				return true;
+			}
+
+			case (Token::S_HIDE):
+			{
+				mapscript->isTextShown = false;
 				return true;
 			}
 
@@ -286,81 +457,50 @@ bool Story::testCondition(GameGUI *gui)
 						break;
 					case (Token::S_FLAG):
 					{
-						int x, y ,r;
-
+						int incL = 0;
 						execLine++;
-						mapscript->getFlagPos(line[execLine].msg, &x, &y, &r);
-						if (line[lineSelector+3+negate].type==Token::S_YOU)
+
+						FlagMap::const_iterator fi;
+						if ((fi = mapscript->flags.find(line[execLine].msg)) == mapscript->flags.end())
+							assert(false);
+
+						Uint32 testMask;
+						if (line[lineSelector+3+negate].type==Token::INT)
 						{
-							int dx, dy;
-							for (dy=y-5; dy<y+5; dy++)
-								for (dx=x-5; dx<x+5; dx++)
-								{
-									Uint16 gid=game->map.getGroundUnit(dx, dy);
-									if (gid!=NOGUID)
-									{
-										int team=Unit::GIDtoTeam(gid);
-										if (game->teams[0]->teamNumber==team)//TODO XOR
-										{
-											lineSelector +=3+negate;
-											return true;
-										}
-									}
-								}
-							return false;
+							testMask = 1<<(line[lineSelector+3+negate].value);
+						}
+						else if (line[lineSelector+3+negate].type==Token::S_ENEMY)
+						{
+							testMask = game->teams[line[lineSelector+4+negate].value]->enemies;
+							incL = 1;
 						}
 						else if (line[lineSelector+3+negate].type==Token::S_ALLY)
 						{
-							int dx, dy;
-							for (dy=y-5; dy<y+5; dy++)
-								for (dx=x-5; dx<x+5; dx++)
-								{
-									Uint16 gid=game->map.getGroundUnit(dx, dy);
-									if (gid!=NOGUID)
-									{
-										int team=Unit::GIDtoTeam(gid);
-										Uint32 tm=1<<team;
-										if (game->teams[0]->allies & tm) //TODO XOR
-										{
-											lineSelector +=3+negate;
-											return true;
-										}
-									}
-								}
-
-							return false;
-						}
-						else if (line[lineSelector+3+negate].type==Token::S_NOENEMY)
-						{
-							int dx, dy;
-							for (dy=y-5; dy<y+5; dy++)
-								for (dx=x-5; dx<x+5; dx++)
-								{
-									Uint16 gid;
-									gid=game->map.getGroundUnit(dx, dy);
-									if (gid!=NOGUID)
-									{
-										int team=Unit::GIDtoTeam(gid);
-										Uint32 tm=1<<team;
-										if (game->teams[0]->enemies & tm)//TODO XOR
-											return false;
-									}
-									gid=game->map.getBuilding(dx, dy);
-									if (gid!=NOGBID)
-									{
-										int team=Building::GIDtoTeam(gid);
-										Uint32 tm=1<<team;
-										if (game->teams[0]->enemies & tm)//TODO XOR
-											return false;
-									}
-								}
-
-							lineSelector +=3+negate;
-							return true;
+							testMask = game->teams[line[lineSelector+4+negate].value]->allies;
+							incL = 1;
 						}
 						else
 							assert(false);
 
+						int x = fi->second.x;
+						int y = fi->second.y;
+						int r = fi->second.r;
+						int dx, dy;
+						for (dy=y-r; dy<y+r; dy++)
+							for (dx=x-r; dx<x+r; dx++)
+							{
+								Uint16 gid=game->map.getGroundUnit(dx, dy);
+								if (gid!=NOGUID)
+								{
+									int team=Unit::GIDtoTeam(gid);
+									if (team & testMask)
+									{
+										lineSelector += 3+negate+incL;
+										return true;
+									}
+								}
+							}
+						return false;
 					}
 					case (Token::S_WORKER):
 					case (Token::S_EXPLORER):
@@ -389,155 +529,7 @@ bool Story::testCondition(GameGUI *gui)
 					}
 				}
 			}
-			case (Token::S_LABEL):
-			{
-				lineSelector++;
-				return true;
-			}
-			case (Token::S_JUMP):
-			{
-				int newEmplacement;
-				for (newEmplacement =lineSelector; newEmplacement > 0; newEmplacement--)
-				{
-					if ((line[lineSelector+1].msg == line[newEmplacement].msg) && (line[newEmplacement-1].type=Token::S_LABEL))
-					{
-						break;
-					}
-				}
-				lineSelector = --newEmplacement;
-				return true;
-			}
-			case (Token::INT):
-			{
-				internTimer--;
-				if (internTimer==0)
-					return true;
-				else
-					return false;
-			}
-			case (Token::S_FRIEND):
-			{
-				/*mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
-				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
-				mapscript->game->teams[line[lineSelector+2].value]->allies |= mapscript->game->teams[line[lineSelector+1].value]->me;
-				mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
-				lineSelector +=2;*/
-				return true;
-			}
-			case (Token::S_ENEMY):
-			{
 
-				/*mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
-				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
-				mapscript->game->teams[line[lineSelector+2].value]->allies &= ~ mapscript->game->teams[line[lineSelector+1].value]->me;
-				mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
-				lineSelector +=2;*/
-				return true;
-			}
-			case (Token::S_GUIENABLE):
-			{
-				Token::TokenType object = line[++lineSelector].type;
-				if (object <= Token::S_WARRIOR)
-				{
-					// Units : TODO
-				}
-				else if (object <= Token::S_WALL_B)
-				{
-					gui->enableBuildingsChoice(object - Token::S_SWARM_B);
-				}
-				else if (object <= Token::S_FORBIDDEN_F)
-				{
-					gui->enableFlagsChoice(object - Token::S_EXPLOR_F);
-				}
-				else if (object <= Token::S_ALLIANCESCREEN)
-				{
-					gui->enableGUIElement(object - Token::S_BUILDINGTAB);
-				}
-				return true;
-			}
-			case (Token::S_GUIDISABLE):
-			{
-				Token::TokenType object = line[++lineSelector].type;
-				if (object <= Token::S_WARRIOR)
-				{
-					// Units : TODO
-				}
-				else if (object <= Token::S_WALL_B)
-				{
-					gui->disableBuildingsChoice(object - Token::S_SWARM_B);
-				}
-				else if (object <= Token::S_FORBIDDEN_F)
-				{
-					gui->disableFlagsChoice(object - Token::S_EXPLOR_F);
-				}
-				else if (object <= Token::S_ALLIANCESCREEN)
-				{
-					gui->disableGUIElement(object - Token::S_BUILDINGTAB);
-				}
-				return true;
-			}
-			case (Token::S_SUMMON):
-			{
-				const std::string& flagName = line[++lineSelector].msg;
-				int globulesAmount = line[++lineSelector].value;
-				int type = line[++lineSelector].type - Token::S_WORKER;
-				int level = line[++lineSelector].value;
-				int team = line[++lineSelector].value;
-
-				int x, y, r;
-				if (mapscript->getFlagPos(flagName, &x, &y, &r))
-				{
-					int number = globulesAmount;
-					int maxTest = number * 3;
-
-					while ((number>0) && (maxTest>0))
-					{
-						int dx=(syncRand()%(2*r))+1;
-						int dy=(syncRand()%(2*r))+1;
-						dx-=r;
-						dy-=r;
-
-						if (dx*dx+dy*dy<r*r)
-						{
-							if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
-							{
-								number --;
-							}
-						}
-
-						maxTest--;
-					}
-				}
-				return true;
-			}
-			case (Token::S_SETFLAG):
-			{
-				Flag flag;
-				bool found=false;
-
-				flag.name = line[++lineSelector].msg;
-				flag.x = line[++lineSelector].value;
-				flag.y = line[++lineSelector].value;
-				flag.r  =line[++lineSelector].value;
-				for (std::vector<Flag>::iterator it=mapscript->flags.begin(); it != mapscript->flags.end(); ++it)
-				{
-					if ((*it).name==flag.name)
-					{
-						(*it)=flag;
-						found=true;
-						break;
-					}
-				}
-				if (!found)
-					mapscript->flags.push_back(flag);
-
-				return true;
-			}
-			case (Token::S_HIDE):
-			{
-				mapscript->isTextShown = false;
-				return true;
-			}
 			default:
 				return false;
 		}
@@ -546,17 +538,38 @@ bool Story::testCondition(GameGUI *gui)
 
 void Story::step(GameGUI *gui)
 {
-	while (testCondition(gui))
+	int cycleLeft = 256;
+
+	while (testCondition(gui) && cycleLeft)
 	{
-		lineSelector ++;
+		lineSelector++;
+		cycleLeft--;
 	}
+
+	if (!cycleLeft)
+		std::cout << "Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
 }
 
 using namespace std;
 
 const char *ErrorReport::getErrorString(void)
 {
-	static const char *strings[]={ "No error", "Invalid Value ", "Syntax error", "Invalid player", "No such file", "Invalid Falg name", "Flag name already defined","Missing \"(\"","Missing \")\"", "Missing \",\"", "Missing argument", "Unknown error" };
+	static const char *strings[]={
+		"No error",
+		"Invalid Value ",
+		"Syntax error",
+		"Invalid team",
+		"No such file",
+		"Flag name not defined",
+		"Flag name already defined",
+		"Label not defined",
+		"Missing \"(\"",
+		"Missing \")\"",
+		"Missing \",\"",
+		"Missing argument",
+		"Invalid alliance level. Level must be between 0 and 3",
+		"Unknown error"
+	};
 	assert(type >= 0);
 	assert(type < ET_NB_ET);
 	assert(ET_NB_ET == sizeof(strings)/sizeof(const char *));
@@ -610,7 +623,10 @@ void Aquisition::nextToken()
 		if (c=='#' && newLine)
 		{
 			while(c!='\n')
+			{
 				c=this->getChar();
+				HANDLE_ERROR_POS(c);
+			}
 		}
 		newLine=false;
 		//if (index(" \t\r\n().,", c)==NULL)
@@ -808,33 +824,6 @@ void Mapscript::setSourceCode(const char *sourceCode)
 	strcpy(this->sourceCode, sourceCode);
 }
 
-bool Mapscript::getFlagPos(string name, int *x, int *y, int *r)
-{
-	for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
-	{
-		if ((*it).name==name)
-		{
-			*x=(*it).x;
-			*y=(*it).y;
-			*r=(*it).r;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Mapscript::doesFlagExist(string name)
-{
-	for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
-	{
-		if ((*it).name==name)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 void Mapscript::reset(void)
 {
 	isTextShown = false;
@@ -951,6 +940,12 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 	reset();
 
+	// Set the size of the won/lost arrays and clear them
+	hasWon.resize(game->session.numberOfTeam);
+	std::fill(hasWon.begin(), hasWon.end(), 0);
+	hasLost.resize(game->session.numberOfTeam);
+	std::fill(hasLost.begin(), hasLost.end(), 0);
+
 	NEXT_TOKEN;
 	while (donnees->getToken()->type != Token::S_EOF)
 	{
@@ -965,14 +960,16 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			{
 				break;
 			}
+			
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
-				//Grammar for summon | summon(flag_name , globules_amount , globule_type , globule_level , player_int)
+				// summon | summon(flag_name , globules_amount , globule_type , globule_level , team_int)
 				case (Token::S_SUMMON):
 				{
 					//<-summon
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PAROPEN;
 					NEXT_TOKEN; // <- flag_name
 					CHECK_ARGUMENT;
@@ -981,12 +978,13 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (!doesFlagExist(donnees->getToken()->msg))
+					else if (flags.find(donnees->getToken()->msg) == flags.end())
 					{
-						er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+						er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules_amount
 					CHECK_ARGUMENT;
@@ -1001,6 +999,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules type
 					CHECK_ARGUMENT;
@@ -1010,6 +1009,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules level
 					CHECK_ARGUMENT;
@@ -1024,8 +1024,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_SEMICOL;
-					NEXT_TOKEN; //<- player
+					NEXT_TOKEN; //<- team
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
@@ -1034,21 +1035,23 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					}
 					else if (donnees->getToken()->value >= game->session.numberOfTeam)
 					{
-						er.type=ErrorReport::ET_INVALID_PLAYER;
+						er.type=ErrorReport::ET_INVALID_TEAM;
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
 
-				//Grammar for setflag | setflag("flag_name" , x , y , r )
+				// setflag | setflag("flag_name" , x , y , r )
 				case (Token::S_SETFLAG):
 				{
 					Flag flag;
-					bool found=false;
 					thisone.line.push_back(*donnees->getToken()); //<-setflag
+
+					// flagname
 					CHECK_PAROPEN;
 					NEXT_TOKEN;//<-"flagName"
 					CHECK_ARGUMENT;
@@ -1057,13 +1060,15 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (doesFlagExist(donnees->getToken()->msg))
+					else if (flags.find(donnees->getToken()->msg) != flags.end())
 					{
-						er.type=ErrorReport::ET_DOUBLE_FLAG_NAME;
+						er.type=ErrorReport::ET_DUPLICATED_FLAG_NAME;
 						break;
 					}
-					flag.name=donnees->getToken()->msg;
+					std::string name=donnees->getToken()->msg;
 					thisone.line.push_back(*donnees->getToken());
+
+					// x
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- x
 					CHECK_ARGUMENT;
@@ -1074,6 +1079,8 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					}
 					flag.x=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
+
+					// y
 					CHECK_SEMICOL;
 					NEXT_TOKEN;//<- y
 					CHECK_ARGUMENT;
@@ -1083,6 +1090,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					flag.y=donnees->getToken()->value;
+					thisone.line.push_back(*donnees->getToken());
+
+					// r
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- r
 					CHECK_ARGUMENT;
@@ -1093,28 +1103,77 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					}
 					flag.r=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
-					for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
-					{
-						if ((*it).name==flag.name)
-						{
-							(*it)=flag;
-							found=true;
-							break;
-						}
-					}
-					if (!found)
-						flags.push_back(flag);
-					thisone.line.push_back(*donnees->getToken());
+
+					// add
+					flags[name] = flag;
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
-				//Grammar of Show, Label, Jump
-		    //TODO: !! No check if label name exist !!!
+
+				// Alliance
+				case (Token::S_ALLIANCE):
+				{
+					thisone.line.push_back(*donnees->getToken()); //<-setflag
+
+					// team 1
+					CHECK_PAROPEN;
+					NEXT_TOKEN;
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					if (donnees->getToken()->value >= game->session.numberOfTeam)
+					{
+						er.type=ErrorReport::ET_INVALID_TEAM;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					// team 2
+					CHECK_PAROPEN;
+					NEXT_TOKEN;
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					if (donnees->getToken()->value >= game->session.numberOfTeam)
+					{
+						er.type=ErrorReport::ET_INVALID_TEAM;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					// level
+					CHECK_PAROPEN;
+					NEXT_TOKEN;
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					if (donnees->getToken()->value > 3)
+					{
+						er.type=ErrorReport::ET_INVALID_ALLIANCE_LEVEL;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+				}
+				break;
+
+				// Show, Label, Jump
 				case (Token::S_SHOW):
 				case (Token::S_LABEL):
 				case (Token::S_JUMP):
 				{
+					Token::TokenType type = donnees->getToken()->type;
+
 					thisone.line.push_back(*donnees->getToken());
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
@@ -1124,12 +1183,60 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					thisone.line.push_back(*donnees->getToken());
-					CHECK_PARCLOSE;
-					NEXT_TOKEN;
+
+					if (type == Token::S_LABEL)
+					{
+						// add label to table
+						thisone.labels[donnees->getToken()->msg] = thisone.line.size();
+					}
+					if (type == Token::S_JUMP)
+					{
+						// complain if label doesn't exists
+						if (thisone.labels.find(donnees->getToken()->msg) == thisone.labels.end())
+						{
+							er.type=ErrorReport::ET_UNDEFINED_LABEL;
+							break;
+						}
+					}
+
+					if (type == Token::S_SHOW)
+					{
+						thisone.line.push_back(*donnees->getToken());
+						NEXT_TOKEN;
+						if (donnees->getToken()->type != Token::S_PARCLOSE)
+						{
+							// This is a multilingual show
+							if (donnees->getToken()->type != Token::S_SEMICOL)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							NEXT_TOKEN;
+							CHECK_ARGUMENT;
+							if (donnees->getToken()->type != Token::INT)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							thisone.line.push_back(*donnees->getToken());
+							CHECK_PARCLOSE;
+							NEXT_TOKEN;
+						}
+						else
+						{
+							NEXT_TOKEN;
+						}
+					}
+					else
+					{
+						thisone.line.push_back(*donnees->getToken());
+						CHECK_PARCLOSE;
+						NEXT_TOKEN;
+					}
 				}
 				break;
-				//Grammar Of Wait | wait ( int) or wait ( isdead( playerid ) ) or wait( condition ) or wait( not( condition ) )
+
+				// Wait | wait ( int) or wait ( isdead( teamNumber ) ) or wait( condition ) or wait( not( condition ) )
 				case (Token::S_WAIT):
 				{
 					bool enter = false;
@@ -1150,7 +1257,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						thisone.line.push_back(*donnees->getToken());
 					}
 
-					// isdead( playerid )
+					// isdead( teamNumber )
 					if (donnees->getToken()->type == Token::S_ISDEAD && !enter)
 					{
 						enter = true;
@@ -1165,14 +1272,11 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						else if (donnees->getToken()->value >= game->session.numberOfTeam)
 						{
-							er.type=ErrorReport::ET_INVALID_PLAYER;
+							er.type=ErrorReport::ET_INVALID_TEAM;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
 						CHECK_PARCLOSE;
-						//CHECK_PARCLOSE;
-						//NEXT_TOKEN;
-						//break;
 					}
 					// following two arguments can be negated !
 					if (donnees->getToken()->type == Token::S_NOT && !enter)
@@ -1188,6 +1292,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					{
 						enter = true;
 						thisone.line.push_back(*donnees->getToken());
+
 						CHECK_PAROPEN;
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
@@ -1196,26 +1301,43 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (!doesFlagExist(donnees->getToken()->msg))
+						else if (flags.find(donnees->getToken()->msg) == flags.end())
 						{
-							er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+							er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
+
 						CHECK_SEMICOL;
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if ((donnees->getToken()->type != Token::S_YOU) && (donnees->getToken()->type != Token::S_ENEMY)
-						&& (donnees->getToken()->type != Token::S_ALLY) && (donnees->getToken()->type != Token::INT))
-						{
-							er.type=ErrorReport::ET_SYNTAX_ERROR;
-							break;
-						}
 						thisone.line.push_back(*donnees->getToken());
+						if (donnees->getToken()->type != Token::INT)
+						{
+							if ((donnees->getToken()->type != Token::S_ENEMY)
+								&& (donnees->getToken()->type != Token::S_ALLY))
+								{
+									er.type=ErrorReport::ET_SYNTAX_ERROR;
+									break;
+								}
+							else
+							{
+								// we have enemy or ally
+								CHECK_PAROPEN;
+								NEXT_TOKEN;
+								if (donnees->getToken()->type != Token::INT)
+								{
+									er.type=ErrorReport::ET_SYNTAX_ERROR;
+									break;
+								}
+								thisone.line.push_back(*donnees->getToken());
+								CHECK_PARCLOSE;
+							}
+						}
 						CHECK_PARCLOSE;
 					}
-					//Comparaison| ( Variable( player , "flagName" ) cond value ) : variable = unit
-					//( Variable( level , player , "flagName" ) cond value ) : variable = building
+					//Comparaison| ( Variable( team , "flagName" ) cond value ) : variable = unit
+					//( Variable( level , team , "flagName" ) cond value ) : variable = building
 					//"flagName" can be omitted !
 					if ((donnees->getToken()->type >= Token::S_WORKER) && (donnees->getToken()->type <= Token::S_MARKET_B) && !enter)
 					{
@@ -1251,7 +1373,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							CHECK_ARGUMENT;
 						}
 
-						//player
+						// team
 						if (donnees->getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1259,7 +1381,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						else if (donnees->getToken()->value >= game->session.numberOfTeam)
 						{
-							er.type=ErrorReport::ET_INVALID_PLAYER;
+							er.type=ErrorReport::ET_INVALID_TEAM;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
@@ -1274,9 +1396,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (!doesFlagExist(donnees->getToken()->msg))
+							else if (flags.find(donnees->getToken()->msg) == flags.end())
 							{
-								er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+								er.type=ErrorReport::ET_UNDEFINED_FLAG_NAME;
 								break;
 							}
 							thisone.line.push_back(*donnees->getToken());
@@ -1317,53 +1439,19 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					break;
 				}
 				break;
+
 				case (Token::NIL):
 				{
 					//NEXT_TOKEN;
 					er.type=ErrorReport::ET_UNKNOWN;
 				}
 				break;
-					//friend/ennemy( player1 , player2 )
-				case (Token::S_FRIEND):
-				case (Token::S_ENEMY):
-				{
-					thisone.line.push_back(*donnees->getToken());
-					CHECK_PAROPEN;
-					NEXT_TOKEN;
-					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
-					{
-						er.type=ErrorReport::ET_INVALID_PLAYER;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					CHECK_SEMICOL;
-					NEXT_TOKEN;
-					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
-					{
-						er.type=ErrorReport::ET_INVALID_PLAYER;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					CHECK_PARCLOSE;
-					NEXT_TOKEN;
-				}
-				break;
-					//Timer( int )
+
+				// Grammar of Timer( int )
 				case (Token::S_TIMER):
 				{
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
@@ -1372,21 +1460,19 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					if (donnees->getToken()->value <=0)
-					{
-						er.type=ErrorReport::ET_INVALID_VALUE;
-						break;
-					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
+
 				// Enable or disable a GUI element
 				case (Token::S_GUIENABLE):
 				case (Token::S_GUIDISABLE):
 				{
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
@@ -1396,29 +1482,56 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
+
 				case (Token::S_LOOSE):
 				case (Token::S_WIN):
+				{
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PAROPEN;
+					NEXT_TOKEN;
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					{
+						er.type=ErrorReport::ET_INVALID_TEAM;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+				}
+				break;
+
 				case (Token::S_HIDE):
 				{
 					thisone.line.push_back(*donnees->getToken());
 					NEXT_TOKEN;
 				}
 				break;
+
 				case (Token::S_EOF):
 				{
 				}
 				break;
+
 				default:
 					er.type=ErrorReport::ET_UNKNOWN;
 					break;
 			}
 		}
 		stories.push_back(thisone);
-//Debug code
+		// Debug code
 		printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 		for (unsigned  i=0; i<thisone.line.size(); i++)
 			cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;
@@ -1429,31 +1542,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 bool Mapscript::hasTeamWon(unsigned teamNumber)
 {
-	// Can make win or loose only team 0
 	if (testMainTimer())
 	{
-		if (teamNumber==0)
-		{
-			for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
-			{
-				if ((*it).hasWon)
-				return true;
-			}
-		}
+		return hasWon[teamNumber];
 	}
 	return false;
 }
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)
 {
-	// Can make win or loose only team 0
-	if (teamNumber==0)
-	{
-		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
-		{
-			if ((*it).hasLost)
-				return true;
-		}
-	}
-	return false;
+	return hasLost[teamNumber];
 }

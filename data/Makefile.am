@@ -1,4 +1,4 @@
-SUBDIRS=fonts gfx gui
+SUBDIRS=fonts gfx gui zik
 
 glob2datadir= $(pkgdatadir)/data
 glob2data_DATA= $(wildcard $(srcdir)/*.txt)
