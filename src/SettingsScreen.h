@@ -42,7 +42,8 @@ private:
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *hwaccel, *nodblbuff, *lowquality;
-	Text *title;
+	Text *title, *language, *display, *usernameText;
+	Text *fullscreenText, *hwaccelText, *nodblbuffText, *lowqualityText;
 
 public:
 	SettingsScreen();
