@@ -68,11 +68,12 @@ void Glob2::mutiplayerYOG(void)
 {
 	YOGScreen yogScreen;
 	drawYOGSplashScreen();
-	yogScreen.createConnection();
-	//if (yogScreen.socket!=NULL)
+	
+	// try to open YOG
+	if (globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
 	{
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
-		yogScreen.closeConnection();
+		globalContainer->yog.forceDisconnect();
 		printf("Engine::yogReturnCode=%d\n", yogReturnCode);
 		if (yogReturnCode==YOGScreen::CANCEL)
 			return;
@@ -263,7 +264,6 @@ int Glob2::run(int argc, char *argv[])
 					case MultiplayersOfferScreen::JOIN:
 					{
 						Engine engine;
-						printf("join\n");
 						int rc=engine.initMutiplayerJoin();
 						if (rc==Engine::EE_NO_ERROR)
 						{

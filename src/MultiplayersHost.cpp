@@ -59,14 +59,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	this->shareOnYOG=shareOnYOG;
 	if (shareOnYOG)
 	{
-		// tell YOG to open the game
-		// TODO : Use new yog
-		/*YOGConnector yogConnector;
-		yogConnector.open();
-		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
-		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.getMapName());
-		yogConnector.sendString(newGameText);
-		yogConnector.close();*/
+		globalContainer->yog.shareGame("glob2", "0.1-pre", sessionInfo->map.getMapName());
 	}
 }
 
@@ -75,14 +68,7 @@ MultiplayersHost::~MultiplayersHost()
 
 	if (shareOnYOG)
 	{
-		// tell YOG to open the game
-		/*YOGConnector yogConnector;
-		yogConnector.open();
-		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
-		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
-		yogConnector.sendString(newGameText);
-		yogConnector.close();*/
-		// TODO : Use new yog
+		globalContainer->yog.unshareGame();
 	}
 
 	if (destroyNet)
@@ -640,6 +626,9 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::onTimer(Uint32 tick)
 {
+	// call yog step
+	globalContainer->yog.step();
+	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
 	{
 		if (--startGameTimeCounter<0)
@@ -729,7 +718,7 @@ void MultiplayersHost::sendingTime()
 				removePlayer(i);
 				update=true;
 			}
-		
+
 		if (update)
 		{
 			// all other players are ignorant of the new situation:
@@ -901,14 +890,7 @@ void MultiplayersHost::stopHosting(void)
 	
 	if (shareOnYOG)
 	{
-		// TODO : Use new yog
-		// tell YOG to open the game
-		/*YOGConnector yogConnector;
-		yogConnector.open();
-		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
-		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
-		yogConnector.sendString(newGameText);
-		yogConnector.close();*/
+		globalContainer->yog.unshareGame();
 	}
 }
 

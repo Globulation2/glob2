@@ -62,16 +62,6 @@ YOGScreen::~YOGScreen()
 #	define snprintf _snprintf
 #endif
 
-void YOGScreen::createConnection(void)
-{
-	globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName);
-}
-
-void YOGScreen::closeConnection(void)
-{
-	globalContainer->yog.forceDisconnect();
-}
-
 void YOGScreen::updateList(void)
 {
 	IPs.clear();
@@ -188,7 +178,15 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			multiplayersJoin->quitThisGame();
 
 			Engine engine;
+			
+			// quit chat
+			globalContainer->yog.quitChannel(DEFAULT_CHAT_CHAN);
+			// host game and wait for players
 			int rc=engine.initMutiplayerHost(true);
+			// quit game listing
+			globalContainer->yog.quitChannel(DEFAULT_GAME_CHAN);
+
+			// execute game
 			if (rc==Engine::EE_NO_ERROR)
 			{
 				if (engine.run()==-1)
@@ -197,6 +195,12 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			else if (rc==-1)
 				endExecute(-1);
+				
+			// rejoin chat and game listing
+			globalContainer->yog.joinChannel(DEFAULT_CHAT_CHAN);
+			globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
+			
+			// redraw all stuff
 			updateList();
 			gameList->commit();
 			dispatchPaint(gfxCtx);
