@@ -1307,6 +1307,7 @@ void YOG::sendMessage(const char *message)
 	m.messageID=lastMessageID;
 	strncpy(m.text, message, MAX_MESSAGE_SIZE);
 	m.text[MAX_MESSAGE_SIZE-1]=0;
+	handleMessageAliasing(m.text, 256);
 	m.timeout=0;
 	m.TOTL=3;
 	m.textLength=Utilities::strmlen(m.text, 256);
@@ -1519,14 +1520,10 @@ char *YOG::getStatusString()
 
 void YOG::handleMessageAliasing(char *message, int maxSize)
 {
-	if (strncmp("/msg ", message, 5))
-	{
+	if (strncmp("/msg ", message, 5)==0)
 		memmove(message+2, message+4, Utilities::strmlen(message+4, maxSize-4));
-		return;
-	}
-	if (strncmp("/away ", message, 6))
-	{
+	else if (strncmp("/whisper ", message, 9)==0)
+		memmove(message+2, message+8, Utilities::strmlen(message+8, maxSize-8));
+	else if (strncmp("/away ", message, 6)==0)
 		memmove(message+2, message+5, Utilities::strmlen(message+5, maxSize-5));
-		return;
-	}
 }
