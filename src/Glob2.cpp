@@ -28,7 +28,6 @@
 #include "YOGScreen.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
-#include <SDL_net.h>
 #include "MultiplayersHost.h"
 
 #include <stdio.h>

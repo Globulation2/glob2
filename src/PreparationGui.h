@@ -24,7 +24,6 @@
 #include "GAG.h"
 #include "Race.h"
 #include "Session.h"
-#include "SDL_net.h"
 #include "GUIMapPreview.h"
 
 class MainMenuScreen:public Screen
@@ -125,6 +124,8 @@ public:
 	MultiplayersCrossConnectable():SessionConnection() { }
 	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
+	int getFreeChannel();
+	
 public:
 	IPaddress serverIP;
 };
