@@ -37,15 +37,16 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 
 bool ScriptEditorScreen::testCompile(void)
 {
-	const char *backup=mapScript->getSourceCode();
+	/*const char *backup=mapScript->getSourceCode();
 	char *temp=new char[strlen(backup+1)];
 	strcpy(temp, backup);
-	
+
 	mapScript->setSourceCode(editor->getText());
 	ErrorReport er=mapScript->compileScript(game);
-	
+
 	mapScript->setSourceCode(temp);
-	delete[] temp;
+	delete[] temp;*/
+	ErrorReport er=mapScript->compileScript(game, editor->getText());
 
 	if (er.type==ErrorReport::ET_OK)
 	{

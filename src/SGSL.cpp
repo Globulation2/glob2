@@ -790,11 +790,16 @@ void Mapscript::step()
 }
 
 
-ErrorReport Mapscript::compileScript(Game *game)
+ErrorReport Mapscript::compileScript(Game *game, const char *script)
 {
 	StringAquisition aquisition;
-	aquisition.open(sourceCode);
+	aquisition.open(script);
 	return parseScript(&aquisition, game);
+}
+
+ErrorReport Mapscript::compileScript(Game *game)
+{
+	return compileScript(game, sourceCode);
 }
 
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
