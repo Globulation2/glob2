@@ -413,7 +413,7 @@ void MapEdit::handleMapClick(int mx, int my)
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mx, my, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 
-		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, -1))
+		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, team, false))
 		{
 			game.addBuilding(x, y, typeNum, team);
 			if ((type==0) && (level==0))
@@ -638,7 +638,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 			tempY=((my)>>5)+viewportY;
 		else
 			tempY=((my+16)>>5)+viewportY;
-		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, team, false);
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings;
@@ -677,7 +677,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 			}
 			int typeNum=nnbt->typeNum;
 
-			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, team, false);
 
 			batX=(mapX-viewportX)<<5;
 			batY=(mapY-viewportY)<<5;

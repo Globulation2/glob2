@@ -775,7 +775,10 @@ void Game::syncStep(GameGUI *gui, Sint32 localTeam)
 				{
 					Building *b=teams[t]->myBuildings[i];
 					if (b)
+					{
 						assert(b->owner==teams[t]);
+						assert(b->type);
+					}
 					if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 					{
 						b->setMapDiscovered();
@@ -936,7 +939,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 	int w=globalContainer->buildingsTypes.get(typeNum)->width;
 	int h=globalContainer->buildingsTypes.get(typeNum)->height;
 
-	Building *b=new Building(x, y, gid, typeNum, team, &globalContainer->buildingsTypes);
+	Building *b=new Building(x&map.getMaskW(), y&map.getMaskH(), gid, typeNum, team, &globalContainer->buildingsTypes);
 
 	if (b->type->canExchange)
 		team->canExchange.push_front(b);
@@ -1008,9 +1011,10 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned fla
 	{
 		for (int ti=0; ti<session.numberOfTeam; ti++)
 			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
-				if ((*bi)->posX==x && (*bi)->posX==y)
+				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
 					teams[ti]->virtualBuildings.erase(bi);
+					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;;
 					delete *bi;
 					r->x=x;
 					r->y=y;
@@ -1048,19 +1052,19 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, un
 	return somethingInRect;
 }
 
-bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, int teamNumber)
+bool Game::checkRoomForBuilding(int mousePosX, int mousePosY, int typeNum, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-	int x=coordX+bt->decLeft;
-	int y=coordY+bt->decTop;
+	int x=mousePosX+bt->decLeft;
+	int y=mousePosY+bt->decTop;
 
-	*mapX=x;
-	*mapY=y;
+	*buildingPosX=x;
+	*buildingPosY=y;
 
-	return checkRoomForBuilding(x, y, typeNum, teamNumber);
+	return checkRoomForBuilding(x, y, typeNum, teamNumber, checkFow);
 }
 
-bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber)
+bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber, bool checkFow)
 {
 	Team *team=teams[teamNumber];
 	assert(team);
@@ -1078,7 +1082,7 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber)
 		for (std::list<Building *>::iterator vb=team->virtualBuildings.begin(); vb!=team->virtualBuildings.end(); ++vb)
 		{
 			Building *b=*vb;
-			if (b->posX==x && b->posY==y)
+			if ((b->posX==(x&map.getMaskW())) && (b->posY==(y&map.getMaskH())))
 				return false;
 		}
 		return true;
@@ -1086,7 +1090,7 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber)
 	else
 		isRoom=map.isFreeForBuilding(x, y, w, h);
 	
-	if (teamNumber<0)
+	if (!checkFow)
 		return isRoom;
 	
 	if (isRoom)
@@ -1099,7 +1103,6 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber)
 	}
 	else
 		return false;
-	
 }
 
 bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY)

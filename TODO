@@ -2,6 +2,9 @@ To First release :
 
 -les guerrières ne sont toujours pas intelligentes.
 
+NetGame:
+- Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
+
 IngameGUI:
 -On ne sait pas qui est mort.
 
@@ -24,9 +27,6 @@ Optimisation:
 Optimisation efficacité:
 - Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
 
-Minimap:
-- Il faudrait si possible augmenter la visibilité des fruits.
-
 Technique :
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
@@ -38,6 +38,12 @@ Technique :
 Options:
 - glob2 --benchmark
 
+Propreté du code:
+- Est-ce que on veux remettre une interface "Serialisable", après avoir enlevé "Order" dans certins objets ?
+
+MapEditor:
+http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
+
 To Next version :
 
 - Ressuciter le concept de race.
@@ -46,17 +52,9 @@ To Next version :
 - Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
 - GUITextArea doit tout faire en UTF8, pas en ascii avec correction a 2 euros derriere. (nct)
 
-Dépendances:
-- Order: il y a en fait deux concepts. Une interface et une utilisations. Est-ce qu'il faut faire deux headers ?
-- Utilities: dépendance de Game.h
-
 For later later :
 
 Gameplay:
 - Peut-on partager les batiments alliés d'ungrade ?
 
 - Infos in Map editor
-
-- Crash:
-   glob2: NetGame.cpp:1044: void NetGame::treatData(Uint8*, int, IPaddress): Assertion `false' failed.
-Abandon
