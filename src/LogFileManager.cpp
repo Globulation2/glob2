@@ -32,39 +32,28 @@ LogFileManager::LogFileManager(FileManager *fileManager)
 
 LogFileManager::~LogFileManager()
 {
-	for (std::vector<LogFMF>::iterator logFileIt=logFileList.begin(); logFileIt!=logFileList.end(); ++logFileIt)
-		if (logFileIt->file!=stdout)
-			fclose(logFileIt->file);
+	for (NameFileMap::iterator logFileIt=logFileMap.begin(); logFileIt!=logFileMap.end(); ++logFileIt)
+		if (logFileIt->second != stdout)
+			fclose(logFileIt->second);
 }
 
 FILE *LogFileManager::getFile(const char *fileName)
 {
-	//printf("getFile(%s).\n", name);
-	int logPrefixSize=strlen("logs/");
-	int fileNameSize=strlen(fileName);
-	int userNameSize=strlen(globalContainer->getUsername());
-	int fullSize=logPrefixSize+fileNameSize+userNameSize+1;
-	char *fullName=new char[fullSize];
-	assert(fullName);
-	snprintf(fullName, fullSize, "logs/%s%s", globalContainer->getUsername(), fileName);
+	std::string logName = "logs/";
+	logName += globalContainer->getUsername();
+	logName += fileName;
+	if (logFileMap.find(logName) == logFileMap.end())
+	{
+		FILE *file=fileManager->openFP(logName.c_str(), "w");
 		
-	for (std::vector<LogFMF>::iterator logFileIt=logFileList.begin(); logFileIt!=logFileList.end(); ++logFileIt)
-		if (logFileIt->name==fullName)
-			return logFileIt->file;
-	
-	assert(fileManager);
-	FILE *file=fileManager->openFP(fullName, "w");
-	
-	if (file==NULL)
-		file=stdout;
-	
-	LogFMF logFMF;
-	logFMF.name=fullName;
-	logFMF.file=file;
-	
-	delete[] fullName;
-	
-	logFileList.push_back(logFMF);
-	
-	return file;
+		if (file==NULL)
+			file = stdout;
+		
+		logFileMap[logName] = file;
+		return file;
+	}
+	else
+	{
+		return logFileMap[logName];
+	}
 }

@@ -22,7 +22,7 @@
 
 #include "Header.h"
 #include <string>
-#include <vector>
+#include <map>
 
 class FileManager;
 
@@ -32,13 +32,8 @@ public:
 	LogFileManager(FileManager *fileManager);
 	virtual ~LogFileManager();
 	
-	typedef struct
-	{
-		std::string name;
-		FILE *file;
-	} LogFMF; //FMF means FileManagerFile
-	
-	std::vector<LogFMF> logFileList;
+	typedef std::map<std::string, FILE *> NameFileMap;
+	NameFileMap logFileMap;
 	
 	FILE *getFile(const char *fileName);
 	
