@@ -408,6 +408,11 @@ Player::Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 :BasePlayer()
 {
 	bool success=load(stream, teams, versionMinor);
+	if (success)
+	{
+		fprintf(logFile, "!success\n");
+		fflush(logFile);
+	}
 	assert(success);
 }
 
@@ -500,6 +505,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	if (memcmp(signature,"PLYb",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
+		fprintf(logFile, "Player::load: Signature missmatch at begin of Player\n");
 		return false;
 	}
 	
@@ -516,6 +522,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	if (!success)
 	{
 		fprintf(stderr, "Player::load: Error during BasePlayer load\n");
+		fprintf(logFile, "Player::load: Error during BasePlayer load\n");
 		return false;
 	}
 
@@ -527,7 +534,11 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	{
 		ai=new AI(AI::NONE, this);
 		if (!ai->load(stream, versionMinor))
+		{
+			fprintf(stderr, "Player::load: Error during AI load\n");
+			fprintf(logFile, "Player::load: Error during AI load\n");
 			return false;
+		}
 	}
 	else
 	{
@@ -539,6 +550,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	if (memcmp(signature,"PLYe",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
+		fprintf(logFile, "Player::load: Signature missmatch at end of Player\n");
 		return false;
 	}
 	

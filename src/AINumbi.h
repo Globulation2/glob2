@@ -56,7 +56,7 @@ private:
 	int critticalWarriors;
 	int critticalTime;
 	int attackTimer;
-	int mainBuilding[BuildingType::NB_BUILDING];
+	int mainBuilding[15]; //BuildingType::NB_BUILDING=15 with lover versions
 	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);

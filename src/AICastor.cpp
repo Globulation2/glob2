@@ -360,7 +360,7 @@ AICastor::~AICastor()
 
 bool AICastor::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
-	fprintf(logFile,  "AICastor::load\n");
+	fprintf(logFile, "load(%d)\n", versionMinor);
 	init(player);
 	assert(game);
 	
@@ -372,12 +372,17 @@ bool AICastor::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 	
 	Sint32 aiFileVersion=SDL_ReadBE32(stream);
 	if (aiFileVersion<AI_FILE_MIN_VERSION)
+	{
+		fprintf(stderr, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
+		fprintf(logFile, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
 		return false;
+	}
 	if (aiFileVersion>=1)
 		timer=SDL_ReadBE32(stream);
 	else
 		timer=0;
 	
+	fprintf(logFile, "load success\n");
 	return true;
 }
 
