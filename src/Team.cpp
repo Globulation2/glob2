@@ -197,10 +197,10 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 
 void Team::setCorrectMasks(void)
 {
-	allies=1<<teamNumber;
+	me=teamNumberToMask(teamNumber);
+	allies=me;
 	enemies=~allies;
-	sharedVision=1<<teamNumber;
-	me=1<<teamNumber;
+	sharedVision=me;
 }
 
 void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
@@ -585,6 +585,22 @@ void Team::step(void)
 				myUnits[i]=NULL;
 			}
 		}
+	
+	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
+	{
+		Building *building=*it;
+		if (building->unitsInside.size()==0)
+		{
+			if (!building->type->isVirtual)
+				map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
+			building->buildingState=Building::DEAD;
+			prestige-=(*it)->type->prestige;
+			buildingsToBeDestroyed.push_front(building);
+			
+			std::list<Building *>::iterator ittemp=it;
+			it=buildingsWaitingForDestruction.erase(ittemp);
+		}
+	}
 	
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{

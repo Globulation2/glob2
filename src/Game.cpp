@@ -733,7 +733,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	if (fly)
 		free=map.isFreeForAirUnit(x, y);
 	else
-		free=map.isFreeForGroundUnit(x, y, ut->performance[SWIM]);
+		free=map.isFreeForGroundUnit(x, y, ut->performance[SWIM], Team::teamNumberToMask(team));
 	if (!free)
 		return NULL;
 

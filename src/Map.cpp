@@ -157,6 +157,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.ressource.id=NORESID;
 	initCase.groundUnit=NOGUID;
 	initCase.airUnit=NOGUID;
+	initCase.forbidden=0;
 	
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
@@ -191,7 +192,7 @@ void Map::setGame(Game *game)
 bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 {
 	assert(sessionGame);
-	assert(sessionGame->versionMinor>=15);
+	assert(sessionGame->versionMinor>=16);
 	
 	clear();
 	
@@ -233,6 +234,8 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		
 		cases[i].groundUnit=SDL_ReadBE16(stream);
 		cases[i].airUnit=SDL_ReadBE16(stream);
+		
+		cases[i].forbidden=SDL_ReadBE32(stream);
 	}
 
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
@@ -284,6 +287,7 @@ void Map::save(SDL_RWops *stream)
 		
 		SDL_WriteBE16(stream, cases[i].groundUnit);
 		SDL_WriteBE16(stream, cases[i].airUnit);
+		SDL_WriteBE32(stream, cases[i].forbidden);
 	}
 	
 	// We save sectors:
@@ -442,7 +446,7 @@ bool Map::incRessource(int x, int y, RessourceType ressourceType)
 	return false;
 }
 
-bool Map::isFreeForGroundUnit(int x, int y, bool canSwim)
+bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 me)
 {
 	if (isRessource(x, y))
 		return false;
@@ -451,6 +455,8 @@ bool Map::isFreeForGroundUnit(int x, int y, bool canSwim)
 	if (getGroundUnit(x, y)!=NOGUID)
 		return false;
 	if (!canSwim && isWater(x, y))
+		return false;
+	if (getForbidden(x, y)&me)
 		return false;
 	return true;
 }
@@ -483,13 +489,15 @@ bool Map::isFreeForBuilding(int x, int y, int w, int h)
 	return true;
 }
 
-bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim)
+bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me)
 {
 	if (isRessource(x, y))
 		return false;
 	if (getBuilding(x, y)!=NOGBID)
 		return false;
 	if (!canSwim && isWater(x, y))
+		return false;
+	if (getForbidden(x, y)&me)
 		return false;
 	return true;
 }

@@ -339,7 +339,7 @@ void Building::launchConstruction(void)
 		// We remove all units who are going to the building:
 		// Notice that the algotithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
-		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 		{
 			Unit *u=*it;
 			int d=u->displacement;
@@ -352,17 +352,19 @@ void Building::launchConstruction(void)
 				unitsToRemove.push_front(u);
 			}
 		}
-		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); it++)
+		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); ++it)
 		{
 			Unit *u=*it;
 			unitsInside.remove(u);
 		}
 		
-		buildingState=Building::WAITING_FOR_CONSTRUCTION;
+		buildingState=WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
-		update();
+		updateCallLists(); // To remove all units working.
+		
+		updateConstructionState(); // To switch to a realy building site, if all units have been freed from building.
 	}
 }
 
@@ -391,12 +393,12 @@ void Building::cancelConstruction(void)
 		else
 			assert(false);
 	}
-	else if (buildingState==Building::WAITING_FOR_CONSTRUCTION_ROOM)
+	else if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM)
 	{
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
 	}
-	else if (buildingState==Building::WAITING_FOR_CONSTRUCTION)
+	else if (buildingState==WAITING_FOR_CONSTRUCTION)
 	{
 		buildingState=ALIVE;
 	}
@@ -430,6 +432,7 @@ void Building::cancelConstruction(void)
 		maxUnitWorking=0;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
+	updateCallLists();
 
 	if (hp>=type->hpInit)
 		hp=type->hpInit;
@@ -452,8 +455,6 @@ void Building::cancelConstruction(void)
 
 	int vr=type->viewingRange;
 	owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
-	
-	update();
 }
 
 void Building::launchDelete(void)
@@ -467,12 +468,7 @@ void Building::launchDelete(void)
 		maxUnitInside=0;
 		updateCallLists();
 		
-		if (!type->isVirtual)
-			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
-		buildingState=DEAD;
-		owner->prestige-=type->prestige;
-		
-		owner->buildingsToBeDestroyed.push_front(this);
+		owner->buildingsWaitingForDestruction.push_front(this);
 	}
 }
 
@@ -485,7 +481,7 @@ void Building::cancelDelete(void)
 		maxUnitWorking=0;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
-	update();
+	updateCallLists();
 }
 
 void Building::updateConstructionState(void)
@@ -514,19 +510,37 @@ void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)
 		return;
+	bool ressourceFull=isRessourceFull();
+	if (ressourceFull)
+	{
+		// Then we don't need anyone more to fill me:
+		if (foodable!=2)
+		{
+			owner->foodable.remove(this);
+			foodable=2;
+		}
+		if (fillable!=2)
+		{
+			owner->fillable.remove(this);
+			fillable=2;
+		}
+	}
 	
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		// Add itself in the right "call-lists":
-		if (foodable!=1 && type->foodable)
+		if (!ressourceFull)
 		{
-			owner->foodable.push_front(this);
-			foodable=1;
-		}
-		if (fillable!=1 && type->fillable)
-		{
-			owner->fillable.push_front(this);
-			fillable=1;
+			if (foodable!=1 && type->foodable)
+			{
+				owner->foodable.push_front(this);
+				foodable=1;
+			}
+			if (fillable!=1 && type->fillable)
+			{
+				owner->fillable.push_front(this);
+				fillable=1;
+			}
 		}
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 			if (zonable[i]!=1 && type->zonable[i])
@@ -554,34 +568,31 @@ void Building::updateCallLists(void)
 				owner->zonable[i].remove(this);
 				zonable[i]=2;
 			}
-		while (unitsWorking.size()>(unsigned)maxUnitWorking) // TODO : the same with insides units
+		if (maxUnitWorking==0)
 		{
-			int maxDistSquare=0;
-
-			Unit *fu=NULL;
-			std::list<Unit *>::iterator ittemp;
-			
-			// First choice: free an unit who has a not needed ressource..
+			// This is only a special optimisation case:
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 			{
-				int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-				int r=(*it)->caryedRessource;
-				if ( (r>=0) && (!neededRessource(r)) )
-					if (newDistSquare>maxDistSquare)
-					{
-						maxDistSquare=newDistSquare;
-						fu=(*it);
-						ittemp=it;
-					}
+				(*it)->attachedBuilding=NULL;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
 			}
-			
-			// Second choice: free an unit who has no ressource..
-			if (fu==NULL)
-				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+			unitsWorking.clear();
+		}
+		else
+			while (unitsWorking.size()>(unsigned)maxUnitWorking)
+			{
+				int maxDistSquare=0;
+
+				Unit *fu=NULL;
+				std::list<Unit *>::iterator ittemp;
+
+				// First choice: free an unit who has a not needed ressource..
+				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
 					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
 					int r=(*it)->caryedRessource;
-					if (r<0)
+					if ( (r>=0) || (!neededRessource(r)) )
 						if (newDistSquare>maxDistSquare)
 						{
 							maxDistSquare=newDistSquare;
@@ -589,36 +600,50 @@ void Building::updateCallLists(void)
 							ittemp=it;
 						}
 				}
-			
-			// Third choice: free any unit..
-			if (fu==NULL)
-				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
-				{
-					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (newDistSquare>maxDistSquare)
+
+				// Second choice: free an unit who has no ressource..
+				if (fu==NULL)
+					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 					{
-						maxDistSquare=newDistSquare;
-						fu=(*it);
-						ittemp=it;
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+						int r=(*it)->caryedRessource;
+						if (r<0)
+							if (newDistSquare>maxDistSquare)
+							{
+								maxDistSquare=newDistSquare;
+								fu=(*it);
+								ittemp=it;
+							}
 					}
+
+				// Third choice: free any unit..
+				if (fu==NULL)
+					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+					{
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+						if (newDistSquare>maxDistSquare)
+						{
+							maxDistSquare=newDistSquare;
+							fu=(*it);
+							ittemp=it;
+						}
+					}
+
+				if (fu!=NULL)
+				{
+					//printf("Building::update::unitsWorking::fu->gid=%d\n", fu->gid);
+					// We free the unit.
+					fu->activity=Unit::ACT_RANDOM;
+					// fu->displacement=Unit::DIS_RANDOM; TODO: why was this here?
+
+					unitsWorking.erase(ittemp);
+					//update(); // TODO: why was this here?
+					fu->attachedBuilding=NULL;
+					fu->needToRecheckMedical=true;
 				}
-
-			if (fu!=NULL)
-			{
-				//printf("Building::update::unitsWorking::fu->gid=%d\n", fu->gid);
-				// We free the unit.
-				fu->activity=Unit::ACT_RANDOM;
-				fu->displacement=Unit::DIS_RANDOM;
-				
-				unitsWorking.erase(ittemp);
-				update();
-				fu->attachedBuilding=NULL;
-				fu->needToRecheckMedical=true;
+				else
+					break;
 			}
-			else
-				break;
-
-		}
 	}
 
 	if ((signed)unitsInside.size()<maxUnitInside)
@@ -656,20 +681,6 @@ void Building::updateCallLists(void)
 			owner->canFeedUnit.remove(this);
 		if (type->canHealUnit)
 			owner->canHealUnit.remove(this);
-	}
-	
-	if (isRessourceFull())
-	{
-		if (foodable!=2)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
-		if (fillable!=2)
-		{
-			owner->fillable.remove(this);
-			fillable=2;
-		}
 	}
 }
 
@@ -731,7 +742,7 @@ void Building::updateBuildingSite(void)
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
 
 		// we need to do an update again
-		update();
+		update(); // zzz TODO: continue here
 	}
 }
 
@@ -740,8 +751,8 @@ void Building::update(void)
 	if (buildingState==DEAD)
 		return;
 
-	updateConstructionState();
 	updateCallLists();
+	updateConstructionState();
 	if (type->isBuildingSite)
 		updateBuildingSite();
 }
@@ -1456,7 +1467,7 @@ void Building::turretStep(void)
 
 void Building::kill(void)
 {
-	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); it++)
+	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
 		if (u->displacement==Unit::DIS_INSIDE)
@@ -1476,7 +1487,7 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->activity=Unit::ACT_RANDOM;
@@ -1545,15 +1556,16 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	int exitQuality=0;
 	int oldQuality;
 	int exitX=0, exitY=0;
+	Uint32 me=owner->me;
 	
 	//if (exitQuality<4)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 			{
-				if (owner->map->isFreeForGroundUnit(testX, testY-1, canSwim))
+				if (owner->map->isFreeForGroundUnit(testX, testY-1, canSwim, me))
 					oldQuality++;
 				if (owner->map->isRessource(testX, testY-1))
 				{
@@ -1582,9 +1594,9 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 			{
-				if (owner->map->isFreeForGroundUnit(testX, testY+1, canSwim))
+				if (owner->map->isFreeForGroundUnit(testX, testY+1, canSwim, me))
 					oldQuality++;
 				if (owner->map->isRessource(testX, testY+1))
 				{
@@ -1613,9 +1625,9 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 			{
-				if (owner->map->isFreeForGroundUnit(testX-1, testY, canSwim))
+				if (owner->map->isFreeForGroundUnit(testX-1, testY, canSwim, me))
 					oldQuality++;
 				if (owner->map->isRessource(testX-1, testY))
 				{
@@ -1644,9 +1656,9 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim))
+			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 			{
-				if (owner->map->isFreeForGroundUnit(testX+1, testY, canSwim))
+				if (owner->map->isFreeForGroundUnit(testX+1, testY, canSwim, me))
 					oldQuality++;
 				if (owner->map->isRessource(testX+1, testY))
 				{
