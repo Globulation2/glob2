@@ -50,6 +50,10 @@ private:
 	void clearFileList(void);
 	//! internal function that does the real listing job
 	bool addListingForDir(const char *realDir, const char *extension);
+	//! open a file, if it is in writing, do a backup
+	SDL_RWops *openWithbackup(const char *filename, const char *mode);
+	//! open a file, if it is in writing, do a backup, fopen version
+	FILE *openWithbackupFP(const char *filename, const char *mode);
 
 public:
 	//! FileManager constructor
