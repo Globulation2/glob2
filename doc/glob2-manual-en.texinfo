@@ -62,11 +62,6 @@ a quick access to what you are searching for.
 @c * Index::            Complete index.
 @end menu
 
-@node Quick introduction
-@chapter Quick introduction
-
-Glon2 is cool.
-
 @enumerate
 @item
 It works !
@@ -76,10 +71,27 @@ It is free !
 
 @end enumerate
 
+@node Quick introduction
+@chapter Quick introduction
+
+Glob2 is cool.
+
 @node Contributing
 @chapter Contributing
 
 The following sections will strongly help you if you are (or wanna be) a Globulation 2 contributor.
+
+@menu
+* Becoming a contributor::  The (easy) process to follow to become a Globulation 2 contributor.
+* Coding guidelines::  Guidelines you have to follow if you want your code to be incorporated info Globulation 2.
+* SGSL reference::  A detailed reference on SGSL syntax and keywords.
+@end menu
+
+@node Becoming a contributor
+@section Becoming a contributor
+
+@node Coding guidelines
+@section Coding guidelines
 
 @node SGSL reference
 @section SGSL reference
