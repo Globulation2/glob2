@@ -20,8 +20,8 @@
 #ifndef __BINARYSTREAM_H
 #define __BINARYSTREAM_H
 
-// For U/SintNN
 #include <Stream.h>
+#include "StreamBackend.h"
 
 // For htons/htonl
 #ifdef WIN32
@@ -33,15 +33,16 @@
 
 namespace GAGCore
 {
-	// Endian safe read and write
-	// ==========================
-	
 	class BinaryOutputStream : public OutputStream
 	{
+	private:
+		StreamBackend *backend;
+		
 	public:
-		virtual ~BinaryOutputStream() { }
+		BinaryOutputStream(StreamBackend *backend) { this->backend = backend; }
+		virtual ~BinaryOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const char *name = NULL) = 0;
+		virtual void write(const void *data, const size_t size, const char *name = NULL) { backend->write(data, size); }
 	
 		virtual void writeEndianIndependant(const void *v, const size_t size, const char *name)
 		{
@@ -58,7 +59,7 @@ namespace GAGCore
 				*(Uint32 *)v = htonl(*(Uint32 *)v);
 				*((Uint32 *)v+1) = htonl(*((Uint32 *)v+1));
 			}
-			write(v, size, name);
+			backend->write(v, size);
 		}
 	
 		virtual void writeSint8(const Sint8 v, const char *name = NULL) { this->write(&v, 1, name); }
@@ -70,23 +71,34 @@ namespace GAGCore
 		virtual void writeFloat(const float v, const char *name = NULL) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeDouble(const double v, const char *name = NULL) { this->writeEndianIndependant(&v, 8, name); }
 		
-		virtual void flush(void) = 0;
+		virtual void flush(void) { backend->flush(); }
 		
 		virtual void writeEnterSection(const char *name) { }
 		virtual void writeEnterSection(unsigned id) { }
 		virtual void writeLeaveSection(size_t count = 1) { }
+		
+		virtual bool canSeek(void) { return true; }
+		virtual void seekFromStart(int displacement) { backend->seekFromStart(displacement); }
+		virtual void seekFromEnd(int displacement) { backend->seekFromEnd(displacement); }
+		virtual void seekRelative(int displacement) { backend->seekRelative(displacement); }
+		virtual size_t getPosition(void) { return backend->getPosition(); }
+		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
 	};
 	
 	class BinaryInputStream : public InputStream
 	{
+	private:
+		StreamBackend *backend;
+		
 	public:
-		virtual ~BinaryInputStream() { }
+		BinaryInputStream(StreamBackend *backend) { this->backend = backend; }
+		virtual ~BinaryInputStream() { delete backend; }
 	
-		virtual void read(void *data, size_t size, const char *name = NULL) = 0;
+		virtual void read(void *data, size_t size, const char *name = NULL) { backend->read(data, size); }
 	
 		virtual void readEndianIndependant(void *v, size_t size, const char *name)
 		{
-			read(v, size, name);
+			backend->read(v, size);
 			if (size==2)
 			{
 				*(Uint16 *)v = ntohs(*(Uint16 *)v);
@@ -114,24 +126,13 @@ namespace GAGCore
 		virtual void readEnterSection(const char *name) { }
 		virtual void readEnterSection(unsigned id) { }
 		virtual void readLeaveSection(size_t count = 1) { }
-	};
-	
-	class BinaryFileStream : public BinaryOutputStream, public BinaryInputStream
-	{
-	private:
-		FILE *fp;
-	public:
-		BinaryFileStream(FILE *fp) { this->fp = fp; }
-		virtual ~BinaryFileStream() { fclose(fp); }
-		virtual void write(const void *data, const size_t size, const char *name) { fwrite(data, size, 1 ,fp); }
-		virtual void flush(void) { fflush(fp); }
-		virtual void read(void *data, size_t size, const char *name) { fread(data, size, 1, fp); }
+		
 		virtual bool canSeek(void) { return true; }
-		virtual void seekFromStart(int displacement) { fseek(fp, displacement, SEEK_SET); }
-		virtual void seekFromEnd(int displacement) { fseek(fp, displacement, SEEK_END); }
-		virtual void seekRelative(int displacement) { fseek(fp, displacement, SEEK_CUR); }
-		virtual size_t getPosition(void) { return ftell(fp); }
-		virtual bool isEndOfStream(void) { return feof(fp) != 0; }
+		virtual void seekFromStart(int displacement) { backend->seekFromStart(displacement); }
+		virtual void seekFromEnd(int displacement) { backend->seekFromEnd(displacement); }
+		virtual void seekRelative(int displacement) { backend->seekRelative(displacement); }
+		virtual size_t getPosition(void) { return backend->getPosition(); }
+		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
 	};
 }
 
