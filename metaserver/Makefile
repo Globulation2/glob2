@@ -1,5 +1,5 @@
-CFLAGS = -g -Wall `sdl-config --cflags`
-CXXFLAGS = -g -Wall `sdl-config --cflags`
+CFLAGS = -g -Wall `sdl-config --cflags` 
+CXXFLAGS = -g -Wall `sdl-config --cflags` -DYOG_METASERVER
 LINKFLAGS = -g `sdl-config --libs` -lSDL_net
 C = gcc
 XX = g++

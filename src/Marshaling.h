@@ -22,7 +22,13 @@
 
 
 #ifndef DX9_BACKEND	// TODO:Die!
+
+#ifdef YOG_METASERVER
+#include <SDL.h>
+#else
 #include <glSDL.h>
+#endif
+
 #include <SDL_endian.h>
 #else
 #include <Types.h>
