@@ -34,15 +34,18 @@ Game::Game()
 	init();
 }
 
-Game::Game(/*const*/ SessionInfo *initial)
+Game::Game(const SessionInfo *initial)
 {
 	loadBase(initial);
 }
 
-void Game::loadBase(/*const*/ SessionInfo *initial)
+void Game::loadBase(const SessionInfo *initial)
 {
 	init();
-	char *mapFileName=initial->map.getMapFileName();
+	const char *mapName=initial->map.getMapName();
+	char mapFileName[BaseMap::MAP_NAME_MAX_SIZE+4];
+	snprintf(mapFileName, BaseMap::MAP_NAME_MAX_SIZE+4, "%s.map", mapName);
+	printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
 	SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
 	load(stream);
 	SDL_RWclose(stream);
@@ -92,7 +95,7 @@ void Game::init()
 	stepCounter=0;
 }
 
-void Game::setBase(/*const*/ SessionInfo *initial)
+void Game::setBase(const SessionInfo *initial)
 {
 	assert (initial->numberOfTeam==session.numberOfTeam);
 	// TODO, we should be able to play with less team than planed on the map

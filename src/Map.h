@@ -78,14 +78,15 @@ public:
 	virtual ~BaseMap(void) { }
 
 	enum { MAP_NAME_MAX_SIZE=32 };
+
 protected:
 	char mapName[MAP_NAME_MAX_SIZE];
-	char mapFileName[MAP_NAME_MAX_SIZE+4];//this is not saved in file
+
 public:
-	//! safely copy s to mapName[] and remove the extention if needed.
+	//! Safely copy s to mapName[] and remove the extention if needed.
 	void setMapName(const char *s);
-	char *getMapName();
-	char *getMapFileName();
+	const char *getMapName() const;
+	const char *getMapFileName() const;
 protected:
 	//! serialized form of BaseMap
 	char data[MAP_NAME_MAX_SIZE];
@@ -125,7 +126,7 @@ public:
 	virtual ~Map(void);
 
 	//! Set the base map (name and initial infos)
-	void setBaseMap(/*const*/ BaseMap *initial);
+	void setBaseMap(const BaseMap *initial);
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER);
 	//! Save a map
