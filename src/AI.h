@@ -12,8 +12,6 @@
 
 #define __AI_H
 
-
-
 #include "GAG.h"
 
 #include "Order.h"

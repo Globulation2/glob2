@@ -15,8 +15,8 @@ class SDLGraphicContext;
 class SDLSprite:public Sprite
 {
 protected:
-	vector <SDL_Surface *> images;
-	vector <SDL_Surface *> masks;
+	std::vector <SDL_Surface *> images;
+	std::vector <SDL_Surface *> masks;
 	Uint8 bcR, bcG, bcB;
 	bool usebaseColor;
 

@@ -40,9 +40,10 @@ void YOGScreen::closeConnection(void)
 
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
+// NOTE angel > WIN32 use _stricmp and not _strcasecmp sorry... 
 #ifdef WIN32
-#define strcasecmp _strcasecmp
-#define snprintf _snprintf
+#	define strcasecmp _stricmp
+#	define snprintf _snprintf
 #endif
 
 void YOGScreen::createConnection(void)

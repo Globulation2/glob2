@@ -31,10 +31,6 @@ void TextInput::onTimer(Uint32 tick)
 {
 }
 
-#ifdef WIN32
-#defien strncpy _strncpy
-#endif
-
 void TextInput::setText(const char *newText)
 {
 	strncpy(this->text, newText, MAX_TEXT_SIZE);

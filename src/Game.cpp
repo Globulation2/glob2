@@ -507,7 +507,7 @@ void Game::removeTeam(void)
 				if (!team->myBuildings[i]->type->isVirtual)
 					map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOUID);
 		}
-		for (int i=0; i<256; ++i)
+		for (i=0; i<256; ++i)
 		{
 			//if (team->myBullets[i])
 			// TODO : handle bullets destruction

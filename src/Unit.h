@@ -100,8 +100,11 @@ public:
 		DIR_LEFT=1,
 		DIR_RIGHT=2
 	};
-	
-	static const int HUNGRY_MAX=120000;
+
+	enum 
+	{
+		HUNGRY_MAX=120000
+	};
 	
 protected:
 	void handleMedical(void);
