@@ -39,6 +39,7 @@ protected:
 	Font *fontPtr;
 	unsigned textDep;
 	int cursorScreenPos;
+	std::string pwd;
 
 public:
 	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, unsigned maxLength=0, bool password=false);

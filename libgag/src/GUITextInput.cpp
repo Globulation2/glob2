@@ -34,7 +34,7 @@ TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, c
 
 	this->font=font;
 	this->text=text;
-
+	
 	cursPos=this->text.length();
 	this->maxLength=maxLength;
 	textDep=0;
@@ -254,26 +254,45 @@ void TextInput::recomputeTextInfos(void)
 	getScreenPos(&x, &y, &w, &h);
 #define TEXTBOXSIDEPAD 30
 
-	// make sure we have always right space at left
-	if (cursPos<textDep)
-		textDep=cursPos;
-
-	// we make cursor not out of the box at left
-	textDep++;
-	do
+	if (password)
 	{
-		textDep--;
-		cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
+		pwd.clear();
+		unsigned l = text.length();
+		unsigned p = 0, op = p;
+		unsigned compCursPos = 0;
+		unsigned pwdCursPos = 0;
+		while ((p = getNextUTF8Char(text.c_str(), op)) < l)
+		{
+			if (compCursPos < cursPos)
+				pwdCursPos++;
+			compCursPos += (p - op);
+			pwd += "*";
+			op = p;
+		}
+		cursorScreenPos=fontPtr->getStringWidth(pwd.c_str(), pwdCursPos);
 	}
-	while ((textDep>0) && (cursorScreenPos<TEXTBOXSIDEPAD));
-
-	// we make cursor not out of the box at right
-	while ( (textDep<text.length()) && (cursorScreenPos>w-TEXTBOXSIDEPAD-4) )
+	else
 	{
+		// make sure we have always right space at left
+		if (cursPos<textDep)
+			textDep=cursPos;
+	
+		// we make cursor not out of the box at left
 		textDep++;
-		cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
+		do
+		{
+			textDep--;
+			cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
+		}
+		while ((textDep>0) && (cursorScreenPos<TEXTBOXSIDEPAD));
+	
+		// we make cursor not out of the box at right
+		while ( (textDep<text.length()) && (cursorScreenPos>w-TEXTBOXSIDEPAD-4) )
+		{
+			textDep++;
+			cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
+		}
 	}
-
 }
 
 void TextInput::paint(void)
@@ -292,7 +311,15 @@ void TextInput::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
-	parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, text.c_str()+textDep);
+	
+	if (password)
+	{
+		parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, text.c_str()+textDep);
+	}
+	else
+	{
+		parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, pwd.c_str());
+	}
 
 	// we draw the cursor:
 	if(activated)
