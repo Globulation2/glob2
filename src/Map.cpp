@@ -4360,9 +4360,9 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
 	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
 }
 
-Sint32 Map::checkSum(bool heavy)
+Uint32 Map::checkSum(bool heavy)
 {
-	Sint32 cs=size;
+	Uint32 cs=size;
 	if (heavy)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)

@@ -494,8 +494,8 @@ void MultiplayersJoin::checkSumConfirmationRecieved(Uint8 *data, int size, IPadd
 		return;
 	}
 
-	Sint32 rsc=getSint32(data, 4);
-	Sint32 lsc=sessionInfo.checkSum();
+	Uint32 rsc=getUint32(data, 4);
+	Uint32 lsc=sessionInfo.checkSum();
 
 	if (rsc!=lsc)
 	{
@@ -1558,9 +1558,9 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	Sint32 cs=sessionInfo.checkSum();
+	Uint32 cs=sessionInfo.checkSum();
 	fprintf(logFile, "cs=%x.\n", cs);
-	addSint32(packet->data, cs, 4);
+	addUint32(packet->data, cs, 4);
 
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 		fprintf(logFile, "suceeded to send confirmation packet\n");
