@@ -21,12 +21,13 @@
 #ifndef __BUILDING_H
 #define __BUILDING_H
 
-#include "Unit.h"
+#include "UnitType.h"
 #include <list>
 #include <vector>
 
 #define SHOOTING_COOLDOWN_MAX 65536
 
+class Unit;
 class Team;
 class BuildingType;
 class BuildingsTypes;

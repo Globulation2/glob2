@@ -42,6 +42,9 @@ private:
 	TextInput *serverName;
 	Text *playerText;
 	TextInput *playerName;
+	Text *statusText;
+	int oldStatus;
+	List *lanServers;
 	bool wasVisible;
 
 public:

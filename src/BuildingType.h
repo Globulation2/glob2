@@ -23,14 +23,12 @@
 
 #include <vector>
 #include "EntityType.h"
-#include "Building.h"
-#include "Unit.h"
+#include "UnitType.h"
 
 class BuildingType: public EntityType
 {
 public:
 	
-
 	enum BuildingTypeNumber
 	{
 		SWARM_BUILDING=0,
