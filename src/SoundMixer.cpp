@@ -33,7 +33,7 @@ using namespace GAGCore;
 #endif
 
 
-#define SAMPLE_COUNT_PER_SLICE 8192*8
+#define SAMPLE_COUNT_PER_SLICE 4096*8
 #define INTERPOLATION_RANGE 65535
 #define INTERPOLATION_BITS 16
 #define SPEEX_FRAME_SIZE 160
@@ -62,22 +62,44 @@ static void initInterpolationTable(void)
 
 void SoundMixer::handleVoiceInsertion(int *outputSample)
 {
-	if (voiceDatas.empty())
+	// if no more voice
+	if (voices.empty())
 		return;
 	
-	float value = (1-voiceSubIndex) * voiceVal0 + voiceSubIndex * voiceVal1;
-	
-	*outputSample = (static_cast<int>(3.0f * value) + (*outputSample)) / 4;
-	
-	// increment index, keep track of stereo
-	voiceSubIndex += (8000.0f/44100.0f)*0.475f;
-	if (voiceSubIndex > 1)
+	float value = 0;
+	for (std::map<int, PlayerVoice>::iterator i = voices.begin(); i != voices.end();)
 	{
-		voiceSubIndex -= 1;
-		voiceVal0 = voiceVal1;
-		voiceDatas.pop();
-		voiceVal1 = voiceDatas.front();
+		struct PlayerVoice &pv = i->second;
+		value += (1-pv.voiceSubIndex) * pv.voiceVal0 + pv.voiceSubIndex * pv.voiceVal1;
+	
+		// increment index, keep track of stereo
+		pv.voiceSubIndex += (8000.0f/44100.0f)*0.475f;
+		if (pv.voiceSubIndex > 1)
+		{
+			pv.voiceSubIndex -= 1;
+			pv.voiceVal0 = pv.voiceVal1;
+			pv.voiceDatas.pop();
+			pv.voiceVal1 = pv.voiceDatas.front();
+			
+			// if there is no more data in this voice, remove it
+			if (pv.voiceDatas.empty())
+			{
+				// go to next voice
+				std::map<int, PlayerVoice>::iterator j = i;
+				++i;
+				voices.erase(j);
+				continue;
+			}
+		}
+		
+		// go to next voice
+		++i;
 	}
+	// saturate
+	value = std::min(value, 32767.0f);
+	value = std::max(value, -32767.0f);
+	// write sample
+	*outputSample = (static_cast<int>(3.0f * (value)) + (*outputSample)) / 4;
 }
 
 void mixaudio(void *voidMixer, Uint8 *stream, int len)
@@ -253,7 +275,7 @@ void SoundMixer::openAudio(void)
 	speexDecoderState = speex_decoder_init(&speex_nb_mode);
 	int tmp = 1;
 	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
-	voiceSubIndex = 0;
+	
 }
 
 SoundMixer::SoundMixer(unsigned volume, bool mute)
@@ -374,27 +396,32 @@ void SoundMixer::addVoiceData(OrderVoiceData *order)
 {
 	if (soundEnabled)
 	{
-		SpeexBits bits;
+		SDL_LockAudio();
+		// get or create the voice
+		PlayerVoice &pv = voices[order->sender];
+		// insert 200 ms silence to let packets come if we aer the first
+		if (pv.voiceDatas.empty())
+		{
+			for (size_t j=0; j<2000; j++)
+				pv.voiceDatas.push(0);
+			pv.voiceVal0 = pv.voiceVal1 = 0;
+			pv.voiceSubIndex = 0;
+		}
 		
+		SpeexBits bits;
 		speex_bits_init(&bits);
 		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
+		// read each frame
 		for (size_t i=0; i<order->frameCount; i++)
 		{
 			float floatBuffer[SPEEX_FRAME_SIZE];
 			speex_decode(speexDecoderState, &bits, floatBuffer);
 			
-			SDL_LockAudio();
-			// insert 200 ms silence to let packets come if we aer the first
-			if (voiceDatas.empty())
-			{
-				for (size_t j=0; j<200; j++)
-					voiceDatas.push(0);
-				voiceVal0 = voiceVal1 = 0;
-			}
 			for (size_t j=0; j<SPEEX_FRAME_SIZE; j++)
-				voiceDatas.push(floatBuffer[j]);
-			SDL_UnlockAudio();
+				pv.voiceDatas.push(floatBuffer[j]);
 		}
 		speex_bits_destroy(&bits);
+		
+		SDL_UnlockAudio();
 	}
 }

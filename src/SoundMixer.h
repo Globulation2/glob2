@@ -30,6 +30,7 @@
 #include <vorbis/vorbisfile.h>
 #include <vector>
 #include <queue>
+#include <map>
 
 class OrderVoiceData;
 
@@ -50,13 +51,19 @@ public:
 	bool soundEnabled;
 	unsigned volume;
 	
-	//! float sample from speex decoder
-	std::queue<float> voiceDatas;
-	//! subsample precision for voice (8Khz instead of 44.1Khz)
-	float voiceSubIndex;
-	//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio datas
-	float voiceVal0;
-	float voiceVal1;
+	//! Voice for one player
+	struct PlayerVoice
+	{
+		//! float sample from speex decoder
+		std::queue<float> voiceDatas;
+		//! subsample precision for voice (8Khz instead of 44.1Khz)
+		float voiceSubIndex;
+		//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio datas
+		float voiceVal0;
+		float voiceVal1;
+	};
+	//! Map of voices to players
+	std::map<int, PlayerVoice> voices;
 	//! pointer to the structure holding the speex decoder
 	void *speexDecoderState;
 	
