@@ -48,6 +48,7 @@ http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706
 
 To Next version :
 
+- Pouvoir transplanter des ressources.
 - Ressuciter le concept de race.
 - Il faudrait gérer des vitesses différentes, que çe soit pour 1:le GUI, 2:le motteur 3:le réseau.
 - Il faudrait que le réseau soit plus léger, en particuler que la taille des packets soit plus optimale.

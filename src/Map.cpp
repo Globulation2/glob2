@@ -1100,34 +1100,39 @@ void Map::clearForbiddenArea(Uint32 me)
 			(*(cases+w*y+x)).forbidden&=~me;
 }
 
-bool Map::decRessource(int x, int y)
+void Map::decRessource(int x, int y)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
 
 	if (r==NORESID)
-		return false;
+		return;
 
 	int type=r.type;
 	const RessourceType *fulltype=globalContainer->ressourcesTypes.get(type);
 	unsigned amount=r.amount;
 	assert(amount);
 
-	if (!fulltype->shrinkable || ((fulltype->eternal) && (amount==0)))
-		return false;
-	else if (!fulltype->granular || amount==1)
-		*rp=NORESID;
+	if (!fulltype->shrinkable)
+		return;
+	if (fulltype->eternal)
+	{
+		if (amount>0)
+			rp->amount=amount-1;
+	}
 	else
-		rp->amount=amount-1;
-	return true;
+	{
+		if (!fulltype->granular || amount==1)
+			*rp=NORESID;
+		else
+			rp->amount=amount-1;
+	}
 }
 
-bool Map::decRessource(int x, int y, int ressourceType)
+void Map::decRessource(int x, int y, int ressourceType)
 {
 	if (isRessource(x, y, ressourceType))
-		return decRessource(x, y);
-	else
-		return false;
+		decRessource(x, y);
 }
 
 bool Map::incRessource(int x, int y, int ressourceType, int variety)

@@ -2146,13 +2146,18 @@ void GameGUI::drawRessourceInfos(void)
 		
 		// Draw ressource image
 		const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
-		unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount -1;
+		unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount;
+		if (!rt->eternal)
+			resImg--;
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+16, ypos, globalContainer->ressources, resImg);
 		
 		// Draw ressource count
 		if (rt->granular)
 		{
-			const std::string amountS = GAG::nsprintf("%d/%d", r.amount, rt->sizesCount);
+			int sizesCount=rt->sizesCount;
+			if (rt->eternal)
+				sizesCount--;
+			const std::string amountS = GAG::nsprintf("%d/%d", r.amount, sizesCount);
 			int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 		}
