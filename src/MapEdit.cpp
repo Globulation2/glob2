@@ -38,6 +38,7 @@ MapEdit::MapEdit()
 		viewportSpeedX[i]=0;
 		viewportSpeedY[i]=0;
 	}
+	centeredTeam=0;
 
 	// set the editor default values
 	team=0;
@@ -1071,12 +1072,42 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 			break;
 		case SDLK_s:
 		{
-			loadSave(false);
+			if (pressed)
+				loadSave(false);
 		}
 		break;
 		case SDLK_l:
 		{
-			loadSave(true);
+			if (pressed)
+				loadSave(true);
+		}
+		break;
+		case SDLK_TAB:
+		{
+			if (pressed)
+			{
+				int numberOfTeam=game.session.numberOfTeam;
+				if (numberOfTeam>0)
+				{
+					centeredTeam=centeredTeam%numberOfTeam;
+					Team *t=game.teams[centeredTeam];
+					if (t)
+					{
+						Building *b=t->myBuildings[0];
+						if (b)
+						{
+							viewportX=b->getMidX()-(globalContainer->gfx->getW()>>6);
+							viewportY=b->getMidY()-(globalContainer->gfx->getH()>>6);
+
+							viewportX&=game.map.getMaskW();
+							viewportY&=game.map.getMaskH();
+
+							draw();
+						}
+					}
+					centeredTeam++;
+				}
+			}
 		}
 		break;
 		default:
