@@ -24,6 +24,8 @@ GUITextInput.cpp\
 GUITextInput.h\
 GUITextArea.cpp \
 GUITextArea.h \
+GUIMapPreview.h \
+GUIMapPreview.cpp \
 Game.cpp\
 Game.h\
 GameGUI.cpp\
