@@ -169,7 +169,7 @@ void Map::clear()
 					for (int s=0; s<2; s++)
 					{
 						assert(ressourcesGradient[t][r][s]);
-						delete ressourcesGradient[t][r][s];
+						delete[] ressourcesGradient[t][r][s];
 						ressourcesGradient[t][r][s]=NULL;
 					}
 		
