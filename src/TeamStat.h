@@ -30,7 +30,7 @@ struct TeamStat
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
 	int totalNeeded;
-	
+
 	int totalBuilding;
 	int numberBuildingPerType[BuildingType::NB_BUILDING];
 	int numberBuildingPerTypePerLevel[BuildingType::NB_BUILDING][6];
