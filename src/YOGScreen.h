@@ -58,7 +58,6 @@ protected:
 	TextArea *chatWindow;
 	std::vector<Uint32> IPs;
 
-
 	static SDLNet_SocketSet socketSet;
 
 	void updateList(void);

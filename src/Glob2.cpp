@@ -67,7 +67,7 @@ void Glob2::mutiplayerYOG(void)
 	YOGScreen yogScreen;
 	drawYOGSplashScreen();
 	yogScreen.createConnection();
-	if (yogScreen.socket!=NULL)
+	//if (yogScreen.socket!=NULL)
 	{
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
 		yogScreen.closeConnection();
