@@ -20,6 +20,7 @@
 #include <GUINumber.h>
 #include <assert.h>
 #include <Toolkit.h>
+#include <strstream>
 
 Number::Number()
 {
@@ -95,10 +96,11 @@ void Number::internalPaint(void)
 	if (nth<(int)numbers.size())
 	{
 		// We center the string
-		char s[256];
-		snprintf(s, 256, "%d", numbers[nth]);
-		int tw=fontPtr->getStringWidth(s);
-		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, "%d", numbers[nth]);
+		std::strstream s;
+		s << numbers[nth];
+		int tw=fontPtr->getStringWidth(s.str());
+		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str());
+		s.freeze(0);
 	}
 	int dx1=(m-fontPtr->getStringWidth("-"))/2;
 	parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");

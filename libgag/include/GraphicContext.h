@@ -68,8 +68,8 @@ public:
 	virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
 	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
 	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
-	virtual void drawString(int x, int y, const Font *font, const char *msg, ...)=0;
-	virtual void drawString(int x, int y, int w, const Font *font, const char *msg, ...)=0;
+	virtual void drawString(int x, int y, const Font *font, const char *msg)=0;
+	virtual void drawString(int x, int y, int w, const Font *font, const char *msg)=0;
 	virtual void drawSurface(int x, int y, DrawableSurface *surface)=0;
 	virtual void updateRects(SDL_Rect *rects, int size)=0;
 	virtual void updateRect(int x, int y, int w, int h)=0;
@@ -79,7 +79,7 @@ class GraphicContext:public virtual DrawableSurface
 {
 private:
 	SDL_Rect **modes;
-	
+
 public:
 	virtual ~GraphicContext(void);
 
@@ -88,8 +88,6 @@ public:
 	virtual void beginVideoModeListing(void);
 	virtual bool getNextVideoMode(int *w, int *h);
 	virtual void setCaption(const char *title, const char *icon)=0;
-
-	virtual void dbgprintf(const char *msg, ...)=0;
 
 	virtual void loadSprite(const char *filename, const char *name)=0;
 
@@ -113,10 +111,10 @@ public:
 		STYLE_ITALIC = 0x02,
 		STYLE_UNDERLINE = 0x04,
 	};
-	
+
 public:
 	virtual ~Font() { }
-	
+
 	// width and height
 	virtual int getStringWidth(const char *string) const=0;
 	virtual int getStringWidth(const char *string, int len) const;
@@ -125,13 +123,13 @@ public:
 	virtual int getStringHeight(const char *string, int len) const;
 	virtual int getStringHeight(const int i) const;
 	virtual bool printable(char c) const=0;
-	
+
 	// Style and color
 	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE) { }
 	virtual void pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE) { }
 	virtual void popColor(void) { }
 	virtual void getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const { }
-	
+
 	virtual void setStyle(unsigned style) { }
 	virtual void pushStyle(unsigned style) { }
 	virtual void popStyle(void) { }

@@ -51,8 +51,8 @@ public:
 	virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-	virtual void drawString(int x, int y, const Font *font, const char *msg, ...);
-	virtual void drawString(int x, int y, int w, const Font *font, const char *msg, ...);
+	virtual void drawString(int x, int y, const Font *font, const char *msg);
+	virtual void drawString(int x, int y, int w, const Font *font, const char *msg);
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);
 	virtual void updateRects(SDL_Rect *rects, int size) { }
 	virtual void updateRect(int x, int y, int w, int h) { }
@@ -77,7 +77,6 @@ public:
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 
-	virtual void dbgprintf(const char *msg, ...);
 	virtual void loadImage(const char *name);
 
 	virtual void loadSprite(const char *filename, const char *name);

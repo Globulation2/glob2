@@ -20,6 +20,7 @@
 #include <GUIRatio.h>
 #include <Toolkit.h>
 #include <assert.h>
+#include <strstream>
 
 Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font)
 {
@@ -120,12 +121,13 @@ void Ratio::internalPaint(void)
 		parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 180, 180, 180);
 	}
-	
+
 	// We center the string
-	char s[256];
-	snprintf(s, 256, "%d", get());
-	int tw=font->getStringWidth(s);
-	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, "%d", get());
+	std::ostrstream g;
+	g << get();
+	int tw=font->getStringWidth(g.str());
+	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, g.str());
+	g.freeze(0);
 
 	needRefresh=false;
 }

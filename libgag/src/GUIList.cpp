@@ -207,14 +207,14 @@ void List::internalPaint(void)
 	else
 	{
 		disp = 0;
-		
+
 		elementLength = w-2;
 		parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 	}
 
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		parent->getSurface()->drawString(x+2, yPos, fontPtr, "%s", (strings[i+disp]).c_str());
+		parent->getSurface()->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
 		if (i+(int)disp==nth)
 			parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 		nextSize+=textHeight;

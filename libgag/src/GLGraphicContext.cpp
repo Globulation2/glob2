@@ -290,19 +290,6 @@ bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	}
 }
 
-void GLGraphicContext::dbgprintf(const char *msg, ...)
-{
-	va_list arglist;
-
-	fprintf(stderr,"GAG : DBG : ");
-
-	va_start(arglist, msg);
-    vfprintf(stderr, msg, arglist );
-	va_end(arglist);
-
-	fprintf(stderr,"\n");
-}
-
 void GLGraphicContext::nextFrame(void)
 {
 	glFlush();

@@ -69,15 +69,11 @@ void TextArea::internalPaint(void)
 			assert(i+areaPos<lines.size());
 			if (i+areaPos<lines.size()-1)
 			{
-				unsigned tempLen=(unsigned)(lines[i+areaPos+1]-lines[i+areaPos]);
-				char *temp=new char[tempLen+1];
-				memcpy(temp, textBuffer+lines[i+areaPos], tempLen);
-				temp[tempLen]=0;
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", temp);
-				delete[] temp;
+				std::string temp(textBuffer+lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, temp.c_str());
 			}
 			else
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", (textBuffer+lines[i+areaPos]));
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, (textBuffer+lines[i+areaPos]));
 		}
 	}
 	if (!readOnly)
