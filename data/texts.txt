@@ -107,6 +107,12 @@ Prune
 
 Švestky
 
+[Bullets]
+Boullets
+Bullets
+
+
+
 [range]
 Portée
 Range

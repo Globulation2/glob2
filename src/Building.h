@@ -117,6 +117,7 @@ public:
 	// turrets
 	Uint32 shootingStep;
 	Sint32 shootingCooldown;
+	Sint32 bullets;
 	
 	Uint32 seenByMask;
 	

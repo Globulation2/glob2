@@ -88,6 +88,8 @@ public:
 	Sint32 shootDamage; // Uint8
 	Sint32 shootSpeed; // Uint8
 	Sint32 shootRythme; // Uint8
+	Sint32 maxBullets;
+	Sint32 multiplierStoneToBullets;
 
 	Sint32 unitProductionTime; // Uint8, nb tick to produce one unit
 	Sint32 ressourceForOneUnit;
@@ -184,6 +186,8 @@ public:
 			"shootDamage",
 			"shootSpeed",
 			"shootRythme",
+			"maxBullets",
+			"multiplierStoneToBullets",
 
 			"unitProductionTime",
 			"ressourceForOneUnit",

@@ -22,7 +22,8 @@
 
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 23
+#define MINIMUM_VERSION_MINOR 23
+#define VERSION_MINOR 24
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -35,6 +36,7 @@
 // version 20 removed useless variable in Unit, used by old pathfinding. And added new Units-states.
 // version 21 added real support for ClearingFlags with the gradient system.
 // version 22 added MOV_RANDOM_FLY to support exiting of forbidden flags.
-// version 23 added Unit::ownExchangeBuilding and Unit::foreingExchangeBuilding to support the exchange building.
+// version 23 added support for the exchange building.
+// version 24 added Building::bullets
 
 #endif

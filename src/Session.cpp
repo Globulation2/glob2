@@ -135,7 +135,7 @@ bool SessionGame::load(SDL_RWops *stream)
 		return false;
 
 	versionMinor=SDL_ReadBE32(stream);
-	if (versionMinor != VERSION_MINOR)
+	if (versionMinor < MINIMUM_VERSION_MINOR)
 		return false;
 
 	if (memcmp(signature,"SEGb",4)!=0)
