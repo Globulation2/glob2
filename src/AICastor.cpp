@@ -74,7 +74,7 @@ void AICastor::Project::init(const char *suffix)
 		|| this->shortTypeNum==IntBuildingType::FOOD_BUILDING);
 	defense=(this->shortTypeNum==IntBuildingType::DEFENSE_BUILDING);
 	
-	debugStdName += Toolkit::getStringTable()->getString("[building name]", this->shortTypeNum);
+	debugStdName += IntBuildingType::typeFromShortNumber(this->shortTypeNum);
 	debugStdName += "-";
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
