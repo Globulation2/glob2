@@ -38,7 +38,7 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags=DrawableSurface::DEFAULT;
+	screenFlags=DrawableSurface::RESIZABLE|DrawableSurface::NO_DOUBLEBUF;
 	screenWidth=640;
 	screenHeight=480;
 	graphicType=DrawableSurface::GC_SDL;
@@ -140,10 +140,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings->screenFlags|=DrawableSurface::FULLSCREEN;
 			continue;
 		}
+		if (strcmp(argv[i], "-F")==0)
+		{
+			settings->screenFlags&=~DrawableSurface::FULLSCREEN;
+			continue;
+		}
 
 		if (strcmp(argv[i], "-a")==0)
 		{
 			settings->screenFlags|=DrawableSurface::HWACCELERATED;
+			continue;
+		}
+		if (strcmp(argv[i], "-A")==0)
+		{
+			settings->screenFlags&=~DrawableSurface::HWACCELERATED;
 			continue;
 		}
 
@@ -152,10 +162,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings->screenFlags|=DrawableSurface::RESIZABLE;
 			continue;
 		}
+		if (strcmp(argv[i], "-R")==0)
+		{
+			settings->screenFlags&=~DrawableSurface::RESIZABLE;
+			continue;
+		}
 
 		if (strcmp(argv[i], "-b")==0)
 		{
 			settings->screenFlags|=DrawableSurface::NO_DOUBLEBUF;
+			continue;
+		}
+		if (strcmp(argv[i], "-B")==0)
+		{
+			settings->screenFlags&=~DrawableSurface::NO_DOUBLEBUF;
 			continue;
 		}
 
@@ -164,17 +184,23 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings->optionFlags|=OPTION_LOW_SPEED_GFX;
 			continue;
 		}
+		if (strcmp(argv[i], "-h")==0)
+		{
+			settings->optionFlags&=~OPTION_LOW_SPEED_GFX;
+			continue;
+		}
 
-		if (strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
+		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
 			printf("Cmd line arguments :\n");
-			printf("-f\tset full screen\n");
-			printf("-r\tset resizable window\n");
+			printf("-f/-F\tset/clear full screen\n");
+			printf("-r/-R\tset/clear resizable window\n");
 			printf("-s\tset resolution (for instance : -s640x480)\n");
-			printf("-a\tset hardware accelerated gfx\n");
-			printf("-b\tdisable double buffering (usefull on OS X in fullscreen)\n");
+			printf("-a/-A\tset/clear hardware accelerated gfx\n");
+			printf("-b/-B\tdisable/enable double buffering (usefull on OS X in fullscreen)\n");
 			printf("-l\tlow speed graphics : disable some transparency effects\n");
+			printf("-h\thigh speed graphics : max of transparency effects\n");
 			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");

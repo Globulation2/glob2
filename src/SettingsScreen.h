@@ -32,6 +32,7 @@ public:
 	};
 private:
 	List *languageList;
+	List *modeList;
 	TextInput *userName;
 	int oldLanguage;
 	

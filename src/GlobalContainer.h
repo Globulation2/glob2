@@ -57,6 +57,7 @@ private:
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 
+	friend class SettingsScreen;
 	//! user preferences
 	base::Ptr<Settings> settings;
 	const char *userName;
