@@ -74,40 +74,6 @@ private:
 	Game *game;
 };
 
-/*class BaseMap: public Order
-{
-public:
-	BaseMap();
-	virtual ~BaseMap(void) { }
-
-	enum { MAP_NAME_MAX_SIZE=32 };
-
-protected:
-	char mapName[MAP_NAME_MAX_SIZE];
-	char mapFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
-	char gameFileName[MAP_NAME_MAX_SIZE+5];//This is not saved in file
-
-public:
-	//! Safely copy s to mapName[] and remove the extention if needed.
-	void setMapName(const char *s);
-	const char *getMapName() const;
-	const char *getMapFileName() const;
-	const char *getGameFileName() const;
-protected:
-	//! serialized form of BaseMap
-	char data[MAP_NAME_MAX_SIZE];
-
-public:
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
-
-	Uint8 getOrderType();
-	char *getData();
-	bool setData(const char *data, int dataLength);
-	int getDataLength();
-	virtual Sint32 checkSum();
-};*/
-
 //! Map, handle all physical localisations
 /*!
 	When not specified, all size are given in 32x32 pixel cell, which is the basic
@@ -131,8 +97,6 @@ public:
 	//! Map destructor
 	virtual ~Map(void);
 
-	//! Set the base map (name and initial infos)
-//	void setBaseMap(const BaseMap *initial);
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
 	// !This call is needed to use the Map!

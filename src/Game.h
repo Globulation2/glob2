@@ -39,8 +39,6 @@ public:
 
 public:
 	Game();
-	//Game(const SessionInfo *initial);
-	//bool loadBase(const SessionInfo *initial);
 	virtual ~Game();
 
 private:
@@ -65,6 +63,7 @@ public:
 
 public:
 
+	//! This methode will overide currents values of *this by the values of *initial.
 	void setBase(const SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
 	bool load(SDL_RWops *stream);

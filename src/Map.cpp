@@ -21,108 +21,7 @@
 #include "Unit.h"
 #include "Game.h"
 #include "Utilities.h"
-/*
-BaseMap::BaseMap()
-{
-	strncpy(mapName,"DEBUG MAP", MAP_NAME_MAX_SIZE);
-}
 
-void BaseMap::save(SDL_RWops *stream)
-{
-	SDL_RWwrite(stream, "GLO2", 4, 1);
-	SDL_RWwrite(stream, mapName, 32, 1);
-	SDL_RWwrite(stream, "GLO2", 4, 1);
-}
-
-bool BaseMap::load(SDL_RWops *stream)
-{
-	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-
-	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
-	setMapName(mapName);
-
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-
-	return true;
-}
-
-void BaseMap::setMapName(const char *s)
-{
-	strncpy(mapName, s, MAP_NAME_MAX_SIZE);
-	mapName[MAP_NAME_MAX_SIZE-1]=0;
-	char *c=strrchr(mapName, '.');
-	if (c)
-		*c=0;
-	// set filename from mapname
-	snprintf(mapFileName, MAP_NAME_MAX_SIZE+4, "%s.map", mapName);
-	snprintf(gameFileName, MAP_NAME_MAX_SIZE+5, "%s.game", mapName);
-	//printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
-}
-
-const char *BaseMap::getMapName() const
-{
-	//printf("(get)mapName=(%s).\n", mapName);
-	return mapName;
-}
-
-const char *BaseMap::getMapFileName() const
-{
-	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
-	return mapFileName;
-}
-
-const char *BaseMap::getGameFileName() const
-{
-	//printf(gameFileName=(%s), mapName=(%s).\n", gameFileName, mapName);
-	return gameFileName;
-}
-
-Uint8 BaseMap::getOrderType()
-{
-	return DATA_BASE_MAP;
-}
-
-char *BaseMap::getData()
-{
-	memcpy(data, mapName, MAP_NAME_MAX_SIZE);
-	return data;
-}
-
-
-bool BaseMap::setData(const char *data, int dataLength)
-{
-	if (dataLength!=getDataLength())
-		return false;
-
-	memcpy(mapName, data, MAP_NAME_MAX_SIZE);
-	setMapName(mapName);
-
-	return true;
-}
-
-int BaseMap::getDataLength()
-{
-	return MAP_NAME_MAX_SIZE;
-}
-
-Sint32 BaseMap::checkSum()
-{
-	Sint32 cs=0;
-
-	for (int i=0; i<(int)strlen(mapName); i++)
-	{
-		cs^=mapName[i];
-		cs=(cs<<31)|(cs>>1);
-	}
-
-	return cs;
-}
-*/
 Sector::Sector(Game *game)
 {
 	this->game=game;
@@ -350,38 +249,10 @@ bool Map::decRessource(int x, int y)
 
 bool Map::decRessource(int x, int y, RessourceType ressourceType)
 {
-	// this is the clean way :
 	if (isRessource(x, y, ressourceType))
 		return decRessource(x, y);
 	else
 		return false;
-	// this is perhaps faster but I don't think so (more cache used) :
-	/*
-	int d=getTerrain(x, y)-272;
-	if ((d<0)||(d>=40))
-		return false;
-	int r=d/10;
-	int l=d%5;
-	if (r==ressourceType)
-	{
-		if ((r==CORN)||(r==STONE)) // those are the slow-consuming ressources.
-		{
-			if (l>0)
-				setTerrain(x, y, d+271);
-			else if (l==0)
-				setTerrain(x, y, syncRand()&0xF);
-		}
-		else if (r==WOOD)
-			setTerrain(x, y, syncRand()&0xF);
-		else if (r==ALGA)
-			setTerrain(x, y, 256+(syncRand()&0xF));
-		else
-			assert(false);
-		return true;
-	}
-	else
-		return false;
-	*/
 }
 
 bool Map::isFreeForUnit(int x, int y, bool canFly)
@@ -547,12 +418,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 	return false;
 }
-/*
-void Map::setBaseMap(const BaseMap *initial)
-{
-	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
-}
-*/
+
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
 	if (mapDiscovered)
@@ -691,26 +557,17 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		size=wSector*hSector;
 		if (sectors)
 			delete[] sectors;
-		// non standard !!!
-#		ifndef WIN32
-			sectors=new Sector[size](game);
-#		else
-			sectors=new Sector[size];
-			{
-				for (int i = 0; i < size; ++i)
-				{
-					sectors[i].~Sector();
-					new (&sectors[i])Sector(game);
-				}
-			}
-#		endif
+
+		sectors=new Sector[size];
+		for (int i = 0; i < size; ++i)
+		{
+			sectors[i].~Sector();
+			new (&sectors[i])Sector(game);
+		}
 
 		for (int i=0;i<size;++i)
-		{
-			// TODO : make a bool sector.load to allow errors.
 			if (!sectors[i].load(stream, game))
 				return false;
-		}
 
 		SDL_RWread(stream, signature, 4, 1);
 		if (memcmp(signature,"GLO2",4)!=0)
@@ -1250,53 +1107,3 @@ int Map::warpDistSquare(int px, int py, int qx, int qy)
 	
 	return ((dx*dx)+(dy*dy));
 }
-/*
-void Map::saveThumbnail(SDL_RWops *stream)
-{
-	bool isWater;
-	bool isSand;
-	bool isGrass;
-	bool isWood;
-	bool isCorn;
-	bool isStone;
-	bool isSeaweed;
-	int dx, dy;
-	float dMx, dMy;
-	float minidx, minidy;
-	Uint8 tempdata[128*128];
-
-	dMx=(float)w/128.0f;
-	dMy=(float)h/128.0f;
-	for (dy=0; dy<128; dy++)
-	{
-		for (dx=0; dx<128;dx++)
-		{
-			isWater=isSand=isGrass=isWood=isCorn=isStone=isSeaweed=false;
-			for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
-			{
-				for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
-				{
-					int mdx=(int)minidx;
-					int mdy=(int)minidy;
-					if (this->isWater(mdx, mdy))
-						isWater=true;
-					else if (this->isGrass(mdx, mdy))
-						isGrass=true;
-					else if (isRessource(mdx, mdy, WOOD))
-						isWood=true;
-					else if (isRessource(mdx, mdy, CORN))
-						isCorn=true;
-					else if (isRessource(mdx, mdy, STONE))
-						isStone=true;
-					else if (isRessource(mdx, mdy, ALGA))
-						isSeaweed=true;
-					else
-						isSand=true;
-				}
-			}
-			tempdata[dy*128+dx]=isWater+(isSand<<1)+(isGrass<<2)+(isWood<<3)+(isCorn<<4)+(isStone<<5)+(isSeaweed<<6);
-		}
-	}
-	SDL_RWwrite(stream, tempdata, 128*128, 1);
-}
-*/

@@ -81,15 +81,6 @@ BasePlayer::~BasePlayer(void)
 		unbind();
 }
 
-/*void BasePlayer::close(void)
-{
-	fprintf(logFile, "Player::close number=%d destroyNet=%d.\n", number, destroyNet);
-	if (destroyNet)
-	{
-		unbind();
-	}
-}*/
-
 void BasePlayer::setNumber(Sint32 number)
 {
 	this->number=number;
@@ -279,38 +270,6 @@ void BasePlayer::printip(char s[32])
 	
 	snprintf(s, 32, "%d.%d.%d.%d : %d", i24, i16, i8, i0, netPort);
 }
-
-/*bool BasePlayer::bind()
-{
-	if (socket==NULL)
-	{
-		socket=SDLNet_UDP_Open(ANY_PORT);
-	
-		if (socket!=NULL)
-			printf("Socket opened at port to player %d.\n", number);
-		else
-			printf("failed to open a socket to player %d.\n", number);
-	}
-	
-	if ((socket==NULL) || (ip.host==0))
-	{
-		printf("no socket, or no ip to bind socket to player %d\n", number);
-		return false;
-	}
-		
-	channel=SDLNet_UDP_Bind(socket, -1, &ip);
-			
-	if (channel != -1)
-	{
-		printf("suceeded to bind socket to player %d.\n", number);
-		return true;			
-	}
-	else
-	{
-		printf("failed to bind socket to player %d.\n", number);		
-		return false;
-	}
-}*/
 
 bool BasePlayer::bind(UDPsocket socket, int channel)
 {

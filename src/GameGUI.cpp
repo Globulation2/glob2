@@ -1163,9 +1163,6 @@ Order *GameGUI::getOrder(void)
 
 void GameGUI::draw(void)
 {
-	// TODO : compare building to see if something has changed
-
-	//if (needRedraw)
 	checkValidSelection();
 	{
 		needRedraw=false;
