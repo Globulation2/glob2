@@ -26,21 +26,28 @@
 
 MainMenuScreen::MainMenuScreen()
 {
-	arch=globalContainer->gfx->loadSprite("data/gui/mainmenu");
+	/*arch=globalContainer->gfx->loadSprite("data/gui/mainmenu");
 
 	addWidget(new Button(30, 50, 280, 60, arch, -1, 1, 0));
 	addWidget(new Button(50, 130, 280, 60, arch, -1, 2, 1));
 	addWidget(new Button(90, 210, 280, 60, arch, -1, 3, 2));
 	addWidget(new Button(170, 290, 280, 60, arch, -1, 4, 3));
 	addWidget(new Button(330, 370, 280, 60, arch, -1, 5, 4));
-	addWidget(new Button(30, 370, 140, 60, arch, -1, 6, 5));
+	addWidget(new Button(30, 370, 140, 60, arch, -1, 6, 5));*/
+	addWidget(new TextButton(150, 25, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[campagn]") ,0));
+	addWidget(new TextButton(150, 90, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[custom game]") ,1));
+	addWidget(new TextButton(150, 155, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[yog]") ,2));
+	addWidget(new TextButton(150, 220, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[lan]") ,3));
+	addWidget(new TextButton(150, 285, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[settings]") ,4));
+	addWidget(new TextButton(150, 350, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[editor]") ,5));
+	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]") ,6));
 
-	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	globalContainer->gfx->setClipRect();
 }
 
 MainMenuScreen::~MainMenuScreen()
 {
-	delete arch;
+	//delete arch;
 }
 
 void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -51,7 +58,8 @@ void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void MainMenuScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawSprite(0, 0, arch, 0);
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	//gfxCtx->drawSprite(0, 0, arch, 0);
 }
 
 int MainMenuScreen::menu(void)

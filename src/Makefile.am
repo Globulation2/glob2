@@ -70,7 +70,9 @@ UnitType.h\
 Utilities.cpp\
 Utilities.h \
 FileManager.h \
-FileManager.cpp
+FileManager.cpp \
+YOGScreen.h \
+YOGScreen.cpp
 
 glob2_LDADD= -lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

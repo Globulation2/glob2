@@ -10,7 +10,8 @@
 #include "MapEdit.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
-#include "SDL_net.h"
+#include "YOGScreen.h"
+#include <SDL_net.h>
 
 GlobalContainer *globalContainer=0;
 
@@ -51,10 +52,25 @@ int main(int argc, char *argv[])
 			break;
 			case 1:
 			{
-
+				// TODO : call create game screen with special parameters if it is custom/yog/lan
 			}
 			break;
 			case 2:
+			{
+				YOGScreen yogScreen;
+				int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
+				yogScreen.closeConnection();
+				if (yogReturnCode==1)
+				{
+					// TODO : join game in joyScreen.ip;
+				}
+				else if (yogReturnCode==2)
+				{
+					// TODO : create game
+				}
+			}
+			break;
+			case 3:
 			{
 				switch (MultiplayersOfferScreen::menu())
 				{
@@ -66,7 +82,7 @@ int main(int argc, char *argv[])
 								run=false;
 					}
 					break;
-					
+
 					case MultiplayersOfferScreen::JOIN :
 					{
 						Engine engine;
@@ -75,13 +91,13 @@ int main(int argc, char *argv[])
 								run=false;
 					}
 					break;
-					
+
 					case MultiplayersOfferScreen::QUIT :
 					{
-						
+
 					}
 					break;
-					
+
 					case -1 :
 					{
 						run=false;
@@ -90,15 +106,15 @@ int main(int argc, char *argv[])
 				}
 			}
 			break;
-			case 3: break;
-			case 4:
+			case 4: break;
+			case 5:
 			{
 				MapEdit mapEdit;
 				if (mapEdit.run()==-1)
 					run=false;
 			}
 			break;
-			case 5:
+			case 6:
 			{
 				run=false;
 			}

@@ -17,12 +17,15 @@ public:
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(DrawableSurface *gfx);
+	virtual void setText(const char *newText);
 
 protected:
 	int x, y, w, h;
 	Font *font;
 	DrawableSurface *gfx;
 	int cursPos;
+
+	void repaint(DrawableSurface *gfx);
 	
 public:
 	enum {

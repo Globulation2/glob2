@@ -22,6 +22,7 @@ public:
 	void addText(const char *text, int pos);
 	void addText(const char *text);
 	void removeText(int pos);
+	void clear(void);
 
 protected:
 	int x, y, w, h;

@@ -23,12 +23,25 @@ TextInput::TextInput(int x, int y, int w, int h, Font *font, const char *text, b
 	this->text[MAX_TEXT_SIZE-1]=0;
 	
 	cursPos=strlen(text);
-	
+
 	this->activated=activated;
 }
 
 void TextInput::onTimer(Uint32 tick)
 {
+}
+
+#ifdef WIN32
+#defien strncpy _strncpy
+#endif
+
+void TextInput::setText(const char *newText)
+{
+	strncpy(this->text, newText, MAX_TEXT_SIZE);
+	cursPos=0;
+	repaint(gfx);
+	parent->addUpdateRect(x, y, w, h);
+	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
 void TextInput::onSDLEvent(SDL_Event *event)
@@ -52,14 +65,14 @@ void TextInput::onSDLEvent(SDL_Event *event)
 					textBeforeCurs[--cursPos]=0;
 				
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
 			else
 			{
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				activated=true;
 				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
@@ -82,8 +95,8 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				cursPos++;
 		
 				assert(gfx);
-				paint(gfx);
-		
+				repaint(gfx);
+
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
@@ -95,7 +108,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				cursPos++;
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
@@ -106,7 +119,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				cursPos--;
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
@@ -116,58 +129,70 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			if (cursPos>0)
 			{
 				int l=strlen(text);
-				
+
 				memmove( &(text[cursPos-1]), &(text[cursPos]), l-cursPos+1);
-				
+
 				//printf("clear: l=%d, cursPos=%d, text=%s \n", l, cursPos, text);
 				cursPos--;
-		
+
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 
 				//printf("now: l=%d, cursPos=%d, text=%s \n", strlen(text), cursPos, text);
 			}
-			
+
 		}
 		else if (sym==SDLK_DELETE)
 		{
 			int l=strlen(text);
 			if (cursPos<l)
 			{
-				memmove( &(text[cursPos]), &(text[cursPos+1]), l-cursPos+1);
+				memmove( &(text[cursPos]), &(text[cursPos+1]), l-cursPos);
 
 				assert(gfx);
-				paint(gfx);
+				repaint(gfx);
 				parent->addUpdateRect(x, y, w, h);
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
+		}
+		else if (sym==SDLK_HOME)
+		{
+			cursPos=0;
+			assert(gfx);
+			repaint(gfx);
+			parent->addUpdateRect(x, y, w, h);
+		}
+		else if (sym==SDLK_END)
+		{
+			cursPos=strlen(text);
+			assert(gfx);
+			repaint(gfx);
+			parent->addUpdateRect(x, y, w, h);
+		}
+		else if (sym==SDLK_RETURN)
+		{
+			parent->onAction(this, TEXT_VALIDATED, 0, 0);
 		}
 		else
 		{
 			//printf("unused c=%c(%d).\n", c, c);
 		}
-		
+
 	}
 }
 
 void TextInput::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
-	
-	gfx->drawFilledRect(x, y, w, h, 0, 0, 0);
 
-	static const int r= 40;
-	static const int g=240;
-	static const int b= 80;
-	gfx->drawVertLine(x  , y  , h, r, g, b);
-	gfx->drawHorzLine(x  , y  , w, r, g, b);
-	gfx->drawVertLine(x+w, y  , h, r, g, b);
-	gfx->drawHorzLine(x  , y+h, w, r, g, b);
-	
+	static const int r= 180;
+	static const int g= 180;
+	static const int b= 180;
+	gfx->drawRect(x, y, w, h, r, g, b);
 	gfx->drawString(x+2, y+2, font, text);
-	
+
 	// we draw the cursor:
 	if(activated)
 	{
@@ -178,5 +203,11 @@ void TextInput::paint(DrawableSurface *gfx)
 		int hbc=font->getStringHeight(textBeforeCurs);
 		gfx->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
 	}
+}
+
+void TextInput::repaint(DrawableSurface *gfx)
+{
+	parent->paint(x, y, w, h);
+	paint(gfx);
 }
 

@@ -19,12 +19,15 @@ public:
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
+	void load(void);
+
+private:
+	void setMetaServerName(char *name);
 
 public:
 	Uint32 graphicFlags;
-
-	void load(void);
-
+	char *metaServerName;
+	Uint16 metaServerPort;
 
 	FileManager fileManager;
 
@@ -35,6 +38,7 @@ public:
 	Sprite *units;
 	Sprite *buildings;
 	Font *menuFont;
+	Font *standardFont;
 
 	StringTable texts;
 
@@ -44,3 +48,4 @@ public:
 extern GlobalContainer *globalContainer;
 
 #endif 
+
