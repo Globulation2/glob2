@@ -1001,6 +1001,8 @@ Order *AICastor::controlUpgrades()
 		return NULL;
 	if (b->type->isVirtual)
 		return NULL;
+	if (b->maxUnitWorking<1)
+		return new OrderModifyBuilding(b->gid, 1);
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
@@ -2475,7 +2477,7 @@ void AICastor::computeWheatCareMap()
 	
 	memcpy(wheatCareMap[0], obstacleUnitMap, size);
 	for (size_t i=0; i<=sizeMask; i++)
-		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==15
+		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==15 && hydratationMap[i]>0
 			&& ((wheatCareMap[1][i]>7)
 				|| ((oldWheatGradient[3][i]==255 || oldWheatGradient[2][i]==255) && (oldWheatGradient[1][i]<255 || oldWheatGradient[0][i]<255))))
 		{
