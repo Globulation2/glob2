@@ -54,7 +54,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		globalContainer->texts.setLang(par1);
-		dispatchPaint(gfxCtx);
+		ok->setText(globalContainer->texts.getString("[ok]"));
+		cancel->setText(globalContainer->texts.getString("[cancel]"));
 	}
 }
 
@@ -65,11 +66,6 @@ void SettingsScreen::paint(int x, int y, int w, int h)
 	{
 		char *text=globalContainer->texts.getString("[settings]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
-	}
-	if (y+h>330)
-	{
-		ok->setText(globalContainer->texts.getString("[ok]"));
-		cancel->setText(globalContainer->texts.getString("[cancel]"));
 	}
 	addUpdateRect(x, y, w, h);
 }
