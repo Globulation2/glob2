@@ -9,14 +9,19 @@ rd /s /q scripts
 md data
 md data\fonts
 md data\gfx
+md data\gfx\cursor
 md data\gui
 md data\zik
+copy ..\data\*.* data
 copy ..\data\fonts\*.* data\fonts
 copy ..\data\gfx\*.* data\gfx
+copy ..\data\gfx\cursor\*.* data\gfx\cursor
 copy ..\data\gui\*.* data\gui
 copy ..\data\zik\*.* data\zik
+del data\makefile.am
 del data\fonts\makefile.am
 del data\gfx\makefile.am
+del data\gfx\cursor\makefile.am
 del data\gui\makefile.am
 del data\zik\makefile.am
 md maps

@@ -21,6 +21,7 @@
 #define INCLUDED_DX9_GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
+#include "CursorManager.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -176,6 +177,10 @@ namespace GAGCore
 	
 	class GraphicContext : public DrawableSurface
 	{
+	public:
+		//! The cursor manager, public to be able to set custom cursors
+		CursorManager cursorManager;
+		
 	private:
 		//! Available full screen modes
 		RECT **modes;
