@@ -9,6 +9,7 @@
 #include "Header.h"
 #include "Order.h"
 #include "Game.h"
+#include "GameGUIDialog.h"
 #include <queue>
 
 #define MAX_UNIT_WORKING 20
@@ -31,7 +32,7 @@ public:
 	void draw(void);
 	void drawAll(int team);
 	void executeOrder(Order *order);
-	
+
 	void load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 
@@ -92,11 +93,22 @@ private:
 	int mouseX, mouseY;
 	int viewportSpeedX[8], viewportSpeedY[8];
 
+	// menu related functions
+	enum
+	{
+		IGM_NONE=0,
+		IGM_MAIN,
+		IGM_SAVE
+	} inGameMenu;
+	InGameScreen *gameMenuScreen;
+	SDLOffScreenGraphicContext *gameMenuGfx;
+
+	// message related functions : FIXME : move this to a class
 	static const int MAX_MESSAGE_SIZE=64; // avoid network overflow
 	typedef struct
 	{
 		int showTicks;
-		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4]; 
+		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4];
 	} Message;
 	std::list<Message> messagesList;
 	static const int DEFAULT_MESSAGE_SHOW_TICKS=100;
@@ -106,4 +118,4 @@ private:
 };
 
 #endif
- 
+
