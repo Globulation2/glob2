@@ -134,7 +134,7 @@ void GlobalContainer::initProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// set default values in settings or load them
-	strncpy(settings.name, getenv("USER"), BasePlayer::MAX_NAME_LENGTH);
+	strncpy(settings.userName, getenv("USER"), BasePlayer::MAX_NAME_LENGTH);
 	// TODO : loading code
 
 	// create graphic context

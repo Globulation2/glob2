@@ -132,7 +132,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==TEXT_VALIDATED)
 	{
 		char data[GAME_INFO_MAX_SIZE];
-		snprintf(data, GAME_INFO_MAX_SIZE, "say %s", textInput->text);
+		snprintf(data, GAME_INFO_MAX_SIZE, "say <%s> %s", globalContainer->settings.userName, textInput->text);
 		sendString(socket, data);
 		textInput->setText("");
 	}
