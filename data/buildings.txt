@@ -1230,7 +1230,7 @@ isBuildingSite = 1
 
 // stone wall
 startImage = 23
-miniImage = -1
+miniImage = 23
 crossConnectMultiImage = 1
 hueImage = 1;
 
