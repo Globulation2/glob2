@@ -46,8 +46,7 @@ Options:
 - glob2 --benchmark
 
 Network:
-- Checksum des cartes pour retélécherrger au besoin
-- Vérification du no. de réseau.
+- si on se kick quand on host, on peut plus quitter l'ecran
 
 To Next version :
 

@@ -451,7 +451,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	else
 		fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
 	
-	Uint8 sdata[128+12];
+	Uint8 sdata[64+16];
 	sdata[0]=YMT_GAME_INFO_FROM_HOST;
 	sdata[1]=0;
 	sdata[2]=0;
@@ -470,9 +470,9 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	sdata[14]=0; // pad
 	sdata[15]=NET_PROTOCOL_VERSION;
 	strncpy((char *)(sdata+16), sessionInfo.getMapName(), 64);
-	int ssize=Utilities::strmlen((char *)(sdata+12), 64)+16;
-	assert(ssize<64+12);
-	UDPpacket *packet=SDLNet_AllocPacket(ssize);
+	int ssize=Utilities::strmlen((char *)(sdata+16), 64)+16;
+	assert(ssize<64+16);
+	UDPpacket *packet=SDLNet_AllocPacket(64+16);
 	if (packet==NULL)
 		return;
 	if (ip.host==0)
