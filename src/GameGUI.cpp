@@ -201,7 +201,14 @@ void GameGUI::step(void)
 	
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
-		addMessage(200, 30, 30, "%s", globalContainer->texts.getString("[your units are under attack]"));
+	{
+		Sint32 UID=localTeam->getEventId();
+		int team=Unit::UIDtoTeam(UID);
+		int id=Unit::UIDtoID(UID);
+		Unit *u=game.teams[team]->myUnits[id];
+		int strDec=(int)(u->typeNum);
+		addMessage(200, 30, 30, "%s %s", globalContainer->texts.getString("[unit type]", strDec), globalContainer->texts.getString("[attacked(f)]"));
+	}
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 	{
 		Sint32 UID=localTeam->getEventId();
