@@ -60,13 +60,14 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 	step=0;
 }
 
-AI::AI(SDL_RWops *stream, Player *player)
+AI::AI(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
 	aiImplementation=NULL;
 	implementitionID=NONE;
 	this->player=player;
 	step=0;
-	load(stream);
+	bool goodLoad=load(stream, versionMinor);
+	assert(goodLoad);
 }
 
 AI::~AI()
@@ -86,7 +87,7 @@ Order *AI::getOrder(bool paused)
 	return aiImplementation->getOrder();
 }
 
-bool AI::load(SDL_RWops *stream)
+bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	assert(player);
 	
@@ -107,10 +108,10 @@ bool AI::load(SDL_RWops *stream)
 			aiImplementation=new AINull();
 		break;
 		case NUMBI:
-			aiImplementation=new AINumbi(stream, player);
+			aiImplementation=new AINumbi(stream, player, versionMinor);
 		break;
 		case CASTOR:
-			aiImplementation=new AICastor(stream, player);
+			aiImplementation=new AICastor(stream, player, versionMinor);
 		break;
 		default:
 			assert(false);

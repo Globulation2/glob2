@@ -70,7 +70,7 @@ public:
 	virtual void init(Player *player)=0;
 	virtual ~AIImplementation(){}
 	
-	virtual bool load(SDL_RWops *stream)=0;
+	virtual bool load(SDL_RWops *stream, Sint32 versionMinor)=0;
 	virtual void save(SDL_RWops *stream)=0;
 	
 	virtual Order *getOrder(void)=0;

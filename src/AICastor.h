@@ -34,7 +34,7 @@ class AICastor : public AIImplementation
 {
 public:
 	AICastor(Player *player);
-	AICastor(SDL_RWops *stream, Player *player);
+	AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor);
 	void init(Player *player);
 	~AICastor();
 
@@ -43,12 +43,13 @@ public:
 	Game *game;
 	Map *map;
 
-	bool load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	Order *getOrder(void);
 	
 private:
+	Uint32 timer;
 };
 
 #endif

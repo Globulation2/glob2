@@ -528,7 +528,9 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	setTeam(teams[teamNumber]);
 	if (type>=P_AI)
 	{
-		ai=new AI(stream, this);
+		ai=new AI(AI::NONE, this);
+		if (!ai->load(stream, versionMinor))
+			return false;
 	}
 	else
 	{

@@ -30,10 +30,11 @@ AINumbi::AINumbi(Player *player)
 	init(player);
 }
 
-AINumbi::AINumbi(SDL_RWops *stream, Player *player)
+AINumbi::AINumbi(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	load(stream);
+	bool goodLoad=load(stream, versionMinor);
+	assert(goodLoad);
 }
 
 void AINumbi::init(Player *player)
@@ -64,7 +65,7 @@ AINumbi::~AINumbi()
 {
 }
 
-bool AINumbi::load(SDL_RWops *stream)
+bool AINumbi::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	assert(game);
 
