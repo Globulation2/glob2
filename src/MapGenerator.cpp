@@ -755,6 +755,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	controlSand();
 	regenerateMap(0, 0, w, h);
 	
+	printf("makeRandomMap::success\n");
 	return true;
 }
 
@@ -1387,19 +1388,21 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, squareSize);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
-		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
-		assert(good);
+		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1, false))
+		{
+			printf("Failed to add swarm of team %d\n", s);
+			return false;
+		}
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
 		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
-		{
-			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0);
-			if (u==NULL)
+			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
+			{
+				printf("Failed to add unit %d of team %d\n", i, s);
 				return false;
-			assert(u);
-		}
+			}
 		teams[s]->createLists();
 	}
 	map.smoothRessources(descriptor.islandsSize/10);
@@ -1420,15 +1423,21 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
-		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1))
+		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1, false))
+		{
+			printf("Failed to add swarm of team %d\n", s);
 			return false;
+		}
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
 		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, s);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
 			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
+			{
+				printf("Failed to add unit %d of team %d\n", i, s);
 				return false;
+			}
 		teams[s]->createLists();
 	}
 	return true;
