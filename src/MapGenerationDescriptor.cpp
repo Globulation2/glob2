@@ -201,7 +201,7 @@ void MapGenerationDescriptor::loadSyncronization(void)
 	setSyncRandSeedA(randa);
 	setSyncRandSeedB(randb);
 	setSyncRandSeedC(randc);
-}
+	}
 
 void MapGenerationDescriptor::synchronizeNow(void)
 {

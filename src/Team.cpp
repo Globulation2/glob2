@@ -711,6 +711,7 @@ void Team::createLists(void)
 				turrets.push_front(myBuildings[i]);
 			if (myBuildings[i]->type->isVirtual)
 				virtualBuildings.push_front(myBuildings[i]);
+			myBuildings[i]->update();
 		}
 }
 

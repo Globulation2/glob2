@@ -217,7 +217,7 @@ int Engine::initLoadGame()
 	
 	return EE_NO_ERROR;
 }
-
+#include "Utilities.h"
 void Engine::startMultiplayer(SessionConnection *sessionConnection)
 {
 	int p=sessionConnection->myPlayerNumber;

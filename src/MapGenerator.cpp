@@ -634,8 +634,6 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	//for (int i=0; i<descriptor.nbIslands; i++)
 	//	printf("boot[%d]=(%d, %d).\n", i, bootX[i], bootY[i]);
 	
-	
-	
 	// Three, expands islands
 	for (int s=0; s<descriptor.islandsSize; s++)
 	{
@@ -876,10 +874,9 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 					continue;
 				}*/
 			}
+	
 	controlSand();
 	regenerateMap(0, 0, w, h);
-	
-	
 	// let's add ressources...
 	
 	for (int s=0; s<descriptor.nbIslands; s++)
@@ -962,6 +959,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 					}
 				}
 			}
+	
 }
 
 void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
@@ -1008,7 +1006,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 	if (session.mapGenerationDescriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
-}
+	}
 /*
 WATER=0,
 SAND=1,

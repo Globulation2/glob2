@@ -1561,6 +1561,7 @@ Sint32 Game::checkSum()
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
+	//printf("Game::sc, sr=(%d, %d, %d).\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	//printf(", %x)\n", cs);
 	
 	return cs;
