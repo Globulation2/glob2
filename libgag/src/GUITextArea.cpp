@@ -52,6 +52,7 @@ void TextArea::internalPaint(void)
 {
 	assert(parent);
 	assert(parent->getSurface());
+	parent->getSurface()->setClipRect(x, y, w, h);
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	if (textBuffer)
 	{
@@ -75,14 +76,7 @@ void TextArea::internalPaint(void)
 	{
 		parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
 	}
-	/*if (areaPos>0)
-	{
-		DisplayManager::drawGraphicContent(theme->scrollUp,size.w+theme->xScroll,theme->y1Scroll);
-	}
-	if (areaPos+areaHeight<lines.size()-1)
-	{
-		DisplayManager::drawGraphicContent(theme->scrollDown,size.w+theme->xScroll,size.h+theme->y2Scroll);
-	}*/
+	parent->getSurface()->setClipRect();
 }
 
 void TextArea::paint(void)
@@ -399,6 +393,20 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				}
 			}
 			break;
+		}
+	}
+	else if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		{
+			if (event->button.button == 4)
+			{
+				scrollUp();
+			}
+			else if (event->button.button == 5)
+			{
+				scrollDown();
+			}
 		}
 	}
 	/*else if (event->type==SDL_MOUSEBUTTONDOWN)
