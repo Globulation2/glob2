@@ -34,6 +34,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 
 	logFile=NULL;
 	logFile=fopen("MultiplayersHost.log", "w");
+	if (logFile==NULL)
+		logFile=stdout;
 	assert(logFile);
 	// net things:
 	initHostGlobalState();
@@ -154,7 +156,8 @@ MultiplayersHost::~MultiplayersHost()
 	
 	if (logFile)
 	{
-		fclose(logFile);
+		if (logFile!=stdout)
+			fclose(logFile);
 		logFile=NULL;
 	}
 }
