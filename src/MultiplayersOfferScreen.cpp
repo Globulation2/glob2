@@ -19,6 +19,10 @@
 
 #include "MultiplayersOfferScreen.h"
 #include "GlobalContainer.h"
+#include <GUIButton.h>
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 MultiplayersOfferScreen::MultiplayersOfferScreen()
 {

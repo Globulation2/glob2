@@ -20,10 +20,7 @@
 #ifndef __MULTIPLAYERS_OFFER_SCREEN_H
 #define __MULTIPLAYERS_OFFER_SCREEN_H
 
-#include "GAG.h"
-/*
-#include "Session.h"
-#include "GUIMapPreview.h"*/
+#include <GUIBase.h>
 
 class MultiplayersOfferScreen:public Screen
 {

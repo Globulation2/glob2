@@ -18,10 +18,18 @@
 */
 
 #include "MultiplayersHostScreen.h"
-#include "GAG.h"
 #include "YOGScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "SessionConnection.h"
+#include "MultiplayersHost.h"
+#include "MultiplayersJoin.h"
+#include <GUIText.h>
+#include <GUITextArea.h>
+#include <GUITextInput.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
