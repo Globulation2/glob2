@@ -699,7 +699,7 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 	
 	if (fb<((wr/numbers)+numbersInc))
 	{
-		printf("AI: findNewEmplacement(%d), fb=%d, wr=%d, numbers=%d, numbersInc=%d, nn=%d.\n", buildingType, fb, wr, numbers, numbersInc, ((wr/numbers)+numbersInc));
+		//printf("AI: findNewEmplacement(%d), fb=%d, wr=%d, numbers=%d, numbersInc=%d, nn=%d.\n", buildingType, fb, wr, numbers, numbersInc, ((wr/numbers)+numbersInc));
 		int x, y;
 		if (findNewEmplacement(buildingType, &x, &y))
 		{
@@ -707,7 +707,7 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 			int teamNumber=player->team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 		}
-		printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
+		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
 		return new NullOrder();
 	}
 	else
