@@ -92,13 +92,6 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		int xBase = (i>>3)*250;
 		int yBase = (i&0x7)*25;
 
-		alliance[i]=new Selector(150+xBase, 40+yBase, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
-		addWidget(alliance[i]);
-
-		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
-		chat[i]=new OnOffButton(218+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
-		addWidget(chat[i]);
-
 		std::string pname;
 		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
 		{
@@ -115,6 +108,13 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		Team *team = gameGUI->game.players[i]->team;
 		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->colorR, team->colorG, team->colorB));
 		addWidget(text);
+		
+		alliance[i]=new Selector(150+xBase, 40+yBase, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
+		addWidget(alliance[i]);
+
+		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
+		chat[i]=new OnOffButton(218+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
+		addWidget(chat[i]);
 	}
 	for (;i<16;i++)
 	{
@@ -134,12 +134,12 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 	else
 	{
+		// add ok button
+		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		
 		addWidget(new Animation(250+149, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 13));
 		addWidget(new Animation(250+182, 13, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 14));
 		addWidget(new Animation(250+220, 16, ALIGN_LEFT, ALIGN_LEFT, "data/gfx/gamegui", 15));
-	
-		// add ok button
-		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	this->gameGUI=gameGUI;
 	dispatchInit();
