@@ -1569,7 +1569,7 @@ void GameGUI::draw(void)
 					}
 				}
 			}
-			for (int i=0; i<NB_RESSOURCES; i++)
+			for (unsigned i=0; i<globalContainer->ressourcesTypes->number(); i++)
 				if (buildingType->maxRessource[i])
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+64+(i*10)+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]);
 

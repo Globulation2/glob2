@@ -344,7 +344,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			double errAlphaGrass=finalAlphaGrass-baseGrass;
 			//double errAlpha=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
 			//printf("errAlpha=(%f, %f, %f) (%f).\n", errAlphaWater, errAlphaSand, errAlphaGrass, errAlpha);
-			
+
 			double betaWater;
 			double betaSand ; 
 			double betaGrass;
@@ -836,7 +836,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", ress, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[ress];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourceType)ress, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourcesTypes::intResType)ress, amount);
 		}
 
 		if (smallestWidth<limiteDist)
@@ -875,9 +875,9 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", smallestRessource, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[smallestRessource];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourceType)smallestRessource, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourcesTypes::intResType)smallestRessource, amount);
 		}
-		
+
 		int maxDir=0;
 		int maxWidth=0;
 		int maxDist=0;
@@ -1300,8 +1300,8 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 	{
 		int d, p, amount;
 		int smallestAmount;
-		RessourceType smallestRessource;
-		
+		RessourcesTypes::intResType smallestRessource;
+
 		//WOOD
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]-d))
@@ -1373,7 +1373,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		if (amount>0)
 			setRessource(bootX[s]+p, bootY[s], ALGA, amount);
 	}
-	
+
 	// Let's smooth ressources...
 	this->smoothRessources(smoothRessources*2);
 }

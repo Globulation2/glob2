@@ -36,7 +36,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	islandsSize=50;
 	beach=1;
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=7;
 	
 	nbWorkers=4;
@@ -53,42 +53,39 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==76);
-	
+	assert(DATA_SIZE==60+MAX_NB_RESSOURCES*4);
+
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
-	
+
 	addSint32(data, (Sint32)terrainType, 8);
-	
+
 	addSint32(data, (Sint32)methode, 12);
 	addSint32(data, waterRatio, 16);
 	addSint32(data, sandRatio, 20);
 	addSint32(data, grassRatio, 24);
 	addSint32(data, smooth, 28);
-	
+
 	addSint32(data, islandsSize, 32);
 	addSint32(data, beach, 36);
-	
-	assert(NB_RESSOURCES==5);
-	addSint32(data, ressource[0], 40);
-	addSint32(data, ressource[1], 44);
-	addSint32(data, ressource[2], 48);
-	addSint32(data, ressource[3], 52);
-	addSint32(data, ressource[4], 52);
-	
-	addSint32(data, nbWorkers, 56);
-	addSint32(data, nbTeams, 60);
-	
-	addUint32(data, randa, 64);
-	addUint32(data, randb, 68);
-	addUint32(data, randc, 72);
-	
+
+	addSint32(data, nbWorkers, 40);
+	addSint32(data, nbTeams, 44);
+
+	addUint32(data, randa, 48);
+	addUint32(data, randb, 52);
+	addUint32(data, randc, 56);
+
+	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+		addSint32(data, ressource[i], 60+i*4);
+
+
 	return data;
 }
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==76);
+	assert(DATA_SIZE==60+MAX_NB_RESSOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	
@@ -96,7 +93,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	hDec=getSint32(data, 4);
 	
 	terrainType=(TerrainType)getSint32(data, 8);
-	
+
 	methode=(Methode)getSint32(data, 12);
 	waterRatio=getSint32(data, 16);
 	sandRatio=getSint32(data, 20);
@@ -105,21 +102,17 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	
 	islandsSize=getSint32(data, 32);
 	beach=getSint32(data, 36);
-	
-	assert(NB_RESSOURCES==5);
-	ressource[0]=getSint32(data, 40);
-	ressource[1]=getSint32(data, 44);
-	ressource[2]=getSint32(data, 48);
-	ressource[3]=getSint32(data, 52);
-	ressource[4]=getSint32(data, 52);
-	
-	nbWorkers=getSint32(data, 56);
-	nbTeams=getSint32(data, 60);
-	
-	randa=getSint32(data, 64);
-	randb=getSint32(data, 68);
-	randc=getSint32(data, 72);
-	
+
+	nbWorkers=getSint32(data, 40);
+	nbTeams=getSint32(data, 44);
+
+	randa=getSint32(data, 48);
+	randb=getSint32(data, 52);
+	randc=getSint32(data, 56);
+
+	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+		ressource[i]=getSint32(data, 60+i*4);
+
 	bool good=true;
 	if (getDataLength()!=dataLength)
 		good=false;
@@ -171,19 +164,14 @@ Sint32 MapGenerationDescriptor::checkSum()
 	cs=(cs<<31)|(cs>>1);
 	cs^=islandsSize;
 	cs^=beach;
-	
-	assert(NB_RESSOURCES==5);
-	cs=(cs<<31)|(cs>>1);
-	cs+=ressource[0];
-	cs+=ressource[1]<<3;
-	cs+=ressource[2]<<6;
-	cs+=ressource[3]<<9;
-	cs+=ressource[4]<<12;
-	
+
+	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+		cs+=ressource[i]<<(3*i);
+
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;
 	cs^=nbTeams<<5;
-	
+
 	cs=(cs<<31)|(cs>>1);
 	cs^=randa%randb;
 	cs^=randb%randc;

@@ -92,7 +92,7 @@ public:
 	Uint32 unitStayRangeLocal;
 
 	// Building specific :
-	Sint32 ressources[NB_RESSOURCES]; // Ammount stocked, or used for building building.
+	Sint32 ressources[MAX_NB_RESSOURCES]; // Ammount stocked, or used for building building.
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -110,7 +110,7 @@ public:
 	Uint32 seenByMask;
 
 	// optimisation parameters
-	Sint32 closestRessourceX[NB_RESSOURCES], closestRessourceY[NB_RESSOURCES];
+	Sint32 closestRessourceX[MAX_NB_RESSOURCES], closestRessourceY[MAX_NB_RESSOURCES];
 
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);

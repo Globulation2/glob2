@@ -305,13 +305,13 @@ Building *Team::findBestFillable(Unit *unit)
 			return choosen;
 		}
 	}
-	
+
 	Building *choosen=NULL;
 	float score=1e9;
-	for (int r=0; r<NB_RESSOURCES; r++)
+	for (unsigned r=0; r<globalContainer->ressourcesTypes->number(); r++)
 	{
 		int rx, ry;
-		if (map->nearestRessource(x, y, (RessourceType)r, &rx, &ry))
+		if (map->nearestRessource(x, y, (RessourcesTypes::intResType)r, &rx, &ry))
 		{
 			float ressourceDist=(float)map->warpDistSquare(x, y, rx, ry);
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)

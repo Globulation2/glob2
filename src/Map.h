@@ -21,6 +21,7 @@
 #define __MAP_H
 
 #include "GAG.h"
+#include "GlobalContainer.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Team.h"
@@ -61,7 +62,7 @@ enum TerrainType
 	GRASS=2
 };
 
-const int RessourceTerrain[NB_RESSOURCES] = {
+const int RessourceTerrain[MAX_NB_RESSOURCES] = {
 	GRASS,
 	GRASS,
 	GRASS,
@@ -77,7 +78,7 @@ class Map
 {
 public:
 	//! Type of terrain (used for undermap)
-	
+
 
 public:
 	//! Map constructor
@@ -238,25 +239,25 @@ public:
 		return isRessource(x, y) && (getRessource(x, y).field.type != STONE);
 	}
 
-	bool isRessource(int x, int y, RessourceType ressourceType)
+	bool isRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 	{
-		return (RessourceType)getRessource(x, y).field.type == ressourceType;
+		return (RessourcesTypes::intResType)getRessource(x, y).field.type == ressourceType;
 	}
 
-	bool isRessource(int x, int y, RessourceType *ressourceType)
+	bool isRessource(int x, int y, RessourcesTypes::intResType *ressourceType)
 	{
 		Uint8 rt=getRessource(x, y).field.type;
 		if (rt==0xFF)
 			return false;
-		*ressourceType=(RessourceType)rt;
+		*ressourceType=(RessourcesTypes::intResType)rt;
 		return true;
 	}
 
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	bool decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	bool decRessource(int x, int y, RessourceType ressourceType);
-	bool incRessource(int x, int y, RessourceType ressourceType);
+	bool decRessource(int x, int y, RessourcesTypes::intResType ressourceType);
+	bool incRessource(int x, int y, RessourcesTypes::intResType ressourceType);
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 me);
@@ -281,9 +282,9 @@ public:
 	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
 	bool doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy);
+	bool doesUnitTouchRessource(Unit *unit, RessourcesTypes::intResType ressourceType, int *dx, int *dy);
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
+	bool doesPosTouchRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy);
 	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
@@ -333,8 +334,8 @@ public:
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 	
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
-	bool nearestRessource(int x, int y, RessourceType  ressourceType, int *dx, int *dy);
-	bool nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, RessourcesTypes::intResType  ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, RessourcesTypes::intResType *ressourceType, int *dx, int *dy);
 	//! Only returns ressource into the circle (fx, fy, fsr).
 	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
 

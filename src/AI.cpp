@@ -20,7 +20,6 @@
 #include "AI.h"
 #include "Player.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #include "Game.h"
 #include <assert.h>
 

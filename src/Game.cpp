@@ -1234,12 +1234,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			Uint16 gid=map.getBuilding(x+viewportX, y+viewportY);
 			if (gid!=NOGBID) // Then this is a building
 			{
-				globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
-				globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 128, 0);
-				
+				//globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
+				//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 128, 0);
+
 				int id = Building::GIDtoID(gid);
 				int team = Building::GIDtoTeam(gid);
-				
+
 				Building *building=teams[team]->myBuildings[id];
 				assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 				if (useMapDiscovered
@@ -1255,7 +1255,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		assert(building);
 		BuildingType *type=building->type;
 		Team *team=building->owner;
-		
+
 		int imgid=type->startImage;
 		int x, y;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
@@ -1266,7 +1266,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		// draw building
 		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
-		
+
 		if (!type->hueImage)
 		{
 			// Here we draw the sprite with a flag:
