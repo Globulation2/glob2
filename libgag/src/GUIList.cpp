@@ -271,6 +271,16 @@ void List::removeText(int pos)
 	}
 }
 
+bool List::isText(const char *text) const
+{
+	for (unsigned i=0; i<strings.size(); i++)
+	{
+		if (strings[i] == text)
+			return true;
+	}
+	return false;
+}
+
 const char *List::getText(int pos) const
 {
 	if ((pos>=0) && (pos<(int)strings.size()))
