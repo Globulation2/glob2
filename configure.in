@@ -4,13 +4,6 @@ AM_INIT_AUTOMAKE(glob2, 0.8.2)
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
-#CFLAGS="`freetype-config --cflags` $CFLAGS"
-#LIBS="-lpng $LIBS `freetype-config --libs`"
-#LIBS="-lpng"
-
-dnl CXXFLAGS="-g -Wall $CXXFLAGS"
-dnl LIBS="-lpng $LIBS"
-
 
 dnl Programs 
 AC_PROG_CC
@@ -19,8 +12,8 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 
-dnl Languages
-AC_LANG_C
+dnl Set to C for all libraries test
+AC_LANG(C)
 
 
 dnl Header files
@@ -55,14 +48,14 @@ if test "x$enable_opengl" = "xyes"; then
 fi
 
 
-dnl C & C++ check
-AC_LANG_C
-AC_LANG_CPLUSPLUS
-
-
 dnl Check for header files
 AC_FUNC_ALLOCA
 AC_HEADER_DIRENT
+
+
+dnl Set the C++ after the tests
+AC_LANG(C++)
+
 AC_CHECK_HEADERS(vector,,AC_MSG_WARN(STL classes missing ?))
 
 
