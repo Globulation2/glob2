@@ -131,10 +131,12 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	// add players name
 	Text *text;
+	int inc = (gui->game.session.numberOfTeam < 16) ? 20 : 10;
+	Font *font = (gui->game.session.numberOfTeam < 16) ? globalContainer->standardFont : globalContainer->littleFont;
 	for (int i=0; i<gui->game.session.numberOfTeam; i++)
 	{
 		Team *t=gui->game.teams[i];
-		text=new Text(30, 80+(i*20), globalContainer->standardFont, t->getFirstPlayerName());
+		text=new Text(30, 80+(i*inc), font, t->getFirstPlayerName());
 		text->setColor(t->colorR, t->colorG, t->colorB);
 		addWidget(text);
 	}
