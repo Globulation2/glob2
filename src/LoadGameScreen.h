@@ -20,9 +20,13 @@
 #ifndef __LOAD_GAME_SCREEN_H
 #define __LOAD_GAME_SCREEN_H
 
-#include "GAG.h"
 #include "Session.h"
-#include "GUIMapPreview.h"
+#include <GUIBase.h>
+
+class Button;
+class List;
+class MapPreview;
+class Text;
 
 class LoadGameScreen:public Screen
 {

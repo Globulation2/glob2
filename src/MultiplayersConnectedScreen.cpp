@@ -19,7 +19,13 @@
 
 #include "MultiplayersConnectedScreen.h"
 #include "MultiplayersJoin.h"
-#include "GAG.h"
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <GUITextArea.h>
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 //MultiplayersConnectedScreen pannel part !!
 
@@ -28,7 +34,7 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	this->multiplayersJoin=multiplayersJoin;
 	
 	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Disconnect]"), DISCONNECT));
-	
+
 	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]"), 600, 0));
 
 	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");

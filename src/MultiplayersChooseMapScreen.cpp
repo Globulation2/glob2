@@ -22,6 +22,13 @@
 #include "YOG.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "GUIMapPreview.h"
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <GUIList.h>
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
@@ -176,9 +183,4 @@ void MultiplayersChooseMapScreen::onTimer(Uint32 tick)
 {
 	if (shareOnYOG)
 		yog->step();
-}
-
-void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 }

@@ -20,6 +20,12 @@
 #include "LoadGameScreen.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "GUIMapPreview.h"
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <GUIList.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 LoadGameScreen::LoadGameScreen()
 {
