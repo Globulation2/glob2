@@ -44,7 +44,7 @@
 #define BULLET_IMGID 50
 
 #define MIN_MAX_PRESIGE 500
-#define TEAM_MAX_PRESTIGE 230
+#define TEAM_MAX_PRESTIGE 150
 
 Game::Game(GameGUI *gui)
 {
