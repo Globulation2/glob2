@@ -1463,7 +1463,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				if (type->width==1)
 				{
 					maxWidth=8;
-					actWidth=1+(int)(8.0f*hpRatio);
+					actWidth=1+(int)(7.0f*hpRatio);
 					addDec=2;
 				}
 				else

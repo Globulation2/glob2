@@ -2592,7 +2592,8 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 			{
 				if (c.ressource.id!=NORESID)
 				{
-					if (c.ressource.field.type!=STONE)
+					Sint8 t=c.ressource.field.type;
+					if (t<BASIC_COUNT && t!=STONE)
 						gradient[addrl]=255;
 					else
 						gradient[addrl]=0;
