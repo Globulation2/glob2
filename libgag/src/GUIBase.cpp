@@ -351,7 +351,7 @@ void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 
 void OverlayScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 255);
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 140);
 }
 
 

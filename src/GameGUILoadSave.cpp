@@ -27,9 +27,8 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 {
 	this->isLoad=isLoad;
 	this->extension=Utilities::concat(".", extension);
-	firstPaint=true;
 
-	fileList=new List(10, 35, 280, 150, globalContainer->standardFont);
+	fileList=new List(10, 40, 280, 145, globalContainer->standardFont);
 
 	if (globalContainer->fileManager->initDirectoryListing(directory, extension))
 	{
@@ -51,6 +50,11 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 
 	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
 	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+
+	if (isLoad)
+		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), 300));
+	else
+		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 300));
 
 	fileName=Utilities::concat(fileNameEntry->getText(), this->extension);
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
@@ -95,17 +99,4 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)
 {
 
-}
-
-void LoadSaveScreen::paint(int x, int y, int w, int h)
-{
-	OverlayScreen::paint(x, y, w, h);
-	if (firstPaint)
-	{
-		if (isLoad)
-			gfxCtx->drawString(10, 7, globalContainer->menuFont, globalContainer->texts.getString("[load game]"));
-		else
-			gfxCtx->drawString(10, 7, globalContainer->menuFont, globalContainer->texts.getString("[save game]"));
-		firstPaint=false;
-	}
 }
