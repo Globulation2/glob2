@@ -59,11 +59,6 @@ Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const c
 		this->h=fontPtr->getStringHeight(text);
 		keepH=false;
 	}
-
-	cr = 255;
-	cg = 255;
-	cb = 255;
-	ca = DrawableSurface::ALPHA_OPAQUE;
 }
 
 void Text::setText(const char *newText)
@@ -97,12 +92,9 @@ void Text::setText(const char *newText)
 	}
 }
 
-void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void Text::setStyle(Font::Style style)
 {
-	cr = r;
-	cg = g;
-	cb = b;
-	ca = a;
+	this->style = style;
 }
 
 void Text::internalRepaint(int x, int y, int w, int h)
@@ -110,23 +102,18 @@ void Text::internalRepaint(int x, int y, int w, int h)
 	int wDec, hDec;
 
 	if (hAlignFlag==ALIGN_FILL)
-		wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
+		wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;
 	else
 		wDec=0;
 
 	if (vAlignFlag==ALIGN_FILL)
-		hDec=(h-fontPtr->getStringHeight(text.c_str()))>>1;
+		hDec=(h-fontPtr->getStringHeight(text.c_str(), style.shape))>>1;
 	else
 		hDec=0;
 
-	Font::Style style = fontPtr->getStyle();
-	style.r = cr;
-	style.g = cg;
-	style.b = cb;
-	style.a = ca;
-	fontPtr->pushStyle(style);
+	parent->getSurface()->pushFontStyle(fontPtr, style);
 	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
-	fontPtr->popStyle();
+	parent->getSurface()->popFontStyle(fontPtr);
 }
 
 void Text::internalInit(int x, int y, int w, int h)

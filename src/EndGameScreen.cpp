@@ -197,7 +197,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	for (unsigned i=0; i<teams.size(); i++)
 	{
 		text=new Text(20, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", teams[i].name.c_str(), 140);
-		text->setColor(teams[i].r, teams[i].g, teams[i].b);
+		text->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].r, teams[i].g, teams[i].b));
 		names.push_back(text);
 		addWidget(text);
 	}
@@ -226,7 +226,7 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	std::sort(teams.begin(), teams.end(), moreScore);
 	for (unsigned i=0; i<names.size(); i++)
 	{
-		names[i]->setColor(teams[i].r, teams[i].g, teams[i].b);
+		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].r, teams[i].g, teams[i].b));
 		names[i]->setText(teams[i].name.c_str());
 	}
 }

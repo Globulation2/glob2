@@ -62,25 +62,33 @@ bool TrueTypeFont::load(const char *filename, unsigned size)
 	return false;
 }
 
-int TrueTypeFont::getStringWidth(const char *string) const
+int TrueTypeFont::getStringWidth(const char *string, Shape shape) const
 {
 	int w, h;
+	int oldShape = TTF_GetFontStyle(font);
+	TTF_SetFontStyle(font, shape);
 	TTF_SizeUTF8(font, string, &w, &h);
+	TTF_SetFontStyle(font, oldShape);
 	return w;
 }
 
-int TrueTypeFont::getStringHeight(const char *string) const
+int TrueTypeFont::getStringHeight(const char *string, Shape shape) const
 {
+	int height;
+	int oldShape = TTF_GetFontStyle(font);
+	TTF_SetFontStyle(font, shape);
 	if (string)
 	{
 		int w, h;
 		TTF_SizeUTF8(font, string, &w, &h);
-		return h;
+		height = h;
 	}
 	else
 	{
-		return TTF_FontHeight(font);
+		height = TTF_FontHeight(font);
 	}
+	TTF_SetFontStyle(font, oldShape);
+	return height;
 }
 
 void TrueTypeFont::setStyle(Style style)
@@ -91,7 +99,7 @@ void TrueTypeFont::setStyle(Style style)
 		styleStack.pop();
 	pushStyle(style);
 }
-
+#include <iostream>
 void TrueTypeFont::pushStyle(Style style)
 {
 	assert(font);

@@ -93,8 +93,12 @@ SettingsScreen::SettingsScreen()
 	addWidget(dblbuff);
 	dblbuffText=new Text(20, 150+80, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
 	addWidget(dblbuffText);
+	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
+	addWidget(rebootWarning);
 	
 	setVisibilityFromGraphicType();
+	rebootWarning->visible=false;
 
 	// Username part
 	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
@@ -183,6 +187,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
+			
+			rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 		}
 		else if (source==modeList)
 		{
@@ -264,11 +270,15 @@ void SettingsScreen::setVisibilityFromGraphicType(void)
 	dblbuffText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
 	hwaccel->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
 	hwaccelText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
+	rebootWarning->visible = globalContainer->settings.graphicType == DrawableSurface::GC_GL;
 }
 
 void SettingsScreen::updateGfxCtx(void)
 {
-	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
+	if (globalContainer->settings.graphicType != DrawableSurface::GC_GL)
+	{
+		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
+	}
 	setVisibilityFromGraphicType();
 	dispatchPaint(globalContainer->gfx);
 	actDisplay->setText(actDisplayModeToString().c_str());

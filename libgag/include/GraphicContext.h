@@ -25,8 +25,67 @@
 #include <vector>
 #include <string>
 
-class Font;
 class Sprite;
+
+class Font
+{
+public:
+	enum Shape
+	{
+		STYLE_NORMAL = 0x00,
+		STYLE_BOLD = 0x01,
+		STYLE_ITALIC = 0x02,
+		STYLE_UNDERLINE = 0x04,
+	};
+	
+	struct Style
+	{
+		Shape shape;
+		Uint8 r, g, b, a;
+		
+		Style() { shape = STYLE_NORMAL; r = 255; g = 255; b = 255; a = 255; }
+		
+		Style(Shape shape, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
+		{
+			this->shape = shape;
+			this->r = r;
+			this->g = g;
+			this->b = b;
+			this->a = a;
+		}
+		
+		bool operator<(const Style &o) const
+		{
+			Uint32 w0 = (r<<24) | (g<<16) | (b<<8) | a;
+			Uint32 w1 = (o.r<<24) | (o.g<<16) | (o.b<<8) | o.a;
+			if (w0 == w1)
+				return shape < o.shape;
+			else
+				return w0 < w1;
+		}
+	};
+
+public:
+	virtual ~Font() { }
+
+	// width and height
+	virtual int getStringWidth(const char *string, Shape shape = STYLE_NORMAL) const = 0;
+	virtual int getStringWidth(const char *string, int len, Shape shape = STYLE_NORMAL) const;
+	virtual int getStringWidth(const int i, Shape shape = STYLE_NORMAL) const;
+	virtual int getStringHeight(const char *string, Shape shape = STYLE_NORMAL) const = 0;
+	virtual int getStringHeight(const char *string, int len, Shape shape = STYLE_NORMAL) const;
+	virtual int getStringHeight(const int i, Shape shape = STYLE_NORMAL) const;
+
+	// Style and color
+	virtual void setStyle(Style style) = 0;
+	virtual Style getStyle(void) const = 0;
+	
+protected:
+	friend class DrawableSurface;
+	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) = 0;
+	virtual void pushStyle(Style style) = 0;
+	virtual void popStyle(void) = 0;
+};
 
 class DrawableSurface
 {
@@ -141,6 +200,25 @@ protected:
 		virtual void apply(DrawableSurface *ds) { ds->drawString(x, y, w, font, msg.c_str()); }
 	};
 	
+	class PushFontStyleCommand: public DrawCommand
+	{
+	protected:
+		Font *font;
+		Font::Style style;
+	public:
+		PushFontStyleCommand(Font *font, Font::Style style) { this->font=font; this->style=style; }
+		virtual void apply(DrawableSurface *ds) { ds->pushFontStyle(font, style); }
+	};
+	
+	class PopFontStyleCommand: public DrawCommand
+	{
+	protected:
+		Font *font;
+	public:
+		PopFontStyleCommand(Font *font) { this->font=font; }
+		virtual void apply(DrawableSurface *ds) { ds->popFontStyle(font); }
+	};
+	
 	class DrawSurfaceCommand: public DrawCommand
 	{
 	protected:
@@ -200,6 +278,8 @@ public:
 	virtual void drawString(int x, int y, Font *font, const char *msg);
 	virtual void drawString(int x, int y, int w, Font *font, const char *msg);
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);
+	virtual void pushFontStyle(Font *font, Font::Style style);
+	virtual void popFontStyle(Font *font);
 	virtual void updateRects(SDL_Rect * /*rects*/, int /*size*/) { }
 	virtual void updateRect(int /*x*/, int /*y*/, int /*w*/, int /*h*/) { }
 	virtual void *getPixelPointer(void)  { return surface->pixels; }
@@ -236,68 +316,6 @@ public:
 	virtual void printScreen(const char *filename);
 	virtual void setPartialRedraw(bool value) { partialRedraw = value; }
 };
-
-
-class Font
-{
-public:
-	enum Shape
-	{
-		STYLE_NORMAL = 0x00,
-		STYLE_BOLD = 0x01,
-		STYLE_ITALIC = 0x02,
-		STYLE_UNDERLINE = 0x04,
-	};
-	
-	struct Style
-	{
-		Shape shape;
-		Uint8 r, g, b, a;
-		
-		Style() { shape = STYLE_NORMAL; r = 255; g = 255; b = 255; a = DrawableSurface::ALPHA_OPAQUE; }
-		
-		Style(Shape shape, Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE)
-		{
-			this->shape = shape;
-			this->r = r;
-			this->g = g;
-			this->b = b;
-			this->a = a;
-		}
-		
-		bool operator<(const Style &o) const
-		{
-			Uint32 w0 = (r<<24) | (g<<16) | (b<<8) | a;
-			Uint32 w1 = (o.r<<24) | (o.g<<16) | (o.b<<8) | o.a;
-			if (w0 == w1)
-				return shape < o.shape;
-			else
-				return w0 < w1;
-		}
-	};
-
-public:
-	virtual ~Font() { }
-
-	// width and height
-	virtual int getStringWidth(const char *string) const = 0;
-	virtual int getStringWidth(const char *string, int len) const;
-	virtual int getStringWidth(const int i) const;
-	virtual int getStringHeight(const char *string) const = 0;
-	virtual int getStringHeight(const char *string, int len) const;
-	virtual int getStringHeight(const int i) const;
-
-	// Style and color
-	virtual void setStyle(Style style) = 0;
-	virtual void pushStyle(Style style) = 0;
-	virtual void popStyle(void) = 0;
-	virtual Style getStyle(void) const = 0;
-	
-protected:
-	friend class DrawableSurface;
-	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) = 0;
-};
-
 
 union Color32
 {

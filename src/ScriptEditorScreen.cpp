@@ -65,13 +65,13 @@ bool ScriptEditorScreen::testCompile(void)
 
 	if (er.type==ErrorReport::ET_OK)
 	{
-		compilationResult->setColor(100, 255, 100);
+		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
 		compilationResult->setText("Compilation success");
 		return true;
 	}
 	else
 	{
-		compilationResult->setColor(255, 50, 50);
+		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 		compilationResult->setText(GAG::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
 		editor->setCursorPos(er.pos);
 		return false;
@@ -151,7 +151,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"rb");
 			if (!stream)
 			{
-				compilationResult->setColor(255, 50, 50);
+				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 				compilationResult->setText(GAG::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}
@@ -170,7 +170,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"wb");
 			if (!stream)
 			{
-				compilationResult->setColor(255, 50, 50);
+				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 				compilationResult->setText(GAG::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
 				return;
 			}

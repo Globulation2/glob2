@@ -1119,6 +1119,34 @@ void DrawableSurface::drawString(int x, int y, int w, Font *font, const char *ms
 	font->drawString(surface, x, y, w, output.c_str(), &clipRect);
 }
 
+void DrawableSurface::pushFontStyle(Font *font, Font::Style style)
+{
+	if (!surface)
+		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new PushFontStyleCommand(font, style));
+		return;
+	}
+	
+	font->pushStyle(style);
+}
+
+void DrawableSurface::popFontStyle(Font *font)
+{
+	if (!surface)
+		return;
+		
+	if ((flags & DOUBLEBUF) && partialRedraw)
+	{
+		drawCommands.push_back(new PopFontStyleCommand(font));
+		return;
+	}
+	
+	font->popStyle();
+}
+
 void DrawableSurface::drawSurface(int x, int y, DrawableSurface *osurface)
 {
 	if ((!surface) || (!osurface) || (!osurface->surface))
@@ -1198,6 +1226,7 @@ bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 		sdlFlags |= SDL_GLSDL;
 		sdlFlags |= SDL_HWSURFACE;
 		sdlFlags |= SDL_DOUBLEBUF;
+		sdlFlags &= ~SDL_RESIZABLE;
 	}
 	
 	if (minW && (w < minW))
@@ -1333,32 +1362,32 @@ void GraphicContext::printScreen(const char *filename)
 }
 
 
-int Font::getStringWidth(const int i) const
+int Font::getStringWidth(const int i, Shape shape) const
 {
 	std::ostringstream temp;
 	temp << i;
-	return getStringWidth(temp.str().c_str());
+	return getStringWidth(temp.str().c_str(), shape);
 }
 
-int Font::getStringWidth(const char *string, int len) const
+int Font::getStringWidth(const char *string, int len, Shape shape) const
 {
 	std::string temp;
 	temp.append(string, len);
-	return getStringWidth(temp.c_str());
+	return getStringWidth(temp.c_str(), shape);
 }
 
-int Font::getStringHeight(const char *string, int len) const
+int Font::getStringHeight(const char *string, int len, Shape shape) const
 {
 	std::string temp;
 	temp.append(string, len);
-	return getStringHeight(temp.c_str());
+	return getStringHeight(temp.c_str(), shape);
 }
 
-int Font::getStringHeight(const int i) const
+int Font::getStringHeight(const int i, Shape shape) const
 {
 	std::ostringstream temp;
 	temp << i;
-	return getStringHeight(temp.str().c_str());
+	return getStringHeight(temp.str().c_str(), shape);
 }
 
 

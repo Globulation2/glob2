@@ -56,6 +56,7 @@ private:
 	Text *title, *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
 	Text *actDisplay;
+	Text *rebootWarning;
 
 	bool gfxAltered;
 	

@@ -1069,6 +1069,16 @@ Impostazioni
 Настройки
 Opciones
 Beállítások
+[Warning, you need to reboot the game for changes to take effect]
+Attention, il faut rédemarrer le jeu pour que les changements soient pris en compte
+Warning, you need to reboot the game for changes to take effect
+
+
+
+
+
+
+
 [editor]
 Editeur
 Editor
