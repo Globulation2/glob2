@@ -311,7 +311,8 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		filename=NULL;
 		
 		fprintf(logFile, " we may need to download, we don't have a random map.\n");
-		filename=sessionInfo.getFileName().c_str();
+		std::string filenameString = sessionInfo.getFileName();
+		const char *filename = filenameString.c_str();
 		
 		assert(filename);
 		assert(filename[0]);
