@@ -90,6 +90,10 @@ public:
 	void shareGame(const char *gameName);
 	void unshareGame();
 	
+	void joinGame();
+	void unjoinGame();
+	bool joinedGame;
+	
 	bool isMessage(void);
 	const char *getMessage(void);
 	const char *getMessageSource(void);

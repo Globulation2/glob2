@@ -140,7 +140,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
-	globalContainer->yog->shareGame(mapName);
+	globalContainer->yog->shareGame(sessionInfo.map.getMapName());
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;

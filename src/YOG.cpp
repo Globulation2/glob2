@@ -44,6 +44,8 @@ YOG::YOG()
 	
 	gameSocket=NULL;
 	gameSocketReceived=false;
+	
+	joinedGame=false;
 }
 
 YOG::~YOG()
@@ -342,14 +344,14 @@ bool YOG::enableConnection(const char *userName)
 	receivedMessages.clear();
 	lastMessageID=0;
 	
-	connectionTimeout=2;//2 instead of 0 to share brandwith with others timouts
+	connectionTimeout=0+2;//2 instead of 0 to share brandwith with others timouts
 	connectionTOTL=3;
 	
 	games.clear();
-	gamesTimeout=4;//4 instead of 0 to share brandwith with others timouts
+	gamesTimeout=0+4;//4 instead of 0 to share brandwith with others timouts
 	gamesTOTL=3;
 	
-	presenceTimeout=6;//5 instead of 0 to share brandwith with others timouts
+	presenceTimeout=0+6;//6 instead of 0 to share brandwith with others timouts
 	presenceTOTL=3;
 	
 	gameSocket=NULL;
@@ -422,7 +424,7 @@ void YOG::step()
 			switch (yogSharingState)
 			{
 			case YSS_NOT_SHARING_GAME:
-				if (gamesTimeout--<=0)
+				if (!joinedGame && gamesTimeout--<=0)
 				{
 					if (gamesTOTL--<=0)
 					{
@@ -465,6 +467,17 @@ void YOG::step()
 			break;
 			} // end switch yogSharingState
 			
+			
+		} // end case YGS_CONNECTED
+		case YGS_PLAYING:
+		break;
+		default:
+
+		break;
+		}
+		
+		if (yogGlobalState==YGS_CONNECTED || yogGlobalState==YGS_PLAYING)
+		{
 			if (sendingMessages.size()>0)
 			{
 				std::list<Message>::iterator mit=sendingMessages.begin();
@@ -481,10 +494,17 @@ void YOG::step()
 						send(YMT_SEND_MESSAGE, mit->messageID, (Uint8 *)mit->text, mit->textLength);
 					}
 			}
-		} // end case YGS_CONNECTED
-		case YGS_PLAYING:
+		}
+		
+		if (joinedGame)
 		{
-			if (presenceTimeout--<=0)
+			assert(yogGlobalState==YGS_CONNECTED);
+			assert(yogSharingState==YSS_NOT_SHARING_GAME);
+		}
+		
+		if (yogGlobalState==YGS_PLAYING || joinedGame || yogSharingState>YSS_NOT_SHARING_GAME)
+		{
+			if (yogGlobalState>=YGS_CONNECTED && presenceTimeout--<=0)
 			{
 				if (presenceTOTL--<=0)
 					printf("YOG::Connection lost to YOG!\n"); //TODO!
@@ -492,11 +512,6 @@ void YOG::step()
 					send(YMT_CONNECTION_PRESENCE);
 				presenceTimeout=LONG_NETWORK_TIMEOUT;
 			}
-		}
-		break;
-		default:
-
-		break;
 		}
 		
 		if (yogSharingState==YSS_STOP_SHARING_GAME && sharingGameTimeout--<=0)
@@ -551,10 +566,6 @@ void YOG::step()
 			printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
 		}
 		SDLNet_FreePacket(packet);
-
-		
-
-
 	}
 }
 
@@ -576,6 +587,17 @@ void YOG::unshareGame()
 	
 	gameSocket=NULL;
 	gameSocketReceived=false;
+}
+
+void YOG::joinGame()
+{
+	joinedGame=true;
+}
+
+void YOG::unjoinGame()
+{
+	assert(joinedGame);
+	joinedGame=false;
 }
 
 bool YOG::isMessage(void)
@@ -627,6 +649,7 @@ bool YOG::newGameList(bool reset)
 
 void YOG::gameStarted()
 {
+	assert(!joinedGame);
 	printf("YOG::gameStarted()\n");
 	if (yogGlobalState==YGS_CONNECTED)
 		yogGlobalState=YGS_PLAYING;
