@@ -32,8 +32,13 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 
+#define IRC_CHAN "#glob2"
+#define IRC_SERVER "irc.freenode.net"
+
 // TODO: is it anyway to do this cleaner ?
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
+
+IRC *ircPtr = NULL;
 
 YOGScreen::YOGScreen()
 {
@@ -62,15 +67,34 @@ YOGScreen::YOGScreen()
 	selectedGameInfo=NULL;
 	
 	executionMode=0;
+	
+	irc.connect(IRC_SERVER, 6667, yog->userName);
+	irc.joinChannel(IRC_CHAN);
+	irc.setChatChannel(IRC_CHAN);
+	ircPtr = &irc;
 }
 
 YOGScreen::~YOGScreen()
 {
+	irc.disconnect();
+	ircPtr = NULL;
 	delete multiplayersJoin;
 	if (selectedGameInfo)
 		delete selectedGameInfo;
 }
+/* Should we disconnect from IRC while playing ?
+YOGScreen::ircConnect(void)
+{
+	irc.connect(IRC_SERVER, 6667, yog->userName);
+	irc.joinChannel(IRC_CHAN);
+	irc.setChatChannel(IRC_CHAN);
+}
 
+YOGScreen::ircDisconnect(void)
+{
+	irc.disconnect();
+}
+*/
 
 void YOGScreen::updateGameList(void)
 {
@@ -163,6 +187,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==TEXT_VALIDATED)
 	{
 		yog->sendMessage(textInput->getText());
+		irc.sendCommand(textInput->getText());
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -191,6 +216,73 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void YOGScreen::onTimer(Uint32 tick)
 {
+	// IRC
+	irc.step();
+	
+	while (irc.isChatMessage())
+	{
+		chatWindow->addText(irc.getChatMessageSource());
+		chatWindow->addText(" @ ");
+		chatWindow->addText(irc.getChatMessageDiffusion());
+		chatWindow->addText(" : ");
+		chatWindow->addText(irc.getChatMessage());
+		chatWindow->addText("\n");
+		chatWindow->scrollToBottom();
+		irc.freeChatMessage();
+	}
+	
+	while (irc.isInfoMessage())
+	{
+		chatWindow->addText(irc.getInfoMessageSource());
+		
+		switch (irc.getInfoMessageType())
+		{
+			case IRC::IRC_MSG_JOIN:
+			chatWindow->addText(" has joint irc channel ");
+			break;
+			
+			case IRC::IRC_MSG_PART:
+			chatWindow->addText(" has left irc channel ");
+			break;
+			
+			case IRC::IRC_MSG_QUIT:
+			chatWindow->addText(" has quitted irc, reason");
+			break;
+			
+			case IRC::IRC_MSG_MODE:
+			chatWindow->addText(" has set mode of ");
+			break;
+			
+			case IRC::IRC_MSG_NOTICE:
+			if (irc.getInfoMessageSource()[0])
+				chatWindow->addText(" noticed ");
+			else
+				chatWindow->addText("Notice ");
+			break;
+			
+			default:
+			chatWindow->addText(" has sent an unhandled IRC Info Message:");
+			break;
+		}
+		
+		if (irc.getInfoMessageDiffusion())
+		{
+			chatWindow->addText(irc.getInfoMessageDiffusion());
+		}
+		
+		if (irc.getInfoMessageText()[0])
+		{
+			chatWindow->addText(" : " );
+			chatWindow->addText(irc.getInfoMessageText());
+		}
+		
+		chatWindow->addText("\n");
+		chatWindow->scrollToBottom();
+		irc.freeInfoMessage();
+	}
+	
+	
+	// YOG
 	if (yog->newGameList(true))
 		updateGameList();	
 	if (yog->newPlayerList(true))

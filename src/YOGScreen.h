@@ -23,6 +23,7 @@
 #include "MultiplayersJoin.h"
 #include <vector>
 #include "YOG.h"
+#include "IRC.h"
 #include <GUIBase.h>
 using namespace GAGGUI;
 
@@ -63,6 +64,8 @@ protected:
 	TextArea *chatWindow;
 	
 	TextButton *joinButton;
+	
+	IRC irc;
 
 	void updateGameList(void);
 	void updatePlayerList(void);

@@ -40,6 +40,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "YOG.h"
+#include "IRC.h"
 #include "SoundMixer.h"
 
 #define TYPING_INPUT_BASE_INC 7
@@ -68,6 +69,9 @@
 #define YOFFSET_PROGRESS_BAR 10
 
 #define YOFFSET_BRUSH 64
+
+//! Pointer to IRC client in YOGScreen, NULL if no IRC client is available
+extern IRC *ircPtr;
 
 enum GameGUIGfxId
 {
@@ -386,6 +390,11 @@ void GameGUI::step(void)
 	
 	// do a yog step
 	yog->step();
+	
+	// do a irc step if we have to
+	if (ircPtr)
+		ircPtr->step();
+	// TODO : should we read the datas now or let them for return to YOGScreen ?
 
 	// display yog chat messages
 	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
