@@ -20,6 +20,7 @@
 #ifndef __MULTIPLAYERHOSTSCREEN_H
 #define __MULTIPLAYERHOSTSCREEN_H
 
+#include <vector>
 #include <GUIBase.h>
 using namespace GAGGUI;
 
@@ -41,14 +42,13 @@ public:
 	enum
 	{
 		START = 1,
-		CANCEL = 5,
-		ADD_AI_NUMBI = 7,
-		ADD_AI_CASTOR = 8,
-
+		CANCEL = 2,
 		STARTED=11,
 		
 		COLOR_BUTTONS=32,
-		CLOSE_BUTTONS=64
+		CLOSE_BUTTONS=64,
+		
+		ADD_AI = 100
 	};
 
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
@@ -69,7 +69,7 @@ public:
 	bool shareOnYOG;
 
 	TextButton *startButton;
-	TextButton *addAINumbi, *addAICastor;
+	std::vector<TextButton *> addAI;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];

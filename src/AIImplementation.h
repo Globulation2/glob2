@@ -67,7 +67,6 @@ class AIImplementation
 {
 public:
 	AIImplementation(){}
-	virtual void init(Player *player)=0;
 	virtual ~AIImplementation(){}
 	
 	virtual bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor)=0;

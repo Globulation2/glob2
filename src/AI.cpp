@@ -27,6 +27,7 @@
 #include "AINull.h"
 #include "AINumbi.h"
 #include "AICastor.h"
+#include "AIToubib.h"
 
 /*AI::AI(Player *player)
 {
@@ -49,6 +50,9 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		break;
 		case CASTOR:
 			aiImplementation=new AICastor(player);
+		break;
+		case TOUBIB:
+			aiImplementation=new AIToubib(player);
 		break;
 		default:
 			assert(false);
@@ -115,6 +119,9 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 		break;
 		case CASTOR:
 			aiImplementation=new AICastor(stream, player, versionMinor);
+		break;
+		case TOUBIB:
+			aiImplementation=new AIToubib(stream, player, versionMinor);
 		break;
 		default:
 			assert(false);

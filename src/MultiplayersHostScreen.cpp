@@ -35,10 +35,14 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addAINumbi=new TextButton(20, 285, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AINumbi]"), ADD_AI_NUMBI);
-	addWidget(addAINumbi);
-	addAICastor=new TextButton(20, 335, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AICastor]"), ADD_AI_CASTOR);
-	addWidget(addAICastor);
+	// we don't want to add AI_NONE
+	for (size_t i=1; i<AI::SIZE; i++)
+	{
+		TextButton *button = new TextButton(20, 335-50*(i-1), 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[AI]", i), ADD_AI+i);
+		addWidget(button);
+		addAI.push_back(button);
+	}
+	
 	startButton=new TextButton(20, 385, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
 	addWidget(new TextButton(20, 435, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 
@@ -305,40 +309,41 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		switch (par1)
+		if (par1 == START)
 		{
-		case START :
 			multiplayersHost->startGame();
-		break;
-		case CANCEL :
+		}
+		else if (par1 == CANCEL)
+		{
 			multiplayersHost->stopHosting();
 			if (shareOnYOG)
 				executionMode=par1;
 			else
 				endExecute(par1);
-		break;
-		case ADD_AI_NUMBI :
-		case ADD_AI_CASTOR :
+		}
+		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))
+		{
 			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
 				&&(multiplayersHost->sessionInfo.numberOfPlayer<MAX_NUMBER_OF_PLAYERS))
 			{
-				multiplayersHost->addAI((AI::ImplementitionID)(par1-ADD_AI_NUMBI+AI::NUMBI));
+				multiplayersHost->addAI((AI::ImplementitionID)(par1-ADD_AI));
 				if (multiplayersHost->sessionInfo.numberOfPlayer>=16)
 				{
-					addAINumbi->hide();
-					addAICastor->hide();
+					for (size_t i=0; i<addAI.size(); i++)
+						addAI[i]->hide();
 					gameFullText->show();
 				}
 			}
-		break;
-		case -1:
+		}
+		else if (par1 == -1)
+		{
 			multiplayersHost->stopHosting();
 			if (shareOnYOG)
 				executionMode=par1;
 			else
 				endExecute(par1);
-		break;
-		default:
+		}
+		else
 		{
 			if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 			{
@@ -346,12 +351,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 				if (multiplayersHost->sessionInfo.numberOfPlayer<16)
 				{
 					gameFullText->hide();
-					addAINumbi->show();
-					addAICastor->show();
+					for (size_t i=0; i<addAI.size(); i++)
+						addAI[i]->show();
 				}
 			}
-		}
-		break;
 		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)

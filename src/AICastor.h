@@ -118,7 +118,6 @@ private:
 public:
 	AICastor(Player *player);
 	AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	void init(Player *player);
 	~AICastor();
 
 	Player *player;
@@ -132,6 +131,7 @@ public:
 	Order *getOrder(void);
 	
 private:
+	void init(Player *player);
 	void defineStrategy();
 	
 	Order *controlSwarms();

@@ -12,6 +12,8 @@ AINumbi.h\
 AINumbi.cpp\
 AICastor.h\
 AICastor.cpp\
+AIToubib.h\
+AIToubib.cpp\
 Building.cpp\
 Building.h\
 BuildingType.cpp\
