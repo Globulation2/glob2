@@ -166,7 +166,7 @@ void MapPreview::setMapThumbnail(const char *mapName)
 				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 
-				mapThumbnail->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
+				mapThumbnail->drawPixel(dx+decX, dy+decY, r, g, b);
 			}
 		}
 		mapThumbnail->unlock();
