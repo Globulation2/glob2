@@ -64,8 +64,9 @@ public:
 	Sint32 lastInsideSubscribe;
 	
 	// optimisation / consistency
-	bool job[NB_ABILITY]; // If true, then is allready in owner->job[i]
-	bool attract[NB_ABILITY]; // If true, then is allready in owner->attract[i]
+	Sint32 job[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->job[i], 2:not in owner->job[i]}
+	Sint32 attract[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->attract[i], 2:not in owner->attract[i]}
+	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity
 	Sint32 UID; // Sint16, for reservation see below

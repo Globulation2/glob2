@@ -191,7 +191,7 @@ public:
 	// building attraction handling
 	// FIXME : should we duplicate this
 	Building *attachedBuilding;
-	int destinationPurprose;
+	Sint32 destinationPurprose;
 	bool subscribed;
 	int caryedRessource;
 
