@@ -80,7 +80,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	startGameTimeCounter=0;
 
 	serverName=serverNameMemory;
-	serverName[0]=0;
+	serverNameMemory[0]=0;
 	playerName[0]=0;
 	
 	serverIP.host=0;
@@ -761,7 +761,7 @@ void MultiplayersJoin::receiveTime()
 						serverIP.host=it->ip;
 						serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
-						char *s=SDLNet_ResolveIP(&serverIP);
+						const char *s=SDLNet_ResolveIP(&serverIP);
 						if (s)
 							serverName=s;
 						else
@@ -1347,7 +1347,8 @@ bool MultiplayersJoin::tryConnection()
 	
 	if (!shareOnYOG)
 	{
-		if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
+		serverName = serverNameMemory;
+		if (SDLNet_ResolveHost(&serverIP, serverNameMemory, SERVER_PORT)==0)
 		{
 			fprintf(logFile, "serverName=(%s)\n", serverName);
 			fprintf(logFile, "found serverIP=%s\n", Utilities::stringIP(serverIP));
@@ -1438,12 +1439,12 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	const char *s=SDLNet_ResolveIP(&yogGameInfo->hostip);
 	if (s)
 	{
-		strncpy(serverName, s, 128);
-		serverName[127]=0;
+		strncpy(serverNameMemory, s, 128);
+		serverNameMemory[127]=0;
 	}
 	else
 	{
-		Utilities::stringIP(serverName, 128, yogGameInfo->hostip.host);
+		Utilities::stringIP(serverNameMemory, 128, yogGameInfo->hostip.host);
 	}
 	serverIP=yogGameInfo->hostip;
 	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);
