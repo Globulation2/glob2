@@ -24,14 +24,12 @@
 #include "Header.h"
 
 #ifdef macintosh
-#ifndef MACOS_OPENTRANSPORT
-#define MACOS_OPENTRANSPORT
-#endif
+#define DISABLE_GLOB_LAN_BROADCAST
 #endif
 
 
 // Include system network headers
-#ifdef MACOS_OPENTRANSPORT
+#ifdef DISABLE_GLOB_LAN_BROADCAST
 
 
 #else
@@ -74,7 +72,7 @@ private:
 	Uint16 port;
 
 
-#ifndef MACOS_OPENTRANSPORT
+#ifndef DISABLE_GLOB_LAN_BROADCAST
 private:
 	hostent *hostEnt;
 	sockaddr_in cliAddr;
