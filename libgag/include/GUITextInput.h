@@ -30,7 +30,7 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	class TextInput: public RectangularWidget
+	class TextInput: public HighlightableWidget
 	{
 	protected:
 		std::string font;

@@ -60,6 +60,8 @@ namespace GAGGUI
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		HighlightableWidget::onSDLEvent(event);
 	
 		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -168,6 +170,7 @@ namespace GAGGUI
 		int i=0;
 		unsigned elementLength;
 	
+		HighlightableWidget::paint();
 		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	
 		unsigned count = (h-4) / textHeight;

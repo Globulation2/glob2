@@ -31,7 +31,7 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	class List: public RectangularWidget
+	class List: public HighlightableWidget
 	{
 	protected:
 		std::string font;
@@ -45,7 +45,7 @@ namespace GAGGUI
 		GAGCore::Font *fontPtr;
 	
 	public:
-		List():RectangularWidget() { fontPtr = NULL; }
+		List() { fontPtr = NULL; }
 		List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font);
 		virtual ~List();
 	
