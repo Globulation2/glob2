@@ -739,6 +739,7 @@ void Building::cancelDelete(void)
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
+	// we do not update owner->buildingsWaitingForDestruction because Team::syncStep will remove this building from the list
 }
 
 void Building::updateClearingFlag(bool canSwim)
