@@ -87,7 +87,7 @@ void GameGUI::flagSelectedStep(void)
 	// update flag
 	int mx, my;
 	Uint8 button=SDL_GetMouseState(&mx, &my);
-	if (button&SDL_BUTTON(1))
+	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
 	{
 		if (selBuild && (selBuild->type->isVirtual))
 		{
@@ -768,9 +768,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			{
 				if (UID<0)
 				{
-					int buildingTeam=Building::UIDtoTeam(UID);
-					// we can select for view buildings that are allied AND shared vision
-					if (((game.teams[buildingTeam]->allies) &(1<<localTeam)) && (game.teams[localTeam]->sharedVision&(1<<buildingTeam)))
+					// we can select for view buildings that are in shared vision
+					if (game.map.isFOW(mapX, mapY, game.teams[localTeam]->sharedVision))
 					{
 						displayMode=BUILDING_SELECTION_VIEW;
 						game.selectedUnit=NULL;
@@ -1128,120 +1127,122 @@ void GameGUI::draw(void)
 			if (selBuild->type->shootDamage)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+22, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[damage]"), selBuild->type->shootDamage);
 
-			if (selBuild->type->maxUnitWorking)
+			if ((selBuild->owner->allies) &(1<<localTeam))
 			{
-				if (selBuild->buildingState==Building::ALIVE)
+				if (selBuild->type->maxUnitWorking)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
-					drawScrollBox(globalContainer->gfx->getW()-128, 256+35+12, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
-				}
-				else
-				{
-					if (selBuild->unitsWorking.size()>1)
+					if (selBuild->buildingState==Building::ALIVE)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s%d%s",
-							globalContainer->texts.getString("[still (w)]"),
-							selBuild->unitsWorking.size(),
-							globalContainer->texts.getString("[units working]"));
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+35+12, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 					}
-					else if (selBuild->unitsWorking.size()==1)
+					else
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s",
-							globalContainer->texts.getString("[still one unit working]") );
-					}
-				}
-			}
-
-			if (selBuild->type->unitProductionTime)
-			{
-				int Left=(selBuild->productionTimeout*128)/selBuild->type->unitProductionTime;
-				int Elapsed=128-Left;
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+55+12, Elapsed, 7, 100, 100, 255);
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+55+12, Left, 7, 128, 128, 128);
-
-				for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-				{
-					drawScrollBox(globalContainer->gfx->getW()-128, 256+80+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+83+(i*20)+12, globalContainer->littleFontGreen, "%s", globalContainer->texts.getString("[unit type]", i));
-				}
-			}
-
-			if (selBuild->type->maxUnitInside)
-			{
-				if (selBuild->buildingState==Building::ALIVE)
-				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
-				}
-				else
-				{
-					if (selBuild->unitsInside.size()>1)
-					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s%d%s",
-							globalContainer->texts.getString("[still (i)]"),
-							selBuild->unitsInside.size(),
-							globalContainer->texts.getString("[units inside]"));
-					}
-					else if (selBuild->unitsInside.size()==1)
-					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s",
-							globalContainer->texts.getString("[still one unit inside]") );
+						if (selBuild->unitsWorking.size()>1)
+						{
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s%d%s",
+								globalContainer->texts.getString("[still (w)]"),
+								selBuild->unitsWorking.size(),
+								globalContainer->texts.getString("[units working]"));
+						}
+						else if (selBuild->unitsWorking.size()==1)
+						{
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFontGreen, "%s",
+								globalContainer->texts.getString("[still one unit working]") );
+						}
 					}
 				}
-			}
-			for (int i=0; i<NB_RESSOURCES; i++)
-				if (selBuild->type->maxRessource[i])
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10)+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
 
-			// it is a unit ranged attractor (aka flag)
-			if (selBuild->type->defaultUnitStayRange)
-			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
+				if (selBuild->type->unitProductionTime)
+				{
+					int Left=(selBuild->productionTimeout*128)/selBuild->type->unitProductionTime;
+					int Elapsed=128-Left;
+					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+55+12, Elapsed, 7, 100, 100, 255);
+					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+55+12, Left, 7, 128, 128, 128);
 
-				// get flag stat
-				int goingTo, attacking, removingBlack;
-				selBuild->computeFlagStat(&goingTo, &attacking, &removingBlack);
-				int onSpot=attacking+removingBlack;
-				// display flag stat
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+80, globalContainer->littleFontGreen, "%d %s", goingTo, globalContainer->texts.getString("[in way]"));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+92, globalContainer->littleFontGreen, "%d %s", onSpot, globalContainer->texts.getString("[on the spot]"));
+					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+					{
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+80+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+83+(i*20)+12, globalContainer->littleFontGreen, "%s", globalContainer->texts.getString("[unit type]", i));
+					}
+				}
 
-				// display range box
-				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
-					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
-				else if (selBuild->type->type==BuildingType::WAR_FLAG)
-					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
-				else
-					assert(false);
-			}
+				if (selBuild->type->maxUnitInside)
+				{
+					if (selBuild->buildingState==Building::ALIVE)
+					{
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
+					}
+					else
+					{
+						if (selBuild->unitsInside.size()>1)
+						{
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s%d%s",
+								globalContainer->texts.getString("[still (i)]"),
+								selBuild->unitsInside.size(),
+								globalContainer->texts.getString("[units inside]"));
+						}
+						else if (selBuild->unitsInside.size()==1)
+						{
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFontGreen, "%s",
+								globalContainer->texts.getString("[still one unit inside]") );
+						}
+					}
+				}
+				for (int i=0; i<NB_RESSOURCES; i++)
+					if (selBuild->type->maxRessource[i])
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10)+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
 
-			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-			{
-				drawTextCenter(globalContainer->gfx->getW()-128, 256+172, "[wait destroy]");
-			}
-			else if (selBuild->buildingState==Building::ALIVE)
-			{
-				drawButton(globalContainer->gfx->getW()-128+16, 256+172, "[destroy]");
-			}
+				// it is a unit ranged attractor (aka flag)
+				if (selBuild->type->defaultUnitStayRange)
+				{
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
 
-			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
-			{
-				if ((selBuild->type->lastLevelTypeNum!=-1))
+					// get flag stat
+					int goingTo, attacking, removingBlack;
+					selBuild->computeFlagStat(&goingTo, &attacking, &removingBlack);
+					int onSpot=attacking+removingBlack;
+					// display flag stat
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+80, globalContainer->littleFontGreen, "%d %s", goingTo, globalContainer->texts.getString("[in way]"));
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+92, globalContainer->littleFontGreen, "%d %s", onSpot, globalContainer->texts.getString("[on the spot]"));
+
+					// display range box
+					if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
+					else if (selBuild->type->type==BuildingType::WAR_FLAG)
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
+					else
+						assert(false);
+				}
+
+				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+				{
+					drawTextCenter(globalContainer->gfx->getW()-128, 256+172, "[wait destroy]");
+				}
+				else if (selBuild->buildingState==Building::ALIVE)
+				{
+					drawButton(globalContainer->gfx->getW()-128+16, 256+172, "[destroy]");
+				}
+
+				if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
+				{
+					if ((selBuild->type->lastLevelTypeNum!=-1))
+						drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+				}
+				else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
-			}
-			else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
-			{
-				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
-			}
-			else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
-			{
-				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
-			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
-			{
-				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
-			}
-			//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFontGreen, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
-
+				}
+				else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
+				{
+					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+				}
+				else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+				{
+					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
+				}
+				//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFontGreen, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
+				}
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
@@ -1711,16 +1712,19 @@ void GameGUI::iterateSelection(void)
 		int pos=Building::UIDtoID(selectionUID);
 		int team=Building::UIDtoTeam(selectionUID);
 		int i=pos;
-		while (i<pos+512)
+		if (team==localTeam)
 		{
-			i++;
-			Building *b=game.teams[team]->myBuildings[i&0x1FF];
-			if (b && b->typeNum==selBuild->typeNum)
+			while (i<pos+512)
 			{
-				selBuild=b;
-				selectionUID=b->UID;
-				centerViewportOnSelection();
-				break;
+				i++;
+				Building *b=game.teams[team]->myBuildings[i&0x1FF];
+				if (b && b->typeNum==selBuild->typeNum)
+				{
+					selBuild=b;
+					selectionUID=b->UID;
+					centerViewportOnSelection();
+					break;
+				}
 			}
 		}
 	}

@@ -32,6 +32,8 @@ Unit::Unit(SDL_RWops *stream, Team *owner)
 
 Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int level)
 {
+	int i;
+
 	// unit specification
 	typeNum=type;
 
@@ -70,12 +72,10 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	borderY=0;
 
 	// quality parameters
+	for (i=0; i<NB_ABILITY; i++)
 	{
-		for (int i=0; i<NB_ABILITY; i++)
-		{
-			this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
-			this->level[i]=level;
-		}
+		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
+		this->level[i]=level;
 	}
 
 	// trigger parameters
@@ -92,7 +92,8 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	if (performance[ATTACK_SPEED])
 		trigHungry=(hungry*2)/10;
 	else
-		trigHungry=(hungry*5)/20;
+		trigHungry=hungry/4;
+	trigHungryCarying=hungry/10;
 
 
 	// NOTE : rewrite hp from level
@@ -110,6 +111,8 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 
 void Unit::load(SDL_RWops *stream, Team *owner)
 {
+	int i;
+
 	// unit specification
 	typeNum=(UnitType::TypeNum)SDL_ReadBE32(stream);
 	race=&(owner->race);
@@ -159,18 +162,17 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	// hungry
 	hungry=SDL_ReadBE32(stream);
 	trigHungry=SDL_ReadBE32(stream);
+	trigHungryCarying=(trigHungry*4)/10;
 
 	// quality parameters
 	
 	// quality parameters
+	for (i=0; i<NB_ABILITY; i++)
 	{
-		for (int i=0; i<NB_ABILITY; i++)
-		{
-			performance[i]=SDL_ReadBE32(stream);
-			level[i]=SDL_ReadBE32(stream);
-		}
+		performance[i]=SDL_ReadBE32(stream);
+		level[i]=SDL_ReadBE32(stream);
 	}
-	
+
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
 #	ifdef WIN32
 #		pragma warning (disable : 4800)
@@ -186,6 +188,8 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 
 void Unit::save(SDL_RWops *stream)
 {
+	int i;
+
 	// unit specification
 	// we drop the unittype pointer, we save only the number
 	SDL_WriteBE32(stream, (Uint32)typeNum);
@@ -230,12 +234,10 @@ void Unit::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, trigHungry);
 
 	// quality parameters
+	for (i=0; i<NB_ABILITY; i++)
 	{
-		for (int i=0; i<NB_ABILITY; i++)
-		{
-			SDL_WriteBE32(stream, performance[i]);
-			SDL_WriteBE32(stream, level[i]);
-		}
+		SDL_WriteBE32(stream, performance[i]);
+		SDL_WriteBE32(stream, level[i]);
 	}
 
 	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
@@ -383,16 +385,23 @@ void Unit::handleMedical(void)
 		return;
 	
 	medical=MED_FREE;
-	
+
 	hungry-=race->unitTypes[0][0].hungryness;
 	if (hp<=trigHP)
 	{
 		//printf("I'm hurt ; healt h %d/%d\n", hp, performance[HP]);
 		medical=MED_DAMAGED;
 	}
-	if (hungry<=trigHungry)
+
+	int realTrigHungry;
+	if (caryedRessource==-1)
+		realTrigHungry=trigHungry;
+	else
+		realTrigHungry=trigHungryCarying;
+
+	if (hungry<=realTrigHungry)
 		medical=MED_HUNGRY;
-		
+
 	if (hungry<=0)
 		hp--;
 	if (hp<0)
