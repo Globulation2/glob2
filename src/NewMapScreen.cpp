@@ -43,8 +43,6 @@ void HowNewMapScreen::paint(int x, int y, int w, int h)
 
 NewMapScreen::NewMapScreen()
 {
-	firstPaint=true;
-
 	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
 	
 	mapSizeX=new Number(20, 50, 100, 20, 20, globalContainer->menuFont);
@@ -107,6 +105,13 @@ NewMapScreen::NewMapScreen()
 	nbWorkers->visible=false;
 	addWidget(nbWorkers);
 	
+	numberOfTeamText=new Text(430, 100, globalContainer->standardFont, globalContainer->texts.getString("[number of teams]"));
+	numberOfTeamText->visible=false;
+	addWidget(numberOfTeamText);
+	numberOfWorkerText=new Text (430, 120, globalContainer->standardFont, globalContainer->texts.getString("[workers]"));
+	numberOfWorkerText->visible=false;
+	addWidget(numberOfWorkerText);
+	
 	// eRANDOM
 	
 	waterRatio=new Ratio(310, 160, 164, 18, 40, descriptor.waterRatio, globalContainer->menuFont);
@@ -134,6 +139,23 @@ NewMapScreen::NewMapScreen()
 	smooth->visible=false;
 	addWidget(smooth);
 	
+	ratioText=new Text(310, 140, globalContainer->standardFont, globalContainer->texts.getString("[ratios]"));
+	ratioText->visible=false;
+	addWidget(ratioText);
+	waterText=new Text(480, 160, globalContainer->standardFont, globalContainer->texts.getString("[water]"));
+	waterText->visible=false;
+	addWidget(waterText);
+	sandText=new Text(480, 180, globalContainer->standardFont, globalContainer->texts.getString("[sand]"));
+	sandText->visible=false;
+	addWidget(sandText);
+	grassText=new Text(480, 200, globalContainer->standardFont, globalContainer->texts.getString("[grass]"));
+	grassText->visible=false;
+	addWidget(grassText);
+	smoothingText=new Text(480, 220, globalContainer->standardFont, globalContainer->texts.getString("[smoothing]"));
+	smoothingText->visible=false;
+	addWidget(smoothingText);
+
+	
 	// eISLANDS
 	
 	islandsSize=new Ratio(310, 140, 114, 18, 40, descriptor.islandsSize, globalContainer->menuFont);
@@ -150,10 +172,23 @@ NewMapScreen::NewMapScreen()
 	beach->visible=false;
 	addWidget(beach);
 	
+	islandSizeText=new Text(430, 140, globalContainer->standardFont, globalContainer->texts.getString("[islands size]"));
+	islandSizeText->visible=false;
+	addWidget(islandSizeText);
+	beachSizeText=new Text(430, 160, globalContainer->standardFont, globalContainer->texts.getString("[beach size]"));
+	beachSizeText->visible=false;
+	addWidget(beachSizeText);
+	
+	
 	// all
 	
 	addWidget(new TextButton( 20, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
 	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+
+	char *text= globalContainer->texts.getString("[create map]");
+	addWidget(new Text(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text));
+	addWidget(new Text(130, 50, globalContainer->standardFont, globalContainer->texts.getString("[map size x]")));
+	addWidget(new Text(130, 75, globalContainer->standardFont, globalContainer->texts.getString("[map size y]")));
 }
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -198,16 +233,26 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				// not eUNIFORM
 				nbTeams->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				nbWorkers->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				numberOfTeamText->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				numberOfWorkerText->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				
 				
 				// eRANDOM
 				waterRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				sandRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				grassRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				smooth->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				ratioText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				waterText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				sandText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				grassText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				smoothingText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				
 				// eISLANDS
 				islandsSize->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
 				beach->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				islandSizeText->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				beachSizeText->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
 				
 				dispatchPaint(gfxCtx);
 				addUpdateRect(310, 100, 330, 300);
@@ -233,36 +278,4 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 void NewMapScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (firstPaint)
-	{
-		char *text= globalContainer->texts.getString("[create map]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
-
-		gfxCtx->drawString(130, 50, globalContainer->standardFont, globalContainer->texts.getString("[map size x]"));
-		gfxCtx->drawString(130, 75, globalContainer->standardFont, globalContainer->texts.getString("[map size y]"));
-		
-		//firstPaint=false;
-	}
-	
-	if (descriptor.methode!=MapGenerationDescriptor::eUNIFORM)
-	{
-		gfxCtx->drawString(430, 100, globalContainer->standardFont, globalContainer->texts.getString("[number of teams]"));
-		gfxCtx->drawString(430, 120, globalContainer->standardFont, globalContainer->texts.getString("[workers]"));
-	}
-	
-	if (descriptor.methode==MapGenerationDescriptor::eRANDOM)
-	{
-		gfxCtx->drawString(310, 140, globalContainer->standardFont, globalContainer->texts.getString("[ratios]"));
-		gfxCtx->drawString(480, 160, globalContainer->standardFont, globalContainer->texts.getString("[water]"));
-		gfxCtx->drawString(480, 180, globalContainer->standardFont, globalContainer->texts.getString("[sand]"));
-		gfxCtx->drawString(480, 200, globalContainer->standardFont, globalContainer->texts.getString("[grass]"));
-		gfxCtx->drawString(480, 220, globalContainer->standardFont, globalContainer->texts.getString("[smoothing]"));
-	}
-	
-	if (descriptor.methode==MapGenerationDescriptor::eISLANDS)
-	{
-		gfxCtx->drawString(430, 140, globalContainer->standardFont, globalContainer->texts.getString("[islands size]"));
-		gfxCtx->drawString(430, 160, globalContainer->standardFont, globalContainer->texts.getString("[beach size]"));
-	}
-	addUpdateRect();
 }
