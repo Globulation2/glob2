@@ -31,6 +31,7 @@ public:
 	};
 private:
 	Tree* Next();
+	Tree* Next2();
 	void Fail(const std::string& message) {
 		throw Error(next.position, message);
 	}
