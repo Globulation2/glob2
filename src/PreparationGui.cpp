@@ -254,7 +254,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 {
 	arch=globalContainer->gfx->loadSprite("data/gui/mplayerchoosemap");
 
-	mapName=new TextInput(400, 40, 128, 12, globalContainer->standardFont, "net.map", true);
+	mapName=new TextInput(430, 10, 200, 25, globalContainer->standardFont, "net.map", true);
 	load=new Button(230, 150, 120, 60, arch, -1, 1, LOAD);
 	share=new Button(250, 230, 140, 60, arch, -1, 2, SHARE);
 	cancel=new Button(290, 310, 140, 60, arch, -1, 3, CANCEL);
@@ -264,6 +264,16 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	addWidget(cancel);
 
 	addWidget(mapName);
+
+	fileList=new List(10, 10, 200, 400, globalContainer->standardFont);
+
+	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
+	{
+		const char *file;
+		while ((file=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
+			fileList->addText(file);
+	}
+	addWidget(fileList);
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 }
@@ -275,7 +285,11 @@ MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
 
 void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_RELEASED)
+	if (action==LIST_ELEMENT_SELECTED)
+	{
+		mapName->setText(fileList->getText(par1));
+	}
+	else if (action==BUTTON_RELEASED)
 	{
 		if (source==load)
 		{
@@ -315,7 +329,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawSprite(0, 0, arch, 0);
-	gfxCtx->drawString(300, 40, globalContainer->standardFont, "Map File :");
+	gfxCtx->drawString(300, 10, globalContainer->standardFont, "Map File :");
 
 	if (validSessionInfo)
 		paintSessionInfo(0);

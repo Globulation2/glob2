@@ -109,6 +109,7 @@ private:
 	Sprite *arch;
 	TextInput *mapName;
 	Button *load, *share, *cancel;
+	List *fileList;
 
 public:
 	MultiplayersChooseMapScreen();
