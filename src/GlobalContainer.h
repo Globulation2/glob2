@@ -15,7 +15,7 @@
 
 struct Settings
 {
-	char name[BasePlayer::MAX_NAME_LENGTH];
+	char userName[BasePlayer::MAX_NAME_LENGTH];
 };
 
 class GlobalContainer

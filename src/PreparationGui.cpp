@@ -1205,7 +1205,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");
 
 	serverName=new TextInput(400, 170, 128, 12, font, "192.168.1.1", true);
-	playerName=new TextInput(400, 150, 128, 12, font, "glom", false);
+	playerName=new TextInput(400, 150, 128, 12, font, globalContainer->settings.userName, false);
 
 	addWidget(new Button(270, 200, 140, 60, arch, -1, 1, CONNECT));
 	addWidget(new Button(210, 280, 180, 60, arch, -1, 2, QUIT));
