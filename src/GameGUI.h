@@ -85,9 +85,6 @@ public:
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
-	std::vector<int> buildingsChoice;
-	std::vector<int> flagsChoice;
-
 private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
@@ -97,6 +94,7 @@ private:
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
 	void handleActivation(Uint8 state, Uint8 gain);
+	void nextDisplayMode(void);
 	void coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport=true);
 
 	// Drawing support functions
@@ -165,6 +163,19 @@ private:
 	void setSelection(SelectionMode newSelMode, unsigned newSelection);
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
+
+	// What's visible or hidden on GUI
+	std::vector<int> buildingsChoice;
+	std::vector<int> flagsChoice;
+	enum HidableGUIElements
+	{
+		HIDABLE_BUILDINGS_LIST = 0x1,
+		HIDABLE_FLAGS_LIST = 0x2,
+		HIDABLE_TEXT_STAT = 0x4,
+		HIDABLE_GFX_STAT = 0x8,
+		HIDABLE_ALLIANCE = 0x10,
+	};
+	Uint32 hiddenGUIElements;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;

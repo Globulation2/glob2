@@ -39,7 +39,7 @@ public:
 		QUIT_GAME = 5
 	};
 public:
-	InGameMainScreen();
+	InGameMainScreen(bool showAlliance);
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };

@@ -760,7 +760,7 @@ void Game::step(Sint32 localTeam)
 		
 		syncRand();
 		
-		if ((stepCounter&31)==0)
+		if ((stepCounter&31)==16)
 		{
 			map.switchFogOfWar();
 			for (int t=0; t<session.numberOfTeam; t++)
@@ -778,7 +778,7 @@ void Game::step(Sint32 localTeam)
 		
 		renderMiniMap(localTeam, true, stepCounter%25, 25);
 
-		if ((stepCounter&31)==4)
+		if ((stepCounter&31)==0)
 		{
 			wonStep();
 			scriptStep();

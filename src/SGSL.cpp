@@ -495,7 +495,7 @@ bool Story::testCondition()
 
 void Story::step()
 {
-	if (testCondition())
+	while (testCondition())
 	{
 		lineSelector ++;
 	}
