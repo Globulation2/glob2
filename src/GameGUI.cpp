@@ -43,6 +43,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 GameGUI::GameGUI()
 {
 	isRunning=true;
+	exitGlobCompletely=false;
 	needRedraw=true;
 	drawHealthFoodBar=false;
 	drawPathLines=false;
@@ -376,6 +377,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_QUIT)
 	{
+		exitGlobCompletely=true;
 		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 		//isRunning=false;
 	}

@@ -232,6 +232,10 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 			data[7]=0;
 			sessionInfo.players[p].send(data, 8);
 		}
+		else
+		{
+			printf("player %d is not binded! (crossPacketRecieved[%d]=%d).\n", p, p, crossPacketRecieved[p]);
+		}
 	}
 	else
 		printf("Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
@@ -277,7 +281,7 @@ void MultiplayersJoin::checkAllCrossConnected(void)
 
 void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddress ip)
 {
-	printf("crossConnectionFirstMessage\n");
+	printf("crossConnectionSecondMessage\n");
 
 	if (size!=8)
 	{
@@ -293,7 +297,7 @@ void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddr
 		checkAllCrossConnected();
 	}
 	else
-		printf("Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
+		printf("Dangerous crossConnectionSecondMessage packet recieved (%d)!\n", p);
 
 }
 
@@ -413,7 +417,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 
 		if (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			printf("recieved packet\n");
+			printf("recieved packet (%d)\n", packet->data[0]);
 			//printf("packet=%d\n", (int)packet);
 			//printf("packet->channel=%d\n", packet->channel);
 			//printf("packet->len=%d\n", packet->len);

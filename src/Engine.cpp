@@ -305,5 +305,8 @@ int Engine::run(void)
 
 	delete net;
 
-	return NO_ERROR;
+	if (gui.exitGlobCompletely)
+		return -1;
+	else
+		return NO_ERROR;
 }
