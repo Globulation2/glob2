@@ -63,7 +63,9 @@ namespace GAGCore
 			keyFile = inputLineStream->readLine();
 			while (!inputLineStream->isEndOfStream())
 			{
-				translationFiles.push_back(inputLineStream->readLine());
+				const std::string &s = inputLineStream->readLine();
+				if (s != "")
+					translationFiles.push_back(s);
 			}
 			delete inputLineStream;
 		}
