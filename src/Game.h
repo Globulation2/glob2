@@ -24,8 +24,6 @@
 #include "Session.h"
 #include "SGSL.h"
 
-#define BULLET_IMGID 34
-
 class MapGenerationDescriptor;
 
 class Game
