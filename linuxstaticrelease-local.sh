@@ -8,7 +8,8 @@ export CC=gcc
 export G2VER=0.8.4
 ./configure --with-sdl-prefix=/usr/local --disable-opengl
 echo "Making glob2"
-make >& /dev/null
+make 
+#>& /dev/null
 cd src
 echo "Creating static binary"
 ./staticlink.sh
@@ -21,6 +22,7 @@ echo "Patching archive with binary files"
 cp src/glob2 /tmp/glob2-$G2VER/src
 echo "Recompressing archive"
 cd /tmp
-tar cfz glob2-$G2VER-static.tar.gz glob2-$G2VER/
-scp glob2-$G2VER-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
-ssh nct@lappc22.epfl.ch ln -f -s ~/public_html/glob2-$G2VER-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
+tar cfz glob2-static-$G2VER.tar.gz glob2-$G2VER/
+#tar cfz glob2-$DATESTAMP-static.tar.gz glob2-0.1/
+#scp glob2-$DATESTAMP-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
+#ssh nct@lappc22.epfl.ch ln -f -s ~/public_html/glob2-$DATESTAMP-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
