@@ -11,6 +11,12 @@
 #include "StringTable.h"
 #include "FileManager.h"
 #include "BuildingType.h"
+#include "Player.h"
+
+struct Settings
+{
+	char name[BasePlayer::MAX_NAME_LENGTH];
+};
 
 class GlobalContainer
 {
@@ -30,6 +36,8 @@ public:
 	Uint32 graphicFlags;
 	char *metaServerName;
 	Uint16 metaServerPort;
+
+	Settings settings;
 
 	FileManager fileManager;
 
