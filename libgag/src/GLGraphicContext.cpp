@@ -27,7 +27,7 @@
 #include "GLGraphicContext.h"
 #include "SDLFont.h"
 #include <SupportFunctions.h>
-#include <Environment.h>
+#include <Toolkit.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>
@@ -556,7 +556,7 @@ void GLGraphicContext::loadFont(const char *filename, unsigned size, const char 
 	
 	if (rf)
 	{
-		fontMap[std::string(name)] = rf;
+		Toolkit::fontMap[std::string(name)] = rf;
 	}
 }
 

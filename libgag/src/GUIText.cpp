@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <SupportFunctions.h>
 #include <assert.h>
+#include <Toolkit.h>
 
 Text::Text(int x, int y, const char *font, const char *text, int w, int h)
 {
@@ -30,6 +31,7 @@ Text::Text(int x, int y, const char *font, const char *text, int w, int h)
 	this->text=text;
 	this->w=w;
 	this->h=h;
+	fontPtr=NULL;
 	cr = 255;
 	cg = 255;
 	cb = 255;
@@ -90,6 +92,7 @@ void Text::paint(void)
 {
 	assert(parent);
 	assert(parent->getSurface());
+	fontPtr = Toolkit::getFont(font.c_str());
 	if (visible)
 	{
 		int wDec, hDec;
@@ -124,7 +127,7 @@ void Text::repaint(void)
 	}
 	else
 	{
-		upW=fontPtr->getStringWidth(text)+2;
+		upW=fontPtr->getStringWidth(text.c_str())+2;
 	}
 	
 	if (h)
@@ -133,7 +136,7 @@ void Text::repaint(void)
 	}
 	else
 	{
-		upH=fontPtr->getStringHeight(text);
+		upH=fontPtr->getStringHeight(text.c_str());
 	}
 	
 	if (w || h)

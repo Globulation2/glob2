@@ -35,6 +35,6 @@ enum MessageBoxType
 
 //! The display a modal message box, with a title and some buttons
 //! \retval the nummer of the clicked button, -1 on unexpected early-out (CTRL-C, ...)
-int MessageBox(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2 = NULL, const char *caption3 = NULL);
+int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2 = NULL, const char *caption3 = NULL);
 
 #endif

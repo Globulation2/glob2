@@ -19,24 +19,25 @@
 
 #include <GUINumber.h>
 #include <assert.h>
+#include <Toolkit.h>
 
-Number::Number(int x, int y, int w, int h, int m, const Font *font)
+Number::Number()
+{
+	x = y = w = h = m = nth = 0;
+}
+
+Number::Number(int x, int y, int w, int h, int m, const char *font)
 {
 	assert(font);
 	this->font=font;
-	textHeight=font->getStringHeight(NULL);
-	
 	this->x=x;
 	this->y=y;
 	this->w=w;
-	if (h<1)
-		h=textHeight;
 	this->h=h;
 	if (m<1)
 		m=h;
 	this->m=m;
 	nth=0;
-	assert(w>textHeight*2);
 }
 
 Number::~Number()
@@ -92,17 +93,22 @@ void Number::internalPaint(void)
 		// We center the string
 		char s[256];
 		snprintf(s, 256, "%d", numbers[nth]);
-		int tw=font->getStringWidth(s);
-		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, font, "%d", numbers[nth]);
+		int tw=fontPtr->getStringWidth(s);
+		parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, "%d", numbers[nth]);
 	}
-	int dx1=(m-font->getStringWidth("-"))/2;
-	parent->getSurface()->drawString(x+dx1, y+dy, font, "-");
-	int dx2=(m-font->getStringWidth("+"))/2;
-	parent->getSurface()->drawString(x+dx2+w-m, y+dy, font, "+");
+	int dx1=(m-fontPtr->getStringWidth("-"))/2;
+	parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
+	int dx2=(m-fontPtr->getStringWidth("+"))/2;
+	parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
 }
 
 void Number::paint(void)
 {
+	fontPtr = Toolkit::getFont(font.c_str());
+	textHeight = fontPtr->getStringHeight(NULL);
+		if (h<1)
+		h=textHeight;
+
 	if (visible)
 		internalPaint();
 }

@@ -37,9 +37,12 @@ protected:
 		ITEM(Uint8, ca)
 	CLASSEND;
 
+	// cache, recomputed at least on paint
+	Font *fontPtr;
+
 public:
 	Text() { cr=cg=cb=ca=0; }
-	Text(int x, int y, const char *string="", const char *text="", int w=0, int h=0);
+	Text(int x, int y, const char *font="", const char *text="", int w=0, int h=0);
 	virtual ~Text() { }
 	virtual const char *getText() const { return text.c_str();}
 	virtual void setText(const char *newText, ...);
