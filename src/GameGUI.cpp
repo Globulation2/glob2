@@ -269,6 +269,19 @@ void GameGUI::synchroneStep(void)
 {
 	assert(localTeam);
 	assert(teamStats);
+	
+	if ((game.stepCounter&255)==79)
+	{
+		const char *name=globalContainer->texts.getString("[auto save]");
+		SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
+		if (stream)
+		{
+			save(stream, name);
+			SDL_RWclose(stream);
+		}
+		else
+			printf("GameGUI::synchroneStep: Can't auto save map\n");
+	}
 }
 
 bool GameGUI::processGameMenu(SDL_Event *event)
@@ -2125,7 +2138,8 @@ bool GameGUI::load(SDL_RWops *stream)
 void GameGUI::save(SDL_RWops *stream, const char *name)
 {
 	// Game is can't be no more automatically generated
-	delete game.session.mapGenerationDescriptor;
+	if (game.session.mapGenerationDescriptor)
+		delete game.session.mapGenerationDescriptor;
 	game.session.mapGenerationDescriptor=NULL;
 	
 	game.save(stream, false, name);

@@ -645,9 +645,7 @@ void Game::step(Sint32 localTeam)
 	else
 	{
 		for (int i=0; i<session.numberOfTeam; i++)
-		{
 			teams[i]->step();
-		}
 		map.step();
 		
 		syncRand();
