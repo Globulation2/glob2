@@ -274,9 +274,9 @@ bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	{
 		//setClipRect();
 		if (flags&FULLSCREEN)
-			fprintf(stderr, "GAG : GL Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
+			fprintf(stderr, "GAG : GL Screen set to %dx%d at %d bpp in fullscreen\n", w, h, depth);
 		else
-			fprintf(stderr, "GAG : GL Screen set to %dx%d with %d bpp in window\n", w, h, depth);
+			fprintf(stderr, "GAG : GL Screen set to %dx%d at %d bpp in window\n", w, h, depth);
 			
 		printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
 		printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));

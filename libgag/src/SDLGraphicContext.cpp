@@ -962,9 +962,9 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	{
 		setClipRect();
 		if (flags&FULLSCREEN)
-			fprintf(stderr, "Toolkit : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
+			fprintf(stderr, "Toolkit : Screen set to %dx%d at %d bpp in fullscreen\n", w, h, depth);
 		else
-			fprintf(stderr, "Toolkit : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
+			fprintf(stderr, "Toolkit : Screen set to %dx%d at %d bpp in window\n", w, h, depth);
 		return true;
 	}
 }
