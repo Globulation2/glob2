@@ -84,7 +84,7 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 		fileName=Utilities::concat(s, extension);
 		fileNameEntry->setText(s);
 	}
-	else if (action==TEXT_MODIFFIED)
+	else if (action==TEXT_MODIFIED)
 	{
 		assert(fileName);
 		delete[] fileName;

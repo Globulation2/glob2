@@ -148,7 +148,7 @@ void MultiplayersJoinScreen::onSDLEvent(SDL_Event *event)
 void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 
-	if (action==TEXT_MODIFFIED)
+	if (action==TEXT_MODIFIED)
 	{
 		if (source==serverName)
 		{

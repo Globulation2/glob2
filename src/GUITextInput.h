@@ -44,7 +44,7 @@ protected:
 	
 public:
 	enum {
-		MAX_TEXT_SIZE=256
+		MAX_TEXT_SIZE=512,
 	};
 	char text[MAX_TEXT_SIZE];
 	

@@ -91,12 +91,20 @@ void TextArea::onSDLEvent(SDL_Event *event)
 {
 	if (event->type==SDL_KEYDOWN)
 	{
-		switch (event->key.keysym.sym)
+		SDLKey sym=event->key.keysym.sym;
+		SDLMod mod=event->key.keysym.mod;
+		
+		switch (sym)
 		{
 			case SDLK_DELETE:
 			if (!readOnly)
 			{
-				remText(cursorPos, 1);
+				if (cursorPos<textBufferLength)
+				{
+					unsigned len=getNextUTF8Char(textBuffer, cursorPos);
+					remText(cursorPos, len-cursorPos);
+					parent->onAction(this, TEXT_MODIFIED, 0, 0);
+				}
 			}
 			break;
 			
@@ -105,8 +113,11 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if (cursorPos)
 				{
-					cursorPos--;
-					remText(cursorPos, 1);
+					unsigned newPos=getPrevUTF8Char(textBuffer, cursorPos);
+					unsigned len=cursorPos-newPos;
+					cursorPos=newPos;
+					remText(newPos, len);
+					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
 			}
 			break;
@@ -122,6 +133,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					cursorPos=lines[cursorPosY];
 				}
 				computeAndRepaint();
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 			}
 			break;
 			
@@ -139,6 +151,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 						cursorPos=textBufferLength;
 				}
 				computeAndRepaint();
+				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 			}
 			break;
 			
@@ -163,6 +176,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					}
 					
 					computeAndRepaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 			}
 			break;
@@ -197,6 +211,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					}
 					
 					computeAndRepaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 			}
 			break;
@@ -204,10 +219,35 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			case SDLK_LEFT:
 			if (!readOnly)
 			{
-				if (cursorPos>0)
+				if (mod&KMOD_CTRL)
 				{
-					cursorPos--;
+					bool cont=true;
+					while ((cursorPos>0) && cont)
+					{
+						cursorPos=getPrevUTF8Char(textBuffer, cursorPos);
+						switch (textBuffer[cursorPos])
+						{
+							case '.':
+							case ' ':
+							case '\t':
+							case ',':
+							case '\'':
+							cont=false;
+							default:
+							break;
+						}
+					}
 					computeAndRepaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
+				else
+				{
+					if (cursorPos>0)
+					{
+						cursorPos=getPrevUTF8Char(textBuffer, cursorPos);
+						computeAndRepaint();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					}
 				}
 			}
 			break;
@@ -215,10 +255,36 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			case SDLK_RIGHT:
 			if (!readOnly)
 			{
-				if (cursorPos<textBufferLength)
+				if (mod&KMOD_CTRL)
 				{
-					cursorPos++;
+					bool cont=true;
+					while ((cursorPos<textBufferLength) && cont)
+					{
+						cursorPos=getNextUTF8Char(textBuffer, cursorPos);
+						switch (textBuffer[cursorPos])
+						{
+							case '.':
+							case ' ':
+							case '\t':
+							case ',':
+							case '\'':
+							cont=false;
+							default:
+							break;
+						}
+					}
 					computeAndRepaint();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
+				else
+				{
+					if (cursorPos<textBufferLength)
+					{
+						cursorPos++;
+						cursorPos=getNextUTF8Char(textBuffer, cursorPos);
+						computeAndRepaint();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					}
 				}
 			}
 			break;
@@ -233,11 +299,11 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			default:
 			if (!readOnly)
 			{
-				unsigned char c=(char)event->key.keysym.unicode;
-				if ((c>31) && (c<128))
-				{
-					addChar(c);
-				}
+				Uint16 c=event->key.keysym.unicode;
+				char utf8text[4];
+				UCS16toUTF8(c, utf8text);
+				addText(utf8text);
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 			break;
 		}

@@ -30,6 +30,15 @@
 // transform an ucs 16 unicode char to an utf8 one
 void UCS16toUTF8(Uint16 ucs16, char utf8[4]);
 
+// return the number of char to go to the next utf8 one in the string
+unsigned getNextUTF8Char(unsigned char c);
+
+// return pos of the next UTF8 char in text
+unsigned getNextUTF8Char(const char *text, unsigned pos);
+
+// return pos of the previous UTF8 char in text
+unsigned getPrevUTF8Char(const char *text, unsigned pos);
+
 //! Widget reacts to SDL_Event and produce Action
 enum Action
 {
@@ -44,7 +53,7 @@ enum Action
 	BUTTON_STATE_CHANGED,
 
 	TEXT_CURSOR_MOVED,
-	TEXT_MODIFFIED,
+	TEXT_MODIFIED,
 	TEXT_ACTIVATED,
 	TEXT_VALIDATED,
 	TEXT_SET,
