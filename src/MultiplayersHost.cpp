@@ -445,6 +445,11 @@ void MultiplayersHost::switchPlayerTeam(int p, int newTeamNumber)
 {
 	// get actual team number for player
 	Sint32 oldTeamNumber = sessionInfo.players[p].teamNumber;
+	fprintf(logFile, "\nswitchPlayerTeam(p=%d, newTeamNumber=%d), oldTeamNumber=%d, numberOfTeam=%d\n", p, newTeamNumber, oldTeamNumber, sessionInfo.numberOfTeam);
+	assert(newTeamNumber>=0);
+	assert(newTeamNumber<sessionInfo.numberOfTeam);
+	assert(oldTeamNumber>=0);
+	assert(oldTeamNumber<sessionInfo.numberOfTeam);
 	// remove from old team, add to new
 	sessionInfo.teams[oldTeamNumber].playersMask &= ~sessionInfo.players[p].numberMask;
 	sessionInfo.teams[newTeamNumber].playersMask |= sessionInfo.players[p].numberMask;
