@@ -447,23 +447,25 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_GAME_SOCKET:
 	{
-		send(ip, YMT_GAME_SOCKET);
+		//send(ip, YMT_GAME_SOCKET);
 		bool good=false;
 		//send(ip, YMT_GAME_SOCKET);TODO: to which socket do we send it ?
 		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
-			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame && (*sender)->gameip.host==0)
+			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame)
 			{
-				//TODO: check also username
-				//TODO: make game aviable
+				//TODO: check username too
 				(*sender)->gameip=ip;
 				fprintf(logServer, "Client %s has a gameip (%d.%d.%d.%d:%d)\n", (*sender)->userName, (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
 				(*sender)->send(YMT_GAME_SOCKET);
-				good=true;
+				if ((*sender)->gameip.host==0) // is it new ?
+					good=true;
 				break;
 			}
 		if (good)
+		{
 			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				sendGameList(*client);
+		}
 	}
 	break;
 	}
@@ -548,10 +550,10 @@ void YOGServer::run()
 
 int main(int argc, char *argv[])
 {
-	logClient=fopen("YOGClient.log", "w");
-	logServer=fopen("YOGServer.log", "w");
-	//logClient=stdout;
-	//logServer=stdout;
+	//logClient=fopen("YOGClient.log", "w");
+	//logServer=fopen("YOGServer.log", "w");
+	logClient=stdout;
+	logServer=stdout;
 	
 	YOGServer yogServer;
 	if (yogServer.init())
