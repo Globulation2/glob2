@@ -117,7 +117,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	SDLNet_FreePacket(packet);
 }
 
-void YOGServer::executeCommand(YOGClient *sender, char *s)
+void YOGServer::executeCommand(YOGClient *sender, char *s, Uint8 messageID)
 {
 	if (s[0]!='/')
 		return;
@@ -125,52 +125,39 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 	{
 		case 'w':
 		case 'm':
-		{
-			if ((s[2]==' ') || ((s[2]=='s') && (s[3]=='g') && (s[4]==' ')))
+			if (s[2]==' ')
 			{
-				int n;
-				for (n=0; n<32; n++)
-					if (s[n+3]==' ' || s[n+3]==0)
-						break;
-				char userName[32];
-				memcpy(userName, s+3, n);
-				userName[n]=0;
+				PrivateReceipt privateReceipt;
+				privateReceipt.messageID=messageID;
 				
-				// We look for a client with this userName:
-				bool found=false;
 				std::list<YOGClient *>::iterator client;
 				for (client=clients.begin(); client!=clients.end(); ++client)
-					if (strncmp((*client)->userName, userName, 32)==0)
-						{
-							found=true;
-							break;
-						}
-				if (!found)
-					return;
-				
-				Message m;
-				int l;
-				l=strmlen(s+n+4, 256-n-4);
-				memcpy(m.text, s+n+4, l);
-				m.text[l-1]=0;
-				m.textLength=l;
+				{
+					char *name=(*client)->userName;
+					int unl=Utilities::strnlen(name, 32);
+					if ((strncmp(name, s+3, unl)==0)&&(s[3+unl]==' '))
+					{
+						Message m;
+						int l;
+						l=Utilities::strmlen(s+unl+4, 256-unl-4);
+						memcpy(m.text, s+unl+4, l);
+						m.text[l-1]=0;
+						m.textLength=l;
 
-				l=strmlen(sender->userName, 32);
-				memcpy(m.userName, sender->userName, l);
-				m.userName[l-1]=0;
-				m.userNameLength=l;
+						l=Utilities::strmlen(sender->userName, 32);
+						memcpy(m.userName, sender->userName, l);
+						m.userName[l-1]=0;
+						m.userNameLength=l;
+
+						m.messageType=YMT_PRIVATE_MESSAGE;
+						(*client)->addMessage(&m);
+						
+						privateReceipt.addr.push_back(unl);
+					}
+				}
 				
-				m.messageType=YMT_PRIVATE_MESSAGE;
-				(*client)->addMessage(&m);
-				
-				l=strmlen((*client)->userName, 32);
-				memcpy(m.userName, (*client)->userName, l);
-				m.userName[l-1]=0;
-				m.userNameLength=l;
-				m.messageType=YMT_PRIVATE_RECEIPT;
-				sender->addMessage(&m);//TODO: we could save a lot of brandwith if we clervery uses "lastMessageID".
+				sender->addReceipt(&privateReceipt);
 			}
-		}
 		break;
 		case 0:
 		{
@@ -379,19 +366,19 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (s[0]=='/')
 			{
 				// We received a command
-				executeCommand(c, s);
+				executeCommand(c, s, messageID);
 			}
 			else
 			{
 				Message m;
 				int l;
 
-				l=strmlen(s, 256);
+				l=Utilities::strmlen(s, 256);
 				memcpy(m.text, s, l);
 				m.text[l-1]=0;
 				m.textLength=l;
 
-				l=strmlen(c->userName, 32);
+				l=Utilities::strmlen(c->userName, 32);
 				memcpy(m.userName, c->userName, l);
 				m.userName[l-1]=0;
 				m.userNameLength=l;
@@ -413,7 +400,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size!=4)
 		{
-			lprintf("bad message size (%d).\n", size);
+			lprintf("bad YMT_MESSAGE message size (%d).\n", size);
 			break;
 		}
 		Uint8 messageID=data[1];
@@ -428,6 +415,27 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			}
 		if (good)
 			(*sender)->deliveredMessage(messageID);
+	}
+	break;
+	case YMT_PRIVATE_RECEIPT:
+	{
+		if (size!=4)
+		{
+			lprintf("bad YMT_PRIVATE_RECEIPT message size (%d).\n", size);
+			break;
+		}
+		Uint8 receiptID=data[1];
+		bool good=false;
+		std::list<YOGClient *>::iterator sender;
+		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				(*sender)->TOTL=3;
+				good=true; // ok, he's connected
+				break;
+			}
+		if (good)
+			(*sender)->deliveredReceipt(receiptID);
 	}
 	break;
 	case YMT_SHARING_GAME:
@@ -919,6 +927,22 @@ void YOGServer::run()
 				}
 			}
 			
+			if (c->privateReceipts.size()>0 && c->receiptTimeout--<=0)
+			{
+				std::list<PrivateReceipt>::iterator rit=c->privateReceipts.begin();
+				if (c->receiptTOTL--<=0)
+				{
+					lprintf("unable to deliver receipt to (%s)\n", c->userName);
+					c->privateReceipts.erase(rit);
+					break;
+				}
+				else
+				{
+					c->receiptTimeout=DEFAULT_NETWORK_TIMEOUT;
+					c->send(*rit);
+				}
+			}
+			
 			if (c->sharingGame==NULL && c!=admin && c->games.size()>0)
 			{
 				if (c->gamesSize>0 && c->gamesTimeout--<=0 )
@@ -1056,14 +1080,6 @@ void YOGServer::lprintf(const char *msg, ...)
 		}
 	if (admin)
 		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
-}
-
-int YOGServer::strmlen(const char *s, int max)
-{
-	for (int i=0; i<max; i++)
-		if (*(s+i)==0)
-			return i+1;
-	return max;
 }
 
 int main(int argc, char *argv[])

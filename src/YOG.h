@@ -163,6 +163,7 @@ public:
 	Uint32 uid;
 	
 	std::list<Message> sendingMessages;
+	std::list<Message> recentlySentMessages;
 	std::list<Message> receivedMessages;
 	std::list<Message> recentlyReceivedMessages;
 	

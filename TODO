@@ -12,7 +12,7 @@ To First release :
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
-- Les exploratrices doivent consid�er le FOW, et pas uniquement le noir. (nuage)
+- Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
 - Empecher les champs de saisie de texte d'accepter plus de 256 octets de données,
   pour assurer que les limitation de YOG soient respectées.
@@ -22,6 +22,7 @@ To Next version :
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - building finished message must contain building type. Select building when doing this. (nct)
 - makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
+- Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
 
 For later later :
 

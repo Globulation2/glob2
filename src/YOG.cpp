@@ -266,7 +266,6 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_MESSAGE:
 	case YMT_PRIVATE_MESSAGE:
 	case YMT_ADMIN_MESSAGE:
-	case YMT_PRIVATE_RECEIPT:
 	{
 		Uint8 messageID=data[1];
 		send(YMT_MESSAGE, messageID);
@@ -319,6 +318,70 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 	}
 	break;
+	case YMT_PRIVATE_RECEIPT:
+	{
+		if (size<8)
+		{
+			fprintf(logFile, "bad size for a YMT_PRIVATE_RECEIPT packet (size=%d)\n", size);
+			break;
+		}
+		Uint8 receiptID=data[4];
+		Uint8 messageID=data[5];
+		Uint8 sizeAddrs=data[6];
+		assert(size-8==sizeAddrs);
+		send(YMT_PRIVATE_RECEIPT, receiptID);
+		
+		fprintf(logFile, "YMT_PRIVATE_RECEIPT packet receiptID=%d, messageID=%d, sizeAddrs=%d\n", receiptID, messageID, sizeAddrs);
+		
+		if (sizeAddrs==0)
+		{
+			for (std::list<Message>::iterator mit=recentlySentMessages.begin(); mit!=recentlySentMessages.end(); ++mit)
+				if (mit->messageID==messageID)
+				{
+					fprintf(logFile, "Message (%s) not delivered!\n", mit->text);
+					//TODO: create a message for this
+					recentlySentMessages.erase(mit);
+					break;
+				}
+		}
+		else
+			for (std::list<Message>::iterator mit=recentlySentMessages.begin(); mit!=recentlySentMessages.end(); ++mit)
+				if (mit->messageID==messageID)
+				{
+					for (int i=0; i<sizeAddrs; i++)
+					{
+						Message m;
+						m.messageID=messageID;
+						m.messageType=YMT_PRIVATE_RECEIPT;
+						m.timeout=0;
+						m.TOTL=3;
+						m.gameGuiPainted=false;
+						int l;
+						char *text=mit->text+data[8+i]+4;
+						l=Utilities::strmlen(text, 256);
+						memcpy(m.text, text, l);
+						if (m.text[l-1]!=0)
+							fprintf(logFile, "warning, non-zero ending text message!\n");
+						m.text[255]=0;
+						m.textLength=l;
+
+						l=data[8+i];
+						if (l<32)
+							l++;
+						char *userName=mit->text+3;
+						memcpy(m.userName, userName, l);
+						m.userName[l-1]=0;
+						m.userNameLength=l;
+
+						fprintf(logFile, "new YMT_PRIVATE_RECEIPT message:%s:%s\n", m.userName, m.text);
+						receivedMessages.push_back(m);
+					}
+					recentlySentMessages.erase(mit);
+					fprintf(logFile, "Message (%d) removed from recentlySentMessages\n", messageID);
+					break;
+				}
+	}
+	break;
 	case YMT_SEND_MESSAGE:
 	{
 		if (sendingMessages.size()>0)
@@ -328,6 +391,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (mit->messageID==messageID)
 			{
 				fprintf(logFile, "Message (%d) has arrived (%s)\n", messageID, mit->text);
+				recentlySentMessages.push_back(*mit);
+				if (recentlySentMessages.size()>64)
+					recentlySentMessages.pop_front();
 				sendingMessages.erase(mit);
 				break;
 			}
