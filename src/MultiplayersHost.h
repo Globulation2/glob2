@@ -63,6 +63,7 @@ public:
 		
 		int totalLost;
 		int totalSent;
+		int totalReceived;
 		int windowstats[MAX_WINDOW_SIZE];
 		int windowlosts[MAX_WINDOW_SIZE];
 		int onlyWaited;
