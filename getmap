@@ -1,4 +1,0 @@
-#!/bin/sh
-rm -f glob2map.tar.gz
-wget http://lappc22.epfl.ch/~nct/glob2map.tar.gz
-tar xvzf glob2map.tar.gz

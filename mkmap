@@ -1,3 +1,2 @@
 #!/bin/sh
-tar cvzf glob2map.tar.gz maps/*.map
-scp glob2map.tar.gz nct@lappc22.epfl.ch:~/public_html/
+rsync -z --delete-after maps/*.map nct@yog1.ysagoon.com:~/glob2maps/

@@ -1,4 +1,0 @@
-#!/bin/sh
-rm -f glob2data.tar
-wget http://lappc22.epfl.ch/~nct/glob2data.tar
-tar xvf glob2data.tar
