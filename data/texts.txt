@@ -162,7 +162,7 @@ Kampf Fahne
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
-
+Entfernungs Fahne
 [wood wall]
 Mur de bois
 Wood wall
@@ -198,7 +198,7 @@ Ein Arbeiter fehlt
 [no unit needed]
 Equilibre du travail
 Work balanced  
-  
+Arbeiter balanciert  
 [l waiting for player]
 Attente du joueur
 Waiting for player
@@ -458,11 +458,11 @@ Stiller Spieler
 [PNS_PLAYER_SEND_PRESENCE_REQUEST]
 Requête de présence reçue
 Presence request received
-
+Presenz Anfrage bekommen
 [PNS_PLAYER_SEND_SESSION_REQUEST]
 Requête de session reçue
 Session request received
-
+Session Anfrage bekommen
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyées
 Informations sended
@@ -658,11 +658,11 @@ hat verlassen
 [speed]
 Vitesse
 Speed
-
+Geschwindigkeit
 [attack speed]
 Vit. attaque
 Attack speed
-
+Angriffs gesch.
 [new]
 Nouveau
 New
@@ -670,91 +670,91 @@ Neu
 [load]
 Charger
 Load
-
+Laden
 [handmade map]
 Carte faite à la main
 Handmade map
-
+Handgemachte Karte
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
-
+Zufallsgenerierte Karten
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
-
+Uniforme Landschaft
 [random terrain]
 Terrain aléatoire
 Random terrain
-
+Zufalls Landschaft
 [islands terrain]
 Iles
 Islands
-
+Inseln
 [ratios]
 Proportions
 Rations
-
+Verhältnis
 [smoothing]
 Lissage
 Smoothing
-
+Glättung
 [number of teams]
 nombre d'equipes
 number of teams
-
+Anzahl Manschaften
 [islands size]
 taille des iles
 islands size
-
+Grösse der Inseln
 [beach size]
 taille de la plage
 beach size
-
+Grösse des Strandes
 [workers]
 Ouvrières
 Workers
-
+Arbeiter
 [bad error in connection system]
 Mauvaise erreure dans le système de connection
 Bad error in connection system
-
+Schlechter
 [not connected]
 Pas connecté
 Not connected
-
+Nicht angeschlossen
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
-
+Présenzanfrage gesendet ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
-
+Sessionanfrage gesendet ... 
 [checksum sent]
 Somme de contrôle envoyée ...
 Checksum sent ...
-
+Prüfsumme gesendet ...
 [connected to server]
 Connecté au serveur
 Connected to server
-
+Angeschlossen an Server
 [connecting to all players]
 En train de connecter avec les joueurs
 Connecting to all players
-
+Anschliessen an alle Spieler
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
-
+Angeschlossen an alle Spieler
 [aviable lan games]
 Parties locales disponibles
 Local aviable games
-
+Lokalvorhandene Spiele
 [login]
 Login
 Login
-
+Login
 [from:]
 de:
 from:
@@ -770,19 +770,19 @@ Script compilieren
 [downloaded at]
 Téléchargé à 
 Downloaded at 
-
+Runtergeladen zu
 [percent]
   pourcent
   percent
-  
+  prozent
 [download finished]
 Téléchargement terminé
 Download finished
-
+Runterladen fertig
 [map name:]
 Carte:
 Map name:
-
+Karte:
 [:map name]
 .
 .
