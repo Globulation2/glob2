@@ -21,7 +21,6 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
-#include "LANBroadcast.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
@@ -641,7 +640,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	channel=SDLNet_UDP_Bind(socket, channel, &ip);
 	if (channel!=-1)
 	{
-		UDPpacket *packet=SDLNet_AllocPacket(size);
+		UDPpacket *packet=SDLNet_AllocPacket(36);
 		
 		if (packet==NULL)
 		{
@@ -655,13 +654,21 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 			return;
 		}
 		
-		char data[4];
-		data[0]=BROADCAST_RESPONSE;
+		char data[36];
+		if (shareOnYOG)
+			data[0]=BROADCAST_RESPONSE_YOG;
+		else
+			data[0]=BROADCAST_RESPONSE_LAN;
 		data[1]=0;
 		data[2]=0;
 		data[3]=0;
-		packet->len=4;
-		memcpy((char *)packet->data, data, 4);
+		memset(&data[4], 0, 32);
+		strncpy(&data[4], sessionInfo.map.getMapName(), 32);
+		printf("MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
+		printf("MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
+		printf("MultiplayersHost sendingB (%s).\n", &data[4]);
+		packet->len=36;
+		memcpy((char *)packet->data, data, 36);
 		
 		bool sucess;
 		

@@ -29,10 +29,6 @@ public:
 	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
 	int getFreeChannel();
-
-public:
-	bool broadcast(char *data, int size);
-	bool broadcast(const int v);
 	
 public:
 	IPaddress serverIP;

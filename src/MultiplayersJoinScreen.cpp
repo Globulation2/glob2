@@ -81,6 +81,16 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		oldStatus=multiplayersJoin->waitingState;
 	}
 	
+	if (multiplayersJoin->listHasChanged)
+	{
+		lanServers->clear();
+		std::list<MultiplayersJoin::LANHost>::iterator it;
+		for (it=multiplayersJoin->LANHosts.begin(); it!=multiplayersJoin->LANHosts.end(); ++it)
+			lanServers->addText(it->gameName);
+		lanServers->commit();
+		multiplayersJoin->listHasChanged=false;
+	}
+	/*
 	char **list;
 	int length;
 	if (multiplayersJoin->getList(&list, &length))
@@ -95,6 +105,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		delete[] list;
 		lanServers->commit();
 	}
+	*/
 	
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
@@ -170,7 +181,21 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		if (source==lanServers)
-			serverName->setText(lanServers->getText(par1));
+		{
+			std::list<MultiplayersJoin::LANHost>::iterator it;
+			int i=0;
+			for (it=multiplayersJoin->LANHosts.begin(); it!=multiplayersJoin->LANHosts.end(); ++it)
+				if (i==par1)
+				{
+					char s[16];
+					Uint32 netHost=SDL_SwapBE32(it->ip);
+					snprintf(s, 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
+					serverName->setText(s);
+					break;
+				}
+				else
+					i++;
+		}
 	}
 
 }

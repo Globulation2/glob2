@@ -62,7 +62,12 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	kicked=false;
 	
 	if (lan.enable(SERVER_PORT))
-		broadcastState=BS_ENABLE;
+	{
+		if (shareOnYOG)
+			broadcastState=BS_DISABLE_YOG;
+		else
+			broadcastState=BS_ENABLE_LAN;
+	}
 	else
 		broadcastState=BS_BAD;
 	
@@ -403,7 +408,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	}
 }
 
-bool MultiplayersJoin::getList(char ***list, int *length)
+/*bool MultiplayersJoin::getList(char ***list, int *length)
 {
 	if (listHasChanged)
 	{
@@ -431,35 +436,39 @@ bool MultiplayersJoin::getList(char ***list, int *length)
 	}
 	else
 		return false;
-}
+}*/
 
 void MultiplayersJoin::receiveTime()
 {
-	if (broadcastState==BS_ENABLE)
+	if ((broadcastState==BS_ENABLE_LAN) || (broadcastState==BS_ENABLE_YOG))
 	{
 		std::list<LANHost>::iterator it;
 		for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 			it->timeout--;
 		
 		int v;
-		if (lan.receive(&v) && (v==BROADCAST_RESPONSE))
+		LANHost lanhost;
+		if (lan.receive(&v, lanhost.gameName))
 		{
-			LANHost lanhost;
-			lanhost.ip=lan.getSenderIP();
-			lanhost.timeout=2*DEFAULT_NETWORK_TIMEOUT;
-			//We ckeck if this host is already in the list:
-			bool already=false;
-			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
-				if (lanhost.ip==it->ip)
-				{
-					already=true;
-					it->timeout=2*DEFAULT_NETWORK_TIMEOUT;
-					break;
-				}
-			if (!already)
+			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
+				|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
 			{
-				LANHosts.push_front(lanhost);
-				listHasChanged=true;
+				lanhost.ip=lan.getSenderIP();
+				lanhost.timeout=2*DEFAULT_NETWORK_TIMEOUT;
+				//We ckeck if this host is already in the list:
+				bool already=false;
+				for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
+					if (strncmp(lanhost.gameName, it->gameName, 32)==0)
+					{
+						already=true;
+						it->timeout=2*DEFAULT_NETWORK_TIMEOUT;
+						break;
+					}
+				if (!already)
+				{
+					LANHosts.push_front(lanhost);
+					listHasChanged=true;
+				}
 			}
 		}
 
@@ -473,6 +482,14 @@ void MultiplayersJoin::receiveTime()
 				//printf("removed (%x).\n", SDL_SwapBE32(ittemp->ip));
 			}
 		}
+		
+		if (broadcastState==BS_ENABLE_YOG)
+			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
+				if (strncmp(it->gameName, gameName, 32)==0)
+				{
+					serverIP=it->ip;
+					printf("Found a local game with same name. Trying NAT.\n");
+				}
 	}
 }
 
@@ -560,16 +577,20 @@ void MultiplayersJoin::sendingTime()
 {
 	if (waitingState>WS_WAITING_FOR_SESSION_INFO)
 	{
-		if (broadcastState==BS_ENABLE)
-			broadcastState=BS_JOINED;
+		if (broadcastState==BS_ENABLE_LAN)
+			broadcastState=BS_JOINED_LAN;
+		else if (broadcastState==BS_ENABLE_YOG)
+			broadcastState=BS_JOINED_YOG;
 	}
 	else
 	{
-		if (broadcastState==BS_JOINED)
-			broadcastState=BS_ENABLE;
+		if (broadcastState==BS_JOINED_LAN)
+			broadcastState=BS_ENABLE_LAN;
+		else if (broadcastState==BS_JOINED_YOG)
+			broadcastState=BS_ENABLE_YOG;
 	}
 	
-	if ((broadcastState==BS_ENABLE)&&(--broadcastTimeout<0))
+	if ((broadcastState==BS_ENABLE_LAN || broadcastState==BS_ENABLE_YOG)&&(--broadcastTimeout<0))
 	{
 		if (lan.send(BROADCAST_REQUEST))
 			broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
@@ -604,6 +625,10 @@ void MultiplayersJoin::sendingTime()
 				{
 					printf("sending water to firewall. (%s) (%d)\n", serverName, SERVER_PORT);
 					globalContainer->yog.sendFirewallActivation(serverName, SERVER_PORT);
+					
+					printf("enabling NAT detection too.\n", serverName, SERVER_PORT);
+					if (broadcastState==BS_DISABLE_YOG)
+						broadcastState=BS_ENABLE_YOG;
 				}
 			}
 			else
@@ -976,4 +1001,6 @@ void MultiplayersJoin::quitThisGame()
 	}
 	
 	waitingState=WS_TYPING_SERVER_NAME;
+	if (broadcastState==BS_ENABLE_YOG)
+		broadcastState=BS_DISABLE_YOG;
 }
