@@ -9,6 +9,7 @@ To First release :
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Clicking on a game on YOG whould to to this game. (nct)
+- Better handling of saving and loading of virtual dirs. (nct)
 
 Bug to fix : (please, don't forget to add your name so the one who want to fix the issue can contact you (nct))
 - some people doesn't begin in center of map ??? (unknown)
@@ -17,6 +18,7 @@ Bug to fix : (please, don't forget to add your name so the one who want to fix t
 
 To Next version :
 
+- War flag have some info about attached units. (max)
 - GUI button free unit must be smoothed from newStat. (nct)
 - allies can put mark on the map. (nct)
 - units working to a building are highlight when building is selected. (nct)

@@ -127,11 +127,14 @@ public:
 	int getMidX(void);
 	int getMidY(void);
 	bool findExit(int *posX, int *posY, int *dx, int *dy, bool canFly);
-	
+
+	//! get flag from units attached to flag
+	void computeFlagStat(int *goingTo, int *attacking, int *removingBlack);
+
 	static Sint32 UIDtoID(Sint32 uid);
 	static Sint32 UIDtoTeam(Sint32 uid);
 	static Sint32 UIDfrom(Sint32 id, Sint32 team);
-	
+
 	Sint32 checkSum();
 };
 

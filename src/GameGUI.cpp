@@ -1059,7 +1059,7 @@ void GameGUI::draw(void)
 							"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 128+48+6*48, globalContainer->littleFontGreen, 
 							"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+48+6*48, globalContainer->littleFontGreen, 
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+48+6*48, globalContainer->littleFontGreen,
 							"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
 					}
 				}
@@ -1162,16 +1162,27 @@ void GameGUI::draw(void)
 				if (selBuild->type->maxRessource[i])
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10)+12, globalContainer->littleFontGreen, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
 
+			// it is a unit ranged attractor (aka flag)
 			if (selBuild->type->defaultUnitStayRange)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
+
+				// get flag stat
+				int goingTo, attacking, removingBlack;
+				selBuild->computeFlagStat(&goingTo, &attacking, &removingBlack);
+				int onSpot=attacking+removingBlack;
+				// display flag stat
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+80, globalContainer->littleFontGreen, "%d %s", goingTo, globalContainer->texts.getString("[in way]"));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+92, globalContainer->littleFontGreen, "%d %s", onSpot, globalContainer->texts.getString("[on the spot]"));
+
+				// display range box
 				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
 					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
 				else if (selBuild->type->type==BuildingType::WAR_FLAG)
 					drawScrollBox(globalContainer->gfx->getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
 				else
 					assert(false);
-				}
+			}
 
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
