@@ -472,7 +472,7 @@ void Map::step(void)
 					int gud=gradientUpdatedDepth[t][r][s];
 					if (gud<2)
 					{
-						printf("updateGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
+						//printf("updateGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
 						updateGradient(t, r, s, gud==0);
 						gradientUpdatedDepth[t][r][s]++;
 						updated=true;
@@ -1548,29 +1548,17 @@ void Map::updateGradient(Building *building, bool canSwim)
 
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 
-	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
+	/*for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
 	{
-		for (int down=0; down<2; down++)
+		int x=15;
+		int y=15;
+		int dis=1;
+		int die=31;
+		int ddi=+2;
+
+		for (int di=dis; di!=die; di+=ddi) //distance-iterator
 		{
-			int x, y, dis, die, ddi;
-			if (down)
-			{
-				x=0;
-				y=0;
-				dis=31;
-				die=1;
-				ddi=-2;
-			}
-			else
-			{
-				x=15;
-				y=15;
-				dis=1;
-				die=31;
-				ddi=+2;
-			}
-			
-			for (int di=dis; di!=die; di+=ddi) //distance-iterator
+			for (int bi=0; bi<2; bi++) //back-iterator
 			{
 				for (int ai=0; ai<4; ai++) //angle-iterator
 				{
@@ -1627,21 +1615,169 @@ void Map::updateGradient(Building *building, bool canSwim)
 							else
 								gradient[wy+x]=max-1;
 						}
-
-						switch (ai)
+						
+						if (bi==0)
 						{
-							case 0:
-								x++;
-							break;
-							case 1:
-								y++;
-							break;
-							case 2:
-								x--;
-							break;
-							case 3:
-								y--;
-							break;
+							switch (ai)
+							{
+								case 0:
+									x++;
+								break;
+								case 1:
+									y++;
+								break;
+								case 2:
+									x--;
+								break;
+								case 3:
+									y--;
+								break;
+							}
+						}
+						else
+						{
+							switch (ai)
+							{
+								case 0:
+									y++;
+								break;
+								case 1:
+									x++;
+								break;
+								case 2:
+									y--;
+								break;
+								case 3:
+									x--;
+								break;
+							}
+						}
+					}
+				}
+			}
+			x--;
+			y--;
+		}
+	}*/
+	
+	for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
+	{
+		for (int down=0; down<2; down++)
+		{
+			int x, y, dis, die, ddi;
+			if (down)
+			{
+				x=0;
+				y=0;
+				dis=31;
+				die=1;
+				ddi=-2;
+			}
+			else
+			{
+				x=15;
+				y=15;
+				dis=1;
+				die=31;
+				ddi=+2;
+			}
+			
+			for (int di=dis; di!=die; di+=ddi) //distance-iterator
+			{
+				for (int bi=0; bi<2; bi++) //back-iterator
+				{
+					for (int ai=0; ai<4; ai++) //angle-iterator
+					{
+						for (int mi=0; mi<di; mi++) //move-iterator
+						{
+							//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
+							assert(x>=0);
+							assert(y>=0);
+							assert(x<32);
+							assert(y<32);
+
+							int wy=32*y;
+							int wyu, wyd;
+							if (y==0)
+								wyu=32*0;
+							else
+								wyu=32*(y-1);
+							if (y==31)
+								wyd=32*31;
+							else
+								wyd=32*(y+1);
+							Uint8 max=gradient[wy+x];
+							if (max && max!=255)
+							{
+								int xl, xr;
+								if (x==0)
+									xl=0;
+								else
+									xl=x-1;
+								if (x==31)
+									xr=31;
+								else
+									xr=x+1;
+
+								Uint8 side[8];
+								side[0]=gradient[wyu+xl];
+								side[1]=gradient[wyu+x ];
+								side[2]=gradient[wyu+xr];
+
+								side[3]=gradient[wy +xr];
+
+								side[4]=gradient[wyd+xr];
+								side[5]=gradient[wyd+x ];
+								side[6]=gradient[wyd+xl];
+
+								side[7]=gradient[wy +xl];
+
+								for (int i=0; i<8; i++)
+									if (side[i]>max)
+										max=side[i];
+								assert(max);
+								if (max==1)
+									gradient[wy+x]=1;
+								else
+									gradient[wy+x]=max-1;
+							}
+
+							if (bi==0)
+							{
+								switch (ai)
+								{
+									case 0:
+										x++;
+									break;
+									case 1:
+										y++;
+									break;
+									case 2:
+										x--;
+									break;
+									case 3:
+										y--;
+									break;
+								}
+							}
+							else
+							{
+								switch (ai)
+								{
+									case 0:
+										y++;
+									break;
+									case 1:
+										x++;
+									break;
+									case 2:
+										y--;
+									break;
+									case 3:
+										x--;
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -1679,47 +1815,50 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	int max=gradient[lx+ly*32];
 	bool found=false;
 	
-	for (int sd=1; sd>=0; sd--)
-		for (int d=sd; d<8; d+=2)
-		{
-			int ddx, ddy;
-			Unit::dxdyfromDirection(d, &ddx, &ddy);
-			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+	if (max>1)
+	{
+		for (int sd=1; sd>=0; sd--)
+			for (int d=sd; d<8; d+=2)
 			{
-				Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
-				if (g>max)
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
-					max=g;
-					*dx=ddx;
-					*dy=ddy;
-					found=true;
+					Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
+					if (g>max)
+					{
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
+					}
 				}
 			}
-		}
-	
-	if (found)
-		return true;
+		if (found)
+			return true;
+	}
 	
 	updateGradient(building, canSwim);
 	
 	max=gradient[lx+ly*32];
-	for (int sd=1; sd>=0; sd--)
-		for (int d=sd; d<8; d+=2)
-		{
-			int ddx, ddy;
-			Unit::dxdyfromDirection(d, &ddx, &ddy);
-			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+	if (max>1)
+		for (int sd=1; sd>=0; sd--)
+			for (int d=sd; d<8; d+=2)
 			{
-				Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
-				if (g>max)
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
-					max=g;
-					*dx=ddx;
-					*dy=ddy;
-					found=true;
+					Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
+					if (g>max)
+					{
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
+					}
 				}
 			}
-		}
 	
 	if (!found)
 		printf("failed to pathfind to a building gid=%d!\n", building->gid);
