@@ -50,7 +50,6 @@ void BuildingsTypes::load(const char *filename)
 		BuildingType *buildingType=new BuildingType();
 		*buildingType=defaultBuildingType;
 		result=buildingType->loadText(stream);
-		
 		if (result)
 			buildingsTypes.push_back(buildingType);
 		else

@@ -303,7 +303,7 @@ bool Unit::step(void)
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
 	{
-		Uint16 enemyGUID=owner->game->map.getGroundUnit(posX+dx, posY+dy);
+		Uint16 enemyGUID=owner->map->getGroundUnit(posX+dx, posY+dy);
 		if (enemyGUID!=NOGUID)
 		{
 			int enemyID=GIDtoID(enemyGUID);
@@ -317,7 +317,7 @@ bool Unit::step(void)
 		}
 		else 
 		{
-			Uint16 enemyGBID=owner->game->map.getBuilding(posX+dx, posY+dy);
+			Uint16 enemyGBID=owner->map->getBuilding(posX+dx, posY+dy);
 			if (enemyGBID!=NOGBID)
 			{
 				int enemyID=Building::GIDtoID(enemyGBID);
@@ -350,13 +350,13 @@ bool Unit::step(void)
 		bool b=endOfAction();
 		if (performance[FLY])
 		{
-			owner->game->map.setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
-			owner->game->map.setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
+			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
+			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
 		}
 		else
 		{
-			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
-			owner->game->map.setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
+			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
+			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
 		}
 
 		return b;
@@ -368,9 +368,9 @@ void Unit::selectPreferedMovement(void)
 {
 	if (performance[FLY])
 		action=FLY;
-	else if ((performance[SWIM]) && (owner->game->map.isWater(posX, posY)) )
+	else if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
 		action=SWIM;
-	else if ((performance[WALK]) && (!owner->game->map.isWater(posX, posY)) )
+	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
 		action=WALK;
 	else
 		assert(false);
@@ -429,9 +429,9 @@ void Unit::handleMedical(void)
 			displacement=DIS_RANDOM;
 			
 			if (performance[FLY])
-				owner->game->map.setAirUnit(posX, posY, NOGUID);
+				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
-				owner->game->map.setGroundUnit(posX, posY, NOGUID);
+				owner->map->setGroundUnit(posX, posY, NOGUID);
 		}
 		else
 		{
@@ -463,11 +463,10 @@ void Unit::handleActivity(void)
 			// first we look for a food building to fill:
 			if (performance[HARVEST])
 			{
-				Building *b;
-				b=owner->findNearestFillableFood(posX, posY);
-				if ( b != NULL)
+				Building *b=owner->findNearestFillableFood(posX, posY);
+				if (b != NULL)
 				{
-					jobFound=owner->game->map.nearestRessource(posX, posY, CORN, &targetX, &targetY);
+					jobFound=owner->map->nearestRessource(posX, posY, CORN, &targetX, &targetY);
 					if (jobFound)
 					{
 						activity=ACT_HARVESTING;
@@ -531,7 +530,7 @@ void Unit::handleActivity(void)
 					assert(destinationPurprose>=0);
 					assert(b->neededRessource(destinationPurprose));
 					
-					jobFound=owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
+					jobFound=owner->map->nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
 					if (jobFound)
 					{
 						activity=ACT_BUILDING;
@@ -720,7 +719,7 @@ void Unit::handleDisplacement(void)
 			assert(attachedBuilding);
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
-				if (owner->game->map.doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
+				if (owner->map->doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
 				{
 					displacement=DIS_HARVESTING;
 					//printf("I found ressource\n");
@@ -730,9 +729,9 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				caryedRessource=destinationPurprose;
-				owner->game->map.decRessource(posX+dx, posY+dy, (RessourceType)caryedRessource);
+				owner->map->decRessource(posX+dx, posY+dy, (RessourceType)caryedRessource);
 				
-				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
 						displacement=DIS_GIVING_TO_BUILDING;
@@ -751,7 +750,7 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
 						displacement=DIS_GIVING_TO_BUILDING;
@@ -802,10 +801,10 @@ void Unit::handleDisplacement(void)
 				{
 					printf("(%d) destinationPurprose=%d.\n", gid, destinationPurprose);
 				}
-				if ((destinationPurprose>=0)&&(owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
+				if ((destinationPurprose>=0)&&(owner->map->nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
 				{
 					newTargetWasSet();
-					if (owner->game->map.doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
+					if (owner->map->doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
 					{
 						displacement=DIS_HARVESTING;
 						//printf("I found ressource\n");
@@ -842,7 +841,7 @@ void Unit::handleDisplacement(void)
 			
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_ENTERING_BUILDING;
 				}
@@ -853,9 +852,9 @@ void Unit::handleDisplacement(void)
 				// then we are sure that the unit can enter.
 				
 				if (performance[FLY])
-					owner->game->map.setAirUnit(posX-dx, posY-dy, NOGUID);
+					owner->map->setAirUnit(posX-dx, posY-dy, NOGUID);
 				else
-					owner->game->map.setGroundUnit(posX-dx, posY-dy, NOGUID);
+					owner->map->setGroundUnit(posX-dx, posY-dy, NOGUID);
 				displacement=DIS_INSIDE;
 				
 				if (destinationPurprose==FEED)
@@ -924,7 +923,7 @@ void Unit::handleDisplacement(void)
 
 			targetX=attachedBuilding->posX;
 			targetY=attachedBuilding->posY;
-			int distance=owner->game->map.warpDistSquare(targetX, targetY, posX, posY);
+			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
 			//printf("%d <? %d :-)\n", dist1, dist2);
 			if (distance<=range)
@@ -988,7 +987,7 @@ void Unit::handleMovement(void)
 
 				dx=-cdy;
 				dy=cdx;
-				if (!owner->game->map.isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVision))
+				if (!owner->map->isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVision))
 				{
 					dx=cdx;
 					dy=cdy;
@@ -1007,7 +1006,7 @@ void Unit::handleMovement(void)
 					{
 						int dx, dy;
 						dxdyfromDirection(j, &dx, &dy);
-						if (!owner->game->map.isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVision))
+						if (!owner->map->isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVision))
 						{
 							dist[j]=i;
 							break;
@@ -1062,7 +1061,7 @@ void Unit::handleMovement(void)
 			}
 			
 			assert(performance[FLY]);
-			if (movement!=MOV_GOING_DXDY || owner->game->map.getAirUnit(posX+dx, posY+dy)!=NOGUID)
+			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
 			{
 				movement=MOV_RANDOM;
 			}
@@ -1071,7 +1070,7 @@ void Unit::handleMovement(void)
 
 		case DIS_ATTACKING_AROUND:
 		{
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
+			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
 			{
 				movement=MOV_ATTACKING_TARGET;
 			}
@@ -1081,14 +1080,14 @@ void Unit::handleMovement(void)
 				movement=MOV_RANDOM;
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
-						if (owner->game->map.isFOWDiscovered(posX+x, posY+y, owner->sharedVision))
+						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVision))
 						{
 							if (attachedBuilding&&
-								owner->game->map.warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
+								owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
 									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
 								continue;
 							Uint16 gid;
-							gid=owner->game->map.getBuilding(posX+x, posY+y);
+							gid=owner->map->getBuilding(posX+x, posY+y);
 							if (gid!=NOGBID)
 							{
 								int team=Building::GIDtoTeam(gid);
@@ -1109,7 +1108,7 @@ void Unit::handleMovement(void)
 									}
 								}
 							}
-							gid=owner->game->map.getGroundUnit(posX+x, posY+y);
+							gid=owner->map->getGroundUnit(posX+x, posY+y);
 							if (gid!=NOGUID)
 							{
 								int team=Unit::GIDtoTeam(gid);
@@ -1137,13 +1136,13 @@ void Unit::handleMovement(void)
 		case DIS_CLEARING_RESSOURCES:
 		{
 			if (movement==MOV_HARVESTING)
-				owner->game->map.decRessource(posX+dx, posY+dy);
+				owner->map->decRessource(posX+dx, posY+dy);
 			
-			if (owner->game->map.doesUnitTouchRemovableRessource(this, &dx, &dy))
+			if (owner->map->doesUnitTouchRemovableRessource(this, &dx, &dy))
 			{	
 				movement=MOV_HARVESTING;
 			}
-			else if (owner->game->map.nearestRessourceInCircle(posX, posY,
+			else if (owner->map->nearestRessourceInCircle(posX, posY,
 				attachedBuilding->posX, attachedBuilding->posY, attachedBuilding->unitStayRange,
 				&targetX, &targetY))
 			{
@@ -1151,7 +1150,7 @@ void Unit::handleMovement(void)
 				//printf("pos=(%d, %d), flag=(%d, %d), range=%d, target=(%d, %d), wds=%d.\n", posX, posY,
 				//	attachedBuilding->posX, attachedBuilding->posY, attachedBuilding->unitStayRange,
 				//	targetX, targetY,
-				//	owner->game->map.warpDistSquare(attachedBuilding->posX, attachedBuilding->posY, targetX, targetY));
+				//	owner->map->warpDistSquare(attachedBuilding->posX, attachedBuilding->posY, targetX, targetY));
 				movement=MOV_GOING_TARGET;
 			}
 			else
@@ -1163,7 +1162,7 @@ void Unit::handleMovement(void)
 
 		case DIS_RANDOM:
 		{
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
+			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
 			{
 				movement=MOV_ATTACKING_TARGET;
 			}
@@ -1177,7 +1176,7 @@ void Unit::handleMovement(void)
 		case DIS_GOING_TO_FLAG:
 		case DIS_GOING_TO_BUILDING:
 		{
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
+			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
 			{
 				movement=MOV_ATTACKING_TARGET;
 			}
@@ -1271,21 +1270,21 @@ void Unit::handleAction(void)
 		{
 			bool fly=performance[FLY];
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, NOGUID);
+				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
-				owner->game->map.setGroundUnit(posX, posY, NOGUID);
+				owner->map->setGroundUnit(posX, posY, NOGUID);
 			dx=-1+syncRand()%3;
 			dy=-1+syncRand()%3;
 			directionFromDxDy();
 			setNewValidDirection();
-			posX=(posX+dx)&(owner->game->map.getMaskW());
-			posY=(posY+dy)&(owner->game->map.getMaskH());
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
 			selectPreferedMovement();
 			speed=performance[action];
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, gid);
+				owner->map->setAirUnit(posX, posY, gid);
 			else
-				owner->game->map.setGroundUnit(posX, posY, gid);
+				owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
 		
@@ -1293,22 +1292,22 @@ void Unit::handleAction(void)
 		{
 			bool fly=performance[FLY];
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, NOGUID);
+				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
-				owner->game->map.setGroundUnit(posX, posY, NOGUID);
+				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
 			pathFind();
 			//printf("%d d=(%d, %d)!\n", (int)this, dx, dy);
-			posX=(posX+dx)&(owner->game->map.getMaskW());
-			posY=(posY+dy)&(owner->game->map.getMaskH());
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
 			
 			selectPreferedMovement();
 			speed=performance[action];
 			
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, gid);
+				owner->map->setAirUnit(posX, posY, gid);
 			else
-				owner->game->map.setGroundUnit(posX, posY, gid);
+				owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
 
@@ -1316,21 +1315,21 @@ void Unit::handleAction(void)
 		{
 			bool fly=performance[FLY];
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, NOGUID);
+				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
-				owner->game->map.setGroundUnit(posX, posY, NOGUID);
+				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
 			directionFromDxDy();
-			posX=(posX+dx)&(owner->game->map.getMaskW());
-			posY=(posY+dy)&(owner->game->map.getMaskH());
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
 			
 			selectPreferedMovement();
 			speed=performance[action];
 			
 			if (fly)
-				owner->game->map.setAirUnit(posX, posY, gid);
+				owner->map->setAirUnit(posX, posY, gid);
 			else
-				owner->game->map.setGroundUnit(posX, posY, gid);
+				owner->map->setGroundUnit(posX, posY, gid);
 			
 			if (verbose)
 				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
@@ -1342,7 +1341,7 @@ void Unit::handleAction(void)
 		{
 			// NOTE : this is a hack : We don't delete the unit on the map
 			// because we have to draw it while it is entering.
-			// owner->game->map.setUnit(posX, posY, NOUID);
+			// owner->map->setUnit(posX, posY, NOUID);
 			posX+=dx;
 			posY+=dy;
 			directionFromDxDy();
@@ -1358,9 +1357,9 @@ void Unit::handleAction(void)
 			speed=performance[action];
 			
 			if (performance[FLY])
-				owner->game->map.setAirUnit(posX, posY, gid);
+				owner->map->setAirUnit(posX, posY, gid);
 			else
-				owner->game->map.setGroundUnit(posX, posY, gid);
+				owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
 		
@@ -1407,7 +1406,7 @@ void Unit::setNewValidDirection(void)
 	if (performance[FLY])
 	{
 		int i=0;
-		while ( i<8 && !owner->game->map.isFreeForAirUnit(posX+dx, posY+dy))
+		while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
 		{
 			direction=(direction+1)&7;
 			dxdyfromDirection();
@@ -1423,7 +1422,7 @@ void Unit::setNewValidDirection(void)
 	{
 		int i=0;
 		bool swim=performance[SWIM];
-		while ( i<8 && !owner->game->map.isFreeForGroundUnit(posX+dx, posY+dy, swim))
+		while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim))
 		{
 			direction=(direction+1)&7;
 			dxdyfromDirection();
@@ -1442,16 +1441,16 @@ bool Unit::valid(int x, int y)
 {
 	// Is there anythig that could block an unit?
 	if (performance[FLY])
-		return owner->game->map.isFreeForAirUnit(x, y);
+		return owner->map->isFreeForAirUnit(x, y);
 	else
-		return owner->game->map.isFreeForGroundUnit(x, y, performance[SWIM]);
+		return owner->map->isFreeForGroundUnit(x, y, performance[SWIM]);
 }
 
 bool Unit::validHard(int x, int y)
 {
 	// Is there anythig that could block an unit? (except other units)
 	assert(!performance[FLY]);
-	return owner->game->map.isHardSpaceForGroundUnit(x, y, performance[SWIM]);
+	return owner->map->isHardSpaceForGroundUnit(x, y, performance[SWIM]);
 }
 
 void Unit::pathFind(void)
@@ -1460,14 +1459,14 @@ void Unit::pathFind(void)
 	int odx=dx;
 	int ody=dy;
 	bool broken=false;
-	int mapw=owner->game->map.getW();
-	int maph=owner->game->map.getH();
+	int mapw=owner->map->getW();
+	int maph=owner->map->getH();
 
 	if (bypassDirection==DIR_UNSET)
 	{
-		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->game->map.isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
+		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->map->isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
 		{
-			owner->game->map.nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			owner->map->nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
 			if (verbose)
 				printf("(%d), no ressouces here! pos=(%d, %d), target=(%d, %d).\n", gid, posX, posY, targetX, targetY);
 		}
@@ -1542,7 +1541,7 @@ void Unit::pathFind(void)
 		tdx=cdx;
 		tdy=cdy;
 		c=0;
-		while(!validHard(startObstacleX+tdx, startObstacleY+tdy) && (owner->game->map.warpDistSquare(posX, posY, startObstacleX+tdx, startObstacleY+tdy)<owner->game->map.warpDistSquare(posX, posY, targetX, targetY)))
+		while(!validHard(startObstacleX+tdx, startObstacleY+tdy) && (owner->map->warpDistSquare(posX, posY, startObstacleX+tdx, startObstacleY+tdy)<owner->map->warpDistSquare(posX, posY, targetX, targetY)))
 		{
 			tdx+=cdx;
 			tdy+=cdy;
@@ -1571,7 +1570,7 @@ void Unit::pathFind(void)
 		int rdir=cDirection;
 		int rDist;
 		
-		int centerSquareDist=owner->game->map.warpDistSquare(centerX, centerY, targetX, targetY);
+		int centerSquareDist=owner->map->warpDistSquare(centerX, centerY, targetX, targetY);
 		if (verbose)
 			printf("centerSquareDist=%d\n", centerSquareDist);
 		
@@ -1603,7 +1602,7 @@ void Unit::pathFind(void)
 			ptlx+=dx;
 			ptly+=dy;
 			ldir=(ldir+1)&7;
-			lDist=owner->game->map.warpDistSquare(ptlx, ptly, targetX, targetY);
+			lDist=owner->map->warpDistSquare(ptlx, ptly, targetX, targetY);
 			
 			// by the right:
 			c=0;
@@ -1625,7 +1624,7 @@ void Unit::pathFind(void)
 			ptrx+=dx;
 			ptry+=dy;
 			rdir=(rdir+7)&7;
-			rDist=owner->game->map.warpDistSquare(ptrx, ptry, targetX, targetY);
+			rDist=owner->map->warpDistSquare(ptrx, ptry, targetX, targetY);
 			
 			obstacleX=startObstacleX;
 			obstacleY=startObstacleY;
@@ -1635,12 +1634,12 @@ void Unit::pathFind(void)
 			if (verbose)
 				printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
 			if ((lDist<=centerSquareDist)
-				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
-				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchBuilding(ptlx, ptly, attachedBuilding->gid)))
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->map->doesPosTouchBuilding(ptlx, ptly, attachedBuilding->gid)))
 				)
 			{
 				bypassDirection=DIR_LEFT;
-				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
 				{
 					targetX=ptlx;
 					targetY=ptly;
@@ -1650,14 +1649,14 @@ void Unit::pathFind(void)
 				break;
 			}
 			if ((rDist<=centerSquareDist)
-				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
-				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchBuilding(ptrx, ptry, attachedBuilding->gid)))
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->map->doesPosTouchBuilding(ptrx, ptry, attachedBuilding->gid)))
 				|| ((ptlx==ptrx)&&(ptly==ptry))
 				|| ((count++)>1024)
 				)
 			{
 				bypassDirection=DIR_RIGHT;
-				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
 				{
 					targetX=ptrx;
 					targetY=ptry;
@@ -1812,7 +1811,7 @@ void Unit::pathFind(void)
 			
 			maxDist*=maxDist;
 			
-			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+			int distSq=owner->map->warpDistSquare(posX, posY, borderX, borderY);
 			int testObstacleX=obstacleX;
 			int testObstacleY=obstacleY;
 			int testBorderX=borderX;
@@ -1844,7 +1843,7 @@ void Unit::pathFind(void)
 					testBorderY+=bdy;
 					if (verbose)
 						printf("l new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-					distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+					distSq=owner->map->warpDistSquare(posX, posY, borderX, borderY);
 					bdx=testObstacleX-testBorderX;
 					bdy=testObstacleY-testBorderY;
 					if (abs(bdx)>1)
@@ -1864,8 +1863,8 @@ void Unit::pathFind(void)
 					if (verbose)
 						printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
-					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-					int currentDistSquare=owner->game->map.warpDistSquare(testBorderX, testBorderY, targetX, targetY);
+					int centerSquareDist=owner->map->warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+					int currentDistSquare=owner->map->warpDistSquare(testBorderX, testBorderY, targetX, targetY);
 
 					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
@@ -1876,7 +1875,7 @@ void Unit::pathFind(void)
 						borderX=testBorderX;
 						borderY=testBorderY;
 						
-						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
 							break;
 					}
 					else
@@ -2001,7 +2000,7 @@ void Unit::pathFind(void)
 			
 			maxDist*=maxDist;
 			
-			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+			int distSq=owner->map->warpDistSquare(posX, posY, borderX, borderY);
 			int testObstacleX=obstacleX;
 			int testObstacleY=obstacleY;
 			int testBorderX=borderX;
@@ -2033,7 +2032,7 @@ void Unit::pathFind(void)
 					testBorderY+=bdy;
 					if (verbose)
 						printf("r new tobstacle=(%d, %d) tborder=(%d, %d) bd=(%d, %d) \n", testObstacleX, testObstacleY, testBorderX, testBorderY, bdx, bdy);
-					distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+					distSq=owner->map->warpDistSquare(posX, posY, borderX, borderY);
 					bdx=testObstacleX-testBorderX;
 					bdy=testObstacleY-testBorderY;
 					if (abs(bdx)>1)
@@ -2053,8 +2052,8 @@ void Unit::pathFind(void)
 					if (verbose)
 						printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
-					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-					int currentDistSquare=owner->game->map.warpDistSquare(testBorderX, testBorderY, targetX, targetY);
+					int centerSquareDist=owner->map->warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+					int currentDistSquare=owner->map->warpDistSquare(testBorderX, testBorderY, targetX, targetY);
 					
 					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
 					{
@@ -2065,7 +2064,7 @@ void Unit::pathFind(void)
 						borderX=testBorderX;
 						borderY=testBorderY;
 						
-						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
 							break;
 					}
 					else
@@ -2085,8 +2084,8 @@ void Unit::pathFind(void)
 		}
 		else
 		{
-			int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-			int currentDistSquare=owner->game->map.warpDistSquare(posX, posY, targetX, targetY);
+			int centerSquareDist=owner->map->warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+			int currentDistSquare=owner->map->warpDistSquare(posX, posY, targetX, targetY);
 
 			if (currentDistSquare<=centerSquareDist)
 			{
@@ -2279,8 +2278,8 @@ void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapw=owner->game->map.getW();
-	int maph=owner->game->map.getH();
+	int mapw=owner->map->getW();
+	int maph=owner->map->getH();
 	if (ldx>(mapw>>1))
 		ldx-=mapw;
 	else if (ldx<-(mapw>>1))
@@ -2310,8 +2309,8 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 void Unit::secondaryDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	int mapw=owner->game->map.getW();
-	int maph=owner->game->map.getH();
+	int mapw=owner->map->getW();
+	int maph=owner->map->getH();
 	if (ldx>(mapw>>1))
 		ldx-=mapw;
 	else if (ldx<-(mapw>>1))

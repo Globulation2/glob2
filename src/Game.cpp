@@ -395,15 +395,14 @@ bool Game::load(SDL_RWops *stream)
 	assert(stream);
 	
 	// delete existing teams
-	int i;
-	for (i=0; i<session.numberOfTeam; ++i)
+	for (int i=0; i<session.numberOfTeam; ++i)
 		if (teams[i])
 		{
 			delete teams[i];
 			teams[i]=NULL;
 		}
 	session.numberOfTeam=0;
-	for (i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<session.numberOfPlayer; ++i)
 		if (players[i])
 		{
 			delete players[i];
@@ -438,29 +437,14 @@ bool Game::load(SDL_RWops *stream)
 	{
 		session=(SessionGame)tempSessionInfo;
 
+		SDL_RWseek(stream, tempSessionInfo.gameOffset, SEEK_SET);
+
 		char signature[4];
-
-		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.gameOffset, SEEK_SET);
-
-		if (session.versionMajor>=0 && session.versionMinor>=9)
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GAMb",4)!=0)
 		{
-			char signature[4];
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GAMb",4)!=0)
-			{
-				fprintf(logFile, "Game::load::begin\n");
-				return false;
-			}
-		}
-		else
-		{
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GLO2",4)!=0)
-			{
-				fprintf(logFile, "Game::load::begin\n");
-				return false;
-			}
+			fprintf(logFile, "Game::load::begin\n");
+			return false;
 		}
 
 		setSyncRandSeedA(SDL_ReadBE32(stream));
@@ -468,70 +452,47 @@ bool Game::load(SDL_RWops *stream)
 		setSyncRandSeedC(SDL_ReadBE32(stream));
 
 		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2", 4)!=0)
+		if (memcmp(signature,"GAMm", 4)!=0)
 		{
 			fprintf(logFile, "Game::load::after sync rand\n");
 			return false;
 		}
 
 		// recreate new teams and players
-		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.teamsOffset, SEEK_SET);
-		for (i=0; i<session.numberOfTeam; ++i)
+		SDL_RWseek(stream, tempSessionInfo.teamsOffset, SEEK_SET);
+		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]=new Team(stream, this, session.versionMinor);
 
-		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
-		for (i=0; i<session.numberOfPlayer; ++i)
+		SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
+		for (int i=0; i<session.numberOfPlayer; ++i)
 			players[i]=new Player(stream, teams, session.versionMinor);
 		stepCounter=SDL_ReadBE32(stream);
 
 		// we have to load team before map
-		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
+		SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
 		if(!map.load(stream, &session, this))
 		{
 			fprintf(logFile, "Game::load::map.load\n");
 			return false;
 		}
 
-		if (session.versionMajor>=0 && session.versionMinor>=9)
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GAMe", 4)!=0)
 		{
-			char signature[4];
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GAMe", 4)!=0)
-			{
-				fprintf(logFile, "Game::load::end\n");
-				return false;
-			}
-		}
-		else
-		{
-			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GLO2", 4)!=0)
-			{
-				fprintf(logFile, "Game::load::end\n");
-				return false;
-			}
+			fprintf(logFile, "Game::load::end\n");
+			return false;
 		}
 		
 		//But we have to finish Team's loading:
-		for (i=0; i<session.numberOfTeam; ++i)
+		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]->update();
 		
 		// then script
 		ErrorReport er;
-		if (session.versionMinor>=10)
-		{
-			SDL_RWseek(stream, tempSessionInfo.mapScriptOffset , SEEK_SET);
-			script.load(stream);
-			er=script.compileScript(this);
-		}
-		else
-		{
-			// load script the script
-			er=script.loadScript("testscript.txt", this);
-		}
+		SDL_RWseek(stream, tempSessionInfo.mapScriptOffset , SEEK_SET);
+		script.load(stream);
+		er=script.compileScript(this);
+		
 		if (er.type!=ErrorReport::ET_OK)
 		{
 			if (er.type==ErrorReport::ET_NO_SUCH_FILE)
@@ -551,8 +512,6 @@ bool Game::load(SDL_RWops *stream)
 
 void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 {
-	int i;
-
 	assert(stream);
 
 	// first we save a session info
@@ -563,13 +522,13 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 	tempSessionInfo.fileIsAMap=(Sint32)fileIsAMap;
 	tempSessionInfo.setMapName(name);
 
-	for (i=0; i<session.numberOfTeam; ++i)
+	for (int i=0; i<session.numberOfTeam; ++i)
 	{
 		tempSessionInfo.team[i]=*teams[i];
 		tempSessionInfo.team[i].disableRecursiveDestruction=true;
 	}
 
-	for (i=0; i<session.numberOfPlayer; ++i)
+	for (int i=0; i<session.numberOfPlayer; ++i)
 	{
 		tempSessionInfo.players[i]=*players[i];
 		tempSessionInfo.players[i].disableRecursiveDestruction=true;
@@ -591,16 +550,16 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 		SDL_WriteBE32(stream, getSyncRandSeedB());
 		SDL_WriteBE32(stream, getSyncRandSeedC());
 
-		SDL_RWwrite(stream, "GLO2", 4, 1);
+		SDL_RWwrite(stream, "GAMm", 4, 1);
 
 		SAVE_OFFSET(stream, 20);
-		for (i=0; i<session.numberOfTeam; ++i)
+		for (int i=0; i<session.numberOfTeam; ++i)
 		{
 			teams[i]->save(stream);
 		}
 
 		SAVE_OFFSET(stream, 24);
-		for (i=0; i<session.numberOfPlayer; ++i)
+		for (int i=0; i<session.numberOfPlayer; ++i)
 		{
 			players[i]->save(stream);
 		}
@@ -620,14 +579,13 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 
 void Game::wonStep(void)
 {
-	int i,j;
 	totalPrestige=0;
 	isGameEnded=false;
 	
-	for (i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<session.numberOfTeam; i++)
 	{
 		bool isOtherAlive=false;
-		for (j=0; j<session.numberOfTeam; j++)
+		for (int j=0; j<session.numberOfTeam; j++)
 		{
 			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
 				isOtherAlive=true;
@@ -646,13 +604,11 @@ void Game::wonStep(void)
 
 void Game::scriptStep(void)
 {
-	int i;
-	
 	// do a script step
 	script.step();
 	
 	// alter win/loose conditions
-	for (i=0; i<session.numberOfTeam; i++)
+	for (int i=0; i<session.numberOfTeam; i++)
 	{
 		if (teams[i]->isAlive)
 		{
@@ -852,10 +808,7 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	if (b->type->isVirtual)
 		teams[team]->virtualBuildings.push_front(b);
 	else
-	{
-		printf("Map::addBuilding map.setBuilding(%d, %d, %d, %d, %d)\n", x, y, w, h, gid);
 		map.setBuilding(x, y, w, h, gid);
-	}
 	teams[team]->myBuildings[id]=b;
 	return b;
 }
@@ -1141,18 +1094,16 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		int lsx, lsy, ldx, ldy;
 		lsx=px+16;
 		lsy=py+16;
-		//#ifdef DBG_PATHFINDING
 		if (unit->bypassDirection && unit->verbose)
 		{
-			unit->owner->game->map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
+			map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
 			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
-			unit->owner->game->map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
+			map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
 			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
-			unit->owner->game->map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
+			map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
 			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
 		}
-		//#endif
-		unit->owner->game->map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
+		map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
 		globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 	}
 }
