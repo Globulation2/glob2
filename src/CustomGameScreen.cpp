@@ -58,21 +58,6 @@ CustomGameScreen::CustomGameScreen()
 		addWidget(isAItext[i]);
 	}
 
-	/*
-	if (globalContainer->fileManager->initDirectoryListing("maps", "map"))
-	{
-		const char *fileName;
-		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
-		{
-			const char *tempFileName=Utilities::concat("maps/", fileName);
-			const char *mapTempName=glob2FilenameToName(tempFileName);
-			delete[] tempFileName;
-			fileList->addText(mapTempName);
-			delete[] mapTempName;
-		}
-		fileList->sort();
-	}
-	*/
 	addWidget(fileList);
 
 	validSessionInfo=false;

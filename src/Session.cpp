@@ -131,10 +131,13 @@ bool SessionGame::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 
 	versionMajor=SDL_ReadBE32(stream);
-	assert(versionMajor==VERSION_MAJOR);
+	if (versionMajor != VERSION_MAJOR)
+		return false;
+
 	versionMinor=SDL_ReadBE32(stream);
-	assert(versionMinor==VERSION_MINOR);
-	
+	if (versionMinor != VERSION_MINOR)
+		return false;
+
 	if (memcmp(signature,"SEGb",4)!=0)
 		return false;
 	
@@ -145,7 +148,7 @@ bool SessionGame::load(SDL_RWops *stream)
 	mapOffset=SDL_ReadBE32(stream);
 	
 	mapScriptOffset=SDL_ReadBE32(stream);
-	
+
 	generationDescriptorOffset=SDL_ReadBE32(stream);
 	
 	numberOfPlayer=SDL_ReadBE32(stream);
@@ -159,9 +162,9 @@ bool SessionGame::load(SDL_RWops *stream)
 		delete mapGenerationDescriptor;
 	mapGenerationDescriptor=NULL;
 	bool isDescriptor;
-	
+
 	isDescriptor=(bool)SDL_ReadBE32(stream);
-	
+
 	if (isDescriptor)
 	{
 		SDL_RWseek(stream, generationDescriptorOffset , SEEK_SET);
