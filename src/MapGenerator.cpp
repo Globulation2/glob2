@@ -1419,8 +1419,7 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
-		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
-		if (!good)
+		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1))
 			return false;
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];

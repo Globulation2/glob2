@@ -466,7 +466,10 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 		delete order;
 		order=new NullOrder();
 	}
-	// TODO: add checksum.
+	
+	if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
+		checkSumsLocal[pushStep]=((SubmitCheckSumOrder *)order)->checkSumValue;
+	
 	order->sender=playerNumber;
 	order->inQueue=true;
 	order->wishedLatency=myLocalWishedLatency;
@@ -605,11 +608,15 @@ Order *NetGame::getOrder(int playerNumber)
 		assert(whoMaskAreWeWaitingFor()==0);
 		
 		if (checkSumsLocal[executeStep] && checkSumsRemote[executeStep])
+		{
 			if (checkSumsLocal[executeStep]!=checkSumsRemote[executeStep])
 			{
 				printf("World desynchronisation at executeStep %d: %x!=%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
 				assert(false);
 			}
+			//else
+			//	printf("World synchronised at executeStep %d: %x==%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
+		}
 		// TODO: check check-sums here
 		assert(order);
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
@@ -897,10 +904,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 					assert(order->getOrderType()==orderType);
 
 					if (orderType==ORDER_SUBMIT_CHECK_SUM)
-					{
-						SubmitCheckSumOrder *cso=(SubmitCheckSumOrder *)order;
-						checkSumsRemote[orderStep]=cso->checkSumValue;
-					}
+						checkSumsRemote[orderStep]=((SubmitCheckSumOrder *)order)->checkSumValue;
 
 					if (ordersQueue[player][orderStep])
 					{
@@ -941,10 +945,12 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			{
 				fprintf(logFile, "  duplicated packet. player=%d, orderStep=%d, v-n\n", player, orderStep);
 				Order *order=ordersQueue[player][orderStep];
-				if (order->getOrderType()!=orderType)
+				if (orderType!=ORDER_SUBMIT_CHECK_SUM && orderType!=ORDER_WAITING_FOR_PLAYER && order->getOrderType()!=orderType)
+				{
+					fprintf(logFile, "  old type=%d, new type=%d\n", order->getOrderType(), orderType);
 					fclose(logFile);
-				if (orderType!=ORDER_WAITING_FOR_PLAYER)
-					assert(order->getOrderType()==orderType);
+					assert(false);
+				}
 				delete order;
 				ordersQueue[player][orderStep]=NULL;
 			}
@@ -953,6 +959,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			order->wishedLatency=receivedWishedLatency;
 			order->wishedDelay=receivedWishedDelay;
 			ordersQueue[player][orderStep]=order;
+			fprintf(logFile, "  ordersQueue[%d][%d]->getOrderType()=%d\n", player, orderStep, ordersQueue[player][orderStep]->getOrderType());
 		}
 		
 		assert(l<=size);
@@ -1215,7 +1222,7 @@ void NetGame::stepExecuted(void)
 				}
 			if (allNullOrders)
 			{
-				timesToEatSteps=0; // We simplay execute all thoses useless orders twice!
+				timesToEatSteps=0; // We simply execute all thoses useless orders twice!
 				
 				for (int p=0; p<numberOfPlayer; p++)
 					if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
