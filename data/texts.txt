@@ -284,3 +284,6 @@ Food left
 [you are under attack]
 Vous etes attaques
 You are under attack
+[building has been finished]
+Le batiment est termine
+The building is finished
