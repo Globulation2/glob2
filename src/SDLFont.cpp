@@ -296,11 +296,12 @@ bool SDLBitmapFont::printable(char c) const
 SDLTTFont::SDLTTFont()
 {
 	font = NULL;
+	
 }
 
-SDLTTFont::SDLTTFont(const char *filename)
+SDLTTFont::SDLTTFont(const char *filename, unsigned size)
 {
-	load(filename);
+	load(filename, size);
 }
 
 SDLTTFont::~SDLTTFont()
@@ -310,11 +311,21 @@ SDLTTFont::~SDLTTFont()
 		
 }
 
-bool SDLTTFont::load(const char *filename)
+bool SDLTTFont::load(const char *filename, unsigned size)
 {
-	// TODO : insert pt in font definition
-	font = TTF_OpenFont(filename, 14);
-	return (font!=NULL);
+	font = TTF_OpenFont(filename, size);
+	if (font)
+	{
+		while (!colorStack.empty())
+			colorStack.pop();
+		while (!styleStack.empty())
+			styleStack.pop();
+		pushColor(0, 0, 0, DrawableSurface::ALPHA_OPAQUE);
+		pushStyle(Font::STYLE_NORMAL);
+		return true;
+	}
+	else
+		return false;
 }
 
 int SDLTTFont::getStringWidth(const char *string) const
@@ -343,14 +354,66 @@ bool SDLTTFont::printable(char c) const
 	return (c>=32);
 }
 
+void SDLTTFont::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	colorStack.pop();
+	pushColor(r, g, b, a);
+}
+
+void SDLTTFont::pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+	SDL_Color c;
+	c.r = r;
+	c.g = g;
+	c.b = b;
+	c.unused = a;
+	colorStack.push(c);
+}
+
+void SDLTTFont::popColor(void)
+{
+	if (colorStack.size() > 1)
+		colorStack.pop();
+}
+
+void SDLTTFont::getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const
+{
+	SDL_Color c;
+	c = colorStack.top();
+	*r = c.r;
+	*g = c.g;
+	*b = c.b;
+	*a = c.unused;
+}
+
+void SDLTTFont::setStyle(unsigned style)
+{
+	styleStack.pop();
+	pushStyle(style);
+}
+
+void SDLTTFont::pushStyle(unsigned style)
+{
+	styleStack.push(style);
+	TTF_SetFontStyle(font, style);
+}
+
+void SDLTTFont::popStyle(void)
+{
+	if (styleStack.size() > 1)
+		styleStack.pop();
+}
+
+unsigned SDLTTFont::getStyle(void) const
+{
+	return styleStack.top();
+}
+
 void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const
 {
 	assert(text);
 	
-	SDL_Color c;
-	c.r=255;
-	c.g=255;
-	c.b=255;
+	SDL_Color c = colorStack.top();
 	SDL_Surface *s=TTF_RenderText_Blended(font, text, c);
 	if (s == NULL)
 		return;

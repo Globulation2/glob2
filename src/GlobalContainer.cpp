@@ -52,7 +52,7 @@ GlobalContainer::GlobalContainer(void)
 	
 	menuFont=NULL;
 	standardFont=NULL;
-	littleFontGreen=NULL;
+	littleFont=NULL;
 	
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -73,8 +73,8 @@ GlobalContainer::~GlobalContainer(void)
 		delete menuFont;
 	if (standardFont)
 		delete standardFont;
-	if (littleFontGreen)
-		delete littleFontGreen;
+	if (littleFont)
+		delete littleFont;
 	if (gfx)
 		delete gfx;
 	assert(yog);
@@ -232,10 +232,15 @@ void GlobalContainer::load(void)
 		gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
 
 		// load fonts
-		menuFont=gfx->loadFont("data/fonts/arial24white.png");
-		//standardFont=gfx->loadFont("data/fonts/arial14white.png");
-		standardFont=gfx->loadFont("data/fonts/arial.ttf");
-		littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
+		/*menuFont=gfx->loadFont("data/fonts/arial24white.png");
+		standardFont=gfx->loadFont("data/fonts/arial14white.png");
+		littleFont=gfx->loadFont("data/fonts/arial8green.png");*/
+		menuFont=gfx->loadFont("data/fonts/arial.ttf", 24);
+		menuFont->setColor(255, 255, 255);
+		standardFont=gfx->loadFont("data/fonts/arial.ttf", 14);
+		standardFont->setColor(255, 255, 255);
+		littleFont=gfx->loadFont("data/fonts/arial.ttf", 10);
+		littleFont->setColor(255, 255, 255);
 
 		initProgressBar();
 

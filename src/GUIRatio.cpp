@@ -23,7 +23,7 @@
 Ratio::Ratio(int x, int y, int w, int h, int size, int value, Font *font)
 {
 	if (!font)
-		font=globalContainer->littleFontGreen;
+		font=globalContainer->littleFont;
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
 	

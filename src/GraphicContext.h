@@ -22,29 +22,8 @@
 
 #include "Header.h"
 
-
-class Font
-{
-public:
-	virtual ~Font() { }
-	virtual int getStringWidth(const char *string) const=0;
-	virtual int getStringWidth(const int i) const;
-	virtual int getStringHeight(const char *string) const=0;
-	virtual bool printable(char c) const=0;
-};
-
-
-class Sprite
-{
-public:
-	virtual ~Sprite() { }
-	virtual void enableBaseColor(Uint8 r, Uint8 g, Uint8 b)=0;
-	virtual void disableBaseColor(void)=0;
-	virtual int getW(int index)=0;
-	virtual int getH(int index)=0;
-};
-
-
+class Font;
+class Sprite;
 
 class DrawableSurface
 {
@@ -92,7 +71,6 @@ public:
 	virtual void updateRect(int x, int y, int w, int h)=0;
 };
 
-
 class GraphicContext:public virtual DrawableSurface
 {
 public:
@@ -105,7 +83,7 @@ public:
 	virtual void dbgprintf(const char *msg, ...)=0;
 
 	virtual Sprite *loadSprite(const char *name)=0;
-	virtual Font *loadFont(const char *name)=0;
+	virtual Font *loadFont(const char *name, unsigned size)=0;
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL)=0;
 
 	virtual void nextFrame(void)=0;
@@ -113,7 +91,49 @@ public:
 	static GraphicContext *createGraphicContext(GraphicContextType type);
 };
 
+class Font
+{
+public:
 
+	enum Style
+	{
+		STYLE_NORMAL = 0x00,
+		STYLE_BOLD = 0x01,
+		STYLE_ITALIC = 0x02,
+		STYLE_UNDERLINE = 0x04,
+	};
+	
+public:
+	virtual ~Font() { }
+	
+	// width and height
+	virtual int getStringWidth(const char *string) const=0;
+	virtual int getStringWidth(const int i) const;
+	virtual int getStringHeight(const char *string) const=0;
+	virtual bool printable(char c) const=0;
+	
+	// Style and color
+	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE) { }
+	virtual void pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE) { }
+	virtual void popColor(void) { }
+	virtual void getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const { }
+	
+	virtual void setStyle(unsigned style) { }
+	virtual void pushStyle(unsigned style) { }
+	virtual void popStyle(void) { }
+	virtual unsigned getStyle(void) const { return 0; }
+};
+
+
+class Sprite
+{
+public:
+	virtual ~Sprite() { }
+	virtual void enableBaseColor(Uint8 r, Uint8 g, Uint8 b)=0;
+	virtual void disableBaseColor(void)=0;
+	virtual int getW(int index)=0;
+	virtual int getH(int index)=0;
+};
 
 
 

@@ -124,7 +124,7 @@ void TeamStats::drawText()
 {
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
-	Font *font=globalContainer->littleFontGreen;
+	Font *font=globalContainer->littleFont;
 	StringTable *strings=&(globalContainer->texts);
 	int textStartPos=gfx->getW()-124;
 	
@@ -151,12 +151,12 @@ void TeamStats::drawText()
 		gfx->drawString(textStartPos, 132+145, font, "%d %s (%.0f %%)", newStats.needHeal, strings->getString("[are wonded]"), ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
 
 		// upgrade state
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+162, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+174, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+186, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+198, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+210, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
-		gfx->drawString(globalContainer->gfx->getW()-124, 132+222, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+162, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+174, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+186, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+198, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+210, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
+		gfx->drawString(globalContainer->gfx->getW()-124, 132+222, globalContainer->littleFont, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
 	}	
 }
 
@@ -166,7 +166,7 @@ void TeamStats::drawStat()
 	
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
-	Font *font=globalContainer->littleFontGreen;
+	Font *font=globalContainer->littleFont;
 	StringTable *strings=&(globalContainer->texts);
 	int textStartPos=gfx->getW()-124;
 	
