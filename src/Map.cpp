@@ -113,11 +113,8 @@ Map::Map()
 		for (int r=0; r<MAX_RESSOURCES; r++)
 		{
 			ressourceAvailableCount[t][r]=0;
-			ressourceAvailableCountFast[t][r]=0;
-			ressourceAvailableCountFar[t][r]=0;
 			ressourceAvailableCountSuccess[t][r]=0;
-			ressourceAvailableCountFailureBase[t][r]=0;
-			ressourceAvailableCountFailureOvercount[t][r]=0;
+			ressourceAvailableCountFailure[t][r]=0;
 		}
 	
 	pathToRessourceCountTot=0;
@@ -303,38 +300,20 @@ void Map::clear()
 				{
 					fprintf(logFile, "ressourceAvailableCount[%d][%d]=%d\n", t, r,
 						ressourceAvailableCount[t][r]);
-					fprintf(logFile, "| ressourceAvailableCountFast[%d][%d]=%d (%f %%)\n", t, r,
-						ressourceAvailableCountFast[t][r],
-						100.*(double)ressourceAvailableCountFast[t][r]/(double)ressourceAvailableCount[t][r]);
-					fprintf(logFile, "+ ressourceAvailableCountFar[%d][%d]=%d (%f %% ratio)\n", t, r,
-						ressourceAvailableCountFar[t][r],
-						100.*(double)ressourceAvailableCountFar[t][r]/(double)ressourceAvailableCount[t][r]);
 					fprintf(logFile, "| ressourceAvailableCountSuccess[%d][%d]=%d (%f %%)\n", t, r,
 						ressourceAvailableCountSuccess[t][r],
 						100.*(double)ressourceAvailableCountSuccess[t][r]/(double)ressourceAvailableCount[t][r]);
-					int ressourceAvailableCountFailure=ressourceAvailableCountFailureBase[t][r]+ressourceAvailableCountFailureOvercount[t][r];
 					fprintf(logFile, "| ressourceAvailableCountFailure[%d][%d]=%d (%f %%)\n", t, r,
 						ressourceAvailableCountFailure,
-						100.*(double)ressourceAvailableCountFailure/(double)ressourceAvailableCount[t][r]);
-					fprintf(logFile, "|- ressourceAvailableCountFailureBase[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
-						ressourceAvailableCountFailureBase[t][r],
-						100.*(double)ressourceAvailableCountFailureBase[t][r]/(double)ressourceAvailableCount[t][r],
-						100.*(double)ressourceAvailableCountFailureBase[t][r]/(double)ressourceAvailableCountFailure);
-					fprintf(logFile, "|- ressourceAvailableCountFailureOvercount[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
-						ressourceAvailableCountFailureOvercount[t][r],
-						100.*(double)ressourceAvailableCountFailureOvercount[t][r]/(double)ressourceAvailableCount[t][r],
-						100.*(double)ressourceAvailableCountFailureOvercount[t][r]/(double)ressourceAvailableCountFailure);
+						100.*(double)ressourceAvailableCountFailure[t][r]/(double)ressourceAvailableCount[t][r]);
 				}
 	
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 		{
 			ressourceAvailableCount[t][r]=0;
-			ressourceAvailableCountFast[t][r]=0;
-			ressourceAvailableCountFar[t][r]=0;
 			ressourceAvailableCountSuccess[t][r]=0;
-			ressourceAvailableCountFailureBase[t][r]=0;
-			ressourceAvailableCountFailureOvercount[t][r]=0;
+			ressourceAvailableCountFailure[t][r]=0;
 		}
 	
 	fprintf(logFile, "\n");
@@ -1784,20 +1763,38 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
 {
-	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
+	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
 	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist)
 {
-	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
+	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
 	if (g>1)
 	{
-		*dist=255-g;
+		*dist = 255-g;
 		return true;
 	}
 	else
 		return false;
+}
+
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+{
+	bool result;
+	if (dist)
+		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y, dist);
+	else
+		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y);
+	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+	
+	ressourceAvailableCount[teamNumber][ressourceType]++;
+	if (getGlobalGradientDestination(gradient, x, y, targetX, targetY))
+		ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
+	else
+		ressourceAvailableCountFailure[teamNumber][ressourceType]++;
+	
+	return result;
 }
 
 bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY)
@@ -1852,6 +1849,9 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 	return result;
 }
 
+
+/*
+This was the old way. I was much more complex but reliable with partially broken gradients. Let's keep it for now in case of such type of gradient reappears
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	ressourceAvailableCount[teamNumber][ressourceType]++;
@@ -2077,6 +2077,7 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 	*targetY=vy;
 	return false;
 }
+*/
 
 void Map::updateGlobalGradientSmall(Uint8 *gradient)
 {
