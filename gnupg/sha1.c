@@ -25,6 +25,11 @@
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
 
+// it should be cleaned: the dependdance from SDL could easily be removed.
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#  define WORDS_BIGENDIAN
+#endif
+
 /* blk0() and blk() perform the initial expand. */
 /* I got the idea of expanding during the round function from SSLeay */
 #ifdef WORDS_BIGENDIAN
