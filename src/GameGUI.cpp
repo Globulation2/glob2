@@ -180,7 +180,7 @@ void GameGUI::init()
 
 	hiddenGUIElements=0;
 	
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+ 	for (size_t i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
 		smoothedCpuLoad[i]=0;
 	smoothedCpuLoadPos=0;
 }
@@ -3122,14 +3122,12 @@ bool GameGUI::load(SDL_RWops *stream)
 		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
 		{
 			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
-			if ((1<<id) & buildingsChoiceMask)
-				buildingsChoiceState[i] = false;
+			buildingsChoiceState[i] = ((1<<id) & buildingsChoiceMask) != 0;
 		}
 		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
 		{
 			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
-			if ((1<<id) & flagsChoiceMask)
-				flagsChoiceState[i] = false;
+			flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
 		}
 	}
 
@@ -3153,10 +3151,10 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	SDL_WriteBE32(stream, hiddenGUIElements);
 	Uint32 buildingsChoiceMask = 0;
 	Uint32 flagsChoiceMask = 0;
-	// save one if hidden (value is negative)
+	// save one if visible
 	for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
 	{
-		if (buildingsChoiceState[i] == 0)
+		if (buildingsChoiceState[i])
 		{
 			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i]);
 			buildingsChoiceMask |= (1<<id);
