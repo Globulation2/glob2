@@ -12,7 +12,7 @@ Heal
 Armure
 Armor
 [damage]
-Domages
+Dommages
 Damage
 [food]
 Nouriture

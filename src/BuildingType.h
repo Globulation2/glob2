@@ -103,6 +103,9 @@ public:
 
 	// Flag usefull
 	Sint32 defaultUnitStayRange;
+
+	Sint32 viewingRange;
+	Sint32 regenerationSpeed;
 	
 	// Number to access next upgrade in BuildingsTypes.
 	// It is computed in the second phase of the BuildingsTypes constructor after all building are read from disk.
@@ -209,7 +212,10 @@ public:
 			"type",
 			"isBuildingSite",
 
-			"defaultUnitStayRange"
+			"defaultUnitStayRange",
+
+			"viewingRange",
+			"regenerationSpeed"
 		};
 		if (size)
 			*size=(sizeof(vars)/sizeof(char *));
