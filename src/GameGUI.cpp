@@ -210,12 +210,15 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 void GameGUI::flagSelectedStep(void)
 {
 	// update flag
-	int mx, my;
-	Building* selBuild=selection.building;
-	Uint8 button=SDL_GetMouseState(&mx, &my);
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
-		if (selBuild && selectionPushed && (selBuild->type->isVirtual))
-			moveFlag(mx, my, false);
+	if (selectionMode == BUILDING_SELECTION)
+	{
+		int mx, my;
+		Building* selBuild=selection.building;
+		Uint8 button=SDL_GetMouseState(&mx, &my);
+		if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
+			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
+				moveFlag(mx, my, false);
+	}
 }
 
 void GameGUI::step(void)
@@ -2145,8 +2148,6 @@ void GameGUI::drawRessourceInfos(void)
 		int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 	}
-	
-	printf("%s selected\n", ressourceName.c_str());
 }
 
 void GameGUI::drawPanel(void)
