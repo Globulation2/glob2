@@ -778,6 +778,7 @@ Order *NetGame::getOrder(int playerNumber)
 		{
 			Order *order=new NullOrder();
 			order->sender=playerNumber;
+			order->needToBeFreedByEngine=true;
 			return order;
 		}
 		bool canQuit=true;
@@ -807,14 +808,18 @@ Order *NetGame::getOrder(int playerNumber)
 			dropStatusCommuniquedToGui[playerNumber]=true;
 		}
 		else
+		{
 			order=new NullOrder();
+		}
 		order->sender=playerNumber;
+		order->needToBeFreedByEngine=true;
 		return order;
 	}
 	else if (waitingForPlayerMask || hadToWaitThisStep)
 	{
 		Order *order=new WaitingForPlayerOrder(whoMaskCountedOut());
 		order->sender=playerNumber;
+		order->needToBeFreedByEngine=true;
 		return order;
 	}
 	else if (players[playerNumber]->type==Player::P_LOST_FINAL)
@@ -828,6 +833,7 @@ Order *NetGame::getOrder(int playerNumber)
 			dropStatusCommuniquedToGui[playerNumber]=true;
 		}
 		order->sender=playerNumber;
+		order->needToBeFreedByEngine=true;
 		return order;
 	}
 	else if (players[playerNumber]->quitting)
@@ -844,6 +850,7 @@ Order *NetGame::getOrder(int playerNumber)
 		dropStatusCommuniquedToGui[playerNumber]=true;
 		Order *order=new NullOrder();
 		order->sender=playerNumber;
+		order->needToBeFreedByEngine=true;
 		return order;
 	}
 	else
