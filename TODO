@@ -2,6 +2,7 @@ To First release :
 
 Gameplay :
 - Unites tirent une pierre.
+- Dans les batiments de nourriture, recolter ce dont il y a le moins (en valeur absolue)
 
 Technique :
 - Minimiser les #includes

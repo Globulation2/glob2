@@ -1719,8 +1719,11 @@ void GameGUI::draw(void)
 		{
 			if (selUnit->caryedRessource>=0)
 			{
+
+				const RessourceType* r = globalContainer->ressourcesTypes->get(selUnit->caryedRessource);
+				unsigned resImg = r->gfxId + r->sizesCount - 1;
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, "%s", Toolkit::getStringTable()->getString("[carry]"));
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, resImg);
 			}
 			else
 			{

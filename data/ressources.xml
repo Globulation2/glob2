@@ -6,7 +6,7 @@
   <size>7</size>
   <element>
    <Object></Object>
-   <name>wood</name>
+   <name>[Wood]</name>
    <terrain>2</terrain>
    <gfxId>0</gfxId>
    <sizesCount>5</sizesCount>
@@ -19,7 +19,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>corn</name>
+   <name>[Corn]</name>
    <terrain>2</terrain>
    <gfxId>10</gfxId>
    <sizesCount>5</sizesCount>
@@ -32,7 +32,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>fungus</name>
+   <name>[Papyrus]</name>
    <terrain>2</terrain>
    <gfxId>20</gfxId>
    <sizesCount>5</sizesCount>
@@ -45,7 +45,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>stone</name>
+   <name>[Stone]</name>
    <terrain>2</terrain>
    <gfxId>30</gfxId>
    <sizesCount>5</sizesCount>
@@ -58,7 +58,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>alga</name>
+   <name>[Alga]</name>
    <terrain>0</terrain>
    <gfxId>40</gfxId>
    <sizesCount>5</sizesCount>
@@ -71,7 +71,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>cherry</name>
+   <name>[Cherry]</name>
    <terrain>2</terrain>
    <gfxId>50</gfxId>
    <sizesCount>5</sizesCount>
@@ -84,7 +84,7 @@
   </element>
   <element>
    <Object></Object>
-   <name>orange</name>
+   <name>[Orange]</name>
    <terrain>2</terrain>
    <gfxId>55</gfxId>
    <sizesCount>5</sizesCount>
