@@ -9,7 +9,7 @@ To First release :
 - makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - map must have version, and little backward compatibility should be keeped. (nct)
 - upgrade key must be inactive if no units have enough high level to build it. (nct)
-- message when player is under attack. (nct)
+- AI do upgrades. (nct)
 
 To Next version :
 

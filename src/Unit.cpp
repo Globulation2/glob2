@@ -320,6 +320,7 @@ bool Unit::step(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
+			enemy->owner->setUnderAttack();
 		}
 		else  if (enemyUID!=NOUID)
 		{
@@ -330,6 +331,7 @@ bool Unit::step(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
+			enemy->owner->setUnderAttack();
 			if (enemy->hp<0)
 				enemy->kill();
 		}

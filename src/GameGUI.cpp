@@ -126,6 +126,9 @@ void GameGUI::step(void)
 	viewportY&=game.map.getMaskH();
 
 	statStep();
+
+	if (game.teams[localTeam]->showIsUnderAttack())
+		addMessage(globalContainer->texts.getString("[you are under attack]"));
 }
 
 void GameGUI::statStep(void)

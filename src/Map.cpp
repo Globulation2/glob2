@@ -158,14 +158,16 @@ void Sector::step(void)
 				{
 					int team=Unit::UIDtoTeam(UID);
 					int id=Unit::UIDtoID(UID);
-					
+
+					game->teams[team]->setUnderAttack();
 					game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
 				}
 				else if (UID!=NOUID)
 				{
 					int team=Building::UIDtoTeam(UID);
 					int id=Building::UIDtoID(UID);
-					
+
+					game->teams[team]->setUnderAttack();
 					Building *b=game->teams[team]->myBuildings[id];
 					int damage=(*it)->shootDamage-b->type->armor; 
 					if (damage>0)

@@ -90,23 +90,28 @@ public:
 	void setBaseTeam(const BaseTeam *initial);
 	void load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
 	void save(SDL_RWops *stream);
-	
+
 	void step(void);
-	
+
+	//! The team is now under attack
+	void setUnderAttack(void) { if (isUnderAttackDisplayCooldown==0) isUnderAttack=true; isUnderAttackDisplayCooldown=40; }
+	//! we have to show "You are under attack message"
+	bool showIsUnderAttack(void) { bool isUA=isUnderAttack; isUnderAttack=false; return isUA; }
+
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
 
 	void computeStat(TeamStat *stats);
-	
+
 	Building *findNearestUpgrade(int x, int y, Abilities ability, int actLevel);
 	Building *findNearestJob(int x, int y, Abilities ability, int actLevel);
 	Building *findNearestAttract(int x, int y, Abilities ability);
 	Building *findNearestFillableFood(int x, int y);
-	
+
 	Building *findNearestHeal(int x, int y);
 	Building *findNearestFood(int x, int y);
-	
+
 	Sint32 checkSum();
 
 private:
@@ -145,10 +150,16 @@ public:
 	// TODO : use a subtil way to allocate UID
 	//Sint32 newUnitUID zzz
 
+private:
+	//! team has been attacked last step
+	bool isUnderAttack;
+	//! display "You are under attack" message only when this is zero
+	int isUnderAttackDisplayCooldown;
+
 public:
 	int freeUnits;
 	bool isAlive;
 };
 
 #endif
- 
+
