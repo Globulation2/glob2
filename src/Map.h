@@ -249,7 +249,7 @@ public:
 		if (r.id==NORESID)
 			return false;
 		Uint8 t=r.field.type;
-		return (t<5 && t!=3);
+		return (t<BASIC_COUNT && t!=STONE);
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
