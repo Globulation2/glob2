@@ -110,6 +110,10 @@ public:
 	int getMaskW(void) const { return wMask; }
 	//! Return map height maskint
 	int getMaskH(void) const { return hMask; }
+	//! Return map width shift 
+	int getShiftW(void) const { return wDec; }
+	//! Return map height shift
+	int getShiftH(void) const { return hDec; }
 	//! Return the number of sectors on x, which corresponds to the sector map width
 	int getSectorW(void) const { return wSector; }
 	//! Return the number of sectors on y, which corresponds to the sector map height
@@ -201,6 +205,11 @@ public:
 	Ressource getRessource(int x, int y)
 	{
 		return (*(cases+w*(y&hMask)+(x&wMask))).ressource;
+	}
+	
+	Ressource getRessource(unsigned pos)
+	{
+		return (cases+pos)->ressource;
 	}
 	
 	Uint32 getForbidden(int x, int y)

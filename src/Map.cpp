@@ -1174,7 +1174,7 @@ bool Map::incRessource(int x, int y, int ressourceType)
 		return false;
 	if (!fulltype->shrinkable)
 		return false;
-	if (r.field.amount<fulltype->sizesCount-1)
+	if (r.field.amount<fulltype->sizesCount)
 	{
 		rp->field.amount=r.field.amount+1;
 		return true;
