@@ -111,7 +111,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 
 		Text *text = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
 		Team *team = gameGUI->game.players[i]->team;
-		text->setColor(team->colorR, team->colorG, team->colorB);
+		text->setStyle(Font::Style(Font::STYLE_NORMAL, team->colorR, team->colorG, team->colorB));
 		addWidget(text);
 	}
 	for (;i<16;i++)

@@ -1480,8 +1480,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
-
-	globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
+	int decX = (unitSprite->getW(imgid)-32)>>1;
+	int decY = (unitSprite->getH(imgid)-32)>>1;
+	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 	if (unit==selectedUnit)
 	{
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
@@ -1730,10 +1731,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[b->verbose&1][lx+ly*32]);
 					}
 
-					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
+					globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
-					globalContainer->littleFont->popStyle();
+					globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 				}
 
 	}

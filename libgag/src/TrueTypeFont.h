@@ -37,17 +37,17 @@ public:
 	virtual ~TrueTypeFont();
 	bool load(const char *filename, unsigned size);
 	
-	int getStringWidth(const char *string) const;
-	int getStringHeight(const char *string) const;
+	int getStringWidth(const char *string, Shape shape) const;
+	int getStringHeight(const char *string, Shape shape) const;
 	
 	// Style and color
 	virtual void setStyle(Style style);
-	virtual void pushStyle(Style style);
-	virtual void popStyle(void);
 	virtual Style getStyle(void) const;
 	
 protected:
 	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
+	virtual void pushStyle(Style style);
+	virtual void popStyle(void);
 	
 protected:
 	TTF_Font *font;

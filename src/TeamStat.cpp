@@ -275,25 +275,25 @@ void TeamStats::drawStat(int pos)
 		const char *slash="/";
 		int sLen=font->getStringWidth(slash);
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 34, 66, 163));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 34, 66, 163));
 		gfx->drawString(textStartPos, startPoxY+20, font, Total);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec+=font->getStringWidth(Total);
 		gfx->drawString(textStartPos+dec, startPoxY+20, font, "/");
 		dec+=sLen;
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
 		gfx->drawString(textStartPos+dec, startPoxY+20, font, free);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec+=font->getStringWidth(free);
 		gfx->drawString(textStartPos+dec, startPoxY+20, font, "/");
 		dec+=sLen;
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 150, 50, 50));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 150, 50, 50));
 		gfx->drawString(textStartPos+dec, startPoxY+20, font, seeking);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec=0;
 		const char *Free=strings->getString("[Free]");
@@ -301,33 +301,33 @@ void TeamStats::drawStat(int pos)
 		const char *starving=strings->getString("[starving]");
 		const char *wounded=strings->getString("[wounded]");
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec+=font->getStringWidth(Free);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, hungry);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec+=font->getStringWidth(hungry);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, starving);
-		font->popStyle();
+		gfx->popFontStyle(font);
 
 		dec+=font->getStringWidth(starving);
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
+		gfx->pushFontStyle(font, Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
 		gfx->drawString(textStartPos+dec, startPoxY+104, font, wounded);
-		font->popStyle();
+		gfx->popFontStyle(font);
 	}
 
 	// graph

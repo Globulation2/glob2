@@ -22,8 +22,7 @@
 
 #include "GUIBase.h"
 #include <string>
-
-class Font;
+#include <GraphicContext.h>
 
 //! This widget is a simple text widget
 class Text: public RectangularWidget
@@ -31,23 +30,20 @@ class Text: public RectangularWidget
 protected:
 	std::string font;
 	std::string text;
-	Uint8 cr;
-	Uint8 cg;
-	Uint8 cb;
-	Uint8 ca;
 	bool keepW;
 	bool keepH;
+	Font::Style style;
 
 	// cache, recomputed at least on paint
 	Font *fontPtr;
 
 public:
-	Text() { cr=cg=cb=ca=0; }
+	Text() { fontPtr=NULL; }
 	Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0);
 	virtual ~Text() { }
 	virtual const char *getText() const { return text.c_str();}
 	virtual void setText(const char *newText);
-	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+	virtual void setStyle(Font::Style style);
 
 protected:
 	virtual void internalInit(int x, int y, int w, int h);
