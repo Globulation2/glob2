@@ -600,7 +600,7 @@ Vytvoř nové jednotky
 
 Új egységek létrehozása
 [food building explaination]
-Nourit vos unités
+Nourrit vos unités
 Foods your units
 
 Potrava tvých jednotek
@@ -1092,7 +1092,7 @@ Editor
 [credits]
 Crédits
 Credits
-Eine ihrer Einheiten wurde von einem anderen Team übernommen
+Kredite
 Poděkování
 O twórcach
 Credits
