@@ -55,7 +55,33 @@ const char *MapPreview::getMethode(void)
 void MapPreview::setMapThumbnail(const char *mapName)
 {
 	this->mapName=mapName;
-	//setThumbnailNameFromMapName(mapName);
+	SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb");
+	if (stream)
+	{
+		SessionGame session;
+		int rv = session.load(stream);
+		if (rv)
+		{
+			if (session.mapGenerationDescriptor)
+			{
+				lastW=1<<session.mapGenerationDescriptor->wDec;
+				lastH=1<<session.mapGenerationDescriptor->hDec;
+			}
+			else
+			{
+				Map map;
+				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
+				rv=map.load(stream, &session);
+				assert(rv);
+				if (rv)
+				{
+					lastW=map.getW();
+					lastH=map.getH();
+				}
+			}
+		}
+		SDL_RWclose(stream);
+	}
 }
 
 void MapPreview::paint(void)
@@ -82,19 +108,19 @@ void MapPreview::paint(void)
 			rv=session.load(stream);
 			if (rv)
 			{
-				Map map;
 				parent->getSurface()->drawFilledRect(x, y, 128, 128, 0, 0, 0);
 				if (session.mapGenerationDescriptor)
 				{
+					randomGenerated=true;
 					// TODO : uses mapGenerationDescriptor to generate map here
 					lastW=1<<session.mapGenerationDescriptor->wDec;
 					lastH=1<<session.mapGenerationDescriptor->hDec;
-					randomGenerated=true;
 					lastRandomGenerationMethode=session.mapGenerationDescriptor->methode;
 				}
 				else
 				{
 					randomGenerated=false;
+					Map map;
 					SDL_RWseek(stream, session.mapOffset , SEEK_SET);
 					rv=map.load(stream, &session);
 					assert(rv);
