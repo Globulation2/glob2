@@ -1983,7 +1983,7 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	SDL_WriteBE32(stream, localTeamNo);
 }
 
-// TODO : merge thoses 2 functions into one
+// TODO : merge thoses 3 functions into one
 
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
