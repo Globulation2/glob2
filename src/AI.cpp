@@ -135,7 +135,7 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 	int ss=swarms.size();
 	Sint32 numberRequested=1+(nbWorkersFator/(ss+1));
 	int nbu=countUnits();
-	
+
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
 		Building *b=*it;
@@ -144,24 +144,25 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 			b->ratioLocal[UnitType::WORKER]=workers;
 			b->ratioLocal[UnitType::EXPLORER]=explorers;
 			b->ratioLocal[UnitType::WARRIOR]=warriors;
-			
+
 			printf("AI: (%d) ratioLocal changed.\n", b->UID);
-			
+
 			Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
 			memcpy(rdyPtr, b->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
 			return new OrderModifySwarms(&(b->UID), rdyPtr, 1);
 		}
-		
+
 		int f=estimateFood(b->posX, b->posY);
+		int numberRequestedTemp=numberRequested;
 		if (f<(nbu*4))
 		{
 			//printf("AI: (%d)not enough food (%d<%d).\n", b->UID, f, (nbu*2));
-			numberRequested=0;
+			numberRequestedTemp=0;
 		}
-		if (b->maxUnitWorkingLocal!=numberRequested)
+		if (b->maxUnitWorkingLocal!=numberRequestedTemp)
 		{
-			printf("AI: (%d) numberRequested changed to %d.\n", b->UID, numberRequested);
-			return new OrderModifyBuildings(&b->UID, &numberRequested, 1);
+			printf("AI: (%d) numberRequested changed to %d.\n", b->UID, numberRequestedTemp);
+			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
 		}
 	}
 	if (ss<minSwarmNumbers)
@@ -731,7 +732,7 @@ Order *AI::checkoutExpands(const int numbers, const int workers)
 	}
 	
 	int wr=countUnits();
-	
+
 	if (fb<=(wr/numbers))
 	{
 		printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", fb, (wr/numbers), wr, numbers);
@@ -877,7 +878,7 @@ Order *AI::getOrder(void)
 		else
 		{
 			// produce warriors
-			switch (timer&0xF)
+			switch (timer&0x1F)
 			{
 				case 0:
 					return swarmsForWorkers(1, 10, 3, 1, 14);

@@ -260,3 +260,12 @@ Sand
 [grass]
 Herbe
 Grass
+[teams]
+  equipes
+  teams
+[choose map]
+Choisir une carte
+Choose a map
+[awaiting players]
+Attente des joueurs
+Awaiting players

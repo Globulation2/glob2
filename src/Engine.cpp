@@ -21,8 +21,8 @@
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "PreparationGui.h"
-
-
+#include "MultiplayersHostScreen.h"
+#include "MultiplayersJoinScreen.h"
 
 int Engine::init(void)
 {

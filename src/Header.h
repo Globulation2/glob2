@@ -26,8 +26,9 @@
 #ifdef WIN32
 	#include <SDL.h>
 	#include <SDL_endian.h>
-#	include <SDL_image.h>
-#	include <assert.h>
+	#include <SDL_image.h>
+	#include <SDL_net.h>
+	#include <assert.h>
 #	pragma warning (disable : 4786)
 #	pragma warning (disable : 4250)
 #elif macintosh
@@ -39,6 +40,7 @@
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_endian.h>
 	#include <SDL/SDL_image.h>
+	#include <SDL/SDL_net.h>
 #endif
 
 //#define DBG_UID

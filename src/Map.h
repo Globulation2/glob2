@@ -78,6 +78,7 @@ public:
 
 	char mapName[32];
 protected:
+	//! serialized form of BaseMap
 	char data[32];
 
 public:

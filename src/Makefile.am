@@ -81,6 +81,10 @@ YOGScreen.h \
 YOGScreen.cpp \
 SettingsScreen.h \
 SettingsScreen.cpp \
+MultiplayersHostScreen.h \
+MultiplayersHostScreen.cpp \
+MultiplayersJoinScreen.h \
+MultiplayersJoinScreen.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp
