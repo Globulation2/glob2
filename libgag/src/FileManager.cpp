@@ -156,6 +156,8 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 {
 	std::vector<const char *>::iterator dirListIterator;
 
+	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
+	
 	// try cache
 	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
@@ -169,6 +171,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 		if (fp)
 			return fp;
 	}
+	*/
 
 	// other wise search
 	int index=0;
@@ -207,6 +210,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 {
 	std::vector<const char *>::iterator dirListIterator;
 
+	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
 	// try cache
 	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
@@ -218,7 +222,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 		delete[] fn;
 		if (fp)
 			return fp;
-	}
+	}*/
 
 	// other wise search
 	int index=0;
@@ -256,6 +260,7 @@ std::ifstream *FileManager::openIFStream(const std::string &fileName)
 {
 	std::ifstream *fp = new std::ifstream();
 	
+	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
 	// try cache
 	if (dirListIndexCache>=0)
 	{
@@ -268,6 +273,7 @@ std::ifstream *FileManager::openIFStream(const std::string &fileName)
 		if (fp->good())
 			return fp;
 	}
+	*/
 	
 	// otherwise search
 	int index=0;

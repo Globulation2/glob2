@@ -36,7 +36,6 @@ http://ysagoon.com/phpBB2/viewtopic.php?t=42&sid=755083a5e3af8f0caf75558feb7e0e1
 http://ysagoon.com/phpBB2/viewtopic.php?t=45&sid=755083a5e3af8f0caf75558feb7e0e15
 -Pouvoir replanter/transferer des ressources.
 -Ajouter des routes.
--avoir des mini icones pour voir ce que transportent les ouvrières
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
@@ -94,9 +93,6 @@ YOG:
 Tutorial:
 - Moins vite.
 - Plus gros.
-
-SGSL:
--l ire "sgslLangCount" depuis texts.txt
 
 To Next version :
 
