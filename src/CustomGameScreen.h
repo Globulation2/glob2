@@ -21,7 +21,7 @@
 #define __CUSTOM_GAME_SCREEN_H
 
 #include "AI.h"
-#include "Session.h"
+#include "ChooseMapScreen.h"
 #include <GUIBase.h>
 using namespace GAGGUI;
 
@@ -36,7 +36,7 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
-class CustomGameScreen:public Screen
+class CustomGameScreen : public ChooseMapScreen
 {
 public:
 	enum
@@ -44,23 +44,19 @@ public:
 		OK = 1,
 		CANCEL = 2
 	};
-	SessionInfo sessionInfo;
+	//SessionInfo sessionInfo;
 
 private:
-	Button *ok, *cancel;
-	Glob2FileList *fileList;
-	MapPreview *mapPreview;
 	OnOffButton *isAI[16];
 	ColorButton *color[16];
 	Text *closedText[16];
 	MultiTextButton *aiSelector[16];
-	Text *mapName, *mapInfo, *mapVersion, *mapSize;
-	bool validSessionInfo;
 
 public:
 	CustomGameScreen();
 	virtual ~CustomGameScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	virtual void validMapSelectedhandler(void);
 	bool isAIactive(int i);
 	AI::ImplementitionID getAiImplementation(int i);
 	int getSelectedColor(int i);

@@ -21,9 +21,16 @@
 #define __GUIMAPPREVIEW_H
 
 #include <GUIBase.h>
-using namespace GAGGUI;
 #include "MapGenerationDescriptor.h"
 #include <string>
+
+namespace GAGCore
+{
+	class DrawableSurface;
+}
+
+using namespace GAGGUI;
+using namespace GAGCore;
 
 //! Widget to preview map
 /*!

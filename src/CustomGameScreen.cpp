@@ -28,27 +28,9 @@
 #include <StringTable.h>
 #include <Stream.h>
 
-CustomGameScreen::CustomGameScreen()
+CustomGameScreen::CustomGameScreen() :
+	ChooseMapScreen("maps", "map", true)
 {
-	ok=new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "maps", "map", true);
-	mapPreview=new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
-
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]")));
-	mapName=new Text(440, 60+128+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapSize);
-
-	addWidget(ok);
-	addWidget(cancel);
-	addWidget(mapPreview);
-
 	for (int i=0; i<16; i++)
 	{
 		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
@@ -75,91 +57,56 @@ CustomGameScreen::CustomGameScreen()
 			aiSelector[i]->setFirstTextIndex(AI::NUMBI);
 		}
 	}
-
-	addWidget(fileList);
-
-	validSessionInfo=false;
 }
 
 CustomGameScreen::~CustomGameScreen()
 {
 }
 
+void CustomGameScreen::validMapSelectedhandler(void)
+{
+	int i;
+	// set the correct number of colors
+	for (i = 0; i<16; i++)
+	{
+		color[i]->clearColors();
+		for (int j = 0; j<sessionInfo.numberOfTeam; j++)
+			color[i]->addColor(sessionInfo.teams[j].colorR, sessionInfo.teams[j].colorG, sessionInfo.teams[j].colorB);
+		color[i]->setSelectedColor();
+	}
+	// find team for human player
+	for (i = 0; i<sessionInfo.numberOfTeam; i++)
+	{
+		if (sessionInfo.teams[i].type == BaseTeam::T_HUMAN)
+		{
+			color[0]->setSelectedColor(i);
+			break;
+		}
+	}
+	// Fill the others
+	int c = color[0]->getSelectedColor();
+	for (i = 1; i<sessionInfo.numberOfTeam; i++)
+	{
+		c = (c+1)%sessionInfo.numberOfTeam;
+		color[i]->setSelectedColor(c);
+		isAI[i]->setState(true);
+		closedText[i]->hide();
+		aiSelector[i]->show();
+	}
+	// Close the rest
+	for (; i<16; i++)
+	{
+		isAI[i]->setState(false);
+		aiSelector[i]->hide();
+		closedText[i]->show();
+	}
+}
+
 void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==LIST_ELEMENT_SELECTED)
-	{
-		const char *mapSelectedName=fileList->getText(par1).c_str();
-		if (mapSelectedName)
-		{
-			std::string mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
-
-			mapPreview->setMapThumbnail(mapFileName.c_str());
-			GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
-			if (stream == NULL)
-			{
-				std::cerr << "CustomGameScreen::onAction : can't open file " << mapFileName << std::endl;
-			}
-			else
-			{
-				std::cout << "CustomGameScreen::onAction : loading map " << mapFileName << std::endl;
-				validSessionInfo = sessionInfo.load(stream);
-				delete stream;
-				if (validSessionInfo)
-				{
-					// update map name & info
-					mapName->setText(sessionInfo.getMapName());
-					char textTemp[256];
-					snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, Toolkit::getStringTable()->getString("[teams]"));
-					mapInfo->setText(textTemp);
-					snprintf(textTemp, 256, "%s %d.%d", Toolkit::getStringTable()->getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
-					mapVersion->setText(textTemp);
-					snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
-					mapSize->setText(textTemp);
-					
-					int nbTeam=sessionInfo.numberOfTeam;
-					int i;
-					// set the correct number of colors
-					for (i=0; i<16; i++)
-					{
-						color[i]->clearColors();
-						for (int j=0; j<nbTeam; j++)
-							color[i]->addColor(sessionInfo.teams[j].colorR, sessionInfo.teams[j].colorG, sessionInfo.teams[j].colorB);
-						color[i]->setSelectedColor();
-					}
-					// find team for human player
-					for (i=0; i<nbTeam; i++)
-					{
-						if (sessionInfo.teams[i].type==BaseTeam::T_HUMAN)
-						{
-							color[0]->setSelectedColor(i);
-							break;
-						}
-					}
-					// Fill the others
-					int c=color[0]->getSelectedColor();
-					for (i=1; i<nbTeam; i++)
-					{
-						c=(c+1)%nbTeam;
-						color[i]->setSelectedColor(c);
-						isAI[i]->setState(true);
-						closedText[i]->hide();
-						aiSelector[i]->show();
-					}
-					// Close the rest
-					for (;i<16; i++)
-					{
-						isAI[i]->setState(false);
-						aiSelector[i]->hide();
-						closedText[i]->show();
-					}
-				}
-				else
-					std::cerr << "CustomGameScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
-			}
-		}
-		else
-		{
+	// call parent
+	ChooseMapScreen::onAction(source, action, par1, par2);
+/*		{
 			// Reset
 			mapPreview->setMapThumbnail(NULL);
 			mapName->setText("");
@@ -177,22 +124,8 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				aiSelector[i]->hide();
 			}
 		}
-	}
-	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (source==ok)
-		{
-			if (validSessionInfo)
-				endExecute(OK);
-			else
-				printf("CGS : This is not a valid map!\n");
-		}
-		else if (source==cancel)
-		{
-			endExecute(par1);
-		}
-	}
-	else if (action==BUTTON_STATE_CHANGED)
+	}*/
+	if (action==BUTTON_STATE_CHANGED)
 	{
 		if (par1==100)
 		{

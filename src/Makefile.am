@@ -83,6 +83,8 @@ UnitType.cpp\
 UnitType.h\
 Utilities.cpp\
 Utilities.h \
+ChooseMapScreen.h \
+ChooseMapScreen.cpp \
 CustomGameScreen.h \
 CustomGameScreen.cpp \
 LoadGameScreen.h \
