@@ -2119,123 +2119,131 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(gradient, 0, size);
 	
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	Game *game=team->game;
+	for (Sint32 ti=0; ti<game->session.numberOfTeam; ti++)
 	{
-		Building *b=myBuildings[i];
-		if (b && !b->type->isVirtual)
+		Team *team=game->teams[ti];
+		assert(team);
+		if (!team)
+			continue;
+		Building **myBuildings=team->myBuildings;
+		for (int i=0; i<1024; i++)
 		{
-			int bx=b->posX;
-			int by=b->posY;
-			int bw=b->type->width;
-			int bh=b->type->height;
-			
-			// we skip building with already a neighbour:
-			bool neighbour=false;
-			//bool wheat=false;
-			for (int xi=bx-1; xi<=bx+bw; xi++)
+			Building *b=myBuildings[i];
+			if (b && !b->type->isVirtual)
 			{
-				int index;
-				index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
-				if (cases[index].building!=NOGBID)
-					neighbour=true;
-				//if (wheatGradient[index]==255)
-				//	wheat=true;
-				index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
-				if (cases[index].building!=NOGBID)
-					neighbour=true;
-				//if (wheatGradient[index]==255)
-				//	wheat=true;
-			}
-			if (!neighbour)
-				for (int yi=by-1; yi<=by+bh; yi++)
+				int bx=b->posX;
+				int by=b->posY;
+				int bw=b->type->width;
+				int bh=b->type->height;
+				
+				// we skip building with already a neighbour:
+				bool neighbour=false;
+				//bool wheat=false;
+				for (int xi=bx-1; xi<=bx+bw; xi++)
 				{
 					int index;
-					index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
+					index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
 					if (cases[index].building!=NOGBID)
 						neighbour=true;
 					//if (wheatGradient[index]==255)
 					//	wheat=true;
-					index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
+					index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
 					if (cases[index].building!=NOGBID)
 						neighbour=true;
 					//if (wheatGradient[index]==255)
 					//	wheat=true;
 				}
-			
-			Uint8 dirty;
-			if (neighbour || /*!wheat ||*/ bw!=dw || bh!=dh)
-				dirty=1;
-			else
-				dirty=0;
-			
-			// dirty at a range of 1 space case, without corners;
-			for (int xi=bx-dw+1; xi<bx+bw; xi++)
-			{
-				gradient[(xi&wMask)+(((by-dh-1)&hMask)<<wDec)]|=1;
-				gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)]|=1;
-			}
-			for (int yi=by-dh+1; yi<by+bh; yi++)
-			{
-				gradient[((bx-dw-1)&wMask)+((yi&hMask)<<wDec)]|=1;
-				gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)]|=1;
-			}
-			{
-				// the same with inner inner corners:
-				gradient[((bx-dw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
-				gradient[((bx-dw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
-				gradient[((bx+bw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
-				gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
-			}
-			
-			// At a range of 0 space case (neignbours), without corners,
-			// we increment (bit 1 to 3), and dirty bit 0 in case:
-			for (int xi=bx-dw+1; xi<bx+bw; xi++)
-			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by-dh)&hMask)<<wDec)];
-				*p=((*p+2)|dirty)&(~16);
-				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
-				*p=((*p+2)|dirty)&(~16);
-			}
-			for (int yi=by-dh+1; yi<by+bh; yi++)
-			{
-				Uint8 *p;
-				p=&gradient[((bx-dw)&wMask)+((yi&hMask)<<wDec)];
-				*p=((*p+2)|dirty)&(~16);
-				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
-				*p=((*p+2)|dirty)&(~16);
-			}
-			
-			// At a range of 2 space case, without corners,
-			// we increment (bit 5 to 7):
-			for (int xi=bx-dw; xi<bx+bw+1; xi++)
-			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by-dh-2)&hMask)<<wDec)];
-				(*p)+=32;
-				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
-				(*p)+=32;
-			}
-			for (int yi=by-dh; yi<by+bh+1; yi++)
-			{
-				Uint8 *p;
-				p=&gradient[((bx-dw-2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=32;
-				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=32;
-			}
-			{
-				// the same with inner inner corners:
-				Uint8 *p;
-				p=&gradient[((bx-dw-1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=32;
-				p=&gradient[((bx-dw-1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=32;
-				p=&gradient[((bx+bw+1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-				(*p)+=32;
-				p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)+=32;
+				if (!neighbour)
+					for (int yi=by-1; yi<=by+bh; yi++)
+					{
+						int index;
+						index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
+						if (cases[index].building!=NOGBID)
+							neighbour=true;
+						//if (wheatGradient[index]==255)
+						//	wheat=true;
+						index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
+						if (cases[index].building!=NOGBID)
+							neighbour=true;
+						//if (wheatGradient[index]==255)
+						//	wheat=true;
+					}
+				
+				Uint8 dirty;
+				if (neighbour || /*!wheat ||*/ bw!=dw || bh!=dh)
+					dirty=1;
+				else
+					dirty=0;
+				
+				// dirty at a range of 1 space case, without corners;
+				for (int xi=bx-dw+1; xi<bx+bw; xi++)
+				{
+					gradient[(xi&wMask)+(((by-dh-1)&hMask)<<wDec)]|=1;
+					gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)]|=1;
+				}
+				for (int yi=by-dh+1; yi<by+bh; yi++)
+				{
+					gradient[((bx-dw-1)&wMask)+((yi&hMask)<<wDec)]|=1;
+					gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)]|=1;
+				}
+				{
+					// the same with inner inner corners:
+					gradient[((bx-dw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
+					gradient[((bx-dw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
+					gradient[((bx+bw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
+					gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
+				}
+				
+				// At a range of 0 space case (neignbours), without corners,
+				// we increment (bit 1 to 3), and dirty bit 0 in case:
+				for (int xi=bx-dw+1; xi<bx+bw; xi++)
+				{
+					Uint8 *p;
+					p=&gradient[(xi&wMask)+(((by-dh)&hMask)<<wDec)];
+					*p=((*p+2)|dirty)&(~16);
+					p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
+					*p=((*p+2)|dirty)&(~16);
+				}
+				for (int yi=by-dh+1; yi<by+bh; yi++)
+				{
+					Uint8 *p;
+					p=&gradient[((bx-dw)&wMask)+((yi&hMask)<<wDec)];
+					*p=((*p+2)|dirty)&(~16);
+					p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
+					*p=((*p+2)|dirty)&(~16);
+				}
+				
+				// At a range of 2 space case, without corners,
+				// we increment (bit 5 to 7):
+				for (int xi=bx-dw; xi<bx+bw+1; xi++)
+				{
+					Uint8 *p;
+					p=&gradient[(xi&wMask)+(((by-dh-2)&hMask)<<wDec)];
+					(*p)+=32;
+					p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
+					(*p)+=32;
+				}
+				for (int yi=by-dh; yi<by+bh+1; yi++)
+				{
+					Uint8 *p;
+					p=&gradient[((bx-dw-2)&wMask)+((yi&hMask)<<wDec)];
+					(*p)+=32;
+					p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
+					(*p)+=32;
+				}
+				{
+					// the same with inner inner corners:
+					Uint8 *p;
+					p=&gradient[((bx-dw-1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
+					(*p)+=32;
+					p=&gradient[((bx-dw-1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
+					(*p)+=32;
+					p=&gradient[((bx+bw+1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
+					(*p)+=32;
+					p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
+					(*p)+=32;
+				}
 			}
 		}
 	}
