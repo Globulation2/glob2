@@ -98,6 +98,7 @@ unsigned getPrevUTF8Char(const char *text, unsigned pos)
 Widget::Widget()
 {
 	visible=true;
+	parent=NULL;
 }
 
 Widget::~Widget()

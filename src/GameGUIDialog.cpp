@@ -107,11 +107,15 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		bool chatState = (gameGUI->chatMask)&(1<<i);
 		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, chatState, CHAT+i);
 		addWidget(chat[i]);
-
-		Text *text = new Text(10, 40+i*25, globalContainer->menuFont, gameGUI->game.players[i]->name);
+		
+		Text *text=new Text(10, 40+i*25, globalContainer->menuFont);
 		Team *team = gameGUI->game.players[i]->team;
 		text->setColor(team->colorR, team->colorG, team->colorB);
 		addWidget(text);
+		if (gameGUI->game.players[i]->type==Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
+			text->setText("%s", gameGUI->game.players[i]->name);
+		else
+			text->setText("(%s)", gameGUI->game.players[i]->name);
 	}
 	for (;i<8;i++)
 	{
