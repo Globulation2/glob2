@@ -156,7 +156,7 @@ void NetGame::init(void)
 	dropState=DS_NO_DROP_PROCESSING;
 };
 
-Uint32 NetGame::whoMaskAreWeWaitingFor(void)
+/*Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 {
 	Uint32 waitingPlayersMask=0;
 	for (int p=0; p<numberOfPlayer; p++)
@@ -165,6 +165,29 @@ Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 		if (type==Player::P_IP && !players[p]->quitting)
 			if (ordersQueue[p][executeStep]==NULL || (lastReceivedFromMe[p]+1)==freeingStep)
 				waitingPlayersMask|=1<<p;
+	}
+	return waitingPlayersMask;
+};*/
+
+Uint32 NetGame::whoMaskAreWeWaitingFor(void)
+{
+	Uint32 waitingPlayersMask=0;
+	for (int p=0; p<numberOfPlayer; p++)
+	{
+		int type=players[p]->type;
+		if (type==Player::P_IP && !players[p]->quitting)
+		{
+			if (ordersQueue[p][executeStep]==NULL)
+			{
+				printf("Can't execute step=%d of player=%d.\n", executeStep, p);
+				waitingPlayersMask|=1<<p;
+			}
+			if ((lastReceivedFromMe[p]+1)==freeingStep)
+			{
+				printf("Can't free step=%d of player=%d.\n", freeingStep, p);
+				waitingPlayersMask|=1<<p;
+			}
+		}
 	}
 	return waitingPlayersMask;
 };
@@ -602,68 +625,40 @@ void NetGame::orderHasBeenExecuted(Order *order)
 
 void NetGame::updateDelays(int player, Uint8 receivedStep)
 {
-	// First, the Order Margin Times:
-	{
-		int delay=0;
-		Uint8 step=executeStep;
-		while (ordersQueue[player][step])
-		{
-			step++;
-			delay++;
-			assert(delay<255);
-		}
-		
-		int count=orderMarginTimeCount[player];
-		recentOrderMarginTime[player][count]=delay;
-		orderMarginTimeCount[player]=(count+1)&63;
-		
-		int min=255;
-		int max=0;
-		for (int i=0; i<64; i++)
-		{
-			int delay=recentOrderMarginTime[player][i];
-			if (delay<min)
-				min=delay;
-			if (delay>max)
-				max=delay;
-		}
-		orderMarginTimeMin[player]=min;
-		orderMarginTimeMax[player]=max;
-		printf("orderMarginTime[%d]=(%d, %d)\n", player, orderMarginTimeMin[player], orderMarginTimeMax[player]);
-	}
+	// We compute the ping-pongs times:
 	
-	// Second, the ping-pongs times:
-	{
-		// We compute the delay from pushStep to receivedStep
-		Uint8 step=pushStep-1;
-		Uint8 delay=0;
-		while (true)
-			if (step==receivedStep)
-				break;
-			else if (step==freeingStep)
-				return;
-			else
-			{
-				step--;
-				delay++;
-			}
-		
-		int count=pingPongCount[player];
-		recentsPingPong[player][count]+=delay;
-		count=(count+1)&63;
-		recentsPingPong[player][count]=0;
-		pingPongCount[player]=count;
-		
-		int max=0;
-		for (int i=0; i<64; i++)
+	// We compute the delay from pushStep to receivedStep:
+	Uint8 step=pushStep-1;
+	Uint8 delay=0;
+	while (true)
+		if (step==receivedStep)
+			break;
+		else if (step==freeingStep)
+			return;
+		else
 		{
-			int delay=recentsPingPong[player][i];
-			if (delay>max)
-				max=delay;
+			step--;
+			delay++;
 		}
-		pingPongMax[player]=max;
-		printf("pingPongMax[%d]=%d\n", player, pingPongMax[player]);
+
+	// We update the pingPongCount[] record:
+	int count=pingPongCount[player];
+	recentsPingPong[player][count]+=delay;
+	count=(count+1)&63;
+	recentsPingPong[player][count]=0;
+	pingPongCount[player]=count;
+
+	// We compute the pingPongMax[p]:
+	int max=0;
+	for (int i=0; i<64; i++)
+	{
+		int delay=recentsPingPong[player][i];
+		if (delay>max)
+			max=delay;
 	}
+	pingPongMax[player]=max;
+	//printf("pingPongMax[%d]=%d\n", player, pingPongMax[player]);
+	
 	countDown[player]=0;
 }
 
@@ -1259,8 +1254,46 @@ void NetGame::stepExecuted(void)
 
 int NetGame::ticksToDelay(void)
 {
+	//for (int p=0; p<numberOfPlayer; p++)
+	//	if (players[p]->type==Player::P_IP)
+	//		printf("pingPongMax[%d]=%d, ", p, pingPongMax[p]);
+	
+	// First, the Order Margin Times:
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			int delay=0;
+			Uint8 step=executeStep;
+			while (ordersQueue[p][step])
+			{
+				step++;
+				delay++;
+				assert(delay<255);
+			}
+
+			int count=orderMarginTimeCount[p];
+			recentOrderMarginTime[p][count]=delay;
+			orderMarginTimeCount[p]=(count+1)&63;
+			//printf("delay=%d, ", delay);
+			
+			int min=255;
+			int max=0;
+			for (int i=0; i<64; i++)
+			{
+				int delay=recentOrderMarginTime[p][i];
+				if (delay<min)
+					min=delay;
+				if (delay>max)
+					max=delay;
+			}
+			orderMarginTimeMin[p]=min;
+			orderMarginTimeMax[p]=max;
+			//printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
+		}
+	
+	
 	Uint8 latency=pushStep-executeStep;
-	printf("latency=%d.\n", latency);
+	//printf("latency=%d, ", latency);
 	
 	int minTicksToWait=255;
 	int n=0;
@@ -1268,7 +1301,7 @@ int NetGame::ticksToDelay(void)
 		if (players[p]->type==Player::P_IP)
 		{
 			n++;
-			int goodOrderMarginTime=latency-(pingPongMax[p]>>1);
+			int goodOrderMarginTime=latency-((pingPongMax[p]+1)>>1);
 			int realOrderMarginTime=orderMarginTimeMin[p]-1;
 			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
 			if (ticksToWait<minTicksToWait)
@@ -1279,7 +1312,7 @@ int NetGame::ticksToDelay(void)
 		myLocalWishedLatency=1;
 		return 0;
 	}
-	printf("minTicksToWait=%d.\n", minTicksToWait);
+	//printf("minTicksToWait=%d, ", minTicksToWait);
 	
 	int maxPingPong=0;
 	for (int p=0; p<numberOfPlayer; p++)
@@ -1289,14 +1322,14 @@ int NetGame::ticksToDelay(void)
 			if (pingPong>maxPingPong)
 				maxPingPong=pingPong;
 		}
-	printf("maxPingPong=%d.\n", maxPingPong);
+	//printf("maxPingPong=%d, ", maxPingPong);
 	
 	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
 	if (goodLatency<1)
 		goodLatency=1;
 	if (minTicksToWait>0)
-		goodLatency+=minTicksToWait;
-	printf("goodLatency=%d.\n", goodLatency);
+		goodLatency+=((minTicksToWait+1)>>1);
+	//printf("goodLatency=%d, ", goodLatency);
 	
 	if (goodLatency<latency)
 		myLocalWishedLatency=latency-1;
@@ -1307,13 +1340,13 @@ int NetGame::ticksToDelay(void)
 	
 	//WARNING: debugg only!: myLocalWishedLatency=1+(rand()&15);
 	
-	printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
+	//printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
 	
 	if (minTicksToWait<=0)
 		return 0;
-	int delay=20*minTicksToWait;
-	if (delay>80)
-		delay=80;
+	int delay=10*minTicksToWait;
+	if (delay>40)
+		delay=40;
 	return delay;
 }
 
