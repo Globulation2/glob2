@@ -781,10 +781,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			if (nbPacketsLost==0)
 			{
 				int brandwidth=playerFileTra[p].brandwidth;
-				if (brandwidth<4)
-					brandwidth++;
-				else
-					brandwidth+=nbPacketsReceived/2;
+				brandwidth+=nbPacketsReceived;
 				if (playerFileTra[p].brandwidth!=brandwidth)
 					fprintf(logFileDownload, "new brandwidth=%d.\n", brandwidth);
 				playerFileTra[p].brandwidth=brandwidth;
@@ -1266,7 +1263,7 @@ void MultiplayersHost::sendingTime()
 			}
 			
 			// We compute the number of (more probably) lost packets:
-			latency=2*latency;
+			latency=16+2*latency;
 			int nbPacketsLost=0;
 			for (int i=0; i<PACKET_SLOTS; i++)
 				if (playerFileTra[p].packetSlot[i].sent && !playerFileTra[p].packetSlot[i].received && playerFileTra[p].packetSlot[i].time>latency)
