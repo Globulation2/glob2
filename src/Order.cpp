@@ -837,10 +837,10 @@ Uint8 *SetAllianceOrder::getData(void)
 {
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->alliedMask, 4);
-	addUint32(data, this->enemyMask, 4);
-	addUint32(data, this->visionExchangeMask, 8);
-	addUint32(data, this->visionFoodMask, 12);
-	addUint32(data, this->visionOtherMask, 16);
+	addUint32(data, this->enemyMask, 8);
+	addUint32(data, this->visionExchangeMask, 12);
+	addUint32(data, this->visionFoodMask, 16);
+	addUint32(data, this->visionOtherMask, 20);
 	return data;
 }
 
@@ -851,10 +851,10 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 
 	this->teamNumber=getUint32(data, 0);
 	this->alliedMask=getUint32(data, 4);
-	this->enemyMask=getUint32(data, 4);
-	this->visionExchangeMask=getUint32(data, 8);
-	this->visionFoodMask=getUint32(data, 12);
-	this->visionOtherMask=getUint32(data, 16);
+	this->enemyMask=getUint32(data, 8);
+	this->visionExchangeMask=getUint32(data, 12);
+	this->visionFoodMask=getUint32(data, 16);
+	this->visionOtherMask=getUint32(data, 20);
 
 	memcpy(this->data,data,dataLength);
 
