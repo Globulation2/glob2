@@ -99,14 +99,10 @@ void Text::setText(const char *newText)
 
 void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	if ((cr!=r) || (cg!=g) || (cb!=b) || (ca!=a))
-	{
-		cr = r;
-		cg = g;
-		cb = b;
-		ca = a;
-		repaint();
-	}
+	cr = r;
+	cg = g;
+	cb = b;
+	ca = a;
 }
 
 void Text::internalRepaint(int x, int y, int w, int h)
