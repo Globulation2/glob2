@@ -22,6 +22,7 @@
 #include "YOGScreen.h"
 #include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
+#include "GlobalContainer.h"
 
 // TODO: is it anyway to do this cleaner ?
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link

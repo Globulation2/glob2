@@ -24,6 +24,7 @@
 #include "LogFileManager.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 
 SessionGame::SessionGame()
 {
@@ -44,9 +45,9 @@ SessionGame::SessionGame()
 
 	fileIsAMap=(Sint32)true;
 	strncpy(mapName,"No name", MAP_NAME_MAX_SIZE);
-		
+
 	mapGenerationDescriptor=NULL;
-	
+
 	logFile=globalContainer->logFileManager->getFile("SessionGame.log");
 }
 

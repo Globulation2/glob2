@@ -702,7 +702,7 @@ void Unit::handleDisplacement(void)
 			assert(attachedBuilding);
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
-				if (owner->map->doesUnitTouchRessource(this, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy))
+				if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 				{
 					displacement=DIS_HARVESTING;
 					//printf("I found ressource\n");
@@ -712,7 +712,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				caryedRessource=destinationPurprose;
-				owner->map->decRessource(posX+dx, posY+dy, (RessourcesTypes::intResType)caryedRessource);
+				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
 				
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
@@ -821,7 +821,7 @@ void Unit::handleDisplacement(void)
 				if (destinationPurprose>=0)
 				{
 					newTargetWasSet();
-					if (owner->map->doesUnitTouchRessource(this, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy))
+					if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 					{
 						displacement=DIS_HARVESTING;
 						//printf("I found ressource\n");

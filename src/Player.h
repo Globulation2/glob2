@@ -20,7 +20,7 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
-#include "GAG.h"
+#include "Header.h"
 #include "AI.h"
 #include "Team.h"
 #include <queue>

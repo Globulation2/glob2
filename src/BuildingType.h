@@ -52,7 +52,6 @@ public:
 		NB_BUILDING
 	};
 
-//	Uint32 __STARTDATA[0];
 #define __STARTDATA_B ((Uint32*)&startImage)
 
 	// visualisation
@@ -113,7 +112,7 @@ public:
 	Sint32 regenerationSpeed;
 	
 	Sint32 prestige;
-	
+
 	// Number to access next upgrade in BuildingsTypes.
 	// It is computed in the second phase of the BuildingsTypes constructor after all building are read from disk.
 	Sint32 nextLevelTypeNum;
@@ -246,18 +245,13 @@ public:
 	}
 };
 
-class BuildingsTypes
+class BuildingsTypes: public EntitiesTypes<BuildingType>
 {
 public:
-	BuildingsTypes();
-	void load(const char *filename);
-	~BuildingsTypes();
+	virtual void load(const char *filename);
+	virtual ~BuildingsTypes() { }
 
 	int getTypeNum(int type, int level, bool isBuildingSite);
-	BuildingType *getBuildingType(unsigned int typeNum);
-	
-public:
-	std::vector<BuildingType *> buildingsTypes;
 };
 
 #endif

@@ -21,6 +21,7 @@
 #define __RESSOURCE_H
 
 #include "Header.h"
+#include "EntityType.h"
 #include <assert.h>
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
@@ -39,71 +40,57 @@ union Ressource
 	} field;
 };
 
-class RessourceType : public base::Object
-{
-protected:
-	CLASSDEF(RessourceType)
-		BASECLASS(base::Object)
-	MEMBERS
-		//! the name of the ressource, will be lookuped for internationalisation
-		ITEM(std::string, name)
-		//! The type of terrain of which this ressource can grow
-		ITEM(Sint32, terrain)
-		//! The First image of the ressource
-		ITEM(Sint32, gfxId)
-		//! The number of images this ressource has for a given variety
-		ITEM(Sint32, sizesCount)
-		//! The number of veriety this ressource has
-		ITEM(Sint32, varietiesCount)
-		//! Does this ressource shrinks when harvested. A non-shrinkable ressource is by definition eternal.
-		ITEM(bool, shrinkable)
-		//! If expendable, a ressource spaw to nearby terrain
-		ITEM(bool, expendable)
-		//! If ethernal, a ressource cannot be fully harvested. There is always an amout of 1.
-		ITEM(bool, eternal)
-		//! If granular, we can decrement one by one. Otherwise, the ressource is fully taken
-		ITEM(bool, granular)
-		//! If yes, the ressource need to be visible NOW to be able to be collected
-		ITEM(bool, visibleToBeCollected)
-	CLASSEND;
-public:
-	RessourceType();
-};
-
-class RessourcesTypes : public base::Object
+class RessourceType: public EntityType
 {
 public:
-	typedef int intResType;
+#define __STARTDATA_R ((Uint32*)&terrain)
+	Sint32 terrain;
+	Sint32 gfxId;
+	Sint32 sizesCount;
+	Sint32 varietiesCount;
+	Sint32 shrinkable;
+	Sint32 expendable;
+	Sint32 eternal;
+	Sint32 granular;
+	Sint32 visibleToBeCollected;
 
 public:
-	CLASSDEF(RessourcesTypes)
-		BASECLASS(base::Object)
-	MEMBERS
-		ITEM(std::vector<RessourceType>, res)
-		ITEM(intResType, wood)
-		ITEM(intResType, corn)
-		ITEM(intResType, fungus)
-		ITEM(intResType, stone)
-		ITEM(intResType, alga)
-		ITEM(intResType, happynessBase)
-		ITEM(intResType, happynessCount)
-	CLASSEND;
-
-public:
-	const RessourceType* get(const unsigned i) { assert(i < res.size()); return &res[i]; }
-	unsigned int number() { return res.size(); }
-
-	RessourcesTypes();
+	RessourceType() { init(); }
+	RessourceType(SDL_RWops *stream) { load(stream); }
+	virtual ~RessourceType() { }
+	virtual const char **getVars(int *size, Uint32 **data)
+	{
+		static const char *vars[] =
+		{
+			"terrain",
+			"gfxId",
+			"sizesCount",
+			"varietiesCount",
+			"shrinkable",
+			"expendable",
+			"eternal",
+			"granular",
+			"visibleToBeCollected",
+		};
+		if (size)
+			*size=(sizeof(vars)/sizeof(char *));
+		if (data)
+			*data=__STARTDATA_R;
+		return vars;
+	}
 };
+
+typedef EntitiesTypes<RessourceType> RessourcesTypes;
 
 #define MAX_NB_RESSOURCES 15
 #define MAX_RESSOURCES 8
-#define WOOD (globalContainer->ressourcesTypes->wood)
-#define CORN (globalContainer->ressourcesTypes->corn)
-#define FUNGUS (globalContainer->ressourcesTypes->fungus)
-#define STONE (globalContainer->ressourcesTypes->stone)
-#define ALGA (globalContainer->ressourcesTypes->alga)
-#define HAPPYNESS_BASE (globalContainer->ressourcesTypes->happynessBase)
-#define HAPPYNESS_COUNT (globalContainer->ressourcesTypes->happynessCount)
+#define WOOD 0
+#define CORN 1
+#define PAPYRUS 2
+#define STONE 3
+#define ALGA 4
+#define BASIC_COUNT 5
+#define HAPPYNESS_BASE 5
+#define HAPPYNESS_COUNT MAX_RESSOURCES-BASIC_COUNT
 
 #endif

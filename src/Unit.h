@@ -20,7 +20,7 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-#include "GAG.h"
+#include "Header.h"
 #include "UnitType.h"
 #include <string.h>
 
@@ -52,7 +52,7 @@ public:
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
-	
+
 	void selectPreferedMovement(void);
 	bool isUnitHungry(void);
 	
@@ -108,7 +108,7 @@ public:
 		MOV_EXITING_BUILDING,
 		MOV_ATTACKING_TARGET
 	};
-	
+
 	enum BypassDirection
 	{
 		DIR_UNSET=0,
@@ -182,7 +182,7 @@ public:
 	Sint32 trigHungry; // (Uint16)
 	Sint32 trigHungryCarying;
 	Uint32 fruitMask;
-	UInt32 fruitCount;
+	Uint32 fruitCount;
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];

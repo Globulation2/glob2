@@ -17,27 +17,3 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Ressource.h"
-
-RessourceType::RessourceType()
-{
-	name="undefined";
-	terrain=0;
-	gfxId=0;
-	sizesCount=0;
-	varietiesCount=0;
-	shrinkable=true;
-	expendable=true;
-	eternal=false;
-	granular=true;
-	visibleToBeCollected=false;
-}
-
-RessourcesTypes::RessourcesTypes()
-{
-	wood=0;
-	corn=1;
-	fungus=2;
-	stone=3;
-	alga=4;
-}

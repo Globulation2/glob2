@@ -19,6 +19,7 @@
 
 #include "YOGScreen.h"
 #include "YOGPreScreen.h"
+#include "GlobalContainer.h"
 
 YOGPreScreen::YOGPreScreen()
 {

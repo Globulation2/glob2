@@ -20,7 +20,7 @@
 #ifndef __TEAM_H
 #define __TEAM_H
 
-#include "GAG.h"
+#include "Header.h"
 #include "Race.h"
 #include <list>
 #include "Order.h"

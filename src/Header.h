@@ -20,39 +20,14 @@
 #ifndef __HEADER_H
 #define __HEADER_H
 
-#ifndef MAX_SINT32
-#define MAX_SINT32 0x7FFFFFFF
-#endif
+#include <GAGSys.h>
 
 #ifdef WIN32
-#	include <windows.h>
-#	include <SDL.h>
-#	include <SDL_endian.h>
-#	include <SDL_image.h>
-#	include <SDL_net.h>
-#	include <assert.h>
-#	define snprintf _snprintf
-#	define vsnprintf _vsnprintf
-#   define S_ISDIR _S_ISDIR
-#	pragma warning (disable : 4786)
-#	pragma warning (disable : 4250)
-#else // Unix ??? autre ??? TODO a preciser...
-	#include <SDL/SDL.h>
-	#include <SDL/SDL_endian.h>
-	#include <SDL/SDL_image.h>
+	#include <SDL_net.h>
+#else
 	#include <SDL/SDL_net.h>
 #endif
 
-#include <GAG.h>
-
-// usefull macros
-#ifndef MAX
-#define MAX(a, b) ((a)>(b) ? (a) : (b))
-#endif
-
-#ifndef MIN
-#define MIN(a, b) ((a)<(b) ? (a) : (b))
-#endif
 
 //! if defined, enable UID debug code
 //#define DBG_UID
@@ -63,13 +38,4 @@
 //! if defined, enable vPath listing
 //#define DBG_VPATH_LIST
 
-#ifndef VARARRAY
-#ifdef _MSC_VER
-#include <malloc.h>
-#define VARARRAY(t,n,s) t *n=(t*)_alloca((s)*sizeof(t))
-#define strcasecmp _stricmp
-#else
-#define VARARRAY(t,n,s) t n[s]
 #endif
-#endif
-#endif 

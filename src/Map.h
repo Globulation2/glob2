@@ -20,8 +20,7 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-#include "GAG.h"
-#include "GlobalContainer.h"
+#include "Header.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Team.h"
@@ -52,7 +51,7 @@ struct Case
 
 	Uint16 groundUnit;
 	Uint16 airUnit;
-	
+
 	Uint32 forbidden; // This is a mask, one bit by team, 0=forbidden case, 1=allowed case.
 };
 
@@ -249,25 +248,25 @@ public:
 		return isRessource(x, y) && (getRessource(x, y).field.type != STONE);
 	}
 
-	bool isRessource(int x, int y, RessourcesTypes::intResType ressourceType)
+	bool isRessource(int x, int y, int ressourceType)
 	{
-		return (RessourcesTypes::intResType)getRessource(x, y).field.type == ressourceType;
+		return getRessource(x, y).field.type == ressourceType;
 	}
 
-	bool isRessource(int x, int y, RessourcesTypes::intResType *ressourceType)
+	bool isRessource(int x, int y, int *ressourceType)
 	{
-		Uint8 rt=getRessource(x, y).field.type;
+		int rt=getRessource(x, y).field.type;
 		if (rt==0xFF)
 			return false;
-		*ressourceType=(RessourcesTypes::intResType)rt;
+		*ressourceType=rt;
 		return true;
 	}
 
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	bool decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	bool decRessource(int x, int y, RessourcesTypes::intResType ressourceType);
-	bool incRessource(int x, int y, RessourcesTypes::intResType ressourceType);
+	bool decRessource(int x, int y, int ressourceType);
+	bool incRessource(int x, int y, int ressourceType);
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
@@ -292,9 +291,9 @@ public:
 	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
 	bool doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, RessourcesTypes::intResType ressourceType, int *dx, int *dy);
+	bool doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy);
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesPosTouchRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy);
+	bool doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy);
 	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
@@ -323,7 +322,7 @@ public:
 	TerrainType getUMTerrain(int x, int y) { return (TerrainType)(*(undermap+w*(y&hMask)+(x&wMask))); }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int size);
-	
+
 	//! With size==0, it will remove no ressource. (Unaligned coordinates)
 	void setNoRessource(int x, int y, int size);
 	//! With size==0, it will add ressource only on one case. (Aligned coordinates)
@@ -342,11 +341,11 @@ public:
 	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY);
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
-	
+
 	// All "nearestRessource" is legacy code, since we implemented the gradient system.
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
-	bool nearestRessource(int x, int y, RessourcesTypes::intResType  ressourceType, int *dx, int *dy);
-	bool nearestRessource(int x, int y, RessourcesTypes::intResType *ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, int  ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, int *ressourceType, int *dx, int *dy);
 	//! Only returns ressource into the circle (fx, fy, fsr).
 	bool nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *dx, int *dy);
 	

@@ -21,7 +21,6 @@
 #define __ENGINE_H
 
 #include "Header.h"
-#include "Game.h"
 #include "GameGUI.h"
 
 class MultiplayersJoin;

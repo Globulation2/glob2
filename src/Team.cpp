@@ -23,6 +23,7 @@
 #include "Utilities.h"
 #include <math.h>
 #include "Marshaling.h"
+#include "GlobalContainer.h"
 #include <float.h>
 
 

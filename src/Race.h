@@ -20,7 +20,7 @@
 #ifndef __RACE_H
 #define __RACE_H
 
-#include "GAG.h"
+#include "Header.h"
 #include "UnitType.h"
 
 class Race

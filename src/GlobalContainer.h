@@ -93,7 +93,7 @@ public:
 	Font *littleFont;
 
 	BuildingsTypes buildingsTypes;
-	base::Ptr<RessourcesTypes> ressourcesTypes;
+	RessourcesTypes ressourcesTypes;
 
 	bool hostServer;
 	char hostServerMapName[32];

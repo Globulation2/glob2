@@ -20,7 +20,7 @@
 #ifndef __GAME_H
 #define __GAME_H
 
-#include "GAG.h"
+#include "Header.h"
 #include "Session.h"
 #include "SGSL.h"
 

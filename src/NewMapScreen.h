@@ -22,6 +22,7 @@
 
 #include "Map.h"
 #include "MapGenerationDescriptor.h"
+#include <GAG.h>
 
 //! This screen allows to choose how to make a new map
 class HowNewMapScreen:public Screen

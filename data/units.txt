@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
+// Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charriere
 //  for any question or comment contact us at nct@ysagoon.com
 //
 // This program is free software; you can redistribute it and/or modify

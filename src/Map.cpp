@@ -20,6 +20,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 
 
 Map::Map()
@@ -435,16 +436,16 @@ void Map::growRessources(void)
 					if (r.field.amount<=(int)(syncRand()&7))
 					{
 						// we grow ressource:
-						incRessource(x, y, (RessourcesTypes::intResType)r.field.type);
+						incRessource(x, y, r.field.type);
 					}
-					else if (globalContainer->ressourcesTypes->get(r.field.type)->expendable)
+					else if (globalContainer->ressourcesTypes.get(r.field.type)->expendable)
 					{
 						// we extand ressource:
 						int dx, dy;
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						incRessource(nx, ny, (RessourcesTypes::intResType)r.field.type);
+						incRessource(nx, ny, r.field.type);
 					}
 				}
 			}
@@ -540,8 +541,8 @@ bool Map::decRessource(int x, int y)
 	if (r.id==NORESID)
 		return false;
 
-	RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
-	const RessourceType *fulltype=globalContainer->ressourcesTypes->get(type);
+	int type=r.field.type;
+	const RessourceType *fulltype=globalContainer->ressourcesTypes.get(type);
 	unsigned amount=r.field.amount;
 	assert(amount);
 
@@ -554,7 +555,7 @@ bool Map::decRessource(int x, int y)
 	return true;
 }
 
-bool Map::decRessource(int x, int y, RessourcesTypes::intResType ressourceType)
+bool Map::decRessource(int x, int y, int ressourceType)
 {
 	if (isRessource(x, y, ressourceType))
 		return decRessource(x, y);
@@ -562,7 +563,7 @@ bool Map::decRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 		return false;
 }
 
-bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
+bool Map::incRessource(int x, int y, int ressourceType)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource &r=*rp;
@@ -575,7 +576,7 @@ bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 		if (getGroundUnit(x, y)!=NOGUID)
 			return false;
 
-		fulltype=globalContainer->ressourcesTypes->get(ressourceType);
+		fulltype=globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
 			rp->field.type=ressourceType;
@@ -589,8 +590,8 @@ bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 	}
 	else
 	{
-		RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
-		fulltype=globalContainer->ressourcesTypes->get(type);
+		int type=r.field.type;
+		fulltype=globalContainer->ressourcesTypes.get(type);
 	}
 
 	if (r.field.type!=ressourceType)
@@ -787,7 +788,7 @@ bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesUnitTouchRessource(Unit *unit, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
+bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy)
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -803,7 +804,7 @@ bool Map::doesUnitTouchRessource(Unit *unit, RessourcesTypes::intResType ressour
 	return false;
 }
 
-bool Map::doesPosTouchRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
+bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy)
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -970,7 +971,7 @@ void Map::setRessource(int x, int y, int type, int size)
 
 bool Map::isRessourceAllowed(int x, int y, int type)
 {
-	return (getTerrainType(x, y)==globalContainer->ressourcesTypes->get(type)->terrain);
+	return (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
@@ -1026,7 +1027,7 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*my+=buildingHeight*16;
 }
 
-bool Map::nearestRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
+bool Map::nearestRessource(int x, int y, int ressourceType, int *dx, int *dy)
 {
 	for (int i=1; i<32; i++)
 	{
@@ -1061,7 +1062,7 @@ bool Map::nearestRessource(int x, int y, RessourcesTypes::intResType ressourceTy
     return false;
 }
 
-bool Map::nearestRessource(int x, int y, RessourcesTypes::intResType *ressourceType, int *dx, int *dy)
+bool Map::nearestRessource(int x, int y, int *ressourceType, int *dx, int *dy)
 {
 	for (int i=1; i<32; i++)
 	{

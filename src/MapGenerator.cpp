@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "MapGenerationDescriptor.h"
+#include "GlobalContainer.h"
 #include <math.h>
 #include <float.h>
 
@@ -776,7 +777,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		ressOrder[0]=CORN;
 		ressOrder[1]=WOOD;
 		ressOrder[2]=STONE;
-		ressOrder[3]=FUNGUS;
+		ressOrder[3]=PAPYRUS;
 		ressOrder[4]=CORN;
 		
 		int distWeight[8];
@@ -835,7 +836,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", ress, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[ress];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourcesTypes::intResType)ress, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, ress, amount);
 		}
 
 		if (smallestWidth<limiteDist)
@@ -874,7 +875,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", smallestRessource, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[smallestRessource];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourcesTypes::intResType)smallestRessource, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, smallestRessource, amount);
 		}
 
 		int maxDir=0;
@@ -1299,7 +1300,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 	{
 		int d, p, amount;
 		int smallestAmount;
-		RessourcesTypes::intResType smallestRessource;
+		int smallestRessource;
 
 		//WOOD
 		for (d=0; d<islandsSize; d++)

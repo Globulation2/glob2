@@ -58,9 +58,8 @@ class UnitType: public EntityType
 public:
 	// caracteristic modulated by player choice, if 0, feature disabled
 	// display infos
-//	Uint32 __STARTDATA[0];
 #	define __STARTDATA_U ((Uint32*)startImage)
-	
+
 	Uint32 startImage[NB_MOVE];
 	
 	Sint32 hungryness;

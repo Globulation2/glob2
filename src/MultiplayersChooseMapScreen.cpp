@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include "YOG.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {

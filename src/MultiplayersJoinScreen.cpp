@@ -21,6 +21,7 @@
 #include "GAG.h"
 #include "MultiplayersConnectedScreen.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {

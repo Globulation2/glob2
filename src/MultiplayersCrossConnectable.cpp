@@ -20,6 +20,7 @@
 #include "MultiplayersCrossConnectable.h"
 #include "Utilities.h"
 #include "LogFileManager.h"
+#include "GlobalContainer.h"
 #include "YOG.h"
 
 MultiplayersCrossConnectable::MultiplayersCrossConnectable()

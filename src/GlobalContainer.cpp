@@ -359,9 +359,8 @@ void GlobalContainer::load(void)
 		updateLoadProgressBar(95);
 		// load buildings types
 		buildingsTypes.load("data/buildings.txt");
-
 		// load ressources types
-		ressourcesTypes=deserialize<RessourcesTypes>("data/ressources.xml");
+		ressourcesTypes.load("data/ressources.txt");
 		updateLoadProgressBar(100);
 	}
 };
