@@ -425,11 +425,8 @@ public:
 protected:
 	// computationals pathfinding statistics:
 	int ressourceAvailableCount[16][MAX_RESSOURCES];
-	int ressourceAvailableCountFast[16][MAX_RESSOURCES];
-	int ressourceAvailableCountFar[16][MAX_RESSOURCES];
 	int ressourceAvailableCountSuccess[16][MAX_RESSOURCES];
-	int ressourceAvailableCountFailureBase[16][MAX_RESSOURCES];
-	int ressourceAvailableCountFailureOvercount[16][MAX_RESSOURCES];
+	int ressourceAvailableCountFailure[16][MAX_RESSOURCES];
 	
 	int pathToRessourceCountTot;
 	int pathToRessourceCountSuccess;
