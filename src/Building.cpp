@@ -1344,7 +1344,6 @@ void Building::subscribeForFlagingStep()
 	
 	if (lastWorkingSubscribe>32)
 	{
-		lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int minValue=INT_MAX;

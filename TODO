@@ -2,9 +2,6 @@ To First release :
 
 -les guerrières ne sont toujours pas intelligentes.
 
-NetGame:
--Il faut augmenter un peu la latence en fonction des tests pour que le jeu soit aussi agréable que possible.
-
 IngameGUI:
 -On ne sait pas qui est mort.
 
@@ -21,15 +18,11 @@ Pathfindig:
 - Des tas d'unités peuvent bloquer une unité...
 - Il y a peut-être des osciliations entre le petit et le grand gradient. (bug pas sauvable).
 
-Gameplay:
-- Peut-on partager les batiments alliés d'ungrade ?
-
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
 
 Optimisation efficacité:
 - Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
-- Les unités qui s'allouent à un drapeau le font une par une (trop lent)
 
 Minimap:
 - Il faudrait si possible augmenter la visibilité des fruits.
@@ -45,9 +38,6 @@ Technique :
 Options:
 - glob2 --benchmark
 
-Network:
-- si on se kick quand on host, on peut plus quitter l'ecran
-
 To Next version :
 
 - Ressuciter le concept de race.
@@ -57,6 +47,9 @@ To Next version :
 - GUITextArea doit tout faire en UTF8, pas en ascii avec correction a 2 euros derriere. (nct)
 
 For later later :
+
+Gameplay:
+- Peut-on partager les batiments alliés d'ungrade ?
 
 - Infos in Map editor
 
