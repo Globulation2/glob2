@@ -359,14 +359,12 @@ int Engine::run(void)
 		Sint32 ticksSpentInComputation=40;
 		Sint32 computationAviableTicks=0;
 		
+		startTick=SDL_GetTicks();
 		while (gui.isRunning)
 		{
-			startTick=SDL_GetTicks();
-
 			// We allways allow the user ot use the gui:
 			gui.step();
 			
-			Sint32 ticksToDelay=0;
 			Sint32 ticksDelayedInside=0;
 			if (!gui.hardPause)
 			{
@@ -393,6 +391,8 @@ int Engine::run(void)
 					else
 						ticksDelayedInside=0;
 				}
+				else
+					ticksDelayedInside=0;
 				
 				// We proceed network:
 				networkReadyToExecute=net->stepReadyToExecute();
@@ -417,14 +417,17 @@ int Engine::run(void)
 
 			globalContainer->gfx->nextFrame();
 
-			
 			endTick=SDL_GetTicks();
-			
 			Sint32 spentTicks=endTick-startTick;
 			ticksSpentInComputation=spentTicks-ticksDelayedInside;
-			
 			computationAviableTicks=gui.game.session.gameTPF-ticksSpentInComputation;
+			Sint32 ticksToWait=computationAviableTicks-ticksDelayedInside;
+			if (ticksToWait>0)
+				SDL_Delay(ticksToWait);
+			startTick=SDL_GetTicks();
 			
+			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
+			gui.setLastStepTimeToWait(computationAviableTicks);
 			if (networkReadyToExecute && !gui.gamePaused)
 			{
 				Sint32 i=computationAviableTicks;
@@ -434,12 +437,6 @@ int Engine::run(void)
 					i=40;
 				cpuStats[i]++;
 			}
-			
-			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
-			Sint32 ticksToWait=computationAviableTicks+ticksToDelay-ticksDelayedInside;
-			if (ticksToWait>0)
-				SDL_Delay(ticksToWait);
-			gui.setLastStepTimeToWait(computationAviableTicks);
 		}
 
 		delete net;
