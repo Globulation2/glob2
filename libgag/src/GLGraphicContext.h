@@ -71,6 +71,7 @@ public:
 	virtual void updateRect(int x, int y, int w, int h);
 	
 	virtual void printScreen(const char *filename);
+	virtual void *getPixelPointer(void) { return NULL; }
 };
 
 #endif
