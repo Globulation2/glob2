@@ -1,4 +1,4 @@
-EXTRA_DIST = Environment.h \ \
+EXTRA_DIST = Environment.h \
 FileManager.h \
 GAG.h \
 GAGSys.h \
