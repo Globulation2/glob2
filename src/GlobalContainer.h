@@ -23,6 +23,27 @@
 #include "GAG.h"
 #include "StringTable.h"
 #include "BuildingType.h"
+#include <string>
+
+class Settings : public base::Object
+{
+protected:
+	CLASSDEF(Settings)
+		BASECLASS(base::Object)
+	MEMBERS
+		ITEM(std::string, username)
+		ITEM(int, screenWidth)
+		ITEM(int, screenHeight)
+		ITEM(Uint32, screenFlags)
+		ITEM(Uint32, optionFlags)
+		ITEM(Uint32, graphicType)
+		ITEM(Uint32, defaultLanguage)
+	CLASSEND;
+
+public:
+	Settings();
+};
+
 class FileManager;
 class LogFileManager;
 
@@ -36,29 +57,25 @@ private:
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 
-	// private gfx info
-	Uint32 graphicFlags;
-	int graphicWidth, graphicHeight;
-	DrawableSurface::GraphicContextType graphicType;
+	//! user preferences
+	base::Ptr<Settings> settings;
+	const char *userName;
+
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
 	void load(void);
-	
-	void setUserName(const char *name);
+
 	void pushUserName(const char *name);
 	void popUserName();
-	Uint32 getGfxFlag() { return graphicFlags; }
+	void setUserName(const char *name);
+	const char *getUsername(void) { return userName; }
+	Uint32 getGfxFlags() { return settings->screenFlags; }
+	Uint32 getOptionFlags() { return settings->screenFlags; }
 
 public:
-	char userNameMemory[USERNAME_MAX_LENGTH];
-	const char *userName;
-	
-	// This is a mask of command line specific options
-	Uint32 optionFlags;
-
 	FileManager *fileManager;
 	LogFileManager *logFileManager;
 	

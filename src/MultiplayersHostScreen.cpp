@@ -147,9 +147,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	{
 		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
-		strncpy(multiplayersJoin->playerName, globalContainer->userName, 32);
+		strncpy(multiplayersJoin->playerName, globalContainer->getUsername(), 32);
 		multiplayersJoin->playerName[31]=0;
-		strncpy(multiplayersJoin->serverNickName, globalContainer->userName, 32);
+		strncpy(multiplayersJoin->serverNickName, globalContainer->getUsername(), 32);
 		multiplayersJoin->serverNickName[31]=0;
 		
 		strncpy(multiplayersJoin->serverName, "localhost", 256);

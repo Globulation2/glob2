@@ -1308,7 +1308,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			newW=256;
 		if (newH<288)
 			newH=288;
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->getGfxFlag());
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->getGfxFlags());
 		regenerateClipRect();
 		draw();
 	}

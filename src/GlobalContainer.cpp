@@ -25,30 +25,49 @@
 #include "FileManager.h"
 #include "LogFileManager.h"
 
+Settings::Settings()
+{
+	// set default values in settings or load them
+	char *newUsername;
+#	ifdef WIN32
+		newUsername=getenv("USERNAME");
+#	else // angel > case of unix and MacIntosh Systems
+		newUsername=getenv("USER");
+#	endif
+	if (!newUsername)
+		newUsername="player";
+	username=newUsername;
+
+	screenFlags=DrawableSurface::DEFAULT;
+	screenWidth=640;
+	screenHeight=480;
+	graphicType=DrawableSurface::GC_SDL;
+	optionFlags=0;
+	defaultLanguage=0;
+}
+
 GlobalContainer::GlobalContainer(void)
 {
+	// init virtual filesystem
 	fileManager=Toolkit::getFileManager();
 	assert(fileManager);
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("logs");
 	logFileManager=new LogFileManager(fileManager);
-	graphicFlags=DrawableSurface::DEFAULT;
-	graphicWidth=640;
-	graphicHeight=480;
-	graphicType=DrawableSurface::GC_SDL;
-	optionFlags=0;
 
-	// set default values in settings or load them
-	char *userName;
-#	ifdef WIN32
-		userName=getenv("USERNAME");
-#	else // angel > case of unix and MacIntosh Systems
-		userName=getenv("USER");
-#	endif
-	if (!userName)
-		userName="player";
-	setUserName(userName);
+	// load user preference
+	base::XMLFileReader xr("preferences.xml");
+	if (xr.valid())
+	{
+		base::TextInputStream<base::XMLFileReader> tis(&xr);
+		settings=(Settings*)(base::Object*)tis.read();
+	}
+	else
+	{
+		settings=new Settings();
+	}
+	userName=settings->username.c_str();
 
 	hostServer=false;
 	gfx=NULL;
@@ -58,16 +77,23 @@ GlobalContainer::GlobalContainer(void)
 	ressources=NULL;
 	units=NULL;
 	buildings=NULL;
-	
+
 	menuFont=NULL;
 	standardFont=NULL;
 	littleFont=NULL;
-	
+
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
 
 GlobalContainer::~GlobalContainer(void)
 {
+	// save user preference
+	settings->defaultLanguage = texts.getLang();
+	base::XMLFileWriter xt("preferences.xml");
+	base::TextOutputStream<base::XMLFileWriter> tos(&xt);
+	tos.write(settings);
+
+	// releasing ressources
 	Toolkit::releaseSprite("terrain");
 	Toolkit::releaseSprite("shading");
 	Toolkit::releaseSprite("black");
@@ -84,9 +110,8 @@ GlobalContainer::~GlobalContainer(void)
 
 void GlobalContainer::setUserName(const char *name)
 {
-	strncpy(userNameMemory, name, USERNAME_MAX_LENGTH);
-	userNameMemory[USERNAME_MAX_LENGTH-1]=0;
-	userName=userNameMemory;
+	settings->username.assign(name, USERNAME_MAX_LENGTH);
+	userName=settings->username.c_str();
 }
 
 void GlobalContainer::pushUserName(const char *name)
@@ -96,7 +121,7 @@ void GlobalContainer::pushUserName(const char *name)
 
 void GlobalContainer::popUserName()
 {
-	userName=userNameMemory;
+	userName=settings->username.c_str();
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
@@ -121,31 +146,31 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		if (strcmp(argv[i], "-f")==0)
 		{
-			graphicFlags|=DrawableSurface::FULLSCREEN;
+			settings->screenFlags|=DrawableSurface::FULLSCREEN;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-a")==0)
 		{
-			graphicFlags|=DrawableSurface::HWACCELERATED;
+			settings->screenFlags|=DrawableSurface::HWACCELERATED;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-r")==0)
 		{
-			graphicFlags|=DrawableSurface::RESIZABLE;
+			settings->screenFlags|=DrawableSurface::RESIZABLE;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-b")==0)
 		{
-			graphicFlags|=DrawableSurface::NO_DOUBLEBUF;
+			settings->screenFlags|=DrawableSurface::NO_DOUBLEBUF;
 			continue;
 		}
-		
+
 		if (strcmp(argv[i], "-l")==0)
 		{
-			optionFlags|=OPTION_LOW_SPEED_GFX;
+			settings->optionFlags|=OPTION_LOW_SPEED_GFX;
 			continue;
 		}
 
@@ -197,12 +222,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else if (argv[i][1] == 't')
 			{
 				if (argv[i][2] != 0)
-					graphicType=(DrawableSurface::GraphicContextType)atoi(&argv[i][2]);
+					settings->graphicType=(DrawableSurface::GraphicContextType)atoi(&argv[i][2]);
 				else
 				{
 					i++;
 					if (i < argc)
-						graphicType=(DrawableSurface::GraphicContextType)atoi(argv[i]);
+						settings->graphicType=(DrawableSurface::GraphicContextType)atoi(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 's')
@@ -215,14 +240,14 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					ix&=~(0x1F);
 					if (ix<640)
 						ix=640;
-					graphicWidth=ix;
+					settings->screenWidth=ix;
 				}
 				if (iy!=0)
 				{
 					iy&=~(0x1F);
 					if (iy<480)
 						iy=480;
-					graphicHeight=iy;
+					settings->screenHeight=iy;
 				}
 			}
 		}
@@ -256,12 +281,13 @@ void GlobalContainer::load(void)
 		assert(false);
 		exit(-1);
 	}
-	
+	texts.setLang(settings->defaultLanguage);
+
 	if (!hostServer)
 	{
 		// create graphic context
-		gfx=GraphicContext::createGraphicContext(graphicType);
-		gfx->setRes(graphicWidth, graphicHeight, 32, graphicFlags);
+		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings->graphicType);
+		gfx->setRes(settings->screenWidth, settings->screenHeight, 32, settings->screenFlags);
 
 		// load fonts
 		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");

@@ -20,8 +20,12 @@
 #ifndef __TOOLKIT_H
 #define __TOOLKIT_H
 
-#include "FileManager.h"
-#include "GraphicContext.h"
+#include <string>
+#include <map>
+
+class Sprite;
+class Font;
+class FileManager;
 
 class Toolkit
 {

@@ -20,7 +20,7 @@
 #ifndef __SUPPORT_FUNCTION_H
 #define __SUPPORT_FUNCTION_H
 
-#include <GAGSys.h>
+#include "GAGSys.h"
 #include <stdlib.h>
 
 namespace GAG

@@ -62,13 +62,16 @@ namespace base
 	Ptr<XMLNode> readXML(const char *fname)
 	{
 		XMLInputStream source(fname);
+		if (!source.valid())
+			return NULL;
+			
 		char currentText[65536];
 		int currentTextLength=0;
 		bool runningText=false;
 		
 		// Create a document skeleton
 		XMLNode *rootNode=new XMLNode(XMLNode::ROOT,"ROOT");
-		
+
 		char cc;
 		while(!source.eof())
 		{
@@ -100,7 +103,7 @@ namespace base
 							break;
 						}
 					}
-					while(source.getNextChar()!=L'>');	
+					while(source.getNextChar()!=L'>');
 				}
 				else if(source.peekNextChar()=='!')
 				{
@@ -190,8 +193,8 @@ namespace base
 						"&"      "amp",
 						"<"      "lt",
 						">"      "gt",
-						"é"      "eacute",
-						"è"      "egrave",
+						"Ã©"     "eacute",
+						"Ã¨"      "egrave",
 						NULL
 					};
 					

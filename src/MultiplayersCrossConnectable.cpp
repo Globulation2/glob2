@@ -324,7 +324,7 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 				Message m;
 				m.messageID=messageID++;
 				m.messageType=MessageOrder::PRIVATE_MESSAGE_TYPE;
-				strncpy(m.userName, globalContainer->userName, 32);
+				strncpy(m.userName, globalContainer->getUsername(), 32);
 				strncpy(m.text, message+4+l, 256);
 				m.timeout=0;
 				m.TOTL=3;
@@ -348,7 +348,7 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 					Message m;
 					m.messageID=messageID++;
 					m.messageType=MessageOrder::PRIVATE_MESSAGE_TYPE;
-					strncpy(m.userName, globalContainer->userName, 32);
+					strncpy(m.userName, globalContainer->getUsername(), 32);
 					strncpy(m.text, message+4+l, 256);
 					m.timeout=0;
 					m.TOTL=3;
@@ -376,7 +376,7 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 		Message m;
 		m.messageID=messageID++;
 		m.messageType=MessageOrder::NORMAL_MESSAGE_TYPE;
-		strncpy(m.userName, globalContainer->userName, 32);
+		strncpy(m.userName, globalContainer->getUsername(), 32);
 		strncpy(m.text, s, 256);
 		m.timeout=0;
 		m.TOTL=3;

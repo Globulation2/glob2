@@ -83,8 +83,8 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runHostServer(int argc, char *argv[])
 {
-	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->userName);
-	yog->enableConnection(globalContainer->userName);
+	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
+	yog->enableConnection(globalContainer->getUsername());
 	
 	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
 	{

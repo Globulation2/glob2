@@ -21,7 +21,7 @@
 #define __GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
-#include "dps/base.h"
+#include "xmlserializer.h"
 
 class Font;
 class Sprite;
