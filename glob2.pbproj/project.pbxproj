@@ -26,6 +26,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
 				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
@@ -1142,6 +1143,104 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		59CB2AA60668A428004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Brush.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2AA70668A428004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = Brush.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2AA80668A428004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = BitArray.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2AA90668A428004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = BitArray.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2AAA0668A428004FEA35 = {
+			fileRef = 59CB2AA60668A428004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2AAB0668A428004FEA35 = {
+			fileRef = 59CB2AA70668A428004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2AAC0668A428004FEA35 = {
+			fileRef = 59CB2AA80668A428004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2AAD0668A428004FEA35 = {
+			fileRef = 59CB2AA90668A428004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2ACD0668A4F8004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = RessourcesTypes.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2ACE0668A4F8004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = RessourceType.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2ACF0668A4F8004FEA35 = {
+			fileRef = 59CB2ACD0668A4F8004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2AD00668A4F8004FEA35 = {
+			fileRef = 59CB2ACE0668A4F8004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		59CB2AD40668A53B004FEA35 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = UnitConsts.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		59CB2AD50668A53B004FEA35 = {
+			fileRef = 59CB2AD40668A53B004FEA35;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //590
 //591
 //592
@@ -1360,7 +1459,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GENERATE_PKGINFO = YES;
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL libgag/include /usr/local/include /usr/local/include/SDL";
@@ -1457,8 +1556,12 @@
 				5B63D48105BAE2670092D38A,
 				5B981DEA060AC8CD00C1AE77,
 				5B981DF0060AC8E900C1AE77,
-				5B981DF2060AC8E900C1AE77,
 				5B981DF6060AC97200C1AE77,
+				59CB2AAA0668A428004FEA35,
+				59CB2AAD0668A428004FEA35,
+				59CB2ACF0668A4F8004FEA35,
+				59CB2AD00668A4F8004FEA35,
+				59CB2AD50668A53B004FEA35,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1917,8 +2020,9 @@
 				5B981DE5060AC70800C1AE77,
 				5B981DE9060AC8CD00C1AE77,
 				5B981DEF060AC8E900C1AE77,
-				5B981DF1060AC8E900C1AE77,
 				5B981DF5060AC97200C1AE77,
+				59CB2AAB0668A428004FEA35,
+				59CB2AAC0668A428004FEA35,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5243,16 +5347,18 @@
 				5967D2C205AB553A000536C3,
 				5967D2C305AB553A000536C3,
 				5967D2C405AB553A000536C3,
-				5967D2C505AB553A000536C3,
-				5967D2C605AB553A000536C3,
 				5B63D43305BAE2080092D38A,
 				5B63D43405BAE2080092D38A,
+				5967D2C505AB553A000536C3,
+				5967D2C605AB553A000536C3,
+				59CB2AA60668A428004FEA35,
+				59CB2AA70668A428004FEA35,
+				59CB2AA80668A428004FEA35,
+				59CB2AA90668A428004FEA35,
 				5B981DF3060AC97200C1AE77,
 				5B981DF4060AC97200C1AE77,
 				5B981DEB060AC8E900C1AE77,
 				5B981DEC060AC8E900C1AE77,
-				5B981DED060AC8E900C1AE77,
-				5B981DEE060AC8E900C1AE77,
 				5967D2CB05AB553A000536C3,
 				5967D2CC05AB553A000536C3,
 				5967D2CD05AB553A000536C3,
@@ -5279,8 +5385,6 @@
 				5B981DE8060AC8CD00C1AE77,
 				5967D2E505AB553A000536C3,
 				5967D2E605AB553A000536C3,
-				5B981DED060AC8E900C1AE77,
-				5B981DEE060AC8E900C1AE77,
 				5967D2E705AB553A000536C3,
 				5967D2E805AB553A000536C3,
 				5967D2EA05AB553A000536C3,
@@ -5333,6 +5437,8 @@
 				5967D31B05AB553A000536C3,
 				5967D31C05AB553A000536C3,
 				5967D31D05AB553A000536C3,
+				59CB2ACD0668A4F8004FEA35,
+				59CB2ACE0668A4F8004FEA35,
 				5967D31E05AB553A000536C3,
 				5967D31F05AB553A000536C3,
 				5967D32005AB553A000536C3,
@@ -5355,6 +5461,7 @@
 				5967D33205AB553A000536C3,
 				5967D33305AB553A000536C3,
 				5967D33405AB553A000536C3,
+				59CB2AD40668A53B004FEA35,
 				5967D33505AB553A000536C3,
 				5967D33605AB553A000536C3,
 				5967D33705AB553A000536C3,
@@ -5760,22 +5867,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5B981DED060AC8E900C1AE77 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = BuildingType.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5B981DEE060AC8E900C1AE77 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = BuildingType.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		5B981DEF060AC8E900C1AE77 = {
 			fileRef = 5B981DEB060AC8E900C1AE77;
 			isa = PBXBuildFile;
@@ -5784,18 +5875,6 @@
 		};
 		5B981DF0060AC8E900C1AE77 = {
 			fileRef = 5B981DEC060AC8E900C1AE77;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B981DF1060AC8E900C1AE77 = {
-			fileRef = 5B981DED060AC8E900C1AE77;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B981DF2060AC8E900C1AE77 = {
-			fileRef = 5B981DEE060AC8E900C1AE77;
 			isa = PBXBuildFile;
 			settings = {
 			};
