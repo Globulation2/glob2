@@ -77,6 +77,7 @@ public:
 	virtual int getH(void)=0;
 	virtual void setClipRect(int x, int y, int w, int h)=0;
 	virtual void setClipRect(void)=0;
+	virtual void loadImage(const char *name)=0;
 	virtual void drawSprite(int x, int y, Sprite *sprite, int index=0)=0;
 	virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
 	virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
@@ -105,7 +106,7 @@ public:
 
 	virtual Sprite *loadSprite(const char *name)=0;
 	virtual Font *loadFont(const char *name)=0;
-	virtual DrawableSurface *createDrawableSurface(void)=0;
+	virtual DrawableSurface *createDrawableSurface(const char *name=NULL)=0;
 
 	virtual void nextFrame(void)=0;
 

@@ -27,6 +27,24 @@
 
 // here begin the SDL Drawable Surface part
 
+void SDLDrawableSurface::loadImage(const char *name)
+{
+	if (name)
+	{
+		SDL_RWops *imageStream;
+		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
+		{
+			if (surface)
+				SDL_FreeSurface(surface);
+			SDL_Surface *temp;
+			temp=IMG_Load_RW(imageStream, 0);
+			surface=SDL_DisplayFormatAlpha(temp);
+			SDL_FreeSurface(temp);
+			SDL_RWclose(imageStream);
+		}
+	}
+}
+
 bool SDLDrawableSurface::setRes(int w, int h, int depth, Uint32 flags)
 {
 	if (surface)
@@ -916,7 +934,9 @@ Font *SDLGraphicContext::loadFont(const char *name)
 	return font;
 }
 
-DrawableSurface *SDLGraphicContext::createDrawableSurface(void)
+DrawableSurface *SDLGraphicContext::createDrawableSurface(const char *name)
 {
-	return new SDLDrawableSurface();
+	DrawableSurface *ds=new SDLDrawableSurface();
+	ds->loadImage(name);
+	return ds;
 }
