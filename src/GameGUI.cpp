@@ -695,55 +695,61 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			orderQueue.push(new OrderCreate(localTeam, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
 		}
 	}
-	else if (game.mouseUnit)
-	{
-		selUnit=game.mouseUnit;
-		selBuild=NULL;
-		// an unit is selected:
-		displayMode=UNIT_SELECTION_VIEW;
-		selectionUID=selUnit->UID;
-		game.selectedUnit=selUnit;
-		checkValidSelection();
-	}
 	else
 	{
 		int mapX, mapY;
 		Sint32 UID;
 		game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
 		UID=game.map.getUnit(mapX, mapY);
-		if (UID!=NOUID)
-		{
-			if ((UID<0)&&((Building::UIDtoTeam(UID)==localTeam))||(game.map.isFOW(mapX, mapY, localTeam)))
+		// check for flag first
+		for (std::list<Building *>::iterator virtualIt=game.teams[localTeam]->virtualBuildings.begin();
+				virtualIt!=game.teams[localTeam]->virtualBuildings.end(); ++virtualIt)
 			{
-				displayMode=BUILDING_SELECTION_VIEW;
-				game.selectedUnit=NULL;
-				selectionUID=UID;
-				checkValidSelection();
+				Building *b=*virtualIt;
+				if ((b->posX==mapX) && (b->posY==mapY))
+				{
+					displayMode=BUILDING_SELECTION_VIEW;
+					game.selectedUnit=NULL;
+					selectionUID=b->UID;
+					checkValidSelection();
+					return;
+				}
 			}
+		// then for unit
+		if (game.mouseUnit)
+		{
+			selUnit=game.mouseUnit;
+			selBuild=NULL;
+			// an unit is selected:
+			displayMode=UNIT_SELECTION_VIEW;
+			selectionUID=selUnit->UID;
+			game.selectedUnit=selUnit;
+			checkValidSelection();
 		}
 		else
 		{
-			// don't change anything
-			/*displayMode=BUILDING_AND_FLAG;
-			game.selectedUnit=NULL;
-			game.selectedBuilding=NULL;
-			selBuild=NULL;
-			selUnit=NULL;
-			needRedraw=true;*/
-		}
-		//! look if there is a virtual building (flag) selected
-		for (std::list<Building *>::iterator virtualIt=game.teams[localTeam]->virtualBuildings.begin();
-			virtualIt!=game.teams[localTeam]->virtualBuildings.end(); ++virtualIt)
-		{
-			Building *b=*virtualIt;
-			if ((b->posX==mapX) && (b->posY==mapY))
+			// then for building
+			if (UID!=NOUID)
 			{
-				displayMode=BUILDING_SELECTION_VIEW;
-				game.selectedUnit=NULL;
-				selectionUID=b->UID;
-				checkValidSelection();
-				break;
+				if ((UID<0)&&((Building::UIDtoTeam(UID)==localTeam))||(game.map.isFOW(mapX, mapY, localTeam)))
+				{
+					displayMode=BUILDING_SELECTION_VIEW;
+					game.selectedUnit=NULL;
+					selectionUID=UID;
+					checkValidSelection();
+				}
 			}
+			else
+			{
+				// don't change anything
+				/*displayMode=BUILDING_AND_FLAG;
+				game.selectedUnit=NULL;
+				game.selectedBuilding=NULL;
+				selBuild=NULL;
+				selUnit=NULL;
+				needRedraw=true;*/
+			}
+			//! look if there is a virtual building (flag) selected
 		}
 	}
 }
