@@ -18,6 +18,7 @@
 */
 
 #include <assert.h>
+#include <SDL_endian.h>
 
 #include <vector>
 
@@ -137,6 +138,9 @@ void Race::create(CreationType creationType)
 	for (int j=0; j<3; ++j)
 		for (int i=0; i<4; ++i)
 			this->unitTypes[j][i]=unitTypes[j][i];
+	
+	// the hungryness is the same for all units:
+	hungryness=unitTypes[0][0].hungryness;
 }
 
 UnitType *Race::getUnitType(int type, int level)
@@ -153,14 +157,21 @@ void Race::save(SDL_RWops *stream)
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].save(stream);
+	
+	SDL_WriteBE32(stream, hungryness);
 }
 
-bool Race::load(SDL_RWops *stream)
+bool Race::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	//printf("loading race\n");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].load(stream);
+	
+	if (versionMinor>=34)
+		hungryness=(Sint32)SDL_ReadBE32(stream);
+	else
+		hungryness=unitTypes[0][0].hungryness;
 	
 	return true;
 }

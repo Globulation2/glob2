@@ -349,6 +349,24 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 		}
 		break;
+		case ORDER_MODIFY_WAR_FLAG:
+		{
+			if (!isPlayerAlive)
+				break;
+			OrderModifyWarFlag *omwf=(OrderModifyWarFlag *)order;
+			int team=Building::GIDtoTeam(omwf->gid);
+			int id=Building::GIDtoID(omwf->gid);
+			Building *b=teams[team]->myBuildings[id];
+			if (b
+				&& b->buildingState==Building::ALIVE
+				&& b->type->defaultUnitStayRange
+				&& b->type->zonable[WARRIOR])
+			{
+				fprintf(logFile, "ORDER_MODIFY_WAR_FLAG");
+				b->minLevelToFlag=omwf->minLevelToFlag;
+			}
+		}
+		break;
 		case ORDER_MOVE_FLAG:
 		{
 			if (!isPlayerAlive)

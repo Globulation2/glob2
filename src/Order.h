@@ -248,6 +248,25 @@ protected:
 	Uint8 *data;
 };
 
+class OrderModifyWarFlag:public OrderModify
+{
+public:
+	OrderModifyWarFlag(const Uint8 *data, int dataLength);
+	OrderModifyWarFlag(Uint16 gid, Uint16 minLevelToFlag);
+	virtual ~OrderModifyWarFlag(void);
+
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return 4; }
+	Uint8 getOrderType(void) { return ORDER_MODIFY_WAR_FLAG; }
+
+	Uint16 gid;
+	Uint16 minLevelToFlag;
+
+protected:
+	Uint8 data[4];
+};
+
 class OrderMoveFlag:public OrderModify
 {
 public:

@@ -59,7 +59,7 @@ bool BaseTeam::load(SDL_RWops *stream, Sint32 versionMinor)
 	SDL_RWread(stream, &colorB, 1, 1);
 	SDL_RWread(stream, &colorPAD, 1, 1);
 	playersMask=SDL_ReadBE32(stream);
-	if(!race.load(stream))
+	if(!race.load(stream, versionMinor))
 		return false;
 	return true;
 }
@@ -558,7 +558,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		int x=unit->posX;
 		int y=unit->posY;
-		int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+		int timeLeft=unit->hungry/race.hungryness;
 		Building *choosen=NULL;
 		int minDist=INT_MAX;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
@@ -577,7 +577,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		int x=unit->posX;
 		int y=unit->posY;
-		int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+		int timeLeft=unit->hungry/race.hungryness;
 		bool canSwim=unit->performance[SWIM];
 		Building *choosen=NULL;
 		int minDist=INT_MAX;
@@ -815,7 +815,7 @@ Building *Team::findBestFoodable(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	int r=unit->caryedRessource;
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
 	bool canSwim=unit->performance[SWIM];
 	
 	if (r!=-1)
@@ -888,7 +888,7 @@ Building *Team::findBestFillable(Unit *unit)
 	int actLevel=unit->level[HARVEST];
 	assert(!unit->performance[FLY]);
 	bool canSwim=unit->performance[SWIM];
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
 	
 	if (r!=-1)
 	{
@@ -1058,55 +1058,71 @@ Building *Team::findBestZonable(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	bool canSwim=unit->performance[SWIM];
-	std::list<Building *> bl;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.hungryness;
 	switch (unit->typeNum)
 	{
 		case WORKER:
-			bl=zonableWorkers[canSwim];
+			for (std::list<Building *>::iterator bi=zonableWorkers[canSwim].begin(); bi!=zonableWorkers[canSwim].end(); ++bi)
+			{
+				Building *b=(*bi);
+				int buildingDist;
+				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+				{
+					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+					}
+				}
+			}
 		break;
+		
 		case EXPLORER:
-			bl=zonableExplorer;
+			for (std::list<Building *>::iterator bi=zonableExplorer.begin(); bi!=zonableExplorer.end(); ++bi)
+			{
+				Building *b=(*bi);
+				double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y));
+				if ((int)buildingDist<timeLeft)
+				{
+					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+					}
+				}
+			}
 		break;
+		
 		case WARRIOR:
-			bl=zonableWarrior;
+			int level;
+			if (unit->level[ATTACK_SPEED]>unit->level[ATTACK_STRENGTH])
+				level=unit->level[ATTACK_SPEED];
+			else
+				level=unit->level[ATTACK_STRENGTH];
+			for (std::list<Building *>::iterator bi=zonableWarrior.begin(); bi!=zonableWarrior.end(); ++bi)
+			{
+				Building *b=(*bi);
+				if (b->minLevelToFlag<=level)
+				{
+					int buildingDist;
+					if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+					{
+						double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+						if (newScore<score)
+						{
+							choosen=b;
+							score=newScore;
+						}
+					}
+				}
+			}
 		break;
+		
 		default:
 			assert(false);
 	}
-	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
-	
-	if (unit->performance[FLY])
-	{
-		for (std::list<Building *>::iterator bi=bl.begin(); bi!=bl.end(); ++bi)
-		{
-			Building *b=(*bi);
-			double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y));
-			if ((int)buildingDist<timeLeft)
-			{
-				double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
-				if (newScore<score)
-				{
-					choosen=b;
-					score=newScore;
-				}
-			}
-		}
-	}
-	else
-		for (std::list<Building *>::iterator bi=bl.begin(); bi!=bl.end(); ++bi)
-		{
-			Building *b=(*bi);
-			int buildingDist;
-			if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
-			{
-				double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
-				if (newScore<score)
-				{
-					choosen=b;
-					score=newScore;
-				}
-			}
-		}
 	return choosen;
 }
 

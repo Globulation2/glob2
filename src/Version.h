@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 32
+#define VERSION_MINOR 34
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -46,5 +46,7 @@
 // version 30 *added version for AI implementations*
 // version 31 changed saved files signatures in Game.
 // version 32 add more stats to end of game stats (total HP, attack Power, defense Power)
+// version 33 added Building::minLevelToFlag to allow to request a minimum level of warriors in war flags.
+// version 34 added Race::hungryness to have it cleaner.
 
 #endif

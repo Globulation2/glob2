@@ -553,7 +553,7 @@ void Unit::handleMedical(void)
 	
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
-	hungry-=race->unitTypes[0][0].hungryness;
+	hungry-=race->hungryness;
 	if (hungry<=0)
 		hp--;
 	
@@ -1012,7 +1012,7 @@ void Unit::handleDisplacement(void)
 					if (goodToTake)
 					{
 						int foreignBuildingDist;
-						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
+						int timeLeft=(hungry-trigHungry)/race->hungryness;
 						if (owner->map->buildingAvailable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
 							&& (foreignBuildingDist<(timeLeft>>1)))
 						{
@@ -1118,7 +1118,7 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
-						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
+						int timeLeft=(hungry-trigHungry)/race->hungryness;
 						
 						if (timeLeft>0)
 						{

@@ -84,6 +84,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new OrderModifyClearingFlag(netData+1, netDataLength-1);
 	}
+	case ORDER_MODIFY_WAR_FLAG:
+	{
+		return new OrderModifyWarFlag(netData+1, netDataLength-1);
+	}
 	case ORDER_MOVE_FLAG:
 	{
 		return new OrderMoveFlag(netData+1, netDataLength-1);
@@ -498,6 +502,42 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength)
 	for (int i=0; i<BASIC_COUNT; i++)
 		clearingRessources[i]=(bool)getUint8(data, 2+i);
 	
+	return true;
+}
+
+// OrderModifyWarFlag' code
+
+OrderModifyWarFlag::OrderModifyWarFlag(const Uint8 *data, int dataLength)
+:OrderModify()
+{
+	assert(dataLength==4);
+	bool good=setData(data, dataLength);
+	assert(good);
+}
+
+OrderModifyWarFlag::OrderModifyWarFlag(Uint16 gid, Uint16 minLevelToFlag)
+{
+	this->gid=gid;
+	this->minLevelToFlag=minLevelToFlag;
+}
+
+OrderModifyWarFlag::~OrderModifyWarFlag(void)
+{
+}
+
+Uint8 *OrderModifyWarFlag::getData(void)
+{
+	addUint16(data, gid, 0);
+	addUint16(data, minLevelToFlag, 2);
+	return data;
+}
+
+bool OrderModifyWarFlag::setData(const Uint8 *data, int dataLength)
+{
+	if (dataLength!=getDataLength())
+		return false;
+	this->gid=getUint16(data, 0);
+	this->minLevelToFlag=getUint16(data, 2);
 	return true;
 }
 
