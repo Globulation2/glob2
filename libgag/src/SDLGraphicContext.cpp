@@ -734,10 +734,10 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 	if (!surface)
 		return;
 
-	if ((x-r > clipRect.x+clipRect.w)
-		|| (x+r < clipRect.x)
-		|| (y-r > clipRect.y+clipRect.h)
-		|| (y+r < clipRect.y))
+	if ((x-ray > clipRect.x+clipRect.w)
+		|| (x+ray < clipRect.x)
+		|| (y-ray > clipRect.y+clipRect.h)
+		|| (y+ray < clipRect.y))
 		return;
 
 	// LINE version
