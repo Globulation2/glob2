@@ -28,10 +28,21 @@
 #include "Order.h"
 #include "Brush.h"
 
+namespace GAGCore
+{
+	class Font;
+}
+using namespace GAGCore;
+
+namespace GAGGUI
+{
+	class OverlayScreen;
+}
+using namespace GAGGUI;
+
 class TeamStats;
-class OverlayScreen;
 class InGameTextInput;
-class Font;
+
 
 //! max unit working at a building
 #define MAX_UNIT_WORKING 20

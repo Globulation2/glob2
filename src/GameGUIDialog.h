@@ -21,9 +21,12 @@
 #define __GAME_GUI_DIALOG_H
 
 #include <GUIBase.h>
-
-class OnOffButton;
-class Selector;
+using namespace GAGGUI;
+namespace GAGGUI
+{
+	class OnOffButton;
+	class Selector;
+}
 class GameGUI;
 
 class InGameMainScreen:public OverlayScreen

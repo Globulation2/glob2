@@ -18,7 +18,7 @@
 */
 
 #include "MultiplayersJoin.h"
-#include "GAG.h"
+#include <GAG.h>
 #include "NetDefine.h"
 #include "Marshaling.h"
 #include "Utilities.h"

@@ -54,308 +54,356 @@
 //#define DBG_VPATH_OPEN
 //#define DBG_VPATH_LIST
 
-
-FileManager::FileManager(const char *gameName)
+namespace GAGCore
 {
-	#ifndef WIN32
-	std::string gameLocal(getenv("HOME"));
-	gameLocal += "/.";
-	gameLocal += gameName;
-	mkdir(gameLocal.c_str(), S_IRWXU);
-	addDir(gameLocal.c_str());
-	#endif
-	addDir(".");
-	addDir(PACKAGE_DATA_DIR);
-	addDir(PACKAGE_SOURCE_DIR);
-	fileListIndex = -1;
-}
-
-FileManager::~FileManager()
-{
-	dirList.clear();
-	clearFileList();
-}
-
-void FileManager::clearFileList(void)
-{
-	fileList.clear();
-	fileListIndex = -1;
-}
-
-void FileManager::addDir(const char *dir)
-{
-	dirList.push_back(dir);
-}
-
-void FileManager::addWriteSubdir(const char *subdir)
-{
-	for (size_t i = 0; i < dirList.size(); i++)
+	FileManager::FileManager(const char *gameName)
 	{
-		std::string toCreate(dirList[i]);
-		toCreate += '/';
-		toCreate += subdir;
-		#ifdef WIN32
-		int result = _mkdir(toCreate.c_str());
-		#else
-		int result = mkdir(toCreate.c_str(), S_IRWXU);
+		#ifndef WIN32
+		std::string gameLocal(getenv("HOME"));
+		gameLocal += "/.";
+		gameLocal += gameName;
+		mkdir(gameLocal.c_str(), S_IRWXU);
+		addDir(gameLocal.c_str());
 		#endif
-		// NOTE : We only want to create the subdir for the first index
-// 		if (result==0)
-			break;
-		if ((result==-1) && (errno==EEXIST))
-			break;
-	}
-}
-
-SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
-{
-	if (strchr(mode, 'w'))
-	{
-		std::string backupName(filename);
-		backupName += '~';
-		rename(filename, backupName.c_str());
-	}
-	return SDL_RWFromFile(filename, mode);
-}
-
-FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
-{
-	if (strchr(mode, 'w'))
-	{
-		std::string backupName(filename);
-		backupName += '~';
-		rename(filename, backupName.c_str());
-	}
-	return fopen(filename, mode);
-}
-
-SDL_RWops *FileManager::open(const char *filename, const char *mode)
-{
-	for (size_t i = 0; i < dirList.size(); ++i)
-	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += filename;
-
-		SDL_RWops *fp =  openWithbackup(path.c_str(), mode);
-		if (fp)
-			return fp;
-	}
-
-	#ifdef DBG_VPATH_OPEN
-	std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-	std::cerr << "Searched path :\n";
-	for (size_t i = 0; i < dirList.size(); ++i)
-		std::cerr << dirList[i] << "\n";
-	std::cerr << std::endl;
-	#endif
-
-	return NULL;
-}
-
-
-FILE *FileManager::openFP(const char *filename, const char *mode)
-{
-	for (size_t i = 0; i < dirList.size(); ++i)
-	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += filename;
-		
-		FILE *fp =  openWithbackupFP(path.c_str(), mode);
-		if (fp)
-			return fp;
-	}
-
-	#ifdef DBG_VPATH_OPEN
-	std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-	std::cerr << "Searched path :\n";
-	for (size_t i = 0; i < dirList.size(); ++i)
-		std::cerr << dirList[i] << "\n";
-	std::cerr << std::endl;
-	#endif
-
-	return NULL;
-}
-
-std::ifstream *FileManager::openIFStream(const std::string &fileName)
-{
-	for (size_t i = 0; i < dirList.size(); ++i)
-	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += fileName;
-
-		std::ifstream *fp = new std::ifstream(path.c_str());
-		if (fp->good())
-			return fp;
-		else
-			delete fp;
+		addDir(".");
+		addDir(PACKAGE_DATA_DIR);
+		addDir(PACKAGE_SOURCE_DIR);
+		fileListIndex = -1;
 	}
 	
-	#ifdef DBG_VPATH_OPEN
-	std::cerr << "GAG : File " << fileName << " not found by std::ifstream\n";
-	std::cerr << "Searched path :\n";
-	for (size_t i = 0; i < dirList.size(); ++i)
-		std::cerr << dirList[i] << "\n";
-	std::cerr << std::endl;
-	#endif
+	FileManager::~FileManager()
+	{
+		dirList.clear();
+		clearFileList();
+	}
 	
-	return NULL;
-}
-
-Uint32 FileManager::checksum(const char *filename)
-{
-	Uint32 cs = 0;
-	SDL_RWops *stream = open(filename);
-	if (stream)
+	void FileManager::clearFileList(void)
 	{
-		int length = SDL_RWseek(stream, 0, SEEK_END);
-		SDL_RWseek(stream, 0, SEEK_SET);
+		fileList.clear();
+		fileListIndex = -1;
+	}
+	
+	void FileManager::addDir(const char *dir)
+	{
+		dirList.push_back(dir);
+	}
+	
+	void FileManager::addWriteSubdir(const char *subdir)
+	{
+		for (size_t i = 0; i < dirList.size(); i++)
+		{
+			std::string toCreate(dirList[i]);
+			toCreate += '/';
+			toCreate += subdir;
+			#ifdef WIN32
+			int result = _mkdir(toCreate.c_str());
+			#else
+			int result = mkdir(toCreate.c_str(), S_IRWXU);
+			#endif
+			// NOTE : We only want to create the subdir for the first index
+	// 		if (result==0)
+				break;
+			if ((result==-1) && (errno==EEXIST))
+				break;
+		}
+	}
+	
+	SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
+	{
+		if (strchr(mode, 'w'))
+		{
+			std::string backupName(filename);
+			backupName += '~';
+			rename(filename, backupName.c_str());
+		}
+		return SDL_RWFromFile(filename, mode);
+	}
+	
+	FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
+	{
+		if (strchr(mode, 'w'))
+		{
+			std::string backupName(filename);
+			backupName += '~';
+			rename(filename, backupName.c_str());
+		}
+		return fopen(filename, mode);
+	}
+	
+	OutputStream *FileManager::openOutputStream(const char *filename)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			
+			FILE *fp = openWithbackupFP(path.c_str(), "wb");
+			if (fp)
+				return new BinaryFileStream(fp);
+		}
+	
+		#ifdef DBG_VPATH_OPEN
+		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+		std::cerr << "Searched path :\n";
+		for (size_t i = 0; i < dirList.size(); ++i)
+			std::cerr << dirList[i] << "\n";
+		std::cerr << std::endl;
+		#endif
+	
+		return NULL;
+	}
+	
+	InputStream *FileManager::openInputStream(const char *filename)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			
+			FILE *fp = fopen(path.c_str(), "rb");
+			if (fp)
+				return new BinaryFileStream(fp);
+		}
+	
+		#ifdef DBG_VPATH_OPEN
+		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+		std::cerr << "Searched path :\n";
+		for (size_t i = 0; i < dirList.size(); ++i)
+			std::cerr << dirList[i] << "\n";
+		std::cerr << std::endl;
+		#endif
+	
+		return NULL;
+	}
+	
+	SDL_RWops *FileManager::open(const char *filename, const char *mode)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+	
+			SDL_RWops *fp =  openWithbackup(path.c_str(), mode);
+			if (fp)
+				return fp;
+		}
+	
+		#ifdef DBG_VPATH_OPEN
+		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+		std::cerr << "Searched path :\n";
+		for (size_t i = 0; i < dirList.size(); ++i)
+			std::cerr << dirList[i] << "\n";
+		std::cerr << std::endl;
+		#endif
+	
+		return NULL;
+	}
+	
+	FILE *FileManager::openFP(const char *filename, const char *mode)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			
+			FILE *fp = openWithbackupFP(path.c_str(), mode);
+			if (fp)
+				return fp;
+		}
+	
+		#ifdef DBG_VPATH_OPEN
+		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+		std::cerr << "Searched path :\n";
+		for (size_t i = 0; i < dirList.size(); ++i)
+			std::cerr << dirList[i] << "\n";
+		std::cerr << std::endl;
+		#endif
+	
+		return NULL;
+	}
+	
+	std::ifstream *FileManager::openIFStream(const std::string &fileName)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += fileName;
+	
+			std::ifstream *fp = new std::ifstream(path.c_str());
+			if (fp->good())
+				return fp;
+			else
+				delete fp;
+		}
 		
-		int lengthBlock = length & (~0x3);
-		for (int i=0; i<(lengthBlock>>2); i++)
-		{
-			cs ^= SDL_ReadBE32(stream);
-			cs = (cs<<31)|(cs>>1);
-		}
-		int lengthRest = length & 0x3;
-		for (int i=0; i<lengthRest; i++)
-		{
-			unsigned char c;
-			SDL_RWread(stream, &c, 1, 1);
-			cs ^= (static_cast<Uint32>(c))<<(8*i);
-		}
-		SDL_RWclose(stream);
-	}
-	return cs;
-}
-
-void FileManager::remove(const char *filename)
-{
-	for (size_t i = 0; i < dirList.size(); ++i)
-	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += filename;
-		std::remove(path.c_str());
-	}
-}
-
-bool FileManager::isDir(const char *filename)
-{
-	#ifdef WIN32
-	struct _stat s;
-	#else
-	struct stat s;
-	#endif
-	s.st_mode = 0;
-	int serr = 1;
-	for (size_t i = 0; (serr != 0) && (i < dirList.size()); ++i)
-	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += filename;
-		#ifdef WIN32
-		serr = ::_stat(path.c_str(), &s);
-		#else
-		serr = stat(path.c_str(), &s);
-		#endif
-	}
-	return (s.st_mode & S_IFDIR) != 0;
-}
-
-bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
-{
-	DIR *dir = opendir(realDir);
-	struct dirent *dirEntry;
-
-	if (!dir)
-	{
-		#ifdef DBG_VPATH_LIST
-		std::cerr << "GAG : Open dir failed for dir " << realDir << std::endl;
-		#endif
-		return false;
-	}
-
-	while ((dirEntry = readdir(dir))!=NULL)
-	{
-		#ifdef DBG_VPATH_LIST
-		std::cerr << realDir << std::endl;
+		#ifdef DBG_VPATH_OPEN
+		std::cerr << "GAG : File " << fileName << " not found by std::ifstream\n";
+		std::cerr << "Searched path :\n";
+		for (size_t i = 0; i < dirList.size(); ++i)
+			std::cerr << dirList[i] << "\n";
+		std::cerr << std::endl;
 		#endif
 		
-		// there might be a way to optimize the decision of the ok
-		bool ok = true;
-		// hide hidden stuff
-		if (dirEntry->d_name[0] == '.')
+		return NULL;
+	}
+	
+	Uint32 FileManager::checksum(const char *filename)
+	{
+		Uint32 cs = 0;
+		SDL_RWops *stream = open(filename);
+		if (stream)
 		{
-			ok = false;
-		}
-		// take directories if asked
-		else if (dirEntry->d_type == DT_DIR)
-		{
-			ok = dirs;
-		}
-		// check extension if provided
-		else if (extension) 
-		{
-			size_t l, nl;
-			l=strlen(extension);
-			nl=strlen(dirEntry->d_name);
-			ok = ((nl>l) &&
-			      (dirEntry->d_name[nl-l-1]=='.') &&
-			      (strcmp(extension,dirEntry->d_name+(nl-l))==0));
-		}
-		if (ok)
-		{
-			// test if name already exists in vector
-			bool alreadyIn = false;
-			for (size_t i = 0; i < fileList.size(); ++i)
+			int length = SDL_RWseek(stream, 0, SEEK_END);
+			SDL_RWseek(stream, 0, SEEK_SET);
+			
+			int lengthBlock = length & (~0x3);
+			for (int i=0; i<(lengthBlock>>2); i++)
 			{
-				if (fileList[i] == dirEntry->d_name)
+				cs ^= SDL_ReadBE32(stream);
+				cs = (cs<<31)|(cs>>1);
+			}
+			int lengthRest = length & 0x3;
+			for (int i=0; i<lengthRest; i++)
+			{
+				unsigned char c;
+				SDL_RWread(stream, &c, 1, 1);
+				cs ^= (static_cast<Uint32>(c))<<(8*i);
+			}
+			SDL_RWclose(stream);
+		}
+		return cs;
+	}
+	
+	void FileManager::remove(const char *filename)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			std::remove(path.c_str());
+		}
+	}
+	
+	bool FileManager::isDir(const char *filename)
+	{
+		#ifdef WIN32
+		struct _stat s;
+		#else
+		struct stat s;
+		#endif
+		s.st_mode = 0;
+		int serr = 1;
+		for (size_t i = 0; (serr != 0) && (i < dirList.size()); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			#ifdef WIN32
+			serr = ::_stat(path.c_str(), &s);
+			#else
+			serr = stat(path.c_str(), &s);
+			#endif
+		}
+		return (s.st_mode & S_IFDIR) != 0;
+	}
+	
+	bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
+	{
+		DIR *dir = opendir(realDir);
+		struct dirent *dirEntry;
+	
+		if (!dir)
+		{
+			#ifdef DBG_VPATH_LIST
+			std::cerr << "GAG : Open dir failed for dir " << realDir << std::endl;
+			#endif
+			return false;
+		}
+	
+		while ((dirEntry = readdir(dir))!=NULL)
+		{
+			#ifdef DBG_VPATH_LIST
+			std::cerr << realDir << std::endl;
+			#endif
+			
+			// there might be a way to optimize the decision of the ok
+			bool ok = true;
+			// hide hidden stuff
+			if (dirEntry->d_name[0] == '.')
+			{
+				ok = false;
+			}
+			// take directories if asked
+			else if (dirEntry->d_type == DT_DIR)
+			{
+				ok = dirs;
+			}
+			// check extension if provided
+			else if (extension) 
+			{
+				size_t l, nl;
+				l=strlen(extension);
+				nl=strlen(dirEntry->d_name);
+				ok = ((nl>l) &&
+					(dirEntry->d_name[nl-l-1]=='.') &&
+					(strcmp(extension,dirEntry->d_name+(nl-l))==0));
+			}
+			if (ok)
+			{
+				// test if name already exists in vector
+				bool alreadyIn = false;
+				for (size_t i = 0; i < fileList.size(); ++i)
 				{
-					alreadyIn = true;
-					break;
+					if (fileList[i] == dirEntry->d_name)
+					{
+						alreadyIn = true;
+						break;
+					}
+				}
+				if (!alreadyIn)
+				{
+					fileList.push_back(dirEntry->d_name);
 				}
 			}
-			if (!alreadyIn)
-			{
-				fileList.push_back(dirEntry->d_name);
-			}
 		}
+	
+		closedir(dir);
+		return true;
 	}
-
-	closedir(dir);
-	return true;
-}
-
-bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension, const bool dirs)
-{
-	bool result = false;
-	clearFileList();
-	for (size_t i = 0; i < dirList.size(); ++i)
+	
+	bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension, const bool dirs)
 	{
-		std::string path(dirList[i]);
-		path += DIR_SEPARATOR;
-		path += virtualDir;
-		#ifdef DBG_VPATH_LIST
-		std::cerr << "GAG : Listing from dir " << path << std::endl;
-		#endif
-		result = addListingForDir(path.c_str(), extension, dirs) || result;
+		bool result = false;
+		clearFileList();
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += virtualDir;
+			#ifdef DBG_VPATH_LIST
+			std::cerr << "GAG : Listing from dir " << path << std::endl;
+			#endif
+			result = addListingForDir(path.c_str(), extension, dirs) || result;
+		}
+		if (result)
+			fileListIndex=0;
+		else
+			fileListIndex=-1;
+		return result;
 	}
-	if (result)
-		fileListIndex=0;
-	else
-		fileListIndex=-1;
-	return result;
-}
-
-const char *FileManager::getNextDirectoryEntry(void)
-{
-	if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))
+	
+	const char *FileManager::getNextDirectoryEntry(void)
 	{
-		return fileList[fileListIndex++].c_str();
+		if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))
+		{
+			return fileList[fileListIndex++].c_str();
+		}
+		return NULL;
 	}
-	return NULL;
 }
-

@@ -23,29 +23,36 @@
 #include "GUIBase.h"
 #include <string>
 
-class Sprite;
-
-class Animation: public RectangularWidget
+namespace GAGCore
 {
-protected:
-	Uint32 duration;
-	Uint32 count;
-	Sint32 start;
-	std::string sprite;
+	class Sprite;
+}
 
-	// cache, recomputed on internalInit
-	Sprite *archPtr;
-	unsigned pos, durationLeft;
-
-public:
-	Animation() { duration=count=start=0; pos=durationLeft=0; archPtr=NULL; }
-	Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);
-	virtual ~Animation() { }
-	virtual void onTimer(Uint32 tick);
-
-protected:
-	virtual void internalInit(int x, int y, int w, int h);
-	virtual void internalRepaint(int x, int y, int w, int h);
-};
+namespace GAGGUI
+{
+	
+	class Animation: public RectangularWidget
+	{
+	protected:
+		Uint32 duration;
+		Uint32 count;
+		Sint32 start;
+		std::string sprite;
+	
+		// cache, recomputed on internalInit
+		GAGCore::Sprite *archPtr;
+		unsigned pos, durationLeft;
+	
+	public:
+		Animation() { duration=count=start=0; pos=durationLeft=0; archPtr=NULL; }
+		Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);
+		virtual ~Animation() { }
+		virtual void onTimer(Uint32 tick);
+	
+	protected:
+		virtual void internalInit(int x, int y, int w, int h);
+		virtual void internalRepaint(int x, int y, int w, int h);
+	};
+}
 
 #endif

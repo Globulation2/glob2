@@ -24,36 +24,42 @@
 #include <vector>
 #include <string>
 
-class Font;
-
-class Number: public RectangularWidget
+namespace GAGCore
 {
-protected:
-	Sint32 nth;
-	Sint32 m;
-	std::vector<int> numbers;
+	class Font;
+}
 
-	// cache, recomputed at least on paint
-	Font *fontPtr;
-	int textHeight;
-
-public:
-	Number();
-	Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font);
-	virtual ~Number();
-
-	virtual void onSDLEvent(SDL_Event *event);
-
-	void add(int number);
-	void clear(void);
-	void setNth(int nth);
-	void set(int number);
-	int getNth(void);
-	int get(void);
-
-protected:
-	virtual void internalRepaint(int x, int y, int w, int h);
-};
+namespace GAGGUI
+{
+	class Number: public RectangularWidget
+	{
+	protected:
+		Sint32 nth;
+		Sint32 m;
+		std::vector<int> numbers;
+	
+		// cache, recomputed at least on paint
+		GAGCore::Font *fontPtr;
+		int textHeight;
+	
+	public:
+		Number();
+		Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font);
+		virtual ~Number();
+	
+		virtual void onSDLEvent(SDL_Event *event);
+	
+		void add(int number);
+		void clear(void);
+		void setNth(int nth);
+		void set(int number);
+		int getNth(void);
+		int get(void);
+	
+	protected:
+		virtual void internalRepaint(int x, int y, int w, int h);
+	};
+}
 
 #endif
 

@@ -20,6 +20,12 @@
 #include "CreditScreen.h"
 #include "GlobalContainer.h"
 #include <iostream>
+#include <GUIButton.h>
+#include <GUIText.h>
+using namespace GAGGUI;
+#include <Toolkit.h>
+#include <StringTable.h>
+using namespace GAGCore;
 
 CreditScreen::CreditScreen()
 {

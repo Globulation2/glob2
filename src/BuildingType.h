@@ -26,8 +26,6 @@
 #include "UnitConsts.h"
 #include "Ressource.h"
 
-class Sprite;
-
 class BuildingType: public LoadableFromConfigFile
 {
 public:

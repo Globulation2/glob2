@@ -3,6 +3,7 @@ Toolkit.h \
 StringTable.h \
 FileManager.h \
 Types.h \
+Stream.h \
 GAG.h \
 GAGSys.h \
 GUIBase.h \

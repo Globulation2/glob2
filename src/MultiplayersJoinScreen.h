@@ -23,10 +23,14 @@
 #include "SessionConnection.h"
 #include "MultiplayersJoin.h"
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class Text;
-class TextInput;
-class List;
+namespace GAGGUI
+{
+	class Text;
+	class TextInput;
+	class List;
+}
 
 class MultiplayersJoinScreen:public Screen
 {

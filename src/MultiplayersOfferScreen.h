@@ -21,6 +21,7 @@
 #define __MULTIPLAYERS_OFFER_SCREEN_H
 
 #include <GUIBase.h>
+using namespace GAGGUI;
 
 class MultiplayersOfferScreen:public Screen
 {

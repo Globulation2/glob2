@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-#include "GAG.h"
+#include <GAG.h>
 #include "Game.h"
 #include "GameGUILoadSave.h"
 #include "GlobalContainer.h"
@@ -512,7 +512,7 @@ void MapEdit::paintCoordinates(int mx, int my)
 				game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);
 
 		}
-		std::string s(GAG::nsprintf("(%d,%d)", px, py));
+		std::string s(GAGCore::nsprintf("(%d,%d)", px, py));
 		int w=font->getStringWidth(s.c_str());
 		int x=baseX+64-w/2;
 		globalContainer->gfx->drawString(x, y, font, s.c_str());

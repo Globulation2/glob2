@@ -24,37 +24,39 @@
 #include "GUIList.h"
 #include <string>
 
-class FileList: public List
+namespace GAGGUI
 {
-protected:
-	std::string dir;
-	std::string extension;
-	bool recurse;
-	std::string current;
-
-public:
-	FileList():List() { }
-	FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
-					 const char *dir,
-					 const char *extension=NULL, const bool recurse=false);
-	virtual ~FileList();
-
-	//! converts file name to displayed name (default removes .extension)
-	virtual const char* fileToList(const char* fileName) const;
-	//! converts displayed name to file constname (default appends .extension)
-	virtual const char* listToFile(const char* listName) const;
-	//! returns the current full directory name (dir/current)
-	const char* fullDir() const;
-	//! returns the full file name (by prepending fullDir()/)
-	const char* fullName(const char* fileName) const;
-
-	//! Sorts the list (puts directories first)
-	virtual void sort(void); 
-
-public:
-	void generateList();
-	void selectionChanged();
-};
-
+	class FileList: public List
+	{
+	protected:
+		std::string dir;
+		std::string extension;
+		bool recurse;
+		std::string current;
+	
+	public:
+		FileList():List() { }
+		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+						const char *dir,
+						const char *extension=NULL, const bool recurse=false);
+		virtual ~FileList();
+	
+		//! converts file name to displayed name (default removes .extension)
+		virtual const char* fileToList(const char* fileName) const;
+		//! converts displayed name to file constname (default appends .extension)
+		virtual const char* listToFile(const char* listName) const;
+		//! returns the current full directory name (dir/current)
+		const char* fullDir() const;
+		//! returns the full file name (by prepending fullDir()/)
+		const char* fullName(const char* fileName) const;
+	
+		//! Sorts the list (puts directories first)
+		virtual void sort(void); 
+	
+	public:
+		void generateList();
+		void selectionChanged();
+	};
+}
 
 #endif

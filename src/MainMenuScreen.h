@@ -20,7 +20,13 @@
 #ifndef __MAIN_MENU_SCREEN_H
 #define __MAIN_MENU_SCREEN_H
 
-#include "GAG.h"
+#include <GUIBase.h>
+namespace GAGCore
+{
+	class DrawableSurface;
+}
+using namespace GAGCore;
+using namespace GAGGUI;
 
 class MainMenuScreen:public Screen
 {

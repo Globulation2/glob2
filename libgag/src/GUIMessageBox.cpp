@@ -24,101 +24,106 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-class MessageBoxScreen:public OverlayScreen
+using namespace GAGCore;
+
+namespace GAGGUI
 {
-public:
-	MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
-	virtual ~MessageBoxScreen() { }
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-};
-
-MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
-:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
-{
-	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
-
-	int dec;
-	if (titleWidth>totCaptionWidth)
-		dec=20+((titleWidth-totCaptionWidth)>>1);
-	else
-		dec=20;
-	for (int i=0; i<captionCount; i++)
+	class MessageBoxScreen:public OverlayScreen
 	{
-		addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, font, captionArray[i], i));
-		dec+=20 + captionWidth[i];
-	}
-}
-
-void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if (action==BUTTON_PRESSED)
-		endValue=par1;
-}
-
-int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
-{
-	// for passing captions to class
-	const char *captionArray[3]={
-		caption1,
-		caption2,
-		caption3 };
-
-	int captionWidth[3];
-	memset(captionWidth, 0, sizeof(captionWidth));
-	Font *fontPtr=Toolkit::getFont(font);
-
-	// compute number of caption
-	unsigned captionCount;
-	if (caption3!=NULL)
+	public:
+		MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
+		virtual ~MessageBoxScreen() { }
+		virtual void onAction(Widget *source, Action action, int par1, int par2);
+	};
+	
+	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
+	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
 	{
-		captionCount = 3;
-		captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+10;
-		captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
-		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
-	}
-	else if (caption2!=NULL)
-	{
-		captionCount = 2;
-		captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
-		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
-	}
-	else
-	{
-		captionCount = 1;
-		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
-	}
-
-	int totCaptionWidth = captionWidth[0]+captionWidth[1]+captionWidth[2]+(captionCount-1)*20+40;
-	int titleWidth =  fontPtr->getStringWidth(title)+10;
-
-	MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
-
-	mbs->dispatchPaint(mbs->getSurface());
-
-	// save screen
-	parentCtx->setClipRect();
-
-	SDL_Event event;
-	while(mbs->endValue<0)
-	{
-		while (SDL_PollEvent(&event))
+		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
+	
+		int dec;
+		if (titleWidth>totCaptionWidth)
+			dec=20+((titleWidth-totCaptionWidth)>>1);
+		else
+			dec=20;
+		for (int i=0; i<captionCount; i++)
 		{
-			if (event.type==SDL_QUIT)
-				break;
-			mbs->translateAndProcessEvent(&event);
+			addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, font, captionArray[i], i));
+			dec+=20 + captionWidth[i];
 		}
-		parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
-		parentCtx->updateRect(mbs->decX, mbs->decY, mbs->getW(), mbs->getH());
 	}
-
-	int retVal;
-	if (mbs->endValue>=0)
-		retVal=mbs->endValue;
-	else
-		retVal=-1;
-
-	// clean up
-	delete mbs;
-
-	return retVal;
+	
+	void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par2)
+	{
+		if (action==BUTTON_PRESSED)
+			endValue=par1;
+	}
+	
+	int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
+	{
+		// for passing captions to class
+		const char *captionArray[3]={
+			caption1,
+			caption2,
+			caption3 };
+	
+		int captionWidth[3];
+		memset(captionWidth, 0, sizeof(captionWidth));
+		Font *fontPtr=Toolkit::getFont(font);
+	
+		// compute number of caption
+		unsigned captionCount;
+		if (caption3!=NULL)
+		{
+			captionCount = 3;
+			captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+10;
+			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+		}
+		else if (caption2!=NULL)
+		{
+			captionCount = 2;
+			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+		}
+		else
+		{
+			captionCount = 1;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+		}
+	
+		int totCaptionWidth = captionWidth[0]+captionWidth[1]+captionWidth[2]+(captionCount-1)*20+40;
+		int titleWidth =  fontPtr->getStringWidth(title)+10;
+	
+		MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
+	
+		mbs->dispatchPaint(mbs->getSurface());
+	
+		// save screen
+		parentCtx->setClipRect();
+	
+		SDL_Event event;
+		while(mbs->endValue<0)
+		{
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type==SDL_QUIT)
+					break;
+				mbs->translateAndProcessEvent(&event);
+			}
+			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
+			parentCtx->updateRect(mbs->decX, mbs->decY, mbs->getW(), mbs->getH());
+		}
+	
+		int retVal;
+		if (mbs->endValue>=0)
+			retVal=mbs->endValue;
+		else
+			retVal=-1;
+	
+		// clean up
+		delete mbs;
+	
+		return retVal;
+	}
 }

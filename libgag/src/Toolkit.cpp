@@ -25,110 +25,113 @@
 #include <iostream>
 #include "TrueTypeFont.h"
 
-Toolkit::SpriteMap Toolkit::spriteMap;
-Toolkit::FontMap Toolkit::fontMap;
-FileManager *Toolkit::fileManager = NULL;
-StringTable *Toolkit::strings = NULL;
-GraphicContext *Toolkit::gc = NULL;
-
-void Toolkit::init(const char *gameName)
+namespace GAGCore
 {
-	if (!fileManager)
-	{
-		fileManager = new FileManager(gameName);
-		strings = new StringTable();
-	}
-	else
-		assert(false);
-}
-
-void Toolkit::initGraphic(void)
-{
-	gc = new GraphicContext();
-}
-
-void Toolkit::close(void)
-{
-	for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
-		delete (*it).second;
-	spriteMap.clear();
-	for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
-		delete (*it).second;
-	fontMap.clear();
+	Toolkit::SpriteMap Toolkit::spriteMap;
+	Toolkit::FontMap Toolkit::fontMap;
+	FileManager *Toolkit::fileManager = NULL;
+	StringTable *Toolkit::strings = NULL;
+	GraphicContext *Toolkit::gc = NULL;
 	
-	if (fileManager)
+	void Toolkit::init(const char *gameName)
 	{
-		delete fileManager;
-		fileManager = NULL;
-		delete strings;
-		strings = NULL;
-	}
-	
-	if (gc)
-	{
-		delete gc;
-		gc = NULL;
-	}
-}
-
-Sprite *Toolkit::getSprite(const char *name)
-{
-	if (spriteMap.find(name) == spriteMap.end())
-	{
-		Sprite *sprite = new Sprite();
-		if (sprite->load(name))
+		if (!fileManager)
 		{
-			spriteMap[std::string(name)] = sprite;
+			fileManager = new FileManager(gameName);
+			strings = new StringTable();
+		}
+		else
+			assert(false);
+	}
+	
+	void Toolkit::initGraphic(void)
+	{
+		gc = new GraphicContext();
+	}
+	
+	void Toolkit::close(void)
+	{
+		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
+			delete (*it).second;
+		spriteMap.clear();
+		for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
+			delete (*it).second;
+		fontMap.clear();
+		
+		if (fileManager)
+		{
+			delete fileManager;
+			fileManager = NULL;
+			delete strings;
+			strings = NULL;
+		}
+		
+		if (gc)
+		{
+			delete gc;
+			gc = NULL;
+		}
+	}
+	
+	Sprite *Toolkit::getSprite(const char *name)
+	{
+		if (spriteMap.find(name) == spriteMap.end())
+		{
+			Sprite *sprite = new Sprite();
+			if (sprite->load(name))
+			{
+				spriteMap[std::string(name)] = sprite;
+			}
+			else
+			{
+				delete sprite;
+				std::cerr << "GAG : Can't load sprite " << name << std::endl;
+				return NULL;
+			}
+		}
+		return spriteMap[std::string(name)];
+	}
+	
+	void Toolkit::releaseSprite(const char *name)
+	{
+		SpriteMap::iterator it = spriteMap.find(std::string(name));
+		assert(it!=spriteMap.end());
+		delete (*it).second;
+		spriteMap.erase(it);
+	}
+	
+	void Toolkit::loadFont(const char *filename, unsigned size, const char *name)
+	{
+		TrueTypeFont *ttf = new TrueTypeFont();
+		if (ttf->load(filename, size))
+		{
+			Toolkit::fontMap[std::string(name)] = ttf;
 		}
 		else
 		{
-			delete sprite;
-			std::cerr << "GAG : Can't load sprite " << name << std::endl;
-			return NULL;
+			delete ttf;
+			std::cerr << "GAG : Can't load font " << name << " with size " << size << " from " << filename << std::endl;
 		}
 	}
-	return spriteMap[std::string(name)];
-}
-
-void Toolkit::releaseSprite(const char *name)
-{
-	SpriteMap::iterator it = spriteMap.find(std::string(name));
-	assert(it!=spriteMap.end());
-	delete (*it).second;
-	spriteMap.erase(it);
-}
-
-void Toolkit::loadFont(const char *filename, unsigned size, const char *name)
-{
-	TrueTypeFont *ttf = new TrueTypeFont();
-	if (ttf->load(filename, size))
+	
+	Font *Toolkit::getFont(const char *name)
 	{
-		Toolkit::fontMap[std::string(name)] = ttf;
+		if (fontMap.find(name) == fontMap.end())
+		{
+			std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
+			assert(false);
+			return NULL;
+		}
+		return fontMap[std::string(name)];
 	}
-	else
+	
+	void Toolkit::releaseFont(const char *name)
 	{
-		delete ttf;
-		std::cerr << "GAG : Can't load font " << name << " with size " << size << " from " << filename << std::endl;
+		FontMap::iterator it = fontMap.find(std::string(name));
+		assert(it!=fontMap.end());
+		delete (*it).second;
+		fontMap.erase(it);
 	}
-}
-
-Font *Toolkit::getFont(const char *name)
-{
-	if (fontMap.find(name) == fontMap.end())
-	{
-		std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
-		assert(false);
-		return NULL;
-	}
-	return fontMap[std::string(name)];
-}
-
-void Toolkit::releaseFont(const char *name)
-{
-	FontMap::iterator it = fontMap.find(std::string(name));
-	assert(it!=fontMap.end());
-	delete (*it).second;
-	fontMap.erase(it);
 }
 
 

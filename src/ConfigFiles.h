@@ -22,6 +22,7 @@
 
 #include <Toolkit.h>
 #include <FileManager.h>
+using namespace GAGCore;
 #include <vector>
 #include <map>
 #include <sstream>

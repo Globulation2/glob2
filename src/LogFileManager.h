@@ -24,7 +24,11 @@
 #include <string>
 #include <map>
 
-class FileManager;
+namespace GAGCore
+{
+	class FileManager;
+}
+using namespace GAGCore;
 
 /*!
 The LogFileManager is an utility class. It's designed to have only one instance per programm.

@@ -24,51 +24,57 @@
 #include <vector>
 #include <string>
 
-class Font;
-
-class TextArea:public RectangularWidget
+namespace GAGCore
 {
-public:
-	TextArea() { font=NULL; }
-	TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
-	virtual ~TextArea();
+	class Font;
+}
 
-	virtual void paint(void);
-	virtual void onSDLEvent(SDL_Event *event);
-
-	virtual void setText(const char *text);
-	virtual const char *getText(void) { return text.c_str(); }
-	virtual void addText(const char *text);
-	virtual void addChar(const char c);
-	virtual void remText(unsigned pos, unsigned len);
-	virtual void scrollDown(void);
-	virtual void scrollUp(void);
-	virtual void scrollToBottom(void);
-	virtual void setCursorPos(unsigned pos);
-
-protected:
-	virtual void internalPaint(void);
-	virtual void layout(void);
-	virtual void repaint(void);
-	//! we make sure the repaint will show something correct
-	virtual void computeAndRepaint(void);
-
-protected:
-	bool readOnly;
-	Font *font;
-	size_t areaHeight;
-	size_t areaPos;
-	unsigned int charHeight;
-	std::vector <size_t> lines;
-	std::string text;
+namespace GAGGUI
+{
+	class TextArea:public RectangularWidget
+	{
+	public:
+		TextArea() { font=NULL; }
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
+		virtual ~TextArea();
 	
-	// edit mod variables
-	// this one is the only one always valid, other are recomputed from it
-	size_t cursorPos;
-	// this one can be invalid, but must be within textBufferLength
-	size_t cursorPosY;
-	// this one can be anything
-	unsigned int cursorScreenPosY;
-};
+		virtual void paint(void);
+		virtual void onSDLEvent(SDL_Event *event);
+	
+		virtual void setText(const char *text);
+		virtual const char *getText(void) { return text.c_str(); }
+		virtual void addText(const char *text);
+		virtual void addChar(const char c);
+		virtual void remText(unsigned pos, unsigned len);
+		virtual void scrollDown(void);
+		virtual void scrollUp(void);
+		virtual void scrollToBottom(void);
+		virtual void setCursorPos(unsigned pos);
+	
+	protected:
+		virtual void internalPaint(void);
+		virtual void layout(void);
+		virtual void repaint(void);
+		//! we make sure the repaint will show something correct
+		virtual void computeAndRepaint(void);
+	
+	protected:
+		bool readOnly;
+		GAGCore::Font *font;
+		size_t areaHeight;
+		size_t areaPos;
+		unsigned int charHeight;
+		std::vector <size_t> lines;
+		std::string text;
+		
+		// edit mod variables
+		// this one is the only one always valid, other are recomputed from it
+		size_t cursorPos;
+		// this one can be invalid, but must be within textBufferLength
+		size_t cursorPosY;
+		// this one can be anything
+		unsigned int cursorScreenPosY;
+	};
+}
 
 #endif

@@ -23,14 +23,18 @@
 #include "AI.h"
 #include "Session.h"
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class Button;
-class MapPreview;
-class OnOffButton;
-class ColorButton;
-class MultiTextButton;
-class Text;
+namespace GAGGUI
+{
+	class Button;
+	class OnOffButton;
+	class ColorButton;
+	class MultiTextButton;
+	class Text;
+}
 class Glob2FileList;
+class MapPreview;
 
 class CustomGameScreen:public Screen
 {

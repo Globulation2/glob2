@@ -25,99 +25,95 @@
 #include <GraphicContext.h>
 #include <algorithm>
 
-Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
+using namespace GAGCore;
+
+namespace GAGGUI
 {
-	this->x=x;
-	this->y=y;
-	this->hAlignFlag=hAlign;
-	this->vAlignFlag=vAlign;
-
-	this->font=font;
-	this->text=text;
-
-	internalInit(0, 0, 0, 0);
-	assert(fontPtr);
-	assert(text);
-	if ((w) || (hAlignFlag==ALIGN_FILL))
+	Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
 	{
-		this->w=w;
-		keepW=true;
+		this->x=x;
+		this->y=y;
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+	
+		this->font=font;
+		this->text=text;
+	
+		internalInit(0, 0, 0, 0);
+		assert(fontPtr);
+		assert(text);
+		if ((w) || (hAlignFlag==ALIGN_FILL))
+		{
+			this->w=w;
+			keepW=true;
+		}
+		else
+		{
+			this->w=fontPtr->getStringWidth(text);
+			keepW=false;
+		}
+	
+		if ((h) || (vAlignFlag==ALIGN_FILL))
+		{
+			this->h=h;
+			keepH=true;
+		}
+		else
+		{
+			this->h=fontPtr->getStringHeight(text);
+			keepH=false;
+		}
 	}
-	else
+	
+	void Text::setText(const char *newText)
 	{
-		this->w=fontPtr->getStringWidth(text);
-		keepW=false;
-	}
-
-	if ((h) || (vAlignFlag==ALIGN_FILL))
-	{
-		this->h=h;
-		keepH=true;
-	}
-	else
-	{
-		this->h=fontPtr->getStringHeight(text);
-		keepH=false;
-	}
-}
-
-void Text::setText(const char *newText)
-{
-/*	va_list arglist;
-	char output[1024];
-
-	// handle printf-like outputs
-	va_start(arglist, newText);
-	vsnprintf(output, 1024, newText, arglist);
-	va_end(arglist);
-	output[1023]=0;
-*/
-	if (this->text != newText)
-	{
-		if (!keepW)
-			w = std::max<int>(w, fontPtr->getStringWidth(newText));
-		if (!keepH)
-			h = std::max<int>(h, fontPtr->getStringHeight(newText));
+		if (this->text != newText)
+		{
+			if (!keepW)
+				w = std::max<int>(w, fontPtr->getStringWidth(newText));
+			if (!keepH)
+				h = std::max<int>(h, fontPtr->getStringHeight(newText));
+			
+			// copy text
+			this->text = newText;
 		
-		// copy text
-		this->text = newText;
-	
-		repaint();
-	
-		if (!keepW)
-			w = fontPtr->getStringWidth(newText);
-		if (!keepH)
-			h = fontPtr->getStringHeight(newText);
-		parent->onAction(this, TEXT_SET, 0, 0);
+			repaint();
+		
+			if (!keepW)
+				w = fontPtr->getStringWidth(newText);
+			if (!keepH)
+				h = fontPtr->getStringHeight(newText);
+			parent->onAction(this, TEXT_SET, 0, 0);
+		}
 	}
-}
-
-void Text::setStyle(Font::Style style)
-{
-	this->style = style;
-}
-
-void Text::internalRepaint(int x, int y, int w, int h)
-{
-	int wDec, hDec;
-
-	if (hAlignFlag==ALIGN_FILL)
-		wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;
-	else
-		wDec=0;
-
-	if (vAlignFlag==ALIGN_FILL)
-		hDec=(h-fontPtr->getStringHeight(text.c_str(), style.shape))>>1;
-	else
-		hDec=0;
-
-	parent->getSurface()->pushFontStyle(fontPtr, style);
-	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
-	parent->getSurface()->popFontStyle(fontPtr);
-}
-
-void Text::internalInit(int x, int y, int w, int h)
-{
-	fontPtr = Toolkit::getFont(font.c_str());
-	assert(fontPtr);
+	
+	void Text::setStyle(Font::Style style)
+	{
+		this->style = style;
+	}
+	
+	void Text::internalRepaint(int x, int y, int w, int h)
+	{
+		int wDec, hDec;
+	
+		if (hAlignFlag==ALIGN_FILL)
+			wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;
+		else
+			wDec=0;
+	
+		if (vAlignFlag==ALIGN_FILL)
+			hDec=(h-fontPtr->getStringHeight(text.c_str(), style.shape))>>1;
+		else
+			hDec=0;
+	
+		parent->getSurface()->pushFontStyle(fontPtr, style);
+		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
+		parent->getSurface()->popFontStyle(fontPtr);
+	}
+	
+	void Text::internalInit(int x, int y, int w, int h)
+	{
+		fontPtr = Toolkit::getFont(font.c_str());
+		assert(fontPtr);
+	}
 }

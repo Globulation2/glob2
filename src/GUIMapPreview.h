@@ -21,6 +21,7 @@
 #define __GUIMAPPREVIEW_H
 
 #include <GUIBase.h>
+using namespace GAGGUI;
 #include "MapGenerationDescriptor.h"
 
 //! Widget to preview map

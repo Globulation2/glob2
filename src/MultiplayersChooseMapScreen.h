@@ -22,12 +22,17 @@
 
 #include "Session.h"
 #include <GUIBase.h>
+using namespace GAGGUI;
 
-class Button;
-class List;
-class Text;
-class TextButton;
+namespace GAGGUI
+{
+	class Button;
+	class List;
+	class Text;
+	class TextButton;
+}
 class MapPreview;
+
 
 class MultiplayersChooseMapScreen:public Screen
 {
