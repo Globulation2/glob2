@@ -558,7 +558,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	order->wishedDelay=myLocalWishedDelay;
 	ordersQueue[playerNumber][pushStep]=order;
 	
-	if (localPlayerNumber==playerNumber && (pushStep&1==1))
+	if (localPlayerNumber==playerNumber && ((pushStep&1)==1))
 	{
 		for (int p=0; p<numberOfPlayer; p++)
 			if (players[p]->type==Player::P_IP)
@@ -933,7 +933,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		else if (orderType==ORDER_DROPPING_PLAYER)
 		{
 			assert(orderSize>=5);
-			bool askForReply=data[l++];
+			bool askForReply=(data[l++]!=0);
 			Uint32 dropMask=getUint32(data+l, 0);
 			l+=4;
 			droppingPlayersMask[player]=dropMask;

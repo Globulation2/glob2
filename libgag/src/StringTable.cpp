@@ -32,7 +32,7 @@
 
 OneStringToken::OneStringToken(const char *name)
 {
-	int len=strlen(name)+1;
+	size_t len=strlen(name)+1;
 	this->name=(char *)malloc(len);
 	strncpy(this->name, name, len);
 }
@@ -46,7 +46,7 @@ OneStringToken::~OneStringToken()
 
 void OneStringToken::addData(char *data)
 {
-	int len=strlen(data)+1;
+	size_t len=strlen(data)+1;
 	char *temp=(char *)malloc(len);
 	strncpy(temp, data, len);
 	this->data.push_back(temp);
@@ -157,11 +157,11 @@ bool StringTable::load(char *filename)
 		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
 			char *s=(*it)->name;
-			int l=strlen(s);
+			size_t l=strlen(s);
 			bool lcwp=false;
 			int baseCountS=0;
 			int baseCountD=0;
-			for (int j=0; j<l; j++)
+			for (size_t j=0; j<l; j++)
 			{
 				char c=s[j];
 				if (lcwp && c!=' ' && c!='%')
@@ -182,11 +182,11 @@ bool StringTable::load(char *filename)
 			for (int i=0; i<(int)((*it)->data.size()); i++)
 			{
 				char *s=(*it)->data[i];
-				int l=strlen(s);
+				size_t l=strlen(s);
 				bool lcwp=false;
 				int countS=0;
 				int countD=0;
-				for (int j=0; j<l; j++)
+				for (size_t j=0; j<l; j++)
 				{
 					char c=s[j];
 					if (lcwp && c!=' ' && c!='%')

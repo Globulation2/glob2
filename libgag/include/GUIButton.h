@@ -124,7 +124,7 @@ public:
 	//! Return the color sel
 	virtual int getSelectedColor(void) { return selColor; }
 	//! Return the number of possible colors
-	virtual int getNumberOfColors(void) { return v.size(); }
+	virtual size_t getNumberOfColors(void) { return v.size(); }
 
 protected:
 	virtual void internalRepaint(int x, int y, int w, int h);

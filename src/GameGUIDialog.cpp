@@ -90,7 +90,7 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
 		addWidget(alliance[i]);
 
-		bool chatState = (gameGUI->chatMask)&(1<<i);
+		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
 		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
 

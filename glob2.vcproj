@@ -131,6 +131,9 @@
 				RelativePath=".\src\AICastor.cpp">
 			</File>
 			<File
+				RelativePath=".\src\AINull.cpp">
+			</File>
+			<File
 				RelativePath="src\AINumbi.cpp">
 			</File>
 			<File
