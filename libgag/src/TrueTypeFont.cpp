@@ -160,6 +160,7 @@ namespace GAGCore
 			data.s = s = SDL_DisplayFormatAlpha(temp);
 			assert(s);
 			SDL_FreeSurface(temp);
+			//SDL_UnlockSurface(s);
 			
 			// store in cache
 			cache[key] = data;

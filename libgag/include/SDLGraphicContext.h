@@ -98,13 +98,11 @@ namespace GAGCore
 		SDL_Rect clipRect;
 		//! Flags, can be a combination of ResolutionFlags
 		Uint32 flags;
-		//! if true, surface is locked and suitable for direct pixel access
-		bool locked;
 		
 		//! lock only if necessary
-		void lock(void) { if (!locked) { SDL_LockSurface(surface); locked = true; } }
+		virtual void lock(void) { if (glSDL_MustLock(surface)) SDL_LockSurface(surface); }
 		//! unlock only if necessary
-		void unlock(void) { if (locked) { SDL_UnlockSurface(surface); locked = false; } }
+		virtual void unlock(void) { if (glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
 		
 	public:
 		enum GraphicContextType
@@ -165,10 +163,11 @@ namespace GAGCore
 		
 	protected:
 		int minW, minH;
-		//! draw all queued command due to the double buffering
-		void drawQueudCommands(void);
-		//! clear all queued commands
-		void clearQueudCommands(void);
+				
+		//! lock only if necessary, we do not lock GL graphic context
+		virtual void lock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_LockSurface(surface); }
+		//! unlock only if necessary, we do not lock GL graphic context
+		virtual void unlock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
 	
 	public:
 		GraphicContext();

@@ -788,6 +788,16 @@ void glSDL_QuitSubSystem(Uint32 flags)
 }
 
 
+int glSDL_IsGLSDLSurface(SDL_Surface *surface)
+{
+	return (IS_GLSDL_SURFACE(surface));
+}
+
+int glSDL_MustLock(SDL_Surface *surface)
+{
+	return (SDL_MUSTLOCK(surface));
+}
+
 SDL_Surface *glSDL_SetVideoMode(int width, int height, int bpp, Uint32 flags)
 {
 	SDL_Surface *screen;
@@ -1741,9 +1751,6 @@ int glSDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 		else
 		{
 			glSDL_Invalidate(dst, dstrect);
-			// Note from nct : if surface are not unlocked, SDL_BlitSurface return -1
-			SDL_UnlockSurface(src);
-			SDL_UnlockSurface(dst);
 			return SDL_BlitSurface(src, srcrect, dst, dstrect);
 		}
 	}

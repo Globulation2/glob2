@@ -76,7 +76,6 @@ namespace GAGCore
 		clipRect.w = 0;
 		clipRect.h = 0;
 		flags = 0;
-		locked = false;
 	}
 	
 	void DrawableSurface::loadImage(const char *name)
@@ -171,7 +170,6 @@ namespace GAGCore
 		if (!surface)
 			return;
 			
-		unlock();
 		sprite->draw(surface, &clipRect, x, y, index);
 	}
 	
@@ -239,6 +237,7 @@ namespace GAGCore
 				}
 				break;
 			}
+			unlock();
 		}
 	}
 	
@@ -257,10 +256,12 @@ namespace GAGCore
 		if (glSDL_DrawRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b), a) != 0)
 		#endif
 		{
+			lock();
 			drawHorzLine(x, y, w, r, g, b, a);
 			drawHorzLine(x, y+h-1, w, r, g, b, a);
 			drawVertLine(x, y, h, r, g, b, a);
 			drawVertLine(x+w-1, y, h, r, g, b, a);
+			unlock();
 		}
 	}
 	
@@ -411,6 +412,7 @@ namespace GAGCore
 				}
 				break;
 			}
+			unlock();
 		}
 	}
 	
@@ -555,6 +557,7 @@ namespace GAGCore
 				default:
 					break;
 			}
+			unlock();
 		}
 	}
 	
@@ -692,6 +695,7 @@ namespace GAGCore
 				default:
 					break;
 			}
+			unlock();
 		}
 	}
 	
@@ -869,6 +873,7 @@ namespace GAGCore
 			if (x<=0)
 				return;
 		
+			lock();
 			while (--x)
 			{
 				if (e < w)
@@ -886,6 +891,7 @@ namespace GAGCore
 				drawPixel(px,py,r,g,b,(Uint8)(I-(e>>FIXED)));
 				drawPixel(px+alphadecx,py+alphadecy,r,g,b,(Uint8)(e>>FIXED));
 			}
+			unlock();
 		}
 	}
 	
@@ -988,6 +994,7 @@ namespace GAGCore
 			int dx, dy, d;
 			int rdx, rdy;
 			int i;
+			lock();
 			for (i=0; i<3; i++)
 			{
 				dx=0;
@@ -1019,6 +1026,7 @@ namespace GAGCore
 				}
 				while (dx<=dy);
 			}
+			unlock();
 		}
 	}
 	
@@ -1046,7 +1054,6 @@ namespace GAGCore
 		FILTER_OUT_CHAR(output.c_str(), '\n');
 		FILTER_OUT_CHAR(output.c_str(), '\r');
 		
-		unlock();
 		font->drawString(surface, x, y, w, output.c_str(), &clipRect);
 	}
 	
@@ -1078,8 +1085,6 @@ namespace GAGCore
 		r.w=static_cast<Uint16>(osurface->getW());
 		r.h=static_cast<Uint16>(osurface->getH());
 	
-		unlock();
-		osurface->unlock();
 		SDL_BlitSurface(osurface->surface, NULL, this->surface, &r);
 	}
 	
@@ -1090,7 +1095,6 @@ namespace GAGCore
 	{
 		minW = minH = 0;
 		surface = NULL;
-		locked = false;
 	
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
@@ -1187,7 +1191,6 @@ namespace GAGCore
 	{
 		if (surface)
 		{
-			unlock();
 			SDL_Flip(surface);
 		}
 	}
