@@ -810,6 +810,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				}
 				else
 				{
+					// Enable paning
 					panPushed=true;
 					panMouseX=event->button.x;
 					panMouseY=event->button.y;
@@ -1227,8 +1228,8 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	if (panPushed)
 	{
 		// handle panning
-		int dx=mx-panMouseX;
-		int dy=my-panMouseY;
+		int dx=(mx-panMouseX)>>1;
+		int dy=(my-panMouseY)>>1;
 		viewportX=(panViewX+dx)&game.map.getMaskW();
 		viewportY=(panViewY+dy)&game.map.getMaskH();
 	}
