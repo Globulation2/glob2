@@ -94,10 +94,10 @@ void EndGameStat::repaint(void)
 
 
 //! This function is used to sort the player array
-struct LessScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
+struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
 {
 	EndOfGameStat::Type type;
-	bool operator()(const TeamEntry& t1, const TeamEntry& t2) { return t1.endVal[type]<t1.endVal[type]; }
+	bool operator()(const TeamEntry& t1, const TeamEntry& t2) { return t1.endVal[type] > t2.endVal[type]; }
 };
 
 
@@ -175,14 +175,16 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		entry.b=t->colorB;
 		entry.a=0;
 		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+		{
 			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+		}
 		teams.push_back(entry);	
 	}
 
 	// sort
-	LessScore lessScore;
-	lessScore.type=EndOfGameStat::TYPE_UNITS;
-	std::sort(teams.begin(), teams.end(), lessScore);
+	MoreScore moreScore;
+	moreScore.type=EndOfGameStat::TYPE_UNITS;
+	std::sort(teams.begin(), teams.end(), moreScore);
 	
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
@@ -212,12 +214,12 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 {
-	LessScore lessScore;
-	lessScore.type=type;
-	std::sort(teams.begin(), teams.end(), lessScore);
+	MoreScore moreScore;
+	moreScore.type=type;
+	std::sort(teams.begin(), teams.end(), moreScore);
 	for (unsigned i=0; i<names.size(); i++)
 	{
-		names[i]->setText(teams[i].name.c_str());
 		names[i]->setColor(teams[i].r, teams[i].g, teams[i].b);
+		names[i]->setText(teams[i].name.c_str());
 	}
 }
