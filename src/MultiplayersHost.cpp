@@ -27,7 +27,7 @@
 #include "LogFileManager.h"
 
 #ifndef INADDR_BROADCAST
-#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#define INADDR_BROADCAST 0x7F000001
 #endif
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
@@ -616,7 +616,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
 		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
-		if (serverIP.host && (serverIP.host!=SDL_SwapBE32(0x7F000001)))
+		if (serverIP.host && (serverIP.host!=0x7F000001))
 		{
 			if (serverIP.host!=newHost)
 			{
@@ -1591,23 +1591,34 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
 
 				BasePlayer *backupPlayer[32];
-				bool showsExternalIP=(shareOnYOG && !sessionInfo.players[i].ipFromNAT); // Other players don't want to have LAN(NAT) IPs, but global IPs.
-				if (showsExternalIP)
-					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-					{
-						backupPlayer[i]=(BasePlayer *)malloc(sizeof(BasePlayer));
-						*backupPlayer[i]=sessionInfo.players[i];
-						if (sessionInfo.players[i].ipFromNAT)
+				for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+				{
+					backupPlayer[p]=(BasePlayer *)malloc(sizeof(BasePlayer));
+					*backupPlayer[p]=sessionInfo.players[p];
+				}
+				if (!sessionInfo.players[i].ipFromNAT)
+				{
+					for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+						if (sessionInfo.players[p].ip.host==0x7F000001)
+							sessionInfo.players[p].ip.host=serverIP.host;
+				
+					if (shareOnYOG)
+						for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 						{
-							IPaddress newip=yog->ipFromUserName(sessionInfo.players[i].name);
-							fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
-							if (newip.host)
+							backupPlayer[i]=(BasePlayer *)malloc(sizeof(BasePlayer));
+							if (sessionInfo.players[i].ipFromNAT)
 							{
-								sessionInfo.players[i].ip=newip;
-								sessionInfo.players[i].ipFromNAT=false;
+								IPaddress newip=yog->ipFromUserName(sessionInfo.players[i].name);
+								fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
+								if (newip.host)
+								{
+									sessionInfo.players[i].ip=newip;
+									sessionInfo.players[i].ipFromNAT=false;
+								}
 							}
 						}
-					}
+				}
+				
 				char *data=NULL;
 				int size=sessionInfo.getDataLength(true);
 
@@ -1629,12 +1640,11 @@ void MultiplayersHost::sendingTime()
 
 				free(data);
 				
-				if (showsExternalIP)
-					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-					{
-						sessionInfo.players[i]=*backupPlayer[i];
-						free(backupPlayer[i]);
-					}
+				for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+				{
+					sessionInfo.players[p]=*backupPlayer[p];
+					free(backupPlayer[p]);
+				}
 			}
 			break;
 
