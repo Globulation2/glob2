@@ -68,13 +68,6 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	obstacleY=0;
 	borderX=0;
 	borderY=0;
-	
-	// trigger parameters
-	hp=0;
-	trigHP=10;
-
-	hungry=HUNGRY_MAX;
-	trigHungry=(hungry*3)/10;
 
 	// quality parameters
 	{
@@ -84,11 +77,28 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 			this->level[i]=level;
 		}
 	}
-	
+
+	// trigger parameters
+	hp=0;
+
+	// warriors fight to death
+	if (performance[ATTACK_SPEED])
+		trigHP=0;
+	else
+		trigHP=20;
+
+	// warriors wait more tiem before going to eat
+	hungry=HUNGRY_MAX;
+	if (performance[ATTACK_SPEED])
+		trigHungry=(hubgry*2)/10;
+	else
+		trigHungry=(hungry*5)/20;
+
+
 	// NOTE : rewrite hp from level
 	hp=this->performance[HP];
 	trigHP=(hp*3)/10;
-	
+
 	attachedBuilding=NULL;
 	destinationPurprose=-1;
 	subscribed=false;
