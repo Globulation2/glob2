@@ -1149,6 +1149,19 @@ bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask)
 	return true;
 }
 
+bool Map::isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim, Uint32 teamMask)
+{
+	if (isRessource(x+w, y+h))
+		return false;
+	if (getBuilding(x+w, y+h)!=NOGBID)
+		return false;
+	if (getGroundUnit(x+w, y+h)!=NOGUID)
+		return false;
+	if (!canSwim && isWater(x+w, y+h))
+		return false;
+	return true;
+}
+
 bool Map::isFreeForBuilding(int x, int y)
 {
 	if (isRessource(x, y))
