@@ -188,7 +188,8 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 	
-			SDL_RWops *fp =  openWithbackup(path.c_str(), mode);
+			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "]\n" << std::endl;
+			SDL_RWops *fp = openWithbackup(path.c_str(), mode);
 			if (fp)
 				return fp;
 		}

@@ -408,7 +408,7 @@ std::string SessionGame::getMapName() const
 std::string SessionGame::getFileName(void) const
 {
 	if (fileIsAMap)
-		return glob2NameToFilename("maps", mapName, "map").c_str();
+		return glob2NameToFilename("maps", mapName, "map");
 	else
 		return glob2NameToFilename("games", mapName, "game");
 }
