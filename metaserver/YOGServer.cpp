@@ -281,7 +281,7 @@ void YOGServer::deconnectClient(YOGClient *client)
 		admin=NULL;
 	
 	client->deconnected();
-	printf("total number of clients = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authentifiedClients.size());
+	lprintf("total number of clients = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authentifiedClients.size());
 }
 
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
