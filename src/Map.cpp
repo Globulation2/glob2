@@ -771,7 +771,42 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*my+=buildingHeight*16;
 }
 
-bool Map::nearestRessource(int ix, int iy, RessourceType ressourceType, int *dx, int *dy)
+
+bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+{
+	for (int i=1; i<32; i++)
+	{
+		for (int j=-i; j<i; j++)
+		{
+			if (isRessource(x+i, y+j, ressourceType))
+			{
+				*dx=(x+i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x-i, y+j, ressourceType))
+			{
+				*dx=(x-i)&getMaskW();
+				*dy=(y+j)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y+i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y+i)&getMaskH();
+				return true;
+			}
+			if (isRessource(x+j, y-i, ressourceType))
+			{
+				*dx=(x+j)&getMaskW();
+				*dy=(y-i)&getMaskH();
+				return true;
+			}
+		}
+	}
+    return false;
+}
+/*bool Map::nearestRessource(int ix, int iy, RessourceType ressourceType, int *dx, int *dy)
 {
 	// TODO : make a better ressource path finding, increase it
 
@@ -833,7 +868,7 @@ bool Map::nearestRessource(int ix, int iy, RessourceType ressourceType, int *dx,
 		}
 	}
     return false;
-}
+}*/
 
 Sint32 Map::checkSum()
 {

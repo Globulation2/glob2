@@ -518,16 +518,35 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			else if (mx<128-16)
 			{
-				nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_FLAG_RANGE)/94;
+				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
+					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_EXPLO_FLAG_RANGE)/94;
+				else if (selBuild->type->type==BuildingType::WAR_FLAG)
+					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_WAR_FLAG_RANGE)/94;
+				else
+					assert(false);
 				orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
 			{
-				if(selBuild->unitStayRangeLocal<MAX_FLAG_RANGE)
+				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
 				{
-					nbReq=(selBuild->unitStayRangeLocal+=1);
-					orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					if(selBuild->unitStayRangeLocal<MAX_EXPLO_FLAG_RANGE)
+					{
+						nbReq=(selBuild->unitStayRangeLocal+=1);
+						orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					}
 				}
+				else if (selBuild->type->type==BuildingType::WAR_FLAG)
+				{
+					if(selBuild->unitStayRangeLocal<MAX_WAR_FLAG_RANGE)
+					{
+						nbReq=(selBuild->unitStayRangeLocal+=1);
+						orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					}
+				}
+				else
+					assert(false);
+				
 			}
 		}
 
@@ -821,8 +840,13 @@ void GameGUI::draw(void)
 			if (selBuild->type->defaultUnitStayRange)
 			{
 				globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 256+132, font, "%s : %d", globalContainer.texts.getString("[range]"), selBuild->unitStayRange);
-				drawScrollBox(globalContainer.gfx.getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_FLAG_RANGE);
-			}
+				if (selBuild->type->type==BuildingType::EXPLORATION_FLAG)
+					drawScrollBox(globalContainer.gfx.getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_EXPLO_FLAG_RANGE);
+				else if (selBuild->type->type==BuildingType::WAR_FLAG)
+					drawScrollBox(globalContainer.gfx.getW()-128, 256+144, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, MAX_WAR_FLAG_RANGE);
+				else
+					assert(false);
+				}
 			
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
@@ -1056,7 +1080,7 @@ void GameGUI::executeOrder(Order *order)
 				sprintf(message.text, "%s : %s", game.players[sp]->name, mo->getText());
 				messagesList.push_front(message);
 			}
-			game.executeOrder(order);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		case ORDER_QUITED :
@@ -1064,7 +1088,7 @@ void GameGUI::executeOrder(Order *order)
 			if (order->sender==localPlayer)
 				isRunning=false;
 			
-			game.executeOrder(order);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME :
@@ -1076,12 +1100,12 @@ void GameGUI::executeOrder(Order *order)
 			message.text[MAX_MESSAGE_SIZE-1]=0;
 			messagesList.push_front(message);
 			
-			game.executeOrder(order);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		default:
 		{
-			game.executeOrder(order);
+			game.executeOrder(order, localPlayer);
 		}
 	}
 }

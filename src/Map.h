@@ -160,7 +160,7 @@ public:
 	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY);
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 
-	bool nearestRessource(int ix, int iy, RessourceType ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
 	
 //private:
 	// private functions, used for edition

@@ -47,15 +47,9 @@ Waiting destruction
 [upgrade]
 Ameliorer
 Upgrade
-[wait upgrade]
-Attente amelioration
-Waiting upgrade
-[wait upgrade room]
-Attente place
-Waiting room
-[need room to start upgarde]
-Pas assez de place
-Not enough room
+[cancel upgrade]
+Anuler amelio.
+Cancel upgrade
 [unit type]
 Type d'unite
 Unit type
