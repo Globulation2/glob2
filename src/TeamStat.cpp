@@ -185,10 +185,24 @@ void TeamStats::drawStat()
 		int nbOk, nbNeedFood, nbNeedHeal;
 		if (stats[index].totalUnit)
 		{
-			nbOk=(stats[index].needNothing*64)/stats[index].totalUnit;
-			nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
 			// to avoid some roundoff errors
-			nbNeedHeal=64-(nbOk + nbNeedFood);
+			if (stats[index].needNothing>0)
+			{
+				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+				nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
+				nbOk=64-(nbNeedHeal + nbNeedFood);
+			}
+			else if (stats[index].needFood>0)
+			{
+				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+				nbNeedFood=64-(nbNeedHeal);
+				nbOk=0;
+			}
+			else
+			{
+				nbOk=nbNeedFood=0;
+				nbNeedHeal=64;
+			}
 		}
 		else
 		{
