@@ -156,6 +156,8 @@ void GameGUI::init()
 	flagsChoice.push_back(9);
 	flagsChoice.push_back(10);
 	flagsChoice.push_back(11);
+
+	hiddenGUIElements=0;
 }
 
 void GameGUI::adjustInitialViewport()
@@ -663,7 +665,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen();
+						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 						inGameMenu=IGM_MAIN;
 					}
@@ -810,13 +812,27 @@ void GameGUI::handleRightClick(void)
 	// We cycle between views:
 	if (selectionMode==NO_SELECTION)
 	{
-		displayMode=DisplayMode((displayMode + 1) % NB_VIEWS);
+		nextDisplayMode();
 	}
 	// We deselect all, we want no tools activated:
 	else
 	{
 		clearSelection();
 	}
+}
+
+void GameGUI::nextDisplayMode(void)
+{
+	int t=0;
+	do
+	{
+		displayMode=DisplayMode((displayMode + 1) % NB_VIEWS);
+		if ((t++)==4)
+		{
+			displayMode=NB_VIEWS;
+			break;
+		}
+	} while ((1<<((int)displayMode)) & hiddenGUIElements);
 }
 
 void GameGUI::handleKey(SDLKey key, bool pressed)
@@ -836,7 +852,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 				{
 					if ((inGameMenu==IGM_NONE) && (!pressed))
 					{
-						gameMenuScreen=new InGameMainScreen();
+						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 						inGameMenu=IGM_MAIN;
 					}
@@ -1186,8 +1202,12 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (my<128+32)
 	{
-		displayMode=DisplayMode(mx/32);
-		clearSelection();
+		int dm=mx/32;
+		if (!((1<<dm) & hiddenGUIElements))
+		{
+			displayMode=DisplayMode(dm);
+			clearSelection();
+		}
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -1420,25 +1440,37 @@ Order *GameGUI::getOrder(void)
 void GameGUI::drawPanelButtons(int pos)
 {
 	// draw buttons
-	if (displayMode==BUILDING_VIEW)
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 1);
-	else
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 0);
+	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
+	{
+		if (displayMode==BUILDING_VIEW)
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 1);
+		else
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 0);
+	}
 
-	if (displayMode==FLAG_VIEW)
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
-	else
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
+	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
+	{
+		if (displayMode==FLAG_VIEW)
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
+		else
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
+	}
 
-	if (displayMode==STAT_TEXT_VIEW)
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 3);
-	else
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 2);
+	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
+	{
+		if (displayMode==STAT_TEXT_VIEW)
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 3);
+		else
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 2);
+	}
 
-	if (displayMode==STAT_GRAPH_VIEW)
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 5);
-	else
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
+	if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
+	{
+		if (displayMode==STAT_GRAPH_VIEW)
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 5);
+		else
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
+	}
 
 	// draw decoration
 }
@@ -2638,17 +2670,36 @@ bool GameGUI::load(SDL_RWops *stream)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
 		return false;
 	}
-	
+
 	if (!game.session.fileIsAMap)
 	{
 		// load gui's specific infos
 		chatMask=SDL_ReadBE32(stream);
-		
+
 		localPlayer=SDL_ReadBE32(stream);
 		localTeamNo=SDL_ReadBE32(stream);
 
 		viewportX=SDL_ReadBE32(stream);
 		viewportY=SDL_ReadBE32(stream);
+
+		hiddenGUIElements=SDL_ReadBE32(stream);
+		Uint32 buildingsChoiceMask=SDL_ReadBE32(stream);
+		Uint32 flagsChoiceMask=SDL_ReadBE32(stream);
+		// invert value if hidden
+		for (unsigned i=0; i<buildingsChoice.size(); ++i)
+		{
+			int id=buildingsChoice[i];
+			assert(i>=0);
+			if ((1<<id) & buildingsChoiceMask)
+				buildingsChoice[i]=-id;
+		}
+		for (unsigned i=0; i<flagsChoice.size(); ++i)
+		{
+			int id=flagsChoice[i];
+			assert(i>=0);
+			if ((1<<id) & flagsChoiceMask)
+				flagsChoice[i]=-id;
+		}
 	}
 
 	return true;
@@ -2660,13 +2711,32 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	if (game.session.mapGenerationDescriptor)
 		delete game.session.mapGenerationDescriptor;
 	game.session.mapGenerationDescriptor=NULL;
-	
+
 	game.save(stream, false, name);
 	SDL_WriteBE32(stream, chatMask);
 	SDL_WriteBE32(stream, localPlayer);
 	SDL_WriteBE32(stream, localTeamNo);
 	SDL_WriteBE32(stream, viewportX);
 	SDL_WriteBE32(stream, viewportY);
+
+	SDL_WriteBE32(stream, hiddenGUIElements);
+	Uint32 buildingsChoiceMask = 0;
+	Uint32 flagsChoiceMask = 0;
+	// save one if hidden (value is negative)
+	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	{
+		int id=buildingsChoice[i];
+		if (id<0)
+			buildingsChoiceMask |= (1<<(-id));
+	}
+	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	{
+		int id=buildingsChoice[i];
+		if (id<0)
+			flagsChoiceMask |= (1<<(-id));
+	}
+	SDL_WriteBE32(stream, buildingsChoiceMask);
+	SDL_WriteBE32(stream, flagsChoiceMask);
 }
 
 // TODO : merge thoses 3 functions into one
