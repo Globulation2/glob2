@@ -113,7 +113,11 @@ int Engine::initCustom(void)
 	if (cgs == CustomGameScreen::CANCEL)
 		return EE_CANCEL;
 
-	gui.game.loadBase(&(customGameScreen.sessionInfo));
+	if (!gui.game.loadBase(&(customGameScreen.sessionInfo)))
+	{
+		printf("Engine : Can't load map\n");
+		return EE_CANCEL;
+	}
 	int nbTeam=gui.game.session.numberOfTeam;
 	if (nbTeam==0)
 		return EE_CANCEL;

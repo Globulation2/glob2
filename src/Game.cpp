@@ -39,13 +39,16 @@ Game::Game(const SessionInfo *initial)
 	loadBase(initial);
 }
 
-void Game::loadBase(const SessionInfo *initial)
+bool Game::loadBase(const SessionInfo *initial)
 {
 	init();
+	printf("initial->map.getMapFileName()=%s.\n", initial->map.getMapFileName());
 	SDL_RWops *stream=globalContainer->fileManager.open(initial->map.getMapFileName(),"rb");
-	load(stream);
+	if (!load(stream))
+		return false;
 	SDL_RWclose(stream);
 	setBase(initial);
+	return true;
 }
 
 Game::~Game()
@@ -53,15 +56,21 @@ Game::~Game()
 	// delete existing teams and players
 	int i;
 	for (i=0; i<session.numberOfTeam; i++)
-	{
-		delete teams[i];
-	}
+		if (teams[i])
+		{
+			delete teams[i];
+			teams[i]=NULL;
+		}
 	for (i=0; i<session.numberOfPlayer; i++)
-	{
-		delete players[i];
-	}
+		if (players[i])
+		{
+			delete players[i];
+			players[i]=NULL;
+		}
 
-	delete minimap;
+	if (minimap)
+		delete minimap;
+	minimap=NULL;
 }
 
 void Game::init()
@@ -72,13 +81,13 @@ void Game::init()
 
 	session.numberOfTeam=0;
 	session.numberOfPlayer=0;
+	
+	for (int i=0; i<32; i++)
 	{
-		for (int i=0; i<32; i++)
-		{
-			teams[i]=NULL;
-			players[i]=NULL;
-		}
+		teams[i]=NULL;
+		players[i]=NULL;
 	}
+	
 	addTeam();
 	setSyncRandSeed();
 	
@@ -348,17 +357,21 @@ bool Game::load(SDL_RWops *stream)
 	// delete existing teams
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)
-	{
-		delete teams[i];
-	}
+		if (teams[i])
+		{
+			delete teams[i];
+			teams[i]=NULL;
+		}
 	for (i=0; i<session.numberOfPlayer; ++i)
-	{
-		delete players[i];
-	}
-
+		if (players[i])
+		{
+			delete players[i];
+			players[i]=NULL;
+		}
+	
 	SessionInfo tempSessionInfo;
-	tempSessionInfo.load(stream);
-
+	if (!tempSessionInfo.load(stream))
+		return false;
 	session=(SessionGame)tempSessionInfo;
 	
 	map.setMapName(tempSessionInfo.map.getMapName());
