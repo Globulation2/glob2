@@ -47,6 +47,11 @@ MultiplayersJoin::~MultiplayersJoin()
 				SDLNet_UDP_Unbind(socket, channel);
 				fprintf(logFile, "~MultiplayersJoin::Socket unbinded channel=%d\n", channel);
 			}
+			
+			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+				if (sessionInfo.players[j].type==BasePlayer::P_IP)
+					sessionInfo.players[j].close();
+			
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
 			fprintf(logFile, "Socket closed.\n");
