@@ -133,7 +133,7 @@ public:
 	Unit *selectedUnit;
 	Building *selectedBuilding;
 	
-	Sint32 stepCounter;
+	Uint32 stepCounter;
 	int totalPrestige;
 	int prestigeToReach;
 	bool totalPrestigeReached;

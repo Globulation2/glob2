@@ -131,6 +131,7 @@ public:
 	Uint8 localGradient[2][1024];
 	Uint8 *globalGradient[2];
 	bool locked[2]; //True if the building is not reachable.
+	Uint32 lastGlobalGradientUpdateStepCounter[2];
 	
 	Uint8 *localRessources[2];
 	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.

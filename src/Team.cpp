@@ -471,6 +471,22 @@ void Team::integrity(void)
 		if (b)
 			b->integrity();
 	}
+	for (std::list<Building *>::iterator it=foodable.begin(); it!=foodable.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		if (!(*it)->type->foodable)
+			printf("assert failure with gid=%d\n", (*it)->gid);
+		assert((*it)->type->foodable);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+	}
+	for (std::list<Building *>::iterator it=fillable.begin(); it!=fillable.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		assert((*it)->type->fillable);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+	}
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
 		assert(*it);
@@ -1139,6 +1155,72 @@ int Team::maxBuildLevel(void)
 	return maxLevel;
 }
 
+void Team::removeFromAbilitiesLists(Building *building)
+{
+	if (building->type->foodable)
+		foodable.remove(building);
+	if (building->type->fillable)
+		fillable.remove(building);
+	if (building->type->zonable[WORKER])
+	{
+		zonableWorkers[0].remove(building);
+		zonableWorkers[1].remove(building);
+	}
+	if (building->type->zonable[EXPLORER])
+		zonableExplorer.remove(building);
+	if (building->type->zonable[WARRIOR])
+		zonableWarrior.remove(building);
+	
+	for (int ui=0; ui<NB_ABILITY; ui++)
+		if (building->type->upgrade[ui])
+			upgrade[ui].remove(building);
+	
+	if (building->type->canFeedUnit)
+		canFeedUnit.remove(building);
+	if (building->type->canHealUnit)
+		canHealUnit.remove(building);
+	if (building->type->canExchange)
+		canExchange.remove(building);
+	
+	if (building->type->unitProductionTime)
+		swarms.remove(building);
+	if (building->type->shootingRange)
+		turrets.remove(building);
+	
+	if (building->type->zonable[WORKER])
+		clearingFlags.remove(building);
+	
+	if (building->type->isVirtual)
+		virtualBuildings.remove(building);
+	
+	if (building->type->zonableForbidden)
+		zonableForbidden.remove(building);
+}
+
+void Team::addToStaticAbilitiesLists(Building *building)
+{
+	if (building->type->canExchange)
+		canExchange.push_back(building);
+	
+	if (building->type->unitProductionTime)
+		swarms.push_back(building);
+	
+	if (building->type->shootingRange)
+		turrets.push_back(building);
+	
+	if (building->type->zonable[WORKER])
+		clearingFlags.push_back(building);
+	
+	if (building->type->isVirtual)
+		virtualBuildings.push_back(building);
+		
+	if (building->type->zonableForbidden)
+	{
+		zonableForbidden.push_back(building);
+		map->setForbiddenCircularArea(building->posX, building->posY, building->unitStayRange, me);
+	}
+}
+
 void Team::syncStep(void)
 {
 	integrity();
@@ -1207,19 +1289,9 @@ void Team::syncStep(void)
 	{
 		Building *building=*it;
 		fprintf(logFile, "building guid=%d deleted\n", building->gid);
+		fflush(logFile);
 
-		if (building->type->unitProductionTime)
-			swarms.remove(building);
-		if (building->type->shootingRange)
-			turrets.remove(building);
-		if (building->type->canExchange)
-			canExchange.remove(building);
-		if (building->type->isVirtual)
-			virtualBuildings.remove(building);
-		if (building->type->zonable[WORKER])
-			clearingFlags.remove(building);
-		if (building->type->zonableForbidden)
-			zonableForbidden.remove(building);
+		removeFromAbilitiesLists(building);
 		
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
@@ -1232,7 +1304,7 @@ void Team::syncStep(void)
 		subscribeToBringRessources.remove(building);
 		subscribeForFlaging.remove(building);
 
-		if(game->selectedBuilding==building)
+		if (game->selectedBuilding==building)
 			game->selectedBuilding=NULL;
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;

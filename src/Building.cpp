@@ -139,6 +139,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
+		lastGlobalGradientUpdateStepCounter[i]=0;
 		
 		localRessources[i]=0;
 		localRessourcesCleanTime[i]=0;
@@ -246,6 +247,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		}
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
+		lastGlobalGradientUpdateStepCounter[i]=0;
 		
 		localRessourcesCleanTime[i]=0;
 		anyRessourceToClear[i]=0;
@@ -489,18 +491,7 @@ void Building::launchConstruction(void)
 			constructionResultState=UPGRADE;
 		}
 
-		if (type->unitProductionTime)
-			owner->swarms.remove(this);
-		if (type->shootingRange)
-			owner->turrets.remove(this);
-		if (type->canExchange)
-			owner->canExchange.remove(this);
-		if (type->isVirtual)
-			owner->virtualBuildings.remove(this);
-		if (type->zonable[WORKER])
-			owner->clearingFlags.remove(this);
-		if (type->zonableForbidden)
-			owner->zonableForbidden.remove(this);
+		owner->removeFromAbilitiesLists(this);
 		
 		removeSubscribers();
 
@@ -718,37 +709,40 @@ void Building::updateCallLists(void)
 	
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
-		// Add itself in the right "call-lists":
-		if (!ressourceFull)
+		if (buildingState==ALIVE)
 		{
-			if (foodable!=1 && type->foodable)
+			// Add itself in the right "call-lists":
+			if (!ressourceFull)
 			{
-				owner->foodable.push_front(this);
-				foodable=1;
-			}
-			if (fillable!=1 && type->fillable)
-			{
-				owner->fillable.push_front(this);
-				fillable=1;
-			}
-		}
-		
-		if (type->zonable[WORKER])
-			for (int canSwim=0; canSwim<2; canSwim++)
-				if (anyRessourceToClear[canSwim]!=2 && zonableWorkers[canSwim]!=1)
+				if (foodable!=1 && type->foodable)
 				{
-					owner->zonableWorkers[canSwim].push_front(this);
-					zonableWorkers[canSwim]=1;
+					owner->foodable.push_front(this);
+					foodable=1;
 				}
-		if (zonableExplorer!=1 && type->zonable[EXPLORER])
-		{
-			owner->zonableExplorer.push_front(this);
-			zonableExplorer=1;
-		}
-		if (zonableWarrior!=1 && type->zonable[WARRIOR])
-		{
-			owner->zonableWarrior.push_front(this);
-			zonableWarrior=1;
+				if (fillable!=1 && type->fillable)
+				{
+					owner->fillable.push_front(this);
+					fillable=1;
+				}
+			}
+			
+			if (type->zonable[WORKER])
+				for (int canSwim=0; canSwim<2; canSwim++)
+					if (anyRessourceToClear[canSwim]!=2 && zonableWorkers[canSwim]!=1)
+					{
+						owner->zonableWorkers[canSwim].push_front(this);
+						zonableWorkers[canSwim]=1;
+					}
+			if (zonableExplorer!=1 && type->zonable[EXPLORER])
+			{
+				owner->zonableExplorer.push_front(this);
+				zonableExplorer=1;
+			}
+			if (zonableWarrior!=1 && type->zonable[WARRIOR])
+			{
+				owner->zonableWarrior.push_front(this);
+				zonableWarrior=1;
+			}
 		}
 	}
 	else
@@ -932,10 +926,13 @@ void Building::updateConstructionState(void)
 		}
 		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
-			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
-			owner->buildingsTryToBuildingSiteRoom.push_front(this);
-			if (verbose)
-				printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
+			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
+			{
+				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
+				owner->buildingsTryToBuildingSiteRoom.push_front(this);
+				if (verbose)
+					printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
+			}
 		}
 		else if (verbose)
 			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
@@ -1099,6 +1096,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		owner->prestige+=type->prestige;
 
 		buildingState=ALIVE;
+		owner->addToStaticAbilitiesLists(this);
 		
 		// towers may already have some stone!
 		if (constructionResultState==UPGRADE)

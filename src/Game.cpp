@@ -198,35 +198,14 @@ void Game::executeOrder(Order *order, int localPlayer)
 				break;
 			if (isVirtual || checkRoomForBuilding(posX, posY, typeNum, teamNumber))
 			{
-				if(posX<0)
-					posX+=map.getW();
-				if(posY<0)
-					posY+=map.getH();
 				posX&=map.getMaskW();
 				posY&=map.getMaskH();
-
 				Building *b=addBuilding(posX, posY, typeNum, teamNumber);
 				assert(b);
 				if (b)
 				{
 					fprintf(logFile, "ORDER_CREATE");
-					BuildingType *type=b->type;
-					Team *owner=b->owner;
-					if (type->unitProductionTime)
-						owner->swarms.push_back(b);
-					if (type->shootingRange)
-						owner->turrets.push_back(b);
-					if (type->canExchange)
-						owner->canExchange.push_back(b);
-					if (type->isVirtual)
-						owner->virtualBuildings.push_back(b);
-					if (type->zonable[WORKER])
-						owner->clearingFlags.push_back(b);
-					if (type->zonableForbidden)
-					{
-						owner->zonableForbidden.push_back(b);
-						map.setForbiddenCircularArea(posX, posY, b->unitStayRange, team->me);
-					}
+					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
 				}
 			}

@@ -104,6 +104,7 @@ Map::Map()
 	pathToBuildingCountFarOldSuccess=0;
 	pathToBuildingCountFarOldFailureLocked=0;
 	pathToBuildingCountFarOldFailureBad=0;
+	pathToBuildingCountFarOldFailureRepeat=0;
 	pathToBuildingCountFarOldFailureUnusable=0;
 	pathToBuildingCountFarUpdateSuccess=0;
 	pathToBuildingCountFarUpdateSuccessAround=0;
@@ -431,7 +432,8 @@ void Map::clear()
 			+pathToBuildingCountFarOldSuccess
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
-			//+pathToBuildingCountFarOldFailureUnusable
+			+pathToBuildingCountFarOldFailureRepeat
+			//+pathToBuildingCountFarOldFailureUnusable // doesn't return
 			+pathToBuildingCountFarUpdateSuccess
 			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
@@ -449,6 +451,7 @@ void Map::clear()
 			+pathToBuildingCountFarOldSuccess
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
+			+pathToBuildingCountFarOldFailureRepeat
 			+pathToBuildingCountFarOldFailureUnusable;
 		fprintf(logFile, "|-  pathToBuildingCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarOld,
@@ -464,6 +467,7 @@ void Map::clear()
 		int pathToBuildingCountFarOldFailure=
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
+			+pathToBuildingCountFarOldFailureRepeat
 			+pathToBuildingCountFarOldFailureUnusable;
 		fprintf(logFile, "|-   pathToBuildingCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			pathToBuildingCountFarOldFailure,
@@ -482,6 +486,12 @@ void Map::clear()
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFarOldFailure);
+		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureRepeat=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
+			pathToBuildingCountFarOldFailureRepeat,
+			100.*(double)pathToBuildingCountFarOldFailureRepeat/(double)pathToBuildingCountTot,
+			100.*(double)pathToBuildingCountFarOldFailureRepeat/(double)pathToBuildingCountFar,
+			100.*(double)pathToBuildingCountFarOldFailureRepeat/(double)pathToBuildingCountFarOld,
+			100.*(double)pathToBuildingCountFarOldFailureRepeat/(double)pathToBuildingCountFarOldFailure);
 		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureUnusable=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
 			pathToBuildingCountFarOldFailureUnusable,
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountTot,
@@ -558,6 +568,7 @@ void Map::clear()
 	pathToBuildingCountFarOldSuccess=0;
 	pathToBuildingCountFarOldFailureLocked=0;
 	pathToBuildingCountFarOldFailureBad=0;
+	pathToBuildingCountFarOldFailureRepeat=0;
 	pathToBuildingCountFarOldFailureUnusable=0;
 	
 	pathToBuildingCountFarUpdateSuccess=0;
@@ -675,7 +686,7 @@ void Map::clear()
 			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOld,
 			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOldSuccess);
-		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old success)\n",
+		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
 			buildingAviableCountFarOldSuccessAround,
 			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFar,
@@ -782,7 +793,7 @@ void Map::clear()
 	
 	fprintf(logFile, "\n");
 	fprintf(logFile, "pathfindForbiddenCount=%d\n", pathfindForbiddenCount);
-	if (buildingAviableCountTot)
+	if (pathfindForbiddenCount)
 	{
 		fprintf(logFile, "|- pathfindForbiddenCountSuccess=%d (%f %%)\n",
 			pathfindForbiddenCountSuccess,
@@ -791,7 +802,6 @@ void Map::clear()
 		fprintf(logFile, "|- pathfindForbiddenCountFailure=%d (%f %%)\n",
 			pathfindForbiddenCountFailure,
 			100.*(double)pathfindForbiddenCountFailure/(double)pathfindForbiddenCount);
-		
 	}
 	
 	pathfindForbiddenCount=0;
@@ -1121,7 +1131,7 @@ void Map::growRessources(void)
 	}
 }
 
-void Map::syncStep(Sint32 stepCounter)
+void Map::syncStep(Uint32 stepCounter)
 {
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
@@ -3569,11 +3579,20 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			//printf("...pathfindedBuilding v6\n");
 			return true;
 		}
+		else if (building->lastGlobalGradientUpdateStepCounter[canSwim]+128>game->stepCounter) // not faster than 5.12s
+		{
+			pathToBuildingCountFarOldFailureRepeat++;
+			return false;
+		}
 		else
+		{
 			pathToBuildingCountFarOldFailureUnusable++;
+		}
 	}
 	
 	updateGlobalGradient(building, canSwim);
+	building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
+	
 	if (building->locked[canSwim])
 	{
 		pathToBuildingCountFarUpdateFailureLocked++;
