@@ -90,7 +90,7 @@ public:
 private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDL_keysym keySym, bool pressed);
+	void handleKey(SDLKey key, bool pressed);
 	void handleKeyAlways(void);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
@@ -102,7 +102,6 @@ private:
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
-	void checkValidSelection(void);
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
@@ -129,21 +128,37 @@ private:
 	void checkWonConditions(void);
 
 	friend class InGameAlliance8Screen;
+
+	//! Display mode
 	enum DisplayMode
 	{
 		BUILDING_VIEW=0,
 		FLAG_VIEW,
 		STAT_TEXT_VIEW,
 		STAT_GRAPH_VIEW,
-		BUILDING_SELECTION_VIEW,
-		UNIT_SELECTION_VIEW,
 		NB_VIEWS,
-	};
+	} displayMode;
 
-	//! Display mode including selection
-	DisplayMode displayMode;
+	//! Selection mode
+	enum SelectionMode
+	{
+		NO_SELECTION=0,
+		BUILDING_SELECTION,
+		UNIT_SELECTION,
+		BUILD_SELECTION,
+	} selectionMode;
+	union
+	{
+		Building* building;
+		Unit* unit;
+		unsigned build;
+	} selection;
 
-	Building *selBuild;
+	void setSelection(SelectionMode newSelMode, void* newSelection=NULL);
+	void setSelection(SelectionMode newSelMode, unsigned newSelection);
+	void clearSelection(void) { setSelection(NO_SELECTION); }
+	void checkSelection(void);
+
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
 	//! True if the mouse's button way never relased since click im minimap.
@@ -156,11 +171,7 @@ private:
 	int panMouseX, panMouseY;
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
-	
-	Uint16 selectionGUID;
-	Uint16 selectionGBID;
-	Unit *selUnit;
-	int typeToBuild;
+
 	bool showUnitWorkingToBuilding;
 
 	TeamStats *teamStats;
@@ -173,7 +184,7 @@ private:
 	int mouseX, mouseY;
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
-	
+
 	// menu related functions
 	enum
 	{
@@ -186,7 +197,7 @@ private:
 		IGM_END_OF_GAME
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
-	
+
 	bool hasEndOfGameDialogBeenShown;
 
 	// On screen message handling
@@ -221,7 +232,7 @@ private:
 	struct Mark
 	{
 		enum { DEFAULT_MARK_SHOW_TICKS = 40 };
-		
+
 		// since when it is shown
 		int showTicks;
 		// position
@@ -231,7 +242,7 @@ private:
 	};
 
 	std::list<Mark> markList;
-	
+
 	//! add a minimap mark
 	void addMark(MapMarkOrder *mmo);
 };
