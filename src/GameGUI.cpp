@@ -30,6 +30,8 @@
 #include <SupportFunctions.h>
 #include <Toolkit.h>
 #include <Stream.h>
+#include <BinaryStream.h>
+#include <TextStream.h>
 
 #include "Game.h"
 #include "GameGUI.h"
@@ -496,14 +498,16 @@ void GameGUI::syncStep(void)
 	{
 		const char *name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
-		GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(fileName);
-		if (stream)
+		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
+		if (stream->isEndOfStream())
 		{
-			save(stream, name);
-			delete stream;
+			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
 		}
 		else
-			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
+		{
+			save(stream, name);
+		}
+		delete stream;
 	}
 }
 
@@ -651,16 +655,18 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-						GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(locationName);
-						if (stream)
+						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
+						if (stream->isEndOfStream())
+						{
+							std::cerr << "GGU : Can't save map " << locationName << std::endl;
+						}
+						else
 						{
 							const char *name = ((LoadSaveScreen *)gameMenuScreen)->getName();
 							assert(name);
 							save(stream, name);
-							delete stream;
 						}
-						else
-							printf("GGU : Can't save map\n");
+						delete stream;
 					}
 				}
 
@@ -1135,13 +1141,17 @@ void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
 	{
 		if ((key.keysym.mod & KMOD_SHIFT) != 0)
 		{
-			GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("glob2.dump.txt", FileManager::STREAM_TEXT);
-			if (stream)
+			OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.dump.txt"));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "Can't dump full game memory to file glob2.dump.txt" << std::endl;
+			}
+			else
 			{
 				std::cerr << "Dump full game memory" << std::endl;
 				save(stream, "glob2.dump.txt");
-				delete stream;
 			}
+			delete stream;
 		}
 		else
 		{
@@ -1319,18 +1329,22 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		{
 			// a unit is selected:
 			setSelection(UNIT_SELECTION, game.mouseUnit);
-			selectionPushed=true;
+			selectionPushed = true;
 			// handle dump of unit characteristics
 			if ((SDL_GetModState() & KMOD_SHIFT) != 0)
 			{
-				GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("unit.dump.txt", FileManager::STREAM_TEXT);
-				if (stream)
+				OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("unit.dump.txt"));
+				if (stream->isEndOfStream())
+				{
+					std::cerr << "Can't dump unit to file unit.dump.txt" << std::endl;
+				}
+				else
 				{
 					std::cerr << "Dump unit " << game.mouseUnit->gid << " memory" << std::endl;
 					game.mouseUnit->save(stream);
 					game.mouseUnit->saveCrossRef(stream);
-					delete stream;
 				}
+				delete stream;
 			}
 		}
 		else 
@@ -1352,14 +1366,18 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					// handle dump of building characteristics
 					if ((SDL_GetModState() & KMOD_SHIFT) != 0)
 					{
-						GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("building.dump.txt", FileManager::STREAM_TEXT);
-						if (stream)
+						OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("building.dump.txt"));
+						if (stream->isEndOfStream())
+						{
+							std::cerr << "Can't dump unit to file building.dump.txt" << std::endl;
+						}
+						else
 						{
 							std::cerr << "Dump building " << selection.building->gid << " memory" << std::endl;
 							selection.building->save(stream);
 							selection.building->saveCrossRef(stream);
-							delete stream;
 						}
+						delete stream;
 					}
 				}
 			}
@@ -3204,12 +3222,22 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 	}
 	else
 	{
-		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(initial->getFileName());
-		bool res = load(stream);
-		delete stream;
-		if (!res)
+		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(initial->getFileName()));
+		if (stream->isEndOfStream())
+		{
+			std::cerr << "GameGUI::loadBase() : error, can't open file " << initial->getFileName() << std::endl;
+			delete stream;
 			return false;
-		game.setBase(initial);
+		}
+		else
+		{
+			bool res = load(stream);
+			delete stream;
+			if (!res)
+				return false;
+			
+			game.setBase(initial);
+		}
 	}
 
 	return true;

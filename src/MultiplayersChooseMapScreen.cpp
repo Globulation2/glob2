@@ -92,16 +92,16 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		}
 		mapPreview->setMapThumbnail(mapFileName.c_str());
 
-		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
-		if (stream == NULL)
+		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+		if (stream->isEndOfStream())
 		{
-			std::cerr << "MultiplayersChooseMapScreen::onAction : can't open file " << mapFileName << std::endl;
+			std::cerr << "MultiplayersChooseMapScreen::onAction() : error, can't open file " << mapFileName<< std::endl;
 		}
 		else
 		{
 			std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 			validSessionInfo = sessionInfo.load(stream);
-			delete stream;
+			
 			if (validSessionInfo)
 			{
 				// update map name & info
@@ -119,6 +119,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			else
 				std::cerr << "MultiplayersChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
+		delete stream;
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{

@@ -35,10 +35,7 @@
 
 namespace GAGCore
 {
-	class OutputStream;
-	class InputStream;
-	class OutputLineStream;
-	class InputLineStream;
+	class StreamBackend;
 	
 	//! File Manager (filesystem abstraction)
 	class FileManager
@@ -91,25 +88,15 @@ namespace GAGCore
 		//! Returns true if filename is a directory
 		bool isDir(const char *filename);
 	
-		//! Open an output stream, use it to write structured datas, const char *version
-		OutputStream *openOutputStream(const char *filename, StreamType type = STREAM_BINARY);
-		//! Open an output stream, use it to write structured datas, std::string version
-		OutputStream *openOutputStream(const std::string &filename, StreamType type = STREAM_BINARY) { return openOutputStream(filename.c_str(), type); }
+		//! Open an output stream backend, use it to construct specific output streams, const char *version
+		StreamBackend *openOutputStreamBackend(const char *filename);
+		//! Open an output stream backend, use it to construct specific output streams, std::string version
+		StreamBackend *openOutputStreamBackend(const std::string &filename) { return openOutputStreamBackend(filename.c_str()); }
 		
-		//! Open an input stream, use it to read structured datas, const char *version
-		InputStream *openInputStream(const char *filename, StreamType type = STREAM_BINARY);
-		//! Open an input stream, use it to read structured datas, std::string version
-		InputStream *openInputStream(const std::string &filename, StreamType type = STREAM_BINARY) { return openInputStream(filename.c_str(), type); }
-		
-		//! Open an output line stream, use it to write line-oriented files, const char *version
-		OutputLineStream *openOutputLineStream(const char *filename);
-		//! Open an output line stream, use it to write line-oriented files, std::string version
-		OutputLineStream *openOutputLineStream(const std::string &filename) { return openOutputLineStream(filename.c_str()); }
-		
-		//! Open an input line stream, use it to read line-oriented files, const char *version
-		InputLineStream *openInputLineStream(const char *filename);
-		//! Open an input line stream, use it to read line-oriented files, std::string version
-		InputLineStream *openInputLineStream(const std::string &filename) { return openInputLineStream(filename.c_str()); }
+		//! Open an input stream backend, use it to construct specific input streams, const char *version
+		StreamBackend *openInputStreamBackend(const char *filename);
+		//! Open an input stream backend, use it to construct specific input streams, std::string version
+		StreamBackend *openInputStreamBackend(const std::string &filename) { return openInputStreamBackend(filename.c_str()); }
 		
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const char *filename, const char *mode="rb");

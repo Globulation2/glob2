@@ -26,6 +26,8 @@
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <Stream.h>
+#include <BinaryStream.h>
 using namespace GAGCore;
 // using namespace std;
 
@@ -87,15 +89,19 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	fontPtr = NULL;
 	
 	// load text
-	InputLineStream *inputLineStream;
-	if ((inputLineStream = Toolkit::getFileManager()->openInputLineStream(filename)) != NULL)
+	InputLineStream *inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (inputLineStream->isEndOfStream())
+	{
+		std::cerr << "ScrollingText::ScrollingText() : error, can't open file " << filename << std::endl;
+	}
+	else
 	{
 		while (!inputLineStream->isEndOfStream())
 		{	// This is the nice way to do it
 			text.push_back(inputLineStream->readLine());
 		}
-		delete inputLineStream;
 	}
+	delete inputLineStream;
 }
 
 void ScrollingText::init(void)

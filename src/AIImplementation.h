@@ -31,6 +31,7 @@ The main methode is Order *getOrder() which return the order to be used by the A
 namespace GAGCore
 {
 	class InputStream;
+	class OutputStream;
 }
 class Player;
 class Order;

@@ -26,6 +26,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <Stream.h>
+#include <BinaryStream.h>
 
 ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse)
 {
@@ -70,16 +71,15 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	{
 		std::string mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
 		mapPreview->setMapThumbnail(mapFileName.c_str());
-		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
-		if (stream == NULL)
+		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+		if (stream->isEndOfStream())
 		{
-			std::cerr << "ChooseMapScreen::onAction : can't open file " << mapFileName << std::endl;
+			std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
 		}
 		else
 		{
 			std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 			validMapSelected = sessionInfo.load(stream);
-			delete stream;
 			if (validMapSelected)
 			{
 				// update map name & info
@@ -98,6 +98,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			else
 				std::cerr << "ChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
+		delete stream;
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{

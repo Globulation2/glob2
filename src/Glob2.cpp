@@ -35,6 +35,7 @@
 #include "GlobalContainer.h"
 
 #include <Stream.h>
+#include <BinaryStream.h>
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -129,10 +130,11 @@ int Glob2::runHostServer()
 	char *mapName=globalContainer->hostServerMapName;
 	
 	printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
-	if (stream == NULL)
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	if (stream->isEndOfStream())
 	{
-		printf("Map '%s' not found!\n", mapName);
+		std::cerr << "Glob2::runHostServer() : error, can't open map " << mapName << std::endl;
+		delete stream;
 		return 1;
 	}
 	else

@@ -88,7 +88,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	else
 	{
 		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", sessionInfo->getFileName().c_str());
-		stream = globalContainer->fileManager->openInputStream(sessionInfo->getFileName());
+		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sessionInfo->getFileName()));
 		mapFileCheckSum = globalContainer->fileManager->checksum(sessionInfo->getFileName());
 	}
 	

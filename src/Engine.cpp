@@ -26,6 +26,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
+#include <BinaryStream.h>
 
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
@@ -510,8 +511,14 @@ int Engine::run(void)
 
 bool Engine::loadGame(const std::string &filename)
 {
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-	if (stream)
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;
+		delete stream;
+		return false;
+	}
+	else
 	{
 		bool res = gui.load(stream);
 		delete stream;
@@ -520,11 +527,6 @@ bool Engine::loadGame(const std::string &filename)
 			std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't load game." << std::endl;
 			return false;
 		}
-	}
-	else
-	{
-		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;
-		return false;
 	}
 
 	std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;

@@ -20,7 +20,7 @@
 #include <GUITextArea.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
-#include <Stream.h>
+#include <StreamBackend.h>
 #include <FileManager.h>
 #include <assert.h>
 #include <iostream>
@@ -751,8 +751,13 @@ namespace GAGGUI
 	
 	bool TextArea::load(const char *filename)
 	{
-		InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-		if (stream)
+		StreamBackend *stream = Toolkit::getFileManager()->openInputStreamBackend(filename);
+		if (stream->isEndOfStream())
+		{
+			delete stream;
+			return false;
+		}
+		else
 		{
 			stream->seekFromEnd(0);
 			size_t len = stream->getPosition();
@@ -769,20 +774,21 @@ namespace GAGGUI
 			delete stream;
 			return true;
 		}
-		else
-			return false;
 	}
 	
 	bool TextArea::save(const char *filename)
 	{
-		OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
-		if (stream)
+		StreamBackend *stream = Toolkit::getFileManager()->openOutputStreamBackend(filename);
+		if (stream->isEndOfStream())
+		{
+			delete stream;
+			return false;
+		}
+		else
 		{
 			stream->write(text.c_str(), text.length());
 			delete stream;
 			return true;
 		}
-		else
-			return false;
 	}
 }
