@@ -467,7 +467,15 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			client.userName[l-1]=0;
 			index+=l;
 			assert(index<=size);
-			clients.push_back(client);
+			bool allready=false;
+			for (std::list<Client>::iterator clienti=clients.begin(); clienti!=clients.end(); ++clienti)
+				if (clienti->uid==client.uid)
+				{
+					allready=true;
+					break;
+				}
+			if (!allready)
+				clients.push_back(client);
 			fprintf(logFile, "client uid=%d name=%s\n", client.uid, client.userName);
 		}
 		newClientListAviable=true;
