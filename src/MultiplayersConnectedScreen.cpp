@@ -30,14 +30,14 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	
 	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Disconnect]"), DISCONNECT));
 	
-	addWidget(new Text(20, 5, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
-	
-	startTimer=new Text(440, 300, globalContainer->standardFont, "");
+	addWidget(new Text(20, 5, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
+
+	startTimer=new Text(440, 300, "standard", "");
 	addWidget(startTimer);
-	
+
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
 	addWidget(textInput);
 	
 	timeCounter=0;
@@ -55,7 +55,7 @@ void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 
 	multiplayersJoin->sessionInfo.draw(gfxCtx);
-	
+
 	addUpdateRect();
 }
 
@@ -63,16 +63,16 @@ void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
 void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 {
 	assert(multiplayersJoin);
-	
+
 	multiplayersJoin->onTimer(tick);
-	
+
 	if (multiplayersJoin->waitingState<MultiplayersJoin::WS_WAITING_FOR_PRESENCE)
 	{
 		multiplayersJoin->quitThisGame();
 		printf("MultiplayersConnectScreen:DISCONNECTED!\n");
 		endExecute(DISCONNECTED);
 	}
-	
+
 	if ((timeCounter++ % 10)==0)
 	{
 		dispatchPaint(gfxCtx);
@@ -98,7 +98,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			snprintf(s, 128, "%s", globalContainer->texts.getString("[download finished]"));
 		startTimer->setText(s);
 	}
-	
+
 	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
 	{
 		if (multiplayersJoin->startGameTimeCounter<0)
@@ -107,7 +107,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			endExecute(STARTED);
 		}
 	}
-	
+
 	if (multiplayersJoin->receivedMessages.size())
 		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersJoin->receivedMessages.begin(); mit!=multiplayersJoin->receivedMessages.end(); ++mit)
 			if (!mit->guiPainted)
@@ -146,7 +146,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				}
 				mit->guiPainted=true;
 			}
-	
+
 	for (std::list<YOG::Message>::iterator mit=yog->receivedMessages.begin(); mit!=yog->receivedMessages.end(); ++mit)
 		if (!mit->gameGuiPainted)
 		{
@@ -231,7 +231,7 @@ void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int pa
 	else if (action==TEXT_VALIDATED)
 	{
 		assert(multiplayersJoin);
-		multiplayersJoin->sendMessage(textInput->text);
+		multiplayersJoin->sendMessage(textInput->getText());
 		textInput->setText("");
 	}
 }

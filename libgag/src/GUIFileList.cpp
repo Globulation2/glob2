@@ -21,7 +21,7 @@
 #include <functional>
 #include <algorithm>
 #include <iostream>
-#include <Environment.h>
+#include <Toolkit.h>
 
 FileList::FileList(int x, int y, int w, int h, base::Ptr<Font> font,
 									 const char *dir,
@@ -52,13 +52,13 @@ void FileList::generateList()
 		fullDir += DIR_SEPARATOR + this->current;
 	}
 	// we add the other files
-	if (GAG::fileManager->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
+	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
 	{
 		const char* fileName;
-		while ((fileName=(GAG::fileManager->getNextDirectoryEntry()))!=NULL)
+		while ((fileName=(Toolkit::getFileManager()->getNextDirectoryEntry()))!=NULL)
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
-			if (GAG::fileManager->isDir(fullFileName.c_str()))
+			if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
 			{
 				std::string dirName = std::string(fileName) + DIR_SEPARATOR;
 				this->addText(dirName.c_str());

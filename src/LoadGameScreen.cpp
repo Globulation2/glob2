@@ -29,14 +29,14 @@ LoadGameScreen::LoadGameScreen()
 	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
-	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose game]"), 600));
-	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
+	addWidget(new Text(20, 18, "menu", globalContainer->texts.getString("[choose game]"), 600));
+	mapName=new Text(440, 60+128+30, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, globalContainer->standardFont, "", 180);
+	mapInfo=new Text(440, 60+128+60, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, globalContainer->standardFont, "", 180);
+	mapVersion=new Text(440, 60+128+90, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
+	mapSize=new Text(440, 60+128+120, "standard", "", 180);
 	addWidget(mapSize);
 
 	addWidget(ok);

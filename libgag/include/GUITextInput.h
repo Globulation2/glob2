@@ -41,7 +41,7 @@ protected:
 
 public:
 	TextInput();
-	TextInput(int x, int y, int w, int h, const char *font, const char *text, bool activated, unsigned textLength=512);
+	TextInput(int x, int y, int w, int h, const char *font, const char *text="", bool activated=false, unsigned textLength=512);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);

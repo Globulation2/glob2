@@ -130,10 +130,6 @@ void RectangularWidget::setVisible(bool visible)
 
 Screen::~Screen()
 {
-	for (std::vector<base::Ptr<Widget> >::iterator it=widgets.begin(); it!=widgets.end(); it++)
-	{
-		delete (*it);
-	}
 }
 
 void Screen::paint()

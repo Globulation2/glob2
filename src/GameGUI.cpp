@@ -34,7 +34,7 @@
 InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
 :OverlayScreen(parentCtx, 492, 34)
 {
-	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true, 256);
+	textInput=new TextInput(5, 5, 482, 24, "standard", "", true, 256);
 	addWidget(textInput);
 }
 

@@ -27,7 +27,8 @@
 
 GlobalContainer::GlobalContainer(void)
 {
-	fileManager=GAG::fileManager;
+	fileManager=Toolkit::getFileManager();
+	assert(fileManager);
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("logs");
@@ -271,42 +272,55 @@ void GlobalContainer::load(void)
 		gfx->setRes(graphicWidth, graphicHeight, 32, graphicFlags);
 
 		// load fonts
-		menuFont=gfx->loadFont("data/fonts/sans.ttf", 22);
+		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");
+		menuFont=Toolkit::getFont("menu");
 		menuFont->setColor(255, 255, 255);
-		standardFont=gfx->loadFont("data/fonts/sans.ttf", 14);
+
+		gfx->loadFont("data/fonts/sans.ttf", 14, "standard");
+		standardFont=Toolkit::getFont("menu");
 		standardFont->setColor(255, 255, 255);
-		littleFont=gfx->loadFont("data/fonts/sans.ttf", 10);
+
+		gfx->loadFont("data/fonts/sans.ttf", 10, "little");
+		littleFont=Toolkit::getFont("menu");
 		littleFont->setColor(255, 255, 255);
 
 		initProgressBar();
 
 		updateLoadProgressBar(10);
 		// load terrain data
-		terrain=gfx->loadSprite("data/gfx/terrain");
+		gfx->loadSprite("data/gfx/terrain", "terrain");
+		terrain=Toolkit::getSprite("terrain");
 
 		// load shader for unvisible terrain
-		terrainShader=gfx->loadSprite("data/gfx/shade");
+		gfx->loadSprite("data/gfx/shade", "shading");
+		terrainShader=Toolkit::getSprite("shading");
 		
 		// black for unexplored terrain
-		terrainBlack=gfx->loadSprite("data/gfx/black");
+		gfx->loadSprite("data/gfx/black", "black");
+		terrainBlack=Toolkit::getSprite("black");
 
 		updateLoadProgressBar(30);
 		// load ressources
-		ressources=gfx->loadSprite("data/gfx/ressource");
+		gfx->loadSprite("data/gfx/ressource", "ressources");
+		ressources=Toolkit::getSprite("ressources");
 
 		updateLoadProgressBar(40);
 		// load units
-		units=gfx->loadSprite("data/gfx/unit");
+		gfx->loadSprite("data/gfx/unit", "units");
+		units=Toolkit::getSprite("units");
 
 		updateLoadProgressBar(70);
 		// load buildings
-		buildings=gfx->loadSprite("data/gfx/building");
+		gfx->loadSprite("data/gfx/building", "buildings");
+		buildings=Toolkit::getSprite("buildings");
 
 		updateLoadProgressBar(90);
 		// load graphics for gui
-		unitmini=gfx->loadSprite("data/gfx/unitmini");
-		gamegui=gfx->loadSprite("data/gfx/gamegui");
-		
+		gfx->loadSprite("data/gfx/unitmini", "buildings");
+		unitmini=Toolkit::getSprite("buildings");
+		gfx->loadSprite("data/gfx/gamegui", "gamegui");
+		gamegui=Toolkit::getSprite("gamegui");
+
 		updateLoadProgressBar(95);
 		// load buildings types
 		buildingsTypes.load("data/buildings.txt");

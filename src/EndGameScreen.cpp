@@ -145,7 +145,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 	}
 	
-	addWidget(new Text(20, 18, globalContainer->menuFont, titleText, 600));
+	addWidget(new Text(20, 18, "menu", titleText, 600));
 	if (allocatedText)
 		delete[] allocatedText;
 	statWidget=new EndGameStat(38, 80, &(gui->game));
@@ -190,7 +190,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
 	{
-		text=new Text(60+128*3, 80+(i*inc), font, teams[i].name.c_str());
+		text=new Text(60+128*3, 80+(i*inc), "standard", teams[i].name.c_str());
 		text->setColor(teams[i].r, teams[i].g, teams[i].b);
 		names.push_back(text);
 		addWidget(text);
