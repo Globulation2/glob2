@@ -32,6 +32,12 @@ MapEdit::MapEdit()
 	// default value;
 	viewportX=0;
 	viewportY=0;
+	int i;
+	for (i=0; i<9; i++)
+	{
+		viewportSpeedX[i]=0;
+		viewportSpeedY[i]=0;
+	}
 
 	// set the editor default values
 	team=0;
@@ -574,7 +580,7 @@ void MapEdit::updateUnits(int x, int y, int w, int h)
 			}
 }
 
-void MapEdit::handleKeyPressed(SDLKey key)
+void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 {
 	switch (key)
 	{
@@ -582,53 +588,100 @@ void MapEdit::handleKeyPressed(SDLKey key)
 			isRunning=false;
 			break;
 		case SDLK_UP:
+			if (pressed)
+		    	viewportSpeedY[1]=-1;
+		    else
+		    	viewportSpeedY[1]=0;
+			break;
 		case SDLK_KP8:
-			viewportY=(viewportY+game.map.getH()-1)&game.map.getMaskH();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+		    	viewportSpeedY[2]=-1;
+		    else
+		    	viewportSpeedY[2]=0;
 			break;
 		case SDLK_DOWN:
+			if (pressed)
+		    	viewportSpeedY[3]=1;
+		    else
+		    	viewportSpeedY[3]=0;
+			break;
 		case SDLK_KP2:
-			viewportY=(viewportY+1)&game.map.getMaskH();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+		    	viewportSpeedY[4]=1;
+		    else
+		    	viewportSpeedY[4]=0;
 			break;
 		case SDLK_LEFT:
+			if (pressed)
+		    	viewportSpeedX[1]=-1;
+		    else
+		    	viewportSpeedX[1]=0;
+			break;
 		case SDLK_KP4:
-			viewportX=(viewportX+game.map.getW()-1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+		    	viewportSpeedX[2]=-1;
+		    else
+		    	viewportSpeedX[2]=0;
 			break;
 		case SDLK_RIGHT:
+			if (pressed)
+		    	viewportSpeedX[3]=1;
+		    else
+		    	viewportSpeedX[3]=0;
+			break;
 		case SDLK_KP6:
-			viewportX=(viewportX+1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+		    	viewportSpeedX[4]=1;
+		    else
+		    	viewportSpeedX[4]=0;
 			break;
 		case SDLK_KP7:
-			viewportY=(viewportY+game.map.getH()-1)&game.map.getMaskH();
-			viewportX=(viewportX+game.map.getW()-1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+			{
+		    	viewportSpeedX[5]=-1;
+		    	viewportSpeedY[5]=-1;
+		    }
+		    else
+		    {
+		    	viewportSpeedX[5]=0;
+		    	viewportSpeedY[5]=0;
+		    }
 			break;
 		case SDLK_KP9:
-			viewportY=(viewportY+game.map.getH()-1)&game.map.getMaskH();
-			viewportX=(viewportX+1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-
-			drawMiniMap();
+			if (pressed)
+			{
+		    	viewportSpeedX[6]=1;
+		    	viewportSpeedY[6]=-1;
+		    }
+		    else
+		    {
+		    	viewportSpeedX[6]=0;
+		    	viewportSpeedY[6]=0;
+		    }
 			break;
 		case SDLK_KP1:
-			viewportY=(viewportY+1)&game.map.getMaskH();
-			viewportX=(viewportX+game.map.getW()-1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+			{
+		    	viewportSpeedX[7]=-1;
+		    	viewportSpeedY[7]=1;
+		    }
+		    else
+		    {
+		    	viewportSpeedX[7]=0;
+		    	viewportSpeedY[7]=0;
+		    }
 			break;
 		case SDLK_KP3:
-			viewportY=(viewportY+1)&game.map.getMaskH();
-			viewportX=(viewportX+1)&game.map.getMaskW();
-			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-			drawMiniMap();
+			if (pressed)
+			{
+		    	viewportSpeedX[8]=1;
+		    	viewportSpeedY[8]=1;
+		    }
+		    else
+		    {
+		    	viewportSpeedX[8]=0;
+		    	viewportSpeedY[8]=0;
+		    }
 			break;
 		case SDLK_s:
 		{
@@ -646,6 +699,20 @@ void MapEdit::handleKeyPressed(SDLKey key)
 	}
 }
 
+void MapEdit::viewportFromMxMY(int mx, int my)
+{
+	mx-=14;
+	my-=14;
+	mx=(mx*128)/100;
+	my=(my*128)/100;
+	viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
+	if (viewportX<0)
+		viewportX+=game.map.getW();
+	if (viewportY<0)
+		viewportY+=game.map.getH();
+}
+
 int MapEdit::run(void)
 {
 	game.map.setSize(7,7, &game);
@@ -656,239 +723,229 @@ int MapEdit::run(void)
 
 	isRunning=true;
 	int returnCode=0;
+	Uint32 startTick, endTick, deltaTick;
 	while (isRunning)
 	{
 		SDL_Event event;
+		startTick=SDL_GetTicks();
 
-		SDL_WaitEvent(&event);
-
-		if (event.type!=SDL_VIDEORESIZE)
-			while (SDL_PollEvent(&event))
-			{
-				if (event.type==SDL_VIDEORESIZE)
-					break;
-			}
-
-		if (event.type==SDL_MOUSEBUTTONDOWN)
+		while (SDL_PollEvent(&event))
 		{
-			int mx=event.button.x;
-			int my=event.button.y;
-			if (mx>=globalContainer->gfx->getW()-128)
-			{
-				if (my<128)
+			if (event.type!=SDL_VIDEORESIZE)
+				while (SDL_PollEvent(&event))
 				{
-					mx=mx-globalContainer->gfx->getW()+128;
-					mx-=14;
-					my-=14;
-					mx=(mx*128)/100;
-					my=(my*128)/100;
-					viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
-					viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
-					if (viewportX<0)
-						viewportX+=game.map.getW();
-					if (viewportY<0)
-						viewportY+=game.map.getH();
-					drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
-					drawMiniMap();
+					if (event.type==SDL_VIDEORESIZE)
+						break;
+				}
+
+			if (event.type==SDL_MOUSEBUTTONDOWN)
+			{
+				int mx=event.button.x;
+				int my=event.button.y;
+				if (mx>=globalContainer->gfx->getW()-128)
+				{
+					if (my<128)
+					{
+						viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+						drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+						drawMiniMap();
+					}
+					else
+					{
+						handleMenuClick(mx, my, event.button.button);
+					}
 				}
 				else
 				{
-					handleMenuClick(mx, my, event.button.button);
-				}
-			}
-			else
-			{
-				handleMapClick(mx, my);
-			}
-		}
-		else if (event.type==SDL_MOUSEMOTION)
-		{
-			int mx=event.motion.x;
-			int my=event.motion.y;
-
-			int x=globalContainer->gfx->getW()-128;
-			int y=460;
-
-			// NOTE : this is just to test fonts
-			globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
-			globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
-			globalContainer->gfx->updateRect(x, y, 128, 20);
-
-			static int oldBrush=NONE;
-			static int orX=0, orY=0, orW=0, orH=0;
-			const int maxNbRefreshZones=2;
-			SDL_Rect refreshZones[maxNbRefreshZones];
-			int nbRefreshZones=0;
-
-			if ( (oldBrush==BUILDING) || (oldBrush==UNIT) || (oldBrush==TERRAIN) || (oldBrush==RESSOURCE) || (editMode==DELETE) )
-			{
-				drawMap(orX, orY, orW, orH, false);
-
-				refreshZones[nbRefreshZones].x=orX;
-				refreshZones[nbRefreshZones].y=orY;
-				refreshZones[nbRefreshZones].w=orW;
-				refreshZones[nbRefreshZones].h=orH;
-				nbRefreshZones++;
-
-				oldBrush=NONE;
-			}
-
-			if (Utilities::ptInRect(mx, my, &mapClip))
-			{
-				if (event.motion.state&SDL_BUTTON(1))
-				{
 					handleMapClick(mx, my);
 				}
-				if ( (editMode==TERRAIN) || (editMode==RESSOURCE) || (editMode==DELETE) )
+			}
+			else if (event.type==SDL_MOUSEMOTION)
+			{
+				int mx=event.motion.x;
+				int my=event.motion.y;
+
+				const int scrollZoneWidth=5;
+
+				// handle nice scroll
+				if (mx<scrollZoneWidth)
+					viewportSpeedX[0]=-1;
+				else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
+					viewportSpeedX[0]=1;
+				else
+					viewportSpeedX[0]=0;
+
+				if (my<scrollZoneWidth)
+					viewportSpeedY[0]=-1;
+				else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
+					viewportSpeedY[0]=1;
+				else
+					viewportSpeedY[0]=0;
+
+				// handle viewport reset
+				if (event.motion.state&SDL_BUTTON(1))
 				{
-					//terrainSize
-					int x, y, w, h;
-					if (editMode==TERRAIN)
+					if (mx>globalContainer->gfx->getW()-128)
 					{
-						x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
-						w=(terrainSize)<<5;
-						y=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
-						h=(terrainSize)<<5;
- 					}
-					else
-					{
-						x=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-						y=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-						w=(terrainSize)<<5;
-						h=(terrainSize)<<5;
-					}
-
-					Utilities::rectClipRect(x, y, w, h, mapClip);
-
-					globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
-
-					refreshZones[nbRefreshZones].x=x;
-					refreshZones[nbRefreshZones].y=y;
-					refreshZones[nbRefreshZones].w=w;
-					refreshZones[nbRefreshZones].h=h;
-					nbRefreshZones++;
-
-					orX=x;
-					orY=y;
-					orW=w;
-					orH=h;
-
-					oldBrush=editMode;
-				}
-				else if (editMode==UNIT)
-				{
-
-					int cx=(mx>>5)+viewportX;
-					int cy=(my>>5)+viewportY;
-
-					int px=mx&0xFFFFFFE0;
-					int py=my&0xFFFFFFE0;
-					int pw=32;
-					int ph=32;
-
-					bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
-
-					int imgid;
-					if (type==UnitType::WORKER)
-						imgid=64;
-					else if (type==UnitType::EXPLORER)
-						imgid=0;
-					else if (type==UnitType::WARRIOR)
-						imgid=256;
-
-					Sprite *unitSprite=globalContainer->units;
-					unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-
-					globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
-
-					globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
-
-					Utilities::rectClipRect(px, py, pw, ph, mapClip);
-					if (isRoom)
-						globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
-					else
-						globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
-
-					globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-
-					refreshZones[nbRefreshZones].x=px;
-					refreshZones[nbRefreshZones].y=py;
-					refreshZones[nbRefreshZones].w=pw;
-					refreshZones[nbRefreshZones].h=ph;
-					nbRefreshZones++;
-
-					orX=px;
-					orY=py;
-					orW=pw;
-					orH=ph;
-					oldBrush=UNIT;
-				}
-				else if (editMode==BUILDING)
-				{
-					int mapX, mapY;
-					int batX, batY, batW, batH;
-
-					// we get the type of building
-					int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
-					BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-
-					// we check for room
-					int tempX, tempY;
-					if (bt->width&0x1)
-						tempX=((mx)>>5)+viewportX;
-					else
-						tempX=((mx+16)>>5)+viewportX;
-
-					if (bt->height&0x1)
-						tempY=((my)>>5)+viewportY;
-					else
-						tempY=((my+16)>>5)+viewportY;
-					bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
-
-					// we get the datas
-					Sprite *sprite=globalContainer->buildings;
-					sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-
-					batX=(mapX-viewportX)<<5;
-					batY=(mapY-viewportY)<<5;
-					batW=(bt->width)<<5;
-					batH=(bt->height)<<5;
-
-					globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
-					globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
-
-					Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
-
-					if (isRoom)
-						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
-					else
-						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
-					
-					if (isRoom)
-					{
-						BuildingType *nnbt=bt;
-						int max=0;
-						while(nnbt->nextLevelTypeNum!=-1)
+						if (my<128)
 						{
-							nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
-							if (max++>200)
-							{
-								printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
-								assert(false);
-								break;
-							}
+							viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+							drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+							drawMiniMap();
 						}
-						int typeNum=nnbt->typeNum;
+					}
+				}
 
-						tempX+=((-bt->decLeft+nnbt->decLeft)<<5);
-						tempY+=((-bt->decTop +nnbt->decTop )<<5);
+				int x=globalContainer->gfx->getW()-128;
+				int y=460;
 
-						isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+				// NOTE : this is just to test fonts
+				globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
+				globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
+				globalContainer->gfx->updateRect(x, y, 128, 20);
+
+				static int oldBrush=NONE;
+				static int orX=0, orY=0, orW=0, orH=0;
+				const int maxNbRefreshZones=2;
+				SDL_Rect refreshZones[maxNbRefreshZones];
+				int nbRefreshZones=0;
+
+				if ( (oldBrush==BUILDING) || (oldBrush==UNIT) || (oldBrush==TERRAIN) || (oldBrush==RESSOURCE) || (editMode==DELETE) )
+				{
+					drawMap(orX, orY, orW, orH, false);
+
+					refreshZones[nbRefreshZones].x=orX;
+					refreshZones[nbRefreshZones].y=orY;
+					refreshZones[nbRefreshZones].w=orW;
+					refreshZones[nbRefreshZones].h=orH;
+					nbRefreshZones++;
+
+					oldBrush=NONE;
+				}
+
+				if (Utilities::ptInRect(mx, my, &mapClip))
+				{
+					if (event.motion.state&SDL_BUTTON(1))
+					{
+						handleMapClick(mx, my);
+					}
+					if ( (editMode==TERRAIN) || (editMode==RESSOURCE) || (editMode==DELETE) )
+					{
+						//terrainSize
+						int x, y, w, h;
+						if (editMode==TERRAIN)
+						{
+							x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+							w=(terrainSize)<<5;
+							y=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+							h=(terrainSize)<<5;
+						}
+						else
+						{
+							x=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+							y=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+							w=(terrainSize)<<5;
+							h=(terrainSize)<<5;
+						}
+
+						Utilities::rectClipRect(x, y, w, h, mapClip);
+
+						globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
+
+						refreshZones[nbRefreshZones].x=x;
+						refreshZones[nbRefreshZones].y=y;
+						refreshZones[nbRefreshZones].w=w;
+						refreshZones[nbRefreshZones].h=h;
+						nbRefreshZones++;
+
+						orX=x;
+						orY=y;
+						orW=w;
+						orH=h;
+
+						oldBrush=editMode;
+					}
+					else if (editMode==UNIT)
+					{
+
+						int cx=(mx>>5)+viewportX;
+						int cy=(my>>5)+viewportY;
+
+						int px=mx&0xFFFFFFE0;
+						int py=my&0xFFFFFFE0;
+						int pw=32;
+						int ph=32;
+
+						bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
+
+						int imgid;
+						if (type==UnitType::WORKER)
+							imgid=64;
+						else if (type==UnitType::EXPLORER)
+							imgid=0;
+						else if (type==UnitType::WARRIOR)
+							imgid=256;
+
+						Sprite *unitSprite=globalContainer->units;
+						unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
+						globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+
+						globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
+
+						Utilities::rectClipRect(px, py, pw, ph, mapClip);
+						if (isRoom)
+							globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
+						else
+							globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
+
+						globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+
+						refreshZones[nbRefreshZones].x=px;
+						refreshZones[nbRefreshZones].y=py;
+						refreshZones[nbRefreshZones].w=pw;
+						refreshZones[nbRefreshZones].h=ph;
+						nbRefreshZones++;
+
+						orX=px;
+						orY=py;
+						orW=pw;
+						orH=ph;
+						oldBrush=UNIT;
+					}
+					else if (editMode==BUILDING)
+					{
+						int mapX, mapY;
+						int batX, batY, batW, batH;
+
+						// we get the type of building
+						int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+
+						// we check for room
+						int tempX, tempY;
+						if (bt->width&0x1)
+							tempX=((mx)>>5)+viewportX;
+						else
+							tempX=((mx+16)>>5)+viewportX;
+
+						if (bt->height&0x1)
+							tempY=((my)>>5)+viewportY;
+						else
+							tempY=((my+16)>>5)+viewportY;
+						bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+						// we get the datas
+						Sprite *sprite=globalContainer->buildings;
+						sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
 						batX=(mapX-viewportX)<<5;
 						batY=(mapY-viewportY)<<5;
-						batW=(nnbt->width)<<5;
-						batH=(nnbt->height)<<5;
+						batW=(bt->width)<<5;
+						batH=(bt->height)<<5;
+
+						globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+						globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
 
 						Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
 
@@ -897,52 +954,118 @@ int MapEdit::run(void)
 						else
 							globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
 
+						if (isRoom)
+						{
+							BuildingType *nnbt=bt;
+							int max=0;
+							while(nnbt->nextLevelTypeNum!=-1)
+							{
+								nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+								if (max++>200)
+								{
+									printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
+									assert(false);
+									break;
+								}
+							}
+							int typeNum=nnbt->typeNum;
+
+							tempX+=((-bt->decLeft+nnbt->decLeft)<<5);
+							tempY+=((-bt->decTop +nnbt->decTop )<<5);
+
+							isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+							batX=(mapX-viewportX)<<5;
+							batY=(mapY-viewportY)<<5;
+							batW=(nnbt->width)<<5;
+							batH=(nnbt->height)<<5;
+
+							Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+
+							if (isRoom)
+								globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+							else
+								globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+
+						}
+
+						refreshZones[nbRefreshZones].x=batX;
+						refreshZones[nbRefreshZones].y=batY;
+						refreshZones[nbRefreshZones].w=batW;
+						refreshZones[nbRefreshZones].h=batH;
+						nbRefreshZones++;
+						orX=batX;
+						orY=batY;
+						orW=batW;
+						orH=batH;
+
+						globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+						oldBrush=BUILDING;
 					}
-
-					refreshZones[nbRefreshZones].x=batX;
-					refreshZones[nbRefreshZones].y=batY;
-					refreshZones[nbRefreshZones].w=batW;
-					refreshZones[nbRefreshZones].h=batH;
-					nbRefreshZones++;
-					orX=batX;
-					orY=batY;
-					orW=batW;
-					orH=batH;
-
-					globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-					oldBrush=BUILDING;
 				}
-			}
 
-			assert(nbRefreshZones<=maxNbRefreshZones);
-			if (nbRefreshZones>0)
+				assert(nbRefreshZones<=maxNbRefreshZones);
+				if (nbRefreshZones>0)
+				{
+					globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
+				}
+
+
+			}
+			else if (event.type==SDL_KEYDOWN)
 			{
-				globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
+				handleKeyPressed(event.key.keysym.sym, true);
 			}
+			else if (event.type==SDL_KEYUP)
+			{
+				handleKeyPressed(event.key.keysym.sym, false);
+			}
+			else if (event.type==SDL_VIDEORESIZE)
+			{
+				int newW=event.resize.w&0xFFFFFFE0;
+				int newH=event.resize.h&0xFFFFFFE0;
+				if (newW<256)
+					newW=256;
+				if (newH<288)
+					newH=288;
+				globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
+				regenerateClipRect();
+				draw();
+			}
+			else if (event.type==SDL_QUIT)
+			{
+				returnCode=-1;
+				isRunning=false;
+			}
+		}
 
+		// redraw on scroll
+		bool doRedraw=false;
+		int i;
+		viewportX+=game.map.getW();
+		viewportY+=game.map.getH();
+		{
+			for (i=0; i<9; i++)
+			{
+				viewportX+=viewportSpeedX[i];
+				viewportY+=viewportSpeedY[i];
+				if ((viewportSpeedX[i]!=0) || (viewportSpeedY[i]!=0))
+					doRedraw=true;
+			}
+		}
+		viewportX&=game.map.getMaskW();
+		viewportY&=game.map.getMaskH();
 
-		}
-		else if (event.type==SDL_KEYDOWN)
+		if (doRedraw)
 		{
-			handleKeyPressed(event.key.keysym.sym);
+			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+			drawMiniMap();
 		}
-		else if (event.type==SDL_VIDEORESIZE)
-		{
-			int newW=event.resize.w&0xFFFFFFE0;
-			int newH=event.resize.h&0xFFFFFFE0;
-			if (newW<256)
-				newW=256;
-			if (newH<288)
-				newH=288;
-			globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
-			regenerateClipRect();
-			draw();
-		}
-		else if (event.type==SDL_QUIT)
-		{
-			returnCode=-1;
-			isRunning=false;
-		}
+
+		endTick=SDL_GetTicks();
+		deltaTick=endTick-startTick;
+		if (deltaTick<33)
+			SDL_Delay(33-deltaTick);
 	}
 
 	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);

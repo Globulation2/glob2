@@ -114,7 +114,7 @@ private:
 	std::queue<Order *> orderQueue;
 
 	int mouseX, mouseY;
-	int viewportSpeedX[8], viewportSpeedY[8];
+	int viewportSpeedX[9], viewportSpeedY[9];
 	
 	// statistics related:
 	enum

@@ -47,7 +47,7 @@ GameGUI::GameGUI()
 	statMode=STAT_TEXT;
 
 	{
-		for (int i=0; i<8; i++)
+		for (int i=0; i<9; i++)
 		{
 			viewportSpeedX[i]=0;
 			viewportSpeedY[i]=0;
@@ -94,7 +94,7 @@ void GameGUI::step(void)
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
 	{
-		for (int i=0; i<8; i++)
+		for (int i=0; i<9; i++)
 		{
 			viewportX+=viewportSpeedX[i];
 			viewportY+=viewportSpeedY[i];
@@ -392,13 +392,13 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 		case SDLK_KP3:
 			if (pressed)
 			{
-		    	viewportSpeedX[3]=1;
-		    	viewportSpeedY[3]=1;
+		    	viewportSpeedX[8]=1;
+		    	viewportSpeedY[8]=1;
 		    }
 		    else
 		    {
-		    	viewportSpeedX[3]=0;
-		    	viewportSpeedY[3]=0;
+		    	viewportSpeedX[8]=0;
+		    	viewportSpeedY[8]=0;
 		    }
 			break;
 		case SDLK_PLUS:

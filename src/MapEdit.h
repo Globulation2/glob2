@@ -40,7 +40,7 @@ private:
 
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
-	void handleKeyPressed(SDLKey key);
+	void handleKeyPressed(SDLKey key, bool pressed);
 
 	void load(void);
 	void save(void);
@@ -60,6 +60,7 @@ private:
 private:
 	void regenerateClipRect(void);
 	void drawSelRect(int x, int y, int w, int h);
+	void viewportFromMxMY(int mx, int my);
 
 private:
 	Game game;
@@ -67,6 +68,7 @@ private:
 
 	int viewportX, viewportY;
 	int viewportW, viewportH;
+	int viewportSpeedX[9], viewportSpeedY[9];
 	SDL_Rect screenClip, mapClip;
 	GraphicContext *gfx;
 
