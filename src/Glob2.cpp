@@ -89,6 +89,13 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runHostServer(int argc, char *argv[])
 {
+	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->settings.userName);
+	if (!globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
+	{
+		printf("Glob2::runHostServer():connection to YOG failed!\n");
+		return 0;
+	}
+	
 	bool validSessionInfo;
 	SessionInfo sessionInfo;
 	
@@ -112,6 +119,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 		}
 	}
 	
+	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
 	
 	Uint32 frameStartTime;
@@ -178,7 +186,10 @@ int Glob2::runHostServer(int argc, char *argv[])
 	
 	
 	delete multiplayersHost;
-		
+	
+	printf("Glob2::runHostServer(): disconnecting YOG.\n");
+	globalContainer->yog.forceDisconnect();
+	
 	printf("Glob2::runHostServer():end.\n");
 
 	return 0;
