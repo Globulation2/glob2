@@ -716,7 +716,7 @@ void MapEdit::loadSave(bool isLoad)
 void MapEdit::scriptEditor(void)
 {
 	// create dialog box
-	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen(&(game.script));
+	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen(&(game.script), &game);
 	scriptEditorScreen->dispatchPaint(scriptEditorScreen->getSurface());
 	
 	// save screen

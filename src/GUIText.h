@@ -31,7 +31,7 @@ protected:
 	Uint8 cr, cg, cb, ca;
 
 public:
-	Text(int x, int y, Font *font, const char *text, int w=0, int h=0);
+	Text(int x, int y, Font *font, const char *text="", int w=0, int h=0);
 	virtual ~Text() { if (this->text) delete[] this->text; }
 	virtual void setText(const char *newText);
 	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
