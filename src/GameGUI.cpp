@@ -1181,29 +1181,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-
-							Sint32 rdyPtr[1][NB_UNIT_TYPE];
-							memcpy(rdyPtr, selBuild->ratioLocal, NB_UNIT_TYPE*sizeof(Sint32));
-							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), rdyPtr, 1));
+							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
 						}
 					}
 					else if (mx<128-18)
 					{
 						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
-
-						Sint32 rdyPtr[1][NB_UNIT_TYPE];
-						memcpy(rdyPtr, selBuild->ratioLocal, NB_UNIT_TYPE*sizeof(Sint32));
-						orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), rdyPtr, 1));
+						orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-
-							Sint32 rdyPtr[1][NB_UNIT_TYPE];
-							memcpy(rdyPtr, selBuild->ratioLocal, NB_UNIT_TYPE*sizeof(Sint32));
-							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), rdyPtr, 1));
+							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);

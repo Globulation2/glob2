@@ -460,7 +460,7 @@ OrderModifySwarms::OrderModifySwarms(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderModifySwarms::OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], int length)
+OrderModifySwarms::OrderModifySwarms(Uint16 *gid, Sint32 *ratios, int length)
 {
 	assert(NB_UNIT_TYPE==3);
 	this->length=length;
@@ -470,7 +470,7 @@ OrderModifySwarms::OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], 
 	this->data=(Uint8 *)malloc(14*length);
 
 	memcpy(this->gid, gid, length*2);
-	memcpy(this->ratio, ratio, NB_UNIT_TYPE*length*4);
+	memcpy(this->ratio, ratios, NB_UNIT_TYPE*length*4);
 }
 
 OrderModifySwarms::~OrderModifySwarms()
