@@ -93,7 +93,7 @@ public:
 	//! Grow ressources on map
 	void growRessources(void);
 	//! Do a step associated woth map (grow ressources and process bullets)
-	void syncStep(Sint32 stepCounter);
+	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferRessourceType
 	void switchFogOfWar(void);
 
@@ -431,7 +431,8 @@ protected:
 	int pathToBuildingCountFarIsNew;
 	int pathToBuildingCountFarOldSuccess;
 	int pathToBuildingCountFarOldFailureLocked;
-	int pathToBuildingCountFarOldFailureBad;//-
+	int pathToBuildingCountFarOldFailureBad;
+	int pathToBuildingCountFarOldFailureRepeat;
 	int pathToBuildingCountFarOldFailureUnusable;
 	int pathToBuildingCountFarUpdateSuccess;
 	int pathToBuildingCountFarUpdateSuccessAround;

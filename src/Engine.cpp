@@ -387,8 +387,21 @@ int Engine::run(void)
 			// We allways allow the user ot use the gui:
 			if (globalContainer->runNoX)
 			{
-				if (gui.getLocalTeam()->isAlive==false || gui.getLocalTeam()->hasWon==true || gui.game.totalPrestigeReached)
+				if (!gui.getLocalTeam()->isAlive)
+				{
+					printf("nox::gui.localTeam is dead\n");
 					gui.isRunning=false;
+				}
+				else if (gui.getLocalTeam()->hasWon)
+				{
+					printf("nox::gui.localTeam has won\n");
+					gui.isRunning=false;
+				}
+				else if (gui.game.totalPrestigeReached)
+				{
+					printf("nox::gui.game.totalPrestigeReached\n");
+					gui.isRunning=false;
+				}
 			}
 			else
 				gui.step();
@@ -487,10 +500,15 @@ int Engine::run(void)
 		}
 	}
 	
-	// Display End Game Screen
-	EndGameScreen endGameScreen(&gui);
-	if (endGameScreen.execute(globalContainer->gfx, 40)==-1)
+	if (globalContainer->runNoX)
 		return -1;
 	else
-		return EE_NO_ERROR;
+	{
+		// Display End Game Screen
+		EndGameScreen endGameScreen(&gui);
+		if (endGameScreen.execute(globalContainer->gfx, 40)==-1)
+			return -1;
+		else
+			return EE_NO_ERROR;
+	}
 }

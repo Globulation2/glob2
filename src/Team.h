@@ -104,6 +104,11 @@ public:
 	//! Check some available integrity constraints
 	void integrity(void);
 	
+	//! remove the building from all lists not realated to the upgrade/destroying systems
+	void removeFromAbilitiesLists(Building *building);
+	//! add the building from all lists not realated to the upgrade/destroying systems
+	void addToStaticAbilitiesLists(Building *building);
+	
 	//! Do a step for each unit, building and bullet in team.
 	void syncStep(void);
 
