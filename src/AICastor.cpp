@@ -147,8 +147,8 @@ void AICastor::firstInit()
 
 AICastor::AICastor(Player *player)
 {
-	//logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	logFile=stdout;
+	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	//logFile=stdout;
 	
 	firstInit();
 	init(player);
