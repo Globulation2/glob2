@@ -230,6 +230,38 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	}
 }
 
+void GameGUI::brushStep(int mx, int my)
+{
+	int mapX, mapY;
+	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
+	int fig = forbiddenBrush.getFigure();
+	brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, fig));
+	int startX = mapX-BrushTool::getBrushDimX(fig);
+	int startY = mapY-BrushTool::getBrushDimY(fig);
+	int width  = BrushTool::getBrushWidth(fig);
+	int height = BrushTool::getBrushHeight(fig);
+	if (forbiddenBrush.getType() == BrushTool::MODE_ADD)
+	{
+		for (int y=startY; y<startY+height; y++)
+			for (int x=startX; x<startX+width; x++)
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				{
+					game.map.localForbiddenMap[game.map.w*(y&game.map.hMask)+(x&game.map.wMask)] = 0;
+				}
+	}
+	else if (forbiddenBrush.getType() == BrushTool::MODE_DEL)
+	{
+		for (int y=startY; y<startY+height; y++)
+			for (int x=startX; x<startX+width; x++)
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY))
+				{
+					game.map.localForbiddenMap[game.map.w*(y&game.map.hMask)+(x&game.map.wMask)] = 0xFF;
+				}
+	}
+	else
+		assert(false);
+}
+
 void GameGUI::dragStep(void)
 {
 	int mx, my;
@@ -246,9 +278,7 @@ void GameGUI::dragStep(void)
 		// Update brush
 		else if (selectionMode==BRUSH_SELECTION)
 		{
-			int mapX, mapY;
-			game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-			brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, forbiddenBrush.getFigure()));
+			brushStep(mx, my);
 		}
 	}
 }
@@ -1158,9 +1188,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
-		int mapX, mapY;
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		brushAccumulator.applications.push_back(BrushApplication(mapX, mapY, forbiddenBrush.getFigure()));
+		brushStep(mouseX, mouseY);
 	}
 	else if (putMark)
 	{
@@ -2986,6 +3014,7 @@ bool GameGUI::load(SDL_RWops *stream)
 		hiddenGUIElements=SDL_ReadBE32(stream);
 		Uint32 buildingsChoiceMask=SDL_ReadBE32(stream);
 		Uint32 flagsChoiceMask=SDL_ReadBE32(stream);
+		
 		// invert value if hidden
 		for (unsigned i=0; i<buildingsChoice.size(); ++i)
 		{
@@ -3001,6 +3030,9 @@ bool GameGUI::load(SDL_RWops *stream)
 			if ((1<<id) & flagsChoiceMask)
 				flagsChoice[i]=-id-1;
 		}
+		
+		// recompute local forbidden
+		game.map.computeLocalForbidden(localTeamNo);
 	}
 
 	return true;

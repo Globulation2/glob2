@@ -421,7 +421,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 					{
 						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
 						if (oaf->mask.get(orderMaskIndex))
+						{
+							// Update real map
 							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden |= teamMask;
+							// Update local map
+							map.localForbiddenMap[map.w*(y&map.hMask)+(x&map.wMask)] = 0;
+						}
 					}
 			}
 			else if (oaf->type == BrushTool::MODE_DEL)
@@ -432,7 +437,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 					{
 						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
 						if (oaf->mask.get(orderMaskIndex))
+						{
+							// Update real map
 							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden &= notTeamMask;
+							// Update local map
+							map.localForbiddenMap[map.w*(y&map.hMask)+(x&map.wMask)] = 0xFF;
+						}
 					}
 					
 				// We remove, so we need to refresh the gradients, unfortunatly
@@ -1865,7 +1875,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if (map.isNotForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me))
+				if (map.isForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me))
 					globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 255, 0, 0, 80);
 			}
 			/*{

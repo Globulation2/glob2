@@ -144,6 +144,8 @@ private:
 	void drawInGameTextInput(void);
 
 	void moveFlag(int mx, int my, bool drop);
+	//! Update the brush and the local map due to mouse motion
+	void brushStep(int mx, int my);
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(void);
 	//! on each step, check if we have won or lost

@@ -54,7 +54,7 @@ struct Case
 	Uint16 groundUnit;
 	Uint16 airUnit;
 
-	Uint32 forbidden; // This is a mask, one bit by team, 0=forbidden case, 1=allowed case.
+	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 };
 
 
@@ -174,11 +174,14 @@ public:
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
 	}
 	
-	//! Return true if the position (x,y) is not a forbidden area set by the user
-	bool isNotForbiddenLocal(int x, int y, int teamMask)
+	//! Return true if the position (x,y) is a forbidden area set by the user
+	bool isForbiddenLocal(int x, int y, int teamMask)
 	{
-		return ((*(cases+w*(y&hMask)+(x&wMask))).forbidden&teamMask) != 0;
+		return localForbiddenMap[w*(y&hMask)+(x&wMask)] == 0;
 	}
+	
+	//! Compute localForbiddenMap from cases array
+	void computeLocalForbidden(int localTeamNo);
 
 	inline Uint16 getTerrain(int x, int y)
 	{
@@ -481,8 +484,8 @@ public:
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
 	Uint32 *mapDiscovered;
 	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
-	//! Array of mask, same as in Case::forbidden : one bit by team, 0=forbidden case, 1=allowed case.
-	std::valarray<Uint32> localForbiddenMap;
+	//! Array, 0 = forbidden, 0xFF = allowed
+	std::valarray<Uint8> localForbiddenMap;
 	
 public:
 	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
