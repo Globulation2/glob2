@@ -660,6 +660,7 @@ void Team::step(void)
 			turrets.remove(myBuildings[*it]);
 		if ( myBuildings[*it]->type->isVirtual )
 			virtualBuildings.remove(myBuildings[*it]);
+		subscribeForInside.remove(myBuildings[*it]);
 		subscribeToBringRessources.remove(myBuildings[*it]);
 		subscribeForFlaging.remove(myBuildings[*it]);
 		delete myBuildings[*it];
@@ -676,10 +677,14 @@ void Team::step(void)
 			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
 	}
-
+	
+	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
+	{
+		//printf("(*it)->unitsInsideSubscribe.size()=%d\n", (*it)->unitsInsideSubscribe.size());
 		if ((*it)->unitsInsideSubscribe.size()>0)
 			(*it)->subscribeForInsideStep();
+	}
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 	{
@@ -701,6 +706,7 @@ void Team::step(void)
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeToBringRessources.erase(ittemp);
 		}
+	
 	//subscribeForFlagingStep
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()>0)

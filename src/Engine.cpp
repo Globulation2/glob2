@@ -330,6 +330,7 @@ int Engine::run(void)
 			//printf ("Engine::bgu:%d\n", globalContainer->safe());
 
 			gui.step();
+			
 			if (!isNowWaiting)
 				gui.synchroneStep(); // This is better to call it "synchronously." Otherwise stats may appear wrongly extended...
 
