@@ -668,6 +668,7 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool ov
 		sprintf(temp, "%s%dm.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
+#ifdef LOAD_ALL_IMAGE_TYPE
 		sprintf(temp, "%s%dm.bmp", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
@@ -695,12 +696,14 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool ov
 		sprintf(temp, "%s%dm.tga", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
+#endif
 	}
 	else
 	{
 		sprintf(temp, "%s%d.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
+#ifdef LOAD_ALL_IMAGE_TYPE
 		sprintf(temp, "%s%d.bmp", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
@@ -728,6 +731,7 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, bool ov
 		sprintf(temp, "%s%d.tga", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
+#endif
 	}
 	return NULL;
 }

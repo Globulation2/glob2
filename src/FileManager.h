@@ -38,6 +38,10 @@ private:
 	std::vector<const char *> fileList;
 	//! Index in the dirFileList vector
 	int fileListIndex;
+	//! Last index in dir list, accelerate loading
+	int dirListIndexCache;
+
+	//int totTest, cMiss, cHit;
 
 private:
 	//! clear the list of directory
