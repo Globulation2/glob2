@@ -1457,6 +1457,7 @@ void Unit::handleMovement(void)
 		|| displacement == DIS_GOING_TO_BUILDING))
 	{
 		Map *map = owner->map;
+		// TODO : be sure this is the right thing to do and add a decent comment
 		if (movement == MOV_HARVESTING)
 			map->decRessource(posX + dx, posY + dy);
 		for (int tdx = -1; tdx <= 1; tdx++)

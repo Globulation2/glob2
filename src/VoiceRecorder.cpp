@@ -46,6 +46,7 @@
 	#include <sys/soundcard.h>
 	#include <unistd.h>
 	#include <fcntl.h>
+	#define STOP_RECORDING_TIMEOUT 2000
 #endif
 
 #define MAX_VOICE_MULTI_FRAME_LENGTH 256
@@ -114,7 +115,7 @@ int record(void *pointer)
 		size_t totalRead = 0;
 		size_t frameCount = 0;
 		
-		while (voiceRecorder->recordingNow)
+		while (voiceRecorder->recordingNow || (voiceRecorder->stopRecordingTimeout > 0))
 		{
 			// read
 			#ifdef WIN32
@@ -127,6 +128,7 @@ int record(void *pointer)
 			size_t readLength = read(dsp, buffer, toReadLength);
 			assert(readLength == toReadLength);
 			totalRead += readLength;
+			voiceRecorder->stopRecordingTimeout -= readLength;
 			#endif
 			
 			// transforms samples to float
@@ -208,6 +210,7 @@ VoiceRecorder::VoiceRecorder()
 	// create the thread that willl record and the mutex that will protect access to shared order list
 	recordThreadRun = true;
 	recordingNow = false;
+	stopRecordingTimeout = 0;
 	recordingThread = SDL_CreateThread(record, this);
 	ordersMutex = SDL_CreateMutex();
 }
@@ -231,6 +234,7 @@ void VoiceRecorder::startRecording(void)
 
 void VoiceRecorder::stopRecording(void)
 {
+	stopRecordingTimeout = STOP_RECORDING_TIMEOUT;
 	recordingNow = false;
 }
 
