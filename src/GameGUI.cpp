@@ -1864,6 +1864,7 @@ void GameGUI::drawOverlayInfos(void)
 	int dec=(globalContainer->gfx->getW()-640)>>2;
 	dec += 32;
 	
+	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 	for (i=0; i<3; i++)
 	{
 		free = teamStats->getFreeUnits(UnitType::TypeNum(i));
