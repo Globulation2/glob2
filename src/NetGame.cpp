@@ -65,6 +65,10 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	
 	for (int i=0; i<10; i++)
 		latencyStats[i]=0;
+	for (int i=0; i<40; i++)
+		wishedDelayStats[i]=0;
+	for (int i=0; i<40; i++)
+		maxMedianWishedDelayStats[i]=0;
 	init();
 };
 
@@ -77,6 +81,23 @@ NetGame::~NetGame()
 	for (int i=0; i<10; i++)
 		fprintf(logFile, "latencyStats[%2d]=%5d (%4f)\n", i, latencyStats[i], (float)(100.*latencyStats[i])/(float)sum);
 	fprintf(logFile, "\n");
+	
+	sum=0;
+	for (int i=0; i<40; i++)
+		sum+=wishedDelayStats[i];
+	fprintf(logFile, "wishedDelayStats: (sum=%d)\n", sum);
+	for (int i=0; i<40; i++)
+		fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
+	fprintf(logFile, "\n");
+	
+	sum=0;
+	for (int i=0; i<40; i++)
+		sum+=maxMedianWishedDelayStats[i];
+	fprintf(logFile, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
+	for (int i=0; i<40; i++)
+		fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
+	fprintf(logFile, "\n");
+		
 	fflush(logFile);
 	
 	for (int p=0; p<32; p++)
@@ -112,9 +133,29 @@ void NetGame::init(void)
 		fprintf(logFile, "\n");
 		for (int i=0; i<10; i++)
 			latencyStats[i]=0;
-		fflush(logFile);
 	}
-		
+	sum=0;
+	for (int i=0; i<40; i++)
+		sum+=wishedDelayStats[i];
+	if (sum)
+	{
+		fprintf(logFile, "wishedDelayStats: (sum=%d)\n", sum);
+		for (int i=0; i<40; i++)
+			fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
+		fprintf(logFile, "\n");
+	}
+	sum=0;
+	for (int i=0; i<40; i++)
+		sum+=maxMedianWishedDelayStats[i];
+	if (sum)
+	{
+		fprintf(logFile, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
+		for (int i=0; i<40; i++)
+			fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
+		fprintf(logFile, "\n");
+	}
+	fflush(logFile);
+	
 	executeStep=0;
 	pushStep=0+defaultLatency;
 	freeingStep=256-maxLatency-2;
@@ -498,7 +539,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	//if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
 	
 	fprintf(logFile, "\n");
-	fprintf(logFile, "NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
+	fprintf(logFile, "pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
 	
 	assert(ordersQueue[playerNumber][pushStep]==NULL);
 	
@@ -676,7 +717,7 @@ Order *NetGame::getOrder(int playerNumber)
 		wishedLatency[playerNumber]=order->wishedLatency;
 		recentsWishedDelay[playerNumber][executeStep&63]=order->wishedDelay;
 		fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, order->wishedLatency);
-		fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
+		//fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
 		
 		return order;
 	}
@@ -1452,21 +1493,26 @@ void NetGame::stepExecuted(void)
 
 int NetGame::ticksToDelay(void)
 {
-	//We look for the slowest player, and get his average delay:
-	int minAverageWishedDelay=255;
+	//We look for the slowest player, and get his median delay:
+	int maxMedianWishedDelay=0;
 	for (int p=0; p<numberOfPlayer; p++)
-	{
-		int averageWishedDelay=0;
 		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-			for (int i=0; i<64; i++)
-				averageWishedDelay+=recentsWishedDelay[p][i];
-		averageWishedDelay+=63;
-		averageWishedDelay/=64;
-		if (minAverageWishedDelay>averageWishedDelay)
-			minAverageWishedDelay=averageWishedDelay;
+		{
+			int medianWishedDelay;
+			for (medianWishedDelay=0; medianWishedDelay<40; medianWishedDelay++)
+			{
+				int underCount=0;
+				for (int i=0; i<64; i++)
+					if (recentsWishedDelay[p][i]<=medianWishedDelay)
+						underCount++;
+				if (underCount>=32)
+					break;
+			}
+			if (maxMedianWishedDelay<medianWishedDelay)
+				maxMedianWishedDelay=medianWishedDelay;
 	}
-	
-	//fprintf(logFile, "minAverageWishedDelay=%d\n", minAverageWishedDelay);
+	maxMedianWishedDelayStats[maxMedianWishedDelay]++;
+	//fprintf(logFile, "maxMedianWishedDelay=%d\n", maxMedianWishedDelay);
 	
 	Uint8 latency=pushStep-executeStep;
 	
@@ -1508,16 +1554,21 @@ int NetGame::ticksToDelay(void)
 	}
 	
 	
-	int delay=minAverageWishedDelay+minTicksToWait;
+	int delay=maxMedianWishedDelay+minTicksToWait;
 	
-	//printf("minTicksToWait=%d, minAverageWishedDelay=%d, delay=%d\n", minTicksToWait, minAverageWishedDelay, delay);
+	//printf("minTicksToWait=%d, maxAverageWishedDelay=%d, delay=%d\n", minTicksToWait, maxAverageWishedDelay, delay);
 	
 	return delay;
 }
 
-void NetGame::setWishedDelay(int delay)
+void NetGame::setLeftTicks(int leftTicks)
 {
-	myLocalWishedDelay=delay;
+	if (leftTicks>=4)
+		myLocalWishedDelay=0;
+	else
+		myLocalWishedDelay=4-leftTicks;
+	
+	if (myLocalWishedDelay>39)
+		myLocalWishedDelay=39;
+	wishedDelayStats[myLocalWishedDelay]++;
 }
-
-

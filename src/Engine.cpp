@@ -37,7 +37,7 @@
 Engine::Engine()
 {
 	net=NULL;
-	for (int i=0; i<40; i++)
+	for (int i=0; i<=40; i++)
 		cpuStats[i]=0;
 	logFile = globalContainer->logFileManager->getFile("Engine.log");
 }
@@ -45,14 +45,14 @@ Engine::Engine()
 Engine::~Engine()
 {
 	fprintf(logFile, "cpu usage stats:\n");
-	for (int i=0; i<40; i++)
+	for (int i=0; i<=40; i++)
 		fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
 	int sum=0;
-	for (int i=0; i<40; i++)
+	for (int i=0; i<=40; i++)
 		sum+=cpuStats[i];
 	fprintf(logFile, "\n");
 	fprintf(logFile, "cpu usage graph:\n");
-	for (int i=0; i<40; i++)
+	for (int i=0; i<=40; i++)
 	{
 		fprintf(logFile, "%3d.%1d %% | ", 100-(i*5)/2, (i&1)*5);
 		double ratio=100.*(double)cpuStats[i]/(double)sum;
@@ -351,6 +351,9 @@ int Engine::run(void)
 		//int ticknb=0;
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute=true;
+		Sint32 ticksSpentInComputation=40;
+		Sint32 computationAviableTicks=0;
+		
 		while (gui.isRunning)
 		{
 			startTick=SDL_GetTicks();
@@ -363,6 +366,7 @@ int Engine::run(void)
 				gui.synchroneStep();
 
 			Sint32 ticksToDelay=0;
+			Sint32 ticksDelayedInside=0;
 			if (!gui.paused) // TODO: this is an ugly pause !
 			{
 				if (networkReadyToExecute)
@@ -376,7 +380,14 @@ int Engine::run(void)
 							net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
 					
 					ticksToDelay=net->ticksToDelay();
-					SDL_Delay(ticksToDelay);
+					if (ticksToDelay>computationAviableTicks)
+						ticksDelayedInside=computationAviableTicks;
+					else
+						ticksDelayedInside=ticksToDelay;
+					if (ticksDelayedInside>0)
+						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
+					else
+						ticksDelayedInside=0;
 				}
 				
 				// We proceed network:
@@ -408,12 +419,15 @@ int Engine::run(void)
 
 			
 			endTick=SDL_GetTicks();
-			Sint32 spentTick=endTick-startTick;
-			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
+			
+			Sint32 spentTicks=endTick-startTick;
+			ticksSpentInComputation=spentTicks-ticksDelayedInside;
+			
+			computationAviableTicks=gui.game.session.gameTPF-ticksSpentInComputation;
 			
 			if (!gui.paused)
 			{
-				Sint32 i=leftTicks+ticksToDelay;
+				Sint32 i=computationAviableTicks;
 				if (i<0)
 					i=0;
 				else if (i>=40)
@@ -421,34 +435,11 @@ int Engine::run(void)
 				cpuStats[i]++;
 			}
 			
-			Sint32 ticksToWait=leftTicks;
-			if (leftTicks<0)
-				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.
-			else
-				net->setWishedDelay(0);
+			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
 			
+			Sint32 ticksToWait=computationAviableTicks+ticksToDelay-ticksDelayedInside;
 			if (ticksToWait>0)
-				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.
-				
-			/*endTick=SDL_GetTicks();
-			Sint32 spentTick=endTick-startTick;
-			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
-			if (!gui.paused)
-			{
-				Sint32 i=leftTicks;
-				if (i<0)
-					i=0;
-				else if (i>=40)
-					i=40;
-				cpuStats[i]++;
-			}
-			Sint32 ticksToWait=leftTicks+net->ticksToDelay();
-			if (leftTicks<0)
-				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.
-			else
-				net->setWishedDelay(0);
-			if (ticksToWait>0)
-				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.*/
+				SDL_Delay(ticksToWait);
 		}
 
 		delete net;

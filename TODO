@@ -3,6 +3,7 @@ To First release :
 IngameGUI:
 -On ne devrait pas voir combien il y a d'unités dans un batiment ennemi.
 -On ne sait pas qui est mort.
+-Il faudrait une pause.
 
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
@@ -26,6 +27,7 @@ Optimisation:
 
 Minimap:
 - La minimap ne tient pas compte des batiment que l'on voit sous le FOW.
+- Il faudrait si possible augmenter la visibilité des fruits.
 
 Technique :
 - optimiser l'affichage des boulets

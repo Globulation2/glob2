@@ -54,7 +54,7 @@ public:
 	NetGame *net;
 
 protected:
-	int cpuStats[40];
+	int cpuStats[41];
 	FILE *logFile;
 };
 
