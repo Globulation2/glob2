@@ -20,7 +20,7 @@
 #include <GUIFileList.h>
 #include <functional>
 #include <algorithm>
-
+#include <iostream>
 
 FileList::FileList(int x, int y, int w, int h, const Font *font, 
 									 FileManager* fileManager, const char *dir, 
@@ -107,7 +107,7 @@ void FileList::selectionChanged()
 const char* FileList::fileToList(const char* fileName) const
 {
 	// this default behaviour is probably not what you want
-	cout << "FileList::fileToList !!!" << endl;
+	std::cout << "FileList::fileToList !!!" << std::endl;
 	std::string listName(fileName);
 	if (! extension.empty())
 		listName.resize(listName.size() - (extension.size() + 1));
@@ -117,7 +117,7 @@ const char* FileList::fileToList(const char* fileName) const
 const char* FileList::listToFile(const char* listName) const
 {
 	// this default behaviour is probably not what you want
-	cout << "FileList::listToFile !!!" << endl;
+	std::cout << "FileList::listToFile !!!" << std::endl;
 	std::string fileName(listName);
 	if (! this->extension.empty())
 	{

@@ -59,6 +59,8 @@
 #endif
 #endif
 
+#include <string.h>
+
 //! strdup function using new
 inline char* newstrdup(const char* str)
 {
