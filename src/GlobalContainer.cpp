@@ -150,11 +150,16 @@ void GlobalContainer::initProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// set default values in settings or load them
+	char *userName;
 #	ifdef WIN32 // angel > case Win32 caca
-		strncpy(settings.userName, getenv("USERNAME"), BasePlayer::MAX_NAME_LENGTH);
+		userName=getenv("USERNAME");
 #	else // angel > case of unix and MacIntosh Systems
-		strncpy(settings.userName, getenv("USER"), BasePlayer::MAX_NAME_LENGTH);
+		userName=getenv("USER");
 #	endif
+	if (!userName)
+		userName="player";
+	strncpy(settings.userName, userName, BasePlayer::MAX_NAME_LENGTH);
+		
 	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
 	// TODO : loading code
 
