@@ -17,10 +17,12 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-*swarm building site
+*swarm0c
 
-startImage 39
-miniImage 39
+type swarm
+
+gameSpriteImage 39
+miniSpriteImage 39
 hueImage 1
 
 fillable 1
@@ -39,10 +41,12 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*swarm
+*swarm0
 
-startImage 0
-miniImage 0
+type swarm
+
+gameSpriteImage 0
+miniSpriteImage 0
 hueImage 1
 
 fillable 1
@@ -64,10 +68,13 @@ viewingRange 4
 regenerationSpeed 3
 
 
-*food building site, level 0
+*inn0c
 
-startImage 41
-miniImage 41
+type inn
+
+gameSprite data/gfx/inn0c
+gameSpriteImage 0
+miniSpriteImage 41
 
 fillable 1
 
@@ -85,10 +92,12 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*food building, level 0
+*inn0
 
-startImage 1
-miniImage 1
+type inn
+
+gameSpriteImage 1
+miniSpriteImage 1
 
 foodable 1
 canFeedUnit 1
@@ -110,10 +119,12 @@ shortTypeNum 1
 maxUnitWorking 1
 
 
-*food building site, level 1
+*inn1c
 
-startImage 41
-miniImage 41
+type inn
+
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -131,10 +142,12 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*food building, level 1
+*inn1
 
-startImage 8
-miniImage 8
+type inn
+
+gameSpriteImage 8
+miniSpriteImage 8
 
 foodable 1
 canFeedUnit 1
@@ -156,10 +169,12 @@ shortTypeNum 1
 maxUnitWorking 1
 
 
-*food building site, level 2
+*inn2c
 
-startImage 42
-miniImage 42
+type inn
+
+gameSpriteImage 42
+miniSpriteImage 42
 
 fillable 1
 
@@ -178,10 +193,12 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*food building, level 2
+*inn2
 
-startImage 15
-miniImage 15
+type inn
+
+gameSpriteImage 15
+miniSpriteImage 15
 
 foodable 1
 canFeedUnit 1
@@ -204,10 +221,13 @@ shortTypeNum 1
 maxUnitWorking 1
 
 
-*health building site, level 0
+*hospital0c
 
-startImage 41
-miniImage 41
+type hospital
+
+gameSprite data/gfx/hosp0c
+gameSpriteImage 0
+miniSpriteImage 41
 
 fillable 1
 
@@ -227,8 +247,8 @@ isBuildingSite 1
 
 *health building, level 0
 
-startImage 2
-miniImage 2
+gameSpriteImage 2
+miniSpriteImage 2
 
 canHealUnit 1
 timeToHealUnit 12
@@ -246,8 +266,8 @@ shortTypeNum 2
 
 *health building site, level 1
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -267,8 +287,8 @@ isBuildingSite 1
 
 *health building, level 1
 
-startImage 9
-miniImage 9
+gameSpriteImage 9
+miniSpriteImage 9
 
 canHealUnit 1
 timeToHealUnit 7
@@ -286,8 +306,8 @@ shortTypeNum 2
 
 *health building site, level 2
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -308,8 +328,8 @@ isBuildingSite 1
 
 *health building, level 2
 
-startImage 16
-miniImage 16
+gameSpriteImage 16
+miniSpriteImage 16
 
 canHealUnit 1
 timeToHealUnit 3
@@ -328,8 +348,8 @@ shortTypeNum 2
 
 *Walk building site, level 0
 
-startImage 44
-miniImage 44
+gameSpriteImage 44
+miniSpriteImage 44
 
 fillable 1
 
@@ -351,8 +371,8 @@ isBuildingSite 1
 
 *Walk building, level 0
 
-startImage 3
-miniImage 3
+gameSpriteImage 3
+miniSpriteImage 3
 
 upgradeWalk 1
 upgradeTimeWalk 7
@@ -371,8 +391,8 @@ shortTypeNum 3
 
 *Walk building site, level 1
 
-startImage 45
-miniImage 45
+gameSpriteImage 45
+miniSpriteImage 45
 
 fillable 1
 
@@ -394,8 +414,8 @@ isBuildingSite 1
 
 *Walk building, level 1
 
-startImage 10
-miniImage 10
+gameSpriteImage 10
+miniSpriteImage 10
 
 upgradeWalk 1
 upgradeTimeWalk 7
@@ -414,8 +434,8 @@ shortTypeNum 3
 
 *Walk building site, level 2
 
-startImage 45
-miniImage 45
+gameSpriteImage 45
+miniSpriteImage 45
 
 fillable 1
 
@@ -437,8 +457,8 @@ isBuildingSite 1
 
 *Walk building, level 2
 
-startImage 17
-miniImage 17
+gameSpriteImage 17
+miniSpriteImage 17
 
 upgradeWalk 1
 upgradeTimeWalk 8
@@ -457,8 +477,8 @@ shortTypeNum 3
 
 *Swim building site, level 0
 
-startImage 44
-miniImage 44
+gameSpriteImage 44
+miniSpriteImage 44
 
 fillable 1
 
@@ -479,8 +499,8 @@ isBuildingSite 1
 
 *Swim building, level 0
 
-startImage 4
-miniImage 4
+gameSpriteImage 4
+miniSpriteImage 4
 
 upgradeSwim 1
 upgradeTimeSwim 7
@@ -499,8 +519,8 @@ shortTypeNum 4
 
 *Swim building site, level 1
 
-startImage 45
-miniImage 45
+gameSpriteImage 45
+miniSpriteImage 45
 
 fillable 1
 
@@ -522,8 +542,8 @@ isBuildingSite 1
 
 *Swim building, level 1
 
-startImage 11
-miniImage 11
+gameSpriteImage 11
+miniSpriteImage 11
 
 upgradeSwim 1
 upgradeTimeSwim 7
@@ -542,8 +562,8 @@ shortTypeNum 4
 
 *Swim building site, level 2
 
-startImage 45
-miniImage 45
+gameSpriteImage 45
+miniSpriteImage 45
 
 fillable 1
 
@@ -567,8 +587,8 @@ isBuildingSite 1
 
 *Swim building, level 2
 
-startImage 18
-miniImage 18
+gameSpriteImage 18
+miniSpriteImage 18
 
 upgradeSwim 1
 upgradeTimeSwim 8
@@ -587,8 +607,8 @@ shortTypeNum 4
 
 *Attack building site, level 0
  
-startImage 43
-miniImage 43
+gameSpriteImage 43
+miniSpriteImage 43
 
 fillable 1
 
@@ -609,8 +629,8 @@ isBuildingSite 1
 
 *Attack building, level 0
 
-startImage 5
-miniImage 5
+gameSpriteImage 5
+miniSpriteImage 5
 
 upgradeAttackStrength 1
 upgradeTimeAttackStrength 4
@@ -631,8 +651,8 @@ shortTypeNum 5
 
 *Attack building site, level 1
 
-startImage 43
-miniImage 43
+gameSpriteImage 43
+miniSpriteImage 43
 
 fillable 1
 
@@ -654,8 +674,8 @@ isBuildingSite 1
 
 *Attack building, level 1
 
-startImage 12
-miniImage 12
+gameSpriteImage 12
+miniSpriteImage 12
 
 upgradeAttackStrength 1
 upgradeTimeAttackStrength 7
@@ -676,8 +696,8 @@ shortTypeNum 5
 
 *Attack building site, level 2
 
-startImage 43
-miniImage 43
+gameSpriteImage 43
+miniSpriteImage 43
 
 fillable 1
 
@@ -699,8 +719,8 @@ isBuildingSite 1
 
 *Attack building, level 2
 
-startImage 19
-miniImage 19
+gameSpriteImage 19
+miniSpriteImage 19
 
 upgradeAttackStrength 1
 upgradeTimeAttackStrength 7
@@ -721,8 +741,8 @@ shortTypeNum 5
 
 *Science building site, level 0
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -744,8 +764,8 @@ isBuildingSite 1
 
 *Science building, level 0
 
-startImage 6
-miniImage 6
+gameSpriteImage 6
+miniSpriteImage 6
 
 upgradeBuild 1
 upgradeTimeBuild 4
@@ -766,8 +786,8 @@ shortTypeNum 6
 
 *Science building site, level 1
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -790,8 +810,8 @@ isBuildingSite 1
 
 *Science building, level 1
 
-startImage 13
-miniImage 13
+gameSpriteImage 13
+miniSpriteImage 13
 
 upgradeBuild 1
 upgradeTimeBuild 12
@@ -812,8 +832,8 @@ shortTypeNum 6
 
 *Science building site, level 2
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -837,8 +857,8 @@ isBuildingSite 1
 
 *Science building, level 2
 
-startImage 20
-miniImage 20
+gameSpriteImage 20
+miniSpriteImage 20
 
 upgradeBuild 1
 upgradeTimeBuild 7
@@ -860,8 +880,8 @@ prestige 50
 
 *Defense building site, level 0
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -882,8 +902,8 @@ isBuildingSite 1
 
 *Defense building, level 0
 
-startImage 7
-miniImage 7
+gameSpriteImage 7
+miniSpriteImage 7
 
 fillable 1
 maxStone 4
@@ -911,8 +931,8 @@ viewingRange 6
 
 *Defense building site, level 1
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -936,8 +956,8 @@ viewingRange 5
 
 *Defense building, level 1
 
-startImage 14
-miniImage 14
+gameSpriteImage 14
+miniSpriteImage 14
 
 fillable 1
 maxStone 4
@@ -965,8 +985,8 @@ viewingRange 7
 
 *Defense building site, level 2
 
-startImage 41
-miniImage 41
+gameSpriteImage 41
+miniSpriteImage 41
 
 fillable 1
 
@@ -991,8 +1011,8 @@ viewingRange 6
 
 *Defense building, level 2
 
-startImage 21
-miniImage 21
+gameSpriteImage 21
+miniSpriteImage 21
 
 fillable 1
 maxStone 4
@@ -1020,9 +1040,9 @@ viewingRange 8
 
 *Exploration Flag
 
-startImage 46
+gameSpriteImage 46
 hueImage 1
-miniImage -1
+miniSpriteImage -1
 
 zonableExplorer 1
 
@@ -1043,9 +1063,9 @@ maxUnitStayRange 20
 
 *War Flag
 
-startImage 47
+gameSpriteImage 47
 hueImage 1
-miniImage -1
+miniSpriteImage -1
 
 zonableWarrior 1
 
@@ -1066,9 +1086,9 @@ maxUnitStayRange 8
 
 *Clearing Flag
 
-startImage 48
+gameSpriteImage 48
 hueImage 1
-miniImage -1
+miniSpriteImage -1
 
 zonableWorker 1
 
@@ -1089,8 +1109,8 @@ maxUnitStayRange 14
 
 *stone wall building site
 
-startImage 40
-miniImage -1
+gameSpriteImage 40
+miniSpriteImage -1
 hueImage 1;
 
 fillable 1
@@ -1112,8 +1132,8 @@ isBuildingSite 1
 
 *stone wall
 
-startImage 23
-miniImage 23
+gameSpriteImage 23
+miniSpriteImage 23
 crossConnectMultiImage 1
 hueImage 1;
 
@@ -1130,8 +1150,8 @@ armor 10
 
 *market building site
 
-startImage 42
-miniImage 43
+gameSpriteImage 42
+miniSpriteImage 43
 
 width 3
 height 3
@@ -1151,8 +1171,8 @@ fillable 1
 
 *market (used for exchange)
 
-startImage 22
-miniImage 22
+gameSpriteImage 22
+miniSpriteImage 22
 
 width 3
 height 3

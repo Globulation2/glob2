@@ -26,6 +26,7 @@
 #include "UnitConsts.h"
 #include "Ressource.h"
 
+class Sprite;
 
 class BuildingType: public LoadableFromConfigFile
 {
@@ -54,17 +55,20 @@ public:
 
 		NB_BUILDING
 	};
+	
+	// basic infos
+	std::string type;
 
 	// visualisation
-	Sint32 startImage;
+	std::string gameSprite;
+	Sint32 gameSpriteImage;
+	std::string miniSprite;
+	Sint32 miniSpriteImage;
+	
 	Sint32 hueImage; // bool. The way we show the building's team (false=we draw a flag, true=we hue all the sprite)
 	Sint32 flagImage;
-	Sint32 miniImage;
-	// If true, mean we have a wall-like building
-	Sint32 crossConnectMultiImage;
-	//Sint32 nbDifferentImages;
-	//Sint32 timeBetweenImages;
-
+	Sint32 crossConnectMultiImage; // If true, mean we have a wall-like building
+	
 	// could be Uint8, if non 0 tell the number of maximum units locked by bulding for:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
@@ -124,6 +128,10 @@ public:
 	Sint32 nextLevelTypeNum;
 	Sint32 typeNum;
 	Sint32 lastLevelTypeNum;
+	
+	// Regenerated parameters
+	Sprite *gameSpritePtr;
+	Sprite *miniSpritePtr;
 
 public:
 	virtual ~BuildingType() { }

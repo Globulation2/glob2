@@ -22,11 +22,13 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <assert.h>
+#include <iostream>
 
 Toolkit::SpriteMap Toolkit::spriteMap;
 Toolkit::FontMap Toolkit::fontMap;
-FileManager *Toolkit::fileManager=NULL;
-StringTable *Toolkit::strings=NULL;
+FileManager *Toolkit::fileManager = NULL;
+StringTable *Toolkit::strings = NULL;
+GraphicContext *Toolkit::gc = NULL;
 
 void Toolkit::init(const char *gameName)
 {
@@ -58,6 +60,14 @@ void Toolkit::close(void)
 
 Sprite *Toolkit::getSprite(const char *name)
 {
+	if (spriteMap.find(name) == spriteMap.end())
+	{
+		if (gc)
+			gc->loadSprite(name, name);
+		else
+			return NULL;
+	}
+	std::cout << "Sprite " << name << " loaded, " << spriteMap[std::string(name)]->getFrameCount() << std::endl;
 	return spriteMap[std::string(name)];
 }
 

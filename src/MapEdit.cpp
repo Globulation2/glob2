@@ -195,7 +195,7 @@ void MapEdit::drawMenu(void)
 		{
 			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 			assert(bt);
-			int imgid=bt->startImage;
+			int imgid = bt->gameSpriteImage;
 			int x=((i&0x3)<<5)+menuStartW;
 			int y=((i>>2)<<5)+306;
 			if (i==12)
@@ -205,7 +205,7 @@ void MapEdit::drawMenu(void)
 			}
 	
 			globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
-			Sprite *buildingSprite=globalContainer->buildings;
+			Sprite *buildingSprite = bt->gameSpritePtr;
 			int w=buildingSprite->getW(imgid);
 			int h=buildingSprite->getH(imgid);
 			int decW=20, decH=20;
@@ -665,7 +665,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, team, false);
 
 		// we get the datas
-		Sprite *sprite=globalContainer->buildings;
+		Sprite *sprite = bt->gameSpritePtr;
 		sprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
 		batX=(mapX-viewportX)<<5;
@@ -674,7 +674,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 		batH=(bt->height)<<5;
 
 		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage);
 
 		Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
 		assert(batW>=0);

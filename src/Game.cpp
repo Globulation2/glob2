@@ -41,7 +41,7 @@
 
 #include "Brush.h"
 
-#define BULLET_IMGID 50
+#define BULLET_IMGID 0
 
 #define MIN_MAX_PRESIGE 500
 #define TEAM_MAX_PRESTIGE 150
@@ -1797,18 +1797,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if ((b != NOGBID) &&
 				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 				add |= (1<<0);
-			imgid = type->startImage + add;
+			imgid = type->gameSpriteImage + add;
 		}
 		else
 		{
-			imgid = type->startImage;
+			imgid = type->gameSpriteImage;
 		}
 		int x, y;
 		int dx, dy;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 		// select buildings and set the team colors
-		Sprite *buildingSprite=globalContainer->buildings;
+		Sprite *buildingSprite = type->gameSpritePtr;
 		dx = (type->width<<5)-buildingSprite->getW(imgid);
 		dy = (type->height<<5)-buildingSprite->getH(imgid);
 		buildingSprite->setBaseColor(team->colorR, team->colorG, team->colorB);
@@ -1816,6 +1816,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		// draw building
 		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
 
+		/* As new graphics are progressing, small colored flags have been disabled.
 		if (!type->hueImage)
 		{
 			// Here we draw the sprite with a flag:
@@ -1828,11 +1829,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			int fw=buildingSprite->getW(flagImgid);
 			//int fh=flagSprite->getH();
 
-			globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid);
-
+			globalContainer->gfx->drawSprite(x+(w<<5)-fh, y+(h<<5)-fw, buildingSprite, flagImgid);
+			
 			//We add a hued color over the flag
-			//globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid+1);
+			//globalContainer->gfx->drawSprite(x+(w<<5)-fh, y+(h<<5)-fw, buildingSprite, flagImgid+1);
 		}
+		*/
 
 		if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 		{
@@ -1931,7 +1933,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// Let's paint the bullets:
 	// TODO : optimise : test only possible sectors to show bullets.
 
-	Sprite *bulletSprite=globalContainer->buildings;
+	Sprite *bulletSprite = globalContainer->bullet;
 	// FIXME : have team in bullets to have the correct color
 
 	int mapPixW=(map.getW())<<5;
@@ -2034,15 +2036,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		Building *building=*virtualIt;
 		BuildingType *type=building->type;
 
-		int team=building->owner->teamNumber;
+		int team = building->owner->teamNumber;
 
-		int imgid=type->startImage;
+		int imgid = type->gameSpriteImage;
 
 		int x, y;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 		// all flags are hued:
-		Sprite *buildingSprite=globalContainer->buildings;
+		Sprite *buildingSprite = type->gameSpritePtr;
 		buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 

@@ -204,8 +204,10 @@ public:
 
 	//! Return the width of index frame of the sprite
 	virtual int getW(int index);
-	//! //! Return the height of index frame of the sprite
+	//! Return the height of index frame of the sprite
 	virtual int getH(int index);
+	//! Return the number of frame in this sprite
+	virtual int getFrameCount(void);
 };
 
 
