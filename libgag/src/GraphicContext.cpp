@@ -1208,25 +1208,37 @@ GraphicContext::~GraphicContext(void)
 
 bool GraphicContext::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 {
-	Uint32 sdlFlags=0;
+	Uint32 sdlFlags = 0;
 
-	this->flags=flags;
-	if (flags & DOUBLEBUF)
-		sdlFlags = SDL_DOUBLEBUF;
+	this->flags = flags;
+	
 	if (flags & FULLSCREEN)
 		sdlFlags |= SDL_FULLSCREEN;
-	if (flags & HWACCELERATED)
-		sdlFlags |= SDL_HWSURFACE;
-	if (flags & RESIZABLE)
-		sdlFlags |= SDL_RESIZABLE;
-		
-	// enable OpenGL
+	
+	// if OpenGL
 	if (type == GC_GL)
 	{
+		// Enable OpenGL
 		sdlFlags |= SDL_GLSDL;
+		// Force others flags
+		// Enable HW surface
 		sdlFlags |= SDL_HWSURFACE;
+		flags    |= HWACCELERATED;
+		// Enable double buffer
 		sdlFlags |= SDL_DOUBLEBUF;
+		flags    |= SDL_DOUBLEBUF;
+		// Disable resizable
 		sdlFlags &= ~SDL_RESIZABLE;
+		flags    &= ~RESIZABLE;
+	}
+	else
+	{
+		if (flags & DOUBLEBUF)
+			sdlFlags = SDL_DOUBLEBUF;
+		if (flags & HWACCELERATED)
+			sdlFlags |= SDL_HWSURFACE;
+		if (flags & RESIZABLE)
+			sdlFlags |= SDL_RESIZABLE;
 	}
 	
 	if (minW && (w < minW))
@@ -1347,6 +1359,12 @@ void GraphicContext::loadImage(const char *name)
 				dRect.w = static_cast<Uint16>(temp->w);
 				dRect.h = static_cast<Uint16>(temp->h);
 				SDL_BlitSurface(temp, NULL, surface, &dRect);
+				if (flags & DOUBLEBUF)
+				{
+					SDL_Flip(surface);
+					SDL_BlitSurface(temp, NULL, surface, &dRect);
+					SDL_Flip(surface);
+				}
 				SDL_FreeSurface(temp);
 			}
 			SDL_RWclose(imageStream);
