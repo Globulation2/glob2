@@ -97,10 +97,13 @@ public:
 	Token getToken() { return token; }
 	void nextToken();
 	bool newFile(const char*);
+	unsigned getLine(void) { return lastLine; }
+	unsigned getCol(void) { return lastCol; }
 
 private:
 	Token token;
 	FILE *fp;
+	unsigned actLine, actCol, lastLine, lastCol;
 };
 
 class Mapscript;

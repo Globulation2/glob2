@@ -290,6 +290,10 @@ Aquisition::Aquisition(void)
 {
 	fp=NULL;
 	token.type=Token::NIL;
+	actLine=0;
+	actCol=0;
+	lastLine=0;
+	lastCol=0;
 }
 
 bool Aquisition::newFile(const char *filename)
@@ -304,10 +308,15 @@ bool Aquisition::newFile(const char *filename)
 	return true;
 }
 
+#define HANDLE_NL(c) if (c=='\n') { actLine++; actCol=0; }
+
 void Aquisition::nextToken()
 {
 	string mot;
 	int c;
+	
+	lastCol=actCol;
+	lastLine=actLine;
 
 	// eat empty char
 	while((c=fgetc(fp))!=EOF)
@@ -317,6 +326,7 @@ void Aquisition::nextToken()
 			ungetc(c, fp);
 			break;
 		}
+		HANDLE_NL(c);
 	}
 
 	if (c==EOF)
@@ -347,6 +357,7 @@ void Aquisition::nextToken()
 				break;
 			}
 		}
+		HANDLE_NL(c);
 		mot+= (char)c;
 	}
 
@@ -557,7 +568,9 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 				break;
 			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
 			{
-				//VŽrification gramaticale
+				// Grammar check
+				er.line=donnees.getLine();
+				er.col=donnees.getCol();
 				switch (donnees.getToken().type)
 				{
 					case (Token::S_SHOW):
