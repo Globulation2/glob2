@@ -1360,6 +1360,7 @@ void GameGUI::draw(void)
 				
 			globalContainer->littleFont->pushColor(r, g, b);
 			textT=selBuild->owner->getFirstPlayerName();
+			assert(textT);
 			decT=(128-globalContainer->littleFont->getStringWidth(textT)>>1);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+16, globalContainer->littleFont, "%s", textT);
 			globalContainer->littleFont->popColor();
