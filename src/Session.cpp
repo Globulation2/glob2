@@ -397,6 +397,7 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 		return team;
 	
 	int newAICount=0;
+	assert(currentSessionInfo);
 	for (int i=0; i<currentSessionInfo->numberOfPlayer; i++)
 		if (currentSessionInfo->players[i].type==BasePlayer::P_AI)
 			newAICount++;
@@ -409,6 +410,5 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 				team=players[i].teamNumber;
 				break;
 			}
-	
 	return team;
 }
