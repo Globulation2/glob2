@@ -537,6 +537,7 @@ void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8
 
 void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	// LINE version
 	/*#ifndef M_PI
 	#define M_PI 3.1415927
 	#endif
@@ -555,6 +556,8 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 		lpx=px;
 		lpy=py;
 	}*/
+	// alpha VERISON
+	/*
 	int dx, dy, d;
 	dx=0;
 	dy=ray;
@@ -610,6 +613,42 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 		}
 	}
 	while (dx<=dy);
+	*/
+	int newAlpha=a>>2;
+	int dx, dy, d;
+	int rdx, rdy;
+	int i;
+	for (i=0; i<3; i++)
+	{
+		dx=0;
+		dy=(ray<<1)+i;
+		d=0;
+	
+		do
+		{
+			rdx=(dx>>1);
+			rdy=(dy>>1);
+			drawPixel(x+rdx, y+rdy, r, g, b, newAlpha);
+			drawPixel(x+rdx, y-rdy, r, g, b, newAlpha);
+			drawPixel(x-rdx, y+rdy, r, g, b, newAlpha);
+			drawPixel(x-rdx, y-rdy, r, g, b, newAlpha);
+			drawPixel(x+rdy, y+rdx, r, g, b, newAlpha);
+			drawPixel(x+rdy, y-rdx, r, g, b, newAlpha);
+			drawPixel(x-rdy, y+rdx, r, g, b, newAlpha);
+			drawPixel(x-rdy, y-rdx, r, g, b, newAlpha);
+			dx++;
+			if (d>=0)
+			{
+				dy--;
+				d += ((dx-dy)<<1)+2;			
+			}
+			else
+			{
+				d +=(dx<<1) +1;
+			}
+		}
+		while (dx<=dy);
+	}
 }
 
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg, ...)
