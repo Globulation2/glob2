@@ -2376,10 +2376,10 @@ int glSDL_DrawRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color, Uint8 a)
 		gl.Color4ub(r, g, b, a);
 	else
 		gl.Color3ub(r, g, b);
-	gl.Vertex2i(dx1, dy1); gl.Vertex2i(dx1, dy2);
-	gl.Vertex2i(dx1, dy2); gl.Vertex2i(dx2, dy2);
-	gl.Vertex2i(dx2, dy2); gl.Vertex2i(dx2, dy1);
-	gl.Vertex2i(dx2, dy1); gl.Vertex2i(dx1, dy1);
+	gl.Vertex2i(dx1, dy1+1); gl.Vertex2i(dx1, dy2);
+	gl.Vertex2i(dx1+1, dy2); gl.Vertex2i(dx2-1, dy2);
+	gl.Vertex2i(dx2-1, dy2); gl.Vertex2i(dx2-1, dy1+1);
+	gl.Vertex2i(dx2, dy1+1); gl.Vertex2i(dx1, dy1+1);
 	gl.End();
 
 	return 0;

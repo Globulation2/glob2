@@ -463,7 +463,7 @@ void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 	
 	#ifdef HAVE_OPENGL
-	if (glSDL_DrawLine(surface, x, y, x, y+l-1, color, a) != 0)
+	if (glSDL_DrawLine(surface, x, y, x, y+l, color, a) != 0)
 	#endif
 	{
 		// clip on x
@@ -613,7 +613,7 @@ void DrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 
 	Uint32 color = SDL_MapRGB(surface->format, r, g, b);
 		
 	#ifdef HAVE_OPENGL
-	if (glSDL_DrawLine(surface, x, y, x+l-1, y, color, a) != 0)
+	if (glSDL_DrawLine(surface, x, y, x+l, y, color, a) != 0)
 	#endif
 	{
 		// clip on y
