@@ -56,8 +56,10 @@ TextArea::~TextArea(void)
 
 void TextArea::internalPaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	areaHeight=(h-8)/charHeight;
 	parent->getSurface()->setClipRect(x, y, w, h);
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	if (textBuffer)
@@ -92,6 +94,9 @@ void TextArea::paint(void)
 
 void TextArea::repaint(void)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	parent->paint(x, y, w, h);
 	internalPaint();
 	parent->addUpdateRect(x, y, w, h);
@@ -99,6 +104,8 @@ void TextArea::repaint(void)
 
 void TextArea::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
 	if (event->type==SDL_KEYDOWN)
 	{
 		SDLKey sym=event->key.keysym.sym;
@@ -270,7 +277,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				}
 			}
 			break;
-				
+
 			case SDLK_DOWN:
 			{
 				if ((!readOnly) && (cursorPosY+1<lines.size()))
@@ -502,7 +509,7 @@ void TextArea::computeAndRepaint(void)
 			utf8CleanCursorPos += getNextUTF8Char(textBuffer[utf8CleanCursorPos]);
 		}
 		cursorPos = utf8CleanCursorPos;
-		
+
 		// compute displayable cursor Pos
 		char temp[1024];
 		unsigned cursorPosX = cursorPos-lines[cursorPosY];
@@ -511,7 +518,7 @@ void TextArea::computeAndRepaint(void)
 		temp[cursorPosX]=0;
 		cursorScreenPosY=font->getStringWidth(temp);
 	}
-	
+
 	// repaint
 	repaint();
 }
@@ -618,7 +625,7 @@ void TextArea::addText(const char *text)
 			memcpy(temp+cursorPos+ts, textBuffer+cursorPos, textBufferLength-cursorPos);
 			cursorPos+=ts;
 		}
-		
+
 		temp[textBufferLength+ts]=0;
 		
 		setText(temp);

@@ -32,22 +32,24 @@ YOGScreen::YOGScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(true);
 
-	addWidget(new TextButton(440, 390, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[create game]"), CREATE_GAME));
-	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), CANCEL, 27));
+	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", globalContainer->texts.getString("[yog]")));
 
-	gameList=new List(20, 40, 400, 150, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	addWidget(new TextButton(20, 65, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(20, 20, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), CANCEL, 27));
+
+	gameList=new List(20, 50, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
 	addWidget(gameList);
-	gameInfo=new TextArea(440, 40, 180, 105, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	gameInfo=new TextArea(20, 50, 180, 95, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	addWidget(gameInfo);
-	joinButton=new TextButton(440, 165, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[join]"), JOIN);
+	joinButton=new TextButton(20, 165, 180, 25, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", globalContainer->texts.getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new List(440, 210, 180, 160, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	playerList=new List(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
-	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
+	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
 
 	selectedGameInfo=NULL;
@@ -185,11 +187,11 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 void YOGScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (y<40)
+	/*if (y<40)
 	{
 		const char *text= globalContainer->texts.getString("[yog]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, "%s", text);
-	}
+	}*/
 	addUpdateRect();
 }
 

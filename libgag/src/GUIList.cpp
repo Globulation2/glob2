@@ -52,6 +52,9 @@ void List::clear(void)
 
 void List::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		unsigned count = (h-4) / textHeight;
@@ -148,8 +151,9 @@ void List::selectionChanged()
 
 void List::internalPaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
 	textHeight = fontPtr->getStringHeight((const char *)NULL);
@@ -229,7 +233,9 @@ void List::paint(void)
 
 void List::repaint(void)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	
 	parent->paint(x, y, w, h);
 	if (visible)
 		internalPaint();

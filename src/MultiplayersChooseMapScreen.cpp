@@ -31,7 +31,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
 	toogleButton=new TextButton(240, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[the games]"), TOOGLE);
 	mapPreview=new MapPreview(240, 60, "net.map");
-	title=new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose map]"), 600);
+	title=new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose map]"));
 
 	addWidget(ok);
 	addWidget(cancel);
