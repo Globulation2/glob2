@@ -75,8 +75,11 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_LOOSE, "loose" },
 	{ S_STORY, "story" },
 	{ S_WORKER, "nbWorker" },
+	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "nbExplorer" },
+	{ S_EXPLORER, "Explorer" },
 	{ S_WARRIOR, "nbWarrior" },
+	{ S_WARRIOR, "Warrior" },
 	{ S_SWARM_B, "nbSwarm" },
 	{ S_FOOD_B, "nbGranary" },
 	{ S_HEALTH_B, "nbHospital" },
@@ -425,11 +428,23 @@ bool Story::testCondition()
 			}
 			case (Token::S_SUMMON):
 			{
-				//TODO STEPH SUMMON
-				//Grammar of summon |summon(globules_amount globule_type(player_int . level) flag_name
-				//-> globules amount = line[lineSelector+1].value
-				// ...
-				//-> flag name = line[lineSelector+5].msg
+				int x, y;
+				mapscript->getFlagPos(line[lineSelector+5].msg, &x, &y);
+				int dx, dy;
+				int number =line[lineSelector+1].value;
+				int delta = (int)(sqrt(number)+1)/2;
+				for (dy=y-delta; dy<y+delta; dy++)
+				{
+					for (dx=x-delta; dx<x+delta; dx++)
+					{
+						if (number >= 0)
+						{
+							mapscript->game->addUnit(dx, dy, line[lineSelector+3].value, line[lineSelector+2].type-101, line[lineSelector+4].value, 0, 0, 0);
+							number --;
+						}
+					}
+				}		
+
 				lineSelector +=5;
 				return true;
 			}
@@ -696,7 +711,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 				// Grammar check
 				switch (donnees.getToken().type)
 				{
-					//Grammar for summon |summon(globules_amount globule_type(player_int . level) flag_name
+					//Grammar for summon |summon(globules_amount globule_type(player_int . level) flag_name)
 					case (Token::S_SUMMON):
 					{
 						thisone.line.push_back(donnees.getToken());
@@ -725,6 +740,11 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
+						else if (donnees.getToken().value >= game->session.numberOfTeam)
+						{
+							er.type=ErrorReport::ET_INVALID_PLAYER;
+							break;
+						}
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::INT)
@@ -747,6 +767,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
 					}
+					break;
 					//Grammar for setflag | setflag(flag_name)(x.y)
 					case (Token::S_SETFLAG):
 					{
@@ -801,7 +822,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees.getToken().value > game->session.numberOfTeam)
+							else if (donnees.getToken().value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_PLAYER;
 								break;
@@ -873,7 +894,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees.getToken().value > game->session.numberOfTeam)
+							else if (donnees.getToken().value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_PLAYER;
 								break;
@@ -917,7 +938,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value > game->session.numberOfTeam)
+						else if (donnees.getToken().value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
@@ -929,7 +950,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value > game->session.numberOfTeam)
+						else if (donnees.getToken().value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
@@ -966,7 +987,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value > game->session.numberOfTeam)
+						else if (donnees.getToken().value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
