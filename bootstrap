@@ -28,7 +28,7 @@ fi
 rm -rf config.cache autom4te-*.cache
 
 aclocal \
-&& automake --foreign --add-missing \
 && autoheader \
+&& automake --foreign --add-missing \
 && autoconf
 

@@ -1310,12 +1310,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				// draw ressource
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
-				if (r.id != NORESID)
+				if (r != NORESID)
 				{
 					Sprite *sprite=globalContainer->ressources;
-					int type=r.field.type;
-					int amount=r.field.amount;
-					int variety=r.field.variety;
+					int type=r.type;
+					int amount=r.amount;
+					int variety=r.variety;
 					const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
 					int imgid=rt->gfxId+(variety*rt->sizesCount)+amount-1;
 					int dx=(sprite->getW(imgid)-32)>>1;
@@ -1327,7 +1327,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					assert(variety>=0);
 					assert(variety<rt->varietiesCount);
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
-}			}
+				}
+			}
 
 	//for (int y=top; y<=bot; y++)
 	//	for (int x=left; x<=right; x++)
@@ -1920,9 +1921,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 					{
 						// get color to add
 						Ressource r = map.getRessource((int)minidx, (int)minidy);
-						if (r.id != NORESID)
+						if (r != NORESID)
 						{
-							pcolIndex = r.field.type + 3;
+							pcolIndex = r.type + 3;
 						}
 						else
 						{
@@ -1938,9 +1939,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 					{
 						// get color to add
 						Ressource r = map.getRessource((int)minidx, (int)minidy);
-						if (r.id != NORESID)
+						if (r != NORESID)
 						{
-							pcolIndex = r.field.type + 3;
+							pcolIndex = r.type + 3;
 						}
 						else
 						{

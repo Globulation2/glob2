@@ -249,26 +249,26 @@ public:
 
 	bool isRessource(int x, int y)
 	{
-		return getRessource(x, y).id != NORESID;
+		return getRessource(x, y) != NORESID;
 	}
 
 	bool isRemovableRessource(int x, int y)
 	{
 		Ressource r=getRessource(x, y);
-		if (r.id==NORESID)
+		if (r==NORESID)
 			return false;
-		Uint8 t=r.field.type;
+		Uint8 t=r.type;
 		return (t<BASIC_COUNT && t!=STONE);
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
 	{
-		return getRessource(x, y).field.type == ressourceType;
+		return getRessource(x, y).type == ressourceType;
 	}
 
 	bool isRessource(int x, int y, int *ressourceType)
 	{
-		int rt=getRessource(x, y).field.type;
+		int rt=getRessource(x, y).type;
 		if (rt==0xFF)
 			return false;
 		*ressourceType=rt;

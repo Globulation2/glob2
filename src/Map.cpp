@@ -749,15 +749,10 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	cases=new Case[size];
 
-	/*Ressource initRessource;
-	initRessource.field.type=0;
-	initRessource.field.variety=0;
-	initRessource.field.amount=0;
-	initRessource.field.animation=0;*/
 	Case initCase;
 	initCase.terrain=0; // default, not really meaningfull.
 	initCase.building=NOGBID;
-	initCase.ressource.id=NORESID;
+	initCase.ressource=NORESID;
 	initCase.groundUnit=NOGUID;
 	initCase.airUnit=NOGUID;
 	initCase.forbidden=0;
@@ -838,7 +833,8 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		cases[i].terrain=SDL_ReadBE16(stream);
 		cases[i].building=SDL_ReadBE16(stream);
 
-		cases[i].ressource.id=SDL_ReadBE32(stream);
+		//cases[i].ressource=SDL_ReadBE32(stream);
+		SDL_RWread(stream, &(cases[i].ressource), 1, 4);
 
 		cases[i].groundUnit=SDL_ReadBE16(stream);
 		cases[i].airUnit=SDL_ReadBE16(stream);
@@ -904,7 +900,8 @@ void Map::save(SDL_RWops *stream)
 		SDL_WriteBE16(stream, cases[i].terrain);
 		SDL_WriteBE16(stream, cases[i].building);
 		
-		SDL_WriteBE32(stream, cases[i].ressource.id);
+		//SDL_WriteBE32(stream, cases[i].ressource.id);
+		SDL_RWwrite(stream, &(cases[i].ressource), 1, 4);
 		
 		SDL_WriteBE16(stream, cases[i].groundUnit);
 		SDL_WriteBE16(stream, cases[i].airUnit);
@@ -981,7 +978,7 @@ void Map::growRessources(void)
 		{
 			//int y=syncRand()&hMask;
 			Ressource r=getRessource(x, y);
-			if (r.id!=NORESID)
+			if (r != NORESID)
 			{
 				// we look around to see if there is any water :
 				// TODO: uses UnderMap.
@@ -1002,28 +999,28 @@ void Map::growRessources(void)
 
 				// alga, wood and corn are limited by near underground. Others are not.
 				bool expand=true;
-				if (r.field.type==ALGA)
+				if (r.type==ALGA)
 					expand=isWater(wax1, way1)&&isSand(wax2, way2);
-				else if (r.field.type==WOOD)
+				else if (r.type==WOOD)
 					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
-				else if (r.field.type==CORN)
+				else if (r.type==CORN)
 					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
 
 				if (expand)
 				{
-					if (r.field.amount<=(int)(syncRand()&7))
+					if (r.amount<=(int)(syncRand()&7))
 					{
 						// we grow ressource:
-						incRessource(x, y, r.field.type, r.field.variety);
+						incRessource(x, y, r.type, r.variety);
 					}
-					else if (globalContainer->ressourcesTypes.get(r.field.type)->expendable)
+					else if (globalContainer->ressourcesTypes.get(r.type)->expendable)
 					{
 						// we extand ressource:
 						int dx, dy;
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						incRessource(nx, ny, r.field.type, r.field.variety);
+						incRessource(nx, ny, r.type, r.variety);
 					}
 				}
 			}
@@ -1114,20 +1111,20 @@ bool Map::decRessource(int x, int y)
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
 
-	if (r.id==NORESID)
+	if (r==NORESID)
 		return false;
 
-	int type=r.field.type;
+	int type=r.type;
 	const RessourceType *fulltype=globalContainer->ressourcesTypes.get(type);
-	unsigned amount=r.field.amount;
+	unsigned amount=r.amount;
 	assert(amount);
 
 	if (!fulltype->shrinkable || ((fulltype->eternal) && (amount==1)))
 		return false;
 	else if (!fulltype->granular || amount==1)
-		rp->id=NORESID;
+		*rp=NORESID;
 	else
-		rp->field.amount=amount-1;
+		rp->amount=amount-1;
 	return true;
 }
 
@@ -1145,7 +1142,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	Ressource &r=*rp;
 	const RessourceType *fulltype;
 
-	if (r.id==NORESID)
+	if (r==NORESID)
 	{
 		if (getBuilding(x, y)!=NOGBID)
 			return false;
@@ -1155,10 +1152,10 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		fulltype=globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
-			rp->field.type=ressourceType;
-			rp->field.variety=variety;
-			rp->field.amount=1;
-			rp->field.animation=0;
+			rp->type=ressourceType;
+			rp->variety=variety;
+			rp->amount=1;
+			rp->animation=0;
 			return true;
 		}
 		else
@@ -1166,17 +1163,16 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	}
 	else
 	{
-		int type=r.field.type;
-		fulltype=globalContainer->ressourcesTypes.get(type);
+		fulltype=globalContainer->ressourcesTypes.get(r.type);
 	}
 
-	if (r.field.type!=ressourceType)
+	if (r.type!=ressourceType)
 		return false;
 	if (!fulltype->shrinkable)
 		return false;
-	if (r.field.amount<fulltype->sizesCount)
+	if (r.amount<fulltype->sizesCount)
 	{
-		rp->field.amount=r.field.amount+1;
+		rp->amount=r.amount+1;
 		return true;
 	}
 	return false;
@@ -1542,7 +1538,7 @@ void Map::setNoRessource(int x, int y, int size)
 	assert(size<h);
 	for (int dx=x-(size>>1); dx<x+(size>>1); dx++)
 		for (int dy=y-(size>>1); dy<y+(size>>1); dy++)
-			(cases+w*(dy&hMask)+(dx&wMask))->ressource.id=NORESID;
+			(cases+w*(dy&hMask)+(dx&wMask))->ressource=NORESID;
 }
 
 void Map::setRessource(int x, int y, int type, int size)
@@ -1555,12 +1551,12 @@ void Map::setRessource(int x, int y, int type, int size)
 			if (isRessourceAllowed(dx, dy, type))
 			{
 				Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
-				rp->field.type=type;
+				rp->type=type;
 				RessourceType *rt=globalContainer->ressourcesTypes.get(type);
-				rp->field.variety=syncRand()%rt->varietiesCount;
+				rp->variety=syncRand()%rt->varietiesCount;
 				assert(rt->sizesCount>1);
-				rp->field.amount=1+syncRand()%(rt->sizesCount-1);
-				rp->field.animation=0;
+				rp->amount=1+syncRand()%(rt->sizesCount-1);
+				rp->animation=0;
 			}
 }
 
@@ -2022,7 +2018,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 			for (int x=0; x<w; x++)
 			{
 				Case c=cases[wy+x];
-				if (c.ressource.id==NORESID)
+				if (c.ressource==NORESID)
 				{
 					if (c.building!=NOGBID)
 						gradient[wy+x]=0;
@@ -2033,7 +2029,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 				}
 				else
 				{
-					if (c.ressource.field.type==ressourceType)
+					if (c.ressource.type==ressourceType)
 					{
 						if (visibleToBeCollected && !(fogOfWar[wy+x]&teamMask))
 							gradient[wy+x]=0;
@@ -2438,7 +2434,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			int addrl=wyl+xl;
 			if (gradient[addrl]!=255)
 			{
-				if (c.ressource.id!=NORESID)
+				if (c.ressource!=NORESID)
 					gradient[addrl]=0;
 				else if (c.building!=NOGBID && c.building!=bgid)
 					gradient[addrl]=0;
@@ -2714,7 +2710,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			Case c=cases[wyx];
 			if (c.building==NOGBID)
 			{
-				if (c.ressource.id!=NORESID)
+				if (c.ressource!=NORESID)
 					gradient[wyx]=0;
 				else if (c.forbidden&teamMask)
 					gradient[wyx]=0;
@@ -3083,9 +3079,9 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
 			{
-				if (c.ressource.id!=NORESID)
+				if (c.ressource!=NORESID)
 				{
-					Sint8 t=c.ressource.field.type;
+					Sint8 t=c.ressource.type;
 					if (t<BASIC_COUNT && t!=STONE)
 						gradient[addrl]=255;
 					else
@@ -3972,7 +3968,7 @@ Sint32 Map::checkSum(bool heavy)
 			{
 				cs+=(cases+w*(y&hMask)+(x&wMask))->terrain;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->building;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource.id;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->groundUnit;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->airUnit;
 				cs=(cs<<1)|(cs>>31);
