@@ -309,8 +309,8 @@ void GameGUI::processEvent(SDL_Event *event)
 	// handle typing
 	if (typingInputScreen)
 	{
-		if (event->type==SDL_KEYDOWN)
-			typingInputScreen->translateAndProcessEvent(event);
+		//if (event->type==SDL_KEYDOWN)
+		typingInputScreen->translateAndProcessEvent(event);
 
 		if (typingInputScreen->endValue==0)
 		{
@@ -1420,7 +1420,9 @@ void GameGUI::drawInGameTextInput(void)
 {
 	int decW=((globalContainer->gfx->getW()-640)>>1);
 	int lengthToCome=(typingInputScreenPos*(492+decW))/100;
-	globalContainer->gfx->drawSurface(10-492+lengthToCome, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
+	typingInputScreen->decX=10-492+lengthToCome;
+	typingInputScreen->decY=globalContainer->gfx->getH()-44;
+	globalContainer->gfx->drawSurface(typingInputScreen->decX, typingInputScreen->decY, typingInputScreen->getSurface());
 	if (typingInputScreenInc>0)
 		if (typingInputScreenPos<100)
 			typingInputScreenPos+=typingInputScreenInc;
