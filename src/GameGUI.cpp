@@ -198,8 +198,8 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_QUIT)
 	{
-		//TODO :orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
-		isRunning=false;
+		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+		//isRunning=false;
 	}
 }
 
