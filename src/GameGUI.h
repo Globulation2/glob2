@@ -43,6 +43,7 @@ class GameGUI
 public:
 	Game game;
 	bool paused;
+	bool scroolLocked;
 	bool isRunning;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;

@@ -116,6 +116,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new WaitingForPlayerOrder(netData+1, netDataLength-1);
 	}
+	case ORDER_PAUSE_GAME:
+	{
+		return new PauseGameOrder(netData+1, netDataLength-1);
+	}
 	case ORDER_DROPPING_PLAYER:
 	{
 		return new DroppingPlayerOrder(netData+1, netDataLength-1);
@@ -177,7 +181,7 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	this->posY=getSint32(data, 8);
 	this->typeNumber=(BuildingType::BuildingTypeNumber)getUint32(data, 12);
 	
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
@@ -856,7 +860,7 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 	this->visionFoodMask=getUint32(data, 16);
 	this->visionOtherMask=getUint32(data, 20);
 
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 
 	return true;
 }
@@ -889,7 +893,7 @@ bool SubmitCheckSumOrder::setData(const Uint8 *data, int dataLength)
 
 	this->checkSumValue=getUint32(data, 0);
 	
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
@@ -928,7 +932,7 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
 	this->x=getSint32(data, 4);
 	this->y=getSint32(data, 8);
 
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 
 	return true;
 }
@@ -958,14 +962,40 @@ bool WaitingForPlayerOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-
 	this->maskAwayPlayer=getUint32(data, 0);
-	
-	memcpy(this->data,data,dataLength);
-	
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
+// PauseGameOrder's code
+
+PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength)
+:MiscOrder()
+{
+	assert(dataLength==1);
+	bool good=setData(data, dataLength);
+	assert(good);
+}
+
+PauseGameOrder::PauseGameOrder(bool pause)
+{
+	this->pause=pause;
+}
+
+Uint8 *PauseGameOrder::getData(void)
+{
+	data[0]=(Uint8)pause;
+	return data;
+}
+
+bool PauseGameOrder::setData(const Uint8 *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+	pause=(bool)data[0];
+	memcpy(this->data, data, dataLength);
+	return true;
+}
 
 // DroppingPlayerOrder's code
 
@@ -1032,7 +1062,7 @@ bool RequestingDeadAwayOrder::setData(const Uint8 *data, int dataLength)
 	this->missingStep=getUint32(data, 4);
 	this->lastAviableStep=getUint32(data, 8);
 	
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
@@ -1068,7 +1098,7 @@ bool NoMoreOrdersAviable::setData(const Uint8 *data, int dataLength)
 	this->player=getUint32(data, 0);
 	this->lastAviableStep=getUint32(data, 4);
 	
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }
@@ -1101,7 +1131,7 @@ bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength)
 
 	this->player=getUint32(data, 0);
 	
-	memcpy(this->data,data,dataLength);
+	memcpy(this->data, data, dataLength);
 	
 	return true;
 }

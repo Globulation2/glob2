@@ -367,7 +367,7 @@ int Engine::run(void)
 
 			Sint32 ticksToDelay=0;
 			Sint32 ticksDelayedInside=0;
-			if (!gui.paused) // TODO: this is an ugly pause !
+			if (!gui.scroolLocked)
 			{
 				if (networkReadyToExecute)
 				{
@@ -406,7 +406,9 @@ int Engine::run(void)
 				net->stepExecuted();
 
 				// here we do the real work
-				gui.game.step(gui.localTeamNo);
+				
+				if (!gui.paused)
+					gui.game.step(gui.localTeamNo);
 			}
 
 			// we draw
