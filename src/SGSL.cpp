@@ -1222,7 +1222,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						enter = true;
 
 						thisone.line.push_back(*donnees->getToken());
-						if (donnees->getToken()->type > Token::S_SWARM_B)
+						if (donnees->getToken()->type >= Token::S_SWARM_B)
 						{
 							// Buildings
 							// level
