@@ -206,8 +206,11 @@ void GameGUI::step(void)
 		int team=Unit::UIDtoTeam(UID);
 		int id=Unit::UIDtoID(UID);
 		Unit *u=game.teams[team]->myUnits[id];
-		int strDec=(int)(u->typeNum);
-		addMessage(200, 30, 30, "%s %s %s", globalContainer->texts.getString("[Your]"), globalContainer->texts.getString("[units type]", strDec), globalContainer->texts.getString("[are under attack(f)]"));
+		if (u)
+		{
+			int strDec=(int)(u->typeNum);
+			addMessage(200, 30, 30, "%s %s %s", globalContainer->texts.getString("[Your]"), globalContainer->texts.getString("[units type]", strDec), globalContainer->texts.getString("[are under attack(f)]"));
+		}
 	}
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 	{
@@ -215,8 +218,11 @@ void GameGUI::step(void)
 		int team=Building::UIDtoTeam(UID);
 		int id=Building::UIDtoID(UID);
 		Building *b=game.teams[team]->myBuildings[id];
-		int strDec=b->type->type;
-		addMessage(255, 0, 0, "%s", globalContainer->texts.getString("[the building is under attack]", strDec));
+		if (b)
+		{
+			int strDec=b->type->type;
+			addMessage(255, 0, 0, "%s", globalContainer->texts.getString("[the building is under attack]", strDec));
+		}
 	}
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
 	{
@@ -224,8 +230,11 @@ void GameGUI::step(void)
 		int team=Building::UIDtoTeam(UID);
 		int id=Building::UIDtoID(UID);
 		Building *b=game.teams[team]->myBuildings[id];
-		int strDec=b->type->type;
-		addMessage(30, 255, 30, "%s",  globalContainer->texts.getString("[the building is finished]", strDec));
+		if (b)
+		{
+			int strDec=b->type->type;
+			addMessage(30, 255, 30, "%s",  globalContainer->texts.getString("[the building is finished]", strDec));
+		}
 	}
 		
 	// do a yog step
@@ -797,6 +806,12 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					{
 						orderQueue.push_back(new OrderConstruction(selBuild->UID));
 					}
+				}
+				break;
+			case SDLK_r:
+				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->hp<selBuild->type->hpMax) && (!selBuild->type->isBuildingSite))
+				{
+					orderQueue.push_back(new OrderConstruction(selBuild->UID));
 				}
 				break;
 			case SDLK_p :
