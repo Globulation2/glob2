@@ -24,7 +24,7 @@
 #include "Header.h"
 #include <deque>
 
-#define DEFAULT_CHAT_CHAN "#yog"
+#define DEFAULT_CHAT_CHAN "#debian"
 #define DEFAULT_GAME_CHAN "#yog-games"
 
 //! This class is a YOG client
@@ -32,22 +32,32 @@ class YOG
 {
 public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
-	enum InfoMessage
+	enum InfoMessageType
 	{
-		IRC_MSG_JOIN=0
+		IRC_MSG_NONE=0,
+		IRC_MSG_JOIN=1,
+		IRC_MSG_QUIT=2,
+		IRC_MSG_MODE=3
 	};
 
 	struct ChatMessage
 	{
-		char message[IRC_MESSAGE_SIZE];
-		char source[IRC_NICK_SIZE];
-		char diffusion[IRC_CHANNEL_SIZE];
+		char message[IRC_MESSAGE_SIZE+1];
+		char source[IRC_NICK_SIZE+1];
+		char diffusion[IRC_CHANNEL_SIZE+1];
+	};
+
+	struct InfoMessage
+	{
+		InfoMessageType type;
+		char source[IRC_NICK_SIZE+1];
+		char diffusion[IRC_CHANNEL_SIZE+1];
 	};
 
 	struct GameInfo
 	{
-		char source[IRC_NICK_SIZE];
-		char infos[IRC_MESSAGE_SIZE];
+		char source[IRC_NICK_SIZE+1];
+		char infos[IRC_MESSAGE_SIZE+1];
 		Uint32 updatedTick;
 	};
 
@@ -59,6 +69,9 @@ protected:
 
 	//! pending messages
 	std::deque<ChatMessage> messages;
+
+	//! pending info message
+	std::deque<InfoMessage> infoMessages;
 
 protected:
 	//! Interprete a message from IRC; do parsing etc
@@ -99,13 +112,13 @@ public:
 	// INFO
 	//! Return true if there is pending info message
 	bool isInfoMessage(void);
-	//! Get Info message type
-	const InfoMessage *getInfoMessageType(void);
-	//! Get Info message associated text
-	const char *getInfoMessageText(void);
-	//! Get the channel (or the user) from where the message is
+	//! Get Info info message type
+	const InfoMessageType getInfoMessageType(void);
+	//! Get the associated nick with info message
 	const char *getInfoMessageSource(void);
-	//! Free last message
+	//! Get where the info message has been spawned
+	const char *getInfoMessageDiffusion(void);
+	//! Free last info message
 	void freeInfoMessage(void);
 
 	//! Join a given channel

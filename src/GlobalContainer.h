@@ -26,10 +26,13 @@
 #include "FileManager.h"
 #include "BuildingType.h"
 #include "Player.h"
+#include "YOG.h"
 
 struct Settings
 {
 	char userName[BasePlayer::MAX_NAME_LENGTH];
+	Uint16 ircPort;
+	char *ircURL;
 };
 
 class GlobalContainer
@@ -42,19 +45,20 @@ public:
 	void load(void);
 
 private:
-	void setMetaServerName(char *name);
+	void setIRCURL(const char *name);
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 
 public:
 	Uint32 graphicFlags;
 	int graphicWidth, graphicHeight;
-	char *metaServerName;
-	Uint16 metaServerPort;
 
 	Settings settings;
 
 	FileManager fileManager;
+	
+	//! Ysagoon Online Game connector and session handler
+	YOG yog;
 
 	GraphicContext *gfx;
 	Sprite *terrain;

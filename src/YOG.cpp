@@ -18,6 +18,18 @@
 
 */
 
+/*
+	TODO to finish :
+	
+	- implement a way to activate new game claiming
+	- call yog.step from main game, multiplayerhost,
+	and yogscreen
+	- do a lookup from nick to IP using IRC whois
+	command (need to parse the command).
+	- clean and test all stuff
+
+*/
+
 #include "YOG.h"
 
 YOG::YOG()
@@ -51,9 +63,9 @@ bool YOG::connect(const char *serverName, int serverPort, const char *nick)
 	SDLNet_TCP_AddSocket(socketSet, socket);
 
 	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "USER %s undef undef Glob2_User", nick);
+	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef Glob2_User", nick);
 	sendString(command);
-	snprintf(command, IRC_MESSAGE_SIZE, "NICK %s", nick);
+	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", nick);
 	sendString(command);
 	joinChannel();
 	//joinChannel(DEFAULT_GAME_CHAN);
@@ -117,6 +129,7 @@ void YOG::interpreteIRCMessage(const char *message)
 		cmd=strtok(tempMessage, " ");
 	}
 
+	// this is a debug printf to reverse engineer IRC protocol
 	printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
 
 	if (strcasecmp(cmd, "PRIVMSG")==0)
@@ -126,10 +139,55 @@ void YOG::interpreteIRCMessage(const char *message)
 		ChatMessage msg;
 
 		strncpy(msg.source,  source, IRC_NICK_SIZE);
+		msg.source[IRC_NICK_SIZE]=0;
+
 		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+		msg.diffusion[IRC_CHANNEL_SIZE]=0;
+
 		strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+		msg.message[IRC_MESSAGE_SIZE]=0;
 
 		messages.push_back(msg);
+	}
+	else if (strcasecmp(cmd, "JOIN")==0)
+	{
+		char *diffusion=strtok(NULL, " :");
+		InfoMessage msg;
+
+		msg.type=IRC_MSG_JOIN;
+
+		strncpy(msg.source,  source, IRC_NICK_SIZE);
+		msg.source[IRC_NICK_SIZE]=0;
+
+		if (diffusion)
+		{
+			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+			msg.diffusion[IRC_CHANNEL_SIZE]=0;
+		}
+		else
+			msg.diffusion[0]=0;
+
+		infoMessages.push_back(msg);
+	}
+	else if (strcasecmp(cmd, "QUIT")==0)
+	{
+		char *diffusion=strtok(NULL, " :");
+		InfoMessage msg;
+
+		msg.type=IRC_MSG_QUIT;
+
+		strncpy(msg.source,  source, IRC_NICK_SIZE);
+		msg.source[IRC_NICK_SIZE]=0;
+
+		if (diffusion)
+		{
+			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+			msg.diffusion[IRC_CHANNEL_SIZE]=0;
+		}
+		else
+			msg.diffusion[0]=0;
+
+		infoMessages.push_back(msg);
 	}
 }
 
@@ -179,7 +237,7 @@ const char *YOG::getChatMessageSource(void)
 		return NULL;
 }
 
-const char *YOG::getMessageDiffusion(void)
+const char *YOG::getInfoMessageDiffusion(void)
 {
 	if (messages.size()>0)
 		return messages[0].diffusion;
@@ -191,6 +249,41 @@ void YOG::freeChatMessage(void)
 {
 	if (messages.size()>0)
 		messages.erase(messages.begin());
+}
+
+bool YOG::isInfoMessage(void)
+{
+	return infoMessages.size()>0;
+}
+
+const YOG::InfoMessageType YOG::getInfoMessageType(void)
+{
+	if (infoMessages.size()>0)
+		return infoMessages[0].type;
+	else
+		return IRC_MSG_NONE;
+}
+
+const char *YOG::getInfoMessageSource(void)
+{
+	if (infoMessages.size()>0)
+		return infoMessages[0].source;
+	else
+		return NULL;
+}
+
+const char *YOG::getMessageDiffusion(void)
+{
+	if (infoMessages.size()>0)
+		return infoMessages[0].diffusion;
+	else
+		return NULL;
+}
+
+void YOG::freeInfoMessage(void)
+{
+	if (infoMessages.size()>0)
+		infoMessages.erase(infoMessages.begin());
 }
 
 void YOG::sendCommand(const char *message)

@@ -611,3 +611,11 @@ beginnen
 pas pret
 not ready
 nicht bereit
+[has joined]
+a rejoint
+has joined
+ist angeschlossen
+[has quit]
+a quitte
+has quit
+hat verlassen
