@@ -1248,8 +1248,8 @@ void YOG::step()
 			memcpy(packet->data, data, 8);
 			packet->address=serverIP;
 			packet->channel=-1;
-			bool sucess=SDLNet_UDP_Send(hostGameSocket, -1, packet)==1;
-			if (!sucess)
+			bool success=SDLNet_UDP_Send(hostGameSocket, -1, packet)==1;
+			if (!success)
 				fprintf(logFile, "failed to send the hostGameSocket to YOG!\n");
 			SDLNet_FreePacket(packet);
 		}
@@ -1276,8 +1276,8 @@ void YOG::step()
 			memcpy(packet->data, data, 12);
 			packet->address=serverIP;
 			packet->channel=-1;
-			bool sucess=SDLNet_UDP_Send(joinGameSocket, -1, packet)==1;
-			if (!sucess)
+			bool success=SDLNet_UDP_Send(joinGameSocket, -1, packet)==1;
+			if (!success)
 				fprintf(logFile, "failed to send the joinGameSocket to YOG!\n");
 			SDLNet_FreePacket(packet);
 		}
@@ -1338,8 +1338,8 @@ void YOG::sendGameinfoRequest()
 			memcpy(packet->data, data, 8);
 			packet->address=game->hostip;
 			packet->channel=-1;
-			bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-			if (!sucess)
+			bool success=SDLNet_UDP_Send(socket, -1, packet)==1;
+			if (!success)
 				fprintf(logFile, "failed to send packet!\n");
 			else
 				fprintf(logFile, "sendGameinfoRequest() to ip=%s\n",  Utilities::stringIP(game->hostip));
