@@ -55,6 +55,7 @@ namespace GAGGUI
 		virtual void init(void);
 		virtual void paint(void);
 		void setText(const char *newText);
+		void setText(const std::string &newText) { setText(newText.c_str()); }
 		const char *getText(void) { return text.c_str(); }
 		void deactivate(void) { activated=false; recomputeTextInfos(); }
 		

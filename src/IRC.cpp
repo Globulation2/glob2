@@ -415,6 +415,29 @@ void IRC::leaveChannel(const char *channel)
 	sendString(command);
 }
 
+bool IRC::initChannelUserListing(const std::string &channel)
+{
+	std::map<std::string, std::set<std::string> >::const_iterator channelIt = usersOnChannels.find(channel);
+	if (channelIt != usersOnChannels.end())
+	{
+		nextChannelUser = channelIt->second.begin();
+		endChannelUser = channelIt->second.end();
+		return true;
+	}
+	else
+		return false;
+}
+
+bool IRC::isMoreChannelUser(void)
+{
+	return nextChannelUser != endChannelUser;
+}
+
+const std::string &IRC::getNextChannelUser(void)
+{
+	return *nextChannelUser++;
+}
+
 bool IRC::getString(char data[IRC_MESSAGE_SIZE])
 {
 	if (socket)

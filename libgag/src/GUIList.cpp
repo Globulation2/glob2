@@ -28,7 +28,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	List::List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font)
+	List::List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
 	{
 		this->x=x;
 		this->y=y;
@@ -37,7 +37,6 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 	
-		assert(font);
 		this->font=font;
 		nth=-1;
 		disp=0;
@@ -220,10 +219,10 @@ namespace GAGGUI
 			parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 		}
 	
-		while ((nextSize<h-4) && ((unsigned)i<strings.size()))
+		while ((nextSize<h-4) && ((size_t)i<strings.size()))
 		{
 			parent->getSurface()->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
-			if (i+(int)disp==nth)
+			if (i+static_cast<int>(disp) == nth)
 				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 			nextSize+=textHeight;
 			i++;
@@ -233,12 +232,17 @@ namespace GAGGUI
 		parent->getSurface()->setClipRect();
 	}
 	
-	void List::addText(const char *text, int pos)
+	void List::addText(const std::string &text, size_t pos)
 	{
-		if ((pos>=0) && (pos<(int)strings.size()))
+		if (pos < strings.size())
 		{
-			strings.insert(strings.begin()+pos, std::string(text));
+			strings.insert(strings.begin()+pos, text);
 		}
+	}
+	
+	void List::addText(const std::string &text)
+	{
+		strings.push_back(text);
 	}
 	
 	void List::sort(void)
@@ -246,24 +250,19 @@ namespace GAGGUI
 		std::sort(strings.begin(), strings.end());
 	}
 	
-	void List::addText(const char *text)
+	void List::removeText(size_t pos)
 	{
-		strings.push_back(std::string(text));
-	}
-	
-	void List::removeText(int pos)
-	{
-		if ((pos>=0) && (pos<(int)strings.size()))
+		if (pos < strings.size())
 		{
 			strings.erase(strings.begin()+pos);
-			if (pos<nth)
+			if (static_cast<int>(pos) < nth)
 				nth--;
 		}
 	}
 	
-	bool List::isText(const char *text) const
+	bool List::isText(const std::string &text) const
 	{
-		for (unsigned i=0; i<strings.size(); i++)
+		for (size_t i=0; i<strings.size(); i++)
 		{
 			if (strings[i] == text)
 				return true;
@@ -271,30 +270,32 @@ namespace GAGGUI
 		return false;
 	}
 	
-	const char *List::getText(int pos) const
+	const std::string &List::getText(size_t pos) const
 	{
-		if ((pos>=0) && (pos<(int)strings.size()))
+		if (pos < strings.size())
 		{
-			return strings[pos].c_str();
+			return strings[pos];
 		}
 		else
-			return NULL;
+			assert(false);
 	}
 	
-	const char *List::get(void) const
+	const std::string &List::get(void) const
 	{
-		return getText(nth);
+		if (nth >= 0)
+			return getText(static_cast<size_t>(nth));
+		else
+			assert(false);
 	}
 	
-	int List::getNth(void) const
+	int List::getSelectionIndex(void) const
 	{
 		return nth;
 	}
 	
-	void List::setNth(int nth)
+	void List::setSelectionIndex(int index)
 	{
-		assert((nth>=0)&&(nth<(int)strings.size()));
-		if ((nth>=0)&&(nth<(int)strings.size()))
-			this->nth=nth;
+		if ((index >= -1 ) && (index < static_cast<int>(strings.size())))
+			this->nth = index;
 	}
 }

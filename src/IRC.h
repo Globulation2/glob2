@@ -29,6 +29,9 @@
 
 #include <deque>
 #include <vector>
+#include <set>
+#include <string>
+#include <map>
 
 #ifdef WIN32
 #define snprintf _snprintf
@@ -44,9 +47,9 @@ public:
 	enum IRCConst
 	{
 		IRC_CHANNEL_SIZE = 200,
-		IRC_MESSAGE_SIZE=512,
+		IRC_MESSAGE_SIZE = 512,
 		//! we are using freenode, and doc sates that maxlength is 16, as stated here: http://searchirc.com/network/freenode
-		IRC_NICK_SIZE=16
+		IRC_NICK_SIZE = 16
 	};
 	
 	enum InfoMessageType
@@ -89,6 +92,13 @@ protected:
 
 	//! pending info messages
 	std::deque<InfoMessage> infoMessages;
+	
+	//! all users on each connected channels
+	std::map<std::string, std::set<std::string> > usersOnChannels;
+	//! iterator after the last channel user
+	std::set<std::string>::const_iterator endChannelUser;
+	//! iterator to the next channel user
+	std::set<std::string>::iterator nextChannelUser;
 	
 	//! The chat where default chat will go
 	char chatChan[IRC_CHANNEL_SIZE+1];
@@ -146,11 +156,18 @@ public:
 	const char *getInfoMessageText(void);
 	//! Free last info message
 	void freeInfoMessage(void);
-
+	
+	// CHANNEL
 	//! Join a given channel, if no argument is given, join chat channel
 	void joinChannel(const char *channel=NULL);
 	//! Quit a given channel, if no argument is given, leave chat channel
 	void leaveChannel(const char *channel=NULL);
+	//! Init current channel iteration for listing users. Return if the channel exists. Iteration has to be completed (iterated until isMoreChannelUser return false) before calling step.
+	bool initChannelUserListing(const std::string &channel);
+	//! Return if there is user to be iterated on the current channel iterator. initChannelUserListing has to be called once before calling this method.
+	bool isMoreChannelUser(void);
+	//! Return the next channel user on the current channel iterator. initChannelUserListing has to be called once before calling this method. Returned string has to be copied before next call to this function or next call to initChannelUserListing or next call to step.
+	const std::string &getNextChannelUser(void);
 
 private:
 	//! Send a string in IRC format

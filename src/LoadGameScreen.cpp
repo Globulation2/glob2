@@ -63,7 +63,7 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		std::string mapFileName = glob2NameToFilename("games", fileList->getText(par1), "game");
+		std::string mapFileName = glob2NameToFilename("games", fileList->getText(par1).c_str(), "game");
 
 		mapPreview->setMapThumbnail(mapFileName.c_str());
 		

@@ -197,7 +197,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==modeList)
 		{
 			int w, h;
-			sscanf(modeList->getText(par1), "%dx%d", &w, &h);
+			sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h);
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
 			updateGfxCtx();
@@ -212,7 +212,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (par1 == 0)
 				globalContainer->settings.screenDepth = 0;
 			else
-				globalContainer->settings.screenDepth = atoi(depthList->getText(par1));
+				globalContainer->settings.screenDepth = atoi(depthList->getText(par1).c_str());
 			updateGfxCtx();
 		}
 	}
