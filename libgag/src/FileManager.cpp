@@ -46,13 +46,13 @@
 #	include <sys/stat.h>
 #endif
 
-FileManager::FileManager()
+FileManager::FileManager(const char *gameName)
 {
 #ifndef WIN32
-	char glob2Local[256];
-	snprintf(glob2Local, sizeof(glob2Local), "%s/.glob2", getenv("HOME"));
-	mkdir(glob2Local, S_IRWXU);
-	addDir(glob2Local);
+	char gameLocal[256];
+	snprintf(gameLocal, sizeof(gameLocal), "%s/.%s", getenv("HOME"), gameName);
+	mkdir(gameLocal, S_IRWXU);
+	addDir(gameLocal);
 #endif
     addDir(".");
     addDir(PACKAGE_DATA_DIR);

@@ -27,7 +27,7 @@
 
 GlobalContainer::GlobalContainer(void)
 {
-	fileManager=new FileManager();
+	fileManager=GAG::fileManager;
 	logFileManager=new LogFileManager(fileManager);
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;

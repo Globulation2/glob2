@@ -204,7 +204,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 
 int Glob2::run(int argc, char *argv[])
 {
-	GAG::init();
+	GAG::init("glob2");
 
 	globalContainer=new GlobalContainer();
 
