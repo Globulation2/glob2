@@ -569,16 +569,16 @@ Mercato
 Рынок
 Mercado
 Piac
-[exchange]
-Echange
-Exchange
-Handel
-Směnit
-Wymiana
-Cambio
-Обмен
-Cambio
-Csereüzlet
+[forbidden area]
+Zone interdites
+Forbidden area
+
+
+
+
+
+
+
 [Building short explaination]
 Courte explication du batiment  (24 caractères max)
 Building short explaination (24 chars max)
