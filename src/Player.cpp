@@ -210,6 +210,19 @@ bool BasePlayer::sameip(IPaddress ip)
 	return ((this->ip.host==ip.host)&&(this->ip.port==ip.port));
 }
 
+void BasePlayer::printip(char s[32])
+{
+	Uint32 netHost=SDL_SwapBE32(ip.host);
+	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
+	
+	int i24=(netHost>>24)&0xFF;
+	int i16=(netHost>>16)&0xFF;
+	int i8=(netHost>>8)&0xFF;
+	int i0=(netHost>>0)&0xFF;
+	
+	snprintf(s, 32, "%d.%d.%d.%d : %d", i24, i16, i8, i0, netPort);
+}
+
 bool BasePlayer::bind()
 {
 	if (socket==NULL)

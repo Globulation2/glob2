@@ -116,6 +116,7 @@ public:
 	
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
+	void BasePlayer::printip(char s[32]);
 	bool sameip(IPaddress ip);
 	bool bind();
 	void unbind();

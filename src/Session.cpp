@@ -69,12 +69,9 @@ void SessionInfo::draw(DrawableSurface *gfx)
 	gfx->drawFilledRect(20, 60, gfx->getW()-40, 200, 0, 0, 0);
 	for (int i=0; i<numberOfPlayer; i++)
 	{
-		int i24=(players[i].ip.host>>24)&0xFF;
-		int i16=(players[i].ip.host>>16)&0xFF;
-		int i8=(players[i].ip.host>>8)&0xFF;
-		int i0=(players[i].ip.host>>0)&0xFF;
-		// NOTE : ip.host is Big Endian
-		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %d : %d.%d.%d.%d", players[i].name, players[i].teamNumber, i0, i8, i16, i24);
+		char s[32];
+		players[i].printip(s);
+		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %s", players[i].name, s);
 	}
 
 }
