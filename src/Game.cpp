@@ -25,7 +25,6 @@
 #include "LogFileManager.h"
 #include <set>
 #include <string>
-#include <strstream>
 #include <functional>
 #include <algorithm>
 
@@ -1248,14 +1247,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
-					std::ostrstream xstr;
-					xstr << int((x+viewportX+map.getW())&(map.getMaskW()));
-					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, xstr.str());
-					xstr.freeze(0);
-					std::ostrstream ystr;
-					ystr << int((y+viewportY+map.getH())&(map.getMaskH()));
-					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, ystr.str());
-					ystr.freeze(0);
+					
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX+map.getW())&(map.getMaskW())));
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, ((y+viewportY+map.getH())&(map.getMaskH())));
 				}
 
 	// We draw debug area:
@@ -1272,10 +1266,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
 						int lx=(x+viewportX-b->posX+15+32)&31;
 						int ly=(y+viewportY-b->posY+15+32)&31;
-						std::ostrstream s;
-						s << b->localGradient[1][lx+ly*32];
-						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, s.str());
-						s.freeze(0);
+						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
 						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
@@ -1295,10 +1286,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
 				{
-					std::ostrstream s;
-					s << b->globalGradient[1][x+viewportX+(y+viewportY)*w];
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, s.str());
-					s.freeze(0);
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[1][x+viewportX+(y+viewportY)*w]);
 					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", (x+viewportX+map.getW())&(map.getMaskW()));
 					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", (y+viewportY+map.getH())&(map.getMaskH()));
 				}

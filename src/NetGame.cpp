@@ -227,7 +227,7 @@ void NetGame::sendPushOrder(int targetPlayer)
 		assert(order);
 		if (order->latencyPadding)
 		{
-			printf("sendPushOrder skipped step=%d.\n", step);
+			fprintf(logFile, "sendPushOrder skipped step=%d.\n", step);
 			assert(order->getOrderType()==ORDER_NULL);
 			step++; // We skip orders which have been added to increase latency.
 			order=ordersQueue[localPlayerNumber][step];
@@ -733,7 +733,7 @@ void NetGame::computeMyLocalWishedLatency()
 		}
 	if (n==0)
 		minTicksToWait=0;
-	printf("minTicksToWait=%d, ", minTicksToWait);
+	//printf("minTicksToWait=%d, ", minTicksToWait);
 	
 	int maxPingPong=0;
 	for (int p=0; p<numberOfPlayer; p++)
@@ -1397,7 +1397,7 @@ int NetGame::ticksToDelay(void)
 	else
 		minTicksToWait*=10; //Because "Ticks" are 40ms in NetGame and "Ticks" are 1ms int SDL.
 	
-	printf("minTicksToWait=%d, minAverageWishedDelay=%d\n", minTicksToWait, minAverageWishedDelay);
+	//printf("minTicksToWait=%d, minAverageWishedDelay=%d\n", minTicksToWait, minAverageWishedDelay);
 	
 	if (minAverageWishedDelay>minTicksToWait)
 		return minAverageWishedDelay;

@@ -20,7 +20,7 @@
 #include <GUIRatio.h>
 #include <Toolkit.h>
 #include <assert.h>
-#include <strstream>
+#include <sstream>
 
 Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font)
 {
@@ -123,11 +123,10 @@ void Ratio::internalPaint(void)
 	}
 
 	// We center the string
-	std::ostrstream g;
+	std::stringstream g;
 	g << get();
-	int tw=font->getStringWidth(g.str());
-	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, g.str());
-	g.freeze(0);
+	int tw=font->getStringWidth(g.str().c_str());
+	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, g.str().c_str());
 
 	needRefresh=false;
 }

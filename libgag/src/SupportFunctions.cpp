@@ -21,7 +21,6 @@
 #include <math.h>
 #include <assert.h>
 #include <stdarg.h>
-#include <stdio.h>
 
 namespace GAG
 {
@@ -244,7 +243,7 @@ namespace GAG
 		va_list arglist;
 		char* msg;
 		va_start(arglist, f);
-		asprintf(&msg, f, arglist);
+		vasprintf(&msg, f, arglist);
 		va_end(arglist);
 		std::string ret(msg);
 		free(msg);

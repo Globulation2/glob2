@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <sstream>
 
 // here begin the SDL Drawable Surface part
 SDLGraphicContext *screen=NULL;
@@ -847,6 +848,16 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 
 // usefull macro to replace some char (like newline) with \0 in string
 #define FILTER_OUT_CHAR(s, c) { char *_c; if ( (_c=(strchr(s, c)))!=NULL) *_c=0; }
+
+void SDLDrawableSurface::drawString(int x, int y, const Font *font, int i)
+{
+	if (!surface)
+		return;
+
+	std::stringstream ystr;
+	ystr << i;
+	((const SDLFont *)font)->drawString(surface, x, y, 0, ystr.str().c_str(), &clipRect);
+}
 
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg)
 {
