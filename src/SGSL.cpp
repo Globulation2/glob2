@@ -199,19 +199,23 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	operation = line[pc++].type;
 	amount = line[pc].value;
 
+	int val = valueOfVariable(game, type, teamNumber, level);
 	switch (operation)
 	{
 		case (Token::S_HIGHER):
 		{
-			return (valueOfVariable(game, type, teamNumber, level) > amount);
+			std::cout << "SGSL : conditionTester : testing " << val << " > " << amount << std::endl;
+			return (val > amount);
 		}
 		case (Token::S_LOWER):
 		{
-			return (valueOfVariable(game, type, teamNumber, level) < amount);
+			std::cout << "SGSL : conditionTester : testing " << val << " < " << amount << std::endl;
+			return (val < amount);
 		}
 		case (Token::S_EQUAL):
 		{
-			return (valueOfVariable(game, type, teamNumber, level) == amount);
+			std::cout << "SGSL : conditionTester : testing " << val << " = " << amount << std::endl;
+			return (val == amount);
 		}
 		default:
 			return false;
