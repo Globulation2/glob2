@@ -117,7 +117,7 @@ public:
 	UDPsocket socket;
 	Uint8 lastSentMessageID; // The last message id that client has sent to YOG. Used to ignore doubles.
 	char userName[32];
-	char passWord[32];
+	unsigned char passWord[32];
 	unsigned char xorpassw[32];
 	std::list<Message> messages; // messages to send
 	Uint8 lastMessageID; // The last message id sent by YOG to client. Used to give new messages an unique id.
