@@ -710,9 +710,15 @@ void MapEdit::loadSave(bool isLoad)
 	if (loadSaveScreen->endValue==0)
 	{
 		if (isLoad)
+		{
 			load(loadSaveScreen->fileName);
+		}
 		else
+		{
+			// TODO : we need to know if save is success
 			save(loadSaveScreen->fileName);
+			hasMapBeenModiffied=false;
+		}
 	}
 
 	// clean up
@@ -762,6 +768,9 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 			editMode=EM_DELETE;
 		else
 		{
+			// TODO : once we are sure the following is false only if the map is correctly saved, we can test on it
+			// hasMapBeenModiffied
+		
 			const char *reallyquit = globalContainer->texts.getString("[really quit ?]");
 			const char *yes = globalContainer->texts.getString("[Yes]");
 			const char *no = globalContainer->texts.getString("[No]");
