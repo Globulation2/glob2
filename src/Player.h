@@ -63,7 +63,7 @@ public:
 		
 		PNS_PLAYER_SILENT,
 		
-		// client to players state:
+		// host choose a state for joiners between :
 		
 		PNS_PLAYER_SEND_ONE_REQUEST,
 		PNS_SERVER_SEND_SESSION_INFO,
@@ -81,7 +81,7 @@ public:
 		PNS_PLAYER_CONFIRMED_START_GAME,
 		PNS_PLAYER_PLAYS,
 		
-		// players to players states:
+		// joiners choose a state for joiners between :
 		
 		PNS_BINDED,
 		PNS_SENDING_FIRST_PACKET,

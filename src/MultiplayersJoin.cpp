@@ -565,6 +565,7 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	assert(packet);
 
 	packet->channel=channel;
+	packet->address=serverIP;
 	packet->len=28;
 	packet->data[0]=NEW_PLAYER_WANTS_SESSION_INFO;
 	packet->data[1]=0;
@@ -615,6 +616,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	assert(packet);
 
 	packet->channel=channel;
+	packet->address=serverIP;
 	packet->len=8;
 	packet->data[0]=NEW_PLAYER_SEND_CHECKSUM_CONFIRMATION;
 	packet->data[1]=0;
@@ -656,12 +658,12 @@ bool MultiplayersJoin::send(const int v)
 	assert(packet);
 
 	packet->channel=channel;
+	packet->address=serverIP;
 	packet->len=4;
 	packet->data[0]=v;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	packet->address=serverIP;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
 		printf("suceeded to send packet v=%d\n", v);
@@ -690,6 +692,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 	assert(packet);
 
 	packet->channel=channel;
+	packet->address=serverIP;
 	packet->len=8;
 	packet->data[0]=u;
 	packet->data[1]=0;
@@ -699,7 +702,6 @@ bool MultiplayersJoin::send(const int u, const int v)
 	packet->data[5]=0;
 	packet->data[6]=0;
 	packet->data[7]=0;
-	packet->address=serverIP;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
 		printf("suceeded to send packet v=%d\n", v);
@@ -751,6 +753,7 @@ bool MultiplayersJoin::tryConnection()
 	}
 
 	channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
+	//or zzz? channel=SDLNet_UDP_Bind(socket, 0, &serverIP);
 
 	if (channel != -1)
 	{
