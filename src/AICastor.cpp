@@ -50,10 +50,17 @@ inline static void dxdyfromDirection(int direction, int *dx, int *dy)
 void AICastor::firstInit()
 {
 	obstacleUnitMap=NULL;
+	obstacleBuildingMap=NULL;
+	spaceForBuildingMap=NULL;
+	foodBuildingNeighbourMap=NULL;
+	
 	workPowerMap=NULL;
 	workRangeMap=NULL;
 	workAbilityMap=NULL;
 	hydratationMap=NULL;
+	wheatGrowthMap=NULL;
+	
+	goodFoodBuildingMap=NULL;
 	
 	ressourcesCluster=NULL;
 }
@@ -93,10 +100,24 @@ void AICastor::init(Player *player)
 	assert(this->map);
 	
 	size_t size=map->w*map->h;
+	assert(size>0);
 	
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
 	obstacleUnitMap=new Uint8[size];
+	
+	if (obstacleBuildingMap!=NULL)
+		delete[] obstacleBuildingMap;
+	obstacleBuildingMap=new Uint8[size];
+	
+	if (spaceForBuildingMap!=NULL)
+		delete[] spaceForBuildingMap;
+	spaceForBuildingMap=new Uint8[size];
+	
+	if (foodBuildingNeighbourMap!=NULL)
+		delete[] foodBuildingNeighbourMap;
+	foodBuildingNeighbourMap=new Uint8[size];
+	
 	
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
@@ -114,6 +135,15 @@ void AICastor::init(Player *player)
 		delete[] hydratationMap;
 	hydratationMap=new Uint8[size];
 	
+	if (wheatGrowthMap!=NULL)
+		delete[] wheatGrowthMap;
+	wheatGrowthMap=new Uint8[size];
+	
+	if (goodFoodBuildingMap!=NULL)
+		delete[] goodFoodBuildingMap;
+	goodFoodBuildingMap=new Uint8[size];
+	
+	
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
 	ressourcesCluster=new Uint16[size];
@@ -126,6 +156,16 @@ AICastor::~AICastor()
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
 	
+	if (obstacleBuildingMap!=NULL)
+		delete[] obstacleBuildingMap;
+	
+	if (spaceForBuildingMap!=NULL)
+		delete[] spaceForBuildingMap;
+	
+	if (foodBuildingNeighbourMap!=NULL)
+		delete[] foodBuildingNeighbourMap;
+	
+		
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
 	
@@ -137,6 +177,13 @@ AICastor::~AICastor()
 	
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
+	
+	if (wheatGrowthMap!=NULL)
+		delete[] wheatGrowthMap;
+	
+	if (goodFoodBuildingMap!=NULL)
+		delete[] goodFoodBuildingMap;
+	
 	
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
@@ -176,29 +223,29 @@ Order *AICastor::getOrder(void)
 {
 	timer++;
 	
-	if (!hydratationMapComputed)
-		computeHydratationMap();
-	
 	computeObstacleUnitMap();
+	computeObstacleBuildingMap();
+	computeSpaceForBuildingMap();
+	computeFoodBuildingNeighbourMap();
+	
 	computeWorkPowerMap();
 	computeWorkRangeMap();
 	computeWorkAbilityMap();
 	
+	if (!hydratationMapComputed)
+		computeHydratationMap();
+	computeWheatGrowthMap();
+	
+	Order *gfbm=computeGoodFoodBuildingMap(50, 5);
+	if (gfbm)
+		return gfbm;
+	
 	return new NullOrder();
 }
 
-void AICastor::computeObstacleUnitMap()
+
+void AICastor::computeCanSwim()
 {
-	int w=map->w;
-	int h=map->w;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	size_t size=w*h;
-	Case *cases=map->cases;
-	Uint32 teamMask=team->me;
-	
-	memset(obstacleUnitMap, 1, size);
-	
 	// If our population has more healthy-working-units able to swimm than healthy-working-units
 	// unable to swimm then we choose to be able to go trough water:
 	Unit **myUnits=team->myUnits;
@@ -215,8 +262,20 @@ void AICastor::computeObstacleUnitMap()
 				sumCantSwim++;
 		}
 	}
-	bool canSwim=(sumCanSwim>sumCantSwim);
 	
+	canSwim=(sumCanSwim>sumCantSwim);
+}
+
+void AICastor::computeObstacleUnitMap()
+{
+	int w=map->w;
+	int h=map->h;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	//size_t size=w*h;
+	Case *cases=map->cases;
+	Uint32 teamMask=team->me;
+		
 	for (int y=0; y<h; y++)
 	{
 		int wy=w*y;
@@ -230,11 +289,160 @@ void AICastor::computeObstacleUnitMap()
 					obstacleUnitMap[wyx]=0;
 				else if (c.forbidden&teamMask)
 					obstacleUnitMap[wyx]=0;
-				else if (!canSwim && map->isWater(x, y))
+				else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
 					obstacleUnitMap[wyx]=0;
+				else
+					obstacleUnitMap[wyx]=1;
 			}
 			else
 				obstacleUnitMap[wyx]=0;
+		}
+	}
+}
+
+
+void AICastor::computeObstacleBuildingMap()
+{
+	int w=map->w;
+	int h=map->h;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	//int hDec=map->hDec;
+	//int wDec=map->wDec;
+	//size_t size=w*h;
+	Case *cases=map->cases;
+	
+	for (int y=0; y<h; y++)
+	{
+		int wy=w*y;
+		for (int x=0; x<w; x++)
+		{
+			int wyx=wy+x;
+			Case c=cases[wyx];
+			if (c.building==NOGBID)
+			{
+				if (c.terrain>=16) // if (!isGrass)
+					obstacleBuildingMap[wyx]=0;
+				else if (c.ressource.type!=NO_RES_TYPE)
+					obstacleBuildingMap[wyx]=0;
+				else
+					obstacleBuildingMap[wyx]=1;
+			}
+			else
+				obstacleBuildingMap[wyx]=0;
+		}
+	}
+}
+
+void AICastor::computeSpaceForBuildingMap()
+{
+	int w=map->w;
+	int h=map->h;
+	int wMask=map->wMask;
+	//int hMask=map->hMask;
+	//int hDec=map->hDec;
+	//int wDec=map->wDec;
+	size_t size=w*h;
+	
+	memcpy(spaceForBuildingMap, obstacleBuildingMap, size);
+	
+	for (int y=0; y<h; y++)
+	{
+		int wy0=w*y;
+		int wy1=w*((y+1)&wMask);
+		
+		for (int x=0; x<w; x++)
+		{
+			int wyx[4];
+			wyx[0]=wy0+x+0;
+			wyx[1]=wy0+x+1;
+			wyx[2]=wy1+x+0;
+			wyx[3]=wy1+x+1;
+			Uint8 obs[4];
+			for (int i=0; i<4; i++)
+				obs[i]=spaceForBuildingMap[wyx[i]];
+			Uint8 min=255;
+			for (int i=0; i<4; i++)
+				if (min>obs[i])
+					min=obs[i];
+			if (min!=0)
+				spaceForBuildingMap[wyx[0]]=min+1;
+		}
+	}
+}
+
+void AICastor::computeFoodBuildingNeighbourMap()
+{
+	int w=map->w;
+	int h=map->h;
+	int wMask=map->wMask;
+	int hMask=map->hMask;
+	//int hDec=map->hDec;
+	int wDec=map->wDec;
+	size_t size=w*h;
+	Uint8 *gradient=foodBuildingNeighbourMap;
+	Case *cases=map->cases;
+	
+	memset(gradient, 0, size);
+	
+	Building **myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if (b)
+		{
+			int bx=b->posX;
+			int by=b->posY;
+			int bw=b->type->width;
+			int bh=b->type->height;
+			
+			// we skip building with already a neighbour:
+			int neighbour=0;
+			for (int xi=bx-1; xi<=bx+bw; xi++)
+			{
+				if (cases[(xi&wMask)+(((by-1 )&hMask)<<wDec)].building!=NOGBID)
+				{
+					neighbour=1;
+					goto neighbourComputed;
+				}
+				if (cases[(xi&wMask)+(((by+bh)&hMask)<<wDec)].building!=NOGBID)
+				{
+					neighbour=1;
+					goto neighbourComputed;
+				}
+			}
+			for (int yi=by-1; yi<=by+bh; yi++)
+			{
+				if (cases[((bx-1 )&wMask)+((yi&hMask)<<wDec)].building!=NOGBID)
+				{
+					neighbour=1;
+					goto neighbourComputed;
+				}
+				if (cases[((bx+bw)&wMask)+((yi&hMask)<<wDec)].building!=NOGBID)
+				{
+					neighbour=1;
+					goto neighbourComputed;
+				}
+			}
+			
+			neighbourComputed:
+			for (int xi=bx-2; xi<=bx+bw; xi++)
+			{
+				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by-2 )&hMask)<<wDec)];
+				*p=(*p+2)|neighbour;
+				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
+				*p=(*p+2)|neighbour;
+			}
+			
+			for (int yi=by-1; yi<by+bh; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx-2 )&wMask)+((yi&hMask)<<wDec)];
+				*p=(*p+2)|neighbour;
+				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
+				*p=(*p+2)|neighbour;
+			}
 		}
 	}
 }
@@ -376,30 +584,113 @@ void AICastor::computeWorkAbilityMap()
 	}
 }
 
-
-
 void AICastor::computeHydratationMap()
 {
 	printf("computeHydratationMap()...\n");
 	int w=map->w;
 	int h=map->w;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
 	size_t size=w*h;
 	
 	memset(hydratationMap, 0, size);
 	
-	for (int y=0; y<h; y++)
-		for (int x=0; x<w; x++)
-		{
-			Uint16 t=(map->cases+w*(y&hMask)+(x&wMask))->terrain;
-			if ((t>=256) && (t<256+16)) // if WATER
-				hydratationMap[x+y*w]=16;
-		}
+	Case *cases=map->cases;
+	for (size_t i=0; i<size; i++)
+	{
+		Uint16 t=cases[i].terrain;
+		if ((t>=256) && (t<256+16)) // if WATER
+			hydratationMap[i]=16;
+	}
 	
 	updateGlobalGradientNoObstacle(hydratationMap);
 	hydratationMapComputed=true;
 	printf("...computeHydratationMap() done\n");
+}
+
+void AICastor::computeWheatGrowthMap()
+{
+	int w=map->w;
+	int h=map->w;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	size_t size=w*h;
+	
+	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
+	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	
+	for (size_t i=0; i<size; i++)
+	{
+		Uint8 wheat=wheatGradient[i]; // [0..255]
+		if (wheat>=254)
+			wheatGrowthMap[i]=1+hydratationMap[i];
+	}
+	
+	map->updateGlobalGradient(wheatGrowthMap);
+	
+	for (size_t i=0; i<size; i++)
+	{
+		Uint8 *p=&wheatGrowthMap[i];
+		if ((*p)!=0)
+			(*p)--;
+	}
+}
+
+Order *AICastor::computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat)
+{
+	// minWork: 50 is a safe value.
+	// minWheat: 5 is a safe value
+	
+	int w=map->w;
+	int h=map->w;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	size_t size=w*h;
+	
+	memset(goodFoodBuildingMap, 0, size);
+	
+	Uint8 bestWheatScore=0;
+	Uint8 bestWorkScore=0;
+	size_t bestIndex;
+	
+	for (size_t i=0; i<size; i++)
+	{
+		Uint8 neighbour=foodBuildingNeighbourMap[i];
+		if (neighbour!=2)
+			continue;
+		
+		Uint8 space=spaceForBuildingMap[i];
+		if (space<2)
+			continue;
+		
+		Uint8 work=workAbilityMap[i];
+		if (work<minWork)
+			continue;
+		
+		Uint8 wheat=wheatGrowthMap[i];
+		if (wheat<minWheat)
+			continue;
+		
+		goodFoodBuildingMap[i]=wheat;
+		if (wheat>=bestWheatScore && (wheat>bestWheatScore || work>bestWorkScore))
+		{
+			bestWheatScore=wheat;
+			bestWorkScore=work;
+			bestIndex=i;
+		}
+	}
+	
+	if (bestWheatScore>0 && bestWorkScore>0)
+	{
+		Sint32 x=(bestIndex&map->wMask);
+		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 void AICastor::computeRessourcesCluster()

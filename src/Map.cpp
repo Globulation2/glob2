@@ -2062,6 +2062,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 				side[1]=gradient[wyu+x ];
 				side[2]=gradient[wyu+xr];
 				side[3]=gradient[wy +xl];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2073,7 +2074,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
-
+	
 	for (int y=hMask; y>=0; y--)
 	{
 		int wy=(y<<wDec);
@@ -2092,6 +2093,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 				side[1]=gradient[wyd+x ];
 				side[2]=gradient[wyd+xl];
 				side[3]=gradient[wy +xl];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2103,7 +2105,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
-
+	
 	for (int x=0; x<w; x++)
 	{
 		int xl=(x-1)&wMask;
@@ -2120,6 +2122,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 				side[1]=gradient[wyd+xl];
 				side[2]=gradient[wy +xl];
 				side[3]=gradient[wyu+x ];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
@@ -2148,6 +2151,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 				side[1]=gradient[wy +xr];
 				side[2]=gradient[wyd+xr];
 				side[3]=gradient[wyu+x ];
+				max++;
 
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
