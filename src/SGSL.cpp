@@ -30,6 +30,8 @@
 #include "GameGUI.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 
 Token::TokenSymbolLookupTable Token::table[] =
 {
@@ -65,6 +67,12 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_ISDEAD, "isdead" },
 	{ S_ALLY, "ally" },
 	{ S_ENEMY, "enemy" },
+
+	{ S_LANG_0, "lang0" },
+	{ S_LANG_1, "lang1" },
+	{ S_LANG_2, "lang2" },
+	{ S_LANG_3, "lang3" },
+	{ S_LANG_4, "lang4" },
 
 	{ S_WORKER, "Worker" },
 	{ S_EXPLORER, "Explorer" },
@@ -222,9 +230,11 @@ bool Story::testCondition(GameGUI *gui)
 			case (Token::S_SHOW):
 			{
 				unsigned lsInc=0;
-				if (line[lineSelector+2].type == Token::INT)
+				if ((line[lineSelector+2].type >= Token::S_LANG_0) ||
+					(line[lineSelector+2].type <= Token::S_LANG_4))
 				{
-					if ((unsigned)line[lineSelector+2].value != globalContainer->settings.defaultLanguage)
+					unsigned langId = line[lineSelector+2].type - Token::S_LANG_0;
+					if (langId != globalContainer->settings.defaultLanguage)
 					{
 						lineSelector += 2;
 						return true;
@@ -611,6 +621,7 @@ const char *ErrorReport::getErrorString(void)
 		"Missing \",\"",
 		"Missing argument",
 		"Invalid alliance level. Level must be between 0 and 3",
+		"Not a valid language identifier",
 		"Unknown error"
 	};
 	assert(type >= 0);
@@ -874,6 +885,18 @@ void Mapscript::reset(void)
 	stories.clear();
 	areas.clear();
 	flags.clear();
+
+	// fill language map
+	unsigned langCount = Toolkit::getStringTable()->getNumberOfLanguage();
+	unsigned sgslLangCount = 5;
+	assert(sgslLangCount == langCount);
+	for (unsigned i=0; i<sgslLangCount; i++)
+	{
+		unsigned j=0;
+		while (Token::table[j].type != (int)(Token::S_LANG_0+i))
+			j++;
+		Token::table[j].name = Toolkit::getStringTable()->getStringInLang("[language-code]", i);
+	}
 }
 
 bool Mapscript::testMainTimer()
@@ -1347,9 +1370,10 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							}
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
-							if (donnees->getToken()->type != Token::INT)
+							if ((donnees->getToken()->type < Token::S_LANG_0) ||
+								(donnees->getToken()->type > Token::S_LANG_4))
 							{
-								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								er.type=ErrorReport::ET_NOT_VALID_LANG_ID;
 								break;
 							}
 							thisone.line.push_back(*donnees->getToken());

@@ -5,6 +5,12 @@ English
 Deutsch
 Česky
 Polski
+[language-code]
+fr
+en
+de
+cz
+po
 [language-tr]
 Langue
 Language
