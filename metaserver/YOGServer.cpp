@@ -1099,9 +1099,9 @@ void YOGServer::run()
 					c->timeout=LONG_NETWORK_TIMEOUT;
 			}
 		}
-			
 		
-		SDL_Delay(50);
+		
+		SDL_Delay(40);
 	}
 	lprintf("YOGServer is down and exiting.\n");
 }

@@ -20,6 +20,6 @@
 #ifndef __HEADER_H
 #define __HEADER_H
 
-#include <GAGSys.h>
+#include "GAGSys.h"
 
 #endif
