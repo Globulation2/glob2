@@ -10,6 +10,7 @@ ingameGUI:
 
 Net:
 - Vérifier que les "wishedLatency" ne soient pas modiffés pendant qu'un joueur est temporairement inaccessible.
+- Ajouter des versions de protocole (net + YOG).
 
 YOG:
 - utiliser: lsa2pc12.epfl.ch / 128.178.145.89 / Port : 7486 (UDP + TCP)
