@@ -113,8 +113,6 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
-	
-	Map::clearBuildingGradient(localGradient);
 	for (int i=0; i<2; i++)
 	{
 		globalGradient[i]=NULL;
@@ -188,7 +186,6 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		}
 		dirtyLocalGradient[i]=true;
 	}
-	Map::clearBuildingGradient(localGradient);
 }
 
 void Building::save(SDL_RWops *stream)
