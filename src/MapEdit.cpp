@@ -314,7 +314,7 @@ void MapEdit::handleMapClick(void)
 
 void MapEdit::handleMapClick(int mx, int my)
 {
-	int winX, winW, winY, winH;
+	int winX=0, winW=globalContainer->gfx->getW()-128, winY=0, winH=globalContainer->gfx->getH();
 	static int ax=0, ay=0, atype=0;
 	int x=ax, y=ay;
 	bool needRedraw=false;

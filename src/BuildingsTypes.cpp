@@ -154,7 +154,7 @@ Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSi
 {
 	for (size_t i=0; i<entries.size(); i++)
 	{
-		if ((entries[i]->type == type) && (entries[i]->level == level) && (entries[i]->isBuildingSite == isBuildingSite))
+		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))
 			return i;
 	}
 	
@@ -167,7 +167,7 @@ BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuil
 {
 	for (size_t i=0; i<entries.size(); i++)
 	{
-		if ((entries[i]->type == type) && (entries[i]->level == level) && (entries[i]->isBuildingSite == isBuildingSite))
+		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))
 			return entries[i];
 	}
 	

@@ -936,18 +936,16 @@ void Unit::handleDisplacement(void)
 					// Let's check for possible exchange ressources:
 					
 					bool goodToGive=targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource];
-					bool goodToTake=false;
-					int ressourceToTake;
+					int ressourceToTake=-1;
 					for (int r=0; r<HAPPYNESS_COUNT; r++)
 						if ((destinationPurprose & (1<<r))
 							&& foreingExchangeBuilding->ressources[HAPPYNESS_BASE+r]>0)
 						{
-							goodToTake=true;
 							ressourceToTake=HAPPYNESS_BASE+r;
 							break;
 						}
 					
-					if (goodToGive && goodToTake)
+					if (goodToGive && (ressourceToTake>=0))
 					{
 						// OK, we can proceed to the exchange.
 						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
@@ -972,7 +970,7 @@ void Unit::handleDisplacement(void)
 					else
 					{
 						if (verbose)
-							printf("guid=(%d) loopMove at foreingExchangeBuilding, caryedRessource=%d, destinationPurprose=%d, goodToGive=%d, goodToTake=%d\n", gid, caryedRessource, destinationPurprose, goodToGive, goodToTake);
+							printf("guid=(%d) loopMove at foreingExchangeBuilding, caryedRessource=%d, destinationPurprose=%d, goodToGive=%d, goodToTake=%d\n", gid, caryedRessource, destinationPurprose, goodToGive, (ressourceToTake>=0));
 						loopMove=true;
 					}
 				}
@@ -998,18 +996,15 @@ void Unit::handleDisplacement(void)
 					}
 					
 					// Let's grab the right ressource.
-					
-					bool goodToTake=false;
-					int ressourceToTake;
+					int ressourceToTake=-1;
 					for (int r=0; r<HAPPYNESS_COUNT; r++)
 						if (foreingExchangeBuilding->receiveRessourceMask & (1<<r))
 						{
-							goodToTake=true;
 							ressourceToTake=HAPPYNESS_BASE+r;
 							break;
 						}
 					
-					if (goodToTake)
+					if (ressourceToTake>=0)
 					{
 						int foreignBuildingDist;
 						int timeLeft=(hungry-trigHungry)/race->hungryness;

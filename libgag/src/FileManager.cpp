@@ -249,7 +249,7 @@ bool FileManager::isDir(const char *filename)
 	#else
 	struct stat s;
 	#endif
-
+	s.st_mode = 0;
 	int serr = 1;
 	for (size_t i = 0; (serr != 0) && (i < dirList.size()); ++i)
 	{

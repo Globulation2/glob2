@@ -543,7 +543,7 @@ void Building::cancelConstruction(void)
 	if (type->isBuildingSite)
 	{
 		assert(buildingState==ALIVE);
-		int targetLevelTypeNum;
+		int targetLevelTypeNum=-1;
 		
 		if (constructionResultState==UPGRADE)
 			targetLevelTypeNum=type->prevLevel;
@@ -1056,13 +1056,16 @@ bool Building::tryToBuildingSiteRoom(void)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int targetLevelTypeNum;
+	int targetLevelTypeNum=-1;
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
 		targetLevelTypeNum=type->prevLevel;
 	else
 		assert(false);
+		
+	if (targetLevelTypeNum==-1)
+		return false;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+targetBt->decLeft;
@@ -1165,7 +1168,7 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
 {
-	int tltn;
+	int tltn=-1;
 	if (constructionResultState==UPGRADE)
 		tltn=type->nextLevel;
 	else if (constructionResultState==REPAIR)
@@ -1735,40 +1738,43 @@ void Building::turretStep(void)
 			{
 				switch (shootingStep)
 				{
-				case 0:
-				targetX=posX-j;
-				targetY=posY-i;
-				break;
-				case 1:
-				targetX=posX+j+1;
-				targetY=posY-i;
-				break;
-				case 2:
-				targetX=posX-j;
-				targetY=posY+i+1;
-				break;
-				case 3:
-				targetX=posX+j+1;
-				targetY=posY+i+1;
-				break;
-				case 4:
-				targetX=posX-i;
-				targetY=posY-j;
-				break;
-				case 5:
-				targetX=posX+i+1;
-				targetY=posY-j;
-				break;
-				case 6:
-				targetX=posX-i;
-				targetY=posY+j+1;
-				break;
-				case 7:
-				targetX=posX+i+1;
-				targetY=posY+j+1;
-				break;
-				default:
-				assert(false);
+					case 0:
+					targetX=posX-j;
+					targetY=posY-i;
+					break;
+					case 1:
+					targetX=posX+j+1;
+					targetY=posY-i;
+					break;
+					case 2:
+					targetX=posX-j;
+					targetY=posY+i+1;
+					break;
+					case 3:
+					targetX=posX+j+1;
+					targetY=posY+i+1;
+					break;
+					case 4:
+					targetX=posX-i;
+					targetY=posY-j;
+					break;
+					case 5:
+					targetX=posX+i+1;
+					targetY=posY-j;
+					break;
+					case 6:
+					targetX=posX-i;
+					targetY=posY+j+1;
+					break;
+					case 7:
+					targetX=posX+i+1;
+					targetY=posY+j+1;
+					break;
+					default:
+					assert(false);
+					targetX=0;
+					targetY=0;
+					break;
 				}
 				int targetGUID=map->getGroundUnit(targetX, targetY);
 				if (targetGUID!=NOGUID)
