@@ -11,13 +11,13 @@ cd ..
 echo "Creating source distrib"
 make dist >& /dev/null
 echo "Decompressing dist archive in /tmp"
-gunzip -cd glob2-0.2.tar.gz | tar x -C/tmp
+gunzip -cd glob2-0.8.2.tar.gz | tar x -C/tmp
 echo "Patching archive with binary files"
 cp src/glob2 /tmp/glob2-0.2/src
 #echo "Patching archive with map"
 #cp -r maps /tmp/glob2-0.2
 echo "Recompressing archive"
 cd /tmp
-tar cfz glob2-$DATESTAMP-static.tar.gz glob2-0.2/
+tar cfz glob2-$DATESTAMP-static.tar.gz glob2-0.8-2/
 scp glob2-$DATESTAMP-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
 ssh nct@lappc22.epfl.ch ln -f -s ~/public_html/glob2-$DATESTAMP-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
