@@ -40,6 +40,7 @@ private:
 	List *fileList;
 	MapPreview *mapPreview;
 	OnOffButton *isAI[8];
+	ColorButton *color[8];
 	Text *isAItext[8];
 	Text *mapName, *mapInfo;
 	bool validSessionInfo;
@@ -50,6 +51,7 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 	bool isAIactive(int i) { return isAI[i]->getState(); }
+	int getSelectedColor(int i) { return color[i]->getSelectedColor(); }
 };
 
 #endif

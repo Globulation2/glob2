@@ -42,12 +42,6 @@ protected:
 		Uint8 origB[256];
 		Uint32 colors[256];
 		Uint8 rTransformed, gTransformed, bTransformed;
-	public:
-		static void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v );
-		static void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
-	private:
-		static float fmin(float f1, float f2, float f3);
-		static float fmax(float f1, float f2, float f3);
 	};
 
 	Palette pal;
