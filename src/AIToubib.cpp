@@ -53,25 +53,38 @@ void AIToubib::init(Player *player)
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
+	
+	currentStateIndex = NB_HISTORY_STATES;
+	bzero(history, sizeof(AIState) * NB_HISTORY_STATES);
+	
+	//pq = new std::priority_queue(std::list<AIProject>);
+	
+	
+	
 }
 
 bool AIToubib::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
-	if (versionMinor<=32)
+	if (versionMinor< 35)
 	{
-		fprintf(stderr, "AINumbi::load : trying to load too old AINumbi (versionMinor < 33)\n");
+		fprintf(stderr, "AIToubib::load : trying to load too old AIToubib (versionMinor < 35)\n");
 		assert(false);
 	}
+
+	// saving state variables
+	//SDL_ReadBE16(stream);
 	
 	return true;
 }
 
 void AIToubib::save(SDL_RWops *stream)
 {
-
+	// loading state variables
+	//SDL_WriteBE16(stream, <#Uint16 value#>);
 }
 
 Order *AIToubib::getOrder(void)
 {
+	// TODO: implement the AI
 	return new NullOrder();
 }
