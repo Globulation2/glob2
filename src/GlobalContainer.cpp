@@ -32,7 +32,7 @@
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
-	#define VERSION "Win32 - not using autoconf"
+	#define VERSION "System Specific - not using autoconf"
 #endif
 #include "Version.h"
 #include "YOGConsts.h"
