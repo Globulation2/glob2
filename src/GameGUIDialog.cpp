@@ -20,10 +20,12 @@
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
+#include "SoundMixer.h"
 #include <GUISelector.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIAnimation.h>
+#include <GUISelector.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
@@ -34,7 +36,7 @@ InGameMainScreen::InGameMainScreen(bool showAlliance)
 {
 	addWidget(new TextButton(10, 10, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
 	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
-	//addWidget(new TextButton(10, 90, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
+	addWidget(new TextButton(10, 90, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
 	if (showAlliance)
 		addWidget(new TextButton(10, 130, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
 	addWidget(new TextButton(10, 180, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
@@ -234,35 +236,12 @@ Uint32 InGameAlliance8Screen::getChatMask(void)
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, 300, 295)
 {
-	// speed
-	
-	const int speedDec=45;
-	addWidget(new Text(20, speedDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[game speed]")));
-	speed[0]=new OnOffButton(30, speedDec, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, SPEED+0);
-	addWidget(speed[0]);
-	addWidget(new Text(60, speedDec, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[small]")));
-	speed[1]=new OnOffButton(30, speedDec+25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, SPEED+1);
-	addWidget(speed[1]);
-	addWidget(new Text(60, speedDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[medium]")));
-	speed[2]=new OnOffButton(30, speedDec+50, 20, 20, ALIGN_LEFT, ALIGN_LEFT, true, SPEED+2);
-	addWidget(speed[2]);
-	addWidget(new Text(60, speedDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[large]")));
-	
-	// latency
-	const int latDec=speedDec+120;
-	addWidget(new Text(20, latDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[network latency]")));
-	latency[0]=new OnOffButton(30, latDec, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, LATENCY+0);
-	addWidget(latency[0]);
-	addWidget(new Text(60, latDec, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[small]")));
-	latency[1]=new OnOffButton(30, latDec+25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, LATENCY+1);
-	addWidget(latency[1]);
-	addWidget(new Text(60, latDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[medium]")));
-	latency[2]=new OnOffButton(30, latDec+50, 20, 20, ALIGN_LEFT, ALIGN_LEFT, true, LATENCY+2);
-	addWidget(latency[2]);
-	addWidget(new Text(60, latDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[large]")));
-	
+	musicVol=new Selector(19, 50, ALIGN_LEFT, ALIGN_TOP, 256, 8, globalContainer->settings.musicVolume, 1);
+	addWidget(musicVol);
+	Text *musicVolText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	addWidget(musicVolText);
+
 	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	this->gameGUI=gameGUI;
 }
 
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -271,25 +250,8 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		endValue=par1;
 	}
-	else if (action==BUTTON_STATE_CHANGED)
+	else if (action==VALUE_CHANGED)
 	{
-		if (par1>=LATENCY)
-		{
-			int id=par1-LATENCY;
-			for (int i=0; i<3; i++)
-			{
-				if (i!=id)
-					latency[i]->setState(false);
-			}
-		}
-		else if (par1>=SPEED)
-		{
-			int id=par1-SPEED;
-			for (int i=0; i<3; i++)
-			{
-				if (i!=id)
-					speed[i]->setState(false);
-			}
-		}
+		globalContainer->mix->setVolume(musicVol->getValue());
 	}
 }

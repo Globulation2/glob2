@@ -97,14 +97,10 @@ public:
 	enum
 	{
 		OK = 0,
-		SPEED = 32,
-		LATENCY = 64
 	};
 
 public:
-	OnOffButton *speed[3];
-	OnOffButton *latency[3];
-	GameGUI *gameGUI;
+	Selector *musicVol;
 
 public:
 	InGameOptionScreen(GameGUI *gameGUI);

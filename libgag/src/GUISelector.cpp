@@ -31,7 +31,7 @@ Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, u
 	this->count=count;
 	this->markStep=markStep;
 	this->size=size;
-	unsigned hSize = std::max(size, 6u);
+	unsigned hSize = std::max(size, 10u);
 	assert(count>=1);
 	this->w=(count-1)*size+6;
 	this->h=hSize+4;
@@ -99,7 +99,7 @@ void Selector::internalInit(int x, int y, int w, int h)
 void Selector::internalRepaint(int x, int y, int w, int h)
 {
 	unsigned l=(count-1)*size-2;
-	unsigned hSize = std::max(size, 6u);
+	unsigned hSize = std::max(size, 10u);
 
 	parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+1, l, 180, 180, 180);
 	parent->getSurface()->drawHorzLine(x+4, y+(hSize>>1)+2, l, 180, 180, 180);
