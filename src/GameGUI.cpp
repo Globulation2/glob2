@@ -433,7 +433,7 @@ void GameGUI::musicStep(void)
 		localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) ||
 		localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
 	{
-	   warTimeout = 200;
+	   warTimeout = 220;
 	   globalContainer->mix->setNextTrack(4, true);
 	}
 	
@@ -441,7 +441,7 @@ void GameGUI::musicStep(void)
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT) ||
 		localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
 	{
-		buildingTimeout = 150;
+		buildingTimeout = 220;
 		globalContainer->mix->setNextTrack(3, true);
 	}
 	

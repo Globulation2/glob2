@@ -516,7 +516,7 @@ int Engine::run(void)
 	{
 		// Restart menu music
 		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(1, true);
+		globalContainer->mix->setNextTrack(1);
 		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
