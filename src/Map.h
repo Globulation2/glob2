@@ -343,7 +343,7 @@ protected:
 
 public:
 	Sint32 checkSum(bool heavy);
-	int warpDistSquare(int px, int py, int qx, int qy);
+	Sint32 warpDistSquare(int px, int py, int qx, int qy);
 
 
 public:

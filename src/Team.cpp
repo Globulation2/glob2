@@ -219,153 +219,6 @@ void Team::setCorrectColor(float value)
 	this->colorB=(Uint8)(255.0f*b);
 }
 
-
-Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel)
-{
-	Building *b=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
-	for (std::list<Building *>::iterator it=upgrade[(int)ability].begin(); it!=upgrade[(int)ability].end(); it++)
-	{
-		if ((*it)->type->level>=actLevel)
-		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
-			{
-				b=*it;
-				dist=newDist;
-			}
-		}
-	}
-	return b;
-}
-
-Building *Team::findBestConstruction(Unit *unit)
-{
-	Building *choosen=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
-	
-	int x=unit->posX;
-	int y=unit->posY;
-	int r=unit->caryedRessource;
-	int actLevel=unit->level[HARVEST];
-	
-	if (r==-1)
-	{
-		int dx, dy;
-		if (map->nearestRessource(x, y, (RessourceType *)&r, &dx, &dy))
-		{
-			// Ressouce "r" is aviable around here.
-			// I'll try to find a building who need this ressouce.
-			//int addedDist=sqr(x-dx)+sqr(y-dy);
-			
-			for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-			{
-				Building *building=(*it);
-				if ((building->type->level<=actLevel)&&(building->neededRessource(r)))
-				{
-					newDist=distSquare(building->getMidX(), building->getMidY(), dx, dy);
-					int maxUnitWorking=building->maxUnitWorking;
-					newDist-=maxUnitWorking*maxUnitWorking;
-					if (newDist<dist)
-					{
-						unit->destinationPurprose=r;
-						choosen=building;
-						dist=newDist;
-					}
-				}
-			}
-			
-			if (choosen)
-				return choosen;
-		}
-	}
-	else
-	{
-		// I'm already carying a ressource:
-		// I'll only go to a building who need this ressource, if possible.
-		for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-		{
-			Building *building=(*it);
-			if ((building->type->level<=actLevel)&&(building->neededRessource(r)))
-			{
-				newDist=distSquare(building->getMidX(), building->getMidY(), x, y);
-				int maxUnitWorking=building->maxUnitWorking;
-				newDist-=maxUnitWorking*maxUnitWorking;
-				if (newDist<dist)
-				{
-					choosen=building;
-					dist=newDist;
-				}
-			}
-		}
-		
-		if (choosen)
-		{
-			unit->destinationPurprose=r;
-			return choosen;
-		}
-	}
-	
-	// Ehanced ways to find a building has failed, choose any building aviable
-	float floatDist=1e9;
-	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-	{
-		Building *building=(*it);
-		if (building->type->level<=actLevel)
-		{
-			//This is a balancing system: Reduce virtualy the distance if more units are requested:
-			float newDist=(float)distSquare(building->getMidX(), building->getMidY(), x, y)/(float)(building->maxUnitWorking-building->unitsWorking.size());
-			if (newDist<floatDist)
-			{
-				choosen=building;
-				floatDist=newDist;
-			}
-		}
-	}
-	
-	if (choosen)
-		unit->destinationPurprose=choosen->neededRessource();
-	return choosen;
-}
-
-Building *Team::findNearestAttract(int x, int y, Abilities ability)
-{
-	Building *b=NULL;
-	float score=1e9;
-	for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
-	{
-		//This is a balancing system: Reduce virtualy the distance if more units are requested:
-		float newScore=(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y)/(float)((*it)->maxUnitWorking-(*it)->unitsWorking.size());
-		if (newScore<score)
-		{
-			b=*it;
-			score=newScore;
-		}
-	}
-	return b;
-}
-
-Building *Team::findNearestFillableFood(int x, int y)
-{
-	Building *b=NULL;
-	float score=1e9;
-	
-	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-		if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
-		{
-			//This is a balancing system: Reduce virtualy the distance if more units are requested:
-			float newScore=(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y)/(float)((*it)->maxUnitWorking-(*it)->unitsWorking.size());
-			if ( newScore<score )
-			{
-				b=*it;
-				score=newScore;
-			}
-		}
-	return b;
-}
-
 Building *Team::findNearestHeal(int x, int y)
 {
 	Building *b=NULL;
@@ -400,19 +253,148 @@ Building *Team::findNearestFood(int x, int y)
 	return b;
 }
 
+Building *Team::findBestFoodable(Unit *unit)
+{
+	Building *choosen=NULL;
+	float score=1e9;
+	int x=unit->posX;
+	int y=unit->posY;
+	
+	for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+	{
+		Building *b=(*bi);
+		//This is a balancing system: Reduce virtualy the distance if more units are requested:
+		float newScore=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+		if (newScore<score)
+		{
+			choosen=b;
+			score=newScore;
+		}
+	}
+	return choosen;
+}
+
+Building *Team::findBestFillable(Unit *unit)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	int r=unit->caryedRessource;
+	int actLevel=unit->level[HARVEST];
+	if (r!=-1)
+	{
+		// I'm already carying a ressource:
+		// I'll only go to a building who need this ressource, if possible.
+		Building *choosen=NULL;
+		float score=1e9;
+		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
+		{
+			Building *b=(*bi);
+			if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
+			{
+				float newScore=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+				if (newScore<score)
+				{
+					choosen=b;
+					score=newScore;
+				}
+			}
+		}
+		if (choosen)
+		{
+			unit->destinationPurprose=r;
+			return choosen;
+		}
+	}
+	
+	Building *choosen=NULL;
+	float score=1e9;
+	for (int r=0; r<NB_RESSOURCES; r++)
+	{
+		int rx, ry;
+		if (map->nearestRessource(x, y, (RessourceType)r, &rx, &ry))
+		{
+			float ressourceDist=(float)map->warpDistSquare(x, y, rx, ry);
+			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
+			{
+				Building *b=(*bi);
+				if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
+				{
+					float buildingDist=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), rx, ry);
+					float newScore=(ressourceDist+buildingDist)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+					}
+				}
+			}
+		}
+	}
+	if (choosen)
+		unit->destinationPurprose=choosen->neededRessource();
+		
+	return choosen;
+}
+
+
+Building *Team::findBestZonable(Unit *unit)
+{
+	Building *choosen=NULL;
+	float score=1e9;
+	int x=unit->posX;
+	int y=unit->posY;
+	std::list<Building *> bl=zonable[unit->typeNum];
+	for (std::list<Building *>::iterator bi=bl.begin(); bi!=bl.end(); ++bi)
+	{
+		Building *b=(*bi);
+		float newScore=(float)map->warpDistSquare(b->posX, b->posY, x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+		if (newScore<score)
+		{
+			choosen=b;
+			score=newScore;
+		}
+	}
+	return choosen;
+}
+
+Building *Team::findBestUpgrade(Unit *unit)
+{
+	Building *choosen=NULL;
+	float score=1e9;
+	int x=unit->posX;
+	int y=unit->posY;
+	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
+	{
+		int actLevel=unit->level[ability];
+		if (upgrade[ability].size())
+			printf("findBestUpgrade upgrade[%d].size()=%d (unit %d)\n", ability, upgrade[ability].size(), unit->gid);
+		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); bi++)
+		{
+			Building *b=(*bi);
+			if (b->type->level>=actLevel)
+			{
+				float newScore=(float)map->warpDistSquare(b->posX, b->posY, x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+				if (newScore<score)
+				{
+					unit->destinationPurprose=(Sint32)ability;
+					choosen=b;
+					score=newScore;
+				}
+			}
+		}
+	}
+	return choosen;
+}
+
 int Team::maxBuildLevel(void)
 {
-	int index;
-	Unit *u;
 	int maxLevel=0;
-	int unitLevel;
-
-	for (index=0; index<1024; index++)
+	for (int i=0; i<1024; i++)
 	{
-		u=myUnits[index];
+		Unit *u=myUnits[i];
 		if (u && u->performance[BUILD])
 		{
-			unitLevel=u->level[BUILD];
+			int unitLevel=u->level[BUILD];
 			if (unitLevel>maxLevel)
 				maxLevel=unitLevel;
 		}
@@ -750,9 +732,18 @@ Sint32 Team::checkSum()
 	{
 		cs^=upgrade[i].size();
 		cs=(cs<<31)|(cs>>1);
-		cs^=job[i].size();
-		cs^=attract[i].size();
+		//cs^=job[i].size();
+		//cs^=attract[i].size();
 
+	}
+	cs^=foodable.size();
+	cs=(cs<<31)|(cs>>1);
+	cs^=fillable.size();
+	cs=(cs<<31)|(cs>>1);
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+	{
+		cs^=zonable[i].size();
+		cs=(cs<<31)|(cs>>1);
 	}
 	
 	cs=(cs<<31)|(cs>>1);

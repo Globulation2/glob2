@@ -125,8 +125,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
 	clear();
 
-	assert(wDec<32);
-	assert(hDec<32);
+	assert(wDec<16);
+	assert(hDec<16);
 	this->wDec=wDec;
 	this->hDec=hDec;
 	w=1<<wDec;
@@ -1069,10 +1069,10 @@ Sint32 Map::checkSum(bool heavy)
 	return cs;
 }
 
-int Map::warpDistSquare(int px, int py, int qx, int qy)
+Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
 {
-	int dx=abs(px-qx);
-	int dy=abs(py-qy);
+	Sint32 dx=abs(px-qx);
+	Sint32 dy=abs(py-qy);
 	dx&=wMask;
 	dy&=hMask;
 	if (dx>(w>>1))

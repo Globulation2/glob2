@@ -107,18 +107,18 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
-
-	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
-	Building *findBestConstruction(Unit *unit);
-	Building *findNearestAttract(int x, int y, Abilities ability);
-	Building *findNearestFillableFood(int x, int y);
-
-	//! Called when unit want upgrade a certain ability
-	Building *findNearestUpgrade(int x, int y, Abilities ability, int actLevel);
-	//! Called when unit needs heal
-	Building *findNearestHeal(int x, int y);
+	
 	//! Called when unit is hungry
 	Building *findNearestFood(int x, int y);
+	//! Called when unit needs heal
+	Building *findNearestHeal(int x, int y);
+	
+	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
+	Building *findBestFoodable(Unit *unit);
+	Building *findBestFillable(Unit *unit);
+	Building *findBestZonable(Unit *unit);
+
+	Building *findBestUpgrade(Unit *unit);
 
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
@@ -141,12 +141,17 @@ public:
 	
 	Building *myBuildings[1024];
 	
-	// thoses are the Call Lists :
+	// thoses where the 4 "call-lists" :
+	std::list<Building *> foodable;
+	std::list<Building *> fillable;
+	std::list<Building *> zonable[NB_UNIT_TYPE];
 	std::list<Building *> upgrade[NB_ABILITY];
-	std::list<Building *> job[NB_ABILITY];
-	std::list<Building *> attract[NB_ABILITY];
-	std::list<Building *> canFeedUnit;
+	
+	// The list of building which have one specific ability.
+	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
 	std::list<Building *> canHealUnit;
+	
+	// The list of building with new subscribed unit.
 	std::list<Building *> subscribeForInside;
 	std::list<Building *> subscribeToBringRessources;
 	std::list<Building *> subscribeForFlaging;

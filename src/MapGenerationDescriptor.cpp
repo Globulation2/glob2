@@ -69,11 +69,12 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, islandsSize, 32);
 	addSint32(data, beach, 36);
 	
-	assert(NB_RESSOURCES==4);
+	assert(NB_RESSOURCES==5);
 	addSint32(data, ressource[0], 40);
 	addSint32(data, ressource[1], 44);
 	addSint32(data, ressource[2], 48);
 	addSint32(data, ressource[3], 52);
+	addSint32(data, ressource[4], 52);
 	
 	addSint32(data, nbWorkers, 56);
 	addSint32(data, nbTeams, 60);
@@ -105,11 +106,12 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	islandsSize=getSint32(data, 32);
 	beach=getSint32(data, 36);
 	
-	assert(NB_RESSOURCES==4);
+	assert(NB_RESSOURCES==5);
 	ressource[0]=getSint32(data, 40);
 	ressource[1]=getSint32(data, 44);
 	ressource[2]=getSint32(data, 48);
 	ressource[3]=getSint32(data, 52);
+	ressource[4]=getSint32(data, 52);
 	
 	nbWorkers=getSint32(data, 56);
 	nbTeams=getSint32(data, 60);
@@ -133,21 +135,21 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 
 void MapGenerationDescriptor::save(SDL_RWops *stream)
 {
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_RWwrite(stream, "MgdB", 4, 1);
 	SDL_RWwrite(stream, getData(), DATA_SIZE, 1);
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_RWwrite(stream, "MgdE", 4, 1);
 }
 
 bool MapGenerationDescriptor::load(SDL_RWops *stream)
 {
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
+	if (memcmp(signature, "MgdB", 4)!=0)
 		return false;
 	SDL_RWread(stream, data, DATA_SIZE, 1);
 	setData(data, DATA_SIZE);
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
+	if (memcmp(signature, "MgdE", 4)!=0)
 		return false;
 	return true;
 }
@@ -170,12 +172,13 @@ Sint32 MapGenerationDescriptor::checkSum()
 	cs^=islandsSize;
 	cs^=beach;
 	
-	assert(NB_RESSOURCES==4);
+	assert(NB_RESSOURCES==5);
 	cs=(cs<<31)|(cs>>1);
 	cs+=ressource[0];
-	cs+=ressource[1]<<4;
-	cs+=ressource[2]<<8;
-	cs+=ressource[3]<<12;
+	cs+=ressource[1]<<3;
+	cs+=ressource[2]<<6;
+	cs+=ressource[3]<<9;
+	cs+=ressource[4]<<12;
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;

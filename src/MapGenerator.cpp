@@ -776,9 +776,9 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		int ressOrder[8];
 		ressOrder[0]=CORN;
 		ressOrder[1]=WOOD;
-		ressOrder[2]=CORN;
-		ressOrder[3]=STONE;
-		ressOrder[4]=WOOD;
+		ressOrder[2]=STONE;
+		ressOrder[3]=FUNGUS;
+		ressOrder[4]=CORN;
 		
 		int distWeight[8];
 		distWeight[0]=1;
