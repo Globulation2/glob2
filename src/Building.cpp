@@ -101,6 +101,8 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		zonable[i]=0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
+	
+	Map::clearBuildingGradient(gradient);
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -159,6 +161,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		assert(ressources[i]<=type->maxRessource[i]);
+	
+	Map::clearBuildingGradient(gradient);
 }
 
 void Building::save(SDL_RWops *stream)

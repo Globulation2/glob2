@@ -1290,9 +1290,9 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 			}
 		}*/
 		
-		for (int y=0; y<=h; y++)
+		for (int y=0; y<h; y++)
 		{
-			int wy=w*(y&hMask);
+			int wy=w*y;
 			int wyu=w*((y+hMask)&hMask);
 			for (int x=0; x<w; x++)
 			{
@@ -1321,9 +1321,9 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 			}
 		}
 
-		for (int y=h; y>=0; y--)
+		for (int y=hMask; y>=0; y--)
 		{
-			int wy=w*(y&hMask);
+			int wy=w*y;
 			int wyd=w*((y+1)&hMask);
 			for (int x=0; x<w; x++)
 			{
@@ -1444,24 +1444,6 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	if (found)
 		return true;
 	
-	for (int sd=0; sd<2; sd++)
-		for (int d=sd; d<8; d+=2)
-		{
-			int ddx, ddy;
-			Unit::dxdyfromDirection(d, &ddx, &ddy);
-			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
-			{
-				Uint8 g=*(gradient+((x+w+ddx)&wMask)+((y+h+ddy)&hMask)*w);
-				if (g>=max)
-				{
-					max=g;
-					*dx=ddx;
-					*dy=ddy;
-					found=true;
-				}
-			}
-		}
-	
 	if (!found)
 	{
 		int mvx=x-2;
@@ -1509,32 +1491,45 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	return true;
 }
 
-void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingGradient[2][BUILDING_GRADIENT_SIZE], Uint32 teamMask)
+void Map::clearBuildingGradient(Uint8 gradient[2][1024])
 {
-	for (int canSwim=0; canSwim<=1; canSwim++)
-	{
-		Uint8 *gradient=buildingGradient[1];
-		
-		memset(gradient, 1, BUILDING_GRADIENT_SIZE);
-		for (int dy=0; dy<posH; dy++)
-			for (int dx=0; dx<posW; dx++)
-				gradient[BUILDING_GRADIENT_DW+dx+(BUILDING_GRADIENT_DH+dy)*BUILDING_GRADIENT_W]=255;
-		
-		// Here g=Global(map axis), l=Local(map axis)
+	memset(gradient, 1, 2*1024);
+}
+
+void Map::updateGradient(Building *building, bool canSwim)
+{
+	assert(building);
+	int posX=building->posX;
+	int posY=building->posY;
+	int posW=building->type->width;
+	int posH=building->type->height;
+	Uint32 teamMask=building->owner->me;
+	Uint16 bgid=building->gid;
 	
-		for (int yl=0; yl<BUILDING_GRADIENT_H; yl++)
+	Uint8 *gradient=building->gradient[canSwim];
+
+	memset(gradient, 1, 1024);
+	for (int dy=0; dy<posH; dy++)
+		for (int dx=0; dx<posW; dx++)
+			gradient[15+dx+(15+dy)*32]=255;
+
+	// Here g=Global(map axis), l=Local(map axis)
+
+	for (int yl=0; yl<32; yl++)
+	{
+		int wyl=32*yl;
+		int yg=(yl+posY-15+h)&hMask;
+		int wyg=w*yg;
+		for (int xl=0; xl<32; xl++)
 		{
-			int wyl=BUILDING_GRADIENT_W*yl;
-			int yg=(yl+posY-BUILDING_GRADIENT_DH+h)&hMask;
-			int wyg=w*yg;
-			for (int xl=0; xl<BUILDING_GRADIENT_W; xl++)
+			int xg=(xl+posX-15+w)&wMask;
+			Case c=cases[wyg+xg];
+			int addrl=wyl+xl;
+			if (gradient[addrl]!=0 && gradient[addrl]!=255)
 			{
-				int xg=(xl+posX-BUILDING_GRADIENT_DW+w)&wMask;
-				Case c=cases[wyg+xg];
-				int addrl=wyl+xl;
 				if (c.ressource.id!=NORESID)
 					gradient[addrl]=0;
-				else if (c.building!=NOGBID)
+				else if (c.building!=NOGBID && c.building!=bgid)
 					gradient[addrl]=0;
 				else if (c.forbidden&teamMask)
 					gradient[addrl]=0;
@@ -1542,39 +1537,66 @@ void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingG
 					gradient[addrl]=0;
 			}
 		}
-		
-		//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
-		// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
-		
-		static const int w=BUILDING_GRADIENT_W;
-		static const int h=BUILDING_GRADIENT_H;
-		static const int dw=BUILDING_GRADIENT_DW;
-		static const int dh=BUILDING_GRADIENT_DH;
-		static const int wMask=BUILDING_GRADIENT_W_MASK;
-		static const int hMask=BUILDING_GRADIENT_H_MASK;
-		
-		for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
+	}
+
+	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+
+	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
+	{
+		for (int down=0; down<2; down++)
 		{
-			int x=dw;
-			int y=dh;
-			for (int di=1; di<dw; di+=2) //distance-iterator
+			int x, y, dis, die, ddi;
+			if (down)
+			{
+				x=0;
+				y=0;
+				dis=31;
+				die=1;
+				ddi=-2;
+			}
+			else
+			{
+				x=15;
+				y=15;
+				dis=1;
+				die=31;
+				ddi=+2;
+			}
+			
+			for (int di=dis; di!=die; di+=ddi) //distance-iterator
+			{
 				for (int ai=0; ai<4; ai++) //angle-iterator
 				{
 					for (int mi=0; mi<di; mi++) //move-iterator
 					{
-						assert(x>0);
-						assert(y>0);
-						assert(x<w);
-						assert(y<h);
-						
-						int wy=w*y;
-						int wyu=w*((y+hMask)&hMask);
-						int wyd=w*((y+1)&hMask);
+						//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
+						assert(x>=0);
+						assert(y>=0);
+						assert(x<32);
+						assert(y<32);
+
+						int wy=32*y;
+						int wyu, wyd;
+						if (y==0)
+							wyu=32*0;
+						else
+							wyu=32*(y-1);
+						if (y==31)
+							wyd=32*31;
+						else
+							wyd=32*(y+1);
 						Uint8 max=gradient[wy+x];
 						if (max && max!=255)
 						{
-							int xl=(x+wMask)&wMask;
-							int xr=(x+1)&wMask;
+							int xl, xr;
+							if (x==0)
+								xl=0;
+							else
+								xl=x-1;
+							if (x==31)
+								xr=31;
+							else
+								xr=x+1;
 
 							Uint8 side[8];
 							side[0]=gradient[wyu+xl];
@@ -1598,7 +1620,7 @@ void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingG
 							else
 								gradient[wy+x]=max-1;
 						}
-						
+
 						switch (ai)
 						{
 							case 0:
@@ -1615,11 +1637,87 @@ void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingG
 							break;
 						}
 					}
+				}
+				if (down)
+				{
+					x++;
+					y++;
+				}
+				else
+				{
 					x--;
 					y--;
 				}
+			}
 		}
 	}
+}
+
+bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	assert(building);
+	int bx=building->posX;
+	int by=building->posY;
+	//int bw=building->type->width;
+	//int bh=building->type->height;
+	 
+	Uint32 teamMask=building->owner->me;
+	Uint8 *gradient=building->gradient[canSwim];
+	
+	if (warpDistMax(x, y, bx, by)>=16) //TODO: allow the use ot the last line! (on x and y)
+		return false;
+	
+	int lx=(x-bx+15+32)&31;
+	int ly=(y-by+15+32)&31;
+	int max=gradient[lx+ly*32];
+	bool found=false;
+	
+	for (int sd=1; sd>=0; sd--)
+		for (int d=sd; d<8; d+=2)
+		{
+			int ddx, ddy;
+			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+			{
+				Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
+				if (g>max)
+				{
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
+				}
+			}
+		}
+	
+	if (found)
+		return true;
+	
+	updateGradient(building, canSwim);
+	
+	max=gradient[lx+ly*32];
+	for (int sd=1; sd>=0; sd--)
+		for (int d=sd; d<8; d+=2)
+		{
+			int ddx, ddy;
+			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+			{
+				Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
+				if (g>max)
+				{
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
+				}
+			}
+		}
+	
+	if (!found)
+		printf("failed to pathfind to a building gid=%d!\n", building->gid);
+	
+	return found;
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)
@@ -1768,4 +1866,20 @@ Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
 		dy=h-dy;
 	
 	return ((dx*dx)+(dy*dy));
+}
+
+Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
+{
+	Sint32 dx=abs(px-qx);
+	Sint32 dy=abs(py-qy);
+	dx&=wMask;
+	dy&=hMask;
+	if (dx>(w>>1))
+		dx=abs(w-dx);
+	if (dy>(h>>1))
+		dy=abs(h-dy);
+	if (dx>dy)
+		return dx;
+	else
+		return dy;
 }

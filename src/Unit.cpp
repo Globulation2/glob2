@@ -1493,10 +1493,10 @@ void Unit::pathFind(void)
 {
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
-	bool canSwimm=performance[SWIM]>0;
+	bool canSwim=performance[SWIM]>0;
 	if (displacement==DIS_GOING_TO_RESSOURCE)
 	{
-		if (map->pathfindRessource(teamNumber, destinationPurprose, canSwimm, posX, posY, &dx, &dy))
+		if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy))
 		{
 			if (verbose)
 				printf("Unit gid=%d found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
@@ -1506,6 +1506,23 @@ void Unit::pathFind(void)
 		{
 			if (verbose)
 				printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
+				
+			stopWorkingForBuilding();
+			setNewValidDirection();
+		}
+	}
+	else if (displacement==DIS_GOING_TO_BUILDING)
+	{
+		if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+		{
+			if (verbose)
+				printf("Unit gid=%d found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+			directionFromDxDy();
+		}
+		else
+		{
+			if (verbose)
+				printf("Unit gid=%d failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				
 			stopWorkingForBuilding();
 			setNewValidDirection();
