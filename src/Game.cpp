@@ -801,9 +801,9 @@ void Game::addTeam(void)
 
 		session.numberOfTeam++;
 		for (int i=0; i<session.numberOfTeam; i++)
-		{
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
-		}
+		
+		prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
 		
 		map.addTeam();
 	}
