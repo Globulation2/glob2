@@ -81,8 +81,8 @@ public:
 
 	bool hostServer;
 	char hostServerMapName[32];
-	char hostServerUsername[32];
-	char hostServerPassword[32];
+	char hostServerUserName[32];
+	char hostServerPassWord[32];
 };
 
 extern GlobalContainer *globalContainer;

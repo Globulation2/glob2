@@ -23,6 +23,8 @@
 #include <GUIBase.h>
 #include "YOG.h"
 
+class OnOffButton;
+class Text;
 class TextInput;
 class TexTArea;
 class Animation;
@@ -34,7 +36,8 @@ public:
 	{
 		EXECUTING=0,
 		LOGIN=1,
-		CANCEL=2
+		CANCEL=2,
+		NEW_USER=10
 	};
 	enum
 	{
@@ -49,6 +52,8 @@ public:
 	
 	int endExecutionValue;
 	TextInput *login, *password;
+	OnOffButton *newYogPassword;
+	Text *newYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
 	YOG::ExternalStatusState oldYOGExternalStatusState;

@@ -105,6 +105,9 @@ public:
 	void addClient(YOGClient *client);
 	void removeClient(Uint32 uid);
 	void updateClient(Uint32 uid, Uint16 change);
+	void deconnected();
+	void reconnected(IPaddress ip);
+	void newRandomXorPassw();
 	void lprintf(const char *msg, ...);
 	int strmlen(const char *s, int max);
 	
@@ -114,6 +117,8 @@ public:
 	UDPsocket socket;
 	Uint8 lastSentMessageID; // The last message id that client has sent to YOG. Used to ignore doubles.
 	char userName[32];
+	char passWord[32];
+	unsigned char xorpassw[32];
 	std::list<Message> messages; // messages to send
 	Uint8 lastMessageID; // The last message id sent by YOG to client. Used to give new messages an unique id.
 	int messageTimeout;

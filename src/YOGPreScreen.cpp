@@ -24,6 +24,7 @@
 #include <GUITextInput.h>
 #include <GUITextArea.h>
 #include <GUIButton.h>
+#include <GUIText.h>
 #include <GUIAnimation.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -35,15 +36,21 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
-	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
-	login=new TextInput(20, 360, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
+	addWidget(new Text(20, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
+	login=new TextInput(20, 330, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), false, 32);
 	addWidget(login);
 	
-	addWidget(new Text(20, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
-	password=new TextInput(20, 430, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", true, 32);
+	addWidget(new Text(20, 370, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
+	password=new TextInput(20, 400, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", true, 32);
 	addWidget(password);
 	
-	statusText=new TextArea(20, 250, 600, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	newYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, NEW_USER);
+	newYogPasswordText=new Text(47, 440, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
+		Toolkit::getStringTable()->getString("[Register a new YOG user with password]"));
+	addWidget(newYogPassword);
+	addWidget(newYogPasswordText);
+	
+	statusText=new TextArea(20, 230, 600, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
 	
 	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
@@ -84,8 +91,19 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 			yog->deconnect();
 			endExecutionValue=-1;
 		}
+	}
+	if (action==TEXT_ACTIVATED)
+	{
+		if (source==login)
+			password->deactivate();
+		else if (source==password)
+			login->deactivate();
 		else
+		{
 			assert(false);
+			login->deactivate();
+			password->deactivate();
+		}
 	}
 }
 
@@ -120,7 +138,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	if (connectOnNextTimer)
 	{
-		yog->enableConnection(login->getText(), password->getText());
+		yog->enableConnection(login->getText(), password->getText(), newYogPassword->getState());
 		connectOnNextTimer=false;
 	}
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)

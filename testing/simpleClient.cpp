@@ -27,6 +27,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../src/YOGConsts.h"
+#include "../src/Utilities.h"
+#include "../src/Marshaling.h"
 
 namespace simpleClient
 {
@@ -37,6 +39,8 @@ namespace simpleClient
 	int timeout=0;
 	int TOTL=3;
 	bool connected=false;
+	bool authenticated=false;
+	char passWord[32];
 
 	bool init()
 	{
@@ -151,6 +155,10 @@ namespace simpleClient
 			printf("bad packet.\n");
 			return;
 		}
+		
+		TOTL=3;
+		timeout=350;
+		
 		switch (data[0])
 		{
 		case YMT_BAD:
@@ -175,15 +183,58 @@ namespace simpleClient
 		}
 		break;
 		case YMT_CONNECTION_PRESENCE:
-			TOTL=3;
-			timeout=350;
 		break;
 		case YMT_CONNECTING:
-			connected=true;
-			printf("connected to YOG.\n");
+			if (size==36)
+			{
+				connected=true;
+				printf("connected to YOG...\n");
+				char xorpassw[32];
+				memcpy(xorpassw, (char *)data+4, 32);
+				char sdata[32];
+				memcpy(sdata, passWord, 32);
+				printf("authenticating to YOG with passWord=(%s)...\n", passWord);
+				send(YMT_AUTHENTICATING, (Uint8 *)sdata, 32);
+			}
+		break;
+		case YMT_AUTHENTICATING:
+			authenticated=true;
+			printf("authenticated with YOG\n");
+		break;
+		case YMT_CONNECTION_REFUSED:
+			printf("YMT_CONNECTION_REFUSED [");
+			for (int i=0; i<size; i++)
+				printf("%d, ", data[i]);
+			printf("]\n");
+		break;
+		case YMT_DECONNECTING:
+			connected=false;
+			authenticated=false;
+		break;
+		case YMT_CLIENTS_LIST:
+			int nbClients=(int)data[4];
+			Uint8 clientsPacketID=data[5];
+			printf("YMT_CLIENTS_LIST nbClients=%d, clientsPacketID=%d\n", nbClients, clientsPacketID);
+			int index=6;
+			for (int i=0; i<nbClients; i++)
+			{
+				Uint32 cuid=getUint32(data, index);
+				index+=4;
+				char *name=(char *)data+index;
+				int l=Utilities::strmlen(name, 32);
+				index+=l;
+				bool playing=(bool)data[index];
+				index++;
+				bool away=(bool)data[index];
+				index++;
+				printf(" %d (%s) %d %d\n", cuid, name, playing, away);
+			}
+			Uint8 data[2];
+			data[0]=nbClients;
+			data[1]=clientsPacketID;
+			send(YMT_CLIENTS_LIST, data, 2);
 		break;
 		}
-
 	}
 
 	void run()
@@ -197,8 +248,7 @@ namespace simpleClient
 
 			while (SDLNet_UDP_Recv(socket, packet)==1)
 			{
-				treatPacket(packet->address.host, packet->address.port, packet->data, packet->len);
-				/*printf("Packet received.\n");
+				/*printf("\nPacket received.\n");
 				printf("packet=%d\n", (int)packet);
 				printf("packet->channel=%d\n", packet->channel);
 				printf("packet->len=%d\n", packet->len);
@@ -206,7 +256,8 @@ namespace simpleClient
 				printf("packet->status=%d\n", packet->status);
 				printf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
 				printf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));*/
-				//printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
+				printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
+				treatPacket(packet->address.host, packet->address.port, packet->data, packet->len);
 			}
 
 			// get first timer
@@ -226,48 +277,48 @@ namespace simpleClient
 
 			if (retval)
 			{
-				char s[256];
-				fgets(s, 256, stdin);
-				int l=strlen(s);
-				if ((l>1)&&(s[l-1]=='\n'))
-					s[l-1]=0;
-				if (strncmp(s, "bad", 3)==0)
+				char token[32][256];
+				char s[1024];
+				fgets(s, 1024, stdin);
+				Utilities::staticTokenize(s, 1024, token);
+				if (strcmp(token[0], "bad")==0)
 				{
 					send(YMT_BAD);
 				}
-				else if (strncmp(s, "admin", 5)==0)
+				else if (strcmp(token[0], "admin")==0)
 				{
-					if (l>6)
+					if (token[1])
 					{
 						char data[32+4];
 						data[0]=0;
 						data[1]=0;
 						data[2]=0;
-						data[3]=4;
-						strncpy(data+4, s+6, 32);
-						data[31+4]=0;
+						data[3]=YOG_PROTOCOL_VERSION;
+						strncpy(data+4, token[1], 32);
+						data[4+31]=0;
 						send(YMT_CONNECTING, 1, (Uint8 *)data, 32+4);
+						strncpy(passWord, token[2], 32);
 					}
 				}
-				else if (strncmp(s, "connect", 7)==0)
+				else if (strcmp(token[0], "connect")==0)
 				{
-					if (l>8)
+					if (token[1])
 					{
 						char data[32+4];
 						data[0]=0;
 						data[1]=0;
 						data[2]=0;
-						data[3]=4;
-						strncpy(data+4, s+6, 32);
+						data[3]=YOG_PROTOCOL_VERSION;
+						strncpy(data+4, token[1], 32);
 						data[31+4]=0;
 						send(YMT_CONNECTING, (Uint8 *)data, 32+4);
 					}
 				}
-				else if (strncmp(s, "deconnect", 9)==0)
+				else if (strcmp(token[0], "deconnect")==0)
 				{
 					send(YMT_DECONNECTING);
 				}
-				else if (strncmp(s, "close", 5)==0)
+				else if (strcmp(token[0], "close")==0)
 				{
 					Uint8 id=1;
 					Uint8 data[4];
@@ -276,15 +327,14 @@ namespace simpleClient
 					data[2]=0x34|id;
 					data[3]=0x45;
 					send(YMT_CLOSE_YOG, id, data, 4);
-					
 				}
-				else if (strncmp(s, "flush", 5)==0)
+				else if (strcmp(token[0], "flush")==0)
 				{
-					if (l>6)
+					if (token[1])
 					{
 						char name[32];
 						memset(name, 0, 32);
-						strncpy(name, s+6, 32);
+						strncpy(name, token[1], 32);
 						name[31]=0;
 						Uint8 id=atoi(name);
 						Uint8 data[4];
@@ -295,27 +345,27 @@ namespace simpleClient
 						send(YMT_FLUSH_FILES, id, data, 4);
 					}
 				}
-				else if (strncmp(s, "exit", 9)==0)
+				else if (strcmp(token[0], "exit")==0)
 				{
 					running=false;
 				}
 				else
 				{
-					s[255]=0;
 					lastMessageID++;
-					send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)s, strlen(s)+1);
+					send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)s, Utilities::strmlen(s, 256));
 				}
 			}
 
 			SDLNet_FreePacket(packet);
 			
-			if (connected && timeout--<=0)
+			if (authenticated && timeout--<=0)
 			{
 				timeout=350;
 				if (TOTL--<=0)
 				{
 					printf("YOG is down.\n");
 					connected=false;
+					authenticated=false;
 				}
 				else
 					send(YMT_CONNECTION_PRESENCE);

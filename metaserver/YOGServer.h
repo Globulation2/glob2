@@ -49,7 +49,9 @@ public:
 	void run();
 	void lprintf(const char *msg, ...);
 	
-	std::list<YOGClient *> clients;
+	std::list<YOGClient *> unconnectedClients;
+	std::list<YOGClient *> connectedClients;
+	std::list<YOGClient *> authentifiedClients;
 	
 	UDPsocket socket;
 	bool running;
