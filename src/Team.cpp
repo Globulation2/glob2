@@ -568,12 +568,14 @@ void Team::save(SDL_RWops *stream)
 
 void Team::step(void)
 {
+	int nbUnits=0;
 	freeUnits=0;
 	{
 		for (int i=0; i<1024; i++)
 		{
 			if (myUnits[i])
 			{
+				nbUnits++;
 				myUnits[i]->step();
 				if (myUnits[i]->isDead)
 				{
@@ -581,6 +583,7 @@ void Team::step(void)
 					delete myUnits[i];
 					myUnits[i]=NULL;
 				}
+				// FIXME : remove this from here, it is a hack
 				else if ((myUnits[i]->activity==Unit::ACT_RANDOM)&&(myUnits[i]->medical==Unit::MED_FREE)&&(myUnits[i]->performance[HARVEST]))
 				{
 					freeUnits++;
@@ -657,9 +660,12 @@ void Team::step(void)
 			}
 		}
 	}
+	bool isEnoughFoodInSwarm=false;
 	{
 		for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
+			if ((*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}
 	}
@@ -670,6 +676,8 @@ void Team::step(void)
 			(*it)->turretStep();
 		}
 	}
+
+	isAlive=isEnoughFoodInSwarm || (nbUnits!=0);
 }
 
 Sint32 Team::checkSum()

@@ -132,6 +132,7 @@ public:
 
 public:
 	int freeUnits;
+	bool isAlive;
 };
 
 #endif
