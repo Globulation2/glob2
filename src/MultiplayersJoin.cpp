@@ -123,7 +123,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 			fclose(logFile);
 		logFile=NULL;
 	}
-	logFile=fopen("MultiplayersJoin.log", "w");
+	logFile=globalContainer->fileManager.openFP("MultiplayersJoin.log", "w");
 	if (logFile==NULL)
 		logFile=stdout;
 	assert(logFile);
