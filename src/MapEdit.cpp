@@ -414,7 +414,7 @@ void MapEdit::handleMapClick(int mx, int my)
 
 		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, -1))
 		{
-			game.addBuilding(x, y, team, typeNum);
+			game.addBuilding(x, y, typeNum, team);
 			if ((type==0) && (level==0))
 			{
 				game.teams[team]->startPosX=tempX;
