@@ -51,7 +51,7 @@ void BuildingsTypes::load(const char *filename)
 			if (bt1!=bt2)
 				if (bt1->isBuildingSite)
 				{
-					if ((bt2->level==bt1->level) && (bt2->type==bt1->type) && !(bt2->isBuildingSite))
+					if ((bt2->level==bt1->level) && (bt2->shortTypeNum==bt1->shortTypeNum) && !(bt2->isBuildingSite))
 					{
 						bt1->nextLevelTypeNum=i;
 						bt2->lastLevelTypeNum=j;
@@ -60,7 +60,7 @@ void BuildingsTypes::load(const char *filename)
 				}
 				else
 				{
-					if ((bt2->level==bt1->level+1) && (bt2->type==bt1->type) && (bt2->isBuildingSite))
+					if ((bt2->level==bt1->level+1) && (bt2->shortTypeNum==bt1->shortTypeNum) && (bt2->isBuildingSite))
 					{
 						bt1->nextLevelTypeNum=i;
 						bt2->lastLevelTypeNum=j;
@@ -103,8 +103,8 @@ void BuildingsTypes::load(const char *filename)
 				assert(bt2);
 				if (bt1->hpInit!=bt2->hpMax)
 				{
-					printf("Warning, with building type %d==%d. Building site (tn%d) has has hpInit=%d, but building (tn%d) has hpMax=%d\n",
-						bt1->type, bt2->type, bt1->typeNum, bt1->hpInit, bt2->typeNum, bt2->hpMax);
+					printf("Warning, with building shortTypeNum %d==%d. Building site (tn%d) has has hpInit=%d, but building (tn%d) has hpMax=%d\n",
+						bt1->shortTypeNum, bt2->shortTypeNum, bt1->typeNum, bt1->hpInit, bt2->typeNum, bt2->hpMax);
 				}
 			}
 		}
@@ -119,8 +119,8 @@ void BuildingsTypes::load(const char *filename)
 			int hpSum=(*it)->hpInit+resSum*(*it)->hpInc;
 			if (hpSum<(*it)->hpMax)
 			{
-				printf("Warning, building type %d with hpInc=%d, resSum=%d, hpSum=%d, hpMax=%d. (make hpInc>=%d)\n",
-					(*it)->type, (*it)->hpInc, resSum, hpSum, (*it)->hpMax, ((*it)->hpMax-(*it)->hpInit+resSum-1)/resSum);
+				printf("Warning, building shortTypeNum %d with hpInc=%d, resSum=%d, hpSum=%d, hpMax=%d. (make hpInc>=%d)\n",
+					(*it)->shortTypeNum, (*it)->hpInc, resSum, hpSum, (*it)->hpMax, ((*it)->hpMax-(*it)->hpInit+resSum-1)/resSum);
 			}
 		}
 		
@@ -151,13 +151,13 @@ void BuildingsTypes::load(const char *filename)
 	}
 }
 
-Sint32 BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
+Sint32 BuildingsTypes::getTypeNum(int shortTypeNum, int level, bool isBuildingSite)
 {
 	Sint32 i=0;
 	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		BuildingType *bt=*it;
-		if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
+		if ((bt->shortTypeNum==shortTypeNum) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
 			return i;
 		i++;
 	}

@@ -312,7 +312,7 @@ void GameGUI::step(void)
 		Building *b=game.teams[team]->myBuildings[id];
 		if (b)
 		{
-			int strDec=b->type->type;
+			int strDec=b->type->shortTypeNum;
 			addMessage(255, 0, 0, "%s", Toolkit::getStringTable()->getString("[the building is under attack]", strDec));
 		}
 	}
@@ -324,7 +324,7 @@ void GameGUI::step(void)
 		Building *b=game.teams[team]->myBuildings[id];
 		if (b)
 		{
-			int strDec=b->type->type;
+			int strDec=b->type->shortTypeNum;
 			addMessage(30, 255, 30, "%s",  Toolkit::getStringTable()->getString("[the building is finished]", strDec));
 		}
 	}
@@ -1310,7 +1310,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		}
 		
 		// cleared ressources fo clearing flags:
-		if (buildingType->type==BuildingType::CLEARING_FLAG
+		if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG
 			&& ((selBuild->owner->allies)&(1<<localTeamNo))
 			&& mx>10
 			&& mx<22)
@@ -1805,7 +1805,7 @@ void GameGUI::drawBuildingInfos(void)
 
 	// draw "building" of "player"
 	std::string title;
-	title += Toolkit::getStringTable()->getString("[building name]", buildingType->type);
+	title += Toolkit::getStringTable()->getString("[building name]", buildingType->shortTypeNum);
 	{
 		title += " (";
 		const char *textT=selBuild->owner->getFirstPlayerName();
@@ -1987,7 +1987,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	
 	// cleared ressources for clearing flags:
-	if (buildingType->type==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,

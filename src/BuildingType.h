@@ -33,7 +33,7 @@ public:
 	{
 		SWARM_BUILDING=0,
 		FOOD_BUILDING=1,
-		HEALTH_BUILDING=2,
+		HEAL_BUILDING=2,
 
 		WALKSPEED_BUILDING=3,
 		SWIMSPEED_BUILDING=4,
@@ -107,7 +107,7 @@ public:
 	Sint32 hpInc;
 	Sint32 armor; // (Uint8)
 	Sint32 level; // (Uint8)
-	Sint32 type; // BuildingTypeNumber, Should not be used by the main engine, but only to choose the next level building.
+	Sint32 shortTypeNum; // BuildingTypeShortNumber, Should not be used by the main engine, but only to choose the next level building.
 	Sint32 isBuildingSite;
 
 	// Flag usefull
