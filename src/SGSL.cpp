@@ -1240,7 +1240,11 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
 				}
+				break;
 
 				// Alliance
 				case (Token::S_ALLIANCE):
