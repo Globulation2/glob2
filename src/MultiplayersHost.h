@@ -39,7 +39,8 @@ public:
 
 	enum{SECONDS_BEFORE_START_GAME=5};
 	
-	enum{NET_WINDOW_SIZE=256};
+	enum{NET_WINDOW_SIZE=1024};
+	enum{MAX_WINDOW_SIZE=512};
 	struct NetWindowSlot
 	{
 		//NetWindowState state;
@@ -52,11 +53,14 @@ public:
 	struct PlayerFileTransmission
 	{
 		bool wantsFile;
-		NetWindowSlot window[256];
+		bool receivedFile;
+		NetWindowSlot window[NET_WINDOW_SIZE];
 		int packetSize;
 		int windowSize;
+		Uint32 unreceivedIndex;
 	};
 	PlayerFileTransmission playerFileTra[32];
+	int windowstats[MAX_WINDOW_SIZE];
 	
 public:
 

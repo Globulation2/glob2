@@ -91,6 +91,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		downloadStream=NULL;
 	}
 	unreceivedIndex=0;
+	endOfFileIndex=0xFFFFFFFF;
 	for (int i=0; i<NET_WINDOW_SIZE; i++)
 	{
 		netWindow[i].index=0;
@@ -181,22 +182,50 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		if (filename)
 		{
 			if (downloadStream)
+			{
 				SDL_RWclose(downloadStream);
+				downloadStream=NULL;
+			}
+			unreceivedIndex=0;
+			endOfFileIndex=0xFFFFFFFF;
+			for (int i=0; i<NET_WINDOW_SIZE; i++)
+			{
+				netWindow[i].index=0;
+				netWindow[i].received=false;
+				netWindow[i].packetSize=0; //set 512 in release
+			}
+			
 			downloadStream=globalContainer->fileManager.open(filename,"wb");
 		}
 	}
 	
-	startDownloadTimeout=0;
+	if (startDownloadTimeout>2)
+		startDownloadTimeout=2;
 }
 
 void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 {
 	if (downloadStream==NULL)
 	{
-		printf("MultiplayersJoin:: we received an unwanted data file !!!.\n");
+		NETPRINTF("MultiplayersJoin:: no more data file wanted.\n");
+		if (endOfFileIndex)
+		{
+			char data[72];
+			memset(data, 0, 72);
+
+			data[0]=NEW_PLAYER_WANTS_FILE;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+
+			addUint32(data, unreceivedIndex, 4);
+			//for (int ri=0; ri<16; ri++)
+			//	addUint32(data, firstReceived[ri], 8+ri*4);
+
+			send(data, 72);
+		}
 		return;
 	}
-	printf("dwi=(%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
 	int windowIndex=(int)getSint32(data, 4);
 	Uint32 writingIndex=getUint32(data, 8);
 	int writingSize=size-12;
@@ -210,9 +239,8 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	
 	if (writingSize==0)
 	{
-		printf("end of the file !!!.\n");
-		SDL_RWclose(downloadStream);
-		downloadStream=NULL;
+		endOfFileIndex=writingIndex;
+		NETPRINTF("end of the file is %d.\n", endOfFileIndex);
 	}
 	else
 	{
@@ -223,31 +251,38 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		netWindow[windowIndex].received=true;
 		netWindow[windowIndex].packetSize=writingSize;
 
-		printf("unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
-		if (unreceivedIndex==writingIndex)
-		{
-			unreceivedIndex=writingIndex+writingSize;
-			//This was maybe a gap:
-			bool hit=true;
-			while (hit)
-			{
-				NETPRINTF("MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
-				hit=false;
-				for (int i=0; i<NET_WINDOW_SIZE; i++)
-					if (netWindow[windowIndex].received)
-					{
-						Uint32 index=netWindow[windowIndex].index;
-						Uint32 packetSize=netWindow[windowIndex].packetSize;
-						if (unreceivedIndex==index)
-						{
-							unreceivedIndex=index+packetSize;
-							hit=true;
-						}
-					}
-			}
-		}
+		NETPRINTF("unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
 		
-		startDownloadTimeout=0;
+		if (startDownloadTimeout>2)
+			startDownloadTimeout=2;
+	}
+	
+	bool hit=true;
+	bool anyHit=false;
+	while (hit)
+	{
+		hit=false;
+		for (int i=0; i<NET_WINDOW_SIZE; i++)
+			if (netWindow[i].received)
+			{
+				Uint32 index=netWindow[i].index;
+				Uint32 packetSize=netWindow[i].packetSize;
+				if (unreceivedIndex==index)
+				{
+					unreceivedIndex=index+packetSize;
+					hit=true;
+					anyHit=true;
+				}
+			}
+	}
+	if (anyHit)
+		NETPRINTF("MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
+	
+	if (endOfFileIndex==unreceivedIndex)
+	{
+		printf("download's file closed\n");
+		SDL_RWclose(downloadStream);
+		downloadStream=NULL;
 	}
 	
 }
@@ -475,7 +510,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	switch (data[0])
 	{
 		case FULL_FILE_DATA:
-			printf("part of map received from ip(%x,%d)!\n", ip.host, ip.port);
+			//NETPRINTF("part of map received from ip(%x,%d)!\n", ip.host, ip.port);
 			dataFileRecieved(data, size, ip);
 		break;
 	
@@ -738,15 +773,8 @@ void MultiplayersJoin::sendingTime()
 	
 	if ( (waitingState!=WS_TYPING_SERVER_NAME) && downloadStream && (startDownloadTimeout--<0) )
 	{
-		/*unreceivedIndex=0;
-		for (int i=0; i<NET_WINDOW_SIZE; i++)
-		{
-			netWindow[i].index=0;
-			netWindow[i].received=false;
-			netWindow[i].packetSize=0; //set 512 in release
-		}*/
-		
 		Uint32 firstReceived[16];
+
 		for (int j=0; j<16; j++)
 		{
 			firstReceived[j]=0xFFFFFFFF;
@@ -755,16 +783,17 @@ void MultiplayersJoin::sendingTime()
 				{
 					Uint32 index=netWindow[i].index;
 					if (index<firstReceived[j])
+					{
 						if (j)
 						{
 							if (index>firstReceived[j-1])
 								firstReceived[j]=index;
 						}
-						else
+						else if (index>unreceivedIndex)
 							firstReceived[j]=index;
+					}
 				}
 		}
-		//TODO: calculate what we need !
 		char data[72];
 		memset(data, 0, 72);
 		
@@ -774,12 +803,19 @@ void MultiplayersJoin::sendingTime()
 		data[3]=0;
 		
 		addUint32(data, unreceivedIndex, 4);
-		//for (int ri=0; ri<16; ri++)
-		//	addUint32(data, firstReceived[ri], 8+ri*4);
+		for (int ri=0; ri<16; ri++)
+			addUint32(data, firstReceived[ri], 8+ri*4);
 		
 		send(data, 72);
 		NETPRINTF("MultiplayersJoin::sending download request\n");
-		NETPRINTF("MultiplayersJoin::(%d; %d)\n", unreceivedIndex, firstReceived[0]);
+		NETPRINTF("MultiplayersJoin::unreceivedIndex=%d\n", unreceivedIndex);
+		NETPRINTF("receivedIndex=(");
+		for (int ix=0; ix<16; ix++)
+		{
+			firstReceived[ix]=getUint32(data, 8+ix*4);
+			NETPRINTF("%d, ", firstReceived[ix]);
+		}
+		NETPRINTF(").\n");
 		
 		startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	}
