@@ -49,6 +49,7 @@ bool SDLDrawableSurface::setRes(int w, int h, int depth, Uint32 flags)
 void SDLDrawableSurface::setAlpha(bool usePerPixelAlpha, Uint8 alphaValue)
 {
 	SDL_Surface *tempScreen;
+	assert(surface);
 	SDL_SetAlpha(surface, SDL_SRCALPHA, alphaValue);
 
 	if (usePerPixelAlpha)
@@ -67,6 +68,7 @@ void SDLDrawableSurface::setClipRect(int x, int y, int w, int h)
 	clipRect.y=y;
 	clipRect.w=w;
 	clipRect.h=h;
+	assert(surface);
 	SDL_SetClipRect(surface, &clipRect);
 }
 
@@ -76,11 +78,13 @@ void SDLDrawableSurface::setClipRect(void)
 	clipRect.y=0;
 	clipRect.w=surface->w;
 	clipRect.h=surface->h;
+	assert(surface);
 	SDL_SetClipRect(surface, &clipRect);
 }
 
 void SDLDrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 {
+	assert(surface);
 	((SDLSprite *)sprite)->draw(surface, &clipRect, x, y, index);
 }
 
@@ -91,6 +95,7 @@ void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint
 		return;
 
  	/* Set the pixel */
+	assert(surface);
 	SDL_LockSurface(surface);
     switch(surface->format->BitsPerPixel)
 	{
@@ -158,6 +163,7 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 	rect.y=y;
 	rect.w=w;
 	rect.h=h;
+	assert(surface);
 	SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b));
 }
 
@@ -193,7 +199,8 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 	if (l<=0)
 		return;
 
-    pixel = SDL_MapRGB(surface->format, r, g, b);
+	assert(surface);
+	pixel = SDL_MapRGB(surface->format, r, g, b);
 
 	SDL_LockSurface(surface);
 	/* Set the pixels */
@@ -286,7 +293,8 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 	if (l<=0)
 		return;
 
-    pixel = SDL_MapRGB(surface->format, r, g, b);
+	assert(surface);
+	pixel = SDL_MapRGB(surface->format, r, g, b);
 
 	SDL_LockSurface(surface);
     /* Set the pixels */
@@ -558,11 +566,13 @@ void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *
 	vsprintf(output,  msg, arglist);
 	va_end(arglist);
 
+	assert(surface);
 	((const SDLFont *)font)->drawString(surface, x, y, output, &clipRect);
 }
 
 void SDLDrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
 {
+	assert(surface);
 	SDLDrawableSurface *sdlsurface=dynamic_cast<SDLDrawableSurface *>(surface);
 	SDL_Rect r;
 

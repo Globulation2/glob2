@@ -161,7 +161,7 @@ void GlobalContainer::load(void)
 	strncpy(settings.userName, userName, BasePlayer::MAX_NAME_LENGTH);
 		
 	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
-	// TODO : loading code
+	// TODO : loading code for username and others options
 
 	// create graphic context
 	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
