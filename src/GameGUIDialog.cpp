@@ -95,7 +95,7 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		addWidget(chat[i]);
 
 		std::string pname;
-		if (gameGUI->game.players[i]->type==Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
+		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
 		{
 			pname = gameGUI->game.players[i]->name;
 		}

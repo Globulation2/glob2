@@ -208,8 +208,8 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 	*teamNumber=players[playerNumber].teamNumber;
 	if (players[playerNumber].type==BasePlayer::P_IP)
 		snprintf(infoString, stringLen, "%s : %s", players[playerNumber].name, Utilities::stringIP(players[playerNumber].ip));
-	else if (players[playerNumber].type==BasePlayer::P_AI)
-		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
+	else if (players[playerNumber].type>=BasePlayer::P_AI)
+		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]", players[playerNumber].type-BasePlayer::P_AI));
 	else
 		assert(false);
 }
@@ -633,7 +633,7 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 {
 	int oldAICount=0;
 	for (int i=0; i<numberOfPlayer; i++)
-		if (players[i].type==BasePlayer::P_AI)
+		if (players[i].type>=BasePlayer::P_AI)
 			oldAICount++;
 	if (oldAICount==0)
 		return team;
@@ -641,12 +641,12 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 	int newAICount=0;
 	assert(currentSessionInfo);
 	for (int i=0; i<currentSessionInfo->numberOfPlayer; i++)
-		if (currentSessionInfo->players[i].type==BasePlayer::P_AI)
+		if (currentSessionInfo->players[i].type>=BasePlayer::P_AI)
 			newAICount++;
 	
 	int targetCount=(newAICount%oldAICount);
 	for (int i=0; i<numberOfPlayer; i++)
-		if (players[i].type==BasePlayer::P_AI)
+		if (players[i].type>=BasePlayer::P_AI)
 			if (targetCount++==0)
 			{
 				team=players[i].teamNumber;
