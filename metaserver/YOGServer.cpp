@@ -333,13 +333,16 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				// Here we have to send this message to all clients!
 				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
 				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
-					if ((*client)->messages.size()<(256-2))
+					if ((*client!=admin) || (c!=admin))
 					{
-						m.messageID=++(*client)->lastMessageID;
-						(*client)->messages.push_back(m);
+						if ((*client)->messages.size()<(256-2))
+						{
+							m.messageID=++(*client)->lastMessageID;
+							(*client)->messages.push_back(m);
+						}
+						else
+							lprintf("Client %s is being flooded!\n", (*client)->userName);
 					}
-					else
-						lprintf("Client %s is being flooded!\n", (*client)->userName);
 			}
 		}
 	}
@@ -361,7 +364,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				good=true; // ok, he's connected
 				break;
 			}
-		if (good & (*sender)->messages.size()>0)
+		if (good && (*sender)->messages.size()>0)
 		{
 			std::list<Message>::iterator mit=(*sender)->messages.begin();
 			if (mit->messageID==messageID)
@@ -817,7 +820,7 @@ void YOGServer::lprintf(const char *msg, ...)
 	
 	if (logServer)
 		fputs(output, logServer);
-	//printf(output);
+	printf(output);
 	
 	int i;
 	for (i=0; i<256; i++)

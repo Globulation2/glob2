@@ -156,12 +156,13 @@ namespace simpleClient
 		case YMT_BAD:
 			printf("bad packet.\n");
 		break;
+		case YMT_PRIVATE_MESSAGE:
 		case YMT_MESSAGE:
 		{
 			char s[256];
 			strncpy(s, (char *)data+4, 256);
 			s[255]=0;
-			//printf("client:%s\n", s);
+			printf("client:%s\n", s);
 			send(YMT_MESSAGE, data[1]);
 		}
 		break;
@@ -171,7 +172,6 @@ namespace simpleClient
 			strncpy(s, (char *)data+4, 256);
 			s[255]=0;
 			printf("dump:%s\n", s);
-			send(YMT_MESSAGE, data[1]);
 		}
 		break;
 		case YMT_CONNECTION_PRESENCE:
