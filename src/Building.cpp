@@ -1247,6 +1247,7 @@ void Building::turretStep(void)
 	Uint32 enemies=owner->enemies;
 	bool targetFound=false;
 	Map *map=&(owner->game->map);
+	assert(map);
 
 	int targetX=-1;
 	int targetY=-1;
@@ -1296,7 +1297,8 @@ void Building::turretStep(void)
 				{
 					int otherTeam=Unit::UIDtoTeam(targetUID);
 					Uint32 otherTeamMask=1<<otherTeam;
-					if (enemies&otherTeamMask)
+					Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetUID];
+					if (enemies&otherTeamMask && testUnit->delta<testUnit->speed)
 					{
 						targetFound=true;
 						//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
