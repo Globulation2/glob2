@@ -189,12 +189,12 @@ void TextArea::addText(const char *text)
 
 		temp=(char *)malloc(textBufferLength+ts+1);
 
-		memcpy(temp,textBuffer,textBufferLength);
-		memcpy(&(temp[textBufferLength]),text,ts);
+		memcpy(temp, textBuffer, textBufferLength);
+		memcpy(&(temp[textBufferLength]), text, ts);
 
 		temp[textBufferLength+ts]=0;
 
-		setText(temp,areaPos);
+		setText(temp, areaPos);
 	}
 }
 

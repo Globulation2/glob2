@@ -66,7 +66,7 @@ public:
 	bool listHasChanged;
 	struct LANHost
 	{
-		Uint32 ip;
+		Uint32 ip; // This is in network endianess
 		char gameName[32];
 		char serverNickName[32];
 		int timeout;
@@ -81,7 +81,7 @@ private:
 public:
 	char serverNameMemory[128];
 	char *serverName;
-	char playerName[128];
+	char playerName[32];
 	char serverNickName[32];
 
 	WaitingState waitingState;
@@ -113,9 +113,7 @@ public:
 
 	void serverAskForBeginning(char *data, int size, IPaddress ip);
 	void treatData(char *data, int size, IPaddress ip);
-	//void confirmPlayerStartGame(IPaddress ip);
 
-	//bool getList(char ***list, int *length);
 	void receiveTime();
 	void onTimer(Uint32 tick);
 	char *getStatusString();

@@ -448,6 +448,63 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 		sessionInfo.players[p].netTimeout=3; // =1 would be enough, if loopback where safe.
 }
 
+void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
+{
+	/*if (size!=12)
+	{
+		NETPRINTF("Bad size(%d) for an Session request from ip %x.\n", size, ip.host);
+		return;
+	}
+	
+	int p;
+	for (p=0; p<sessionInfo.numberOfPlayer; p++)
+		if (sessionInfo.players[p].sameip(ip))
+			break;
+	if (p>=sessionInfo.numberOfPlayer)
+	{
+		NETPRINTF("An unknow player (%x, %d) has sended a Session request !!!\n", ip.host, ip.port);
+		return;
+	}
+	
+	bool serverIPReceived=false;
+	Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
+	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
+	if (serverIP.host)
+	{
+		if (serverIP.host!=newHost)
+		{
+			NETPRINTF("Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
+			return;
+		}
+		if (serverIP.port!=newPort)
+		{
+			NETPRINTF("Bad port received by(%x:%d). old=(%d) new=(%d)\n", ip.host, ip.port, serverIP.port, newPort);
+			return;
+		}
+	}
+	else
+	{
+		serverIP.host=newHost;
+		serverIP.port=newPort;
+		serverIPReceived=true;
+		NETPRINTF("I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
+	}
+
+	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
+	sessionInfo.players[p].netTimeout=0;
+	sessionInfo.players[p].netTimeoutSize=LONG_NETWORK_TIMEOUT;
+	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
+
+	printf("this ip(%x:%d) wantsSession (player %d)\n", ip.host, ip.port, p);
+	
+	// all other players are ignorant of the new situation:
+	initHostGlobalState();
+	reinitPlayersState();
+	
+	if (serverIPReceived)
+		sessionInfo.players[p].netTimeout=3; // =1 would be enough, if loopback where safe.*/
+}
+
 void MultiplayersHost::addAI()
 {
 	int p=sessionInfo.numberOfPlayer;
