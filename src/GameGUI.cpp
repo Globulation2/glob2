@@ -207,7 +207,7 @@ void GameGUI::step(void)
 		int id=Unit::UIDtoID(UID);
 		Unit *u=game.teams[team]->myUnits[id];
 		int strDec=(int)(u->typeNum);
-		addMessage(200, 30, 30, "%s %s", globalContainer->texts.getString("[unit type]", strDec), globalContainer->texts.getString("[attacked(f)]"));
+		addMessage(200, 30, 30, "%s %s %s", globalContainer->texts.getString("[Your]"), globalContainer->texts.getString("[units type]", strDec), globalContainer->texts.getString("[are under attack(f)]"));
 	}
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 	{
@@ -216,7 +216,7 @@ void GameGUI::step(void)
 		int id=Building::UIDtoID(UID);
 		Building *b=game.teams[team]->myBuildings[id];
 		int strDec=b->type->type;
-		addMessage(255, 0, 0, "%s %s", globalContainer->texts.getString("[building name]", strDec), globalContainer->texts.getString("[attacked]"));
+		addMessage(255, 0, 0, "%s", globalContainer->texts.getString("[the building is under attack]", strDec));
 	}
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
 	{
@@ -225,7 +225,7 @@ void GameGUI::step(void)
 		int id=Building::UIDtoID(UID);
 		Building *b=game.teams[team]->myBuildings[id];
 		int strDec=b->type->type;
-		addMessage(30, 255, 30, "%s %s",  globalContainer->texts.getString("[building name]", strDec), globalContainer->texts.getString("[finished]"));
+		addMessage(30, 255, 30, "%s",  globalContainer->texts.getString("[the building is finished]", strDec));
 	}
 		
 	// do a yog step
@@ -1413,7 +1413,7 @@ void GameGUI::draw(void)
 					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 					{
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", i));
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[Unit type]", i));
 					}
 				}
 
@@ -1553,7 +1553,7 @@ void GameGUI::draw(void)
 		{
 			Uint8 r, g, b;
 
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", selUnit->typeNum));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, "%s", globalContainer->texts.getString("[Unit type]", selUnit->typeNum));
 			
 			// display unit's owner
 			if (localTeam->teamNumber == selUnit->owner->teamNumber)
