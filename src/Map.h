@@ -346,14 +346,10 @@ public:
 	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY);
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
-
-	// All "nearestRessource" is legacy code, since we implemented the gradient system.
-	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
-	bool nearestRessource(int x, int y, int  ressourceType, int *dx, int *dy);
 	
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
-	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, Uint8 level);
+	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
 	/*Uint8 distToRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{

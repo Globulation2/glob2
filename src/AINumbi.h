@@ -29,6 +29,7 @@ class Map;
 class Order;
 class Player;
 class Team;
+class Building;
 
 class AINumbi : public AIImplementation
 {
@@ -57,7 +58,7 @@ private:
 	int critticalTime;
 	int attackTimer;
 	int mainBuilding[BuildingType::NB_BUILDING];
-	int estimateFood(int x, int y);
+	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);
 	Order *swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);

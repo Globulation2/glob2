@@ -237,10 +237,22 @@ Order *AINumbi::getOrder(void)
 	return new NullOrder();
 }
 
-int AINumbi::estimateFood(int x, int y)
+int AINumbi::estimateFood(Building *building)
 {
-	int rx, ry;
-	if (map->nearestRessource(x, y, CORN, &rx, &ry))
+	int rx, ry, dist;
+	bool found;
+	if (map->ressourceAviable(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
+		found=true;
+	else if (map->ressourceAviable(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
+		found=true;
+	else if (map->ressourceAviable(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
+		found=true;
+	else if (map->ressourceAviable(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
+		found=true;
+	else 
+		found=false;
+	
+	if (found)
 	{
 		rx+=map->getW();
 		ry+=map->getH();
@@ -368,7 +380,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 			return new OrderModifySwarms(&(b->gid), b->ratioLocal, 1);
 		}
 
-		int f=estimateFood(b->posX, b->posY);
+		int f=estimateFood(b);
 		int numberRequestedTemp=numberRequested;
 		int numberRequestedLoca=b->maxUnitWorking;
 		if (f<(nbu*3-1))
@@ -689,11 +701,11 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 				int valid=nbFreeAround(buildingType, px, py, width, height);
 				if ((valid>299)&&(game->checkRoomForBuilding(px, py, typeNum, player->team->teamNumber)))
 				{
-					int rx, ry;
-					bool nr=map->nearestRessource(px, py, CORN, &rx, &ry);
+					int rx, ry, dist;
+					bool nr=map->ressourceAviable(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
-						int dist=map->warpDistSquare(px+1, py+1, rx, ry);
+						//int dist=map->warpDistSquare(px+1, py+1, rx, ry);
 						if (((dist<=(64+width*height))&&(buildingType<=1))||((dist>=(64+width*height))&&(buildingType>1)))
 						{
 							//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);

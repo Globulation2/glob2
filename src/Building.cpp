@@ -1229,7 +1229,7 @@ void Building::subscribeToBringRessourcesStep()
 				else
 				{
 					//We set targetX and targetY for gameplay purpose:
-					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL, 255);
+					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL);
 					
 					unitsWorking.push_back(choosen);
 					choosen->subscriptionSuccess();
