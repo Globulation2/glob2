@@ -891,22 +891,22 @@ Runtergeladen zu
 Téléchargement terminé
 Download finished
 Runterladen fertig
-[Map name: %s\n]
-Carte: %s.\n
-Map name: %s.\n
-Karte: %s.\n
+[Map name: %s]
+Carte: %s.
+Map name: %s.
+Karte: %s.
 [one player]
 Un joueur présent.
 One player has joined.
-Ein Spieler
-[number of players: %s\n]
-%s joueurs présents.\n
-%s players has joined.\n
-%s Spieler.\n
-[number of teams: %s\n]
-%s équipes.\n
-%s teams.\n
-%s Mannschaften.\n
+Ein Spieler.
+[number of players: %d]
+%d joueurs présents.
+%d players has joined.
+%d Spieler.
+[number of teams: %d]
+%d équipes.
+%d teams.
+%d Mannschaften.
 [game full]
 Jeu complet
 Game full
