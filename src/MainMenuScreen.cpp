@@ -43,14 +43,12 @@ MainMenuScreen::MainMenuScreen()
 	
 	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAG::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
 
-	globalContainer->gfx->setClipRect();
-
-	background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
+	//background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
 }
 
 MainMenuScreen::~MainMenuScreen()
 {
-	delete background;
+	//delete background;
 }
 
 void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)

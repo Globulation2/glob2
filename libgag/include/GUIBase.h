@@ -121,18 +121,10 @@ public:
 	//! RectangularWidget destructor
 	virtual ~RectangularWidget() { }
 
-	//! Show the widget
-	/*! By default, call (with reals x, y, w, h) :
-		- paint();
-		- parent->updateRect(x, y, w, h)
-	*/
+	//! Show the widget, put in queue for end of step
 	virtual void show(void);
 
-	//! Hide the widget
-	/*! By default, call (with reals x, y, w, h) :
-		- parent->paint(x, y, w, h);
-		- parent->updateRect(x, y, w, h)
-	*/
+	//! Hide the widget, put in queue for end of step
 	virtual void hide(void);
 
 	//! Show or hide the widget, call show or hide depending on visibe
@@ -146,7 +138,6 @@ public:
 	virtual void paint(void);
 
 protected:
-
 	//! Called before a paint or a show event, init the paint dependant stuff
 	virtual void internalInit(int x, int y, int w, int h) { }
 
@@ -163,6 +154,21 @@ protected:
 
 	//! Compute the actual position from the layout informations
 	virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
+	
+	friend class Screen;
+	//! Hide the widget
+	/*! By default, call (with reals x, y, w, h) :
+		- parent->paint(x, y, w, h);
+		- parent->updateRect(x, y, w, h)
+	*/
+	virtual void doHide(void);
+	
+	//! Show the widget
+	/*! By default, call (with reals x, y, w, h) :
+		- paint();
+		- parent->updateRect(x, y, w, h)
+	*/
+	virtual void doShow(void);
 };
 
 //! This class provides highlight support through mouse motion detection
@@ -197,6 +203,12 @@ protected:
 	//! the associated drawable surface, set from the parent after construction
 	DrawableSurface *gfxCtx;
 
+	friend class RectangularWidget;
+	//! the widgets to hide
+	std::vector<RectangularWidget *> toHide;
+	//! the widgets to show
+	std::vector<RectangularWidget *> toShow;
+	
 public:
 	Screen();
 

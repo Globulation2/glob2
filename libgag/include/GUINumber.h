@@ -29,7 +29,6 @@ class Font;
 class Number: public RectangularWidget
 {
 protected:
-	std::string font;
 	Sint32 nth;
 	Sint32 m;
 	std::vector<int> numbers;
@@ -43,9 +42,7 @@ public:
 	Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font);
 	virtual ~Number();
 
-	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(void);
 
 	void add(int number);
 	void clear(void);
@@ -55,8 +52,7 @@ public:
 	int get(void);
 
 protected:
-	virtual void repaint(void);
-	virtual void internalPaint(void);
+	virtual void internalRepaint(int x, int y, int w, int h);
 };
 
 #endif

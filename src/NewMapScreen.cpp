@@ -29,9 +29,10 @@
 
 HowNewMapScreen::HowNewMapScreen()
 {
-	addWidget(new TextButton( 20, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[new]"), NEW, 13));
-	addWidget(new TextButton(340, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load]"), LOAD));
-	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(150,  70, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[new]"), NEW, 13));
+	addWidget(new TextButton(150,  130, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load]"), LOAD));
+	addWidget(new TextButton(150, 415, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor]")));
 }
 
 void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -48,7 +49,7 @@ NewMapScreen::NewMapScreen()
 {
 	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
 	
-	mapSizeX=new Number(20, 50, 100, 20, ALIGN_LEFT, ALIGN_LEFT, 20, "menu");
+	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeX->add(64);
 	mapSizeX->add(128);
 	mapSizeX->add(256);
@@ -56,7 +57,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeX->setNth(descriptor.wDec-6);
 	addWidget(mapSizeX);
 	
-	mapSizeY=new Number(20, 75, 100, 20, ALIGN_LEFT, ALIGN_LEFT, 20, "menu");
+	mapSizeY=new Number(20, 75, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeY->add(64);
 	mapSizeY->add(128);
 	mapSizeY->add(256);
@@ -64,7 +65,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeY->setNth(descriptor.hDec-6);
 	addWidget(mapSizeY);
 	
-	methodes=new List(20, 100, 280, 300, ALIGN_LEFT, ALIGN_LEFT, "menu");
+	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
 	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[random terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
@@ -73,7 +74,7 @@ NewMapScreen::NewMapScreen()
 	
 	// eUNIFORM
 
-	terrains=new List(340, 100, 280, 300, ALIGN_LEFT, ALIGN_LEFT, "menu");
+	terrains=new List(340, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
 	terrains->addText(Toolkit::getStringTable()->getString("[water]"));
 	terrains->addText(Toolkit::getStringTable()->getString("[sand]"));
 	terrains->addText(Toolkit::getStringTable()->getString("[grass]"));
@@ -82,7 +83,7 @@ NewMapScreen::NewMapScreen()
 	
 	// not eUNIFORM
 	
-	nbTeams=new Number(310, 100, 114, 18, ALIGN_LEFT, ALIGN_LEFT, 18, "menu");
+	nbTeams=new Number(310, 100, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	nbTeams->add(1);
 	nbTeams->add(2);
 	nbTeams->add(3);
@@ -95,7 +96,7 @@ NewMapScreen::NewMapScreen()
 	nbTeams->visible=false;
 	addWidget(nbTeams);
 	
-	nbWorkers=new Number(310, 120, 114, 18, ALIGN_LEFT, ALIGN_LEFT, 18, "menu");
+	nbWorkers=new Number(310, 120, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	nbWorkers->add(1);
 	nbWorkers->add(2);
 	nbWorkers->add(3);
@@ -108,28 +109,28 @@ NewMapScreen::NewMapScreen()
 	nbWorkers->visible=false;
 	addWidget(nbWorkers);
 
-	numberOfTeamText=new Text(430, 100, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
+	numberOfTeamText=new Text(430, 100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
 	numberOfTeamText->visible=false;
 	addWidget(numberOfTeamText);
-	numberOfWorkerText=new Text (430, 120, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[workers]"));
+	numberOfWorkerText=new Text (430, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[workers]"));
 	numberOfWorkerText->visible=false;
 	addWidget(numberOfWorkerText);
 	
 	// eRANDOM
 	
-	waterRatio=new Ratio(310, 160, 164, 18, ALIGN_LEFT, ALIGN_LEFT, 40, descriptor.waterRatio, "menu");
+	waterRatio=new Ratio(310, 160, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.waterRatio, "menu");
 	waterRatio->visible=false;
 	addWidget(waterRatio);
 	
-	sandRatio=new Ratio(310, 180, 164, 18, ALIGN_LEFT, ALIGN_LEFT, 40, descriptor.sandRatio, "menu");
+	sandRatio=new Ratio(310, 180, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.sandRatio, "menu");
 	sandRatio->visible=false;
 	addWidget(sandRatio);
 	
-	grassRatio=new Ratio(310, 200, 164, 18, ALIGN_LEFT, ALIGN_LEFT, 40, descriptor.grassRatio, "menu");
+	grassRatio=new Ratio(310, 200, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.grassRatio, "menu");
 	grassRatio->visible=false;
 	addWidget(grassRatio);
 	
-	smooth=new Number(310, 220, 164, 18, ALIGN_LEFT, ALIGN_LEFT, 18, "menu");
+	smooth=new Number(310, 220, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	smooth->add(1);
 	smooth->add(2);
 	smooth->add(3);
@@ -142,30 +143,30 @@ NewMapScreen::NewMapScreen()
 	smooth->visible=false;
 	addWidget(smooth);
 	
-	ratioText=new Text(310, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[ratios]"));
+	ratioText=new Text(310, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[ratios]"));
 	ratioText->visible=false;
 	addWidget(ratioText);
-	waterText=new Text(480, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[water]"));
+	waterText=new Text(480, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[water]"));
 	waterText->visible=false;
 	addWidget(waterText);
-	sandText=new Text(480, 180, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[sand]"));
+	sandText=new Text(480, 180, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[sand]"));
 	sandText->visible=false;
 	addWidget(sandText);
-	grassText=new Text(480, 200, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[grass]"));
+	grassText=new Text(480, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[grass]"));
 	grassText->visible=false;
 	addWidget(grassText);
-	smoothingText=new Text(480, 220, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
+	smoothingText=new Text(480, 220, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
 
 	
 	// eISLANDS
 
-	islandsSize=new Ratio(310, 140, 114, 18, ALIGN_LEFT, ALIGN_LEFT, 40, descriptor.islandsSize, "menu");
+	islandsSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.islandsSize, "menu");
 	islandsSize->visible=false;
 	addWidget(islandsSize);
 	
-	beach=new Number(310, 160, 114, 18, ALIGN_LEFT, ALIGN_LEFT, 18, "menu");
+	beach=new Number(310, 160, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	beach->add(0);
 	beach->add(1);
 	beach->add(2);
@@ -175,23 +176,23 @@ NewMapScreen::NewMapScreen()
 	beach->visible=false;
 	addWidget(beach);
 	
-	islandSizeText=new Text(430, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[islands size]"));
+	islandSizeText=new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[islands size]"));
 	islandSizeText->visible=false;
 	addWidget(islandSizeText);
-	beachSizeText=new Text(430, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[beach size]"));
+	beachSizeText=new Text(430, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[beach size]"));
 	beachSizeText->visible=false;
 	addWidget(beachSizeText);
 	
 	
 	// all
 	
-	addWidget(new TextButton( 20, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
-	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton( 20, 420, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(340, 420, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	const char *text= Toolkit::getStringTable()->getString("[create map]");
-	addWidget(new Text(20+((600-Toolkit::getFont("menu")->getStringWidth(text))>>1), 18, ALIGN_LEFT, ALIGN_LEFT, "menu", text));
-	addWidget(new Text(130, 50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size x]")));
-	addWidget(new Text(130, 75, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size y]")));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", text));
+	addWidget(new Text(130, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[map size x]")));
+	addWidget(new Text(130, 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[map size y]")));
 }
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -231,34 +232,31 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (old!=descriptor.methode)
 			{
 				// eUNIFORM
-				terrains->visible=(descriptor.methode==MapGenerationDescriptor::eUNIFORM);
+				terrains->setVisible(descriptor.methode==MapGenerationDescriptor::eUNIFORM);
 				
 				// not eUNIFORM
-				nbTeams->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				nbWorkers->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfTeamText->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfWorkerText->visible=(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				nbWorkers->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				numberOfTeamText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				numberOfWorkerText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				
 				
 				// eRANDOM
-				waterRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				sandRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				grassRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				smooth->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				ratioText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				waterText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				sandText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				grassText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
-				smoothingText->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				waterRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				sandRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				grassRatio->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				smooth->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				ratioText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				waterText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				sandText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				grassText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				smoothingText->setVisible(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				
 				// eISLANDS
-				islandsSize->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				beach->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				islandSizeText->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				beachSizeText->visible=(descriptor.methode==MapGenerationDescriptor::eISLANDS);
-				
-				dispatchPaint(gfxCtx);
-				addUpdateRect(310, 100, 330, 300);
+				islandsSize->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				beach->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				islandSizeText->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
+				beachSizeText->setVisible(descriptor.methode==MapGenerationDescriptor::eISLANDS);
 			}
 		}
 	}

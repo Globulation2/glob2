@@ -25,9 +25,10 @@
 
 Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font)
 {
-	this->font=Toolkit::getFont(font);
 	assert(font);
-	textHeight=this->font->getStringHeight((const char *)NULL);
+	this->fontPtr=Toolkit::getFont(font);
+	assert(fontPtr);
+	textHeight=this->fontPtr->getStringHeight((const char *)NULL);
 	
 	this->x=x;
 	this->y=y;
@@ -65,6 +66,9 @@ void Ratio::onTimer(Uint32 tick)
 
 void Ratio::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x+value, y, x+value+size, h))
@@ -101,7 +105,7 @@ void Ratio::onSDLEvent(SDL_Event *event)
 	
 }
 
-void Ratio::internalPaint(void)
+void Ratio::internalRepaint(int x, int y, int w, int h)
 {
 	assert(parent);
 	assert(parent->getSurface());
@@ -126,25 +130,10 @@ void Ratio::internalPaint(void)
 	// We center the string
 	std::stringstream g;
 	g << get();
-	int tw=font->getStringWidth(g.str().c_str());
-	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, g.str().c_str());
+	int tw=fontPtr->getStringWidth(g.str().c_str());
+	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, fontPtr, g.str().c_str());
 
 	needRefresh=false;
-}
-
-void Ratio::paint(void)
-{
-	if (visible)
-		internalPaint();
-}
-
-void Ratio::repaint(void)
-{
-	assert(parent);
-	parent->paint(x, y, w, h);
-	if (visible)
-		internalPaint();
-	parent->addUpdateRect(x, y, w, h);
 }
 
 int Ratio::getMax(void)

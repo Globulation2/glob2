@@ -31,8 +31,10 @@ Number::Number()
 Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
 {
 	assert(font);
-	this->font=font;
-
+	this->fontPtr=Toolkit::getFont(font);
+	assert(fontPtr);
+	textHeight=this->fontPtr->getStringHeight((const char *)NULL);
+	
 	this->x=x;
 	this->y=y;
 	this->w=w;
@@ -53,6 +55,9 @@ Number::~Number()
 
 void Number::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
@@ -84,7 +89,7 @@ void Number::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void Number::internalPaint(void)
+void Number::internalRepaint(int x, int y, int w, int h)
 {
 	assert(parent);
 	assert(parent->getSurface());
@@ -114,27 +119,6 @@ void Number::internalPaint(void)
 	parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
 	int dx2=(m-fontPtr->getStringWidth("+"))/2;
 	parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
-}
-
-void Number::paint(void)
-{
-	fontPtr = Toolkit::getFont(font.c_str());
-	assert(fontPtr);
-	textHeight = fontPtr->getStringHeight((const char*)NULL);
-		if (h<1)
-		h=textHeight;
-
-	if (visible)
-		internalPaint();
-}
-
-void Number::repaint(void)
-{
-	assert(parent);
-	parent->paint(x, y, w, h);
-	if (visible)
-		internalPaint();
-	parent->addUpdateRect(x, y, w, h);
 }
 
 void Number::add(int number)

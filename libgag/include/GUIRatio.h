@@ -27,26 +27,25 @@ class Font;
 class Ratio: public RectangularWidget
 {
 public:
-	Ratio() { font=NULL; }
+	Ratio() { fontPtr=NULL; }
 	Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
 	virtual ~Ratio();
 
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(void);
 
 	void set(int value);
 	int getMax(void);
 	int get(void);
 
 	void setScale(float start, float ratio);
+	
 protected:
-	virtual void repaint(void);
-	virtual void internalPaint(void);
+	virtual void internalRepaint(int x, int y, int w, int h);
 
 protected:
 	int textHeight;
-	const Font *font;
+	const Font *fontPtr;
 
 	//! This is the wheight of the scrool bar
 	int size;
