@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([Globulation 2], 0.8.6, [glob2-devel@nongnu.org], glob2)
+AC_INIT([Globulation 2], 0.8.7, [glob2-devel@nongnu.org], glob2)
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 

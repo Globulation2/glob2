@@ -192,7 +192,7 @@ Szilva
 [Clearing:]
 Défrichage de:
 Clearing:
-
+Rodung
 Vyčištění:
 
 
@@ -202,7 +202,7 @@ Tisztítás:
 [Min required level:]
 Niveau minimum requis:
 Minimum required level:
-
+Mindestlevel:
 Min. úroveň bojovníků:
 
 
@@ -1092,7 +1092,7 @@ Editor
 [credits]
 Crédits
 Credits
-
+Eine ihrer Einheiten wurde von einem anderen Team übernommen
 Poděkování
 O twórcach
 Credits
@@ -1722,7 +1722,7 @@ Megtámadták a %s -t
 [Your unit got converted to another team]
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
-
+Sie haben eine Einheit von einem anderen Team übernommen
 Tva jednotka změnila víru v jiného hráče
 Twoja jednostka została przeciągnięta na stronę wroga
 La tua unità è stata convertita in un'altra squadra
@@ -1842,7 +1842,7 @@ Egységek
 [Attack]
 Attaque
 Attack
-
+Angriff
 Útok
 
 
@@ -1852,7 +1852,7 @@ Támadás
 [Defense]
 Défense
 Defense
-
+Verteidigung
 Obrana
 
 
@@ -2702,7 +2702,7 @@ Szünet
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 Register a new YOG user with a password. (insecure)
-
+Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 Registrace nového YOG uživatele s heslem. (nejisté)
 
 Registra un nuovo utente YOG con una passord. (non sicuro)
@@ -2712,7 +2712,7 @@ Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 Remember the password locally. (insecure)
-
+Passwort lokal speichern. (unsicher)
 Zapamatovat si heslo lokálně? (nejisté)
 
 Ricordati la password localmente. (non sicuro)
@@ -2762,7 +2762,7 @@ A kapcsolat felvétele a YOG metaszerverrel.
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
 Disconnecting from the YOG metaserver...
-
+Beende Verbindung zum YOG Metaserver...
 Odpojuji z YOG metaserveru...
 Rozłączam z metaserwerem YOG...
 Disconnessione dal metaserver YOG in corso...
@@ -2812,7 +2812,7 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevede
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
 The YOG metaserver has refused connection because the supplied password was incorrect.
-
+Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
 YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 
 
@@ -2822,7 +2822,7 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adt�
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
-
+Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch kein Passwort hat. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden. 
 YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přidělené heslo. Pro registraci přezdívky s tímto heslem zaškrtni políčko "Registrace nového YOG uživatele s heslem" před připojením. Budeš potřebovat zaškrtnout toto políčko pouze jednou.
 
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
@@ -2832,7 +2832,7 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználón�
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
-
+Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon registriert wurde. Wenn es ihr Benutzername ist deaktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren".
 YOG metaserver odmítnul spojení, protože tato přezdívka je už zaregistovaná. Jestliže přezdívka je tvá, nezaškrtávej políčko "Registrace nového YOG uživatele s heslem".
 
 Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
@@ -2842,7 +2842,7 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév 
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
 The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
-
+Der YOG Metaserver hat die Verbindung abgewiesen da ein Protokolfehler aufgetreten ist: Sind schon angemeldet. Versuchen sie es in 45 Sekunden erneut.
 YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: už jsi byl autentizovaný. Zkus to znovu za 45 sekund.
 
 Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel protocollo: sei già autenticato. Riprova tra 45 secondi.
@@ -2852,7 +2852,7 @@ A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már 
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
-
+Der YOG Metaserver hat die Verbindung abgewiesen da ein interner Protokolfehler aufgetreten ist: Sie sind während der Anmeldung nicht verbunden. Bitten melden sie diesen Fehler.
 YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: nejsi ještě připojen během ověřování. Prosím reportuj tuto chybu.
 
 Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
@@ -3056,7 +3056,7 @@ Gewonnen: Sie haben das höchste Prestige
 Ty máš největší prestiž ...
 Wygrałeś: Masz największy prestiż
 Hai vinto: hai il magior prestigio
-
+Benutzername
 Ganador: Tu eres el que mas prestigio tiene
 Nyertél: neked van a legnagyobb presztízsed.
 [The game has not been finished]
@@ -3082,7 +3082,7 @@ Kijelző
 [username]
 Nom d'utilisateur
 Username
-
+Username
 Jméno uživatele
 Nazwa użytkownika
 Username
@@ -3092,7 +3092,7 @@ Felhasználónév
 [fullscreen]
 Plein écran
 Fullscreen
-
+Vollbild
 Fullscreen
 Pełen ekran
 Schermo intero
@@ -3102,7 +3102,7 @@ Teljes képernyő
 [hwaccel]
 Accélération matérielle
 Hardware acceleration
-
+Hardware Beschleunigung
 Hardware akcelerace
 Dopalanie sprzętowe
 Accelerazione HardWare
@@ -3112,7 +3112,7 @@ Hardveres gyorsítás
 [dblbuff]
 Doube-tampon
 Double buffering
-
+Double-buffering
 Double-buffering
 Double-buffering
 Double-buffering
@@ -3122,7 +3122,7 @@ Dupla pufferelés
 [lowquality]
 Basse qualité
 Low quality
-
+Niedrige Qualität
 Nízká kvalita
 Niska jakość
 Bassa qualità
@@ -3132,7 +3132,7 @@ Alacsony képminőség
 [audio]
 Audio
 Audio
-
+Audio
 Audio
 Audio
 Audio
@@ -3142,7 +3142,7 @@ Audió
 [Music volume]
 Volume (musique)
 Volume (music)
-
+Volumen (Musik)
 Hlasitost (hudba)
 Głośność (muzyka)
 Volume (musica)
@@ -3152,7 +3152,7 @@ Hangerősség (zene)
 [Happyness]
 Satisfaction
 Happiness
-
+Zufriedenheit
 Zadostiučinění
 Satysfakcja
 Soddisfazione
