@@ -23,7 +23,6 @@ Pathfindig:
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
 - Le comportement de guerrières doit-être amélioré.
-- Building::subscribeForFlagingStep() n'est pas du tout refait!!
 
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?

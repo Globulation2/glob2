@@ -1798,6 +1798,7 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
+	assert(gid<32768);
 	return (gid%1024);
 }
 
