@@ -1355,7 +1355,8 @@ void GameGUI::draw(void)
 				
 			globalContainer->littleFont->pushColor(r, g, b);
 			textT=selBuild->owner->getFirstPlayerName();
-			assert(textT);
+			if (!textT)
+				textT=globalContainer->texts.getString("[Uncontrolled]");
 			decT=(128-globalContainer->littleFont->getStringWidth(textT)>>1);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+16, globalContainer->littleFont, "%s", textT);
 			globalContainer->littleFont->popColor();
@@ -1554,7 +1555,8 @@ void GameGUI::draw(void)
 				
 			globalContainer->littleFont->pushColor(r, g, b);
 			const char *textT=selUnit->owner->getFirstPlayerName();
-			assert(textT);
+			if (!textT)
+				textT=globalContainer->texts.getString("[Uncontrolled]");
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124+64, 128+4, globalContainer->littleFont, "%s", textT);
 			globalContainer->littleFont->popColor();
 			

@@ -547,6 +547,10 @@ Euren
 sont attaquées
 are under attack
 sind unter Angriff !
+[Uncontrolled]
+Incontrôlé
+Uncontrolled
+
 [ai]
 IA
 AI
