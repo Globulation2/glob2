@@ -158,4 +158,7 @@ Quit the game
 [ok]
 Accepter
 Ok
+[you have lost]
+Vous avez perdu !
+You have lost !
 

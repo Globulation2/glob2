@@ -1183,7 +1183,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
-		
+
 		if (isRoom)
 		{
 			if (isExtendedRoom)
@@ -1208,7 +1208,10 @@ void GameGUI::drawOverlayInfos(void)
 		else if (!selBuild->type->isVirtual)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 	}
-
+	if (game.teams[localTeam]->isAlive==false)
+	{
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, font, globalContainer->texts.getString("[you have lost]"));
+	}
 }
 
 void GameGUI::drawInGameMenu(void)
