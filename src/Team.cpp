@@ -233,7 +233,6 @@ Building *Team::findNearestHeal(Unit *unit)
 		int x=unit->posX;
 		int y=unit->posY;
 		int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
-		bool canSwim=unit->performance[SWIM];
 		Building *choosen=NULL;
 		int minDist=INT_MAX;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
@@ -276,15 +275,13 @@ Building *Team::findNearestFood(Unit *unit)
 	{
 		int x=unit->posX;
 		int y=unit->posY;
-		int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
-		bool canSwim=unit->performance[SWIM];
 		Building *choosen=NULL;
 		int minDist=INT_MAX;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
 			int buildingDist=map->warpDistSquare(x, y, b->posX, b->posY);
-			if (buildingDist<timeLeft && buildingDist<minDist)
+			if (buildingDist<minDist)
 			{
 				choosen=b;
 				minDist=buildingDist;
@@ -296,7 +293,6 @@ Building *Team::findNearestFood(Unit *unit)
 	{
 		int x=unit->posX;
 		int y=unit->posY;
-		int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
 		bool canSwim=unit->performance[SWIM];
 		Building *choosen=NULL;
 		int minDist=INT_MAX;
@@ -304,7 +300,7 @@ Building *Team::findNearestFood(Unit *unit)
 		{
 			Building *b=(*bi);
 			int buildingDist;
-			if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<timeLeft && buildingDist<minDist)
+			if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && buildingDist<minDist)
 			{
 				choosen=b;
 				minDist=buildingDist;
@@ -355,30 +351,32 @@ Building *Team::findBestFoodable(Unit *unit)
 	Building *choosen=NULL;
 	double score=DBL_MAX;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
-	{
-		Sint32 rx, ry;
-		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
-			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
-			{
-				Building *b=(*bi);
-				if (b->neededRessource(ri))
+		if (ri==CORN || ri>=HAPPYNESS_BASE)
+		{
+			Sint32 rx, ry;
+			int ressourceDist;
+			if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft)
+				&& map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250))
+				for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 				{
-					int buildingDist;
-					if (map->buildingAviable(b, canSwim, rx, ry, &buildingDist) && (ressourceDist+buildingDist<timeLeft))
+					Building *b=(*bi);
+					if (b->neededRessource(ri))
 					{
-						double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
-						if (newScore<score)
+						int buildingDist;
+						if (map->buildingAviable(b, canSwim, rx, ry, &buildingDist) && (ressourceDist+buildingDist<timeLeft))
 						{
-							choosen=b;
-							score=newScore;
-							unit->destinationPurprose=ri;
+							double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+							if (newScore<score)
+							{
+								choosen=b;
+								score=newScore;
+								unit->destinationPurprose=ri;
+							}
 						}
 					}
 				}
-			}
-	}
-		
+		}
+	
 	return choosen;
 }
 
@@ -428,7 +426,8 @@ Building *Team::findBestFillable(Unit *unit)
 	{
 		Sint32 rx, ry;
 		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft)
+			&& map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250))
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
