@@ -47,6 +47,8 @@ GlobalContainer::~GlobalContainer(void)
 		delete menuFont;
 	if (standardFont)
 		delete standardFont;
+	if (littleFontGreen)
+		delete littleFontGreen;
 	if (gfx)
 		delete gfx;
 	if (metaServerName)
@@ -163,6 +165,7 @@ void GlobalContainer::load(void)
 	// load fonts
 	menuFont=gfx->loadFont("data/fonts/arial24white.png");
 	standardFont=gfx->loadFont("data/fonts/arial14white.png");
+	littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
 
 	// load texts
 	texts.load("data/texts.txt");

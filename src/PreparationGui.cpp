@@ -162,20 +162,20 @@ void SessionScreen::paintSessionInfo(int state)
 	//printf("sing map, s=%d\n", state);
 
 	gfxCtx->drawFilledRect(440, 200, 200, 14, 40,40,40);
-	gfxCtx->drawString(440, 200, globalContainer->standardFont, "state %d", state);
+	gfxCtx->drawString(440, 200, globalContainer->littleFontGreen, "state %d", state);
 
 	if (startGameTimeCounter)
 	{
 		gfxCtx->drawFilledRect(440, 214, 200, 14, 40,40,40);
-		gfxCtx->drawString(440, 214, globalContainer->standardFont, "starting game...%d", startGameTimeCounter/20);
+		gfxCtx->drawString(440, 214, globalContainer->littleFontGreen, "starting game...%d", startGameTimeCounter/20);
 	}
 	gfxCtx->drawFilledRect(0, 0, 640, (sessionInfo.numberOfPlayer+1)*14, 30,40,70);
 
 	{
 		for (int p=0; p<sessionInfo.numberOfPlayer; p++)
 		{
-			gfxCtx->drawString(10, 0+(14*p), globalContainer->standardFont, "player %d", p);
-			gfxCtx->drawString(70, 0+(14*p), globalContainer->standardFont, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
+			gfxCtx->drawString(10, 0+(14*p), globalContainer->littleFontGreen, "player %d", p);
+			gfxCtx->drawString(70, 0+(14*p), globalContainer->littleFontGreen, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
 				sessionInfo.players[p].number, sessionInfo.players[p].teamNumber, sessionInfo.players[p].netState,
 				sessionInfo.players[p].ip.host, sessionInfo.players[p].name, sessionInfo.players[p].netTOTL, crossPacketRecieved[p]);
 
@@ -192,8 +192,8 @@ void SessionScreen::paintSessionInfo(int state)
 	{
 		for (int t=0; t<sessionInfo.numberOfTeam; t++)
 		{
-			gfxCtx->drawString(10, 480-(14*(t+1)), globalContainer->standardFont, "team %d", t);
-			gfxCtx->drawString(70, 480-(14*(t+1)), globalContainer->standardFont, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, %d, %d, playersMask=%d",
+			gfxCtx->drawString(10, 480-(14*(t+1)), globalContainer->littleFontGreen, "team %d", t);
+			gfxCtx->drawString(70, 480-(14*(t+1)), globalContainer->littleFontGreen, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, %d, %d, playersMask=%d",
 				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].colorR, sessionInfo.team[t].colorG, sessionInfo.team[t].colorB, sessionInfo.team[t].playersMask);
 
 			/*gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
