@@ -118,7 +118,7 @@ public:
 
 	enum 
 	{
-		HUNGRY_MAX=120000
+		HUNGRY_MAX=150000
 	};
 	
 protected:
