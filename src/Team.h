@@ -198,9 +198,6 @@ public:
 	int startPosX, startPosY;
 	int prestige;
 
-	// TODO : use a subtil way to allocate UID
-	//Sint32 newUnitUID zzz
-
 private:
 	//! was an event last tick
 	bool isEvent[EVENT_TYPE_SIZE];

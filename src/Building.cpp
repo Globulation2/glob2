@@ -1007,24 +1007,6 @@ bool Building::tryToBuildingSiteRoom(void)
 			totalRatio++;
 			percentUsed[i]=0;
 		}
-
-		/*zzz if (foodable!=2)
-		{
-			owner->foodable.remove(this);
-			foodable=2;
-		}
-		if (fillable!=2)
-		{
-			owner->fillable.remove(this);
-			fillable=2;
-		}
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (zonable[i]!=2)
-			{
-				owner->zonable[i].remove(this);
-				zonable[i]=2;
-			}
-		update();*/
 	}
 	return isRoom;
 }

@@ -95,7 +95,7 @@ private:
 	void sendPushOrder(int targetPlayer); // Uses pushUStep
 	void sendWaitingForPlayerOrder(int targetPlayer);
 	void sendDroppingPlayersMask(int targetPlayer, bool askForReply);
-	void sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 resendingUStep); //zzz Check Uint32 transitions.
+	void sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 resendingUStep);
 	void sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 resendingUStep);
 	
 public:
@@ -127,10 +127,6 @@ private:
 	// Should points to a valid order, unless network possible packet loss.
 	// Mainly used by getOrder().
 	Uint32 executeUStep;
-	/*
-	// The next step to be freed.
-	// Have to points to a valid order.
-	Uint32 freeingUStep;*/
 	
 	// This is the number of orders by packet:
 	int ordersByPackets;
@@ -147,13 +143,13 @@ private:
 	Uint8 myLocalWishedLatency; // The latency we want, but the other players don't know about it yet. (caused by network latency)
 	Uint8 wishedLatency[32]; // The latency each player wants.
 	int myLocalWishedDelay; // The delay we want, but the other players don't know about it yet. (caused by a too slow computer)
-	Uint8 recentsWishedDelay[32][256]; // The delay each player wants. (recents) zzz
+	Uint8 recentsWishedDelay[32][256]; // The delay each player wants. (recents)
 	
 	static const int MAX_GAME_PACKET_SIZE=1500;
 	static const int countDownMax=400; //400[t]x40[ms/t]=16'000[ms]
 	
 	Order *ordersQueue[32][256];
-	Uint32 lastUStepReceivedFromMe[32]; //zzz Check Uint32 transitions.
+	Uint32 lastUStepReceivedFromMe[32];
 	Uint32 lastSdlTickReceivedFromHim[32];
 	
 	int countDown[32];
@@ -167,8 +163,8 @@ private:
 	
 	DropState dropState;
 	Uint8 theLastExecutedStep;
-	Uint32 lastExecutedUStep[32]; // TODO: switch to uint32 transitions
-	Uint32 lastAviableUStep[32][32]; // TODO: switch to uint32 transitions
+	Uint32 lastExecutedUStep[32];
+	Uint32 lastAviableUStep[32][32];
 	
 	// We want tu update latency automatically:
 	int recentsPingPong[32][256]; // The 256 last ping+pong times. [ms]

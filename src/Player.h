@@ -62,8 +62,8 @@ public:
 	bool waitForNatResolution;
 	
 	bool quitting; // We have executed the quitting order of player, but we did not freed all his orders.
-	Uint32 quitUStep; // zzz TODO: check the Uint32 transition safety.
-	Uint32 lastUStepToExecute; /// zzz TODO: check the Uint32 transition safety.
+	Uint32 quitUStep;
+	Uint32 lastUStepToExecute;
 	enum PlayerNetworkState
 	{
 		PNS_BAD=0,
