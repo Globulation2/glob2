@@ -271,17 +271,15 @@ void YOGScreen::onTimer(Uint32 tick)
 		
 		yog->receivedMessages.erase(m);
 	}
-
+	
+	multiplayersJoin->onTimer(tick);
 	if ((executionMode==-1) || (executionMode==CANCEL))
 	{
 		assert(yog);
 		if (yog->unjoiningConfirmed || yog->connectionLost)
 			endExecute(executionMode);
 	}
-	
-	// the game connection part:
-	multiplayersJoin->onTimer(tick);
-	if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO) && (yog->unjoining==false))
+	else if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO) && (yog->unjoining==false))
 	{
 		printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
 		yog->joinGame();

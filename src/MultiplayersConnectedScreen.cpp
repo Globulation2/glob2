@@ -221,12 +221,14 @@ void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int pa
 		if (par1==DISCONNECT)
 		{
 			assert(multiplayersJoin);
+			printf("MultiplayersConnectedScreen::par1==DISCONNECT\n");
 			multiplayersJoin->quitThisGame();
 			endExecute(DISCONNECT);
 		}
 		else if (par1==-1)
 		{
 			assert(multiplayersJoin);
+			printf("MultiplayersConnectedScreen::par1==-1\n");
 			multiplayersJoin->quitThisGame();
 			endExecute(-1);
 		}
