@@ -22,8 +22,8 @@
 #include "Utilities.h"
 
 //! Load/Save screen
-InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName)
-:InGameScreen(300, 275)
+LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName)
+:OverlayScreen(300, 275)
 {
 	this->isLoad=isLoad;
 	this->extension=Utilities::concat(".", extension);
@@ -56,13 +56,13 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
-InGameLoadSaveScreen::~InGameLoadSaveScreen()
+LoadSaveScreen::~LoadSaveScreen()
 {
 	delete[] fileName;
 	delete[] extension;
 }
 
-void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
+void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
@@ -92,14 +92,14 @@ void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int
 	}
 }
 
-void InGameLoadSaveScreen::onSDLEvent(SDL_Event *event)
+void LoadSaveScreen::onSDLEvent(SDL_Event *event)
 {
 
 }
 
-void InGameLoadSaveScreen::paint(int x, int y, int w, int h)
+void LoadSaveScreen::paint(int x, int y, int w, int h)
 {
-	InGameScreen::paint(x, y, w, h);
+	OverlayScreen::paint(x, y, w, h);
 	if (firstPaint)
 	{
 		if (isLoad)

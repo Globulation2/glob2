@@ -24,6 +24,7 @@
 #include "UnitType.h"
 #include "Utilities.h"
 #include "GameGUILoadSave.h"
+#include "ScriptEditorScreen.h"
 
 
 MapEdit::MapEdit()
@@ -680,43 +681,66 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 
 void MapEdit::loadSave(bool isLoad)
 {
-	// create backBuffer
-	//DrawableSurface *backBuffer=globalContainer->gfx->createDrawableSurface();
-
 	// create dialog box
-	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen("", "map", isLoad, game.map.getMapName());
-	gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-	//backBuffer->setRes(gameMenuScreen->getW(), gameMenuScreen->getH());
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("", "map", isLoad, game.map.getMapName());
+	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
 
 	// save screen
 	globalContainer->gfx->setClipRect();
-	//backBuffer->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, globalContainer->gfx);
 
 	SDL_Event event;
-	while(gameMenuScreen->endValue<0)
+	while(loadSaveScreen->endValue<0)
 	{
 		while (SDL_PollEvent(&event))
 		{
-			gameMenuScreen->translateAndProcessEvent(&event);
+			loadSaveScreen->translateAndProcessEvent(&event);
 		}
-		globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
-		globalContainer->gfx->updateRect(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getW(), gameMenuScreen->getH());
+		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
+		globalContainer->gfx->updateRect(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getW(), loadSaveScreen->getH());
 	}
 
-	if (gameMenuScreen->endValue==0)
+	if (loadSaveScreen->endValue==0)
 	{
 		if (isLoad)
-			load(gameMenuScreen->fileName);
+			load(loadSaveScreen->fileName);
 		else
-			save(gameMenuScreen->fileName);
+			save(loadSaveScreen->fileName);
 	}
 
 	// clean up
-	delete gameMenuScreen;
+	delete loadSaveScreen;
 
 	draw();
+}
 
-	//delete backBuffer;
+void MapEdit::scriptEditor(void)
+{
+	// create dialog box
+	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen();
+	scriptEditorScreen->dispatchPaint(scriptEditorScreen->getSurface());
+	
+	// TODO : load script
+
+	// save screen
+	globalContainer->gfx->setClipRect();
+
+	SDL_Event event;
+	while(scriptEditorScreen->endValue<0)
+	{
+		while (SDL_PollEvent(&event))
+		{
+			scriptEditorScreen->translateAndProcessEvent(&event);
+		}
+		globalContainer->gfx->drawSurface(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getSurface());
+		globalContainer->gfx->updateRect(scriptEditorScreen->decX, scriptEditorScreen->decY, scriptEditorScreen->getW(), scriptEditorScreen->getH());
+	}
+	
+	// TODO : save script
+
+	// clean up
+	delete scriptEditorScreen;
+
+	draw();
 }
 
 void MapEdit::handleMenuClick(int mx, int my, int button)
@@ -736,7 +760,10 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	else if ((my>173) && (my<205))
 	{
 		if (mx>=96)
+		{
+			scriptEditor();
 			return;
+		}
 		editMode=EM_TERRAIN;
 		type=mx/32;
 	}

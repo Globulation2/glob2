@@ -34,7 +34,7 @@ class TeamStats;
 #define MAX_CLEARING_FLAG_RANGE 14
 
 //! The screen that contains the text input while typing message in game
-class InGameTextInput:public InGameScreen
+class InGameTextInput:public OverlayScreen
 {
 protected:
 	//! the text input widget
@@ -176,7 +176,7 @@ private:
 		IGM_SAVE,
 		IGM_ALLIANCE8
 	} inGameMenu;
-	InGameScreen *gameMenuScreen;
+	OverlayScreen *gameMenuScreen;
 
 	// message related functions : FIXME : move this to a class
 public :

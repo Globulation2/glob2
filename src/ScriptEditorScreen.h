@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
@@ -17,35 +17,30 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __GAME_GUI_LOAD_SAVE_H
-#define __GAME_GUI_LOAD_SAVE_H
+#ifndef __SCRIPT_EDITOR_SCREEN_H
+#define __SCRIPT_EDITOR_SCREEN_H
 
 #include "GAG.h"
 #include "GameGUIDialog.h"
 
-class LoadSaveScreen:public OverlayScreen
+class ScriptEditorScreen:public OverlayScreen
 {
 public:
 	enum
 	{
 		OK = 0,
-		CANCEL = 1
+		CANCEL = 1,
+		COMPILE = 2
 	};
-	char *fileName;
-
+	
 private:
-	List *fileList;
-	TextInput *fileNameEntry;
-	bool firstPaint;
-	bool isLoad;
-	const char *extension;
-
+	TextArea *editor;
+	
 public:
-	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);
-	virtual ~LoadSaveScreen();
+	ScriptEditorScreen();
+	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(int x, int y, int w, int h);
 };
 
 #endif

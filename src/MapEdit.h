@@ -55,7 +55,10 @@ public:
 	bool load(const char *name);
 private:
 	void save(/*const*/ char *name);
+	// execute the load/save dialog
 	void loadSave(bool isLoad);
+	// execute the script editor dialog
+	void scriptEditor(void);
 
 	void updateUnits(int x, int y, int w, int h);
 public:
