@@ -48,6 +48,8 @@ YOGServer::~YOGServer()
 		delete (*client);
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
 		delete (*game);
+	
+	fclose(usersFile);
 }
 
 bool YOGServer::init()
@@ -60,6 +62,42 @@ bool YOGServer::init()
 		lprintf("failed to open socket at port %d.\n", YOG_SERVER_PORT);
 		return false;
 	}
+	
+	lprintf("YOGServer::reading users...\n");
+	usersFile=fopen("YOGUsers.log", "r");
+	IPaddress ip;
+	ip.host=0;
+	ip.port=0;
+	while (!feof(usersFile))
+	{
+		char username[32];
+		char password[32];
+		memset(username, 0, 32);
+		memset(password, 0, 32);
+		int rv=fread(username, 1, 32, usersFile);
+		if (rv==0)
+			break;
+		else
+			assert(rv==32);
+		rv=fread(password, 1, 32, usersFile);
+		assert(rv==32);
+		YOGClient *client=new YOGClient(ip, socket, username);
+		memcpy(client->password, password, 32);
+		unconnectedClients.push_back(client);
+		lprintf(" username=(%s) password=(%s) added\n", username, password);
+	}
+	fclose(usersFile);
+	
+	lprintf("YOGServer::writing users...\n");
+	usersFile=fopen("YOGUsers.log", "w");
+	for (std::list<YOGClient *>::iterator client=unconnectedClients.begin(); client!=unconnectedClients.end(); ++client)
+	{
+		fwrite((*client)->username, 32, 1, usersFile);
+		fwrite((*client)->password, 32, 1, usersFile);
+		lprintf(" username=(%s) password=(%s) added\n", (*client)->username, (*client)->password);
+	}
+	fflush(usersFile);
+	
 	return true;
 }
 
@@ -279,6 +317,13 @@ void YOGServer::deconnectClient(YOGClient *client)
 
 	if (client==admin)
 		admin=NULL;
+	else if (client->password[0])
+	{
+		fwrite(client->username, 32, 1, usersFile);
+		fwrite(client->password, 32, 1, usersFile);
+		fflush(usersFile);
+		lprintf("+wrote usersFile with username=(%s)\n", client->username);
+	}
 	
 	client->deconnected();
 	lprintf("total number of clients = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());

@@ -59,6 +59,7 @@ public:
 	std::list<Game *> games;
 	Uint32 gameUID;
 	
+	FILE *usersFile;
 };
 
 #endif
