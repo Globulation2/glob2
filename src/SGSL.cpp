@@ -718,7 +718,7 @@ Mapscript::Mapscript()
 {
 	reset();
 	sourceCode=NULL;
-	setSourceCode("no source code");
+	setSourceCode("");
 }
 
 Mapscript::~Mapscript(void)
