@@ -445,7 +445,8 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
-			miniMapPushed=false,
+			if (event->button.button==SDL_BUTTON_LEFT)
+				miniMapPushed=false,
 			selectionPushed=false;
 			showUnitWorkingToBuilding=false;
 		}
@@ -723,10 +724,9 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
 	viewportX+=game.teams[localTeam]->startPosX+(game.map.getW()>>1);
 	viewportY+=game.teams[localTeam]->startPosY+(game.map.getH()>>1);
-	if (viewportX<0)
-		viewportX+=game.map.getW();
-	if (viewportY<0)
-		viewportY+=game.map.getH();
+	
+	viewportX&=game.map.getMaskW();
+	viewportY&=game.map.getMaskH();
 }
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)

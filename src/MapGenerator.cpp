@@ -591,7 +591,9 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	int bootX[32];
 	int bootY[32];
 	int nbIslands=descriptor.nbIslands;
-	int islandsSize=((w+h)*descriptor.islandsSize)/800;
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbIslands)));
+	if (islandsSize<8)
+		islandsSize=8;
 	int minDistSquare=(w*h)/nbIslands;
 	//printf("minDistSquare=%d.\n", minDistSquare);
 	
@@ -813,7 +815,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	}
 	
 	// Four, avoid too much sand. Let's smooth
-	for (int s=0; s<(2-descriptor.beach); s++)
+	for (int s=0; s<2; s++)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
@@ -877,6 +879,96 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 			}
 	
 	controlSand();
+	
+	// Five, add some sand
+	for (int s=0; s<descriptor.beach; s++)
+		for (int dy=0; dy<4; dy++)
+			for (int dx=0; dx<4; dx++)
+				for (int y=dy; y<h; y+=4)
+					for (int x=dx; x<w; x+=4)
+					{
+						int a, b;
+						switch (syncRand()&7)
+						{
+						case 0:
+							a=getUMTerrain(x+1, y);
+							b=getUMTerrain(x-1, y);
+							if ((a==SAND)&&(b==WATER)||(a==WATER)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 1:
+							a=getUMTerrain(x, y-1);
+							b=getUMTerrain(x, y+1);
+							if ((a==SAND)&&(b==WATER)||(a==WATER)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 2:
+							a=getUMTerrain(x+1, y+1);
+							b=getUMTerrain(x-1, y-1);
+							if ((a==SAND)&&(b==WATER)||(a==WATER)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 3:
+							a=getUMTerrain(x+1, y-1);
+							b=getUMTerrain(x-1, y+1);
+							if ((a==SAND)&&(b==WATER)||(a==WATER)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						
+						
+						case 4:
+							a=getUMTerrain(x+1, y);
+							b=getUMTerrain(x-1, y);
+							if ((a==SAND)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 5:
+							a=getUMTerrain(x, y-1);
+							b=getUMTerrain(x, y+1);
+							if ((a==SAND)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 6:
+							a=getUMTerrain(x+1, y+1);
+							b=getUMTerrain(x-1, y-1);
+							if ((a==SAND)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						case 7:
+							a=getUMTerrain(x+1, y-1);
+							b=getUMTerrain(x-1, y+1);
+							if ((a==SAND)&&(b==SAND))
+							{
+								setUMTerrain(x, y, SAND);
+								continue;
+							}
+						break;
+						}
+				}
+	
+	
+	//controlSand();
 	regenerateMap(0, 0, w, h);
 }
 
@@ -886,52 +978,91 @@ void Map::addRessources(MapGenerationDescriptor &descriptor)
 	int bootY[32];
 	bootX=descriptor.bootX;
 	bootY=descriptor.bootY;
-	int islandsSize=((w+h)*descriptor.islandsSize)/800;
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbIslands)));
+	if (islandsSize<8)
+		islandsSize=8;
 	// let's add ressources...
 	int smoothRessources=islandsSize/4;
 	for (int s=0; s<descriptor.nbIslands; s++)
 	{
 		int d, p, amount;
+		int smallestAmount;
+		RessourceType smallestRessource;
 		
+		//WOOD
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]-d))
 				break;
 		amount=descriptor.ressource[WOOD];
 		amount=d-smoothRessources-2;
+		if (amount<1)
+			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
 			setResAtPos(bootX[s], bootY[s]-p, WOOD, amount);
+		smallestAmount=amount;
+		smallestRessource=WOOD;
 		
+		//CORN
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]-d, bootY[s]))
 				break;
 		amount=descriptor.ressource[CORN];
 		amount=d-smoothRessources-0;
+		if (amount<1)
+			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
 			setResAtPos(bootX[s]-p, bootY[s], CORN, amount);
+		if (amount<smallestAmount)
+		{
+			smallestAmount=amount;
+			smallestRessource=CORN;
+		}
 		
+		//STONE
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]+d))
 				break;
 		amount=descriptor.ressource[STONE];
 		amount=d-smoothRessources-3;
+		if (amount<1)
+			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
 			setResAtPos(bootX[s], bootY[s]+p, STONE, amount);
+		if (amount<smallestAmount)
+		{
+			smallestAmount=amount;
+			smallestRessource=STONE;
+		}
 		
+		
+		//We add the ressource with the smallest amount:
 		for (d=0; d<islandsSize; d++)
+			if (!isGrass(bootX[s]+d, bootY[s]+d))
+				break;
+		amount=descriptor.ressource[smallestRessource];
+		amount=d-smoothRessources-3;
+		if (amount<1)
+			amount=1;
+		p=d-1-amount/2;
+		if (amount>0)
+			setResAtPos(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
+		
+		//ALGA
+		for (d=0; d<2*islandsSize; d++)
 			if (isWater(bootX[s]+d, bootY[s]))
 				break;
 		amount=descriptor.ressource[ALGA];
-		amount=d-smoothRessources-3;
-		p=d-1-amount/2;
+		amount=smoothRessources;
+		p=d+smoothRessources-1+amount/2;
 		if (amount>0)
 			setResAtPos(bootX[s]+p, bootY[s], ALGA, amount);
 	}
 	
 	// Let's smooth ressources...
-	for (int s=0; s<smoothRessources; s++)
+	for (int s=0; s<smoothRessources*2; s++)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{

@@ -41,6 +41,9 @@ Ratio::Ratio(int x, int y, int w, int h, int size, int value, Font *font)
 	assert(value<max);
 	needRefresh=true;
 	pressed=false;
+	
+	start=0.0;
+	ratio=1.0;
 }
 
 Ratio::~Ratio()
@@ -119,9 +122,9 @@ void Ratio::internalPaint(void)
 	
 	// We center the string
 	char s[256];
-	snprintf(s, 256, "%d", value);
+	snprintf(s, 256, "%d", get());
 	int tw=font->getStringWidth(s);
-	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, "%d", value);
+	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, "%d", get());
 
 	needRefresh=false;
 }
@@ -143,10 +146,16 @@ void Ratio::repaint(void)
 
 int Ratio::getMax(void)
 {
-	return max;
+	return (int)(max+ratio*(float)value);
 }
 
 int Ratio::get(void)
 {
-	return value;
+	return (int)(start+ratio*(float)value);
+}
+
+void Ratio::setScale(float start, float ratio)
+{
+	this->start=start;
+	this->ratio=ratio;
 }

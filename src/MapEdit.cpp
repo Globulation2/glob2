@@ -45,12 +45,20 @@ MapEdit::MapEdit()
 	level=0;
 	type=Map::WATER; // water
 
-	editMode= EM_TERRAIN; // terrain
+	editMode=EM_TERRAIN; // terrain
 	wasClickInMap=false;
+	minimapPushed=false;
+	pushedBrush=EM_NONE;
 
 	// load menu
 	menu=globalContainer->gfx->loadSprite("data/gui/editor");
 	font=globalContainer->gfx->loadFont("data/fonts/arial8black.png");
+	
+	// static-like variables:
+	savedMx=0;
+	savedMy=0;
+	oldBrush=EM_NONE;
+	orX=orY=orW=orH=0;
 }
 
 MapEdit::~MapEdit()
@@ -59,13 +67,15 @@ MapEdit::~MapEdit()
 	delete font;
 }
 
-void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate)
+void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode)
 {
 	Utilities::rectClipRect(sx, sy, sw, sh, mapClip);
 
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
 	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team);
+	if (doPaintEditMode)
+		paintEditMode(false, false);
 
 	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
@@ -248,17 +258,19 @@ void MapEdit::drawMenu(void)
 
 void MapEdit::draw(void)
 {
-	drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
+	drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
 	renderMiniMap();
 	drawMenu();
 }
 
-void MapEdit::handleMapClick(int mx, int my)
+void MapEdit::handleMapClick()
 {
+	int mx=savedMx;
+	int my=savedMy;
 	int x, y;
 	int winX, winW, winY, winH;
 	static int ax, ay, atype;
-	bool needRedraw=false;
+	bool needRedraw;
 
 	if (editMode==EM_TERRAIN)
 	{
@@ -377,13 +389,417 @@ void MapEdit::handleMapClick(int mx, int my)
 
 	if (needRedraw)
 	{
-		drawMap(winX, winY, winW, winH);
+		drawMap(winX, winY, winW, winH, true, false);
 		//renderMiniMap();
 	}
 
 	atype=type;
 	ax=x;
 	ay=y;
+}
+
+void MapEdit::handleMapClick(int mx, int my)
+{
+	savedMx=mx;
+	savedMy=my;
+	handleMapClick();
+}
+
+void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
+{
+	int mx=savedMx;
+	int my=savedMy;
+	
+	const int maxNbRefreshZones=2;
+	SDL_Rect refreshZones[maxNbRefreshZones];
+	int nbRefreshZones=0;
+	
+	if (clearOld && oldBrush!=EM_NONE && mayUpdate)
+	{
+		drawMap(orX, orY, orW, orH, false, false);
+
+		refreshZones[nbRefreshZones].x=orX;
+		refreshZones[nbRefreshZones].y=orY;
+		refreshZones[nbRefreshZones].w=orW;
+		refreshZones[nbRefreshZones].h=orH;
+		nbRefreshZones++;
+	}
+	
+	if ( (editMode==EM_TERRAIN) || (editMode==EM_RESSOURCE) || (editMode==EM_DELETE) )
+	{
+		//terrainSize
+		int x, y, w, h;
+		if (editMode==EM_TERRAIN)
+		{
+			x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+			w=(terrainSize)<<5;
+			y=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+			h=(terrainSize)<<5;
+		}
+		else
+		{
+			x=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+			y=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+			w=(terrainSize)<<5;
+			h=(terrainSize)<<5;
+		}
+
+		Utilities::rectClipRect(x, y, w, h, mapClip);
+
+		globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
+
+		refreshZones[nbRefreshZones].x=x;
+		refreshZones[nbRefreshZones].y=y;
+		refreshZones[nbRefreshZones].w=w;
+		refreshZones[nbRefreshZones].h=h;
+		nbRefreshZones++;
+
+		orX=x;
+		orY=y;
+		orW=w;
+		orH=h;
+
+		oldBrush=editMode;
+	}
+	else if (editMode==EM_UNIT)
+	{
+
+		int cx=(mx>>5)+viewportX;
+		int cy=(my>>5)+viewportY;
+
+		int px=mx&0xFFFFFFE0;
+		int py=my&0xFFFFFFE0;
+		int pw=32;
+		int ph=32;
+
+		bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
+
+		int imgid;
+		if (type==UnitType::WORKER)
+			imgid=64;
+		else if (type==UnitType::EXPLORER)
+			imgid=0;
+		else if (type==UnitType::WARRIOR)
+			imgid=256;
+
+		Sprite *unitSprite=globalContainer->units;
+		unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
+		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+
+		globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
+
+		Utilities::rectClipRect(px, py, pw, ph, mapClip);
+		if (isRoom)
+			globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
+		else
+			globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
+
+		globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+
+		refreshZones[nbRefreshZones].x=px;
+		refreshZones[nbRefreshZones].y=py;
+		refreshZones[nbRefreshZones].w=pw;
+		refreshZones[nbRefreshZones].h=ph;
+		nbRefreshZones++;
+
+		orX=px;
+		orY=py;
+		orW=pw;
+		orH=ph;
+		oldBrush=EM_UNIT;
+	}
+	else if (editMode==EM_BUILDING)
+	{
+		int mapX, mapY;
+		int batX, batY, batW, batH;
+
+		// we get the type of building
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+
+		// we check for room
+		int tempX, tempY;
+		if (bt->width&0x1)
+			tempX=((mx)>>5)+viewportX;
+		else
+			tempX=((mx+16)>>5)+viewportX;
+
+		if (bt->height&0x1)
+			tempY=((my)>>5)+viewportY;
+		else
+			tempY=((my+16)>>5)+viewportY;
+		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+		// we get the datas
+		Sprite *sprite=globalContainer->buildings;
+		sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
+		batX=(mapX-viewportX)<<5;
+		batY=(mapY-viewportY)<<5;
+		batW=(bt->width)<<5;
+		batH=(bt->height)<<5;
+
+		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
+
+		Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+		assert(batW>=0);
+		assert(batH>=0);
+
+		if (isRoom)
+			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+		else
+			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+
+		if (isRoom)
+		{
+			BuildingType *nnbt=bt;
+			int max=0;
+			while(nnbt->nextLevelTypeNum!=-1)
+			{
+				nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+				if (max++>200)
+				{
+					printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
+					assert(false);
+					break;
+				}
+			}
+			int typeNum=nnbt->typeNum;
+
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+			batX=(mapX-viewportX)<<5;
+			batY=(mapY-viewportY)<<5;
+			batW=(nnbt->width)<<5;
+			batH=(nnbt->height)<<5;
+
+			Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+			assert(batW>=0);
+			assert(batH>=0);
+
+			if (isRoom)
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+			else
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+
+		}
+
+		refreshZones[nbRefreshZones].x=batX;
+		refreshZones[nbRefreshZones].y=batY;
+		refreshZones[nbRefreshZones].w=batW;
+		refreshZones[nbRefreshZones].h=batH;
+		nbRefreshZones++;
+		orX=batX;
+		orY=batY;
+		orW=batW;
+		orH=batH;
+
+		globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+		oldBrush=EM_BUILDING;
+	}
+
+	assert(nbRefreshZones<=maxNbRefreshZones);
+	if (nbRefreshZones>0 && mayUpdate)
+		globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
+}
+
+void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
+{
+	savedMx=mx;
+	savedMy=my;
+	paintEditMode(clearOld, mayUpdate);
+
+	/*if (oldBrush!=EM_NONE)
+	{
+		drawMap(orX, orY, orW, orH, false);
+
+		refreshZones[nbRefreshZones].x=orX;
+		refreshZones[nbRefreshZones].y=orY;
+		refreshZones[nbRefreshZones].w=orW;
+		refreshZones[nbRefreshZones].h=orH;
+		nbRefreshZones++;
+	}
+
+	if ( (editMode==EM_TERRAIN) || (editMode==EM_RESSOURCE) || (editMode==EM_DELETE) )
+	{
+		//terrainSize
+		int x, y, w, h;
+		if (editMode==EM_TERRAIN)
+		{
+			x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+			w=(terrainSize)<<5;
+			y=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
+			h=(terrainSize)<<5;
+		}
+		else
+		{
+			x=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+			y=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
+			w=(terrainSize)<<5;
+			h=(terrainSize)<<5;
+		}
+
+		Utilities::rectClipRect(x, y, w, h, mapClip);
+
+		globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
+
+		refreshZones[nbRefreshZones].x=x;
+		refreshZones[nbRefreshZones].y=y;
+		refreshZones[nbRefreshZones].w=w;
+		refreshZones[nbRefreshZones].h=h;
+		nbRefreshZones++;
+
+		orX=x;
+		orY=y;
+		orW=w;
+		orH=h;
+
+		oldBrush=editMode;
+	}
+	else if (editMode==EM_UNIT)
+	{
+
+		int cx=(mx>>5)+viewportX;
+		int cy=(my>>5)+viewportY;
+
+		int px=mx&0xFFFFFFE0;
+		int py=my&0xFFFFFFE0;
+		int pw=32;
+		int ph=32;
+
+		bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
+
+		int imgid;
+		if (type==UnitType::WORKER)
+			imgid=64;
+		else if (type==UnitType::EXPLORER)
+			imgid=0;
+		else if (type==UnitType::WARRIOR)
+			imgid=256;
+
+		Sprite *unitSprite=globalContainer->units;
+		unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
+		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+
+		globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
+
+		Utilities::rectClipRect(px, py, pw, ph, mapClip);
+		if (isRoom)
+			globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
+		else
+			globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
+
+		globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+
+		refreshZones[nbRefreshZones].x=px;
+		refreshZones[nbRefreshZones].y=py;
+		refreshZones[nbRefreshZones].w=pw;
+		refreshZones[nbRefreshZones].h=ph;
+		nbRefreshZones++;
+
+		orX=px;
+		orY=py;
+		orW=pw;
+		orH=ph;
+		oldBrush=EM_UNIT;
+	}
+	else if (editMode==EM_BUILDING)
+	{
+		int mapX, mapY;
+		int batX, batY, batW, batH;
+
+		// we get the type of building
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+
+		// we check for room
+		int tempX, tempY;
+		if (bt->width&0x1)
+			tempX=((mx)>>5)+viewportX;
+		else
+			tempX=((mx+16)>>5)+viewportX;
+
+		if (bt->height&0x1)
+			tempY=((my)>>5)+viewportY;
+		else
+			tempY=((my+16)>>5)+viewportY;
+		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+		// we get the datas
+		Sprite *sprite=globalContainer->buildings;
+		sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
+		batX=(mapX-viewportX)<<5;
+		batY=(mapY-viewportY)<<5;
+		batW=(bt->width)<<5;
+		batH=(bt->height)<<5;
+
+		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
+
+		Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+		assert(batW>=0);
+		assert(batH>=0);
+
+		if (isRoom)
+			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+		else
+			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+
+		if (isRoom)
+		{
+			BuildingType *nnbt=bt;
+			int max=0;
+			while(nnbt->nextLevelTypeNum!=-1)
+			{
+				nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+				if (max++>200)
+				{
+					printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
+					assert(false);
+					break;
+				}
+			}
+			int typeNum=nnbt->typeNum;
+
+			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+
+			batX=(mapX-viewportX)<<5;
+			batY=(mapY-viewportY)<<5;
+			batW=(nnbt->width)<<5;
+			batH=(nnbt->height)<<5;
+
+			Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+			assert(batW>=0);
+			assert(batH>=0);
+
+			if (isRoom)
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+			else
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+
+		}
+
+		refreshZones[nbRefreshZones].x=batX;
+		refreshZones[nbRefreshZones].y=batY;
+		refreshZones[nbRefreshZones].w=batW;
+		refreshZones[nbRefreshZones].h=batH;
+		nbRefreshZones++;
+		orX=batX;
+		orY=batY;
+		orW=batW;
+		orH=batH;
+
+		globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+		oldBrush=EM_BUILDING;
+	}
+
+	assert(nbRefreshZones<=maxNbRefreshZones);
+	if (nbRefreshZones>0 && mayUpdate)
+		globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);*/
 }
 
 void MapEdit::regenerateClipRect(void)
@@ -533,7 +949,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x, screenClip.y, screenClip.w-128,screenClip.h);
+						drawMap(screenClip.x, screenClip.y, screenClip.w-128,screenClip.h, true, true);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -554,7 +970,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
+						drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -765,10 +1181,9 @@ void MapEdit::viewportFromMxMY(int mx, int my)
 	my-=14+decY;
 	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
-	if (viewportX<0)
-		viewportX+=game.map.getW();
-	if (viewportY<0)
-		viewportY+=game.map.getH();
+	
+	viewportX&=game.map.getMaskW();
+	viewportY&=game.map.getMaskH();
 }
 
 int MapEdit::processEvent(const SDL_Event *event)
@@ -778,22 +1193,21 @@ int MapEdit::processEvent(const SDL_Event *event)
 	{
 		int mx=event->button.x;
 		int my=event->button.y;
+		if (event->button.button==SDL_BUTTON_LEFT)
+		{
+			minimapPushed=false;
+			pushedBrush=EM_NONE;
+		}
 		if (mx>=globalContainer->gfx->getW()-128)
 		{
 			if (my<128)
 			{
-				viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-				drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
-				drawMiniMap();
+				//printf("so what?.\n");
 			}
 			else
 			{
 				handleMenuClick(mx, my, event->button.button);
 			}
-		}
-		else
-		{
-			handleMapClick(mx, my);
 		}
 		if (wasClickInMap)
 		{
@@ -805,9 +1219,33 @@ int MapEdit::processEvent(const SDL_Event *event)
 	{
 		int mx=event->button.x;
 		int my=event->button.y;
-		if ((Utilities::ptInRect(mx, my, &mapClip)) && (event->button.button==SDL_BUTTON_LEFT))
+		if (event->button.button==SDL_BUTTON_LEFT)
 		{
-			wasClickInMap=true;
+			if (mx>globalContainer->gfx->getW()-128)
+			{
+				if (my<128)
+				{
+					minimapPushed=true;
+					viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+					drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, false);
+					drawMiniMap();
+				}
+			}
+			else if (Utilities::ptInRect(mx, my, &mapClip))
+			{
+				handleMapClick(mx, my);
+				pushedBrush=editMode;
+				paintEditMode(mx, my, true, true);
+				wasClickInMap=true;
+			}
+		}
+		else if (event->button.button==SDL_BUTTON_RIGHT)
+		{
+			// We relase tools, like in game:
+			editMode=EM_NONE;
+			paintEditMode(mx, my, true, true);
+			minimapPushed=false;
+			drawMenu();
 		}
 	}
 	else if ((event->type==SDL_ACTIVEEVENT) && (event->active.gain==0))
@@ -818,252 +1256,45 @@ int MapEdit::processEvent(const SDL_Event *event)
 	{
 		int mx=event->motion.x;
 		int my=event->motion.y;
-
-		const int scrollZoneWidth=5;
-
-		// handle nice scroll
-		if (mx<scrollZoneWidth)
-			viewportSpeedX[0]=-1;
-		else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
-			viewportSpeedX[0]=1;
-		else
-			viewportSpeedX[0]=0;
-
-		if (my<scrollZoneWidth)
-			viewportSpeedY[0]=-1;
-		else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
-			viewportSpeedY[0]=1;
-		else
-			viewportSpeedY[0]=0;
-
-		// handle viewport reset
-		if (event->motion.state&SDL_BUTTON(1))
+		
 		{
-			if (mx>globalContainer->gfx->getW()-128)
-			{
-				if (my<128)
-				{
-					viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-					drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
-					drawMiniMap();
-				}
-			}
+			// NOTE : this is just to test fonts
+			int x=globalContainer->gfx->getW()-128;
+			int y=460;
+			globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
+			globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
+			globalContainer->gfx->updateRect(x, y, 128, 20);
 		}
-
-		int x=globalContainer->gfx->getW()-128;
-		int y=460;
-
-		// NOTE : this is just to test fonts
-		globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
-		globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
-		globalContainer->gfx->updateRect(x, y, 128, 20);
-
-		static int oldBrush=EM_NONE;
-		static int orX=0, orY=0, orW=0, orH=0;
-		const int maxNbRefreshZones=2;
-		SDL_Rect refreshZones[maxNbRefreshZones];
-		int nbRefreshZones=0;
-
-		if ( (oldBrush==EM_BUILDING) || (oldBrush==EM_UNIT) || (oldBrush==EM_TERRAIN) || (oldBrush==EM_RESSOURCE) || (editMode==EM_DELETE) )
+		
+		if (minimapPushed)
 		{
-			drawMap(orX, orY, orW, orH, false);
-
-			refreshZones[nbRefreshZones].x=orX;
-			refreshZones[nbRefreshZones].y=orY;
-			refreshZones[nbRefreshZones].w=orW;
-			refreshZones[nbRefreshZones].h=orH;
-			nbRefreshZones++;
-
-			oldBrush=EM_NONE;
+			// handle viewport reset
+			viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, false);
+			drawMiniMap();
 		}
-
-		if (Utilities::ptInRect(mx, my, &mapClip))
+		else
 		{
-			if (event->motion.state&SDL_BUTTON(1))
-			{
-				//wasClickInMap=true;
+			// handle nice scroll
+			const int scrollZoneWidth=5;
+			if (mx<scrollZoneWidth)
+				viewportSpeedX[0]=-1;
+			else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
+				viewportSpeedX[0]=1;
+			else
+				viewportSpeedX[0]=0;
+
+			if (my<scrollZoneWidth)
+				viewportSpeedY[0]=-1;
+			else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
+				viewportSpeedY[0]=1;
+			else
+				viewportSpeedY[0]=0;
+
+			if (pushedBrush!=EM_NONE)
 				handleMapClick(mx, my);
-			}
-			if ( (editMode==EM_TERRAIN) || (editMode==EM_RESSOURCE) || (editMode==EM_DELETE) )
-			{
-				//terrainSize
-				int x, y, w, h;
-				if (editMode==EM_TERRAIN)
-				{
-					x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
-					w=(terrainSize)<<5;
-					y=((my+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
-					h=(terrainSize)<<5;
-				}
-				else
-				{
-					x=((mx)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-					y=((my)&0xFFFFFFE0)-((terrainSize>>1)<<5);
-					w=(terrainSize)<<5;
-					h=(terrainSize)<<5;
-				}
 
-				Utilities::rectClipRect(x, y, w, h, mapClip);
-
-				globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
-
-				refreshZones[nbRefreshZones].x=x;
-				refreshZones[nbRefreshZones].y=y;
-				refreshZones[nbRefreshZones].w=w;
-				refreshZones[nbRefreshZones].h=h;
-				nbRefreshZones++;
-
-				orX=x;
-				orY=y;
-				orW=w;
-				orH=h;
-
-				oldBrush=editMode;
-			}
-			else if (editMode==EM_UNIT)
-			{
-
-				int cx=(mx>>5)+viewportX;
-				int cy=(my>>5)+viewportY;
-
-				int px=mx&0xFFFFFFE0;
-				int py=my&0xFFFFFFE0;
-				int pw=32;
-				int ph=32;
-
-				bool isRoom=game.map.isFreeForUnit(cx, cy, type==UnitType::EXPLORER);
-
-				int imgid;
-				if (type==UnitType::WORKER)
-					imgid=64;
-				else if (type==UnitType::EXPLORER)
-					imgid=0;
-				else if (type==UnitType::WARRIOR)
-					imgid=256;
-
-				Sprite *unitSprite=globalContainer->units;
-				unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-
-				globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
-
-				globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
-
-				Utilities::rectClipRect(px, py, pw, ph, mapClip);
-				if (isRoom)
-					globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
-				else
-					globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
-
-				globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-
-				refreshZones[nbRefreshZones].x=px;
-				refreshZones[nbRefreshZones].y=py;
-				refreshZones[nbRefreshZones].w=pw;
-				refreshZones[nbRefreshZones].h=ph;
-				nbRefreshZones++;
-
-				orX=px;
-				orY=py;
-				orW=pw;
-				orH=ph;
-				oldBrush=EM_UNIT;
-			}
-			else if (editMode==EM_BUILDING)
-			{
-				int mapX, mapY;
-				int batX, batY, batW, batH;
-
-				// we get the type of building
-				int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
-				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-
-				// we check for room
-				int tempX, tempY;
-				if (bt->width&0x1)
-					tempX=((mx)>>5)+viewportX;
-				else
-					tempX=((mx+16)>>5)+viewportX;
-
-				if (bt->height&0x1)
-					tempY=((my)>>5)+viewportY;
-				else
-					tempY=((my+16)>>5)+viewportY;
-				bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
-
-				// we get the datas
-				Sprite *sprite=globalContainer->buildings;
-				sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
-
-				batX=(mapX-viewportX)<<5;
-				batY=(mapY-viewportY)<<5;
-				batW=(bt->width)<<5;
-				batH=(bt->height)<<5;
-
-				globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
-				globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
-
-				Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
-				assert(batW>=0);
-				assert(batH>=0);
-
-				if (isRoom)
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
-				else
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
-
-				if (isRoom)
-				{
-					BuildingType *nnbt=bt;
-					int max=0;
-					while(nnbt->nextLevelTypeNum!=-1)
-					{
-						nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
-						if (max++>200)
-						{
-							printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
-							assert(false);
-							break;
-						}
-					}
-					int typeNum=nnbt->typeNum;
-
-					isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
-
-					batX=(mapX-viewportX)<<5;
-					batY=(mapY-viewportY)<<5;
-					batW=(nnbt->width)<<5;
-					batH=(nnbt->height)<<5;
-
-					Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
-					assert(batW>=0);
-					assert(batH>=0);
-
-					if (isRoom)
-						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
-					else
-						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
-
-				}
-
-				refreshZones[nbRefreshZones].x=batX;
-				refreshZones[nbRefreshZones].y=batY;
-				refreshZones[nbRefreshZones].w=batW;
-				refreshZones[nbRefreshZones].h=batH;
-				nbRefreshZones++;
-				orX=batX;
-				orY=batY;
-				orW=batW;
-				orH=batH;
-
-				globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-				oldBrush=EM_BUILDING;
-			}
-		}
-
-		assert(nbRefreshZones<=maxNbRefreshZones);
-		if (nbRefreshZones>0)
-		{
-			globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
+			paintEditMode(mx, my, true, true);
 		}
 	}
 	else if (event->type==SDL_KEYDOWN)
@@ -1232,23 +1463,25 @@ int MapEdit::run(void)
 				returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
 			}
 		}
+			
 		if (wasMouseMotion)
-			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
+			returnCode=(processEvent(&mouseMotionEvent) == -1) ? -1 : returnCode;
 		if (wasWindowEvent)
-			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
+			returnCode=(processEvent(&windowEvent) == -1) ? -1 : returnCode;
 
 		// redraw on scroll
 		bool doRedraw=false;
-		int i;
 		viewportX+=game.map.getW();
 		viewportY+=game.map.getH();
+		for (int i=0; i<9; i++)
 		{
-			for (i=0; i<9; i++)
+			viewportX+=viewportSpeedX[i];
+			viewportY+=viewportSpeedY[i];
+			if ((viewportSpeedX[i]!=0) || (viewportSpeedY[i]!=0))
 			{
-				viewportX+=viewportSpeedX[i];
-				viewportY+=viewportSpeedY[i];
-				if ((viewportSpeedX[i]!=0) || (viewportSpeedY[i]!=0))
-					doRedraw=true;
+				doRedraw=true;
+				if (pushedBrush!=EM_NONE)
+					handleMapClick();
 			}
 		}
 		viewportX&=game.map.getMaskW();
@@ -1256,7 +1489,7 @@ int MapEdit::run(void)
 
 		if (doRedraw)
 		{
-			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
+			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
 			drawMiniMap();
 		}
 
