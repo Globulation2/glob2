@@ -375,7 +375,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		fprintf(logFile, "we received a %d games list (size=%d)\n", nbGames, size);
 		int index=8;
-		bool good=true;
+		bool isAnyCompleteNewGame=false; // Used to detect if we don't have the game-host-uid in our current (YOG-)clients list.
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
@@ -388,25 +388,17 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			
 			Uint32 huid=getUint32safe(data, index);
 			index+=4;
-			bool found=false;
+			
+			game.huid=huid;
+			game.userName[0]=0;
 			for (std::list<Client>::iterator clienti=clients.begin(); clienti!=clients.end(); ++clienti)
 				if (clienti->uid==huid)
 				{
 					memcpy(game.userName, clienti->userName, 32);
 					game.userName[31]=0;
-					found=true;
+					isAnyCompleteNewGame=true;
+					break;
 				}
-			if (!found)
-			{
-				good=false;
-				break;
-			}
-			/*l=Utilities::strmlen((char *)data+index, 32);
-			memcpy(game.userName, data+index, l);
-			if (game.userName[l-1]!=0)
-				fprintf(logFile, "warning, non-zero ending userName!\n");
-			game.userName[l-1]=0;
-			index+=l;*/
 			
 			int l=Utilities::strmlen((char *)data+index, 64);//TODO: set game's name's length to 64 everywhere !
 			memcpy(game.name, data+index, l);
@@ -426,12 +418,10 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "index=%d.\n", index);
 			fprintf(logFile, "game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
 		}
-		if (good)
-		{
-			assert(index==size);
+		assert(index==size);
+		if (isAnyCompleteNewGame)
 			newGameListAviable=true;
-			send(YMT_GAMES_LIST, nbGames);
-		}
+		send(YMT_GAMES_LIST, nbGames);
 	}
 	break;
 	case YMT_UNSHARED_LIST:
@@ -506,7 +496,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (int i=0; i<nbClients; i++)
 		{
 			Client client;
-			client.uid=getUint32safe(data, index);
+			Uint32 cuid=getUint32safe(data, index);
+			client.uid=cuid;
 			index+=4;
 			int l=Utilities::strmlen((char *)data+index, 32);
 			memcpy(client.userName, data+index, l);
@@ -523,7 +514,18 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					break;
 				}
 			if (!allready)
+			{
 				clients.push_back(client);
+				
+				for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+					if (game->userName[0]==0 && game->huid==cuid)
+					{
+						strncpy(game->userName, client.userName, 32);
+						newGameListAviable=true;
+						fprintf(logFile, "Game (%s) from (%s) newly aviable!\n", game->name, game->userName);
+						break;
+					}
+			}
 			fprintf(logFile, "client uid=%d name=%s\n", client.uid, client.userName);
 		}
 		newClientListAviable=true;
