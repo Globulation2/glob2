@@ -465,9 +465,6 @@ bool SessionInfo::load(SDL_RWops *stream)
 
 	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
 	printf("End-user map name is %s\n", mapName);
-	
-//	if (!map.load(stream))
-//		return false;
 
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)

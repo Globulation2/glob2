@@ -38,7 +38,7 @@ Map::Map()
 			for (int s=0; s<2; s++)
 			{
 				ressourcesGradient[t][r][s]=NULL;
-				gradientUpdated[t][r][s]=false;
+				gradientUpdatedDepth[t][r][s]=0;
 			}
 	undermap=NULL;
 	sectors=NULL;
@@ -143,7 +143,7 @@ void Map::clear()
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
-				gradientUpdated[t][r][s]=false;
+				gradientUpdatedDepth[t][r][s]=0;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -273,12 +273,12 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 			{
 				assert(ressourcesGradient[t][r][s]==NULL);
 				ressourcesGradient[t][r][s]=new Uint8[size];
-				updateGradient(t, r, s);
+				updateGradient(t, r, s, true);
 			}
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<1; s++)
-				gradientUpdated[t][r][s]=false;
+				gradientUpdatedDepth[t][r][s]=0;
 	
 	printf("loaded %d gradient teams\n", sessionGame->numberOfTeam);
 
@@ -364,7 +364,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateGradient(t, r, s);
+			updateGradient(t, r, s, true);
 		}
 }
 
@@ -468,20 +468,24 @@ void Map::step(void)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
-					if (!gradientUpdated[t][r][s])
+				{
+					int gud=gradientUpdatedDepth[t][r][s];
+					if (gud<2)
 					{
-						updateGradient(t, r, s);
-						gradientUpdated[t][r][s]=true;
+						printf("updateGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
+						updateGradient(t, r, s, gud==0);
+						gradientUpdatedDepth[t][r][s]++;
 						updated=true;
 						goto tripleBreak;
 					}
+				}
 		tripleBreak:
 		if (!updated)
 		{
 			for (int t=0; t<numberOfTeam; t++)
 				for (int r=0; r<MAX_RESSOURCES; r++)
 					for (int s=0; s<2; s++)
-						gradientUpdated[t][r][s]=false;
+						gradientUpdatedDepth[t][r][s]=0;
 		}
 	}
 	
@@ -1215,34 +1219,37 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 	}
 }
 
-void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	
-	memset(gradient, 1, size);
-	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	for (int y=0; y<h; y++)
+	if (init)
 	{
-		int wy=w*y;
-		for (int x=0; x<w; x++)
+		memset(gradient, 1, size);
+		Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+		for (int y=0; y<h; y++)
 		{
-			Case c=cases[wy+x];
-			if (c.ressource.id==NORESID)
+			int wy=w*y;
+			for (int x=0; x<w; x++)
 			{
-				if (c.building!=NOGBID)
-					gradient[wy+x]=0;
-				else if (c.forbidden&teamMask)
-					gradient[wy+x]=0;
-				else if (!canSwim && isWater(x, y))
-					gradient[wy+x]=0;
-			}
-			else
-			{
-				if (c.ressource.field.type==ressourceType)
-					gradient[wy+x]=255;
+				Case c=cases[wy+x];
+				if (c.ressource.id==NORESID)
+				{
+					if (c.building!=NOGBID)
+						gradient[wy+x]=0;
+					else if (c.forbidden&teamMask)
+						gradient[wy+x]=0;
+					else if (!canSwim && isWater(x, y))
+						gradient[wy+x]=0;
+				}
 				else
-					gradient[wy+x]=0;
+				{
+					if (c.ressource.field.type==ressourceType)
+						gradient[wy+x]=255;
+					else
+						gradient[wy+x]=0;
+				}
 			}
 		}
 	}

@@ -369,7 +369,7 @@ public:
 		return *(gradient+(x&wMask)+(y&hMask)*w);
 	}
 	
-	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
 	
 	static void clearBuildingGradient(Uint8 gradient[2][1024]);
@@ -393,7 +393,8 @@ protected:
 	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
 	//255=ressource, 0=obstacle, the higher it is, the closest it is from the ressouce.
 	Uint8 *ressourcesGradient[32][MAX_NB_RESSOURCES][2];
-	bool gradientUpdated[32][MAX_NB_RESSOURCES][2]; //Used for scheduling computation time.
+	//Used for scheduling computation time. (if==0) has to be fully recomputed, (if>0) number of depth already computed.
+	int gradientUpdatedDepth[32][MAX_NB_RESSOURCES][2];
 	Uint8 *undermap;
 	Sint32 w, h; //in cases
 	int size;
