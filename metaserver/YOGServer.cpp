@@ -917,13 +917,22 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		if (good)
 		{
 			YOGClient *c=*sender;
-			int nbGames=(int)data[1];
+			unsigned nbGames=(unsigned)data[1];
 			lprintf("client %s received a %d games list.\n", c->username, nbGames);
-			for (int i=0; i<nbGames; i++)
+			if (nbGames>c->games.size())
+			{
+				lprintf(" bad game list nbGames=%d, games.size=%d\n", nbGames, c->games.size());
+				break;
+			}
+			for (unsigned i=0; i<nbGames; i++)
 			{
 				std::list<Game *>::iterator game=c->games.begin();
+				if (game==c->games.end())
+				{
+					lprintf(" Warning! Critical error!, client's game list emptih!\n");
+					break;
+				}
 				lprintf("%d game %s\n", i, (*game)->name);
-				assert(game!=c->games.end());
 				c->games.erase(game);
 			}
 		}
@@ -1405,7 +1414,7 @@ void YOGServer::run()
 					index+=4;
 					addUint16(data, (*ji)->joinGameip.port, index);
 					index+=2;
-					lprintf("(%s)", (*ji)->username);
+					lprintf("(%s)\n", (*ji)->username);
 				}
 				lprintf(" wants to join game to (%s).\n", c->username);
 				assert(index==size);
