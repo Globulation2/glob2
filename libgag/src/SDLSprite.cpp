@@ -28,9 +28,10 @@
 
 extern SDLGraphicContext *screen;
 
+#ifdef USE_PAL_LAYER
+
 #define STATIC_PALETTE_SIZE 256
 #define COLOR_ROTATION_COUNT 32
-#define PAL_COLOR_MERGE_THRESHOLD 2
 
 struct TransformedPalEntry
 {
@@ -52,192 +53,6 @@ struct OriginalPal
 	Uint8 g[STATIC_PALETTE_SIZE];
 	Uint8 b[STATIC_PALETTE_SIZE];
 };
-
-//! This class contains all statically allocated color for color shifting
-struct StaticPalContainer
-{
-	//! The original palette, used for new rotation
-	OriginalPal originalPal;
-	
-	//! Teh array of transformed palette, one for each color
-	TransformedPal rotatedPal[COLOR_ROTATION_COUNT];
-	
-	//! The number of color allocated in the palette (0..255)
-	unsigned allocatedCount;
-	//! the number of palette allocated (0..COLOR_ROTATION_COUNT)
-	unsigned rotatedCount;
-	//! the position of the next free entry, wrap
-	unsigned rotatedNextFree;
-	//! The active pallette (0..rotatedCount)
-	unsigned activePalette;
-	
-	
-	//! the minimal distance of two colors in the set
-	unsigned minDist;
-	//! the two index of the color which has the minimal distance
-	unsigned minDistIdx1, minDistIdx2;
-	
-	//! Constructor
-	StaticPalContainer();
-	
-	//! Allocate a color, return the index
-	unsigned allocate(Uint8 r, Uint8 g, Uint8 b);
-	
-	//! Activate a color, if needed, do the rotation
-	void setColor(Uint8 r, Uint8 g, Uint8 b);
-} palContainer;
-
-StaticPalContainer::StaticPalContainer()
-{
-	allocatedCount = 0;
-	rotatedCount = 0;
-	rotatedNextFree = 0;
-	activePalette = 0;
-	minDist = 
-	minDistIdx1 = minDistIdx2 = 0;
-}
-
-unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b)
-{
-	unsigned i = 0;
-	unsigned len = 1000000000;
-	unsigned nearestIdx = 0;
-	int dr, dg, db;
-	unsigned nlen;
-	
-	while (i<allocatedCount)
-	{
-		dr = (r-originalPal.r[i]);
-		dg = (g-originalPal.g[i]);
-		db = (b-originalPal.b[i]);
-		
-		// NOTE : this metric could be improved
-		nlen=dr*dr + dg*dg + db*db;
-		
-		if (nlen <= PAL_COLOR_MERGE_THRESHOLD)
-		{
-			return i;
-		}
-		else if (nlen < len)
-		{
-			nearestIdx = i;
-			len = nlen;
-		}
-		i++;
-	}
-	if (i<STATIC_PALETTE_SIZE)
-	{
-		originalPal.r[i]=r;
-		originalPal.g[i]=g;
-		originalPal.b[i]=b;
-		allocatedCount++;
-		return i;
-	}
-	return nearestIdx;
-	
-	
-	/*
-	This algo doesn't work because we can't change index after one image has been loaded
-	unsigned i;
-	unsigned localMinDist = 1000000000;
-	unsigned localMinDistIdx = 0;
-	
-	for (i=0; i<allocatedCount; i++)
-	{
-		dr = (r-originalPal.r[i]);
-		dg = (g-originalPal.g[i]);
-		db = (b-originalPal.b[i]);
-		
-		// this distance metric could be improved
-		nlen=dr*dr + dg*dg + db*db;
-		
-		if (nlen<localMinDist)
-		{
-			localMinDistIdx = i;
-			localMinDist = nlen;
-		}
-	}
-	// localMinDistIdx has the index of the nearer color
-	
-	if (allocatedCount<COLOR_ROTATION_COUNT)
-	{
-		// we have enough room
-		originalPal.r[allocatedCount]=r;
-		originalPal.g[allocatedCount]=g;
-		originalPal.b[allocatedCount]=b;
-		allocatedCount++;
-	}
-	else
-	{
-		// we do not have enough room
-		if (localMinDist < minDist)
-		{
-			// we have found a color which is nearer than the replacing threshold
-			return localMinDistIdx;
-		}
-		else
-		{
-			// we will replace another color
-			originalPal.r[minDistIdx1
-		}
-	}
-	*/
-}
-
-void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
-{
-	unsigned i;
-	for (i=0; i<rotatedCount; i++)
-	{
-		if ((rotatedPal[i].rotr == r) && (rotatedPal[i].rotg == g) && (rotatedPal[i].rotb == b))
-		{
-			// we have found a previous one
-			activePalette = i;
-			return;
-		}
-	}
-	
-	// we have not found a previous one, we need to allocate a new one
-	if (rotatedCount < COLOR_ROTATION_COUNT)
-		rotatedCount++;
-	
-	// activate the palette
-	activePalette = rotatedNextFree;
-
-	// do the transformation
-	float hue, lum, sat;
-	float baseHue;
-	float hueDec;
-	float nR, nG, nB;
-	GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
-	GAG::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
-	hueDec=hue-baseHue;
-	for (i=0; i<256; i++)
-	{
-		GAG::RGBtoHSV( ((float)originalPal.r[i])/255, ((float)originalPal.g[i])/255, ((float)originalPal.b[i])/255, &hue, &sat, &lum);
-		GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
-		rotatedPal[rotatedNextFree].colors[i].r=(Uint32)(255*nR);
-		rotatedPal[rotatedNextFree].colors[i].g=(Uint32)(255*nG);
-		rotatedPal[rotatedNextFree].colors[i].b=(Uint32)(255*nB);
-		rotatedPal[rotatedNextFree].colors[i].pad=0;
-	}
-
-	// save the color
-	rotatedPal[rotatedNextFree].rotr=r;
-	rotatedPal[rotatedNextFree].rotg=g;
-	rotatedPal[rotatedNextFree].rotb=b;
-
-	// round robin on next free pointer, wrap
-	if (rotatedNextFree != COLOR_ROTATION_COUNT-1)
-	{
-		rotatedNextFree++;
-	}
-	else
-	{
-		rotatedNextFree=0;
-	}
-}
-
 
 SDLSprite::Palette::Palette()
 {
@@ -290,21 +105,7 @@ void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
 		bTransformed=b;
 	}
 }
-
-// Paletized image, used for rotation
-SDLSprite::PalImage::PalImage(int w, int h)
-{
-	this->w=w;
-	this->h=h;
-	data=new PalImageEntry[w*h];
-}
-
-SDLSprite::PalImage::~PalImage()
-{
-	if (data)
-		delete[] data;
-}
-
+#endif
 
 SDL_Surface *SDLSprite::getGlobalContainerGfxSurface(void)
 {
@@ -326,9 +127,6 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	SDL_Rect src;
 	int w, h;
 	int diff;
-
-	SDL_GetClipRect(dest, &oldr);
-	SDL_SetClipRect(dest, &newr);
 
 	w=getW(index);
 	h=getH(index);
@@ -371,11 +169,16 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	r.w=w;
 	r.h=h;
 
+	SDL_GetClipRect(dest, &oldr);
+	SDL_SetClipRect(dest, &newr);
+
 	if (images[index])
 		SDL_BlitSurface(images[index], &src, dest, &r);
-	SDL_LockSurface(dest);
+
 	if ((masks[index]) && (masks[index]->format->BitsPerPixel==8) && (dest->format->BitsPerPixel==32))
 	{
+		SDL_LockSurface(dest);
+
 		int dx, dy;
 		int sy;
 		Uint8 *sPtr;
@@ -386,7 +189,6 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 		Uint32 dR, dG, dB;
 		Uint32 Rshift, Gshift, Bshift;
 
-		// TODO : use more infos from destination and implement 16 bpp version
 		Rshift=dest->format->Rshift;
 		Gshift=dest->format->Gshift;
 		Bshift=dest->format->Bshift;
@@ -420,10 +222,15 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 			while (--dx);
 			sy++;
 		}
+
+		SDL_UnlockSurface(dest);
 	}
 
+	#ifdef USE_PAL_LAYER
 	if ((paletizeds[index]) && (paletizeds[index]->format->BitsPerPixel==8) && (dest->format->BitsPerPixel==32))
 	{
+		SDL_LockSurface(dest);
+
 		int dx, dy;
 		int sy;
 		Uint8 color;
@@ -449,68 +256,73 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 			while (--dx);
 			sy++;
 		}
+
+		SDL_UnlockSurface(dest);
 	}
-	
+	#endif
+
 	if (rotated[index])
 	{
-		int dx, dy;
-		int sy;
-		Uint32 *dPtr;
-		
-		TransformedPalEntry color;
-		TransformedPalEntry *colors=palContainer.rotatedPal[palContainer.activePalette].colors;
-		PalImageEntry *sPtr;
-		PalImageEntry entry;
-		
-		Uint32 a, na;
-		Uint32 dR, dG, dB;
-		Uint32 Rshift, Gshift, Bshift;
-		Uint32 dVal;
-
-		Rshift=dest->format->Rshift;
-		Gshift=dest->format->Gshift;
-		Bshift=dest->format->Bshift;
-		
-		sy=src.y;
-		for (dy=r.y; dy<r.y+r.h; dy++)
+		Color32 color;
+		color.channel.r = bcR;
+		color.channel.g = bcG;
+		color.channel.b = bcB;
+		color.channel.a = DrawableSurface::ALPHA_OPAQUE;
+		RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(color);
+		SDL_Surface *toBlit;
+		if (it == rotated[index]->rotationMap.end())
 		{
-			sPtr=rotated[index]->data+sy*rotated[index]->w+src.x;
-			dPtr=((Uint32 *)(dest->pixels))+dy*(dest->pitch>>2)+r.x;
-			dx=w;
-			do
+			float hue, lum, sat;
+			float baseHue, hueDec;
+
+			GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+			GAG::RGBtoHSV( ((float)bcR)/255, ((float)bcG)/255, ((float)bcB)/255, &hue, &sat, &lum);
+			hueDec = hue-baseHue;
+			int w = rotated[index]->orig->w;
+			int h = rotated[index]->orig->h;
+
+			SDL_Surface *newSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+
+			Uint32 *sPtr = (Uint32 *)rotated[index]->orig->pixels;
+			Uint32 *dPtr = (Uint32 *)newSurface->pixels;
+			for (int i=0; i<w*h; i++)
 			{
-				// get the values
-				entry=*sPtr;
-				dVal=*dPtr;
-				
-				// get the color
-				color=colors[entry.index];
-				
-				// get the alpha
-				a=entry.alpha;
-				na=255-a;
-				
-				dR=(dVal>>Rshift)&0xFF;
-				dG=(dVal>>Gshift)&0xFF;
-				dB=(dVal>>Bshift)&0xFF;
-				
-				dR=((a*color.r)+(na*dR))>>8;
-				dG=((a*color.g)+(na*dG))>>8;
-				dB=((a*color.b)+(na*dB))>>8;
-				
-				dVal=(dVal&0xFF000000)|((dR<<Rshift)|(dG<<Gshift)|(dB<<Bshift));
-				//dVal=entry.index*a;
-				*dPtr=dVal;
-				
-				dPtr++;
+				Uint8 sR, sG, sB, alpha;
+				Uint8 dR, dG, dB;
+				float nR, nG, nB;
+				SDL_GetRGBA(*sPtr, rotated[index]->orig->format, &sR, &sG, &sB, &alpha);
+
+				GAG::RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
+
+				float newHue = hue + hueDec;
+				if (newHue >= 360)
+					newHue -= 360;
+				if (newHue < 0)
+					newHue += 360;
+
+				GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
+
+				dR = (Uint32)(255*nR);
+				dG = (Uint32)(255*nG);
+				dB = (Uint32)(255*nB);
+
+				*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
 				sPtr++;
+				dPtr++;
 			}
-			while (--dx);
-			sy++;
+
+			toBlit = SDL_DisplayFormatAlpha(newSurface);
+			assert(toBlit);
+			SDL_FreeSurface(newSurface);
+			rotated[index]->rotationMap[color] = toBlit;
 		}
+		else
+		{
+			toBlit = it->second;
+		}
+		SDL_BlitSurface(toBlit, &src, dest, &r);
 	}
 
-	SDL_UnlockSurface(dest);
 	SDL_SetClipRect(dest, &oldr);
 }
 
@@ -519,8 +331,9 @@ void SDLSprite::setBaseColor(Uint8 r, Uint8 g, Uint8 b)
 	bcR=r;
 	bcG=g;
 	bcB=b;
+	#ifdef USE_PAL_LAYER
 	pal.setColor(r, g, b);
-	palContainer.setColor(r, g, b);
+	#endif
 }
 
 SDLSprite::~SDLSprite()
@@ -535,12 +348,14 @@ SDLSprite::~SDLSprite()
 		if (*masksIt)
 			SDL_FreeSurface((*masksIt));
 	}
+	#ifdef USE_PAL_LAYER
 	for (std::vector <SDL_Surface *>::iterator paletizedsIt=paletizeds.begin(); paletizedsIt!=paletizeds.end(); ++paletizedsIt)
 	{
 		if (*paletizedsIt)
 			SDL_FreeSurface((*paletizedsIt));
 	}
-	for (std::vector <PalImage *>::iterator rotatedIt=rotated.begin(); rotatedIt!=rotated.end(); ++rotatedIt)
+	#endif
+	for (std::vector <RotatedImage *>::iterator rotatedIt=rotated.begin(); rotatedIt!=rotated.end(); ++rotatedIt)
 	{
 		if (*rotatedIt)
 			delete (*rotatedIt);
@@ -572,6 +387,7 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	else
 		masks.push_back(NULL);
 
+	#ifdef USE_PAL_LAYER
 	if (paletizedStream)
 	{
 		SDL_Surface *sprite;
@@ -581,7 +397,8 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	}
 	else
 		paletizeds.push_back(NULL);
-		
+	#endif
+
 	if (rotatedStream)
 	{
 		SDL_Surface *sprite;
@@ -589,17 +406,7 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 		assert(sprite);
 		if (sprite->format->BitsPerPixel==32)
 		{
-			PalImage *image=new PalImage(sprite->w, sprite->h);
-			
-			Uint32 *ptr=(Uint32 *)(sprite->pixels);
-			for (int i=0; i<sprite->w*sprite->h; i++)
-			{
-				Uint8 r, g, b, a;
-				SDL_GetRGBA(*ptr, sprite->format, &r, &g, &b, &a);
-				image->data[i].index=palContainer.allocate(r, g, b);
-				image->data[i].alpha=a;
-				ptr++;
-			}
+			RotatedImage *image = new RotatedImage(sprite);
 			rotated.push_back(image);
 		}
 		else
@@ -620,10 +427,12 @@ int SDLSprite::getW(int index)
 		return images[index]->w;
 	else if (masks[index])
 		return masks[index]->w;
+	#ifdef USE_PAL_LAYER
 	else if (paletizeds[index])
 		return paletizeds[index]->w;
+	#endif
 	else if (rotated[index])
-		return rotated[index]->w;
+		return rotated[index]->orig->w;
 	else
 		return 0;
 }
@@ -636,10 +445,12 @@ int SDLSprite::getH(int index)
 		return images[index]->h;
 	else if (masks[index])
 		return masks[index]->h;
+	#ifdef USE_PAL_LAYER
 	else if (paletizeds[index])
 		return paletizeds[index]->h;
+	#endif
 	else if (rotated[index])
-		return rotated[index]->h;
+		return rotated[index]->orig->h;
 	else
 		return 0;
 }

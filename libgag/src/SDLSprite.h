@@ -22,15 +22,20 @@
 
 #include <vector>
 #include "GraphicContext.h"
+#include <map>
 
 class SDLGraphicContext;
+
+//#define USE_PAL_LAYER
+#define USE_MASK_LAYER
 
 //! class for handling Sprites with SDL
 class SDLSprite:public Sprite
 {
 protected:
-	// palette, inner class for legacy graphic
-	// class for handling color lookup
+	#ifdef USE_PAL_LAYER
+	//! Palette, inner class for legacy graphic
+	//* class for handling color lookup */
 	class Palette
 	{
 	public:
@@ -42,38 +47,41 @@ protected:
 		Uint32 colors[256];
 		Uint8 rTransformed, gTransformed, bTransformed;
 	};
-	
-	//! This represents one pixel of a palettized image
-	struct PalImageEntry
-	{
-		//! The index in the palette
-		Uint8 index;
-		//! The alpha component
-		Uint8 alpha;
-	};
-	
-	//! This represents an image paletised with exteranl global palette and alpha support
-	struct PalImage
-	{
-		//! The dimension of the image
-		int w, h;
-		//! The pixel array
-		PalImageEntry *data;
-		
-		PalImage(int w, int h);
-		~PalImage();
-	};
 
 	Palette pal;
 
 	friend class Palette;
+	#endif
+
+	union Color32
+	{
+		Uint32 id;
+		struct
+		{
+			Uint8 r, g, b, a;
+		} channel;
+
+		bool operator<(const Color32 &o) const { return id<o.id; }
+	};
+
+	struct RotatedImage
+	{
+		const SDL_Surface *orig;
+		typedef std::map<Color32, SDL_Surface *> RotationMap;
+		RotationMap rotationMap;
+
+		RotatedImage(const SDL_Surface *s) { orig=s; }
+	};
+
 	static SDL_Surface *getGlobalContainerGfxSurface(void);
 
 protected:
 	std::vector <SDL_Surface *> images;
 	std::vector <SDL_Surface *> masks;
+	#ifdef USE_PAL_LAYER
 	std::vector <SDL_Surface *> paletizeds;
-	std::vector <PalImage *> rotated;
+	#endif
+	std::vector <RotatedImage *> rotated;
 	Uint8 bcR, bcG, bcB;
 
 protected:
