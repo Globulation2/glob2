@@ -605,6 +605,8 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				if (windowstats[i]>1)
 					fprintf(logFile, "%d \t %d.\n", i, windowstats[i]);
 			fprintf(logFile, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
+			
+			stepHostGlobalState();
 		}
 		else
 		{
