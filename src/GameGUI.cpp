@@ -2220,7 +2220,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// draw message List
-	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>1)
+	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>2)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;

@@ -54,6 +54,7 @@ public:
 	UDPsocket socket;
 	int channel;
 	bool ipFromNAT;
+	bool ipFirewallClean;
 	bool waitForNatResolution;
 	
 	bool quitting; // We have executed the quitting order of player, but we did not freed all his orders.
