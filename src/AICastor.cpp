@@ -111,8 +111,8 @@ AICastor::Strategy::Strategy()
 	
 	successWait=0;
 	
-	warLevelTriger=0;
-	warTimeTriger=0;
+	warLevelTrigger=0;
+	warTimeTrigger=0;
 	maxAmountGoal=0;
 };
 
@@ -185,12 +185,12 @@ void AICastor::init(Player *player)
 	controlStrikesTimer=0;
 	
 	warLevel=0;
-	warTimeTrigerLevel=0;
-	warLevelTrigerLevel=0;
-	warAmountTrigerLevel=0;
+	warTimeTriggerLevel=0;
+	warLevelTriggerLevel=0;
+	warAmountTriggerLevel=0;
 	
 	onStrike=false;
-	strikeTimeTriger=0;
+	strikeTimeTrigger=0;
 	strikeTeamSelected=false;
 	strikeTeam=0;
 	
@@ -705,14 +705,14 @@ void AICastor::defineStrategy()
 	strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
 	strategy.isFreePart=10; // good in [3..20]
 	
-	strategy.warLevelTriger=1;
-	strategy.warTimeTriger=8192;
-	strategy.warAmountTriger=3;
+	strategy.warLevelTrigger=1;
+	strategy.warTimeTrigger=8192;
+	strategy.warAmountTrigger=3;
 	
-	strategy.strikeWarPowerTrigerUp=4096;
-	strategy.strikeWarPowerTrigerDown=2048;
-	strategy.strikeTimeTriger=32768; //21min51s
-	strikeTimeTriger=strategy.strikeTimeTriger;
+	strategy.strikeWarPowerTriggerUp=4096;
+	strategy.strikeWarPowerTriggerDown=2048;
+	strategy.strikeTimeTrigger=32768; //21min51s
+	strikeTimeTrigger=strategy.strikeTimeTrigger;
 	
 	strategy.maxAmountGoal=10;
 }
@@ -1924,40 +1924,40 @@ void AICastor::computeBuildingSum()
 
 void AICastor::computeWarLevel()
 {
-	if (timer>strategy.warTimeTriger)
+	if (timer>strategy.warTimeTrigger)
 	{
-		fprintf(logFile,  "timer=%d, strategy.warTimeTriger=%d\n", timer, strategy.warTimeTriger);
-		warTimeTrigerLevel++;
-		strategy.warTimeTriger=strategy.warTimeTriger+((1+strategy.warTimeTriger)>>1);
+		fprintf(logFile,  "timer=%d, strategy.warTimeTrigger=%d\n", timer, strategy.warTimeTrigger);
+		warTimeTriggerLevel++;
+		strategy.warTimeTrigger=strategy.warTimeTrigger+((1+strategy.warTimeTrigger)>>1);
 	}
-	int warTimeTrigerLevelUse=warTimeTrigerLevel;
-	if (warTimeTrigerLevelUse>2)
-		warTimeTrigerLevelUse=2;
+	int warTimeTriggerLevelUse=warTimeTriggerLevel;
+	if (warTimeTriggerLevelUse>2)
+		warTimeTriggerLevelUse=2;
 	
 	int sum=0;
 	for (int si=0; si<2; si++)
-		for (int li=strategy.warLevelTriger; li<4; li++)
+		for (int li=strategy.warLevelTrigger; li<4; li++)
 			sum+=buildingLevels[IntBuildingType::ATTACK_BUILDING][si][li];
 	if (sum>1)
-		warLevelTrigerLevel=2;
+		warLevelTriggerLevel=2;
 	else if (sum>0)
-		warLevelTrigerLevel=1;
+		warLevelTriggerLevel=1;
 	else
-		warLevelTrigerLevel=0;
+		warLevelTriggerLevel=0;
 	
-	if (buildsAmount>strategy.warAmountTriger)
-		warAmountTrigerLevel=2;
-	else if (buildsAmount>=strategy.warAmountTriger)
-		warAmountTrigerLevel=1;
+	if (buildsAmount>strategy.warAmountTrigger)
+		warAmountTriggerLevel=2;
+	else if (buildsAmount>=strategy.warAmountTrigger)
+		warAmountTriggerLevel=1;
 	else
-		warAmountTrigerLevel=0;
-	warLevel=warTimeTrigerLevelUse+warLevelTrigerLevel+warAmountTrigerLevel;
+		warAmountTriggerLevel=0;
+	warLevel=warTimeTriggerLevelUse+warLevelTriggerLevel+warAmountTriggerLevel;
 	
 	static int oldWarLevel=-1;
 	if (oldWarLevel!=warLevel)
 	{
-		fprintf(logFile,  "warLevel=%d, warTimeTrigerLevelUse=%d, warLevelTrigerLevel=%d, warAmountTrigerLevel=%d\n",
-			warLevel, warTimeTrigerLevelUse, warLevelTrigerLevel, warAmountTrigerLevel);
+		fprintf(logFile,  "warLevel=%d, warTimeTriggerLevelUse=%d, warLevelTriggerLevel=%d, warAmountTriggerLevel=%d\n",
+			warLevel, warTimeTriggerLevelUse, warLevelTriggerLevel, warAmountTriggerLevel);
 		oldWarLevel=warLevel;
 	}
 	
@@ -1979,19 +1979,19 @@ void AICastor::computeWarLevel()
 		oldWarPowerSum=warPowerSum;
 	}
 	
-	if (warPowerSum<strategy.strikeWarPowerTrigerDown)
+	if (warPowerSum<strategy.strikeWarPowerTriggerDown)
 	{
 		if (onStrike)
 		{
 			strikeTeamSelected=false;
 			onStrike=false;
 			
-			strikeTimeTriger=timer+strategy.strikeTimeTriger;
-			strategy.strikeWarPowerTrigerUp=strategy.strikeWarPowerTrigerUp+strategy.strikeWarPowerTrigerUp/2;
-			fprintf(logFile,  " strategy.strikeWarPowerTrigerUp=%d\n", strategy.strikeWarPowerTrigerUp);
+			strikeTimeTrigger=timer+strategy.strikeTimeTrigger;
+			strategy.strikeWarPowerTriggerUp=strategy.strikeWarPowerTriggerUp+strategy.strikeWarPowerTriggerUp/2;
+			fprintf(logFile,  " strategy.strikeWarPowerTriggerUp=%d\n", strategy.strikeWarPowerTriggerUp);
 		}
 	}
-	else if (timer>strikeTimeTriger || warPowerSum>strategy.strikeWarPowerTrigerUp)
+	else if (timer>strikeTimeTrigger || warPowerSum>strategy.strikeWarPowerTriggerUp)
 	{
 		onStrike=true;
 	}
