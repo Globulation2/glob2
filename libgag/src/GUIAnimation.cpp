@@ -58,5 +58,15 @@ void Animation::internalRepaint(int x, int y, int w, int h)
 
 void Animation::onTimer(Uint32 tick)
 {
-	// TODO : add animation support here
+	if (count>1)
+	{
+		if (--durationLeft==0)
+		{
+			pos++;
+			if (pos==start+count)
+				pos=start;
+			repaint();
+			durationLeft=duration;
+		}
+	}
 }
