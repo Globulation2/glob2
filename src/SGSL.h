@@ -81,6 +81,7 @@ struct ErrorReport
 		ET_OK=0,
 		ET_SYNTAX_ERROR,
 		ET_INVALID_PLAYER,
+		ET_NO_SUCH_FILE,
 		ET_UNKNOWN,
 	} type;
 	unsigned line;
