@@ -141,8 +141,6 @@ public:
 	
 	Building *myBuildings[1024];
 	
-	Bullet *myBullets[256];
-	
 	// thoses are the Call Lists :
 	std::list<Building *> upgrade[NB_ABILITY];
 	std::list<Building *> job[NB_ABILITY];
