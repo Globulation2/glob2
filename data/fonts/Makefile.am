@@ -1,2 +1,4 @@
 glob2datafontdir:= $(pkgdatadir)/data/fonts
-dist_glob2datafont_DATA:= $(wildcard $(srcdir)/*.ttf) 
+glob2datafont_DATA:= $(wildcard $(srcdir)/*.ttf) 
+EXTRA_DIST= $(glob2datafont_DATA)
+
