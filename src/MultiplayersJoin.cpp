@@ -218,8 +218,15 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 
 void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress ip)
 {
+	if (size<12+2+10) // 10=min of getDataLength(true)
+	{
+		fprintf(logFile, "Bad size (%d) for a dataSessionInfoRecieved!\n", size);
+		return;
+	}
+	
 	int pn=getSint32(data, 4);
 	myPlayerNumber=pn;
+	Uint32 serverFileCheckSum=getUint32(data, 8);
 
 	if ((pn<0)||(pn>=32))
 	{
@@ -229,10 +236,10 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	}
 	fprintf(logFile, "dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
 	
-	int serverNickNameSize=Utilities::strmlen((char *)data+8, 32);
+	int serverNickNameSize=Utilities::strmlen((char *)data+12, 32);
 	if (serverNickName[0])
 	{
-		if (strncmp(serverNickName, (char *)data+8, serverNickNameSize)==0)
+		if (strncmp(serverNickName, (char *)data+12, serverNickNameSize)==0)
 		{
 			fprintf(logFile, " same serverNickName=(%s)\n", serverNickName);
 		}
@@ -244,13 +251,13 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	}
 	else
 	{
-		memcpy(serverNickName, data+8, serverNickNameSize);
+		memcpy(serverNickName, data+12, serverNickNameSize);
 		fprintf(logFile, " serverNickName=(%s)\n", serverNickName);
 	}
 
 	unCrossConnectSessionInfo();
 
-	if (!sessionInfo.setData(data+8+serverNickNameSize, size-8-serverNickNameSize, true))
+	if (!sessionInfo.setData(data+12+serverNickNameSize, size-12-serverNickNameSize, true))
 	{
 		fprintf(logFile, " Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;
@@ -304,17 +311,22 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		assert(filename);
 		assert(filename[0]);
 		fprintf(logFile, " filename=%s.\n", filename);
-		SDL_RWops *stream=globalContainer->fileManager->open(filename,"rb");
+		SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
 		if (stream)
 		{
-			fprintf(logFile, " we don't need to download, we do have the file!\n");
-			SDL_RWclose(stream);
-			filename=NULL;
+			fprintf(logFile, " we have the file.\n");
+			Uint32 myFileCheckSum=globalContainer->fileManager->checksum(filename);
+			if (serverFileCheckSum==myFileCheckSum)
+			{
+				fprintf(logFile, "  we don't need to download, we have the correct file! checksum (%x)\n", serverFileCheckSum);
+				SDL_RWclose(stream);
+				filename=NULL;
+			}
+			else
+				fprintf(logFile, "  we need to download, we have an outdated file! %x!=%x\n", myFileCheckSum, serverFileCheckSum);
 		}
 		else
-		{
-			fprintf(logFile, " we do need to download, we don't have the file!\n");
-		}
+			fprintf(logFile, " we need to download, we don't have the file!\n");
 		
 		if (filename)
 		{

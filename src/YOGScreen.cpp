@@ -285,7 +285,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		yog->joinGame();
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
 		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
-		yog->unjoinGame();
+		//yog->unjoinGame();
 		printf("YOGScreen::rv=%d\n", rv);
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{

@@ -78,18 +78,19 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	}
 	
 	stream=NULL;
-	
+	mapFileCheckSum=0;
 	if (sessionInfo->mapGenerationDescriptor && sessionInfo->fileIsAMap)
 	{
 		fprintf(logFile, "MultiplayersHost() random map.\n");
 	}
 	else
 	{
-		const char *s=sessionInfo->getFileName();
-		assert(s);
-		assert(s[0]);
-		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
-		stream=globalContainer->fileManager->open(s,"rb");
+		const char *mapFileName=sessionInfo->getFileName();
+		assert(mapFileName);
+		assert(mapFileName[0]);
+		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", mapFileName);
+		stream=globalContainer->fileManager->open(mapFileName, "rb");
+		mapFileCheckSum=globalContainer->fileManager->checksum(mapFileName);
 	}
 	
 	fileSize=0;
@@ -1479,16 +1480,16 @@ void MultiplayersHost::sendingTime()
 		}
 	
 	
-	for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+	for (int pi=0; pi<sessionInfo.numberOfPlayer; pi++)
 	{
-		if ((sessionInfo.players[i].type==BasePlayer::P_IP)&&(--sessionInfo.players[i].netTimeout<0))
+		if ((sessionInfo.players[pi].type==BasePlayer::P_IP)&&(--sessionInfo.players[pi].netTimeout<0))
 		{
 			update=true;
-			sessionInfo.players[i].netTimeout+=sessionInfo.players[i].netTimeoutSize;
+			sessionInfo.players[pi].netTimeout+=sessionInfo.players[pi].netTimeoutSize;
 
-			assert(sessionInfo.players[i].netTimeoutSize);
+			assert(sessionInfo.players[pi].netTimeoutSize);
 
-			if (--sessionInfo.players[i].netTOTL<0)
+			if (--sessionInfo.players[pi].netTOTL<0)
 			{
 				if (hostGlobalState>=HGS_GAME_START_SENDED)
 				{
@@ -1497,12 +1498,12 @@ void MultiplayersHost::sendingTime()
 				}
 				else
 				{
-					sessionInfo.players[i].netState=BasePlayer::PNS_BAD;
-					fprintf(logFile, "Last timeout for player %d has been spent.\n", i);
+					sessionInfo.players[pi].netState=BasePlayer::PNS_BAD;
+					fprintf(logFile, "Last timeout for player %d has been spent.\n", pi);
 				}
 			}
 
-			switch (sessionInfo.players[i].netState)
+			switch (sessionInfo.players[pi].netState)
 			{
 			case BasePlayer::PNS_BAD :
 			{
@@ -1512,37 +1513,37 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
 			{
-				fprintf(logFile, "Lets send the presence to player %d.\n", i);
-				sessionInfo.players[i].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
+				fprintf(logFile, "Lets send the presence to player %d.\n", pi);
+				sessionInfo.players[pi].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST :
 			{
-				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
+				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", pi, Utilities::stringIP(sessionInfo.players[pi].ip));
 
 				BasePlayer *backupPlayer[32];
-				for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+				for (int pii=0; pii<sessionInfo.numberOfPlayer; pii++)
 				{
-					backupPlayer[p]=(BasePlayer *)malloc(sizeof(BasePlayer));
-					*backupPlayer[p]=sessionInfo.players[p];
+					backupPlayer[pii]=(BasePlayer *)malloc(sizeof(BasePlayer));
+					*backupPlayer[pii]=sessionInfo.players[pii];
 				}
-				if (!sessionInfo.players[i].ipFromNAT)
+				if (!sessionInfo.players[pi].ipFromNAT)
 				{
 					//for (int p=0; p<sessionInfo.numberOfPlayer; p++)
 					//	if (sessionInfo.players[p].ip.host==SDL_SwapBE32(0x7F000001))
 					//		sessionInfo.players[p].ip.host=serverIP.host;
 				
 					if (shareOnYOG)
-						for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-							if (sessionInfo.players[i].ipFromNAT)
+						for (int pii=0; pii<sessionInfo.numberOfPlayer; pii++)
+							if (sessionInfo.players[pii].ipFromNAT)
 							{
-								IPaddress newip=yog->ipFromUserName(sessionInfo.players[i].name);
-								fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
+								IPaddress newip=yog->ipFromUserName(sessionInfo.players[pii].name);
+								fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", pii, sessionInfo.players[pii].name, Utilities::stringIP(sessionInfo.players[pii].ip), Utilities::stringIP(newip));
 								if (newip.host)
 								{
-									sessionInfo.players[i].setip(newip);
-									sessionInfo.players[i].ipFromNAT=false;
+									sessionInfo.players[pii].setip(newip);
+									sessionInfo.players[pii].ipFromNAT=false;
 								}
 							}
 				}
@@ -1554,26 +1555,26 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
 
 				int hostUserNameSize=Utilities::strmlen(globalContainer->getUsername(), 32);
-				data=(Uint8 *)malloc(size+8+hostUserNameSize);
+				data=(Uint8 *)malloc(12+hostUserNameSize+size);
 				assert(data);
 
 				data[0]=DATA_SESSION_INFO;
 				data[1]=0;
 				data[2]=0;
 				data[3]=0;
-				addSint32(data, i, 4);
-				memcpy(data+8, globalContainer->getUsername(), hostUserNameSize);
-				
-				memcpy(data+8+hostUserNameSize, sessionInfo.getData(true), size);
+				addSint32(data, pi, 4);
+				addSint32(data, mapFileCheckSum, 8);
+				memcpy(data+12, globalContainer->getUsername(), hostUserNameSize);
+				memcpy(data+12+hostUserNameSize, sessionInfo.getData(true), size);
 
-				sessionInfo.players[i].send(data, size+8+hostUserNameSize);
+				sessionInfo.players[pi].send(data, 12+hostUserNameSize+size);
 
 				free(data);
 				
-				for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+				for (int pii=0; pii<sessionInfo.numberOfPlayer; pii++)
 				{
-					sessionInfo.players[p]=*backupPlayer[p];
-					free(backupPlayer[p]);
+					sessionInfo.players[pii]=*backupPlayer[pii];
+					free(backupPlayer[pii]);
 				}
 			}
 			break;
@@ -1581,25 +1582,25 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
 			{
-				fprintf(logFile, "Lets send the confiramtion for checksum to player %d.\n", i);
+				fprintf(logFile, "Lets send the confiramtion for checksum to player %d.\n", pi);
 				Uint8 data[8];
 				data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
 				data[1]=0;
 				data[2]=0;
 				data[3]=0;
 				addSint32(data, sessionInfo.checkSum(), 4);
-				sessionInfo.players[i].send(data, 8);
+				sessionInfo.players[pi].send(data, 8);
 
 				// Now that's not our problem if this packet don't sucess.
 				// In such a case, the client will reply.
-				sessionInfo.players[i].netTimeout=0;
-				sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
-				sessionInfo.players[i].netState=BasePlayer::PNS_OK;
+				sessionInfo.players[pi].netTimeout=0;
+				sessionInfo.players[pi].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
+				sessionInfo.players[pi].netState=BasePlayer::PNS_OK;
 
 				// Lets check if all players has the sessionInfo:
 				stepHostGlobalState();
 
-				fprintf(logFile, "player %d is know ok. (%d)\n", i, sessionInfo.players[i].netState);
+				fprintf(logFile, "player %d is know ok. (%d)\n", pi, sessionInfo.players[pi].netState);
 			}
 			break;
 
@@ -1608,64 +1609,64 @@ void MultiplayersHost::sendingTime()
 			{
 				if (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS)
 				{
-					sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
-					sessionInfo.players[i].netTimeout=0;
-					sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
-					sessionInfo.players[i].netTOTL++;
-					fprintf(logFile, "Player %d is newly all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					sessionInfo.players[pi].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
+					sessionInfo.players[pi].netTimeout=0;
+					sessionInfo.players[pi].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
+					sessionInfo.players[pi].netTOTL++;
+					fprintf(logFile, "Player %d is newly all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				}
 				else
-					fprintf(logFile, "Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					fprintf(logFile, "Player %d is all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				// players keeps ok.
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START :
 			{
-				fprintf(logFile, "We have to inform player %d to start cross connection.\n", i);
-				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
+				fprintf(logFile, "We have to inform player %d to start cross connection.\n", pi);
+				sessionInfo.players[pi].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START :
 			{
-				fprintf(logFile, "Player %d is cross connecting, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
+				fprintf(logFile, "Player %d is cross connecting, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				sessionInfo.players[pi].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION :
 			{
-				fprintf(logFile, "We have to inform player %d that we recieved his crossConnection confirmation.\n", i);
-				sessionInfo.players[i].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
+				fprintf(logFile, "We have to inform player %d that we recieved his crossConnection confirmation.\n", pi);
+				sessionInfo.players[pi].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
 
-				sessionInfo.players[i].netState=BasePlayer::PNS_CROSS_CONNECTED;
+				sessionInfo.players[pi].netState=BasePlayer::PNS_CROSS_CONNECTED;
 			}
 			break;
 
 			case BasePlayer::PNS_CROSS_CONNECTED :
 			{
-				fprintf(logFile, "Player %d is cross connected ! Yahoo !, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "Player %d is cross connected ! Yahoo !, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_START_GAME :
 			{
-				fprintf(logFile, "We send start game to player %d, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
-				sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING);
+				fprintf(logFile, "We send start game to player %d, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				sessionInfo.players[pi].send(SERVER_ASK_FOR_GAME_BEGINNING);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_CONFIRMED_START_GAME :
 			{
 				// here we could tell other players
-				fprintf(logFile, "Player %d plays, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "Player %d plays, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 			}
 			break;
 
 			default:
 			{
-				fprintf(logFile, "Buggy state for player %d.\n", i);
+				fprintf(logFile, "Buggy state for player %d.\n", pi);
 			}
 
 			}
