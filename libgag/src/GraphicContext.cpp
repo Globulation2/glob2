@@ -113,11 +113,13 @@ namespace GAGCore
 		
 		void checkExtensions(void)
 		{
-			isTextureRectangle = (strstr((char *)glGetString(GL_EXTENSIONS), "GL_NV_texture_rectangle") != NULL);
+			const char *glExtensions = (const char *)glGetString(GL_EXTENSIONS);
+			isTextureRectangle = (strstr(glExtensions, "GL_NV_texture_rectangle") != NULL);
+			isTextureRectangle = isTextureRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
 			if (isTextureRectangle)
-				std::cout << "Toolkit : GL_NV_texture_rectangle extension present, optimal texture size will be used" << std::endl;
+				std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
 			else
-				std::cout << "Toolkit : GL_NV_texture_rectangle extension not present, power of two texture will be used" << std::endl;
+				std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
 		}
 		
 		void doBlend(int on)
