@@ -1248,6 +1248,7 @@ void Unit::handleMovement(void)
 				attachedBuilding->unitsInside.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->updateCallLists();
+				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
 				subscribed=false;
 			}
@@ -1506,17 +1507,8 @@ void Unit::pathFind(void)
 			setNewValidDirection();
 		}
 	}
-	else if (performance[FLY])
+	else if (attachedBuilding)
 	{
-		int ldx=targetX-posX;
-		int ldy=targetY-posY;
-		simplifyDirection(ldx, ldy, &dx, &dy);
-		directionFromDxDy();
-		setNewValidDirection();
-	}
-	else
-	{
-		assert(attachedBuilding);
 		if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 		{
 			if (verbose)
@@ -1531,6 +1523,14 @@ void Unit::pathFind(void)
 			stopWorkingForBuilding();
 			setNewValidDirection();
 		}
+	}
+	else
+	{
+		int ldx=targetX-posX;
+		int ldy=targetY-posY;
+		simplifyDirection(ldx, ldy, &dx, &dy);
+		directionFromDxDy();
+		setNewValidDirection();
 	}
 }
 

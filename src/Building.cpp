@@ -1078,7 +1078,7 @@ void Building::subscribeToBringRessourcesStep()
 								int distUnitRessource;
 								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
 								{
-									if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
+									/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
 										for (int d=0; d<8; d++)
 										{
 											int ddx, ddy;
@@ -1089,8 +1089,7 @@ void Building::subscribeToBringRessourcesStep()
 												ry=(ry+map->getH()+ddy)&map->getMaskH();
 												break;
 											}
-										}
-									
+										}*/
 									int distBuildingRessource;
 									if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
 									{
@@ -1133,7 +1132,7 @@ void Building::subscribeToBringRessourcesStep()
 									int distUnitRessource;
 									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
 									{
-										if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
+										/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
 											for (int d=0; d<8; d++)
 											{
 												int ddx, ddy;
@@ -1144,8 +1143,7 @@ void Building::subscribeToBringRessourcesStep()
 													ry=(ry+map->getH()+ddy)&map->getMaskH();
 													break;
 												}
-											}
-										
+											}*/
 										int distBuildingRessource;
 										if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
 										{
@@ -1631,7 +1629,7 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->activity=Unit::ACT_RANDOM;

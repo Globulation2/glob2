@@ -369,6 +369,7 @@ public:
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
 	
+	
 	static void clearBuildingGradient(Uint8 gradient[2][1024]);
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient

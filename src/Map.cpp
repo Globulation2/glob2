@@ -1146,6 +1146,12 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		return false;
 	if (dist)
 		*dist=255-g;
+	if (g>=255)
+	{
+		*targetX=x;
+		*targetY=y;
+		return true;
+	}
 	
 	int vx=x;
 	int vy=y;
@@ -1978,11 +1984,33 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		if (!building->dirtyLocalGradient[canSwim])
 		{
 			Uint8 currentg=gradient[lx+ly*32];
-			if (currentg>1 && !building->dirtyLocalGradient[canSwim])
+			if (currentg>1)
 			{
 				*dist=255-currentg;
 				return true;
 			}
+			else
+				for (int d=0; d<8; d++)
+				{
+					int ddx, ddy;
+					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					int lxddx=lx+ddx;
+					if (lxddx<0)
+						lxddx=0;
+					else if(lxddx>31)
+						lxddx=31;
+					int lyddy=ly+ddy;
+					if (lyddy<0)
+						lyddy=0;
+					else if(lyddy>31)
+						lyddy=31;
+					Uint8 g=gradient[lxddx+32*lyddy];
+					if (g>1)
+					{
+						*dist=255-g;
+						return true;
+					}
+				}
 		}
 		
 		updateLocalGradient(building, canSwim);
@@ -1994,6 +2022,28 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			*dist=255-currentg;
 			return true;
 		}
+		else
+			for (int d=0; d<8; d++)
+			{
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				int lxddx=lx+ddx;
+				if (lxddx<0)
+					lxddx=0;
+				else if(lxddx>31)
+					lxddx=31;
+				int lyddy=ly+ddy;
+				if (lyddy<0)
+					lyddy=0;
+				else if(lyddy>31)
+					lyddy=31;
+				Uint8 g=gradient[lxddx+32*lyddy];
+				if (g>1)
+				{
+					*dist=255-g;
+					return true;
+				}
+			}
 	}
 	
 	gradient=building->globalGradient[canSwim];
@@ -2002,7 +2052,6 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		gradient=new Uint8[size];
 		printf("ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
-		updateGlobalGradient(building, canSwim);
 	}
 	else
 	{
@@ -2014,6 +2063,19 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		}
 		else
 		{
+			for (int d=0; d<8; d++)
+			{
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				int xddx=(x+ddx+w)&wMask;
+				int yddy=(y+ddy+h)&hMask;
+				Uint8 g=gradient[xddx+yddy*w];
+				if (g>1)
+				{
+					*dist=255-g;
+					return true;
+				}
+			}
 			printf("ba-a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
@@ -2029,6 +2091,19 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	}
 	else
 	{
+		for (int d=0; d<8; d++)
+		{
+			int ddx, ddy;
+			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			int xddx=(x+ddx+w)&wMask;
+			int yddy=(y+ddy+h)&hMask;
+			Uint8 g=gradient[xddx+yddy*w];
+			if (g>1)
+			{
+				*dist=255-g;
+				return true;
+			}
+		}
 		printf("ba-b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
@@ -2067,12 +2142,12 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 						lxddx=0;
 					else if(lxddx>31)
 						lxddx=31;
-					int lxddy=ly+ddy;
-					if (lxddy<0)
-						lxddy=0;
-					else if(lxddy>31)
-						lxddy=31;
-					Uint8 g=gradient[lxddx+32*lxddy];
+					int lyddy=ly+ddy;
+					if (lyddy<0)
+						lyddy=0;
+					else if(lyddy>31)
+						lyddy=31;
+					Uint8 g=gradient[lxddx+32*lyddy];
 					if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
 					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
