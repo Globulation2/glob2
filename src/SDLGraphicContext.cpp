@@ -94,8 +94,10 @@ bool SDLDrawableSurface::setRes(int w, int h, int depth, Uint32 flags)
 
 void SDLDrawableSurface::setAlpha(bool usePerPixelAlpha, Uint8 alphaValue)
 {
+	if (!surface)
+		return;
+
 	SDL_Surface *tempScreen;
-	assert(surface);
 	SDL_SetAlpha(surface, SDL_SRCALPHA, alphaValue);
 
 	if (usePerPixelAlpha)
@@ -114,7 +116,10 @@ void SDLDrawableSurface::setClipRect(int x, int y, int w, int h)
 	clipRect.y=y;
 	clipRect.w=w;
 	clipRect.h=h;
-	assert(surface);
+
+	if (!surface)
+		return;
+
 	SDL_SetClipRect(surface, &clipRect);
 }
 
@@ -124,18 +129,25 @@ void SDLDrawableSurface::setClipRect(void)
 	clipRect.y=0;
 	clipRect.w=surface->w;
 	clipRect.h=surface->h;
-	assert(surface);
+
+	if (!surface)
+		return;
+
 	SDL_SetClipRect(surface, &clipRect);
 }
 
 void SDLDrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
 {
-	assert(surface);
+	if (!surface)
+		return;
 	((SDLSprite *)sprite)->draw(surface, &clipRect, x, y, index);
 }
 
 void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	// TODO : do the alpha !!!
 	if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
 		return;
@@ -196,6 +208,9 @@ void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint
 
 void SDLDrawableSurface::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	drawHorzLine(x, y, w, r, g, b, a);
 	drawHorzLine(x, y+h-1, w, r, g, b, a);
 	drawVertLine(x, y, h, r, g, b, a);
@@ -204,6 +219,9 @@ void SDLDrawableSurface::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, 
 
 void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	if (a==ALPHA_OPAQUE)
 	{
 		SDL_Rect rect;
@@ -211,7 +229,6 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 		rect.y=y;
 		rect.w=w;
 		rect.h=h;
-		assert(surface);
 		SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b));
 	}
 	else
@@ -230,6 +247,9 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 
 void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	Uint32 pixel;
 
 	// clip on x
@@ -260,7 +280,6 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 	if (l<=0)
 		return;
 
-	assert(surface);
 	pixel = SDL_MapRGB(surface->format, r, g, b);
 
 	SDL_LockSurface(surface);
@@ -324,6 +343,9 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 
 void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	Uint32 pixel;
 
 	// clip on y
@@ -354,7 +376,6 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 	if (l<=0)
 		return;
 
-	assert(surface);
 	pixel = SDL_MapRGB(surface->format, r, g, b);
 
 	SDL_LockSurface(surface);
@@ -414,6 +435,9 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 
 void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	// from leto/calodox. 1999, Bresenham anti-aliased line code
 	const int FIXED=8;
 	const int I=255; /* nombre de degres different d'importance ligne/fond */
@@ -598,6 +622,9 @@ void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8
 
 void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	if (!surface)
+		return;
+
 	// LINE version
 	/*#ifndef M_PI
 	#define M_PI 3.1415927
@@ -714,6 +741,9 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg, ...)
 {
+	if (!surface)
+		return;
+
 	va_list arglist;
 	char output[1024];
 
@@ -721,22 +751,26 @@ void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *
 	vsnprintf(output, 1024, msg, arglist);
 	va_end(arglist);
 
-	assert(surface);
 	((const SDLFont *)font)->drawString(surface, x, y, output, &clipRect);
 }
 
 void SDLDrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
 {
-	assert(surface);
+	if (!surface)
+		return;
+
 	SDLDrawableSurface *sdlsurface=dynamic_cast<SDLDrawableSurface *>(surface);
-	SDL_Rect r;
+	if ((sdlsurface) && (sdlsurface->surface))
+	{
+		SDL_Rect r;
 
-	r.x=x;
-	r.y=y;
-	r.w=surface->getW();
-	r.h=surface->getH();
+		r.x=x;
+		r.y=y;
+		r.w=surface->getW();
+		r.h=surface->getH();
 
-	SDL_BlitSurface(sdlsurface->surface, NULL, this->surface, &r);
+		SDL_BlitSurface(sdlsurface->surface, NULL, this->surface, &r);
+	}
 }
 
 
@@ -812,22 +846,25 @@ void SDLGraphicContext::dbgprintf(const char *msg, ...)
 
 void SDLGraphicContext::nextFrame(void)
 {
-	SDL_Flip(surface);
+	if (surface)
+		SDL_Flip(surface);
 }
 
 void SDLGraphicContext::updateRects(SDL_Rect *rects, int size)
 {
-	SDL_UpdateRects(surface, size, rects);
+	if (surface)
+		SDL_UpdateRects(surface, size, rects);
 };
 
 void SDLGraphicContext::updateRect(int x, int y, int w, int h)
 {
-	SDL_UpdateRect(surface, x, y, w, h);
+	if (surface)
+		SDL_UpdateRect(surface, x, y, w, h);
 }
 
 void SDLGraphicContext::loadImage(const char *name)
 {
-	if (name)
+	if ((name) && (surface))
 	{
 		SDL_RWops *imageStream;
 		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
