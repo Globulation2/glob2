@@ -66,6 +66,7 @@ void YOGScreen::updateGameList(void)
 	gameList->clear();
 	for (std::list<YOG::GameInfo>::iterator game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
 		gameList->addText(game->name);
+	gameList->commit();
 }
 
 void YOGScreen::updatePlayerList(void)
@@ -73,6 +74,7 @@ void YOGScreen::updatePlayerList(void)
 	playerList->clear();
 	for (std::list<YOG::Client>::iterator client=globalContainer->yog->clients.begin(); client!=globalContainer->yog->clients.end(); ++client)
 		playerList->addText(client->userName);
+	playerList->commit();
 }
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -103,15 +105,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 				endExecute(-1);
 			// redraw all stuff
 			if (globalContainer->yog->newGameList(true))
-			{
 				updateGameList();
-				gameList->commit();
-			}
 			if (globalContainer->yog->newPlayerList(true))
-			{
 				updatePlayerList();
-				playerList->commit();
-			}
 			dispatchPaint(gfxCtx);
 			globalContainer->yog->unshareGame(); // zzz Don't we stop sharing game when it start ?
 		}
@@ -138,15 +134,18 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			int i=0;
 			for (game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
 				if (i==par1)
+				{
+					printf("i=%d\n", i);
+					assert(game!=globalContainer->yog->games.end());
+					
+					selectedGameInfo=new YOG::GameInfo(*game);
+					multiplayersJoin->tryConnection(selectedGameInfo);
+					
 					break;
+				}
 				else
 					i++;
-			printf("i=%d\n", i);
-			if (game!=globalContainer->yog->games.end())
-			{
-				selectedGameInfo=new YOG::GameInfo(*game);
-				multiplayersJoin->tryConnection(selectedGameInfo);
-			}
+			
 		}
 		else
 			;//TODO: a better communication system between YOG and YOGScreen!
@@ -167,16 +166,9 @@ void YOGScreen::paint(int x, int y, int w, int h)
 void YOGScreen::onTimer(Uint32 tick)
 {
 	if (globalContainer->yog->newGameList(true))
-	{
-		updateGameList();
-		gameList->commit();
-	}
-	
+		updateGameList();	
 	if (globalContainer->yog->newPlayerList(true))
-	{
 		updatePlayerList();
-		playerList->commit();
-	}
 	
 	globalContainer->yog->step();
 	while (globalContainer->yog->receivedMessages.size()>0)
@@ -267,15 +259,9 @@ void YOGScreen::onTimer(Uint32 tick)
 			assert(false);
 		}
 		if (globalContainer->yog->newGameList(true))
-		{
 			updateGameList();
-			gameList->commit();
-		}
 		if (globalContainer->yog->newPlayerList(true))
-		{
 			updatePlayerList();
-			playerList->commit();
-		}
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}

@@ -1045,7 +1045,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	strncpy((char *)(packet->data+8), playerName, 32);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
-		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);
+		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s) ipFromNAT=%d\n", Utilities::stringIP(serverIP), serverName, ipFromNAT);
 	else
 	{
 		fprintf(logFile, "failed to send presence request packet to host=(%s(%s))\n", Utilities::stringIP(serverIP), serverName);

@@ -481,7 +481,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].setTeamNumber(t);
 	memcpy(sessionInfo.players[p].name, (char *)(data+8), 32);
 	sessionInfo.players[p].setip(ip);
-	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data+4, 28);
+	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
 	fprintf(logFile, "this ip(%s) has ipFromNAT=%d!\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
 	// we check if this player has already a connection:
