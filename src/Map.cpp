@@ -676,14 +676,14 @@ void Map::growRessources(void)
 				int wax1=x+dwax;
 				int way1=y+dway;
 				
-				int wax2=x-dway*2;
-				int way2=y+dwax*2;
+				//int wax2=x-dway*2;
+				//int way2=y+dwax*2;
 				
 				int wax3=x-dwax*2;
 				int way3=y-dway*2;
 				
-				int wax4=x+dway*2;
-				int way4=y-dwax*2;
+				//int wax4=x+dway*2;
+				//int way4=y-dwax*2;
 				
 				bool expand=false;
 				if (r==ALGA)
