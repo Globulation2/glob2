@@ -209,7 +209,7 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { assert(NB_UNIT_TYPE==3); return length*16; }
+	int getDataLength(void) { assert(NB_UNIT_TYPE==3); return length*14; }
 	int getNumberOfSwarm(void) { return length; }
 
 	Uint16 *gid;
