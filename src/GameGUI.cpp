@@ -190,11 +190,11 @@ void GameGUI::step(void)
 		flagSelectedStep();
 	
 	if (game.teams[localTeam]->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
-		addMessage(globalContainer->texts.getString("[your units are under attack]"));
+		addMessage(globalContainer->texts.getString("[your units are under attack]"), 200, 30, 30);
 	if (game.teams[localTeam]->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-		addMessage(globalContainer->texts.getString("[your buildings are under attack]"));
+		addMessage(globalContainer->texts.getString("[your buildings are under attack]"), 255, 0, 0);
 	if (game.teams[localTeam]->wasEvent(Team::BUILDING_FINISHED_EVENT))
-		addMessage(globalContainer->texts.getString("[building has been finished]"));
+		addMessage(globalContainer->texts.getString("[building has been finished]"), 30, 255, 30);
 		
 	// do a yog step
 	globalContainer->yog->step();
@@ -1596,7 +1596,12 @@ void GameGUI::drawOverlayInfos(void)
 			
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
 		{
+			/*globalContainer->standardFont->pushColor(0, 0, 0);
+			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
+			globalContainer->standardFont->popColor();*/
+			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
+			globalContainer->standardFont->popColor();
 			ymesg+=20;
 			it->showTicks--;
 		}

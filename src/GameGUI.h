@@ -186,17 +186,22 @@ private :
 	{
 		int showTicks;
 		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4];
+		Uint8 r, g, b, a;
 	} Message;
 	std::list<Message> messagesList;
 	enum {
 		DEFAULT_MESSAGE_SHOW_TICKS = 100,
 	};
 	//! add a message to the window message list
-	void addMessage(const char *msgText, int category=0)
+	void addMessage(const char *msgText, Uint8 r = 230, Uint8 g = 230, Uint8 b = 230, Uint8 a = DrawableSurface::ALPHA_OPAQUE)
 	{
 		Message message;
 		message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
 		snprintf(message.text, MAX_MESSAGE_SIZE, msgText);
+		message.r = r;
+		message.g = g;
+		message.b = b;
+		message.a = a;
 		messagesList.push_front(message);
 	}
 	// Typing stuff :
