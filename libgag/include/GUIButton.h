@@ -59,7 +59,7 @@ protected:
 		ITEM(std::string, font)
 	CLASSEND;
 
-	// cache, recomputed on interHighlightableWidget(returnCode)nalInit
+	// cache, recomputed on internalInit
 	Font *fontPtr;
 
 public:
@@ -82,8 +82,6 @@ protected:
 	MEMBERS
 		ITEM(bool, state)
 	CLASSEND;
-
-	bool highlighted;
 
 public:
 	OnOffButton() { state=false; returnCode=0; highlighted=false; }

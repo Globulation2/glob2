@@ -159,7 +159,6 @@ void RectangularWidget::repaint(void)
 
 	parent->paint(x, y, w, h);
 	internalRepaint(x, y, w, h);
-
 	parent->addUpdateRect(x, y, w, h);
 }
 
