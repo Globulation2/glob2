@@ -231,9 +231,14 @@ int Glob2::run(int argc, char *argv[])
 
 	yog=new YOG();
 	
+	// TODO : this structure is ugly, do we have to keep hostServer ?
 	if (globalContainer->hostServer)
 	{
-		return runHostServer(argc, argv);
+		int ret = runHostServer(argc, argv);
+		delete yog;
+		delete globalContainer;
+		Toolkit::close();
+		return 0;
 	}
 
 	isRunning=true;

@@ -28,6 +28,16 @@
 #include <Toolkit.h>
 #include <GAG.h>
 
+// version related stuff
+#ifdef HAVE_CONFIG_H
+	#include <config.h>
+#else
+	#define VERSION "Win32 - not using autoconf"
+#endif
+#include "Version.h"
+#include "YOGConsts.h"
+#include "NetConsts.h"
+
 
 GlobalContainer::GlobalContainer(void)
 {
@@ -119,6 +129,21 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			}
 			continue;
 		}
+		if (strcmp(argv[i], "-v")==0 || strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
+		{
+			printf("\nGlobulation 2 - %s\n\n", VERSION);
+			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
+			printf("Featuring :\n");
+			printf("* Map version %d\n", VERSION_MINOR);
+			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);
+			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
+			printf("* YOG Protocol version %d\n\n", YOG_PROTOCOL_VERSION);
+			printf("This program and all related materials are GPL, see COPYING for details.\n");
+			printf("(C) 2001-2004 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
+			printf("See AUTHORS for a full list.\n\n");
+			printf("Type %s -h for a list of command line options.\n\n", argv[0]);
+			exit(0);
+		}
 		if (strcmp(argv[i], "-f")==0)
 		{
 			settings.screenFlags|=DrawableSurface::FULLSCREEN;
@@ -190,6 +215,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
+			printf("-v\tprint the version adn exit\n");
 			exit(0);
 		}
 
