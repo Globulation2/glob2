@@ -20,6 +20,12 @@
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
+#include <GUISelector.h>
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <GUIAnimation.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 
 //! Main menu screen
