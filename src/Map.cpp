@@ -867,6 +867,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.airUnit = NOGUID;
 	initCase.forbidden = 0;
 	initCase.guardArea = 0;
+	initCase.clearArea = 0;
 	
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
@@ -969,6 +970,11 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 		else
 			cases[i].guardArea = 0;
 		
+		if (sessionGame->versionMinor >= 38)
+			cases[i].clearArea = stream->readUint32("clearArea");
+		else
+			cases[i].clearArea = 0;
+		
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1062,6 +1068,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].airUnit, "airUnit");
 		stream->writeUint32(cases[i].forbidden, "forbidden");
 		stream->writeUint32(cases[i].guardArea, "guardArea");
+		stream->writeUint32(cases[i].clearArea, "clearArea");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1246,6 +1253,16 @@ void Map::computeLocalGuardArea(int localTeamNo)
 			localGuardAreaMap.set(i, true);
 		else
 			localGuardAreaMap.set(i, false);
+}
+
+void Map::computeLocalClearArea(int localTeamNo)
+{
+	int localTeamMask = 1<<localTeamNo;
+	for (size_t i=0; i<size; i++)
+		if ((cases[i].clearArea & localTeamMask) != 0)
+			localClearAreaMap.set(i, true);
+		else
+			localClearAreaMap.set(i, false);
 }
 
 void Map::decRessource(int x, int y)

@@ -56,6 +56,7 @@ struct Case
 
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
+	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
 };
 
 
@@ -191,6 +192,8 @@ public:
 	void computeLocalForbidden(int localTeamNo);
 	//! Compute localGuardAreaMap from cases array
 	void computeLocalGuardArea(int localTeamNo);
+	//! Compute localClearAreaMap from cases array
+	void computeLocalClearArea(int localTeamNo);
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y)
@@ -522,6 +525,8 @@ public:
 	Utilities::BitArray localForbiddenMap;
 	//! true = guard area
 	Utilities::BitArray localGuardAreaMap;
+	//! true = clear area
+	Utilities::BitArray localClearAreaMap;
 	
 public:
 	// Used to go to ressources
