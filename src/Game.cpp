@@ -1214,7 +1214,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 
 	// We draw debug area:
-	//if (false)
+	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				//if (map.getForbidden(x+viewportX, y+viewportY))
@@ -1222,7 +1222,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
 					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
 					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 				}
@@ -1246,8 +1246,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						int lx=(x+viewportX-b->posX+15+32)&31;
 						int ly=(y+viewportY-b->posY+15+32)&31;
 						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->gradient[1][lx+ly*32]);
-						globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
-						globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
+						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
+						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
 
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
