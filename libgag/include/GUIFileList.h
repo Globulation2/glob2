@@ -26,19 +26,27 @@
 
 namespace GAGGUI
 {
+	//! A widget that display a list of file, with the possibility to enter folders.
 	class FileList: public List
 	{
 	protected:
+		//! the starting directory, can't go upper, only recurse in subfolder
 		std::string dir;
+		//! extension to show
 		std::string extension;
+		//! if true, allow subfolder entrance
 		bool recurse;
+		//! current subfolder
 		std::string current;
 	
 	public:
+		//! Constructor
 		FileList():List() { }
+		//! Constructor, with arguments. x, y, w, h are the positional information. hAlign and vAlign the layouting flags. font the name of the font to use, dir is the initial directory in the CVS, extension is the extension to show, recurse is to allow subfolder entrance
 		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
 						const char *dir,
 						const char *extension=NULL, const bool recurse=false);
+		//! Destructor
 		virtual ~FileList();
 	
 		//! converts file name to displayed name (default removes .extension)
@@ -54,7 +62,9 @@ namespace GAGGUI
 		virtual void sort(void); 
 	
 	public:
+		//! Regenerate the list content from the current directory
 		void generateList();
+		//! Called when selection changes. Override List behaviour, enter subfolder if enabled and possible and signal parent otherwise
 		void selectionChanged();
 	};
 }
