@@ -269,7 +269,10 @@ public:
 		{
 			Uint32 w0 = (r<<24) | (g<<16) | (b<<8) | a;
 			Uint32 w1 = (o.r<<24) | (o.g<<16) | (o.b<<8) | o.a;
-			return w0 < w1;
+			if (w0 == w1)
+				return shape < o.shape;
+			else
+				return w0 < w1;
 		}
 	};
 

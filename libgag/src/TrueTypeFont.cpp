@@ -22,7 +22,6 @@
 #include <SupportFunctions.h>
 #include <FileManager.h>
 #include <assert.h>
-#include <SDL_image.h>
 #include <iostream>
 
 TrueTypeFont::TrueTypeFont()
@@ -137,13 +136,14 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 		c.b = styleStack.top().b;
 		c.unused = styleStack.top().a;
 		
-		s = TTF_RenderUTF8_Blended(font, text, c);
-		if (s == NULL)
+		SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
+		if (temp == NULL)
 			return;
-		/*SDL_Surface *temp = s;
+		
 		s = SDL_DisplayFormatAlpha(temp);
-		SDL_FreeSurface(temp);*/
-			
+		assert(s);
+		SDL_FreeSurface(temp);
+		
 		// store in cache
 		cache[entry] = s;
 		std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;

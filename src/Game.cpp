@@ -2350,6 +2350,8 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	{
 		minimap->drawHorzLine(decX, decY+stepStart+stepLength, szX, 100, 100, 100);
 	}
+	
+	//minimap->drawString(5, 5, globalContainer->littleFont, "test");
 
 	/*// overdraw flags
 	if (localTeam>=0)

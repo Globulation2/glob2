@@ -3507,6 +3507,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	message.r = r;
 	message.g = g;
 	message.b = b;
+	message.a = DrawableSurface::ALPHA_OPAQUE;
 	char fullText[1024];
 	
 	va_list ap;
