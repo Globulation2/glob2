@@ -40,6 +40,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	downloadStream=NULL;
 	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
 	logFileDownload=globalContainer->logFileManager->getFile("MultiplayersJoinDownload.log");
+	fprintf(logFile, "INADDR_BROADCAST=%s\n", Utilities::stringIP(INADDR_BROADCAST));
 	assert(logFile);
 	duplicatePacketFile=0;
 	filename=NULL;
@@ -366,7 +367,7 @@ void MultiplayersJoin::dataFileRecieved(Uint8 *data, int size, IPaddress ip)
 	Uint32 writingIndex=getUint32(data, 8);
 	int writingSize=size-12;
 	assert(writingSize>0);
-	fprintf(logFileDownload, " received data. size=%d, writingIndex=%d, writingSize=%d\n", size, writingIndex, writingSize);
+	fprintf(logFileDownload, " received data. size=%d, writingIndex=%d (%dk), writingSize=%d\n", size, writingIndex, writingIndex/1024, writingSize);
 	totalReceived++;
 	
 	Uint32 minIndex=(Uint32)-1;
@@ -407,7 +408,7 @@ void MultiplayersJoin::dataFileRecieved(Uint8 *data, int size, IPaddress ip)
 			}
 	}
 	if (anyHit)
-		fprintf(logFileDownload, "new unreceivedIndex=%d.\n", unreceivedIndex);
+		fprintf(logFileDownload, "new unreceivedIndex=%d (%dk)\n", unreceivedIndex, unreceivedIndex/1024);
 	
 	SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
 	SDL_RWwrite(downloadStream, data+12, writingSize, 1);
@@ -1114,7 +1115,7 @@ void MultiplayersJoin::sendingTime()
 		if (startDownloadTimeout<0 || receivedCounter>=brandwidth)
 		{
 			//Then we have to send a feed-back.
-			fprintf(logFileDownload, "startDownloadTimeout=%d, receivedCounter=%d, brandwidth=%d\n", startDownloadTimeout, receivedCounter, brandwidth);
+			fprintf(logFileDownload, "startDownloadTimeout=%d, receivedCounter=%d, brandwidth=%d, unreceivedIndex=%d (%dk)\n", startDownloadTimeout, receivedCounter, brandwidth, unreceivedIndex, unreceivedIndex/1024);
 			
 			//We have to compute the unfragmented segments:
 			Uint32 receivedBegin[8];
@@ -1123,6 +1124,7 @@ void MultiplayersJoin::sendingTime()
 			memset(receivedEnd, 0, 8*sizeof(Uint32));
 			Uint32 alreadyCountedIndex=unreceivedIndex;
 			int ixend=0;
+			fprintf(logFileDownload, " minIndex=(");
 			for (int ix=0; ix<8; ix++)
 			{
 				Uint32 minIndex=(Uint32)-1;
@@ -1150,21 +1152,23 @@ void MultiplayersJoin::sendingTime()
 					{
 						hit=false;
 						for (int i=0; i<PACKET_SLOTS; i++)
-						if (packetSlot[i].received)
-						{
-							Uint32 index=packetSlot[i].index;
-							if (index>alreadyCountedIndex && index==minIndex)
+							if (packetSlot[i].received)
 							{
-								minIndex+=1024;
-								hit=true;
+								Uint32 index=packetSlot[i].index;
+								if (index>alreadyCountedIndex && index==minIndex)
+								{
+									minIndex+=1024;
+									hit=true;
+								}
 							}
-						}
 					}
-					receivedEnd[ix]=minIndex;
+					assert(minIndex-1024>alreadyCountedIndex);
+					receivedEnd[ix]=minIndex-1024;
 					alreadyCountedIndex=minIndex;
 					ixend=ix;
 				}
 			}
+			fprintf(logFileDownload, ")\n");
 			
 			// Let's create the packet:
 			int size=8+8*ixend;
@@ -1177,8 +1181,8 @@ void MultiplayersJoin::sendingTime()
 			data[2]=0;
 			data[3]=0;
 			addUint32(data, unreceivedIndex, 4);
-			fprintf(logFileDownload, "ixend=%d\n", ixend);
-			fprintf(logFileDownload, "received=(");
+			fprintf(logFileDownload, " ixend=%d\n", ixend);
+			fprintf(logFileDownload, " received=(");
 			for (int ix=0; ix<ixend; ix++)
 			{
 				addUint32(data, receivedBegin[ix], 8+ix*8);
