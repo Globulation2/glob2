@@ -131,7 +131,9 @@ bool SessionGame::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 
 	versionMajor=SDL_ReadBE32(stream);
+	assert(versionMajor==VERSION_MAJOR);
 	versionMinor=SDL_ReadBE32(stream);
+	assert(versionMinor==VERSION_MINOR);
 	
 	if (memcmp(signature,"SEGb",4)!=0)
 		return false;
