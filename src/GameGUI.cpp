@@ -96,7 +96,7 @@ void GameGUI::statStep(void)
 	stats[statsPtr]=newStats;
 }
 
-void GameGUI::processGameMenu(SDL_Event *event)
+bool GameGUI::processGameMenu(SDL_Event *event)
 {
 	gameMenuScreen->translateAndProcessEvent(event);
 	switch (inGameMenu)
@@ -105,25 +105,54 @@ void GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
+				case 3:
+				delete gameMenuScreen;
+				if (game.session.numberOfPlayer<=8)
+				{
+					inGameMenu=IGM_ALLIANCE8;
+					gameMenuScreen=new InGameAlliance8Screen();
+					int i;
+					for (i=0; i<game.session.numberOfPlayer; i++)
+						strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
+					for (;i<8; i++)
+						((InGameAlliance8Screen *)gameMenuScreen)->names[i][0]=0;
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getGraphicContext());
+				}
+				else
+				{
+					inGameMenu=IGM_NONE;
+				}
+				return true;
+
 				case 4:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
-				break;
+				return true;
 
 				case 5:
 				orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
-				break;
+				return true;
 
 				default:
-				break;
+				return false;
 			}
 		}
-		break;
+
+		case IGM_ALLIANCE8:
+		{
+			switch (gameMenuScreen->endValue)
+			{
+				case 30:
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				return true;
+			}
+		}
 
 		default:
-		break;
+		return false;
 	}
 }
 
@@ -131,7 +160,8 @@ void GameGUI::processEvent(SDL_Event *event)
 {
 	// if there is a menu he get events first
 	if (inGameMenu)
-		processGameMenu(event);
+		if (processGameMenu(event))
+			return;
 
 	if (event->type==SDL_KEYDOWN)
 	{
@@ -210,7 +240,6 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getGraphicContext());
 					inGameMenu=IGM_MAIN;
 				}
-				//orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 			}
 			break;
 		case SDLK_UP:

@@ -155,3 +155,7 @@ Return to game
 [quit the game]
 Quitter le jeu
 Quit the game
+[ok]
+Accepter
+Ok
+

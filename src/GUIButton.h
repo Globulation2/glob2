@@ -15,7 +15,6 @@ public:
 	Button(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, int returnCode);
 	virtual ~Button() { }
 
-	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(GraphicContext *gfx);
 	virtual void repaint(void);
@@ -44,5 +43,24 @@ protected:
 	const Font *font;
 	int decX, decY;
 };
+
+class OnOffButton:public Widget
+{
+public:
+	OnOffButton(int x, int y, int w, int h, bool startState, int returnCode);
+	virtual ~OnOffButton() { }
+
+	virtual void onSDLEvent(SDL_Event *event);
+	virtual void paint(GraphicContext *gfx);
+	virtual void repaint(void);
+
+protected:
+	int x, y, w, h;
+	bool state;
+	int returnCode;
+	bool highlighted;
+	GraphicContext *gfx;
+};
+
 
 #endif 
