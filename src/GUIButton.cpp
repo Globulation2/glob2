@@ -103,6 +103,7 @@ void Button::paint(DrawableSurface *gfx)
 TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode)
 :Button(x, y, w, h, arch, standardId, highlightID, returnCode)
 {
+	this->text=NULL;
 	this->font=font;
 	setText(text);
 }
@@ -117,6 +118,8 @@ void TextButton::paint(DrawableSurface *gfx)
 void TextButton::setText(const char *text)
 {
 	int textLength=strlen(text);
+	if (this->text)
+		delete[] this->text;
 	this->text=new char[textLength+1];
 	strncpy(this->text, text, textLength+1);
 	decX=(w-font->getStringWidth(text))>>1;
