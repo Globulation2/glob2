@@ -151,9 +151,9 @@ void BuildingsTypes::load(const char *filename)
 	}
 }
 
-int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
+Sint32 BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 {
-	int i=0;
+	Sint32 i=0;
 	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		BuildingType *bt=*it;

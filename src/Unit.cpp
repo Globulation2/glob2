@@ -177,7 +177,7 @@ void Unit::save(SDL_RWops *stream)
 {
 	// unit specification
 	// we drop the unittype pointer, we save only the number
-	SDL_WriteBE32(stream, (Uint32)typeNum);
+	SDL_WriteBE32(stream, typeNum);
 
 	// identity
 	SDL_WriteBE16(stream, gid);

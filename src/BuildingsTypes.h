@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charriï¿½e
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ public:
 	virtual void load(const char *filename);
 	virtual ~BuildingsTypes() { }
 
-	int getTypeNum(int type, int level, bool isBuildingSite);
+	Sint32 getTypeNum(int type, int level, bool isBuildingSite);
 };
 
 #endif

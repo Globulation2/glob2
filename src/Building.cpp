@@ -40,7 +40,7 @@ Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32
 	load(stream, types, owner, versionMinor);
 }
 
-Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types)
+Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types)
 {
 	logFile = globalContainer->logFileManager->getFile("Building.log");
 	
@@ -523,7 +523,7 @@ void Building::launchConstruction(void)
 
 void Building::cancelConstruction(void)
 {
-	Uint32 recoverTypeNum=typeNum;
+	Sint32 recoverTypeNum=typeNum;
 	BuildingType *recoverType=type;
 
 	if (type->isBuildingSite)
