@@ -22,13 +22,14 @@
 
 #include "GUIBase.h"
 #include <vector>
+#include <string>
 
 class Font;
 
 class TextArea:public RectangularWidget
 {
 public:
-	TextArea() { font=NULL; textBuffer=NULL; }
+	TextArea() { font=NULL; }
 	TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
 	virtual ~TextArea();
 
@@ -36,7 +37,7 @@ public:
 	virtual void onSDLEvent(SDL_Event *event);
 
 	virtual void setText(const char *text);
-	virtual const char *getText(void) { return textBuffer; }
+	virtual const char *getText(void) { return text.c_str(); }
 	virtual void addText(const char *text);
 	virtual void addChar(const char c);
 	virtual void remText(unsigned pos, unsigned len);
@@ -47,7 +48,7 @@ public:
 
 protected:
 	virtual void internalPaint(void);
-	virtual void internalSetText(const char *text);
+	virtual void layout(void);
 	virtual void repaint(void);
 	//! we make sure the repaint will show something correct
 	virtual void computeAndRepaint(void);
@@ -55,13 +56,11 @@ protected:
 protected:
 	bool readOnly;
 	const Font *font;
-	char *textBuffer;
-	const char *initialText;
-	unsigned int textBufferLength;
 	unsigned int areaHeight;
 	unsigned int areaPos;
 	unsigned int charHeight;
 	std::vector <unsigned int> lines;
+	std::string text;
 	
 	// edit mod variables
 	// this one is the only one always valid, other are recomputed from it
