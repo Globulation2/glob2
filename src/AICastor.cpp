@@ -948,8 +948,6 @@ Order *AICastor::controlUpgrades()
 	int upgradeLevelGoal=((buildsAmount+1)>>1);
 	if (upgradeLevelGoal>3)
 		upgradeLevelGoal=3;
-	printf("controlUpgrades(%d), shortTypeNum=%d, level=%d, upgradeLevelGoal=%d\n",
-		bi, shortTypeNum, level, upgradeLevelGoal);
 	if (level>=upgradeLevelGoal)
 		return NULL;
 	int sumOver=0;
@@ -1262,7 +1260,7 @@ void AICastor::addProjects()
 		}
 		if (needSwim)
 		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 7, "boot");
+			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 4, "boot");
 			project->successWait=strategy.successWait;
 			project->critical=true;
 			project->priority=0;
@@ -1272,7 +1270,7 @@ void AICastor::addProjects()
 	}
 	if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 7, "boot");
+		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 5, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
