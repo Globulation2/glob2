@@ -41,9 +41,10 @@ Text::Text(int x, int y, const char *font, const char *text, int w, int h)
 void Text::setText(const char *newText, ...)
 {
 	assert(parent);
-	assert(fontPtr);
 	assert(newText);
-	
+	fontPtr = Toolkit::getFont(font.c_str());
+	assert(fontPtr);
+
 	va_list arglist;
 	char output[1024];
 	int upW, upH, nW, nH;
@@ -69,14 +70,19 @@ void Text::setText(const char *newText, ...)
 		upH=fontPtr->getStringHeight(text.c_str());
 		nH=fontPtr->getStringHeight(output);
 	}
-	parent->paint(x, y, upW, upH);
+
 
 	// copy text
 	this->text = output;
 
-	// draw new
-	paint();
-	parent->addUpdateRect(x, y, MAX(nW, upW), MAX(nH, upH));
+	if (visible)
+	{
+		parent->paint(x, y, upW, upH);
+
+		// draw new
+		paint();
+		parent->addUpdateRect(x, y, MAX(nW, upW), MAX(nH, upH));
+	}
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
@@ -118,6 +124,7 @@ void Text::paint(void)
 void Text::repaint(void)
 {
 	int upW, upH;
+	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
 	
 	DrawableSurface *s=parent->getSurface();
