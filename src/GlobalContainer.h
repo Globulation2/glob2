@@ -21,27 +21,11 @@
 #define __GLOBALCONTAINER_H
 
 #include <GAG.h>
+#include "Header.h"
 #include "BuildingType.h"
+#include "Ressource.h"
+#include "Settings.h"
 #include <string>
-
-class Settings : public base::Object
-{
-protected:
-	CLASSDEF(Settings)
-		BASECLASS(base::Object)
-	MEMBERS
-		ITEM(std::string, username)
-		ITEM(int, screenWidth)
-		ITEM(int, screenHeight)
-		ITEM(Uint32, screenFlags)
-		ITEM(Uint32, optionFlags)
-		ITEM(Uint32, graphicType)
-		ITEM(Uint32, defaultLanguage)
-	CLASSEND;
-
-public:
-	Settings();
-};
 
 class FileManager;
 class LogFileManager;
@@ -56,9 +40,6 @@ private:
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 
-	friend class SettingsScreen;
-	//! user preferences
-	base::Ptr<Settings> settings;
 	const char *userName;
 
 public:
@@ -72,8 +53,6 @@ public:
 	void popUserName();
 	void setUserName(const char *name);
 	const char *getUsername(void) { return userName; }
-	Uint32 getGfxFlags() { return settings->screenFlags; }
-	Uint32 getOptionFlags() { return settings->optionFlags; }
 
 public:
 	FileManager *fileManager;
@@ -92,6 +71,8 @@ public:
 	Font *standardFont;
 	Font *littleFont;
 
+	Settings settings;
+
 	BuildingsTypes buildingsTypes;
 	RessourcesTypes ressourcesTypes;
 
@@ -101,5 +82,5 @@ public:
 
 extern GlobalContainer *globalContainer;
 
-#endif 
+#endif
 

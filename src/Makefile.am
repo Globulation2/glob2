@@ -34,6 +34,8 @@ Glob2.cpp\
 Glob2.h\
 GlobalContainer.cpp\
 GlobalContainer.h\
+Settings.cpp\
+Settings.h\
 Header.h\
 Makefile.am\
 Map.cpp\

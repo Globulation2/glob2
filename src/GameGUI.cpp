@@ -696,7 +696,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (newH<480)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->getGfxFlags());
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags);
 	}
 }
 
@@ -1292,7 +1292,7 @@ void GameGUI::draw(void)
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 
 	// draw menu background, black if low speed graphics, transparent otherwise
-	if (globalContainer->getOptionFlags()&GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
@@ -1993,7 +1993,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// info bar
-	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 0);
 	else
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 40, 180);
@@ -2085,14 +2085,14 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawAll(int team)
 {
-	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 	else
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 	
 	static const bool useMapDiscovered=false;
 	bool drawBuildingRects=(typeToBuild>=0);
-	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16);
 		game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, useMapDiscovered);
