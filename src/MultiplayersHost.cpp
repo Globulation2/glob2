@@ -1252,11 +1252,12 @@ void MultiplayersHost::sendingTime()
 					latencyCount++;
 				}
 			int latency;
-			if (latencyCount>32)
+			if (latencyCount>8)
 				latency=latencySum/latencyCount;
 			else
-				latency=32;
-			if (playerFileTra[p].latency!=latency)
+				latency=8;
+			int latencyChange=latency-playerFileTra[p].latency;
+			if (latencyChange)
 			{
 				fprintf(logFileDownload, "new latency=%d.\n", latency);
 				playerFileTra[p].latency=latency;
@@ -1273,15 +1274,16 @@ void MultiplayersHost::sendingTime()
 			
 			// We update the brandwidth:
 			int brandwidth=playerFileTra[p].brandwidth;
+			if (latencyChange>0)
+				brandwidth/=1+latencyChange;
 			if (nbPacketsLost>playerFileTra[p].lastNbPacketsLost)
-			{
 				brandwidth-=2*(nbPacketsLost-playerFileTra[p].lastNbPacketsLost);
-				if (brandwidth<1)
-					brandwidth=1;
-				if (playerFileTra[p].brandwidth!=brandwidth)
-					fprintf(logFileDownload, "new brandwidth=%d.\n", brandwidth);
-				playerFileTra[p].brandwidth=brandwidth;
-			}
+			if (brandwidth<1)
+				brandwidth=1;
+			if (playerFileTra[p].brandwidth!=brandwidth)
+				fprintf(logFileDownload, "new brandwidth=%d.\n", brandwidth);
+			playerFileTra[p].brandwidth=brandwidth;
+			
 			playerFileTra[p].lastNbPacketsLost=nbPacketsLost;
 			
 			// Can we send something ?
