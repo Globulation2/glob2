@@ -463,6 +463,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_SHARING_GAME:
 	{
 		selectedGame=getUint32(data, 4);
+		if (selectedGame)
+			isSelectedGame=true;
 		if (yogSharingState==YSS_SHARING_GAME)
 		{
 			fprintf(logFile, "game %s is shared (selectedGame=%d)\n", sharingGameName, selectedGame);
@@ -1439,6 +1441,7 @@ void YOG::setJoinGameSocket(UDPsocket socket)
 	joinGameSocketTimeout=0;
 	joinGameSocketTOTL=3;
 	unjoining=false;
+	joinGameSocketReceived=false;
 }
 
 bool YOG::joinGameSocketSet()
@@ -1490,7 +1493,6 @@ IPaddress YOG::ipFromUserName(char userName[32])
 
 char *YOG::userNameFromUID(Uint32 uid)
 {
-	bool found=false;
 	for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
 		if (uid==client->uid)
 			return client->userName;

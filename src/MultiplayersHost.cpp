@@ -709,7 +709,7 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 			return;
 		}
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
-		fprintf(logFileDownload, "player %d unreceivedIndex=%d (%dk)\n", p, unreceivedIndex, unreceivedIndex/1024);
+		fprintf(logFileDownload, "player %d unreceivedIndex=%d (%dk), fileSize=%d (%dk)\n", p, unreceivedIndex, unreceivedIndex/1024, fileSize, fileSize/1024);
 		
 		if (unreceivedIndex>=fileSize)
 		{

@@ -628,7 +628,7 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 {
 	if (waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 	{
-		fprintf(logFile, "server(%s) has recieved our stillCrossConnecting state.\n", Utilities::stringIP(ip));
+		fprintf(logFile, "server(%s) has recieved our stillCrossConnecting state. size=(%d)\n", Utilities::stringIP(ip), size);
 		if (waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 		{
 			waitingTimeout=SHORT_NETWORK_TIMEOUT;
@@ -656,18 +656,23 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 				l+=2;
 				char *userName=yog->userNameFromUID(uid);
 				if (userName)
+				{
+					fprintf(logFile, " userName=(%s), ip=(%s)", userName, Utilities::stringIP(ip));
 					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+					{
+						printf("  type[%d]=%d\n", j, sessionInfo.players[j].type);
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
 							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
 							{
-								fprintf(logFile, " player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
+								fprintf(logFile, "   player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
 								sessionInfo.players[j].setip(ip);
-								sessionInfo.players[j].waitForNatResolution=false;
 							}
 							else
-								fprintf(logFile, " player (%d) (%s) not switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
+								fprintf(logFile, "   player (%d) (%s) not switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
 						}
+					}
+				}
 			}
 			assert(l==size);
 		}
