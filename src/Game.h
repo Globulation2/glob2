@@ -41,7 +41,7 @@ public:
 	};
 
 public:
-	Game();
+	Game(GameGUI *gui);
 	virtual ~Game();
 
 private:
@@ -53,7 +53,7 @@ private:
 		BOTTOM_TO_TOP
 	};
 	
-	void init(void);
+	void init(GameGUI *gui);
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2);
 	
 	//! return true if all human are allied together, flase otherwise
@@ -76,9 +76,9 @@ public:
 	//! look for each team if it has won or not
 	void wonSyncStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed
-	void scriptSyncStep(GameGUI *gui);
+	void scriptSyncStep();
 	//! called by gui, execute a step for this game. The gui parameter is for the script
-	void syncStep(GameGUI *gui, Sint32 localTeam);
+	void syncStep(Sint32 localTeam);
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
@@ -116,6 +116,7 @@ public:
 	Map map;
 	DrawableSurface *minimap;
 	Mapscript script;
+	GameGUI *gui;
 
 public:
 	int mouseX, mouseY;

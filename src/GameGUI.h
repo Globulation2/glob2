@@ -97,7 +97,7 @@ public:
 	void disableGUIElement(int id);
 
 	// Stats for engine
-	void setLastStepTimeToWait(int s);
+	void setCpuLoad(int s);
 
 private:
 	bool processGameMenu(SDL_Event *event);
@@ -239,18 +239,12 @@ private:
 	bool hasEndOfGameDialogBeenShown;
 
 	// On screen message handling
-	// --------------------------
-
 	struct Message
 	{
 		enum { DEFAULT_MESSAGE_SHOW_TICKS = 180 };
-
-		// since when it is shown
-		int showTicks;
-		// text
+		int showTicks; // since when it is shown
 		std::string text;
-		// color
-		Uint8 r, g, b, a;
+		Uint8 r, g, b, a; // color
 	};
 	
 	std::list<Message> messagesList;
@@ -267,18 +261,12 @@ private:
 	int typingInputScreenInc;
 	
 	// Minimap marking handling
-	// ------------------------
-	
 	struct Mark
 	{
 		enum { DEFAULT_MARK_SHOW_TICKS = 40 };
-
-		// since when it is shown
-		int showTicks;
-		// position
-		int x, y;
-		// color
-		Uint8 r, g, b;
+		int showTicks; // since when it is shown
+		int x, y; // position
+		Uint8 r, g, b; // color
 	};
 
 	std::list<Mark> markList;
@@ -287,8 +275,9 @@ private:
 	void addMark(MapMarkOrder *mmo);
 	
 	// how long the COU has been idle last tick
-	std::valarray<int> smoothedStepTimeToWait;
-	unsigned smoothedStepTimeToWaitPos;
+	#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
+	int smoothedCpuLoad[SMOOTH_CPU_LOAD_WINDOW_LENGTH];
+	unsigned smoothedCpuLoadPos;
 };
 
 #endif
