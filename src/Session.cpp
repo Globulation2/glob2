@@ -20,6 +20,7 @@
 
 #include "Session.h"
 #include "Order.h"
+#include "GlobalContainer.h"
 
 SessionGame::SessionGame()
 {
@@ -45,22 +46,37 @@ bool SessionGame::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-		
+
 	numberOfPlayer=SDL_ReadBE32(stream);
 	numberOfTeam=SDL_ReadBE32(stream);
 	gameTPF=SDL_ReadBE32(stream);
 	gameLatency=SDL_ReadBE32(stream);
-	
+
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	return true;
 }
 
 Uint8 SessionGame::getOrderType()
 {
 	return DATA_SESSION_GAME;
+}
+
+void SessionInfo::draw(DrawableSurface *gfx)
+{
+	gfx->drawFilledRect(20, 60, gfx->getW()-40, 200, 0, 0, 0);
+	for (int i=0; i<numberOfPlayer; i++)
+	{
+		int i24=(players[i].ip.host>>24)&0xFF;
+		int i16=(players[i].ip.host>>16)&0xFF;
+		int i8=(players[i].ip.host>>8)&0xFF;
+		int i0=(players[i].ip.host>>0)&0xFF;
+		// NOTE : ip.host is Big Endian
+		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %d : %d.%d.%d.%d", players[i].name, players[i].teamNumber, i0, i8, i16, i24);
+	}
+
 }
 
 char *SessionGame::getData()
@@ -95,7 +111,7 @@ int SessionGame::getDataLength()
 Sint32 SessionGame::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	cs^=numberOfPlayer;
 	cs^=numberOfTeam;
 	cs=(cs<<31)|(cs>>1);

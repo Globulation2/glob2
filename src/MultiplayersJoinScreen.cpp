@@ -31,6 +31,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	serverName=new TextInput(150, 170, 340, 30, globalContainer->standardFont, "192.168.1.1", true);
 	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
+	strncpy(multiplayersJoin.serverName, serverName->text, 128);
+	strncpy(multiplayersJoin.playerName, playerName->text, 128);
 
 	addWidget(new TextButton(150, 350, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
@@ -59,6 +61,7 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 
 void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
+	// TODO : call SessionInfo.draw()
 	multiplayersJoin.onTimer(tick);
 
 	if ((multiplayersJoin.waitingState!=MultiplayersJoin::WS_TYPING_SERVER_NAME) && multiplayersJoin.validSessionInfo)

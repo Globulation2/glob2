@@ -480,6 +480,10 @@ inline Uint32 getUint32(const char *data, int pos)
 	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
 }
 
+inline Uint32 getUint32RAW(const char *data, int pos)
+{
+	return *(Uint32 *)(((Uint8 *)data) +pos) ;
+}
 
 inline void addSint32(const Uint8 *data, Sint32 val, int pos)
 {

@@ -68,6 +68,9 @@ public:
 	Sint32 checkSum();
 	
 	bool setLocal(int p);
+
+	//! draw a list of players
+	void draw(DrawableSurface *gfx);
 	
 public:
 	BaseMap map;
