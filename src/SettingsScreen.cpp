@@ -35,7 +35,7 @@ SettingsScreen::SettingsScreen()
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_PRESSED)
+	if (action==BUTTON_RELEASED)
 	{
 		strncpy(globalContainer->settings.userName, userName->text, BasePlayer::MAX_NAME_LENGTH);
 		endExecute(par1);
