@@ -186,6 +186,8 @@ OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typ
 
 Uint8 *OrderCreate::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
+	
 	addSint32(data, this->teamNumber, 0);
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
@@ -227,6 +229,7 @@ OrderDelete::OrderDelete(Uint16 gid)
 
 Uint8 *OrderDelete::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
 	return data;
 }
@@ -257,15 +260,16 @@ OrderCancelDelete::OrderCancelDelete(Uint16 gid)
 
 Uint8 *OrderCancelDelete::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
 	return data;
 }
 
 bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
 {
-	if(dataLength!=getDataLength())
+	if(dataLength != getDataLength())
 		return false;
-	this->gid=getUint16(data, 0);
+	this->gid = getUint16(data, 0);
 	memcpy(this->data, data, dataLength);
 	return true;
 }
@@ -288,6 +292,7 @@ OrderConstruction::OrderConstruction(Uint16 gid)
 
 Uint8 *OrderConstruction::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
 	return data;
 }
@@ -319,6 +324,7 @@ OrderCancelConstruction::OrderCancelConstruction(Uint16 gid)
 
 Uint8 *OrderCancelConstruction::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->gid, 0);
 	return data;
 }
@@ -358,6 +364,7 @@ OrderModifyBuilding::OrderModifyBuilding(Uint16 gid, Uint16 numberRequested)
 
 Uint8 *OrderModifyBuilding::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addUint16(data, numberRequested, 2);
 	return data;
@@ -391,6 +398,7 @@ OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask
 
 Uint8 *OrderModifyExchange::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addUint32(data, receiveRessourceMask, 2);
 	addUint32(data, sendRessourceMask, 6);
@@ -412,19 +420,20 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength)
 OrderModifySwarm::OrderModifySwarm(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert(dataLength==getDataLength());
-	bool good=setData(data, dataLength);
+	assert(dataLength == getDataLength());
+	bool good = setData(data, dataLength);
 	assert(good);
 }
 
 OrderModifySwarm::OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE])
 {
-	this->gid=gid;
+	this->gid = gid;
 	memcpy(this->ratio, ratio, 4*NB_UNIT_TYPE);
 }
 
 Uint8 *OrderModifySwarm::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		addSint32(data, ratio[i], 2+4*i);
@@ -433,11 +442,11 @@ Uint8 *OrderModifySwarm::getData(void)
 
 bool OrderModifySwarm::setData(const Uint8 *data, int dataLength)
 {
-	if (dataLength!=getDataLength())
+	if (dataLength != getDataLength())
 		return false;
-	gid=getUint16(data, 0);
+	gid = getUint16(data, 0);
 	for (int i=0; i<NB_UNIT_TYPE; i++)
-		ratio[i]=getSint32(data, 2+4*i);
+		ratio[i] = getSint32(data, 2+4*i);
 	return true;
 }
 
@@ -459,6 +468,7 @@ OrderModifyFlag::OrderModifyFlag(Uint16 gid, Sint32 range)
 
 Uint8 *OrderModifyFlag::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addSint32(data, range, 2);
 	return data;
@@ -540,6 +550,7 @@ OrderModifyWarFlag::~OrderModifyWarFlag(void)
 
 Uint8 *OrderModifyWarFlag::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addUint16(data, minLevelToFlag, 2);
 	return data;
@@ -574,6 +585,7 @@ OrderMoveFlag::OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop)
 
 Uint8 *OrderMoveFlag::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addSint32(data, x, 2);
 	addSint32(data, y, 6);
@@ -830,6 +842,7 @@ SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 
 
 Uint8 *SetAllianceOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->alliedMask, 4);
 	addUint32(data, this->enemyMask, 8);
@@ -872,6 +885,7 @@ MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
 
 Uint8 *MapMarkOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->teamNumber, 0);
 	addSint32(data, this->x, 4);
 	addSint32(data, this->y, 8);
@@ -909,6 +923,7 @@ WaitingForPlayerOrder::WaitingForPlayerOrder(Uint32 maskAwayPlayer)
 
 Uint8 *WaitingForPlayerOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->maskAwayPlayer, 0);
 	return data;
 }
@@ -939,6 +954,7 @@ PauseGameOrder::PauseGameOrder(bool pause)
 
 Uint8 *PauseGameOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	data[0]=(Uint8)pause;
 	return data;
 }
@@ -969,6 +985,7 @@ DroppingPlayerOrder::DroppingPlayerOrder(Uint32 dropingPlayersMask)
 
 Uint8 *DroppingPlayerOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->dropingPlayersMask, 0);
 	return data;
 }
@@ -1002,6 +1019,7 @@ RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingSt
 
 Uint8 *RequestingDeadAwayOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->player, 0);
 	addUint32(data, this->missingStep, 4);
 	addUint32(data, this->lastAvailableStep, 8);
@@ -1040,6 +1058,7 @@ NoMoreOrdersAvailable::NoMoreOrdersAvailable(Sint32 player, Sint32 lastAvailable
 
 Uint8 *NoMoreOrdersAvailable::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->player, 0);
 	addUint32(data, this->lastAvailableStep, 4);
 	return data;
@@ -1075,6 +1094,7 @@ PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
 
 Uint8 *PlayerQuitsGameOrder::getData(void)
 {
+	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->player, 0);
 	return data;
 }

@@ -217,7 +217,7 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 
 protected:
-	Uint8 data[10];
+	Uint8 data[14];
 };
 
 class OrderModifyFlag:public OrderModify
