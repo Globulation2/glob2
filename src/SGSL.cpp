@@ -605,12 +605,12 @@ void Story::step(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
-	std::cout << "SGSL thread " << this << " PC : " << lineSelector << std::endl;
+	std::cout << "SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
-		std::cout << "SGSL thread " << this << " PC : " << lineSelector << std::endl;
+		std::cout << "SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	}
 
 	if (!cycleLeft)
