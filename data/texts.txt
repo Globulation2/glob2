@@ -117,7 +117,7 @@ Prune
 Boullets
 Bullets
 
-
+Střelivo
 
 [range]
 Portée
@@ -327,25 +327,25 @@ Zákaz vstupu
 Mur de pierre
 Stone wall
 Steinmauer
-Hradba
+Kamenná hradba
 Kamienny mur
 [wood wall]
 Mur de boid
 Wood wall
 
-
+Dřevěná hradba
 
 [market]
 Marché
 Market
 
-
+Tržiště
 
 [exchange]
 Echange
 Exchange
 
-
+Směnit
 
 [waiting for %s]
 Attente de %s
@@ -435,7 +435,7 @@ Kampania
 Didacticiel
 Tutorial
 
-
+Tutoriál
 
 [custom game]
 Jeu libre
@@ -471,7 +471,7 @@ Edytor
 Crédits
 Credits
 
-
+Poděkování
 
 [quit]
 Quitter
@@ -747,7 +747,7 @@ Obranná věž postavena ...
 ?? Drapeau d'interdiction terminé ??
 ?? Forbidden flag finished ??
 
-
+?? Prapor zakáz vstupu připraven ??
 
 [the stone wall is finished]
 Un élément de mur est terminé
@@ -765,7 +765,7 @@ Kus hradby hotov ...
 Le marché est terminé
 The market is finished
 
-
+Tržiště postaveno ...
 
 [the building is under attack]
 Le batiment est attaqué
@@ -783,13 +783,13 @@ Der Stock wird angegriffen
 L'auberge est attaquée
 The Inn is under attack
 Der Gasthof wird angegriffen
-Hospoda pod útokem
+Hospoda je pod útokem
 
 [the health building is under attack]
 L'hopital est attaqué
 The hospital is under attack
 Das Hospital wird angegriffen
-Nemocnice pod útokem
+Nemocnice je pod útokem
 
 [the walkspeed building is under attack]
 La piste de course est attaquée
@@ -801,19 +801,19 @@ Závodní dráha pod útokem
 La piscine est attaquée
 The swimming pool is under attack
 Das Schwimmbecken wird angegriffen
-Koupaliště pod útokem
+Koupaliště je pod útokem
 
 [the attack building is under attack]
 Le camp d'entrainement est attaqué
 The training camp is under attack
 Das Trainingslager wird angegriffen
-Cvičiště pod útokem
+Cvičiště je pod útokem
 
 [the science building is under attack]
 L'école est attaquée
 The school is under attack
 Die Schule wird angegriffen
-Škola pod útokem
+Škola je pod útokem
 
 [the defense building is under attack]
 Vos défenses sont attaquées
@@ -843,7 +843,7 @@ Obranná věž je pod útokem
 ?? Drapeau d'interdiction attaqué ??
 ?? Forbidden flag under attack ??
 
-?? Zákaz vstupu v obležení nepřátel ??
+?? Prapor zákaz vstupu v obležení nepřátel ??
 
 [the stone wall is under attack]
 L'ennemi est à vos murs
@@ -861,7 +861,7 @@ Nepřítel utočí na hradby
 Le marché est attaqué
 The market is under attack
 
-
+Tržiště je pod útokem
 
 [Your]
 Vos
@@ -879,13 +879,13 @@ jesteś atakowany(a)
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
 
-
+Tva jednotka změnila víru v jiného hráče
 
 [Another team's unit got converted to your team]
 Un unité enemie s'est convertie à votre équipe
 Another team's unit got converted to your team
 
-
+Cizí tým změnil víru v Tebe
 
 [Uncontrolled]
 Incontrôlé
@@ -1263,19 +1263,19 @@ Vyhlazení
 nombre d'equipes
 number of teams
 Anzahl Mannschaften
-počet hráčů
+Počet hráčů
 
 [islands size]
 taille des iles
 islands size
 Größe der Inseln
-velikost ostrovů
+Velikost ostrovů
 
 [beach size]
 taille de la plage
 beach size
 Größe des Strandes
-velikost pláží
+Velikost pláží
 
 [workers]
 Ouvrières
@@ -1449,7 +1449,7 @@ Prędkość gry
 Pause
 Paused
 
-
+Pauza
 
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
@@ -1479,7 +1479,7 @@ Navazuji spojení s YOG metaserverem...
 Déconnection du metaserveur YOG...
 Disconnecting from YOG metaserver...
 
-
+Odpojuji z YOG metaserveru...
 
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
@@ -1557,7 +1557,7 @@ Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný s
 Voulez-vous sauver avant de quitter ?
 Do you want to save before quitting ?
 Möchten Sie vor dem Beenden abspeichern?
-
+Chceš uložit před odchodem ?
 Chcesz zapisać stan gry, przed jej zakończeniem ?
 [Yes]
 Oui
@@ -1671,13 +1671,13 @@ Nízká kvalita
 Audio
 Audio
 
-
+Audio
 
 [Music volume]
 Volume (musique)
 Volume (music)
 
-
+Hlasitost (hudba)
 
 [Happyness]
 Satisfaction
