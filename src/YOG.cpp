@@ -1162,16 +1162,16 @@ void YOG::sendGameinfoRequest()
 				packet->data[1]=0;
 				packet->data[2]=0;
 				packet->data[3]=0;
+				
+				//TODO: send broadcasting for any game, not only for selected games. broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
 				if (SDLNet_UDP_Send(socket, -1, packet)==1)
-				{
-					fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet.\n");
-					//TODO: send broadcasting for any game, not only for selected games. broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
-				}
+					fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet\n");
 				else
 				{
 					enableLan=false;
-					fprintf(logFile, "failed to send a BROADCAST_REQUEST packet!\n");
+					fprintf(logFile, "failed to send a BROADCAST_REQUEST packet\n");
 				}
+				
 				SDLNet_FreePacket(packet);
 			}
 			else

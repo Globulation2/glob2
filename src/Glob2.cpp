@@ -332,7 +332,7 @@ int Glob2::run(int argc, char *argv[])
 				}
 				else if (rc==HowNewMapScreen::LOAD)
 				{
-					MultiplayersChooseMapScreen multiplayersChooseMapScreen;
+					MultiplayersChooseMapScreen multiplayersChooseMapScreen(false);
 					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
 					if (rc==MultiplayersChooseMapScreen::OK)
 					{

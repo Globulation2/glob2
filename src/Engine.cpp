@@ -260,7 +260,7 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 
 int Engine::initMutiplayerHost(bool shareOnYOG)
 {
-	MultiplayersChooseMapScreen multiplayersChooseMapScreen;
+	MultiplayersChooseMapScreen multiplayersChooseMapScreen(shareOnYOG);
 
 	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
 
