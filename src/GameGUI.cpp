@@ -92,7 +92,6 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 {
-	isRunning=true;
 }
 
 GameGUI::~GameGUI()
@@ -102,6 +101,7 @@ GameGUI::~GameGUI()
 
 void GameGUI::init()
 {
+	isRunning=true;
 	paused=false;
 	scroolLocked=false;
 	exitGlobCompletely=false;
