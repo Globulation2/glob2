@@ -139,9 +139,6 @@ void Game::setBase(const SessionInfo *initial)
 	session.gameLatency=initial->gameLatency;
 	
 	anyPlayerWaited=false;
-	
-	// set the AI alliance
-	setAIAlliance();
 }
 
 void Game::executeOrder(Order *order, int localPlayer)
@@ -325,7 +322,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 			teams[team]->enemies=~teams[team]->allies;
 			teams[team]->sharedVision=((SetAllianceOrder *)order)->visionMask;
 			setAIAlliance();
-			printf("All human are allied : %d\n", isHumanAllAllied());
 		}
 		break;
 		case ORDER_WAITING_FOR_PLAYER:
@@ -353,6 +349,7 @@ bool Game::isHumanAllAllied(void)
 	for (i=0; i<session.numberOfTeam; i++)
 	{
 		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
+		//printf("team %d is AI is %d\n", i, teams[i]->type == BaseTeam::T_AI);
 	}
 	
 	// if there is any non-AI player with which we aren't allied, return false
@@ -361,7 +358,6 @@ bool Game::isHumanAllAllied(void)
 	{
 		if (teams[i]->type != BaseTeam::T_AI)
 		{
-			printf("aMask %X, nonAiMask %X\n",  teams[i]->allies, nonAIMask);
 			if (teams[i]->allies != nonAIMask)
 				return false;
 		}
@@ -376,6 +372,8 @@ void Game::setAIAlliance(void)
 	
 	if (isHumanAllAllied())
 	{
+		printf("Game : AIs are now allied vs human\n");
+		
 		// all human are allied, ally AI
 		Uint32 aiMask = 0;
 		
@@ -384,6 +382,8 @@ void Game::setAIAlliance(void)
 			if (teams[i]->type == BaseTeam::T_AI)
 				aiMask |= (1<<i);
 		
+		printf("AI mask : %x\n", aiMask);
+				
 		// ally them together
 		for (i=0; i<session.numberOfTeam; i++)
 			if (teams[i]->type == BaseTeam::T_AI)
@@ -394,11 +394,16 @@ void Game::setAIAlliance(void)
 	}
 	else
 	{
+		printf("Game : AIs are now in ffa mode\n");
+		
 		// free for all on AI side
 		for (i=0; i<session.numberOfTeam; i++)
 		{
-			teams[i]->allies = teams[i]->me;
-			teams[i]->enemies = ~teams[i]->allies;
+			if (teams[i]->type == BaseTeam::T_AI)
+			{
+				teams[i]->allies = teams[i]->me;
+				teams[i]->enemies = ~teams[i]->allies;
+			}
 		}
 	}
 }
@@ -528,6 +533,7 @@ bool Game::load(SDL_RWops *stream)
 			}
 		}
 	}
+	
 	return true;
 }
 
@@ -608,7 +614,7 @@ void Game::wonStep(void)
 		bool isOtherAlive=false;
 		for (j=0; j<session.numberOfTeam; j++)
 		{
-			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) && ((teams[j]->me) & (teams[i]->allies)) )) && (teams[j]->isAlive))
+			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
 				isOtherAlive=true;
 		}
 		teams[i]->hasWon=!isOtherAlive;

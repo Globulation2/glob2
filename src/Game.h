@@ -57,8 +57,7 @@ private:
 	
 	//! return true if all human are allied together, flase otherwise
 	bool isHumanAllAllied(void);
-	//! ally or disally AI following human alliances
-	void setAIAlliance(void);
+	
 
 public:
 	bool anyPlayerWaited;
@@ -100,6 +99,9 @@ public:
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=false);
 	Sint32 checkSum();
+	
+	//! ally or disally AI following human alliances
+	void setAIAlliance(void);
 	
 public:
 	SessionGame session;
