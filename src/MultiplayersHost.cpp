@@ -93,6 +93,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	for (int p=0; p<32; p++)
 	{
 		playerFileTra[p].wantsFile=false;
+		playerFileTra[p].receivedFile=false;
 		playerFileTra[p].packetSize=512;
 		playerFileTra[p].windowSize=1;
 		
@@ -105,6 +106,9 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 			playerFileTra[p].window[i].packetSize=512;
 		}
 	}
+	
+	for (int i=0; i<256; i++)
+		windowstats[i]=0;
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -397,6 +401,20 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
 	
+	
+	playerFileTra[p].wantsFile=false;
+	playerFileTra[p].receivedFile=false;
+	playerFileTra[p].packetSize=512;
+	playerFileTra[p].windowSize=1;
+	for (int i=0; i<NET_WINDOW_SIZE; i++)
+	{
+		playerFileTra[p].window[i].index=0;
+		playerFileTra[p].window[i].sent=false;
+		playerFileTra[p].window[i].received=false;
+		playerFileTra[p].window[i].time=0;
+		playerFileTra[p].window[i].packetSize=512;
+	}
+	
 	sessionInfo.players[p].init();
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
@@ -517,53 +535,88 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 	
 	if (!playerFileTra[p].wantsFile)
 	{
-		printf("player (%x, %d) first requests file.\n", ip.host, ip.port);
-
-		playerFileTra[p].wantsFile=true;
-		for (int i=0; i<NET_WINDOW_SIZE; i++)
+		if (!playerFileTra[p].receivedFile)
 		{
-			playerFileTra[p].window[i].index=0;
-			playerFileTra[p].window[i].sent=false;
-			playerFileTra[p].window[i].received=false;
-			playerFileTra[p].window[i].time=0;
-			playerFileTra[p].window[i].packetSize=512;
+			printf("player (%x, %d) first requests file.\n", ip.host, ip.port);
+			playerFileTra[p].wantsFile=true;
+			for (int i=0; i<NET_WINDOW_SIZE; i++)
+			{
+				playerFileTra[p].window[i].index=0;
+				playerFileTra[p].window[i].sent=false;
+				playerFileTra[p].window[i].received=false;
+				playerFileTra[p].window[i].time=0;
+				playerFileTra[p].window[i].packetSize=512;
+			}
+
+			playerFileTra[p].packetSize=512;
+			playerFileTra[p].windowSize=1;
 		}
-		
-		playerFileTra[p].packetSize=512;
-		playerFileTra[p].windowSize=1;
 	}
 	else
 	{
 		Uint32 unreceivedIndex=getUint32(data, 4);
-		printf("unreceivedIndex=%d\n", unreceivedIndex);
-		Uint32 receivedIndex[16];
-		printf("receivedIndex=(");
-		for (int ix=0; ix<16; ix++)
-		{
-			receivedIndex[ix]=getUint32(data, 8+ix*4);
-			printf("%d, ", receivedIndex[ix]);
-		}
-		printf(").\n");
+		playerFileTra[p].unreceivedIndex=unreceivedIndex;
+		NETPRINTF("unreceivedIndex=%d\n", unreceivedIndex);
 		
-		for (int i=0; i<NET_WINDOW_SIZE; i++)
+		if (unreceivedIndex==fileSize)
 		{
-			Uint32 index=playerFileTra[p].window[i].index;
-			if (index<unreceivedIndex)
-				playerFileTra[p].window[i].received=true;
-			else if (index>unreceivedIndex)
-				for (int ix=0; ix<16; ix++)
-					if (index==receivedIndex[ix])
-					{
-						playerFileTra[p].window[i].received=true;
-						break;
-					}
+			playerFileTra[p].wantsFile=false;
+			playerFileTra[p].receivedFile=true;
+			
+			for (int i=0; i<MAX_WINDOW_SIZE; i++)
+				if (windowstats[i]>1)
+					NETPRINTF("%d \t %d.\n", i, windowstats[i]);
+			NETPRINTF("playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
 		}
-	
+		else
+		{
+			Uint32 receivedIndex[16];
+			NETPRINTF("receivedIndex=(");
+			for (int ix=0; ix<16; ix++)
+			{
+				receivedIndex[ix]=getUint32(data, 8+ix*4);
+				NETPRINTF("%d, ", receivedIndex[ix]);
+				assert(receivedIndex[ix]>unreceivedIndex);
+			}
+			NETPRINTF(").\n");
+
+			for (int i=0; i<NET_WINDOW_SIZE; i++)
+			{
+				Uint32 index=playerFileTra[p].window[i].index;
+				if (index<unreceivedIndex)
+				{
+					if (!playerFileTra[p].window[i].received)
+						playerFileTra[p].windowSize++;
+					playerFileTra[p].window[i].received=true;
+				}
+				else if (index>unreceivedIndex)
+					for (int ix=0; ix<16; ix++)
+						if (index==receivedIndex[ix])
+						{
+							if (!playerFileTra[p].window[i].received)
+								playerFileTra[p].windowSize++;
+							playerFileTra[p].window[i].received=true;
+							break;
+						}
+			}
+		
+			if (playerFileTra[p].windowSize>=MAX_WINDOW_SIZE)
+			{
+				if (playerFileTra[p].packetSize>=32768)
+				{
+					playerFileTra[p].windowSize=MAX_WINDOW_SIZE-1;
+					playerFileTra[p].packetSize=32768;
+				}
+				else
+				{
+					playerFileTra[p].windowSize/=2;
+					playerFileTra[p].packetSize*=2;
+				}
+			}
+		}
 	}
 	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
 	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL;
-
-	printf("this ip(%x:%d) wantsFile (player %d)\n", ip.host, ip.port, p);
 }
 
 void MultiplayersHost::addAI()
@@ -1034,110 +1087,143 @@ void MultiplayersHost::sendingTime()
 		if (playerFileTra[p].wantsFile)
 		{
 			int unreceived=0;
-			Uint32 firstReceivedIndex=0xFFFFFFFF;
+			Uint32 lastReceivedIndex=0; //TODO: optimisable!
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 				if (playerFileTra[p].window[i].sent)
 				{
 					Uint32 index=playerFileTra[p].window[i].index;
 					if (playerFileTra[p].window[i].received)
 					{
-						if (index<firstReceivedIndex)
-							firstReceivedIndex=index;
+						if (index>lastReceivedIndex)
+							lastReceivedIndex=index;
 					}
 					else
 						unreceived++;
 				}
 			
 			int toSend=playerFileTra[p].windowSize-unreceived;
-			if (toSend)
-				printf("unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
+			//if (toSend)
+			NETPRINTF("unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
+			NETPRINTF("lastReceivedIndex=%d\n", lastReceivedIndex);
+			windowstats[playerFileTra[p].windowSize]++;
 			
-			// We start to increment timout timers only for "gaps".
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent
-					&& !playerFileTra[p].window[i].received
-					&& (playerFileTra[p].window[i].index<firstReceivedIndex) //only gaps
-					&& (playerFileTra[p].window[i].time++>SHORT_NETWORK_TIMEOUT))
+				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
+				{
+					if (playerFileTra[p].window[i].index<lastReceivedIndex)
+						playerFileTra[p].window[i].time+=2;//gaps are more probably lost
+					else
+						playerFileTra[p].window[i].time++;
+				}
+			
+			Uint32 smallestIndexTimeout=0xFFFFFFFF;
+			int wisit=-1;
+			for (int i=0; i<NET_WINDOW_SIZE; i++)
+				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>SHORT_NETWORK_TIMEOUT)
+				{
+					Uint32 index=playerFileTra[p].window[i].index;
+					if (index<smallestIndexTimeout)
 					{
-						playerFileTra[p].window[i].time=0;
-						
-						toSend--;
-						int sendingIndex=playerFileTra[p].window[i].index;
-						// We have to resend this packet
-						printf("resending index=%d.\n", sendingIndex);
-						
-						int size=playerFileTra[p].window[i].packetSize;
-						if (sendingIndex+size>fileSize)
-							size=fileSize-sendingIndex;
-						assert(size>=0);
-						char *data=(char *)malloc(size+12);
-						assert(data);
-						data[0]=FULL_FILE_DATA;
-						data[1]=0;
-						data[2]=0;
-						data[3]=0;
-						addSint32(data, (Sint32)i, 4);
-						addUint32(data, sendingIndex, 8);
-						SDL_RWseek(stream, sendingIndex, SEEK_SET);
-						SDL_RWread(stream, data+12, size, 1);
-						
-						printf("dwi=(%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-						bool success=player.send(data, size+12);
-						assert(success);
-						
-						free(data);
+						smallestIndexTimeout=index;
+						wisit=i;
 					}
+				}
+				
+			if (wisit>=0)
+			{
+				int i=wisit;
+				playerFileTra[p].window[i].time=0;
+
+				toSend--;
+				int sendingIndex=playerFileTra[p].window[i].index;
+				// We have to resend this packet
+				NETPRINTF("resending index=%d.\n", sendingIndex);
+
+				int size=playerFileTra[p].window[i].packetSize;
+				if (sendingIndex+size>(int)fileSize)
+					size=fileSize-sendingIndex;
+				assert(size>=0);
+				if (size>=0)
+				{
+					char *data=(char *)malloc(size+12);
+					assert(data);
+					data[0]=FULL_FILE_DATA;
+					data[1]=0;
+					data[2]=0;
+					data[3]=0;
+					addSint32(data, (Sint32)i, 4);
+					addUint32(data, sendingIndex, 8);
+					SDL_RWseek(stream, sendingIndex, SEEK_SET);
+					SDL_RWread(stream, data+12, size, 1);
+
+					bool success=player.send(data, size+12);
+					assert(success);
+
+					free(data);
+				}
+
+				int windowSize=playerFileTra[p].windowSize;
+				windowSize=(windowSize*99)/100;
+				windowSize--;
+				if (windowSize<1)
+				{
+					windowSize=1;
+					if (playerFileTra[p].packetSize>256)
+						playerFileTra[p].packetSize/=2;
+				}
+				playerFileTra[p].windowSize=windowSize;
+			}
 			
 			if (toSend)
-				printf("toSend=%d\n", toSend);
+				NETPRINTF("toSend=%d\n", toSend);
 			
-			for (int t=0; t<toSend; t++)
+			for (int t=0; t<toSend ; t++)
 			{
 				Uint32 sendingIndex=0;
+				bool endOfFile=false;
 				for (int i=0; i<NET_WINDOW_SIZE; i++)
 					if (playerFileTra[p].window[i].sent)
 					{
-						Uint32 index=playerFileTra[p].window[i].index+playerFileTra[p].window[i].packetSize;
-						if (index>sendingIndex)
-							sendingIndex=index;
+						Uint32 index=playerFileTra[p].window[i].index;
+						Uint32 packetSize=playerFileTra[p].window[i].packetSize;
+						Uint32 tot=index+packetSize;
+						if (packetSize==0)
+						{
+							endOfFile=true;
+							break;
+						}
+						else if (tot>sendingIndex)
+							sendingIndex=tot;
+						
 					}
-				
-				printf("t=%d, sendingIndex=%d\n", t, sendingIndex);
-				
-				//SDL_ReadBE32(stream)
-				//SDL_WriteBE32(stream, x)
-				//SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
+				if (endOfFile)
+					break;
 				int size=playerFileTra[p].packetSize;
+				
 				if (sendingIndex+size>fileSize)
 					size=fileSize-sendingIndex;
 				assert(size>=0);
-				char *data=(char *)malloc(size+12);
-				assert(data);
-				data[0]=FULL_FILE_DATA;
-				data[1]=0;
-				data[2]=0;
-				data[3]=0;
-				addUint32(data, sendingIndex, 8);
-				SDL_RWseek(stream, sendingIndex, SEEK_SET);
-				SDL_RWread(stream, data+12, size, 1);
 				
-				// We look for a free window index:
-				Uint32 smallestIndex=0xFFFFFFFF;
-				int wi=-1;
-				//first, we look for a free window slot:
-				for (int i=0; i<NET_WINDOW_SIZE; i++)
-					if (!playerFileTra[p].window[i].sent)
-					{
-						Uint32 index=playerFileTra[p].window[i].index;
-						if (index<smallestIndex)
-						{
-							smallestIndex=index;
-							wi=i;
-						}
-					}
-				if (wi==-1) //Second, we need to free a widndow slot: we take the oldest sent:
+				if (size>=0)
+				{
+					NETPRINTF("t=%d, sendingIndex=%d, size=%d\n", t, sendingIndex, size);
+					
+					char *data=(char *)malloc(size+12);
+					assert(data);
+					data[0]=FULL_FILE_DATA;
+					data[1]=0;
+					data[2]=0;
+					data[3]=0;
+					addUint32(data, sendingIndex, 8);
+					SDL_RWseek(stream, sendingIndex, SEEK_SET);
+					SDL_RWread(stream, data+12, size, 1);
+
+					// We look for a free window index:
+					Uint32 smallestIndex=0xFFFFFFFF;
+					int wi=-1;
+					//first, we look for a free window slot:
 					for (int i=0; i<NET_WINDOW_SIZE; i++)
-						if (playerFileTra[p].window[i].sent && playerFileTra[p].window[i].received)
+						if (!playerFileTra[p].window[i].sent)
 						{
 							Uint32 index=playerFileTra[p].window[i].index;
 							if (index<smallestIndex)
@@ -1146,26 +1232,37 @@ void MultiplayersHost::sendingTime()
 								wi=i;
 							}
 						}
+					if (wi==-1) //Second, we need to free a widndow slot: we take the oldest sent:
+						for (int i=0; i<NET_WINDOW_SIZE; i++)
+							if (playerFileTra[p].window[i].sent && playerFileTra[p].window[i].received)
+							{
+								Uint32 index=playerFileTra[p].window[i].index;
+								if (index<smallestIndex)
+								{
+									smallestIndex=index;
+									wi=i;
+								}
+							}
+							
+					assert(wi!=-1);
 
-				assert(wi!=-1);
-				
-				if (wi!=-1)
-				{
-					addSint32(data, (Sint32)wi, 4);
-					printf("dwi=(%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-					
-					playerFileTra[p].window[wi].index=sendingIndex;
-					playerFileTra[p].window[wi].sent=true;
-					playerFileTra[p].window[wi].received=false;
-					playerFileTra[p].window[wi].time=0;
-					playerFileTra[p].window[wi].packetSize=size;
-					
-					bool success=player.send(data, size+12);
-					
-					assert(success);
+					if (wi!=-1)
+					{
+						addSint32(data, (Sint32)wi, 4);
+
+						playerFileTra[p].window[wi].index=sendingIndex;
+						playerFileTra[p].window[wi].sent=true;
+						playerFileTra[p].window[wi].received=false;
+						playerFileTra[p].window[wi].time=0;
+						playerFileTra[p].window[wi].packetSize=size;
+
+						bool success=player.send(data, size+12);
+
+						assert(success);
+					}
+
+					free(data);
 				}
-				
-				free(data);
 			}
 		}
 	}

@@ -49,7 +49,7 @@ public:
 	SDL_RWops *downloadStream;
 	int startDownloadTimeout;
 	
-	enum{NET_WINDOW_SIZE=256};
+	enum{NET_WINDOW_SIZE=1024};
 	struct NetWindowSlot
 	{
 		//NetWindowState state;
@@ -57,8 +57,9 @@ public:
 		bool received;
 		int packetSize;
 	};
-	NetWindowSlot netWindow[256];
+	NetWindowSlot netWindow[NET_WINDOW_SIZE];
 	Uint32 unreceivedIndex;
+	Uint32 endOfFileIndex;
 	
 private:
 	LANBroadcast lan;
