@@ -41,6 +41,7 @@ InGameMainScreen::InGameMainScreen(bool showAlliance)
 		addWidget(new TextButton(10, 130, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
 	addWidget(new TextButton(10, 180, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
 	addWidget(new TextButton(10, 230, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
+	dispatchInit();
 }
 
 void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -56,6 +57,7 @@ InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue
 	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
 		addWidget(new TextButton(10, 100, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
+	dispatchInit();
 }
 
 void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -140,6 +142,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		addWidget(new TextButton(135, 250, 230, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	this->gameGUI=gameGUI;
+	dispatchInit();
 }
 
 void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -257,6 +260,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	addWidget(musicVolText);
 
 	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	dispatchInit();
 }
 
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)

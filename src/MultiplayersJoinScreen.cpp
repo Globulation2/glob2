@@ -73,12 +73,6 @@ MultiplayersJoinScreen::~MultiplayersJoinScreen()
 	delete multiplayersJoin;
 }
 
-void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	addUpdateRect();
-}
-
 
 void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
@@ -98,7 +92,6 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		std::list<MultiplayersJoin::LANHost>::iterator it;
 		for (it=multiplayersJoin->lanHosts.begin(); it!=multiplayersJoin->lanHosts.end(); ++it)
 			lanServers->addText(it->gameName);
-		lanServers->commit();
 		multiplayersJoin->listHasChanged=false;
 	}
 	
@@ -108,11 +101,11 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
-			dispatchPaint(gfxCtx);
+			// do nothing
 		}
 		else if (rv==MultiplayersConnectedScreen::DISCONNECTED)
 		{
-			dispatchPaint(gfxCtx);
+			// do nothing
 		}
 		else if (rv==MultiplayersConnectedScreen::STARTED)
 		{

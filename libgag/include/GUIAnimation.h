@@ -48,10 +48,8 @@ namespace GAGGUI
 		Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);
 		virtual ~Animation() { }
 		virtual void onTimer(Uint32 tick);
-	
-	protected:
-		virtual void internalInit(int x, int y, int w, int h);
-		virtual void internalRepaint(int x, int y, int w, int h);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	};
 }
 

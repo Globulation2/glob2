@@ -145,8 +145,6 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		else
 			assert(false);
 		printf("YOGPreScreen:: YOGScreen has ended ...\n");
-		dispatchPaint(gfxCtx);
-		addUpdateRect(0, 0, gfxCtx->getW(), gfxCtx->getH());
 	}
 	if (connectOnNextTimer)
 	{

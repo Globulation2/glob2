@@ -51,9 +51,12 @@ public:
 		a=DrawableSurface::ALPHA_OPAQUE;
 	}
 	
-	void internalRepaint(int x, int y, int w, int h)
+	void paint(GAGCore::DrawableSurface *gfx)
 	{
 		assert(parent);
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		parent->getSurface()->drawFilledRect(x, y, w, h, r, g, b);
 	}
 	
@@ -64,7 +67,6 @@ public:
 			r=nr;
 			g=ng;
 			b=nb;
-			repaint();
 		}
 	}
 };

@@ -39,7 +39,7 @@ namespace GAGGUI
 		this->font=font;
 		this->text=text;
 	
-		internalInit(0, 0, 0, 0);
+		init();
 		assert(fontPtr);
 		assert(text);
 		if ((w) || (hAlignFlag==ALIGN_FILL))
@@ -65,36 +65,17 @@ namespace GAGGUI
 		}
 	}
 	
-	void Text::setText(const char *newText)
+	void Text::init(void)
 	{
-		if (this->text != newText)
-		{
-			if (!keepW)
-				w = std::max<int>(w, fontPtr->getStringWidth(newText));
-			if (!keepH)
-				h = std::max<int>(h, fontPtr->getStringHeight(newText));
-			
-			// copy text
-			this->text = newText;
-		
-			repaint();
-		
-			if (!keepW)
-				w = fontPtr->getStringWidth(newText);
-			if (!keepH)
-				h = fontPtr->getStringHeight(newText);
-			parent->onAction(this, TEXT_SET, 0, 0);
-		}
+		fontPtr = Toolkit::getFont(font.c_str());
+		assert(fontPtr);
 	}
 	
-	void Text::setStyle(Font::Style style)
-	{
-		this->style = style;
-	}
-	
-	void Text::internalRepaint(int x, int y, int w, int h)
+	void Text::paint(GAGCore::DrawableSurface *gfx)
 	{
 		int wDec, hDec;
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
 	
 		if (hAlignFlag==ALIGN_FILL)
 			wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;
@@ -111,9 +92,23 @@ namespace GAGGUI
 		parent->getSurface()->popFontStyle(fontPtr);
 	}
 	
-	void Text::internalInit(int x, int y, int w, int h)
+	void Text::setText(const char *newText)
 	{
-		fontPtr = Toolkit::getFont(font.c_str());
-		assert(fontPtr);
+		if (this->text != newText)
+		{
+			// copy text
+			this->text = newText;
+		
+			if (!keepW)
+				w = fontPtr->getStringWidth(newText);
+			if (!keepH)
+				h = fontPtr->getStringHeight(newText);
+			parent->onAction(this, TEXT_SET, 0, 0);
+		}
+	}
+	
+	void Text::setStyle(Font::Style style)
+	{
+		this->style = style;
 	}
 }

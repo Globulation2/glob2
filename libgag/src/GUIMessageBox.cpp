@@ -97,7 +97,7 @@ namespace GAGGUI
 	
 		MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
 	
-		mbs->dispatchPaint(mbs->getSurface());
+		mbs->dispatchPaint();
 	
 		// save screen
 		parentCtx->setClipRect();

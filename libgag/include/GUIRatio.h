@@ -21,6 +21,7 @@
 #define __GUI_RATIO_H
 
 #include "GUIBase.h"
+#include <string>
 
 namespace GAGCore
 {
@@ -38,6 +39,8 @@ namespace GAGGUI
 	
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	
 		void set(int value);
 		int getMax(void);
@@ -46,11 +49,9 @@ namespace GAGGUI
 		void setScale(float start, float ratio);
 		
 	protected:
-		virtual void internalRepaint(int x, int y, int w, int h);
-	
-	protected:
 		int textHeight;
 		GAGCore::Font *fontPtr;
+		std::string font;
 	
 		//! This is the wheight of the scrool bar
 		int size;

@@ -37,6 +37,7 @@ namespace GAGGUI
 		Sint32 nth;
 		Sint32 m;
 		std::vector<int> numbers;
+		std::string font;
 	
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
@@ -48,6 +49,8 @@ namespace GAGGUI
 		virtual ~Number();
 	
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	
 		void add(int number);
 		void clear(void);
@@ -55,9 +58,6 @@ namespace GAGGUI
 		void set(int number);
 		int getNth(void);
 		int get(void);
-	
-	protected:
-		virtual void internalRepaint(int x, int y, int w, int h);
 	};
 }
 

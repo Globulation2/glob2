@@ -98,6 +98,7 @@ InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
 {
 	textInput=new TextInput(5, 5, 482, 24, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
 	addWidget(textInput);
+	dispatchInit();
 }
 
 void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2)
@@ -494,7 +495,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
 					gameMenuScreen=new LoadSaveScreen("games", "game", true, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
 				break;
@@ -503,7 +503,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
 					gameMenuScreen=new LoadSaveScreen("games", "game", false, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
 				break;
@@ -513,7 +512,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					gameMenuScreen=NULL;
 					inGameMenu=IGM_ALLIANCE;
 					gameMenuScreen=new InGameAllianceScreen(this);
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
 				break;
@@ -522,7 +520,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_OPTION;
 					gameMenuScreen=new InGameOptionScreen(this);
-					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
 				break;
@@ -762,7 +759,6 @@ void GameGUI::processEvent(SDL_Event *event)
 					if (inGameMenu==IGM_NONE)
 					{
 						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 						inGameMenu=IGM_MAIN;
 					}
 					// the following is commented becase we don't get click event while in menu.
@@ -967,7 +963,6 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					if ((inGameMenu==IGM_NONE) && (!pressed))
 					{
 						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 						inGameMenu=IGM_MAIN;
 					}
 				}
@@ -1054,7 +1049,6 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 				if (pressed)
 				{
 					typingInputScreen=new InGameTextInput(globalContainer->gfx);
-					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
 					typingInputScreenInc=TYPING_INPUT_BASE_INC;
 					typingInputScreenPos=0;
 				}
@@ -2841,6 +2835,7 @@ void GameGUI::drawOverlayInfos(void)
 
 void GameGUI::drawInGameMenu(void)
 {
+	gameMenuScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
 	
 	// Draw a-la-aqua drop shadows
@@ -2871,6 +2866,7 @@ void GameGUI::drawInGameTextInput(void)
 {
 	typingInputScreen->decX=(globalContainer->gfx->getW()-128-492)/2;
 	typingInputScreen->decY=globalContainer->gfx->getH()-typingInputScreenPos;
+	typingInputScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface(typingInputScreen->decX, typingInputScreen->decY, typingInputScreen->getSurface());
 	if (typingInputScreenInc>0)
 		if (typingInputScreenPos<TYPING_INPUT_MAX_POS-TYPING_INPUT_BASE_INC)
@@ -2959,7 +2955,6 @@ void GameGUI::checkWonConditions(void)
 		{
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have lost]"), true);
-			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 			hasEndOfGameDialogBeenShown=true;
 		}
 	}
@@ -2969,7 +2964,6 @@ void GameGUI::checkWonConditions(void)
 		{
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true);
-			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 			hasEndOfGameDialogBeenShown=true;
 		}
 	}
@@ -2979,7 +2973,6 @@ void GameGUI::checkWonConditions(void)
 		{
 			inGameMenu=IGM_END_OF_GAME;
 			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true);
-			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 		}
 	}
 }

@@ -36,7 +36,8 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *m
 	this->vAlignFlag=vAlign;
 	this->w=128;
 	this->h=128;
-	this->mapName=mapName;
+	if (mapName)
+		this->mapName=mapName;
 	lastW=0;
 	lastH=0;
 	randomGenerated=false;
@@ -55,11 +56,13 @@ void MapPreview::setMapThumbnail(const char *mapName)
 {
 	this->mapName=mapName;
 	//setThumbnailNameFromMapName(mapName);
-	repaint();
 }
 
-void MapPreview::internalRepaint(int x, int y, int w, int h)
+void MapPreview::paint(GAGCore::DrawableSurface *gfx)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	
 	assert(parent);
 	assert(parent->getSurface());
 	
@@ -68,10 +71,11 @@ void MapPreview::internalRepaint(int x, int y, int w, int h)
 	if (vAlignFlag == ALIGN_FILL)
 		y += (h-128)>>1;
 	
+	// TODO : we need to cache result in another surface !!
 	bool rv = true;
-	if (mapName!=0)
+	if (mapName.length() != 0)
 	{
-		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb");
+		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName.c_str(), "rb");
 		if (stream)
 		{
 			SessionGame session;

@@ -48,10 +48,8 @@ namespace GAGGUI
 		virtual ~Button() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
-	
-	protected:
-		virtual void internalInit(int x, int y, int w, int h);
-		virtual void internalRepaint(int x, int y, int w, int h);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	};
 	
 	class TextButton:public Button
@@ -67,12 +65,10 @@ namespace GAGGUI
 		TextButton() { fontPtr=NULL; }
 		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
 		virtual ~TextButton() { }
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	
 		void setText(const char *text);
-	
-	protected:
-		virtual void internalInit(int x, int y, int w, int h);
-		virtual void internalRepaint(int x, int y, int w, int h);
 	};
 	
 	class OnOffButton:public HighlightableWidget
@@ -86,11 +82,9 @@ namespace GAGGUI
 		virtual ~OnOffButton() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 		virtual bool getState(void) { return state; }
 		virtual void setState(bool newState);
-	
-	protected:
-		virtual void internalRepaint(int x, int y, int w, int h);
 	};
 	
 	//! A button that can have multiple color
@@ -120,19 +114,17 @@ namespace GAGGUI
 	
 		//! Process SDL event
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 		//! Add a color to the color list
 		virtual void addColor(int r, int g, int b) { v.push_back(Color(r, g, b)); }
 		//! Clear the color list
 		virtual void clearColors(void) { v.clear(); }
 		//! Set the color selection to default
-		virtual void setSelectedColor(int c=0) { selColor=c; repaint(); }
+		virtual void setSelectedColor(int c=0) { selColor=c; }
 		//! Return the color sel
 		virtual int getSelectedColor(void) { return selColor; }
 		//! Return the number of possible colors
 		virtual size_t getNumberOfColors(void) { return v.size(); }
-	
-	protected:
-		virtual void internalRepaint(int x, int y, int w, int h);
 	};
 	
 	//! A button that can have multiple texts

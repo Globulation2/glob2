@@ -51,7 +51,8 @@ namespace GAGGUI
 	
 		virtual void onTimer(Uint32 tick) { }
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void paint(void);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	
 		void addText(const char *text, int pos);
 		void addText(const char *text);
@@ -60,8 +61,6 @@ namespace GAGGUI
 		void clear(void);
 		const char *getText(int pos) const;
 		const char *get(void) const;
-		//! Call this after all add has been done
-		void commit(void) { repaint(); }
 		//! Sorts the list (override it if you don't like it)
 		virtual void sort(void);
 	
@@ -70,9 +69,6 @@ namespace GAGGUI
 	
 		int getNth(void) const;
 		void setNth(int nth);
-	
-		virtual void repaint(void);
-		virtual void internalPaint(void);
 	};
 }
 

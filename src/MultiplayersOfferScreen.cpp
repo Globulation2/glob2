@@ -49,7 +49,7 @@ void MultiplayersOfferScreen::onAction(Widget *source, Action action, int par1, 
 
 void MultiplayersOfferScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	gfx->drawFilledRect(x, y, w, h, 0, 0, 0);
 	//gfxCtx->drawSprite(0, 0, arch, 0);
 }
 

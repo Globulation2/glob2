@@ -38,8 +38,9 @@ namespace GAGGUI
 		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
 		virtual ~TextArea();
 	
-		virtual void paint(void);
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 	
 		virtual void setText(const char *text);
 		virtual const char *getText(void) { return text.c_str(); }
@@ -52,11 +53,10 @@ namespace GAGGUI
 		virtual void setCursorPos(unsigned pos);
 	
 	protected:
-		virtual void internalPaint(void);
+		//! Create the strings index table from text
 		virtual void layout(void);
-		virtual void repaint(void);
 		//! we make sure the repaint will show something correct
-		virtual void computeAndRepaint(void);
+		virtual void compute(void);
 	
 	protected:
 		bool readOnly;

@@ -52,13 +52,13 @@ namespace GAGGUI
 	
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void paint(void);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 		void setText(const char *newText);
 		const char *getText(void) { return text.c_str(); }
-		void deactivate(void) { activated=false; repaint(); }
-	
+		void deactivate(void) { activated=false; recomputeTextInfos(); }
+		
 	protected:
-		virtual void repaint(void);
 		void recomputeTextInfos(void);
 	};
 }

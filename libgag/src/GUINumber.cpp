@@ -35,10 +35,7 @@ namespace GAGGUI
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
 	{
 		assert(font);
-		this->fontPtr=Toolkit::getFont(font);
-		assert(fontPtr);
-		textHeight=this->fontPtr->getStringHeight((const char *)NULL);
-		
+		this->font = font;
 		this->x=x;
 		this->y=y;
 		this->w=w;
@@ -74,7 +71,6 @@ namespace GAGGUI
 						nth--;
 						if (numbers.size()>0)
 						{
-							repaint();
 							parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 						}
 					}
@@ -85,7 +81,6 @@ namespace GAGGUI
 					if (nth<((int)numbers.size()-1))
 					{
 						nth++;
-						repaint();
 						parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 					}
 				}
@@ -93,13 +88,22 @@ namespace GAGGUI
 		}
 	}
 	
-	void Number::internalRepaint(int x, int y, int w, int h)
+	void Number::init(void)
 	{
-		assert(parent);
-		assert(parent->getSurface());
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-		parent->getSurface()->drawVertLine(x+m, y, h, 255, 255, 255);
-		parent->getSurface()->drawVertLine(x+w-m, y, h, 255, 255, 255);
+		this->fontPtr=Toolkit::getFont(font.c_str());
+		assert(fontPtr);
+		textHeight=this->fontPtr->getStringHeight((const char *)NULL);
+		assert(textHeight > 0);
+	}
+	
+	void Number::paint(GAGCore::DrawableSurface *gfx)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		gfx->drawVertLine(x+m, y, h, 255, 255, 255);
+		gfx->drawVertLine(x+w-m, y, h, 255, 255, 255);
 		
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());
@@ -110,13 +114,13 @@ namespace GAGGUI
 			std::stringstream s;
 			s << numbers[nth];
 			int tw=fontPtr->getStringWidth(s.str().c_str());
-			parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
+			gfx->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
 
 		}
 		int dx1=(m-fontPtr->getStringWidth("-"))/2;
-		parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
+		gfx->drawString(x+dx1, y+dy, fontPtr, "-");
 		int dx2=(m-fontPtr->getStringWidth("+"))/2;
-		parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
+		gfx->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
 	}
 	
 	void Number::add(int number)

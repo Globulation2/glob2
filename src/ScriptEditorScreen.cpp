@@ -49,6 +49,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(new TextButton(230, 360, 130, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 	addWidget(new TextButton(370, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
 	addWidget(new TextButton(480, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
+	dispatchInit();
 }
 
 bool ScriptEditorScreen::testCompile(void)
@@ -130,7 +131,7 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 {
 	// create dialog box
 	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("scripts", "sgsl", isLoad, game->session.getMapName(), filenameToName, glob2NameToFilename);
-	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
+	loadSaveScreen->dispatchPaint();
 
 	// save screen
 	globalContainer->gfx->setClipRect();

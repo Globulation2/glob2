@@ -280,9 +280,7 @@ void SettingsScreen::updateGfxCtx(void)
 		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	}
 	setVisibilityFromGraphicType();
-	dispatchPaint(globalContainer->gfx);
 	actDisplay->setText(actDisplayModeToString().c_str());
-	addUpdateRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	gfxAltered = true;
 }
 
