@@ -658,3 +658,5 @@ C : Envoyer les messages à
 touche enter : envoyer un message
 [shortcut explanation v]
 touche v : presser pour parler
+[Delete map]
+Effacer la carte séléctionnée

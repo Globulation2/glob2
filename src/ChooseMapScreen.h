@@ -41,7 +41,9 @@ public:
 		//! Value returned upon screen execution completion when a valid map/game is selected
 		OK = 1,
 		//! Value returned upon screen execution completion when the map/game selection is canceled
-		CANCEL = 2
+		CANCEL = 2,
+		//! Value returned if screen is for games and delete button has been pressed
+		DELETE = 3,
 	};
 	
 	//! Session info, will be used by caller upen screen execution completion
@@ -54,6 +56,8 @@ protected:
 	Button *ok;
 	//! The cancel button
 	Button *cancel;
+	//! the delete map button
+	Button *deleteMap;
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The widget that will show a preview of the selection map
