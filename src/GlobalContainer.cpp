@@ -25,11 +25,23 @@ GlobalContainer::GlobalContainer(void)
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
+	for (int  i=1; i<argc; i++)
 	{
-		for (int  i=1; i<argc; i++)
-		{
-			if (strcmp(argv[i], "-f")==0)
-				graphicFlags|=SDL_FULLSCREEN;
+		if (strcmp(argv[i], "-f")==0) {
+			graphicFlags|=SDL_FULLSCREEN;
+			continue;
+		}
+
+		// the -d option appends a directory in the
+		// directory search list.
+		if ((argv[i][0] == '-') && (argv[i][1] == 'd')) {
+			if (argv[i][2] != 0)
+				fileManager.addDir(&argv[i][2]);
+			else {
+				i++;
+				if (i < argc) 
+					fileManager.addDir(argv[i]);
+			}
 		}
 	}
 }
