@@ -623,7 +623,7 @@ void Unit::handleActivity(void)
 			attachedBuilding=NULL;
 			subscribed=false;
 		}
-		
+
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
@@ -632,6 +632,8 @@ void Unit::handleActivity(void)
 			{
 				Team *currentTeam=owner;
 				Team *targetTeam=b->owner;
+				currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum);
+				targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum);
 				if (currentTeam!=targetTeam)
 				{
 					int targetID=-1;
@@ -641,7 +643,7 @@ void Unit::handleActivity(void)
 							targetID=i;
 							break;
 						}
-					
+
 					if (targetID!=-1)
 					{
 						Sint32 currentID=Unit::GIDtoID(gid);
@@ -664,7 +666,7 @@ void Unit::handleActivity(void)
 						owner=targetTeam;
 					}
 				}
-				
+
 				destinationPurprose=FEED;
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;

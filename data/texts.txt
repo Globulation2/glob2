@@ -827,6 +827,18 @@ are under attack
 werden angegriffen
 jsou pod útokem
 jesteś atakowany(a)
+[Your unit got converted to another team]
+Votre unité est passée à l'équipe adverse
+Your unit got converted to another team
+
+
+
+[Another team's unit got converted to your team]
+Un unité enemie s'est convertie à votre équipe
+Another team's unit got converted to your team
+
+
+
 [Uncontrolled]
 Incontrôlé
 Uncontrolled
