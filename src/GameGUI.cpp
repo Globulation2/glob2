@@ -467,7 +467,11 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		else
 		{
 			if (selBuild && (selBuild->type->isVirtual))
-				game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &(selBuild->posX), &(selBuild->posY), viewportX, viewportY);
+			{
+				int posX, posY;
+				game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
+				orderQueue.push(new OrderMoveFlags(&(selBuild->UID), &posX, &posY, 1));
+			}
 		}
 	}
 }

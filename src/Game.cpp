@@ -187,6 +187,24 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 		}
 		break;
+		case ORDER_MOVE_FLAG:
+		{
+			{
+				for (int i=0; i<((OrderMoveFlags *)order)->getNumberOfBuilding(); i++)
+				{
+					Sint32 UID=((OrderMoveFlags *)order)->UID[i];
+					int team=Building::UIDtoTeam(UID);
+					int id=Building::UIDtoID(UID);
+					Building *b=teams[team]->myBuildings[id];
+					if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
+					{
+						b->posX=((OrderMoveFlags *)order)->x[i];
+						b->posY=((OrderMoveFlags *)order)->y[i];	
+					}
+				}
+			}
+		}
+		break;
 		case ORDER_MODIFY_SWARM:
 		{
 			{

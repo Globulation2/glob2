@@ -11,7 +11,7 @@ SessionGame::SessionGame()
 	numberOfPlayer=0;
 	numberOfTeam=0;
 	gameTPF=40;
-	gameLatency=10;
+	gameLatency=5;
 }
 
 void SessionGame::save(SDL_RWops *stream)
