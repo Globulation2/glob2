@@ -92,7 +92,7 @@ public:
 	Sint32 ratioLocal[UnitType::NB_UNIT_TYPE];
 	Sint32 percentUsed[UnitType::NB_UNIT_TYPE];
 	
-	Uint32 shootingStep;
+	Uint32 shootingStep;//TODO:dead variable remove it
 	Sint32 shootingCooldown;
 
 	// optimisation parameters

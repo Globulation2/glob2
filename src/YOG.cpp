@@ -244,6 +244,12 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		yogGlobalState=YGS_CONNECTED;
 	}
 	break;
+	case YMT_CONNECTION_REFUSED:
+	{
+		printf("YOG:connection refused!\n");
+		yogGlobalState=YGS_NOT_CONNECTING;
+	}
+	break;
 	case YMT_DECONNECTING:
 	{
 		printf("YOG:deconnected\n");
@@ -462,14 +468,6 @@ void YOG::deconnect()
 		connectionTimeout=0;
 		connectionTOTL=3;
 	}
-	else if (yogGlobalState!=YGS_DECONNECTING)
-	{
-		yogGlobalState=YGS_DECONNECTING;
-		connectionTimeout=0;
-		connectionTOTL=3;
-		printf("YOG::deconnect() in a bad state (yogGlobalState=%d).\n", yogGlobalState);
-		assert(false);
-	}
 	
 	if (yogSharingState>=YSS_SHARING_GAME)
 	{
@@ -681,26 +679,6 @@ void YOG::unjoinGame()
 {
 	assert(joinedGame);
 	joinedGame=false;
-}
-
-bool YOG::isMessage(void)
-{
-	return (receivedMessages.size()>0);
-}
-
-const char *YOG::getMessage(void)
-{
-	return receivedMessages.begin()->text;
-}
-
-const char *YOG::getMessageSource(void)
-{
-	return receivedMessages.begin()->userName;
-}
-
-void YOG::freeMessage(void)
-{
-	receivedMessages.erase(receivedMessages.begin());
 }
 
 void YOG::sendMessage(const char *message)

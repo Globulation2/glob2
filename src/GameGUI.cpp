@@ -200,19 +200,28 @@ void GameGUI::step(void)
 	globalContainer->yog->step();
 
 	// display chat messages
-	while (globalContainer->yog->isMessage())
+	while (globalContainer->yog->receivedMessages.size()>0)
 	{
+		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
+		switch(m->messageType)//set the text color
+		{
+		case YMT_MESSAGE:
+		break;
+		case YMT_PRIVATE_MESSAGE:
+		break;
+		case YMT_ADMIN_MESSAGE:
+		break;
+		default:
+			assert(false);
+		break;
+		}
 		char msg[YOG::MAX_MESSAGE_SIZE];
-		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "%s:%s", globalContainer->yog->getMessageSource(), globalContainer->yog->getMessage());
-		msg[YOG::MAX_MESSAGE_SIZE]=0;
+		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "<%s>%s", m->userName, m->text);
+		msg[YOG::MAX_MESSAGE_SIZE-1]=0;
 		addMessage(msg);
-		globalContainer->yog->freeMessage();
+		globalContainer->yog->receivedMessages.erase(m);
 	}
-	
-	// discard chat infos
-	/*TODO:is is still a use for info messages ?
-	while(globalContainer->yog->isInfoMessage())
-		globalContainer->yog->freeInfoMessage();*/
+
 }
 
 void GameGUI::synchroneStep(void)
