@@ -7,6 +7,7 @@ libgag_a_SOURCES = FileManager.cpp\
 	GUITextArea.cpp\
 	GraphicContext.cpp\
 	SDLGraphicContext.cpp\
+	GLGraphicContext.cpp \
 	SDL_ttf.c\
 	GAG.cpp\
 	GUIButton.cpp\
@@ -20,6 +21,7 @@ libgag_a_SOURCES = FileManager.cpp\
 
 EXTRA_DIST = SDLFont.h \
         SDLGraphicContext.h \
+		GLGraphicConext.cpp \
         SDLSprite.h \
         SDL_ttf.h
 			

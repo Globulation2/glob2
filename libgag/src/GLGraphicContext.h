@@ -17,26 +17,32 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SDLGRAPHICCONTEXT_H
-#define __SDLGRAPHICCONTEXT_H
+#ifndef __GLGRAPHICCONTEXT_H
+#define __GLGRAPHICCONTEXT_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_LIBGL
 
 #include <GAGSys.h>
 #include "GraphicContext.h"
 
-class SDLDrawableSurface: public virtual DrawableSurface
+class GLGraphicContext: public virtual GraphicContext
 {
-protected:
-	friend class SDLSprite;
-	SDL_Surface *surface;
-	SDL_Rect clipRect;
-	
+private:
+	SDL_Surface *screen;
+//	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
+
 public:
-	SDLDrawableSurface();
-	virtual ~SDLDrawableSurface() { if (surface) SDL_FreeSurface(surface); }
+	GLGraphicContext(void);
+	virtual ~GLGraphicContext(void);
+
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
-	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);
-	/*virtual*/ int getW(void) { if(surface) return surface->w; else return 0;}
-	/*virtual*/ int getH(void) { if(surface) return surface->h; else return 0; }
+	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE) { }
+	virtual int getW(void) { return screen->w; }
+	virtual int getH(void) { return screen->h; }
 	virtual void setClipRect(int x, int y, int w, int h);
 	virtual void setClipRect(void);
 	virtual void loadImage(const char *name);
@@ -51,31 +57,10 @@ public:
 	virtual void drawString(int x, int y, const Font *font, const char *msg, ...);
 	virtual void drawString(int x, int y, int w, const Font *font, const char *msg, ...);
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);
-	virtual void updateRects(SDL_Rect *rects, int size) { }
-	virtual void updateRect(int x, int y, int w, int h) { }
-};
-
-class SDLGraphicContext:  public SDLDrawableSurface, public virtual GraphicContext
-{
-private:
-	enum ImageType
-	{
-		NORMAL,
-		OVERLAY,
-		PALETTE,
-		ROTATED
-	};
-	SDL_RWops *tryOpenImage(const char *name, int number, ImageType type);
-
-public:
-	SDLGraphicContext(void);
-	virtual ~SDLGraphicContext(void);
-
-	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
+	
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 
 	virtual void dbgprintf(const char *msg, ...);
-	virtual void loadImage(const char *name);
 
 	virtual Sprite *loadSprite(const char *name);
 	virtual Font *loadFont(const char *name, unsigned size);
@@ -88,5 +73,6 @@ public:
 	virtual void printScreen(const char *filename);
 };
 
+#endif
 
 #endif

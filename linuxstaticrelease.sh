@@ -1,5 +1,7 @@
 #!/bin/sh
 DATESTAMP=`date +%Y%m%d`
+echo "Configuring without OpenGL"
+./configure --disable-opengl
 echo "Making glob2"
 make >& /dev/null
 cd src

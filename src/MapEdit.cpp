@@ -1274,7 +1274,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			newW=256;
 		if (newH<288)
 			newH=288;
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->graphicFlags);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->getGfxFlag());
 		regenerateClipRect();
 		draw();
 	}
@@ -1384,7 +1384,7 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 
 int MapEdit::run(void)
 {
-	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
 
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
@@ -1461,6 +1461,6 @@ int MapEdit::run(void)
 			SDL_Delay(33-deltaTick);
 	}
 
-	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
 	return returnCode;
 }

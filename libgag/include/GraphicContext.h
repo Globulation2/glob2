@@ -88,6 +88,7 @@ public:
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL)=0;
 
 	virtual void nextFrame(void)=0;
+	virtual void printScreen(const char *filename)=0;
 
 	static GraphicContext *createGraphicContext(GraphicContextType type);
 };

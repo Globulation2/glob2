@@ -1233,3 +1233,10 @@ DrawableSurface *SDLGraphicContext::createDrawableSurface(const char *name)
 	ds->loadImage(name);
 	return ds;
 }
+
+
+void SDLGraphicContext::printScreen(const char *filename)
+{
+	if (surface)
+		SDL_SaveBMP(surface, filename);
+}

@@ -19,7 +19,13 @@
 
 #include "GraphicContext.h"
 #include "SDLGraphicContext.h"
+#include "GLGraphicContext.h"
 #include <assert.h>
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 
 GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 {
@@ -27,6 +33,12 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 	{
 		return new SDLGraphicContext;
 	}
+#ifdef HAVE_LIBGL
+	else if (type==GC_GL)
+	{
+		return new GLGraphicContext;
+	}
+#endif
 	else
 	{
 		fprintf(stderr, "GAG : Critical, don't know how to create graphic context 0x%x\n", (unsigned)type );

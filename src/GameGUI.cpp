@@ -879,8 +879,12 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				}
 				break;
 			case SDLK_w:
+			case SDLK_PAUSE:
 				if (pressed)
 					paused=!paused;
+				break;
+			case SDLK_PRINT:
+				globalContainer->gfx->printScreen("screenshot.bmp");
 				break;
 			default:
 
