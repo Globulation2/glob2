@@ -1,5 +1,4 @@
-EXTRA_DIST = xmlserializer.h \
-Toolkit.h \
+EXTRA_DIST = Toolkit.h \
 StringTable.h \
 FileManager.h \
 GAG.h \
