@@ -30,22 +30,6 @@
 SDLDrawableSurface::SDLDrawableSurface()
 {
 	surface=NULL;
-	// <Nuage>TODO: NCT, I have added this because valgrind complains about it:
-	/*
-	==355== Conditional jump or move depends on uninitialised value(s)
-	==355==    at 0x8099505: SDLDrawableSurface::drawVertLine(int, int, int, unsigned char, unsigned char, unsigned char, unsigned char) (SDLGraphicContext.cpp:211)
-	==355==    by 0x80993A2: SDLDrawableSurface::drawRect(int, int, int, int, unsigned char, unsigned char, unsigned
-	char, unsigned char) (SDLGraphicContext.cpp:177)
-	==355==    by 0x80728C6: GameGUI::drawOverlayInfos(void) (GameGUI.cpp:1480)
-	==355==    by 0x807376C: GameGUI::drawAll(int) (GameGUI.cpp:1630)
-	==355==
-	==355== Conditional jump or move depends on uninitialised value(s)
-	==355==    at 0x8099864: SDLDrawableSurface::drawHorzLine(int, int, int, unsigned char, unsigned char, unsigned char, unsigned char) (SDLGraphicContext.cpp:305)
-	==355==    by 0x80992FF: SDLDrawableSurface::drawRect(int, int, int, int, unsigned char, unsigned char, unsigned
-	char, unsigned char) (SDLGraphicContext.cpp:174)
-	==355==    by 0x80728C6: GameGUI::drawOverlayInfos(void) (GameGUI.cpp:1480)
-	==355==    by 0x807376C: GameGUI::drawAll(int) (GameGUI.cpp:1630)
-	*/
 	clipRect.x=0;
 	clipRect.y=0;
 	clipRect.w=0;
