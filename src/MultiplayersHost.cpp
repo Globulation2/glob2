@@ -439,6 +439,43 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 	removePlayer(i);
 }
 
+void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddress ip)
+{
+	fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
+	if (rsize!=8)
+		return;
+	
+	char *sdata="aaaabbbbTODO yogGameInfo";
+	int ssize=strlen(sdata)+1;
+	sdata[0]=YMT_GAME_INFO_FROM_HOST;
+	sdata[1]=0;
+	sdata[2]=0;
+	sdata[3]=0;
+	memcpy(sdata+4, rdata+4, 4); // we copy game's uid
+
+	assert(sdata);
+	UDPpacket *packet=SDLNet_AllocPacket(ssize);
+	if (packet==NULL)
+		return;
+	if (ip.host==0)
+		return;
+	packet->len=ssize;
+
+	memcpy((char *)packet->data, sdata, ssize);
+
+	bool sucess;
+
+	packet->address=ip;
+	packet->channel=-1;
+	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	if (!sucess)
+		fprintf(logFile, "failed to send yogGameInfo packet!\n");
+
+	SDLNet_FreePacket(packet);
+	
+	return;
+}
+
 void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
@@ -539,27 +576,30 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	}
 	
 	bool serverIPReceived=false;
-	Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
-	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
-	if (serverIP.host)
+	if (!sessionInfo.players[p].ipFromNAT)
 	{
-		if (serverIP.host!=newHost)
+		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
+		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
+		if (serverIP.host)
 		{
-			fprintf(logFile, "Bad ip received by(%s). old=(%s) new=(%s)\n", Utilities::stringIP(ip), Utilities::stringIP(serverIP.host), Utilities::stringIP(newHost));
-			return;
+			if (serverIP.host!=newHost)
+			{
+				fprintf(logFile, "Bad ip received by(%s). old=(%s) new=(%s)\n", Utilities::stringIP(ip), Utilities::stringIP(serverIP.host), Utilities::stringIP(newHost));
+				return;
+			}
+			if (serverIP.port!=newPort)
+			{
+				fprintf(logFile, "Bad port received by(%s). old=(%d) new=(%d)\n", Utilities::stringIP(ip), serverIP.port, newPort);
+				return;
+			}
 		}
-		if (serverIP.port!=newPort)
+		else
 		{
-			fprintf(logFile, "Bad port received by(%s). old=(%d) new=(%d)\n", Utilities::stringIP(ip), serverIP.port, newPort);
-			return;
+			serverIP.host=newHost;
+			serverIP.port=newPort;
+			serverIPReceived=true;
+			fprintf(logFile, "I recived my ip!:(%s).\n", Utilities::stringIP(serverIP));
 		}
-	}
-	else
-	{
-		serverIP.host=newHost;
-		serverIP.port=newPort;
-		serverIPReceived=true;
-		fprintf(logFile, "I recived my ip!:(%s).\n", Utilities::stringIP(serverIP));
 	}
 
 	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
@@ -1006,6 +1046,10 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		{
 		case BROADCAST_REQUEST:
 			broadcastRequest(data, size, ip);
+		break;
+		
+		case YOG_CLIENT_REQUESTS_GAME_INFO:
+			yogClientRequestsGameInfo(data, size, ip);
 		break;
 		
 		case NEW_PLAYER_WANTS_PRESENCE:

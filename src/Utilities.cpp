@@ -443,21 +443,24 @@ namespace Utilities
 		s[n-1]=0;
 	}
 	
-	char staticStringIP[128];
+	char staticStringIP[8][128];
+	int staticCounter;
 	char *stringIP(Uint32 nip)
 	{
+		staticCounter=(staticCounter+1)&0x7;
 		Uint32 ip=SDL_SwapBE32(nip);
-		snprintf(staticStringIP, 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-		staticStringIP[127]=0;
-		return staticStringIP;
+		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+		staticStringIP[staticCounter][127]=0;
+		return staticStringIP[staticCounter];
 	}
 	
 	char *stringIP(IPaddress nip)
 	{
+		staticCounter=(staticCounter+1)&0x7;
 		Uint32 ip=SDL_SwapBE32(nip.host);
-		snprintf(staticStringIP, 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(nip.port));
-		staticStringIP[127]=0;
-		return staticStringIP;
+		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(nip.port));
+		staticStringIP[staticCounter][127]=0;
+		return staticStringIP[staticCounter];
 	}
 }
 

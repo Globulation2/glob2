@@ -107,9 +107,9 @@ public:
 	bool newGameList(bool reset);
 	bool newPlayerList(bool reset);
 	
-	//bool selectGame(std::list<GameInfo>::iterator gameit);
-	//bool selectedGameinfoUpdated(bool reset);
-	//GameInfo *getSelectedGameInfo();
+	bool selectGame(Uint32 uid);
+	bool selectedGameinfoUpdated(bool reset);
+	GameInfo *getSelectedGameInfo();
 	
 	void gameStarted();
 	void gameEnded();
@@ -139,6 +139,10 @@ public:
 	
 	std::list<GameInfo> games;
 	bool newGameListAviable;
+	
+	Uint32 selectedGame;
+	bool isSelectedGame;
+	bool newSelectedGameinfoAviable;
 	
 	int presenceTimeout;
 	int presenceTOTL;
