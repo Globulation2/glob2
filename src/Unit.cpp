@@ -2293,16 +2293,16 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	
 	cs^=typeNum;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [0]
+		checkSumsList->push_back(typeNum);// [0]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=isDead;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [1]
+		checkSumsList->push_back(isDead);// [1]
 	cs=(cs<<1)|(cs>>31);
 	cs^=gid;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2]
+		checkSumsList->push_back(gid);// [2]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=posX;
@@ -2313,7 +2313,7 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	cs=(cs<<1)|(cs>>31);
 	cs^=delta;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4]
+		checkSumsList->push_back(delta);// [4]
 	cs=(cs<<1)|(cs>>31);
 	cs^=dx;
 	cs^=dy;
@@ -2327,12 +2327,12 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	cs=(cs<<1)|(cs>>31);
 	cs^=speed;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [7]
+		checkSumsList->push_back(speed);// [7]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=(int)needToRecheckMedical;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [8]
+		checkSumsList->push_back(needToRecheckMedical);// [8]
 	cs=(cs<<1)|(cs>>31);
 	cs^=medical;
 	cs^=activity;
@@ -2393,13 +2393,13 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	
 	cs^=destinationPurprose;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [17]
+		checkSumsList->push_back(destinationPurprose);// [17]
 	cs^=(Uint32)subscribed;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [18]
+		checkSumsList->push_back(subscribed);// [18]
 	cs^=caryedRessource;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [19]
+		checkSumsList->push_back(caryedRessource);// [19]
 	
 	return cs;
 }
