@@ -1674,7 +1674,7 @@ Fullscreen
 
 
 [hwaccel]
-Accélération matériel
+Accélération matérielle
 Hardware Acceleration
 
 
