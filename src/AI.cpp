@@ -1129,9 +1129,45 @@ Order *AI::getOrder(void)
 
 void AI::save(SDL_RWops *stream)
 {
-	//TODO !
+	//Game *game=player->team->game;
+	//assert((game->session.versionMajor>=0)&&(game->session.versionMinor>=3));
+	
+	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_WriteBE32(stream, phase);
+	SDL_WriteBE32(stream, attackPhase);
+	SDL_WriteBE32(stream, phaseTime);
+	SDL_WriteBE32(stream, critticalWarriors);
+	SDL_WriteBE32(stream, critticalTime);
+	SDL_WriteBE32(stream, attackTimer);
+	SDL_WriteBE32(stream, (Uint32)strategy);
+	
+	SDL_RWwrite(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
+	
+	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
-void AI::load(SDL_RWops *stream)
-{
 
+bool AI::load(SDL_RWops *stream)
+{
+	Game *game=player->team->game;
+	if ((game->session.versionMajor>=0)&&(game->session.versionMinor>=3))
+	{
+		char signature[4];
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+		phase            =SDL_ReadBE32(stream);
+		attackPhase      =SDL_ReadBE32(stream);
+		phaseTime        =SDL_ReadBE32(stream);
+		critticalWarriors=SDL_ReadBE32(stream);
+		critticalTime    =SDL_ReadBE32(stream);
+		attackTimer      =SDL_ReadBE32(stream);
+		strategy         =(Strategy)SDL_ReadBE32(stream);
+		
+		SDL_RWread(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
+		
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+	}
+	return true;
 }

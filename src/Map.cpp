@@ -51,6 +51,32 @@ bool BaseMap::load(SDL_RWops *stream)
 	return true;
 }
 
+void BaseMap::setMapName(const char *s)
+{
+	strncpy(mapName, s, MAP_NAME_MAX_SIZE);
+	mapName[MAP_NAME_MAX_SIZE-1]=0;
+	char *c=strrchr(mapName, '.');
+	if (c)
+		*c=0;
+	printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
+}
+
+char *BaseMap::getMapName()
+{
+	printf("(get)mapName=(%s).\n", mapName);
+	return mapName;
+}
+
+char *BaseMap::getMapFileName()
+{
+	strncpy(mapFileName, mapName, MAP_NAME_MAX_SIZE);
+	mapFileName[MAP_NAME_MAX_SIZE-1]=0;
+	int l=strlen(mapName);
+	strncpy(&mapFileName[l], ".map", 5);
+	mapFileName[MAP_NAME_MAX_SIZE+4-1]=0;
+	printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
+	return mapFileName;
+}
 
 Uint8 BaseMap::getOrderType()
 {
@@ -275,6 +301,18 @@ bool Map::isRessource(int x, int y, RessourceType ressourceType)
 		return ( (d/10) == ressourceType );
 }
 
+bool Map::isRessource(int x, int y, RessourceType *ressourceType)
+{
+	int d=getTerrain(x, y)-272;
+	if ((d<0)||(d>=40))
+		return false;
+	else
+	{
+		*ressourceType=(RessourceType)(d/10);
+		return true;
+	}
+}
+
 bool Map::decRessource(int x, int y)
 {
 	int d=getTerrain(x, y)-272;
@@ -464,9 +502,9 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-void Map::setBaseMap(const BaseMap *initial)
+void Map::setBaseMap(/*const*/ BaseMap *initial)
 {
-	memcpy(mapName, initial->mapName, 32);
+	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }
 
 void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType)
@@ -1020,6 +1058,43 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 }
 
 bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+{
+	{
+		for (int i=1; i<32; i++)
+		{
+			for (int j=-i; j<i; j++)
+			{
+				if (isRessource(x+i, y+j, ressourceType))
+				{
+					*dx=(x+i)&getMaskW();
+					*dy=(y+j)&getMaskH();
+					return true;
+				}
+				if (isRessource(x-i, y+j, ressourceType))
+				{
+					*dx=(x-i)&getMaskW();
+					*dy=(y+j)&getMaskH();
+					return true;
+				}
+				if (isRessource(x+j, y+i, ressourceType))
+				{
+					*dx=(x+j)&getMaskW();
+					*dy=(y+i)&getMaskH();
+					return true;
+				}
+				if (isRessource(x+j, y-i, ressourceType))
+				{
+					*dx=(x+j)&getMaskW();
+					*dy=(y-i)&getMaskH();
+					return true;
+				}
+			}
+		}
+	}
+    return false;
+}
+
+bool Map::nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy)
 {
 	{
 		for (int i=1; i<32; i++)

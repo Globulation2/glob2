@@ -99,6 +99,7 @@ public:
 
 	//! Called when unit wanna work to building. Distance is balanced with user's number of requested unit
 	Building *findNearestJob(int x, int y, Abilities ability, int actLevel);
+	Building *findBestJob(int x, int y, Abilities ability, int actLevel);
 	//! Called when unit wanna be attracted to building. Distance is balanced with user's number of requested unit
 	Building *findNearestAttract(int x, int y, Abilities ability);
 	//! Called when unit wanna work to fill building with food. Distance is balanced with user's number of requested unit

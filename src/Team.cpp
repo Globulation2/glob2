@@ -282,6 +282,28 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 	return b;
 }
 
+Building *Team::findBestJob(int x, int y, Abilities ability, int actLevel)
+{
+	Building *b=NULL;
+	Sint32 dist=MAX_SINT32;
+	Sint32 newDist;
+	for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
+	{
+		if ((*it)->type->level<=actLevel)
+		{
+			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			int maxUnitWorking=(*it)->maxUnitWorking;
+			newDist+=maxUnitWorking*maxUnitWorking;
+			if ( newDist<dist )
+			{
+				b=*it;
+				dist=newDist;
+			}
+		}
+	}
+	return b;
+}
+
 Building *Team::findNearestAttract(int x, int y, Abilities ability)
 {
 	Building *b=NULL;

@@ -29,7 +29,6 @@
 #include <list>
 
 #define NOUID (Sint16)0x8000
-#define MAP_NAME_MAX_SIZE 32
 class Map;
 class Game;
 
@@ -78,7 +77,15 @@ public:
 	BaseMap();
 	virtual ~BaseMap(void) { }
 
+	static const int MAP_NAME_MAX_SIZE=32;
+protected:
 	char mapName[MAP_NAME_MAX_SIZE];
+	char mapFileName[MAP_NAME_MAX_SIZE+4];//this is not saved in file
+public:
+	//! safely copy s to mapName[] and remove the extention if needed.
+	void setMapName(const char *s);
+	char *getMapName();
+	char *getMapFileName();
 protected:
 	//! serialized form of BaseMap
 	char data[MAP_NAME_MAX_SIZE];
@@ -118,7 +125,7 @@ public:
 	virtual ~Map(void);
 
 	//! Set the base map (name and initial infos)
-	void setBaseMap(const BaseMap *initial);
+	void setBaseMap(/*const*/ BaseMap *initial);
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER);
 	//! Save a map
@@ -199,7 +206,8 @@ public:
 	bool isSand(int x, int y);
 	bool isGrowableRessource(int x, int y);
 	bool isRessource(int x, int y);
-	bool isRessource(int x, int y, RessourceType ressourceType);
+	bool isRessource(int x, int y, RessourceType  ressourceType);
+	bool isRessource(int x, int y, RessourceType *ressourceType);
 	
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	bool decRessource(int x, int y);
@@ -252,9 +260,8 @@ public:
 	//! Transform coordinate from building (px,py) to screen (mx,my)
 	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
-	bool nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
-	//! Save a thumbnail of the map in stream
-	//void saveThumbnail(SDL_RWops *stream);
+	bool nearestRessource(int x, int y, RessourceType  ressourceType, int *dx, int *dy);
+	bool nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy);
 
 protected:
 	// private functions, used for edition

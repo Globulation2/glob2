@@ -313,6 +313,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 						if (stream)
 						{
+							game.map.setMapName(name);
 							this->save(stream);
 							SDL_RWclose(stream);
 						}

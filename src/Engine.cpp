@@ -25,10 +25,18 @@
 #include "CustomGameScreen.h"
 #include "YOGScreen.h"
 
-int Engine::init(void)
+Engine::Engine()
 {
-	assert(false);
-	return 0; // not sure about this but should return a value...
+	net=NULL;
+}
+
+Engine::~Engine()
+{
+	if (net)
+	{
+		delete net;
+		net=NULL;
+	}
 }
 
 int Engine::initCampain(void)
@@ -304,6 +312,7 @@ int Engine::run(void)
 	}
 
 	delete net;
+	net=NULL;
 
 	if (gui.exitGlobCompletely)
 		return -1;

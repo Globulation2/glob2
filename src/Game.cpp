@@ -34,17 +34,16 @@ Game::Game()
 	init();
 }
 
-Game::Game(const SessionInfo *initial)
+Game::Game(/*const*/ SessionInfo *initial)
 {
 	loadBase(initial);
 }
 
-void Game::loadBase(const SessionInfo *initial)
+void Game::loadBase(/*const*/ SessionInfo *initial)
 {
 	init();
-	char textTemp[36];
-	snprintf(textTemp, 36, "%s.map", initial->map.mapName);
-	SDL_RWops *stream=globalContainer->fileManager.open(textTemp,"rb");
+	char *mapFileName=initial->map.getMapFileName();
+	SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
 	load(stream);
 	SDL_RWclose(stream);
 	setBase(initial);
@@ -93,7 +92,7 @@ void Game::init()
 	stepCounter=0;
 }
 
-void Game::setBase(const SessionInfo *initial)
+void Game::setBase(/*const*/ SessionInfo *initial)
 {
 	assert (initial->numberOfTeam==session.numberOfTeam);
 	// TODO, we should be able to play with less team than planed on the map
@@ -368,7 +367,7 @@ bool Game::load(SDL_RWops *stream)
 	tempSessionInfo.load(stream);
 
 	memcpy(&session.versionMajor, &tempSessionInfo.versionMajor, 11*4);
-	memcpy(map.mapName, tempSessionInfo.map.mapName, 32);
+	map.setMapName(tempSessionInfo.map.getMapName());
 	// other informations are dropped, are they used somewhere ????
 
 	char signature[4];

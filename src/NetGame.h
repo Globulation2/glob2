@@ -29,6 +29,7 @@ class NetGame
 {
 public:
 	NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32]);
+	~NetGame();
 
 	Order *getOrder(Sint32 playerNumber);
 	void pushOrder(Order *order, Sint32 playerNumber);

@@ -110,6 +110,7 @@ public:
 
 	bool isRessourceFull(void);
 	int neededRessource(void);
+	int neededRessource(int r);
 	void cancelUpgrade(void);
 	void update(void);
 	bool tryToUpgradeRoom(void);
