@@ -12,7 +12,7 @@
 class TextInput: public Widget
 {
 public:
-	TextInput(int x, int y, int w, int h, Font *font, const char *text);
+	TextInput(int x, int y, int w, int h, Font *font, const char *text, bool activated);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);
@@ -28,6 +28,8 @@ protected:
 public:
 	static const int MAX_TEXT_SIZE=256;
 	char text[MAX_TEXT_SIZE];
+	
+	bool activated;
 };
 
 #endif 

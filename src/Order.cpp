@@ -87,6 +87,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new NoMoreOrdersAviable(netData+4,netDataLength-4);
 	}
+	case ORDER_PLAYER_QUIT_GAME :
+	{
+		return new PlayerQuitsGameOrder(netData+4,netDataLength-4);
+	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 		
@@ -493,13 +497,14 @@ MessageOrder::MessageOrder(const char *data, int dataLength)
 	setData(data, dataLength);
 }
 
-MessageOrder::MessageOrder(const char *text, Uint32 recepientsMask)
+MessageOrder::MessageOrder(Uint32 recepientsMask, const char *text)
 {
 	this->length=strlen(text)+5;
 	this->data=(char *)malloc(length);
 	memcpy(data+4,text,length-5);
 	this->data[length-1]=0;
 	addUint32(data, recepientsMask, 0);
+	this->recepientsMask=recepientsMask;
 }
 
 MessageOrder::~MessageOrder()
@@ -697,7 +702,6 @@ bool RequestingDeadAwayOrder::setData(const char *data, int dataLength)
 	return true;
 }
 
-
 // NoMoreOrdersAviable code
 
 NoMoreOrdersAviable::NoMoreOrdersAviable(const char *data, int dataLength)
@@ -733,4 +737,34 @@ bool NoMoreOrdersAviable::setData(const char *data, int dataLength)
 	return true;
 }
 
+// PlayerQuitsGameOrder code
 
+PlayerQuitsGameOrder::PlayerQuitsGameOrder(const char *data, int dataLength)
+{
+	assert(dataLength==4);
+
+	setData(data, dataLength);
+}
+
+PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
+{
+	this->player=player;
+}
+
+char *PlayerQuitsGameOrder::getData(void)
+{
+	addUint32(data, this->player, 0);
+	return data;
+}
+
+bool PlayerQuitsGameOrder::setData(const char *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+
+	this->player=getUint32(data, 0);
+	
+	memcpy(this->data,data,dataLength);
+	
+	return true;
+}

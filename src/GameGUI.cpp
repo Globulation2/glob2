@@ -32,6 +32,8 @@ GameGUI::GameGUI()
 		viewportSpeedX[i]=0;
 		viewportSpeedY[i]=0;
 	}
+	
+	typingMessage=false;
 }
 
 GameGUI::~GameGUI()
@@ -94,11 +96,11 @@ void GameGUI::processEvent(SDL_Event *event)
 {
 	if (event->type==SDL_KEYDOWN)
 	{
-		handleKey(event->key.keysym.sym, true);
+		handleKey(event->key.keysym, true);
 	}
 	else if (event->type==SDL_KEYUP)
 	{
-		handleKey(event->key.keysym.sym, false);
+		handleKey(event->key.keysym, false);
 	}
 	else if (event->type==SDL_MOUSEMOTION)
 	{
@@ -123,7 +125,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_QUIT)
 	{
-		isRunning=false;
+		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 	}
 }
 
@@ -138,19 +140,30 @@ void GameGUI::handleRightClick(void)
 	needRedraw=true;
 }
 
-void GameGUI::handleKey(SDLKey key, bool pressed)
+void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 {
+	SDLKey key=keySym.sym;
+	 
 	int modifier;
 	
 	if (pressed)
 		modifier=1;
 	else
 		modifier=-1;
-		
+	
+	if (pressed && typingMessage && (font->printable(keySym.unicode)))
+	{
+		if (typedChar<MAX_MESSAGE_SIZE)
+		{
+			typedMessage[typedChar++]=keySym.unicode;
+			typedMessage[typedChar]=0;
+		}
+	}
+	
 	switch (key)
 	{
 		case SDLK_ESCAPE:
-			isRunning=false;
+			orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
 			break;
 		case SDLK_UP:
 			if (pressed)
@@ -289,8 +302,35 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			if (pressed)
 				showExtendedInformation=!showExtendedInformation;
 			break;
+		case SDLK_RETURN :
+			if (pressed)
+			{
+				if (typingMessage)
+				{
+					// TODO : send message only to some players
+					orderQueue.push(new MessageOrder((Uint32)0xFFFFFFFF, typedMessage));
+					
+					typedMessage[0]=0;
+					typedChar=0;
+					typingMessage=false;
+				}
+				else
+				{
+					typedMessage[0]=0;
+					typedChar=0;
+					typingMessage=true;
+				}
+			}
+		break;
+		case SDLK_BACKSPACE :
+			if (pressed && (typedChar>0))
+			{
+				typedChar--;
+				typedMessage[typedChar]=0;
+			}
+		break;
 		default:
-		// unhandeld key
+			
 		break;
 	}
 }
@@ -533,6 +573,7 @@ Order *GameGUI::getOrder(void)
 	{
 		Order *order=orderQueue.front();
 		orderQueue.pop();
+		
 		return order;
 	}
 }
@@ -569,6 +610,29 @@ void GameGUI::draw(void)
 		}
 		
 		
+	}
+	else
+	{
+		int ymesg=32;
+		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
+		{
+			globalContainer.gfx.drawString(32, ymesg, font, "%s : %s", game.players[it->sender]->name, it->text);
+			ymesg+=20;
+			it->showTicks--;
+		}
+		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
+		{
+			if (it->showTicks<0)
+			{
+				std::list<Message>::iterator ittemp=it;
+				it=messagesList.erase(ittemp);
+			}
+		}
+	}
+	
+	if (typingMessage)
+	{
+		globalContainer.gfx.drawString(40, 440, font, ": %s", typedMessage);
 	}
 	
 	//if (needRedraw)
@@ -888,6 +952,36 @@ void GameGUI::draw(void)
 	}
 }
 
+void GameGUI::executeOrder(Order *order)
+{
+	switch (order->getOrderType())
+	{
+		case ORDER_TEXT_MESSAGE :
+		{
+			MessageOrder *mo=(MessageOrder *)order;
+			
+			if (mo->recepientsMask &(1<<localPlayer))
+			{
+				Message message;
+				message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
+				strncpy(message.text, mo->getText(), MAX_MESSAGE_SIZE);
+				message.text[MAX_MESSAGE_SIZE-1]=0;
+				message.sender=mo->sender;
+				messagesList.push_front(message);
+			}
+		}
+		case ORDER_PLAYER_QUIT_GAME :
+		{
+			PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
+			if (pqgo->player==localPlayer)
+				isRunning=false;
+		}
+		default:
+		{
+			game.executeOrder(order);
+		}
+	}
+}
 void GameGUI::load(SDL_RWops *stream)
 {
 	bool result=game.load(stream);

@@ -86,8 +86,6 @@ MultiplayersOfferScreen::MultiplayersOfferScreen()
 	addWidget(new Button(270, 230, 220, 60, arch, -1, 2, JOIN));
 	addWidget(new Button(190, 310, 180, 60, arch, -1, 3, QUIT));
 
-	//addWidget(new TextInput(400, 100, 128, 12, font, "hello !"));
-
 	globalContainer.gfx.setClipRect(NULL);
 }
 
@@ -201,7 +199,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	arch=new IMGGraphicArchive("data/gui05.data");
 	font=new SDLBitmapFont("data/font2.png");
 	
-	mapName=new TextInput(400, 40, 128, 12, font, "net.map");
+	mapName=new TextInput(400, 40, 128, 12, font, "net.map", true);
 	load=new Button(230, 150, 120, 60, arch, -1, 1, LOAD);
 	share=new Button(250, 230, 140, 60, arch, -1, 2, SHARE);
 	cancel=new Button(290, 310, 140, 60, arch, -1, 3, CANCEL);
@@ -1113,12 +1111,14 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	arch=new IMGGraphicArchive("data/gui03.data");
 	font=new SDLBitmapFont("data/font2.png");
 	
-	serverName=new TextInput(400, 170, 128, 12, font, "192.168.1.34");
+	serverName=new TextInput(400, 170, 128, 12, font, "192.168.1.34", true);
+	playerName=new TextInput(400, 150, 128, 12, font, "glom", false);
 
 	addWidget(new Button(270, 200, 140, 60, arch, -1, 1, CONNECT));
 	addWidget(new Button(210, 280, 180, 60, arch, -1, 2, QUIT));
 
 	addWidget(serverName);
+	addWidget(playerName);
 	
 	globalContainer.gfx.setClipRect(NULL);
 	
@@ -1667,7 +1667,7 @@ bool MultiplayersJoinScreen::sendSessionInfoRequest()
 	packet->data[2]=0;
 	packet->data[3]=0;
 	memset(packet->data+4, 0, 16);
-	strncpy((char *)(packet->data+4), "NETWORK PLAYER", 16);
+	strncpy((char *)(packet->data+4), playerName->text, 16);
 	
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
@@ -1885,6 +1885,16 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 			endExecute(par1);
 		}
 	}
+	else if (action==TEXT_ACTIVATED)
+	{
+		// we desactivate others texts inputs:
+		if (source!=serverName)
+			serverName->activated=false;
+		if (source!=playerName)
+			playerName->activated=false;
+		Screen::paint();
+		addUpdateRect();
+	}
 	
 	
 }
@@ -1893,10 +1903,12 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawSprite(arch->getSprite(0), 0, 0);
 	gfxCtx->drawString(280, 170, font, "Server hostname :");
+	gfxCtx->drawString(280, 150, font, "Player name :");
 	
 	if ((validSessionInfo)&&(waitingState!=WS_TYPING_SERVER_NAME))
 		paintSessionInfo(waitingState);
 	serverName->paint(gfxCtx);
+	playerName->paint(gfxCtx);
 }
 
 

@@ -378,6 +378,31 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		Order *order=playersNetQueue[playerNumber][currentStep].order;
 		// Game will free the object and step will delete its reference from list
 		assert(order);
+		
+		
+		switch(order->getOrderType())
+		{
+			case ORDER_PLAYER_QUIT_GAME :
+			{
+				PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
+				int ap=pqgo->player;
+				players[ap]->type=Player::P_LOST_B;
+				int s=lastReceivedFromHim[ap];
+				for (int si=0; si<=(2*latency); si++)
+				{
+					checkSumsLocal[s]=0;
+					checkSumsRemote[s]=0;
+					s=(s+1)%queueSize;
+				}
+			}
+			break;
+			default :
+			{
+			
+			}
+		}
+		
+		order->sender=playerNumber;
 		//printf("(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
 		return order;
 	}
@@ -389,10 +414,9 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	assert(order);
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	assert(players[playerNumber]->type!=Player::P_IP);//method only for local & ai.
-
+	
 	// will be used [latency] steps later
 	int pushStep=(currentStep+latency)%queueSize;
-	
 	if (playersNetQueue[playerNumber][pushStep].order)
 	{
 		if (((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))
@@ -440,7 +464,6 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	
 	// push in private queue
 	confirmNewStepRecievedFromHim(pushStep, playerNumber);
-	
 	if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
 	{
 		checkSumsLocal[pushStep]=((SubmitCheckSumOrder*)order)->checkSumValue;
@@ -718,7 +741,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 				players[ap]->type=Player::P_LOST_B;
 				
 				int s=lastReceivedFromHim[ap];
-				for (int si=0; si<=latency; si++)
+				for (int si=0; si<=(2*latency); si++)
 				{
 					checkSumsLocal[s]=0;
 					checkSumsRemote[s]=0;

@@ -43,7 +43,7 @@ public:
 public:
 	
 	void setBase(const SessionInfo *initial);
-	void executeOrder(Order *order); // we need to free order at end
+	void executeOrder(Order *order);
 	bool load(SDL_RWops *stream); // load a saved game
     void save(SDL_RWops *stream);
 

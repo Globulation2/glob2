@@ -28,13 +28,14 @@ public:
 	int getViewportY() { return viewportY; }
 	
 	void draw(void);
+	void executeOrder(Order *order);
 	
 	void load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 
 	void processEvent(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDLKey key, bool pressed);
+	void handleKey(SDL_keysym keySym, bool pressed);
 	void handleMouseMotion(int mx, int my);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
@@ -81,11 +82,24 @@ private:
 	
 	SDLBitmapFont *font;
 	
-	queue<Order *> orderQueue;
+	std::queue<Order *> orderQueue;
 	
 	int mouseX, mouseY;
 	int viewportX, viewportY;
 	int viewportSpeedX[8], viewportSpeedY[8];
+
+	static const int MAX_MESSAGE_SIZE=64; // avoid network overflow
+	typedef struct
+	{
+		int showTicks;
+		char text[MAX_MESSAGE_SIZE];
+		int sender;
+	} Message;
+	std::list<Message> messagesList;
+	static const int DEFAULT_MESSAGE_SHOW_TICKS=100;
+	bool typingMessage;
+	char typedMessage[MAX_MESSAGE_SIZE];
+	int typedChar;
 };
 
 #endif

@@ -196,6 +196,7 @@ public:
 private:
 	IMGGraphicArchive *arch;
 	TextInput *serverName;
+	TextInput *playerName;
 	
 	WaitingState waitingState;
 	int waitingTimeout;
