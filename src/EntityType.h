@@ -53,14 +53,13 @@ public:
 
 	virtual void load(const char *filename)
 	{
-		// we load the building description now
 		SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "r");
 
 		bool result=true;
 
 		T defaultEntityType;
-		result=defaultEntityType.loadText(stream);
 		defaultEntityType.init();
+		result=defaultEntityType.loadText(stream);
 
 		while (result)
 		{
@@ -70,7 +69,6 @@ public:
 			if (result)
 			{
 				entitiesTypes.push_back(entityType);
-				//buildingType->dump();
 			}
 			else
 				delete entityType;
@@ -93,6 +91,12 @@ public:
 	}
 
 	unsigned size(void) { return entitiesTypes.size(); }
+	
+	void dump(void)
+	{
+		for (typename std::vector <T *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+			(*it)->dump();
+	}
 
 protected:
 	std::vector<T*> entitiesTypes;
