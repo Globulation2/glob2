@@ -1157,20 +1157,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
-	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_DXDY) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 	{
 		int lsx, lsy, ldx, ldy;
 		lsx=px+16;
 		lsy=py+16;
-		if (unit->bypassDirection && unit->verbose)
-		{
-			map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
-			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
-			map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
-			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
-			map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
-			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
-		}
 		map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
 		globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 	}

@@ -93,7 +93,7 @@ public:
 	void createLists(void);
 
 	//! Check some aviable integrity constraints
-	void intergity(void);
+	void integrity(void);
 	
 	//! Do a step for each unit, building and bullet in team.
 	void step(void);

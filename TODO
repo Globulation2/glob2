@@ -18,6 +18,8 @@ Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Statistiques sur les gradients et le pathfinding pour optimiser.
 - Les drapeaux doivent pathfinder à 255 dans tout leut périmètre!
+- est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
+- Debugger le "Clearing ressources system" pour les drapeaux de défrichage.
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.

@@ -305,19 +305,6 @@ Building *Team::findBestFoodable(Unit *unit)
 		Sint32 rx, ry;
 		int ressourceDist;
 		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
-		{
-			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
-				for (int d=0; d<8; d++)
-				{
-					int ddx, ddy;
-					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, me))
-					{
-						rx=(rx+map->getW()+ddx)&map->getMaskW();
-						ry=(ry+map->getH()+ddy)&map->getMaskH();
-						break;
-					}
-				}*/
 			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 			{
 				Building *b=(*bi);
@@ -336,7 +323,6 @@ Building *Team::findBestFoodable(Unit *unit)
 					}
 				}
 			}
-		}
 	}
 		
 	return choosen;
@@ -389,19 +375,6 @@ Building *Team::findBestFillable(Unit *unit)
 		Sint32 rx, ry;
 		int ressourceDist;
 		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
-		{
-			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
-				for (int d=0; d<8; d++)
-				{
-					int ddx, ddy;
-					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, me))
-					{
-						rx=(rx+map->getW()+ddx)&map->getMaskW();
-						ry=(ry+map->getH()+ddy)&map->getMaskH();
-						break;
-					}
-				}*/
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
@@ -420,7 +393,6 @@ Building *Team::findBestFillable(Unit *unit)
 					}
 				}
 			}
-		}
 	}
 		
 	return choosen;
@@ -688,7 +660,7 @@ void Team::createLists(void)
 		}
 }
 
-void Team::intergity(void)
+void Team::integrity(void)
 {
 	for (int id=0; id<1024; id++)
 	{
@@ -707,7 +679,7 @@ void Team::intergity(void)
 
 void Team::step(void)
 {
-	intergity();
+	integrity();
 	int nbUnits=0;
 	for (int i=0; i<1024; i++)
 	{
@@ -715,9 +687,7 @@ void Team::step(void)
 		if (u)
 		{
 			nbUnits++;
-			intergity();
 			u->step();
-			intergity();
 			if (u->isDead)
 			{
 				fprintf(logFile, "unit guid=%d deleted\n", u->gid);
@@ -729,7 +699,6 @@ void Team::step(void)
 			}
 		}
 	}
-	intergity();
 	
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
@@ -853,8 +822,6 @@ void Team::step(void)
 			eventCooldown[i]--;
 	
 	stats.step(this);
-	
-	intergity();
 }
 
 void Team::computeForbiddenArea()

@@ -1137,6 +1137,18 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist)
+{
+	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
+	if (g>1)
+	{
+		*dist=255-g;
+		return true;
+	}
+	else
+		return false;
+}
+
 bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, Uint8 level)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
@@ -1435,6 +1447,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	//printf("pathfindingRessource...\n");
+	assert(ressourceType<MAX_RESSOURCES);
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	Uint8 max=*(gradient+x+y*w);

@@ -81,6 +81,11 @@ void BuildingsTypes::load(const char *filename)
 			}
 		if (needRessource)
 			assert((*it)->fillable || (*it)->foodable);
+		
+		if ((*it)->isBuildingSite)
+			assert((*it)->hpInc>0);
+		else
+			assert((*it)->hpInc==0);
 	}
 }
 
