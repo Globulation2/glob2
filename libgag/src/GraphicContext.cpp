@@ -40,6 +40,10 @@
 #include <GL/glu.h>
 #endif
 
+#ifdef WIN32
+#include <GL/glext.h>
+#endif
+
 namespace GAGCore
 {
 	// static local pointer to the actual graphic context
