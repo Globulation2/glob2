@@ -548,10 +548,10 @@ void YOGServer::run()
 
 int main(int argc, char *argv[])
 {
-	//logClient=fopen("YOGClient.log", "w");
-	//logServer=fopen("YOGServer.log", "w");
-	logClient=stdout;
-	logServer=stdout;
+	logClient=fopen("YOGClient.log", "w");
+	logServer=fopen("YOGServer.log", "w");
+	//logClient=stdout;
+	//logServer=stdout;
 	
 	YOGServer yogServer;
 	if (yogServer.init())
