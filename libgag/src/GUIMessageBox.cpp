@@ -112,7 +112,7 @@ namespace GAGGUI
 				mbs->translateAndProcessEvent(&event);
 			}
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
-			parentCtx->updateRect(mbs->decX, mbs->decY, mbs->getW(), mbs->getH());
+			parentCtx->nextFrame();
 		}
 	
 		int retVal;

@@ -201,6 +201,39 @@ namespace GAGGUI
 		}
 	}
 	
+	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
+	float splineInterpolation(float T, float V0, float V1, float x)
+	{
+		assert(T > 0);
+		float a = (-2 * (V1 - V0)) / (T * T * T);
+		float b = (3 * (V1 - V0)) / (T * T);
+		float c = 0;
+		float d = V0;
+		return a * (x * x * x) + b * (x * x) + c * x + d;
+	}
+	
+	HighlightableWidget::HighlightableWidget()
+	: totalAnimationTime(10)
+	{
+		assert(totalAnimationTime > 0);
+		highlighted = false;
+		prevHighlightValue = 0;
+		nextHighlightValue = 0;
+		actAnimationTime = 0;
+		this->returnCode = 0;
+	}
+	
+	HighlightableWidget::HighlightableWidget(Sint32 returnCode)
+	: totalAnimationTime(10)
+	{
+		assert(totalAnimationTime > 0);
+		highlighted = false;
+		prevHighlightValue = 0;
+		nextHighlightValue = 0;
+		actAnimationTime = 0;
+		this->returnCode = returnCode;
+	}
+	
 	void HighlightableWidget::onSDLEvent(SDL_Event *event)
 	{
 		int x, y, w, h;
@@ -212,18 +245,47 @@ namespace GAGGUI
 			{
 				if (!highlighted)
 				{
-					highlighted=true;
+					highlighted = true;
 					parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
+					prevHighlightValue = actAnimationTime/totalAnimationTime;
+					nextHighlightValue = 1;
+					actAnimationTime = totalAnimationTime-actAnimationTime;
 				}
 			}
 			else
 			{
 				if (highlighted)
 				{
-					highlighted=false;
+					highlighted = false;
 					parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
+					prevHighlightValue = 1 - actAnimationTime/totalAnimationTime;
+					nextHighlightValue = 0;
+					actAnimationTime = totalAnimationTime-actAnimationTime;
 				}
 			}
+		}
+	}
+	
+	void HighlightableWidget::paint(void)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
+		float actHighlight;
+		if (actAnimationTime > 0)
+		{
+			// as actAnimationTime is decreasing over time, we have to invert prev and next highlight values
+			actHighlight = splineInterpolation(totalAnimationTime,  nextHighlightValue, prevHighlightValue, actAnimationTime);
+			actAnimationTime--;
+		}
+		else
+			actHighlight = nextHighlightValue;
+		
+		parent->getSurface()->drawRect(x, y, w, h, 200, 200, 200);
+		if (actHighlight > 0)
+		{
+			unsigned val = static_cast<unsigned>(255.0 * actHighlight);
+			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, val, val, val);
 		}
 	}
 	
@@ -385,7 +447,7 @@ namespace GAGGUI
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			if ((*it)->visible)
-				(*it)->paint(gfx);
+				(*it)->paint();
 		}
 		gfx->nextFrame();
 	}

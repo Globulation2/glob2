@@ -50,7 +50,7 @@ namespace GAGGUI
 	
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 	
 		void add(int number);
 		void clear(void);

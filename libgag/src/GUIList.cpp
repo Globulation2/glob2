@@ -155,25 +155,28 @@ namespace GAGGUI
 		assert(textHeight > 0);
 	}
 	
-	void List::paint(GAGCore::DrawableSurface *gfx)
+	void List::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 	
 		int nextSize=textHeight;
 		int yPos=y+2;
 		int i=0;
 		unsigned elementLength;
 	
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	
 		unsigned count = (h-4) / textHeight;
 		if (strings.size() > count)
 		{
 			// draw line and arrows
-			gfx->drawVertLine(x+w-21, y, h, 180, 180, 180);
-			gfx->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
-			gfx->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
+			parent->getSurface()->drawVertLine(x+w-21, y, h, 180, 180, 180);
+			parent->getSurface()->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
+			parent->getSurface()->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
 	
 			unsigned j;
 			int baseX = x+w-11;
@@ -181,12 +184,12 @@ namespace GAGGUI
 			int baseY2 = y+h-11;
 			for (j=7; j>4; j--)
 			{
-				gfx->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
-				gfx->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
-				gfx->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
-				gfx->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
-				gfx->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
-				gfx->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
+				parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
 			}
 	
 			// draw slider
@@ -195,7 +198,7 @@ namespace GAGGUI
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
-				gfx->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
+				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
 			}
 			else
 			{
@@ -204,27 +207,27 @@ namespace GAGGUI
 			}
 	
 			elementLength = w-22;
-			gfx->setClipRect(x+1, y+1, w-22, h-2);
+			parent->getSurface()->setClipRect(x+1, y+1, w-22, h-2);
 		}
 		else
 		{
 			disp = 0;
 	
 			elementLength = w-2;
-			gfx->setClipRect(x+1, y+1, w-2, h-2);
+			parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
 		}
 	
 		while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 		{
-			gfx->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
+			parent->getSurface()->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
 			if (i+(int)disp==nth)
-				gfx->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
+				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 			nextSize+=textHeight;
 			i++;
 			yPos+=textHeight;
 		}
 		
-		gfx->setClipRect();
+		parent->getSurface()->setClipRect();
 	}
 	
 	void List::addText(const char *text, int pos)

@@ -43,13 +43,13 @@ namespace GAGGUI
 		GAGCore::Sprite *archPtr;
 	
 	public:
-		Button() { unicodeShortcut=0; highlighted=false; standardId=-1; highlightID=-1; archPtr=NULL; }
+		Button() { unicodeShortcut=0; standardId=-1; highlightID=-1; archPtr=NULL; }
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 	};
 	
 	class TextButton:public Button
@@ -66,7 +66,7 @@ namespace GAGGUI
 		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
 		virtual ~TextButton() { }
 		virtual void init(void);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 	
 		void setText(const char *text);
 	};
@@ -77,12 +77,12 @@ namespace GAGGUI
 		bool state;
 	
 	public:
-		OnOffButton() { state=false; returnCode=0; highlighted=false; }
+		OnOffButton() { state=false; returnCode=0; }
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode);
 		virtual ~OnOffButton() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 		virtual bool getState(void) { return state; }
 		virtual void setState(bool newState);
 	};
@@ -114,7 +114,7 @@ namespace GAGGUI
 	
 		//! Process SDL event
 		virtual void onSDLEvent(SDL_Event *event);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 		//! Add a color to the color list
 		virtual void addColor(int r, int g, int b) { v.push_back(Color(r, g, b)); }
 		//! Clear the color list

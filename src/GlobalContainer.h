@@ -48,6 +48,7 @@ public:
 private:
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
+	void destroyProgressBar(void);
 
 	const char *userName;
 

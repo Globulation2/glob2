@@ -55,10 +55,13 @@ namespace GAGGUI
 		durationLeft=duration;
 	}
 	
-	void Animation::paint(GAGCore::DrawableSurface *gfx)
+	void Animation::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		assert(parent);
+		assert(parent->getSurface());
 		
 		int dW=(w-archPtr->getW(pos))>>1;
 		int dH=(h-archPtr->getH(pos))>>1;

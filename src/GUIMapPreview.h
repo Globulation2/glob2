@@ -38,7 +38,7 @@ public:
 	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *mapName=NULL);
 	//! Destructor
 	virtual ~MapPreview() { }
-	virtual void paint(GAGCore::DrawableSurface *gfx);
+	virtual void paint(void);
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const char *mapName=NULL);
 	//! Returns last map width

@@ -96,14 +96,17 @@ namespace GAGGUI
 		assert(textHeight > 0);
 	}
 	
-	void Number::paint(GAGCore::DrawableSurface *gfx)
+	void Number::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
-		gfx->drawVertLine(x+m, y, h, 255, 255, 255);
-		gfx->drawVertLine(x+w-m, y, h, 255, 255, 255);
+		assert(parent);
+		assert(parent->getSurface());
+		
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+m, y, h, 255, 255, 255);
+		parent->getSurface()->drawVertLine(x+w-m, y, h, 255, 255, 255);
 		
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());
@@ -114,13 +117,13 @@ namespace GAGGUI
 			std::stringstream s;
 			s << numbers[nth];
 			int tw=fontPtr->getStringWidth(s.str().c_str());
-			gfx->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
+			parent->getSurface()->drawString(x+m+(w-2*m-tw)/2, y+dy, fontPtr, s.str().c_str());
 
 		}
 		int dx1=(m-fontPtr->getStringWidth("-"))/2;
-		gfx->drawString(x+dx1, y+dy, fontPtr, "-");
+		parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
 		int dx2=(m-fontPtr->getStringWidth("+"))/2;
-		gfx->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
+		parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
 	}
 	
 	void Number::add(int number)

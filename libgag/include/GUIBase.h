@@ -92,7 +92,7 @@ namespace GAGGUI
 		//! Method called for each SDL_Event
 		virtual void onSDLEvent(SDL_Event *event) { }
 		//! Drawing methode of the widget
-		virtual void paint(GAGCore::DrawableSurface *gfx) = 0;
+		virtual void paint(void) = 0;
 		//! Init the widget, called before the first paint
 		virtual void init(void) { }
 	
@@ -147,14 +147,19 @@ namespace GAGGUI
 	{
 	public:
 		bool highlighted;
+		float prevHighlightValue;
+		float nextHighlightValue;
+		float actAnimationTime;
+		const float totalAnimationTime;
 		Sint32 returnCode;
 	
 	public:
-		HighlightableWidget() { highlighted=false; this->returnCode=0; }
-		HighlightableWidget(Sint32 returnCode) { highlighted=false; this->returnCode=returnCode; }
+		HighlightableWidget();
+		HighlightableWidget(Sint32 returnCode);
 	
 		virtual ~HighlightableWidget() {}
 	
+		virtual void paint(void);
 		virtual void onSDLEvent(SDL_Event *event);
 	};
 	

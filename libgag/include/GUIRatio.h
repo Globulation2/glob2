@@ -40,7 +40,7 @@ namespace GAGGUI
 		virtual void onTimer(Uint32 tick);
 		virtual void onSDLEvent(SDL_Event *event);
 		virtual void init(void);
-		virtual void paint(GAGCore::DrawableSurface *gfx);
+		virtual void paint(void);
 	
 		void set(int value);
 		int getMax(void);

@@ -115,34 +115,37 @@ namespace GAGGUI
 		assert(textHeight > 0);
 	}
 	
-	void Ratio::paint(GAGCore::DrawableSurface *gfx)
+	void Ratio::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		assert(parent);
+		assert(parent->getSurface());
+		
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 		if (pressed)
 		{
-			gfx->drawHorzLine(x+value+1, y+1, size-2, 170, 170, 240);
-			gfx->drawHorzLine(x+value+1, y+h-2, size-2, 170, 170, 240);
+			parent->getSurface()->drawHorzLine(x+value+1, y+1, size-2, 170, 170, 240);
+			parent->getSurface()->drawHorzLine(x+value+1, y+h-2, size-2, 170, 170, 240);
 			
-			gfx->drawVertLine(x+value+1, y+1, h-2, 170, 170, 240);
-			gfx->drawVertLine(x+value+size-1, y+1, h-2, 170, 170, 240);
+			parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 170, 170, 240);
+			parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 170, 170, 240);
 		}
 		else
 		{
-			gfx->drawHorzLine(x+value+1, y+1, size-2, 180, 180, 180);
-			gfx->drawHorzLine(x+value+1, y+h-2, size-2, 180, 180, 180);
+			parent->getSurface()->drawHorzLine(x+value+1, y+1, size-2, 180, 180, 180);
+			parent->getSurface()->drawHorzLine(x+value+1, y+h-2, size-2, 180, 180, 180);
 			
-			gfx->drawVertLine(x+value+1, y+1, h-2, 180, 180, 180);
-			gfx->drawVertLine(x+value+size-1, y+1, h-2, 180, 180, 180);
+			parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 180, 180, 180);
+			parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 180, 180, 180);
 		}
 	
 		// We center the string
 		std::stringstream g;
 		g << get();
 		int tw=fontPtr->getStringWidth(g.str().c_str());
-		gfx->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, fontPtr, g.str().c_str());
+		parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, fontPtr, g.str().c_str());
 	
 		needRefresh=false;
 	}

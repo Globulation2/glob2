@@ -45,7 +45,7 @@ void EndGameStat::setStatType(EndOfGameStat::Type type)
 	this->type=type;
 }
 
-void EndGameStat::paint(GAGCore::DrawableSurface *gfx)
+void EndGameStat::paint(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);

@@ -377,7 +377,6 @@ int Engine::run(void)
 	else
 	{
 		globalContainer->mix->setNextTrack(2, true);
-		globalContainer->gfx->setPartialRedraw(false);
 	}
 	
 	while (doRunOnceAggain)
@@ -516,7 +515,6 @@ int Engine::run(void)
 		// Restart menu music
 		assert(globalContainer->mix);
 		globalContainer->mix->setNextTrack(1);
-		globalContainer->gfx->setPartialRedraw(true);
 		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
