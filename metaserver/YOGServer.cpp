@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charri�e
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -1027,6 +1027,18 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			lprintf("Warning flush temptative (%d)\n", size);
 			break;
 		}
+		bool good=false;
+		for (std::list<YOGClient *>::iterator sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				good=(*sender==admin);
+				break;
+			}
+		if (!good)
+		{
+			lprintf("Warning flush temptative not by admin, from ip=(%s)\n", Utilities::stringIP(ip));
+			break;
+		}
 		if (id)
 		{
 			if (logServerFile)
@@ -1198,8 +1210,8 @@ void YOGServer::run()
 			lprintf("packet->maxlen=%d\n", packet->maxlen);
 			lprintf("packet->status=%d\n", packet->status);
 			lprintf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
-			lprintf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));*/
-			lprintf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
+			lprintf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
+			lprintf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
 			treatPacket(packet->address, packet->data, packet->len);
 		}
 		SDLNet_FreePacket(packet);
