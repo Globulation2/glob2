@@ -31,6 +31,7 @@ public:
 	NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32]);
 	~NetGame();
 
+	void printQueue(char *str);
 	void orderHasBeenExecuted(Order *order);
 	Order *getOrder(Sint32 playerNumber);
 	void pushOrder(Order *order, Sint32 playerNumber);
@@ -90,7 +91,7 @@ private:
 	Uint32 stayingPlayersMask[32];
 	DropState dropState;
 	int lastAviableStep[32][32];
-	std::queue<Order *> localOrderQueue[32];
+	std::list<Order *> localOrderQueue[32];
 	
 	UDPsocket socket;
 	

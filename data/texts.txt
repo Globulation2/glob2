@@ -623,3 +623,11 @@ hat verlassen
 #yog-fr
 #yog-en
 #yog-de
+[speed]
+Vitesse
+Speed
+
+[attack speed]
+Vit. attaque
+Attack speed
+
