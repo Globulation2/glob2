@@ -12,9 +12,7 @@ Gameplay :
 Technique :
 - Minimiser les #includes
 - factoriser setAirUnit() & setGroundUnit().
-- optimiser Game::drawMap, sur useMapDiscovered en diférenciant l'éditeur du jeu.
-	changer le nom de: teamSelected
-	optimiser les boulets
+- optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - Refaire le pathfinding, essayer d'utilisre des cibles avec double précision, et d'améliorer
  le goToTarget simple par exploration locale.
