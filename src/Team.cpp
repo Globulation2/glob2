@@ -1159,14 +1159,15 @@ void Team::syncStep(void)
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
 	
-	int nbUnits=0;
+	int nbUsefullUnits=0;
 	for (int i=0; i<1024; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
 		{
 			if (u->displacement!=Unit::DIS_EXITING_BUILDING || u->movement!=Unit::MOV_INSIDE)
-				nbUnits++;
+				if (u->typeNum!=EXPLORER)
+					nbUsefullUnits++;
 			u->syncStep();
 			if (u->isDead)
 			{
@@ -1311,7 +1312,7 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 		(*it)->clearingFlagsStep();
 	
-	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
+	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUsefullUnits!=0));
 	// decount event cooldown counter
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		if (eventCooldown[i]>0)
