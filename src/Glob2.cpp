@@ -78,24 +78,6 @@ void Glob2::mutiplayerYOG(void)
 		return;
 	}
 	printf("Glob2::YOGPreScreen has ended ...\n");
-	/*YOGScreen yogScreen;
-	drawYOGSplashScreen();
-	
-	// try to open YOG
-	if (globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
-	{
-		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 50);
-		globalContainer->yog.forceDisconnect();
-		printf("Engine::yogReturnCode=%d\n", yogReturnCode);
-		if (yogReturnCode==YOGScreen::CANCEL)
-			return;
-		if (yogReturnCode==-1)
-		{
-			isRunning=false;
-			return;
-		}
-		printf("Engine::YOG game has ended ...\n");
-	}*/
 }
 
 int Glob2::runHostServer(int argc, char *argv[])

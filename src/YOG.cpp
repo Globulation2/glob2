@@ -46,6 +46,11 @@ YOG::YOG()
 	gameSocketReceived=false;
 	
 	joinedGame=false;
+	
+	// Funny, LogFileManager is not initialised !
+	//logFile=globalContainer->logFileManager.getFile("YOG.log");
+	//assert(logFile);
+	logFile=stdout;
 }
 
 YOG::~YOG()
@@ -60,7 +65,7 @@ void YOG::send(YOGMessageType v, Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logFile, "Failed to alocate packet!\n");
 	{
 		Uint8 data[4];
 		data[0]=v;
@@ -75,7 +80,7 @@ void YOG::send(YOGMessageType v, Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logFile, "Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -83,7 +88,7 @@ void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logFile, "Failed to alocate packet!\n");
 	{
 		Uint8 data[4];
 		data[0]=v;
@@ -98,7 +103,7 @@ void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logFile, "Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -111,7 +116,7 @@ void YOG::send(YOGMessageType v)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logFile, "Failed to alocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -119,7 +124,7 @@ void YOG::send(YOGMessageType v)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logFile, "Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -132,7 +137,7 @@ void YOG::send(YOGMessageType v, UDPsocket socket)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logFile, "Failed to alocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -140,7 +145,7 @@ void YOG::send(YOGMessageType v, UDPsocket socket)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logFile, "Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
@@ -153,7 +158,7 @@ void YOG::send(YOGMessageType v, Uint8 id)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		printf("Failed to alocate packet!\n");
+		fprintf(logFile, "Failed to alocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -161,23 +166,23 @@ void YOG::send(YOGMessageType v, Uint8 id)
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
-		printf("Failed to send the packet!\n");
+		fprintf(logFile, "Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 }
 
 void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 {
-	printf("YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>0)&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, port);
+	fprintf(logFile, "YOG::packet received by ip=%d.%d.%d.%d port=%d\n", (ip>>0)&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, port);
 	if (data[2]!=0 || data[3]!=0)
 	{
-		printf("bad packet.\n");
+		fprintf(logFile, "bad packet.\n");
 		return;
 	}
-	printf("YOG::data=[%d.%d.%d.%d]\n", data[0], data[1], data[2], data[3]);
+	fprintf(logFile, "YOG::data=[%d.%d.%d.%d]\n", data[0], data[1], data[2], data[3]);
 	switch (data[0])
 	{
 	case YMT_BAD:
-		printf("YOG::bad packet.\n");
+		fprintf(logFile, "YOG::bad packet.\n");
 	break;
 	case YMT_MESSAGE:
 	case YMT_PRIVATE_MESSAGE:
@@ -206,18 +211,18 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			l=Utilities::strmlen((char *)data+4, 256);
 			memcpy(m.text, (char *)data+4, l);
 			if (m.text[l-1]!=0)
-				printf("YOG::warning, non-zero ending text message!\n");
+				fprintf(logFile, "YOG::warning, non-zero ending text message!\n");
 			m.text[255]=0;
 			m.textLength=l;
 			
 			l=Utilities::strmlen((char *)data+4+m.textLength, 32);
 			memcpy(m.userName, (char *)data+4+m.textLength, l);
 			if (m.userName[l-1]!=0)
-				printf("YOG::warning, non-zero ending userName!\n");
+				fprintf(logFile, "YOG::warning, non-zero ending userName!\n");
 			m.userName[31]=0;
 			m.userNameLength=l;
 			
-			printf("YOG:new message:%s:%s\n", m.userName, m.text);
+			fprintf(logFile, "YOG:new message:%s:%s\n", m.userName, m.text);
 			receivedMessages.push_back(m);
 		}
 	}
@@ -230,42 +235,42 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			std::list<Message>::iterator mit=sendingMessages.begin();
 			if (mit->messageID==messageID)
 			{
-				printf("YOG::Message (%d) has arrived (%s)\n", messageID, mit->text);
+				fprintf(logFile, "YOG::Message (%d) has arrived (%s)\n", messageID, mit->text);
 				sendingMessages.erase(mit);
 				break;
 			}
 			else
-				printf("YOG::Warning, message (%d) confirmed, but message (%d) is being sended!\n", messageID, mit->messageID);
+				fprintf(logFile, "YOG::Warning, message (%d) confirmed, but message (%d) is being sended!\n", messageID, mit->messageID);
 		}
 	}
 	break;
 	case YMT_CONNECTING:
 	{
-		printf("YOG:connected\n");
+		fprintf(logFile, "YOG:connected\n");
 		yogGlobalState=YGS_CONNECTED;
 	}
 	break;
 	case YMT_CONNECTION_REFUSED:
 	{
-		printf("YOG:connection refused!\n");
+		fprintf(logFile, "YOG:connection refused!\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
 	case YMT_DECONNECTING:
 	{
-		printf("YOG:deconnected\n");
+		fprintf(logFile, "YOG:deconnected\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
 	case YMT_SHARING_GAME:
 	{
-		printf("YOG:game %s is shared\n", sharingGameName);
+		fprintf(logFile, "YOG:game %s is shared\n", sharingGameName);
 		yogSharingState=YSS_SHARED_GAME;
 	}
 	break;
 	case YMT_STOP_SHARING_GAME:
 	{
-		printf("YOG:game %s is unshared\n", sharingGameName);
+		fprintf(logFile, "YOG:game %s is unshared\n", sharingGameName);
 		yogSharingState=YSS_NOT_SHARING_GAME;
 	}
 	break;
@@ -274,10 +279,10 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		int nbGames=(int)getUint32(data, 4);
 		if (size>48+(4+2+4+32+128)*nbGames)
 		{
-			printf("YOG::we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
+			fprintf(logFile, "YOG::we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
 			break;
 		}
-		printf("YOG:we received a %d games list (size=%d)\n", nbGames, size);
+		fprintf(logFile, "YOG:we received a %d games list (size=%d)\n", nbGames, size);
 		int index=8;
 		for (int i=0; i<nbGames; i++)
 		{
@@ -292,19 +297,19 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			l=Utilities::strmlen((char *)data+index, 32);
 			memcpy(game.userName, data+index, l);
 			if (game.userName[l-1]!=0)
-				printf("YOG::warning, non-zero ending userName!\n");
+				fprintf(logFile, "YOG::warning, non-zero ending userName!\n");
 			game.userName[l-1]=0;
 			index+=l;
 			l=Utilities::strmlen((char *)data+index, 128);
 			memcpy(game.name, data+index, l);
 			if (game.name[l-1]!=0)
-				printf("YOG::warning, non-zero ending game name!\n");
+				fprintf(logFile, "YOG::warning, non-zero ending game name!\n");
 			game.name[l-1]=0;
 			index+=l;
 			assert(index<=size);
 			games.push_back(game);
-			printf("index=%d.\n", index);
-			printf("YOG::game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
+			fprintf(logFile, "index=%d.\n", index);
+			fprintf(logFile, "YOG::game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
 		}
 		assert(index==size);
 		newGameListAviable=true;
@@ -316,10 +321,10 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		int nbUnshared=(int)getUint32(data, 4);
 		if (size!=8+4*nbUnshared)
 		{
-			printf("YOG::we received a bad unshared list (size=%d!=%d)\n", size, 8+4*nbUnshared);
+			fprintf(logFile, "YOG::we received a bad unshared list (size=%d!=%d)\n", size, 8+4*nbUnshared);
 			break;
 		}
-		printf("YOG:we received a %d unshared list\n", nbUnshared);
+		fprintf(logFile, "YOG:we received a %d unshared list\n", nbUnshared);
 		int index=8;
 		for (int i=0; i<nbUnshared; i++)
 		{
@@ -346,7 +351,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		gameSocketTimeout=LONG_NETWORK_TIMEOUT;
 		gameSocketTOTL=3;
 		gameSocketReceived=true;
-		printf("YOG::gameSocketReceived\n");
+		fprintf(logFile, "YOG::gameSocketReceived\n");
 	}
 	break;
 	case YMT_CLIENTS_LIST:
@@ -354,10 +359,10 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		int nbClients=(int)getUint32(data, 4);
 		if (size>8+(4+32)*nbClients)
 		{
-			printf("YOG::we received a bad clients list (size=%d!<=%d)\n", size, 8+(4+32)*nbClients);
+			fprintf(logFile, "YOG::we received a bad clients list (size=%d!<=%d)\n", size, 8+(4+32)*nbClients);
 			break;
 		}
-		printf("YOG:we received a %d clients list\n", nbClients);
+		fprintf(logFile, "YOG:we received a %d clients list\n", nbClients);
 		int index=8;
 		for (int i=0; i<nbClients; i++)
 		{
@@ -370,7 +375,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			index+=l;
 			assert(index<=size);
 			clients.push_back(client);
-			printf("YOG::client uid=%d name=%s\n", client.uid, client.userName);
+			fprintf(logFile, "YOG::client uid=%d name=%s\n", client.uid, client.userName);
 		}
 		newClientListAviable=true;
 		send(YMT_CLIENTS_LIST, nbClients);
@@ -381,10 +386,10 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		int nbClients=(int)getUint32(data, 4);
 		if (size>12+4*nbClients)
 		{
-			printf("YOG::we received a bad left clients list (size=%d!<=%d)\n", size, 8+4*nbClients);
+			fprintf(logFile, "YOG::we received a bad left clients list (size=%d!<=%d)\n", size, 8+4*nbClients);
 			break;
 		}
-		printf("YOG:we received a %d left clients list\n", nbClients);
+		fprintf(logFile, "YOG:we received a %d left clients list\n", nbClients);
 		
 		Uint32 leftClientPacketID=getUint32(data, 8);
 		
@@ -396,7 +401,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				if (client->uid==uid)
 				{
-					printf("YOG::left client uid=%d name=%s\n", client->uid, client->userName);
+					fprintf(logFile, "YOG::left client uid=%d name=%s\n", client->uid, client->userName);
 					clients.erase(client);
 					break;
 				}
@@ -409,7 +414,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	}
 	break;
 	case YMT_CLOSE_YOG:
-		printf("YOG:: YOG is dead (killed)!\n"); //TODO: create a deconnected method
+		fprintf(logFile, "YOG:: YOG is dead (killed)!\n"); //TODO: create a deconnected method
 	break;
 	}
 
@@ -427,14 +432,15 @@ bool YOG::enableConnection(const char *userName)
 	socket=SDLNet_UDP_Open(0);
 	if (!socket)
 	{
-		printf("YOG::failed to open a socket!\n");
+		fprintf(logFile, "YOG::failed to open a socket!\n");
 		return false;
 	}
 	
+	fprintf(logFile, "YOG::resolving YOG host name...\n");
 	int rv=SDLNet_ResolveHost(&serverIP, YOG_SERVER_IP, YOG_SERVER_PORT);
 	if (rv==-1)
 	{
-		printf("YOG::failed to resolve YOG host name!\n");
+		fprintf(logFile, "YOG::failed to resolve YOG host name!\n");
 		return false;
 	}
 	
@@ -460,7 +466,7 @@ bool YOG::enableConnection(const char *userName)
 	clients.clear();
 	newClientListAviable=false;
 	
-	printf("YOG::enableConnection(%s)\n", userName);
+	fprintf(logFile, "YOG::enableConnection(%s)\n", userName);
 	
 	return true;
 }
@@ -502,11 +508,11 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_NOT_CONNECTING;
-					printf("YOG::unable to deconnect!\n");
+					fprintf(logFile, "YOG::unable to deconnect!\n");
 				}
 				else
 				{
-					printf("YOG::sending deconnection request...\n");
+					fprintf(logFile, "YOG::sending deconnection request...\n");
 					send(YMT_DECONNECTING);
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
@@ -518,11 +524,11 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_UNABLE_TO_CONNECT;
-					printf("YOG::unable to connect!\n");
+					fprintf(logFile, "YOG::unable to connect!\n");
 				}
 				else
 				{
-					printf("YOG::sending connection request...\n");
+					fprintf(logFile, "YOG::sending connection request...\n");
 					send(YMT_CONNECTING, (Uint8 *)userName, Utilities::strmlen(userName, 32));
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
@@ -543,12 +549,12 @@ void YOG::step()
 				{
 					if (sharingGameTOTL--<=0)
 					{
-						printf("YOG::failed to share game!\n");
+						fprintf(logFile, "YOG::failed to share game!\n");
 						yogSharingState=YSS_NOT_SHARING_GAME;
 					}
 					else
 					{
-						printf("YOG::sending share game info... (%s)\n", sharingGameName);
+						fprintf(logFile, "YOG::sending share game info... (%s)\n", sharingGameName);
 						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
 						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, Utilities::strmlen(sharingGameName, 128));
 					}
@@ -558,7 +564,7 @@ void YOG::step()
 				//cool
 			break;
 			default:
-				printf("YOG::warning, bad yogSharingState!\n");
+				fprintf(logFile, "YOG::warning, bad yogSharingState!\n");
 			break;
 			} // end switch yogSharingState
 			
@@ -581,7 +587,7 @@ void YOG::step()
 				else if (mit->timeout--<=0)
 					if (mit->TOTL--<=0)
 					{
-						printf("YOG::failed to send a message!\n");
+						fprintf(logFile, "YOG::failed to send a message!\n");
 						sendingMessages.erase(mit);
 						//break;
 					}
@@ -602,7 +608,7 @@ void YOG::step()
 		if (yogGlobalState>=YGS_CONNECTED && presenceTimeout--<=0)
 		{
 			if (presenceTOTL--<=0)
-				printf("YOG::Connection lost to YOG!\n"); //TODO!
+				fprintf(logFile, "YOG::Connection lost to YOG!\n"); //TODO!
 			else
 				send(YMT_CONNECTION_PRESENCE);
 			presenceTimeout=LONG_NETWORK_TIMEOUT;
@@ -612,12 +618,12 @@ void YOG::step()
 		{
 			if (sharingGameTOTL--<=0)
 			{
-				printf("YOG::failed to unshare game!\n");
+				fprintf(logFile, "YOG::failed to unshare game!\n");
 				yogSharingState=YSS_NOT_SHARING_GAME;
 			}
 			else
 			{
-				printf("YOG::Sending a stop sharing game ...!\n");
+				fprintf(logFile, "YOG::Sending a stop sharing game ...!\n");
 				send(YMT_STOP_SHARING_GAME);
 				sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
 			}
@@ -632,12 +638,12 @@ void YOG::step()
 			}
 			else if (gameSocketTOTL--<=0)
 			{
-				printf("YOG::Unable to deliver the gameSocket to YOG!\n"); // TODO!
+				fprintf(logFile, "YOG::Unable to deliver the gameSocket to YOG!\n"); // TODO!
 				gameSocketTimeout=LONG_NETWORK_TIMEOUT;
 			}
 			else
 			{
-				printf("YOG::Sending the game socket to YOG ...\n");
+				fprintf(logFile, "YOG::Sending the game socket to YOG ...\n");
 				send(YMT_GAME_SOCKET, gameSocket);
 				gameSocketTimeout=LONG_NETWORK_TIMEOUT;
 			}
@@ -649,15 +655,15 @@ void YOG::step()
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
 			treatPacket(packet->address.host, packet->address.port, packet->data, packet->len);
-			/*printf("Packet received.\n");
-			printf("packet=%d\n", (int)packet);
-			printf("packet->channel=%d\n", packet->channel);
-			printf("packet->len=%d\n", packet->len);
-			printf("packet->maxlen=%d\n", packet->maxlen);
-			printf("packet->status=%d\n", packet->status);
-			printf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
-			printf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
-			printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
+			/*fprintf(logFile, "Packet received.\n");
+			fprintf(logFile, "packet=%d\n", (int)packet);
+			fprintf(logFile, "packet->channel=%d\n", packet->channel);
+			fprintf(logFile, "packet->len=%d\n", packet->len);
+			fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+			fprintf(logFile, "packet->status=%d\n", packet->status);
+			fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			fprintf(logFile, "SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
+			fprintf(logFile, "packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
 		}
 		SDLNet_FreePacket(packet);
 	}
@@ -670,7 +676,7 @@ void YOG::shareGame(const char *gameName)
 	sharingGameName[127]=0;
 	sharingGameTimeout=0;
 	sharingGameTOTL=3;
-	printf("YOG::shareGame\n");
+	fprintf(logFile, "YOG::shareGame\n");
 }
 
 void YOG::unshareGame()
@@ -736,27 +742,27 @@ bool YOG::newPlayerList(bool reset)
 void YOG::gameStarted()
 {
 	assert(!joinedGame);
-	printf("YOG::gameStarted()\n");
+	fprintf(logFile, "YOG::gameStarted()\n");
 	if (yogGlobalState==YGS_CONNECTED)
 		yogGlobalState=YGS_PLAYING;
 	else
-		printf("YOG::Warning gameStarted() in a bad yogGlobalState=%d!\n", yogGlobalState);
+		fprintf(logFile, "YOG::Warning gameStarted() in a bad yogGlobalState=%d!\n", yogGlobalState);
 }
 
 void YOG::gameEnded()
 {
-	printf("YOG::gameEnded()\n");
+	fprintf(logFile, "YOG::gameEnded()\n");
 	if (yogGlobalState==YGS_PLAYING)
 		yogGlobalState=YGS_CONNECTED;
 	else
-		printf("YOG::Warning gameEnded() in a bad yogGlobalState=%d!\n", yogGlobalState);
+		fprintf(logFile, "YOG::Warning gameEnded() in a bad yogGlobalState=%d!\n", yogGlobalState);
 }
 
 void YOG::setGameSocket(UDPsocket socket)
 {
-	printf("YOG::setGameSocket()\n");
+	fprintf(logFile, "YOG::setGameSocket()\n");
 	if (yogSharingState<YSS_SHARING_GAME)
-		printf("YOG::Warning setGameSocket() in a bad yogSharingState=%d!\n", yogSharingState);
+		fprintf(logFile, "YOG::Warning setGameSocket() in a bad yogSharingState=%d!\n", yogSharingState);
 	gameSocket=socket;
 	gameSocketTimeout=0;
 	gameSocketTOTL=3;
