@@ -1299,18 +1299,21 @@ void YOG::unjoinGame()
 
 void YOG::sendMessage(const char *message)
 {
-	lastMessageID++;
-	Message m;
-	m.messageID=lastMessageID;
-	strncpy(m.text, message, MAX_MESSAGE_SIZE);
-	m.text[MAX_MESSAGE_SIZE-1]=0;
-	handleMessageAliasing(m.text, 256);
-	m.timeout=0;
-	m.TOTL=3;
-	m.textLength=Utilities::strmlen(m.text, 256);
-	m.userName[0]=0;
-	m.userNameLength=0;
-	sendingMessages.push_back(m);
+	if (!handleLocalMessageTreatment(message))
+	{
+		lastMessageID++;
+		Message m;
+		m.messageID=lastMessageID;
+		strncpy(m.text, message, 256);
+		m.text[255]=0;
+		handleMessageAliasing(m.text, 256);
+		m.timeout=0;
+		m.TOTL=3;
+		m.textLength=Utilities::strmlen(m.text, 256);
+		m.userName[0]=0;
+		m.userNameLength=0;
+		sendingMessages.push_back(m);
+	}
 }
 
 bool YOG::newGameList(bool reset)
@@ -1528,4 +1531,34 @@ void YOG::handleMessageAliasing(char *message, int maxSize)
 		memmove(message+2, message+8, Utilities::strmlen(message+8, maxSize-8));
 	else if (strncmp("/away ", message, 6)==0)
 		memmove(message+2, message+5, Utilities::strmlen(message+5, maxSize-5));
+}
+
+bool YOG::handleLocalMessageTreatment(const char *message)
+{
+	const char *s=NULL;
+	if (strncmp("/help", message, 6)==0 || strncmp("/h", message, 3)==0)
+		s=globalContainer->texts.getString("[YOG_HELP]");
+	else if (strncmp("/help away", message, 11)==0 || strncmp("/h a", message, 5)==0)
+		s=globalContainer->texts.getString("[YOG_HELP_AWAY]");
+	else if (strncmp("/help msg", message, 10)==0 || strncmp("/h m", message, 5)==0)
+		s=globalContainer->texts.getString("[YOG_HELP_MSG]");
+	if (s)
+	{
+		Message m;
+		m.messageID=0;
+		m.messageType=YCMT_EVENT_MESSAGE;
+		m.timeout=0;
+		m.TOTL=3;
+		m.gameGuiPainted=false;
+		int l=Utilities::strmlen(s, 512);
+		memcpy(m.text, s, l);
+		m.text[511]=0;
+		m.textLength=l;
+		m.userName[0]=0;
+		m.userNameLength=1;
+		receivedMessages.push_back(m);
+		return true;
+	}
+	else
+		return false;
 }

@@ -38,10 +38,11 @@
 
 
 //We allways have:
+// 512 char max local messages size,
 // 256 char max messages size,
-// 64 char max games name size,
-// 64 char max map name size,
-// 32 char max userName size.
+//  64 char max games name size,
+//  64 char max map name size,
+//  32 char max userName size.
 
 //Max size is defined by games lists. ((128+32+6+4)*16)=2720
 //or unshare 256*4+4=1028

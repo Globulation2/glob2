@@ -30,8 +30,6 @@ class LogFileManager;
 class YOG
 {
 public:
-	enum {MAX_MESSAGE_SIZE=256};
-	
 	enum YOGGlobalState
 	{
 		YGS_BAD=0,
@@ -83,7 +81,7 @@ public:
 	};
 	struct Message
 	{
-		char text[256];
+		char text[512];
 		int textLength;
 		int timeout;
 		int TOTL;
@@ -231,6 +229,9 @@ public:
 	// This methode modiffy the "message" to replace "/msg " by "/m ", because YOG only understand "/m".
 	// This also allow GameGUI to make simpler tests.
 	void handleMessageAliasing(char *message, int maxSize);
+	
+	// Handle the "/help" message.
+	bool handleLocalMessageTreatment(const char *message);
 };
 
 extern YOG *yog;
