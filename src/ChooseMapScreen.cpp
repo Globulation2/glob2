@@ -42,12 +42,21 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	mapPreview = new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(mapPreview);
 	
+	deleteMap = NULL;
 	if (strcmp(directory, "maps") == 0)
+	{
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]"));
+	}
 	else if (strcmp(directory, "games") == 0)
+	{
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
+		deleteMap = new TextButton(220, 430, 200, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Delete map]"), DELETE);
+		addWidget(deleteMap);
+	}
 	else
+	{
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose campaign]"));
+	}
 	addWidget(title);
 	mapName=new Text(440, 60+128+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapName);
@@ -111,6 +120,16 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		else if (source == cancel)
 		{
 			endExecute(par1);
+		}
+		else if (source == deleteMap)
+		{
+			// if a valid file is selected, delete it
+			if (fileList->getSelectionIndex() >= 0)
+			{
+				std::string mapFileName = fileList->listToFile(fileList->get().c_str());
+				Toolkit::getFileManager()->remove(mapFileName);
+				fileList->generateList();
+			}
 		}
 	}
 }
