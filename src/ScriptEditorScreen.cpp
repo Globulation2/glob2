@@ -17,10 +17,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "GAG.h"
 #include "ScriptEditorScreen.h"
 #include "SGSL.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "GameGUILoadSave.h"
+#include "Utilities.h"
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUIButton.h>
@@ -37,9 +40,11 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(editor);
 	compilationResult=new Text(10, 335, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
-	addWidget(new TextButton(10, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
-	addWidget(new TextButton(100, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	addWidget(new TextButton(190, 360, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	addWidget(new TextButton(10, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
+	addWidget(new TextButton(120, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	addWidget(new TextButton(230, 360, 130, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	addWidget(new TextButton(370, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
+	addWidget(new TextButton(480, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
 }
 
 bool ScriptEditorScreen::testCompile(void)
@@ -75,22 +80,29 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if (par1 == COMPILE)
+		if (par1 == OK)
+		{
+			if (testCompile())
+			{
+				mapScript->setSourceCode(editor->getText());
+				endValue=par1;
+			}
+		}
+		else if (par1 == CANCEL)
+		{
+			endValue=par1;
+		}
+		else if (par1 == COMPILE)
 		{
 			testCompile();
 		}
-		else
+		else if (par1 == LOAD)
 		{
-			if (par1 == OK)
-			{
-				if (testCompile())
-				{
-					mapScript->setSourceCode(editor->getText());
-					endValue=par1;
-				}
-			}
-			else
-				endValue=par1;
+			loadSave(true);
+		}
+		else if (par1 == SAVE)
+		{
+			loadSave(false);
 		}
 	}
 }
@@ -98,4 +110,75 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 {
 
+}
+#include <iostream>
+const char* filenameToName(const char *fullfilename)
+{
+	const char* filename = strrchr(fullfilename, DIR_SEPARATOR) + 1;
+	const char* filenameend = strrchr(filename, '.');
+	size_t len = filenameend - filename;
+	char* name = new char[len + 1];
+	*std::replace_copy(filename, filenameend, name, '_', ' ') = '\0';
+	return name;
+}
+
+void ScriptEditorScreen::loadSave(bool isLoad)
+{
+	// create dialog box
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("scripts", "sgsl", isLoad, game->session.getMapName(), filenameToName, glob2NameToFilename);
+	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
+
+	// save screen
+	globalContainer->gfx->setClipRect();
+
+	SDL_Event event;
+	while(loadSaveScreen->endValue<0)
+	{
+		while (SDL_PollEvent(&event))
+		{
+			loadSaveScreen->translateAndProcessEvent(&event);
+		}
+		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
+		globalContainer->gfx->updateRect(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getW(), loadSaveScreen->getH());
+	}
+
+	if (loadSaveScreen->endValue==0)
+	{
+		if (isLoad)
+		{
+			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"rb");
+			if (!stream)
+			{
+				compilationResult->setColor(255, 50, 50);
+				compilationResult->setText("Loading script from %s failed", loadSaveScreen->getName());
+				return;
+			}
+			unsigned len=SDL_ReadBE32(stream);
+			char* sourceCode=new char[len];
+			SDL_RWread(stream, sourceCode, len, 1);
+			editor->addText(sourceCode);
+			delete sourceCode;
+			SDL_RWclose(stream);
+		}
+		else
+		{
+			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"wb");
+			if (!stream)
+			{
+				compilationResult->setColor(255, 50, 50);
+				compilationResult->setText("Saving script to %s failed", loadSaveScreen->getName());
+				return;
+			}
+			const char* sourceCode=editor->getText();
+			unsigned len=strlen(sourceCode)+1;
+			SDL_WriteBE32(stream, len);
+			SDL_RWwrite(stream, sourceCode, len, 1);
+			SDL_RWclose(stream);
+		}
+	}
+
+	// clean up
+	delete loadSaveScreen;
+
+	//draw();
 }
