@@ -459,7 +459,6 @@ void Building::cancelConstruction(void)
 
 void Building::launchDelete(void)
 {
-	printf("launchingDelete building %d\n", gid); 
 	if (buildingState==ALIVE)
 	{
 		removeSubscribers();
@@ -470,7 +469,6 @@ void Building::launchDelete(void)
 		updateCallLists();
 		
 		owner->buildingsWaitingForDestruction.push_front(this);
-		printf("building %d pushed in buildingsWaitingForDestruction\n", gid); 
 	}
 }
 
@@ -1471,7 +1469,6 @@ void Building::kill(void)
 	if (buildingState==DEAD)
 		return;
 	
-	printf("killing building %d\n", gid); 
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
@@ -1513,7 +1510,6 @@ void Building::kill(void)
 	buildingState=DEAD;
 	owner->prestige-=type->prestige;
 	
-	printf("building %d pushed in buildingsToBeDestroyed beacuse killing\n", gid); 
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
