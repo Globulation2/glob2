@@ -412,7 +412,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
 			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
-			printf("Team is %d, type is %d, pos is (%d,%d,%d,%d)\n", oaf->team, oaf->type, oaf->x, oaf->y, oaf->w, oaf->h);
 			if (oaf->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = teams[oaf->team]->me;
@@ -425,7 +424,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							// Update real map
 							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden |= teamMask;
 							// Update local map
-							map.localForbiddenMap[map.w*(y&map.hMask)+(x&map.wMask)] = 0;
+							map.localForbiddenMap.set(map.w*(y&map.hMask)+(x&map.wMask), true);
 						}
 					}
 			}
@@ -441,7 +440,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							// Update real map
 							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden &= notTeamMask;
 							// Update local map
-							map.localForbiddenMap[map.w*(y&map.hMask)+(x&map.wMask)] = 0xFF;
+							map.localForbiddenMap.set(map.w*(y&map.hMask)+(x&map.wMask), false);
 						}
 					}
 					
