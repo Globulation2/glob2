@@ -367,7 +367,7 @@ public:
 	}
 	
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
-	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
@@ -389,8 +389,13 @@ protected:
 	
 	int localRessourcesUpdateCount;
 	int pathfindLocalRessourceCount;
-	int pathfindLocalRessourceCountSuccess;
-	int pathfindLocalRessourceCountFailure;
+	int pathfindLocalRessourceCountSuccessBase;
+	int pathfindLocalRessourceCountSuccessLocked;
+	int pathfindLocalRessourceCountSuccessUpdate;
+	int pathfindLocalRessourceCountSuccessUpdateLocked;
+	int pathfindLocalRessourceCountFailureUnusable;
+	int pathfindLocalRessourceCountFailureNone;
+	int pathfindLocalRessourceCountFailureBad;
 	
 	int pathToBuildingCountTot;
 	
