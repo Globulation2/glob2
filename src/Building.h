@@ -187,6 +187,7 @@ public:
 	void subscribeForFlagingStep();
 	void subscribeForInsideStep(void);
 	void swarmStep(void);
+	//! This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(void);
 	void clearingFlagsStep(void);
 	void kill(void);

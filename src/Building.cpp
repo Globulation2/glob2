@@ -1755,45 +1755,63 @@ void Building::swarmStep(void)
 	}
 }
 
+
 void Building::turretStep(void)
 {
+	// create bullet from stones in stock
 	if (ressources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
 	{
 		ressources[STONE]--;
-		bullets+=type->multiplierStoneToBullets;
+		bullets += type->multiplierStoneToBullets;
 		
 		// we need to be stone-feeded
 		updateCallLists();
 	}
 	
-	if (shootingCooldown>0)
+	// compute cooldown
+	if (shootingCooldown > 0)
 	{
-		shootingCooldown-=type->shootRythme;
+		shootingCooldown -= type->shootRythme;
 		return;
 	}
 	
-	if (bullets<=0)
+	// if we have no bullet, don't try to shoot
+	if (bullets <= 0)
 		return;
 
 	assert(type->width ==2);
 	assert(type->height==2);
 
-	int range=type->shootingRange;
-	shootingStep=(shootingStep+1)&0x7;
+	int range = type->shootingRange;
+	shootingStep = (shootingStep+1)&0x7;
 
-	Uint32 enemies=owner->enemies;
-	bool targetFound=false;
-	int bestTime=256;
-	Map *map=owner->map;
+	Uint32 enemies = owner->enemies;
+	Map *map = owner->map;
 	assert(map);
 
-	int targetX, targetY;
-	int bestTargetX=0, bestTargetY=0;
-	for (int i=0; i<=range && !targetFound; i++)
-		for (int j=0; j<=i && !targetFound; j++)
-			//for (int k=0; k<8; k++)
+	// the type of target we have found
+	enum TargetType
+	{
+		TARGETTYPE_NONE,
+		TARGETTYPE_WARRIOR,
+		TARGETTYPE_WORKER,
+		TARGETTYPE_BUILDING,
+	};
+	// The type of the best target we have found up to now
+	TargetType targetFound = TARGETTYPE_NONE;
+	// The score of the best target we have found up to now
+	int bestScore = 0;
+	// The position of the best target we have found up to now
+	int bestTargetX = 0, bestTargetY=0;
+	
+	for (int i=0; i<=range ; i++)
+	{
+		for (int j=0; j<=i ; j++)
+		{
+			for (int k=0; k<8; k++)
 			{
-				switch (shootingStep)
+				int targetX, targetY;
+				switch (k)
 				{
 					case 0:
 					targetX=posX-j;
@@ -1833,69 +1851,90 @@ void Building::turretStep(void)
 					targetY=0;
 					break;
 				}
-				int targetGUID=map->getGroundUnit(targetX, targetY);
-				if (targetGUID!=NOGUID)
+				int targetGUID = map->getGroundUnit(targetX, targetY);
+				if (targetGUID != NOGUID)
 				{
-					Sint32 otherTeam=Unit::GIDtoTeam(targetGUID);
-					Sint32 targetID=Unit::GIDtoID(targetGUID);
-					Uint32 otherTeamMask=1<<otherTeam;
+					Sint32 otherTeam = Unit::GIDtoTeam(targetGUID);
+					Sint32 targetID = Unit::GIDtoID(targetGUID);
+					Uint32 otherTeamMask = 1<<otherTeam;
 					if (enemies & otherTeamMask)
 					{
-						Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetID];
-						if (((owner->sharedVisionExchange & otherTeamMask)==0) || (testUnit->foreingExchangeBuilding==NULL))
+						Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
+						if ((owner->sharedVisionExchange & otherTeamMask) == 0)
 						{
-							int targetTime;
-							if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
-								targetTime=0;
-							else
-								targetTime=(256-testUnit->delta)/testUnit->speed;
-							if (targetTime<bestTime)
+							int targetScore;
+							// shoot warrior first, then workers if no warrior
+							if (testUnit->typeNum == WARRIOR)
 							{
-								bestTime=targetTime;
-								bestTargetX=targetX;
-								bestTargetY=targetY;
-								targetFound=true;
+								// score is proportional to speed, probability to hit, attack strength and actual damage being conducted
+								if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
+									targetScore = 1000 + testUnit->performance[ATTACK_STRENGTH] ;
+								else
+									targetScore = testUnit->speed/(256-testUnit->delta) + 10*testUnit->performance[ATTACK_STRENGTH] ;
+								// adjust score for range
+								targetScore = ((range+1)*targetScore)/(i+1);
+								// anything else or warriors with lower scores are overriden
+								if ((targetFound != TARGETTYPE_WARRIOR) || (targetScore > bestScore))
+								{
+									bestScore = targetScore;
+									bestTargetX = targetX;
+									bestTargetY = targetY;
+									targetFound = TARGETTYPE_WARRIOR;
+								}
+							}
+							else if ((targetFound != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
+							{
+								// score is proportional to speed and probability to hit
+								targetScore = testUnit->speed/(256-testUnit->delta);
+								// adjust score for range
+								targetScore = ((range+1)*targetScore)/(i+1);
+								// building or workers with lower scores are overriden
+								if ((targetFound != TARGETTYPE_WORKER) || (targetScore > bestScore))
+								{
+									bestScore = targetScore;
+									bestTargetX = targetX;
+									bestTargetY = targetY;
+									targetFound = TARGETTYPE_WORKER;
+								}
 							}
 						}
-						//printf("found unit target: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
-						//break;
 					}
 				}
-				int targetGBID=map->getBuilding(targetX, targetY);
-				if (targetGBID!=NOGBID)
+				// shoot building only if no unit is found
+				if (targetFound == TARGETTYPE_NONE)
 				{
-					int otherTeam=Building::GIDtoTeam(targetGBID);
-					int otherID=Building::GIDtoID(targetGBID);
-					Uint32 otherTeamMask=1<<otherTeam;
-					if (enemies&otherTeamMask)
+					int targetGBID = map->getBuilding(targetX, targetY);
+					if (targetGBID != NOGBID)
 					{
-						Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
-						if (b->hp>1 || !b->type->isBuildingSite)
+						int otherTeam = Building::GIDtoTeam(targetGBID);
+						//int otherID = Building::GIDtoID(targetGBID);
+						Uint32 otherTeamMask = 1<<otherTeam;
+						if (enemies & otherTeamMask)
 						{
-							targetFound=true;
-							bestTargetX=targetX;
-							bestTargetY=targetY;
-							break;
-						}
-						else if (bestTime==256)
-						{
-							targetFound=true;
-							bestTargetX=targetX;
-							bestTargetY=targetY;
-							bestTime=255;
+							// adjust score for range
+							int targetScore = (range+1)/(i+1); 
+							if (targetScore > bestScore)
+							{
+								bestScore = targetScore;
+								bestTargetX = targetX;
+								bestTargetY = targetY;
+								targetFound = TARGETTYPE_BUILDING;
+							}
 						}
 					}
 				}
 			}
+		}
+		if (targetFound == TARGETTYPE_WARRIOR)
+			break;
+	}
 
-	int midX=getMidX();
-	int midY=getMidY();
-	if (targetFound)
+	if (targetFound != TARGETTYPE_NONE)
 	{
-		shootingStep=0;
+		shootingStep = 0;
 		
 		//printf("%d found target found: (%d, %d) \n", gid, targetX, targetY);
-		Sector *s=owner->map->getSector(midX, midY);
+		Sector *s=owner->map->getSector(getMidX(), getMidY());
 
 		int px, py;
 		px=((posX)<<5)+((type->width)<<4);
@@ -1916,7 +1955,6 @@ void Building::turretStep(void)
 			dpy=dpy-(map->getH()<<5);
 		if (dpy<-(map->getH()<<4))
 			dpy=dpy+(map->getH()<<5);
-
 
 		int mdp;
 
@@ -1950,8 +1988,6 @@ void Building::turretStep(void)
 		}
 
 		Bullet *b=new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY);
-		//printf("%d insert: pos=(%d, %d), target=(%d, %d), p=(%d, %d), dp=(%d, %d), mdp=%d, speed=(%d, %d).\n", gid, posX, posY, targetX, targetY, px, py, dpx, dpy, mdp, speedX, speedY);
-		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", gid, px, py, speedX, speedY, ticksLeft, type->shootDamage);
 		s->bullets.push_front(b);
 
 		bullets--;
