@@ -2393,7 +2393,7 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 		checkSumsList->push_back(cs);// [2+t*20+p*2]
 	
 	cs=(cs<<31)|(cs>>1);
-	cs^=map.checkSum(false);
+	cs^=map.checkSum(true);
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [3+t*20+p*2]

@@ -2307,88 +2307,88 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 
 	cs^=posX;
 	if (checkSumsList)
-		checkSumsList->push_back(posX);// [4]
+		checkSumsList->push_back(posX);// [3]
 	cs=(cs<<1)|(cs>>31);
 	cs^=posY;
 	if (checkSumsList)
-		checkSumsList->push_back(posY);// [5]
+		checkSumsList->push_back(posY);// [4]
 	cs=(cs<<1)|(cs>>31);
 	cs^=delta;
 	if (checkSumsList)
-		checkSumsList->push_back(delta);// [6]
+		checkSumsList->push_back(delta);// [5]
 	cs=(cs<<1)|(cs>>31);
 	cs^=dx;
 	if (checkSumsList)
-		checkSumsList->push_back(dx);// [7]
+		checkSumsList->push_back(dx);// [6]
 	cs^=dy;
 	if (checkSumsList)
-		checkSumsList->push_back(dy);// [8]
+		checkSumsList->push_back(dy);// [7]
 	cs^=direction;
 	if (checkSumsList)
-		checkSumsList->push_back(direction);// [9]
+		checkSumsList->push_back(direction);// [8]
 	cs=(cs<<1)|(cs>>31);
 	cs^=insideTimeout;
 	if (checkSumsList)
-		checkSumsList->push_back(insideTimeout);// [10]
+		checkSumsList->push_back(insideTimeout);// [9]
 	cs=(cs<<1)|(cs>>31);
 	cs^=speed;
 	if (checkSumsList)
-		checkSumsList->push_back(speed);// [11]
+		checkSumsList->push_back(speed);// [10]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=(int)needToRecheckMedical;
 	if (checkSumsList)
-		checkSumsList->push_back(needToRecheckMedical);// [12]
+		checkSumsList->push_back(needToRecheckMedical);// [11]
 	cs=(cs<<1)|(cs>>31);
 	cs^=medical;
 	if (checkSumsList)
-		checkSumsList->push_back(medical);// [13]
+		checkSumsList->push_back(medical);// [12]
 	cs^=activity;
 	if (checkSumsList)
-		checkSumsList->push_back(activity);// [14]
+		checkSumsList->push_back(activity);// [13]
 	cs^=displacement;
 	if (checkSumsList)
-		checkSumsList->push_back(displacement);// [15]
+		checkSumsList->push_back(displacement);// [14]
 	cs^=movement;
 	if (checkSumsList)
-		checkSumsList->push_back(movement);// [16]
+		checkSumsList->push_back(movement);// [15]
 	cs^=action;
 	if (checkSumsList)
-		checkSumsList->push_back(action);// [17]
+		checkSumsList->push_back(action);// [16]
 	cs=(cs<<1)|(cs>>31);
 	cs^=targetX;
 	if (checkSumsList)
-		checkSumsList->push_back(targetX);// [18]
+		checkSumsList->push_back(targetX);// [17]
 	cs^=targetY;
 	if (checkSumsList)
-		checkSumsList->push_back(targetY);// [19]
+		checkSumsList->push_back(targetY);// [18]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hp;
 	if (checkSumsList)
-		checkSumsList->push_back(hp);// [20]
+		checkSumsList->push_back(hp);// [19]
 	cs^=trigHP;
 	if (checkSumsList)
-		checkSumsList->push_back(trigHP);// [21]
+		checkSumsList->push_back(trigHP);// [20]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hungry;
 	if (checkSumsList)
-		checkSumsList->push_back(hungry);// [22]
+		checkSumsList->push_back(hungry);// [21]
 	cs^=trigHungry;
 	if (checkSumsList)
-		checkSumsList->push_back(trigHungry);// [23]
+		checkSumsList->push_back(trigHungry);// [22]
 	cs^=trigHungryCarying;
 	if (checkSumsList)
-		checkSumsList->push_back(trigHungryCarying);// [24]
+		checkSumsList->push_back(trigHungryCarying);// [23]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=fruitMask;
 	if (checkSumsList)
-		checkSumsList->push_back(fruitMask);// [25]
+		checkSumsList->push_back(fruitMask);// [24]
 	cs^=fruitCount;
 	if (checkSumsList)
-		checkSumsList->push_back(fruitCount);// [26]
+		checkSumsList->push_back(fruitCount);// [25]
 	cs=(cs<<1)|(cs>>31);
 
 	for (int i=0; i<NB_ABILITY; i++)
@@ -2401,34 +2401,36 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<1)|(cs>>31);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [27]
+		checkSumsList->push_back(cs);// [26]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);
 	if (checkSumsList)
-		checkSumsList->push_back((attachedBuilding!=NULL ? 1:0));// [28]
+		checkSumsList->push_back((attachedBuilding!=NULL ? 1:0));// [27]
 	cs=(cs<<1)|(cs>>31);
 	cs^=(targetBuilding!=NULL ? 1:0);
 	if (checkSumsList)
-		checkSumsList->push_back((targetBuilding!=NULL ? 1:0));// [29]
+		checkSumsList->push_back((targetBuilding!=NULL ? 1:0));// [28]
 	cs^=(ownExchangeBuilding!=NULL ? 2:0);
 	if (checkSumsList)
-		checkSumsList->push_back((ownExchangeBuilding!=NULL ? 1:0));// [30]
+		checkSumsList->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
 	cs^=(foreingExchangeBuilding!=NULL ? 4:0);
 	if (checkSumsList)
-		checkSumsList->push_back((foreingExchangeBuilding!=NULL ? 1:0));// [31]
+		checkSumsList->push_back((foreingExchangeBuilding!=NULL ? 1:0));// [30]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=destinationPurprose;
 	if (checkSumsList)
-		checkSumsList->push_back(destinationPurprose);// [32]
+		checkSumsList->push_back(destinationPurprose);// [31]
 	cs^=(Uint32)subscribed;
 	if (checkSumsList)
-		checkSumsList->push_back(subscribed);// [33]
+		checkSumsList->push_back(subscribed);// [32]
 	cs^=caryedRessource;
 	if (checkSumsList)
-		checkSumsList->push_back(caryedRessource);// [34]
+		checkSumsList->push_back(caryedRessource);// [33]
 	
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [34]
 	if (checkSumsList)
 		checkSumsList->push_back(0);// [35]
 	if (checkSumsList)
@@ -2437,8 +2439,6 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		checkSumsList->push_back(0);// [37]
 	if (checkSumsList)
 		checkSumsList->push_back(0);// [38]
-	if (checkSumsList)
-		checkSumsList->push_back(0);// [39]
 	
 	return cs;
 }

@@ -4093,6 +4093,7 @@ Sint32 Map::checkSum(bool heavy)
 				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource.getUint32();
 				cs+=(cases+w*(y&hMask)+(x&wMask))->groundUnit;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->airUnit;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->forbidden;
 				cs=(cs<<1)|(cs>>31);
 			}
 	return cs;
