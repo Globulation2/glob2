@@ -275,6 +275,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
+			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-version\tprint the version and exit\n");
@@ -296,6 +297,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					i++;
 					if (i < argc)
 						fileManager->addDir(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 'y')
+			{
+				if (argv[i][2] != 0)
+					yogHostName = &argv[i][2];
+				else
+				{
+					i++;
+					if (i < argc)
+						yogHostName = argv[i];
 				}
 			}
 			else if (argv[i][1] == 'u')

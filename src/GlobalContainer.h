@@ -101,6 +101,8 @@ public:
 	char hostServerMapName[32];
 	char hostServerUserName[32];
 	char hostServerPassWord[32];
+	//! hostname for YOG, can be set by cmd line to override default
+	std::string yogHostName;
 };
 
 extern GlobalContainer *globalContainer;
