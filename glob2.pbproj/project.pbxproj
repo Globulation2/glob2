@@ -69,6 +69,7 @@
 				5BE4B5C304CEBB990000000D,
 				5B5E057D03FD4BF30000000D,
 				5B112EA705443E050000000D,
+				59F38DC2056F8A9F001837F4,
 			);
 		};
 		08FB7794FE84155DC02AAC07 = {
@@ -109,6 +110,48 @@
 //1A2
 //1A3
 //1A4
+//590
+//591
+//592
+//593
+//594
+		59F38DC2056F8A9F001837F4 = {
+			buildPhases = (
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = All;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+				59F38DC4056F8AC1001837F4,
+				59F38DC6056F8AC8001837F4,
+				59F38DC5056F8AC4001837F4,
+			);
+			isa = PBXAggregateTarget;
+			name = All;
+			productName = All;
+		};
+		59F38DC4056F8AC1001837F4 = {
+			isa = PBXTargetDependency;
+			target = 5B5E057D03FD4BF30000000D;
+		};
+		59F38DC5056F8AC4001837F4 = {
+			isa = PBXTargetDependency;
+			target = 5BE4B5C304CEBB990000000D;
+		};
+		59F38DC6056F8AC8001837F4 = {
+			isa = PBXTargetDependency;
+			target = 5B5E044403FD45FD0000000D;
+		};
+//590
+//591
+//592
+//593
+//594
 //5B0
 //5B1
 //5B2
@@ -132,7 +175,7 @@
 				GCC_VERSION = 3.X;
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/3.1 /sw/lib /sw/include /sw/include/SDL";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL";
 				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "-Ilibgag/include -ffast-math -faltivec -mcpu=7400 -mtune=7400 -mdynamic-no-pic -funroll-loops  -fstrict-aliasing";
 				OTHER_LDFLAGS = "-g -Wall build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a  /usr/local/lib/libz.a /sw/lib/libjpeg.a";
@@ -4057,12 +4100,6 @@
 			settings = {
 			};
 		};
-		5B38916C04CD5A6E0000000D = {
-			fileRef = 5BE9C98203FFA1DE0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B38916D04CD5B440000000D = {
 			buildActionMask = 8;
 			dstPath = data;
@@ -7142,7 +7179,6 @@
 				5B5E04CB03FD4AE40000000D,
 				5B5E05A303FD4D360000000D,
 				5B38916204CD5A2D0000000D,
-				5B38916C04CD5A6E0000000D,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7241,7 +7277,7 @@
 				GCC_VERSION = 3.x;
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/2.95.2 /sw/lib /sw/include /sw/include/SDL";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-Ilibgag/include";
 				OTHER_LDFLAGS = "build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -framework foundation -lpng";
@@ -7249,6 +7285,7 @@
 				PRODUCT_NAME = Globulation2;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
+				USE_GCC3_PFE_SUPPORT = NO;
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = app;
 			};
@@ -7407,10 +7444,10 @@
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_VERSION = 3.X;
 				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include";
-				LIBRARY_SEARCH_PATHS = "/sw/lib /sw/include";
+				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /sw/lib /sw/include";
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-Ilibgag/include -DDPS_NO_SOCKLEN_T";
+				OTHER_CFLAGS = "-Ilibgag/include -DDPS_NO_SOCKLEN_T -I/sw/include/SDL";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = libgag.a;
@@ -9717,7 +9754,7 @@
 				GCC_VERSION = 3.X;
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/3.1 /sw/lib /sw/include /sw/include/SDL";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-Ilibgag/include -ffast-math";
 				OTHER_LDFLAGS = "-g -Wall build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a  /usr/local/lib/libz.a /sw/lib/libjpeg.a";
@@ -10218,7 +10255,6 @@
 				5BE4B60404CEBB990000000D,
 				5BE4B60504CEBB990000000D,
 				5BE4B60604CEBB990000000D,
-				5BE4B60704CEBB990000000D,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -10237,12 +10273,6 @@
 		};
 		5BE4B60604CEBB990000000D = {
 			fileRef = 5BE9CEBC03FFA2400000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BE4B60704CEBB990000000D = {
-			fileRef = 5BE9C98203FFA1DE0000000D;
 			isa = PBXBuildFile;
 			settings = {
 			};
