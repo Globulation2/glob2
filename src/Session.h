@@ -89,7 +89,7 @@ public:
 	MapGenerationDescriptor *mapGenerationDescriptor;
 protected:
 	//! Serialized form of SessionGame
-	enum {S_GAME_ONLY_DATA_SIZE=36};
+	enum {S_GAME_ONLY_DATA_SIZE=32};
 	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
 	char data[S_GAME_DATA_SIZE];
 };

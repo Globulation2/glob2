@@ -19,10 +19,14 @@
 
 #include "MultiplayersCrossConnectable.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 
 MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 :SessionConnection()
 {
+	logFile=globalContainer->logFileManager.getFile("MultiplayersCrossConnectable.log");
+	assert(logFile);
+	
 	serverIP.host=0;
 	serverIP.port=0;
 	ipFromNAT=false;
@@ -51,7 +55,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 						int freeChannel=getFreeChannel();
 						if (!sessionInfo.players[j].bind(socket, freeChannel))
 						{
-							printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+							fprintf(logFile, "Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 							sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 							sucess=false;
 							break;
@@ -61,13 +65,13 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 
 					if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
 					{
-						printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+						fprintf(logFile, "Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 						sucess=false;
 						break;
 					}
 					sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
-					printf("We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
+					fprintf(logFile, "We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 				}
 }
 
@@ -82,7 +86,10 @@ int MultiplayersCrossConnectable::getFreeChannel()
 				good=false;
 		}
 		if (good)
+		{
+			fprintf(logFile, "good free channel=%d\n", channel);
 			return channel;
+		}
 	}
 	assert(false);
 	return -1;

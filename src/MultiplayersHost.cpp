@@ -1464,6 +1464,9 @@ void MultiplayersHost::sendingTime()
 				char *data=NULL;
 				int size=sessionInfo.getDataLength();
 
+				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
+				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
+				
 				data=(char *)malloc(size+8);
 				assert(data);
 
