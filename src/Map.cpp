@@ -140,9 +140,8 @@ Map::Map()
 	buildingAviableCountFarOldFailureEnd=0;
 	
 	pathfindForbiddenCount=0;
-	pathfindForbiddenCountFailureMini=0;
 	pathfindForbiddenCountSuccess=0;
-	pathfindForbiddenCountFailureFast=0;
+	pathfindForbiddenCountFailure=0;
 	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
 }
@@ -789,26 +788,15 @@ void Map::clear()
 			pathfindForbiddenCountSuccess,
 			100.*(double)pathfindForbiddenCountSuccess/(double)pathfindForbiddenCount);
 		
-		int pathfindForbiddenCountFailure=pathfindForbiddenCountFailureFast+pathfindForbiddenCountFailureMini;
 		fprintf(logFile, "|- pathfindForbiddenCountFailure=%d (%f %%)\n",
 			pathfindForbiddenCountFailure,
 			100.*(double)pathfindForbiddenCountFailure/(double)pathfindForbiddenCount);
 		
-		fprintf(logFile, "|-  pathfindForbiddenCountFailureFast=%d (%f %%) (%f %% of failure)\n",
-			pathfindForbiddenCountFailureFast,
-			100.*(double)pathfindForbiddenCountFailureFast/(double)pathfindForbiddenCount,
-			100.*(double)pathfindForbiddenCountFailureFast/(double)pathfindForbiddenCountFailure);
-		fprintf(logFile, "|-  pathfindForbiddenCountFailureMini=%d (%f %%) (%f %% of failure)\n",
-			pathfindForbiddenCountFailureMini,
-			100.*(double)pathfindForbiddenCountFailureMini/(double)pathfindForbiddenCount,
-			100.*(double)pathfindForbiddenCountFailureMini/(double)pathfindForbiddenCountFailure);
-		
 	}
 	
 	pathfindForbiddenCount=0;
-	pathfindForbiddenCountFailureMini=0;
 	pathfindForbiddenCountSuccess=0;
-	pathfindForbiddenCountFailureFast=0;
+	pathfindForbiddenCountFailure=0;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -2493,7 +2481,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		pathToRessourceCountFailure++;
 		*stopWork=true;
-		return pathfindForbidden(teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
 	}
 	
 	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
@@ -3466,7 +3454,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	gradient=forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
 	if (gradient[x+y*w]!=255)
-		return pathfindForbidden(teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
 	
 	gradient=building->localGradient[canSwim];
 	
@@ -3797,33 +3785,57 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 	}
 }
 
-bool Map::pathfindForbidden(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
 {
-	printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
+	//printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
 	pathfindForbiddenCount++;
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
+	static const int tabClose[8][2]={
+		{-1, -1},
+		{ 0, -1},
+		{ 1, -1},
+		{ 1,  0},
+		{ 1,  1},
+		{ 0,  1},
+		{-1,  1},
+		{-1,  0}};
 	
-	Uint8 max=gradient[x+y*w];
-	
-	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	
-	if (max<2)
+	Uint32 maxValue=0;
+	int maxd;
+	for (int di=0; di<8; di++)
 	{
-		printf(" FailureFast (%d)\n", max);
-		pathfindForbiddenCountFailureFast++;
-		return false;
+		int rx=tabClose[di][0];
+		int ry=tabClose[di][1];
+		int xg=(x+rx)&wMask;
+		int yg=(y+ry)&hMask;
+		if (getGroundUnit(xg, yg)!=NOGUID)
+			continue;
+		Uint8 base=gradient[xg+(yg<<wDec)];
+		Uint8 option;
+		if (optionGradient)
+			option=optionGradient[xg+(yg<<wDec)];
+		else
+			option=0;
+		Uint32 value=(base<<8)|option;
+		if (maxValue<value)
+		{
+			maxValue=value;
+			maxd=di;
+		}
 	}
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
+	if (maxValue>=(2<<8))
 	{
-		printf(" Success (%d)\n", max);
+		*dx=tabClose[maxd][0];
+		*dy=tabClose[maxd][1];
+		//printf(" Success (%d:%d) (%d, %d)\n", (maxValue>>8), (maxValue&0xFF), *dx, *dy);
 		pathfindForbiddenCountSuccess++;
 		return true;
 	}
 	else
 	{
-		printf(" Failure (%d)\n", max);
-		pathfindForbiddenCountFailureMini++;
+		//printf(" Failure (%d)\n", maxValue);
+		pathfindForbiddenCountFailure++;
 		return false;
 	}
 }
