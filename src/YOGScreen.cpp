@@ -23,6 +23,14 @@
 #include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <GUITextArea.h>
+#include <GUIList.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 // TODO: is it anyway to do this cleaner ?
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link

@@ -20,6 +20,13 @@
 #include "YOGScreen.h"
 #include "YOGPreScreen.h"
 #include "GlobalContainer.h"
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <GUITextArea.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 YOGPreScreen::YOGPreScreen()
 {

@@ -20,8 +20,11 @@
 #ifndef __YOG_PRE_SCREEN_H
 #define __YOG_PRE_SCREEN_H
 
-#include "GAG.h"
+#include <GUIBase.h>
 #include "YOG.h"
+
+class TextInput;
+class TexTArea;
 
 class YOGPreScreen:public Screen
 {
