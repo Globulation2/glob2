@@ -1913,8 +1913,8 @@ void AICastor::computeBuildingSum()
 		for (int si=0; si<2; si++)
 			for (int li=0; li<4; li++)
 				if (buildingLevels[bi][si][li]>0)
-					if ((timer&4095)==0)
-						printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li);
+					if ((timer&8191)==0)
+						printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li, buildingLevels[bi][si][li]);
 }
 
 void AICastor::computeWarLevel()
