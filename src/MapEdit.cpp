@@ -458,31 +458,35 @@ void MapEdit::handleMapClick(int mx, int my)
 	handleMapClick();
 }
 
-void MapEdit::paintCoordodinates(void)
+void MapEdit::paintCoordinates()
 {
-	// FIXME : do it right
-	int mx=savedMx;
-	int my=savedMy;
-
-	int px, py;
-	if (editMode==EM_TERRAIN)
-		game.map.displayToMapCaseUnaligned(mx, my, &px, &py, viewportX, viewportY);
-	else
-		game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);
-
-	int x=0;
-	int y=globalContainer->gfx->getH()-16;
-	//int w=font->getStringWidth(GAG::nsprintf("(%d, %d)", px, py).c_str());
-	globalContainer->gfx->drawFilledRect(x, y, 64, 16, 128, 128, 128);
-	globalContainer->gfx->drawString(x, y, font, GAG::nsprintf("(%d, %d)", px, py).c_str());
-	globalContainer->gfx->updateRect(x, y, 64, 16);
+	return this->paintCoordinates(savedMx, savedMy);
 }
 
-void MapEdit::paintCoordodinates(int mx, int my)
+void MapEdit::paintCoordinates(int mx, int my)
 {
-	savedMx=mx;
-	savedMy=my;
-	paintCoordodinates();
+	if (mx<globalContainer->gfx->getW()-128)
+	{
+		int px, py;
+		if (editMode==EM_TERRAIN)
+			game.map.displayToMapCaseUnaligned(mx, my, &px, &py, viewportX, viewportY);
+		else
+			game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);	
+	
+		std::string s = GAG::nsprintf("(%d, %d)", px, py);
+		int w=font->getStringWidth(s.c_str());
+	        int h=font->getStringHeight(s.c_str());
+		int x=mx-w;
+		int y=my-h;
+		int dx=x>?0;
+		int dy=y>?0;
+		int dw=x+w-dx;
+		int dh=y+h-dy;
+	
+		globalContainer->gfx->drawFilledRect(x, y, w, h, 0, 0, 0, 128);
+		globalContainer->gfx->drawString(x, y, font, s.c_str());
+		globalContainer->gfx->updateRect(dx, dy, dw, dh);
+	}
 }
 
 void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
@@ -1304,7 +1308,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 	{
 		int mx=event->motion.x;
 		int my=event->motion.y;
-		paintCoordodinates(mx, my);
 		
 		if (minimapPushed)
 		{
@@ -1336,6 +1339,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 			paintEditMode(mx, my, true, true);
 		}
+
 	}
 	else if (event->type==SDL_KEYDOWN)
 	{
@@ -1510,7 +1514,7 @@ int MapEdit::run(void)
 			returnCode=(processEvent(&windowEvent) == -1) ? -1 : returnCode;
 
 		// redraw on scroll
-		bool doRedraw=false;
+		bool doRedraw=wasMouseMotion;
 		viewportX+=game.map.getW();
 		viewportY+=game.map.getH();
 		for (int i=0; i<9; i++)
@@ -1530,7 +1534,7 @@ int MapEdit::run(void)
 		if (doRedraw)
 		{
 			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-			paintCoordodinates();
+			paintCoordinates();
 			drawMiniMap();
 		}
 

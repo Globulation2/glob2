@@ -44,8 +44,8 @@ private:
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
 	void handleMapClick(void);
-	void paintCoordodinates(int mx, int my);
-	void paintCoordodinates(void);
+	void paintCoordinates(void);
+	void paintCoordinates(int mx, int my);
 	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
 	void paintEditMode(bool clearOld, bool mayUpdate);
 	
