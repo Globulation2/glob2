@@ -26,23 +26,19 @@
 class Text;
 
 //! Widget to display stats at end of game
-class EndGameStat: public Widget
+class EndGameStat: public RectangularWidget
 {
 public:
 	//! Constructor, takes position and initial map name
-	EndGameStat(int x, int y, Game *game);
+	EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game);
 	//! Destructor
 	virtual ~EndGameStat() { }
-	//! First paint call
-	virtual void paint(void);
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
 
 protected:
 	//! internal paint routine
-	void repaint(void);
-	//! position of widget on screen
-	int x, y;
+	void internalRepaint(int x, int y, int w, int h);
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing

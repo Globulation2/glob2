@@ -25,17 +25,19 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 
-EndGameStat::EndGameStat(int x, int y, Game *game)
+EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
 	this->x=x;
 	this->y=y;
-	this->game = game;
-	this->type = EndOfGameStat::TYPE_UNITS;
-}
+	this->w=w;
+	this->h=h;
 
-void EndGameStat::paint(void)
-{
-	repaint();
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	
+	this->game = game;
+	
+	this->type = EndOfGameStat::TYPE_UNITS;
 }
 
 void EndGameStat::setStatType(EndOfGameStat::Type type)
@@ -44,14 +46,13 @@ void EndGameStat::setStatType(EndOfGameStat::Type type)
 	repaint();
 }
 
-void EndGameStat::repaint(void)
+void EndGameStat::internalRepaint(int x, int y, int w, int h)
 {
 	assert(parent);
 	assert(parent->getSurface());
 	
 	// draw background
-	parent->paint(x, y, 128*3, 256);
-	parent->getSurface()->drawRect(x, y, 128*3, 256, 180, 180, 180);
+	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	
 	// find maximum
 	int team, pos, maxValue=0;
@@ -67,6 +68,7 @@ void EndGameStat::repaint(void)
 	
 	// draw curve
 	if (maxValue)
+	{
 		for (team=0; team < game->session.numberOfTeam; team++)
 		{
 			Uint8 r = game->teams[team]->colorR;
@@ -77,23 +79,21 @@ void EndGameStat::repaint(void)
 			int oy, ox, nx, ny;
 
 			ox = 1;
-			oy = (game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * 256)/maxValue;
+			oy = (game->teams[team]->stats.endOfGameStats[statsIndex].value[type] * (h-2))/maxValue;
 
 			for (pos=1; pos<TeamStats::END_OF_GAME_STATS_SIZE; pos++)
 			{
 				int index=(statsIndex+pos)&0x7F;
-				nx = ox+3;
-				ny = (game->teams[team]->stats.endOfGameStats[index].value[type] * 256)/maxValue;
+				nx = (pos*(w-2))/TeamStats::END_OF_GAME_STATS_SIZE;
+				ny = (game->teams[team]->stats.endOfGameStats[index].value[type] * (h-2))/maxValue;
 
-				parent->getSurface()->drawLine(x+ox, y+256-oy, x+nx, y+256-ny, r, g, b);
+				parent->getSurface()->drawLine(x+ox, y+h-oy-1, x+nx, y+h-ny-1, r, g, b);
 
 				ox = nx;
 				oy = ny;
 			}
 		}
-	
-	// update
-	parent->addUpdateRect(x, y, 128*3, 256);
+	}
 }
 
 
@@ -152,14 +152,14 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText));
 	if (allocatedText)
 		delete[] allocatedText;
-	statWidget=new EndGameStat(38, 80, &(gui->game));
+	statWidget=new EndGameStat(20, 80, 180, 150, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 	
 	// add buttons
-	addWidget(new TextButton(90, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(150, 415, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), 3, 13));
+	addWidget(new TextButton(90, 110, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 110, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 110, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(150, 25, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), 3, 13));
 	
 	// add players name
 	Text *text;
@@ -193,7 +193,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
 	{
-		text=new Text(60+128*3, 80+(i*inc), ALIGN_LEFT, ALIGN_LEFT, "standard", teams[i].name.c_str());
+		text=new Text(20, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", teams[i].name.c_str(), 140);
 		text->setColor(teams[i].r, teams[i].g, teams[i].b);
 		names.push_back(text);
 		addWidget(text);
