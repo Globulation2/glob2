@@ -147,6 +147,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				posY&=map.getMaskH();
 				
 				Building *b=addBuilding(posX, posY, team, typeNumber);
+				assert(b);
 				if (b)
 				{
 					if (b->type->unitProductionTime)
@@ -170,6 +171,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int team=Building::GIDtoTeam(gid);
 				int id=Building::GIDtoID(gid);
 				Building *b=teams[team]->myBuildings[id];
+				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE))
 				{
 					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
@@ -199,8 +201,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 					b->unitStayRange=newRange;
 					if (order->sender!=localPlayer)
 						b->unitStayRangeLocal=newRange;
-					
-					//b->update(); TODO: does any flags need an update ?
 
 					if (b->type->zonableForbidden)
 					{
@@ -238,11 +238,24 @@ void Game::executeOrder(Order *order, int localPlayer)
 					b->posX=((OrderMoveFlags *)order)->x[i];
 					b->posY=((OrderMoveFlags *)order)->y[i];
 					
-					if (drop && b->type->zonableForbidden)
+					if (b->type->zonableForbidden)
 					{
-						teams[team]->computeForbiddenArea();
-						teams[team]->dirtyGlobalGradient();
+						if (drop)
+						{
+							teams[team]->computeForbiddenArea();
+							teams[team]->dirtyGlobalGradient();
+						}
 					}
+					else
+						for (int i=0; i<2; i++)
+						{
+							b->dirtyLocalGradient[i]=true;
+							if (b->globalGradient[i])
+							{
+								delete[] b->globalGradient[i];
+								b->globalGradient[i]=NULL;
+							}
+						}
 					
 					if (order->sender!=localPlayer)
 					{

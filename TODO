@@ -4,8 +4,12 @@ Gameplay :
 // - Unites tirent une pierre.
 
 Bug:
-- Les drapeaux de guerrières sont mal gérés et des guerrières marchent sur le meme GID.
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
+- Les viewportX/Y ils n'ont pas l'air de se charger correctement dans l'éditeur (la touche "tab" bug),
+	et lorsque on sauve une partie, on ne se retrouve pas centré sur le premier batiment.
+
+ingameGUI:
+- Les info en bleu pour upgrader un batiment de nouriture viennent pas dessus les fruits.
 
 Net:
 - Vérifier que les "wishedLatency" ne soient pas modiffés pendant qu'un joueur est temporairement inaccessible.

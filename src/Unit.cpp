@@ -485,12 +485,11 @@ void Unit::handleActivity(void)
 						destinationPurprose=(Sint32)CORN;
 						attachedBuilding=b;
 						if (verbose)
-							printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
+							printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
 						owner->subscribeToBringRessources.push_front(b);
-						//b->update();
 						return;
 					}
 				}
@@ -518,7 +517,6 @@ void Unit::handleActivity(void)
 				b->lastInsideSubscribe=0;
 				subscribed=true;
 				owner->subscribeForInside.push_front(b);
-				///b->update();
 
 				return;
 			}
@@ -537,12 +535,11 @@ void Unit::handleActivity(void)
 				targetY=attachedBuilding->getMidY();
 				newTargetWasSet();
 				if (verbose)
-					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
+					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsWorkingSubscribe.push_front(this);
 				b->lastWorkingSubscribe=0;
 				subscribed=true;
 				owner->subscribeForFlaging.push_front(b);
-				//b->update();
 				//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
 
 				return;
@@ -574,12 +571,11 @@ void Unit::handleActivity(void)
 						attachedBuilding=b;
 						
 						if (verbose)
-							printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
+							printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
 						owner->subscribeToBringRessources.push_front(b);
-						//b->update();
 						return;
 					}
 				}
@@ -614,7 +610,6 @@ void Unit::handleActivity(void)
 					b->lastInsideSubscribe=0;
 					subscribed=true;
 					owner->subscribeForInside.push_front(b);
-					//b->update();
 				}
 				else
 					activity=ACT_RANDOM;
@@ -630,7 +625,7 @@ void Unit::handleActivity(void)
 		if (attachedBuilding)
 		{
 			if (verbose)
-				printf("Need medical while working, abort work\n");
+				printf("guid=(%d) Need medical while working, abort work\n", gid);
 			attachedBuilding->unitsWorking.remove(this);
 			attachedBuilding->unitsInside.remove(this);
 			attachedBuilding->unitsWorkingSubscribe.remove(this);
@@ -661,8 +656,7 @@ void Unit::handleActivity(void)
 				subscribed=true;
 				owner->subscribeForInside.push_front(b);
 				if (verbose)
-					printf("Subscribed to food building %d\n", b->gid);
-				//b->update();
+					printf("guid=(%d) Subscribed to food building gbid=(%d)\n", gid, b->gid);
 			}
 			else
 				activity=ACT_RANDOM;
@@ -674,7 +668,7 @@ void Unit::handleActivity(void)
 			if ( b != NULL)
 			{
 				if (verbose)
-					printf("Subscribed to heal building %d\n", b->gid);
+					printf("guid=(%d) Subscribed to heal building gbid=(%d)\n", gid, b->gid);
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=HEAL;
@@ -771,7 +765,7 @@ void Unit::handleDisplacement(void)
 				{
 					assert(attachedBuilding);
 					if (verbose)
-						printf("guid=(%d) Giving ressource (%d) to building bgid=(%d) old-amount=(%d)\n", gid, destinationPurprose, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
+						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
 					attachedBuilding->ressources[caryedRessource]+=attachedBuilding->type->multiplierRessource[caryedRessource];
 					if (attachedBuilding->ressources[caryedRessource] > attachedBuilding->type->maxRessource[caryedRessource])
 						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
@@ -1528,8 +1522,17 @@ void Unit::pathFind(void)
 			setNewValidDirection();
 		}
 	}
-	else if (displacement==DIS_GOING_TO_BUILDING)
+	else if (performance[FLY])
 	{
+		int ldx=targetX-posX;
+		int ldy=targetY-posY;
+		simplifyDirection(ldx, ldy, &dx, &dy);
+		directionFromDxDy();
+		setNewValidDirection();
+	}
+	else
+	{
+		assert(attachedBuilding);
 		if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 		{
 			if (verbose)
@@ -1545,13 +1548,13 @@ void Unit::pathFind(void)
 			setNewValidDirection();
 		}
 	}
-	else
+	/*else
 	{
 		int ldx=targetX-posX;
 		int ldy=targetY-posY;
 		simplifyDirection(ldx, ldy, &dx, &dy);
 		directionFromDxDy();
-	}
+	}*/
 }
 
 /*void Unit::pathFind(void)
