@@ -1646,16 +1646,19 @@ void MultiplayersHost::stopHosting(void)
 
 void MultiplayersHost::startGame(void)
 {
-	if(hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE)
+	if (hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE)
 	{
-		fprintf(logFile, "Lets tell all players to start game.\n");
-		startGameTimeCounter=SECOND_TIMEOUT*SECONDS_BEFORE_START_GAME;
-		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-			sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
-		hostGlobalState=HGS_GAME_START_SENDED;
+		if (hostGlobalState<HGS_GAME_START_SENDED)
+		{
+			fprintf(logFile, "Lets tell all players to start game.\n");
+			startGameTimeCounter=SECOND_TIMEOUT*SECONDS_BEFORE_START_GAME;
+			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+				sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
+			hostGlobalState=HGS_GAME_START_SENDED;
 
-		// let's check if all players are playing
-		stepHostGlobalState();
+			// let's check if all players are playing
+			stepHostGlobalState();
+		}
 	}
 	else
 		fprintf(logFile, "can't start now. hostGlobalState=(%d)<(%d)\n", hostGlobalState, HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE);
