@@ -34,7 +34,10 @@
 class Game;
 class Map;
 class Team;
-class InputStream;
+namespace GAGCore
+{
+	class InputStream;
+}
 
 class BasePlayer
 {

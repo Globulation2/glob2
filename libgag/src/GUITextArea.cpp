@@ -20,9 +20,12 @@
 #include <GUITextArea.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include <Stream.h>
+#include <FileManager.h>
 #include <assert.h>
 #include <iostream>
 #include <algorithm>
+#include <valarray>
 
 using namespace GAGCore;
 
@@ -692,5 +695,42 @@ namespace GAGGUI
 			areaPos++;
 		}
 		compute();
+	}
+	
+	bool TextArea::load(const char *filename)
+	{
+		InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
+		if (stream)
+		{
+			stream->seekFromEnd(0);
+			size_t len = stream->getPosition();
+			stream->seekFromStart(0);
+			
+			std::valarray<char> tempText(len+1);
+			stream->read(&tempText[0], len);
+			tempText[len] = 0;
+			
+			text = &tempText[0];
+			layout();
+			compute();
+			
+			delete stream;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	bool TextArea::save(const char *filename)
+	{
+		OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
+		if (stream)
+		{
+			stream->write(text.c_str(), text.length());
+			delete stream;
+			return true;
+		}
+		else
+			return false;
 	}
 }
