@@ -38,5 +38,6 @@
 #include "GUIRatio.h"
 #include "GUIMessageBox.h"
 #include "GUISelector.h"
+#include "GUIAnimation.h"
 
 #endif
