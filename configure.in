@@ -87,6 +87,7 @@ AC_CONFIG_FILES([Makefile
 	doc/Makefile
 	data/Makefile
 	data/gfx/Makefile
+	data/gfx/cursor/Makefile
 	data/fonts/Makefile
 	data/gui/Makefile
 	data/zik/Makefile

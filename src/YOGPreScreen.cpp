@@ -73,6 +73,7 @@ YOGPreScreen::YOGPreScreen()
 YOGPreScreen::~YOGPreScreen()
 {
 	Toolkit::releaseSprite("data/gfx/rotatingEarth");
+	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
 
 void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -92,6 +93,7 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 			oldYOGExternalStatusState=YOG::YESTS_CONNECTING;
 			connectOnNextTimer=true;
 			animation->show();
+			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 		}
 		else if (par1==-1)
 		{
@@ -130,6 +132,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 			globalContainer->settings.save();
 		}
 		animation->hide();
+		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 40);
@@ -154,7 +157,10 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)
 	{
 		if (yog->externalStatusState!=YOG::YESTS_CONNECTING)
+		{
 			animation->hide();
+			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
+		}
 		char *s=yog->getStatusString();
 		statusText->setText(s);
 		delete[] s;

@@ -8,6 +8,7 @@ libgag_a_SOURCES = \
 	FileManager.cpp\
 	Toolkit.cpp\
 	StringTable.cpp\
+	CursorManager.cpp\
 	SupportFunctions.cpp\
 	SDL_ttf.c\
 	SDL_ttf.h\

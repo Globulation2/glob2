@@ -1074,7 +1074,10 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 				break;
 			case SDLK_m :
 				if (pressed)
+				{
 					putMark=true;
+					globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
+				}
 				break;
 
 			case SDLK_RETURN :
@@ -1291,6 +1294,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		int markx, marky;
 		game.map.displayToMapCaseAligned(mx, my, &markx, &marky, viewportX, viewportY);
 		orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+		globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 		putMark = false;
 	}
 	else
@@ -1364,6 +1368,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int markx, marky;
 			minimapMouseToPos(mx, my, &markx, &marky, false);
 			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}
 		else

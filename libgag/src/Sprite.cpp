@@ -85,10 +85,12 @@ namespace GAGCore
 		return getFrameCount() > 0;
 	}
 	
-	void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
+	void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index, Uint8 spriteAlpha)
 	{
 		if (!checkBound(index))
 			return;
+			
+		// TODO : handle per surface alpha
 	
 		SDL_Rect oldr, r;
 		SDL_Rect newr=*clip;
@@ -248,11 +250,6 @@ namespace GAGCore
 		}
 		else
 			rotated.push_back(NULL);
-	}
-	
-	void Sprite::setAlpha(Uint8 alpha)
-	{
-		// Use per surface alophafor RGBA surface, not supporetd by SDL RGBA blit
 	}
 	
 	int Sprite::getW(int index)

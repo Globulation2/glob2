@@ -21,6 +21,7 @@
 #define INCLUDED_SDL_GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
+#include "CursorManager.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -142,7 +143,7 @@ namespace GAGCore
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void loadImage(const char *name);
-		virtual void drawSprite(int x, int y, Sprite *sprite, int index=0);
+		virtual void drawSprite(int x, int y, Sprite *sprite, int index=0, Uint8 alpha = DrawableSurface::ALPHA_OPAQUE);
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
@@ -180,29 +181,42 @@ namespace GAGCore
 		}
 	};
 	
+	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
-	private:
-		SDL_Rect **modes;
+	public:
+		//! The cursor manager, public to be able to set custom cursors
+		CursorManager cursorManager;
 		
 	protected:
+		//! the minimum acceptable resolution
 		int minW, minH;
-				
+		//! the pointer for iterating through mode list
+		SDL_Rect **modes;
+		
 	public:
+		//! Constructor
 		GraphicContext();
+		//! Destructor
 		virtual ~GraphicContext(void);
 	
-		//! this must be called before any Drawable Surface method.
+		//! Set the resolution, create the window if necessary. This must be called before any Drawable Surface method.
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
+		//! Change the rendering quality (antialiased lines, ...)
 		virtual void setQuality(Quality quality);
+		//! Set the minimum acceptable resolution
 		virtual void setMinRes(int w=0, int h=0);
+		//! Set the caption of the window
 		virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
+		//! Begin listing of acceptable video mode, *not thread-safe*
 		virtual void beginVideoModeListing(void);
+		//! Get the next acceptable video mode in w,h, return false if end of list, *not thread-safe*
 		virtual bool getNextVideoMode(int *w, int *h);
-			
+		//! Load an image on the screen
 		virtual void loadImage(const char *name);
-	
+		//! Switch to next frame. If double-buffering, switch buffer otherwise just blit
 		virtual void nextFrame(void);
+		//! Save a bmp of the screen to a file, bypass virtual filesystem
 		virtual void printScreen(const char *filename);
 		
 		//! lock only if necessary, we do not lock GL graphic context
@@ -283,13 +297,11 @@ namespace GAGCore
 		bool load(const char *filename);
 	
 		//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
-		virtual void draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index);
+		virtual void draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index, Uint8 alpha);
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, g, b); }
-		//! Set the alpha component of the sprite
-		virtual void setAlpha(Uint8 alpha);
-	
+		
 		//! Return the width of index frame of the sprite
 		virtual int getW(int index);
 		//! Return the height of index frame of the sprite
