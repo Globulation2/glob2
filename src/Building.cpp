@@ -573,10 +573,12 @@ void Building::cancelConstruction(void)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 	
+	owner->removeFromAbilitiesLists(this);
 	owner->prestige-=type->prestige;
 	typeNum=recoverTypeNum;
 	type=recoverType;
 	owner->prestige+=type->prestige;
+	owner->addToStaticAbilitiesLists(this);
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;

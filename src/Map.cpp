@@ -889,7 +889,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
 	
-	for (int i=0; i<size; i++)
+	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
 		
 	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
@@ -956,7 +956,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 
 	// We read what's inside the map:
 	SDL_RWread(stream, undermap, size, 1);
-	for (int i=0; i<size; i++)
+	for (size_t i=0; i<size; i++)
 	{
 		mapDiscovered[i]=SDL_ReadBE32(stream);
 
@@ -1039,7 +1039,7 @@ void Map::save(SDL_RWops *stream)
 
 	// We write what's inside the map:
 	SDL_RWwrite(stream, undermap, size, 1);
-	for (int i=0; i<size ;i++)
+	for (size_t i=0; i<size ;i++)
 	{
 		SDL_WriteBE32(stream, mapDiscovered[i]);
 
@@ -1517,10 +1517,10 @@ bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	
+	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy))
+			if (isRessource(x+tdx, y+tdy) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 			{
 				*dx=tdx;
 				*dy=tdy;
@@ -1533,10 +1533,10 @@ bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	
+	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy, ressourceType))
+			if (isRessource(x+tdx, y+tdy, ressourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 			{
 				*dx=tdx;
 				*dy=tdy;
@@ -2159,36 +2159,29 @@ void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool can
 	{
 		assert(globalContainer);
 		bool visibleToBeCollected=(bool)globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
-		for (int y=0; y<h; y++)
+		for (size_t i=0; i<size; i++)
 		{
-			int wy=(y<<wDec);
-			for (int x=0; x<w; x++)
+			Case c=cases[i];
+			if (c.forbidden&teamMask)
+				gradient[i]=0;
+			else if (c.ressource.type==NO_RES_TYPE)
 			{
-				Case c=cases[wy+x];
-				if (c.ressource.type==NO_RES_TYPE)
-				{
-					if (c.building!=NOGBID)
-						gradient[wy+x]=0;
-					else if (c.forbidden&teamMask)
-						gradient[wy+x]=0;
-					else if (!canSwim && isWater(x, y))
-						gradient[wy+x]=0;
-					else
-						gradient[wy+x]=1;
-				}
+				if (c.building!=NOGBID)
+					gradient[i]=0;
+				else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
+					gradient[i]=0;
 				else
-				{
-					if (c.ressource.type==ressourceType)
-					{
-						if (visibleToBeCollected && !(fogOfWar[wy+x]&teamMask))
-							gradient[wy+x]=0;
-						else
-							gradient[wy+x]=255;
-					}
-					else
-						gradient[wy+x]=0;
-				}
+					gradient[i]=1;
 			}
+			else if (c.ressource.type==ressourceType)
+			{
+				if (visibleToBeCollected && !(fogOfWar[i]&teamMask))
+					gradient[i]=0;
+				else
+					gradient[i]=255;
+			}
+			else
+				gradient[i]=0;
 		}
 	}
 	updateGlobalGradient(gradient);
@@ -2509,6 +2502,77 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		fprintf(logFile, "locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		*stopWork=false;
 		return false;
+	}
+}
+
+void Map::pathfindRandom(Unit *unit, bool verbose)
+{
+	if (verbose)
+		printf("pathfindRandom()\n");
+	int x=unit->posX;
+	int y=unit->posY;
+	if (cases[x+(y<<wDec)].forbidden&unit->owner->me)
+	{
+		if (verbose)
+			printf(" forbidden\n");
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy))
+		{
+			if (verbose)
+				printf(" success\n");
+			unit->directionFromDxDy();
+		}
+		else
+		{
+			if (verbose)
+				printf(" failed\n");
+			unit->dx=0;
+			unit->dy=0;
+			unit->direction=8;
+		}
+	}
+	else
+	{
+		bool da[8];
+		int count=0;
+		for (int di=0; di<8; di++)
+		{
+			int tx=(x+tabClose[di][0])&wMask;
+			int ty=(y+tabClose[di][1])&hMask;
+			if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+			{
+				da[di]=true;
+				count++;
+			}
+			else
+				da[di]=false;
+		}
+		if (verbose)
+		{
+			printf("count=%d\n", count);
+			for (int di=0; di<8; di++)
+				printf("da[%d]=%d\n", di, da[di]);
+		}
+		if (count==0)
+		{
+			unit->dx=0;
+			unit->dy=0;
+			unit->direction=8;
+			return;
+		}
+		int dir=syncRand()%count;
+		if (verbose)
+			printf(" dir=%d\n", dir);
+		for (int di=0; di<8; di++)
+			if (da[di] && dir--==0)
+			{
+				unit->dx=tabClose[di][0];
+				unit->dy=tabClose[di][1];
+				unit->direction=di;
+				if (verbose)
+					printf("d=(%d, %d), d=%d\n", unit->dx, unit->dy, unit->direction);
+				return;
+			}
+		assert(false);
 	}
 }
 

@@ -376,6 +376,7 @@ public:
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose);
+	void pathfindRandom(Unit *unit, bool verbose);
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
@@ -506,7 +507,7 @@ protected:
 	//Used for scheduling computation time. (if==0) has to be fully recomputed, (if>0) number of depth already computed.
 	int gradientUpdatedDepth[32][MAX_NB_RESSOURCES][2];
 	Uint8 *undermap;
-	int size;
+	size_t size;
 	
 	Sector *sectors;
 	Sint32 wSector, hSector;
