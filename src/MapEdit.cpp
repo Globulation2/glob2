@@ -1043,9 +1043,8 @@ bool MapEdit::load(const char *filename)
 	type=0; // water
 	editMode=EM_TERRAIN; // terrain
 
-	if (rv);
-		draw();
-	return rv;
+	draw();
+	return true;
 }
 
 bool MapEdit::save(const char *filename, const char *name)
