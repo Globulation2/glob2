@@ -154,6 +154,8 @@ void AICastor::init(Player *player)
 	ressourcesCluster=new Uint16[size];
 	
 	hydratationMapComputed=false;
+	
+	phase=P_NONE;
 }
 
 AICastor::~AICastor()
@@ -231,7 +233,31 @@ Order *AICastor::getOrder(void)
 {
 	timer++;
 	
-	computeObstacleUnitMap();
+	if (timer&31)
+		return new NullOrder();
+	
+	if (!hydratationMapComputed)
+		computeHydratationMap();
+	
+	choosePhase();
+	
+	phase=P_ALPHA; // TODO zzz remove 
+	switch (phase)
+	{
+		case P_NONE:
+			return new NullOrder();
+		case P_ALPHA:
+			return phaseAlpha();
+		case P_END:
+			assert(false);
+	}
+	
+	return phaseAlpha();
+	assert(false);
+	return new NullOrder();
+}
+
+	/*computeObstacleUnitMap();
 	computeObstacleBuildingMap();
 	computeSpaceForBuildingMap();
 	computeBuildingNeighbourMap();
@@ -241,20 +267,64 @@ Order *AICastor::getOrder(void)
 	computeWorkRangeMap();
 	computeWorkAbilityMap();
 	
-	if (!hydratationMapComputed)
-		computeHydratationMap();
+	computeWheatGrowthMap();*/
+	
+Order *AICastor::phaseAlpha()
+{
+	// Phase alpha will make a new Food Building at any price.
+	
+	computeCanSwim();
+	
+	computeObstacleBuildingMap();
+	computeSpaceForBuildingMap(2);
+	
+	computeBuildingNeighbourMap();
+	computeTwoSpaceNeighbourMap();
+	
 	computeWheatGrowthMap();
 	
-	Order *gfbm=computeGoodFoodBuildingMap(50, 5);
+	computeObstacleUnitMap();
+	computeWorkPowerMap();
+	computeWorkRangeMap();
+	computeWorkAbilityMap();
+	
+	Order *gfbm=computeGoodFoodBuildingMap();
 	if (gfbm)
 		return gfbm;
 	
 	return new NullOrder();
 }
 
+void AICastor::choosePhase()
+{
+	if (phase==P_NONE)
+	{
+		int canFeedUnit=0;
+		
+		Building **myBuildings=team->myBuildings;
+		for (int i=0; i<1024; i++)
+		{
+			Building *b=myBuildings[i];
+			if (b)
+			{
+				if (b->type->canFeedUnit)
+					canFeedUnit++;
+			}
+		}
+		
+		if (canFeedUnit==0)
+		{
+			printf("AICastor::phase=P_ALPHA\n");
+			phase=P_ALPHA;
+		}
+	}
+	
+	
+}
 
 void AICastor::computeCanSwim()
 {
+	//printf("computeCanSwim()...\n");
 	// If our population has more healthy-working-units able to swimm than healthy-working-units
 	// unable to swimm then we choose to be able to go trough water:
 	Unit **myUnits=team->myUnits;
@@ -273,10 +343,12 @@ void AICastor::computeCanSwim()
 	}
 	
 	canSwim=(sumCanSwim>sumCantSwim);
+	//printf("...computeCanSwim() done\n");
 }
 
 void AICastor::computeObstacleUnitMap()
 {
+	//printf("computeObstacleUnitMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -307,11 +379,13 @@ void AICastor::computeObstacleUnitMap()
 				obstacleUnitMap[wyx]=0;
 		}
 	}
+	//printf("...computeObstacleUnitMap() done\n");
 }
 
 
 void AICastor::computeObstacleBuildingMap()
 {
+	//printf("computeObstacleBuildingMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -341,10 +415,12 @@ void AICastor::computeObstacleBuildingMap()
 				obstacleBuildingMap[wyx]=0;
 		}
 	}
+	//printf("...computeObstacleBuildingMap() done\n");
 }
 
-void AICastor::computeSpaceForBuildingMap()
+void AICastor::computeSpaceForBuildingMap(int max)
 {
+	//printf("computeSpaceForBuildingMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -355,30 +431,35 @@ void AICastor::computeSpaceForBuildingMap()
 	
 	memcpy(spaceForBuildingMap, obstacleBuildingMap, size);
 	
-	for (int y=0; y<h; y++)
+	for (int i=1; i<max; i++)
 	{
-		int wy0=w*y;
-		int wy1=w*((y+1)&wMask);
-		
-		for (int x=0; x<w; x++)
+		for (int y=0; y<h; y++)
 		{
-			int wyx[4];
-			wyx[0]=wy0+x+0;
-			wyx[1]=wy0+x+1;
-			wyx[2]=wy1+x+0;
-			wyx[3]=wy1+x+1;
-			Uint8 obs[4];
-			for (int i=0; i<4; i++)
-				obs[i]=spaceForBuildingMap[wyx[i]];
-			Uint8 min=255;
-			for (int i=0; i<4; i++)
-				if (min>obs[i])
-					min=obs[i];
-			if (min!=0)
-				spaceForBuildingMap[wyx[0]]=min+1;
+			int wy0=w*y;
+			int wy1=w*((y+1)&wMask);
+			
+			for (int x=0; x<w; x++)
+			{
+				int wyx[4];
+				wyx[0]=wy0+x+0;
+				wyx[1]=wy0+x+1;
+				wyx[2]=wy1+x+0;
+				wyx[3]=wy1+x+1;
+				Uint8 obs[4];
+				for (int i=0; i<4; i++)
+					obs[i]=spaceForBuildingMap[wyx[i]];
+				Uint8 min=255;
+				for (int i=0; i<4; i++)
+					if (min>obs[i])
+						min=obs[i];
+				if (min!=0)
+					spaceForBuildingMap[wyx[0]]=min+1;
+			}
 		}
 	}
+	//printf("...computeSpaceForBuildingMap() done\n");
 }
+
 
 void AICastor::computeBuildingNeighbourMap()
 {
@@ -399,7 +480,7 @@ void AICastor::computeBuildingNeighbourMap()
 	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
-		if (b)
+		if (b && !b->type->isVirtual)
 		{
 			int bx=b->posX;
 			int by=b->posY;
@@ -446,21 +527,22 @@ void AICastor::computeBuildingNeighbourMap()
 				dirty=0;
 			
 			// dirty two case range, without corners;
-			for (int xi=bx-2; xi<=bx+bw; xi++)
+			for (int xi=bx-1; xi<bx+bw; xi++)
 			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by   -3)&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)|=1;
+				gradient[(xi&wMask)+(((by   -3)&hMask)<<wDec)]|=1;
+				gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)]|=1;
 			}
-			for (int yi=by-2; yi<=by+bh; yi++)
+			for (int yi=by-1; yi<by+bh; yi++)
 			{
-				Uint8 *p;
-				p=&gradient[((bx   -3)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
+				gradient[((bx   -3)&wMask)+((yi&hMask)<<wDec)]|=1;
+				gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)]|=1;
+			}
+			{
+				// the same with inner inner corners:
+				gradient[((bx -2)&wMask)+(((by -2)&hMask)<<wDec)]|=1;
+				gradient[((bx -2)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
+				gradient[((bx+bw)&wMask)+(((by -2)&hMask)<<wDec)]|=1;
+				gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
 			}
 			
 			// sum from bit 1 for range 3, which are good places, without corners:
@@ -472,14 +554,44 @@ void AICastor::computeBuildingNeighbourMap()
 				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
 				*p=(*p+2)|dirty;
 			}
-			
 			for (int yi=by-1; yi<by+bh; yi++)
 			{
 				Uint8 *p;
 				p=&gradient[((bx-2 )&wMask)+((yi&hMask)<<wDec)];
-				*p=(*p+2)|neighbour;
+				*p=(*p+2)|dirty;
 				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
 				*p=(*p+2)|dirty;
+			}
+			
+			
+			// sum from bit 1 for range 4, which are good places:
+			for (int xi=bx-4; xi<=bx+bw+2; xi++)
+			{
+				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by   -4)&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
+				(*p)+=2;
+			}
+			for (int yi=by-3; yi<=by+bh+1; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx   -4)&wMask)+((yi&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
+				(*p)+=2;
+			}
+			{
+				// the same with inner inner corners:
+				Uint8 *p;
+				p=&gradient[((bx   -3)&wMask)+(((by   -3)&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[((bx   -3)&wMask)+(((by+bh+1)&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[((bx+bw+1)&wMask)+(((by   -3)&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
+				(*p)+=2;
 			}
 		}
 	}
@@ -502,7 +614,7 @@ void AICastor::computeTwoSpaceNeighbourMap()
 	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
-		if (b)
+		if (b && !b->type->isVirtual)
 		{
 			int bx=b->posX;
 			int by=b->posY;
@@ -756,11 +868,8 @@ void AICastor::computeWheatGrowthMap()
 	}
 }
 
-Order *AICastor::computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat)
+Order *AICastor::computeGoodFoodBuildingMap()
 {
-	// minWork: 50 is a safe value.
-	// minWheat: 5 is a safe value
-	
 	int w=map->w;
 	int h=map->w;
 	//int wMask=map->wMask;
@@ -769,82 +878,77 @@ Order *AICastor::computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat)
 	
 	memset(goodFoodBuildingMap, 0, size);
 	
-	Uint8 bestWheatScore=0;
+	printf("computeGoodFoodBuildingMap()\n");
+	
+	// first, we auto calibrate minWork:
 	Uint8 bestWorkScore=0;
+	for (size_t i=0; i<size; i++)
+	{
+		Uint8 work=workAbilityMap[i];
+		if (bestWorkScore<work)
+			bestWorkScore=work;
+	}
+	
+	Uint8 minWork=bestWorkScore/2;
+	if (minWork>30)
+		minWork=30;
+	printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
+	
+	// second, we auto calibrate minWheat:
+	Uint8 bestWheatScore=0;
+	for (size_t i=0; i<size; i++)
+	{
+		Uint8 work=workAbilityMap[i];
+		if (work<minWork)
+			continue;
+		Uint8 wheat=wheatGrowthMap[i];
+		if (bestWheatScore<wheat)
+			bestWheatScore=wheat;
+	}
+	
+	Uint8 minWheat=bestWheatScore/2;
+	printf(" bestWheatScore=%d, minWheat=%d\n", bestWheatScore, minWheat);
+	
+	// third, we find the best place possible:
 	size_t bestIndex;
-	
-	// first, we look for any neighbour:
+	Uint32 bestScore=0;
 	for (size_t i=0; i<size; i++)
 	{
+		Uint8 space=spaceForBuildingMap[i];
+		if (space<2)
+			continue;
+		
+		Uint8 work=workAbilityMap[i];
+		if (work<minWork)
+			continue;
+		
+		Uint8 wheat=wheatGrowthMap[i];
+		if (wheat<minWheat)
+			continue;
+		
 		Uint8 neighbour=buildingNeighbourMap[i];
-		if (neighbour!=2)
+		if (neighbour&1)
 			continue;
+		neighbour++;
+		Uint32 score=((wheat<<8)+work)*neighbour;
 		
-		Uint8 space=spaceForBuildingMap[i];
-		if (space<2)
-			continue;
-		
-		Uint8 work=workAbilityMap[i];
-		if (work<minWork)
-			continue;
-		
-		Uint8 wheat=wheatGrowthMap[i];
-		if (wheat<minWheat)
-			continue;
-		
-		goodFoodBuildingMap[i]=wheat;
-		if (wheat>=bestWheatScore && (wheat>bestWheatScore || work>bestWorkScore))
+		Uint32 show=(score>>8);
+		if (show>255)
+			show=255;
+		goodFoodBuildingMap[i]=show;
+		if (bestScore<score)
 		{
-			bestWheatScore=wheat;
-			bestWorkScore=work;
+			bestScore=score;
 			bestIndex=i;
 		}
 	}
 	
-	if (bestWheatScore>0 && bestWorkScore>0)
+	if (bestScore>0)
 	{
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
-		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
-	}
-	
-	
-	Uint8 bestNeighbourScore=0;
-	// second, we look for a new distance-2 based emplacement
-	for (size_t i=0; i<size; i++)
-	{
-		Uint8 neighbour=twoSpaceNeighbourMap[i];
-		if (neighbour&1 || neighbour<2)
-			continue;
-		
-		Uint8 space=spaceForBuildingMap[i];
-		if (space<2)
-			continue;
-		
-		Uint8 work=workAbilityMap[i];
-		if (work<minWork)
-			continue;
-		
-		Uint8 wheat=wheatGrowthMap[i];
-		if (wheat<minWheat)
-			continue;
-		
-		goodFoodBuildingMap[i]=wheat;
-		if (/*neighbour>bestNeighbourScore &&*/ wheat>=bestWheatScore && (wheat>bestWheatScore || work>bestWorkScore))
-		{
-			bestNeighbourScore=neighbour;
-			bestWheatScore=wheat;
-			bestWorkScore=work;
-			bestIndex=i;
-		}
-	}
-	
-	if (bestNeighbourScore>0 && bestWheatScore>0 && bestWorkScore>0)
-	{
-		Sint32 x=(bestIndex&map->wMask);
-		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+		printf(" found a cool place, score=%d\n", bestScore);
 		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 	}
 	
