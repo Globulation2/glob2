@@ -685,21 +685,29 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
+
+							Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
+							memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
+							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 						}
 					}
 					else if (mx<128-16)
 					{
 						selBuild->ratioLocal[i]=((mx-16)*MAX_RATIO_RANGE)/94;
-						orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
 
+						Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
+						memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
+						orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), reinterpret_cast<Sint32 (*)[UnitType::NB_UNIT_TYPE]>(&(selBuild->ratioLocal)), 1));
+
+							Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
+							memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
+							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
