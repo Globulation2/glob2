@@ -87,7 +87,12 @@ int record(void *pointer)
 		int dsp;
 		int rate = 8000;
 		int channels = 1;
+		
+		#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		int format = AFMT_S16_LE;
+		#else
+		int format = AFMT_S16_BE;
+		#endif
 		
 		dsp = open("/dev/dsp", O_RDONLY);
 		if (dsp == -1)

@@ -375,7 +375,6 @@ void SoundMixer::addVoiceData(OrderVoiceData *order)
 {
 	if (soundEnabled)
 	{
-		printf("SoundMixer::addVoiceDat\n");
 		SpeexBits bits;
 		
 		speex_bits_init(&bits);
