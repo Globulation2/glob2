@@ -585,8 +585,8 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	if (players[playerNumber]->type<Player::P_AI && players[playerNumber]->type!=Player::P_LOCAL)
 	{
-		printf("Error, can't push order of player %s, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
-		fprintf(logFile, "Error, can't push order of player %s, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
+		printf("Error, can't push order of player %d, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
+		fprintf(logFile, "Error, can't push order of player %d, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
 		assert(false);
 	}
 	
