@@ -749,12 +749,13 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 		frameStream=tryOpenImage(name, i, false);
 		overlayStream=tryOpenImage(name, i, true);
 
-		if (!frameStream)
+		if (!((frameStream) || (overlayStream)))
 			break;
 
 		sprite->loadFrame(frameStream, overlayStream);
 
-		SDL_RWclose(frameStream);
+		if (frameStream)
+			SDL_RWclose(frameStream);
 		if (overlayStream)
 			SDL_RWclose(overlayStream);
 		i++;

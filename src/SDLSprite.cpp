@@ -78,7 +78,8 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	r.w=w;
 	r.h=h;
 
-	SDL_BlitSurface(images[index], &src, dest, &r);
+	if (images[index])
+		SDL_BlitSurface(images[index], &src, dest, &r);
 	SDL_LockSurface(dest);
 	if ((masks[index]) && (masks[index]->format->BitsPerPixel==8) && (dest->format->BitsPerPixel==32))
 	{
@@ -176,6 +177,8 @@ int SDLSprite::getW(int index)
 	assert(index<(int)images.size());
 	if (images[index])
 		return images[index]->w;
+	else if (masks[index])
+		return masks[index]->w;
 	else
 		return 0;
 }
@@ -186,6 +189,8 @@ int SDLSprite::getH(int index)
 	assert(index<(int)images.size());
 	if (images[index])
 		return images[index]->h;
+	else if (masks[index])
+		return masks[index]->h;
 	else
 		return 0;
 }
