@@ -32,4 +32,4 @@ EXTRA_DIST = SDLFont.h \
 		win32_dirent.h
 			
 
-INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I../include/
+INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../include/
