@@ -20,6 +20,7 @@
 
 #include <GUISelector.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 #include <assert.h>
 
 Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue, unsigned size, const char *sprite, Sint32 id)

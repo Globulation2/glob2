@@ -22,6 +22,7 @@
 
 #include "Header.h"
 #include <Toolkit.h>
+#include <FileManager.h>
 #include <vector>
 #include <assert.h>
 

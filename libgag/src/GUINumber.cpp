@@ -20,6 +20,7 @@
 #include <GUINumber.h>
 #include <assert.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 #include <sstream>
 
 Number::Number()

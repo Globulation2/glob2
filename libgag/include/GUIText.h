@@ -21,23 +21,22 @@
 #define __GUITEXT_H
 
 #include "GUIBase.h"
+#include <string>
+
+class Font;
 
 //! This widget is a simple text widget
 class Text: public RectangularWidget
 {
 protected:
-	CLASSDEF(Text)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(std::string, font)
-		ITEM(std::string, text)
-		ITEM(Uint8, cr)
-		ITEM(Uint8, cg)
-		ITEM(Uint8, cb)
-		ITEM(Uint8, ca)
-		ITEM(bool, keepW)
-		ITEM(bool, keepH)
-	CLASSEND;
+	std::string font;
+	std::string text;
+	Uint8 cr;
+	Uint8 cg;
+	Uint8 cb;
+	Uint8 ca;
+	bool keepW;
+	bool keepH;
 
 	// cache, recomputed at least on paint
 	Font *fontPtr;
@@ -48,7 +47,7 @@ public:
 	virtual ~Text() { }
 	virtual const char *getText() const { return text.c_str();}
 	virtual void setText(const char *newText, ...);
-	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
+	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
 
 protected:
 	virtual void internalInit(int x, int y, int w, int h);

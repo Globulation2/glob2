@@ -19,6 +19,7 @@
 
 #include <GUIRatio.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 #include <assert.h>
 #include <sstream>
 

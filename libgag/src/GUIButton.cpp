@@ -20,6 +20,7 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <assert.h>
+#include <GraphicContext.h>
 
 Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
 :HighlightableWidget(returnCode)

@@ -22,6 +22,7 @@
 #include "GlobalContainer.h"
 #include "Marshaling.h"
 #include "LogFileManager.h"
+#include <StringTable.h>
 
 BasePlayer::BasePlayer()
 {

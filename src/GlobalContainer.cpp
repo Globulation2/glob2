@@ -25,6 +25,7 @@
 #include "FileManager.h"
 #include "LogFileManager.h"
 #include <Toolkit.h>
+#include <GAG.h>
 
 GlobalContainer::GlobalContainer(void)
 {

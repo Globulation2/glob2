@@ -20,6 +20,7 @@
 
 #include <GUIAnimation.h>
 #include <Toolkit.h>
+#include <GraphicContext.h>
 #include <assert.h>
 
 Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count, Sint32 duration)

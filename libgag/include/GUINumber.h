@@ -22,18 +22,17 @@
 
 #include "GUIBase.h"
 #include <vector>
+#include <string>
+
+class Font;
 
 class Number: public RectangularWidget
 {
 protected:
-	CLASSDEF(Number)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(std::string, font)
-		ITEM(Sint32, nth)
-		ITEM(Sint32, m)
-		ITEM(std::vector<int>, numbers)
-	CLASSEND;
+	std::string font;
+	Sint32 nth;
+	Sint32 m;
+	std::vector<int> numbers;
 
 	// cache, recomputed at least on paint
 	Font *fontPtr;

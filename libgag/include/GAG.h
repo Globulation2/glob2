@@ -20,7 +20,6 @@
 #ifndef __GAG_H
 #define __GAG_H
 
-#include "xmlserializer.h"
 #include "GAGSys.h"
 #include "FileManager.h"
 #include "StringTable.h"

@@ -22,13 +22,10 @@
 
 #include "GUIBase.h"
 
+class Font;
+
 class Ratio: public RectangularWidget
 {
-	CLASSDEF(Ratio)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-	CLASSEND;
-
 public:
 	Ratio() { font=NULL; }
 	Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);

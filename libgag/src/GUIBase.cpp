@@ -19,6 +19,7 @@
 
 #include <GUIBase.h>
 #include <assert.h>
+#include <GraphicContext.h>
 
 // this function support base unicode (UCS16)
 void UCS16toUTF8(Uint16 ucs16, char utf8[4])
@@ -257,6 +258,10 @@ Screen::Screen()
 
 Screen::~Screen()
 {
+	for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+	{
+		delete (*it);
+	}
 }
 
 void Screen::paint()
@@ -367,42 +372,38 @@ void Screen::addUpdateRect(int x, int y, int w, int h)
 	updateRects.push_back(r);
 }
 
-void Screen::addWidget(base::Ptr<Widget> widget)
+void Screen::addWidget(Widget* widget)
 {
 	assert(widget);
 	widget->parent=this;
 	// this option enable or disable the multiple add check
-#ifdef ENABLE_MULTIPLE_ADD_WIDGET
-		widgets.add(widget);
-#else
-		widgets.adds(widget);
-#endif
+	widgets.insert(widget);
 }
 
-void Screen::removeWidget(base::Ptr<Widget> widget)
+void Screen::removeWidget(Widget* widget)
 {
 	assert(widget);
 	assert(widget->parent==this);
-	widgets.remove(widget);
+	widgets.erase(widget);
 }
 
 void Screen::dispatchEvents(SDL_Event *event)
 {
 	onSDLEvent(event);
-	for (unsigned i=0; i<widgets.size(); i++)
+	for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 	{
-		if (widgets[i]->visible)
-			widgets[i]->onSDLEvent(event);
+		if ((*it)->visible)
+			(*it)->onSDLEvent(event);
 	}
 }
 
 void Screen::dispatchTimer(Uint32 tick)
 {
 	onTimer(tick);
-	for (unsigned i=0; i<widgets.size(); i++)
+	for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 	{
-		if (widgets[i]->visible)
-			widgets[i]->onTimer(tick);
+		if ((*it)->visible)
+			(*it)->onTimer(tick);
 	}
 }
 
@@ -412,10 +413,10 @@ void Screen::dispatchPaint(DrawableSurface *gfx)
 	gfxCtx=gfx;
 	gfxCtx->setClipRect();
 	paint();
-	for (unsigned i=0; i<widgets.size(); i++)
+	for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 	{
-		if (widgets[i]->visible)
-			widgets[i]->paint();
+		if ((*it)->visible)
+			(*it)->paint();
 	}
 }
 
@@ -437,6 +438,23 @@ void Screen::repaint(DrawableSurface *gfx)
 void Screen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+}
+
+int Screen::getW(void)
+{
+	if (gfxCtx)
+		return gfxCtx->getW();
+	else
+		return 0;
+
+}
+
+int Screen::getH(void)
+{
+	if (gfxCtx)
+		return gfxCtx->getH();
+	else
+		return 0;
 }
 
 // Overlay screen, used for non full frame dialog

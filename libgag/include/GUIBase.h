@@ -21,12 +21,11 @@
 #define __GUIBASE_H
 
 #include "GAGSys.h"
-#include "GraphicContext.h"
 #include <vector>
-#include "xmlserializer.h"
+#include <set>
 
-//! if defined, widget added twice are handeld correctly
-#define ENABLE_MULTIPLE_ADD_WIDGET
+class GraphicContext;
+class DrawableSurface;
 
 // transform an ucs 16 unicode char to an utf8 one
 void UCS16toUTF8(Uint16 ucs16, char utf8[4]);
@@ -71,14 +70,11 @@ enum Action
 class Screen;
 
 //! A widget is a GUI block element
-class Widget : public base::Object
+class Widget
 {
-	CLASSDEFNOREG(Widget)
-		BASECLASS(base::Object)
-	MEMBERS
+public:
 		//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
-		ITEM(bool, visible)
-	CLASSEND;
+	bool visible;
 
 public:
 	//! Widget constructor
@@ -111,16 +107,12 @@ protected:
 class RectangularWidget:public Widget
 {
 protected:
-	CLASSDEFNOREG(RectangularWidget)
-		BASECLASS(Widget)
-	MEMBERS
-		ITEM(Sint32, x)
-		ITEM(Sint32, y)
-		ITEM(Sint32, w)
-		ITEM(Sint32, h)
-		ITEM(Uint32, hAlignFlag)
-		ITEM(Uint32, vAlignFlag)
-	CLASSEND;
+	Sint32 x;
+	Sint32 y;
+	Sint32 w;
+	Sint32 h;
+	Uint32 hAlignFlag;
+	Uint32 vAlignFlag;
 
 public:
 	//! RectangularWidget constructor, set all values to 0
@@ -176,12 +168,8 @@ protected:
 class HighlightableWidget:public RectangularWidget
 {
 public:
-	CLASSDEFNOREG(HighlightableWidget)
-		BASECLASS(RectangularWidget)
-	MEMBERS
-		ITEM(bool, highlighted)
-		ITEM(Sint32, returnCode)
-	CLASSEND;
+	bool highlighted;
+	Sint32 returnCode;
 
 public:
 	HighlightableWidget() { highlighted=false; this->returnCode=0; }
@@ -193,15 +181,11 @@ public:
 };
 
 //! The screen is the widget container and has a background
-class Screen : public base::Object
+class Screen
 {
 protected:
-	CLASSDEFNOREG(Screen)
-		BASECLASS(base::Object)
-	MEMBERS
-		//! the widgets
-		ITEM(base::Vector<Widget>, widgets)
-	CLASSEND;
+	//! the widgets
+	std::set<Widget *> widgets;
 
 	//! true while execution is running, no need for serialisation
 	bool run;
@@ -239,9 +223,9 @@ public:
 	//! Next update will include the (x,y)-(x+w,y+h) rect
 	void addUpdateRect(int x, int y, int w, int h);
 	//! Add widget, added widget are garbage collected
-	void addWidget(base::Ptr<Widget> widget);
+	void addWidget(Widget* widget);
 	//! Remove widget, note that removed widget are not garbage collected
-	void removeWidget(base::Ptr<Widget> widget);
+	void removeWidget(Widget* widget);
 	//! Call onSDLEvent on each widget after having called onSDLEvent on the screen itself
 	void dispatchEvents(SDL_Event *event);
 	//! Call onTimer on each widget after having called onTimer on the screen itself
@@ -253,9 +237,9 @@ public:
 	//! Return the associated drawable surface
 	DrawableSurface *getSurface(void) { return gfxCtx; }
 	//! Return the width of the screen
-	int getW(void) { if (gfxCtx) return gfxCtx->getW(); else return 0; }
+	int getW(void);
 	//! Return the height of the screen
-	int getH(void) { if (gfxCtx) return gfxCtx->getH(); else return 0; }
+	int getH(void);
 };
 
 

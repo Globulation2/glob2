@@ -22,6 +22,7 @@
 #include "SDLFont.h"
 #include <SupportFunctions.h>
 #include <Toolkit.h>
+#include <FileManager.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>
