@@ -798,6 +798,8 @@ Order *NetGame::getOrder(int playerNumber)
 			fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, order->wishedLatency);
 			fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
 		}
+		if (order->getOrderType()!=ORDER_NULL)
+			fprintf(logFile, "getOrder(p=%d)->type==%d\n", playerNumber, order->getOrderType());
 		return order;
 	}
 }

@@ -2071,27 +2071,27 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfPlayer; i++)
 	{
-		cs^=players[i]->checkSum();
+		cs^=players[i]->checkSum(checkSumsList);
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2+t*20]
+		checkSumsList->push_back(cs);// [2+t*20+p*2]
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=map.checkSum(false);
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3+t*20]
+		checkSumsList->push_back(cs);// [3+t*20+p*2]
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4+t*20]
+		checkSumsList->push_back(cs);// [4+t*20+p*2]
 
 	cs^=script.checkSum();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5+t*20]
+		checkSumsList->push_back(cs);// [5+t*20+p*2]
 	
 	return cs;
 }
