@@ -52,6 +52,7 @@ public:
 	OnOffButton *allied[8];
 	OnOffButton *chat[8];
 	char names[8][BasePlayer::MAX_NAME_LENGTH];
+	bool firstPaint;
 
 public:
 	InGameAlliance8Screen();

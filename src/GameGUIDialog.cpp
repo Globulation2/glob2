@@ -100,6 +100,7 @@ InGameAlliance8Screen::InGameAlliance8Screen()
 		addWidget(chat[i]);
 	}
 	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, &globalContainer.menuFont, globalContainer.texts.getString("[ok]"), 30));
+	firstPaint=true;
 }
 
 void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, int par2)
@@ -117,10 +118,14 @@ void InGameAlliance8Screen::onSDLEvent(SDL_Event *event)
 void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 {
 	InGameScreen::paint(x, y, w, h);
-	gfxCtx->drawString(233, 10, &globalContainer.menuFont, "A");
-	gfxCtx->drawString(273, 10, &globalContainer.menuFont, "C");
-	for (int i=0; i<8; i++)
+	if (firstPaint)
 	{
-		gfxCtx->drawString(10, 40+i*25, &globalContainer.menuFont, names[i]);
+		gfxCtx->drawString(231, 10, &globalContainer.menuFont, "A");
+		gfxCtx->drawString(272, 10, &globalContainer.menuFont, "C");
+		for (int i=0; i<8; i++)
+		{
+			gfxCtx->drawString(10, 40+i*25, &globalContainer.menuFont, names[i]);
+		}
+		firstPaint=false;
 	}
 }
