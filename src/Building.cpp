@@ -1201,6 +1201,7 @@ void Building::subscribeToBringRessourcesStep()
 					{
 						int value=dist-(timeLeft>>1);
 						unit->destinationPurprose=r;
+						fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						if (value<minValue)
 						{
 							minValue=value;
@@ -1240,6 +1241,7 @@ void Building::subscribeToBringRessourcesStep()
 										if (value<minValue)
 										{
 											unit->destinationPurprose=r;
+											fprintf(logFile, "[%d] bdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
 											choosen=unit;
 											if (verbose)
@@ -1323,6 +1325,7 @@ void Building::subscribeToBringRessourcesStep()
 													unit->ownExchangeBuilding=this;
 													unit->foreingExchangeBuilding=*fbi;
 													unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+													fprintf(logFile, "[%d] bdp3 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 												}
 											}
 										}
@@ -1362,6 +1365,7 @@ void Building::subscribeToBringRessourcesStep()
 										if (value<minValue)
 										{
 											unit->destinationPurprose=r;
+											fprintf(logFile, "[%d] bdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 											minValue=value;
 											choosen=unit;
 										}

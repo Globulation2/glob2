@@ -255,7 +255,10 @@ public:
 	bool isRessource(int x, int y, bool ressourceTypes[BASIC_COUNT])
 	{
 		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-		return (ressource->type!=NO_RES_TYPE && ressource->amount>0 && ressourceTypes[ressource->type]);
+		return (ressource->type!=NO_RES_TYPE
+			&& ressource->amount>0
+			&& ressource->type<BASIC_COUNT
+			&& ressourceTypes[ressource->type]);
 	}
 
 	bool isRessource(int x, int y, int *ressourceType)
