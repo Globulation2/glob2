@@ -934,7 +934,7 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 	else
 		yogHostname = YOG_SERVER_IP;
 	fprintf(logFile, "\nresolving YOG host name %s\n", yogHostname);
-	int rv = SDLNet_ResolveHost(&serverIP, yogHostname, YOG_SERVER_PORT);
+	int rv = SDLNet_ResolveHost(&serverIP, (char *)yogHostname, YOG_SERVER_PORT);
 	if (rv==-1)
 	{
 		fprintf(logFile, "failed to resolve YOG host name %s!\n", yogHostname);
