@@ -309,7 +309,7 @@ void Unit::unsubscribed(void)
 				}
 				break;
 				default:
-					assert(false); 
+					assert(false);
 			}
 		}
 		break;
@@ -485,7 +485,7 @@ void Unit::handleActivity(void)
 						displacement=DIS_GOING_TO_RESSOURCE;
 						if (verbose)
 							printf("(%d)Going to harvest for filling building\n", UID);
-						destinationPurprose=(int)CORN;
+						destinationPurprose=(Sint32)CORN;
 						attachedBuilding=b;
 						//printf("g(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
 						b->unitsWorkingSubscribe.push_front(this);
@@ -510,7 +510,7 @@ void Unit::handleActivity(void)
 							jobFound=true;
 							activity=ACT_UPGRADING;
 							displacement=DIS_GOING_TO_BUILDING;
-							destinationPurprose=abilityIterator;
+							destinationPurprose=(Sint32)abilityIterator;
 							
 							//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
 							
@@ -537,7 +537,7 @@ void Unit::handleActivity(void)
 				
 				// if we have a ressource
 				b=owner->findBestConstruction(this);
-				if ( b != NULL)
+				if (b != NULL)
 				{
 					//do not do this (it's done in findBestConstruction() much nicer)
 					//destinationPurprose=b->neededRessource();

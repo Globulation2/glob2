@@ -86,8 +86,9 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		job[i]=false;
-		attract[i]=false;
+		job[i]=0;
+		attract[i]=0;
+		upgrade[i]=0;
 	}
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
@@ -148,6 +149,13 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		seenByMask=SDL_ReadBE32(stream);
 	else
 		seenByMask=0; //TODO: load it!
+	
+	for (int i=0; i<NB_ABILITY; i++)
+	{
+		job[i]=0;
+		attract[i]=0;
+		upgrade[i]=0;
+	}
 }
 
 void Building::save(SDL_RWops *stream)
@@ -489,12 +497,16 @@ void Building::update(void)
 		// add itself in Call lists
 		for (i=0; i<NB_ABILITY; i++)
 		{
-			if (!job[i] && type->job[i])
+			if (job[i]!=1 && type->job[i])
+			{
 				owner->job[i].push_front(this);
-			if (!attract[i] && type->attract[i])
+				job[i]=1;
+			}
+			if (attract[i]!=1 && type->attract[i])
+			{
 				owner->attract[i].push_front(this);
-			job[i]=true;
-			attract[i]=true;
+				attract[i]=1;
+			}
 		}
 	}
 	else
@@ -502,12 +514,16 @@ void Building::update(void)
 		// delete itself from all Call lists
 		for (i=0; i<NB_ABILITY; i++)
 		{
-			if (job[i] && type->job[i])
+			if (job[i]!=2 && type->job[i])
+			{
 				owner->job[i].remove(this);
-			if (attract[i] && type->attract[i])
+				job[i]=2;
+			}
+			if (attract[i]!=2 && type->attract[i])
+			{
 				owner->attract[i].remove(this);
-			job[i]=false;
-			attract[i]=false;
+				attract[i]=2;
+			}
 		}
 
 		while (unitsWorking.size()>(unsigned)maxUnitWorking) // TODO : the same with insides units
@@ -581,10 +597,11 @@ void Building::update(void)
 	{
 		// add itself in Call lists
 		for (i=0; i<NB_ABILITY; i++)
-		{
-			if (type->upgrade[i])
+			if (upgrade[i]!=1 && type->upgrade[i])
+			{
 				owner->upgrade[i].push_front(this);
-		}
+				upgrade[i]=1;
+			}
 
 		// this is for food handling
 		if (type->canFeedUnit)
@@ -606,10 +623,11 @@ void Building::update(void)
 	{
 		// delete itself from all Call lists
 		for (i=0; i<NB_ABILITY; i++)
-		{
-			if (type->upgrade[i])
+			if (upgrade[i]!=2 && type->upgrade[i])
+			{
 				owner->upgrade[i].remove(this);
-		}
+				upgrade[i]=2;
+			}
 
 		if (type->canFeedUnit)
 			owner->canFeedUnit.remove(this);
@@ -620,6 +638,11 @@ void Building::update(void)
 	// this is for ressource gathering
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
+		if (job[HARVEST]!=2)
+		{
+			owner->job[HARVEST].remove(this);
+			job[HARVEST]=2;
+		}
 		if (type->isBuildingSite)
 		{
 			// we really uses the resources of the buildingsite:
@@ -671,11 +694,6 @@ void Building::update(void)
 
 			// we need to do an update again
 			update();
-		}
-		else if (job[HARVEST])
-		{
-			owner->job[HARVEST].remove(this);
-			job[HARVEST]=false;
 		}
 	}
 }
@@ -753,6 +771,12 @@ bool Building::tryToUpgradeRoom(void)
 			percentUsed[i]=0;
 		}
 
+		// TODO: now we can see that the engine "genericity" is not as good as we would like to.
+		if (job[HARVEST]!=2)
+		{
+			owner->job[HARVEST].remove(this);
+			job[HARVEST]=2;
+		}
 		update();
 	}
 	return isRoom;
