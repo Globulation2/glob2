@@ -1492,13 +1492,15 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	int oldQuality;
 	int exitX, exitY;
 	
-	//if (exitQuality<3)
+	//if (exitQuality<4)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
 			{
+				if (owner->game->map.isFreeForUnit(testX, testY-1, canFly))
+					oldQuality++;
 				if (owner->game->map.isRessource(testX, testY-1))
 				{
 					if (exitQuality<1+oldQuality)
@@ -1521,13 +1523,15 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 				}
 			}
 	}
-	if (exitQuality<3)
+	if (exitQuality<4)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
 			{
+				if (owner->game->map.isFreeForUnit(testX, testY+1, canFly))
+					oldQuality++;
 				if (owner->game->map.isRessource(testX, testY+1))
 				{
 					if (exitQuality<1+oldQuality)
@@ -1550,13 +1554,15 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 				}
 			}
 	}
-	if (exitQuality<3)
+	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
 			{
+				if (owner->game->map.isFreeForUnit(testX-1, testY, canFly))
+					oldQuality++;
 				if (owner->game->map.isRessource(testX-1, testY))
 				{
 					if (exitQuality<1+oldQuality)
@@ -1579,13 +1585,15 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 				}
 			}
 	}
-	if (exitQuality<3)
+	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
 			{
+				if (owner->game->map.isFreeForUnit(testX+1, testY, canFly))
+					oldQuality++;
 				if (owner->game->map.isRessource(testX+1, testY))
 				{
 					if (exitQuality<1+oldQuality)
