@@ -43,14 +43,17 @@
 
 GlobalContainer::GlobalContainer(void)
 {
+	// Init toolkit
+	Toolkit::init("glob2");
+
 	// init virtual filesystem
-	fileManager=Toolkit::getFileManager();
+	fileManager = Toolkit::getFileManager();
 	assert(fileManager);
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
-	logFileManager=new LogFileManager(fileManager);
+	logFileManager = new LogFileManager(fileManager);
 
 	// load user preference
 	settings.load();
@@ -71,7 +74,6 @@ GlobalContainer::GlobalContainer(void)
 	terrainBlack=NULL;
 	ressources=NULL;
 	units=NULL;
-	buildings=NULL;
 
 	menuFont=NULL;
 	standardFont=NULL;
@@ -82,25 +84,10 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
-	if (!runNoX)
-	{
-		// releasing ressources
-		Toolkit::releaseSprite("terrain");
-		Toolkit::releaseSprite("black");
-		Toolkit::releaseSprite("shading");
-		Toolkit::releaseSprite("ressources");
-		Toolkit::releaseSprite("ressourcemini");
-		Toolkit::releaseSprite("units");
-		Toolkit::releaseSprite("unitmini");
-		Toolkit::releaseSprite("buildings");
-		Toolkit::releaseSprite("buildingmini");
-		Toolkit::releaseSprite("gamegui");
-		Toolkit::releaseSprite("brush");
-		Toolkit::releaseFont("menu");
-		Toolkit::releaseFont("standard");
-		Toolkit::releaseFont("little");
-	}
+	// release ressources
+	Toolkit::close();
 	
+	// close screen and sound
 	if (gfx)
 		delete gfx;
 	if (mix)
@@ -366,6 +353,15 @@ void GlobalContainer::load(void)
 	}
 	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
 
+	if (!runNoX)
+	{
+		// create graphic context
+		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
+		gfx->setMinRes(640, 480);
+		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
+		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
+	}
+	
 	// load buildings types
 	buildingsTypes.load();
 	// load ressources types
@@ -379,6 +375,8 @@ void GlobalContainer::load(void)
 		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
 		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
+		initProgressBar();
+		
 		// create mixer
 		mix = new SoundMixer(settings.musicVolume);
 		mix->loadTrack("data/zik/intro.ogg");
@@ -389,6 +387,7 @@ void GlobalContainer::load(void)
 		mix->setNextTrack(0);
 		mix->setNextTrack(1);
 
+		updateLoadProgressBar(10);
 		// load fonts
 		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");
 		menuFont=Toolkit::getFont("menu");
@@ -402,48 +401,31 @@ void GlobalContainer::load(void)
 		littleFont=Toolkit::getFont("little");
 		littleFont->setColor(255, 255, 255);
 
-		initProgressBar();
-
-		updateLoadProgressBar(10);
+		updateLoadProgressBar(30);
 		// load terrain data
-		gfx->loadSprite("data/gfx/terrain", "terrain");
-		terrain=Toolkit::getSprite("terrain");
+		terrain = Toolkit::getSprite("data/gfx/terrain");
 		
 		// black for unexplored terrain
-		gfx->loadSprite("data/gfx/black", "black");
-		terrainBlack=Toolkit::getSprite("black");
+		terrainBlack = Toolkit::getSprite("data/gfx/black");
 
 		// load shader for unvisible terrain
-		gfx->loadSprite("data/gfx/shade", "shading");
-		terrainShader=Toolkit::getSprite("shading");
+		terrainShader = Toolkit::getSprite("data/gfx/shade");
 		
-		updateLoadProgressBar(30);
+		updateLoadProgressBar(50);
 		// load ressources
-		gfx->loadSprite("data/gfx/ressource", "ressources");
-		ressources=Toolkit::getSprite("ressources");
-		gfx->loadSprite("data/gfx/ressourcemini", "ressourcemini");
-		ressourceMini=Toolkit::getSprite("ressourcemini");
-
-		updateLoadProgressBar(40);
-		// load units
-		gfx->loadSprite("data/gfx/unit", "units");
-		units=Toolkit::getSprite("units");
+		ressources = Toolkit::getSprite("data/gfx/ressource");
+		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+		bullet = Toolkit::getSprite("data/gfx/bullet");
 
 		updateLoadProgressBar(70);
-		// load buildings
-		gfx->loadSprite("data/gfx/building", "buildings");
-		buildings=Toolkit::getSprite("buildings");
+		// load units
+		units = Toolkit::getSprite("data/gfx/unit");
 
 		updateLoadProgressBar(90);
 		// load graphics for gui
-		gfx->loadSprite("data/gfx/unitmini", "unitmini");
-		unitmini=Toolkit::getSprite("unitmini");
-		gfx->loadSprite("data/gfx/buildingmini", "buildingmini");
-		buildingmini=Toolkit::getSprite("buildingmini");
-		gfx->loadSprite("data/gfx/gamegui", "gamegui");
-		gamegui=Toolkit::getSprite("gamegui");
-		gfx->loadSprite("data/gfx/brush", "brush");
-		brush=Toolkit::getSprite("brush");
+		unitmini = Toolkit::getSprite("data/gfx/unitmini");
+		gamegui = Toolkit::getSprite("data/gfx/gamegui");
+		brush = Toolkit::getSprite("data/gfx/brush");
 
 		updateLoadProgressBar(100);
 	}

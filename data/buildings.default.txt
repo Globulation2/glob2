@@ -17,8 +17,15 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-*default building
-startImage 0
+*default
+
+type null
+
+gameSprite data/gfx/building
+gameSpriteImage 0
+miniSprite data/gfx/buildingmini
+miniSpriteImage 0
+
 hueImage 0
 flagImage 49
 miniImage 0

@@ -1692,7 +1692,7 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLin
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 			assert(bt);
-			int imgid=bt->miniImage;
+			int imgid = bt->miniSpriteImage;
 			int x, y;
 
 			x=((v % numberPerLine)*width)+globalContainer->gfx->getW()-128;
@@ -1700,19 +1700,18 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLin
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
-			int decX, decY;
-			if (imgid>=0)
+			if (imgid >= 0)
 			{
-				buildingSprite=globalContainer->buildingmini;
+				buildingSprite = bt->miniSpritePtr;
 			}
 			else
 			{
-				buildingSprite=globalContainer->buildings;
-				imgid=bt->startImage;
+				buildingSprite = bt->gameSpritePtr;
+				imgid = bt->gameSpriteImage;
 			}
 			
-			decX=(width-buildingSprite->getW(imgid))>>1;
-			decY=(46-buildingSprite->getW(imgid))>>1;
+			int decX = (width-buildingSprite->getW(imgid))>>1;
+			int decY = (46-buildingSprite->getW(imgid))>>1;
 
 			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
@@ -2000,19 +1999,19 @@ void GameGUI::drawBuildingInfos(void)
 
 	// building icon
 	Sprite *miniSprite;
-	int imgid, dx, dy;
-	if (buildingType->miniImage >= 0)
+	int imgid;
+	if (buildingType->miniSpriteImage >= 0)
 	{
-		miniSprite = globalContainer->buildingmini;
-		imgid = buildingType->miniImage;
+		miniSprite = buildingType->miniSpritePtr;
+		imgid = buildingType->miniSpriteImage;
 	}
 	else
 	{
-		miniSprite = globalContainer->buildings;
-		imgid = buildingType->startImage;
+		miniSprite = buildingType->gameSpritePtr;
+		imgid = buildingType->gameSpriteImage;
 	}
-	dx = (56-miniSprite->getW(imgid))>>1;
-	dy = (46-miniSprite->getH(imgid))>>1;
+	int dx = (56-miniSprite->getW(imgid))>>1;
+	int dy = (46-miniSprite->getH(imgid))>>1;
 	miniSprite->setBaseColor(selBuild->owner->colorR, selBuild->owner->colorG, selBuild->owner->colorB);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2+dx, ypos+4+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2, ypos+4, globalContainer->gamegui, 18);
@@ -2518,7 +2517,7 @@ void GameGUI::drawOverlayInfos(void)
 		// we get the type of building
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		Sprite *sprite = globalContainer->buildings;
+		Sprite *sprite = bt->gameSpritePtr;
 		
 		// we translate dimensions and situation
 		int tempX, tempY;
@@ -2532,14 +2531,14 @@ void GameGUI::drawOverlayInfos(void)
 		
 		// we get the screen dimensions of the building
 		int batW = (bt->width)<<5;
-		int batH = sprite->getH(bt->startImage);
+		int batH = sprite->getH(bt->gameSpriteImage);
 		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
 		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
 		
 		// we draw the building
 		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage);
 		
 		if (!bt->isVirtual)
 		{

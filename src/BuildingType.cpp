@@ -18,14 +18,20 @@
 */
 
 #include "BuildingType.h"
+#include <Toolkit.h>
 #include <assert.h>
 
 void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 {
-	configBlock->load(startImage, "startImage");
+	configBlock->load(type, "type");
+
+	configBlock->load(gameSprite, "gameSprite");
+	configBlock->load(gameSpriteImage, "gameSpriteImage");
+	configBlock->load(miniSprite, "miniSprite");
+	configBlock->load(miniSpriteImage, "miniSpriteImage");
+	
 	configBlock->load(hueImage,"hueImage");
 	configBlock->load(flagImage,"flagImage");
-	configBlock->load(miniImage,"miniImage");
 	configBlock->load(crossConnectMultiImage,"crossConnectMultiImage");
 	
 	assert(NB_ABILITY == 12);
@@ -136,4 +142,8 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(regenerationSpeed, "regenerationSpeed");
 	
 	configBlock->load(prestige, "prestige");
+	
+	// regenerate local parameters
+	gameSpritePtr = Toolkit::getSprite(gameSprite.c_str());
+	miniSpritePtr = Toolkit::getSprite(miniSprite.c_str());
 }

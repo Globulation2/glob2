@@ -34,22 +34,25 @@
 
 GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 {
-	if (type==GC_SDL)
+	GraphicContext *gc;
+	if (type == GC_SDL)
 	{
-		return new SDLGraphicContext();
+		gc = new SDLGraphicContext();
 	}
 #ifdef HAVE_LIBGL
-	else if (type==GC_GL)
+	else if (type == GC_GL)
 	{
-		return new GLGraphicContext();
+		gc = new GLGraphicContext();
 	}
 #endif
 	else
 	{
 		fprintf(stderr, "GAG : Critical, don't know how to create graphic context 0x%x\n", (unsigned)type );
 		assert(false);
-		return NULL;
+		gc = NULL;
 	}
+	Toolkit::gc = gc;
+	return gc;
 }
 
 

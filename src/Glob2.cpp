@@ -230,9 +230,8 @@ int Glob2::runHostServer()
 
 int Glob2::run(int argc, char *argv[])
 {
-	Toolkit::init("glob2");
-
 	srand(time(NULL));
+	
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
@@ -432,7 +431,6 @@ int Glob2::run(int argc, char *argv[])
 
 	delete yog;
 	delete globalContainer;
-	Toolkit::close();
 	return 0;
 }
 

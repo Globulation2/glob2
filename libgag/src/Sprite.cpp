@@ -24,6 +24,7 @@
 #include <FileManager.h>
 #include <assert.h>
 #include <SDL_image.h>
+#include <algorithm>
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
@@ -249,7 +250,7 @@ void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
 int Sprite::getW(int index)
 {
 	assert(index>=0);
-	assert(index<(int)images.size());
+	assert(index<getFrameCount());
 	if (images[index])
 		return images[index]->s->w;
 	else if (rotated[index])
@@ -261,7 +262,7 @@ int Sprite::getW(int index)
 int Sprite::getH(int index)
 {
 	assert(index>=0);
-	assert(index<(int)images.size());
+	assert(index<getFrameCount());
 	if (images[index])
 		return images[index]->s->h;
 	else if (rotated[index])
@@ -270,3 +271,7 @@ int Sprite::getH(int index)
 		return 0;
 }
 
+int Sprite::getFrameCount(void)
+{
+	return std::max(images.size(), rotated.size());
+}

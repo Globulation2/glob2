@@ -69,10 +69,9 @@ public:
 	Sprite *terrainShader;
 	Sprite *ressources;
 	Sprite *ressourceMini;
+	Sprite *bullet;
 	Sprite *units;
-	Sprite *buildings;
 	Sprite *unitmini;
-	Sprite *buildingmini;
 	Sprite *gamegui;
 	Sprite *brush;
 	Font *menuFont;
