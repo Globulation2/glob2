@@ -1,4 +1,5 @@
 #!/bin/sh
+DATESTAMP=`date +%Y%m%d`
 echo "Making glob2"
 make >& /dev/null
 cd src
@@ -15,5 +16,6 @@ cp src/glob2 /tmp/glob2-0.1/src
 #cp -r maps /tmp/glob2-0.1
 echo "Recompressing archive"
 cd /tmp
-tar cfz glob2-0.1-static.tar.gz glob2-0.1/
-scp glob2-0.1-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
+tar cfz glob2-$DATESTAMP-static.tar.gz glob2-0.1/
+scp glob2-$DATESTAMP-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
+ssh nct@lappc22.epfl.ch ln -s ~/public_html/glob2-$DATESTAMP-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
