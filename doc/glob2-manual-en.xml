@@ -104,7 +104,6 @@ Globulation 2 developpers."
 <para>Go back In the glob2 directory, and generate configure :</para>
 <substeps>
 <step><para><command>cd ..</command></para></step>
-<step><para><command>autoheader</command></para></step>
 <step performance="optional">
 <para>If you have SDL not installed in the aclocal PATH (on Mac OS X for instance), do the following : 
 <command>aclocal -I /usr/local/share/aclocal</command>, where
@@ -112,6 +111,7 @@ Globulation 2 developpers."
 </step>
 <step performance="optional"><para>If SDL aclocal's macro are installed at a standard place,
 just run :<command>aclocal</command></para></step>
+<step><para><command>autoheader</command></para></step>
 <step><para><command>automake --add-missing && autoconf</command></para></step>
 </substeps>
 </step>
