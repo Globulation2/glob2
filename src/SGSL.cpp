@@ -558,7 +558,7 @@ bool Story::testCondition(GameGUI *gui)
 								if (gid!=NOGUID)
 								{
 									int team=Unit::GIDtoTeam(gid);
-									if (team & testMask)
+									if ((1<<team) & testMask)
 									{
 										isUnit = true;
 										goto doubleBreak;
