@@ -319,7 +319,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
 				typingInputScreen->setText("");
 			}
-			typingInputScreenInc=-50;
+			typingInputScreenInc=-10;
 			//delete typingInputScreen;
 			//typingInputScreen=NULL;
 			typingInputScreen->endValue=1;
@@ -579,7 +579,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					typingInputScreen=new InGameTextInput();
 					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
-					typingInputScreenInc=50;
+					typingInputScreenInc=10;
 					typingInputScreenPos=0;
 				}
 				break;
@@ -1418,12 +1418,17 @@ void GameGUI::drawInGameMenu(void)
 
 void GameGUI::drawInGameTextInput(void)
 {
-	globalContainer->gfx->drawSurface(10-492+typingInputScreenPos, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
+	int decW=((globalContainer->gfx->getW()-640)>>1);
+	int lengthToCome=(typingInputScreenPos*(492+decW))/100;
+	globalContainer->gfx->drawSurface(10-492+lengthToCome, globalContainer->gfx->getH()-44, typingInputScreen->getSurface());
 	if (typingInputScreenInc>0)
-		if (typingInputScreenPos<492)
+		if (typingInputScreenPos<100)
 			typingInputScreenPos+=typingInputScreenInc;
 		else
+		{
 			typingInputScreenInc=0;
+			typingInputScreenPos=100;
+		}
 	else if (typingInputScreenInc<0)
 		if (typingInputScreenPos>0)
 			typingInputScreenPos+=typingInputScreenInc;
