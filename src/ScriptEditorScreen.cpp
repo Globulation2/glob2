@@ -41,12 +41,12 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 {
 	this->mapScript=mapScript;
 	this->game=game;
-	scriptEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
+	scriptEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, "", mapScript->sourceCode.c_str());
 	addWidget(scriptEditor);
-	nextMapEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->nextMap.c_str());
+	nextMapEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, "", game->nextMap.c_str());
 	nextMapEditor->visible = false;
 	addWidget(nextMapEditor);
-	campaignTextEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
+	campaignTextEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, "", game->campaignText.c_str());
 	campaignTextEditor->visible = false;
 	addWidget(campaignTextEditor);
 	
