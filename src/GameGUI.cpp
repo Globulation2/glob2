@@ -32,6 +32,7 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include <SupportFunctions.h>
+#include <algorithm>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
@@ -55,6 +56,8 @@
 #define YOFFSET_TEXT_BAR 16
 #define YOFFSET_TEXT_PARA 14
 #define YOFFSET_TEXT_LINE 12
+
+#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 8
 
 enum GameGUIGfxId
 {
@@ -97,6 +100,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
+:smoothedStepTimeToWait(0, SMOOTH_CPU_LOAD_WINDOW_LENGTH)
 {
 }
 
@@ -116,8 +120,7 @@ void GameGUI::init()
 	drawPathLines=false;
 	viewportX=0;
 	viewportY=0;
-	lastStepTimeToWait=0;
-	smoothedStepTimeToWait=0;
+	smoothedStepTimeToWaitPos=0;
 	mouseX=0;
 	mouseY=0;
 	displayMode=BUILDING_VIEW;
@@ -2201,6 +2204,8 @@ void GameGUI::drawPanel(void)
 	}
 }
 
+int intSquare(int i) { return i*i; }
+
 void GameGUI::drawOverlayInfos(void)
 {
 	if (selectionMode==TOOL_SELECTION)
@@ -2499,28 +2504,29 @@ void GameGUI::drawOverlayInfos(void)
 	
 	// draw network latency
 	dec += 120;
-	if (lastStepTimeToWait>8)
+	int stepTimeToWaitLength = static_cast<int>(smoothedStepTimeToWait.size());
+	int stepTimeToWaitMean=smoothedStepTimeToWait.sum() / stepTimeToWaitLength;
+	if (stepTimeToWaitMean>8)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (lastStepTimeToWait>0)
+	else if (stepTimeToWaitMean>0)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	
-	if (lastStepTimeToWait>0)
-		globalContainer->gfx->drawFilledRect(dec, 4, lastStepTimeToWait, 4, actC[0], actC[1], actC[2]);
+	if (stepTimeToWaitMean>0)
+		globalContainer->gfx->drawFilledRect(dec, 4, stepTimeToWaitMean, 8, actC[0], actC[1], actC[2]);
 	else
-		globalContainer->gfx->drawFilledRect(dec+lastStepTimeToWait, 4, -lastStepTimeToWait, 4, redC[0], redC[1], redC[2]);
-	
-	if (smoothedStepTimeToWait>8)
-		memcpy(actC, greenC, sizeof(greenC));
-	else if (smoothedStepTimeToWait>0)
-		memcpy(actC, yellowC, sizeof(yellowC));
-	
-	if (smoothedStepTimeToWait>0)
-		globalContainer->gfx->drawFilledRect(dec, 8, smoothedStepTimeToWait, 4, actC[0], actC[1], actC[2]);
-	else
-		globalContainer->gfx->drawFilledRect(dec+smoothedStepTimeToWait, 8, -smoothedStepTimeToWait, 4, redC[0], redC[1], redC[2]);
+		globalContainer->gfx->drawFilledRect(dec+stepTimeToWaitMean, 4, -stepTimeToWaitMean, 8, redC[0], redC[1], redC[2]);
 	
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
+	
+	// compuet variance
+	std::valarray<int> varArray = smoothedStepTimeToWait - stepTimeToWaitMean;
+	varArray.apply(intSquare);
+	int squareSum = varArray.sum();
+	int squareVar = squareSum/(stepTimeToWaitLength-1);
+	int var = static_cast<int>(sqrt(static_cast<double>(squareVar)));
+	globalContainer->gfx->drawVertLine(dec+stepTimeToWaitMean+var, 3, 10, 180, 180, 180);
+	globalContainer->gfx->drawVertLine(dec+stepTimeToWaitMean-var, 3, 10, 180, 180, 180);
 	
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
@@ -3130,10 +3136,9 @@ void GameGUI::disableGUIElement(int id)
 
 void GameGUI::setLastStepTimeToWait(int s)
 {
-	const int smoothLength = 16;
-	
-	lastStepTimeToWait = s;
-	smoothedStepTimeToWait = (smoothedStepTimeToWait*(smoothLength-1)+s)/smoothLength;
+	smoothedStepTimeToWait[smoothedStepTimeToWaitPos] = s;
+	smoothedStepTimeToWaitPos++;
+	smoothedStepTimeToWaitPos %= smoothedStepTimeToWait.size();
 }
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
