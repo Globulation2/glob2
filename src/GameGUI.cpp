@@ -2557,8 +2557,8 @@ void GameGUI::drawTopScreenBar(void)
 	Uint8 actC[3];
 	int free, tot;
 
-	int dec=(globalContainer->gfx->getW()-640)>>2;
-	dec += 20;
+	int dec = (globalContainer->gfx->getW()-640)>>2;
+	dec += 10;
 
 	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 	for (int i=0; i<3; i++)
@@ -2586,7 +2586,7 @@ void GameGUI::drawTopScreenBar(void)
 	// draw prestige stats
 	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
 	
-	dec += 80;
+	dec += 90;
 	
 	// draw unit conversion stats
 	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, GAGCore::nsprintf("+%d / -%d", localTeam->unitConversionGained, localTeam->unitConversionLost).c_str());
