@@ -34,8 +34,12 @@ public:
 		START = 1,
 		CANCEL = 5,
 
-		STARTED=11
+		STARTED=11,
+		
+		COLOR_BUTTONS = 20
 	};
+	
+	enum { MAX_NUMBER_OF_PLAYERS = 16};
 
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);
@@ -47,6 +51,8 @@ public:
 
 	MultiplayersHost *multiplayersHost;
 	MultiplayersJoin *multiplayersJoin;
+	
+	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 };
 
 #endif

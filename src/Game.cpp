@@ -43,6 +43,9 @@ bool Game::loadBase(const SessionInfo *initial)
 {
 	init();
 	printf("initial->map.getMapFileName()=%s.\n", initial->map.getMapFileName());
+	const char *s=initial->map.getMapFileName();
+	assert(s);
+	assert(s[0]);
 	SDL_RWops *stream=globalContainer->fileManager.open(initial->map.getMapFileName(),"rb");
 	if (!load(stream))
 		return false;

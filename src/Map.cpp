@@ -94,6 +94,7 @@ bool BaseMap::setData(const char *data, int dataLength)
 		return false;
 	
 	memcpy(mapName, data, MAP_NAME_MAX_SIZE);
+	setMapName(mapName);
 	
 	return true;
 }
@@ -106,14 +107,13 @@ int BaseMap::getDataLength()
 Sint32 BaseMap::checkSum()
 {
 	Sint32 cs=0;
-
+	
+	for (int i=0; i<(int)strlen(mapName); i++)
 	{
-		for (int i=0; i<(int)strlen(mapName); i++)
-		{
-			cs^=mapName[i];
-			cs=(cs<<31)|(cs>>1);
-		}
+		cs^=mapName[i];
+		cs=(cs<<31)|(cs>>1);
 	}
+	
 	return cs;
 }
 
