@@ -20,6 +20,8 @@
 #ifndef __AI_CASTOR_H
 #define __AI_CASTOR_H
 
+#include <list>
+
 #include "BuildingType.h"
 #include "AIImplementation.h"
 
@@ -32,6 +34,69 @@ class Building;
 
 class AICastor : public AIImplementation
 {
+public:
+	class Project
+	{
+	public:
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char* debugName)
+		{
+			this->debugName=debugName;
+			printf(" new project(%s)\n", debugName);
+			subPhase=0;
+		
+			blocking=true;
+			this->shortTypeNum=shortTypeNum;
+			food=false;
+			
+			mainWorkers=3;
+			foodWorkers=1;
+			otherWorkers=-1;
+			
+			multipleStart=false;
+			waitFinished=false;
+			finalWorkers=1;
+			
+			finished=false;
+		}
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 mainWorkers, const char* debugName)
+		{
+			this->debugName=debugName;
+			printf(" new project(%s)\n", debugName);
+			subPhase=0;
+		
+			blocking=true;
+			this->shortTypeNum=shortTypeNum;
+			food=false;
+			
+			this->mainWorkers=mainWorkers;
+			foodWorkers=-11;
+			otherWorkers=-1;
+			
+			multipleStart=false;
+			waitFinished=false;
+			finalWorkers=-1;
+			
+			finished=false;
+		}
+		const char *debugName;
+		
+		int subPhase;
+		
+		bool blocking;
+		BuildingType::BuildingTypeShortNumber shortTypeNum;
+		bool food;
+		
+		Sint32 mainWorkers;
+		Sint32 foodWorkers;
+		Sint32 otherWorkers;
+		
+		bool multipleStart;
+		bool waitFinished;
+		Sint32 finalWorkers;
+		
+		bool finished;
+	};
+	
 private:
 	void firstInit();
 public:
@@ -51,10 +116,11 @@ public:
 	Order *getOrder(void);
 	
 private:
+	void addProjects(void);
+	
 	void choosePhase();
 	
-	Order *phaseBasic(BuildingType::BuildingTypeShortNumber shortTypeNum, bool food, Sint32 mainWorkers, Sint32 foodWorkers, Sint32 otherWorkers, bool multipleStart, Sint32 finalWorkers);
-	
+	Order *continueProject(Project *project);
 	
 	void computeCanSwim();
 	void computeNeedPool();
@@ -78,9 +144,10 @@ private:
 	
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
+
+	std::list<Project *> projects;
 	
-private:
-	enum PhaseType
+	/*enum PhaseType
 	{
 		P_NONE=0,
 		P_BASIC_FOOD=1,
@@ -93,7 +160,7 @@ private:
 	
 	PhaseType phase;
 	int subPhase;
-	int scheduler;
+	int scheduler;*/
 	
 	Uint32 timer;
 	bool canSwim;

@@ -55,7 +55,7 @@ public:
 	};
 
 	// type
-	Uint32 typeNum; // number in BuildingTypes
+	Sint32 typeNum; // number in BuildingTypes
 	BuildingType *type;
 
 	// construction state

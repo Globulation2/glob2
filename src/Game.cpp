@@ -185,11 +185,11 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int posY=((OrderCreate *)order)->posY;
 			int teamNumber=((OrderCreate *)order)->team;
 			assert(teamNumber==team->teamNumber);
-			int typeNumber=((OrderCreate *)order)->typeNumber;
-			bool isVirtual=globalContainer->buildingsTypes.get(typeNumber)->isVirtual;
+			Sint32 typeNum=((OrderCreate *)order)->typeNum;
+			bool isVirtual=globalContainer->buildingsTypes.get(typeNum)->isVirtual;
 			if (!isVirtual && (team->noMoreBuildingSitesCountdown>0))
 				break;
-			if (isVirtual || checkRoomForBuilding(posX, posY, typeNumber, teamNumber))
+			if (isVirtual || checkRoomForBuilding(posX, posY, typeNum, teamNumber))
 			{
 				if(posX<0)
 					posX+=map.getW();
@@ -198,7 +198,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				posX&=map.getMaskW();
 				posY&=map.getMaskH();
 
-				Building *b=addBuilding(posX, posY, typeNumber, teamNumber);
+				Building *b=addBuilding(posX, posY, typeNum, teamNumber);
 				assert(b);
 				if (b)
 				{
