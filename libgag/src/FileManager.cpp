@@ -53,8 +53,9 @@ FileManager::FileManager(const char *gameName)
 	snprintf(gameLocal, sizeof(gameLocal), "%s/.%s", getenv("HOME"), gameName);
 	mkdir(gameLocal, S_IRWXU);
 	addDir(gameLocal);
-#endif
+#else
     addDir(".");
+#endif
     addDir(PACKAGE_DATA_DIR);
     addDir(PACKAGE_SOURCE_DIR);
 	fileListIndex=-1;
