@@ -54,6 +54,11 @@ Blé
 Wheat
 Weizen
 Obilí
+[fungus]
+Champignons
+Fungus
+
+
 [stone]
 Pierre
 Stone
