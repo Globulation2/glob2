@@ -2268,22 +2268,19 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	return false;
 }
 
-void Building::computeFlagStat(int *goingTo, int *onSpot)
+void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 {
 	*goingTo = 0;
 	*onSpot = 0;
-
-	for (std::list<Unit *>::iterator unitIt=unitsWorking.begin(); unitIt!=unitsWorking.end(); ++unitIt)
+	
+	Sint32 unitStayRangeLocalSquare = (1+unitStayRangeLocal)*(1+unitStayRangeLocal);
+	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
 	{
-		Unit *unit = *unitIt;
-		if (unit->displacement == Unit::DIS_GOING_TO_FLAG)
+		Sint32 distSquareLocal = owner->map->warpDistSquare(posXLocal, posYLocal, (*ui)->posX, (*ui)->posY);
+		if (distSquareLocal < unitStayRangeLocalSquare)
+			(*onSpot)++;
+		else
 			(*goingTo)++;
-		else if (unit->displacement == Unit::DIS_ATTACKING_AROUND)
-			(*onSpot)++;
-		else if (unit->displacement == Unit::DIS_REMOVING_BLACK_AROUND)
-			(*onSpot)++;
-		else if (unit->displacement == Unit::DIS_CLEARING_RESSOURCES)
-			(*onSpot)++;
 	}
 }
 
