@@ -618,9 +618,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Joiner joiner;
 			joiner.uid=getUint32(data, index);
 			index+=4;
-			joiner.ip.host=getUint32(data, index);
+			joiner.ip.host=SDL_SwapBE32(getUint32(data, index));
 			index+=4;
-			joiner.ip.port=getUint16(data, index);
+			joiner.ip.port=SDL_SwapBE16(getUint16(data, index));
 			index+=2;
 			joiner.timeout=i;
 			joiner.TOTL=3;
