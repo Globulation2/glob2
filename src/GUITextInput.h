@@ -25,7 +25,7 @@ protected:
 	DrawableSurface *gfx;
 	int cursPos;
 
-	void repaint(DrawableSurface *gfx);
+	void repaint(void);
 	
 public:
 	enum {

@@ -12,7 +12,7 @@ GlobalContainer::GlobalContainer(void)
 {
 	graphicFlags=DrawableSurface::DEFAULT;
 	metaServerName=NULL;
-	setMetaServerName("localhost");
+	setMetaServerName("moneo.calodox.org");
 	metaServerPort=3000;
 }
 

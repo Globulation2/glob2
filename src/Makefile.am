@@ -22,6 +22,8 @@ GUIList.cpp\
 GUIList.h\
 GUITextInput.cpp\
 GUITextInput.h\
+GUITextArea.cpp \
+GUITextArea.h \
 Game.cpp\
 Game.h\
 GameGUI.cpp\

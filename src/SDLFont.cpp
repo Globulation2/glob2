@@ -56,7 +56,7 @@ void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, const char *t
 		return;
 	int ofs, i=0;
 	SDL_Rect srcrect, dstrect;
-	while (text[i]!='\0')
+	while ((text[i]!='\0') && (text[i]!='\r') && (text[i]!='\n'))
 	{
 		if (text[i]==' ')
 		{

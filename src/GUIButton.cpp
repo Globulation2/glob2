@@ -177,23 +177,8 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void OnOffButton::paint(DrawableSurface *gfx)
+void OnOffButton::internalPaint(void)
 {
-	this->gfx=gfx;
-	highlighted=false;
-	gfx->drawRect(x, y, w, h, 180, 180, 180);
-	if (state)
-	{
-		gfx->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-		gfx->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-		gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-		gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
-	}
-}
-
-void OnOffButton::repaint(void)
-{
-	parent->paint(x, y, w, h);
 	if (highlighted)
 	{
 		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -208,5 +193,18 @@ void OnOffButton::repaint(void)
 		gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
 		gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
 	}
+}
+
+void OnOffButton::paint(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
+	highlighted=false;
+	internalPaint();
+}
+
+void OnOffButton::repaint(void)
+{
+	parent->paint(x, y, w, h);
+	internalPaint();
 	parent->addUpdateRect(x, y, w, h);
 }

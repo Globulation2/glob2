@@ -39,15 +39,12 @@ void TextInput::setText(const char *newText)
 {
 	strncpy(this->text, newText, MAX_TEXT_SIZE);
 	cursPos=0;
-	repaint(gfx);
-	parent->addUpdateRect(x, y, w, h);
+	repaint();
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
 void TextInput::onSDLEvent(SDL_Event *event)
 {
-	// TODO : handle click in the box.
-	
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -64,15 +61,12 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				while((font->getStringWidth(textBeforeCurs)>dx)&&(cursPos>0))
 					textBeforeCurs[--cursPos]=0;
 				
-				assert(gfx);
-				repaint(gfx);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
 			else
 			{
-				assert(gfx);
-				repaint(gfx);
+				repaint();
 				activated=true;
 				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
@@ -89,9 +83,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			if (cursPos<l)
 			{
 				cursPos++;
-				assert(gfx);
-				repaint(gfx);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
 		}
@@ -100,9 +92,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			if (cursPos>0)
 			{
 				cursPos--;
-				assert(gfx);
-				repaint(gfx);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
 		}
@@ -117,9 +107,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				//printf("clear: l=%d, cursPos=%d, text=%s \n", l, cursPos, text);
 				cursPos--;
 
-				assert(gfx);
-				repaint(gfx);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 
 				//printf("now: l=%d, cursPos=%d, text=%s \n", strlen(text), cursPos, text);
@@ -133,25 +121,19 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				memmove( &(text[cursPos]), &(text[cursPos+1]), l-cursPos);
 
-				assert(gfx);
-				repaint(gfx);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 			}
 		}
 		else if (sym==SDLK_HOME)
 		{
 			cursPos=0;
-			assert(gfx);
-			repaint(gfx);
-			parent->addUpdateRect(x, y, w, h);
+			repaint();
 		}
 		else if (sym==SDLK_END)
 		{
 			cursPos=strlen(text);
-			assert(gfx);
-			repaint(gfx);
-			parent->addUpdateRect(x, y, w, h);
+			repaint();
 		}
 		else if (sym==SDLK_RETURN)
 		{
@@ -160,7 +142,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		else
 		{
 			char c=event->key.keysym.unicode;
-		
+
 			if (font->printable(c))
 			{
 				int l=strlen(text);
@@ -171,10 +153,8 @@ void TextInput::onSDLEvent(SDL_Event *event)
 					text[cursPos]=c;
 					cursPos++;
 
-					assert(gfx);
-					repaint(gfx);
+					repaint();
 
-					parent->addUpdateRect(x, y, w, h);
 					parent->onAction(this, TEXT_MODIFFIED, 0, 0);
 				}
 			}
@@ -205,9 +185,11 @@ void TextInput::paint(DrawableSurface *gfx)
 	}
 }
 
-void TextInput::repaint(DrawableSurface *gfx)
+void TextInput::repaint(void)
 {
+	assert(gfx);
 	parent->paint(x, y, w, h);
 	paint(gfx);
+	parent->addUpdateRect(x, y, w, h);
 }
 

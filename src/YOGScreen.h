@@ -32,6 +32,7 @@ public:
 private:
 	List *gameList;
 	TextInput *textInput;
+	TextArea *chatWindow;
 	vector<Uint32> IPs;
 	TCPsocket socket;
 	SDLNet_SocketSet socketSet;

@@ -18,6 +18,8 @@ YOGScreen::YOGScreen()
 	addWidget(gameList);
 	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
 	addWidget(textInput);
+	chatWindow=new TextArea(20, 300, 400, 115, globalContainer->standardFont);
+	addWidget(chatWindow);
 
 	createList();
 }
@@ -144,6 +146,7 @@ void YOGScreen::paint(int x, int y, int w, int h)
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
 	}
 	sendString(socket, "listenon");
+
 }
 
 void YOGScreen::onTimer(Uint32 tick)
@@ -152,6 +155,13 @@ void YOGScreen::onTimer(Uint32 tick)
 	{
 		char data[GAME_INFO_MAX_SIZE];
 		getString(socket, data);
-		printf("SVR MSG : %s\n", data);
+		if (data[0]==0)
+			printf("We got null string through newtork, why ?\n");
+		else
+		{
+			chatWindow->addText(data);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
+		}
 	}
 }
