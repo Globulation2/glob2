@@ -429,7 +429,11 @@ bool Game::load(SDL_RWops *stream)
 	
 	// load script the script
 	// TODO : for now it's from file, but..
-	script.loadScript("testscript.txt", this);
+	ErrorReport er=script.loadScript("testscript.txt", this);
+	if (er.type!=ErrorReport::ET_OK)
+	{
+		printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line, er.col);
+	}
 	
 	return true;
 }

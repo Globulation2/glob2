@@ -280,6 +280,12 @@ void Story::step()
 //Aquisition du texte par le parseur
 using namespace std;
 
+const char *ErrorReport::getErrorString(void)
+{
+	static const char *strings[]={ "No error", "Syntax error", "Invalid player", "Unknown error" };
+	return strings[(int)type];
+}
+
 Aquisition::~Aquisition(void)
 {
 	if (fp)
