@@ -89,7 +89,7 @@ void SessionGame::save(SDL_RWops *stream)
 {
 	versionMajor=VERSION_MAJOR;
 	versionMinor=VERSION_MINOR;
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_RWwrite(stream, "SEGb", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);
 	// save 0, will be rewritten after
@@ -112,18 +112,28 @@ void SessionGame::save(SDL_RWops *stream)
 	}
 	else
 		SDL_WriteBE32(stream, (Sint32)false);
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_RWwrite(stream, "SEGe", 4, 1);
 }
 
 bool SessionGame::load(SDL_RWops *stream)
 {
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
 
 	versionMajor=SDL_ReadBE32(stream);
 	versionMinor=SDL_ReadBE32(stream);
+	
+	if (versionMinor>=9)
+	{
+		if (memcmp(signature,"SEGb",4)!=0)
+			return false;
+	}
+	else
+	{
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+	}
+	
 	if (versionMinor>1)
 	{
 		sessionInfoOffset=SDL_ReadBE32(stream);
@@ -161,9 +171,18 @@ bool SessionGame::load(SDL_RWops *stream)
 	else
 		mapGenerationDescriptor=NULL;
 	
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
+	if (versionMinor>=9)
+	{
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"SEGe",4)!=0)
+			return false;
+	}
+	else
+	{
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+	}
 
 	return true;
 }

@@ -1794,6 +1794,7 @@ bool GameGUI::load(SDL_RWops *stream)
 	init();
 	
 	bool result=game.load(stream);
+	
 	chatMask=SDL_ReadBE32(stream);
 	
 	if (game.session.versionMinor>3)
@@ -1805,6 +1806,7 @@ bool GameGUI::load(SDL_RWops *stream)
 		assert(!game.session.fileIsAMap);
 	if (result==false)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
+	
 	return result;
 }
 

@@ -71,6 +71,8 @@ public:
 	AI(Player *player);
 
 	AI(SDL_RWops *stream, Player *player);
+	~AI();
+	
 	void init(Player *player);
 	
 	Player *player;
