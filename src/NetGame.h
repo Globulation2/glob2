@@ -90,7 +90,8 @@ public:
 private:
 	Uint32 whoMaskAreWeWaitingFor(void); // Uses executeUStep
 	Uint32 whoMaskCountedOut(void); // Players who has been late for more than 1 tick. Used to avoid flicking of the "away player" message.
-	Uint32 lastUStepReceivedFromHim(int player);
+	//Uint32 lastUStepReceivedFromHim(int player);
+	Uint32 lastUsableUStepReceivedFromHim(int player);
 	void sendPushOrder(int targetPlayer); // Uses pushUStep
 	void sendWaitingForPlayerOrder(int targetPlayer);
 	void sendDroppingPlayersMask(int targetPlayer, bool askForReply);

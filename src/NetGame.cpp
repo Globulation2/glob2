@@ -244,7 +244,7 @@ Uint32 NetGame::whoMaskCountedOut(void)
 	return countedOutMask;
 };
 
-Uint32 NetGame::lastUStepReceivedFromHim(int player)
+/*Uint32 NetGame::lastUStepReceivedFromHim(int player)
 {
 	Uint32 lastUStep=0;
 	for (int stepi=0; stepi<256; stepi++)
@@ -254,6 +254,14 @@ Uint32 NetGame::lastUStepReceivedFromHim(int player)
 			lastUStep=s;
 	}
 	return lastUStep;
+}*/
+
+Uint32 NetGame::lastUsableUStepReceivedFromHim(int player)
+{
+	Uint32 usi=executeUStep;
+	while (ordersQueue[player][usi&255]->ustep==usi)
+		usi++;
+	return usi-1;
 }
 
 void NetGame::sendPushOrder(int targetPlayer)
@@ -294,11 +302,11 @@ void NetGame::sendPushOrder(int targetPlayer)
 	data[1]=0; //pad
 	data[2]=localPlayerNumber;
 	data[3]=0; //pad
-	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastUsableUStepReceivedFromHim(targetPlayer), 4);
 	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
 	addUint32(data, SDL_GetTicks(), 12);
 	int l=16;
-	fprintf(logFile, " lastUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUStepReceivedFromHim(targetPlayer));
+	fprintf(logFile, " lastUsableUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUsableUStepReceivedFromHim(targetPlayer));
 	ustep=pushUStep;
 	for (int i=0; i<n; i++)
 	{
@@ -371,10 +379,10 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	data[ 1]=0; //pad
 	data[ 2]=localPlayerNumber;
 	data[ 3]=0; //pad
-	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastUsableUStepReceivedFromHim(targetPlayer), 4);
 	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
 	addUint32(data, SDL_GetTicks(), 12);
-	fprintf(logFile, " lastUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUStepReceivedFromHim(targetPlayer));
+	fprintf(logFile, " lastUsableUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUsableUStepReceivedFromHim(targetPlayer));
 	
 	
 	int size=wfpo->getDataLength();
@@ -437,7 +445,7 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	data[ 1]=0; //pad
 	data[ 2]=localPlayerNumber;
 	data[ 3]=0; //pad
-	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastUsableUStepReceivedFromHim(targetPlayer), 4);
 	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
 	addUint32(data, SDL_GetTicks(), 12);
 	
@@ -458,8 +466,8 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	for (int pi=0; pi<numberOfPlayer; pi++)
 		if (players[pi]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<pi)))
 		{
-			addUint32(data, lastUStepReceivedFromHim(pi), l);
-			fprintf(logFile, " lastUStepReceivedFromHim(%2d)=%d.\n", pi, lastUStepReceivedFromHim(pi));
+			addUint32(data, lastUsableUStepReceivedFromHim(pi), l);
+			fprintf(logFile, " lastUsableUStepReceivedFromHim(%2d)=%d.\n", pi, lastUsableUStepReceivedFromHim(pi));
 			l+=4;
 		}
 	assert(l==totalSize);
@@ -486,7 +494,7 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	data[ 1]=0; //pad
 	data[ 2]=localPlayerNumber;
 	data[ 3]=0; //pad
-	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastUsableUStepReceivedFromHim(targetPlayer), 4);
 	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
 	addUint32(data, SDL_GetTicks(), 12);
 	
@@ -543,7 +551,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 rese
 	data[1]=0; //pad
 	data[2]=missingPlayer;
 	data[3]=0; //pad
-	addUint32(data, 0,  4); //no good lastUStepReceivedFromHim() aviable
+	addUint32(data, 0,  4); //no good lastUsableUStepReceivedFromHim() aviable
 	addUint32(data, 0,  8); //no good lastSdlTickReceivedFromHim[] aviable
 	addUint32(data, 0, 12); //no good SDL_GetTicks() aviable
 	
@@ -1058,7 +1066,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			fprintf(logFile, "  gameCheckSum=%x\n", order->gameCheckSum);
 			
 			if (players[player]->type==Player::P_LOST_DROPPING && dropState==DS_ExchangingOrders)
-				lastAviableUStep[localPlayerNumber][player]=lastUStepReceivedFromHim(player);
+				lastAviableUStep[localPlayerNumber][player]=lastUsableUStepReceivedFromHim(player);
 		}
 		assert(l<=size);
 	}
@@ -1146,7 +1154,7 @@ bool NetGame::stepReadyToExecute(void)
 		{
 			lastExecutedUStep[localPlayerNumber]=executeUStep-1;
 			for (int pi=0; pi<numberOfPlayer; pi++)
-				lastAviableUStep[localPlayerNumber][pi]=lastUStepReceivedFromHim(pi);
+				lastAviableUStep[localPlayerNumber][pi]=lastUsableUStepReceivedFromHim(pi);
 			int n=0;
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if ((players[pi]->type==Player::P_IP && !players[pi]->quitting) || players[pi]->type==Player::P_LOCAL)
