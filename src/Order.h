@@ -21,7 +21,11 @@
 #define __ORDER_H
 
 #include <assert.h>
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <glSDL.h>
+#else
+#include <Types.h>
+#endif
 
 #include "NetConsts.h"
 #include "Ressource.h"

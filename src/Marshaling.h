@@ -20,8 +20,13 @@
 #ifndef __MARSHALING_H
 #define __MARSHALING_H
 
+
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <glSDL.h>
 #include <SDL_endian.h>
+#else
+#include <Types.h>
+#endif
 #include <string.h>
 
 // Usefull function for marshalling

@@ -24,7 +24,13 @@ using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
 #include <iostream>
+
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
+#else
+#include <Types.h>
+#endif
+
 
 #define SAMPLE_COUNT_PER_SLICE 8192*8
 #define INTERPOLATION_RANGE 65535

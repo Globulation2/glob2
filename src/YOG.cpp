@@ -21,10 +21,15 @@
 
 #include "../gnupg/sha1.c"
 
+
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <glSDL.h>
 #include <SDL_endian.h>
 #include <SDL_image.h>
 #include <SDL_net.h>
+#else
+#include <Types.h>
+#endif
 #include <stdio.h>
 #include <assert.h>
 #include <sys/types.h>

@@ -21,7 +21,11 @@
 #define __SECTOR_H
 
 #include <list>
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_rwops.h>
+#else
+#include <Types.h>
+#endif
 
 class Map;
 class Game;

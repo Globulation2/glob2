@@ -11,9 +11,13 @@
 #ifndef _SHA1_H
 # define _SHA1_H
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL.h>
 
 typedef Uint32 uint32_t;
+#else
+typedef unsigned __int32 uint32_t;
+#endif
 
 typedef struct {
   uint32_t state[5];

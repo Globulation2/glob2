@@ -23,7 +23,9 @@
 #include <GraphicContext.h>
 #include <assert.h>
 #include <iostream>
+#ifndef DX9_BACKEND	// TODO:Die!
 #include "TrueTypeFont.h"
+#endif
 
 namespace GAGCore
 {

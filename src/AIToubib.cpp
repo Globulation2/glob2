@@ -57,7 +57,7 @@ void AIToubib::init(Player *player)
 	assert(this->map);
 	
 	currentStateIndex = NB_HISTORY_STATES;
-	bzero(history, sizeof(AIState) * NB_HISTORY_STATES);
+	memset(history, 0, sizeof(AIState) * NB_HISTORY_STATES);
 	
 	//pq = new std::priority_queue(std::list<AIProject>);
 	

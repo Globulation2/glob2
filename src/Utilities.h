@@ -21,7 +21,12 @@
 #define __UTILITIES_H
 
 #include <stdlib.h>
+
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
+#else
+#include <Types.h>
+#endif
 
 namespace GAGCore
 {
