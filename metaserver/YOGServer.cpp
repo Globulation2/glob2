@@ -162,8 +162,8 @@ void YOGServer::executeCommand(YOGClient *sender, char *s, Uint8 messageID)
 						memcpy(s, awayMessage, l);
 						printf("l=(%d), s=(%s), s=(%x)\n", l, s, (int)s);
 						privateReceipt.awayMessages.push_front(s);
-						printf("(*client)->awayMessage=(%s)\n", (*client)->awayMessage);
-						printf("awayMessages.begin()=(%s)\n", *privateReceipt.awayMessages.begin());
+						lprintf("(*client)->awayMessage=(%s)\n", (*client)->awayMessage);
+						lprintf("awayMessages.begin()=(%s)\n", *privateReceipt.awayMessages.begin());
 					}
 				}
 			}
