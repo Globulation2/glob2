@@ -507,7 +507,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
-				printf("!! NOT CODED YET !! Use option\n");
 				return true;
 			}
 			else
