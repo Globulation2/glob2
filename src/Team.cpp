@@ -597,18 +597,11 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 
 	// resolve cross reference
 	for (i=0; i< 1024; i++)
-	{
 		if (myUnits[i])
 			myUnits[i]->loadCrossRef(stream, this);
-	}
 	for (i=0; i<512; i++)
-	{
 		if (myBuildings[i])
-		{
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
-			myBuildings[i]->update();
-		}
-	}
 
 	allies=SDL_ReadBE32(stream);
 	enemies=SDL_ReadBE32(stream);
@@ -628,6 +621,13 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	isAlive=true;
 	
 	return true;
+}
+
+void Team::update()
+{
+	for (int i=0; i<512; i++)
+		if (myBuildings[i])
+			myBuildings[i]->update();
 }
 
 void Team::save(SDL_RWops *stream)

@@ -504,6 +504,10 @@ bool Game::load(SDL_RWops *stream)
 				return false;
 		}
 		
+		//But we have to finish Team's loading:
+		for (i=0; i<session.numberOfTeam; ++i)
+			teams[i]->update();
+		
 		// then script
 		ErrorReport er;
 		if (session.versionMinor>=10)

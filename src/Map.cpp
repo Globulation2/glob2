@@ -642,12 +642,10 @@ bool Map::load(SDL_RWops *stream, Game *game)
 	sizeOfFogOfWar=size;
 	stepCounter=0;
 	cases=new Case[size];
+	for (int i=0;i<size;++i)
 	{
-		for (int i=0;i<size;++i)
-		{
-			mapDiscovered[i]=SDL_ReadBE32(stream);
-			cases[i].setInteger(SDL_ReadBE32(stream));
-		}
+		mapDiscovered[i]=SDL_ReadBE32(stream);
+		cases[i].setInteger(SDL_ReadBE32(stream));
 	}
 
 	undermap=new Uint8[size];

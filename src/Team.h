@@ -84,6 +84,7 @@ public:
 
 	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
 	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
+	void update();
 	void save(SDL_RWops *stream);
 	
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
