@@ -3,7 +3,7 @@
 <item>
  <Object></Object>
  <res>
-  <size>7</size>
+  <size>8</size>
   <element>
    <Object></Object>
    <name>[Wood]</name>
@@ -93,6 +93,20 @@
    <name>[Orange]</name>
    <terrain>2</terrain>
    <gfxId>55</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>1</varietiesCount>
+   <shrinkable>true</shrinkable>
+   <expendable>false</expendable>
+   <eternal>true</eternal>
+   <granular>true</granular>
+   <multiplicator>10</multiplicator>
+   <visibleToBeCollected>true<visibleToBeCollected>
+  </element>
+  <element>
+   <Object></Object>
+   <name>[Prune]</name>
+   <terrain>2</terrain>
+   <gfxId>60</gfxId>
    <sizesCount>5</sizesCount>
    <varietiesCount>1</varietiesCount>
    <shrinkable>true</shrinkable>
