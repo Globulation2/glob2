@@ -1818,6 +1818,8 @@ void GameGUI::save(SDL_RWops *stream, char *name)
 	SDL_WriteBE32(stream, localTeamNo);
 }
 
+// TODO : merge thoses 2 functions into one
+
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
 	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 128, 128, 128);
@@ -1830,7 +1832,9 @@ void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLooku
 		textToDraw=globalContainer->texts.getString(caption);
 	else
 		textToDraw=caption;
-	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFont, textToDraw);
+	int len=globalContainer->littleFont->getStringWidth(textToDraw);
+	int h=globalContainer->littleFont->getStringHeight(textToDraw);
+	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
 void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
@@ -1845,7 +1849,9 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 		textToDraw=globalContainer->texts.getString(caption);
 	else
 		textToDraw=caption;
-	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFont, textToDraw);
+	int len=globalContainer->littleFont->getStringWidth(textToDraw);
+	int h=globalContainer->littleFont->getStringHeight(textToDraw);
+	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
@@ -1872,8 +1878,8 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 	globalContainer->gfx->drawVertLine(x+15, y, 16, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x+16+95, y, 16, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x+16+96+15, y, 16, 28, 28, 28);
-	globalContainer->gfx->drawString(x+6, y+3, globalContainer->littleFont, "-");
-	globalContainer->gfx->drawString(x+96+16+6, y+3, globalContainer->littleFont, "+");
+	globalContainer->gfx->drawString(x+6, y+1, globalContainer->littleFont, "-");
+	globalContainer->gfx->drawString(x+96+16+6, y+1, globalContainer->littleFont, "+");
 	int size=(valueLocal*94)/max;
 	globalContainer->gfx->drawFilledRect(x+16+1, y+1, size, 14, 100, 100, 200);
 	size=(value*94)/max;
