@@ -245,23 +245,23 @@ void TeamStats::drawStat()
 		int sLen=font->getStringWidth(slash);
 
 		font->pushColor(34, 66, 163);
-		gfx->drawString(textStartPos, startPoxY+16, font, "%s", Total);
+		gfx->drawString(textStartPos, startPoxY+20, font, "%s", Total);
 		font->popColor();
 
 		dec+=font->getStringWidth(Total);
-		gfx->drawString(textStartPos+dec, startPoxY+16, font, "/");
+		gfx->drawString(textStartPos+dec, startPoxY+20, font, "/");
 		dec+=sLen;
 
 		font->pushColor(22, 229, 40);
-		gfx->drawString(textStartPos+dec, startPoxY+16, font, "%s", free);
+		gfx->drawString(textStartPos+dec, startPoxY+20, font, "%s", free);
 		font->popColor();
 
 		dec+=font->getStringWidth(free);
-		gfx->drawString(textStartPos+dec, startPoxY+16, font, "/");
+		gfx->drawString(textStartPos+dec, startPoxY+20, font, "/");
 		dec+=sLen;
 
 		font->pushColor(150, 50, 50);
-		gfx->drawString(textStartPos+dec, startPoxY+16, font, "%s", seeking);
+		gfx->drawString(textStartPos+dec, startPoxY+20, font, "%s", seeking);
 		font->popColor();
 	
 		dec=0;
@@ -271,31 +271,31 @@ void TeamStats::drawStat()
 		const char *wounded=strings->getString("[wounded]");
 		
 		font->pushColor(22, 229, 40);
-		gfx->drawString(textStartPos, startPoxY+100, font, "%s", Free);
+		gfx->drawString(textStartPos, startPoxY+104, font, "%s", Free);
 		font->popColor();
 
 		dec+=font->getStringWidth(Free);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "/");
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 		
 		font->pushColor(224, 210, 17);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "%s", hungry);
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "%s", hungry);
 		font->popColor();
 
 		dec+=font->getStringWidth(hungry);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "/");
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 		
 		font->pushColor(249, 167, 14);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "%s", starving);
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "%s", starving);
 		font->popColor();
 
 		dec+=font->getStringWidth(starving);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "/");
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
 		dec+=sLen;
 		
 		font->pushColor(250, 25, 25);
-		gfx->drawString(textStartPos+dec, startPoxY+100, font, "%s", wounded);
+		gfx->drawString(textStartPos+dec, startPoxY+104, font, "%s", wounded);
 		font->popColor();
 	}
 		
