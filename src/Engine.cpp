@@ -328,7 +328,8 @@ int Engine::run(void)
 			//printf ("Engine::bnp:%d\n", globalContainer->safe());
 			if (!gui.paused)
 			{
-				net->pushOrder(gui.getOrder(), gui.localPlayer);
+				if (!isNowWaiting)
+					net->pushOrder(gui.getOrder(), gui.localPlayer);
 
 				// we get and push ai orders
 				if (!isNowWaiting)
