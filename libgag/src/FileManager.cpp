@@ -99,6 +99,27 @@ void FileManager::addDir(const char *dir)
 	dirListIndexCache=-1;
 }
 
+void FileManager::addWriteSubdir(const char *subdir)
+{
+#ifndef WIN32
+	int subdirLen=strlen(subdir);
+	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	{
+		const char *baseDir=*dirListIterator;
+		int dirLen=strlen(baseDir);
+		char *toCreate=new char[subdirLen+dirLen+2];
+		
+		strncpy(toCreate, baseDir, dirLen);
+		toCreate[dirLen]='/';
+		strncpy(toCreate+dirLen+1, subdir, subdirLen+1);
+		
+		mkdir(toCreate, S_IRWXU);
+		
+		delete[] toCreate;
+	}
+#endif
+}
+
 SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))

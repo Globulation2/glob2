@@ -42,7 +42,7 @@ LoadGameScreen::LoadGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	if (globalContainer->fileManager->initDirectoryListing(".", "game"))
+	if (globalContainer->fileManager->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
@@ -67,7 +67,7 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
-		char *mapFileName=Utilities::concat(mapSelectedName, ".game");
+		const char *mapFileName=Utilities::concat("games/", mapSelectedName, ".game");
 		
 		mapPreview->setMapThumbnail(mapFileName);
 		printf("CGS : Loading map '%s' ...\n", mapFileName);

@@ -69,6 +69,8 @@ public:
 
 	//! Add a directory to the search list
 	void addDir(const char *dir);
+	//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
+	void addWriteSubdir(const char *subdir);
 
 	//! Remove a file or a directory in the virtual filesystem
 	void remove(const char *filename);

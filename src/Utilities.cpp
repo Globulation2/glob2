@@ -382,6 +382,17 @@ namespace Utilities
 		return s;
 	}
 	
+	char *concat(const char *a, const char *b, const char *c)
+	{
+		int aLen=strlen(a);
+		int bLen=strlen(b);
+		int cLen=strlen(c);
+		int totLen=aLen+bLen+cLen+1;
+		char *s=new char[totLen];
+		snprintf(s, totLen, "%s%s%s", a, b, c);
+		return s;
+	}
+	
 	char *dencat(const char *a, const char *b)
 	{
 		int length=strlen(a)-strlen(b);
