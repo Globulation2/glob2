@@ -1655,6 +1655,13 @@ bool GameGUI::load(SDL_RWops *stream)
 	
 	bool result=game.load(stream);
 	chatMask=SDL_ReadBE32(stream);
+	
+	if (game.session.versionMinor>3)
+	{
+		localPlayer=SDL_ReadBE32(stream);
+		localTeam=SDL_ReadBE32(stream);
+	}
+	
 	if (result==false)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
 	return result;
@@ -1664,6 +1671,8 @@ void GameGUI::save(SDL_RWops *stream)
 {
 	game.save(stream);
 	SDL_WriteBE32(stream, chatMask);
+	SDL_WriteBE32(stream, localPlayer);
+	SDL_WriteBE32(stream, localTeam);
 }
 
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)

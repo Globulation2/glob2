@@ -49,8 +49,8 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 	fileNameEntry=new TextInput(10, 195, 280, 25, globalContainer->standardFont, defaultFileName, true);
 	addWidget(fileNameEntry);
 
-	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK));
-	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
+	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
 
 	fileName=Utilities::concat(fileNameEntry->getText(), this->extension);
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);

@@ -56,13 +56,13 @@ int Engine::initCampain(void)
 	// we make a player for each team
 	int playerNumber=0;
 	bool wasHuman=false;
-	char name[16];
+	char name[BasePlayer::MAX_NAME_LENGTH];
 	int i;
 	for (i=0; i<gui.game.session.numberOfTeam; i++)
 	{
 		if (gui.game.teams[i]->type==BaseTeam::T_AI)
 		{
-			snprintf(name, 16, "AI Player %d", playerNumber);
+			snprintf(name, BasePlayer::MAX_NAME_LENGTH, "AI Player %d", playerNumber);
 			gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 		}
 		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAN)
@@ -71,13 +71,13 @@ int Engine::initCampain(void)
 			{
 				gui.localPlayer=playerNumber;
 				gui.localTeam=i;
-				snprintf(name, 16, "Player %d", playerNumber);
+				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "Player %d", playerNumber);
 				wasHuman=true;
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
 			}
 			else
 			{
-				snprintf(name, 16, "AI Player %d", playerNumber);
+				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "AI Player %d", playerNumber);
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 			}
 		}
@@ -124,7 +124,7 @@ int Engine::initCustom(void)
 	if (nbTeam==0)
 		return EE_CANCEL;
 
-	char name[16];
+	char name[BasePlayer::MAX_NAME_LENGTH];
 	int i;
 	int nbPlayer=0;
 
@@ -141,7 +141,7 @@ int Engine::initCustom(void)
 			}
 			else
 			{
-				snprintf(name, 16, "%s %d", globalContainer->texts.getString("[ai]"), nbPlayer-1);
+				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", globalContainer->texts.getString("[ai]"), nbPlayer-1);
 				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], BasePlayer::P_AI);
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;
@@ -184,6 +184,17 @@ int Engine::initCustom(const char *gameName)
 	{
 		printf("Engine : Can't load map\n"); 
 		return EE_CANCEL;
+	}
+	
+	// If the game is a network saved game, we need to toogle net players to ai players:
+	for (int p=0; p<gui.game.session.numberOfTeam; p++)
+	{
+		printf("player[%d].type=%d.\n", p, gui.game.players[p]->type);
+		if (gui.game.players[p]->type==BasePlayer::P_IP)
+		{
+			gui.game.players[p]->makeItAI();
+			printf("net player (id %d) was made ai.\n", p);
+		}
 	}
 	
 	gui.game.renderMiniMap(gui.localTeam);
@@ -316,9 +327,10 @@ int Engine::run(void)
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
 				if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
+				{
 					net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+				}
 			}
-
 			//printf ("Engine::bns:%d\n", globalContainer->safe());
 
 			// we proceed network

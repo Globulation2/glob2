@@ -143,7 +143,6 @@ void MultiplayersJoin::unCrossConnectSessionInfo()
 		}
 		crossPacketRecieved[j]=0;
 	}
-
 }
 
 /*void MultiplayersJoin::tryCrossConnections(void)
@@ -245,26 +244,23 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 void MultiplayersJoin::checkAllCrossConnected(void)
 {
 	bool allCrossConnected=true;
-	{
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		{
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].type==BasePlayer::P_IP)
 			if (crossPacketRecieved[j]<2)
 			{
 				allCrossConnected=false;
 				break;
 			}
-		}
-	}
 	if (allCrossConnected)
 	{
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		{
-			if ((sessionInfo.players[j].netState!=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(sessionInfo.players[j].netState!=BasePlayer::PNS_HOST))
-			{
-				allCrossConnected=false;
-				break;
-			}
-		}
+			if (sessionInfo.players[j].type==BasePlayer::P_IP)
+				if ((sessionInfo.players[j].netState!=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(sessionInfo.players[j].netState!=BasePlayer::PNS_HOST))
+				{
+					allCrossConnected=false;
+					break;
+				}
+		
 	}
 	if (allCrossConnected)
 	{

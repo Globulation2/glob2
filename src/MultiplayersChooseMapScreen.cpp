@@ -19,6 +19,7 @@
 */
 
 #include "MultiplayersChooseMapScreen.h"
+#include "Utilities.h"
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 {
@@ -41,12 +42,16 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	addWidget(mapVersion);
 	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
 	addWidget(mapSize);
-
+	
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
-		const char *file;
-		while ((file=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
-			fileList->addText(file);
+		const char *fileName;
+		while ((fileName=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
+		{
+			char *newText=Utilities::dencat(fileName, ".map");
+			fileList->addText(newText);
+			delete[] newText;
+		}
 	}
 	addWidget(fileList);
 
@@ -63,7 +68,8 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapFileName=fileList->getText(par1);
+		const char *mapSelectedName=fileList->getText(par1);
+		char *mapFileName=Utilities::concat(mapSelectedName, ".map");
 		mapPreview->setMapThumbnail(mapFileName);
 		printf("PGU : Loading map '%s' ...\n", mapFileName);
 		SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
@@ -88,6 +94,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			else
 				printf("PGU : Warning, Error during map load\n");
 		}
+		delete[] mapFileName;
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{

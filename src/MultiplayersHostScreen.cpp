@@ -33,9 +33,10 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addWidget(new TextButton(180, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
-	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
-
+	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI));
+	addWidget(new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
+	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
 	multiplayersJoin=NULL;
 
@@ -109,8 +110,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin)
 		multiplayersJoin->onTimer(tick);
 
-	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
-		&& (multiplayersHost->startGameTimeCounter%20==0))
+	if (((timeCounter++ % 10)==0)&&(multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER))
 	{
 		char s[128];
 		snprintf(s, sizeof(s), "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
@@ -134,6 +134,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		case CANCEL :
 			multiplayersHost->stopHosting();
 			endExecute(par1);
+		break;
+		case ADD_AI :
+			multiplayersHost->addAI();
+			printf("added ai.\n");
 		break;
 		case -1:
 			multiplayersHost->stopHosting();

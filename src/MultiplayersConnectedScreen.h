@@ -36,6 +36,8 @@ public:
 
 private:
 	int timeCounter;
+public:
+	Text *startTimer;
 
 public:
 	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);

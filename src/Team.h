@@ -47,6 +47,9 @@ public:
 	Uint32 playersMask;
 	Race race;
 	
+public:
+	bool disableRecursiveDestruction;
+	
 private:
 	char data[16];
 

@@ -19,12 +19,6 @@
 */
 
 #include "MultiplayersCrossConnectable.h"
-/*
-#include "PreparationGui.h"
-#include "GlobalContainer.h"
-#include "GAG.h"
-#include "NetConsts.h"
-#include "YOGScreen.h"*/
 
 void MultiplayersCrossConnectable::tryCrossConnections(void)
 {
@@ -38,8 +32,9 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 	data[5]=0;
 	data[6]=0;
 	data[7]=0;
-	{
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].type==BasePlayer::P_IP)
 		{
 			if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
 			{
@@ -66,8 +61,6 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 				sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
 			}
 		}
-	}
-
 }
 
 int MultiplayersCrossConnectable::getFreeChannel()

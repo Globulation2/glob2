@@ -33,6 +33,7 @@ public:
 	{
 		START = 1,
 		CANCEL = 5,
+		ADD_AI = 7,
 
 		STARTED=11,
 		
@@ -40,7 +41,10 @@ public:
 	};
 	
 	enum { MAX_NUMBER_OF_PLAYERS = 16};
-
+	
+private:
+	int timeCounter;
+	
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);
 	virtual ~MultiplayersHostScreen();

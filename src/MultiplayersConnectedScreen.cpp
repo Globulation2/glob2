@@ -28,10 +28,13 @@
 MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin)
 {
 	this->multiplayersJoin=multiplayersJoin;
-
+	
 	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 	
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	
+	startTimer=new Text(20, 400, globalContainer->standardFont, "");
+	addWidget(startTimer);
 }
 
 MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
@@ -44,15 +47,6 @@ void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 
 	multiplayersJoin->sessionInfo.draw(gfxCtx);
-	
-	if (multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME)
-	{
-		char s[256];
-		snprintf(s, 256, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);		
-		int h=globalContainer->menuFont->getStringHeight(s);
-		printf("s=%s.\n", s);
-		gfxCtx->drawString(20, 460-h, globalContainer->menuFont, s);
-	}
 	
 	addUpdateRect();
 }
@@ -69,9 +63,17 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		endExecute(DISCONNECT);
 	}
 	
-	
 	if ((timeCounter++ % 10)==0)
+	{
 		dispatchPaint(gfxCtx);
+		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
+		{
+			char s[128];
+			snprintf(s, 128, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
+			printf("s=%s.\n", s);
+			startTimer->setText(s);
+		}
+	}
 	
 	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
 	{

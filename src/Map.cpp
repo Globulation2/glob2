@@ -108,7 +108,7 @@ bool BaseMap::setData(const char *data, int dataLength)
 
 int BaseMap::getDataLength()
 {
-	return 32;
+	return MAP_NAME_MAX_SIZE;
 }
 
 Sint32 BaseMap::checkSum()
