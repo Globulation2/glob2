@@ -30,16 +30,22 @@
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	serverName=new TextInput(150, 170, 340, 30, globalContainer->standardFont, "localhost", true);
-	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
 	strncpy(multiplayersJoin.serverName, serverName->text, 128);
+	addWidget(serverName);
+
+	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
 	strncpy(multiplayersJoin.playerName, playerName->text, 128);
+	addWidget(playerName);
+
+	serverText=new Text(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+	addWidget(serverText);
+
+	playerText=new Text(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+	addWidget(playerText);
 
 	addWidget(new TextButton( 80, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
 	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
-
-	addWidget(serverName);
-	addWidget(playerName);
 
 	globalContainer->gfx->setClipRect();
 }
@@ -60,8 +66,8 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 	}
 	else
 	{
-		gfxCtx->drawString(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
-		gfxCtx->drawString(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+		//gfxCtx->drawString(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+		//gfxCtx->drawString(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
 	}
 	addUpdateRect();
 }
@@ -77,7 +83,9 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	{
 		if (wasVisible)
 		{
+			serverText->visible=false;
 			serverName->visible=false;
+			playerText->visible=false;
 			playerName->visible=false;
 			dispatchPaint(gfxCtx);
 			wasVisible=false;
@@ -87,7 +95,9 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	{
 		if (!wasVisible)
 		{
+			serverText->visible=true;
 			serverName->visible=true;
+			playerText->visible=true;
 			playerName->visible=true;
 			dispatchPaint(gfxCtx);
 			wasVisible=true;

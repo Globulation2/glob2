@@ -18,20 +18,23 @@
 
 */
 
-#ifndef __GAG_H
-#define __GAG_H
+#ifndef __GUITEXT_H
+#define __GUITEXT_H
 
-#include "Header.h"
-#include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
 #include "GUIBase.h"
-#include "GUIButton.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
-#include "GUIList.h"
+
+class Text: public Widget
+{
+protected:
+	int x;
+	int y;
+	const Font *font;
+	const char *text;
+public:
+	Text(int x, int y, /*int w, int h,*/ const Font *font, const char *text) { this->x=x; this->y=y; this->font=font; this->text=text; }
+	virtual ~Text() { }
+
+	virtual void paint(DrawableSurface *gfx) { gfx->drawString(x, y, font, text); }
+};
 
 #endif
- 
