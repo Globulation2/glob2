@@ -28,13 +28,13 @@ public:
 
 public:
 	Uint32 IP;
+	TCPsocket socket;
 
 private:
 	List *gameList;
 	TextInput *textInput;
 	TextArea *chatWindow;
-	vector<Uint32> IPs;
-	TCPsocket socket;
+	std::vector<Uint32> IPs;
 	SDLNet_SocketSet socketSet;
 
 public:
@@ -45,7 +45,6 @@ public:
 	void paint(int x, int y, int w, int h);
 	void closeConnection(void);
 	void createConnection(void);
-
 
 private:
 	bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);

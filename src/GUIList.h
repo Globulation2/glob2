@@ -25,6 +25,11 @@ public:
 	void clear(void);
 
 protected:
+	virtual void internalPaint(void);
+	virtual void repaint(void);
+
+protected:
+	DrawableSurface *gfx;
 	int x, y, w, h;
 	int textHeight;
 	const Font *font;

@@ -75,7 +75,10 @@ void YOGScreen::createConnection(void)
 		bool res=getString(socket, data);
 		if ((!res) || (strcasecmp(data, "end")==0))
 			break;
-		gameList->addText(data);
+		if (data[0]!=0)
+			gameList->addText(data);
+		else
+			printf("We got null string through network during list reception, why ?\n");
 	}
 }
 

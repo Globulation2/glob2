@@ -46,18 +46,32 @@ void List::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void List::paint(DrawableSurface *gfx)
+void List::internalPaint(void)
 {
 	int nextSize=textHeight;
-	int yPos=y;
+	int yPos=y+2;
 	int i=0;
 	gfx->drawRect(x, y, w, h, 180, 180, 180);
-	while ((textHeight<h) && ((unsigned)i<strings.size()))
+	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		gfx->drawString(x, yPos, font, strings[i]);
+		gfx->drawString(x+2, yPos, font, strings[i]);
 		nextSize+=textHeight;
 		i++;
+		yPos+=textHeight;
 	}
+}
+
+void List::paint(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
+	internalPaint();
+}
+
+void List::repaint(void)
+{
+	parent->paint(x, y, w, h);
+	internalPaint();
+	parent->addUpdateRect(x, y, w, h);
 }
 
 void List::addText(const char *text, int pos)
