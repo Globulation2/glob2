@@ -2575,8 +2575,8 @@ void GameGUI::drawOverlayInfos(void)
 					
 				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
 				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastbt, &exMapX, &exMapY);
-				int exBatX=(exMapX-viewportX)<<5;
-				int exBatY=(exMapY-viewportY)<<5;
+				int exBatX=((exMapX-viewportX)&(game.map.wMask))<<5;
+				int exBatY=((exMapY-viewportY)&(game.map.hMask))<<5;
 				int exBatW=(lastbt->width)<<5;
 				int exBatH=(lastbt->height)<<5;
 
