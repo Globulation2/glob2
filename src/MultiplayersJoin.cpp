@@ -448,6 +448,7 @@ void MultiplayersJoin::receiveTime()
 		
 		int v;
 		LANHost lanhost;
+		//printf("broadcastState=%d.\n", broadcastState);
 		if (lan.receive(&v, lanhost.gameName))
 		{
 			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
@@ -487,7 +488,8 @@ void MultiplayersJoin::receiveTime()
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 				if (strncmp(it->gameName, gameName, 32)==0)
 				{
-					serverIP=it->ip;
+					serverIP.host=it->ip;
+					serverIP.port=SERVER_PORT;
 					printf("Found a local game with same name. Trying NAT.\n");
 				}
 	}
@@ -626,7 +628,7 @@ void MultiplayersJoin::sendingTime()
 					printf("sending water to firewall. (%s) (%d)\n", serverName, SERVER_PORT);
 					globalContainer->yog.sendFirewallActivation(serverName, SERVER_PORT);
 					
-					printf("enabling NAT detection too.\n", serverName, SERVER_PORT);
+					printf("enabling NAT detection too.\n");
 					if (broadcastState==BS_DISABLE_YOG)
 						broadcastState=BS_ENABLE_YOG;
 				}
