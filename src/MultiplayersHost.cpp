@@ -62,6 +62,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	this->shareOnYOG=shareOnYOG;
 	if (shareOnYOG)
 	{
+		fprintf(logFile, "sharing on YOG\n");
 		globalContainer->yog.shareGame("glob2", "0.1-pre", sessionInfo->map.getMapName());
 	}
 	

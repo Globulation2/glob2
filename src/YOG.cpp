@@ -443,6 +443,7 @@ void YOG::sendCommand(const char *message)
 	else
 	{
 		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", chatChan, message);
+		printf("YOG::sendString(%s).\n", command);
 		sendString(command);
 	}
 }
@@ -485,6 +486,7 @@ void YOG::shareGame(const char *id, const char *version, const char *comment)
 	isSharedGame=true;
 	sharedGameLastUpdated=SDL_GetTicks();
 	snprintf(sharedGame, sizeof(sharedGame), "PRIVMSG %s :%s %s %s", DEFAULT_GAME_CHAN, id, version, comment);
+	printf("YOG::shareGame(%s)\n", sharedGame);
 	sendString(sharedGame);
 	joinChannel(DEFAULT_FW_CHAN);
 }
