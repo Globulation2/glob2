@@ -270,6 +270,19 @@ void IRC::interpreteIRCMessage(const char *message)
 			usersOnChannelsModified = true;
 		}
 	}
+	else if (strcasecmp(cmd, "433")==0)
+	{
+		if (strlen(this->nick) < IRC_NICK_SIZE)
+		{
+			strcat(this->nick,"_");
+			
+			char command[IRC_MESSAGE_SIZE];
+			snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
+			sendString(command);
+			joinChannel("#glob2");
+		}
+	}
+
 }
 
 void IRC::step(void)
