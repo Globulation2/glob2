@@ -462,7 +462,6 @@ protected:
 	int pathToBuildingCountFarOldFailureRepeat;
 	int pathToBuildingCountFarOldFailureUnusable;
 	int pathToBuildingCountFarUpdateSuccess;
-	int pathToBuildingCountFarUpdateSuccessAround;
 	int pathToBuildingCountFarUpdateFailureLocked;
 	int pathToBuildingCountFarUpdateFailureVirtual;
 	int pathToBuildingCountFarUpdateFailureBad;

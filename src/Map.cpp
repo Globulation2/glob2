@@ -149,7 +149,6 @@ Map::Map()
 	pathToBuildingCountFarOldFailureRepeat=0;
 	pathToBuildingCountFarOldFailureUnusable=0;
 	pathToBuildingCountFarUpdateSuccess=0;
-	pathToBuildingCountFarUpdateSuccessAround=0;
 	pathToBuildingCountFarUpdateFailureLocked=0;
 	pathToBuildingCountFarUpdateFailureVirtual=0;
 	pathToBuildingCountFarUpdateFailureBad=0;
@@ -458,18 +457,17 @@ void Map::clear()
 			100.*(double)pathToBuildingCountCloseFailureEnd/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseFailureEnd/(double)pathToBuildingCountCloseFailure);
 
-		// TODO : nct, I've removed this assert because it makes some maps crash. To reenable once trash found
-		/*assert(pathToBuildingCountFar==
+		assert(pathToBuildingCountFar==
+			//+pathToBuildingCountFarIsNew // doesn't return
 			+pathToBuildingCountFarOldSuccess
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
 			+pathToBuildingCountFarOldFailureRepeat
 			//+pathToBuildingCountFarOldFailureUnusable // doesn't return
 			+pathToBuildingCountFarUpdateSuccess
-			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
-			+pathToBuildingCountFarUpdateFailureBad);*/
+			+pathToBuildingCountFarUpdateFailureBad);
 		fprintf(logFile, "|- pathToBuildingCountFar=%d (%f %% of tot)\n",
 			pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFar/(double)pathToBuildingCountTot);
@@ -532,7 +530,6 @@ void Map::clear()
 		
 		int pathToBuildingCountFarUpdate=
 			+pathToBuildingCountFarUpdateSuccess
-			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad;
@@ -550,11 +547,6 @@ void Map::clear()
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFarUpdate);
-		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
-			pathToBuildingCountFarUpdateSuccessAround,
-			100.*(double)pathToBuildingCountFarUpdateSuccessAround/(double)pathToBuildingCountTot,
-			100.*(double)pathToBuildingCountFarUpdateSuccessAround/(double)pathToBuildingCountFar,
-			100.*(double)pathToBuildingCountFarUpdateSuccessAround/(double)pathToBuildingCountFarUpdate);
 		
 		int pathToBuildingCountFarUpdateFailure=
 			+pathToBuildingCountFarUpdateFailureLocked
@@ -604,7 +596,6 @@ void Map::clear()
 	pathToBuildingCountFarOldFailureUnusable=0;
 	
 	pathToBuildingCountFarUpdateSuccess=0;
-	pathToBuildingCountFarUpdateSuccessAround=0;
 	pathToBuildingCountFarUpdateFailureLocked=0;
 	pathToBuildingCountFarUpdateFailureBad=0;
 	
@@ -3763,7 +3754,6 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	else
 		pathToBuildingCountIsFar++;
 	pathToBuildingCountFar++;
-	
 	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
 	
 	gradient=building->globalGradient[canSwim];
