@@ -47,6 +47,25 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 	}
 }
 
+
+void GraphicContext::beginVideoModeListing(void)
+{
+	modes=SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+}
+
+bool GraphicContext::getNextVideoMode(int *w, int *h)
+{
+	if ((modes) && (*modes) && (modes!=(SDL_Rect **)-1))
+	{
+		*w=(*modes)->w;
+		*h=(*modes)->h;
+		modes++;
+		return true;
+	}
+	else
+		return false;
+}
+
 GraphicContext::~GraphicContext(void)
 {
 }

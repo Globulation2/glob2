@@ -969,6 +969,7 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	}
 }
 
+
 void SDLGraphicContext::dbgprintf(const char *msg, ...)
 {
 	va_list arglist;

@@ -20,16 +20,27 @@
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
 #include <assert.h>
+#include <sstream>
 
 SettingsScreen::SettingsScreen()
 {
-	//int decX=(globalContainer->gfx->getW()-400)>>1;
-	languageList=new List(120, 60, 400, 200, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	languageList=new List(20, 60, 200, 200, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);
 	userName=new TextInput(120, 280, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
+
+	modeList=new List(20, 60, 200, 200, ALIGN_RIGHT, ALIGN_LEFT, "standard");
+	globalContainer->gfx->beginVideoModeListing();
+	int w, h;
+	while(globalContainer->gfx->getNextVideoMode(&w, &h))
+	{
+		std::ostringstream ost;
+		ost << w << "x" << h;
+		modeList->addText(ost.str().c_str());
+	}
+	addWidget(modeList);
 
 	ok=new TextButton( 60, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(380, 330, 200, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
@@ -56,10 +67,20 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		globalContainer->texts.setLang(par1);
-		ok->setText(globalContainer->texts.getString("[ok]"));
-		cancel->setText(globalContainer->texts.getString("[Cancel]"));
-		title->setText(globalContainer->texts.getString("[settings]"));
+		if (source==languageList)
+		{
+			globalContainer->texts.setLang(par1);
+			ok->setText(globalContainer->texts.getString("[ok]"));
+			cancel->setText(globalContainer->texts.getString("[Cancel]"));
+			title->setText(globalContainer->texts.getString("[settings]"));
+		}
+		else if (source==modeList)
+		{
+			int w, h;
+			sscanf(modeList->getText(par1), "%dx%d", &w, &h);
+			globalContainer->settings->screenWidth=w;
+			globalContainer->settings->screenHeight=h;
+		}
 	}
 }
 
