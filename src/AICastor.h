@@ -96,14 +96,15 @@ public:
 		Sint32 successWait;
 		Sint32 isFreePart;
 		
-		Build build[BuildingType::NB_HARD_BUILDING];
+		Build build[BuildingType::NB_BUILDING];
 		
 		Uint32 warTimeTriger;
 		Sint32 warLevelTriger;
 		Sint32 warAmountTriger;
 		
 		Uint32 strikeTimeTriger;
-		Sint32 strikeWarPowerTriger;
+		Sint32 strikeWarPowerTrigerUp;
+		Sint32 strikeWarPowerTrigerDown;
 		
 		Sint32 maxAmountGoal;
 		
@@ -135,6 +136,7 @@ private:
 	Order *expandFood();
 	Order *controlFood();
 	Order *controlUpgrades();
+	Order *controlStrikes();
 	
 	bool addProject(Project *project);
 	void addProjects();
@@ -154,13 +156,15 @@ private:
 	void computeObstacleBuildingMap();
 	void computeSpaceForBuildingMap(int max);
 	void computeBuildingNeighbourMap(int dw, int dh);
-	void computeTwoSpaceNeighbourMap();
 	
 	void computeWorkPowerMap();
 	void computeWorkRangeMap();
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
 	void computeWheatGrowthMap();
+	
+	void computeEnemyPowerMap();
+	void computeEnemyRangeMap();
 	
 	Order *findGoodBuilding(Sint32 typeNum, bool food, bool critical);
 	
@@ -174,16 +178,17 @@ public:
 	Uint32 timer;
 	bool canSwim;
 	bool needSwim;
-	int buildingSum[BuildingType::NB_HARD_BUILDING][2]; // [shortTypeNum][isBuildingSite]
-	int buildingLevels[BuildingType::NB_HARD_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
+	int buildingSum[BuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
+	int buildingLevels[BuildingType::NB_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
 	int warLevel; // 0: no war
 	int warTimeTrigerLevel;
 	int warLevelTrigerLevel;
 	int warAmountTrigerLevel;
 	
-	int strikeLevel; // 0: no strike
-	int strikeTimeTrigerLevel;
-	int strikeWarPowerTrigerLevel;
+	bool onStrike;
+	Uint32 strikeTimeTriger;
+	bool strikeTeamSelected;
+	int strikeTeam;
 	
 	bool foodLock;
 	Uint32 foodLockStats[2];
@@ -195,6 +200,7 @@ public:
 	
 	Uint32 lastFreeWorkersComputed;
 	Uint32 lastWheatCareMapComputed;
+	Uint32 lastEnemyPowerMapComputed;
 	
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
@@ -202,6 +208,7 @@ public:
 	Uint32 controlFoodTimer;
 	Uint32 controlUpgradeTimer;
 	Uint32 controlUpgradeDelay;
+	Uint32 controlStrikesTimer;
 	
 	Strategy strategy;
 	
@@ -213,8 +220,6 @@ public:
 	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
 	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 3]: direct neighbours count, bit 4: zero, bits [5, 7]; far neighbours count.
 	
-	Uint8 *twoSpaceNeighbourMap; // TODO: remove.
-	
 	Uint8 *workPowerMap;
 	Uint8 *workRangeMap;
 	Uint8 *workAbilityMap;
@@ -223,6 +228,9 @@ public:
 	Uint8 *wheatCareMap;
 	
 	Uint8 *goodBuildingMap; // TODO: remove.
+	
+	Uint8 *enemyPowerMap;
+	Uint8 *enemyRangeMap;
 	
 	Uint16 *ressourcesCluster;
 	
