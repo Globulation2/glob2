@@ -48,12 +48,15 @@ YOG::YOG()
 	joinGameSocketReceived=false;
 	
 	joinedGame=false;
+	isConnectedToGameHost=false;
 	
 	isSelectedGame=false;
 	newSelectedGameinfoAviable=false;
 	selectedGameinfoValid=false;
 	selectedGameinfoTimeout=0;
 	selectedGameinfoTOTL=0;
+	
+	uid=0;
 	
 	enableLan=lan.enable(SERVER_PORT);
 	//printf("enableLan=%d.\n", enableLan);
@@ -72,11 +75,24 @@ YOG::~YOG()
 	//TODO: check connection with YOGServer.
 }
 
+void YOG::send(Uint8 *data, int size)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(size);
+	assert(packet);
+	packet->len=size;
+	memcpy((char *)packet->data, data, size);
+	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logFile, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
+}
+
 void YOG::send(YOGMessageType v, Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
-	if (packet==NULL)
-		fprintf(logFile, "Failed to alocate packet!\n");
+	assert(packet);
 	{
 		Uint8 data[4];
 		data[0]=v;
@@ -98,8 +114,7 @@ void YOG::send(YOGMessageType v, Uint8 *data, int size)
 void YOG::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
-	if (packet==NULL)
-		fprintf(logFile, "Failed to alocate packet!\n");
+	assert(packet);
 	{
 		Uint8 data[4];
 		data[0]=v;
@@ -126,8 +141,7 @@ void YOG::send(YOGMessageType v)
 	data[2]=0;
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
-	if (packet==NULL)
-		fprintf(logFile, "Failed to alocate packet!\n");
+	assert(packet);
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -147,8 +161,7 @@ void YOG::send(YOGMessageType v, UDPsocket socket)
 	data[2]=0;
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
-	if (packet==NULL)
-		fprintf(logFile, "Failed to alocate packet!\n");
+	assert(packet);
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -168,12 +181,31 @@ void YOG::send(YOGMessageType v, Uint8 id)
 	data[2]=0;
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
-	if (packet==NULL)
-		fprintf(logFile, "Failed to alocate packet!\n");
+	assert(packet);
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
 	packet->address=serverIP;
+	packet->channel=-1;
+	int rv=SDLNet_UDP_Send(socket, -1, packet);
+	if (rv!=1)
+		fprintf(logFile, "Failed to send the packet!\n");
+	SDLNet_FreePacket(packet);
+}
+
+void YOG::send(UDPsocket socket, IPaddress ip, Uint8 v)
+{
+	Uint8 data[4];
+	data[0]=v;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	assert(packet);
+
+	packet->len=4;
+	memcpy((char *)packet->data, data, 4);
+	packet->address=ip;
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
@@ -256,7 +288,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			m.userName[31]=0;
 			m.userNameLength=l;
 			
-			fprintf(logFile, "YOG:new message:%s:%s\n", m.userName, m.text);
+			fprintf(logFile, "new message:%s:%s\n", m.userName, m.text);
 			receivedMessages.push_back(m);
 		}
 	}
@@ -280,31 +312,38 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTING:
 	{
-		fprintf(logFile, "YOG:connected\n");
-		yogGlobalState=YGS_CONNECTED;
+		if (size==8)
+		{
+			fprintf(logFile, "connected\n");
+			yogGlobalState=YGS_CONNECTED;
+			uid=getUint32(data, 4);
+		}
+		else
+			fprintf(logFile, "bad YOG-connected packet\n");
 	}
 	break;
 	case YMT_CONNECTION_REFUSED:
 	{
-		fprintf(logFile, "YOG:connection refused!\n");
+		fprintf(logFile, "connection refused!\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
 	case YMT_DECONNECTING:
 	{
-		fprintf(logFile, "YOG:deconnected\n");
+		fprintf(logFile, "deconnected\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
 	case YMT_SHARING_GAME:
 	{
-		fprintf(logFile, "YOG:game %s is shared\n", sharingGameName);
+		selectedGame=getUint32(data, 4);
+		fprintf(logFile, "game %s is shared (selectedGame=%d)\n", sharingGameName, selectedGame);
 		yogSharingState=YSS_SHARED_GAME;
 	}
 	break;
 	case YMT_STOP_SHARING_GAME:
 	{
-		fprintf(logFile, "YOG:game %s is unshared\n", sharingGameName);
+		fprintf(logFile, "game %s is unshared\n", sharingGameName);
 		yogSharingState=YSS_NOT_SHARING_GAME;
 	}
 	break;
@@ -316,18 +355,14 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
 			break;
 		}
-		fprintf(logFile, "YOG:we received a %d games list (size=%d)\n", nbGames, size);
+		fprintf(logFile, "we received a %d games list (size=%d)\n", nbGames, size);
 		int index=8;
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
-			game.hostip.host=SDL_SwapLE32(getUint32safe(data, index));
+			game.hostip.host=getUint32safe(data, index);
 			index+=4;
-			game.hostip.port=SDL_SwapLE16(getUint16safe(data, index));
-			index+=2;
-			game.joinip.host=SDL_SwapLE32(getUint32safe(data, index));
-			index+=4;
-			game.joinip.port=SDL_SwapLE16(getUint16safe(data, index));
+			game.hostip.port=getUint16safe(data, index);
 			index+=2;
 			game.uid=getUint32safe(data, index);
 			index+=4;
@@ -369,7 +404,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "we received a bad unshared list (size=%d!=%d)\n", size, 8+4*nbUnshared);
 			break;
 		}
-		fprintf(logFile, "YOG:we received a %d unshared list\n", nbUnshared);
+		fprintf(logFile, "we received a %d unshared list\n", nbUnshared);
 		int index=8;
 		for (int i=0; i<nbUnshared; i++)
 		{
@@ -420,7 +455,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "we received a bad clients list (size=%d!<=%d)\n", size, 8+(4+32)*nbClients);
 			break;
 		}
-		fprintf(logFile, "YOG:we received a %d clients list\n", nbClients);
+		fprintf(logFile, "we received a %d clients list\n", nbClients);
 		int index=8;
 		for (int i=0; i<nbClients; i++)
 		{
@@ -447,7 +482,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "we received a bad left clients list (size=%d!<=%d)\n", size, 8+4*nbClients);
 			break;
 		}
-		fprintf(logFile, "YOG:we received a %d left clients list\n", nbClients);
+		fprintf(logFile, "we received a %d left clients list\n", nbClients);
 		
 		Uint32 leftClientPacketID=getUint32(data, 8);
 		
@@ -472,7 +507,60 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 	break;
 	case YMT_CLOSE_YOG:
-		fprintf(logFile, " YOG is dead (killed)!\n"); //TODO: create a desconnected method
+		fprintf(logFile, " YOG is dead (killed)!\n"); //TODO: create a deconnected method
+	break;
+	case YMT_PLAYERS_WANTS_TO_JOIN:
+	{
+		int n=(size-4)/10;
+		if (n*10+4!=size)
+		{
+			fprintf(logFile, "warning, bad YMT_PLAYERS_WANTS_TO_JOIN packet!\n");
+			break;
+		}
+		int index=4;
+		int sendSize=4*n+4;
+		int sendIndex=4;
+		Uint8 sendData[sendSize];
+		sendData[0]=YMT_PLAYERS_WANTS_TO_JOIN;
+		sendData[1]=0;
+		sendData[2]=0;
+		sendData[3]=0;
+		for (int i=0; i<n; i++)
+		{
+			Joiner joiner;
+			joiner.uid=getUint32(data, index);
+			index+=4;
+			joiner.ip.host=getUint32(data, index);
+			index+=4;
+			joiner.ip.port=getUint16(data, index);
+			index+=2;
+			joiner.timeout=i;
+			joiner.TOTL=3;
+			joiner.connected=false;
+			bool already=false;
+			for (std::list<Joiner>::iterator ji=joiners.begin(); ji!=joiners.end(); ji++)
+				if (ji->uid==joiner.uid)
+				{
+					ji->timeout=i;
+					ji->TOTL=3;
+					already=true;
+				}
+			if (!already)
+			{
+				joiners.push_back(joiner);
+				fprintf(logFile, "received a new joinerip (%s) uid=(%d)\n", Utilities::stringIP(joiner.ip), joiner.uid);
+			}
+			else
+				fprintf(logFile, "received a useless joinerip (%s)\n", Utilities::stringIP(joiner.ip));
+			
+			addUint32(sendData, joiner.uid, sendIndex);
+			sendIndex+=4;
+		}
+		assert(index==size);
+		assert(sendIndex==sendSize);
+		if (n>0)
+			send(sendData, sendSize);
+	}
 	break;
 	}
 }
@@ -521,9 +609,12 @@ bool YOG::enableConnection(const char *userName)
 	hostGameSocketReceived=false;
 	joinGameSocket=NULL;
 	joinGameSocketReceived=false;
+	joiners.clear();
 	
 	clients.clear();
 	newClientListAviable=false;
+	
+	uid=0;
 	
 	fprintf(logFile, "enableConnection(%s)\n", userName);
 	
@@ -688,24 +779,25 @@ void YOG::step()
 			}
 		}
 		
-		if (hostGameSocket && hostGameSocketTimeout--<=0)
+		if (hostGameSocket && yogGlobalState<YGS_PLAYING && hostGameSocketTimeout--<=0 && uid)
 		{
-			//hostGameSocketReceived no more used.
 			if (hostGameSocketTOTL--<=0)
 				fprintf(logFile, "Unable to deliver the hostGameSocket to YOG!\n"); // TODO!
-			hostGameSocketTimeout=LONG_NETWORK_TIMEOUT;
-			fprintf(logFile, "Sending the hostGameSocket to YOG ...\n");
-			UDPpacket *packet=SDLNet_AllocPacket(36);
+			if (hostGameSocketReceived || hostGameSocketTOTL<=0)
+				hostGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+			else
+				hostGameSocketTimeout=DEFAULT_NETWORK_TIMEOUT;
+			fprintf(logFile, "Sending the hostGameSocket to YOG (selectedGame=%d)...\n", selectedGame);
+			UDPpacket *packet=SDLNet_AllocPacket(8);
 			assert(packet);
-			packet->len=36;
-			char data[36];
+			packet->len=8;
+			char data[8];
 			data[0]=YMT_HOST_GAME_SOCKET;
 			data[1]=0;
 			data[2]=0;
 			data[3]=0;
-			strncpy(data+4, userName, 32);
-			data[35]=0;
-			memcpy(packet->data, data, 36);//TODO: minimise size
+			addUint32(data, uid, 4);
+			memcpy(packet->data, data, 8);
 			packet->address=serverIP;
 			packet->channel=-1;
 			bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
@@ -714,24 +806,26 @@ void YOG::step()
 			SDLNet_FreePacket(packet);
 		}
 		
-		if (joinGameSocket && joinGameSocketTimeout--<=0)
+		if (joinGameSocket && (!isConnectedToGameHost || !joinGameSocketReceived) && joinGameSocketTimeout--<=0 && selectedGame && uid)
 		{
-			//joinGameSocketReceived no more used
 			if (joinGameSocketTOTL--<=0)
 				fprintf(logFile, "Unable to deliver the joinGameSocket to YOG!\n"); // TODO!
-			joinGameSocketTimeout=LONG_NETWORK_TIMEOUT;
-			fprintf(logFile, "Sending the joinGameSocket to YOG ...\n");
-			UDPpacket *packet=SDLNet_AllocPacket(36);
+			if (joinGameSocketReceived || joinGameSocketTOTL<=0)
+				joinGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+			else
+				joinGameSocketTimeout=DEFAULT_NETWORK_TIMEOUT;
+			fprintf(logFile, "Sending the joinGameSocket to YOG (selectedGame=%d)...\n", selectedGame);
+			UDPpacket *packet=SDLNet_AllocPacket(12);
 			assert(packet);
-			packet->len=36;
-			char data[36];
+			packet->len=12;
+			char data[12];
 			data[0]=YMT_JOIN_GAME_SOCKET;
 			data[1]=0;
 			data[2]=0;
 			data[3]=0;
-			strncpy(data+4, userName, 32);
-			data[35]=0;
-			memcpy(packet->data, data, 36);//TODO: minimise size
+			addUint32(data, uid, 4);
+			addUint32(data, selectedGame, 8);
+			memcpy(packet->data, data, 12);
 			packet->address=serverIP;
 			packet->channel=-1;
 			bool sucess=SDLNet_UDP_Send(joinGameSocket, -1, packet)==1;
@@ -770,6 +864,14 @@ void YOG::step()
 			}
 		}
 		
+		if (hostGameSocket && joiners.size()>0)
+			for (std::list<Joiner>::iterator joiner=joiners.begin(); joiner!=joiners.end(); ++joiner)
+				if (!joiner->connected && joiner->timeout--<0 && joiner->TOTL-->0)
+				{
+					send(hostGameSocket, joiner->ip, SERVER_FIREWALL_EXPOSED);
+					printf("hostGameSocket send SERVER_FIREWALL_EXPOSED to (%s), TOTL=(%d)\n", Utilities::stringIP(joiner->ip), joiner->TOTL);
+					joiner->timeout=DEFAULT_NETWORK_TIMEOUT;
+				}
 		UDPpacket *packet=NULL;
 		packet=SDLNet_AllocPacket(YOG_MAX_PACKET_SIZE);
 		assert(packet);
@@ -848,6 +950,7 @@ void YOG::unshareGame()
 	
 	hostGameSocket=NULL;
 	hostGameSocketReceived=false;
+	joiners.clear();
 }
 
 void YOG::joinGame()
@@ -941,6 +1044,7 @@ YOG::GameInfo *YOG::getSelectedGameInfo()
 void YOG::gameStarted()
 {
 	assert(!joinedGame);
+	assert(isConnectedToGameHost);
 	fprintf(logFile, "gameStarted()\n");
 	if (yogGlobalState==YGS_CONNECTED)
 		yogGlobalState=YGS_PLAYING;
@@ -957,6 +1061,7 @@ void YOG::gameEnded()
 		fprintf(logFile, "Warning gameEnded() in a bad yogGlobalState=%d!\n", yogGlobalState);
 	joinGameSocket=NULL;
 	joinGameSocketReceived=false;
+	isConnectedToGameHost=false;
 }
 
 void YOG::setHostGameSocket(UDPsocket socket)
@@ -987,4 +1092,46 @@ void YOG::setJoinGameSocket(UDPsocket socket)
 bool YOG::joinGameSocketSet()
 {
 	return joinGameSocketReceived;
+}
+
+void YOG::joinerConnected(IPaddress ip)
+{
+	for (unsigned i=0; i<joiners.size(); i++)
+		for (std::list<Joiner>::iterator joiner=joiners.begin(); joiner!=joiners.end(); ++joiner)
+			if (joiner->ip.host==ip.host && joiner->ip.port==ip.port)
+			{
+				joiner->connected=true;
+				fprintf(logFile, "joiner(%s) connected\n", Utilities::stringIP(joiner->ip));
+			}
+}
+
+void YOG::connectedToGameHost()
+{
+	isConnectedToGameHost=true;
+	fprintf(logFile, "connectedToGameHost()\n");
+}
+
+IPaddress YOG::ipFromUserName(char userName[32])
+{
+	bool found=false;
+	Uint32 uid=0;
+	fprintf(logFile, "ipFromUserName(%s)..\n", userName);
+	for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
+		if (strncmp(client->userName, userName, 32)==0)
+		{
+			found=true;
+			uid=client->uid;
+			break;
+		}
+	fprintf(logFile, "ipFromUserName found=(%d), uid=(%d)\n", found, uid);
+	for (std::list<Joiner>::iterator joiner=joiners.begin(); joiner!=joiners.end(); ++joiner)
+		if (joiner->uid==uid)
+		{
+			fprintf(logFile, "ipFromUserName=(%s)\n", Utilities::stringIP(joiner->ip));
+			return joiner->ip;
+		}
+	IPaddress ip;
+	ip.host=0;
+	ip.port=0;
+	return ip;
 }

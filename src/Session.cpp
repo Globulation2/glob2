@@ -626,7 +626,7 @@ Sint32 SessionInfo::checkSum()
 		cs^=team[i].checkSum();
 	
 	cs^=SessionGame::checkSum();
-	fprintf(logFile, "SessionInfo::sc=%x.\n", cs);
+	//fprintf(logFile, "SessionInfo::sc=%x.\n", cs);
 	
 	return cs;
 }

@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+Â  Â  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+Â  Â  This program is free software; you can redistribute it and/or modify
+Â  Â  it under the terms of the GNU General Public License as published by
+Â  Â  the Free Software Foundation; either version 2 of the License, or
+Â  Â  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Â  Â  This program is distributed in the hope that it will be useful,
+Â  Â  but WITHOUT ANY WARRANTY; without even the implied warranty of
+Â  Â  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Â See the
+Â  Â  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Â  Â  You should have received a copy of the GNU General Public License
+Â  Â  along with this program; if not, write to the Free Software
+Â  Â  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA Â 02111-1307 Â USA
 */
 
 #include "MultiplayersJoinScreen.h"
@@ -92,22 +92,6 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		lanServers->commit();
 		multiplayersJoin->listHasChanged=false;
 	}
-	/*
-	char **list;
-	int length;
-	if (multiplayersJoin->getList(&list, &length))
-	{
-		lanServers->clear();
-		for (int i=0; i<length; i++)
-		{
-			lanServers->addText(list[i]);
-			printf("JS::added list[%d]=(%s).\n", i, list[i]);
-			delete[] list[i];
-		}
-		delete[] list;
-		lanServers->commit();
-	}
-	*/
 	
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{

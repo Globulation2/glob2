@@ -262,10 +262,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 				if (sessionInfo.players[i].type==BasePlayer::P_IP)
 				{
 					sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
-					if (sessionInfo.players[i].netTimeout>0)
-						sessionInfo.players[i].netTimeout-=sessionInfo.players[i].netTimeoutSize-i*2;
-					else
-						fprintf(logFile, "usefull\n");
+					sessionInfo.players[i].netTimeout=i;
 					sessionInfo.players[i].netTOTL++;
 				}
 		}
@@ -531,8 +528,9 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	memcpy(sessionInfo.players[p].name, (char *)(data+8), 32);
 	sessionInfo.players[p].setip(ip);
 	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
-	fprintf(logFile, "this ip(%s) has ipFromNAT=%d!\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
+	fprintf(logFile, "this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
+	globalContainer->yog->joinerConnected(ip);
 	// we check if this player has already a connection:
 
 	for (int i=0; i<p; i++)
@@ -881,6 +879,8 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 		fprintf(logFile, "this ip(%s) is start cross connection confirmed..\n", Utilities::stringIP(ip));
 		return;
 	}
+	else
+		fprintf(logFile, "this ip(%s) is start cross connection confirmed too early ??\n", Utilities::stringIP(ip));
 }
 void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddress ip)
 {
@@ -1477,12 +1477,29 @@ void MultiplayersHost::sendingTime()
 			{
 				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", i, Utilities::stringIP(sessionInfo.players[i].ip));
 
+				BasePlayer *backupPlayer[32];
+				if (shareOnYOG) // Other players don't want to have LAN(NAT) IPs, but global IPs.
+					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+					{
+						backupPlayer[i]=(BasePlayer *)malloc(sizeof(BasePlayer));
+						*backupPlayer[i]=sessionInfo.players[i];
+						if (sessionInfo.players[i].ipFromNAT)
+						{
+							IPaddress newip=globalContainer->yog->ipFromUserName(sessionInfo.players[i].name);
+							fprintf(logFile, "may replace ip(%s) by ip(%s)\n", Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
+							if (newip.host)
+							{
+								sessionInfo.players[i].ip=newip;
+								sessionInfo.players[i].ipFromNAT=false;
+							}
+						}
+					}
 				char *data=NULL;
 				int size=sessionInfo.getDataLength(true);
 
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
-				
+
 				data=(char *)malloc(size+8);
 				assert(data);
 
@@ -1495,8 +1512,15 @@ void MultiplayersHost::sendingTime()
 				memcpy(data+8, sessionInfo.getData(true), size);
 
 				sessionInfo.players[i].send(data, size+8);
-				
+
 				free(data);
+				
+				if (shareOnYOG)
+					for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+					{
+						sessionInfo.players[i]=*backupPlayer[i];
+						free(backupPlayer[i]);
+					}
 			}
 			break;
 
@@ -1530,11 +1554,11 @@ void MultiplayersHost::sendingTime()
 			{
 				if (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS)
 				{
-
 					sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START;
 					sessionInfo.players[i].netTimeout=0;
 					sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 					sessionInfo.players[i].netTOTL++;
+					fprintf(logFile, "Player %d is newly all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 				}
 				else
 					fprintf(logFile, "Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
