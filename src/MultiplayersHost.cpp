@@ -117,7 +117,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 			playerFileTra[p].window[i].index=0;
 			playerFileTra[p].window[i].sent=false;
 			playerFileTra[p].window[i].received=false;
-			playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
+			playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
 			playerFileTra[p].window[i].packetSize=64;
 		}
 	}
@@ -471,7 +471,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 		playerFileTra[p].window[i].index=0;
 		playerFileTra[p].window[i].sent=false;
 		playerFileTra[p].window[i].received=false;
-		playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
+		playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
 		playerFileTra[p].window[i].packetSize=64;
 	}
 	
@@ -606,7 +606,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				playerFileTra[p].window[i].index=0;
 				playerFileTra[p].window[i].sent=false;
 				playerFileTra[p].window[i].received=false;
-				playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
+				playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
 				playerFileTra[p].window[i].packetSize=64;
 			}
 
@@ -1211,7 +1211,7 @@ void MultiplayersHost::sendingTime()
 			Uint32 smallestIndexTimeout=0xFFFFFFFF;
 			int wisit=-1;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>MAX_NETWORK_TIMEOUT)
+				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>LONG_NETWORK_TIMEOUT)
 				{
 					Uint32 index=playerFileTra[p].window[i].index;
 					if (index<smallestIndexTimeout)
