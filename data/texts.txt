@@ -205,7 +205,7 @@ Válečník
 Żołnierz
 [still (w)]
 Encore 
-Still 
+Still
 Noch
 Dosud 
 iągle
@@ -221,24 +221,18 @@ One unit left working
 Eine Einheit arbeitet
 Ještě 1 jednotka pracuje
 ciągle jednostka działa
-[still (i)]
-Encore 
+[Still (i)]
+Encore
 Still 
 Noch 
 Dosud 
 Wciąż jeszcze
-[units inside]
- unités dedans
- units inside
- Einheiten drinnen
- jednotek uvnitř
- jednostka wewnątrz
-[still one unit inside]
-Une unité dedans
-One unit left inside
-Noch eine Einheit drinnen
-Ještě 1 jednotka uvnitř
-Ciągle jednostka jest wewnątrz
+[Still one]
+Encore une
+One left
+Noch eine
+Ještě 1
+Ciągle jest
 [building name]
 Nom du batiment
 Building name
@@ -552,11 +546,11 @@ Stufen
 Úrovně
 Poziomy
 [building site]
-Chantier
-Building site
-Baustelle
-Staveniště
-Building site
+chantier
+building site
+baustelle
+staveniště
+building site
 [create map]
 Créer carte
 Create map
@@ -1103,17 +1097,17 @@ wounded
 verletzt
 Zraněných
 
-[in way]
-en chemin
-in way
-unterwegs
-na cestě
+[In way]
+En chemin
+In way
+Unterwegs
+Na cestě
 
-[on the spot]
-sur place
-on the spot
-vor Ort
-na místě
+[On the spot]
+Sur place
+On the spot
+Vor Ort
+Na místě
 
 [Version]
 Version
