@@ -108,6 +108,7 @@ private:
 	Button *ok, *cancel;
 	List *fileList;
 	MapPreview *mapPreview;
+	Text *mapName, *mapInfo, *mapVersion;
 	bool validSessionInfo;
 
 public:

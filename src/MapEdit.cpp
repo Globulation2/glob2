@@ -612,14 +612,15 @@ void MapEdit::save(const char *name)
 			*c=0;
 		game.save(stream);
 		SDL_RWclose(stream);
-		char text[256];
+		// legacy code, TO BE REMOVED
+		/*char text[256];
 		snprintf(text, 256, "%s.tn", name);
 		SDL_RWops *stream=globalContainer->fileManager.open(text,"wb");
 		if (stream)
 		{
 			game.map.saveThumbnail(stream);
 			SDL_RWclose(stream);
-		}
+		}*/
 	}
 }
 

@@ -583,43 +583,48 @@ bool Map::load(SDL_RWops *stream, Game *game)
 			cases[i].setInteger(SDL_ReadBE32(stream));
 		}
 	}
-	memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
-	memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
+
 	undermap=new Uint8[size];
 	SDL_RWread(stream, undermap, size, 1);
 
-	// now sectors
-	wSector=SDL_ReadBE32(stream);
-	hSector=SDL_ReadBE32(stream);
-	size=wSector*hSector;
-	if (sectors)
-		delete[] sectors;
-	// non standard !!!
-#	ifndef WIN32
-		sectors=new Sector[size](game);
-#	else
-		sectors=new Sector[size];
-		{
-			for (int i = 0; i < size; ++i)
+	// Only if we load a game, (not a map preview, load all stuff)
+	if (game)
+	{
+		memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
+		memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
+
+		// now sectors
+		wSector=SDL_ReadBE32(stream);
+		hSector=SDL_ReadBE32(stream);
+		size=wSector*hSector;
+		if (sectors)
+			delete[] sectors;
+		// non standard !!!
+#		ifndef WIN32
+			sectors=new Sector[size](game);
+#		else
+			sectors=new Sector[size];
 			{
-				sectors[i].~Sector();
-				new (&sectors[i])Sector(game);
+				for (int i = 0; i < size; ++i)
+				{
+					sectors[i].~Sector();
+					new (&sectors[i])Sector(game);
+				}
+			}
+#		endif
+
+		{
+			for (int i=0;i<size;++i)
+			{
+				// TODO : make a bool sector.load to allow errors.
+				sectors[i].load(stream, game);
 			}
 		}
-#	endif
 
-	{
-		for (int i=0;i<size;++i)
-		{
-			// TODO : make a bool sector.load to allow errors.
-			sectors[i].load(stream, game);
-		}
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
 	}
-	
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-	
 	return true;
 }
 
@@ -730,7 +735,7 @@ void Map::step(void)
 	growRessources();
 	for (int i=0; i<(wSector*hSector); i++)
 		sectors[i].step();
-	
+
 	stepCounter++;
 }
 
@@ -1069,7 +1074,7 @@ int Map::warpDistSquare(int px, int py, int qx, int qy)
 	
 	return ((dx*dx)+(dy*dy));
 }
-
+/*
 void Map::saveThumbnail(SDL_RWops *stream)
 {
 	bool isWater;
@@ -1118,3 +1123,4 @@ void Map::saveThumbnail(SDL_RWops *stream)
 	}
 	SDL_RWwrite(stream, tempdata, 128*128, 1);
 }
+*/

@@ -25,7 +25,7 @@
 SessionGame::SessionGame()
 {
 	versionMajor=0;
-	versionMinor=1;
+	versionMinor=2;
 	playersOffset=0;
 	teamsOffset=0;
 	mapOffset=0;
@@ -38,9 +38,17 @@ SessionGame::SessionGame()
 
 void SessionGame::save(SDL_RWops *stream)
 {
+	versionMajor=0;
+	versionMinor=2;
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);
+	// save 0, will be rewritten after
+	SDL_WriteBE32(stream, 0);
+	SDL_WriteBE32(stream, 0);
+	SDL_WriteBE32(stream, 0);
+	SDL_WriteBE32(stream, 0);
+	SDL_WriteBE32(stream, 0);
 	SDL_WriteBE32(stream, numberOfPlayer);
 	SDL_WriteBE32(stream, numberOfTeam);
 	SDL_WriteBE32(stream, gameTPF);
@@ -57,6 +65,14 @@ bool SessionGame::load(SDL_RWops *stream)
 
 	versionMajor=SDL_ReadBE32(stream);
 	versionMinor=SDL_ReadBE32(stream);
+	if (versionMinor>1)
+	{
+		sessionInfoOffset=SDL_ReadBE32(stream);
+		gameOffset=SDL_ReadBE32(stream);
+		teamsOffset=SDL_ReadBE32(stream);
+		playersOffset=SDL_ReadBE32(stream);
+		mapOffset=SDL_ReadBE32(stream);
+	}
 	numberOfPlayer=SDL_ReadBE32(stream);
 	numberOfTeam=SDL_ReadBE32(stream);
 	gameTPF=SDL_ReadBE32(stream);
@@ -140,14 +156,17 @@ Sint32 SessionGame::checkSum()
 SessionInfo::SessionInfo()
 :SessionGame()
 {
-	
+
 }
 
 void SessionInfo::save(SDL_RWops *stream)
 {
 	int i;
 	SessionGame::save(stream);
-	
+
+	// update to this version
+	SAVE_OFFSET(stream, 12);
+
 	map.save(stream);
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
@@ -164,10 +183,13 @@ bool SessionInfo::load(SDL_RWops *stream)
 	int i;
 	if (!SessionGame::load(stream))
 		return false;
-	
+
+	if (versionMinor>1)
+		SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
+
 	if (!map.load(stream))
 		return false;
-	
+
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)

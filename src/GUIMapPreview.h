@@ -42,13 +42,11 @@ public:
 	virtual void setMapThumbnail(const char *mapName=NULL);
 
 protected:
-	//! takes a map name (*.map), add thumbnail (*.map.tn) and store it
-	void setThumbnailNameFromMapName(const char *name);
 	//! internal paint routine
 	void repaint(void);
 
-	//! internal name for file to load
-	char thumbnailName[256];
+	//! internal name, is a pointer to a char* somewhere.
+	const char *mapName;
 	//! position on widget on screen
 	int x, y;
 	//! internal copy of gfx pointer

@@ -256,6 +256,13 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
+	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
+	addWidget(mapName);
+	mapInfo=new Text(440, 60+128+60, globalContainer->standardFont, "", 180);
+	addWidget(mapInfo);
+	mapVersion=new Text(440, 60+128+90, globalContainer->standardFont, "", 180);
+	addWidget(mapVersion);
+
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
 		const char *file;
@@ -277,25 +284,26 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapName=fileList->getText(par1);
-		mapPreview->setMapThumbnail(mapName);
-		printf("PGU : Loading map '%s' ...\n", mapName);
-		SDL_RWops *stream=globalContainer->fileManager.open(mapName,"rb");
+		const char *mapFileName=fileList->getText(par1);
+		mapPreview->setMapThumbnail(mapFileName);
+		printf("PGU : Loading map '%s' ...\n", mapFileName);
+		SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
 		if (stream==NULL)
-			printf("Map '%s' not found!\n", mapName);
+			printf("Map '%s' not found!\n", mapFileName);
 		else
 		{
 			validSessionInfo=sessionInfo.load(stream);
 			SDL_RWclose(stream);
 			if (validSessionInfo)
 			{
-				paint(388, 60, 640-388, 128);
+				// update map name & info
 				sessionInfo.map.mapName[31]=0;
-				gfxCtx->drawString(388, 60, globalContainer->standardFont, sessionInfo.map.mapName);
+				mapName->setText(sessionInfo.map.mapName);
 				char textTemp[256];
 				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
-				gfxCtx->drawString(388, 90, globalContainer->standardFont, textTemp);
-				addUpdateRect(388, 60, 640-388, 128);
+				mapInfo->setText(textTemp);
+				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
+				mapVersion->setText(textTemp);
 			}
 			else
 				printf("PGU : Warning, Error during map load\n");
