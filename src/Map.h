@@ -119,14 +119,12 @@ public:
 	}
 	bool isMapDiscovered(int x, int y, int p)
 	{
-		return true;
 		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	/*void setFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))|=(1<<p); }
 	void unsetFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))&=~(1<<p); }*/
 	bool isFOW(int x, int y, int p)
 	{
-		return true;
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }

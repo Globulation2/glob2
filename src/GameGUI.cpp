@@ -1134,7 +1134,10 @@ void GameGUI::drawOverlayInfos(void)
 			tempY=((mouseY+16)>>5)+viewportY;
 
 		if (bt->isVirtual)
+		{
+			game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 			isRoom=true;
+		}
 		else
 			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 
@@ -1178,7 +1181,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
-
+		
 		if (isRoom)
 		{
 			if (isExtendedRoom)

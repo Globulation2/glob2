@@ -80,7 +80,7 @@ void GlobalContainer::load(void)
 	buildings=gfx->loadSprite("data/gfx/building");
 
 	// load fonts
-	menuFont=gfx->loadFont("data/fonts/arial24.png");
+	menuFont=gfx->loadFont("data/fonts/arial24white.png");
 
 	// load texts
 	texts.load("data/texts.txt");
