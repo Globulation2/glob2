@@ -1168,7 +1168,23 @@ void Unit::handleMovement(void)
 			else if (performance[FLY])
 				movement=MOV_RANDOM_FLY;
 			else if (map->getForbidden(posX, posY)&owner->me)
+			{
+				int shortestDist=INT_MAX;
+				bool found=false;
+				for (std::list<Building *>::iterator it=owner->virtualBuildings.begin(); it!=owner->virtualBuildings.end(); ++it)
+					if ((*it)->type->zonableForbidden)
+					{
+						int dist=map->warpDistSquare(posX, posY, (*it)->posX, (*it)->posY);
+						if (dist<shortestDist)
+						{
+							targetX=(*it)->posX;
+							targetY=(*it)->posY;
+							found=true;
+						}
+					}
+				assert(found);
 				movement=MOV_ESCAPING_FORBIDDEN;
+			}
 			else
 				movement=MOV_RANDOM_GROUND;
 		}
@@ -1567,49 +1583,40 @@ void Unit::flytoTarget()
 	assert(performance[FLY]);
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
-	
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	Map *map=owner->map;
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	
 	int cDirection=direction;
-	
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-		
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-		
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-		
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	
 	dx=0;
 	dy=0;
 	direction=8;
@@ -1617,83 +1624,93 @@ void Unit::flytoTarget()
 		printf("0x%lX: flyto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
 }
 
-void Unit::closestGroundValidDxDy()
-{
-	int cDirection=direction;
-		
-	if (valid(posX+dx, posY+dy))
-		return;
-		
-	direction=(cDirection+1)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-		
-	direction=(cDirection+7)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-	
-	direction=(cDirection+2)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-		
-	direction=(cDirection+6)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-	
-	direction=(cDirection+3)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-		
-	direction=(cDirection+5)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-	
-	direction=(cDirection+4)&7;
-	dxdyfromDirection();
-	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
-		return;
-	
-	dx=0;
-	dy=0;
-	direction=8;
-	if (verbose)
-		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
-}
-
 void Unit::gotoGroundTarget()
 {
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
-	
 	simplifyDirection(ldx, ldy, &dx, &dy);
-
 	directionFromDxDy();
-	
 	if (verbose)
 		printf("gotoTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
-	
-	closestGroundValidDxDy();
+	int cDirection=direction;
+	if (valid(posX+dx, posY+dy))
+		return;
+	Map *map=owner->map;
+	direction=(cDirection+1)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+7)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+2)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+6)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+3)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+5)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+4)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
 }
 
 void Unit::escapeGroundTarget()
 {
 	int ldx=posX-targetX;
 	int ldy=posY-targetY;
-	
 	simplifyDirection(ldx, ldy, &dx, &dy);
-
 	directionFromDxDy();
-	
 	if (verbose)
 		printf("escapeTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
-	
-	closestGroundValidDxDy();
+	int cDirection=direction;
+	if (valid(posX+dx, posY+dy))
+		return;
+	Map *map=owner->map;
+	direction=(cDirection+1)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+7)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+2)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+6)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+3)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+5)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	direction=(cDirection+4)&7;
+	dxdyfromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
 }
 
 void Unit::endOfAction(void)

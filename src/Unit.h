@@ -138,10 +138,9 @@ protected:
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
 	bool areOnlyUnitsInFront(int dx, int dy);
-	void flytoTarget();
-	void closestGroundValidDxDy();
-	void gotoGroundTarget();
-	void escapeGroundTarget();
+	void flytoTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
+	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
+	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 	
 public:

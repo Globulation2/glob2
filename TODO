@@ -16,13 +16,14 @@ Net:
 
 Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
-- Il est peut-être interessant d'optimiser en regardant si le batiment est enfermé à une distance de zéro.
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
-- si un batiment est enfermé, il faut gérer! (FIXED!)
 - Gérer les unités piégées dans un drapeau d'interrdiction.
 - Le comportement de guerrières doit-être amélioré.
+
+Optimisation:
+- Regarder les utilisations de "Team::virtualBuildings", pour svoir si il est utile de faire des groupes plus précis.
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.

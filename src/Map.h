@@ -274,6 +274,7 @@ public:
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
+	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim, Uint32 teamMask);
 	bool isFreeForAirUnit(int x, int y) {return (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);

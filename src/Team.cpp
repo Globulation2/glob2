@@ -229,11 +229,10 @@ void Team::setCorrectColor(float value)
 Building *Team::findNearestHeal(int x, int y)
 {
 	Building *b=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
+	int dist=INT_MAX;
 	for (std::list<Building *>::iterator it=canHealUnit.begin(); it!=canHealUnit.end(); it++)
 	{
-		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+		int newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
 		if ( newDist<dist )
 		{
 			b=*it;
