@@ -27,12 +27,14 @@
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
+	multiplayersJoin=new MultiplayersJoin();
+
 	serverName=new TextInput(150, 170, 340, 30, globalContainer->standardFont, "localhost", true);
-	strncpy(multiplayersJoin.serverName, serverName->text, 128);
+	strncpy(multiplayersJoin->serverName, serverName->text, 128);
 	addWidget(serverName);
 
 	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
-	strncpy(multiplayersJoin.playerName, playerName->text, 128);
+	strncpy(multiplayersJoin->playerName, playerName->text, 128);
 	addWidget(playerName);
 
 	serverText=new Text(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
@@ -59,9 +61,9 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 
-	if (multiplayersJoin.waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
-		multiplayersJoin.sessionInfo.draw(gfxCtx);
+		multiplayersJoin->sessionInfo.draw(gfxCtx);
 		//addUpdateRect(20, 20, gfxCtx->getW()-40, 200);
 	}
 	else
@@ -76,36 +78,42 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
 	// TODO : call SessionInfo.draw()
-	multiplayersJoin.onTimer(tick);
-
-	if (multiplayersJoin.waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	multiplayersJoin->onTimer(tick);
+	
+	bool showNow=false;
+	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
+		serverText->visible=false;
+		serverName->visible=false;
+		playerText->visible=false;
+		playerName->visible=false;
 		if (wasVisible)
 		{
-			serverText->visible=false;
-			serverName->visible=false;
-			playerText->visible=false;
-			playerName->visible=false;
-			dispatchPaint(gfxCtx);
+			showNow=true;
 			wasVisible=false;
 		}
 	}
 	else
 	{
+		serverText->visible=true;
+		serverName->visible=true;
+		playerText->visible=true;
+		playerName->visible=true;
 		if (!wasVisible)
 		{
-			serverText->visible=true;
-			serverName->visible=true;
-			playerText->visible=true;
-			playerName->visible=true;
-			dispatchPaint(gfxCtx);
+			showNow=true;
 			wasVisible=true;
 		}
 	}
 	
-	if (multiplayersJoin.waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
+	if (showNow || ((!wasVisible) && ((tick % 10)==0)))
 	{
-		if (multiplayersJoin.startGameTimeCounter<0)
+		dispatchPaint(gfxCtx);
+	}
+	
+	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
+	{
+		if (multiplayersJoin->startGameTimeCounter<0)
 		{
 			printf("JoinScreen::Lets quit this screen and start game!\n");
 			endExecute(STARTED);
@@ -125,9 +133,9 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	if (action==TEXT_MODIFFIED)
 	{
 		if (source==serverName)
-			strncpy(multiplayersJoin.serverName, serverName->text, 128);
+			strncpy(multiplayersJoin->serverName, serverName->text, 128);
 		else if (source==playerName)
-			strncpy(multiplayersJoin.playerName, playerName->text, 128);
+			strncpy(multiplayersJoin->playerName, playerName->text, 128);
 		else
 			assert(false);
 	}
@@ -135,14 +143,14 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (par1==CONNECT)
 		{
-			if (!multiplayersJoin.tryConnection())
+			if (!multiplayersJoin->tryConnection())
 			{
-				multiplayersJoin.waitingState=MultiplayersJoin::WS_TYPING_SERVER_NAME;
+				multiplayersJoin->waitingState=MultiplayersJoin::WS_TYPING_SERVER_NAME;
 			}
 		}
 		else if (par1==DISCONNECT)
 		{
-			multiplayersJoin.quitThisGame();
+			multiplayersJoin->quitThisGame();
 		}
 		else
 		{

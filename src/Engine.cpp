@@ -160,7 +160,7 @@ int Engine::initMutiplayerJoin(void)
 
 	if (multiplayersJoinScreen.execute(globalContainer->gfx, 20)==MultiplayersJoinScreen::STARTED)
 	{
-		startMultiplayer(&multiplayersJoinScreen.multiplayersJoin);
+		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);
 
 		return NO_ERROR;
 	}
