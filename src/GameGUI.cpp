@@ -1601,7 +1601,7 @@ void GameGUI::drawOverlayInfos(void)
 			if (pm&apm)
 			{
 
-				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->littleFont,"%s%d", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
+				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->littleFont,"%s%d%s", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
 				pnb++;
 			}
 			pm=pm<<1;
@@ -1630,7 +1630,7 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->standardFont->popColor();*/
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text);
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
