@@ -2509,30 +2509,28 @@ void GameGUI::drawOverlayInfos(void)
 	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
 	
 	// draw network latency
-	dec += 120;
+	dec += 110;
 	int stepTimeToWaitLength = static_cast<int>(smoothedStepTimeToWait.size());
 	int stepTimeToWaitMean=smoothedStepTimeToWait.sum() / stepTimeToWaitLength;
 	if (stepTimeToWaitMean>8)
 		memcpy(actC, greenC, sizeof(greenC));
 	else if (stepTimeToWaitMean>0)
 		memcpy(actC, yellowC, sizeof(yellowC));
-	
-	if (stepTimeToWaitMean>0)
-		globalContainer->gfx->drawFilledRect(dec, 4, stepTimeToWaitMean, 8, actC[0], actC[1], actC[2]);
 	else
-		globalContainer->gfx->drawFilledRect(dec+stepTimeToWaitMean, 4, -stepTimeToWaitMean, 8, redC[0], redC[1], redC[2]);
+		memcpy(actC, redC, sizeof(redC));
 	
+	globalContainer->gfx->drawFilledRect(dec, 4, 40-stepTimeToWaitMean, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
-	// compuet variance
+	// compute variance
 	std::valarray<int> varArray = smoothedStepTimeToWait - stepTimeToWaitMean;
 	varArray.apply(intSquare);
 	int squareSum = varArray.sum();
 	int squareVar = squareSum/(stepTimeToWaitLength-1);
 	int var = static_cast<int>(sqrt(static_cast<double>(squareVar)));
-	globalContainer->gfx->drawVertLine(dec+stepTimeToWaitMean+var, 3, 10, 180, 180, 180);
-	globalContainer->gfx->drawVertLine(dec+stepTimeToWaitMean-var, 3, 10, 180, 180, 180);
+	globalContainer->gfx->drawVertLine(dec+40-stepTimeToWaitMean+var, 3, 10, 180, 180, 180);
+	globalContainer->gfx->drawVertLine(dec+40-stepTimeToWaitMean-var, 3, 10, 180, 180, 180);
 	
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
