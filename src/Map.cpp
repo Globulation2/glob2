@@ -2517,7 +2517,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		pathToRessourceCountFailure++;
 		if (verbose)
 			printf("...pathfindedRessource failure locked v4\n");
-		printf("locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
+		//printf("locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		fprintf(logFile, "locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		*stopWork=false;
 		return false;
@@ -3621,7 +3621,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	else
 	{
 		pathToBuildingCountFarUpdateFailureBad++;
-		printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
+		// TODO: find why this happend so often
+		//printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
 		fprintf(logFile, "g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
 	}
 	return false;
