@@ -37,7 +37,7 @@ public:
 	void save(SDL_RWops *stream);
 
 	void processEvent(SDL_Event *event);
-	void processGameMenu(SDL_Event *event);
+	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_keysym keySym, bool pressed);
 	void handleMouseMotion(int mx, int my);
@@ -99,7 +99,8 @@ private:
 	{
 		IGM_NONE=0,
 		IGM_MAIN,
-		IGM_SAVE
+		IGM_SAVE,
+		IGM_ALLIANCE8
 	} inGameMenu;
 	InGameScreen *gameMenuScreen;
 

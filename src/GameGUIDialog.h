@@ -7,6 +7,7 @@
 #define __GAME_GUI_DIALOG_H
 
 #include "GAG.h"
+#include "Player.h"
 
 class InGameScreen:public Screen
 {
@@ -15,6 +16,7 @@ public:
 	virtual ~InGameScreen();
 
 	virtual void translateAndProcessEvent(SDL_Event *event);
+	virtual void paint(int x, int y, int w, int h);
 
 public:
 	int endValue;
@@ -31,7 +33,7 @@ public:
 	virtual ~InGameSaveScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(int x, int y, int w, int h);
+	//virtual void paint(int x, int y, int w, int h);
 };
 
 class InGameMainScreen:public InGameScreen
@@ -41,7 +43,24 @@ public:
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
+	//virtual void paint(int x, int y, int w, int h);
+};
+
+class InGameAlliance8Screen:public InGameScreen
+{
+public:
+	OnOffButton *allied[8];
+	OnOffButton *chat[8];
+	char names[8][BasePlayer::MAX_NAME_LENGTH];
+
+public:
+	InGameAlliance8Screen();
+	virtual ~InGameAlliance8Screen() { }
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(int x, int y, int w, int h);
 };
+
+
 
 #endif

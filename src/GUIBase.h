@@ -16,6 +16,7 @@ enum Action
 	BUTTON_LOST_MOUSEOVER,
 	BUTTON_PRESSED,
 	BUTTON_RELEASED,
+	BUTTON_STATE_CHANGED,
 	TEXT_MODIFFIED,
 	TEXT_ACTIVATED,
 	LIST_ELEMENT_SELECTED
@@ -28,8 +29,8 @@ class Widget
 public:
 	virtual ~Widget() { }
 
-	virtual void onTimer(Uint32 tick)=0;
-	virtual void onSDLEvent(SDL_Event *event)=0;
+	virtual void onTimer(Uint32 tick) { }
+	virtual void onSDLEvent(SDL_Event *event) { }
 	virtual void paint(GraphicContext *gfx)=0;
 
 protected:
