@@ -1361,30 +1361,31 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		assert(bt);
-		int imgid=bt->startImage;
+		int imgid=bt->miniImage;
 		int x, y;
 
 		x=((v&0x1)*64)+globalContainer->gfx->getW()-128;
 		y=((v>>1)*46)+128+32;
-		globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
+		globalContainer->gfx->setClipRect(x, y, 64, 46);
 
-		Sprite *buildingSprite=globalContainer->buildings;
+		Sprite *buildingSprite;
 		int decX, decY;
-		if (buildingSprite->getW(imgid)<=32)
-			decX=-16;
-		else if (buildingSprite->getW(imgid)>64)
-			decX=20;
-		else
-			decX=0;
-		if (buildingSprite->getH(imgid)<=32)
-			decY=-8;
-		else if (buildingSprite->getH(imgid)>64)
-			decY=26;
-		else
+		if (imgid>=0)
+		{
+			buildingSprite=globalContainer->buildingmini;
+			decX=4;
 			decY=0;
+		}
+		else
+		{
+			buildingSprite=globalContainer->buildings;
+			imgid=bt->startImage;
+			decX=(64-buildingSprite->getW(imgid))>>1;
+			decY=(46-buildingSprite->getW(imgid))>>1;
+		}
 
 		buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-		globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
+		globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
 
 		++it;
 		v++;
@@ -1470,6 +1471,7 @@ void GameGUI::drawUnitInfos(void)
 	ypos += YOFFSET_NAME;
 
 	// draw unit's image
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, ypos, globalContainer->gamegui, 18);
 
 	// draw HP
 	if (selUnit->hp<=selUnit->trigHP)

@@ -330,8 +330,10 @@ void GlobalContainer::load(void)
 
 		updateLoadProgressBar(90);
 		// load graphics for gui
-		gfx->loadSprite("data/gfx/unitmini", "buildings");
-		unitmini=Toolkit::getSprite("buildings");
+		gfx->loadSprite("data/gfx/unitmini", "unitmini");
+		unitmini=Toolkit::getSprite("unitmini");
+		gfx->loadSprite("data/gfx/buildingmini", "buildingmini");
+		buildingmini=Toolkit::getSprite("buildingmini");
 		gfx->loadSprite("data/gfx/gamegui", "gamegui");
 		gamegui=Toolkit::getSprite("gamegui");
 
