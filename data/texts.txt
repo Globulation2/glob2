@@ -423,14 +423,14 @@ Nahrung
 Vos unites sont attaquées !
 Your unites are under attack !
 Die Einheiten werden angegriffen !
-[your buildings are under attack]
-Vos batiments sont attaqués !
-Your buildings are under attack !
-Gebaeude unter Angriff !
-[building has been finished]
-Le batiment est termine
-The building is finished
-Das Gebauede ist vertig
+[attacked]
+attaqué
+attacked
+unter Angriff !
+[finished]
+terminé
+finished
+vertig
 [ai]
 IA
 AI

@@ -331,7 +331,7 @@ bool Unit::step(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT);
+			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyUID);
 		}
 		else  if (enemyUID!=NOUID)
 		{
@@ -342,7 +342,7 @@ bool Unit::step(void)
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT);
+			enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyUID);
 			if (enemy->hp<0)
 				enemy->kill();
 		}

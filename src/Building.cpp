@@ -729,7 +729,7 @@ void Building::update(void)
 			// DUNNO : when do we update closestRessourceXY[] ?
 			int vr=type->viewingRange;
 			owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
-			owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT);
+			owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, UID);
 
 			// we need to do an update again
 			update();
