@@ -67,7 +67,7 @@ protected:
 	void openAudio(void);
 
 public:
-	SoundMixer(unsigned volume = 255);
+	SoundMixer(unsigned volume = 255, bool mute = false);
 
 	~SoundMixer();
 
@@ -75,7 +75,7 @@ public:
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
 
-	void setVolume(unsigned volume);
+	void setVolume(unsigned volume, bool mute);
 	
 	void stopMusic(void);
 	

@@ -639,4 +639,10 @@ Custom cursor
 [choose campaign]
 Choose a campaign
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG 
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[mute]
+mute
+[shortcut explanation enter]
+enter : send a text message
+[shortcut explanation v]
+v : hold to speak

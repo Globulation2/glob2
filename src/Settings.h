@@ -36,6 +36,7 @@ public:
 	Uint32 graphicType;
 	Uint32 defaultLanguage;
 	Uint32 musicVolume;
+	int mute;
 
 public:
 	void load(const char *filename="preferences.txt");

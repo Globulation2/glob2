@@ -640,3 +640,9 @@ Curseur personalisé
 Choisir une campagne
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[mute]
+mute
+[shortcut explanation enter]
+entrée : envoye un message texte
+[shortcut explanation v]
+v : maintenir pour parler
