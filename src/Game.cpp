@@ -134,10 +134,13 @@ void Game::setBase(const SessionInfo *initial)
 void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
+	bool isPlayerAlive=players[order->sender]->team->isAlive;
 	switch (order->getOrderType())
 	{
 		case ORDER_CREATE:
 		{
+			if (!isPlayerAlive)
+				break;
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
 			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
@@ -166,6 +169,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_MODIFY_BUILDING:
 		{
+			if (!isPlayerAlive)
+				break;
 			{
 				for (int i=0; i<((OrderModifyBuildings *)order)->getNumberOfBuilding(); i++)
 				{
@@ -187,6 +192,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_MODIFY_FLAG:
 		{
+			if (!isPlayerAlive)
+				break;
 			{
 				for (int i=0; i<((OrderModifyFlags *)order)->getNumberOfBuilding(); i++)
 				{
@@ -207,6 +214,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_MOVE_FLAG:
 		{
+			if (!isPlayerAlive)
+				break;
 			{
 				for (int i=0; i<((OrderMoveFlags *)order)->getNumberOfBuilding(); i++)
 				{
@@ -225,6 +234,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_MODIFY_SWARM:
 		{
+			if (!isPlayerAlive)
+				break;
 			{
 				for (int i=0; i<((OrderModifySwarms *)order)->getNumberOfSwarm(); i++)
 				{
@@ -266,6 +277,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_UPGRADE:
 		{
+			if (!isPlayerAlive)
+				break;
 			Sint32 UID=((OrderDelete *)order)->UID;
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);
@@ -291,6 +304,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		break;
 		case ORDER_CANCEL_UPGRADE :
 		{
+			if (!isPlayerAlive)
+				break;
 			Sint32 UID=((OrderCancelUpgrade *)order)->UID;
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);

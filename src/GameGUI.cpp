@@ -47,7 +47,7 @@ GameGUI::GameGUI()
 	isRunning=true;
 	exitGlobCompletely=false;
 	needRedraw=true;
-	drawHealthFoodBar=false;
+	drawHealthFoodBar=true;
 	drawPathLines=false;
 	viewportX=0;
 	viewportY=0;
