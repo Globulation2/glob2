@@ -985,68 +985,59 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		return;
 	}
 
-	//int channel=getFreeChannel();
-	//channel=SDLNet_UDP_Bind(socket, channel, &ip);
-	//if (channel!=-1)
+	UDPpacket *packet=SDLNet_AllocPacket(68);
+
+	if (packet==NULL)
 	{
-		UDPpacket *packet=SDLNet_AllocPacket(68);
-		
-		if (packet==NULL)
-		{
-			fprintf(logFile, "broad:can't alocate packet!\n");
-			return;
-		}
-		
-		if (ip.host==0)
-		{
-			fprintf(logFile, "broad:can't have a null ip.host\n");
-			return;
-		}
-		
-		char data[68];
-		if (shareOnYOG)
-			data[0]=BROADCAST_RESPONSE_YOG;
-		else
-			data[0]=BROADCAST_RESPONSE_LAN;
-		data[1]=0;
-		data[2]=0;
-		data[3]=0;
-		memset(&data[4], 0, 32);
-		strncpy(&data[4], sessionInfo.map.getMapName(), 32);
-		memset(&data[36], 0, 32);
-		strncpy(&data[36], globalContainer->userName, 32);
-		
-		//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-		//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
-		//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
-		packet->len=68;
-		memcpy((char *)packet->data, data, 68);
-		
-		bool sucess;
-		
-		packet->address=ip;
-		//packet->channel=channel;
-		packet->channel=-1;
-		
-		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-		// Notice that we can choose between giving a "channel", or the ip.
-		// Here we do both. Then "channel" could be -1.
-		// This is interesting because getFreeChannel() may return -1.
-		// We have no real use of "channel".
-		if (sucess)
-			fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
-		
-		
-		SDLNet_FreePacket(packet);
-		
-		fprintf(logFile, "broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
-		SDLNet_UDP_Unbind(socket, channel);
-		channel=-1;
+		fprintf(logFile, "broad:can't alocate packet!\n");
+		return;
 	}
-	//else
-	//{
-	//	fprintf(logFile, "broad:can't bind (socket=%x).\n", (int)socket);
-	//}
+
+	if (ip.host==0)
+	{
+		fprintf(logFile, "broad:can't have a null ip.host\n");
+		return;
+	}
+
+	char sdata[68];
+	if (shareOnYOG)
+		sdata[0]=BROADCAST_RESPONSE_YOG;
+	else
+		sdata[0]=BROADCAST_RESPONSE_LAN;
+	sdata[1]=0;
+	sdata[2]=0;
+	sdata[3]=0;
+	memset(&sdata[4], 0, 32);
+	strncpy(&sdata[4], sessionInfo.map.getMapName(), 32);
+	memset(&sdata[36], 0, 32);
+	strncpy(&sdata[36], globalContainer->userName, 32);
+
+	//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
+	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
+	//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
+	packet->len=68;
+	memcpy((char *)packet->data, sdata, 68);
+
+	bool sucess;
+
+	packet->address=ip;
+	//packet->channel=channel;
+	packet->channel=-1;
+
+	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	// Notice that we can choose between giving a "channel", or the ip.
+	// Here we do both. Then "channel" could be -1.
+	// This is interesting because getFreeChannel() may return -1.
+	// We have no real use of "channel".
+	if (sucess)
+		fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
+
+
+	SDLNet_FreePacket(packet);
+
+	fprintf(logFile, "broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
+	SDLNet_UDP_Unbind(socket, channel);
+	channel=-1;
 }
 
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)

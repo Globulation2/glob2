@@ -23,7 +23,7 @@
 #include "Header.h"
 #include "YOGConsts.h"
 #include <list>
-#include "LANBroadcast.h"
+
 class LogFileManager;
 
 class YOG
@@ -193,7 +193,6 @@ public:
 	std::list<Joiner> joiners;
 private:
 	bool enableLan;
-	LANBroadcast lan;
 	
 public:
 	FILE *logFile;

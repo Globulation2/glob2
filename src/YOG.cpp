@@ -67,8 +67,8 @@ YOG::YOG(LogFileManager *logFileManager)
 	else
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
-	enableLan=lan.enable(SERVER_PORT);
-	fprintf(logFile, "enableLan=%d.\n", enableLan);
+	//zzz enableLan=lan.enable(SERVER_PORT);
+	//fprintf(logFile, "enableLan=%d.\n", enableLan);
 	
 }
 
@@ -575,6 +575,41 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			send(sendData, sendSize);
 	}
 	break;
+	case YMT_BROADCAST_RESPONSE_LAN:
+	case YMT_BROADCAST_RESPONSE_YOG:
+	{
+		if (size!=68)
+		{
+			fprintf(logFile, "Warning, bad size for a gameHostBroadcastResponse (%d).\n", size);
+			return;
+		}
+		int v=data[0];
+		char gameName[128];
+		char serverNickName[32];
+		
+		strncpy(gameName, (char *)&data[4], 32);
+		strncpy(serverNickName, (char *)&data[36], 32);
+
+		fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, gameName, serverNickName);
+		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+			if ((strncmp(gameName, game->name, 128)==0)
+				&& (strncmp(serverNickName, game->userName, 32)==0))
+			{
+				fprintf(logFile, "Solved a NAT from (%s) to (%s).\n", Utilities::stringIP(game->hostip), Utilities::stringIP(ip));
+				game->hostip=ip;
+				if ( game->hostip.port!=SDL_SwapBE16(SERVER_PORT))
+					fprintf(logFile, "Warning, the server port is not the standard port! Should not happen! (%d)\n", serverIP.port);
+				game->natSolved=true;
+				if (isSelectedGame && game->uid==selectedGame)
+				{
+					selectedGameinfoTOTL++;
+					selectedGameinfoTimeout=2;
+				}
+			}
+			
+		
+	}
+	break;
 	}
 }
 
@@ -849,10 +884,10 @@ void YOG::step()
 		
 		if (isSelectedGame && !newSelectedGameinfoAviable && selectedGameinfoTimeout--<0 && selectedGameinfoTOTL-->0)
 		{
-			sendGameinfoRequest();
 			selectedGameinfoTimeout=DEFAULT_NETWORK_TIMEOUT;
+			sendGameinfoRequest();
 		}
-		if (isSelectedGame)
+		/*zzz if (isSelectedGame)
 		{
 			int v;
 			char gameName[128];
@@ -875,7 +910,7 @@ void YOG::step()
 						}
 					}
 			}
-		}
+		}*/
 		
 		if (hostGameSocket && joiners.size()>0)
 			for (std::list<Joiner>::iterator joiner=joiners.begin(); joiner!=joiners.end(); ++joiner)
@@ -936,8 +971,32 @@ void YOG::sendGameinfoRequest()
 			
 			if (!game->natSolved && enableLan)
 			{
-				lan.send(BROADCAST_REQUEST);
-				printf("BROADCAST_REQUEST\n");
+				//zzz lan.send(BROADCAST_REQUEST);
+				//printf("BROADCAST_REQUEST\n");
+				
+				UDPpacket *packet=SDLNet_AllocPacket(4);
+
+				assert(packet);
+
+				packet->channel=-1;
+				packet->address.host=INADDR_BROADCAST;
+				packet->address.port=SDL_SwapBE16(SERVER_PORT);
+				packet->len=4;
+				packet->data[0]=YMT_BROADCAST_REQUEST;
+				packet->data[1]=0;
+				packet->data[2]=0;
+				packet->data[3]=0;
+				if (SDLNet_UDP_Send(socket, -1, packet)==1)
+				{
+					fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet.\n");
+					//TODO: send broadcasting for any game, not only for selected games. broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
+				}
+				else
+				{
+					enableLan=false;
+					fprintf(logFile, "failed to send a BROADCAST_REQUEST packet!\n");
+				}
+				SDLNet_FreePacket(packet);
 			}
 			break;
 		}

@@ -147,8 +147,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->serverNickName[31]=0;
 		multiplayersJoin->ipFromNAT=true;
 		
-		strncpy(multiplayersJoin->serverNameMemory, "localhost", 128);
-		multiplayersJoin->serverName = multiplayersJoin->serverNameMemory;
+		strncpy(multiplayersJoin->serverName, "localhost", 256);
 		multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
 		multiplayersJoin->serverIP.port=SDL_SwapBE16(SERVER_PORT);
 		

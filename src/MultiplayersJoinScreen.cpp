@@ -21,15 +21,15 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "MultiplayersConnectedScreen.h"
+#include "Utilities.h"
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(false);
 
 	serverName=new TextInput(20, 170, 280, 30, globalContainer->standardFont, "localhost", true);
-	strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
-	multiplayersJoin->serverNameMemory[127]=0;
-	multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
+	strncpy(multiplayersJoin->serverName, serverName->text, 256);
+	multiplayersJoin->serverName[255]=0;
 	addWidget(serverName);
 
 	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false);
@@ -88,7 +88,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	{
 		lanServers->clear();
 		std::list<MultiplayersJoin::LANHost>::iterator it;
-		for (it=multiplayersJoin->LANHosts.begin(); it!=multiplayersJoin->LANHosts.end(); ++it)
+		for (it=multiplayersJoin->lanHosts.begin(); it!=multiplayersJoin->lanHosts.end(); ++it)
 			lanServers->addText(it->gameName);
 		lanServers->commit();
 		multiplayersJoin->listHasChanged=false;
@@ -137,9 +137,8 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (source==serverName)
 		{
-			strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
-			multiplayersJoin->serverNameMemory[127]=0;
-			multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
+			strncpy(multiplayersJoin->serverName, serverName->text, 256);
+			multiplayersJoin->serverName[255]=0;
 		}
 		else if (source==playerName)
 		{
@@ -182,16 +181,12 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 		{
 			std::list<MultiplayersJoin::LANHost>::iterator it;
 			int i=0;
-			for (it=multiplayersJoin->LANHosts.begin(); it!=multiplayersJoin->LANHosts.end(); ++it)
+			for (it=multiplayersJoin->lanHosts.begin(); it!=multiplayersJoin->lanHosts.end(); ++it)
 				if (i==par1)
 				{
-					char s[16];
-					Uint32 netHost=SDL_SwapBE32(it->ip);
-					snprintf(s, 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
-					serverName->setText(s);
-					strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
-					multiplayersJoin->serverNameMemory[127]=0;
-					multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
+					serverName->setText(Utilities::stringIP(it->ip.host));
+					strncpy(multiplayersJoin->serverName, serverName->text, 256);
+					multiplayersJoin->serverName[255]=0;
 					break;
 				}
 				else
