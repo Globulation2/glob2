@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "MultiplayersCrossConnectable.h"
@@ -47,6 +47,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		if (sessionInfo.players[j].type==BasePlayer::P_IP)
 			if (!sessionInfo.players[j].waitForNatResolution)
+			{
 				if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
 				{
 					if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
@@ -54,7 +55,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 						int freeChannel=getFreeChannel();
 						if (!sessionInfo.players[j].bind(socket, freeChannel))
 						{
-							fprintf(logFile, "Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+							fprintf(logFile, "Player %d with ip %s is not bindable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 							sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 							sucess=false;
 							break;
@@ -64,7 +65,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 
 					if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
 					{
-						fprintf(logFile, "Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
+						fprintf(logFile, "Player %d with ip %s is not sendable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 						sucess=false;
 						break;
@@ -72,6 +73,9 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 					sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
 					fprintf(logFile, "We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 				}
+			}
+			else
+				fprintf(logFile, "We wait for nat resolution of player %d.\n", j);
 }
 
 int MultiplayersCrossConnectable::getFreeChannel()

@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "Session.h"
@@ -263,6 +263,8 @@ char *SessionGame::getData(bool compressed)
 	{
 		fprintf(logFile, "getData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
 			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
+		if (mapGenerationDescriptor)
+			fprintf(logFile, "mgscs=%x\n", mapGenerationDescriptor->checkSum());
 		addSint8(data, (Sint8)versionMajor, 0);
 		addSint8(data, (Sint8)versionMinor, 1);
 		addSint8(data, (Sint8)numberOfPlayer, 2);
@@ -328,6 +330,8 @@ bool SessionGame::setData(const char *data, int dataLength, bool compressed)
 			mapGenerationDescriptor=NULL;
 		fprintf(logFile, "setData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
 			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
+		if (mapGenerationDescriptor)
+			fprintf(logFile, "mgscs=%x\n", mapGenerationDescriptor->checkSum());
 	}
 	else
 	{
@@ -397,7 +401,7 @@ Sint32 SessionGame::checkSum()
 	//	versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency);
 	//printf("mapGenerationDescriptor=%x", mapGenerationDescriptor);
 	
-	//printf("SessionGame::sc=%x.\n", cs);
+	fprintf(logFile, "SessionGame::sc=%x.\n", cs);
 	
 	return cs;
 }
@@ -615,18 +619,14 @@ Sint32 SessionInfo::checkSum()
 	
 	cs^=map.checkSum();
 
-	{
-		for (int i=0; i<32; ++i)
-			cs^=players[i].checkSum();
-	}
-
-	{
-		for (int i=0; i<32; ++i)
-			cs^=team[i].checkSum();
-	}
+	for (int i=0; i<numberOfPlayer; ++i)
+		cs^=players[i].checkSum();
+	
+	for (int i=0; i<numberOfTeam; ++i)
+		cs^=team[i].checkSum();
 	
 	cs^=SessionGame::checkSum();
-	//printf("SessionInfo::sc=%x.\n", cs);
+	fprintf(logFile, "SessionInfo::sc=%x.\n", cs);
 	
 	return cs;
 }
