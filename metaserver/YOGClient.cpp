@@ -20,6 +20,7 @@
 #include "YOGClient.h"
 #include "../src/Marshaling.h"
 #include "../src/Utilities.h"
+#include <stdarg.h>
 
 extern FILE *logServerFile;
 extern YOGClient *admin;

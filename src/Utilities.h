@@ -20,7 +20,6 @@
 #ifndef __UTILITIES_H
 #define __UTILITIES_H
 
-#include "Header.h"
 #include <stdlib.h>
 #include <SDL/SDL_net.h>
 
