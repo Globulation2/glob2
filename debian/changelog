@@ -1,3 +1,10 @@
+glob2 (alpha5-post) unstable; urgency=low
+
+  * Post Alpha5 CVS
+  * Lib GLU deps changed
+
+ -- Stephane Magnenat <nct@ysagoon.com>  Sat, 29 May 2004 12:25:00 +0200
+
 glob2 (alpha3) unstable; urgency=low
 
   * Alpha 3
