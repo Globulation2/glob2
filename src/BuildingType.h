@@ -54,6 +54,7 @@ public:
 
 		NB_BUILDING
 	};
+	static const int NB_HARD_BUILDING=8;
 
 #define __STARTDATA_B ((Uint32*)&startImage)
 
