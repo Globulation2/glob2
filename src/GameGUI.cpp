@@ -605,11 +605,24 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==SDL_BUTTON_MIDDLE)
 			{
-				panPushed=true;
-				panMouseX=event->button.x;
-				panMouseY=event->button.y;
-				panViewX=viewportX;
-				panViewY=viewportY;
+				if (selectMode==BUILDING_SELECTION && (globalContainer->gfx->getW()-event->button.x<128))
+				{
+					assert (selBuild);
+					selBuild->verbose=!selBuild->verbose;
+					printf("building gid=(%d) verbose %d\n", selBuild->gid, selBuild->verbose);
+					printf(" pos=(%d, %d)\n", selBuild->posX, selBuild->posY);
+					printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
+					printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
+					printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
+				}
+				else
+				{
+					panPushed=true;
+					panMouseX=event->button.x;
+					panMouseY=event->button.y;
+					panViewX=viewportX;
+					panViewY=viewportY;
+				}
 			}
 			else if (button==4)
 			{
@@ -1218,6 +1231,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		assert(selUnit);
 		selUnit->verbose=!selUnit->verbose;
 		printf("unit gid=(%d) verbose %d\n", selUnit->gid, selUnit->verbose);
+		printf(" pos=(%d, %d)\n", selUnit->posX, selUnit->posY);
 		printf(" needToRecheckMedical=%d\n", selUnit->needToRecheckMedical);
 		printf(" medical=%d\n", selUnit->medical);
 		printf(" activity=%d\n", selUnit->activity);

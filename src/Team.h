@@ -113,9 +113,9 @@ public:
 	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
 	
 	//! Called when unit is hungry
-	Building *findNearestFood(int x, int y);
+	Building *findNearestFood(Unit *unit);
 	//! Called when unit needs heal
-	Building *findNearestHeal(int x, int y);
+	Building *findNearestHeal(Unit *unit);
 	
 	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
 	Building *findBestFoodable(Unit *unit);
