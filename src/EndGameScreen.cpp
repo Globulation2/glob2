@@ -144,7 +144,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 	}
 	
-	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", titleText, 600));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText));
 	if (allocatedText)
 		delete[] allocatedText;
 	statWidget=new EndGameStat(38, 80, &(gui->game));

@@ -28,7 +28,7 @@ CustomGameScreen::CustomGameScreen()
 	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "maps", "map", true);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
-	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose map]"), 600));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose map]")));
 	mapName=new Text(440, 60+128+30, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapName);
 	mapInfo=new Text(440, 60+128+60, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
