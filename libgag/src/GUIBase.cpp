@@ -117,21 +117,50 @@ void RectangularWidget::show(void)
 {
 	assert(parent);
 	visible=true;
-	repaint();
+
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	paint();
+	parent->addUpdateRect(x, y, w, h);
 }
 
 void RectangularWidget::hide(void)
 {
 	assert(parent);
 	visible=false;
-	repaint();
+
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	parent->paint(x, y, w, h);
+	parent->addUpdateRect(x, y, w, h);
 }
 
 void RectangularWidget::setVisible(bool visible)
 {
-	assert(parent);
-	this->visible=visible;
-	repaint();
+	if (visible)
+		show();
+	else
+		hide();
+}
+
+void RectangularWidget::paint(void)
+{
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	internalInit(x, y, w, h);
+	internalRepaint(x, y, w, h);
+}
+
+void RectangularWidget::repaint(void)
+{
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	parent->paint(x, y, w, h);
+	internalRepaint(x, y, w, h);
+
+	parent->addUpdateRect(x, y, w, h);
 }
 
 void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
@@ -186,6 +215,31 @@ void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 
 		default:
 			assert(false);
+	}
+}
+
+void HighlightableWidget::onSDLEvent(SDL_Event *event)
+{
+	if (event->type==SDL_MOUSEMOTION)
+	{
+		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		{
+			if (!highlighted)
+			{
+				highlighted=true;
+				repaint();
+				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
+			}
+		}
+		else
+		{
+			if (highlighted)
+			{
+				highlighted=false;
+				repaint();
+				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
+			}
+		}
 	}
 }
 
