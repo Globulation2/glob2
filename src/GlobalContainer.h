@@ -68,6 +68,7 @@ public:
 	Sprite *terrainBlack;
 	Sprite *terrainShader;
 	Sprite *ressources;
+	Sprite *ressourceMini;
 	Sprite *units;
 	Sprite *buildings;
 	Sprite *unitmini;

@@ -89,8 +89,11 @@ GlobalContainer::~GlobalContainer(void)
 		Toolkit::releaseSprite("black");
 		Toolkit::releaseSprite("shading");
 		Toolkit::releaseSprite("ressources");
+		Toolkit::releaseSprite("ressourcemini");
 		Toolkit::releaseSprite("units");
+		Toolkit::releaseSprite("unitmini");
 		Toolkit::releaseSprite("buildings");
+		Toolkit::releaseSprite("buildingmini");
 		Toolkit::releaseSprite("gamegui");
 		Toolkit::releaseSprite("brush");
 		Toolkit::releaseFont("menu");
@@ -417,6 +420,8 @@ void GlobalContainer::load(void)
 		// load ressources
 		gfx->loadSprite("data/gfx/ressource", "ressources");
 		ressources=Toolkit::getSprite("ressources");
+		gfx->loadSprite("data/gfx/ressourcemini", "ressourcemini");
+		ressourceMini=Toolkit::getSprite("ressourcemini");
 
 		updateLoadProgressBar(40);
 		// load units
