@@ -236,13 +236,12 @@ private:
 
 	struct Message
 	{
-		enum { MAX_MESSAGE_SIZE = 64 };
-		enum { MAX_DISPLAYED_MESSAGE_SIZE = MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4 }; // avoid network overflow
 		enum { DEFAULT_MESSAGE_SHOW_TICKS = 180 };
 
 		// since when it is shown
 		int showTicks;
-		char text[MAX_DISPLAYED_MESSAGE_SIZE];
+		// text
+		std::string text;
 		// color
 		Uint8 r, g, b, a;
 	};
