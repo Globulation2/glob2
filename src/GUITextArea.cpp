@@ -111,6 +111,37 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			}
 			break;
 			
+			case SDLK_HOME:
+			{
+				if (SDL_GetModState() & KMOD_CTRL)
+				{
+					cursorPos=0;
+				}
+				else
+				{
+					cursorPos=lines[cursorPosY];
+				}
+				computeAndRepaint();
+			}
+			break;
+			
+			case SDLK_END:
+			{
+				if (SDL_GetModState() & KMOD_CTRL)
+				{
+					cursorPos=textBufferLength;
+				}
+				else
+				{
+					if (cursorPosY<lines.size()-1)
+						cursorPos=lines[cursorPosY+1]-1;
+					else
+						cursorPos=textBufferLength;
+				}
+				computeAndRepaint();
+			}
+			break;
+			
 			case SDLK_UP:
 			{
 				if (readOnly)
@@ -281,12 +312,12 @@ void TextArea::computeAndRepaint(void)
 		}
 		if (cursorPosY<lines.size()-1)
 		{
-			while (cursorPosY+1>areaPos+areaHeight)
+			while (cursorPosY+1>=areaPos+areaHeight)
 				areaPos++;
 		}
 		else
 		{
-			while (cursorPosY>areaPos+areaHeight)
+			while (cursorPosY>=areaPos+areaHeight)
 				areaPos++;
 		}
 
@@ -327,7 +358,7 @@ void TextArea::internalSetText(const char *text)
 		temp[temppos]=0;
 		
 		// TODO : add getStringWidth with a number of char paramater to get ride of temp
-		
+		// TODO : handle non­wrapping case
 		while (pos<textBufferLength)
 		{
 			while ((font->getStringWidth(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
