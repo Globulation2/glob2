@@ -242,29 +242,24 @@ Sint32 BasePlayer::checkSum()
 
 void BasePlayer::setip(Uint32 host, Uint16 port)
 {
-	ip.host=host;
-	ip.port=port;
+	if (ip.host!=host || ip.port!=port)
+	{
+		unbind();
+		ip.host=host;
+		ip.port=port;
+	}
 }
 void BasePlayer::setip(IPaddress ip)
 {
-	this->ip=ip;
+	if (ip.host!=this->ip.host || ip.port!=this->ip.port)
+	{
+		unbind();
+		this->ip=ip;
+	}
 }
 bool BasePlayer::sameip(IPaddress ip)
 {
 	return ((this->ip.host==ip.host)&&(this->ip.port==ip.port));
-}
-
-void BasePlayer::printip(char s[32])
-{
-	Uint32 netHost=SDL_SwapBE32(ip.host);
-	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
-	
-	int i24=(netHost>>24)&0xFF;
-	int i16=(netHost>>16)&0xFF;
-	int i8=(netHost>>8)&0xFF;
-	int i0=(netHost>>0)&0xFF;
-	
-	snprintf(s, 32, "%d.%d.%d.%d : %d", i24, i16, i8, i0, netPort);
 }
 
 bool BasePlayer::bind(UDPsocket socket, int channel)
@@ -310,8 +305,10 @@ void BasePlayer::unbind()
 	if (channel!=-1)
 	{
 		fprintf(logFile, "Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		assert(socket);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
+		netState=PNS_NOT_BINDED;
 	}
 }
 
@@ -319,14 +316,17 @@ bool BasePlayer::send(Uint8 *data, int size)
 {
 	if (ip.host==0)
 		return false;
+	if (socket==NULL)
+		return false;
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 		return false;
 	packet->len=size;
-			
+	
 	memcpy(packet->data, data, size);
 
 	bool sucess;
+	
 
 	packet->address=ip;
 	packet->channel=channel;

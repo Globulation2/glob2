@@ -790,7 +790,7 @@ void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress 
 				sessionInfo.players[j].waitForNatResolution=false;
 				sessionInfo.players[j].ipFromNAT=true;
 				sessionInfo.players[j].setip(ip);
-				fprintf(logFile, "joinerBroadcastResponse, The player (%s) has a new ip(%s)\n", name, Utilities::stringIP(ip));
+				fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", name, j, Utilities::stringIP(ip));
 			}
 	}
 	else
