@@ -171,6 +171,8 @@ private:
 	Sint32 checkSumsRemote[256];
 	
 	FILE *logFile;
+protected:
+	int latencyStats[10];
 };
 
 #endif

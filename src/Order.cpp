@@ -914,8 +914,8 @@ MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
 Uint8 *MapMarkOrder::getData(void)
 {
 	addUint32(data, this->teamNumber, 0);
-	addUint32(data, this->x, 4);
-	addUint32(data, this->y, 8);
+	addSint32(data, this->x, 4);
+	addSint32(data, this->y, 8);
 	return data;
 }
 
@@ -925,8 +925,8 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
 		return false;
 
 	this->teamNumber=getUint32(data, 0);
-	this->x=getUint32(data, 4);
-	this->y=getUint32(data, 8);
+	this->x=getSint32(data, 4);
+	this->y=getSint32(data, 8);
 
 	memcpy(this->data,data,dataLength);
 

@@ -357,6 +357,7 @@ int Engine::run(void)
 			if (networkReadyToExecute)
 				gui.synchroneStep();
 
+			Sint32 ticksToDelay=0;
 			if (!gui.paused) // TODO: this is an ugly pause !
 			{
 				if (networkReadyToExecute)
@@ -368,6 +369,9 @@ int Engine::run(void)
 					for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 						if (gui.game.players[i]->ai)
 							net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+					
+					ticksToDelay=net->ticksToDelay();
+					SDL_Delay(ticksToDelay);
 				}
 				
 				// We proceed network:
@@ -397,7 +401,31 @@ int Engine::run(void)
 
 			globalContainer->gfx->nextFrame();
 
+			
 			endTick=SDL_GetTicks();
+			Sint32 spentTick=endTick-startTick;
+			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
+			
+			if (!gui.paused)
+			{
+				Sint32 i=leftTicks+ticksToDelay;
+				if (i<0)
+					i=0;
+				else if (i>=40)
+					i=40;
+				cpuStats[i]++;
+			}
+			
+			Sint32 ticksToWait=leftTicks;
+			if (leftTicks<0)
+				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.
+			else
+				net->setWishedDelay(0);
+			
+			if (ticksToWait>0)
+				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.
+				
+			/*endTick=SDL_GetTicks();
 			Sint32 spentTick=endTick-startTick;
 			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
 			if (!gui.paused)
@@ -415,7 +443,7 @@ int Engine::run(void)
 			else
 				net->setWishedDelay(0);
 			if (ticksToWait>0)
-				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.
+				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.*/
 		}
 
 		delete net;

@@ -59,6 +59,7 @@ private:
 
 public:
 	bool anyPlayerWaited;
+	int anyPlayerWaitedTimeFor;
 	Uint32 maskAwayPlayer;
 
 public:
