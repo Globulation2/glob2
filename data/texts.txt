@@ -535,6 +535,10 @@ sind ok
 ont faim
 are hungry
 sind hungrig
+[are dying hungry]
+meurent de faim
+starve to death
+
 [are wonded]
 blessées
 are wonded
@@ -576,9 +580,9 @@ Total/libres/recherche
 Total/free/seeking
 Total/Frei/suchen
 [Ok/hungry/wounded]
-Libre/faim/blessées
-Free/hungry/wounded
-Frei/Hungrig/Verletzt
+Libre/faim/trop faim/blessées
+Free/hungry/starving/wounded
+
 [in way]
 en chemin
 in way
