@@ -418,21 +418,23 @@ void Unit::handleActivity(void)
 						displacement=DIS_GOING_TO_RESSOURCE;
 						destinationPurprose=(int)CORN;
 						newTargetWasSet();
-						
+
 						//printf("Going to harvest for filling building\n");
-						
+
 						attachedBuilding=b;
+						b->unitsWorking.push_front(this);
+						b->update();
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
 						owner->subscribeForWorkingStep.push_front(b);
 						//b->update();
-						
+
 						return;
 					}
 				}
 			}
-			
+
 			// second we look for upgrade
 			for (int abilityIterator=(int)WALK; abilityIterator<(int)ARMOR; abilityIterator++)
 				if (performance[abilityIterator])
@@ -696,7 +698,7 @@ void Unit::handleDisplacement(void)
 					attachedBuilding->ressources[(int)destinationPurprose]++;
 					if (displacement==DIS_BUILDING)
 						attachedBuilding->hp+=attachedBuilding->type->hpInc;
-					
+
 					assert(attachedBuilding);
 					attachedBuilding->update();
 					// NOTE : this assert is wrong because Building->update() can free the unit
@@ -895,7 +897,6 @@ void Unit::handleMovement(void)
 {
 	switch (displacement)
 	{
-
 		case DIS_REMOVING_BLACK_AROUND:
 		{
 			if (attachedBuilding)
@@ -975,8 +976,9 @@ void Unit::handleMovement(void)
 			}
 			if (owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID)
 				movement=MOV_RANDOM;
+			break;
 		}
-		break;
+
 		case DIS_ATTACKING_AROUND:
 		{
 			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
@@ -1016,8 +1018,9 @@ void Unit::handleMovement(void)
 							}
 						}
 			}
+			break;
 		}
-		break;
+
 		case DIS_RANDOM:
 		{
 			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->game->map.doesUnitTouchEnemy(this, &dx, &dy)))
@@ -1088,7 +1091,7 @@ void Unit::handleMovement(void)
 			movement=MOV_GOING_TARGET;
 			break;
 		}
-		
+
 		case DIS_HARVESTING:
 		{
 			movement=MOV_HARVESTING;
@@ -1149,7 +1152,7 @@ void Unit::handleAction(void)
 			owner->game->map.setUnit(posX, posY, UID);
 			break;
 		}
-		
+
 		case MOV_GOING_DXDY:
 		{
 			owner->game->map.setUnit(posX, posY, NOUID);

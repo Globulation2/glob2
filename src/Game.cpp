@@ -784,14 +784,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				// draw terrain
 				id=map.getTerrain(x+viewportX, y+viewportY);
+				PalSprite *sprite;
 				if (id<272)
 				{
-					globalContainer.gfx.drawSprite(globalContainer.terrain.getSprite(id), x<<5, y<<5);
+					sprite=(PalSprite *)globalContainer.terrain.getSprite(id);
 				}
 				else
 				{
-					globalContainer.gfx.drawSprite(globalContainer.ressources.getSprite(id-272), x<<5, y<<5);
+					sprite=(PalSprite *)globalContainer.ressources.getSprite(id-272);
 				}
+
+				if (map.isFOW(x+viewportX, y+viewportY, teamSelected)||(!useMapDiscovered))
+					sprite->setPal(&globalContainer.macPal);
+				else
+					sprite->setPal(&globalContainer.ShadedPal);
+
+				globalContainer.gfx.drawSprite(sprite , x<<5, y<<5);
 				// draw Unit or Building
 				#ifdef DBG_UID
 				if ((!useMapDiscovered) || map.isMapDiscovered(x+viewportX, y+viewportY, teamSelected))
@@ -1084,6 +1092,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 
 	// draw shading
+
 	if (useMapDiscovered)
 	{
 		for (y=top; y<=bot; y++)
@@ -1093,14 +1102,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				{
 					globalContainer.gfx.drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
 				}
-				else if ( (!map.isFOW(x+viewportX, y+viewportY, teamSelected)))
+				/*else if ( (!map.isFOW(x+viewportX, y+viewportY, teamSelected)))
 				{
 					for (int i=0; i<16; i++)
 					{
 						globalContainer.gfx.drawVertLine((x<<5)+(i<<1), y<<5, 32, 10, 10, 10);
 						globalContainer.gfx.drawHorzLine((x<<5), (y<<5)+(i<<1), 32, 10, 10, 10);
 					}
-				}
+				}*/
 			}
 	}
 
