@@ -116,16 +116,17 @@ RectangularWidget::RectangularWidget()
 
 void RectangularWidget::show(void)
 {
-	assert(parent);
-	visible=true;
-
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	paint();
-	parent->addUpdateRect(x, y, w, h);
+	if (!visible)
+		parent->toShow.push_back(this);
 }
 
 void RectangularWidget::hide(void)
+{
+	if (visible)
+		parent->toHide.push_back(this);
+}
+
+void RectangularWidget::doHide(void)
 {
 	assert(parent);
 	visible=false;
@@ -136,9 +137,20 @@ void RectangularWidget::hide(void)
 	parent->addUpdateRect(x, y, w, h);
 }
 
-void RectangularWidget::setVisible(bool visible)
+void RectangularWidget::doShow(void)
 {
-	if (visible)
+	assert(parent);
+	visible=true;
+
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	paint();
+	parent->addUpdateRect(x, y, w, h);
+}
+
+void RectangularWidget::setVisible(bool newState)
+{
+	if (newState)
 		show();
 	else
 		hide();
@@ -285,11 +297,12 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
 
-	gfx->setClipRect();
 	dispatchPaint(gfx);
-	addUpdateRect(0, 0, gfx->getW(), gfx->getH());
+	addUpdateRect();
+	repaint(gfx);
 	run=true;
 	onAction(NULL, SCREEN_CREATED, 0, 0);
+	
 	while (run)
 	{
 		// get first timer
@@ -328,9 +341,9 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 				case SDL_VIDEORESIZE:
 				{
 					gfx->setRes(event.resize.w, event.resize.h, gfx->getDepth(), gfx->getFlags());
-					updateRects.clear();
 					dispatchPaint(gfx);
-					addUpdateRect(0, 0, gfx->getW(), gfx->getH());
+					addUpdateRect();
+					repaint(gfx);
 					onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 				}
 				break;
@@ -345,6 +358,15 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 			dispatchEvents(&lastMouseMotion);
 		if (wasWindowEvent)
 			dispatchEvents(&windowEvent);
+			
+		// process to hide/ to show requests
+		for (unsigned i=0; i<toHide.size(); i++)
+			toHide[i]->doHide();
+		toHide.clear();
+			
+		for (unsigned i=0; i<toShow.size(); i++)
+			toShow[i]->doShow();
+		toShow.clear();
 
 		// redraw
 		repaint(gfx);
@@ -436,11 +458,12 @@ void Screen::repaint(DrawableSurface *gfx)
 	if (updateRects.size()>0)
 	{
 		SDL_Rect *rects=new SDL_Rect[updateRects.size()];
-		{
-			for (unsigned int i=0; i<updateRects.size(); i++)
-				rects[i]=updateRects[i];
-		}
+		
+		for (unsigned i=0; i<updateRects.size(); i++)
+			rects[i]=updateRects[i];
+			
 		gfx->updateRects(rects, updateRects.size());
+		
 		delete[] rects;
 		updateRects.clear();
 	}

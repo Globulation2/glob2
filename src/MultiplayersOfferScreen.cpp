@@ -20,17 +20,17 @@
 #include "MultiplayersOfferScreen.h"
 #include "GlobalContainer.h"
 #include <GUIButton.h>
+#include <GUIText.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
 MultiplayersOfferScreen::MultiplayersOfferScreen()
 {
-	addWidget(new TextButton(150,  25, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[host]"), HOST));
-	addWidget(new TextButton(150,  90, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[join a game]"), JOIN));
-	addWidget(new TextButton(150, 415, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
-
-	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	addWidget(new TextButton(150,  70, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[host]"), HOST));
+	addWidget(new TextButton(150,  130, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[join a game]"), JOIN));
+	addWidget(new TextButton(150, 415, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[lan]")));
 }
 
 MultiplayersOfferScreen::~MultiplayersOfferScreen()
