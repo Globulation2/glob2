@@ -1208,6 +1208,7 @@ maxUnitStayRange = 14
 // stone wall building site
 startImage = 40
 miniImage = -1
+hueImage = 1;
 
 fillable = 1
 maxWood = 0
@@ -1231,6 +1232,7 @@ isBuildingSite = 1
 startImage = 23
 miniImage = -1
 crossConnectMultiImage = 1
+hueImage = 1;
 
 width = 1
 height = 1

@@ -2474,10 +2474,10 @@ void GameGUI::drawOverlayInfos(void)
 		Sprite *sprite=globalContainer->buildings;
 		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 
-		batX=(mapX-viewportX)<<5;
-		batY=(mapY-viewportY)<<5;
 		batW=(bt->width)<<5;
-		batH=(bt->height)<<5;
+		batH=sprite->getH(bt->startImage);
+		batX=(mapX-viewportX)<<5;
+		batY=((mapY-viewportY)<<5)-(batH-(bt->height<<5));
 
 		// we get extended building sizes:
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
@@ -2504,9 +2504,9 @@ void GameGUI::drawOverlayInfos(void)
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 
 				if (isRoom&&isExtendedRoom)
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
+					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
 				else
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
+					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 127, 0, 0, 127);
 			}
 		}
 
