@@ -1421,7 +1421,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				if (selBuild->hp<buildingType->hpMax)
 				{
 					// repair
-					if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
+					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
 						orderQueue.push_back(new OrderConstruction(selBuild->gid));
 				}
 				else if (buildingType->nextLevelTypeNum!=-1)
@@ -2165,7 +2165,7 @@ void GameGUI::drawBuildingInfos(void)
 			if (selBuild->hp<buildingType->hpMax)
 			{
 				// repair
-				if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
+				if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
 				{
 					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
 					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12

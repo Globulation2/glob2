@@ -93,6 +93,7 @@ Map::Map()
 	
 	pathToBuildingCountIsFar=0;
 	pathToBuildingCountFar=0;
+	pathToBuildingCountFarIsNew=0;
 	pathToBuildingCountFarOldSuccess=0;
 	pathToBuildingCountFarOldFailureLocked=0;
 	pathToBuildingCountFarOldFailureBad=0;
@@ -120,7 +121,7 @@ Map::Map()
 	buildingAviableCountIsFar=0;
 	buildingAviableCountFar=0;
 	buildingAviableCountFarNew=0;
-	buildingAviableCountFarNewSuccess=0;
+	buildingAviableCountFarNewSuccessFast=0;
 	buildingAviableCountFarNewSuccessClosely=0;
 	buildingAviableCountFarNewFailureLocked=0;
 	buildingAviableCountFarNewFailureVirtual=0;
@@ -475,6 +476,11 @@ void Map::clear()
 			pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdate/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdate/(double)pathToBuildingCountFar);
+		fprintf(logFile, "|+   pathToBuildingCountFarIsNew=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
+			pathToBuildingCountFarIsNew,
+			100.*(double)pathToBuildingCountFarIsNew/(double)pathToBuildingCountTot,
+			100.*(double)pathToBuildingCountFarIsNew/(double)pathToBuildingCountFar,
+			100.*(double)pathToBuildingCountFarIsNew/(double)pathToBuildingCountFarUpdate);
 		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
 			pathToBuildingCountFarUpdateSuccess,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountTot,
@@ -678,16 +684,25 @@ void Map::clear()
 			buildingAviableCountFarNew,
 			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountFar);
-		fprintf(logFile, "|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+		
+		int buildingAviableCountFarNewSuccess=buildingAviableCountFarNewSuccessFast+buildingAviableCountFarNewSuccessClosely;
+		fprintf(logFile, "|-    buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewSuccess,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
-		fprintf(logFile, "|-   buildingAviableCountFarNewSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
-			buildingAviableCountFarNewSuccess,
+		fprintf(logFile, "|-    buildingAviableCountFarNewSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
+			buildingAviableCountFarNewSuccessFast,
+			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountTot,
+			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFar,
+			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFarNew,
+			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFarNewSuccess);
+		fprintf(logFile, "|-   buildingAviableCountFarNewSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
+			buildingAviableCountFarNewSuccessClosely,
 			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFarNew);
+			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFarNew,
+			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFarNewSuccess);
 		
 		int buildingAviableCountFarNewFailure=
 			+buildingAviableCountFarNewFailureLocked
@@ -731,7 +746,7 @@ void Map::clear()
 	buildingAviableCountIsFar=0;
 	buildingAviableCountFar=0;
 	buildingAviableCountFarNew=0;
-	buildingAviableCountFarNewSuccess=0;
+	buildingAviableCountFarNewSuccessFast=0;
 	buildingAviableCountFarNewSuccessClosely=0;
 	buildingAviableCountFarNewFailureLocked=0;
 	buildingAviableCountFarNewFailureVirtual=0;
@@ -3595,7 +3610,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
-		buildingAviableCountFarNewSuccess++;
+		buildingAviableCountFarNewSuccessFast++;
 		*dist=255-currentg;
 		return true;
 	}
@@ -3709,6 +3724,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
+		pathToBuildingCountFarIsNew++;
 		gradient=new Uint8[size];
 		//printf("allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		fprintf(logFile, "allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
