@@ -1,13 +1,16 @@
-all: broadTest simpleServer simpleClient
+all: broadTest simpleServer simpleClient chaterYog
 
 broadTest: broadTest.cpp
-	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` broadTest.cpp -o broadTest
+	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` broadTest.cpp -o broadTest
 	
 simpleServer: simpleServer.cpp
-	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleServer.cpp -o simpleServer
+	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleServer.cpp -o simpleServer
 	
 simpleClient: simpleClient.cpp
-	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleClient.cpp -o simpleClient
+	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleClient.cpp -o simpleClient
 	
+chaterYog: chaterYog.cpp
+	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` chaterYog.cpp -o chaterYog
+
 clean:
-	rm -f broadTest simpleServer simpleClient core
+	rm -f broadTest simpleServer simpleClient chaterYog core
