@@ -13,7 +13,7 @@ leben
 Santé
 Heal
 Gesundheit
-Heal
+Zdravý
 [armor]
 Armure
 Armor
@@ -23,12 +23,12 @@ Opevnění
 Dommages
 Damage
 Schaden
-Damage
+Poškození
 [food]
 Nouriture
 Food
 Nahrung
-Food
+Potrava
 [working]
 Travaillant
 Working
@@ -43,7 +43,7 @@ Uvnitř
 Ressources
 Ressources
 Ressourcen
-Ressources (prostredky)
+Prostředky
 [wood]
 Bois
 Wood
@@ -53,7 +53,7 @@ Dřevo
 Blé
 Corn
 Weizen
-Pšenice
+Obilí
 [stone]
 Pierre
 stone
@@ -83,7 +83,7 @@ Stornuj zničeni
 Attente destruction
 Waiting destruction
 Warten auf Zerstoerung
-Waiting destruction
+Očekávám zničení
 [upgrade]
 Améliorer
 Upgrade
@@ -108,7 +108,7 @@ Stornuj opravu
 type d'unités
 units type
 art die Eineiten
-units type
+druh jednotek
 [workers]
 ouvrières
 workers
@@ -153,7 +153,7 @@ Dosud
  unites travaillent
  units work
  Einheiten arbeiten
- jednotek pracujes
+ jednotek pracuje
 [still one unit working]
 Une unité travaille
 Still one unit working
@@ -243,17 +243,17 @@ Hradba
 Attente de %s
 Waiting for %s
 Warten auf %s
-Waiting for %s
+Čeká se na %s
 [%s has left the game]
 %s a quitté la partie.
 %s has quited the game.
 %s hat des Spiel verlassen.
-%s has quited the game.
+%s opustil hru.
 [%s has been deconnected of the game]
 %s s'est fait déconnecté de la partie.
+%s has been disconnected.
 %s has been deconnected.
-%s has been deconnected.
-%s has been deconnected.
+%s byl odpojen.
 [load game]
 Charger jeu
 Load Game
@@ -293,7 +293,7 @@ Budiž
 Annuler
 Cancel
 Wiederrufen
-Storno
+Zrušit
 [you have lost]
 Vous avez perdu !
 You have lost !
@@ -308,7 +308,7 @@ Vyhrál jsi :-)
 Campagne
 Campaign
 Kampagne
-Campaign
+Nová hra
 [custom game]
 Jeu libre
 Custom game
@@ -343,12 +343,12 @@ Konec
 Créer partie
 Create game
 Spiel kreieren
-Create game
+Vytvoř hru
 [update list]
 Mettre a jour
 Update list
 Wiederaufbau
-Update list
+Obnovit seznam
 [connecting to]
 Connection a
 Connecting to
@@ -358,12 +358,12 @@ Připojuji se k
 Connecter
 Connect
 Verbinden
-Připojen
+Připojit
 [Disconnect]
 Déconnecter
 Disonnect
 Verbindung unterbrechen
-Odpojen
+Odpojit
 [please wait]
 Attendre SVP
 Please wait
@@ -378,17 +378,17 @@ Nahrávám Globulation 2
 Héberger une partie
 Host a game
 Spiel unterbringen
-Host a game
+Hostuj hru
 [join a game]
 Joindre une partie
 Join a game
 Anschliessen an ein Spiel
-Join a game
+Připojit se do hry
 [join]
 Joindre
 Join
 Anschliessen
-Join
+Připojit se
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
@@ -448,7 +448,7 @@ Breite der Karte
 Hauteur de la carte
 Height of the map
 Höhe der Karte
-Výška mapay
+Výška mapy
 [default terrain]
 Terrain par defaut
 Default terrain
@@ -478,22 +478,22 @@ Tráva
 Choisir une carte
 Choose a map
 Karte auswaelen
-Vyběr mapy
+Výběr mapy
 [choose game]
 Choisir une partie
 Choose a game
 Spiel auswaelen
-Choose a game
+Výběr hry
 [awaiting players]
 Attente des joueurs
 Awaiting players
 Warten auf Spieler
-Awaiting players
+Čeká se na hráče
 [stat]
 Statistiques
 Statistic
 Statistiken
-Statistic
+Statistické údaje
 [food left]
 Nourriture
 Food left
@@ -543,7 +543,7 @@ The school is finished
 La tour de défense est terminée
 The defense tower is finished
 
-Obranna věž postavena ...
+Obranná věž postavena ...
 [the exploration flag is finished]
 ?? Drapeau d'exploration terminé ??
 ?? Exploration flag finised ??
@@ -563,7 +563,7 @@ Obranna věž postavena ...
 Un élément de mur est terminé
 A part of the wall is finished
 
-Kus hradby hotov
+Kus hradby hotov ...
 [the building is under attack]
 le batiment est attaqué
 the building is under attack
@@ -643,22 +643,22 @@ jsou pod útokem
 Incontrôlé
 Uncontrolled
 
-Uncontrolled
+Neovládaný
 [ai]
 IA
 AI
 KI
-AI
+Počítač
 [closed]
 Fermé
 Closed
 Geschlossen
-Closed
+Uzavřeno
 [close]
 Fermer
 Close
 Schliessen
-Close
+Uzavři
 [player]
 Joueur
 Player
@@ -668,17 +668,17 @@ Hráč
 Inconnu
 Unknow
 unbekannt
-Unknow
+Neznámý
 [PNS_BINDED]
 Connu
 Know
 bekannt
-Know
+Známý
 [PNS_SENDING_FIRST_PACKET]
 Connecté
 Connected
 Verbindet
-Connected
+Připojeno
 [PNS_HOST]
 PNS_HOST
 PNS_HOST
@@ -688,27 +688,27 @@ PNS_HOST
 Joueur silencieux
 Silent player
 Stiller Spieler
-Silent player
+Tichý hráč
 [PNS_PLAYER_SEND_PRESENCE_REQUEST]
 Requête de présence reçue
 Presence request received
 Presenz Anfrage bekommen
-Presence request received
+Požadavek připojení přijat
 [PNS_PLAYER_SEND_SESSION_REQUEST]
 Requête de session reçue
 Session request received
 Session Anfrage bekommen
-Session request received
+Požadavek na navázání relace přijat
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyées
 Informations sended
 Information gesendet
-Informations sended
+Informace poslány
 [PNS_PLAYER_SEND_CHECK_SUM]
 Verification reçue
 Check received
 Pruefung bekommen
-Check received
+Kontrola přijata
 [PNS_OK]
 OK
 OK
@@ -718,42 +718,42 @@ OK
 Debut d'interconnection
 Begin of interconnection
 Begin der Verbindung
-Begin of interconnection
+Začátek spojení
 [PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
 Interconnection confirmée
 Interconnection confirmed
 Verbindung bestaetigt
-Interconnection confirmed
+Spojení ověřeno
 [PNS_PLAYER_FINISHED_CROSS_CONNECTION]
 Interconnection terminée
 Interconnection finished
 Verbindung beendet
-Interconnection finished
+Spojení navázáno
 [PNS_CROSS_CONNECTED]
 Interconnecté
 Interconnected
 Verbunden
-Interconnected
+Spojen
 [PNS_SERVER_SEND_START_GAME]
 Debut de partie envoyée
 Begin of the game sended
 Begin des Spiels gesendet
-Begin of the game sended
+Počátek hry odeslán
 [PNS_PLAYER_CONFIRMED_START_GAME]
 Debut de partie confirmée
 Begin of the game confirmed
 Begin des Spiels bestaetigt
-Begin of the game confirmed
+Počátek hry potvrzen
 [PNS_PLAYER_PLAYS]
 Joue
 Plays
 Spielt
-Plays
+Hraje
 [STARTING GAME ...]
-Départ du jeu...
-Starting game...
-Begins des Spiels...
-Startuji hru...
+Départ du jeu... 
+Starting game... 
+Begins des Spiels... 
+Startuji hru... 
 [Statistics]
 Statistiques
 Statistics
@@ -898,17 +898,17 @@ Verze
 ouvert
 open
 offen
-open
+Otevřít
 [Add AI]
 Ajouter IA
 Add AI
 KI zugeben
-Add AI
+Přidej počítač
 [AI]
 IA
 AI
 KI
-AI
+Počítač
 [AI name 1]
 Gros mechant
 Bag Guy
@@ -933,27 +933,27 @@ Agressman
 Parties
 Games
 Spiele
-Games
+Hry
 [the maps]
 Cartes
 Maps
 Karten
-Maps
+Mapy
 [was]
 auparavant
 was
 vorher
-was
+byl
 [was AI]
 auparavant IA
 was AI
 vorher KI
-was AI
+byl počítač
 [state]
 état
 state
 Zuestand
-state
+stav
 [Start]
 Départ
 Start
@@ -963,17 +963,17 @@ Start
 pas prêt
 not ready
 nicht bereit
-not ready
+nepřipraven
 [has joined]
 a rejoint
 has joined
 ist angeschlossen
-has joined
+připojen
 [has quit]
 a quitté
 has quit
 hat verlassen
-has quit
+odpojil
 [yog-chat]
 #yog-fr
 #yog-en
@@ -983,7 +983,7 @@ has quit
 Vitesse
 Speed
 Geschwindigkeit
-Speed
+Rychlost
 [current speed]
 Vitesse actuelle
 Current speed
@@ -1008,12 +1008,12 @@ Nahrát
 Carte faite à la main
 Handmade map
 Handgemachte Karte
-Handmade map
+Ručně vyrobená mapa
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
 Zufallsgenerierte Karten
-Methodes of random generated maps
+Metody náhodně vytvořených map
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
@@ -1063,52 +1063,52 @@ Dělníci
 Mauvaise erreure dans le système de connection
 Bad error in connection system
 Schlechter
-Bad error in connection system
+Kritická chyba v systému připojení
 [not connected]
 Pas connecté
 Not connected
 Nicht angeschlossen
-Not connected
+Nepřipojen
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
 Présenzanfrage gesendet ...
-Presence request sent ...
+Požadavek připojení odeslán ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
 Sessionanfrage gesendet ... 
-Session request sent ...
+Požadavek na navázání relace odeslán ...
 [checksum sent]
 Somme de contrôle envoyée ...
 Checksum sent ...
 Prüfsumme gesendet ...
-Checksum sent ...
+Kontrolní součet odeslán ...
 [connected to server]
 Connecté au serveur
 Connected to server
 Angeschlossen an Server
-Connected to server
+Server připojen
 [connecting to all players]
 En train de connecter avec les joueurs
 Connecting to all players
 Anschliessen an alle Spieler
-Connecting to all players
+Připojuji se ke všem hráčům
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
 Angeschlossen an alle Spieler
-Connected to all players
+Připojen ke všem hráčům
 [aviable lan games]
 Parties locales disponibles
 Local aviable games
 Lokalvorhandene Spiele
-Local aviable games
+Dostupné místní hry
 [login]
 Login
 Login
 Login
-Login
+Přihlásit
 [from:]
 de:
 from:
@@ -1123,17 +1123,17 @@ pro:
 absent:
 away:
 weg:
-away:
+pryč:
 [compile]
 Compiler le script
 Compile script
 Script compilieren
-Compile script
+Sestavit skript
 [downloaded at]
 Téléchargé à 
 Downloaded at 
 Runtergeladen zu
-Downloaded at 
+Stahuji 
 [percent]
   pourcent
   percent
@@ -1143,7 +1143,7 @@ Downloaded at
 Téléchargement terminé
 Download finished
 Runterladen fertig
-Download finished
+Stáhnuto
 [Map name: %s]
 Carte: %s.
 Map name: %s.
@@ -1153,22 +1153,22 @@ Jméno mapy: %s.
 Un joueur présent.
 One player has joined.
 Ein Spieler.
-One player has joined.
+Jeden hráč se připojil.
 [number of players: %d]
 %d joueurs présents.
 %d players has joined.
 %d Spieler.
-%d players has joined.
+%d hráčů se připojilo.
 [number of teams: %d]
 %d équipes.
 %d teams.
 %d Mannschaften.
-%d teams.
+%d týmů.
 [game full]
 Jeu complet
 Game full
 Spiel full
-Game full
+Plně obsazená hra
 [small]
 faible
 small
@@ -1198,82 +1198,82 @@ Rychlost hry
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
 Interner koherenz Fehler bei der Anschliessung
-Internal consistency error while connecting.
+Vnitřní chyba spojitosti během připojovaní.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
 Anschliessen unmöglich. Anscheinend ist der YOG Metaserver nicht verfügbar.
-Unable to connect. Apparently the YOG metaserver is down.
+Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
 Das System ist bereit sich an YOG anzuschliessen
-The connection system is ready to contact the YOG metaserver for connection.
+Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Etablishing the connection to the YOG metaserver...
 Anschluss an YOG Metaserver im Aufbau...
-Etablishing the connection to the YOG metaserver...
+Navazuji spojení s YOG metaserverem...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
 Der Administrator hat gerade YOG abgestellt.
-An administrator has just stopped the YOG metaserver.
+Správce zastavil YOG metaserver.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
 Der Anschluss an YOG wurde verlohren.
-The connection to YOG has been lost.
+Spojení s YOG metaserverem bylo ztraceno.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
 Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihre Version von Globulation zu alt ist. 
-The YOG metaserver has refused the connection because your globulation2 version is too old to communicate with.
+YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
 Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihr Pseudo schohn gebraucht wird.
-The YOG metaserver has refused the connection because your username is already used by someone else.
+YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
 Der YOG Metaserver hat den Anschluss ohne Erklärung nicht akzeptiert.
-The YOG metaserver has refused the connection without explanation!
+YOG metaserver odmítnul spojení bez udání důvodu.
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 The player %s has left YOG.
 Der Spieler %s hat YOG verlassen.
-The player %s has left YOG.
+Hráč %s se odpojil od YOG.
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 The player %s has joined YOG.
 %s
-The player %s has joined YOG.
+Hráč %s se připojil k YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as being away.
 Sie sind weg.
-You are marked as being away.
+Jsi označen, že jsi pryč.
 [You are no more marked as away]
 Vous êtes désormais considéré comme étant présent.
 You are no longer marked as away.
 Sie sind wieder da.
-You are no longer marked as away.
+Nejsi označen, že jsi pryč.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
 Das YOG Nachrigten System kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" tippen. 
-The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
+YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <příkaz>" pro více informací o příkazu.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
-The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/m I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
+The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/away I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
 Der Befehl "/away (<Nachricht>)" zeigt anderen YOG Spieler dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen. z.b. "Ich drinke ein Bier, bin um eins zurück !". Alias "/a"
-The "/away (<message>)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/m I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
+Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoji dočasnou nepřítomnost. Můžeš přidat i výmluvnou krátkou zprávu (důvod). Například "/away Du na cigaretu, za 5 minut sem zpátky ...", lze použít zkráceně "/a".
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
 Der "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine speziefische Person zu senden. z.b. "msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
-The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
+Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný si jí nepřečte (šeptání). Například "/msg klip Nazdar :-), tak co ?", lze použít zkráceně "/m".
 [really quit without saving?]
 Voulez-vous vraiment quitter sans sauver ?
 Are you sure you want to quit without saving ?
@@ -1303,7 +1303,7 @@ games/Auto save.game
 Le prestige total a été atteint
 Total prestige reached
 
-Total prestige reached
+Dosažená celková prestiž
 [Continue playing]
 Continuer à jouer
 Continue playing
@@ -1313,27 +1313,27 @@ Pokračovat ve hře
 Perdu : Votre colonie est morte
 Lost : Your colony is dead
 
-Tvoje kolonie je mrtvá ... [prohrál jsi]
+Tvoje kolonie je zničená ... 
 [Won : you defeated your opponents]
 Gagné : Vous avez vaincu vos adversaires
 Won : you defeated your opponents
 
-Tvoji nepřátelé byli poraženi ... [vyhrál jsi ;-]
+Tvoji nepřátelé byli poraženi ...
 [Won : your ally %s have the biggest prestige]
 Gagné : votre allié %s a le plus de prestige
 Won : your ally %s have the biggest prestige
 %s
-Won : your ally %s have the biggest prestige
+Tvůj spojenec %s má největší prestiž ...
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
 %s
-Lost : %s has more prestige than you
+%s má větší prestiž než Ty ...
 [Won : you have the biggest prestige]
 Gagné : Vous avez le plus de prestige
 Won : you have the biggest prestige
 
-Won : you have the biggest prestige
+Ty máš největší prestiž ...
 [The game has not been finished]
 La partie n'a pas été finie
 The game has not been finished
