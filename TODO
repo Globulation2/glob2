@@ -21,7 +21,6 @@ Pathfindig:
 - Aller chercher la ressource qui est aussi proche du batiment.
 - Le comportement de guerrières doit-être amélioré.
 - Des tas d'unités peuvent bloquer une unité...
-- Il y a peut-être des osciliations entre le petit et le grand gradient. (bug pas sauvable).
 
 Optimisation:
 - Utliser de Uint32 pour les ressource inexsitantes, sans endiansafe!
@@ -47,7 +46,6 @@ Propreté du code:
 MapEditor:
 -http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
 -La génération automatique est de nouveau cassée!
--La touche "exc" est saisie au KEY_DOWN, alors qu'elle est saisie au KEY_Up dans le main screen.
 
 YOG:
 -Ajouter des chambres

@@ -479,7 +479,15 @@ void Building::launchConstruction(void)
 			owner->swarms.remove(this);
 		if (type->shootingRange)
 			owner->turrets.remove(this);
-
+		if (type->canExchange)
+			owner->canExchange.remove(this);
+		if (type->isVirtual)
+			owner->virtualBuildings.remove(this);
+		if (type->zonable[WORKER])
+			owner->clearingFlags.remove(this);
+		if (type->zonableForbidden)
+			owner->zonableForbidden.remove(this);
+		
 		removeSubscribers();
 
 		// We remove all units who are going to the building:
@@ -587,9 +595,17 @@ void Building::cancelConstruction(void)
 	productionTimeout=type->unitProductionTime;
 
 	if (type->unitProductionTime)
-		owner->swarms.push_front(this);
+		owner->swarms.push_back(this);
 	if (type->shootingRange)
-		owner->turrets.push_front(this);
+		owner->turrets.push_back(this);
+	if (type->canExchange)
+		owner->canExchange.push_back(this);
+	if (type->isVirtual)
+		owner->virtualBuildings.push_back(this);
+	if (type->zonable[WORKER])
+		owner->clearingFlags.push_back(this);
+	if (type->zonableForbidden)
+		owner->zonableForbidden.push_back(this);
 	
 	totalRatio=0;
 	
@@ -955,12 +971,18 @@ void Building::updateBuildingSite(void)
 
 		productionTimeout=type->unitProductionTime;
 		if (type->unitProductionTime)
-			owner->swarms.push_front(this);
+			owner->swarms.push_back(this);
 		if (type->shootingRange)
-			owner->turrets.push_front(this);
+			owner->turrets.push_back(this);
 		if (type->canExchange)
-			owner->canExchange.push_front(this);
-
+			owner->canExchange.push_back(this);
+		if (type->isVirtual)
+			owner->virtualBuildings.push_back(this);
+		if (type->zonable[WORKER])
+			owner->clearingFlags.push_back(this);
+		if (type->zonableForbidden)
+			owner->zonableForbidden.push_back(this);
+		
 		setMapDiscovered();
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
 
@@ -1849,7 +1871,7 @@ void Building::clearingFlagsStep(void)
 {
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
-			if (localRessourcesCleanTime[canSwim]++>128) // Update every 5[s]
+			if (localRessourcesCleanTime[canSwim]++>512) // Update every 20.48[s]
 				updateClearingFlag(canSwim);
 }
 

@@ -199,15 +199,21 @@ void Game::executeOrder(Order *order, int localPlayer)
 				if (b)
 				{
 					fprintf(logFile, "ORDER_CREATE");
-					if (b->type->unitProductionTime)
-						b->owner->swarms.push_back(b);
-					if (b->type->shootingRange)
-						b->owner->turrets.push_back(b);
-					if (b->type->zonable[WORKER])
-						b->owner->clearingFlags.push_back(b);
-					if (b->type->zonableForbidden)
+					BuildingType *type=b->type;
+					Team *owner=b->owner;
+					if (type->unitProductionTime)
+						owner->swarms.push_back(b);
+					if (type->shootingRange)
+						owner->turrets.push_back(b);
+					if (type->canExchange)
+						owner->canExchange.push_back(b);
+					if (type->isVirtual)
+						owner->virtualBuildings.push_back(b);
+					if (type->zonable[WORKER])
+						owner->clearingFlags.push_back(b);
+					if (type->zonableForbidden)
 					{
-						b->owner->zonableForbidden.push_back(b);
+						owner->zonableForbidden.push_back(b);
 						map.setForbiddenArea(posX, posY, b->unitStayRange, team->me);
 					}
 					b->update();
