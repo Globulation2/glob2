@@ -68,7 +68,7 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 300 : 600, 295)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 300 : 600, 325)
 {
 	// fill the slots
 	int i;
@@ -132,7 +132,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	if (gameGUI->game.session.numberOfPlayer<8)
 	{
 		// add ok button
-		addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(10, 280, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	else
 	{
@@ -143,8 +143,13 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 		
 		// add ok button
-		addWidget(new TextButton(150, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(150, 280, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
+	
+	// add keyboard shortcut explanations
+	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation enter]")));
+	addWidget(new Text(10, 258, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation v]")));
+	
 	this->gameGUI=gameGUI;
 	dispatchInit();
 }
