@@ -413,7 +413,11 @@ void Building::neededRessources(Uint8 needs[MAX_NB_RESSOURCES])
 
 int Building::neededRessource(int r)
 {
-	return (type->maxRessource[r]>ressources[r]);
+	int need=type->maxRessource[r]-ressources[r];
+	if (need>0)
+		return need;
+	else
+		return false;
 }
 
 void Building::launchConstruction(void)

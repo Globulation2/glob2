@@ -607,12 +607,13 @@ Building *Team::findBestFillable(Unit *unit)
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
-				if (b->type->level<=actLevel && b->neededRessource(ri))
+				if (b->type->level<=actLevel)
 				{
+					int need=b->neededRessource(ri);
 					int buildingDist;
-					if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+					if (need && map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
-						double newScore=(double)(buildingDist+ressourceDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+						double newScore=(double)(buildingDist+ressourceDist)/((double)(b->maxUnitWorking-b->unitsWorking.size())*(double)need);
 						if (newScore<score)
 						{
 							choosen=b;
