@@ -35,6 +35,8 @@ protected:
 		ITEM(Uint8, cg)
 		ITEM(Uint8, cb)
 		ITEM(Uint8, ca)
+		ITEM(bool, keepW)
+		ITEM(bool, keepH)
 	CLASSEND;
 
 	// cache, recomputed at least on paint
@@ -47,10 +49,10 @@ public:
 	virtual const char *getText() const { return text.c_str();}
 	virtual void setText(const char *newText, ...);
 	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
-	virtual void paint(void);
 
 protected:
-	virtual void repaint(void);
+	virtual void internalInit(int x, int y, int w, int h);
+	virtual void internalRepaint(int x, int y, int w, int h);
 };
 
 #endif

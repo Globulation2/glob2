@@ -92,6 +92,10 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		//totalRatio++;
 		percentUsed[i]=0;
 	}
+
+	receiveRessourceMask=0;
+	sendRessourceMask=0;
+
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
 
@@ -148,6 +152,9 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
 		percentUsed[i]=SDL_ReadBE32(stream);
 	}
+
+	receiveRessourceMask=SDL_ReadBE32(stream);
+	sendRessourceMask=SDL_ReadBE32(stream);
 
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);
@@ -211,6 +218,9 @@ void Building::save(SDL_RWops *stream)
 		SDL_WriteBE32(stream, ratio[i]);
 		SDL_WriteBE32(stream, percentUsed[i]);
 	}
+
+	SDL_WriteBE32(stream, receiveRessourceMask);
+	SDL_WriteBE32(stream, sendRessourceMask);
 
 	SDL_WriteBE32(stream, shootingStep);
 	SDL_WriteBE32(stream, shootingCooldown);

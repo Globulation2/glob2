@@ -154,12 +154,15 @@ void RectangularWidget::paint(void)
 
 void RectangularWidget::repaint(void)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
+	if (visible)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
 
-	parent->paint(x, y, w, h);
-	internalRepaint(x, y, w, h);
-	parent->addUpdateRect(x, y, w, h);
+		parent->paint(x, y, w, h);
+		internalRepaint(x, y, w, h);
+		parent->addUpdateRect(x, y, w, h);
+	}
 }
 
 void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)

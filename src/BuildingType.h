@@ -93,6 +93,7 @@ public:
 	Sint32 ressourceForOneUnit;
 
 	Sint32 maxRessource[MAX_NB_RESSOURCES];
+	Sint32 multiplierRessource[MAX_NB_RESSOURCES];
 	Sint32 maxUnitInside;
 	Sint32 maxUnitWorking;
 
@@ -188,24 +189,35 @@ public:
 			
 			"maxWood",
 			"maxCorn",
-			"maxFungus",
+			"maxPapyrus",
 			"maxStone",
 			"maxAlgue",
 			"maxFruit0",
 			"maxFruit1",
 			"maxFruit2",
-			"maxRes8",
-			"maxRes9",
-			"maxRes10",
-			"maxRes11",
-			"maxRes12",
-			"maxRes13",
-			"maxRes14",
-			"maxRes15",
-			"maxRes16",
-			"maxRes17",
-			"maxRes18",
-			"maxRes19",
+			"maxFruit3",
+			"maxFruit4",
+			"maxFruit5",
+			"maxFruit6",
+			"maxFruit7",
+			"maxFruit8",
+			"maxFruit9",
+
+			"multiplierWood",
+			"multiplierCorn",
+			"multiplierPapyrus",
+			"multiplierStone",
+			"multiplierAlgue",
+			"multiplierFruit0",
+			"multiplierFruit1",
+			"multiplierFruit2",
+			"multiplierFruit3",
+			"multiplierFruit4",
+			"multiplierFruit5",
+			"multiplierFruit6",
+			"multiplierFruit7",
+			"multiplierFruit8",
+			"multiplierFruit9",
 
 			"maxUnitInside",
 			"maxUnitWorking",

@@ -48,22 +48,22 @@ SettingsScreen::SettingsScreen()
 
 	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	fullscreenText=new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"));
+	fullscreenText=new Text(20, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
 
 	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	hwaccelText=new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"));
+	hwaccelText=new Text(20, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
 	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
 	addWidget(nodblbuff);
-	nodblbuffText=new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]"));
+	nodblbuffText=new Text(20, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]"), 160);
 	addWidget(nodblbuffText);
 
 	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	lowqualityText=new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"));
+	lowqualityText=new Text(20, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
 	addWidget(lowqualityText);
 
 	// Username part

@@ -24,17 +24,17 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addAI=new TextButton(440, 345, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Add AI]"), ADD_AI);
-	startButton=new TextButton(440, 390, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
-	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	addAI=new TextButton(440, 335, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Add AI]"), ADD_AI);
+	startButton=new TextButton(440, 385, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
+	addWidget(new TextButton(440, 435, 180, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 	addWidget(addAI);
 
 	startButton->visible=false;
 	addWidget(startButton);
-	notReadyText=new Text(440, 390, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 25);
+	notReadyText=new Text(440, 385, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
-	gameFullText=new Text(440, 345, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 25);
+	gameFullText=new Text(440, 335, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[game full]"), 180, 30);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
 	savedSessionInfo=NULL;

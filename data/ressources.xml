@@ -15,7 +15,6 @@
    <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>false</granular>
-   <multiplicator>1</multiplicator>
    <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
@@ -29,8 +28,7 @@
    <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>true</granular>
-   <multiplicator>1</multiplicator>
-   <visibleToBeCollected>false<visibleToBeCollected>
+    <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
    <Object></Object>
@@ -43,7 +41,6 @@
    <expendable>false</expendable>
    <eternal>false</eternal>
    <granular>true</granular>
-   <multiplicator>1</multiplicator>
    <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
@@ -57,7 +54,6 @@
    <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
-   <multiplicator>1</multiplicator>
    <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
@@ -71,7 +67,6 @@
    <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>false</granular>
-   <multiplicator>1</multiplicator>
    <visibleToBeCollected>false<visibleToBeCollected>
   </element>
   <element>
@@ -85,7 +80,6 @@
    <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
-   <multiplicator>10</multiplicator>
    <visibleToBeCollected>true<visibleToBeCollected>
   </element>
   <element>
@@ -99,7 +93,6 @@
    <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
-   <multiplicator>10</multiplicator>
    <visibleToBeCollected>true<visibleToBeCollected>
   </element>
   <element>
@@ -113,7 +106,6 @@
    <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
-   <multiplicator>10</multiplicator>
    <visibleToBeCollected>true<visibleToBeCollected>
   </element>
  </res>
