@@ -11,6 +11,7 @@ To First release :
 - upgrade key must be inactive if no units have enough high level to build it. (nct)
 - AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
+- Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 
 To Next version :
 
