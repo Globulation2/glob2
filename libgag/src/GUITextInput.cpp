@@ -66,6 +66,8 @@ namespace GAGGUI
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		
+		HighlightableWidget::onSDLEvent(event);
 	
 		if (event->type==SDL_MOUSEBUTTONDOWN)
 		{
@@ -271,9 +273,8 @@ namespace GAGGUI
 		assert(parent->getSurface());
 	
 		recomputeTextInfos();
-	
-		assert(parent);
-		assert(parent->getSurface());
+		HighlightableWidget::paint();
+		
 		parent->getSurface()->drawRect(x, y, w, h, r, g, b);
 		
 		if (password)
