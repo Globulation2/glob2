@@ -104,7 +104,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			}
 			else
 				strncpy(shownInfo, playerInfo, 128);
-			
+
 			text[i]->setText(shownInfo);
 			color[i]->setSelectedColor(teamNumber);
 			if (!wasSlotUsed[i])
@@ -119,7 +119,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		{
 			if (wasSlotUsed[i])
 			{
-				
+
 				text[i]->hide();
 				color[i]->hide();
 				kickButton[i]->hide();
@@ -130,7 +130,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			}
 		}
 	}
-	
+
 	if (multiplayersJoin==NULL)
 	{
 		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
@@ -231,13 +231,16 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		break;
 		default:
 		{
-			if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
-				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
 			if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 				multiplayersHost->kickPlayer(par1-CLOSE_BUTTONS);
 		}
 		break;
 		}
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
 	}
 }
 
