@@ -208,6 +208,9 @@ void TeamStats::drawStat()
 		if (stats[i].numberUnitPerType[0]>maxWorker)
 			maxWorker=stats[i].numberUnitPerType[0];
 
+	if (maxWorker==0)
+		return;
+
 	// captions
 	gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
 	gfx->drawString(textStartPos, 132+16, font, strings->getString("[Total/free/seeking]"));
@@ -233,20 +236,7 @@ void TeamStats::drawStat()
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
-		/*int nbFree=((stats[index].totalFree)*64)/maxUnit;
-		int nbNeeded=((stats[index].totalNeeded)*64)/maxUnit;
-		int nbTotal=(stats[index].totalUnit*64)/maxUnit;
-		int realyFree=nbFree-nbNeeded;
-		if (realyFree>0)
-		{
-			globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 250);
-			globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree, realyFree, 0, 250, 0);
 
-			globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbNeeded, nbNeeded, 250, 0, 0);
-		}
-		else
-			globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal, 0, 0, 250);*/
-		
 		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
 		{
@@ -281,9 +271,6 @@ void TeamStats::drawStat()
 		{
 			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
-		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
-		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);

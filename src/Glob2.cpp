@@ -206,11 +206,14 @@ int Glob2::runHostServer(int argc, char *argv[])
 int Glob2::run(int argc, char *argv[])
 {
 	GAG::init();
+
 	globalContainer=new GlobalContainer();
+
 	yog=new YOG();
 
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+
 	if (!globalContainer->hostServer)
 		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
