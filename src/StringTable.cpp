@@ -75,7 +75,7 @@ StringTable::~StringTable()
 		.
 		string lang n
 
-	
+
 	And fist space of each line is removed, to allow emptih strings.
 
 */
@@ -104,6 +104,7 @@ bool StringTable::load(char *filename)
 {
 	FILE *fp;
 	char temp[1024];
+	unsigned line=0;
 
 	if ((fp=globalContainer->fileManager->openFP(filename, "r"))==NULL)
 	{
@@ -118,17 +119,21 @@ bool StringTable::load(char *filename)
 			fclose(fp);
 			return true;
 		}
+		line++;
 		terminateLine(temp, 1024);
 		numberoflanguages=atoi(temp);
 		while (!feof(fp))
 		{
 			OneStringToken *myString;
-			
+
 			if (fgets(temp, 1024, fp)==NULL)
 				break;
+			line++;
 			terminateLine(temp, 1024);
+			if (temp[0]!='[')
+				fprintf(stderr, "StringTable::load: warning, lookup entry at line %d lacks [ at start\n", line);
 			myString=new OneStringToken(temp);
-			
+
 			for (int n=0; n<numberoflanguages; n++)
 			{
 				if (fgets(temp, 1024, fp)==NULL)
@@ -136,6 +141,7 @@ bool StringTable::load(char *filename)
 					delete myString;
 					goto doublebreak;
 				}
+				line++;
 				terminateLine(temp, 1024);
 				if (temp==NULL)
 					myString->addData("");
@@ -146,7 +152,7 @@ bool StringTable::load(char *filename)
 		}
 		doublebreak:
 		fclose(fp);
-		
+
 		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
 			char *s=(*it)->name;
