@@ -20,7 +20,7 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
 #define NORESID 0xFFFFFFFF
