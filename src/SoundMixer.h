@@ -34,6 +34,9 @@ public:
 	bool earlyChange;
 	bool soundEnabled;
 	unsigned volume;
+	
+protected:
+	void openAudio(void);
 
 public:
 	SoundMixer(unsigned volume = 255);

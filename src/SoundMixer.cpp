@@ -146,7 +146,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	}
 }
 
-SoundMixer::SoundMixer(unsigned volume)
+void SoundMixer::openAudio(void)
 {
 	SDL_AudioSpec as;
 	// Set 16-bit stereo audio at 44Khz
@@ -156,12 +156,7 @@ SoundMixer::SoundMixer(unsigned volume)
 	as.samples = SAMPLE_COUNT_PER_SLICE;
 	as.callback = mixaudio;
 	as.userdata = this;
-
-	actTrack = -1;
-	nextTrack = -1;
-	earlyChange = false;
-	this->volume = volume;
-
+	
 	// Open the audio device and start playing sound!
 	if (SDL_OpenAudio(&as, NULL) < 0)
 	{
@@ -172,6 +167,26 @@ SoundMixer::SoundMixer(unsigned volume)
 	else
 	{
 		soundEnabled = true;
+	}
+}
+
+SoundMixer::SoundMixer(unsigned volume)
+{
+	actTrack = -1;
+	nextTrack = -1;
+	earlyChange = false;
+	this->volume = volume;
+	
+	if (volume == 0)
+	{
+		soundEnabled = false;
+		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
+		return;
+	}
+	
+	else
+	{
+		openAudio();
 	}
 
 	initInterpolationTable();
@@ -240,7 +255,12 @@ void SoundMixer::setVolume(unsigned volume)
 	if (lastVolume != volume)
 	{
 		if (lastVolume == 0)
-			SDL_PauseAudio(0);
+		{
+			if (!soundEnabled)
+				openAudio();
+			if (actTrack>=0)
+				SDL_PauseAudio(0);
+		}
 		if (volume == 0)
 			SDL_PauseAudio(1);
 	}
