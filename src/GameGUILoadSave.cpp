@@ -73,11 +73,15 @@ void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *s=fileList->getText(par1);
+		assert(fileName);
+		delete[] fileName;
 		fileName=Utilities::concat(s, extension);
 		fileNameEntry->setText(s);
 	}
 	else if (action==TEXT_MODIFFIED)
 	{
+		assert(fileName);
+		delete[] fileName;
 		fileName=Utilities::concat(fileNameEntry->getText(), extension);
 	}
 }
