@@ -27,6 +27,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#define TYPING_INPUT_BASE_INC 7
+#define TYPING_INPUT_MAX_POS 46
+
 InGameTextInput::InGameTextInput()
 :OverlayScreen(492, 34)
 {
@@ -503,7 +506,7 @@ void GameGUI::processEvent(SDL_Event *event)
 					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, inputText));
 				typingInputScreen->setText("");
 			}
-			typingInputScreenInc=-10;
+			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
 			typingInputScreen->endValue=1;
 			return;
 		}
@@ -781,7 +784,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					typingInputScreen=new InGameTextInput();
 					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
-					typingInputScreenInc=10;
+					typingInputScreenInc=TYPING_INPUT_BASE_INC;
 					typingInputScreenPos=0;
 				}
 				break;
@@ -1785,21 +1788,19 @@ void GameGUI::drawInGameMenu(void)
 
 void GameGUI::drawInGameTextInput(void)
 {
-	int decW=((globalContainer->gfx->getW()-640)>>1);
-	int lengthToCome=(typingInputScreenPos*(492+decW))/100;
-	typingInputScreen->decX=10-492+lengthToCome;
-	typingInputScreen->decY=globalContainer->gfx->getH()-44;
+	typingInputScreen->decX=(globalContainer->gfx->getW()-128-492)/2;
+	typingInputScreen->decY=globalContainer->gfx->getH()-typingInputScreenPos;
 	globalContainer->gfx->drawSurface(typingInputScreen->decX, typingInputScreen->decY, typingInputScreen->getSurface());
 	if (typingInputScreenInc>0)
-		if (typingInputScreenPos<100)
+		if (typingInputScreenPos<TYPING_INPUT_MAX_POS-TYPING_INPUT_BASE_INC)
 			typingInputScreenPos+=typingInputScreenInc;
 		else
 		{
 			typingInputScreenInc=0;
-			typingInputScreenPos=100;
+			typingInputScreenPos=TYPING_INPUT_MAX_POS;
 		}
 	else if (typingInputScreenInc<0)
-		if (typingInputScreenPos>0)
+		if (typingInputScreenPos>TYPING_INPUT_BASE_INC)
 			typingInputScreenPos+=typingInputScreenInc;
 		else
 		{
