@@ -51,7 +51,8 @@ MapEdit::MapEdit()
 
 	// load menu
 	menu=globalContainer->gfx->loadSprite("data/gui/editor");
-	font=globalContainer->gfx->loadFont("data/fonts/arial8black.png");
+	// TODO FIXME here:
+	font=globalContainer->littleFont; //globalContainer->gfx->loadFont("data/fonts/arial8black.png");
 	
 	// static-like variables:
 	savedMx=0;
@@ -66,7 +67,7 @@ MapEdit::MapEdit()
 MapEdit::~MapEdit()
 {
 	delete menu;
-	delete font;
+	//delete font;
 }
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode)

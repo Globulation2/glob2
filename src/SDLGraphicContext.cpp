@@ -1042,10 +1042,10 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 	return sprite;
 }
 
-Font *SDLGraphicContext::loadFont(const char *name)
+Font *SDLGraphicContext::loadFont(const char *name, unsigned size)
 {
 	SDLTTFont *ttf=new SDLTTFont();
-	if (ttf->load(name))
+	if (ttf->load(name, size))
 		return ttf;
 	else
 		delete ttf;

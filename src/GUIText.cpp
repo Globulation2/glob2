@@ -19,7 +19,7 @@
 
 #include "GUIText.h"
 
-Text::Text(int x, int y, const Font *font, const char *text, int w, int h)
+Text::Text(int x, int y, Font *font, const char *text, int w, int h)
 {
 	this->x=x;
 	this->y=y;
@@ -75,6 +75,14 @@ void Text::setText(const char *newText)
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
+void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE)
+{
+	cr = r;
+	cg = g;
+	cb = b;
+	ca = a;
+}
+
 void Text::paint(void)
 {
 	assert(parent);
@@ -93,7 +101,9 @@ void Text::paint(void)
 		else
 			hDec=0;
 
+		font->pushColor(cr, cg, cb, ca);
 		parent->getSurface()->drawString(x+wDec, y+hDec, font, text);
+		font->popColor();
 	}
 }
 

@@ -77,7 +77,7 @@ public:
 	virtual void loadImage(const char *name);
 
 	virtual Sprite *loadSprite(const char *name);
-	virtual Font *loadFont(const char *name);
+	virtual Font *loadFont(const char *name, unsigned size);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
 
 	virtual void nextFrame(void);

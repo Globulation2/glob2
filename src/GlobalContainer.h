@@ -69,7 +69,7 @@ public:
 	Sprite *buildings;
 	Font *menuFont;
 	Font *standardFont;
-	Font *littleFontGreen;
+	Font *littleFont;
 
 	StringTable texts;
 

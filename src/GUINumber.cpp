@@ -23,7 +23,7 @@
 Number::Number(int x, int y, int w, int h, int m, const Font *font)
 {
 	if (!font)
-		font=globalContainer->littleFontGreen;
+		font=globalContainer->littleFont;
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
 	

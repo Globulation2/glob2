@@ -22,6 +22,7 @@
 
 #include "Header.h"
 #include "GraphicContext.h"
+#include <stack>
 
 class SDLFont:public Font
 {
@@ -31,9 +32,8 @@ public:
 protected:
 	friend class SDLDrawableSurface;
 
-	//! draw a string until we fint a \0, \r or \n in text
+	//! draw a string until we find a \0
 	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const=0;
-	virtual bool load(const char *filename)=0;	
 };
 
 class SDLBitmapFont: public SDLFont
@@ -87,13 +87,24 @@ class SDLTTFont:public SDLFont
 {
 public:
 	SDLTTFont();
-	SDLTTFont(const char *filename);
+	SDLTTFont(const char *filename, unsigned size);
 	virtual ~SDLTTFont();
-	bool load(const char *filename);
+	bool load(const char *filename, unsigned size);
+	
 	int getStringWidth(const char *string) const;
 	int getStringHeight(const char *string) const;
 	bool printable(char c) const;
-
+	
+	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
+	virtual void pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
+	virtual void popColor(void);
+	virtual void getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const;
+	
+	virtual void setStyle(unsigned style);
+	virtual void pushStyle(unsigned style);
+	virtual void popStyle(void);
+	virtual unsigned getStyle(void) const;
+	
 protected:
 	friend class SDLDrawableSurface;
 	
@@ -101,6 +112,9 @@ protected:
 	
 protected:
 	TTF_Font *font;
+	
+	std::stack<unsigned> styleStack;
+	std::stack<SDL_Color> colorStack;
 };
 
 #endif
