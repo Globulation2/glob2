@@ -147,7 +147,7 @@ protected:
 		int x, y;
 		DrawableSurface *s;
 	public:
-		DrawSurfaceCommand(int x, int y, DrawableSurface *) { this->x=x; this->y=y; this->s=s; }
+		DrawSurfaceCommand(int x, int y, DrawableSurface *s) { this->x=x; this->y=y; this->s=s; }
 		virtual void apply(DrawableSurface *ds) { ds->drawSurface(x, y, s); }
 	};
 		
