@@ -109,9 +109,6 @@ public:
 	
 	Uint32 seenByMask;
 
-	// optimisation parameters
-	Sint32 closestRessourceX[MAX_NB_RESSOURCES], closestRessourceY[MAX_NB_RESSOURCES];
-
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types);
@@ -124,14 +121,15 @@ public:
 
 	bool isRessourceFull(void);
 	int neededRessource(void);
+	void neededRessources(Uint8 needs[MAX_NB_RESSOURCES]);
 	int neededRessource(int r);
 	void launchConstruction(void);
 	void cancelConstruction(void);
 	void launchDelete(void);
 	void cancelDelete(void);
 	
-	void updateConstructionState(void);
 	void updateCallLists(void);
+	void updateConstructionState(void);
 	void updateBuildingSite(void);
 	void update(void);
 	

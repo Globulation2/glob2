@@ -122,6 +122,7 @@ public:
 	};
 	
 protected:
+	void stopWorkingForBuilding(void);
 	void handleMedical(void);
 	void handleActivity(void);
 	void handleDisplacement(void);
@@ -134,7 +135,6 @@ protected:
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
 	void pathFind(void);
-	void gotoTempTarget(void);
 	bool areOnlyUnitsAround(void);
 	bool areOnlyUnitsInFront(int dx, int dy);
 	void gotoTarget(int targetX, int targetY);

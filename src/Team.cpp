@@ -307,6 +307,34 @@ Building *Team::findBestFillable(Unit *unit)
 
 	Building *choosen=NULL;
 	float score=1e9;
+	bool canSwim=unit->performance[SWIM];
+	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
+	{
+		Sint32 rx, ry;
+		int dist;
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &dist))
+		{
+			double ressourceDist=sqrt((double)dist);
+			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
+			{
+				Building *b=(*bi);
+				if ((b->type->level<=actLevel)&&(b->neededRessource(ri)))
+				{
+					double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), rx, ry));
+					double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+						unit->destinationPurprose=ri;
+					}
+				}
+			}
+		}
+	}
+	
+	/*Building *choosen=NULL;
+	float score=1e9;
 	for (unsigned r=0; r<globalContainer->ressourcesTypes->number(); r++)
 	{
 		int rx, ry;
@@ -330,7 +358,7 @@ Building *Team::findBestFillable(Unit *unit)
 		}
 	}
 	if (choosen)
-		unit->destinationPurprose=choosen->neededRessource();
+		unit->destinationPurprose=choosen->neededRessource();*/
 		
 	return choosen;
 }
@@ -584,6 +612,15 @@ void Team::step(void)
 				myUnits[i]=NULL;
 			}
 		}
+	
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+			for (int r=0; r<MAX_NB_RESSOURCES; r++)
+			{
+				int max=myBuildings[i]->type->maxRessource[r];
+				int cur=myBuildings[i]->ressources[r];
+				assert(cur<=max);
+			}
 	
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
 	{

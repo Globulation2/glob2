@@ -97,6 +97,7 @@ public:
 };
 
 #define MAX_NB_RESSOURCES 20
+#define MAX_RESSOURCES 7
 #define WOOD (globalContainer->ressourcesTypes->wood)
 #define CORN (globalContainer->ressourcesTypes->corn)
 #define FUNGUS (globalContainer->ressourcesTypes->fungus)

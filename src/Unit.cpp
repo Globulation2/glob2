@@ -389,6 +389,19 @@ bool Unit::isUnitHungry(void)
 	return (hungry<=realTrigHungry);
 }
 
+void Unit::stopWorkingForBuilding(void)
+{
+	activity=ACT_RANDOM;
+	displacement=DIS_RANDOM;
+	
+	assert(attachedBuilding);
+	attachedBuilding->unitsWorking.remove(this);
+	attachedBuilding->unitsWorkingSubscribe.remove(this);
+	attachedBuilding->updateCallLists();
+	attachedBuilding=NULL;
+	subscribed=false;
+}
+
 void Unit::handleMedical(void)
 {
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
@@ -432,9 +445,6 @@ void Unit::handleMedical(void)
 		}
 		isDead=true;
 	}
-
-	if (medical==MED_FREE)
-		needToRecheckMedical=true;
 }
 
 void Unit::handleActivity(void)
@@ -442,7 +452,7 @@ void Unit::handleActivity(void)
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
-
+	
 	if (medical==MED_FREE)
 	{
 		if (activity==ACT_RANDOM)
@@ -457,7 +467,8 @@ void Unit::handleActivity(void)
 				Building *b=owner->findBestFoodable(this);
 				if (b != NULL)
 				{
-					jobFound=owner->map->nearestRessource(posX, posY, CORN, &targetX, &targetY);
+					//Notice that (targetX, targetY) is only set for gameplay purposes, but the unit will follow the gradient.
+					jobFound=owner->map->ressourceAviable(owner->teamNumber, CORN, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 					if (jobFound)
 					{
 						activity=ACT_HARVESTING;
@@ -534,12 +545,13 @@ void Unit::handleActivity(void)
 				Building *b=owner->findBestFillable(this);
 				if (b != NULL)
 				{
-					//do not do this (it's done in findBestConstruction() much nicer)
+					//do not do this (it's done in findBestFillable() much nicer)
 					//destinationPurprose=b->neededRessource();
 					assert(destinationPurprose>=0);
 					assert(b->neededRessource(destinationPurprose));
-
-					jobFound=owner->map->nearestRessource(posX, posY, (RessourcesTypes::intResType)destinationPurprose, &targetX, &targetY);
+					
+					//Notice that (targetX, targetY) is only set for gameplay purposes, but the unit will follow the gradient.
+					jobFound=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 					if (jobFound)
 					{
 						activity=ACT_BUILDING;
@@ -602,7 +614,7 @@ void Unit::handleActivity(void)
 		if (attachedBuilding)
 		{
 			if (verbose)
-				printf("Need medical assistant while working, abort work\n");
+				printf("Need medical while working, abort work\n");
 			attachedBuilding->unitsWorking.remove(this);
 			attachedBuilding->unitsInside.remove(this);
 			attachedBuilding->unitsWorkingSubscribe.remove(this);
@@ -618,12 +630,12 @@ void Unit::handleActivity(void)
 			b=owner->findNearestFood(posX, posY);
 			if ( b != NULL)
 			{
-				
+
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=FEED;
 				needToRecheckMedical=false;
-    			
+
 				attachedBuilding=b;
 				targetX=attachedBuilding->getMidX();
 				targetY=attachedBuilding->getMidY();
@@ -651,7 +663,7 @@ void Unit::handleActivity(void)
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=HEAL;
 				needToRecheckMedical=false;
-    			
+
 				attachedBuilding=b;
 				targetX=attachedBuilding->getMidX();
 				targetY=attachedBuilding->getMidY();
@@ -742,10 +754,10 @@ void Unit::handleDisplacement(void)
 				if (attachedBuilding->ressources[caryedRessource] < attachedBuilding->type->maxRessource[caryedRessource])
 				{
 					assert(attachedBuilding);
-					//printf("Giving ressource to building : res : %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
+					if (verbose)
+						printf("(Unit gid=%d) Giving ressource to building gid=%d : res : %d\n", gid, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
 					attachedBuilding->ressources[caryedRessource]+=globalContainer->ressourcesTypes->get(caryedRessource)->multiplicator;
-					if (attachedBuilding->ressources[caryedRessource] >
-							attachedBuilding->type->maxRessource[caryedRessource])
+					if (attachedBuilding->ressources[caryedRessource] > attachedBuilding->type->maxRessource[caryedRessource])
 						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
 					caryedRessource=-1;
 					if (displacement==DIS_BUILDING)
@@ -761,26 +773,55 @@ void Unit::handleDisplacement(void)
 						else
 							attachedBuilding->hp+=bt->hpInc;
 					}
+				}
 
-					assert(attachedBuilding);
-					attachedBuilding->update();
-					// NOTE : this assert is wrong because Building->update() can free the unit
-					//assert(attachedBuilding);
-					// replaced by
-					if (!attachedBuilding)
+				assert(attachedBuilding);
+				attachedBuilding->update();
+				// NOTE : this assert is wrong because Building->update() can free the unit
+				//assert(attachedBuilding);
+				// replaced by
+				if (!attachedBuilding)
+				{
+					if (verbose)
+						printf("(Unit gid=%d) The building doesn't need me any more.\n", gid);
+					activity=ACT_RANDOM;
+					displacement=DIS_RANDOM;
+					subscribed=false;
+					return;
+				}
+				
+				Uint8 needs[MAX_NB_RESSOURCES];
+				attachedBuilding->neededRessources(needs);
+				int teamNumber=owner->teamNumber;
+				bool canSwim=performance[SWIM];
+				int timeLeft=hungry/race->unitTypes[0][0].hungryness;
+				destinationPurprose=-1;
+				int minValue=owner->map->getW()+owner->map->getW();
+				Map* map=owner->map;
+				for (int r=0; r<MAX_NB_RESSOURCES; r++)
+				{
+					int need=needs[r];
+					if (need)
 					{
-						//printf("The building doesn't need me any more.\n");
-						activity=ACT_RANDOM;
-						displacement=DIS_RANDOM;
-						subscribed=false;
-						return;
+						int distToRessource;
+						if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &targetX, &targetY, &distToRessource))
+						{
+							if ((distToRessource<<1)>=timeLeft)
+								continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
+							int value=distToRessource/need;
+							if (value<minValue)
+							{
+								destinationPurprose=r;
+								minValue=value;
+							}
+						}
 					}
 				}
-				destinationPurprose=attachedBuilding->neededRessource();
-				if (verbose)
-					printf("(%d) destinationPurprose=%d.\n", gid, destinationPurprose);
 				
-				if ((destinationPurprose>=0)&&(owner->map->nearestRessource(posX, posY, (RessourcesTypes::intResType)destinationPurprose, &targetX, &targetY)))
+				if (verbose)
+					printf("(Unit gid=%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
+				
+				if (destinationPurprose>=0)
 				{
 					newTargetWasSet();
 					if (owner->map->doesUnitTouchRessource(this, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy))
@@ -797,15 +838,9 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
-					//printf("Don't find any ressource !!!!\n");
-					activity=ACT_RANDOM;
-					displacement=DIS_RANDOM;
-					attachedBuilding->unitsWorking.remove(this);
-					attachedBuilding->unitsWorkingSubscribe.remove(this);
-					attachedBuilding->updateCallLists();
-					attachedBuilding=NULL;
-					subscribed=false;
-
+					if (verbose)
+						printf("(Unit gid=%d) can't find any ressource %d !!!!\n", gid, destinationPurprose);
+					stopWorkingForBuilding();
 				}
 			}
 			else
@@ -1433,7 +1468,6 @@ void Unit::setNewValidDirection(void)
 			dxdyfromDirection();
 		}
 	}
-
 }
 
 bool Unit::valid(int x, int y)
@@ -1453,6 +1487,37 @@ bool Unit::validHard(int x, int y)
 }
 
 void Unit::pathFind(void)
+{
+	Map *map=owner->map;
+	int teamNumber=owner->teamNumber;
+	bool canSwimm=performance[SWIM]>0;
+	if (displacement==DIS_GOING_TO_RESSOURCE)
+	{
+		if (map->pathfindRessource(teamNumber, destinationPurprose, canSwimm, posX, posY, &dx, &dy))
+		{
+			if (verbose)
+				printf("Unit gid=%d found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
+			directionFromDxDy();
+		}
+		else
+		{
+			if (verbose)
+				printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
+				
+			stopWorkingForBuilding();
+			setNewValidDirection();
+		}
+	}
+	else
+	{
+		int ldx=targetX-posX;
+		int ldy=targetY-posY;
+		simplifyDirection(ldx, ldy, &dx, &dy);
+		directionFromDxDy();
+	}
+}
+
+/*void Unit::pathFind(void)
 {
 	// TODO: do something more clever when you know you'r locked.
 	int odx=dx;
@@ -2107,6 +2172,7 @@ void Unit::pathFind(void)
 	}
 	
 }
+*/
 
 bool Unit::areOnlyUnitsAround(void)
 {
