@@ -312,14 +312,8 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	else
 		startPosSet=0;
 
-	// load stats
-	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
-	{
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
-	}
+	if (!stats.load(stream, versionMinor))
+		return false;
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 	{
@@ -380,14 +374,7 @@ void Team::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, startPosY);
 	SDL_WriteBE32(stream, startPosSet);
 	
-	// save stats
-	SDL_WriteBE32(stream, stats.endOfGameStatIndex);
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
-	{
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]);
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]);
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]);
-	}
+	stats.save(stream);
 }
 
 void Team::createLists(void)

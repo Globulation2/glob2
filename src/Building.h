@@ -187,6 +187,7 @@ public:
 	bool findGroundExit(int *posX, int *posY, int *dx, int *dy);
 	bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
+	int getLongLevel(void);
 
 	//! get flag from units attached to flag
 	void computeFlagStat(int *goingTo, int *onSpot);

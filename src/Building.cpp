@@ -1994,6 +1994,11 @@ bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 	return false;
 }
 
+int Building::getLongLevel(void)
+{
+	return ((type->level)<<1)+1-type->isBuildingSite;
+}
+
 bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim)
 {
 	int testX, testY;
