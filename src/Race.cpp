@@ -65,7 +65,7 @@ void Race::create(CreationType creationType)
 		{
 			int offset=SDL_RWtell(stream);
 			limits[0][j].loadText(stream);
-			
+
 			SDL_RWseek(stream, offset, SEEK_SET);
 			limits[1][j].loadText(stream);
 			//limits[1][j] = limits[0][j]; // TODO : seek !! zzz
@@ -196,6 +196,6 @@ void Race::loadText(const char *filename)
 			unitTypes[i][j].init();
 			unitTypes[i][j].loadText(stream);
         }
-	SDL_FreeRW(stream);
+	SDL_RWclose(stream);
 }
 */
