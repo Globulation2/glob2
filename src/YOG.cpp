@@ -287,9 +287,10 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
-			game.ip.host=getUint32safe(data, index);
+			game.ip.host=SDL_SwapLE32(getUint32safe(data, index));
+			game.ip.host=(data, index);
 			index+=4;
-			game.ip.port=getUint16safe(data, index);
+			game.ip.port=SDL_SwapLE16(getUint16safe(data, index));
 			index+=2;
 			game.uid=getUint32safe(data, index);
 			index+=4;
