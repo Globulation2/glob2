@@ -126,14 +126,14 @@ Stone wall
  
  
 [r units free]
-  unites libres
-  units free
+  u. libres
+  idle u.
 [one unit free]
-Une unite libre
-One unit free
+Une u. libre
+One u. idle
 [no unit free]
-Pas d'unites libres
-No unit free
+Pas d'u. libres
+No idle u.
 [l waiting for player]
 Attente du joueur
 Waiting for player

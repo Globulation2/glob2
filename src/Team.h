@@ -123,6 +123,9 @@ public:
 	Building *findNearestHeal(int x, int y);
 	Building *findNearestFood(int x, int y);
 
+	//! Return the maximum build level (need at least 1 unit of this level)
+	int maxBuildLevel(void);
+	
 	Sint32 checkSum();
 
 private:

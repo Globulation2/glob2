@@ -930,7 +930,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
 			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 			{
 				orderQueue.push(new OrderUpgrade(selBuild->UID));
 			}
@@ -1184,7 +1184,7 @@ void GameGUI::draw(void)
 			{
 				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 			{
 				drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
