@@ -1,0 +1,9 @@
+Globulation 2
+
+If you have taken this from CVS and you want to build the package;
+type this in the same directory as this file :
+
+autoheader && aclocal && automake --add-missing && autoconf
+
+Then read the INSTALL file.
+
