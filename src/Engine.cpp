@@ -187,14 +187,16 @@ int Engine::initCustom(const char *gameName)
 		return EE_CANCEL;
 	}
 	
+	printf("Engine::initCustom:: numberOfPlayer=%d numberOfTeam=%d.\n", gui.game.session.numberOfTeam, gui.game.session.numberOfPlayer);
+	
 	// If the game is a network saved game, we need to toogle net players to ai players:
-	for (int p=0; p<gui.game.session.numberOfTeam; p++)
+	for (int p=0; p<gui.game.session.numberOfPlayer; p++)
 	{
-		printf("player[%d].type=%d.\n", p, gui.game.players[p]->type);
+		printf("Engine::initCustom::player[%d].type=%d.\n", p, gui.game.players[p]->type);
 		if (gui.game.players[p]->type==BasePlayer::P_IP)
 		{
 			gui.game.players[p]->makeItAI();
-			printf("net player (id %d) was made ai.\n", p);
+			printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
 		}
 	}
 	

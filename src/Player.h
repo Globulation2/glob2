@@ -31,11 +31,11 @@ public:
  	enum PlayerType
 	{
 		P_NONE=0, // NOTE : we don't need any more because null player are not created
-		P_LOST_A, // Player will be droped in any cases, but we still have to exchange orders
-		P_LOST_B, // Player is no longer considered, may be later changed to P_AI
-		P_AI,
-		P_IP,
-		P_LOCAL
+		P_LOST_A=1, // Player will be droped in any cases, but we still have to exchange orders
+		P_LOST_B=2, // Player is no longer considered, may be later changed to P_AI
+		P_AI=3,
+		P_IP=4,
+		P_LOCAL=5
 	};
 
 	enum {MAX_NAME_LENGTH = 32};

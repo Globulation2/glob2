@@ -581,6 +581,14 @@ void Player::makeItAI()
 
 bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 {
+	if (versionMinor>=9)
+	{
+		char signature[4];
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"PLYb",4)!=0)
+			return false;
+	}
+	
 	// if AI, delete
 	if ((type==P_AI) && (ai))
 		delete ai;
@@ -599,11 +607,20 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	else
 		ai=NULL;
 	
+	if (versionMinor>=9)
+	{
+		char signature[4];
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"PLYe",4)!=0)
+			return false;
+	}
+	
 	return true;
 }
 
 void Player::save(SDL_RWops *stream)
 {
+	SDL_RWwrite(stream, "PLYb", 4, 1);
 	// base player
 	BasePlayer::save(stream);
 
@@ -612,6 +629,7 @@ void Player::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, startPositionY);
 	if (type==P_AI)
 		ai->save(stream);
+	SDL_RWwrite(stream, "PLYe", 4, 1);
 }
 
 Sint32 Player::checkSum()

@@ -352,6 +352,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 bool Game::load(SDL_RWops *stream)
 {
 	assert(stream);
+	
 	// delete existing teams
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)
@@ -368,7 +369,7 @@ bool Game::load(SDL_RWops *stream)
 			players[i]=NULL;
 		}
 	session.numberOfPlayer=0;
-
+		
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
 	if (!tempSessionInfo.load(stream))
@@ -388,9 +389,20 @@ bool Game::load(SDL_RWops *stream)
 
 		if (session.versionMinor>1)
 			SDL_RWseek(stream, tempSessionInfo.gameOffset , SEEK_SET);
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
+		
+		if (session.versionMajor>=0 && session.versionMinor>=9)
+		{
+			char signature[4];
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GAMb",4)!=0)
+				return false;
+		}
+		else
+		{
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GLO2",4)!=0)
+				return false;
+		}
 
 		setSyncRandSeedA(SDL_ReadBE32(stream));
 		setSyncRandSeedB(SDL_ReadBE32(stream));
@@ -422,9 +434,19 @@ bool Game::load(SDL_RWops *stream)
 		if(!map.load(stream, this))
 			return false;
 
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
+		if (session.versionMajor>=0 && session.versionMinor>=9)
+		{
+			char signature[4];
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GAMe",4)!=0)
+				return false;
+		}
+		else
+		{
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GLO2",4)!=0)
+				return false;
+		}
 	}
 	
 	// load script the script
@@ -451,6 +473,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 	int i;
 
 	assert(stream);
+	
 
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
@@ -481,7 +504,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 	else
 	{
 		SAVE_OFFSET(stream, 16);
-		SDL_RWwrite(stream, "GLO2", 4, 1);
+		SDL_RWwrite(stream, "GAMb", 4, 1);
 
 		SDL_WriteBE32(stream, getSyncRandSeedA());
 		SDL_WriteBE32(stream, getSyncRandSeedB());
@@ -506,8 +529,9 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 		SAVE_OFFSET(stream, 28);
 		map.save(stream);
 
-		SDL_RWwrite(stream, "GLO2", 4, 1);
+		SDL_RWwrite(stream, "GAMe", 4, 1);
 	}
+	
 }
 
 void Game::wonStep(void)
