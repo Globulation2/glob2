@@ -1261,7 +1261,7 @@ void GameGUI::draw(void)
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 				}
-				else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+				else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 				}

@@ -183,7 +183,7 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 				numberRequestedTemp=0;
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
-			printf("AI: (%d) numberRequested changed to %d (f=%d).\n", b->UID, numberRequestedTemp, f);
+			printf("AI: (%d) numberRequested changed to %d (f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, f, nbu);
 			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
 		}
 	}
