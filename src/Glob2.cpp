@@ -32,25 +32,6 @@
 
 GlobalContainer *globalContainer=0;
 
-void drawYOGSplashScreen(void)
-{
-	int w, h;
-	w=globalContainer->gfx->getW();
-	h=globalContainer->gfx->getH();
-	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	char *text[3];
-	text[0]=globalContainer->texts.getString("[connecting to]");
-	text[1]=globalContainer->texts.getString("[yog]");
-	text[2]=globalContainer->texts.getString("[please wait]");
-	for (int i=0; i<3; ++i)
-	{
-		int size=globalContainer->menuFont->getStringWidth(text[i]);
-		int dec=(w-size)>>1;
-		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
-	}
-	globalContainer->gfx->updateRect(0, 0, w, h);
-}
-
 int main(int argc, char *argv[])
 {
 	globalContainer = new GlobalContainer();
@@ -94,7 +75,12 @@ int main(int argc, char *argv[])
 			break;
 			case 2:
 			{
-				YOGScreen yogScreen;
+				Engine engine;
+				if (engine.initMutiplayerYOG()==Engine::NO_ERROR)
+					if (engine.run()==-1)
+						run=false;
+				
+				/*YOGScreen yogScreen;
 				drawYOGSplashScreen();
 				yogScreen.createConnection();
 				if (yogScreen.socket!=NULL)
@@ -109,7 +95,7 @@ int main(int argc, char *argv[])
 					{
 						// TODO : create game
 					}
-				}
+				}*/
 			}
 			break;
 			case 3:

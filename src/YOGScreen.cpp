@@ -22,12 +22,17 @@
 #include <stdio.h>
 #include "YOGScreen.h"
 #include "GlobalContainer.h"
+#include "MultiplayersConnectedScreen.h"
 
 YOGScreen::YOGScreen()
 {
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]") ,0));
-	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]") ,1));
-	addWidget(new TextButton(440, 300, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[update list]") ,3));
+	multiplayersJoin=new MultiplayersJoin();
+	strncpy(multiplayersJoin->serverName, "nohost", 128);
+	strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
+
+	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL));
+	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(440, 300, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[update list]"), UPDATE_LIST));
 
 	gameList=new List(20, 60, 600, 220, globalContainer->standardFont);
 	addWidget(gameList);
@@ -40,6 +45,7 @@ YOGScreen::YOGScreen()
 YOGScreen::~YOGScreen()
 {
 	closeYOG();
+	delete multiplayersJoin;
 }
 
 TCPsocket YOGScreen::socket = NULL;
@@ -172,7 +178,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_RELEASED)
 	{
-		if (par1 ==3)
+		if (par1==UPDATE_LIST)
 		{
 			updateList();
 			gameList->repaint();
@@ -199,9 +205,14 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		
 		ip=SDL_SwapLE32(ip); //TODO: YOG should work in BigEndian.
 		
-		printf("YOG : selected ip is %d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+		char s[128];
+		snprintf(s, 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+		
+		printf("YOG : selected ip is %s\n", s);
 		
 		// we create a new screen to join this game:
+		strncpy(multiplayersJoin->serverName, s, 128);
+		multiplayersJoin->tryConnection();
 	}
 }
 
@@ -214,11 +225,36 @@ void YOGScreen::paint(int x, int y, int w, int h)
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
 	}
 	sendString(socket, "listenon");
-
+	addUpdateRect();
 }
 
 void YOGScreen::onTimer(Uint32 tick)
 {
+	// the game connection part:
+	multiplayersJoin->onTimer(tick);
+	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	{
+		printf("YOG::joining because state=%d.\n", multiplayersJoin->waitingState);
+		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 20);
+		if (rv==MultiplayersConnectedScreen::DISCONNECT)
+		{
+			printf("YOG::unable to join DISCONNECT returned.\n");
+			dispatchPaint(gfxCtx);
+		}
+		else if (rv==MultiplayersConnectedScreen::STARTED)
+		{
+			endExecute(STARTED);
+		}
+		else
+		{
+			printf("rv=%d\n", rv);
+			assert(false);
+		}
+		delete multiplayersConnectedScreen;
+	}
+	
+	// the YOG part:
 	if (SDLNet_CheckSockets(socketSet, 0))
 	{
 		char data[GAME_INFO_MAX_SIZE];
