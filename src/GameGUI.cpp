@@ -135,8 +135,11 @@ public:
 	//! InGameScrollableText constructor
 	InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory);
 	//! InGameScrollableText destructor
-	virtual ~InGameScrollableText() { };
-	virtual void onAction(Widget *source, Action action, int par1, int par2) { };
+	virtual ~InGameScrollableText() { }
+	//! Dummy
+	virtual void onAction(Widget *source, Action action, int par1, int par2) { }
+	//! read messageHistory and update widget 
+	void readHistory(std::vector<std::string> messageHistory);
 };
 
 InGameScrollableText::InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory)
@@ -144,12 +147,18 @@ InGameScrollableText::InGameScrollableText(GraphicContext *parentCtx, std::vecto
 {
 	messageList=new List(0, 0, (globalContainer->gfx->getW()-152), 100, 0, 0, "standard");
 	addWidget(messageList);
+	readHistory(messageHistory);
+	dispatchInit();
+}
+
+void InGameScrollableText::readHistory(std::vector<std::string> messageHistory)
+{
+	messageList->clear();
 	if (messageHistory.capacity() > 0){
 		for (int i = messageHistory.size() -1; i>=0; i--){
 			messageList->addText(messageHistory[i]);
 		}
 	}
-	dispatchInit();
 }
 
 GameGUI::GameGUI()
@@ -3028,14 +3037,22 @@ void GameGUI::drawOverlayInfos(void)
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
 			globalContainer->gfx->pushFontStyle(globalContainer->standardFont, Font::Style(Font::STYLE_BOLD, it->r, it->g, it->b, it->a));
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
+			if (scrollableText) 
+				globalContainer->gfx->drawString(32, (ymesg+105), globalContainer->standardFont, it->text.c_str());
+			else 
+				globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
 			globalContainer->gfx->popFontStyle(globalContainer->standardFont);
 			ymesg += 20;
 
 			// delete old messages
 			if (!(--(it->showTicks)))
 			{
+				// update message history
 				messageHistory.push_back(it->text.c_str());
+				// update in-game history if it's there
+				if (scrollableText) {
+					scrollableText->readHistory(messageHistory);
+				}
 				it=messagesList.erase(it);
 			}
 			else
