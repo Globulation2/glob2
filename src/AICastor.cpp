@@ -472,7 +472,7 @@ Order *AICastor::getOrder()
 	if ((timer&511)==0)
 	{
 		Uint8 *temp=oldWheatGradient[3];
-		for (int i=3; i>0; i++)
+		for (int i=3; i>0; i--)
 			oldWheatGradient[i]=oldWheatGradient[i-1];
 		oldWheatGradient[0]=temp;
 		Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
