@@ -74,6 +74,7 @@ public:
 	Sprite *unitmini;
 	Sprite *buildingmini;
 	Sprite *gamegui;
+	Sprite *brush;
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;

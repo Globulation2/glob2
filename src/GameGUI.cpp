@@ -65,6 +65,8 @@
 
 #define YOFFSET_PROGRESS_BAR 10
 
+#define YOFFSET_BRUSH 64
+
 enum GameGUIGfxId
 {
 	EXCHANGE_BUILDING_ICONS = 21
@@ -171,7 +173,7 @@ void GameGUI::init()
 	flagsChoice.push_back(8);
 	flagsChoice.push_back(9);
 	flagsChoice.push_back(10);
-	flagsChoice.push_back(11);
+	//flagsChoice.push_back(11);
 
 	hiddenGUIElements=0;
 	
@@ -1138,6 +1140,13 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		if (isRoom)
 			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
 	}
+	else if (selectionMode==BRUSH_SELECTION)
+	{
+		// TODO : put here the correct code to handle forbidden drawing
+		int mapX, mapY;
+		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
+		orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, globalContainer->buildingsTypes.getTypeNum(11, 0, false)));
+	}
 	else if (putMark)
 	{
 		int markx, marky;
@@ -1479,12 +1488,21 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
-		int xNum=mx>>6;
-		int yNum=(my-YPOS_BASE_FLAG)/46;
-		int id=yNum*2+xNum;
-		if (id<(int)flagsChoice.size())
-			if (flagsChoice[id]>=0)
-				setSelection(TOOL_SELECTION, flagsChoice[id]);
+		my -= YPOS_BASE_FLAG;
+		if (my > YOFFSET_BRUSH)
+		{
+			forbiddenBrush.handleClick(mx, my-YOFFSET_BRUSH);
+			setSelection(BRUSH_SELECTION);
+		}
+		else
+		{
+			int xNum=mx / (128/3);
+			int yNum=my / 46;
+			int id=yNum*3+xNum;
+			if (id<(int)flagsChoice.size())
+				if (flagsChoice[id]>=0)
+					setSelection(TOOL_SELECTION, flagsChoice[id]);
+		}
 	}
 }
 
@@ -1515,7 +1533,7 @@ void GameGUI::drawPanelButtons(int pos)
 
 	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==FLAG_VIEW))
+		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
@@ -1540,10 +1558,13 @@ void GameGUI::drawPanelButtons(int pos)
 	// draw decoration
 }
 
-void GameGUI::drawChoice(int pos, std::vector<int> &types)
+void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLine)
 {
+	assert(numberPerLine >= 2);
+	assert(numberPerLine <= 3);
 	int sel=-1;
 	int v=0;
+	int width = (128/numberPerLine);
 
 	std::vector<int>::const_iterator it=types.begin();
 	while (it!=types.end())
@@ -1561,8 +1582,8 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 			int imgid=bt->miniImage;
 			int x, y;
 
-			x=((v&0x1)*64)+globalContainer->gfx->getW()-128;
-			y=((v>>1)*46)+128+32;
+			x=((v % numberPerLine)*width)+globalContainer->gfx->getW()-128;
+			y=((v / numberPerLine)*46)+128+32;
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
@@ -1577,7 +1598,7 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 				imgid=bt->startImage;
 			}
 			
-			decX=(64-buildingSprite->getW(imgid))>>1;
+			decX=(width-buildingSprite->getW(imgid))>>1;
 			decY=(46-buildingSprite->getW(imgid))>>1;
 
 			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
@@ -1595,9 +1616,12 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 	if (selectionMode==TOOL_SELECTION)
 	{
 		assert(sel>=0);
-		int x=((sel&0x1)*64)+globalContainer->gfx->getW()-128;
-		int y=((sel>>1)*46)+128+32;
-		globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
+		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-128;
+		int y=((sel / numberPerLine)*46)+128+32;
+		if (numberPerLine == 2)
+			globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
+		else
+			globalContainer->gfx->drawSprite(x+((width-40)>>1), y+4, globalContainer->gamegui, 23);
 	}
 
 	// draw infos
@@ -1605,9 +1629,9 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 	{
 		if (mouseY>pos)
 		{
-			int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
+			int xNum=(mouseX-globalContainer->gfx->getW()+128) / width;
 			int yNum=(mouseY-pos)/46;
-			int id=yNum*2+xNum;
+			int id=yNum*numberPerLine+xNum;
 			if (id<count)
 			{
 				int typeId=types[id];
@@ -2326,7 +2350,8 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
-		drawChoice(YPOS_BASE_FLAG, flagsChoice);
+		drawChoice(YPOS_BASE_FLAG, flagsChoice, 3);
+		forbiddenBrush.draw(globalContainer->gfx->getW()-128, YPOS_BASE_FLAG+YOFFSET_BRUSH);
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
 	{
@@ -2432,6 +2457,11 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 
+	}
+	else if (selectionMode==BRUSH_SELECTION)
+	{
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
+		forbiddenBrush.drawBrush(mouseX, mouseY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -3088,14 +3118,21 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 	globalContainer->gfx->drawFilledRect(x+16+1, y+5, size, 6, 28, 200, 28);*/
 }
 
+void GameGUI::cleanOldSelection(void)
+{
+	if (selectionMode==BUILDING_SELECTION)
+		game.selectedBuilding=NULL;
+	else if (selectionMode==UNIT_SELECTION)
+		game.selectedUnit=NULL;
+	else if (selectionMode==BRUSH_SELECTION)
+		forbiddenBrush.unselect();
+}
+
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 {
 	if (selectionMode!=newSelMode)
 	{
-		if (selectionMode==BUILDING_SELECTION)
-			game.selectedBuilding=NULL;
-		else if (selectionMode==UNIT_SELECTION)
-			game.selectedUnit=NULL;
+		cleanOldSelection();
 		selectionMode=newSelMode;
 	}
 
@@ -3127,10 +3164,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 {
 	if (selectionMode!=newSelMode)
 	{
-		if (selectionMode==BUILDING_SELECTION)
-			game.selectedBuilding=NULL;
-		else if (selectionMode==UNIT_SELECTION)
-			game.selectedUnit=NULL;
+		cleanOldSelection();
 		selectionMode=newSelMode;
 	}
 

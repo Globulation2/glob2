@@ -26,6 +26,7 @@
 #include "Header.h"
 #include "Game.h"
 #include "Order.h"
+#include "Brush.h"
 
 class TeamStats;
 class OverlayScreen;
@@ -129,7 +130,7 @@ private:
 	//! Draw the buttons associated to the panel
 	void drawPanelButtons(int pos);
 	//! Draw a choice of buildings or flags
-	void drawChoice(int pos, std::vector<int> &types);
+	void drawChoice(int pos, std::vector<int> &types, unsigned numberPerLine = 2);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
@@ -168,6 +169,7 @@ private:
 		UNIT_SELECTION,
 		RESSOURCE_SELECTION,
 		TOOL_SELECTION,
+		BRUSH_SELECTION
 	} selectionMode;
 	union
 	{
@@ -177,10 +179,15 @@ private:
 		int ressource;
 	} selection;
 
+	//! Unset and clean everything related to the selection so a new one can be set
+	void cleanOldSelection(void);
 	void setSelection(SelectionMode newSelMode, void* newSelection=NULL);
 	void setSelection(SelectionMode newSelMode, unsigned newSelection);
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
+	
+	// Brushes
+	BrushTool forbiddenBrush;
 
 	// What's visible or hidden on GUI
 	std::vector<int> buildingsChoice;

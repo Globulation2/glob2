@@ -133,7 +133,9 @@ BuildingsTypes.h \
 BuildingsTypes.cpp \
 RessourcesTypes.h \
 GameUtilities.h \
-GameUtilities.cpp
+GameUtilities.cpp \
+Brush.h \
+Brush.cpp
 
 glob2_LDADD = @LIBS@ @FT2_LIBS@ @SDL_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ ../libgag/src/libgag.a
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ @VORBIS_CFLAGS@ -I@srcdir@/../libgag/include
