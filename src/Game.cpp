@@ -900,6 +900,17 @@ bool Game::load(GAGCore::InputStream *stream)
 				return false;
 			}
 		}
+		
+		if (session.versionMinor < 37)
+		{
+			nextMap = "";
+			campaignText = "";
+		}
+		else
+		{
+			nextMap = stream->readText("nextMap");
+			campaignText = stream->readText("campaignText");
+		}
 	}
 
 	// Compute new max prestige
@@ -980,6 +991,9 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name
 
 		SAVE_OFFSET(stream, 32);
 		script.save(stream);
+		
+		stream->writeText(nextMap, "nextMap");
+		stream->writeText(campaignText, "campaignText");
 	}
 	stream->writeLeaveSection();
 }

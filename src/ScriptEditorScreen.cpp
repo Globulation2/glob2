@@ -41,31 +41,38 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 {
 	this->mapScript=mapScript;
 	this->game=game;
-	editor = new TextArea(10, 10, 580, 320, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
-	addWidget(editor);
-	compilationResult=new Text(10, 335, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	scriptEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
+	addWidget(scriptEditor);
+	nextMapEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->nextMap.c_str());
+	nextMapEditor->visible = false;
+	addWidget(nextMapEditor);
+	campaignTextEditor = new TextArea(10, 35, 580, 290, ALIGN_LEFT, ALIGN_LEFT, "standard", false, game->campaignText.c_str());
+	campaignTextEditor->visible = false;
+	addWidget(campaignTextEditor);
+	
+	compilationResult=new Text(10, 330, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
 	addWidget(new TextButton(10, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
 	addWidget(new TextButton(120, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	addWidget(new TextButton(230, 360, 130, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
-	addWidget(new TextButton(370, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
-	addWidget(new TextButton(480, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
+	compileButton = new TextButton(230, 360, 130, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE);
+	addWidget(compileButton);
+	loadButton = new TextButton(370, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD);
+	addWidget(loadButton);
+	saveButton = new TextButton(480, 360, 100, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE);
+	addWidget(saveButton);
+	
+	addWidget(new TextButton(10, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Script", TAB_SCRIPT));
+	addWidget(new TextButton(120, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Next map", TAB_NEXT_MAP));
+	addWidget(new TextButton(230, 10, 100, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", "Campaign text", TAB_CAMPAIGN_TEXT));
+	mode = new Text(20, 10, ALIGN_RIGHT, ALIGN_TOP, "standard", "Script");
+	addWidget(mode);
 	dispatchInit();
 }
 
 bool ScriptEditorScreen::testCompile(void)
 {
-	/*const char *backup=mapScript->getSourceCode();
-	char *temp=new char[strlen(backup+1)];
-	strcpy(temp, backup);
-
-	mapScript->setSourceCode(editor->getText());
-	ErrorReport er=mapScript->compileScript(game);
-
-	mapScript->setSourceCode(temp);
-	delete[] temp;*/
 	mapScript->reset();
-	ErrorReport er=mapScript->compileScript(game, editor->getText());
+	ErrorReport er=mapScript->compileScript(game, scriptEditor->getText());
 
 	if (er.type==ErrorReport::ET_OK)
 	{
@@ -77,7 +84,7 @@ bool ScriptEditorScreen::testCompile(void)
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 		compilationResult->setText(GAGCore::nsprintf("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString()).c_str());
-		editor->setCursorPos(er.pos);
+		scriptEditor->setCursorPos(er.pos);
 		return false;
 	}
 }
@@ -90,9 +97,11 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		{
 			if (testCompile())
 			{
-				mapScript->sourceCode = editor->getText();
+				mapScript->sourceCode = scriptEditor->getText();
 				endValue=par1;
 			}
+			game->nextMap = nextMapEditor->getText();
+			game->campaignText = campaignTextEditor->getText();
 		}
 		else if (par1 == CANCEL)
 		{
@@ -104,11 +113,47 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == LOAD)
 		{
-			loadSave(true);
+			if (scriptEditor->visible)
+				loadSave(true, "scripts", "sgsl");
+			else if (campaignTextEditor->visible)
+				loadSave(true, "campaign", "txt");
 		}
 		else if (par1 == SAVE)
 		{
-			loadSave(false);
+			if (scriptEditor->visible)
+				loadSave(false, "scripts", "sgsl");
+			else if (campaignTextEditor->visible)
+				loadSave(false, "campaign", "txt");
+		}
+		else if (par1 == TAB_SCRIPT)
+		{
+			scriptEditor->visible = true;
+			nextMapEditor->visible = false;
+			campaignTextEditor->visible = false;
+			compileButton->visible = true;
+			loadButton->visible = true;
+			saveButton->visible = true;
+			mode->setText("Script");
+		}
+		else if (par1 == TAB_NEXT_MAP)
+		{
+			scriptEditor->visible = false;
+			nextMapEditor->visible = true;
+			campaignTextEditor->visible = false;
+			compileButton->visible = false;
+			loadButton->visible = false;
+			saveButton->visible = false;
+			mode->setText("Next map");
+		}
+		else if (par1 == TAB_CAMPAIGN_TEXT)
+		{
+			scriptEditor->visible = false;
+			nextMapEditor->visible = false;
+			campaignTextEditor->visible = true;
+			compileButton->visible = false;
+			loadButton->visible = true;
+			saveButton->visible = true;
+			mode->setText("Campaign text");
 		}
 	}
 }
@@ -128,10 +173,10 @@ const char* filenameToName(const char *fullfilename)
 	return name;
 }
 
-void ScriptEditorScreen::loadSave(bool isLoad)
+void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("scripts", "sgsl", isLoad, game->session.getMapName(), filenameToName, glob2NameToFilename);
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, game->session.getMapName(), filenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint();
 
 	// save screen
@@ -155,22 +200,46 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 
 	if (loadSaveScreen->endValue==0)
 	{
-		if (isLoad)
+		if (scriptEditor->visible)
 		{
-			if (!editor->load(loadSaveScreen->getFileName()))
+			if (isLoad)
 			{
-				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-				compilationResult->setText(GAGCore::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
+				if (!scriptEditor->load(loadSaveScreen->getFileName()))
+				{
+					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+					compilationResult->setText(GAGCore::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
+				}
+			}
+			else
+			{
+				if (!scriptEditor->save(loadSaveScreen->getFileName()))
+				{
+					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+					compilationResult->setText(GAGCore::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
+				}
+			}
+		}
+		else if (campaignTextEditor->visible)
+		{
+			if (isLoad)
+			{
+				if (!campaignTextEditor->load(loadSaveScreen->getFileName()))
+				{
+					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+					compilationResult->setText(GAGCore::nsprintf("Loading campaign text from %s failed", loadSaveScreen->getName()).c_str());
+				}
+			}
+			else
+			{
+				if (!campaignTextEditor->save(loadSaveScreen->getFileName()))
+				{
+					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+					compilationResult->setText(GAGCore::nsprintf("Saving campaign text to %s failed", loadSaveScreen->getName()).c_str());
+				}
 			}
 		}
 		else
-		{
-			if (!editor->save(loadSaveScreen->getFileName()))
-			{
-				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-				compilationResult->setText(GAGCore::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
-			}
-		}
+			assert(false);
 	}
 
 	// clean up

@@ -1637,10 +1637,10 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-void Map::setUMatPos(int x, int y, TerrainType t, int size)
+void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
-	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
-		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
+	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 		{
 			if (t==GRASS)
 			{
@@ -1689,28 +1689,28 @@ void Map::setUMatPos(int x, int y, TerrainType t, int size)
 			setUMTerrain(dx,dy,t);
 		}
 	if (t==SAND)
-		regenerateMap(x-(size>>1)-1,y-(size>>1)-1,size+1,size+1);
+		regenerateMap(x-(l>>1)-1,y-(l>>1)-1,l+1,l+1);
 	else
-		regenerateMap(x-(size>>1)-2,y-(size>>1)-2,size+3,size+3);
+		regenerateMap(x-(l>>1)-2,y-(l>>1)-2,l+3,l+3);
 }
 
-void Map::setNoRessource(int x, int y, int size)
+void Map::setNoRessource(int x, int y, int l)
 {
-	assert(size>=0);
-	assert(size<w);
-	assert(size<h);
-	for (int dx=x-(size>>1); dx<x+(size>>1); dx++)
-		for (int dy=y-(size>>1); dy<y+(size>>1); dy++)
+	assert(l>=0);
+	assert(l<w);
+	assert(l<h);
+	for (int dx=x-(l>>1); dx<x+(l>>1); dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1); dy++)
 			(cases+w*(dy&hMask)+(dx&wMask))->ressource.clear();
 }
 
-void Map::setRessource(int x, int y, int type, int size)
+void Map::setRessource(int x, int y, int type, int l)
 {
-	assert(size>=0);
-	assert(size<w);
-	assert(size<h);
-	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
-		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
+	assert(l>=0);
+	assert(l<w);
+	assert(l<h);
+	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			if (isRessourceAllowed(dx, dy, type))
 			{
 				Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
@@ -2075,7 +2075,7 @@ void Map::updateGlobalGradientSmall(Uint8 *gradient)
 			}
 		}
 	}
-	assert(listCountWrite<size);
+	assert(listCountWrite<=size);
 	delete[] listedAddr;
 }
 void Map::updateGlobalGradientBig(Uint8 *gradient)
@@ -2128,7 +2128,7 @@ void Map::updateGlobalGradientBig(Uint8 *gradient)
 			}
 		}
 	}
-	assert(listCountWrite<size);
+	assert(listCountWrite<=size);
 	delete[] listedAddr;
 }
 

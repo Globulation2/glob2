@@ -131,8 +131,10 @@ namespace GAGCore
 		virtual double readDouble(const char *name = NULL) { double d; this->readEndianIndependant(&d, 8, name); return d; }
 		virtual std::string readText(const char *name = NULL)
 		{
-			std::valarray<char> buffer(readUint32());
-			read(&buffer[0], buffer.size());
+			size_t len = readUint32();
+			std::valarray<char> buffer(len+1);
+			read(&buffer[0], len);
+			buffer[len] = 0;
 			return std::string(&buffer[0]);
 		}
 		

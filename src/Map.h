@@ -354,12 +354,12 @@ public:
 	//! Return undermap terrain type at (x,y)
 	TerrainType getUMTerrain(int x, int y) { return (TerrainType)(*(undermap+w*(y&hMask)+(x&wMask))); }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
-	void setUMatPos(int x, int y, TerrainType t, int size);
+	void setUMatPos(int x, int y, TerrainType t, int l);
 
-	//! With size==0, it will remove no ressource. (Unaligned coordinates)
-	void setNoRessource(int x, int y, int size);
-	//! With size==0, it will add ressource only on one case. (Aligned coordinates)
-	void setRessource(int x, int y, int type, int size);
+	//! With l==0, it will remove no ressource. (Unaligned coordinates)
+	void setNoRessource(int x, int y, int l);
+	//! With l==0, it will add ressource only on one case. (Aligned coordinates)
+	void setRessource(int x, int y, int type, int l);
 	bool isRessourceAllowed(int x, int y, int type);
 	
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
