@@ -13,7 +13,7 @@ Note : if SDL is not installed system wide but rather in $prefix,
 add the following flags to aclocal :
 aclocal -I $prefix/share/aclocal
 
-For instance, under macOSX, replace aclocal by
+Under macOSX, replace aclocal by
 aclocal -I /usr/local/share/aclocal
 
 It doesn't currently work with automake 1.6 You should install automake 1.4 (in /usr/local/bin) and start it from there.
@@ -25,7 +25,7 @@ To do so edit  "src/Makefile" and change the following:
 CCXX = /usr/bin/g++2
 ...
 
-
+With the current version of SDL, the fullScreen doesn't work with dublebuffering. Disable it with "-f -b".
 
 Under Win32 :
 
