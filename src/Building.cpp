@@ -606,7 +606,7 @@ void Building::updateCallLists(void)
 
 				if (fu!=NULL)
 				{
-					printf("Building::we free the unit gid=%d\n", fu->gid);
+					//printf("Building::we free the unit gid=%d\n", fu->gid);
 					// We free the unit.
 					fu->activity=Unit::ACT_RANDOM;
 
@@ -1577,7 +1577,6 @@ bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 				*posY=yi;
 				int tdx=xi-getMidX();
 				int tdy=yi-getMidY();
-				*dx=sign(tdx);
 				if (tdx<0)
 					*dx=-1;
 				else if (tdx==0)

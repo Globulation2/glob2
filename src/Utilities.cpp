@@ -22,16 +22,6 @@
 #include <assert.h>
 #include <string.h>
 
-int sign(int s)
-{
-	if (s==0)
-		return 0;
-	else if (s<0)
-		return -1;
-	else
-		return 1;
-}
-
 int distSquare(int x1, int y1, int x2, int y2)
 {
 	int dx=x2-x1;
