@@ -311,7 +311,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
 							assert(button);
-							bool state=localTeam->sharedVision&(1<<i);
+							bool state=localTeam->sharedVision&(1<<otherTeam);
 							button->setState(state);
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
