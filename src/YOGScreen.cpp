@@ -82,7 +82,7 @@ YOGScreen::YOGScreen()
 	playerList=new YOGPlayerList(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
 	addWidget(playerList);
 
-	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
+	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard", true, "data/gui/yog");
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
@@ -252,11 +252,11 @@ void YOGScreen::onTimer(Uint32 tick)
 	
 	while (irc.isChatMessage())
 	{
+		chatWindow->addText("<");
 		chatWindow->addText(irc.getChatMessageSource());
-		chatWindow->addText(" @ ");
-		chatWindow->addText(irc.getChatMessageDiffusion());
-		chatWindow->addText(" : ");
+		chatWindow->addText("> ");
 		chatWindow->addText(irc.getChatMessage());
+		chatWindow->addImage(1);
 		chatWindow->addText("\n");
 		chatWindow->scrollToBottom();
 		irc.freeChatMessage();
@@ -307,6 +307,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(irc.getInfoMessageText());
 		}
 		
+		chatWindow->addImage(1);
 		chatWindow->addText("\n");
 		chatWindow->scrollToBottom();
 		irc.freeInfoMessage();
@@ -330,6 +331,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
@@ -339,6 +341,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
@@ -348,6 +351,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
@@ -357,6 +361,7 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
@@ -365,11 +370,13 @@ void YOGScreen::onTimer(Uint32 tick)
 			chatWindow->addText(m->userName);
 			chatWindow->addText("] ");
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
 		case YCMT_EVENT_MESSAGE:
 			chatWindow->addText(m->text);
+			chatWindow->addImage(0);
 			chatWindow->addText("\n");
 			chatWindow->scrollToBottom();
 		break;
