@@ -60,6 +60,7 @@ public:
 
 		T defaultEntityType;
 		result=defaultEntityType.loadText(stream);
+		defaultEntityType.init();
 
 		while (result)
 		{
