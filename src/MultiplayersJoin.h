@@ -130,7 +130,7 @@ public:
 	void crossConnectionFirstMessage(Uint8 *data, int size, IPaddress ip);
 	void checkAllCrossConnected();
 	void crossConnectionSecondMessage(Uint8 *data, int size, IPaddress ip);
-	void stillCrossConnectingConfirmation(IPaddress ip);
+	void stillCrossConnectingConfirmation(Uint8 *data, int size, IPaddress ip);
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
 
 	void serverAskForBeginning(Uint8 *data, int size, IPaddress ip);

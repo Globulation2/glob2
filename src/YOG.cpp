@@ -1488,6 +1488,15 @@ IPaddress YOG::ipFromUserName(char userName[32])
 	return ip;
 }
 
+char *YOG::userNameFromUID(Uint32 uid)
+{
+	bool found=false;
+	for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
+		if (uid==client->uid)
+			return client->userName;
+	return NULL;
+}
+
 char *YOG::getStatusString(ExternalStatusState externalStatusState)
 {
 	const char *s;

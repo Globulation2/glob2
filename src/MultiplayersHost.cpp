@@ -905,7 +905,42 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 		sessionInfo.players[i].netTimeout=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
+		
+		if (shareOnYOG)
+		{
+			assert(yog);
+			int size=8+10*yog->joiners.size();
+			Uint8 data[size];
+			
+			data[0]=SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+			
+			data[4]=yog->joiners.size();
+			data[5]=0;
+			data[6]=0;
+			data[7]=0;
+			
+			int l=8;
+			for (std::list<YOG::Joiner>::iterator ji=yog->joiners.begin(); ji!=yog->joiners.end(); ++ji)
+			{
+				addUint32(data, ji->uid, l);
+				l+=4;
+				addUint32(data, ji->ip.host, l);
+				l+=4;
+				addUint16(data, ji->ip.port, l);
+				l+=2;
+			}
+			assert(l==size);
+			sessionInfo.players[i].send(data, size);
+		}
+		else
+			sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
+		
+		
+		
+		
 		fprintf(logFile, "this ip(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip));
 		return;
 	}
