@@ -43,6 +43,7 @@ bool BaseMap::load(SDL_RWops *stream)
 		return false;
 	
 	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
+	setMapName(mapName);
 	
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)

@@ -28,7 +28,7 @@ CustomGameScreen::CustomGameScreen()
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL);
 	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
-	mapPreview=new MapPreview(640-20-26-128, 70, "default.map");
+	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
 	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);

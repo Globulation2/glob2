@@ -87,8 +87,6 @@ YOGScreen.h \
 YOGScreen.cpp \
 YOGConnector.h \
 YOGConnector.cpp \
-YOG.h \
-YOG.cpp \
 SettingsScreen.h \
 SettingsScreen.cpp \
 MultiplayersHostScreen.h \
@@ -103,7 +101,8 @@ MultiplayersConnectedScreen.h \
 MultiplayersConnectedScreen.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
-NewMapScreen.cpp
+NewMapScreen.cpp \
+YOG.cpp
 
 glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@
