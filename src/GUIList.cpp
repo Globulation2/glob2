@@ -118,7 +118,7 @@ void List::removeText(int pos)
 	}
 }
 
-/*const*/ char *List::getText(int pos)
+char *List::getText(int pos) const
 {
 	if ((pos>=0) && (pos<(int)strings.size()))
 	{

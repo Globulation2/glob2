@@ -31,7 +31,7 @@ YOGConnector::YOGConnector()
 
 YOGConnector::~YOGConnector()
 {
-	
+
 }
 
 void YOGConnector::open(void)

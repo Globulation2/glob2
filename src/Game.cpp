@@ -34,12 +34,12 @@ Game::Game()
 	init();
 }
 
-Game::Game(/*const*/ SessionInfo *initial)
+Game::Game(const SessionInfo *initial)
 {
 	loadBase(initial);
 }
 
-void Game::loadBase(/*const*/ SessionInfo *initial)
+void Game::loadBase(const SessionInfo *initial)
 {
 	init();
 	SDL_RWops *stream=globalContainer->fileManager.open(initial->map.getMapFileName(),"rb");
@@ -91,7 +91,7 @@ void Game::init()
 	stepCounter=0;
 }
 
-void Game::setBase(/*const*/ SessionInfo *initial)
+void Game::setBase(const SessionInfo *initial)
 {
 	assert (initial->numberOfTeam==session.numberOfTeam);
 	// TODO, we should be able to play with less team than planed on the map

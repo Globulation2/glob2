@@ -24,6 +24,7 @@
 #include "MultiplayersJoin.h"
 #include "GAG.h"
 #include <vector>
+#include "YOG.h"
 
 class YOGScreen:public Screen
 {
@@ -46,6 +47,7 @@ public:
 
 public:
 	static TCPsocket socket;
+	static YOG yog;
 
 public:
 	MultiplayersJoin *multiplayersJoin;
@@ -55,6 +57,7 @@ protected:
 	TextInput *textInput;
 	TextArea *chatWindow;
 	std::vector<Uint32> IPs;
+
 
 	static SDLNet_SocketSet socketSet;
 
