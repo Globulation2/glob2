@@ -181,13 +181,14 @@ private:
 	// message related functions : FIXME : move this to a class
 public :
 	enum {
-		MAX_MESSAGE_SIZE = 64
+		MAX_MESSAGE_SIZE = 64,
+		MAX_DISPLAYED_MESSAGE_SIZE = MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4
 	}; // avoid network overflow
 private :
 	typedef struct
 	{
 		int showTicks;
-		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4];
+		char text[MAX_DISPLAYED_MESSAGE_SIZE];
 		Uint8 r, g, b, a;
 	} Message;
 	std::list<Message> messagesList;
@@ -199,7 +200,8 @@ private :
 	{
 		Message message;
 		message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-		snprintf(message.text, MAX_MESSAGE_SIZE, msgText);
+		strncpy(message.text, msgText, MAX_DISPLAYED_MESSAGE_SIZE);
+		message.text[MAX_DISPLAYED_MESSAGE_SIZE-1]=0;
 		message.r = r;
 		message.g = g;
 		message.b = b;
