@@ -866,22 +866,25 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		cases[i].forbidden=SDL_ReadBE32(stream);
 	}
 
-	for (int t=0; t<sessionGame->numberOfTeam; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
-			for (int s=0; s<2; s++)
-			{
-				assert(ressourcesGradient[t][r][s]==NULL);
-				ressourcesGradient[t][r][s]=new Uint8[size];
-				updateGradient(t, r, s, true);
-			}
-	for (int t=0; t<32; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
-			for (int s=0; s<1; s++)
-				gradientUpdatedDepth[t][r][s]=0;
-
 	if (game)
+	{
+		// This is a game, so we do compute gradients
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
+			for (int r=0; r<MAX_RESSOURCES; r++)
+				for (int s=0; s<2; s++)
+				{
+					assert(ressourcesGradient[t][r][s]==NULL);
+					ressourcesGradient[t][r][s]=new Uint8[size];
+					updateGradient(t, r, s, true);
+				}
+		for (int t=0; t<32; t++)
+			for (int r=0; r<MAX_RESSOURCES; r++)
+				for (int s=0; s<1; s++)
+					gradientUpdatedDepth[t][r][s]=0;
+
 		this->game=game;
-	
+	}
+
 	// We load sectors:
 	wSector=SDL_ReadBE32(stream);
 	hSector=SDL_ReadBE32(stream);
