@@ -31,7 +31,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *spritelocation, const char *text)
 	{
 		this->x=x;
 		this->y=y;
@@ -39,8 +39,9 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+		
 		this->readOnly=readOnly;
+		this->sprite=sprite;
 		// TODO : clean this and store text font
 		this->font=Toolkit::getFont(font);
 		assert(this->font);
@@ -55,8 +56,17 @@ namespace GAGGUI
 		cursorScreenPosY=0;
 	
 		this->text = text;
-	}
+
+		spriteWidth = 0;
+		
+		this->sprite = Toolkit::getSprite(spritelocation);
+		if (sprite)
+		{
+			spriteWidth=this->sprite->getW(0);	
 	
+		}
+	}
+
 	TextArea::~TextArea(void)
 	{
 		
@@ -450,12 +460,22 @@ namespace GAGGUI
 			if (i+areaPos<lines.size()-1)
 			{
 				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), w-8-spriteWidth, font, substr.c_str());
+				
+				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				{
+					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
+				}
 			}
 			else
 			{
 				const std::string &substr = text.substr(lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), w-8-spriteWidth, font, substr.c_str());
+				
+				if (sprite && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
+				{
+					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
+				}
 			}
 		}
 	
@@ -545,13 +565,15 @@ namespace GAGGUI
 	void TextArea::layout(void)
 	{
 		int x, y, w, h;
+		unsigned line = 0;
 		getScreenPos(&x, &y, &w, &h);
 		
 		unsigned pos = 0;
-		int length = w-4-getStringWidth("W");
+		int length = w-4-getStringWidth("W")-spriteWidth;
 		
 		lines.clear();
 		lines.push_back(0);
+		lines_frames.clear();
 		std::string lastWord;
 		std::string lastLine;
 		int spaceLength = getStringWidth(" ");
@@ -574,6 +596,10 @@ namespace GAGGUI
 					}
 					else
 					{
+						if (sprite && frames.size() > line)
+						{
+							lines_frames.push_back(frames[line]);
+						}
 						lines.push_back(pos-lastWord.size());
 						lastLine = lastWord;
 						lastWord.clear();
@@ -587,7 +613,18 @@ namespace GAGGUI
 					int actLineLength = getStringWidth(lastLine);
 					int actWordLength = getStringWidth(lastWord);
 					if (actWordLength+actLineLength+spaceLength >= length)
+					{
+						if (sprite && frames.size() > line)
+						{	
+							lines_frames.push_back(frames[line]);
+						}	
 						lines.push_back(pos-lastWord.size());
+					}
+					if (sprite && frames.size() > line)
+					{
+						lines_frames.push_back(frames[line]);
+						line++;
+					}
 					lines.push_back(pos+1);
 					lastWord.clear();
 					lastLine.clear();
@@ -606,6 +643,10 @@ namespace GAGGUI
 		int actWordLength = getStringWidth(lastWord);
 		if (actWordLength+actLineLength+spaceLength >= length)
 		{
+			if (sprite && frames.size() > line)
+			{
+				lines_frames.push_back(frames[line]);
+			}
 			lines.push_back(pos-lastWord.size());
 		}
 		
@@ -644,7 +685,18 @@ namespace GAGGUI
 			compute();
 		}
 	}
+
+	void TextArea::addImage(int frame)
+	{
+		assert(frame<=sprite->getFrameCount()-1);
+		this->frames.push_back(frame);
+	}
 	
+	void TextArea::addNoImage(void)
+	{
+		this->frames.push_back(-1);
+	}
+
 	void TextArea::remText(unsigned pos, unsigned len)
 	{
 		if (pos < text.length())
