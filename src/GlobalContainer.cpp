@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "SDL.h"
 #include <string.h>
+#include "NonANSICStdWrapper.h"
 
 GlobalContainer::GlobalContainer(void)
 {
@@ -132,6 +133,10 @@ void GlobalContainer::initProgressBar(void)
 
 void GlobalContainer::load(void)
 {
+	// set default values in settings or load them
+	strncpy(settings.name, getenv("USER"), BasePlayer::MAX_NAME_LENGTH);
+	// TODO : loading code
+
 	// create graphic context
 	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
 	gfx->setRes(640, 480, 32, globalContainer->graphicFlags);

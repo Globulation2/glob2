@@ -34,7 +34,7 @@ void TextArea::internalPaint(void)
 	gfx->drawRect(x, y, w, h, 180, 180, 180);
 	if (textBuffer)
 	{
-		for (unsigned i=0;(i<=areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
+		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
 			assert(i+areaPos<lines.size());
 			gfx->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
