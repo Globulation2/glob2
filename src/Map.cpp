@@ -1025,9 +1025,8 @@ void Map::growRessources(void)
 			{
 				// we look around to see if there is any water :
 				// TODO: uses UnderMap.
-				static const int waterDist=0xF;
-				int dwax=(syncRand()&waterDist)-(syncRand()&waterDist);
-				int dway=(syncRand()&waterDist)-(syncRand()&waterDist);
+				int dwax=(syncRand()&0xF)-(syncRand()&0xF);
+				int dway=(syncRand()&0xF)-(syncRand()&0xF);
 				int wax1=x+dwax;
 				int way1=y+dway;
 

@@ -130,6 +130,7 @@ void AICastor::firstInit()
 	workRangeMap=NULL;
 	workAbilityMap=NULL;
 	hydratationMap=NULL;
+	notGrassMap=NULL;
 	wheatGrowthMap=NULL;
 	wheatCareMap=NULL;
 	
@@ -177,7 +178,7 @@ void AICastor::init(Player *player)
 	controlUpgradeDelay=32;
 	controlStrikesTimer=0;
 	
-	hydratationMapComputed=false;
+	hardMapComputed=false;
 	warLevel=0;
 	warTimeTrigerLevel=0;
 	warLevelTrigerLevel=0;
@@ -247,6 +248,10 @@ void AICastor::init(Player *player)
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
 	hydratationMap=new Uint8[size];
+
+	if (notGrassMap!=NULL)
+		delete[] notGrassMap;
+	notGrassMap=new Uint8[size];
 	
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
@@ -300,6 +305,9 @@ AICastor::~AICastor()
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
 	
+	if (notGrassMap!=NULL)
+		delete[] notGrassMap;
+	
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
 	
@@ -352,8 +360,12 @@ Order *AICastor::getOrder()
 {
 	timer++;
 	
-	if (!hydratationMapComputed)
+	if (!hardMapComputed)
+	{
 		computeHydratationMap();
+		computeNotGrassMap();
+		hardMapComputed=true;
+	}
 	
 	if (!strategy.defined)
 		defineStrategy();
@@ -435,9 +447,7 @@ Order *AICastor::getOrder()
 	
 	if (timer>lastWheatCareMapComputed+256) // each 10s
 	{
-		computeObstacleBuildingMap();
-		computeObstacleUnitMap();
-		computeWheatGrowthMap();
+		computeWheatCareMap();
 	}
 	
 	/*if (onStrike)
@@ -618,7 +628,7 @@ Order *AICastor::controlSwarms()
 	printf("unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
 		unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum, foodLock, realFoodLock, foodLockStats[0], foodLockStats[1]);
 	
-	if (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0])
+	if ((timer>2048) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
@@ -1088,7 +1098,7 @@ void AICastor::addProjects()
 		project->food=true;
 		
 		project->mainWorkers=3;
-		project->foodWorkers=1;
+		project->foodWorkers=2;
 		project->otherWorkers=0;
 		
 		project->multipleStart=true;
@@ -2206,26 +2216,96 @@ void AICastor::computeWorkAbilityMap()
 
 void AICastor::computeHydratationMap()
 {
-	printf("computeHydratationMap()...\n");
+	fprintf(logFile, "computeHydratationMap()...\n");
+	int w=map->w;
+	int h=map->h;
+	int wMask=map->wMask;
+	int hMask=map->hMask;
+	//int hDec=map->hDec;
+	int wDec=map->wDec;
+	size_t size=w*h;
+	
+	Uint16 *gradient=(Uint16 *)malloc(2*size);
+	memset(gradient, 0, 2*size);
+	Case *cases=map->cases;
+	static const int range=16;
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+		{
+			Uint16 t=cases[x+(y<<wDec)].terrain;
+			if ((t>=256)&&(t<256+16)) // if SAND
+				for (int r=1; r<range; r++)
+				{
+					for (int dx=-r; dx<=r; dx++)
+					{
+						Uint16 *gp=&gradient[((x+dx)&wMask)+(((y -r)&hMask)<<wDec)];
+						*gp+=(range-r);
+					}
+					for (int dx=-r; dx<=r; dx++)
+					{
+						Uint16 *gp=&gradient[((x+dx)&wMask)+(((y +r)&hMask)<<wDec)];
+						*gp+=(range-r);
+					}
+					for (int dy=(1-r); dy<r; dy++)
+					{
+						Uint16 *gp=&gradient[((x -r)&wMask)+(((y+dy)&hMask)<<wDec)];
+						*gp+=(range-r);
+					}
+					for (int dy=(1-r); dy<r; dy++)
+					{
+						Uint16 *gp=&gradient[((x +r)&wMask)+(((y+dy)&hMask)<<wDec)];
+						*gp+=(range-r);
+					}
+				}
+		}
+	for (size_t i=0; i<size; i++)
+		hydratationMap[i]=(gradient[i]>>4);
+	free(gradient);
+	fprintf(logFile, "...computeHydratationMap() done\n");
+}
+
+void AICastor::computeNotGrassMap()
+{
+	fprintf(logFile, "computeNotGrassMap()...\n");
 	int w=map->w;
 	int h=map->w;
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
 	size_t size=w*h;
 	
-	memset(hydratationMap, 0, size);
+	memset(notGrassMap, 0, size);
 	
 	Case *cases=map->cases;
 	for (size_t i=0; i<size; i++)
 	{
 		Uint16 t=cases[i].terrain;
-		if ((t>=256) && (t<256+16)) // if WATER
-			hydratationMap[i]=16;
+		if (t>16)// if !GRASS
+			notGrassMap[i]=16;
 	}
 	
-	updateGlobalGradientNoObstacle(hydratationMap);
-	hydratationMapComputed=true;
-	printf("...computeHydratationMap() done\n");
+	updateGlobalGradientNoObstacle(notGrassMap);
+	fprintf(logFile, "...computeNotGrassMap() done\n");
+}
+
+void AICastor::computeWheatCareMap()
+{
+	if (lastWheatCareMapComputed==timer)
+		return;
+	int w=map->w;
+	int h=map->w;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	//int hDec=map->hDec;
+	//int wDec=map->wDec;
+	size_t size=w*h;
+	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	Case *cases=map->cases;
+	memcpy(wheatCareMap, obstacleUnitMap, size);
+	for (size_t i=0; i<size; i++)
+		if (notGrassMap[i]==15 && wheatGradient[i]==254 && cases[i].terrain<16)
+			wheatCareMap[i]=8;
+	map->updateGlobalGradient(wheatCareMap);
+	lastWheatCareMapComputed=timer;
 }
 
 void AICastor::computeWheatGrowthMap()
@@ -2237,23 +2317,17 @@ void AICastor::computeWheatGrowthMap()
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	
 	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	
 	memcpy(wheatGrowthMap, obstacleUnitMap, size);
-	memcpy(wheatCareMap, obstacleUnitMap, size);
 	
 	for (size_t i=0; i<size; i++)
 		if (wheatGradient[i]==255)
-			wheatGrowthMap[i]=1+hydratationMap[i];
+			wheatGrowthMap[i]=1+(hydratationMap[i]>>3);
 	
 	map->updateGlobalGradient(wheatGrowthMap);
 	
-	Case *cases=map->cases;
-	for (size_t i=0; i<size; i++)
-		if (wheatGrowthMap[i]>=13 && wheatGradient[i]==254 && cases[i].terrain<16)
-			wheatCareMap[i]=8;
-	
-	map->updateGlobalGradient(wheatCareMap);
+	computeWheatCareMap();
 	
 	for (size_t i=0; i<size; i++)
 	{
@@ -2269,7 +2343,6 @@ void AICastor::computeWheatGrowthMap()
 				(*p)=1;
 		}
 	}
-	lastWheatCareMapComputed=timer;
 }
 
 void AICastor::computeEnemyPowerMap()
@@ -2535,7 +2608,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	if (bestScore>0)
 	{
 	
-		printf(" found a cool placen");
+		printf(" found a cool place");
 		printf("  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
 			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
 		
