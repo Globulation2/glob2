@@ -513,6 +513,25 @@ bool Map::isFreeForBuilding(int x, int y, int w, int h)
 	return true;
 }
 
+bool Map::isFreeForBuilding(int x, int y, int w, int h, Uint16 gid)
+{
+	for (int yi=y; yi<y+h; yi++)
+		for (int xi=x; xi<x+w; xi++)
+			if (!isFreeForBuilding(xi, yi))
+			{
+				if (isRessource(xi, yi))
+					return false;
+				Uint16 buid=getBuilding(xi, yi);
+				if (buid!=NOGBID && buid!=gid)
+					return false;
+				if (getGroundUnit(xi, yi)!=NOGUID)
+					return false;
+				if (!isGrass(xi, yi))
+					return false;
+			}
+	return true;
+}
+
 bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me)
 {
 	if (isRessource(x, y))
@@ -554,7 +573,8 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid)
 		{
 			if (isRessource(xi, yi))
 				return false;
-			if (getBuilding(xi, yi)!=NOGBID && getBuilding(xi, yi)!=gid)
+			Uint16 buid=getBuilding(xi, yi);
+			if (buid!=NOGBID && buid!=gid)
 				return false;
 			if (!isGrass(xi, yi))
 				return false;

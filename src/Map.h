@@ -255,6 +255,7 @@ public:
 	bool isFreeForAirUnit(int x, int y);
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);
+	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid);
 	// The "hardSpace" keywork means "Free" but you don't count Ground-Units as obstacles.
 	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me);
 	bool isHardSpaceForBuilding(int x, int y);

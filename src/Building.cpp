@@ -499,7 +499,7 @@ void Building::updateConstructionState(void)
 		{
 			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
 			owner->buildingsTryToBuildingSiteRoom.push_front(this);
-			//printf("inserted %d, w=%d\n", (int)this, type->width);
+			//printf("inserted %d in buildingsTryToBuildingSiteRoom\n", gid);
 		}
 		else
 			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
@@ -777,8 +777,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	int newWidth=nextBt->width;
 	int newHeight=nextBt->height;
 
-	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight);
-
+	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
 	{
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
@@ -815,7 +814,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		buildingState=ALIVE;
 
 		// units
-		//printf("uses maxUnitWorkingPreferred=%d\n", maxUnitWorkingPreferred);
+		//printf("%d uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
