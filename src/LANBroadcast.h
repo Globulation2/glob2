@@ -18,10 +18,43 @@
 
 */
 
-#ifndef __NETDEFINE_H
-#define __NETDEFINE_H
 
-#define  NETPRINTF printf
-//#define NETPRINTF if (false) printf
+#ifndef __LAN_BROADCAST_H
+#define __LAN_BROADCAST_H
+
+#include "Header.h"
+
+//Network related includes
+#include <sys/types.h>
+#include <sys/socket.h>
+//#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+//Strange include
+#include <unistd.h>
+
+class LANBroadcast
+{
+public:
+	LANBroadcast();
+	~LANBroadcast();
+	bool enable(Uint16 port);
+	bool send(int v);
+	bool socketReady(void);
+	bool receive(int *v);
+	Uint32 getSenderIP();
+
+private:
+	struct hostent *hostEnt;
+	struct sockaddr_in servAddr;
+	struct sockaddr_in cliAddr;
+	struct sockaddr_in senderAddr;
+	Uint16 port;
+	int socketDefinition;
+};
 
 #endif
+
+ 
+

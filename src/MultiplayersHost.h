@@ -42,6 +42,7 @@ public:
 	{
 		SECONDS_BEFORE_START_GAME=5
 	};
+	
 public:
 
 	bool firstDraw;
@@ -68,6 +69,7 @@ public:
 	void confirmStillCrossConnecting(char *data, int size, IPaddress ip);
 	void confirmCrossConnectionAchieved(char *data, int size, IPaddress ip);
 	void confirmPlayerStartGame(char *data, int size, IPaddress ip);
+	void broadcastRequest(char *data, int size, IPaddress ip);
 	void treatData(char *data, int size, IPaddress ip);
 	void onTimer(Uint32 tick);
 	void sendingTime();

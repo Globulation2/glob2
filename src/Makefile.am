@@ -118,7 +118,10 @@ NewMapScreen.cpp \
 YOG.h \
 YOG.cpp  \
 MapGenerationDescriptor.h \
-MapGenerationDescriptor.cpp
+MapGenerationDescriptor.cpp \
+LANBroadcast.h \
+LANBroadcast.cpp
+
 
 glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

@@ -22,9 +22,10 @@
 #ifndef __AI_H
 #define __AI_H
 
-#include "Order.h"
+#include "BuildingType.h"
 
 class Player;
+class Order;
 
 class AI
 {

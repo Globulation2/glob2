@@ -22,6 +22,8 @@
 #define __MULTIPLAYERJOIN_H
 
 #include "MultiplayersCrossConnectable.h"
+#include "LANBroadcast.h"
+#include <list>
 
 class MultiplayersJoin:public MultiplayersCrossConnectable
 {
@@ -42,6 +44,28 @@ public:
 
 		WS_SERVER_START_GAME
 	};
+
+private:
+	LANBroadcast lan;
+	enum BroadcastState
+	{
+		BS_BAD=0,
+		BS_ENABLE,
+		BS_JOINED
+	};
+	BroadcastState broadcastState;
+	int broadcastTimeout;
+	
+	struct LANHost
+	{
+		int rv;
+		Uint32 ip;
+		int timeout;
+	};
+	
+	std::list<LANHost> LANHosts;
+	
+	bool listHasChanged;
 
 public:
 	char serverName[128];
@@ -75,7 +99,10 @@ public:
 	void treatData(char *data, int size, IPaddress ip);
 	//void confirmPlayerStartGame(IPaddress ip);
 
+	bool getList(char ***list, int *length);
+	void receiveTime();
 	void onTimer(Uint32 tick);
+	char *getStatusString();
 
 	void sendingTime();
 	bool sendSessionInfoRequest();

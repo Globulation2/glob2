@@ -44,6 +44,14 @@ void MultiplayersJoin::init()
 	playerName[0]=0;
 	
 	kicked=false;
+	
+	if (lan.enable(SERVER_PORT))
+		broadcastState=BS_ENABLE;
+	else
+		broadcastState=BS_BAD;
+	
+	broadcastTimeout=0;
+	listHasChanged=false;
 }
 
 MultiplayersJoin::~MultiplayersJoin()
@@ -408,9 +416,67 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	}
 }
 
+bool MultiplayersJoin::getList(char ***list, int *length)
+{
+	if (listHasChanged)
+	{
+		listHasChanged=false;
+		
+		int l=LANHosts.size();
+		*list=new char*[l];
+		
+		std::list<LANHost>::iterator it;
+		int i=0;
+		for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
+		{
+			assert(i<l);
+			(*list)[i]=new char[16];
+			
+			Uint32 netHost=SDL_SwapBE32(it->ip);
+			snprintf((*list)[i], 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
+			printf("getList::list[%d]=%s\n", i, (*list)[i]);
+			i++;
+		}
+		*length=l;
+		return true;
+	}
+	else
+		return false;
+}
+
+void MultiplayersJoin::receiveTime()
+{
+	std::list<LANHost>::iterator it;
+	for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
+		it->timeout--;
+	
+	int v;
+	if (lan.receive(&v))
+	{
+		LANHost lanhost;
+		lanhost.rv=v;
+		lanhost.ip=lan.getSenderIP();
+		lanhost.timeout=SHORT_NETWORK_TIMEOUT;
+		LANHosts.push_front(lanhost);
+		listHasChanged=true;
+	}
+	
+	for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
+	{
+		if (it->timeout<0)
+		{
+			std::list<LANHost>::iterator ittemp=it;
+			it=LANHosts.erase(ittemp);
+			listHasChanged=true;
+			printf("removed (%d).\n", ittemp->rv);
+		}
+	}
+}
+
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
 	sendingTime();
+	receiveTime();
 
 	if ((waitingState!=WS_TYPING_SERVER_NAME) && socket)
 	{
@@ -445,8 +511,53 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 	}
 }
 
+char *MultiplayersJoin::getStatusString()
+{
+	char *s;
+	switch (waitingState)
+	{
+		case WS_BAD:
+			s=globalContainer->texts.getString("[bad error in connection system]");
+		break;
+		case WS_TYPING_SERVER_NAME:
+			s=globalContainer->texts.getString("[not connected]");
+		break;
+		case WS_WAITING_FOR_SESSION_INFO:
+			s=globalContainer->texts.getString("[request sended, waiting for answer]");
+		break;
+		case WS_WAITING_FOR_CHECKSUM_CONFIRMATION:
+			s=globalContainer->texts.getString("[answer recieved, checksum sended]");
+		break;
+		case WS_OK:
+			s=globalContainer->texts.getString("[connected to server]");
+		break;
+		case WS_CROSS_CONNECTING:
+		case WS_CROSS_CONNECTING_START_CONFIRMED:
+			s=globalContainer->texts.getString("[connecting to all players]");
+		break;
+		case WS_CROSS_CONNECTING_ACHIEVED:
+		case WS_CROSS_CONNECTING_SERVER_HEARD:
+		case WS_SERVER_START_GAME:
+			s=globalContainer->texts.getString("[connected to all players]");
+		break;
+	}
+	int l=strlen(s)+1;
+	char *t=new char[l];
+	strncpy(t, s, l);
+	return t;
+}
+
+
 void MultiplayersJoin::sendingTime()
 {
+	if ((broadcastState==BS_ENABLE)&&(--broadcastTimeout<0))
+	{
+		if (lan.send(BROADCAST_REQUEST))
+			broadcastTimeout=SHORT_NETWORK_TIMEOUT;
+		else
+			broadcastState=BS_BAD;
+	}
+
 	if ((waitingState!=WS_TYPING_SERVER_NAME)&&(--waitingTimeout<0))
 	{
 		if (--waitingTOTL<0)

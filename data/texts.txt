@@ -683,3 +683,31 @@ beach size
 Ouvrieres
 Workers
 
+[bad error in connection system]
+Mauvaise erreur dans le systeme de connection
+Bad error in connection system
+
+[not connected]
+Pas connecte
+Not connected
+
+[request sended, waiting for answer]
+Requete envoyee, en attente de reponse
+Request sended, waiting for answer
+
+[answer recieved, checksum sended]
+Reponse recue, somme de verification envoyee
+Answer recieved, checksum sended
+
+[connected to server]
+Connecte au serveur
+Connected to server
+
+[connecting to all players]
+En train de connecter avec les joueurs
+Connecting to all players
+
+[connected to all players]
+Connecte avec tous les joueurs
+Connected to all players
+

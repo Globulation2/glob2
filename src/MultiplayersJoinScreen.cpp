@@ -25,28 +25,33 @@
 
 //MultiplayersJoinScreen pannel part !!
 
-
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	multiplayersJoin=new MultiplayersJoin();
 
-	serverName=new TextInput(150, 170, 340, 30, globalContainer->standardFont, "localhost", true);
+	serverName=new TextInput(20, 170, 280, 30, globalContainer->standardFont, "localhost", true);
 	strncpy(multiplayersJoin->serverName, serverName->text, 128);
 	addWidget(serverName);
 
-	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
+	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
 	strncpy(multiplayersJoin->playerName, playerName->text, 128);
 	addWidget(playerName);
 
-	serverText=new Text(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+	serverText=new Text(20, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
 	addWidget(serverText);
 
-	playerText=new Text(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+	playerText=new Text(20, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
+	
+	statusText=new Text(20, 390, globalContainer->standardFont, "");
+	addWidget(statusText);
 
-	addWidget(new TextButton( 40, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
+	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
 	addWidget(new TextButton(280, 420, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
 
+	lanServers=new List(320, 100, 280, 200, globalContainer->menuFont);
+	addWidget(lanServers);
+	
 	wasVisible=false;
 }
 
@@ -65,6 +70,29 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
 	multiplayersJoin->onTimer(tick);
+	
+	if (multiplayersJoin->waitingState!=oldStatus)
+	{
+		char *s=multiplayersJoin->getStatusString();
+		statusText->setText(s);
+		delete[] s;
+		oldStatus=multiplayersJoin->waitingState;
+	}
+	
+	char **list;
+	int length;
+	if (multiplayersJoin->getList(&list, &length))
+	{
+		lanServers->clear();
+		for (int i=0; i<length; i++)
+		{
+			lanServers->addText(list[i]);
+			printf("JS::added list[%d]=(%s).\n", i, list[i]);
+			delete[] list[i];
+		}
+		delete[] list;
+		lanServers->commit();
+	}
 	
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
@@ -137,6 +165,10 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 		if (source!=playerName)
 			playerName->activated=false;
 	}
-
+	else if (action==LIST_ELEMENT_SELECTED)
+	{
+		if (source==lanServers)
+			serverName->setText(lanServers->getText(par1));
+	}
 
 }

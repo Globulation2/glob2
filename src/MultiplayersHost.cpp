@@ -22,6 +22,7 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
+#include "LANBroadcast.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
@@ -197,7 +198,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 
 	default:
 	{
-		NETPRINTF("This is a bad and unknow(%d) hostGlobalState case. Should no happend!\n",hostGlobalState);
+		NETPRINTF("This is a bad and unknow(%d) hostGlobalState case. Should not happend!\n",hostGlobalState);
 	}
 	break;
 
@@ -579,6 +580,66 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 	}
 }
 
+void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
+{
+	if (size!=4)
+	{
+		NETPRINTF("broad:Bad size(%d) for a broadcast request from ip %x.\n", size, ip.host);
+		return;
+	}
+
+	int channel=getFreeChannel();
+	channel=SDLNet_UDP_Bind(socket, channel, &ip);
+	if (channel!=-1)
+	{
+		UDPpacket *packet=SDLNet_AllocPacket(size);
+		
+		if (packet==NULL)
+		{
+			NETPRINTF("broad:can't alocate packet!\n");
+			return;
+		}
+		
+		if (ip.host==0)
+		{
+			NETPRINTF("broad:can't have a null ip.host\n");
+			return;
+		}
+		
+		char data[4];
+		data[0]=BROADCAST_RESPONSE;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		packet->len=4;
+		memcpy((char *)packet->data, data, 4);
+		
+		bool sucess;
+		
+		packet->address=ip;
+		packet->channel=channel;
+		
+		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+		// Notice that we can choose between giving a "channel", or the ip.
+		// Here we do both. Then "channel" could be -1.
+		// This is interesting because getFreeChannel() may return -1.
+		// We have no real use of "channel".
+		if (sucess)
+			NETPRINTF("broad:sucedded to response.\n");
+		
+		
+		SDLNet_FreePacket(packet);
+		
+		NETPRINTF("broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
+		SDLNet_UDP_Unbind(socket, channel);
+		channel=-1;
+	}
+	else
+	{
+		printf("broad:can't bind (socket=%x).\n", (int)socket);
+	}
+}
+
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
@@ -590,6 +651,10 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 	{
 		switch (data[0])
 		{
+		case BROADCAST_REQUEST:
+			broadcastRequest(data, size, ip);
+		break;
+		
 		case NEW_PLAYER_WANTS_SESSION_INFO:
 			newPlayer(data, size, ip);
 		break;
