@@ -122,11 +122,18 @@ namespace GAGCore
 			HWACCELERATED=4,
 			RESIZABLE=8,
 		};
+		
+		enum Quality
+		{
+			HIGH_QUALITY=0,
+			LOW_QUALITY=1
+		};
 	
 	public:
 		DrawableSurface();
 		virtual ~DrawableSurface(void) { if (surface) SDL_FreeSurface(surface); }
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
+		virtual void setQuality(Quality quality) { }
 		virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);
 		virtual int getW(void) { if(surface) return surface->w; else return 0; }
 		virtual int getH(void) { if(surface) return surface->h; else return 0; }
@@ -171,6 +178,7 @@ namespace GAGCore
 	
 		//! this must be called before any Drawable Surface method.
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
+		virtual void setQuality(Quality quality);
 		virtual void setMinRes(int w=0, int h=0);
 		virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 		virtual void beginVideoModeListing(void);

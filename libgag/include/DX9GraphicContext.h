@@ -127,6 +127,12 @@ namespace GAGCore
 			HWACCELERATED=4,
 			RESIZABLE=8,
 		};
+		
+		enum Quality
+		{
+			HIGH_QUALITY=0,
+			LOW_QUALITY=1
+		};
 	
 	public:
 		DrawableSurface();

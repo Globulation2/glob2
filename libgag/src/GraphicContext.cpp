@@ -1188,6 +1188,16 @@ namespace GAGCore
 		}
 	}
 	
+	void GraphicContext::setQuality(Quality quality)
+	{
+		#ifdef HAVE_OPENGL
+		if (quality == HIGH_QUALITY)
+			glSDL_SetAntiAliasing(1);
+		else
+			glSDL_SetAntiAliasing(0);
+		#endif
+	}
+	
 	void GraphicContext::nextFrame(void)
 	{
 		if (surface)

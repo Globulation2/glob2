@@ -258,6 +258,8 @@ void glSDL_SetBltAlpha(int alpha);
  */
 void glSDL_SetLineWidth(float width);
 void glSDL_SetLineStipple(int factor, Uint16 pattern);
+/* Quality settings, 1 = AA enabled, 0 = AAA disabled */
+void glSDL_SetAntiAliasing(int quality);
 
 int glSDL_DrawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color, Uint8 alpha);
 int glSDL_DrawRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color, Uint8 alpha);

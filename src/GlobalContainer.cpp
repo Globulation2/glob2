@@ -383,6 +383,7 @@ void GlobalContainer::load(void)
 		gfx = Toolkit::getGraphicContext();
 		gfx->setMinRes(640, 480);
 		gfx->setRes(settings.screenWidth, settings.screenHeight, globalContainer->settings.screenDepth, settings.screenFlags, (DrawableSurface::GraphicContextType)settings.graphicType);
+		gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::HIGH_QUALITY : GraphicContext::LOW_QUALITY);
 		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	
