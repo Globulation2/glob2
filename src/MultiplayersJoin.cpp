@@ -1144,8 +1144,8 @@ void MultiplayersJoin::sendingTime()
 			for (int ix=0; ix<ixend; ix++)
 			{
 				addUint32(data, receivedBegin[ix], 8+ix*8);
-				addUint32(data, receivedEnd[ix], 8+ix*8);
-				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix], receivedEnd[ix]);
+				addUint32(data, receivedEnd[ix], 12+ix*8);
+				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix]/1024, receivedEnd[ix]/1024);
 			}
 			fprintf(logFileDownload, ")\n");
 			bool success=send(data, size);
