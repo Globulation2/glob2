@@ -1082,8 +1082,8 @@ void Unit::pathFind(void)
 		int tdy=cdy;
 		int c=0;
 		// we ignore the units as obstacle:
-		// TODO better : use validHard?
-		while((owner->game->map.getUnit(posX+tdx, posY+tdy)>=0))
+		// TODO better : use validHard? Right man, that was a bug !
+		while(validHard(posX+tdx, posY+tdy))
 		{
 			tdx+=cdx;
 			tdy+=cdy;
@@ -1218,29 +1218,105 @@ void Unit::pathFind(void)
 		// TODO : something if obstacle==border
 		// TODO : something if the validHard configuration uf the map has changed.
 		
+		int mapw=owner->game->map.w;
+		int maph=owner->game->map.h;
+			
+		while (obstacleX<0)
+			obstacleX+=mapw;
+		while (obstacleY<0)
+			obstacleY+=maph;
+		while (borderX<0)
+			borderX+=mapw;
+		while (borderY<0)
+			borderY+=maph;
+		
+		while (obstacleX>mapw)
+			obstacleX-=mapw;
+		while (obstacleY>maph)
+			obstacleY-=maph;
+		while (borderX>mapw)
+			borderX-=mapw;
+		while (borderY>maph)
+			borderY-=maph;
+		
+		// WARNING : both cases above are very similars
 		if (bypassDirection==DIR_LEFT)
 		{
 			
 			int c=0;
 			if (verbose)
 					printf("l o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
-			int bdx=obstacleX-borderX;
-			int bdy=obstacleY-borderY;
-			int bDirection=directionFromDxDy(bdx, bdy);
-			int odx=borderX-obstacleX;
-			int ody=borderY-obstacleY;
+			int bdx;
+			int bdy;
+			int bDirection;
+			int odx;
+			int ody;
+			assert(validHard(borderX, borderY));
 			
+			if (validHard(obstacleX, obstacleY))
+			{
+				if (verbose)
+					printf("l obstacle not hard! .n");
+				printf("l(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+				/*int ctpx=posX-tempTargetX;
+				int ctpy=posY-tempTargetY;
+				
+				int dctpx, dctpy;
+				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
+
+				obstacleX+=dctpx;
+				obstacleY+=dctpy;
+				while(validHard(obstacleX, obstacleY))
+				{
+					obstacleX+=dctpx;
+					obstacleY+=dctpy;
+				}
+
+				borderX=obstacleX-dctpx;
+				borderY=obstacleY-dctpy;*/
+				assert(false);// TODO : remove assert and put the above code out of comment when ground moves.
+			}
+			
+			bdx=obstacleX-borderX;
+			bdy=obstacleY-borderY;
+			bDirection=directionFromDxDy(bdx, bdy);
+			odx=borderX-obstacleX;
+			ody=borderY-obstacleY;
 			
 			int ldx=borderX-posX;
 			int ldy=borderY-posY;
+			if (ldx>(mapw>>1))
+				ldx=mapw-ldx;
+			if (ldy>(maph>>1))
+				ldy=maph-ldy;
 			simplifyDirection(ldx, ldy, &dx, &dy);
 			directionFromDxDy();
 			
 			if (verbose)
 					printf("l d=(%d, %d) bd=(%d, %d) od=(%d, %d) ld=(%d, %d) \n", dx, dy, bdx, bdy, odx, ody, ldx, ldy);
 			
+			int bapx=posX; // BorderAdvancePossiblitiy
+			int bapy=posY;
+			int bapdx=sign(ldx);
+			int bapdy=sign(ldy);
+			int maxDist=0;
+			if ((bapdx!=0)||(bapdy!=0))
+				while(validHard(bapx, bapy))
+				{
+					bapx+=bapdx;
+					bapy+=bapdy;
+					if (maxDist++>64)
+						break;
+				}
+			else
+				maxDist=1;
+			if (verbose)
+				printf("l maxDist=%d \n", maxDist);
+			
+			maxDist*=maxDist;
+			
 			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
-			if ( (((dx*odx+dy*ody)<=0) || (distSq<4)) && (distSq<9) )
+			for (int i=0; i<2 && (distSq<maxDist) ; i++)
 			{
 				// Ok, the border is not too far.
 				
@@ -1251,20 +1327,27 @@ void Unit::pathFind(void)
 					if ((++c)>8)
 					{
 						if (verbose)
-							printf("l:bad state, gotoTarget now\n");
+							printf("l c:bad state, gotoTarget now\n");
 						gotoTarget(targetX, targetY);
 						bypassDirection=DIR_UNSET;
 						return;
 					}
 					bDirection=(bDirection+7)&7;
+					if (verbose)
+						printf("l obstacle=(%d, %d) border=(%d, %d) bd=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY, bdx, bdy);
+					
 					dxdyfromDirection(bDirection, &bdx, &bdy);
 				}
 				borderX+=bdx;
 				borderY+=bdy;
 				if (verbose)
-					printf("l new border=(%d, %d) bd=(%d, %d) \n", borderX, borderY, bdx, bdy);
+					printf("l new obstacle=(%d, %d) border=(%d, %d) bd=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY, bdx, bdy);
+				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+				bdx=obstacleX-borderX;
+				bdy=obstacleY-borderY;
+				bDirection=directionFromDxDy(bdx, bdy);
+				c=0;
 			}
-			
 			gotoTarget(borderX, borderY);
 		}
 		else if (bypassDirection==DIR_RIGHT)
@@ -1272,40 +1355,83 @@ void Unit::pathFind(void)
 			int c=0;
 			if (verbose)
 					printf("r o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
-			int bdx=obstacleX-borderX;
-			int bdy=obstacleY-borderY;
-			int bDirection=directionFromDxDy(bdx, bdy);
-			int odx=borderX-obstacleX;
-			int ody=borderY-obstacleY;
+			int bdx;
+			int bdy;
+			int bDirection;
+			int odx;
+			int ody;
 			
+			assert(validHard(borderX, borderY));
+			
+			if (validHard(obstacleX, obstacleY))
+			{
+				if (verbose)
+					printf("r obstacle not hard! .n");
+				printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+				/*int ctpx=posX-tempTargetX;
+				int ctpy=posY-tempTargetY;
+				
+				int dctpx, dctpy;
+				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
+
+				obstacleX+=dctpx;
+				obstacleY+=dctpy;
+				while(validHard(obstacleX, obstacleY))
+				{
+					obstacleX+=dctpx;
+					obstacleY+=dctpy;
+				}
+
+				borderX=obstacleX-dctpx;
+				borderY=obstacleY-dctpy;*/
+				assert(false);// TODO : remove assert and put the above code out of comment when ground moves.
+			}
+			
+			
+			
+			bdx=obstacleX-borderX;
+			bdy=obstacleY-borderY;
+			bDirection=directionFromDxDy(bdx, bdy);
+			odx=borderX-obstacleX;
+			ody=borderY-obstacleY;
 			
 			int ldx=borderX-posX;
 			int ldy=borderY-posY;
 			
-			int mapw=owner->game->map.w;
-			int maph=owner->game->map.h;
+			
 			if (ldx>(mapw>>1))
 				ldx=mapw-ldx;
 			if (ldy>(maph>>1))
 				ldy=maph-ldy;
 			
-			// TODO : this does not warp correctly!
 			simplifyDirection(ldx, ldy, &dx, &dy);
 			directionFromDxDy();
 			
-			
-			/*
-			r o=(-2, 66) b=(-3, 66) 
-			r d=(1, 0) bd=(1, 0) od=(-1, 0) ld=(-130, 3) 
-			r o=(-2, 66) b=(-3, 66) 
-			r d=(-1, 1) bd=(1, 0) od=(-1, 0) ld=(-3, 3)
-			*/
-			
 			if (verbose)
-					printf("r d=(%d, %d) bd=(%d, %d) od=(%d, %d) ld=(%d, %d) \n", dx, dy, bdx, bdy, odx, ody, ldx, ldy);
+				printf("r d=(%d, %d) bd=(%d, %d) od=(%d, %d) ld=(%d, %d) \n", dx, dy, bdx, bdy, odx, ody, ldx, ldy);
+			
+			int bapx=posX; // BorderAdvancePossiblitiy
+			int bapy=posY;
+			int bapdx=sign(ldx);
+			int bapdy=sign(ldy);
+			int maxDist=0;
+			if ((bapdx!=0)||(bapdy!=0))
+				while(validHard(bapx, bapy))
+				{
+					bapx+=bapdx;
+					bapy+=bapdy;
+					if (maxDist++>64)
+						break;
+				}
+			else
+				maxDist=1;
+			if (verbose)
+				printf("r maxDist=%d \n", maxDist);
+			
+			maxDist*=maxDist;
 			
 			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
-			if ( (((dx*odx+dy*ody)<=0) || (distSq<4)) && (distSq<9) )
+			for (int i=0; i<2 && (distSq<maxDist) ; i++)
 			{
 				// Ok, the border is not too far.
 				
@@ -1316,20 +1442,27 @@ void Unit::pathFind(void)
 					if ((++c)>8)
 					{
 						if (verbose)
-							printf("l:bad state, gotoTarget now\n");
+							printf("r c:bad state, gotoTarget now\n");
 						gotoTarget(targetX, targetY);
 						bypassDirection=DIR_UNSET;
 						return;
 					}
 					bDirection=(bDirection+1)&7;
+					if (verbose)
+						printf("r obstacle=(%d, %d) border=(%d, %d) bd=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY, bdx, bdy);
+					
 					dxdyfromDirection(bDirection, &bdx, &bdy);
 				}
 				borderX+=bdx;
 				borderY+=bdy;
 				if (verbose)
-					printf("r new border=(%d, %d) bd=(%d, %d) \n", borderX, borderY, bdx, bdy);
+					printf("r new obstacle=(%d, %d) border=(%d, %d) bd=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY, bdx, bdy);
+				distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
+				bdx=obstacleX-borderX;
+				bdy=obstacleY-borderY;
+				bDirection=directionFromDxDy(bdx, bdy);
+				c=0;
 			}
-			
 			gotoTarget(borderX, borderY);
 		}
 		else

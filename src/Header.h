@@ -24,6 +24,6 @@
 
 //#define DBG_UID
 #undef DBG_UID
-//#define DBG_PATHFINDING
+#define DBG_PATHFINDING
 
 #endif 

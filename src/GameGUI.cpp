@@ -901,6 +901,8 @@ void GameGUI::draw(void)
 		// we get the type of building
 		int mapX, mapY;
 		int batX, batY, batW, batH;
+		int exMapX, exMapY; // ex suffix means EXtended building; the last level building type.
+		int exBatX, exBatY, exBatW, exBatH;
 
 		int typeNum=game.buildingsTypes.getTypeNum(typeToBuild, 0, false);
 
@@ -917,8 +919,26 @@ void GameGUI::draw(void)
 			tempY=((mouseY)>>5)+viewportY;
 		else
 			tempY=((mouseY+16)>>5)+viewportY;
-			
+		
+		
 		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
+		
+		// we find last's leve type num:
+		BuildingType *lastbt=game.buildingsTypes.getBuildingType(typeNum);
+		int lastTypeNum=typeNum;
+		int max=0;
+		while(lastbt->nextLevelTypeNum>=0)
+		{
+			lastTypeNum=lastbt->nextLevelTypeNum;
+			lastbt=game.buildingsTypes.getBuildingType(lastTypeNum);
+			if (max++>200)
+			{
+				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+				break;
+			}
+		}
+		
+		bool isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
 
 		// we get the datas
 		Sprite *sprite=globalContainer.buildings.getSprite(bt->startImage);
@@ -929,14 +949,29 @@ void GameGUI::draw(void)
 		batY=(mapY-viewportY)<<5;
 		batW=(bt->width)<<5;
 		batH=(bt->height)<<5;
-			
+		
+		// we get extended building sizes:
+		
+		exBatX=(exMapX-viewportX)<<5;
+		exBatY=(exMapY-viewportY)<<5;
+		exBatW=(lastbt->width)<<5;
+		exBatH=(lastbt->height)<<5;
+		
+		
 		globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
 		globalContainer.gfx.drawSprite(sprite, batX, batY);
 
 		if (isRoom)
-			globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+		{
+			if (isExtendedRoom)
+				globalContainer.gfx.drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
+			else
+				globalContainer.gfx.drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
+			globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+		}
 		else
-			globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+			globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+		
 	}
 	else if (selBuild)
 	{
