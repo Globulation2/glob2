@@ -63,7 +63,7 @@
 #define YOFFSET_TEXT_PARA 14
 #define YOFFSET_TEXT_LINE 12
 
-#define YOFFSET_PROGRESS_BAR 7
+#define YOFFSET_PROGRESS_BAR 10
 
 enum GameGUIGfxId
 {
@@ -1801,6 +1801,7 @@ void GameGUI::drawBuildingInfos(void)
 	BuildingType *buildingType = selBuild->type;
 	int ypos = YPOS_BASE_BUILDING;
 	Uint8 r, g, b;
+	unsigned unitInsideBarYDec = 0;
 
 	// draw "building" of "player"
 	std::string title;
@@ -1988,10 +1989,10 @@ void GameGUI::drawBuildingInfos(void)
 	// cleared ressources for clearing flags:
 	if (buildingType->type==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
-		ypos+=YOFFSET_B_SEP;
+		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
 			Toolkit::getStringTable()->getString("[Clearing:]"));
-		ypos+=YOFFSET_TEXT_PARA;
+		ypos += YOFFSET_TEXT_PARA;
 		int j=0;
 		for (int i=0; i<BASIC_COUNT; i++)
 			if (i!=STONE)
@@ -2025,6 +2026,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TOWER;
 	}
 
+	// There is unit inside, show time to leave
 	if ((selBuild->owner->allies) & (1<<localTeamNo))
 	{
 		// we select food buildings, heal buildings, and upgrade buildings:
@@ -2036,10 +2038,10 @@ void GameGUI::drawBuildingInfos(void)
 		else
 			for (int i=0; i<NB_ABILITY; i++)
 				if (buildingType->upgradeTime[i])
-					maxTimeTo=buildingType->upgradeTime[i];
+					maxTimeTo=std::max(maxTimeTo, buildingType->upgradeTime[i]);
 		if (maxTimeTo)
 		{
-			int leftMin=128;
+			/*int leftMin=128;
 			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
 			{
 				Unit *u=*it;
@@ -2058,8 +2060,24 @@ void GameGUI::drawBuildingInfos(void)
 				int elapsed=128-left;
 				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, ypos, elapsed, 7, 100, 100, 255);
 				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+elapsed, ypos, left, 7, 128, 128, 128);
+			}*/
+			
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, ypos, 128, 7, 168, 150, 90);
+			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
+			{
+				Unit *u=*it;
+				assert(u);
+				if (u->displacement==Unit::DIS_INSIDE)
+				{
+					int left=(-u->insideTimeout*128+128-u->delta/2)/(1+maxTimeTo);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left-1, ypos, 7, 17, 30, 64);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left, ypos, 7, 63, 111, 149);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-left+1, ypos, 7, 17, 30, 64);
+				}
 			}
-			ypos+=YOFFSET_PROGRESS_BAR;
+			
+			ypos += YOFFSET_PROGRESS_BAR;
+			unitInsideBarYDec = YOFFSET_PROGRESS_BAR;
 		}
 	}
 	
@@ -2207,6 +2225,7 @@ void GameGUI::drawBuildingInfos(void)
 								drawValueAlignedRight(blueYpos+12, bt->shootingRange);
 								blueYpos += YOFFSET_TOWER;
 							}
+							blueYpos += unitInsideBarYDec;
 							blueYpos += YOFFSET_B_SEP;
 
 							unsigned j = 0;
