@@ -36,6 +36,8 @@ YOG::YOG()
 {
 	socket=NULL;
 	socketSet=NULL;
+	isSharedGame=false;
+	sharedGame[0]=0;
 }
 
 YOG::~YOG()
@@ -251,6 +253,15 @@ void YOG::step(void)
 			++gameToDeleteIt;
 	}
 
+	// resend game if timout between two send has elapsed
+	if (isSharedGame)
+	{
+		if (sharedGameLastUpdated+RESEND_GAME_INTERVAL<SDL_GetTicks())
+		{
+			sendString(sharedGame);
+			sharedGameLastUpdated=SDL_GetTicks();
+		}
+	}
 }
 
 
@@ -363,6 +374,7 @@ void YOG::sendCommand(const char *message)
 	}
 }
 
+
 void YOG::joinChannel(const char *channel)
 {
 	char command[IRC_MESSAGE_SIZE];
@@ -376,6 +388,21 @@ void YOG::quitChannel(const char *channel)
 	snprintf(command, IRC_MESSAGE_SIZE, "PART %s", channel);
 	sendString(command);
 }
+
+
+void YOG::unshareGame(void)
+{
+	isSharedGame=false;
+}
+
+void YOG::shareGame(const char *id, const char *version, const char *comment)
+{
+	isSharedGame=true;
+	sharedGameLastUpdated=SDL_GetTicks();
+	snprintf(sharedGame, sizeof(sharedGame), "PRIVMSG %s :%s %s %s", DEFAULT_GAME_CHAN, id, version, comment);
+	sendString(sharedGame);
+}
+
 
 bool YOG::resetGameLister(void)
 {
