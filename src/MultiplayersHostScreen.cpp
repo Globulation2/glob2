@@ -38,10 +38,10 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
-	firstDraw=true;
-
 	multiplayersHost=new MultiplayersHost(sessionInfo, true);
 	multiplayersJoin=NULL;
+
+	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -100,10 +100,4 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (firstDraw)
-	{
-		char *text= globalContainer->texts.getString("[awaiting players]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
-		firstDraw=false;
-	}
 }
