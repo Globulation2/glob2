@@ -57,12 +57,11 @@ public:
 	virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-	virtual void drawString(int x, int y, const Font *font, const char *msg, ...);
-	virtual void drawString(int x, int y, int w, const Font *font, const char *msg, ...);
-	virtual void drawSurface(int x, int y, DrawableSurface *surface);
-	
+	virtual void drawString(int x, int y, const Font *font, int i);
+	virtual void drawString(int x, int y, const Font *font, const char *msg);
+	virtual void drawString(int x, int y, int w, const Font *font, const char *msg);
+	virtual void drawSurface(int x, int y, DrawableSurface *surface);	
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
-
 	virtual void loadSprite(const char *filename, const char *name);
 	virtual void loadFont(const char *filename, unsigned size, const char *name);
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL);
