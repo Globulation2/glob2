@@ -246,7 +246,7 @@ Freies Spiel
 [yog]
 Jeu en ligne Ysagoon
 Ysagoon Online Gaming
-Ysagoon Olnine Spiel
+Ysagoon Online Spiel
 [lan]
 Jeu en reseau local
 LAN Game
