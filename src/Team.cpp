@@ -237,7 +237,6 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	canExchange.clear();
 	virtualBuildings.clear();
 	clearingFlags.clear();
-	zonableForbidden.clear();
 	
 	prestige=0;
 	for (int i=0; i<1024; i++)
@@ -259,8 +258,6 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 				virtualBuildings.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->zonable[WORKER])
 				clearingFlags.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonableForbidden)
-				zonableForbidden.push_back(myBuildings[i]);
 		}
 		else
 			myBuildings[i]=NULL;
@@ -399,8 +396,6 @@ void Team::createLists(void)
 				virtualBuildings.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->zonable[WORKER])
 				clearingFlags.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonableForbidden)
-				zonableForbidden.push_back(myBuildings[i]);
 			myBuildings[i]->update();
 		}
 }
@@ -1211,9 +1206,6 @@ void Team::removeFromAbilitiesLists(Building *building)
 	
 	if (building->type->isVirtual)
 		virtualBuildings.remove(building);
-	
-	if (building->type->zonableForbidden)
-		zonableForbidden.remove(building);
 }
 
 void Team::addToStaticAbilitiesLists(Building *building)
@@ -1232,12 +1224,6 @@ void Team::addToStaticAbilitiesLists(Building *building)
 	
 	if (building->type->isVirtual)
 		virtualBuildings.push_back(building);
-		
-	if (building->type->zonableForbidden)
-	{
-		zonableForbidden.push_back(building);
-		map->setForbiddenCircularArea(building->posX, building->posY, building->unitStayRange, me);
-	}
 }
 
 void Team::syncStep(void)
@@ -1302,8 +1288,11 @@ void Team::syncStep(void)
 		}
 	}
 	if (isDirtyGlobalGradient)
+	{
 		dirtyGlobalGradient();
-
+		map->updateForbiddenGradient(teamNumber);
+	}
+	
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
@@ -1413,17 +1402,6 @@ void Team::syncStep(void)
 			eventCooldown[i]--;
 	
 	stats.step(this);
-}
-
-void Team::computeForbiddenArea()
-{
-	map->clearForbiddenArea(me);
-	for (std::list<Building *>::iterator it=zonableForbidden.begin(); it!=zonableForbidden.end(); ++it)
-	{
-		Building *b=*it;
-		if (b->buildingState==Building::ALIVE)
-			map->setForbiddenCircularArea(b->posX, b->posY, b->unitStayRange, me);
-	}
 }
 
 void Team::dirtyGlobalGradient()

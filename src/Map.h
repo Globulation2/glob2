@@ -393,6 +393,7 @@ public:
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
+	void updateForbiddenGradient(int teamNumber);
 	void updateForbiddenGradient();
 	
 protected:

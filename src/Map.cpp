@@ -1213,10 +1213,8 @@ void Map::computeLocalForbidden(int localTeamNo)
 {
 	int localTeamMask = 1<<localTeamNo;
 	for (size_t i=0; i<size; i++)
-	{
 		if ((cases[i].forbidden & localTeamMask) != 0)
 			localForbiddenMap.set(i, true);
-	}
 }
 
 void Map::setForbiddenCircularArea(int x, int y, int r, Uint32 me)
@@ -3991,6 +3989,8 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
 	pathfindForbiddenCount++;
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
+	if (!gradient)
+		printf("error, Map::pathfindForbidden(), forbiddenGradient[teamNumber=%d][canSwim=%d] is NULL\n", teamNumber, canSwim);
 	assert(gradient);
 	
 	Uint32 maxValue=0;
@@ -4073,12 +4073,17 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 	updateGlobalGradient(gradient);
 }
 
+void Map::updateForbiddenGradient(int teamNumber)
+{
+	for (int si=0; si<2; si++)
+		updateForbiddenGradient(teamNumber, si);
+}
+
 void Map::updateForbiddenGradient()
 {
 	int numberOfTeam=game->session.numberOfTeam;
 	for (int ti=0; ti<numberOfTeam; ti++)
-		for (int si=0; si<2; si++)
-			updateForbiddenGradient(ti, si);
+		updateForbiddenGradient(ti);
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)
