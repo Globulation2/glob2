@@ -94,6 +94,8 @@ void GameGUI::init()
 	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
+	
+	hasEndOfGameDialogBeenShown=false;
 }
 
 void GameGUI::adjustInitialViewport()
@@ -271,6 +273,9 @@ void GameGUI::step(void)
 			}
 			m->gameGuiPainted=true;
 		}
+		
+	// do we have won or lost conditions
+	checkWonConditions();
 }
 
 void GameGUI::synchroneStep(void)
@@ -458,6 +463,24 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				gameMenuScreen=NULL;
 				return true;
 
+				default:
+				return false;
+			}
+		}
+		
+		case IGM_END_OF_GAME:
+		{
+			switch (gameMenuScreen->endValue)
+			{
+				case InGameEndOfGameScreen::QUIT:
+				orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
+				
+				case InGameEndOfGameScreen::CONTINUE:
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				gameMenuScreen=NULL;
+				return true;
+				
 				default:
 				return false;
 			}
@@ -1821,18 +1844,6 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
-	if (localTeam->isAlive==false)
-	{
-		// TODO : draw won screen
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, "%s", globalContainer->texts.getString("[you have lost]"));
-	}
-	else if (localTeam->hasWon==true)
-	{
-		// TODO : draw lost screen
-		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, "%s", globalContainer->texts.getString("[you have won]"));
-	}
-	if (game.totalPrestigeReached)
-		globalContainer->gfx->drawString(20, (globalContainer->gfx->getH()>>1)+30, globalContainer->littleFont, "%s", "total prestige reached");
 
 	// draw message List
 	if (game.anyPlayerWaited && game.maskAwayPlayer)
@@ -2060,6 +2071,42 @@ void GameGUI::drawAll(int team)
 	{
 		globalContainer->gfx->setClipRect();
 		drawInGameTextInput();
+	}
+}
+
+void GameGUI::checkWonConditions(void)
+{
+	if (hasEndOfGameDialogBeenShown)
+		return;
+		
+	if (localTeam->isAlive==false)
+	{
+		if (inGameMenu==IGM_NONE)
+		{
+			inGameMenu=IGM_END_OF_GAME;
+			gameMenuScreen=new InGameEndOfGameScreen(globalContainer->texts.getString("[you have lost]"), true);
+			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+			hasEndOfGameDialogBeenShown=true;
+		}
+	}
+	else if (localTeam->hasWon==true)
+	{
+		if (inGameMenu==IGM_NONE)
+		{
+			inGameMenu=IGM_END_OF_GAME;
+			gameMenuScreen=new InGameEndOfGameScreen(globalContainer->texts.getString("[you have won]"), true);
+			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+			hasEndOfGameDialogBeenShown=true;
+		}
+	}
+	else if (game.totalPrestigeReached)
+	{
+		if (inGameMenu==IGM_NONE)
+		{
+			inGameMenu=IGM_END_OF_GAME;
+			gameMenuScreen=new InGameEndOfGameScreen(globalContainer->texts.getString("[Total prestige reached]"), true);
+			gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+		}
 	}
 }
 

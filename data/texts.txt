@@ -1015,6 +1015,14 @@ Speichern
 Sauvegarde automatique.game
 Auto save.game
 
+[Total prestige reached]
+Le prestige total a été atteint
+Total prestige reached
+
+[Continue playing]
+Continuer à jouer
+Continue playing
+
 [Lost : your colony is dead]
 Perdu : Votre colonie est morte
 Lost : Your colony is dead

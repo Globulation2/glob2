@@ -39,8 +39,20 @@ public:
 	InGameMainScreen();
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	virtual void onSDLEvent(SDL_Event *event);
-	//virtual void paint(int x, int y, int w, int h);
+};
+
+class InGameEndOfGameScreen:public OverlayScreen
+{
+public:
+	enum
+	{
+		QUIT = 0,
+		CONTINUE = 1
+	};
+public:
+	InGameEndOfGameScreen(const char *title, bool canContinue);
+	virtual ~InGameEndOfGameScreen() { }
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
 
 class GameGUI;
