@@ -31,6 +31,12 @@
 #include <SDL_net.h>
 #include "MultiplayersHost.h"
 
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+
 GlobalContainer *globalContainer=0;
 
 
@@ -107,15 +113,56 @@ int Glob2::runHostServer(int argc, char *argv[])
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
-	Sint32 stepLength=20;
+	Sint32 stepLength=50;
 	
 	bool running=true;
+	char s[32];
 	while (running)
 	{
 		// get first timer
 		frameStartTime=SDL_GetTicks();
 		
 		multiplayersHost->onTimer(frameStartTime);
+		
+		fd_set rfds;
+		struct timeval tv;
+		int retval;
+		
+		// Watch stdin (fd 0) to see when it has input.
+		FD_ZERO(&rfds);
+		FD_SET(0, &rfds);
+		// Wait up to one second. */
+		tv.tv_sec = 0;
+		tv.tv_usec = 0;
+		
+		retval = select(1, &rfds, NULL, NULL, &tv);
+		// Don't rely on the value of tv now!
+		
+		if (retval)
+		{
+			fgets(s, 32, stdin);
+			int l=strlen(s);
+			if ((l>1)&&(s[l-1]=='\n'))
+				s[l-1]=0;
+			
+			if (strncmp(s, "start", 5)==0)
+			{
+				multiplayersHost->startGame();
+			}
+			else if ((strncmp(s, "quit", 4)==0) || (strncmp(s, "exit", 4)==0) || (strncmp(s, "bye", 4)==0))
+			{
+				multiplayersHost->stopHosting();
+				running=false;
+			}
+			else
+				printf("Glob2::runHostServer():not understood (%s).\n", s);
+		}
+		
+		if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
+		{
+			printf("Glob2::runHostServer():state high enough.\n");
+			running=false;
+		}
 		
 		frameWaitTime=SDL_GetTicks()-frameStartTime;
 		frameWaitTime=stepLength-frameWaitTime;
@@ -126,7 +173,6 @@ int Glob2::runHostServer(int argc, char *argv[])
 	multiplayersHost->startGame();
 	multiplayersHost->stopHosting();*/
 	
-	multiplayersHost->startGame();
 	
 	delete multiplayersHost;
 		
