@@ -410,9 +410,9 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		/*int x, y;
 		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
 		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
 			int teamNumber=player->team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+			return new OrderCreate(teamNumber, x, y, typeNum);
 		}*/
 	}
 	return new NullOrder();
@@ -835,9 +835,9 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 
 		if (ey!=-1)
 		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
-			return new OrderCreate(teamNumber, ex, ey, (BuildingType::BuildingTypeNumber)typeNum);
+			return new OrderCreate(teamNumber, ex, ey, typeNum);
 		}
 		else
 			return new NullOrder();
@@ -896,9 +896,9 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 		int x, y;
 		if (findNewEmplacement(buildingType, &x, &y))
 		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+			return new OrderCreate(teamNumber, x, y, typeNum);
 		}
 		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
 		return new NullOrder();
@@ -929,9 +929,9 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 		int x, y;
 		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
 		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
 			int teamNumber=team->teamNumber;
-			return new OrderCreate(teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+			return new OrderCreate(teamNumber, x, y, typeNum);
 		}
 		return new NullOrder();
 	}

@@ -1118,7 +1118,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		// we get the type of building
 		int mapX, mapY;
 
-		int typeNum;
+		Sint32 typeNum;
 
 		// try to get the building site, if it doesn't exists, get the finished building (for flags)
 		typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, true);
@@ -1136,7 +1136,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
 		if (isRoom)
-			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
+			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
 	}
 	else if (putMark)
 	{
