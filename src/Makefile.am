@@ -2,7 +2,6 @@ bin_PROGRAMS = glob2
 
 glob2_SOURCES= AI.cpp \
 AI.h\
-AIImplementation.cpp \
 AIImplementation.h\
 AINumbi.h \
 AINumbi.cpp \
