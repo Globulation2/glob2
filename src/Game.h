@@ -41,7 +41,7 @@ public:
 	bool anyPlayerWaited;
 	Uint32 maskAwayPlayer;
 public:
-	
+
 	void setBase(const SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
 	bool load(SDL_RWops *stream); // load a saved game
@@ -65,20 +65,20 @@ public:
 	bool checkRoomForBuilding(int x, int y, int typeNum, Sint32 team);
 	bool checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team);
 	bool checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team);
-	
+
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar=false, bool drawPathLines=false, bool drawBuildingRects=true, const bool useMapDiscovered=false);
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=false);
 
 
 	Sint32 checkSum();
-	
+
 public:
 	SessionGame session;
 	Team *teams[32];
 	Player *players[32];
 	Map map;
-	SDL_Surface *minimap;
+	DrawableSurface *minimap;
 	
 	/* <leto> I moved this to globalContainer.
 	static BuildingsTypes buildingsTypes;

@@ -7,33 +7,32 @@
 #define __GUIBUTTON_H
 
 #include "GUIBase.h"
-#include "Sprite.h"
 
 class Button: public Widget
 {
 public:
-	Button(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, int returnCode);
+	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode);
 	virtual ~Button() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(GraphicContext *gfx);
+	virtual void paint(DrawableSurface *gfx);
 	virtual void repaint(void);
 
 protected:
 	int x, y, w, h;
-	GraphicArchive *arch;
+	Sprite *arch;
 	int standardId, highlightID, returnCode;
 	bool highlighted;
-	GraphicContext *gfx;
+	DrawableSurface *gfx;
 };
 
 class TextButton:public Button
 {
 public:
-	TextButton(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode);
+	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode);
 	virtual ~TextButton() { delete[] text; }
 
-	virtual void paint(GraphicContext *gfx);
+	virtual void paint(DrawableSurface *gfx);
 	virtual void repaint(void);
 
 	void setText(const char *text);
@@ -51,7 +50,7 @@ public:
 	virtual ~OnOffButton() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(GraphicContext *gfx);
+	virtual void paint(DrawableSurface *gfx);
 	virtual void repaint(void);
 
 protected:
@@ -59,7 +58,7 @@ protected:
 	bool state;
 	int returnCode;
 	bool highlighted;
-	GraphicContext *gfx;
+	DrawableSurface *gfx;
 };
 
 

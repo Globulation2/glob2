@@ -31,7 +31,7 @@ private:
 	void save(void);
 
 	void updateUnits(int x, int y, int w, int h);
-	
+
 	enum EditMode
 	{
 		NONE,
@@ -53,7 +53,7 @@ private:
 	int viewportX, viewportY;
 	int viewportW, viewportH;
 	SDL_Rect screenClip, mapClip;
-	SDLGraphicContext *gfx;
+	GraphicContext *gfx;
 
 	int team;
 	int terrainSize;
@@ -61,9 +61,9 @@ private:
 	int type;
 	EditMode editMode;
 
-	IMGGraphicArchive *menu;
-	
-	SDLBitmapFont *font;
+	Sprite *menu;
+
+	Font *font;
 };
 
 #endif 

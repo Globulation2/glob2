@@ -24,8 +24,8 @@ public:
 
 	void addDir(const char *dir);
 
-	SDL_RWops *open(const char *filename, const char *mode="rb");
-	FILE *openFP(const char *filename, const char *mode);
+	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=true);
+	FILE *openFP(const char *filename, const char *mode, bool verboseIfNotFound=true);
 };
 
 #endif

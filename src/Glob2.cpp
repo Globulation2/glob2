@@ -19,11 +19,11 @@ int main(int argc, char *argv[])
 	globalContainer = new GlobalContainer();
 
 	globalContainer->parseArgs(argc, argv);
-	globalContainer->gfx.setCaption("Globulation 2", "glob 2");
-	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
-
-	globalContainer->buildingsTypes.load("data/buildings.txt");
 	globalContainer->load();
+	globalContainer->gfx->setCaption("Globulation 2", "glob 2");
+	
+	globalContainer->buildingsTypes.load("data/buildings.txt");
+
 
 	if ( SDLNet_Init() < 0 ) {
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDLNet_GetError());

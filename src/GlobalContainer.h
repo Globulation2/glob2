@@ -16,36 +16,27 @@ class GlobalContainer
 {
 public:
 	GlobalContainer(void);
+	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
-	
-	char safer0[1024];
-	Uint32 graphicFlags;
-	char safer1[1024];
-	
-	void load(void);
-	bool safe(void);
-	
-	char safer2[1024];
-	MacPalGraphicArchive terrain;
-	char safer3[1024];
-	MacPalGraphicArchive ressources;
-	char safer4[1024];
-	MacPalGraphicArchive units;
-	char safer5[1024];
-	MacPalGraphicArchive buildings;
-	char safer6[1024];
-	Palette macPal;
-	Palette ShadedPal;
-	char safer7[1024];
 
-	SDLGraphicContext gfx;
-	char safer8[1024];
-	StringTable texts;
+public:
+	Uint32 graphicFlags;
+
+	void load(void);
+
+
 	FileManager fileManager;
 
-	char safer9[1024];
-	SDLBitmapFont menuFont;
+	GraphicContext *gfx;
+	Sprite *terrain;
+	Sprite *terrainShader;
+	Sprite *ressources;
+	Sprite *units;
+	Sprite *buildings;
+	Font *menuFont;
+
+	StringTable texts;
 
 	BuildingsTypes buildingsTypes;
 };

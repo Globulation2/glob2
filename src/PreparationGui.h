@@ -23,7 +23,7 @@ public:
 		QUIT = 5
 	};
 private:
-	IMGGraphicArchive *arch;
+	Sprite *arch;
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();
@@ -42,7 +42,7 @@ public:
 		QUIT = 5
 	};
 private:
-	IMGGraphicArchive *arch;
+	Sprite *arch;
 	Font *font;
 public:
 	MultiplayersOfferScreen();
@@ -91,7 +91,7 @@ public:
 	};
 
 private:
-	IMGGraphicArchive *arch;
+	Sprite *arch;
 	TextInput *mapName;
 	Button *load, *share, *cancel;
 
@@ -138,7 +138,7 @@ public:
 		SECONDS_BEFORE_START_GAME=5
 	};
 private:
-	IMGGraphicArchive *arch;
+	Sprite *arch;
 	TextInput *mapName;
 
 	HostGlobalState hostGlobalState;
@@ -196,7 +196,7 @@ public:
 		WS_SERVER_START_GAME
 	};
 private:
-	IMGGraphicArchive *arch;
+	Sprite *arch;
 	TextInput *serverName;
 	TextInput *playerName;
 	

@@ -5,7 +5,7 @@
 
 #include "GUIButton.h"
 
-Button::Button(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, int returnCode)
+Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode)
 {
 	this->x=x;
 	this->y=y;
@@ -61,38 +61,38 @@ void Button::repaint(void)
 	if (highlighted)
 	{
 		if (highlightID>=0)
-			gfx->drawSprite(arch->getSprite(highlightID), x, y);
+			gfx->drawSprite(x, y, arch, highlightID);
 		else
 			parent->paint(x, y, w, h);
 	}
 	else
 	{
 		if (standardId>=0)
-			gfx->drawSprite(arch->getSprite(standardId), x, y);
+			gfx->drawSprite(x, y, arch, standardId);
 		else
 			parent->paint(x, y, w, h);
 	}
 	parent->addUpdateRect(x, y, w, h);
 }
 
-void Button::paint(GraphicContext *gfx)
+void Button::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
 	if (standardId>=0)
-		gfx->drawSprite(arch->getSprite(standardId), x, y);
+		gfx->drawSprite(x, y, arch, standardId);
 	highlighted=false;
 }
 
 
 
-TextButton::TextButton(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode)
+TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode)
 :Button(x, y, w, h, arch, standardId, highlightID, returnCode)
 {
 	this->font=font;
 	setText(text);
 }
 
-void TextButton::paint(GraphicContext *gfx)
+void TextButton::paint(DrawableSurface *gfx)
 {
 	Button::paint(gfx);
 	gfx->drawString(x+decX, y+decY, font, text);
@@ -177,7 +177,7 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void OnOffButton::paint(GraphicContext *gfx)
+void OnOffButton::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
 	highlighted=false;
