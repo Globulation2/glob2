@@ -367,11 +367,6 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 	}
 }
 
-void MultiplayersHost::newHostPlayer(void)
-{
-
-}
-
 void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 {
 	Sint32 rcs=getSint32(data, 4);

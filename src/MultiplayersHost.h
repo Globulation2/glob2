@@ -57,7 +57,6 @@ public:
 	void removePlayer(int p);
 	void removePlayer(char *data, int size, IPaddress ip);
 	void newPlayer(char *data, int size, IPaddress ip);
-	void newHostPlayer(void);
 	void confirmPlayer(char *data, int size, IPaddress ip);
 	void confirmStartCrossConnection(char *data, int size, IPaddress ip);
 	void confirmStillCrossConnecting(char *data, int size, IPaddress ip);
