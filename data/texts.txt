@@ -219,13 +219,13 @@ Please wait
 Chargement de Globulation 2
 Loading Globulation 2
 [host]
-Heberge une partie
+Heberger une partie
 Host a game
 [join]
-Joint une partie
+Joindre une partie
 Join a game
 [goto main menu]
-Retourne au menu principal
+Retourner au menu principal
 Go back to main menu
 [player name]
 Nom du joueur
