@@ -1,4 +1,4 @@
-10
+11
 [language]
 Français
 English
@@ -10,6 +10,7 @@ Italiano
 Español
 Magyar
 Српски
+Româneste
 [language-code]
 fr
 en
@@ -21,6 +22,7 @@ ru
 es
 hu
 sr
+ro
 [language-tr]
 Langue
 Language
@@ -32,6 +34,7 @@ Lingua
 Idioma
 Nyelv
 Језик
+Limba
 [hp]
 Pts vie
 HP
@@ -43,6 +46,7 @@ HP
 Здоровье
 Életpont
 Живот
+Viata
 [heal]
 Santé
 Health
@@ -54,6 +58,7 @@ Guarisci
 Salud
 Egészség
 Здравље
+Sănătate
 [armor]
 Armure
 Armour
@@ -65,6 +70,7 @@ Armatura
 Armadura
 Páncél
 Оклоп
+Armură
 [damage]
 Dommages
 Damage
@@ -76,6 +82,7 @@ Danno
 Daño
 Kár
 Штета
+Lovire
 [food]
 Nourriture
 Food
@@ -87,6 +94,7 @@ Cibo
 Comida
 Élelmiszer
 Храна
+Mâncare
 [working]
 Travaillant
 Working
@@ -98,6 +106,7 @@ Al lavoro
 Trabajando
 Dolgozik
 Ради се
+Lucrează
 [inside]
 Dedans
 Inside
@@ -109,6 +118,7 @@ Interno
 Dentro
 Belül
 Унутра
+Înăuntru
 [ressources]
 Ressources
 Resources
@@ -120,6 +130,7 @@ Risorse
 Recursos
 Erőforrások
 Извори
+Resurse
 [Wood]
 Bois
 Wood
@@ -131,6 +142,7 @@ Legno
 Madera
 Fa
 Дрво
+Lemn
 [Corn]
 Blé
 Wheat
@@ -142,6 +154,7 @@ Frumento
 Maiz
 Búza
 Жито
+Grâu
 [Papyrus]
 Papyrus
 Papyrus
@@ -153,6 +166,7 @@ Papyrus
 Papiro
 Papírusz
 Папирус
+Papirus
 [Stone]
 Pierre
 Stone
@@ -164,6 +178,7 @@ Pietra
 Piedra
 Kő
 Камен
+Piatră
 [Alga]
 Algue
 Algae
@@ -175,6 +190,7 @@ Alghe
 Alga
 Alga
 Алге
+Alge
 [Cherry]
 Cerise
 Cherry
@@ -186,6 +202,7 @@ Ciliegia
 Cereza
 Cseresznye
 Вишње
+Cireaşă
 [Orange]
 Orange
 Orange
@@ -197,6 +214,7 @@ Arancia
 Naranja
 Narancs
 Наранџе
+Portocală
 [Prune]
 Prune
 Prune
@@ -208,6 +226,7 @@ Prugna
 Pasa
 Szilva
 Шљиве
+Prună
 [Clearing:]
 Défrichage de:
 Clearing:
@@ -219,6 +238,7 @@ Vyčištění:
 Limpiando
 Tisztítás: 
 Чишћење:
+Defrişare de:
 [Min required level:]
 Niveau minimum requis:
 Minimum required level:
@@ -230,6 +250,7 @@ Min. úroveň bojovníků:
 Nivel Minimo requerido
 Minimális szükséges szint:
 Најмањи потребни ниво:
+Nivel minim necesar:
 [Bullets]
 Boulets
 Bullets
@@ -241,6 +262,7 @@ Proiettili
 Balas
 Lőszer
 Муниција
+Gloanţe
 [range]
 Portée
 Range
@@ -252,6 +274,7 @@ Intervallo
 Rango
 Hatótávolság
 Домет
+Întindere
 [destroy]
 Détruire
 Destroy
@@ -263,9 +286,10 @@ Distruggi
 Destruir
 Megsemmisít
 Уништи
+Distruge
 [cancel destroy]
 Annuler destruction
-Cancel destruction
+Cancel destroy
 Zerstörung verhindern
 Stornuj zničeni
 Przerwij niszczenie
@@ -274,6 +298,7 @@ Annulla distruggi
 Cancelar destruccion
 Megsemmisítés megszakítása
 Заустави уништење
+Anulează distrugerea
 [wait destroy]
 En attente de destruction
 Awaiting destruction
@@ -285,6 +310,7 @@ Aspetta distruggi
 Esperar a destruir
 Megsemmisítésre várva
 Одложи уништење
+În aşteptarea distrugerii
 [upgrade]
 Améliorer
 Upgrade
@@ -296,6 +322,7 @@ Aggiorna
 Mejorar
 Fejleszteni
 Догради
+Ameliorează
 [repair]
 Réparer
 Repair
@@ -307,6 +334,7 @@ Ripara
 Reparar
 Megjavítani
 Поправи
+Repară
 [cancel upgrade]
 Annuler amélioration
 Cancel upgrade
@@ -318,6 +346,7 @@ Annulla aggiorna
 Cancelar mejorar
 Fejlesztés megszakítása
 Одложи дограду
+Anulează ameliorarea
 [cancel repair]
 Annuler réparation
 Cancel repair
@@ -329,6 +358,7 @@ Annulla ripara
 Cancelar reparar
 Javítás megszakítása
 Одложи поправку
+Anulează reparatia
 [units type]
 type d'unités
 unit type
@@ -340,6 +370,7 @@ Tipo di unità
 Tipo de unidad
 Egység típus
 Врсте јединица
+tipul unităţii
 [workers]
 ouvrières
 workers
@@ -351,6 +382,7 @@ operai
 Trabajadores
 dolgozók
 Радници
+lucrători
 [explorers]
 exploratrices
 explorers
@@ -362,6 +394,7 @@ esploratori
 Exploradores
 felderítők
 Извиђачи
+exploratori
 [warriors]
 guerrières
 warriors
@@ -373,6 +406,7 @@ guerrieri
 Guerreros
 harcosok
 Ратници
+luptători
 [Unit type]
 Type d'unite
 Unit type
@@ -384,6 +418,7 @@ Tipo di unità
 Tipo de unidad
 Egység típus
 Врста јединице
+Tipul unitătii
 [Worker]
 Ouvrière
 Worker
@@ -395,6 +430,7 @@ Operaio
 Trabajador
 Dolgozó
 Радник
+Lucrător
 [Explorer]
 Exploratrice
 Explorer
@@ -406,6 +442,7 @@ Esploratore
 Explorador
 Felderítő
 Извиђач
+Explorator
 [Warrior]
 Guerrière
 Warrior
@@ -417,6 +454,7 @@ Guerriero
 Guerrero
 Harcos
 Ратник
+Luptător
 [still (w)]
 Encore 
 Still
@@ -428,6 +466,7 @@ Ancora
 Ahora
 Még mindig
 Чекање
+Încă
 [units working]
  unites travaillent
  units work
@@ -439,9 +478,10 @@ Még mindig
  Unidades trabajando
  az egységek dolgoznak
  јединица у послу
+ unităţi lucrează
 [still one unit working]
-Une unité travaille
-One unit left working
+Une unité travaille encore
+One unit still working
 Eine Einheit arbeitet
 Ještě 1 jednotka pracuje
 Jeszcze 1 jednostka pracująca
@@ -450,6 +490,7 @@ Ancora un unità al lavoro
 Una unidad trabajando
 Egy egység dolgozik
 Једна јединица у послу
+O unitate încă mai lucrează
 [Still (i)]
 Encore
 Still 
@@ -461,6 +502,7 @@ Ancora
 Ahora
 Még mindig
 Још
+Încă
 [Still one]
 Encore une
 One left
@@ -472,6 +514,7 @@ Ancora uno
 Ahora una
 Még egy
 Још једна
+Încă una
 [Building name]
 Nom du batiment
 Building name
@@ -483,6 +526,7 @@ Nome della costruzione
 
 Az épület elnevezése
 Име зграде
+Numele clădirii
 [swarm building]
 Ruche
 Swarm
@@ -494,6 +538,7 @@ Magazzino
 Enjambre
 Raj
 Рој
+Stup
 [food building]
 Auberge
 Inn
@@ -505,6 +550,7 @@ Mensa
 Taberna
 Étkezde
 Гостионица
+Popas
 [health building]
 Hôpital
 Hospital
@@ -516,6 +562,7 @@ Ospedale
 Hospital
 Kórház
 Болница
+Spital
 [walkspeed building]
 Piste de course
 Racetrack
@@ -527,6 +574,7 @@ Circuito
 Circuito
 Versenypálya
 Стадион
+Pistă raliu
 [swimspeed building]
 Piscine
 Swimming pool
@@ -538,6 +586,7 @@ Piscina
 Piscina
 Úszómedence
 Пливалиште
+Piscină
 [attack building]
 Camp d'entraînement
 Barracks
@@ -549,6 +598,7 @@ Caserma
 Cuartel
 Laktanya
 Касарна
+Câmp de-antrenament
 [science building]
 Ecole
 School
@@ -560,6 +610,7 @@ Scuola
 Escuela
 Iskola
 Школа
+Şcoală
 [defense building]
 Tourelle
 Defence Tower
@@ -571,6 +622,7 @@ Torre di difesa
 Torre
 Páncéltorony
 Стражара
+Turn de-apărare
 [exploration flag]
 Drapeau d'exploration
 Exploration flag
@@ -582,6 +634,7 @@ Bandiera di esplorazione
 Bandera de exploracion
 Felderítő zászló
 Истраживачка застава
+Steag de apărare
 [war flag]
 Drapeau de guerre
 War flag
@@ -593,6 +646,7 @@ Bandiera di guerra
 Bandera de guerra
 Hadizászló
 Ратна застава
+Steag de luptă
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
@@ -604,6 +658,7 @@ Bandiera pulitrice
 Bandera de limpieza
 Tisztítás zászló
 Застава чишћења
+Steag de defrişare
 [stone wall]
 Mur de pierre
 Stone wall
@@ -615,6 +670,7 @@ Muro di pietra
 Muro de piedra
 Kőfal
 Камени зид
+Zid de piatră
 [market]
 Marché
 Market
@@ -626,6 +682,7 @@ Mercato
 Mercado
 Piac
 Пијаца
+Piată
 [forbidden area]
 Zone interdites
 Forbidden area
@@ -637,6 +694,7 @@ Forbidden area
 
 
 
+Zonă interzisă
 [Building short explaination]
 Courte explication du batiment  (24 caractères max)
 Building short explaination (24 chars max)
@@ -648,6 +706,7 @@ Krátké vysvětlení (24 znaků max)
 
 Az épület rövid leírása  (max. 24 karater)
 Кратко име грађевине
+Scurtă prezentare a clădirii (maxim 24 caractere)
 [swarm building explaination]
 Crée de nouvelles unités
 Creates new units
@@ -659,6 +718,7 @@ Vytvoř nové jednotky
 
 Új egységek létrehozása
 Зграда за ројење.
+Crează unităţi noi
 [food building explaination]
 Nourrit vos unités
 Foods your units
@@ -670,8 +730,9 @@ Potrava tvých jednotek
 
 Egységek élelmezése
 Зграда у којој се скупља храна.
+Vă hrăneşte unitaţile
 [health building explaination]
-Soigne vos unités
+Soigne vos unités 
 Heals your units
 
 Zdravý tvých jednotek
@@ -681,9 +742,10 @@ Zdravý tvých jednotek
 
 Egységek gyógyítása
 Болница служи за лечење
+Vă vindecă unităţile
 [walkspeed building explaination]
 Améliore la vitesse de
-Improves the walking
+Improves the walking speed
 
 Zlepši chůzi
 
@@ -692,8 +754,9 @@ Zlepši chůzi
 
 Haladási sebesség
 Стадион служи за...
+Ameliorează viteza de mers
 [swimspeed building explaination]
-Améliore le niveau de
+Améliore la vitesse de
 Improves the swimming
 
 Zlepši plavání
@@ -703,8 +766,9 @@ Zlepši plavání
 
 Úszási sebesség
 Пливалиште служи за...
+Ameliorează viteza de
 [attack building explaination]
-Améliore le niveau
+Améliore le niveau d'ataque
 Improves fighting level
 
 Zlepši bojeschopnost
@@ -714,6 +778,7 @@ Zlepši bojeschopnost
 
 Támadóképesség
 Касарна служи за ...
+Vă ameliorează
 [science building explaination]
 Améliore le niveau de
 Improve the building level
@@ -725,6 +790,7 @@ Zlepši uroveň stavitelství
 
 A dolgozók építési
 Школа служи за учење нових вештина.
+Vă ameliorează
 [defense building explaination]
 Attaque les unité ennmies
 Attacks nearby enemy
@@ -736,6 +802,7 @@ Zaútoč na blízkého nepřítele
 
 Megtámadja a közeli
 Стражара служи за осматрање.
+Atacă unitaţile inamice
 [exploration flag explaination]
 Attire des exploratrices
 Attracts explorers
@@ -747,6 +814,7 @@ Přilákáno průzkumníků
 
 Összevonja a
 Истраживачка застава служи за истраживање.
+Atrage exploratori
 [war flag explaination]
 Attire des guerrières
 Attracts warriors
@@ -758,6 +826,7 @@ Přilákáno válečníků
 
 Összevonja a
 Ратна застава служи за ратовање.
+Atrage luptători
 [clearing flag explaination]
 Enlève les ressources
 Clear ressources
@@ -769,6 +838,7 @@ Clear ressources
 
 Erőforrások feltárása
 Застава за чишћење служи за чишћење
+Îndepărtează resursele
 [stone wall explaination]
 Elément passif de défense
 Passive defense element
@@ -780,6 +850,7 @@ Pasivní ochraná část
 
 Passzív védelmi elem
 Камени зид служи за...
+Element pasiv de apărare
 [market explaination]
 Permet d'échanger des
 Allows to exchange fruits
@@ -791,6 +862,7 @@ Povolení vyměnit ovoce
 
 Lehetővé teszi az
 Пијаца служи за
+Permite schimbul de fructe
 [Building short explaination 2]
 Courte explication 2 du batiment  (24 caractères max)
 Building short explaination 2 (24 chars max)
@@ -802,9 +874,11 @@ Krátké vysvětlení 2 (24 znaků max)
 
 Épületek rövid megnevezése 2 (max. 24 karakter)
 
+Scurtă explicaţie 2 a clădirii (maxim 24 caractere)
 [swarm building explaination 2]
  
  
+
 
 
 
@@ -824,6 +898,7 @@ Krátké vysvětlení 2 (24 znaků max)
 
 
 
+
 [health building explaination 2]
  
  
@@ -835,9 +910,10 @@ Krátké vysvětlení 2 (24 znaků max)
 
 
 
+
 [walkspeed building explaination 2]
 marche de vos unités
-speed level of your units
+level of your units
 
 
 
@@ -846,6 +922,7 @@ speed level of your units
 
 fejlesztése
 
+înot a unitătilor
 [swimspeed building explaination 2]
 nage de vos unités
 speed level of your units
@@ -857,6 +934,7 @@ speed level of your units
 
 fejlesztése
 
+nivelul de înot
 [attack building explaination 2]
 d'attaque de vos guerrières
 of your warriors
@@ -868,6 +946,7 @@ of your warriors
 
 fejlesztése
 
+nivelul de luptă
 [science building explaination 2]
 construction des ouvières
 of your workers
@@ -879,6 +958,7 @@ of your workers
 
 sebességének fejlesztése
 
+nivelul de construire
 [defense building explaination 2]
 avoisinantes
 units or buildings
@@ -890,6 +970,7 @@ units or buildings
 
 ellenséges egységeket
 
+din vecinătate
 [exploration flag explaination 2]
  
  
@@ -900,6 +981,7 @@ ellenséges egységeket
 
 
 felderítőket
+
 
 [war flag explaination 2]
  
@@ -912,9 +994,11 @@ felderítőket
 
 harcosokat
 
+
 [clearing flag explaination 2]
  
  
+
 
 
 
@@ -934,6 +1018,7 @@ harcosokat
 
 
 
+
 [market explaination 2]
 fruits avec les autres
 with the others
@@ -945,6 +1030,7 @@ with the others
 
 gyümölcs árucserét
 
+cu ceilalţi
 [waiting for %s]
 Attente de %s
 Waiting for %s
@@ -956,6 +1042,7 @@ Aspettando %s
 Esperando a %s
 %s -ra várva
 Чека се на %s
+Aşteaptă %s
 [%s has left the game]
 %s a quitté la partie.
 %s has quit the game.
@@ -967,6 +1054,7 @@ Esperando a %s
 %s se ha ido del juego
 %s kilépett a játékból.
 %s напусти игру.
+%s a părăsit jocul.
 [%s has been deconnected of the game]
 %s s'est fait déconnecté de la partie.
 %s has been disconnected.
@@ -978,6 +1066,7 @@ Die Verbindung zu %s wurde getrennt.
 %s se ha desconectado del juego
 %s kapcsolata megszakadt.
 %s би искључен из игре.
+%s a fost deconectat din joc.
 [load game]
 Charger jeu
 Load game
@@ -989,6 +1078,7 @@ Carica partita
 Cargar partida
 Játék betöltése
 Учитај игру
+Încarcă joc
 [save game]
 Sauvegarder jeu
 Save game
@@ -1000,6 +1090,7 @@ Salva partita
 Salvar partida
 Játék elmentése
 Сними игру
+Salvează joc
 [options]
 Options
 Options
@@ -1011,6 +1102,7 @@ Opzioni
 Opciones
 Opciók
 Избори
+Opţiuni
 [alliances]
 Alliances
 Alliances
@@ -1022,6 +1114,7 @@ Alleanze
 Alianzas
 Szövetségek
 Савези
+Alianţe
 [return to game]
 Retour au jeu
 Return to game
@@ -1033,6 +1126,7 @@ Ritorna al gioco
 Volver al juego
 Visszalépés a játékba
 Повратак на игру
+Înapoi la joc
 [quit the game]
 Quitter le jeu
 Quit the game
@@ -1044,6 +1138,7 @@ Esci dal gioco
 Salir del juego
 Kilépés a játékból
 Напусти игру
+Iesi din joc
 [ok]
 Accepter
 Ok
@@ -1055,6 +1150,7 @@ Ok
 OK
 Rendben
 У реду
+Acceptă
 [Cancel]
 Annuler
 Cancel
@@ -1066,6 +1162,7 @@ Annulla
 Cancelar
 Mégsem
 Поништи
+Anulează
 [you have lost]
 Vous avez perdu!
 You have lost!
@@ -1077,6 +1174,7 @@ Hai perso
 Has perdido
 Elvesztetted a játékot!
 Изгубили сте игру.
+Aţi pierdut!
 [you have won]
 Vous avez gagné!
 You have won!
@@ -1088,6 +1186,7 @@ Hai vinto!!!!
 Has ganado
 Megnyerted a játékot!
 Добили сте игру.
+Aţi câştigat!
 [campagn]
 Campagne
 Campaign
@@ -1099,6 +1198,7 @@ Campagna
 Campaña
 Hadjárat
 Кампања
+Campanie
 [tutorial]
 Didacticiel
 Tutorial
@@ -1110,6 +1210,7 @@ Esercitazione
 Tutorial
 Gyakorlás
 Уџбеник
+Tutorial
 [custom game]
 Jeu libre
 Custom game
@@ -1121,17 +1222,19 @@ Gioco personalizzato
 Juego personalizado
 Szabadjáték
 Произвољна игра
+Joc liber
 [yog]
-Jeu en ligne Ysagoon
-Ysagoon Online Gaming
-Ysagoon-Onlinespiel
-Ysagoon Online Gaming
-Ysagoon-Gra w Internecie
-Gioca on-line a Ysagoon
-Ysagoon-игра в Интернете
-Juego en linea con Ysagoon
-Ysagoon Online Játék
-Игра преко мреже (Ysagoon)
+Le jeu en ligne par Ysagoon YOG
+Ysagoon Online Gaming YOG
+Ysagoon-Onlinespiel YOG
+Ysagoon Online Gaming YOG
+Ysagoon-Gra w Internecie YOG
+Gioca on-line a Ysagoon YOG
+Ysagoon-игра в Интернете YOG
+Juego en linea con Ysagoon YOG
+Ysagoon Online Játék YOG
+Игра преко мреже (Ysagoon) YOG
+Jocul în retea prin Ysagoon YOG
 [Enter your nickname :]
 Entrez votre pseudo :
 Enter your nickname :
@@ -1143,6 +1246,7 @@ Inserisci il tuo soprannome :
 Introduce tu apodo :
 Add meg a nevedet :
 Унесите надимак :
+Introduceţi pseudonimul dvstră :
 [Enter your password :]
 Entrez votre mot de passe :
 Enter your password :
@@ -1154,6 +1258,7 @@ Inserisci la tua password :
 Introduce la contraseña :
 Add meg a jelszavadat :
 Унесите лозинку :
+Introduceţi parola dvstră :
 [lan]
 Jeu en réseau local
 LAN Game
@@ -1165,6 +1270,7 @@ Gioca in rete (LAN)
 Juego en red LAN
 Játék a helyi hálózaton
 Игра у локалној мрежи
+Joc in reţea locală LAN
 [settings]
 Paramètres
 Settings
@@ -1176,6 +1282,7 @@ Impostazioni
 Opciones
 Beállítások
 Подешавања
+Setări
 [Warning, you need to reboot the game for changes to take effect]
 Attention, il faut relancer le jeu pour que les changements soient pris en compte
 Warning, you need to reboot the game for changes to take effect
@@ -1187,6 +1294,7 @@ Warning, you need to reboot the game for changes to take effect
 
 
 Упозорење: морате да поново покренете игру да би измене биле уважене.
+Atenţie, trebuie să reporniţi jocul pentru ca schimbările sa aibă efect
 [editor]
 Editeur
 Editor
@@ -1198,6 +1306,7 @@ Editor
 Editor
 Editor
 Уредник
+Editor
 [credits]
 Crédits
 Credits
@@ -1209,6 +1318,7 @@ Credits
 Creditos
 Szerzők
 Заслуге
+Credite
 [quit]
 Quitter
 Quit
@@ -1220,6 +1330,7 @@ Esci
 Salir
 Kilépés
 Излаз
+Iesi
 [create game]
 Créer partie
 Create game
@@ -1231,6 +1342,7 @@ Crea il gioco
 Crear juego
 Új játék
 Направи игру
+Crează joc
 [update list]
 Mettre à jour
 Update list
@@ -1242,6 +1354,7 @@ Aggiorna la lista
 Actualizar lista
 Naprakésszé tétel
 Обнови списак
+Pune la zii lista
 [connecting to]
 Connection à
 Connecting to
@@ -1253,6 +1366,7 @@ Mi sto connettendo a
 Conectando a
 Kapcsolódás
 Повезивање са: 
+Conectare la
 [connect]
 Connecter
 Connect
@@ -1264,6 +1378,7 @@ Connesso
 Conectado
 Kapcsolódás
 Прикључи се
+Conectează
 [Disconnect]
 Déconnecter
 Disconnect
@@ -1275,6 +1390,7 @@ Disconnettiti
 Desconectado
 Kapcsolat megszakítása
 Искључи се
+Deconectează
 [please wait]
 Attendre SVP
 Please wait
@@ -1286,6 +1402,7 @@ Aspetta un momento
 Espere por favor
 Kérem várjon
 Молим сачекајте
+Vă rugăm aşteptaţi
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
@@ -1297,6 +1414,7 @@ Sto caricando Globulation 2
 Cargando Globulation 2
 A Globulation 2 betöltése
 Учитавам Глобулацију 2
+Globulation 2 se încarcă
 [host]
 Héberger une partie
 Host a game
@@ -1308,6 +1426,7 @@ Ospita una partita
 Serivir una partida
 Játék hostolása
 Рачунар
+Găzduiţi un joc
 [join a game]
 Joindre une partie
 Join a game
@@ -1319,6 +1438,7 @@ Unisciti ad una partita
 Unirse a un juego
 Csatlakozás egy játékhoz
 Придружи се игри
+Alăturate unui joc
 [join]
 Joindre
 Join
@@ -1330,6 +1450,7 @@ Unisci
 Unirse
 Csatlakozás
 Придружи се
+Alăturăte
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
@@ -1341,6 +1462,7 @@ Torna al menu principale
 Volver al menu principal
 Vissza a főmenübe
 Назад на главни избор
+Întoarceţi-vă la meniul principal
 [player name]
 Nom du joueur
 Player name
@@ -1352,6 +1474,7 @@ Nome del giocatore
 Nombre del jugador
 A játékos neve
 Име играча
+Numele jucătorului
 [svr hostname]
 Nom du serveur hôte
 Server hostname
@@ -1363,6 +1486,7 @@ Nome del server
 Nombre del servidor
 A játékszerver neve
 Име сервера
+Numele servărului gazdă
 [hp]
 Point de vie
 Hitpoint
@@ -1374,6 +1498,7 @@ Punti vita
 Здоровье
 Életpont
 Здравље
+Punct de viaţă
 [carry]
 Transporte :
 Carrying :
@@ -1385,6 +1510,7 @@ Trasporto :
 Transporte :
 Szállít :
 Пренос :
+Transportă :
 [don't carry anything]
 Ne transporte rien
 Not carrying anything
@@ -1396,6 +1522,7 @@ Non Ttrasportare niente
 No transporta nada
 Nem szállít semmit
 Не носи ништа
+Nu transportă nimic
 [level]
 Niveau
 Level
@@ -1407,6 +1534,7 @@ Lvivello
 Nivel
 Szint
 Ниво
+Nivel
 [levels]
 Niveaux
 Levels
@@ -1418,6 +1546,7 @@ Livelli
 Niveles
 Szintek
 Нивои
+Nivele
 [building site]
 chantier
 construction site
@@ -1429,6 +1558,7 @@ Sito in costruzione
 Construyendo
 építési terület
 Градилиште
+şantier
 [create map]
 Créer carte
 Create map
@@ -1440,6 +1570,7 @@ Crea una mappa
 Crear mapa
 Térkép készítése
 Направи мапу
+Crează hartă
 [map size x]
 Largeur de la carte
 Map width
@@ -1451,6 +1582,7 @@ Grandezza x della mappa
 Anchura del mapa
 Térkép szélessége
 Ширина мапе
+Lărgimea hărţii
 [map size y]
 Hauteur de la carte
 Map height
@@ -1462,6 +1594,7 @@ Grandezza y della mappa
 Altura del mapa
 Térkép hosszúsága
 Висина мапе
+Înălţimea hărţii
 [default terrain]
 Terrain par défaut
 Default terrain
@@ -1473,6 +1606,7 @@ Terreno predefinito
 Terreno predefinido
 Alapértelmezett terep
 Подразумевано земљиште
+Teren din oficiu
 [water]
 Eau
 Water
@@ -1484,6 +1618,7 @@ Acqua
 Agua
 Víz
 Вода
+Apă
 [sand]
 Sable
 Sand
@@ -1495,6 +1630,7 @@ Sabbia
 Arena
 Homok
 Песак
+Nisip
 [grass]
 Herbe
 Grass
@@ -1506,6 +1642,7 @@ Erba
 Hierba
 Fű
 Трава
+Iarbă
 [teams]
  équipes
  teams
@@ -1517,6 +1654,7 @@ Fű
  Equipos
  csapatok
  екипа
+ echipe
 [choose map]
 Choisir une carte
 Choose a map
@@ -1528,6 +1666,7 @@ Seleziona una mappa
 Elegir un mapa
 Válassz egy térképet
 Избор мапе
+Alegeţi o hartă
 [choose game]
 Choisir une partie
 Choose a game
@@ -1539,6 +1678,7 @@ Seleziona un gioco
 Elegir un juego
 Válassz egy játékot
 Избор игре
+Alegeţi un joc
 [awaiting players]
 En attente des joueurs
 Awaiting players
@@ -1550,6 +1690,7 @@ In attesa di altri giocatori
 Esperando a los jugadores
 Játékosokra várva
 Чекам играче
+În asteptare de jucători
 [stat]
 Statistiques
 Statistics
@@ -1561,6 +1702,7 @@ Statistiche
 Estadisticas
 Statisztika
 Статистика
+Statistici
 [food left]
 Nourriture
 Food left
@@ -1572,6 +1714,7 @@ Cibo rimasto
 Comida restante
 Maradék élelmiszer
 Преостало хране
+Mâncare rămasă
 [the building is finished]
 Le bâtiment est terminé
 The building is finished
@@ -1583,6 +1726,7 @@ L'edificio �completato
 Construccion finalizada
 Az épület elkészült
 Зграда је завршена
+Clădirea este terminată
 [the swarm is finished]
 La ruche est terminée
 The swarm is finished
@@ -1594,6 +1738,7 @@ Il magazzino è completato
 El enjambre ha sido construido
 A raj elkészült
 Ројење је завршено
+Stupul este terminat
 [the food building is finished]
 L'auberge est terminée
 The Inn is finished
@@ -1605,6 +1750,7 @@ La mensa è stata completata
 La taberna ha sido construida
 Az étkezde elkészült
 Кантина је завршена
+Popasul este terminat
 [the health building is finished]
 L'hôpital est terminé
 The hospital is finished
@@ -1616,6 +1762,7 @@ L'ospedale è stato completato
 El hospital ha sido construido
 A kórház elkészült
 Болница је завршена
+Spitalul este terminat
 [the walkspeed building is finished]
 La piste de course est terminée
 The racetrack is finished
@@ -1627,6 +1774,7 @@ Il circuito è stato completato
 El circuito ha sido construido
 A versenypálya elkészült
 Стадион је завршен
+Pista de raliu este terminată
 [the swimspeed building is finished]
 La piscine est terminée
 The swimming pool is finished
@@ -1638,6 +1786,7 @@ La piscina è stata completata
 La piscina ha sido contruida
 At úszómedence elkészült
 Пливалиште је завршено
+Piscina este terminată
 [the attack building is finished]
 Le camp d'entraînement est terminé
 The training camp is finished
@@ -1649,6 +1798,7 @@ La caserma è stata completata
 El cuartel ha sido construido
 A laktanya elkészült
 Касарна је завршена
+Câmpul de-antrenament este terminat
 [the science building is finished]
 L'école est terminée
 The school is finished
@@ -1660,6 +1810,7 @@ La scuola è stata completata
 La escuela ha sido construida
 Az iskola elkészült
 Школа је завршена
+Şcoala este terminată
 [the tower building is finished]
 La tour de défense est terminée
 The defense tower is finished
@@ -1671,6 +1822,7 @@ La torre da difesa è stata completata
 La torre ha sido construida
 A páncéltorony elkészült
 Стражара је завршена
+Turnul de apărare este terminat
 [the exploration flag is finished]
 ?? Drapeau d'exploration terminé ??
 ?? Exploration flag finished ??
@@ -1682,6 +1834,7 @@ A páncéltorony elkészült
 ?? Bandera de exploracion finalizada ??
 ?? A felderítőzászló elkészült ??
 ?? Истраживачка застава је завршена ??
+?? Steag de explorare terminat ??
 [the war flag is finished]
 ?? Drapeau de guerre terminé ??
 ?? War flag finished ??
@@ -1693,6 +1846,7 @@ A páncéltorony elkészült
 ?? Bandera de guerra finalizada ??
 ?? A hadizászló elkészült ??
 ?? Ратна застава је завршена ??
+?? Steag de război terminat ??
 [the clearing flag is finished]
 ?? Drapeau de défrichage terminé ??
 ?? Clearing flag finished ??
@@ -1704,6 +1858,7 @@ A páncéltorony elkészült
 ?? Bandera de limpieza finalizada ??
 ?? A tisztító zászló elkészült ??
 ?? Застава за чишћење је завршена ??
+?? Steag de defrişare terminat ??
 [the stone wall is finished]
 Un élément de mur est terminé
 A wall section is finished
@@ -1715,6 +1870,7 @@ Il muro di pietra è stato completato
 El muro de piedra ha sido construido
 A kőfal elkészült
 Камени зид је завршен
+Un element de zid este terminat
 [the market is finished]
 Le marché est terminé
 The market is finished
@@ -1726,6 +1882,7 @@ Il mercato è finito
 El mercado ha sido construido
 A piac elkészült
 Пијаца је завршена
+Piaţa este terminată
 [the building is under attack]
 Le bâtiment est attaqué
 The building is under attack
@@ -1737,6 +1894,7 @@ L'edificio è sotto attacco
 Edificio esta siendo atacado
 Megtámadták az épületet
 Зграда је нападнута
+Clădirea este atacată
 [the swarm is under attack]
 La ruche est attaquée
 The swarm is under attack
@@ -1748,6 +1906,7 @@ Il magazzino è sotto attacco
 El enjambre esta siendo atacado
 Megtámadták a rajt
 Рој је нападнут
+Stupul este atacat
 [the food building is under attack]
 L'auberge est attaquée
 The Inn is under attack
@@ -1759,6 +1918,7 @@ La mensa è sotto attacco
 La taberna esta siendo atacado
 Megtámadták az étkezdét
 Кантина је нападнута
+Popasul este atacat
 [the health building is under attack]
 L'hôpital est attaqué
 The hospital is under attack
@@ -1770,6 +1930,7 @@ L'ospedale è sotto attacco
 El hospital esta siendo atacado
 Megtámadták a kórházat
 Болница је нападнута
+Spitalul este atacat
 [the walkspeed building is under attack]
 La piste de course est attaquée
 The racetrack is under attack
@@ -1781,6 +1942,7 @@ Il circuito è sotto attacco
 El circuito esta siendo atacado
 Megtámadták a versenypályát
 Стадион је нападнут
+Pista de cursă este atacată
 [the swimspeed building is under attack]
 La piscine est attaquée
 The swimming pool is under attack
@@ -1792,6 +1954,7 @@ La piscina è sotto attacco
 La piscina esta siendo atacada
 Megtámadták az úszómedencét
 Пливалиште је нападнуто
+Piscina este atacată
 [the attack building is under attack]
 Le camp d'entraînement est attaqué
 The training camp is under attack
@@ -1803,6 +1966,7 @@ La caserma è sotto attacco
 El cuartel esta siendo atacado
 Megtámadták a laktanyát
 Касарна је нападнута
+Câmpul de antrenament este atacat
 [the science building is under attack]
 L'école est attaquée
 The school is under attack
@@ -1814,6 +1978,7 @@ La scuola è sotto attacco
 La escuela esta siendo atacada
 Megtámadták az iskolát
 Школа је нападнута
+Şcoala este atacată
 [the defense building is under attack]
 Vos défenses sont attaquées
 Your defenses are under attack
@@ -1825,6 +1990,7 @@ La torre da difesa è sotto attacco
 La torre esta siendo atacada
 Megtámadták az erődítményeket
 Стражара је нападнута
+Apărarea vă este atacată
 [the exploration flag is under attack]
 ?? Drapeau d'exploration attaqué ??
 ?? Exploration flag under attack ??
@@ -1836,6 +2002,7 @@ Megtámadták az erődítményeket
 ?? La bandera de exploracion esta siendo atacada ??
 ?? Megtámadták a felderítózászlót ??
 ?? Истраживачка застава је нападнута ??
+?? Steagul de explorare este atacat ??
 [the war flag is under attack]
 ?? Drapeau de guerre attaqué ??
 ?? War flag under attack ??
@@ -1847,6 +2014,7 @@ Megtámadták az erődítményeket
 ?? La bandera de guerra esta siendo atacada ??
 ?? Megtámadták a hadizászlót ??
 ?? Ратна застава је нападнута ??
+?? Steagul de luptă este atacat ??
 [the clearing flag is under attack]
 ?? Drapeau de défrichage attaqué ??
 ?? Clearing flag under attack ??
@@ -1858,6 +2026,7 @@ Megtámadták az erődítményeket
 ?? La bandera de limpieza esta siendo atacada ??
 ?? Megtámadták a tisztító zászlót ??
 ?? Застава за чишћење је нападута ??
+?? Steagul de defrişare este atacat ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
 The enemy is at your walls
@@ -1869,6 +2038,7 @@ Il muro di roccia è sotto attacco
 El enemigo esta en tu muralla
 Az ellenség a falak előtt áll
 Камени зид је нападнут
+Inamicul este la ziduri
 [the market is under attack]
 Le marché est attaqué
 The market is under attack
@@ -1880,6 +2050,7 @@ Il ercato è sotto attacco
 El mercado esta siendo atacado
 Megtámadták a piacot
 Пијаца је нападнута
+Piata este atacată
 [Your %s are under attack]
 Vos %s sont attaquées
 Your %s are under attack
@@ -1891,6 +2062,7 @@ Il tuo %s sotto attacco
 Tu %s esta siendo atacado
 Megtámadták a %s -t
 Нападнута јединица: %s
+%s voastre sunt atacate
 [Your unit got converted to another team]
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
@@ -1902,6 +2074,7 @@ La tua unità è stata convertita in un'altra squadra
 Tu unidad se ha convertido al bando enemigo
 Az egységedet az ellenség elfogta
 Ваша јединица је пребегла
+Unitatea voastră a trecut de partea adversarului
 [Another team's unit got converted to your team]
 Une unité ennemie s'est convertie à votre équipe
 Another team's unit got converted to your team
@@ -1913,6 +2086,7 @@ Un'altra sqadra ha convertito la tua unità
 La unidad enemiga se ha pasado a nuestro bando
 Elfogtad az ellenség egységét
 Противничка јединица је пребегла код нас
+O unitate inamică a trecut de partea voastră
 [Uncontrolled]
 Incontrôlé
 Uncontrolled
@@ -1924,6 +2098,7 @@ Incontrollato
 Incontrolado
 Független
 Неконтролисан
+Necontrolat
 [ai]
 IA
 AI
@@ -1935,6 +2110,7 @@ AI
 IA
 MI
 ВИ
+IA
 [closed]
 Fermé
 Closed
@@ -1946,6 +2122,7 @@ Chiuso
 Cerrado
 Zárva
 Затворен
+Închis
 [close]
 Fermer
 Close
@@ -1957,6 +2134,7 @@ Chiuso
 Cerrado
 Bezár
 Затвори
+Închide
 [player]
 Joueur
 Player
@@ -1968,6 +2146,7 @@ Giocatore
 Jugador
 Játékos
 Играч
+Jucător
 [STARTING GAME ...]
 Début du jeu... 
 Starting game... 
@@ -1979,6 +2158,7 @@ Inizio gioco...
 Iniciando la partida
 Indul a játék...
 Игра почиње...
+Începe jocul...
 [Statistics]
 Statistiques
 Statistics
@@ -1990,6 +2170,7 @@ Statistiche
 Estadisticas
 Statisztika
 Статистика
+Statistici
 [Buildings]
 Bâtiments
 Buildings
@@ -2001,6 +2182,7 @@ Costruzioni
 Edificios
 Épületek
 Зграде
+Clădiri
 [Prestige]
 Prestige
 Prestige
@@ -2012,6 +2194,7 @@ Prestigio
 Prestigio
 Presztízs
 Престиж
+Prestigiu
 [Units]
 Unités
 Units
@@ -2023,6 +2206,7 @@ Unità
 Unidades
 Egységek
 Јединице
+Unităţi
 [Attack]
 Attaque
 Attack
@@ -2034,6 +2218,7 @@ Angriff
 Ataque
 Támadás
 Напад
+Atacă
 [Defense]
 Défense
 Defense
@@ -2045,6 +2230,7 @@ Obrana
 Defensa
 Védelem
 Одбрана
+Apărare
 [free]
 libres
 free
@@ -2056,6 +2242,7 @@ liberi
 libre
 szabad
 Слободно
+libere
 [of which]
 dont
 of which
@@ -2067,6 +2254,7 @@ dei quali
 de los cuales
 amelyik
 од чега
+dintre care
 [are ok]
 sont ok
 are ok
@@ -2078,6 +2266,7 @@ ok
 esta bien
 rendben van
 у реду
+sunt ok
 [are hungry]
 ont faim
 are hungry
@@ -2089,6 +2278,7 @@ hanno fame
 esta hambriento
 éhes
 су гладне
+le este foame
 [are dying hungry]
 meurent de faim
 are starving to death
@@ -2100,8 +2290,9 @@ stanno morendo di fame
 esta famelico
 éhen hal
 умиру од глади
+mor de foame
 [are wonded]
-blessées
+sont blessées
 are wounded
 sind verletzt
 je zraněných
@@ -2111,6 +2302,7 @@ sono feriti
 esta herido
 megsebesült
 су рањене
+sunt rănite
 [and]
 et
 and
@@ -2122,6 +2314,7 @@ e
 y
 és
 и
+şi
 [seeking a job]
 cherchent du travail
 are looking for a job
@@ -2133,6 +2326,7 @@ cercano lavoro
 buscando trabajo
 munkát keres
 траже посао
+caută de lucru
 [Walk]
 Marche
 Walk
@@ -2144,6 +2338,7 @@ Cammina
 Andando
 megy
 Ходај
+Merge
 [Swim]
 Nage
 Swim
@@ -2155,6 +2350,7 @@ Nuota
 Nadando
 Úszik
 Пливај
+Înoată
 [Build]
 Construit
 Build
@@ -2166,6 +2362,7 @@ Costruisci
 Construir
 Épít
 Гради
+Construieşte
 [Harvest]
 Récolte
 Harvest
@@ -2177,6 +2374,7 @@ Raccola
 Recolectar
 Betakarít
 Жањи
+Recoltează
 [At. speed]
 Vitesse at.
 Att. speed
@@ -2188,6 +2386,7 @@ At. velocità
 At. velocidad
 Támadási sebesség
 Брзина напада
+Viteza at.
 [At. strength]
 Force at.
 Att. strength
@@ -2199,6 +2398,7 @@ At. resistenza
 At. fuerza
 Támadási erő
 Снага напада
+Forţa at.
 [Total]
 Total
 Total
@@ -2210,6 +2410,7 @@ Totale
 Total
 Összesen
 Укупно
+Total
 [free]
 libres
 free
@@ -2221,6 +2422,7 @@ Libero
 libre
 szabad
 слободно
+libere
 [seeking]
 recherche
 seeking
@@ -2232,6 +2434,7 @@ Ricerca
 Buscando
 keresés
 у потрази
+caută
 [Free]
 Libre
 Free
@@ -2243,6 +2446,7 @@ Libero
 Libre
 Szabad
 слободних
+Liber
 [hungry]
 faim
 hungry
@@ -2254,6 +2458,7 @@ Fame
 hambriento
 éhes
 гладних
+foame
 [starving]
 trop faim
 starving
@@ -2265,6 +2470,7 @@ troppa fame
 famelico
 éhezik
 умирућих од глади
+foarte foame
 [wounded]
 blessées
 wounded
@@ -2276,6 +2482,7 @@ ferito
 herido
 sebesült
 рањених
+rănite
 [In way]
 En chemin
 On the way
@@ -2287,6 +2494,7 @@ sulla strada
 en camino
 Úton van
 У путу
+Pe drum
 [On the spot]
 Sur place
 Here
@@ -2298,6 +2506,7 @@ Sul posto
 Aqui
 Helyszínen van
 На лицу места
+Aici
 [Version]
 Version
 Version
@@ -2309,6 +2518,7 @@ versione
 Version
 Verzió
 Верзија
+Versiune
 [open]
 ouvert
 open
@@ -2320,6 +2530,7 @@ Apri
 Abrir
 nyitva
 отвори
+deschis
 [Add AI]
 Ajouter IA
 Add AI
@@ -2331,6 +2542,7 @@ Aggiungi un IA
 Añadir IA
 MI-t hozzáad
 Додај ВИ
+Adăugaţi IA
 [AI]
 IA
 AI
@@ -2342,6 +2554,7 @@ AI
 IA
 MI
 ВИ
+IA
 [AINone]
 AINone
 AINone
@@ -2353,6 +2566,7 @@ AINone
 IANone
 MINone
 НикогоВИћ
+AINone
 [AINumbi]
 AINumbi
 AINumbi
@@ -2364,6 +2578,7 @@ AINumbi
 IANumbi
 MINumbi
 ГлупаВИ
+AINumbi
 [AICastor]
 AICastor
 AICastor
@@ -2375,6 +2590,7 @@ AICastor
 IACastor
 MICastor
 ВИКастор
+AICastor
 [AIToubib]
 AIToubib
 AIToubib
@@ -2385,6 +2601,7 @@ IAToubib
 AIToubib
 IAToubib
 MIToubib
+AIToubib
 AIToubib
 [the games]
 Parties
@@ -2397,6 +2614,7 @@ Giochi
 Juegos
 Játékok
 Игре
+Jocuri
 [the maps]
 Cartes
 Maps
@@ -2408,6 +2626,7 @@ Mappe
 Mapas
 Térképek
 Мапе
+Hărţi
 [was]
 auparavant
 was
@@ -2419,6 +2638,7 @@ era
 era
 volt
 је био
+înainte
 [was AI]
 auparavant IA
 was AI
@@ -2430,6 +2650,7 @@ era un IA
 era un IA
 korábbi MI
 је био ВИ
+înainte AI
 [state]
 état
 state
@@ -2441,6 +2662,7 @@ stato
 estado
 állapot
 стање
+stadiu
 [Start]
 Départ
 Start
@@ -2452,6 +2674,7 @@ Start
 Comenzar
 Kezdés
 Почетак
+Porneşte
 [not ready]
 pas prêt
 not ready
@@ -2463,6 +2686,7 @@ non pronto
 sin preparar
 nincs készen
 није спреман
+nu-i gata
 [has joined]
 a rejoint
 has joined
@@ -2474,6 +2698,7 @@ dołączył(a)
 ha entrado
 csatlakozott
 се придружио
+s-a alăturat
 [has quit]
 a quitté
 has quit
@@ -2485,6 +2710,7 @@ se ne è andato
 se ha ido
 kilépett
 је отишао
+a ieşit
 [yog-chat]
 #yog-fr
 #yog-en
@@ -2496,6 +2722,7 @@ kilépett
 #yog-es
 #yog-hu
 #yog-sr
+#yog-ro
 [speed]
 Vitesse
 Speed
@@ -2507,6 +2734,7 @@ Velocità
 Velocidad
 Sebesség
 Брзина
+Viteză
 [current speed]
 Vitesse actuelle
 Current speed
@@ -2518,8 +2746,9 @@ Velocità corrente
 Velocidad actual
 Aktuális sebesség
 Тренутна брзина
+Viteză actuală
 [attack speed]
-Vit. attaque
+Vitesse d'attaque
 Attack speed
 Angriffsgeschw.
 Útočící rychlost
@@ -2529,6 +2758,7 @@ Velocità d'attacco
 Velocidad de ataqu
 Támadási sebesség
 Брзина напада
+Viteză de atac
 [new]
 Nouveau
 New
@@ -2540,6 +2770,7 @@ Nuovo
 Nuevo
 Új
 Нова
+Nou
 [load]
 Charger
 Load
@@ -2551,6 +2782,7 @@ Carica
 Cargar
 Betölt
 Учитај
+Încarcă
 [handmade map]
 Carte faite à la main
 Handmade map
@@ -2562,6 +2794,7 @@ Gestisci mappa
 Mapa hecho a mano
 Saját készítésű térkép
 Ручно направљена мапа
+Hartă făcută de mână
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
@@ -2573,6 +2806,7 @@ Metodi di generazione casuale della mappa
 Metodo de generacion del mapa
 Véletlenszerű térkép előállítási eljárások
 Начин случајног генерисања мапе
+Metode de generare de hărţi aleatoare
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
@@ -2584,6 +2818,7 @@ Terreno uniforme
 Terreno uniforme
 Egységes térkép
 Једнообразно земљиште
+Teren uniform
 [random terrain]
 Terrain aléatoire
 Random terrain
@@ -2595,6 +2830,7 @@ Terreno a caso
 Terreno aleatorio
 Véletlenszerű térkép
 Случајно земљиште
+Teren aleatoriu
 [islands terrain]
 Iles
 Islands
@@ -2606,6 +2842,7 @@ Terreno a isole
 Islas
 Szigetek
 Острвско земљиште
+Teren cu insule
 [ratios]
 Proportions
 Proportions
@@ -2617,6 +2854,7 @@ Razioni
 Proporcion
 Arányok
 Односи
+Proportii
 [smoothing]
 Lissage
 Smoothing
@@ -2628,6 +2866,7 @@ Spianatura
 Liso
 Simítás
 Умекшавање
+Lisaj
 [number of teams]
 nombre d'équipes
 number of teams
@@ -2639,6 +2878,7 @@ Numero di squadre
 Numero de equipos
 Csapatok száma
 Број тимова
+numărul echipelor
 [islands size]
 taille des îles
 island size
@@ -2650,6 +2890,7 @@ Grandezza delle isole
 Tamaño de las islas
 a szigetek mérete
 Величина острва
+mărimea insulelor
 [beach size]
 taille de la plage
 beach size
@@ -2661,6 +2902,7 @@ Grandezza della spiaggia
 Tamaño de la playa
 a partok méretei
 Величина плажа
+mărimea plajei
 [workers]
 Ouvrières
 Workers
@@ -2672,6 +2914,7 @@ Operai
 Trabajadores
 dolgozók
 Радници
+Lucrători
 [bad error in connection system]
 Mauvaise erreur dans le système de connection
 Bad error in connection system
@@ -2683,6 +2926,7 @@ Brutto errore nel sistema di connessione
 Error en el sistema de conexion
 Végzetes hiba a kapcsolódási rendszerben
 Грешка у систему за повезивање
+Eroare greşită în sistemul de conexie
 [not connected]
 Non connecté
 Not connected
@@ -2694,6 +2938,7 @@ non connesso
 No conectado
 Nincs kapcsolat
 Није прикључен
+Neconectat
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
@@ -2705,6 +2950,7 @@ Richiesta di presenza inviata ...
 Invitacion enviada ...
 Kapcsolódási kérelem elküldve ...
 Присуство је пријављено ...
+Cerere pentru prezentă trimisă ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
@@ -2716,6 +2962,7 @@ Richiesta di sessione inviata ...
 Peticion de sesion enviada ...
 Csatlakozási kérelem elküldve ...
 Послат је захтев за сесију ...
+Cerere pentru sesiune trimisă ...
 [checksum sent]
 Somme de contrôle envoyée ...
 Checksum sent ...
@@ -2727,6 +2974,7 @@ Richiesta di checksum inviata ...
 Checksum enviada ...
 Ellenőrzőösszeg elküldve ...
 Послата је контролна сума ...
+Sumă de control trimisă ...
 [connected to server]
 Connecté au serveur
 Connected to server
@@ -2738,6 +2986,7 @@ Connesso al server
 Conectado al servidor
 Szerverhez történő csatlakozás sikeres
 Прикључен на сервер
+Conectat la servăr
 [connecting to all players]
 En train de se connecter avec les joueurs
 Connecting to all players
@@ -2749,6 +2998,7 @@ Mi sto connettendo agli altri giocatori
 Conectando a todos los jugadores
 Csatlakozás a játékosokhoz
 Прикључење са свим играчима
+Conectare cu jucătorii in curs
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
@@ -2760,6 +3010,7 @@ Connesso a tutti i giocatori
 Conectados todos los jugadores
 Csatlakozott a játékosokhoz
 Прикључен на све играче
+Conectat cu ceilalti jucători
 [available lan games]
 Parties locales disponibles
 Available local games
@@ -2771,6 +3022,7 @@ iochi LAN diponibili
 juegos LAN disponibles
 Elérhető hálózati játékok
 Доступне локалне мрежне игре
+Jocuri locale disponibile
 [login]
 Login
 Login
@@ -2782,6 +3034,7 @@ Login
 Login
 Bejelentkezés
 Пријава
+Login
 [from:]
 de:
 from:
@@ -2793,6 +3046,7 @@ da:
 de:
 honnan:
 од:
+de la:
 [to:]
 à:
 to:
@@ -2804,6 +3058,7 @@ a:
 a:
 hová:
 ка:
+către:
 [away:]
 absent:
 away:
@@ -2815,6 +3070,7 @@ assente:
 ausente:
 távol van:
 одсутан:
+absent:
 [compile]
 Compiler le script
 Compile script
@@ -2826,6 +3082,7 @@ Compila lo script
 Compilar el script
 Szkript fordítása
 Преведи скрипт
+Compilează scriptul
 [downloaded at]
 Téléchargé à 
 Downloaded at 
@@ -2837,6 +3094,7 @@ Scaricato a
 Bajado al
 Letöltés
 Преузето са
+Descărcat la
 [percent]
   pourcent
   percent
@@ -2848,6 +3106,7 @@ Letöltés
   porcentaje
   százalék
   процен(а)(та)
+  la sută
 [download finished]
 Téléchargement terminé
 Download finished
@@ -2859,6 +3118,7 @@ Download completato
 Descarga terminada
 A letöltés befejeződött
 Преузимање је готово
+Descărcare terminată
 [Map name: %s]
 Carte: %s.
 Map name: %s.
@@ -2870,6 +3130,7 @@ Nome della mappa: %s.
 Nombre del mapa: %s.
 A térkép neve: %s.
 Име мапе: %s.
+Hartă: %s.
 [one player]
 Un joueur présent.
 A player has joined.
@@ -2881,6 +3142,7 @@ Giocatore singolo.
 un jugador
 Egy játékos van jelen.
 Један играч.
+Un jucător prezent.
 [number of players: %d]
 %d joueurs présents.
 %d players are present.
@@ -2892,6 +3154,7 @@ Egy játékos van jelen.
 %d numero de jugadores
 %d játékos van jelen.
 Број присутних играча: %d.
+%d jucători prezenţi.
 [number of teams: %d]
 %d équipes.
 %d teams.
@@ -2903,6 +3166,7 @@ Egy játékos van jelen.
 %d numero de equipos
 %d csapat
 Број екипа: %d.
+%d echipe.
 [game full]
 Jeu complet
 Game full
@@ -2914,6 +3178,7 @@ Gioco completo
 Partida completa
 A játék megtelt
 Потпуна игра
+Joc complet
 [small]
 faible
 small
@@ -2925,6 +3190,7 @@ piccolo
 Pequeño
 kicsi
 Мала
+mică
 [medium]
 moyen
 medium
@@ -2936,6 +3202,7 @@ medio
 mediano
 közepes
 Средња
+medie
 [large]
 grand
 large
@@ -2947,6 +3214,7 @@ largo
 grande
 nagy
 Велика
+mare
 [network latency]
 Latence du réseau
 Network latency
@@ -2958,6 +3226,7 @@ Latenza della rete
 latencia
 Hálózati várakozási idő
 Мрежно кашњење
+Latenţa reţelei
 [game speed]
 Vitesse du jeu
 Game speed
@@ -2969,6 +3238,7 @@ Velocità di gioco
 velocidad del juego
 A játék sebessége
 Брзина игре
+Viteza jocului
 [Paused]
 Pause
 Paused
@@ -2980,6 +3250,7 @@ Pausa
 Pausa
 Szünet
 Пауза
+Pauză
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 Register a new YOG user with a password. (insecure)
@@ -2991,6 +3262,7 @@ Registra un nuovo utente YOG con una passord. (non sicuro)
 Registrar un nuevo jugador YOG con contraseña (inseguro)
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
 Пријави новог корисника на YOG са лозинком. (није шифровано)
+Înregistrează noul jucător YOG cu parola. (nesecurizat)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 Remember the password locally. (insecure)
@@ -3002,6 +3274,7 @@ Ricordati la password localmente. (non sicuro)
 Recordar la contraseña (inseguro)
 A jleszót helyileg tárolja. (nem biztonságos)
 Запамти лозинку у локалу (није шифровано)
+Memorează parola local. (nesecurizat)
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
@@ -3013,6 +3286,7 @@ Errore interno di connessione.
 Inconsistencia interna mientras conectaba
 Belső összefüggési hiba a kapcsolódás alatt.
 Грешка при прикључењу.
+Eroare de coerenţă internă in timpul conectării.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
@@ -3024,6 +3298,7 @@ Non mi riesco a connettere, apparentemente il master server YOG �offline.
 Imposible conectar. Metaservidor YOG esta caido
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
+Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
@@ -3035,6 +3310,7 @@ Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 El sistema de conexion esta listo para contactar con el metaservidor YOG
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
+Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Establishing the connection to the YOG metaserver...
@@ -3046,6 +3322,7 @@ Mi sto connettendo al metaserver YOG...
 Conectando al metaservidor YOG...
 A kapcsolat felvétele a YOG metaszerverrel.
 Повезивање са YOG мета-сервером...
+Stabilirea conexiunii cu metaservărul YOG...
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
 Disconnecting from the YOG metaserver...
@@ -3057,6 +3334,7 @@ Disconnessione dal metaserver YOG in corso...
 Desconectando del metaservidor YOG...
 Lecsatlakozás a YOG metaszerverről...
 Искључивање са YOG мета-сервера
+Deconexiune de la metaservărul YOG...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
@@ -3068,6 +3346,7 @@ Un amministratore ha appena fermato il metaserver YOG.
 Un administrador a interrumpido el metaservidor YOG.
 Egy adminisztrátor leállította a YOG metaszervert.
 Администратор је управо искључио YOG мета-сервер.
+Un administrator tocmai a oprit metaserverul YOG.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
@@ -3079,6 +3358,7 @@ La connessione a YOG �stat persa.
 Conexion al metaservidor YOG perdida
 A kapcsolat a YOG metaszerverrel megszakadt.
 Веза са YOG је прекинута.
+Conexiunea la YOG s-a pierdut.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
@@ -3090,6 +3370,7 @@ Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation
 No se puede conectar al metaservidor YOG, tu cliente globulation2 esta obsoleto
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
 YOG мета-сервер је прекинуо везу јер је ваше издање Глобулације2 престаро.
+Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
@@ -3101,6 +3382,7 @@ Il metaserver YOG ha rifiutato la tua connessione perch�il tuo username �gi�
 No se puede conectar al metaservidor YOG. Nombre de usuario en uso
 A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
 YOG мета-сервер је одбио везу јер корисничко име које сте изабрали неко већ користи.
+Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
 The YOG metaserver has refused connection because the supplied password was incorrect.
@@ -3112,6 +3394,7 @@ YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 No se puede conectar al metaservidor YOG. Contraseña incorrecta
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
+Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
@@ -3123,6 +3406,7 @@ Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password 
 El metaservidor YOG ha rechazado la conexión porque el usuario no tiene contraseña aun, activa la opción: Registrar un nuevo usuario YOG con contraseña
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
 YOG мета-сервер је одбио везу јер ваше корисничко име нема одређену лозинку. Морате регистровати ваше име и изабрати лозинку.
+Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
@@ -3134,6 +3418,7 @@ Il metaserver YOG ha respinto la connessione questo username è già stato regis
 Nombre de usuario ya registrado, intente otro
 A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
 YOG мета-сервер је одбио везу јер је ово корисничко име већ пријављено, али са лозинком. Ако корисничко име припада Вама, искључите опцију "Региструј новог корисника са лозинком"
+Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utilizator a fost deja inregistrat cu o parolă. Daca sunteţi cel ce l-aţi înregistrat, dezactivati opţiunea "Înregistraţi utilizatorul YOG cu parola" de langă.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
 The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
@@ -3145,6 +3430,7 @@ Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel 
 El servidor YOG ha rechazado la conexión por un error de autentificacion, intentalo en 45 segundos
 A YOG metaszerver visszautasította a kapcsolatot egy protokollhiba miatt: már be vagy jelentkezve. Próbálkozz újra 45 másodperc múlva.
 YOG мета-сервер је одбио везу јер се десила грешка при повезивању. Покушајте поново да се повежете за 45 секунди.
+Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: sunteţi deja autentificat. Încercaţi din nou în 45 de secunde.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
@@ -3156,6 +3442,7 @@ Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel p
 El servidor YOG ha rechazado la conexion por un error interno, por favor reporta este fallo.
 A YOG metaszerver visszautasította a kapcsolatot egy belső protokollhiba miatt: azonosítás alatt még nem történt meg a kapcsolódás. A felmerült hibáról küldj értesítést a fejlesztőknek.
 YOG мета-сервер је одбио везу јер се десила грешка при повезивању: нисте били повезани током целог процеса пријаве. Молимо Вас да пријавите ову грешку.
+Metaserverul YOG a refuzat sa vă conectaţi dintr-o eroare de protocol: nu sunteti conectat in faza de autentificare. Vă rog să raportaţi această eroare.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
@@ -3167,6 +3454,7 @@ Il metaserver YOG ha respinto la connessione senza spiegazione!
 El metaservidor YOG ha rechazado la conexión inexplicablemente.
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 YOG мета-сервер је одбио везу али није назначио разлог.
+Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 %s has left YOG.
@@ -3178,6 +3466,7 @@ Il giocatore %s se n'�andato da YOG.
 El jugador %s ha abandonado YOG
 A %s játékos kilépett a YOG-ból.
 Играч %s је напустио YOG.
+Jucătorul %s a iesit din YOG.
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 %s has joined YOG.
@@ -3189,6 +3478,7 @@ Il giocatore %s è entrato in YOG.
 El jugador %s se ha unido a YOG
 A %s játékos csatlakozott a YOG-hoz.
 Играч %s се пријавио на YOG
+Jucătorul %s a intrat in YOG.
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as away.
@@ -3200,6 +3490,7 @@ Adesso sei segnato come assente.
 Estas marcado como ausente.
 Távollevőként vagy megjelölve.
 Од сада сте на одсуству.
+Sunteţi de acum marcat ca fiind absent.
 [You are no more marked as away]
 Vous êtes à nouveau considéré comme étant présent.
 You are no longer marked as away.
@@ -3211,6 +3502,7 @@ Non sei pi segnato come assente.
 Ya no estas marcado como ausente.
 Már nem vagy távollevőként megjelölve.
 Више нисте на одсуству.
+Sunteţi din nou considerat ca fiind prezent.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
@@ -3222,6 +3514,7 @@ Il sistema di messaggistica YOG ha due comandi: "msg" e "away". Scrivi "/help <c
 El sistema de mensajes YOG tiene dos comandos, "msg" y "awat". Escribe "/help <comando>" para aprender sobre uno de ellos.
 A YOG üzenettovábbító rendszer két parancsot ismer: "msg" és "away". A "/help <parancs>" beütésével lehet használatukkal kapcsolatban további információkat kapni.
 Систем за помоћ има две наредбе: "msg" и "away". Куцајте: "/help <команда>" да бисте добили више информација о некој од њих.
+Sistemul de mesaje YOG dispune de două comenzi, "msg" şi "away". Tastaţi "/help <comandă>" pentru a afla mai mult.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
 The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
@@ -3233,6 +3526,7 @@ Il comando "/away [<messaggio>]" permette agli altri utenti YOG di sapere che te
 El comando "/away [<mensaje>]" te permite ausentarte dejando un mensaje a los demas
 A "/away (<üzenet>)" parancs segítségével lehet a többi YOG felhasználóval közölni, hogy jelenleg nem tartózkodsz a gép közelében. Ezen kívül lehetőség van egy kis magyarázó üzenet hozzáadására is. Például a "/away Elugrottam meginni egy sört". Alias "/a"
 Команда "/away (<порука>)" омогућава да обавестите друге YOG кориснике да привремено нисте ту. На пример: "/away Једем пљескавицу и вратићу се за 1 сат". Команда може да се скрати на "/a".
+Comanda "/away (<mesaj>)" vă permite să indicaţi la ceilalţi utilizatori de YOG că sunteti momentan absent. aveţi în plus posiblitatea de a pune un mic mesaj cu explicaţii. De exemplu "/away Mănânc o brânză şi revin la 13h14". Alias "/a".
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
@@ -3244,6 +3538,7 @@ Il comando "/msg <nome> <messaggio>" permette di spedire un messaggio solo ad un
 El comando "/msn <nick> <mensaje>" envia <mensaje> al usuario <nick>
 A "/msg <név> <üzenet>" paranccsal üzenetet küldhetsz. Például "/msg Jani Hello Jani hogy vagy?". Alias "/m"
 Команда "/msg <име> <порука>" шаље приватну поруку. На пример: "/msg Пера Де си Перо, шта има?". Може се скратити на "/m".
+Comanda "/msg <nume> <mesaj>" vă permite să trimiteţi un mesaj la o singură persoană. Exemplu "/msg untip42 Salut, cum mai mege jocul ?". Alias "/m".
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
 Do you want to save before quitting?
@@ -3255,6 +3550,7 @@ Voui salvare prima di uscire?
 Deseas guardar antes de salir?
 El kívánod a játékot menteni kilépés előtt?
 Сними пре изласка?
+Vreţi să salvaţi înainte de a ieşi?
 [Yes]
 Oui
 Yes
@@ -3266,6 +3562,7 @@ Sì
 Si
 Igen
 Да
+Da
 [No]
 Non
 No
@@ -3277,6 +3574,7 @@ No
 No
 Nem
 Не
+Nu
 [Save]
 Sauvegarder
 Save
@@ -3288,6 +3586,7 @@ Salva
 Guardar
 Mentés
 Сними
+Salvează
 [auto save]
 Sauvegarde automatique
 Auto save
@@ -3299,6 +3598,7 @@ Salvataggio automatico
 Autoguardado
 Automatikus mentés
 Сними аутоматски
+Salvare automatică
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached
@@ -3310,6 +3610,7 @@ Totale prestigio raggiunto
 Prestigio total alcanzado
 Elérted a legmagasabb presztízs szintet
 Укупан постигнут престиж
+Prestigiul total a fost atins
 [Continue playing]
 Continuer à jouer
 Continue playing
@@ -3321,6 +3622,7 @@ Continua a giocare
 Continuar jugando
 Játék folytatása
 Настави игру
+Continuă jocul
 [Lost : your colony is dead]
 Perdu : votre colonie est morte
 Lost: your colony is dead
@@ -3332,6 +3634,7 @@ Hai perso: la tua colonia �morta.
 Perdedor: Tu colonia ha sido aniquilada
 A kolóniád megsemmisült.
 Пораз : Ваша колонија је мртва
+Pierdut : colonia voastră este moartă
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
 Won : you defeated your opponents
@@ -3343,6 +3646,7 @@ Hai vinto: hai battuto i tuoi avversari
 Vencedor: Has destruido a tus enemigos
 Nyertél: legyőzted az ellenfeleidet.
 Победа : Савладали сте противике.
+Câştig : aţi învins pe toţi adversarii
 [Won : your ally %s has the most prestige]
 Gagné : votre allié %s a le plus de prestige
 Won: your ally %s has the biggest prestige
@@ -3354,6 +3658,7 @@ Hai vinto: il tuo alleato %s ha il maggior prestigio.
 Vencedor: tu aliado %s ha alcanzado el mayor prestigio-
 Nyertél: a szövetségesed %s elérte a legnagyobb presztízs szintet.
 Победа : Ваш савезник %s је достигао највећи могући престиж.
+Câstig : aliatul vostru %s are cel mai mare prestigiu.
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
@@ -3365,6 +3670,7 @@ Hai perso: %s ha pi prestigio di te
 Perdedor: %s tiene mas prestigio que tu
 Veszítettél: %s -nak nagyobb a presztízse mint neked.
 Пораз : %s је остварио већи престиж од Вас.
+Pierdut : %s are un prestigiu mai mare
 [Won : you have the most prestige]
 Gagné : vous avez le plus de prestige
 Won : you have the biggest prestige
@@ -3376,6 +3682,7 @@ Benutzername
 Ganador: Tu eres el que mas prestigio tiene
 Nyertél: neked van a legnagyobb presztízsed.
 Победа: Остварили сте највећи могући престиж.
+Câştig : aveţi cel mai mare prestigiu
 [The game has not been finished]
 La partie n'a pas été terminée
 The game has not been finished
@@ -3385,8 +3692,9 @@ Gra nie została skończona
 La partita non è finita
 Игра не была закончена
 La partida no ha acabado
-A játék nem fejeződött be.
+A játék nem fejeződött be
 Игра није завршена
+Jocul nu s-a terminat
 [display]
 Affichage
 Display
@@ -3398,6 +3706,7 @@ Visualizza
 Visualizador
 Kijelző
 Екран
+Afişaj
 [username]
 Nom d'utilisateur
 Username
@@ -3409,6 +3718,7 @@ Username
 Nombre de usuario
 Felhasználónév
 Корисничко име
+Numele utilizatorului
 [fullscreen]
 Plein écran
 Fullscreen
@@ -3420,6 +3730,7 @@ Schermo intero
 Pantalla completa
 Teljes képernyő
 Цео екран
+Ecran întreg
 [hwaccel]
 Accélération matérielle
 Hardware acceleration
@@ -3431,6 +3742,7 @@ Accelerazione HardWare
 Aceleración Hardaware
 Hardveres gyorsítás
 Хардверско убрзање
+Acceleratie materială
 [dblbuff]
 Doube-tampon
 Double buffering
@@ -3442,6 +3754,7 @@ Double-buffering
 Buffer Doble
 Dupla pufferelés
 Двоструко баферисање
+Tampon dublu
 [lowquality]
 Basse qualité
 Low quality
@@ -3453,6 +3766,7 @@ Bassa qualità
 Calidad Baja
 Alacsony képminőség
 Низак квалитет
+Calitate scăzută
 [audio]
 Audio
 Audio
@@ -3464,6 +3778,7 @@ Audio
 Audio
 Audió
 Звук
+Audio
 [Music volume]
 Volume (musique)
 Volume (music)
@@ -3475,6 +3790,7 @@ Volume (musica)
 Volumen (musica)
 Hangerősség (zene)
 Јачина (музика)
+Volum  (muzică)
 [Happyness]
 Satisfaction
 Happiness
@@ -3486,4 +3802,4 @@ Soddisfazione
 Felicidad
 Boldogság
 Задовољство
-
+Bucurie
