@@ -269,7 +269,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		switch (irc.getInfoMessageType())
 		{
 			case IRC::IRC_MSG_JOIN:
-			chatWindow->addText(" has joint irc channel ");
+			chatWindow->addText(" has joined irc channel ");
 			break;
 			
 			case IRC::IRC_MSG_PART:
