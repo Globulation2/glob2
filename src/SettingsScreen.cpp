@@ -30,6 +30,7 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include "SoundMixer.h"
+#include <ostream>
 
 SettingsScreen::SettingsScreen()
 {
@@ -44,6 +45,8 @@ SettingsScreen::SettingsScreen()
 	// graphics part
 	display=new Text(245, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
 	addWidget(display);
+	actDisplay = new Text(50, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", actDisplayModeToString().c_str());
+	addWidget(actDisplay);
 	modeList=new List(245, 90, 100, 200, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
@@ -264,8 +267,26 @@ void SettingsScreen::updateGfxCtx(void)
 	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	setVisibilityFromGraphicType();
 	dispatchPaint(globalContainer->gfx);
+	actDisplay->setText(actDisplayModeToString().c_str());
 	addUpdateRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	gfxAltered = true;
+}
+
+std::string SettingsScreen::actDisplayModeToString(void)
+{
+	std::ostringstream oss;
+	oss << globalContainer->settings.screenWidth << "x" << globalContainer->settings.screenHeight;
+	if (globalContainer->settings.screenDepth == 0)
+		oss << " auto depth";
+	else
+		oss << " " << globalContainer->settings.screenDepth << " bpp";
+	if (globalContainer->settings.graphicType == DrawableSurface::GC_SDL)
+		oss << " SDL";
+	else if (globalContainer->settings.graphicType == DrawableSurface::GC_GL)
+		oss << " GL";
+	else
+		assert(false);
+	return oss.str();
 }
 
 int SettingsScreen::menu(void)
