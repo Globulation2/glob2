@@ -58,13 +58,14 @@ public:
 	bool shareOnYOG;
 
 	TextButton *startButton;
+	TextButton *addAI;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *startTimer;
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
-	bool showsReady;
 	Text *notReadyText;
+	Text *gameFullText;
 	
 	SessionInfo *savedSessionInfo;
 };
