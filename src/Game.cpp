@@ -92,7 +92,6 @@ void Game::init()
 		players[i]=NULL;
 	}
 	
-	addTeam();
 	setSyncRandSeed();
 	
 	mouseX=0;
@@ -354,7 +353,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 bool Game::load(SDL_RWops *stream)
 {
 	assert(stream);
-
 	// delete existing teams
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)
@@ -363,62 +361,72 @@ bool Game::load(SDL_RWops *stream)
 			delete teams[i];
 			teams[i]=NULL;
 		}
+	session.numberOfTeam=0;
 	for (i=0; i<session.numberOfPlayer; ++i)
 		if (players[i])
 		{
 			delete players[i];
 			players[i]=NULL;
 		}
-	
+	session.numberOfPlayer=0;
+
+	// We load the file's header:
 	SessionInfo tempSessionInfo;
 	if (!tempSessionInfo.load(stream))
 		return false;
-	session=(SessionGame)tempSessionInfo;
 	
-	map.setMapName(tempSessionInfo.map.getMapName());
-
-	char signature[4];
-
-	if (session.versionMinor>1)
-		SDL_RWseek(stream, tempSessionInfo.gameOffset , SEEK_SET);
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-
-	setSyncRandSeedA(SDL_ReadBE32(stream));
-	setSyncRandSeedB(SDL_ReadBE32(stream));
-	setSyncRandSeedC(SDL_ReadBE32(stream));
-
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-
-	// recreate new teams and players
-	if (session.versionMinor>1)
-		SDL_RWseek(stream, tempSessionInfo.teamsOffset , SEEK_SET);
-	for (i=0; i<session.numberOfTeam; ++i)
+	if (tempSessionInfo.mapGenerationDescriptor && tempSessionInfo.fileIsAMap)
 	{
-		teams[i]=new Team(stream, this);
+		tempSessionInfo.mapGenerationDescriptor->synchronizeNow();
+		generateMap(*tempSessionInfo.mapGenerationDescriptor);
 	}
-
-	if (session.versionMinor>1)
-		SDL_RWseek(stream, tempSessionInfo.playersOffset , SEEK_SET);
-	for (i=0; i<session.numberOfPlayer; ++i)
+	else
 	{
-		players[i]=new Player(stream, teams, session.versionMinor);
+		session=(SessionGame)tempSessionInfo;
+		map.setMapName(tempSessionInfo.map.getMapName());
+
+		char signature[4];
+
+		if (session.versionMinor>1)
+			SDL_RWseek(stream, tempSessionInfo.gameOffset , SEEK_SET);
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+
+		setSyncRandSeedA(SDL_ReadBE32(stream));
+		setSyncRandSeedB(SDL_ReadBE32(stream));
+		setSyncRandSeedC(SDL_ReadBE32(stream));
+
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+
+		// recreate new teams and players
+		if (session.versionMinor>1)
+			SDL_RWseek(stream, tempSessionInfo.teamsOffset , SEEK_SET);
+		for (i=0; i<session.numberOfTeam; ++i)
+		{
+			teams[i]=new Team(stream, this);
+		}
+
+		if (session.versionMinor>1)
+			SDL_RWseek(stream, tempSessionInfo.playersOffset , SEEK_SET);
+		for (i=0; i<session.numberOfPlayer; ++i)
+		{
+			players[i]=new Player(stream, teams, session.versionMinor);
+		}
+		stepCounter=SDL_ReadBE32(stream);
+
+		// we have to load team before map
+		if (session.versionMinor>1)
+			SDL_RWseek(stream, tempSessionInfo.mapOffset , SEEK_SET);
+		if(!map.load(stream, this))
+			return false;
+
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
 	}
-	stepCounter=SDL_ReadBE32(stream);
-
-	// we have to load team before map
-	if (session.versionMinor>1)
-		SDL_RWseek(stream, tempSessionInfo.mapOffset , SEEK_SET);
-	if(!map.load(stream, this))
-		return false;
-
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
-		return false;
-
 	return true;
 }
 
@@ -449,34 +457,41 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 	}
 	
 	tempSessionInfo.save(stream);
-
-	SAVE_OFFSET(stream, 16);
-	SDL_RWwrite(stream, "GLO2", 4, 1);
-
-	SDL_WriteBE32(stream, getSyncRandSeedA());
-	SDL_WriteBE32(stream, getSyncRandSeedB());
-	SDL_WriteBE32(stream, getSyncRandSeedC());
-
-	SDL_RWwrite(stream, "GLO2", 4, 1);
-
-	SAVE_OFFSET(stream, 20);
-	for (i=0; i<session.numberOfTeam; ++i)
-	{
-		teams[i]->save(stream);
-	}
-
-	SAVE_OFFSET(stream, 24);
-	for (i=0; i<session.numberOfPlayer; ++i)
-	{
-		players[i]->save(stream);
-	}
-
-	SDL_WriteBE32(stream, stepCounter);
-
-	SAVE_OFFSET(stream, 28);
-	map.save(stream);
 	
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	if (session.mapGenerationDescriptor && session.fileIsAMap)
+	{
+		//printf("giga compression system activated.\n");
+	}
+	else
+	{
+		SAVE_OFFSET(stream, 16);
+		SDL_RWwrite(stream, "GLO2", 4, 1);
+
+		SDL_WriteBE32(stream, getSyncRandSeedA());
+		SDL_WriteBE32(stream, getSyncRandSeedB());
+		SDL_WriteBE32(stream, getSyncRandSeedC());
+
+		SDL_RWwrite(stream, "GLO2", 4, 1);
+
+		SAVE_OFFSET(stream, 20);
+		for (i=0; i<session.numberOfTeam; ++i)
+		{
+			teams[i]->save(stream);
+		}
+
+		SAVE_OFFSET(stream, 24);
+		for (i=0; i<session.numberOfPlayer; ++i)
+		{
+			players[i]->save(stream);
+		}
+
+		SDL_WriteBE32(stream, stepCounter);
+
+		SAVE_OFFSET(stream, 28);
+		map.save(stream);
+
+		SDL_RWwrite(stream, "GLO2", 4, 1);
+	}
 }
 
 void Game::step(Sint32 localTeam)

@@ -63,7 +63,7 @@ private:
 	List *methodes, *terrains;
 	Ratio *waterRatio, *sandRatio, *grassRatio;
 	Number *smooth;
-	Number *nbIslands;
+	Number *nbTeams;
 	Ratio *islandsSize;
 	Number *beach;
 	Number *nbWorkers;

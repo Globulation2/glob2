@@ -56,10 +56,10 @@ public:
 	
 	Sint32 waterRatio, sandRatio, grassRatio;
 	Sint32 smooth;
-	Sint32 nbIslands, islandsSize, beach;
+	Sint32 islandsSize, beach;
 	Sint32 ressource[NB_RESSOURCES];
 
-	Sint32 nbWorkers;
+	Sint32 nbTeams, nbWorkers;
 	
 	Uint32 randa, randb, randc;
 public:

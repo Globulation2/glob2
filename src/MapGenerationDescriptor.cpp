@@ -34,13 +34,13 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	grassRatio=50;
 	smooth=4;
 	
-	nbIslands=4;
 	islandsSize=50;
 	beach=1;
 	for (int i=0; i<NB_RESSOURCES; i++)
 		ressource[i]=7;
 	
 	nbWorkers=4;
+	nbTeams=4;
 	
 	randa=randb=randc=0;
 }
@@ -66,17 +66,17 @@ char *MapGenerationDescriptor::getData()
 	addSint32(data, grassRatio, 24);
 	addSint32(data, smooth, 28);
 	
-	addSint32(data, nbIslands, 32);
-	addSint32(data, islandsSize, 36);
-	addSint32(data, beach, 40);
+	addSint32(data, islandsSize, 32);
+	addSint32(data, beach, 36);
 	
 	assert(NB_RESSOURCES==4);
-	addSint32(data, ressource[0], 44);
-	addSint32(data, ressource[1], 48);
-	addSint32(data, ressource[2], 52);
-	addSint32(data, ressource[3], 56);
+	addSint32(data, ressource[0], 40);
+	addSint32(data, ressource[1], 44);
+	addSint32(data, ressource[2], 48);
+	addSint32(data, ressource[3], 52);
 	
-	addSint32(data, nbWorkers, 60);
+	addSint32(data, nbWorkers, 56);
+	addSint32(data, nbTeams, 60);
 	
 	addUint32(data, randa, 64);
 	addUint32(data, randb, 68);
@@ -102,17 +102,17 @@ bool MapGenerationDescriptor::setData(const char *data, int dataLength)
 	grassRatio=getSint32(data, 24);
 	smooth=getSint32(data, 28);
 	
-	nbIslands=getSint32(data, 32);
-	islandsSize=getSint32(data, 36);
-	beach=getSint32(data, 40);
+	islandsSize=getSint32(data, 32);
+	beach=getSint32(data, 36);
 	
 	assert(NB_RESSOURCES==4);
-	ressource[0]=getSint32(data, 44);
-	ressource[1]=getSint32(data, 48);
-	ressource[2]=getSint32(data, 52);
-	ressource[3]=getSint32(data, 56);
+	ressource[0]=getSint32(data, 40);
+	ressource[1]=getSint32(data, 44);
+	ressource[2]=getSint32(data, 48);
+	ressource[3]=getSint32(data, 52);
 	
-	nbWorkers=getSint32(data, 60);
+	nbWorkers=getSint32(data, 56);
+	nbTeams=getSint32(data, 60);
 	
 	randa=getSint32(data, 64);
 	randb=getSint32(data, 68);
@@ -167,7 +167,6 @@ Sint32 MapGenerationDescriptor::checkSum()
 	cs+=smooth<<27;
 	
 	cs=(cs<<31)|(cs>>1);
-	cs^=nbIslands;
 	cs^=islandsSize;
 	cs^=beach;
 	
@@ -180,6 +179,7 @@ Sint32 MapGenerationDescriptor::checkSum()
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;
+	cs^=nbTeams<<5;
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=randa%randb;

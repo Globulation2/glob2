@@ -30,11 +30,21 @@ MapPreview::MapPreview(int x, int y, const char *mapName)
 	this->mapName=mapName;
 	lastW=0;
 	lastH=0;
+	randomGenerated=false;
+	//lastRandomGenerationMethode=eUNIFORM;
 }
 
 void MapPreview::paint(void)
 {
 	repaint();
+}
+
+char *MapPreview::getMethode(void)
+{
+	if (randomGenerated)
+		return globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
+	else
+		return globalContainer->texts.getString("[handmade map]");
 }
 
 void MapPreview::setMapThumbnail(const char *mapName)
@@ -59,10 +69,25 @@ void MapPreview::repaint(void)
 			if (session.versionMinor>1)
 			{
 				Map map;
-				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
-				bool rv=map.load(stream); // TODO: check if the loading is sucessfull
-				assert(rv);
 				parent->getSurface()->drawFilledRect(x, y, 128, 128, 0, 0, 0);
+				if (session.mapGenerationDescriptor)
+				{
+					// TODO : uses mapGenerationDescriptor to generate map here 
+					lastW=1<<session.mapGenerationDescriptor->wDec;
+					lastH=1<<session.mapGenerationDescriptor->hDec;
+					randomGenerated=true;
+					lastRandomGenerationMethode=session.mapGenerationDescriptor->methode;
+					parent->addUpdateRect(x, y, 128, 128);
+					SDL_RWclose(stream);
+					return;
+				}
+				else
+				{
+					randomGenerated=false;
+					SDL_RWseek(stream, session.mapOffset , SEEK_SET);
+					bool rv=map.load(stream); // TODO: check if the loading is sucessfull
+					assert(rv);
+				}
 
 				lastW=map.getW();
 				lastH=map.getH();
