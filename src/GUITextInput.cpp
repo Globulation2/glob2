@@ -272,7 +272,7 @@ void TextInput::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
-	parent->getSurface()->drawString(x+2, y+3, font, text+textDep);
+	parent->getSurface()->drawString(x+2, y+3, w-6, font, text+textDep);
 
 	// we draw the cursor:
 	if(activated)

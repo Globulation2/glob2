@@ -45,6 +45,7 @@ int SDLBitmapFont::getStringWidth(const char *string) const
 	return textWidth(string);
 }
 
+
 int SDLBitmapFont::getStringWidth(const int i) const
 {
 	char temp[32];
@@ -71,13 +72,13 @@ bool SDLBitmapFont::load(const char *filename)
 	return load(sprite);
 }
 
-void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip) const
+void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip) const
 {
 	if ((!picture) || (!Surface) || (!text))
 		return;
-	int ofs, i=0;
+	int ofs, i=0, bx=x;
 	SDL_Rect srcrect, dstrect;
-	while ((text[i]!='\0') && (text[i]!='\r') && (text[i]!='\n'))
+	while ((text[i]!='\0') && (text[i]!='\r') && (text[i]!='\n') && ((w==0) || (x-bx<w)))
 	{
 		if (text[i]==' ')
 		{
@@ -94,6 +95,8 @@ void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, const char *t
 			dstrect.x = (Sint16) ( x-(CharPos[ofs+1]-CharPos[ofs+0])/2 );
 			dstrect.y = (Sint16) y;
 			x+=CharPos[ofs+2]-CharPos[ofs+1];
+			if ((w!=0) && (x-bx>=w))
+				return;
 			if (clip)
 				Utilities::sdcRects(&srcrect, &dstrect, *clip);
 			SDL_BlitSurface( picture, &srcrect, Surface, &dstrect);
