@@ -2059,7 +2059,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[1+1*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[5];
 		side[0]=miniGrad[0+2*5];
 		side[1]=miniGrad[0+1*5];
@@ -2079,7 +2079,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[3+1*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[5];
 		side[0]=miniGrad[2+0*5];
 		side[1]=miniGrad[3+0*5];
@@ -2099,7 +2099,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[3+3*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[5];
 		side[0]=miniGrad[4+2*5];
 		side[1]=miniGrad[4+3*5];
@@ -2119,7 +2119,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[1+3*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[5];
 		side[0]=miniGrad[2+4*5];
 		side[1]=miniGrad[1+4*5];
@@ -2140,7 +2140,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[2+1*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[3];
 		side[0]=miniGrad[1+0*5];
 		side[1]=miniGrad[2+0*5];
@@ -2158,7 +2158,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[3+2*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[3];
 		side[0]=miniGrad[4+1*5];
 		side[1]=miniGrad[4+2*5];
@@ -2176,7 +2176,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[2+3*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[3];
 		side[0]=miniGrad[1+4*5];
 		side[1]=miniGrad[2+4*5];
@@ -2194,7 +2194,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	max=miniGrad[1+2*5];
 	if (max && max!=255)
 	{
-		max=0;
+		max=1;
 		Uint8 side[3];
 		side[0]=miniGrad[0+1*5];
 		side[1]=miniGrad[0+2*5];
@@ -2231,11 +2231,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 			printf("%4d", miniGrad[rx+ry*5]);
 		printf("\n");
 	}
-	printf("\n");
 	printf("maxs:\n");
 	for (int d=0; d<8; d++)
 		printf("%4d\n", maxs[d]);
-	printf("\n");
 	printf("maxd=%4d\n", maxd);
 	printf("stdd=%4d\n", maxd);*/
 	
@@ -2273,6 +2271,7 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 					miniGrad[rx+ry*5]=0;
 			}
 	
+	//printf("\np=(%d, %d)\n", x, y);
 	return directionFromMinigrad(miniGrad, dx, dy);
 }
 
@@ -2325,6 +2324,7 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 					miniGrad[rx+ry*5]=0;
 			}
 	
+	//printf("\np=(%d, %d)\n", x, y);
 	return directionFromMinigrad(miniGrad, dx, dy);
 }
 
