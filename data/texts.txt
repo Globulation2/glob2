@@ -1517,6 +1517,12 @@ Etablishing the connection to the YOG metaserver...
 Verbindungsaufbau zum YOG-Metaserver...
 Navazuji spojení s YOG metaserverem...
 
+[YESTS_DECONNECTING]
+Déconnection du metaserveur YOG...
+Disconnecting from YOG metaserver...
+
+
+
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
@@ -1552,13 +1558,13 @@ Le joueur %s a quitté YOG.
 The player %s has left YOG.
 Spieler %s hat YOG verlassen.
 Hráč %s se odpojil od YOG.
-The player %s has left YOG.
+%s
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 The player %s has joined YOG.
 Spieler %s ist zu YOG zurückgekehrt.
 Hráč %s se připojil k YOG.
-The player %s has joined YOG.
+%s
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as being away.

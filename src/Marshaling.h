@@ -22,8 +22,10 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_endian.h>
+#include <string.h>
+
 // Usefull function for marshalling
-// You have to use the "safe" version, in case you may access unaligned data.
+// TODO: we have to add another version for all thoses if we want them to work for spark CPUs.
 
 // 32 bit:
 
@@ -37,13 +39,6 @@ inline Sint32 getSint32(const Uint8 *data, int pos)
 	return (Sint32)SDL_SwapBE32( *((Sint32 *)(data+pos)) );
 }
 
-inline Uint32 getSint32safe(const Uint8 *data, int pos)
-{
-	Sint8 temp[4];
-	memcpy(temp, data+pos, 4);
-	return (Sint32)SDL_SwapBE32(*((Sint32 *)temp));
-}
-
 inline void addUint32(const Uint8 *data, Uint32 val, int pos)
 {
 	*((Uint32 *)(data+pos))=SDL_SwapBE32(val);
@@ -52,13 +47,6 @@ inline void addUint32(const Uint8 *data, Uint32 val, int pos)
 inline Uint32 getUint32(const Uint8 *data, int pos)
 {
 	return (Uint32)SDL_SwapBE32( *((Uint32 *)(data+pos)) );
-}
-
-inline Uint32 getUint32safe(const Uint8 *data, int pos)
-{
-	Uint8 temp[4];
-	memcpy(temp, data+pos, 4);
-	return (Uint32)SDL_SwapBE32(*((Uint32 *)temp));
 }
 
 inline Uint32 getUint32RAW(const Uint8 *data, int pos)
@@ -86,13 +74,6 @@ inline Sint16 getSint16(const Uint8 *data, int pos)
 inline Uint16 getUint16(const Uint8 *data, int pos)
 {
 	return (Uint16)SDL_SwapBE16(*((Uint16 *)(data+pos)));
-}
-
-inline Uint16 getUint16safe(const Uint8 *data, int pos)
-{
-	Uint8 temp[2];
-	memcpy(temp, data+pos, 2);
-	return (Uint16)SDL_SwapBE16(*((Uint16 *)temp));
 }
 
 // 8 bit:

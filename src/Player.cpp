@@ -175,8 +175,8 @@ bool BasePlayer::setData(const Uint8 *data, int dataLength, bool compressed)
 	
 	if (compressed)
 	{
-		Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32safe(data, 0));
-		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32safe(data, 4));
+		Uint32 newHost=(Uint32)SDL_SwapBE32((Uint32)getUint32(data, 0));
+		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 4));
 		ip.host=newHost;
 		ip.port=newPort;
 		

@@ -498,14 +498,14 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
-			game.hostip.host=SDL_SwapLE32(getUint32safe(data, index));
+			game.hostip.host=SDL_SwapLE32(getUint32(data, index));
 			index+=4;
-			game.hostip.port=SDL_SwapLE16(getUint16safe(data, index));
+			game.hostip.port=SDL_SwapLE16(getUint16(data, index));
 			index+=2;
-			game.uid=getUint32safe(data, index);
+			game.uid=getUint32(data, index);
 			index+=4;
 			
-			Uint32 huid=getUint32safe(data, index);
+			Uint32 huid=getUint32(data, index);
 			index+=4;
 			
 			game.huid=huid;
@@ -617,7 +617,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (int i=0; i<nbClients; i++)
 		{
 			Client client;
-			Uint32 cuid=getUint32safe(data, index);
+			Uint32 cuid=getUint32(data, index);
 			client.uid=cuid;
 			index+=4;
 			int l=Utilities::strmlen((char *)data+index, 32);
@@ -683,9 +683,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int index=6;
 		for (int i=0; i<nbClients; i++)
 		{
-			Uint32 uid=getUint32safe(data, index);
+			Uint32 uid=getUint32(data, index);
 			index+=4;
-			Uint16 change=getUint16safe(data, index);
+			Uint16 change=getUint16(data, index);
 			index+=2;
 			for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				if (client->uid==uid)
@@ -921,12 +921,14 @@ void YOG::deconnect()
 	else if (yogGlobalState>=YGS_CONNECTED)
 	{
 		yogGlobalState=YGS_DECONNECTING;
+		externalStatusState=YESTS_DECONNECTING;
 		connectionTimeout=0;
 		connectionTOTL=3;
 	}
 	else if (yogGlobalState>=YGS_CONNECTING)
 	{
 		yogGlobalState=YGS_DECONNECTING;
+		externalStatusState=YESTS_DECONNECTING;
 		connectionTimeout=0;
 		connectionTOTL=1;
 	}
@@ -1500,6 +1502,9 @@ char *YOG::getStatusString(ExternalStatusState externalStatusState)
 	case YESTS_DECONNECTED:
 	case YESTS_CREATED:
 		s=Toolkit::getStringTable()->getString("[YESTS_CREATED]");
+	break;
+	case YESTS_DECONNECTING:
+		s=Toolkit::getStringTable()->getString("[YESTS_DECONNECTING]");
 	break;
 	case YESTS_CONNECTING:
 		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTING]");

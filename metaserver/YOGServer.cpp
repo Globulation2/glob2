@@ -22,6 +22,7 @@
 #include "YOGServer.h"
 #include "../src/Utilities.h"
 #include <errno.h>
+#include <stdarg.h>
 
 FILE *logServerFile=NULL;
 YOGClient *admin=NULL;
@@ -1115,7 +1116,7 @@ void YOGServer::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
+	if (strcmp(YOG_SERVER_IP, "192.168.1.10")==0)
 		printf("%s", output);
 	
 	if (logServerFile)

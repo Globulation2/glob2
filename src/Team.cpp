@@ -95,13 +95,13 @@ bool BaseTeam::setData(const Uint8 *data, int dataLength)
 	if (dataLength!=getDataLength())
 		return false;
 
-	teamNumber=getSint32safe(data, 0);
-	numberOfPlayer=getSint32safe(data, 4);
+	teamNumber=getSint32(data, 0);
+	numberOfPlayer=getSint32(data, 4);
 	colorR=getUint8(data, 8);
 	colorG=getUint8(data, 9);
 	colorB=getUint8(data, 10);
 	colorPAD=getUint8(data, 11);
-	playersMask=getSint32safe(data, 12);
+	playersMask=getSint32(data, 12);
 	// TODO : create the race from the network here.
 
 	return true;
