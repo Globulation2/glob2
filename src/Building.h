@@ -177,9 +177,11 @@ public:
 	static Sint32 GIDtoTeam(Uint16 gid);
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
+	void integrity();
 	Sint32 checkSum();
 
-
+protected:
+	FILE *logFile;
 };
 
 #endif

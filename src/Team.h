@@ -92,6 +92,9 @@ public:
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
 	void createLists(void);
 
+	//! Check some aviable integrity constraints
+	void intergity(void);
+	
 	//! Do a step for each unit, building and bullet in team.
 	void step(void);
 
@@ -202,6 +205,9 @@ public:
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
 	TeamStats stats;
+
+protected:
+	FILE *logFile;
 };
 
 #endif

@@ -25,16 +25,20 @@
 #include "GlobalContainer.h"
 #include <list>
 #include <math.h>
+#include "LogFileManager.h"
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	globalGradient[0]=NULL;
 	globalGradient[1]=NULL;
+	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
 }
 
 Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types)
 {
+	logFile = globalContainer->logFileManager->getFile("Building.log");
+	
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -235,19 +239,31 @@ void Building::save(SDL_RWops *stream)
 
 void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 {
+	fprintf(logFile, "loadCrossRef (%d)\n", gid);
+	
 	// units
 	maxUnitInside=SDL_ReadBE32(stream);
 	assert(maxUnitInside<65536);
 	
 	int nbWorking=SDL_ReadBE32(stream);
+	fprintf(logFile, " nbWorking=%d\n", nbWorking);
 	unitsWorking.clear();
 	for (int i=0; i<nbWorking; i++)
-		unitsWorking.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
+	{
+		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		assert(unit);
+		unitsWorking.push_front(unit);
+	}
 
 	int nbWorkingSubscribe=SDL_ReadBE32(stream);
+	fprintf(logFile, " nbWorkingSubscribe=%d\n", nbWorkingSubscribe);
 	unitsWorkingSubscribe.clear();
 	for (int i=0; i<nbWorkingSubscribe; i++)
-		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
+	{
+		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		assert(unit);
+		unitsWorkingSubscribe.push_front(unit);
+	}
 
 	lastWorkingSubscribe=SDL_ReadBE32(stream);
 
@@ -255,38 +271,48 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	maxUnitWorkingPreferred=SDL_ReadBE32(stream);
 	maxUnitWorkingLocal=maxUnitWorking;
 	int nbInside=SDL_ReadBE32(stream);
+	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
 	for (int i=0; i<nbInside; i++)
 	{
 		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
-		if (unit)
-			unitsInside.push_front(unit);
-		else
-			printf("Warning, file corrupted!\n");
+		assert(unit);
+		unitsInside.push_front(unit);
 	}
 
 	int nbInsideSubscribe=SDL_ReadBE32(stream);
+	fprintf(logFile, " nbInsideSubscribe=%d\n", nbInsideSubscribe);
 	unitsInsideSubscribe.clear();
 	for (int i=0; i<nbInsideSubscribe; i++)
-		unitsInsideSubscribe.push_front(owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))]);
+	{
+		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		assert(unit);
+		unitsInsideSubscribe.push_front(unit);
+	}
 	lastInsideSubscribe=SDL_ReadBE32(stream);
 }
 
 void Building::saveCrossRef(SDL_RWops *stream)
 {
+	fprintf(logFile, "saveCrossRef (%d)\n", gid);
+	
 	// units
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
+	fprintf(logFile, " nbWorking=%d\n", unitsWorking.size());
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		SDL_WriteBE16(stream, (*it)->gid);
 	}
 
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
+	fprintf(logFile, " nbWorkingSubscribe=%d\n", unitsWorkingSubscribe.size());
 	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
 		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		SDL_WriteBE16(stream, (*it)->gid);
 	}
 	
@@ -295,16 +321,20 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitWorking);
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
+	fprintf(logFile, " nbInside=%d\n", unitsInside.size());
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		SDL_WriteBE16(stream, (*it)->gid);
 	}
 
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
+	fprintf(logFile, " nbInsideSubscribe=%d\n", unitsInsideSubscribe.size());
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
 		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		SDL_WriteBE16(stream, (*it)->gid);
 	}
 	SDL_WriteBE32(stream, lastInsideSubscribe);
@@ -1607,12 +1637,16 @@ void Building::turretStep(void)
 
 void Building::kill(void)
 {
+	fprintf(logFile, "kill gid=%d buildingState=%d\n", gid, buildingState);
 	if (buildingState==DEAD)
 		return;
 	
+	
+	fprintf(logFile, " still %d unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
+		fprintf(logFile, "  guid=%d\n", u->gid);
 		if (u->displacement==Unit::DIS_INSIDE)
 			u->isDead=true;
 
@@ -1630,8 +1664,10 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
+	fprintf(logFile, " still %d unitsWorking\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
+		assert(*it);
 		(*it)->attachedBuilding=NULL;
 		(*it)->activity=Unit::ACT_RANDOM;
 		(*it)->needToRecheckMedical=true;
@@ -1894,6 +1930,45 @@ Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 	return id+team*1024;
 }
 
+void Building::integrity()
+{
+	assert(unitsWorking.size()>=0);
+	assert(unitsWorking.size()<65536);
+	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	{
+		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert((*it)->attachedBuilding==this);
+	}
+
+	assert(unitsWorkingSubscribe.size()>=0);
+	assert(unitsWorkingSubscribe.size()<65536);
+	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+	{
+		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert((*it)->attachedBuilding==this);
+	}
+	
+	assert(unitsInside.size()>=0);
+	assert(unitsInside.size()<65536);
+	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
+	{
+		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert((*it)->attachedBuilding==this);
+	}
+
+	assert(unitsInsideSubscribe.size()>=0);
+	assert(unitsInsideSubscribe.size()<65536);
+	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+	{
+		assert(*it);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert((*it)->attachedBuilding==this);
+	}
+}
+
 Sint32 Building::checkSum()
 {
 	int cs=0;
@@ -1931,6 +2006,7 @@ Sint32 Building::checkSum()
 
 	cs^=shootingStep;
 	cs^=shootingCooldown;
+	
 	
 	return cs;
 }

@@ -122,7 +122,7 @@ public:
 	};
 	
 protected:
-	void stopWorkingForBuilding(void);
+	void stopAttachedForBuilding(bool goingInside);
 	void handleMedical(void);
 	void handleActivity(void);
 	void handleDisplacement(void);
@@ -199,6 +199,9 @@ public:
 public:
 	Sint32 checkSum();
 	bool verbose;
+	
+protected:
+	FILE *logFile;
 };
 
 #endif

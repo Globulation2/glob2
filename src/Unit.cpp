@@ -23,14 +23,19 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
 
 Unit::Unit(SDL_RWops *stream, Team *owner)
 {
+	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	load(stream, owner);
 }
 
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
+	logFile = globalContainer->logFileManager->getFile("Unit.log");
+	
 	// unit specification
 	this->typeNum=typeNum;
 
@@ -354,7 +359,9 @@ void Unit::step(void)
 	{
 		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
 		delta+=(speed-256);
+		
 		endOfAction();
+		
 		if (performance[FLY])
 		{
 			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
@@ -391,12 +398,26 @@ bool Unit::isUnitHungry(void)
 	return (hungry<=realTrigHungry);
 }
 
-void Unit::stopWorkingForBuilding(void)
+void Unit::stopAttachedForBuilding(bool goingInside)
 {
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
 	
 	assert(attachedBuilding);
+	
+	if (goingInside)
+	{
+		attachedBuilding->unitsInside.remove(this);
+		attachedBuilding->unitsInsideSubscribe.remove(this);
+	}
+	else
+	{
+		for (std::list<Unit *>::iterator  it=attachedBuilding->unitsInside.begin(); it!=attachedBuilding->unitsInside.end(); ++it)
+			assert(*it!=this);
+		for (std::list<Unit *>::iterator  it=attachedBuilding->unitsInsideSubscribe.begin(); it!=attachedBuilding->unitsInsideSubscribe.end(); ++it)
+			assert(*it!=this);
+	}
+	
 	attachedBuilding->unitsWorking.remove(this);
 	attachedBuilding->unitsWorkingSubscribe.remove(this);
 	attachedBuilding->updateCallLists();
@@ -422,6 +443,10 @@ void Unit::handleMedical(void)
 		hp--;
 	if (hp<0)
 	{
+		fprintf(logFile, "guid=%d, set isDead(%d), beacause hungry.\n", gid, isDead);
+		if (attachedBuilding)
+			fprintf(logFile, " attachedBuilding->gid=%d.\n", attachedBuilding->gid);
+		
 		if (!isDead)
 		{
 			if (attachedBuilding)
@@ -837,7 +862,7 @@ void Unit::handleDisplacement(void)
 				{
 					if (verbose)
 						printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
-					stopWorkingForBuilding();
+					stopAttachedForBuilding(false);
 				}
 			}
 			else
@@ -1244,6 +1269,8 @@ void Unit::handleMovement(void)
 				activity=ACT_RANDOM;
 				displacement=DIS_RANDOM;
 				movement=MOV_EXITING_BUILDING;
+				
+				fprintf(logFile, "guid=%d exiting gbid=%d\n", gid, attachedBuilding->gid);
 
 				attachedBuilding->unitsInside.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
@@ -1365,7 +1392,6 @@ void Unit::handleAction(void)
 			
 			if (verbose)
 				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
-			
 			break;
 		}
 		
@@ -1487,6 +1513,7 @@ bool Unit::validHard(int x, int y)
 
 void Unit::pathFind(void)
 {
+	owner->intergity();
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
 	bool canSwim=performance[SWIM]>0;
@@ -1503,7 +1530,7 @@ void Unit::pathFind(void)
 			if (verbose)
 				printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
 				
-			stopWorkingForBuilding();
+			stopAttachedForBuilding(false);
 			setNewValidDirection();
 		}
 	}
@@ -1513,14 +1540,15 @@ void Unit::pathFind(void)
 		{
 			if (verbose)
 				printf("Unit gid=%d found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+			
 			directionFromDxDy();
 		}
 		else
 		{
 			if (verbose)
 				printf("Unit gid=%d failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
-				
-			stopWorkingForBuilding();
+			
+			stopAttachedForBuilding(true);
 			setNewValidDirection();
 		}
 	}
@@ -1532,6 +1560,7 @@ void Unit::pathFind(void)
 		directionFromDxDy();
 		setNewValidDirection();
 	}
+	owner->intergity();
 }
 
 bool Unit::areOnlyUnitsAround(void)

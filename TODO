@@ -16,7 +16,7 @@ Net:
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.
-- Modiffier le comportement-gui des drapeaux d'interdiction pour ne tenir compte des mouvements lorsque l'on lache le drapeau.
+- Les drapeaux doivent pathfinder à 255 dans tout leut périmètre!
 - Terminer le pathfindig: grouper les gradients globaux
 - Statistiques sur les gradients et le pathfinding pour optimiser.
 - Minimiser les #includes
