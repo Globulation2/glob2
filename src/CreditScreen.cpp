@@ -36,7 +36,7 @@ CreditScreen::CreditScreen()
 		{
 			std::string::size_type f = s.find('<');
 			std::string::size_type l = s.rfind('>');
-			if (f != std::string::npos)
+			if ((f != std::string::npos) && (l != std::string::npos))
 			{
 				s.erase(f, l-f+1);
 			}
