@@ -511,7 +511,7 @@ using namespace std;
 
 const char *ErrorReport::getErrorString(void)
 {
-	static const char *strings[]={ "No error","Invalid Value ", "Syntax error", "Invalid player","No such file", "Unknown error" };
+	static const char *strings[]={ "No error", "Invalid Value ", "Syntax error", "Invalid player", "No such file", "Invalid Falg name", "Unknown error" };
 	return strings[(int)type];
 }
 
@@ -650,6 +650,18 @@ bool Mapscript::getFlagPos(string name, int *x, int *y)
 	return false;
 }
 
+bool Mapscript::doesFlagExist(string name)
+{
+	for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
+	{
+		if ((*it).name==name)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Mapscript::reset(void)
 {
 	isTextShown = false;
@@ -757,6 +769,11 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
+						else if (!doesFlagExist(donnees.getToken().msg))
+						{
+							er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+							break;
+						}
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
 					}
@@ -764,6 +781,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					//Grammar for setflag | setflag(flag_name)(x.y)
 					case (Token::S_SETFLAG):
 					{
+						Flag flag;
+						bool found=false;
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::STRING)
@@ -771,18 +790,36 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
+						flag.name=donnees.getToken().msg;
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
-						for (int i =0; i<2; i++)
+						if (donnees.getToken().type != Token::INT)
 						{
-							if (donnees.getToken().type != Token::INT)
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+						flag.x=donnees.getToken().value;
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
+						if (donnees.getToken().type != Token::INT)
+						{
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
+						}
+						flag.y=donnees.getToken().value;
+						for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
+						{
+							if ((*it).name==flag.name)
 							{
-								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								(*it)=flag;
+								found=true;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
 						}
+						if (!found)
+							flags.push_back(flag);
+						thisone.line.push_back(donnees.getToken());
+						donnees.nextToken();
 					}
 					break;
 					//Grammar of Show Mark Gobackto
@@ -831,7 +868,12 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
-							}							
+							}
+							else if (!doesFlagExist(donnees.getToken().msg))
+							{
+								er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+								break;
+							}
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
 							if ((donnees.getToken().type != Token::S_YOU) && (donnees.getToken().type != Token::S_NOENEMY) && (donnees.getToken().type != Token::S_ALLY))
