@@ -1100,11 +1100,8 @@ Building *Team::findBestZonable(Unit *unit)
 		break;
 		
 		case WARRIOR:
-			int level;
-			if (unit->level[ATTACK_SPEED]>unit->level[ATTACK_STRENGTH])
-				level=unit->level[ATTACK_SPEED];
-			else
-				level=unit->level[ATTACK_STRENGTH];
+		{
+			int level=std::min(unit->level[ATTACK_SPEED], unit->level[ATTACK_STRENGTH]);
 			for (std::list<Building *>::iterator bi=zonableWarrior.begin(); bi!=zonableWarrior.end(); ++bi)
 			{
 				Building *b=(*bi);
@@ -1122,6 +1119,7 @@ Building *Team::findBestZonable(Unit *unit)
 					}
 				}
 			}
+		}
 		break;
 		
 		default:
