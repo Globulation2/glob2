@@ -1495,6 +1495,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
+		
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
 		if (hpRatio>0.6)
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
@@ -1502,6 +1503,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 255, 0);
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
+			
+		if ((unit->performance[HARVEST]) && (unit->caryedRessource>=0))
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->caryedRessource);
 	}
 	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 		if (unit->displacement==Unit::DIS_GOING_TO_FLAG
