@@ -366,8 +366,6 @@ Building *Team::findBestUpgrade(Unit *unit)
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
 	{
 		int actLevel=unit->level[ability];
-		if (upgrade[ability].size())
-			printf("findBestUpgrade upgrade[%d].size()=%d (unit %d)\n", ability, upgrade[ability].size(), unit->gid);
 		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); bi++)
 		{
 			Building *b=(*bi);

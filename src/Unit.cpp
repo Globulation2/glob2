@@ -913,13 +913,12 @@ void Unit::handleDisplacement(void)
 			//printf("%d <? %d :-)\n", dist1, dist2);
 			if (distance<=range)
 			{
-				//printf("I'm in flag\n");
-				if (destinationPurprose==FLY)
-					displacement=DIS_REMOVING_BLACK_AROUND;
-				else if (destinationPurprose==ATTACK_SPEED)
-					displacement=DIS_ATTACKING_AROUND;
-				else if (destinationPurprose==HARVEST)
+				if (typeNum==WORKER)
 					displacement=DIS_CLEARING_RESSOURCES;
+				else if (typeNum==EXPLORER)
+					displacement=DIS_REMOVING_BLACK_AROUND;
+				else if (typeNum==WARRIOR)
+					displacement=DIS_ATTACKING_AROUND;
 				else
 					assert(false);
 			}
