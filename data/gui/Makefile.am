@@ -1,4 +1,2 @@
 glob2dataguidir= $(pkgdatadir)/data/gui
-glob2datagui_DATA= $(wildcard *.png) 
-
-EXTRA_DIST= $(glob2datagui_DATA) 
+dist_glob2datagui_DATA= $(wildcard $(srcdir)/*.png)
