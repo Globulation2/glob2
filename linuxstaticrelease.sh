@@ -18,4 +18,4 @@ echo "Recompressing archive"
 cd /tmp
 tar cfz glob2-$DATESTAMP-static.tar.gz glob2-0.1/
 scp glob2-$DATESTAMP-static.tar.gz nct@lappc22.epfl.ch:~/public_html/
-ssh nct@lappc22.epfl.ch ln -s ~/public_html/glob2-$DATESTAMP-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
+ssh nct@lappc22.epfl.ch ln -f -s ~/public_html/glob2-$DATESTAMP-static.tar.gz ~/public_html/glob2-latest-static.tar.gz
