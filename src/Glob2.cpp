@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
 					case MultiplayersOfferScreen::JOIN :
 					{
 						Engine engine;
+						printf("join\n");
 						if (engine.initMutiplayerJoin()==Engine::NO_ERROR)
 							if (engine.run()==-1)
 								run=false;

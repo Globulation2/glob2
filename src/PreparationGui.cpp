@@ -94,20 +94,23 @@ int MainMenuScreen::menu(void)
 
 MultiplayersOfferScreen::MultiplayersOfferScreen()
 {
-	arch=globalContainer->gfx->loadSprite("data/gui/mplayermenu");
+/*	arch=globalContainer->gfx->loadSprite("data/gui/mplayermenu");
 	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");
 
 	addWidget(new Button(250, 150, 140, 60, arch, -1, 1, HOST));
 	addWidget(new Button(270, 230, 220, 60, arch, -1, 2, JOIN));
-	addWidget(new Button(190, 310, 180, 60, arch, -1, 3, QUIT));
+	addWidget(new Button(190, 310, 180, 60, arch, -1, 3, QUIT));*/
+	addWidget(new TextButton(150, 25, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[host]"), HOST));
+	addWidget(new TextButton(150, 90, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN));
+	addWidget(new TextButton(150, /*155*/415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 }
 
 MultiplayersOfferScreen::~MultiplayersOfferScreen()
 {
-	delete font;
-	delete arch;
+	/*delete font;
+	delete arch;*/
 }
 
 void MultiplayersOfferScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -121,7 +124,8 @@ void MultiplayersOfferScreen::onAction(Widget *source, Action action, int par1, 
 
 void MultiplayersOfferScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawSprite(0, 0, arch, 0);
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	//gfxCtx->drawSprite(0, 0, arch, 0);
 }
 
 int MultiplayersOfferScreen::menu(void)
@@ -158,20 +162,20 @@ void SessionScreen::paintSessionInfo(int state)
 	//printf("sing map, s=%d\n", state);
 
 	gfxCtx->drawFilledRect(440, 200, 200, 14, 40,40,40);
-	gfxCtx->drawString(440, 200, font, "state %d", state);
+	gfxCtx->drawString(440, 200, globalContainer->standardFont, "state %d", state);
 
 	if (startGameTimeCounter)
 	{
 		gfxCtx->drawFilledRect(440, 214, 200, 14, 40,40,40);
-		gfxCtx->drawString(440, 214, font, "starting game...%d", startGameTimeCounter/20);
+		gfxCtx->drawString(440, 214, globalContainer->standardFont, "starting game...%d", startGameTimeCounter/20);
 	}
 	gfxCtx->drawFilledRect(0, 0, 640, (sessionInfo.numberOfPlayer+1)*14, 30,40,70);
 
 	{
 		for (int p=0; p<sessionInfo.numberOfPlayer; p++)
 		{
-			gfxCtx->drawString(10, 0+(14*p), font, "player %d", p);
-			gfxCtx->drawString(70, 0+(14*p), font, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
+			gfxCtx->drawString(10, 0+(14*p), globalContainer->standardFont, "player %d", p);
+			gfxCtx->drawString(70, 0+(14*p), globalContainer->standardFont, "number %d, teamNumber %d, netState %d, ip %x, name %s, TOTL %d, cc %d",
 				sessionInfo.players[p].number, sessionInfo.players[p].teamNumber, sessionInfo.players[p].netState,
 				sessionInfo.players[p].ip.host, sessionInfo.players[p].name, sessionInfo.players[p].netTOTL, crossPacketRecieved[p]);
 
@@ -188,8 +192,8 @@ void SessionScreen::paintSessionInfo(int state)
 	{
 		for (int t=0; t<sessionInfo.numberOfTeam; t++)
 		{
-			gfxCtx->drawString(10, 480-(14*(t+1)), font, "team %d", t);
-			gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, %d, %d, playersMask=%d",
+			gfxCtx->drawString(10, 480-(14*(t+1)), globalContainer->standardFont, "team %d", t);
+			gfxCtx->drawString(70, 480-(14*(t+1)), globalContainer->standardFont, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, %d, %d, playersMask=%d",
 				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].colorR, sessionInfo.team[t].colorG, sessionInfo.team[t].colorB, sessionInfo.team[t].playersMask);
 
 			/*gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
@@ -252,9 +256,8 @@ void MultiplayersCrossConnectableScreen::tryCrossConnections(void)
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 {
 	arch=globalContainer->gfx->loadSprite("data/gui/mplayerchoosemap");
-	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");
 
-	mapName=new TextInput(400, 40, 128, 12, font, "net.map", true);
+	mapName=new TextInput(400, 40, 128, 12, globalContainer->standardFont, "net.map", true);
 	load=new Button(230, 150, 120, 60, arch, -1, 1, LOAD);
 	share=new Button(250, 230, 140, 60, arch, -1, 2, SHARE);
 	cancel=new Button(290, 310, 140, 60, arch, -1, 3, CANCEL);
@@ -270,7 +273,6 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 
 MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
 {
-	delete font;
 	delete arch;
 }
 
@@ -316,7 +318,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawSprite(0, 0, arch, 0);
-	gfxCtx->drawString(300, 40, font, "Map File :");
+	gfxCtx->drawString(300, 40, globalContainer->standardFont, "Map File :");
 
 	if (validSessionInfo)
 		paintSessionInfo(0);
@@ -335,7 +337,6 @@ void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 {
 	arch=globalContainer->gfx->loadSprite("data/gui/mplayerhost");
-	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");
 
 	addWidget(new Button(270, 200, 140, 60, arch, -1, 1, START));
 	addWidget(new Button(210, 280, 180, 60, arch, -1, 2, CANCEL));
@@ -368,7 +369,6 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
 {
-	delete font;
 	delete arch;
 
 	if (destroyNet)
@@ -1219,19 +1219,19 @@ void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
-	arch=globalContainer->gfx->loadSprite("data/gui/mplayerhost");
-	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");
+	/*arch=globalContainer->gfx->loadSprite("data/gui/mplayerhost");
+	font=globalContainer->gfx->loadFont("data/fonts/arial8green.png");*/
 
-	serverName=new TextInput(400, 170, 128, 12, font, "192.168.1.1", true);
-	playerName=new TextInput(400, 150, 128, 12, font, globalContainer->settings.userName, false);
+	serverName=new TextInput(150, 170, 340, 30, globalContainer->standardFont, "192.168.1.1", true);
+	playerName=new TextInput(150, 270, 340, 30, globalContainer->standardFont, globalContainer->settings.userName, false);
 
-	addWidget(new Button(270, 200, 140, 60, arch, -1, 1, CONNECT));
-	addWidget(new Button(210, 280, 180, 60, arch, -1, 2, QUIT));
+	addWidget(new TextButton(150, 350, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
+	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
 	addWidget(serverName);
 	addWidget(playerName);
 
-	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	globalContainer->gfx->setClipRect();
 
 	//sessionInfo
 
@@ -1245,10 +1245,25 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	startGameTimeCounter=0;
 }
 
+void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
+{
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	//globalContainer->gfx->setClipRect(x, y , w, h);
+	gfxCtx->drawString(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+	gfxCtx->drawString(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+
+	if ((validSessionInfo)&&(waitingState!=WS_TYPING_SERVER_NAME))
+		paintSessionInfo(waitingState);
+//	serverName->paint(gfxCtx);
+//	playerName->paint(gfxCtx);
+	//globalContainer->gfx->setClipRect();
+}
+
+
 MultiplayersJoinScreen::~MultiplayersJoinScreen()
 {
-	delete font;
-	delete arch;
+	/*delete font;
+	delete arch;*/
 
 	if (destroyNet)
 	{
@@ -1582,7 +1597,8 @@ void MultiplayersJoinScreen::treatData(char *data, int size, IPaddress ip)
 			{
 				printf("Server has quit.\n");
 				waitingState=WS_TYPING_SERVER_NAME;
-				Screen::paint();
+				assert(gfxCtx);
+				dispatchPaint(gfxCtx);
 				addUpdateRect();
 			}
 		break;
@@ -1666,7 +1682,8 @@ void MultiplayersJoinScreen::sendingTime()
 		{
 			printf("Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
-			Screen::paint();
+			assert(gfxCtx);
+			dispatchPaint(gfxCtx);
 			Screen::addUpdateRect();
 		}
 		else
@@ -1803,7 +1820,7 @@ bool MultiplayersJoinScreen::sendSessionInfoRequest()
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
-		printf("suceeded to send session request packet\n");
+		printf("succeded to send session request packet\n");
 		//printf("packet->channel=%d\n", packet->channel);
 		//printf("packet->len=%d\n", packet->len);
 		//printf("packet->maxlen=%d\n", packet->maxlen);
@@ -2024,24 +2041,12 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 			serverName->activated=false;
 		if (source!=playerName)
 			playerName->activated=false;
-		Screen::paint();
+		assert(gfxCtx);
+		dispatchPaint(gfxCtx);
 		addUpdateRect();
 	}
 
 
 }
-
-void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawSprite(0, 0, arch, 0);
-	gfxCtx->drawString(280, 170, font, "Server hostname :");
-	gfxCtx->drawString(280, 150, font, "Player name :");
-	
-	if ((validSessionInfo)&&(waitingState!=WS_TYPING_SERVER_NAME))
-		paintSessionInfo(waitingState);
-	serverName->paint(gfxCtx);
-	playerName->paint(gfxCtx);
-}
-
 
 

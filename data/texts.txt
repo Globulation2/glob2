@@ -197,13 +197,27 @@ Update list
 [connecting to]
 Connection a
 Connecting to
+[connect]
+Connecter
+Connect
 [please wait]
 Attendre SVP
 Please wait
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
-
-
-
-
+[host]
+Heberge une partie
+Host a game
+[join]
+Joint une partie
+Join a game
+[goto main menu]
+Retourne au menu principal
+Go back to main menu
+[player name]
+Nom du joueur
+Player name
+[svr hostname]
+Nom du serveur hote
+Server hostname

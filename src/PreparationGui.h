@@ -38,7 +38,7 @@ public:
 		QUIT = 5
 	};
 private:
-	Sprite *arch;
+	//Sprite *arch;
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();
@@ -57,8 +57,8 @@ public:
 		QUIT = 5
 	};
 private:
-	Sprite *arch;
-	Font *font;
+	//Sprite *arch;
+	//Font *font;
 public:
 	MultiplayersOfferScreen();
 	virtual ~MultiplayersOfferScreen();
@@ -78,7 +78,7 @@ public:
 	virtual ~SessionScreen();
 protected:
 	bool validSessionInfo;
-	Font *font;
+	//Font *font;
 	int crossPacketRecieved[32];
 	int startGameTimeCounter;
 protected:
@@ -211,7 +211,7 @@ public:
 		WS_SERVER_START_GAME
 	};
 private:
-	Sprite *arch;
+	//Sprite *arch;
 	TextInput *serverName;
 	TextInput *playerName;
 	
