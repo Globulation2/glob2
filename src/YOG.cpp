@@ -882,7 +882,7 @@ void YOG::step()
 				if (!joiner->connected && joiner->timeout--<0 && joiner->TOTL-->0)
 				{
 					send(hostGameSocket, joiner->ip, SERVER_FIREWALL_EXPOSED);
-					printf("hostGameSocket send SERVER_FIREWALL_EXPOSED to (%s), TOTL=(%d)\n", Utilities::stringIP(joiner->ip), joiner->TOTL);
+					fprintf(logFile, "hostGameSocket send SERVER_FIREWALL_EXPOSED to (%s), TOTL=(%d)\n", Utilities::stringIP(joiner->ip), joiner->TOTL);
 					joiner->timeout=DEFAULT_NETWORK_TIMEOUT;
 				}
 		UDPpacket *packet=NULL;
