@@ -139,6 +139,9 @@ void Game::setBase(const SessionInfo *initial)
 	session.gameLatency=initial->gameLatency;
 	
 	anyPlayerWaited=false;
+	
+	// set the AI alliance
+	setAIAlliance();
 }
 
 void Game::executeOrder(Order *order, int localPlayer)
@@ -321,6 +324,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 			teams[team]->allies=((SetAllianceOrder *)order)->allianceMask;
 			teams[team]->enemies=~teams[team]->allies;
 			teams[team]->sharedVision=((SetAllianceOrder *)order)->visionMask;
+			setAIAlliance();
+			printf("All human are allied : %d\n", isHumanAllAllied());
 		}
 		break;
 		case ORDER_WAITING_FOR_PLAYER:
@@ -336,6 +341,64 @@ void Game::executeOrder(Order *order, int localPlayer)
 			// players[pqgo->player]->type=Player::P_LOST_B;
 		}
 		break;
+	}
+}
+
+bool Game::isHumanAllAllied(void)
+{
+	Uint32 nonAIMask=0;
+	int i;
+	
+	// AIMask now have the mask of everything which isn't AI
+	for (i=0; i<session.numberOfTeam; i++)
+	{
+		nonAIMask |= ((teams[i]->type != BaseTeam::T_AI) ? 1 : 0) << i;
+	}
+	
+	// if there is any non-AI player with which we aren't allied, return false
+	for (i=0; i<session.numberOfTeam; i++)
+	{
+		if (teams[i]->type != BaseTeam::T_AI)
+		{
+			printf("aMask %X, nonAiMask %X\n",  teams[i]->allies, nonAIMask);
+			if (teams[i]->allies != nonAIMask)
+				return false;
+		}
+	}
+	
+	return true;
+}
+
+void Game::setAIAlliance(void)
+{
+	int i;
+	
+	if (isHumanAllAllied())
+	{
+		// all human are allied, ally AI
+		Uint32 aiMask = 0;
+		
+		// find all AI
+		for (i=0; i<session.numberOfTeam; i++)
+			if (teams[i]->type == BaseTeam::T_AI)
+				aiMask |= (1<<i);
+		
+		// ally them together
+		for (i=0; i<session.numberOfTeam; i++)
+			if (teams[i]->type == BaseTeam::T_AI)
+			{
+				teams[i]->allies = aiMask;
+				teams[i]->enemies = ~teams[i]->allies;
+			}
+	}
+	else
+	{
+		// free for all on AI side
+		for (i=0; i<session.numberOfTeam; i++)
+		{
+			teams[i]->allies = teams[i]->me;
+			teams[i]->enemies = ~teams[i]->allies;
+		}
 	}
 }
 
