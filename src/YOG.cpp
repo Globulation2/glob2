@@ -1472,7 +1472,7 @@ IPaddress YOG::ipFromUserName(char userName[32])
 	return ip;
 }
 
-char *YOG::getStatusString()
+char *YOG::getStatusString(ExternalStatusState externalStatusState)
 {
 	char *s;
 	switch (externalStatusState)
@@ -1513,6 +1513,11 @@ char *YOG::getStatusString()
 	char *t=new char[l];
 	strncpy(t, s, l);
 	return t;
+}
+
+char *YOG::getStatusString()
+{
+	return getStatusString(externalStatusState);
 }
 
 void YOG::handleMessageAliasing(char *message, int maxSize)

@@ -225,6 +225,7 @@ public:
 	
 public:
 	ExternalStatusState externalStatusState;
+	char *getStatusString(ExternalStatusState externalStatusState);
 	char *getStatusString();
 	
 	// This methode modiffy the "message" to replace "/msg " by "/m ", because YOG only understand "/m".
