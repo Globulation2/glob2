@@ -5,7 +5,6 @@ To First release :
 - network must work correctly, and screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
-- makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - map must have version, and little backward compatibility should be keeped. (nct)
 - AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
@@ -23,3 +22,4 @@ To Next version :
 - building finished message must contain building type. Select building when doing this. (nct)
 - do icons for buildings. (nct)
 - message when team is defeated. (nct)
+- makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
