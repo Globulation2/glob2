@@ -17,22 +17,27 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <SDL/SDL_rwops.h>
+
+#include <FileManager.h>
+#include <GraphicContext.h>
+#include <StringTable.h>
+#include <Toolkit.h>
+
+#include "CustomGameScreen.h"
+#include "EndGameScreen.h"
 #include "Engine.h"
+#include "Game.h"
+#include "GlobalContainer.h"
+#include "LoadGameScreen.h"
+#include "LogFileManager.h"
 #include "MultiplayersHostScreen.h"
 #include "MultiplayersJoinScreen.h"
 #include "MultiplayersChooseMapScreen.h"
-#include "CustomGameScreen.h"
-#include "LoadGameScreen.h"
-#include "YOGScreen.h"
-#include "Utilities.h"
 #include "NetGame.h"
-#include "EndGameScreen.h"
-#include "Game.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GraphicContext.h>
+#include "Utilities.h"
+#include "YOGScreen.h"
+
 
 Engine::Engine()
 {

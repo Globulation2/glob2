@@ -17,11 +17,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Utilities.h"
 #include <math.h>
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
+
+#include "Utilities.h"
 #include "Game.h"
 
 int distSquare(int x1, int y1, int x2, int y2)

@@ -22,15 +22,17 @@
 
 #include <string>
 
-#include "BuildingType.h"
+#include "BuildingsTypes.h"
 #include "Header.h"
-#include "RessourceType.h"
+#include "RessourcesTypes.h"
 #include "Settings.h"
 
 class FileManager;
 class LogFileManager;
 class GraphicContext;
 class SoundMixer;
+class Sprite;
+class Font;
 
 class GlobalContainer
 {

@@ -30,6 +30,7 @@
 class TeamStats;
 class OverlayScreen;
 class InGameTextInput;
+class Font;
 
 //! max unit working at a building
 #define MAX_UNIT_WORKING 20

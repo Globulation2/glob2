@@ -20,12 +20,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
-#include <GUITextInput.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GraphicContext.h>
-#include <SupportFunctions.h>
+
 #include <algorithm>
+
+#include <FileManager.h>
+#include <GUITextInput.h>
+#include <GraphicContext.h>
+#include <StringTable.h>
+#include <SupportFunctions.h>
+#include <Toolkit.h>
 
 #include "Game.h"
 #include "GameGUI.h"

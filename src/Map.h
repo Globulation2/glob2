@@ -21,6 +21,7 @@
 #define __MAP_H
 
 #include <list>
+#include <assert.h>
 
 #include "Building.h"
 #include "Ressource.h"

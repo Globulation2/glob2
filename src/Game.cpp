@@ -25,6 +25,7 @@
 #include <functional>
 #include <algorithm>
 
+#include <FileManager.h>
 #include <GraphicContext.h>
 
 #include "BuildingType.h"
