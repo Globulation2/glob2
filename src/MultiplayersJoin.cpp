@@ -586,6 +586,7 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	else
 	{
 		printf("failed to send session request packet\n");
+		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
 
@@ -723,6 +724,7 @@ bool MultiplayersJoin::tryConnection()
 	else
 	{
 		printf("failed to open a socket.\n");
+		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
 
@@ -733,6 +735,7 @@ bool MultiplayersJoin::tryConnection()
 	else
 	{
 		printf("failed to find adresse\n");
+		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
 
@@ -748,6 +751,7 @@ bool MultiplayersJoin::tryConnection()
 	else
 	{
 		printf("failed to bind socket\n");
+		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
 
