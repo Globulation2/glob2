@@ -1490,15 +1490,18 @@ void Team::syncStep(void)
 
 void Team::checkControllingPlayers(void)
 {
-	bool stillInControl = false;
-	for (int i=0; i<game->session.numberOfPlayer; i++)
+	if (!hasWon)
 	{
-		if ((game->players[i]->teamNumber == teamNumber) &&
-			game->players[i]->type != Player::P_LOST_DROPPING &&
-			game->players[i]->type != Player::P_LOST_FINAL)
-			stillInControl = true;
+		bool stillInControl = false;
+		for (int i=0; i<game->session.numberOfPlayer; i++)
+		{
+			if ((game->players[i]->teamNumber == teamNumber) &&
+				game->players[i]->type != Player::P_LOST_DROPPING &&
+				game->players[i]->type != Player::P_LOST_FINAL)
+				stillInControl = true;
+		}
+		isAlive = isAlive && stillInControl;
 	}
-	isAlive = isAlive && stillInControl;
 }
 
 void Team::dirtyGlobalGradient()

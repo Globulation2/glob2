@@ -236,7 +236,7 @@ public:
 	int noMoreBuildingSitesCountdown;
 	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
 	bool isAlive;
-	//! called by game, set to true if all others team has won or if script has forced
+	//! called by game, set to true if all others team has lost or if script has forced
 	bool hasWon;
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
