@@ -43,8 +43,9 @@ public:
 	virtual Sint32 checkSum()=0;
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
-	bool inQueue;
+	bool inQueue; // False if it has to be freed by NetGame::orderHasBeenExecuted() instead of NetGame::freeingStep.
 	Uint8 wishedLatency;
+	bool latencyPadding; // True if this order has been added to increase latency.
 };
 
 

@@ -25,6 +25,7 @@ Order::Order(void)
 	sender=-1;
 	inQueue=true;
 	wishedLatency=0;
+	latencyPadding=false;
 }
 
 Order *Order::getOrder(const Uint8 *netData, int netDataLength)

@@ -49,7 +49,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	assert(localPlayerNumber!=-1);
 	
 	waitingForPlayerMask=0;
-	ordersByPackets=1;
+	ordersByPackets=2;
 
 	this->socket=socket;
 	
@@ -197,6 +197,14 @@ void NetGame::sendPushOrder(int targetPlayer)
 	{
 		Order *order=ordersQueue[localPlayerNumber][step];
 		assert(order);
+		if (order->latencyPadding)
+		{
+			printf("sendPushOrder skipped step=%d.\n", step);
+			assert(order->getOrderType()==ORDER_NULL);
+			step++; // We skip orders which have been added to increase latency.
+			order=ordersQueue[localPlayerNumber][step];
+			assert(order);
+		}
 		totalSize+=3+order->getDataLength();
 		if (step==executeStep)
 		{
@@ -219,6 +227,13 @@ void NetGame::sendPushOrder(int targetPlayer)
 	{
 		Order *order=ordersQueue[localPlayerNumber][step];
 		assert(order);
+		if (order->latencyPadding)
+		{
+			assert(order->getOrderType()==ORDER_NULL);
+			step++; // We skip orders which have been added to increase latency.
+			order=ordersQueue[localPlayerNumber][step];
+			assert(order);
+		}
 		int orderSize=order->getDataLength();
 		data[l++]=step;
 		data[l++]=orderSize;
@@ -421,7 +436,7 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	order->wishedLatency=myLocalWishedLatency;
 	ordersQueue[playerNumber][pushStep]=order;
 	
-	if (localPlayerNumber==playerNumber)
+	if (localPlayerNumber==playerNumber && (pushStep&1==1))
 	{
 		for (int p=0; p<numberOfPlayer; p++)
 			if (players[p]->type==Player::P_IP)
@@ -614,7 +629,7 @@ void NetGame::updateDelays(int player, Uint8 receivedStep)
 		}
 		orderMarginTimeMin[player]=min;
 		orderMarginTimeMax[player]=max;
-		//printf("orderMarginTime[%d]=(%d, %d)\n", player, orderMarginTimeMin[player], orderMarginTimeMax[player]);
+		printf("orderMarginTime[%d]=(%d, %d)\n", player, orderMarginTimeMin[player], orderMarginTimeMax[player]);
 	}
 	
 	// Second, the ping-pongs times:
@@ -646,7 +661,7 @@ void NetGame::updateDelays(int player, Uint8 receivedStep)
 				max=delay;
 		}
 		pingPongMax[player]=max;
-		//printf("pingPongMax[%d]=%d\n", player, pingPongMax[player]);
+		printf("pingPongMax[%d]=%d\n", player, pingPongMax[player]);
 	}
 	countDown[player]=0;
 }
@@ -687,7 +702,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		Uint8 orderStep=data[l++];
 		int orderSize=data[l++];
 		Uint8 orderType=data[l++];
-		fprintf(logFile, " treatData player=%d, orderStep=%d, orderSize=%d, orderType=%d\n", player, orderStep, orderSize, orderType);
+		fprintf(logFile, " oneOrder player=%d, orderStep=%d, orderSize=%d, orderType=%d\n", player, orderStep, orderSize, orderType);
 	
 		if (!players[player]->sameip(ip))
 			if (dropState!=DS_EXCHANGING_ORDERS)
@@ -834,7 +849,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 }
 
 void NetGame::receptionStep(void)
-{
+{ 
 	if (socket)
 	{
 		UDPpacket *packet=NULL;
@@ -1095,6 +1110,7 @@ void NetGame::stepExecuted(void)
 						nullOrder->sender=p;
 						nullOrder->inQueue=true;
 						nullOrder->wishedLatency=0;
+						nullOrder->latencyPadding=true;
 						ordersQueue[p][executeStep]=nullOrder;
 					}
 			}
@@ -1238,7 +1254,7 @@ void NetGame::stepExecuted(void)
 int NetGame::ticksToDelay(void)
 {
 	Uint8 latency=pushStep-executeStep;
-	//printf("latency=%d.\n", latency);
+	printf("latency=%d.\n", latency);
 	
 	int minTicksToWait=255;
 	int n=0;
@@ -1257,7 +1273,7 @@ int NetGame::ticksToDelay(void)
 		myLocalWishedLatency=1;
 		return 0;
 	}
-	//printf("minTicksToWait=%d.\n", minTicksToWait);
+	printf("minTicksToWait=%d.\n", minTicksToWait);
 	
 	int maxPingPong=0;
 	for (int p=0; p<numberOfPlayer; p++)
@@ -1268,12 +1284,12 @@ int NetGame::ticksToDelay(void)
 				maxPingPong=pingPong;
 		}
 	
-	int goodLatency=maxPingPong>>1;
+	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
 	if (goodLatency<1)
 		goodLatency=1;
 	if (minTicksToWait>0)
 		goodLatency+=minTicksToWait;
-	//printf("goodLatency=%d.\n", goodLatency);
+	printf("goodLatency=%d.\n", goodLatency);
 	
 	if (goodLatency<latency)
 		myLocalWishedLatency=latency-1;
@@ -1284,7 +1300,7 @@ int NetGame::ticksToDelay(void)
 	
 	//WARNING: debugg only!: myLocalWishedLatency=1+(rand()&15);
 	
-	//printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
+	printf("myLocalWishedLatency=%d.\n", myLocalWishedLatency);
 	
 	if (minTicksToWait<=0)
 		return 0;
