@@ -375,7 +375,7 @@ public:
 	
 	bool buildingAviable(Building *building, bool canSwim, int x, int y, int *dist);
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
-	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 	

@@ -1765,7 +1765,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	}
 }
 
-void Map::updateGlobalGradient(Uint8 *gradient)
+/*void Map::updateGlobalGradient(Uint8 *gradient)
 {
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
@@ -1891,6 +1891,130 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
+}*/
+
+
+void Map::updateGlobalGradient(Uint8 *gradient)
+{
+	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
+	
+	for (int yi=0; yi<h; yi++)
+	{
+		int wy=((yi&hMask)<<wDec);
+		int wyu=(((yi+hMask)&hMask)<<wDec);
+		for (int xi=yi; xi<(yi+w); xi++)
+		{
+			int x=xi&wMask;
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				int xl=(x+wMask)&wMask;
+				int xr=(x+1)&wMask;
+
+				Uint8 side[4];
+				side[0]=gradient[wyu+xl];
+				side[1]=gradient[wyu+x ];
+				side[2]=gradient[wyu+xr];
+				side[3]=gradient[wy +xl];
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+
+	for (int y=hMask; y>=0; y--)
+	{
+		int wy=(y<<wDec);
+		int wyd=(((y+1)&hMask)<<wDec);
+		for (int xi=y; xi<(y+w); xi++)
+		{
+			int x=xi&wMask;
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				int xl=(x+wMask)&wMask;
+				int xr=(x+1)&wMask;
+
+				Uint8 side[4];
+				side[0]=gradient[wyd+xr];
+				side[1]=gradient[wyd+x ];
+				side[2]=gradient[wyd+xl];
+				side[3]=gradient[wy +xl];
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+
+	for (int x=0; x<w; x++)
+	{
+		int xl=(x+wMask)&wMask;
+		for (int yi=x; yi<(x+h); yi++)
+		{
+			int wy=((yi&hMask)<<wDec);
+			int wyu=(((yi+hMask)&hMask)<<wDec);
+			int wyd=(((yi+1)&hMask)<<wDec);
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				Uint8 side[4];
+				side[0]=gradient[wyu+xl];
+				side[1]=gradient[wyd+xl];
+				side[2]=gradient[wy +xl];
+				side[3]=gradient[wyu+x ];
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+
+	for (int x=wMask; x>=0; x--)
+	{
+		int xr=(x+1)&wMask;
+		for (int yi=x; yi<(x+h); yi++)
+		{
+			int wy=((yi&hMask)<<wDec);
+			int wyu=(((yi+hMask)&hMask)<<wDec);
+			int wyd=(((yi+1)&hMask)<<wDec);
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				Uint8 side[4];
+				side[0]=gradient[wyu+xr];
+				side[1]=gradient[wy +xr];
+				side[2]=gradient[wyd+xr];
+				side[3]=gradient[wyu+x ];
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
 }
 
 void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init)
@@ -1955,6 +2079,9 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		*stopWork=true;
 		return false;
 	}
+	
+	//Uint8 miniGrad[25]; TODO
+	
 	// We don't use for (int d=0; d<8; d++), this way units won't take two diagonals if not needed.
 	
 	for (int sd=1; sd>=0; sd--)
