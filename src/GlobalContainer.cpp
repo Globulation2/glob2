@@ -26,6 +26,8 @@
 GlobalContainer::GlobalContainer(void)
 {
 	graphicFlags=DrawableSurface::DEFAULT;
+	graphicWidth=640;
+	graphicHeight=480;
 	metaServerName=NULL;
 	setMetaServerName("moneo.calodox.org");
 	metaServerPort=3000;
@@ -92,6 +94,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("Cmd line arguments :\n");
 			printf("-f\tset full screen\n");
 			printf("-r\tset resizable window\n");
+			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-m\tspecify meta server hostname\n");
@@ -137,6 +140,26 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 						metaServerPort=atoi(argv[i]);
 				}
 			}
+			else if (argv[i][1] == 's')
+			{
+				const char *resStr=&(argv[i][2]);
+				int ix, iy;
+				sscanf(resStr, "%dx%d", &ix, &iy);
+				if (ix!=0)
+				{
+					ix&=~(0x1F);
+					if (ix<640)
+						ix=640;
+					graphicWidth=ix;
+				}
+				if (iy!=0)
+				{
+					iy&=~(0x1F);
+					if (iy<480)
+						iy=480;
+					graphicHeight=iy;
+				}
+			}
 		}
 	}
 }
@@ -173,7 +196,7 @@ void GlobalContainer::load(void)
 
 	// create graphic context
 	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
-	gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
+	gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
 
 	// load fonts
 	menuFont=gfx->loadFont("data/fonts/arial24white.png");
