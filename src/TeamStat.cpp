@@ -162,14 +162,14 @@ void TeamStats::step(Team *team)
 	stat.totalNeeded=maxStat.totalNeeded;
 }
 
-void TeamStats::drawText()
+void TeamStats::drawText(int pos)
 {
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=Toolkit::getStringTable();
 	int textStartPosX=gfx->getW()-124;
-	int textStartPosY=128+32;
+	int textStartPosY=pos;
 	
 	TeamStat &newStats=stats[statsIndex];
 	
@@ -213,7 +213,7 @@ void TeamStats::drawText()
 	}
 }
 
-void TeamStats::drawStat()
+void TeamStats::drawStat(int pos)
 {
 	assert(STATS_SIZE==128);// We have graphical constraints
 	
@@ -222,7 +222,7 @@ void TeamStats::drawStat()
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=Toolkit::getStringTable();
 	int textStartPos=gfx->getW()-124;
-	int startPoxY=128+32;
+	int startPoxY=pos;
 	
 	// compute total units
 	/*int maxUnit=0;

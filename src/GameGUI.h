@@ -84,6 +84,9 @@ public:
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
+	std::vector<int> buildingsChoice;
+	std::vector<int> flagsChoice;
+
 private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
@@ -108,7 +111,9 @@ private:
 	//! Draw the panel
 	void drawPanel(void);
 	//! Draw the buttons associated to the panel
-	void drawPanelButtons(void);
+	void drawPanelButtons(int pos);
+	//! Draw a choice of buildings or flags
+	void drawChoice(int pos, std::vector<int> &types);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
