@@ -35,7 +35,6 @@ class AINumbi : public AIImplementation
 public:
 	AINumbi(Player *player);
 	AINumbi(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	void init(Player *player);
 	~AINumbi();
 
 	Player *player;
@@ -57,6 +56,7 @@ private:
 	int critticalTime;
 	int attackTimer;
 	int mainBuilding[15]; //BuildingType::NB_BUILDING=15 with lover versions
+	void init(Player *player);
 	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);

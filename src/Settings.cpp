@@ -110,5 +110,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
+		SDL_RWclose(stream);
 	}
 }

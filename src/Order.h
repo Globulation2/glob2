@@ -28,6 +28,7 @@
 #include "UnitConsts.h"
 #include "BitArray.h"
 
+//! An order is everything a human player or an AI can do to alter game state
 class Order
 {
 public:
@@ -50,7 +51,7 @@ public:
 };
 
 
-// Creation orders
+//! Building creation order
 class OrderCreate:public Order
 {
 public:
@@ -72,8 +73,7 @@ public:
 };
 
 
-// Deletion orders
-
+//! Building deletion order
 class OrderDelete:public Order
 {
 public:
@@ -91,6 +91,7 @@ protected:
 	Uint8 data[2];
 };
 
+//! Cancel a building deletion if pending
 class OrderCancelDelete:public Order
 {
 public:
@@ -108,7 +109,8 @@ protected:
 	Uint8 data[2];
 };
 
-class OrderConstruction:public Order //! Means Upgarde or Repair Order
+//! Upgarde or Repair a building
+class OrderConstruction:public Order
 {
 public:
 	OrderConstruction(const Uint8 *data, int dataLength);
@@ -125,6 +127,7 @@ protected:
 	Uint8 data[2];
 };
 
+//! Cancel a building upgarde or repair if pending
 class OrderCancelConstruction:public Order
 {
 public:
@@ -143,8 +146,7 @@ protected:
 };
 
 
-// Modification orders
-
+//! Modification orders
 class OrderModify:public Order
 {
 public:
@@ -152,6 +154,7 @@ public:
 	virtual ~OrderModify(void) {}
 };
 
+//! Change the number of unit assigned to a building
 class OrderModifyBuilding:public OrderModify
 {
 public:
@@ -171,6 +174,7 @@ protected:
 	Uint8 data[4];
 };
 
+//! Change the 
 class OrderModifyExchange:public OrderModify
 {
 public:

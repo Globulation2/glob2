@@ -152,6 +152,7 @@ void BuildingsTypes::resolveUpgradeReferences(void)
 
 Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSite)
 {
+	assert(type);
 	for (size_t i=0; i<entries.size(); i++)
 	{
 		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))
@@ -165,6 +166,7 @@ Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSi
 
 BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuildingSite)
 {
+	assert(type);
 	for (size_t i=0; i<entries.size(); i++)
 	{
 		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))

@@ -34,7 +34,8 @@ public:
 		NONE=0,
 		NUMBI=1,
 		CASTOR=2,
-		SIZE=3
+		TOUBIB=3,
+		SIZE
 	};
 	static const ImplementitionID toggleAI=CASTOR;
 	
