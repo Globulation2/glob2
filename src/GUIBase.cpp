@@ -53,8 +53,9 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 		dispatchTimer(frameStartTime);
 
 		// send events
-		SDL_Event lastMouseMotion, event;
+		SDL_Event lastMouseMotion, windowEvent, event;
 		bool hadLastMouseMotion=false;
+		bool wasWindowEvent=false;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -72,6 +73,11 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 					lastMouseMotion=event;
 				}
 				break;
+				case SDL_ACTIVEEVENT:
+				{
+					windowEvent=event;
+					wasWindowEvent=true;
+				}
 				default:
 				{
 					dispatchEvents(&event);
@@ -81,6 +87,8 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 		}
 		if (hadLastMouseMotion)
 			dispatchEvents(&lastMouseMotion);
+		if (wasWindowEvent)
+			dispatchEvents(&windowEvent);
 
 		// redraw
 		repaint(gfx);

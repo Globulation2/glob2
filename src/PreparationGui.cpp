@@ -67,7 +67,7 @@ MainMenuScreen::~MainMenuScreen()
 
 void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_PRESSED)
+	if (action==BUTTON_RELEASED)
 		endExecute(par1);
 }
 
@@ -113,7 +113,10 @@ MultiplayersOfferScreen::~MultiplayersOfferScreen()
 void MultiplayersOfferScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_RELEASED)
+	{
+		printf("but pressed\n");
 		endExecute(par1);
+	}
 }
 
 void MultiplayersOfferScreen::paint(int x, int y, int w, int h)
@@ -273,7 +276,7 @@ MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
 
 void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_PRESSED)
+	if (action==BUTTON_RELEASED)
 	{
 		if (source==load)
 		{
@@ -1179,7 +1182,7 @@ void MultiplayersHostScreen::startGame(void)
 
 void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_PRESSED)
+	if (action==BUTTON_RELEASED)
 	{
 		switch (par1)
 		{
@@ -2000,7 +2003,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		//printf("%s\n", serverName->text);
 	}
-	else if (action==BUTTON_PRESSED)
+	else if (action==BUTTON_RELEASED)
 	{
 		if (par1==CONNECT)
 		{
