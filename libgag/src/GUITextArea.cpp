@@ -105,6 +105,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
+	
 	if (event->type==SDL_KEYDOWN)
 	{
 		SDLKey sym=event->key.keysym.sym;
@@ -577,7 +578,7 @@ void TextArea::internalSetText(const char *text)
 					if ((lastWhite!=-1) && (lastWhite>(int)lines[lines.size()-1]))
 					{
 						pos=lastWhite;
-						textBuffer[pos]='\n';
+						//textBuffer[pos]='\n';
 						pos++;
 					}
 					lines.push_back(pos);
