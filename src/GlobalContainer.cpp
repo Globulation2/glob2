@@ -31,6 +31,18 @@ GlobalContainer::GlobalContainer(void)
 	metaServerName=NULL;
 	setMetaServerName("moneo.calodox.org");
 	metaServerPort=3000;
+	
+	hostServer=false;
+	gfx=NULL;
+	terrain=NULL;
+	terrainShader=NULL;
+	ressources=NULL;
+	units=NULL;
+	buildings=NULL;
+	
+	menuFont=NULL;
+	standardFont=NULL;
+	littleFontGreen=NULL;
 }
 
 GlobalContainer::~GlobalContainer(void)
@@ -70,6 +82,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
+		if (strcmp(argv[i], "-host")==0)
+		{
+			hostServer=true;
+			continue;
+		}
 		if (strcmp(argv[i], "-f")==0)
 		{
 			graphicFlags|=DrawableSurface::FULLSCREEN;
@@ -194,40 +211,44 @@ void GlobalContainer::load(void)
 	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
 	// TODO : loading code for username and others options
 
-	// create graphic context
-	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
-	gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
-
-	// load fonts
-	menuFont=gfx->loadFont("data/fonts/arial24white.png");
-	standardFont=gfx->loadFont("data/fonts/arial14white.png");
-	littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
-
 	// load texts
 	texts.load("data/texts.txt");
-	initProgressBar();
-
-	updateLoadProgressBar(10);
-	// load terrain data
-	terrain=gfx->loadSprite("data/gfx/terrain");
-
-	// load shader for unvisible terrain
-	terrainShader=gfx->loadSprite("data/gfx/shade");
-
-	updateLoadProgressBar(30);
-	// load ressources
-	ressources=gfx->loadSprite("data/gfx/ressource");
-
-	updateLoadProgressBar(40);
-	// load units
-	units=gfx->loadSprite("data/gfx/unit");
-
-	updateLoadProgressBar(70);
-	// load buildings
-	buildings=gfx->loadSprite("data/gfx/building");
-
-	updateLoadProgressBar(90);
-	// load buildings types
-	globalContainer->buildingsTypes.load("data/buildings.txt");
-	updateLoadProgressBar(100);
+	
+	if (!hostServer)
+	{
+		// create graphic context
+		gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
+		gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
+		
+		// load fonts
+		menuFont=gfx->loadFont("data/fonts/arial24white.png");
+		standardFont=gfx->loadFont("data/fonts/arial14white.png");
+		littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
+		
+		initProgressBar();
+		
+		updateLoadProgressBar(10);
+		// load terrain data
+		terrain=gfx->loadSprite("data/gfx/terrain");
+		
+		// load shader for unvisible terrain
+		terrainShader=gfx->loadSprite("data/gfx/shade");
+		
+		updateLoadProgressBar(30);
+		// load ressources
+		ressources=gfx->loadSprite("data/gfx/ressource");
+		
+		updateLoadProgressBar(40);
+		// load units
+		units=gfx->loadSprite("data/gfx/unit");
+		
+		updateLoadProgressBar(70);
+		// load buildings
+		buildings=gfx->loadSprite("data/gfx/building");
+		
+		updateLoadProgressBar(90);
+		// load buildings types
+		globalContainer->buildingsTypes.load("data/buildings.txt");
+		updateLoadProgressBar(100);
+	}
 };

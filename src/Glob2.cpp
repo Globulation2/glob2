@@ -73,6 +73,11 @@ void Glob2::mutiplayerYOG(void)
 	}
 }
 
+int Glob2::runHostServer(int argc, char *argv[])
+{
+	return 0;
+}
+
 int Glob2::run(int argc, char *argv[])
 {
 	globalContainer = new GlobalContainer();
@@ -87,6 +92,11 @@ int Glob2::run(int argc, char *argv[])
 		exit(1);
 	}
 	atexit(SDLNet_Quit);
+	
+	if (globalContainer->hostServer)
+	{
+		return runHostServer(argc, argv);
+	}
 
 	isRunning=true;
 	while (isRunning)

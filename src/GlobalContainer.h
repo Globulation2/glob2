@@ -69,6 +69,8 @@ public:
 	StringTable texts;
 
 	BuildingsTypes buildingsTypes;
+	
+	bool hostServer;
 };
 
 extern GlobalContainer *globalContainer;
