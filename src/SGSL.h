@@ -211,6 +211,7 @@ public:
 	~Mapscript();
 	
 public:
+	ErrorReport compileScript(Game *game, const char *script);
 	ErrorReport compileScript(Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
 	
