@@ -1407,9 +1407,8 @@ void GameGUI::draw(void)
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+132, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->unitStayRange);
 
 					// get flag stat
-					int goingTo, attacking, removingBlack;
-					selBuild->computeFlagStat(&goingTo, &attacking, &removingBlack);
-					int onSpot=attacking+removingBlack;
+					int goingTo, onSpot;
+					selBuild->computeFlagStat(&goingTo, &onSpot);
 					// display flag stat
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+80, globalContainer->littleFont, "%d %s", goingTo, globalContainer->texts.getString("[in way]"));
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 256+92, globalContainer->littleFont, "%d %s", onSpot, globalContainer->texts.getString("[on the spot]"));
