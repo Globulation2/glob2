@@ -328,4 +328,4 @@
 [abreaviation explanation C]
 [shortcut explanation enter]
 [shortcut explanation v]
-[Delete map]
+[Delete game]

@@ -658,5 +658,5 @@ C : Send chat messages to
 key enter : send a chat message
 [shortcut explanation v]
 key v : hold to speak
-[Delete map]
-Delete the selected map
+[Delete game]
+Delete the selected game
