@@ -68,7 +68,7 @@ Story::~Story()
 	
 }
 
-int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer)
+int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 {
 	switch(nameOfVariable.type)
 	{
@@ -79,21 +79,21 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer)
 		case(Token::S_WARRIOR):
 			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[2];
 		case(Token::S_SWARM_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[0];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[0][level];
 		case(Token::S_FOOD_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[1];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[1][level];
 		case(Token::S_HEALTH_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[2];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[2][level];
 		case(Token::S_WALKSPEED_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[3];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[3][level];
 		case(Token::S_FLYSPEED_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[4];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[4][level];
 		case(Token::S_ATTACK_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[5];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[5][level];
 		case(Token::S_SCIENCE_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[6];
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[6][level];
 		case(Token::S_DEFENCE_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[7]; 
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[7][level]; 
 		default:
 			return 0;
 	}
@@ -102,19 +102,19 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer)
 
 bool Story::conditionTester()
 {
-	switch (line[lineSelector+3].type)
+	switch (line[lineSelector+4].type)
 	{
 		case (Token::S_HIGHER):
 		{
-			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) > line[lineSelector+4].value);
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+3].value,line[lineSelector+2].value) > line[lineSelector+5].value);
 		}
 		case (Token::S_LOWER):
 		{
-			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) < line[lineSelector+4].value);
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+3].value,line[lineSelector+2].value) < line[lineSelector+5].value);
 		}
 		case (Token::S_EQUAL):
 		{
-			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) == line[lineSelector+4].value);
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+3].value,line[lineSelector+2].value) == line[lineSelector+5].value);
 		}
 		default:
 			return false;		
@@ -194,7 +194,7 @@ bool Story::testCondition()
 					{
 						if (conditionTester())
 						{
-							lineSelector +=4;
+							lineSelector +=5;
 							mapscript->isTextShown=false;
 							return true;
 						}
@@ -210,7 +210,7 @@ bool Story::testCondition()
 			}
 			case (Token::S_GOBACKTO):
 			{
-				//TODO traiter les erreurs en cas de nonexistance du token !
+				//TODO deal with error of nonexistence of the token !
 				int newEmplacement;
 				for (int i = lineSelector; i > 0; i--)
 				{
@@ -277,7 +277,6 @@ void Story::step()
 	}
 }
 
-//Aquisition du texte par le parseur
 using namespace std;
 
 const char *ErrorReport::getErrorString(void)
@@ -286,6 +285,7 @@ const char *ErrorReport::getErrorString(void)
 	return strings[(int)type];
 }
 
+//Text aquisition by the parser
 Aquisition::~Aquisition(void)
 {
 	if (fp)
@@ -571,14 +571,20 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 		{
 			Story thisone(this);
 			if (er.type != ErrorReport::ET_OK)
+			{
+				er.line=donnees.getLine();
+				er.col=donnees.getCol();
 				break;
+			}
 			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
 			{
 				if (er.type != ErrorReport::ET_OK)
+				{
+					er.line=donnees.getLine();
+					er.col=donnees.getCol();
 					break;
+				}
 				// Grammar check
-				er.line=donnees.getLine();
-				er.col=donnees.getCol();
 				switch (donnees.getToken().type)
 				{
 					case (Token::S_SHOW):
@@ -589,8 +595,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::STRING)
 						{
-							er.line=donnees.getLine();
-							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -609,8 +613,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if (donnees.getToken().type != Token::INT)
 							{
-								er.line=donnees.getLine();
-								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -623,8 +625,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if (donnees.getToken().type != Token::INT)
 							{
-								er.line=donnees.getLine();
-								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -633,8 +633,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if ((donnees.getToken().type != Token::S_YOU) || (donnees.getToken().type != Token::S_NOENEMY))
 							{
-								er.line=donnees.getLine();
-								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -648,7 +646,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							break;
 						}
-						else if ((donnees.getToken().type > 100) && (donnees.getToken().type < 300))
+						else if ((donnees.getToken().type > 100) && (donnees.getToken().type < 200))
 						{
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
@@ -667,32 +665,70 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 									}
 									else
 									{
-										er.line=donnees.getLine();
-										er.col=donnees.getCol();
 										er.type=ErrorReport::ET_SYNTAX_ERROR;
 										break;
 									}
 								}
 								else
 								{
-									er.line=donnees.getLine();
-									er.col=donnees.getCol();
+									er.type=ErrorReport::ET_SYNTAX_ERROR;
+									break;
+								}
+								
+							}
+							else
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+						}
+						else if ((donnees.getToken().type > 200) && (donnees.getToken().type < 300))
+						{
+							thisone.line.push_back(donnees.getToken());
+							donnees.nextToken();
+							if (donnees.getToken().type == Token::INT)
+							{
+								thisone.line.push_back(donnees.getToken());
+								donnees.nextToken();
+								if (donnees.getToken().type == Token::INT)
+								{
+									thisone.line.push_back(donnees.getToken());
+									donnees.nextToken();
+									if ((donnees.getToken().type > 300) && (donnees.getToken().type < 304))
+									{
+										thisone.line.push_back(donnees.getToken());
+										donnees.nextToken();
+										if (donnees.getToken().type == Token::INT)
+										{
+											thisone.line.push_back(donnees.getToken());
+											donnees.nextToken();
+										}
+										else
+										{
+											er.type=ErrorReport::ET_SYNTAX_ERROR;
+											break;
+										}
+									}
+									else
+									{
+										er.type=ErrorReport::ET_SYNTAX_ERROR;
+										break;
+									}
+								}
+								else
+								{
 									er.type=ErrorReport::ET_SYNTAX_ERROR;
 									break;
 								}
 							}
 							else
 							{
-								er.line=donnees.getLine();
-								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
 						}
 						else
 						{
-							er.line=donnees.getLine();
-							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -720,16 +756,12 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							}
 							else
 							{
-								er.line=donnees.getLine();
-								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
 						}
 						else
 						{
-							er.line=donnees.getLine();
-							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -743,8 +775,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::INT)
 						{
-							er.line=donnees.getLine();
-							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -765,8 +795,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					}
 					break;
 					default:
-						er.line=donnees.getLine();
-						er.col=donnees.getCol();
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 				}
