@@ -40,11 +40,25 @@ int distSquare(int x1, int y1, int x2, int y2);
 namespace Utilities
 {
 	// rectangle
+	//! return true if (x,y) is in r
 	bool ptInRect(int x, int y, SDL_Rect *r);
+	// FIXME : please Luc document this :
 	void rectClipRect(int &x, int &y, int &w, int &h, SDL_Rect &r);
 	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd);
 	void rectExtendRect(int xs, int ys, int ws, int hs, int *xd, int *yd, int *wd, int *hd);
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping);
+
+	// color space conversion
+	//! do a color space conversion from RGB to HSV
+	void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v );
+	//! do a color space conversion from HSV to RGB
+	void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
+	// color space conversion support functions
+	//! return min of f1, f2 and f3
+	float fmin(float f1, float f2, float f3);
+	//! return max of f1, f2 and f3
+	float fmax(float f1, float f2, float f3);
+
 };
 
 #endif

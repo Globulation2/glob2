@@ -138,7 +138,7 @@ void TextButton::repaint(void)
 }
 
 
-
+// FIXME : use intermediate class for highlight handling
 
 OnOffButton::OnOffButton(int x, int y, int w, int h, bool startState, int returnCode)
 {
@@ -148,6 +148,7 @@ OnOffButton::OnOffButton(int x, int y, int w, int h, bool startState, int return
 	this->h=h;
 	this->state=startState;
 	this->returnCode=returnCode;
+	highlighted=false;
 }
 
 void OnOffButton::onSDLEvent(SDL_Event *event)
@@ -231,4 +232,92 @@ void OnOffButton::setState(bool newState)
 		state=newState;
 		repaint();
 	}
+}
+
+ColorButton::ColorButton(int x, int y, int w, int h, int returnCode)
+{
+	this->x=x;
+	this->y=y;
+	this->w=w;
+	this->h=h;
+	this->returnCode=returnCode;
+	highlighted=false;
+	selColor=0;
+}
+
+void ColorButton::onSDLEvent(SDL_Event *event)
+{
+	assert(parent);
+	if (event->type==SDL_MOUSEMOTION)
+	{
+		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		{
+			if (!highlighted)
+			{
+				highlighted=true;
+				assert(gfx);
+    			repaint();
+				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
+			}
+		}
+		else
+		{
+			if (highlighted)
+			{
+				highlighted=false;
+				assert(gfx);
+				repaint();
+				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
+			}
+		}
+	}
+	else if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		{
+			selColor++;
+			if (selColor>=(signed)vr.size())
+				selColor=0;
+			repaint();
+			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
+		}
+	}
+	else if (event->type==SDL_MOUSEBUTTONUP)
+	{
+		// FIXME : there is a memory trash here : why ?
+		//if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		//	parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
+	}
+}
+
+void ColorButton::internalPaint(void)
+{
+	if (highlighted)
+	{
+		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+		gfx->drawRect(x, y, w, h, 255, 255, 255);
+		if (vr.size())
+			gfx->drawFilledRect(x+2, y+2, w-4, h-4, vr[selColor], vg[selColor], vb[selColor]);
+	}
+	else
+	{
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		if (vr.size())
+			gfx->drawFilledRect(x+1, y+1, w-2, h-2, vr[selColor], vg[selColor], vb[selColor]);
+	}
+}
+
+void ColorButton::paint(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
+	highlighted=false;
+	internalPaint();
+}
+
+void ColorButton::repaint(void)
+{
+	parent->paint(x, y, w, h);
+	internalPaint();
+	parent->addUpdateRect(x, y, w, h);
 }

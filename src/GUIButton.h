@@ -81,5 +81,43 @@ protected:
 	DrawableSurface *gfx;
 };
 
+//! A button that can have multiple color
+class ColorButton:public Widget
+{
+public:
+	//! ColorButton constructor
+	ColorButton(int x, int y, int w, int h, int returnCode);
+	//! ColorButton destructor
+	virtual ~ColorButton() { }
 
-#endif 
+	//! Process SDL event
+	virtual void onSDLEvent(SDL_Event *event);
+	//! Inital paint call, parent is ok and no addUpdateRect is needed.
+	virtual void paint(DrawableSurface *gfx);
+	//! Add a color to the color list
+	virtual void addColor(int r, int g, int b) { vr.push_back(r); vg.push_back(g); vb.push_back(b); }
+	//! Clear the color list
+	virtual void clearColors(void) { vr.clear(); vg.clear(); vb.clear(); selColor=0; }
+	//! Set the color selection to default
+	virtual void setSelectedColor(int c=0) { selColor=c; repaint(); }
+	//! Return the color sel
+	virtual int getSelectedColor(void) { return selColor; }
+	//! Return the number of possible colors
+	virtual int getNumberOfColors(void) { return vr.size(); }
+
+protected:
+	//! Internal paint method, call by paint and repaint
+	virtual void internalPaint(void);
+	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
+	virtual void repaint(void);
+
+protected:
+	int x, y, w, h;
+	int selColor;
+	vector<int> vr, vg, vb;
+	int returnCode;
+	bool highlighted;
+	DrawableSurface *gfx;
+};
+
+#endif

@@ -44,7 +44,9 @@ CustomGameScreen::CustomGameScreen()
 	{
 		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, true, 10+i);
 		addWidget(isAI[i]);
-		isAItext[i]=new Text(270, 60+i*30, globalContainer->standardFont, (i==0)  ? globalContainer->texts.getString("[player]") : globalContainer->texts.getString("[ai]"));
+		color[i]=new ColorButton(265, 60+i*30, 25, 25, 20+i);
+		addWidget(color[i]);
+		isAItext[i]=new Text(300, 60+i*30, globalContainer->standardFont, (i==0)  ? globalContainer->texts.getString("[player]") : globalContainer->texts.getString("[ai]"));
 		addWidget(isAItext[i]);
 	}
 
@@ -86,23 +88,15 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
 				mapInfo->setText(textTemp);
 
-				// hide/show widgets
-				paint(230, 60, 220, 30*8);
-				int i;
-				for (i=0; i<sessionInfo.numberOfTeam; i++)
+				int i, j;
+				for (i=0; i<8; i++)
 				{
-					isAI[i]->visible=true;
-					isAI[i]->paint(gfxCtx);
-					isAItext[i]->visible=true;
-					isAItext[i]->paint(gfxCtx);
+					for (j=0; j<sessionInfo.numberOfTeam; j++)
+					{
+						color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
+					}
+					color[i]->setSelectedColor();
 				}
-				// FIXME : there is a memory trash when this loop is active; probably a side effect
-				for (; i<8; i++)
-				{
-					isAI[i]->visible=false;
-					isAItext[i]->visible=false;
-				}
-				addUpdateRect(230, 60, 220, 30*8);
 			}
 			else
 				printf("CGS : Warning, Error during map load\n");

@@ -113,34 +113,35 @@ int Engine::initCustom(void)
 	if (nbTeam==0)
 		return CANCEL;
 
-	// TODO : handle alliance & players nicely here (cf Starcraft)
 	char name[16];
 	int i;
-	int nbPlayer=1;
-	gui.localPlayer=0;
-	gui.localTeam=0;
+	int nbPlayer=0;
 
 	// TODO : replace this by player name, that should have been saved globalContainer
-	snprintf(name, 16, "Player 0");
-	gui.game.players[0]=new Player(0, name, gui.game.teams[0], BasePlayer::P_LOCAL);
-	gui.game.teams[0]->numberOfPlayer=1;
-	gui.game.teams[0]->playersMask=1;
-	for (i=1; i<nbTeam; i++)
+	//snprintf(name, 16, "Player 0");
+	for (i=0; i<8; i++)
 	{
 		if (customGameScreen.isAIactive(i))
 		{
-			snprintf(name, 16, "AI Player %d", i);
-			gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[i], BasePlayer::P_AI);
-			gui.game.teams[i]->numberOfPlayer=1;
-			gui.game.teams[i]->playersMask=(1<<i);
+			int teamColor=customGameScreen.getSelectedColor(i);
+			if (i==0)
+			{
+				gui.game.players[nbPlayer]=new Player(0, globalContainer->texts.getString("[player]"), gui.game.teams[teamColor], BasePlayer::P_LOCAL);
+				gui.localPlayer=nbPlayer;
+				gui.localTeam=teamColor;
+			}
+			else
+			{
+				snprintf(name, 16, "%s %d", globalContainer->texts.getString("[ai]"), nbPlayer-1);
+				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], BasePlayer::P_AI);
+			}
+			gui.game.teams[teamColor]->numberOfPlayer++;
+			gui.game.teams[teamColor]->playersMask|=(1<<nbPlayer);
 			nbPlayer++;
 		}
-		else
-		{
-			gui.game.teams[i]->numberOfPlayer=0;
-			gui.game.teams[i]->playersMask=0;
-		}
 	}
+	// TODO : destroy team that have no attached player
+	// should be in game.defragTeamArray();
 
 	gui.game.session.numberOfPlayer=nbPlayer;
 	gui.game.renderMiniMap(gui.localTeam);
