@@ -28,6 +28,7 @@
 #include <string>
 #include <functional>
 #include <algorithm>
+#include <GraphicContext.h>
 
 #define BULLET_IMGID 35
 

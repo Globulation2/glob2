@@ -21,6 +21,10 @@
 #include "Team.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <SupportFunctions.h>
 
 TeamStats::TeamStats()
 {

@@ -21,6 +21,11 @@
 #define __MULTIPLAYER_CONNECTED_SCREEN_H
 
 #include "MultiplayersJoin.h"
+#include <GUIBase.h>
+
+class Text;
+class TextInput;
+class TextArea;
 
 class MultiplayersConnectedScreen:public Screen
 {
@@ -38,7 +43,7 @@ private:
 	double progress, lastProgress;
 public:
 	Text *startTimer;
-	
+
 private:
 	TextInput *textInput;
 	TextArea *chatWindow;

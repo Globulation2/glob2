@@ -20,6 +20,8 @@
 #include "GUIMapPreview.h"
 #include "Session.h"
 #include "Utilities.h"
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 MapPreview::MapPreview(int x, int y, const char *mapName)
 {

@@ -20,12 +20,11 @@
 #ifndef __SESSION_H
 #define __SESSION_H
 
-#include "GAG.h"
-#include "Order.h"
-#include "Team.h"
+#include "Header.h"
 #include "Player.h"
-#include "Map.h"
 #include "MapGenerationDescriptor.h"
+
+class DrawableSurface;
 
 //! Save in stream at offset the actual file pos
 #define SAVE_OFFSET(stream, offset) \
@@ -134,7 +133,7 @@ public:
 	Uint8 *getData(bool compressed);
 	bool setData(const Uint8 *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
-	
+
 	Uint8 *getData() { return SessionInfo::getData(false); }
 	bool setData(const Uint8 *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
 	int getDataLength() { return SessionInfo::getDataLength(false); }
