@@ -24,6 +24,8 @@
 #include "SessionConnection.h"
 #include "MultiplayersHost.h"
 #include "MultiplayersJoin.h"
+#include "NetConsts.h"
+#include "Order.h"
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUITextInput.h>

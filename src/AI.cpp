@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "Order.h"
 #include <assert.h>
 
 #include "AINull.h"

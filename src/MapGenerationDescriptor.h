@@ -20,16 +20,14 @@
 #ifndef __MAP_GENERATION_DESCRIPTOR_H
 #define __MAP_GENERATION_DESCRIPTOR_H
 
-#include "Order.h"
 #include "Map.h"
 
-class MapGenerationDescriptor:public Order
+class MapGenerationDescriptor
 {
 public:
 	MapGenerationDescriptor();
 	virtual ~MapGenerationDescriptor(void);
 	
-	Uint8 getOrderType() {return ORDER_MAP_GENERATION_DEFINITION; }
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength() {return DATA_SIZE; }
