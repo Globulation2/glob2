@@ -862,3 +862,12 @@ The YOG metaserver has refused the connection because your username is allready 
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explaination!
+
+[The player ]
+Le joueur 
+The player
+
+[ has left YOG]
+  a quite YOG
+  has left YOG
+ 
