@@ -192,6 +192,8 @@ void Team::init(void)
 	isAlive=true;
 	hasWon=false;
 	prestige=0;
+	unitConversionLost = 0;
+	unitConversionGained = 0;
 	noMoreBuildingSitesCountdown=0;
 }
 
@@ -338,7 +340,17 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		startPosSet = stream->readSint32("startPosSet");
 	else
 		startPosSet = 0;
-
+	if (versionMinor >= 36)
+	{
+		unitConversionLost = stream->readSint32("unitConversionLost");
+		unitConversionGained = stream->readSint32("unitConversionGained");
+	}
+	else
+	{
+		unitConversionLost = 0;
+		unitConversionGained = 0;
+	}
+		
 	if (!stats.load(stream, versionMinor))
 	{
 		stream->readLeaveSection();
@@ -434,6 +446,8 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(startPosX, "startPosX");
 	stream->writeSint32(startPosY, "startPosY");
 	stream->writeSint32(startPosSet, "startPosSet");
+	stream->writeSint32(unitConversionLost, "unitConversionLost");
+	stream->writeSint32(unitConversionGained, "unitConversionGained");
 	
 	stats.save(stream);
 	

@@ -2540,6 +2540,99 @@ void GameGUI::drawPanel(void)
 
 int intSquare(int i) { return i*i; }
 
+void GameGUI::drawTopScreenBar(void)
+{
+	// bar background 
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 0);
+	else
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 40, 180);
+
+	// draw unit stats
+	Uint8 redC[]={200, 0, 0};
+	Uint8 greenC[]={0, 200, 0};
+	Uint8 whiteC[]={200, 200, 200};
+	Uint8 yellowC[]={200, 200, 0};
+	Uint8 actC[3];
+	int free, tot;
+
+	int dec=(globalContainer->gfx->getW()-640)>>2;
+	dec += 20;
+
+	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+	for (int i=0; i<3; i++)
+	{
+		free = teamStats->getFreeUnits(i);
+		// worker is a special case
+		if (i==0)
+			free -= teamStats->getWorkersNeeded();
+		tot = teamStats->getTotalUnits(i);
+		if (free<0)
+			memcpy(actC, redC, sizeof(redC));
+		else if (free>0)
+			memcpy(actC, greenC, sizeof(greenC));
+		else
+			memcpy(actC, whiteC, sizeof(whiteC));
+
+		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
+		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
+		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d", free, tot).c_str());
+		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
+
+		dec += 70;
+	}
+
+	// draw prestige stats
+	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
+	
+	dec += 80;
+	
+	// draw unit conversion stats
+	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, GAGCore::nsprintf("+%d / -%d", localTeam->unitConversionGained, localTeam->unitConversionLost).c_str());
+	
+	// draw CPU load
+	dec += 70;
+	int cpuLoadMax=0;
+	int cpuLoadMaxIndex=0;
+	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+		if (cpuLoadMax<smoothedCpuLoad[i])
+		{
+			cpuLoadMax=smoothedCpuLoad[i];
+			cpuLoadMaxIndex=i;
+		}
+	int cpuLoad=0;
+	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
+			cpuLoad=smoothedCpuLoad[i];
+	if (cpuLoad<game.session.gameTPF-8)
+		memcpy(actC, greenC, sizeof(greenC));
+	else if (cpuLoad<game.session.gameTPF)
+		memcpy(actC, yellowC, sizeof(yellowC));
+	else
+		memcpy(actC, redC, sizeof(redC));
+	
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
+	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
+	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
+	
+	// draw window bar
+	int pos=globalContainer->gfx->getW()-128-32;
+	for (int i=0; i<pos; i+=32)
+	{
+		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
+	}
+	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
+	{
+		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+	}
+
+	// draw main menu button
+	if (gameMenuScreen)
+		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
+	else
+		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
+}
+
 void GameGUI::drawOverlayInfos(void)
 {
 	if (selectionMode==TOOL_SELECTION)
@@ -2784,91 +2877,8 @@ void GameGUI::drawOverlayInfos(void)
 		}
 	}
 
-	// info bar
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 0);
-	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 40, 180);
-
-	// draw unit stats
-	Uint8 redC[]={200, 0, 0};
-	Uint8 greenC[]={0, 200, 0};
-	Uint8 whiteC[]={200, 200, 200};
-	Uint8 yellowC[]={200, 200, 0};
-	Uint8 actC[3];
-	int free, tot;
-
-	int dec=(globalContainer->gfx->getW()-640)>>2;
-	dec += 20;
-
-	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-	for (int i=0; i<3; i++)
-	{
-		free = teamStats->getFreeUnits(i);
-		// worker is a special case
-		if (i==0)
-			free -= teamStats->getWorkersNeeded();
-		tot = teamStats->getTotalUnits(i);
-		if (free<0)
-			memcpy(actC, redC, sizeof(redC));
-		else if (free>0)
-			memcpy(actC, greenC, sizeof(greenC));
-		else
-			memcpy(actC, whiteC, sizeof(whiteC));
-
-		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
-		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d", free, tot).c_str());
-		globalContainer->gfx->popFontStyle(globalContainer->littleFont);
-
-		dec += 70;
-	}
-
-	// draw prestigestats
-	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAGCore::nsprintf("%d / %d / %d", localTeam->prestige, game.totalPrestige, game.prestigeToReach).c_str());
-	
-	// draw network latency
-	dec += 110;
-	int cpuLoadMax=0;
-	int cpuLoadMaxIndex=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (cpuLoadMax<smoothedCpuLoad[i])
-		{
-			cpuLoadMax=smoothedCpuLoad[i];
-			cpuLoadMaxIndex=i;
-		}
-	int cpuLoad=0;
-	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
-		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
-			cpuLoad=smoothedCpuLoad[i];
-	if (cpuLoad<game.session.gameTPF-8)
-		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoad<game.session.gameTPF)
-		memcpy(actC, yellowC, sizeof(yellowC));
-	else
-		memcpy(actC, redC, sizeof(redC));
-	
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
-	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
-	
-	// draw window bar
-	int pos=globalContainer->gfx->getW()-128-32;
-	for (int i=0; i<pos; i+=32)
-	{
-		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
-	}
-	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
-	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
-	}
-
-	// draw main menu button
-	if (gameMenuScreen)
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
-	else
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
-
+	// Draw the bar contining number of units, CPU load, etc...
+	drawTopScreenBar();
 }
 
 void GameGUI::drawInGameMenu(void)
