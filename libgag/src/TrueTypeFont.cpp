@@ -24,9 +24,12 @@
 #include <assert.h>
 #include <iostream>
 
+#define MAX_CACHE_SIZE 128
+
 TrueTypeFont::TrueTypeFont()
 {
 	font = NULL;
+	now = 0;
 }
 
 TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
@@ -38,8 +41,8 @@ TrueTypeFont::~TrueTypeFont()
 {
 	if (font)
 	{
-		for (std::map<CacheEntry, SDL_Surface *>::iterator it = cache.begin(); it != cache.end(); ++it)
-			SDL_FreeSurface(it->second);
+		for (std::map<CacheKey, CacheData>::iterator it = cache.begin(); it != cache.end(); ++it)
+			SDL_FreeSurface(it->second.s);
 		TTF_CloseFont(font);
 	}
 }
@@ -121,13 +124,15 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 	assert(font);
 	assert(styleStack.size()>0);
 	
-	CacheEntry entry;
-	entry.text = text;
-	entry.style = styleStack.top();
+	CacheKey key;
+	key.text = text;
+	key.style = styleStack.top();
 	
+	CacheData data;
 	SDL_Surface *s;
 	
-	if (cache.find(entry) == cache.end())
+	std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
+	if (keyIt == cache.end())
 	{
 		// create bitmap
 		SDL_Color c;
@@ -140,18 +145,29 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 		if (temp == NULL)
 			return;
 		
-		s = SDL_DisplayFormatAlpha(temp);
+		// create key
+		data.lastAccessed = now;
+		data.s = s = SDL_DisplayFormatAlpha(temp);
 		assert(s);
 		SDL_FreeSurface(temp);
 		
 		// store in cache
-		cache[entry] = s;
+		cache[key] = data;
+		timeCache[now] = cache.find(key);
 		std::cout << "String cache size for " << this << " is now " << cache.size() << std::endl;
 	}
 	else
 	{
-		s = cache[entry];
+		// get surface
+		s = keyIt->second.s;
+		// erase old time association
+		timeCache.erase(keyIt->second.lastAccessed);
+		// set new time
+		keyIt->second.lastAccessed = now;
+		// add new time association
+		timeCache[now] = keyIt;
 	}
+	now++;
 	
 	// render
 	SDL_Rect sr;
@@ -182,5 +198,13 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 	if (clip)
 	{
 		SDL_SetClipRect(Surface, &oc);
+	}
+	
+	// when cache is too big, remove the first element
+	if (cache.size() >= MAX_CACHE_SIZE)
+	{
+		SDL_FreeSurface(timeCache.begin()->second->second.s);
+		cache.erase(timeCache.begin()->second);
+		timeCache.erase(timeCache.begin());
 	}
 }

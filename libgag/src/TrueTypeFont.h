@@ -53,15 +53,23 @@ protected:
 	TTF_Font *font;
 	std::stack<Style> styleStack;
 	
-	struct CacheEntry
+	struct CacheKey
 	{
 		std::string text;
 		Style style;
 		
-		bool operator<(const CacheEntry &o) const { if (text == o.text) return (style < o.style); else return (text < o.text);  }
+		bool operator<(const CacheKey &o) const { if (text == o.text) return (style < o.style); else return (text < o.text);  }
 	};
 	
-	std::map<CacheEntry, SDL_Surface *> cache;
+	struct CacheData
+	{
+		SDL_Surface *s;
+		unsigned lastAccessed;
+	};
+	
+	unsigned now;
+	std::map<CacheKey, CacheData> cache;
+	std::map<unsigned, std::map<CacheKey, CacheData>::iterator> timeCache;
 };
 
 #endif
