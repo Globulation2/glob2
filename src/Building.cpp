@@ -25,7 +25,6 @@
 #include <list>
 #include "GlobalContainer.h"
 
-
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	load(stream, types, owner, versionMinor);
@@ -39,6 +38,14 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 
 	// construction state
 	buildingState=ALIVE;
+	// We can only push on map level 0 building-sites !
+	// If you want to add higher level building-sites, you have to change the "constructionResultState" to UPGRADE,
+	// and set the "buildingState" correctly.
+	if (type->isBuildingSite)
+		constructionResultState=NEW_BUILDING;
+	else
+		constructionResultState=NO_CONSTRUCTION;
+	
 
 	// units
 	maxUnitInside=type->maxUnitInside;
@@ -73,10 +80,13 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
-	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	ratioLocal[0]=ratio[0]=1;
+	totalRatio++;
+	percentUsed[0]=0;
+	for (int i=1; i<UnitType::NB_UNIT_TYPE; i++)
 	{
-		ratioLocal[i]=ratio[i]=1;
-		totalRatio++;
+		ratioLocal[i]=ratio[i]=0;
+		//totalRatio++;
 		percentUsed[i]=0;
 	}
 	shootingStep=0;
@@ -100,6 +110,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 {
 	// construction state
 	buildingState=(BuildingState)SDL_ReadBE32(stream);
+	if (versionMinor>=13)
+		constructionResultState=(ConstructionResultState)SDL_ReadBE32(stream);
+	else
+		constructionResultState=NO_CONSTRUCTION;
 
 	// identity
 	UID=SDL_ReadBE32(stream);
@@ -164,6 +178,7 @@ void Building::save(SDL_RWops *stream)
 
 	// construction state
 	SDL_WriteBE32(stream, (Uint32)buildingState);
+	SDL_WriteBE32(stream, (Uint32)constructionResultState);
 
 	// identity
 	SDL_WriteBE32(stream, UID);
@@ -309,10 +324,23 @@ int Building::neededRessource(int r)
 	return (type->maxRessource[r]>ressources[r]);
 }
 
-void Building::launchUpgrade(void)
+void Building::launchConstruction(void)
 {
-	if ((buildingState==ALIVE) && (!type->isBuildingSite) && (type->nextLevelTypeNum!=-1) && (isHardSpace()))
+	if ((buildingState==ALIVE) && (!type->isBuildingSite))
 	{
+		if (hp<type->hpMax)
+		{
+			if ((type->lastLevelTypeNum==-1) || !isHardSpaceForBuildingSite(REPAIR))
+				return;
+			constructionResultState=REPAIR;
+		}
+		else
+		{
+			if ((type->nextLevelTypeNum==-1) || !isHardSpaceForBuildingSite(UPGRADE))
+				return;
+			constructionResultState=UPGRADE;
+		}
+		
 		if (type->unitProductionTime)
 			owner->swarms.remove(this);
 		if (type->shootingRange)
@@ -321,7 +349,7 @@ void Building::launchUpgrade(void)
 		removeSubscribers();
 		
 		// We remove all units who are going to the building:
-		// Notice that the algotithme is not fast but clean.
+		// Notice that the algotithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
 		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); it++)
 		{
@@ -342,7 +370,7 @@ void Building::launchUpgrade(void)
 			unitsInside.remove(u);
 		}
 		
-		buildingState=Building::WAITING_FOR_UPGRADE;
+		buildingState=Building::WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
@@ -350,31 +378,39 @@ void Building::launchUpgrade(void)
 	}
 }
 
-void Building::cancelUpgrade(void)
+void Building::cancelConstruction(void)
 {
 	Uint32 recoverTypeNum=typeNum;
 	BuildingType *recoverType=type;
 	
 	if (type->isBuildingSite)
 	{
-		int lastLevelTypeNum=type->lastLevelTypeNum;
+		assert(buildingState==ALIVE);
+		int targetLevelTypeNum;
 		
-		if (lastLevelTypeNum!=-1)
+		if (constructionResultState==UPGRADE)
+			targetLevelTypeNum=type->lastLevelTypeNum;
+		else if (constructionResultState==REPAIR)
+			targetLevelTypeNum=type->nextLevelTypeNum;
+		else
+			assert(false);
+		
+		if (targetLevelTypeNum!=-1)
 		{
-			recoverTypeNum=lastLevelTypeNum;
-			recoverType=globalContainer->buildingsTypes.getBuildingType(lastLevelTypeNum);
+			recoverTypeNum=targetLevelTypeNum;
+			recoverType=globalContainer->buildingsTypes.getBuildingType(targetLevelTypeNum);
 		}
 		else
 			assert(false);
 	}
-	else if (buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+	else if (buildingState==Building::WAITING_FOR_CONSTRUCTION_ROOM)
 	{
-		owner->buildingsToBeUpgraded.remove(this);
-		buildingState=Building::ALIVE;
+		owner->buildingsTryToBuildingSiteRoom.remove(this);
+		buildingState=ALIVE;
 	}
-	else if (buildingState==Building::WAITING_FOR_UPGRADE)
+	else if (buildingState==Building::WAITING_FOR_CONSTRUCTION)
 	{
-		buildingState=Building::ALIVE;
+		buildingState=ALIVE;
 	}
 	else
 	{
@@ -382,6 +418,7 @@ void Building::cancelUpgrade(void)
 		// when the building upgrade" was already canceled.
 		return;
 	}
+	constructionResultState=NO_CONSTRUCTION;
 	
 	if (!type->isVirtual)
 		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
@@ -475,16 +512,16 @@ void Building::update(void)
 		}
 	}
 
-	if ((buildingState==WAITING_FOR_UPGRADE) || (buildingState==WAITING_FOR_UPGRADE_ROOM))
+	if ((buildingState==WAITING_FOR_CONSTRUCTION) || (buildingState==WAITING_FOR_CONSTRUCTION_ROOM))
 	{
-		if (!isHardSpace())
+		if (!isHardSpaceForBuildingSite())
 		{
-			cancelUpgrade();
+			cancelConstruction();
 		}
 		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
-			buildingState=WAITING_FOR_UPGRADE_ROOM;
-			owner->buildingsToBeUpgraded.push_front(this);
+			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
+			owner->buildingsTryToBuildingSiteRoom.push_front(this);
 			//printf("inserted %d, w=%d\n", (int)this, type->width);
 		}
 		else
@@ -648,10 +685,12 @@ void Building::update(void)
 			// we really uses the resources of the buildingsite:
 			for(i=0; i<NB_RESSOURCES; i++)
 				ressources[i]-=type->maxRessource[i];
-
+			
 			typeNum=type->nextLevelTypeNum;
 			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
-
+			assert(constructionResultState!=NO_CONSTRUCTION);
+			constructionResultState=NO_CONSTRUCTION;
+			
 			// we don't need any worker any more
 			
 			// Notice that we could avoid freeing thoses units,
@@ -698,13 +737,20 @@ void Building::update(void)
 	}
 }
 
-bool Building::tryToUpgradeRoom(void)
+bool Building::tryToBuildingSiteRoom(void)
 {
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int nextLevelTypeNum=type->nextLevelTypeNum;
-	BuildingType *nextBt=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
+	int targetLevelTypeNum;
+	if (constructionResultState==UPGRADE)
+		targetLevelTypeNum=type->nextLevelTypeNum;
+	else if (constructionResultState==REPAIR)
+		targetLevelTypeNum=type->lastLevelTypeNum;
+	else
+		assert(false);
+	
+	BuildingType *nextBt=globalContainer->buildingsTypes.getBuildingType(targetLevelTypeNum);
 	int newPosX=midPosX+nextBt->decLeft;
 	int newPosY=midPosY+nextBt->decTop;
 
@@ -730,13 +776,31 @@ bool Building::tryToUpgradeRoom(void)
 
 	if (isRoom)
 	{
+		if (constructionResultState==REPAIR)
+		{
+			float destructionRatio = (float)hp/(float)type->hpMax;
+			float fTotErr=0;
+			for (unsigned i=0; i<NB_RESSOURCES; i++)
+			{
+				float fVal=destructionRatio*(float)nextBt->maxRessource[i];
+				int iVal=(int)fVal;
+				fTotErr+=fVal-(float)iVal;
+				if (fTotErr>1)
+				{
+					fTotErr-=1;
+					iVal++;
+				}
+				ressources[i]=iVal;
+			}
+		}
+			
 		if (!type->isVirtual)
 		{
 			owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
 			owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
 		}
 
-		typeNum=nextLevelTypeNum;
+		typeNum=targetLevelTypeNum;
 		type=nextBt;
 
 		buildingState=ALIVE;
@@ -782,12 +846,24 @@ bool Building::tryToUpgradeRoom(void)
 	return isRoom;
 }
 
-bool Building::isHardSpace(void)
+bool Building::isHardSpaceForBuildingSite(void)
 {
-	int nltn=type->nextLevelTypeNum;
-	if (nltn==-1)
+	return isHardSpaceForBuildingSite(constructionResultState);
+}
+
+bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
+{
+	int tltn;
+	if (constructionResultState==UPGRADE)
+		tltn=type->nextLevelTypeNum;
+	else if (constructionResultState==REPAIR)
+		tltn=type->lastLevelTypeNum;
+	else
+		assert(false);
+	
+	if (tltn==-1)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(nltn);
+	BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(tltn);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;

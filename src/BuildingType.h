@@ -97,7 +97,7 @@ public:
 	Sint32 armor; // (Uint8)
 	Sint32 level; // (Uint8)
 	Sint32 type; // BuildingTypeNumber, Should not be used by the main engine, but only to choose the next level building.
-	Sint32 isBuildingSite; // (bool, 0=false, 1=true)
+	Sint32 isBuildingSite;
 
 	// Flag usefull
 	Sint32 defaultUnitStayRange;

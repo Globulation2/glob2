@@ -776,13 +776,23 @@ void Unit::handleDisplacement(void)
 			{
 				if (attachedBuilding->ressources[caryedRessource] < attachedBuilding->type->maxRessource[caryedRessource])
 				{
-					
 					assert(attachedBuilding);
 					//printf("Giving ressource to building : res : %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
 					attachedBuilding->ressources[caryedRessource]++;
 					caryedRessource=-1;
 					if (displacement==DIS_BUILDING)
-						attachedBuilding->hp+=attachedBuilding->type->hpInc;
+					{
+						BuildingType *bt=attachedBuilding->type;
+						if (attachedBuilding->constructionResultState==Building::REPAIR)
+						{
+							int totRessources=0;
+							for (unsigned i=0; i<NB_RESSOURCES; i++)
+								totRessources+=bt->maxRessource[i];
+							attachedBuilding->hp+=bt->hpMax/totRessources;
+						}
+						else
+							attachedBuilding->hp+=bt->hpInc;
+					}
 
 					assert(attachedBuilding);
 					attachedBuilding->update();

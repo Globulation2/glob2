@@ -445,7 +445,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	int i;
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
-	buildingsToBeUpgraded.clear();
+	buildingsTryToBuildingSiteRoom.clear();
 	
 	// loading baseteam
 	if(!BaseTeam::load(stream))
@@ -668,12 +668,12 @@ void Team::step(void)
 	
 	buildingsToBeDestroyed.clear();
 	
-	for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
+	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
 	{
-		if ( (*it)->tryToUpgradeRoom() )
+		if ( (*it)->tryToBuildingSiteRoom() )
 		{
 			std::list<Building *>::iterator ittemp=it;
-			it=buildingsToBeUpgraded.erase(ittemp);
+			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
 	}
 
@@ -793,7 +793,7 @@ Sint32 Team::checkSum()
 	cs^=canHealUnit.size();
 	
 	cs^=buildingsToBeDestroyed.size();
-	cs^=buildingsToBeUpgraded.size();
+	cs^=buildingsTryToBuildingSiteRoom.size();
 	
 	cs^=swarms.size();
 	cs^=turrets.size();

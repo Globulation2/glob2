@@ -712,7 +712,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
 					{
-						orderQueue.push_back(new OrderUpgrade(selBuild->UID));
+						orderQueue.push_back(new OrderConstruction(selBuild->UID));
 					}
 				}
 				break;
@@ -1108,22 +1108,32 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 		if ((my>256+172) && (my<256+172+16))
 		{
-			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
+			BuildingType *buildingType=selBuild->type;
+			if (selBuild->constructionResultState == Building::REPAIR)
 			{
-				if ((selBuild->type->lastLevelTypeNum!=-1))
-					orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
+				assert(buildingType->nextLevelTypeNum!=-1);
+				orderQueue.push_back(new OrderCancelConstruction(selBuild->UID));
 			}
-			else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+			else if (selBuild->constructionResultState == Building::UPGRADE)
 			{
-				orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
+				assert(buildingType->nextLevelTypeNum!=-1);
+				assert(buildingType->lastLevelTypeNum!=-1);
+				orderQueue.push_back(new OrderCancelConstruction(selBuild->UID));
 			}
-			else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
+			else if ((selBuild->constructionResultState == Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 			{
-				orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
-			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
-			{
-				orderQueue.push_back(new OrderUpgrade(selBuild->UID));
+				if (selBuild->hp<buildingType->hpMax)
+				{
+					// repair
+					if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR))
+						orderQueue.push_back(new OrderConstruction(selBuild->UID));
+				}
+				else if ((buildingType->nextLevelTypeNum!=-1) && (localTeam->maxBuildLevel()>buildingType->level))
+				{
+					// upgrade
+					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE))
+						orderQueue.push_back(new OrderConstruction(selBuild->UID));
+				}
 			}
 		}
 
@@ -1375,66 +1385,78 @@ void GameGUI::draw(void)
 						assert(false);
 				}
 
-				if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
+				// repair and upgrade
+				if (selBuild->constructionResultState == Building::REPAIR)
 				{
-					if ((buildingType->lastLevelTypeNum!=-1))
-						drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
+					assert(buildingType->nextLevelTypeNum!=-1);
+					drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel repair]");
 				}
-				else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+				else if (selBuild->constructionResultState == Building::UPGRADE)
 				{
-					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
+					assert(buildingType->nextLevelTypeNum!=-1);
+					assert(buildingType->lastLevelTypeNum!=-1);
+					drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
 				}
-				else if ((buildingType->lastLevelTypeNum!=-1) && (buildingType->isBuildingSite))
+				else if ((selBuild->constructionResultState == Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 				{
-					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
-				}
-				else if ((buildingType->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!buildingType->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>buildingType->level))
-				{
-					drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[upgrade]");
-					
-					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
-						&& mouseY>256+172 && mouseY<256+172+16 )
+					if (selBuild->hp<buildingType->hpMax)
+					{
+						// repair
+						if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR))
+							drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[repair]");
+					}
+					else if ((buildingType->nextLevelTypeNum!=-1) && (localTeam->maxBuildLevel()>buildingType->level))
+					{
+						// upgrade
+						if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE))
 						{
-							globalContainer->littleFont->pushColor(200, 200, 255);
-							
-							// We draw the ressources cost.
-							int typeNum=buildingType->nextLevelTypeNum;
-							BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
-								"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont, 
-								"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont, 
-								"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-18, globalContainer->littleFont,
-								"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
-							
-							// We draw the new abilities:
-							bt=globalContainer->buildingsTypes.getBuildingType(bt->nextLevelTypeNum);
-							if (bt->hpMax)
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+2, globalContainer->littleFont, "%d", bt->hpMax);
-							
-							if (bt->armor)
-							{
-								if (!buildingType->armor)
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[armor]"));
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+12, globalContainer->littleFont, "%d", bt->armor);
-							}
-							if (bt->shootDamage)
-							{
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+22, globalContainer->littleFont, "%d", bt->shootDamage);
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+32, globalContainer->littleFont, "%d", bt->shootingRange);
-							}
-							if (bt->maxUnitInside)
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+62+12, globalContainer->littleFont, "%d", bt->maxUnitInside);
-							
-							if (buildingType->maxRessource[CORN])
-								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+64+(CORN*10)+12, globalContainer->littleFont, "%d", bt->maxRessource[CORN]);
+							drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[upgrade]");
+							if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+								&& mouseY>256+172 && mouseY<256+172+16 )
+								{
+									globalContainer->littleFont->pushColor(200, 200, 255);
 
-							globalContainer->littleFont->popColor();
+									// We draw the ressources cost.
+									int typeNum=buildingType->nextLevelTypeNum;
+									BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont, 
+										"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont, 
+										"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont, 
+										"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-18, globalContainer->littleFont,
+										"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
+
+									// We draw the new abilities:
+									bt=globalContainer->buildingsTypes.getBuildingType(bt->nextLevelTypeNum);
+									if (bt->hpMax)
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+2, globalContainer->littleFont, "%d", bt->hpMax);
+
+									if (bt->armor)
+									{
+										if (!buildingType->armor)
+											globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[armor]"));
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+12, globalContainer->littleFont, "%d", bt->armor);
+									}
+									if (bt->shootDamage)
+									{
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+22, globalContainer->littleFont, "%d", bt->shootDamage);
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+32, globalContainer->littleFont, "%d", bt->shootingRange);
+									}
+									if (bt->maxUnitInside)
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+62+12, globalContainer->littleFont, "%d", bt->maxUnitInside);
+
+									if (buildingType->maxRessource[CORN])
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+64+(CORN*10)+12, globalContainer->littleFont, "%d", bt->maxRessource[CORN]);
+
+									globalContainer->littleFont->popColor();
+								}
 						}
+					}
 				}
-
+				
+				// building destruction
 				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 				{
 					drawRedButton(globalContainer->gfx->getW()-128+12, 256+172+16+8, "[cancel destroy]");
@@ -1708,13 +1730,9 @@ void GameGUI::drawOverlayInfos(void)
 		// display messages
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
-			/*globalContainer->standardFont->pushColor(0, 0, 0);
-			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
-			globalContainer->standardFont->popColor();*/
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text);
-			
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;

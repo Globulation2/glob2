@@ -259,31 +259,31 @@ void Game::executeOrder(Order *order, int localPlayer)
 				b->cancelDelete();
 		}
 		break;
-		case ORDER_UPGRADE:
+		case ORDER_CONSTRUCTION:
 		{
 			if (!isPlayerAlive)
 				break;
-			Sint32 UID=((OrderUpgrade *)order)->UID;
+			Sint32 UID=((OrderConstruction *)order)->UID;
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
 			
 			if (b)
-				b->launchUpgrade();
+				b->launchConstruction();
 		}
 		break;
-		case ORDER_CANCEL_UPGRADE :
+		case ORDER_CANCEL_CONSTRUCTION:
 		{
 			if (!isPlayerAlive)
 				break;
-			Sint32 UID=((OrderCancelUpgrade *)order)->UID;
+			Sint32 UID=((OrderCancelConstruction *)order)->UID;
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
 			if (b)
-				b->cancelUpgrade();
+				b->cancelConstruction();
 		}
 		break;
 		case ORDER_SET_ALLIANCE:

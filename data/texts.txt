@@ -71,10 +71,18 @@ Warten auf Zerstoerung
 Améliorer
 Upgrade
 Verbessern
+[repair]
+Réparer
+Repair
+
 [cancel upgrade]
 Annuler amélioration
 Cancel upgrade
 Verbes. wiederrufen
+[cancel repair]
+Annuler réparation
+Cancel repair
+
 [unit type]
 Type d'unite
 Unit type
