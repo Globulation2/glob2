@@ -353,13 +353,13 @@ bool Story::testCondition(GameGUI *gui)
 				{
 					// Units : TODO
 				}
-				else if (object <= Token::S_WALL_B)
+				else if (object <= Token::S_MARKET_B)
 				{
 					gui->enableBuildingsChoice(object - Token::S_SWARM_B);
 				}
 				else if (object <= Token::S_FORBIDDEN_F)
 				{
-					gui->enableFlagsChoice(object - Token::S_EXPLOR_F);
+					gui->enableFlagsChoice(object - Token::S_EXPLOR_F + BuildingType::EXPLORATION_FLAG);
 				}
 				else if (object <= Token::S_ALLIANCESCREEN)
 				{
@@ -375,13 +375,13 @@ bool Story::testCondition(GameGUI *gui)
 				{
 					// Units : TODO
 				}
-				else if (object <= Token::S_WALL_B)
+				else if (object <= Token::S_MARKET_B)
 				{
 					gui->disableBuildingsChoice(object - Token::S_SWARM_B);
 				}
 				else if (object <= Token::S_FORBIDDEN_F)
 				{
-					gui->disableFlagsChoice(object - Token::S_EXPLOR_F);
+					gui->disableFlagsChoice(object - Token::S_EXPLOR_F + BuildingType::EXPLORATION_FLAG);
 				}
 				else if (object <= Token::S_ALLIANCESCREEN)
 				{
