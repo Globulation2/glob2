@@ -132,10 +132,12 @@ namespace GAGCore
 		// Check for consistency
 		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 		{
+			// For each entry...
 			bool lcwp=false;
 			int baseCountS=0;
 			int baseCountD=0;
 			const std::string &s = it->first;
+			// we check that we only have valid format (from a printf point of view)...
 			for (size_t j=0; j<s.length(); j++)
 			{
 				char c = s[j];
@@ -154,6 +156,7 @@ namespace GAGCore
 				}
 				lcwp=(c=='%');
 			}
+			// then we are sure that format are correct in all translation
 			for (size_t i=0; i<strings[it->second]->data.size(); i++)
 			{
 				const std::string &s = strings[it->second]->data[i];
@@ -178,6 +181,7 @@ namespace GAGCore
 					}
 					lcwp=(c=='%');
 				}
+				// if not, issue an error message
 				if (baseCountS!=countS ||baseCountD!=countD)
 				{
 					std::cerr << "In " << translationFiles[i] << ", text = [" << baseCountS << ":" << baseCountD << "] (" << it->first << "), translation = [" << countS << ":" << countD << "] (" << s << "), doesn't match !" << std::endl;
