@@ -22,12 +22,11 @@
 
 // For U/SintNN
 #include "Types.h"
+#include <string>
 
 namespace GAGCore
 {
-	// Endian safe read and write
-	// ==========================
-	
+	//! A stream is a high-level serialization structure, used to read/write structured datas
 	class Stream
 	{
 	public:
@@ -40,6 +39,7 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) = 0;
 	};
 	
+	//! The stream that can be written to
 	class OutputStream : public Stream
 	{
 	public:
@@ -62,6 +62,7 @@ namespace GAGCore
 		virtual void writeLeaveSection(size_t count = 1) = 0;
 	};
 	
+	//! The stream that can be read from
 	class InputStream : public Stream
 	{
 	public:
@@ -80,6 +81,35 @@ namespace GAGCore
 		virtual void readEnterSection(const char *name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
 		virtual void readLeaveSection(size_t count = 1) = 0;
+	};
+	
+	class StreamBackend;
+	
+	//! Stream used to write line by line
+	class OutputLineStream
+	{
+	private:
+		StreamBackend *backend;
+	
+	public:
+		OutputLineStream(StreamBackend *backend);
+		virtual ~OutputLineStream();
+		void writeLine(const std::string &s);
+		void writeLine(const char *s);
+		bool isEndOfStream(void);
+	};
+	
+	//! Stream used to read line by line
+	class InputLineStream
+	{
+	private:
+		StreamBackend *backend;
+	
+	public:
+		InputLineStream(StreamBackend *backend);
+		virtual ~InputLineStream();
+		std::string readLine(void);
+		bool isEndOfStream(void);
 	};
 }
 

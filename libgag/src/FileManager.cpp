@@ -56,10 +56,6 @@
 #	include <sys/stat.h>
 #endif
 
-//! define this to have a verbose vPath error
-//#define DBG_VPATH_OPEN
-//#define DBG_VPATH_LIST
-
 namespace GAGCore
 {
 	FileManager::FileManager(const char *gameName)
@@ -166,7 +162,7 @@ namespace GAGCore
 				{
 					FILE *fp = openWithbackupFP(path.c_str(), "wb");
 					if (fp)
-						return new BinaryFileStream(fp);
+						return new BinaryOutputStream(new FileStreamBackend(fp));
 				}
 				break;
 				
@@ -182,14 +178,6 @@ namespace GAGCore
 				assert(false);
 			}
 		}
-	
-		#ifdef DBG_VPATH_OPEN
-		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-		std::cerr << "Searched path :\n";
-		for (size_t i = 0; i < dirList.size(); ++i)
-			std::cerr << dirList[i] << "\n";
-		std::cerr << std::endl;
-		#endif
 	
 		return NULL;
 	}
@@ -208,7 +196,7 @@ namespace GAGCore
 				{
 					FILE *fp = fopen(path.c_str(), "rb");
 					if (fp)
-						return new BinaryFileStream(fp);
+						return new BinaryInputStream(new FileStreamBackend(fp));
 				}
 				break;
 				
@@ -224,14 +212,36 @@ namespace GAGCore
 			}
 		}
 	
-		#ifdef DBG_VPATH_OPEN
-		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-		std::cerr << "Searched path :\n";
-		for (size_t i = 0; i < dirList.size(); ++i)
-			std::cerr << dirList[i] << "\n";
-		std::cerr << std::endl;
-		#endif
+		return NULL;
+	}
 	
+	OutputLineStream *FileManager::openOutputLineStream(const char *filename)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			
+			FILE *fp = fopen(path.c_str(), "wb");
+			if (fp)
+				return new OutputLineStream(new FileStreamBackend(fp));
+		}
+		return NULL;
+	}
+	
+	InputLineStream *FileManager::openInputLineStream(const char *filename)
+	{
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+			
+			FILE *fp = fopen(path.c_str(), "rb");
+			if (fp)
+				return new InputLineStream(new FileStreamBackend(fp));
+		}
 		return NULL;
 	}
 	
@@ -248,14 +258,6 @@ namespace GAGCore
 				return fp;
 		}
 	
-		#ifdef DBG_VPATH_OPEN
-		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-		std::cerr << "Searched path :\n";
-		for (size_t i = 0; i < dirList.size(); ++i)
-			std::cerr << dirList[i] << "\n";
-		std::cerr << std::endl;
-		#endif
-	
 		return NULL;
 	}
 	
@@ -271,14 +273,6 @@ namespace GAGCore
 			if (fp)
 				return fp;
 		}
-	
-		#ifdef DBG_VPATH_OPEN
-		std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
-		std::cerr << "Searched path :\n";
-		for (size_t i = 0; i < dirList.size(); ++i)
-			std::cerr << dirList[i] << "\n";
-		std::cerr << std::endl;
-		#endif
 	
 		return NULL;
 	}
@@ -297,14 +291,6 @@ namespace GAGCore
 			else
 				delete fp;
 		}
-		
-		#ifdef DBG_VPATH_OPEN
-		std::cerr << "GAG : File " << fileName << " not found by std::ifstream\n";
-		std::cerr << "Searched path :\n";
-		for (size_t i = 0; i < dirList.size(); ++i)
-			std::cerr << dirList[i] << "\n";
-		std::cerr << std::endl;
-		#endif
 		
 		return NULL;
 	}
@@ -443,9 +429,6 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += virtualDir;
-			#ifdef DBG_VPATH_LIST
-			std::cerr << "GAG : Listing from dir " << path << std::endl;
-			#endif
 			result = addListingForDir(path.c_str(), extension, dirs) || result;
 		}
 		if (result)

@@ -37,6 +37,8 @@ namespace GAGCore
 {
 	class OutputStream;
 	class InputStream;
+	class OutputLineStream;
+	class InputLineStream;
 	
 	//! File Manager (filesystem abstraction)
 	class FileManager
@@ -89,10 +91,15 @@ namespace GAGCore
 		//! Returns true if filename is a directory
 		bool isDir(const char *filename);
 	
-		//! Open an output stream
+		//! Open an output stream, use it to write structured datas
 		OutputStream *openOutputStream(const char *filename, StreamType type = STREAM_BINARY);
-		//! Open an input stream
+		//! Open an input stream, use it to read structured datas
 		InputStream *openInputStream(const char *filename, StreamType type = STREAM_BINARY);
+		//! Open an output line stream, use it to write line-oriented files
+		OutputLineStream *openOutputLineStream(const char *filename);
+		//! Open an input line stream, use it to read line-oriented files
+		InputLineStream *openInputLineStream(const char *filename);
+		
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const char *filename, const char *mode="rb");
 		//! Open a file in the FILE* format
