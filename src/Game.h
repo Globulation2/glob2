@@ -95,8 +95,8 @@ public:
 	bool removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 
-	bool checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, int teamNumber);
-	bool checkRoomForBuilding(int x, int y, int typeNum, int teamNumber);
+	bool checkRoomForBuilding(int mousePosX, int mousePosY, int typeNum, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
+	bool checkRoomForBuilding(int x, int y, int typeNum, int teamNumber, bool checkFow=true);
 	bool checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, int typeNum);
 

@@ -575,6 +575,7 @@ void Building::cancelConstruction(void)
 
 void Building::setMapDiscovered(void)
 {
+	assert(type);
 	int vr=type->viewingRange;
 	if (type->canExchange)
 		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionExchange);
