@@ -132,6 +132,7 @@ void Screen::dispatchTimer(Uint32 tick)
 void Screen::dispatchPaint(DrawableSurface *gfx)
 {
 	gfxCtx=gfx;
+	gfxCtx->setClipRect();
 	paint();
 	{
 		for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)

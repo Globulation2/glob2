@@ -161,4 +161,32 @@ Ok
 [you have lost]
 Vous avez perdu !
 You have lost !
+[campagn]
+Campagne
+Campagn
+[custom game]
+Jeu libre
+Custom game
+[yog]
+Jeu en ligne Ysagoon
+Ysagoon Online Gaming
+[lan]
+Jeu en reseau local
+LAN Game
+[settings]
+Parametres
+Settings
+[editor]
+Editeur
+Editor
+[quit]
+Quitter
+Quit
+[create game]
+Creer partie
+Create game
+[update list]
+Mettre a jour
+Update list
+
 

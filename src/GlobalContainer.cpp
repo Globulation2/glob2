@@ -6,10 +6,14 @@
 
 #include "GlobalContainer.h"
 #include "SDL.h"
+#include <string.h>
 
 GlobalContainer::GlobalContainer(void)
 {
 	graphicFlags=DrawableSurface::DEFAULT;
+	metaServerName=NULL;
+	setMetaServerName("localhost");
+	metaServerPort=3000;
 }
 
 GlobalContainer::~GlobalContainer(void)
@@ -26,33 +30,87 @@ GlobalContainer::~GlobalContainer(void)
 		delete buildings;
 	if (menuFont)
 		delete menuFont;
+	if (standardFont)
+		delete standardFont;
 	if (gfx)
 		delete gfx;
+	if (metaServerName)
+		delete[] metaServerName;
+}
+
+void GlobalContainer::setMetaServerName(char *name)
+{
+	if (metaServerName)
+		delete[] metaServerName;
+	metaServerName=new char[strlen(name)+1];
+	strcpy(metaServerName, name);
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i], "-f")==0) {
+		if (strcmp(argv[i], "-f")==0)
+		{
 			graphicFlags|=DrawableSurface::FULLSCREEN;
 			continue;
 		}
 
-		if (strcmp(argv[i], "-a")==0) {
+		if (strcmp(argv[i], "-a")==0)
+		{
 			graphicFlags|=DrawableSurface::HWACCELERATED;
 			continue;
 		}
 
+		if (strcmp(argv[i], "-h")==0)
+		{
+			printf("\nGlobulation 2\n");
+			printf("Cmd line arguments :\n");
+			printf("-f\tset full screen\n");
+			printf("-a\tset hardware accelerated gfx\n");
+			printf("-d\tadd a directory to the directory search list\n");
+			printf("-m\tspecify meta server hostname\n");
+			printf("-p\tspecify meta server port\n\n");
+		}
+
 		// the -d option appends a directory in the
 		// directory search list.
-		if ((argv[i][0] == '-') && (argv[i][1] == 'd')) {
-			if (argv[i][2] != 0)
-				fileManager.addDir(&argv[i][2]);
-			else {
-				i++;
-				if (i < argc) 
-					fileManager.addDir(argv[i]);
+		// the -m options set the meta sever name
+		// the -p option set the port
+		if (argv[i][0] == '-')
+		{
+			if(argv[i][1] == 'd')
+			{
+				if (argv[i][2] != 0)
+					fileManager.addDir(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						fileManager.addDir(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 'm')
+			{
+				if (argv[i][2] != 0)
+					setMetaServerName(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						setMetaServerName(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 'p')
+			{
+				if (argv[i][2] != 0)
+					metaServerPort=atoi(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						metaServerPort=atoi(argv[i]);
+				}
 			}
 		}
 	}
@@ -81,6 +139,7 @@ void GlobalContainer::load(void)
 
 	// load fonts
 	menuFont=gfx->loadFont("data/fonts/arial24white.png");
+	standardFont=gfx->loadFont("data/fonts/arial14white.png");
 
 	// load texts
 	texts.load("data/texts.txt");

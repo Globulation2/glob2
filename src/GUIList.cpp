@@ -17,12 +17,19 @@ List::List(int x, int y, int w, int h, const Font *font)
 
 List::~List()
 {
+	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
 	{
-		for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
-		{
-			delete (*it);
-		}
+		delete (*it);
 	}
+}
+
+void List::clear(void)
+{
+	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
+	{
+		delete (*it);
+	}
+	strings.clear();
 }
 
 void List::onSDLEvent(SDL_Event *event)
@@ -44,7 +51,8 @@ void List::paint(DrawableSurface *gfx)
 	int nextSize=textHeight;
 	int yPos=y;
 	int i=0;
-	while (textHeight<h)
+	gfx->drawRect(x, y, w, h, 180, 180, 180);
+	while ((textHeight<h) && ((unsigned)i<strings.size()))
 	{
 		gfx->drawString(x, yPos, font, strings[i]);
 		nextSize+=textHeight;
