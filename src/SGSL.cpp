@@ -269,14 +269,14 @@ bool Story::testCondition(GameGUI *gui)
 
 			case (Token::S_WIN):
 			{
-				mapscript->hasWon.at(line[lineSelector+1].value)=true;
-				return false;
+				mapscript->hasWon.at(line[++lineSelector].value)=true;
+				return true;
 			}
 
 			case (Token::S_LOOSE):
 			{
-				mapscript->hasLost.at(line[lineSelector+1].value)=true;
-				return false;
+				mapscript->hasLost.at(line[++lineSelector].value)=true;
+				return true;
 			}
 
 			case (Token::S_TIMER):
