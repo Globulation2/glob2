@@ -34,3 +34,10 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 		return NULL;
 	}
 }
+
+int Font::getStringWidth(const int i) const
+{
+	char temp[32];
+	snprintf(temp, 32, "%d", i);
+	return getStringWidth(temp);
+}

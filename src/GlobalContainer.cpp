@@ -233,7 +233,8 @@ void GlobalContainer::load(void)
 
 		// load fonts
 		menuFont=gfx->loadFont("data/fonts/arial24white.png");
-		standardFont=gfx->loadFont("data/fonts/arial14white.png");
+		//standardFont=gfx->loadFont("data/fonts/arial14white.png");
+		standardFont=gfx->loadFont("data/fonts/arial.ttf");
 		littleFontGreen=gfx->loadFont("data/fonts/arial8green.png");
 
 		initProgressBar();
