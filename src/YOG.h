@@ -34,7 +34,7 @@ class YOG
 public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
 	enum { GAMEINFO_ID_SIZE = 31, GAMEINFO_VERSION_SIZE=7, GAMEINFO_COMMENT_SIZE=59 };
-	enum { RESEND_GAME_TIMEOUT = 6000, RESEND_GAME_INTERVAL= 10000 };
+	enum { RESEND_GAME_TIMEOUT =30000, RESEND_GAME_INTERVAL= 10000 };
 
 	enum InfoMessageType
 	{
@@ -84,6 +84,13 @@ protected:
 
 	//! iterator for get function from user
 	std::vector<GameInfo>::iterator gameInfoIt;
+	
+	//! true if a game is actually shared
+	bool isSharedGame;
+	//! the string corresponding to the game beeing shared
+	char sharedGame[IRC_MESSAGE_SIZE];
+	//! the last time we have sent shared game info to IRC
+	Uint32 sharedGameLastUpdated;
 
 protected:
 	//! Interprete a message from IRC; do parsing etc
@@ -139,12 +146,10 @@ public:
 	void quitChannel(const char *channel=DEFAULT_CHAT_CHAN);
 
 	// GAME creation
-	//! Create a new game and start the login room
-	void createGame(void);
-	//! Start the game
-	void startGame(void);
-	//! Set the game parameters
-	void setGameParameters(const char *id, const char *version, const char *comment);
+	//! Stop sharing the game, the game has started or has been canceled
+	void unshareGame(void);
+	//! Share the game with thoses parameters
+	void shareGame(const char *id, const char *version, const char *comment);
 
 	// GAME listing
 	/*
