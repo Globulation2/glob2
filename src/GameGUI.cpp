@@ -514,6 +514,26 @@ void GameGUI::processEvent(SDL_Event *event)
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
 			}
+			else if (button==4)
+			{
+				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
+					(selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE) &&
+					(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+				{
+					int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+				}
+			}
+			else if (button==5)
+			{
+				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
+					(selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE) &&
+					(selBuild->maxUnitWorkingLocal>0))
+				{
+					int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+				}
+			}
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
@@ -523,6 +543,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			showUnitWorkingToBuilding=false;
 		}
 	}
+	
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
@@ -1492,7 +1513,14 @@ void GameGUI::draw(void)
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, globalContainer->texts.getString("[unit type]", selUnit->typeNum));
-
+			
+			/*
+			const char *teamOfUnitName = 
+			me = 0, 0, 190
+			allied = 255, 196, 0
+			enemy = 190, 0, 0
+			*/
+			
 			Uint8 r, g, b;
 
 			if (selUnit->hp<=selUnit->trigHP)

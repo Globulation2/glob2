@@ -520,7 +520,7 @@ Joue
 Plays
 Spielt
 [STARTING GAME ...]
-Departe du jeu...
+Départ du jeu...
 Starting gaem...
 Begins des Spiels...
 [Statistics]
@@ -900,7 +900,7 @@ Le joueur
 The player
 Der Spieler
 [ has left YOG]
- a quité YOG.
+ a quitté YOG.
  has left YOG.
  hat YOG verlassen.
 [You are now marked as away]
