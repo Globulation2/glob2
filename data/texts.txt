@@ -127,13 +127,13 @@ Stone wall
  
 [r units free]
   u. libres
-  idle u.
+  idle workers
 [one unit free]
 Une u. libre
-One u. idle
+One idle worker
 [no unit free]
 Pas d'u. libres
-No idle u.
+No idle worker
 [l waiting for player]
 Attente du joueur
 Waiting for player
@@ -350,3 +350,48 @@ Plays
 [STARTING GAME ...]
 Departe du jeu...
 Starting gaem...
+[Statistics]
+Statistiques
+Statistics
+[Units]
+Unites
+Units
+[free]
+libres
+free
+[of which]
+dont
+of which
+[are ok]
+sont ok
+are ok
+[are hungry]
+ont faim
+are hungry
+[are wonded]
+blessees
+are wonded
+[Walk]
+Marche
+Walk
+[Swim]
+Nage
+Swim
+[Build]
+Constr.
+Build
+[Harvest]
+Recolte
+Harvest
+[At. speed]
+Vitesse at.
+At. speed
+[At. strength]
+Force at.
+At. strength
+[Free/total]
+Total/libres
+Total/free
+[Ok/hungry/wounded]
+Ok/faim/blessees
+Ok/hungry/wounded

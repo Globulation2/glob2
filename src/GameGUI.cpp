@@ -1010,8 +1010,11 @@ void GameGUI::draw(void)
 				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
 			}
 
-			int nowFu=game.teams[localTeam]->freeUnits;
-			
+			TeamStat *newStats;
+			newStats=stats+statsPtr;
+			int nowFu=newStats->isFree[0];
+
+			// FIXME : delete thsi hack and use TeamStat instead
 			// we have to smooth the free units function for visual conveniance.
 			recentFreeUnits[recentFreeUnitsIt]=nowFu;
 			recentFreeUnitsIt=(recentFreeUnitsIt+1)%nbRecentFreeUnits;
@@ -1238,26 +1241,41 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==STAT_VIEW)
 		{
-			TeamStat newStats;
-			newStats=stats[statsPtr];
+			GraphicContext *gfx=globalContainer->gfx;
+			Font *font=globalContainer->littleFontGreen;
+			StringTable *strings=&(globalContainer->texts);
+			int textStartPos=gfx->getW()-124;
+			TeamStat *newStats;
+			newStats=stats+statsPtr;
 			if (statMode==STAT_TEXT)
 			{
-				// TODO : this code needs to be internationalized
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFontGreen, "Units newStats :");
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFontGreen, "%d free on %d", newStats.isFree, newStats.totalUnit);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30+5, globalContainer->littleFontGreen, "%3.2f %% Worker", ((float)newStats.numberPerType[0])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45+5, globalContainer->littleFontGreen, "%3.2f %% Explorer", ((float)newStats.numberPerType[1])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60+5, globalContainer->littleFontGreen, "%3.2f %% Warrior", ((float)newStats.numberPerType[2])*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75+10, globalContainer->littleFontGreen, "%3.2f %% are Ok", ((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90+10, globalContainer->littleFontGreen, "%3.2f %% needs food", ((float)newStats.needFood)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105+10, globalContainer->littleFontGreen, "%3.2f %% needs heal ", ((float)newStats.needHeal)*100.0f/((float)newStats.totalUnit));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120+15, globalContainer->littleFontGreen, "Upgrades levels :");
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135+15, globalContainer->littleFontGreen, "Walk %d/%d/%d/%d", newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150+15, globalContainer->littleFontGreen, "Swim %d/%d/%d/%d", newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165+15, globalContainer->littleFontGreen, "Build %d/%d/%d/%d", newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180+15, globalContainer->littleFontGreen, "Harvest %d/%d/%d/%d", newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195+15, globalContainer->littleFontGreen, "At Speed %d/%d/%d/%d", newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210+15, globalContainer->littleFontGreen, "At Strength %d/%d/%d/%d", newStats.upgradeState[ATTACK_STRENGTH][0], newStats.upgradeState[ATTACK_STRENGTH][1], newStats.upgradeState[ATTACK_STRENGTH][2], newStats.upgradeState[ATTACK_STRENGTH][3]);
+				// general
+				gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
+				gfx->drawString(textStartPos, 132+17, font, "%d %s", newStats->totalUnit, strings->getString("[Units]"));
+				if (newStats->totalUnit)
+				{
+					// worker
+					gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats->numberPerType[0], strings->getString("[worker]"), ((float)newStats->numberPerType[0])*100.0f/((float)newStats->totalUnit));
+					gfx->drawString(textStartPos+5, 132+46, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[0], strings->getString("[free]"));
+					// explorer
+					gfx->drawString(textStartPos, 132+63, font, "%d %s (%.0f %%)", newStats->numberPerType[1], strings->getString("[Explorer]"), ((float)newStats->numberPerType[1])*100.0f/((float)newStats->totalUnit));
+					gfx->drawString(textStartPos+5, 132+75, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[1], strings->getString("[free]"));
+					// warrior
+					gfx->drawString(textStartPos, 132+92, font, "%d %s (%.0f %%)", newStats->numberPerType[2], strings->getString("[Warrior]"), ((float)newStats->numberPerType[2])*100.0f/((float)newStats->totalUnit));
+					gfx->drawString(textStartPos+5, 132+104, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[2], strings->getString("[free]"));
+
+					// living state
+					gfx->drawString(textStartPos, 132+121, font, "%d %s (%.0f %%)", newStats->needNothing, strings->getString("[are ok]"), ((float)newStats->needNothing)*100.0f/((float)newStats->totalUnit));
+					gfx->drawString(textStartPos, 132+133, font, "%d %s (%.0f %%)", newStats->needFood, strings->getString("[are hungry]"), ((float)newStats->needFood)*100.0f/((float)newStats->totalUnit));
+					gfx->drawString(textStartPos, 132+145, font, "%d %s (%.0f %%)", newStats->needHeal, strings->getString("[are wonded]"), ((float)newStats->needHeal)*100.0f/((float)newStats->totalUnit));
+
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+162, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats->upgradeState[WALK][0], newStats->upgradeState[WALK][1], newStats->upgradeState[WALK][2], newStats->upgradeState[WALK][3]);
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+174, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats->upgradeState[SWIM][0], newStats->upgradeState[SWIM][1], newStats->upgradeState[SWIM][2], newStats->upgradeState[SWIM][3]);
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+186, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats->upgradeState[BUILD][0], newStats->upgradeState[BUILD][1], newStats->upgradeState[BUILD][2], newStats->upgradeState[BUILD][3]);
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+198, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats->upgradeState[HARVEST][0], newStats->upgradeState[HARVEST][1], newStats->upgradeState[HARVEST][2], newStats->upgradeState[HARVEST][3]);
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+210, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats->upgradeState[ATTACK_SPEED][0], newStats->upgradeState[ATTACK_SPEED][1], newStats->upgradeState[ATTACK_SPEED][2], newStats->upgradeState[ATTACK_SPEED][3]);
+					gfx->drawString(globalContainer->gfx->getW()-124, 132+222, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats->upgradeState[ATTACK_STRENGTH][0], newStats->upgradeState[ATTACK_STRENGTH][1], newStats->upgradeState[ATTACK_STRENGTH][2], newStats->upgradeState[ATTACK_STRENGTH][3]);
+				}
 			}
 			else
 			{
@@ -1267,13 +1285,16 @@ void GameGUI::draw(void)
 					if (stats[i].totalUnit>maxUnit)
 						maxUnit=stats[i].totalUnit;
 				}
+				gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
+				gfx->drawString(textStartPos, 132+16, font, strings->getString("[Free/total]"));
+				gfx->drawString(textStartPos, 132+100, font, strings->getString("[Ok/hungry/wounded]"));
 				for (int i2=0; i2<128; i2++)
 				{
 					int index=(statsPtr+i2+1)&0x7F;
-					int nbFree=(stats[index].isFree*64)/maxUnit;
+					int nbFree=(stats[index].totalFree*64)/maxUnit;
 					int nbTotal=(stats[index].totalUnit*64)/maxUnit;
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 10 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 10 +64-nbFree, nbFree, 0, 255, 0);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 36 +64-nbFree, nbFree, 0, 255, 0);
 					int nbOk, nbNeedFood, nbNeedHeal;
 					if (stats[index].totalUnit)
 					{
@@ -1285,9 +1306,9 @@ void GameGUI::draw(void)
 					{
 						nbOk=nbNeedFood=nbNeedHeal=0;
 					}
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 80 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 80 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 80 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
 
 				}
 			}

@@ -66,8 +66,10 @@ class Game;
 struct TeamStat
 {
 	int totalUnit;
-	int isFree;
 	int numberPerType[UnitType::NB_UNIT_TYPE];
+	int totalFree;
+	int isFree[UnitType::NB_UNIT_TYPE];
+	
 	int needFood;
 	int needHeal;
 	int needNothing;
@@ -181,7 +183,6 @@ private:
 	int eventPosX, eventPosY;
 
 public:
-	int freeUnits;
 	bool isAlive;
 };
 
