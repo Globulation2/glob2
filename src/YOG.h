@@ -28,6 +28,10 @@ class YOG
 {
 public:
 	enum { IRC_MESSAGE_SIZE=512 };
+	enum InfoMessage
+	{
+		IRC_MSG_JOIN=0
+	};
 
 private:
 	//! the socket that we use to connect to IRC
@@ -57,13 +61,25 @@ public:
 	//! Return true if there is pending message
 	bool isChatMessage(void);
 	//! Get message
-	char *getChatMessage(void);
-	//! Get the channel from where the message is
-	char *getChatMessageChannel(void);
+	const char *getChatMessage(void);
+	//! Get the channel (or the user) from where the message is
+	const char *getChatMessageSource(void);
 	//! Free last message
 	void freeChatMessage(void);
 	//! Send a message to channel
 	void sendChatMessage(const char *message, const char *channel="#yog");
+
+	// INFO
+	//! Return true if there is pending info message
+	bool isInfoMessage(void);
+	//! Get Info message type
+	const InfoMessage *getInfoMessageType(void);
+	//! Get Info message associated text
+	const char *getInfoMessageText(void);
+	//! Get the channel (or the user) from where the message is
+	const char *getInfoMessageSource(void);
+	//! Free last message
+	void freeInfoessage(void);
 
 	//! Join a given channel
 	void joinChannel(const char *channel="#yog");
@@ -83,7 +99,7 @@ public:
 	//! Return true if there is games pending
 	bool isYOGGame(void);
 	//! Get parameters from pending game
-	char *getYOGGame(void);
+	const char *getYOGGame(void);
 	//! Free last game parameters
 	void freeYOGGame(void);
 
