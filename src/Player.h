@@ -132,6 +132,7 @@ public:
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
 	bool sameip(IPaddress ip);
+	bool localhostip();
 	bool bind(UDPsocket socket);
 	void unbind();
 	

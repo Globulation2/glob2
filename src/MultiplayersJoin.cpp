@@ -265,6 +265,11 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].type==BasePlayer::P_IP)
+			if (j!=myPlayerNumber && sessionInfo.players[j].localhostip())
+				sessionInfo.players[j].waitForNatResolution=true;
+	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		sessionInfo.players[j].ipFirewallClean=false;
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
@@ -1168,15 +1173,25 @@ void MultiplayersJoin::sendingTime()
 			&& (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYOG))
 			sendBroadcastRequest(GAME_SERVER_PORT);
 		
+		bool needLocalBroadcasting=false;
+		
 		if ((broadcastState==BS_ENABLE_YOG || broadcastState==BS_JOINED_YOG)
 			&& (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION))
-			{
-				sendBroadcastRequest(GAME_JOINER_PORT_1);
-				SDL_Delay(10);
-				sendBroadcastRequest(GAME_JOINER_PORT_2);
-				SDL_Delay(10);
-				sendBroadcastRequest(GAME_JOINER_PORT_3);
-			}
+				needLocalBroadcasting=true;
+		
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+			if (sessionInfo.players[j].type==BasePlayer::P_IP)
+				if (j!=myPlayerNumber && sessionInfo.players[j].localhostip() && !sessionInfo.players[j].waitForNatResolution)
+					needLocalBroadcasting=true;
+		
+		if (needLocalBroadcasting)
+		{
+			sendBroadcastRequest(GAME_JOINER_PORT_1);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_2);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_3);
+		}
 	}
 	
 	if ((waitingState!=WS_TYPING_SERVER_NAME) && downloadStream)

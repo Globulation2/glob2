@@ -276,6 +276,10 @@ bool BasePlayer::sameip(IPaddress ip)
 {
 	return ((this->ip.host==ip.host)&&(this->ip.port==ip.port));
 }
+bool BasePlayer::localhostip()
+{
+	return (ip.host==SDL_SwapBE32(0x7F000001));
+}
 
 bool BasePlayer::bind(UDPsocket socket)
 {
