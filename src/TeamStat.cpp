@@ -68,7 +68,7 @@ void TeamStats::step(Team *team)
 	for (i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
-		
+
 		if (smoothedStat.totalFree>maxStat.totalFree)
 			maxStat.totalFree=smoothedStat.totalFree;
 		for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
@@ -77,7 +77,7 @@ void TeamStats::step(Team *team)
 		if (smoothedStat.totalNeeded>maxStat.totalNeeded)
 			maxStat.totalNeeded=smoothedStat.totalNeeded;
 	}
-	
+
 	// We change current stats:
 	statsIndex++;
 	statsIndex%=STATS_SIZE;
@@ -91,8 +91,11 @@ void TeamStats::step(Team *team)
 			stat.totalUnit++;
 			stat.numberUnitPerType[(int)u->typeNum]++;
 
-			if (u->medical==Unit::MED_HUNGRY)
-				stat.needFood++;
+			if (u->isUnitHungry())
+				if (u->hp<u->performance[HP])
+					stat.needFoodCritical++;
+				else
+					stat.needFood++;
 			else if (u->medical==Unit::MED_DAMAGED)
 				stat.needHeal++;
 			else
@@ -111,7 +114,7 @@ void TeamStats::step(Team *team)
 			}
 		}
 	}
-	
+
 	for (i=0; i<512; i++)
 	{
 		if (team->myBuildings[i])
@@ -226,8 +229,8 @@ void TeamStats::drawStat()
 		int nbSeeking=(seeking*64)/maxWorker;
 		int nbTotal=(stats[index].numberUnitPerType[UnitType::WORKER]*64)/maxWorker;
 		
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 75, 75, 150);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree-nbSeeking, nbFree, 50, 250, 100);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
 		/*int nbFree=((stats[index].totalFree)*64)/maxUnit;
 		int nbNeeded=((stats[index].totalNeeded)*64)/maxUnit;
@@ -243,7 +246,7 @@ void TeamStats::drawStat()
 		else
 			globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal, 0, 0, 250);*/
 		
-		int nbOk, nbNeedFood, nbNeedHeal;
+		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
 		{
 			// to avoid some roundoff errors
@@ -251,29 +254,38 @@ void TeamStats::drawStat()
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
 				nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
-				nbOk=64-(nbNeedHeal + nbNeedFood);
+				nbNeedFoodCritical=(stats[index].needFoodCritical*64)/stats[index].totalUnit;
+				nbOk=64-(nbNeedHeal + nbNeedFood+nbNeedFoodCritical);
 			}
 			else if (stats[index].needFood>0)
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
-				nbNeedFood=64-(nbNeedHeal);
+				nbNeedFoodCritical=(stats[index].needFoodCritical*64)/stats[index].totalUnit;
+				nbNeedFood=64-(nbNeedHeal-nbNeedFoodCritical);
+				nbOk=0;
+			}
+			else if (stats[index].needFoodCritical>0)
+			{
+				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+				nbNeedFoodCritical=64-nbNeedHeal;
 				nbOk=0;
 			}
 			else
 			{
-				nbOk=nbNeedFood=0;
+				nbOk=nbNeedFood=nbNeedFoodCritical=0;
 				nbNeedHeal=64;
 			}
 		}
 		else
 		{
-			nbOk=nbNeedFood=nbNeedHeal=0;
+			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
 		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
 		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
 		//globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 50, 250, 100);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
+		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
 	}
 }
