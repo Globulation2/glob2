@@ -39,16 +39,18 @@ CampaignScreen::CampaignScreen(const std::string &text)
 		std::string s;
 		std::getline(iss, s);
 
-		if (s.size() && s[0]!='\n')
+		if (s.size() && s[0] != '\n')
 		{
-			std::string::size_type f = s.find('<');
-			std::string::size_type l = s.rfind('>');
-			if ((f != std::string::npos) && (l != std::string::npos))
+			if (s[0] == '*')
 			{
-				s.erase(f, l-f+1);
+				addWidget(new Text(0, yPos, ALIGN_FILL, ALIGN_TOP, "menu", s.c_str()+1));
+				yPos += 30;
 			}
-			addWidget(new Text(0, yPos, ALIGN_FILL, ALIGN_TOP, "standard", s.c_str()));
-			yPos += 14;
+			else
+			{
+				addWidget(new Text(0, yPos, ALIGN_FILL, ALIGN_TOP, "standard", s.c_str()));
+				yPos += 14;
+			}
 		}
 		else
 		{
