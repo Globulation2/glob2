@@ -1943,13 +1943,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	}
 	
-	//if (false)
+	if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				//if (players[1] && players[1]->ai)
 				{
 					AICastor *ai=(AICastor *)players[2]->ai->aiImplementation;
-					Uint8 *gradient=ai->wheatCareMap;
+					Uint8 *gradient=ai->goodBuildingMap;
 					//Uint8 *gradient=map.forbiddenGradient[1][0];
 					
 					assert(gradient);
