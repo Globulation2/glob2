@@ -22,6 +22,9 @@ Pathfindig:
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
 - si un batiment est enfermé, il faut gérer!
+- Gérer les unités piégées dans un drapeau d'interrdiction.
+- Ne pas prendre des ressources en dehosr du drapeau de défrichage.
+- Le comportement de guerrières doit-être amélioré.
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.

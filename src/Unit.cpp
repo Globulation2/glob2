@@ -1114,22 +1114,34 @@ void Unit::handleMovement(void)
 			if (movement==MOV_HARVESTING)
 				map->decRessource(posX+dx, posY+dy);
 			
-			if (map->doesUnitTouchRemovableRessource(this, &dx, &dy))
-				movement=MOV_HARVESTING;
-			else
-			{
-				bool canSwim=performance[SWIM];
-				assert(attachedBuilding);
-				if (attachedBuilding->localRessources[canSwim]==NULL)
-					map->updateLocalRessources(attachedBuilding, canSwim);
-				if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+			int bx=attachedBuilding->posX;
+			int by=attachedBuilding->posY;
+			int usr=attachedBuilding->unitStayRange;
+			int usr2=usr*usr;
+			for (int tdx=-1; tdx<=1; tdx++)
+				for (int tdy=-1; tdy<=1; tdy++)
 				{
-					directionFromDxDy();
-					movement=MOV_GOING_DXDY;
+					int x=posX+tdx;
+					int y=posY+tdy;
+					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRemovableRessource(x, y))
+					{
+						dx=tdx;
+						dy=tdy;
+						movement=MOV_HARVESTING;
+						return;
+					}
 				}
-				else
-					movement=MOV_RANDOM;
+			bool canSwim=performance[SWIM];
+			assert(attachedBuilding);
+			if (attachedBuilding->localRessources[canSwim]==NULL)
+				map->updateLocalRessources(attachedBuilding, canSwim);
+			if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+			{
+				directionFromDxDy();
+				movement=MOV_GOING_DXDY;
 			}
+			else
+				movement=MOV_RANDOM;
 		}
 		break;
 

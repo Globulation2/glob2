@@ -245,7 +245,11 @@ public:
 
 	bool isRemovableRessource(int x, int y)
 	{
-		return isRessource(x, y) && (getRessource(x, y).field.type!=STONE);
+		Ressource r=getRessource(x, y);
+		if (r.id==NORESID)
+			return false;
+		Uint8 v=r.field.variety;
+		return (v<5 && v!=3);
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
