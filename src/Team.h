@@ -104,12 +104,9 @@ public:
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
 
-	//! Called when unit wanna work to building. Distance is balanced with user's number of requested unit
-	//Building *findNearestJob(int x, int y, Abilities ability, int actLevel);
+	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
 	Building *findBestConstruction(Unit *unit);
-	//! Called when unit wanna be attracted to building. Distance is balanced with user's number of requested unit
 	Building *findNearestAttract(int x, int y, Abilities ability);
-	//! Called when unit wanna work to fill building with food. Distance is balanced with user's number of requested unit
 	Building *findNearestFillableFood(int x, int y);
 
 	//! Called when unit want upgrade a certain ability
@@ -143,7 +140,6 @@ public:
 	std::list<Building *> canFeedUnit;
 	std::list<Building *> canHealUnit;
 	std::list<Building *> subscribeForInside;
-	//std::list<Building *> subscribeForWorkingStep;
 	std::list<Building *> subscribeToBringRessources;
 	std::list<Building *> subscribeForFlaging;
 
