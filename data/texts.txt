@@ -194,6 +194,10 @@ Connecting to
 [please wait]
 Attendre SVP
 Please wait
+[loading glob2]
+Chargement de Globulation 2
+Loading Globulation 2
+
 
 
 

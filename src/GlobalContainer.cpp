@@ -116,26 +116,25 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	}
 }
 
+void GlobalContainer::updateLoadProgressBar(int value)
+{
+	gfx->drawRect((gfx->getW()-402)>>1, (gfx->getH()>>1)+10, 402, 22, 180, 180, 180);
+	gfx->drawFilledRect((gfx->getW()-400)>>1, (gfx->getH()>>1)+11, value<<2, 20, 255, 255, 255);
+	gfx->updateRect((gfx->getW()-402)>>1, (gfx->getH()>>1)-30, 402, 62);
+}
+
+void GlobalContainer::initProgressBar(void)
+{
+	char *text;
+	text=texts.getString("[loading glob2]");
+	gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, text);
+}
+
 void GlobalContainer::load(void)
 {
 	// create graphic context
 	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
 	gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
-
-	// load terrain data
-	terrain=gfx->loadSprite("data/gfx/terrain");
-
-	// load shader for unvisible terrain
-	terrainShader=gfx->loadSprite("data/gfx/shade");
-
-	// load ressources
-	ressources=gfx->loadSprite("data/gfx/ressource");
-
-	// load units
-	units=gfx->loadSprite("data/gfx/unit");
-
-	// load buildings
-	buildings=gfx->loadSprite("data/gfx/building");
 
 	// load fonts
 	menuFont=gfx->loadFont("data/fonts/arial24white.png");
@@ -143,5 +142,26 @@ void GlobalContainer::load(void)
 
 	// load texts
 	texts.load("data/texts.txt");
+	initProgressBar();
 
+	updateLoadProgressBar(10);
+	// load terrain data
+	terrain=gfx->loadSprite("data/gfx/terrain");
+
+	// load shader for unvisible terrain
+	terrainShader=gfx->loadSprite("data/gfx/shade");
+
+	updateLoadProgressBar(40);
+	// load ressources
+	ressources=gfx->loadSprite("data/gfx/ressource");
+
+	updateLoadProgressBar(50);
+	// load units
+	units=gfx->loadSprite("data/gfx/unit");
+
+	updateLoadProgressBar(80);
+	// load buildings
+	buildings=gfx->loadSprite("data/gfx/building");
+
+	updateLoadProgressBar(100);
 };

@@ -51,6 +51,8 @@ public:
 
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(DrawableSurface *gfx);
+	virtual bool getState(void) { return state; }
+	virtual void setState(bool newState);
 
 protected:
 	virtual void internalPaint(void);
