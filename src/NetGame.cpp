@@ -412,6 +412,7 @@ void NetGame::sendPushOrder(int targetPlayer)
 		}
 		ustep--;
 	}
+	assert(totalSize<=576);// don't send anything biger too keep low brandwidth.
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=0; //pad
