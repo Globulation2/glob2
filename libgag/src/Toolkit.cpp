@@ -67,7 +67,7 @@ Sprite *Toolkit::getSprite(const char *name)
 		else
 			return NULL;
 	}
-	std::cout << "Sprite " << name << " loaded, " << spriteMap[std::string(name)]->getFrameCount() << std::endl;
+	//std::cout << "Sprite " << name << " loaded, " << spriteMap[std::string(name)]->getFrameCount() << std::endl;
 	return spriteMap[std::string(name)];
 }
 

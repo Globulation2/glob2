@@ -31,31 +31,6 @@ class Sprite;
 class BuildingType: public LoadableFromConfigFile
 {
 public:
-	
-	enum BuildingTypeShortNumber
-	{
-		SWARM_BUILDING=0,
-		FOOD_BUILDING=1,
-		HEAL_BUILDING=2,
-
-		WALKSPEED_BUILDING=3,
-		SWIMSPEED_BUILDING=4,
-		ATTACK_BUILDING=5,
-		SCIENCE_BUILDING=6,
-
-		DEFENSE_BUILDING=7,
-		
-		EXPLORATION_FLAG=8,
-		WAR_FLAG=9,
-		CLEARING_FLAG=10,
-
-		STONE_WALL=11,
-
-		MARKET_BUILDING=12,
-
-		NB_BUILDING
-	};
-	
 	// basic infos
 	std::string type;
 
@@ -123,15 +98,11 @@ public:
 	
 	Sint32 prestige;
 
-	// Number to access next upgrade in BuildingsTypes.
-	// It is computed in the second phase of the BuildingsTypes constructor after all building are read from disk.
-	Sint32 nextLevelTypeNum;
-	Sint32 typeNum;
-	Sint32 lastLevelTypeNum;
-	
 	// Regenerated parameters
 	Sprite *gameSpritePtr;
 	Sprite *miniSpritePtr;
+	int prevLevel;
+	int nextLevel;
 
 public:
 	virtual ~BuildingType() { }

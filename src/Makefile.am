@@ -1,6 +1,9 @@
 bin_PROGRAMS = glob2
 
-glob2_SOURCES= AI.cpp \
+glob2_SOURCES=\
+IntBuildingType.h\
+IntBuildingType.cpp\
+AI.cpp \
 AI.h\
 AIImplementation.h\
 AINull.h\

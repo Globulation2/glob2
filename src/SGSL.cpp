@@ -349,6 +349,7 @@ bool Story::testCondition(GameGUI *gui)
 
 			case (Token::S_GUIENABLE):
 			{
+				// TODO : be clean and dynamic and generic here !
 				Token::TokenType object = line[++lineSelector].type;
 				if (object <= Token::S_WARRIOR)
 				{
@@ -356,11 +357,11 @@ bool Story::testCondition(GameGUI *gui)
 				}
 				else if (object <= Token::S_MARKET_B)
 				{
-					gui->enableBuildingsChoice(object - Token::S_SWARM_B);
+					gui->enableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
 				}
 				else if (object <= Token::S_FORBIDDEN_F)
 				{
-					gui->enableFlagsChoice(object - Token::S_EXPLOR_F + BuildingType::EXPLORATION_FLAG);
+					gui->enableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}
 				else if (object <= Token::S_ALLIANCESCREEN)
 				{
@@ -378,11 +379,11 @@ bool Story::testCondition(GameGUI *gui)
 				}
 				else if (object <= Token::S_MARKET_B)
 				{
-					gui->disableBuildingsChoice(object - Token::S_SWARM_B);
+					gui->disableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
 				}
 				else if (object <= Token::S_FORBIDDEN_F)
 				{
-					gui->disableFlagsChoice(object - Token::S_EXPLOR_F + BuildingType::EXPLORATION_FLAG);
+					gui->disableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}
 				else if (object <= Token::S_ALLIANCESCREEN)
 				{
@@ -438,7 +439,7 @@ bool Story::testCondition(GameGUI *gui)
 				int unitCount = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
 
-				int typeNum = globalContainer->buildingsTypes.getTypeNum(9, 0, false);
+				int typeNum = globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 
 				Building *b = game->addBuilding(x, y, typeNum, team);
 

@@ -188,9 +188,9 @@ void MapEdit::drawMenu(void)
 	{
 		int typeNum;
 		if ((i!=0) && (i<8))
-			typeNum=globalContainer->buildingsTypes.getTypeNum(i, ((level>2) ? 2 : level) , false);
+			typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(i), ((level>2) ? 2 : level) , false);
 		else
-			typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+			typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(i), 0, false);
 		if (typeNum != -1)
 		{
 			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
@@ -416,13 +416,13 @@ void MapEdit::handleMapClick(int mx, int my)
 	else if (editMode==EM_BUILDING)
 	{
 		//game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(type), level, false);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mx, my, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 
-		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, team, false))
+		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
 			game.addBuilding(x, y, typeNum, team);
 			if (type==0 && level==0)
@@ -647,7 +647,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 		int batX, batY, batW, batH;
 
 		// we get the type of building
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(type), level, false);
 		assert(typeNum!=-1);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
@@ -662,7 +662,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 			tempY=((my)>>5)+viewportY;
 		else
 			tempY=((my+16)>>5)+viewportY;
-		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, team, false);
+		bool isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team, false);
 
 		// we get the datas
 		Sprite *sprite = bt->gameSpritePtr;
@@ -689,9 +689,9 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 		{
 			BuildingType *nnbt=bt;
 			int max=0;
-			while(nnbt->nextLevelTypeNum!=-1)
+			while(nnbt->nextLevel != -1)
 			{
-				nnbt=globalContainer->buildingsTypes.get(nnbt->nextLevelTypeNum);
+				nnbt=globalContainer->buildingsTypes.get(nnbt->nextLevel);
 				if (max++>200)
 				{
 					printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
@@ -699,9 +699,7 @@ void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
 					break;
 				}
 			}
-			int typeNum=nnbt->typeNum;
-
-			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, team, false);
+			isRoom=game.checkRoomForBuilding(tempX, tempY, nnbt, &mapX, &mapY, team, false);
 
 			batX=(mapX-viewportX)<<5;
 			batY=(mapY-viewportY)<<5;

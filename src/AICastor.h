@@ -23,7 +23,7 @@
 #include <list>
 #include <string>
 
-#include "BuildingType.h"
+#include "IntBuildingType.h"
 #include "AIImplementation.h"
 
 class Game;
@@ -40,12 +40,12 @@ public:
 	class Project
 	{
 	public:
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char *suffix);
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix);
+		Project(IntBuildingType::Number shortTypeNum, const char *suffix);
+		Project(IntBuildingType::Number shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix);
 		void init(const char *suffix);
 
 	public:
-		BuildingType::BuildingTypeShortNumber shortTypeNum;
+		IntBuildingType::Number shortTypeNum;
 		int amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
 		bool defense; // place at incpoming places.
@@ -100,7 +100,7 @@ public:
 		Sint32 successWait;
 		Sint32 isFreePart;
 		
-		Build build[BuildingType::NB_BUILDING];
+		Build build[IntBuildingType::NB_BUILDING];
 		
 		Uint32 warTimeTriger;
 		Sint32 warLevelTriger;
@@ -183,8 +183,8 @@ public:
 	Uint32 timer;
 	bool canSwim;
 	bool needSwim;
-	int buildingSum[BuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
-	int buildingLevels[BuildingType::NB_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
+	int buildingSum[IntBuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
+	int buildingLevels[IntBuildingType::NB_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
 	int warLevel; // 0: no war
 	int warTimeTrigerLevel;
 	int warLevelTrigerLevel;

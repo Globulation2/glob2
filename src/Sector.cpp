@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
+#include "BuildingType.h"
 
 Sector::Sector(Game *game)
 {

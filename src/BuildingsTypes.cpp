@@ -18,150 +18,170 @@
 */
 
 #include <assert.h>
-
 #include <vector>
+#include <iostream>
 
 #include "BuildingsTypes.h"
 #include "GlobalContainer.h"
 
 void BuildingsTypes::load()
 {
-	// load the file
 	ConfigVector<BuildingType>::load("data/buildings.default.txt", true);
 	ConfigVector<BuildingType>::load("data/buildings.txt");
-
-	// We resolve the nextLevelTypeNum references, used for upgrade.
-	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
-	{
-		(*it)->lastLevelTypeNum=-1;
-		(*it)->typeNum=-1;
-		(*it)->nextLevelTypeNum=-1;
-	}
-	BuildingType *bt1;
-	BuildingType *bt2;
-	int j=0;
-	for (std::vector <BuildingType *>::iterator it1=entries.begin(); it1!=entries.end(); ++it1)
-	{
-		bt1=*it1;
-		bt1->nextLevelTypeNum=-1;
-		bt1->typeNum=j;
-		int i=0;
-		for (std::vector <BuildingType *>::iterator it2=entries.begin(); it2!=entries.end(); ++it2)
-		{
-			bt2=*it2;
-			if (bt1!=bt2)
-				if (bt1->isBuildingSite)
-				{
-					if ((bt2->level==bt1->level) && (bt2->shortTypeNum==bt1->shortTypeNum) && !(bt2->isBuildingSite))
-					{
-						bt1->nextLevelTypeNum=i;
-						bt2->lastLevelTypeNum=j;
-						break;
-					}
-				}
-				else
-				{
-					if ((bt2->level==bt1->level+1) && (bt2->shortTypeNum==bt1->shortTypeNum) && (bt2->isBuildingSite))
-					{
-						bt1->nextLevelTypeNum=i;
-						bt2->lastLevelTypeNum=j;
-						break;
-					}
-				}
-			i++;
-		}
-		j++;
-	}
 	
-	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
+	resolveUpgradeReferences();
+	
+	checkIntegrity();
+}
+
+void BuildingsTypes::checkIntegrity(void)
+{
+	for (size_t i=0; i<entries.size(); i++)
 	{
+		BuildingType *bt = entries[i];
+		assert(bt);
+		
 		//Need ressource integrity:
 		bool needRessource=false;
-		for (int i=0; i<MAX_RESSOURCES; i++)
-			if ((*it)->maxRessource[i])
+		for (unsigned j=0; j<MAX_RESSOURCES; j++)
+			if (bt->maxRessource[j])
 			{
 				needRessource=true;
 				break;
 			}
 		if (needRessource)
-			assert((*it)->fillable || (*it)->foodable);
+			assert(bt->fillable || bt->foodable);
 		
 		//hpInc integrity:
-		if ((*it)->isBuildingSite)
-			assert((*it)->hpInc>0);
+		if (bt->isBuildingSite)
+			assert(bt->hpInc > 0);
 		else
-			assert((*it)->hpInc==0);
+			assert(bt->hpInc == 0);
 		
 		//mpMax/hpInit integrity:
-		if ((*it)->isBuildingSite)
+		if (bt->isBuildingSite)
 		{
-			BuildingType *bt1=*it;
-			assert(bt1);
-			if (bt1->level)
+			if (bt->level)
 			{
-				assert(bt1->lastLevelTypeNum!=-1);
-				BuildingType *bt2=get(bt1->lastLevelTypeNum);
+				assert(bt->prevLevel != -1);
+				BuildingType *bt2 = get(bt->prevLevel);
 				assert(bt2);
-				if (bt1->hpInit!=bt2->hpMax)
+				if (bt->hpInit != bt2->hpMax)
 				{
-					printf("Warning, with building shortTypeNum %d==%d. Building site (tn%d) has has hpInit=%d, but building (tn%d) has hpMax=%d\n",
-						bt1->shortTypeNum, bt2->shortTypeNum, bt1->typeNum, bt1->hpInit, bt2->typeNum, bt2->hpMax);
+					std::cerr << "BuildingsTypes::load() : warning : " << bt->type << " : Building site (" << entriesToName[i] << ") has hpInit=" << bt->hpInit << ", but final building (" << entriesToName[bt->prevLevel] << ") has hpMax=" << bt2->hpMax << std::endl;
 				}
 			}
 		}
 		
 		
 		//hpInit/hpInc integrity:
-		if ((*it)->isBuildingSite)
+		if (bt->isBuildingSite)
 		{
 			int resSum=0;
 			for (int i=0; i<MAX_RESSOURCES; i++)
-				resSum+=(*it)->maxRessource[i];
-			int hpSum=(*it)->hpInit+resSum*(*it)->hpInc;
-			if (hpSum<(*it)->hpMax)
+				resSum += bt->maxRessource[i];
+			int hpSum = bt->hpInit+resSum*bt->hpInc;
+			if (hpSum < bt->hpMax)
 			{
-				printf("Warning, building shortTypeNum %d with hpInc=%d, resSum=%d, hpSum=%d, hpMax=%d. (make hpInc>=%d)\n",
-					(*it)->shortTypeNum, (*it)->hpInc, resSum, hpSum, (*it)->hpMax, ((*it)->hpMax-(*it)->hpInit+resSum-1)/resSum);
+				std::cerr << "BuildingsTypes::load() : warning : " << bt->type << " : hpSum(" << hpSum <<") < hpMax(" << bt->hpMax << ") with hpInit=" << bt->hpInit << ", hpInc=" << bt->hpInc << ", resSum=" << resSum << ". Make hpInc>=" << (bt->hpMax-bt->hpInit+resSum-1)/resSum << std::endl;;
 			}
 		}
 		
 		
 		//flag integrity:
-		if ((*it)->isVirtual)
+		if (bt->isVirtual)
 		{
-			assert((*it)->isCloacked);
-			assert((*it)->defaultUnitStayRange);
+			assert(bt->isCloacked);
+			assert(bt->defaultUnitStayRange);
 		}
-		if ((*it)->isCloacked)
+		if (bt->isCloacked)
 		{
-			assert((*it)->isVirtual);
-			assert((*it)->defaultUnitStayRange);
+			assert(bt->isVirtual);
+			assert(bt->defaultUnitStayRange);
 		}
-		if ((*it)->defaultUnitStayRange)
+		if (bt->defaultUnitStayRange)
 		{
-			assert((*it)->isCloacked);
-			assert((*it)->isVirtual);
+			assert(bt->isCloacked);
+			assert(bt->isVirtual);
 		}
-		if ((*it)->zonableForbidden)
+		if (bt->zonableForbidden)
 		{
-			assert((*it)->isCloacked);
-			assert((*it)->isVirtual);
-			assert((*it)->defaultUnitStayRange);
+			assert(bt->isCloacked);
+			assert(bt->isVirtual);
+			assert(bt->defaultUnitStayRange);
 		}
 		
 	}
 }
 
-Sint32 BuildingsTypes::getTypeNum(int shortTypeNum, int level, bool isBuildingSite)
+void BuildingsTypes::resolveUpgradeReferences(void)
 {
-	Sint32 i=0;
-	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
+	for (size_t i=0; i<entries.size(); i++)
 	{
-		BuildingType *bt=*it;
-		if ((bt->shortTypeNum==shortTypeNum) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
-			return i;
-		i++;
+		entries[i]->nextLevel = entries[i]->prevLevel = -1;
 	}
+	
+	for (size_t i=0; i<entries.size(); i++)
+	{
+		BuildingType *bt1 = entries[i];
+		for (size_t j=0; j<entries.size(); j++)
+		{
+			BuildingType *bt2 = entries[j];
+			if (bt1 != bt2)
+				if (bt1->isBuildingSite)
+				{
+					if ((bt2->level == bt1->level) && (bt2->type  == bt1->type) && !(bt2->isBuildingSite))
+					{
+						bt1->nextLevel = j;
+						bt2->prevLevel = i;
+						break;
+					}
+				}
+				else
+				{
+					if ((bt2->level == bt1->level+1) && (bt2->type == bt1->type) && (bt2->isBuildingSite))
+					{
+						bt1->nextLevel = j;
+						bt2->prevLevel = i;
+						break;
+					}
+				}
+		}
+	}
+}
+
+Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSite)
+{
+	for (size_t i=0; i<entries.size(); i++)
+	{
+		if ((entries[i]->type == type) && (entries[i]->level == level) && (entries[i]->isBuildingSite == isBuildingSite))
+			return i;
+	}
+	
+	std::cerr << "BuildingsTypes::getTypeNum(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
 	// we can reach this point if we request a flag
 	return -1;
+}
+
+BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuildingSite)
+{
+	for (size_t i=0; i<entries.size(); i++)
+	{
+		if ((entries[i]->type == type) && (entries[i]->level == level) && (entries[i]->isBuildingSite == isBuildingSite))
+			return entries[i];
+	}
+	
+	std::cerr << "BuildingsTypes::getByType(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
+	// we can reach this point if we request a flag
+	return NULL;
+}
+
+Sint32 BuildingsTypes::getTypeNum(const std::string &s, int level, bool isBuildingSite)
+{
+	return getTypeNum(s.c_str(), level, isBuildingSite);
+}
+
+BuildingType *BuildingsTypes::getByType(const std::string &s,int level, bool isBuildingSite)
+{
+	return getByType(s.c_str(), level, isBuildingSite);
 }

@@ -158,22 +158,24 @@ void GameGUI::init()
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
 
-	buildingsChoice.clear();
-	buildingsChoice.push_back(0);
-	buildingsChoice.push_back(1);
-	buildingsChoice.push_back(2);
-	buildingsChoice.push_back(3);
-	buildingsChoice.push_back(4);
-	buildingsChoice.push_back(5);
-	buildingsChoice.push_back(6);
-	buildingsChoice.push_back(7);
-	buildingsChoice.push_back(11);
-	buildingsChoice.push_back(12);
+	buildingsChoiceName.clear();
+	buildingsChoiceName.push_back("swarm");
+	buildingsChoiceName.push_back("inn");
+	buildingsChoiceName.push_back("hospital");
+	buildingsChoiceName.push_back("racetrack");
+	buildingsChoiceName.push_back("swimmingpool");
+	buildingsChoiceName.push_back("barracks");
+	buildingsChoiceName.push_back("school");
+	buildingsChoiceName.push_back("defencetower");
+	buildingsChoiceName.push_back("stonewall");
+	buildingsChoiceName.push_back("market");
+	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
 
-	flagsChoice.clear();
-	flagsChoice.push_back(8);
-	flagsChoice.push_back(9);
-	flagsChoice.push_back(10);
+	flagsChoiceName.clear();
+	flagsChoiceName.push_back("explorationflag");
+	flagsChoiceName.push_back("warflag");
+	flagsChoiceName.push_back("clearingflag");
+	flagsChoiceState.resize(flagsChoiceName.size(), true);
 
 	hiddenGUIElements=0;
 	
@@ -1016,7 +1018,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
 						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevel!=-1) && (!selBuild->type->isBuildingSite))
 						{
 							orderQueue.push_back(new OrderConstruction(selBuild->gid));
 						}
@@ -1230,9 +1232,9 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		bool isRoom;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
 		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
+			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
 
 		if (isRoom)
 			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, typeNum));
@@ -1421,7 +1423,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			
 			// cleared ressources for clearing flags:
-			if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG)
+			if (buildingType->type == "clearingflag")
 			{
 				int j=0;
 				for (int i=0; i<BASIC_COUNT; i++)
@@ -1438,7 +1440,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					}
 			}
 			
-			if (buildingType->shortTypeNum==BuildingType::WAR_FLAG)
+			if (buildingType->type == "warflag")
 				for (int i=0; i<4; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
@@ -1547,7 +1549,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
 						orderQueue.push_back(new OrderConstruction(selBuild->gid));
 				}
-				else if (buildingType->nextLevelTypeNum!=-1)
+				else if (buildingType->nextLevel!=-1)
 				{
 					// upgrade
 					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
@@ -1595,9 +1597,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int xNum=mx>>6;
 		int yNum=(my-YPOS_BASE_BUILDING)/46;
 		int id=yNum*2+xNum;
-		if (id<(int)buildingsChoice.size())
-			if (buildingsChoice[id]>=0)
-				setSelection(TOOL_SELECTION, buildingsChoice[id]);
+		if (id<(int)buildingsChoiceName.size())
+			if (buildingsChoiceState[id])
+				setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[id].c_str());
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
@@ -1612,9 +1614,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int xNum=mx / (128/3);
 			int yNum=my / 46;
 			int id=yNum*3+xNum;
-			if (id<(int)flagsChoice.size())
-				if (flagsChoice[id]>=0)
-					setSelection(TOOL_SELECTION, flagsChoice[id]);
+			if (id<(int)flagsChoiceName.size())
+				if (flagsChoiceState[id])
+					setSelection(TOOL_SELECTION, (void*)flagsChoiceName[id].c_str());
 		}
 	}
 }
@@ -1671,32 +1673,30 @@ void GameGUI::drawPanelButtons(int pos)
 	// draw decoration
 }
 
-void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLine)
+void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine)
 {
 	assert(numberPerLine >= 2);
 	assert(numberPerLine <= 3);
 	int sel=-1;
-	int v=0;
 	int width = (128/numberPerLine);
+	size_t i;
 
-	std::vector<int>::const_iterator it=types.begin();
-	while (it!=types.end())
+	for (i=0; i<types.size(); i++)
 	{
-		int i = *it;
+		std::string &type = types[i];
 
-		if ((selectionMode==TOOL_SELECTION) && (i==int(selection.build)))
-			sel=v;
+		if ((selectionMode==TOOL_SELECTION) && (type == (const char *)selection.build))
+			sel = i;
 
-		if (i>=0)
+		if (states[i])
 		{
-			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+			BuildingType *bt = globalContainer->buildingsTypes.getByType(type.c_str(), 0, false);
 			assert(bt);
 			int imgid = bt->miniSpriteImage;
 			int x, y;
 
-			x=((v % numberPerLine)*width)+globalContainer->gfx->getW()-128;
-			y=((v / numberPerLine)*46)+128+32;
+			x=((i % numberPerLine)*width)+globalContainer->gfx->getW()-128;
+			y=((i / numberPerLine)*46)+128+32;
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
@@ -1716,16 +1716,13 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLin
 			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
 		}
-
-		++it;
-		v++;
 	}
-	int count = v;
+	int count = i;
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 
 	// draw selection if needed
-	if (selectionMode==TOOL_SELECTION)
+	if (selectionMode == TOOL_SELECTION)
 	{
 		assert(sel>=0);
 		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-128;
@@ -1746,18 +1743,19 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types, unsigned numberPerLin
 			int id=yNum*numberPerLine+xNum;
 			if (id<count)
 			{
-				int typeId=types[id];
-				if (typeId >= 0)
+				std::string &type = types[id];
+				if (states[id])
 				{
 					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
+					int typeId = IntBuildingType::shortNumberFromType(type.c_str());
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
 					
 					globalContainer->littleFont->pushColor(128, 128, 128);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explaination]", typeId);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explaination 2]", typeId);
 					globalContainer->littleFont->popColor();
-					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
+					int typeNum=globalContainer->buildingsTypes.getTypeNum(type.c_str(), 0, true);
 					if (typeNum!=-1)
 					{
 						BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
@@ -1972,7 +1970,7 @@ void GameGUI::drawBuildingInfos(void)
 
 	// building text
 	title = "";
-	if ((buildingType->nextLevelTypeNum>=0) ||  (buildingType->lastLevelTypeNum>=0))
+	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
 	{
 		const char *textT = Toolkit::getStringTable()->getString("[level]");
 		title += GAG::nsprintf("%s %d", textT, buildingType->level+1);
@@ -2129,7 +2127,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	
 	// cleared ressources for clearing flags:
-	if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	if ((buildingType->type == "clearingflag") && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
@@ -2154,7 +2152,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	
 	// min war level for war flags:
-	if (buildingType->shortTypeNum==BuildingType::WAR_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	if ((buildingType->type == "warflag") && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
@@ -2313,14 +2311,14 @@ void GameGUI::drawBuildingInfos(void)
 		if (selBuild->constructionResultState==Building::REPAIR)
 		{
 			if (buildingType->isBuildingSite)
-				assert(buildingType->nextLevelTypeNum!=-1);
+				assert(buildingType->nextLevel!=-1);
 			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel repair]");
 		}
 		else if (selBuild->constructionResultState==Building::UPGRADE)
 		{
-			assert(buildingType->nextLevelTypeNum!=-1);
+			assert(buildingType->nextLevel!=-1);
 			if (buildingType->isBuildingSite)
-				assert(buildingType->lastLevelTypeNum!=-1);
+				assert(buildingType->prevLevel!=-1);
 			drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[cancel upgrade]");
 		}
 		else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
@@ -2342,7 +2340,7 @@ void GameGUI::drawBuildingInfos(void)
 						}
 				}
 			}
-			else if (buildingType->nextLevelTypeNum!=-1)
+			else if (buildingType->nextLevel!=-1)
 			{
 				// upgrade
 				if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
@@ -2354,14 +2352,14 @@ void GameGUI::drawBuildingInfos(void)
 							globalContainer->littleFont->pushColor(200, 200, 255);
 
 							// We draw the ressources cost.
-							int typeNum=buildingType->nextLevelTypeNum;
+							int typeNum=buildingType->nextLevel;
 							BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 							drawCosts(bt->maxRessource, globalContainer->littleFont);
 
 							// We draw the new abilities:
 							int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
 
-							bt=globalContainer->buildingsTypes.get(bt->nextLevelTypeNum);
+							bt=globalContainer->buildingsTypes.get(bt->nextLevel);
 
 							if (bt->hpMax)
 								drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
@@ -2491,11 +2489,11 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==BUILDING_VIEW)
 	{
-		drawChoice(YPOS_BASE_BUILDING, buildingsChoice);
+		drawChoice(YPOS_BASE_BUILDING, buildingsChoiceName, buildingsChoiceState);
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
-		drawChoice(YPOS_BASE_FLAG, flagsChoice, 3);
+		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
 		forbiddenBrush.draw(globalContainer->gfx->getW()-128, YPOS_BASE_FLAG+YOFFSET_BRUSH);
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
@@ -2525,9 +2523,9 @@ void GameGUI::drawOverlayInfos(void)
 		bool isRoom;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		if (bt->isVirtual)
-			isRoom = game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localTeamNo);
 		else
-			isRoom = game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
+			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
 		
 		// we get the screen dimensions of the building
 		int batW = (bt->width)<<5;
@@ -2564,20 +2562,20 @@ void GameGUI::drawOverlayInfos(void)
 				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
 				int lastTypeNum=typeNum;
 				int max=0;
-				while (lastbt->nextLevelTypeNum>=0)
+				while (lastbt->nextLevel>=0)
 				{
-					lastTypeNum=lastbt->nextLevelTypeNum;
+					lastTypeNum=lastbt->nextLevel;
 					lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
 					if (max++>200)
 					{
-						printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+						printf("GameGUI: Error: nextLevel architecture is broken.\n");
 						assert(false);
 						break;
 					}
 				}
 					
 				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY);
+				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastbt, &exMapX, &exMapY);
 				int exBatX=(exMapX-viewportX)<<5;
 				int exBatY=(exMapY-viewportY)<<5;
 				int exBatW=(lastbt->width)<<5;
@@ -3129,19 +3127,17 @@ bool GameGUI::load(SDL_RWops *stream)
 		Uint32 flagsChoiceMask=SDL_ReadBE32(stream);
 		
 		// invert value if hidden
-		for (unsigned i=0; i<buildingsChoice.size(); ++i)
+		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
 		{
-			int id=buildingsChoice[i];
-			assert(i>=0);
+			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i].c_str());
 			if ((1<<id) & buildingsChoiceMask)
-				buildingsChoice[i]=-id-1;
+				buildingsChoiceState[i] = false;
 		}
-		for (unsigned i=0; i<flagsChoice.size(); ++i)
+		for (unsigned i=0; i<flagsChoiceState.size(); ++i)
 		{
-			int id=flagsChoice[i];
-			assert(i>=0);
+			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i].c_str());
 			if ((1<<id) & flagsChoiceMask)
-				flagsChoice[i]=-id-1;
+				flagsChoiceState[i] = false;
 		}
 	}
 
@@ -3166,17 +3162,21 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	Uint32 buildingsChoiceMask = 0;
 	Uint32 flagsChoiceMask = 0;
 	// save one if hidden (value is negative)
-	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
 	{
-		int id=buildingsChoice[i];
-		if (id<0)
-			buildingsChoiceMask |= (1<<(-id-1));
+		if (buildingsChoiceState[i] == 0)
+		{
+			int id = IntBuildingType::shortNumberFromType(buildingsChoiceName[i].c_str());
+			buildingsChoiceMask |= (1<<id);
+		}
 	}
-	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	for (unsigned i=0; i<flagsChoiceState.size(); ++i)
 	{
-		int id=buildingsChoice[i];
-		if (id<0)
-			flagsChoiceMask |= (1<<(-id-1));
+		if (flagsChoiceState[i])
+		{
+			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i].c_str());
+			flagsChoiceMask |= (1<<id);
+		}
 	}
 	SDL_WriteBE32(stream, buildingsChoiceMask);
 	SDL_WriteBE32(stream, flagsChoiceMask);
@@ -3311,10 +3311,6 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 	{
 		selection.ressource=newSelection;
 	}
-	else if (selectionMode==TOOL_SELECTION)
-	{
-		selection.build=newSelection;
-	}
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
@@ -3337,7 +3333,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
-		selection.build=*(unsigned*)newSelection;
+		selection.build=(char*)newSelection;
 	}
 }
 
@@ -3410,43 +3406,39 @@ void GameGUI::centerViewportOnSelection(void)
 	}
 }
 
-void GameGUI::enableBuildingsChoice(int id)
+void GameGUI::enableBuildingsChoice(const std::string &name)
 {
-	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
 	{
-		int idl=buildingsChoice[i];
-		if (-idl-1 == id)
-			buildingsChoice[i]=-idl-1;
+		if (name == buildingsChoiceName[i])
+			buildingsChoiceState[i] = true;
 	}
 }
 
-void GameGUI::disableBuildingsChoice(int id)
+void GameGUI::disableBuildingsChoice(const std::string &name)
 {
-	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
 	{
-		int idl=buildingsChoice[i];
-		if (idl == id)
-			buildingsChoice[i]=-id-1;
+		if (name == buildingsChoiceName[i])
+			buildingsChoiceState[i] = false;
 	}
 }
 
-void GameGUI::enableFlagsChoice(int id)
+void GameGUI::enableFlagsChoice(const std::string &name)
 {
-	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	for (size_t i=0; i<flagsChoiceName.size(); ++i)
 	{
-		int idl=flagsChoice[i];
-		if (-idl-1 == id)
-			flagsChoice[i]=-idl-1;
+		if (name == flagsChoiceName[i])
+			flagsChoiceState[i] = true;
 	}
 }
 
-void GameGUI::disableFlagsChoice(int id)
+void GameGUI::disableFlagsChoice(const std::string &name)
 {
-	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	for (size_t i=0; i<flagsChoiceName.size(); ++i)
 	{
-		int idl=flagsChoice[i];
-		if (idl == id)
-			flagsChoice[i]=-id-1;
+		if (name == flagsChoiceName[i])
+			flagsChoiceState[i] = false;
 	}
 }
 

@@ -245,7 +245,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*health building, level 0
+*hospital0
+
+type hospital
 
 gameSpriteImage 2
 miniSpriteImage 2
@@ -264,7 +266,9 @@ level 0
 shortTypeNum 2
 
 
-*health building site, level 1
+*hospital1c
+
+type hospital
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -285,7 +289,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*health building, level 1
+*hospital1
+
+type hospital
 
 gameSpriteImage 9
 miniSpriteImage 9
@@ -304,7 +310,9 @@ level 1
 shortTypeNum 2
 
 
-*health building site, level 2
+*hospital2c
+
+type hospital
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -326,7 +334,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*health building, level 2
+*hospital2
+
+type hospital
 
 gameSpriteImage 16
 miniSpriteImage 16
@@ -346,7 +356,9 @@ level 2
 shortTypeNum 2
 
 
-*Walk building site, level 0
+*racetrack0c
+
+type racetrack
 
 gameSpriteImage 44
 miniSpriteImage 44
@@ -369,7 +381,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Walk building, level 0
+*racetrack0
+
+type racetrack
 
 gameSpriteImage 3
 miniSpriteImage 3
@@ -389,7 +403,9 @@ level 0
 shortTypeNum 3
 
 
-*Walk building site, level 1
+*racetrack1c
+
+type racetrack
 
 gameSpriteImage 45
 miniSpriteImage 45
@@ -412,7 +428,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Walk building, level 1
+*racetrack1
+
+type racetrack
 
 gameSpriteImage 10
 miniSpriteImage 10
@@ -432,7 +450,9 @@ level 1
 shortTypeNum 3
 
 
-*Walk building site, level 2
+*racetrack2c
+
+type racetrack
 
 gameSpriteImage 45
 miniSpriteImage 45
@@ -455,7 +475,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Walk building, level 2
+*racetrack2
+
+type racetrack
 
 gameSpriteImage 17
 miniSpriteImage 17
@@ -475,7 +497,9 @@ level 2
 shortTypeNum 3
 
 
-*Swim building site, level 0
+*swimmingpool0c
+
+type swimmingpool
 
 gameSpriteImage 44
 miniSpriteImage 44
@@ -497,7 +521,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Swim building, level 0
+*swimmingpool0
+
+type swimmingpool
 
 gameSpriteImage 4
 miniSpriteImage 4
@@ -517,7 +543,9 @@ level 0
 shortTypeNum 4
 
 
-*Swim building site, level 1
+*swimmingpool1c
+
+type swimmingpool
 
 gameSpriteImage 45
 miniSpriteImage 45
@@ -540,7 +568,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Swim building, level 1
+*swimmingpool1
+
+type swimmingpool
 
 gameSpriteImage 11
 miniSpriteImage 11
@@ -560,7 +590,9 @@ level 1
 shortTypeNum 4
 
 
-*Swim building site, level 2
+*swimmingpool2c
+
+type swimmingpool
 
 gameSpriteImage 45
 miniSpriteImage 45
@@ -585,7 +617,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Swim building, level 2
+*swimmingpool2
+
+type swimmingpool
 
 gameSpriteImage 18
 miniSpriteImage 18
@@ -605,7 +639,9 @@ level 2
 shortTypeNum 4
 
 
-*Attack building site, level 0
+*barracks0c
+
+type barracks
  
 gameSpriteImage 43
 miniSpriteImage 43
@@ -627,7 +663,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Attack building, level 0
+*barracks0
+
+type barracks
 
 gameSpriteImage 5
 miniSpriteImage 5
@@ -649,7 +687,9 @@ level 0
 shortTypeNum 5
 
 
-*Attack building site, level 1
+*barracks1c
+
+type barracks
 
 gameSpriteImage 43
 miniSpriteImage 43
@@ -672,7 +712,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Attack building, level 1
+*barracks1
+
+type barracks
 
 gameSpriteImage 12
 miniSpriteImage 12
@@ -694,7 +736,9 @@ level 1
 shortTypeNum 5
 
 
-*Attack building site, level 2
+*barracks2c
+
+type barracks
 
 gameSpriteImage 43
 miniSpriteImage 43
@@ -717,7 +761,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Attack building, level 2
+*barracks2
+
+type barracks
 
 gameSpriteImage 19
 miniSpriteImage 19
@@ -739,7 +785,9 @@ level 2
 shortTypeNum 5
 
 
-*Science building site, level 0
+*school0c
+
+type school
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -762,7 +810,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Science building, level 0
+*school0
+
+type school
 
 gameSpriteImage 6
 miniSpriteImage 6
@@ -784,7 +834,9 @@ level 0
 shortTypeNum 6
 
 
-*Science building site, level 1
+*school1c
+
+type school
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -808,7 +860,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Science building, level 1
+*school1
+
+type school
 
 gameSpriteImage 13
 miniSpriteImage 13
@@ -830,7 +884,9 @@ level 1
 shortTypeNum 6
 
 
-*Science building site, level 2
+*school2c
+
+type school
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -855,7 +911,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Science building, level 2
+*school2
+
+type school
 
 gameSpriteImage 20
 miniSpriteImage 20
@@ -878,7 +936,9 @@ shortTypeNum 6
 prestige 50
 
 
-*Defense building site, level 0
+*defencetower0c
+
+type defencetower
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -900,7 +960,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*Defense building, level 0
+*defencetower0
+
+type defencetower
 
 gameSpriteImage 7
 miniSpriteImage 7
@@ -929,7 +991,9 @@ shortTypeNum 7
 viewingRange 6
 
 
-*Defense building site, level 1
+*defencetower1c
+
+type defencetower
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -954,7 +1018,9 @@ isBuildingSite 1
 viewingRange 5
 
 
-*Defense building, level 1
+*defencetower1
+
+type defencetower
 
 gameSpriteImage 14
 miniSpriteImage 14
@@ -983,7 +1049,9 @@ shortTypeNum 7
 viewingRange 7
 
 
-*Defense building site, level 2
+*defencetower2c
+
+type defencetower
 
 gameSpriteImage 41
 miniSpriteImage 41
@@ -1009,7 +1077,9 @@ isBuildingSite 1
 viewingRange 6
 
 
-*Defense building, level 2
+*defencetower2
+
+type defencetower
 
 gameSpriteImage 21
 miniSpriteImage 21
@@ -1038,7 +1108,9 @@ shortTypeNum 7
 viewingRange 8
 
 
-*Exploration Flag
+*explorationflag0
+
+type explorationflag
 
 gameSpriteImage 46
 hueImage 1
@@ -1061,7 +1133,9 @@ defaultUnitStayRange 10
 maxUnitStayRange 20
 
 
-*War Flag
+*warflag0
+
+type warflag
 
 gameSpriteImage 47
 hueImage 1
@@ -1084,7 +1158,9 @@ defaultUnitStayRange 4
 maxUnitStayRange 8
 
 
-*Clearing Flag
+*clearingflag0
+
+type clearingflag
 
 gameSpriteImage 48
 hueImage 1
@@ -1107,7 +1183,9 @@ defaultUnitStayRange 3
 maxUnitStayRange 14
 
 
-*stone wall building site
+*stonewall0c
+
+type stonewall
 
 gameSpriteImage 40
 miniSpriteImage -1
@@ -1130,7 +1208,9 @@ maxUnitWorking 1
 isBuildingSite 1
 
 
-*stone wall
+*stonewall0
+
+type stonewall
 
 gameSpriteImage 23
 miniSpriteImage 23
@@ -1148,7 +1228,9 @@ shortTypeNum 11
 armor 10
 
 
-*market building site
+*market0c
+
+type market
 
 gameSpriteImage 42
 miniSpriteImage 43
@@ -1169,7 +1251,9 @@ isBuildingSite 1
 fillable 1
 
 
-*market (used for exchange)
+*market0
+
+type market
 
 gameSpriteImage 22
 miniSpriteImage 22

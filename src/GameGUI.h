@@ -91,10 +91,10 @@ public:
 	Team *getLocalTeam(void) { return localTeam; }
 
 	// Script interface
-	void enableBuildingsChoice(int id);
-	void disableBuildingsChoice(int id);
-	void enableFlagsChoice(int id);
-	void disableFlagsChoice(int id);
+	void enableBuildingsChoice(const std::string &name);
+	void disableBuildingsChoice(const std::string &name);
+	void enableFlagsChoice(const std::string &name);
+	void disableFlagsChoice(const std::string &name);
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
 
@@ -131,7 +131,7 @@ private:
 	//! Draw the buttons associated to the panel
 	void drawPanelButtons(int pos);
 	//! Draw a choice of buildings or flags
-	void drawChoice(int pos, std::vector<int> &types, unsigned numberPerLine = 2);
+	void drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
@@ -181,7 +181,7 @@ private:
 	{
 		Building* building;
 		Unit* unit;
-		unsigned build;
+		const char *build;
 		int ressource;
 	} selection;
 
@@ -197,8 +197,10 @@ private:
 	BrushAccumulator brushAccumulator;
 
 	// What's visible or hidden on GUI
-	std::vector<int> buildingsChoice;
-	std::vector<int> flagsChoice;
+	std::vector<std::string> buildingsChoiceName;
+	std::vector<bool> buildingsChoiceState;
+	std::vector<std::string> flagsChoiceName;
+	std::vector<bool> flagsChoiceState;
 	enum HidableGUIElements
 	{
 		HIDABLE_BUILDINGS_LIST = 0x1,
