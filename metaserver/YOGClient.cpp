@@ -19,6 +19,7 @@
 
 #include "YOGClient.h"
 #include "../src/Marshaling.h"
+#include "../src/Utilities.h"
 
 extern FILE *logServer;
 extern YOGClient *admin;
@@ -78,6 +79,7 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	clientsPacketID=0;
 	clientsUpdatePacketID=0;
 	playing=false;
+	away=false;
 	
 	clientsTimeout=DEFAULT_NETWORK_TIMEOUT;
 	clientsTOTL=3;
@@ -236,16 +238,8 @@ void YOGClient::send(const Message &m)
 
 void YOGClient::send(PrivateReceipt &privateReceipt)
 {
-	int size=8+privateReceipt.addr.size();
-	UDPpacket *packet=SDLNet_AllocPacket(size);
-	if (packet==NULL)
-	{
-		lprintf("Failed to allocate packet!\n");
-		return;
-	}
-	packet->len=size;
-	
-	Uint8 sdata[8];
+	int size=8+(1+1+64)*privateReceipt.addr.size();
+	Uint8 sdata[size];
 	sdata[0]=YMT_PRIVATE_RECEIPT;
 	sdata[1]=0;
 	sdata[2]=0;
@@ -254,12 +248,52 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 	sdata[5]=privateReceipt.messageID;
 	sdata[6]=privateReceipt.addr.size();
 	sdata[7]=0;
-	memcpy((char *)packet->data, sdata, 8);
 	
-	int addd=8;
-	for (std::list<Uint8>::iterator adi=privateReceipt.addr.begin(); adi!=privateReceipt.addr.end(); adi++)
-		packet->data[addd++]=*adi;
+	int index=8;
+	
+	std::list<Uint8>::iterator addri=privateReceipt.addr.begin();
+	std::list<bool>::iterator awayi=privateReceipt.away.begin();
+	std::list<char *>::iterator message=privateReceipt.awayMessages.begin();
+	
+	while(addri!=privateReceipt.addr.end())
+	{
+		if (awayi==privateReceipt.away.end())
+		{
+			lprintf("Warning! Critical error! awayi==away.end(), userName=(%s), index=(%d).\n", userName, index);
+			return;
+		}
+		sdata[index]=*addri;
+		index++;
+		sdata[index]=*awayi;
+		index++;
+		if (*awayi)
+		{
+			if (message==privateReceipt.awayMessages.end())
+			{
+				lprintf("Warning! Critical error! message==awayMessages.end(), userName=(%s), index=(%d).\n", userName, index);
+				return;
+			}
+			int l=Utilities::strmlen(*message, 64);
+			printf("*message=(%s)\n", *message);
+			memcpy(sdata+index, *message, l);
+			index+=l;
+			message++;
+		}
+		assert(index<=size);
+		
+		addri++;
+		awayi++;
+	}
 
+	UDPpacket *packet=SDLNet_AllocPacket(index);
+	if (packet==NULL)
+	{
+		lprintf("Failed to allocate packet!\n");
+		return;
+	}
+	packet->len=index;
+	memcpy((char *)packet->data, sdata, index);
+	
 	packet->address=ip;
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
@@ -267,7 +301,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 	
-	lprintf("Sent a YMT_PRIVATE_RECEIPT to (%s). size=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", userName, size, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
+	lprintf("Sent a YMT_PRIVATE_RECEIPT to (%s). size=%d, index=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", userName, size, index, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
 }
 
 void YOGClient::sendGames()
@@ -392,6 +426,11 @@ void YOGClient::deliveredReceipt(Uint8 receiptID)
 		lprintf("receipt delivered to (%s), (receiptID=%d, messageID=%d) \n", userName, rit->receiptID, rit->messageID);
 		if (size>1)
 			receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+		for (std::list<char *>::iterator message=rit->awayMessages.begin(); message!=rit->awayMessages.end(); message++)
+		{
+			printf("*message=(%s), *message=(%x)\n", *message, (int)*message);
+			free(*message);
+		}
 		privateReceipts.erase(rit);
 		receiptTOTL=3;
 	}
@@ -458,7 +497,9 @@ void YOGClient::sendClients()
 		assert(l<=32);
 		memcpy(data+index, (*client)->userName, l);
 		index+=l;
-		data[index]=(*client)->hostGameip.host||(*client)->joinGameip.host;
+		data[index]=(*client)->playing;
+		index++;
+		data[index]=(*client)->away;
 		index++;
 		assert(index<size);
 		lastSentClients[rri].push_back(*client);
@@ -551,40 +592,26 @@ void YOGClient::removeClient(Uint32 uid)
 	clientsUpdatesTOTL=3;
 }
 
-void YOGClient::updateClient(Uint32 uid, bool playing)
+void YOGClient::updateClient(Uint32 uid, Uint16 change)
 {
 	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
 		if (cup->uid==uid)
 		{
-			if (playing)
-			{
-				if (cup->change==CUP_NOT_PLAYING)
-					cup->change=CUP_PLAYING;
-				else
-					assert(cup->change!=CUP_LEFT);
-			}
+			if (cup->change&(Uint16)CUP_LEFT)
+				lprintf("Warning! Critcal error! updatePlayingClient on a leaving client!\n");
 			else
-			{
-				if (cup->change==CUP_PLAYING)
-					cup->change=CUP_NOT_PLAYING;
-				else
-					assert(cup->change!=CUP_LEFT);
-			}
+				cup->change=(Uint16)change;
 			return;
 		}
 	
 	ClientUpdate cup;
 	cup.uid=uid;
-	if (playing)
-		cup.change=CUP_PLAYING;
-	else
-		cup.change=CUP_NOT_PLAYING;
-	
+	cup.change=(Uint16)change;
 	clientsUpdates.push_back(cup);
 	
 	int importance=0;
 	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
-		if (cup->change==CUP_LEFT)
+		if (cup->change==(Uint16)CUP_LEFT)
 			importance+=2;
 		else
 			importance++;

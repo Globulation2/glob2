@@ -64,12 +64,12 @@ YOG::YOG(LogFileManager *logFileManager)
 	
 	uid=0;
 	
-	/*if (logFileManager)
+	if (logFileManager)
 	{
 		logFile=logFileManager->getFile("YOG.log");
 		assert(logFile);
 	}
-	else*/
+	else
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
 	
@@ -332,10 +332,13 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint8 receiptID=data[4];
 		Uint8 messageID=data[5];
 		Uint8 sizeAddrs=data[6];
-		assert(size-8==sizeAddrs);
-		send(YMT_PRIVATE_RECEIPT, receiptID);
-		
 		fprintf(logFile, "YMT_PRIVATE_RECEIPT packet receiptID=%d, messageID=%d, sizeAddrs=%d\n", receiptID, messageID, sizeAddrs);
+		if (size-8>=(2+64)*sizeAddrs)
+		{
+			fprintf(logFile, "bad size for a YMT_PRIVATE_RECEIPT packet (size=%d), (ip=%s)\n", size, Utilities::stringIP(ip));
+			break;
+		}
+		send(YMT_PRIVATE_RECEIPT, receiptID);
 		
 		if (sizeAddrs==0)
 		{
@@ -352,34 +355,55 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			for (std::list<Message>::iterator mit=recentlySentMessages.begin(); mit!=recentlySentMessages.end(); ++mit)
 				if (mit->messageID==messageID)
 				{
+					int index=8;
 					for (int i=0; i<sizeAddrs; i++)
 					{
+						int unl=data[index++];
+						bool away=data[index++];
 						Message m;
 						m.messageID=messageID;
-						m.messageType=YCMT_PRIVATE_RECEIPT;
 						m.timeout=0;
 						m.TOTL=3;
 						m.gameGuiPainted=false;
-						int l;
-						char *text=mit->text+data[8+i]+4;
-						l=Utilities::strmlen(text, 256);
-						memcpy(m.text, text, l);
-						if (m.text[l-1]!=0)
-							fprintf(logFile, "warning, non-zero ending text message!\n");
-						m.text[255]=0;
-						m.textLength=l;
-
-						l=data[8+i];
+						
+						int l=unl;
 						if (l<32)
 							l++;
 						char *userName=mit->text+3;
 						memcpy(m.userName, userName, l);
 						m.userName[l-1]=0;
 						m.userNameLength=l;
+						
+						if (away)
+						{
+							m.messageType=YCMT_PRIVATE_RECEIPT_BUT_AWAY;
+							
+							char *text=(char *)data+index;
+							int l=Utilities::strmlen(text, 64);
+							memcpy(m.text, text, l);
+							if (m.text[l-1]!=0)
+								fprintf(logFile, "warning, non-zero ending away message!\n");
+							m.text[63]=0;
+							m.textLength=l;
+							index+=l;
+						}
+						else
+						{
+							m.messageType=YCMT_PRIVATE_RECEIPT;
+							
+							char *text=mit->text+unl+4;
+							int l=Utilities::strmlen(text, 256);
+							memcpy(m.text, text, l);
+							if (m.text[l-1]!=0)
+								fprintf(logFile, "warning, non-zero ending text message!\n");
+							m.text[255]=0;
+							m.textLength=l;
+						}
 
-						fprintf(logFile, "new YMT_PRIVATE_RECEIPT message:%s:%s\n", m.userName, m.text);
+						fprintf(logFile, "new YMT_PRIVATE_RECEIPT (%d) message:%s:%s\n", away, m.userName, m.text);
 						receivedMessages.push_back(m);
 					}
+					assert(index==size);
 					recentlySentMessages.erase(mit);
 					fprintf(logFile, "Message (%d) removed from recentlySentMessages\n", messageID);
 					break;
@@ -599,7 +623,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			memcpy(client.userName, data+index, l);
 			client.userName[l-1]=0;
 			index+=l;
-			client.playing=data[index];
+			client.playing=(bool)data[index];
+			index++;
+			client.away=(bool)data[index];
 			index++;
 			assert(index<=size);
 			bool allready=false;
@@ -654,7 +680,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			for (std::list<Client>::iterator client=clients.begin(); client!=clients.end(); ++client)
 				if (client->uid==uid)
 				{
-					if (change==CUP_LEFT)
+					if (change & CUP_LEFT)
 					{
 						fprintf(logFile, "left client uid=%d name=%s\n", client->uid, client->userName);
 						Message message;
@@ -665,18 +691,45 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						receivedMessages.push_back(message);
 						clients.erase(client);
 					}
-					else if (change==CUP_PLAYING)
-					{
-						fprintf(logFile, "client uid=%d name=%s playing\n", client->uid, client->userName);
-						client->playing=true;
-					}
-					else if (change==CUP_NOT_PLAYING)
-					{
-						fprintf(logFile, "client uid=%d name=%s not playing\n", client->uid, client->userName);
-						client->playing=false;
-					}
 					else
-						assert(false);
+					{
+						if (change & CUP_PLAYING)
+						{
+							fprintf(logFile, "client uid=%d name=%s playing\n", client->uid, client->userName);
+							client->playing=true;
+						}
+						else if (change & CUP_NOT_PLAYING)
+						{
+							fprintf(logFile, "client uid=%d name=%s not playing\n", client->uid, client->userName);
+							client->playing=false;
+						}
+						if (change & CUP_AWAY)
+						{
+							fprintf(logFile, "client uid=%d name=%s away\n", client->uid, client->userName);
+							if (client->uid==this->uid && !client->away)
+							{
+								Message message;
+								message.gameGuiPainted=false;
+								message.messageType=YCMT_EVENT_MESSAGE;
+								snprintf(message.text, 256, "%s", globalContainer->texts.getString("[You are now marked as away]"));
+								receivedMessages.push_back(message);
+							}
+							client->away=true;
+						}
+						else if (change & CUP_NOT_AWAY)
+						{
+							fprintf(logFile, "client uid=%d name=%s not away\n", client->uid, client->userName);
+							if (client->uid==this->uid && client->away)
+							{
+								Message message;
+								message.gameGuiPainted=false;
+								message.messageType=YCMT_EVENT_MESSAGE;
+								snprintf(message.text, 256, "%s", globalContainer->texts.getString("[You are no more marked as away]"));
+								receivedMessages.push_back(message);
+							}
+							client->away=false;
+						}
+					}
 					break;
 				}
 			

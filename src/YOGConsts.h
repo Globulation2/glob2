@@ -46,14 +46,16 @@
 //Max size is defined by games lists. ((128+32+6+4)*16)=2720
 //or unshare 256*4+4=1028
 #define YOG_MAX_PACKET_SIZE ((128+32+6+4)*16)
-#define YOG_PROTOCOL_VERSION 3
+#define YOG_PROTOCOL_VERSION 4
 
 enum clientUpdateChange
 {
 	CUP_BAD=0,
 	CUP_LEFT=1,
 	CUP_PLAYING=2,
-	CUP_NOT_PLAYING=3
+	CUP_NOT_PLAYING=4,
+	CUP_AWAY=8,
+	CUP_NOT_AWAY=16
 };
 
 // Those are the messages identifiers inside YOG-client.
@@ -66,7 +68,8 @@ enum YOGClientMessageType
 	YCMT_MESSAGE=12,
 	YCMT_PRIVATE_MESSAGE=14,
 	YCMT_PRIVATE_RECEIPT=16,
-	YCMT_ADMIN_MESSAGE=18,
+	YCMT_PRIVATE_RECEIPT_BUT_AWAY=18,
+	YCMT_ADMIN_MESSAGE=20,
 };
 
 // Those are all the possible UDP packet identifier,

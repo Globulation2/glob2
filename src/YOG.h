@@ -99,7 +99,8 @@ public:
 	{
 		char userName[32];
 		Uint32 uid;
-		Uint8 playing;
+		bool playing;
+		bool away;
 	};
 	
 	struct Joiner

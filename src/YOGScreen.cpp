@@ -81,8 +81,23 @@ void YOGScreen::updatePlayerList(void)
 	{
 		if (client->playing)
 		{
+			if (client->away)
+			{
+				char s[32+4];
+				snprintf(s, 32+4, "([%s])", client->userName);
+				playerList->addText(s);
+			}
+			else
+			{
+				char s[32+2];
+				snprintf(s, 32+2, "(%s)", client->userName);
+				playerList->addText(s);
+			}
+		}
+		else if (client->away)
+		{
 			char s[32+2];
-			snprintf(s, 32+2, "(%s)", client->userName);
+			snprintf(s, 32+2, "[%s]", client->userName);
 			playerList->addText(s);
 		}
 		else
@@ -123,7 +138,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (globalContainer->yog->newPlayerList(true))
 				updatePlayerList();
 			dispatchPaint(gfxCtx);
-			globalContainer->yog->unshareGame(); // zzz Don't we stop sharing game when it start ?
+			globalContainer->yog->unshareGame();
 		}
 		else if (par1==JOIN)
 		{
@@ -216,6 +231,15 @@ void YOGScreen::onTimer(Uint32 tick)
 		case YCMT_PRIVATE_RECEIPT:
 			chatWindow->addText("<");
 			chatWindow->addText(globalContainer->texts.getString("[to:]"));
+			chatWindow->addText(m->userName);
+			chatWindow->addText("> ");
+			chatWindow->addText(m->text);
+			chatWindow->addText("\n");
+			chatWindow->scrollToBottom();
+		break;
+		case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
+			chatWindow->addText("<");
+			chatWindow->addText(globalContainer->texts.getString("[away:]"));
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);

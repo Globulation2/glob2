@@ -125,39 +125,80 @@ void YOGServer::executeCommand(YOGClient *sender, char *s, Uint8 messageID)
 	{
 		case 'w':
 		case 'm':
-			if (s[2]==' ')
+		if (s[2]==' ')
+		{
+			PrivateReceipt privateReceipt;
+			privateReceipt.messageID=messageID;
+
+			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 			{
-				PrivateReceipt privateReceipt;
-				privateReceipt.messageID=messageID;
-				
-				std::list<YOGClient *>::iterator client;
-				for (client=clients.begin(); client!=clients.end(); ++client)
+				char *name=(*client)->userName;
+				int unl=Utilities::strnlen(name, 32);
+				bool away=(*client)->away;
+				if ((strncmp(name, s+3, unl)==0)&&(s[3+unl]==' '))
 				{
-					char *name=(*client)->userName;
-					int unl=Utilities::strnlen(name, 32);
-					if ((strncmp(name, s+3, unl)==0)&&(s[3+unl]==' '))
+					Message m;
+					int l;
+					l=Utilities::strmlen(s+unl+4, 256-unl-4);
+					memcpy(m.text, s+unl+4, l);
+					m.text[l-1]=0;
+					m.textLength=l;
+
+					l=Utilities::strmlen(sender->userName, 32);
+					memcpy(m.userName, sender->userName, l);
+					m.userName[l-1]=0;
+					m.userNameLength=l;
+
+					m.messageType=YMT_PRIVATE_MESSAGE;
+					(*client)->addMessage(&m);
+					
+					privateReceipt.addr.push_back(unl);
+					privateReceipt.away.push_back(away);
+					if (away)
 					{
-						Message m;
-						int l;
-						l=Utilities::strmlen(s+unl+4, 256-unl-4);
-						memcpy(m.text, s+unl+4, l);
-						m.text[l-1]=0;
-						m.textLength=l;
-
-						l=Utilities::strmlen(sender->userName, 32);
-						memcpy(m.userName, sender->userName, l);
-						m.userName[l-1]=0;
-						m.userNameLength=l;
-
-						m.messageType=YMT_PRIVATE_MESSAGE;
-						(*client)->addMessage(&m);
-						
-						privateReceipt.addr.push_back(unl);
+						char *awayMessage=(*client)->awayMessage;
+						int l=Utilities::strmlen(awayMessage, 64);
+						char *s=(char *)malloc(l);
+						memcpy(s, awayMessage, l);
+						printf("l=(%d), s=(%s), s=(%x)\n", l, s, (int)s);
+						privateReceipt.awayMessages.push_front(s);
+						printf("(*client)->awayMessage=(%s)\n", (*client)->awayMessage);
+						printf("awayMessages.begin()=(%s)\n", *privateReceipt.awayMessages.begin());
 					}
 				}
-				
-				sender->addReceipt(&privateReceipt);
 			}
+
+			sender->addReceipt(&privateReceipt);
+		}
+		break;
+		case 'a':
+		{
+			bool playing=sender->playing; // We could completely avoid to send the CUP_[NOT_]PLAYING flag.
+			bool away=!sender->away;
+			sender->away=away;
+			Uint32 uid=sender->uid;
+			Uint16 change=0;
+			if (playing)
+				change|=CUP_PLAYING;
+			else
+				change|=CUP_NOT_PLAYING;
+			if (away)
+				change|=CUP_AWAY;
+			else
+				change|=CUP_NOT_AWAY;
+			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+				(*client)->updateClient(uid, change);
+			if (away)
+			{
+				if (s[2]==' ') // Do we have one argument ?
+					strncpy(sender->awayMessage, s+3, 64);
+				else
+					sender->awayMessage[0]=0;
+				lprintf("Client (%s) is now away (%s).\n", sender->userName, sender->awayMessage);
+			}
+			else
+				lprintf("Client (%s) is no more away.\n", sender->userName);
+		}
 		break;
 		case 0:
 		{
@@ -539,7 +580,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 					lprintf("(ok)\n");
 					Uint32 cuid=(*sender)->uid;
 					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
-						(*c)->updateClient(cuid, false);
+						(*c)->updateClient(cuid, (Uint16)CUP_NOT_PLAYING);
 					(*sender)->joinGameip.host=0;
 					(*sender)->joinGameip.port=0;
 					(*sender)->hostGameip.host=0;
@@ -800,7 +841,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 						(*client)->addGame((*sender)->sharingGame);
 				if (!(*sender)->playing)
 					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
-						(*c)->updateClient(cuid, true);
+						(*c)->updateClient(cuid, (Uint16)CUP_PLAYING);
 				(*sender)->hostGameip=ip;
 				(*sender)->playing=true;
 				lprintf("Client (%s) has a hostGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
@@ -821,7 +862,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			{
 				if (!(*sender)->playing)
 					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
-						(*c)->updateClient(cuid, true);
+						(*c)->updateClient(cuid, (Uint16)CUP_PLAYING);
 				(*sender)->joinGameip=ip;
 				(*sender)->playing=true;
 				lprintf("Client %s has a joinGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
@@ -939,6 +980,8 @@ void YOGServer::run()
 				if (c->receiptTOTL--<=0)
 				{
 					lprintf("unable to deliver receipt to (%s)\n", c->userName);
+					for (std::list<char *>::iterator message=rit->awayMessages.begin(); message!=rit->awayMessages.end(); message++)
+						free(*message);
 					c->privateReceipts.erase(rit);
 					break;
 				}
