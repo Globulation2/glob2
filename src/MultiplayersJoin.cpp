@@ -49,18 +49,19 @@ MultiplayersJoin::~MultiplayersJoin()
 		}
 	}
 	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-			fclose(logFile);
-		logFile=NULL;
-	}
 	if (downloadStream)
 	{
 		fprintf(logFile, "MultiplayersJoin:: download not finished.\n");
 		//TODO: delete/remove the incomplete file !
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
+	}
+	
+	if (logFile)
+	{
+		if (logFile!=stdout)
+			fclose(logFile);
+		logFile=NULL;
 	}
 }
 

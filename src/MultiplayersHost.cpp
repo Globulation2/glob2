@@ -614,20 +614,17 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 			{
 				Uint32 index=playerFileTra[p].window[i].index;
-				if (index<unreceivedIndex)
+				if (index<unreceivedIndex && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
 				{
-					if (!playerFileTra[p].window[i].received)
-						playerFileTra[p].windowSize++;
+					playerFileTra[p].windowSize++;
 					playerFileTra[p].window[i].received=true;
 				}
 				else if (index>unreceivedIndex)
 					for (int ix=0; ix<16; ix++)
-						if (index==receivedIndex[ix])
+						if (index==receivedIndex[ix] && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
 						{
-							if (!playerFileTra[p].window[i].received)
-								playerFileTra[p].windowSize++;
+							playerFileTra[p].windowSize++;
 							playerFileTra[p].window[i].received=true;
-							break;
 						}
 			}
 		
@@ -644,6 +641,9 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 					playerFileTra[p].packetSize*=2;
 				}
 			}
+			
+			
+			fprintf(logFile, "playerFileTra[p].windowSize=%d.\n", playerFileTra[p].windowSize);
 		}
 	}
 	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
@@ -1203,6 +1203,7 @@ void MultiplayersHost::sendingTime()
 						playerFileTra[p].packetSize/=2;
 				}
 				playerFileTra[p].windowSize=windowSize;
+				fprintf(logFile, "windowSize=%d\n", windowSize);
 			}
 			
 			if (toSend)
