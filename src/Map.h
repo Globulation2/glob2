@@ -378,6 +378,7 @@ public:
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
 	
+	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 
 protected:
 	// private functions, used for edition

@@ -104,9 +104,14 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
+	
 	Map::clearBuildingGradient(localGradient);
-	globalGradient[0]=NULL;
-	globalGradient[1]=NULL;
+	for (int i=0; i<2; i++)
+	{
+		globalGradient[i]=NULL;
+		dirtyLocalGradient[i]=true;
+		dirtyGlobalGradient[i]=true;
+	}
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -167,11 +172,15 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		assert(ressources[i]<=type->maxRessource[i]);
 	
 	for (int i=0; i<2; i++)
+	{
 		if (globalGradient[i])
 		{
 			delete globalGradient[i];
 			globalGradient[i]=NULL;
 		}
+		dirtyLocalGradient[i]=true;
+		dirtyGlobalGradient[i]=true;
+	}
 	Map::clearBuildingGradient(localGradient);
 }
 

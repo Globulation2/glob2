@@ -1513,6 +1513,7 @@ void Map::clearBuildingGradient(Uint8 gradient[2][1024])
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
 	assert(building);
+	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
@@ -1695,6 +1696,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
 	assert(building);
+	building->dirtyGlobalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
@@ -1967,7 +1969,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int max=gradient[lx+ly*32];
 		bool found=false;
 
-		if (max>1)
+		if (max>1 && !building->dirtyLocalGradient[canSwim])
 		{
 			for (int sd=1; sd>=0; sd--)
 				for (int d=sd; d<8; d+=2)
@@ -2046,7 +2048,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		updateGlobalGradient(building, canSwim);
 		printf("w=%d, h=%d, size=%d.\n", w, h, size);
 	}
-	else
+	else if (!building->dirtyGlobalGradient[canSwim])
 	{
 		bool found=false;
 		Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
@@ -2103,6 +2105,27 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	printf("global gradient to building gid=%d failed! p=(%d, %d)\n", building->gid, x, y);
 	
 	return false;
+}
+
+void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
+{
+	//printf("Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
+	for (int hi=0; hi<hl; hi++)
+	{
+		int wyi=w*((y+h+hi)&hMask);
+		for (int wi=0; wi<wl; wi++)
+		{
+			int xi=(x+w+wi)&wMask;
+			int bgid=cases[xi+wyi].building;
+			if (bgid!=NOGBID)
+				if (Building::GIDtoTeam(bgid)==teamNumber)
+				{
+					//printf("dirtying-LocalGradient bgid=%d\n", bgid);
+					for (int canSwim=0; canSwim<2; canSwim++)
+						game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)]->dirtyLocalGradient[canSwim]=true;
+				}
+		}
+	}
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)

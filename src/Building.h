@@ -110,6 +110,8 @@ public:
 	
 	Uint32 seenByMask;
 	
+	bool dirtyLocalGradient[2];
+	bool dirtyGlobalGradient[2];
 	Uint8 localGradient[2][1024];
 	Uint8 *globalGradient[2];
 
