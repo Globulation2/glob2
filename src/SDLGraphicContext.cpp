@@ -465,6 +465,7 @@ void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8
     }
 	else
 	{
+		// we swap x and y meaning
 		test = -test;
 		Swap(dx,dy);
 		littleincx = 0;
@@ -521,8 +522,7 @@ void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8
 			py+=bigincy;
 			e-= w;
 		}
-		if (((clipRect.y+clipRect.h)-y2)>1)
-			drawPixel(px,py,r,g,b,(Uint8)(I-(e>>FIXED)));
+		drawPixel(px,py,r,g,b,(Uint8)(I-(e>>FIXED)));
 		drawPixel(px+alphadecx,py+alphadecy,r,g,b,(Uint8)(e>>FIXED));
 	}
 }
