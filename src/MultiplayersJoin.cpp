@@ -1492,8 +1492,6 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	packet->data[2]=0;
 	packet->data[3]=0;
 
-	memset(packet->data+4, 0, 8);
-
 	Uint32 netHost=SDL_SwapBE32(serverIP.host);
 	Uint16 netPort=SDL_SwapBE16(serverIP.port);
 	fprintf(logFile, "sendSessionInfoRequest() serverIP=%s\n", Utilities::stringIP(serverIP));
