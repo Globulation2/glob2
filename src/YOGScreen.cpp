@@ -64,6 +64,11 @@ YOGScreen::~YOGScreen()
 
 void YOGScreen::updateList(void)
 {
+	std::vector<char *>::iterator ipIt;
+	for( ipIt=IPs.begin(); ipIt!=IPs.end(); ++ipIt)
+	{
+		delete[] (*ipIt);
+	}
 	IPs.clear();
 	gameList->clear();
 
@@ -95,13 +100,19 @@ void YOGScreen::updateList(void)
 			const char *identifier=globalContainer->yog.getGameIdentifier();
 			const char *version=globalContainer->yog.getGameVersion();
 			const char *comment=globalContainer->yog.getGameComment();
+			const char *hostname=globalContainer->yog.getGameHostname();
 
 			char data[128];
 			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
 			gameList->addText(data);
+			
+			char *ip;
+			int ipLen=strlen(hostname);
+			ip=new char[ipLen+1];
+			strncpy(ip, hostname, ipLen+1);
+			IPs.push_back(ip);
 		}
 		while (globalContainer->yog.getNextGame());
-		// TODO : remove IP or update them
 	}
 }
 /*
@@ -246,17 +257,20 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		//ip=atoi(token);
 		sscanf(token, "%x", &ip);
 
-		ip=SDL_SwapLE32(ip); //TODO: YOG should work in BigEndian.
+		ip=SDL_SwapLE32(ip);
 
 		char s[128];
 		snprintf(s, 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
 
 		printf("YOG : selected ip is %s\n", s);
-
+		*/
 		// we create a new screen to join this game:
-		strncpy(multiplayersJoin->serverName, s, 128);
+		printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
+		strncpy(multiplayersJoin->serverName, IPs[par1], 128);
+		multiplayersJoin->serverName[127]=0;
 		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
-		multiplayersJoin->tryConnection();*/
+		multiplayersJoin->playerName[127]=0;
+		multiplayersJoin->tryConnection();
 	}
 }
 

@@ -28,9 +28,22 @@ GlobalContainer::GlobalContainer(void)
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
+
 	settings.ircURL=NULL;
 	setIRCURL("irc.debian.org");
 	settings.ircPort=6667;
+
+	// set default values in settings or load them
+	settings.userName[0]=0;
+	char *userName;
+#	ifdef WIN32
+		userName=getenv("USERNAME");
+#	else // angel > case of unix and MacIntosh Systems
+		userName=getenv("USER");
+#	endif
+	if (!userName)
+		userName="player";
+	setUserName(userName);
 
 	hostServer=false;
 	gfx=NULL;
@@ -76,6 +89,12 @@ void GlobalContainer::setIRCURL(const char *name)
 	int len=strlen(name)+1;
 	settings.ircURL=new char[len];
 	strncpy(settings.ircURL, name, len);
+}
+
+void GlobalContainer::setUserName(const char *name)
+{
+	strncpy(settings.userName, name, BasePlayer::MAX_NAME_LENGTH);
+	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
@@ -127,6 +146,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-m\tspecify meta server hostname\n");
 			printf("-p\tspecify meta server port\n");
+			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
 			exit(0);
 		}
@@ -168,6 +188,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					i++;
 					if (i < argc)
 						settings.ircPort=atoi(argv[i]);
+				}
+			}
+			else if (argv[i][1] == 'u')
+			{
+				if (argv[i][2] != 0)
+					setUserName(&argv[i][2]);
+				else
+				{
+					i++;
+					if (i < argc)
+						setUserName(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 's')
@@ -214,20 +245,6 @@ void GlobalContainer::initProgressBar(void)
 
 void GlobalContainer::load(void)
 {
-	// set default values in settings or load them
-	char *userName;
-#	ifdef WIN32 // angel > case Win32 caca
-		userName=getenv("USERNAME");
-#	else // angel > case of unix and MacIntosh Systems
-		userName=getenv("USER");
-#	endif
-	if (!userName)
-		userName="player";
-	strncpy(settings.userName, userName, BasePlayer::MAX_NAME_LENGTH);
-
-	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
-	// TODO : loading code for username and others options
-
 	// load texts
 	texts.load("data/texts.txt");
 

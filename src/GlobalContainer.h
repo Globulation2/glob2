@@ -46,6 +46,7 @@ public:
 
 private:
 	void setIRCURL(const char *name);
+	void setUserName(const char *name);
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 

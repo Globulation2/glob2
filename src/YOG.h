@@ -32,7 +32,7 @@ class YOG
 {
 public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
-	enum { GAMEINFO_ID_SIZE = 31, GAMEINFO_VERSION_SIZE=7, GAMEINFO_COMMENT_SIZE=59 };
+	enum { GAMEINFO_ID_SIZE = 31, GAMEINFO_VERSION_SIZE=7, GAMEINFO_COMMENT_SIZE=59, GAMEINFO_HOSTNAME_SIZE=127 };
 	enum { RESEND_GAME_TIMEOUT =30000, RESEND_GAME_INTERVAL= 10000 };
 
 	enum InfoMessageType
@@ -63,6 +63,7 @@ public:
 		char identifier[GAMEINFO_ID_SIZE+1];
 		char version[GAMEINFO_VERSION_SIZE+1];
 		char comment[GAMEINFO_COMMENT_SIZE+1];
+		char hostname[GAMEINFO_HOSTNAME_SIZE+1];
 		Uint32 updatedTick;
 	};
 
@@ -181,6 +182,8 @@ public:
 	const char *getGameVersion(void);
 	//! Get comment from pending game, return NULL when last
 	const char *getGameComment(void);
+	//! Get hostname where game is
+	const char *getGameHostname(void);
 	//! Returns true and get next game if there is another game in list, false otherwise
 	bool getNextGame(void);
 
