@@ -24,6 +24,7 @@
 #include <GUITextInput.h>
 #include <GUITextArea.h>
 #include <GUIButton.h>
+#include <GUIAnimation.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
@@ -43,10 +44,16 @@ YOGPreScreen::YOGPreScreen()
 	
 	endExecutionValue=EXECUTING;
 	connectOnNextTimer=false;
+
+	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
+	animation=new Animation(32, 100, ALIGN_FILL, ALIGN_TOP, "animation", 0, 20, 2);
+	animation->visible=false;
+	addWidget(animation);
 }
 
 YOGPreScreen::~YOGPreScreen()
 {
+	Toolkit::releaseSprite("animation");
 }
 
 void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -65,6 +72,7 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 			delete[] s;
 			oldYOGExternalStatusState=YOG::YESTS_CONNECTING;
 			connectOnNextTimer=true;
+			animation->show();
 		}
 		else if (par1==-1)
 		{
@@ -86,6 +94,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	else if (yog->yogGlobalState>=YOG::YGS_CONNECTED)
 	{
+		animation->hide();
 		printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 40);
@@ -112,10 +121,12 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)
 	{
+		if (yog->externalStatusState!=YOG::YESTS_CONNECTING)
+			animation->hide();
 		char *s=yog->getStatusString();
 		statusText->setText(s);
 		delete[] s;
 		oldYOGExternalStatusState=yog->externalStatusState;
 	}
-	
+
 }

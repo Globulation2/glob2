@@ -62,6 +62,7 @@ Sprite *Toolkit::getSprite(const char *name)
 void Toolkit::releaseSprite(const char *name)
 {
 	SpriteMap::iterator it = spriteMap.find(std::string(name));
+	assert(it!=spriteMap.end());
 	delete (*it).second;
 	spriteMap.erase(it);
 }
@@ -74,6 +75,7 @@ Font *Toolkit::getFont(const char *name)
 void Toolkit::releaseFont(const char *name)
 {
 	FontMap::iterator it = fontMap.find(std::string(name));
+	assert(it!=fontMap.end());
 	delete (*it).second;
 	fontMap.erase(it);
 }

@@ -54,7 +54,9 @@ void Animation::internalInit(int x, int y, int w, int h)
 
 void Animation::internalRepaint(int x, int y, int w, int h)
 {
-	parent->getSurface()->drawSprite(x, y, archPtr, pos);
+	int dW=(w-archPtr->getW(pos))>>1;
+	int dH=(h-archPtr->getH(pos))>>1;
+	parent->getSurface()->drawSprite(x+dW, y+dH, archPtr, pos);
 }
 
 void Animation::onTimer(Uint32 tick)
