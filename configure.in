@@ -67,7 +67,7 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [source directory])
 
-AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile 
+AC_OUTPUT([Makefile src/Makefile doc/Makefile data/Makefile 
 data/gfx/Makefile
 data/fonts/Makefile
 data/gui/Makefile

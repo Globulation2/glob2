@@ -21,9 +21,11 @@ libgag_a_SOURCES = FileManager.cpp\
 
 EXTRA_DIST = SDLFont.h \
         SDLGraphicContext.h \
-		GLGraphicConext.cpp \
+		GLGraphicContext.h \
         SDLSprite.h \
-        SDL_ttf.h
+        SDL_ttf.h \
+		win32_dirent.cpp \
+		win32_dirent.h
 			
 
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I../include/
