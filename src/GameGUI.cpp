@@ -486,7 +486,7 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
-	const int scrollZoneWidth=8;
+	const int scrollZoneWidth=5;
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;
 
@@ -1253,6 +1253,21 @@ void GameGUI::drawOverlayInfos(void)
 	{
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, font, globalContainer->texts.getString("[you have lost]"));
 	}
+	else if (hasLocalTeamWon()==true)
+	{
+		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, font, globalContainer->texts.getString("[you have won]"));
+	}
+}
+
+bool GameGUI::hasLocalTeamWon(void)
+{
+	bool isOtherAlive=false;
+	for (int i=0; i<game.session.numberOfTeam; i++)
+	{
+		if ((game.teams[i]->teamNumber!=localTeam) && (game.teams[i]->isAlive))
+			isOtherAlive=true;
+	}
+	return !isOtherAlive;
 }
 
 void GameGUI::drawInGameMenu(void)
