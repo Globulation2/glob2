@@ -64,12 +64,12 @@ YOG::YOG(LogFileManager *logFileManager)
 	
 	uid=0;
 	
-	/*if (logFileManager)
+	if (logFileManager)
 	{
 		logFile=logFileManager->getFile("YOG.log");
 		assert(logFile);
 	}
-	else*/
+	else
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
 	
