@@ -25,7 +25,7 @@
 #include "Game.h"
 #include "GameGUIDialog.h"
 #include <queue>
-#include "TeamStat.h"
+class TeamStats; //#include "TeamStat.h"
 
 #define MAX_UNIT_WORKING 20
 #define MAX_EXPLO_FLAG_RANGE 20
@@ -122,7 +122,7 @@ public:
 	char toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+5];
 	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines;
-	int localPlayer, localTeam;
+	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
 
 private:
@@ -155,7 +155,8 @@ private:
 
 	//TeamStat stats[128];
 	//int statsPtr;
-	TeamStats teamStats;
+	TeamStats *teamStats;
+	Team *localTeam;
 	StatMode statMode;
 
 	Uint32 chatMask;

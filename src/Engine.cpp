@@ -70,7 +70,7 @@ int Engine::initCampain(void)
 			if (!wasHuman)
 			{
 				gui.localPlayer=playerNumber;
-				gui.localTeam=i;
+				gui.localTeamNo=i;
 				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "Player %d", playerNumber);
 				wasHuman=true;
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
@@ -87,7 +87,7 @@ int Engine::initCampain(void)
 	}
 
 	gui.game.session.numberOfPlayer=playerNumber;
-	gui.game.renderMiniMap(gui.localTeam);
+	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 
 	// FIXME : delete Team that hasn't any players and defrag array
@@ -138,7 +138,7 @@ int Engine::initCustom(void)
 			{
 				gui.game.players[nbPlayer]=new Player(0, globalContainer->userName, gui.game.teams[teamColor], BasePlayer::P_LOCAL);
 				gui.localPlayer=nbPlayer;
-				gui.localTeam=teamColor;
+				gui.localTeamNo=teamColor;
 			}
 			else
 			{
@@ -154,7 +154,7 @@ int Engine::initCustom(void)
 	// should be in game.defragTeamArray();
 
 	gui.game.session.numberOfPlayer=nbPlayer;
-	gui.game.renderMiniMap(gui.localTeam);
+	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -198,7 +198,7 @@ int Engine::initCustom(const char *gameName)
 		}
 	}
 	
-	gui.game.renderMiniMap(gui.localTeam);
+	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
 
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -231,13 +231,13 @@ void Engine::startMultiplayer(SessionConnection *sessionConnection)
 	gui.loadBase(&sessionConnection->sessionInfo);
 
 	gui.localPlayer=p;
-	gui.localTeam=sessionConnection->sessionInfo.players[p].teamNumber;
-	assert(gui.localTeam<sessionConnection->sessionInfo.numberOfTeam);
-	gui.localTeam=gui.localTeam % sessionConnection->sessionInfo.numberOfTeam; // Ugly relase case.
+	gui.localTeamNo=sessionConnection->sessionInfo.players[p].teamNumber;
+	assert(gui.localTeamNo<sessionConnection->sessionInfo.numberOfTeam);
+	gui.localTeamNo=gui.localTeamNo % sessionConnection->sessionInfo.numberOfTeam; // Ugly relase case.
 
-	gui.game.renderMiniMap(gui.localTeam);
-	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
+	gui.game.renderMiniMap(gui.localTeamNo);
+	gui.viewportX=gui.game.teams[gui.localTeamNo]->startPosX-((globalContainer->gfx->getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeamNo]->startPosY-(globalContainer->gfx->getH()>>6);
 	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
 	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
 
@@ -246,7 +246,7 @@ void Engine::startMultiplayer(SessionConnection *sessionConnection)
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
 
-	printf("Engine::localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
+	printf("Engine::localPlayer=%d, localTeamNb=%d\n", gui.localPlayer, gui.localTeamNo);
 }
 
 
@@ -358,13 +358,13 @@ int Engine::run(void)
 				//printf ("Engine::bne:%d\n", globalContainer->safe());
 
 				// here we do the real work
-				gui.game.step(gui.localTeam);
+				gui.game.step(gui.localTeamNo);
 			}
 
 			//printf ("Engine::bdr:%d\n", globalContainer->safe());
 
 			// we draw
-			gui.drawAll(gui.localTeam);
+			gui.drawAll(gui.localTeamNo);
 
 			//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
 			//ticknb=(ticknb+1)%(640-128);
