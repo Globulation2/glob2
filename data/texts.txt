@@ -449,6 +449,12 @@ Editor
 Editor
 Editor
 Edytor
+[credits]
+Crédits
+Credits
+
+
+
 [quit]
 Quitter
 Quit

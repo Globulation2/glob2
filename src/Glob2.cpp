@@ -31,6 +31,7 @@
 #include "NewMapScreen.h"
 #include "MultiplayersHost.h"
 #include "MultiplayersChooseMapScreen.h"
+#include "CreditScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
@@ -377,6 +378,12 @@ int Glob2::run(int argc, char *argv[])
 				}
 				else
 					assert(false);
+			}
+			break;
+			case MainMenuScreen::CREDITS:
+			{
+				CreditScreen creditScreen;
+				creditScreen.execute(globalContainer->gfx, 40);
 			}
 			break;
 			case MainMenuScreen::QUIT:

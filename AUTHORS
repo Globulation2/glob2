@@ -1,32 +1,42 @@
-Main developpers (including design, code and graphics) :
+Game design, core programming and project managment
 
-Stephane Magnenat <nct@ysagoon.com>
-Luc-Olivier de Charriere <nuage@ysagoon.com>
+Stéphane Magnenat <nct@ysagoon.com>
+Luc-Olivier de Charrière <nuage@ysagoon.com>
 
-Major contribution :
 
-* Serialiser from DPS (http://dps.epfl.ch) :
-  Sebastian Gerlach <minas@calodox.org>
+Additionnal programming
 
-Contributors :
+Martin Nyffenegger <barock@ysagoon.com> (SGSL)
+Martin Voelkle <martin.voelkle@epfl.ch> (GUI and bug fix)
 
-* Coding :
-  Julien Pilet <leto@calodox.org>
-  Frederic Dubouchet <angel@calodox.org>
-  Sebastian Gerlach <minas@calodox.org>
- 
-* Czech translation :
-  Michal Turek <bastard.user.from.hell@seznam.cz>
 
-* Deutsch translation :
-  Martin Nyffenegger <barock@ysagoon.com>
-  matthias Warkus <mawarkus@gnome.org>
+Graphism
 
-* Debian packages :
-  Gryzor
+Luc-Olivier de Charrière <nuage@ysagoon.com> (Globulation 1)
+Cyrille Dunant <cyrille.dunant@epfl.ch> (coloring)
+Emmanuel Eckard <emmanuel.eckard@epfl.ch> (drawing)
+Stéphane Magnenat <nct@ysagoon.com> (GUI and bug fix)
+Gabriel Walt <disney@ysagoon.com> (GUI)
 
-* Beta testing & graphic :
-  Gabriel Walt <disney@ysagoon.com>
 
-* Conceptual consulting for version 1.0 :
-  Cecile Grivaz <kat@ysagoon.com>
+Translations
+
+Michal Turek <bastard.user.from.hell@seznam.cz> (game, Czech)
+Martin Nyffenegger <barock@ysagoon.com> (game, Deutsch)
+Matthias Warkus <mawarkus@gnome.org> (game, Deutsch)
+Ghislain Leveque <court-jus@court-jus.net> (manual, French, English)
+
+
+Packaging
+
+Vincent Deffontaines <vincent@gryzor.com> (Debian)
+Sebastian Gerlach <minas@calodox.org> (Win32)
+
+
+Web Site
+
+Gabriel Walt <disney@ysagoon.com> (Olaf CMS)
+Stéphane Magnenat <nct@ysagoon.com> (content)
+Martin Voelkle <martin.voelkle@epfl.ch> (wiki)
+
+

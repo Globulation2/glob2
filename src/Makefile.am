@@ -78,6 +78,8 @@ LoadGameScreen.h \
 LoadGameScreen.cpp \
 MainMenuScreen.h \
 MainMenuScreen.cpp \
+CreditScreen.h \
+CreditScreen.cpp \
 MultiplayersOfferScreen.h\
 MultiplayersOfferScreen.cpp \
 YOGScreen.h \
