@@ -1,1 +1,1 @@
-extra_DIST= sha1.c  sha1.h
+EXTRA_DIST= sha1.c sha1.h
