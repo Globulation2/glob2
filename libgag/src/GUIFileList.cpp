@@ -77,6 +77,9 @@ namespace GAGGUI
 			}
 			this->sort();
 		}
+		
+		// we deselect
+		this->nth = -1;
 	}
 	
 	void FileList::selectionChanged()
