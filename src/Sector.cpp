@@ -132,7 +132,7 @@ void Sector::step(void)
 			BulletExplosion *explosion = new BulletExplosion();
 			explosion->x = (*it)->targetX;
 			explosion->y = (*it)->targetY;
-			explosion->ticksLeft = globalContainer->bulletExplosion->getFrameCount() - 1;
+			explosion->ticksLeft = globalContainer->bulletExplosion->getFrameCount();
 			explosions.push_front(explosion);
 
 			// remove bullet
