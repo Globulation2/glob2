@@ -103,7 +103,7 @@ public:
 	void addTeam(void);
 	void removeTeam(void);
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
-	void cleanUncontrolledTeams(void);
+	void clearingUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);
 
 	//void addUnit(int x, int y, int team, int type, int level);

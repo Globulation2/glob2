@@ -203,7 +203,7 @@ int MultiplayersHost::newTeamIndice()
 	{
 		int numberOfPlayer=0;
 		Uint32 m=1;
-		Uint32 pm=sessionInfo.team[ti].playersMask;
+		Uint32 pm=sessionInfo.teams[ti].playersMask;
 		for (int i=0; i<32; i++)
 		{
 			if (m&pm)
@@ -371,8 +371,8 @@ void MultiplayersHost::removePlayer(int p)
 	bool wasKnownByOthers=(sessionInfo.players[p].netState>BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST);
 	int t=sessionInfo.players[p].teamNumber;
 	fprintf(logFile, "player %d quited the game, from team %d.\n", p, t);
-	sessionInfo.team[t].playersMask&=~sessionInfo.players[p].numberMask;
-	sessionInfo.team[t].numberOfPlayer--;
+	sessionInfo.teams[t].playersMask&=~sessionInfo.players[p].numberMask;
+	sessionInfo.teams[t].numberOfPlayer--;
 	
 	if (playerFileTra[p].wantsFile)
 	{
@@ -409,8 +409,8 @@ void MultiplayersHost::removePlayer(int p)
 	{
 		fprintf(logFile, "replace it by another player: %d\n", mp);
 		int mt=sessionInfo.players[mp].teamNumber;
-		sessionInfo.team[mt].playersMask&=~sessionInfo.players[mp].numberMask;
-		sessionInfo.team[mt].numberOfPlayer--;
+		sessionInfo.teams[mt].playersMask&=~sessionInfo.players[mp].numberMask;
+		sessionInfo.teams[mt].numberOfPlayer--;
 
 		sessionInfo.players[p]=sessionInfo.players[mp];
 
@@ -429,8 +429,8 @@ void MultiplayersHost::removePlayer(int p)
 		// We erase replaced player:
 		sessionInfo.players[mp].init();
 
-		sessionInfo.team[t].playersMask|=sessionInfo.players[p].numberMask;
-		sessionInfo.team[t].numberOfPlayer++;
+		sessionInfo.teams[t].playersMask|=sessionInfo.players[p].numberMask;
+		sessionInfo.teams[t].numberOfPlayer++;
 	}
 	sessionInfo.numberOfPlayer--;
 	fprintf(logFile, "nop %d.\n", sessionInfo.numberOfPlayer);
@@ -445,8 +445,11 @@ void MultiplayersHost::removePlayer(int p)
 
 void MultiplayersHost::switchPlayerTeam(int p)
 {
-	Sint32 teamNumber=(sessionInfo.players[p].teamNumber+1)%sessionInfo.numberOfTeam;
-	sessionInfo.players[p].setTeamNumber(teamNumber);
+	Sint32 oldTeamNumber=sessionInfo.players[p].teamNumber;
+	sessionInfo.teams[oldTeamNumber].playersMask&=~sessionInfo.players[p].numberMask;
+	Sint32 newTeamNumber=(oldTeamNumber+1)%sessionInfo.numberOfTeam;
+	sessionInfo.teams[newTeamNumber].playersMask|=sessionInfo.players[p].numberMask;
+	sessionInfo.players[p].setTeamNumber(newTeamNumber);
 	
 	reinitPlayersState();
 }
@@ -599,8 +602,8 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 	{
 		fprintf(logFile, " newPlayerPresence::this ip(%s) is added in player list. (player %d), name=(%s)\n", Utilities::stringIP(ip), p, sessionInfo.players[p].name);
 		sessionInfo.numberOfPlayer++;
-		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
-		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
+		sessionInfo.teams[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
+		sessionInfo.teams[sessionInfo.players[p].teamNumber].numberOfPlayer++;
 		sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
 		sessionInfo.players[p].netTimeout=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[p].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -859,8 +862,8 @@ void MultiplayersHost::addAI(AI::ImplementitionID aiImplementationId)
 	strncpy(sessionInfo.players[p].name, Toolkit::getStringTable()->getString("[AI]", aiImplementationId), BasePlayer::MAX_NAME_LENGTH);
 	
 	sessionInfo.numberOfPlayer++;
-	sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
-	sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
+	sessionInfo.teams[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
+	sessionInfo.teams[sessionInfo.players[p].teamNumber].numberOfPlayer++;
 	
 	/*sessionInfo.players[p].netState=BasePlayer::PNS_AI;
 	sessionInfo.players[p].netTimeout=0;
