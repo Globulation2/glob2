@@ -73,12 +73,12 @@ namespace GAGCore
 		virtual ~Font() { }
 	
 		// width and height
-		virtual int getStringWidth(const char *string, Shape shape = STYLE_NORMAL) = 0;
-		virtual int getStringWidth(const char *string, int len, Shape shape = STYLE_NORMAL);
-		virtual int getStringWidth(const int i, Shape shape = STYLE_NORMAL);
-		virtual int getStringHeight(const char *string, Shape shape = STYLE_NORMAL) = 0;
-		virtual int getStringHeight(const char *string, int len, Shape shape = STYLE_NORMAL);
-		virtual int getStringHeight(const int i, Shape shape = STYLE_NORMAL);
+		virtual int getStringWidth(const char *string) = 0;
+		virtual int getStringWidth(const char *string, int len);
+		virtual int getStringWidth(const int i);
+		virtual int getStringHeight(const char *string) = 0;
+		virtual int getStringHeight(const char *string, int len);
+		virtual int getStringHeight(const int i);
 	
 		// Style and color
 		virtual void setStyle(Style style) = 0;

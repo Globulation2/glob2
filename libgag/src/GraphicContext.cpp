@@ -1255,31 +1255,31 @@ namespace GAGCore
 	}
 	
 	
-	int Font::getStringWidth(const int i, Shape shape)
+	int Font::getStringWidth(const int i)
 	{
 		std::ostringstream temp;
 		temp << i;
-		return getStringWidth(temp.str().c_str(), shape);
+		return getStringWidth(temp.str().c_str());
 	}
 	
-	int Font::getStringWidth(const char *string, int len, Shape shape)
+	int Font::getStringWidth(const char *string, int len)
 	{
 		std::string temp;
 		temp.append(string, len);
-		return getStringWidth(temp.c_str(), shape);
+		return getStringWidth(temp.c_str());
 	}
 	
-	int Font::getStringHeight(const char *string, int len, Shape shape)
+	int Font::getStringHeight(const char *string, int len)
 	{
 		std::string temp;
 		temp.append(string, len);
-		return getStringHeight(temp.c_str(), shape);
+		return getStringHeight(temp.c_str());
 	}
 	
-	int Font::getStringHeight(const int i, Shape shape)
+	int Font::getStringHeight(const int i)
 	{
 		std::ostringstream temp;
 		temp << i;
-		return getStringHeight(temp.str().c_str(), shape);
+		return getStringHeight(temp.str().c_str());
 	}
 }
