@@ -20,7 +20,6 @@
 #ifndef __SESSION_H
 #define __SESSION_H
 
-#include "Header.h"
 #include "Player.h"
 #include "MapGenerationDescriptor.h"
 
@@ -138,7 +137,7 @@ public:
 
 	bool setLocal(int p);
 
-	int getTeamNumber(char playerName[BasePlayer::MAX_NAME_LENGTH], int team);
+	int getTeamNumber(char playerName[32], int team);
 	int getAITeamNumber(SessionInfo *currentSessionInfo, int team);
 
 	//! get information on player in a nice string

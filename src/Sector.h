@@ -21,7 +21,8 @@
 #define __SECTOR_H
 
 #include <list>
-#include "Header.h"
+
+#include <SDL/SDL_rwops.h>
 
 class Map;
 class Game;

@@ -20,11 +20,10 @@
 #ifndef __ORDER_H
 #define __ORDER_H
 
-#include "Header.h"
-#include "Building.h"
-#include "BuildingType.h"
-#include "NetConsts.h"
 #include <assert.h>
+
+#include "NetConsts.h"
+#include "UnitType.h"
 
 class Order
 {
@@ -51,12 +50,11 @@ public:
 
 
 // Creation orders
-// NOTE : we pass a BuildingType but it's a int and it's un typenum so we need to CLEAN THIS !!!
 class OrderCreate:public Order
 {
 public:
 	OrderCreate(const Uint8 *data, int dataLength);
-	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::BuildingTypeNumber typeNumber);
+	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNumber);
 	virtual ~OrderCreate(void) { }
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
@@ -67,7 +65,7 @@ public:
 	Uint32 team;
 	Sint32 posX;
 	Sint32 posY;
-	BuildingType::BuildingTypeNumber typeNumber;
+	Sint32 typeNumber;
 
  private:
 	Uint8 data[16];

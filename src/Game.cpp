@@ -17,18 +17,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Game.h"
-#include "BuildingType.h"
 #include <assert.h>
 #include <string.h>
-#include "Utilities.h"
-#include "LogFileManager.h"
-#include "GlobalContainer.h"
+
 #include <set>
 #include <string>
 #include <functional>
 #include <algorithm>
+
 #include <GraphicContext.h>
+
+#include "Game.h"
+#include "BuildingType.h"
+#include "Utilities.h"
+#include "LogFileManager.h"
+#include "GlobalContainer.h"
 
 #define BULLET_IMGID 35
 

@@ -150,7 +150,7 @@ OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::BuildingTypeNumber typeNumber)
+OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, Sint32 typeNumber)
 {
 	this->team=team;
 	this->posX=posX;
@@ -163,7 +163,7 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->team, 0);
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
-	addUint32(data, (Uint32)this->typeNumber, 12);
+	addSint32(data, (Sint32)this->typeNumber, 12);
 	
 	return data;
 }
@@ -176,7 +176,7 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	this->team=getSint32(data, 0);
 	this->posX=getSint32(data, 4);
 	this->posY=getSint32(data, 8);
-	this->typeNumber=(BuildingType::BuildingTypeNumber)getUint32(data, 12);
+	this->typeNumber=getSint32(data, 12);
 	
 	memcpy(this->data, data, dataLength);
 	

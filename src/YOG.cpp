@@ -19,7 +19,6 @@
  
 // TODO:remove useless includes
 
-#include <openssl/sha.h>
 #include "../gnupg/sha1.c"
 
 #include <SDL/SDL.h>

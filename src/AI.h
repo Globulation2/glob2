@@ -20,7 +20,7 @@
 #ifndef __AI_H
 #define __AI_H
 
-#include "Header.h"
+#include <SDL/SDL_rwops.h>
 
 class Player;
 class Order;
