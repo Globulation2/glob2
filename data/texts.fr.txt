@@ -198,7 +198,7 @@ Annuler
 Vous avez perdu!
 [you have won]
 Vous avez gagné!
-[campagn]
+[campaign]
 Campagne
 [tutorial]
 Didacticiel

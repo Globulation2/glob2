@@ -196,7 +196,7 @@ Ok
 Вы проиграли!
 [you have won]
 Вы победили!
-[campagn]
+[campaign]
 Кампания
 [tutorial]
 Самоучитель

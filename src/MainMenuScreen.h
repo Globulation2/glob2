@@ -33,7 +33,7 @@ class MainMenuScreen:public Screen
 public:
 	enum
 	{
-		CAMPAIN,
+		CAMPAIGN,
 		TUTORIAL,
 		LOAD_GAME,
 		CUSTOM,

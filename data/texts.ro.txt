@@ -196,7 +196,7 @@ Anulează
 Aţi pierdut!
 [you have won]
 Aţi câştigat!
-[campagn]
+[campaign]
 Campanie
 [tutorial]
 Tutorial

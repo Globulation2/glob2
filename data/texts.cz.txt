@@ -198,7 +198,7 @@ Zrušit
 Jsi ztracen...
 [you have won]
 Vyhrál jsi!
-[campagn]
+[campaign]
 Nová hra
 [tutorial]
 Tutoriál

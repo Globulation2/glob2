@@ -98,7 +98,7 @@
 [Cancel]
 [you have lost]
 [you have won]
-[campagn]
+[campaign]
 [tutorial]
 [custom game]
 [yog]

@@ -198,7 +198,7 @@ Cancel
 You have lost!
 [you have won]
 You have won!
-[campagn]
+[campaign]
 Campaign
 [tutorial]
 Tutorial

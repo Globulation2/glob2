@@ -37,9 +37,9 @@ public:
 	~Engine();
 	
 	//! Display a campaign chooser screen then call initCampaign(mapName) with the selected file
-	int initCampain();
+	int initCampaign();
 	//! Load mapName for campaign, init teams and create netGame
-	int initCampain(const std::string &mapName);
+	int initCampaign(const std::string &mapName);
 	//! Display a custom map chooser screen, init teams and create netGame
 	int initCustom();
 	//! Init and load a custom game from gameName. init teams and create netGame

@@ -272,17 +272,17 @@ int Glob2::run(int argc, char *argv[])
 				isRunning = false;
 			}
 			break;
-			case MainMenuScreen::CAMPAIN:
+			case MainMenuScreen::CAMPAIGN:
 			{
 				Engine engine;
-				if (engine.initCampain() == Engine::EE_NO_ERROR)
+				if (engine.initCampaign() == Engine::EE_NO_ERROR)
 					isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::TUTORIAL:
 			{
 				Engine engine;
-				if (engine.initCampain("maps/tutorial.map") == Engine::EE_NO_ERROR)
+				if (engine.initCampaign("maps/tutorial.map") == Engine::EE_NO_ERROR)
 					isRunning = (engine.run() != -1);
 			}
 			break;

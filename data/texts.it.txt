@@ -196,7 +196,7 @@ Annulla
 Hai perso
 [you have won]
 Hai vinto!!!!
-[campagn]
+[campaign]
 Campagna
 [tutorial]
 Esercitazione
