@@ -302,8 +302,20 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			m.userName[31]=0;
 			m.userNameLength=l;
 			
-			fprintf(logFile, "new message:%s:%s\n", m.userName, m.text);
-			receivedMessages.push_back(m);
+			for (std::list<Message>::iterator mit=recentlyReceivedMessages.begin(); mit!=recentlyReceivedMessages.end(); ++mit)
+				if (mit->messageID==messageID && (strncmp(m.text, mit->text, m.textLength)==0))
+				{
+					already=true;
+					break;
+				}
+			if (!already)
+			{
+				fprintf(logFile, "new message:%s:%s\n", m.userName, m.text);
+				receivedMessages.push_back(m);
+				recentlyReceivedMessages.push_back(m);
+				if (recentlyReceivedMessages.size()>64)
+					recentlyReceivedMessages.pop_front();
+			}
 		}
 	}
 	break;

@@ -427,7 +427,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				break;
 			}
 		if (good)
-			(*sender)->deleteMessage(messageID);
+			(*sender)->deliveredMessage(messageID);
 	}
 	break;
 	case YMT_SHARING_GAME:
