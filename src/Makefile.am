@@ -131,5 +131,5 @@ ScriptEditorScreen.cpp \
 SDL_ttf.c \
 SDL_ttf.h 
 
-glob2_LDADD=-lSDL_net -lSDL_image -lSDL_ttf @SDL_LIBS@ 
+glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@
