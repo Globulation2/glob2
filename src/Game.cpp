@@ -1397,14 +1397,17 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		int imgid=type->startImage;
 		int x, y;
+		int dx, dy;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 		// select buildings and set the team colors
 		Sprite *buildingSprite=globalContainer->buildings;
+		dx = (type->width<<5)-buildingSprite->getW(imgid);
+		dy = (type->height<<5)-buildingSprite->getH(imgid);
 		buildingSprite->setBaseColor(team->colorR, team->colorG, team->colorB);
 
 		// draw building
-		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
 
 		if (!type->hueImage)
 		{
