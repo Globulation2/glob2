@@ -32,9 +32,13 @@ void TextArea::internalPaint(void)
 {
 	assert(gfx);
 	gfx->drawRect(x, y, w, h, 180, 180, 180);
-	for (unsigned i=0;(i<=areaHeight)&&(i<lines.size()-areaPos);i++)
+	if (textBuffer)
 	{
-		gfx->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
+		for (unsigned i=0;(i<=areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
+		{
+			assert(i+areaPos<lines.size());
+			gfx->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
+		}
 	}
 	/*if (areaPos>0)
 	{
@@ -67,21 +71,13 @@ void TextArea::onSDLEvent(SDL_Event *event)
 		{
 		case SDLK_UP:
 			{
-				if (areaPos>0)
-				{
-					areaPos--;
-				}
-				repaint();
+				scrollUp();
 				//return true;
 			}
 			break;
 		case SDLK_DOWN:
 			{
-				if ((unsigned)areaPos<lines.size()-areaHeight-1)
-				{
-					areaPos++;
-				}
-				repaint();
+				scrollDown();
 				//return true;
 			}
 			break;
@@ -183,18 +179,24 @@ void TextArea::addText(const char *text)
 
 void TextArea::scrollDown(void)
 {
-	if (areaPos<lines.size()-areaHeight-1)
+	if (lines.size()>=areaHeight)
 	{
-		areaPos++;
+		if (areaPos<lines.size()-areaHeight-1)
+		{
+			areaPos++;
+		}
 	}
 	repaint();
 }
 
 void TextArea::scrollUp(void)
 {
-	if (areaPos>0)
+	if (lines.size()>=areaHeight)
 	{
-		areaPos--;
+		if (areaPos>0)
+		{
+			areaPos--;
+		}
 	}
 	repaint();
 }
