@@ -72,6 +72,13 @@ struct Token
 		S_ALLY,
 		S_ENEMY,
 
+		// Language code
+		S_LANG_0,
+		S_LANG_1,
+		S_LANG_2,
+		S_LANG_3,
+		S_LANG_4,
+
 		// Constants
 		// Units
 		S_WORKER=100,
@@ -143,6 +150,7 @@ struct ErrorReport
 		ET_MISSING_SEMICOL,
 		ET_MISSING_ARGUMENT,
 		ET_INVALID_ALLIANCE_LEVEL,
+		ET_NOT_VALID_LANG_ID,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
