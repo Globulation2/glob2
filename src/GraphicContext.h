@@ -61,7 +61,8 @@ protected:
 
 class SDLBitmapFont: public SDLFont
 {
-public:	
+public:
+	SDLBitmapFont();
 	SDLBitmapFont(const char *filename);
 	virtual ~SDLBitmapFont();
 	bool load(const char *filename);

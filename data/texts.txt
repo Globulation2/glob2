@@ -137,3 +137,21 @@ Waiting for player
 [r has left the game]
   a quite la partie
   has quited the game
+[load game]
+Charger jeu
+Load Game
+[save game]
+Sauvegarder jeu
+Save Game
+[options]
+Options
+Options
+[alliances]
+Alliances
+Alliances
+[return to game]
+Retour au jeu
+Return to game
+[quit the game]
+Quitter le jeu
+Quit the game

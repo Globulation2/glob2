@@ -97,6 +97,7 @@ void TextButton::paint(GraphicContext *gfx)
 {
 	Button::paint(gfx);
 	gfx->drawString(x+decX, y+decY, font, text);
+	gfx->drawRect(x, y, w, h, 180, 180, 180);
 }
 
 void TextButton::setText(const char *text)
@@ -111,6 +112,14 @@ void TextButton::setText(const char *text)
 void TextButton::repaint(void)
 {
 	Button::repaint();
+	parent->paint(x, y, w, h);
 	gfx->drawString(x+decX, y+decY, font, text);
+	if (highlighted)
+	{
+		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+		gfx->drawRect(x, y, w, h, 255, 255, 255);
+	}
+	else
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
 }
 

@@ -60,6 +60,7 @@ public:
 	void dispatchTimer(Uint32 tick);
 	void dispatchPaint(GraphicContext *gfx);
 	void repaint(GraphicContext *gfx);
+	GraphicContext *getGraphicContext(void) { return gfxCtx; }
 
 protected:
 	bool run;

@@ -11,18 +11,18 @@
 class InGameScreen:public Screen
 {
 public:
-	InGameScreen() { isEnded=false;}
-	virtual ~InGameScreen() { }
+	InGameScreen(int w, int h);
+	virtual ~InGameScreen();
+
+	virtual void translateAndProcessEvent(SDL_Event *event);
 
 public:
-	bool isEnded;
+	int endValue;
+	int decX, decY;
 };
 
 class InGameSaveScreen:public InGameScreen
 {
-private:
-	int decX, decY;
-
 public:
 	char *filename;
 
@@ -36,9 +36,6 @@ public:
 
 class InGameMainScreen:public InGameScreen
 {
-private:
-	int decX, decY;
-
 public:
 	InGameMainScreen();
 	virtual ~InGameMainScreen() { }
