@@ -1208,6 +1208,7 @@ namespace GAGCore
 			int mx, my;
 			unsigned b = SDL_GetMouseState(&mx, &my);
 			cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
+			setClipRect();
 			cursorManager.draw(this, mx, my);
 			SDL_Flip(surface);
 		}
