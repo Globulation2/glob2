@@ -907,7 +907,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					}
 				}
 				break;
-			case SDLK_p :
+			case SDLK_t :
 				if (pressed)
 					drawPathLines=!drawPathLines;
 				break;
@@ -956,7 +956,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					viewportY = evY-(sh>>6);
 				}
 				break;
-			case SDLK_w:
+			case SDLK_p:
 			case SDLK_PAUSE:
 				if (pressed)
 					orderQueue.push_back(new PauseGameOrder(!paused));
@@ -1791,7 +1791,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 
 	// inside
-	if (buildingType->maxUnitInside)
+	if ((buildingType->maxUnitInside) && ((selBuild->owner->allies) &(1<<localTeamNo)))
 	{
 		globalContainer->littleFont->pushColor(185, 195, 21);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
