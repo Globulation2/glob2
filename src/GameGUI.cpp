@@ -430,7 +430,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-						SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
+						SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
 						if (stream)
 						{
 							save(stream, name);
@@ -1881,7 +1881,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s);
 		assert(s[0]);
 		printf("GameGUI::loadBase[map]::s=%s.\n", s);
-		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
+		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
 		if (!game.load(stream))
 			return false;
 		SDL_RWclose(stream);
@@ -1893,7 +1893,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s);
 		assert(s[0]);
 		printf("GameGUI::loadBase[game]::s=%s.\n", s);
-		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
+		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
 		if (!load(stream))
 			return false;
 		SDL_RWclose(stream);

@@ -24,6 +24,7 @@
 #include "YOG.h"
 #include "Marshaling.h"
 #include "Utilities.h"
+#include "LogFileManager.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
@@ -35,8 +36,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	else
 		this->savedSessionInfo=NULL;
 
-	logFile=globalContainer->logFileManager.getFile("MultiplayersHost.log");
-	logFileDownload=globalContainer->logFileManager.getFile("MultiplayersHostDownload.log");
+	logFile=globalContainer->logFileManager->getFile("MultiplayersHost.log");
+	logFileDownload=globalContainer->logFileManager->getFile("MultiplayersHostDownload.log");
 	assert(logFile);
 	// net things:
 	initHostGlobalState();
@@ -80,7 +81,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		assert(s);
 		assert(s[0]);
 		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
-		stream=globalContainer->fileManager.open(s,"rb");
+		stream=globalContainer->fileManager->open(s,"rb");
 	}
 	else
 	{
@@ -88,7 +89,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		assert(s);
 		assert(s[0]);
 		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
-		stream=globalContainer->fileManager.open(s,"rb");
+		stream=globalContainer->fileManager->open(s,"rb");
 	}
 	
 	fileSize=0;

@@ -24,6 +24,7 @@
 #include "YOGConsts.h"
 #include <list>
 #include "LANBroadcast.h"
+class LogFileManager;
 
 class YOG
 {
@@ -96,7 +97,7 @@ public:
 	};
 	
 public:
-	YOG();
+	YOG(LogFileManager *logFileManager);
 	virtual ~YOG();
 	void send(Uint8 *data, int size);
 	void send(YOGMessageType v, Uint8 *data, int size);

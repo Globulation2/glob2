@@ -32,8 +32,9 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "NetConsts.h"
+#include "LogFileManager.h"
 
-YOG::YOG()
+YOG::YOG(LogFileManager *logFileManager)
 {
 	socket=NULL;
 	yogGlobalState=YGS_NOT_CONNECTING;
@@ -58,13 +59,17 @@ YOG::YOG()
 	
 	uid=0;
 	
+	if (logFileManager)
+	{
+		logFile=logFileManager->getFile("YOG.log");
+		assert(logFile);
+	}
+	else
+		logFile=stdout;
+	fprintf(logFile, "new YOG");
 	enableLan=lan.enable(SERVER_PORT);
-	//printf("enableLan=%d.\n", enableLan);
+	fprintf(logFile, "enableLan=%d.\n", enableLan);
 	
-	// Funny, LogFileManager is not initialised !
-	//logFile=globalContainer->logFileManager.getFile("YOG.log");
-	//assert(logFile);
-	logFile=stdout;
 }
 
 YOG::~YOG()
@@ -859,7 +864,7 @@ void YOG::step()
 					if ((strncmp(gameName, game->name, 128)==0)
 						&& (strncmp(serverNickName, game->userName, 32)==0))
 					{
-						fprintf(logFile, "Solved a NAT from %s to %s.\n", Utilities::stringIP(game->hostip), Utilities::stringIP(lan.getSenderIP()));
+						fprintf(logFile, "Solved a NAT from (%s) to (%s).\n", Utilities::stringIP(game->hostip), Utilities::stringIP(lan.getSenderIP()));
 						game->hostip.host=lan.getSenderIP();
 						game->hostip.port=SDL_SwapBE16(SERVER_PORT);
 						game->natSolved=true;

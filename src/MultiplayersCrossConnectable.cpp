@@ -20,11 +20,12 @@
 #include "MultiplayersCrossConnectable.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "LogFileManager.h"
 
 MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 :SessionConnection()
 {
-	logFile=globalContainer->logFileManager.getFile("MultiplayersCrossConnectable.log");
+	logFile=globalContainer->logFileManager->getFile("MultiplayersCrossConnectable.log");
 	assert(logFile);
 	
 	serverIP.host=0;
