@@ -1321,6 +1321,7 @@ void MultiplayersHost::sendingTime()
 						playerFileTra[p].packetSize/=2;
 						for (int i=0; i<MAX_WINDOW_SIZE; i++)
 							playerFileTra[p].windowlosts[i]/=2;
+						windowSize=40;
 						fprintf(logFileDownload, "new packetSize=%d.\n", playerFileTra[p].packetSize);
 					}
 				}
