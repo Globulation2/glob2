@@ -27,6 +27,10 @@ Text::Text(int x, int y, Font *font, const char *text, int w, int h)
 	this->text=NULL;
 	this->w=w;
 	this->h=h;
+	cr = 255;
+	cg = 255;
+	cb = 255;
+	ca = DrawableSurface::ALPHA_OPAQUE;
 	if (text)
 	{
 		int textLength=strlen(text);

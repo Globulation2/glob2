@@ -125,8 +125,9 @@ LANBroadcast.h \
 LANBroadcast.cpp \
 LogFileManager.h \
 LogFileManager.cpp \
-YOGPreScreen.cpp
-
+YOGPreScreen.cpp \
+SDL_ttf.c \
+SDL_ttf.h
 
 glob2_LDADD=-lSDL_net -lSDL_image -lSDL_ttf @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

@@ -316,12 +316,8 @@ bool SDLTTFont::load(const char *filename, unsigned size)
 	font = TTF_OpenFont(filename, size);
 	if (font)
 	{
-		while (!colorStack.empty())
-			colorStack.pop();
-		while (!styleStack.empty())
-			styleStack.pop();
-		pushColor(0, 0, 0, DrawableSurface::ALPHA_OPAQUE);
-		pushStyle(Font::STYLE_NORMAL);
+		setColor(0, 0, 0, DrawableSurface::ALPHA_OPAQUE);
+		setStyle(Font::STYLE_NORMAL);
 		return true;
 	}
 	else
@@ -356,12 +352,18 @@ bool SDLTTFont::printable(char c) const
 
 void SDLTTFont::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	colorStack.pop();
+	assert(font);
+	
+	while (colorStack.size() > 0)
+		colorStack.pop();
+	
 	pushColor(r, g, b, a);
 }
 
 void SDLTTFont::pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	assert(font);
+	
 	SDL_Color c;
 	c.r = r;
 	c.g = g;
@@ -372,12 +374,16 @@ void SDLTTFont::pushColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void SDLTTFont::popColor(void)
 {
+	assert(font);
+	
 	if (colorStack.size() > 1)
 		colorStack.pop();
 }
 
 void SDLTTFont::getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const
 {
+	assert(font);
+	
 	SDL_Color c;
 	c = colorStack.top();
 	*r = c.r;
@@ -388,18 +394,26 @@ void SDLTTFont::getColor(Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a) const
 
 void SDLTTFont::setStyle(unsigned style)
 {
-	styleStack.pop();
+	assert(font);
+	
+	while (styleStack.size() > 0)
+		styleStack.pop();
+		
 	pushStyle(style);
 }
 
 void SDLTTFont::pushStyle(unsigned style)
 {
+	assert(font);
+	
 	styleStack.push(style);
 	TTF_SetFontStyle(font, style);
 }
 
 void SDLTTFont::popStyle(void)
 {
+	assert(font);
+	
 	if (styleStack.size() > 1)
 	{
 		styleStack.pop();
@@ -409,6 +423,8 @@ void SDLTTFont::popStyle(void)
 
 unsigned SDLTTFont::getStyle(void) const
 {
+	assert(font);
+	
 	return styleStack.top();
 }
 
