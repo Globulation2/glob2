@@ -39,9 +39,9 @@ Sector::~Sector(void)
 
 void Sector::setGame(Game *game)
 {
+	free();
 	this->game=game;
 	this->map=&(game->map);
-	free();
 }
 
 void Sector::free(void)
