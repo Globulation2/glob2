@@ -27,6 +27,12 @@
 
 #define SAMPLE_COUNT_PER_SLICE 4096
 
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+#define OGG_BYTEORDER 0
+#else
+#define OGG_BYTEORDER 1
+#endif
+
 static int interpolationTable[SAMPLE_COUNT_PER_SLICE];
 
 static void initInterpolationTable(void)
@@ -65,7 +71,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		while(rest > 0)
 		{
 			int bs;
-			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, 0, 2, 1, &bs);
+			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
 			if (ret == 0) // EOF
 			{
 				ov_pcm_seek(mixer->tracks[mixer->actTrack], 0);
@@ -88,7 +94,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		while(rest > 0)
 		{
 			int bs;
-			long ret = ov_read(mixer->tracks[mixer->nextTrack], p, rest, 0, 2, 1, &bs);
+			long ret = ov_read(mixer->tracks[mixer->nextTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
 			if (ret == 0) // EOF
 			{
 				ov_pcm_seek(mixer->tracks[mixer->nextTrack], 0);
@@ -108,8 +114,6 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		{
 			Sint16 t0 = track0[i];
 			Sint16 t1 = track1[i];
-			SDL_SwapLE16(t0);
-			SDL_SwapLE16(t1);
 			int intI = interpolationTable[i];
 			int val = (intI*t0+(65535-intI*t1))>>16;
 			mix[i] = (val * vol)>>8;
@@ -127,7 +131,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		while(rest > 0)
 		{
 			int bs;
-			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, 0, 2, 1, &bs);
+			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
 			if (ret == 0) // EOF
 			{
 				mixer->actTrack = mixer->nextTrack;
@@ -147,7 +151,6 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		for (unsigned i=0; i<nsamples; i++)
 		{
 			Sint16 t = mix[i];
-			SDL_SwapLE16(t);
 			mix[i] = (t * vol)>>8;
 		}
 	}
