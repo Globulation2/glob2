@@ -42,7 +42,7 @@
 // Max packet size for reception in game setup
 #define MAX_PACKET_SIZE 4096
 
-#define NET_PROTOCOL_VERSION 14
+#define NET_PROTOCOL_VERSION 15
 
 enum OrderTypes
 {
@@ -96,7 +96,8 @@ enum OrderTypes
 	
 	ORDER_TEXT_MESSAGE_CONFIRMATION=70,
 	ORDER_TEXT_MESSAGE=71,
-	ORDER_SET_ALLIANCE=72,
+	ORDER_VOICE_DATA=72,
+	ORDER_SET_ALLIANCE=73,
 
 	ORDER_MAP_MARK=74,
 	

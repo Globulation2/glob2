@@ -18,12 +18,13 @@
 */
 
 #include "SoundMixer.h"
+#include "Order.h"
 #include <Toolkit.h>
 #include <FileManager.h>
 using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
-#include <iostream>
+#include <speex.h>
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
@@ -35,6 +36,7 @@ using namespace GAGCore;
 #define SAMPLE_COUNT_PER_SLICE 8192*8
 #define INTERPOLATION_RANGE 65535
 #define INTERPOLATION_BITS 16
+#define SPEEX_FRAME_SIZE 160
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define OGG_BYTEORDER 0
@@ -55,6 +57,26 @@ static void initInterpolationTable(void)
 		double x = static_cast<double>(i);
 		double v = m * (a * (x * x * x) + b * (x* x));
 		interpolationTable[i] = static_cast<int>(v);
+	}
+}
+
+void SoundMixer::handleVoiceInsertion(int *outputSample)
+{
+	if (voiceDatas.empty())
+		return;
+	
+	float value = (1-voiceSubIndex) * voiceVal0 + voiceSubIndex * voiceVal1;
+	
+	*outputSample = (static_cast<int>(3.0f * value) + (*outputSample)) / 4;
+	
+	// increment index, keep track of stereo
+	voiceSubIndex += (8000.0f/44100.0f)*0.475f;
+	if (voiceSubIndex > 1)
+	{
+		voiceSubIndex -= 1;
+		voiceVal0 = voiceVal1;
+		voiceDatas.pop();
+		voiceVal1 = voiceDatas.front();
 	}
 }
 
@@ -129,7 +151,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			int t1 = track1[i];
 			int intI = interpolationTable[i];
 			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
-			mix[i] = (val * vol)>>8;
+			val = (val * vol)>>8;
+			mixer->handleVoiceInsertion(&val);
+			mix[i] = val;
 		}
 
 		// clear change
@@ -167,7 +191,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				for (unsigned i=0; i<nsamples; i++)
 				{
 					int t = mix[i];
-					mix[i] = (t * vol) >> 8;
+					t = (t * vol) >> 8;
+					mixer->handleVoiceInsertion(&t);
+					mix[i] = t;
 				}
 		}
 		else if (mixer->mode == SoundMixer::MODE_START)
@@ -176,7 +202,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			{
 				int t = mix[i];
 				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
-				mix[i] = (t * vol) >> 8;
+				t = (t * vol) >> 8;
+				mixer->handleVoiceInsertion(&t);
+				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_NORMAL;
 		}
@@ -187,7 +215,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				int t = mix[i];
 				int intI = interpolationTable[i];
 				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
-				mix[i] = (t * vol) >> 8;
+				t = (t * vol) >> 8;
+				mixer->handleVoiceInsertion(&t);
+				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_STOPPED;
 			SDL_PauseAudio(1);
@@ -218,6 +248,12 @@ void SoundMixer::openAudio(void)
 		soundEnabled = true;
 		mode = MODE_STOPPED;
 	}
+	
+	// Open Speex decoder
+	speexDecoderState = speex_decoder_init(&speex_nb_mode);
+	int tmp = 1;
+	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
+	voiceSubIndex = 0;
 }
 
 SoundMixer::SoundMixer(unsigned volume)
@@ -232,6 +268,7 @@ SoundMixer::SoundMixer(unsigned volume)
 	if (volume == 0)
 	{
 		soundEnabled = false;
+		speexDecoderState = NULL;
 		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
 		return;
 	}
@@ -247,6 +284,7 @@ SoundMixer::~SoundMixer()
 	{
 		SDL_PauseAudio(1);
 		SDL_CloseAudio();
+		speex_encoder_destroy(speexDecoderState);
 	}
 	
 	for (size_t i=0; i<tracks.size(); i++)
@@ -333,4 +371,32 @@ void SoundMixer::stopMusic(void)
 	mode = MODE_STOP;
 }
 
-
+void SoundMixer::addVoiceData(OrderVoiceData *order)
+{
+	if (soundEnabled)
+	{
+		printf("SoundMixer::addVoiceDat\n");
+		SpeexBits bits;
+		
+		speex_bits_init(&bits);
+		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
+		for (size_t i=0; i<order->frameCount; i++)
+		{
+			float floatBuffer[SPEEX_FRAME_SIZE];
+			speex_decode(speexDecoderState, &bits, floatBuffer);
+			
+			SDL_LockAudio();
+			// insert 200 ms silence to let packets come if we aer the first
+			if (voiceDatas.empty())
+			{
+				for (size_t j=0; j<200; j++)
+					voiceDatas.push(0);
+				voiceVal0 = voiceVal1 = 0;
+			}
+			for (size_t j=0; j<SPEEX_FRAME_SIZE; j++)
+				voiceDatas.push(floatBuffer[j]);
+			SDL_UnlockAudio();
+		}
+		speex_bits_destroy(&bits);
+	}
+}

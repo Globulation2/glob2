@@ -1,8 +1,8 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  Copyright (C) 2004 Jean-David Maillefer
+  This file is part of Globulation 2, a free software real-time strategy game
+  http://glob2.ysagoon.com
+  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
-  or jdmaillefer AT bluewin DOT ch
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,25 +56,29 @@ void AIToubib::init(Player *player)
 	assert(this->game);
 	assert(this->map);
 	
-	currentStateIndex = NB_HISTORY_STATES;
+	now = 0;
+	
+	/*currentStateIndex = NB_HISTORY_STATES;
 	memset(history, 0, sizeof(AIState) * NB_HISTORY_STATES);
 	
 	//pq = new std::priority_queue(std::list<AIProject>);
 	
 	
-	
+	*/
 }
 
 bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	// check version
 	if (versionMinor< 35)
 	{
 		fprintf(stderr, "AIToubib::load : trying to load too old AIToubib (versionMinor < 35)\n");
 		assert(false);
+		return false;
 	}
 
 	// saving state variables
-	//SDL_ReadBE16(stream);
+	now = stream->readUint32("now");
 	
 	return true;
 }
@@ -82,11 +86,26 @@ bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 void AIToubib::save(GAGCore::OutputStream *stream)
 {
 	// loading state variables
-	//SDL_WriteBE16(stream, <#Uint16 value#>);
+	stream->writeUint32(now, "now");
+}
+
+Order *AIToubib::getOrderBuildingStep(void)
+{
+	return new NullOrder();
+}
+
+void AIToubib::computeMyStatsStep(void)
+{
+
 }
 
 Order *AIToubib::getOrder(void)
 {
-	// TODO: implement the AI
-	return new NullOrder();
+	now++;
+	
+	switch (now % 2)
+	{
+		case 0: return getOrderBuildingStep();
+		default: computeMyStatsStep(); return new NullOrder();
+	}
 }

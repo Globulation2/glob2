@@ -37,6 +37,7 @@ namespace GAGCore
 using namespace GAGCore;
 
 class SoundMixer;
+class VoiceRecorder;
 class LogFileManager;
 
 class GlobalContainer
@@ -70,6 +71,7 @@ public:
 
 	GraphicContext *gfx;
 	SoundMixer *mix;
+	VoiceRecorder *rec;
 	Sprite *terrain;
 	Sprite *terrainWater;
 	Sprite *terrainCloud;

@@ -29,6 +29,9 @@
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>
+#include <queue>
+
+class OrderVoiceData;
 
 class SoundMixer
 {
@@ -47,6 +50,19 @@ public:
 	bool soundEnabled;
 	unsigned volume;
 	
+	//! float sample from speex decoder
+	std::queue<float> voiceDatas;
+	//! subsample precision for voice (8Khz instead of 44.1Khz)
+	float voiceSubIndex;
+	//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio datas
+	float voiceVal0;
+	float voiceVal1;
+	//! pointer to the structure holding the speex decoder
+	void *speexDecoderState;
+	
+	//! if voice data is available, insert it to output
+	inline void handleVoiceInsertion(int *outputSample);
+	
 protected:
 	void openAudio(void);
 
@@ -62,6 +78,9 @@ public:
 	void setVolume(unsigned volume);
 	
 	void stopMusic(void);
+	
+	//! Add voice data from order. Data should be copied as order will be destroyed after this call
+	void addVoiceData(OrderVoiceData *order);
 };
 
 #endif

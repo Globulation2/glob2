@@ -1,8 +1,8 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  Copyright (C) 2004 Jean-David Maillefer
+  This file is part of Globulation 2, a free software real-time strategy game
+  http://glob2.ysagoon.com
+  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
-  or jdmaillefer AT bluewin DOT ch
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,21 @@ class Building;
 
 class AIToubib : public AIImplementation
 {
+protected:
+	// Internal members
+	Uint32 now;
+	
+protected:
+	// Internal functions
+
+	//! Initialization (avoid duplicate code)
+	void init(Player *player);
+	
+	//! Create a building if possible
+	Order *getOrderBuildingStep(void);
+	//! Compute internal stats used by other parts of the code
+	void computeMyStatsStep(void);
+	
 public:
 	AIToubib(Player *player);
 	AIToubib(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -52,7 +67,7 @@ public:
 	Order *getOrder(void);
 	
 private:
-	
+	/*
 	// All constants parameterizing AIToubib	
 	static const Uint8 MAX_NB_PROJECTS = 10;
 	static const Uint8 NB_HISTORY_STATES = 5;
@@ -77,7 +92,7 @@ private:
 	
 	//std::list<int> myList;
 	//std::list<int, std::allocator<int> > t1;
-	/*std::priority_queue<
+	std::priority_queue<
 		int, 
 		std::vector<
 		int, 
@@ -85,16 +100,16 @@ private:
 		std::less<int> > pq;*/
 	/*std::priority_queue< AIProject,
 		std::list< AIProject, std::allocator<AIProject> >,
-		std::less<AIProject> > pq;*/
+		std::less<AIProject> > pq;
 	//AIProject projects[];
-	
-	
+	*/
+	/*
 	//! Initialization (avoid duplicate code)
 	void init(Player *player);
 	
 	//! evaluate the current state 
 	void evalState();
-	
+	*/
 };
 
 #endif

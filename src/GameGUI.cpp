@@ -44,6 +44,7 @@
 #include "YOG.h"
 #include "IRC.h"
 #include "SoundMixer.h"
+#include "VoiceRecorder.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
@@ -428,6 +429,11 @@ void GameGUI::step(void)
 			addMessage(30, 255, 30, "%s",  Toolkit::getStringTable()->getString("[the building is finished]", strDec));
 		}
 	}
+	
+	// voice step
+	OrderVoiceData *orderVoiceData;
+	while ((orderVoiceData = globalContainer->rec->getNextOrder()) != NULL)
+		orderQueue.push_back(orderVoiceData);
 	
 	// music step
 	musicStep();
@@ -1099,7 +1105,12 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 					globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_MARK);
 				}
 				break;
-
+			case SDLK_v :
+				if (pressed)
+					globalContainer->rec->startRecording();
+				else
+					globalContainer->rec->stopRecording();
+				break;
 			case SDLK_RETURN :
 				if (pressed)
 				{
@@ -3183,6 +3194,11 @@ void GameGUI::executeOrder(Order *order)
 				assert(false);
 			
 			game.executeOrder(order, localPlayer);
+		}
+		break;
+		case ORDER_VOICE_DATA:
+		{
+			globalContainer->mix->addVoiceData((OrderVoiceData *)order);
 		}
 		break;
 		case ORDER_QUITED :
