@@ -113,8 +113,6 @@ protected:
 	FILE *logFile;
 };
 
-// zzz : Correct all sizes
-
 //! The session that indirectly derive from Order.
 //! This session will go through the network at connection time
 class SessionInfo:public SessionGame
