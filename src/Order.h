@@ -521,7 +521,7 @@ public:
 	NoMoreOrdersAvailable(Sint32 player, Sint32 lastAvailableStep);
 	virtual ~NoMoreOrdersAvailable(void) { }
 
-	Uint8 getOrderType(void) { return ORDER_NO_MORE_ORDER_AVIABLES; }
+	Uint8 getOrderType(void) { return ORDER_NO_MORE_ORDER_AVAILABLES; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 8; }

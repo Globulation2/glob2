@@ -112,7 +112,7 @@ void NetGame::init(void)
 	
 	for (int pi=0; pi<numberOfPlayer; pi++)
 	{
-		// We start with no checkSum aviable:
+		// We start with no checkSum available:
 		for (int stepi=0; stepi<256; stepi++)
 			gameCheckSums[pi][stepi]=0;
 		
@@ -480,7 +480,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	if (order->ustep!=resendUStep)
 	{
 		order=NULL;
-		fprintf(logFile, " resend not aviable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
+		fprintf(logFile, " resend not available, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
 	}
 	else
 	{
@@ -501,7 +501,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	
 	int size=wfpo->getDataLength();
 	addUint32(data, executeUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	addUint32(data, 0, 20); // no revealant gameCheckSum available
 	data[24]=size;
 	data[25]=0; //wishedLatency is networkly synchrone
 	data[26]=0; //wishedDelay is networkly synchrone
@@ -564,7 +564,7 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	addUint32(data, SDL_GetTicks(), 12);
 	
 	addUint32(data, executeUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	addUint32(data, 0, 20); // no revealant gameCheckSum available
 	data[24]=orderDataLength;
 	data[25]=myLocalWishedLatency;
 	data[26]=myLocalWishedDelay;
@@ -613,7 +613,7 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	addUint32(data, SDL_GetTicks(), 12);
 	
 	addUint32(data, resendingUStep, 16);
-	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	addUint32(data, 0, 20); // no revealant gameCheckSum available
 	data[20]=1;
 	data[21]=myLocalWishedLatency;
 	data[22]=myLocalWishedDelay;
@@ -665,9 +665,9 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 rese
 	data[1]=0; //pad
 	data[2]=missingPlayer;
 	data[3]=0; //pad
-	addUint32(data, 0,  4); //no good lastUsableUStepReceivedFromHim() aviable
-	addUint32(data, 0,  8); //no good lastSdlTickReceivedFromHim[] aviable
-	addUint32(data, 0, 12); //no good SDL_GetTicks() aviable
+	addUint32(data, 0,  4); //no good lastUsableUStepReceivedFromHim() available
+	addUint32(data, 0,  8); //no good lastSdlTickReceivedFromHim[] available
+	addUint32(data, 0, 12); //no good SDL_GetTicks() available
 	
 	fprintf(logFile, "sendDeadAwayOrder missingPlayer=%d, targetPlayer=%d, resendingUStep=%d\n", missingPlayer, targetPlayer, resendingUStep);
 	int l=16;
@@ -1486,7 +1486,7 @@ bool NetGame::computeNumberOfStepsToEat(void)
 	for (int pi=0; pi<numberOfPlayer; pi++)
 		if (players[pi]->quitting && (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL))
 		{
-			fprintf(logFile, " player %d quitting, no latency changing aviable\n", pi);
+			fprintf(logFile, " player %d quitting, no latency changing available\n", pi);
 			return true;
 		}
 	if (targetLatency>latency)

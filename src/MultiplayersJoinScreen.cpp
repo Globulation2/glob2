@@ -49,8 +49,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	playerText=new Text(20, 245, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[player name]"));
 	addWidget(playerText);
 
-	aviableGamesText=new Text(340, 55, ALIGN_SCREEN_CENTERED, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[aviable lan games]"));
-	addWidget(aviableGamesText);
+	availableGamesText=new Text(340, 55, ALIGN_SCREEN_CENTERED, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[available lan games]"));
+	addWidget(availableGamesText);
 
 	statusText=new Text(20, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidget(statusText);

@@ -685,7 +685,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int* bootX=descriptor.bootX;
 	int* bootY=descriptor.bootY;
 	
-	//TODO: First pass to find the number of aviable places.
+	//TODO: First pass to find the number of available places.
 	for (int team=0; team<nbTeams; team++)
 	{
 		int maxSurface=0;

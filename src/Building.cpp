@@ -1318,7 +1318,7 @@ void Building::subscribeToBringRessourcesStep()
 			if (choosen==NULL && type->canExchange && owner->openMarket())
 			{
 				SessionGame &session=owner->game->session;
-				// We compute all what's aviable from foreign ressources: (mask)
+				// We compute all what's available from foreign ressources: (mask)
 				Uint32 allForeignSendRessourceMask=0;
 				Uint32 allForeignReceiveRessourceMask=0;
 				for (int ti=0; ti<session.numberOfTeam; ti++)
@@ -2202,7 +2202,7 @@ Uint32 Building::eatOnce(Uint32 *mask)
 	return fruitCount;
 }
 
-int Building::aviableHappynessLevel()
+int Building::availableHappynessLevel()
 {
 	int inside=(int)unitsInside.size();
 	if (ressources[CORN]<=inside)

@@ -44,7 +44,7 @@ public:
 	AI(ImplementitionID implementitionID, Player *player);
 	AI(SDL_RWops *stream, Player *player, Sint32 versionMinor);
 	~AI();
-	void init(ImplementitionID ImplementitionID, Player *player);
+	//void init(ImplementitionID ImplementitionID, Player *player);
 	
 	AIImplementation *aiImplementation;
 	ImplementitionID implementitionID;

@@ -39,7 +39,7 @@
 #include <StringTable.h>
 
 
-// If you don't have SDL_net 1.2.5 some features won't be aviable.
+// If you don't have SDL_net 1.2.5 some features won't be available.
 #ifndef INADDR_BROADCAST
 #define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
 #endif
@@ -706,7 +706,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					{
 						strncpy(game->userName, client.userName, 32);
 						newGameListAvailable=true;
-						fprintf(logFile, "Game (%s) from (%s) newly aviable!\n", game->name, game->userName);
+						fprintf(logFile, "Game (%s) from (%s) newly available!\n", game->name, game->userName);
 						break;
 					}
 			}
