@@ -1757,7 +1757,22 @@ void Building::kill(void)
 	updateCallLists();
 
 	if (!type->isVirtual)
+	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+		if (type->isBuildingSite && type->level==0)
+		{
+			bool good=false;
+			for (int r=0; r<BASIC_COUNT; r++)
+				if (ressources[r]>0)
+				{
+					good=true;
+					break;
+				}
+			if (!good)
+				owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
+		}
+		
+	}
 	
 	buildingState=DEAD;
 	owner->prestige-=type->prestige;

@@ -131,7 +131,9 @@ void Game::executeOrder(Order *order, int localPlayer)
 	assert(order->sender>=0);
 	assert(order->sender<32);
 	assert(order->sender<session.numberOfPlayer);
-	bool isPlayerAlive=players[order->sender]->team->isAlive;
+	Team *team=players[order->sender]->team;
+	assert(team);
+	bool isPlayerAlive=team->isAlive;
 	if (order->getOrderType()!=ORDER_WAITING_FOR_PLAYER)
 		anyPlayerWaitedTimeFor=0;
 	switch (order->getOrderType())
@@ -140,14 +142,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
-			// if not really safe, we have to put -1 instead of team.
 
 			int posX=((OrderCreate *)order)->posX;
 			int posY=((OrderCreate *)order)->posY;
-			int team=((OrderCreate *)order)->team;
+			int teamNumber=((OrderCreate *)order)->team;
+			assert(teamNumber==team->teamNumber);
 			int typeNumber=((OrderCreate *)order)->typeNumber;
-			if (globalContainer->buildingsTypes.get(typeNumber)->isVirtual || checkRoomForBuilding(posX, posY, typeNumber, team))
+			bool isVirtual=globalContainer->buildingsTypes.get(typeNumber)->isVirtual;
+			if (!isVirtual && (team->noMoreBuildingSitesCountdown>0))
+				break;
+			if (isVirtual || checkRoomForBuilding(posX, posY, typeNumber, teamNumber))
 			{
 				if(posX<0)
 					posX+=map.getW();
@@ -156,7 +160,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				posX&=map.getMaskW();
 				posY&=map.getMaskH();
 
-				Building *b=addBuilding(posX, posY, team, typeNumber);
+				Building *b=addBuilding(posX, posY, typeNumber, teamNumber);
 				assert(b);
 				if (b)
 				{
@@ -165,7 +169,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 					if (b->type->shootingRange)
 						b->owner->turrets.push_back(b);
 					if (b->type->zonableForbidden)
-						map.setForbiddenArea(posX, posY, b->unitStayRange, teams[team]->me);
+						map.setForbiddenArea(posX, posY, b->unitStayRange, team->me);
 					b->update();
 				}
 			}
@@ -887,13 +891,14 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	return teams[team]->myUnits[id];
 }
 
-Building *Game::addBuilding(int x, int y, int team, int typeNum)
+Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 {
-	assert(team<session.numberOfTeam);
+	Team *team=teams[teamNumber];
+	assert(team);
 
 	int id=-1;
 	for (int i=0; i<1024; i++)//we search for a free place for a building.
-		if (teams[team]->myBuildings[i]==NULL)
+		if (team->myBuildings[i]==NULL)
 		{
 			id=i;
 			break;
@@ -902,20 +907,18 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 		return NULL;
 
 	//ok, now we can safely deposite an building.
-	int gid=Building::GIDfrom(id, team);
+	int gid=Building::GIDfrom(id, teamNumber);
 
 	int w=globalContainer->buildingsTypes.get(typeNum)->width;
 	int h=globalContainer->buildingsTypes.get(typeNum)->height;
 
-	Building *b=new Building(x, y, gid, typeNum, teams[team], &globalContainer->buildingsTypes);
+	Building *b=new Building(x, y, gid, typeNum, team, &globalContainer->buildingsTypes);
 
 	if (b->type->isVirtual)
-	{
-		teams[team]->virtualBuildings.push_front(b);
-	}
+		team->virtualBuildings.push_front(b);
 	else
 		map.setBuilding(x, y, w, h, gid);
-	teams[team]->myBuildings[id]=b;
+	team->myBuildings[id]=b;
 	return b;
 }
 
@@ -1003,7 +1006,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned f
 	return somethingInRect;
 }
 
-bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
+bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, int teamNumber)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=coordX+bt->decLeft;
@@ -1012,11 +1015,14 @@ bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, 
 	*mapX=x;
 	*mapY=y;
 
-	return checkRoomForBuilding(x, y, typeNum, team);
+	return checkRoomForBuilding(x, y, typeNum, teamNumber);
 }
 
-bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
+bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber)
 {
+	Team *team=teams[teamNumber];
+	assert(team);
+	
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;
 	int h=bt->height;
@@ -1024,10 +1030,10 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	bool isRoom=true;
 	if (bt->isVirtual)
 	{
-		if (team<0)
+		if (teamNumber<0)
 			return true;
 
-		for (std::list<Building *>::iterator vb=teams[team]->virtualBuildings.begin(); vb!=teams[team]->virtualBuildings.end(); ++vb)
+		for (std::list<Building *>::iterator vb=team->virtualBuildings.begin(); vb!=team->virtualBuildings.end(); ++vb)
 		{
 			Building *b=*vb;
 			if (b->posX==x && b->posY==y)
@@ -1038,14 +1044,14 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	else
 		isRoom=map.isFreeForBuilding(x, y, w, h);
 	
-	if (team<0)
+	if (teamNumber<0)
 		return isRoom;
 	
 	if (isRoom)
 	{
 		for (int dy=y; dy<y+h; dy++)
 			for (int dx=x; dx<x+w; dx++)
-				if (map.isMapDiscovered(dx, dy, teams[team]->me))
+				if (map.isMapDiscovered(dx, dy, team->me))
 					return true;
 		return false;
 	}
@@ -1054,7 +1060,7 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	
 }
 
-bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
+bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=coordX+bt->decLeft;
@@ -1063,10 +1069,10 @@ bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *ma
 	*mapX=x;
 	*mapY=y;
 
-	return checkHardRoomForBuilding(x, y, typeNum, team);
+	return checkHardRoomForBuilding(x, y, typeNum);
 }
 
-bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
+bool Game::checkHardRoomForBuilding(int x, int y, int typeNum)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;

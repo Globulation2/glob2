@@ -1658,6 +1658,8 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	ressourceAviableCount[teamNumber][ressourceType]++;
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
+	x&=wMask;
+	y&=hMask;
 	int wy=(y<<wDec);
 	Uint8 g=gradient[wy+x];
 	if (g<2)
@@ -1676,6 +1678,8 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	}
 	int vx=x+w;
 	int vy=y+h;
+	vx&=wMask;
+	vy&=hMask;
 	
 	while (true)
 	{
@@ -2918,6 +2922,8 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
+	x&=wMask;
+	y&=hMask;
 	assert(x>=0);
 	assert(y>=0);
 	
