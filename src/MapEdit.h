@@ -38,6 +38,7 @@ private:
 	void drawMenu(void);
 	void draw(void);
 
+	int processEvent(const SDL_Event *event);
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
 	void handleKeyPressed(SDLKey key, bool pressed);
