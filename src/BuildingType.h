@@ -204,7 +204,7 @@ public:
 class BuildingsTypes
 {
 public:
-	// BuildingsTypes() { }
+	BuildingsTypes();
 	void load(const char *filename);
 	~BuildingsTypes();
 

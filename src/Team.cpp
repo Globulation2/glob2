@@ -99,7 +99,7 @@ Team::Team(SDL_RWops *stream, Game *game)
 {
 	this->game=game;
 	init();
-	load(stream, &(game->buildingsTypes));
+	load(stream, &(globalContainer->buildingsTypes));
 }
 
 Team::~Team()

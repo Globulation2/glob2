@@ -8,6 +8,9 @@
 #include "GlobalContainer.h"
 
 
+BuildingsTypes::BuildingsTypes() 
+{
+}
 
 BuildingType *BuildingsTypes::getBuildingType(unsigned int typeNum)
 {

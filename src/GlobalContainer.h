@@ -10,6 +10,7 @@
 #include "GAG.h"
 #include "StringTable.h"
 #include "FileManager.h"
+#include "BuildingType.h"
 
 class GlobalContainer
 {
@@ -45,6 +46,8 @@ public:
 
 	char safer9[1024];
 	SDLBitmapFont menuFont;
+
+	BuildingsTypes buildingsTypes;
 };
 
 extern GlobalContainer *globalContainer;

@@ -465,10 +465,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		// TODO : when we eant building site, pass true tu getTypeNum
 		int typeNum;
 		if (typeToBuild<(int)BuildingType::EXPLORATION_FLAG)
-			typeNum=game.buildingsTypes.getTypeNum(typeToBuild, 0, true);
+			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, true);
 		else
-			typeNum=game.buildingsTypes.getTypeNum(typeToBuild, 0, false);
-		BuildingType *bt=game.buildingsTypes.buildingsTypes[typeNum];
+			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
+		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
@@ -788,8 +788,8 @@ void GameGUI::draw(void)
 		{
 			for (int i=0; i<10; i++)
 			{
-				int typeNum=game.buildingsTypes.getTypeNum(i, 0, false);
-				BuildingType *bt=game.buildingsTypes.getBuildingType(typeNum);
+				int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 				int imgid=bt->startImage;
 				int x=((i&0x1)<<6)+globalContainer->gfx.getW()-128;
 				int y=((i>>1)<<6)+128;
@@ -1059,10 +1059,10 @@ void GameGUI::draw(void)
 		int exMapX, exMapY; // ex suffix means EXtended building; the last level building type.
 		int exBatX, exBatY, exBatW, exBatH;
 
-		int typeNum=game.buildingsTypes.getTypeNum(typeToBuild, 0, false);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
 
 		// we check for room
-		BuildingType *bt=game.buildingsTypes.buildingsTypes[typeNum];
+		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 
 		int tempX, tempY;
 		if (bt->width&0x1)
@@ -1079,13 +1079,13 @@ void GameGUI::draw(void)
 		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 		
 		// we find last's leve type num:
-		BuildingType *lastbt=game.buildingsTypes.getBuildingType(typeNum);
+		BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 		int lastTypeNum=typeNum;
 		int max=0;
 		while(lastbt->nextLevelTypeNum>=0)
 		{
 			lastTypeNum=lastbt->nextLevelTypeNum;
-			lastbt=game.buildingsTypes.getBuildingType(lastTypeNum);
+			lastbt=globalContainer->buildingsTypes.getBuildingType(lastTypeNum);
 			if (max++>200)
 			{
 				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");

@@ -16,7 +16,6 @@
 
 Game::Game()
 {
-	Game::buildingsTypes.load("data/buildings.txt");
 	init();
 }
 
@@ -563,12 +562,12 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	//ok, now we can safely deposite an building.
 	int uid = Building::UIDfrom(id, team);
 
-	int w=buildingsTypes.buildingsTypes[typeNum]->width;
-	int h=buildingsTypes.buildingsTypes[typeNum]->height;
+	int w=globalContainer->buildingsTypes.buildingsTypes[typeNum]->width;
+	int h=globalContainer->buildingsTypes.buildingsTypes[typeNum]->height;
 
 	map.setBuilding(x, y, w, h, uid);
 
-	Building *b=new Building(x, y, uid, typeNum, teams[team], &buildingsTypes);
+	Building *b=new Building(x, y, uid, typeNum, teams[team], &globalContainer->buildingsTypes);
 	teams[team]->myBuildings[id]=b;
 	return b;
 }
@@ -636,7 +635,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
 
 bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
 {
-	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int x=coordX+bt->decLeft;
 	int y=coordY+bt->decTop;
 
@@ -648,7 +647,7 @@ bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, 
 
 bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 {
-	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int w=bt->width;
 	int h=bt->height;
 
@@ -687,7 +686,7 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 
 bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
 {
-	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int x=coordX+bt->decLeft;
 	int y=coordY+bt->decTop;
 
@@ -699,7 +698,7 @@ bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *ma
 
 bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 {
-	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int w=bt->width;
 	int h=bt->height;
 
@@ -1011,13 +1010,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			int typeNum=building->typeNum;
 			globalContainer->gfx.drawRect(x, y, batW, batH, 255, 255, 255, 127);
 			
-			BuildingType *lastbt=buildingsTypes.getBuildingType(typeNum);
+			BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 			int lastTypeNum=typeNum;
 			int max=0;
 			while(lastbt->nextLevelTypeNum>=0)
 			{
 				lastTypeNum=lastbt->nextLevelTypeNum;
-				lastbt=buildingsTypes.getBuildingType(lastTypeNum);
+				lastbt=globalContainer->buildingsTypes.getBuildingType(lastTypeNum);
 				if (max++>200)
 				{
 					printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
