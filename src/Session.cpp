@@ -32,6 +32,7 @@ SessionGame::SessionGame()
 	teamsOffset=0;
 	playersOffset=0;
 	mapOffset=0;
+	mapScriptOffset=0;
 	generationDescriptorOffset=0;
 
 	numberOfPlayer=0;
@@ -71,6 +72,7 @@ SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
 	teamsOffset=sessionGame.teamsOffset;
 	playersOffset=sessionGame.playersOffset;
 	mapOffset=sessionGame.mapOffset;
+	mapScriptOffset=sessionGame.mapScriptOffset;
 	generationDescriptorOffset=sessionGame.generationDescriptorOffset;
 	numberOfPlayer=sessionGame.numberOfPlayer;
 	numberOfTeam=sessionGame.numberOfTeam;
@@ -98,6 +100,7 @@ void SessionGame::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, 0);//teamsOffset
 	SDL_WriteBE32(stream, 0);//playersOffset
 	SDL_WriteBE32(stream, 0);//mapOffset
+	SDL_WriteBE32(stream, 0);//mapScriptOffset
 	SDL_WriteBE32(stream, 0);//generationDescriptorOffset
 	SDL_WriteBE32(stream, numberOfPlayer);
 	SDL_WriteBE32(stream, numberOfTeam);
@@ -107,7 +110,7 @@ void SessionGame::save(SDL_RWops *stream)
 	if (mapGenerationDescriptor)
 	{
 		SDL_WriteBE32(stream, (Sint32)true);
-		SAVE_OFFSET(stream, 32);
+		SAVE_OFFSET(stream, 36);
 		mapGenerationDescriptor->save(stream);
 	}
 	else
@@ -142,6 +145,8 @@ bool SessionGame::load(SDL_RWops *stream)
 		playersOffset=SDL_ReadBE32(stream);
 		mapOffset=SDL_ReadBE32(stream);
 	}
+	if (versionMinor>9)
+		mapScriptOffset=SDL_ReadBE32(stream);
 	if (versionMinor>6)
 		generationDescriptorOffset=SDL_ReadBE32(stream);
 	numberOfPlayer=SDL_ReadBE32(stream);

@@ -19,7 +19,7 @@
 
 #include "GUITextArea.h"
 
-TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true)
+TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true, const char *text="")
 {
 	this->readOnly=readOnly;
 	this->x=x;
@@ -38,6 +38,8 @@ TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=t
 	cursorPos=0;
 	cursorPosY=0;
 	cursorScreenPosY=0;
+	
+	internalSetText(text);
 }
 
 TextArea::~TextArea(void)
@@ -294,7 +296,7 @@ void TextArea::computeAndRepaint(void)
 }
 
 
-void TextArea::setText(const char *text)
+void TextArea::internalSetText(const char *text)
 {
 	assert(text);
 	if (text)
@@ -363,9 +365,13 @@ void TextArea::setText(const char *text)
 		}
 		if (pos==textBufferLength)
 			textBuffer[pos]=0;
-		
-		computeAndRepaint();
 	}
+}
+
+void TextArea::setText(const char *text)
+{
+	internalSetText(text);
+	computeAndRepaint();
 }
 
 void TextArea::addText(const char *text)

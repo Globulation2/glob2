@@ -24,6 +24,7 @@
 #include <deque>
 #include <vector>
 #include <stdio.h>
+#include "Marshaling.h"
 
 struct Token
 {
@@ -207,8 +208,14 @@ public:
 	~Mapscript();
 	
 public:
-	ErrorReport compileScript(const char *sourceCode, Game *game);
+	ErrorReport compileScript(Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
+	
+	bool load(SDL_RWops *stream);
+	void save(SDL_RWops *stream);
+	void setSourceCode(const char *sourceCode);
+	const char *getSourceCode(void) { return sourceCode; }
+	
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
@@ -230,6 +237,7 @@ private:
 	std::deque<Story> stories;
 	std::vector<Flag> flags;
 	Game *game;
+	char *sourceCode;
 };
 
 
