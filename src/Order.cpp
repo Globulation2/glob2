@@ -799,7 +799,7 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength)
 	
 	if (this->data != NULL)
 		free(this->data);
-	data = (Uint8 *)malloc(dataLength);
+	this->data = (Uint8 *)malloc(dataLength);
 	memcpy(this->data, data, dataLength);
 	return true;
 }
