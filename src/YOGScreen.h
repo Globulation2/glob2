@@ -31,12 +31,12 @@ public:
 	enum
 	{
 		EXIT=-1,
+		NONE=0,
 		CANCEL=2,
 		CREATE_GAME=3,
 		UPDATE_LIST=4,
 		
-		STARTED=11,
-		
+		STARTED=11
 	};
 
 	enum

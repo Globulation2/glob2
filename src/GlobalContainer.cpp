@@ -102,7 +102,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i], "-host")==0)
+		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
 		{
 			if (i+1<argc)
 			{
@@ -136,7 +136,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			continue;
 		}
 
-		if (strcmp(argv[i], "-h")==0)
+		if (strcmp(argv[i], "-h")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
 			printf("Cmd line arguments :\n");

@@ -75,10 +75,10 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	globalContainer->yog->step();
 	if (endExecutionValue!=EXECUTING)
 	{
-		if (globalContainer->yog->yogGlobalState==YOG::YGS_NOT_CONNECTING)
+		if (globalContainer->yog->yogGlobalState<=YOG::YGS_NOT_CONNECTING)
 			endExecute(endExecutionValue);
 	}
-	else if (globalContainer->yog->yogGlobalState==YOG::YGS_CONNECTED)
+	else if (globalContainer->yog->yogGlobalState>=YOG::YGS_CONNECTED)
 	{
 		printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;

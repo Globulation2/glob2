@@ -520,7 +520,10 @@ void YOGServer::run()
 				{
 					fprintf(logServer, "Client %s timed out.\n", (*client)->userName);
 					if ((*client)->sharingGame)
+					{
+						games.remove((*client)->sharingGame);
 						delete (*client)->sharingGame;
+					}
 					(*client)->sharingGame=NULL;
 					delete (*client);
 					clients.erase(client);
