@@ -386,9 +386,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
-			game.hostip.host=getUint32safe(data, index);
+			game.hostip.host=SDL_SwapLE32(getUint32safe(data, index));
 			index+=4;
-			game.hostip.port=getUint16safe(data, index);
+			game.hostip.port=SDL_SwapLE16(getUint16safe(data, index));
 			index+=2;
 			game.uid=getUint32safe(data, index);
 			index+=4;
@@ -618,9 +618,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Joiner joiner;
 			joiner.uid=getUint32(data, index);
 			index+=4;
-			joiner.ip.host=SDL_SwapBE32(getUint32(data, index));
+			joiner.ip.host=SDL_SwapLE32(getUint32(data, index));
 			index+=4;
-			joiner.ip.port=SDL_SwapBE16(getUint16(data, index));
+			joiner.ip.port=SDL_SwapLE16(getUint16(data, index));
 			index+=2;
 			joiner.timeout=i;
 			joiner.TOTL=3;
