@@ -1066,9 +1066,10 @@ Building *Team::findBestZonable(Unit *unit)
 			{
 				Building *b=(*bi);
 				int buildingDist;
-				if (map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
+				int need=b->maxUnitWorking-b->unitsWorking.size();
+				if ((need>0) && map->buildingAvailable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					Sint32 newScore=(buildingDist<<8)/(b->maxUnitWorking-b->unitsWorking.size());
+					Sint32 newScore=(buildingDist<<8)/need;
 					if (newScore<score)
 					{
 						choosen=b;
