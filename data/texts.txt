@@ -1274,11 +1274,11 @@ La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule
 The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
 Der "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine speziefische Person zu senden. z.b. "msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
 Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný si jí nepřečte (šeptání). Například "/msg klip Nazdar :-), tak co ?", lze použít zkráceně "/m".
-[really quit without saving?]
-Voulez-vous vraiment quitter sans sauver ?
-Are you sure you want to quit without saving ?
+[save before quit?]
+Voulez-vous sauver avant de quitter ?
+Do you want to save before quitting ?
 
-Chceš opravdu odejít bez uložení ?
+
 [Yes]
 Oui
 Yes

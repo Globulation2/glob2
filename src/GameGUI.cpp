@@ -26,6 +26,7 @@
 #include "YOG.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <math.h>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
@@ -1936,8 +1937,8 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			
 			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
-			int ray = sin(float(it->showTicks)/float(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2;
-			int ray2 = cos(float(it->showTicks)/float(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2;
+			int ray = (int)(sin((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
+			int ray2 = (int)(cos((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
 			Uint8 a;			
 			/*if (ray < (Mark::DEFAULT_MARK_SHOW_TICKS>>1))
 				a = DrawableSurface::ALPHA_OPAQUE;
