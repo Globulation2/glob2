@@ -97,22 +97,13 @@ SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		FILE *fp =  fopen(filename, "rb");
+		FILE *fp = fopen(filename, "rb");
 		if (fp)
 		{
 			fclose(fp);
-			char backupText[1024];
-#ifdef WIN32
-			snprintf(backupText, sizeof(backupText), "ren %s %s~", filename, filename);
-#else
-			snprintf(backupText, sizeof(backupText), "mv %s %s~", filename, filename);
-#endif
-			system(backupText);
-			return SDL_RWFromFile(filename, mode);
-		}
-		else
-		{
-			return NULL;
+			char backupText[512];
+			snprintf(backupText, sizeof(backupText), "%s~", filename);
+			rename(filename, backupText);
 		}
 	}
 	return SDL_RWFromFile(filename, mode);
@@ -122,22 +113,13 @@ FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		FILE *fp =  fopen(filename, "rb");
+		FILE *fp = fopen(filename, "rb");
 		if (fp)
 		{
 			fclose(fp);
-			char backupText[1024];
-#ifdef WIN32
-			snprintf(backupText, sizeof(backupText), "ren %s %s~", filename, filename);
-#else
-			snprintf(backupText, sizeof(backupText), "mv %s %s~", filename, filename);
-#endif
-			system(backupText);
-			return fopen(filename, mode);
-		}
-		else
-		{
-			return NULL;
+			char backupText[512];
+			snprintf(backupText, sizeof(backupText), "%s~", filename);
+			rename(filename, backupText);
 		}
 	}
 	return fopen(filename, mode);
