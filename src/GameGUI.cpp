@@ -92,7 +92,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 {
-	//init();
+	isRunning=true;
 }
 
 GameGUI::~GameGUI()
@@ -103,7 +103,6 @@ GameGUI::~GameGUI()
 void GameGUI::init()
 {
 	paused=false;
-	isRunning=true;
 	exitGlobCompletely=false;
 	toLoadGameFileName[0]=0;
 	drawHealthFoodBar=true;
@@ -771,7 +770,6 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
-		//isRunning=false;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
 	{
@@ -2584,6 +2582,7 @@ void GameGUI::executeOrder(Order *order)
 
 bool GameGUI::loadBase(const SessionInfo *initial)
 {
+	init();
 	if (initial->mapGenerationDescriptor)
 	{
 		assert(initial->fileIsAMap);
