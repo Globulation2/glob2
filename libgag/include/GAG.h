@@ -33,5 +33,6 @@
 #include "GUIList.h"
 #include "GUINumber.h"
 #include "GUIRatio.h"
+#include "GUIMessageBox.h"
 
 #endif

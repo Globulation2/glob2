@@ -15,6 +15,7 @@ libgag_a_SOURCES = FileManager.cpp\
 	GUITextInput.cpp\
 	SDLFont.cpp\
 	SDLSprite.cpp\
+	GUIMessageBox.cpp \
 	SupportFunctions.cpp
 
 EXTRA_DIST = SDLFont.h \

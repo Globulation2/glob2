@@ -22,7 +22,7 @@
 
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
-:OverlayScreen(600, 400)
+:OverlayScreen(globalContainer->gfx, 600, 400)
 {
 	this->mapScript=mapScript;
 	this->game=game;

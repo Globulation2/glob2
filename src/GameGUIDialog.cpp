@@ -22,50 +22,9 @@
 #include "GameGUI.h"
 
 
-OverlayScreen::OverlayScreen(int w, int h)
-{
-	gfxCtx=globalContainer->gfx->createDrawableSurface();
-	gfxCtx->setRes(w, h);
-	gfxCtx->setAlpha(false, 128);
-	decX=(globalContainer->gfx->getW()-w)>>1;
-	decY=(globalContainer->gfx->getH()-h)>>1;
-	endValue=-1;
-}
-
-OverlayScreen::~OverlayScreen()
-{
-	delete gfxCtx;
-}
-
-void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
-{
-	SDL_Event ev=*event;
-	switch (ev.type)
-	{
-		case SDL_MOUSEMOTION:
-			ev.motion.x-=decX;
-			ev.motion.y-=decY;
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			ev.button.x-=decX;
-			ev.button.y-=decY;
-			break;
-		default:
-			break;
-	}
-	dispatchEvents(&ev);
-}
-
-void OverlayScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 255);
-}
-
-
 //! Main menu screen
 InGameMainScreen::InGameMainScreen()
-:OverlayScreen(300, 275)
+:OverlayScreen(globalContainer->gfx, 300, 275)
 {
 	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), LOAD_GAME));
 	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), SAVE_GAME));
@@ -88,7 +47,7 @@ void InGameMainScreen::onSDLEvent(SDL_Event *event)
 
 //! Alliance screen
 InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
-:OverlayScreen(300, 295)
+:OverlayScreen(globalContainer->gfx, 300, 295)
 {
 	// fill the slots
 	int i;
@@ -195,7 +154,7 @@ Uint32 InGameAlliance8Screen::getChatMask(void)
 
 //! Option Screen
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(300, 295)
+:OverlayScreen(globalContainer->gfx, 300, 295)
 {
 	// speed
 	
