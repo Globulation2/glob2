@@ -146,6 +146,9 @@ public:
 	
 	std::list<Client> clients;
 	bool newClientListAviable;
+	
+public:
+	FILE *logFile;
 };
 
 #endif
