@@ -23,6 +23,7 @@
 
 #include "PreparationGui.h"
 #include "MultiplayersHost.h"
+#include "MultiplayersJoin.h"
 #include "GAG.h"
 
 class MultiplayersHostScreen: public Screen
@@ -48,6 +49,7 @@ public:
 	void paint(int x, int y, int w, int h);
 
 	MultiplayersHost *multiplayersHost;
+	MultiplayersJoin *multiplayersJoin;
 };
 
 #endif

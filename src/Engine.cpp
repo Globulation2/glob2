@@ -143,10 +143,10 @@ int Engine::initMutiplayerHost(void)
 	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
 	if (multiplayersHostScreen.execute(globalContainer->gfx, 20)==MultiplayersHostScreen::STARTED)
 	{
-		if (multiplayersHostScreen.multiplayersHost->myPlayerNumber==-1)
+		if (multiplayersHostScreen.multiplayersJoin->myPlayerNumber==-1)
 			return CANCEL;
 		else
-			startMultiplayer(multiplayersHostScreen.multiplayersHost);
+			startMultiplayer(multiplayersHostScreen.multiplayersJoin);
 
 		return NO_ERROR;
 	}

@@ -41,6 +41,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 	firstDraw=true;
 
 	multiplayersHost=new MultiplayersHost(sessionInfo, true);
+	multiplayersJoin=NULL;
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -54,6 +55,26 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 
 	multiplayersHost->sessionInfo.draw(gfxCtx);
 	addUpdateRect(20, 20, gfxCtx->getW()-40, 200);
+	
+	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
+	{
+		multiplayersJoin=new MultiplayersJoin();
+		strncpy(multiplayersJoin->playerName, "Host Name", 128);//TODO: uses username
+		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address) 
+		if (s)
+			strncpy(multiplayersJoin->serverName, s, 128);
+		else
+		{
+			// a home made translation:
+			Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
+			snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+		}
+		
+		multiplayersJoin->tryConnection();
+	}
+	
+	if (multiplayersJoin)
+		multiplayersJoin->onTimer(tick);
 
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
