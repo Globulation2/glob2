@@ -259,14 +259,16 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTING:
 	{
-		if (size>4+32)
+		if (size>8+32 ||  size <8+2)
 		{
-			lprintf("bad message size (%d).\n", size);
+			lprintf("bad YMT_CONNECTING message size (%d).\n", size);
 			break;
 		}
 		bool connected=false;
 		bool sameName=false;
 		Uint32 uid=0;
+		Uint32 protocolVersion=getUint32(data, 4);
+		bool compatibleProtocol=(protocolVersion==YOG_PROTOCOL_VERSION);
 		
 		std::list<YOGClient *>::iterator client;
 		for (client=clients.begin(); client!=clients.end(); ++client)
@@ -276,14 +278,14 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				uid=(*client)->uid;
 				connected=true;
 			}
-			else if (strncmp((*client)->userName, (char *)data+4, 32)==0)
+			else if (strncmp((*client)->userName, (char *)data+8, 32)==0)
 				sameName=true;
 		
-		if (!connected && !sameName)
+		if (!connected && !sameName && compatibleProtocol)
 		{
 			char userName[32];
 			memset(userName, 0, 32);
-			strncpy(userName, (char *)data+4, 32);
+			strncpy(userName, (char *)data+8, 32);
 			userName[31]=0;
 			
 			YOGClient *yogClient=new YOGClient(ip, socket, userName);
@@ -310,8 +312,20 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				lprintf("new client connected as (%s), from (%s), uid=(%d)\n", userName, Utilities::stringIP(ip), uid);
 		}
 		
-		if (sameName)
-			send(ip, YMT_CONNECTION_REFUSED);
+		if (sameName || !compatibleProtocol)
+		{
+			Uint8 data[8];
+			data[0]=YMT_CONNECTION_REFUSED;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+			
+			data[4]=sameName;
+			data[5]=YOG_PROTOCOL_VERSION;
+			data[6]=0;
+			data[7]=0;
+			send(ip, data, 8);
+		}
 		else
 		{
 			Uint8 data[8];
@@ -981,6 +995,7 @@ void YOGServer::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
+	//printf("%s", output);
 	
 	if (logServer)
 		fputs(output, logServer);

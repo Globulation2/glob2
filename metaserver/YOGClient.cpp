@@ -406,6 +406,7 @@ void YOGClient::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
+	//printf("%s", output);
 	
 	if (logServer)
 		fputs(output, logServer);

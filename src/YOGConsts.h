@@ -20,8 +20,8 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
-#define YOG_SERVER_IP "goldeneye.sked.ch"
-//#define YOG_SERVER_IP "192.168.1.5"
+//#define YOG_SERVER_IP "goldeneye.sked.ch"
+#define YOG_SERVER_IP "192.168.1.5"
 #define YOG_SERVER_PORT 7007
 
 // 1s-4s-7.5s-14.5s-40s
@@ -45,6 +45,7 @@
 //Max size is defined by games lists. ((128+32+6+4)*16)=2720
 //or unshare 256*4+4=1028
 #define YOG_MAX_PACKET_SIZE ((128+32+6+4)*16)
+#define YOG_PROTOCOL_VERSION 1
 
 enum YOGMessageType
 {
