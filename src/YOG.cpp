@@ -242,24 +242,25 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_GAME_INFO_FROM_HOST:
 	{
 		Uint32 uid=getUint32(data, 4);
-		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
-			if (game->uid==uid)
-			{
-				assert(size-12<128); // TODO: have a secure test.
-				
-				game->numberOfPlayer=(int)getSint8(data, 8);
-				game->numberOfTeam=(int)getSint8(data, 9);
-				game->fileIsAMap=(bool)getSint8(data, 10);
-				game->mapGenerationMethode=(int)getSint8(data, 11);
-				memcpy(game->mapName, data+12, size-12);
-				game->mapName[127]=0;
-				if (isSelectedGame && selectedGame==uid)
+		if (size>(4+4+4+64))
+			printf("Warning, bad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
+		else
+			for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+				if (game->uid==uid)
 				{
-					newSelectedGameinfoAviable=true;
-					selectedGameinfoValid=true;
+					game->numberOfPlayer=(int)getSint8(data, 8);
+					game->numberOfTeam=(int)getSint8(data, 9);
+					game->fileIsAMap=(bool)getSint8(data, 10);
+					game->mapGenerationMethode=(int)getSint8(data, 11);
+					memcpy(game->mapName, data+12, size-12);
+					game->mapName[63]=0;
+					if (isSelectedGame && selectedGame==uid)
+					{
+						newSelectedGameinfoAviable=true;
+						selectedGameinfoValid=true;
+					}
+					printf("new game->mapName=%s\n", game->mapName);
 				}
-				printf("new game->mapName=%s\n", game->mapName);
-			}
 	}
 	break;
 	case YMT_MESSAGE:
@@ -373,9 +374,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_GAMES_LIST:
 	{
 		int nbGames=(int)getUint32(data, 4);
-		if (size>48+(4+2+4+2+4+4+64)*nbGames)
+		if (size>8+(4+2+4+4+32+64)*nbGames)
 		{
-			fprintf(logFile, "we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+32+128)*nbGames);
+			fprintf(logFile, "we received a bad game list (size=%d!<=%d)\n", size, 8+(4+2+4+4+32+64)*nbGames);
 			break;
 		}
 		fprintf(logFile, "we received a %d games list (size=%d)\n", nbGames, size);
@@ -417,7 +418,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			game.numberOfTeam=0;
 			game.fileIsAMap=false;
 			game.mapGenerationMethode=0xFF;
-			memset(game.mapName, 0, 128);
+			memset(game.mapName, 0, 64);
 			game.natSolved=false;
 			games.push_back(game);
 			fprintf(logFile, "index=%d.\n", index);
@@ -657,7 +658,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			return;
 		}
 		int v=data[0];
-		char gameName[128];
+		char gameName[64];
 		char serverNickName[32];
 		
 		strncpy(gameName, (char *)&data[4], 32);
@@ -665,7 +666,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 
 		fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, gameName, serverNickName);
 		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
-			if ((strncmp(gameName, game->name, 128)==0)
+			if ((strncmp(gameName, game->name, 64)==0)
 				&& (strncmp(serverNickName, game->userName, 32)==0))
 			{
 				fprintf(logFile, "Solved a NAT from (%s) to (%s).\n", Utilities::stringIP(game->hostip), Utilities::stringIP(ip));
@@ -851,7 +852,7 @@ void YOG::step()
 					{
 						fprintf(logFile, "sending share game info... (%s)\n", sharingGameName);
 						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
-						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, Utilities::strmlen(sharingGameName, 128));
+						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, Utilities::strmlen(sharingGameName, 64));
 					}
 				}
 			break;
@@ -1091,8 +1092,8 @@ void YOG::sendGameinfoRequest()
 void YOG::shareGame(const char *gameName)
 {
 	yogSharingState=YSS_SHARING_GAME;
-	strncpy(sharingGameName, gameName, 128);
-	sharingGameName[127]=0;
+	strncpy(sharingGameName, gameName, 64);
+	sharingGameName[63]=0;
 	sharingGameTimeout=0;
 	sharingGameTOTL=3;
 	fprintf(logFile, "shareGame(%s)\n", gameName);
