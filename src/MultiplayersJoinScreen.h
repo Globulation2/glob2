@@ -43,6 +43,7 @@ private:
 	TextInput *serverName;
 	Text *playerText;
 	TextInput *playerName;
+	bool wasVisible;
 
 public:
 	MultiplayersJoinScreen();

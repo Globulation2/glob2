@@ -20,6 +20,16 @@
 
 #include "GUIBase.h"
 
+Widget::Widget()
+{
+	visible=true;
+}
+
+Widget::~Widget()
+{
+	
+}
+
 Screen::~Screen()
 {
 	{

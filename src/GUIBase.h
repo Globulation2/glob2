@@ -26,7 +26,7 @@
 #include <vector>
 
 //! if defined, widget added twice are handeld correctly
-#undef ENABLE_MULTIPLE_ADD_WIDGET
+#define ENABLE_MULTIPLE_ADD_WIDGET
 
 enum Action
 {
@@ -48,7 +48,8 @@ class Screen;
 class Widget
 {
 public:
-	virtual ~Widget() { visible=true; }
+	Widget();
+	virtual ~Widget();
 
 	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event) { }
