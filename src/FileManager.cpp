@@ -93,6 +93,56 @@ void FileManager::addDir(const char *dir)
 	dirListIndexCache=0;
 }
 
+SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
+{
+	if (strchr(mode, 'w'))
+	{
+		FILE *fp =  fopen(filename, "rb");
+		if (fp)
+		{
+			fclose(fp);
+			char backupText[1024];
+#ifdef WIN32
+			snprintf(backupText, sizeof(backupText), "ren %s %s~", filename, filename);
+#else
+			snprintf(backupText, sizeof(backupText), "mv %s %s~", filename, filename);
+#endif
+			system(backupText);
+			return SDL_RWFromFile(filename, mode);
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	return SDL_RWFromFile(filename, mode);
+}
+
+FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
+{
+	if (strchr(mode, 'w'))
+	{
+		FILE *fp =  fopen(filename, "rb");
+		if (fp)
+		{
+			fclose(fp);
+			char backupText[1024];
+#ifdef WIN32
+			snprintf(backupText, sizeof(backupText), "ren %s %s~", filename, filename);
+#else
+			snprintf(backupText, sizeof(backupText), "mv %s %s~", filename, filename);
+#endif
+			system(backupText);
+			return fopen(filename, mode);
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	return fopen(filename, mode);
+}
+
 SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verboseIfNotFound)
 {
 	std::vector<const char *>::iterator dirListIterator;
@@ -103,7 +153,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
-		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
+		SDL_RWops *fp = openWithbackup(fn, mode);
 		delete[] fn;
 		//totTest++;
 
@@ -119,7 +169,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
-		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
+		SDL_RWops *fp =  openWithbackup(fn, mode);
 		//totTest++;
 		delete[] fn;
 		if (fp)
@@ -154,7 +204,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
-		FILE *fp =  fopen(fn, mode);
+		FILE *fp =  openWithbackupFP(fn, mode);
 		//totTest++;
 		delete[] fn;
 		if (fp)
@@ -169,7 +219,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
-		FILE *fp =  fopen(fn, mode);
+		FILE *fp =  openWithbackupFP(fn, mode);
 		//totTest++;
 		delete[] fn;
 		if (fp)
