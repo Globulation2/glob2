@@ -24,6 +24,7 @@
 #include <errno.h>
 #include <SDL_endian.h>
 #include <iostream>
+#include "BinaryStream.h"
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
