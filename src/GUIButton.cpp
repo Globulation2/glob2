@@ -189,7 +189,6 @@ void OnOffButton::paint(GraphicContext *gfx)
 		gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
 		gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
 	}
-	printf("hello\n");
 }
 
 void OnOffButton::repaint(void)
