@@ -18,6 +18,7 @@
 */
 
 #include "MultiplayersCrossConnectable.h"
+#include "Utilities.h"
 
 MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 :SessionConnection()
@@ -66,6 +67,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 						break;
 					}
 					sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
+					printf("We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 				}
 }
 
