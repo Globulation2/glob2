@@ -429,6 +429,7 @@ Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, Play
 		ai=NULL;
 		team->type=BaseTeam::T_HUMAN;
 	}
+	startPositionX = startPositionY = 0;
 }
 
 Player::~Player()
