@@ -1740,6 +1740,9 @@ int glSDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 		else
 		{
 			glSDL_Invalidate(dst, dstrect);
+			// Note from nct : if surface are not unlocked, SDL_BlitSurface return -1
+			SDL_UnlockSurface(src);
+			SDL_UnlockSurface(dst);
 			return SDL_BlitSurface(src, srcrect, dst, dstrect);
 		}
 	}
