@@ -376,7 +376,6 @@ void GlobalContainer::load(void)
 		assert(false);
 		exit(-1);
 	}
-	Toolkit::getStringTable()->setDefaultLang(1);
 	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
 
 	if (!runNoX)
