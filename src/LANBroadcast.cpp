@@ -163,10 +163,7 @@ bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 		return false;
 	
 	char data[68];
-//TODO: ugly hack to make it work under OSX for now... 	
-#ifndef socklen_t
-#define socklen_t int
-#endif
+
 
 
 	socklen_t senderLen;
