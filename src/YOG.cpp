@@ -301,12 +301,14 @@ void YOG::step(void)
 			bool res=getString(data);
 			if (res)
 			{
-				//printf("YOG (IRC) has received [%s]\n", data);
+				printf("YOG (IRC) has received [%s]\n", data);
 				interpreteIRCMessage(data);
 			}
 			else
+			{
 				printf("YOG (IRC) has received an error\n");
-
+				break;
+			}
 		}
 		if (check==-1)
 			printf("YOG (IRC) has a select error\n");
