@@ -740,7 +740,7 @@ void Team::step(void)
 				// FIXME : this can slow down game, do only every n tick
 				Unit *u=myUnits[i];
 				latestStat.totalUnit++;
-				latestStat.numberPerType[u->typeNum]++;
+				latestStat.numberUnitPerType[u->typeNum]++;
 				
 				if (u->medical==Unit::MED_HUNGRY)
 					latestStat.needFood++;
@@ -764,7 +764,7 @@ void Team::step(void)
 		}
 	
 	}
-
+	
 	/*for (int i=0; i<512; i++)
 		if (myBuildings[i])
 			myBuildings[i]->step();*/
@@ -837,6 +837,17 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 	{
 		(*it)->turretStep();
+	}
+	
+	// stat for buildings
+	// FIXME : this is stat, do not do all the time
+	for (i=0; i<512; i++)
+	{
+		if (myBuildings[i])
+		{
+			latestStat.totalBuilding++;
+			latestStat.numberBuildingPerType[myBuildings[i]->type->type]++;
+		}
 	}
 
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));

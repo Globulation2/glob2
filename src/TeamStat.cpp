@@ -78,7 +78,7 @@ void TeamStats::step(Team *team)
 		if (u)
 		{
 			stat.totalUnit++;
-			stat.numberPerType[(int)u->typeNum]++;
+			stat.numberUnitPerType[(int)u->typeNum]++;
 
 			if (u->medical==Unit::MED_HUNGRY)
 				stat.needFood++;
@@ -123,13 +123,13 @@ void TeamStats::drawText()
 	if (newStats.totalUnit)
 	{
 		// worker
-		gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats.numberPerType[0], strings->getString("[worker]"), ((float)newStats.numberPerType[0])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[worker]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+46, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[0], strings->getString("[free]"));
 		// explorer
-		gfx->drawString(textStartPos, 132+63, font, "%d %s (%.0f %%)", newStats.numberPerType[1], strings->getString("[Explorer]"), ((float)newStats.numberPerType[1])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+63, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[Explorer]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+75, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[1], strings->getString("[free]"));
 		// warrior
-		gfx->drawString(textStartPos, 132+92, font, "%d %s (%.0f %%)", newStats.numberPerType[2], strings->getString("[Warrior]"), ((float)newStats.numberPerType[2])*100.0f/((float)newStats.totalUnit));
+		gfx->drawString(textStartPos, 132+92, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[2], strings->getString("[Warrior]"), ((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPos+5, 132+104, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[2], strings->getString("[free]"));
 
 		// living state

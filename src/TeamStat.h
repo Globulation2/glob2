@@ -21,13 +21,16 @@
 #define __TEAM_STAT_H
 
 #include "UnitType.h"
+#include "BuildingType.h"
 
 struct TeamStat
 {
 	int totalUnit;
-	int numberPerType[UnitType::NB_UNIT_TYPE];
+	int numberUnitPerType[UnitType::NB_UNIT_TYPE];
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
+	int totalBuilding;
+	int numberBuildingPerType[BuildingType::NB_BUILDING];
 	
 	int needFood;
 	int needHeal;
