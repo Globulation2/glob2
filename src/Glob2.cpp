@@ -27,6 +27,7 @@
 #include "GlobalContainer.h"
 #include "YOGScreen.h"
 #include "SettingsScreen.h"
+#include "NewMapScreen.h"
 #include <SDL_net.h>
 
 GlobalContainer *globalContainer=0;
@@ -159,8 +160,10 @@ int main(int argc, char *argv[])
 			break;
 			case 5:
 			{
+				NewMapScreen newMapScreen;
+				newMapScreen.execute(globalContainer->gfx, 30);
 				MapEdit mapEdit;
-				if (mapEdit.run()==-1)
+				if (mapEdit.run(newMapScreen.sizeX, newMapScreen.sizeY, newMapScreen.defaultTerrainType))
 					run=false;
 			}
 			break;

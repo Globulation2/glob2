@@ -79,7 +79,9 @@ YOGScreen.h \
 YOGScreen.cpp \
 SettingsScreen.h \
 SettingsScreen.cpp \
-NonANSICStdWrapper.h
+NonANSICStdWrapper.h \
+NewMapScreen.h \
+NewMapScreen.cpp
 
 glob2_LDADD= -lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

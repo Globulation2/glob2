@@ -107,7 +107,7 @@ public:
 	virtual ~Map(void);
 
 	void setBaseMap(const BaseMap *initial);
-	void setSize(int wDec, int hDec, Game *game);
+	void setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER);
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream, Game *game);
 	

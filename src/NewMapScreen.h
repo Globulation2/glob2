@@ -18,23 +18,41 @@
 
 */
 
-#ifndef __SETTINGSSCREEN_H
-#define __SETTINGSSCREEN_H
+#ifndef __NEWMAPSCREEN_H
+#define __NEWMAPSCREEN_H
 
-#include "GAG.h"
+#include "Map.h"
 
-class SettingsScreen:public Screen
+//! This screen allows to choose the size of the map and the default background
+class NewMapScreen:public Screen
 {
+public:
+	//! Size in bit of the map (6=64, 7=128, 8=256, 9=512) on x
+	int sizeX;
+	//! Size in bit of the map (6=64, 7=128, 8=256, 9=512) on y
+	int sizeY;
+	//! Type of default terrain (WATER, GRASS, SAND)
+	Map::TerrainType defaultTerrainType;
+
 private:
-	List *languageList;
-	TextInput *userName;
+	//! 4 size choices on x
+	OnOffButton *sizeXButton[4];
+	//! 4 size choices on y
+	OnOffButton *sizeYButton[4];
+	//! 3 default terrain choices
+	OnOffButton *defaultTerrainTypeButton[3];
+	//! is true if first paint
+	bool firstPaint;
 
 public:
-	SettingsScreen();
-	virtual ~SettingsScreen() { }
+	//! Constructor
+	NewMapScreen();
+	//! Destructor
+	virtual ~NewMapScreen() { }
+	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
+	//! Paint handler
 	void paint(int x, int y, int w, int h);
-	static int menu(void);
 };
 
 #endif
