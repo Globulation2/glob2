@@ -77,6 +77,8 @@ void MapPreview::repaint(void)
 					lastH=1<<session.mapGenerationDescriptor->hDec;
 					randomGenerated=true;
 					lastRandomGenerationMethode=session.mapGenerationDescriptor->methode;
+					parent->paint(x, y, 128, 128);
+					parent->addUpdateRect(x, y, 128, 128);
 				}
 				else
 				{
@@ -174,8 +176,8 @@ void MapPreview::repaint(void)
 	if (rv == false)
 	{
 		parent->paint(x, y, 128, 128);
-		parent->getSurface()->drawLine(x, y, x+128, y+128, 255, 0, 0);
-		parent->getSurface()->drawLine(x+128, y, x, y+128, 255, 0, 0);
+		parent->getSurface()->drawLine(x, y, x+127, y+127, 255, 0, 0);
+		parent->getSurface()->drawLine(x+127, y, x, y+127, 255, 0, 0);
 		parent->addUpdateRect(x, y, 128, 128);
 	}
 }
