@@ -161,7 +161,6 @@ Sint32 BasePlayer::checkSum()
 	
 	
 	cs^=(type==P_AI)+(type==P_LOST_A)+(type==P_LOST_B);
-	
 	cs^=number;
 	cs^=numberMask;
 	cs^=teamNumber;
@@ -169,10 +168,9 @@ Sint32 BasePlayer::checkSum()
 	cs^=ip.host;
 	cs^=ip.port;
 	
-	
 	for (int i=0; i<(int)strlen(name); i++)
 		cs^=name[i];
-		
+	
 	return cs;
 }
 
@@ -225,7 +223,10 @@ bool BasePlayer::bind()
 void BasePlayer::unbind()
 {
 	if (channel!=-1)
+	{
 		SDLNet_UDP_Unbind(socket, channel);
+		channel=-1;
+	}
 }
 
 bool BasePlayer::send(char *data, int size)
@@ -233,16 +234,17 @@ bool BasePlayer::send(char *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 		return false;
-			
+	if (ip.host==0)
+		return false;
 	packet->len=size;
 			
 	memcpy((char *)packet->data, data, size);
 	
 	bool sucess;
-	if (abs(rand()%100)<70)
-		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-	else
-		sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
+	//if (abs(rand()%100)<70)
+	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	//else
+	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	//if (sucess)
 	//	printf("suceeded to send packet to player %d.\n", number);
 	//else

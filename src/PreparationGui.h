@@ -109,7 +109,16 @@ public:
 };
 
 
-class MultiplayersHostScreen:public SessionScreen
+class MultiplayersCrossConnectableScreen:public SessionScreen
+{
+public:
+	virtual ~MultiplayersCrossConnectableScreen(){};
+	void tryCrossConnections(void);
+public:
+	IPaddress serverIP;
+};
+
+class MultiplayersHostScreen:public MultiplayersCrossConnectableScreen
 {
 public:
 	enum
@@ -123,11 +132,11 @@ public:
 	enum HostGlobalState
 	{
 		HGS_BAD=0,
-		HGS_SHARING_SESSION_INFO,
-		HGS_WAITING_CROSS_CONNECTIONS,
-		HGS_ALL_PLAYERS_CROSS_CONNECTED,
-		HGS_GAME_START_SENDED,
-		HGS_PLAYING
+		HGS_SHARING_SESSION_INFO=1,
+		HGS_WAITING_CROSS_CONNECTIONS=2,
+		HGS_ALL_PLAYERS_CROSS_CONNECTED=3,
+		HGS_GAME_START_SENDED=4,
+		HGS_PLAYING_COUNTER=5 // the counter 5-4-3-2-1-0 is playing
 	};
 	
 	enum
@@ -165,11 +174,9 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 
-public:
-	IPaddress *myip;
 };
 
-class MultiplayersJoinScreen:public SessionScreen
+class MultiplayersJoinScreen:public MultiplayersCrossConnectableScreen
 {
 public:
 	enum
@@ -214,6 +221,7 @@ public:
 	void tryCrossConnections(void);
 	void startCrossConnections(void);
 	void crossConnectionFirstMessage(char *data, int size, IPaddress ip);
+	void checkAllCrossConnected(void);
 	void crossConnectionSecondMessage(char *data, int size, IPaddress ip);
 	void stillCrossConnectingConfirmation(IPaddress ip);
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
@@ -231,9 +239,6 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 
-public:
-	IPaddress serverIP;
-	int hostPlayer;
 };
 
 

@@ -22,8 +22,7 @@ public:
 		P_LOST_B, // Player is no longer considered, may be later changed to P_AI
 		P_AI,
 		P_IP,
-		P_LOCAL,
-		P_HOST
+		P_LOCAL
 	};
 	
 	static const int MAX_NAME_LENGTH = 16;

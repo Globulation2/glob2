@@ -13,7 +13,8 @@ GameGUI::GameGUI()
 {
 	isRunning=true;
 	needRedraw=true;
-	showExtendedInformation=false;
+	drawHealthFoodBar=false;
+	drawPathLines=false;
 	viewportX=0;
 	viewportY=0;
 	mouseX=0;
@@ -125,7 +126,8 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_QUIT)
 	{
-		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+		//TODO :orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+		isRunning=false;
 	}
 }
 
@@ -298,10 +300,15 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				}
 			}
 			break;
-		case SDLK_TAB:
+		case SDLK_p :
 			if (pressed)
-				showExtendedInformation=!showExtendedInformation;
+				drawPathLines=!drawPathLines;
 			break;
+		case SDLK_i :
+			if (pressed)
+				drawHealthFoodBar=!drawHealthFoodBar;
+			break;
+			
 		case SDLK_RETURN :
 			if (pressed)
 			{
@@ -997,6 +1004,18 @@ void GameGUI::draw(void)
 		else if (!selBuild->type->isVirtual)
 			globalContainer.gfx.drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 	}
+}
+
+void GameGUI::drawAll(void)
+{
+	globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
+	game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(),viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, true);
+
+	globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 0, 128, 128);
+	game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, viewportX, viewportY);
+
+	globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW(), globalContainer.gfx.getH());
+	draw();
 }
 
 void GameGUI::executeOrder(Order *order)
