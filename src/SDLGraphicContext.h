@@ -74,6 +74,7 @@ public:
 	virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 
 	virtual void dbgprintf(const char *msg, ...);
+	virtual void loadImage(const char *name);
 
 	virtual Sprite *loadSprite(const char *name);
 	virtual Font *loadFont(const char *name);
