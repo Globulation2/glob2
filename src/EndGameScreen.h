@@ -20,8 +20,10 @@
 #ifndef __END_GAME_SCREEN_H
 #define __END_GAME_SCREEN_H
 
-#include "GAG.h"
 #include "GameGUI.h"
+#include <GUIBase.h>
+
+class Text;
 
 //! Widget to display stats at end of game
 class EndGameStat: public Widget
@@ -35,7 +37,7 @@ public:
 	virtual void paint(void);
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
-	
+
 protected:
 	//! internal paint routine
 	void repaint(void);

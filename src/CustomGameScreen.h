@@ -20,10 +20,15 @@
 #ifndef __CUSTOM_GAME_SCREEN_H
 #define __CUSTOM_GAME_SCREEN_H
 
-#include "GAG.h"
 #include "Session.h"
-#include "GUIGlob2FileList.h"
-#include "GUIMapPreview.h"
+#include <GUIBase.h>
+
+class Button;
+class MapPreview;
+class OnOffButton;
+class ColorButton;
+class Text;
+class Glob2FileList;
 
 class CustomGameScreen:public Screen
 {
@@ -49,9 +54,8 @@ public:
 	CustomGameScreen();
 	virtual ~CustomGameScreen();
 	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	bool isAIactive(int i) { return isAI[i]->getState(); }
-	int getSelectedColor(int i) { return color[i]->getSelectedColor(); }
+	bool isAIactive(int i);
+	int getSelectedColor(int i);
 };
 
 #endif

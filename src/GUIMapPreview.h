@@ -20,7 +20,7 @@
 #ifndef __GUIMAPPREVIEW_H
 #define __GUIMAPPREVIEW_H
 
-#include "GUIBase.h"
+#include <GUIBase.h>
 #include "MapGenerationDescriptor.h"
 
 //! Widget to preview map

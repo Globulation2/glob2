@@ -20,8 +20,11 @@
 #ifndef __GAME_GUI_LOAD_SAVE_H
 #define __GAME_GUI_LOAD_SAVE_H
 
-#include "GAG.h"
+#include <GUIBase.h>
 #include "GameGUIDialog.h"
+
+class List;
+class TextInput;
 
 class LoadSaveScreen:public OverlayScreen
 {
@@ -54,8 +57,8 @@ public:
 	virtual ~LoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
-	const char *getFileName(void) { return fileName; }
-	const char *getName(void) { return fileNameEntry->getText(); }
+	const char *getFileName(void);
+	const char *getName(void);
 };
 
 #endif

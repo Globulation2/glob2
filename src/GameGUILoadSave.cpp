@@ -20,6 +20,12 @@
 #include "GameGUILoadSave.h"
 #include "GlobalContainer.h"
 #include "Utilities.h"
+#include <GUIList.h>
+#include <GUIButton.h>
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 //! Load/Save screen
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
@@ -137,4 +143,14 @@ void LoadSaveScreen::generateFileName(void)
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)
 {
 
+}
+
+const char *LoadSaveScreen::getFileName(void)
+{
+	return fileName;
+}
+
+const char *LoadSaveScreen::getName(void)
+{
+	return fileNameEntry->getText();
 }

@@ -24,6 +24,7 @@
 #include "Order.h"
 #include "Game.h"
 #include <queue>
+
 class TeamStats;
 class OverlayScreen;
 class InGameTextInput;
