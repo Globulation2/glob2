@@ -28,6 +28,7 @@ public:
 	void loadCrossRef(SDL_RWops *stream, Team *owner);
 	void saveCrossRef(SDL_RWops *stream);
 	
+	void unsubscribed(void);
 	bool step(void);
 	
 	void directionFromDxDy(void);
@@ -167,6 +168,7 @@ public:
 	// FIXME : should we duplicate this
 	Building *attachedBuilding;
 	int destinationPurprose;
+	bool subscribed;
 
 public:
 	Sint32 checkSum();

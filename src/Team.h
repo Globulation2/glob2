@@ -110,6 +110,8 @@ public:
 	std::list<Building *> attract[NB_ABILITY];
 	std::list<Building *> canFeedUnit;
 	std::list<Building *> canHealUnit;
+	std::list<Building *> subscribeForInsideStep;
+	std::list<Building *> subscribeForWorkingStep;
 
 	std::list<int> buildingsToBeDestroyed;
 	std::list<Building *> buildingsToBeUpgraded;

@@ -859,19 +859,52 @@ int MapEdit::run(void)
 						globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
 					else
 						globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+					
+					
+					if (isRoom)
+					{
+						BuildingType *nnbt=bt;
+						int max=0;
+						while(nnbt->nextLevelTypeNum!=-1)
+						{
+							nnbt=game.buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+							if (max++>200)
+							{
+								printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
+								assert(false);
+								break;
+							}
+						}
+						int typeNum=nnbt->typeNum;
+						
+						tempX+=((-bt->decLeft+nnbt->decLeft)<<5);
+						tempY+=((-bt->decTop +nnbt->decTop )<<5);
+						
+						isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
+						
+						batX=(mapX-viewportX)<<5;
+						batY=(mapY-viewportY)<<5;
+						batW=(nnbt->width)<<5;
+						batH=(nnbt->height)<<5;
+					
+						if (isRoom)
+							globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+						else
+							globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
 
+					}
+					
 					refreshZones[nbRefreshZones].x=batX;
 					refreshZones[nbRefreshZones].y=batY;
 					refreshZones[nbRefreshZones].w=batW;
 					refreshZones[nbRefreshZones].h=batH;
 					nbRefreshZones++;
-
-					globalContainer.gfx.setClipRect(&screenClip);
-
 					orX=batX;
 					orY=batY;
 					orW=batW;
 					orH=batH;
+					
+					globalContainer.gfx.setClipRect(&screenClip);
 					oldBrush=BUILDING;
 				}
 			}

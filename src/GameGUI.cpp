@@ -874,6 +874,8 @@ void GameGUI::draw(void)
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+255, font, "ab=%x", selUnit->attachedBuilding);
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+270, font, "speed=%d", selUnit->speed);
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+285, font, "verbose=%d", selUnit->verbose);
+			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+300, font, "subscribed=%d", selUnit->subscribed);
+			
 		}
 		else if (displayMode==STAT_VIEW)
 		{

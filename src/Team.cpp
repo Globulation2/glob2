@@ -140,6 +140,9 @@ void Team::init(void)
 	palette=globalContainer.macPal;
 	freeUnits=0;
 	startPosX=startPosY=0;
+	
+	subscribeForInsideStep.clear();
+	subscribeForWorkingStep.clear();
 }
 
 void Team::setBaseTeam(const BaseTeam *initial)
@@ -488,6 +491,7 @@ void Team::step(void)
 	}
 	buildingsToBeDestroyed.clear();
 	
+	
 	for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
 	{
 		if ( (*it)->tryToUpgradeRoom() )
@@ -496,6 +500,33 @@ void Team::step(void)
 			it=buildingsToBeUpgraded.erase(ittemp);
 		}
 	}
+	
+	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+	{
+		(*it)->subscribeForInsideStep();
+	}
+	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+	{
+		if ( ((*it)->fullInside()) || ((*it)->unitsInsideSubscribe.size()==0) )
+		{
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForInsideStep.erase(ittemp);
+		}
+	}
+	
+	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+	{
+		(*it)->subscribeForWorkingStep();
+	}
+	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+	{
+		if ( ((*it)->fullWorking()) || ((*it)->unitsWorkingSubscribe.size()==0) )
+		{
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForWorkingStep.erase(ittemp);
+		}
+	}
+	
 	
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{

@@ -41,6 +41,7 @@ BuildingsTypes::BuildingsTypes(const char *filename)
 	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
 	{
 		(*it)->lastLevelTypeNum=-1;
+		(*it)->typeNum=-1;
 		(*it)->nextLevelTypeNum=-1;
 	}
 	BuildingType *bt1;
@@ -50,6 +51,7 @@ BuildingsTypes::BuildingsTypes(const char *filename)
 	{
 		bt1=*it1;
 		bt1->nextLevelTypeNum=-1;
+		bt1->typeNum=j;
 		int i=0;
 		for (std::vector <BuildingType *>::iterator it2=buildingsTypes.begin(); it2!=buildingsTypes.end(); ++it2)
 		{

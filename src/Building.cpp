@@ -30,7 +30,9 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	maxUnitWorking=type->maxUnitWorking;
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitWorkingPreferred=maxUnitWorking;
-
+	lastInsideSubscribe=0;
+	lastWorkingSubscribe=0;
+	
 	// identity
 	UID=uid;
 	owner=team;
@@ -63,6 +65,8 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
+	
+	
 
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
@@ -179,7 +183,15 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	{
 		unitsWorking.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
 	}
-
+	int nbWorkingSubscribe=SDL_ReadBE32(stream);
+	unitsWorkingSubscribe.clear();
+	for (int i=0; i<nbWorkingSubscribe; i++)
+	{
+		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	}
+	lastWorkingSubscribe=SDL_ReadBE32(stream);
+	
+	
 	maxUnitWorking=SDL_ReadBE32(stream);
 	maxUnitWorkingPreferred=SDL_ReadBE32(stream);
 	maxUnitWorkingLocal=maxUnitWorking;
@@ -189,6 +201,13 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	{
 		unitsInside.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
 	}
+	int nbInsideSubscribe=SDL_ReadBE32(stream);
+	unitsInsideSubscribe.clear();
+	for (int i=0; i<nbInsideSubscribe; i++)
+	{
+		unitsInsideSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+	}
+	lastInsideSubscribe=SDL_ReadBE32(stream);
 }
 
 void Building::saveCrossRef(SDL_RWops *stream)
@@ -200,7 +219,13 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	{
 		SDL_WriteBE32(stream, (*it)->UID);
 	}
-
+	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
+	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+	{
+		SDL_WriteBE32(stream, (*it)->UID);
+	}
+	SDL_WriteBE32(stream, lastWorkingSubscribe);
+	
 	SDL_WriteBE32(stream, maxUnitWorking);
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
@@ -208,6 +233,12 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	{
 		SDL_WriteBE32(stream, (*it)->UID);
 	}
+	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
+	for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+	{
+		SDL_WriteBE32(stream, (*it)->UID);
+	}
+	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
 
 bool Building::isRessourceFull(void)
@@ -301,7 +332,7 @@ void Building::update(void)
 
 	if (buildingState==WAITING_FOR_DESTRUCTION)
 	{
-		if ((unitsWorking.size()==0) && (unitsInside.size()==0))
+		if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
 			owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
 			buildingState=DEAD;
@@ -315,7 +346,7 @@ void Building::update(void)
 		{
 			cancelUpgrade();
 		}
-		else if ((unitsWorking.size()==0) && (unitsInside.size()==0))
+		else if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
 			buildingState=WAITING_FOR_UPGRADE_ROOM;
 			owner->buildingsToBeUpgraded.push_front(this);
@@ -391,7 +422,7 @@ void Building::update(void)
 		}
 	}
 
-	if (unitsInside.size()<maxUnitInside)
+	if ((signed)unitsInside.size()<maxUnitInside)
 	{
 		// add itself in Call lists
 		for (int i=0; i<NB_ABILITY; i++)
@@ -588,6 +619,99 @@ void Building::step(void)
 {
 	assert(false);
 	// NOTE : Unit needs to update itself when it is in a building
+}
+
+bool Building::fullWorking(void)
+{
+	return ((signed)unitsWorking.size()>=maxUnitWorking);
+}
+
+bool Building::fullInside(void)
+{
+	if ((type->canFeedUnit) && (ressources[CORN]<=(int)unitsInside.size()))
+		return true;
+	else
+		return ((signed)unitsInside.size()>=maxUnitInside);
+}
+
+void Building::subscribeForWorkingStep()
+{
+	lastWorkingSubscribe++;
+	if (lastWorkingSubscribe>32)
+	{
+		if ((signed)unitsWorking.size()<maxUnitWorking)
+		{
+			int mindist=owner->game->map.getW()*owner->game->map.getW();
+			Unit *u=NULL;
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			{
+				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+				if (dist<mindist)
+				{
+					mindist=dist;
+					u=*it;
+				}
+			}
+			if (u)
+			{
+				unitsWorkingSubscribe.remove(u);
+				unitsWorking.push_back(u);
+				u->unsubscribed();
+				update();
+			}
+		}
+		
+		if ((signed)unitsWorking.size()>=maxUnitWorking)
+		{
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			{
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+			}
+			unitsWorkingSubscribe.clear();
+		}
+	}
+}
+
+void Building::subscribeForInsideStep()
+{
+	lastInsideSubscribe++;
+	if (lastInsideSubscribe>32)
+	{
+		if ((signed)unitsInside.size()<maxUnitInside)
+		{
+			int mindist=owner->game->map.getW()*owner->game->map.getW();
+			Unit *u=NULL;
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			{
+				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+				if (dist<mindist)
+				{
+					mindist=dist;
+					u=*it;
+				}
+			}
+			if (u)
+			{
+				unitsInsideSubscribe.remove(u);
+				unitsInside.push_back(u);
+				u->unsubscribed();
+				update();
+			}
+		}
+		
+		if ((signed)unitsInside.size()>=maxUnitInside)
+		{
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			{
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+			}
+			unitsInsideSubscribe.clear();
+		}
+	}
 }
 
 void Building::swarmStep(void)
