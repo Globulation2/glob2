@@ -2766,6 +2766,28 @@ void GameGUI::drawOverlayInfos(void)
 void GameGUI::drawInGameMenu(void)
 {
 	globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
+	// Draw a-la-aqua drop shadows
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	{
+		int x = gameMenuScreen->decX;
+		int y = gameMenuScreen->decY;
+		int w = gameMenuScreen->getSurface()->getW();
+		int h = gameMenuScreen->getSurface()->getH();
+		
+		globalContainer->gfx->drawSprite(x-8, y+h, globalContainer->terrainShader, 17);
+		globalContainer->gfx->drawSprite(x+w, y+h, globalContainer->terrainShader, 18);
+		globalContainer->gfx->setClipRect(x, y+h, w, 16);
+		for (int i=0; i<w+31; i+=32)
+		{
+			globalContainer->gfx->drawSprite(x+i, y+h, globalContainer->terrainShader, 16);
+		}
+		globalContainer->gfx->setClipRect(x-8, y, w+16, h);
+		for (int i=0; i<h+31; i+=32)
+		{
+			globalContainer->gfx->drawSprite(x-8, y+i, globalContainer->terrainShader, 19);
+			globalContainer->gfx->drawSprite(x+w, y+i, globalContainer->terrainShader, 20);
+		}
+	}
 }
 
 void GameGUI::drawInGameTextInput(void)
