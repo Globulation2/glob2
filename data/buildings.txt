@@ -1189,7 +1189,8 @@ maxUnitStayRange 14
 
 type stonewall
 
-gameSpriteImage 40
+gameSprite data/gfx/wallc
+gameSpriteImage 0
 miniSpriteImage -1
 hueImage 1;
 
