@@ -85,9 +85,9 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	addWidget(new TextButton(155, 230, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	if (isLoad)
-		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), 300));
+		addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]")));
 	else
-		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), 300));
+		addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]")));
 
 	generateFileName();
 }
