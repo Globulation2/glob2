@@ -205,7 +205,7 @@ void YOGScreen::onTimer(Uint32 tick)
 	if (globalContainer->yog->newPlayerList(true))
 		updatePlayerList();
 	
-	globalContainer->yog->step();
+	//globalContainer->yog->step(); this yog->step() is allready done in multiplayersJoin instance.
 	while (globalContainer->yog->receivedMessages.size()>0)
 	{
 		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
@@ -358,4 +358,11 @@ void YOGScreen::onTimer(Uint32 tick)
 			gameInfo->setText("");
 		}
 	}
+	
+	if (globalContainer->yog->connectionLost)
+	{
+		multiplayersJoin->quitThisGame();
+		endExecute(CANCEL);
+	}
+	
 }

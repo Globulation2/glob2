@@ -836,8 +836,12 @@ Vitesse du jeu
 Game speed
 Spielgeschwindigkeit
 [YESTS_BAD]
-Erreur interne de connection
-Internal connection error
+Erreur de cohérence interne lors de la connection.
+Internal consistency error while connecting.
+
+[YESTS_UNABLE_TO_CONNECT]
+Impossible de se connecter. Apparement le metaserveur YOG n'est pas disponible.
+Impossible to connect. Apparently the YOG metaserver is down.
 
 [YESTS_CREATED]
 Le système de connection prêt à contacter au metaserveur YOG pour se connecter.
@@ -848,8 +852,8 @@ Etablissement de la connection au metaserveur YOG...
 Etablishing the connection to the YOG metaserver...
 
 [YESTS_YOG_KILLED]
-Le metaserveur YOG vient de se faire tuer!
-The YOG metaserver has just been killed!
+Un administrateur vient d'arrêter le metaserveur YOG.
+An administrator has just stoped the YOG metaserver.
 
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.

@@ -90,16 +90,19 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		if (yogReturnCode==YOGScreen::CANCEL)
 		{
 			globalContainer->yog->deconnect();
-			endExecutionValue=CANCEL;
+			//endExecutionValue=CANCEL;
 		}
 		else if (yogReturnCode==-1)
 		{
 			globalContainer->yog->deconnect();
 			endExecutionValue=-1;
 		}
+		else
+			assert(false);
 		printf("YOGPreScreen:: YOGScreen has ended ...\n");
+		dispatchPaint(gfxCtx);
 	}
-	else if (globalContainer->yog->externalStatusState!=oldYOGExternalStatusState)
+	if (globalContainer->yog->externalStatusState!=oldYOGExternalStatusState)
 	{
 		char *s=globalContainer->yog->getStatusString();
 		statusText->setText(s);
