@@ -166,12 +166,12 @@ namespace GAGCore
 		SDL_SetClipRect(surface, &clipRect);
 	}
 	
-	void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index)
+	void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, int index,  Uint8 alpha)
 	{
 		if (!surface)
 			return;
 			
-		sprite->draw(surface, &clipRect, x, y, index);
+		sprite->draw(surface, &clipRect, x, y, index, alpha);
 	}
 	
 	void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -1180,6 +1180,9 @@ namespace GAGCore
 		else
 		{
 			setClipRect();
+			SDL_ShowCursor(SDL_DISABLE);
+			// load cursors
+			cursorManager.load();
 			if (flags&FULLSCREEN)
 				fprintf(stderr, "Toolkit : Screen set to %dx%d at %d bpp in fullscreen\n", w, h, depth);
 			else
@@ -1202,6 +1205,10 @@ namespace GAGCore
 	{
 		if (surface)
 		{
+			int mx, my;
+			unsigned b = SDL_GetMouseState(&mx, &my);
+			cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
+			cursorManager.draw(this, mx, my);
 			SDL_Flip(surface);
 		}
 	}
