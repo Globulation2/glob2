@@ -265,6 +265,9 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		sessionInfo.players[j].ipFirewallClean=false;
+	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		fprintf(logFile, " player=(%d) ip=(%s) waitForNatResolution=(%d), ipFromNAT=(%d)\n", j, Utilities::stringIP(sessionInfo.players[j].ip), sessionInfo.players[j].waitForNatResolution, sessionInfo.players[j].ipFromNAT); 
 	
 	if (localPort)
@@ -534,6 +537,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 			fprintf(logFile, " player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 			
 			sessionInfo.players[p].setip(ip); // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
+			sessionInfo.players[p].ipFirewallClean=true;
 			
 			fprintf(logFile, " (this NAT is solved)\n");
 			sessionInfo.players[p].waitForNatResolution=false;
@@ -547,6 +551,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 			{
 				fprintf(logFile, " changing port for firewall tolerance for player p=(%d) from ip=(%s) to ip=(%s)\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 				sessionInfo.players[p].setip(ip);
+				sessionInfo.players[p].ipFirewallClean=true;
 			}
 		}
 		else
@@ -612,14 +617,17 @@ void MultiplayersJoin::checkAllCrossConnected()
 	}
 	if (allCrossConnected)
 	{
-		waitingState=WS_CROSS_CONNECTING_ACHIEVED;
-		if (waitingTimeout>0)
+		if (waitingState<=WS_CROSS_CONNECTING_ACHIEVED)
 		{
-			waitingTimeout-=waitingTimeoutSize;
-			assert(waitingTimeoutSize);
-			waitingTOTL++;
+			waitingState=WS_CROSS_CONNECTING_ACHIEVED;
+			if (waitingTimeout>0)
+			{
+				waitingTimeout-=waitingTimeoutSize;
+				assert(waitingTimeoutSize);
+				waitingTOTL++;
+			}
+			fprintf(logFile, "All players are cross connected to me !! (wt=%d) (wts=%d) (wtotl=%d) (ws=%d)\n", waitingTimeout, waitingTimeoutSize, waitingTOTL, waitingState);
 		}
-		fprintf(logFile, "All players are cross connected to me !! (wt=%d) (wts=%d) (wtotl=%d) (ws=%d)\n", waitingTimeout, waitingTimeoutSize, waitingTOTL, waitingState);
 	}
 }
 
@@ -684,7 +692,8 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 						//fprintf(logFile, "  type[%d]=%d\n", j, sessionInfo.players[j].type);
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
-							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
+							if (((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
+								&& !sessionInfo.players[j].ipFirewallClean)
 							{
 								if (sessionInfo.players[j].sameip(ip))
 									fprintf(logFile, "   player (%d) (%s) already switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
@@ -1290,7 +1299,8 @@ void MultiplayersJoin::sendingTime()
 		else
 			fprintf(logFile, "TOTL %d\n", waitingTOTL);
 			
-		
+		if (waitingState>=WS_CROSS_CONNECTING_START_CONFIRMED && waitingState<WS_SERVER_START_GAME)
+			MultiplayersCrossConnectable::tryCrossConnections();
 			
 		switch (waitingState)
 		{
@@ -1355,7 +1365,6 @@ void MultiplayersJoin::sendingTime()
 				send(CLIENT_QUIT_NEW_GAME);
 				waitingState=WS_TYPING_SERVER_NAME;
 			}
-			MultiplayersCrossConnectable::tryCrossConnections();
 			checkAllCrossConnected();
 		}
 		break;
