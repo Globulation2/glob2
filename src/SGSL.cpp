@@ -54,6 +54,77 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include "SGSL.h"
 #include "Game.h"
 
+Token::TokenSymbolLookupTable Token::table[] =
+{
+	{ S_WAIT, "wait" },
+	{ S_EQUAL, "=" },
+	{ S_HIGHER, ">" },
+	{ S_LOWER, "<" },
+	{ S_TIMER, "timer" },
+	{ S_SHOW, "show" },
+	{ S_ACTIVATE, "activate" },
+	{ S_DEACTIVATE, "deactivate" },
+	{ S_FRIEND, "friend" },
+	{ S_ENEMY, "enemy" },
+	{ S_DEAD, "dead" },
+	{ S_ALIVE, "alive" },
+	{ S_FLAG, "flag" },
+	{ S_YOU, "you" },
+	{ S_NOENEMY, "noenemy" },
+	{ S_WIN, "win" },
+	{ S_LOOSE, "loose" },
+	{ S_STORY, "story" },
+	{ S_WORKER, "nbWorker" },
+	{ S_EXPLORER, "nbExplorer" },
+	{ S_WARRIOR, "nbWarrior" },
+	{ S_SWARM_B, "nbSwarm" },
+	{ S_FOOD_B, "nbGranary" },
+	{ S_HEALTH_B, "nbHospital" },
+	{ S_WALKSPEED_B, "nbRacetrack" },
+	{ S_SWIMSPEED_B, "nbPool" },
+	{ S_ATTACK_B, "nbCamp" },
+	{ S_SCIENCE_B, "nbSchool" },
+	{ S_DEFENCE_B, "nbTower" },
+	{ S_HIDE, "hide" },
+	{ S_MARK, "mark" },
+	{ S_GOBACKTO, "gobackto" },
+	{ INT, "int" },
+	{ STRING, "string" },
+	{ NIL, NULL }
+};
+
+Token::TokenType Token::getTypeByName(const char *name)
+{
+	int i = 0;
+	TokenType type=NIL;
+	while (table[i].type != NIL)
+	{
+		if (strcasecmp(name, table[i].name)==0)
+		{
+			type = table[i].type;
+			break;
+		}
+		i++;
+	}
+	return type;
+}
+
+const char *Token::getNameByType(Token::TokenType type)
+{
+	int i = 0;
+	const char *name=NULL;
+	while (table[i].name != NULL)
+	{
+		if (type == table[i].type)
+		{
+			name = table[i].name;
+			break;
+		}
+		i++;
+	}
+	return name;
+}
+
 Story::Story(Mapscript *mapscript)
 {
 	lineSelector = 0;
@@ -94,7 +165,7 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 				return latestStat->numberBuildingPerTypePerLevel[2][level];
 			case(Token::S_WALKSPEED_B):
 				return latestStat->numberBuildingPerTypePerLevel[3][level];
-			case(Token::S_FLYSPEED_B):
+			case(Token::S_SWIMSPEED_B):
 				return latestStat->numberBuildingPerTypePerLevel[4][level];
 			case(Token::S_ATTACK_B):
 				return latestStat->numberBuildingPerTypePerLevel[5][level];
@@ -254,12 +325,10 @@ bool Story::testCondition()
 			}
 			case (Token::S_GOBACKTO):
 			{
-				//TODO deal with error of nonexistence of the token !
 				int newEmplacement;
-				for (int i = lineSelector; i > 0; i--)
+				for (newEmplacement = lineSelector; newEmplacement > 0; newEmplacement--)
 				{
-					if (line[lineSelector+1].msg == line[i].msg)
-						newEmplacement = i;
+					if (line[lineSelector+1].msg == line[newEmplacement].msg)
 						break;
 				}
 				lineSelector = newEmplacement;
@@ -450,137 +519,9 @@ void Aquisition::nextToken()
 			else
 				token.type = Token::NIL;
 		}
-		else if (mot=="wait")
-		{
-			token.type=Token::S_WAIT;
-		}
-		else if (mot=="=")
-		{
-			token.type=Token::S_EQUAL;
-		}
-		else if (mot==">")
-		{
-			token.type=Token::S_HIGHER;
-		}
-		else if (mot=="<")
-		{
-			token.type=Token::S_LOWER;
-		}
-		else if (mot=="timer")
-		{
-			token.type=Token::S_TIMER;
-		}
-		else if (mot=="show")
-		{
-			token.type=Token::S_SHOW;
-		}
-		else if (mot=="activate")
-		{
-			token.type=Token::S_ACTIVATE;
-		}
-		else if (mot=="deactivate")
-		{
-			token.type=Token::S_DEACTIVATE;
-		}
-		else if (mot=="friend")
-		{
-			token.type=Token::S_FRIEND;
-		}
-		else if (mot=="enemy")
-		{
-			token.type=Token::S_ENEMY;
-		}
-		else if (mot=="dead")
-		{
-			token.type=Token::S_DEAD;
-		}
-		else if (mot=="alive")
-		{
-			token.type=Token::S_ALIVE;
-		}
-		else if (mot=="flag")
-		{
-			token.type=Token::S_FLAG;
-		}
-		else if (mot=="you")
-		{
-			token.type=Token::S_YOU;
-		}
-		else if (mot=="noenemy")
-		{
-			token.type=Token::S_NOENEMY;
-		}
-		else if (mot=="win")
-		{
-			token.type=Token::S_WIN;
-		}
-		else if (mot=="loose")
-		{
-			token.type=Token::S_LOOSE;
-		}
-		else if (mot=="story")
-		{
-			token.type=Token::S_STORY;
-		}
-        else if (mot=="nbWorker")
-		{
-			token.type=Token::S_WORKER;
-		}
-		else if (mot=="nbExplorer")
-		{
-			token.type=Token::S_EXPLORER;
-		}
-		else if (mot=="nbWarrior")
-		{
-			token.type=Token::S_WARRIOR;
-		}
-		else if (mot=="nbSwarmBuilding")
-		{
-			token.type=Token::S_SWARM_B;
-		}
-		else if (mot=="nbFoodBuilding")
-		{
-			token.type=Token::S_FOOD_B;
-		}
-		else if (mot=="nbHealthBuilding")
-		{
-			token.type=Token::S_HEALTH_B;
-		}
-		else if (mot=="nbWalkBuilding")
-		{
-			token.type=Token::S_WALKSPEED_B;
-		}
-		else if (mot=="nbFlyBuilding")
-		{
-			token.type=Token::S_FLYSPEED_B;
-		}
-		else if (mot=="nbAttackBuilding")
-		{
-			token.type=Token::S_ATTACK_B;
-		}
-		else if (mot=="nbScienceBuilding")
-		{
-			token.type=Token::S_SCIENCE_B;
-		}
-		else if (mot == "nbDefenceBuilding")
-		{
-			token.type=Token::S_DEFENCE_B;
-		}
-		else if (mot == "hide")
-		{
-			token.type=Token::S_HIDE;
-		}
-		else if (mot == "mark")
-		{
-			token.type=Token::S_MARK;
-		}
-		else if (mot == "gobackto")
-		{
-			token.type=Token::S_GOBACKTO;
-		}
 		else
 		{
-			token.type=Token::NIL;
+			token.type=Token::getTypeByName(mot.c_str());
 		}
 	}
 	else
@@ -866,7 +807,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 			stories.push_back(thisone);
 			printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 			for (unsigned  i=0; i<thisone.line.size(); i++)
-				cout << "Token type " << thisone.line[i].type << endl;
+				cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;
 			donnees.nextToken();
 		}
 	}

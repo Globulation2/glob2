@@ -40,7 +40,7 @@ struct Token
 		S_FOOD_B=202,
 		S_HEALTH_B=203,
 		S_WALKSPEED_B=204,
-		S_FLYSPEED_B=205,
+		S_SWIMSPEED_B=205,
 		S_ATTACK_B=206,
 		S_SCIENCE_B=207,
 		S_DEFENCE_B=208,
@@ -68,9 +68,24 @@ struct Token
 		S_MARK=321,
 		S_GOBACKTO=322
 	} type;
+	
+	struct TokenSymbolLookupTable
+	{
+		TokenType type;
+		const char *name;
+	};
 
 	int value;
 	std::string msg;
+	
+	//! This table is a map table between token type and token names
+	static TokenSymbolLookupTable table[];
+	
+	//! Returns the type of a given name (parsing phase)
+	static TokenType getTypeByName(const char *name);
+	
+	//! Returns the name a of given type (debug & script recreation phase)
+	static const char *getNameByType(TokenType type);
 };
 
 struct ErrorReport
