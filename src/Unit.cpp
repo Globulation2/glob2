@@ -255,6 +255,8 @@ void Unit::subscriptionSuccess(void)
 				case ACT_FLAG:
 				{
 					displacement=DIS_GOING_TO_FLAG;
+					targetX=attachedBuilding->getMidX();
+					targetY=attachedBuilding->getMidY();
 				}
 				break;
 				case ACT_UPGRADING:
@@ -1213,7 +1215,8 @@ void Unit::handleMovement(void)
 			Map *map=owner->map;
 			int teamNumber=owner->teamNumber;
 			bool canSwim=performance[SWIM]>0;
-			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy))
+			bool stopWork;
+			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy, &stopWork))
 			{
 				if (verbose)
 					printf("Unit gid=%d found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
@@ -1225,7 +1228,8 @@ void Unit::handleMovement(void)
 				if (verbose)
 					printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
 
-				stopAttachedForBuilding(false);
+				if (stopWork)
+					stopAttachedForBuilding(false);
 				movement=MOV_RANDOM;
 			}
 		}
@@ -1273,7 +1277,10 @@ void Unit::handleAction(void)
 			if (fly)
 				owner->map->setAirUnit(posX, posY, gid);
 			else
+			{
+				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
 				owner->map->setGroundUnit(posX, posY, gid);
+			}
 			break;
 		}
 
@@ -1296,7 +1303,10 @@ void Unit::handleAction(void)
 			if (fly)
 				owner->map->setAirUnit(posX, posY, gid);
 			else
+			{
+				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
 				owner->map->setGroundUnit(posX, posY, gid);
+			}
 			break;
 		}
 		
@@ -1334,7 +1344,10 @@ void Unit::handleAction(void)
 			if (fly)
 				owner->map->setAirUnit(posX, posY, gid);
 			else
+			{
+				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
 				owner->map->setGroundUnit(posX, posY, gid);
+			}
 			
 			if (verbose)
 				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
@@ -1363,7 +1376,10 @@ void Unit::handleAction(void)
 			if (performance[FLY])
 				owner->map->setAirUnit(posX, posY, gid);
 			else
+			{
+				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
 				owner->map->setGroundUnit(posX, posY, gid);
+			}
 			break;
 		}
 		

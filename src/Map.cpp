@@ -65,8 +65,13 @@ Map::Map()
 	
 	localRessourcesUpdateCount=0;
 	pathfindLocalRessourceCount=0;
-	pathfindLocalRessourceCountSuccess=0;
-	pathfindLocalRessourceCountFailure=0;
+	pathfindLocalRessourceCountSuccessBase=0;
+	pathfindLocalRessourceCountSuccessLocked=0;
+	pathfindLocalRessourceCountSuccessUpdate=0;
+	pathfindLocalRessourceCountSuccessUpdateLocked=0;
+	pathfindLocalRessourceCountFailureUnusable=0;
+	pathfindLocalRessourceCountFailureNone=0;
+	pathfindLocalRessourceCountFailureBad=0;
 	
 	pathToBuildingCountTot=0;
 	pathToBuildingCountClose=0;
@@ -203,11 +208,11 @@ void Map::clear()
 		printf("| pathToRessourceCountSuccess=%d (%f %% of tot)\n",
 			pathToRessourceCountSuccess,
 			100.*(double)pathToRessourceCountSuccess/(double)pathToRessourceCountTot);
-		printf("|- pathToRessourceCountSuccessClose=%d (%f %% of tot) (%f %% of success)\n",
+		printf("|-  pathToRessourceCountSuccessClose=%d (%f %% of tot) (%f %% of success)\n",
 			pathToRessourceCountSuccessClose,
 			100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountTot,
 			100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountSuccess);
-		printf("|- pathToRessourceCountSuccessFar=%d (%f %% of tot) (%f %% of success)\n",
+		printf("|-  pathToRessourceCountSuccessFar=%d (%f %% of tot) (%f %% of success)\n",
 			pathToRessourceCountSuccessFar,
 			100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountTot,
 			100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountSuccess);
@@ -225,18 +230,64 @@ void Map::clear()
 	printf("pathfindLocalRessourceCount=%d\n", pathfindLocalRessourceCount);
 	if (pathfindLocalRessourceCount)
 	{
-		printf("| pathfindLocalRessourceCountSuccess=%d (%f %%)\n",
+		int pathfindLocalRessourceCountSuccess=
+			+pathfindLocalRessourceCountSuccessBase
+			+pathfindLocalRessourceCountSuccessLocked
+			+pathfindLocalRessourceCountSuccessUpdate
+			+pathfindLocalRessourceCountSuccessUpdateLocked;
+		
+		printf("| pathfindLocalRessourceCountSuccess=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountSuccess,
 			100.*(float)pathfindLocalRessourceCountSuccess/(float)pathfindLocalRessourceCount);
-		printf("| pathfindLocalRessourceCountFailure=%d (%f %%)\n",
+		printf("|-  pathfindLocalRessourceCountSuccessBase=%d (%f %% of count) (%f %% of success)\n",
+			pathfindLocalRessourceCountSuccessBase,
+			100.*(float)pathfindLocalRessourceCountSuccessBase/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountSuccessBase/(float)pathfindLocalRessourceCountSuccess);
+		printf("|-  pathfindLocalRessourceCountSuccessLocked=%d (%f %% of count) (%f %% of success)\n",
+			pathfindLocalRessourceCountSuccessLocked,
+			100.*(float)pathfindLocalRessourceCountSuccessLocked/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountSuccessLocked/(float)pathfindLocalRessourceCountSuccess);
+		printf("|-  pathfindLocalRessourceCountSuccessUpdate=%d (%f %% of count) (%f %% of success)\n",
+			pathfindLocalRessourceCountSuccessUpdate,
+			100.*(float)pathfindLocalRessourceCountSuccessUpdate/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountSuccessUpdate/(float)pathfindLocalRessourceCountSuccess);
+		printf("|-  pathfindLocalRessourceCountSuccessUpdateLocked=%d (%f %% of count) (%f %% of success)\n",
+			pathfindLocalRessourceCountSuccessUpdateLocked,
+			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCountSuccess);
+		
+		int pathfindLocalRessourceCountFailure=
+			+pathfindLocalRessourceCountFailureUnusable
+			+pathfindLocalRessourceCountFailureNone
+			+pathfindLocalRessourceCountFailureBad;
+		
+		printf("| pathfindLocalRessourceCountFailure=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountFailure,
 			100.*(float)pathfindLocalRessourceCountFailure/(float)pathfindLocalRessourceCount);
+		printf("|-  pathfindLocalRessourceCountFailureUnusable=%d (%f %% of count) (%f %% of failure)\n",
+			pathfindLocalRessourceCountFailureUnusable,
+			100.*(float)pathfindLocalRessourceCountFailureUnusable/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountFailureUnusable/(float)pathfindLocalRessourceCountFailure);
+		printf("|-  pathfindLocalRessourceCountFailureNone=%d (%f %% of count) (%f %% of failure)\n",
+			pathfindLocalRessourceCountFailureNone,
+			100.*(float)pathfindLocalRessourceCountFailureNone/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountFailureNone/(float)pathfindLocalRessourceCountFailure);
+		printf("|-  pathfindLocalRessourceCountFailureBad=%d (%f %% of count) (%f %% of failure)\n",
+			pathfindLocalRessourceCountFailureBad,
+			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCount,
+			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCountFailure);
 	}
 	
 	localRessourcesUpdateCount=0;
+	
 	pathfindLocalRessourceCount=0;
-	pathfindLocalRessourceCountSuccess=0;
-	pathfindLocalRessourceCountFailure=0;
+	pathfindLocalRessourceCountSuccessBase=0;
+	pathfindLocalRessourceCountSuccessLocked=0;
+	pathfindLocalRessourceCountSuccessUpdate=0;
+	pathfindLocalRessourceCountSuccessUpdateLocked=0;
+	pathfindLocalRessourceCountFailureUnusable=0;
+	pathfindLocalRessourceCountFailureNone=0;
+	pathfindLocalRessourceCountFailureBad=0;
 	
 	printf("\n");
 	printf("pathToBuildingCountTot=%d\n", pathToBuildingCountTot);
@@ -1736,7 +1787,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 	}
 }
 
-bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
 {
 	pathToRessourceCountTot++;
 	//printf("pathfindingRessource...\n");
@@ -1749,6 +1800,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	if (max<2)
 	{
 		pathToRessourceCountFailure++;
+		*stopWork=true;
 		return false;
 	}
 	// We don't use for (int d=0; d<8; d++), this way units won't take two diagonals if not needed.
@@ -1818,15 +1870,15 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		pathToRessourceCountSuccessFar++;
 		//printf("...pathfindedRessource v2 %d\n", found);
+		return true;
 	}
 	else
 	{
 		pathToRessourceCountFailure++;
 		printf("locked at (%d, %d)\n", x, y);
+		*stopWork=false;
+		return false;
 	}
-	
-	
-	return true;
 }
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
@@ -2955,7 +3007,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
-	printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
+	//printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
 	
 	int bx=building->posX;
 	int by=building->posY;
@@ -3005,16 +3057,16 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		{
 			if (found)
 			{
-				pathfindLocalRessourceCountSuccess++;
-				printf("...pathfindedLocalRessource v1\n");
+				pathfindLocalRessourceCountSuccessBase++;
+				//printf("...pathfindedLocalRessource v1\n");
 				return true;
 			}
 			else
 			{
 				*dx=0;
 				*dy=0;
-				pathfindLocalRessourceCountSuccess++;
-				printf("...pathfindedLocalRessource v2 locked\n");
+				pathfindLocalRessourceCountSuccessLocked++;
+				//printf("...pathfindedLocalRessource v2 locked\n");
 				return true;
 			}
 		}
@@ -3027,7 +3079,13 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	found=false;
 	gradientUsable=false;
 	
-	if (currentg>1 && currentg!=255)
+	if (currentg==1)
+	{
+		pathfindLocalRessourceCountFailureNone++;
+		//printf("...pathfindedLocalRessource v3 No ressource\n");
+		return false;
+	}
+	else if ((currentg!=0) && (currentg!=255))
 	{
 		for (int sd=0; sd<=1; sd++)
 			for (int d=sd; d<8; d+=2)
@@ -3060,7 +3118,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		{
 			if (found)
 			{
-				pathfindLocalRessourceCountSuccess++;
+				pathfindLocalRessourceCountSuccessUpdate++;
 				printf("...pathfindedLocalRessource v3\n");
 				return true;
 			}
@@ -3068,22 +3126,22 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			{
 				*dx=0;
 				*dy=0;
-				pathfindLocalRessourceCountSuccess++;
+				pathfindLocalRessourceCountSuccessUpdateLocked++;
 				printf("...pathfindedLocalRessource v4 locked\n");
 				return true;
 			}
 		}
 		else
 		{
-			pathfindLocalRessourceCountFailure++;
-			printf("b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			pathfindLocalRessourceCountFailureUnusable++;
+			printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 	}
 	else
 	{
-		pathfindLocalRessourceCountFailure++;
-		printf("c- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		pathfindLocalRessourceCountFailureBad++;
+		printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
 }

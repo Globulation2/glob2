@@ -1178,7 +1178,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
 	if ((drawPathLines) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
-		if (unit->displacement==Unit::DIS_GOING_TO_FLAG || unit->displacement==Unit::DIS_GOING_TO_RESSOURCE || unit->displacement==Unit::DIS_GOING_TO_BUILDING)
+		if (unit->displacement==Unit::DIS_GOING_TO_FLAG
+			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
+			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING)
 		{
 			int lsx, lsy, ldx, ldy;
 			lsx=px+16;
@@ -1308,7 +1310,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 	
 	// We draw debug area:
-	if (false)
+	//if (false)
 	{
 		assert(teams[0]);
 		Building *b=NULL;
