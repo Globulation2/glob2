@@ -2258,7 +2258,8 @@ bool GameGUI::load(SDL_RWops *stream)
 		localPlayer=SDL_ReadBE32(stream);
 		localTeamNo=SDL_ReadBE32(stream);
 
-		assert(!game.session.fileIsAMap);
+		viewportX=SDL_ReadBE32(stream);
+		viewportY=SDL_ReadBE32(stream);
 	}
 
 	return true;
@@ -2275,6 +2276,8 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	SDL_WriteBE32(stream, chatMask);
 	SDL_WriteBE32(stream, localPlayer);
 	SDL_WriteBE32(stream, localTeamNo);
+	SDL_WriteBE32(stream, viewportX);
+	SDL_WriteBE32(stream, viewportY);
 }
 
 // TODO : merge thoses 3 functions into one
