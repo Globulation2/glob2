@@ -32,7 +32,7 @@ union Ressource
 	Uint32 id;
 	struct
 	{
-		Uint8 type;
+		Sint8 type;
 		Uint8 variety;
 		Uint8 amount;
 		Uint8 animation;
@@ -75,7 +75,7 @@ public:
 class RessourcesTypes : public base::Object
 {
 public:
-	typedef Uint32 intResType;
+	typedef int intResType;
 
 public:
 	CLASSDEF(RessourcesTypes)
