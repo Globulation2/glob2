@@ -466,12 +466,10 @@ void MapEdit::paintCoordinates(int mx, int my)
 	int h=font->getStringHeight("(888,888)");
 	int y=128-h;
 	globalContainer->gfx->drawFilledRect(baseX, y, 128, h, 0, 0, 0);
-	bool coord = minimapPushed || (mx < baseX) || (my < 128);
-	if (coord)
+	if ((mx < baseX) || (my < 128))
 	{
 		int px, py;
-		bool minimapCoord = minimapPushed || ((mx > baseX) && (my < 128));
-		if (minimapCoord) // display coordinates according to minimap
+		if (mx > baseX) // display coordinates according to minimap
 		{
 			int mMax;
 			int szX, szY;
