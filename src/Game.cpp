@@ -1913,8 +1913,8 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	dMx=(float)mMax/100.0f;
 	dMy=(float)mMax/100.0f;
 
-	decSPX=teams[localTeam]->startPosX+map.getW()/2;
-	decSPY=teams[localTeam]->startPosY+map.getH()/2;
+	decSPX=teams[localTeam]->startPosX-map.getW()/2;
+	decSPY=teams[localTeam]->startPosY-map.getH()/2;
 
 	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
