@@ -286,6 +286,13 @@ bool Map::decRessource(int x, int y)
 
 bool Map::decRessource(int x, int y, RessourceType ressourceType)
 {
+	// this is the clean way :
+	if (isRessource(x, y, ressourceType))
+		return decRessource(x, y);
+	else
+		return false;
+	// this is perhaps faster but I don't think so (more cache used) :
+	/*
 	int d=getTerrain(x, y)-272;
 	if ((d<0)||(d>=40))
 		return false;
@@ -310,6 +317,7 @@ bool Map::decRessource(int x, int y, RessourceType ressourceType)
 	}
 	else
 		return false;
+	*/
 }
 
 bool Map::isFreeForUnit(int x, int y, bool canFly)
@@ -1027,4 +1035,9 @@ int Map::warpDistSquare(int px, int py, int qx, int qy)
 		dy=h-dy;
 	
 	return ((dx*dx)+(dy*dy));
+}
+
+void Map::saveThumbnail(SDL_RWops *stream)
+{
+	// FIXME : save thumbnail
 }

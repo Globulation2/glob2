@@ -579,8 +579,8 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 	my=(my*128)/100;
 	viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
-	viewportX+=game.teams[localTeam]->startPosX+(game.map.w>>1);
-	viewportY+=game.teams[localTeam]->startPosY+(game.map.h>>1);
+	viewportX+=game.teams[localTeam]->startPosX+(game.map.getW()>>1);
+	viewportY+=game.teams[localTeam]->startPosY+(game.map.getH()>>1);
 	if (viewportX<0)
 		viewportX+=game.map.getW();
 	if (viewportY<0)

@@ -79,8 +79,8 @@ int Engine::initCampain(void)
 	gui.game.renderMiniMap(gui.localTeam);
 	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
 	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
-	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
-	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
+	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
+	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
 
 	// FIXME : delete Team that hasn't any players and defrag array
 
@@ -118,8 +118,8 @@ void Engine::startMultiplayer(SessionScreen *screen)
 	gui.game.renderMiniMap(gui.localTeam);
 	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
 	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
-	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
-	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
+	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
+	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
 
 	// we create the net game
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
