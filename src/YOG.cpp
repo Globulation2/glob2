@@ -1,7 +1,7 @@
 /*
  *  Ysagoon Online Gaming
  *  Meta Server with chat for Ysagoon game (first is glob2)
- *  (c) 2002 Luc-Olivier de Charrière <nuage@ysagoon.com>
+ *  (c) 2002 Luc-Olivier de Charriï¿½e <nuage@ysagoon.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -429,10 +429,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 	break;
 	case YMT_CLOSE_YOG:
-		fprintf(logFile, "YOG:: YOG is dead (killed)!\n"); //TODO: create a deconnected method
+		fprintf(logFile, "YOG:: YOG is dead (killed)!\n"); //TODO: create a desconnected method
 	break;
 	}
-
 }
 
 bool YOG::enableConnection(const char *userName)
