@@ -1,7 +1,9 @@
-AC_INIT(src/Game.cpp)
-AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(glob2, 0.8.5)
-AM_CONFIG_HEADER(config.h)
+AC_PREREQ(2.59)
+AC_INIT([Globulation 2], 0.8.6, [glob2-devel@nongnu.org], glob2)
+AM_INIT_AUTOMAKE
+
+AC_CONFIG_SRCDIR([src/Game.cpp])
+AC_CONFIG_HEADERS([config.h])
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
 
@@ -72,15 +74,18 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [source directory])
 
-AC_OUTPUT([Makefile src/Makefile doc/Makefile data/Makefile 
-data/gfx/Makefile
-data/fonts/Makefile
-data/gui/Makefile
-data/zik/Makefile
-maps/Makefile
-libgag/Makefile
-libgag/include/Makefile
-libgag/src/Makefile
-gnupg/Makefile
-] )
+AC_CONFIG_FILES([Makefile
+	src/Makefile
+	doc/Makefile
+	data/Makefile
+	data/gfx/Makefile
+	data/fonts/Makefile
+	data/gui/Makefile
+	data/zik/Makefile
+	maps/Makefile
+	libgag/Makefile
+	libgag/include/Makefile
+	libgag/src/Makefile
+	gnupg/Makefile])
+AC_OUTPUT
 
