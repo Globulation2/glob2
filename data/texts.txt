@@ -1721,3 +1721,9 @@ Low quality
 
 Nízká kvalita
 
+[happyness level %d: %d]
+satisfaction %d: %d unités
+happyness %d: %d units
+%d %d
+%d %d
+%d %d

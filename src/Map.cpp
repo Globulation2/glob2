@@ -3116,7 +3116,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	assert(y>=0);
 	 
 	Uint32 teamMask=building->owner->me;
-	Uint8 *gradient=building->localGradient[canSwim];
+	
+	Uint8 * gradient;
+	
+	gradient=building->localGradient[canSwim];
 	
 	if (isInLocalGradient(x, y, bx, by))
 	{

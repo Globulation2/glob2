@@ -47,6 +47,8 @@ struct TeamStat
 	int totalUnitFooded;
 	
 	//int totalPrestige;
+	
+	int happiness[HAPPYNESS_COUNT+1];
 };
 
 struct TeamSmoothedStat
