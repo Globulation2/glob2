@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
@@ -40,12 +41,12 @@
 #ifdef WIN32
 #	include <windows.h>
 #	include <io.h>
+#	include <direct.h>
 #	include "win32_dirent.h"
 #else
 #	include <sys/types.h>
 #	include <dirent.h>
 #	include <sys/stat.h>
-#	include <errno.h>
 #endif
 
 FileManager::FileManager(const char *gameName)
@@ -94,7 +95,7 @@ void FileManager::clearFileList(void)
 
 void FileManager::addDir(const char *dir)
 {
-	int len=strlen(dir);
+	size_t len=strlen(dir);
 	char *newDir=new char[len+1];
 	strncpy(newDir, dir, len+1);
 	dirList.push_back(newDir);
@@ -103,19 +104,22 @@ void FileManager::addDir(const char *dir)
 
 void FileManager::addWriteSubdir(const char *subdir)
 {
-#ifndef WIN32
-	int subdirLen=strlen(subdir);
+	size_t subdirLen=strlen(subdir);
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
 		const char *baseDir=*dirListIterator;
-		int dirLen=strlen(baseDir);
+		size_t dirLen=strlen(baseDir);
 		char *toCreate=new char[subdirLen+dirLen+2];
 		
 		strncpy(toCreate, baseDir, dirLen);
 		toCreate[dirLen]='/';
 		strncpy(toCreate+dirLen+1, subdir, subdirLen+1);
 		
+#ifdef WIN32
+		int result=_mkdir(toCreate);
+#else
 		int result=mkdir(toCreate, S_IRWXU);
+#endif
 		
 		delete[] toCreate;
 		if (result==0)
@@ -123,7 +127,6 @@ void FileManager::addWriteSubdir(const char *subdir)
 		if ((result==-1) && (errno==EEXIST))
 			break;
 	}
-#endif
 }
 
 SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
@@ -155,7 +158,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	// try cache
 	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
 		SDL_RWops *fp = openWithbackup(fn, mode);
@@ -170,7 +173,7 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	int index=0;
 	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
@@ -206,7 +209,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	// try cache
 	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
 		FILE *fp =  openWithbackupFP(fn, mode);
@@ -220,7 +223,7 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	int index=0;
 	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
@@ -255,7 +258,7 @@ void FileManager::remove(const char *filename)
 	// other wise search
 	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
 		std::remove(fn);
@@ -275,7 +278,7 @@ bool FileManager::isDir(const char *filename)
 	int serr = 1;
 	while ((serr) && (dirListIterator != dirList.end()))
 	{
-		int allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
+		size_t allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
 		char *fn = new char[allocatedLength];
 		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
 #ifdef WIN32
@@ -402,7 +405,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension, c
 		// check extension if provided
 		else if (extension) 
 		{
-			int l, nl;
+			size_t l, nl;
 			l=strlen(extension);
 			nl=strlen(dirEntry->d_name);
 			ok = ((nl>l) &&
@@ -420,7 +423,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension, c
 			}
 			if (!alreadyIn)
 			{
-				int len=strlen(dirEntry->d_name)+1;
+				size_t len=strlen(dirEntry->d_name)+1;
 				char *fileName=new char[len];
 				strncpy(fileName, dirEntry->d_name, len);
 				fileList.push_back(fileName);
@@ -439,7 +442,7 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 	clearFileList();
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		int allocatedLength=strlen(virtualDir) + strlen(*dirListIterator) + 2;
+		size_t allocatedLength=strlen(virtualDir) + strlen(*dirListIterator) + 2;
 		char *dn = new char[allocatedLength];
 		snprintf(dn, allocatedLength,  "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
 #ifdef DBG_VPATH_LIST
