@@ -3900,7 +3900,7 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 		int yg=(y+ry)&hMask;
 		if (verbose)
 			printf("[di=%d], r=(%d, %d), g=(%d, %d)\n", di, rx, ry, xg, yg);
-		if (getGroundUnit(xg, yg)!=NOGUID)
+		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
 			continue;
 		size_t addr=xg+(yg<<wDec);
 		Uint8 base=gradient[addr];
