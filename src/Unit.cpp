@@ -461,7 +461,6 @@ void Unit::handleActivity(void)
 		{
 			// look for a "job"
 			// else keep walking around
-			bool jobFound=false;
 			if (verbose)
 				printf("guid=(%d) looking for a job...\n", gid);
 
@@ -474,24 +473,19 @@ void Unit::handleActivity(void)
 					assert(destinationPurprose>=0);
 					assert(b->neededRessource(destinationPurprose));
 					
-					//Notice that (targetX, targetY) is only set for gameplay purposes, but the unit will follow the gradient.
-					jobFound=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
-					if (jobFound)
-					{
-						activity=ACT_HARVESTING;
-						displacement=DIS_GOING_TO_RESSOURCE;
-						if (verbose)
-							printf("(%d)Going to harvest for fooding building\n", gid);
-						destinationPurprose=(Sint32)CORN;
-						attachedBuilding=b;
-						if (verbose)
-							printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-						b->unitsWorkingSubscribe.push_front(this);
-						b->lastWorkingSubscribe=0;
-						subscribed=true;
-						owner->subscribeToBringRessources.push_front(b);
-						return;
-					}
+					activity=ACT_HARVESTING;
+					displacement=DIS_GOING_TO_RESSOURCE;
+					if (verbose)
+						printf("(%d)Going to harvest for fooding building\n", gid);
+					destinationPurprose=(Sint32)CORN;
+					attachedBuilding=b;
+					if (verbose)
+						printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+					b->unitsWorkingSubscribe.push_front(this);
+					b->lastWorkingSubscribe=0;
+					subscribed=true;
+					owner->subscribeToBringRessources.push_front(b);
+					return;
 				}
 			}
 
@@ -500,7 +494,6 @@ void Unit::handleActivity(void)
 			b=owner->findBestUpgrade(this);
 			if (b != NULL)
 			{
-				jobFound=true;
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				
@@ -525,7 +518,6 @@ void Unit::handleActivity(void)
 			b=owner->findBestZonable(this);
 			if (b != NULL)
 			{
-				jobFound=true;
 				activity=ACT_FLAG;
 				displacement=DIS_GOING_TO_FLAG;
 				destinationPurprose=-1;
@@ -557,36 +549,28 @@ void Unit::handleActivity(void)
 					assert(destinationPurprose>=0);
 					assert(b->neededRessource(destinationPurprose));
 					
-					//Notice that (targetX, targetY) is only set for gameplay purposes, but the unit will follow the gradient.
-					jobFound=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
-					if (jobFound)
-					{
-						activity=ACT_BUILDING;
-						displacement=DIS_GOING_TO_RESSOURCE;
-						newTargetWasSet();
-						
-						if (verbose)
-							printf("guid=(%d) Going to harvest to build building\n", gid);
-						
-						attachedBuilding=b;
-						
-						if (verbose)
-							printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
-						b->unitsWorkingSubscribe.push_front(this);
-						b->lastWorkingSubscribe=0;
-						subscribed=true;
-						owner->subscribeToBringRessources.push_front(b);
-						return;
-					}
+					activity=ACT_BUILDING;
+					displacement=DIS_GOING_TO_RESSOURCE;
+					newTargetWasSet();
+
+					if (verbose)
+						printf("guid=(%d) Going to harvest to build building\n", gid);
+
+					attachedBuilding=b;
+
+					if (verbose)
+						printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
+					b->unitsWorkingSubscribe.push_front(this);
+					b->lastWorkingSubscribe=0;
+					subscribed=true;
+					owner->subscribeToBringRessources.push_front(b);
+					return;
 				}
 			}
 			
-			if ( (!jobFound) )
-			{
-				if (verbose)
-					printf("guid=(%d) no job found.\n", gid);
-				// find another job.
-			}
+			if (verbose)
+				printf("guid=(%d) no job found.\n", gid);
+			
 			// nothing to do:
 			// we go to a heal building if we'r not fully healed:
 			if (hp<performance[HP])

@@ -153,6 +153,7 @@ private:
 	// We want tu update latency automatically:
 	Uint8 recentsPingPong[32][64]; // The 64 last ping+pong times. [ticks]
 	Uint8 pingPongCount[32]; // The next recentDelays[][x] to write in. [ticks]
+	Uint8 pingPongMin[32];
 	Uint8 pingPongMax[32]; // Average-like and usable ping+pong time to a player. [ticks]
 	
 	Uint8 recentOrderMarginTime[32][64]; // The 64 last, time before we run out of orders. [ticks]
