@@ -71,7 +71,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitWorkingPreferred=1;
 	lastInsideSubscribe=0;
-	lastWorkingSubscribe=0;
+	subscriptionTimer=0;
 
 	// position
 	posX=x;
@@ -388,7 +388,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsWorkingSubscribe.push_front(unit);
 	}
 
-	lastWorkingSubscribe = stream->readSint32("lastWorkingSubscribe");
+	subscriptionTimer = stream->readSint32("subscriptionTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
 	maxUnitWorkingLocal = maxUnitWorking;
@@ -454,7 +454,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 	
-	stream->writeSint32(lastWorkingSubscribe, "lastWorkingSubscribe");
+	stream->writeSint32(subscriptionTimer, "subscriptionTimer");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	
@@ -1288,7 +1288,8 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	lastWorkingSubscribe++;
+	if (subscriptionTimer>0)
+		subscriptionTimer++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
@@ -1299,13 +1300,12 @@ void Building::subscribeToBringRessourcesStep()
 		return;
 	}
 	
-	if (lastWorkingSubscribe>16)
+	if (subscriptionTimer>32)
 	{
 		if (verbose)
 			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
-		if ((signed)unitsWorking.size()<maxUnitWorking)
+		while (((Sint32)unitsWorking.size()<maxUnitWorking) && !unitsWorkingSubscribe.empty())
 		{
-		
 			int minValue=INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
@@ -1528,22 +1528,24 @@ void Building::subscribeToBringRessourcesStep()
 				{
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
-					lastWorkingSubscribe=0;
 					choosen->standardRandomActivity();
 					if (verbose)
 						printf("...!neededRessource(choosen->destinationPurprose=%d)\n", choosen->destinationPurprose);
 					return;
 				}
 			}
+			else
+				break;
 		}
 		
-		if ((signed)unitsWorking.size()>=maxUnitWorking)
+		//if ((Sint32)unitsWorking.size()>=maxUnitWorking)
 		{
-			if (verbose)
-				printf(" unitsWorking.size()>=maxUnitWorking\n");
+			//if (verbose)
+			//	printf(" unitsWorking.size()>=maxUnitWorking\n");
 			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				(*it)->standardRandomActivity();
 			unitsWorkingSubscribe.clear();
+			subscriptionTimer=0;
 		}
 		if (verbose)
 			printf(" ...done\n");
@@ -1552,7 +1554,8 @@ void Building::subscribeToBringRessourcesStep()
 
 void Building::subscribeForFlagingStep()
 {
-	lastWorkingSubscribe++;
+	if (subscriptionTimer>0)
+		subscriptionTimer++;
 	if (fullWorking())
 	{
 		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
@@ -1561,9 +1564,9 @@ void Building::subscribeForFlagingStep()
 		return;
 	}
 	
-	if (lastWorkingSubscribe>16)
+	if (subscriptionTimer>32)
 	{
-		if ((signed)unitsWorking.size()<maxUnitWorking)
+		while (((Sint32)unitsWorking.size()<maxUnitWorking) && !unitsWorkingSubscribe.empty())
 		{
 			int minValue=INT_MAX;
 			Unit *choosen=NULL;
@@ -1625,6 +1628,16 @@ void Building::subscribeForFlagingStep()
 				choosen->subscriptionSuccess();
 				updateCallLists();
 			}
+			else
+				break;
+		}
+		
+		//if ((Sint32)unitsWorking.size()>=maxUnitWorking)
+		{
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				(*it)->standardRandomActivity();
+			unitsWorkingSubscribe.clear();
+			subscriptionTimer=0;
 		}
 	}
 }
@@ -1640,7 +1653,7 @@ void Building::subscribeForInsideStep()
 		return;
 	}
 	
-	if (lastInsideSubscribe>16)
+	if (lastInsideSubscribe>32)
 	{
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
