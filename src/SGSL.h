@@ -112,10 +112,10 @@ struct ErrorReport
 	
 	unsigned line;
 	unsigned col;
+	unsigned pos;
 	
-	
-	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; }
-	ErrorReport(ErrorType et) { type=et; line=0; col=0; }
+	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
+	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
 	
 	const char *getErrorString(void);
 };
@@ -132,13 +132,14 @@ public:
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
 	unsigned getCol(void) { return lastCol; }
+	unsigned getPos(void) { return lastPos; }
 	
 	virtual int getChar(void) = 0;
 	virtual int ungetChar(char c) = 0;
 
 private:
 	Token token;
-	unsigned actLine, actCol, lastLine, lastCol;
+	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 };
 
 class FileAquisition: public Aquisition
