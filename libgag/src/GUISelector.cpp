@@ -22,16 +22,18 @@
 #include <Toolkit.h>
 #include <assert.h>
 
-Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned size, unsigned defaultValue, const char *sprite, Sint32 id)
+Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue, unsigned size, const char *sprite, Sint32 id)
 {
 	this->x=x;
 	this->y=y;
+	this->count=count;
 	this->size=size;
 	assert(count>=1);
 	this->w=(count-1)*size+6;
 	this->h=size+4;
 	this->hAlignFlag=hAlign;
 	this->vAlignFlag=vAlign;
+	this->value=defaultValue;
 
 	if (sprite)
 		this->sprite=sprite;
@@ -41,15 +43,59 @@ Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, u
 
 void Selector::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
 
+	if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
+		{
+			int dx=event->button.x-x;
+			value=(dx+(size>>1))/size;
+			repaint();
+			parent->onAction(this, VALUE_CHANGED, value, 0);
+		}
+	}
+	else if (event->type==SDL_MOUSEMOTION)
+	{
+		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h) &&
+			(event->motion.state&SDL_BUTTON(1)))
+		{
+			int dx=event->motion.x-x;
+			value=(dx+(size>>1))/size;
+			repaint();
+			parent->onAction(this, VALUE_CHANGED, value, 0);
+		}
+	}
 }
 
 void Selector::internalInit(int x, int y, int w, int h)
 {
-
+	if (id>=0)
+	{
+		archPtr=Toolkit::getSprite(sprite.c_str());
+		assert(archPtr);
+	}
 }
 
 void Selector::internalRepaint(int x, int y, int w, int h)
 {
+	unsigned l=(count-1)*size-2;
+	parent->getSurface()->drawHorzLine(x+4, y+(size>>1)+2, l, 180, 180, 180);
+	parent->getSurface()->drawHorzLine(x+4, y+(size>>1)+3, l, 180, 180, 180);
+	for (unsigned i=0; i<count; i++)
+	{
+		parent->getSurface()->drawVertLine(x+2+i*size, y+2, size, 180, 180, 180);
+		parent->getSurface()->drawVertLine(x+3+i*size, y+2, size, 180, 180, 180);
+	}
 
+	if (id<0)
+	{
+		parent->getSurface()->drawRect(x+size*value, y, 6, size+4, 255, 255, 255);
+	}
+	else
+	{
+		parent->getSurface()->drawSprite(x+size*value, y, archPtr, id);
+	}
 }
