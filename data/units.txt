@@ -35,7 +35,7 @@ stopSwimSpeed = 8
 stopFlySpeed = 0
 
 walkSpeed = 16
-swimSpeed = 12
+swimSpeed = 0
 flySpeed = 0
 
 buildSpeed = 0
