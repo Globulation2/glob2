@@ -29,14 +29,14 @@ class BuildingType: public EntityType
 {
 public:
 	
-	enum BuildingTypeNumber
+	enum BuildingTypeShortNumber
 	{
 		SWARM_BUILDING=0,
 		FOOD_BUILDING=1,
 		HEALTH_BUILDING=2,
 
 		WALKSPEED_BUILDING=3,
-		FLYSPEED_BUILDING=4,
+		SWIMSPEED_BUILDING=4,
 		ATTACK_BUILDING=5,
 		SCIENCE_BUILDING=6,
 

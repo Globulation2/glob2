@@ -53,10 +53,14 @@ public:
 private:
 	void choosePhase();
 	
-	Order *phaseAlpha();
-	Order *phaseBeta();
-
+	Order *phaseBasic(BuildingType::BuildingTypeShortNumber shortTypeNum, bool food, Sint32 mainWorkers, Sint32 foodWorkers, Sint32 otherWorkers, bool multipleStart);
+	//Order *phaseAlpha(); // get any food building
+	//Order *phaseBeta(); // get any swarm
+	//Order *phaseGamma(); // get some of the best food building aviable
+	
+	
 	void computeCanSwim();
+	void computeNeedPool();
 	
 	void computeObstacleUnitMap();
 	void computeObstacleBuildingMap();
@@ -70,8 +74,8 @@ private:
 	void computeHydratationMap();
 	void computeWheatGrowthMap(int dw, int dh);
 	
-	Order *findGoodFoodBuilding(Sint32 typeNum);
-	Order *findBestFoodBuilding(Sint32 typeNum);
+	Order *findGoodBuilding(Sint32 typeNum, bool food, int higherQuality);
+	Order *findBestBuilding(Sint32 typeNum, bool food);
 	
 	void computeRessourcesCluster();
 	
@@ -84,6 +88,7 @@ private:
 		P_NONE=0,
 		P_ALPHA=1,
 		P_BETA=2,
+		P_GAMMA=3,
 		P_END
 	};
 	
@@ -92,17 +97,17 @@ private:
 	int scheduler;
 	
 	Uint32 timer;
-	
+	bool canSwim;
+	bool needPool;
+	Uint32 lastNeedPoolComputed;
 	
 	bool hydratationMapComputed;
 	
 public:
-	bool canSwim;
-	
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
 	Uint8 *obstacleBuildingMap; // where buildings can be built. included in {0, 1}
 	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
-	Uint8 *buildingNeighbourMap; // bit 0: dirty flag, bit [1, 2]: direct neighbours count, bit 4: zero, bit [5, 7]; far neighbours count.
+	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 2]: direct neighbours count, bit 4: zero, bits [5, 7]; far neighbours count.
 	
 	Uint8 *twoSpaceNeighbourMap; // TODO: remove.
 	
@@ -112,7 +117,7 @@ public:
 	Uint8 *hydratationMap;
 	Uint8 *wheatGrowthMap;
 	
-	Uint8 *goodFoodBuildingMap; // TODO: remove.
+	Uint8 *goodBuildingMap; // TODO: remove.
 	
 	Uint16 *ressourcesCluster;
 	
