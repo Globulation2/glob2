@@ -147,12 +147,15 @@ public:
 
 	//! This uses loopback adress to find local "socket"'s host port.
 	//! It's given in network order
-	static Uint16 findLocalPort(UDPsocket socket);
+	Uint16 findLocalPort(UDPsocket socket);
 	
 	bool tryConnection();
 	bool tryConnection(const YOG::GameInfo *yogGameInfo);
 	
 	void quitThisGame();
+
+private:
+	FILE *logFile;
 };
 
 #endif

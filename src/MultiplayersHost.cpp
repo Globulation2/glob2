@@ -32,6 +32,9 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	else
 		this->savedSessionInfo=NULL;
 
+	logFile=NULL;
+	logFile=fopen("MultiplayersHost.log", "w");
+	assert(logFile);
 	// net things:
 	initHostGlobalState();
 
@@ -41,14 +44,14 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	serverIP.host=0;
 	serverIP.port=0;
 
-	NETPRINTF("Openning a socket...\n");
+	fprintf(logFile, "Openning a socket...\n");
 	if (socket)
 	{
-		NETPRINTF("Socket opened at port %d.\n", SERVER_PORT);
+		fprintf(logFile, "Socket opened at port %d.\n", SERVER_PORT);
 	}
 	else
 	{
-		NETPRINTF("failed to open a socket.\n");
+		fprintf(logFile, "failed to open a socket.\n");
 		return;
 	}
 
@@ -64,14 +67,14 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	
 	if (sessionInfo->mapGenerationDescriptor && sessionInfo->fileIsAMap)
 	{
-		printf("MultiplayersHost() random map.\n");
+		fprintf(logFile, "MultiplayersHost() random map.\n");
 	}
 	else if (sessionInfo->fileIsAMap)
 	{
 		const char *s=sessionInfo->map.getMapFileName();
 		assert(s);
 		assert(s[0]);
-		printf("MultiplayersHost() fileName=%s.\n", s);
+		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
 		stream=globalContainer->fileManager.open(s,"rb");
 	}
 	else
@@ -79,7 +82,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		const char *s=sessionInfo->map.getGameFileName();
 		assert(s);
 		assert(s[0]);
-		printf("MultiplayersHost() fileName=%s.\n", s);
+		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
 		stream=globalContainer->fileManager.open(s,"rb");
 	}
 	
@@ -126,7 +129,7 @@ MultiplayersHost::~MultiplayersHost()
 		{
 			send(CLIENT_QUIT_NEW_GAME);
 			SDLNet_UDP_Unbind(socket, channel);
-			NETPRINTF("Socket unbinded.\n");
+			fprintf(logFile, "Socket unbinded.\n");
 		}
 		if (socket)
 		{
@@ -139,7 +142,7 @@ MultiplayersHost::~MultiplayersHost()
 					sessionInfo.players[p].unbind();
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
-			NETPRINTF("Socket closed.\n");
+			fprintf(logFile, "Socket closed.\n");
 		}
 	}
 	
@@ -148,6 +151,12 @@ MultiplayersHost::~MultiplayersHost()
 		
 	if (stream)
 		SDL_RWclose(stream);
+	
+	if (logFile)
+	{
+		fclose(logFile);
+		logFile=NULL;
+	}
 }
 
 int MultiplayersHost::newTeamIndice()
@@ -205,7 +214,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 	switch (hostGlobalState)
 	{
 	case HGS_BAD :
-		NETPRINTF("This is a bad hostGlobalState case. Should not happend!\n");
+		fprintf(logFile, "This is a bad hostGlobalState case. Should not happend!\n");
 	break;
 	case HGS_SHARING_SESSION_INFO :
 	{
@@ -218,7 +227,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 
 		if (allOK)
 		{
-			NETPRINTF("OK, now we are waiting for cross connections\n");
+			fprintf(logFile, "OK, now we are waiting for cross connections\n");
 			hostGlobalState=HGS_WAITING_CROSS_CONNECTIONS;
 			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 				if (sessionInfo.players[i].type==BasePlayer::P_IP)
@@ -227,7 +236,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 					if (sessionInfo.players[i].netTimeout>0)
 						sessionInfo.players[i].netTimeout-=sessionInfo.players[i].netTimeoutSize-i*2;
 					else
-						NETPRINTF("usefull\n");
+						fprintf(logFile, "usefull\n");
 					sessionInfo.players[i].netTOTL++;
 				}
 		}
@@ -242,14 +251,14 @@ void MultiplayersHost::stepHostGlobalState(void)
 			if (sessionInfo.players[j].type==BasePlayer::P_IP)
 				if (crossPacketRecieved[j]<3)
 				{
-					NETPRINTF("player %d is not cross connected.\n", j);
+					fprintf(logFile, "player %d is not cross connected.\n", j);
 					allPlayersCrossConnected=false;
 					break;
 				}
 		
 		if (allPlayersCrossConnected && (hostGlobalState>=HGS_WAITING_CROSS_CONNECTIONS))
 		{
-			NETPRINTF("Great, all players are cross connected, Game could start!.\n");
+			fprintf(logFile, "Great, all players are cross connected, Game could start, except the file!.\n");
 			hostGlobalState=HGS_ALL_PLAYERS_CROSS_CONNECTED;
 		}
 	}
@@ -257,8 +266,27 @@ void MultiplayersHost::stepHostGlobalState(void)
 
 	case HGS_ALL_PLAYERS_CROSS_CONNECTED :
 	{
-
+		bool allPlayersHaveFile=true;
+		
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+			if (sessionInfo.players[j].type==BasePlayer::P_IP)
+				if (playerFileTra[j].wantsFile)
+				{
+					fprintf(logFile, "player %d is still downloading game file.\n", j);
+					allPlayersHaveFile=false;
+					break;
+				}
+		
+		if (allPlayersHaveFile && (hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED))
+		{
+			fprintf(logFile, "Great, all players have the game file too, Game could start!.\n");
+			hostGlobalState=HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE;
+		}
 	}
+	break;
+	
+	case HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE :
+		
 	break;
 
 	case HGS_GAME_START_SENDED:
@@ -275,9 +303,9 @@ void MultiplayersHost::stepHostGlobalState(void)
 				}
 			}
 		
-		if (allPlayersPlaying && (hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED))
+		if (allPlayersPlaying && (hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE))
 		{
-			NETPRINTF("Great, all players have recieved start info.\n");
+			fprintf(logFile, "Great, all players have recieved start info.\n");
 			hostGlobalState=HGS_PLAYING_COUNTER;
 		}
 	}
@@ -291,7 +319,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 
 	default:
 	{
-		NETPRINTF("This is a bad and unknow(%d) hostGlobalState case. Should not happend!\n",hostGlobalState);
+		fprintf(logFile, "This is a bad and unknow(%d) hostGlobalState case. Should not happend!\n",hostGlobalState);
 	}
 	break;
 
@@ -310,7 +338,7 @@ void MultiplayersHost::removePlayer(int p)
 {
 	bool wasKnownByOthers=(sessionInfo.players[p].netState>BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST);
 	int t=sessionInfo.players[p].teamNumber;
-	NETPRINTF("player %d quited the game, from team %d.\n", p, t);
+	fprintf(logFile, "player %d quited the game, from team %d.\n", p, t);
 	sessionInfo.team[t].playersMask&=~sessionInfo.players[p].numberMask;
 	sessionInfo.team[t].numberOfPlayer--;
 
@@ -325,7 +353,7 @@ void MultiplayersHost::removePlayer(int p)
 	int mp=sessionInfo.numberOfPlayer-1;
 	if (mp>p)
 	{
-		NETPRINTF("replace it by another player: %d\n", mp);
+		fprintf(logFile, "replace it by another player: %d\n", mp);
 		int mt=sessionInfo.players[mp].teamNumber;
 		sessionInfo.team[mt].playersMask&=~sessionInfo.players[mp].numberMask;
 		sessionInfo.team[mt].numberOfPlayer--;
@@ -351,7 +379,7 @@ void MultiplayersHost::removePlayer(int p)
 		sessionInfo.team[t].numberOfPlayer++;
 	}
 	sessionInfo.numberOfPlayer--;
-	NETPRINTF("nop %d.\n", sessionInfo.numberOfPlayer);
+	fprintf(logFile, "nop %d.\n", sessionInfo.numberOfPlayer);
 	
 	if (wasKnownByOthers)
 	{
@@ -377,7 +405,7 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a quit game !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a quit game !!!\n", ip.host, ip.port);
 		return;
 	}
 	removePlayer(i);
@@ -385,10 +413,10 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 {
-	printf("MultiplayersHost::newPlayerPresence().\n");
+	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
 	if (size!=36)
 	{
-		NETPRINTF("Bad size(%d) for an Presence request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an Presence request from ip %x.\n", size, ip.host);
 		return;
 	}
 	int p=sessionInfo.numberOfPlayer;
@@ -428,7 +456,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	{
 		if (sessionInfo.players[i].sameip(ip))
 		{
-			NETPRINTF("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
+			fprintf(logFile, "this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
 
 			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
 			sessionInfo.players[i].netTimeout=0;
@@ -441,13 +469,13 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	int freeChannel=getFreeChannel();
 	if (!sessionInfo.players[p].bind(socket, freeChannel))
 	{
-		NETPRINTF("this ip(%x:%d) is not bindable\n", ip.host, ip.host);
+		fprintf(logFile, "this ip(%x:%d) is not bindable\n", ip.host, ip.host);
 		return;
 	}
 
 	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
 	{
-		printf("newPlayerPresence::this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
+		fprintf(logFile, "newPlayerPresence::this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
@@ -462,7 +490,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 {
 	if (size!=12)
 	{
-		NETPRINTF("Bad size(%d) for an Session request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an Session request from ip %x.\n", size, ip.host);
 		return;
 	}
 	
@@ -472,7 +500,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a Session request !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a Session request !!!\n", ip.host, ip.port);
 		return;
 	}
 	
@@ -483,12 +511,12 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	{
 		if (serverIP.host!=newHost)
 		{
-			NETPRINTF("Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
+			fprintf(logFile, "Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
 			return;
 		}
 		if (serverIP.port!=newPort)
 		{
-			NETPRINTF("Bad port received by(%x:%d). old=(%d) new=(%d)\n", ip.host, ip.port, serverIP.port, newPort);
+			fprintf(logFile, "Bad port received by(%x:%d). old=(%d) new=(%d)\n", ip.host, ip.port, serverIP.port, newPort);
 			return;
 		}
 	}
@@ -497,7 +525,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 		serverIP.host=newHost;
 		serverIP.port=newPort;
 		serverIPReceived=true;
-		NETPRINTF("I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
+		fprintf(logFile, "I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
 	}
 
 	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
@@ -505,7 +533,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].netTimeoutSize=LONG_NETWORK_TIMEOUT;
 	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
 
-	printf("this ip(%x:%d) wantsSession (player %d)\n", ip.host, ip.port, p);
+	fprintf(logFile, "this ip(%x:%d) wantsSession (player %d)\n", ip.host, ip.port, p);
 	
 	// all other players are ignorant of the new situation:
 	initHostGlobalState();
@@ -519,7 +547,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 {
 	if (size!=72)
 	{
-		NETPRINTF("Bad size(%d) for an File request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an File request from ip %x.\n", size, ip.host);
 		return;
 	}
 	
@@ -529,7 +557,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a File request !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a File request !!!\n", ip.host, ip.port);
 		return;
 	}
 	
@@ -537,7 +565,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 	{
 		if (!playerFileTra[p].receivedFile)
 		{
-			printf("player (%x, %d) first requests file.\n", ip.host, ip.port);
+			fprintf(logFile, "player (%x, %d) first requests file.\n", ip.host, ip.port);
 			playerFileTra[p].wantsFile=true;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 			{
@@ -556,7 +584,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 	{
 		Uint32 unreceivedIndex=getUint32(data, 4);
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
-		NETPRINTF("unreceivedIndex=%d\n", unreceivedIndex);
+		fprintf(logFile, "unreceivedIndex=%d\n", unreceivedIndex);
 		
 		if (unreceivedIndex==fileSize)
 		{
@@ -565,20 +593,20 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			
 			for (int i=0; i<MAX_WINDOW_SIZE; i++)
 				if (windowstats[i]>1)
-					NETPRINTF("%d \t %d.\n", i, windowstats[i]);
-			NETPRINTF("playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
+					fprintf(logFile, "%d \t %d.\n", i, windowstats[i]);
+			fprintf(logFile, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
 		}
 		else
 		{
 			Uint32 receivedIndex[16];
-			NETPRINTF("receivedIndex=(");
+			fprintf(logFile, "receivedIndex=(");
 			for (int ix=0; ix<16; ix++)
 			{
 				receivedIndex[ix]=getUint32(data, 8+ix*4);
-				NETPRINTF("%d, ", receivedIndex[ix]);
+				fprintf(logFile, "%d, ", receivedIndex[ix]);
 				assert(receivedIndex[ix]>unreceivedIndex);
 			}
-			NETPRINTF(").\n");
+			fprintf(logFile, ").\n");
 
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 			{
@@ -659,14 +687,14 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a checksum !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a checksum !!!\n", ip.host, ip.port);
 		return;
 	}
 
 	if (rcs!=lcs)
 	{
-		printf("this ip(%x:%d) confirmed a wrong checksum (player %d)!\n", ip.host, ip.port, i);
-		NETPRINTF("rcs=%x, lcs=%x.\n", rcs, lcs);
+		fprintf(logFile, "this ip(%x:%d) confirmed a wrong checksum (player %d)!\n", ip.host, ip.port, i);
+		fprintf(logFile, "rcs=%x, lcs=%x.\n", rcs, lcs);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
@@ -675,12 +703,12 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 	}
 	else
 	{
-		printf("this ip(%x:%d) confirmed a good checksum (player %d)\n", ip.host, ip.port, i);
+		fprintf(logFile, "this ip(%x:%d) confirmed a good checksum (player %d)\n", ip.host, ip.port, i);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_CHECK_SUM;
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
-		NETPRINTF("this ip(%x) is confirmed in player list.\n", ip.host);
+		fprintf(logFile, "this ip(%x) is confirmed in player list.\n", ip.host);
 		return;
 	}
 }
@@ -692,7 +720,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a confirmStartCrossConnection !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmStartCrossConnection !!!\n", ip.host, ip.port);
 		return;
 	}
 
@@ -702,7 +730,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 		sessionInfo.players[i].netTimeout=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		NETPRINTF("this ip(%x, %d) is start cross connection confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%x, %d) is start cross connection confirmed..\n", ip.host, ip.port);
 		return;
 	}
 }
@@ -714,7 +742,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a confirmStillCrossConnecting !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmStillCrossConnecting !!!\n", ip.host, ip.port);
 		return;
 	}
 
@@ -725,7 +753,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
-		NETPRINTF("this ip(%x, %d) is continuing cross connection confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%x, %d) is continuing cross connection confirmed..\n", ip.host, ip.port);
 		return;
 	}
 }
@@ -738,7 +766,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sended a confirmCrossConnectionAchieved !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmCrossConnectionAchieved !!!\n", ip.host, ip.port);
 		return;
 	}
 
@@ -748,7 +776,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		NETPRINTF("this ip(%x, %d) is cross connection achievement confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%x, %d) is cross connection achievement confirmed..\n", ip.host, ip.port);
 
 		crossPacketRecieved[i]=3;
 
@@ -763,7 +791,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 {
 	if (size!=8)
 	{
-		NETPRINTF("A player (%x, %d) has sent a bad sized confirmPlayerStartGame.\n", ip.host, ip.port);
+		fprintf(logFile, "A player (%x, %d) has sent a bad sized confirmPlayerStartGame.\n", ip.host, ip.port);
 		return;
 	}
 
@@ -773,7 +801,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		NETPRINTF("An unknow player (%x, %d) has sent a confirmPlayerStartGame.\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%x, %d) has sent a confirmPlayerStartGame.\n", ip.host, ip.port);
 		return;
 	}
 
@@ -789,7 +817,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 			// ping=(startGameTimeCounter-sgtc)/2
 			// startGameTimeCounter=(startGameTimeCounter+sgtc)/2 would be a full direct correction
 			// but the division by 4 will gives a fair average ping between all players
-		NETPRINTF("this ip(%x, %d) confirmed start game within %d seconds.\n", ip.host, ip.port, sgtc/20);
+		fprintf(logFile, "this ip(%x, %d) confirmed start game within %d seconds.\n", ip.host, ip.port, sgtc/20);
 
 		crossPacketRecieved[i]=4;
 
@@ -804,7 +832,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
-		NETPRINTF("broad:Bad size(%d) for a broadcast request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "broad:Bad size(%d) for a broadcast request from ip %x.\n", size, ip.host);
 		return;
 	}
 
@@ -816,13 +844,13 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		
 		if (packet==NULL)
 		{
-			NETPRINTF("broad:can't alocate packet!\n");
+			fprintf(logFile, "broad:can't alocate packet!\n");
 			return;
 		}
 		
 		if (ip.host==0)
 		{
-			NETPRINTF("broad:can't have a null ip.host\n");
+			fprintf(logFile, "broad:can't have a null ip.host\n");
 			return;
 		}
 		
@@ -839,9 +867,9 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		memset(&data[36], 0, 32);
 		strncpy(&data[36], globalContainer->settings.userName, 32);
 		
-		//printf("MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-		//printf("MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
-		//printf("MultiplayersHost sendingB (%s).\n", &data[4]);
+		//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
+		//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
+		//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
 		packet->len=68;
 		memcpy((char *)packet->data, data, 68);
 		
@@ -856,27 +884,27 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		// This is interesting because getFreeChannel() may return -1.
 		// We have no real use of "channel".
 		if (sucess)
-			NETPRINTF("broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
+			fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
 		
 		
 		SDLNet_FreePacket(packet);
 		
-		NETPRINTF("broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
+		fprintf(logFile, "broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
 	}
 	else
 	{
-		printf("broad:can't bind (socket=%x).\n", (int)socket);
+		fprintf(logFile, "broad:can't bind (socket=%x).\n", (int)socket);
 	}
 }
 
 void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
-	NETPRINTF("MultiplayersHost::treatData (%d)\n", data[0]);
+	fprintf(logFile, "MultiplayersHost::treatData (%d)\n", data[0]);
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
-		NETPRINTF("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
+		fprintf(logFile, "Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
 	}
 	if (hostGlobalState<HGS_GAME_START_SENDED)
@@ -920,7 +948,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			NETPRINTF("Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
 		};
 	}
 	else
@@ -932,7 +960,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			NETPRINTF("Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
 		};
 	}
 }
@@ -951,11 +979,11 @@ void MultiplayersHost::onTimer(Uint32 tick)
 			{
 				Uint16 port=globalContainer->yog.getFirewallActivationPort();
 				char *hostName=globalContainer->yog.getFirewallActivationHostname();
-				NETPRINTF("have to send water to firewall. port=(%d)\n", port);
+				fprintf(logFile, "have to send water to firewall. port=(%d)\n", port);
 				IPaddress ip;
 				if(SDLNet_ResolveHost(&ip, hostName, SDL_SwapBE16(port))!=0)
 				{
-					printf("failed to resolve host (%s).\n", hostName);
+					fprintf(logFile, "failed to resolve host (%s).\n", hostName);
 					continue;
 				}
 				UDPpacket *packet=SDLNet_AllocPacket(4);
@@ -973,9 +1001,9 @@ void MultiplayersHost::onTimer(Uint32 tick)
 				success=(SDLNet_UDP_Send(socket, -1, packet)==1);
 				SDLNet_FreePacket(packet);
 				if (!success)
-					printf("MultiplayersHost::failed to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
+					fprintf(logFile, "MultiplayersHost::failed to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
 				else
-					printf("MultiplayersHost::sucess to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
+					fprintf(logFile, "MultiplayersHost::sucess to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
 				
 				isNext=globalContainer->yog.getNextFirewallActivation();
 			}
@@ -987,7 +1015,7 @@ void MultiplayersHost::onTimer(Uint32 tick)
 		if (--startGameTimeCounter<0)
 		{
 			send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
-			NETPRINTF("Lets quit this screen and start game!\n");
+			fprintf(logFile, "Lets quit this screen and start game!\n");
 			if (hostGlobalState<=HGS_GAME_START_SENDED)
 			{
 				// done in game: drop player.
@@ -1009,15 +1037,15 @@ void MultiplayersHost::onTimer(Uint32 tick)
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			NETPRINTF("Packet received.\n");
-			//NETPRINTF("packet=%d\n", (int)packet);
-			//NETPRINTF("packet->channel=%d\n", packet->channel);
-			//NETPRINTF("packet->len=%d\n", packet->len);
-			//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-			//NETPRINTF("packet->status=%d\n", packet->status);
-			//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			fprintf(logFile, "Packet received.\n");
+			//fprintf(logFile, "packet=%d\n", (int)packet);
+			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+			//fprintf(logFile, "packet->len=%d\n", packet->len);
+			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+			//fprintf(logFile, "packet->status=%d\n", packet->status);
+			//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 
-			//NETPRINTF("packet->data=%s\n", packet->data);
+			//fprintf(logFile, "packet->data=%s\n", packet->data);
 
 			treatData((char *)(packet->data), packet->len, packet->address);
 
@@ -1031,7 +1059,7 @@ void MultiplayersHost::onTimer(Uint32 tick)
 
 bool MultiplayersHost::send(const int v)
 {
-	//NETPRINTF("Sending packet to all players (%d).\n", v);
+	//fprintf(logFile, "Sending packet to all players (%d).\n", v);
 	char data[4];
 	data[0]=v;
 	data[1]=0;
@@ -1044,7 +1072,7 @@ bool MultiplayersHost::send(const int v)
 }
 bool MultiplayersHost::send(const int u, const int v)
 {
-	//NETPRINTF("Sending packet to all players (%d;%d).\n", u, v);
+	//fprintf(logFile, "Sending packet to all players (%d;%d).\n", u, v);
 	char data[8];
 	data[0]=u;
 	data[1]=0;
@@ -1103,8 +1131,8 @@ void MultiplayersHost::sendingTime()
 			
 			int toSend=playerFileTra[p].windowSize-unreceived;
 			//if (toSend)
-			NETPRINTF("unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
-			NETPRINTF("lastReceivedIndex=%d\n", lastReceivedIndex);
+			fprintf(logFile, "unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
+			fprintf(logFile, "lastReceivedIndex=%d\n", lastReceivedIndex);
 			windowstats[playerFileTra[p].windowSize]++;
 			
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
@@ -1137,7 +1165,7 @@ void MultiplayersHost::sendingTime()
 				toSend--;
 				int sendingIndex=playerFileTra[p].window[i].index;
 				// We have to resend this packet
-				NETPRINTF("resending index=%d.\n", sendingIndex);
+				fprintf(logFile, "resending index=%d.\n", sendingIndex);
 
 				int size=playerFileTra[p].window[i].packetSize;
 				if (sendingIndex+size>(int)fileSize)
@@ -1175,7 +1203,7 @@ void MultiplayersHost::sendingTime()
 			}
 			
 			if (toSend)
-				NETPRINTF("toSend=%d\n", toSend);
+				fprintf(logFile, "toSend=%d\n", toSend);
 			
 			for (int t=0; t<toSend ; t++)
 			{
@@ -1206,7 +1234,7 @@ void MultiplayersHost::sendingTime()
 				
 				if (size>=0)
 				{
-					NETPRINTF("t=%d, sendingIndex=%d, size=%d\n", t, sendingIndex, size);
+					fprintf(logFile, "t=%d, sendingIndex=%d, size=%d\n", t, sendingIndex, size);
 					
 					char *data=(char *)malloc(size+12);
 					assert(data);
@@ -1287,7 +1315,7 @@ void MultiplayersHost::sendingTime()
 				else
 				{
 					sessionInfo.players[i].netState=BasePlayer::PNS_BAD;
-					NETPRINTF("Last timeout for player %d has been spent.\n", i);
+					fprintf(logFile, "Last timeout for player %d has been spent.\n", i);
 				}
 			}
 
@@ -1301,14 +1329,14 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
 			{
-				NETPRINTF("Lets send the presence to player %d.\n", i);
+				fprintf(logFile, "Lets send the presence to player %d.\n", i);
 				sessionInfo.players[i].send(SERVER_PRESENCE);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST :
 			{
-				NETPRINTF("Lets send the session info to player %d.\n", i);
+				fprintf(logFile, "Lets send the session info to player %d.\n", i);
 
 				char *data=NULL;
 				int size=sessionInfo.getDataLength();
@@ -1333,7 +1361,7 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
 			{
-				NETPRINTF("Lets send the confiramtion for checksum to player %d.\n", i);
+				fprintf(logFile, "Lets send the confiramtion for checksum to player %d.\n", i);
 				char data[8];
 				data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
 				data[1]=0;
@@ -1351,7 +1379,7 @@ void MultiplayersHost::sendingTime()
 				// Lets check if all players has the sessionInfo:
 				stepHostGlobalState();
 
-				NETPRINTF("player %d is know ok. (%d)\n", i, sessionInfo.players[i].netState);
+				fprintf(logFile, "player %d is know ok. (%d)\n", i, sessionInfo.players[i].netState);
 			}
 			break;
 
@@ -1367,28 +1395,28 @@ void MultiplayersHost::sendingTime()
 					sessionInfo.players[i].netTOTL++;
 				}
 				else
-					NETPRINTF("Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+					fprintf(logFile, "Player %d is all right, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 				// players keeps ok.
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START :
 			{
-				NETPRINTF("We have to inform player %d to start cross connection.\n", i);
+				fprintf(logFile, "We have to inform player %d to start cross connection.\n", i);
 				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START :
 			{
-				NETPRINTF("Player %d is cross connecting, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "Player %d is cross connecting, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 				sessionInfo.players[i].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION :
 			{
-				NETPRINTF("We have to inform player %d that we recieved his crossConnection confirmation.\n", i);
+				fprintf(logFile, "We have to inform player %d that we recieved his crossConnection confirmation.\n", i);
 				sessionInfo.players[i].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
 
 				sessionInfo.players[i].netState=BasePlayer::PNS_CROSS_CONNECTED;
@@ -1397,13 +1425,13 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_CROSS_CONNECTED :
 			{
-				NETPRINTF("Player %d is cross connected ! Yahoo !, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "Player %d is cross connected ! Yahoo !, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_START_GAME :
 			{
-				NETPRINTF("We send start game to player %d, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "We send start game to player %d, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 				sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING);
 			}
 			break;
@@ -1411,13 +1439,13 @@ void MultiplayersHost::sendingTime()
 			case BasePlayer::PNS_PLAYER_CONFIRMED_START_GAME :
 			{
 				// here we could tell other players
-				NETPRINTF("Player %d plays, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
+				fprintf(logFile, "Player %d plays, TOTL %d.\n", i, sessionInfo.players[i].netTOTL);
 			}
 			break;
 
 			default:
 			{
-				NETPRINTF("Buggy state for player %d.\n", i);
+				fprintf(logFile, "Buggy state for player %d.\n", i);
 			}
 
 			}
@@ -1429,7 +1457,7 @@ void MultiplayersHost::sendingTime()
 
 void MultiplayersHost::stopHosting(void)
 {
-	NETPRINTF("Every player has one chance to get the server-quit packet.\n");
+	fprintf(logFile, "Every player has one chance to get the server-quit packet.\n");
 	send(SERVER_QUIT_NEW_GAME);
 	
 	if (shareOnYOG)
@@ -1440,9 +1468,9 @@ void MultiplayersHost::stopHosting(void)
 
 void MultiplayersHost::startGame(void)
 {
-	if(hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED)
+	if(hostGlobalState>=HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE)
 	{
-		NETPRINTF("Lets tell all players to start game.\n");
+		fprintf(logFile, "Lets tell all players to start game.\n");
 		startGameTimeCounter=SECOND_TIMEOUT*SECONDS_BEFORE_START_GAME;
 		{
 			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -1457,6 +1485,6 @@ void MultiplayersHost::startGame(void)
 		stepHostGlobalState();
 	}
 	else
-		NETPRINTF("can't start now. hostGlobalState=(%d)<(%d)\n", hostGlobalState, HGS_ALL_PLAYERS_CROSS_CONNECTED);
+		fprintf(logFile, "can't start now. hostGlobalState=(%d)<(%d)\n", hostGlobalState, HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE);
 
 }

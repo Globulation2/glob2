@@ -33,8 +33,9 @@ public:
 		HGS_SHARING_SESSION_INFO=1,
 		HGS_WAITING_CROSS_CONNECTIONS=2,
 		HGS_ALL_PLAYERS_CROSS_CONNECTED=3,
-		HGS_GAME_START_SENDED=4,
-		HGS_PLAYING_COUNTER=5 // the counter 5-4-3-2-1-0 is playing
+		HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE=4,
+		HGS_GAME_START_SENDED=5,
+		HGS_PLAYING_COUNTER=6 // the counter 5-4-3-2-1-0 is playing
 	};
 
 	enum{SECONDS_BEFORE_START_GAME=5};
@@ -104,6 +105,9 @@ public:
 	bool send(const int u, const int v);
 	void stopHosting(void);
 	void startGame(void);
+
+private:
+	FILE *logFile;
 };
 
 #endif

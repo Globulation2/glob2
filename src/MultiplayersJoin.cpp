@@ -27,6 +27,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 {
 	yogGameInfo=NULL;
 	downloadStream=NULL;
+	logFile=NULL;
 	init(shareOnYOG);
 }
 
@@ -40,12 +41,25 @@ MultiplayersJoin::~MultiplayersJoin()
 			{
 				send(CLIENT_QUIT_NEW_GAME);
 				SDLNet_UDP_Unbind(socket, channel);
-				NETPRINTF("~MultiplayersJoin::Socket unbinded.\n");
+				fprintf(logFile, "~MultiplayersJoin::Socket unbinded.\n");
 			}
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
-			NETPRINTF("Socket closed.\n");
+			fprintf(logFile, "Socket closed.\n");
 		}
+	}
+	
+	if (logFile)
+	{
+		fclose(logFile);
+		logFile=NULL;
+	}
+	if (downloadStream)
+	{
+		fprintf(logFile, "MultiplayersJoin:: download not finished.\n");
+		//TODO: delete/remove the incomplete file !
+		SDL_RWclose(downloadStream);
+		downloadStream=NULL;
 	}
 }
 
@@ -100,20 +114,28 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	}
 	
 	localPort=0;
+	
+	if (logFile)
+	{
+		fclose(logFile);
+		logFile=NULL;
+	}
+	logFile=fopen("MultiplayersJoin.log", "w");
+	assert(logFile);
 }
 
 void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
-		NETPRINTF("Bad size for a Presence packet recieved!\n");
+		fprintf(logFile, "Bad size for a Presence packet recieved!\n");
 		waitingState=WS_WAITING_FOR_PRESENCE;
 		waitingTimeout=0;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		return;
 	}
 	
-	NETPRINTF("dataPresenceRecieved\n");
+	fprintf(logFile, "dataPresenceRecieved\n");
 	
 	waitingState=WS_WAITING_FOR_SESSION_INFO;
 	waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
@@ -127,19 +149,19 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 
 	if ((pn<0)||(pn>=32))
 	{
-		NETPRINTF("Warning: bad dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
+		fprintf(logFile, "Warning: bad dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
 		waitingTimeout=0;
 		return;
 	}
 
 	myPlayerNumber=pn;
-	NETPRINTF("dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
+	fprintf(logFile, "dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
 
 	unCrossConnectSessionInfo();
 
 	if (!sessionInfo.setData(data+8, size-8))
 	{
-		NETPRINTF("Bad content, or bad size for a sessionInfo packet recieved!\n");
+		fprintf(logFile, "Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;
 	}
 
@@ -152,13 +174,13 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	//do we need to download the file from host ? :
 	if (sessionInfo.mapGenerationDescriptor && sessionInfo.fileIsAMap)
 	{
-		printf("MultiplayersJoin::no need for download, we have a random map.\n");
+		fprintf(logFile, "MultiplayersJoin::no need for download, we have a random map.\n");
 	}
 	else
 	{
 		const char *filename=NULL;
 		
-		printf("MultiplayersJoin::we may need to download, we don't have a random map.\n");
+		fprintf(logFile, "MultiplayersJoin::we may need to download, we don't have a random map.\n");
 		if (sessionInfo.fileIsAMap)
 			filename=sessionInfo.map.getMapFileName();
 		else
@@ -166,17 +188,17 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		
 		assert(filename);
 		assert(filename[0]);
-		printf("MultiplayersJoin::filename=%s.\n", filename);
+		fprintf(logFile, "MultiplayersJoin::filename=%s.\n", filename);
 		SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
 		if (stream)
 		{
-			printf("MultiplayersJoin::we don't need to download, we do have the file!\n");
+			fprintf(logFile, "MultiplayersJoin::we don't need to download, we do have the file!\n");
 			SDL_RWclose(stream);
 			filename=NULL;
 		}
 		else
 		{
-			printf("MultiplayersJoin::we do need to download, we don't have the file!\n");
+			fprintf(logFile, "MultiplayersJoin::we do need to download, we don't have the file!\n");
 		}
 		
 		if (filename)
@@ -207,7 +229,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 {
 	if (downloadStream==NULL)
 	{
-		NETPRINTF("MultiplayersJoin:: no more data file wanted.\n");
+		fprintf(logFile, "MultiplayersJoin:: no more data file wanted.\n");
 		if (endOfFileIndex)
 		{
 			char data[72];
@@ -229,18 +251,18 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	int windowIndex=(int)getSint32(data, 4);
 	Uint32 writingIndex=getUint32(data, 8);
 	int writingSize=size-12;
-	NETPRINTF("MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
+	fprintf(logFile, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
 	
 	if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
 	{
-		printf("MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFile, "MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	
 	if (writingSize==0)
 	{
 		endOfFileIndex=writingIndex;
-		NETPRINTF("end of the file is %d.\n", endOfFileIndex);
+		fprintf(logFile, "end of the file is %d.\n", endOfFileIndex);
 	}
 	else
 	{
@@ -251,7 +273,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		netWindow[windowIndex].received=true;
 		netWindow[windowIndex].packetSize=writingSize;
 
-		NETPRINTF("unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
+		fprintf(logFile, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
 		
 		if (startDownloadTimeout>2)
 			startDownloadTimeout=2;
@@ -276,11 +298,11 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 			}
 	}
 	if (anyHit)
-		NETPRINTF("MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
+		fprintf(logFile, "MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
 	
 	if (endOfFileIndex==unreceivedIndex)
 	{
-		printf("download's file closed\n");
+		fprintf(logFile, "download's file closed\n");
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
 	}
@@ -289,11 +311,11 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 
 void MultiplayersJoin::checkSumConfirmationRecieved(char *data, int size, IPaddress ip)
 {
-	NETPRINTF("checkSumConfirmationRecieved\n");
+	fprintf(logFile, "checkSumConfirmationRecieved\n");
 
 	if (size!=8)
 	{
-		NETPRINTF("Bad size for a checksum confirmation packet recieved!\n");
+		fprintf(logFile, "Bad size for a checksum confirmation packet recieved!\n");
 		waitingState=WS_WAITING_FOR_CHECKSUM_CONFIRMATION;
 		waitingTimeout=0;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -305,14 +327,14 @@ void MultiplayersJoin::checkSumConfirmationRecieved(char *data, int size, IPaddr
 
 	if (rsc!=lsc)
 	{
-		NETPRINTF("Bad checksum confirmation packet value recieved!\n");
+		fprintf(logFile, "Bad checksum confirmation packet value recieved!\n");
 		waitingState=WS_WAITING_FOR_CHECKSUM_CONFIRMATION;
 		waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		return;
 	}
 
-	NETPRINTF("Checksum confirmation packet recieved and valid!\n");
+	fprintf(logFile, "Checksum confirmation packet recieved and valid!\n");
 
 	waitingState=WS_OK;
 	waitingTimeout=SHORT_NETWORK_TIMEOUT;
@@ -335,7 +357,7 @@ void MultiplayersJoin::unCrossConnectSessionInfo()
 
 void MultiplayersJoin::startCrossConnections(void)
 {
-	NETPRINTF("OK, we can start cross connections.\n");
+	fprintf(logFile, "OK, we can start cross connections.\n");
 
 	waitingTimeout=0;
 	waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -350,28 +372,28 @@ void MultiplayersJoin::startCrossConnections(void)
 
 void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddress ip)
 {
-	NETPRINTF("crossConnectionFirstMessage\n");
+	fprintf(logFile, "crossConnectionFirstMessage\n");
 
 	if (size!=8)
 	{
-		NETPRINTF("Bad size for a crossConnectionFirstMessage packet recieved!\n");
+		fprintf(logFile, "Bad size for a crossConnectionFirstMessage packet recieved!\n");
 		return;
 	}
 
 	Sint32 p=data[4];
-	NETPRINTF("p=%d\n", p);
+	fprintf(logFile, "p=%d\n", p);
 
 	if ((p>=0)&&(p<sessionInfo.numberOfPlayer))
 	{
 		if (sessionInfo.players[p].ip.host!=ip.host)
 		{
-			NETPRINTF("Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%x), but should be ip(%x)!\n", p, ip.host, sessionInfo.players[p].ip.host);
+			fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%x), but should be ip(%x)!\n", p, ip.host, sessionInfo.players[p].ip.host);
 		}
 		else if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
 		{
 			if (crossPacketRecieved[p]<1)
 				crossPacketRecieved[p]=1;
-			NETPRINTF("crossConnectionFirstMessage packet recieved (%d)\n", p);
+			fprintf(logFile, "crossConnectionFirstMessage packet recieved (%d)\n", p);
 
 			char data[8];
 			data[0]=PLAYER_CROSS_CONNECTION_SECOND_MESSAGE;
@@ -386,11 +408,11 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 		}
 		else
 		{
-			NETPRINTF("player %d is not binded! (crossPacketRecieved[%d]=%d).\n", p, p, crossPacketRecieved[p]);
+			fprintf(logFile, "player %d is not binded! (crossPacketRecieved[%d]=%d).\n", p, p, crossPacketRecieved[p]);
 		}
 	}
 	else
-		NETPRINTF("Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
+		fprintf(logFile, "Dangerous crossConnectionFirstMessage packet recieved (%d)!\n", p);
 
 }
 
@@ -417,7 +439,7 @@ void MultiplayersJoin::checkAllCrossConnected(void)
 	}
 	if (allCrossConnected)
 	{
-		NETPRINTF("All players are cross connected to me !!\n");
+		fprintf(logFile, "All players are cross connected to me !!\n");
 		waitingState=WS_CROSS_CONNECTING_ACHIEVED;
 		if (waitingTimeout>0)
 		{
@@ -430,11 +452,11 @@ void MultiplayersJoin::checkAllCrossConnected(void)
 
 void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddress ip)
 {
-	NETPRINTF("crossConnectionSecondMessage\n");
+	fprintf(logFile, "crossConnectionSecondMessage\n");
 
 	if (size!=8)
 	{
-		NETPRINTF("Bad size for a crossConnectionSecondMessage packet recieved!\n");
+		fprintf(logFile, "Bad size for a crossConnectionSecondMessage packet recieved!\n");
 		return;
 	}
 
@@ -442,11 +464,11 @@ void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddr
 	if ((p>=0)&&(p<32))
 	{
 		crossPacketRecieved[p]=2;
-		NETPRINTF("crossConnectionSecondMessage packet recieved (%d)\n", p);
+		fprintf(logFile, "crossConnectionSecondMessage packet recieved (%d)\n", p);
 		checkAllCrossConnected();
 	}
 	else
-		NETPRINTF("Dangerous crossConnectionSecondMessage packet recieved (%d)!\n", p);
+		fprintf(logFile, "Dangerous crossConnectionSecondMessage packet recieved (%d)!\n", p);
 
 }
 
@@ -454,34 +476,34 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(IPaddress ip)
 {
 	if (waitingState>=WS_CROSS_CONNECTING_START_CONFIRMED)
 	{
-		NETPRINTF("server(%x,%d has recieved our stillCrossConnecting state.\n", ip.host, ip.port);
+		fprintf(logFile, "server(%x,%d has recieved our stillCrossConnecting state.\n", ip.host, ip.port);
 		waitingTimeout=SHORT_NETWORK_TIMEOUT;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 	}
 	else
-		NETPRINTF("Warning: ip(%x,%d) sent us a stillCrossConnectingConfirmation while in a bad state!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%x,%d) sent us a stillCrossConnectingConfirmation while in a bad state!.\n", ip.host, ip.port);
 }
 
 void MultiplayersJoin::crossConnectionsAchievedConfirmation(IPaddress ip)
 {
 	if (waitingState>=WS_CROSS_CONNECTING_ACHIEVED)
 	{
-		NETPRINTF("server(%x,%d has recieved our crossConnection achieved state.\n", ip.host, ip.port);
+		fprintf(logFile, "server(%x,%d has recieved our crossConnection achieved state.\n", ip.host, ip.port);
 		waitingState=WS_CROSS_CONNECTING_SERVER_HEARD;
 		waitingTimeout=SHORT_NETWORK_TIMEOUT;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 	}
 	else
-		NETPRINTF("Warning: ip(%x,%d) sent us a crossConnection achieved state while in a bad state!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%x,%d) sent us a crossConnection achieved state while in a bad state!.\n", ip.host, ip.port);
 }
 
 void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 {
 	if (size!=8)
 	{
-		NETPRINTF("Warning: ip(%x,%d) sent us a bad serverAskForBeginning!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%x,%d) sent us a bad serverAskForBeginning!.\n", ip.host, ip.port);
 	}
 
 	if (waitingState>=WS_CROSS_CONNECTING_ACHIEVED)
@@ -493,10 +515,10 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 
 		startGameTimeCounter=data[4];
 
-		NETPRINTF("Server(%x,%d) asked for game start, timecounter=%d\n", ip.host, ip.port, startGameTimeCounter);
+		fprintf(logFile, "Server(%x,%d) asked for game start, timecounter=%d\n", ip.host, ip.port, startGameTimeCounter);
 	}
 	else
-		NETPRINTF("Warning: ip(%x,%d) sent us a serverAskForBeginning!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%x,%d) sent us a serverAskForBeginning!.\n", ip.host, ip.port);
 
 }
 
@@ -504,18 +526,18 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 {
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
-		NETPRINTF("Bad packet recieved (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
+		fprintf(logFile, "Bad packet recieved (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
 	}
 	switch (data[0])
 	{
 		case FULL_FILE_DATA:
-			//NETPRINTF("part of map received from ip(%x,%d)!\n", ip.host, ip.port);
+			//fprintf(logFile, "part of map received from ip(%x,%d)!\n", ip.host, ip.port);
 			dataFileRecieved(data, size, ip);
 		break;
 	
 		case SERVER_WATER:
-			printf("water received from ip(%x,%d)!\n", ip.host, ip.port);
+			fprintf(logFile, "water received from ip(%x,%d)!\n", ip.host, ip.port);
 		break;
 		
 		case SERVER_PRESENCE :
@@ -534,7 +556,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 			if (waitingState<WS_SERVER_START_GAME)
 			{
 				//TODO : show an explaination pannel for the joiner.
-				NETPRINTF("Server kicked you.\n");
+				fprintf(logFile, "Server kicked you.\n");
 				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;
 				kicked=true;
@@ -544,7 +566,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 			if (waitingState<WS_SERVER_START_GAME)
 			{
 				//TODO : show an explaination pannel for the joiner.
-				NETPRINTF("Server has quit.\n");
+				fprintf(logFile, "Server has quit.\n");
 				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;
 			}
@@ -575,7 +597,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			NETPRINTF("Unknow kind of packet(%d) recieved from ip(%x,%d)!\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved from ip(%x,%d)!\n", data[0], ip.host, ip.port);
 	}
 }
 
@@ -589,10 +611,10 @@ void MultiplayersJoin::receiveTime()
 		
 		int v;
 		LANHost lanhost;
-		//NETPRINTF("broadcastState=%d.\n", broadcastState);
+		//fprintf(logFile, "broadcastState=%d.\n", broadcastState);
 		if (lan.receive(&v, lanhost.gameName, lanhost.serverNickName))
 		{
-			NETPRINTF("received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
+			fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
 			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
 				|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
 			{
@@ -622,7 +644,7 @@ void MultiplayersJoin::receiveTime()
 				std::list<LANHost>::iterator ittemp=it;
 				it=LANHosts.erase(ittemp);
 				listHasChanged=true;
-				//printf("removed (%x).\n", SDL_SwapBE32(ittemp->ip));
+				//fprintf(logFile, "removed (%x).\n", SDL_SwapBE32(ittemp->ip));
 			}
 		}
 		
@@ -633,35 +655,35 @@ void MultiplayersJoin::receiveTime()
 					{
 						if ((socket)&&(channel!=-1))
 						{
-							NETPRINTF("MultiplayersJoin:NAT:Unbinding socket.\n");
+							fprintf(logFile, "MultiplayersJoin:NAT:Unbinding socket.\n");
 							// In improbable case that the target ip really hosted a game,
 							// we send him a quit game message
 							send(CLIENT_QUIT_NEW_GAME);
 							SDLNet_UDP_Unbind(socket, channel);
-							NETPRINTF("MultiplayersJoin:NAT:Socket unbinded.\n");
+							fprintf(logFile, "MultiplayersJoin:NAT:Socket unbinded.\n");
 						}
 						
 						serverIP.host=it->ip;
 						//serverIP.port=SDL_SwapBE16(SERVER_PORT);
-						NETPRINTF("Found a local game with same serverNickName=(%s).\n", serverNickName);
+						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
-						NETPRINTF("Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
+						fprintf(logFile, "Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
 						{
-							NETPRINTF("MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
-							NETPRINTF("MultiplayersJoin:NAT:serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
+							fprintf(logFile, "MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
+							fprintf(logFile, "MultiplayersJoin:NAT:serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
 						}
 						else
 						{
-							NETPRINTF("MultiplayersJoin:NAT:failed to bind socket\n");
+							fprintf(logFile, "MultiplayersJoin:NAT:failed to bind socket\n");
 							waitingState=WS_TYPING_SERVER_NAME;
 						}
 					}
 				else
 				{
-					NETPRINTF("MultiplayersJoin:NAT: (%s)!=(%s)\n", it->serverNickName, serverNickName);
+					fprintf(logFile, "MultiplayersJoin:NAT: (%s)!=(%s)\n", it->serverNickName, serverNickName);
 				}
 	}
 }
@@ -679,15 +701,15 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			NETPRINTF("recieved packet (%d)\n", packet->data[0]);
-			//NETPRINTF("packet=%d\n", (int)packet);
-			//NETPRINTF("packet->channel=%d\n", packet->channel);
-			//NETPRINTF("packet->len=%d\n", packet->len);
-			//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-			//NETPRINTF("packet->status=%d\n", packet->status);
-			//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			fprintf(logFile, "recieved packet (%d)\n", packet->data[0]);
+			//fprintf(logFile, "packet=%d\n", (int)packet);
+			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+			//fprintf(logFile, "packet->len=%d\n", packet->len);
+			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+			//fprintf(logFile, "packet->status=%d\n", packet->status);
+			//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 
-			//NETPRINTF("packet->data=%s\n", packet->data);
+			//fprintf(logFile, "packet->data=%s\n", packet->data);
 
 			treatData((char *)(packet->data), packet->len, packet->address);
 		}
@@ -699,7 +721,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 	{
 		if (--startGameTimeCounter<0)
 		{
-			NETPRINTF("MultiplayersJoin::Lets quit this screen and start game!\n");
+			fprintf(logFile, "MultiplayersJoin::Lets quit this screen and start game!\n");
 		}
 	}
 }
@@ -807,15 +829,15 @@ void MultiplayersJoin::sendingTime()
 			addUint32(data, firstReceived[ri], 8+ri*4);
 		
 		send(data, 72);
-		NETPRINTF("MultiplayersJoin::sending download request\n");
-		NETPRINTF("MultiplayersJoin::unreceivedIndex=%d\n", unreceivedIndex);
-		NETPRINTF("receivedIndex=(");
+		fprintf(logFile, "MultiplayersJoin::sending download request\n");
+		fprintf(logFile, "MultiplayersJoin::unreceivedIndex=%d\n", unreceivedIndex);
+		fprintf(logFile, "receivedIndex=(");
 		for (int ix=0; ix<16; ix++)
 		{
 			firstReceived[ix]=getUint32(data, 8+ix*4);
-			NETPRINTF("%d, ", firstReceived[ix]);
+			fprintf(logFile, "%d, ", firstReceived[ix]);
 		}
-		NETPRINTF(").\n");
+		fprintf(logFile, ").\n");
 		
 		startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	}
@@ -826,15 +848,15 @@ void MultiplayersJoin::sendingTime()
 		
 		if (--waitingTOTL<0)
 		{
-			NETPRINTF("Last TOTL spent, server has left\n");
+			fprintf(logFile, "Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
 			
 			if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
 				broadcastState=BS_DISABLE_YOG;
-			NETPRINTF("disabling NAT detection too. bs=(%d)\n", broadcastState);
+			fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 		}
 		else
-			NETPRINTF("TOTL %d\n", waitingTOTL);
+			fprintf(logFile, "TOTL %d\n", waitingTOTL);
 			
 		
 			
@@ -853,7 +875,7 @@ void MultiplayersJoin::sendingTime()
 				if (yogGameInfo)
 				{
 					assert(shareOnYOG);
-					NETPRINTF("requesting sending water to firewall. (%s) (%d)\n", yogGameInfo->source, localPort);
+					fprintf(logFile, "requesting sending water to firewall. (%s) (%d)\n", yogGameInfo->source, localPort);
 					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, localPort);
 				}
 				
@@ -861,7 +883,7 @@ void MultiplayersJoin::sendingTime()
 				{
 					if (broadcastState==BS_DISABLE_YOG)
 						broadcastState=BS_ENABLE_YOG;
-					NETPRINTF("enabling NAT detection too. bs=(%d)\n", broadcastState);
+					fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
 				}
 			}
 			else
@@ -885,7 +907,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_OK:
 		{
-			NETPRINTF("Im ok, but I want the server to know I m still here!\n");
+			fprintf(logFile, "Im ok, but I want the server to know I m still here!\n");
 			if (!sendSessionInfoConfirmation())
 				waitingState=WS_TYPING_SERVER_NAME;
 		}
@@ -893,7 +915,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_CROSS_CONNECTING:
 		{
-			NETPRINTF("We tell the server that we heard about croos connection start.\n");
+			fprintf(logFile, "We tell the server that we heard about croos connection start.\n");
 			if (!send(PLAYERS_CONFIRM_START_CROSS_CONNECTIONS))
 			{
 				send(CLIENT_QUIT_NEW_GAME);
@@ -910,7 +932,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_CROSS_CONNECTING_START_CONFIRMED:
 		{
-			NETPRINTF("We try cross connecting aggain:\n");
+			fprintf(logFile, "We try cross connecting aggain:\n");
 			// we have to inform the server that we are still alive:
 			if (!send(PLAYERS_STILL_CROSS_CONNECTING))
 			{
@@ -924,7 +946,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_CROSS_CONNECTING_ACHIEVED:
 		{
-			NETPRINTF("We are cross connected.\n");
+			fprintf(logFile, "We are cross connected.\n");
 			if (!send(PLAYERS_CROSS_CONNECTIONS_ACHIEVED))
 			{
 				send(CLIENT_QUIT_NEW_GAME);
@@ -935,7 +957,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_CROSS_CONNECTING_SERVER_HEARD:
 		{
-			NETPRINTF("Im fully cross connected and server confirmed!\n");
+			fprintf(logFile, "Im fully cross connected and server confirmed!\n");
 			if (!send(PLAYERS_CROSS_CONNECTIONS_ACHIEVED))
 			{
 				send(CLIENT_QUIT_NEW_GAME);
@@ -946,7 +968,7 @@ void MultiplayersJoin::sendingTime()
 
 		case WS_SERVER_START_GAME :
 		{
-			NETPRINTF("Starting game within %d seconds.\n", (int)(startGameTimeCounter/20));
+			fprintf(logFile, "Starting game within %d seconds.\n", (int)(startGameTimeCounter/20));
 			if (!send(PLAYER_CONFIRM_GAME_BEGINNING, startGameTimeCounter))
 			{
 				send(CLIENT_QUIT_NEW_GAME);
@@ -956,7 +978,7 @@ void MultiplayersJoin::sendingTime()
 		break;
 
 		default:
-			NETPRINTF("Im in a bad state %d!\n", waitingState);
+			fprintf(logFile, "Im in a bad state %d!\n", waitingState);
 
 		}
 
@@ -985,11 +1007,11 @@ bool MultiplayersJoin::sendPresenceRequest()
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
 		char *s=SDLNet_ResolveIP(&serverIP);
-		NETPRINTF("succeded to send presence request packet to host=(%x)(%s) port=(%d)\n", serverIP.host, s, serverIP.port);
+		fprintf(logFile, "succeded to send presence request packet to host=(%x)(%s) port=(%d)\n", serverIP.host, s, serverIP.port);
 	}
 	else
 	{
-		NETPRINTF("failed to send session request packet\n");
+		fprintf(logFile, "failed to send session request packet\n");
 		waitingState=WS_TYPING_SERVER_NAME;
 		SDLNet_FreePacket(packet);
 		return false;
@@ -1021,17 +1043,17 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 
 	Uint32 netHost=SDL_SwapBE32((Uint32)serverIP.host);
 	Uint32 netPort=(Uint32)SDL_SwapBE16(serverIP.port);
-	NETPRINTF("sendSessionInfoRequest() host=%x, port=%x, netHost=%x netPort=%x\n", serverIP.host, serverIP.port, netHost, netPort);
+	fprintf(logFile, "sendSessionInfoRequest() host=%x, port=%x, netHost=%x netPort=%x\n", serverIP.host, serverIP.port, netHost, netPort);
 	addUint32(packet->data, netHost, 4);
 	addUint32(packet->data, netPort, 8);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
-		NETPRINTF("succeded to send session request packet\n");
+		fprintf(logFile, "succeded to send session request packet\n");
 	}
 	else
 	{
-		NETPRINTF("failed to send session request packet\n");
+		fprintf(logFile, "failed to send session request packet\n");
 		waitingState=WS_TYPING_SERVER_NAME;
 		SDLNet_FreePacket(packet);
 		return false;
@@ -1060,23 +1082,23 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	packet->data[2]=0;
 	packet->data[3]=0;
 	Sint32 cs=sessionInfo.checkSum();
-	NETPRINTF("MultiplayersJoin::cs=%x.\n", cs);
+	fprintf(logFile, "MultiplayersJoin::cs=%x.\n", cs);
 	addSint32((char *)(packet->data), cs, 4);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
-		NETPRINTF("suceeded to send confirmation packet\n");
-		//NETPRINTF("packet->channel=%d\n", packet->channel);
-		//NETPRINTF("packet->len=%d\n", packet->len);
-		//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-		//NETPRINTF("packet->status=%d\n", packet->status);
-		//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+		fprintf(logFile, "suceeded to send confirmation packet\n");
+		//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+		//fprintf(logFile, "packet->len=%d\n", packet->len);
+		//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+		//fprintf(logFile, "packet->status=%d\n", packet->status);
+		//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 
-		//NETPRINTF("packet->data=%s, cs=%x\n", packet->data, cs);
+		//fprintf(logFile, "packet->data=%s, cs=%x\n", packet->data, cs);
 	}
 	else
 	{
-		NETPRINTF("failed to send confirmation packet\n");
+		fprintf(logFile, "failed to send confirmation packet\n");
 		SDLNet_FreePacket(packet);
 		return false;
 	}
@@ -1103,11 +1125,11 @@ bool MultiplayersJoin::send(char *data, int size)
 	memcpy(packet->data, data, size);
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		NETPRINTF("MultiplayersJoin::send suceeded to send packet\n");
+		fprintf(logFile, "MultiplayersJoin::send suceeded to send packet\n");
 	}
 	else
 	{
-		NETPRINTF("MultiplayersJoin::send failed to send packet (channel=%d)\n", channel);
+		fprintf(logFile, "MultiplayersJoin::send failed to send packet (channel=%d)\n", channel);
 		SDLNet_FreePacket(packet);
 		return false;
 	}
@@ -1132,18 +1154,18 @@ bool MultiplayersJoin::send(const int v)
 	packet->data[3]=0;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		NETPRINTF("MultiplayersJoin::send suceeded to send packet v=%d\n", v);
-		//NETPRINTF("packet->channel=%d\n", packet->channel);
-		//NETPRINTF("packet->len=%d\n", packet->len);
-		//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-		//NETPRINTF("packet->status=%d\n", packet->status);
-		//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+		fprintf(logFile, "MultiplayersJoin::send suceeded to send packet v=%d\n", v);
+		//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+		//fprintf(logFile, "packet->len=%d\n", packet->len);
+		//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+		//fprintf(logFile, "packet->status=%d\n", packet->status);
+		//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 
-		//NETPRINTF("packet->data=%s\n", packet->data);
+		//fprintf(logFile, "packet->data=%s\n", packet->data);
 	}
 	else
 	{
-		NETPRINTF("MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
+		fprintf(logFile, "MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		SDLNet_FreePacket(packet);
 		return false;
 	}
@@ -1171,18 +1193,18 @@ bool MultiplayersJoin::send(const int u, const int v)
 	packet->data[7]=0;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		NETPRINTF("MultiplayersJoin::send suceeded to send packet v=%d\n", v);
-		//NETPRINTF("packet->channel=%d\n", packet->channel);
-		//NETPRINTF("packet->len=%d\n", packet->len);
-		//NETPRINTF("packet->maxlen=%d\n", packet->maxlen);
-		//NETPRINTF("packet->status=%d\n", packet->status);
-		//NETPRINTF("packet->address=%x,%d\n", packet->address.host, packet->address.port);
+		fprintf(logFile, "MultiplayersJoin::send suceeded to send packet v=%d\n", v);
+		//fprintf(logFile, "packet->channel=%d\n", packet->channel);
+		//fprintf(logFile, "packet->len=%d\n", packet->len);
+		//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
+		//fprintf(logFile, "packet->status=%d\n", packet->status);
+		//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
 
-		//NETPRINTF("packet->data=%s\n", packet->data);
+		//fprintf(logFile, "packet->data=%s\n", packet->data);
 	}
 	else
 	{
-		NETPRINTF("MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
+		fprintf(logFile, "MultiplayersJoin::send failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		SDLNet_FreePacket(packet);
 		return false;
 	}
@@ -1201,10 +1223,10 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 		UDPsocket tempSocket;
 		tempSocket=SDLNet_UDP_Open(tempPort);
 		if (tempSocket)
-			NETPRINTF("findLocalPort:: Socket opened at port %d.\n", tempPort);
+			fprintf(logFile, "findLocalPort:: Socket opened at port %d.\n", tempPort);
 		else
 		{
-			NETPRINTF("findLocalPort:: failed to open a socket.\n");
+			fprintf(logFile, "findLocalPort:: failed to open a socket.\n");
 			continue; // We try to open another port
 		}
 
@@ -1226,11 +1248,11 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 			packet->data[3]=0;
 			if (SDLNet_UDP_Send(socket, -1, packet)==1)
 			{
-				NETPRINTF("findLocalPort:: suceeded to send packet\n");
+				fprintf(logFile, "findLocalPort:: suceeded to send packet\n");
 			}
 			else
 			{
-				NETPRINTF("findLocalPort:: failed to send packet\n");
+				fprintf(logFile, "findLocalPort:: failed to send packet\n");
 				SDLNet_FreePacket(packet);
 				SDLNet_UDP_Close(tempSocket);
 				continue; // We try with another port
@@ -1250,17 +1272,17 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 				if (count++>=3)
 					break;
 				SDL_Delay(100);
-				NETPRINTF("findLocalPort::delay 100ms to wait for the loop-back packet\n");
+				fprintf(logFile, "findLocalPort::delay 100ms to wait for the loop-back packet\n");
 			}
 			if (count>=3)
 			{
-				NETPRINTF("findLocalPort::no Packet received !!!!\n");
+				fprintf(logFile, "findLocalPort::no Packet received !!!!\n");
 				SDLNet_FreePacket(packet);
 				SDLNet_UDP_Close(tempSocket);
 				continue; // We try with another port
 			}
-			NETPRINTF("findLocalPort::Packet received.\n");
-			NETPRINTF("findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			fprintf(logFile, "findLocalPort::Packet received.\n");
+			fprintf(logFile, "findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
 			localPort=packet->address.port;
 
 			SDLNet_FreePacket(packet);
@@ -1286,23 +1308,23 @@ bool MultiplayersJoin::tryConnection()
 	if (socket)
 	{
 		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
-		NETPRINTF("Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+		fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	}
 	else
 	{
-		NETPRINTF("failed to open a socket.\n");
+		fprintf(logFile, "failed to open a socket.\n");
 		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
 
 	if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
 	{
-		NETPRINTF("serverName=(%s)\n", serverName);
-		NETPRINTF("found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
+		fprintf(logFile, "serverName=(%s)\n", serverName);
+		fprintf(logFile, "found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
 	}
 	else
 	{
-		NETPRINTF("failed to find adresse\n");
+		fprintf(logFile, "failed to find adresse\n");
 		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
@@ -1312,12 +1334,12 @@ bool MultiplayersJoin::tryConnection()
 
 	if (channel != -1)
 	{
-		NETPRINTF("suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
-		NETPRINTF("serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
+		fprintf(logFile, "suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
+		fprintf(logFile, "serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
 	}
 	else
 	{
-		NETPRINTF("failed to bind socket\n");
+		fprintf(logFile, "failed to bind socket\n");
 		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
@@ -1329,7 +1351,7 @@ bool MultiplayersJoin::tryConnection()
 	
 	
 		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
-		NETPRINTF("Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+		fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	
 	
 	localPort=findLocalPort(socket);
@@ -1339,28 +1361,28 @@ bool MultiplayersJoin::tryConnection()
 
 void MultiplayersJoin::quitThisGame()
 {
-	NETPRINTF("quitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
+	fprintf(logFile, "quitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
 	unCrossConnectSessionInfo();
 
 	if (socket)
 	{
 		if (channel!=-1)
 		{
-			NETPRINTF("Unbinding socket.\n");
+			fprintf(logFile, "Unbinding socket.\n");
 			send(CLIENT_QUIT_NEW_GAME);
 			SDLNet_UDP_Unbind(socket, channel);
-			NETPRINTF("MultiplayersJoin::quitThisGame::Socket unbinded.\n");
+			fprintf(logFile, "MultiplayersJoin::quitThisGame::Socket unbinded.\n");
 		}
-		NETPRINTF("Closing socket.\n");
+		fprintf(logFile, "Closing socket.\n");
 		SDLNet_UDP_Close(socket);
 		socket=NULL;
-		NETPRINTF("Socket closed.\n");
+		fprintf(logFile, "Socket closed.\n");
 	}
 	
 	waitingState=WS_TYPING_SERVER_NAME;
 	if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
 		broadcastState=BS_DISABLE_YOG;
-	NETPRINTF("disabling NAT detection too. bs=(%d)\n", broadcastState);
+	fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 }
 
 bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)

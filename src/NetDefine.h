@@ -21,6 +21,6 @@
 #define __NETDEFINE_H
 
 //#define  NETPRINTF printf
-#define NETPRINTF if (true) ; else printf
+//#define NETPRINTF if (true) ; else printf
 
 #endif

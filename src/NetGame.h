@@ -28,10 +28,10 @@ NetGame is used by the engine to push and pop order for every players.
 
 Without latency, it could be a simple list of Orders, one for each player.
 
-But the aim of NetGame is to mask the latency (and lost orders)
+But the aim of NetGame is to hide the latency (and lost orders)
 for all the rest of the engine and the program.
-Then, for eah player, you have a queue of order.
-For local player and AI, you allways have "latency" orders in queue.
+Then, for each player, you have a queue of order.
+Even if you are not playing network games, locals players and AIs, allways have n="latency" orders in queue.
 You have 0 to 2*"latency" order for remote players. (With or without gaps)
 Some order may be missing, because network layer (UDP) may have lost them.
 At playersNetQueue[player][currentStep] you have all orders that have to be executed this turn.
@@ -141,6 +141,9 @@ public:
 private:
 	Sint32 checkSumsLocal[queueSize];
 	Sint32 checkSumsRemote[queueSize];
+	
+private:
+	FILE *logFile;
 };
 
 #endif
