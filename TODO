@@ -4,9 +4,15 @@ Gameplay :
 - Unites tirent une pierre.
 - Dans les batiments de nourriture, recolter ce dont il y a le moins (en valeur absolue)
 
+Bug:
+- Les drapeaux de guerrières sont mal gérés et des guerrières marchent sur le même GID.
+- La destruction d'un batiment n'altère pas les gradients des autre équipes.
+
 Technique :
+- Il faut beaucoup de boulets pour une pierre déposée dans une tourelle.
 - Modiffier le comportement-gui des drapeaux d'interdiction pour ne tenir compte des mouvements lorsque l'on lache le drapeau.
-- Terminer le pathfindig: grouper les gradients globaux et updater les cartes en cas de disparition d'obstacles.
+- Terminer le pathfindig: grouper les gradients globaux
+- Statistiques sur les gradients et le pathfinding pour optimiser.
 - Minimiser les #includes
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
