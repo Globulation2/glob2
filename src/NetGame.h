@@ -90,6 +90,7 @@ public:
 	void stepExecuted(void);
 	
 private:
+	void updateDelays(int player, Uint8 receivedStep);
 	void treatData(Uint8 *data, int size, IPaddress ip);
 
 	int numberOfPlayer;
@@ -135,6 +136,10 @@ private:
 	Uint8 theLastExecutedStep;
 	Uint8 lastExecutedStep[32];
 	Uint8 lastAviableStep[32][32];
+	
+	// We wants tu update latency automatically:
+	Uint8 recentDelays[32][256];
+	Uint8 delaysCount[32];
 	
 	UDPsocket socket;
 
