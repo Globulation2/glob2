@@ -21,7 +21,7 @@
 #include <vector>
 #include "BuildingType.h"
 #include "GlobalContainer.h"
-
+#include "GlobalContainer.h"
 
 BuildingsTypes::BuildingsTypes() 
 {

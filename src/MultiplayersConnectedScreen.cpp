@@ -30,8 +30,6 @@ MultiplayersConnectScreen::MultiplayersConnectScreen(MultiplayersJoin *multiplay
 	this->multiplayersJoin=multiplayersJoin;
 
 	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
-
-	globalContainer->gfx->setClipRect();
 }
 
 MultiplayersConnectScreen::~MultiplayersConnectScreen()

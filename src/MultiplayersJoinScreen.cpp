@@ -48,8 +48,6 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
-	globalContainer->gfx->setClipRect();
-	
 	wasVisible=false;
 }
 
