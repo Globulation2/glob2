@@ -43,6 +43,24 @@ Game::Game()
 
 Game::~Game()
 {
+	int sum=0;
+	for (int i=0; i<32; i++)
+		sum+=ticksGameSum[i];
+	if (sum)
+	{
+		fprintf(logFile, "execution time of Game::step: sum=%d\n", sum);
+		for (int i=0; i<32; i++)
+			fprintf(logFile, "ticksGameSum[%2d]=%8d, (%f %%)\n", i, ticksGameSum[i], (float)ticksGameSum[i]*100./(float)sum);
+		fprintf(logFile, "\n");
+		for (int i=0; i<32; i++)
+		{
+			fprintf(logFile, "ticksGameSum[%2d]=", i);
+			for (int j=0; j<(int)(0.5+(float)ticksGameSum[i]*100./(float)sum); j++)
+				fprintf(logFile, "*");
+			fprintf(logFile, "\n");
+		}
+	}
+	
 	// delete existing teams and players
 	for (int i=0; i<session.numberOfTeam; i++)
 		if (teams[i])
@@ -90,6 +108,9 @@ void Game::init()
 	prestigeToReach=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
+	
+	for (int i=0; i<32; i++)
+		ticksGameSum[i]=0;
 }
 
 void Game::setBase(const SessionInfo *initial)
@@ -730,6 +751,7 @@ void Game::step(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
+		Sint32 startTick=SDL_GetTicks();
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->step();
 		
@@ -759,12 +781,16 @@ void Game::step(Sint32 localTeam)
 			renderMiniMap(localTeam, true);
 		}
 		
-		stepCounter++;
+		
 		if ((stepCounter&31)==4)
 		{
 			wonStep();
 			scriptStep();
 		}
+		
+		Sint32 endTick=SDL_GetTicks();
+		ticksGameSum[stepCounter&31]+=endTick-startTick;
+		stepCounter++;
 	}
 }
 
@@ -888,7 +914,6 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 {
-	printf("addBuilding(x=%d, y=%d, typeNum=%d, teamNumber=%d)\n", x, y, typeNum, teamNumber);
 	Team *team=teams[teamNumber];
 	assert(team);
 

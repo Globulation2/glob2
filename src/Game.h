@@ -135,6 +135,7 @@ public:
 	
 protected:
 	FILE *logFile;
+	int ticksGameSum[32];
 };
 
 //! extract the user-visible name from a glob2 map filename, return NULL if filename is an invalid glob2 map
