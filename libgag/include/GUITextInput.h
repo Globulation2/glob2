@@ -31,8 +31,8 @@ protected:
 	std::string font;
 	std::string text;
 	bool activated;
-	Uint32 cursPos;
-	Uint32 maxLength;
+	size_t cursPos;
+	size_t maxLength;
 	bool password;
 
 	// cache, recomputed at least on paint
@@ -42,7 +42,7 @@ protected:
 	std::string pwd;
 
 public:
-	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, unsigned maxLength=0, bool password=false);
+	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);

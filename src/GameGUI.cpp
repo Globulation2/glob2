@@ -2479,66 +2479,33 @@ void GameGUI::drawOverlayInfos(void)
 	if (selectionMode==TOOL_SELECTION)
 	{
 		// we get the type of building
-		int mapX, mapY;
-		int batX, batY, batW, batH;
-		int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-		int exBatX, exBatY, exBatW, exBatH;
+		int typeNum = globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
+		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+		Sprite *sprite = globalContainer->buildings;
+		
+		// we translate dimensions and situation
 		int tempX, tempY;
-		bool isRoom, isExtendedRoom;
-
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
-
-		// we check for room
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-
+		int mapX, mapY;
+		bool isRoom;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		if (bt->isVirtual)
-			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
+			isRoom = game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 		else
-			isRoom=game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
-
-		// we find last's leve type num:
-		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-		int lastTypeNum=typeNum;
-		int max=0;
-		while(lastbt->nextLevelTypeNum>=0)
-		{
-			lastTypeNum=lastbt->nextLevelTypeNum;
-			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-			if (max++>200)
-			{
-				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
-				assert(false);
-				break;
-			}
-		}
-
-		// we check room for extension
-		if (bt->isVirtual)
-			isExtendedRoom=true;
-		else
-			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY);
-
-		// we get the datas
-		Sprite *sprite=globalContainer->buildings;
+			isRoom = game.checkHardRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY);
+		
+		// we get the screen dimensions of the building
+		int batW = (bt->width)<<5;
+		int batH = sprite->getH(bt->startImage);
+		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
+		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
+		
+		// we draw the building
 		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-
-		batW=(bt->width)<<5;
-		batH=sprite->getH(bt->startImage);
-		batX=(((mapX-viewportX)&(game.map.wMask))<<5);
-		batY=(((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
-
-		// we get extended building sizes:
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
-
+		
 		if (!bt->isVirtual)
 		{
-			exBatX=(exMapX-viewportX)<<5;
-			exBatY=(exMapY-viewportY)<<5;
-			exBatW=(lastbt->width)<<5;
-			exBatH=(lastbt->height)<<5;
-
 			if (localTeam->noMoreBuildingSitesCountdown>0)
 			{
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
@@ -2555,8 +2522,32 @@ void GameGUI::drawOverlayInfos(void)
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
 				else
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+				
+				// We look for its maximum extension size
+				// we find last's level type num:
+				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
+				int lastTypeNum=typeNum;
+				int max=0;
+				while (lastbt->nextLevelTypeNum>=0)
+				{
+					lastTypeNum=lastbt->nextLevelTypeNum;
+					lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
+					if (max++>200)
+					{
+						printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+						assert(false);
+						break;
+					}
+				}
+					
+				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
+				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY);
+				int exBatX=(exMapX-viewportX)<<5;
+				int exBatY=(exMapY-viewportY)<<5;
+				int exBatW=(lastbt->width)<<5;
+				int exBatH=(lastbt->height)<<5;
 
-				if (isRoom&&isExtendedRoom)
+				if (isRoom && isExtendedRoom)
 					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
 				else
 					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);

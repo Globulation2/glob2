@@ -105,19 +105,19 @@ namespace GAG
 
 		if (dx>0)
 		{
-			source->x+=dx;
-			destination->x+=dx;
+			source->x+=static_cast<Sint16>(dx);
+			destination->x+=static_cast<Sint16>(dx);
 
 			sw-=dx;
-			destination->w-=dx;
+			destination->w-=static_cast<Sint16>(dx);
 		}
 		if (dy>0)
 		{
-			source->y+=dy;
-			destination->y+=dy;
+			source->y+=static_cast<Sint16>(dy);
+			destination->y+=static_cast<Sint16>(dy);
 
 			sh-=dy;
-			destination->h-=dy;
+			destination->h-=static_cast<Sint16>(dy);
 		}
 
 		int dwx=(destination->x+destination->w)-(clipping.x+clipping.w);
@@ -126,12 +126,12 @@ namespace GAG
 		if (dwx>0)
 		{
 			sw-=dwx;
-			destination->w-=dwx;
+			destination->w-=static_cast<Sint16>(dwx);
 		}
 		if (dhy>0)
 		{
 			sh-=dhy;
-			destination->h-=dhy;
+			destination->h-=static_cast<Sint16>(dhy);
 		}
 
 		if (sw>0)

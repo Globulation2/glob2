@@ -87,14 +87,14 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	{
 		diff=newr.x-x;
 		w-=diff;
-		src.x+=diff;
+		src.x+=static_cast<Sint16>(diff);
 		x=newr.x;
 	}
 	if (y<newr.y)
 	{
 		diff=newr.y-y;
 		h-=diff;
-		src.y+=diff;
+		src.y+=static_cast<Sint16>(diff);
 		y=newr.y;
 	}
 
@@ -112,12 +112,12 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 	if ((w<=0) || (h<=0))
 		return;
 
-	src.w=w;
-	src.h=h;
-	r.x=x;
-	r.y=y;
-	r.w=w;
-	r.h=h;
+	src.w=static_cast<Sint16>(w);
+	src.h=static_cast<Sint16>(h);
+	r.x=static_cast<Sint16>(x);
+	r.y=static_cast<Sint16>(y);
+	r.w=static_cast<Sint16>(w);
+	r.h=static_cast<Sint16>(h);
 
 	SDL_GetClipRect(dest, &oldr);
 	SDL_SetClipRect(dest, &newr);
@@ -163,9 +163,9 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 
 					GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
 
-					dR = (Uint32)(255*nR);
-					dG = (Uint32)(255*nG);
-					dB = (Uint32)(255*nB);
+					dR = static_cast<Uint8>(255.0f*nR);
+					dG = static_cast<Uint8>(255.0f*nG);
+					dB = static_cast<Uint8>(255.0f*nB);
 
 					*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
 				}

@@ -32,7 +32,7 @@ protected:
 	std::string font;
 	std::vector<std::string> strings;
 	Sint32 nth;
-	Uint32 disp;
+	size_t disp;
 
 	//! Cached variables, do not serialise, reconstructed on paint() call
 	//! Length of the scroll box, this is a cache

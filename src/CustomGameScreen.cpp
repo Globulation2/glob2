@@ -115,8 +115,9 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					mapSize->setText(textTemp);
 					
 					int nbTeam=sessionInfo.numberOfTeam;
+					int i;
 					// set the correct number of colors
-					for (int i=0; i<16; i++)
+					for (i=0; i<16; i++)
 					{
 						color[i]->clearColors();
 						for (int j=0; j<nbTeam; j++)
@@ -124,7 +125,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 						color[i]->setSelectedColor();
 					}
 					// find team for human player
-					for (int i=0; i<nbTeam; i++)
+					for (i=0; i<nbTeam; i++)
 					{
 						if (sessionInfo.teams[i].type==BaseTeam::T_HUMAN)
 						{
@@ -134,7 +135,6 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					}
 					// Fill the others
 					int c=color[0]->getSelectedColor();
-					int i;
 					for (i=1; i<nbTeam; i++)
 					{
 						c=(c+1)%nbTeam;
