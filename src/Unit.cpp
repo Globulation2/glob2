@@ -2286,7 +2286,9 @@ Sint32 Unit::GIDtoTeam(Uint16 gid)
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
+	assert(id>=0);
 	assert(id<1024);
+	assert(team>=0);
 	assert(team<32);
 	return id+team*1024;
 }
