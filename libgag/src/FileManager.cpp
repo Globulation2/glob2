@@ -161,7 +161,7 @@ namespace GAGCore
 				return new FileStreamBackend(fp);
 		}
 	
-		return NULL;
+		return new FileStreamBackend(NULL);
 	}
 	
 	StreamBackend *FileManager::openInputStreamBackend(const char *filename)
@@ -177,7 +177,7 @@ namespace GAGCore
 				return new FileStreamBackend(fp);
 		}
 	
-		return NULL;
+		return new FileStreamBackend(NULL);
 	}
 	
 	SDL_RWops *FileManager::open(const char *filename, const char *mode)
