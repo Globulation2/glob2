@@ -79,10 +79,17 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	}
 	case ORDER_QUITED:
 	{
+		assert(false); // Currently, QuitedOrder has to be used only between NetGame and GameGUI, but not the network.
 		return new QuitedOrder();
+	}
+	case ORDER_DECONNECTED:
+	{
+		assert(false); // Currently, DeconnectedOrder has to be used only between NetGame and GameGUI, but not the network.
+		return new DeconnectedOrder();
 	}
 	case ORDER_NULL:
 	{
+		assert(false); // Currently, NullOrder has to be used only between NetGame and GameGUI, but not the network.
 		return new NullOrder();
 	}
 	case ORDER_TEXT_MESSAGE:
@@ -686,6 +693,13 @@ NullOrder::NullOrder()
 // QuitedOrder's code
 
 QuitedOrder::QuitedOrder()
+:MiscOrder()
+{
+}
+
+// QuitedOrder's code
+
+DeconnectedOrder::DeconnectedOrder()
 :MiscOrder()
 {
 }

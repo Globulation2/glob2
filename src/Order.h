@@ -286,6 +286,7 @@ public:
 	
 };
 
+//! only used as a communication channel between NetGame and GameGUI.
 class QuitedOrder:public MiscOrder
 {
 public:
@@ -297,6 +298,20 @@ public:
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_QUITED; }
 	Sint32 checkSum() { return ORDER_QUITED; }
+};
+
+//! only used as a communication channel between NetGame and GameGUI.
+class DeconnectedOrder:public MiscOrder
+{
+public:
+	DeconnectedOrder();
+	virtual ~DeconnectedOrder(void) { }
+
+	Uint8 *getData(void) { return NULL; }
+	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
+	int getDataLength(void) { return 0; }
+	Uint8 getOrderType(void) { return ORDER_DECONNECTED; }
+	Sint32 checkSum() { return ORDER_DECONNECTED; }
 };
 
 class MessageOrder:public MiscOrder

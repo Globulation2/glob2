@@ -557,7 +557,7 @@ Order *NetGame::getOrder(int playerNumber)
 		Order *order=ordersQueue[playerNumber][executeStep];
 		if (players[playerNumber]->type==Player::P_LOST_DROPPING && order==NULL)
 		{
-			order=new NullOrder();
+			order=new DeconnectedOrder();
 			order->sender=playerNumber;
 			order->inQueue=false;
 			players[playerNumber]->type=Player::P_LOST_FINAL;

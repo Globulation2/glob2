@@ -2168,6 +2168,14 @@ void GameGUI::executeOrder(Order *order)
 			game.executeOrder(order, localPlayer);
 		}
 		break;
+		case ORDER_DECONNECTED :
+		{
+			int qp=order->sender;
+			addMessage(200, 200, 200, globalContainer->texts.getString("[%s has been deconnected of the game]"), game.players[qp]->name);
+			
+			game.executeOrder(order, localPlayer);
+		}
+		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;

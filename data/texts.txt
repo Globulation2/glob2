@@ -196,9 +196,13 @@ Attente de %s
 Waiting for %s
 Warten auf %s
 [%s has left the game]
-%s a quitté la partie
-%s has quited the game
-%s hat des Spiel verlassen
+%s a quitté la partie.
+%s has quited the game.
+%s hat des Spiel verlassen.
+[%s has been deconnected of the game]
+%s s'est fait déconnecté de la partie.
+%s has been deconnected.
+%s
 [load game]
 Charger jeu
 Load Game
