@@ -990,7 +990,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 	fprintf(logFile, "MultiplayersHost::treatData (%d)\n", data[0]);
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
-		fprintf(logFile, "Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
+		printf("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
 	}
 	if (hostGlobalState<HGS_GAME_START_SENDED)
