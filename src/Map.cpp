@@ -3131,7 +3131,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		bool found=false;
 		bool gradientUsable=false;
 		
-		if (currentg==255 && !building->dirtyLocalGradient[canSwim])
+		if (!building->dirtyLocalGradient[canSwim] && currentg==255)
 		{
 			*dx=0;
 			*dy=0;
