@@ -11,3 +11,4 @@ data/texts.ro.txt
 data/texts.ru.txt
 data/texts.sr.txt
 data/texts.se.txt
+data/texts.si.txt
