@@ -719,7 +719,7 @@ void Game::wonStep(void)
 			if ((j!=i) && (!( ((teams[i]->me) & (teams[j]->allies)) /*&& ((teams[j]->me) & (teams[i]->allies))*/ )) && (teams[j]->isAlive))
 				isOtherAlive=true;
 		}
-		teams[i]->hasWon=!isOtherAlive;
+		teams[i]->hasWon|=!isOtherAlive;
 		isGameEnded|=teams[i]->hasWon;
 		totalPrestige+=teams[i]->prestige;
 	}
