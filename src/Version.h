@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 24
+#define VERSION_MINOR 25
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -38,5 +38,6 @@
 // version 22 added MOV_RANDOM_FLY to support exiting of forbidden flags.
 // version 23 added support for the exchange building.
 // version 24 added Building::bullets
+// version 25 added Multiple AI support
 
 #endif

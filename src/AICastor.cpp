@@ -17,48 +17,54 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "AICastor.h"
+#include "Player.h"
+#include "Utilities.h"
+#include "Game.h"
+#include "GlobalContainer.h"
 
-#ifndef __AI_H
-#define __AI_H
 
-#include "Header.h"
-
-class Player;
-class Order;
-class AIImplementation;
-
-class AI
+AICastor::AICastor(Player *player)
 {
-public:
-	enum ImplementitionID
-	{
-		NONE=0,
-		NUMBI=1,
-		CASTOR=2,
-	};
-	static const ImplementitionID toggleAI = CASTOR;
-	
-public:
-	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
-	AI(ImplementitionID implementitionID, Player *player);
-	AI(SDL_RWops *stream, Player *player);
-	~AI();
-	void init(ImplementitionID ImplementitionID, Player *player);
-	
-	AIImplementation *aiImplementation;
-	ImplementitionID implementitionID;
-	
-	Player *player;
-	
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
-	
-	Order *getOrder(bool paused);
-};
+	init(player);
+}
+
+AICastor::AICastor(SDL_RWops *stream, Player *player)
+{
+	init(player);
+	load(stream);
+}
+
+void AICastor::init(Player *player)
+{
+	assert(player);
+
+	this->player=player;
+	this->team=player->team;
+	this->game=player->game;
+	this->map=player->map;
+
+	assert(this->team);
+	assert(this->game);
+	assert(this->map);
+}
+
+AICastor::~AICastor()
+{
+}
+
+bool AICastor::load(SDL_RWops *stream)
+{
+	assert(game);
+	return true;
+}
+
+void AICastor::save(SDL_RWops *stream)
+{
+}
 
 
-
-#endif
-
- 
-
+Order *AICastor::getOrder(void)
+{
+	return new NullOrder();
+}

@@ -34,15 +34,19 @@ public:
 		P_NONE=0, // NOTE : we don't need any more because null player are not created
 		P_LOST_DROPPING=1, // Player will be droped in any cases, but we still have to exchange orders
 		P_LOST_FINAL=2, // Player is no longer considered, may be later changed to P_AI. All orders are NULLs.
-		P_AI=3,
+		/*P_AI=3,
 		P_IP=4,
-		P_LOCAL=5
+		P_LOCAL=5*/
+		P_IP=3,
+		P_LOCAL=4,
+		P_AI=5,
+		// Note : P_AI + n is AI type n
 	};
 
 	enum {MAX_NAME_LENGTH = 32};
-	
+
 	PlayerType type;
-	
+
 	Sint32 number;
 	Uint32 numberMask;
 	char name[MAX_NAME_LENGTH];
@@ -155,7 +159,7 @@ public:
 	void setTeam(Team *team);
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
 	
-	void makeItAI();
+	void makeItAI(AI::ImplementitionID aiType);
 	
 	bool load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor);
 	void save(SDL_RWops *stream);
@@ -175,4 +179,3 @@ public:
 };
 
 #endif
- 
