@@ -38,6 +38,7 @@
 	#include "SDL_endian.h"
 	#include <Assert.h>
 	#include <StdLib.h>
+        #import <Cocoa/Cocoa.h>
 #else // Unix ??? autre ??? TODO a preciser...
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_endian.h>

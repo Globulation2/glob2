@@ -21,14 +21,15 @@ Types associations with int numbers.
 11	wait(time in seconds): time to wait before exectuting the next command
 12	timer(time in seconds): same thing as wait but is drawn on the screen
 13	wait(condition)
+        condition:  untit_or_building number_of_player condition number 
 21	show(string): diplays a string on the screen until the next command is finished
-3	player(number).order: gives orders to players, orders are
-1   -activate: activates the given player (on by default)
-2   -deactivate: deactivate the given player
-3   -friend: makes a player become your friend
-4   -ennemy: makes a player become your ennemy (on by default)
-5   -dead: return true if the player is dead
-6   -alive: returns true if the player is alive
+1   activate: activates the given player (on by default)
+2   deactivate: deactivate the given player
+3   friend: makes a player become your friend
+4   ennemy: makes a player become your ennemy (on by default)
+
+5   dead number_of_player: return true if the player is dead
+6   alive number_of_player: returns true if the player is alive
 4	flag(number).order: give orders to flags
 1   -you: returns true if one of your globule reaches the radius of the given flag
 2   -noenemy: returns true if no enemy is in the radius of the given flag
@@ -55,145 +56,190 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 
 Story::Story(Mapscript *mapscript)
 {
-	conditionWaiter = false;
+	lineSelector = 0;
 	internTimer=0;
 	hasWon=false;
 	hasLost=false;
 	this->mapscript=mapscript;
 }
 
+Story::~Story()
+{
+	
+}
+
+int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer)
+{
+	switch(nameOfVariable.type)
+	{
+		case(Token::S_WORKER):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[0];
+		case(Token::S_EXPLORER):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[1];
+		case(Token::S_WARRIOR):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[2];
+		case(Token::S_SWARM_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[0];
+		case(Token::S_FOOD_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[1];
+		case(Token::S_HEALTH_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[2];
+		case(Token::S_WALKSPEED_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[3];
+		case(Token::S_FLYSPEED_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[4];
+		case(Token::S_ATTACK_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[5];
+		case(Token::S_SCIENCE_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[6];
+		case(Token::S_DEFENCE_B):
+			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerType[7]; 
+		default:
+			return 0;
+	}
+}
+
+
+bool Story::conditionTester()
+{
+	switch (line[lineSelector+3].type)
+	{
+		case (Token::S_HIGHER):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) > line[lineSelector+4].value);
+		}
+		case (Token::S_LOWER):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) < line[lineSelector+4].value);
+		}
+		case (Token::S_EQUAL):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value) == line[lineSelector+4].value);
+		}
+		default:
+			return false;		
+	}
+}
+
 bool Story::testCondition()
 {
-	/*TODO for Steph, là je peux que te faire la structure de base si tu veux,
-	d'ailleurs pour les test ( wait(x > y) ) il faudrai rajouter tous les noms de variables à Token non ?
-	*/
 
 	if (line.size())
-		switch (line.front().type)
+		switch (line[lineSelector].type)
 		{
 			case (Token::S_SHOW):
 			{
-				line.pop_front();
-				cout<< line.front().msg;
+                //TODO: STEPH: integrate into the GUI show while isTextShown is true
+				mapscript->isTextShown = true;
+				lineSelector++;
+				mapscript->textShown = line[lineSelector].msg;
+				cout << line[lineSelector].msg << endl;
 				return true;
 			}
 			
 			case (Token::S_WIN):
 			{
 				hasWon=true;
-				return true;
+				return false;
 			}
 			
 			case (Token::S_LOOSE):
 			{
 				hasLost=true;
-				return true;
+				return false;
 			}
 			
 			case (Token::S_TIMER):
 			{
-				line.pop_front();
-				mapscript->mainTimer=line.front().value;
+				lineSelector ++;
+				mapscript->mainTimer=line[lineSelector].value;
 				return true;
 			}
 			
 			case (Token::S_WAIT):
 			{
-				line.pop_front();
-				if (line.front().type==Token::INT)
+				switch (line[lineSelector+1].type)
 				{
-					//TODO remplace 20 with the real tpf
-					internTimer=line.front().value*20;
-					//We don't pop the value, so we know we have to wait
+					case(Token::INT):
+					{
+						lineSelector++;
+						internTimer=line[lineSelector].value;
+					}
+					case (Token::S_DEAD):
+					{
+						if (!mapscript->game->teams[line[lineSelector+2].value]->isAlive)
+						{
+							lineSelector+=2;
+							return true;
+						}
+						else
+							return false;
+					}
+					case (Token::S_ALIVE):
+					{
+					if (mapscript->game->teams[line[lineSelector+2].value]->isAlive)
+						{
+							lineSelector+=2;
+							return true;
+						}
+						else
+							return false;
+					}
+					case (Token::S_FLAG):
+					{
+						// TODO: STEPH: Need flags
+						lineSelector +=3;
+						return true;
+					}
+					default: //Test conditions
+					{
+						if (conditionTester())
+						{
+							lineSelector +=4;
+							mapscript->isTextShown=false;
+							return true;
+						}
+						else
+							return false;
+					}
 				}
-				else //Test conditions
-				{
-					// call testTCondition
-					// if (testCondition)
-					// 		line.pop_front();
-					// else
-					// 		line.push_front(S_WAIT);
-					//Extract the right data
-					if (line.front().type==Token::INT)
-					{
-						numberForCondition = line.front().value;
-						line.pop_front();
-						condition = line.front();
-						line.pop_front();
-						nameOfVariable = line.front();
-						line.pop_front();
-					}
-					else if ((line.front().type==Token::S_PLAYER) |(line.front().type==Token::S_FLAG))
-					{
-						nameOfVariable = line.front();
-						line.pop_front();
-						numberForCondition = line.front().value;
-						line.pop_front();
-						condition = line.front();
-						line.pop_front();
-					}
-					else
-					{
-						nameOfVariable = line.front();
-						line.pop_front();
-						condition = line.front();
-						line.pop_front();
-						numberForCondition = line.front().value;
-						line.pop_front();
-					}
-					Token conditionWaiter;
-					conditionWaiter.type=Token::W_CONDITION;
-					line.push_front(conditionWaiter);
-				}
-				return false;
 			}
-			
+		
 			case (Token::INT):
 			{
-					//TODO verify that step is actually called once every tpf
-					internTimer-=1;
-					if (internTimer==0) return true;
-					else return false;
+				internTimer--;
+				if (internTimer==0)
+					return true;
+				else
+					return false;
 			}
-			
-			case (Token::S_PLAYER):
+			//Here the only possibilities are: friend,activate,deactivate,enemy
+			//TODO make the right action ! HELP STEPH !!!
+			case (Token::S_FRIEND):
 			{
-				//Here the only possibilities are: friend,activate,deactivate,enemy
-				line.pop_front();
-				int witchPlayer=line.front().value;
-				line.pop_front();
-				switch (line.front().type)
-				{
-					//TODO make the right action ! HELP STEPH !!!
-					case (Token::S_FRIEND):
-					{
-
-					}
-					case (Token::S_ENEMY):
-					{
-
-					}
-					case (Token::S_ACTIVATE):
-					{
-
-					}
-					case (Token::S_DEACTIVATE):
-					{
-
-					}
-					default:
-							return true;
-				}
+				lineSelector +=1;
+				return true;
+			}
+			case (Token::S_ENEMY):
+			{
+				lineSelector +=1;
+				return true;
+			}
+			case (Token::S_ACTIVATE):
+			{
+				lineSelector +=1;
+				return true;
+			}
+			case (Token::S_DEACTIVATE):
+			{
+				lineSelector +=1;
 				return true;
 			}
 			
-			case (Token::W_CONDITION):
-			{
-					//Test all possible combination of possibilities !!!
-			}
-			
+			case (Token::S_HIDE):
+				mapscript->isTextShown = false;
 			default:
-			return false;
+				return false;
 		}
 
 	return false;
@@ -203,7 +249,7 @@ void Story::step()
 {
 	if (testCondition())
 	{
-		line.pop_front();
+		lineSelector ++;
 	}
 }
 
@@ -277,19 +323,12 @@ void Aquisition::nextToken()
 				break;
 			}
 		}
-
-		mot.push_back((char)c);
-	}
-
-	if (c==EOF)
-	{
-		token.type=Token::S_EOF;
-		return;
+		mot+= (char)c;
 	}
 
 	if (mot.size()>0)
 	{
-		if ((mot[0]>0) && (mot[0]<9))
+		if ((mot[0]>='0') && (mot[0]<='9'))
 		{
 			token.type = Token::INT;
 			token.value = atoi(mot.c_str());
@@ -299,7 +338,10 @@ void Aquisition::nextToken()
 			string::size_type start=mot.find_first_of("\"");
 			string::size_type end=mot.find_last_of("\"");
 			if ((start!=string::npos) && (end!=string::npos))
+			{
+				token.type = Token::STRING;
 				token.msg = mot.substr(start+1, end-start-1);
+			}
 			else
 				token.type = Token::NIL;
 		}
@@ -315,13 +357,9 @@ void Aquisition::nextToken()
 		{
 			token.type=Token::S_HIGHER;
 		}
-		else if (mot=="=")
+		else if (mot=="<")
 		{
 			token.type=Token::S_LOWER;
-		}
-		else if (mot=="player")
-		{
-			token.type=Token::S_PLAYER;
 		}
 		else if (mot=="timer")
 		{
@@ -379,11 +417,61 @@ void Aquisition::nextToken()
 		{
 			token.type=Token::S_STORY;
 		}
+        else if (mot=="nbWorker")
+		{
+			token.type=Token::S_WORKER;
+		}
+		else if (mot=="nbExplorer")
+		{
+			token.type=Token::S_EXPLORER;
+		}
+		else if (mot=="nbWarrior")
+		{
+			token.type=Token::S_WARRIOR;
+		}
+		else if (mot=="nbSwarmBuilding")
+		{
+			token.type=Token::S_SWARM_B;
+		}
+		else if (mot=="nbFoodBuilding")
+		{
+			token.type=Token::S_FOOD_B;
+		}
+		else if (mot=="nbHealthBuilding")
+		{
+			token.type=Token::S_HEALTH_B;
+		}
+		else if (mot=="nbWalkBuilding")
+		{
+			token.type=Token::S_WALKSPEED_B;
+		}
+		else if (mot=="nbFlyBuilding")
+		{
+			token.type=Token::S_FLYSPEED_B;
+		}
+		else if (mot=="nbAttackBuilding")
+		{
+			token.type=Token::S_ATTACK_B;
+		}
+		else if (mot=="nbAcienceBuilding")
+		{
+			token.type=Token::S_SCIENCE_B;
+		}
+		else if (mot == "nbDefenceBuilding")
+		{
+			token.type=Token::S_DEFENCE_B;
+		}
+		else if (mot == "hide")
+		{
+			token.type=Token::S_HIDE;
+		}
 		else
 		{
 			token.type=Token::NIL;
 		}
 	}
+	else
+		token.type = Token::NIL;
 }
 
 // Mapscript creation
@@ -398,7 +486,8 @@ Mapscript::~Mapscript(void)
 
 void Mapscript::reset(void)
 {
-	mainTimer=-1;
+	isTextShown = false;
+	mainTimer=0;
 	game=NULL;
 	stories.clear();
 }
@@ -406,30 +495,23 @@ void Mapscript::reset(void)
 bool Mapscript::testMainTimer()
 { 
 	//TODO afficher le main timer
-	mainTimer-=1;
-	if (mainTimer==0)
-		return true;
-	else
-		return false;
+	if (mainTimer)
+		mainTimer--;
+	return (mainTimer <= 0);
 }
+
 void Mapscript::step()
 {
-	if(testMainTimer())
+	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		//TODO perdu ou gagné ?
-	}
-	else
-	{
-		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
-		{
-			(*it).step();
-		}
+		(*it).step();
 	}
 }
 
 
-bool Mapscript::loadScript(const char *filename, Game *game)
+ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
+	ErrorReport er;
 	if (donnees.newFile(filename))
 	{
 		reset();
@@ -445,15 +527,18 @@ bool Mapscript::loadScript(const char *filename, Game *game)
 				donnees.nextToken();
 			}
 			stories.push_back(thisone);
-			printf("SGSL : story loaded, %d tokens\n", thisone.line.size());
+			printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
+			for (unsigned  i=0; i<thisone.line.size(); i++)
+				cout << "Token type " << thisone.line[i].type << endl;
 			donnees.nextToken();
 		}
-		return true;
+		er.type=ErrorReport::ET_OK;
 	}
 	else
 	{
-		return false;
+		er.type=ErrorReport::ET_UNKNOWN;
 	}
+	return er;
 }
 
 bool Mapscript::hasTeamWon(unsigned teamNumber)
@@ -471,10 +556,7 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 			}
 		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)

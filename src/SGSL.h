@@ -28,34 +28,61 @@ struct Token
 {
 	enum TokenType
 	{
-		NIL,
-		S_EQUAL,
-		S_HIGHER,
-		S_LOWER,
-		S_EOF,
-		S_WAIT,
-		S_TIMER,
-		S_SHOW,
-		S_PLAYER,
-		S_ACTIVATE,
-		S_DEACTIVATE,
-		S_FRIEND,
-		S_ENEMY,
-		S_DEAD,
-		S_ALIVE,
-		S_FLAG,
-		S_YOU,
-		S_NOENEMY,
-		S_WIN,
-		S_LOOSE,
-		S_STORY,
-		W_CONDITION,
-		INT,
-		STRING
+		NIL=0,
+		INT=1,
+		STRING=2,
+		//Units
+		S_WORKER=101,
+		S_EXPLORER=102,
+		S_WARRIOR=103,
+		//Buildings
+		S_SWARM_B=201,
+		S_FOOD_B=202,
+		S_HEALTH_B=203,
+		S_WALKSPEED_B=204,
+		S_FLYSPEED_B=205,
+		S_ATTACK_B=206,
+		S_SCIENCE_B=207,
+		S_DEFENCE_B=208,
+		//SGSL
+		S_EQUAL=301,
+		S_HIGHER=302,
+		S_LOWER=303,
+		S_EOF=304,
+		S_WAIT=305,
+		S_TIMER=306,
+		S_SHOW=307,
+		S_ACTIVATE=308,
+		S_DEACTIVATE=309,
+		S_FRIEND=310,
+		S_ENEMY=311,
+		S_DEAD=312,
+		S_ALIVE=313,
+		S_FLAG=314,
+		S_YOU=315,
+		S_NOENEMY=316,
+		S_WIN=317,
+		S_LOOSE=318,
+		S_STORY=319,
+		S_HIDE=320
 	} type;
 
 	int value;
 	std::string msg;
+};
+
+struct ErrorReport
+{
+	ErrorReport() { line=0; col=0; }
+	enum ErrorType
+	{
+		ET_OK,
+		ET_SYNTAX_ERROR,
+		ET_INVALID_PLAYER,
+		ET_UNKNOWN,
+	} type;
+	unsigned line;
+	unsigned col;
 };
 
 class Aquisition
@@ -80,7 +107,7 @@ class Story
 {
 public:
 	Story(Mapscript *mapscript);
-	virtual ~Story() { }
+	virtual ~Story();
 
 public:
 	void step();
@@ -88,13 +115,12 @@ public:
 	bool hasWon, hasLost;
 	
 private:
-	Mapscript *mapscript;
-	Token nameOfVariable;
-	int numberForCondition;
-	Token condition;
-	bool conditionWaiter;
-	int internTimer;
+	bool conditionTester();
 	bool testCondition();
+	int valueOfVariable(Token nameOfVariable,int numberOfPlayer);
+	int lineSelector;
+	Mapscript *mapscript;
+	int internTimer;
 };
 
 class Game;
@@ -106,10 +132,12 @@ public:
 	~Mapscript();
 	
 public:
-	bool loadScript(const char *filename, Game *game);
+	ErrorReport loadScript(const char *filename, Game *game);
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
+	bool isTextShown;
+	string textShown;
 	
 private:
 	friend class Story;
