@@ -1,6 +1,6 @@
 AC_INIT(src/Game.cpp)
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(glob2, 0.8.2)
+AM_INIT_AUTOMAKE(glob2, 0.8.4)
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
@@ -81,5 +81,6 @@ maps/Makefile
 libgag/Makefile
 libgag/include/Makefile
 libgag/src/Makefile
+gnupg/Makefile
 ] )
 
