@@ -17,22 +17,41 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ENVIRONMENT_H
-#define __ENVIRONMENT_H
+#ifndef __TOOLKIT_H
+#define __TOOLKIT_H
 
 #include "FileManager.h"
+#include "GraphicContext.h"
 
-namespace GAG
+class Toolkit
 {
-	//! The virtual file system
-	extern FileManager *fileManager;
+public:
+	Toolkit();
 	
 	//! Initialize gag, must be called before any call to GAG
-	void init(const char *gameName);
+	static void init(const char *gameName);
 
 	//! Close gag, must be called after any call to GAG
-	void close(void);
-}
+	static void close(void);
+
+	static FileManager *getFileManager(void) { return fileManager; }
+	static Sprite *getSprite(const char *name);
+	static void releaseSprite(const char *name);
+	static Font *getFont(const char *name);
+	static void releaseFont(const char *name);
+
+protected:
+	friend class SDLGraphicContext;
+	friend class GLGraphicContext;
+	typedef std::map<std::string, Sprite *> SpriteMap;
+	typedef std::map<std::string, Font *> FontMap;
+	//! All loaded sprites
+	static SpriteMap spriteMap;
+	//! All loaded fonts
+	static FontMap fontMap;
+	//! The virtual file system
+	static FileManager *fileManager;
+};
 
 #endif
  
