@@ -1578,11 +1578,11 @@ Speichern
 Uložit
 Zapisz
 [auto save]
-games/Sauvegarde automatique.game
-games/Auto save.game
-games/autosave.game
-games/Auto save.game
-games/Auto save.game
+Sauvegarde automatique
+Auto save
+autosave
+Auto save
+Auto save
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached

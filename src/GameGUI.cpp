@@ -288,18 +288,18 @@ void GameGUI::synchroneStep(void)
 	
 	if ((game.stepCounter&255)==79)
 	{
-		const char *locationName=globalContainer->texts.getString("[auto save]");
-		SDL_RWops *stream=globalContainer->fileManager->open(locationName, "wb");
+		const char *name=globalContainer->texts.getString("[auto save]");
+		const char *fileName=glob2NameToFilename("games", name, "game");
+		SDL_RWops *stream=globalContainer->fileManager->open(fileName, "wb");
 		if (stream)
 		{
-			char *name = strchr(locationName, '/');
-			assert(name);
-			name++;
+
 			save(stream, name);
 			SDL_RWclose(stream);
 		}
 		else
 			printf("GameGUI::synchroneStep: Can't auto save map\n");
+		delete[](fileName);
 	}
 }
 
