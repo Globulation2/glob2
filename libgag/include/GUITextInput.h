@@ -40,7 +40,6 @@ protected:
 	int cursorScreenPos;
 
 public:
-	TextInput();
 	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, unsigned maxLength=0);
 	virtual ~TextInput() { }
 
@@ -49,7 +48,7 @@ public:
 	virtual void paint(void);
 	void setText(const char *newText);
 	const char *getText(void) { return text.c_str(); }
-	void deactivate(void) { activated=false; }
+	void deactivate(void) { activated=false; repaint(); }
 
 protected:
 	virtual void repaint(void);

@@ -139,7 +139,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			}
 			continue;
 		}
-		if (strcmp(argv[i], "-v")==0 || strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
+		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
 		{
 			printf("\nGlobulation 2 - %s\n\n", VERSION);
 			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
@@ -229,8 +229,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
+			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
-			printf("-v\tprint the version adn exit\n");
+			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}
 
