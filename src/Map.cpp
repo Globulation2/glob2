@@ -4087,7 +4087,7 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	}
 	// if solution is found, copy it in dx, dy and returns true.
 	// if no solution is found, which mean that either we are in gradient, there is no gradient, every direction is busy, return false.
-	if ((maxValue > 0) && (maxValue < 255))
+	if ((maxValue > 1) && (maxValue < 255))
 	{
 		*dx = tabClose[maxd][0];
 		*dy = tabClose[maxd][1];
