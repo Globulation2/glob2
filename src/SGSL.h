@@ -123,6 +123,9 @@ struct Token
 
 	//! Constructor, set logic default values
 	Token() { type=NIL; value=0; }
+	
+	//! Constructor, create a token of type t
+	Token(TokenType t) { type=t; value=0; }
 
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
