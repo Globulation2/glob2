@@ -20,9 +20,12 @@
 #ifndef __STREAMBACKEND_H
 #define __STREAMBACKEND_H
 
-// For U/SintNN
 #include <Types.h>
+#include <string>
 #include <stdio.h>
+#ifdef putc
+#undef putc
+#endif
 
 namespace GAGCore
 {
@@ -64,6 +67,29 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { fseek(fp, displacement, SEEK_CUR); }
 		virtual size_t getPosition(void) { return ftell(fp); }
 		virtual bool isEndOfStream(void) { return feof(fp) != 0; }
+	};
+	
+	//! A stream backend that lies in memory
+	class MemoryStreamBackend : public StreamBackend
+	{
+	private:
+		std::string datas;
+		size_t index;
+		
+	public:
+		MemoryStreamBackend(const void *data = NULL, const size_t size = 0);
+		virtual ~MemoryStreamBackend() { }
+		
+		virtual void write(const void *data, const size_t size);
+		virtual void flush(void) { }
+		virtual void read(void *data, size_t size);
+		virtual void putc(int c);
+		virtual int getc(void);
+		virtual void seekFromStart(int displacement);
+		virtual void seekFromEnd(int displacement);
+		virtual void seekRelative(int displacement);
+		virtual size_t getPosition(void);
+		virtual bool isEndOfStream(void);
 	};
 }
 

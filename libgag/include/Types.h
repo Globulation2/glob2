@@ -20,8 +20,6 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
-#include <stdlib.h>	// For NULL...
-
 #ifndef DX9_BACKEND
 #include <SDL.h>
 #endif
