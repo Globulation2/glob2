@@ -98,7 +98,7 @@ int Engine::initCampain(void)
 	return NO_ERROR;
 }
 
-void Engine::startMultiplayer(SessionScreen *screen)
+void Engine::startMultiplayer(SessionConnection *screen)
 {
 	int p=screen->myPlayerNumber;
 
@@ -161,7 +161,7 @@ int Engine::initMutiplayerJoin(void)
 
 	if (multiplayersJoinScreen.execute(globalContainer->gfx, 20)==MultiplayersJoinScreen::STARTED)
 	{
-		startMultiplayer(&multiplayersJoinScreen);
+		startMultiplayer(&multiplayersJoinScreen.multiplayersJoin);
 
 		return NO_ERROR;
 	}

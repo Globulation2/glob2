@@ -130,9 +130,9 @@ int MultiplayersOfferScreen::menu(void)
 
 
 
-// SessionScreen pannel uniformisation part !!
+// SessionConnection pannel uniformisation part !!
 
-SessionScreen::SessionScreen()
+SessionConnection::SessionConnection()
 {
 	validSessionInfo=false;
 	{
@@ -147,11 +147,11 @@ SessionScreen::SessionScreen()
 	myPlayerNumber=-1;
 }
 
-SessionScreen::~SessionScreen()
+SessionConnection::~SessionConnection()
 {
 
 }
-
+/*
 void SessionScreen::paintSessionInfo(int state)
 {
 	//printf("sing map, s=%d\n", state);
@@ -174,11 +174,7 @@ void SessionScreen::paintSessionInfo(int state)
 				sessionInfo.players[p].number, sessionInfo.players[p].teamNumber, sessionInfo.players[p].netState,
 				sessionInfo.players[p].ip.host, sessionInfo.players[p].name, sessionInfo.players[p].netTOTL, crossPacketRecieved[p]);
 
-			/*gfxCtx->drawString(70, 0+(14*p), font, "type=%d, number=%d, numberMask=%d, teamNumber=%d, teamNumberMask=%d,
-				ip=%x, name=%s",
-				sessionInfo.players[p].type, sessionInfo.players[p].number, sessionInfo.players[p].numberMask, sessionInfo.players[p].teamNumber, sessionInfo.players[p].teamNumberMask,
-				sessionInfo.players[p].ip.host, sessionInfo.players[p].name);
-			*/
+
 		}
 	}
 
@@ -190,18 +186,14 @@ void SessionScreen::paintSessionInfo(int state)
 			gfxCtx->drawString(10, 480-(14*(t+1)), globalContainer->littleFontGreen, "team %d", t);
 			gfxCtx->drawString(70, 480-(14*(t+1)), globalContainer->littleFontGreen, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, %d, %d, playersMask=%d",
 				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].colorR, sessionInfo.team[t].colorG, sessionInfo.team[t].colorB, sessionInfo.team[t].playersMask);
-
-			/*gfxCtx->drawString(70, 480-(14*(t+1)), font, "type=%d, teamNumber=%d, numberOfPlayer=%d, color=%d, playersMask=%d",
-				sessionInfo.team[t].type, sessionInfo.team[t].teamNumber, sessionInfo.team[t].numberOfPlayer, sessionInfo.team[t].color, sessionInfo.team[t].playersMask);
-			*/
 		}
 	}
-}
+}*/
 
 
-//MultiplayersCrossConnectableScreen unification part !!
+//MultiplayersCrossConnectable unification part !!
 
-void MultiplayersCrossConnectableScreen::tryCrossConnections(void)
+void MultiplayersCrossConnectable::tryCrossConnections(void)
 {
 	bool sucess=true;
 	char data[8];
@@ -249,7 +241,6 @@ void MultiplayersCrossConnectableScreen::tryCrossConnections(void)
 
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
-:SessionScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL);
@@ -269,6 +260,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	addWidget(fileList);
 
 	firstDraw=true;
+	validSessionInfo=false;
 
 	globalContainer->gfx->setClipRect();
 }

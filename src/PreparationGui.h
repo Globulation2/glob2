@@ -70,20 +70,18 @@ public:
 
 class TextInput;
 
-class SessionScreen:public Screen
+class SessionConnection
 {
 protected:
 	enum {MAX_PACKET_SIZE=4000};
 public:
-	SessionScreen();
-	virtual ~SessionScreen();
-protected:
+	SessionConnection();
+	virtual ~SessionConnection();
 	bool validSessionInfo;
 	//Font *font;
 	int crossPacketRecieved[32];
 	int startGameTimeCounter;
 protected:
-	void paintSessionInfo(int state);
 	enum {hostiphost=0};
 	enum {hostipport=0};
 public:
@@ -96,7 +94,7 @@ public:
 
 };
 
-class MultiplayersChooseMapScreen:public SessionScreen
+class MultiplayersChooseMapScreen:public Screen
 {
 public:
 	enum
@@ -104,12 +102,14 @@ public:
 		OK = 1,
 		CANCEL = 2
 	};
+	SessionInfo sessionInfo;
 
 private:
 	Button *ok, *cancel;
 	List *fileList;
 	MapPreview *mapPreview;
 	bool firstDraw;
+	bool validSessionInfo;
 
 public:
 	MultiplayersChooseMapScreen();
@@ -119,11 +119,11 @@ public:
 };
 
 
-class MultiplayersCrossConnectableScreen:public SessionScreen
+class MultiplayersCrossConnectable:public SessionConnection
 {
 public:
-	MultiplayersCrossConnectableScreen():SessionScreen() { }
-	virtual ~MultiplayersCrossConnectableScreen(){};
+	MultiplayersCrossConnectable():SessionConnection() { }
+	virtual ~MultiplayersCrossConnectable() { }
 	void tryCrossConnections(void);
 public:
 	IPaddress serverIP;

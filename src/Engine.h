@@ -33,11 +33,11 @@ public:
 	Engine() { }
 	int init(void);
 	int initCampain(void);
-	void startMultiplayer(SessionScreen *screen);
+	void startMultiplayer(SessionConnection *screen);
 	int initMutiplayerHost(void);
 	int initMutiplayerJoin(void);
 	int run(void);
-	
+
 	enum EngineError
 	{
 		NO_ERROR=1,

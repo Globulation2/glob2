@@ -85,6 +85,8 @@ MultiplayersHostScreen.h \
 MultiplayersHostScreen.cpp \
 MultiplayersJoinScreen.h \
 MultiplayersJoinScreen.cpp \
+MultiplayersJoin.h \
+MultiplayersJoin.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp
