@@ -19,7 +19,6 @@
 */
 
 #include "Player.h"
-#include "SDL_net.h"
 #include "NetConsts.h"
 #include "GlobalContainer.h"
 
@@ -79,13 +78,13 @@ void BasePlayer::close(void)
 	if (destroyNet)
 	{
 		unbind();
-		if (socket)
+		/*if (socket)
 		{
 			SDLNet_UDP_Close(socket);
 			printf("Socket closed to player %d.\n", number);
 		}
 		socket=NULL;
-		channel=-1;
+		channel=-1;zzz*/
 		destroyNet=false;
 	}
 }
@@ -224,7 +223,7 @@ void BasePlayer::printip(char s[32])
 	snprintf(s, 32, "%d.%d.%d.%d : %d", i24, i16, i8, i0, netPort);
 }
 
-bool BasePlayer::bind()
+/*bool BasePlayer::bind()
 {
 	if (socket==NULL)
 	{
@@ -254,6 +253,43 @@ bool BasePlayer::bind()
 		printf("failed to bind socket to player %d.\n", number);		
 		return false;
 	}
+}*/
+
+bool BasePlayer::bind(UDPsocket socket, int channel)
+{
+	this->socket=socket;
+	
+	assert(socket);
+	
+	if (socket==NULL)
+	{
+		socket=SDLNet_UDP_Open(ANY_PORT);
+	
+		if (socket!=NULL)
+			printf("Socket opened at port to player %d.\n", number);
+		else
+			printf("failed to open a socket to player %d.\n", number);
+	}
+	
+	if ((socket==NULL) || (ip.host==0))
+	{
+		printf("no socket, or no ip to bind socket to player %d\n", number);
+		return false;
+	}
+		
+	channel=SDLNet_UDP_Bind(socket, channel, &ip);
+	this->channel=channel;
+			
+	if (channel != -1)
+	{
+		printf("suceeded to bind socket to player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		return true;			
+	}
+	else
+	{
+		printf("failed to bind socket to player %d.\n", number);		
+		return false;
+	}
 }
 
 void BasePlayer::unbind()
@@ -275,16 +311,17 @@ bool BasePlayer::send(char *data, int size)
 	packet->len=size;
 			
 	memcpy((char *)packet->data, data, size);
+	packet->address=ip;
 	
 	bool sucess;
 	//if (abs(rand()%100)<70)
-	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
 	//else
 	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
-	//if (sucess)
-	//	printf("suceeded to send packet to player %d.\n", number);
-	//else
-	//	printf("failed to send packet to player %d. (%x, %d)\n", number, ip.host, ip.port);
+	if (sucess)
+		printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
+	else
+		printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
 			
 	SDLNet_FreePacket(packet);
 	

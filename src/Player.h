@@ -25,7 +25,6 @@
 #include "AI.h"
 #include "Team.h"
 #include <queue>
-#include "SDL_net.h"
 
 class BasePlayer: public Order
 {
@@ -118,7 +117,7 @@ public:
 	void setip(IPaddress ip);
 	void BasePlayer::printip(char s[32]);
 	bool sameip(IPaddress ip);
-	bool bind();
+	bool bind(UDPsocket socket, int channel);
 	void unbind();
 	
 	bool send(char *data, int size);

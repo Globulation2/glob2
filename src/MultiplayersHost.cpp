@@ -312,7 +312,8 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		}
 	}
 
-	if (!sessionInfo.players[p].bind())
+	int freeChannel=getFreeChannel();
+	if (!sessionInfo.players[p].bind(socket, freeChannel))
 	{
 		printf("this ip(%x:%d) is not bindable\n", ip.host, ip.host);
 		return;

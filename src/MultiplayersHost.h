@@ -49,9 +49,12 @@ public:
 
 	HostGlobalState hostGlobalState;
 
+
 public:
 	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG);
 	virtual ~MultiplayersHost();
+
+public:
 	void initHostGlobalState(void);
 	void stepHostGlobalState(void);
 	void removePlayer(int p);

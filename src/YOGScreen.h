@@ -23,7 +23,6 @@
 
 #include "MultiplayersJoin.h"
 #include "GAG.h"
-#include <SDL_net.h>
 #include <vector>
 
 class YOGScreen:public Screen

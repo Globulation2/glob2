@@ -661,7 +661,8 @@ bool MultiplayersJoin::send(const int v)
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	if (SDLNet_UDP_Send(socket, channel, packet)==1)
+	packet->address=serverIP;
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
 		printf("suceeded to send packet v=%d\n", v);
 		//printf("packet->channel=%d\n", packet->channel);
@@ -674,7 +675,7 @@ bool MultiplayersJoin::send(const int v)
 	}
 	else
 	{
-		printf("failed to send packet (%d)\n", v);
+		printf("failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		return false;
 	}
 
@@ -698,7 +699,8 @@ bool MultiplayersJoin::send(const int u, const int v)
 	packet->data[5]=0;
 	packet->data[6]=0;
 	packet->data[7]=0;
-	if (SDLNet_UDP_Send(socket, channel, packet)==1)
+	packet->address=serverIP;
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
 		printf("suceeded to send packet v=%d\n", v);
 		//printf("packet->channel=%d\n", packet->channel);
@@ -711,7 +713,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 	}
 	else
 	{
-		printf("failed to send packet (%d)\n", v);
+		printf("failed to send packet (v=%d) (channel=%d)\n", v, channel);
 		return false;
 	}
 
@@ -752,7 +754,7 @@ bool MultiplayersJoin::tryConnection()
 
 	if (channel != -1)
 	{
-		printf("suceeded to bind socket\n");
+		printf("suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
 
 		printf("serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
 		printf("serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);

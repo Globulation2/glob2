@@ -21,8 +21,8 @@
 #ifndef __YOG_CONNECTOR_H
 #define __YOG_CONNECTOR_H
 
-#include <SDL_net.h>
 #include <vector>
+#include "Header.h"
 
 class YOGConnector
 {

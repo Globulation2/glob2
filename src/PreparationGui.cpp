@@ -212,7 +212,8 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 			{
 				if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
 				{
-					if (!sessionInfo.players[j].bind())
+					int channel=getFreeChannel();
+					if (!sessionInfo.players[j].bind(socket, channel))
 					{
 						printf("Player %d with ip(%x, %d) is not bindable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
@@ -234,6 +235,23 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 		}
 	}
 
+}
+
+int MultiplayersCrossConnectable::getFreeChannel()
+{
+	for (int channel=1; channel<SDLNET_MAX_UDPCHANNELS; channel++)
+	{
+		bool good=true;
+		for (int i=0; i<32; i++)
+		{
+			if (sessionInfo.players[i].channel==channel)
+				good=false;
+		}
+		if (good)
+			return channel;
+	}
+	assert(false);
+	return -1;
 }
 
 //MultiplayersChooseMapScreen pannel part !!
