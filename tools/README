@@ -1,0 +1,4 @@
+This directory contains the source of mksprite, a utility to create sprite for glob2 from a bunch of images. This utility requires Magick++, freely available at:
+http://studio.imagemagick.org/Magick++/
+
+Steph, 2 Jan 2005
