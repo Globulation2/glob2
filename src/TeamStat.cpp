@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "TeamStat.h"
@@ -49,12 +49,15 @@ void TeamStats::step(Team *team)
 			smoothedStat.totalFree++;
 		}
 	}
-	for (i=0; i<512; i++)
-	{
-		Building *b=team->myBuildings[i];
-		if (b)
-			smoothedStat.totalNeeded+=b->maxUnitWorking-b->unitsWorking.size();
-	}
+	
+	std::list<Building *> upgradesList=team->upgrade[HARVEST];
+	for (std::list<Building *>::iterator bi=upgradesList.begin(); bi!=upgradesList.end(); bi++)
+		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	
+	std::list<Building *> jobsList=team->job[HARVEST];
+	for (std::list<Building *>::iterator bi=jobsList.begin(); bi!=jobsList.end(); bi++)
+		smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+	
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
@@ -211,17 +214,17 @@ void TeamStats::drawStat()
 	{
 		int index=(statsIndex+i+1)&0x7F;
 		
-		int free=stats[index].isFree[0]-stats[index].totalNeeded;
+		int free=stats[index].isFree[UnitType::WORKER]-stats[index].totalNeeded;
 		int seeking=stats[index].totalNeeded;
 		if (free<0)
 		{
 			free=0;
-			seeking=stats[index].isFree[0];
+			seeking=stats[index].isFree[UnitType::WORKER];
 		}
 		
 		int nbFree=(free*64)/maxWorker;
 		int nbSeeking=(seeking*64)/maxWorker;
-		int nbTotal=(stats[index].numberUnitPerType[0]*64)/maxWorker;
+		int nbTotal=(stats[index].numberUnitPerType[UnitType::WORKER]*64)/maxWorker;
 		
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 75, 75, 150);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree-nbSeeking, nbFree, 50, 250, 100);

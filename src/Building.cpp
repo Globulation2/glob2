@@ -63,10 +63,8 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	unitStayRangeLocal=unitStayRange;
 
 	// building specific :
-	{
-		for(int i=0; i<NB_RESSOURCES; i++)
-			ressources[i]=0;
-	}
+	for(int i=0; i<NB_RESSOURCES; i++)
+		ressources[i]=0;
 
 	// quality parameters
 	hp=type->hpInit; // (Uint16)
@@ -75,19 +73,22 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 	{
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-		{
-			ratioLocal[i]=ratio[i]=1;
-			totalRatio++;
-			percentUsed[i]=0;
-		}
+		ratioLocal[i]=ratio[i]=1;
+		totalRatio++;
+		percentUsed[i]=0;
 	}
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
 
 	seenByMask=0;
-
+	
+	for (int i=0; i<NB_ABILITY; i++)
+	{
+		job[i]=false;
+		attract[i]=false;
+	}
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
 	// Now, it's not used.
@@ -510,10 +511,12 @@ void Building::update(void)
 		// add itself in Call lists
 		for (i=0; i<NB_ABILITY; i++)
 		{
-			if (type->job[i])
+			if (!job[i] && type->job[i])
 				owner->job[i].push_front(this);
-			if (type->attract[i])
+			if (!attract[i] && type->attract[i])
 				owner->attract[i].push_front(this);
+			job[i]=true;
+			attract[i]=true;
 		}
 	}
 	else
@@ -521,19 +524,12 @@ void Building::update(void)
 		// delete itself from all Call lists
 		for (i=0; i<NB_ABILITY; i++)
 		{
-			if (type->job[i])
-			{
-				//if (owner->job[i].size()==1)
-				//	printf("last job removed (ability=%d)\n", i);
+			if (job[i] && type->job[i])
 				owner->job[i].remove(this);
-			}
-
-			if (type->attract[i])
-			{
-				//if (owner->attract[i].size()==1)
-				//	printf("last attract removed (ability=%d)\n", i);
+			if (attract[i] && type->attract[i])
 				owner->attract[i].remove(this);
-			}
+			job[i]=false;
+			attract[i]=false;
 		}
 
 		while (unitsWorking.size()>(unsigned)maxUnitWorking) // TODO : the same with insides units
@@ -660,7 +656,7 @@ void Building::update(void)
 			// Notice that we could avoid freeing thoses units,
 			// this would keep the units working to the same building,
 			// and then ensure that all newly contructed food building to
-			// be filled (at least start to be filled).int maxDistSquare=0;
+			// be filled (at least start to be filled).
 
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 			{
@@ -698,9 +694,10 @@ void Building::update(void)
 			// we need to do an update again
 			update();
 		}
-		else
+		else if (job[HARVEST])
 		{
 			owner->job[HARVEST].remove(this);
+			job[HARVEST]=false;
 		}
 	}
 }
