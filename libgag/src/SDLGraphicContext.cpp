@@ -29,8 +29,8 @@
 #include <sstream>
 #include <SDL_image.h>
 
-// here begin the SDL Drawable Surface part
-SDLGraphicContext *screen=NULL;
+// the global variable that represents the screen
+GraphicContext *screen = NULL;
 
 SDLDrawableSurface::SDLDrawableSurface()
 {

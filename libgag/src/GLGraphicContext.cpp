@@ -62,9 +62,7 @@ void GLGraphicContext::setClipRect(void)
 
 void GLGraphicContext::drawSprite(int x, int y, Sprite *sprite, int index)
 {
-/*	if (!surface)
-		return;
-	((SDLSprite *)sprite)->draw(surface, &clipRect, x, y, index);*/
+	sprite->drawGL(x, y, index);
 }
 
 void GLGraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -230,30 +228,36 @@ GLGraphicContext::~GLGraphicContext(void)
 
 bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 {
-	Uint32 sdlFlags=SDL_OPENGL;
+	Uint32 sdlFlags = SDL_OPENGL;
 
-	this->flags=flags;
-	if (flags&FULLSCREEN)
-		sdlFlags|=SDL_FULLSCREEN;
-	if (flags&RESIZABLE)
-		sdlFlags|=SDL_RESIZABLE;
-
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-	//SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-	/*if (flags&DOUBLEBUF)
+	this->flags = flags;
+	if (flags & FULLSCREEN)
+		sdlFlags |= SDL_FULLSCREEN;
+	if (flags & RESIZABLE)
+		sdlFlags |= SDL_RESIZABLE;
+	
+	if (depth == 15)
 	{
-		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-		sdlFlags|=SDL_DOUBLEBUF;
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
 	}
-	else
+	else if (depth == 16)
 	{
-		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
-	}*/
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+	}
+	else if (depth >= 24)
+	{
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	}
+	GLint gl_doublebuf = flags & DOUBLEBUF;
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, gl_doublebuf);
 
-	screen = SDL_SetVideoMode(w, h, 32, SDL_OPENGL/*sdlFlags*/);
+	screen = SDL_SetVideoMode(w, h, depth, sdlFlags);
 
 	if (!screen)
 	{
@@ -263,7 +267,7 @@ bool GLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	else
 	{
 		//setClipRect();
-		if (flags&FULLSCREEN)
+		if (flags & FULLSCREEN)
 			fprintf(stderr, "GAG : GL Screen set to %dx%d at %d bpp in fullscreen\n", w, h, depth);
 		else
 			fprintf(stderr, "GAG : GL Screen set to %dx%d at %d bpp in window\n", w, h, depth);
