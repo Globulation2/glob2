@@ -419,8 +419,8 @@ void Building::saveCrossRef(SDL_RWops *stream)
 
 bool Building::isRessourceFull(void)
 {
-	for (int i=0; i<MAX_RESSOURCES; i++)
-		if (ressources[i]<type->maxRessource[i])
+	for (int i=0; i<BASIC_COUNT; i++)
+		if (ressources[i]+type->multiplierRessource[i]<=type->maxRessource[i])
 			return false;
 	return true;
 }
@@ -449,15 +449,15 @@ int Building::neededRessource(void)
 
 void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 {
-	for (int r=0; r<MAX_NB_RESSOURCES; r++)
-		needs[r]=type->maxRessource[r]-ressources[r];
+	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
+		needs[ri]=type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri];
 }
 
 void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 {
 	 // we balance the system with Units working on it:
-	for (int r=0; r<MAX_NB_RESSOURCES; r++)
-		needs[r]=(type->maxRessource[r]-ressources[r]);
+	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
+		needs[ri]=(type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri]);
 	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurprose>=0)
 		{
@@ -466,17 +466,17 @@ void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 		}
 	for (int i=0; i<20; i++)
 	{
-		for (int r=0; r<MAX_NB_RESSOURCES; r++)
-			if (needs[r]>0)
+		for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
+			if (needs[ri]>0)
 				return;
-		for (int r=0; r<MAX_NB_RESSOURCES; r++)
-			needs[r]+=(type->maxRessource[r]-ressources[r]);
+		for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
+			needs[ri]+=(type->maxRessource[ri]-ressources[ri]+1-type->multiplierRessource[ri]);
 	}
 }
 
 int Building::neededRessource(int r)
 {
-	int need=type->maxRessource[r]-ressources[r];
+	int need=type->maxRessource[r]-ressources[r]+1-type->multiplierRessource[r];
 	if (need>0)
 		return need;
 	else
