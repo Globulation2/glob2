@@ -265,6 +265,9 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 
 void MultiplayersCrossConnectable::sendMessage(const char *s)
 {
+	assert(s);
+	if (*s==0)
+		return;
 	Message m;
 	m.messageID=messageID++;
 	strncpy(m.userName, globalContainer->userName, 32);
