@@ -361,7 +361,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
-			assert(b);
 			if (b)
 				b->cancelDelete();
 		}
@@ -375,7 +374,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int id=Building::GIDtoID(gid);
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
-			assert(b);
 			if (b)
 				b->launchConstruction();
 		}
@@ -389,7 +387,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int id=Building::GIDtoID(gid);
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
-			assert(b);
 			if (b)
 				b->cancelConstruction();
 		}
@@ -1363,41 +1360,42 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	
 	// We draw debug area:
-	if (false)
-		//if (selectedUnit && selectedUnit->verbose)
-		//if (selectedBuilding && selectedBuilding->verbose)
-		{
-			Building *b=NULL;
-			//Building *b=selectedBuilding;
-			//Building *b=selectedUnit->attachedBuilding;
-			
-			//assert(teams[0]);
-			//Building *b=teams[0]->myBuildings[0];
-			if (teams[0]->virtualBuildings.size())
-				b=*teams[0]->virtualBuildings.begin();
+	//if (selectedUnit && selectedUnit->verbose)
+	if (selectedBuilding && selectedBuilding->verbose)
+	{
+		//Building *b=NULL;
+		Building *b=selectedBuilding;
+		//Building *b=selectedUnit->attachedBuilding;
 
-			int w=map.getW();
-			if (b && b->globalGradient[0])
-				for (int y=top-1; y<=bot; y++)
-					for (int x=left-1; x<=right; x++)
+		//assert(teams[0]);
+		//Building *b=teams[0]->myBuildings[0];
+		//if (teams[0]->virtualBuildings.size())
+		//	b=*teams[0]->virtualBuildings.begin();
+
+		int w=map.getW();
+		if (b)
+			for (int y=top-1; y<=bot; y++)
+				for (int x=left-1; x<=right; x++)
+				{
+					if (b->verbose==1)
 					{
-						//if (b->verbose==1)
-						{
+						if (b->globalGradient[0])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
 								b->globalGradient[0][((x+viewportX+map.getW())&(map.getMaskW()))+((y+viewportY+map.getH())&(map.getMaskH()))*w]);
-						}
-						/*else if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
-						{
-							int lx=(x+viewportX-b->posX+15+32)&31;
-							int ly=(y+viewportY-b->posY+15+32)&31;
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[0][lx+ly*32]);
-						}*/
-						
-						globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
-						globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
 					}
-					
-		}
+					else if (map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
+					{
+						int lx=(x+viewportX-b->posX+15+32)&31;
+						int ly=(y+viewportY-b->posY+15+32)&31;
+						if (!b->dirtyLocalGradient[0])
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[0][lx+ly*32]);
+					}
+
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
+				}
+
+	}
 
 	// We draw ground buildings:
 	for (int y=top-1; y<=bot; y++)
