@@ -754,27 +754,38 @@ Order *NetGame::getOrder(int playerNumber)
 					}
 		if (!good)
 		{
-			FILE *logFile = globalContainer->logFileManager->getFile("Checksum.log");
+			FILE *logFile;
+			int ci;
 			std::list<Uint32> checkSumsListForBuildings=checkSumsListsStorageForBuildings[executeUStep&255];
 			std::list<Uint32> checkSumsListForUnits=checkSumsListsStorageForUnits[executeUStep&255];
 			std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
-			int ci=0;
+			
+			ci=0;
+			logFile=globalContainer->logFileManager->getFile("ChecksumUnits.log");
 			fprintf(logFile, "my checkSumsListForUnits at ustep=%d is:\n", executeUStep);
 			for (std::list<Uint32>::iterator csi=checkSumsListForUnits.begin(); csi!=checkSumsListForUnits.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+			fflush(logFile);
+			
 			ci=0;
+			logFile=globalContainer->logFileManager->getFile("ChecksumBuildings.log");
 			fprintf(logFile, "my checkSumsListForBuildings at ustep=%d is:\n", executeUStep);
 			for (std::list<Uint32>::iterator csi=checkSumsListForBuildings.begin(); csi!=checkSumsListForBuildings.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+			fflush(logFile);
+			
 			//ci=0;
 			//printf("my checkSum at ustep=%d is:\n", executeUStep);
 			//for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
 			//	printf("[%3d] %x\n", ci++, *csi);
+			
 			ci=0;
+			logFile=globalContainer->logFileManager->getFile("Checksum.log");
 			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
 			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			fflush(logFile);
+			
 			assert(false);
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])

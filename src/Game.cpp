@@ -179,7 +179,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 	if (orderType!=ORDER_WAITING_FOR_PLAYER)
 	{
 		anyPlayerWaitedTimeFor=0;
-		fprintf(logFile, "[%d] %d (", order->ustep, order->getOrderType());
+		fprintf(logFile, "[%d] %d %d (", order->ustep, team->teamNumber, order->getOrderType());
 	}
 	switch (orderType)
 	{
@@ -204,7 +204,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
 				if (b)
 				{
-					fprintf(logFile, "ORDER_CREATE (%d, %d)\n", posX, posY);
+					fprintf(logFile, "ORDER_CREATE (%d, %d)", posX, posY);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
 				}
@@ -214,7 +214,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				BuildProject buildProject;
 				buildProject.posX=posX;
 				buildProject.posY=posY;
-				fprintf(logFile, "new BuildProject (%d, %d)\n", posX, posY);
+				fprintf(logFile, "new BuildProject (%d, %d)", posX, posY);
 				buildProject.teamNumber=oc->teamNumber;
 				buildProject.typeNum=oc->typeNum;
 				buildProjects.push_back(buildProject);
