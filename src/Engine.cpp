@@ -158,7 +158,7 @@ int Engine::initCustom(void)
 
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
-	return NO_ERROR;
+	return EE_NO_ERROR;
 }
 
 void Engine::startMultiplayer(SessionConnection *screen)

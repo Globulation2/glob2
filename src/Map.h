@@ -77,7 +77,7 @@ public:
 	BaseMap();
 	virtual ~BaseMap(void) { }
 
-	static const int MAP_NAME_MAX_SIZE=32;
+	enum { MAP_NAME_MAX_SIZE=32 };
 protected:
 	char mapName[MAP_NAME_MAX_SIZE];
 	char mapFileName[MAP_NAME_MAX_SIZE+4];//this is not saved in file
