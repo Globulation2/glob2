@@ -92,7 +92,7 @@ private:
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
 	void handleActivation(Uint8 state, Uint8 gain);
-	void viewportFromMxMY(int mx, int my);
+	void coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport=true);
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
@@ -148,6 +148,8 @@ private:
 	bool selectionPushed;
 	//! True if the mouse's button way never relased since click im minimap.
 	bool miniMapPushed;
+	//! True if we try to put a mark in the minimap
+	bool putMark;
 	Unit *selUnit;
 	Sint32 selectionUID;
 	bool needRedraw;
@@ -211,7 +213,7 @@ private :
 	
 	struct Mark
 	{
-		enum { DEFAULT_MARK_SHOW_TICKS = 100 };
+		enum { DEFAULT_MARK_SHOW_TICKS = 40 };
 		
 		// since when it is shown
 		int showTicks;

@@ -70,6 +70,7 @@ void GameGUI::init()
 	selBuild=NULL;
 	selectionPushed=false;
 	miniMapPushed=false;
+	putMark=false;
 	showUnitWorkingToBuilding=false;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
@@ -726,6 +727,10 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				if (pressed)
 					drawHealthFoodBar=!drawHealthFoodBar;
 				break;
+			case SDLK_m :
+				if (pressed)
+					putMark=true;
+				break;
 
 			case SDLK_RETURN :
 				if (pressed)
@@ -763,7 +768,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 	}
 }
 
-void GameGUI::viewportFromMxMY(int mx, int my)
+void GameGUI::coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport)
 {
 	// get data for minimap
 	int mMax;
@@ -773,13 +778,18 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 
 	mx-=14+decX;
 	my-=14+decY;
-	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
-	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
-	viewportX+=localTeam->startPosX+(game.map.getW()>>1);
-	viewportY+=localTeam->startPosY+(game.map.getH()>>1);
+	*cx=((mx*game.map.getW())/szX);
+	*cy=((my*game.map.getH())/szY);
+	if (useviewport)
+	{
+		*cx-=((globalContainer->gfx->getW()-128)>>6);
+		*cy-=((globalContainer->gfx->getH())>>6);
+	}
+	*cx+=localTeam->startPosX+(game.map.getW()>>1);
+	*cy+=localTeam->startPosY+(game.map.getH()>>1);
 	
-	viewportX&=game.map.getMaskW();
-	viewportY&=game.map.getMaskH();
+	*cx&=game.map.getMaskW();
+	*cy&=game.map.getMaskH();
 }
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
@@ -790,7 +800,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (miniMapPushed)
 	{
-		viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+		coordinateFromMxMY(mx-globalContainer->gfx->getW()+128, my, &viewportX, &viewportY);
 	}
 	else
 	{
@@ -918,8 +928,18 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	// handle minimap
 	if (my<128)
 	{
-		miniMapPushed=true;
-		viewportFromMxMY(mx, my);
+		if (putMark)
+		{
+			int markx, marky;
+			coordinateFromMxMY(mx, my, &markx, &marky, false);
+			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
+			putMark = false;
+		}
+		else
+		{
+			miniMapPushed=true;
+			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
+		}
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
 	{
@@ -1644,9 +1664,12 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
 			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text);
+			
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
+			
+			// delete old messages
 			if (!(--it->showTicks))
 			{
 				it=messagesList.erase(it);
@@ -1657,15 +1680,57 @@ void GameGUI::drawOverlayInfos(void)
 			}
 			
 		}
-		/*
-		for (std::list <Message>::iterator it2=messagesList.begin(); it2!=messagesList.end(); ++it2)
+		
+		// display map mark
+		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
 		{
-			if (it2->showTicks<0)
+			
+			int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
+			Uint8 a;
+			
+			/*if (ray < (Mark::DEFAULT_MARK_SHOW_TICKS>>1))
+				a = DrawableSurface::ALPHA_OPAQUE;
+			else
+			{*/
+				//float coef = (float)(it->showTicks)/(float)(Mark::DEFAULT_MARK_SHOW_TICKS);//>>1);
+				a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
+			//}
+			
+			int mMax;
+			int szX, szY;
+			int decX, decY;
+			int x, y;
+			
+			// FIXME : if needed, move this into a function like coordinateFromMxMY,
+			// copy - pasted from Game.drawMiniMap
+			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+			
+			x = it->x;
+			y = it->y;
+			x = x - localTeam->startPosX + (game.map.getW()>>1);
+			y = y - localTeam->startPosY + (game.map.getH()>>1);
+			x &= game.map.getMaskW();
+			y &= game.map.getMaskH();
+			x = (x*100)/mMax;
+			y = (y*100)/mMax;
+			x += globalContainer->gfx->getW()-128+14+decX;
+			y += 14+decY;
+			
+			a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
+			globalContainer->gfx->drawCircle(x, y, ray, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawCircle(x, y, (ray*11)/8, it->r, it->g, it->b, a);
+			
+			// delete old marks
+			if (!(--it->showTicks))
 			{
-				std::list<Message>::iterator ittemp=it2;
-				it2=messagesList.erase(ittemp);
+				it=markList.erase(it);
 			}
-		}*/
+			else
+			{
+				++it;
+			}
+		}
+		
 	}
 }
 
@@ -1766,7 +1831,7 @@ void GameGUI::executeOrder(Order *order)
 			MapMarkOrder *mmo=(MapMarkOrder *)order;
 			
 			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
-			if (game.teams[mmo->teamNumber]->allies & localTeamNo)
+			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
 			{
 				addMark(mmo);
 			}
@@ -2018,6 +2083,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	message.g = g;
 	message.b = b;
 	message.a = DrawableSurface::ALPHA_OPAQUE;
+	
 	messagesList.push_front(message);
 }
 
@@ -2030,5 +2096,7 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 	mark.r=game.teams[mmo->teamNumber]->colorR;
 	mark.g=game.teams[mmo->teamNumber]->colorG;
 	mark.b=game.teams[mmo->teamNumber]->colorB;
+	
+	markList.push_front(mark);
 }
 
