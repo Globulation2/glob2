@@ -36,7 +36,7 @@ List::~List()
 {
 	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
 	{
-		delete (*it);
+		delete[] (*it);
 	}
 }
 
@@ -44,7 +44,7 @@ void List::clear(void)
 {
 	for (std::vector<char *>::iterator it=strings.begin(); it!=strings.end(); ++it)
 	{
-		delete (*it);
+		delete[] (*it);
 	}
 	strings.clear();
 }
