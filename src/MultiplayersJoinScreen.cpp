@@ -45,7 +45,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	addWidget(playerText);
 
 	addWidget(new TextButton( 80, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT));
-	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
+	//addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
 	wasVisible=false;
@@ -79,7 +79,27 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	// TODO : call SessionInfo.draw()
 	multiplayersJoin->onTimer(tick);
 	
-	bool showNow=false;
+	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	{
+		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 20);
+		if (rv==MultiplayersConnectedScreen::DISCONNECT)
+		{
+			dispatchPaint(gfxCtx);
+		}
+		else if (rv==MultiplayersConnectedScreen::STARTED)
+		{
+			endExecute(STARTED);
+		}
+		else
+		{
+			printf("rv=%d\n", rv);
+			assert(false);
+		}
+		delete multiplayersConnectedScreen;
+	}
+	
+	/*bool showNow=false;
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
 		serverText->visible=false;
@@ -117,7 +137,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 			printf("JoinScreen::Lets quit this screen and start game!\n");
 			endExecute(STARTED);
 		}
-	}
+	}*/
 }
 
 void MultiplayersJoinScreen::onSDLEvent(SDL_Event *event)
@@ -144,14 +164,16 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 		{
 			multiplayersJoin->tryConnection();
 		}
-		else if (par1==DISCONNECT)
+		/*else if (par1==DISCONNECT)
 		{
 			multiplayersJoin->quitThisGame();
+		}*/
+		else if (par1==QUIT)
+		{
+			endExecute(QUIT);
 		}
 		else
-		{
-			endExecute(par1);
-		}
+			assert(false);
 	}
 	else if (action==TEXT_ACTIVATED)
 	{

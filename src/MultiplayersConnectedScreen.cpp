@@ -18,26 +18,26 @@
 
 */
 
-#include "MultiplayersConnectScreen.h"
+#include "MultiplayersConnectedScreen.h"
+#include "MultiplayersJoin.h"
 #include "GlobalContainer.h"
 #include "GAG.h"
 
-//MultiplayersConnectScreen pannel part !!
+//MultiplayersConnectedScreen pannel part !!
 
-
-MultiplayersConnectScreen::MultiplayersConnectScreen(MultiplayersJoin *multiplayersJoin)
+MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin)
 {
 	this->multiplayersJoin=multiplayersJoin;
 
 	addWidget(new TextButton(360, 350, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[disconnect]"), DISCONNECT));
 }
 
-MultiplayersConnectScreen::~MultiplayersConnectScreen()
+MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
 {
 
 }
 
-void MultiplayersConnectScreen::paint(int x, int y, int w, int h)
+void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 
@@ -47,18 +47,22 @@ void MultiplayersConnectScreen::paint(int x, int y, int w, int h)
 }
 
 
-void MultiplayersConnectScreen::onTimer(Uint32 tick)
+void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 {
 	multiplayersJoin->onTimer(tick);
 	
 	if (multiplayersJoin->waitingState<MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
+		multiplayersJoin->quitThisGame();
 		printf("MultiplayersConnectScreen:DISCONNECT!\n");
 		endExecute(DISCONNECT);
 	}
 	
-	if ((tick % 10)==0)
+	
+	if ((timeCounter++ % 10)==0)
 		dispatchPaint(gfxCtx);
+	
+	printf("tick=%d.\n", tick);
 	
 	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
 	{
@@ -70,18 +74,21 @@ void MultiplayersConnectScreen::onTimer(Uint32 tick)
 	}
 }
 
-void MultiplayersJoinScreen::onSDLEvent(SDL_Event *event)
+void MultiplayersConnectedScreen::onSDLEvent(SDL_Event *event)
 {
 
 }
 
 
-void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, int par2)
+void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_RELEASED)
 	{
 		if (par1==DISCONNECT)
+		{
+			multiplayersJoin->quitThisGame();
 			endExecute(DISCONNECT);
+		}
 		else
 			assert(false);
 	}
