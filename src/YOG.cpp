@@ -73,7 +73,7 @@ YOG::YOG()
 	logFile=globalContainer->logFileManager->getFile("YOG.log");
 	if (logFile==NULL)
 		logFile=stdout;
-	fprintf(logFile, "new YOG");
+	fprintf(logFile, "new YOG\n");
 	
 	enableLan=true;
 	unjoining=false;

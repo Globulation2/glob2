@@ -23,7 +23,7 @@
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 23
-#define VERSION_MINOR 30
+#define VERSION_MINOR 31
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -44,5 +44,6 @@
 // version 28 changed eternal ressources way to count the amount.
 // version 29 added Team::startPosSet for easy map editing.
 // version 30 *added version for AI implementations*
+// version 31 changed saved files signatures in Game.
 
 #endif

@@ -512,6 +512,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	{
 		assert(ai);
 		delete ai;
+		ai=NULL;
 	}
 
 	// base player

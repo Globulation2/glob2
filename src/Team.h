@@ -90,7 +90,6 @@ public:
 
 	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
 	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
-	void update();
 	void save(SDL_RWops *stream);
 	
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
@@ -100,7 +99,6 @@ public:
 	void clearLists(void);
 	//! Used to clear all buildings and units of this team on the map
 	void clearMap(void);
-	//! Used to delete buildings
 	void clearMem(void);
 
 	//! Check some available integrity constraints
@@ -123,12 +121,11 @@ public:
 	void setCorrectColor(float value);
 	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
 	
+	void update();
 	bool openMarket();
 	
-	//! Called when unit is hungry
-	Building *findNearestFood(Unit *unit);
-	//! Called when unit needs heal
 	Building *findNearestHeal(Unit *unit);
+	Building *findNearestFood(Unit *unit);
 	
 	//! The 3 next methodes are called by an Unit, in order to find the best work for her.
 	Building *findBestFoodable(Unit *unit);

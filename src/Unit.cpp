@@ -41,6 +41,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	assert(team);
 	race=&(team->race);
+	assert(race);
 
 	// identity
 	this->gid=gid;
@@ -119,6 +120,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	// unit specification
 	typeNum=SDL_ReadBE32(stream);
 	race=&(owner->race);
+	assert(race);
 
 	// identity
 	gid=SDL_ReadBE16(stream);

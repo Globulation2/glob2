@@ -17,6 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "AICastor.h"
+
 #include <assert.h>
 #include <string.h>
 
@@ -640,51 +642,101 @@ bool Game::load(SDL_RWops *stream)
 
 		char signature[4];
 		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GAMb",4)!=0)
+		if (session.versionMinor>=31)
 		{
-			fprintf(logFile, "Game::load::begin\n");
+			if (memcmp(signature,"GaBe", 4)!=0)
+			{
+				fprintf(logFile, "Signature missmatch at begin\n");
+				return false;
+			}
+		}
+		else if (memcmp(signature, "GAMb",4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch at begin\n");
 			return false;
 		}
-
+		
+		if (session.versionMinor>=31)
+			stepCounter=SDL_ReadBE32(stream);
 		setSyncRandSeedA(SDL_ReadBE32(stream));
 		setSyncRandSeedB(SDL_ReadBE32(stream));
 		setSyncRandSeedC(SDL_ReadBE32(stream));
 
 		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GAMm", 4)!=0)
+		
+		if (session.versionMinor>=31)
 		{
-			fprintf(logFile, "Game::load::after sync rand\n");
+			if (memcmp(signature,"GaSy", 4)!=0)
+			{
+				fprintf(logFile, "Signature missmatch after sync rand\n");
+				return false;
+			}
+		}
+		else if (memcmp(signature, "GAMm", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch after sync rand\n");
 			return false;
 		}
 
-		// recreate new teams and players
+		// we load teams
 		SDL_RWseek(stream, tempSessionInfo.teamsOffset, SEEK_SET);
 		for (int i=0; i<session.numberOfTeam; ++i)
 			teams[i]=new Team(stream, this, session.versionMinor);
-
-		SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
-		for (int i=0; i<session.numberOfPlayer; ++i)
-			players[i]=new Player(stream, teams, session.versionMinor);
-		stepCounter=SDL_ReadBE32(stream);
-
+		if (session.versionMinor>=31)
+		{
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GaTe", 4)!=0)
+			{
+				fprintf(logFile, "Signature missmatch after teams\n");
+				return false;
+			}
+		}
+		
 		// we have to load team before map
 		SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
 		if(!map.load(stream, &session, this))
 		{
-			fprintf(logFile, "Game::load::map.load\n");
+			fprintf(logFile, "Signature missmatch in map\n");
 			return false;
 		}
-
 		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GAMe", 4)!=0)
+		if (session.versionMinor>=31)
 		{
-			fprintf(logFile, "Game::load::end\n");
+			if (memcmp(signature,"GaMa", 4)!=0)
+			{
+				fprintf(logFile, "Signature missmatch after map\n");
+				return false;
+			}
+		}
+		else if (memcmp(signature,"GAMe", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch after map\n");
 			return false;
 		}
 
-		//But we have to finish Team's loading:
+		// we have to load map and team before players
+		SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
+		for (int i=0; i<session.numberOfPlayer; ++i)
+			players[i]=new Player(stream, teams, session.versionMinor);
+			
+		if (session.versionMinor>=31)
+		{
+			SDL_RWread(stream, signature, 4, 1);
+			if (memcmp(signature,"GaPl", 4)!=0)
+			{
+				fprintf(logFile, "Signature missmatch after players\n");
+				return false;
+			}
+		}
+		else
+			stepCounter=SDL_ReadBE32(stream);
+
+		// we have to finish Team's loading:
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->update();
+		
+		for (int i=0; i<session.numberOfTeam; i++)
+			teams[i]->integrity();
 		
 		// then script
 		ErrorReport er;
@@ -746,33 +798,28 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 	else
 	{
 		SAVE_OFFSET(stream, 16);
-		SDL_RWwrite(stream, "GAMb", 4, 1);
+		SDL_RWwrite(stream, "GaBe", 4, 1);
 
+		SDL_WriteBE32(stream, stepCounter);
 		SDL_WriteBE32(stream, getSyncRandSeedA());
 		SDL_WriteBE32(stream, getSyncRandSeedB());
 		SDL_WriteBE32(stream, getSyncRandSeedC());
-
-		SDL_RWwrite(stream, "GAMm", 4, 1);
+		SDL_RWwrite(stream, "GaSy", 4, 1);
 
 		SAVE_OFFSET(stream, 20);
 		for (int i=0; i<session.numberOfTeam; ++i)
-		{
 			teams[i]->save(stream);
-		}
-
-		SAVE_OFFSET(stream, 24);
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			players[i]->save(stream);
-		}
-
-		SDL_WriteBE32(stream, stepCounter);
+		SDL_RWwrite(stream, "GaTe", 4, 1);
 
 		SAVE_OFFSET(stream, 28);
 		map.save(stream);
-
-		SDL_RWwrite(stream, "GAMe", 4, 1);
+		SDL_RWwrite(stream, "GaMa", 4, 1);
 		
+		SAVE_OFFSET(stream, 24);
+		for (int i=0; i<session.numberOfPlayer; ++i)
+			players[i]->save(stream);
+		SDL_RWwrite(stream, "GaPl", 4, 1);
+
 		SAVE_OFFSET(stream, 32);
 		script.save(stream);
 	}
@@ -1449,6 +1496,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (gid!=NOGUID)
 				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
 		}
+	
+	//if (false)
+		for (int y=top-1; y<=bot; y++)
+			for (int x=left-1; x<=right; x++)
+				if (players[1] && players[1]->ai)
+				{
+					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
+					Uint8 *gradient=ai->workAbilityMap;
+					assert(gradient);
+					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
+					
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
+				}
 	
 	// We draw debug area:
 	if (false)

@@ -32,8 +32,7 @@ AINumbi::AINumbi(Player *player)
 
 AINumbi::AINumbi(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
-	init(player);
-	bool goodLoad=load(stream, versionMinor);
+	bool goodLoad=load(stream, player, versionMinor);
 	assert(goodLoad);
 }
 
@@ -65,10 +64,10 @@ AINumbi::~AINumbi()
 {
 }
 
-bool AINumbi::load(SDL_RWops *stream, Sint32 versionMinor)
+bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
-	assert(game);
-
+	init(player);
+	
 	phase            =SDL_ReadBE32(stream);
 	attackPhase      =SDL_ReadBE32(stream);
 	phaseTime        =SDL_ReadBE32(stream);
