@@ -857,6 +857,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
+	localClearAreaMap.resize(size, false);
 	
 	cases=new Case[size];
 	Case initCase;
@@ -935,6 +936,7 @@ bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *gam
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
+	localClearAreaMap.resize(size, false);
 	cases = new Case[size];
 	undermap = new Uint8[size];
 
