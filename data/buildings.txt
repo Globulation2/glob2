@@ -133,6 +133,7 @@ prestige = 0
 
 // swarm building site
 startImage = 23
+miniImage = 23
 hueImage = 1
 
 fillable = 1
@@ -154,6 +155,7 @@ isBuildingSite = 1
 
 // swarm
 startImage = 0
+miniImage = 0
 hueImage = 1
 
 fillable = 1
@@ -178,6 +180,7 @@ regenerationSpeed = 3
 
 // food building site, level 0
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -223,6 +226,7 @@ maxUnitWorking = 1
 
 // food building site, level 1
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -243,6 +247,7 @@ isBuildingSite = 1
 
 // food building, level 1
 startImage = 8
+miniImage = 8
 
 foodable = 1
 canFeedUnit = 1
@@ -267,6 +272,7 @@ maxUnitWorking = 1
 
 // food building site, level 2
 startImage = 26
+miniImage = 26
 
 fillable = 1
 
@@ -288,6 +294,7 @@ isBuildingSite = 1
 
 // food building, level 2
 startImage = 15
+miniImage = 15
 
 foodable = 1
 canFeedUnit = 1
@@ -313,7 +320,7 @@ maxUnitWorking = 1
 
 // health building site, level 0
 startImage = 25
-
+miniImage = 25
 
 fillable = 1
 
@@ -353,6 +360,7 @@ type = 2
 
 // health building site, level 1
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -373,6 +381,7 @@ isBuildingSite = 1
 
 // health building, level 1
 startImage = 9
+miniImage = 9
 
 canHealUnit = 1
 timeToHealUnit = 7
@@ -391,6 +400,7 @@ type = 2
 
 // health building site, level 2
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -412,6 +422,7 @@ isBuildingSite = 1
 
 // health building, level 2
 startImage = 16
+miniImage = 16
 
 canHealUnit = 1
 timeToHealUnit = 3
@@ -431,6 +442,7 @@ type = 2
 
 // Walk building site, level 0
 startImage = 28
+miniImage = 28
 
 fillable = 1
 
@@ -473,6 +485,7 @@ type = 3
 
 // Walk building site, level 1
 startImage = 29
+miniImage = 29
 
 fillable = 1
 
@@ -495,6 +508,7 @@ isBuildingSite = 1
 
 // Walk building, level 1
 startImage = 10
+miniImage = 10
 
 upgradeWalk = 1
 upgradeTimeWalk = 7
@@ -514,6 +528,7 @@ type = 3
 
 // Walk building site, level 2
 startImage = 29
+miniImage = 29
 
 fillable = 1
 
@@ -536,6 +551,7 @@ isBuildingSite = 1
 
 // Walk building, level 2
 startImage = 17
+miniImage = 17
 
 upgradeWalk = 1
 upgradeTimeWalk = 8
@@ -555,6 +571,7 @@ type = 3
 
 // Swim building site, level 0
 startImage = 28
+miniImage = 28
 
 fillable = 1
 
@@ -596,6 +613,7 @@ type = 4
 
 // Swim building site, level 1
 startImage = 29
+miniImage = 29
 
 fillable = 1
 
@@ -618,6 +636,7 @@ isBuildingSite = 1
 
 // Swim building, level 1
 startImage = 11
+miniImage = 11
 
 upgradeSwim = 1
 upgradeTimeSwim = 7
@@ -637,6 +656,7 @@ type = 4
 
 // Swim building site, level 2
 startImage = 29
+miniImage = 29
 
 fillable = 1
 
@@ -661,6 +681,7 @@ isBuildingSite = 1
 
 // Swim building, level 2
 startImage = 18
+miniImage = 18
 
 upgradeSwim = 1
 upgradeTimeSwim = 8
@@ -680,6 +701,7 @@ type = 4
 
 // Attack building site, level 0
 startImage = 27
+miniImage = 27
 
 fillable = 1
 
@@ -723,6 +745,7 @@ type = 5
 
 // Attack building site, level 1
 startImage = 27
+miniImage = 27
 
 fillable = 1
 
@@ -745,6 +768,7 @@ isBuildingSite = 1
 
 // Attack building, level 1
 startImage = 12
+miniImage = 12
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 7
@@ -766,6 +790,7 @@ type = 5
 
 // Attack building site, level 2
 startImage = 27
+miniImage = 27
 
 fillable = 1
 
@@ -788,6 +813,7 @@ isBuildingSite = 1
 
 // Attack building, level 2
 startImage = 19
+miniImage = 19
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 7
@@ -808,6 +834,7 @@ type = 5
 
 // Science building site, level 0
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -852,6 +879,7 @@ type = 6
 
 // Science building site, level 1
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -875,6 +903,7 @@ isBuildingSite = 1
 
 // Science building, level 1
 startImage = 13
+miniImage = 13
 
 upgradeBuild = 1
 upgradeTimeBuild = 12
@@ -896,6 +925,7 @@ type = 6
 
 // Science building site, level 2
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -920,6 +950,7 @@ isBuildingSite = 1
 
 // Science building, level 2
 startImage = 20
+miniImage = 20
 
 upgradeBuild = 1
 upgradeTimeBuild = 7
@@ -942,6 +973,7 @@ prestige = 50
 
 // Defense building site, level 0
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -992,6 +1024,7 @@ viewingRange = 6
 
 // Defense building site, level 1
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -1016,6 +1049,7 @@ viewingRange = 5
 
 // Defense building, level 1
 startImage = 14
+miniImage = 14
 
 fillable = 1
 maxStone = 4
@@ -1044,6 +1078,7 @@ viewingRange = 7
 
 // Defense building site, level 2
 startImage = 25
+miniImage = 25
 
 fillable = 1
 
@@ -1069,6 +1104,7 @@ viewingRange = 6
 
 // Defense building, level 2
 startImage = 21
+miniImage = 21
 
 fillable = 1
 maxStone = 4
@@ -1194,6 +1230,7 @@ maxUnitStayRange = 20
 
 // stone wall building site
 startImage = 24
+miniImage = 24
 
 fillable = 1
 maxWood = 0
@@ -1231,6 +1268,7 @@ armor = 10
 
 // wood wall building site
 startImage = 24
+miniImage = -1
 
 fillable = 1
 maxWood = 1
@@ -1267,6 +1305,7 @@ armor = 2
 
 // market building site
 startImage = 26
+miniImage = 26
 
 width = 3
 height = 3
@@ -1287,6 +1326,7 @@ fillable = 1
 
 // market (used for exchange)
 startImage = 36
+miniImage = 36
 
 width = 3
 height = 3

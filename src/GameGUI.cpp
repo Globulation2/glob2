@@ -1525,16 +1525,15 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 			if (imgid>=0)
 			{
 				buildingSprite=globalContainer->buildingmini;
-				decX=4;
-				decY=0;
 			}
 			else
 			{
 				buildingSprite=globalContainer->buildings;
 				imgid=bt->startImage;
-				decX=(64-buildingSprite->getW(imgid))>>1;
-				decY=(46-buildingSprite->getW(imgid))>>1;
 			}
+			
+			decX=(64-buildingSprite->getW(imgid))>>1;
+			decY=(46-buildingSprite->getW(imgid))>>1;
 
 			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
@@ -1818,15 +1817,14 @@ void GameGUI::drawBuildingInfos(void)
 	{
 		miniSprite = globalContainer->buildingmini;
 		imgid = buildingType->miniImage;
-		dx = dy = 0;
 	}
 	else
 	{
 		miniSprite = globalContainer->buildings;
 		imgid = buildingType->startImage;
-		dx = 12;
-		dy = 7;
 	}
+	dx = (56-miniSprite->getW(imgid))>>1;
+	dy = (46-miniSprite->getH(imgid))>>1;
 	miniSprite->setBaseColor(selBuild->owner->colorR, selBuild->owner->colorG, selBuild->owner->colorB);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2+dx, ypos+4+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2, ypos+4, globalContainer->gamegui, 18);
@@ -2366,20 +2364,30 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	else
 	{
-		int ymesg=32;
+		int ymesg = 32;
+		int yinc = 0;
 
 		// show script text
 		if (game.script.isTextShown)
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, game.script.textShown.c_str());
+		{
+			std::vector<std::string> lines;
+			setMultiLine(game.script.textShown, &lines);
+			for (unsigned i=0; i<lines.size(); i++)
+			{
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
+				yinc += 22;
+			}
+		}
 
 		// show script counter
 		if (game.script.getMainTimer())
+		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, GAG::nsprintf("%d", game.script.getMainTimer()).c_str());
+			yinc = std::max(yinc, 32);
+		}
 
-		// if either script text or script timer has been shown, increment line count
-		if (game.script.isTextShown || game.script.getMainTimer())
-			ymesg+=32;
-
+		ymesg += yinc;
+		
 		// display messages
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
@@ -3092,6 +3100,47 @@ void GameGUI::disableGUIElement(int id)
 	hiddenGUIElements |= (1<<id);
 	if (displayMode==id)
 		nextDisplayMode();
+}
+
+void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)
+{
+	unsigned pos = 0;
+	int length = globalContainer->gfx->getW()-128-64;
+	
+	std::string lastWord;
+	std::string lastLine;
+	
+	while (pos<input.length())
+	{
+		if (input[pos] == ' ')
+		{
+			int actLineLength = globalContainer->standardFont->getStringWidth(lastLine.c_str());
+			int actWordLength = globalContainer->standardFont->getStringWidth(lastWord.c_str());
+			int spaceLength = globalContainer->standardFont->getStringWidth(" ");
+			if (actWordLength+actLineLength+spaceLength < length)
+			{
+				if (lastLine.length())
+					lastLine += " ";
+				lastLine += lastWord;
+				lastWord.clear();
+			}
+			else
+			{
+				output->push_back(lastLine);
+				lastLine = lastWord;
+				lastWord.clear();
+			}
+		}
+		else
+		{
+			lastWord += input[pos];
+		}
+		pos++;
+	}
+	if (lastLine.length())
+		lastLine += " ";
+	lastLine += lastWord;
+	output->push_back(lastLine);
 }
 
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)

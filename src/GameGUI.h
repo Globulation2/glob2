@@ -248,6 +248,9 @@ private:
 	};
 	
 	std::list<Message> messagesList;
+	
+	//! Transform a text to multi line according to screen width
+	void setMultiLine(const std::string &input, std::vector<std::string> *output);
 
 	//! add a message to the window message list
 	void addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...);
