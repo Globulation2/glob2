@@ -654,6 +654,44 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	
 }
 
+bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
+{
+	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	int x=coordX+bt->decLeft;
+	int y=coordY+bt->decTop;
+
+	*mapX=x;
+	*mapY=y;
+
+	return checkHardRoomForBuilding(x, y, typeNum, team);
+}
+
+bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
+{
+	BuildingType *bt=buildingsTypes.buildingsTypes[typeNum];
+	int w=bt->width;
+	int h=bt->height;
+
+	bool isRoom=true;
+	if (bt->isVirtual)
+	{
+		for (int dy=y; dy<y+h; dy++)
+			for (int dx=x; dx<x+w; dx++)
+				if ((map.getUnit(dx, dy)!=NOUID) && (map.getUnit(dx, dy)<0))
+					isRoom=false;
+		return isRoom;
+	}
+	else
+	{
+		for (int dy=y; dy<y+h; dy++)
+			for (int dx=x; dx<x+w; dx++)
+				if ((!map.isGrass(dx, dy)) || ((map.getUnit(dx, dy)!=NOUID) && (map.getUnit(dx, dy)<0)))
+					isRoom=false;
+	}
+	
+	return isRoom;
+}
+
 /*bool Game::checkRoomForUnit(int x, int y)
 {
 	bool isRoom=true;
@@ -841,12 +879,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 							lsx=px+16;
 							lsy=py+16;
 							#ifdef DBG_PATHFINDING
-							if (unit->bypassDirection)
+							if (unit->bypassDirection && unit->verbose)
 							{
 								unit->owner->game->map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
 								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
 								unit->owner->game->map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
 								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
+								unit->owner->game->map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
+								globalContainer.gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
 							}
 							#endif
 							unit->owner->game->map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
