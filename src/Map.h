@@ -166,11 +166,7 @@ public:
 	//! This mask represents which team's part of map we are allowed to see.
 	bool isMapDiscovered(int x, int y, Uint32 visionMask)
 	{
-#ifdef DBG_ALL_MAP_DISCOVERED
-		return true;
-#else
 		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
-#endif
 	}
 
 	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
