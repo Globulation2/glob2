@@ -176,8 +176,16 @@ private :
 	} Message;
 	std::list<Message> messagesList;
 	enum {
-		DEFAULT_MESSAGE_SHOW_TICKS = 100
+		DEFAULT_MESSAGE_SHOW_TICKS = 100,
 	};
+	//! add a message to the window message list
+	void addMessage(const char *msgText)
+	{
+		Message message;
+		message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
+		snprintf(message.text, MAX_MESSAGE_SIZE, msgText);
+		messagesList.push_front(message);
+	}
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
 	int typingInputScreenPos;
