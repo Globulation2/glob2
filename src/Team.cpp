@@ -871,7 +871,11 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 
 	swarms.clear();
 	turrets.clear();
+	canExchange.clear();
 	virtualBuildings.clear();
+	clearingFlags.clear();
+	zonableForbidden.clear();
+		
 	prestige=0;
 	for (int i=0; i<1024; i++)
 	{
@@ -883,11 +887,17 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 		{
 			myBuildings[i]=new Building(stream, buildingstypes, this, versionMinor);
 			if (myBuildings[i]->type->unitProductionTime)
-				swarms.push_front(myBuildings[i]);
+				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
-				turrets.push_front(myBuildings[i]);
+				turrets.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->canExchange)
+				canExchange.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_front(myBuildings[i]);
+				virtualBuildings.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonable[WORKER])
+				clearingFlags.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonableForbidden)
+				zonableForbidden.push_back(myBuildings[i]);
 		}
 		else
 			myBuildings[i]=NULL;
@@ -1039,11 +1049,15 @@ void Team::createLists(void)
 		if (myBuildings[i])
 		{
 			if (myBuildings[i]->type->unitProductionTime)
-				swarms.push_front(myBuildings[i]);
+				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
-				turrets.push_front(myBuildings[i]);
+				turrets.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_front(myBuildings[i]);
+				virtualBuildings.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonable[WORKER])
+				clearingFlags.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonableForbidden)
+				zonableForbidden.push_back(myBuildings[i]);
 			myBuildings[i]->update();
 		}
 }
@@ -1206,13 +1220,15 @@ void Team::syncStep(void)
 			swarms.remove(building);
 		if (building->type->shootingRange)
 			turrets.remove(building);
-		if (building->type->zonable[WORKER])
-			clearingFlags.remove(building);
+		if (building->type->canExchange)
+			canExchange.remove(building);
 		if (building->type->isVirtual)
 			virtualBuildings.remove(building);
+		if (building->type->zonable[WORKER])
+			clearingFlags.remove(building);
 		if (building->type->zonableForbidden)
 			zonableForbidden.remove(building);
-
+		
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
 		assert(building->unitsWorkingSubscribe.size()==0);
