@@ -345,7 +345,7 @@ void Map::growRessources(void)
 						// we grow ressource:
 						incRessource(x, y, (RessourcesTypes::intResType)r.field.type);
 					}
-					else
+					else if (globalContainer->ressourcesTypes->get(r.field.type)->expendable)
 					{
 						// we extand ressource:
 						int dx, dy;

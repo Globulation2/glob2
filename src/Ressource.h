@@ -57,6 +57,8 @@ protected:
 		ITEM(Sint32, varietiesCount)
 		//! Does this ressource shrinks when harvested. A non-shrinkable ressource is by definition eternal.
 		ITEM(bool, shrinkable)
+		//! If expendable, a ressource spaw to nearby terrain
+		ITEM(bool, expendable)
 		//! If ethernal, a ressource cannot be fully harvested. There is always an amout of 1.
 		ITEM(bool, eternal)
 		//! If granular, we can decrement one by one. Otherwise, the ressource is fully taken
