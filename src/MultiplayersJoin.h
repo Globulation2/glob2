@@ -159,6 +159,7 @@ public:
 
 private:
 	FILE *logFile;
+	FILE *logFileDownload;
 };
 
 #endif
