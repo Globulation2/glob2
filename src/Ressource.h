@@ -28,16 +28,15 @@
 #define NORESID 0xFFFFFFFF
 
 //! A union is used so a ressource can be accessed as a whole 32 bit unsigned int as well as 4 bytes defining its components (type, ...).
-union Ressource
+struct Ressource
 {
-	Uint32 id;
-	struct
-	{
-		Sint8 type;
-		Uint8 variety;
-		Uint8 amount;
-		Uint8 animation;
-	} field;
+	Uint8 type;
+	Uint8 variety;
+	Uint8 amount;
+	Uint8 animation;
+	
+	Ressource(Uint32 i=NORESID) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
+	operator Uint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
 
 class RessourceType: public EntityType
