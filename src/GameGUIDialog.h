@@ -69,8 +69,9 @@ public:
 	};
 
 public:
-	OnOffButton *allied[8];
-	OnOffButton *vision[8];
+	//OnOffButton *allied[8];
+	//OnOffButton *vision[8];
+	Selector *alliance[8];
 	OnOffButton *chat[8];
 	GameGUI *gameGUI;
 
@@ -78,8 +79,11 @@ public:
 	InGameAlliance8Screen(GameGUI *gameGUI);
 	virtual ~InGameAlliance8Screen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	Uint32 getAllianceMask(void);
-	Uint32 getVisionMask(void);
+	Uint32 getAlliedMask(void);
+	Uint32 getEnemyMask(void);
+	Uint32 getExchangeVisionMask(void);
+	Uint32 getFoodVisionMask(void);
+	Uint32 getOtherVisionMask(void);
 	Uint32 getChatMask(void);
 
 protected:

@@ -64,19 +64,33 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 	{
 		int otherTeam=gameGUI->game.players[i]->teamNumber;
 
-		bool alliedState = (gameGUI->localTeam->allies)&(1<<otherTeam);
-		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, alliedState, ALLIED+i);
-		addWidget(allied[i]);
+		// level 0 is peace, level 3 is total war
+		unsigned defaultAlliance;
+		if ((gameGUI->localTeam->allies)&(1<<otherTeam))
+		{
+			// we are allied
+			defaultAlliance=0;
+		}
+		else if ((gameGUI->localTeam->enemies)&(1<<otherTeam))
+		{
+			// we are enemy
+			defaultAlliance=3;
+		}
+		else
+		{
+			// we share exchange in both levels, but food only in 1
+			if ((gameGUI->localTeam->sharedVisionFood)&(1<<otherTeam))
+				defaultAlliance=1;
+			else
+				defaultAlliance=2;
+		}
 
-		// TODO : pass to three modes
-		bool visionState = (gameGUI->localTeam->sharedVisionOther)&(1<<otherTeam);
-		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, visionState, VISION+i);
-		addWidget(vision[i]);
+		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, defaultAlliance);
+		addWidget(alliance[i]);
 
 		bool chatState = (gameGUI->chatMask)&(1<<i);
 		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
-
 
 		std::string pname;
 		if (gameGUI->game.players[i]->type==Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
@@ -97,12 +111,11 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 	}
 	for (;i<8;i++)
 	{
-		allied[i]=vision[i]=chat[i]=NULL;
+		alliance[i]=NULL;
+		chat[i]=NULL;
 	}
 
 	// add static text
-	addWidget(new Text(200, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", "A"));
-	addWidget(new Text(236, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", "V"));
 	addWidget(new Text(272, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", "C"));
 
 	// add ok button
@@ -116,8 +129,14 @@ void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, in
 	{
 		endValue=par1;
 	}
-	else if (action==BUTTON_STATE_CHANGED)
-		setCorrectValueForPlayer(par1%32);
+	else if (action==VALUE_CHANGED)
+	{
+		int i;
+		for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+			if (source==alliance[i])
+				break;
+		setCorrectValueForPlayer(i);
+	}
 }
 
 void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
@@ -131,34 +150,72 @@ void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
 			// if two players are the same team, we must have the same alliance and vision
 			if (game->players[j]->teamNumber==game->players[i]->teamNumber)
 			{
-				allied[j]->setState(allied[i]->getState());
-				vision[j]->setState(vision[i]->getState());
+				alliance[j]->setValue(alliance[i]->getValue());
 			}
 		}
 	}
 }
 
-Uint32 InGameAlliance8Screen::getAllianceMask(void)
+Uint32 InGameAlliance8Screen::getAlliedMask(void)
 {
+	// allied is 0
 	Uint32 mask=0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (allied[i]->getState())
+		if (alliance[i]->getValue()==0)
 			mask|=1<<i;
 	}
 	return mask;
 }
 
-Uint32 InGameAlliance8Screen::getVisionMask(void)
+Uint32 InGameAlliance8Screen::getEnemyMask(void)
 {
+	// enemy is 3
 	Uint32 mask=0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (vision[i]->getState())
+		if (alliance[i]->getValue()==3)
 			mask|=1<<i;
 	}
 	return mask;
 }
+
+Uint32 InGameAlliance8Screen::getExchangeVisionMask(void)
+{
+	// we have exchange vision in 2 and down
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (alliance[i]->getValue()<3)
+			mask|=1<<i;
+	}
+	return mask;
+}
+
+Uint32 InGameAlliance8Screen::getFoodVisionMask(void)
+{
+	// we have food vision in 1 and down
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (alliance[i]->getValue()<2)
+			mask|=1<<i;
+	}
+	return mask;
+}
+
+Uint32 InGameAlliance8Screen::getOtherVisionMask(void)
+{
+	// we have exchange vision in 0
+	Uint32 mask=0;
+	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
+	{
+		if (alliance[i]->getValue()==0)
+			mask|=1<<i;
+	}
+	return mask;
+}
+
 
 Uint32 InGameAlliance8Screen::getChatMask(void)
 {

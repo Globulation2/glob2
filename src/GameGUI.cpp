@@ -373,27 +373,30 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameAlliance8Screen::OK :
 				{
-					// mask are for players, we need to convert them to team.
-					Uint32 playerAllianceMask=((InGameAlliance8Screen *)gameMenuScreen)->getAllianceMask();
-					Uint32 teamAllianceMask=0;
-					Uint32 playerVisionMask=((InGameAlliance8Screen *)gameMenuScreen)->getVisionMask();
-					Uint32 teamVisionMask=0;
+					Uint32 playerMask[5];
+					Uint32 teamMask[5];
+					playerMask[0]=((InGameAlliance8Screen *)gameMenuScreen)->getAlliedMask();
+					playerMask[1]=((InGameAlliance8Screen *)gameMenuScreen)->getEnemyMask();
+					playerMask[2]=((InGameAlliance8Screen *)gameMenuScreen)->getExchangeVisionMask();
+					playerMask[3]=((InGameAlliance8Screen *)gameMenuScreen)->getFoodVisionMask();
+					playerMask[4]=((InGameAlliance8Screen *)gameMenuScreen)->getOtherVisionMask();
+					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
+					// mask are for players, we need to convert them to team.
 					for (int i=0; i<game.session.numberOfPlayer; i++)
 					{
 						int otherTeam=game.players[i]->teamNumber;
-						if (playerAllianceMask&(1<<i))
+						for (int j=0; j<5; j++)
 						{
-							// player is allied, ally team
-							teamAllianceMask|=(1<<otherTeam);
-						}
-						if (playerVisionMask&(1<<i))
-						{
-							// player is shared vision, share vision with team
-							teamVisionMask|=(1<<otherTeam);
+							if (playerMask[j]&(1<<i))
+							{
+								// player is set, set team
+								teamMask[j]|=(1<<otherTeam);
+							}
 						}
 					}
-					orderQueue.push_back(new SetAllianceOrder(localTeamNo, teamAllianceMask, teamVisionMask, teamVisionMask, teamVisionMask));
+					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
+						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;

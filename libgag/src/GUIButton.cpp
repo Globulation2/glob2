@@ -75,7 +75,6 @@ void Button::internalInit(int x, int y, int w, int h)
 		archPtr=Toolkit::getSprite(sprite.c_str());
 		assert(archPtr);
 	}
-	highlighted=false;
 }
 
 void Button::internalRepaint(int x, int y, int w, int h)

@@ -41,11 +41,12 @@ protected:
 
 public:
 	Selector() { count=0; value=0; id=0; archPtr=NULL; }
-	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned size=16, unsigned defaultValue=0, const char *sprite=NULL, Sint32 id=0);
+	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
 	virtual ~Selector() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual Uint32 getValue(void) { return value; }
+	virtual void setValue(Uint32 v) { this->value=v; repaint(); }
 	virtual Uint32 getCount(void) { return count; }
 
 protected:
