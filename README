@@ -9,6 +9,10 @@ autoheader && aclocal && automake --add-missing && autoconf
 
 Then read the INSTALL file.
 
+Note : if SDL is not installed system wide but rather in $prefix,
+add the following flags to aclocal :
+aclocal -I $prefix/share/aclocal
+
 
 Under Win32 :
 
