@@ -25,7 +25,7 @@ int Engine::initCampain(void)
 		return CANT_LOAD_MAP;
 	}
 	SDL_RWclose(stream);
-	
+
 	// we make a player for each team
 	int playerNumber=0;
 	bool wasHuman=false;
@@ -56,46 +56,50 @@ int Engine::initCampain(void)
 	}
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeam);
-	
+	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer.gfx.getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer.gfx.getH()>>6);
+	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
+	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
+
 	// FIXME : delete Team that hasn't any players and defrag array
-	
+
 	if (!wasHuman)
 	{
 		fprintf(stderr, "ENG : Error, can't find any human player\n");
 		return CANT_FIND_PLAYER;
 	}
-	
+
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE);
-	
+
 	return NO_ERROR;
 }
 
 void Engine::startMultiplayer(SessionScreen *screen)
 {
 	int p=screen->myPlayerNumber;
-	
+
 	screen->destroyNet=false;
 	for (int j=0; j<screen->sessionInfo.numberOfPlayer; j++)
 		screen->sessionInfo.players[j].destroyNet=false;
-	
+
 	screen->sessionInfo.setLocal(p);
-	
+
 	gui.game.loadBase(&screen->sessionInfo);
-	
+
 	gui.localPlayer=p;
 	gui.localTeam=screen->sessionInfo.players[p].teamNumber;
-	assert(gui.localTeam<screen->sessionInfo.numberOfTeam); 
+	assert(gui.localTeam<screen->sessionInfo.numberOfTeam);
 	gui.localTeam=gui.localTeam % screen->sessionInfo.numberOfTeam; // Ugly relase case.
-	
+
 	gui.game.renderMiniMap(gui.localTeam);
 	// we create the net game
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE);
-	
+
 	printf("localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
 
@@ -151,7 +155,7 @@ int Engine::run(void)
 		//printf ("Engine::bgu:%d\n", globalContainer.safe());
 		
 		gui.step();
-		
+
 		//printf ("Engine::bnp:%d\n", globalContainer.safe());
 		
 		net->pushOrder(gui.getOrder(), gui.localPlayer);
@@ -164,7 +168,7 @@ int Engine::run(void)
 		}
 		
 		//printf ("Engine::bns:%d\n", globalContainer.safe());
-		
+
 		// we proceed network
 		net->step();
 		
@@ -181,14 +185,14 @@ int Engine::run(void)
 		gui.game.step(gui.localTeam);
 		
 		//printf ("Engine::bdr:%d\n", globalContainer.safe());
-		
+
 		// we draw
 		
 		globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
 		gui.game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(), gui.getViewportX(), gui.getViewportY(), gui.game.players[gui.localPlayer]->teamNumber, gui.showExtendedInformation, true);
 		
 		globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 0, 128, 128);
-		gui.game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, gui.getViewportX(), gui.getViewportY());
+		gui.game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, gui.getViewportX(), gui.getViewportY(), gui.game.players[gui.localPlayer]->teamNumber);
 		
 		globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW(), globalContainer.gfx.getH());
 		gui.draw();

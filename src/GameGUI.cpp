@@ -335,6 +335,18 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 	}
 }
 
+void GameGUI::viewportFromMxMY(int mx, int my)
+{
+	viewportX=((mx*game.map.getW())>>7)-((globalContainer.gfx.getW()-128)>>6);
+	viewportY=((my*game.map.getH())>>7)-((globalContainer.gfx.getH())>>6);
+	viewportX+=game.teams[localTeam]->startPosX+(game.map.w>>1);
+	viewportY+=game.teams[localTeam]->startPosY+(game.map.h>>1);
+	if (viewportX<0)
+		viewportX+=game.map.getW();
+	if (viewportY<0)
+		viewportY+=game.map.getH();
+}
+
 void GameGUI::handleMouseMotion(int mx, int my)
 {
 	const int scrollZoneWidth=8;
@@ -354,6 +366,11 @@ void GameGUI::handleMouseMotion(int mx, int my)
 		viewportSpeedY[0]=1;
 	else
 		viewportSpeedY[0]=0;
+
+	if ((mx>globalContainer.gfx.getW()-128) && (my<128) && (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1)))
+	{
+		viewportFromMxMY(mx, my);
+	}
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
@@ -424,12 +441,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	// handle minimap
 	if (my<128)
 	{
-		viewportX=((mx*game.map.getW())>>7)-((globalContainer.gfx.getW()-128)>>6);
-		viewportY=((my*game.map.getH())>>7)-((globalContainer.gfx.getH())>>6);
-		if (viewportX<0)
-			viewportX+=game.map.getW();
-		if (viewportY<0)
-			viewportY+=game.map.getH();
+		viewportFromMxMY(mx, my);
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
 	{
@@ -711,7 +723,7 @@ void GameGUI::draw(void)
 			
 			// building Infos
 			globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 128, 128, globalContainer.gfx.getH()-128);
-			
+
 			if (selBuild->type->hpMax)
 				globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 256+2, font, "%s : %d/%d", globalContainer.texts.getString("[hp]"), selBuild->hp, selBuild->type->hpMax);
 			if (selBuild->type->armor)

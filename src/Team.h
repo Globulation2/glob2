@@ -103,21 +103,23 @@ public:
 	Building *myBuildings[512];
 
 	Bullet *myBullets[256];
-	
+
 	// thoses are the Call Lists :
 	std::list<Building *> upgrade[NB_ABILITY];
 	std::list<Building *> job[NB_ABILITY];
 	std::list<Building *> attract[NB_ABILITY];
 	std::list<Building *> canFeedUnit;
 	std::list<Building *> canHealUnit;
-	
+
 	std::list<int> buildingsToBeDestroyed;
 	std::list<Building *> buildingsToBeUpgraded;
-	
+
 	std::list<Building *> swarms;
 	std::list<Building *> turrets;
 
 	Uint32 allies, enemies, sharedVision, me; //mask
+
+	int startPosX, startPosY;
 
 	// TODO : use a subtil way to allocate UID
 	//Sint32 newUnitUID zzz

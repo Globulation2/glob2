@@ -339,6 +339,11 @@ void MapEdit::handleMapClick(int mx, int my)
 		if (game.checkRoomForBuilding(tempX, tempY, typeNum, &x, &y, -1))
 		{
 			game.addBuilding(x, y, team, typeNum );
+			if ((type==0) && (level==0))
+			{
+				game.teams[team]->startPosX=tempX;
+				game.teams[team]->startPosY=tempY;
+			}
 			game.regenerateDiscoveryMap();
 			winX=(x-viewportX)&game.map.getMaskW();
 			winY=(y-viewportY)&game.map.getMaskH();
