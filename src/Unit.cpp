@@ -462,6 +462,8 @@ void Unit::handleActivity(void)
 			// look for a "job"
 			// else keep walking around
 			bool jobFound=false;
+			if (verbose)
+				printf("guid=(%d) looking for a job...\n", gid);
 
 			// first we look for a food building to fill, because it is the first priority.
 			if (performance[HARVEST])
@@ -469,17 +471,21 @@ void Unit::handleActivity(void)
 				Building *b=owner->findBestFoodable(this);
 				if (b != NULL)
 				{
+					assert(destinationPurprose>=0);
+					assert(b->neededRessource(destinationPurprose));
+					
 					//Notice that (targetX, targetY) is only set for gameplay purposes, but the unit will follow the gradient.
-					jobFound=owner->map->ressourceAviable(owner->teamNumber, CORN, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+					jobFound=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 					if (jobFound)
 					{
 						activity=ACT_HARVESTING;
 						displacement=DIS_GOING_TO_RESSOURCE;
 						if (verbose)
-							printf("(%d)Going to harvest for filling building\n", gid);
+							printf("(%d)Going to harvest for fooding building\n", gid);
 						destinationPurprose=(Sint32)CORN;
 						attachedBuilding=b;
-						//printf("g(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
+						if (verbose)
+							printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
@@ -501,7 +507,8 @@ void Unit::handleActivity(void)
 				
 				assert(destinationPurprose>=WALK);
 				assert(destinationPurprose<ARMOR);
-				//printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
+				if (verbose)
+					printf("Going to upgrading itself in a building for ability : %d\n", destinationPurprose);
 
 				attachedBuilding=b;
 				targetX=attachedBuilding->getMidX();
@@ -529,7 +536,8 @@ void Unit::handleActivity(void)
 				targetX=attachedBuilding->getMidX();
 				targetY=attachedBuilding->getMidY();
 				newTargetWasSet();
-				//printf("f(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
+				if (verbose)
+					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsWorkingSubscribe.push_front(this);
 				b->lastWorkingSubscribe=0;
 				subscribed=true;
@@ -560,10 +568,13 @@ void Unit::handleActivity(void)
 						displacement=DIS_GOING_TO_RESSOURCE;
 						newTargetWasSet();
 						
-						//printf("(%x)Going to harvest to build building\n", (int)this);
+						if (verbose)
+							printf("guid=(%d) Going to harvest to build building\n", gid);
 						
 						attachedBuilding=b;
-						//printf("c(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
+						
+						if (verbose)
+							printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), bgid=(%d)\n", gid, destinationPurprose, b->gid);
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
@@ -576,6 +587,8 @@ void Unit::handleActivity(void)
 			
 			if ( (!jobFound) )
 			{
+				if (verbose)
+					printf("guid=(%d) no job found.\n", gid);
 				// find another job.
 			}
 			// nothing to do:
@@ -586,7 +599,8 @@ void Unit::handleActivity(void)
 				b=owner->findNearestHeal(posX, posY);
 				if (b != NULL)
 				{
-					//printf("Going to heal building\n");
+					if (verbose)
+						printf("guid=(%d) Going to heal building\n", gid);
 					activity=ACT_UPGRADING;
 					displacement=DIS_GOING_TO_BUILDING;
 					destinationPurprose=HEAL;
@@ -757,7 +771,7 @@ void Unit::handleDisplacement(void)
 				{
 					assert(attachedBuilding);
 					if (verbose)
-						printf("(Unit gid=%d) Giving ressource to building gid=%d : res : %d\n", gid, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
+						printf("guid=(%d) Giving ressource (%d) to building bgid=(%d) old-amount=(%d)\n", gid, destinationPurprose, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
 					attachedBuilding->ressources[caryedRessource]+=attachedBuilding->type->multiplierRessource[caryedRessource];
 					if (attachedBuilding->ressources[caryedRessource] > attachedBuilding->type->maxRessource[caryedRessource])
 						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
@@ -785,7 +799,7 @@ void Unit::handleDisplacement(void)
 				if (!attachedBuilding)
 				{
 					if (verbose)
-						printf("(Unit gid=%d) The building doesn't need me any more.\n", gid);
+						printf("guid=(%d) The building doesn't need me any more.\n", gid);
 					activity=ACT_RANDOM;
 					displacement=DIS_RANDOM;
 					subscribed=false;
@@ -824,7 +838,7 @@ void Unit::handleDisplacement(void)
 				}
 				
 				if (verbose)
-					printf("(Unit gid=%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
+					printf("guid=(%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
 				
 				if (destinationPurprose>=0)
 				{
@@ -844,7 +858,7 @@ void Unit::handleDisplacement(void)
 				else
 				{
 					if (verbose)
-						printf("(Unit gid=%d) can't find any ressource %d !!!!\n", gid, destinationPurprose);
+						printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
 					stopWorkingForBuilding();
 				}
 			}

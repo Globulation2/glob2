@@ -256,22 +256,63 @@ Building *Team::findNearestFood(int x, int y)
 
 Building *Team::findBestFoodable(Unit *unit)
 {
-	Building *choosen=NULL;
-	float score=1e9;
 	int x=unit->posX;
 	int y=unit->posY;
-	
-	for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+	int r=unit->caryedRessource;
+	if (r!=-1)
 	{
-		Building *b=(*bi);
-		//This is a balancing system: Reduce virtualy the distance if more units are requested:
-		float newScore=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
-		if (newScore<score)
+		// I'm already carying a ressource:
+		// I'll only go to a building who need this ressource, if possible.
+		Building *choosen=NULL;
+		float score=1e9;
+		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 		{
-			choosen=b;
-			score=newScore;
+			Building *b=(*bi);
+			if (b->neededRessource(r))
+			{
+				float newScore=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
+				if (newScore<score)
+				{
+					choosen=b;
+					score=newScore;
+				}
+			}
+		}
+		if (choosen)
+		{
+			unit->destinationPurprose=r;
+			return choosen;
 		}
 	}
+
+	Building *choosen=NULL;
+	float score=1e9;
+	bool canSwim=unit->performance[SWIM];
+	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
+	{
+		Sint32 rx, ry;
+		int dist;
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &dist))
+		{
+			double ressourceDist=sqrt((double)dist);
+			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
+			{
+				Building *b=(*bi);
+				if (b->neededRessource(ri))
+				{
+					double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), rx, ry));
+					double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+						unit->destinationPurprose=ri;
+					}
+				}
+			}
+		}
+	}
+		
 	return choosen;
 }
 
@@ -334,33 +375,6 @@ Building *Team::findBestFillable(Unit *unit)
 			}
 		}
 	}
-	
-	/*Building *choosen=NULL;
-	float score=1e9;
-	for (unsigned r=0; r<globalContainer->ressourcesTypes->number(); r++)
-	{
-		int rx, ry;
-		if (map->nearestRessource(x, y, (RessourcesTypes::intResType)r, &rx, &ry))
-		{
-			float ressourceDist=(float)map->warpDistSquare(x, y, rx, ry);
-			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-			{
-				Building *b=(*bi);
-				if ((b->type->level<=actLevel)&&(b->neededRessource(r)))
-				{
-					float buildingDist=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), rx, ry);
-					float newScore=(ressourceDist+buildingDist)/(float)(b->maxUnitWorking-b->unitsWorking.size());
-					if (newScore<score)
-					{
-						choosen=b;
-						score=newScore;
-					}
-				}
-			}
-		}
-	}
-	if (choosen)
-		unit->destinationPurprose=choosen->neededRessource();*/
 		
 	return choosen;
 }
