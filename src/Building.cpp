@@ -282,11 +282,10 @@ void Building::saveCrossRef(SDL_RWops *stream)
 
 bool Building::isRessourceFull(void)
 {
-	bool isFull=true;
 	for (int i=0; i<NB_RESSOURCES; i++)
 		if (ressources[i]<type->maxRessource[i])
-			isFull=false;
-	return isFull;
+			return false;
+	return true;
 }
 
 int Building::neededRessource(void)

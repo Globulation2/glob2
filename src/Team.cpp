@@ -225,17 +225,15 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
+	for (std::list<Building *>::iterator it=upgrade[(int)ability].begin(); it!=upgrade[(int)ability].end(); it++)
 	{
-		for (std::list<Building *>::iterator it=upgrade[(int)ability].begin(); it!=upgrade[(int)ability].end(); it++)
+		if ((*it)->type->level>=actLevel)
 		{
-			if ((*it)->type->level>=actLevel)
+			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			if ( newDist<dist )
 			{
-				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-				if ( newDist<dist )
-				{
-					b=*it;
-					dist=newDist;
-				}
+				b=*it;
+				dist=newDist;
 			}
 		}
 	}
@@ -353,8 +351,8 @@ Building *Team::findNearestFillableFood(int x, int y)
 {
 	Building *b=NULL;
 	float score=1e9;
+	
 	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-	{
 		if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
 		{
 			//This is a balancing system: Reduce virtualy the distance if more units are requested:
@@ -365,7 +363,6 @@ Building *Team::findNearestFillableFood(int x, int y)
 				score=newScore;
 			}
 		}
-	}
 	return b;
 }
 

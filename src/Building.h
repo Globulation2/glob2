@@ -69,9 +69,7 @@ public:
 	Sint32 lastWorkingSubscribe;
 	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
-	
 	std::list<Unit *> unitsInsideSubscribe;
-	
 	Sint32 lastInsideSubscribe;
 	
 	// optimisation / consistency
