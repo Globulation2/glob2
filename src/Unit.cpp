@@ -361,6 +361,7 @@ void Unit::step(void)
 		delta+=(speed-256);
 		
 		endOfAction();
+		owner->intergity();
 		
 		if (performance[FLY])
 		{
@@ -400,15 +401,19 @@ bool Unit::isUnitHungry(void)
 
 void Unit::stopAttachedForBuilding(bool goingInside)
 {
-	activity=ACT_RANDOM;
-	displacement=DIS_RANDOM;
-	
 	assert(attachedBuilding);
 	
 	if (goingInside)
 	{
 		attachedBuilding->unitsInside.remove(this);
 		attachedBuilding->unitsInsideSubscribe.remove(this);
+		
+		if (activity==ACT_UPGRADING)
+		{
+			assert(displacement==DIS_GOING_TO_BUILDING);
+			if (destinationPurprose==HEAL || destinationPurprose==FEED)
+				needToRecheckMedical=true;
+		}
 	}
 	else
 	{
@@ -418,11 +423,15 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 			assert(*it!=this);
 	}
 	
+	activity=ACT_RANDOM;
+	displacement=DIS_RANDOM;
+	
 	attachedBuilding->unitsWorking.remove(this);
 	attachedBuilding->unitsWorkingSubscribe.remove(this);
 	attachedBuilding->updateCallLists();
 	attachedBuilding=NULL;
 	subscribed=false;
+	assert(needToRecheckMedical);
 }
 
 void Unit::handleMedical(void)
@@ -650,7 +659,6 @@ void Unit::handleActivity(void)
 			b=owner->findNearestFood(posX, posY);
 			if ( b != NULL)
 			{
-
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=FEED;
@@ -704,6 +712,7 @@ void Unit::handleDisplacement(void)
 	if (subscribed)
 	{
 		displacement=DIS_RANDOM;
+		owner->intergity();
 	}
 	else switch (activity)
 	{
@@ -718,6 +727,7 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
+			owner->intergity();
 			break;
 		}
 
@@ -806,6 +816,7 @@ void Unit::handleDisplacement(void)
 					activity=ACT_RANDOM;
 					displacement=DIS_RANDOM;
 					subscribed=false;
+					assert(needToRecheckMedical);
 					return;
 				}
 				
@@ -824,7 +835,7 @@ void Unit::handleDisplacement(void)
 					if (need)
 					{
 						int distToRessource;
-						if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &tx, &ty, &distToRessource))
+						if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &tx, &ty, &distToRessource, 255))
 						{
 							if ((distToRessource<<1)>=timeLeft)
 								continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
@@ -868,6 +879,7 @@ void Unit::handleDisplacement(void)
 			else
 				displacement=DIS_RANDOM;
 			
+			owner->intergity();
 			break;
 		}
 		
@@ -952,6 +964,8 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
+			
+			owner->intergity();
 			break;
 		}
 
@@ -985,12 +999,14 @@ void Unit::handleDisplacement(void)
 				attachedBuilding->updateCallLists();
 				attachedBuilding=NULL;
 				subscribed=false;
+				assert(needToRecheckMedical);
 			}
 			else
 			{
 				displacement=DIS_GOING_TO_FLAG;
 			}
 
+			owner->intergity();
 			break;
 		}
 
@@ -1000,6 +1016,8 @@ void Unit::handleDisplacement(void)
 			break;
 		}
 	}
+	
+	owner->intergity();
 }
 
 void Unit::handleMovement(void)
@@ -1278,6 +1296,7 @@ void Unit::handleMovement(void)
 				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
 				subscribed=false;
+				assert(needToRecheckMedical);
 			}
 			else
 			{
@@ -1534,7 +1553,7 @@ void Unit::pathFind(void)
 			setNewValidDirection();
 		}
 	}
-	else if (attachedBuilding)
+	else if (attachedBuilding && !performance[FLY])
 	{
 		if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 		{
@@ -1666,12 +1685,17 @@ void Unit::newTargetWasSet(void)
 void Unit::endOfAction(void)
 {
 	handleMedical();
+	owner->intergity();
 	if (isDead)
 		return;
 	handleActivity();
+	owner->intergity();
 	handleDisplacement();
+	owner->intergity();
 	handleMovement();
+	owner->intergity();
 	handleAction();
+	owner->intergity();
 }
 
 // NOTE : position 0 is top left (-1, -1) then run clockwise
@@ -1783,6 +1807,21 @@ Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 	assert(team>=0);
 	assert(team<32);
 	return id+team*1024;
+}
+
+
+void Unit::integrity()
+{
+	if (isDead)
+		return;
+	
+	if (!needToRecheckMedical)
+	{
+		assert(activity==ACT_UPGRADING);
+		if (!subscribed) 
+			assert(displacement==DIS_GOING_TO_BUILDING || displacement==DIS_ENTERING_BUILDING || displacement==DIS_INSIDE);
+		assert(destinationPurprose==HEAL || destinationPurprose==FEED);
+	}
 }
 
 Sint32 Unit::checkSum()

@@ -1137,7 +1137,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, Uint8 level)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
@@ -1147,7 +1147,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		return false;
 	if (dist)
 		*dist=255-g;
-	if (g>=255)
+	if (g>=level)
 	{
 		*targetX=x;
 		*targetY=y;
@@ -1219,7 +1219,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		vx=(vx+vddx+w)&wMask;
 		vy=(vy+vddy+h)&hMask;
 		//printf("v=(%d, %d) max=%d\n", vx, vy, max);
-		if (max>=255)
+		if (max>=level)
 		{
 			*targetX=vx;
 			*targetY=vy;
@@ -2017,7 +2017,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		updateLocalGradient(building, canSwim);
 		
 		Uint8 currentg=gradient[lx+ly*32];
-		printf("cs=%d, l=(%d, %d), currentg=%d\n", canSwim, lx, ly, currentg);
+		
 		if (currentg>1)
 		{
 			*dist=255-currentg;
@@ -2130,6 +2130,13 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		Uint8 currentg=gradient[lx+ly*32];
 		bool found=false;
 		bool gradientUsable=false;
+		
+		if (currentg==255)
+		{
+			*dx=0;
+			*dy=0;
+			return true;
+		}
 
 		if (currentg>1 && !building->dirtyLocalGradient[canSwim])
 		{
@@ -2242,15 +2249,18 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				}
 
 		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
-		if (found && gradientUsable)
+		if (gradientUsable)
 		{
-			//printf("...pathfindedBuilding v3\n");
-			return true;
-		}
-		else
-		{
-			printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			return false;
+			if (found)
+			{
+				//printf("...pathfindedBuilding v3\n");
+				return true;
+			}
+			else
+			{
+				printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+				return false;
+			}
 		}
 	}
 	

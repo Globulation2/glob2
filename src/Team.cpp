@@ -302,7 +302,7 @@ Building *Team::findBestFoodable(Unit *unit)
 	{
 		Sint32 rx, ry;
 		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist) && (ressourceDist<timeLeft))
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
 		{
 			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
 				for (int d=0; d<8; d++)
@@ -386,7 +386,7 @@ Building *Team::findBestFillable(Unit *unit)
 	{
 		Sint32 rx, ry;
 		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist) && (ressourceDist<timeLeft))
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250) && (ressourceDist<timeLeft))
 		{
 			/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
 				for (int d=0; d<8; d++)
@@ -694,6 +694,13 @@ void Team::intergity(void)
 		if (b)
 			b->integrity();
 	}
+	
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=myUnits[i];
+		if (u)
+			u->integrity();
+	}
 }
 
 void Team::step(void)
@@ -701,20 +708,26 @@ void Team::step(void)
 	intergity();
 	int nbUnits=0;
 	for (int i=0; i<1024; i++)
-		if (myUnits[i])
+	{
+		Unit *u=myUnits[i];
+		if (u)
 		{
 			nbUnits++;
-			myUnits[i]->step();
-			if (myUnits[i]->isDead)
+			intergity();
+			u->step();
+			intergity();
+			if (u->isDead)
 			{
-				fprintf(logFile, "unit guid=%d deleted\n", myUnits[i]->gid);
-				if (myUnits[i]->attachedBuilding)
-					fprintf(logFile, " attachedBuilding->bgid=%d\n", myUnits[i]->attachedBuilding->gid);
+				fprintf(logFile, "unit guid=%d deleted\n", u->gid);
+				if (u->attachedBuilding)
+					fprintf(logFile, " attachedBuilding->bgid=%d\n", u->attachedBuilding->gid);
 				
-				delete myUnits[i];
+				delete u;
 				myUnits[i]=NULL;
 			}
 		}
+	}
+	intergity();
 	
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
@@ -838,6 +851,8 @@ void Team::step(void)
 			eventCooldown[i]--;
 	
 	stats.step(this);
+	
+	intergity();
 }
 
 void Team::computeForbiddenArea()
