@@ -435,7 +435,7 @@ bool Story::testCondition()
 			{
 				const std::string& flagName = line[++lineSelector].msg;
 				int globulesAmount = line[++lineSelector].value;
-				int type = line[++lineSelector].type;
+				int type = line[++lineSelector].type - Token::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
 
@@ -571,10 +571,12 @@ void Aquisition::nextToken()
 		//if (index(" \t\r\n().,", c)==NULL)
 		if (index(" \t\r\n", c)==NULL)
 		{
-			if (c == '\n')
-				newLine=true;
 			this->ungetChar(c);
 			break;
+		}
+		else if (c == '\n')
+		{
+			newLine=true;
 		}
 		HANDLE_ERROR_POS(c);
 	}
@@ -1330,6 +1332,24 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					if (donnees->getToken()->value <=0)
+					{
+						er.type=ErrorReport::ET_INVALID_VALUE;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+				}
+				break;
+				// Enable or disable a GUI element
+				case (Token::S_GUIENABLE):
+				case (Token::S_GUIDISABLE):
+				{
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
+					NEXT_TOKEN;
+					CHECK_ARGUMENT;
+					if ((donnees->getToken()->type < Token::S_WORKER) || (donnees->getToken()->type > Token::S_ALLIANCESCREEN))
 					{
 						er.type=ErrorReport::ET_INVALID_VALUE;
 						break;
