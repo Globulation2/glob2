@@ -61,21 +61,10 @@ void BaseMap::setMapName(const char *s)
 	printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
 }
 
-char *BaseMap::getMapName()
+const char *BaseMap::getMapName() const
 {
 	printf("(get)mapName=(%s).\n", mapName);
 	return mapName;
-}
-
-char *BaseMap::getMapFileName()
-{
-	strncpy(mapFileName, mapName, MAP_NAME_MAX_SIZE);
-	mapFileName[MAP_NAME_MAX_SIZE-1]=0;
-	int l=strlen(mapName);
-	strncpy(&mapFileName[l], ".map", 5);
-	mapFileName[MAP_NAME_MAX_SIZE+4-1]=0;
-	printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
-	return mapFileName;
 }
 
 Uint8 BaseMap::getOrderType()
@@ -502,7 +491,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-void Map::setBaseMap(/*const*/ BaseMap *initial)
+void Map::setBaseMap(const BaseMap *initial)
 {
 	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }
