@@ -1467,8 +1467,8 @@ void Building::turretStep(void)
 
 		// TODO : shall we really uses shootSpeed ?
 		// FIXME : is it correct this way ? IS there a function for this ?
-		int dpx=(targetX*32)+16-4-px; // 4 is the half size of the bullet
-		int dpy=(targetY*32)+16-4-py;
+		int dpx=(bestTargetX*32)+16-4-px; // 4 is the half size of the bullet
+		int dpy=(bestTargetY*32)+16-4-py;
 		//printf("%d insert: dp=(%d, %d).\n", UID, dpx, dpy);
 		if (dpx>(owner->game->map.getW()<<4))
 			dpx=dpx-(owner->game->map.getW()<<5);
@@ -1511,7 +1511,7 @@ void Building::turretStep(void)
 			}
 		}
 
-		Bullet *b=new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, targetX, targetY);
+		Bullet *b=new Bullet(px, py, speedX, speedY, ticksLeft, type->shootDamage, bestTargetX, bestTargetY);
 		//printf("%d insert: pos=(%d, %d), target=(%d, %d), p=(%d, %d), dp=(%d, %d), mdp=%d, speed=(%d, %d).\n", UID, posX, posY, targetX, targetY, px, py, dpx, dpy, mdp, speedX, speedY);
 		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", UID, px, py, speedX, speedY, ticksLeft, type->shootDamage);
 		s->bullets.push_front(b);

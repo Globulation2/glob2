@@ -246,11 +246,12 @@ void TeamStats::drawStat()
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
 				nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
 				nbNeedFoodCritical=(stats[index].needFoodCritical*64)/stats[index].totalUnit;
-				nbOk=64-(nbNeedHeal + nbNeedFood+nbNeedFoodCritical);
+				nbOk=64-(nbNeedHeal+nbNeedFood+nbNeedFoodCritical);
 			}
 			else if (stats[index].needFood>0)
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+				nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
 				nbNeedFoodCritical=(stats[index].needFoodCritical*64)/stats[index].totalUnit;
 				nbNeedFood=64-(nbNeedHeal-nbNeedFoodCritical);
 				nbOk=0;
@@ -258,6 +259,7 @@ void TeamStats::drawStat()
 			else if (stats[index].needFoodCritical>0)
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
+				nbNeedFood=0;
 				nbNeedFoodCritical=64-nbNeedHeal;
 				nbOk=0;
 			}
