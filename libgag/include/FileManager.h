@@ -84,6 +84,8 @@ public:
 	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
 	//! Open a file in the FILE* format
 	FILE *openFP(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
+	//! Return the checksum of a file
+	Uint32 checksum(const char *filename);
 
 	// FIXME : the following functions are not thread-safe :
 	//! must be call before directory listening, return true if success
