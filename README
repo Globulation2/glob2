@@ -35,7 +35,7 @@ with MSDEV to build glob2.
 !! WARNING !!
 The gfx are no more included in the CVS.
 You have to go to download them at
-http://moneo.calodox.org/~nct/glob2gfx.tar
+http://moneo.phear.org/~nct/glob2gfx.tar
 
 Once downloaded, untar them in the data directory :
 cd glob2/data, tar xvf glob2gfx.tar
