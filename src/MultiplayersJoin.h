@@ -122,11 +122,11 @@ public:
 	void checkSumConfirmationRecieved(char *data, int size, IPaddress ip);
 	
 
-	void unCrossConnectSessionInfo(void);
-	void tryCrossConnections(void);
-	void startCrossConnections(void);
+	void unCrossConnectSessionInfo();
+	void tryCrossConnections();
+	void startCrossConnections();
 	void crossConnectionFirstMessage(char *data, int size, IPaddress ip);
-	void checkAllCrossConnected(void);
+	void checkAllCrossConnected();
 	void crossConnectionSecondMessage(char *data, int size, IPaddress ip);
 	void stillCrossConnectingConfirmation(IPaddress ip);
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
@@ -148,7 +148,7 @@ public:
 	bool send(const int v);
 	bool send(const int u, const int v);
 	
-	bool tryConnection();
+	bool tryConnection(bool detectLAN);
 	bool tryConnection(YOG::GameInfo *yogGameInfo);
 	
 	void quitThisGame();

@@ -52,7 +52,13 @@ struct Game
 	Uint32 uid;
 	std::list<YOGClient *> joiners; // Firewalls extermination system
 };
-	
+
+struct ClientUpdate
+{
+	Uint32 uid;
+	Uint16 change;
+};
+
 // This is an metaserver YOG client.
 class YOGClient
 {
@@ -77,10 +83,10 @@ public:
 	void gamesClear();
 	
 	void sendClients();
-	void sendLeftClients();
+	void sendClientsUpdates();
 	void addClient(YOGClient *client);
 	void removeClient(Uint32 uid);
-	void removeUselessClients();
+	void updateClient(Uint32 uid, bool playing);
 	void lprintf(const char *msg, ...);
 	int strmlen(const char *s, int max);
 	
@@ -112,16 +118,20 @@ public:
 	std::list<YOGClient *> clients;
 	int clientsTimeout;
 	int clientsTOTL;
-	std::list<Uint32> leftClients;
-	int leftClientsTimeout;
-	int leftClientsTOTL;
-	Uint32 leftClientPacketID;
-	std::list<Uint32> lastLeftClientsSent[4];
+	Uint8 clientsPacketID;
+	std::list<YOGClient *> lastSentClients[16];
+	
+	std::list<ClientUpdate> clientsUpdates;
+	int clientsUpdatesTimeout;
+	int clientsUpdatesTOTL;
+	Uint8 clientsUpdatePacketID;
+	std::list<ClientUpdate> lastSentClientsUpdates[16];
 	
 	int timeout;
 	int TOTL;
 	
 	Uint32 uid;
+	bool playing;
 public:
 	bool hasip(IPaddress &ip) {return this->ip.host==ip.host && this->ip.port==ip.port;}
 };

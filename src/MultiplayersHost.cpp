@@ -377,7 +377,7 @@ void MultiplayersHost::removePlayer(int p)
 	sessionInfo.players[p].netTimeoutSize=0;// TODO : Only for debug version
 	sessionInfo.players[p].netTOTL=0;
 
-	sessionInfo.players[p].close();
+	sessionInfo.players[p].unbind();
 	int mp=sessionInfo.numberOfPlayer-1;
 	if (mp>p)
 	{

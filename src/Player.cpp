@@ -77,26 +77,18 @@ void BasePlayer::init()
 
 BasePlayer::~BasePlayer(void)
 {
-	if (!disableRecursiveDestruction)
-		close();
+	if (!disableRecursiveDestruction && destroyNet)
+		unbind();
 }
 
-void BasePlayer::close(void)
+/*void BasePlayer::close(void)
 {
 	fprintf(logFile, "Player::close number=%d destroyNet=%d.\n", number, destroyNet);
 	if (destroyNet)
 	{
 		unbind();
-		/*if (socket)
-		{
-			SDLNet_UDP_Close(socket);
-			printf("Socket closed to player %d.\n", number);
-		}
-		socket=NULL;
-		channel=-1;zzz
-		destroyNet=false;*/
 	}
-}
+}*/
 
 void BasePlayer::setNumber(Sint32 number)
 {

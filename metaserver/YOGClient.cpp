@@ -35,20 +35,20 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	
 	lastSentMessageID=0;
 	lastMessageID=0;
-	messageTimeout=0;
+	messageTimeout=DEFAULT_NETWORK_TIMEOUT;
 	messageTOTL=3;
 	
-	joinersTimeout=0;
+	joinersTimeout=DEFAULT_NETWORK_TIMEOUT;
 	sharingGame=NULL;
 	joinedGame=NULL;
 	
-	timeout=0;
+	timeout=DEFAULT_NETWORK_TIMEOUT;
 	TOTL=3;
 	
 	gamesSize=0;
-	gamesTimeout=0;
+	gamesTimeout=DEFAULT_NETWORK_TIMEOUT;
 	gamesTOTL=3;
-	unsharedTimeout=0;
+	unsharedTimeout=DEFAULT_NETWORK_TIMEOUT;
 	unsharedTOTL=3;
 	
 	static Uint32 clientUID=1;
@@ -57,7 +57,14 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 		clientUID++;
 	uid=clientUID;
 	
-	leftClientPacketID=0;
+	clientsPacketID=0;
+	clientsUpdatePacketID=0;
+	playing=false;
+	
+	clientsTimeout=DEFAULT_NETWORK_TIMEOUT;
+	clientsTOTL=3;
+	clientsUpdatesTimeout=DEFAULT_NETWORK_TIMEOUT;
+	clientsUpdatesTOTL=3;
 }
 
 YOGClient::~YOGClient()
@@ -214,7 +221,7 @@ void YOGClient::sendGames()
 	int nbGames=games.size();
 	if (gamesSize>16)
 		nbGames=16;
-	int size=(4+2+4+2+4+32+128)*nbGames+4;
+	int size=(4+2+4+2+4+4+64)*nbGames+4;
 	Uint8 data[size];
 	int index=4;
 	nbGames=0;
@@ -227,12 +234,15 @@ void YOGClient::sendGames()
 			index+=2;
 			addUint32(data, (*game)->uid, index);
 			index+=4;
-			int l;
+			
+			addUint32(data, (*game)->host->uid, index);
+			index+=4;
+			/*int l;
 			l=strmlen((*game)->host->userName, 32);
 			memcpy(data+index, (*game)->host->userName, l);
-			index+=l;
+			index+=l;*/
 
-			l=strmlen((*game)->name, 32);
+			int l=strmlen((*game)->name, 64); //TODO: set game's name's length to 64 everywhere !
 			memcpy(data+index, (*game)->name, l);
 			index+=l;
 			lprintf("%d index=%d.\n", nbGames, index);
@@ -323,10 +333,14 @@ void YOGClient::sendClients()
 	int nbClients=clients.size();
 	if (nbClients>32)
 		nbClients=32;
-	int size=(32+4)*nbClients+4;
+	int size=(4+32+2)*nbClients+1;
 	Uint8 data[size];
-	addUint32(data, nbClients, 0); // This is redundancy
-	int index=4;
+	addUint8(data, (Uint8)nbClients, 0); // This is redundancy
+	clientsPacketID++;
+	addUint8(data, clientsPacketID, 1); // This is redundancy
+	int index=2;
+	int rri=clientsPacketID&15;
+	lastSentClients[rri].clear();
 	for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 	{
 		addUint32(data, (*client)->uid, index);
@@ -335,66 +349,155 @@ void YOGClient::sendClients()
 		assert(l<=32);
 		memcpy(data+index, (*client)->userName, l);
 		index+=l;
+		data[index]=(*client)->hostGameip.host||(*client)->joinGameip.host;
+		index++;
 		assert(index<size);
+		lastSentClients[rri].push_back(*client);
 	}
 	send(YMT_CLIENTS_LIST, data, index);
-	lprintf("sent a %d clients list to %s\n", nbClients, userName);
+	lprintf("sent a (%d) clients list to (%s), cpid=%d\n", nbClients, userName, clientsPacketID);
 }
 
-void YOGClient::sendLeftClients()
+void YOGClient::sendClientsUpdates()
 {
-	int nbClients=leftClients.size();
+	int nbClients=clientsUpdates.size();
 	if (nbClients>32)
 		nbClients=32;
-	int size=4*nbClients+4;
+	int size=6*nbClients+2;
 	Uint8 data[size];
-	addUint32(data, nbClients, 0);
+	addUint8(data, (Uint8)nbClients, 0);
 	
-	leftClientPacketID++;
-	addUint32(data, leftClientPacketID, 4); // This is redundancy
+	clientsUpdatePacketID++;
+	addUint8(data, clientsUpdatePacketID, 1); // This is redundancy
 	
-	int index=8;
-	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
+	int index=2;
+	int rri=clientsUpdatePacketID&15;
+	lastSentClientsUpdates[rri].clear();
+	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
 	{
-		addUint32(data, *uid, index);
-		//lprintf("uid=%d.\n", *uid);
+		addUint32(data, cup->uid, index);
 		index+=4;
+		addUint16(data, cup->change, index);
+		index+=2;
+		lastSentClientsUpdates[rri].push_back(*cup);
 	}
-	lastLeftClientsSent[leftClientPacketID&0x3]=leftClients;
 	
-	send(YMT_LEFT_CLIENTS_LIST, data, index);
-	lprintf("sent a %d left clients list to %s\n", nbClients, userName);
+	if (nbClients>0)
+		send(YMT_UPDATE_CLIENTS_LIST, data, index);
+	lprintf("sent a (%d) clients update list to (%s), cupid=%d\n", nbClients, userName, clientsUpdatePacketID);
 }
 
 void YOGClient::addClient(YOGClient *client)
 {
+	for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+		if (*c==client)
+		{
+			assert(false);
+			return;
+		}
 	clients.push_back(client);
-	if (clients.size()>32)
-		clientsTimeout=0;
-	else
-		clientsTimeout=10;
+	
+	int importance=clients.size();
+	int targetTimeout=16-importance/4;
+	if (targetTimeout<0)
+		targetTimeout=0;
+	if (clientsTimeout>targetTimeout)
+		clientsTimeout=targetTimeout;
+	//lprintf("addClient::clientsTimeout=%d\n", targetTimeout);
 	clientsTOTL=3;
 }
 
 void YOGClient::removeClient(Uint32 uid)
 {
-	leftClients.push_back(uid);
-	if (leftClients.size()>32)
-		leftClientsTimeout=0;
-	else
-		leftClientsTimeout=10;
-	leftClientsTOTL=3;
-}
-
-void YOGClient::removeUselessClients()
-{
-	for (std::list<Uint32>::iterator uid=leftClients.begin(); uid!=leftClients.end(); ++uid)
-		for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
-			if ((*client)->uid==*uid)
+	for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+		if ((*client)->uid==uid)
+		{
+			clients.erase(client);
+			break;
+		}
+	for (int i=0; i<16; i++)
+		for (std::list<YOGClient *>::iterator client=lastSentClients[i].begin(); client!=lastSentClients[i].end(); ++client)
+			if ((*client)->uid==uid)
 			{
-				clients.erase(client);
+				lastSentClients[i].erase(client);
 				break;
 			}
+	bool found=false;
+	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
+		if (cup->uid==uid)
+		{
+			cup->change=CUP_LEFT;
+			found=true;
+			break;
+		}
+	if (!found)
+	{
+		ClientUpdate cup;
+		cup.uid=uid;
+		cup.change=CUP_LEFT;
+
+		clientsUpdates.push_back(cup);
+	}
+	
+	int importance=0;
+	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
+		if (cup->change==CUP_LEFT)
+			importance+=2;
+		else
+			importance++;
+	int targetTimeout=16-importance/4;
+	if (targetTimeout<0)
+		targetTimeout=0;
+	if (clientsUpdatesTimeout>targetTimeout)
+		clientsUpdatesTimeout=targetTimeout;
+	//lprintf("removeClient::clientsUpdatesTimeout=%d\n", clientsUpdatesTimeout);
+	clientsUpdatesTOTL=3;
+}
+
+void YOGClient::updateClient(Uint32 uid, bool playing)
+{
+	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
+		if (cup->uid==uid)
+		{
+			if (playing)
+			{
+				if (cup->change==CUP_NOT_PLAYING)
+					cup->change=CUP_PLAYING;
+				else
+					assert(cup->change!=CUP_LEFT);
+			}
+			else
+			{
+				if (cup->change==CUP_PLAYING)
+					cup->change=CUP_NOT_PLAYING;
+				else
+					assert(cup->change!=CUP_LEFT);
+			}
+			return;
+		}
+	
+	ClientUpdate cup;
+	cup.uid=uid;
+	if (playing)
+		cup.change=CUP_PLAYING;
+	else
+		cup.change=CUP_NOT_PLAYING;
+	
+	clientsUpdates.push_back(cup);
+	
+	int importance=0;
+	for (std::list<ClientUpdate>::iterator cup=clientsUpdates.begin(); cup!=clientsUpdates.end(); ++cup)
+		if (cup->change==CUP_LEFT)
+			importance+=2;
+		else
+			importance++;
+	int targetTimeout=16-importance/4;
+	if (targetTimeout<0)
+		targetTimeout=0;
+	if (clientsUpdatesTimeout>targetTimeout)
+		clientsUpdatesTimeout=targetTimeout;
+	//lprintf("updateClient::clientsUpdatesTimeout=%d (importance=%d) (targetTimeout=%d)\n", clientsUpdatesTimeout, importance, targetTimeout);
+	clientsUpdatesTOTL=3;
 }
 
 void YOGClient::lprintf(const char *msg, ...)
@@ -406,7 +509,7 @@ void YOGClient::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	//printf("%s", output);
+	printf("%s", output);
 	
 	if (logServer)
 		fputs(output, logServer);

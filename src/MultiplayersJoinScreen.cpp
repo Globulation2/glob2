@@ -152,7 +152,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (par1==CONNECT)
 		{
-			multiplayersJoin->tryConnection();
+			multiplayersJoin->tryConnection(true);
 		}
 		else if (par1==QUIT)
 		{

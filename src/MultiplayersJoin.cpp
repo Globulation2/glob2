@@ -48,12 +48,13 @@ MultiplayersJoin::~MultiplayersJoin()
 				if (waitingState!=WS_TYPING_SERVER_NAME)
 					send(CLIENT_QUIT_NEW_GAME);
 				SDLNet_UDP_Unbind(socket, channel);
+				channel=-1;
 				fprintf(logFile, "~MultiplayersJoin::Socket unbinded channel=%d\n", channel);
 			}
 			
 			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 				if (sessionInfo.players[j].type==BasePlayer::P_IP)
-					sessionInfo.players[j].close();
+					sessionInfo.players[j].unbind();
 			
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
@@ -195,9 +196,9 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
-	fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", localPort);
 	if (localPort)
 	{
+		fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", localPort);
 		sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
 		sessionInfo.players[myPlayerNumber].ip.port=localPort;
 	}
@@ -411,7 +412,7 @@ void MultiplayersJoin::unCrossConnectSessionInfo()
 	{
 		if (sessionInfo.players[j].netState>=BasePlayer::PNS_BINDED)
 		{
-			sessionInfo.players[j].close();
+			sessionInfo.players[j].unbind();
 			sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 		}
 		crossPacketRecieved[j]=0;
@@ -504,7 +505,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 
 }
 
-void MultiplayersJoin::checkAllCrossConnected(void)
+void MultiplayersJoin::checkAllCrossConnected()
 {
 	bool allCrossConnected=true;
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
@@ -527,7 +528,6 @@ void MultiplayersJoin::checkAllCrossConnected(void)
 	}
 	if (allCrossConnected)
 	{
-		fprintf(logFile, "All players are cross connected to me !!\n");
 		waitingState=WS_CROSS_CONNECTING_ACHIEVED;
 		if (waitingTimeout>0)
 		{
@@ -535,6 +535,7 @@ void MultiplayersJoin::checkAllCrossConnected(void)
 			assert(waitingTimeoutSize);
 			waitingTOTL++;
 		}
+		fprintf(logFile, "All players are cross connected to me !! (wt=%d) (wts=%d) (wtotl=%d) (ws=%d)\n", waitingTimeout, waitingTimeoutSize, waitingTOTL, waitingState);
 	}
 }
 
@@ -562,11 +563,14 @@ void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddr
 
 void MultiplayersJoin::stillCrossConnectingConfirmation(IPaddress ip)
 {
-	if (waitingState>=WS_CROSS_CONNECTING_START_CONFIRMED)
+	if (waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 	{
 		fprintf(logFile, "server(%s) has recieved our stillCrossConnecting state.\n", Utilities::stringIP(ip));
-		waitingTimeout=SHORT_NETWORK_TIMEOUT;
-		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
+		if (waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
+		{
+			waitingTimeout=SHORT_NETWORK_TIMEOUT;
+			waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
+		}
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 	}
 	else
@@ -669,18 +673,19 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 		case SERVER_FIREWALL_EXPOSED:
 			printf("water received from ip(%s)!\n", Utilities::stringIP(ip));
 			fprintf(logFile, "water received from ip(%s)!\n", Utilities::stringIP(ip));
-			if (WS_WAITING_FOR_PRESENCE)
+			if (waitingState>=WS_WAITING_FOR_PRESENCE)
 			{
 				waitingTimeout=0;
 				waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 				waitingTOTL=DEFAULT_NETWORK_TOTL;
+				globalContainer->yog->connectedToGameHost();
 			}
-			globalContainer->yog->connectedToGameHost();
 		break;
 		
 		case SERVER_PRESENCE :
 			dataPresenceRecieved(data, size, ip);
-			globalContainer->yog->connectedToGameHost();
+			if (waitingState>=WS_WAITING_FOR_PRESENCE)
+				globalContainer->yog->connectedToGameHost();
 		break;
 		
 		case DATA_SESSION_INFO :
@@ -777,9 +782,9 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 						fprintf(logFile, "MultiplayersJoin:NAT:Unbinding socket. channel=%d\n", channel);
 						// In improbable case that the target ip really hosted a game,
 						// we send him a quit game message
-						send(CLIENT_QUIT_NEW_GAME);
+						//send(CLIENT_QUIT_NEW_GAME);
 						SDLNet_UDP_Unbind(socket, channel);
-						fprintf(logFile, "MultiplayersJoin:NAT:Socket unbinded, channel=%d\n", channel);
+						channel=-1;
 					}
 
 					serverIP=it->ip;
@@ -1146,11 +1151,12 @@ bool MultiplayersJoin::sendPresenceRequest()
 	addSint32(packet->data, (Sint32)ipFromNAT, 4);
 	strncpy((char *)(packet->data+8), playerName, 32); //TODO: use uid if over YOG.
 
-	if (SDLNet_UDP_Send(socket, channel, packet)==1)
-		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s) ipFromNAT=%d\n", Utilities::stringIP(serverIP), serverName, ipFromNAT);
+	int nbsent=SDLNet_UDP_Send(socket, channel, packet);
+	if (nbsent==1)
+		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s) channel=%d ipFromNAT=%d\n", Utilities::stringIP(serverIP), serverName, channel, ipFromNAT);
 	else
 	{
-		fprintf(logFile, "failed to send presence request packet to host=(%s(%s))\n", Utilities::stringIP(serverIP), serverName);
+		fprintf(logFile, "failed to send presence request packet to host=(%s)(%s) channel=%d ipFromNAT=%d, nbsent=%d\n", Utilities::stringIP(serverIP), serverName, channel, ipFromNAT, nbsent);
 		waitingState=WS_TYPING_SERVER_NAME;
 		SDLNet_FreePacket(packet);
 		return false;
@@ -1326,9 +1332,10 @@ bool MultiplayersJoin::send(const int u, const int v)
 	return true;
 }
 
-bool MultiplayersJoin::tryConnection()
+bool MultiplayersJoin::tryConnection(bool detectLAN)
 {
 	quitThisGame();
+	fprintf(logFile, "\ntryConnection()\n");
 
 	if (!socket)
 	{
@@ -1353,12 +1360,12 @@ bool MultiplayersJoin::tryConnection()
 	}
 
 	channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
-	//or zzz? channel=SDLNet_UDP_Bind(socket, 0, &serverIP);
+	//channel=SDLNet_UDP_Bind(socket, 0, &serverIP);
 
 	if (channel != -1)
 	{
 		fprintf(logFile, "suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
-		fprintf(logFile, "serverIP=%s\n", Utilities::stringIP(serverIP.port));
+		fprintf(logFile, "serverIP=(%s)\n", Utilities::stringIP(serverIP));
 	}
 	else
 	{
@@ -1383,24 +1390,37 @@ bool MultiplayersJoin::tryConnection()
 	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
 	fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	
-	if (shareOnYOG && !ipFromNAT) // the (ipFromNAT test) will avoid to broadcast, if you are the joiner and host.
+	if (shareOnYOG && detectLAN)
 	{
+		ipFromNAT=true;
 		if (broadcastState==BS_DISABLE_YOG)
 			broadcastState=BS_ENABLE_YOG;
 		fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
 	}
+	else
+		fprintf(logFile, "not enabling NAT detection. shareOnYOG=%d, ipFromNAT=%d, broadcastState=%d\n", shareOnYOG, ipFromNAT, broadcastState);
 	
 	return sendPresenceRequest();
 }
 
 void MultiplayersJoin::quitThisGame()
 {
-	fprintf(logFile, "quitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
+	fprintf(logFile, "\nquitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
 	unCrossConnectSessionInfo();
 	
+	if (waitingState>WS_TYPING_SERVER_NAME)
+		send(CLIENT_QUIT_NEW_GAME);
 	waitingState=WS_TYPING_SERVER_NAME;
 	if (broadcastState==BS_ENABLE_YOG)
 		broadcastState=BS_DISABLE_YOG;
+		
+	ipFromNAT=false;
+	if ((socket)&&(channel!=-1))
+	{
+		fprintf(logFile, "Unbinding socket. channel=%d\n", channel);
+		SDLNet_UDP_Unbind(socket, channel);
+		channel=-1;
+	}
 	fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 }
 
@@ -1426,7 +1446,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	playerName[31]=0;
 	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;
-	return tryConnection();
+	return tryConnection(true);
 }
 
 Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
