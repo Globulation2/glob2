@@ -986,9 +986,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 	// Set the size of the won/lost arrays and clear them
 	hasWon.resize(game->session.numberOfTeam);
-	std::fill(hasWon.begin(), hasWon.end(), 0);
+	std::fill(hasWon.begin(), hasWon.end(), false);
 	hasLost.resize(game->session.numberOfTeam);
-	std::fill(hasLost.begin(), hasLost.end(), 0);
+	std::fill(hasLost.begin(), hasLost.end(), false);
 
 	NEXT_TOKEN;
 	while (donnees->getToken()->type != Token::S_EOF)
