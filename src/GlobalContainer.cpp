@@ -73,17 +73,21 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
-	// releasing ressources
-	Toolkit::releaseSprite("terrain");
-	Toolkit::releaseSprite("shading");
-	Toolkit::releaseSprite("black");
-	Toolkit::releaseSprite("ressources");
-	Toolkit::releaseSprite("units");
-	Toolkit::releaseSprite("buildings");
-	Toolkit::releaseSprite("gamegui");
-	Toolkit::releaseFont("menu");
-	Toolkit::releaseFont("standard");
-	Toolkit::releaseFont("little");
+	if (!hostServer)
+	{
+		// releasing ressources
+		Toolkit::releaseSprite("terrain");
+		Toolkit::releaseSprite("shading");
+		Toolkit::releaseSprite("black");
+		Toolkit::releaseSprite("ressources");
+		Toolkit::releaseSprite("units");
+		Toolkit::releaseSprite("buildings");
+		Toolkit::releaseSprite("gamegui");
+		Toolkit::releaseFont("menu");
+		Toolkit::releaseFont("standard");
+		Toolkit::releaseFont("little");
+	}
+	
 	if (gfx)
 		delete gfx;
 	if (mix)
@@ -115,17 +119,21 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	{
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
 		{
-			if (i+1<argc)
+			if (i+3<argc)
 			{
 				strncpy(hostServerMapName, argv[i+1], 32);
+				strncpy(hostServerUsername, argv[i+2], 32);
+				strncpy(hostServerPassword, argv[i+3], 32);
 				hostServer=true;
-				i++;
+				pushUserName(argv[i+2]);
+				i+=3;
+				pushUserName(hostServerUsername);
 			}
 			else
 			{
-				printf("usage: -host MapName.\n");
-				hostServer=true;
-				strncpy(hostServerMapName, "default.map", 32);
+				printf("usage:\n");
+				printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
+				exit(0);
 			}
 			continue;
 		}
@@ -219,7 +227,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-t\ttype of gfx rendere : 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify an user name\n");
-			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
+			printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
 			printf("-v\tprint the version adn exit\n");
 			exit(0);
 		}

@@ -31,7 +31,7 @@ public:
 	void drawYOGSplashScreen();
 	void mutiplayerYOG();
 	//! run a text-only host server, without any graphical window.
-	int runHostServer(int argc, char *argv[]);
+	int runHostServer();
 	int run(int argc, char *argv[]);
 };
 
