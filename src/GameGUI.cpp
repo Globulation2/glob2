@@ -40,6 +40,14 @@
 #define YPOS_BASE_BUILDING YPOS_BASE_DEFAULT
 #define YPOS_BASE_FLAG YPOS_BASE_DEFAULT
 #define YPOS_BASE_STAT YPOS_BASE_DEFAULT
+#define YPOS_BASE_UNIT YPOS_BASE_DEFAULT+4
+
+#define YOFFSET_NAME 20
+#define YOFFSET_ICON 46
+#define YOFFSET_CARYING 34
+
+#define YOFFSET_TEXT_PARA 15
+#define YOFFSET_TEXT_LINE 12
 
 //! The screen that contains the text input while typing message in game
 class InGameTextInput:public OverlayScreen
@@ -1081,7 +1089,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					checkValidSelection();
 					showUnitWorkingToBuilding=true;
 				}
-				
+
 			}
 			else
 			{
@@ -1429,6 +1437,110 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 	}
 }
 
+
+void GameGUI::drawUnitInfos(void)
+{
+	int ypos = YPOS_BASE_UNIT;
+	Uint8 r, g, b;
+
+	// draw "unit" of "player"
+	std::string title;
+	title += Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum);
+	title += " (";
+
+	const char *textT=selUnit->owner->getFirstPlayerName();
+	if (!textT)
+		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
+	title += textT;
+	title += ")";
+
+	if (localTeam->teamNumber == selUnit->owner->teamNumber)
+		{ r=100; g=100; b=255; }
+	else if (localTeam->allies & selUnit->owner->me)
+		{ r=255; g=210; b=20; }
+	else
+		{ r=255; g=50; b=50; }
+
+	globalContainer->littleFont->pushColor(r, g, b);
+	int titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
+	int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
+	globalContainer->gfx->drawString(titlePos, ypos, globalContainer->littleFont, title.c_str());
+	globalContainer->littleFont->popColor();
+
+	ypos += YOFFSET_NAME;
+
+	// draw unit's image
+
+	// draw HP
+	if (selUnit->hp<=selUnit->trigHP)
+		{ r=255; g=0; b=0; }
+	else
+		{ r=0; g=255; b=0; }
+
+	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos, globalContainer->littleFont, GAG::nsprintf("%d/%d", selUnit->hp, selUnit->performance[HP]).c_str());
+	globalContainer->littleFont->popColor();
+
+	// draw food
+	if (selUnit->isUnitHungry())
+		{ r=255; g=0; b=0; }
+	else
+		{ r=0; g=255; b=0; }
+
+	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAG::nsprintf("%2.0f %% (%d)", ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount).c_str());
+	globalContainer->littleFont->popColor();
+
+	ypos += YOFFSET_ICON;
+
+	if (selUnit->performance[HARVEST])
+	{
+		if (selUnit->caryedRessource>=0)
+		{
+			const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->caryedRessource);
+			unsigned resImg = r->gfxId + r->sizesCount - 1;
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, ypos, globalContainer->ressources, resImg);
+		}
+		else
+		{
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[don't carry anything]"));
+		}
+	}
+	ypos += YOFFSET_CARYING+10;
+
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[current speed]"), selUnit->speed).c_str());
+	ypos += YOFFSET_TEXT_PARA+10;
+
+	if (selUnit->typeNum!=EXPLORER)
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]"), selUnit->speed).c_str());
+	ypos += YOFFSET_TEXT_PARA;
+
+	if (selUnit->performance[WALK])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]).c_str());
+	ypos += YOFFSET_TEXT_LINE;
+
+	if (selUnit->performance[SWIM])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
+	ypos += YOFFSET_TEXT_LINE;
+
+	if (selUnit->performance[BUILD])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]).c_str());
+	ypos += YOFFSET_TEXT_LINE;
+
+	if (selUnit->performance[HARVEST])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]).c_str());
+	ypos += YOFFSET_TEXT_LINE;
+
+	if (selUnit->performance[ATTACK_SPEED])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]).c_str());
+	ypos += YOFFSET_TEXT_LINE;
+
+	if (selUnit->performance[ATTACK_STRENGTH])
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]).c_str());
+
+}
+
 void GameGUI::drawPanel(void)
 {
 	// ensure we have a valid selection and associate pointers
@@ -1672,102 +1784,7 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
-		Uint8 r, g, b;
-
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", selUnit->typeNum));
-
-		// display unit's owner
-		if (localTeam->teamNumber == selUnit->owner->teamNumber)
-			{ r=100; g=100; b=255; }
-		else if (localTeam->allies & selUnit->owner->me)
-			{ r=255; g=210; b=20; }
-		else
-			{ r=255; g=50; b=50; }
-
-		globalContainer->littleFont->pushColor(r, g, b);
-		const char *textT=selUnit->owner->getFirstPlayerName();
-		if (!textT)
-			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124+64, 128+4, globalContainer->littleFont, textT);
-		globalContainer->littleFont->popColor();
-
-
-		if (selUnit->hp<=selUnit->trigHP)
-			{ r=255; g=0; b=0; }
-		else
-			{ r=0; g=255; b=0; }
-
-		globalContainer->littleFont->pushColor(r, g, b);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[hp]"), selUnit->hp).c_str());
-		globalContainer->littleFont->popColor();
-
-		if (selUnit->isUnitHungry())
-			{ r=255; g=0; b=0; }
-		else
-			{ r=0; g=255; b=0; }
-
-		globalContainer->littleFont->pushColor(r, g, b);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+36, globalContainer->littleFont, GAG::nsprintf("%s : %2.0f %% (%d)", Toolkit::getStringTable()->getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount).c_str());
-		globalContainer->littleFont->popColor();
-
-		if (selUnit->performance[HARVEST])
-		{
-			if (selUnit->caryedRessource>=0)
-			{
-				const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->caryedRessource);
-				unsigned resImg = r->gfxId + r->sizesCount - 1;
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, resImg);
-			}
-			else
-			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, Toolkit::getStringTable()->getString("[don't carry anything]"));
-			}
-		}
-
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+96, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[current speed]"), selUnit->speed).c_str());
-
-		if (selUnit->typeNum!=EXPLORER)
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+168, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[levels]"), selUnit->speed).c_str());
-
-		if (selUnit->performance[WALK])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]).c_str());
-		if (selUnit->performance[SWIM])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+196, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]).c_str());
-		if (selUnit->performance[BUILD])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+208, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]).c_str());
-		if (selUnit->performance[HARVEST])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+220, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]).c_str());
-		if (selUnit->performance[ATTACK_SPEED])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+232, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]).c_str());
-		if (selUnit->performance[ATTACK_STRENGTH])
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+244, globalContainer->littleFont, GAG::nsprintf("%s (%d) : %d", Toolkit::getStringTable()->getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]).c_str());
-
-		/* debug code:
-		Sint32 UID=selUnit->UID;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFont, "hp=%d", selUnit->hp);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFont, "UID=%d", UID);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 30, globalContainer->littleFont, "id=%d", Unit::UIDtoID(UID));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 45, globalContainer->littleFont, "Team=%d", Unit::UIDtoTeam(UID));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 60, globalContainer->littleFont, "medical=%d", selUnit->medical);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 75, globalContainer->littleFont, "activity=%d", selUnit->activity);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 90, globalContainer->littleFont, "displacement=%d", selUnit->displacement);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+105, globalContainer->littleFont, "movement=%d", selUnit->movement);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+120, globalContainer->littleFont, "action=%d", selUnit->action);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+135, globalContainer->littleFont, "pox=(%d;%d)", selUnit->posX, selUnit->posY);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+150, globalContainer->littleFont, "d=(%d;%d)", selUnit->dx, selUnit->dy);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+165, globalContainer->littleFont, "direction=%d", selUnit->direction);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+180, globalContainer->littleFont, "target=(%d;%d)", selUnit->targetX, selUnit->targetY);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+195, globalContainer->littleFont, "tempTarget=(%d;%d)", selUnit->tempTargetX, selUnit->tempTargetY);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+210, globalContainer->littleFont, "obstacle=(%d;%d)", selUnit->obstacleX, selUnit->obstacleY);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+225, globalContainer->littleFont, "border=(%d;%d)", selUnit->borderX, selUnit->borderY);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+240, globalContainer->littleFont, "bypassDirection=%d", selUnit->bypassDirection);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+255, globalContainer->littleFont, "ab=%x", selUnit->attachedBuilding);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+270, globalContainer->littleFont, "speed=%d", selUnit->speed);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+285, globalContainer->littleFont, "verbose=%d", selUnit->verbose);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+300, globalContainer->littleFont, "subscribed=%d", selUnit->subscribed);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, globalContainer->littleFont, "ndToRckMed=%d", selUnit->needToRecheckMedical);
-		*/
+		drawUnitInfos();
 	}
 	else if (displayMode==BUILDING_VIEW)
 	{
@@ -2604,4 +2621,5 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 	
 	markList.push_front(mark);
 }
+
 
