@@ -763,6 +763,10 @@ von:
 à:
 to:
 zu:
+[away:]
+absent:
+away:
+
 [compile]
 Compiler le script
 Compile script
@@ -868,6 +872,14 @@ Le joueur
 The player
 
 [ has left YOG]
-  a quite YOG
-  has left YOG
+ a quité YOG.
+ has left YOG.
  
+[You are now marked as away]
+Vous êtes désormais considéré comme étant absent.
+You are now marked as away.
+
+[You are no more marked as away]
+Vous êtes désormais considéré comme étant présent.
+You are no more marked as away.
+

@@ -44,7 +44,15 @@ struct PrivateReceipt
 {
 	Uint8 receiptID;
 	Uint8 messageID;
+	
+	//The beginning of the originaly sent message. (e.i. "/m john hello")
+	//This allow the original sender to make the difference between the target-UserName and the TextMessage.
 	std::list<Uint8> addr;
+	
+	//A same length list.
+	//Bit 1 is true if the target-client is away.
+	std::list<bool> away;
+	std::list<char *> awayMessages;
 };
 
 class YOGClient;
@@ -96,7 +104,7 @@ public:
 	void sendClientsUpdates();
 	void addClient(YOGClient *client);
 	void removeClient(Uint32 uid);
-	void updateClient(Uint32 uid, bool playing);
+	void updateClient(Uint32 uid, Uint16 change);
 	void lprintf(const char *msg, ...);
 	int strmlen(const char *s, int max);
 	
@@ -146,6 +154,8 @@ public:
 	
 	Uint32 uid;
 	bool playing;
+	bool away;
+	char awayMessage[64];
 public:
 	bool hasip(IPaddress &ip) {return this->ip.host==ip.host && this->ip.port==ip.port;}
 };

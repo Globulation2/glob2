@@ -220,23 +220,21 @@ void GameGUI::step(void)
 					/* We don't want YOG messages to appear while in the game.
 					addMessage(99, 143, 255, "<%s> %s", m->userName, m->text);*/
 				break;
-
 				case YCMT_PRIVATE_MESSAGE:
 					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[from:]"), m->userName, m->text);
 				break;
-
 				case YCMT_ADMIN_MESSAGE:
 					addMessage(138, 99, 255, "<%s> %s", m->userName, m->text);
 				break;
-
 				case YCMT_PRIVATE_RECEIPT:
 					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[to:]"), m->userName, m->text);
 				break;
-				
+				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
+					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[away:]"), m->userName, m->text);
+				break;
 				case YCMT_EVENT_MESSAGE:
 					addMessage(99, 143, 255, "%s", m->text);
 				break;
-
 				default:
 					printf("m->messageType=%d\n", m->messageType);
 					assert(false);
