@@ -208,10 +208,10 @@ void GameGUI::step(void)
 		addMessage(30, 255, 30, globalContainer->texts.getString("[building has been finished]"));
 		
 	// do a yog step
-	globalContainer->yog->step();
+	yog->step();
 
 	// display yog chat messages
-	for (std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin(); m!=globalContainer->yog->receivedMessages.end(); ++m)
+	for (std::list<YOG::Message>::iterator m=yog->receivedMessages.begin(); m!=yog->receivedMessages.end(); ++m)
 		if (!m->gameGuiPainted)
 		{
 			switch(m->messageType)//set the text color
@@ -470,7 +470,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			if (message[0])
 			{
 				bool foundLocal=false;
-				globalContainer->yog->handleMessageAliasing(message, 256);
+				yog->handleMessageAliasing(message, 256);
 				if (strncmp(message, "/m ", 3)==0)
 				{
 					for (int i=0; i<game.session.numberOfPlayer; i++)
@@ -485,10 +485,10 @@ void GameGUI::processEvent(SDL_Event *event)
 							}
 						}
 					if (!foundLocal)
-						globalContainer->yog->sendMessage(message);
+						yog->sendMessage(message);
 				}
 				else if (message[0]=='/')
-					globalContainer->yog->sendMessage(message);
+					yog->sendMessage(message);
 				else
 					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
 				typingInputScreen->setText("");

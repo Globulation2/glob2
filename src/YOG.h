@@ -26,6 +26,7 @@
 
 class LogFileManager;
 
+//! Ysagoon Online Game connector and session handler
 class YOG
 {
 public:
@@ -115,7 +116,7 @@ public:
 	};
 	
 public:
-	YOG(LogFileManager *logFileManager);
+	YOG();
 	virtual ~YOG();
 	void send(Uint8 *data, int size);
 	void send(YOGMessageType v, Uint8 *data, int size);
@@ -230,5 +231,7 @@ public:
 	// This also allow GameGUI to make simpler tests.
 	void handleMessageAliasing(char *message, int maxSize);
 };
+
+extern YOG *yog;
 
 #endif

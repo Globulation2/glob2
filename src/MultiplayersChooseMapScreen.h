@@ -23,7 +23,6 @@
 #include "GAG.h"
 #include "Session.h"
 #include "GUIMapPreview.h"
-#include "GlobalContainer.h"
 
 class MultiplayersChooseMapScreen:public Screen
 {

@@ -179,7 +179,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 void MultiplayersChooseMapScreen::onTimer(Uint32 tick)
 {
 	if (shareOnYOG)
-		globalContainer->yog->step();
+		yog->step();
 }
 
 void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)

@@ -39,8 +39,10 @@
 #define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
 #endif
 
-YOG::YOG(LogFileManager *logFileManager)
+YOG::YOG()
 {
+	assert(globalContainer);
+	
 	socket=NULL;
 	yogGlobalState=YGS_NOT_CONNECTING;
 	lastMessageID=0;
@@ -63,13 +65,8 @@ YOG::YOG(LogFileManager *logFileManager)
 	selectedGameinfoTOTL=0;
 	
 	uid=0;
-	
-	if (logFileManager)
-	{
-		logFile=logFileManager->getFile("YOG.log");
-		assert(logFile);
-	}
-	else
+	logFile=globalContainer->logFileManager->getFile("YOG.log");
+	if (logFile==NULL)
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
 	

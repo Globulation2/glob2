@@ -40,7 +40,7 @@ public:
 	
 	std::vector<LogFMF> logFileList;
 	
-	FILE *getFile(char *name);
+	FILE *getFile(const char *fileName);
 	
 	FileManager *fileManager;
 };

@@ -22,7 +22,6 @@
 #include <string.h>
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
-#include "YOG.h"
 #include "FileManager.h"
 #include "LogFileManager.h"
 
@@ -30,7 +29,6 @@ GlobalContainer::GlobalContainer(void)
 {
 	fileManager=new FileManager();
 	logFileManager=new LogFileManager(fileManager);
-	yog=new YOG(logFileManager);
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
@@ -84,8 +82,6 @@ GlobalContainer::~GlobalContainer(void)
 		delete littleFont;
 	if (gfx)
 		delete gfx;
-	assert(yog);
-	delete yog;
 }
 
 void GlobalContainer::setUserName(const char *name)
