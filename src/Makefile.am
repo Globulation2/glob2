@@ -113,11 +113,17 @@ MapGenerationDescriptor.h \
 MapGenerationDescriptor.cpp \
 LogFileManager.h \
 LogFileManager.cpp \
+YOGPreScreen.h \
 YOGPreScreen.cpp \
 ScriptEditorScreen.h \
 ScriptEditorScreen.cpp \
 EndGameScreen.h \
-EndGameScreen.cpp
+EndGameScreen.cpp \
+Gradient.h \
+Marshaling.h \
+YOGConsts.h \
+NetDefine.h \
+Version.h
 
 glob2_LDADD=-lvorbisfile -lvorbis -lSDL_net -lSDL_image @FT2_LIBS@ @SDL_LIBS@ ../libgag/src/libgag.a
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../libgag/include
