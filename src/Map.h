@@ -422,7 +422,7 @@ protected:
 	int pathToBuildingCountFarOldFailureBad;
 	int pathToBuildingCountFarOldFailureUnusable;
 	int pathToBuildingCountFarUpdateSuccess;
-	int pathToBuildingCountFarUpdateSuccessFar;
+	int pathToBuildingCountFarUpdateSuccessAround;
 	int pathToBuildingCountFarUpdateFailureLocked;
 	int pathToBuildingCountFarUpdateFailureBad;
 	
@@ -435,9 +435,9 @@ protected:
 	
 	int buildingAviableCountClose;
 	int buildingAviableCountCloseSuccess;
-	int buildingAviableCountCloseSuccessClosely;
+	int buildingAviableCountCloseSuccessAround;
 	int buildingAviableCountCloseSuccessUpdate;
-	int buildingAviableCountCloseSuccessUpdateClosely;
+	int buildingAviableCountCloseSuccessUpdateAround;
 	int buildingAviableCountCloseFailureLocked;
 	int buildingAviableCountCloseFailureEnd;
 	
@@ -450,7 +450,7 @@ protected:
 	int buildingAviableCountFarNewFailureEnd;
 	int buildingAviableCountFarOld;
 	int buildingAviableCountFarOldSuccess;
-	int buildingAviableCountFarOldSuccessClosely;
+	int buildingAviableCountFarOldSuccessAround;
 	int buildingAviableCountFarOldFailureLocked;
 	int buildingAviableCountFarOldFailureEnd;
 

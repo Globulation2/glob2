@@ -1609,38 +1609,44 @@ void Unit::gotoGroundTarget()
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
+	Uint32 teamMask=owner->me;
 	Map *map=owner->map;
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	int cDirection=direction;
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, teamMask))
 		return;
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("guid=(%d) gotoGroundTarget failed pos=(%d, %d) \n", gid, posX, posY);
 }
 
 void Unit::escapeGroundTarget()
@@ -1650,37 +1656,38 @@ void Unit::escapeGroundTarget()
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
+	Uint32 teamMask=owner->me;
 	Map *map=owner->map;
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	int cDirection=direction;
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, teamMask))
 		return;
 	dx=0;
 	dy=0;
