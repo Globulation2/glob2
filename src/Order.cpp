@@ -22,7 +22,9 @@
 
 Order::Order(void)
 {
+	sender=-1;
 	inQueue=true;
+	wishedLatency=0;
 }
 
 Order *Order::getOrder(const Uint8 *netData, int netDataLength)

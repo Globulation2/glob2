@@ -84,16 +84,18 @@ public:
 	void pushOrder(Order *order, int playerNumber);
 	Order *getOrder(int playerNumber);
 	void orderHasBeenExecuted(Order *order);
-	
+
+private:
+	void updateDelays(int player, Uint8 receivedStep);
+	void treatData(Uint8 *data, int size, IPaddress ip);
+
+public:
 	bool stepReadyToExecute(void);
 	void receptionStep(void);
 	void stepExecuted(void);
 	int ticksToDelay(void);
 	
 private:
-	void updateDelays(int player, Uint8 receivedStep);
-	void treatData(Uint8 *data, int size, IPaddress ip);
-
 	int numberOfPlayer;
 	int localPlayerNumber;
 	
@@ -114,10 +116,14 @@ private:
 	int ordersByPackets;
 	
 	Uint32 waitingForPlayerMask;
+	bool hadToWaitThisStep;
 	
 	Player *players[32];
 
 	enum {defaultLatency=8};//320[ms]
+	enum {maxLatency=24};//960[ms]
+	Uint8 myLocalWishedLatency; // The latency we wants, but the other players don't know about it yet.
+	Uint8 wishedLatency[32]; // The latency each player wants.
 	enum {MAX_GAME_PACKET_SIZE=1500};
 	enum {COUNT_DOWN_DEATH=100};
 	
@@ -139,13 +145,14 @@ private:
 	Uint8 lastAviableStep[32][32];
 	
 	// We wants tu update latency automatically:
-	Uint8 recentsPingPong[32][256]; // The 256 last ping+pong times. [ticks]
+	Uint8 recentsPingPong[32][64]; // The 64 last ping+pong times. [ticks]
 	Uint8 pingPongCount[32]; // The next recentDelays[][x] to write in. [ticks]
-	Uint8 pingPong[32]; // Average-like and usable ping+pong time to a player. [ticks]
+	Uint8 pingPongMax[32]; // Average-like and usable ping+pong time to a player. [ticks]
 	
-	Uint8 recentOrderMarginTime[32][256]; 
+	Uint8 recentOrderMarginTime[32][64]; // The 64 last, time before we run out of orders. [ticks]
 	Uint8 orderMarginTimeCount[32];
-	Uint8 orderMarginTime[32]; // Average-like and usable time before we run out of orders. [ticks]
+	Uint8 orderMarginTimeMin[32];
+	Uint8 orderMarginTimeMax[32];
 	
 	
 	UDPsocket socket;

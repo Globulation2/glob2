@@ -44,6 +44,7 @@ public:
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
 	bool inQueue;
+	Uint8 wishedLatency;
 };
 
 
