@@ -24,8 +24,6 @@
 #include "Header.h"
 #include <stdlib.h>
 
-// bit &1 looks good.
-// bit &3 looks poor.
 Uint32 syncRand(void);
 void setSyncRandSeed();
 void setSyncRandSeedA(Uint32 seed);

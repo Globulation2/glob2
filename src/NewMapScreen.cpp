@@ -55,7 +55,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeX->add(128);
 	mapSizeX->add(256);
 	mapSizeX->add(512);
-	mapSizeX->setNth(1);
+	mapSizeX->setNth(sizeX-6);
 	addWidget(mapSizeX);
 	
 	mapSizeY=new Number(20, 75, 100, 20, 20, globalContainer->menuFont);
@@ -63,7 +63,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeY->add(128);
 	mapSizeY->add(256);
 	mapSizeY->add(512);
-	mapSizeY->setNth(1);
+	mapSizeY->setNth(sizeY-6);
 	addWidget(mapSizeY);
 	
 	methodes=new List(20, 100, 280, 300, globalContainer->menuFont);
@@ -79,15 +79,15 @@ NewMapScreen::NewMapScreen()
 	terrains->setNth(0);
 	addWidget(terrains);
 	
-	waterRatio=new Ratio(320, 120, 164, 18, 40, descriptor.waterRatio);
+	waterRatio=new Ratio(320, 120, 164, 18, 40, descriptor.waterRatio, globalContainer->menuFont);
 	waterRatio->visible=false;
 	addWidget(waterRatio);
 	
-	sandRatio=new Ratio(320, 140, 164, 18, 40, descriptor.sandRatio);
+	sandRatio=new Ratio(320, 140, 164, 18, 40, descriptor.sandRatio, globalContainer->menuFont);
 	sandRatio->visible=false;
 	addWidget(sandRatio);
 	
-	grassRatio=new Ratio(320, 160, 164, 18, 40, descriptor.grassRatio);
+	grassRatio=new Ratio(320, 160, 164, 18, 40, descriptor.grassRatio, globalContainer->menuFont);
 	grassRatio->visible=false;
 	addWidget(grassRatio);
 	
@@ -99,6 +99,7 @@ NewMapScreen::NewMapScreen()
 	smooth->add(5);
 	smooth->add(6);
 	smooth->add(7);
+	smooth->add(8);
 	smooth->setNth(descriptor.smooth-1);
 	smooth->visible=false;
 	addWidget(smooth);
@@ -141,7 +142,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				smooth->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
 				
 				dispatchPaint(gfxCtx);
-				addUpdateRect(320, 100, 280, 300);
+				addUpdateRect(320, 100, 320, 300);
 			}
 		}
 	}
@@ -177,6 +178,6 @@ void NewMapScreen::paint(int x, int y, int w, int h)
 		gfxCtx->drawString(500, 120, globalContainer->menuFont, globalContainer->texts.getString("[water]"));
 		gfxCtx->drawString(500, 140, globalContainer->menuFont, globalContainer->texts.getString("[sand]"));
 		gfxCtx->drawString(500, 160, globalContainer->menuFont, globalContainer->texts.getString("[grass]"));
-		gfxCtx->drawString(400, 180, globalContainer->menuFont, globalContainer->texts.getString("[Uniformity]"));
+		gfxCtx->drawString(500, 180, globalContainer->menuFont, globalContainer->texts.getString("[Smoothing]"));
 	}
 }

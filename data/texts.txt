@@ -651,7 +651,7 @@ Random terrain
 Proportions
 Rations
 
-[Uniformity]
-Uniformite
-Uniformity
+[Smoothing]
+Lissage
+Smoothing
 

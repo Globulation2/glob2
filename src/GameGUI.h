@@ -98,6 +98,7 @@ private:
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 public:
+	// Engine has to call this every "real" steps. (or game steps)
 	void synchroneStep(void);
 private:
 	void iterateSelection(void);
@@ -145,6 +146,8 @@ private:
 	Building *selBuild;
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
+	//! True if the mouse's button way never relased since click im minimap.
+	bool miniMapPushed;
 	Unit *selUnit;
 	Sint32 selectionUID;
 	bool needRedraw;
