@@ -1,17 +1,10 @@
 To First release :
 
 Gameplay :
-- Changer la structure de la carte :
-  * niveau 0 pas sur eau.
-  * explo sur batiments.
 - Unites tirent une pierre.
-- Tourelles tirent une pierre.
-- Drapeau d'interdiction.
-- Sauvegarde configuration.
 
 Technique :
 - Minimiser les #includes
-- factoriser setAirUnit() & setGroundUnit().
 - optimiser l'affichage des boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
 - Refaire le pathfinding, essayer d'utilisre des cibles avec double précision, et d'améliorer
@@ -19,7 +12,6 @@ Technique :
 - La minimap ne tient pas compte des batiment que l'on voit sous le FOW.
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
-- write a quick start guide. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
 - Un YOG qui tienne la route.

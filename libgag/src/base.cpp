@@ -24,19 +24,6 @@
 	base namespace.
 */
 
-/*!	\mainpage DPS Reference documentation
-
-	\section intro Introduction
-	This is the reference for the DPS class library. The DPS library contains many
-	classes, most of which are not intended for use by applications. In order to
-	make finding information easier, the classes are sorted into several modules. 
-	The module \ref user contains all classes intended for application development.
-	\section feedback Feedback
-	This documentation is not yet complete, but should provide enough information
-	for developing applications with DPS. If you have any comments or suggestions,
-	do not hesitate to send them to <a href="mailto:sebastian.gerlach@epfl.ch">Sebastian.Gerlach@epfl.ch</a>.
-*/
-
 #include <dps/base.h>
 
 #ifdef DPS_COMPILER_MS
