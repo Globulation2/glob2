@@ -149,7 +149,7 @@ namespace GAGCore
 						baseCountD++;
 					else
 					{
-						std::cerr << "text=(" << s << "), Only %d and %s are supported in translations !" << std::endl;
+						std::cerr << "StringTable::load(\"" << filename << "\") : error, consistency : text=(" << s << "), Only %d and %s are supported in translations !" << std::endl;
 						assert(false);
 						return false;
 					}
@@ -174,7 +174,7 @@ namespace GAGCore
 							countD++;
 						else
 						{
-							std::cerr << "translation=(" << s << "Only %s and %d are supported in translations !" << std::endl;
+							std::cerr << "StringTable::load(\"" << filename << "\") : error, translation consistency : translation=(" << s << "Only %s and %d are supported in translations !" << std::endl;
 							assert(false);
 							return false;
 						}
@@ -184,7 +184,7 @@ namespace GAGCore
 				// if not, issue an error message
 				if (baseCountS!=countS ||baseCountD!=countD)
 				{
-					std::cerr << "In " << translationFiles[i] << ", text = [" << baseCountS << ":" << baseCountD << "] (" << it->first << "), translation = [" << countS << ":" << countD << "] (" << s << "), doesn't match !" << std::endl;
+					std::cerr << "StringTable::load(\"" << filename << "\") : error, translation : in " << translationFiles[i] << ", text = [" << baseCountS << ":" << baseCountD << "] (" << it->first << "), translation = [" << countS << ":" << countD << "] (" << s << "), doesn't match !" << std::endl;
 					assert(false);
 					return false;
 				}
@@ -214,13 +214,17 @@ namespace GAGCore
 			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 			if (accessIt == stringAccess.end())
 			{
+				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
 				return "ERROR : NO STRING";
 			}
 			else
 			{
 				int dec = index >= 0 ? index + 1 : 0;
 				if (accessIt->second+dec >= strings.size())
+				{
+					std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, index out of bound." << std::endl;
 					return "ERROR : INDEX OUT OF BOUND";
+				}
 				std::string &s = strings[accessIt->second+dec]->data[actLang];
 				if (s.length() == 0)
 					return strings[accessIt->second+dec]->data[defaultLang].c_str();
@@ -230,6 +234,7 @@ namespace GAGCore
 		}
 		else
 		{
+			std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, bad language selected." << std::endl;
 			return "ERROR, BAD LANG";
 		}
 	}
@@ -242,6 +247,7 @@ namespace GAGCore
 			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 			if (accessIt == stringAccess.end())
 			{
+				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
 				return "ERROR : NO STRING";
 			}
 			else
@@ -251,6 +257,7 @@ namespace GAGCore
 		}
 		else
 		{
+			std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, bad language selected." << std::endl;
 			return "ERROR, BAD LANG ID";
 		}
 	}
