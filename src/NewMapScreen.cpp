@@ -71,7 +71,7 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[random terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
-	methodes->setNth(0);
+	methodes->setSelectionIndex(0);
 	addWidget(methodes);
 	
 	// eUNIFORM
@@ -80,7 +80,7 @@ NewMapScreen::NewMapScreen()
 	terrains->addText(Toolkit::getStringTable()->getString("[water]"));
 	terrains->addText(Toolkit::getStringTable()->getString("[sand]"));
 	terrains->addText(Toolkit::getStringTable()->getString("[grass]"));
-	terrains->setNth(descriptor.terrainType);
+	terrains->setSelectionIndex(descriptor.terrainType);
 	addWidget(terrains);
 	
 	// not eUNIFORM
@@ -223,13 +223,13 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		// eUNIFORM
 		if (source==terrains)
-			descriptor.terrainType=(TerrainType)terrains->getNth();
+			descriptor.terrainType=(TerrainType)terrains->getSelectionIndex();
 		
 		// all
 		if (source==methodes)
 		{
 			MapGenerationDescriptor::Methode old=descriptor.methode;
-			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getNth();
+			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getSelectionIndex();
 			
 			if (old!=descriptor.methode)
 			{

@@ -89,10 +89,10 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=fileList->getText(par1);
+		const char *mapSelectedName=fileList->getText(par1).c_str();
 		if (mapSelectedName)
 		{
-			std::string mapFileName = fileList->listToFile(fileList->getText(par1));
+			std::string mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
 
 			mapPreview->setMapThumbnail(mapFileName.c_str());
 			GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);

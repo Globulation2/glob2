@@ -78,7 +78,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=static_cast<Glob2FileList *>(source)->getText(par1);
+		const char *mapSelectedName=static_cast<Glob2FileList *>(source)->getText(par1).c_str();
 		std::string mapFileName;
 		if (mapMode)
 		{

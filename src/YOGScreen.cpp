@@ -105,32 +105,38 @@ void YOGScreen::updateGameList(void)
 
 void YOGScreen::updatePlayerList(void)
 {
+	// update YOG one
 	playerList->clear();
 	for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
 	{
+		std::string listEntry;
 		if (client->playing)
 		{
 			if (client->away)
 			{
-				char s[32+4];
-				snprintf(s, 32+4, "([%s])", client->userName);
-				playerList->addText(s);
+				listEntry = std::string("y ([") + client->userName + "])";
 			}
 			else
 			{
-				char s[32+2];
-				snprintf(s, 32+2, "(%s)", client->userName);
-				playerList->addText(s);
+				
+				listEntry = std::string("y (") + client->userName + ")";
 			}
 		}
 		else if (client->away)
 		{
-			char s[32+2];
-			snprintf(s, 32+2, "[%s]", client->userName);
-			playerList->addText(s);
+			listEntry = std::string("y [") + client->userName + "]";
 		}
 		else
-			playerList->addText(client->userName);
+			listEntry = client->userName;
+		playerList->addText(listEntry);
+	}
+	// update irc entries, remove one already on YOG
+	if (irc.initChannelUserListing(IRC_CHAN))
+	{
+		while (irc.isMoreChannelUser())
+		{
+			playerList->addText(std::string("i ") + irc.getNextChannelUser());
+		}
 	}
 }
 
