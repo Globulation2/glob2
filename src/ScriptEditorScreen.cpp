@@ -57,7 +57,8 @@ bool ScriptEditorScreen::testCompile(void)
 	{
 		compilationResult->setColor(255, 50, 50);
 		compilationResult->setText("Compilation failure");
-		printf("SGSL : %d:%d: %s\n", er.line+1, er.col, er.getErrorString());
+		editor->setCursorPos(er.pos);
+		printf("SGSL : %d:%d %s\n", er.line+1, er.col, er.getErrorString());
 		// TODO : print clean error message
 		return false;
 	}

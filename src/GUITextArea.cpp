@@ -239,6 +239,14 @@ void TextArea::onSDLEvent(SDL_Event *event)
 	//return false;
 }
 
+void TextArea::setCursorPos(unsigned pos)
+{
+	if (pos>textBufferLength)
+		pos=textBufferLength;
+	cursorPos=pos;
+	computeAndRepaint();
+}
+
 void TextArea::computeAndRepaint(void)
 {
 	// The only variable which is always valid is cursorPos,

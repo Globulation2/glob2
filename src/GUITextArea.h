@@ -40,6 +40,7 @@ public:
 	virtual void scrollDown(void);
 	virtual void scrollUp(void);
 	virtual void scrollToBottom(void);
+	virtual void setCursorPos(unsigned pos);
 
 protected:
 	virtual void internalPaint(void);

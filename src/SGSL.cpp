@@ -530,11 +530,13 @@ Aquisition::Aquisition(void)
 	token.type=Token::NIL;
 	actLine=0;
 	actCol=0;
+	actPos=0;
 	lastLine=0;
 	lastCol=0;
+	lastPos=0;
 }
 
-#define HANDLE_ERROR_POS(c) if (c=='\n') { actLine++; actCol=0; } else { actCol++; }
+#define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
 #undef getc
 
 void Aquisition::nextToken()
@@ -544,6 +546,7 @@ void Aquisition::nextToken()
 	
 	lastCol=actCol;
 	lastLine=actLine;
+	lastPos=actPos;
 
 	// eat empty char
 	while(( c=this->getChar() )!=EOF)
@@ -786,7 +789,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 {
 
-#define NEXT_TOKEN {  er.line=donnees->getLine(); er.col=donnees->getCol(); donnees->nextToken(); }
+#define NEXT_TOKEN {  er.line=donnees->getLine(); er.col=donnees->getCol(); er.pos=donnees->getPos(); donnees->nextToken(); }
 
 	ErrorReport er;
 	er.type=ErrorReport::ET_OK;
