@@ -82,7 +82,7 @@ BasePlayer::~BasePlayer(void)
 
 void BasePlayer::close(void)
 {
-	//printf("Player::close (%d).\n", destroyNet);
+	fprintf(logFile, "Player::close destroyNet=%d.\n", destroyNet);
 	if (destroyNet)
 	{
 		unbind();
