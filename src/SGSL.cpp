@@ -34,6 +34,7 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include <math.h>
 #include "SGSL.h"
 #include "Game.h"
+#include "Utilities.h"
 
 
 Token::TokenSymbolLookupTable Token::table[] =
@@ -428,19 +429,25 @@ bool Story::testCondition()
 				int x, y, r;
 				if (mapscript->getFlagPos(line[lineSelector+1].msg, &x, &y, &r))
 				{
-					int dx, dy;
-					int number =line[lineSelector+2].value;
-					int delta = (int)(sqrt((double)number)+1)/2;
-					for (dy=y-delta; dy<y+delta; dy++)
+					int number = line[lineSelector+2].value;
+					int maxTest = number * 3;
+
+					while ((number>0) && (maxTest>0))
 					{
-						for (dx=x-delta; dx<x+delta; dx++)
+						int dx=(syncRand()%(2*r))+1;
+						int dy=(syncRand()%(2*r))+1;
+						dx-=r;
+						dy-=r;
+
+						if (dx*dx+dy*dy<r*r)
 						{
-							if (number >= 0)
+							if (mapscript->game->addUnit(x+dx, y+dy, line[lineSelector+5].value, line[lineSelector+3].type-101, line[lineSelector+4].value, 0, 0, 0))
 							{
-								mapscript->game->addUnit(dx, dy, line[lineSelector+5].value, line[lineSelector+3].type-101, line[lineSelector+4].value, 0, 0, 0);
 								number --;
 							}
 						}
+
+						maxTest--;
 					}
 				}
 				lineSelector +=4;
@@ -802,8 +809,19 @@ void Mapscript::step()
 		mainTimer--;
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		(*it).step();
+		it->step();
 	}
+}
+
+Sint32 Mapscript::checkSum()
+{
+	Sint32 cs=0;
+	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+	{
+		cs^=it->checkSum();
+		cs=(cs<<28)|(cs>>4);
+	}
+	return cs;
 }
 
 

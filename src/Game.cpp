@@ -2048,6 +2048,8 @@ Sint32 Game::checkSum()
 	cs^=getSyncRandSeedC();
 	//printf("Game::sc, sr=(%d, %d, %d).", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
 	//printf(", %x)\n", cs);
+
+	cs^=script.checkSum();
 	
 	return cs;
 }
