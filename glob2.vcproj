@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib libspeex.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -87,7 +87,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib libspeex.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -369,6 +369,9 @@
 				RelativePath="src\Utilities.cpp">
 			</File>
 			<File
+				RelativePath=".\src\VoiceRecorder.cpp">
+			</File>
+			<File
 				RelativePath="src\YOG.cpp">
 			</File>
 			<File
@@ -380,6 +383,9 @@
 			<Filter
 				Name="libgag"
 				Filter="">
+				<File
+					RelativePath=".\libgag\src\BinaryStream.cpp">
+				</File>
 				<File
 					RelativePath=".\libgag\src\CursorManager.cpp">
 				</File>
@@ -426,6 +432,9 @@
 					RelativePath=".\libgag\src\Stream.cpp">
 				</File>
 				<File
+					RelativePath=".\libgag\src\StreamBackend.cpp">
+				</File>
+				<File
 					RelativePath=".\libgag\src\StreamBackend.h">
 				</File>
 				<File
@@ -433,6 +442,9 @@
 				</File>
 				<File
 					RelativePath=".\libgag\src\SupportFunctions.cpp">
+				</File>
+				<File
+					RelativePath=".\libgag\src\TextStream.cpp">
 				</File>
 				<File
 					RelativePath=".\libgag\src\Toolkit.cpp">

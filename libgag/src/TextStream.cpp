@@ -22,6 +22,10 @@
 #include <fstream>
 #include <iostream>
 #include <stack>
+#ifdef WIN32
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#endif
 
 namespace GAGCore
 {
@@ -237,7 +241,7 @@ namespace GAGCore
 					case '\t':
 					case '\n':
 					case '\r':
-					while (std::isspace(next))
+					while (next==' ' || next=='\t' || next=='\r' || next=='\n') //std::isspace(next))
 						nextChar();
 					token = nextToken();
 					break;

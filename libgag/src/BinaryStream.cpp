@@ -19,14 +19,14 @@
 
 #include <BinaryStream.h>
 
+#include <valarray>
+#include <assert.h>
 // For htons/htonl
 #ifdef WIN32
 	#include <windows.h>
 #else
 	#include <netinet/in.h>
 #endif
-#include <valarray>
-#include <assert.h>
 
 namespace GAGCore
 {
