@@ -64,33 +64,46 @@ namespace GAGCore
 		return false;
 	}
 	
-	int TrueTypeFont::getStringWidth(const char *string, Shape shape) const
+	int TrueTypeFont::getStringWidth(const char *string, Shape shape)
 	{
-		int w, h;
-		int oldShape = TTF_GetFontStyle(font);
-		TTF_SetFontStyle(font, shape);
-		TTF_SizeUTF8(font, string, &w, &h);
-		TTF_SetFontStyle(font, oldShape);
+		pushStyle(Style(shape, styleStack.top().r, styleStack.top().g, styleStack.top().b, styleStack.top().a));
+		SDL_Surface *s = getStringCached(string);
+		int w;
+		if (s)
+		{
+			w = s->w;
+			cleanupCache();
+		}
+		else
+			w = 0;
+		popStyle();
 		return w;
 	}
 	
-	int TrueTypeFont::getStringHeight(const char *string, Shape shape) const
+	int TrueTypeFont::getStringHeight(const char *string, Shape shape)
 	{
-		int height;
-		int oldShape = TTF_GetFontStyle(font);
-		TTF_SetFontStyle(font, shape);
+		int h;
 		if (string)
 		{
-			int w, h;
-			TTF_SizeUTF8(font, string, &w, &h);
-			height = h;
+			pushStyle(Style(shape, styleStack.top().r, styleStack.top().g, styleStack.top().b, styleStack.top().a));
+			SDL_Surface *s = getStringCached(string);
+			if (s)
+			{
+				h = s->h;
+				cleanupCache();
+			}
+			else
+				h = 0;
+			popStyle();
 		}
 		else
 		{
-			height = TTF_FontHeight(font);
+			int oldShape = TTF_GetFontStyle(font);
+			TTF_SetFontStyle(font, shape);
+			h = TTF_FontHeight(font);
+			TTF_SetFontStyle(font, oldShape);
 		}
-		TTF_SetFontStyle(font, oldShape);
-		return height;
+		return h;
 	}
 	
 	void TrueTypeFont::setStyle(Style style)
@@ -128,7 +141,7 @@ namespace GAGCore
 		return styleStack.top();
 	}
 	
-	void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip)
+	SDL_Surface *TrueTypeFont::getStringCached(const char *text)
 	{
 		assert(text);
 		assert(font);
@@ -153,7 +166,7 @@ namespace GAGCore
 			
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
 			if (temp == NULL)
-				return;
+				return NULL;
 			
 			// create key
 			data.lastAccessed = now;
@@ -178,44 +191,58 @@ namespace GAGCore
 			timeCache[now] = keyIt;
 		}
 		now++;
-		
-		// render
-		SDL_Rect sr;
-		sr.x = 0;
-		sr.y = 0;
-		sr.w = static_cast<Uint16>(s->w);
-		sr.h = static_cast<Uint16>(s->h);
+		return s;
+	}
 	
-		SDL_Rect r;
-		r.x = static_cast<Sint16>(x);
-		r.y = static_cast<Sint16>(y);
-		if (w)
-			r.w = static_cast<Uint16>(w);
-		else
-			r.w = static_cast<Uint16>(s->w);
-		r.h = static_cast<Uint16>(s->h);
-	
-		SDL_Rect oc;
-		if (clip)
-		{
-			SDL_GetClipRect(Surface, &oc);
-			sdcRects(&sr, &r, *clip);
-			SDL_SetClipRect(Surface, &r);
-		}
-	
-		SDL_BlitSurface(s, &sr, Surface, &r);
-	
-		if (clip)
-		{
-			SDL_SetClipRect(Surface, &oc);
-		}
-		
+	void TrueTypeFont::cleanupCache(void)
+	{
 		// when cache is too big, remove the first element
 		if (cache.size() >= MAX_CACHE_SIZE)
 		{
 			SDL_FreeSurface(timeCache.begin()->second->second.s);
 			cache.erase(timeCache.begin()->second);
 			timeCache.erase(timeCache.begin());
+		}
+	}
+	
+	void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip)
+	{
+		SDL_Surface *s = getStringCached(text);
+		
+		// render
+		if (s)
+		{
+			SDL_Rect sr;
+			sr.x = 0;
+			sr.y = 0;
+			sr.w = static_cast<Uint16>(s->w);
+			sr.h = static_cast<Uint16>(s->h);
+		
+			SDL_Rect r;
+			r.x = static_cast<Sint16>(x);
+			r.y = static_cast<Sint16>(y);
+			if (w)
+				r.w = static_cast<Uint16>(w);
+			else
+				r.w = static_cast<Uint16>(s->w);
+			r.h = static_cast<Uint16>(s->h);
+		
+			SDL_Rect oc;
+			if (clip)
+			{
+				SDL_GetClipRect(Surface, &oc);
+				sdcRects(&sr, &r, *clip);
+				SDL_SetClipRect(Surface, &r);
+			}
+		
+			SDL_BlitSurface(s, &sr, Surface, &r);
+		
+			if (clip)
+			{
+				SDL_SetClipRect(Surface, &oc);
+			}
+			
+			cleanupCache();
 		}
 	}
 }

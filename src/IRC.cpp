@@ -196,7 +196,11 @@ void IRC::interpreteIRCMessage(const char *message)
 
 		infoMessages.push_back(msg);
 		
-		usersOnChannels[std::string(diffusion)].erase(std::string(source));
+		// if we leave the chan, erase all list
+		if (strcmp(source, nick) == 0)
+			usersOnChannels[std::string(diffusion)].clear();
+		else
+			usersOnChannels[std::string(diffusion)].erase(std::string(source));
 		usersOnChannelsModified = true;
 	}
 	else if (strcasecmp(cmd, "QUIT")==0)
