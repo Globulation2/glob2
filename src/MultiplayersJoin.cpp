@@ -745,6 +745,10 @@ void MultiplayersJoin::receiveTime()
 						{
 							fprintf(logFile, "MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
 							fprintf(logFile, "MultiplayersJoin:NAT:serverIP.port=%d\n", SDL_SwapBE16(serverIP.port));
+							
+							waitingState=WS_WAITING_FOR_PRESENCE;
+							waitingTimeout=0;
+							waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 						}
 						else
 						{
@@ -948,12 +952,12 @@ void MultiplayersJoin::sendingTime()
 		{
 			if (sendPresenceRequest())
 			{
-				if (shareOnYOG)
+				/*if (shareOnYOG)
 				{
 					if (broadcastState==BS_DISABLE_YOG)
 						broadcastState=BS_ENABLE_YOG;
 					fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
-				}
+				}*/
 			}
 			else
 				waitingState=WS_TYPING_SERVER_NAME;
@@ -1346,6 +1350,13 @@ bool MultiplayersJoin::tryConnection()
 	
 	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
 	fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+	
+	if (shareOnYOG && !ipFromNAT) // ipFromNAT will avoid to broadcast, if you are the joiner and host.
+	{
+		if (broadcastState==BS_DISABLE_YOG)
+			broadcastState=BS_ENABLE_YOG;
+		fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
+	}
 	
 	return sendPresenceRequest();
 }
