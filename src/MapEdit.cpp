@@ -974,7 +974,7 @@ bool MapEdit::save(const char *filename, const char *name)
 {
 	assert(filename);
 	assert(name);
-	
+
 	SDL_RWops *stream=globalContainer->fileManager->open(filename,"wb");
 	if (stream)
 	{
