@@ -21,6 +21,8 @@ Pathfindig:
 - Des tas d'unités peuvent bloquer une unité...
 - Il y a peut-être des osciliations entre le petit et le grand gradient. (bug pas sauvable).
 
+Gameplay:
+- Peut-on partager les batiments alliés d'ungrade ?
 
 Optimisation:
 - Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
@@ -39,6 +41,10 @@ Technique :
 - traduction des raccourcis claviers de la GUI. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Un YOG qui tienne la route.
+
+Options:
+- glob2 --version
+- glob2 --benchmark
 
 To Next version :
 
