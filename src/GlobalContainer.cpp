@@ -128,6 +128,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-m\tspecify meta server hostname\n");
 			printf("-p\tspecify meta server port\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
+			exit(0);
 		}
 
 		// the -d option appends a directory in the
