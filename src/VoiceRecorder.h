@@ -45,8 +45,10 @@ public:
 	std::queue<OrderVoiceData *> orders;
 	//! True when record thread is running
 	bool recordThreadRun;
-	//! True when 
+	//! True when recording
 	bool recordingNow;
+	//! When recordingNow is set to false, get decrement
+	int stopRecordingTimeout;
 	
 public:
 	//! Constructor
