@@ -1,7 +1,34 @@
 #!/bin/sh
 
+DIE=0
+
+(autoconf --version && autoheader --version) < /dev/null > /dev/null 2>&1 || {
+        echo
+        echo "You must have autoconf installed to compile glob2 from CVS."
+        echo "Download the appropriate package for your distribution,"
+        echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
+        DIE=1
+}
+
+(aclocal --version) < /dev/null > /dev/null 2>&1 || {
+        echo
+        echo "You must have automake installed to compile glob2 from CVS."
+        echo "Download the appropriate package for your distribution,"
+        echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
+	DIE=1
+}
+
+if test "$DIE" -eq 1; then
+	echo
+	echo "You miss the necessary tools to compile glob2 from CVS,"
+	echo "please try a released source archive."
+        exit 1
+fi
+
+rm -rf config.cache autom4te-*.cache
+
 aclocal \
-&& autoheader \
 && automake --foreign --add-missing \
+&& autoheader \
 && autoconf
 
