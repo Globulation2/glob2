@@ -1235,21 +1235,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-		{
-			// state change
-			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(0);
-	
-			// draw
-			glBegin(GL_POINT);
-			if (color.a < 255)
-				glColor4ub(color.r, color.g, color.b, color.a);
-			else
-				glColor3ub(color.r, color.g, color.b);
-			glVertex2f(x, y);
-			glEnd();
-		}
+			drawFilledRect(x, y, 1.0f, 1.0f, color);
 		else
 		#endif
 			DrawableSurface::drawPixel(static_cast<int>(x), static_cast<int>(y), color);
