@@ -25,6 +25,7 @@
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
 {
+	yogGameInfo=NULL;
 	init(shareOnYOG);
 }
 
@@ -76,6 +77,14 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	listHasChanged=false;
 	
 	this->shareOnYOG=shareOnYOG;
+	
+	if (yogGameInfo)
+	{
+		delete yogGameInfo;
+		yogGameInfo=NULL;
+	}
+	
+	localPort=0;
 }
 
 void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
@@ -621,11 +630,16 @@ void MultiplayersJoin::sendingTime()
 		{
 			if (sendPresenceRequest())
 			{
+				if (yogGameInfo)
+				{
+					assert(shareOnYOG);
+					Uint16 port=SERVER_PORT;
+					NETPRINTF("sending water to firewall. (%s) (%d)\n", yogGameInfo->source, port);
+					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, port);
+				}
+				
 				if (shareOnYOG)
 				{
-					NETPRINTF("sending water to firewall. (%s) (%d)\n", serverName, SERVER_PORT);
-					globalContainer->yog.sendFirewallActivation(serverName, SERVER_PORT);
-					
 					if (broadcastState==BS_DISABLE_YOG)
 						broadcastState=BS_ENABLE_YOG;
 					NETPRINTF("enabling NAT detection too. bs=(%d)\n", broadcastState);
@@ -932,6 +946,78 @@ bool MultiplayersJoin::send(const int u, const int v)
 	return true;
 }
 
+Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
+{
+	Uint16 localPort=0;
+	for (int tempPort=7008; tempPort<7009; tempPort++)
+	{
+		// First, we create a temporaty local server (tempServer):
+		UDPsocket tempSocket;
+		tempSocket=SDLNet_UDP_Open(tempPort);
+		if (tempSocket)
+			NETPRINTF("findLocalPort:: Socket opened at port %d.\n", tempPort);
+		else
+		{
+			NETPRINTF("findLocalPort:: failed to open a socket.\n");
+			return 0;
+		}
+
+		{
+			UDPpacket *packet=SDLNet_AllocPacket(4);
+
+			assert(packet);
+
+			packet->channel=-1;
+			IPaddress localAdress;
+			localAdress.host=SDL_SwapBE32(0x7F000001);
+			localAdress.port=SDL_SwapBE16(tempPort);
+			packet->address=localAdress;
+			packet->len=4;
+			packet->data[0]=LOOP_BACK_PACKET_TYPE;
+			packet->data[1]=0;
+			packet->data[2]=0;
+			packet->data[3]=0;
+			if (SDLNet_UDP_Send(socket, -1, packet)==1)
+			{
+				NETPRINTF("findLocalPort:: suceeded to send packet\n");
+			}
+			else
+			{
+				NETPRINTF("findLocalPort:: failed to send packet\n");
+				SDLNet_FreePacket(packet);
+				return 0;
+			}
+			SDLNet_FreePacket(packet);
+		}
+		
+		// Three, we wait for this packet
+		{
+			assert(tempSocket);
+			UDPpacket *packet=NULL;
+			packet=SDLNet_AllocPacket(4);
+			assert(packet);
+			if (SDLNet_UDP_Recv(tempSocket, packet)==1)
+			{
+				NETPRINTF("findLocalPort::Packet received.\n");
+				NETPRINTF("findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
+				localPort=packet->address.port;
+			}
+			else
+				NETPRINTF("findLocalPort::no Packet received!!!!\n");
+
+			SDLNet_FreePacket(packet);
+		}
+		
+		// Four, we close the tempServer
+		SDLNet_UDP_Close(tempSocket);
+		
+		if (localPort)
+			break;
+	}
+	
+	return localPort;
+}
+
 bool MultiplayersJoin::tryConnection()
 {
 	quitThisGame();
@@ -982,6 +1068,14 @@ bool MultiplayersJoin::tryConnection()
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
 	else
 		waitingTOTL=DEFAULT_NETWORK_TOTL-1;
+	
+	
+		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
+		NETPRINTF("Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+	
+	
+	localPort=findLocalPort(socket);
+	
 	return sendPresenceRequest();
 }
 
@@ -1012,6 +1106,10 @@ void MultiplayersJoin::quitThisGame()
 
 bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)
 {
+	if (this->yogGameInfo)
+		delete this->yogGameInfo;
+	this->yogGameInfo=yogGameInfo;
+	
 	serverName=serverNameMemory;
 	strncpy(serverName, yogGameInfo->hostname, 128);
 	serverName[127]=0;

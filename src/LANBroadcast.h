@@ -23,19 +23,33 @@
 
 #include "Header.h"
 
-#ifndef MACOS_OPENTRANSPORT
+/* Include system network headers */
+#ifdef MACOS_OPENTRANSPORT
 
-//Network related includes
-#include <sys/types.h>
-#include <sys/socket.h>
-//#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 
-//Strange include
-#include <unistd.h>
+#else
+#	if defined(__WIN32__) || defined(WIN32)
+#		define Win32_Winsock
+#		include <windows.h>
+#	else /* UNIX */
+#			include <sys/types.h>
+#			include <sys/socket.h>
+//#			include <netinet/in.h>
+#			include <arpa/inet.h>
+#			include <netdb.h>
+			//Strange include:
+#			include <unistd.h>
+#		ifndef __BEOS__
+//#			include <arpa/inet.h>
+#		endif
+#		ifdef linux
+//#			include <netinet/tcp.h>
+#		endif
+#	include <netdb.h>
+#	include <sys/socket.h>
+#	endif /* WIN32 */
+#endif /* Open Transport */
 
-#endif //end of !MACOS_OPENTRANSPORT
 
 class LANBroadcast
 {
