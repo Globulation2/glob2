@@ -43,6 +43,8 @@
 #include "IRC.h"
 #include "SoundMixer.h"
 
+#include <SDL_keysym.h>
+
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
 
@@ -726,15 +728,14 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 	}
 
+	// the dump (debug) keys are always handled
+	if (event->type == SDL_KEYDOWN)
+		handleKeyDump(event->key);
+	
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
 		processGameMenu(event);
-		// It is usefull to be able to print screen even here
-		if ((event->type == SDL_KEYDOWN) && (event->key.keysym.sym == SDLK_PRINT))
-		{
-			globalContainer->gfx->printScreen("screenshot.bmp");
-		}
 	}
 	else
 	{
@@ -1102,9 +1103,26 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			break;
 		}
 	}
-	if ((key == SDLK_PRINT) && (pressed))
+}
+
+void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
+{
+	if (key.keysym.sym == SDLK_PRINT)
 	{
-		globalContainer->gfx->printScreen("screenshot.bmp");
+		if ((key.keysym.mod & KMOD_SHIFT) != 0)
+		{
+			GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("glob2.dump.txt", FileManager::STREAM_TEXT);
+			if (stream)
+			{
+				std::cerr << "Dump full game memory" << std::endl;
+				save(stream, "glob2.dump.txt");
+				delete stream;
+			}
+		}
+		else
+		{
+			globalContainer->gfx->printScreen("screenshot.bmp");
+		}
 	}
 }
 

@@ -41,6 +41,18 @@ namespace GAGCore
 	//! File Manager (filesystem abstraction)
 	class FileManager
 	{
+	public:
+		//! Type of Stream
+		enum StreamType
+		{
+			//! Binary stream, content directly written in endian-safe binary
+			STREAM_BINARY = 0,
+			//! Compatibility stream, not human-readable but uses the metas infos for backward compatibility
+			STREAM_COMPAT,
+			//! Text stream, human readable and backward compatible
+			STREAM_TEXT,
+		};
+		
 	private:
 		//! List of directory where to search for requested file
 		std::vector<std::string> dirList;
@@ -58,6 +70,8 @@ namespace GAGCore
 		SDL_RWops *openWithbackup(const char *filename, const char *mode);
 		//! open a file, if it is in writing, do a backup, fopen version
 		FILE *openWithbackupFP(const char *filename, const char *mode);
+		//! open a file, if it is in writing, do a backup, std::ofstream version
+		std::ofstream *openWithbackupOFS(const char *filename, std::ofstream::openmode mode);
 	
 	public:
 		//! FileManager constructor
@@ -76,9 +90,9 @@ namespace GAGCore
 		bool isDir(const char *filename);
 	
 		//! Open an output stream
-		OutputStream *openOutputStream(const char *filename);
+		OutputStream *openOutputStream(const char *filename, StreamType type = STREAM_BINARY);
 		//! Open an input stream
-		InputStream *openInputStream(const char *filename);
+		InputStream *openInputStream(const char *filename, StreamType type = STREAM_BINARY);
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const char *filename, const char *mode="rb");
 		//! Open a file in the FILE* format

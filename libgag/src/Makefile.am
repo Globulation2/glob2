@@ -24,7 +24,8 @@ libgag_a_SOURCES = \
 	GUISelector.cpp\
 	GUIAnimation.cpp\
 	GUIMessageBox.cpp\
-	BinaryStream.h
+	BinaryStream.h\
+	TextStream.h
 	
 EXTRA_DIST = win32_dirent.cpp win32_dirent.h
 			

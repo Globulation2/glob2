@@ -25,6 +25,7 @@
 #include <SDL_endian.h>
 #include <iostream>
 #include "BinaryStream.h"
+#include "TextStream.h"
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
@@ -131,7 +132,23 @@ namespace GAGCore
 		return fopen(filename, mode);
 	}
 	
-	OutputStream *FileManager::openOutputStream(const char *filename)
+	std::ofstream *FileManager::openWithbackupOFS(const char *filename, std::ofstream::openmode mode)
+	{
+		if (mode & std::ios_base::out)
+		{
+			std::string backupName(filename);
+			backupName += '~';
+			rename(filename, backupName.c_str());
+		}
+		std::ofstream *ofs = new std::ofstream(filename, mode);
+		if (ofs->is_open())
+			return ofs;
+		
+		delete ofs;
+		return NULL;
+	}
+	
+	OutputStream *FileManager::openOutputStream(const char *filename, StreamType type)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -139,9 +156,27 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 			
-			FILE *fp = openWithbackupFP(path.c_str(), "wb");
-			if (fp)
-				return new BinaryFileStream(fp);
+			switch (type)
+			{
+				case STREAM_BINARY:
+				{
+					FILE *fp = openWithbackupFP(path.c_str(), "wb");
+					if (fp)
+						return new BinaryFileStream(fp);
+				}
+				break;
+				
+				case STREAM_TEXT:
+				{
+					std::ofstream *ofs = openWithbackupOFS(path.c_str(), std::ios_base::out);
+					if (ofs)
+						return new TextOutputStream(ofs);
+				}
+				break;
+				
+				default:
+				assert(false);
+			}
 		}
 	
 		#ifdef DBG_VPATH_OPEN
@@ -155,7 +190,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	InputStream *FileManager::openInputStream(const char *filename)
+	InputStream *FileManager::openInputStream(const char *filename, StreamType type)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -163,9 +198,26 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 			
-			FILE *fp = fopen(path.c_str(), "rb");
-			if (fp)
-				return new BinaryFileStream(fp);
+			switch (type)
+			{
+				case STREAM_BINARY:
+				{
+					FILE *fp = fopen(path.c_str(), "rb");
+					if (fp)
+						return new BinaryFileStream(fp);
+				}
+				break;
+				
+				/*case STREAM_TEXT:
+				std::ofstream *ofs = new strd::ofstream(path.c_str(), "rb");
+				FILE *fp = fopen(path.c_str(), "rb");
+				if (fp)
+					return new TextOutputStream(fp);
+				break;*/
+				
+				default:
+				assert(false);
+			}
 		}
 	
 		#ifdef DBG_VPATH_OPEN
