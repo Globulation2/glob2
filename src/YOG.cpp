@@ -319,9 +319,9 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		if (size==8)
 		{
-			fprintf(logFile, "connected\n");
 			yogGlobalState=YGS_CONNECTED;
 			uid=getUint32(data, 4);
+			fprintf(logFile, "connected (uid=%d)\n", uid);
 		}
 		else
 			fprintf(logFile, "bad YOG-connected packet\n");
@@ -329,7 +329,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTION_REFUSED:
 	{
-		fprintf(logFile, "connection refused!\n");
+		fprintf(logFile, "connection refused! (sameName=%d, YOG_PROTOCOL_VERSION=%d, PROTOCOL_VERSION=%d)\n", data[4], data[5], YOG_PROTOCOL_VERSION);
 		yogGlobalState=YGS_NOT_CONNECTING;
 	}
 	break;
@@ -727,7 +727,27 @@ void YOG::step()
 				else
 				{
 					fprintf(logFile, "sending connection request...\n");
-					send(YMT_CONNECTING, (Uint8 *)userName, Utilities::strmlen(userName, 32));
+					
+					int tl=Utilities::strmlen(userName, 32);
+					
+					UDPpacket *packet=SDLNet_AllocPacket(8+tl);
+					assert(packet);
+					Uint8 sdata[8+tl];
+					sdata[0]=YMT_CONNECTING;
+					sdata[1]=0;
+					sdata[2]=0;
+					sdata[3]=0;
+					addUint32(sdata, YOG_PROTOCOL_VERSION, 4);
+					memcpy(sdata+8, (Uint8 *)userName, tl);
+					memcpy((char *)packet->data, sdata, 8+tl);
+					packet->len=8+tl;
+					packet->address=serverIP;
+					packet->channel=-1;
+					int rv=SDLNet_UDP_Send(socket, -1, packet);
+					if (rv!=1)
+						fprintf(logFile, "Failed to send the packet!\n");
+					SDLNet_FreePacket(packet);
+					
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
 		}
