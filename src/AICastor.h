@@ -218,7 +218,7 @@ public:
 	
 	Strategy strategy;
 	
-	bool hardMapComputed;
+	int computeBoot;
 	
 public:
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
