@@ -36,7 +36,6 @@ public:
 private:
 	List *fileList;
 	TextInput *fileNameEntry;
-	bool firstPaint;
 	bool isLoad;
 	const char *extension;
 
@@ -45,7 +44,6 @@ public:
 	virtual ~LoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(int x, int y, int w, int h);
 };
 
 #endif
