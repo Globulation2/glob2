@@ -187,13 +187,14 @@ public:
 	bool isSand(int x, int y);
 	bool isGrowableRessource(int x, int y);
 	bool isRessource(int x, int y);
+	bool isRemovableRessource(int x, int y);
 	bool isRessource(int x, int y, RessourceType  ressourceType);
 	bool isRessource(int x, int y, RessourceType *ressourceType);
 	
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
-	bool decRessource(int x, int y);
+	void decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	bool decRessource(int x, int y, RessourceType ressourceType);
+	void decRessource(int x, int y, RessourceType ressourceType);
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForUnit(int x, int y, bool canFly);
 	//! Return true if unit has contact with otherUID. If true, put contact direction in dx, dy
@@ -204,6 +205,7 @@ public:
 	bool doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of any ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
+	bool doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy);
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy

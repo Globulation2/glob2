@@ -23,11 +23,13 @@
 #include <string.h>
 #include "GlobalContainer.h"
 #include "Utilities.h"
+#include "LogFileManager.h"
 #include <set>
 
 Game::Game()
 {
 	init();
+	logFile = globalContainer->logFileManager->getFile("Game.log");
 }
 
 Game::~Game()
@@ -401,18 +403,23 @@ bool Game::load(SDL_RWops *stream)
 	// We load the file's header:
 	SessionInfo tempSessionInfo;
 	if (!tempSessionInfo.load(stream))
+	{
+		fprintf(logFile, "Game::load::tempSessionInfo.load\n");
 		return false;
+	}
 
 	if (tempSessionInfo.mapGenerationDescriptor && tempSessionInfo.fileIsAMap)
 	{
 		tempSessionInfo.mapGenerationDescriptor->synchronizeNow();
 		if (!generateMap(*tempSessionInfo.mapGenerationDescriptor))
+		{
+			fprintf(logFile, "Game::load::generateMap\n");
 			return false;
+		}
 	}
 	else
 	{
 		session=(SessionGame)tempSessionInfo;
-		//map.setMapName(tempSessionInfo.map.getMapName());
 
 		char signature[4];
 
@@ -424,13 +431,19 @@ bool Game::load(SDL_RWops *stream)
 			char signature[4];
 			SDL_RWread(stream, signature, 4, 1);
 			if (memcmp(signature,"GAMb",4)!=0)
+			{
+				fprintf(logFile, "Game::load::begin\n");
 				return false;
+			}
 		}
 		else
 		{
 			SDL_RWread(stream, signature, 4, 1);
 			if (memcmp(signature,"GLO2",4)!=0)
+			{
+				fprintf(logFile, "Game::load::begin\n");
 				return false;
+			}
 		}
 
 		setSyncRandSeedA(SDL_ReadBE32(stream));
@@ -439,7 +452,10 @@ bool Game::load(SDL_RWops *stream)
 
 		SDL_RWread(stream, signature, 4, 1);
 		if (memcmp(signature,"GLO2", 4)!=0)
+		{
+			fprintf(logFile, "Game::load::after sync rand\n");
 			return false;
+		}
 
 		// recreate new teams and players
 		if (session.versionMinor>1)
@@ -457,20 +473,29 @@ bool Game::load(SDL_RWops *stream)
 		if (session.versionMinor>1)
 			SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
 		if(!map.load(stream, &session, this))
+		{
+			fprintf(logFile, "Game::load::map.load\n");
 			return false;
+		}
 
 		if (session.versionMajor>=0 && session.versionMinor>=9)
 		{
 			char signature[4];
 			SDL_RWread(stream, signature, 4, 1);
 			if (memcmp(signature,"GAMe", 4)!=0)
+			{
+				fprintf(logFile, "Game::load::end\n");
 				return false;
+			}
 		}
 		else
 		{
 			SDL_RWread(stream, signature, 4, 1);
 			if (memcmp(signature,"GLO2", 4)!=0)
+			{
+				fprintf(logFile, "Game::load::end\n");
 				return false;
+			}
 		}
 		
 		//But we have to finish Team's loading:

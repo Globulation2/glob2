@@ -202,6 +202,12 @@ bool Map::isRessource(int x, int y)
 	return (getTerrain(x, y)>=272);
 }
 
+bool Map::isRemovableRessource(int x, int y)
+{
+	int resId = getTerrain(x, y)-272;
+	return ((resId>=0) && !((resId>=20) && (resId<=29)));
+}
+
 bool Map::isRessource(int x, int y, RessourceType ressourceType)
 {
 	// TODO : avoid the division !
@@ -215,7 +221,7 @@ bool Map::isRessource(int x, int y, RessourceType ressourceType)
 bool Map::isRessource(int x, int y, RessourceType *ressourceType)
 {
 	int d=getTerrain(x, y)-272;
-	if ((d<0)||(d>=40))
+	if ((d<0) || (d>=40))
 		return false;
 	else
 	{
@@ -224,35 +230,34 @@ bool Map::isRessource(int x, int y, RessourceType *ressourceType)
 	}
 }
 
-bool Map::decRessource(int x, int y)
+void Map::decRessource(int x, int y)
 {
 	int d=getTerrain(x, y)-272;
 	if ((d<0)||(d>=40))
-		return false;
+		return;
 	int r=d/10;
 	int l=d%5;
-	if ((r==CORN)||(r==STONE)) // those are the slow-consuming ressources.
+	if (r==CORN) // those are the slow-consuming ressources.
 	{
 		if (l>0)
 			setTerrain(x, y, d+271);
 		else if (l==0)
 			setTerrain(x, y, syncRand()&0xF);
 	}
+	else if (r==STONE)
+		return;
 	else if (r==WOOD)
 		setTerrain(x, y, syncRand()&0xF);
 	else if (r==ALGA)
 		setTerrain(x, y, 256+(syncRand()&0xF));
 	else
 		assert(false);
-	return true;
 }
 
-bool Map::decRessource(int x, int y, RessourceType ressourceType)
+void Map::decRessource(int x, int y, RessourceType ressourceType)
 {
 	if (isRessource(x, y, ressourceType))
-		return decRessource(x, y);
-	else
-		return false;
+		decRessource(x, y);
 }
 
 bool Map::isFreeForUnit(int x, int y, bool canFly)
@@ -317,6 +322,24 @@ bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
 	for (tdx=-1; tdx<=1; tdx++)
 		for (tdy=-1; tdy<=1; tdy++)
 			if (isRessource(x+tdx, y+tdy))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+			
+	return false;
+}
+
+bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	int tdx, tdy;
+	
+	for (tdx=-1; tdx<=1; tdx++)
+		for (tdy=-1; tdy<=1; tdy++)
+			if (isRemovableRessource(x+tdx, y+tdy))
 			{
 				*dx=tdx;
 				*dy=tdy;
@@ -1053,25 +1076,25 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
 	for (int i=1; i<32; i++)
 		for (int j=-i; j<i; j++)
 		{
-			if (isRessource(x+i, y+j) && warpDistSquare(x+i, y+j, fx, fy)<=fsr)
+			if (isRemovableRessource(x+i, y+j) && warpDistSquare(x+i, y+j, fx, fy)<=fsr)
 			{
 				*dx=(x+i)&getMaskW();
 				*dy=(y+j)&getMaskH();
 				return true;
 			}
-			if (isRessource(x-i, y+j) && warpDistSquare(x-i, y+j, fx, fy)<=fsr)
+			if (isRemovableRessource(x-i, y+j) && warpDistSquare(x-i, y+j, fx, fy)<=fsr)
 			{
 				*dx=(x-i)&getMaskW();
 				*dy=(y+j)&getMaskH();
 				return true;
 			}
-			if (isRessource(x+j, y+i) && warpDistSquare(x+j, y+i, fx, fy)<=fsr)
+			if (isRemovableRessource(x+j, y+i) && warpDistSquare(x+j, y+i, fx, fy)<=fsr)
 			{
 				*dx=(x+j)&getMaskW();
 				*dy=(y+i)&getMaskH();
 				return true;
 			}
-			if (isRessource(x+j, y-i) && warpDistSquare(x+j, y-i, fx, fy)<=fsr)
+			if (isRemovableRessource(x+j, y-i) && warpDistSquare(x+j, y-i, fx, fy)<=fsr)
 			{
 				*dx=(x+j)&getMaskW();
 				*dy=(y-i)&getMaskH();

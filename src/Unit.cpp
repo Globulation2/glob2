@@ -1117,7 +1117,7 @@ void Unit::handleMovement(void)
 			if (movement==MOV_HARVESTING)
 				owner->game->map.decRessource(posX+dx, posY+dy);
 			
-			if (owner->game->map.doesUnitTouchRessource(this, &dx, &dy))
+			if (owner->game->map.doesUnitTouchRemovableRessource(this, &dx, &dy))
 			{	
 				movement=MOV_HARVESTING;
 			}
@@ -1406,14 +1406,12 @@ bool Unit::validMed(int x, int y)
 	else
 	{
 		int c=0;
+		for (int i=0; i<8; i++)
 		{
-			for (int i=0; i<8; i++)
-			{
-				int dx, dy;
-				dxdyfromDirection(i, &dx, &dy);
-				if (valid(x+dx, x+dy))
-					c++;
-			}
+			int dx, dy;
+			dxdyfromDirection(i, &dx, &dy);
+			if (valid(x+dx, x+dy))
+				c++;
 		}
 		return (c>=4);
 	}

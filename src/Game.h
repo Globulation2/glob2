@@ -117,10 +117,14 @@ public:
 	Building *selectedBuilding;
 	
 	Sint32 stepCounter;
+	
 public:
 	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
+	
+protected:
+	FILE *logFile;
 };
 
 #endif 

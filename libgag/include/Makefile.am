@@ -11,4 +11,5 @@ GUIText.h \
 GUITextArea.h \
 GUITextInput.h \
 GraphicContext.h \
-SupportFunctions.h
+SupportFunctions.h \
+GUIMessageBox.h
