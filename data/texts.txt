@@ -343,10 +343,10 @@ Name
 Nom du serveur hote
 Server hostname
 Beherberger Name
-[hp%d]
-Point de vie : %d
-HitPoint : %d
-Lebens Punkt : %d
+[hp]
+Point de vie
+HitPoint
+Lebens Punkt
 [carry]
 Transporte :
 Carry :

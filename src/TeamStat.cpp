@@ -150,7 +150,7 @@ void TeamStats::drawText()
 	TeamStat &newStats=stats[statsIndex];
 	
 	// general
-	gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
+	gfx->drawString(textStartPos, 132, font, "%s", strings->getString("[Statistics]"));
 	gfx->drawString(textStartPos, 132+17, font, "%d %s", newStats.totalUnit, strings->getString("[Units]"));
 	if (newStats.totalUnit)
 	{
@@ -216,9 +216,9 @@ void TeamStats::drawStat()
 		return;
 
 	// captions
-	gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
-	gfx->drawString(textStartPos, 132+16, font, strings->getString("[Total/free/seeking]"));
-	gfx->drawString(textStartPos, 132+100, font, strings->getString("[Ok/hungry/wounded]"));
+	gfx->drawString(textStartPos, 132, font, "%s", strings->getString("[Statistics]"));
+	gfx->drawString(textStartPos, 132+16, font, "%s",  strings->getString("[Total/free/seeking]"));
+	gfx->drawString(textStartPos, 132+100, font, "%s", strings->getString("[Ok/hungry/wounded]"));
 
 	// graph
 	for (int i=0; i<128; i++)

@@ -193,7 +193,7 @@ void YOGScreen::paint(int x, int y, int w, int h)
 	if (y<40)
 	{
 		char *text= globalContainer->texts.getString("[yog]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, text);
+		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, "%s", text);
 	}
 	addUpdateRect();
 }

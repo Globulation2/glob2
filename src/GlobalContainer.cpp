@@ -227,7 +227,7 @@ void GlobalContainer::initProgressBar(void)
 	//text=texts.getString("[loading glob2]");
 	gfx->loadImage("data/gfx/IntroMN.png");
 	gfx->updateRect(0, 0, 0, 0);
-	//gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, text);
+	//gfx->drawString((gfx->getW()-menuFont->getStringWidth(text))>>1, (gfx->getH()>>1)-30, menuFont, "%s", text);
 }
 
 void GlobalContainer::load(void)
