@@ -63,6 +63,7 @@ namespace Utilities
 	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY);
 
 	char *concat(const char *a, const char *b);
+	char *concat(const char *a, const char *b, const char *c);
 	char *dencat(const char *a, const char *b);
 	
 	Sint32 log2(Sint32 a);

@@ -50,7 +50,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(methode);
 	
 	mapFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
-	if (globalContainer->fileManager->initDirectoryListing(".", "map"))
+	if (globalContainer->fileManager->initDirectoryListing("maps", "map"))
 	{
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
@@ -64,7 +64,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(mapFileList);
 
 	gameFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
-	if (globalContainer->fileManager->initDirectoryListing(".", "game"))
+	if (globalContainer->fileManager->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
@@ -97,14 +97,14 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		if (mapMode)
 		{
 			const char *mapSelectedName=mapFileList->getText(par1);
-			mapFileName=Utilities::concat(mapSelectedName, ".map");
+			mapFileName=Utilities::concat("maps/", mapSelectedName, ".map");
 			mapPreview->setMapThumbnail(mapFileName);
 			printf("PGU : Loading map '%s' ...\n", mapFileName);
 		}
 		else
 		{
 			const char *mapSelectedName=gameFileList->getText(par1);
-			mapFileName=Utilities::concat(mapSelectedName, ".game");
+			mapFileName=Utilities::concat("games/", mapSelectedName, ".game");
 			mapPreview->setMapThumbnail(mapFileName);
 			printf("PGU : Loading game '%s' ...\n", mapFileName);
 		}

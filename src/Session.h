@@ -106,8 +106,8 @@ public:
 protected:
 	//! Name of map or game, serialized
 	char mapName[MAP_NAME_MAX_SIZE];
-	char mapFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
-	char gameFileName[MAP_NAME_MAX_SIZE+5];//This is not saved in file
+	char mapFileName[MAP_NAME_MAX_SIZE+8];//This is not saved in file
+	char gameFileName[MAP_NAME_MAX_SIZE+10];//This is not saved in file
 	
 	void regenerateInternalMapNames();
 

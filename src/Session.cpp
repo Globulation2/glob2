@@ -441,8 +441,8 @@ void SessionGame::setMapName(const char *s)
 void SessionGame::regenerateInternalMapNames(void)
 {
 	// set filename from mapname
-	snprintf(mapFileName, sizeof(mapFileName), "%s.map", mapName);
-	snprintf(gameFileName, sizeof(gameFileName), "%s.game", mapName);
+	snprintf(mapFileName, sizeof(mapFileName), "maps/%s.map", mapName);
+	snprintf(gameFileName, sizeof(gameFileName), "games/%s.game", mapName);
 }
 
 const char *SessionGame::getMapName() const
