@@ -62,9 +62,14 @@ namespace Utilities
 	//! data for computing minimap
 	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY);
 
+	//! return the concatenation of string a and b, must be freed by delete[]
 	char *concat(const char *a, const char *b);
+	//! return the concatenation of string a, b and c, must be freed by delete[]
 	char *concat(const char *a, const char *b, const char *c);
+	//! return the decatenation of string a by b, must be freed by delete[]
 	char *dencat(const char *a, const char *b);
+	//! return a copy of a, must be freed by delete[]
+	char *strdup(const char *a);
 	
 	Sint32 log2(Sint32 a);
 	Sint32 power2(Sint32 a);

@@ -24,6 +24,7 @@
 #include "Version.h"
 #include "LogFileManager.h"
 #include "Utilities.h"
+#include "Game.h"
 
 SessionGame::SessionGame()
 {
@@ -44,8 +45,7 @@ SessionGame::SessionGame()
 
 	fileIsAMap=(Sint32)true;
 	strncpy(mapName,"No name", MAP_NAME_MAX_SIZE);
-	regenerateInternalMapNames();
-	
+		
 	mapGenerationDescriptor=NULL;
 	
 	logFile=globalContainer->logFileManager->getFile("SessionGame.log");
@@ -83,8 +83,6 @@ SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
 	fileIsAMap=sessionGame.fileIsAMap;
 
 	memcpy(mapName, sessionGame.mapName, sizeof(mapName));
-	memcpy(mapFileName, sessionGame.mapFileName, sizeof(mapFileName));
-	memcpy(gameFileName, sessionGame.gameFileName, sizeof(gameFileName));
 
 	mapGenerationDescriptor=NULL;
 	if (sessionGame.mapGenerationDescriptor)
@@ -330,7 +328,6 @@ bool SessionGame::setData(const Uint8 *data, int dataLength, bool compressed)
 
 		int l=Utilities::strmlen((char *)(data+7), sizeof(mapName));
 		memcpy(mapName, data+7, l);
-		regenerateInternalMapNames();
 		assert(mapName[sizeof(mapName)-1]==0);
 
 		if (mapGenerationDescriptor)
@@ -375,8 +372,8 @@ bool SessionGame::setData(const Uint8 *data, int dataLength, bool compressed)
 
 		memcpy(mapName, data+32+MapGenerationDescriptor::DATA_SIZE, sizeof(mapName));
 		assert( Utilities::strnlen(mapName, sizeof(mapName)) < (int)sizeof(mapName) );
-		regenerateInternalMapNames();
 	}
+		
 	return true;
 }
 
@@ -435,14 +432,6 @@ void SessionGame::setMapName(const char *s)
 	char *c=strrchr(mapName, '.');
 	if (c)
 		*c=0;
-	regenerateInternalMapNames();
-}
-
-void SessionGame::regenerateInternalMapNames(void)
-{
-	// set filename from mapname
-	snprintf(mapFileName, sizeof(mapFileName), "maps/%s.map", mapName);
-	snprintf(gameFileName, sizeof(gameFileName), "games/%s.game", mapName);
 }
 
 const char *SessionGame::getMapName() const
@@ -451,24 +440,12 @@ const char *SessionGame::getMapName() const
 	return mapName;
 }
 
-const char *SessionGame::getMapFileName() const
-{
-	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
-	return mapFileName;
-}
-
-const char *SessionGame::getGameFileName() const
-{
-	//printf(gameFileName=(%s), mapName=(%s).\n", gameFileName, mapName);
-	return gameFileName;
-}
-
 const char *SessionGame::getFileName(void) const
 {
 	if (fileIsAMap)
-		return getMapFileName();
+		return glob2NameToFilename("maps", mapName, "map");
 	else
-		return getGameFileName();
+		return glob2NameToFilename("games", mapName, "game");
 }
 
 SessionInfo::SessionInfo()
@@ -514,7 +491,7 @@ bool SessionInfo::load(SDL_RWops *stream)
 	if (versionMinor>11)
 	{
 		SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
-		regenerateInternalMapNames();
+		printf("End-user map name is %s\n", mapName);
 	}
 	else
 	{
@@ -524,7 +501,6 @@ bool SessionInfo::load(SDL_RWops *stream)
 
 		// 32 is the length of the legacy map name
 		SDL_RWread(stream, mapName, 32, 1);
-		regenerateInternalMapNames();
 
 		SDL_RWread(stream, signature, 4, 1);
 		if (memcmp(signature,"GLO2",4)!=0)

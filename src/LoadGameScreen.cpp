@@ -20,6 +20,7 @@
 #include "LoadGameScreen.h"
 #include "GlobalContainer.h"
 #include "Utilities.h"
+#include "Game.h"
 
 LoadGameScreen::LoadGameScreen()
 {
@@ -47,9 +48,11 @@ LoadGameScreen::LoadGameScreen()
 		const char *fileName;
 		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
 		{
-			char *newText=Utilities::dencat(fileName, ".game");
-			fileList->addText(newText);
-			delete[] newText;
+			const char *tempFileName=Utilities::concat("games/", fileName);
+			const char *mapTempName=glob2FilenameToName(tempFileName);
+			delete[] tempFileName;
+			fileList->addText(mapTempName);
+			delete[] mapTempName;
 		}
 		fileList->sort();
 	}
@@ -67,7 +70,7 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
-		const char *mapFileName=Utilities::concat("games/", mapSelectedName, ".game");
+		const char *mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
 		
 		mapPreview->setMapThumbnail(mapFileName);
 		printf("CGS : Loading map '%s' ...\n", mapFileName);
@@ -112,9 +115,4 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==BUTTON_STATE_CHANGED)
 	{
 	}
-}
-
-void LoadGameScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 }

@@ -224,7 +224,7 @@ int Engine::initLoadGame()
 	if (lgs==LoadGameScreen::CANCEL)
 		return EE_CANCEL;
 
-	return initCustom(loadGameScreen.sessionInfo.getGameFileName());
+	return initCustom(loadGameScreen.sessionInfo.getFileName());
 }
 
 void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
