@@ -1582,11 +1582,19 @@ void GameGUI::drawOverlayInfos(void)
 	else
 	{
 		int ymesg=32;
+		
+		// show script text
 		if (game.script.isTextShown)
-		{
-			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", game.script.textShown.c_str());
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, game.script.textShown.c_str());
+		
+		// show script counter
+		if (game.script.getMainTimer())
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont,"%d", game.script.getMainTimer());
+		
+		// if either script text or script timer has been shown, increment line count
+		if (game.script.isTextShown || game.script.getMainTimer())
 			ymesg+=32;
-		}
+			
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
 		{
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);
