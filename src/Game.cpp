@@ -200,6 +200,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
+				b->removeSubscribers();
 				b->buildingState=Building::WAITING_FOR_DESTRUCTION;
 				b->maxUnitWorking=0;
 				b->maxUnitInside=0;
@@ -222,6 +223,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				if (b->type->shootingRange)
 					t->turrets.remove(b);
 				
+				b->removeSubscribers();
 				b->buildingState=Building::WAITING_FOR_UPGRADE;
 				b->maxUnitWorkingLocal=0;
 				b->maxUnitWorking=0;

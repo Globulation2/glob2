@@ -266,7 +266,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 		case SDLK_PLUS:
 		case SDLK_KP_PLUS:
 			{
-				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 				{
 					int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
@@ -276,7 +276,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 		case SDLK_MINUS:
 		case SDLK_KP_MINUS:
 			{
-				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
+				if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
 				{
 					int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
@@ -874,6 +874,8 @@ void GameGUI::draw(void)
 			{
 				drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
+			globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 470, font, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
+				
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
@@ -899,6 +901,7 @@ void GameGUI::draw(void)
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+270, font, "speed=%d", selUnit->speed);
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+285, font, "verbose=%d", selUnit->verbose);
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+300, font, "subscribed=%d", selUnit->subscribed);
+			globalContainer.gfx.drawString(globalContainer.gfx.getW()-124, 128+315, font, "ndToRckMed=%d", selUnit->needToRecheckMedical);
 			
 		}
 		else if (displayMode==STAT_VIEW)
