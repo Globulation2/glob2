@@ -145,7 +145,8 @@ void AICastor::firstInit()
 
 AICastor::AICastor(Player *player)
 {
-	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	//logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	logFile=stdout;
 	
 	firstInit();
 	init(player);
@@ -154,7 +155,6 @@ AICastor::AICastor(Player *player)
 AICastor::AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
 	logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	//logFile=stdout;
 	
 	firstInit();
 	bool goodLoad=load(stream, player, versionMinor);
@@ -581,7 +581,6 @@ void AICastor::defineStrategy()
 	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseOrder=6;
 	strategy.build[BuildingType::WALKSPEED_BUILDING].baseOrder=7;
 	
-	
 	strategy.build[BuildingType::SCIENCE_BUILDING].base=2;
 	strategy.build[BuildingType::SWARM_BUILDING].base=2;
 	strategy.build[BuildingType::ATTACK_BUILDING].base=2;
@@ -591,29 +590,28 @@ void AICastor::defineStrategy()
 	strategy.build[BuildingType::SWIMSPEED_BUILDING].base=1;
 	strategy.build[BuildingType::WALKSPEED_BUILDING].base=1;
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].workers=7;
-	strategy.build[BuildingType::SWARM_BUILDING].workers=2;
-	strategy.build[BuildingType::ATTACK_BUILDING].workers=4;
-	strategy.build[BuildingType::DEFENSE_BUILDING].workers=3;
-	strategy.build[BuildingType::FOOD_BUILDING].workers=2;
-	strategy.build[BuildingType::HEAL_BUILDING].workers=1;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].workers=4;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].workers=4;
+	strategy.build[BuildingType::SCIENCE_BUILDING].baseWorkers=5;
+	strategy.build[BuildingType::SWARM_BUILDING].baseWorkers=2;
+	strategy.build[BuildingType::ATTACK_BUILDING].baseWorkers=2;
+	strategy.build[BuildingType::DEFENSE_BUILDING].baseWorkers=2;
+	strategy.build[BuildingType::FOOD_BUILDING].baseWorkers=3;
+	strategy.build[BuildingType::HEAL_BUILDING].baseWorkers=1;
+	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseWorkers=3;
+	strategy.build[BuildingType::WALKSPEED_BUILDING].baseWorkers=5;
+	
+	strategy.build[BuildingType::SCIENCE_BUILDING].baseUpgrade=2;
+	strategy.build[BuildingType::SWARM_BUILDING].baseUpgrade=0;
+	strategy.build[BuildingType::ATTACK_BUILDING].baseUpgrade=2;
+	strategy.build[BuildingType::DEFENSE_BUILDING].baseUpgrade=1;
+	strategy.build[BuildingType::FOOD_BUILDING].baseUpgrade=2;
+	strategy.build[BuildingType::HEAL_BUILDING].baseUpgrade=2;
+	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseUpgrade=0;
+	strategy.build[BuildingType::WALKSPEED_BUILDING].baseUpgrade=0;
+	
 	
 	strategy.build[BuildingType::SWARM_BUILDING].finalWorkers=2;
 	strategy.build[BuildingType::FOOD_BUILDING].finalWorkers=1;
 	strategy.build[BuildingType::DEFENSE_BUILDING].finalWorkers=1;
-	
-	
-	strategy.build[BuildingType::SCIENCE_BUILDING].upgradeBase=2;
-	strategy.build[BuildingType::SWARM_BUILDING].upgradeBase=0;
-	strategy.build[BuildingType::ATTACK_BUILDING].upgradeBase=2;
-	strategy.build[BuildingType::DEFENSE_BUILDING].upgradeBase=1;
-	strategy.build[BuildingType::FOOD_BUILDING].upgradeBase=2;
-	strategy.build[BuildingType::HEAL_BUILDING].upgradeBase=2;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].upgradeBase=0;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].upgradeBase=0;
-	
 	
 	
 	strategy.build[BuildingType::DEFENSE_BUILDING].newOrder=0;
@@ -634,6 +632,14 @@ void AICastor::defineStrategy()
 	strategy.build[BuildingType::WALKSPEED_BUILDING].news=1;
 	strategy.build[BuildingType::SWIMSPEED_BUILDING].news=1;
 	
+	strategy.build[BuildingType::DEFENSE_BUILDING].newWorkers=4;
+	strategy.build[BuildingType::SWARM_BUILDING].newWorkers=3;
+	strategy.build[BuildingType::FOOD_BUILDING].newWorkers=2;
+	strategy.build[BuildingType::SCIENCE_BUILDING].newWorkers=7;
+	strategy.build[BuildingType::ATTACK_BUILDING].newWorkers=5;
+	strategy.build[BuildingType::HEAL_BUILDING].newWorkers=2;
+	strategy.build[BuildingType::WALKSPEED_BUILDING].newWorkers=4;
+	strategy.build[BuildingType::SWIMSPEED_BUILDING].newWorkers=4;
 	
 	strategy.build[BuildingType::DEFENSE_BUILDING].newUpgrade=10;
 	strategy.build[BuildingType::SWARM_BUILDING].newUpgrade=0;
@@ -921,17 +927,17 @@ Order *AICastor::controlUpgrades()
 	{
 		if (b->type->DEFENSE_BUILDING)
 		{
-			if (b->hp*1<b->type->hpMax*4)
+			if (b->hp*4<b->type->hpMax*1)
 				return new OrderConstruction(b->gid);
 		}
 		else if (b->type->maxUnitInside)
 		{
-			if (b->hp*3<b->type->hpMax*4)
+			if (b->hp*4<b->type->hpMax*3)
 				return new OrderConstruction(b->gid);
 		}
 		else
 		{
-			if (b->hp*2<b->type->hpMax*4)
+			if (b->hp*4<b->type->hpMax*2)
 				return new OrderConstruction(b->gid);
 		}
 	}
@@ -942,6 +948,8 @@ Order *AICastor::controlUpgrades()
 	int upgradeLevelGoal=((buildsAmount+1)>>1);
 	if (upgradeLevelGoal>3)
 		upgradeLevelGoal=3;
+	printf("controlUpgrades(%d), shortTypeNum=%d, level=%d, upgradeLevelGoal=%d\n",
+		bi, shortTypeNum, level, upgradeLevelGoal);
 	if (level>=upgradeLevelGoal)
 		return NULL;
 	int sumOver=0;
@@ -949,9 +957,7 @@ Order *AICastor::controlUpgrades()
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[shortTypeNum][si][li];
 	
-	int upgradeAmountGoal;
-	upgradeAmountGoal=strategy.build[shortTypeNum].upgradeBase;
-	
+	int upgradeAmountGoal=strategy.build[shortTypeNum].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
 	
@@ -1317,7 +1323,7 @@ void AICastor::addProjects()
 							|| starvingWarningStats[1]>starvingWarningStats[0]))
 						continue;
 					Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
-						strategy.build[bi].base, strategy.build[bi].workers, "base");
+						strategy.build[bi].base, strategy.build[bi].baseWorkers, "base");
 					project->successWait=strategy.successWait;
 					project->finalWorkers=strategy.build[bi].finalWorkers;
 					if (addProject(project))
@@ -1330,7 +1336,7 @@ void AICastor::addProjects()
 		int upgradeSum=0;
 		for (int li=1; li<4; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
-		if (upgradeSum<strategy.build[bi].upgradeBase)
+		if (upgradeSum<strategy.build[bi].baseUpgrade)
 			return;
 	}
 	buildsAmount=2;
@@ -1341,7 +1347,7 @@ void AICastor::addProjects()
 	
 	int upgradeGoal[BuildingType::NB_HARD_BUILDING];
 	for (int bi=0; bi<BuildingType::NB_HARD_BUILDING; bi++)
-		upgradeGoal[bi]=strategy.build[bi].upgradeBase;
+		upgradeGoal[bi]=strategy.build[bi].baseUpgrade;
 	
 	for (Sint32 agi=1; agi<4; agi++)
 	{
@@ -1363,7 +1369,7 @@ void AICastor::addProjects()
 								|| starvingWarningStats[1]>starvingWarningStats[0]))
 							continue;
 						Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
-							amountGoal[bi], strategy.build[bi].workers+agi, "loop");
+							amountGoal[bi], strategy.build[bi].newWorkers+(agi-1), "loop");
 						project->successWait=strategy.successWait;
 						project->finalWorkers=strategy.build[bi].finalWorkers;
 						if (addProject(project))
@@ -1401,7 +1407,10 @@ Order *AICastor::continueProject(Project *project)
 	if (foodLock && !project->critical && project->shortTypeNum==BuildingType::SWARM_BUILDING)
 	{
 		fprintf(logFile,  "(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
-		project->timer=timer+8192; // 5min27s
+		if (starvingWarning)
+			project->timer=timer+8192; // 5min28s
+		else
+			project->timer=timer+2048; // 1min22s
 		project->blocking=false;
 		project->critical=false;
 	}
@@ -1415,7 +1424,10 @@ Order *AICastor::continueProject(Project *project)
 	else if (project->subPhase==1)
 	{
 		if (!project->critical && !enoughFreeWorkers())
+		{
+			project->timer=timer;
 			return NULL;
+		}
 		// find any good building place
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
@@ -1504,7 +1516,7 @@ Order *AICastor::continueProject(Project *project)
 	{
 		// balance workers:
 		
-		int isFree=getFreeWorkers();
+		int isFree=team->stats.getWorkersBalance();
 		Sint32 mainWorkers=project->mainWorkers;
 		Sint32 finalWorkers=project->finalWorkers;
 		if (isFree<=3)
@@ -1522,48 +1534,41 @@ Order *AICastor::continueProject(Project *project)
 			//	finalWorkers=isFree;
 		}
 		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
-		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-		
-		Sint32 swarmTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
-		Sint32 swarmSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, true);
-		Sint32 foodTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, false);
-		Sint32 foodSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
-		
 		Building **myBuildings=team->myBuildings;
 		for (int i=0; i<1024; i++)
 		{
 			Building *b=myBuildings[i];
 			if (b)
 			{
-				if (b->typeNum==typeNum)
+				if (b->type->shortTypeNum==project->shortTypeNum)
 				{
-					// a main building site
-					if (finalWorkers>=0 && b->maxUnitWorking!=finalWorkers)
+					if (b->type->isBuildingSite)
 					{
-						b->maxUnitWorking=finalWorkers;
-						b->maxUnitWorkingLocal=finalWorkers;
-						b->update();
-						project->timer=timer;
-						return new OrderModifyBuilding(b->gid, finalWorkers);
+						// a main building site
+						if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
+						{
+							b->maxUnitWorking=mainWorkers;
+							b->maxUnitWorkingLocal=mainWorkers;
+							b->update();
+							project->timer=timer;
+							return new OrderModifyBuilding(b->gid, mainWorkers);
+						}
+					}
+					else
+					{
+						// a main building
+						if (finalWorkers>=0 && b->maxUnitWorking!=finalWorkers)
+						{
+							b->maxUnitWorking=finalWorkers;
+							b->maxUnitWorkingLocal=finalWorkers;
+							b->update();
+							project->timer=timer;
+							return new OrderModifyBuilding(b->gid, finalWorkers);
+						}
 					}
 				}
-				else if (b->typeNum==siteTypeNum)
-				{
-					// a main building
-					if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
-					{
-						b->maxUnitWorking=mainWorkers;
-						b->maxUnitWorkingLocal=mainWorkers;
-						b->update();
-						project->timer=timer;
-						return new OrderModifyBuilding(b->gid, mainWorkers);
-					}
-				}
-				else if (b->typeNum==swarmTypeNum
-					|| b->typeNum==swarmSiteTypeNum
-					|| b->typeNum==foodTypeNum
-					|| b->typeNum==foodSiteTypeNum)
+				else if (b->type->shortTypeNum==BuildingType::SWARM_BUILDING
+					|| b->type->shortTypeNum==BuildingType::FOOD_BUILDING)
 				{
 					// food buildings
 					if (project->foodWorkers>=0 && b->maxUnitWorking!=project->foodWorkers)
@@ -1612,11 +1617,10 @@ Order *AICastor::continueProject(Project *project)
 		{
 			fprintf(logFile,  "(%s) (want more construction site [%d+%d>=%d])\n",
 				project->debugName, real, site, project->amount);
-			int isFree=getFreeWorkers();
-			if (isFree>0)
+			if (isFree>1)
 			{
 				project->subPhase=1;
-				fprintf(logFile,  "(%s) (enough free workers) (switching back to subphase 1)\n", project->debugName);
+				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to subphase 1)\n", project->debugName, isFree);
 			}
 			else
 			{
@@ -1633,29 +1637,24 @@ Order *AICastor::continueProject(Project *project)
 	}
 	else if (project->subPhase==5)
 	{
-		// We simply wait for the food building to be finished,
+		// We simply wait for the building to be finished,
 		// and add free workers if aviable and project.waitFinished:
 		
-		if (project->waitFinished || overWorkers)
+		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{
-			int isFree=getFreeWorkers();
-			if (isFree>2)
+			Building **myBuildings=team->myBuildings;
+			for (int i=0; i<1024; i++)
 			{
-				Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-				Building **myBuildings=team->myBuildings;
-				for (int i=0; i<1024; i++)
+				Building *b=myBuildings[i];
+				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking<project->mainWorkers)
 				{
-					Building *b=myBuildings[i];
-					if (b && b->typeNum==siteTypeNum && b->maxUnitWorking<project->mainWorkers)
-					{
-						//printf("(%s) (incrementing workers) isFree=%d, current=%d\n",
-						//	project->debugName, isFree, b->maxUnitWorking);
-						b->maxUnitWorking++;
-						b->maxUnitWorkingLocal=b->maxUnitWorking;
-						b->update();
-						project->timer=timer;
-						return new OrderModifyBuilding(b->gid, b->maxUnitWorking);
-					}
+					//printf("(%s) (incrementing workers) isFree=%d, current=%d\n",
+					//	project->debugName, isFree, b->maxUnitWorking);
+					b->maxUnitWorking++;
+					b->maxUnitWorkingLocal=b->maxUnitWorking;
+					b->update();
+					project->timer=timer;
+					return new OrderModifyBuilding(b->gid, b->maxUnitWorking);
 				}
 			}
 		}
@@ -1690,27 +1689,17 @@ Order *AICastor::continueProject(Project *project)
 		
 		if (project->finalWorkers>=0)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
-			
-			int isFree=getFreeWorkers();
 			Sint32 finalWorkers=project->finalWorkers;
-			/*if (isFree<=3)
-			{
-				if (finalWorkers>3)
-					finalWorkers=3;
-			}
-			else if (finalWorkers>isFree)
-				finalWorkers=isFree;*/
 			
 			Building **myBuildings=team->myBuildings;
 			for (int i=0; i<1024; i++)
 			{
 				Building *b=myBuildings[i];
-				if (b && b->typeNum==typeNum && b->maxUnitWorking!=finalWorkers)
+				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking!=finalWorkers)
 				{
 					assert(b->type->maxUnitWorking!=0);
-					fprintf(logFile,  "(%s) (set finalWorkers [isFree=%d, current=%d, final=%d])\n",
-						project->debugName, isFree, b->maxUnitWorking, finalWorkers);
+					fprintf(logFile,  "(%s) (set finalWorkers [current=%d, final=%d])\n",
+						project->debugName, b->maxUnitWorking, finalWorkers);
 					b->maxUnitWorking=finalWorkers;
 					b->maxUnitWorkingLocal=finalWorkers;
 					b->update();
@@ -1766,24 +1755,6 @@ bool AICastor::enoughFreeWorkers()
 		oldEnough[buildsAmount]=enough;
 	}
 	return enough;
-}
-
-int AICastor::getFreeWorkers()
-{
-	if (lastFreeWorkersComputed!=timer)
-	{
-		lastFreeWorkersComputed=timer;
-		int sum=0;
-		Unit **myUnits=team->myUnits;
-		for (int i=0; i<1024; i++)
-		{
-			Unit *u=myUnits[i];
-			if (u && u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM && u->typeNum==WORKER && !u->subscribed)
-				sum++;
-		}
-		freeWorkers=sum;
-	}
-	return freeWorkers;
 }
 
 void AICastor::computeCanSwim()

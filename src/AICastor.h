@@ -80,12 +80,14 @@ public:
 		{
 			int baseOrder;
 			int base;
-			int workers;
+			int baseWorkers;
+			int baseUpgrade;
+			
 			int finalWorkers;
-			int upgradeBase;
 			
 			int newOrder;
 			int news;
+			int newWorkers;
 			int newUpgrade;
 		};
 		
@@ -148,7 +150,6 @@ private:
 	Order *continueProject(Project *project);
 	
 	bool enoughFreeWorkers();
-	int getFreeWorkers();
 	void computeCanSwim();
 	void computeNeedSwim();
 	void computeBuildingSum();
