@@ -193,7 +193,9 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 		int l, nl;
 		l=strlen(extension);
 		nl=strlen(dirEntry->d_name);
-		if (strcmp(extension,dirEntry->d_name+(nl-l))==0)
+		if ((nl>l) &&
+			(dirEntry->d_name[nl-l-1]=='.') &&
+			(strcmp(extension,dirEntry->d_name+(nl-l))==0))
 		{
 			// test if name already exists in vector
 			bool alreadyIn=false;
