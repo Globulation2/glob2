@@ -84,7 +84,7 @@ void MapPreview::repaint(void)
 					{
 						randomGenerated=false;
 						SDL_RWseek(stream, session.mapOffset , SEEK_SET);
-						rv=map.load(stream);
+						rv=map.load(stream, &session);
 						assert(rv);
 						if (rv)
 						{

@@ -92,11 +92,11 @@ int Engine::initCampain(void)
 		fprintf(stderr, "ENG : Error, can't find any human player\n");
 		return EE_CANT_FIND_PLAYER;
 	}
-	
+
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
-	
+
 	// FIXME : delete Team that hasn't any players and defrag array
 
 	// we create the net game
@@ -157,7 +157,7 @@ int Engine::initCustom(void)
 	gui.game.session.numberOfPlayer=nbPlayer;
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
-	
+
 	// set the correct alliance
 	gui.game.setAIAlliance();
 
@@ -180,19 +180,19 @@ int Engine::initCustom(const char *gameName)
 		}
 		else
 		{
-			printf("Engine : Can't load map\n"); 
+			printf("Engine : Can't load map\n");
 			SDL_RWclose(stream);
 			return EE_CANCEL;
 		}
 	}
 	else
 	{
-		printf("Engine : Can't load map\n"); 
+		printf("Engine : Can't load map\n");
 		return EE_CANCEL;
 	}
-	
+
 	printf("Engine::initCustom:: numberOfPlayer=%d numberOfTeam=%d.\n", gui.game.session.numberOfTeam, gui.game.session.numberOfPlayer);
-	
+
 	// If the game is a network saved game, we need to toogle net players to ai players:
 	for (int p=0; p<gui.game.session.numberOfPlayer; p++)
 	{
@@ -203,10 +203,10 @@ int Engine::initCustom(const char *gameName)
 			printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
 		}
 	}
-	
+
 	gui.game.renderMiniMap(gui.localTeamNo);
 	gui.adjustInitialViewport();
-	
+
 	// set the correct alliance
 	gui.game.setAIAlliance();
 
@@ -217,13 +217,14 @@ int Engine::initCustom(const char *gameName)
 
 int Engine::initLoadGame()
 {
+	// TODO: It's maybe cleaner to only use a string instead of all sessionInfo.
 	LoadGameScreen loadGameScreen;
 	int lgs=loadGameScreen.execute(globalContainer->gfx, 50);
 	if (lgs==LoadGameScreen::CANCEL)
 		return EE_CANCEL;
-	
-	initCustom(loadGameScreen.sessionInfo.map.getGameFileName());
-	
+
+	initCustom(loadGameScreen.sessionInfo.getGameFileName());
+
 	return EE_NO_ERROR;
 }
 

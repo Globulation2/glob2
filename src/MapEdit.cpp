@@ -690,7 +690,7 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 void MapEdit::loadSave(bool isLoad)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("", "map", isLoad, game.map.getMapName());
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("", "map", isLoad, game.session.getMapName());
 	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
 
 	// save screen
@@ -915,13 +915,12 @@ bool MapEdit::load(const char *name)
 	return rv;
 }
 
-void MapEdit::save(/*const*/ char *name)
+void MapEdit::save(const char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
 	if (stream)
 	{
-		game.map.setMapName(name);
-		game.save(stream, true, NULL);
+		game.save(stream, true, name);
 		SDL_RWclose(stream);
 	}
 }

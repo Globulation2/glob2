@@ -21,7 +21,7 @@
 #include "Unit.h"
 #include "Game.h"
 #include "Utilities.h"
-
+/*
 BaseMap::BaseMap()
 {
 	strncpy(mapName,"DEBUG MAP", MAP_NAME_MAX_SIZE);
@@ -40,14 +40,14 @@ bool BaseMap::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
 	setMapName(mapName);
-	
+
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	return true;
 }
 
@@ -60,7 +60,7 @@ void BaseMap::setMapName(const char *s)
 		*c=0;
 	// set filename from mapname
 	snprintf(mapFileName, MAP_NAME_MAX_SIZE+4, "%s.map", mapName);
-	snprintf(gameFileName, MAP_NAME_MAX_SIZE+4, "%s.game", mapName);
+	snprintf(gameFileName, MAP_NAME_MAX_SIZE+5, "%s.game", mapName);
 	//printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
 }
 
@@ -98,10 +98,10 @@ bool BaseMap::setData(const char *data, int dataLength)
 {
 	if (dataLength!=getDataLength())
 		return false;
-	
+
 	memcpy(mapName, data, MAP_NAME_MAX_SIZE);
 	setMapName(mapName);
-	
+
 	return true;
 }
 
@@ -113,16 +113,16 @@ int BaseMap::getDataLength()
 Sint32 BaseMap::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	for (int i=0; i<(int)strlen(mapName); i++)
 	{
 		cs^=mapName[i];
 		cs=(cs<<31)|(cs>>1);
 	}
-	
+
 	return cs;
 }
-
+*/
 Sector::Sector(Game *game)
 {
 	this->game=game;
@@ -225,7 +225,7 @@ void Sector::step(void)
 }
 
 Map::Map()
-:BaseMap()
+//:BaseMap()
 {
 	mapDiscovered=NULL;
 	fogOfWarA=NULL;
@@ -547,12 +547,12 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 
 	return false;
 }
-
+/*
 void Map::setBaseMap(const BaseMap *initial)
 {
 	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }
-
+*/
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
 	if (mapDiscovered)
@@ -607,7 +607,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	wSector=w>>4;
 	hSector=h>>4;
 	size=wSector*hSector;
-	
+
 	sectors=new Sector[size];
 }
 
@@ -622,10 +622,16 @@ void Map::setGame(Game *game)
 		sectors[i].setGame(game);
 }
 
-bool Map::load(SDL_RWops *stream, Game *game)
+bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 {
-	if (!BaseMap::load(stream))
-		return false;
+	//if (!BaseMap::load(stream))
+	//	return false;
+	assert(sessionGame);
+	if (sessionGame->versionMinor<12)
+	{
+		// bypass the name of game in BaseMap for older version
+		SDL_RWseek(stream, 32+8, SEEK_CUR);
+	}
 
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
@@ -715,7 +721,7 @@ bool Map::load(SDL_RWops *stream, Game *game)
 
 void Map::save(SDL_RWops *stream)
 {
-	BaseMap::save(stream);
+	//BaseMap::save(stream);
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	
@@ -1218,14 +1224,9 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
     return false;
 }
 
-Sint32 Map::checkSum()
-{
-	return BaseMap::checkSum();
-}
-
 Sint32 Map::checkSum(bool heavy)
 {
-	Sint32 cs=BaseMap::checkSum();
+	Sint32 cs=0;
 	if (heavy)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)

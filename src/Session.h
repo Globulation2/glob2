@@ -49,17 +49,25 @@ public:
 	void save(SDL_RWops *stream);
 
 	virtual Uint8 getOrderType();
-	
+
 	virtual char *getData(bool compressed);
 	virtual bool setData(const char *data, int dataLength, bool compressed);
 	virtual int getDataLength(bool compressed);
-	
+
 	virtual char *getData() { return SessionGame::getData(false); }
 	virtual bool setData(const char *data, int dataLength) { return SessionGame::setData(data, dataLength, false); }
 	virtual int getDataLength() { return SessionGame::getDataLength(false); }
-	
+
 	virtual Sint32 checkSum();
-	
+
+	// internal and external map/game/file name manipulation
+	//! Safely copy s to mapName[] and remove the extention if needed.
+	void setMapName(const char *s);
+	const char *getMapName() const;
+	const char *getMapFileName() const;
+	const char *getGameFileName() const;
+	const char *getFileName(void) const;
+
 public:
 	//! Major map version. Change only with structural modification
 	Sint32 versionMajor;
@@ -80,7 +88,7 @@ public:
 	Uint32 mapScriptOffset;
 	//! Offset of generationDescriptor data from beginning of file
 	Uint32 generationDescriptorOffset;
-	
+
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
 
@@ -88,13 +96,23 @@ public:
 	Sint32 gameTPF;
 	//! Number of tick between order issue and order commit. This is the maximum lag during a game
 	Sint32 gameLatency;
-	
+	//! 1 : file is a map, 0 : file is a game
 	Sint32 fileIsAMap;
-	
+
 	MapGenerationDescriptor *mapGenerationDescriptor;
+
+	enum { MAP_NAME_MAX_SIZE=64 };
+
 protected:
+	//! Name of map or game, serialized
+	char mapName[MAP_NAME_MAX_SIZE];
+	char mapFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
+	char gameFileName[MAP_NAME_MAX_SIZE+5];//This is not saved in file
+	
+	void regenerateInternalMapNames();
+
 	//! Serialized form of SessionGame
-	enum {S_GAME_ONLY_DATA_SIZE=32};
+	enum {S_GAME_ONLY_DATA_SIZE=32+MAP_NAME_MAX_SIZE};
 	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
 	char data[S_GAME_DATA_SIZE];
 protected:
@@ -111,9 +129,9 @@ public:
 	virtual ~SessionInfo(void) { }
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
-	
+
 	Uint8 getOrderType();
-	
+
 	char *getData(bool compressed);
 	bool setData(const char *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
@@ -121,29 +139,27 @@ public:
 	char *getData() { return SessionInfo::getData(false); }
 	bool setData(const char *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
 	int getDataLength() { return SessionInfo::getDataLength(false); }
-	
+
 	Sint32 checkSum();
-	
+
 	bool setLocal(int p);
-	
+
 	int getTeamNumber(char playerName[BasePlayer::MAX_NAME_LENGTH], int team);
 	int getAITeamNumber(SessionInfo *currentSessionInfo, int team);
-	
+
 	//! draw a list of players
 	void draw(DrawableSurface *gfx);
 	//! get information on player in a nice string
 	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen);
 
 public:
-	BaseMap map;
+//	BaseMap map;
 	BasePlayer players[32];
 	BaseTeam team[32];
 
-public:
-	const char *getFileName(void) const;
 protected:
 	//! Serialized form of SessionInfo
-	enum {S_INFO_ONLY_DATA_SIZE=2592};
+	enum {S_INFO_ONLY_DATA_SIZE=2560};
 	enum {S_INFO_DATA_SIZE=S_INFO_ONLY_DATA_SIZE+S_GAME_DATA_SIZE};
 	char data[S_INFO_DATA_SIZE];
 };

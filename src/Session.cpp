@@ -23,6 +23,7 @@
 #include "Marshaling.h"
 #include "Version.h"
 #include "LogFileManager.h"
+#include "Utilities.h"
 
 SessionGame::SessionGame()
 {
@@ -40,8 +41,10 @@ SessionGame::SessionGame()
 	numberOfTeam=0;
 	gameTPF=40;
 	gameLatency=5;
-	
+
 	fileIsAMap=(Sint32)true;
+	strncpy(mapName,"No name", MAP_NAME_MAX_SIZE);
+	regenerateInternalMapNames();
 	
 	mapGenerationDescriptor=NULL;
 	
@@ -78,7 +81,11 @@ SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
 	gameTPF=sessionGame.gameTPF;
 	gameLatency=sessionGame.gameLatency;
 	fileIsAMap=sessionGame.fileIsAMap;
-	
+
+	memcpy(mapName, sessionGame.mapName, sizeof(mapName));
+	memcpy(mapFileName, sessionGame.mapFileName, sizeof(mapFileName));
+	memcpy(gameFileName, sessionGame.gameFileName, sizeof(gameFileName));
+
 	mapGenerationDescriptor=NULL;
 	if (sessionGame.mapGenerationDescriptor)
 		mapGenerationDescriptor=new MapGenerationDescriptor(*sessionGame.mapGenerationDescriptor);
@@ -221,7 +228,7 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		players[playerNumber].printip(s);
 		char t[32];
 		players[playerNumber].printNetState(t);
-		
+
 		/*if (savedSessionInfo)
 		{
 			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
@@ -269,15 +276,20 @@ char *SessionGame::getData(bool compressed)
 		addSint8(data, (Sint8)gameTPF, 4);
 		addSint8(data, (Sint8)gameLatency, 5);
 		addSint8(data, (Sint8)fileIsAMap, 6);
+
+		int l=Utilities::strmlen(mapName, sizeof(mapName));
+		memcpy(data+7, mapName, l);
+
 		if (mapGenerationDescriptor)
 		{
-			addSint8(data, 1, 7);
+			addSint8(data, 1, 7+l);
 			// TODO: make a compression for mapGenerationDescriptor
 			assert(mapGenerationDescriptor->getDataLength()==MapGenerationDescriptor::DATA_SIZE);
-			memcpy(data+8, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
+			memcpy(data+8+l, mapGenerationDescriptor->getData(), MapGenerationDescriptor::DATA_SIZE);
 		}
 		else
-			addSint8(data, 0, 7);
+			addSint8(data, 0, 7+l);
+
 	}
 	else
 	{
@@ -296,6 +308,7 @@ char *SessionGame::getData(bool compressed)
 		}
 		else
 			addSint32(data, 0, 28);
+		memcpy(data+32, mapName, sizeof(mapName));
 	}
 	return data;
 }
@@ -314,14 +327,20 @@ bool SessionGame::setData(const char *data, int dataLength, bool compressed)
 		gameTPF=getSint8(data, 4);
 		gameLatency=getSint8(data, 5);
 		fileIsAMap=getSint8(data, 6);
+
+		int l=Utilities::strmlen(data+7, sizeof(mapName));
+		memcpy(mapName, data+7, l);
+		regenerateInternalMapNames();
+		assert(mapName[sizeof(mapName)-1]==0);
+
 		if (mapGenerationDescriptor)
 			delete mapGenerationDescriptor;
 		mapGenerationDescriptor=NULL;
-		bool isDescriptor=getSint8(data, 7);
+		bool isDescriptor=getSint8(data, 7+l);
 		if (isDescriptor)
 		{
 			mapGenerationDescriptor=new MapGenerationDescriptor();
-			mapGenerationDescriptor->setData(data+8, MapGenerationDescriptor::DATA_SIZE);
+			mapGenerationDescriptor->setData(data+8+l, MapGenerationDescriptor::DATA_SIZE);
 		}
 		else
 			mapGenerationDescriptor=NULL;
@@ -353,6 +372,10 @@ bool SessionGame::setData(const char *data, int dataLength, bool compressed)
 		}
 		else
 			mapGenerationDescriptor=NULL;
+
+		memcpy(mapName, data+32+MapGenerationDescriptor::DATA_SIZE, sizeof(mapName));
+		assert( Utilities::strnlen(mapName, sizeof(mapName)) < (int)sizeof(mapName) );
+		regenerateInternalMapNames();
 	}
 	return true;
 }
@@ -362,10 +385,10 @@ int SessionGame::getDataLength(bool compressed)
 {
 	if (compressed)
 	{
+		int l=8+Utilities::strmlen(mapName, sizeof(mapName));
 		if (mapGenerationDescriptor)
-			return 8+mapGenerationDescriptor->getDataLength();
-		else
-			return 8;
+			l+=mapGenerationDescriptor->getDataLength();
+		return l;
 	}
 	else
 	{
@@ -403,6 +426,51 @@ Sint32 SessionGame::checkSum()
 	return cs;
 }
 
+void SessionGame::setMapName(const char *s)
+{
+	assert(s);
+	assert(s[0]);
+	strncpy(mapName, s, sizeof(mapName));
+	mapName[MAP_NAME_MAX_SIZE-1]=0;
+	char *c=strrchr(mapName, '.');
+	if (c)
+		*c=0;
+	regenerateInternalMapNames();
+}
+
+void SessionGame::regenerateInternalMapNames(void)
+{
+	// set filename from mapname
+	snprintf(mapFileName, sizeof(mapFileName), "%s.map", mapName);
+	snprintf(gameFileName, sizeof(gameFileName), "%s.game", mapName);
+}
+
+const char *SessionGame::getMapName() const
+{
+	//printf("(get)mapName=(%s).\n", mapName);
+	return mapName;
+}
+
+const char *SessionGame::getMapFileName() const
+{
+	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
+	return mapFileName;
+}
+
+const char *SessionGame::getGameFileName() const
+{
+	//printf(gameFileName=(%s), mapName=(%s).\n", gameFileName, mapName);
+	return gameFileName;
+}
+
+const char *SessionGame::getFileName(void) const
+{
+	if (fileIsAMap)
+		return getMapFileName();
+	else
+		return getGameFileName();
+}
+
 SessionInfo::SessionInfo()
 :SessionGame()
 {
@@ -421,35 +489,56 @@ void SessionInfo::save(SDL_RWops *stream)
 	// update to this version
 	SAVE_OFFSET(stream, 12);
 
-	map.save(stream);
-	
+	SDL_RWwrite(stream, mapName, MAP_NAME_MAX_SIZE, 1);
+
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	for (i=0; i<numberOfPlayer; i++)
 		players[i].save(stream);
 	for (i=0; i<numberOfTeam; i++)
 		team[i].save(stream);
-		
+
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
 
 bool SessionInfo::load(SDL_RWops *stream)
 {
 	int i;
+	char signature[4];
+
 	if (!SessionGame::load(stream))
 		return false;
 
 	if (versionMinor>1)
 		SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
 
-	if (!map.load(stream))
-		return false;
+	if (versionMinor>11)
+	{
+		SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
+		regenerateInternalMapNames();
+	}
+	else
+	{
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
 
-	char signature[4];
+		// 32 is the length of the legacy map name
+		SDL_RWread(stream, mapName, 32, 1);
+		regenerateInternalMapNames();
+
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+	}
+
+//	if (!map.load(stream))
+//		return false;
+
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
 
-	
+
 	for (i=0; i<numberOfPlayer; ++i)
 		if(!players[i].load(stream, versionMinor))
 			return false;
@@ -461,7 +550,7 @@ bool SessionInfo::load(SDL_RWops *stream)
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
-	
+
 	return true;
 }
 
@@ -476,14 +565,9 @@ char *SessionInfo::getData(bool compressed)
 	{
 		int l=0;
 
-		// TODO: make a compressed version for map data.
-		memcpy(l+data, map.getData(), map.getDataLength() );
-		l+=map.getDataLength();
-		fprintf(logFile, "getData::mapName=%s\n", map.getMapName());
-
 		memcpy(l+data, SessionGame::getData(true), SessionGame::getDataLength(true));
 		l+=SessionGame::getDataLength(true);
-		
+
 		for (int i=0; i<numberOfPlayer; ++i)
 		{
 			assert(players[i].getDataLength(true)==44);
@@ -505,9 +589,6 @@ char *SessionInfo::getData(bool compressed)
 	else
 	{
 		int l=0;
-
-		memcpy(l+data, map.getData(), map.getDataLength() );
-		l+=map.getDataLength();
 
 		for (int i=0; i<32; ++i)
 		{
@@ -536,10 +617,6 @@ bool SessionInfo::setData(const char *data, int dataLength, bool compressed)
 	if (compressed)
 	{
 		int l=0;
-		
-		map.setData(l+data, map.getDataLength());
-		l+=map.getDataLength();
-		fprintf(logFile, "setData::mapName=%s\n", map.getMapName());
 
 		bool good=SessionGame::setData(l+data, SessionGame::getDataLength(true), true);
 		l+=SessionGame::getDataLength(true);
@@ -567,9 +644,6 @@ bool SessionInfo::setData(const char *data, int dataLength, bool compressed)
 	else
 	{
 		int l=0;
-
-		map.setData(l+data, map.getDataLength());
-		l+=map.getDataLength();
 
 		for (int i=0; i<32; ++i)
 		{
@@ -604,7 +678,7 @@ int SessionInfo::getDataLength(bool compressed)
 			assert(players[0].getDataLength(true)==44);
 		if (numberOfTeam>0)
 			assert(team[0].getDataLength()==16);
-		return map.getDataLength()+SessionGame::getDataLength(true)+numberOfPlayer*44+numberOfTeam*16;
+		return SessionGame::getDataLength(true)+numberOfPlayer*44+numberOfTeam*16;
 	}
 	else
 		return S_INFO_ONLY_DATA_SIZE+SessionGame::getDataLength();
@@ -614,8 +688,10 @@ Sint32 SessionInfo::checkSum()
 {
 	Sint32 cs=0;
 	
-	cs^=map.checkSum();
-
+	int l=Utilities::strmlen(mapName, sizeof(mapName));
+	for (int i=0; i<l; ++i)
+		cs^=(((Sint32)mapName[i])<<((i&7)<<2));
+	
 	for (int i=0; i<numberOfPlayer; ++i)
 		cs^=players[i].checkSum();
 	
@@ -670,11 +746,3 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 	return team;
 }
 
-
-const char *SessionInfo::getFileName(void) const
-{
-	if (fileIsAMap)
-		return map.getMapFileName();
-	else
-		return map.getGameFileName();
-}

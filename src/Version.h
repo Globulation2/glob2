@@ -22,7 +22,9 @@
 
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 11
+#define VERSION_MINOR 12
 // version 10 added script saved in game
+// version 11 the gamesfiles do saves which building has been seen under fog of war.
+// version 12 saves map name into SessionGame instead of BaseMap.
 
 #endif

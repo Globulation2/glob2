@@ -80,9 +80,9 @@ public:
 
 	//!
 	bool loadBase(const SessionInfo *initial);
-	//! 
+	//!
 	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream, char *name);
+	void save(SDL_RWops *stream, const char *name);
 
 	void processEvent(SDL_Event *event);
 
@@ -122,8 +122,8 @@ public:
 	bool isRunning;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
-	//! if this is not emptih, then Engine should load the map with this filename.
-	char toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+5];
+	//! if this is not empty, then Engine should load the map with this filename.
+	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
 	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines;
 	int localPlayer, localTeamNo;
