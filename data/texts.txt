@@ -923,9 +923,9 @@ Der Befehl "/away (<Nachricht>)" zeigt anderen YOG Spieler dass Sie gerade weg s
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/m".
 Der "/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine speziefische Person zu senden. z.b. "msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
-[really quit ?]
-Voulez-vous vraiment quitter ?
-Are you sure you wanna quit ?
+[really quit without saving?]
+Voulez-vous vraiment quitter sans sauver ?
+Are you sure you want to quit without saving ?
 
 [Yes]
 Oui

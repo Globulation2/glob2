@@ -54,7 +54,7 @@ private:
 public:
 	bool load(const char *name);
 private:
-	void save(const char *name);
+	bool save(const char *name);
 	// execute the load/save dialog
 	void loadSave(bool isLoad);
 	// execute the script editor dialog

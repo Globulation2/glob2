@@ -47,20 +47,22 @@ public:
 
 	const char *filename;
 	SDL_RWops *downloadStream;
-	int startDownloadTimeout;
 	
-	enum{NET_WINDOW_SIZE=1024};
-	struct NetWindowSlot
+	enum{PACKET_SLOTS=1024};
+	struct PacketSlot
 	{
-		//NetWindowState state;
 		Uint32 index;
 		bool received;
-		int packetSize;
+		int brandwidth;
 	};
-	NetWindowSlot netWindow[NET_WINDOW_SIZE];
+	PacketSlot packetSlot[PACKET_SLOTS];
 	Uint32 unreceivedIndex;
 	Uint32 endOfFileIndex;
+	int totalReceived;
 	int duplicatePacketFile;
+	int startDownloadTimeout;
+	int brandwidth;
+	int receivedCounter;
 	
 private:
 	enum BroadcastState

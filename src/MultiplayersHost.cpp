@@ -102,26 +102,22 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		playerFileTra[p].wantsFile=false;
 		playerFileTra[p].receivedFile=false;
-		playerFileTra[p].packetSize=256;
-		playerFileTra[p].windowSize=32;
 		playerFileTra[p].unreceivedIndex=0;
-		for (int i=0; i<MAX_WINDOW_SIZE; i++)
+		playerFileTra[p].brandwidth=0;
+		playerFileTra[p].lastNbPacketsLost=0;
+		for (int i=0; i<PACKET_SLOTS; i++)
 		{
-			playerFileTra[p].windowstats[i]=0;
-			playerFileTra[p].windowlosts[i]=0;
+			playerFileTra[p].packetSlot[i].index=0;
+			playerFileTra[p].packetSlot[i].sent=false;
+			playerFileTra[p].packetSlot[i].received=false;
+			playerFileTra[p].packetSlot[i].brandwidth=0;
+			playerFileTra[p].packetSlot[i].time=0;
 		}
-		playerFileTra[p].totalLost=0;
+		playerFileTra[p].time=0;
+		playerFileTra[p].latency=32;
 		playerFileTra[p].totalSent=0;
+		playerFileTra[p].totalLost=0;
 		playerFileTra[p].totalReceived=0;
-		playerFileTra[p].onlyWaited=0;
-		for (int i=0; i<NET_WINDOW_SIZE; i++)
-		{
-			playerFileTra[p].window[i].index=0;
-			playerFileTra[p].window[i].sent=false;
-			playerFileTra[p].window[i].received=false;
-			playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-			playerFileTra[p].window[i].packetSize=256;
-		}
 	}
 	
 	if (!shareOnYOG)
@@ -180,29 +176,15 @@ MultiplayersHost::~MultiplayersHost()
 	if (stream)
 		SDL_RWclose(stream);
 	
-	if (logFile)
-	{
-		if (logFile!=stdout)
-		{
-			for (int p=0; p<32; p++)
-				if (playerFileTra[p].totalSent)
-				{
-					fprintf(logFile, "player %d\n", p);
-					int totLost=0;
-					for (int i=0; i<MAX_WINDOW_SIZE; i++)
-					{
-						totLost+=playerFileTra[p].windowlosts[i];
-						if (playerFileTra[p].windowstats[i]>0)
-							fprintf(logFile, "%3d \t %3d \t %3d \t %3d\n", i, playerFileTra[p].windowstats[i], playerFileTra[p].windowlosts[i], totLost);
-					}
-					fprintf(logFile, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
-					fprintf(logFile, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/playerFileTra[p].totalSent);
-					fprintf(logFile, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
-					fprintf(logFile, "playerFileTra[p].totalReceived=%d.\n", playerFileTra[p].totalReceived);
-					fprintf(logFile, "playerFileTra[p].onlyWaited=%d.\n", playerFileTra[p].onlyWaited);
-				}
-		}
-	}
+	if (logFileDownload && logFileDownload!=stdout)
+		for (int p=0; p<32; p++)
+			if (playerFileTra[p].totalSent)
+			{
+				fprintf(logFileDownload, "player %d \n", p);
+				fprintf(logFileDownload, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
+				fprintf(logFileDownload, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/(float)playerFileTra[p].totalSent);
+				fprintf(logFileDownload, "playerFileTra[p].totalReceived=%d. (%f)\n", playerFileTra[p].totalReceived, (float)playerFileTra[p].totalReceived/(float)playerFileTra[p].totalSent);
+			}
 }
 
 int MultiplayersHost::newTeamIndice()
@@ -314,7 +296,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 		
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			if (sessionInfo.players[j].type==BasePlayer::P_IP)
-				if (playerFileTra[j].wantsFile)
+				if (playerFileTra[j].wantsFile && !playerFileTra[j].receivedFile)
 				{
 					fprintf(logFile, "player %d is still downloading game file.\n", j);
 					allPlayersHaveFile=false;
@@ -523,21 +505,22 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	assert(p<32);
 	playerFileTra[p].wantsFile=false;
 	playerFileTra[p].receivedFile=false;
-	playerFileTra[p].packetSize=256;
-	playerFileTra[p].windowSize=32;
-	playerFileTra[p].totalLost=0;
-	playerFileTra[p].totalSent=0;
-	playerFileTra[p].totalReceived=0;
-	playerFileTra[p].onlyWaited=0;
 	playerFileTra[p].unreceivedIndex=0;
-	for (int i=0; i<NET_WINDOW_SIZE; i++)
+	playerFileTra[p].brandwidth=0;
+	playerFileTra[p].lastNbPacketsLost=0;
+	for (int i=0; i<PACKET_SLOTS; i++)
 	{
-		playerFileTra[p].window[i].index=0;
-		playerFileTra[p].window[i].sent=false;
-		playerFileTra[p].window[i].received=false;
-		playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-		playerFileTra[p].window[i].packetSize=256;
+		playerFileTra[p].packetSlot[i].index=0;
+		playerFileTra[p].packetSlot[i].sent=false;
+		playerFileTra[p].packetSlot[i].received=false;
+		playerFileTra[p].packetSlot[i].brandwidth=0;
+		playerFileTra[p].packetSlot[i].time=0;
 	}
+	playerFileTra[p].latency=32;
+	playerFileTra[p].time=0;
+	playerFileTra[p].totalSent=0;
+	playerFileTra[p].totalLost=0;
+	playerFileTra[p].totalReceived=0;
 	
 	sessionInfo.players[p].init();
 	sessionInfo.players[p].type=BasePlayer::P_IP;
@@ -648,7 +631,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 {
-	if (size!=72)
+	if (size>72)
 	{
 		fprintf(logFile, "Bad size(%d) for an File request from ip %s.\n", size, Utilities::stringIP(ip));
 		fprintf(logFileDownload, "Bad size(%d) for an File request from ip %s.\n", size, Utilities::stringIP(ip));
@@ -666,45 +649,56 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 		return;
 	}
 	
+	if (data[1]&1)
+	{
+		char data[12];
+		data[0]=FULL_FILE_DATA;
+		data[1]=1;
+		data[2]=0;
+		data[3]=0;
+		addUint32(data, fileSize, 4);
+		bool success=sessionInfo.players[p].send(data, 8);
+		assert(success);
+		if (size==4)
+		{
+			fprintf(logFileDownload, "Size only requested.\n");
+			return;
+		}
+	}
+	
 	if (!playerFileTra[p].wantsFile)
 	{
 		if (!playerFileTra[p].receivedFile)
 		{
-			fprintf(logFile, "player (%s) first requests file.\n", Utilities::stringIP(ip));
-			fprintf(logFileDownload, "player (%s) first requests file.\n", Utilities::stringIP(ip));
+			fprintf(logFile, "player %d (%s) first requests file.\n", p, Utilities::stringIP(ip));
+			fprintf(logFileDownload, "player %d (%s) first requests file.\n", p, Utilities::stringIP(ip));
+			
 			playerFileTra[p].wantsFile=true;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
+			playerFileTra[p].receivedFile=false;
+			playerFileTra[p].unreceivedIndex=0;
+			playerFileTra[p].brandwidth=1;
+			playerFileTra[p].lastNbPacketsLost=0;
+			for (int i=0; i<PACKET_SLOTS; i++)
 			{
-				playerFileTra[p].window[i].index=0;
-				playerFileTra[p].window[i].sent=false;
-				playerFileTra[p].window[i].received=false;
-				playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-				playerFileTra[p].window[i].packetSize=256;
+				playerFileTra[p].packetSlot[i].index=0;
+				playerFileTra[p].packetSlot[i].sent=false;
+				playerFileTra[p].packetSlot[i].received=false;
+				playerFileTra[p].packetSlot[i].brandwidth=0;
+				playerFileTra[p].packetSlot[i].time=0;
 			}
-
-			playerFileTra[p].packetSize=256;
-			playerFileTra[p].windowSize=32;
+			playerFileTra[p].latency=32;
+			playerFileTra[p].time=0;
+			playerFileTra[p].totalSent=0;
+			playerFileTra[p].totalLost=0;
+			playerFileTra[p].totalReceived=0;
 		}
-		
-		Uint32 unreceivedIndex=getUint32(data, 4);
-		if (unreceivedIndex!=0xFFFFFFFF)
+		else
 		{
-			char data[12];
-			data[0]=FULL_FILE_DATA;
-			data[1]=0;
-			data[2]=0;
-			data[3]=0;
-			addSint32(data, (Sint32)-1, 4);
-			addUint32(data, fileSize, 8);
-
-			bool success=sessionInfo.players[p].send(data, 12);
-			assert(success);
-			playerFileTra[p].totalLost++; //TODO: this doesn't seem to be a real lost! Do understand why this allways happens.
-			playerFileTra[p].totalSent++;
-			playerFileTra[p].windowstats[playerFileTra[p].windowSize]++;
+			fprintf(logFile, "player %d (%s) double requests file.\n", p, Utilities::stringIP(ip));
+			fprintf(logFileDownload, "player %d (%s) double requests file.\n", p, Utilities::stringIP(ip));
 		}
 	}
-	else
+	else if (size>=8)
 	{
 		Uint32 unreceivedIndex=getUint32(data, 4);
 		if (unreceivedIndex<playerFileTra[p].unreceivedIndex)
@@ -713,126 +707,86 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			fprintf(logFileDownload, "Bad FileRequest packet received !!!\n");
 			return;
 		}
-		assert(unreceivedIndex>=playerFileTra[p].unreceivedIndex); //TODO: this is another security hole.
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
-		fprintf(logFileDownload, "unreceivedIndex=%d\n", unreceivedIndex);
+		fprintf(logFileDownload, "player %d unreceivedIndex=%d\n", p, unreceivedIndex);
 		
-		if (unreceivedIndex==fileSize || unreceivedIndex==0xFFFFFFFF)
+		if (unreceivedIndex>=fileSize)
 		{
-			playerFileTra[p].wantsFile=false;
-			playerFileTra[p].receivedFile=true;
-			
-			fprintf(logFileDownload, "player %d\n", p);
-			int totLost=0;
-			for (int i=0; i<MAX_WINDOW_SIZE; i++)
+			if (playerFileTra[p].totalSent && !playerFileTra[p].receivedFile)
 			{
-				totLost+=playerFileTra[p].windowlosts[i];
-				if (playerFileTra[p].windowstats[i]>0)
-					fprintf(logFileDownload, "%3d \t %3d \t %3d \t %3d\n", i, playerFileTra[p].windowstats[i], playerFileTra[p].windowlosts[i], totLost);
+				fprintf(logFileDownload, "player %d \n", p);
+				fprintf(logFileDownload, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
+				fprintf(logFileDownload, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/(float)playerFileTra[p].totalSent);
+				fprintf(logFileDownload, "playerFileTra[p].totalReceived=%d. (%f)\n", playerFileTra[p].totalReceived, (float)playerFileTra[p].totalReceived/(float)playerFileTra[p].totalSent);
 			}
-			fprintf(logFileDownload, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
-			fprintf(logFileDownload, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/playerFileTra[p].totalSent);
-			fprintf(logFileDownload, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
-			fprintf(logFileDownload, "playerFileTra[p].totalReceived=%d.\n", playerFileTra[p].totalReceived);
-			fprintf(logFileDownload, "playerFileTra[p].onlyWaited=%d.\n", playerFileTra[p].onlyWaited);
-			
+			playerFileTra[p].wantsFile=true;
+			playerFileTra[p].receivedFile=true;
 			stepHostGlobalState();
 		}
 		else
 		{
-			Uint32 receivedIndex[16];
-			fprintf(logFileDownload, "receivedIndex=(");
-			for (int ix=0; ix<16; ix++)
+			// We dump the current packet's received's confirmation:
+			int ixend=(size-8)/8;
+			fprintf(logFileDownload, "ixend=%d\n", ixend);
+			Uint32 receivedBegin[8];
+			Uint32 receivedEnd[8];
+			fprintf(logFileDownload, "received=(");
+			for (int ix=0; ix<ixend; ix++)
 			{
-				receivedIndex[ix]=getUint32(data, 8+ix*4);
-				fprintf(logFileDownload, "%d, ", receivedIndex[ix]);
-				assert(receivedIndex[ix]>unreceivedIndex);
-			}
-			fprintf(logFileDownload, ").\n");
-
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-			{
-				Uint32 index=playerFileTra[p].window[i].index;
-				if (index<unreceivedIndex && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
+				receivedBegin[ix]=getUint32(data, 8+ix*8);
+				receivedEnd[ix]=getUint32(data, 12+ix*8);
+				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix], receivedEnd[ix]);
+				if (receivedBegin[ix]<=unreceivedIndex)
 				{
-					playerFileTra[p].windowSize++;
-					playerFileTra[p].totalReceived++;
-					playerFileTra[p].window[i].received=true;
-				}
-				else if (index>unreceivedIndex)
-					for (int ix=0; ix<16; ix++)
-						if (index==receivedIndex[ix] && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
-						{
-							playerFileTra[p].windowSize++;
-							playerFileTra[p].totalReceived++;
-							playerFileTra[p].window[i].received=true;
-						}
-			}
-			
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].index==unreceivedIndex)
-					assert(!playerFileTra[p].window[i].received);
-			
-			/*int totLost=0;
-			int maxTotLost=playerFileTra[p].totalReceived/200;
-			if (maxTotLost<1)
-				maxTotLost=1;
-			int windowSize=playerFileTra[p].windowSize;
-			int imaxp=-1;
-			int imaxs=-1;
-			for (int i=0; i<MAX_WINDOW_SIZE; i++)
-			{
-				int lost=playerFileTra[p].windowlosts[i];
-				totLost+=lost;
-				if (lost>0)
-					imaxs=i;
-				if (totLost>=maxTotLost)
-				{
-					imaxp=i;
-					break;
+					fprintf(logFileDownload, "Warning, critical error, (receivedBegin[ix]<=unreceivedIndex), (%d)(%d)\n", receivedBegin[ix], unreceivedIndex);
+					return;
 				}
 			}
-			if (imaxp>0)
-				windowSize=imaxp-1;
-			else if (imaxs>0)
-				windowSize=imaxs+1;
+			fprintf(logFileDownload, ")\n");
 			
-			if (windowSize<16)
-				windowSize=16;
-			else if (windowSize>64)
+			// We record which packets have been received, and how many:
+			int nbPacketsReceived=0;
+			for (int i=0; i<PACKET_SLOTS; i++)
 			{
-				int maxws=playerFileTra[p].totalReceived/2;
-				if (windowSize>maxws)
+				Uint32 index=playerFileTra[p].packetSlot[i].index;
+				if (playerFileTra[p].packetSlot[i].sent && !playerFileTra[p].packetSlot[i].received)
 				{
-					windowSize=maxws;
-					fprintf(logFileDownload, "maxws=%d\n", maxws);
+					if (index<unreceivedIndex)
+					{
+						nbPacketsReceived++;
+						playerFileTra[p].totalReceived++;
+						playerFileTra[p].packetSlot[i].received=true;
+					}
+					else
+						for (int ix=0; ix<ixend; ix++)
+							if (index>=receivedBegin[ix] && index<=receivedEnd[ix])
+							{
+								nbPacketsReceived++;
+								playerFileTra[p].totalReceived++;
+								playerFileTra[p].packetSlot[i].received=true;
+								break;
+							}
 				}
 			}
 			
-			int packetSize=playerFileTra[p].packetSize;
-			if (windowSize>=MAX_WINDOW_SIZE)
+			// We compute the number of (probably) lost packets:
+			int nbPacketsLost=0;
+			int latency=playerFileTra[p].latency;
+			for (int i=0; i<PACKET_SLOTS; i++)
 			{
-				if (packetSize>=1024)
-				{
-					playerFileTra[p].windowSize=MAX_WINDOW_SIZE-1;
-					playerFileTra[p].packetSize=1024;
-				}
-				else
-				{
-					windowSize/=2;
-					packetSize*=2;
-					fprintf(logFileDownload, "new packetSize=%d.\n", packetSize);
-					int windowlosts[MAX_WINDOW_SIZE];
-					memcpy(windowlosts, playerFileTra[p].windowlosts, MAX_WINDOW_SIZE*sizeof(int));
-					memset(playerFileTra[p].windowlosts, 0, MAX_WINDOW_SIZE*sizeof(int));
-					for (int i=0; i<(MAX_WINDOW_SIZE/2); i++)
-						playerFileTra[p].windowlosts[i]=windowlosts[i*2]+windowlosts[1+i*2];
-					playerFileTra[p].packetSize=packetSize;
-				}
+				PacketSlot &ps=playerFileTra[p].packetSlot[i];
+				if (ps.sent && !ps.received && ps.time>latency)
+					nbPacketsLost++;
 			}
-			playerFileTra[p].windowSize=windowSize;
-			fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);*/
+			if (nbPacketsLost==0)
+				playerFileTra[p].brandwidth+=nbPacketsReceived;
 		}
+	}
+	else
+	{
+		fprintf(logFile, "Bad size(%d) for an File request from ip %s.\n", size, Utilities::stringIP(ip));
+		fprintf(logFileDownload, "Bad size(%d) for an File request from ip %s.\n", size, Utilities::stringIP(ip));
+		return;
 	}
 	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
 	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL;
@@ -1089,7 +1043,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
 	if (data[0]!=NEW_PLAYER_WANTS_FILE)
 		fprintf(logFile, "\nMultiplayersHost::treatData (%d)\n", data[0]);
-	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
+	if ((data[2]!=0)||(data[3]!=0))
 	{
 		printf("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
@@ -1280,271 +1234,191 @@ void MultiplayersHost::sendingTime()
 	
 	// We send the file if necessary
 	for (int p=0; p<32; p++)
-	{
-		BasePlayer &player=sessionInfo.players[p];
-		if (playerFileTra[p].wantsFile)
+		if (playerFileTra[p].wantsFile && !playerFileTra[p].receivedFile)
 		{
-			bool onlyWait=true;
-			
-			int unreceived=0;
-			Uint32 lastReceivedIndex=0;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent)
+			// We compute an average latency:
+			int latencySum=0;
+			int latencyCount=0;
+			for (int i=0; i<PACKET_SLOTS; i++)
+				if (playerFileTra[p].packetSlot[i].sent && playerFileTra[p].packetSlot[i].received)
 				{
-					Uint32 index=playerFileTra[p].window[i].index;
-					if (playerFileTra[p].window[i].received)
-					{
-						if (index>lastReceivedIndex)
-							lastReceivedIndex=index;
-					}
-					else
-						unreceived++;
+					latencySum+=playerFileTra[p].packetSlot[i].time;
+					latencyCount++;
 				}
-			
-			
-			int toSend;
-			if (playerFileTra[p].windowSize<=unreceived)
-				toSend=0;
+			int latency;
+			if (latencyCount>32)
+				latency=latencySum/latencyCount;
 			else
+				latency=32;
+			if (playerFileTra[p].latency!=latency)
 			{
-				toSend=(playerFileTra[p].windowSize-unreceived)/20;
-				if (toSend<1)
-					toSend=1;
+				fprintf(logFileDownload, "new latency=%d.\n", latency);
+				playerFileTra[p].latency=latency;
 			}
-			//if (toSend)
-			fprintf(logFileDownload, "unreceived=%d, windowSize=%d, toSend=%d.\n", unreceived, playerFileTra[p].windowSize, toSend);
-			fprintf(logFileDownload, "lastReceivedIndex=%d\n", lastReceivedIndex);
 			
-			int latePackets=0;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
-				{
-					if (playerFileTra[p].window[i].index<lastReceivedIndex)
-					{
-						playerFileTra[p].window[i].time+=2;//gaps are more probably lost
-						latePackets++;
-					}
-					else
-						playerFileTra[p].window[i].time++;
-				}
+			// We compute the number of (more probably) lost packets:
+			latency=2*latency;
+			int nbPacketsLost=0;
+			for (int i=0; i<PACKET_SLOTS; i++)
+				if (playerFileTra[p].packetSlot[i].sent && !playerFileTra[p].packetSlot[i].received && playerFileTra[p].packetSlot[i].time>latency)
+					nbPacketsLost++;
+			if (nbPacketsLost)
+				fprintf(logFileDownload, "nbPacketsLost=%d.\n", nbPacketsLost);
 			
-			Uint32 smallestIndexTimeout=0xFFFFFFFF;
-			int wisit=-1;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>MAX_NETWORK_TIMEOUT)
-				{
-					Uint32 index=playerFileTra[p].window[i].index;
-					if (index<smallestIndexTimeout)
-					{
-						smallestIndexTimeout=index;
-						wisit=i;
-					}
-				}
-			if (wisit>=0)
+			// We update the brandwidth:
+			int brandwidth=playerFileTra[p].brandwidth;
+			if (nbPacketsLost>playerFileTra[p].lastNbPacketsLost)
 			{
-				int i=wisit;
-				playerFileTra[p].window[i].time=0;
-
-				toSend--;
-				int sendingIndex=playerFileTra[p].window[i].index;
-				// We have to resend this packet
-				fprintf(logFileDownload, "resending index=%d.\n", sendingIndex);
-
-				int size=playerFileTra[p].window[i].packetSize;
-				if (sendingIndex+size>(int)fileSize)
-					size=fileSize-sendingIndex;
-				assert(size>=0);
-				if (size>=0)
-				{
-					char *data=(char *)malloc(size+12);
-					assert(data);
-					data[0]=FULL_FILE_DATA;
-					data[1]=0;
-					data[2]=0;
-					data[3]=0;
-					addSint32(data, (Sint32)i, 4);
-					addUint32(data, sendingIndex, 8);
-					SDL_RWseek(stream, sendingIndex, SEEK_SET);
-					SDL_RWread(stream, data+12, size, 1);
-
-					bool success=player.send(data, size+12);
-					assert(success);
-					playerFileTra[p].totalLost++;
-					playerFileTra[p].totalSent++;
-					
-					int windowStatSize=playerFileTra[p].windowSize*size/playerFileTra[p].packetSize;
-					if (windowStatSize<0)
-						windowStatSize=0;
-					else if(windowStatSize>=MAX_WINDOW_SIZE)
-						windowStatSize=MAX_WINDOW_SIZE-1;
-					playerFileTra[p].windowstats[windowStatSize]++;
-					onlyWait=false;
-
-					free(data);
-				}
-				
-				int windowSize=playerFileTra[p].windowSize;
-				int packetSize=playerFileTra[p].packetSize;
-				int windowStatSize=windowSize*size/packetSize;
-				if (windowStatSize<0)
-					windowStatSize=0;
-				else if(windowStatSize>=MAX_WINDOW_SIZE)
-					windowStatSize=MAX_WINDOW_SIZE-1;
-				playerFileTra[p].windowlosts[windowStatSize]++;
-				
-				int totLost=0;
-				int maxTotLost=playerFileTra[p].totalReceived/200;
-				if (maxTotLost<1)
-					maxTotLost=1;
-				int imaxp=-1;
-				int imaxs=-1;
-				for (int i=0; i<MAX_WINDOW_SIZE; i++)
-				{
-					int lost=playerFileTra[p].windowlosts[i];
-					totLost+=lost;
-					if (lost>0)
-						imaxs=i;
-					if (totLost>=maxTotLost)
+				brandwidth-=(nbPacketsLost-playerFileTra[p].lastNbPacketsLost);
+				if (brandwidth<1)
+					brandwidth=1;
+				if (playerFileTra[p].brandwidth!=brandwidth)
+					fprintf(logFileDownload, "new brandwidth=%d.\n", brandwidth);
+				playerFileTra[p].brandwidth=brandwidth;
+			}
+			playerFileTra[p].lastNbPacketsLost=nbPacketsLost;
+			
+			// Can we send something ?
+			int time=(playerFileTra[p].time++)&31;
+			int toSend=(brandwidth>>5)+(time<=(brandwidth&31));
+			
+			// OK, let's sens "toSend" packets:
+			fprintf(logFileDownload, "*Sending %d packets:\n", toSend);
+			for (int s=0; s<toSend; s++)
+			{
+				// We take the oldest packet:
+				Uint32 minIndex=(Uint32)-1;
+				int mini=-1;
+				for (int i=0; i<PACKET_SLOTS; i++)
+					if (!playerFileTra[p].packetSlot[i].sent)
 					{
-						imaxp=i;
+						minIndex=playerFileTra[p].packetSlot[i].index;
+						mini=i;
 						break;
 					}
-				}
-				if (imaxp>0)
-					windowSize=imaxp-1;
-				else if (imaxs>0)
-					windowSize=imaxs+1;
-				
-				if (windowSize>64)
-				{
-					int maxws=playerFileTra[p].totalReceived/2;
-					if (windowSize>maxws)
+				if (mini==-1)
+					for (int i=0; i<PACKET_SLOTS; i++)
 					{
-						windowSize=maxws;
-						fprintf(logFileDownload, "maxws=%d\n", maxws);
-					}// else if (latePackets)
-					//	windowSize--;
-				}
-				
-				if (windowSize<128)
-				{
-					if (windowSize<16)
-						windowSize=16;
-					int pspw=packetSize/windowSize;
-					if (pspw>=12)
-					{
-						packetSize/=2;
-						windowSize*=2;
-						int windowlosts[MAX_WINDOW_SIZE];
-						memcpy(windowlosts, playerFileTra[p].windowlosts, MAX_WINDOW_SIZE*sizeof(int));
-						memset(playerFileTra[p].windowlosts, 0, MAX_WINDOW_SIZE*sizeof(int));
-						for (int i=0; i<MAX_WINDOW_SIZE; i++)
-							playerFileTra[p].windowlosts[i]=windowlosts[i/2]/2;
-						fprintf(logFileDownload, "new packetSize=%d.\n", packetSize);
-						playerFileTra[p].packetSize=packetSize;
-					}
-				}
-				playerFileTra[p].windowSize=windowSize;
-				fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);
-			}
-			
-			if (toSend)
-				fprintf(logFileDownload, "toSend=%d\n", toSend);
-			
-			for (int t=0; t<toSend ; t++)
-			{
-				Uint32 sendingIndex=0;
-				bool endOfFile=false;
-				for (int i=0; i<NET_WINDOW_SIZE; i++)
-					if (playerFileTra[p].window[i].sent)
-					{
-						Uint32 index=playerFileTra[p].window[i].index;
-						Uint32 packetSize=playerFileTra[p].window[i].packetSize;
-						Uint32 tot=index+packetSize;
-						if (packetSize==0)
+						Uint32 index=playerFileTra[p].packetSlot[i].index;
+						if (index<minIndex)
 						{
-							endOfFile=true;
-							break;
+							minIndex=index;
+							mini=i;
+							if (minIndex==0)
+								break;
 						}
-						else if (tot>sendingIndex)
-							sendingIndex=tot;
-						
 					}
-				if (endOfFile)
-					break;
-				int size=playerFileTra[p].packetSize;
+				assert(mini!=-1);
+				assert(mini<PACKET_SLOTS);
+				bool sent=playerFileTra[p].packetSlot[mini].sent;
+				bool received=playerFileTra[p].packetSlot[mini].received;
+				Uint32 sendingIndex;
+				if ((sent && received) || !sent)
+				{
+					// This not a lost packet, we have to find a packet to send:
+					// first, is it any late packet ?
+					bool found=false;
+					Uint32 minIndexLost=(Uint32)-1;
+					for (int i=0; i<PACKET_SLOTS; i++)
+					{
+						PacketSlot &ps=playerFileTra[p].packetSlot[i];
+						if (ps.sent && !ps.received && ps.time>latency)
+						{
+							found=true;
+							Uint32 index=ps.index;
+							if (index<minIndexLost)
+							{
+								minIndexLost=index;
+								mini=i;
+							}
+						}
+					}
+					if (found)
+					{
+						sendingIndex=minIndexLost;
+						fprintf(logFileDownload, "Ressending-v1 now the lost packet, sendingIndex=%d, mini=%d.\n", sendingIndex, mini);
+						playerFileTra[p].totalLost++;
+					}
+					else
+					{
+						// Here, we have no late packet, we look for a new packet:
+						Uint32 maxIndex=0;
+						bool firstTime=true;
+						for (int i=0; i<PACKET_SLOTS; i++)
+							if (playerFileTra[p].packetSlot[i].sent)
+							{
+								Uint32 index=playerFileTra[p].packetSlot[i].index;
+								firstTime=false;
+								if (index>maxIndex)
+									maxIndex=index;
+							}
+						if (firstTime)
+						{
+							fprintf(logFileDownload, " We send the first packet!\n");
+							sendingIndex=0;
+						}
+						else
+						{
+							sendingIndex=maxIndex+1024; // 1024 is the default size.
+							if (sendingIndex>=fileSize)
+							{
+								fprintf(logFileDownload, "Nothing-v1 more to send to player (%d). sendingIndex=(%d).\n", p, sendingIndex);
+								toSend=0;
+								break;
+							}
+							else
+								fprintf(logFileDownload, "Sending the next packet, sendingIndex=%d.\n", sendingIndex);
+						}
+					}
+				}
+				else
+				{
+					// This is a definitely lost packet, we send it aggain:
+					fprintf(logFileDownload, "Ressending-v2 now the lost packet, sendingIndex=%d, mini=%d.\n", sendingIndex, mini);
+					sendingIndex=playerFileTra[p].packetSlot[mini].index;
+					playerFileTra[p].totalLost++;
+				}
 				
+				int size=1024; // 1024 is the default size.
 				if (sendingIndex+size>fileSize)
 					size=fileSize-sendingIndex;
-				assert(size>=0);
-				
-				if (size>=0)
+				if (size<0)
 				{
-					fprintf(logFileDownload, "t=%d, sendingIndex=%d, size=%d\n", t, sendingIndex, size);
-					
-					char *data=(char *)malloc(size+12);
-					assert(data);
-					data[0]=FULL_FILE_DATA;
-					data[1]=0;
-					data[2]=0;
-					data[3]=0;
-					addUint32(data, sendingIndex, 8);
-					SDL_RWseek(stream, sendingIndex, SEEK_SET);
-					SDL_RWread(stream, data+12, size, 1);
-
-					// We look for a free window index:
-					Uint32 smallestIndex=0xFFFFFFFF;
-					int wi=-1;
-					//first, we look for a free window slot:
-					for (int i=0; i<NET_WINDOW_SIZE; i++)
-						if (!playerFileTra[p].window[i].sent)
-						{
-							Uint32 index=playerFileTra[p].window[i].index;
-							if (index<smallestIndex)
-							{
-								smallestIndex=index;
-								wi=i;
-							}
-						}
-					if (wi==-1) //Second, we need to free a widndow slot: we take the oldest sent:
-						for (int i=0; i<NET_WINDOW_SIZE; i++)
-							if (playerFileTra[p].window[i].sent && playerFileTra[p].window[i].received)
-							{
-								Uint32 index=playerFileTra[p].window[i].index;
-								if (index<smallestIndex)
-								{
-									smallestIndex=index;
-									wi=i;
-								}
-							}
-							
-					assert(wi!=-1);
-
-					if (wi!=-1)
-					{
-						addSint32(data, (Sint32)wi, 4);
-
-						playerFileTra[p].window[wi].index=sendingIndex;
-						playerFileTra[p].window[wi].sent=true;
-						playerFileTra[p].window[wi].received=false;
-						playerFileTra[p].window[wi].time=0;
-						playerFileTra[p].window[wi].packetSize=size;
-
-						bool success=player.send(data, size+12);
-						assert(success);
-						playerFileTra[p].totalSent++;
-						playerFileTra[p].windowstats[playerFileTra[p].windowSize]++;
-						onlyWait=false;
-					}
-
-					free(data);
+					fprintf(logFileDownload, "Nothing-v2 more to send to player (%d). sendingIndex=(%d).\n", p, sendingIndex);
+					toSend=0;
+					break;
 				}
+				
+				char *data=(char *)malloc(12+size);
+				assert(data);
+				data[0]=FULL_FILE_DATA;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				if (size<1024)
+					addSint32(data, 0, 4); // Send a confirmation at once, beacause we are at the end of the file.
+				else
+					addSint32(data, brandwidth, 4);
+				addUint32(data, sendingIndex, 8);
+				SDL_RWseek(stream, sendingIndex, SEEK_SET);
+				SDL_RWread(stream, data+12, size, 1);
+				bool success=sessionInfo.players[p].send(data, 12+size);
+				assert(success);
+				free(data);
+				playerFileTra[p].totalSent++;
+				fprintf(logFileDownload, "sent a (size=%d) packet to player (%d). sendingIndex=(%d).\n", size, p, sendingIndex);
+				
+				playerFileTra[p].packetSlot[mini].index=sendingIndex;
+				playerFileTra[p].packetSlot[mini].sent=true;
+				playerFileTra[p].packetSlot[mini].received=false;
+				playerFileTra[p].packetSlot[mini].brandwidth=brandwidth;
+				playerFileTra[p].packetSlot[mini].time=0;
 			}
 			
-			if (onlyWait)
-				playerFileTra[p].onlyWaited++;
+			for (int i=0; i<PACKET_SLOTS; i++)
+				if (playerFileTra[p].packetSlot[i].sent && !playerFileTra[p].packetSlot[i].received)
+					playerFileTra[p].packetSlot[i].time++;
 		}
-	}
 	
 	
 	for (int i=0; i<sessionInfo.numberOfPlayer; i++)

@@ -41,34 +41,30 @@ public:
 
 	enum{SECONDS_BEFORE_START_GAME=5};
 	
-	enum{NET_WINDOW_SIZE=1024};
-	enum{MAX_WINDOW_SIZE=256};
-	struct NetWindowSlot
+	enum{PACKET_SLOTS=1024};
+	struct PacketSlot
 	{
-		//NetWindowState state;
 		Uint32 index;
-		bool sent;
-		bool received;
+		bool sent, received;
+		int brandwidth;
 		int time;
-		int packetSize;
 	};
 	struct PlayerFileTransmission
 	{
 		bool wantsFile;
 		bool receivedFile;
-		NetWindowSlot window[NET_WINDOW_SIZE];
-		int packetSize;
-		int windowSize;
 		Uint32 unreceivedIndex;
-		
-		int totalLost;
+		int brandwidth;
+		int lastNbPacketsLost;
+		PacketSlot packetSlot[PACKET_SLOTS];
+		int time;
+		int latency;
 		int totalSent;
+		int totalLost;
 		int totalReceived;
-		int windowstats[MAX_WINDOW_SIZE];
-		int windowlosts[MAX_WINDOW_SIZE];
-		int onlyWaited;
 	};
 	PlayerFileTransmission playerFileTra[32];
+	
 public:
 
 	bool firstDraw;
