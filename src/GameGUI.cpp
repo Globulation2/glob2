@@ -1178,19 +1178,20 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			{
 				int buildingTeam=Building::GIDtoTeam(gbid);
 				// we can select for view buildings that are in shared vision
-				if ((game.map.isMapDiscovered(mapX, mapY, localTeam->sharedVisionOther))
-					&& ( (game.teams[buildingTeam]->allies&(1<<localTeamNo)) || game.map.isFOWDiscovered(mapX, mapY, localTeam->sharedVisionOther)))
+				if ((buildingTeam==localTeamNo)
+					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
+					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me)
+						&& (game.teams[buildingTeam]->allies&(1<<localTeamNo))))
 				{
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;
 					showUnitWorkingToBuilding=true;
 				}
-
 			}
 			else
 			{
 				// and ressource
-				if (game.map.isRessource(mapX, mapY))
+				if (game.map.isRessource(mapX, mapY) && game.map.isMapDiscovered(mapX, mapY, localTeam->me))
 				{
 					setSelection(RESSOURCE_SELECTION, mapY*game.map.getW()+mapX);
 					selectionPushed=true;

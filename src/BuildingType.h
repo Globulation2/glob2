@@ -85,7 +85,7 @@ public:
 	Sint32 width, height; // Uint8, size in square
 	Sint32 decLeft, decTop;
 	Sint32 isVirtual; // bool, doesn't occupy ground occupation map, used for war-flag and exploration-flag.
-	Sint32 isCloacked; // bool, graphicaly invisible for enemi.
+	Sint32 isCloacked; // bool, graphicaly invisible for enemy.
 	//Sint32 *walkOverMap; // should be allocated and deleted in a cleany way
 	//Sint32 walkableOver; // bool, can walk over
 	Sint32 shootingRange; // Uint8, if 0 can't shoot
