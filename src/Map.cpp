@@ -889,7 +889,7 @@ void Map::regenerateMap(int x, int y, int w, int h)
 	{
 		for (dy=y;dy<y+h;dy++)
 		{
-			setTerrain(dx,dy,lookup(getUMTerrain(dx,dy),getUMTerrain(dx+1,dy),getUMTerrain(dx,dy+1),getUMTerrain(dx+1,dy+1)));
+			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
 		}
 	}
 }
@@ -908,7 +908,7 @@ void Map::setResAtPos(int x, int y, int type, int size)
 				(getUMTerrain(dx+1,dy)==GRASS) &&
 				(getUMTerrain(dx,dy+1)==GRASS) &&
 				(getUMTerrain(dx+1,dy+1)==GRASS) )
-				setTerrain(dx,dy,272+type*10+rand()%10);
+				setTerrain(dx,dy,272+type*10+syncRand()%10);
 			}
 		}
 	}
@@ -922,7 +922,7 @@ void Map::setResAtPos(int x, int y, int type, int size)
 					(getUMTerrain(dx+1,dy)==WATER) &&
 					(getUMTerrain(dx,dy+1)==WATER) &&
 					(getUMTerrain(dx+1,dy+1)==WATER) )
-				setTerrain(dx,dy,302+rand()%10);
+				setTerrain(dx,dy,302+syncRand()%10);
 			}
 		}
 	}
@@ -1023,7 +1023,7 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
 	br=2-br;
 	int index=tl*27+tr*9+bl*3+br;
 
-	return terrainLookupTable[index][0]+(rand()%terrainLookupTable[index][1]);
+	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
@@ -1185,7 +1185,14 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
 }
 Sint32 Map::checkSum()
 {
-	return BaseMap::checkSum();
+	Sint32 cs=BaseMap::checkSum();
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+		{
+			cs^=getTerrain(x, y)-272;
+			cs=(cs<<31)|(cs>>1);
+		}
+	return cs;
 }
 
 int Map::warpDistSquare(int px, int py, int qx, int qy)
