@@ -56,6 +56,26 @@ Map::Map()
 	sizeSector=0;
 	
 	stepCounter=0;
+	
+	//Gradients stats:
+	pathToRessourceCountTot=0;
+	pathToRessourceCountSuccessClose=0;
+	pathToRessourceCountSuccessFar=0;
+	pathToRessourceCountFailure=0;
+	
+	pathToBuildingCountTot=0;
+	pathToBuildingCountClose=0;
+	pathToBuildingCountCloseSuccess=0;
+	pathToBuildingCountCloseFailure=0;
+	
+	pathToBuildingCountIsFar=0;
+	pathToBuildingCountFar=0;
+	pathToBuildingCountFarSuccess=0;
+	pathToBuildingCountFarFailure=0;
+	pathToBuildingCountFarSuccessFar=0;
+	
+	localBuildingGradientUpdate=0;
+	globalBuildingGradientUpdate=0;
 }
 
 Map::~Map(void)
@@ -145,6 +165,58 @@ void Map::clear()
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				gradientUpdatedDepth[t][r][s]=0;
+	
+	int pathToRessourceCountSuccess=pathToRessourceCountSuccessClose+pathToRessourceCountSuccessFar;
+	
+	printf("\n");
+	printf("pathToRessourceCountTot=%d\n", pathToRessourceCountTot);
+	if (pathToBuildingCountTot)
+	{
+		printf("| pathToRessourceCountSuccess=%d (%f %% of tot)\n", pathToRessourceCountSuccess, 100.*(double)pathToRessourceCountSuccess/(double)pathToRessourceCountTot);
+		printf("|- pathToRessourceCountSuccessClose=%d (%f %% of tot) (%f %% of success)\n", pathToRessourceCountSuccessClose, 100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountTot, 100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountSuccess);
+		printf("|- pathToRessourceCountSuccessFar=%d (%f %% of tot) (%f %% of success)\n", pathToRessourceCountSuccessFar, 100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountTot, 100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountSuccess);
+		printf("| pathToRessourceCountFailure=%d (%f %% of tot)\n", pathToRessourceCountFailure, 100.*(double)pathToRessourceCountFailure/(double)pathToRessourceCountTot);
+	}
+	pathToRessourceCountTot=0;
+	pathToRessourceCountSuccessClose=0;
+	pathToRessourceCountSuccessFar=0;
+	pathToRessourceCountFailure=0;
+	
+	printf("\n");
+	printf("pathToBuildingCountTot=%d\n", pathToBuildingCountTot);
+	if (pathToBuildingCountTot)
+	{
+		printf("|- pathToBuildingCountClose=%d (%f %% of tot)\n", pathToBuildingCountClose, 100.*(double)pathToBuildingCountClose/(double)pathToBuildingCountTot);
+		printf("|-  pathToBuildingCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n", pathToBuildingCountCloseSuccess, 100.*(double)pathToBuildingCountCloseSuccess/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountCloseSuccess/(double)pathToBuildingCountClose);
+		printf("|-  pathToBuildingCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n", pathToBuildingCountCloseFailure, 100.*(double)pathToBuildingCountCloseFailure/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountCloseFailure/(double)pathToBuildingCountClose);
+
+		printf("|- pathToBuildingCountFar=%d (%f %% of tot)\n", pathToBuildingCountFar, 100.*(double)pathToBuildingCountFar/(double)pathToBuildingCountTot);
+		printf("|-  pathToBuildingCountIsFar=%d (%f %% of tot) (%f %% of far)\n", pathToBuildingCountIsFar, 100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountFar);
+		printf("|-  pathToBuildingCountFarSuccess=%d (%f %% of tot) (%f %% of far)\n", pathToBuildingCountFarSuccess, 100.*(double)pathToBuildingCountFarSuccess/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountFarSuccess/(double)pathToBuildingCountFar);
+		printf("|-  pathToBuildingCountFarSuccessFar=%d (%f %% of tot) (%f %% of far)\n", pathToBuildingCountFarSuccessFar, 100.*(double)pathToBuildingCountFarSuccessFar/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountFarSuccessFar/(double)pathToBuildingCountFar);
+		printf("|-  pathToBuildingCountFarFailure=%d (%f %% of tot) (%f %% of far)\n", pathToBuildingCountFarFailure, 100.*(double)pathToBuildingCountFarFailure/(double)pathToBuildingCountTot, 100.*(double)pathToBuildingCountFarFailure/(double)pathToBuildingCountFar);
+	}
+	
+	int buildingGradientUpdate=localBuildingGradientUpdate+globalBuildingGradientUpdate;
+	printf("\n");
+	printf("buildingGradientUpdate=%d\n", buildingGradientUpdate);
+	if (buildingGradientUpdate)
+	{
+	printf("|- localBuildingGradientUpdate=%d (%f %%)\n", localBuildingGradientUpdate, 100.*(double)localBuildingGradientUpdate/(double)buildingGradientUpdate);
+	printf("|- globalBuildingGradientUpdate=%d (%f %%)\n", globalBuildingGradientUpdate, 100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
+	}
+	pathToBuildingCountTot=0;
+	pathToBuildingCountClose=0;
+	pathToBuildingCountCloseSuccess=0;
+	pathToBuildingCountCloseFailure=0;
+	
+	pathToBuildingCountFar=0;
+	pathToBuildingCountFarSuccess=0;
+	pathToBuildingCountFarSuccessFar=0;
+	pathToBuildingCountFarFailure=0;
+	
+	localBuildingGradientUpdate=0;
+	globalBuildingGradientUpdate=0;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -619,11 +691,6 @@ bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask)
 	if (getForbidden(x+w, y+h)&teamMask)
 		return false;
 	return true;
-}
-
-bool Map::isFreeForAirUnit(int x, int y)
-{
-	return (getAirUnit(x+w, y+h)==NOGUID);
 }
 
 bool Map::isFreeForBuilding(int x, int y)
@@ -1446,6 +1513,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy)
 {
+	pathToRessourceCountTot++;
 	//printf("pathfindingRessource...\n");
 	assert(ressourceType<MAX_RESSOURCES);
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
@@ -1454,8 +1522,10 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	bool found=false;
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (max<2)
+	{
+		pathToRessourceCountFailure++;
 		return false;
-	
+	}
 	// We don't use for (int d=0; d<8; d++), this way units won't take two diagonals if not needed.
 	
 	for (int sd=1; sd>=0; sd--)
@@ -1478,68 +1548,65 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	
 	if (found)
 	{
+		pathToRessourceCountSuccessClose++;
 		//printf("...pathfindedRessource v1\n");
 		return true;
 	}
 	
-	if (!found)
-	{
-		int mvx=x-2;
-		int mvy=y-2;
-		for (int ai=0; ai<4; ai++)
-			for (int mi=0; mi<5; mi++)
+	
+	int mvx=x-2;
+	int mvy=y-2;
+	for (int ai=0; ai<4; ai++)
+		for (int mi=0; mi<5; mi++)
+		{
+			int ddx=SIGN(mvx-x);
+			int ddy=SIGN(mvy-y);
+			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 			{
-				int ddx=SIGN(mvx-x);
-				int ddy=SIGN(mvy-y);
-				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				Uint8 g=*(gradient+((mvx+w)&wMask)+((mvy+h)&hMask)*w);
+				if (g>max)
 				{
-					Uint8 g=*(gradient+((mvx+w)&wMask)+((mvy+h)&hMask)*w);
-					if (g>max)
-					{
-						max=g;
-						*dx=ddx;
-						*dy=ddy;
-						found=true;
-					}
-				}
-				switch (ai)
-				{
-					case 0:
-						mvx++;
-					break;
-					case 1:
-						mvy++;
-					break;
-					case 2:
-						mvx--;
-					break;
-					case 3:
-						mvy--;
-					break;
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
 				}
 			}
-	}
+			switch (ai)
+			{
+				case 0:
+					mvx++;
+				break;
+				case 1:
+					mvy++;
+				break;
+				case 2:
+					mvx--;
+				break;
+				case 3:
+					mvy--;
+				break;
+			}
+		}
 
-	if (!found)
+	if (found)
 	{
+		pathToRessourceCountSuccessFar++;
+		//printf("...pathfindedRessource v2 %d\n", found);
+	}
+	else
+	{
+		pathToRessourceCountFailure++;
 		printf("locked at (%d, %d)\n", x, y);
-		// Don't set dx and dy, we simply hope the direction will bring the unit to the ressource...
-		//*dx=0;
-		//*dy=0;
 	}
 	
-	//printf("...pathfindedRessource v2 %d\n", found);
 	
 	return true;
 }
 
-void Map::clearBuildingGradient(Uint8 gradient[2][1024])
-{
-	memset(gradient, 1, 2*1024);
-}
-
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
+	localBuildingGradientUpdate++;
 	printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	building->dirtyLocalGradient[canSwim]=false;
@@ -1725,7 +1792,9 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
+	globalBuildingGradientUpdate++;
 	assert(building);
+	assert(building->type);
 	printf("updatingGlobalGradient (gbid=%d)...\n", building->gid);
 	int posX=building->posX;
 	int posY=building->posY;
@@ -1738,9 +1807,26 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	assert(gradient);
 
 	memset(gradient, 1, size);
-	for (int dy=0; dy<posH; dy++)
-		for (int dx=0; dx<posW; dx++)
-			gradient[posX+dx+(posY+dy)*w]=255;
+	if (building->type->isVirtual)
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int rm=(r<<1)+1;
+		int r2=rm*rm;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=((yi*yi)<<2);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+((xi*xi)<<2)<r2)
+					gradient[((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask))]=255;
+		}
+	}
+	else
+	{
+		for (int dy=0; dy<posH; dy++)
+			for (int dx=0; dx<posW; dx++)
+				gradient[((posX+dx)&wMask)+((posY+dy)&hMask)*w]=255;
+	}
 
 	for (int y=0; y<h; y++)
 	{
@@ -2125,6 +2211,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
+	pathToBuildingCountTot++;
 	//printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
 	assert(building);
 	int bx=building->posX;
@@ -2137,6 +2224,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	
 	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
 	{
+		pathToBuildingCountClose++;
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
 		int max=0;
@@ -2144,10 +2232,12 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		bool found=false;
 		bool gradientUsable=false;
 		
-		if (currentg==255)
+		if (currentg==255 && !building->dirtyLocalGradient[canSwim])
 		{
 			*dx=0;
 			*dy=0;
+			pathToBuildingCountCloseSuccess++;
+			//printf("...pathfindedBuilding v0\n");
 			return true;
 		}
 
@@ -2181,6 +2271,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				}
 			if (found && gradientUsable)
 			{
+				pathToBuildingCountCloseSuccess++;
 				//printf("...pathfindedBuilding v1\n");
 				return true;
 			}
@@ -2222,11 +2313,16 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				}
 			if (found && gradientUsable)
 			{
+				pathToBuildingCountCloseSuccess++;
 				//printf("...pathfindedBuilding v2\n");
 				return true;
 			}
 		}
+		pathToBuildingCountCloseFailure++;
 	}
+	else
+		pathToBuildingCountIsFar++;
+	pathToBuildingCountFar++;
 	
 	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
 	
@@ -2243,7 +2339,13 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		bool gradientUsable=false;
 		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 		Uint8 max=0;
-		if (currentg>1)
+		if (currentg==1)
+		{
+			pathToBuildingCountFarFailure++;
+			printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			return false;
+		}
+		else
 			for (int sd=0; sd<=1; sd++)
 				for (int d=sd; d<8; d+=2)
 				{
@@ -2266,12 +2368,14 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		{
 			if (found)
 			{
+				pathToBuildingCountFarSuccess++;
 				//printf("...pathfindedBuilding v3\n");
 				return true;
 			}
 			else
 			{
-				printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+				pathToBuildingCountFarFailure++;
+				printf("b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 				return false;
 			}
 		}
@@ -2305,6 +2409,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
 		if (found && gradientUsable)
 		{
+			pathToBuildingCountFarSuccess++;
 			//printf("...pathfindedBuilding v4\n");
 			return true;
 		}
@@ -2328,13 +2433,14 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		
 		if (found && gradientUsable)
 		{
+			pathToBuildingCountFarSuccessFar++;
 			//printf("...pathfindedBuilding v5\n");
 			return true;
 		}
 	}
 	
-	printf("b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-	
+	pathToBuildingCountFarFailure++;
+	printf("c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 	return false;
 }
 

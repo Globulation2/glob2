@@ -244,6 +244,8 @@ void Unit::subscriptionSuccess(void)
 		{
 			activity=ACT_UPGRADING;
 			displacement=DIS_GOING_TO_BUILDING;
+			targetX=attachedBuilding->getMidX();
+			targetY=attachedBuilding->getMidY();
 		}
 		break;
 		case MED_FREE:
@@ -258,6 +260,8 @@ void Unit::subscriptionSuccess(void)
 				case ACT_UPGRADING:
 				{
 					displacement=DIS_GOING_TO_BUILDING;
+					targetX=attachedBuilding->getMidX();
+					targetY=attachedBuilding->getMidY();
 				}
 				break;
 				case ACT_FILLING:
@@ -797,8 +801,8 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
-			break;
 		}
+		break;
 		
 		case ACT_UPGRADING:
 		{
@@ -807,9 +811,7 @@ void Unit::handleDisplacement(void)
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
-				{
 					displacement=DIS_ENTERING_BUILDING;
-				}
 			}
 			else if (displacement==DIS_ENTERING_BUILDING)
 			{
@@ -881,18 +883,16 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
-			break;
 		}
+		break;
 
 		case ACT_FLAG:
 		{
 			assert(attachedBuilding);
-
 			targetX=attachedBuilding->posX;
 			targetY=attachedBuilding->posY;
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
-			//printf("%d <? %d :-)\n", dist1, dist2);
 			if (distance<=range)
 			{
 				if (typeNum==WORKER)
@@ -904,22 +904,10 @@ void Unit::handleDisplacement(void)
 				else
 					assert(false);
 			}
-			else if (attachedBuilding->unitsWorking.size()>(unsigned)attachedBuilding->maxUnitWorking)
-			{
-				// FIXME : this code is often used, we should do a methode with it !!
-				activity=ACT_RANDOM;
-				displacement=DIS_RANDOM;
-				attachedBuilding->unitsWorking.remove(this);
-				attachedBuilding->unitsWorkingSubscribe.remove(this);
-				attachedBuilding->updateCallLists();
-				attachedBuilding=NULL;
-				subscribed=false;
-				assert(needToRecheckMedical);
-			}
 			else
-				assert(false);
-			break;
+				displacement=DIS_GOING_TO_FLAG;
 		}
+		break;
 
 		default:
 		{
@@ -1192,7 +1180,7 @@ void Unit::handleMovement(void)
 				movement=MOV_ATTACKING_TARGET;
 			else if (performance[FLY])
 			{
-				movement=MOV_GOING_TARGET;
+				movement=MOV_FLYING_TARGET;
 			}
 			else if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 			{
@@ -1339,6 +1327,22 @@ void Unit::handleAction(void)
 				owner->map->setAirUnit(posX, posY, gid);
 			else
 				owner->map->setGroundUnit(posX, posY, gid);
+			break;
+		}
+		
+		case MOV_FLYING_TARGET:
+		{
+			owner->map->setAirUnit(posX, posY, NOGUID);
+			
+			gotoTarget();
+			
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
+
+			action=FLY;
+			speed=performance[FLY];
+
+			owner->map->setAirUnit(posX, posY, gid);
 			break;
 		}
 
@@ -1501,6 +1505,61 @@ bool Unit::areOnlyUnitsInFront(int dx, int dy)
 		return false;
 
 	return true;
+}
+
+void Unit::flytoTarget()
+{
+	assert(performance[FLY]);
+	int ldx=targetX-posX;
+	int ldy=targetY-posY;
+	
+	simplifyDirection(ldx, ldy, &dx, &dy);
+	directionFromDxDy();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	
+	int cDirection=direction;
+	
+	direction=(cDirection+1)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+		
+	direction=(cDirection+7)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	
+	direction=(cDirection+2)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+		
+	direction=(cDirection+6)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	
+	direction=(cDirection+3)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+		
+	direction=(cDirection+5)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	
+	direction=(cDirection+4)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("0x%lX: flyto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
 }
 
 void Unit::gotoTarget()

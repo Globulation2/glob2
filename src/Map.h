@@ -270,7 +270,7 @@ public:
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
-	bool isFreeForAirUnit(int x, int y);
+	bool isFreeForAirUnit(int x, int y) {return (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);
 	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid);
@@ -369,8 +369,6 @@ public:
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
 	
-	
-	static void clearBuildingGradient(Uint8 gradient[2][1024]);
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	
@@ -378,6 +376,27 @@ public:
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
+	
+protected:
+	// computationals pathfinding statistics:
+	int pathToRessourceCountTot;
+	int pathToRessourceCountSuccessClose;
+	int pathToRessourceCountSuccessFar;
+	int pathToRessourceCountFailure;
+	
+	int pathToBuildingCountTot;
+	int pathToBuildingCountClose;
+	int pathToBuildingCountCloseSuccess;
+	int pathToBuildingCountCloseFailure;
+	
+	int pathToBuildingCountIsFar;
+	int pathToBuildingCountFar;
+	int pathToBuildingCountFarSuccess;
+	int pathToBuildingCountFarFailure;
+	int pathToBuildingCountFarSuccessFar;
+	
+	int localBuildingGradientUpdate;
+	int globalBuildingGradientUpdate;
 
 protected:
 	// private functions, used for edition

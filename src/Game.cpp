@@ -173,7 +173,6 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int team=Building::GIDtoTeam(gid);
 				int id=Building::GIDtoID(gid);
 				Building *b=teams[team]->myBuildings[id];
-				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE))
 				{
 					b->maxUnitWorking=((OrderModifyBuildings *)order)->numberRequested[i];
@@ -1157,14 +1156,15 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
-	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_DXDY) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
-	{
-		int lsx, lsy, ldx, ldy;
-		lsx=px+16;
-		lsy=py+16;
-		map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
-		globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
-	}
+	if ((drawPathLines) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+		if (unit->displacement==Unit::DIS_GOING_TO_FLAG || unit->displacement==Unit::DIS_GOING_TO_RESSOURCE || unit->displacement==Unit::DIS_GOING_TO_BUILDING)
+		{
+			int lsx, lsy, ldx, ldy;
+			lsx=px+16;
+			lsy=py+16;
+			map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
+			globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+		}
 }
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, bool drawBuildingRects, const bool useMapDiscovered)
@@ -1289,7 +1289,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[5];
+		Building *b=NULL;
+		//b=teams[0]->myBuildings[0];
+		if (teams[0]->virtualBuildings.size())
+			b=*teams[0]->virtualBuildings.begin();
+		
 		int w=map.getW();
 		if (b && b->globalGradient[1])
 		{
