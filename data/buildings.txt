@@ -174,7 +174,8 @@ maxUnitWorking 1
 
 type inn
 
-gameSpriteImage 42
+gameSprite data/gfx/inn2c
+gameSpriteImage 0
 miniSpriteImage 42
 
 fillable 1
@@ -316,7 +317,8 @@ shortTypeNum 2
 
 type hospital
 
-gameSpriteImage 41
+gameSprite data/gfx/hosp2c
+gameSpriteImage 0
 miniSpriteImage 41
 
 fillable 1
@@ -362,7 +364,8 @@ shortTypeNum 2
 
 type racetrack
 
-gameSpriteImage 44
+gameSprite data/gfx/racetrack0c
+gameSpriteImage 0
 miniSpriteImage 44
 
 fillable 1
@@ -503,7 +506,8 @@ shortTypeNum 3
 
 type swimmingpool
 
-gameSpriteImage 44
+gameSprite data/gfx/pool0c
+gameSpriteImage 0
 miniSpriteImage 44
 
 fillable 1
