@@ -660,7 +660,7 @@ void MapEdit::mapHasBeenModiffied(void)
 	if (game.session.mapGenerationDescriptor)
 	{
 		// If the map is modiffied, this is no longer a RandomGeneratedMap.
-		printf("because you modified the map, it can't be any more directly generated automatically.\n");
+		printf("because you modified the map, it can't be directly generated automatically any more.\n");
 		delete game.session.mapGenerationDescriptor;
 		game.session.mapGenerationDescriptor=NULL;
 	}

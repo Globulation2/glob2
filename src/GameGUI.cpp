@@ -1947,6 +1947,12 @@ bool GameGUI::load(SDL_RWops *stream)
 
 	bool result=game.load(stream);
 
+	if (result==false)
+	{
+		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
+		return false;
+	}
+	
 	if (!game.session.fileIsAMap)
 	{
 		// load gui's specific infos
@@ -1959,15 +1965,18 @@ bool GameGUI::load(SDL_RWops *stream)
 		}
 		if (game.session.versionMinor>4)
 			assert(!game.session.fileIsAMap);
-		if (result==false)
-			printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
+		
 	}
 
-	return result;
+	return true;
 }
 
 void GameGUI::save(SDL_RWops *stream, const char *name)
 {
+	// Game is can't be no more automatically generated
+	delete game.session.mapGenerationDescriptor;
+	game.session.mapGenerationDescriptor=NULL;
+	
 	game.save(stream, false, name);
 	SDL_WriteBE32(stream, chatMask);
 	SDL_WriteBE32(stream, localPlayer);
