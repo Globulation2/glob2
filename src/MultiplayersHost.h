@@ -49,6 +49,9 @@ public:
 	
 	HostGlobalState hostGlobalState;
 	SessionInfo *savedSessionInfo;
+	
+	//! A stream to the map (or saved game) file.
+	SDL_RWops *stream;
 
 public:
 	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo);

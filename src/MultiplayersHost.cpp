@@ -59,6 +59,29 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		globalContainer->yog.shareGame("glob2", "0.1-pre", sessionInfo->map.getMapName());
 	}
+	
+	stream=NULL;
+	
+	if (sessionInfo->mapGenerationDescriptor && sessionInfo->fileIsAMap)
+	{
+		printf("MultiplayersHost() random map.\n");
+	}
+	else if (sessionInfo->fileIsAMap)
+	{
+		const char *s=sessionInfo->map.getMapFileName();
+		assert(s);
+		assert(s[0]);
+		printf("MultiplayersHost() fileName=%s.\n", s);
+		stream=globalContainer->fileManager.open(s,"rb");
+	}
+	else
+	{
+		const char *s=sessionInfo->map.getGameFileName();
+		assert(s);
+		assert(s[0]);
+		printf("MultiplayersHost() fileName=%s.\n", s);
+		stream=globalContainer->fileManager.open(s,"rb");
+	}
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -95,6 +118,9 @@ MultiplayersHost::~MultiplayersHost()
 	
 	if (savedSessionInfo)
 		delete savedSessionInfo;
+		
+	if (stream)
+		SDL_RWclose(stream);
 }
 
 int MultiplayersHost::newTeamIndice()
@@ -450,7 +476,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 {
-	if (size!=12)
+	if (size!=4)
 	{
 		NETPRINTF("Bad size(%d) for an File request from ip %x.\n", size, ip.host);
 		return;
@@ -465,11 +491,51 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 		NETPRINTF("An unknow player (%x, %d) has sended a File request !!!\n", ip.host, ip.port);
 		return;
 	}
+	
+	BasePlayer &player=sessionInfo.players[p];
+	if (!player.wantsFile)
+	{
+		printf("player (%x, %d) first requests file.\n", ip.host, ip.port);
+		player.wantsFile=true;
+		
+		for (int i=0; i<512; i++)
+			player.window[i]=Player::WS_UNSENT;
+		printf("windowSize[%d]=%d.\n", p, player.windowSize);
+		player.windowIndex=0;
+		
+		/*bool wantsFile;
+		enum WindowState
+		{
+			WS_BAD=0,
 
-	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_FILE_REQUEST;
-	sessionInfo.players[p].netTimeout=0;
-	sessionInfo.players[p].netTimeoutSize=DEFAULT_NETWORK_TIMEOUT;
-	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
+			WS_LOST=1,
+			WS_UNSENT=2,
+			WS_SENT=3,
+			WS_RECEIVED=4
+		};
+		enum {NETWORK_BETA = 512};
+		WindowState window[256];
+		int windowSize;*/
+	}
+	else
+	{
+		Uint8 unr[4];//unreceived packet indices.
+		unr[0]=data[4];
+		unr[1]=data[5];
+		unr[2]=data[6];
+		unr[3]=data[7];
+		printf("unr=(%d, %d, %d, %d).\n", unr[0], unr[1], unr[2], unr[3]);
+		
+		//TODO: finish ! zzz
+	}
+	
+	
+	//SDL_ReadBE32(stream)
+	//SDL_WriteBE32(stream, x)
+	//SDL_RWseek(stream, sessionInfoOffset, SEEK_SET)
+	
+	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
+	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL;
 
 	printf("this ip(%x:%d) wantsFile (player %d)\n", ip.host, ip.port, p);
 }
@@ -749,7 +815,11 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		case NEW_PLAYER_WANTS_SESSION_INFO:
 			playerWantsSession(data, size, ip);
 		break;
-
+		
+		case NEW_PLAYER_WANTS_FILE:
+			playerWantsFile(data, size, ip);
+		break;
+		
 		case NEW_PLAYER_SEND_CHECKSUM_CONFIRMATION:
 			confirmPlayer(data, size, ip);
 		break;
