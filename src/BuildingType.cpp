@@ -102,6 +102,19 @@ void BuildingsTypes::load(const char *filename)
 		}
 		j++;
 	}
+	
+	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
+	{
+		bool needRessource=false;
+		for (int i=0; i<MAX_RESSOURCES; i++)
+			if ((*it)->maxRessource[i])
+			{
+				needRessource=true;
+				break;
+			}
+		if (needRessource)
+			assert((*it)->fillable || (*it)->foodable);
+	}
 }
 
 int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
