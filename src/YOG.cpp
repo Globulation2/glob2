@@ -21,7 +21,7 @@
 
 #include "../gnupg/sha1.c"
 
-#include <SDL.h>
+#include <glSDL.h>
 #include <SDL_endian.h>
 #include <SDL_image.h>
 #include <SDL_net.h>
