@@ -17,6 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <Stream.h>
+#include <TextStream.h>
 #include "NetGame.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -28,6 +30,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
+#include "Game.h"
 
 NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 {
@@ -881,6 +884,20 @@ Order *NetGame::getOrder(int playerNumber)
 								fprintf(logFile, "World desynchronisation at executeUStep %d.\n", executeUStep);
 								fprintf(logFile, " player %2d has a checkSum=%x\n", pai, checkSumsA);
 								fprintf(logFile, " player %2d has a checkSum=%x\n", pbi, checkSumsB);
+								
+								// dumping game to text
+								OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.world-desynchronization.dump.txt"));
+								if (stream->isEndOfStream())
+								{
+									std::cerr << "Can't dump full game memory to file glob2.world-desynchronization.dump.txt" << std::endl;
+								}
+								else
+								{
+									std::cerr << "Dump full game memory" << std::endl;
+									players[localPlayerNumber]->game->save(stream, false, "glob2.dump.txt");
+								}
+								delete stream;
+								
 								good=false;
 							}
 							//else
