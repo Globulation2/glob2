@@ -103,10 +103,7 @@ void DrawableSurface::loadImage(const char *name)
 bool DrawableSurface::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 {
 	if (surface)
-	{
-		unlock();
 		SDL_FreeSurface(surface);
-	}
 
 	this->flags=flags;
 	Uint32 sdlFlags=0;
@@ -117,7 +114,7 @@ bool DrawableSurface::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 
 	SDL_Surface *tempScreen = SDL_CreateRGBSurface(sdlFlags, w, h, depth, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
 	assert(tempScreen);
-	surface = SDL_DisplayFormat(tempScreen);
+	surface = SDL_DisplayFormatAlpha(tempScreen);
 	assert(surface);
 	SDL_FreeSurface(tempScreen);
 	setClipRect();
@@ -1246,6 +1243,7 @@ void GraphicContext::nextFrame(void)
 {
 	if (surface)
 	{
+		unlock();
 		if ((flags & DOUBLEBUF) && partialRedraw)
 		{
 			partialRedraw = false;
@@ -1263,6 +1261,7 @@ void GraphicContext::updateRects(SDL_Rect *rects, int size)
 {
 	if (surface)
 	{
+		unlock();
 		if ((flags & DOUBLEBUF) && partialRedraw)
 		{
 			partialRedraw = false;
@@ -1282,6 +1281,7 @@ void GraphicContext::updateRect(int x, int y, int w, int h)
 {
 	if (surface)
 	{
+		unlock();
 		if ((flags & DOUBLEBUF) && partialRedraw)
 		{
 			partialRedraw = false;

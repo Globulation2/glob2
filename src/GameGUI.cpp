@@ -2841,6 +2841,7 @@ void GameGUI::drawOverlayInfos(void)
 void GameGUI::drawInGameMenu(void)
 {
 	globalContainer->gfx->drawSurface(gameMenuScreen->decX, gameMenuScreen->decY, gameMenuScreen->getSurface());
+	
 	// Draw a-la-aqua drop shadows
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
