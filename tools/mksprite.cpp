@@ -23,6 +23,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 
 using namespace std;
@@ -36,6 +37,8 @@ struct Frame
 vector<Frame> frames;
 vector<Image> planes;
 
+const unsigned initialTexSize = 256;
+
 class Layouter
 {
 protected:
@@ -47,68 +50,148 @@ protected:
 public:
 	Layouter()
 	{
-		texsize = 256;
+		texsize = initialTexSize;
 		posx = 0;
 		posy = 0;
 		maxy = 0;
 	}
 	
-	void writeFrame(const Geometry &frameSize, const Image &frame)
+	void writeFrame(const Geometry &frameSize, const Image &frame, bool doDraw)
 	{
 		Frame f;
 		f.x = posx;
 		f.y = posy;
 		f.w = frameSize.width();
 		f.h = frameSize.height();
-		planes[planes.size() - 1].draw(DrawableCompositeImage(posx, posy, frame));
+		f.plane = planes.size() - 1;
+		if (doDraw)
+			planes[planes.size() - 1].draw(DrawableCompositeImage(posx, posy, frame));
 		frames.push_back(f);
 	}
 
-	void layout(size_t count, char *files[])
+	bool layout(size_t count, char *files[], bool doDraw)
 	{
+		planes.clear();
 		planes.push_back(Image(Geometry(texsize, texsize), Color("transparent")));
+		frames.clear();
+		posx = 0;
+		posy = 0;
+		maxy = 0;
 		for (size_t i=0; i<count; i++)
 		{
 			Image frame(files[i]);
 			frame.matte(true);
 			Geometry size = frame.size();
-			if ( (posy + size.height() < texsize) && (posx + size.width() < texsize) )
+			if ( (posy + size.height() <= texsize) && (posx + size.width() <= texsize) )
 			{
-				writeFrame(size, frame);
+				writeFrame(size, frame, doDraw);
 				posx += size.width();
 				maxy = max(maxy, posy + size.height());
 			}
-			else if (maxy + size.height() < texsize)
+			else if ( (maxy + size.height() <= texsize) && (size.width() <= texsize) )
 			{
 				posy = maxy;
 				posx = 0;
-				writeFrame(size, frame);
+				writeFrame(size, frame, doDraw);
+				posx += size.width();
+				maxy = max(maxy, posy + size.height());
 			}
 			else
 			{
-				cerr << "Next frame" << std::endl;
+				if ((size.width() > texsize) || (size.height() > texsize))
+					return false;
 				planes.push_back(Image(Geometry(texsize, texsize), Color("transparent")));
 				posx = posy = maxy = 0;
-				writeFrame(size, frame);
+				writeFrame(size, frame, doDraw);
+				posx += size.width();
+				maxy = max(maxy, posy + size.height());
 			}
 		}
+		return true;
+	}
+	
+	bool findBestLayout(size_t count, char *files[])
+	{
+		unsigned oldTexSize;
+		bool layoutResult;
+		do
+		{
+			oldTexSize = texsize;
+			texsize >>= 1;
+			cout << "Trying texture of " << texsize << endl;
+			layoutResult = layout(count, files, false);
+		}
+		while (layoutResult && (frames.size() > 0) && (planes.size() == 1) && (texsize > 0));
+		
+		texsize = oldTexSize;
+		cout << "Using texture of " << texsize << endl;
+		layoutResult = layout(count, files, true);
+		
+		return (frames.size() != 0) && layoutResult;
+	}
+	
+	void writeSpritePlanes(const char *spriteName)
+	{
 		for (size_t i=0; i<planes.size(); i++)
 		{
 			ostringstream planeFileName;
-			planeFileName << "plane" << i << ".png";
+			planeFileName << spriteName << ".plane" << i << ".png";
 			planes[i].write(planeFileName.str());
+		}
+	}
+	
+	void writeSpriteText(const char *spriteName)
+	{
+		ostringstream spriteFileName;
+		spriteFileName << spriteName << ".sprite";
+		ofstream spriteFile(spriteFileName.str().c_str());
+		if (spriteFile)
+		{
+			spriteFile << "frameCount = " << frames.size() << ";\n";
+			spriteFile << "planeFileName = " << spriteName << ";\n";
+			for (size_t i=0; i<frames.size(); i++)
+			{
+				spriteFile << i << "\n";
+				spriteFile << "{\n";
+				spriteFile << "\tx = " << frames[i].x << ";\n";
+				spriteFile << "\ty = " << frames[i].y << ";\n";
+				spriteFile << "\tw = " << frames[i].w << ";\n";
+				spriteFile << "\th = " << frames[i].h << ";\n";
+				spriteFile << "\tplane = " << frames[i].plane << ";\n";
+				spriteFile << "}\n";
+			}
+			spriteFile << endl;
+		}
+		else
+		{
+			cerr << "Can't create sprite description file " << spriteFileName.str() << endl;
+			exit(3);
 		}
 	}
 };
 
+void usage(const char *exeName)
+{
+	cerr << "Usage:\n" << exeName << " [sprite name] [frame images] ..." << endl;
+}
+
 int main(int argc, char *argv[])
 {
-	if (argc == 1)
+	if (argc < 3)
+	{
+		usage(argv[0]);
 		return 1;
+	}
 	Layouter l;
 	try
 	{
-		l.layout(argc-1, argv+1);	
+		if (l.findBestLayout(argc-2, argv+2))
+		{
+			l.writeSpritePlanes(argv[1]);
+			l.writeSpriteText(argv[1]);
+		}
+		else
+			cerr << "Can't find a suitable layout !" << endl;
 	}
 	catch ( Exception &error_ ) 
 	{ 
