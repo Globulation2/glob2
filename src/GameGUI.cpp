@@ -2124,24 +2124,31 @@ void GameGUI::drawRessourceInfos(void)
 	const Ressource &r = game.map.getRessource(selection.ressource);
 	int ypos = YPOS_BASE_RESSOURCE;
 	
-	// Draw ressource name
-	const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);
-	int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
-	int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
-	globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
-	ypos += 2*YOFFSET_TEXT_PARA;
-	
-	// Draw ressource image
-	const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
-	unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount -1;
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+16, ypos, globalContainer->ressources, resImg);
-	
-	// Draw ressource count
-	if (rt->granular)
+	if (static_cast<Uint32>(r) !=NORESID)
 	{
-		const std::string amountS = GAG::nsprintf("%d/%d", r.amount, rt->sizesCount);
-		int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
+		// Draw ressource name
+		const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);
+		int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
+		int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
+		globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
+		ypos += 2*YOFFSET_TEXT_PARA;
+		
+		// Draw ressource image
+		const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
+		unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount -1;
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+16, ypos, globalContainer->ressources, resImg);
+		
+		// Draw ressource count
+		if (rt->granular)
+		{
+			const std::string amountS = GAG::nsprintf("%d/%d", r.amount, rt->sizesCount);
+			int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
+		}
+	}
+	else
+	{
+		clearSelection();
 	}
 }
 
