@@ -4,7 +4,6 @@ To First release :
 - balance unit allocation by demand. (nct)
 - custom game should have a map choosing screen. (nct)
 - network must work correctly, and screen must be easy to understand. (nct)
-- stupid graphic bug in game menu must be fixed. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
