@@ -58,7 +58,17 @@ void TextArea::internalPaint(void)
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
 			assert(i+areaPos<lines.size());
-			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", (textBuffer+lines[i+areaPos]));
+			if (i+areaPos<lines.size()-1)
+			{
+				unsigned tempLen=(unsigned)(lines[i+areaPos+1]-lines[i+areaPos]);
+				char *temp=new char[tempLen+1];
+				memcpy(temp, textBuffer+lines[i+areaPos], tempLen);
+				temp[tempLen]=0;
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", temp);
+				delete[] temp;
+			}
+			else
+				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, "%s", (textBuffer+lines[i+areaPos]));
 		}
 	}
 	if (!readOnly)
@@ -431,10 +441,9 @@ void TextArea::internalSetText(const char *text)
 		temp[temppos]=0;
 		
 		// TODO : add getStringWidth with a number of char paramater to get ride of temp
-		// TODO : handle nonwrapping case
 		while (pos<textBufferLength)
 		{
-			while ((font->getStringWidth(temp)<w-8)&&(pos<textBufferLength)&&(text[pos]!='\n'))
+			while ((font->getStringWidth(temp)<w-4-font->getStringWidth("W"))&&(pos<textBufferLength)&&(text[pos]!='\n'))
 			{
 				if (text[pos]==' ')
 					lastWhite=pos;
