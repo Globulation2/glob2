@@ -507,10 +507,6 @@ bool Story::testCondition(GameGUI *gui)
 						else
 							return false;
 					}
-					case (Token::S_NOT):
-						//Execution Error, this chouldn't happoen !!!
-						assert(false);
-						break;
 					case (Token::S_AREA):
 					{
 						int incL = 0;
@@ -542,6 +538,7 @@ bool Story::testCondition(GameGUI *gui)
 						int y = fi->second.y;
 						int r = fi->second.r;
 						int dx, dy;
+						bool isUnit = false;
 						for (dy=y-r; dy<y+r; dy++)
 							for (dx=x-r; dx<x+r; dx++)
 							{
@@ -551,18 +548,31 @@ bool Story::testCondition(GameGUI *gui)
 									int team=Unit::GIDtoTeam(gid);
 									if (team & testMask)
 									{
-										lineSelector += 3+negate+incL;
-										return true;
+										isUnit = true;
+										goto doubleBreak;
 									}
 								}
 							}
-						return false;
+
+						doubleBreak:
+
+						if (isUnit ^ negate)
+						{
+							lineSelector += 3+negate+incL;
+							return true;
+						}
+						else
+						{
+							return false;
+						}
 					}
 					case (Token::S_WORKER):
 					case (Token::S_EXPLORER):
 					case (Token::S_WARRIOR):
 					{
-						if (conditionTester(game, execLine, false))
+						bool conditionResult = conditionTester(game, execLine, false);
+						conditionResult ^= negate;
+						if (conditionResult)
 						{
 							lineSelector += 4+negate;
 							mapscript->isTextShown=false;
@@ -574,12 +584,12 @@ bool Story::testCondition(GameGUI *gui)
 					break;
 					default: //Test conditions
 					{
-						if (conditionTester(game, execLine, true))
+						bool conditionResult = conditionTester(game, execLine, true);
+						conditionResult ^= negate;
+						if (conditionResult)
 						{
 							lineSelector += 5+negate;
-							printf("Next Type is %d\n", (int)line[lineSelector+1].type);
 							mapscript->isTextShown=false;
-							printf("SGSL : condition true\n");
 							return true;
 						}
 						else
@@ -607,7 +617,7 @@ void Story::step(GameGUI *gui)
 	}
 
 	if (!cycleLeft)
-		std::cout << "Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
+		std::cout << "SGSL : Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
 }
 
 using namespace std;
