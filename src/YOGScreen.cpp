@@ -179,15 +179,29 @@ void YOGScreen::onTimer(Uint32 tick)
 	}
 	
 	globalContainer->yog->step();
-	while (globalContainer->yog->isMessage())
+	while (globalContainer->yog->receivedMessages.size()>0)
 	{
+		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
+		switch(m->messageType)//set the text color
+		{
+		case YMT_MESSAGE:
+		break;
+		case YMT_PRIVATE_MESSAGE:
+		break;
+		case YMT_ADMIN_MESSAGE:
+		break;
+		default:
+			assert(false);
+		break;
+		}
 		chatWindow->addText("<");
-		chatWindow->addText(globalContainer->yog->getMessageSource());
+		chatWindow->addText(m->userName);
 		chatWindow->addText("> ");
-		chatWindow->addText(globalContainer->yog->getMessage());
+		chatWindow->addText(m->text);
 		chatWindow->addText("\n");
 		chatWindow->scrollToBottom();
-		globalContainer->yog->freeMessage();
+		
+		globalContainer->yog->receivedMessages.erase(m);
 	}
 
 	// the game connection part:

@@ -180,6 +180,8 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		printf("YOG::bad packet.\n");
 	break;
 	case YMT_MESSAGE:
+	case YMT_PRIVATE_MESSAGE:
+	case YMT_ADMIN_MESSAGE:
 	{
 		Uint8 messageID=data[1];
 		send(YMT_MESSAGE, messageID);
@@ -195,6 +197,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		{
 			Message m;
 			m.messageID=messageID;
+			m.messageType=(YOGMessageType)data[0];
 			m.timeout=0;
 			m.TOTL=3;
 			int l;
@@ -204,17 +207,16 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			if (m.text[l-1]!=0)
 				printf("YOG::warning, non-zero ending text message!\n");
 			m.text[255]=0;
-			m.textLength=l-1;
+			m.textLength=l;
 			
-			l=Utilities::strmlen((char *)data+4+m.textLength+1, 32);
-			memcpy(m.userName, (char *)data+4+m.textLength+1, l);
+			l=Utilities::strmlen((char *)data+4+m.textLength, 32);
+			memcpy(m.userName, (char *)data+4+m.textLength, l);
 			if (m.userName[l-1]!=0)
 				printf("YOG::warning, non-zero ending userName!\n");
 			m.userName[31]=0;
-			m.userNameLength=l-1;
+			m.userNameLength=l;
 			
-			printf("YOG:new message:%s:%s %d:%d\n", m.userName, m.text, m.textLength, m.userNameLength);
-			printf("size=%d, m.textLength=%d, m.userNameLength=%d.\n", size, m.textLength, m.userNameLength);
+			printf("YOG:new message:%s:%s\n", m.userName, m.text);
 			receivedMessages.push_back(m);
 		}
 	}
@@ -537,7 +539,7 @@ void YOG::step()
 					{
 						printf("YOG::sending share game info... (%s)\n", sharingGameName);
 						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
-						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, strlen(sharingGameName)+1);
+						send(YMT_SHARING_GAME, (Uint8 *)sharingGameName, Utilities::strmlen(sharingGameName, 128));
 					}
 				}
 			break;
@@ -710,7 +712,7 @@ void YOG::sendMessage(const char *message)
 	m.text[MAX_MESSAGE_SIZE-1]=0;
 	m.timeout=0;
 	m.TOTL=3;
-	m.textLength=strlen(m.text)+1;
+	m.textLength=Utilities::strmlen(m.text, 256);
 	m.userName[0]=0;
 	m.userNameLength=0;
 	sendingMessages.push_back(m);

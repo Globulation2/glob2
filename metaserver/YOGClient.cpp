@@ -176,7 +176,7 @@ void YOGClient::send(const Message &m)
 	packet->len=size;
 	{
 		Uint8 data[4];
-		data[0]=YMT_MESSAGE;
+		data[0]=m.messageType;
 		data[1]=m.messageID;
 		data[2]=0;
 		data[3]=0;

@@ -62,15 +62,16 @@ public:
 	{
 		char text[256];
 		int textLength;
-		Uint8 messageID;
-		Uint8 pad1;
-		Uint8 pad2;
-		Uint8 pad3;//We need to pad to support memory alignement
 		int timeout;
 		int TOTL;
 		bool received;
 		char userName[32];
 		int userNameLength;
+		YOGMessageType messageType;
+		Uint8 messageID;
+		Uint8 pad1;
+		Uint8 pad2;
+		Uint8 pad3;//We need to pad to support memory alignement
 	};
 	
 	struct Client
