@@ -183,6 +183,7 @@ public:
 
 	void integrity();
 	Sint32 checkSum();
+	bool verbose;
 
 protected:
 	FILE *logFile;

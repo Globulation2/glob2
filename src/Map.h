@@ -371,6 +371,7 @@ public:
 		return *(gradient+(x&wMask)+(y&hMask)*w);
 	}
 	
+	void updateGlobalGradient(Uint8 *gradient);
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 	
@@ -387,6 +388,12 @@ public:
 	
 protected:
 	// computationals pathfinding statistics:
+	int ressourceAviableCount[16][MAX_RESSOURCES];
+	int ressourceAviableCountFast[16][MAX_RESSOURCES];
+	int ressourceAviableCountFar[16][MAX_RESSOURCES];
+	int ressourceAviableCountSuccess[16][MAX_RESSOURCES];
+	int ressourceAviableCountFailure[16][MAX_RESSOURCES];
+	
 	int pathToRessourceCountTot;
 	int pathToRessourceCountSuccessClose;
 	int pathToRessourceCountSuccessFar;

@@ -124,6 +124,8 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		locked[i]=false;
 	}
 	localRessourcesCleanTime=0;
+	
+	verbose=false;
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -199,6 +201,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		locked[i]=false;
 	}
 	localRessourcesCleanTime=0;
+	
+	verbose=false;
 }
 
 void Building::save(SDL_RWops *stream)
@@ -714,7 +718,8 @@ void Building::updateCallLists(void)
 
 				if (fu!=NULL)
 				{
-					//printf("Building::we free the unit gid=%d\n", fu->gid);
+					if (verbose)
+						printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
 					// We free the unit.
 					fu->activity=Unit::ACT_RANDOM;
 
@@ -780,10 +785,11 @@ void Building::updateConstructionState(void)
 		{
 			buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
 			owner->buildingsTryToBuildingSiteRoom.push_front(this);
-			//printf("inserted %d in buildingsTryToBuildingSiteRoom\n", gid);
+			if (verbose)
+				printf("bgid=%d, inserted in buildingsTryToBuildingSiteRoom\n", gid);
 		}
-		else
-			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
+		else if (verbose)
+			printf("bgid=%d, Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
 	}
 }
 
@@ -915,7 +921,8 @@ bool Building::tryToBuildingSiteRoom(void)
 		buildingState=ALIVE;
 
 		// units
-		//printf("%d uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
+		if (verbose)
+			printf("bgid=%d, uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
 		maxUnitWorking=maxUnitWorkingPreferred;
 		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
@@ -1037,7 +1044,8 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
-	//printf("bgid=(%d) subscribeToBringRessourcesStep()...\n", gid);
+	if (verbose)
+		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
@@ -1049,7 +1057,8 @@ void Building::subscribeToBringRessourcesStep()
 			(*it)->needToRecheckMedical=true;
 		}
 		unitsWorkingSubscribe.clear();
-		//printf(" ...fullWorking()\n");
+		if (verbose)
+			printf("...fullWorking()\n");
 		return;
 	}
 	
@@ -1084,7 +1093,6 @@ void Building::subscribeToBringRessourcesStep()
 					if (map->buildingAviable(this, canSwim, x, y, &dist) && dist<timeLeft)
 					{
 						int value=dist-timeLeft;
-						//printf("d(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
 						unit->destinationPurprose=r;
 						if (value<minValue)
 						{
@@ -1184,7 +1192,8 @@ void Building::subscribeToBringRessourcesStep()
 
 			if (choosen)
 			{
-				//printf("  unit %d choosen.\n", choosen->gid);
+				if (verbose)
+					printf(" unit %d choosen.\n", choosen->gid);
 				
 				unitsWorkingSubscribe.remove(choosen);
 				if (!neededRessource(choosen->destinationPurprose))
@@ -1198,7 +1207,8 @@ void Building::subscribeToBringRessourcesStep()
 					choosen->subscribed=false;
 					choosen->activity=Unit::ACT_RANDOM;
 					choosen->needToRecheckMedical=true;
-					//printf(" ...!neededRessource(choosen->destinationPurprose)\n");
+					if (verbose)
+						printf("...!neededRessource(choosen->destinationPurprose=%d)\n", choosen->destinationPurprose);
 					return;
 				}
 				else
@@ -1215,7 +1225,8 @@ void Building::subscribeToBringRessourcesStep()
 		
 		if ((signed)unitsWorking.size()>=maxUnitWorking)
 		{
-			//printf(" unitsWorking.size()>=maxUnitWorking\n");
+			if (verbose)
+				printf(" unitsWorking.size()>=maxUnitWorking\n");
 			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
 				(*it)->attachedBuilding=NULL;
@@ -1226,7 +1237,8 @@ void Building::subscribeToBringRessourcesStep()
 			unitsWorkingSubscribe.clear();
 		}
 	}
-	//printf(" ...done\n");
+	if (verbose)
+		printf(" ...done\n");
 }
 
 void Building::subscribeForFlagingStep()

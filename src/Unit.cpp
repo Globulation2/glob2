@@ -577,7 +577,7 @@ void Unit::handleActivity(void)
 			if (hp<performance[HP])
 			{
 				Building *b;
-				b=owner->findNearestHeal(posX, posY);
+				b=owner->findNearestHeal(this);
 				if (b!=NULL)
 				{
 					destinationPurprose=HEAL;
@@ -620,7 +620,7 @@ void Unit::handleActivity(void)
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
-			b=owner->findNearestFood(posX, posY);
+			b=owner->findNearestFood(this);
 			if (b!=NULL)
 			{
 				destinationPurprose=FEED;
@@ -640,7 +640,7 @@ void Unit::handleActivity(void)
 		else if (medical==MED_DAMAGED)
 		{
 			Building *b;
-			b=owner->findNearestHeal(posX, posY);
+			b=owner->findNearestHeal(this);
 			if (b!=NULL)
 			{
 				destinationPurprose=HEAL;
@@ -1656,7 +1656,6 @@ void Unit::escapeGroundTarget()
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
 	bool canSwim=performance[SWIM];
-	Uint32 teamMask=owner->me;
 	Map *map=owner->map;
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
