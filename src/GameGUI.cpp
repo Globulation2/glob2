@@ -220,18 +220,29 @@ void GameGUI::step(void)
 				r = 99;
 				g = 143;
 				b = 255;
+				
+				addMessage(r, g, b, "<%s> %s", m->userName, m->text);
 			break;
 			
 			case YMT_PRIVATE_MESSAGE:
 				r = 99;
 				g = 255;
 				b = 242;
+				addMessage(r, g, b, "<%s%s> %s", globalContainer->texts.getString("[from:]"), m->userName, m->text);
 			break;
 			
 			case YMT_ADMIN_MESSAGE:
 				r = 138;
 				g = 99;
 				b = 255;
+				addMessage(r, g, b, "<%s> %s", m->userName, m->text);
+			break;
+			
+			case YMT_PRIVATE_RECEIPT:
+				r = 99;
+				g = 255;
+				b = 242;
+				addMessage(r, g, b, "<%s%s> %s", globalContainer->texts.getString("[to:]"), m->userName, m->text);
 			break;
 			
 			default:
@@ -240,7 +251,7 @@ void GameGUI::step(void)
 			break;
 		}
 		
-		addMessage(r, g, b, "<%s> %s", m->userName, m->text);
+		
 		globalContainer->yog->receivedMessages.erase(m);
 	}
 
