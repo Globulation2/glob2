@@ -95,6 +95,8 @@ public:
 	void wonSyncStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed
 	void scriptSyncStep();
+	//! before any game logic can be executed, we have to clear the event queu from the last tick
+	void clearEventsStep(void);
 	//! called by gui, execute a step for this game. The gui parameter is for the script
 	void syncStep(Sint32 localTeam);
 

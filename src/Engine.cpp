@@ -379,7 +379,7 @@ int Engine::run(void)
 	if (globalContainer->runNoX)
 		assert(globalContainer->mix==NULL);
 	else
-		globalContainer->mix->stopMusic();
+		globalContainer->mix->setNextTrack(2, true);
 	
 	while (doRunOnceAggain)
 	{
@@ -420,10 +420,9 @@ int Engine::run(void)
 			{
 				// But some jobs have to be executed synchronously:
 				if (networkReadyToExecute)
-					gui.syncStep();
-	
-				if (networkReadyToExecute)
 				{
+					gui.syncStep();
+					
 					// We get and push local orders
 					net->pushOrder(gui.getOrder(), gui.localPlayer);
 					
@@ -444,6 +443,9 @@ int Engine::run(void)
 				}
 				else
 					ticksDelayedInside=0;
+					
+				// We clear the last events
+				gui.game.clearEventsStep();
 				
 				// We proceed network:
 				networkReadyToExecute=net->stepReadyToExecute();
@@ -454,7 +456,6 @@ int Engine::run(void)
 				net->stepExecuted();
 
 				// here we do the real work
-				
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
 					gui.game.syncStep(gui.localTeamNo);
 			}
@@ -513,12 +514,14 @@ int Engine::run(void)
 		return -1;
 	else
 	{
+		// Restart menu music
+		assert(globalContainer->mix);
+		globalContainer->mix->setNextTrack(1, true);
+		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
-		// Restart menu music
-		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(1);
+		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}

@@ -22,6 +22,7 @@
 
 #include <SDL_rwops.h>
 #include <list>
+#include <algorithm>
 
 #include "Race.h"
 #include "TeamStat.h"
@@ -115,11 +116,13 @@ public:
 	//! The team is now under attack or a building is finished, push event
 	void setEvent(int posX, int posY, EventType newEvent, Sint32 id) { if (eventCooldown[newEvent]==0)  { isEvent[newEvent]=true; eventPosX=posX; eventPosY=posY; eventId=id; } eventCooldown[newEvent]=50; }
 	//! was an event last tick
-	bool wasEvent(EventType type) { bool isEv=isEvent[type]; isEvent[type]=false; return isEv; }
+	bool wasEvent(EventType type) { return isEvent[type]; }
 	//! return event position
 	void getEventPos(int *posX, int *posY) { *posX=eventPosX; *posY=eventPosY; }
 	//! return event id (int associated with the event)
 	Sint32 getEventId(void) { return eventId; }
+	//! clear all pending events
+	void clearEvents(void) { std::fill(&isEvent[0], &isEvent[EVENT_TYPE_SIZE], false); }
 
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);

@@ -25,7 +25,9 @@
 #include <iostream>
 #include <SDL_endian.h>
 
-#define SAMPLE_COUNT_PER_SLICE 8192
+#define SAMPLE_COUNT_PER_SLICE 8192*8
+#define INTERPOLATION_RANGE 65535
+#define INTERPOLATION_BITS 16
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define OGG_BYTEORDER 0
@@ -38,7 +40,7 @@ static int interpolationTable[SAMPLE_COUNT_PER_SLICE];
 static void initInterpolationTable(void)
 {
 	double l = static_cast<double>(SAMPLE_COUNT_PER_SLICE-1);
-	double m = 65535;
+	double m = INTERPOLATION_RANGE;
 	double a = - (2) / (l * l * l);
 	double b = (3) / (l * l);
 	for (unsigned i=0; i<SAMPLE_COUNT_PER_SLICE; i++)
@@ -70,6 +72,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// read first ogg
 		rest = len;
 		p = reinterpret_cast<char *>(track0);
+		ogg_int64_t firstPos = ov_pcm_tell(mixer->tracks[mixer->actTrack]);
 		while(rest > 0)
 		{
 			int bs;
@@ -89,7 +92,6 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		}
 
 		// read second ogg
-		ogg_int64_t firstPos = ov_pcm_tell(mixer->tracks[mixer->actTrack]);
 		ov_pcm_seek(mixer->tracks[mixer->nextTrack], firstPos);
 		rest = len;
 		p = reinterpret_cast<char *>(track1);
@@ -114,10 +116,10 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// mix
 		for (unsigned i=0; i<nsamples; i++)
 		{
-			Sint16 t0 = track0[i];
-			Sint16 t1 = track1[i];
+			int t0 = track0[i];
+			int t1 = track1[i];
 			int intI = interpolationTable[i];
-			int val = (intI*t0+((65535-intI)*t1))>>16;
+			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
 			mix[i] = (val * vol)>>8;
 		}
 
@@ -152,18 +154,19 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// volume & fading
 		if (mixer->mode == SoundMixer::MODE_NORMAL)
 		{
-			for (unsigned i=0; i<nsamples; i++)
-			{
-				int t = mix[i];
-				mix[i] = (t * vol) >> 8;
-			}
+			if (vol != 255)
+				for (unsigned i=0; i<nsamples; i++)
+				{
+					int t = mix[i];
+					mix[i] = (t * vol) >> 8;
+				}
 		}
 		else if (mixer->mode == SoundMixer::MODE_START)
 		{
 			for (unsigned i=0; i<nsamples; i++)
 			{
 				int t = mix[i];
-				t = (interpolationTable[i]*t) >> 16;
+				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
 				mix[i] = (t * vol) >> 8;
 			}
 			mixer->mode = SoundMixer::MODE_NORMAL;
@@ -174,7 +177,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			{
 				int t = mix[i];
 				int intI = interpolationTable[i];
-				t = ((65535-intI)*t) >> 16;
+				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
 				mix[i] = (t * vol) >> 8;
 			}
 			mixer->mode = SoundMixer::MODE_STOPPED;
@@ -262,7 +265,10 @@ int SoundMixer::loadTrack(const char *name)
 		return -2;
 	}
 
+	SDL_LockAudio();
 	tracks.push_back(oggFile);
+	SDL_UnlockAudio();
+	
 	return (int)tracks.size()-1;
 }
 
@@ -270,6 +276,8 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
 	if ((soundEnabled) && (volume) && (i<tracks.size()))
 	{
+		SDL_LockAudio();
+		
 		// Select next tracks
 		if (actTrack >= 0)
 			nextTrack = i;
@@ -286,6 +294,8 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		{
 			mode = MODE_EARLY_CHANGE;
 		}
+		
+		SDL_UnlockAudio();
 	}
 }
 
