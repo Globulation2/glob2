@@ -634,3 +634,5 @@ Audio
 Hlasitost (hudba)
 [Happyness]
 Zadostiučinění
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG

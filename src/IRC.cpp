@@ -26,6 +26,9 @@
 
 #include "IRC.h"
 #include <iostream>
+#include <GAG.h>
+#include "GameGUIDialog.h"
+#include "GlobalContainer.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -148,7 +151,6 @@ void IRC::interpreteIRCMessage(const char *message)
 
 	// this is a debug printf to reverse engineer IRC protocol
 	//printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
-
 	if (strcasecmp(cmd, "PRIVMSG")==0)
 	{
 		char *diffusion=strtok(NULL, " :");
@@ -270,6 +272,7 @@ void IRC::interpreteIRCMessage(const char *message)
 			usersOnChannelsModified = true;
 		}
 	}
+	
 	else if (strcasecmp(cmd, "433")==0)
 	{
 		if (strlen(this->nick) < IRC_NICK_SIZE)
@@ -280,6 +283,18 @@ void IRC::interpreteIRCMessage(const char *message)
 			snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
 			sendString(command);
 			joinChannel("#glob2");
+		}
+		
+		else
+		{
+			const char *nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
+			const char *ok = Toolkit::getStringTable()->getString("[ok]");
+			int res=(int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken, ok);
+		
+			if (res != 0 )
+			{
+				assert(false);
+			}
 		}
 	}
 
