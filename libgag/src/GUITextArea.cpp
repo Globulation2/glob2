@@ -571,6 +571,10 @@ void TextArea::layout(void)
 			case '\n':
 			case '\r':
 			{
+				int actLineLength = font->getStringWidth(lastLine.c_str());
+				int actWordLength = font->getStringWidth(lastWord.c_str());
+				if (actWordLength+actLineLength+spaceLength >= length)
+					lines.push_back(pos-lastWord.size());
 				lines.push_back(pos+1);
 				lastWord.clear();
 				lastLine.clear();
