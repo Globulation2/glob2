@@ -388,7 +388,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	int x=unit->posX;
 	int y=unit->posY;
 	int bestTime=256;//Shorter is better
-	int bdx, bdy;
+	int bdx=0, bdy=0;
 	Uint32 enemies;
 
 	enemies=unit->owner->enemies;
