@@ -48,7 +48,7 @@ public:
 		this->vAlignFlag=vAlign;
 		
 		r=g=b=0;
-		a=DrawableSurface::ALPHA_OPAQUE;
+		a=Color::ALPHA_OPAQUE;
 	}
 	
 	void paint(void)
@@ -63,7 +63,7 @@ public:
 		parent->getSurface()->drawFilledRect(x, y, w, h, r, g, b);
 	}
 	
-	void setColor(Uint8 nr, Uint8 ng, Uint8 nb, Uint8 na=DrawableSurface::ALPHA_OPAQUE)
+	void setColor(Uint8 nr, Uint8 ng, Uint8 nb, Uint8 na = Color::ALPHA_OPAQUE)
 	{
 		if ((nr!=r) || (ng!=g) || (nb!=b) || (na!=a))
 		{

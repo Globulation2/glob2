@@ -103,8 +103,7 @@ void Game::init(GameGUI *gui)
 	else
 	{
 		// init minimap
-		minimap=new DrawableSurface();
-		minimap->setRes(100, 100);
+		minimap=new DrawableSurface(100, 100);
 		minimap->drawFilledRect(0, 0, 100, 100, 0, 0, 0);
 	}
 
@@ -1880,10 +1879,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[b->verbose&1][lx+ly*32]);
 					}
 
-					globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
+					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
-					globalContainer->gfx->popFontStyle(globalContainer->littleFont);
+					globalContainer->littleFont->popStyle();
 				}
 
 	}
@@ -2436,7 +2435,6 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	decSPX=teams[localTeam]->startPosX-map.getW()/2;
 	decSPY=teams[localTeam]->startPosY-map.getH()/2;
 
-	minimap->lock();
 	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
 		for (dx=0; dx<szX; dx++)
@@ -2551,7 +2549,7 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 				g = lg/nCount;
 				b = lb/nCount;
 			}
-			minimap->drawPixel(dx+decX, dy+decY, r, g, b, DrawableSurface::ALPHA_OPAQUE);
+			minimap->drawPixel(dx+decX, dy+decY, r, g, b, Color::ALPHA_OPAQUE);
 		}
 	}
 
@@ -2581,7 +2579,6 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 			if ((fy>=stepStart) && (fy<stepStart+stepLength))
 				minimap->drawPixel(fx+decX, fy+decY, r, g, b);
 		}*/
-	minimap->unlock();
 }
 
 Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings, std::list<Uint32> *checkSumsListForUnits)

@@ -22,7 +22,7 @@
 
 #include <assert.h>
 #ifndef DX9_BACKEND	// TODO:Die!
-#include <glSDL.h>
+#include <SDL.h>
 #else
 #include <Types.h>
 #endif

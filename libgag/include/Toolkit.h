@@ -42,7 +42,7 @@ namespace GAGCore
 		//! Initialize gag, must be called before any call to GAG
 		static void init(const char *gameName);
 		//! Initialize the graphic part
-		static void initGraphic(void);
+		static GraphicContext *initGraphic(int w, int h, unsigned int flags);
 	
 		//! Close gag, must be called after any call to GAG
 		static void close(void);
@@ -56,8 +56,7 @@ namespace GAGCore
 		
 		static FileManager *getFileManager(void) { return fileManager; }
 		static StringTable *const getStringTable(void) { return strings; }
-		static GraphicContext *getGraphicContext(void) { return gc; }
-	
+		
 	protected:
 		friend class Sprite;
 		

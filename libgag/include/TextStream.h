@@ -106,6 +106,7 @@ namespace GAGCore
 		}
 		
 	public:
+		//! Constructor. Uses backend, but does not delete it
 		TextInputStream(StreamBackend *backend);
 		
 		virtual void read(void *data, size_t size, const char *name = NULL);

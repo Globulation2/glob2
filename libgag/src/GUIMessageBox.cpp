@@ -100,8 +100,7 @@ namespace GAGGUI
 	
 		// save screen in a temporary surface
 		parentCtx->setClipRect();
-		DrawableSurface *background = new DrawableSurface();
-		background->setRes(parentCtx->getW(), parentCtx->getH());
+		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
 		background->drawSurface(0, 0, parentCtx);
 		
 		mbs->dispatchPaint();
@@ -116,7 +115,7 @@ namespace GAGGUI
 				mbs->translateAndProcessEvent(&event);
 			}
 			mbs->dispatchPaint();
-			parentCtx->drawSurface(0, 0, background);
+			parentCtx->drawSurface((int)0, (int)0, background);
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
 		}

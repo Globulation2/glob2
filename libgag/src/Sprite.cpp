@@ -20,7 +20,6 @@
 #include <GraphicContext.h>
 #include <math.h>
 #include <Toolkit.h>
-#include <SupportFunctions.h>
 #include <FileManager.h>
 #include <assert.h>
 #ifndef DX9_BACKEND	// TODO:Die!
@@ -32,22 +31,9 @@
 
 namespace GAGCore
 {
-	Sprite::Surface::Surface(SDL_Surface *source)
-	{
-		assert(source);
-		s = SDL_DisplayFormatAlpha(source);
-		assert(s);
-		SDL_FreeSurface(source);
-	}
-	
-	Sprite::Surface::~Surface()
-	{
-		SDL_FreeSurface(s);
-	}
-	
 	Sprite::RotatedImage::~RotatedImage()
 	{
-		SDL_FreeSurface(orig);
+		delete orig;
 		for (RotationMap::iterator it = rotationMap.begin(); it != rotationMap.end(); ++it)
 		{
 			delete it->second;
@@ -85,144 +71,36 @@ namespace GAGCore
 		return getFrameCount() > 0;
 	}
 	
-	void Sprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index, Uint8 spriteAlpha)
+	DrawableSurface *Sprite::getRotatedSurface(int index)
 	{
-		if (!checkBound(index))
-			return;
-		
-		if (spriteAlpha == DrawableSurface::ALPHA_TRANSPARENT)
-			return;
-		// TODO : handle per surface alpha
-	
-		SDL_Rect oldr, r;
-		SDL_Rect newr=*clip;
-		SDL_Rect src;
-		int w, h;
-		int diff;
-	
-		w=getW(index);
-		h=getH(index);
-	
-		src.x=0;
-		src.y=0;
-		if (x<newr.x)
+		RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(actColor);
+		DrawableSurface *ds;
+		if (it == rotated[index]->rotationMap.end())
 		{
-			diff=newr.x-x;
-			w-=diff;
-			src.x+=static_cast<Sint16>(diff);
-			x=newr.x;
-		}
-		if (y<newr.y)
-		{
-			diff=newr.y-y;
-			h-=diff;
-			src.y+=static_cast<Sint16>(diff);
-			y=newr.y;
-		}
-	
-		if (x+w>newr.x+newr.w)
-		{
-			diff=(x+w)-(newr.x+newr.w);
-			w-=diff;
-		}
-		if (y+h>newr.y+newr.h)
-		{
-			diff=(y+h)-(newr.y+newr.h);
-			h-=diff;
-		}
-	
-		if ((w<=0) || (h<=0))
-			return;
-	
-		src.w = static_cast<Sint16>(w);
-		src.h = static_cast<Sint16>(h);
-		r.x = static_cast<Sint16>(x);
-		r.y = static_cast<Sint16>(y);
-		r.w = static_cast<Sint16>(w);
-		r.h = static_cast<Sint16>(h);
-	
-		SDL_GetClipRect(dest, &oldr);
-		SDL_SetClipRect(dest, &newr);
-	
-		#ifdef HAVE_OPENGL
-		glSDL_SetBltAlpha(spriteAlpha);
-		#endif
+			// compute hue shift
+			float baseHue, actHue, lum, sat;
+			float hueShift;
+			Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
+			actColor.getHSV(&actHue, &sat, &lum);
+			hueShift = actHue - baseHue;
 			
-		if (images[index])
-			SDL_BlitSurface(images[index]->s, &src, dest, &r);
-	
-		if (rotated[index])
-		{
-			RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(actColor);
-			Surface *toBlit;
-			if (it == rotated[index]->rotationMap.end())
-			{
-				float hue, lum, sat;
-				float baseHue, hueDec;
-	
-				RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
-				RGBtoHSV( ((float)actColor.channel.r)/255, ((float)actColor.channel.g)/255, ((float)actColor.channel.b)/255, &hue, &sat, &lum);
-				hueDec = hue-baseHue;
-				int w = rotated[index]->orig->w;
-				int h = rotated[index]->orig->h;
-	
-				SDL_Surface *newSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-				
-				Uint32 *sPtr = (Uint32 *)rotated[index]->orig->pixels;
-				Uint32 *dPtr = (Uint32 *)newSurface->pixels;
-				for (int i=0; i<w*h; i++)
-				{
-					Uint8 sR, sG, sB, alpha;
-					Uint8 dR, dG, dB;
-					float nR, nG, nB;
-					SDL_GetRGBA(*sPtr, rotated[index]->orig->format, &sR, &sG, &sB, &alpha);
-	
-					if (alpha != DrawableSurface::ALPHA_TRANSPARENT)
-					{
-						RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
-	
-						float newHue = hue + hueDec;
-						if (newHue >= 360)
-							newHue -= 360;
-						if (newHue < 0)
-							newHue += 360;
-	
-						HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
-	
-						dR = static_cast<Uint8>(255.0f*nR);
-						dG = static_cast<Uint8>(255.0f*nG);
-						dB = static_cast<Uint8>(255.0f*nB);
-	
-						*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
-					}
-					else
-						*dPtr = 0;
-	
-					sPtr++;
-					dPtr++;
-				}
-	
-				toBlit = new Surface(newSurface);
-				rotated[index]->rotationMap[actColor] = toBlit;
-			}
-			else
-			{
-				toBlit = it->second;
-			}
+			// rotate image
+			ds = rotated[index]->orig->clone();
+			ds->shiftHSV(hueShift, 0.0f, 0.0f);
 			
-			#ifdef HAVE_OPENGL
-			glSDL_SetBltAlpha(spriteAlpha);
-			#endif
-		
-			SDL_BlitSurface(toBlit->s, &src, dest, &r);
+			// write back
+			rotated[index]->rotationMap[actColor] = ds;
 		}
-	
-		SDL_SetClipRect(dest, &oldr);
+		else
+		{
+			ds = it->second;
+		}
+		return ds;
 	}
 	
 	Sprite::~Sprite()
 	{
-		for (std::vector <Surface *>::iterator imagesIt=images.begin(); imagesIt!=images.end(); ++imagesIt)
+		for (std::vector <DrawableSurface *>::iterator imagesIt = images.begin(); imagesIt != images.end(); ++imagesIt)
 		{
 			if (*imagesIt)
 				delete (*imagesIt);
@@ -238,8 +116,10 @@ namespace GAGCore
 	{
 		if (frameStream)
 		{
-			SDL_Surface *temp = IMG_Load_RW(frameStream, 0);
-			images.push_back(new Surface(temp));
+			SDL_Surface *sprite = IMG_Load_RW(frameStream, 0);
+			assert(sprite);
+			images.push_back(new DrawableSurface(sprite));
+			SDL_FreeSurface(sprite);
 		}
 		else
 			images.push_back(NULL);
@@ -248,16 +128,8 @@ namespace GAGCore
 		{
 			SDL_Surface *sprite = IMG_Load_RW(rotatedStream, 0);
 			assert(sprite);
-			if (sprite->format->BitsPerPixel==32)
-			{
-				RotatedImage *image = new RotatedImage(sprite);
-				rotated.push_back(image);
-			}
-			else
-			{
-				std::cerr << "GAG : Sprite::loadFrame(stream, stream) : warning, rotated image is in wrong depth (" << sprite->format->BitsPerPixel << " instead of 32)" << std::endl;
-				rotated.push_back(NULL);
-			}
+			rotated.push_back(new RotatedImage(new DrawableSurface(sprite)));
+			SDL_FreeSurface(sprite);
 		}
 		else
 			rotated.push_back(NULL);
@@ -268,9 +140,9 @@ namespace GAGCore
 		if (!checkBound(index))
 			return 0;
 		if (images[index])
-			return images[index]->s->w;
+			return images[index]->getW();
 		else if (rotated[index])
-			return rotated[index]->orig->w;
+			return rotated[index]->orig->getW();
 		else
 			return 0;
 	}
@@ -280,9 +152,9 @@ namespace GAGCore
 		if (!checkBound(index))
 			return 0;
 		if (images[index])
-			return images[index]->s->h;
+			return images[index]->getH();
 		else if (rotated[index])
-			return rotated[index]->orig->h;
+			return rotated[index]->orig->getH();
 		else
 			return 0;
 	}

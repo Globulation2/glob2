@@ -184,56 +184,45 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		if (strcmp(argv[i], "-f")==0)
 		{
-			settings.screenFlags |= DrawableSurface::FULLSCREEN;
+			settings.screenFlags |= GraphicContext::FULLSCREEN;
 			continue;
 		}
 		if (strcmp(argv[i], "-F")==0)
 		{
-			settings.screenFlags &= ~DrawableSurface::FULLSCREEN;
+			settings.screenFlags &= ~GraphicContext::FULLSCREEN;
 			continue;
 		}
 
-		if (strcmp(argv[i], "-a")==0)
-		{
-			settings.screenFlags |= DrawableSurface::HWACCELERATED;
-			continue;
-		}
-		if (strcmp(argv[i], "-A")==0)
-		{
-			settings.screenFlags &= ~DrawableSurface::HWACCELERATED;
-			continue;
-		}
-		
 		if (strcmp(argv[i], "-c")==0)
 		{
-			settings.screenFlags |= DrawableSurface::CUSTOMCURSOR;
+			settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
 			continue;
 		}
 		if (strcmp(argv[i], "-C")==0)
 		{
-			settings.screenFlags &= ~DrawableSurface::CUSTOMCURSOR;
+			settings.screenFlags &= ~GraphicContext::CUSTOMCURSOR;
 			continue;
 		}
 
 		if (strcmp(argv[i], "-r")==0)
 		{
-			settings.screenFlags |= DrawableSurface::RESIZABLE;
+			settings.screenFlags |= GraphicContext::RESIZABLE;
 			continue;
 		}
 		if (strcmp(argv[i], "-R")==0)
 		{
-			settings.screenFlags &= ~DrawableSurface::RESIZABLE;
+			settings.screenFlags &= ~GraphicContext::RESIZABLE;
 			continue;
 		}
-
-		if (strcmp(argv[i], "-b")==0)
+		
+		if (strcmp(argv[i], "-g")==0)
 		{
-			settings.screenFlags |= DrawableSurface::DOUBLEBUF;
+			settings.screenFlags |= GraphicContext::USEGPU;
 			continue;
 		}
-		if (strcmp(argv[i], "-B")==0)
+		if (strcmp(argv[i], "-G")==0)
 		{
-			settings.screenFlags &= ~DrawableSurface::DOUBLEBUF;
+			settings.screenFlags &= ~GraphicContext::USEGPU;
 			continue;
 		}
 
@@ -266,8 +255,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-s\tset resolution and depth (for instance : -s640x480 or -s640x480x32)\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-r/-R\tset/clear resizable window\n");
-			printf("-a/-A\tset/clear hardware accelerated gfx\n");
-			printf("-b/-B\tenable/disable double buffering (useful on OS X in fullscreen)\n");
+			printf("-g/-G\tenable/disable OpenGL acceleration (GPU use)\n");
 			printf("-c/-C\tenable/disable custom cursor\n");
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
 			printf("-h\thigh speed graphics: max of transparency effects\n");
@@ -321,17 +309,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 						setUserName(argv[i]);
 				}
 			}
-			else if (argv[i][1] == 't')
-			{
-				if (argv[i][2] != 0)
-					settings.graphicType=(DrawableSurface::GraphicContextType)atoi(&argv[i][2]);
-				else
-				{
-					i++;
-					if (i < argc)
-						settings.graphicType=(DrawableSurface::GraphicContextType)atoi(argv[i]);
-				}
-			}
 			else if (argv[i][1] == 'v')
 			{
 				if (argv[i][2] != 0)
@@ -346,9 +323,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else if (argv[i][1] == 's')
 			{
 				const char *resStr=&(argv[i][2]);
-				int ix, iy, id;
-				int nscaned = sscanf(resStr, "%dx%dx%d", &ix, &iy, &id);
-				if (nscaned > 1)
+				int ix, iy;
+				int nscaned = sscanf(resStr, "%dx%dx", &ix, &iy);
+				if (nscaned == 2)
 				{
 					if (ix!=0)
 					{
@@ -364,11 +341,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 							iy=480;
 						settings.screenHeight = iy;
 					}
-				}
-				if (nscaned > 2)
-				{
-					if ((id == 16) || (id == 32))
-						settings.screenDepth = id;
 				}
 			}
 		}
@@ -389,8 +361,7 @@ void GlobalContainer::updateLoadProgressBar(int value)
 
 void GlobalContainer::initProgressBar(void)
 {
-	progress.s = new DrawableSurface();
-	progress.s->loadImage("data/gfx/IntroMN.png");
+	progress.s = new DrawableSurface("data/gfx/IntroMN.png");;
 	progress.s->drawRect((progress.s->getW()-402)>>1, (progress.s->getH()>>1)+10+180, 402, 22, 180, 180, 180);
 	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
 	gfx->nextFrame();
@@ -415,12 +386,9 @@ void GlobalContainer::load(void)
 	if (!runNoX)
 	{
 		// create graphic context
-		Toolkit::initGraphic();
-		// and set res
-		gfx = Toolkit::getGraphicContext();
+		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags);
 		gfx->setMinRes(640, 480);
-		gfx->setRes(settings.screenWidth, settings.screenHeight, globalContainer->settings.screenDepth, settings.screenFlags, (DrawableSurface::GraphicContextType)settings.graphicType);
-		gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
+		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	

@@ -29,47 +29,88 @@
 
 namespace GAGCore
 {
+	//! Color is 4 bytes big but provides easy access to components
+	struct Color
+	{
+		//! Typical usefull alpha values pre-defined
+		enum Alpha
+		{
+			ALPHA_TRANSPARENT = 0, //!< constant for transparent alpha
+			ALPHA_OPAQUE = 255 //!< constant for opaque alpha
+		};
+		
+		Uint8 r, g, b, a; //!< component of the color
+		
+		//! Constructor. Default color is opaque black
+		Color() { r = g = b = 0; a = ALPHA_OPAQUE; }
+		//! Constructor from components
+		Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a = ALPHA_OPAQUE) { this->r = r; this->g = g; this->b = b; this->a = a; }
+		
+		//! Return HSV values in pointers
+		void getHSV(float *hue, float *sat, float *lum);
+		//! Set color from HLS, alpha unctouched
+		void setHSV(float hue, float sat, float lum);
+		
+		//! pack components in a 32 bits int given SDL screen values
+		Uint32 pack() const;
+		//! unpack from a 32 bits int given SDL screen values
+		void unpack(const Uint32 packedValue);
+		
+		//! comparaison for inequality
+		bool operator<(const Color &o) const { return pack() < o.pack(); }
+		//! comparaison for equality
+		bool operator==(const Color &o) const { return pack() == o.pack(); }
+		
+		static Color black; //!< black color (0,0,0)
+		static Color white; //!< black color (255,255,255)
+	};
+	
+	//! Deprecated, for compatibility only. Eventually, all Color32 should be removed or changed to Color
+	typedef Color Color32;
+	
 	class Sprite;
 	
+	//! Font with a given foundery, shape and color
 	class Font
 	{
 	public:
+		//! Shape of the font
 		enum Shape
 		{
-			STYLE_NORMAL = 0x00,
-			STYLE_BOLD = 0x01,
-			STYLE_ITALIC = 0x02,
-			STYLE_UNDERLINE = 0x04,
+			STYLE_NORMAL = 0x00, //!< normal fond
+			STYLE_BOLD = 0x01, //!< bold font
+			STYLE_ITALIC = 0x02, //!< italic font
+			STYLE_UNDERLINE = 0x04, //!< underlined font
 		};
 		
+		//! Style of the font, i.e. a shape and a color
 		struct Style
 		{
-			Shape shape;
-			Uint8 r, g, b, a;
+			Shape shape; //!< shape of this style
+			Color color; //!< color of this style
 			
-			Style() { shape = STYLE_NORMAL; r = 255; g = 255; b = 255; a = 255; }
+			//! Constructor. Default is normal with white opaque color
+			Style() { shape = STYLE_NORMAL; color = Color::white; }
 			
-			Style(Shape shape, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255)
+			//! Constructor from shape and color
+			Style(Shape _shape, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE) :
+				shape(_shape),
+				color(r, g, b, a)
 			{
-				this->shape = shape;
-				this->r = r;
-				this->g = g;
-				this->b = b;
-				this->a = a;
 			}
 			
+			//! inequality comparaison
 			bool operator<(const Style &o) const
 			{
-				Uint32 w0 = (r<<24) | (g<<16) | (b<<8) | a;
-				Uint32 w1 = (o.r<<24) | (o.g<<16) | (o.b<<8) | o.a;
-				if (w0 == w1)
+				if (color == o.color)
 					return shape < o.shape;
 				else
-					return w0 < w1;
+					return color < o.color;
 			}
 		};
 	
 	public:
+		//! Destructor
 		virtual ~Font() { }
 	
 		// width and height
@@ -83,109 +124,124 @@ namespace GAGCore
 		// Style and color
 		virtual void setStyle(Style style) = 0;
 		virtual Style getStyle(void) const = 0;
+		virtual void pushStyle(Style style) = 0;
+		virtual void popStyle(void) = 0;
 		
 	protected:
 		friend class DrawableSurface;
-		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) = 0;
-		virtual void pushStyle(Style style) = 0;
-		virtual void popStyle(void) = 0;
+		virtual void drawString(DrawableSurface *Surface, int x, int y, int w, const char *text, Uint8 alpha) = 0;
+		virtual void drawString(DrawableSurface *Surface, float x, float y, float w, const char *text, Uint8 alpha) = 0;
 	};
 	
+	//! A surface on which we can draw
 	class DrawableSurface
 	{
 	protected:
-		//! the underlying SDL or glSDL surface
-		SDL_Surface *surface;
+		friend class Color;
+		friend class GraphicContext;
+		//! the underlying software SDL surface
+		SDL_Surface *sdlsurface;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
-		//! Flags, can be a combination of ResolutionFlags
-		Uint32 flags;
-		//! number of times locked has been called
-		int lockCount;
-	public:
-		enum GraphicContextType
-		{
-			GC_SDL=0,
-			GC_GL=1
-		};
-	
-		enum Alpha
-		{
-			ALPHA_TRANSPARENT=0,
-			ALPHA_OPAQUE=255
-		};
-	
-		enum ResolutionFlags
-		{
-			DEFAULT=0,
-			DOUBLEBUF=1,
-			FULLSCREEN=2,
-			HWACCELERATED=4,
-			RESIZABLE=8,
-			CUSTOMCURSOR=16,
-		};
+		//! this surface has been modified since latest blit
+		bool dirty;
+		//! texture index if GPU (GL) is used
+		unsigned int texture;
+		//! texture divisor
+		float texMultX, texMultY;
 		
-		enum Quality
-		{
-			HIGH_QUALITY=0,
-			LOW_QUALITY=1
-		};
-	
+	protected:
+		//! draw a vertical line. This function is private because it is only a helper one
+		void _drawVertLine(int x, int y, int l, Color color);
+		//! draw a horizontal line. This function is private because it is only a helper one
+		void _drawHorzLine(int x, int y, int l, Color color);
+		
+	protected:
+		//! Protectedconstructor, only called by GraphicContext
+		DrawableSurface() { sdlsurface = NULL; }
+		//! allocate textre in GPU for this surface
+		void allocateTexture(void);
+		//! reset the texture size upon changes
+		void initTextureSize(void);
+		//! upload surface to GPU
+		void uploadToTexture(void);
+		//! free texture in GPU for this surface
+		void freeGPUTexture(void);
+		
 	public:
-		DrawableSurface();
-		virtual ~DrawableSurface(void) { if (surface) SDL_FreeSurface(surface); }
-		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
-		virtual void setQuality(Quality quality) { }
-		virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);
-		virtual int getW(void) { if(surface) return surface->w; else return 0; }
-		virtual int getH(void) { if(surface) return surface->h; else return 0; }
-		virtual int getDepth(void) { if(surface) return surface->format->BitsPerPixel; else return 0; }
-		virtual int getFlags(void) { return flags; }
+		// New API
+		
+		// constructors and destructor
+		DrawableSurface(const char *imageFileName);
+		DrawableSurface(const std::string &imageFileName);
+		DrawableSurface(int w, int h);
+		DrawableSurface(const SDL_Surface *sourceSurface);
+		DrawableSurface *clone(void);
+		virtual ~DrawableSurface(void);
+		
+		// modifiers
+		virtual void setRes(int w, int h);
+		virtual void getClipRect(int *x, int *y, int *w, int *h);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void loadImage(const char *name);
-		virtual void drawSprite(int x, int y, Sprite *sprite, int index=0, Uint8 alpha = DrawableSurface::ALPHA_OPAQUE);
-		virtual void drawSprite(int x, int y, int w, int h, Sprite *sprite, int index=0, Uint8 alpha = DrawableSurface::ALPHA_OPAQUE);
-		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
-		virtual void drawString(int x, int y, Font *font, int i);
-		virtual void drawString(int x, int y, Font *font, const char *msg);
-		virtual void drawString(int x, int y, int w, Font *font, const char *msg);
-		virtual void drawSurface(int x, int y, DrawableSurface *surface);
-		virtual void pushFontStyle(Font *font, Font::Style style);
-		virtual void popFontStyle(Font *font);
 		virtual void nextFrame(void) { }
-		virtual void *getPixelPointer(void)  { return surface->pixels; }
-		//! lock only if necessary
-		virtual void lock(void)
-		{
-			lockCount++;
-			#ifdef HAVE_OPENGL
-			if (glSDL_MustLock(surface))
-			#else
-			if (SDL_MUSTLOCK(surface))
-			#endif
-				SDL_LockSurface(surface);
-		}
-		//! unlock only if necessary
-		virtual void unlock(void)
-		{
-			if (lockCount > 0)
-			{
-				lockCount--;
-				#ifdef HAVE_OPENGL
-				if (glSDL_MustLock(surface))
-				#else
-				if (SDL_MUSTLOCK(surface))
-				#endif
-					SDL_UnlockSurface(surface);
-			}
-		}
+		virtual bool loadImage(const char *name);
+		virtual bool loadImage(const std::string &name);
+		virtual void shiftHSV(float hue, float sat, float lum);
+		
+		// accessors
+		virtual int getW(void) { return sdlsurface->w; } 
+		virtual int getH(void) { return sdlsurface->h; }
+		
+		// drawing commands
+		virtual void drawPixel(int x, int y, Color color);
+		virtual void drawPixel(float x, float y, Color color);
+		
+		virtual void drawRect(int x, int y, int w, int h, Color color);
+		virtual void drawRect(float x, float y, float w, float h, Color color);
+		
+		virtual void drawFilledRect(int x, int y, int w, int h, Color color);
+		virtual void drawFilledRect(float x, float y, float w, float h, Color color);
+		
+		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
+		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
+		
+		virtual void drawCircle(int x, int y, int radius, Color color);
+		virtual void drawCircle(float x, float y, float radius, Color color);
+		
+		virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		void drawSprite(int x, int y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		void drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		void drawString(int x, int y, Font *font, const char *msg, int w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		void drawString(float x, float y, Font *font, const char *msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		void drawString(int x, int y, Font *font, const std::string &msg, int w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		// old API, deprecated, do not use. It is only there for compatibility with existing code
+		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawString(int x, int y, Font *font, int i);
 	};
 	
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
@@ -195,124 +251,133 @@ namespace GAGCore
 		//! The cursor manager, public to be able to set custom cursors
 		CursorManager cursorManager;
 		
+		//! Flags that define the characteristic of the graphic context
+		enum OptionFlags
+		{
+			DEFAULT = 0,
+			USEGPU = 1,
+			FULLSCREEN = 2,
+			RESIZABLE = 8,
+			CUSTOMCURSOR = 16,
+		};
+		
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
 		//! the pointer for iterating through mode list
 		SDL_Rect **modes;
+		friend class DrawableSurface;
+		//! option flags
+		Uint32 optionFlags;
 		
 	public:
-		//! Constructor
-		GraphicContext();
+		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
+		GraphicContext(int w, int h, Uint32 flags);
 		//! Destructor
 		virtual ~GraphicContext(void);
-	
-		//! Set the resolution, create the window if necessary. This must be called before any Drawable Surface method.
-		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
-		//! Change the rendering quality (antialiased lines, ...)
-		virtual void setQuality(Quality quality);
+		
+		// modifiers
+		virtual bool setRes(int w, int h, Uint32 flags);
+		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		virtual void setClipRect(int x, int y, int w, int h);
+		virtual void setClipRect(void);
+		virtual void nextFrame(void);
+		//! This function does not work for GraphicContext
+		virtual bool loadImage(const char *name) { return false; }
+		//! This function does not work for GraphicContext
+		virtual bool loadImage(const std::string &name) { return false; }
+		//! This function does not work for GraphicContext
+		virtual void shiftHSV(float hue, float sat, float lum) { }
+		
+		// reimplemented drawing commands for HW (GPU / GL) accelerated version
+		virtual void drawPixel(int x, int y, Color color);
+		virtual void drawPixel(float x, float y, Color color);
+		
+		virtual void drawRect(int x, int y, int w, int h, Color color);
+		virtual void drawRect(float x, float y, float w, float h, Color color);
+		
+		virtual void drawFilledRect(int x, int y, int w, int h, Color color);
+		virtual void drawFilledRect(float x, float y, float w, float h, Color color);
+		
+		virtual void drawLine(int x1, int y1, int x2, int y2, Color color);
+		virtual void drawLine(float x1, float y1, float x2, float y2, Color color);
+		
+		virtual void drawCircle(int x, int y, int radius, Color color);
+		virtual void drawCircle(float x, float y, float radius, Color color);
+		
+		virtual void drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
+		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+		
+		// compat
+		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
+		
+		// GraphicContext specific methods
 		//! Set the minimum acceptable resolution
-		virtual void setMinRes(int w=0, int h=0);
+		virtual void setMinRes(int w = 0, int h = 0);
 		//! Set the caption of the window
 		virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
 		//! Begin listing of acceptable video mode, *not thread-safe*
 		virtual void beginVideoModeListing(void);
 		//! Get the next acceptable video mode in w,h, return false if end of list, *not thread-safe*
 		virtual bool getNextVideoMode(int *w, int *h);
-		//! Load an image on the screen
-		virtual void loadImage(const char *name);
-		//! Switch to next frame. If double-buffering, switch buffer otherwise just blit
-		virtual void nextFrame(void);
+		
 		//! Save a bmp of the screen to a file, bypass virtual filesystem
 		virtual void printScreen(const char *filename);
-		
-		//! lock only if necessary, we do not lock GL graphic context
-		virtual void lock(void)
-		{
-			lockCount++;
-			#ifdef HAVE_OPENGL
-			if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
-			#else
-			if (SDL_MUSTLOCK(surface))
-			#endif
-				SDL_LockSurface(surface);
-		}
-		//! unlock only if necessary, we do not lock GL graphic context
-		virtual void unlock(void)
-		{
-			if (lockCount > 0)
-			{
-				lockCount--;
-				#ifdef HAVE_OPENGL
-				if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
-				#else
-				if (SDL_MUSTLOCK(surface))
-				#endif
-					SDL_UnlockSurface(surface);
-			}
-		}
 	};
 	
-	union Color32
-	{
-		Uint32 id;
-		struct
-		{
-			Uint8 r, g, b, a;
-		} channel;
-	
-		Color32() { channel.r=channel.g=channel.b=0; channel.a=DrawableSurface::ALPHA_OPAQUE; }
-		Color32(Uint8 r, Uint8 g, Uint8 b, Uint8 a=DrawableSurface::ALPHA_OPAQUE) { channel.r=r; channel.g=g; channel.b=b; channel.a=a; }
-		Color32(Uint32 v) { id=v; }
-		bool operator<(const Color32 &o) const { return id<o.id; }
-	};
-	
-	
+	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
 	class Sprite
 	{
 	protected:
-		struct Surface
-		{
-			SDL_Surface *s;
-			
-			//! allocate the internal surface suitable for fast blit, free the source
-			Surface(SDL_Surface *source);
-			~Surface();
-		};
-	
 		struct RotatedImage
 		{
-			SDL_Surface *orig;
-			typedef std::map<Color32, Surface *> RotationMap;
+			DrawableSurface *orig;
+			typedef std::map<Color32, DrawableSurface *> RotationMap;
 			RotationMap rotationMap;
 	
-			RotatedImage(SDL_Surface *s) { orig=s; }
+			RotatedImage(DrawableSurface *s) { orig = s; }
 			~RotatedImage();
 		};
 	
-		std::vector <Surface *> images;
+		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
-		Color32 actColor;
+		Color actColor;
 	
-		friend class GraphicContext;
+		friend class DrawableSurface;
 		// Support functions
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
+		//! Return a rotated drawable surface for actColor, create it if necessary
+		virtual DrawableSurface *getRotatedSurface(int index);
 	
 	public:
+		//! Constructor
 		Sprite() { }
+		//! Destructor
 		virtual ~Sprite();
 		
 		//! Load a sprite from the file, return true if any frame have been loaded
 		bool load(const char *filename);
 	
-		//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
-		virtual void draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index, Uint8 alpha);
-	
 		//! Set the (r,g,b) color to a sprite's base color
-		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, g, b); }
+		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }
 		
 		//! Return the width of index frame of the sprite
 		virtual int getW(int index);

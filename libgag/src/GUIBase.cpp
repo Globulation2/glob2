@@ -369,7 +369,7 @@ namespace GAGGUI
 					break;
 					case SDL_VIDEORESIZE:
 					{
-						gfx->setRes(event.resize.w, event.resize.h, gfx->getDepth(), gfx->getFlags());
+						gfx->setRes(event.resize.w, event.resize.h);
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
@@ -493,12 +493,10 @@ namespace GAGGUI
 	
 	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
 	{
-		gfx=new DrawableSurface();
-		gfx->setRes(w, h);
-		gfx->setAlpha(false, 180);
-		decX=(parentCtx->getW()-w)>>1;
-		decY=(parentCtx->getH()-h)>>1;
-		endValue=-1;
+		gfx = new DrawableSurface(w, h);
+		decX = (parentCtx->getW()-w)>>1;
+		decY = (parentCtx->getH()-h)>>1;
+		endValue = -1;
 	}
 	
 	OverlayScreen::~OverlayScreen()

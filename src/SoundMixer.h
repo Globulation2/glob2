@@ -21,7 +21,7 @@
 #define __SOUNDMIXER_H
 
 #ifndef DX9_BACKEND	// TODO:Die!
-#include <glSDL.h>
+#include <SDL.h>
 #include <SDL_audio.h>
 #else
 #include <Types.h>
