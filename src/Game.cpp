@@ -2370,43 +2370,60 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 {
 	Uint32 cs=0;
 
-	cs^=session.checkSum();
+	Uint32 sessionCs=session.checkSum();
+	cs^=sessionCs;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [0]
+		checkSumsList->push_back(sessionCs);// [0]
 
 	cs=(cs<<31)|(cs>>1);
+	
+	Uint32 teamsCs=0;
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
-		cs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings, checkSumsListForUnits);
+		teamsCs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings, checkSumsListForUnits);
+		teamsCs=(teamsCs<<31)|(teamsCs>>1);
 		cs=(cs<<31)|(cs>>1);
 	}
+	cs^=teamsCs;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [1+t*20]
+		checkSumsList->push_back(teamsCs);// [1+t*20]
 	
 	cs=(cs<<31)|(cs>>1);
+	
+	Uint32 playersCs=0;
 	for (int i=0; i<session.numberOfPlayer; i++)
 	{
-		cs^=players[i]->checkSum(checkSumsList);
+		playersCs^=players[i]->checkSum(checkSumsList);
+		playersCs=(playersCs<<31)|(playersCs>>1);
 		cs=(cs<<31)|(cs>>1);
 	}
+	cs^=playersCs;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [2+t*20+p*2]
+		checkSumsList->push_back(playersCs);// [2+t*20+p*2]
 	
 	cs=(cs<<31)|(cs>>1);
-	cs^=map.checkSum(true);
+	
+	Uint32 mapCs=map.checkSum(true);
+	cs^=mapCs;
+	if (checkSumsList)
+		checkSumsList->push_back(mapCs);// [3+t*20+p*2]
+	
 	cs=(cs<<31)|(cs>>1);
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3+t*20+p*2]
 
-	cs^=getSyncRandSeedA();
-	cs^=getSyncRandSeedB();
-	cs^=getSyncRandSeedC();
+	Uint32 syncRandCs=0;
+	syncRandCs^=getSyncRandSeedA();
+	syncRandCs^=getSyncRandSeedB();
+	syncRandCs^=getSyncRandSeedC();
+	cs^=syncRandCs;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [4+t*20+p*2]
+		checkSumsList->push_back(syncRandCs);// [4+t*20+p*2]
 
-	cs^=script.checkSum();
+	cs=(cs<<31)|(cs>>1);
+	
+	Uint32 scriptCs=script.checkSum();
+	cs^=scriptCs;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5+t*20+p*2]
+		checkSumsList->push_back(scriptCs);// [5+t*20+p*2]
 	
 	return cs;
 }

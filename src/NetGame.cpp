@@ -888,7 +888,7 @@ Order *NetGame::getOrder(int playerNumber)
 			logFile=globalContainer->logFileManager->getFile("ChecksumUnits.log");
 			fprintf(logFile, "my checkSumsListForUnits at ustep=%d is:\n", executeUStep);
 			for (std::list<Uint32>::iterator csi=checkSumsListForUnits.begin(); csi!=checkSumsListForUnits.end(); csi++)
-				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+				fprintf(logFile, "[%3d] %d\n", ci++, (Sint32)*csi);
 			fflush(logFile);
 			
 			ci=0;
@@ -909,6 +909,8 @@ Order *NetGame::getOrder(int playerNumber)
 			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			fflush(logFile);
+			
+			dumpStats();
 			
 			assert(false);
 			for (int pi=0; pi<numberOfPlayer; pi++)
