@@ -364,11 +364,15 @@ bool Unit::step(void)
 		bool b=endOfAction();
 		if (performance[FLY])
 		{
-			owner->game->map.setMapDiscovered(posX-3, posY-3, 7, 7, owner->teamNumber);
-			owner->game->map.setMapBuldingsDiscovered(posX-3, posY-3, 7, 7, owner->teamNumber, owner->game->teams);
+			owner->game->map.setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
+			owner->game->map.setMapBuldingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
 		}
 		else
-			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->teamNumber);
+		{
+			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
+			owner->game->map.setMapBuldingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
+		}
+		
 		return b;
 	}
 	return false;

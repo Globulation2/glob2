@@ -162,13 +162,15 @@ public:
 	int getSectorH(void) { return hSector; }
 
 	//! Set map to discovered state at position (x,y) for team p
-	void setMapDiscovered(int x, int y, int p)
+	void setMapDiscovered(int x, int y, Uint32 sharedVision)
 	{
-		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))|=(1<<p);
-		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=(1<<p);
-		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=(1<<p);
+		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))|=sharedVision;
+		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=sharedVision;
+		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=sharedVision;
 	}
-	void setMapBuldingsDiscovered(int x, int y, int p, Team *teams[32])
+	
+	//! p is the index of the team who see this square
+	void setMapBuldingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[32])
 	{
 		Sint16 uid=(cases+w*(y&hMask)+(x&wMask))->unit;
 		if (uid<0 && uid!=NOUID)
@@ -179,15 +181,8 @@ public:
 			assert(id<512);
 			assert(team>=0);
 			assert(team<32);
-			teams[team]->myBuildings[id]->seenByMask|=(1<<p);
+			teams[team]->myBuildings[id]->seenByMask|=sharedVision;
 		}
-	}
-	//! Set map to undiscovered state at position (x,y) for the shared vision mask of team ps
-	void unsetMapDiscovered(int x, int y, int p)
-	{
-		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))&=~(1<<p);
-		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))&=~(1<<p);
-		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 	}
 	//! Returs true if map is discovered at position (x,y) for the shared vision mask of team ps
 	bool isMapDiscovered(int x, int y, int visionMask)
@@ -210,10 +205,8 @@ public:
 #endif
 	}
 	//! Set map to discovered state at rect (x,y) - (x+w, y+h) for team p
-	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }
-	void setMapBuldingsDiscovered(int x, int y, int w, int h, int p, Team *teams[32]) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapBuldingsDiscovered(dx, dy, p, teams); }
-	//! Set map to undiscovered state at rect (x,y) - (x+w, y+h) for team p
-	void unsetMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) unsetMapDiscovered(dx, dy, p); }
+	void setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, sharedVision); }
+	void setMapBuldingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[32]) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapBuldingsDiscovered(dx, dy, sharedVision, teams); }
 	//! Set all map to undiscovered state
 	void unsetMapDiscovered(void) { memset(mapDiscovered, 0, w*h*sizeof(Uint32)); }
 	// NOTE : unused now
