@@ -22,7 +22,7 @@
 
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 10
+#define VERSION_MINOR 11
 // version 10 added script saved in game
 
 #endif

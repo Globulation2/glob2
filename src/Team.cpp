@@ -127,12 +127,12 @@ Team::Team(Game *game)
 	init();
 }
 
-Team::Team(SDL_RWops *stream, Game *game)
+Team::Team(SDL_RWops *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
 {
 	this->game=game;
 	init();
-	bool success=load(stream, &(globalContainer->buildingsTypes));
+	bool success=load(stream, &(globalContainer->buildingsTypes), versionMinor);
 	assert(success);
 }
 
@@ -536,7 +536,7 @@ int Team::maxBuildLevel(void)
 	return maxLevel;
 }
 
-bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
+bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
 	int i;
 	assert(stream);
@@ -555,9 +555,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 
 		Uint32 isUsed=SDL_ReadBE32(stream);
 		if (isUsed)
-		{
 			myUnits[i]=new Unit(stream, this);
-		}
 		else
 			myUnits[i]=NULL;
 	}
@@ -573,7 +571,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 		Uint32 isUsed=SDL_ReadBE32(stream);
 		if (isUsed)
 		{
-			myBuildings[i]=new Building(stream, buildingstypes, this);
+			myBuildings[i]=new Building(stream, buildingstypes, this, versionMinor);
 			if (myBuildings[i]->type->unitProductionTime)
 				swarms.push_front(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
@@ -638,33 +636,29 @@ void Team::save(SDL_RWops *stream)
 	BaseTeam::save(stream);
 
 	// saving team
+	for (int i=0; i< 1024; i++)
 	{
-		for (int i=0; i< 1024; i++)
+		if (myUnits[i])
 		{
-			if (myUnits[i])
-			{
-				SDL_WriteBE32(stream, true);
-				myUnits[i]->save(stream);
-			}
-			else
-			{
-				SDL_WriteBE32(stream, false);
-			}
+			SDL_WriteBE32(stream, true);
+			myUnits[i]->save(stream);
+		}
+		else
+		{
+			SDL_WriteBE32(stream, false);
 		}
 	}
 
+	for (int i=0; i<512; i++)
 	{
-		for (int i=0; i<512; i++)
+		if (myBuildings[i])
 		{
-			if (myBuildings[i])
-			{
-				SDL_WriteBE32(stream, true);
-				myBuildings[i]->save(stream);
-			}
-			else
-			{
-				SDL_WriteBE32(stream, false);
-			}
+			SDL_WriteBE32(stream, true);
+			myBuildings[i]->save(stream);
+		}
+		else
+		{
+			SDL_WriteBE32(stream, false);
 		}
 	}
 	/*for (int i=0; i<256; i++)
@@ -681,19 +675,15 @@ void Team::save(SDL_RWops *stream)
 	} */
 	
 	// save cross reference
+	for (int i=0; i< 1024; i++)
 	{
-		for (int i=0; i< 1024; i++)
-		{
-			if (myUnits[i])
-				myUnits[i]->saveCrossRef(stream);
-		}
+		if (myUnits[i])
+			myUnits[i]->saveCrossRef(stream);
 	}
+	for (int i=0; i<512; i++)
 	{
-		for (int i=0; i<512; i++)
-		{
-			if (myBuildings[i])
-				myBuildings[i]->saveCrossRef(stream);
-		}
+		if (myBuildings[i])
+			myBuildings[i]->saveCrossRef(stream);
 	}
 
 	SDL_WriteBE32(stream, allies);

@@ -78,12 +78,12 @@ public:
 	};
 public:
 	Team(Game *game);
-	Team(SDL_RWops *stream, Game *game);
+	Team(SDL_RWops *stream, Game *game, Sint32 versionMinor);
 
 	virtual ~Team(void);
 
 	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
-	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
+	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).

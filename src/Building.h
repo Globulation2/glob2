@@ -105,11 +105,11 @@ public:
 	Sint32 closestRessourceX[NB_RESSOURCES], closestRessourceY[NB_RESSOURCES];
 
 public:
-	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner);
+	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, int uid, int typeNum, Team *team, BuildingsTypes *types);
 	virtual ~Building(void) { }
 	
-	void load(SDL_RWops *stream, BuildingsTypes *types, Team *owner);
+	void load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	void loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner);
 	void saveCrossRef(SDL_RWops *stream);
