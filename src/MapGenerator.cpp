@@ -773,28 +773,25 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		bool dirUsed[8];
 		for (int i=0; i<8; i++)
 			dirUsed[i]=false;
-		int ressOrder[8];
+		int ressOrder[4];
 		ressOrder[0]=CORN;
 		ressOrder[1]=WOOD;
 		ressOrder[2]=STONE;
-		ressOrder[3]=PAPYRUS;
-		ressOrder[4]=CORN;
+		ressOrder[3]=CORN;
 		
-		int distWeight[8];
+		int distWeight[4];
 		distWeight[0]=1;
 		distWeight[1]=1;
 		distWeight[2]=1;
-		distWeight[3]=1;
-		distWeight[4]=1;
+		distWeight[3]=2;
 		
-		int widthWeight[8];
+		int widthWeight[4];
 		widthWeight[0]=1;
 		widthWeight[1]=1;
 		widthWeight[2]=1;
-		widthWeight[3]=1;
-		widthWeight[4]=1;
+		widthWeight[3]=2;
 		
-		for (int resi=0; resi<=4; resi++)
+		for (int resi=0; resi<4; resi++)
 		{
 			int ress=ressOrder[resi];
 			int maxDir=0;
@@ -806,7 +803,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 					int width=0;
 					int dx, dy, dist;
 					Unit::dxdyfromDirection(dir, &dx, &dy);
-					for (dist=0; dist<limiteDist; dist++)
+					for (dist=5; dist<limiteDist; dist++)
 						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
 							width++;
 						else if (width>3)
@@ -1418,21 +1415,20 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, 5);
+		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+0, 5);
+		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
-		assert(good);
+		if (!good)
+			return false;
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
 		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], s, typeNum);
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
-		{
-			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0);
-			if (u==NULL)
+			if (addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0)==NULL)
 				return false;
-			assert(u);
-		}
 		teams[s]->createLists();
 	}
 	return true;
