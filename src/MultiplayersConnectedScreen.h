@@ -51,8 +51,7 @@ private:
 public:
 	MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin);
 	virtual ~MultiplayersConnectedScreen();
-	void paint(int x, int y, int w, int h);
-
+	
 	void onTimer(Uint32 tick);
 
 	void onSDLEvent(SDL_Event *event);

@@ -55,16 +55,6 @@ MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
 	//do not delete multiplayersJoin
 }
 
-void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-
-	multiplayersJoin->sessionInfo.draw(gfxCtx);
-
-	addUpdateRect();
-}
-
-
 void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 {
 	assert(multiplayersJoin);
@@ -80,7 +70,9 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 
 	if ((timeCounter++ % 10)==0)
 	{
-		dispatchPaint(gfxCtx);
+		gfxCtx->drawFilledRect(0, 40, gfxCtx->getW(), 170, 0, 0, 0);
+		multiplayersJoin->sessionInfo.draw(gfxCtx);
+		addUpdateRect(0, 40, gfxCtx->getW(), 170);
 		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
 		{
 			char s[128];
@@ -89,6 +81,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			startTimer->setText(s);
 		}
 	}
+	
 	bool isFileMapDownload=multiplayersJoin->isFileMapDownload(progress);
 	if (lastProgress!=progress)
 	{
