@@ -1237,14 +1237,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	//if (false)
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
-				if (map.getForbidden(x+viewportX, y+viewportY))
+				//if (map.getForbidden(x+viewportX, y+viewportY))
 				{
-					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
-					globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
+					if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
+						globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
 					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
-					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
-					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 				}
 	
 	// We draw debug area:
@@ -1264,14 +1264,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->localGradient[1][lx+ly*32]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, "%d", lx);
 						//globalContainer->gfx->drawString((x<<5)+10, (y<<5)+10, globalContainer->littleFont, "%d", ly);
-						globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
-						globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
+						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
+						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
 					}
 	}
 	// We draw debug area:
-	if (false)
+	//if (false)
 	{
 		assert(teams[0]);
 		Building *b=teams[0]->myBuildings[0];
@@ -1282,8 +1282,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				for (int x=left-1; x<=right; x++)
 				{
 					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", b->globalGradient[1][x+viewportX+(y+viewportY)*w]);
-					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
-					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", (x+viewportX)&map.getMaskW());
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", (y+viewportY)&map.getMaskH());
 				}
 
 		}

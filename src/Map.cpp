@@ -1696,7 +1696,6 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
 	assert(building);
-	building->dirtyGlobalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
@@ -1738,12 +1737,12 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 		}
 	}
 
-	for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
+	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 		int x=(posX+wMask)&wMask;
 		int y=(posY+hMask)&hMask;
 		
-		for (int di=posW; di<=128; di+=2) //distance-iterator
+		for (int di=posW+1; di<=64; di+=2) //distance-iterator
 		{
 			for (int bi=0; bi<2; bi++) //back-iterator
 				for (int ai=0; ai<4; ai++) //angle-iterator
@@ -1948,7 +1947,6 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
-	
 }
 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
@@ -2044,11 +2042,11 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	if (gradient==NULL)
 	{
 		gradient=new Uint8[size];
+		printf("allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 		updateGlobalGradient(building, canSwim);
-		printf("w=%d, h=%d, size=%d.\n", w, h, size);
 	}
-	else if (!building->dirtyGlobalGradient[canSwim])
+	else
 	{
 		bool found=false;
 		Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
@@ -2081,6 +2079,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	bool found=false;
 	Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
 	if (max>1)
+	{
 		for (int sd=1; sd>=0; sd--)
 			for (int d=sd; d<8; d+=2)
 			{
@@ -2099,10 +2098,50 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				}
 			}
 
-	if (found)
-		return true;
+		if (found)
+			return true;
+		
+		for (int sd=1; sd>=0; sd--)
+			for (int d=sd; d<8; d+=2)
+			{
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				{
+					Uint8 g=gradient[((x+w+(ddx*2))&wMask)+w*((y+h+(ddy*2))&hMask)];
+					if (g>max)
+					{
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
+					}
+				}
+			}
+		
+		for (int sd=0; sd<=1; sd++)
+			for (int d=sd; d<8; d+=2)
+			{
+				int ddx, ddy;
+				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				{
+					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
+					if (g>=max)
+					{
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
+					}
+				}
+			}
+		
+		if (found)
+			return true;
+	}
 	
-	printf("global gradient to building gid=%d failed! p=(%d, %d)\n", building->gid, x, y);
+	printf("global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 	
 	return false;
 }
