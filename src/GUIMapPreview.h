@@ -40,7 +40,10 @@ public:
 	virtual void paint(DrawableSurface *gfx);
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const char *mapName=NULL);
-
+	//! Returns last map width
+	int getLastWidth(void) { return lastW; }
+	//! Returns last map height
+	int getLastHeight(void) { return lastH; }
 protected:
 	//! internal paint routine
 	void repaint(void);
@@ -49,6 +52,9 @@ protected:
 	const char *mapName;
 	//! position on widget on screen
 	int x, y;
+	//! map last size
+	int lastW, lastH;
+
 	//! internal copy of gfx pointer
 	DrawableSurface *gfx;
 };

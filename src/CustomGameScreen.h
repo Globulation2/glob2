@@ -42,7 +42,7 @@ private:
 	OnOffButton *isAI[8];
 	ColorButton *color[8];
 	Text *isAItext[8];
-	Text *mapName, *mapInfo, *mapVersion;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize;
 	bool validSessionInfo;
 
 public:

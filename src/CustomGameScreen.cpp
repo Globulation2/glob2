@@ -37,6 +37,8 @@ CustomGameScreen::CustomGameScreen()
 	addWidget(mapInfo);
 	mapVersion=new Text(440, 60+128+90, globalContainer->standardFont, "", 180);
 	addWidget(mapVersion);
+	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
+	addWidget(mapSize);
 
 	addWidget(ok);
 	addWidget(cancel);
@@ -91,6 +93,8 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				mapInfo->setText(textTemp);
 				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
+				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
+				mapSize->setText(textTemp);
 
 				int i, j;
 				int nbTeam=sessionInfo.numberOfTeam;
