@@ -114,7 +114,8 @@ public:
 
 private:
 	//! Serialized form of SessionInfo
-	char data[1976];
+	enum {DATA_SIZE=2488};
+	char data[DATA_SIZE];
 };
 
 #endif 

@@ -39,9 +39,7 @@ public:
 		P_LOCAL
 	};
 
-	enum {
-		MAX_NAME_LENGTH = 16
-	};
+	enum {MAX_NAME_LENGTH = 32};
 	
 	PlayerType type;
 	
@@ -85,7 +83,11 @@ public:
 		
 		PNS_BINDED,
 		PNS_SENDING_FIRST_PACKET,
-		PNS_HOST
+		PNS_HOST,
+		
+		// ai :
+		
+		PNS_AI
 	};
 	
 	PlayerNetworkState netState;
@@ -94,17 +96,17 @@ public:
 	int netTOTL; // Number of timeout allowed. TimeOut To Live
 
 private:
-	char data[44];	
+	char data[28+MAX_NAME_LENGTH];
 public:
 	
 	BasePlayer(void);
-	BasePlayer(Sint32 number, const char name[16], Sint32 teamn, PlayerType type);
+	BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamn, PlayerType type);
 	void init();
 	virtual ~BasePlayer(void);
 	void close(void);
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
-	bool load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
@@ -126,6 +128,7 @@ public:
 
 public:
 	bool destroyNet;
+	bool disableRecursiveDestruction;
 
 public:
 	void printNetState(char s[128]);
@@ -135,12 +138,15 @@ class Player:public BasePlayer
 {
 public:
 	Player();
-	Player(SDL_RWops *stream, Team *teams[32]);
-	Player(Sint32 number, const char name[16], Team *team, PlayerType type);
+	Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor);
+	Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type);
 	virtual ~Player(void);
 
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
-	bool load(SDL_RWops *stream, Team *teams[32]);
+	
+	void makeItAI();
+	
+	bool load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 public:

@@ -27,8 +27,7 @@ BasePlayer::BasePlayer()
 	init();
 };
 
-BasePlayer::BasePlayer(Sint32 number, const char name[16], Sint32 teamNumber, PlayerType type)
-
+BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamNumber, PlayerType type)
 {
 	init();
 	
@@ -41,7 +40,7 @@ BasePlayer::BasePlayer(Sint32 number, const char name[16], Sint32 teamNumber, Pl
 	setNumber(number);
 	setTeamNumber(teamNumber);
 	
-	memcpy(this->name, name, 16);
+	memcpy(this->name, name, MAX_NAME_LENGTH);
 
 	this->type=type;
 };
@@ -66,11 +65,14 @@ void BasePlayer::init()
 	destroyNet=true;
 	quitting=false;
 	quitStep=-1;
+	
+	disableRecursiveDestruction=false;
 }
 
 BasePlayer::~BasePlayer(void)
 {
-	close();
+	if (!disableRecursiveDestruction)
+		close();
 }
 
 void BasePlayer::close(void)
@@ -102,12 +104,18 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 	this->teamNumberMask=1<<teamNumber;
 };
 
-bool BasePlayer::load(SDL_RWops *stream)
+bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	type=(PlayerType)SDL_ReadBE32(stream);
 	number=SDL_ReadBE32(stream);
 	numberMask=SDL_ReadBE32(stream);
-	SDL_RWread(stream, name, 16, 1);
+	
+	printf("versionMinor=%d.\n", versionMinor);
+	if (versionMinor<4)
+		SDL_RWread(stream, name, 16, 1);
+	else
+		SDL_RWread(stream, name, MAX_NAME_LENGTH, 1);
+	
 	teamNumber=SDL_ReadBE32(stream);
 	teamNumberMask=SDL_ReadBE32(stream);
 
@@ -121,7 +129,7 @@ void BasePlayer::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, (Uint32)type);
 	SDL_WriteBE32(stream, number);
 	SDL_WriteBE32(stream, numberMask);
-	SDL_RWwrite(stream, name, 16, 1);
+	SDL_RWwrite(stream, name, MAX_NAME_LENGTH, 1);
 	SDL_WriteBE32(stream, teamNumber);
 	SDL_WriteBE32(stream, teamNumberMask);
 	
@@ -147,7 +155,7 @@ char *BasePlayer::getData()
 	addUint32(data, netHost, 20);
 	addUint32(data, netPort, 24);
 	
-	memcpy(data+28, name, 16);
+	memcpy(data+28, name, MAX_NAME_LENGTH);
 	return data;
 }
 
@@ -166,14 +174,14 @@ bool BasePlayer::setData(const char *data, int dataLength)
 	ip.host=newHost;
 	ip.port=newPort;
 	
-	memcpy(name, data+28, 16);
+	memcpy(name, data+28, MAX_NAME_LENGTH);
 	
 	return true;
 }
 
 int BasePlayer::getDataLength()
 {
-	return 44;
+	return (28+MAX_NAME_LENGTH);
 }
 
 Sint32 BasePlayer::checkSum()
@@ -474,14 +482,14 @@ Player::Player()
 	ai=NULL;
 }
 
-Player::Player(SDL_RWops *stream, Team *teams[32])
+Player::Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 :BasePlayer()
 {
-	bool sucess=load(stream, teams);
+	bool sucess=load(stream, teams, versionMinor);
 	assert(sucess);
 }
 
-Player::Player(Sint32 number, const char name[16], Team *team, PlayerType type)
+Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type)
 :BasePlayer(number, name, team->teamNumber, type)
 {
 	if (type==P_AI)
@@ -493,8 +501,11 @@ Player::Player(Sint32 number, const char name[16], Team *team, PlayerType type)
 
 Player::~Player()
 {
-	if (ai)
-		delete ai;
+	if (!disableRecursiveDestruction)
+	{
+		if (ai)
+			delete ai;
+	}
 }
 
 void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
@@ -505,7 +516,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	numberMask=initial->numberMask;
 	teamNumber=initial->teamNumber;
 	teamNumberMask=initial->teamNumberMask;
-	memcpy(this->name, initial->name, 16 );
+	memcpy(this->name, initial->name, MAX_NAME_LENGTH);
 
 	type=initial->type;
 	team=teams[this->teamNumber];
@@ -518,14 +529,26 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	channel=initial->channel;
 };
 
-bool Player::load(SDL_RWops *stream, Team *teams[32])
+void Player::makeItAI()
+{
+	if (ai)
+	{
+		delete ai;
+		ai=NULL;
+	}
+	type=P_AI;
+	ai=new AI(this);
+	assert(ai);
+}
+
+bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 {
 	// if AI, delete
 	if ((type==P_AI) && (ai))
 		delete ai;
 
 	// base player
-	bool success=BasePlayer::load(stream);
+	bool success=BasePlayer::load(stream, versionMinor);
 	if (!success)
 		return false;
 

@@ -53,6 +53,9 @@ private:
 	std::vector<OneStringToken *> strings;
 	int actlang;
 	int numberoflanguages;
+	
+public:
+	enum {AI_NAME_SIZE=4};
 };
 
 #endif

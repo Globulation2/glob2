@@ -34,7 +34,7 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton( 20, 340, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[settings]"), GAME_SETUP));
 	addWidget(new TextButton(340, 340, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[editor]"), EDITOR));
 	
-	addWidget(new TextButton(340, 420, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), QUIT));
+	addWidget(new TextButton(340, 420, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), QUIT, 27));
 
 	globalContainer->gfx->setClipRect();
 }

@@ -552,6 +552,30 @@ Version
 Version
 Version
 [open]
-Ouvert
-Open
-nicht geschlossen
+ouvert
+open
+offen
+[add AI]
+ajouter IA
+add AI
+ 
+[AI]
+IA
+AI
+-
+[AI name 1]
+Gros mechant
+Bag Guy
+Schlecht man
+[AI name 2]
+Destructeur
+Destroyer
+-
+[AI name 3]
+Born to pete la geule
+Ne pour beak your neck
+-
+[AI name 4]
+Cascouille
+Agressman
+-

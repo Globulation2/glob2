@@ -36,6 +36,8 @@ BaseTeam::BaseTeam()
 	colorPAD=0;
 	playersMask=0;
 	type=T_HUMAN;
+	
+	disableRecursiveDestruction=false;
 }
 
 bool BaseTeam::load(SDL_RWops *stream)
@@ -136,21 +138,24 @@ Team::Team(SDL_RWops *stream, Game *game)
 
 Team::~Team()
 {
-	int i;
-	for (i=0; i<1024; ++i)
+	if (!disableRecursiveDestruction)
 	{
-		if (myUnits[i])
-			delete myUnits[i];
-	}
-	for (i=0; i<512; ++i)
-	{
-		if (myBuildings[i])
-			delete myBuildings[i];
-	}
-	for (i=0; i<256; ++i)
-	{
-		if (myBullets[i])
-			delete myBuildings[i];
+		int i;
+		for (i=0; i<1024; ++i)
+		{
+			if (myUnits[i])
+				delete myUnits[i];
+		}
+		for (i=0; i<512; ++i)
+		{
+			if (myBuildings[i])
+				delete myBuildings[i];
+		}
+		for (i=0; i<256; ++i)
+		{
+			if (myBullets[i])
+				delete myBuildings[i];
+		}
 	}
 }
 

@@ -25,7 +25,7 @@
 SessionGame::SessionGame()
 {
 	versionMajor=0;
-	versionMinor=3;
+	versionMinor=4;
 	sessionInfoOffset=0;
 	gameOffset=0;
 	teamsOffset=0;
@@ -46,7 +46,7 @@ SessionGame::SessionGame(const SessionGame &sessionGame)
 void SessionGame::save(SDL_RWops *stream)
 {
 	versionMajor=0;
-	versionMinor=3;
+	versionMinor=4;
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);
@@ -116,11 +116,20 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 	assert(playerNumber>=0);
 	assert(playerNumber<numberOfPlayer);
 	*teamNumber=players[playerNumber].teamNumber;
-	char s[32];
-	players[playerNumber].printip(s);
-	char t[32];
-	players[playerNumber].printNetState(t);
-	snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
+	if (players[playerNumber].type==BasePlayer::P_IP)
+	{
+		char s[32];
+		players[playerNumber].printip(s);
+		char t[32];
+		players[playerNumber].printNetState(t);
+		snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
+	}
+	else if (players[playerNumber].type==BasePlayer::P_AI)
+	{
+		snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+	}
+	else
+		assert(false);
 }
 
 char *SessionGame::getData()
@@ -222,7 +231,7 @@ bool SessionInfo::load(SDL_RWops *stream)
 
 	
 	for (i=0; i<numberOfPlayer; ++i)
-		if(!players[i].load(stream))
+		if(!players[i].load(stream, versionMinor))
 			return false;
 
 	for (i=0; i<numberOfTeam; ++i)
@@ -251,12 +260,14 @@ char *SessionInfo::getData()
 
 	for (i=0; i<32; ++i)
 	{
+		assert(players[i].getDataLength()==60);
 		memcpy(l+data, players[i].getData(), players[i].getDataLength() );
 		l+=players[i].getDataLength();
 	}
 
 	for (i=0; i<32; ++i)
 	{
+		assert(team[i].getDataLength()==16);
 		memcpy(l+data, team[i].getData(), team[i].getDataLength() );
 		l+=team[i].getDataLength();
 	}
@@ -264,7 +275,7 @@ char *SessionInfo::getData()
 	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
 	l+=SessionGame::getDataLength();
 	
-	assert(l==1976);
+	assert(l==DATA_SIZE);
 	return data;
 }
 
@@ -303,7 +314,7 @@ bool SessionInfo::setData(const char *data, int dataLength)
 
 int SessionInfo::getDataLength()
 {
-	return (1976);
+	return DATA_SIZE;
 }
 
 Sint32 SessionInfo::checkSum()

@@ -23,11 +23,6 @@
 
 #include "PreparationGui.h"
 
-/*#include "GAG.h"
-#include "Race.h"
-#include "Session.h"
-#include "GUIMapPreview.h"*/
-
 class MultiplayersCrossConnectable:public SessionConnection
 {
 public:

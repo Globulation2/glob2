@@ -400,7 +400,7 @@ bool Game::load(SDL_RWops *stream)
 		SDL_RWseek(stream, tempSessionInfo.playersOffset , SEEK_SET);
 	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		players[i]=new Player(stream, teams);
+		players[i]=new Player(stream, teams, session.versionMinor);
 	}
 	stepCounter=SDL_ReadBE32(stream);
 
@@ -431,11 +431,13 @@ void Game::save(SDL_RWops *stream)
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
 		tempSessionInfo.team[i]=*teams[i];
+		tempSessionInfo.team[i].disableRecursiveDestruction=true;
 	}
 
 	for (i=0; i<session.numberOfPlayer; ++i)
 	{
 		tempSessionInfo.players[i]=*players[i];
+		tempSessionInfo.players[i].disableRecursiveDestruction=true;
 	}
 	
 	tempSessionInfo.save(stream);

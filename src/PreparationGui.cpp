@@ -29,10 +29,8 @@
 SessionConnection::SessionConnection()
 {
 	validSessionInfo=false;
-	{
-		for (int i=0; i<32; i++)
-			crossPacketRecieved[i]=0;
-	}
+	for (int i=0; i<32; i++)
+		crossPacketRecieved[i]=0;
 
 	socket=NULL;
 	destroyNet=true;

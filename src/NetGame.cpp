@@ -965,136 +965,133 @@ void NetGame::step(void)
 			delete order;
 		}
 		// we look for any usefull drop:
+		
+		for (int p=0; p<numberOfPlayer; p++)
 		{
-			for (int p=0; p<numberOfPlayer; p++)
+			countDown[p]++;
+			if (countDown[p]%10==0)
+				printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
+			int s;
+			if (nextUnrecievedStep(currentStep, p, &s))
 			{
-				countDown[p]++;
-				if(countDown[p]%10==0)
-					printf("countDown[%d]=%d, type=%d\n", p, countDown[p], players[p]->type);
-				int s;
-				if (nextUnrecievedStep(currentStep, p, &s))
+				if (((players[p]->type==BasePlayer::P_IP)||(players[p]->type==BasePlayer::P_LOST_A))&&(countDown[p]>COUNT_DOWN_DEATH))
 				{
-					if (((players[p]->type==BasePlayer::P_IP)||(players[p]->type==BasePlayer::P_LOST_A))&&(countDown[p]>COUNT_DOWN_DEATH))
+					Uint32 stayMask=0; // the mask of staying players
+
+					stayMask=1<<localPlayerNumber;
+
+					for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
+							if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&(eachPlayer!=p))
+								stayMask|=1<<eachPlayer;
+
+
+					if (stayingPlayersMask[localPlayerNumber])
 					{
-						Uint32 stayMask=0; // the mask of staying players
-						
-						stayMask=1<<localPlayerNumber;
-						
-						for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
-								if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&(eachPlayer!=p))
-									stayMask|=1<<eachPlayer;
-						
-						
-						if (stayingPlayersMask[localPlayerNumber])
+						stayMask&=stayingPlayersMask[localPlayerNumber];
+						stayingPlayersMask[localPlayerNumber]=stayMask;
+					}
+
+
+					int nbipp=0; // Number Of IP players
+					Uint32 pm=1;
+
+					for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
+					{
+						printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
+						if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
 						{
-							stayMask&=stayingPlayersMask[localPlayerNumber];
+							printf("m: player %d stay.\n", eachPlayer);
+							nbipp++;
+						}
+						pm=pm<<1;
+					}
+
+					printf("ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
+
+					if (nbipp>0)
+					{
+						Order *order=new DroppingPlayerOrder(stayMask, STARTING_DROPPING_PROCESS);
+
+						for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+							if ((players[eachPlayer]->type==BasePlayer::P_IP)&&(eachPlayer!=p))
+								sendMyOrderThroughUDP(order, -1, eachPlayer, lastReceivedFromHim[eachPlayer]);
+
+						delete order;
+
+						if (dropState==NO_DROP_PROCESSING)
+						{
+							{
+								for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+									stayingPlayersMask[eachPlayer]=0;
+							}
+
+							dropState=ONE_STAY_MASK_RECIEVED;
+
+							{
+								for (int pl=0; pl<numberOfPlayer; pl++)
+									for (int q=0; q<numberOfPlayer; q++)
+										lastAviableStep[pl][q]=-1;
+							}
+
 							stayingPlayersMask[localPlayerNumber]=stayMask;
 						}
-						
-						
-						int nbipp=0; // Number Of IP players
-						Uint32 pm=1;
-						
-						for (int eachPlayer=0; eachPlayer<numberOfPlayer; ++eachPlayer)
+						else
 						{
-							printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
-							if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
+
+							Uint32 nspm;// New staying player mask
+							nspm=stayingPlayersMask[localPlayerNumber] & stayMask;
+							stayingPlayersMask[localPlayerNumber]=nspm;
+							Uint32 pm=1;
+							int nbipp=0; //Number of IP players
+
+							for (int pl=0; pl<numberOfPlayer; pl++)
 							{
-								printf("m: player %d stay.\n", eachPlayer);
-								nbipp++;
+								if (pm&nspm)
+									nbipp++;
+								pm=pm<<1;
 							}
-							pm=pm<<1;
-						}
-						
-						printf("ordering new drop, p=%d, stayMask=%x(%d), nbipp=%d.\n", p, stayMask, stayMask, nbipp);
-						
-						if (nbipp>0)
-						{
-							Order *order=new DroppingPlayerOrder(stayMask, STARTING_DROPPING_PROCESS);
 
-							for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-								if ((players[eachPlayer]->type==BasePlayer::P_IP)&&(eachPlayer!=p))
-									sendMyOrderThroughUDP(order, -1, eachPlayer, lastReceivedFromHim[eachPlayer]);
 
-							delete order;
-							
-							if (dropState==NO_DROP_PROCESSING)
+							if (nbipp<2)
 							{
-								{
-									for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-										stayingPlayersMask[eachPlayer]=0;
-								}
-								
-								dropState=ONE_STAY_MASK_RECIEVED;
+								printf("We finally drop all IP player\n");
 
-								{
-									for (int pl=0; pl<numberOfPlayer; pl++)
-										for (int q=0; q<numberOfPlayer; q++)
-											lastAviableStep[pl][q]=-1;
-								}
-								
-								stayingPlayersMask[localPlayerNumber]=stayMask;
-							}
-							else
-							{
-								
-								Uint32 nspm;// New staying player mask
-								nspm=stayingPlayersMask[localPlayerNumber] & stayMask;
-								stayingPlayersMask[localPlayerNumber]=nspm;
-								Uint32 pm=1;
-								int nbipp=0; //Number of IP players
-								
 								for (int pl=0; pl<numberOfPlayer; pl++)
-								{
-									if (pm&nspm)
-										nbipp++;
-									pm=pm<<1;
-								}
-								
-								
-								if (nbipp<2)
-								{
-									printf("We finally drop all IP player\n");
-									
-									for (int pl=0; pl<numberOfPlayer; pl++)
-										if ((players[pl]->type==Player::P_LOST_A)||(players[pl]->type==Player::P_IP))
-											players[pl]->type=Player::P_LOST_B;
+									if ((players[pl]->type==Player::P_LOST_A)||(players[pl]->type==Player::P_IP))
+										players[pl]->type=Player::P_LOST_B;
 
-									for (int si=0; si<queueSize; si++)
-									{
-										checkSumsLocal[si]=0;
-										checkSumsRemote[si]=0;
-										}
-									
-									
-									dropState=NO_DROP_PROCESSING;
-								}
-								
+								for (int si=0; si<queueSize; si++)
+								{
+									checkSumsLocal[si]=0;
+									checkSumsRemote[si]=0;
+									}
+
+
+								dropState=NO_DROP_PROCESSING;
 							}
-							//printf("Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
+
 						}
-						else if (nbipp==0)
+						//printf("Player %d have to die, because step %d is still not here. (sm=%x)\n", p, s, stayMask);
+					}
+					else if (nbipp==0)
+					{
+						printf("We drop last IP player %d\n", p);
+
+						players[p]->type=Player::P_LOST_B;
+
+						dropState=NO_DROP_PROCESSING;
+						for (int i=0; i<queueSize; i++)
 						{
-							printf("We drop last IP player %d\n", p);
-							
-							players[p]->type=Player::P_LOST_B;
-							
-							dropState=NO_DROP_PROCESSING;
-							for (int i=0; i<queueSize; i++)
-							{
-								checkSumsLocal[i]=0;
-								checkSumsRemote[i]=0;
-							}
+							checkSumsLocal[i]=0;
+							checkSumsRemote[i]=0;
 						}
 					}
 				}
 			}
-			//else if (dropState==ONE_STAY_MASK_RECIEVED)
-			{
-				
-			}
-			
-			
+		}
+		//else if (dropState==ONE_STAY_MASK_RECIEVED)
+		{
+
 		}
 	}
 
