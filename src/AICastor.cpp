@@ -2341,7 +2341,7 @@ void AICastor::computeWorkRangeMap()
 		}
 	}
 	
-	map->updateGlobalGradient(gradient);
+	updateGlobalGradient(gradient);
 }
 
 
@@ -3051,6 +3051,139 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 						max=side[i];
 				if (max==0)
 					gradient[wy+x]=0;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+}
+
+void AICastor::updateGlobalGradient(Uint8 *gradient)
+{
+	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
+	
+	int w=map->w;
+	int h=map->h;
+	int hMask=map->hMask;
+	int wMask=map->wMask;
+	//int hDec=map->hDec;
+	int wDec=map->wDec;
+	
+	for (int yi=0; yi<h; yi++)
+	{
+		int wy=((yi&hMask)<<wDec);
+		int wyu=(((yi-1)&hMask)<<wDec);
+		for (int xi=yi; xi<(yi+w); xi++)
+		{
+			int x=xi&wMask;
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				int xl=(x-1)&wMask;
+				int xr=(x+1)&wMask;
+
+				Uint8 side[4];
+				side[0]=gradient[wyu+xl];
+				side[1]=gradient[wyu+x ];
+				side[2]=gradient[wyu+xr];
+				side[3]=gradient[wy +xl];
+				max++;
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+	
+	for (int y=hMask; y>=0; y--)
+	{
+		int wy=(y<<wDec);
+		int wyd=(((y+1)&hMask)<<wDec);
+		for (int xi=y; xi<(y+w); xi++)
+		{
+			int x=xi&wMask;
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				int xl=(x-1)&wMask;
+				int xr=(x+1)&wMask;
+
+				Uint8 side[4];
+				side[0]=gradient[wyd+xr];
+				side[1]=gradient[wyd+x ];
+				side[2]=gradient[wyd+xl];
+				side[3]=gradient[wy +xl];
+				max++;
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+	
+	for (int x=0; x<w; x++)
+	{
+		int xl=(x-1)&wMask;
+		for (int yi=x; yi<(x+h); yi++)
+		{
+			int wy=((yi&hMask)<<wDec);
+			int wyu=(((yi-1)&hMask)<<wDec);
+			int wyd=(((yi+1)&hMask)<<wDec);
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				Uint8 side[4];
+				side[0]=gradient[wyu+xl];
+				side[1]=gradient[wyd+xl];
+				side[2]=gradient[wy +xl];
+				side[3]=gradient[wyu+x ];
+				max++;
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
+				else
+					gradient[wy+x]=max-1;
+			}
+		}
+	}
+
+	for (int x=wMask; x>=0; x--)
+	{
+		int xr=(x+1)&wMask;
+		for (int yi=x; yi<(x+h); yi++)
+		{
+			int wy=((yi&hMask)<<wDec);
+			int wyu=(((yi-1)&hMask)<<wDec);
+			int wyd=(((yi+1)&hMask)<<wDec);
+			Uint8 max=gradient[wy+x];
+			if (max && max!=255)
+			{
+				Uint8 side[4];
+				side[0]=gradient[wyu+xr];
+				side[1]=gradient[wy +xr];
+				side[2]=gradient[wyd+xr];
+				side[3]=gradient[wyu+x ];
+				max++;
+
+				for (int i=0; i<4; i++)
+					if (side[i]>max)
+						max=side[i];
+				if (max==1)
+					gradient[wy+x]=1;
 				else
 					gradient[wy+x]=max-1;
 			}
