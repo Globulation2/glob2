@@ -1186,6 +1186,10 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		rp->amount=r.amount+1;
 		return true;
 	}
+	else
+	{
+		rp->amount=r.amount-1;
+	}
 	return false;
 }
 
