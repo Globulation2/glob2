@@ -231,7 +231,7 @@ void YOGClient::send(const Message &m)
 	if (rv!=1)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
-	lprintf("size=%d, m.textLength=%d, m.userNameLength=%d.\n", size, m.textLength, m.userNameLength);
+	lprintf("Sent a  Message to (%s), size=%d, m.textLength=%d, m.userNameLength=%d.\n", userName, size, m.textLength, m.userNameLength);
 }
 
 void YOGClient::send(PrivateReceipt &privateReceipt)
@@ -267,7 +267,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 	
-	lprintf("Sent a YMT_PRIVATE_RECEIPT. size=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", size, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
+	lprintf("Sent a YMT_PRIVATE_RECEIPT to (%s). size=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", userName, size, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
 }
 
 void YOGClient::sendGames()
@@ -358,7 +358,7 @@ void YOGClient::deliveredMessage(Uint8 messageID)
 	std::list<Message>::iterator mit=messages.begin();
 	if (mit->messageID==messageID)
 	{
-		lprintf("message (%s) delivered to (%s)\n", mit->text, userName);
+		lprintf("message (%s) delivered to (%s), (messageID=%d)\n", mit->text, userName, messageID);
 		if (size>1)
 			messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		messages.erase(mit);

@@ -64,12 +64,12 @@ YOG::YOG(LogFileManager *logFileManager)
 	
 	uid=0;
 	
-	if (logFileManager)
+	/*if (logFileManager)
 	{
 		logFile=logFileManager->getFile("YOG.log");
 		assert(logFile);
 	}
-	else
+	else*/
 		logFile=stdout;
 	fprintf(logFile, "new YOG");
 	
@@ -277,6 +277,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (mit->messageID==messageID)
 			{
 				already=true;
+				fprintf(logFile, "Message (%s) already received, (messageID=%d)\n", mit->text, messageID);
 				break;
 			}
 		if (!already)
@@ -304,9 +305,10 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			m.userNameLength=l;
 			
 			for (std::list<Message>::iterator mit=recentlyReceivedMessages.begin(); mit!=recentlyReceivedMessages.end(); ++mit)
-				if (mit->messageID==messageID && (strncmp(m.text, mit->text, m.textLength)==0))
+				if ((mit->messageID==messageID) && (strncmp(m.text, mit->text, m.textLength)==0))
 				{
 					already=true;
+					fprintf(logFile, "Message (%s) already recently received, (messageID=%d)\n", mit->text, messageID);
 					break;
 				}
 			if (!already)
@@ -562,7 +564,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_HOST_GAME_SOCKET:
 	{
-		hostGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+		hostGameSocketTimeout=MAX_NETWORK_TIMEOUT;
 		hostGameSocketTOTL=3;
 		hostGameSocketReceived=true;
 		fprintf(logFile, "hostGameSocketReceived\n");
@@ -570,7 +572,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_JOIN_GAME_SOCKET:
 	{
-		joinGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+		joinGameSocketTimeout=MAX_NETWORK_TIMEOUT;
 		joinGameSocketTOTL=3;
 		joinGameSocketReceived=true;
 		fprintf(logFile, "joinGameSocketReceived\n");
@@ -807,7 +809,9 @@ bool YOG::enableConnection(const char *userName)
 	yogGlobalState=YGS_CONNECTING;
 	externalStatusState=YESTS_CONNECTING;
 	sendingMessages.clear();
+	recentlySentMessages.clear();
 	receivedMessages.clear();
+	recentlyReceivedMessages.clear();
 	lastMessageID=0;
 	
 	connectionTimeout=0+4;//4 instead of 0 to share brandwith with others timouts
@@ -1032,7 +1036,7 @@ void YOG::step()
 			if (hostGameSocketTOTL--<=0)
 				fprintf(logFile, "Unable to deliver the hostGameSocket to YOG!\n"); // TODO!
 			if (hostGameSocketReceived || hostGameSocketTOTL<=0)
-				hostGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+				hostGameSocketTimeout=MAX_NETWORK_TIMEOUT;
 			else
 				hostGameSocketTimeout=DEFAULT_NETWORK_TIMEOUT;
 				
@@ -1063,7 +1067,7 @@ void YOG::step()
 			if (joinGameSocketTOTL--<=0)
 				fprintf(logFile, "Unable to deliver the joinGameSocket to YOG!\n"); // TODO!
 			if (joinGameSocketReceived || joinGameSocketTOTL<=0)
-				joinGameSocketTimeout=LONG_NETWORK_TIMEOUT;
+				joinGameSocketTimeout=MAX_NETWORK_TIMEOUT;
 			else
 				joinGameSocketTimeout=DEFAULT_NETWORK_TIMEOUT;
 			fprintf(logFile, "Sending the joinGameSocket to YOG (selectedGame=%d)...\n", selectedGame);
