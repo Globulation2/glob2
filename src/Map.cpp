@@ -3025,7 +3025,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
-	//printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
+	printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
 	
 	int bx=building->posX;
 	int by=building->posY;
@@ -3045,6 +3045,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	if (currentg==1 && building->localRessourcesCleanTime++<7) 
 	{
 		// We wait a bit and avoid immediate recalculation, because there is probably no ressources.
+		printf("...pathfindedLocalRessource v0 failure waiting\n");
 		pathfindLocalRessourceCountWait++;
 		return false;
 	}
@@ -3083,7 +3084,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			if (found)
 			{
 				pathfindLocalRessourceCountSuccessBase++;
-				//printf("...pathfindedLocalRessource v1\n");
+				printf("...pathfindedLocalRessource v1\n");
 				return true;
 			}
 			else
@@ -3091,7 +3092,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 				*dx=0;
 				*dy=0;
 				pathfindLocalRessourceCountSuccessLocked++;
-				//printf("...pathfindedLocalRessource v2 locked\n");
+				printf("...pathfindedLocalRessource v2 locked\n");
 				return true;
 			}
 		}
@@ -3107,7 +3108,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	if (currentg==1)
 	{
 		pathfindLocalRessourceCountFailureNone++;
-		//printf("...pathfindedLocalRessource v3 No ressource\n");
+		printf("...pathfindedLocalRessource v3 No ressource\n");
 		return false;
 	}
 	else if ((currentg!=0) && (currentg!=255))
@@ -3144,7 +3145,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			if (found)
 			{
 				pathfindLocalRessourceCountSuccessUpdate++;
-				//printf("...pathfindedLocalRessource v3\n");
+				printf("...pathfindedLocalRessource v3\n");
 				return true;
 			}
 			else
@@ -3152,7 +3153,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 				*dx=0;
 				*dy=0;
 				pathfindLocalRessourceCountSuccessUpdateLocked++;
-				//printf("...pathfindedLocalRessource v4 locked\n");
+				printf("...pathfindedLocalRessource v4 locked\n");
 				return true;
 			}
 		}
