@@ -39,6 +39,7 @@
 #define DEFAULT_NETWORK_TOTL 3
 #endif
 
+// Max packet size for reception in game setup
 #define MAX_PACKET_SIZE 4096
 
 #define NET_PROTOCOL_VERSION 14
