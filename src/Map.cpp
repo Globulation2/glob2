@@ -784,7 +784,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	fogOfWar=fogOfWarA;
 	
-	localForbiddenMap.resize(size, 0xFFFFFFFF);
+	localForbiddenMap.resize(size, 0xFF);
 	
 	cases=new Case[size];
 
@@ -858,7 +858,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	fogOfWar=fogOfWarA;
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
-	localForbiddenMap.resize(size, 0xFFFFFFFF);
+	localForbiddenMap.resize(size, 0xFF);
 
 	cases=new Case[size];
 
@@ -1119,6 +1119,16 @@ void Map::switchFogOfWar(void)
 		fogOfWar=fogOfWarB;
 	else
 		fogOfWar=fogOfWarA;
+}
+
+void Map::computeLocalForbidden(int localTeamNo)
+{
+	int localTeamMask = 1<<localTeamNo;
+	for (size_t i=0; i<size; i++)
+	{
+		if ((cases[i].forbidden & localTeamMask) != 0)
+			localForbiddenMap[i] = 0xFF;
+	}
 }
 
 void Map::setForbiddenCircularArea(int x, int y, int r, Uint32 me)
