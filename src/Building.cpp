@@ -792,38 +792,87 @@ void Building::subscribeForWorkingStep()
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int minValue=owner->game->map.getW()*owner->game->map.getW();
-			Unit *u=NULL;
+			Unit *choosen=NULL;
+			Map &map=owner->game->map;
+			/* To choos a good unit, we get a composition of things:
+			1-the closest the unit is, the better it is.
+			2-the less the unit is hungry, the better it is.
+			3-if the unit has a needed ressource, this is better.
+			4-if the unit as a not needed ressource, this is worse.
+			5-if the unit is close of a needed ressource, this is better
+			*/
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
-				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				Unit *unit=(*it);
+				int r=unit->caryedRessource;
+				int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+				int x=unit->posX;
+				int y=unit->posY;
+				hungry*=hungry;
+				if ((r>=0)&& neededRessource(r))
 				{
-					/* To choos a good unit, we get a composition of things:
-					1-the closest the unit is, the better it is.
-					  (Notice that the distance factor is at square.)
-					2-the less the unit is hungry, the better it is.
-					3-if the unit has a needed ressource, this is better.
-					4-if the unit as a not needed ressource, this is worse.
-					5-if the unit is close of a needed ressource, this is better
-					*/
-					int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					int hungry=(*it)->hungry/(*it)->race->unitTypes[0][0].hungryness;
-					//zzz TODO: compute ressource factor.
-					int value=dist+hungry;
+					int dist=owner->game->map.warpDistSquare(x, y, posX, posY);
+					int value=dist-hungry;
+					//printf("d(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
+					unit->destinationPurprose=r;
 					if (value<minValue)
 					{
 						minValue=value;
-						u=*it;
+						choosen=unit;
 					}
 				}
 			}
-			if (u)
+			
+			if (choosen==NULL)
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					Unit *unit=(*it);
+					int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int x=unit->posX;
+					int y=unit->posY;
+					int dx, dy;
+					int r;
+					if (map.nearestRessource(x, y, &(RessourceType)r, &dx, &dy)&& neededRessource(r))
+					{
+						int dist=owner->game->map.warpDistSquare(dx, dy, posX, posY);
+						dist+=(x-dx)*(x-dx)+(y-dy)*(y-dy);
+						int value=dist-hungry;
+						//printf("i(%x) dist=%d, hungry=%d, value=%d, r=%d.\n", (int)unit, dist, hungry, value, r);
+						unit->destinationPurprose=r;
+						if (value<minValue)
+						{
+							minValue=value;
+							choosen=unit;
+						}
+					}
+				}
+			
+			if (choosen==NULL)
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					Unit *unit=(*it);
+					int hungry=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int dist=owner->game->map.warpDistSquare(unit->posX, unit->posY, posX, posY);
+					int value=dist-hungry;
+					//printf("u(%x) dist=%d, hungry=%d, value=%d\n", (int)unit, dist, hungry, value);
+					if (value<minValue)
+					{
+						minValue=value;
+						choosen=unit;
+					}
+				}
+			
+			if (choosen)
 			{
-				unitsWorkingSubscribe.remove(u);
-				unitsWorking.push_back(u);
-				u->unsubscribed();
-				
-				// Find the most suitable job for 
-				// zzz
-				
+				//printf("f(%x) choosen.\n", (int)choosen);
+				unitsWorkingSubscribe.remove(choosen);
+				unitsWorking.push_back(choosen);
+				choosen->unsubscribed();
+				if (!neededRessource(choosen->destinationPurprose))
+				{
+					assert(false);
+					choosen->destinationPurprose=neededRessource();
+				}
 				update();
 			}
 		}

@@ -282,26 +282,89 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 	return b;
 }
 
-Building *Team::findBestJob(int x, int y, Abilities ability, int actLevel)
+Building *Team::findBestConstruction(Unit *unit)
 {
-	Building *b=NULL;
+	Building *choosen=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
+	
+	int x=unit->posX;
+	int y=unit->posY;
+	int r=unit->caryedRessource;
+	int actLevel=unit->level[HARVEST];
+	Map &map=game->map;
+	
+	if (r==-1)
 	{
-		if ((*it)->type->level<=actLevel)
+		int dx, dy;
+		if (map.nearestRessource(x, y, &(RessourceType)r, &dx, &dy))
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			int maxUnitWorking=(*it)->maxUnitWorking;
-			newDist+=maxUnitWorking*maxUnitWorking;
-			if ( newDist<dist )
+			// Ressouce "r" is aviable around here.
+			// I'll try to find a building who need this ressouce.
+			//int addedDist=sqr(x-dx)+sqr(y-dy);
+			
+			for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
 			{
-				b=*it;
+				Building *building=(*it);
+				if ((building->type->level<=actLevel)&&(building->neededRessource(r)))
+				{
+					newDist=distSquare(building->getMidX(), building->getMidY(), dx, dy);
+					int maxUnitWorking=building->maxUnitWorking;
+					newDist-=maxUnitWorking*maxUnitWorking;
+					if (newDist<dist)
+					{
+						choosen=building;
+						dist=newDist;
+					}
+				}
+			}
+			
+			if (choosen)
+				return choosen;
+		}
+	}
+	else
+	{
+		// I'm already carying a ressource:
+		// I'll only go to a building who need this ressource, if possible.
+		for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
+		{
+			Building *building=(*it);
+			if ((building->type->level<=actLevel)&&(building->neededRessource(r)))
+			{
+				newDist=distSquare(building->getMidX(), building->getMidY(), x, y);
+				int maxUnitWorking=building->maxUnitWorking;
+				newDist-=maxUnitWorking*maxUnitWorking;
+				if (newDist<dist)
+				{
+					choosen=building;
+					dist=newDist;
+				}
+			}
+		}
+		
+		if (choosen)
+			return choosen;
+	}
+	
+	// Ehanced ways to find a building has failed, choose any building aviable
+	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
+	{
+		Building *building=(*it);
+		if (building->type->level<=actLevel)
+		{
+			newDist=distSquare(building->getMidX(), building->getMidY(), x, y);
+			int maxUnitWorking=building->maxUnitWorking;
+			newDist-=maxUnitWorking*maxUnitWorking;
+			if (newDist<dist)
+			{
+				choosen=building;
 				dist=newDist;
 			}
 		}
 	}
-	return b;
+	
+	return choosen;
 }
 
 Building *Team::findNearestAttract(int x, int y, Abilities ability)

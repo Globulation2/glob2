@@ -33,7 +33,7 @@ public:
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(DrawableSurface *gfx);
 	virtual void setText(const char *newText);
-	virtual const char *getText(void) { return text; }
+	virtual /*const*/ char *getText(void) { return text; }
 
 protected:
 	int x, y, w, h;

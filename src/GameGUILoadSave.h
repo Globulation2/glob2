@@ -27,7 +27,7 @@
 class InGameLoadSaveScreen:public InGameScreen
 {
 public:
-	const char *fileName;
+	/*const*/ char *fileName;
 
 private:
 	List *fileList;
