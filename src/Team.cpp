@@ -260,22 +260,29 @@ Building *Team::findBestFoodable(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	int r=unit->caryedRessource;
+	int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+	bool canSwim=unit->performance[SWIM];
+	
 	if (r!=-1)
 	{
 		// I'm already carying a ressource:
 		// I'll only go to a building who need this ressource, if possible.
 		Building *choosen=NULL;
-		float score=FLT_MAX;
+		double score=DBL_MAX;
 		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 		{
 			Building *b=(*bi);
 			if (b->neededRessource(r))
 			{
-				float newScore=(float)map->warpDistSquare(b->getMidX(), b->getMidY(), x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
-				if (newScore<score)
+				int buildingDist;
+				if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 				{
-					choosen=b;
-					score=newScore;
+					double newScore=(double)buildingDist/(double)(b->maxUnitWorking-b->unitsWorking.size());
+					if (newScore<score)
+					{
+						choosen=b;
+						score=newScore;
+					}
 				}
 			}
 		}
@@ -287,27 +294,40 @@ Building *Team::findBestFoodable(Unit *unit)
 	}
 
 	Building *choosen=NULL;
-	float score=FLT_MAX;
-	bool canSwim=unit->performance[SWIM];
+	double score=DBL_MAX;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 	{
 		Sint32 rx, ry;
-		int dist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &dist))
+		int ressourceDist;
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist) && (ressourceDist<timeLeft))
 		{
-			double ressourceDist=sqrt((double)dist);
+			if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, me))
+				for (int d=0; d<8; d++)
+				{
+					int ddx, ddy;
+					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					if (map->isHardSpaceForGroundUnit(rx+map->getW()+ddx, ry+map->getH()+ddy, canSwim, me))
+					{
+						rx=(rx+map->getW()+ddx)&map->getMaskW();
+						ry=(ry+map->getH()+ddy)&map->getMaskH();
+						break;
+					}
+				}
 			for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 			{
 				Building *b=(*bi);
 				if (b->neededRessource(ri))
 				{
-					double buildingDist=sqrt((double)map->warpDistSquare(b->getMidX(), b->getMidY(), rx, ry));
-					double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
-					if (newScore<score)
+					int buildingDist;
+					if (map->buildingAviable(b, canSwim, rx, ry, &buildingDist) && (ressourceDist+buildingDist<timeLeft))
 					{
-						choosen=b;
-						score=newScore;
-						unit->destinationPurprose=ri;
+						double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+						if (newScore<score)
+						{
+							choosen=b;
+							score=newScore;
+							unit->destinationPurprose=ri;
+						}
 					}
 				}
 			}
