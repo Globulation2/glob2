@@ -39,6 +39,8 @@
 #include "Unit.h"
 #include "Utilities.h"
 
+#include "Brush.h"
+
 #define BULLET_IMGID 35
 
 #define MIN_MAX_PRESIGE 500
@@ -410,34 +412,32 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
 			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
-			printf("Team is %d, pos is (%d,%d), type is %d, figure is %d\n", oaf->team, oaf->x, oaf->y, oaf->type, oaf->figure);
-			Uint32 teamMask = teams[oaf->team]->me;
-			if (oaf->type == 1)
+			printf("Team is %d, type is %d, pos is (%d,%d,%d,%d)\n", oaf->team, oaf->type, oaf->x, oaf->y, oaf->w, oaf->h);
+			if (oaf->type == BrushTool::MODE_ADD)
 			{
-				// Add
-				if (oaf->figure<4)
-					map.setForbiddenCircularArea(oaf->x, oaf->y, oaf->figure, teamMask);
-				else
-					map.setForbiddenSquareArea(oaf->x, oaf->y, oaf->figure-4, teamMask);
+				Uint32 teamMask = teams[oaf->team]->me;
+				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
+					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
+						if (oaf->mask.get(orderMaskIndex))
+							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden |= teamMask;
+					}
 			}
-			else if (oaf->type == 2)
+			else if (oaf->type == BrushTool::MODE_DEL)
 			{
-				// Remove
-				int l;
-				if (oaf->figure<4)
-				{
-					map.clearForbiddenCircularArea(oaf->x, oaf->y, oaf->figure, teamMask);
-					l = oaf->figure;
-				}
-				else
-				{
-					map.clearForbiddenSquareArea(oaf->x, oaf->y, oaf->figure-4, teamMask);
-					l = oaf->figure-4;
-				}
-				
+				Uint32 notTeamMask = ~teams[oaf->team]->me;
+				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
+					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaf->y)*oaf->w+(x-oaf->x);
+						if (oaf->mask.get(orderMaskIndex))
+							(*(map.cases+map.w*(y&map.hMask)+(x&map.wMask))).forbidden &= notTeamMask;
+					}
+					
 				// We remove, so we need to refresh the gradients, unfortunatly
 				teams[oaf->team]->dirtyGlobalGradient();
-				map.dirtyLocalGradient(oaf->x-l-16, oaf->x-l-16, 32+l*2, 32+l*2, oaf->team);
+				map.dirtyLocalGradient(oaf->x-16, oaf->x-16, 32+oaf->w, 32+oaf->h, oaf->team);
 			}
 			else
 				assert(false);
@@ -1866,7 +1866,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			for (int x=left; x<right; x++)
 			{
 				if (map.isNotForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me))
-					globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 255, 0, 0, 127);
+					globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 255, 0, 0, 80);
 			}
 			/*{
 				unsigned i0 = map.isNotForbiddenLocal(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;

@@ -22,6 +22,7 @@
 #include "Marshaling.h"
 #include "Order.h"
 #include "Utilities.h"
+#include "Brush.h"
 
 Order::Order(void)
 {
@@ -86,6 +87,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	case ORDER_MOVE_FLAG:
 	{
 		return new OrderMoveFlag(netData+1, netDataLength-1);
+	}
+	case ORDER_ALTERATE_FORBIDDEN:
+	{
+		return new OrderAlterateForbidden(netData+1, netDataLength-1);
 	}
 	case ORDER_QUITED:
 	{
@@ -538,39 +543,63 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength)
 
 OrderAlterateForbidden::OrderAlterateForbidden(const Uint8 *data, int dataLength)
 {
-	assert(dataLength==20);
+	_data = NULL;
+	
 	bool good=setData(data, dataLength);
 	assert(good);
 }
 
-OrderAlterateForbidden::OrderAlterateForbidden(Uint32 team, Sint32 x, Sint32 y,  Uint32 type, Uint32 figure)
+OrderAlterateForbidden::OrderAlterateForbidden(Uint8 team, Uint8 type, BrushAccumulator *acc)
 {
-	this->team=team;
-	this->x=x;
-	this->y=y;
-	this->type=type;
-	this->figure=figure;
+	assert(acc);
+	_data = NULL;
+	
+	BrushAccumulator::AreaDimensions dim;
+	acc->getBitmap(&mask, &dim);
+	this->team = team;
+	this->type = type;
+	x = dim.minX;
+	y = dim.minY;
+	w = dim.maxX-dim.minX;
+	h = dim.maxY-dim.minY;
+}
+
+OrderAlterateForbidden::~OrderAlterateForbidden(void)
+{
+	if (_data)
+		free(_data);
 }
 
 Uint8 *OrderAlterateForbidden::getData(void)
 {
-	addUint32(data, team, 0);
-	addSint32(data, x, 4);
-	addSint32(data, y, 8);
-	addUint32(data, type, 12);
-	addUint32(data, figure, 16);
-	return data;
+	if (_data)
+		free (_data);
+	this->_data = (Uint8 *)malloc(getDataLength());
+	
+	addUint8(_data, team, 0);
+	addUint8(_data, type, 1);
+	addSint16(_data, x, 2);
+	addSint16(_data, y, 4);
+	addUint16(_data, w, 6);
+	addUint16(_data, h, 8);
+	mask.serialize(_data+10);
+	
+	return _data;
 }
 
 bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 {
-	if (dataLength!=20)
+	if (dataLength < 10)
 		return false;
-	team=getUint32(data, 0);
-	x=getSint32(data, 4);
-	y=getSint32(data, 8);
-	type=getUint32(data, 12);
-	figure=getUint32(data, 16);
+	
+	team = getUint8(data, 0);
+	type = getUint8(data, 1);
+	x = getSint16(data, 2);
+	y = getSint16(data, 4);
+	w = getUint16(data, 6);
+	h = getUint16(data, 8);
+	mask.deserialize(data+10, w*h);
+	
 	return true;
 }
 

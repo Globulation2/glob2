@@ -26,6 +26,7 @@
 #include "NetConsts.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
+#include "BitArray.h"
 
 class Order
 {
@@ -268,26 +269,30 @@ protected:
 	Uint8 data[11];
 };
 
+class BrushAccumulator;
+
 class OrderAlterateForbidden:public OrderModify
 {
 public:
 	OrderAlterateForbidden(const Uint8 *data, int dataLength);
-	OrderAlterateForbidden(Uint32 team, Sint32 x, Sint32 y,  Uint32 type, Uint32 figure);
-	virtual ~OrderAlterateForbidden(void) {}
+	OrderAlterateForbidden(Uint8 team, Uint8 type, BrushAccumulator *acc);
+	virtual ~OrderAlterateForbidden(void);
 	
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 20; }
+	int getDataLength(void) { return 10+mask.getByteLength(); }
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 	
-	Uint32 team;
-	Sint32 x;
-	Sint32 y;
-	Uint32 type;
-	Uint32 figure;
+	Uint8 team;
+	Uint8 type;
+	Sint16 x;
+	Sint16 y;
+	Uint16 w;
+	Uint16 h;
+	Utilities::BitArray mask;
 	
 protected:
-	Uint8 data[20];
+	Uint8 *_data;
 };
 
 
