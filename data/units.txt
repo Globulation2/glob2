@@ -115,11 +115,11 @@ startImageBuild = 192
 startImageHarvest = 192
 
 buildSpeed = 8
-harvestSpeed = 16
+harvestSpeed = 8
 *
 // max Worker Unit
 buildSpeed = 32
-harvestSpeed = 32
+harvestSpeed = 14
 *
 // cost Worker Unit
 *
@@ -145,7 +145,7 @@ startImageWalk = 256
 startImageSwim = 320
 startImageAttack = 384
 
-attackSpeed = 16
+attackSpeed = 11
 attackForce = 8
 *
 // max Warror Unit

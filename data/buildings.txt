@@ -1292,15 +1292,15 @@ miniSpriteImage -1
 
 fillable 1
 maxWood 0
-maxStone 2
+maxStone 1
 
 width 1
 height 1
 decLeft 0
 decTop 0
 hpInit 1
-hpMax 100
-hpInc 50
+hpMax 60
+hpInc 60
 level 0
 shortTypeNum 11
 maxUnitWorking 1
@@ -1322,8 +1322,8 @@ width 1
 height 1
 decLeft 0
 decTop 0
-hpInit 100
-hpMax 100
+hpInit 60
+hpMax 60
 level 0
 shortTypeNum 11
 armor 10
