@@ -318,7 +318,7 @@ OverlayScreen::OverlayScreen(GraphicContext *parentCtx, int w, int h)
 {
 	gfxCtx=parentCtx->createDrawableSurface();
 	gfxCtx->setRes(w, h);
-	gfxCtx->setAlpha(false, 128);
+	gfxCtx->setAlpha(false, 160);
 	decX=(parentCtx->getW()-w)>>1;
 	decY=(parentCtx->getH()-h)>>1;
 	endValue=-1;

@@ -280,9 +280,14 @@ void TeamStats::drawStat()
 	}
 }
 
-int TeamStats::getFreeUnits()
+int TeamStats::getFreeUnits(UnitType::TypeNum type)
 {
-	return (stats[statsIndex].isFree[UnitType::WORKER]);
+	return (stats[statsIndex].isFree[type]);
+}
+
+int TeamStats::getTotalUnits(UnitType::TypeNum type)
+{
+	return (stats[statsIndex].numberUnitPerType[type]);
 }
 
 int TeamStats::getUnitsNeeded()
