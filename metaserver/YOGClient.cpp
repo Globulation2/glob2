@@ -23,6 +23,20 @@
 extern FILE *logServer;
 extern YOGClient *admin;
 
+inline void standardTimeout(int *timeout, const unsigned size, const int base)
+{
+	if (size==1)
+		*timeout=16;
+	else
+	{
+		int targetTimeout=16-size/base;
+		if (targetTimeout<0)
+			*timeout=0;
+		else if (*timeout>targetTimeout)
+			*timeout=targetTimeout;
+	}
+}
+
 YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 {
 	this->ip=ip;
@@ -274,20 +288,14 @@ void YOGClient::addGame(Game *game)
 {
 	games.push_back(game);
 	computeGamesSize();
-	if (gamesSize>=16)
-		gamesTimeout=0;
-	else
-		gamesTimeout=16-gamesSize;
+	standardTimeout(&gamesTimeout, gamesSize, 1);
 	gamesTOTL=3;
 }
 
 void YOGClient::removeGame(Uint32 uid)
 {
 	unshared.push_back(uid);
-	if (unshared.size()>256)
-		unsharedTimeout=0;
-	else
-		unsharedTimeout=10;
+	standardTimeout(&unsharedTimeout, unshared.size(), 16);
 	unsharedTOTL=3;
 }
 
@@ -392,14 +400,7 @@ void YOGClient::addClient(YOGClient *client)
 			return;
 		}
 	clients.push_back(client);
-	
-	int importance=clients.size();
-	int targetTimeout=16-importance/4;
-	if (targetTimeout<0)
-		targetTimeout=0;
-	if (clientsTimeout>targetTimeout)
-		clientsTimeout=targetTimeout;
-	//lprintf("addClient::clientsTimeout=%d\n", targetTimeout);
+	standardTimeout(&clientsTimeout, clients.size(), 2);
 	clientsTOTL=3;
 }
 
@@ -441,12 +442,7 @@ void YOGClient::removeClient(Uint32 uid)
 			importance+=2;
 		else
 			importance++;
-	int targetTimeout=16-importance/4;
-	if (targetTimeout<0)
-		targetTimeout=0;
-	if (clientsUpdatesTimeout>targetTimeout)
-		clientsUpdatesTimeout=targetTimeout;
-	//lprintf("removeClient::clientsUpdatesTimeout=%d\n", clientsUpdatesTimeout);
+	standardTimeout(&clientsUpdatesTimeout, importance, 4);
 	clientsUpdatesTOTL=3;
 }
 
@@ -487,12 +483,7 @@ void YOGClient::updateClient(Uint32 uid, bool playing)
 			importance+=2;
 		else
 			importance++;
-	int targetTimeout=16-importance/4;
-	if (targetTimeout<0)
-		targetTimeout=0;
-	if (clientsUpdatesTimeout>targetTimeout)
-		clientsUpdatesTimeout=targetTimeout;
-	//lprintf("updateClient::clientsUpdatesTimeout=%d (importance=%d) (targetTimeout=%d)\n", clientsUpdatesTimeout, importance, targetTimeout);
+	standardTimeout(&clientsUpdatesTimeout, importance, 4);
 	clientsUpdatesTOTL=3;
 }
 
