@@ -78,17 +78,33 @@ namespace Utilities
 	class BitArray;
 }
 
+//! Accumulator that can store brush and return the resulting bitmap
 class BrushAccumulator
 {
 public:
+	//! Dimension of the resulting bitmap
 	struct AreaDimensions
 	{
-		unsigned minX, minY, maxX, maxY;
+		int minX, minY, maxX, maxY;
 	};
 	
+protected:
+	//! The list of brush applications
 	std::vector<BrushApplication> applications;
-
+	//! The actual dimensions of the resulting applications
+	AreaDimensions dim;
+	
+public:
+	//! Apply this brush to the brush application vector and extend dim as required
+	void applyBrush(const BrushApplication &brush);
+	//! Clear the vector of brush applications
+	void clear(void) { applications.clear(); }
+	//! Return a bitmap which is the result of the fusion of all accumulated brush applications
 	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
+	//! Return the area surface
+	unsigned getAreaSurface(void);
+	//! Return the number of brush applied
+	size_t getApplicationCount(void) { return applications.size(); }
 };
 
 #endif
