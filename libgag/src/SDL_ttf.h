@@ -1,6 +1,6 @@
 /*
     SDL_ttf:  A companion library to SDL for working with TrueType (tm) fonts
-    Copyright (C) 1997, 1998, 1999, 2000, 2001  Sam Lantinga
+    Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2003  Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -20,18 +20,18 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.h,v 1.2 2003/07/17 15:25:08 jdm Exp $ */
+/* $Id: SDL_ttf.h,v 1.3 2003/11/18 17:02:53 nct Exp $ */
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
 	http://www.freetype.org/
 */
 
-#ifndef _SDLttf_h
-#define _SDLttf_h
+#ifndef _SDL_TTF_H
+#define _SDL_TTF_H
 
-#include <SDL/SDL.h>
-#include <SDL/begin_code.h>
+#include "SDL.h"
+#include "begin_code.h"
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -40,26 +40,41 @@ extern "C" {
 
 /* Printable format: "%d.%d.%d", MAJOR, MINOR, PATCHLEVEL
 */
-#define TTF_MAJOR_VERSION	2
-#define TTF_MINOR_VERSION	0
-#define TTF_PATCHLEVEL		6
+#define SDL_TTF_MAJOR_VERSION	2
+#define SDL_TTF_MINOR_VERSION	0
+#define SDL_TTF_PATCHLEVEL	7
 
 /* This macro can be used to fill a version structure with the compile-time
  * version of the SDL_ttf library.
  */
-#define TTF_VERSION(X)							\
+#define SDL_TTF_VERSION(X)						\
 {									\
-	(X)->major = TTF_MAJOR_VERSION;					\
-	(X)->minor = TTF_MINOR_VERSION;					\
-	(X)->patch = TTF_PATCHLEVEL;					\
+	(X)->major = SDL_TTF_MAJOR_VERSION;				\
+	(X)->minor = SDL_TTF_MINOR_VERSION;				\
+	(X)->patch = SDL_TTF_PATCHLEVEL;				\
 }
+
+/* Backwards compatibility */
+#define TTF_MAJOR_VERSION	SDL_TTF_MAJOR_VERSION
+#define TTF_MINOR_VERSION	SDL_TTF_MINOR_VERSION
+#define TTF_PATCHLEVEL		SDL_TTF_PATCHLEVEL
+#define TTF_VERSION(X)		SDL_TTF_VERSION(X)
 
 /* This function gets the version of the dynamically linked SDL_ttf library.
    it should NOT be used to fill a version structure, instead you should
-   use the TTF_VERSION() macro.
+   use the SDL_TTF_VERSION() macro.
  */
 extern DECLSPEC const SDL_version * SDLCALL TTF_Linked_Version(void);
 
+/* ZERO WIDTH NO-BREAKSPACE (Unicode byte order mark) */
+#define UNICODE_BOM_NATIVE	0xFEFF
+#define UNICODE_BOM_SWAPPED	0xFFFE
+
+/* This function tells the library whether UNICODE text is generally
+   byteswapped.  A UNICODE BOM character in a string will override
+   this setting for the remainder of that string.
+*/
+extern DECLSPEC void SDLCALL TTF_ByteSwappedUNICODE(int swapped);
 
 /* The internal structure containing font information */
 typedef struct _TTF_Font TTF_Font;
@@ -111,7 +126,10 @@ extern DECLSPEC int SDLCALL TTF_FontFaceIsFixedWidth(TTF_Font *font);
 extern DECLSPEC char * SDLCALL TTF_FontFaceFamilyName(TTF_Font *font);
 extern DECLSPEC char * SDLCALL TTF_FontFaceStyleName(TTF_Font *font);
 
-/* Get the metrics (dimensions) of a glyph */
+/* Get the metrics (dimensions) of a glyph
+   To understand what these metrics mean, here is a useful link:
+    http://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
+ */
 extern DECLSPEC int SDLCALL TTF_GlyphMetrics(TTF_Font *font, Uint16 ch,
 				     int *minx, int *maxx,
                                      int *miny, int *maxy, int *advance);
@@ -211,6 +229,6 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 #ifdef __cplusplus
 }
 #endif
-#include <SDL/close_code.h>
+#include "close_code.h"
 
-#endif /* _SDLttf_h */
+#endif /* _SDL_TTF_H */
