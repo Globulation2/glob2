@@ -41,12 +41,12 @@ TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, con
 	areaHeight=(h-8)/charHeight;
 	areaPos=0;
 	textBufferLength=0;
-	
+
 	cursorPos=0;
 	cursorPosY=0;
 	cursorScreenPosY=0;
-	
-	internalSetText(text);
+
+	//internalSetText(text);
 }
 
 TextArea::~TextArea(void)
@@ -300,7 +300,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					{
 						cursorPos=lines[cursorPosY+1]+newLineLen;
 					}
-					
+
 					computeAndRepaint();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
@@ -523,6 +523,8 @@ void TextArea::computeAndRepaint(void)
 
 void TextArea::internalSetText(const char *text)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
 	assert(text);
 	if (text)
 	{
@@ -626,7 +628,7 @@ void TextArea::addText(const char *text)
 		temp[textBufferLength+ts]=0;
 		
 		setText(temp);
-		
+
 		free(temp);
 	}
 }
