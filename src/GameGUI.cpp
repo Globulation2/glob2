@@ -453,12 +453,19 @@ void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 void GameGUI::handleRightClick(void)
 {
 	// We deselect all, we want no tools activated:
-	displayMode=BUILDING_AND_FLAG;
-	selBuild=NULL;
-	selUnit=NULL;
-	selectionUID=0;
-	typeToBuild=-1;
-	needRedraw=true;
+	if (displayMode==BUILDING_AND_FLAG)
+	{
+		displayMode=STAT_VIEW;
+	}
+	else
+	{
+		displayMode=BUILDING_AND_FLAG;
+		selBuild=NULL;
+		selUnit=NULL;
+		selectionUID=0;
+		typeToBuild=-1;
+		needRedraw=true;
+	}
 }
 
 void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
