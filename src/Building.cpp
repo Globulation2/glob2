@@ -1042,8 +1042,18 @@ void Building::turretStep(void)
 		int speedX, speedY, ticksLeft;
 
 		// TODO : shall we really uses shootSpeed ?
+		// FIXME : is it correct this way ? IS there a function for this ?
 		int dpx=(targetX*32)+16-4-px; // 4 is the half size of the bullet
 		int dpy=(targetY*32)+16-4-py;
+		if (dpx>(owner->game->map.getW()<<4))
+			dpx=dpx-(owner->game->map.getW()<<4);
+		if (dpx<-(owner->game->map.getW()<<4))
+			dpx=dpx+(owner->game->map.getW()<<4);
+		if (dpy>(owner->game->map.getH()<<4))
+			dpy=dpy-(owner->game->map.getH()<<4);
+		if (dpy<-(owner->game->map.getH()<<4))
+			dpy=dpy+(owner->game->map.getH()<<4);
+
 
 		int mdp;
 
@@ -1051,7 +1061,6 @@ void Building::turretStep(void)
 		assert(dpy);
 		if (abs(dpx)>abs(dpy)) //we avoid a square root, since all ditances are squares lengthed.
 		{
-
 			mdp=abs(dpx);
 			speedX=((dpx*type->shootSpeed)/(mdp<<8));
 			speedY=((dpy*type->shootSpeed)/(mdp<<8));
@@ -1098,7 +1107,7 @@ void Building::kill(void)
 				//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 				u->isDead=true;
 			}
-			
+
 			if (u->displacement==Unit::DIS_ENTERING_BUILDING)
 			{
 				owner->game->map.setUnit(u->posX-u->dx, u->posY-u->dy, NOUID);
