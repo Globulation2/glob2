@@ -141,6 +141,8 @@ public:
 	Map map;
 	DrawableSurface *minimap;
 	Mapscript script;
+	std::string nextMap;
+	std::string campaignText;
 	GameGUI *gui;
 	std::list<BuildProject> buildProjects;
 

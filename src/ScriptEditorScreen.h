@@ -25,6 +25,7 @@ namespace GAGGUI
 {
 	class TextArea;
 	class Text;
+	class TextButton;
 }
 class Game;
 class Mapscript;
@@ -39,13 +40,22 @@ public:
 		COMPILE = 2,
 		LOAD,
 		SAVE,
+		TAB_SCRIPT = 10,
+		TAB_NEXT_MAP,
+		TAB_CAMPAIGN_TEXT
 	};
 	
 protected:
-	TextArea *editor;
+	TextArea *scriptEditor;
+	TextArea *nextMapEditor;
+	TextArea *campaignTextEditor;
 	Text *compilationResult;
 	Mapscript *mapScript;
 	Game *game;
+	Text *mode;
+	TextButton *compileButton;
+	TextButton *loadButton;
+	TextButton *saveButton;
 	
 protected:
 	bool testCompile(void);
@@ -57,7 +67,7 @@ public:
 	virtual void onSDLEvent(SDL_Event *event);
 
 private:
-	void loadSave(bool isLoad);
+	void loadSave(bool isLoad, const char *dir, const char *ext);
 };
 
 #endif
