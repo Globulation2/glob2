@@ -111,7 +111,7 @@ void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 {
 
 }
-#include <iostream>
+
 const char* filenameToName(const char *fullfilename)
 {
 	const char* filename = strrchr(fullfilename, DIR_SEPARATOR) + 1;
