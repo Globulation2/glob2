@@ -1299,7 +1299,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
 }			}
 
-
+	//for (int y=top; y<=bot; y++)
+	//	for (int x=left; x<=right; x++)
+	//		if (map.getBuilding(x+viewportX, y+viewportY)!=NOGBID)
+	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
+			
 	// We draw ground units:
 	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
