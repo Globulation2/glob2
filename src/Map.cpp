@@ -248,7 +248,7 @@ bool Map::isGrass(int x, int y)
 bool Map::isSand(int x, int y)
 {
 	int t=getTerrain(x, y);
-	return ((t>=16)&&(t<32));
+	return ((t>=128)&&(t<128+16));
 }
 
 bool Map::isGrowableRessource(int x, int y)
@@ -680,11 +680,11 @@ void Map::growRessources(void)
 				int wax1=x+dwax;
 				int way1=y+dway;
 				
-				//int wax2=x-dway*2;
-				//int way2=y+dwax*2;
+				int wax2=x+dway*2;
+				int way2=y+dwax*2;
 				
-				int wax3=x-dwax*2;
-				int way3=y-dway*2;
+				int wax3=x-dwax;
+				int way3=y-dway;
 
 				//int wax4=x+dway*2;
 				//int way4=y-dwax*2;
@@ -692,18 +692,15 @@ void Map::growRessources(void)
 				bool expand=false;
 				if (r==ALGA)
 				{
-					if (isSand(wax1, way1))
-						expand=true;
+					expand=isWater(wax1, way1)&&isSand(wax2, way2);
 				}
 				else if (r==WOOD)
 				{
-					if ((isWaterOrAlga(wax1, way1))&&(isGrass(wax3, way3)))
-						expand=true;
+					expand=isWaterOrAlga(wax1, way1)&&(!isSand(wax3, way3));
 				}
 				else if (r==CORN)
 				{
-					if ((isWaterOrAlga(wax1, way1))&&(isGrass(wax3, way3)))
-						expand=true;
+					expand=isWaterOrAlga(wax1, way1)&&(!isSand(wax3, way3));
 				}
 				
 				if (expand)

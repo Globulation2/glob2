@@ -21,6 +21,9 @@
 #ifndef __MAP_H
 #define __MAP_H
 
+//! if defined, enable fow and map invisible
+#define DBG_ALL_MAP_DISCOVERED
+
 #include "GAG.h"
 #include "Unit.h"
 #include "Building.h"
@@ -192,20 +195,14 @@ public:
 	Uint16 getTerrain(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).terrain; }
 	//! Set the terrain type at position (x,y).
 	void setTerrain(int x, int y, Uint16 t) { (*(cases+w*(y&hMask)+(x&wMask))).terrain=t; }
-	//! Return true if there is water or alga at position (x,y).
 	bool isWaterOrAlga(int x, int y);
-	//! Return true if there is water at position (x,y).
 	bool isWater(int x, int y);
-	//! Return true if there is grass at position (x,y).
 	bool isGrass(int x, int y);
-	//! Return true if there is sand at position (x,y).
 	bool isSand(int x, int y);
-	//! Return true if there is a ressource that can grow at position (x,y).
 	bool isGrowableRessource(int x, int y);
-	//! Return true if there is a ressource at position (x,y).
 	bool isRessource(int x, int y);
-	//! Retrun true if there is a ressource of type ressourceType at position (x,y).
 	bool isRessource(int x, int y, RessourceType ressourceType);
+	
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
 	bool decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.

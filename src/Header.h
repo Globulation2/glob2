@@ -53,9 +53,6 @@
 //! if defined, enable pathfinding debug code
 #define DBG_PATHFINDING
 
-//! if defined, enable fow and map invisible
-//#define DBG_ALL_MAP_DISCOVERED
-
 //! define this to true to have a verbose vPath error by default and to false otherwise
 #ifndef DBG_VPATH_OPEN
 #define DBG_VPATH_OPEN false

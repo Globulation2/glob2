@@ -931,6 +931,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 255);
 				}
 				#endif
+				
+				//(debug)if (map.isWaterOrAlga(x+viewportX, y+viewportY))
+				//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
 			}
 	}
 
