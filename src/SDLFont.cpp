@@ -65,7 +65,7 @@ bool SDLBitmapFont::load(const char *filename)
 	SDL_Surface *temp, *sprite;
 	SDL_RWops *stream=globalContainer->fileManager.open(filename, "rb");
 	temp=IMG_Load_RW(stream, 0);
-	SDL_FreeRW(stream);
+	SDL_RWclose(stream);
 	sprite=SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);
 

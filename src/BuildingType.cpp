@@ -56,7 +56,7 @@ void BuildingsTypes::load(const char *filename)
 			delete buildingType;
 	}
 
-	SDL_FreeRW(stream);
+	SDL_RWclose(stream);
 
 	// We resolve the nextLevelTypeNum references, used for upgrade.
 	{

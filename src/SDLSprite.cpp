@@ -47,6 +47,7 @@ SDLSprite::Palette::Palette()
 			origG[i]=g;
 			origB[i]=b;
 		}
+		fclose(palFP);
 	}
 	rTransformed=0;
 	gTransformed=255;
