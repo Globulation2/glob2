@@ -21,7 +21,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-
+#include "LogFileManager.h"
 
 Map::Map()
 {
@@ -65,6 +65,7 @@ Map::Map()
 	
 	localRessourcesUpdateCount=0;
 	pathfindLocalRessourceCount=0;
+	pathfindLocalRessourceCountWait=0;
 	pathfindLocalRessourceCountSuccessBase=0;
 	pathfindLocalRessourceCountSuccessLocked=0;
 	pathfindLocalRessourceCountSuccessUpdate=0;
@@ -109,6 +110,8 @@ Map::Map()
 	buildingAviableCountFarOldSuccess=0;
 	buildingAviableCountFarOldSuccessClosely=0;
 	buildingAviableCountFarOldFailure=0;
+	
+	logFile = globalContainer->logFileManager->getFile("Map.log");
 }
 
 Map::~Map(void)
@@ -201,22 +204,22 @@ void Map::clear()
 	
 	int pathToRessourceCountSuccess=pathToRessourceCountSuccessClose+pathToRessourceCountSuccessFar;
 	
-	printf("\n");
-	printf("pathToRessourceCountTot=%d\n", pathToRessourceCountTot);
+	fprintf(logFile, "\n");
+	fprintf(logFile, "pathToRessourceCountTot=%d\n", pathToRessourceCountTot);
 	if (pathToBuildingCountTot)
 	{
-		printf("| pathToRessourceCountSuccess=%d (%f %% of tot)\n",
+		fprintf(logFile, "| pathToRessourceCountSuccess=%d (%f %% of tot)\n",
 			pathToRessourceCountSuccess,
 			100.*(double)pathToRessourceCountSuccess/(double)pathToRessourceCountTot);
-		printf("|-  pathToRessourceCountSuccessClose=%d (%f %% of tot) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathToRessourceCountSuccessClose=%d (%f %% of tot) (%f %% of success)\n",
 			pathToRessourceCountSuccessClose,
 			100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountTot,
 			100.*(double)pathToRessourceCountSuccessClose/(double)pathToRessourceCountSuccess);
-		printf("|-  pathToRessourceCountSuccessFar=%d (%f %% of tot) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathToRessourceCountSuccessFar=%d (%f %% of tot) (%f %% of success)\n",
 			pathToRessourceCountSuccessFar,
 			100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountTot,
 			100.*(double)pathToRessourceCountSuccessFar/(double)pathToRessourceCountSuccess);
-		printf("| pathToRessourceCountFailure=%d (%f %% of tot)\n",
+		fprintf(logFile, "| pathToRessourceCountFailure=%d (%f %% of tot)\n",
 			pathToRessourceCountFailure,
 			100.*(double)pathToRessourceCountFailure/(double)pathToRessourceCountTot);
 	}
@@ -225,33 +228,41 @@ void Map::clear()
 	pathToRessourceCountSuccessFar=0;
 	pathToRessourceCountFailure=0;
 	
-	printf("\n");
-	printf("localRessourcesUpdateCount=%d\n", localRessourcesUpdateCount);
-	printf("pathfindLocalRessourceCount=%d\n", pathfindLocalRessourceCount);
+	fprintf(logFile, "\n");
+	
+	fprintf(logFile, "pathfindLocalRessourceCount=%d\n", pathfindLocalRessourceCount);
 	if (pathfindLocalRessourceCount)
 	{
+		fprintf(logFile, "+ localRessourcesUpdateCount=%d (%f %% of calls)\n",
+			localRessourcesUpdateCount,
+			100.*(float)localRessourcesUpdateCount/(float)pathfindLocalRessourceCount);
+		
+		fprintf(logFile, "| pathfindLocalRessourceCountWait=%d (%f %% of count)\n",
+			pathfindLocalRessourceCountWait,
+			100.*(float)pathfindLocalRessourceCountWait/(float)pathfindLocalRessourceCount);
+		
 		int pathfindLocalRessourceCountSuccess=
 			+pathfindLocalRessourceCountSuccessBase
 			+pathfindLocalRessourceCountSuccessLocked
 			+pathfindLocalRessourceCountSuccessUpdate
 			+pathfindLocalRessourceCountSuccessUpdateLocked;
 		
-		printf("| pathfindLocalRessourceCountSuccess=%d (%f %% of count)\n",
+		fprintf(logFile, "| pathfindLocalRessourceCountSuccess=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountSuccess,
 			100.*(float)pathfindLocalRessourceCountSuccess/(float)pathfindLocalRessourceCount);
-		printf("|-  pathfindLocalRessourceCountSuccessBase=%d (%f %% of count) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountSuccessBase=%d (%f %% of count) (%f %% of success)\n",
 			pathfindLocalRessourceCountSuccessBase,
 			100.*(float)pathfindLocalRessourceCountSuccessBase/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountSuccessBase/(float)pathfindLocalRessourceCountSuccess);
-		printf("|-  pathfindLocalRessourceCountSuccessLocked=%d (%f %% of count) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountSuccessLocked=%d (%f %% of count) (%f %% of success)\n",
 			pathfindLocalRessourceCountSuccessLocked,
 			100.*(float)pathfindLocalRessourceCountSuccessLocked/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountSuccessLocked/(float)pathfindLocalRessourceCountSuccess);
-		printf("|-  pathfindLocalRessourceCountSuccessUpdate=%d (%f %% of count) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountSuccessUpdate=%d (%f %% of count) (%f %% of success)\n",
 			pathfindLocalRessourceCountSuccessUpdate,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdate/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdate/(float)pathfindLocalRessourceCountSuccess);
-		printf("|-  pathfindLocalRessourceCountSuccessUpdateLocked=%d (%f %% of count) (%f %% of success)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountSuccessUpdateLocked=%d (%f %% of count) (%f %% of success)\n",
 			pathfindLocalRessourceCountSuccessUpdateLocked,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCountSuccess);
@@ -261,18 +272,18 @@ void Map::clear()
 			+pathfindLocalRessourceCountFailureNone
 			+pathfindLocalRessourceCountFailureBad;
 		
-		printf("| pathfindLocalRessourceCountFailure=%d (%f %% of count)\n",
+		fprintf(logFile, "| pathfindLocalRessourceCountFailure=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountFailure,
 			100.*(float)pathfindLocalRessourceCountFailure/(float)pathfindLocalRessourceCount);
-		printf("|-  pathfindLocalRessourceCountFailureUnusable=%d (%f %% of count) (%f %% of failure)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountFailureUnusable=%d (%f %% of count) (%f %% of failure)\n",
 			pathfindLocalRessourceCountFailureUnusable,
 			100.*(float)pathfindLocalRessourceCountFailureUnusable/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountFailureUnusable/(float)pathfindLocalRessourceCountFailure);
-		printf("|-  pathfindLocalRessourceCountFailureNone=%d (%f %% of count) (%f %% of failure)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountFailureNone=%d (%f %% of count) (%f %% of failure)\n",
 			pathfindLocalRessourceCountFailureNone,
 			100.*(float)pathfindLocalRessourceCountFailureNone/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountFailureNone/(float)pathfindLocalRessourceCountFailure);
-		printf("|-  pathfindLocalRessourceCountFailureBad=%d (%f %% of count) (%f %% of failure)\n",
+		fprintf(logFile, "|-  pathfindLocalRessourceCountFailureBad=%d (%f %% of count) (%f %% of failure)\n",
 			pathfindLocalRessourceCountFailureBad,
 			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCountFailure);
@@ -289,11 +300,11 @@ void Map::clear()
 	pathfindLocalRessourceCountFailureNone=0;
 	pathfindLocalRessourceCountFailureBad=0;
 	
-	printf("\n");
-	printf("pathToBuildingCountTot=%d\n", pathToBuildingCountTot);
+	fprintf(logFile, "\n");
+	fprintf(logFile, "pathToBuildingCountTot=%d\n", pathToBuildingCountTot);
 	if (pathToBuildingCountTot)
 	{
-		printf("|- pathToBuildingCountClose=%d (%f %% of tot)\n",
+		fprintf(logFile, "|- pathToBuildingCountClose=%d (%f %% of tot)\n",
 			pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountClose/(double)pathToBuildingCountTot);
 		
@@ -304,76 +315,76 @@ void Map::clear()
 			+pathToBuildingCountCloseSuccessUpdated
 			+pathToBuildingCountCloseSuccessUpdatedAround;
 	
-		printf("|-  pathToBuildingCountCloseSuccessTot=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  pathToBuildingCountCloseSuccessTot=%d (%f %% of tot) (%f %% of close)\n",
 			pathToBuildingCountCloseSuccessTot,
 			100.*(double)pathToBuildingCountCloseSuccessTot/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessTot/(double)pathToBuildingCountClose);
 		
-		printf("|-   pathToBuildingCountCloseSuccessStand=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessStand=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessStand,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountCloseSuccessTot);
 		
-		printf("|-   pathToBuildingCountCloseSuccessBase=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessBase=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessBase,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountCloseSuccessTot);
 		
-		printf("|-   pathToBuildingCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessAround,
 			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessAround/(double)pathToBuildingCountCloseSuccessTot);
 		
-		printf("|-   pathToBuildingCountCloseSuccessUpdated=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessUpdated=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessUpdated,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountCloseSuccessTot);
 		
-		printf("|-   pathToBuildingCountCloseSuccessUpdatedAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessUpdatedAround=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessUpdatedAround,
 			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessUpdatedAround/(double)pathToBuildingCountCloseSuccessTot);
 
-		printf("|-   pathToBuildingCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-   pathToBuildingCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
 			pathToBuildingCountCloseFailure,
 			100.*(double)pathToBuildingCountCloseFailure/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseFailure/(double)pathToBuildingCountClose);
 
-		printf("|- pathToBuildingCountFar=%d (%f %% of tot)\n",
+		fprintf(logFile, "|- pathToBuildingCountFar=%d (%f %% of tot)\n",
 			pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFar/(double)pathToBuildingCountTot);
-		printf("|-  pathToBuildingCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  pathToBuildingCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountIsFar,
 			100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountFar);
-		printf("|-  pathToBuildingCountFarSuccess=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  pathToBuildingCountFarSuccess=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarSuccess,
 			100.*(double)pathToBuildingCountFarSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarSuccess/(double)pathToBuildingCountFar);
-		printf("|-  pathToBuildingCountFarSuccessFar=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  pathToBuildingCountFarSuccessFar=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarSuccessFar,
 			100.*(double)pathToBuildingCountFarSuccessFar/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarSuccessFar/(double)pathToBuildingCountFar);
-		printf("|-  pathToBuildingCountFarFailure=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  pathToBuildingCountFarFailure=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarFailure,
 			100.*(double)pathToBuildingCountFarFailure/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarFailure/(double)pathToBuildingCountFar);
 	}
 	
 	int buildingGradientUpdate=localBuildingGradientUpdate+globalBuildingGradientUpdate;
-	printf("\n");
-	printf("buildingGradientUpdate=%d\n", buildingGradientUpdate);
+	fprintf(logFile, "\n");
+	fprintf(logFile, "buildingGradientUpdate=%d\n", buildingGradientUpdate);
 	if (buildingGradientUpdate)
 	{
-		printf("|- localBuildingGradientUpdate=%d (%f %%)\n",
+		fprintf(logFile, "|- localBuildingGradientUpdate=%d (%f %%)\n",
 			localBuildingGradientUpdate,
 			100.*(double)localBuildingGradientUpdate/(double)buildingGradientUpdate);
-		printf("|- globalBuildingGradientUpdate=%d (%f %%)\n",
+		fprintf(logFile, "|- globalBuildingGradientUpdate=%d (%f %%)\n",
 			globalBuildingGradientUpdate,
 			100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
 	}
@@ -396,78 +407,78 @@ void Map::clear()
 	globalBuildingGradientUpdate=0;
 	
 	
-	printf("\n");
-	printf("buildingAviableCountTot=%d\n", buildingAviableCountTot);
+	fprintf(logFile, "\n");
+	fprintf(logFile, "buildingAviableCountTot=%d\n", buildingAviableCountTot);
 	if (buildingAviableCountTot)
 	{
-		printf("|- buildingAviableCountClose=%d (%f %%)\n",
+		fprintf(logFile, "|- buildingAviableCountClose=%d (%f %%)\n",
 			buildingAviableCountClose,
 			100.*(double)buildingAviableCountClose/(double)buildingAviableCountTot);
-		printf("|-  buildingAviableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  buildingAviableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseSuccess,
 			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountClose);
-		printf("|-  buildingAviableCountCloseSuccessClosely=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  buildingAviableCountCloseSuccessClosely=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseSuccessClosely,
 			100.*(double)buildingAviableCountCloseSuccessClosely/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseSuccessClosely/(double)buildingAviableCountClose);
-		printf("|-  buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseSuccessUpdate,
 			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountClose);
-		printf("|-  buildingAviableCountCloseSuccessUpdateClosely=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  buildingAviableCountCloseSuccessUpdateClosely=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseSuccessUpdateClosely,
 			100.*(double)buildingAviableCountCloseSuccessUpdateClosely/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseSuccessUpdateClosely/(double)buildingAviableCountClose);
-		printf("|-  buildingAviableCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-  buildingAviableCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseFailure,
 			100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountClose);
 		
 		
-		printf("|- buildingAviableCountFar=%d (%f %%)\n",
+		fprintf(logFile, "|- buildingAviableCountFar=%d (%f %%)\n",
 			buildingAviableCountFar,
 			100.*(double)buildingAviableCountFar/(double)buildingAviableCountTot);
-		printf("|-  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAviableCountIsFar,
 			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountFar);
 		
-		printf("|-  buildingAviableCountFarNew=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  buildingAviableCountFarNew=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAviableCountFarNew,
 			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountFar);
-		printf("|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewSuccess,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
-		printf("|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewSuccess,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
-		printf("|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewFailure,
 			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFarNew);
 		
-		printf("|-  buildingAviableCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|-  buildingAviableCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAviableCountFarOld,
 			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountFar);
-		printf("|-   buildingAviableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			buildingAviableCountFarOldSuccess,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFarOld);
-		printf("|-   buildingAviableCountFarOldSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarOldSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			buildingAviableCountFarOldSuccessClosely,
 			100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountFarOld);
-		printf("|-   buildingAviableCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+		fprintf(logFile, "|-   buildingAviableCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			buildingAviableCountFarOldFailure,
 			100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountFar,
@@ -558,7 +569,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 void Map::setGame(Game *game)
 {
 	assert(game);
-	printf("Map::setGame(%p)\n", game);
+	fprintf(logFile, "Map::setGame(%p)\n", game);
 	this->game=game;
 	assert(arraysBuilt);
 	assert(sectors);
@@ -1508,11 +1519,8 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		*targetY=y;
 		return true;
 	}
-	
 	int vx=x;
 	int vy=y;
-	//printf("s=(%d, %d), g=%d, r=%d\n", x, y, g, ressourceType);
-	//Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	
 	while (true)
 	{
@@ -1573,7 +1581,6 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		
 		vx=(vx+vddx+w)&wMask;
 		vy=(vy+vddy+h)&hMask;
-		//printf("v=(%d, %d) max=%d\n", vx, vy, max);
 		if (max>=level)
 		{
 			*targetX=vx;
@@ -1582,6 +1589,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 		if (!found)
 		{
+			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			return false;
 		}
@@ -1876,6 +1884,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		pathToRessourceCountFailure++;
 		printf("locked at (%d, %d)\n", x, y);
+		fprintf(logFile, "locked at (%d, %d)\n", x, y);
 		*stopWork=false;
 		return false;
 	}
@@ -1884,7 +1893,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
 	localBuildingGradientUpdate++;
-	printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
+	fprintf(logFile, "updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
 	building->dirtyLocalGradient[canSwim]=false;
@@ -2102,7 +2111,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
-	printf("...updatedLocalGradient\n");
+	fprintf(logFile, "...updatedLocalGradient\n");
 }
 
 
@@ -2111,7 +2120,8 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	globalBuildingGradientUpdate++;
 	assert(building);
 	assert(building->type);
-	printf("updatingGlobalGradient (gbid=%d)...\n", building->gid);
+	//printf("updatingGlobalGradient (gbid=%d)\n", building->gid);
+	fprintf(logFile, "updatingGlobalGradient (gbid=%d)...", building->gid);
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
@@ -2379,7 +2389,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
-	printf("...updatedGlobalGradient\n");
+	fprintf(logFile, "...updatedGlobalGradient\n");
 }
 
 void Map::updateLocalRessources(Building *building, bool canSwim)
@@ -2388,7 +2398,7 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
-	printf("updatingLocalRessources[%d] (gbid=%d)...\n", canSwim, building->gid);
+	fprintf(logFile, "updatingLocalRessources[%d] (gbid=%d)...\n", canSwim, building->gid);
 	
 	int posX=building->posX;
 	int posY=building->posY;
@@ -2441,6 +2451,7 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 		}
 	}
 	expandLocalGradient(gradient);
+	building->localRessourcesCleanTime=0;
 }
 
 
@@ -2676,7 +2687,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	{
 		buildingAviableCountFarNew++;
 		gradient=new Uint8[size];
-		printf("ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
+		fprintf(logFile, "ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 	}
 	else
@@ -2707,6 +2718,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			}
 			buildingAviableCountFarOldFailure++;
 			printf("ba-a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			fprintf(logFile, "ba-a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 	}
@@ -2738,6 +2750,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		}
 		buildingAviableCountFarNewFailure++;
 		printf("ba-b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		fprintf(logFile, "ba-b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
 }
@@ -2817,6 +2830,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					*dy=0;
 					pathToBuildingCountCloseSuccessAround++;
 					printf("...pathfindedBuilding v3 locked\n");
+					fprintf(logFile, "...pathfindedBuilding v3 locked\n");
 					return true;
 				}
 			}
@@ -2871,6 +2885,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					*dy=0;
 					pathToBuildingCountCloseSuccessUpdatedAround++;
 					printf("...pathfindedBuilding v5 locked\n");
+					fprintf(logFile, "...pathfindedBuilding v5 locked\n");
 					return true;
 				}
 			}
@@ -2887,7 +2902,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	if (gradient==NULL)
 	{
 		gradient=new Uint8[size];
-		printf("allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
+		fprintf(logFile, "allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 	}
 	else
@@ -2900,6 +2915,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		{
 			pathToBuildingCountFarFailure++;
 			printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			fprintf(logFile, "a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 		else
@@ -2933,6 +2949,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			{
 				pathToBuildingCountFarFailure++;
 				printf("b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+				fprintf(logFile, "b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 				return false;
 			}
 		}
@@ -2998,6 +3015,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	
 	pathToBuildingCountFarFailure++;
 	printf("c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	fprintf(logFile, "c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 	return false;
 }
 
@@ -3023,6 +3041,13 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	Uint8 currentg=gradient[lx+(ly<<5)];
 	bool found=false;
 	bool gradientUsable=false;
+	
+	if (currentg==1 && building->localRessourcesCleanTime++<7) 
+	{
+		// We wait a bit and avoid immediate recalculation, because there is probably no ressources.
+		pathfindLocalRessourceCountWait++;
+		return false;
+	}
 	
 	if (currentg>1 && currentg!=255)
 	{
@@ -3119,7 +3144,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			if (found)
 			{
 				pathfindLocalRessourceCountSuccessUpdate++;
-				printf("...pathfindedLocalRessource v3\n");
+				//printf("...pathfindedLocalRessource v3\n");
 				return true;
 			}
 			else
@@ -3127,13 +3152,14 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 				*dx=0;
 				*dy=0;
 				pathfindLocalRessourceCountSuccessUpdateLocked++;
-				printf("...pathfindedLocalRessource v4 locked\n");
+				//printf("...pathfindedLocalRessource v4 locked\n");
 				return true;
 			}
 		}
 		else
 		{
 			pathfindLocalRessourceCountFailureUnusable++;
+			fprintf(logFile, "lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
@@ -3141,6 +3167,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	else
 	{
 		pathfindLocalRessourceCountFailureBad++;
+		fprintf(logFile, "lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
@@ -3148,7 +3175,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 
 void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 {
-	printf("Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
+	fprintf(logFile, "Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
 	for (int hi=0; hi<hl; hi++)
 	{
 		int wyi=w*((y+h+hi)&hMask);
@@ -3159,7 +3186,7 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 			if (bgid!=NOGBID)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{
-					printf("dirtying-LocalGradient bgid=%d\n", bgid);
+					fprintf(logFile, "dirtying-LocalGradient bgid=%d\n", bgid);
 					Building *b=game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)];
 					for (int canSwim=0; canSwim<2; canSwim++)
 					{

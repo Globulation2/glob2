@@ -1436,13 +1436,15 @@ void GameGUI::draw(void)
 			// repair and upgrade
 			if (selBuild->constructionResultState==Building::REPAIR)
 			{
-				assert(buildingType->nextLevelTypeNum!=-1);
+				if (buildingType->isBuildingSite)
+					assert(buildingType->nextLevelTypeNum!=-1);
 				drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[cancel repair]");
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				assert(buildingType->nextLevelTypeNum!=-1);
-				assert(buildingType->lastLevelTypeNum!=-1);
+				if (buildingType->isBuildingSite)
+					assert(buildingType->lastLevelTypeNum!=-1);
 				drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[cancel upgrade]");
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)

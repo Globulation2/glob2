@@ -389,6 +389,7 @@ protected:
 	
 	int localRessourcesUpdateCount;
 	int pathfindLocalRessourceCount;
+	int pathfindLocalRessourceCountWait;
 	int pathfindLocalRessourceCountSuccessBase;
 	int pathfindLocalRessourceCountSuccessLocked;
 	int pathfindLocalRessourceCountSuccessUpdate;
@@ -481,6 +482,9 @@ public:
 	void addRessourcesRandomMap(MapGenerationDescriptor &descriptor);
 	bool makeIslandsMap(MapGenerationDescriptor &descriptor);
 	void addRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
+
+protected:
+	FILE *logFile;
 };
 
 #endif

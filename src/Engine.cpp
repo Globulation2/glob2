@@ -29,14 +29,36 @@
 #include "EndGameScreen.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "LogFileManager.h"
 
 Engine::Engine()
 {
 	net=NULL;
+	for (int i=0; i<40; i++)
+		cpuStats[i]=0;
+	logFile = globalContainer->logFileManager->getFile("Engine.log");
 }
 
 Engine::~Engine()
 {
+	fprintf(logFile, "cpu usage stats:\n");
+	for (int i=0; i<40; i++)
+		fprintf(logFile, "%3d.%1d %% = %d\n", 100-(i*5)/2, (i&1)*5, cpuStats[i]);
+	int sum=0;
+	for (int i=0; i<40; i++)
+		sum+=cpuStats[i];
+	fprintf(logFile, "\n");
+	fprintf(logFile, "cpu usage graph:\n");
+	for (int i=0; i<40; i++)
+	{
+		fprintf(logFile, "%3d.%1d %% | ", 100-(i*5)/2, (i&1)*5);
+		double ratio=100.*(double)cpuStats[i]/(double)sum;
+		int jmax=(int)(ratio+0.5);
+		for (int j=0; j<jmax; j++)
+			fprintf(logFile, "*");
+		fprintf(logFile, "\n");
+	}
+	
 	if (net)
 	{
 		delete net;
@@ -375,6 +397,15 @@ int Engine::run(void)
 			endTick=SDL_GetTicks();
 			Sint32 spentTick=endTick-startTick;
 			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
+			if (!gui.paused)
+			{
+				Sint32 i=leftTicks;
+				if (i<0)
+					i=0;
+				else if (i>=40)
+					i=40;
+				cpuStats[i]++;
+			}
 			Sint32 ticksToWait=leftTicks+net->ticksToDelay();
 			if (leftTicks<0)
 				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.

@@ -122,6 +122,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 	}
+	localRessourcesCleanTime=0;
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -195,6 +196,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		}
 		dirtyLocalGradient[i]=true;
 	}
+	localRessourcesCleanTime=0;
 }
 
 void Building::save(SDL_RWops *stream)
