@@ -291,22 +291,16 @@ void GameGUI::step(void)
 		if (u)
 		{
 			int strDec=(int)(u->typeNum);
-			addMessage(200, 30, 30, "%s %s %s", Toolkit::getStringTable()->getString("[Your]"), Toolkit::getStringTable()->getString("[units type]", strDec), Toolkit::getStringTable()->getString("[are under attack(f)]"));
+			addMessage(200, 30, 30, Toolkit::getStringTable()->getString("[Your %s are under attack]"), Toolkit::getStringTable()->getString("[units type]", strDec));
 		}
 	}
 	if (localTeam->wasEvent(Team::UNIT_CONVERTED_LOST))
 	{
 		addMessage(140, 0, 0, Toolkit::getStringTable()->getString("[Your unit got converted to another team]"));
-			/*Toolkit::getStringTable()->getString("[Your]"),
-			Toolkit::getStringTable()->getString("[units type]", localTeam->getEventId()),
-			Toolkit::getStringTable()->getString("[has been converted to t]"));*/
 	}
 	if (localTeam->wasEvent(Team::UNIT_CONVERTED_ACQUIERED))
 	{
 		addMessage(100, 255, 100, Toolkit::getStringTable()->getString("[Another team's unit got converted to your team]"));
-			/*Toolkit::getStringTable()->getString("[An enemy]"),
-			Toolkit::getStringTable()->getString("[units type]", localTeam->getEventId()),
-			Toolkit::getStringTable()->getString("[converted to you team]"));*/
 	}
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 	{

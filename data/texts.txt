@@ -210,26 +210,26 @@ druh jednotek
 Typ jednostek
 Tipo di unità
 [workers]
-Ouvrières
-Workers
+ouvrières
+workers
 Arbeiter
-Dělníci
-Pracownicy
-Operai
+dělníci
+pracownicy
+operai
 [explorers]
-Exploratrices
-Explorers
+exploratrices
+explorers
 Entdecker
-Průzkumníci
-Odkrywcy
-Esploratori
+průzkumníci
+odkrywcy
+esploratori
 [warriors]
-Guerrières
-Warriors
+guerrières
+warriors
 Krieger
-Válečníci
-Wojownicy
-Guerrieri
+válečníci
+wojownicy
+guerrieri
 [Unit type]
 Type d'unite
 Unit type
@@ -1028,20 +1028,13 @@ Der Markt wird angegriffen
 Tržiště je pod útokem
 Bazar został zaatakowany
 Il ercato è sotto attacco
-[Your]
-Vos
-Your
-Eure
-Tvoji
-Twój
-Il tuo
-[are under attack(f)]
-sont attaquées
-are under attack
-werden angegriffen
-jsou pod útokem
-jesteś atakowany(a)
-�sotto attacco
+[Your %s are under attack]
+Vos %s sont attaquées
+Your %s are under attack
+Eure %s werden angegriffen
+Tvoji %s jsou pod útokem
+Twój %s jesteś atakowany
+Il tuo %s sotto attacco
 [Your unit got converted to another team]
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
