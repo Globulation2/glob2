@@ -617,7 +617,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 		{
 			case SDLK_ESCAPE:
 				{
-					if ((inGameMenu==IGM_NONE) && pressed)
+					if ((inGameMenu==IGM_NONE) && (!pressed))
 					{
 						gameMenuScreen=new InGameMainScreen();
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
