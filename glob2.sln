@@ -7,15 +7,15 @@ Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug DX9 = Debug DX9
 		Debug SDL = Debug SDL
-		Release = Release
+		Release SDL = Release SDL
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9.ActiveCfg = Debug DX9|Win32
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9.Build.0 = Debug DX9|Win32
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL.ActiveCfg = Debug SDL|Win32
 		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL.Build.0 = Debug SDL|Win32
-		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release.ActiveCfg = Release|Win32
-		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release.Build.0 = Release|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL.ActiveCfg = Release SDL|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL.Build.0 = Release SDL|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

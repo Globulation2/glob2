@@ -20,7 +20,37 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
+#include <stdlib.h>	// For NULL...
+
+#ifndef DX9_BACKEND
 #include <SDL.h>
+#endif
+
+#ifdef DX9_BACKEND
+
+#include <windows.h>
+
+// Some typedefs replacing the SDL stuff
+typedef unsigned char Uint8;
+typedef unsigned short Uint16;
+typedef unsigned int Uint32;
+typedef unsigned __int64 Uint64;
+typedef char Sint8;
+typedef short Sint16;
+typedef int Sint32;
+typedef __int64 Sint64;
+
+struct SDL_RWops { };
+struct IPaddress { };
+struct UDPsocket { };
+
+struct SDL_Rect		// TODO: Well, guess what :-)
+{
+	int x,y,w,h;
+};
+
+struct SDL_Event { };
+#endif
 
 namespace GAGCore
 {

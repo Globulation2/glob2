@@ -25,6 +25,8 @@
 #include <vector>
 #include <string>
 
+#include <d3d9.h>
+
 namespace GAGCore
 {
 	class Sprite;
@@ -84,7 +86,7 @@ namespace GAGCore
 		
 	protected:
 		friend class DrawableSurface;
-		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) = 0;
+		virtual void drawString(IDirect3DTexture9 *Surface, int x, int y, int w, const char *text, RECT *clip=NULL) = 0;
 		virtual void pushStyle(Style style) = 0;
 		virtual void popStyle(void) = 0;
 	};
@@ -93,18 +95,26 @@ namespace GAGCore
 	{
 	protected:
 		//! the underlying SDL or glSDL surface
-		SDL_Surface *surface;
+		IDirect3DTexture9 *surface;
 		//! The clipping rect, we do not draw outside it
-		SDL_Rect clipRect;
+		RECT clipRect;
 		//! Flags, can be a combination of ResolutionFlags
 		Uint32 flags;
 		//! if true, surface is locked and suitable for direct pixel access
 		bool locked;
+
+		//! Surface width
+		int width;
+		//! Surface height
+		int height;
+
+		//! Pointer to pixels when locked
+		void *pixels;
 		
 		//! lock only if necessary
-		void lock(void) { if (!locked) { SDL_LockSurface(surface); locked = true; } }
+		void lock(void) { /*if (!locked) { SDL_LockSurface(surface); locked = true; }*/ }
 		//! unlock only if necessary
-		void unlock(void) { if (locked) { SDL_UnlockSurface(surface); locked = false; } }
+		void unlock(void) { /*if (locked) { SDL_UnlockSurface(surface); locked = false; }*/ }
 		
 	public:
 		enum GraphicContextType
@@ -136,12 +146,12 @@ namespace GAGCore
 	
 	public:
 		DrawableSurface();
-		virtual ~DrawableSurface(void) { if (surface) SDL_FreeSurface(surface); }
+		virtual ~DrawableSurface(void) { if (surface) surface->Release(); surface=NULL; }
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
 		virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);
-		virtual int getW(void) { if(surface) return surface->w; else return 0; }
-		virtual int getH(void) { if(surface) return surface->h; else return 0; }
-		virtual int getDepth(void) { if(surface) return surface->format->BitsPerPixel; else return 0; }
+		virtual int getW(void) { return width;  }
+		virtual int getH(void) { return height; }
+		virtual int getDepth(void) { return 32; }	// TODO: Well, that's what we start with...
 		virtual int getFlags(void) { return flags; }
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
@@ -161,13 +171,17 @@ namespace GAGCore
 		virtual void pushFontStyle(Font *font, Font::Style style);
 		virtual void popFontStyle(Font *font);
 		virtual void nextFrame(void) { }
-		virtual void *getPixelPointer(void)  { return surface->pixels; }
+		virtual void *getPixelPointer(void)  { return pixels; }
 	};
 	
-	class GraphicContext:public DrawableSurface
+	class GraphicContext : public DrawableSurface
 	{
 	private:
-		SDL_Rect **modes;
+		//! Available full screen modes
+		RECT **modes;
+		//! Window handle
+		HWND hWnd;
+
 		
 	protected:
 		int minW, minH;
@@ -183,7 +197,7 @@ namespace GAGCore
 		//! this must be called before any Drawable Surface method.
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
 		virtual void setMinRes(int w=0, int h=0);
-		virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
+		virtual void setCaption(const char *title, const char *icon) { SetWindowText(hWnd,title);  } // TODO: Ignore icon
 		virtual void beginVideoModeListing(void);
 		virtual bool getNextVideoMode(int *w, int *h);
 			
@@ -213,20 +227,20 @@ namespace GAGCore
 	protected:
 		struct Surface
 		{
-			SDL_Surface *s;
+			IDirect3DTexture9 *s;
 			
 			//! allocate the internal surface suitable for fast blit, free the source
-			Surface(SDL_Surface *source);
+			Surface(IDirect3DTexture9 *source);
 			~Surface();
 		};
 	
 		struct RotatedImage
 		{
-			SDL_Surface *orig;
+			IDirect3DTexture9 *orig;
 			typedef std::map<Color32, Surface *> RotationMap;
 			RotationMap rotationMap;
 	
-			RotatedImage(SDL_Surface *s) { orig=s; }
+			RotatedImage(IDirect3DTexture9 *s) { orig=s; }
 			~RotatedImage();
 		};
 	
@@ -249,7 +263,7 @@ namespace GAGCore
 		bool load(const char *filename);
 	
 		//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
-		virtual void draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index);
+		virtual void draw(IDirect3DTexture9 *dest, const RECT *clip, int x, int y, int index);
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, g, b); }
@@ -263,6 +277,7 @@ namespace GAGCore
 		//! Return the number of frame in this sprite
 		virtual int getFrameCount(void);
 	};
+
 }
 
 #endif

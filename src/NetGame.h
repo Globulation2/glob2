@@ -75,7 +75,11 @@ order's steps tricks:
 */
 
 #include "Header.h"
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
+#else
+#include <Types.h>
+#endif
 #include <list>
 
 class Player;

@@ -17,7 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_rwops.h>
+#else
+#include <Types.h>
+#endif
 
 #include <FileManager.h>
 #include <GraphicContext.h>

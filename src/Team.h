@@ -20,7 +20,12 @@
 #ifndef __TEAM_H
 #define __TEAM_H
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_rwops.h>
+#else
+#include <Types.h>
+#endif
+
 #include <list>
 #include <algorithm>
 

@@ -43,7 +43,11 @@
 #include "IRC.h"
 #include "SoundMixer.h"
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
+#else
+#include <Types.h>
+#endif
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46

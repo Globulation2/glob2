@@ -22,7 +22,12 @@
 
 #include <assert.h>
 #include <list>
+
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
+#else
+#include <Types.h>
+#endif
 
 #include "AI.h"
 

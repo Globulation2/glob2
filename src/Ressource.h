@@ -20,7 +20,11 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <glSDL.h>
+#else
+#include <Types.h>
+#endif
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
 #define NO_RES_TYPE 0xFF

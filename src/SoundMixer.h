@@ -20,8 +20,12 @@
 #ifndef __SOUNDMIXER_H
 #define __SOUNDMIXER_H
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <glSDL.h>
 #include <SDL_audio.h>
+#else
+#include <Types.h>
+#endif
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>

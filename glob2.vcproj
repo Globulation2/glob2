@@ -63,7 +63,7 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release SDL|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
@@ -189,6 +189,9 @@
 				RelativePath="src\AINumbi.cpp">
 			</File>
 			<File
+				RelativePath=".\src\AIToubib.cpp">
+			</File>
+			<File
 				RelativePath=".\src\BitArray.cpp">
 			</File>
 			<File
@@ -253,6 +256,9 @@
 			</File>
 			<File
 				RelativePath=".\src\IntBuildingType.cpp">
+			</File>
+			<File
+				RelativePath=".\src\IRC.cpp">
 			</File>
 			<File
 				RelativePath="src\LoadGameScreen.cpp">
@@ -372,12 +378,6 @@
 					RelativePath=".\libgag\src\FileManager.cpp">
 				</File>
 				<File
-					RelativePath=".\libgag\src\glSDL.c">
-				</File>
-				<File
-					RelativePath=".\libgag\src\GraphicContext.cpp">
-				</File>
-				<File
 					RelativePath=".\libgag\src\GUIAnimation.cpp">
 				</File>
 				<File
@@ -414,12 +414,6 @@
 					RelativePath=".\libgag\src\GUITextInput.cpp">
 				</File>
 				<File
-					RelativePath=".\libgag\src\SDL_ttf.c">
-				</File>
-				<File
-					RelativePath=".\libgag\src\Sprite.cpp">
-				</File>
-				<File
 					RelativePath=".\libgag\src\StringTable.cpp">
 				</File>
 				<File
@@ -429,11 +423,61 @@
 					RelativePath=".\libgag\src\Toolkit.cpp">
 				</File>
 				<File
-					RelativePath=".\libgag\src\TrueTypeFont.cpp">
-				</File>
-				<File
 					RelativePath=".\libgag\src\win32_dirent.cpp">
 				</File>
+				<Filter
+					Name="libgagSDL"
+					Filter="">
+					<File
+						RelativePath=".\libgag\src\glSDL.c">
+						<FileConfiguration
+							Name="Debug DX9|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\libgag\src\GraphicContext.cpp">
+						<FileConfiguration
+							Name="Debug DX9|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\libgag\src\SDL_ttf.c">
+						<FileConfiguration
+							Name="Debug DX9|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\libgag\src\Sprite.cpp">
+						<FileConfiguration
+							Name="Debug DX9|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\libgag\src\TrueTypeFont.cpp">
+						<FileConfiguration
+							Name="Debug DX9|Win32"
+							ExcludedFromBuild="TRUE">
+							<Tool
+								Name="VCCLCompilerTool"/>
+						</FileConfiguration>
+					</File>
+				</Filter>
+				<Filter
+					Name="libgagDX9"
+					Filter="">
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -443,16 +487,43 @@
 				RelativePath="src\AI.h">
 			</File>
 			<File
+				RelativePath=".\src\AICastor.h">
+			</File>
+			<File
 				RelativePath="src\AIImplementation.h">
+			</File>
+			<File
+				RelativePath=".\src\AINull.h">
 			</File>
 			<File
 				RelativePath="src\AINumbi.h">
 			</File>
 			<File
+				RelativePath=".\src\AIToubib.h">
+			</File>
+			<File
+				RelativePath=".\src\BitArray.h">
+			</File>
+			<File
+				RelativePath=".\src\Brush.h">
+			</File>
+			<File
 				RelativePath="src\Building.h">
 			</File>
 			<File
+				RelativePath=".\src\BuildingsTypes.h">
+			</File>
+			<File
 				RelativePath="src\BuildingType.h">
+			</File>
+			<File
+				RelativePath=".\src\Bullet.h">
+			</File>
+			<File
+				RelativePath=".\src\ConfigFiles.h">
+			</File>
+			<File
+				RelativePath=".\src\CreditScreen.h">
 			</File>
 			<File
 				RelativePath="src\CustomGameScreen.h">
@@ -462,6 +533,9 @@
 			</File>
 			<File
 				RelativePath="src\Engine.h">
+			</File>
+			<File
+				RelativePath=".\src\EntitiesTypes.h">
 			</File>
 			<File
 				RelativePath="src\EntityType.h">
@@ -482,10 +556,16 @@
 				RelativePath="src\GameGUILoadSave.h">
 			</File>
 			<File
+				RelativePath=".\src\GameUtilities.h">
+			</File>
+			<File
 				RelativePath="src\Glob2.h">
 			</File>
 			<File
 				RelativePath="src\GlobalContainer.h">
+			</File>
+			<File
+				RelativePath=".\src\GUIGlob2FileList.h">
 			</File>
 			<File
 				RelativePath="src\GUIMapPreview.h">
@@ -495,6 +575,9 @@
 			</File>
 			<File
 				RelativePath=".\src\IntBuildingType.h">
+			</File>
+			<File
+				RelativePath=".\src\IRC.h">
 			</File>
 			<File
 				RelativePath="src\LoadGameScreen.h">
@@ -566,7 +649,19 @@
 				RelativePath="src\Race.h">
 			</File>
 			<File
+				RelativePath=".\src\Ressource.h">
+			</File>
+			<File
+				RelativePath=".\src\RessourcesTypes.h">
+			</File>
+			<File
+				RelativePath=".\src\RessourceType.h">
+			</File>
+			<File
 				RelativePath="src\ScriptEditorScreen.h">
+			</File>
+			<File
+				RelativePath=".\src\Sector.h">
 			</File>
 			<File
 				RelativePath="src\Session.h">
@@ -575,13 +670,16 @@
 				RelativePath="src\SessionConnection.h">
 			</File>
 			<File
+				RelativePath=".\src\Settings.h">
+			</File>
+			<File
 				RelativePath="src\SettingsScreen.h">
 			</File>
 			<File
 				RelativePath="src\SGSL.h">
 			</File>
 			<File
-				RelativePath="src\StringTable.h">
+				RelativePath=".\src\SoundMixer.h">
 			</File>
 			<File
 				RelativePath="src\Team.h">
@@ -590,7 +688,13 @@
 				RelativePath="src\TeamStat.h">
 			</File>
 			<File
+				RelativePath=".\src\TerrainType.h">
+			</File>
+			<File
 				RelativePath="src\Unit.h">
+			</File>
+			<File
+				RelativePath=".\src\UnitConsts.h">
 			</File>
 			<File
 				RelativePath="src\UnitType.h">
@@ -617,12 +721,6 @@
 				Name="libgag"
 				Filter="">
 				<File
-					RelativePath=".\libgag\include\DX9GraphicContext.h">
-				</File>
-				<File
-					RelativePath="libgag\include\Environment.h">
-				</File>
-				<File
 					RelativePath="libgag\include\FileManager.h">
 				</File>
 				<File
@@ -632,16 +730,19 @@
 					RelativePath="libgag\include\GAGSys.h">
 				</File>
 				<File
-					RelativePath=".\libgag\include\glSDL.h">
+					RelativePath="libgag\include\GraphicContext.h">
 				</File>
 				<File
-					RelativePath="libgag\include\GraphicContext.h">
+					RelativePath=".\libgag\include\GUIAnimation.h">
 				</File>
 				<File
 					RelativePath="libgag\include\GUIBase.h">
 				</File>
 				<File
 					RelativePath="libgag\include\GUIButton.h">
+				</File>
+				<File
+					RelativePath=".\libgag\include\GUIFileList.h">
 				</File>
 				<File
 					RelativePath="libgag\include\GUIList.h">
@@ -656,6 +757,9 @@
 					RelativePath="libgag\include\GUIRatio.h">
 				</File>
 				<File
+					RelativePath=".\libgag\include\GUISelector.h">
+				</File>
+				<File
 					RelativePath="libgag\include\GUIText.h">
 				</File>
 				<File
@@ -665,20 +769,62 @@
 					RelativePath="libgag\include\GUITextInput.h">
 				</File>
 				<File
-					RelativePath="libgag\src\SDL_ttf.h">
+					RelativePath=".\libgag\include\Stream.h">
 				</File>
 				<File
-					RelativePath="libgag\src\SDLFont.h">
-				</File>
-				<File
-					RelativePath=".\libgag\include\SDLGraphicContext.h">
-				</File>
-				<File
-					RelativePath="libgag\src\SDLSprite.h">
+					RelativePath=".\libgag\include\StringTable.h">
 				</File>
 				<File
 					RelativePath="libgag\include\SupportFunctions.h">
 				</File>
+				<File
+					RelativePath=".\libgag\include\Toolkit.h">
+				</File>
+				<File
+					RelativePath=".\libgag\include\Types.h">
+				</File>
+				<Filter
+					Name="libgagSDL"
+					Filter="">
+					<File
+						RelativePath=".\libgag\include\glSDL.h">
+					</File>
+					<File
+						RelativePath="libgag\src\SDLFont.h">
+					</File>
+					<File
+						RelativePath=".\libgag\include\SDLGraphicContext.h">
+					</File>
+					<File
+						RelativePath="libgag\src\SDLSprite.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="libgagDX9"
+					Filter="">
+					<File
+						RelativePath=".\libgag\include\DX9GraphicContext.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="Outofplace"
+					Filter="">
+					<File
+						RelativePath=".\libgag\src\BinaryStream.h">
+					</File>
+					<File
+						RelativePath="libgag\src\SDL_ttf.h">
+					</File>
+					<File
+						RelativePath=".\libgag\src\TextStream.h">
+					</File>
+					<File
+						RelativePath=".\libgag\src\TrueTypeFont.h">
+					</File>
+					<File
+						RelativePath=".\libgag\src\win32_dirent.h">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

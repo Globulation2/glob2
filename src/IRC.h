@@ -21,9 +21,21 @@
 #ifndef __IRC_H
 #define __IRC_H
 
+#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
+#else
+#include <Types.h>
+#endif
+
 #include <deque>
 #include <vector>
+
+#ifdef WIN32
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#define strcasecmp _stricmp
+#endif
+
 
 //! This class is an IRC client
 class IRC
