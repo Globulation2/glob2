@@ -1145,6 +1145,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 					if (newScore<score)
 					{
 						unit->destinationPurprose=(Sint32)ability;
+						fprintf(logFile, "[%d] score=%f, newScore=%f\n", score, newScore);
 						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						choosen=b;
 						score=newScore;
