@@ -314,7 +314,7 @@ bool Aquisition::newFile(const char *filename)
 	return true;
 }
 
-#define HANDLE_NL(c) if (c=='\n') { actLine++; actCol=0; }
+#define HANDLE_ERROR_POS(c) if (c=='\n') { actLine++; actCol=0; } else { actCol++; }
 
 void Aquisition::nextToken()
 {
@@ -332,7 +332,7 @@ void Aquisition::nextToken()
 			ungetc(c, fp);
 			break;
 		}
-		HANDLE_NL(c);
+		HANDLE_ERROR_POS(c);
 	}
 
 	if (c==EOF)
@@ -363,7 +363,7 @@ void Aquisition::nextToken()
 				break;
 			}
 		}
-		HANDLE_NL(c);
+		HANDLE_ERROR_POS(c);
 		mot+= (char)c;
 	}
 
