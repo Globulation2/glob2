@@ -20,6 +20,8 @@
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
 #include "Version.h"
+#include "YOGConsts.h"
+#include "NetConsts.h"
 
 MainMenuScreen::MainMenuScreen()
 {
@@ -57,7 +59,7 @@ void MainMenuScreen::paint(int x, int y, int w, int h)
 	//gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 	gfxCtx->setClipRect(x, y, w, h);
 	gfxCtx->drawSurface(0, 0, background);
-	gfxCtx->drawString(gfxCtx->getW()-70, gfxCtx->getH()-18, globalContainer->standardFont, GAG::nsprintf("V %d.%d", VERSION_MAJOR, VERSION_MINOR).c_str());
+	gfxCtx->drawString(gfxCtx->getW()-70, gfxCtx->getH()-18, globalContainer->standardFont, GAG::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str());
 }
 
 int MainMenuScreen::menu(void)
