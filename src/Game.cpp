@@ -1631,7 +1631,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 	std::set<Building *, BuildingPosComp> buildingList;
-	//std::list<BuildingType *> localySeenBuildings;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -1661,9 +1660,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					sprite=globalContainer->ressources;
 					id-=272;
 				}
-
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
-
 			}
 
 	for (int y=top; y<=bot; y++)

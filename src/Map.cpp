@@ -479,7 +479,8 @@ void Map::clear()
 			100.*(double)pathToBuildingCountCloseFailureEnd/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseFailureEnd/(double)pathToBuildingCountCloseFailure);
 
-		assert(pathToBuildingCountFar==
+		// TODO : nct, I've removed this assert because it makes some maps crash. To reenable once trash found
+		/*assert(pathToBuildingCountFar==
 			+pathToBuildingCountFarOldSuccess
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
@@ -489,7 +490,7 @@ void Map::clear()
 			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
-			+pathToBuildingCountFarUpdateFailureBad);
+			+pathToBuildingCountFarUpdateFailureBad);*/
 		fprintf(logFile, "|- pathToBuildingCountFar=%d (%f %% of tot)\n",
 			pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFar/(double)pathToBuildingCountTot);

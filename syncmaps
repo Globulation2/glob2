@@ -1,2 +1,3 @@
 #!/bin/sh
 rsync -rz yog1.ysagoon.com::glob2maps maps/
+rsync -rz yog1.ysagoon.com::glob2maps campaigns/
