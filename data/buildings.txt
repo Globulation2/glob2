@@ -54,6 +54,7 @@ fillable = 0
 zonableWorker = 0
 zonableExplorer = 0
 zonableWarrior = 0
+zonableForbidden = 0
 
 canFeedUnit = 0
 timeToFeedUnit = 0
@@ -1108,6 +1109,29 @@ maxUnitStayRange = 14
 
 *
 
+// Fobidden Flag
+
+startImage = 33
+hueImage = 0
+
+zonableForbidden = 1
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+isVirtual = 1
+isCloacked =  1
+
+maxUnitWorking = 0
+
+type = 11
+
+defaultUnitStayRange = 3
+maxUnitStayRange = 20
+
+*
+
 
 // stone wall building site
 startImage = 24
@@ -1124,7 +1148,7 @@ hpInit = 1
 hpMax = 100
 hpInc = 50
 level = 0
-type = 11
+type = 12
 maxUnitWorking = 1
 isBuildingSite = 1
 
@@ -1140,7 +1164,7 @@ decTop = 0
 hpInit = 100
 hpMax = 100
 level = 0
-type = 11
+type = 12
 armor = 10
 
 *
@@ -1159,7 +1183,7 @@ hpInit = 1
 hpMax = 50
 hpInc = 49
 level = 0
-type = 12
+type = 13
 maxUnitWorking = 1
 isBuildingSite = 1
 
@@ -1175,7 +1199,7 @@ decTop = 0
 hpInit = 50
 hpMax = 50
 level = 0
-type = 12
+type = 13
 armor = 2
 
 *

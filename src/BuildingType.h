@@ -69,6 +69,7 @@ public:
 	Sint32 foodable;
 	Sint32 fillable;
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.
+	Sint32 zonableForbidden;
 	
 	Sint32 canFeedUnit;
 	Sint32 timeToFeedUnit;
@@ -161,6 +162,7 @@ public:
 			"zonableWorker",
 			"zonableExplorer",
 			"zonableWarrior",
+			"zonableForbidden",
 
 			"canFeedUnit",
 			"timeToFeedUnit",
