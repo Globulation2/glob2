@@ -31,29 +31,47 @@ class NetGame;
 class Engine
 {
 public:
+	//! Constructor
 	Engine();
+	//! Destructor
 	~Engine();
 	
+	//! Display a campaign chooser screen then call initCampaign(mapName) with the selected file
+	int initCampain();
+	//! Load mapName for campaign, init teams and create netGame
 	int initCampain(const std::string &mapName);
+	//! Display a custom map chooser screen, init teams and create netGame
 	int initCustom();
+	//! Init and load a custom game from gameName. init teams and create netGame
 	int initCustom(const std::string &gameName);
+	//! Display a game chooser screen then call initCustom(gameName) with the selected file
 	int initLoadGame();
+	//! Start a multiplayer game. Init teams and create netGame
 	void startMultiplayer(MultiplayersJoin *multiplayersJoin);
+	//! Display a map/game chooser screen suitable for multiplayer use when hosting, than call startMultiplayer
 	int initMutiplayerHost(bool shareOnYOG);
+	//! Join the network game, than call startMultiplayer
 	int initMutiplayerJoin();
-	int initMutiplayerYOG();
+	//! Run game. A valid gui and netGame must exists
 	int run();
 
+	//! Type of error the engine init function can return
 	enum EngineError
 	{
+		//! success
 		EE_NO_ERROR=1,
+		//! user canceled init
 		EE_CANCEL=2,
+		//! can't load a valid map
 		EE_CANT_LOAD_MAP=3,
+		//! no suitable player found in the map
 		EE_CANT_FIND_PLAYER=4
 	};
 
 public:
+	//! The GUI, contains the whole game also
 	GameGUI gui;
+	//! The netGame, take care of order queuing and dispatching
 	NetGame *net;
 	
 protected:

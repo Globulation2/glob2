@@ -636,3 +636,5 @@ Volume (musique)
 Satisfaction
 [customcur]
 Curseur personalisé
+[choose campaign]
+Choisir une campagne
