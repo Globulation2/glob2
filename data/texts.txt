@@ -895,14 +895,14 @@ Der YOG Metaserver hat den Anschluss nicht akzeptiert da Ihr Pseudo schohn gebra
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
 Der YOG Metaserver hat den Anschluss ohne Erklärung nicht akzeptiert.
-[The player ]
-Le joueur 
-The player
-Der Spieler
-[ has left YOG]
- a quitté YOG.
- has left YOG.
- hat YOG verlassen.
+[The player %s has left YOG]
+Le joueur %s a quitté YOG.
+The player %s has left YOG.
+Der Spieler %s hat YOG verlassen.
+[The player %s has joined YOG]
+Le joueur %s a rejoint YOG.
+The player %s has joined YOG.
+
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as being away.
