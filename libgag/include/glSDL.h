@@ -93,6 +93,13 @@ typedef struct glSDL_TexInfo
 #define SDL_GLSDL	0x00100000	/* Create an OpenGL 2D rendering context */
 
 /*
+ * Methode for external call to get surface infos
+ */
+ 
+int glSDL_IsGLSDLSurface(SDL_Surface *surface);
+int glSDL_MustLock(SDL_Surface *surface);
+
+/*
  * Wraps SDL_SetVideoMode(), and adds support for the SDL_GLSDL flag.
  *
  * If 'flags' contains SDL_GLSDL, glSDL_SetVideoMode() sets up a "pure"
