@@ -452,17 +452,17 @@ void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char
 	SDL_Rect sr;
 	sr.x=0;
 	sr.y=0;
-	sr.w=s->w;
-	sr.h=s->h;
+	sr.w=static_cast<Uint16>(s->w);
+	sr.h=static_cast<Uint16>(s->h);
 
 	SDL_Rect r;
-	r.x=x;
-	r.y=y;
+	r.x=static_cast<Sint16>(x);
+	r.y=static_cast<Sint16>(y);
 	if (w)
-		r.w=w;
+		r.w=static_cast<Uint16>(w);
 	else
-		r.w=s->w;
-	r.h=s->h;
+		r.w=static_cast<Uint16>(s->w);
+	r.h=static_cast<Uint16>(s->h);
 
 	SDL_Rect oc;
 	if (clip)

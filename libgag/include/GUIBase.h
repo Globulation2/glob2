@@ -263,11 +263,11 @@ public:
 	//! Int to say when we have finished
 	int endValue;
 	//! Displacement from top-left corner of screen
-	int decX, decY;
+	unsigned decX, decY;
 
 public:
-	//! Constructor, take the context in which the overlay must be create and it's size in x and y
-	OverlayScreen(GraphicContext *parentCtx, int w, int h);
+	//! Constructor, take the context in which the overlay must be create and its dimensions in w and h
+	OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h);
 	//! Destructor
 	virtual ~OverlayScreen();
 

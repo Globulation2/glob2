@@ -56,17 +56,17 @@ protected:
 protected:
 	bool readOnly;
 	const Font *font;
-	unsigned int areaHeight;
-	unsigned int areaPos;
+	size_t areaHeight;
+	size_t areaPos;
 	unsigned int charHeight;
-	std::vector <unsigned int> lines;
+	std::vector <size_t> lines;
 	std::string text;
 	
 	// edit mod variables
 	// this one is the only one always valid, other are recomputed from it
-	unsigned int cursorPos;
+	size_t cursorPos;
 	// this one can be invalid, but must be within textBufferLength
-	unsigned int cursorPosY;
+	size_t cursorPosY;
 	// this one can be anything
 	unsigned int cursorScreenPosY;
 };

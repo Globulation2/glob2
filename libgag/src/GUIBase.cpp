@@ -26,20 +26,20 @@ void UCS16toUTF8(Uint16 ucs16, char utf8[4])
 {
 	if (ucs16<0x80)
 	{
-		utf8[0]=ucs16;
+		utf8[0]=static_cast<Uint8>(ucs16);
 		utf8[1]=0;
 	}
 	else if (ucs16<0x800)
 	{
-		utf8[0]=((ucs16>>6)&0x1F)|0xC0;
-		utf8[1]=(ucs16&0x3F)|0x80;
+		utf8[0]=static_cast<Uint8>(((ucs16>>6)&0x1F)|0xC0);
+		utf8[1]=static_cast<Uint8>((ucs16&0x3F)|0x80);
 		utf8[2]=0;
 	}
 	else if (ucs16<0xd800)
 	{
-		utf8[0]=((ucs16>>12)&0x0F)|0xE0;
-		utf8[1]=((ucs16>>6)&0x3F)|0x80;
-		utf8[2]=(ucs16&0x3F)|0x80;
+		utf8[0]=static_cast<Uint8>(((ucs16>>12)&0x0F)|0xE0);
+		utf8[1]=static_cast<Uint8>(((ucs16>>6)&0x3F)|0x80);
+		utf8[2]=static_cast<Uint8>((ucs16&0x3F)|0x80);
 		utf8[3]=0;
 	}
 	else
@@ -398,10 +398,10 @@ void Screen::addUpdateRect()
 void Screen::addUpdateRect(int x, int y, int w, int h)
 {
 	SDL_Rect r;
-	r.x=x;
-	r.y=y;
-	r.w=w;
-	r.h=h;
+	r.x=static_cast<Sint16>(x);
+	r.y=static_cast<Sint16>(y);
+	r.w=static_cast<Uint16>(w);
+	r.h=static_cast<Uint16>(h);
 	updateRects.push_back(r);
 }
 
@@ -459,7 +459,7 @@ void Screen::repaint(DrawableSurface *gfx)
 	{
 		SDL_Rect *rects=new SDL_Rect[updateRects.size()];
 		
-		for (unsigned i=0; i<updateRects.size(); i++)
+		for (size_t i=0; i<updateRects.size(); i++)
 			rects[i]=updateRects[i];
 			
 		gfx->updateRects(rects, updateRects.size());
@@ -493,7 +493,7 @@ int Screen::getH(void)
 
 // Overlay screen, used for non full frame dialog
 
-OverlayScreen::OverlayScreen(GraphicContext *parentCtx, int w, int h)
+OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
 {
 	gfxCtx=parentCtx->createDrawableSurface();
 	gfxCtx->setRes(w, h);
@@ -514,13 +514,13 @@ void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	switch (ev.type)
 	{
 		case SDL_MOUSEMOTION:
-			ev.motion.x-=decX;
-			ev.motion.y-=decY;
+			ev.motion.x-=static_cast<Uint16>(decX);
+			ev.motion.y-=static_cast<Uint16>(decY);
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
-			ev.button.x-=decX;
-			ev.button.y-=decY;
+			ev.button.x-=static_cast<Uint16>(decX);
+			ev.button.y-=static_cast<Uint16>(decY);
 			break;
 		default:
 			break;

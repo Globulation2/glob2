@@ -119,7 +119,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if (cursorPos < text.length())
 				{
-					unsigned len=getNextUTF8Char(text.c_str(), cursorPos);
+					size_t len=getNextUTF8Char(text.c_str(), cursorPos);
 					remText(cursorPos, len-cursorPos);
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
@@ -131,8 +131,8 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if (cursorPos)
 				{
-					unsigned newPos=getPrevUTF8Char(text.c_str(), cursorPos);
-					unsigned len=cursorPos-newPos;
+					size_t newPos=getPrevUTF8Char(text.c_str(), cursorPos);
+					size_t len=cursorPos-newPos;
 					cursorPos=newPos;
 					remText(newPos, len);
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
@@ -186,11 +186,11 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					if (!readOnly)
 					{
 						// TODO : UTF8 clean cursor displacement in text
-						unsigned int cursorPosX=cursorPos-lines[cursorPosY];
-						unsigned int newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
+						size_t cursorPosX=cursorPos-lines[cursorPosY];
+						size_t newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
 						if (newPosY!=cursorPosY)
 						{
-							unsigned int newLineLen=lines[cursorPosY]-lines[newPosY];
+							size_t newLineLen=lines[cursorPosY]-lines[newPosY];
 
 							if (cursorPosX<newLineLen)
 							{
@@ -217,17 +217,17 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					if (areaPos<lines.size()-areaHeight)
 					{
 						// compute new areaPos
-						areaPos+=MIN(lines.size()-areaHeight-areaPos, areaHeight);
+						areaPos+=std::min(lines.size()-areaHeight-areaPos, areaHeight);
 						
 						// if in edit mode, replace cursor
 						if (!readOnly)
 						{
 							// TODO : UTF8 clean cursor displacement in text
-							unsigned int cursorPosX=cursorPos-lines[cursorPosY];
-							unsigned int newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
+							size_t cursorPosX=cursorPos-lines[cursorPosY];
+							size_t newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
 							if (newPosY!=cursorPosY)
 							{
-								unsigned int newLineLen;
+								size_t newLineLen;
 								if (newPosY==lines.size()-1)
 								{
 									newLineLen=text.length()-lines[newPosY];
@@ -261,8 +261,8 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				if ((!readOnly) && (cursorPosY>0))
 				{
 					// TODO : UTF8 clean cursor displacement in text
-					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
-					unsigned int newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
+					size_t cursorPosX=cursorPos-lines[cursorPosY];
+					size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
 					
 					if (cursorPosX<newLineLen)
 					{
@@ -284,8 +284,8 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				if ((!readOnly) && (cursorPosY+1<lines.size()))
 				{
 					// TODO : UTF8 clean cursor displacement in text
-					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
-					unsigned int newLineLen;
+					size_t cursorPosX=cursorPos-lines[cursorPosY];
+					size_t newLineLen;
 					
 					if (cursorPosY==lines.size()-2)
 					{

@@ -103,10 +103,10 @@ void SDLDrawableSurface::setAlpha(bool usePerPixelAlpha, Uint8 alphaValue)
 
 void SDLDrawableSurface::setClipRect(int x, int y, int w, int h)
 {
-	clipRect.x=x;
-	clipRect.y=y;
-	clipRect.w=w;
-	clipRect.h=h;
+	clipRect.x=static_cast<Sint16>(x);
+	clipRect.y=static_cast<Sint16>(y);
+	clipRect.w=static_cast<Uint16>(w);
+	clipRect.h=static_cast<Uint16>(h);
 
 	if (!surface)
 		return;
@@ -118,8 +118,8 @@ void SDLDrawableSurface::setClipRect(void)
 {
 	clipRect.x=0;
 	clipRect.y=0;
-	clipRect.w=surface->w;
-	clipRect.h=surface->h;
+	clipRect.w=static_cast<Uint16>(surface->w);
+	clipRect.h=static_cast<Uint16>(surface->h);
 
 	if (!surface)
 		return;
@@ -172,9 +172,9 @@ void SDLDrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint
 			{ /* Format/endian independent */
                 Uint8 nr, ng, nb;
 
-                nr = (pixel>>surface->format->Rshift)&0xFF;
-                ng = (pixel>>surface->format->Gshift)&0xFF;
-                nb = (pixel>>surface->format->Bshift)&0xFF;
+                nr = static_cast<Uint8>((pixel>>surface->format->Rshift)&0xFF);
+                ng = static_cast<Uint8>((pixel>>surface->format->Gshift)&0xFF);
+                nb = static_cast<Uint8>((pixel>>surface->format->Bshift)&0xFF);
                 *((bits)+surface->format->Rshift/8) = nr;
                 *((bits)+surface->format->Gshift/8) = ng;
                 *((bits)+surface->format->Bshift/8) = nb;
@@ -216,10 +216,10 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 	if ((a==ALPHA_OPAQUE) || (surface->format->BitsPerPixel==8))
 	{
 		SDL_Rect rect;
-		rect.x=x;
-		rect.y=y;
-		rect.w=w;
-		rect.h=h;
+		rect.x=static_cast<Sint16>(x);
+		rect.y=static_cast<Sint16>(y);
+		rect.w=static_cast<Uint16>(w);
+		rect.h=static_cast<Uint16>(h);
 		SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b));
 	}
 	else
@@ -271,9 +271,9 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 					while (dw)
 					{
 						SDL_GetRGB(*mem, surface->format, &dr, &dg, &db);
-						r=(pr+na*dr)>>8;
-						g=(pg+na*dg)>>8;
-						b=(pb+na*db)>>8;
+						r=static_cast<Uint8>((pr+na*dr)>>8);
+						g=static_cast<Uint8>((pg+na*dg)>>8);
+						b=static_cast<Uint8>((pb+na*db)>>8);
 						*mem = (Uint16)SDL_MapRGB(surface->format, r, g, b);
 						mem++;
 						--dw;
@@ -297,9 +297,9 @@ void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uin
 						dg = *((bits)+surface->format->Gshift/8);
 						db = *((bits)+surface->format->Bshift/8);
 
-						dr=(pr+na*dr)>>8;
-						dg=(pg+na*dg)>>8;
-						db=(pb+na*db)>>8;
+						dr=static_cast<Uint8>((pr+na*dr)>>8);
+						dg=static_cast<Uint8>((pg+na*dg)>>8);
+						db=static_cast<Uint8>((pb+na*db)>>8);
 
 						*((bits)+surface->format->Rshift/8) = dr;
 						*((bits)+surface->format->Gshift/8) = dg;
@@ -433,7 +433,7 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 					nr = (ar+na*dr)>>8;
 					ng = (ag+na*dg)>>8;
 					nb = (ab+na*db)>>8;
-					*bits = (Uint16)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					*bits = (Uint16)SDL_MapRGBA(surface->format, static_cast<Uint8>(nr), static_cast<Uint8>(ng), static_cast<Uint8>(nb), sa);
 					bits += increment;
 				}
 			}
@@ -446,9 +446,9 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 			Uint8 nr, ng, nb;
 			for (int n=l-1; n>=0; --n)
 			{
-				nr = (pixel>>surface->format->Rshift)&0xFF;
-				ng = (pixel>>surface->format->Gshift)&0xFF;
-				nb = (pixel>>surface->format->Bshift)&0xFF;
+				nr = static_cast<Uint8>((pixel>>surface->format->Rshift)&0xFF);
+				ng = static_cast<Uint8>((pixel>>surface->format->Gshift)&0xFF);
+				nb = static_cast<Uint8>((pixel>>surface->format->Bshift)&0xFF);
 				*((bits)+surface->format->Rshift/8) = nr;
 				*((bits)+surface->format->Gshift/8) = ng;
 				*((bits)+surface->format->Bshift/8) = nb;
@@ -484,7 +484,7 @@ void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 					nr = (ar+na*dr)>>8;
 					ng = (ag+na*dg)>>8;
 					nb = (ab+na*db)>>8;
-					*bits = (Uint32)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					*bits = (Uint32)SDL_MapRGBA(surface->format, static_cast<Uint8>(nr), static_cast<Uint8>(ng), static_cast<Uint8>(nb), sa);
 					bits += increment;
 				}
 			}
@@ -572,7 +572,7 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 					nr = (ar+na*dr)>>8;
 					ng = (ag+na*dg)>>8;
 					nb = (ab+na*db)>>8;
-					*bits++ = (Uint16)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					*bits++ = (Uint16)SDL_MapRGBA(surface->format, static_cast<Uint8>(nr), static_cast<Uint8>(ng), static_cast<Uint8>(nb), sa);
 				}
 			}
 		}
@@ -584,9 +584,9 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 			Uint8 *bits= ((Uint8 *)surface->pixels)+y*surface->pitch+x*3;
 			for (int n=l-1; n>=0; --n)
 			{
-				nr = (pixel>>surface->format->Rshift)&0xFF;
-				ng = (pixel>>surface->format->Gshift)&0xFF;
-				nb = (pixel>>surface->format->Bshift)&0xFF;
+				nr = static_cast<Uint8>((pixel>>surface->format->Rshift)&0xFF);
+				ng = static_cast<Uint8>((pixel>>surface->format->Gshift)&0xFF);
+				nb = static_cast<Uint8>((pixel>>surface->format->Bshift)&0xFF);
 				*((bits)+surface->format->Rshift/8) = nr;
 				*((bits)+surface->format->Gshift/8) = ng;
 				*((bits)+surface->format->Bshift/8) = nb;
@@ -620,7 +620,7 @@ void SDLDrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uin
 					nr = (ar+na*dr)>>8;
 					ng = (ag+na*dg)>>8;
 					nb = (ab+na*db)>>8;
-					*bits++ = (Uint32)SDL_MapRGBA(surface->format, nr, ng, nb, sa);
+					*bits++ = (Uint32)SDL_MapRGBA(surface->format, static_cast<Uint8>(nr), static_cast<Uint8>(ng), static_cast<Uint8>(nb), sa);
 				}
 			}
 		}
@@ -906,7 +906,7 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 	}
 	while (dx<=dy);
 	*/
-	int newAlpha=a>>2;
+	Uint8 newAlpha=a>>2;
 	int dx, dy, d;
 	int rdx, rdy;
 	int i;
@@ -979,10 +979,10 @@ void SDLDrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
 	{
 		SDL_Rect r;
 
-		r.x=x;
-		r.y=y;
-		r.w=surface->getW();
-		r.h=surface->getH();
+		r.x=static_cast<Sint16>(x);
+		r.y=static_cast<Sint16>(y);
+		r.w=static_cast<Uint16>(surface->getW());
+		r.h=static_cast<Uint16>(surface->getH());
 
 		SDL_BlitSurface(sdlsurface->surface, NULL, this->surface, &r);
 	}
@@ -1095,10 +1095,10 @@ void SDLGraphicContext::loadImage(const char *name)
 			if (temp)
 			{
 				SDL_Rect dRect;
-				dRect.x=(surface->w-temp->w)>>1;
-				dRect.y=(surface->h-temp->h)>>1;
-				dRect.w=temp->w;
-				dRect.h=temp->h;
+				dRect.x=static_cast<Sint16>((surface->w-temp->w)>>1);
+				dRect.y=static_cast<Sint16>((surface->h-temp->h)>>1);
+				dRect.w=static_cast<Uint16>(temp->w);
+				dRect.h=static_cast<Uint16>(temp->h);
 				SDL_BlitSurface(temp, NULL, surface, &dRect);
 				SDL_FreeSurface(temp);
 			}

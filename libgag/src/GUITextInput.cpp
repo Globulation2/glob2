@@ -22,7 +22,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, unsigned maxLength, bool password)
+TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password)
 {
 	this->x=x;
 	this->y=y;
@@ -97,7 +97,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		{
 			case SDLK_RIGHT:
 			{
-				unsigned l=text.length();
+				size_t l=text.length();
 				if (mod&KMOD_CTRL)
 				{
 					bool cont=true;
@@ -232,7 +232,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				{
 					char utf8text[4];
 					UCS16toUTF8(c, utf8text);
-					unsigned lutf8=strlen(utf8text);
+					size_t lutf8=strlen(utf8text);
 					if ((maxLength==0) || (text.length()+lutf8<maxLength))
 					{
 						text.insert(cursPos, utf8text);
@@ -257,7 +257,7 @@ void TextInput::recomputeTextInfos(void)
 	if (password)
 	{
 		pwd.clear();
-		unsigned l = text.length();
+		size_t l = text.length();
 		unsigned p = 0, op = 0;
 		unsigned compCursPos = 0;
 		unsigned pwdCursPos = 0;
@@ -272,7 +272,7 @@ void TextInput::recomputeTextInfos(void)
 				pwd += "*";
 				op = p;
 			}
-			while(p<l);
+			while (p<l);
 		}
 		cursorScreenPos=fontPtr->getStringWidth(pwd.c_str(), pwdCursPos);
 	}
