@@ -89,7 +89,7 @@ ressourceForOneUnit 0
 
 maxWood 0
 maxCorn 0
-maxFungus 0
+maxPapyrus 0
 maxStone 0
 maxAlgue 0
 maxFruit0 0
