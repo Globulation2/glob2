@@ -84,7 +84,7 @@ Map::Map()
 			for (int s=0; s<2; s++)
 			{
 				ressourcesGradient[t][r][s]=NULL;
-				gradientUpdatedDepth[t][r][s]=0;
+				gradientUpdated[t][r][s]=false;
 			}
 	for (int t=0; t<32; t++)
 		for (int s=0; s<2; s++)
@@ -282,7 +282,7 @@ void Map::clear()
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
-				gradientUpdatedDepth[t][r][s]=0;
+				gradientUpdated[t][r][s]=false;
 	
 	
 	fprintf(logFile, "\n");
@@ -990,12 +990,12 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 				{
 					assert(ressourcesGradient[t][r][s]==NULL);
 					ressourcesGradient[t][r][s]=new Uint8[size];
-					updateRessourcesGradient(t, r, (bool)s, true);
+					updateRessourcesGradient(t, r, (bool)s);
 				}
 		for (int t=0; t<32; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<1; s++)
-					gradientUpdatedDepth[t][r][s]=0;
+					gradientUpdated[t][r][s]=false;
 
 		for (int t=0; t<sessionGame->numberOfTeam; t++)
 			for (int s=0; s<2; s++)
@@ -1084,7 +1084,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateRessourcesGradient(t, r, (bool)s, true);
+			updateRessourcesGradient(t, r, (bool)s);
 		}
 }
 
@@ -1187,25 +1187,16 @@ void Map::syncStep(Uint32 stepCounter)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
-				{
-					int gud=gradientUpdatedDepth[t][r][s];
-					if (gud<1) // now we have only one filter.
+					if (!gradientUpdated[t][r][s])
 					{
-						//printf("updateRessourcesGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
-						updateRessourcesGradient(t, r, (bool)s, gud==0);
-						gradientUpdatedDepth[t][r][s]++;
-						updated=true;
-						goto tripleBreak;
+						updateRessourcesGradient(t, r, (bool)s);
+						gradientUpdated[t][r][s]=true;
+						return;
 					}
-				}
-		tripleBreak:
-		if (!updated)
-		{
-			for (int t=0; t<numberOfTeam; t++)
-				for (int r=0; r<MAX_RESSOURCES; r++)
-					for (int s=0; s<2; s++)
-						gradientUpdatedDepth[t][r][s]=0;
-		}
+		for (int t=0; t<numberOfTeam; t++)
+			for (int r=0; r<MAX_RESSOURCES; r++)
+				for (int s=0; s<2; s++)
+					gradientUpdated[t][r][s]=false;
 	}
 }
 
@@ -2025,6 +2016,69 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	// array.listed.b method:
+	//Uint32 startTick=SDL_GetTicks();
+	
+	assert(size <= 65536);
+	
+	Uint16 listedAddr[size];
+	size_t listCountWrite = 0;
+	
+	// make the first list:
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			if (gradient[(y << wDec) | x] == 255)
+				listedAddr[listCountWrite++] = (y << wDec) | x;
+	
+	size_t listCountRead = 0;
+	while (listCountRead < listCountWrite)
+	{
+		Uint16 deltaAddrG = listedAddr[listCountRead++];
+		
+		size_t y = deltaAddrG >> wDec;
+		size_t x = deltaAddrG & wMask;
+		
+		size_t yu = ((y - 1) & hMask);
+		size_t yd = ((y + 1) & hMask);
+		size_t xl = ((x - 1) & wMask);
+		size_t xr = ((x + 1) & wMask);
+		
+		Uint8 g = gradient[(y << wDec) | x] - 1;
+		
+		size_t deltaAddrC[8];
+		Uint8 *addr;
+		Uint8 side;
+		
+		deltaAddrC[0] = (yu << wDec) | xl;
+		deltaAddrC[1] = (yu << wDec) | x ;
+		deltaAddrC[2] = (yu << wDec) | xr;
+		deltaAddrC[3] = (y  << wDec) | xr;
+		deltaAddrC[4] = (yd << wDec) | xr;
+		deltaAddrC[5] = (yd << wDec) | x ;
+		deltaAddrC[6] = (yd << wDec) | xl;
+		deltaAddrC[7] = (y  << wDec) | xl;
+		for (int ci=0; ci<8; ci++)
+		{
+			addr = &gradient[deltaAddrC[ci]];
+			side = *addr;
+			if (side > 0 && side < g)
+			{
+				*addr = g;
+				if (g > 2)
+					listedAddr[listCountWrite++] = deltaAddrC[ci];
+			}
+		}
+	}
+	
+	//Uint32 endTick=SDL_GetTicks();
+	//Uint32 ticks=endTick-startTick;
+	
+	//gradientTicksSum+=ticks;
+	//gradientTicksSumCount++;
+}
+
+/*void Map::updateGlobalGradient(Uint8 *gradient)
+{
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	
@@ -2147,42 +2201,39 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
-}
+}*/
 
-void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init)
+void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	if (init)
+	assert(globalContainer);
+	bool visibleToBeCollected=(bool)globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
+	for (size_t i=0; i<size; i++)
 	{
-		assert(globalContainer);
-		bool visibleToBeCollected=(bool)globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
-		for (size_t i=0; i<size; i++)
+		Case c=cases[i];
+		if (c.forbidden&teamMask)
+			gradient[i]=0;
+		else if (c.ressource.type==NO_RES_TYPE)
 		{
-			Case c=cases[i];
-			if (c.forbidden&teamMask)
+			if (c.building!=NOGBID)
 				gradient[i]=0;
-			else if (c.ressource.type==NO_RES_TYPE)
-			{
-				if (c.building!=NOGBID)
-					gradient[i]=0;
-				else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
-					gradient[i]=0;
-				else
-					gradient[i]=1;
-			}
-			else if (c.ressource.type==ressourceType)
-			{
-				if (visibleToBeCollected && !(fogOfWar[i]&teamMask))
-					gradient[i]=0;
-				else
-					gradient[i]=255;
-			}
+			else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
+				gradient[i]=0;
 			else
-				gradient[i]=0;
+				gradient[i]=1;
 		}
+		else if (c.ressource.type==ressourceType)
+		{
+			if (visibleToBeCollected && !(fogOfWar[i]&teamMask))
+				gradient[i]=0;
+			else
+				gradient[i]=255;
+		}
+		else
+			gradient[i]=0;
 	}
 	updateGlobalGradient(gradient);
 }
@@ -3006,6 +3057,8 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	else
 		building->locked[canSwim]=false;
 
+	/*
+	TODO: remove this, it was only needed with the old gradient method.
 	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 		int x=(posX-1)&wMask;
@@ -3097,7 +3150,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			x=(x-1)&wMask;
 			y=(y-1)&hMask;
 		}
-	}
+	}*/
 	updateGlobalGradient(gradient);
 }
 

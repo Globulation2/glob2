@@ -371,7 +371,7 @@ public:
 	}
 	
 	void updateGlobalGradient(Uint8 *gradient);
-	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
+	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
@@ -504,8 +504,8 @@ public:
 	//[int team][bool unitCanSwim][int mapX][int mapY]
 	Uint8 *forbiddenGradient[32][2];
 protected:
-	//Used for scheduling computation time. (if==0) has to be fully recomputed, (if>0) number of depth already computed.
-	int gradientUpdatedDepth[32][MAX_NB_RESSOURCES][2];
+	//Used for scheduling computation time.
+	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];
 	Uint8 *undermap;
 	size_t size;
 	
