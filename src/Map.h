@@ -175,7 +175,7 @@ public:
 	}
 	
 	//! Return true if the position (x,y) is a forbidden area set by the user
-	bool isForbiddenLocal(int x, int y, int teamMask)
+	bool isForbiddenLocal(int x, int y)
 	{
 		return localForbiddenMap.get(w*(y&hMask)+(x&wMask));
 	}
