@@ -27,7 +27,7 @@
 
 
 InGameTextInput::InGameTextInput()
-:InGameScreen(492, 34)
+:OverlayScreen(492, 34)
 {
 	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true);
 	addWidget(textInput);
@@ -249,7 +249,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen=new InGameLoadSaveScreen(".", "game");
+					gameMenuScreen=new LoadSaveScreen(".", "game");
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
@@ -258,7 +258,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen=new InGameLoadSaveScreen(".", "game", false, game.map.getMapName());
+					gameMenuScreen=new LoadSaveScreen(".", "game", false, game.map.getMapName());
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
@@ -382,9 +382,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case InGameLoadSaveScreen::OK:
+				case LoadSaveScreen::OK:
 				{
-					/*const*/ char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
+					/*const*/ char *name=((LoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
 					{
 						strncpy(toLoadGameFileName, name, Map::MAP_NAME_MAX_SIZE+5);
@@ -404,7 +404,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 				}
 
-				case InGameLoadSaveScreen::CANCEL:
+				case LoadSaveScreen::CANCEL:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				return true;

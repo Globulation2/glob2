@@ -23,21 +23,21 @@
 #include "GAG.h"
 #include "Player.h"
 
-class InGameScreen:public Screen
+class OverlayScreen:public Screen
 {
 public:
 	int endValue;
 	int decX, decY;
 
 public:
-	InGameScreen(int w, int h);
-	virtual ~InGameScreen();
+	OverlayScreen(int w, int h);
+	virtual ~OverlayScreen();
 
 	virtual void translateAndProcessEvent(SDL_Event *event);
 	virtual void paint(int x, int y, int w, int h);
 };
 
-class InGameMainScreen:public InGameScreen
+class InGameMainScreen:public OverlayScreen
 {
 public:
 	enum
@@ -59,7 +59,7 @@ public:
 
 class GameGUI;
 
-class InGameAlliance8Screen:public InGameScreen
+class InGameAlliance8Screen:public OverlayScreen
 {
 public:
 	enum

@@ -22,7 +22,7 @@
 #include "GameGUI.h"
 
 
-InGameScreen::InGameScreen(int w, int h)
+OverlayScreen::OverlayScreen(int w, int h)
 {
 	gfxCtx=globalContainer->gfx->createDrawableSurface();
 	gfxCtx->setRes(w, h);
@@ -32,12 +32,12 @@ InGameScreen::InGameScreen(int w, int h)
 	endValue=-1;
 }
 
-InGameScreen::~InGameScreen()
+OverlayScreen::~OverlayScreen()
 {
 	delete gfxCtx;
 }
 
-void InGameScreen::translateAndProcessEvent(SDL_Event *event)
+void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 {
 	SDL_Event ev=*event;
 	switch (ev.type)
@@ -57,7 +57,7 @@ void InGameScreen::translateAndProcessEvent(SDL_Event *event)
 	dispatchEvents(&ev);
 }
 
-void InGameScreen::paint(int x, int y, int w, int h)
+void OverlayScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 255);
 }
@@ -65,7 +65,7 @@ void InGameScreen::paint(int x, int y, int w, int h)
 
 //! Main menu screen
 InGameMainScreen::InGameMainScreen()
-:InGameScreen(300, 275)
+:OverlayScreen(300, 275)
 {
 	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), LOAD_GAME));
 	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), SAVE_GAME));
@@ -88,7 +88,7 @@ void InGameMainScreen::onSDLEvent(SDL_Event *event)
 
 //! Alliance screen
 InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
-:InGameScreen(300, 295)
+:OverlayScreen(300, 295)
 {
 	int i;
 	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
@@ -126,7 +126,7 @@ void InGameAlliance8Screen::onSDLEvent(SDL_Event *event)
 
 void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 {
-	InGameScreen::paint(x, y, w, h);
+	OverlayScreen::paint(x, y, w, h);
 	if (firstPaint)
 	{
 		gfxCtx->drawString(200, 10, globalContainer->menuFont, "A");

@@ -759,3 +759,7 @@ von:
 à:
 to:
 zu:
+[compile]
+Compiler le script
+Compile script
+Script compilieren
