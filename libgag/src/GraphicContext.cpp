@@ -1203,14 +1203,18 @@ namespace GAGCore
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
+		#ifdef HAVE_OPENGL
 		glState.doScissor(1);
 		glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+		#endif
 	}
 	
 	void GraphicContext::setClipRect(void)
 	{
 		DrawableSurface::setClipRect();
+		#ifdef HAVE_OPENGL
 		glState.doScissor(0);
+		#endif
 	}
 	
 	// drawing, reimplementation for GL
