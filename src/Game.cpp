@@ -195,6 +195,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				int id=Building::GIDtoID(gid);
 				Building *b=teams[team]->myBuildings[id];
 				assert(b);
+				assert(b->type);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 				{
 					int oldRange=b->unitStayRange;
@@ -212,6 +213,13 @@ void Game::executeOrder(Order *order, int localPlayer)
 							map.dirtyLocalGradient(b->posX-oldRange-16, b->posY-oldRange-16, 32+oldRange*2, 32+oldRange*2, team);
 						}
 					}
+					else
+						for (int i=0; i<2; i++)
+						{
+							b->dirtyLocalGradient[i]=true;
+							delete b->globalGradient[i];
+							b->globalGradient[i]=NULL;
+						}
 				}
 			}
 		}

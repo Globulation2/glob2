@@ -72,6 +72,7 @@ void BuildingsTypes::load(const char *filename)
 	
 	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
+		//Need ressource integrity:
 		bool needRessource=false;
 		for (int i=0; i<MAX_RESSOURCES; i++)
 			if ((*it)->maxRessource[i])
@@ -82,10 +83,35 @@ void BuildingsTypes::load(const char *filename)
 		if (needRessource)
 			assert((*it)->fillable || (*it)->foodable);
 		
+		//hpInc integrity:
 		if ((*it)->isBuildingSite)
 			assert((*it)->hpInc>0);
 		else
 			assert((*it)->hpInc==0);
+		
+		//flag integrity:
+		if ((*it)->isVirtual)
+		{
+			assert((*it)->isCloacked);
+			assert((*it)->defaultUnitStayRange);
+		}
+		if ((*it)->isCloacked)
+		{
+			assert((*it)->isVirtual);
+			assert((*it)->defaultUnitStayRange);
+		}
+		if ((*it)->defaultUnitStayRange)
+		{
+			assert((*it)->isCloacked);
+			assert((*it)->isVirtual);
+		}
+		if ((*it)->zonableForbidden)
+		{
+			assert((*it)->isCloacked);
+			assert((*it)->isVirtual);
+			assert((*it)->defaultUnitStayRange);
+		}
+		
 	}
 }
 
