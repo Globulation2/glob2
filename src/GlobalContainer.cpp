@@ -65,7 +65,6 @@ void GlobalContainer::setMetaServerName(char *name)
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
-	graphicFlags|=DrawableSurface::RESIZABLE;
 	for (int  i=1; i<argc; i++)
 	{
 		if (strcmp(argv[i], "-f")==0)
@@ -80,11 +79,18 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			continue;
 		}
 
+		if (strcmp(argv[i], "-r")==0)
+		{
+			graphicFlags|=DrawableSurface::RESIZABLE;
+			continue;
+		}
+
 		if (strcmp(argv[i], "-h")==0)
 		{
 			printf("\nGlobulation 2\n");
 			printf("Cmd line arguments :\n");
 			printf("-f\tset full screen\n");
+			printf("-r\tset resizable window\n");
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-m\tspecify meta server hostname\n");

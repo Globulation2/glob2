@@ -1051,8 +1051,6 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
 		}
-
-
 	}
 	else if (event->type==SDL_KEYDOWN)
 	{
