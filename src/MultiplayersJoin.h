@@ -51,6 +51,8 @@ public:
 	int waitingTimeout;
 	int waitingTimeoutSize;
 	int waitingTOTL;
+	
+	bool kicked;
 
 public:
 	MultiplayersJoin();

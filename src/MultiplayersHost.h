@@ -46,12 +46,12 @@ public:
 
 	bool firstDraw;
 	bool shareOnYOG;
-
+	
 	HostGlobalState hostGlobalState;
-
+	SessionInfo *savedSessionInfo;
 
 public:
-	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG);
+	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo);
 	virtual ~MultiplayersHost();
 
 public:

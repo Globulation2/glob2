@@ -110,7 +110,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 		}
 	}
 	
-	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true);
+	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;

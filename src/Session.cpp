@@ -131,7 +131,7 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		char t[32];
 		players[playerNumber].printNetState(t);
 		
-		if (savedSessionInfo)
+		/*if (savedSessionInfo)
 		{
 			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
 				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
@@ -141,12 +141,12 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 			else
 				assert(false);
 		}
-		else
+		else*/
 			snprintf(infoString, stringLen, "%s : %s (%s)", players[playerNumber].name, s, t);
 	}
 	else if (players[playerNumber].type==BasePlayer::P_AI)
 	{
-		if (savedSessionInfo)
+		/*if (savedSessionInfo)
 		{
 			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
 				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
@@ -156,7 +156,7 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 			else
 				assert(false);
 		}
-		else
+		else*/
 			snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, globalContainer->texts.getString("[AI]"));
 	}
 	else
@@ -377,4 +377,38 @@ bool SessionInfo::setLocal(int p)
 		return false;
 	players[p].type=BasePlayer::P_LOCAL;
 	return true;
+}
+
+int SessionInfo::getTeamNumber(char playerName[BasePlayer::MAX_NAME_LENGTH], int team)
+{
+	for (int i=0; i<numberOfPlayer; i++)
+		if (strncmp(players[i].name, playerName, BasePlayer::MAX_NAME_LENGTH)==0)
+			team=players[i].teamNumber;
+	return team;
+}
+
+int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
+{
+	int oldAICount=0;
+	for (int i=0; i<numberOfPlayer; i++)
+		if (players[i].type==BasePlayer::P_AI)
+			oldAICount++;
+	if (oldAICount==0)
+		return team;
+	
+	int newAICount=0;
+	for (int i=0; i<currentSessionInfo->numberOfPlayer; i++)
+		if (currentSessionInfo->players[i].type==BasePlayer::P_AI)
+			newAICount++;
+	
+	int targetCount=(newAICount%oldAICount);
+	for (int i=0; i<numberOfPlayer; i++)
+		if (players[i].type==BasePlayer::P_AI)
+			if (targetCount++==0)
+			{
+				team=players[i].teamNumber;
+				break;
+			}
+	
+	return team;
 }

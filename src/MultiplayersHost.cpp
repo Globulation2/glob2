@@ -23,11 +23,15 @@
 #include "GAG.h"
 #include "YOGConnector.h"
 
-MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG)
+MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
 {
 	this->sessionInfo=*sessionInfo;
 	validSessionInfo=true;
+	if (savedSessionInfo)
+		this->savedSessionInfo=new SessionInfo(*savedSessionInfo);
+	else
+		this->savedSessionInfo=NULL;
 
 	// net things:
 	initHostGlobalState();
@@ -94,6 +98,9 @@ MultiplayersHost::~MultiplayersHost()
 			printf("Socket closed.\n");
 		}
 	}
+	
+	if (savedSessionInfo)
+		delete savedSessionInfo;
 }
 
 void MultiplayersHost::initHostGlobalState(void)
@@ -242,7 +249,8 @@ void MultiplayersHost::removePlayer(int p)
 		sessionInfo.players[p].netTOTL=sessionInfo.players[mp].netTOTL;
 		sessionInfo.players[p].numberMask=sessionInfo.players[mp].numberMask;
 
-		int t=(p%sessionInfo.numberOfTeam);
+		//int t=(p%sessionInfo.numberOfTeam);
+		int t=sessionInfo.players[mp].teamNumber;
 		sessionInfo.players[p].setNumber(p);
 		sessionInfo.players[p].setTeamNumber(t);
 		
@@ -296,20 +304,26 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 {
-	if (size!=28)
+	if (size!=44)
 	{
 		printf("Bad size(%d) for an newPlayer request from ip %x.\n", size, ip.host);
 		return;
 	}
-
 	int p=sessionInfo.numberOfPlayer;
 	int t=(p)%sessionInfo.numberOfTeam;
+	assert(BasePlayer::MAX_NAME_LENGTH==32);
+	if (savedSessionInfo)
+	{
+		char playerName[BasePlayer::MAX_NAME_LENGTH];
+		memcpy(playerName, (char *)(data+4), 32);
+		t=savedSessionInfo->getTeamNumber(playerName, t);
+	}
 
 	sessionInfo.players[p].init();
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
-	memcpy(sessionInfo.players[p].name, (char *)(data+4), 16);
+	memcpy(sessionInfo.players[p].name, (char *)(data+4), 32);
 	sessionInfo.players[p].setip(ip);
 
 	// we check if this player has already a connection:
@@ -337,8 +351,8 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 	
 	
 		
-	Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));
-	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 24));
+	Uint32 newHost=SDL_SwapBE32(getUint32(data, 36));
+	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 40));
 	if (serverIP.host)
 	{
 		if (serverIP.host!=newHost)
@@ -387,7 +401,9 @@ void MultiplayersHost::addAI()
 {
 	int p=sessionInfo.numberOfPlayer;
 	int t=(p)%sessionInfo.numberOfTeam;
-
+	if (savedSessionInfo)
+		t=savedSessionInfo->getAITeamNumber(&sessionInfo, t);
+	
 	sessionInfo.players[p].init();
 	sessionInfo.players[p].type=BasePlayer::P_AI;
 	sessionInfo.players[p].setNumber(p);
@@ -676,10 +692,8 @@ bool MultiplayersHost::send(const int v)
 	data[1]=0;
 	data[2]=0;
 	data[3]=0;
-	{
-		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-			sessionInfo.players[i].send(data, 4);
-	}
+	for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+		sessionInfo.players[i].send(data, 4);
 
 	return true;
 }

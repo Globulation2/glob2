@@ -603,3 +603,11 @@ was AI
 etat
 state
 
+[start]
+depart
+start
+beginnen
+[not ready]
+pas pret
+not ready
+

@@ -114,9 +114,10 @@ void Game::setBase(const SessionInfo *initial)
 
 	// set the base team, for now the number is corect but we should check that further
 	int i;
+	printf("session.fileIsAMap=%d.\n", session.fileIsAMap);
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		teams[i]->setBaseTeam(&(initial->team[i]));
+		teams[i]->setBaseTeam(&(initial->team[i]), session.fileIsAMap);
 	}
 
 	// set the base players
@@ -421,7 +422,7 @@ bool Game::load(SDL_RWops *stream)
 	return true;
 }
 
-void Game::save(SDL_RWops *stream)
+void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 {
 	int i;
 
@@ -430,8 +431,10 @@ void Game::save(SDL_RWops *stream)
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
 	
-	tempSessionInfo.fileIsAMap=(Sint32)false;
+	tempSessionInfo.fileIsAMap=(Sint32)fileIsAMap;
 	tempSessionInfo.map=map;
+	if (name)
+		tempSessionInfo.map.setMapName(name);
 
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
@@ -1538,6 +1541,7 @@ Sint32 Game::checkSum()
 	// TODO : add checkSum() in heritated objets too.
 
 	cs^=session.checkSum();
+	//printf("cs=(%x", cs);
 
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
@@ -1545,19 +1549,23 @@ Sint32 Game::checkSum()
 		cs^=teams[i]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
+	//printf(", %x", cs);
 	cs=(cs<<31)|(cs>>1);
 	for (int i2=0; i2<session.numberOfPlayer; i2++)
 	{
 		cs^=players[i2]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
+	//printf(", %x", cs);
 	cs=(cs<<31)|(cs>>1);
 	cs^=map.checkSum();
 	cs=(cs<<31)|(cs>>1);
+	//printf(", %x", cs);
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
+	//printf(", %x)\n", cs);
 	
 	return cs;
 }

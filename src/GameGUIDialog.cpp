@@ -94,18 +94,18 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 	int i;
 	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, false, i);
+		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, false, ALLIED+i);
 		addWidget(allied[i]);
-		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, false, 10+i);
+		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, false, VISION+i);
 		addWidget(vision[i]);
-		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, 20+i);
+		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, CHAT+i);
 		addWidget(chat[i]);
 	}
 	for (;i<8;i++)
 	{
 		allied[i]=vision[i]=chat[i]=NULL;
 	}
-	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 40));
+	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 27));
 	firstPaint=true;
 	this->gameGUI=gameGUI;
 }
@@ -113,15 +113,16 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
 		endValue=par1;
+		printf("par1=%d.\n", par1);
+	}
 	else if (action==BUTTON_STATE_CHANGED)
-		setCorrectValueForPlayer(par1%10);
+		setCorrectValueForPlayer(par1%32);
 }
 
 void InGameAlliance8Screen::onSDLEvent(SDL_Event *event)
 {
-	if ((event->type==SDL_KEYDOWN) && (event->key.keysym.sym==SDLK_ESCAPE))
-		endValue=30;
 }
 
 void InGameAlliance8Screen::paint(int x, int y, int w, int h)
@@ -132,11 +133,9 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 		gfxCtx->drawString(200, 10, globalContainer->menuFont, "A");
 		gfxCtx->drawString(236, 10, globalContainer->menuFont, "V");
 		gfxCtx->drawString(272, 10, globalContainer->menuFont, "C");
+		for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 		{
-			for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
-			{
-				gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
-			}
+			gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
 		}
 		firstPaint=false;
 	}
@@ -145,6 +144,7 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 void InGameAlliance8Screen::setCorrectValueForPlayer(int i)
 {
 	Game *game=&(gameGUI->game);
+	assert(i<game->session.numberOfPlayer);
 	for (int j=0; j<game->session.numberOfPlayer; j++)
 	{
 		if (j!=i)
