@@ -117,7 +117,7 @@ private:
 	void firstInit();
 public:
 	AICastor(Player *player);
-	AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor);
+	AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AICastor();
 
 	Player *player;
@@ -125,8 +125,8 @@ public:
 	Game *game;
 	Map *map;
 
-	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	Order *getOrder(void);
 	

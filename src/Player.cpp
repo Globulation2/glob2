@@ -18,6 +18,7 @@
 */
 
 #include <StringTable.h>
+#include <Stream.h>
 
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
@@ -99,11 +100,11 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 	this->teamNumberMask=1<<teamNumber;
 };
 
-bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
+bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
-
-	type=(PlayerType)SDL_ReadBE32(stream);
+	stream->readEnterSection("BasePlayer");
+	type = (PlayerType)stream->readUint32("type");
 	// Compatibility
 	if (versionMinor<25)
 	{
@@ -116,30 +117,29 @@ bool BasePlayer::load(SDL_RWops *stream, Sint32 versionMinor)
 		else
 			assert((type>=0) && (type<=2));
 	}
-	number=SDL_ReadBE32(stream);
-	numberMask=SDL_ReadBE32(stream);
-
-	SDL_RWread(stream, name, MAX_NAME_LENGTH, 1);
-
-	teamNumber=SDL_ReadBE32(stream);
-	teamNumberMask=SDL_ReadBE32(stream);
-
-	ip.host=SDL_ReadBE32(stream);
-	ip.port=SDL_ReadBE32(stream);
+	number = stream->readUint32("number");
+	numberMask = stream->readUint32("numberMask");
+	stream->read(name, MAX_NAME_LENGTH, "name");
+	teamNumber = stream->readSint32("teamNumber");
+	teamNumberMask = stream->readUint32("teamNumberMask");
+	ip.host = stream->readUint32("ip.host");
+	ip.port = stream->readUint32("ip.port");
+	stream->readLeaveSection();
 	return true;
 }
 
-void BasePlayer::save(SDL_RWops *stream)
+void BasePlayer::save(GAGCore::OutputStream *stream)
 {
-	SDL_WriteBE32(stream, (Uint32)type);
-	SDL_WriteBE32(stream, number);
-	SDL_WriteBE32(stream, numberMask);
-	SDL_RWwrite(stream, name, MAX_NAME_LENGTH, 1);
-	SDL_WriteBE32(stream, teamNumber);
-	SDL_WriteBE32(stream, teamNumberMask);
-	
-	SDL_WriteBE32(stream, ip.host);
-	SDL_WriteBE32(stream, ip.port);
+	stream->writeEnterSection("BasePlayer");
+	stream->writeUint32((Uint32)type, "type");
+	stream->writeSint32(number, "number");
+	stream->writeUint32(numberMask, "numberMask");
+	stream->write(name, MAX_NAME_LENGTH, "name");
+	stream->writeSint32(teamNumber, "teamNumber");
+	stream->writeUint32(teamNumberMask, "teamNumberMask");
+	stream->writeUint32(ip.host, "ip.host");
+	stream->writeUint32(ip.port, "ip.port");
+	stream->writeLeaveSection();
 }
 
 
@@ -404,7 +404,7 @@ Player::Player()
 	ai=NULL;
 }
 
-Player::Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
+Player::Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor)
 :BasePlayer()
 {
 	bool success=load(stream, teams, versionMinor);
@@ -498,14 +498,16 @@ void Player::makeItAI(AI::ImplementitionID aiType)
 	assert(ai);
 }
 
-bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
+bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor)
 {
+	stream->readEnterSection("Player");
 	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"PLYb",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
 		fprintf(logFile, "Player::load: Signature missmatch at begin of Player\n");
+		stream->readLeaveSection();
 		return false;
 	}
 	
@@ -514,61 +516,67 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	{
 		assert(ai);
 		delete ai;
-		ai=NULL;
+		ai = NULL;
 	}
 
 	// base player
-	bool success=BasePlayer::load(stream, versionMinor);
+	bool success = BasePlayer::load(stream, versionMinor);
 	if (!success)
 	{
 		fprintf(stderr, "Player::load: Error during BasePlayer load\n");
 		fprintf(logFile, "Player::load: Error during BasePlayer load\n");
+		stream->readLeaveSection();
 		return false;
 	}
 
 	// player
-	startPositionX=SDL_ReadBE32(stream);
-	startPositionY=SDL_ReadBE32(stream);
+	startPositionX = stream->readSint32("startPositionX");
+	startPositionY = stream->readSint32("startPositionY");
 	setTeam(teams[teamNumber]);
-	if (type>=P_AI)
+	if (type >= P_AI)
 	{
-		ai=new AI(AI::NONE, this);
+		ai = new AI(AI::NONE, this);
 		if (!ai->load(stream, versionMinor))
 		{
 			fprintf(stderr, "Player::load: Error during AI load\n");
 			fprintf(logFile, "Player::load: Error during AI load\n");
+			stream->readLeaveSection();
 			return false;
 		}
 	}
 	else
 	{
-		ai=NULL;
-		team->type=BaseTeam::T_HUMAN;
+		ai = NULL;
+		team->type = BaseTeam::T_HUMAN;
 	}
 	
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureEnd");
 	if (memcmp(signature,"PLYe",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
 		fprintf(logFile, "Player::load: Signature missmatch at end of Player\n");
+		stream->readLeaveSection();
 		return false;
 	}
 	
+	stream->readLeaveSection();
 	return true;
 }
 
-void Player::save(SDL_RWops *stream)
+void Player::save(GAGCore::OutputStream  *stream)
 {
-	SDL_RWwrite(stream, "PLYb", 4, 1);
+	stream->writeEnterSection("Player");
+	stream->write("PLYb", 4, "signatureStart");
 	// base player
 	BasePlayer::save(stream);
 
 	// player
-	SDL_WriteBE32(stream, startPositionX);
-	SDL_WriteBE32(stream, startPositionY);
+	stream->writeSint32(startPositionX, "startPositionX");
+	stream->writeSint32(startPositionY, "startPositionY");
 	if (type>=P_AI)
 		ai->save(stream);
-	SDL_RWwrite(stream, "PLYe", 4, 1);
+	stream->write("PLYe", 4, "signatureEnd");
+	stream->writeLeaveSection();
 }
 
 Uint32 Player::checkSum(std::list<Uint32> *checkSumsList)

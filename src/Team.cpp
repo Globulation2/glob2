@@ -47,34 +47,38 @@ BaseTeam::BaseTeam()
 	disableRecursiveDestruction=false;
 }
 
-bool BaseTeam::load(SDL_RWops *stream, Sint32 versionMinor)
+bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	// loading baseteam
+	stream->readEnterSection("BaseTeam");
 	if (versionMinor>25)
-		type=(TeamType)SDL_ReadBE32(stream);
-	teamNumber=SDL_ReadBE32(stream);
-	numberOfPlayer=SDL_ReadBE32(stream);
-	SDL_RWread(stream, &colorR, 1, 1);
-	SDL_RWread(stream, &colorG, 1, 1);
-	SDL_RWread(stream, &colorB, 1, 1);
-	SDL_RWread(stream, &colorPAD, 1, 1);
-	playersMask=SDL_ReadBE32(stream);
+		type = (TeamType)stream->readUint32("type");
+	teamNumber = stream->readSint32("teamNumber");
+	numberOfPlayer = stream->readSint32("numberOfPlayer");
+	stream->read(&colorR, 1, "colorR");
+	stream->read(&colorG, 1, "colorG");
+	stream->read(&colorB, 1, "colorB");
+	stream->read(&colorPAD, 1, "colorPAD");
+	playersMask = stream->readUint32("playersMask");
+	stream->readLeaveSection();
 	if(!race.load(stream, versionMinor))
 		return false;
 	return true;
 }
 
-void BaseTeam::save(SDL_RWops *stream)
+void BaseTeam::save(GAGCore::OutputStream *stream)
 {
 	// saving baseteam
-	SDL_WriteBE32(stream, (Uint32)type);
-	SDL_WriteBE32(stream, teamNumber);
-	SDL_WriteBE32(stream, numberOfPlayer);
-	SDL_RWwrite(stream, &colorR, 1, 1);
-	SDL_RWwrite(stream, &colorG, 1, 1);
-	SDL_RWwrite(stream, &colorB, 1, 1);
-	SDL_RWwrite(stream, &colorPAD, 1, 1);
-	SDL_WriteBE32(stream, playersMask);
+	stream->writeEnterSection("BaseTeam");
+	stream->writeUint32((Uint32)type, "type");
+	stream->writeSint32(teamNumber, "teamNumber");
+	stream->writeSint32(numberOfPlayer, "numberOfPlayer");
+	stream->write(&colorR, 1, "colorR");
+	stream->write(&colorG, 1, "colorG");
+	stream->write(&colorB, 1, "colorB");
+	stream->write(&colorPAD, 1, "colorPAD");
+	stream->writeUint32(playersMask, "playersMask");
+	stream->writeLeaveSection();
 	race.save(stream);
 }
 
@@ -143,7 +147,7 @@ Team::Team(Game *game)
 	init();
 }
 
-Team::Team(SDL_RWops *stream, Game *game, Sint32 versionMinor)
+Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
 {
 	logFile = globalContainer->logFileManager->getFile("Team.log");
@@ -151,7 +155,7 @@ Team::Team(SDL_RWops *stream, Game *game, Sint32 versionMinor)
 	this->game=game;
 	this->map=&game->map;
 	init();
-	bool success=load(stream, &(globalContainer->buildingsTypes), versionMinor);
+	bool success = load(stream, &(globalContainer->buildingsTypes), versionMinor);
 	assert(success);
 }
 
@@ -209,7 +213,7 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	}
 }
 
-bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
+bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
@@ -218,19 +222,25 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	// loading baseteam
 	if(!BaseTeam::load(stream, versionMinor))
 		return false;
+	
+	stream->readEnterSection("Team");
 
 	// normal load
+	stream->readEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
 	{
 		if (myUnits[i])
 			delete myUnits[i];
 
-		Uint32 isUsed=SDL_ReadBE32(stream);
+		stream->readEnterSection(i);
+		Uint32 isUsed = stream->readUint32("isUsed");
 		if (isUsed)
-			myUnits[i]=new Unit(stream, this);
+			myUnits[i] = new Unit(stream, this);
 		else
-			myUnits[i]=NULL;
+			myUnits[i] = NULL;
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 
 	swarms.clear();
 	turrets.clear();
@@ -238,16 +248,18 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	virtualBuildings.clear();
 	clearingFlags.clear();
 	
-	prestige=0;
+	prestige = 0;
+	stream->readEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
 	{
 		if (myBuildings[i])
 			delete myBuildings[i];
 
-		Uint32 isUsed=SDL_ReadBE32(stream);
+		stream->readEnterSection(i);
+		Uint32 isUsed = stream->readUint32("isUsed");
 		if (isUsed)
 		{
-			myBuildings[i]=new Building(stream, buildingstypes, this, versionMinor);
+			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
 			if (myBuildings[i]->type->unitProductionTime)
 				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
@@ -260,20 +272,34 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 				clearingFlags.push_back(myBuildings[i]);
 		}
 		else
-			myBuildings[i]=NULL;
+			myBuildings[i] = NULL;
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 
 	subscribeForInside.clear();
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
 
 	// resolve cross reference
+	stream->readEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
+	{
 		if (myUnits[i])
+		{
+			stream->readEnterSection(i);
 			myUnits[i]->loadCrossRef(stream, this);
+			stream->readLeaveSection();
+		}
+	}
+	stream->readLeaveSection();
+	
+	stream->readEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
+	{
 		if (myBuildings[i])
 		{
+			stream->readEnterSection(i);
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
 			if (myBuildings[i]->unitsInsideSubscribe.size())
 			{
@@ -295,84 +321,123 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 			}
 			if (myBuildings[i]->type->canExchange)
 				canExchange.push_back(myBuildings[i]);
+			stream->readLeaveSection();
 		}
+	}
+	stream->readLeaveSection();
 
-	allies=SDL_ReadBE32(stream);
-	enemies=SDL_ReadBE32(stream);
-	sharedVisionExchange=SDL_ReadBE32(stream);
-	sharedVisionFood=SDL_ReadBE32(stream);
-	sharedVisionOther=SDL_ReadBE32(stream);
-	me=SDL_ReadBE32(stream);
-	startPosX=SDL_ReadBE32(stream);
-	startPosY=SDL_ReadBE32(stream);
-	if (versionMinor>=29)
-		startPosSet=SDL_ReadBE32(stream);
+	allies = stream->readUint32("allies");
+	enemies = stream->readUint32("enemies");
+	sharedVisionExchange = stream->readUint32("sharedVisionExchange");
+	sharedVisionFood = stream->readUint32("sharedVisionFood");
+	sharedVisionOther = stream->readUint32("sharedVisionOther");
+	me = stream->readUint32("me");
+	startPosX = stream->readSint32("startPosX");
+	startPosY = stream->readSint32("startPosY");
+	if (versionMinor >= 29)
+		startPosSet = stream->readSint32("startPosSet");
 	else
-		startPosSet=0;
+		startPosSet = 0;
 
 	if (!stats.load(stream, versionMinor))
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 
 	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 	{
-		isEvent[i]=false;
-		eventCooldown[i]=0;
+		isEvent[i] = false;
+		eventCooldown[i] = 0;
 	}
-	eventPosX=startPosX;
-	eventPosY=startPosY;
-	isAlive=true;
+	eventPosX = startPosX;
+	eventPosY = startPosY;
+	isAlive = true;
 
+	stream->readLeaveSection();
 	return true;
 }
 
-void Team::save(SDL_RWops *stream)
+void Team::save(GAGCore::OutputStream *stream)
 {
 	// saving baseteam
 	BaseTeam::save(stream);
 
+	stream->writeEnterSection("Team");
+	
 	// saving team
+	stream->writeEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
+	{
+		stream->writeEnterSection(i);
 		if (myUnits[i])
 		{
-			SDL_WriteBE32(stream, true);
+			stream->writeUint32(true, "isUsed");
 			myUnits[i]->save(stream);
 		}
 		else
 		{
-			SDL_WriteBE32(stream, false);
+			stream->writeUint32(false, "isUsed");
 		}
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 
+	stream->writeEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
+	{
+		stream->writeEnterSection(i);
 		if (myBuildings[i])
 		{
-			SDL_WriteBE32(stream, true);
+			stream->writeUint32(true, "isUsed");
 			myBuildings[i]->save(stream);
 		}
 		else
 		{
-			SDL_WriteBE32(stream, false);
+			stream->writeUint32(false, "isUsed");
 		}
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	
 	// save cross reference
+	stream->writeEnterSection("myUnits");
 	for (int i=0; i<1024; i++)
+	{
 		if (myUnits[i])
+		{
+			stream->writeEnterSection(i);
 			myUnits[i]->saveCrossRef(stream);
+			stream->writeLeaveSection();
+		}
+	}
+	stream->writeLeaveSection();
 	
+	stream->writeEnterSection("myBuildings");
 	for (int i=0; i<1024; i++)
+	{
 		if (myBuildings[i])
+		{
+			stream->writeEnterSection(i);
 			myBuildings[i]->saveCrossRef(stream);
+			stream->writeLeaveSection();
+		}
+	}
+	stream->writeLeaveSection();
 
-	SDL_WriteBE32(stream, allies);
-	SDL_WriteBE32(stream, enemies);
-	SDL_WriteBE32(stream, sharedVisionExchange);
-	SDL_WriteBE32(stream, sharedVisionFood);
-	SDL_WriteBE32(stream, sharedVisionOther);
-	SDL_WriteBE32(stream, me);
-	SDL_WriteBE32(stream, startPosX);
-	SDL_WriteBE32(stream, startPosY);
-	SDL_WriteBE32(stream, startPosSet);
+	stream->writeUint32(allies, "allies");
+	stream->writeUint32(enemies, "enemies");
+	stream->writeUint32(sharedVisionOther, "sharedVisionExchange");
+	stream->writeUint32(sharedVisionFood, "sharedVisionFood");
+	stream->writeUint32(sharedVisionOther, "sharedVisionOther");
+	stream->writeUint32(me, "me");
+	stream->writeSint32(startPosX, "startPosX");
+	stream->writeSint32(startPosY, "startPosY");
+	stream->writeSint32(startPosSet, "startPosSet");
 	
 	stats.save(stream);
+	
+	stream->writeLeaveSection();
 }
 
 void Team::createLists(void)

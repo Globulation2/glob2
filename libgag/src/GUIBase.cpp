@@ -171,28 +171,25 @@ namespace GAGGUI
 		int screenw = parent->getSurface()->getW();
 		int screenh = parent->getSurface()->getH();
 		
-		int decX = (int)splineInterpolationFastStart(SCREEN_ANIMATION_FRAME_COUNT, screenw, 0, parent->animationFrame);
-		int decY = (int)splineInterpolationFastStart(SCREEN_ANIMATION_FRAME_COUNT, screenh, 0, parent->animationFrame);
-	
 		switch (hAlignFlag)
 		{
 			case ALIGN_LEFT:
-				*sx=x - decX;
+				*sx=x;
 				*sw=w;
 				break;
 	
 			case ALIGN_RIGHT:
-				*sx=screenw-w-x + decX;
+				*sx=screenw-w-x;
 				*sw=w;
 				break;
 	
 			case ALIGN_FILL:
-				*sx=x - decX;
+				*sx=x;
 				*sw=screenw-w-x;
 				break;
 				
 			case ALIGN_SCREEN_CENTERED:
-				*sx=x+((screenw-640)>>1) - decX;
+				*sx=x+((screenw-640)>>1);
 				*sw=w;
 				break;
 	
@@ -203,12 +200,12 @@ namespace GAGGUI
 		switch (vAlignFlag)
 		{
 			case ALIGN_LEFT:
-				*sy=y - decY;
+				*sy=y;
 				*sh=h;
 				break;
 	
 			case ALIGN_RIGHT:
-				*sy=screenh-h-y + decY;
+				*sy=screenh-h-y;
 				*sh=h;
 				break;
 	

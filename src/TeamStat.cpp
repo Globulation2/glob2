@@ -23,6 +23,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
+#include <Stream.h>
 
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -424,35 +425,43 @@ int TeamStats::getStarvingUnits()
 	return (stats[statsIndex].needFoodCritical);
 }
 
-bool TeamStats::load(SDL_RWops *stream, Sint32 versionMinor)
+bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	endOfGameStatIndex=SDL_ReadBE32(stream);
+	stream->readEnterSection("TeamStats");
+	endOfGameStatIndex = stream->readSint32("endOfGameStatIndex");
 	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
 	{
-		endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
-		endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
-		endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
+		stream->readEnterSection(i);
+		endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS] = stream->readSint32("EndOfGameStat::TYPE_UNITS");
+		endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS] = stream->readSint32("EndOfGameStat::TYPE_BUILDINGS");
+		endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE] = stream->readSint32("EndOfGameStat::TYPE_PRESTIGE");
 		if (versionMinor > 31)
 		{
-			endOfGameStats[i].value[EndOfGameStat::TYPE_HP]=SDL_ReadBE32(stream);
-			endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK]=SDL_ReadBE32(stream);
-			endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE]=SDL_ReadBE32(stream);
+			endOfGameStats[i].value[EndOfGameStat::TYPE_HP] = stream->readSint32("EndOfGameStat::TYPE_HP");
+			endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK] = stream->readSint32("EndOfGameStat::TYPE_ATTACK");
+			endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE] = stream->readSint32("EndOfGameStat::TYPE_DEFENSE");
 		}
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 	return true;
 }
 
-void TeamStats::save(SDL_RWops *stream)
+void TeamStats::save(GAGCore::OutputStream *stream)
 {
-	SDL_WriteBE32(stream, endOfGameStatIndex);
+	stream->writeEnterSection("TeamStats");
+	stream->writeSint32(endOfGameStatIndex, "endOfGameStatIndex");
 	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
 	{
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]);
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]);
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]);
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_HP]);
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK]);
-		SDL_WriteBE32(stream, endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE]);
+		stream->writeEnterSection(i);
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS], "EndOfGameStat::TYPE_UNITS");
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS], "EndOfGameStat::TYPE_BUILDINGS");
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE], "EndOfGameStat::TYPE_PRESTIGE");
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_HP], "EndOfGameStat::TYPE_HP");
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_ATTACK], "EndOfGameStat::TYPE_ATTACK");
+		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE], "EndOfGameStat::TYPE_DEFENSE");
+		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 }
 

@@ -25,8 +25,9 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include <Stream.h>
 
-Unit::Unit(SDL_RWops *stream, Team *owner)
+Unit::Unit(GAGCore::InputStream *stream, Team *owner)
 {
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	load(stream, owner);
@@ -115,167 +116,190 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	verbose=false;
 }
 
-void Unit::load(SDL_RWops *stream, Team *owner)
+void Unit::load(GAGCore::InputStream *stream, Team *owner)
 {
+	stream->readEnterSection("Unit");
+	
 	// unit specification
-	typeNum=SDL_ReadBE32(stream);
-	race=&(owner->race);
+	typeNum = stream->readSint32("typeNum");
+	race = &(owner->race);
 	assert(race);
 
 	// identity
-	gid=SDL_ReadBE16(stream);
-	this->owner=owner;
-	isDead=SDL_ReadBE32(stream);
+	gid = stream->readUint16("gid");
+	this->owner = owner;
+	isDead = stream->readSint32("isDead");
 
 	// position
-	posX=SDL_ReadBE32(stream);
-	posY=SDL_ReadBE32(stream);
-	delta=SDL_ReadBE32(stream);
-	dx=SDL_ReadBE32(stream);
-	dy=SDL_ReadBE32(stream);
-	direction=SDL_ReadBE32(stream);
-	insideTimeout=SDL_ReadBE32(stream);
-	speed=SDL_ReadBE32(stream);
+	posX = stream->readSint32("posX");
+	posY = stream->readSint32("posY");
+	delta = stream->readSint32("delta");
+	dx = stream->readSint32("dx");
+	dy = stream->readSint32("dy");
+	direction = stream->readSint32("direction");
+	insideTimeout = stream->readSint32("insideTimeout");
+	speed = stream->readSint32("speed");
 
 	// states
-	needToRecheckMedical=(bool)SDL_ReadBE32(stream);
-	medical=(Medical)SDL_ReadBE32(stream);
-	activity=(Activity)SDL_ReadBE32(stream);
-	displacement=(Displacement)SDL_ReadBE32(stream);
-	movement=(Movement)SDL_ReadBE32(stream);
-	action=(Abilities)SDL_ReadBE32(stream);
-	targetX=(Sint32)SDL_ReadBE32(stream);
-	targetY=(Sint32)SDL_ReadBE32(stream);
+	needToRecheckMedical = (bool)stream->readUint32("needToRecheckMedical");
+	medical = (Medical)stream->readUint32("medical");
+	activity = (Activity)stream->readUint32("activity");
+	displacement = (Displacement)stream->readUint32("displacement");
+	movement = (Movement)stream->readUint32("movement");
+	action = (Abilities)stream->readUint32("action");
+	targetX = (Sint32)stream->readSint32("targetX");
+	targetY = (Sint32)stream->readSint32("targetY");
 
 	// trigger parameters
-	hp=SDL_ReadBE32(stream);
-	trigHP=SDL_ReadBE32(stream);
+	hp = stream->readSint32("hp");
+	trigHP = stream->readSint32("trigHP");
 
 	// hungry
-	hungry=SDL_ReadBE32(stream);
-	trigHungry=SDL_ReadBE32(stream);
-	trigHungryCarying=(trigHungry*4)/10;
-	fruitMask=SDL_ReadBE32(stream);
-	fruitCount=SDL_ReadBE32(stream);
+	hungry = stream->readSint32("hungry");
+	trigHungry = stream->readSint32("trigHungry");
+	trigHungryCarying = (trigHungry*4)/10;
+	fruitMask = stream->readUint32("fruitMask");
+	fruitCount = stream->readUint32("fruitCount");
 
 	// quality parameters
+	stream->readEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		performance[i]=SDL_ReadBE32(stream);
-		level[i]=SDL_ReadBE32(stream);
-		canLearn[i]=(bool)SDL_ReadBE32(stream);
+		stream->readEnterSection(i);
+		performance[i] = stream->readSint32("performance");
+		level[i] = stream->readSint32("level");
+		canLearn[i] = (bool)stream->readUint32("canLearn");
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 
-	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
-	subscribed=(bool)SDL_ReadBE32(stream);
+	destinationPurprose = stream->readSint32("destinationPurprose");
+	subscribed = (bool)stream->readUint32("subscribed");
 
-	caryedRessource=(Sint32)SDL_ReadBE32(stream);
-	verbose=false;
+	caryedRessource = stream->readSint32("caryedRessource");
+	verbose = false;
+	
+	stream->readLeaveSection();
 }
 
-void Unit::save(SDL_RWops *stream)
+void Unit::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("Unit");
+	
 	// unit specification
 	// we drop the unittype pointer, we save only the number
-	SDL_WriteBE32(stream, typeNum);
+	stream->writeSint32(typeNum, "typeNum");
 
 	// identity
-	SDL_WriteBE16(stream, gid);
-	SDL_WriteBE32(stream, isDead);
+	stream->writeUint16(gid, "gid");
+	stream->writeSint32(isDead, "isDead");
 
 	// position
-	SDL_WriteBE32(stream, posX);
-	SDL_WriteBE32(stream, posY);
-	SDL_WriteBE32(stream, delta);
-	SDL_WriteBE32(stream, dx);
-	SDL_WriteBE32(stream, dy);
-	SDL_WriteBE32(stream, direction);
-	SDL_WriteBE32(stream, insideTimeout);
-	SDL_WriteBE32(stream, speed);
+	stream->writeSint32(posX, "posX");
+	stream->writeSint32(posY, "posY");
+	stream->writeSint32(delta, "delta");
+	stream->writeSint32(dx, "dx");
+	stream->writeSint32(dy, "dy");
+	stream->writeSint32(direction, "direction");
+	stream->writeSint32(insideTimeout, "insideTimeout");
+	stream->writeSint32(speed, "speed");
 
 	// states
-	SDL_WriteBE32(stream, (Uint32)needToRecheckMedical);
-	SDL_WriteBE32(stream, (Uint32)medical);
-	SDL_WriteBE32(stream, (Uint32)activity);
-	SDL_WriteBE32(stream, (Uint32)displacement);
-	SDL_WriteBE32(stream, (Uint32)movement);
-	SDL_WriteBE32(stream, (Uint32)action);
-	SDL_WriteBE32(stream, (Uint32)targetX);
-	SDL_WriteBE32(stream, (Uint32)targetY);
+	stream->writeUint32((Uint32)needToRecheckMedical, "needToRecheckMedical");
+	stream->writeUint32((Uint32)medical, "medical");
+	stream->writeUint32((Uint32)activity, "activity");
+	stream->writeUint32((Uint32)displacement, "displacement");
+	stream->writeUint32((Uint32)movement, "movement");
+	stream->writeUint32((Uint32)action, "action");
+	stream->writeSint32(targetX, "targetX");
+	stream->writeSint32(targetY, "targetY");
 
 	// trigger parameters
-	SDL_WriteBE32(stream, hp);
-	SDL_WriteBE32(stream, trigHP);
+	stream->writeSint32(hp, "hp");
+	stream->writeSint32(trigHP, "trigHP");
 
 	// hungry
-	SDL_WriteBE32(stream, hungry);
-	SDL_WriteBE32(stream, trigHungry);
-	SDL_WriteBE32(stream, fruitMask);
-	SDL_WriteBE32(stream, fruitCount);
+	stream->writeSint32(hungry, "hungry");
+	stream->writeSint32(trigHungry, "trigHungry");
+	stream->writeUint32(fruitMask, "fruitMask");
+	stream->writeUint32(fruitCount, "fruitCount");
 
 	// quality parameters
+	stream->writeEnterSection("abilities");
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		SDL_WriteBE32(stream, performance[i]);
-		SDL_WriteBE32(stream, level[i]);
-		SDL_WriteBE32(stream, (Uint32)canLearn[i]);
+		stream->writeEnterSection(i);
+		stream->writeUint32(performance[i], "performance");
+		stream->writeUint32(level[i], "level");
+		stream->writeUint32((Uint32)canLearn[i], "canLearn");
+		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 
-	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
-	SDL_WriteBE32(stream, (Uint32)subscribed);
-	SDL_WriteBE32(stream, (Uint32)caryedRessource);
+	stream->writeSint32(destinationPurprose, "destinationPurprose");
+	stream->writeUint32((Uint32)subscribed, "subscribed");
+	stream->writeSint32(caryedRessource, "caryedRessource");
+	
+	stream->writeLeaveSection();
 }
 
-void Unit::loadCrossRef(SDL_RWops *stream, Team *owner)
+void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner)
 {
+	stream->readEnterSection("Unit");
 	Uint16 gbid;
 	
-	gbid=SDL_ReadBE16(stream);
-	if (gbid==NOGBID)
-		attachedBuilding=NULL;
+	gbid = stream->readUint16("attachedBuilding");
+	if (gbid == NOGBID)
+		attachedBuilding = NULL;
 	else
-		attachedBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+		attachedBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
 	
-	gbid=SDL_ReadBE16(stream);
-	if (gbid==NOGBID)
-		targetBuilding=NULL;
+	gbid = stream->readUint16("targetBuilding");
+	if (gbid == NOGBID)
+		targetBuilding = NULL;
 	else
-		targetBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+		targetBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
 		
-	gbid=SDL_ReadBE16(stream);
-	if (gbid==NOGBID)
-		ownExchangeBuilding=NULL;
+	gbid = stream->readUint16("ownExchangeBuilding");
+	if (gbid == NOGBID)
+		ownExchangeBuilding = NULL;
 	else
-		ownExchangeBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+		ownExchangeBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
 	
-	gbid=SDL_ReadBE16(stream);
-	if (gbid==NOGBID)
-		foreingExchangeBuilding=NULL;
+	gbid = stream->readUint16("foreingExchangeBuilding");
+	if (gbid == NOGBID)
+		foreingExchangeBuilding = NULL;
 	else
-		foreingExchangeBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
+		foreingExchangeBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
+		
+	stream->readLeaveSection();
 }
 
-void Unit::saveCrossRef(SDL_RWops *stream)
+void Unit::saveCrossRef(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("Unit");
+	
 	if (attachedBuilding)
-		SDL_WriteBE16(stream, attachedBuilding->gid);
+		stream->writeUint16(attachedBuilding->gid, "attachedBuilding");
 	else
-		SDL_WriteBE16(stream, NOGBID);
+		stream->writeUint16(NOGBID, "attachedBuilding");
 		
 	if (targetBuilding)
-		SDL_WriteBE16(stream, targetBuilding->gid);
+		stream->writeUint16(targetBuilding->gid, "targetBuilding");
 	else
-		SDL_WriteBE16(stream, NOGBID);
+		stream->writeUint16(NOGBID, "targetBuilding");
 		
 	if (ownExchangeBuilding)
-		SDL_WriteBE16(stream, ownExchangeBuilding->gid);
+		stream->writeUint16(ownExchangeBuilding->gid, "ownExchangeBuilding");
 	else
-		SDL_WriteBE16(stream, NOGBID);
+		stream->writeUint16(NOGBID, "ownExchangeBuilding");
 		
 	if (foreingExchangeBuilding)
-		SDL_WriteBE16(stream, foreingExchangeBuilding->gid);
+		stream->writeUint16(foreingExchangeBuilding->gid, "foreingExchangeBuilding");
 	else
-		SDL_WriteBE16(stream, NOGBID);
+		stream->writeUint16(NOGBID, "foreingExchangeBuilding");
+		
+	stream->writeLeaveSection();
 }
 
 void Unit::subscriptionSuccess(void)

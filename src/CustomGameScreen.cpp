@@ -26,13 +26,14 @@
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <Stream.h>
 
 CustomGameScreen::CustomGameScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	fileList=new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "maps", "map", true);
-	mapPreview=new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, NULL);
+	mapPreview=new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]")));
 	mapName=new Text(440, 60+128+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
@@ -95,13 +96,13 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 
 			mapPreview->setMapThumbnail(mapFileName);
 			printf("CGS : Loading map '%s' ...\n", mapFileName);
-			SDL_RWops *stream=Toolkit::getFileManager()->open(mapFileName,"rb");
-			if (stream==NULL)
+			GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
+			if (stream == NULL)
 				printf("Map '%s' not found!\n", mapFileName);
 			else
 			{
-				validSessionInfo=sessionInfo.load(stream);
-				SDL_RWclose(stream);
+				validSessionInfo = sessionInfo.load(stream);
+				delete stream;
 				if (validSessionInfo)
 				{
 					// update map name & info

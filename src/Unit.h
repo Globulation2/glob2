@@ -23,26 +23,32 @@
 #include <list>
 #include <assert.h>
 #include <string.h>
-#include <SDL_rwops.h>
 
+#include <GAGSys.h>
 #include "UnitConsts.h"
 
 class Team;
 class Race;
 class Building;
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 // a unit
 class Unit
 {
 public:
-	Unit(SDL_RWops *stream, Team *owner);
+	Unit(GAGCore::InputStream *stream, Team *owner);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
 	
-	void load(SDL_RWops *stream, Team *owner);
-	void save(SDL_RWops *stream);
-	void loadCrossRef(SDL_RWops *stream, Team *owner);
-	void saveCrossRef(SDL_RWops *stream);
+	void load(GAGCore::InputStream *stream, Team *owner);
+	void save(GAGCore::OutputStream *stream);
+	void loadCrossRef(GAGCore::InputStream *stream, Team *owner);
+	void saveCrossRef(GAGCore::OutputStream *stream);
 	
 	void subscriptionSuccess(void); //Called by the building the unit has subscribed to.
 	void syncStep(void);

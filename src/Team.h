@@ -59,8 +59,8 @@ private:
 	Uint8 data[16];
 
 public:
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	Uint8 getOrderType();
 	Uint8 *getData();
@@ -85,13 +85,13 @@ public:
 	};
 public:
 	Team(Game *game);
-	Team(SDL_RWops *stream, Game *game, Sint32 versionMinor);
+	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
 	virtual ~Team(void);
 
 	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
-	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
 	void createLists(void);

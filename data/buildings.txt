@@ -470,6 +470,7 @@ type racetrack
 
 gameSprite data/gfx/racetrack1b
 gameSpriteImage 0
+gameSpriteCount 3
 miniSprite data/gfx/miniracetrack1b
 miniSpriteImage 0
 

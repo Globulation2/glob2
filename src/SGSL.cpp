@@ -29,6 +29,7 @@
 
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <Stream.h>
 
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -890,22 +891,26 @@ Mapscript::~Mapscript(void)
 		delete[] sourceCode;
 }
 
-bool Mapscript::load(SDL_RWops *stream)
+bool Mapscript::load(GAGCore::InputStream *stream)
 {
 	if (sourceCode)
 		delete[] sourceCode;
 
-	unsigned len=SDL_ReadBE32(stream);
-	sourceCode=new char[len];
-	SDL_RWread(stream, sourceCode, len, 1);
+	stream->readEnterSection("SGSL");
+	unsigned len = stream->readUint32("len");
+	sourceCode = new char[len];
+	stream->read(sourceCode, len, "sourceCode");
+	stream->readLeaveSection();
 	return true;
 }
 
-void Mapscript::save(SDL_RWops *stream)
+void Mapscript::save(GAGCore::OutputStream *stream)
 {
-	unsigned len=strlen(sourceCode) +1;
-	SDL_WriteBE32(stream, len);
-	SDL_RWwrite(stream, sourceCode, len, 1);
+	unsigned len = strlen(sourceCode) +1;
+	stream->writeEnterSection("SGSL");
+	stream->writeUint32(len, "len");
+	stream->write(sourceCode, len, "sourceCode");
+	stream->writeLeaveSection();
 }
 
 void Mapscript::setSourceCode(const char *sourceCode)

@@ -34,6 +34,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
+#include <Stream.h>
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -128,16 +129,16 @@ int Glob2::runHostServer()
 	char *mapName=globalContainer->hostServerMapName;
 	
 	printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
-	SDL_RWops *stream=globalContainer->fileManager->open(mapName,"rb");
-	if (stream==NULL)
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
+	if (stream == NULL)
 	{
 		printf("Map '%s' not found!\n", mapName);
 		return 1;
 	}
 	else
 	{
-		bool validSessionInfo=sessionInfo.load(stream);
-		SDL_RWclose(stream);
+		bool validSessionInfo = sessionInfo.load(stream);
+		delete stream;
 		if (!validSessionInfo)
 		{
 			printf("Glob2::runHostServer():Warning, Error during map load.\n");

@@ -19,6 +19,7 @@
 
 #include "Settings.h"
 #include "Utilities.h"
+#include <Stream.h>
 #include <stdlib.h>
 #include <GAG.h>
 using namespace GAGCore;
@@ -63,23 +64,23 @@ void Settings::load(const char *filename)
 {
 	std::map<std::string, std::string> parsed;
 
-	SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "r");
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
 	if (stream)
 	{
 		// load and parse file
 		char *dest, *varname, *token;
 		char buffer[256];
-		while ((dest=Utilities::gets(buffer, 256, stream))!=NULL)
+		while ((dest = Utilities::gets(buffer, 256, stream))!=NULL)
 		{
-			token=strtok(dest,"\t\n\r=;");
+			token = strtok(dest,"\t\n\r=;");
 			if ((!token) || (strcmp(token,"//")==0))
 				continue;
-			varname=token;
-			token=strtok(NULL,"\t\n\r=");
+			varname = token;
+			token = strtok(NULL,"\t\n\r=");
 			if (token)
 				parsed[varname] = token;
 		}
-		SDL_RWclose(stream);
+		delete stream;
 
 		// read values
 		READ_PARSED_STRING(username);
@@ -97,7 +98,7 @@ void Settings::load(const char *filename)
 
 void Settings::save(const char *filename)
 {
-	SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "w");
+	GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
 	if (stream)
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
@@ -110,6 +111,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
-		SDL_RWclose(stream);
+		delete stream;
 	}
 }

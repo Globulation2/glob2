@@ -37,7 +37,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	ok=new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	toogleButton=new TextButton(240, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[the games]"), TOOGLE);
-	mapPreview=new MapPreview(640-20-26-128, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "net.map");
+	mapPreview=new MapPreview(640-20-26-128, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	title=new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]"));
 
 	addWidget(ok);
@@ -93,13 +93,13 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		}
 		mapPreview->setMapThumbnail(mapFileName);
 
-		SDL_RWops *stream=Toolkit::getFileManager()->open(mapFileName,"rb");
-		if (stream==NULL)
+		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
+		if (stream == NULL)
 			printf("File '%s' not found!\n", mapFileName);
 		else
 		{
-			validSessionInfo=sessionInfo.load(stream);
-			SDL_RWclose(stream);
+			validSessionInfo = sessionInfo.load(stream);
+			delete stream;
 			if (validSessionInfo)
 			{
 				// update map name & info

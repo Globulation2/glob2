@@ -20,50 +20,51 @@
 #include "Bullet.h"
 #include <assert.h>
 #include <SDL_endian.h>
+#include <Stream.h>
 
-Bullet::Bullet(SDL_RWops *stream)
+Bullet::Bullet(GAGCore::InputStream *stream)
 {
-	bool good=load(stream);
+	bool good = load(stream);
 	assert(good);
 }
 
 Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY)
 {
-	this->px=px;
-	this->py=py;
-	this->speedX=speedX;
-	this->speedY=speedY;
-	this->ticksInitial=ticksLeft;
-	this->ticksLeft=ticksLeft;
-	this->shootDamage=shootDamage;
-	this->targetX=targetX;
-	this->targetY=targetY;
+	this->px = px;
+	this->py = py;
+	this->speedX = speedX;
+	this->speedY = speedY;
+	this->ticksInitial = ticksLeft;
+	this->ticksLeft = ticksLeft;
+	this->shootDamage = shootDamage;
+	this->targetX = targetX;
+	this->targetY = targetY;
 }
 
-bool Bullet::load(SDL_RWops *stream)
+bool Bullet::load(GAGCore::InputStream *stream)
 {
-	px=SDL_ReadBE32(stream);
-	py=SDL_ReadBE32(stream);
-	speedX=SDL_ReadBE32(stream);
-	speedY=SDL_ReadBE32(stream);
-	ticksInitial=0;
-	ticksLeft=SDL_ReadBE32(stream);
-	shootDamage=SDL_ReadBE32(stream);
-	targetX=SDL_ReadBE32(stream);
-	targetY=SDL_ReadBE32(stream);
+	px = stream->readSint32("px");
+	py = stream->readSint32("py");
+	speedX = stream->readSint32("speedX");
+	speedY = stream->readSint32("speedY");
+	ticksInitial = 0;
+	ticksLeft = stream->readSint32("ticksLeft");
+	shootDamage = stream->readSint32("shootDamage");
+	targetX = stream->readSint32("targetX");
+	targetY = stream->readSint32("targetY");
 	return true;
 }
 
-void Bullet::save(SDL_RWops *stream)
+void Bullet::save(GAGCore::OutputStream *stream)
 {
-	SDL_WriteBE32(stream, px);
-	SDL_WriteBE32(stream, py);
-	SDL_WriteBE32(stream, speedX);
-	SDL_WriteBE32(stream, speedY);
-	SDL_WriteBE32(stream, ticksLeft);
-	SDL_WriteBE32(stream, shootDamage);
-	SDL_WriteBE32(stream, targetX);
-	SDL_WriteBE32(stream, targetY);
+	stream->writeSint32(px, "px");
+	stream->writeSint32(py, "py");
+	stream->writeSint32(speedX, "speedX");
+	stream->writeSint32(speedY, "speedY");
+	stream->writeSint32(ticksLeft, "ticksLeft");
+	stream->writeSint32(shootDamage, "shootDamage");
+	stream->writeSint32(targetX, "targetX");
+	stream->writeSint32(targetY, "targetY");
 }
 
 void Bullet::step(void)

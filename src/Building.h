@@ -27,6 +27,12 @@
 #include "Ressource.h"
 #include "UnitConsts.h"
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 
 class Unit;
 class Team;
@@ -140,14 +146,14 @@ public:
 	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
 
 public:
-	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
+	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types);
 	virtual ~Building(void) { }
 	
-	void load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
-	void loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner);
-	void saveCrossRef(SDL_RWops *stream);
+	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
+	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner);
+	void saveCrossRef(GAGCore::OutputStream *stream);
 
 	bool isRessourceFull(void);
 	int neededRessource(void);

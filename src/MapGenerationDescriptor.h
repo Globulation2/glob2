@@ -23,6 +23,12 @@
 #include "Ressource.h"
 #include "TerrainType.h"
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 class MapGenerationDescriptor
 {
 public:
@@ -33,8 +39,8 @@ public:
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength() {return DATA_SIZE; }
 	
-	void save(SDL_RWops *stream);
-	bool load(SDL_RWops *stream);
+	void save(GAGCore::OutputStream *stream);
+	bool load(GAGCore::InputStream *stream);
 	Uint32 checkSum();
 	void saveSyncronization(void);
 	void loadSyncronization(void);

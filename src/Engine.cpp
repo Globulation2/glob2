@@ -23,6 +23,7 @@
 #include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <Stream.h>
 
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
@@ -78,14 +79,14 @@ Engine::~Engine()
 int Engine::initCampain(const char *mapName)
 {
 	// we load map
-	SDL_RWops *stream=Toolkit::getFileManager()->open(mapName,"rb");
-	if (gui.load(stream)==false)
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
+	if (gui.load(stream) == false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");
-		SDL_RWclose(stream);
+		delete stream;
 		return EE_CANT_LOAD_MAP;
 	}
-	SDL_RWclose(stream);
+	delete stream;
 
 	// we make a player for each team
 	int playerNumber=0;
@@ -215,18 +216,18 @@ int Engine::initCustom(const char *gameName)
 {
 	assert(gameName);
 	assert(gameName[0]);
-	SDL_RWops *stream=globalContainer->fileManager->open(gameName, "rb");
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(gameName);
 	if (stream)
 	{
 		if (gui.load(stream))
 		{
 			printf("Engine : game is loaded\n");
-			SDL_RWclose(stream);
+			delete stream;
 		}
 		else
 		{
 			printf("Engine : Error during load of %s\n", gameName);
-			SDL_RWclose(stream);
+			delete stream;
 			return EE_CANCEL;
 		}
 	}

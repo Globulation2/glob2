@@ -30,6 +30,12 @@
 #include "Marshaling.h"
 #include "IntBuildingType.h"
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 struct Token
 {
 	enum TokenType
@@ -263,8 +269,8 @@ public:
 	ErrorReport compileScript(Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
 
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream);
+	void save(GAGCore::OutputStream *stream);
 	void setSourceCode(const char *sourceCode);
 	const char *getSourceCode(void) { return sourceCode; }
 

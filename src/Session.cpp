@@ -27,6 +27,7 @@
 #include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <Stream.h>
 
 SessionGame::SessionGame()
 {
@@ -93,90 +94,103 @@ SessionGame& SessionGame::operator=(const SessionGame& sessionGame)
 	return *this;
 }
 
-void SessionGame::save(SDL_RWops *stream)
+void SessionGame::save(GAGCore::OutputStream *stream)
 {
-	versionMajor=VERSION_MAJOR;
-	versionMinor=VERSION_MINOR;
-	SDL_RWwrite(stream, "SEGb", 4, 1);
-	SDL_WriteBE32(stream, versionMajor);
-	SDL_WriteBE32(stream, versionMinor);
+	versionMajor = VERSION_MAJOR;
+	versionMinor = VERSION_MINOR;
+	stream->writeEnterSection("SessionGame");
+	stream->write("SEGb", 4, "signatureStart");
+	stream->writeSint32(versionMajor, "versionMajor");
+	stream->writeSint32(versionMinor, "versionMinor");
 	// save 0, will be rewritten after
-	SDL_WriteBE32(stream, 0);//sessionInfoOffset
-	SDL_WriteBE32(stream, 0);//gameOffset
-	SDL_WriteBE32(stream, 0);//teamsOffset
-	SDL_WriteBE32(stream, 0);//playersOffset
-	SDL_WriteBE32(stream, 0);//mapOffset
-	SDL_WriteBE32(stream, 0);//mapScriptOffset
-	SDL_WriteBE32(stream, 0);//generationDescriptorOffset
-	SDL_WriteBE32(stream, numberOfPlayer);
-	SDL_WriteBE32(stream, numberOfTeam);
-	SDL_WriteBE32(stream, gameTPF);
-	SDL_WriteBE32(stream, gameLatency);
-	SDL_WriteBE32(stream, fileIsAMap);
+	stream->writeUint32(0, "sessionInfoOffset");
+	stream->writeUint32(0, "gameOffset");
+	stream->writeUint32(0, "teamsOffset");
+	stream->writeUint32(0, "playersOffset");
+	stream->writeUint32(0, "mapOffset");
+	stream->writeUint32(0, "mapScriptOffset");
+	stream->writeUint32(0, "generationDescriptorOffset");
+	stream->writeSint32(numberOfPlayer, "numberOfPlayer");
+	stream->writeSint32(numberOfTeam, "numberOfTeam");
+	stream->writeSint32(gameTPF, "gameTPF");
+	stream->writeSint32(gameLatency, "gameLatency");
+	stream->writeSint32(fileIsAMap, "fileIsAMap");
 	if (mapGenerationDescriptor)
 	{
-		SDL_WriteBE32(stream, (Sint32)true);
+		stream->writeSint32((Sint32)true, "mapGenerationDescriptor");
 		SAVE_OFFSET(stream, 36);
 		mapGenerationDescriptor->save(stream);
 	}
 	else
-		SDL_WriteBE32(stream, (Sint32)false);
-	SDL_RWwrite(stream, "SEGe", 4, 1);
+		stream->writeSint32((Sint32)false, "mapGenerationDescriptor");
+	stream->write("SEGe", 4, "signatureEnd");
+	stream->writeLeaveSection();
 }
 
-bool SessionGame::load(SDL_RWops *stream)
+bool SessionGame::load(GAGCore::InputStream *stream)
 {
+	stream->readEnterSection("SessionGame");
 	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureStart");
 
-	versionMajor=SDL_ReadBE32(stream);
+	versionMajor = stream->readSint32("versionMajor");
 	if (versionMajor != VERSION_MAJOR)
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 
-	versionMinor=SDL_ReadBE32(stream);
+	versionMinor = stream->readSint32("versionMinor");
 	if (versionMinor < MINIMUM_VERSION_MINOR)
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 
 	if (memcmp(signature,"SEGb",4)!=0)
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 	
-	sessionInfoOffset=SDL_ReadBE32(stream);
-	gameOffset=SDL_ReadBE32(stream);
-	teamsOffset=SDL_ReadBE32(stream);
-	playersOffset=SDL_ReadBE32(stream);
-	mapOffset=SDL_ReadBE32(stream);
+	sessionInfoOffset = stream->readUint32("sessionInfoOffset");
+	gameOffset = stream->readUint32("gameOffset");
+	teamsOffset = stream->readUint32("teamsOffset");
+	playersOffset = stream->readUint32("playersOffset");
+	mapOffset = stream->readUint32("mapOffset");
+	mapScriptOffset = stream->readUint32("mapScriptOffset");
+	generationDescriptorOffset = stream->readUint32("generationDescriptorOffset");
 	
-	mapScriptOffset=SDL_ReadBE32(stream);
-
-	generationDescriptorOffset=SDL_ReadBE32(stream);
-	
-	numberOfPlayer=SDL_ReadBE32(stream);
-	numberOfTeam=SDL_ReadBE32(stream);
-	gameTPF=SDL_ReadBE32(stream);
-	gameLatency=SDL_ReadBE32(stream);
-
-	fileIsAMap=SDL_ReadBE32(stream);
+	numberOfPlayer = stream->readSint32("numberOfPlayer");
+	numberOfTeam = stream->readSint32("numberOfTeam");
+	gameTPF = stream->readSint32("gameTPF");
+	gameLatency = stream->readSint32("gameLatency");
+	fileIsAMap = stream->readSint32("fileIsAMap");
 	
 	if (mapGenerationDescriptor)
 		delete mapGenerationDescriptor;
 	mapGenerationDescriptor=NULL;
 	bool isDescriptor;
 
-	isDescriptor=(bool)SDL_ReadBE32(stream);
+	isDescriptor=(bool)stream->readSint32("mapGenerationDescriptor");
 
 	if (isDescriptor)
 	{
-		SDL_RWseek(stream, generationDescriptorOffset , SEEK_SET);
-		mapGenerationDescriptor=new MapGenerationDescriptor();
+		stream->seekFromStart(generationDescriptorOffset);
+		mapGenerationDescriptor = new MapGenerationDescriptor();
 		mapGenerationDescriptor->load(stream);
 	}
 	else
-		mapGenerationDescriptor=NULL;
+		mapGenerationDescriptor = NULL;
 	
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureEnd");
 	if (memcmp(signature,"SEGe",4)!=0)
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -409,51 +423,90 @@ SessionInfo::SessionInfo(const SessionGame &sessionGame)
 {
 }
 
-void SessionInfo::save(SDL_RWops *stream)
+void SessionInfo::save(GAGCore::OutputStream *stream)
 {
 	SessionGame::save(stream);
 
+	stream->writeEnterSection("SessionInfo");
 	// update to this version
 	SAVE_OFFSET(stream, 12);
+	
+	stream->write(mapName, MAP_NAME_MAX_SIZE, "mapName");
 
-	SDL_RWwrite(stream, mapName, MAP_NAME_MAX_SIZE, 1);
-
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	stream->write("GLO2", 4, "signatureStart");
+	
+	stream->writeEnterSection("players");
 	for (int i=0; i<numberOfPlayer; i++)
+	{
+		stream->writeEnterSection(i);
 		players[i].save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	
+	stream->writeEnterSection("teams");
 	for (int i=0; i<numberOfTeam; i++)
+	{
+		stream->writeEnterSection(i);
 		teams[i].save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	stream->write("GLO2", 4, "signatureEnd");
+	stream->writeLeaveSection();
 }
 
-bool SessionInfo::load(SDL_RWops *stream)
+bool SessionInfo::load(GAGCore::InputStream *stream)
 {
 	char signature[4];
 
 	if (!SessionGame::load(stream))
 		return false;
 
-	SDL_RWseek(stream, sessionInfoOffset, SEEK_SET);
+	stream->readEnterSection("SessionGame");
+	if (stream->canSeek())
+		stream->seekFromStart(sessionInfoOffset);
 
-	SDL_RWread(stream, mapName, MAP_NAME_MAX_SIZE, 1);
+	stream->read(mapName, MAP_NAME_MAX_SIZE, "mapName");
 	printf("End-user map name is %s\n", mapName);
 
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
+	stream->read(signature, 4, "signatureStart");
+	if (memcmp(signature,"GLO2",4) != 0)
+	{
+		stream->readLeaveSection();
 		return false;
+	}
 
-
+	stream->readEnterSection("players");
 	for (int i=0; i<numberOfPlayer; ++i)
+	{
+		stream->readEnterSection(i);
 		if(!players[i].load(stream, versionMinor))
+		{
+			stream->readLeaveSection(3);
 			return false;
+		}
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 
+	stream->readEnterSection("teams");
 	for (int i=0; i<numberOfTeam; ++i)
+	{
+		stream->readEnterSection(i);
 		if(!teams[i].load(stream, versionMinor))
+		{
+			stream->readLeaveSection(3);
 			return false;
+		}
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
+	stream->read(signature, 4, "signatureEnd");
+	stream->readLeaveSection();
+	if (memcmp(signature,"GLO2",4) != 0)
 		return false;
 
 	return true;

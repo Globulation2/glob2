@@ -25,6 +25,7 @@
 
 #include <FileManager.h>
 #include <Toolkit.h>
+#include <Stream.h>
 
 #include "EntityType.h"
 
@@ -41,19 +42,19 @@ public:
 
 	virtual void load(const char *filename)
 	{
-		SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "r");
+		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
 
-		bool result=true;
+		bool result = true;
 
 		T defaultEntityType;
 		defaultEntityType.init();
-		result=defaultEntityType.loadText(stream);
+		result = defaultEntityType.loadText(stream);
 
 		while (result)
 		{
-			T *entityType=new T();
-			*entityType=defaultEntityType;
-			result=entityType->loadText(stream);
+			T *entityType = new T();
+			*entityType = defaultEntityType;
+			result = entityType->loadText(stream);
 			if (result)
 			{
 				entitiesTypes.push_back(entityType);
@@ -62,7 +63,7 @@ public:
 				delete entityType;
 		}
 
-		SDL_RWclose(stream);
+		delete stream;
 	}
 
 	T* get(unsigned int num)

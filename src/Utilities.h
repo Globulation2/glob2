@@ -23,6 +23,12 @@
 #include <stdlib.h>
 #include <SDL_net.h>
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 Uint32 syncRand(void);
 void setSyncRandSeed();
 void setSyncRandSeedA(Uint32 seed);
@@ -98,8 +104,8 @@ namespace Utilities
 	char *stringIP(IPaddress ip);
 
 	//! read a string from a stream
-	char *gets(char *dest, int size, SDL_RWops *stream);
-	void streamprintf(SDL_RWops *stream, const char *format, ...);
+	char *gets(char *dest, int size, GAGCore::InputStream *stream);
+	void streamprintf(GAGCore::OutputStream *stream, const char *format, ...);
 	
 	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
 	int staticTokenize(const char *s, int n, char token[32][256]);

@@ -43,8 +43,8 @@ public:
 	std::list<Bullet *> bullets;
 	std::list<BulletExplosion *> explosions;
 
-	void save(SDL_RWops *stream);
-	bool load(SDL_RWops *stream, Game *game);
+	void save(GAGCore::OutputStream *stream);
+	bool load(GAGCore::InputStream *stream, Game *game);
 
 	void step(void);
 private:

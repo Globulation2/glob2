@@ -29,6 +29,7 @@
 class Game;
 class Map;
 class Team;
+class InputStream;
 
 class BasePlayer
 {
@@ -128,8 +129,8 @@ public:
 	virtual ~BasePlayer(void);
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	Uint8 getOrderType();
 	
@@ -163,7 +164,7 @@ class Player:public BasePlayer
 {
 public:
 	Player();
-	Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor);
+	Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
 	Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type);
 	virtual ~Player(void);
 
@@ -172,8 +173,8 @@ public:
 	
 	void makeItAI(AI::ImplementitionID aiType);
 	
-	bool load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
+	void save(GAGCore::OutputStream  *stream);
 	
 public:
 	Sint32 startPositionX, startPositionY;

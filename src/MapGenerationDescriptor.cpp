@@ -18,6 +18,7 @@
 */
 
 #include <assert.h>
+#include <Stream.h>
 
 #include "MapGenerationDescriptor.h"
 #include "Marshaling.h"
@@ -81,7 +82,6 @@ Uint8 *MapGenerationDescriptor::getData()
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 		addSint32(data, ressource[i], 60+i*4);
 
-
 	return data;
 }
 
@@ -128,23 +128,30 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	return (good);
 }
 
-void MapGenerationDescriptor::save(SDL_RWops *stream)
+void MapGenerationDescriptor::save(GAGCore::OutputStream *stream)
 {
-	SDL_RWwrite(stream, "MgdB", 4, 1);
-	SDL_RWwrite(stream, getData(), DATA_SIZE, 1);
-	SDL_RWwrite(stream, "MgdE", 4, 1);
+	stream->writeEnterSection("MapGenerationDescriptor");
+	stream->write("MgdB", 4, "signatureStart");
+	stream->write(getData(), DATA_SIZE, "data");
+	stream->write("MgdE", 4, "signatureEnd");
+	stream->writeLeaveSection();
 }
 
-bool MapGenerationDescriptor::load(SDL_RWops *stream)
+bool MapGenerationDescriptor::load(GAGCore::InputStream *stream)
 {
+	stream->readEnterSection("MapGenerationDescriptor");
 	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature, "MgdB", 4)!=0)
+	stream->read(signature, 4, "signatureStart");
+	if (memcmp(signature, "MgdB", 4) != 0)
+	{
+		stream->readLeaveSection();
 		return false;
-	SDL_RWread(stream, data, DATA_SIZE, 1);
+	}
+	stream->read(getData(), DATA_SIZE, "data");
 	setData(data, DATA_SIZE);
-	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature, "MgdE", 4)!=0)
+	stream->read(signature, 4, "signatureEnd");
+	stream->readLeaveSection();
+	if (memcmp(signature, "MgdE", 4) != 0)
 		return false;
 	return true;
 }

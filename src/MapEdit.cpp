@@ -29,6 +29,8 @@
 #include "UnitType.h"
 #include "Utilities.h"
 
+#include <Stream.h>
+
 MapEdit::MapEdit()
 :game(NULL)
 {
@@ -1049,23 +1051,23 @@ bool MapEdit::load(const char *filename)
 {
 	assert(filename);
 
-	SDL_RWops *stream=globalContainer->fileManager->open(filename,"rb");
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
 	if (!stream)
 		return false;
 	
-	bool rv=game.load(stream);
+	bool rv = game.load(stream);
 	
-	SDL_RWclose(stream);
+	delete stream;
 	if (!rv)
 		return false;
 	regenerateClipRect();
 	
 	// set the editor default values
-	team=0;
-	terrainSize=1; // terrain size 1
-	level=0;
-	type=0; // water
-	editMode=EM_TERRAIN; // terrain
+	team = 0;
+	terrainSize = 1; // terrain size 1
+	level = 0;
+	type = 0; // water
+	editMode = EM_TERRAIN; // terrain
 
 	draw();
 	return true;
@@ -1076,11 +1078,11 @@ bool MapEdit::save(const char *filename, const char *name)
 	assert(filename);
 	assert(name);
 
-	SDL_RWops *stream=globalContainer->fileManager->open(filename,"wb");
+	GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
 	if (stream)
 	{
 		game.save(stream, true, name);
-		SDL_RWclose(stream);
+		delete stream;
 		return true;
 	}
 	else

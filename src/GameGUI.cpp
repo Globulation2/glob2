@@ -29,6 +29,7 @@
 #include <StringTable.h>
 #include <SupportFunctions.h>
 #include <Toolkit.h>
+#include <Stream.h>
 
 #include "Game.h"
 #include "GameGUI.h"
@@ -466,14 +467,13 @@ void GameGUI::syncStep(void)
 
 	if ((game.stepCounter&255)==79)
 	{
-		const char *name=Toolkit::getStringTable()->getString("[auto save]");
-		const char *fileName=glob2NameToFilename("games", name, "game");
-		SDL_RWops *stream=globalContainer->fileManager->open(fileName, "wb");
+		const char *name = Toolkit::getStringTable()->getString("[auto save]");
+		const char *fileName = glob2NameToFilename("games", name, "game");
+		GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(fileName);
 		if (stream)
 		{
-
 			save(stream, name);
-			SDL_RWclose(stream);
+			delete stream;
 		}
 		else
 			printf("GameGUI::syncStep: Can't auto save map\n");
@@ -625,13 +625,13 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-						SDL_RWops *stream=globalContainer->fileManager->open(locationName,"wb");
+						GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(locationName);
 						if (stream)
 						{
 							const char *name = ((LoadSaveScreen *)gameMenuScreen)->getName();
 							assert(name);
 							save(stream, name);
-							SDL_RWclose(stream);
+							delete stream;
 						}
 						else
 							printf("GGU : Can't save map\n");
@@ -3091,18 +3091,18 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s);
 		assert(s[0]);
 		printf("GameGUI::loadBase::s=%s.\n", s);
-		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
+		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(s);
 		delete[] s;
 		if (!load(stream))
 			return false;
-		SDL_RWclose(stream);
+		delete stream;
 		game.setBase(initial);
 	}
 
 	return true;
 }
 
-bool GameGUI::load(SDL_RWops *stream)
+bool GameGUI::load(GAGCore::InputStream *stream)
 {
 	init();
 
@@ -3117,17 +3117,19 @@ bool GameGUI::load(SDL_RWops *stream)
 	if (!game.session.fileIsAMap)
 	{
 		// load gui's specific infos
-		chatMask=SDL_ReadBE32(stream);
+		stream->readEnterSection("GameGUI");
+		
+		chatMask = stream->readUint32("chatMask");
 
-		localPlayer=SDL_ReadBE32(stream);
-		localTeamNo=SDL_ReadBE32(stream);
+		localPlayer = stream->readSint32("localPlayer");
+		localTeamNo = stream->readSint32("localTeamNo");
 
-		viewportX=SDL_ReadBE32(stream);
-		viewportY=SDL_ReadBE32(stream);
+		viewportX = stream->readSint32("viewportX");
+		viewportY = stream->readSint32("viewportY");
 
-		hiddenGUIElements=SDL_ReadBE32(stream);
-		Uint32 buildingsChoiceMask=SDL_ReadBE32(stream);
-		Uint32 flagsChoiceMask=SDL_ReadBE32(stream);
+		hiddenGUIElements = stream->readUint32("hiddenGUIElements");
+		Uint32 buildingsChoiceMask = stream->readUint32("buildingsChoiceMask");
+		Uint32 flagsChoiceMask = stream->readUint32("flagsChoiceMask");
 		
 		// invert value if hidden
 		for (unsigned i=0; i<buildingsChoiceState.size(); ++i)
@@ -3140,12 +3142,14 @@ bool GameGUI::load(SDL_RWops *stream)
 			int id = IntBuildingType::shortNumberFromType(flagsChoiceName[i]);
 			flagsChoiceState[i] = ((1<<id) & flagsChoiceMask) != 0;
 		}
+		
+		stream->readLeaveSection();
 	}
 
 	return true;
 }
 
-void GameGUI::save(SDL_RWops *stream, const char *name)
+void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 {
 	// Game is can't be no more automatically generated
 	if (game.session.mapGenerationDescriptor)
@@ -3153,13 +3157,14 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	game.session.mapGenerationDescriptor=NULL;
 
 	game.save(stream, false, name);
-	SDL_WriteBE32(stream, chatMask);
-	SDL_WriteBE32(stream, localPlayer);
-	SDL_WriteBE32(stream, localTeamNo);
-	SDL_WriteBE32(stream, viewportX);
-	SDL_WriteBE32(stream, viewportY);
-
-	SDL_WriteBE32(stream, hiddenGUIElements);
+	
+	stream->writeEnterSection("GameGUI");
+	stream->writeUint32(chatMask, "chatMask");
+	stream->writeSint32(localPlayer, "localPlayer");
+	stream->writeSint32(localTeamNo, "localTeamNo");
+	stream->writeSint32(viewportX, "viewportX");
+	stream->writeSint32(viewportY, "viewportY");
+	stream->writeUint32(hiddenGUIElements, "hiddenGUIElements");
 	Uint32 buildingsChoiceMask = 0;
 	Uint32 flagsChoiceMask = 0;
 	// save one if visible
@@ -3179,8 +3184,9 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 			flagsChoiceMask |= (1<<id);
 		}
 	}
-	SDL_WriteBE32(stream, buildingsChoiceMask);
-	SDL_WriteBE32(stream, flagsChoiceMask);
+	stream->writeUint32(buildingsChoiceMask, "buildingsChoiceMask");
+	stream->writeUint32(flagsChoiceMask, "flagsChoiceMask");
+	stream->writeLeaveSection();
 }
 
 // TODO : merge thoses 3 functions into one

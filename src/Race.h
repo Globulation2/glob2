@@ -22,6 +22,12 @@
 
 #include "UnitType.h"
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
 class Race
 {
 public:
@@ -41,8 +47,9 @@ public:
 	void create(CreationType creationType);
 	UnitType *getUnitType(int type, int level);
 	
-	void save(SDL_RWops *stream);
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
+	// Deactivated for now, as race are not saved */
+	void save(GAGCore::OutputStream *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 };
 
 #endif

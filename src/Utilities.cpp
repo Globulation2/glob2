@@ -21,6 +21,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
+#include <Stream.h>
 
 #include "Utilities.h"
 #include "Game.h"
@@ -483,14 +484,14 @@ namespace Utilities
 		return staticStringIP[staticCounter];
 	}
 
-	char *gets(char *dest, int size, SDL_RWops *stream)
+	char *gets(char *dest, int size, GAGCore::InputStream *stream)
 	{
 		int i;
 		for (i=0;i<size-1;i++)
 		{
 			char c;
-			int res=SDL_RWread(stream, &c, 1, 1);
-			if (res<1)
+			stream->read(&c, 1, "");
+			if (stream->isEndOfStream())
 				return NULL;
 			switch (c)
 			{
@@ -507,13 +508,13 @@ namespace Utilities
 		return dest;
 	}
 
-	void streamprintf(SDL_RWops *stream, const char *format, ...)
+	void streamprintf(GAGCore::OutputStream *stream, const char *format, ...)
 	{
 		char buffer[256];
 		va_list arglist;
 		va_start(arglist, format);
 		vsnprintf(buffer, 256, format, arglist);
-		SDL_RWwrite(stream, buffer, strlen(buffer), 1);
+		stream->write(buffer, strlen(buffer));
 		va_end(arglist);
 	}
 	
