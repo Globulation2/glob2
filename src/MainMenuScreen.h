@@ -38,7 +38,7 @@ public:
 		QUIT = 8
 	};
 private:
-	//Sprite *arch;
+	//DrawableSurface *background;
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();
