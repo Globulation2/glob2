@@ -13,7 +13,7 @@ Note : if SDL is not installed system wide but rather in $prefix,
 add the following flags to aclocal :
 aclocal -I $prefix/share/aclocal
 
-Under macOSX:
+For instance, under macOSX, replace aclocal by
 aclocal -I /usr/local/share/aclocal
 
 You have to use gcc 2.95. If jou have Jaguar and gcc 3, ou'll need to reinstall MaxOS 10.1.x on another disk and install the old gcc 2.95. Then edit 
