@@ -235,7 +235,7 @@ void GlobalContainer::load(void)
 		/*menuFont=gfx->loadFont("data/fonts/arial24white.png");
 		standardFont=gfx->loadFont("data/fonts/arial14white.png");
 		littleFont=gfx->loadFont("data/fonts/arial8green.png");*/
-		menuFont=gfx->loadFont("data/fonts/arial.ttf", 24);
+		menuFont=gfx->loadFont("data/fonts/arial.ttf", 22);
 		menuFont->setColor(255, 255, 255);
 		standardFont=gfx->loadFont("data/fonts/arial.ttf", 14);
 		standardFont->setColor(255, 255, 255);
