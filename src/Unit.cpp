@@ -57,6 +57,14 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	insideTimeout=0;
 	speed=32;
 
+	// quality parameters
+	for (int i=0; i<NB_ABILITY; i++)
+	{
+		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
+		this->level[i]=level;
+		this->canLearn[i]=race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
+	}
+
 	// states
 	needToRecheckMedical=true;
 	medical=MED_FREE;
@@ -66,17 +74,9 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 		movement=MOV_RANDOM_FLY;
 	else
 		movement=MOV_RANDOM_GROUND;
-		
+
 	targetX=0;
 	targetY=0;
-
-	// quality parameters
-	for (int i=0; i<NB_ABILITY; i++)
-	{
-		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
-		this->level[i]=level;
-		this->canLearn[i]=race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
-	}
 
 	// trigger parameters
 	hp=0;
