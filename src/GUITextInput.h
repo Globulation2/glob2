@@ -37,7 +37,10 @@ public:
 protected:
 	const Font *font;
 	int cursPos;
+	int textDep;
+	int cursorScreenPos;
 	virtual void repaint(void);
+	void recomputeTextInfos(void);
 	
 public:
 	enum {

@@ -36,6 +36,8 @@ TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *t
 	this->text[MAX_TEXT_SIZE-1]=0;
 	
 	cursPos=strlen(text);
+	textDep=0;
+	cursorScreenPos=0;
 
 	this->activated=activated;
 }
@@ -47,7 +49,10 @@ void TextInput::onTimer(Uint32 tick)
 void TextInput::setText(const char *newText)
 {
 	strncpy(this->text, newText, MAX_TEXT_SIZE);
+	this->text[MAX_TEXT_SIZE-1]=0;
 	cursPos=0;
+	textDep=0;
+	cursorScreenPos=0;
 	repaint();
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
@@ -206,7 +211,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			if (font->printable(c))
 			{
 				int l=strlen(text);
-				if (l<MAX_TEXT_SIZE)
+				if (l<MAX_TEXT_SIZE-1)
 				{
 					memmove( &(text[cursPos+1]), &(text[cursPos]), l-cursPos);
 
@@ -222,16 +227,52 @@ void TextInput::onSDLEvent(SDL_Event *event)
 	}
 }
 
+void TextInput::recomputeTextInfos(void)
+{
+	char temp[MAX_TEXT_SIZE];
+	
+#define TEXTBOXSIDEPAD 30
+
+	int textLength=strlen(text);
+	
+	// make sure we have always right space at left
+	if (cursPos<textDep)
+		textDep=cursPos;
+	strcpy(temp,&(text[textDep]));
+	temp[cursPos-textDep]=0;
+	cursorScreenPos=font->getStringWidth(temp);
+	while ((cursorScreenPos<TEXTBOXSIDEPAD)&&(textDep>0))
+	{
+		textDep--;
+		strcpy(temp,&(text[textDep]));
+		temp[cursPos-textDep]=0;
+		cursorScreenPos=font->getStringWidth(temp);
+	}
+	
+	// make sure we have always right space at right
+	while ( (cursorScreenPos>w-TEXTBOXSIDEPAD-4) &&	(textDep<textLength) )
+	{
+		textDep++;
+
+		strcpy(temp,&(text[textDep]));
+		temp[cursPos-textDep]=0;
+		cursorScreenPos=font->getStringWidth(temp);
+	}
+
+}
+
 void TextInput::paint(void)
 {
 	static const int r= 180;
 	static const int g= 180;
 	static const int b= 180;
 	
+	recomputeTextInfos();
+	
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
-	parent->getSurface()->drawString(x+2, y+2, font, text);
+	parent->getSurface()->drawString(x+2, y+3, font, text+textDep);
 
 	// we draw the cursor:
 	if(activated)
@@ -239,9 +280,9 @@ void TextInput::paint(void)
 		char textBeforeCurs[MAX_TEXT_SIZE];
 		strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
 		textBeforeCurs[cursPos]=0;
-		int wbc=font->getStringWidth(textBeforeCurs);
+		//int wbc=font->getStringWidth(textBeforeCurs);
 		int hbc=font->getStringHeight(textBeforeCurs);
-		parent->getSurface()->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
+		parent->getSurface()->drawVertLine(x+2+cursorScreenPos/*wbc*/, y+3 , hbc, r, g, b);
 	}
 }
 
