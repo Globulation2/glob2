@@ -209,6 +209,9 @@ Connecting to
 [connect]
 Connecter
 Connect
+[disconnect]
+Deconnecter
+Disonnect
 [please wait]
 Attendre SVP
 Please wait
