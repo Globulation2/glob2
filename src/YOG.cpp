@@ -1517,3 +1517,16 @@ char *YOG::getStatusString()
 	return t;
 }
 
+void YOG::handleMessageAliasing(char *message, int maxSize)
+{
+	if (strncmp("/msg ", message, 5))
+	{
+		memmove(message+2, message+4, Utilities::strmlen(message+4, maxSize-4));
+		return;
+	}
+	if (strncmp("/away ", message, 6))
+	{
+		memmove(message+2, message+5, Utilities::strmlen(message+5, maxSize-5));
+		return;
+	}
+}

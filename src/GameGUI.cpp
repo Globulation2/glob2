@@ -465,30 +465,32 @@ void GameGUI::processEvent(SDL_Event *event)
 
 		if (typingInputScreen->endValue==0)
 		{
-			const char *inputText=typingInputScreen->getText();
-			if (inputText[0])
+			char message[256];
+			strncpy(message, typingInputScreen->getText(), 256);
+			if (message[0])
 			{
 				bool foundLocal=false;
-				if (strncmp(inputText, "/m ", 3)==0 || strncmp(inputText, "/w ", 3)==0)
+				globalContainer->yog->handleMessageAliasing(message, 256);
+				if (strncmp(message, "/m ", 3)==0)
 				{
 					for (int i=0; i<game.session.numberOfPlayer; i++)
 						if (game.players[i])
 						{
 							char *name=game.players[i]->name;
 							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
-							if ((strncmp(name, inputText+3, l)==0)&&(inputText[3+l]==' '))
+							if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
 							{
-								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, inputText+4+l));
+								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, message+4+l));
 								foundLocal=true;
 							}
 						}
 					if (!foundLocal)
-						globalContainer->yog->sendMessage(inputText);
+						globalContainer->yog->sendMessage(message);
 				}
-				else if (inputText[0]=='/')
-					globalContainer->yog->sendMessage(inputText);
+				else if (message[0]=='/')
+					globalContainer->yog->sendMessage(message);
 				else
-					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, inputText));
+					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-TYPING_INPUT_BASE_INC;
