@@ -78,6 +78,11 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		{
 			endExecute(STARTED);
 		}
+		else if (rv==-1)
+		{
+			multiplayersJoin->quitThisGame();
+			endExecute(-1);
+		}
 		else
 		{
 			printf("rv=%d\n", rv);
@@ -113,7 +118,13 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 		}
 		else if (par1==QUIT)
 		{
+			multiplayersJoin->quitThisGame();
 			endExecute(QUIT);
+		}
+		else if (par1==-1)
+		{
+			multiplayersJoin->quitThisGame();
+			endExecute(-1);
 		}
 		else
 			assert(false);

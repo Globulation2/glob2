@@ -76,9 +76,14 @@ int main(int argc, char *argv[])
 			case 2:
 			{
 				Engine engine;
-				if (engine.initMutiplayerYOG()==Engine::NO_ERROR)
+				int rc=engine.initMutiplayerYOG();
+				if (rc==Engine::NO_ERROR)
+				{
 					if (engine.run()==-1)
 						run=false;
+				}
+				else if (rc==-1)
+					run=false;
 				
 				/*YOGScreen yogScreen;
 				drawYOGSplashScreen();
@@ -105,9 +110,14 @@ int main(int argc, char *argv[])
 					case MultiplayersOfferScreen::HOST :
 					{
 						Engine engine;
-						if (engine.initMutiplayerHost()==Engine::NO_ERROR)
+						int rc=engine.initMutiplayerHost();
+						if (rc==Engine::NO_ERROR)
+						{
 							if (engine.run()==-1)
 								run=false;
+						}
+						else if (rc==-1)
+							run=false;
 					}
 					break;
 
@@ -115,9 +125,14 @@ int main(int argc, char *argv[])
 					{
 						Engine engine;
 						printf("join\n");
-						if (engine.initMutiplayerJoin()==Engine::NO_ERROR)
+						int rc=engine.initMutiplayerJoin();
+						if (rc==Engine::NO_ERROR)
+						{
 							if (engine.run()==-1)
 								run=false;
+						}
+						else if (rc==-1)
+							run=false;
 					}
 					break;
 

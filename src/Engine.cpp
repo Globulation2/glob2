@@ -208,23 +208,31 @@ int Engine::initMutiplayerHost(void)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen;
 
-	int mpcms = multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
+	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
 
-	if (mpcms == MultiplayersChooseMapScreen::CANCEL)
+	if (mpcms==MultiplayersChooseMapScreen::CANCEL)
 		return CANCEL;
+	if (mpcms==-1)
+		return -1;
 
 	printf("Engine::the game is sharing ...\n");
 
 	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
-	if (multiplayersHostScreen.execute(globalContainer->gfx, 20)==MultiplayersHostScreen::STARTED)
+	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 20);
+	if (rc==MultiplayersHostScreen::STARTED)
 	{
-		if (multiplayersHostScreen.multiplayersJoin->myPlayerNumber==-1)
+		//if (multiplayersHostScreen.multiplayersJoin->myPlayerNumber==-1)
+		if (multiplayersHostScreen.multiplayersJoin!=NULL)
 			return CANCEL;
 		else
 			startMultiplayer(multiplayersHostScreen.multiplayersJoin);
 
 		return NO_ERROR;
 	}
+	else if (rc==-1)
+		return -1;
+		
+	printf("Engine::initMutiplayerHost() rc=%d\n", rc);
 
 	return CANCEL;
 }
@@ -233,12 +241,15 @@ int Engine::initMutiplayerJoin(void)
 {
 	MultiplayersJoinScreen multiplayersJoinScreen;
 
-	if (multiplayersJoinScreen.execute(globalContainer->gfx, 20)==MultiplayersJoinScreen::STARTED)
+	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 20);
+	if (rc==MultiplayersJoinScreen::STARTED)
 	{
 		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);
 
 		return NO_ERROR;
 	}
+	else if (rc==-1)
+		return -1;
 
 	return CANCEL;
 }
@@ -255,6 +266,8 @@ int Engine::initMutiplayerYOG(void)
 		printf("Engine::yogReturnCode=%d\n", yogReturnCode);
 		if (yogReturnCode==YOGScreen::CANCEL)
 			return CANCEL;
+		if (yogReturnCode==-1)
+			return -1;
 			
 		printf("Engine::YOG game is joined ...\n");
 		

@@ -761,6 +761,7 @@ bool MultiplayersJoin::tryConnection()
 
 void MultiplayersJoin::quitThisGame()
 {
+	printf("quitThisGame() (this=%x)(socket=%x).\n", this, socket);
 	unCrossConnectSessionInfo();
 
 	if (socket)

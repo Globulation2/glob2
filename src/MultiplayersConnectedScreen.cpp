@@ -87,6 +87,11 @@ void MultiplayersConnectedScreen::onAction(Widget *source, Action action, int pa
 			multiplayersJoin->quitThisGame();
 			endExecute(DISCONNECT);
 		}
+		else if (par1==-1)
+		{
+			multiplayersJoin->quitThisGame();
+			endExecute(-1);
+		}
 		else
 			assert(false);
 	}
