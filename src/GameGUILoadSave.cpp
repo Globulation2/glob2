@@ -57,7 +57,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	else
 		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 300));
 
-	fileName=Utilities::concat(directory, fileNameEntry->getText(), this->extension);
+	fileName=Utilities::concat(this->directory, fileNameEntry->getText(), this->extension);
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
