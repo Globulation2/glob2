@@ -66,17 +66,17 @@ void TeamStats::step(Team *team)
 	
 	{
 		std::list<Building *> foodable=team->foodable;
-		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); bi++)
+		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
 	{
 		std::list<Building *> fillable=team->fillable;
-		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); bi++)
+		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
 	{
 		std::list<Building *> zonable=team->zonable[WORKER];
-		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); bi++)
+		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
 	

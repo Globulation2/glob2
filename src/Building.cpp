@@ -606,7 +606,7 @@ void Building::updateCallLists(void)
 		if (maxUnitWorking==0)
 		{
 			// This is only a special optimisation case:
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 			{
 				(*it)->attachedBuilding=NULL;
 				(*it)->activity=Unit::ACT_RANDOM;
@@ -625,31 +625,38 @@ void Building::updateCallLists(void)
 				// First choice: free an unit who has a not needed ressource..
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
 					int r=(*it)->caryedRessource;
-					if ( (r>=0) || (!neededRessource(r)) )
+					if (r>=0 && !neededRessource(r))
+					{
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
 						if (newDistSquare>maxDistSquare)
 						{
 							maxDistSquare=newDistSquare;
 							fu=(*it);
 							ittemp=it;
 						}
+					}
 				}
 
 				// Second choice: free an unit who has no ressource..
 				if (fu==NULL)
+				{
+					int minDistSquare=INT_MAX;
 					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
 						int r=(*it)->caryedRessource;
 						if (r<0)
-							if (newDistSquare>maxDistSquare)
+						{
+							int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+							if (newDistSquare<minDistSquare)
 							{
-								maxDistSquare=newDistSquare;
+								minDistSquare=newDistSquare;
 								fu=(*it);
 								ittemp=it;
 							}
+						}
 					}
+				}
 
 				// Third choice: free any unit..
 				if (fu==NULL)

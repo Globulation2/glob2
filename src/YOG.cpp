@@ -787,7 +787,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			joiner.TOTL=3;
 			joiner.connected=false;
 			bool already=false;
-			for (std::list<Joiner>::iterator ji=joiners.begin(); ji!=joiners.end(); ji++)
+			for (std::list<Joiner>::iterator ji=joiners.begin(); ji!=joiners.end(); ++ji)
 				if (ji->uid==joiner.uid)
 				{
 					ji->timeout=i;

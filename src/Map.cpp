@@ -1960,14 +1960,84 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	printf("...updatedGlobalGradient\n");
 }
 
+bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *dist)
+{
+	assert(building);
+	int bx=building->posX;
+	int by=building->posY;
+	assert(x>=0);
+	assert(y>=0);
+	
+	Uint8 *gradient=building->localGradient[canSwim];
+	
+	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
+	{
+		int lx=(x-bx+15+32)&31;
+		int ly=(y-by+15+32)&31;
+		if (!building->dirtyLocalGradient[canSwim])
+		{
+			Uint8 currentg=gradient[lx+ly*32];
+			if (currentg>1 && !building->dirtyLocalGradient[canSwim])
+			{
+				*dist=255-currentg;
+				return true;
+			}
+		}
+		
+		updateLocalGradient(building, canSwim);
+		
+		Uint8 currentg=gradient[lx+ly*32];
+		if (currentg>1)
+		{
+			*dist=255-currentg;
+			return true;
+		}
+	}
+	
+	gradient=building->globalGradient[canSwim];
+	if (gradient==NULL)
+	{
+		gradient=new Uint8[size];
+		printf("ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
+		building->globalGradient[canSwim]=gradient;
+		updateGlobalGradient(building, canSwim);
+	}
+	else
+	{
+		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+		if (currentg>1)
+		{
+			*dist=255-currentg;
+			return true;
+		}
+		else
+		{
+			printf("ba-a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			return false;
+		}
+	}
+	
+	updateGlobalGradient(building, canSwim);
+	
+	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+	if (currentg>1)
+	{
+		*dist=255-currentg;
+		return true;
+	}
+	else
+	{
+		printf("ba-b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		return false;
+	}
+}
+
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	//printf("pathfindingBuilding...\n");
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
-	//int bw=building->type->width;
-	//int bh=building->type->height;
 	assert(x>=0);
 	assert(y>=0);
 	 
@@ -1979,7 +2049,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
 		int max=0;
-		int currentg=gradient[lx+ly*32];
+		Uint8 currentg=gradient[lx+ly*32];
 		bool found=false;
 		bool gradientUsable=false;
 
@@ -2001,7 +2071,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					else if(lxddy>31)
 						lxddy=31;
 					Uint8 g=gradient[lxddx+32*lxddy];
-					if (g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
 					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
@@ -2042,7 +2112,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					else if(lxddy>31)
 						lxddy=31;
 					Uint8 g=gradient[lxddx+32*lxddy];
-					if (g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
 					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
@@ -2073,108 +2143,97 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	else
 	{
 		bool found=false;
-		Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
-		if (max>1)
-			for (int sd=1; sd>=0; sd--)
+		bool gradientUsable=false;
+		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+		Uint8 max=0;
+		if (currentg>1)
+			for (int sd=0; sd<=1; sd++)
 				for (int d=sd; d<8; d+=2)
 				{
 					int ddx, ddy;
 					Unit::dxdyfromDirection(d, &ddx, &ddy);
-					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
+					if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+						gradientUsable=true;
+					if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
-						Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
-						if (g>max)
-						{
-							max=g;
-							*dx=ddx;
-							*dy=ddy;
-							found=true;
-						}
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
 					}
 				}
 
 		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
-		if (found)
+		if (found && gradientUsable)
 		{
 			//printf("...pathfindedBuilding v3\n");
 			return true;
+		}
+		else
+		{
+			printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			return false;
 		}
 	}
 	
 	updateGlobalGradient(building, canSwim);
 	
 	bool found=false;
-	Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
-	if (max>1)
+	bool gradientUsable=false;
+	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+	Uint8 max=0;
+	if (currentg>1)
 	{
-		for (int sd=1; sd>=0; sd--)
+		for (int sd=0; sd<=1; sd++)
 			for (int d=sd; d<8; d+=2)
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
+				if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					gradientUsable=true;
+				if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
-					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
-					if (g>max)
-					{
-						max=g;
-						*dx=ddx;
-						*dy=ddy;
-						found=true;
-					}
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
 				}
 			}
 
-		if (found)
+		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
+		if (found && gradientUsable)
 		{
 			//printf("...pathfindedBuilding v4\n");
 			return true;
 		}
-		
-		for (int sd=1; sd>=0; sd--)
-			for (int d=sd; d<8; d+=2)
-			{
-				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
-				{
-					Uint8 g=gradient[((x+w+(ddx*2))&wMask)+w*((y+h+(ddy*2))&hMask)];
-					if (g>max)
-					{
-						max=g;
-						*dx=ddx;
-						*dy=ddy;
-						found=true;
-					}
-				}
-			}
 		
 		for (int sd=0; sd<=1; sd++)
 			for (int d=sd; d<8; d+=2)
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				Uint8 g=gradient[((x+w+(ddx*2))&wMask)+w*((y+h+(ddy*2))&hMask)];
+				if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					gradientUsable=true;
+				if (g>max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
-					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
-					if (g>=max)
-					{
-						max=g;
-						*dx=ddx;
-						*dy=ddy;
-						found=true;
-					}
+					max=g;
+					*dx=ddx;
+					*dy=ddy;
+					found=true;
 				}
 			}
 		
-		if (found)
+		if (found && gradientUsable)
 		{
 			//printf("...pathfindedBuilding v5\n");
 			return true;
 		}
 	}
 	
-	printf("global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	printf("b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 	
 	return false;
 }
