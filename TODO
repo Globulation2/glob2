@@ -2,6 +2,7 @@ Priority:
 
 - afficher des boites de dialogue modale. (nct)
 - Empêcher les longs mots de dépasser de la boîte de dialog de YOG. (nct)
+- Débugger les cas ou le polices se réafichent plusieur fois et que l'alpha s'aditionne. (nct)
 
 To First release :
 

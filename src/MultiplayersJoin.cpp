@@ -1098,7 +1098,7 @@ void MultiplayersJoin::sendingTime()
 		}
 		fprintf(logFileDownload, ").\n");
 		
-		startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
+		startDownloadTimeout=DEFAULT_NETWORK_TIMEOUT;
 	}
 
 	if ((waitingState!=WS_TYPING_SERVER_NAME)&&(--waitingTimeout<0))
