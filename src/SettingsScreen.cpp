@@ -189,7 +189,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			else
 			{
-				globalContainer->settings.screenFlags&=(DrawableSurface::FULLSCREEN);
+				globalContainer->settings.screenFlags&=~(DrawableSurface::FULLSCREEN);
 				globalContainer->settings.screenFlags|=DrawableSurface::RESIZABLE;
 			}
 			updateGfxCtx();
