@@ -1944,9 +1944,10 @@ void GameGUI::drawOverlayInfos(void)
 		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
 		{
 			
-			int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
-			Uint8 a;
-			
+			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
+			int ray = sin(float(it->showTicks)/float(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2;
+			int ray2 = cos(float(it->showTicks)/float(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2;
+			Uint8 a;			
 			/*if (ray < (Mark::DEFAULT_MARK_SHOW_TICKS>>1))
 				a = DrawableSurface::ALPHA_OPAQUE;
 			else
@@ -1977,7 +1978,7 @@ void GameGUI::drawOverlayInfos(void)
 			
 			a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
 			globalContainer->gfx->drawCircle(x, y, ray, it->r, it->g, it->b, a);
-			globalContainer->gfx->drawCircle(x, y, (ray*11)/8, it->r, it->g, it->b, a);
+			globalContainer->gfx->drawCircle(x, y, (ray2*11)/8, it->r, it->g, it->b, a);
 			
 			// delete old marks
 			if (!(--(it->showTicks)))
