@@ -1217,14 +1217,15 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					//Comparaison| ( Variable( player , "flagName" ) cond value ) : variable = unit
 					//( Variable( level , player , "flagName" ) cond value ) : variable = building
 					//"flagName" can be omitted !
-					if ((donnees->getToken()->type > 100) && (donnees->getToken()->type < 300) && !enter)
+					if ((donnees->getToken()->type >= Token::S_WORKER) && (donnees->getToken()->type <= Token::S_MARKET_B) && !enter)
 					{
 						enter = true;
-						//Buildings
+
 						thisone.line.push_back(*donnees->getToken());
-						if ((donnees->getToken()->type > 200) && (donnees->getToken()->type < 300))
+						if (donnees->getToken()->type > Token::S_SWARM_B)
 						{
-							//level
+							// Buildings
+							// level
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
@@ -1233,7 +1234,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if ((donnees->getToken()->value < 0) || (donnees->getToken()->value > 5))
+							else if ((donnees->getToken()->value < 0) || (donnees->getToken()->value > 2))
 							{
 								er.type=ErrorReport::ET_INVALID_VALUE;
 								break;
@@ -1242,17 +1243,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							CHECK_SEMICOL;
 							NEXT_TOKEN;
 						}
-						else if ((donnees->getToken()->type > 100) && (donnees->getToken()->type < 200))
+						else
 						{
+							// Units
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
 						}
-						else
-						{
-							er.type=ErrorReport::ET_SYNTAX_ERROR;
-							break;
-						}
+
 						//player
 						if (donnees->getToken()->type != Token::INT)
 						{
@@ -1289,7 +1287,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if ((donnees->getToken()->type < 301) || (donnees->getToken()->type > 303))
+						if ((donnees->getToken()->type < Token::S_EQUAL) || (donnees->getToken()->type > Token::S_LOWER))
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
