@@ -146,7 +146,7 @@ class Bullet
 public:
 	Bullet(SDL_RWops *stream);
 	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY);
-	void load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 public:
 	Sint32 px, py; // pixel precision point of x,y
