@@ -274,3 +274,74 @@ void ColorButton::internalRepaint(int x, int y, int w, int h)
 			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
 	}
 }
+
+MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
+:TextButton(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, font, text, returnCode, unicode)
+{
+	textIndex=0;
+}
+
+void MultiTextButton::onSDLEvent(SDL_Event *event)
+{
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	HighlightableWidget::onSDLEvent(event);
+
+	if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && texts.size())
+		{
+			if (event->button.button == SDL_BUTTON_LEFT)
+			{
+				textIndex++;
+				if (textIndex>=texts.size())
+					textIndex=0;
+				setText(texts.at(textIndex));
+
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			}
+			else if (event->button.button == SDL_BUTTON_RIGHT)
+			{
+				textIndex--;
+				if (textIndex<0)
+					textIndex=texts.size()-1;
+				setText(texts.at(textIndex));
+				
+				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
+				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
+			}
+		}
+	}
+	else if (event->type==SDL_MOUSEBUTTONUP)
+	{
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
+		{
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
+		}
+	}
+}
+
+void MultiTextButton::addText(const char *s)
+{
+	texts.push_back(s);
+}
+
+void MultiTextButton::clearTexts(void)
+{
+	texts.clear();
+}
+
+void MultiTextButton::setTextIndex(int i)
+{
+	textIndex=i;
+	setText(texts.at(textIndex));
+}
+
+void MultiTextButton::setFirstTextIndex(int i)
+{
+	textIndex=i;
+	text=texts.at(textIndex);
+}

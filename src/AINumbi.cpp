@@ -102,7 +102,7 @@ Order *AINumbi::getOrder(void)
 	{
 		timer-=timer;
 		phase++;
-		printf("AI: new phase %d.\n", phase);
+		//printf("AI: new phase %d.\n", phase);
 	}
 	if (phase==0)
 	{
@@ -382,7 +382,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 			b->ratioLocal[EXPLORER]=explorers;
 			b->ratioLocal[WARRIOR]=warriors;
 
-			printf("AI: (%d) ratioLocal changed.\n", b->gid);
+			//printf("AI: (%d) ratioLocal changed.\n", b->gid);
 
 			return new OrderModifySwarm(b->gid, b->ratioLocal);
 		}
@@ -405,7 +405,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 	}
 	if (ss<minSwarmNumbers)
 	{
-		printf("AI: not enough swarms (%d<%d).\n", ss, minSwarmNumbers);
+		//printf("AI: not enough swarms (%d<%d).\n", ss, minSwarmNumbers);
 		// TODO !
 		// assert(false);
 		/*int x, y;
@@ -435,7 +435,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 		if (b==NULL)
 		{
 			mainBuilding[buildingType]=0;
-			printf("AI: no more building !.\n");
+			//printf("AI: no more building !.\n");
 		}
 		else
 			mainBuilding[buildingType]=Building::GIDtoID(b->gid);
@@ -762,14 +762,14 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 	{
 		if (ft>=critticalMass)
 		{
-			printf("AI:(crittical mass)new attack with %d units.\n", ft);
+			//printf("AI:(crittical mass)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
 		attackTimer++;
 		if ((attackTimer>=critticalTimeout)&&(ft>numberRequested))
 		{
 			attackTimer=0;
-			printf("AI:(timeout)new attack with %d units.\n", ft);
+			//printf("AI:(timeout)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
 		return new NullOrder();
@@ -779,7 +779,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		if (ft<=(critticalMass/2))
 		{
 			attackPhase=3;
-			printf("AI:stop attack.\n");
+			//printf("AI:stop attack.\n");
 			return new NullOrder();
 		}
 
@@ -795,7 +795,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 
 				if (b->maxUnitWorking!=numberRequested)
 				{
-					printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
+					//printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
 					return new OrderModifyBuilding(b->gid, numberRequested);
 				}
 			}
@@ -837,7 +837,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		if (ey!=-1)
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
-			printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
+			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
 			return new OrderCreate(teamNumber, ex, ey, (BuildingType::BuildingTypeNumber)typeNum);
 		}
 		else
@@ -926,7 +926,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 
 	if (ss<=(wr/numbers))
 	{
-		printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", ss, (wr/numbers), wr, numbers);
+		//printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", ss, (wr/numbers), wr, numbers);
 		int x, y;
 		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
 		{

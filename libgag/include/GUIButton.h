@@ -130,4 +130,26 @@ protected:
 	virtual void internalRepaint(int x, int y, int w, int h);
 };
 
+//! A button that can have multiple texts
+class MultiTextButton:public TextButton
+{
+protected:
+	std::vector<const char *> texts;
+	unsigned textIndex;
+
+public:
+	MultiTextButton() { textIndex=0; returnCode=0; }
+	MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
+	virtual ~MultiTextButton() { }
+
+	virtual void onSDLEvent(SDL_Event *event);
+	
+	virtual void addText(const char *s);
+	virtual void clearTexts(void);
+	virtual void setTextIndex(int i);
+	virtual void setFirstTextIndex(int i);
+	virtual int getTextIndex(void) { return textIndex; }
+	virtual size_t getTextsSize(void) { return texts.size(); }
+};
+
 #endif

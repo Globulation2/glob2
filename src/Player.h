@@ -20,6 +20,7 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
+#include <assert.h>
 #include <list>
 #include <SDL_net.h>
 
@@ -45,6 +46,16 @@ public:
 		P_AI=5,
 		// Note : P_AI + n is AI type n
 	};
+	
+	static AI::ImplementitionID implementitionIdFromPlayerType(PlayerType type)
+	{
+		assert(type>=P_AI);
+		return (AI::ImplementitionID)((int)type-(int)P_AI);
+	}
+	static PlayerType playerTypeFromImplementitionID(AI::ImplementitionID iid)
+	{
+		return (PlayerType)((int)iid+(int)P_AI);
+	}
 
 	enum {MAX_NAME_LENGTH = 32};
 
@@ -115,7 +126,6 @@ public:
 	BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamn, PlayerType type);
 	void init();
 	virtual ~BasePlayer(void);
-	//void close(void);
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
 	bool load(SDL_RWops *stream, Sint32 versionMinor);

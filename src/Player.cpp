@@ -421,7 +421,7 @@ Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, Play
 	setTeam(team);
 	if (type>=P_AI)
 	{
-		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
+		ai=new AI(implementitionIdFromPlayerType(type), this);
 	}
 	else
 	{
