@@ -167,6 +167,8 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		return;
 	}
 	
+	fprintf(logFile, "sessionInfo.numberOfPlayer=%d, numberOfTeam=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam);
+	
 	if (ipFromNAT)
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			assert(!sessionInfo.players[j].waitForNatResolution);
@@ -705,10 +707,15 @@ void MultiplayersJoin::receiveTime()
 						serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
-						if (s==NULL)
-							s=Utilities::stringIP(serverIP.host);
+						if (s)
+							serverName=s;
+						else
+						{
+							Utilities::stringIP(serverNameMemory, 128, serverIP.host);
+							serverName=serverNameMemory;
+						}
 						ipFromNAT=true;
-						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n",Utilities::stringIP(serverIP), s);
+						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n",Utilities::stringIP(serverIP), serverName);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)

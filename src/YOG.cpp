@@ -47,6 +47,9 @@ YOG::YOG()
 	
 	joinedGame=false;
 	
+	isSelectedGame=false;
+	newSelectedGameinfoAviable=false;
+	
 	// Funny, LogFileManager is not initialised !
 	//logFile=globalContainer->logFileManager.getFile("YOG.log");
 	//assert(logFile);
@@ -184,6 +187,18 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_BAD:
 		fprintf(logFile, "YOG::bad packet.\n");
 	break;
+	/*case YMT_GAME_INFO_FROM_HOST:
+	{
+		Uint32 uid=getUint32(data, 4);
+		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+			if (game->uid==uid)
+			{
+				memcpy(game->zzz, data+8, size-8);
+				if (isSelectedGame && selectedGame==uid)
+					newSelectedGameinfoAviable=true;
+			}
+	}
+	break;*/
 	case YMT_MESSAGE:
 	case YMT_PRIVATE_MESSAGE:
 	case YMT_ADMIN_MESSAGE:
@@ -737,6 +752,36 @@ bool YOG::newPlayerList(bool reset)
 	}
 	else
 		return false;
+}
+
+bool YOG::selectGame(Uint32 uid)
+{
+	for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+		if (game->uid==uid)
+		{
+			selectedGame=uid;
+			isSelectedGame=true;
+			newSelectedGameinfoAviable=false;
+			return true;
+		}
+	
+	selectedGame=uid;
+	isSelectedGame=false;
+	newSelectedGameinfoAviable=false;
+	return false;
+}
+
+bool YOG::selectedGameinfoUpdated(bool reset)
+{
+	return isSelectedGame && newSelectedGameinfoAviable;
+}
+
+YOG::GameInfo *YOG::getSelectedGameInfo()
+{
+	for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+		if (game->uid==selectedGame)
+			return &*game;
+	return NULL;
 }
 
 void YOG::gameStarted()
