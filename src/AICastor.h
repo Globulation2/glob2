@@ -51,11 +51,15 @@ public:
 	Order *getOrder(void);
 	
 private:
+	void choosePhase();
+	
+	Order *phaseAlpha();
+
 	void computeCanSwim();
 	
 	void computeObstacleUnitMap();
 	void computeObstacleBuildingMap();
-	void computeSpaceForBuildingMap();
+	void computeSpaceForBuildingMap(int max);
 	void computeBuildingNeighbourMap();
 	void computeTwoSpaceNeighbourMap();
 	
@@ -64,7 +68,7 @@ private:
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
 	void computeWheatGrowthMap();
-	Order *computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat);
+	Order *computeGoodFoodBuildingMap();
 	
 	void computeRessourcesCluster();
 	
@@ -72,6 +76,17 @@ public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 	
 private:
+	enum PhaseType
+	{
+		P_NONE=0,
+		P_ALPHA=1,
+		P_END
+	};
+	
+	PhaseType phase;
+	int subPhase;
+	int scheduler;
+	
 	Uint32 timer;
 	bool hydratationMapComputed;
 	
@@ -90,7 +105,7 @@ public:
 	Uint8 *hydratationMap;
 	Uint8 *wheatGrowthMap;
 	
-	Uint8 *goodFoodBuildingMap;
+	Uint8 *goodFoodBuildingMap; // TODO: remove.
 	
 	Uint16 *ressourcesCluster;
 	
