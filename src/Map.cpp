@@ -708,7 +708,7 @@ void Map::setRessource(int x, int y, int type, int size)
 	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
 		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
 		{
-			Ressource *rp=&((cases+w*(y&hMask)+(x&wMask))->ressource);
+			Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
 			rp->field.type=type;
 			rp->field.variety=0; // TODO: syncRand()%sizeOfVariety
 			rp->field.amount=1; // TODO: syncRand()%maxAmount
