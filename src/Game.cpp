@@ -119,7 +119,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 		{
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
-			if (checkRoomForBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->typeNumber, ((OrderCreate *)order)->team))
+			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
+				|| checkRoomForBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->typeNumber, ((OrderCreate *)order)->team))
 			{
 				Building *b=addBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->team, ((OrderCreate *)order)->typeNumber );
 				if (b)
@@ -439,7 +440,8 @@ void Game::removeTeam(void)
 		for (int i2=0; i2<512; i2++)
 		{
 			if (team->myBuildings[i2])
-				map.setBuilding(team->myBuildings[i2]->posX, team->myBuildings[i2]->posY, team->myBuildings[i2]->type->width, team->myBuildings[i2]->type->height, NOUID);
+				if (!team->myBuildings[i2]->type->isVirtual)
+					map.setBuilding(team->myBuildings[i2]->posX, team->myBuildings[i2]->posY, team->myBuildings[i2]->type->width, team->myBuildings[i2]->type->height, NOUID);
 		}
 		
 		for (int i3=0; i3<256; i3++)
@@ -548,7 +550,7 @@ void Game::addTeam(void)
 Building *Game::addBuilding(int x, int y, int team, int typeNum)
 {
 	assert(team<session.numberOfTeam);
-	
+
 	int id=-1;
 	for (int i=0; i<512; i++)//we search for a free place for a building.
 		if (teams[team]->myBuildings[i]==NULL)
@@ -565,9 +567,13 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	int w=globalContainer->buildingsTypes.buildingsTypes[typeNum]->width;
 	int h=globalContainer->buildingsTypes.buildingsTypes[typeNum]->height;
 
-	map.setBuilding(x, y, w, h, uid);
-
 	Building *b=new Building(x, y, uid, typeNum, teams[team], &globalContainer->buildingsTypes);
+
+	if (b->type->isVirtual)
+		teams[team]->virtualBuildings.push_front(b);
+	else
+		map.setBuilding(x, y, w, h, uid);
+
 	teams[team]->myBuildings[id]=b;
 	return b;
 }
@@ -596,7 +602,8 @@ bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, int flags)
 		r->y=b->posY;
 		r->w=b->type->width;
 		r->h=b->type->height;
-		map.setBuilding(r->x, r->y, r->w, r->h, NOUID);
+		if (!b->type->isVirtual)
+			map.setBuilding(r->x, r->y, r->w, r->h, NOUID);
 		delete b;
 		teams[team]->myBuildings[id]=NULL;
 	}
@@ -940,8 +947,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	}
 
-	std::set<Building *> flagList;
-
 	for (std::set <int>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
 	{
 		int uid = *it;
@@ -951,12 +956,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		Building *building=teams[team]->myBuildings[id];
 		BuildingType *type=building->type;
-
-		if (type->isVirtual)
-		{
-			flagList.insert(building);
-			//continue; TODO : optimise and have a big copy-past to show "drawHealthFoodBar" information in a flag more specifically.
-		}
 
 		if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
 			continue;
@@ -1123,14 +1122,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 	}
 
-	for (std::set <Building *>::iterator it2=flagList.begin(); it2!=flagList.end(); ++it2)
+	// we look on the whole map for buildings
+	// TODO : increase speed, do not count on graphic clipping
+	for (std::list<Building *>::iterator virtualIt=teams[teamSelected]->virtualBuildings.begin();
+		virtualIt!=teams[teamSelected]->virtualBuildings.end(); ++virtualIt)
 	{
-		Building *building=*it2;
+		Building *building=*virtualIt;
 		BuildingType *type=building->type;
-		int team=building->owner->teamNumber;
 
-		if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
-			continue;
+		int team=building->owner->teamNumber;
 
 		int imgid=type->startImage;
 
@@ -1145,6 +1145,45 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		if (drawHealthFoodBar || (building==selectedBuilding))
 			globalContainer->gfx.drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
+		// FIXME : ugly copy past
+		if (drawHealthFoodBar)
+		{
+			int decy=(type->height*32);
+			int healDecx=(type->width-2)*16+1;
+			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+
+			// TODO : find better color for this
+			// health
+			if (type->hpMax)
+			{
+				float hpRatio=(float)building->hp/(float)type->hpMax;
+				if (hpRatio>0.6)
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 78, 187, 78);
+				else if (hpRatio>0.3)
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 255, 0);
+				else
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(15.0f*hpRatio), 255, 0, 0);
+			}
+
+			// units
+
+			if (building->maxUnitInside>0)
+				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+			if (building->maxUnitWorking>0)
+				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+
+			// food
+			if ((type->canFeedUnit) || (type->unitProductionTime))
+			{
+				// compute bar size, prevent oversize
+				int bDiv=1;
+				assert(type->height!=0);
+				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+					bDiv++;
+				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+			}
+
+		}
 	}
 
 }

@@ -265,7 +265,8 @@ int Building::neededRessource(void)
 
 void Building::cancelUpgrade(void)
 {
-	owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+	if (!type->isVirtual)
+		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 	
@@ -294,8 +295,9 @@ void Building::cancelUpgrade(void)
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
-	
-	owner->game->map.setBuilding(posX, posY, type->width, type->height, UID);
+
+	if (!type->isVirtual)
+		owner->game->map.setBuilding(posX, posY, type->width, type->height, UID);
 	
 	if (type->maxUnitWorking)
 		maxUnitWorking=maxUnitWorkingPreferred;
@@ -335,7 +337,8 @@ void Building::update(void)
 	{
 		if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
 		{
-			owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+			if (!type->isVirtual)
+				owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
 			buildingState=DEAD;
 			owner->buildingsToBeDestroyed.push_front(UIDtoID(UID));
 		}
@@ -543,8 +546,11 @@ bool Building::tryToUpgradeRoom(void)
 
 	if (isRoom)
 	{
-		owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
-		owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
+		if (!type->isVirtual)
+		{
+			owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
+			owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
+		}
 
 		typeNum=nextLevelTypeNum;
 		type=nextBt;

@@ -61,6 +61,8 @@ private:
 	void statStep(void);
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
+	void drawOverlayInfos(void);
+	void drawInGameMenu(void);
 
 private:
 	enum DisplayMode

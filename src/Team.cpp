@@ -336,6 +336,7 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 
 	swarms.clear();
 	turrets.clear();
+	virtualBuildings.clear();
 	{
 		for (int i=0; i<512; i++)
 		{
@@ -347,9 +348,11 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 			{
 				myBuildings[i]=new Building(stream, buildingstypes, this);
 				if (myBuildings[i]->type->unitProductionTime)
-					myBuildings[i]->owner->swarms.push_front(myBuildings[i]);
+					swarms.push_front(myBuildings[i]);
 				if (myBuildings[i]->type->shootingRange)
-					myBuildings[i]->owner->turrets.push_front(myBuildings[i]);
+					turrets.push_front(myBuildings[i]);
+				if (myBuildings[i]->type->isVirtual)
+					virtualBuildings.push_front(myBuildings[i]);
 			}
 			else
 				myBuildings[i]=NULL;
@@ -367,7 +370,7 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 		else
 			myBullets[i]=NULL;
 	}*/
-	
+
 	// resolve cross reference
 	{
 		for (int i=0; i< 1024; i++)
@@ -376,7 +379,7 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 				myUnits[i]->loadCrossRef(stream, this);
 		}
 	}
-	{	
+	{
 		for (int i=0; i<512; i++)
 		{
 			if (myBuildings[i])
@@ -484,31 +487,33 @@ void Team::step(void)
 				freeUnits++;
 			}
 		}
-			
+
 	/*for (int i=0; i<512; i++)
 		if (myBuildings[i])
 			myBuildings[i]->step();*/
-	{		
+	{
 		for (int i=0; i<256; i++)
 			if (myBullets[i])
 				myBullets[i]->step();
 	}
-			
+
 	// this is roughly equivalent to building.step()
 	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		if ( myBuildings[*it]->type->unitProductionTime )
 			swarms.remove(myBuildings[*it]);
-		if (  myBuildings[*it]->type->shootingRange )
+		if ( myBuildings[*it]->type->shootingRange )
 			turrets.remove(myBuildings[*it]);
+		if ( myBuildings[*it]->type->isVirtual )
+			virtualBuildings.remove(myBuildings[*it]);
 		subscribeForInsideStep.remove(myBuildings[*it]);
 		subscribeForWorkingStep.remove(myBuildings[*it]);
 		delete myBuildings[*it];
 		myBuildings[*it]=NULL;
 	}
 	buildingsToBeDestroyed.clear();
-	
-	{	
+
+	{
 		for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
 		{
 			if ( (*it)->tryToUpgradeRoom() )
@@ -567,7 +572,7 @@ void Team::step(void)
 Sint32 Team::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	cs^=BaseTeam::checkSum();
 	
 	cs=(cs<<31)|(cs>>1);
