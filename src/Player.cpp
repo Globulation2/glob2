@@ -335,10 +335,10 @@ bool BasePlayer::send(Uint8 *data, int size)
 	bool success;
 	packet->address=ip;
 	packet->channel=-1;
-	//if (abs(rand()%100)<98)
+	//if (abs(rand()%100)<90)
 		success=SDLNet_UDP_Send(socket, -1, packet)==1;
 	//else
-	//	sucess=true; // WARNING : TODO : remove this artificial lost of packets!
+	//	success=true; // WARNING : TODO : remove this artificial lost of packets!
 	if (!success)
 		fprintf(logFile, "failed to send packet!\n");
 	SDLNet_FreePacket(packet);
