@@ -847,6 +847,10 @@ void Team::step(void)
 		{
 			latestStat.totalBuilding++;
 			latestStat.numberBuildingPerType[myBuildings[i]->type->type]++;
+			int tabLevel=((myBuildings[i]->type->level)<<1)+myBuildings[i]->type->isBuildingSite;
+			assert(tabLevel>=0);
+			assert(tabLevel<=5);
+			latestStat.numberBuildingPerTypePerLevel[myBuildings[i]->type->type][tabLevel]++;
 		}
 	}
 

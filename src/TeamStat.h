@@ -29,8 +29,10 @@ struct TeamStat
 	int numberUnitPerType[UnitType::NB_UNIT_TYPE];
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
+	
 	int totalBuilding;
 	int numberBuildingPerType[BuildingType::NB_BUILDING];
+	int numberBuildingPerTypePerLevel[BuildingType::NB_BUILDING][6];
 	
 	int needFood;
 	int needHeal;
