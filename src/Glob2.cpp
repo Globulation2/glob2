@@ -151,7 +151,7 @@ int Glob2::runHostServer()
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
 	// TODO : let the user choose the name of the shared game
-	yog->shareGame(sessionInfo.getMapName().c_str());
+	yog->shareGame(sessionInfo.getMapNameC());
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
@@ -381,7 +381,8 @@ int Glob2::run(int argc, char *argv[])
 					if (rc==MultiplayersChooseMapScreen::OK)
 					{
 						MapEdit mapEdit;
-						mapEdit.load(multiplayersChooseMapScreen.sessionInfo.getFileName().c_str());
+						std::string filename = multiplayersChooseMapScreen.sessionInfo.getFileName();
+						mapEdit.load(filename.c_str());
 						if (mapEdit.run()==-1)
 							isRunning=false;
 					}

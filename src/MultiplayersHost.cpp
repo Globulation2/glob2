@@ -75,7 +75,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		fprintf(logFile, "sharing on YOG\n");
-		yog->shareGame(sessionInfo->getMapName().c_str());
+		yog->shareGame(sessionInfo->getMapNameC());
 		yog->setHostGameSocket(socket);
 	}
 	
@@ -87,7 +87,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	}
 	else
 	{
-		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", sessionInfo->getFileName().c_str());
+		std::string filename = sessionInfo->getFileName();
+		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", filename.c_str());
 		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sessionInfo->getFileName()));
 		mapFileCheckSum = globalContainer->fileManager->checksum(sessionInfo->getFileName());
 	}
@@ -494,7 +495,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	sdata[13]=0; // pad and trick to show a pseudo game name
 	sdata[14]=0; // pad
 	sdata[15]=NET_PROTOCOL_VERSION;
-	strncpy((char *)(sdata+16), sessionInfo.getMapName().c_str(), 64);
+	strncpy((char *)(sdata+16), sessionInfo.getMapNameC(), 64);
 	int ssize=Utilities::strmlen((char *)(sdata+16), 64)+16;
 	assert(ssize<64+16);
 	UDPpacket *packet=SDLNet_AllocPacket(64+16);
@@ -1097,7 +1098,7 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	sdata[2]=0;
 	sdata[3]=0;
 	memset(sdata+4, 0, 64);
-	memcpy(sdata+4, sessionInfo.getMapName().c_str(), 64);
+	memcpy(sdata+4, sessionInfo.getMapNameC(), 64);
 	memset(sdata+4+64, 0, 32);
 	memcpy(sdata+4+64, globalContainer->getUsername(), 32);
 	

@@ -405,6 +405,11 @@ std::string SessionGame::getMapName() const
 	return std::string(mapName);
 }
 
+const char *SessionGame::getMapNameC(void) const
+{
+	return mapName;
+}
+
 std::string SessionGame::getFileName(void) const
 {
 	if (fileIsAMap)

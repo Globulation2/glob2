@@ -45,7 +45,7 @@ public:
 		WS_SERVER_START_GAME
 	};
 
-	const char *filename;
+	std::string filename;
 	SDL_RWops *downloadStream;
 	
 	enum{PACKET_SLOTS=1024};

@@ -66,9 +66,11 @@ public:
 	void setMapName(const char *s);
 	//! Return the user-friendly name of the map
 	std::string getMapName(void) const;
+	//! Return the user-friendly name of the map, C version
+	const char *getMapNameC(void) const;
 	//! Return the filename of the map, including std directories.
 	std::string getFileName(void) const;
-
+	
 public:
 	//! Major map version. Change only with structural modification
 	Sint32 versionMajor;
