@@ -158,12 +158,13 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==SCREEN_CREATED)
 	{
-		globalContainer->yog.joinChannel(DEFAULT_CHAT_CHAN);
+		globalContainer->yog.setChatChannel(globalContainer->texts.getString("[yog-chat]"));
+		globalContainer->yog.joinChannel();
 		globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
 	}
 	else if (action==SCREEN_DESTROYED)
 	{
-		globalContainer->yog.quitChannel(DEFAULT_CHAT_CHAN);
+		globalContainer->yog.quitChannel();
 		globalContainer->yog.quitChannel(DEFAULT_GAME_CHAN);
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
@@ -178,9 +179,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			multiplayersJoin->quitThisGame();
 
 			Engine engine;
-			
+
 			// quit chat
-			globalContainer->yog.quitChannel(DEFAULT_CHAT_CHAN);
+			globalContainer->yog.quitChannel();
 			// host game and wait for players
 			int rc=engine.initMutiplayerHost(true);
 			// quit game listing
@@ -195,11 +196,11 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			else if (rc==-1)
 				endExecute(-1);
-				
+
 			// rejoin chat and game listing
-			globalContainer->yog.joinChannel(DEFAULT_CHAT_CHAN);
+			globalContainer->yog.joinChannel();
 			globalContainer->yog.joinChannel(DEFAULT_GAME_CHAN);
-			
+
 			// redraw all stuff
 			updateList();
 			gameList->commit();

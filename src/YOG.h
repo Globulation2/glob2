@@ -25,7 +25,6 @@
 #include <deque>
 #include <vector>
 
-#define DEFAULT_CHAT_CHAN "#debian"
 #define DEFAULT_GAME_CHAN "#yog-games"
 
 //! This class is a YOG client
@@ -91,6 +90,8 @@ protected:
 	char sharedGame[IRC_MESSAGE_SIZE];
 	//! the last time we have sent shared game info to IRC
 	Uint32 sharedGameLastUpdated;
+	//! The chat where default chat will go
+	char chatChan[IRC_CHANNEL_SIZE+1];
 
 protected:
 	//! Interprete a message from IRC; do parsing etc
@@ -127,6 +128,8 @@ public:
 	void freeChatMessage(void);
 	//! Send a message (or a command)
 	void sendCommand(const char *message);
+	//! Set the chat channel
+	void setChatChannel(const char *chan);
 
 	// INFO
 	//! Return true if there is pending info message
@@ -140,10 +143,10 @@ public:
 	//! Free last info message
 	void freeInfoMessage(void);
 
-	//! Join a given channel
-	void joinChannel(const char *channel=DEFAULT_CHAT_CHAN);
-	//! Quit a given channel
-	void quitChannel(const char *channel=DEFAULT_CHAT_CHAN);
+	//! Join a given channel, if no argument is given, join chat channel
+	void joinChannel(const char *channel=NULL);
+	//! Quit a given channel, if no argument is given, leave chat channel
+	void quitChannel(const char *channel=NULL);
 
 	// GAME creation
 	//! Stop sharing the game, the game has started or has been canceled
