@@ -958,6 +958,9 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	bool isRoom=true;
 	if (bt->isVirtual)
 	{
+		if (team<0)
+			return true;
+
 		for (std::list<Building *>::iterator vb=teams[team]->virtualBuildings.begin(); vb!=teams[team]->virtualBuildings.end(); ++vb)
 		{
 			Building *b=*vb;

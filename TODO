@@ -14,7 +14,6 @@ Technique :
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
-- Mapeditor should let the user edit walls and flags. (nct)
 - Un YOG qui tienne la route.
 - Netozer les dependances innnutiles pour gagner en temps de compillation !
 
