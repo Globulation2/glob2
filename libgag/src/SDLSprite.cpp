@@ -27,7 +27,7 @@ extern SDLGraphicContext *screen;
 
 #define STATIC_PALETTE_SIZE 256
 #define COLOR_ROTATION_COUNT 32
-#define PAL_COLOR_MERGE_THRESHOLD 4
+#define PAL_COLOR_MERGE_THRESHOLD 2
 
 struct TransformedPalEntry
 {
@@ -66,6 +66,12 @@ struct StaticPalContainer
 	//! The active pallette (0..rotatedCount)
 	unsigned activePalette;
 	
+	
+	//! the minimal distance of two colors in the set
+	unsigned minDist;
+	//! the two index of the color which has the minimal distance
+	unsigned minDistIdx1, minDistIdx2;
+	
 	//! Constructor
 	StaticPalContainer();
 	
@@ -81,6 +87,8 @@ StaticPalContainer::StaticPalContainer()
 	allocatedCount = 0;
 	rotatedCount = 0;
 	activePalette = 0;
+	minDist = 
+	minDistIdx1 = minDistIdx2 = 0;
 }
 
 unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b)
@@ -88,18 +96,19 @@ unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b)
 	unsigned i = 0;
 	unsigned len = 1000000000;
 	unsigned nearestIdx = 0;
-	unsigned dr, dg, db;
+	int dr, dg, db;
 	unsigned nlen;
 	
-	// TODO : improve this
 	while (i<allocatedCount)
 	{
 		dr = (r-originalPal.r[i]);
 		dg = (g-originalPal.g[i]);
 		db = (b-originalPal.b[i]);
 		
+		// NOTE : this metric could be improved
 		nlen=dr*dr + dg*dg + db*db;
-		if (nlen < PAL_COLOR_MERGE_THRESHOLD)
+		
+		if (nlen <= PAL_COLOR_MERGE_THRESHOLD)
 		{
 			return i;
 		}
@@ -119,6 +128,54 @@ unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b)
 		return i;
 	}
 	return nearestIdx;
+	
+	
+	/*
+	This algo doesn't work because we can't change index after one image has been loaded
+	unsigned i;
+	unsigned localMinDist = 1000000000;
+	unsigned localMinDistIdx = 0;
+	
+	for (i=0; i<allocatedCount; i++)
+	{
+		dr = (r-originalPal.r[i]);
+		dg = (g-originalPal.g[i]);
+		db = (b-originalPal.b[i]);
+		
+		// this distance metric could be improved
+		nlen=dr*dr + dg*dg + db*db;
+		
+		if (nlen<localMinDist)
+		{
+			localMinDistIdx = i;
+			localMinDist = nlen;
+		}
+	}
+	// localMinDistIdx has the index of the nearer color
+	
+	if (allocatedCount<COLOR_ROTATION_COUNT)
+	{
+		// we have enough room
+		originalPal.r[allocatedCount]=r;
+		originalPal.g[allocatedCount]=g;
+		originalPal.b[allocatedCount]=b;
+		allocatedCount++;
+	}
+	else
+	{
+		// we do not have enough room
+		if (localMinDist < minDist)
+		{
+			// we have found a color which is nearer than the replacing threshold
+			return localMinDistIdx;
+		}
+		else
+		{
+			// we will replace another color
+			originalPal.r[minDistIdx1
+		}
+	}
+	*/
 }
 
 void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
@@ -133,45 +190,42 @@ void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
 			return;
 		}
 	}
+	
 	// we have not found a previous one
 	if (rotatedCount == COLOR_ROTATION_COUNT-1)
 	{
-		fprintf(stderr, "GAG : Warning, no more free color entry in the lookup table\n");
-		assert(false);
-		return;
+		// we wrap, round robin
+		rotatedCount=0;
 	}
-	else
+		
+	// activate the palette
+	activePalette = rotatedCount;
+
+	// do the transformation
+	float hue, lum, sat;
+	float baseHue;
+	float hueDec;
+	float nR, nG, nB;
+	GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+	GAG::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
+	hueDec=hue-baseHue;
+	for (i=0; i<256; i++)
 	{
-		// activate the palette
-		activePalette = rotatedCount;
-		
-		// do the transformation
-		float hue, lum, sat;
-		float baseHue;
-		float hueDec;
-		float nR, nG, nB;
-		int i;
-		GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
-		GAG::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
-		hueDec=hue-baseHue;
-		for (i=0; i<256; i++)
-		{
-			GAG::RGBtoHSV( ((float)originalPal.r[i])/255, ((float)originalPal.g[i])/255, ((float)originalPal.b[i])/255, &hue, &sat, &lum);
-			GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
-			rotatedPal[rotatedCount].colors[i].r=(Uint32)(255*nR);
-			rotatedPal[rotatedCount].colors[i].g=(Uint32)(255*nG);
-			rotatedPal[rotatedCount].colors[i].b=(Uint32)(255*nB);
-			rotatedPal[rotatedCount].colors[i].pad=0;
-		}
-		
-		// save the color
-		rotatedPal[rotatedCount].rotr=r;
-		rotatedPal[rotatedCount].rotg=g;
-		rotatedPal[rotatedCount].rotb=b;
-		
-		// increment the used palette counter
-		rotatedCount++;
+		GAG::RGBtoHSV( ((float)originalPal.r[i])/255, ((float)originalPal.g[i])/255, ((float)originalPal.b[i])/255, &hue, &sat, &lum);
+		GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
+		rotatedPal[rotatedCount].colors[i].r=(Uint32)(255*nR);
+		rotatedPal[rotatedCount].colors[i].g=(Uint32)(255*nG);
+		rotatedPal[rotatedCount].colors[i].b=(Uint32)(255*nB);
+		rotatedPal[rotatedCount].colors[i].pad=0;
 	}
+
+	// save the color
+	rotatedPal[rotatedCount].rotr=r;
+	rotatedPal[rotatedCount].rotg=g;
+	rotatedPal[rotatedCount].rotb=b;
+
+	// increment the used palette counter
+	rotatedCount++;
 }
 
 

@@ -822,8 +822,11 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 		else if (mx>=116)
 		{
 			// add a team
-			game.addTeam();
-			draw();
+			if (game.session.numberOfTeam<32)
+			{
+				game.addTeam();
+				draw();
+			}
 		}
 		else
 		{
