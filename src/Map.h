@@ -372,7 +372,10 @@ public:
 	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy);
 	
-	void updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingGradient[2][BUILDING_GRADIENT_SIZE], Uint32 teamMask);
+	static void clearBuildingGradient(Uint8 gradient[2][1024]);
+	void updateGradient(Building *building, bool canSwim);
+	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
+	
 
 protected:
 	// private functions, used for edition
@@ -407,8 +410,8 @@ protected:
 
 public:
 	Sint32 checkSum(bool heavy);
-	Sint32 warpDistSquare(int px, int py, int qx, int qy);
-
+	Sint32 warpDistSquare(int px, int py, int qx, int qy); //The distance between (px, py) and (qx, qy), warp-safe, but not rooted.
+	Sint32 warpDistMax(int px, int py, int qx, int qy); //The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 
 public:
 	void makeHomogenMap(TerrainType terrainType);

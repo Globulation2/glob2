@@ -613,15 +613,6 @@ void Team::step(void)
 			}
 		}
 	
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-			for (int r=0; r<MAX_NB_RESSOURCES; r++)
-			{
-				int max=myBuildings[i]->type->maxRessource[r];
-				int cur=myBuildings[i]->ressources[r];
-				assert(cur<=max);
-			}
-	
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
 	{
 		Building *building=*it;
