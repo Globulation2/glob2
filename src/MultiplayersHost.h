@@ -57,6 +57,7 @@ public:
 public:
 	void initHostGlobalState(void);
 	void stepHostGlobalState(void);
+	void switchPlayerTeam(int p);
 	void removePlayer(int p);
 	void removePlayer(char *data, int size, IPaddress ip);
 	void newPlayer(char *data, int size, IPaddress ip);

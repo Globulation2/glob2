@@ -33,13 +33,20 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	addWidget(new TextButton(420, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
+	addWidget(new TextButton(180, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
 	multiplayersJoin=NULL;
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
+
+	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	{
+		color[i]=new ColorButton(22, 62+i*20, 16, 16, COLOR_BUTTONS+i);
+		color[i]->visible=false;
+		addWidget(color[i]);
+	}
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -52,7 +59,17 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	multiplayersHost->onTimer(tick);
 
 	multiplayersHost->sessionInfo.draw(gfxCtx);
-	addUpdateRect(20, 20, gfxCtx->getW()-40, 200);
+	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	{
+		if (multiplayersHost->sessionInfo.players[i].netState>BasePlayer::PNS_BAD)
+		{
+			color[i]->paint(gfxCtx);
+			color[i]->visible=true;
+		}
+		else
+			color[i]->visible=false;
+	}
+	addUpdateRect(20, 20, gfxCtx->getW()-40, 400);
 	
 	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
 	{
@@ -98,6 +115,12 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		case -1:
 			multiplayersHost->stopHosting();
 			endExecute(par1);
+		break;
+		default:
+		{
+			if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
+		}
 		break;
 		}
 	}

@@ -99,14 +99,16 @@ Uint8 SessionGame::getOrderType()
 
 void SessionInfo::draw(DrawableSurface *gfx)
 {
-	gfx->drawFilledRect(20, 60, gfx->getW()-40, 200, 0, 0, 0);
+	gfx->drawFilledRect(20, 60, gfx->getW()-40, 20*numberOfPlayer, 0, 0, 0);
 	for (int i=0; i<numberOfPlayer; i++)
 	{
 		char s[32];
 		players[i].printip(s);
 		char t[32];
 		players[i].printNetState(t);
-		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %s (%s)", players[i].name, s, t);
+		BaseTeam &te=team[players[i].teamNumber];
+		gfx->drawFilledRect(22, 62+i*20, 16, 16, te.colorR, te.colorG, te.colorB);
+		gfx->drawString(40, 60+i*20, globalContainer->standardFont, "%s : %s (%s)", players[i].name, s, t);
 	}
 
 }

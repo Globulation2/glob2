@@ -218,6 +218,7 @@ void MultiplayersHost::removePlayer(int p)
 	sessionInfo.team[t].numberOfPlayer--;
 
 	sessionInfo.players[p].netState=BasePlayer::PNS_BAD;
+	sessionInfo.players[p].type=BasePlayer::P_NONE;
 	sessionInfo.players[p].netTimeout=0;
 	sessionInfo.players[p].netTimeoutSize=DEFAULT_NETWORK_TIMEOUT;//Relase version
 	sessionInfo.players[p].netTimeoutSize=0;// TODO : Only for debug version
@@ -243,6 +244,9 @@ void MultiplayersHost::removePlayer(int p)
 		int t=(p%sessionInfo.numberOfTeam);
 		sessionInfo.players[p].setNumber(p);
 		sessionInfo.players[p].setTeamNumber(t);
+		
+		// We erase replaced player:
+		sessionInfo.players[mp].init();
 
 		sessionInfo.team[t].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[t].numberOfPlayer++;
@@ -251,14 +255,27 @@ void MultiplayersHost::removePlayer(int p)
 	printf("nop %d.\n", sessionInfo.numberOfPlayer);
 	// all other players are ignorant of the new situation:
 	initHostGlobalState();
+	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 	{
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		{
-			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-			if (sessionInfo.players[j].netTimeout>0)
-				sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-			sessionInfo.players[j].netTOTL++;
-		}
+		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+		if (sessionInfo.players[j].netTimeout>0)
+			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+		sessionInfo.players[j].netTOTL++;
+	}
+}
+
+void MultiplayersHost::switchPlayerTeam(int p)
+{
+	Sint32 teamNumber=(sessionInfo.players[p].teamNumber+1)%sessionInfo.numberOfTeam;
+	sessionInfo.players[p].setTeamNumber(teamNumber);
+	
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+	{
+		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+		if (sessionInfo.players[j].netTimeout>0)
+			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+		sessionInfo.players[j].netTOTL++;
 	}
 }
 
@@ -296,19 +313,17 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 
 	// we check if this player has already a connection:
 
+	for (int i=0; i<p; i++)
 	{
-		for (int i=0; i<p; i++)
+		if (sessionInfo.players[i].sameip(ip))
 		{
-			if (sessionInfo.players[i].sameip(ip))
-			{
-				printf("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
+			printf("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
 
-				sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-				sessionInfo.players[i].netTimeout=0;
-				sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
-				sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
-				return;
-			}
+			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+			sessionInfo.players[i].netTimeout=0;
+			sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
+			sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
+			return;
 		}
 	}
 
@@ -356,14 +371,13 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 
 		// all other players are ignorant of the new situation:
 		initHostGlobalState();
+		
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		{
-			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			{
-				sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-				if (sessionInfo.players[j].netTimeout>0)
-					sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-				sessionInfo.players[j].netTOTL++;
-			}
+			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+			if (sessionInfo.players[j].netTimeout>0)
+				sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
+			sessionInfo.players[j].netTOTL++;
 		}
 	}
 }
