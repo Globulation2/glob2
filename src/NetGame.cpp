@@ -603,6 +603,13 @@ Order *NetGame::getOrder(int playerNumber)
 			assert(order->inQueue);
 		}
 		assert(whoMaskAreWeWaitingFor()==0);
+		
+		if (checkSumsLocal[executeStep] && checkSumsRemote[executeStep])
+			if (checkSumsLocal[executeStep]!=checkSumsRemote[executeStep])
+			{
+				printf("World desynchronisation at executeStep %d: %x!=%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
+				assert(false);
+			}
 		// TODO: check check-sums here
 		assert(order);
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
