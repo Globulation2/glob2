@@ -218,22 +218,22 @@ int Engine::initLoadGame()
 	return EE_NO_ERROR;
 }
 
-void Engine::startMultiplayer(SessionConnection *screen)
+void Engine::startMultiplayer(SessionConnection *sessionConnection)
 {
-	int p=screen->myPlayerNumber;
+	int p=sessionConnection->myPlayerNumber;
 
-	screen->destroyNet=false;
-	for (int j=0; j<screen->sessionInfo.numberOfPlayer; j++)
-		screen->sessionInfo.players[j].destroyNet=false;
+	sessionConnection->destroyNet=false;
+	for (int j=0; j<sessionConnection->sessionInfo.numberOfPlayer; j++)
+		sessionConnection->sessionInfo.players[j].destroyNet=false;
 
-	screen->sessionInfo.setLocal(p);
+	sessionConnection->sessionInfo.setLocal(p);
 
-	gui.loadBase(&screen->sessionInfo);
+	gui.loadBase(&sessionConnection->sessionInfo);
 
 	gui.localPlayer=p;
-	gui.localTeam=screen->sessionInfo.players[p].teamNumber;
-	assert(gui.localTeam<screen->sessionInfo.numberOfTeam);
-	gui.localTeam=gui.localTeam % screen->sessionInfo.numberOfTeam; // Ugly relase case.
+	gui.localTeam=sessionConnection->sessionInfo.players[p].teamNumber;
+	assert(gui.localTeam<sessionConnection->sessionInfo.numberOfTeam);
+	gui.localTeam=gui.localTeam % sessionConnection->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	gui.game.renderMiniMap(gui.localTeam);
 	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
@@ -242,7 +242,7 @@ void Engine::startMultiplayer(SessionConnection *screen)
 	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
 
 	// we create the net game
-	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
+	net=new NetGame(sessionConnection->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
 
@@ -346,7 +346,10 @@ int Engine::run(void)
 				//printf ("Engine::bge:%d\n", globalContainer->safe());
 				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 				{
-					gui.executeOrder(net->getOrder(i));
+					Order *order=net->getOrder(i);
+					gui.executeOrder(order);
+					// Some orders needs to be freed:
+					net->orderHasBeenExecuted(order);
 				}
 
 				//printf ("Engine::bne:%d\n", globalContainer->safe());

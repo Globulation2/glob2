@@ -45,7 +45,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 			localPlayerNumber=n;
 	}
 	isWaitingForPlayer=false;
-	
+
 	this->socket=socket;
 	
 	assert(localPlayerNumber!=-1);
@@ -74,6 +74,14 @@ NetGame::~NetGame()
 			delete o;
 			localOrderQueue[eachPlayers].pop();
 		}
+	}
+	
+	assert(socket);
+	if (socket)
+	{
+		// TODO : are player's sockets already closed ?
+		SDLNet_UDP_Close(socket);
+		socket=NULL;
 	}
 }
 
@@ -390,6 +398,20 @@ void NetGame::sendMyOrderThroughUDP(Order *order, Sint32 orderStep, Sint32 targe
 	free(data);
 }
 
+void NetGame::orderHasBeenExecuted(Order *order)
+{
+	// "order" is used as a communication channel from "NetGame" to "Game" and "GameGUI".
+	// The ordred in queue "playersNetQueue" are deleted when new orders comes,
+	// or in the netGame destructor. The other orders which are not in the queue
+	// need to be deleted after use (by "Game" or "GameGUI").
+	assert(order);
+	if (!order->inQueue)
+	{
+		printf("deleting order type %d.\n", order->getOrderType());
+		delete order;
+	};
+}
+
 Order *NetGame::getOrder(Sint32 playerNumber)
 {
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
@@ -416,13 +438,16 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	{
 		Order *order=new WaitingForPlayerOrder(whoMaskAreWeWaitingFor((currentStep+1)%queueSize));
 		order->sender=playerNumber;
+		order->inQueue=false;
 		//NETPRINTF("WaitingForPlayerOrder. (currentStep=%d)(playerNumber=%d)\n", currentStep, playerNumber);
 		return order;
 	}
 	else if ((players[playerNumber]->quitting)&&(players[playerNumber]->type==Player::P_LOST_B))
 	{
+		//NETPRINTF("new QuitedOrder() playerNumber=%d, currentStep=%d\n", playerNumber, currentStep);
 		Order *order=new QuitedOrder();
 		order->sender=playerNumber;
+		order->inQueue=false;
 		return order;
 	}
 	else if (players[playerNumber]->type==Player::P_LOST_B)
@@ -430,15 +455,18 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		//NETPRINTF ("NullOrder\n");
 		Order *order=new NullOrder();
 		order->sender=playerNumber;
+		order->inQueue=false;
 		return order;
 	}
 	else
 	{
 		// we get the order:
+		//NETPRINTF("playerNumber=%d, packetID=%d, ackID=%d, order=%d.\n", playerNumber, playersNetQueue[playerNumber][currentStep].packetID, playersNetQueue[playerNumber][currentStep].ackID, playersNetQueue[playerNumber][currentStep].order);
 		Order *order=playersNetQueue[playerNumber][currentStep].order;
-		// Game will free the object and step will delete its reference from list
+		// NetGame will free the object and step will delete its reference from list,
+		// when new orders will come.
 		assert(order);
-		
+
 		switch(order->getOrderType())
 		{
 			case ORDER_PLAYER_QUIT_GAME :
@@ -461,19 +489,19 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 			break;
 			default :
 			{
-			
+
 			}
 		}
 		
 		order->sender=playerNumber;
 		if ((order->getOrderType()!=51)&&(order->getOrderType()!=73))
-		NETPRINTF("(%d)getOrder, player(%d), type(%d).\n",currentStep, playerNumber,order->getOrderType());
+			NETPRINTF("(%d)getOrder, player(%d), type(%d).\n",currentStep, playerNumber,order->getOrderType());
 		//if (order->getOrderType()!=73)
 		//	NETPRINTF("(%d)go, p=%d, t=%d, l=%d\n", currentStep, playerNumber, order->getOrderType(), order->getDataLength());
+		order->inQueue=true;
 		return order;
 	}
 }
-
 
 void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 {
@@ -485,7 +513,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	// will be used [latency] steps later
 	int pushStep=(currentStep+latency)%queueSize;
 	if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
-	NETPRINTF("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
+		NETPRINTF("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
 	if (playersNetQueue[playerNumber][pushStep].order)
 	{
 		if (((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))
@@ -539,7 +567,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 		if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
 		{
 			checkSumsLocal[pushStep]=((SubmitCheckSumOrder*)order)->checkSumValue;
-			NETPRINTF("(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
+			//NETPRINTF("(%d)submit local cs=%x\n", pushStep, checkSumsLocal[pushStep]);
 		}
 		else
 			checkSumsLocal[pushStep]=0;
@@ -591,6 +619,7 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 		/*WaitingForPlayerOrder *fwpo=(WaitingForPlayerOrder *)o;
 		Uint32 mawp=fwpo->maskAwayPlayer;
 		NETPRINTF("(%d)player %d, is waiting for mawp=%x\n", st, pl, mawp);*/
+		delete o;
 	}
 	else if (type==ORDER_DROPPING_PLAYER)
 	{
@@ -895,14 +924,15 @@ void NetGame::step(void)
 	if (isStepReady(nextStep))
 	{
 		//NETPRINTF("nextStep=%d\n", nextStep);
+		//NETPRINTF("rtd currentStep=%d.\n", currentStep);
+		for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
 		{
-			for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
-			{
-				int s=(currentStep+queueSize-latency-1)%queueSize; // the easy solution
-				//int s=(currentStep+latency+1)%queueSize; // the memory saver solution
-				delete playersNetQueue[eachPlayer][s].order;
-				playersNetQueue[eachPlayer][s].order=NULL;
-			}
+			int s=(currentStep+queueSize-latency-1)%queueSize; // the easy solution
+			//int s=(currentStep+latency+1)%queueSize; // the memory saver solution
+			//assert(playersNetQueue[eachPlayer][s].order);
+			//assert(playersNetQueue[eachPlayer][s].order->inQueue);
+			delete playersNetQueue[eachPlayer][s].order;
+			playersNetQueue[eachPlayer][s].order=NULL;
 		}
 		currentStep=nextStep;
 	}
@@ -939,7 +969,7 @@ void NetGame::step(void)
 				}
 			}
 		}
-		
+
 		
 		Order *order=NULL;
 		int ap, s;

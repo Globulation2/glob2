@@ -28,7 +28,8 @@
 
 class Order
 {
- public:
+public:
+ 	Order(void);
 	virtual ~Order(void) { }
 	virtual Uint8 getOrderType(void)=0;
 
@@ -41,6 +42,7 @@ class Order
 	virtual Sint32 checkSum()=0;
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
+	bool inQueue;
 };
 
 
@@ -48,7 +50,7 @@ class Order
 // NOTE : we pass a BuildingType but it's a int and it's un typenum so we need to CLEAN THIS !!!
 class OrderCreate:public Order
 {
- public:
+public:
 	OrderCreate(const char *data, int dataLength);
 	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::BuildingTypeNumber typeNumber);
 	virtual ~OrderCreate(void) { }
@@ -72,7 +74,7 @@ class OrderCreate:public Order
 
 class OrderDelete:public Order
 {
- public:
+public:
 	OrderDelete(const char *data, int dataLength);
 	OrderDelete(Sint32 UID);
 	virtual ~OrderDelete(void) { }
@@ -90,7 +92,7 @@ protected:
 
 class OrderCancelDelete:public Order
 {
- public:
+public:
 	OrderCancelDelete(const char *data, int dataLength);
 	OrderCancelDelete(Sint32 UID);
 	virtual ~OrderCancelDelete(void) { }
@@ -108,7 +110,7 @@ protected:
 
 class OrderUpgrade:public Order
 {
- public:
+public:
 	OrderUpgrade(const char *data, int dataLength);
 	OrderUpgrade(Sint32 UID);
 	virtual ~OrderUpgrade(void) { }
@@ -126,7 +128,7 @@ protected:
 
 class OrderCancelUpgrade:public Order
 {
- public:
+public:
 	OrderCancelUpgrade(const char *data, int dataLength);
 	OrderCancelUpgrade(Sint32 UID);
 	virtual ~OrderCancelUpgrade(void) { }
@@ -147,7 +149,8 @@ protected:
 
 class OrderModify:public Order
 {
- public:
+public:
+ 	OrderModify();
 	virtual ~OrderModify(void) { }
 
 	Uint8 getOrderType(void) { return 40; }
@@ -158,7 +161,7 @@ class OrderModify:public Order
 
 class OrderModifyUnits:public OrderModify
 {
- public:
+public:
 	OrderModifyUnits(const char *data, int dataLength);
 	OrderModifyUnits(Sint32 *UID, Sint32 *trigHP, Sint32 *trigHungry, int length);
 	virtual ~OrderModifyUnits(void);
@@ -177,7 +180,7 @@ class OrderModifyUnits:public OrderModify
 
 class OrderModifyBuildings:public OrderModify
 {
- public:
+public:
 	OrderModifyBuildings(const char *data, int dataLength);
 	OrderModifyBuildings(Sint32 *UID, Sint32 *numberRequested, int length);
 	virtual ~OrderModifyBuildings(void);
@@ -195,7 +198,7 @@ class OrderModifyBuildings:public OrderModify
 
 class OrderModifySwarms:public OrderModify
 {
- public:
+public:
 	OrderModifySwarms(const char *data, int dataLength);
 	OrderModifySwarms(Sint32 *UID, Sint32 ratio[][UnitType::NB_UNIT_TYPE], int length);
 	virtual ~OrderModifySwarms(void);
@@ -215,7 +218,7 @@ class OrderModifySwarms:public OrderModify
 
 class OrderModifyFlags:public OrderModify
 {
- public:
+public:
 	OrderModifyFlags(const char *data, int dataLength);
 	OrderModifyFlags(Sint32 *UID, Sint32 *range, int length);
 	virtual ~OrderModifyFlags(void);
@@ -234,7 +237,7 @@ class OrderModifyFlags:public OrderModify
 
 class OrderMoveFlags:public OrderModify
 {
- public:
+public:
 	OrderMoveFlags(const char *data, int dataLength);
 	OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length);
 	virtual ~OrderMoveFlags(void);
@@ -258,7 +261,8 @@ class OrderMoveFlags:public OrderModify
 
 class MiscOrder:public Order
 {
- public:
+public:
+	MiscOrder();
 	virtual ~MiscOrder(void) { }
 
 	Uint8 getOrderType(void) { return 50; }
@@ -266,8 +270,8 @@ class MiscOrder:public Order
 
 class NullOrder:public MiscOrder
 {
- public:
-	
+public:
+	NullOrder();
 	virtual ~NullOrder(void) { }
 
 	char *getData(void) { return NULL; }
@@ -280,8 +284,8 @@ class NullOrder:public MiscOrder
 
 class QuitedOrder:public MiscOrder
 {
- public:
-
+public:
+	QuitedOrder();
 	virtual ~QuitedOrder(void) { }
 
 	char *getData(void) { return NULL; }
@@ -293,7 +297,7 @@ class QuitedOrder:public MiscOrder
 
 class MessageOrder:public MiscOrder
 {
- public:
+public:
 	MessageOrder(const char *data, int dataLength);
 	MessageOrder(Uint32 recepientsMask, const char *text);
 	virtual ~MessageOrder(void);
@@ -314,7 +318,7 @@ class MessageOrder:public MiscOrder
 
 class SetAllianceOrder:public MiscOrder
 {
- public:
+public:
 	SetAllianceOrder(const char *data, int dataLength);
 	SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask);
 	virtual ~SetAllianceOrder(void) { }
@@ -335,7 +339,7 @@ class SetAllianceOrder:public MiscOrder
 
 class SubmitCheckSumOrder:public MiscOrder
 {
- public:
+public:
 	SubmitCheckSumOrder(const char *data, int dataLength);
 	SubmitCheckSumOrder(Sint32 checkSumValue);
 	virtual ~SubmitCheckSumOrder(void) { }
@@ -356,7 +360,7 @@ class SubmitCheckSumOrder:public MiscOrder
 
 class WaitingForPlayerOrder:public MiscOrder
 {
- public:
+public:
 	WaitingForPlayerOrder(const char *data, int dataLength);
 	WaitingForPlayerOrder(Uint32 maskAwayPlayer);
 	virtual ~WaitingForPlayerOrder(void) { }
@@ -375,7 +379,7 @@ class WaitingForPlayerOrder:public MiscOrder
 
 class DroppingPlayerOrder:public MiscOrder
 {
- public:
+public:
 	DroppingPlayerOrder(const char *data, int dataLength);
 	DroppingPlayerOrder(Uint32 stayingPlayersMask, Sint32 dropState);
 	virtual ~DroppingPlayerOrder(void) { }
@@ -395,7 +399,7 @@ class DroppingPlayerOrder:public MiscOrder
 
 class RequestingDeadAwayOrder:public MiscOrder
 {
- public:
+public:
 	RequestingDeadAwayOrder(const char *data, int dataLength);
 	RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAviableStep);
 	virtual ~RequestingDeadAwayOrder(void) { }
@@ -416,7 +420,7 @@ class RequestingDeadAwayOrder:public MiscOrder
 
 class NoMoreOrdersAviable:public MiscOrder
 {
- public:
+public:
 	NoMoreOrdersAviable(const char *data, int dataLength);
 	NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep);
 	virtual ~NoMoreOrdersAviable(void) { }
@@ -436,7 +440,7 @@ class NoMoreOrdersAviable:public MiscOrder
 
 class PlayerQuitsGameOrder:public MiscOrder
 {
- public:
+public:
 	PlayerQuitsGameOrder(const char *data, int dataLength);
 	PlayerQuitsGameOrder(Sint32 player);
 	virtual ~PlayerQuitsGameOrder(void) { }
@@ -456,7 +460,7 @@ class PlayerQuitsGameOrder:public MiscOrder
 
 class PlayerExplainsHostIP:public MiscOrder
 {
- public:
+public:
 	PlayerExplainsHostIP(const char *data, int dataLength);
 	PlayerExplainsHostIP(Uint32 host, Uint32 port);
 	virtual ~PlayerExplainsHostIP(void) { }

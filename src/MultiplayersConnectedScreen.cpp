@@ -35,6 +35,8 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	
 	startTimer=new Text(20, 400, globalContainer->standardFont, "");
 	addWidget(startTimer);
+	
+	timeCounter=0;
 }
 
 MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
