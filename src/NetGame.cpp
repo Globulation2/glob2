@@ -936,7 +936,7 @@ Order *NetGame::getOrder(int playerNumber)
 			fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
 		}
 		if (order->getOrderType()!=ORDER_NULL)
-			fprintf(logFile, "getOrder(p=%d)->type==%d\n", playerNumber, order->getOrderType());
+			fprintf(logFile, "getOrderType(p=%d)->type==%d\n", playerNumber, order->getOrderType());
 		return order;
 	}
 }
@@ -1204,6 +1204,8 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			}
 			Order *order=Order::getOrder(data+l-1, orderSize+1);
 			l+=orderSize;
+			if (!order)
+				fflush(logFile);
 			assert(order);
 			assert(order->getOrderType()==orderType);
 			order->ustep=orderUStep;
