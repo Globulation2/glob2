@@ -25,6 +25,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "Team.h"
+#include "Header.h"
 #include <list>
 
 #define NOUID (Sint16)0x8000
@@ -151,26 +152,32 @@ public:
 		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=(1<<p);
 		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=(1<<p);
 	}
-	//! Set map to undiscovered state at position (x,y) for team p
+	//! Set map to undiscovered state at position (x,y) for the shared vision mask of team ps
 	void unsetMapDiscovered(int x, int y, int p)
 	{
 		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))&=~(1<<p);
 	}
-	//! Returs true if map is discovered at position (x,y) for team p
-	bool isMapDiscovered(int x, int y, int p)
+	//! Returs true if map is discovered at position (x,y) for the shared vision mask of team ps
+	bool isMapDiscovered(int x, int y, int visionMask)
 	{
+#ifdef DBG_ALL_MAP_DISCOVERED
 		return true;
-		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
+#else
+		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
+#endif
 	}
 	/*void setFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))|=(1<<p); }
 	void unsetFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))&=~(1<<p); }*/
 	//! Return true if FOW (Fog of War) is not set at position (x,y) for team p (the function name is illogic, should be isFOWfree )
-	bool isFOW(int x, int y, int p)
+	bool isFOW(int x, int y, int visionMask)
 	{
+#ifdef DBG_ALL_MAP_DISCOVERED
 		return true;
-		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
+#else
+		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
+#endif
 	}
 	//! Set map to discovered state at rect (x,y) - (x+w, y+h) for team p
 	void setMapDiscovered(int x, int y, int w, int h, int p) { for (int dx=x; dx<x+w; dx++) for (int dy=y; dy<y+h; dy++) setMapDiscovered(dx, dy, p); }

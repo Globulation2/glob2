@@ -955,7 +955,7 @@ void Unit::handleMovement(void)
 
 				dx=-cdy;
 				dy=cdx;
-				if (!owner->game->map.isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->teamNumber))
+				if (!owner->game->map.isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVision))
 				{
 					dx=cdx;
 					dy=cdy;
@@ -974,7 +974,7 @@ void Unit::handleMovement(void)
 					{
 						int dx, dy;
 						dxdyfromDirection(j, &dx, &dy);
-						if (!owner->game->map.isMapDiscovered(posX+i*dx, posY+j*dy, owner->teamNumber))
+						if (!owner->game->map.isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVision))
 						{
 							dist[j]=i;
 							break;
@@ -1045,7 +1045,7 @@ void Unit::handleMovement(void)
 				movement=MOV_RANDOM;
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
-						if (owner->game->map.isFOW(posX+x, posY+y, owner->teamNumber))
+						if (owner->game->map.isFOW(posX+x, posY+y, owner->sharedVision))
 						{
 							int uid=owner->game->map.getUnit(posX+x, posY+y);
 							if (uid!=NOUID)
