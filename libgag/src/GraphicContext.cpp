@@ -108,7 +108,6 @@ namespace GAGCore
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
 			isTextureRectangle = false;
-			
 		}
 		
 		void checkExtensions(void)
@@ -1206,8 +1205,11 @@ namespace GAGCore
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
 		#ifdef HAVE_OPENGL
-		glState.doScissor(1);
-		glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			glState.doScissor(1);
+			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+		}
 		#endif
 	}
 	
@@ -1215,7 +1217,8 @@ namespace GAGCore
 	{
 		DrawableSurface::setClipRect();
 		#ifdef HAVE_OPENGL
-		glState.doScissor(0);
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+			glState.doScissor(0);
 		#endif
 	}
 	
