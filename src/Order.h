@@ -26,7 +26,6 @@
 #include "NetConsts.h"
 #include <assert.h>
 
-
 class Order
 {
 public:

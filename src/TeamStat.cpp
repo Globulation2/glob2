@@ -80,11 +80,6 @@ void TeamStats::step(Team *team)
 		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); bi++)
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
-	{
-		std::list<Building *> upgrade=team->upgrade[HARVEST];
-		for (std::list<Building *>::iterator bi=upgrade.begin(); bi!=upgrade.end(); bi++)
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
-	}
 	
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;

@@ -131,8 +131,14 @@ public:
 	void cancelConstruction(void);
 	void launchDelete(void);
 	void cancelDelete(void);
+	
+	void updateConstructionState(void);
+	void updateCallLists(void);
+	void updateBuildingSite(void);
 	void update(void);
-	bool tryToBuildingSiteRoom(void);
+	
+	bool tryToBuildingSiteRoom(void); //Returns true if room is found.
+	
 	bool isHardSpaceForBuildingSite(void);
 	bool isHardSpaceForBuildingSite(ConstructionResultState constructionResultState);
 	void step(void);
@@ -155,7 +161,6 @@ public:
 
 	//! get flag from units attached to flag
 	void computeFlagStat(int *goingTo, int *onSpot);
-
 	
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);

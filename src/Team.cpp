@@ -498,7 +498,6 @@ void Team::save(SDL_RWops *stream)
 
 	// saving team
 	for (int i=0; i<1024; i++)
-	{
 		if (myUnits[i])
 		{
 			SDL_WriteBE32(stream, true);
@@ -508,10 +507,8 @@ void Team::save(SDL_RWops *stream)
 		{
 			SDL_WriteBE32(stream, false);
 		}
-	}
 
 	for (int i=0; i<1024; i++)
-	{
 		if (myBuildings[i])
 		{
 			SDL_WriteBE32(stream, true);
@@ -521,19 +518,15 @@ void Team::save(SDL_RWops *stream)
 		{
 			SDL_WriteBE32(stream, false);
 		}
-	}
 	
 	// save cross reference
 	for (int i=0; i<1024; i++)
-	{
 		if (myUnits[i])
 			myUnits[i]->saveCrossRef(stream);
-	}
+	
 	for (int i=0; i<1024; i++)
-	{
 		if (myBuildings[i])
 			myBuildings[i]->saveCrossRef(stream);
-	}
 
 	SDL_WriteBE32(stream, allies);
 	SDL_WriteBE32(stream, enemies);
@@ -579,10 +572,7 @@ void Team::createLists(void)
 void Team::step(void)
 {
 	int nbUnits=0;
-	int i;
-	
-	for (i=0; i<1024; i++)
-	{
+	for (int i=0; i<1024; i++)
 		if (myUnits[i])
 		{
 			nbUnits++;
@@ -595,50 +585,48 @@ void Team::step(void)
 			}
 		}
 	
-	}
-	
-	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
+	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
-		if ( myBuildings[*it]->type->unitProductionTime )
-			swarms.remove(myBuildings[*it]);
-		if ( myBuildings[*it]->type->shootingRange )
-			turrets.remove(myBuildings[*it]);
-		if ( myBuildings[*it]->type->isVirtual )
-			virtualBuildings.remove(myBuildings[*it]);
-		subscribeForInside.remove(myBuildings[*it]);
-		subscribeToBringRessources.remove(myBuildings[*it]);
-		subscribeForFlaging.remove(myBuildings[*it]);
-		delete myBuildings[*it];
-		myBuildings[*it]=NULL;
+		Building *building=*it;
+		if (building->type->unitProductionTime)
+			swarms.remove(building);
+		if (building->type->shootingRange)
+			turrets.remove(building);
+		if (building->type->isVirtual)
+			virtualBuildings.remove(building);
+		
+		assert(building->unitsWorking.size()==0);
+		assert(building->unitsInside.size()==0);
+		assert(building->unitsWorkingSubscribe.size()==0);
+		assert(building->unitsInsideSubscribe.size()==0);
+		
+		subscribeForInside.remove(building);
+		subscribeToBringRessources.remove(building);
+		subscribeForFlaging.remove(building);
+		
+		delete building;
+		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 	}
-	
 	buildingsToBeDestroyed.clear();
 	
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
-	{
-		if ( (*it)->tryToBuildingSiteRoom() )
+		if ((*it)->tryToBuildingSiteRoom())
 		{
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
-	}
 	
 	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-	{
-		//printf("(*it)->unitsInsideSubscribe.size()=%d\n", (*it)->unitsInsideSubscribe.size());
 		if ((*it)->unitsInsideSubscribe.size()>0)
 			(*it)->subscribeForInsideStep();
-	}
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-	{
 		if ((*it)->unitsInsideSubscribe.size()==0)
 		{
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeForInside.erase(ittemp);
 		}
-	}
 
 	//subscribeToBringRessourcesStep 
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
@@ -674,17 +662,13 @@ void Team::step(void)
 	}
 	
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
-	{
 		(*it)->turretStep();
-	}
 
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
 	// decount event cooldown counter
-	for (i=0; i<EVENT_TYPE_SIZE; i++)
-	{
+	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 		if (eventCooldown[i]>0)
 			eventCooldown[i]--;
-	}
 	
 	stats.step(this);
 }
@@ -730,9 +714,6 @@ Sint32 Team::checkSum()
 	{
 		cs^=upgrade[i].size();
 		cs=(cs<<31)|(cs>>1);
-		//cs^=job[i].size();
-		//cs^=attract[i].size();
-
 	}
 	cs^=foodable.size();
 	cs=(cs<<31)|(cs>>1);
@@ -747,13 +728,19 @@ Sint32 Team::checkSum()
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)4cs=%x\n", teamNumber, cs);
 	cs^=canFeedUnit.size();
+	cs=(cs<<31)|(cs>>1);
 	cs^=canHealUnit.size();
+	cs=(cs<<31)|(cs>>1);
 	
 	cs^=buildingsToBeDestroyed.size();
+	cs=(cs<<31)|(cs>>1);
 	cs^=buildingsTryToBuildingSiteRoom.size();
+	cs=(cs<<31)|(cs>>1);
 	
 	cs^=swarms.size();
+	cs=(cs<<31)|(cs>>1);
 	cs^=turrets.size();
+	cs=(cs<<31)|(cs>>1);
 
 	cs^=allies;
 	cs^=enemies;

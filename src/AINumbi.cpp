@@ -780,7 +780,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
 				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
-					return new OrderDelete(gbid); // The target has beed sucessfuly killed.
+					return new OrderDelete(b->gid); // The target has beed sucessfuly killed.
 				
 				if (b->maxUnitWorking!=numberRequested)
 				{

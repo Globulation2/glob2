@@ -468,7 +468,14 @@ void Building::launchDelete(void)
 		maxUnitWorking=0;
 		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
-		update();
+		updateCallLists();
+		
+		if (!type->isVirtual)
+			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+		buildingState=DEAD;
+		owner->prestige-=type->prestige;
+		
+		owner->buildingsToBeDestroyed.push_front(this);
 	}
 }
 
@@ -484,27 +491,11 @@ void Building::cancelDelete(void)
 	update();
 }
 
-void Building::update(void)
+void Building::updateConstructionState(void)
 {
 	if (buildingState==DEAD)
 		return;
-
-	if (buildingState==WAITING_FOR_DESTRUCTION)
-	{
-		if ((unitsWorking.size()==0) && (unitsInside.size()==0) && (unitsWorkingSubscribe.size()==0) && (unitsInsideSubscribe.size()==0))
-		{
-			if (!type->isVirtual)
-				owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
-			buildingState=DEAD;
-			owner->prestige-=type->prestige;
-			owner->buildingsToBeDestroyed.push_front(GIDtoID(gid));
-		}
-		else
-		{
-			printf("(%d)Building wait for destruction, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
-		}
-	}
-
+	
 	if ((buildingState==WAITING_FOR_CONSTRUCTION) || (buildingState==WAITING_FOR_CONSTRUCTION_ROOM))
 	{
 		if (!isHardSpaceForBuildingSite())
@@ -520,23 +511,16 @@ void Building::update(void)
 		else
 			printf("(%d)Building wait for upgrade, uws=%lu, uis=%lu, uwss=%lu, uiss=%lu.\n", gid, (unsigned long)unitsWorking.size(), (unsigned long)unitsInside.size(), (unsigned long)unitsWorkingSubscribe.size(), (unsigned long)unitsInsideSubscribe.size());
 	}
+}
 
+void Building::updateCallLists(void)
+{
+	if (buildingState==DEAD)
+		return;
 	
-	{
-		if (unitsWorking.size()<(unsigned)maxUnitWorking)
-		{
-			// We need units:
-			
-		}
-		else
-		{
-		
-		}
-	}
-	// TODO : save the knowledge weather or not the building is already in the Call list in the building
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
-		// add itself in Call lists
+		// Add itself in the right "call-lists":
 		if (foodable!=1 && type->foodable)
 		{
 			owner->foodable.push_front(this);
@@ -548,16 +532,10 @@ void Building::update(void)
 			fillable=1;
 		}
 		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (zonable[i]!=1 && type->attract[i])
+			if (zonable[i]!=1 && type->zonable[i])
 			{
 				owner->zonable[i].push_front(this);
 				zonable[i]=1;
-			}
-		for (int i=0; i<NB_ABILITY; i++)
-			if (upgrade[i]!=1 && type->upgrade[i])
-			{
-				owner->upgrade[i].push_front(this);
-				upgrade[i]=1;
 			}
 	}
 	else
@@ -654,7 +632,7 @@ void Building::update(void)
 
 	if ((signed)unitsInside.size()<maxUnitInside)
 	{
-		// add itself in Call lists
+		// Add itself in the right "call-lists":
 		for (int i=0; i<NB_ABILITY; i++)
 			if (upgrade[i]!=1 && type->upgrade[i])
 			{
@@ -664,15 +642,10 @@ void Building::update(void)
 
 		// this is for food handling
 		if (type->canFeedUnit)
-		{
 			if (ressources[CORN]>(int)unitsInside.size())
-			{
-				//printf("work : unit : act %d - max %d   res : %d\n", unitsInside.size(), maxUnitInside, ressources[CORN]);
 				owner->canFeedUnit.push_front(this);
-			}
 			else
 				owner->canFeedUnit.remove(this);
-		}
 
 		// this is for Unit headling
 		if (type->canHealUnit)
@@ -693,9 +666,8 @@ void Building::update(void)
 		if (type->canHealUnit)
 			owner->canHealUnit.remove(this);
 	}
-
-	// this is for ressource gathering
-	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	
+	if (isRessourceFull())
 	{
 		if (foodable!=2)
 		{
@@ -707,69 +679,80 @@ void Building::update(void)
 			owner->fillable.remove(this);
 			fillable=2;
 		}
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (zonable[i]!=2)
-			{
-				owner->zonable[i].push_front(this);
-				zonable[i]=2;
-			}
-		if (type->isBuildingSite)
-		{
-			// we really uses the resources of the buildingsite:
-			for(int i=0; i<NB_RESSOURCES; i++)
-				ressources[i]-=type->maxRessource[i];
-			
-			owner->prestige-=type->prestige;
-			typeNum=type->nextLevelTypeNum;
-			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
-			assert(constructionResultState!=NO_CONSTRUCTION);
-			constructionResultState=NO_CONSTRUCTION;
-			owner->prestige+=type->prestige;
-			
-			// we don't need any worker any more
-			
-			// Notice that we could avoid freeing thoses units,
-			// this would keep the units working to the same building,
-			// and then ensure that all newly contructed food building to
-			// be filled (at least start to be filled).
-
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
-			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
-			}
-			unitsWorking.clear();
-			
-			if (type->maxUnitWorking)
-				maxUnitWorking=maxUnitWorkingPreferred;
-			else
-				maxUnitWorking=0;
-			maxUnitWorkingLocal=maxUnitWorking;
-
-			// The working units still works for us, but
-			// we don't have any unit in buildings
-			assert(unitsInside.size()==0);
-			maxUnitInside=type->maxUnitInside;
-
-			hp=type->hpInit;
-
-			productionTimeout=type->unitProductionTime;
-			if (type->unitProductionTime)
-				owner->swarms.push_front(this);
-
-			if (type->shootingRange)
-				owner->turrets.push_front(this);
-
-			// TODO: DUNNO : when do we update closestRessourceXY[] ?
-			int vr=type->viewingRange;
-			owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
-			owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
-
-			// we need to do an update again
-			update();
-		}
 	}
+}
+
+void Building::updateBuildingSite(void)
+{
+	assert(type->isBuildingSite);
+	
+	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	{
+		// we really uses the resources of the buildingsite:
+		for(int i=0; i<NB_RESSOURCES; i++)
+			ressources[i]-=type->maxRessource[i];
+
+		owner->prestige-=type->prestige;
+		typeNum=type->nextLevelTypeNum;
+		type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
+		assert(constructionResultState!=NO_CONSTRUCTION);
+		constructionResultState=NO_CONSTRUCTION;
+		owner->prestige+=type->prestige;
+
+		// we don't need any worker any more
+
+		// Notice that we could avoid freeing thoses units,
+		// this would keep the units working to the same building,
+		// and then ensure that all newly contructed food building to
+		// be filled (at least start to be filled).
+
+		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
+		unitsWorking.clear();
+
+		if (type->maxUnitWorking)
+			maxUnitWorking=maxUnitWorkingPreferred;
+		else
+			maxUnitWorking=0;
+		maxUnitWorkingLocal=maxUnitWorking;
+
+		// The working units still works for us, but
+		// we don't have any unit in buildings
+		assert(unitsInside.size()==0);
+		maxUnitInside=type->maxUnitInside;
+
+		hp=type->hpInit;
+
+		productionTimeout=type->unitProductionTime;
+		if (type->unitProductionTime)
+			owner->swarms.push_front(this);
+
+		if (type->shootingRange)
+			owner->turrets.push_front(this);
+
+		// TODO: DUNNO : when do we update closestRessourceXY[] ?
+		int vr=type->viewingRange;
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
+		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
+
+		// we need to do an update again
+		update();
+	}
+}
+
+void Building::update(void)
+{
+	if (buildingState==DEAD)
+		return;
+
+	updateConstructionState();
+	updateCallLists();
+	if (type->isBuildingSite)
+		updateBuildingSite();
 }
 
 bool Building::tryToBuildingSiteRoom(void)
@@ -919,8 +902,7 @@ void Building::step(void)
 
 void Building::removeSubscribers(void)
 {
-	std::list<Unit *>::iterator it;
-	for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->subscribed=false;
@@ -929,7 +911,7 @@ void Building::removeSubscribers(void)
 	}
 	unitsWorkingSubscribe.clear();
 
-	for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->subscribed=false;
@@ -1484,15 +1466,11 @@ void Building::turretStep(void)
 
 void Building::kill(void)
 {
-	std::list<Unit *>::iterator it;
-	for (it=unitsInside.begin(); it!=unitsInside.end(); it++)
+	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); it++)
 	{
 		Unit *u=*it;
 		if (u->displacement==Unit::DIS_INSIDE)
-		{
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
-		}
 
 		if (u->displacement==Unit::DIS_ENTERING_BUILDING)
 		{
@@ -1508,20 +1486,28 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	for (it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->activity=Unit::ACT_RANDOM;
 		(*it)->needToRecheckMedical=true;
 	}
 	unitsWorking.clear();
-
-	maxUnitWorking=0;
-	maxUnitInside=0;
-
+	
+	removeSubscribers();
+	
 	buildingState=WAITING_FOR_DESTRUCTION;
+	maxUnitWorking=0;
+	maxUnitWorkingLocal=0;
+	maxUnitInside=0;
+	updateCallLists();
 
-	update();
+	if (!type->isVirtual)
+		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+	buildingState=DEAD;
+	owner->prestige-=type->prestige;
+	
+	owner->buildingsToBeDestroyed.push_front(this);
 }
 
 int Building::getMidX(void)
@@ -1728,16 +1714,20 @@ void Building::computeFlagStat(int *goingTo, int *onSpot)
 
 Sint32 Building::GIDtoID(Uint16 gid)
 {
+	assert(gid<32768);
 	return gid%1024;
 }
 
 Sint32 Building::GIDtoTeam(Uint16 gid)
 {
+	assert(gid<32768);
 	return gid/1024;
 }
 
 Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 {
+	assert(id<1024);
+	assert(team<32);
 	return id+team*1024;
 }
 
