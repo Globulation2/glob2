@@ -30,16 +30,12 @@
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner)
 {
-	VALGRIND_MAKE_NOACCESS(&spacer0, sizeof(int));
-	VALGRIND_MAKE_NOACCESS(&spacer1, sizeof(int));
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	load(stream, owner);
 }
 
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
-	VALGRIND_MAKE_NOACCESS(&spacer0, sizeof(int));
-	VALGRIND_MAKE_NOACCESS(&spacer1, sizeof(int));
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	
 	// unit specification

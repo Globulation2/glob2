@@ -188,9 +188,7 @@ public:
 	bool needToRecheckMedical;
 	Medical medical;
 	Activity activity;
-	int spacer0;
 	Displacement displacement;
-	int spacer1;
 	Movement movement;
 	Abilities action;
 	Sint32 targetX, targetY;
