@@ -49,7 +49,7 @@ void YOGClient::send(YOGMessageType v)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -70,7 +70,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
@@ -86,7 +86,7 @@ void YOGClient::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 
 	packet->len=size;
 	memcpy((char *)packet->data, data, size);
@@ -103,7 +103,7 @@ void YOGClient::send(YOGMessageType v, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 		return;
 	}
 	{
@@ -129,7 +129,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 		return;
 	}
 	{
@@ -156,7 +156,7 @@ void YOGClient::send(const Message &m)
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 	{
-		fprintf(logClient, "Failed to alocate packet!\n");
+		fprintf(logClient, "Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=size;
