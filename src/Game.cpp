@@ -1991,7 +1991,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			int decX = globalContainer->bulletExplosion->getW(frame)>>1;
 			int decY = globalContainer->bulletExplosion->getH(frame)>>1;
 			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, img, frame);
-			std::cout << "Explosion at (" << x << "," << y << ") frame " << frame <<std::endl;
+			//std::cout << "Explosion at (" << x << "," << y << ") frame " << frame <<std::endl;
 		}
 	}
 	
