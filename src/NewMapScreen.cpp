@@ -124,6 +124,8 @@ NewMapScreen::NewMapScreen()
 	beach->add(0);
 	beach->add(1);
 	beach->add(2);
+	beach->add(3);
+	beach->add(4);
 	beach->setNth(descriptor.beach);
 	beach->visible=false;
 	addWidget(beach);

@@ -36,7 +36,8 @@ public:
 	void set(int value);
 	int getMax(void);
 	int get(void);
-
+	
+	void setScale(float start, float ratio);
 protected:
 	virtual void repaint(void);
 	virtual void internalPaint(void);
@@ -59,6 +60,9 @@ protected:
 	int px, py;
 	//! The value before the button was pressed
 	int pValue;
+	
+	float start;
+	float ratio;
 	
 	bool needRefresh;
 };

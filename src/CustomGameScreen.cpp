@@ -63,6 +63,7 @@ CustomGameScreen::CustomGameScreen()
 			memcpy(newText, fileName, textLength+1);
 			newText[textLength]=0;
 			fileList->addText(newText);
+			delete[] newText;
 		}
 		fileList->sort();
 	}

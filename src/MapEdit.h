@@ -34,7 +34,7 @@ public:
 	int run(void);
 
 private:
-	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate=true);
+	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
 	void drawMiniMap(void);
 	void renderMiniMap(void);
 	void drawMenu(void);
@@ -43,6 +43,10 @@ private:
 	int processEvent(const SDL_Event *event);
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
+	void handleMapClick(void);
+	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
+	void paintEditMode(bool clearOld, bool mayUpdate);
+	
 	void handleKeyPressed(SDLKey key, bool pressed);
 public:
 	bool load(const char *name);
@@ -51,7 +55,7 @@ private:
 	void loadSave(bool isLoad);
 
 	void updateUnits(int x, int y, int w, int h);
-
+public:
 	enum EditMode
 	{
 		EM_NONE,
@@ -84,10 +88,16 @@ private:
 	int type;
 	EditMode editMode;
 	bool wasClickInMap;
+	bool minimapPushed;
+	EditMode pushedBrush;
 
 	Sprite *menu;
 
 	Font *font;
+private:
+	int savedMx, savedMy;
+	EditMode oldBrush;
+	int orX, orY, orW, orH;
 };
 
 #endif 
