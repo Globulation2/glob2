@@ -183,7 +183,7 @@ namespace simpleClient
 			char s[256];
 			strncpy(s, (char *)data+4, 256);
 			s[255]=0;
-			printf("dump:%s\n", s);
+			printf("%s\n", s);
 		}
 		break;
 		case YMT_CONNECTION_PRESENCE:
