@@ -1748,7 +1748,6 @@ int glSDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color)
 	a = a >> 24;
 	#endif
 
-
 	if(dst == fake_screen)
 		dst = vs;
 	if(vs != dst)
@@ -1789,7 +1788,7 @@ int glSDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color)
 		dx2 = dx1 + dst->clip_rect.w;
 		dy2 = dy1 + dst->clip_rect.h;
 	}
-
+	
 	if (a < 255)
 	{
 		gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
