@@ -41,7 +41,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include <SDL/SDL_endian.h>
+#include <SDL.h>
 
 #include "utils.h"
 

@@ -46,6 +46,10 @@ To Next version :
 - Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
 - GUITextArea doit tout faire en UTF8, pas en ascii avec correction a 2 euros derriere. (nct)
 
+Dépendances:
+- Order: il y a en fait deux concepts. Une interface et une utilisations. Est-ce qu'il faut faire deux headers ?
+- Utilities: dépendance de Game.h
+
 For later later :
 
 Gameplay:

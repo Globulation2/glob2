@@ -20,11 +20,12 @@
 #ifndef __GLOBALCONTAINER_H
 #define __GLOBALCONTAINER_H
 
-#include "Header.h"
-#include "BuildingType.h"
-#include "Ressource.h"
-#include "Settings.h"
 #include <string>
+
+#include "BuildingType.h"
+#include "Header.h"
+#include "RessourceType.h"
+#include "Settings.h"
 
 class FileManager;
 class LogFileManager;
