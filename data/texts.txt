@@ -675,13 +675,33 @@ Geschwindigkeit
 Force at.
 At. strength
 Staerke
-[Total/free/seeking]
-Total/libres/recherche
-Total/free/seeking
-Total/Frei/suchen
-[Ok/hungry/wounded]
-Libre/faim/trop faim/blessées
-Free/hungry/starving/wounded
+[Total]
+Total
+Total
+Total
+[free]
+libres
+free
+frei
+[seeking]
+recherche
+seeking
+suchen
+[Free]
+Libre
+Free
+
+[hungry]
+faim
+hungry
+
+[starving]
+trop faim
+starving
+
+[wounded]
+blessées
+wounded
 
 [in way]
 en chemin
