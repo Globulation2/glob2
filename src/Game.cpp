@@ -1257,7 +1257,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int amount=r.field.amount;
 					int variety=r.field.variety;
 					const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
-					int imgid=rt->gfxId+(variety*rt->varietiesCount)+amount;
+					int imgid=rt->gfxId+(variety*rt->sizesCount)+amount-1;
 					int dx=(sprite->getW(imgid)-32)>>1;
 					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
@@ -1267,8 +1267,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					assert(variety>=0);
 					assert(variety<rt->varietiesCount);
 					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
-				}
-			}
+}			}
 
 
 	// We draw ground units:
