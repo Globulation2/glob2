@@ -100,6 +100,7 @@ protected:
 #define ALIGN_LEFT 0
 #define ALIGN_RIGHT 1
 #define ALIGN_FILL 2
+#define ALIGN_SCREEN_CENTERED 3
 #define ALIGN_TOP 0
 #define ALIGN_BOTTOM 1
 

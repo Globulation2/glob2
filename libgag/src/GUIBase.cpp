@@ -194,6 +194,11 @@ void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 			*sx=x;
 			*sw=screenw-w-x;
 			break;
+			
+		case ALIGN_SCREEN_CENTERED:
+			*sx=x+((screenw-640)>>1);
+			*sw=w;
+			break;
 
 		default:
 			assert(false);
@@ -214,6 +219,11 @@ void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 		case ALIGN_FILL:
 			*sy=y;
 			*sh=screenh-h-y;
+			break;
+			
+		case ALIGN_SCREEN_CENTERED:
+			*sy=y+((screenh-480)>>1);
+			*sh=h;
 			break;
 
 		default:
