@@ -1035,7 +1035,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				x+=mapPixW;
 			if (y<0)
 				y+=mapPixH;
-			
+
 			//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);	
 			if ( (x<=sw) && (y<=sh) )
 				globalContainer.gfx.drawSprite(bulletSprite, x, y);
@@ -1161,11 +1161,13 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int r, g, b;
 	int nCount;
 	Sint16 u;
-	bool isUnitOrBuilding;
+	bool isMeUnitOrBuilding, isEnemyUnitOrBuilding, isAllyUnitOrBuilding;
 
-	int H[3]= { 0, 255, 0 };
-	int E[3]= { 0, 0, 255 };
-	int S[3]= { 255, 255, 0 };
+	int H[3]= { 0, 90, 0 };
+	int E[3]= { 0, 40, 120 };
+	int S[3]= { 170, 170, 0 };
+	int Player[3]= { 10, 240, 20 };
+	int Enemy[3]={ 220, 25, 30 };
 	int pcol[3];
 
 	int decSPX, decSPY;
@@ -1184,125 +1186,92 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 		decSPY=0;
 	}
 
-	// FIXME : ugly copy past,has someone better idea ?
-	if (globalContainer.gfx.screen->format->BitsPerPixel==16)
+	Uint8 *ptr;
+	int bpp=globalContainer.gfx.screen->format->BytesPerPixel;
+	ptr=((Uint8 *)minimap->pixels);
+	for (dy=0; dy<128; dy++)
 	{
-		Uint16 *ptr;
-		for (dy=0; dy<128; dy++)
+		ptr=((Uint8 *)minimap->pixels)+dy*minimap->pitch;
+		for (dx=0; dx<128; dx++)
 		{
-			ptr=((Uint16 *)minimap->pixels)+(dy)*minimap->w;
-			for (dx=0; dx<128; dx++)
-			{
-				pcol[0]=0;
-				pcol[1]=0;
-				pcol[2]=0;
-				nCount=0;
-				isUnitOrBuilding=false;
+			pcol[0]=0;
+			pcol[1]=0;
+			pcol[2]=0;
+			nCount=0;
+			isMeUnitOrBuilding=false;
+			isEnemyUnitOrBuilding=false;
+			isAllyUnitOrBuilding=false;
 
-				// compute
-				for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
+			// compute
+			for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
+			{
+				for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
 				{
-					for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
+					if (showUnitsAndBuildings)
 					{
-						// FIXME : handle this in a better way
-						if (showUnitsAndBuildings)
+						u=map.getUnit(minidx, minidy);
+						if (u!=NOUID)
 						{
-							u=map.getUnit(minidx, minidy);
-							if (u!=NOUID)
+							// TODO : use ally mask
+							if (u>=0)
 							{
-								if (u>=0)
-								{
-									if (Unit::UIDtoTeam(u)==teamSelected)
-										isUnitOrBuilding=true;
-								}
-								else
-								{
-									if (Building::UIDtoTeam(u)==teamSelected)
-										isUnitOrBuilding=true;
-								}
+								if (Unit::UIDtoTeam(u)==teamSelected)
+									isMeUnitOrBuilding=true;
+								else if (map.isFOW(minidx, minidy, teamSelected))
+									isEnemyUnitOrBuilding=true;
+							}
+							else
+							{
+								if (Building::UIDtoTeam(u)==teamSelected)
+									isMeUnitOrBuilding=true;
+								else if (map.isFOW(minidx, minidy, teamSelected))
+									isEnemyUnitOrBuilding=true;
 							}
 						}
-						if ((teamSelected<0)||(map.isMapDiscovered(minidx, minidy, teamSelected)))
-							pcol[map.getUMTerrain((int)minidx,(int)minidy)]++;
-						nCount++;
 					}
-				}
-
-				if (isUnitOrBuilding)
-				{
-					r=255;
-					g=0;
-					b=0;
-				}
-				else
-				{
-					r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-					g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-					b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
-				}
-				*ptr=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
-				ptr++;
-			}
-		}
-	}
-	else
-	{
-		Uint32 *ptr;
-		for (dy=0; dy<128; dy++)
-		{
-			ptr=((Uint32 *)minimap->pixels)+(dy)*minimap->w;
-			for (dx=0; dx<128; dx++)
-			{
-				pcol[0]=0;
-				pcol[1]=0;
-				pcol[2]=0;
-				nCount=0;
-				isUnitOrBuilding=false;
-
-				// compute
-				for (minidx=(dMx*dx)+decSPX; minidx<=(dMx*(dx+1))+decSPX; minidx++)
-				{
-					for (minidy=(dMy*dy)+decSPY; minidy<=(dMy*(dy+1))+decSPY; minidy++)
+					if (teamSelected<0)
+						pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
+					else if (map.isMapDiscovered(minidx, minidy, teamSelected))
 					{
-						// FIXME : handle this in a better way
-						if (showUnitsAndBuildings)
-						{
-							u=map.getUnit(minidx, minidy);
-							if (u!=NOUID)
-							{
-								if (u>=0)
-								{
-									if (Unit::UIDtoTeam(u)==teamSelected)
-										isUnitOrBuilding=true;
-								}
-								else
-								{
-									if (Building::UIDtoTeam(u)==teamSelected)
-										isUnitOrBuilding=true;
-								}
-							}
-						}
-						if ((teamSelected<0)||(map.isMapDiscovered(minidx, minidy, teamSelected)))
-							pcol[map.getUMTerrain((int)minidx,(int)minidy)]++;
-						nCount++;
+						if (map.isFOW(minidx, minidy, teamSelected))
+							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=3;
+						else
+							pcol[map.getUMTerrain((int)minidx,(int)minidy)]+=2;
 					}
-				}
 
-				if (isUnitOrBuilding)
-				{
-					r=255;
-					g=0;
-					b=0;
+					nCount++;
 				}
-				else
-				{
-					r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-					g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-					b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
-				}
-				*ptr=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
-				ptr++;
 			}
+
+			if (isMeUnitOrBuilding)
+			{
+				r=Player[0];
+				g=Player[1];
+				b=Player[2];
+			}
+			else if (isEnemyUnitOrBuilding)
+			{
+				r=Enemy[0];
+				g=Enemy[1];
+				b=Enemy[2];
+			}
+			else
+			{
+				nCount*=3;
+				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
+				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
+				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+			}
+			switch (bpp)
+			{
+			case 1:
+				*ptr=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
+			case 2:
+				*((Uint16 *)ptr)=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
+			case 4:
+				*((Uint32 *)ptr)=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
+			}
+			ptr+=bpp;
 		}
 	}
 }
@@ -1310,9 +1279,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 Sint32 Game::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	// TODO : add checkSum() in heritated objets too.
-	
+
 	cs^=session.checkSum();
 	
 	//printf("g1cs=%x\n", cs);
