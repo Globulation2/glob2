@@ -29,7 +29,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
-#include <SoundMixer.h>
+#include "SoundMixer.h"
 
 SettingsScreen::SettingsScreen()
 {

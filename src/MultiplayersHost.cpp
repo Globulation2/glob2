@@ -922,7 +922,7 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 		{
 			assert(yog);
 			int size=8+10*yog->joiners.size();
-			Uint8 data[size];
+			VARARRAY(Uint8,data,size);
 			
 			data[0]=SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING;
 			data[1]=0;

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="glob2"
 	ProjectGUID="{21BF838A-D64B-4500-92CB-93A7438A3DF0}"
 	Keyword="Win32Proj">
@@ -33,9 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Stuff\Repository\Lib\sdl.lib C:\Stuff\Repository\Lib\sdl_net.lib C:\Stuff\Repository\Lib\sdl_image.lib C:\Stuff\Repository\Lib\freetype.lib C:\Stuff\Repository\Lib\sdlmain.lib ws2_32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/glob2.pdb"
 				SubSystem="1"
@@ -53,7 +54,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -80,10 +87,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Stuff\Repository\Lib\sdl.lib C:\Stuff\Repository\Lib\sdl_net.lib C:\Stuff\Repository\Lib\sdl_image.lib C:\Stuff\Repository\Lib\freetype.lib C:\Stuff\Repository\Lib\sdlmain.lib ws2_32.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static.lib vorbisfile_static.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
-				GenerateDebugInformation="TRUE"
+				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
+				GenerateDebugInformation="FALSE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -101,15 +109,26 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
 				RelativePath="src\AI.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AICastor.cpp">
 			</File>
 			<File
 				RelativePath="src\AINumbi.cpp">
@@ -119,6 +138,12 @@
 			</File>
 			<File
 				RelativePath="src\BuildingType.cpp">
+			</File>
+			<File
+				RelativePath=".\src\Bullet.cpp">
+			</File>
+			<File
+				RelativePath=".\src\CreditScreen.cpp">
 			</File>
 			<File
 				RelativePath="src\CustomGameScreen.cpp">
@@ -134,9 +159,6 @@
 			</File>
 			<File
 				RelativePath="src\Fatal.cpp">
-			</File>
-			<File
-				RelativePath="src\GUIMapPreview.cpp">
 			</File>
 			<File
 				RelativePath="src\Game.cpp">
@@ -155,6 +177,12 @@
 			</File>
 			<File
 				RelativePath="src\GlobalContainer.cpp">
+			</File>
+			<File
+				RelativePath=".\src\GUIGlob2FileList.cpp">
+			</File>
+			<File
+				RelativePath="src\GUIMapPreview.cpp">
 			</File>
 			<File
 				RelativePath="src\LoadGameScreen.cpp">
@@ -217,10 +245,13 @@
 				RelativePath="src\Race.cpp">
 			</File>
 			<File
-				RelativePath="src\SGSL.cpp">
+				RelativePath=".\src\Ressource.cpp">
 			</File>
 			<File
 				RelativePath="src\ScriptEditorScreen.cpp">
+			</File>
+			<File
+				RelativePath=".\src\Sector.cpp">
 			</File>
 			<File
 				RelativePath="src\Session.cpp">
@@ -229,10 +260,16 @@
 				RelativePath="src\SessionConnection.cpp">
 			</File>
 			<File
+				RelativePath=".\src\Settings.cpp">
+			</File>
+			<File
 				RelativePath="src\SettingsScreen.cpp">
 			</File>
 			<File
-				RelativePath="src\StringTable.cpp">
+				RelativePath="src\SGSL.cpp">
+			</File>
+			<File
+				RelativePath=".\src\SoundMixer.cpp">
 			</File>
 			<File
 				RelativePath="src\Team.cpp">
@@ -262,61 +299,70 @@
 				Name="libgag"
 				Filter="">
 				<File
-					RelativePath="libgag\src\FileManager.cpp">
+					RelativePath=".\libgag\src\FileManager.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GAG.cpp">
+					RelativePath=".\libgag\src\GLGraphicContext.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIBase.cpp">
+					RelativePath=".\libgag\src\GraphicContext.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIButton.cpp">
+					RelativePath=".\libgag\src\GUIAnimation.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIList.cpp">
+					RelativePath=".\libgag\src\GUIBase.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIMessageBox.cpp">
+					RelativePath=".\libgag\src\GUIButton.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUINumber.cpp">
+					RelativePath=".\libgag\src\GUIFileList.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIRatio.cpp">
+					RelativePath=".\libgag\src\GUIList.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUIText.cpp">
+					RelativePath=".\libgag\src\GUIMessageBox.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUITextArea.cpp">
+					RelativePath=".\libgag\src\GUINumber.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GUITextInput.cpp">
+					RelativePath=".\libgag\src\GUIRatio.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\GraphicContext.cpp">
+					RelativePath=".\libgag\src\GUISelector.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\SDLFont.cpp">
+					RelativePath=".\libgag\src\GUIText.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\SDLGraphicContext.cpp">
+					RelativePath=".\libgag\src\GUITextArea.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\SDLSprite.cpp">
+					RelativePath=".\libgag\src\GUITextInput.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\SDL_ttf.c">
+					RelativePath=".\libgag\src\SDLFont.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\SupportFunctions.cpp">
+					RelativePath=".\libgag\src\SDLGraphicContext.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\win32_dirent.cpp">
+					RelativePath=".\libgag\src\Sprite.cpp">
 				</File>
 				<File
-					RelativePath="libgag\src\win32_dirent.h">
+					RelativePath=".\libgag\src\StringTable.cpp">
+				</File>
+				<File
+					RelativePath=".\libgag\src\SupportFunctions.cpp">
+				</File>
+				<File
+					RelativePath=".\libgag\src\Toolkit.cpp">
+				</File>
+				<File
+					RelativePath=".\libgag\src\win32_dirent.cpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -354,9 +400,6 @@
 				RelativePath="src\Fatal.h">
 			</File>
 			<File
-				RelativePath="src\GUIMapPreview.h">
-			</File>
-			<File
 				RelativePath="src\Game.h">
 			</File>
 			<File
@@ -373,6 +416,9 @@
 			</File>
 			<File
 				RelativePath="src\GlobalContainer.h">
+			</File>
+			<File
+				RelativePath="src\GUIMapPreview.h">
 			</File>
 			<File
 				RelativePath="src\Header.h">
@@ -447,9 +493,6 @@
 				RelativePath="src\Race.h">
 			</File>
 			<File
-				RelativePath="src\SGSL.h">
-			</File>
-			<File
 				RelativePath="src\ScriptEditorScreen.h">
 			</File>
 			<File
@@ -460,6 +503,9 @@
 			</File>
 			<File
 				RelativePath="src\SettingsScreen.h">
+			</File>
+			<File
+				RelativePath="src\SGSL.h">
 			</File>
 			<File
 				RelativePath="src\StringTable.h">
@@ -510,6 +556,9 @@
 					RelativePath="libgag\include\GAGSys.h">
 				</File>
 				<File
+					RelativePath="libgag\include\GraphicContext.h">
+				</File>
+				<File
 					RelativePath="libgag\include\GUIBase.h">
 				</File>
 				<File
@@ -537,7 +586,7 @@
 					RelativePath="libgag\include\GUITextInput.h">
 				</File>
 				<File
-					RelativePath="libgag\include\GraphicContext.h">
+					RelativePath="libgag\src\SDL_ttf.h">
 				</File>
 				<File
 					RelativePath="libgag\src\SDLFont.h">
@@ -547,9 +596,6 @@
 				</File>
 				<File
 					RelativePath="libgag\src\SDLSprite.h">
-				</File>
-				<File
-					RelativePath="libgag\src\SDL_ttf.h">
 				</File>
 				<File
 					RelativePath="libgag\include\SupportFunctions.h">
