@@ -102,6 +102,7 @@ struct ErrorReport
 		ET_SYNTAX_ERROR,
 		ET_INVALID_PLAYER,
 		ET_NO_SUCH_FILE,
+		ET_INVALID_FLAG_NAME,
 		ET_UNKNOWN,
 	} type;
 	unsigned line;
@@ -181,6 +182,7 @@ private:
 	
 	void reset(void);
 	bool testMainTimer(void);
+	bool doesFlagExist(string name);
 	bool getFlagPos(string name, int *x, int *y);
 	
 	int mainTimer;
