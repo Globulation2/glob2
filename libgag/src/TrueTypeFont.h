@@ -31,6 +31,7 @@ struct SDL_Surface;
 
 namespace GAGCore
 {
+	//! An implementation of Font using SDL_TTF
 	class TrueTypeFont:public Font
 	{
 	public:
@@ -49,6 +50,8 @@ namespace GAGCore
 		virtual Style getStyle(void) const;
 		
 	protected:
+		//! Init internal variables
+		void init(void);
 		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
 		virtual void pushStyle(Style style);
 		virtual void popStyle(void);
@@ -79,6 +82,10 @@ namespace GAGCore
 		unsigned now;
 		std::map<CacheKey, CacheData> cache;
 		std::map<unsigned, std::map<CacheKey, CacheData>::iterator> timeCache;
+		//! number of cache hit
+		unsigned cacheHit;
+		//! number of cache miss
+		unsigned cacheMiss;
 	};
 }
 
