@@ -22,6 +22,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include "Unit.h"
 
 Map::Map()
 {

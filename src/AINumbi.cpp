@@ -18,12 +18,12 @@
 */
 
 #include "AINumbi.h"
-#include "Player.h"
-#include "Utilities.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Order.h"
-
+#include "Player.h"
+#include "Utilities.h"
+#include "Unit.h"
 
 AINumbi::AINumbi(Player *player)
 {

@@ -20,7 +20,8 @@
 #ifndef __MAP_GENERATION_DESCRIPTOR_H
 #define __MAP_GENERATION_DESCRIPTOR_H
 
-#include "Map.h"
+#include "Ressource.h"
+#include "TerrainType.h"
 
 class MapGenerationDescriptor
 {

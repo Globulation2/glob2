@@ -18,17 +18,20 @@
 */
 
 #include <float.h>
+#include <math.h>
+
 #include <Toolkit.h>
 #include <StringTable.h>
-#include "Team.h"
+
 #include "BuildingType.h"
 #include "Game.h"
-#include "NetConsts.h"
-#include "Utilities.h"
-#include <math.h>
-#include "Marshaling.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include "Marshaling.h"
+#include "NetConsts.h"
+#include "Team.h"
+#include "Unit.h"
+#include "Utilities.h"
 
 BaseTeam::BaseTeam()
 {

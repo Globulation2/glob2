@@ -17,11 +17,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GUIMapPreview.h"
-#include "Session.h"
-#include "Utilities.h"
 #include <StringTable.h>
 #include <GraphicContext.h>
+
+#include "GUIMapPreview.h"
+#include "Map.h"
+#include "Session.h"
+#include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *mapName)
 {

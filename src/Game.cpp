@@ -27,12 +27,13 @@
 
 #include <GraphicContext.h>
 
-#include "Game.h"
 #include "BuildingType.h"
-#include "Utilities.h"
-#include "LogFileManager.h"
+#include "Game.h"
 #include "GlobalContainer.h"
+#include "LogFileManager.h"
 #include "Order.h"
+#include "Unit.h"
+#include "Utilities.h"
 
 #define BULLET_IMGID 35
 

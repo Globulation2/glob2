@@ -17,14 +17,15 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Map.h"
-#include "Game.h"
-#include "Utilities.h"
-#include "MapGenerationDescriptor.h"
-#include "GlobalContainer.h"
 #include <math.h>
 #include <float.h>
 
+#include "Game.h"
+#include "GlobalContainer.h"
+#include "Map.h"
+#include "MapGenerationDescriptor.h"
+#include "Unit.h"
+#include "Utilities.h"
 
 void Map::makeHomogenMap(TerrainType terrainType)
 {

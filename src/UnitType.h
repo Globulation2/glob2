@@ -21,37 +21,7 @@
 #define __UNITTYPE_H
 
 #include "EntityType.h"
-
-enum Abilities
-{
-	STOP_WALK=0,
-	STOP_SWIM=1,
-	STOP_FLY=2,
-	
-	WALK=3,
-	SWIM=4,
-	FLY=5,
-	BUILD=6,
-	HARVEST=7,
-	ATTACK_SPEED=8,
-	
-	ATTACK_STRENGTH=9,
-	ARMOR=10,
-	HP=11,
-	
-	HEAL=12,
-	FEED=13
-};
-const int NB_MOVE=9;
-const int NB_ABILITY=12;
-
-
-const int WORKER=0;
-const int EXPLORER=1;
-const int WARRIOR=2;
-const int NB_UNIT_TYPE=3;
-
-const int NB_UNIT_LEVELS=4;
+#include "UnitConsts.h"
 
 class UnitType: public EntityType
 {

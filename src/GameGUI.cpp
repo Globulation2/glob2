@@ -17,13 +17,6 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GameGUI.h"
-#include "Game.h"
-#include "GameGUIDialog.h"
-#include "GameGUILoadSave.h"
-#include "Utilities.h"
-#include "YOG.h"
-#include "GlobalContainer.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -33,6 +26,15 @@
 #include <GraphicContext.h>
 #include <SupportFunctions.h>
 #include <algorithm>
+
+#include "Game.h"
+#include "GameGUI.h"
+#include "GameGUIDialog.h"
+#include "GameGUILoadSave.h"
+#include "GlobalContainer.h"
+#include "Unit.h"
+#include "Utilities.h"
+#include "YOG.h"
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46

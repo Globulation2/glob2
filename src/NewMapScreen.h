@@ -20,9 +20,9 @@
 #ifndef __NEWMAPSCREEN_H
 #define __NEWMAPSCREEN_H
 
-#include "Map.h"
-#include "MapGenerationDescriptor.h"
 #include <GUIBase.h>
+
+#include "MapGenerationDescriptor.h"
 
 class Number;
 class Text;

@@ -20,13 +20,15 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-#include "Unit.h"
-#include "Building.h"
-#include "Team.h"
-#include "Ressource.h"
 #include <list>
+
+#include "Building.h"
+#include "Ressource.h"
 #include "Sector.h"
-#include "Gradient.h"
+#include "Team.h"
+#include "TerrainType.h"
+
+class Unit;
 
 //! No global unit identifier. This value means there is no unit. Used at Case::groundUnit or Case::airUnit.
 #define NOGUID 0xFFFF
@@ -51,13 +53,6 @@ struct Case
 	Uint16 airUnit;
 
 	Uint32 forbidden; // This is a mask, one bit by team, 0=forbidden case, 1=allowed case.
-};
-
-enum TerrainType
-{
-	WATER=0,
-	SAND=1,
-	GRASS=2,
 };
 
 

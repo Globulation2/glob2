@@ -17,16 +17,17 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GAG.h"
-#include "Game.h"
-#include "MapEdit.h"
-#include "UnitType.h"
-#include "Utilities.h"
-#include "GameGUILoadSave.h"
-#include "ScriptEditorScreen.h"
-#include "GlobalContainer.h"
 #include <math.h>
 
+#include "GAG.h"
+#include "Game.h"
+#include "GameGUILoadSave.h"
+#include "GlobalContainer.h"
+#include "MapEdit.h"
+#include "ScriptEditorScreen.h"
+#include "Unit.h"
+#include "UnitType.h"
+#include "Utilities.h"
 
 MapEdit::MapEdit()
 {

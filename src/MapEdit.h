@@ -20,9 +20,6 @@
 #ifndef __GLOB2EDIT_H
 #define __GLOB2EDIT_H
 
-#include "GAG.h"
-#include "Map.h"
-
 class MapEdit
 {
 public:
