@@ -1393,7 +1393,8 @@ void Unit::setNewValidDirection(void)
 	{
 		int i=0;
 		bool swim=performance[SWIM];
-		while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim))
+		Uint32 me=owner->me;
+		while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
 		{
 			direction=(direction+1)&7;
 			dxdyfromDirection();
@@ -1414,14 +1415,14 @@ bool Unit::valid(int x, int y)
 	if (performance[FLY])
 		return owner->map->isFreeForAirUnit(x, y);
 	else
-		return owner->map->isFreeForGroundUnit(x, y, performance[SWIM]);
+		return owner->map->isFreeForGroundUnit(x, y, performance[SWIM], owner->me);
 }
 
 bool Unit::validHard(int x, int y)
 {
 	// Is there anythig that could block an unit? (except other units)
 	assert(!performance[FLY]);
-	return owner->map->isHardSpaceForGroundUnit(x, y, performance[SWIM]);
+	return owner->map->isHardSpaceForGroundUnit(x, y, performance[SWIM], owner->me);
 }
 
 void Unit::pathFind(void)

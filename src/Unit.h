@@ -148,8 +148,8 @@ public:
 	Race *race;
 	
 	// identity
-	Uint16 gid; // team * 1024 (Uint16)
-	Team *owner; // if < 0, not allocated
+	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
+	Team *owner;
 	Sint32 isDead; // (bool) if true is dead, will be garbage collected next turn
 
 	// position

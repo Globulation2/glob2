@@ -107,6 +107,7 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
+	static Uint32 teamNumberToMask(int team) { return 1<<team; }
 	
 	//! Called when unit is hungry
 	Building *findNearestFood(int x, int y);
@@ -157,6 +158,7 @@ public:
 	std::list<Building *> subscribeForFlaging;
 
 	// The lists of building which needs specials updates:
+	std::list<Building *> buildingsWaitingForDestruction;
 	std::list<Building *> buildingsToBeDestroyed;
 	std::list<Building *> buildingsTryToBuildingSiteRoom;
 

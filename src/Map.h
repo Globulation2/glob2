@@ -50,6 +50,8 @@ struct Case
 
 	Uint16 groundUnit;
 	Uint16 airUnit;
+	
+	Uint32 forbidden; // This is a mask, one bit by team, 0=forbidden case, 1=allowed case.
 };
 
 enum TerrainType
@@ -183,10 +185,20 @@ public:
 	{
 		return (*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	}
-
-	void setTerrain(int x, int y, Uint16 t)
+	
+	Uint32 getForbidden(int x, int y)
 	{
-		(*(cases+w*(y&hMask)+(x&wMask))).terrain=t;
+		return (*(cases+w*(y&hMask)+(x&wMask))).forbidden;
+	}
+	
+	void setTerrain(int x, int y, Uint16 terrain)
+	{
+		(*(cases+w*(y&hMask)+(x&wMask))).terrain=terrain;
+	}
+	
+	void setForbidden(int x, int y, Uint32 forbidden)
+	{
+		(*(cases+w*(y&hMask)+(x&wMask))).forbidden=forbidden;
 	}
 
 	bool isWater(int x, int y)
@@ -237,12 +249,12 @@ public:
 	bool incRessource(int x, int y, RessourceType ressourceType);
 	
 	//! Return true if unit can go to position (x,y)
-	bool isFreeForGroundUnit(int x, int y, bool canSwim);
+	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 me);
 	bool isFreeForAirUnit(int x, int y);
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);
 	// The "hardSpace" keywork means "Free" but you don't count Ground-Units as obstacles.
-	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim);
+	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me);
 	bool isHardSpaceForBuilding(int x, int y);
 	bool isHardSpaceForBuilding(int x, int y, int w, int h);
 	bool isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid);

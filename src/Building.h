@@ -80,19 +80,17 @@ public:
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity
-	Uint16 gid; // Sint16, for reservation see below TODO
-	Team *owner; // if < 0, not allocated
+	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
+	Team *owner;
 
 	// position
 	Sint32 posX, posY; // (Uint16)
 	Sint32 posXLocal, posYLocal;
 
-	// 256 flags
 	// Flag usefull :
 	Uint32 unitStayRange; // (Uint8)
 	Uint32 unitStayRangeLocal;
 
-	// 1024 buldings
 	// Building specific :
 	Sint32 ressources[NB_RESSOURCES]; // Ammount stocked, or used for building building.
 

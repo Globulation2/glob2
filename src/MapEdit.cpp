@@ -524,7 +524,7 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 		else
 		{
 			UnitType *ut=game.teams[team]->race.getUnitType(type, level);
-			isRoom=game.map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM]);
+			isRoom=game.map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM], Team::teamNumberToMask(team));
 		}
 
 		int imgid;
