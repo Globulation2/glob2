@@ -19,6 +19,33 @@
 
 #include "GUIBase.h"
 
+void UCS16toUTF8(Uint16 ucs16, char utf8[4])
+{
+	if (ucs16<0x80)
+	{
+		utf8[0]=ucs16;
+		utf8[1]=0;
+	}
+	else if (ucs16<0x800)
+	{
+		utf8[0]=((ucs16>>6)&0x1F)|0xC0;
+		utf8[1]=(ucs16&0x3F)|0x80;
+		utf8[2]=0;
+	}
+	else if (ucs16<0xd800)
+	{
+		utf8[0]=((ucs16>>12)&0x0F)|0xE0;
+		utf8[1]=((ucs16>>6)&0x3F)|0x80;
+		utf8[2]=(ucs16&0x3F)|0x80;
+		utf8[3]=0;
+	}
+	else
+	{
+		utf8[0]=0;
+		fprintf(stderr, "UCS16toUTF8 : Error, can handle UTF16 characters\n");
+	}
+}
+
 Widget::Widget()
 {
 	visible=true;
