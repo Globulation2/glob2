@@ -36,10 +36,10 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags = DrawableSurface::RESIZABLE | DrawableSurface::DOUBLEBUF;
+	screenFlags = DrawableSurface::RESIZABLE | DrawableSurface::DOUBLEBUF | DrawableSurface::HWACCELERATED;
 	screenWidth = 640;
 	screenHeight = 480;
-	screenDepth = 32;
+	screenDepth = 0;
 	graphicType = DrawableSurface::GC_SDL;
 	optionFlags = 0;
 	defaultLanguage = 1;
