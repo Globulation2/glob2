@@ -77,6 +77,7 @@ public:
 protected:
 	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
+	virtual void internalPaint(void);
 };
 
 class OnOffButton:public RectangularWidget

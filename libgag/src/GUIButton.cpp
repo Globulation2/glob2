@@ -115,14 +115,11 @@ void Button::repaint(void)
 
 void Button::paint(void)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
 	if ((visible)&&((standardId>=0)||(highlightID>=0)))
 	{
 		archPtr=Toolkit::getSprite(sprite.c_str());
 		assert(archPtr);
-		parent->getSurface()->drawSprite(x, y, archPtr, standardId);
+		repaint();
 	}
 	highlighted=false;
 }
@@ -134,25 +131,55 @@ TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign,
 	assert(text);
 	this->font=font;
 	this->text=text;
+	fontPtr=NULL;
+}
+
+void TextButton::internalPaint(void)
+{
+	if (visible)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+
+		fontPtr=Toolkit::getFont(font.c_str());
+		assert(fontPtr);
+
+		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
+		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
+
+		Button::repaint();
+		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
+		if (highlighted)
+		{
+			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
+		}
+		else
+		{
+			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		}
+		parent->addUpdateRect(x, y, w, h);
+	}
 }
 
 void TextButton::paint(void)
 {
+	if ((visible)&&((standardId>=0)||(highlightID>=0)))
+	{
+		archPtr=Toolkit::getSprite(sprite.c_str());
+		assert(archPtr);
+	}
+	internalPaint();
+	highlighted=false;
+}
+
+void TextButton::repaint(void)
+{
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 
-	fontPtr=Toolkit::getFont(font.c_str());
-	assert(fontPtr);
-
-	int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
-	int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
-
-	Button::paint();
-	if (visible)
-	{
-		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-	}
+	parent->paint(x, y, w, h);
+	paint();
 }
 
 void TextButton::setText(const char *text)
@@ -162,30 +189,6 @@ void TextButton::setText(const char *text)
 	repaint();
 }
 
-void TextButton::repaint(void)
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	assert(fontPtr);
-
-	Button::repaint();
-	parent->paint(x, y, w, h);
-	if (visible)
-	{
-		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
-		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
-
-		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
-		if (highlighted)
-		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
-		}
-		else
-			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-	}
-	parent->addUpdateRect(x, y, w, h);
-}
 
 // FIXME : use intermediate class for highlight handling
 
