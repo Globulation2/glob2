@@ -192,6 +192,9 @@ void GameGUI::adjustLocalTeam()
 	localTeam=game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats=&localTeam->stats;
+	
+	// recompute local forbidden
+	game.map.computeLocalForbidden(localTeamNo);
 }
 
 void GameGUI::adjustInitialViewport()
@@ -3097,9 +3100,6 @@ bool GameGUI::load(SDL_RWops *stream)
 			if ((1<<id) & flagsChoiceMask)
 				flagsChoice[i]=-id-1;
 		}
-		
-		// recompute local forbidden
-		game.map.computeLocalForbidden(localTeamNo);
 	}
 
 	return true;
