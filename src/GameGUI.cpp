@@ -3003,6 +3003,10 @@ void GameGUI::drawOverlayInfos(void)
 		}
 	}
 
+	// Draw icon if trnasmitting
+	if (globalContainer->rec->recordingNow)
+		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
+	
 	// Draw the bar contining number of units, CPU load, etc...
 	drawTopScreenBar();
 }
