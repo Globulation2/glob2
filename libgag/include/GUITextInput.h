@@ -33,6 +33,7 @@ protected:
 	bool activated;
 	Uint32 cursPos;
 	Uint32 maxLength;
+	bool password;
 
 	// cache, recomputed at least on paint
 	Font *fontPtr;
@@ -40,7 +41,7 @@ protected:
 	int cursorScreenPos;
 
 public:
-	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, unsigned maxLength=0);
+	TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, unsigned maxLength=0, bool password=false);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);

@@ -22,7 +22,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 
-TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, unsigned maxLength)
+TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, unsigned maxLength, bool password)
 {
 	this->x=x;
 	this->y=y;
@@ -41,6 +41,7 @@ TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, c
 	cursorScreenPos=0;
 
 	this->activated=activated;
+	this->password=password;
 }
 
 void TextInput::onTimer(Uint32 tick)
@@ -80,8 +81,8 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			}
 			else
 			{
-				repaint();
 				activated=true;
+				repaint();
 				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
 		}
