@@ -425,6 +425,26 @@ Building *Team::findNearestFood(int x, int y)
 	return b;
 }
 
+int Team::maxBuildLevel(void)
+{
+	int index;
+	Unit *u;
+	int maxLevel=0;
+	int unitLevel;
+
+	for (index=0; index<1024; index++)
+	{
+		u=myUnits[index];
+		if (u)
+		{
+			unitLevel=u->level[BUILD];
+			if (unitLevel>maxLevel)
+				maxLevel=unitLevel;
+		}
+	}
+	return maxLevel;
+}
+
 void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 {
 	assert(buildingsToBeDestroyed.size()==0);

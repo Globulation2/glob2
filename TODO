@@ -8,12 +8,10 @@ To First release :
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - map must have version, and little backward compatibility should be keeped. (nct)
-- upgrade key must be inactive if no units have enough high level to build it. (nct)
 - AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Stat screen must be internationalized and don't display NaN. (nct)
-- Have clean text in stat button (no more overdraw). (nct)
 
 To Next version :
 
