@@ -20,7 +20,8 @@
 #include <SupportFunctions.h>
 #include <math.h>
 #include <assert.h>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
 
 namespace GAG
 {
@@ -241,12 +242,18 @@ namespace GAG
 	std::string nsprintf(const char* f, ...)
 	{
 		va_list arglist;
-		char* msg;
 		va_start(arglist, f);
-		vasprintf(&msg, f, arglist);
+		std::string ret(vnsprintf(f, arglist));
 		va_end(arglist);
-		std::string ret(msg);
-		free(msg);
+		return ret;
+	}
+
+	std::string vnsprintf(const char* f, va_list arglist)
+	{
+		char* str;
+		vasprintf(&str, f, arglist);
+		std::string ret(str);
+		free(str);
 		return ret;
 	}
 }

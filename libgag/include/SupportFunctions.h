@@ -23,6 +23,7 @@
 #include "GAGSys.h"
 #include <stdlib.h>
 #include <string>
+#include <stdarg.h>
 
 namespace GAG
 {
@@ -51,6 +52,9 @@ namespace GAG
 
 	//! c++ version of asprintf (n for new instead of a for alloc)
 	std::string nsprintf(const char* s, ...);
+	//! c++ version of asprintf (n for new instead of a for alloc)
+	std::string vnsprintf(const char* s, va_list args);
+
 };
 
 #endif

@@ -1353,7 +1353,7 @@ void GameGUI::draw(void)
 		}
 
 		globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
-		
+
 		if (typeToBuild>=0)
 		{
 			if (typeToBuild<8)
@@ -1739,10 +1739,10 @@ void GameGUI::draw(void)
 	else if (displayMode==STAT_VIEW)
 	{
 		// draw menu button
-		if (gameMenuScreen)
+		/*if (gameMenuScreen)
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);*/
 
 		if (statMode==STAT_TEXT)
 		{
