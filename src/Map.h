@@ -119,9 +119,10 @@ public:
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
 	void setMapDiscovered(int x, int y, Uint32 sharedVision)
 	{
-		(*(mapDiscovered+w*(y&hMask)+(x&wMask)))|=sharedVision;
-		(*(fogOfWarA+w*(y&hMask)+(x&wMask)))|=sharedVision;
-		(*(fogOfWarB+w*(y&hMask)+(x&wMask)))|=sharedVision;
+		size_t index = ((y&hMask)<<wDec)+(x&wMask);
+		mapDiscovered[index] |= sharedVision;
+		fogOfWarA[index] |= sharedVision;
+		fogOfWarB[index] |= sharedVision;
 	}
 
 	//! Set map to discovered state at rect (x, y, w, h) for all teams in sharedVision (mask).
@@ -135,8 +136,8 @@ public:
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
 	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[32])
 	{
-		Uint16 bgid=(cases+w*(y&hMask)+(x&wMask))->building;
-		if (bgid!=NOGBID)
+		Uint16 bgid = (cases+((y&hMask)<<wDec)+(x&wMask))->building;
+		if (bgid != NOGBID)
 		{
 			int id = Building::GIDtoID(bgid);
 			int team = Building::GIDtoTeam(bgid);
@@ -166,32 +167,32 @@ public:
 	//! This mask represents which team's part of map we are allowed to see.
 	bool isMapDiscovered(int x, int y, Uint32 visionMask)
 	{
-		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
+		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
 
 	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
 	bool isFOWDiscovered(int x, int y, int visionMask)
 	{
-		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
+		return ((fogOfWar[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
 	
 	//! Return true if the position (x,y) is a forbidden area set by the user
 	bool isForbiddenLocal(int x, int y)
 	{
-		return localForbiddenMap.get(w*(y&hMask)+(x&wMask));
+		return localForbiddenMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
 	//! Return true if the position (x,y) is a guard area set by the user
 	bool isGuardAreaLocal(int x, int y)
 	{
-		return localGuardAreaMap.get(w*(y&hMask)+(x&wMask));
+		return localGuardAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
 	//! Return true if the position (x,y) is a clear area set by the user
 	bool isClearAreaLocal(int x, int y)
 	{
-		return localClearAreaMap.get(w*(y&hMask)+(x&wMask));
+		return localClearAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
 	//! Compute localForbiddenMap from cases array
@@ -200,26 +201,32 @@ public:
 	void computeLocalGuardArea(int localTeamNo);
 	//! Compute localClearAreaMap from cases array
 	void computeLocalClearArea(int localTeamNo);
+	
+	//! Return the case at a given position
+	Case &getCase(int x, int y)
+	{
+		return cases[((y&hMask)<<wDec)+(x&wMask)];
+	}
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y)
 	{
-		return (*(cases+w*(y&hMask)+(x&wMask))).terrain;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].terrain;
 	}
 	
-	//! Return the terrain for a gievn position in case array
+	//! Return the terrain for a given position in case array
 	inline Uint16 getTerrain(unsigned pos)
 	{
-		return (cases+pos)->terrain;
+		return cases[pos].terrain;
 	}
 
 	//! Return the typeof terrain. If type is unregistred, returns unknown (-1).
 	int getTerrainType(int x, int y)
 	{
-		unsigned t=getTerrain(x, y);
+		unsigned t = getTerrain(x, y);
 		if (t<16)
 			return GRASS;
-		else if ((t>=128)&&(t<128+16))
+		else if ((t>=128) && (t<128+16))
 			return SAND;
 		else if ((t>=256) && (t<256+16))
 			return WATER;
@@ -229,7 +236,7 @@ public:
 
 	Ressource getRessource(int x, int y)
 	{
-		return (*(cases+w*(y&hMask)+(x&wMask))).ressource;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
 	}
 	
 	Ressource getRessource(unsigned pos)
@@ -239,17 +246,17 @@ public:
 	
 	Uint32 getForbidden(int x, int y)
 	{
-		return (*(cases+w*(y&hMask)+(x&wMask))).forbidden;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
 	}
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		(*(cases+w*(y&hMask)+(x&wMask))).terrain=terrain;
+		cases[((y&hMask)<<wDec)+(x&wMask)].terrain = terrain;
 	}
 	
 	void setForbidden(int x, int y, Uint32 forbidden)
 	{
-		(*(cases+w*(y&hMask)+(x&wMask))).forbidden=forbidden;
+		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden = forbidden;
 	}
 	
 	bool isWater(int x, int y)
@@ -268,7 +275,7 @@ public:
 	{
 		return (getTerrain(x, y)<16);
 	}
-
+	
 	bool isSand(int x, int y)
 	{
 		int t=getTerrain(x, y);
@@ -277,30 +284,30 @@ public:
 
 	bool isRessource(int x, int y)
 	{
-		return (*(cases+w*(y&hMask)+(x&wMask))).ressource.type!=NO_RES_TYPE;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].ressource.type != NO_RES_TYPE;
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
 	{
-		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-		return (ressource->type == ressourceType &&  ressource->amount>0);
+		const Ressource &ressource = cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
+		return (ressource.type == ressourceType &&  ressource.amount>0);
 	}
 
 	bool isRessource(int x, int y, bool ressourceTypes[BASIC_COUNT])
 	{
-		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
-		return (ressource->type!=NO_RES_TYPE
-			&& ressource->amount>0
-			&& ressource->type<BASIC_COUNT
-			&& ressourceTypes[ressource->type]);
+		const Ressource &ressource = cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
+		return (ressource.type != NO_RES_TYPE
+			&& ressource.amount > 0
+			&& ressource.type < BASIC_COUNT
+			&& ressourceTypes[ressource.type]);
 	}
 
 	bool isRessource(int x, int y, int *ressourceType)
 	{
-		int rt=getRessource(x, y).type;
-		if (rt==0xFF)
+		int rt = getRessource(x, y).type;
+		if (rt == 0xFF)
 			return false;
-		*ressourceType=rt;
+		*ressourceType = rt;
 		return true;
 	}
 
@@ -313,7 +320,7 @@ public:
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
 	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim);
-	bool isFreeForAirUnit(int x, int y) {return (getAirUnit(x+w, y+h)==NOGUID); }
+	bool isFreeForAirUnit(int x, int y) { return (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);
 	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid);
@@ -340,17 +347,17 @@ public:
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).groundUnit; }
-	Uint16 getAirUnit(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).airUnit; }
-	Uint16 getBuilding(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).building; }
+	Uint16 getGroundUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].airUnit; }
+	Uint16 getBuilding(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { (*(cases+w*(y&hMask)+(x&wMask))).groundUnit=guid; }
-	void setAirUnit(int x, int y, Uint16 guid) { (*(cases+w*(y&hMask)+(x&wMask))).airUnit=guid; }
+	void setGroundUnit(int x, int y, Uint16 guid) { cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit = guid; }
+	void setAirUnit(int x, int y, Uint16 guid) { cases[((y&hMask)<<wDec)+(x&wMask)].airUnit = guid; }
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid)
 	{
 		for (int yi=y; yi<y+h; yi++)
 			for (int xi=x; xi<x+w; xi++)
-				(*(cases+this->w*(yi&hMask)+(xi&wMask))).building=gbid;
+				cases[((yi&hMask)<<wDec)+(xi&wMask)].building = gbid;
 	}
 	
 	//! Return sector at (x,y).
@@ -359,9 +366,9 @@ public:
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
 	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t) { *(undermap+w*(y&hMask)+(x&wMask))=(Uint8)t; }
+	void setUMTerrain(int x, int y, TerrainType t) { undermap[((y&hMask)<<wDec)+(x&wMask)] = (Uint8)t; }
 	//! Return undermap terrain type at (x,y)
-	TerrainType getUMTerrain(int x, int y) { return (TerrainType)(*(undermap+w*(y&hMask)+(x&wMask))); }
+	TerrainType getUMTerrain(int x, int y) { return (TerrainType)undermap[((y&hMask)<<wDec)+(x&wMask)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
 
@@ -393,9 +400,9 @@ public:
 	
 	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{
-		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+		Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
 		assert(gradient);
-		return *(gradient+(x&wMask)+(y&hMask)*w);
+		return gradient[((y&hMask)<<wDec)+(x&wMask)];
 	}
 	
 	void updateGlobalGradientSmall(Uint8 *gradient);
