@@ -22,7 +22,7 @@
 
 // This is the version of map and savegame format.
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 20
+#define VERSION_MINOR 22
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -34,5 +34,6 @@
 // version 19 removed optimisation parameters
 // version 20 removed useless variable in Unit, used by old pathfinding. And added new Units-states.
 // version 21 added real support for ClearingFlags with the gradient system.
+// version 22 added MOV_RANDOM_FLY to suppoth exiting of forbidden flags.
 
 #endif

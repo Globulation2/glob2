@@ -411,13 +411,19 @@ protected:
 	int pathToBuildingCountCloseSuccessAround;
 	int pathToBuildingCountCloseSuccessUpdated;
 	int pathToBuildingCountCloseSuccessUpdatedAround;
-	int pathToBuildingCountCloseFailure;
+	int pathToBuildingCountCloseFailureLocked;
+	int pathToBuildingCountCloseFailureEnd;
 	
 	int pathToBuildingCountIsFar;
 	int pathToBuildingCountFar;
-	int pathToBuildingCountFarSuccess;
-	int pathToBuildingCountFarFailure;
-	int pathToBuildingCountFarSuccessFar;
+	int pathToBuildingCountFarOldSuccess;
+	int pathToBuildingCountFarOldFailureLocked;
+	int pathToBuildingCountFarOldFailureBad;
+	int pathToBuildingCountFarOldFailureUnusable;
+	int pathToBuildingCountFarUpdateSuccess;
+	int pathToBuildingCountFarUpdateSuccessFar;
+	int pathToBuildingCountFarUpdateFailureLocked;
+	int pathToBuildingCountFarUpdateFailureBad;
 	
 	int localBuildingGradientUpdate;
 	int localBuildingGradientUpdateLocked;

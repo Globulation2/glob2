@@ -2092,7 +2092,7 @@ void GameGUI::drawAll(int team)
 	else
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 	
-	static const bool useMapDiscovered=true;
+	static const bool useMapDiscovered=false;
 	bool drawBuildingRects=(typeToBuild>=0);
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{

@@ -62,7 +62,11 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	medical=MED_FREE;
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
-	movement=MOV_RANDOM;
+	if (performance[FLY])
+		movement=MOV_RANDOM_FLY;
+	else
+		movement=MOV_RANDOM_GROUND;
+		
 	targetX=0;
 	targetY=0;
 
@@ -361,6 +365,17 @@ void Unit::selectPreferedMovement(void)
 	if (performance[FLY])
 		action=FLY;
 	else if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
+		action=SWIM;
+	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
+		action=WALK;
+	else
+		assert(false);
+}
+
+void Unit::selectPreferedGroundMovement(void)
+{
+	assert(!performance[FLY]);
+	if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
 		action=SWIM;
 	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
 		action=WALK;
@@ -927,6 +942,7 @@ void Unit::handleMovement(void)
 	{
 		case DIS_REMOVING_BLACK_AROUND:
 		{
+			assert(performance[FLY]);
 			if (verbose)
 				printf("DIS_REMOVING_BLACK_AROUND\n");
 			if (attachedBuilding)
@@ -993,7 +1009,7 @@ void Unit::handleMovement(void)
 					}
 					else 
 					{
-						movement=MOV_RANDOM;
+						movement=MOV_RANDOM_FLY;
 					}
 				}
 				else
@@ -1015,9 +1031,8 @@ void Unit::handleMovement(void)
 				}
 			}
 
-			assert(performance[FLY]);
 			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_FLY;
 		}
 		break;
 
@@ -1031,7 +1046,7 @@ void Unit::handleMovement(void)
 			//else
 			//{
 				int quality=256; // Smaller is better.
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_GROUND;
 				if (verbose)
 					printf("%d selecting movement\n", gid);
 				
@@ -1141,16 +1156,21 @@ void Unit::handleMovement(void)
 				movement=MOV_GOING_DXDY;
 			}
 			else
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_GROUND;
 		}
 		break;
 
 		case DIS_RANDOM:
 		{
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
+			Map *map=owner->map;
+			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (map->doesUnitTouchEnemy(this, &dx, &dy)))
 				movement=MOV_ATTACKING_TARGET;
+			else if (performance[FLY])
+				movement=MOV_RANDOM_FLY;
+			else if (map->getForbidden(posX, posY)&owner->me)
+				movement=MOV_ESCAPING_FORBIDDEN;
 			else
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_GROUND;
 		}
 		break;
 
@@ -1177,7 +1197,7 @@ void Unit::handleMovement(void)
 				if (verbose)
 					printf("Unit gid=%d failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				stopAttachedForBuilding(true);
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_GROUND;
 			}
 		}
 		break;
@@ -1242,7 +1262,7 @@ void Unit::handleMovement(void)
 
 				if (stopWork)
 					stopAttachedForBuilding(false);
-				movement=MOV_RANDOM;
+				movement=MOV_RANDOM_GROUND;
 			}
 		}
 		break;
@@ -1271,32 +1291,55 @@ void Unit::handleAction(void)
 {
 	switch (movement)
 	{
-		case MOV_RANDOM:
+		case MOV_RANDOM_GROUND:
 		{
-			bool fly=performance[FLY];
-			if (fly)
-				owner->map->setAirUnit(posX, posY, NOGUID);
-			else
-				owner->map->setGroundUnit(posX, posY, NOGUID);
+			assert(!performance[FLY]);
+			owner->map->setGroundUnit(posX, posY, NOGUID);
 			dx=-1+syncRand()%3;
 			dy=-1+syncRand()%3;
 			directionFromDxDy();
-			setNewValidDirection();
+			setNewValidDirectionGround();
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
-			selectPreferedMovement();
+			selectPreferedGroundMovement();
 			speed=performance[action];
-			if (fly)
-				owner->map->setAirUnit(posX, posY, gid);
-			else
-			{
-				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-				owner->map->setGroundUnit(posX, posY, gid);
-			}
+			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
+			owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
-
+		
+		case MOV_RANDOM_FLY:
+		{
+			assert(performance[FLY]);
+			owner->map->setAirUnit(posX, posY, NOGUID);
+			dx=-1+syncRand()%3;
+			dy=-1+syncRand()%3;
+			directionFromDxDy();
+			setNewValidDirectionAir();
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
+			action=FLY;
+			speed=performance[FLY];
+			assert(owner->map->getAirUnit(posX, posY)==NOGUID);
+			owner->map->setAirUnit(posX, posY, gid);
+			break;
+		}
+		
 		case MOV_GOING_TARGET:
+		{
+			assert(!performance[FLY]);
+			owner->map->setGroundUnit(posX, posY, NOGUID);
+			gotoGroundTarget();
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
+			selectPreferedGroundMovement();
+			speed=performance[action];
+			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
+			owner->map->setGroundUnit(posX, posY, gid);
+			break;
+		}
+		
+		/*case MOV_GOING_TARGET:
 		{
 			bool fly=performance[FLY];
 			if (fly)
@@ -1320,13 +1363,13 @@ void Unit::handleAction(void)
 				owner->map->setGroundUnit(posX, posY, gid);
 			}
 			break;
-		}
+		}*/
 		
 		case MOV_FLYING_TARGET:
 		{
 			owner->map->setAirUnit(posX, posY, NOGUID);
 			
-			gotoTarget();
+			flytoTarget();
 			
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
@@ -1335,6 +1378,20 @@ void Unit::handleAction(void)
 			speed=performance[FLY];
 
 			owner->map->setAirUnit(posX, posY, gid);
+			break;
+		}
+		
+		case MOV_ESCAPING_FORBIDDEN:
+		{
+			assert(!performance[FLY]);
+			owner->map->setGroundUnit(posX, posY, NOGUID);
+			escapeGroundTarget();
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
+			selectPreferedGroundMovement();
+			speed=performance[action];
+			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
+			owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
 
@@ -1432,39 +1489,39 @@ void Unit::handleAction(void)
 	}
 }
 
-void Unit::setNewValidDirection(void)
+void Unit::setNewValidDirectionGround(void)
 {
-	if (performance[FLY])
+	assert(!performance[FLY]);
+	int i=0;
+	bool swim=performance[SWIM];
+	Uint32 me=owner->me;
+	while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
 	{
-		int i=0;
-		while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
-		{
-			direction=(direction+1)&7;
-			dxdyfromDirection();
-			i++;
-		}
-		if (i==8)
-		{
-			direction=8;
-			dxdyfromDirection();
-		}
+		direction=(direction+1)&7;
+		dxdyfromDirection();
+		i++;
 	}
-	else
+	if (i==8)
 	{
-		int i=0;
-		bool swim=performance[SWIM];
-		Uint32 me=owner->me;
-		while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
-		{
-			direction=(direction+1)&7;
-			dxdyfromDirection();
-			i++;
-		}
-		if (i==8)
-		{
-			direction=8;
-			dxdyfromDirection();
-		}
+		direction=8;
+		dxdyfromDirection();
+	}
+}
+
+void Unit::setNewValidDirectionAir(void)
+{
+	assert(performance[FLY]);
+	int i=0;
+	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	{
+		direction=(direction+1)&7;
+		dxdyfromDirection();
+		i++;
+	}
+	if (i==8)
+	{
+		direction=8;
+		dxdyfromDirection();
 	}
 }
 
@@ -1560,7 +1617,56 @@ void Unit::flytoTarget()
 		printf("0x%lX: flyto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
 }
 
-void Unit::gotoTarget()
+void Unit::closestGroundValidDxDy()
+{
+	int cDirection=direction;
+		
+	if (valid(posX+dx, posY+dy))
+		return;
+		
+	direction=(cDirection+1)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+		
+	direction=(cDirection+7)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	
+	direction=(cDirection+2)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+		
+	direction=(cDirection+6)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	
+	direction=(cDirection+3)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+		
+	direction=(cDirection+5)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	
+	direction=(cDirection+4)&7;
+	dxdyfromDirection();
+	if (owner->map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+		return;
+	
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
+}
+
+void Unit::gotoGroundTarget()
 {
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
@@ -1572,51 +1678,22 @@ void Unit::gotoTarget()
 	if (verbose)
 		printf("gotoTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
 	
-	int cDirection=direction;
-		
-	if (valid(posX+dx, posY+dy))
-		return;
-		
-	direction=(cDirection+1)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
-		
-	direction=(cDirection+7)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
+	closestGroundValidDxDy();
+}
+
+void Unit::escapeGroundTarget()
+{
+	int ldx=posX-targetX;
+	int ldy=posY-targetY;
 	
-	direction=(cDirection+2)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
-		
-	direction=(cDirection+6)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
+	simplifyDirection(ldx, ldy, &dx, &dy);
+
+	directionFromDxDy();
 	
-	direction=(cDirection+3)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
-		
-	direction=(cDirection+5)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
-	
-	direction=(cDirection+4)&7;
-	dxdyfromDirection();
-	if (valid(posX+dx, posY+dy))
-		return;
-	
-	dx=0;
-	dy=0;
-	direction=8;
 	if (verbose)
-		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
+		printf("escapeTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
+	
+	closestGroundValidDxDy();
 }
 
 void Unit::endOfAction(void)
