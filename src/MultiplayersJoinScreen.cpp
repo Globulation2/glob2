@@ -49,16 +49,16 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	playerText=new Text(20, 245, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[player name]"));
 	addWidget(playerText);
 
-	aviableGamesText=new Text(340, 55, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[aviable lan games]"));
+	aviableGamesText=new Text(340, 55, ALIGN_SCREEN_CENTERED, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[aviable lan games]"));
 	addWidget(aviableGamesText);
 
 	statusText=new Text(20, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidget(statusText);
 
-	addWidget(new TextButton( 20, 420, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
-	addWidget(new TextButton(280, 420, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
+	addWidget(new TextButton( 20, 20, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
+	addWidget(new TextButton(280, 20, 340, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
 
-	lanServers=new List(340, 80, 280, 280, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
+	lanServers=new List(340, 80, 280, 100, ALIGN_SCREEN_CENTERED, ALIGN_FILL, "standard");
 	addWidget(lanServers);
 	
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join a game]")));
