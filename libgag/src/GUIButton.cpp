@@ -58,7 +58,7 @@ void Button::onSDLEvent(SDL_Event *event)
 			}
 		}
 	}
-	else if (event->type==SDL_KEYDOWN)
+	else if (event->type==SDL_KEYUP)
 	{
 		Uint16 typedUnicode=event->key.keysym.unicode;
 		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
