@@ -128,15 +128,19 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		downloadStream=NULL;
 		filename=NULL;
 	}
+	for (int i=0; i<PACKET_SLOTS; i++)
+	{
+		packetSlot[i].index=0;
+		packetSlot[i].received=false;
+		packetSlot[i].brandwidth=0;
+	}
 	unreceivedIndex=0;
 	endOfFileIndex=0xFFFFFFFF;
-	for (int i=0; i<NET_WINDOW_SIZE; i++)
-	{
-		netWindow[i].index=0;
-		netWindow[i].received=false;
-		netWindow[i].packetSize=0; //set 512 in release
-	}
+	totalReceived=0;
+	duplicatePacketFile=0;
 	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
+	brandwidth=0;
+	receivedCounter=0;
 	
 	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
 	assert(logFile);
@@ -272,16 +276,21 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 				SDL_RWclose(downloadStream);
 				downloadStream=NULL;
 			}
+			for (int i=0; i<PACKET_SLOTS; i++)
+			{
+				packetSlot[i].index=0;
+				packetSlot[i].received=false;
+				packetSlot[i].brandwidth=0;
+			}
 			unreceivedIndex=0;
 			endOfFileIndex=0xFFFFFFFF;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-			{
-				netWindow[i].index=0;
-				netWindow[i].received=false;
-				netWindow[i].packetSize=0; //set 512 in release
-			}
-			
+			totalReceived=0;
+			duplicatePacketFile=0;
+			brandwidth=1;
+			receivedCounter=0;
 			downloadStream=globalContainer->fileManager->open(filename,"wb");
+			
+			fprintf(logFile, "downloadStream=%p\n", downloadStream);
 		}
 	}
 	
@@ -291,90 +300,82 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 
 void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 {
-	if (downloadStream==NULL)
+	if (data[1]==1)
 	{
-		fprintf(logFile, " no more data file wanted.\n");
-		fprintf(logFile, "endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
-		fprintf(logFileDownload, " no more data file wanted.\n");
-		fprintf(logFileDownload, "endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
-		
-		if (endOfFileIndex)
+		if (size!=8)
 		{
-			char data[72];
-			memset(data, 0, 72);
-
-			data[0]=NEW_PLAYER_WANTS_FILE;
-			data[1]=0;
-			data[2]=0;
-			data[3]=0;
-
-			addUint32(data, 0xFFFFFFFF, 4);
-			//for (int ri=0; ri<16; ri++)
-			//	addUint32(data, firstReceived[ri], 8+ri*4);
-
-			send(data, 72);
-		}
-		return;
-	}
-	int windowIndex=(int)getSint32(data, 4);
-	Uint32 writingIndex=getUint32(data, 8);
-	int writingSize=size-12;
-	fprintf(logFileDownload, " received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
-	
-	if (writingSize==0)
-	{
-		if (windowIndex==-1)
-		{
-			endOfFileIndex=writingIndex;
-			fprintf(logFileDownload, "1 end of the file is %d.\n", endOfFileIndex);
+			fprintf(logFile, "Warning! bad dataFileRecieved packet size (%d) from (%s)!\n", size, Utilities::stringIP(ip));
+			fprintf(logFileDownload, "Warning! bad dataFileRecieved packet size (%d) from (%s)!\n", size, Utilities::stringIP(ip));
 		}
 		else
-			fprintf(logFileDownload, "e1 we received an bad windowIndex in data file !!!.\n");
+		{
+			endOfFileIndex=getUint32(data, 4);
+			fprintf(logFileDownload, " received endOfFileIndex=%d\n", endOfFileIndex);
+		}
 		return;
 	}
-	else if (windowIndex==-1 && writingSize!=0)
+	if (downloadStream==NULL)
 	{
-		fprintf(logFileDownload, "e2 we received an bad windowIndex in data file !!!.\n");
-		return;
-	}
-	else if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
-	{
-		fprintf(logFileDownload, "e3 we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFile, " no more data file wanted. endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
+		fprintf(logFileDownload, " no more data file wanted. endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
+		
+		char data[8];
+		memset(data, 0, 8);
+		data[0]=NEW_PLAYER_WANTS_FILE;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		addUint32(data, endOfFileIndex, 4);
+		send(data, 8);
 		return;
 	}
 	
+	if (size<=12)
+	{
+		fprintf(logFile, "Warning! bad dataFileRecieved packet size (%d) from (%s)!\n", size, Utilities::stringIP(ip));
+		fprintf(logFileDownload, "Warning! bad dataFileRecieved packet size (%d) from (%s)!\n", size, Utilities::stringIP(ip));
+	}
+	int brandwidth=getSint32(data, 4);
+	if (this->brandwidth>brandwidth)
+		this->brandwidth=brandwidth;
+	Uint32 writingIndex=getUint32(data, 8);
+	int writingSize=size-12;
 	assert(writingSize>0);
-	if (netWindow[windowIndex].received && netWindow[windowIndex].index==writingIndex && netWindow[windowIndex].packetSize==writingSize)
-	{
-		duplicatePacketFile++;
-		fprintf(logFileDownload, "duplicated \n");
-	}
-	else if (startDownloadTimeout>2)
-		startDownloadTimeout=2;
-
-	SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
-	SDL_RWwrite(downloadStream, data+12, writingSize, 1);
-
-	netWindow[windowIndex].index=writingIndex;
-	netWindow[windowIndex].received=true;
-	netWindow[windowIndex].packetSize=writingSize;
-
-	fprintf(logFileDownload, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
+	fprintf(logFileDownload, " received data. size=%d, writingIndex=%d, writingSize=%d\n", size, writingIndex, writingSize);
+	totalReceived++;
 	
+	Uint32 minIndex=(Uint32)-1;
+	int mini=-1;
+	for (int i=0; i<PACKET_SLOTS; i++)
+		if (packetSlot[i].index<minIndex)
+		{
+			minIndex=packetSlot[i].index;
+			mini=i;
+			if (minIndex==0)
+				break;
+		}
+	assert(mini!=-1);
+	assert(mini<PACKET_SLOTS);
+	
+	if (minIndex==writingIndex)
+		duplicatePacketFile++;
+	packetSlot[mini].received=true;
+	packetSlot[mini].index=writingIndex;
+	packetSlot[mini].brandwidth=brandwidth;
+	receivedCounter++;
 	
 	bool hit=true;
 	bool anyHit=false;
 	while (hit)
 	{
 		hit=false;
-		for (int i=0; i<NET_WINDOW_SIZE; i++)
-			if (netWindow[i].received)
+		for (int i=0; i<PACKET_SLOTS; i++)
+			if (packetSlot[i].received)
 			{
-				Uint32 index=netWindow[i].index;
-				Uint32 packetSize=netWindow[i].packetSize;
+				Uint32 index=packetSlot[i].index;
 				if (unreceivedIndex==index)
 				{
-					unreceivedIndex=index+packetSize;
+					unreceivedIndex=index+1024;
 					hit=true;
 					anyHit=true;
 				}
@@ -383,7 +384,13 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	if (anyHit)
 		fprintf(logFileDownload, "new unreceivedIndex=%d.\n", unreceivedIndex);
 	
-	if (endOfFileIndex==unreceivedIndex)
+	SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
+	SDL_RWwrite(downloadStream, data+12, writingSize, 1);
+	
+	if (startDownloadTimeout>16)
+		startDownloadTimeout=16;
+	
+	if (unreceivedIndex>=endOfFileIndex)
 	{
 		if (duplicatePacketFile)
 			fprintf(logFileDownload, " duplicatePacketFile=%d\n", duplicatePacketFile);
@@ -391,6 +398,16 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		fprintf(logFileDownload, "download's file closed\n");
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
+		
+		// We have to tell the server that we finished correctly the download:
+		char data[8];
+		memset(data, 0, 8);
+		data[0]=NEW_PLAYER_WANTS_FILE;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		addUint32(data, endOfFileIndex, 4);
+		send(data, 8);
 	}
 	
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
@@ -1052,53 +1069,99 @@ void MultiplayersJoin::sendingTime()
 		}
 	}
 	
-	if ( (waitingState!=WS_TYPING_SERVER_NAME) && downloadStream && (startDownloadTimeout--<0) )
+	if ((waitingState!=WS_TYPING_SERVER_NAME) && downloadStream)
 	{
-		Uint32 firstReceived[16];
-
-		for (int j=0; j<16; j++)
+		startDownloadTimeout--;
+		if (startDownloadTimeout<0 || receivedCounter>=brandwidth)
 		{
-			firstReceived[j]=0xFFFFFFFF;
-			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (netWindow[i].received)
-				{
-					Uint32 index=netWindow[i].index;
-					if (index<firstReceived[j])
+			//Then we have to send a feed-back.
+			fprintf(logFileDownload, "startDownloadTimeout=%d, receivedCounter=%d, brandwidth=%d\n", startDownloadTimeout, receivedCounter, brandwidth);
+			
+			//We have to compute the unfragmented segments:
+			Uint32 receivedBegin[8];
+			Uint32 receivedEnd[8];
+			memset(receivedBegin, 0, 8*sizeof(Uint32));
+			memset(receivedEnd, 0, 8*sizeof(Uint32));
+			Uint32 localUnreceivedIndex=unreceivedIndex;
+			int ixend=0;
+			for (int ix=0; ix<8; ix++)
+			{
+				Uint32 minIndex=(Uint32)-1;
+				int mini=-1;
+				for (int i=0; i<PACKET_SLOTS; i++)
+					if (packetSlot[i].received)
 					{
-						if (j)
+						Uint32 index=packetSlot[i].index;
+						if (index>localUnreceivedIndex && index<minIndex)
 						{
-							if (index>firstReceived[j-1])
-								firstReceived[j]=index;
+							minIndex=index;
+							mini=i;
 						}
-						else if (index>unreceivedIndex)
-							firstReceived[j]=index;
+					}
+				if (mini==-1)
+				{
+					// No more fragmentation!
+					break;
+				}
+				else
+				{
+					receivedBegin[ix]=minIndex;
+					bool hit=true;
+					while(hit)
+					{
+						hit=false;
+						for (int i=0; i<PACKET_SLOTS; i++)
+							if (packetSlot[i].received && packetSlot[i].index==minIndex)
+							{
+								minIndex+=1024;
+								hit=true;
+							}
+					}
+					receivedEnd[ix]=minIndex;
+					ixend=ix;
+				}
+			}
+			
+			// Let's create the packet:
+			int size=8+8*ixend;
+			char data[size];
+			memset(data, 0, size);
+			data[0]=NEW_PLAYER_WANTS_FILE;
+			data[1]=(endOfFileIndex==0xFFFFFFFF);
+			data[2]=0;
+			data[3]=0;
+			addUint32(data, unreceivedIndex, 4);
+			fprintf(logFileDownload, "ixend=%d\n", ixend);
+			fprintf(logFileDownload, "received=(");
+			for (int ix=0; ix<ixend; ix++)
+			{
+				addUint32(data, receivedBegin[ix], 8+ix*8);
+				addUint32(data, receivedEnd[ix], 8+ix*8);
+				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix], receivedEnd[ix]);
+			}
+			fprintf(logFileDownload, ")\n");
+			bool success=send(data, size);
+			assert(success);
+			
+			receivedCounter-=brandwidth;
+			
+			// We compute the new brandwidth, which is the most recent brandwidth:
+			int maxi=-1;
+			Uint32 maxIndex=0;
+			for (int i=0; i<PACKET_SLOTS; i++)
+				if (packetSlot[i].received)
+				{
+					Uint32 index=packetSlot[i].index;
+					if (index>maxIndex)
+					{
+						maxIndex=index;
+						maxi=i;
 					}
 				}
+			if (maxi!=-1)
+				brandwidth=packetSlot[maxi].brandwidth;
+			startDownloadTimeout=16;
 		}
-		char data[72];
-		memset(data, 0, 72);
-		
-		data[0]=NEW_PLAYER_WANTS_FILE;
-		data[1]=0;
-		data[2]=0;
-		data[3]=0;
-		
-		addUint32(data, unreceivedIndex, 4);
-		for (int ri=0; ri<16; ri++)
-			addUint32(data, firstReceived[ri], 8+ri*4);
-		
-		send(data, 72);
-		fprintf(logFileDownload, "sending download request\n");
-		fprintf(logFileDownload, "unreceivedIndex=%d\n", unreceivedIndex);
-		fprintf(logFileDownload, "receivedIndex=(");
-		for (int ix=0; ix<16; ix++)
-		{
-			firstReceived[ix]=getUint32(data, 8+ix*4);
-			fprintf(logFileDownload, "%d, ", firstReceived[ix]);
-		}
-		fprintf(logFileDownload, ").\n");
-		
-		startDownloadTimeout=DEFAULT_NETWORK_TIMEOUT;
 	}
 
 	if ((waitingState!=WS_TYPING_SERVER_NAME)&&(--waitingTimeout<0))

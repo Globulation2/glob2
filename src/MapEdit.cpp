@@ -716,9 +716,8 @@ void MapEdit::loadSave(bool isLoad)
 		}
 		else
 		{
-			// TODO : we need to know if save is success
-			save(loadSaveScreen->fileName);
-			hasMapBeenModiffied=false;
+			if (save(loadSaveScreen->fileName))
+				hasMapBeenModiffied=false;
 		}
 	}
 
@@ -767,26 +766,31 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 			loadSave(false);
 		else if (mx<96)
 			editMode=EM_DELETE;
-		else
+		else 
 		{
-			// TODO : once we are sure the following is false only if the map is correctly saved, we can test on it
-			// hasMapBeenModiffied
-		
-			const char *reallyquit = globalContainer->texts.getString("[really quit ?]");
-			const char *yes = globalContainer->texts.getString("[Yes]");
-			const char *no = globalContainer->texts.getString("[No]");
-			const char *save = globalContainer->texts.getString("[Save]");
-			int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
+			if (hasMapBeenModiffied)
+			{
+				const char *reallyquit = globalContainer->texts.getString("[really quit without saving?]");
+				const char *yes = globalContainer->texts.getString("[Yes]");
+				const char *no = globalContainer->texts.getString("[No]");
+				const char *save = globalContainer->texts.getString("[Save]");
+				int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
 
-			// save if needed
-			if (res==2)
-				loadSave(false);
-
-			// if yes or save is clicked, quit
-			if (res!=1)
-				isRunning=false;
+				if (res==0) // yes, do quit
+					isRunning=false;
+				else if (res==1) // no, don't quit
+					draw();
+				else if (res==2) // save if needed 
+				{
+					loadSave(false);
+					if (!hasMapBeenModiffied)
+						isRunning=false;
+				}
+				else
+					assert(false);
+			}
 			else
-				draw();
+				isRunning=false;
 		}
 	}
 	else if ((my>173) && (my<205))
@@ -941,14 +945,17 @@ bool MapEdit::load(const char *name)
 	return rv;
 }
 
-void MapEdit::save(const char *name)
+bool MapEdit::save(const char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
 	if (stream)
 	{
 		game.save(stream, true, name);
 		SDL_RWclose(stream);
+		return true;
 	}
+	else
+		return false;
 }
 
 
