@@ -680,10 +680,6 @@ void Building::subscribeForWorkingStep()
 	
 	if (lastWorkingSubscribe>32)
 	{
-		printf("(%d) Building::subscribeForWorkingStep(). s=%d\n", UID, unitsWorkingSubscribe.size());
-		
-		
-		
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();

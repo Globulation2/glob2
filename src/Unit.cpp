@@ -408,11 +408,10 @@ void Unit::handleActivity(void)
 						destinationPurprose=(int)CORN;
 						newTargetWasSet();
 
-						//printf("Going to harvest for filling building\n");
+						if (verbose)
+							printf("(%d)Going to harvest for filling building\n", UID);
 
 						attachedBuilding=b;
-						b->unitsWorking.push_front(this);
-						b->update();
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
