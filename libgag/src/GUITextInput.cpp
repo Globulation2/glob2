@@ -19,7 +19,7 @@
 
 #include <GUITextInput.h>
 
-TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated)
+TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated, unsigned textLength)
 {
 	this->x=x;
 	this->y=y;
@@ -28,13 +28,16 @@ TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *t
 	
 	this->font=font;
 
+	this->text=new char[textLength];
+	this->textLength=textLength;
+
 	if (text)
-		strncpy(this->text, text, MAX_TEXT_SIZE);
+		strncpy(this->text, text, textLength);
 	else
 		this->text[0]=0;
-	
-	this->text[MAX_TEXT_SIZE-1]=0;
-	
+
+	this->text[textLength-1]=0;
+
 	cursPos=strlen(text);
 	textDep=0;
 	cursorScreenPos=0;
@@ -48,8 +51,8 @@ void TextInput::onTimer(Uint32 tick)
 
 void TextInput::setText(const char *newText)
 {
-	strncpy(this->text, newText, MAX_TEXT_SIZE);
-	this->text[MAX_TEXT_SIZE-1]=0;
+	strncpy(this->text, newText, textLength);
+	this->text[textLength-1]=0;
 	cursPos=0;
 	textDep=0;
 	cursorScreenPos=0;
@@ -67,14 +70,14 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				// we move cursor:
 				int dx=event->button.x-x-1;
-				
-				char textBeforeCurs[MAX_TEXT_SIZE];
-				strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
-				while(textBeforeCurs[cursPos]&&(cursPos<MAX_TEXT_SIZE))
+
+				char textBeforeCurs[textLength];
+				strncpy(textBeforeCurs, text, textLength);
+				while(textBeforeCurs[cursPos]&&(cursPos<textLength))
 					cursPos++;
 				while((font->getStringWidth(textBeforeCurs+textDep)>dx)&&(cursPos>0))
 					textBeforeCurs[--cursPos]=0;
-				
+
 				repaint();
 				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 			}
@@ -94,7 +97,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 
 		if (sym==SDLK_RIGHT)
 		{
-			int l=strlen(text);
+			unsigned l=strlen(text);
 			if (mod&KMOD_CTRL)
 			{
 				bool cont=true;
@@ -163,11 +166,11 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		{
 			if (cursPos>0)
 			{
-				int l=strlen(text);
+				unsigned l=strlen(text);
 				unsigned last=getPrevUTF8Char(text, cursPos);
-				
+
 				memmove( &(text[last]), &(text[cursPos]), l-cursPos+1);
-				
+
 				cursPos=last;
 
 				repaint();
@@ -177,11 +180,11 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		}
 		else if (sym==SDLK_DELETE)
 		{
-			int l=strlen(text);
+			unsigned l=strlen(text);
 			if (cursPos<l)
 			{
 				int utf8l=getNextUTF8Char(text[cursPos]);
-				
+
 				memmove( &(text[cursPos]), &(text[cursPos+utf8l]), l-cursPos-utf8l+1);
 
 				repaint();
@@ -215,9 +218,9 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				char utf8text[4];
 				UCS16toUTF8(c, utf8text);
-				int l=strlen(text);
-				int lutf8=strlen(utf8text);
-				if (l+lutf8<MAX_TEXT_SIZE-1)
+				unsigned l=strlen(text);
+				unsigned lutf8=strlen(utf8text);
+				if (l+lutf8<textLength-1)
 				{
 					memmove( &(text[cursPos+lutf8]), &(text[cursPos]), l+1-cursPos);
 
@@ -235,11 +238,11 @@ void TextInput::onSDLEvent(SDL_Event *event)
 
 void TextInput::recomputeTextInfos(void)
 {
-	char temp[MAX_TEXT_SIZE];
+	char temp[textLength];
 	
 #define TEXTBOXSIDEPAD 30
 
-	int textLength=strlen(text);
+	unsigned textLength=strlen(text);
 	
 	// make sure we have always right space at left
 	if (cursPos<textDep)
@@ -283,8 +286,8 @@ void TextInput::paint(void)
 	// we draw the cursor:
 	if(activated)
 	{
-		char textBeforeCurs[MAX_TEXT_SIZE];
-		strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
+		char textBeforeCurs[textLength];
+		strncpy(textBeforeCurs, text, textLength);
 		textBeforeCurs[cursPos]=0;
 		//int wbc=font->getStringWidth(textBeforeCurs);
 		int hbc=font->getStringHeight(textBeforeCurs);
