@@ -55,7 +55,7 @@ MapEdit::MapEdit()
 	menu=globalContainer->gfx->loadSprite("data/gui/editor");
 	// TODO FIXME here:
 	font=globalContainer->littleFont; //globalContainer->gfx->loadFont("data/fonts/arial8black.png");
-	
+
 	// static-like variables:
 	savedMx=0;
 	savedMy=0;
@@ -117,10 +117,20 @@ void MapEdit::drawMenu(void)
 	globalContainer->gfx->drawSprite(menuStartW+32, 173, menu, 6);
 	globalContainer->gfx->drawSprite(menuStartW+64, 173, menu, 7);
 	globalContainer->gfx->drawSprite(menuStartW+96, 173, menu, 8);
-	globalContainer->gfx->drawSprite(menuStartW+0, 205, menu, 9);
+	// ressources
+	globalContainer->gfx->drawFilledRect(menuStartW+0, 205, 128, 32, 0, 0, 0);
+	for (int i=0; i<5; i++)
+	{
+		globalContainer->gfx->setClipRect(menuStartW+2+i*25, 206, 24, 30);
+		globalContainer->gfx->drawSprite(menuStartW+2+i*25, 205, globalContainer->ressources, i*10);
+	}
+	globalContainer->gfx->setClipRect();
+
+	/*globalContainer->gfx->drawSprite(menuStartW+0, 205, menu, 9);
 	globalContainer->gfx->drawSprite(menuStartW+32, 205, menu, 10);
 	globalContainer->gfx->drawSprite(menuStartW+64, 205, menu, 11);
-	globalContainer->gfx->drawSprite(menuStartW+96, 205, menu, 12);
+	globalContainer->gfx->drawSprite(menuStartW+96, 205, menu, 12);*/
+
 	globalContainer->gfx->drawSprite(menuStartW+0, 237, menu, 13);
 	globalContainer->gfx->drawSprite(menuStartW+32, 237, menu, 14);
 	globalContainer->gfx->drawSprite(menuStartW+64, 237, menu, 15);
@@ -183,7 +193,7 @@ void MapEdit::drawMenu(void)
 	if (editMode==EM_TERRAIN)
 		drawSelRect(menuStartW+(type*32), 173, 32, 32);
 	else if (editMode==EM_RESSOURCE)
-		drawSelRect(menuStartW+(type*32), 205, 32, 32);
+		drawSelRect(menuStartW+(type*25)+2, 205, 25, 32);
 	else if (editMode==EM_UNIT)
 		drawSelRect(menuStartW+(type*32), 275, 32, 32);
 	else if (editMode==EM_BUILDING)
@@ -814,7 +824,11 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	else if ((my>205) && (my<237))
 	{
 		editMode=EM_RESSOURCE;
-		type=mx/32;
+		type=(mx-2)/25;
+		if (type<0)
+			type=0;
+		else if (type>4)
+			type=4;
 	}
 	else if ((my>237) && (my<269))
 	{
