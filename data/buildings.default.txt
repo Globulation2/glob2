@@ -23,6 +23,7 @@ type null
 
 gameSprite data/gfx/building
 gameSpriteImage 0
+gameSpriteCount 1
 miniSprite data/gfx/buildingmini
 miniSpriteImage 0
 
