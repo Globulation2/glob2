@@ -4,6 +4,10 @@ To First release :
 - Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 - Implémenter AICastor
 
+Wishlists:
+http://ysagoon.com/phpBB2/viewtopic.php?t=42&sid=755083a5e3af8f0caf75558feb7e0e15
+http://ysagoon.com/phpBB2/viewtopic.php?t=45&sid=755083a5e3af8f0caf75558feb7e0e15
+
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
 
