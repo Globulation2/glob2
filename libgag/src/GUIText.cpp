@@ -77,14 +77,19 @@ void Text::setText(const char *newText, ...)
 	output[1023]=0;
 
 	if (!keepW)
-		w=fontPtr->getStringWidth(output);
+		w=MAX(w, fontPtr->getStringWidth(output));
 	if (!keepH)
-		h=fontPtr->getStringHeight(output);
+		h=MAX(h, fontPtr->getStringHeight(output));
 
 	// copy text
 	this->text = output;
 
 	repaint();
+
+	if (!keepW)
+		w=fontPtr->getStringWidth(output);
+	if (!keepH)
+		h=fontPtr->getStringHeight(output);
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
