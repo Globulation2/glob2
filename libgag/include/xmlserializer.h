@@ -115,22 +115,37 @@ namespace base
 			reader=r;
 		}
 
-		virtual void readInt8(Int8& item)     { const char *s=reader->read(); Int32 t; sscanf(s,"%d",&t); item=(Int8)t; }
-		virtual void readUInt8(UInt8& item)   { const char *s=reader->read(); UInt32 t; sscanf(s,"%u",&t); item=(UInt8)t; }
-		virtual void readInt16(Int16& item)   { const char *s=reader->read(); Int32 t; sscanf(s,"%d",&t); item=(Int16)t; }
-		virtual void readUInt16(UInt16& item) { const char *s=reader->read(); UInt32 t; sscanf(s,"%u",&t); item=(UInt16)t; }
-		virtual void readInt32(Int32& item)   { const char *s=reader->read(); Int32 t; sscanf(s,"%d",&t); item=(Int32)t; }
-		virtual void readUInt32(UInt32& item) { const char *s=reader->read(); UInt32 t; sscanf(s,"%u",&t); item=(UInt32)t; }
-		virtual void readInt64(Int64& item)   { const char *s=reader->read(); Int64 t; sscanf(s,I64F,&t); item=(Int64)t; }
-		virtual void readUInt64(UInt64& item) { const char *s=reader->read(); UInt64 t; sscanf(s,U64F,&t); item=(UInt64)t; }
-		virtual void readFloat(Float& item)   { const char *s=reader->read(); Float t; sscanf(s,"%f",&t); item=(Float)t; }
-		virtual void readDouble(Double& item) { const char *s=reader->read(); Double t; sscanf(s,"%lf",&t); item=(Double)t; }
-		virtual void readBool(Bool& item) { const char *s=reader->read(); item=!strcmp(s,"true"); }
-		virtual void readString(std::string& item) { const char *s=reader->read(); item=s; }
+		virtual void readInt8(Int8& item)     { const char *s=reader->read();
+			if(s) { Int32 t; sscanf(s,"%d",&t); item=(Int8)t; } }
+		virtual void readUInt8(UInt8& item)   { const char *s=reader->read();
+			if(s) { UInt32 t; sscanf(s,"%u",&t); item=(UInt8)t; } }
+		virtual void readInt16(Int16& item)   { const char *s=reader->read();
+			if(s) { Int32 t; sscanf(s,"%d",&t); item=(Int16)t; } }
+		virtual void readUInt16(UInt16& item) { const char *s=reader->read();
+			if(s) { UInt32 t; sscanf(s,"%u",&t); item=(UInt16)t; } }
+		virtual void readInt32(Int32& item)   { const char *s=reader->read();
+			if(s) { Int32 t; sscanf(s,"%d",&t); item=(Int32)t; } }
+		virtual void readUInt32(UInt32& item) { const char *s=reader->read();
+			if(s) { UInt32 t; sscanf(s,"%u",&t); item=(UInt32)t; } }
+		virtual void readInt64(Int64& item)   { const char *s=reader->read();
+			if(s) { Int64 t; sscanf(s,I64F,&t); item=(Int64)t; } }
+		virtual void readUInt64(UInt64& item) { const char *s=reader->read();
+			if(s) { UInt64 t; sscanf(s,U64F,&t); item=(UInt64)t; } }
+		virtual void readFloat(Float& item)   { const char *s=reader->read();
+			if(s) { Float t; sscanf(s,"%f",&t); item=(Float)t; } }
+		virtual void readDouble(Double& item) { const char *s=reader->read();
+			if(s) { Double t; sscanf(s,"%lf",&t); item=(Double)t; } }
+		virtual void readBool(Bool& item)     { const char *s=reader->read();
+			if(s) { item=!strcmp(s,"true"); } }
+		virtual void readString(std::string& item) { const char *s=reader->read();
+			if(s) { item=s; } }
 
-		virtual void readArray(void *data, const Size count, const Size size) 
-		{ 
+		virtual void readArray(void *data, const Size count, const Size size)
+		{
 			const char *s=reader->read();
+			if(s==NULL)
+				return;
+
 			char *t=(char*)malloc(strlen(s)+1);
 			strcpy(t,s);
 			UInt8 *d=(UInt8*)data;
@@ -139,15 +154,17 @@ namespace base
 			{
 				switch(size)
 				{
-				case 1: { UInt32 v; sscanf(c,"%u",&v); *(UInt8*)d=v; } break;
-				case 2: { UInt32 v; sscanf(c,"%u",&v); *(UInt16*)d=v; } break;
-				case 4: { UInt32 v; sscanf(c,"%u",&v); *(UInt32*)d=v; } break;
-				case 8: { UInt64 v; sscanf(c,U64F,&v); *(UInt64*)d=v; } break;
+					case 1: { UInt32 v; sscanf(c,"%u",&v); *(UInt8*)d=v; } break;
+					case 2: { UInt32 v; sscanf(c,"%u",&v); *(UInt16*)d=v; } break;
+					case 4: { UInt32 v; sscanf(c,"%u",&v); *(UInt32*)d=v; } break;
+					case 8: { UInt64 v; sscanf(c,U64F,&v); *(UInt64*)d=v; } break;
 				}
 				d+=size;
 				c=strtok(NULL,",");
 			}
+			free(t);
 		}
+
 		// For named serialization
 		virtual void enter(const char *name) { reader->enter(name); }
 		virtual void leave(const char *name) { reader->leave(name); }
