@@ -274,6 +274,8 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		multiplayersJoin->serverName[127]=0;
 		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
 		multiplayersJoin->playerName[127]=0;
+		strncpy(multiplayersJoin->gameName, "ilesAleatoires", 32);
+		multiplayersJoin->playerName[31]=0;
 		multiplayersJoin->tryConnection();
 	}
 }

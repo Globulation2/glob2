@@ -487,11 +487,12 @@ void MultiplayersJoin::receiveTime()
 		if (broadcastState==BS_ENABLE_YOG)
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 				if (strncmp(it->gameName, gameName, 32)==0)
-				{
-					serverIP.host=it->ip;
-					serverIP.port=SERVER_PORT;
-					printf("Found a local game with same name. Trying NAT.\n");
-				}
+					if (serverIP.host!=it->ip)
+					{
+						serverIP.host=SDL_SwapBE32(it->ip);
+						serverIP.port=SDL_SwapBE16(SERVER_PORT);
+						printf("Found a local game with same name. Trying NAT.\n");
+					}
 	}
 }
 
@@ -753,7 +754,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
-		NETPRINTF("succeded to send presence request packet\n");
+		printf("succeded to send presence request packet to host=(%x) port=(%d)\n", serverIP.host, serverIP.port);
 	}
 	else
 	{
