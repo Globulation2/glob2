@@ -30,6 +30,7 @@
 
 #include "BuildingType.h"
 #include "Game.h"
+#include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "Order.h"
@@ -1778,7 +1779,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	int mMax;
 	int szX, szY;
 	int decX, decY;
-	Utilities::globalCoordToLocalView(this, localTeam, viewportX, viewportY, &rx, &ry);
+	GameUtilities::globalCoordToLocalView(this, localTeam, viewportX, viewportY, &rx, &ry);
 	Utilities::computeMinimapData(100, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
 
 	// draw screen lines
@@ -1804,7 +1805,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 				virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
 		{
 			int fx, fy;
-			Utilities::globalCoordToLocalView(this, localTeam, (*virtualIt)->posXLocal, (*virtualIt)->posYLocal, &fx, &fy);
+			GameUtilities::globalCoordToLocalView(this, localTeam, (*virtualIt)->posXLocal, (*virtualIt)->posYLocal, &fx, &fy);
 			fx = ((fx*100)/mMax);
 			fy = ((fy*100)/mMax);
 

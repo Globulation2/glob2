@@ -36,24 +36,6 @@ Uint32 randa=0x8FD2B1A1;
 Uint32 randb=0XF7F513DE;
 Uint32 randc=0x13DA757F;
 
-/*
-average results
-Uint32 syncRand(void)
-{
-	randa+=0x13573DB1;
-	randb+=0x7B717315;
-
-	randc+=(randa&randb)^0x00000001;
-	randc=(randc<<1)|((randc>>29)&0x1);
-
-	//return (randc>>3)|((randa^randb)&0xE0000000);
-	//return randc;
-	
-	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
-	
-	return (randc>>1)|((randa^randb)&0x80000000);
-}*/
-
 void testRand()
 {
 	for (int m=1; m>0; m=m<<1)
@@ -362,23 +344,6 @@ namespace Utilities
 			*decX=(resolution-*sizeX)>>1;
 			*sizeY=resolution;
 			*decY=0;
-		}
-	}
-
-	void globalCoordToLocalView(const Game *game, int localTeam, int globalX, int globalY, int *localX, int *localY)
-	{
-		assert(game);
-		assert(localX);
-		assert(localY);
-		if (localTeam>=0)
-		{
-			*localX = (globalX - game->teams[localTeam]->startPosX + (game->map.getW()>>1)) & game->map.getMaskW();
-			*localY = (globalY - game->teams[localTeam]->startPosY + (game->map.getH()>>1)) & game->map.getMaskH();
-		}
-		else
-		{
-			*localX = globalX;
-			*localY = globalY;
 		}
 	}
 

@@ -75,9 +75,6 @@ namespace Utilities
 	*/
 	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY);
 
-	//! Transform world coordinate to user view coordinate, always in case units
-	void globalCoordToLocalView(const Game *game, int localTeam, int globalX, int globalY, int *localX, int *localY);
-
 	//! return the concatenation of string a and b, must be freed by delete[]
 	char *concat(const char *a, const char *b);
 	//! return the concatenation of string a, b and c, must be freed by delete[]
