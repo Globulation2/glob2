@@ -52,13 +52,13 @@
 
 FileManager::FileManager(const char *gameName)
 {
-	addDir(".");
 #ifndef WIN32
 	char gameLocal[256];
 	snprintf(gameLocal, sizeof(gameLocal), "%s/.%s", getenv("HOME"), gameName);
 	mkdir(gameLocal, S_IRWXU);
 	addDir(gameLocal);
 #endif
+	addDir(".");
 	addDir(PACKAGE_DATA_DIR);
 	addDir(PACKAGE_SOURCE_DIR);
 	fileListIndex=-1;
