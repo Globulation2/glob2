@@ -52,7 +52,8 @@ void AICastor::firstInit()
 	obstacleUnitMap=NULL;
 	obstacleBuildingMap=NULL;
 	spaceForBuildingMap=NULL;
-	foodBuildingNeighbourMap=NULL;
+	buildingNeighbourMap=NULL;
+	twoSpaceNeighbourMap=NULL;
 	
 	workPowerMap=NULL;
 	workRangeMap=NULL;
@@ -114,9 +115,13 @@ void AICastor::init(Player *player)
 		delete[] spaceForBuildingMap;
 	spaceForBuildingMap=new Uint8[size];
 	
-	if (foodBuildingNeighbourMap!=NULL)
-		delete[] foodBuildingNeighbourMap;
-	foodBuildingNeighbourMap=new Uint8[size];
+	if (buildingNeighbourMap!=NULL)
+		delete[] buildingNeighbourMap;
+	buildingNeighbourMap=new Uint8[size];
+	
+	if (twoSpaceNeighbourMap!=NULL)
+		delete[] twoSpaceNeighbourMap;
+	twoSpaceNeighbourMap=new Uint8[size];
 	
 	
 	if (workPowerMap!=NULL)
@@ -162,10 +167,13 @@ AICastor::~AICastor()
 	if (spaceForBuildingMap!=NULL)
 		delete[] spaceForBuildingMap;
 	
-	if (foodBuildingNeighbourMap!=NULL)
-		delete[] foodBuildingNeighbourMap;
+	if (buildingNeighbourMap!=NULL)
+		delete[] buildingNeighbourMap;
 	
-		
+	if (twoSpaceNeighbourMap!=NULL)
+		delete[] twoSpaceNeighbourMap;
+	
+	
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
 	
@@ -226,7 +234,8 @@ Order *AICastor::getOrder(void)
 	computeObstacleUnitMap();
 	computeObstacleBuildingMap();
 	computeSpaceForBuildingMap();
-	computeFoodBuildingNeighbourMap();
+	computeBuildingNeighbourMap();
+	computeTwoSpaceNeighbourMap();
 	
 	computeWorkPowerMap();
 	computeWorkRangeMap();
@@ -371,7 +380,7 @@ void AICastor::computeSpaceForBuildingMap()
 	}
 }
 
-void AICastor::computeFoodBuildingNeighbourMap()
+void AICastor::computeBuildingNeighbourMap()
 {
 	int w=map->w;
 	int h=map->h;
@@ -380,9 +389,10 @@ void AICastor::computeFoodBuildingNeighbourMap()
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
-	Uint8 *gradient=foodBuildingNeighbourMap;
+	Uint8 *gradient=buildingNeighbourMap;
 	Case *cases=map->cases;
 	
+	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(gradient, 0, size);
 	
 	Building **myBuildings=team->myBuildings;
@@ -397,42 +407,70 @@ void AICastor::computeFoodBuildingNeighbourMap()
 			int bh=b->type->height;
 			
 			// we skip building with already a neighbour:
-			int neighbour=0;
+			bool neighbour=false;
+			bool wheat=false;
 			for (int xi=bx-1; xi<=bx+bw; xi++)
 			{
-				if (cases[(xi&wMask)+(((by-1 )&hMask)<<wDec)].building!=NOGBID)
-				{
-					neighbour=1;
-					goto neighbourComputed;
-				}
-				if (cases[(xi&wMask)+(((by+bh)&hMask)<<wDec)].building!=NOGBID)
-				{
-					neighbour=1;
-					goto neighbourComputed;
-				}
+				int index;
+				index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
+				if (cases[index].building!=NOGBID)
+					neighbour=true;
+				if (wheatGradient[index]==255)
+					wheat=true;
+				index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
+				if (cases[index].building!=NOGBID)
+					neighbour=true;
+				if (wheatGradient[index]==255)
+					wheat=true;
 			}
-			for (int yi=by-1; yi<=by+bh; yi++)
-			{
-				if (cases[((bx-1 )&wMask)+((yi&hMask)<<wDec)].building!=NOGBID)
+			if (!neighbour)
+				for (int yi=by-1; yi<=by+bh; yi++)
 				{
-					neighbour=1;
-					goto neighbourComputed;
+					int index;
+					index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
+					if (cases[index].building!=NOGBID)
+						neighbour=true;
+					if (wheatGradient[index]==255)
+						wheat=true;
+					index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
+					if (cases[index].building!=NOGBID)
+						neighbour=true;
+					if (wheatGradient[index]==255)
+						wheat=true;
 				}
-				if (cases[((bx+bw)&wMask)+((yi&hMask)<<wDec)].building!=NOGBID)
-				{
-					neighbour=1;
-					goto neighbourComputed;
-				}
-			}
 			
-			neighbourComputed:
+			Uint8 dirty;
+			if (neighbour || !wheat)
+				dirty=1;
+			else
+				dirty=0;
+			
+			// dirty two case range, without corners;
 			for (int xi=bx-2; xi<=bx+bw; xi++)
 			{
 				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by   -3)&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			for (int yi=by-2; yi<=by+bh; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx   -3)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			
+			// sum from bit 1 for range 3, which are good places, without corners:
+			for (int xi=bx-1; xi<bx+bw; xi++)
+			{
+				Uint8 *p;
 				p=&gradient[(xi&wMask)+(((by-2 )&hMask)<<wDec)];
-				*p=(*p+2)|neighbour;
+				*p=(*p+2)|dirty;
 				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
-				*p=(*p+2)|neighbour;
+				*p=(*p+2)|dirty;
 			}
 			
 			for (int yi=by-1; yi<by+bh; yi++)
@@ -441,11 +479,93 @@ void AICastor::computeFoodBuildingNeighbourMap()
 				p=&gradient[((bx-2 )&wMask)+((yi&hMask)<<wDec)];
 				*p=(*p+2)|neighbour;
 				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
-				*p=(*p+2)|neighbour;
+				*p=(*p+2)|dirty;
 			}
 		}
 	}
 }
+
+void AICastor::computeTwoSpaceNeighbourMap()
+{
+	int w=map->w;
+	int h=map->h;
+	int wMask=map->wMask;
+	int hMask=map->hMask;
+	//int hDec=map->hDec;
+	int wDec=map->wDec;
+	size_t size=w*h;
+	Uint8 *gradient=twoSpaceNeighbourMap;
+	
+	memset(gradient, 0, size);
+	
+	Building **myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if (b)
+		{
+			int bx=b->posX;
+			int by=b->posY;
+			int bw=b->type->width;
+			int bh=b->type->height;
+			
+			// dirty one case range:
+			for (int xi=bx-2; xi<=bx+bw; xi++)
+			{
+				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by -2)&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			for (int yi=by-1; yi<by+bh; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx -2)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			
+			// dirty two case range, without corners:
+			for (int xi=bx-2; xi<=bx+bw; xi++)
+			{
+				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by   -3)&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			for (int yi=by-2; yi<=by+bh; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx   -3)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+				p=&gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)];
+				(*p)|=1;
+			}
+			
+			// sum from bit 1 fro range 3, which are good places:
+			for (int xi=bx-4; xi<=bx+bw+2; xi++)
+			{
+				Uint8 *p;
+				p=&gradient[(xi&wMask)+(((by   -4)&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
+				(*p)+=2;
+			}
+			for (int yi=by-3; yi<=by+bh+1; yi++)
+			{
+				Uint8 *p;
+				p=&gradient[((bx   -4)&wMask)+((yi&hMask)<<wDec)];
+				(*p)+=2;
+				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
+				(*p)+=2;
+			}
+		}
+	}
+}
+
 
 void AICastor::computeWorkPowerMap()
 {
@@ -653,9 +773,10 @@ Order *AICastor::computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat)
 	Uint8 bestWorkScore=0;
 	size_t bestIndex;
 	
+	// first, we look for any neighbour:
 	for (size_t i=0; i<size; i++)
 	{
-		Uint8 neighbour=foodBuildingNeighbourMap[i];
+		Uint8 neighbour=buildingNeighbourMap[i];
 		if (neighbour!=2)
 			continue;
 		
@@ -687,10 +808,47 @@ Order *AICastor::computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat)
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
 		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 	}
-	else
+	
+	
+	Uint8 bestNeighbourScore=0;
+	// second, we look for a new distance-2 based emplacement
+	for (size_t i=0; i<size; i++)
 	{
-		return NULL;
+		Uint8 neighbour=twoSpaceNeighbourMap[i];
+		if (neighbour&1 || neighbour<2)
+			continue;
+		
+		Uint8 space=spaceForBuildingMap[i];
+		if (space<2)
+			continue;
+		
+		Uint8 work=workAbilityMap[i];
+		if (work<minWork)
+			continue;
+		
+		Uint8 wheat=wheatGrowthMap[i];
+		if (wheat<minWheat)
+			continue;
+		
+		goodFoodBuildingMap[i]=wheat;
+		if (/*neighbour>bestNeighbourScore &&*/ wheat>=bestWheatScore && (wheat>bestWheatScore || work>bestWorkScore))
+		{
+			bestNeighbourScore=neighbour;
+			bestWheatScore=wheat;
+			bestWorkScore=work;
+			bestIndex=i;
+		}
 	}
+	
+	if (bestNeighbourScore>0 && bestWheatScore>0 && bestWorkScore>0)
+	{
+		Sint32 x=(bestIndex&map->wMask);
+		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+	}
+	
+	return NULL;
 }
 
 void AICastor::computeRessourcesCluster()
