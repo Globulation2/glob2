@@ -1797,7 +1797,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 		else
 		{
-			imgid = type->gameSpriteImage;
+			int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+			imgid = type->gameSpriteImage + damageImgShift;
 		}
 		int x, y;
 		int dx, dy;

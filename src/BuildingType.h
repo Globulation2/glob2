@@ -37,6 +37,7 @@ public:
 	// visualisation
 	std::string gameSprite;
 	Sint32 gameSpriteImage;
+	Sint32 gameSpriteCount;
 	std::string miniSprite;
 	Sint32 miniSpriteImage;
 	

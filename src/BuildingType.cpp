@@ -27,6 +27,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 
 	configBlock->load(gameSprite, "gameSprite");
 	configBlock->load(gameSpriteImage, "gameSpriteImage");
+	configBlock->load(gameSpriteCount, "gameSpriteCount");
 	configBlock->load(miniSprite, "miniSprite");
 	configBlock->load(miniSpriteImage, "miniSpriteImage");
 	

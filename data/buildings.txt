@@ -874,6 +874,7 @@ type school
 
 gameSprite data/gfx/school1b
 gameSpriteImage 0
+gameSpriteCount 3
 miniSpriteImage 13
 
 upgradeBuild 1
