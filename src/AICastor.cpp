@@ -1021,6 +1021,7 @@ Order *AICastor::controlUpgrades()
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[shortTypeNum][si][li];
 	
+	assert(shortTypeNum<8);
 	int upgradeAmountGoal=strategy.build[shortTypeNum].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
@@ -1902,6 +1903,13 @@ void AICastor::computeBuildingSum()
 				sum+=buildingLevels[bi][si][li];
 			buildingSum[bi][si]=sum;
 		}
+	
+	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+		for (int si=0; si<2; si++)
+			for (int li=0; li<4; li++)
+				if (buildingLevels[bi][si][li]>0)
+					if ((timer&4095)==0)
+						printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li);
 }
 
 void AICastor::computeWarLevel()
