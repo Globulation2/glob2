@@ -426,14 +426,14 @@ void Building::launchConstruction(void)
 				return;
 			constructionResultState=UPGRADE;
 		}
-		
+
 		if (type->unitProductionTime)
 			owner->swarms.remove(this);
 		if (type->shootingRange)
 			owner->turrets.remove(this);
-		
+
 		removeSubscribers();
-		
+
 		// We remove all units who are going to the building:
 		// Notice that the algotithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
@@ -457,13 +457,13 @@ void Building::launchConstruction(void)
 			assert(u);
 			unitsInside.remove(u);
 		}
-		
+
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists(); // To remove all units working.
-		
+
 		updateConstructionState(); // To switch to a realy building site, if all units have been freed from building.
 	}
 }
@@ -472,7 +472,7 @@ void Building::cancelConstruction(void)
 {
 	Uint32 recoverTypeNum=typeNum;
 	BuildingType *recoverType=type;
-	
+
 	if (type->isBuildingSite)
 	{
 		assert(buildingState==ALIVE);
@@ -893,6 +893,29 @@ void Building::update(void)
 		updateBuildingSite();
 }
 
+void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
+{
+	assert(!type->isBuildingSite);
+	int repairLevelTypeNum = type->lastLevelTypeNum;
+	BuildingType *repairBt = globalContainer->buildingsTypes.get(repairLevelTypeNum);
+	assert(repairBt);
+
+	float destructionRatio = (float)hp/(float)type->hpMax;
+	float fTotErr=0;
+	for (int i=0; i<BASIC_COUNT; i++)
+	{
+		float fVal=(1.0f-destructionRatio)*(float)repairBt->maxRessource[i];
+		int iVal=(int)fVal;
+		fTotErr+=fVal-(float)iVal;
+		if (fTotErr>1)
+		{
+			fTotErr-=1;
+			iVal++;
+		}
+		ressources[i]=iVal;
+	}
+}
+
 bool Building::tryToBuildingSiteRoom(void)
 {
 	int midPosX=posX-type->decLeft;
@@ -905,7 +928,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		targetLevelTypeNum=type->lastLevelTypeNum;
 	else
 		assert(false);
-	
+
 	BuildingType *nextBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+nextBt->decLeft;
 	int newPosY=midPosY+nextBt->decTop;
@@ -934,14 +957,14 @@ bool Building::tryToBuildingSiteRoom(void)
 				ressources[i]=iVal;
 			}
 		}
-		
+
 		if (!type->isVirtual)
 		{
 			owner->map->setBuilding(posX, posY, type->decLeft, type->decLeft, NOGBID);
 			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 		}
 
-		
+
 		owner->prestige-=type->prestige;
 		typeNum=targetLevelTypeNum;
 		type=nextBt;

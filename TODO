@@ -9,9 +9,6 @@ Bug:
 Net:
 - Ajouter des versions de protocole (net + YOG).
 
-IngaemGUI:
-- Afficher le coût de la réparation.
-
 Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Utiliser le gradient local si il y a une ligne directe qui y mène.
