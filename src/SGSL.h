@@ -97,7 +97,6 @@ struct Token
 
 struct ErrorReport
 {
-	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; }
 	enum ErrorType
 	{
 		ET_OK=0,
@@ -109,8 +108,13 @@ struct ErrorReport
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
+	
 	unsigned line;
 	unsigned col;
+	
+	
+	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; }
+	ErrorReport(ErrorType et) { type=et; line=0; col=0; }
 	
 	const char *getErrorString(void);
 };
@@ -127,11 +131,42 @@ public:
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
 	unsigned getCol(void) { return lastCol; }
+	
+	virtual int getChar(void) = 0;
+	virtual int ungetChar(char c) = 0;
 
 private:
 	Token token;
-	FILE *fp;
 	unsigned actLine, actCol, lastLine, lastCol;
+};
+
+class FileAquisition: public Aquisition
+{
+public:
+	FileAquisition() { fp=NULL; }
+	virtual ~FileAquisition() { if (fp) fclose(fp); }
+	bool open(const char *filename);
+	
+	virtual int getChar(void) { return ::fgetc(fp); }
+	virtual int ungetChar(char c) { return ::ungetc(c, fp); }
+	
+private:
+	FILE *fp;
+};
+
+class StringAquisition: public Aquisition
+{
+public:
+	StringAquisition();
+	virtual ~StringAquisition();
+	void open(const char *text);
+	
+	virtual int getChar(void);
+	virtual int ungetChar(char c);
+	
+private:
+	char *buffer;
+	int pos;
 };
 
 class Mapscript;
@@ -172,6 +207,7 @@ public:
 	~Mapscript();
 	
 public:
+	ErrorReport compileScript(const char *sourceCode, Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
@@ -184,6 +220,7 @@ public:
 private:
 	friend class Story;
 	
+	ErrorReport parseScript(Aquisition *donnees, Game *game);
 	void reset(void);
 	bool testMainTimer(void);
 	bool doesFlagExist(string name);
@@ -192,7 +229,6 @@ private:
 	int mainTimer;
 	std::deque<Story> stories;
 	std::vector<Flag> flags;
-	Aquisition donnees;
 	Game *game;
 };
 
