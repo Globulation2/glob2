@@ -80,7 +80,7 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	// trigger parameters
 	hp=0;
 
-	// warriors fight to death
+	// warriors fight to death TODO: this is overided !?!?
 	if (performance[ATTACK_SPEED])
 		trigHP=0;
 	else

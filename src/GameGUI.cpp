@@ -1491,12 +1491,6 @@ void GameGUI::draw(void)
 			if (selUnit->typeNum!=UnitType::EXPLORER)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+168, globalContainer->littleFont, "%s:", globalContainer->texts.getString("[levels]"), selUnit->speed);
 			
-			//if (selUnit->performance[ATTACK_SPEED])
-			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+112, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[attack speed]"), selUnit->performance[ATTACK_SPEED]);
-			//
-			//if (selUnit->performance[ATTACK_STRENGTH])
-			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+128, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selUnit->performance[ATTACK_STRENGTH]);
-			
 			if (selUnit->performance[WALK])
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]);
 			if (selUnit->performance[SWIM])
@@ -1510,7 +1504,7 @@ void GameGUI::draw(void)
 			if (selUnit->performance[ATTACK_STRENGTH])
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+244, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]);
 
-	/* NOTE : I have comment this debug code that isn't used anymore
+			/* debug code:
 			Sint32 UID=selUnit->UID;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFont, "hp=%d", selUnit->hp);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFont, "UID=%d", UID);

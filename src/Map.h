@@ -299,6 +299,8 @@ protected:
 	Sint32 wDec, hDec;
 	Sector *sectors;
 	Sint32 wSector, hSector;
+	
+	Game *game;
 
 public:
 	Sint32 checkSum();

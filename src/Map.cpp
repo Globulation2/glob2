@@ -236,6 +236,7 @@ Map::Map()
 	cases=NULL;
 	sectors=NULL;
 	undermap=NULL;
+	game=NULL;
 	w=0;
 	h=0;
 	wMask=0;
@@ -492,40 +493,56 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	int tdx, tdy;
+	int bestTime=256;//Shorter is better
+	int bdx, bdy;
 	Uint32 enemies;
 
 	enemies=unit->owner->enemies;
-	for (tdx=-1; tdx<=1; tdx++)
+	for (int tdx=-1; tdx<=1; tdx++)
 	{
-		for (tdy=-1; tdy<=1; tdy++)
+		for (int tdy=-1; tdy<=1; tdy++)
 		{
 			Sint32 UID=getUnit(x+tdx, y+tdy);
 			if (UID>=0)
 			{
 				int otherTeam=Unit::UIDtoTeam(UID);
 				Uint32 otherTeamMask=1<<otherTeam;
+				int otherID=Unit::UIDtoID(UID);
+				assert(game);
+				Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
 				if (enemies&otherTeamMask)
 				{
-					*dx=tdx;
-					*dy=tdy;
-					return true;
+					int time=(256-otherUnit->delta)/otherUnit->speed;
+					if (time<bestTime)
+					{
+						bestTime=time;
+						bdx=tdx;
+						bdy=tdy;
+					}
 				}
 			}
-			else if(UID!=NOUID)
+			else if(UID!=NOUID && bestTime==256)
 			{
 				int otherTeam=Building::UIDtoTeam(UID);
 				int otherID=Building::UIDtoID(UID);
 				Uint32 otherTeamMask=1<<otherTeam;
-				Building *b=unit->owner->game->teams[otherTeam]->myBuildings[otherID];
+				assert(game);
+				Building *b=game->teams[otherTeam]->myBuildings[otherID];
 				if ((!b->type->defaultUnitStayRange) && (enemies&otherTeamMask))
 				{
-					*dx=tdx;
-					*dy=tdy;
-					return true;
+					bestTime=255;
+					bdx=tdx;
+					bdy=tdy;
 				}
 			}
 		}
+	}
+	
+	if (bestTime<256)
+	{
+		*dx=bdx;
+		*dy=bdy;
+		return true;
 	}
 
 	return false;
@@ -596,6 +613,9 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 void Map::setGame(Game *game)
 {
+	assert(game);
+	printf("Map::setGame(%x)\n", game);
+	this->game=game;
 	int size=wSector*hSector;
 	assert(size);
 	for (int i=0; i<size; i++)
@@ -654,6 +674,8 @@ bool Map::load(SDL_RWops *stream, Game *game)
 	// Only if we load a game, (not a map preview, load all stuff)
 	if (game)
 	{
+		this->game=game;
+		
 		memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
 		memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
 
