@@ -1025,6 +1025,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 					
 					fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);
 					
+					assert(channel==-1);
 					channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 					if (channel != -1)
 					{
@@ -1065,26 +1066,16 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 		assert(packet);
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
-		{
 			treatData(packet->data, packet->len, packet->address);
-			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
-			//fprintf(logFile, "packet->len=%d\n", packet->len);
-			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
-			//fprintf(logFile, "packet->status=%d\n", packet->status);
-			//fprintf(logFile, "packet->address=%s\n", Utilities::stringIP(packet->address));
-
-			//fprintf(logFile, "packet->data=%s\n", packet->data);
-		}
+		
 		SDLNet_FreePacket(packet);
 	}
 
 	if (waitingState==WS_SERVER_START_GAME)
-	{
 		if (--startGameTimeCounter<0)
 		{
 			fprintf(logFile, "Lets quit this screen and start game!\n");
 		}
-	}
 }
 
 char *MultiplayersJoin::getStatusString()
@@ -1405,7 +1396,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=40;
 	packet->data[0]=NEW_PLAYER_WANTS_PRESENCE;
@@ -1415,7 +1406,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	addSint32(packet->data, (Sint32)ipFromNAT, 4);
 	strncpy((char *)(packet->data+8), playerName, 32); //TODO: use uid if over YOG.
 
-	int nbsent=SDLNet_UDP_Send(socket, channel, packet);
+	int nbsent=SDLNet_UDP_Send(socket, -1, packet);
 	if (nbsent==1)
 		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s) channel=%d ipFromNAT=%d\n", Utilities::stringIP(serverIP), serverName, channel, ipFromNAT);
 	else
@@ -1440,7 +1431,7 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=10;
 	packet->data[0]=NEW_PLAYER_WANTS_SESSION_INFO;
@@ -1456,7 +1447,7 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	addUint32(packet->data, netHost, 4);
 	addUint16(packet->data, netPort, 8);
 
-	if (SDLNet_UDP_Send(socket, channel, packet)==1)
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
 		fprintf(logFile, "succeded to send session request packet\n");
 	}
@@ -1519,7 +1510,7 @@ bool MultiplayersJoin::send(Uint8 *data, int size)
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=size;
 	memcpy(packet->data, data, size);
@@ -1545,7 +1536,7 @@ bool MultiplayersJoin::send(const int v)
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=4;
 	packet->data[0]=v;
@@ -1571,7 +1562,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 
 	assert(packet);
 
-	packet->channel=channel;
+	packet->channel=-1;
 	packet->address=serverIP;
 	packet->len=8;
 	packet->data[0]=u;
@@ -1658,8 +1649,8 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 		}
 	}
 
+	assert(channel==-1);
 	channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
-	//channel=SDLNet_UDP_Bind(socket, 0, &serverIP);
 
 	if (channel != -1)
 	{

@@ -271,7 +271,7 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 		}
 	if (!allready)
 	{
-		fprintf(logFile, "new messageID=%d received from ip=(%s9')", messageID, Utilities::stringIP(ip));
+		fprintf(logFile, "new messageID=%d received from ip=(%s) (%s) (%s)\n", messageID, Utilities::stringIP(ip), m.userName, m.text);
 		receivedMessages.push_back(m);
 		if (receivedMessages.size()>64)
 			receivedMessages.pop_front();
@@ -359,6 +359,7 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 		for (int i=0; i<33; i++)
 			m.received[i]=false;
 
+		fprintf(logFile, " pushing new messageID=%d (%s) (%s)\n", messageID, m.userName, m.text);
 		sendingMessages.push_back(m);
 	}
 }
