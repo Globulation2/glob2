@@ -2141,39 +2141,35 @@ Sint32 Building::checkSum(std::list<Uint32> *checkSumsList)
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [6]
 	cs=(cs<<31)|(cs>>1);
-	
-	cs^=gid;
-	if (checkSumsList)
-		checkSumsList->push_back(cs);// [7]
 
 	cs^=posX;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [8]
+		checkSumsList->push_back(cs);// [7]
 	cs^=posY;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [9]
+		checkSumsList->push_back(cs);// [8]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [10]
+		checkSumsList->push_back(cs);// [9]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=ressources[i];
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [11]
+		checkSumsList->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [12]
+		checkSumsList->push_back(cs);// [11]
 
 	cs^=productionTimeout;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [13]
+		checkSumsList->push_back(cs);// [12]
 	cs^=totalRatio;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [14]
+		checkSumsList->push_back(cs);// [13]
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -2182,22 +2178,27 @@ Sint32 Building::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [15]
+		checkSumsList->push_back(cs);// [14]
 
 	cs^=shootingStep;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [16]
+		checkSumsList->push_back(cs);// [15]
 	cs^=shootingCooldown;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [17]
+		checkSumsList->push_back(cs);// [16]
 	cs^=bullets;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [18]
+		checkSumsList->push_back(cs);// [17]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
 	if (checkSumsList)
+		checkSumsList->push_back(cs);// [18]
+	
+	cs^=gid;
+	if (checkSumsList)
 		checkSumsList->push_back(cs);// [19]
+	
 	return cs;
 }
 
