@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #ifndef __GUIBUTTON_H
@@ -24,7 +24,20 @@
 
 class Button: public RectangularWidget
 {
+protected:
+	CLASSDEF(Button)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(Sint32, returnCode)
+		ITEM(Uint16, unicodeShortcut)
+	CLASSEND;
+
+	bool highlighted;
+	int standardId, highlightID;
+	Sprite *arch;
+
 public:
+	Button() { highlighted=false; standardId=-1; highlightID=-1; arch=NULL; }
 	Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut=0);
 	virtual ~Button() { }
 
@@ -34,12 +47,6 @@ public:
 protected:
 	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
 	virtual void repaint(void);
-
-protected:
-	Sprite *arch;
-	int standardId, highlightID, returnCode;
-	Uint16 unicodeShortcut;
-	bool highlighted;
 };
 
 class TextButton:public Button

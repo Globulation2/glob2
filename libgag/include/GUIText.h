@@ -26,14 +26,22 @@
 class Text: public RectangularWidget
 {
 protected:
-	Font *font;
-	char *text;
-	Uint8 cr, cg, cb, ca;
+	CLASSDEF(Text)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(std::string, font)
+		ITEM(std::string, text)
+		ITEM(Uint8, cr)
+		ITEM(Uint8, cg)
+		ITEM(Uint8, cb)
+		ITEM(Uint8, ca)
+	CLASSEND;
 
 public:
-	Text(int x, int y, Font *font, const char *text="", int w=0, int h=0);
-	virtual ~Text() { if (this->text) delete[] this->text; }
-	virtual const char *getText() const { return text;}
+	Text() { cr=cg=cb=ca=0; }
+	Text(int x, int y, const char *string="", const char *text="", int w=0, int h=0);
+	virtual ~Text() { }
+	virtual const char *getText() const { return text.c_str();}
 	virtual void setText(const char *newText, ...);
 	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = DrawableSurface::ALPHA_OPAQUE);
 	virtual void paint(void);

@@ -7,6 +7,7 @@ Gameplay :
 - Unites tirent une pierre.
 - Tourelles tirent une pierre.
 - Drapeau d'interdiction.
+- Sauvegarde configuration.
 
 Technique :
 - Minimiser les #includes

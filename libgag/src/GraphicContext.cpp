@@ -47,6 +47,10 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 	}
 }
 
+GraphicContext::~GraphicContext(void)
+{
+}
+
 int Font::getStringWidth(const int i) const
 {
 	char temp[32];

@@ -22,32 +22,24 @@
 #include <SupportFunctions.h>
 #include <assert.h>
 
-Text::Text(int x, int y, Font *font, const char *text, int w, int h)
+Text::Text(int x, int y, const char *font, const char *text, int w, int h)
 {
 	this->x=x;
 	this->y=y;
 	this->font=font;
-	this->text=NULL;
+	this->text=text;
 	this->w=w;
 	this->h=h;
 	cr = 255;
 	cg = 255;
 	cb = 255;
 	ca = DrawableSurface::ALPHA_OPAQUE;
-	if (text)
-	{
-		int textLength=strlen(text);
-		this->text=new char[textLength+1];
-		strncpy(this->text, text, textLength+1);
-	}
-	else
-		this->text=NULL;
 }
 
 void Text::setText(const char *newText, ...)
 {
 	assert(parent);
-	assert(font);
+	assert(fontPtr);
 	assert(newText);
 	
 	va_list arglist;
@@ -65,24 +57,20 @@ void Text::setText(const char *newText, ...)
 		nW=upW=w;
 	else
 	{
-		upW=font->getStringWidth(text)+5;
-		nW=font->getStringWidth(output);
+		upW=fontPtr->getStringWidth(text.c_str())+5;
+		nW=fontPtr->getStringWidth(output);
 	}
 	if (h)
 		nH=upH=h;
 	else
 	{
-		upH=font->getStringHeight(text);
-		nH=font->getStringHeight(output);
+		upH=fontPtr->getStringHeight(text.c_str());
+		nH=fontPtr->getStringHeight(output);
 	}
 	parent->paint(x, y, upW, upH);
 
 	// copy text
-	int textLength=strlen(output)+1;
-	if (this->text)
-		delete[] this->text;
-	this->text=new char[textLength];
-	strcpy(this->text, output);
+	this->text = output;
 
 	// draw new
 	paint();
@@ -107,25 +95,25 @@ void Text::paint(void)
 		int wDec, hDec;
 
 		if (w)
-			wDec=(w-font->getStringWidth(text))>>1;
+			wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
 		else
 			wDec=0;
 
 		if (h)
-			hDec=(h-font->getStringHeight(text))>>1;
+			hDec=(h-fontPtr->getStringHeight(text.c_str()))>>1;
 		else
 			hDec=0;
 
-		font->pushColor(cr, cg, cb, ca);
-		parent->getSurface()->drawString(x+wDec, y+hDec, font, "%s", text);
-		font->popColor();
+		fontPtr->pushColor(cr, cg, cb, ca);
+		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, "%s", text.c_str());
+		fontPtr->popColor();
 	}
 }
 
 void Text::repaint(void)
 {
 	int upW, upH;
-	assert(font);
+	assert(fontPtr);
 	
 	DrawableSurface *s=parent->getSurface();
 	int rx=x, ry=y, rw=s->getW()-x, rh=s->getH()-y;
@@ -136,8 +124,7 @@ void Text::repaint(void)
 	}
 	else
 	{
-		assert(font);
-		upW=font->getStringWidth(text)+2;
+		upW=fontPtr->getStringWidth(text)+2;
 	}
 	
 	if (h)
@@ -146,8 +133,7 @@ void Text::repaint(void)
 	}
 	else
 	{
-		assert(font);
-		upH=font->getStringHeight(text);
+		upH=fontPtr->getStringHeight(text);
 	}
 	
 	if (w || h)

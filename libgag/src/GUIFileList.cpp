@@ -21,12 +21,13 @@
 #include <functional>
 #include <algorithm>
 #include <iostream>
+#include <Environment.h>
 
-FileList::FileList(int x, int y, int w, int h, const Font *font, 
-									 FileManager* fileManager, const char *dir, 
+FileList::FileList(int x, int y, int w, int h, base::Ptr<Font> font,
+									 const char *dir,
 									 const char *extension, const bool recurse)
-	: List(x, y, w, h, font), 
-		fileManager(fileManager), dir(dir), 
+	: List(x, y, w, h, font),
+		dir(dir),
 		extension(extension), recurse(recurse), 
 		current("")
 {
@@ -41,8 +42,6 @@ FileList::~FileList()
 void FileList::generateList()
 {
 	// we free the current list
-	for (std::vector<char*>::iterator i = strings.begin(); i != strings.end(); i++)
-		delete[] *i;
 	this->strings.clear();
 
 	std::string fullDir = this->dir;
@@ -53,13 +52,13 @@ void FileList::generateList()
 		fullDir += DIR_SEPARATOR + this->current;
 	}
 	// we add the other files
-	if (fileManager->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
+	if (GAG::fileManager->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
 	{
 		const char* fileName;
-		while ((fileName=(this->fileManager->getNextDirectoryEntry()))!=NULL)
+		while ((fileName=(GAG::fileManager->getNextDirectoryEntry()))!=NULL)
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
-			if (this->fileManager->isDir(fullFileName.c_str()))
+			if (GAG::fileManager->isDir(fullFileName.c_str()))
 			{
 				std::string dirName = std::string(fileName) + DIR_SEPARATOR;
 				this->addText(dirName.c_str());
@@ -144,13 +143,13 @@ const char* FileList::fullName(const char* fileName) const
 	return newstrdup(fullName.c_str());
 }
 
-struct strfilecmp_functor : public std::binary_function<char *, char *, bool>
+struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>
 {
-	bool operator()(char * x, char * y)
-	{ 
-		bool xIsNotDir = (x[strlen(x)-1] != DIR_SEPARATOR);
-		bool yIsNotDir = (y[strlen(y)-1] != DIR_SEPARATOR);
-		return ((xIsNotDir == yIsNotDir)?(strcasecmp(x, y)<0):xIsNotDir<yIsNotDir);
+	bool operator()(std::string x, std::string y)
+	{
+		bool xIsNotDir = (x[x.length()-1] != DIR_SEPARATOR);
+		bool yIsNotDir = (y[y.length()-1] != DIR_SEPARATOR);
+		return ((xIsNotDir == yIsNotDir)?(x<y):xIsNotDir<yIsNotDir);
 	}
 };
 

@@ -23,12 +23,24 @@
 #include <FileManager.h>
 #include <GUIList.h>
 #include <string>
+#include "dps/base.h"
 
 class FileList: public List
 {
+protected:
+	CLASSDEF(FileList)
+		BASECLASS(List)
+	MEMBERS
+		ITEM(std::string, dir)
+		ITEM(std::string, extension)
+		ITEM(std::string, current)
+		ITEM(bool, recurse)
+	CLASSEND;
+
 public:
-	FileList(int x, int y, int w, int h, const Font *font, 
-					 FileManager* fileManager, const char *dir, 
+	FileList():List() { }
+	FileList(int x, int y, int w, int h, base::Ptr<Font> font,
+					 const char *dir,
 					 const char *extension=NULL, const bool recurse=false);
 	virtual ~FileList();
 
@@ -47,13 +59,6 @@ public:
 public:
 	void generateList();
 	void selectionChanged();
-
-protected:
-	FileManager* const fileManager;
-	const std::string dir;
-	const std::string extension;
-	const bool recurse;
-	std::string current;
 };
 
 

@@ -21,6 +21,7 @@
 #define __GRAPHICCONTEXT_H
 
 #include "GAGSys.h"
+#include "dps/base.h"
 
 class Font;
 class Sprite;
@@ -75,7 +76,7 @@ public:
 class GraphicContext:public virtual DrawableSurface
 {
 public:
-	virtual ~GraphicContext(void) { }
+	virtual ~GraphicContext(void);
 
 	//! this must be called before any Drawable Surface method.
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT)=0;
@@ -83,8 +84,10 @@ public:
 
 	virtual void dbgprintf(const char *msg, ...)=0;
 
-	virtual Sprite *loadSprite(const char *name)=0;
-	virtual Font *loadFont(const char *name, unsigned size)=0;
+	virtual void loadSprite(const char *filename, const char *name)=0;
+	
+	virtual void loadFont(const char *filename, unsigned size, const char *name)=0;
+
 	virtual DrawableSurface *createDrawableSurface(const char *name=NULL)=0;
 
 	virtual void nextFrame(void)=0;
@@ -93,10 +96,9 @@ public:
 	static GraphicContext *createGraphicContext(GraphicContextType type);
 };
 
-class Font
+class Font : public base::Object
 {
 public:
-
 	enum Style
 	{
 		STYLE_NORMAL = 0x00,
@@ -135,8 +137,6 @@ public:
 	virtual int getW(int index)=0;
 	virtual int getH(int index)=0;
 };
-
-
 
 
 #endif
