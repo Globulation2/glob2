@@ -85,6 +85,7 @@ public:
 	{
 		char userName[32];
 		Uint32 uid;
+		Uint8 playing;
 	};
 	
 	struct Joiner
@@ -191,6 +192,11 @@ public:
 	bool newClientListAviable;
 	
 	std::list<Joiner> joiners;
+	
+	bool unjoining;
+	int unjoinTimeout;
+	
+	bool connectionLost;
 private:
 	bool enableLan;
 	

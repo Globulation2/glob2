@@ -78,7 +78,16 @@ void YOGScreen::updatePlayerList(void)
 {
 	playerList->clear();
 	for (std::list<YOG::Client>::iterator client=globalContainer->yog->clients.begin(); client!=globalContainer->yog->clients.end(); ++client)
-		playerList->addText(client->userName);
+	{
+		if (client->playing)
+		{
+			char s[32+2];
+			snprintf(s, 32+2, "(%s)", client->userName);
+			playerList->addText(s);
+		}
+		else
+			playerList->addText(client->userName);
+	}
 	playerList->commit();
 }
 

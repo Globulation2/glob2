@@ -106,7 +106,7 @@ public:
 	BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 teamn, PlayerType type);
 	void init();
 	virtual ~BasePlayer(void);
-	void close(void);
+	//void close(void);
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
 	bool load(SDL_RWops *stream, Sint32 versionMinor);
