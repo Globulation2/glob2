@@ -145,8 +145,8 @@ void AICastor::firstInit()
 
 AICastor::AICastor(Player *player)
 {
-	//logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	logFile=stdout;
+	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	//logFile=stdout;
 	
 	firstInit();
 	init(player);
@@ -611,7 +611,7 @@ void AICastor::defineStrategy()
 	
 	strategy.build[BuildingType::SWARM_BUILDING].finalWorkers=2;
 	strategy.build[BuildingType::FOOD_BUILDING].finalWorkers=1;
-	strategy.build[BuildingType::DEFENSE_BUILDING].finalWorkers=1;
+	strategy.build[BuildingType::DEFENSE_BUILDING].finalWorkers=2;
 	
 	
 	strategy.build[BuildingType::DEFENSE_BUILDING].newOrder=0;
