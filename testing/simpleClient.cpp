@@ -35,6 +35,8 @@ namespace simpleClient
 	bool running;
 	Uint8 lastMessageID=0;
 	int timeout=0;
+	int TOTL=3;
+	bool connected=false;
 
 	bool init()
 	{
@@ -169,7 +171,15 @@ namespace simpleClient
 			strncpy(s, (char *)data+4, 256);
 			s[255]=0;
 			printf("dump:%s\n", s);
+			send(YMT_MESSAGE, data[1]);
 		}
+		break;
+		case YMT_CONNECTION_PRESENCE:
+			TOTL=3;
+		break;
+		case YMT_CONNECTING:
+			connected=true;
+			printf("connected to YOG.\n");
 		break;
 		}
 
@@ -292,10 +302,16 @@ namespace simpleClient
 
 			SDLNet_FreePacket(packet);
 			
-			if (timeout--<0)
+			if (connected && timeout--<=0)
 			{
 				timeout=20*14;
-				send(YMT_CONNECTION_PRESENCE);
+				if (TOTL--<=0)
+				{
+					printf("YOG is down.\n");
+					connected=false;
+				}
+				else
+					send(YMT_CONNECTION_PRESENCE);
 			}
 			
 			SDL_Delay(50);
