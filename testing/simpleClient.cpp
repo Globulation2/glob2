@@ -176,7 +176,7 @@ namespace simpleClient
 		break;
 		case YMT_CONNECTION_PRESENCE:
 			TOTL=3;
-			timeout=20*20;
+			timeout=350;
 		break;
 		case YMT_CONNECTING:
 			connected=true;
@@ -311,7 +311,7 @@ namespace simpleClient
 			
 			if (connected && timeout--<=0)
 			{
-				timeout=20*20;
+				timeout=350;
 				if (TOTL--<=0)
 				{
 					printf("YOG is down.\n");
@@ -321,7 +321,7 @@ namespace simpleClient
 					send(YMT_CONNECTION_PRESENCE);
 			}
 			
-			SDL_Delay(50);
+			SDL_Delay(40);
 		}
 	}
 	

@@ -1,7 +1,7 @@
 /*
  *  Ysagoon Online Gaming
  *  Meta Server with chat for Ysagoon game (first is glob2)
- *  (c) 2002 Luc-Olivier de Charrière <nuage@ysagoon.com>
+ *  (c) 2002 Luc-Olivier de Charriï¿½e <nuage@ysagoon.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "../src/YOGConsts.h"
+#include <string.h>
 
 namespace YOG
 {
