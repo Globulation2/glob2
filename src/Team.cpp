@@ -191,7 +191,6 @@ void Team::init(void)
 	eventPosY=startPosY;
 	isAlive=true;
 	hasWon=false;
-	memset(&latestStat, 0, sizeof(TeamStat));
 }
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
@@ -721,7 +720,6 @@ void Team::step(void)
 	int nbUnits=0;
 	int i;
 	
-	memset(&latestStat, 0, sizeof(TeamStat));
 	for (i=0; i<1024; i++)
 	{
 		if (myUnits[i])
@@ -734,40 +732,13 @@ void Team::step(void)
 				delete myUnits[i];
 				myUnits[i]=NULL;
 			}
-			else
-			{
-				// stat part
-				// FIXME : this can slow down game, do only every n tick
-				Unit *u=myUnits[i];
-				latestStat.totalUnit++;
-				latestStat.numberUnitPerType[u->typeNum]++;
-				
-				if (u->medical==Unit::MED_HUNGRY)
-					latestStat.needFood++;
-				else if (u->medical==Unit::MED_DAMAGED)
-					latestStat.needHeal++;
-				else
-				{
-					latestStat.needNothing++;
-					if (u->activity==Unit::ACT_RANDOM)
-					{
-						latestStat.isFree[(int)u->typeNum]++;
-						latestStat.totalFree++;
-					}
-				}
-				for (int j=0; j<NB_ABILITY; j++)
-				{
-					if (u->performance[j])
-						latestStat.upgradeState[j][u->level[j]]++;
-				}
-			}
 		}
 	
 	}
 	
-	/*for (int i=0; i<512; i++)
-		if (myBuildings[i])
-			myBuildings[i]->step();*/
+	//for (int i=0; i<512; i++)
+	//	if (myBuildings[i])
+	//		myBuildings[i]->step();
 	for (i=0; i<256; i++)
 		if (myBullets[i])
 			myBullets[i]->step();
@@ -838,21 +809,6 @@ void Team::step(void)
 	{
 		(*it)->turretStep();
 	}
-	
-	// stat for buildings
-	// FIXME : this is stat, do not do all the time
-	for (i=0; i<512; i++)
-	{
-		if (myBuildings[i])
-		{
-			latestStat.totalBuilding++;
-			latestStat.numberBuildingPerType[myBuildings[i]->type->type]++;
-			int tabLevel=((myBuildings[i]->type->level)<<1)+myBuildings[i]->type->isBuildingSite;
-			assert(tabLevel>=0);
-			assert(tabLevel<=5);
-			latestStat.numberBuildingPerTypePerLevel[myBuildings[i]->type->type][tabLevel]++;
-		}
-	}
 
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
 	// decount event cooldown counter
@@ -861,6 +817,8 @@ void Team::step(void)
 		if (eventCooldown[i]>0)
 			eventCooldown[i]--;
 	}
+	
+	stats.step(this);
 }
 
 Sint32 Team::checkSum()

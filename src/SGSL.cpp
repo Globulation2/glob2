@@ -77,30 +77,31 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 	}
 	else
 	{
+		TeamStat *latestStat=mapscript->game->teams[numberOfPlayer]->stats.getLatestStat();
 		switch(nameOfVariable.type)
 		{
 			case(Token::S_WORKER):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[0];
+				return latestStat->numberUnitPerType[0];
 			case(Token::S_EXPLORER):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[1];
+				return latestStat->numberUnitPerType[1];
 			case(Token::S_WARRIOR):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[2];
+				return latestStat->numberUnitPerType[2];
 			case(Token::S_SWARM_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[0][level];
+				return latestStat->numberBuildingPerTypePerLevel[0][level];
 			case(Token::S_FOOD_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[1][level];
+				return latestStat->numberBuildingPerTypePerLevel[1][level];
 			case(Token::S_HEALTH_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[2][level];
+				return latestStat->numberBuildingPerTypePerLevel[2][level];
 			case(Token::S_WALKSPEED_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[3][level];
+				return latestStat->numberBuildingPerTypePerLevel[3][level];
 			case(Token::S_FLYSPEED_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[4][level];
+				return latestStat->numberBuildingPerTypePerLevel[4][level];
 			case(Token::S_ATTACK_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[5][level];
+				return latestStat->numberBuildingPerTypePerLevel[5][level];
 			case(Token::S_SCIENCE_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[6][level];
+				return latestStat->numberBuildingPerTypePerLevel[6][level];
 			case(Token::S_DEFENCE_B):
-				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[7][level]; 
+				return latestStat->numberBuildingPerTypePerLevel[7][level]; 
 			default:
 				return 0;
 		}

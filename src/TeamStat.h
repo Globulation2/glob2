@@ -75,6 +75,9 @@ private:
 	
 	int smoothedIndex;
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
+
+public:
+	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
 };
 
 #endif

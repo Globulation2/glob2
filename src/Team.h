@@ -172,7 +172,8 @@ public:
 	//! called by game, set to true if all others team has won or if script has forced
 	bool hasWon;
 	//! the stat for this team. It is computed every step, so it is always updated.
-	TeamStat latestStat;
+	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
+	TeamStats stats;
 };
 
 #endif
