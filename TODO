@@ -2,7 +2,6 @@ Priority:
 
 - afficher des boites de dialogue modale. (nct)
 - Empêcher les longs mots de dépasser de la boîte de dialog de YOG. (nct)
-- Débugger les cas ou le polices se réafichent plusieur fois et que l'alpha s'aditionne. (nct)
 
 To First release :
 
@@ -17,7 +16,6 @@ To First release :
 To Next version :
 
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
-- building finished message must contain building type. Select building when doing this. (nct)
 - makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
 

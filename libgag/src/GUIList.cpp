@@ -151,7 +151,7 @@ void List::internalPaint(void)
 
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		parent->getSurface()->drawString(x+2, yPos, font, strings[i+disp]);
+		parent->getSurface()->drawString(x+2, yPos, font, "%s", strings[i+disp]);
 		if (i+(int)disp==nth)
 			parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 		nextSize+=textHeight;
