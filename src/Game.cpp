@@ -776,7 +776,7 @@ void Game::step(Sint32 localTeam)
 				}
 		}
 		
-		renderMiniMap(localTeam, true, stepCounter&31, 32);
+		renderMiniMap(localTeam, true, stepCounter%20, 20);
 
 		if ((stepCounter&31)==4)
 		{
@@ -1966,6 +1966,11 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 			}
 			minimap->drawPixel(dx+decX, dy+decY, r, g, b);
 		}
+	}
+
+	if (stepStart+stepLength<szY)
+	{
+		minimap->drawHorzLine(decX, decY+stepStart+stepLength, szY, 100, 100, 100);
 	}
 
 	// overdraw flags
