@@ -91,6 +91,24 @@ protected:
 	char data[4];
 };
 
+class OrderCancelUpgrade:public Order
+{
+ public:
+	OrderCancelUpgrade(const char *data, int dataLength);
+	OrderCancelUpgrade(Sint32 UID);
+	virtual ~OrderCancelUpgrade(void) { }
+	Uint8 getOrderType(void) { return ORDER_CANCEL_UPGRADE; }
+	char *getData(void);
+	bool setData(const char *data, int dataLength);
+	int getDataLength(void) { return 4; }
+	Sint32 checkSum() { return ORDER_CANCEL_UPGRADE; }
+
+	Sint32 UID;
+
+protected:
+	char data[4];
+};
+
 
 // Modification orders
 

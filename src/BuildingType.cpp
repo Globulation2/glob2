@@ -38,9 +38,14 @@ BuildingsTypes::BuildingsTypes(const char *filename)
 	SDL_FreeRW(stream);
 
 	// We resolve the nextLevelTypeNum references, used for upgrade.
+	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
+	{
+		(*it)->lastLevelTypeNum=-1;
+		(*it)->nextLevelTypeNum=-1;
+	}
 	BuildingType *bt1;
 	BuildingType *bt2;
-
+	int j=0;
 	for (std::vector <BuildingType *>::iterator it1=buildingsTypes.begin(); it1!=buildingsTypes.end(); ++it1)
 	{
 		bt1=*it1;
@@ -55,6 +60,7 @@ BuildingsTypes::BuildingsTypes(const char *filename)
 					if ((bt2->level==bt1->level) && (bt2->type==bt1->type) && !(bt2->isBuildingSite))
 					{
 						bt1->nextLevelTypeNum=i;
+						bt2->lastLevelTypeNum=j;
 						break;
 					}
 				}
@@ -63,11 +69,13 @@ BuildingsTypes::BuildingsTypes(const char *filename)
 					if ((bt2->level==bt1->level+1) && (bt2->type==bt1->type) && (bt2->isBuildingSite))
 					{
 						bt1->nextLevelTypeNum=i;
+						bt2->lastLevelTypeNum=j;
 						break;
 					}
 				}
 			i++;
 		}
+		j++;
 	}
 }
 

@@ -228,6 +228,17 @@ void Game::executeOrder(Order *order)
 			}
 		}
 		break;
+		case ORDER_CANCEL_UPGRADE :
+		{
+			Sint32 UID=((OrderCancelUpgrade *)order)->UID;
+			int team=Building::UIDtoTeam(UID);
+			int id=Building::UIDtoID(UID);
+			Team *t=teams[team];
+			Building *b=t->myBuildings[id];
+			if (b)
+				b->cancelUpgrade();
+		}
+		break;
 		case ORDER_WAITING_FOR_PLAYER:
 		{
 			anyPlayerWaited=true;

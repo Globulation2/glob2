@@ -88,6 +88,7 @@ public:
 	// Number to access next upgrade in BuildingsTypes.
 	// It is computed in the second phase of the BuildingsTypes constructor after all building are read from disk.
 	Sint32 nextLevelTypeNum;
+	Sint32 lastLevelTypeNum;
 
 public:
 	BuildingType() { init(); }
