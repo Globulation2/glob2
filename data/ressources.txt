@@ -32,16 +32,25 @@ visibleToBeCollected = 0
 *
 
 // Wood
+minimapR = 0
+minimapG = 60
+minimapB = 0
 
 *
 
 // Corn
+minimapR = 211
+minimapG = 207
+minimapB = 167
 gfxId = 10
 granular = 1
 
 *
 
 // Papyrus
+minimapR = 0
+minimapG = 0
+minimapB = 0
 gfxId = 20
 expendable = 0
 granular = 1
@@ -49,6 +58,9 @@ granular = 1
 *
 
 // Stone
+minimapR = 104
+minimapG = 112
+minimapB = 124
 gfxId = 30
 shrinkable = 0
 expendable = 0
@@ -58,6 +70,9 @@ granular = 1
 *
 
 // Alga
+minimapR = 41
+minimapG = 157
+minimapB = 165
 terrain = 0
 gfxId = 40
 granular = 1
@@ -65,6 +80,9 @@ granular = 1
 *
 
 // Cherry
+minimapR = 255
+minimapG = 100
+minimapB = 100
 gfxId = 50
 varietiesCount = 1
 expendable = 0
@@ -75,6 +93,9 @@ visibleToBeCollected = 1
 *
 
 // Orange
+minimapR = 255
+minimapG = 100
+minimapB = 100
 gfxId = 55
 varietiesCount = 1
 expendable = 0
@@ -85,6 +106,9 @@ visibleToBeCollected = 1
 *
 
 // Prune
+minimapR = 255
+minimapG = 100
+minimapB = 100
 gfxId = 60
 varietiesCount = 1
 expendable = 0
