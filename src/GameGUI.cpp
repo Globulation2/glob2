@@ -1831,9 +1831,11 @@ void GameGUI::drawUnitInfos(void)
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->colorR, unit->owner->colorG, unit->owner->colorB);
-
+	int decX = (32-unitSprite->getW(imgid))>>1;
+	int decY = (32-unitSprite->getH(imgid))>>1;
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+14+decX, ypos+7+4+decY, unitSprite, imgid);
+	
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+2, ypos+4, globalContainer->gamegui, 18);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+14, ypos+7+4, unitSprite, imgid);
 
 	// draw HP
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s:", Toolkit::getStringTable()->getString("[hp]")).c_str());
