@@ -1867,7 +1867,7 @@ void Building::turretStep(void)
 							if (testUnit->typeNum == WARRIOR)
 							{
 								// score is proportional to speed, probability to hit, attack strength and actual damage being conducted
-								if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
+								if (testUnit->movement == Unit::MOV_ATTACKING_TARGET)
 									targetScore = 1000 + testUnit->performance[ATTACK_STRENGTH] ;
 								else
 									targetScore = testUnit->speed/(256-testUnit->delta) + 10*testUnit->performance[ATTACK_STRENGTH] ;
