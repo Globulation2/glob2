@@ -17,18 +17,21 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include <SDL/SDL.h>
-#include <SDL/SDL_endian.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_net.h>
 #include <stdio.h>
 #include <assert.h>
 #include <sys/types.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_endian.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_net.h>
+
 #include "../src/YOGConsts.h"
 #include "../src/Utilities.h"
 #include "../src/Marshaling.h"
+#include "../gnupg/sha1.c"
 
 namespace simpleClient
 {
@@ -41,6 +44,7 @@ namespace simpleClient
 	bool connected=false;
 	bool authenticated=false;
 	char passWord[32];
+	bool asAdmin=false;
 
 	bool init()
 	{
@@ -191,10 +195,21 @@ namespace simpleClient
 				printf("connected to YOG...\n");
 				char xorpassw[32];
 				memcpy(xorpassw, (char *)data+4, 32);
-				char sdata[32];
-				memcpy(sdata, passWord, 32);
-				printf("authenticating to YOG with passWord=(%s)...\n", passWord);
-				send(YMT_AUTHENTICATING, (Uint8 *)sdata, 32);
+				
+				unsigned char xored[32];
+					for (int i=0; i<32; i++)
+						xored[i]=passWord[i]^xorpassw[i];
+				SHA1_CONTEXT hd;
+				sha1_init(&hd);
+				sha1_write(&hd, xored, 32);
+				sha1_final(&hd);
+				Uint8 *hashed=sha1_read(&hd);
+				
+				printf("authenticating to YOG with asAdmin=%d, passWord=(%s)...\n", asAdmin, passWord);
+				if (asAdmin)
+					send(YMT_AUTHENTICATING, 3, (Uint8 *)hashed, 20);
+				else
+					send(YMT_AUTHENTICATING, 2, (Uint8 *)hashed, 20);
 			}
 		break;
 		case YMT_AUTHENTICATING:
@@ -296,6 +311,7 @@ namespace simpleClient
 						data[3]=YOG_PROTOCOL_VERSION;
 						strncpy(data+4, token[1], 32);
 						data[4+31]=0;
+						asAdmin=true;
 						send(YMT_CONNECTING, 1, (Uint8 *)data, 32+4);
 						strncpy(passWord, token[2], 32);
 					}
@@ -311,6 +327,7 @@ namespace simpleClient
 						data[3]=YOG_PROTOCOL_VERSION;
 						strncpy(data+4, token[1], 32);
 						data[31+4]=0;
+						asAdmin=false;
 						send(YMT_CONNECTING, (Uint8 *)data, 32+4);
 					}
 				}
@@ -352,6 +369,12 @@ namespace simpleClient
 				else
 				{
 					lastMessageID++;
+					for (int i=0; i<1024; i++)
+						if (s[i]=='\n' || s[i]==0)
+						{
+							s[i]=0;
+							break;
+						}
 					send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)s, Utilities::strmlen(s, 256));
 				}
 			}
