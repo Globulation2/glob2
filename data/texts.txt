@@ -450,8 +450,14 @@ Ysagoon-Onlinespiel
 Ysagoon Online Gaming
 Ysagoon-Gra w Internecie
 [Enter your nickname :]
-Entrer votre pseudo :
+Entrez votre pseudo :
 Enter your nickname :
+
+
+
+[Enter your password :]
+Entrez votre mot de passe :
+Enter your password :
 
 
 

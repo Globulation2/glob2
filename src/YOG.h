@@ -125,7 +125,7 @@ public:
 	
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	
-	bool enableConnection(const char *userName);
+	bool enableConnection(const char *userName, const char *password);
 	void step();
 	
 	void sendGameinfoRequest();

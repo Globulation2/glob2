@@ -93,15 +93,15 @@ void Glob2::mutiplayerYOG(void)
 	printf("Glob2::YOGPreScreen has ended ...\n");
 }
 
-int Glob2::runHostServer(int argc, char *argv[])
+int Glob2::runHostServer()
 {
 	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
-	yog->enableConnection(globalContainer->getUsername());
+	yog->enableConnection(globalContainer->hostServerUsername, globalContainer->hostServerPassword);
 	
 	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
 	{
 		yog->step();
-		SDL_Delay(50);
+		SDL_Delay(40);
 	}
 	if (yog->yogGlobalState<YOG::YGS_CONNECTED)
 	{
@@ -235,7 +235,7 @@ int Glob2::run(int argc, char *argv[])
 	// TODO : this structure is ugly, do we have to keep hostServer ?
 	if (globalContainer->hostServer)
 	{
-		int ret = runHostServer(argc, argv);
+		int ret=runHostServer();
 		delete yog;
 		delete globalContainer;
 		Toolkit::close();

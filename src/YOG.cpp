@@ -864,7 +864,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 }
 
-bool YOG::enableConnection(const char *userName)
+bool YOG::enableConnection(const char *userName, const char *password)
 {
 	memset(this->userName, 0, 32);
 	strncpy(this->userName, userName, 31);

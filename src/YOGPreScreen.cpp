@@ -35,9 +35,13 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
-	login=new TextInput(20, 430, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
+	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
+	login=new TextInput(20, 360, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(login);
-	addWidget(new Text(20, 395, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
+	
+	addWidget(new Text(20, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
+	password=new TextInput(20, 430, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", true, 32);
+	addWidget(password);
 	
 	statusText=new TextArea(20, 250, 600, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
@@ -102,7 +106,6 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		if (yogReturnCode==YOGScreen::CANCEL)
 		{
 			yog->deconnect();
-			endExecutionValue=CANCEL;
 		}
 		else if (yogReturnCode==-1)
 		{
@@ -117,7 +120,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 	}
 	if (connectOnNextTimer)
 	{
-		yog->enableConnection(login->getText());
+		yog->enableConnection(login->getText(), password->getText());
 		connectOnNextTimer=false;
 	}
 	else if (yog->externalStatusState!=oldYOGExternalStatusState)
