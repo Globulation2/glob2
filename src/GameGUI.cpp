@@ -149,10 +149,20 @@ void GameGUI::step(void)
 	if (game.teams[localTeam]->wasEvent())
 	{
 		Team::EventType teamEvent=game.teams[localTeam]->getEvent();
-		if (teamEvent==Team::IS_UNDER_ATTACK_EVENT)
-			addMessage(globalContainer->texts.getString("[you are under attack]"));
-		else if (teamEvent==Team::BUILDING_FINISHED_EVENT)
+		switch (teamEvent)
+		{
+			case Team::UNIT_UNDER_ATTACK_EVENT:
+			addMessage(globalContainer->texts.getString("[your units are under attack]"));
+			break;
+			case Team::BUILDING_UNDER_ATTACK_EVENT:
+			addMessage(globalContainer->texts.getString("[your buildings are under attack]"));
+			break;
+			case Team::BUILDING_FINISHED_EVENT:
 			addMessage(globalContainer->texts.getString("[building has been finished]"));
+			break;
+			default:
+			break;
+		}
 	}
 }
 

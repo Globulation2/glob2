@@ -159,7 +159,7 @@ void Sector::step(void)
 					int team=Unit::UIDtoTeam(UID);
 					int id=Unit::UIDtoID(UID);
 
-					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::IS_UNDER_ATTACK_EVENT);
+					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::UNIT_UNDER_ATTACK_EVENT);
 					game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
 				}
 				else if (UID!=NOUID)
@@ -167,7 +167,7 @@ void Sector::step(void)
 					int team=Building::UIDtoTeam(UID);
 					int id=Building::UIDtoID(UID);
 
-					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::IS_UNDER_ATTACK_EVENT);
+					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::BUILDING_UNDER_ATTACK_EVENT);
 					Building *b=game->teams[team]->myBuildings[id];
 					int damage=(*it)->shootDamage-b->type->armor; 
 					if (damage>0)
