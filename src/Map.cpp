@@ -1503,8 +1503,9 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	if (!found)
 	{
 		printf("locked at (%d, %d)\n", x, y);
-		*dx=0;
-		*dy=0;
+		// Don't set dx and dy, we simply hope the direction will bring the unit to the ressource...
+		//*dx=0;
+		//*dy=0;
 	}
 	
 	//printf("...pathfindedRessource v2 %d\n", found);
