@@ -2025,39 +2025,47 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		}*/
 }
 
-Sint32 Game::checkSum()
+Sint32 Game::checkSum(std::list<Uint32> *checkSumsList)
 {
 	Sint32 cs=0;
 
 	cs^=session.checkSum();
-	//printf("cs=(%x", cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
-		cs^=teams[i]->checkSum();
+		cs^=teams[i]->checkSum(checkSumsList);
 		cs=(cs<<31)|(cs>>1);
 	}
-	//printf(", %x", cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
+	
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfPlayer; i++)
 	{
 		cs^=players[i]->checkSum();
 		cs=(cs<<31)|(cs>>1);
 	}
-	//printf(", %x", cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
+	
 	cs=(cs<<31)|(cs>>1);
 	cs^=map.checkSum(false);
 	cs=(cs<<31)|(cs>>1);
-	//printf(", %x", cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
-	//printf("Game::sc, sr=(%d, %d, %d).", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
-	//printf(", %x)\n", cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 
 	cs^=script.checkSum();
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
 	return cs;
 }

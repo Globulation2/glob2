@@ -144,7 +144,7 @@ public:
 	void dirtyGlobalGradient();
 	
 	//! Compute team checksum
-	Sint32 checkSum();
+	Sint32 checkSum(std::list<Uint32> *checkSumsList=NULL);
 	
 	//! Return the name of the first player in the team
 	const char *getFirstPlayerName(void);

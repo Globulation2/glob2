@@ -218,6 +218,7 @@ int Glob2::run(int argc, char *argv[])
 {
 	Toolkit::init("glob2");
 
+	srand(time(NULL));
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();

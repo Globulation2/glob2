@@ -76,6 +76,7 @@ order's steps tricks:
 
 #include "Header.h"
 #include <SDL/SDL_net.h>
+#include <list>
 
 class Player;
 class Order;
@@ -90,7 +91,6 @@ public:
 private:
 	Uint32 whoMaskAreWeWaitingFor(void); // Uses executeUStep
 	Uint32 whoMaskCountedOut(void); // Players who has been late for more than 1 tick. Used to avoid flicking of the "away player" message.
-	//Uint32 lastUStepReceivedFromHim(int player);
 	Uint32 lastUsableUStepReceivedFromHim(int player);
 	void sendPushOrder(int targetPlayer); // Uses pushUStep
 	void sendWaitingForPlayerOrder(int targetPlayer);
@@ -113,6 +113,7 @@ public:
 	void stepExecuted(void);
 	int ticksToDelayInside(void);
 	void setLeftTicks(int leftTicks);
+	std::list<Uint32> *getCheckSumsListsStorage();
 	
 private:
 	int numberOfPlayer;
@@ -175,6 +176,7 @@ private:
 	UDPsocket socket;
 
 	Sint32 gameCheckSums[32][256];
+	std::list<Uint32> checkSumsListsStorage[256];
 	
 	FILE *logFile;
 protected:
