@@ -50,7 +50,7 @@ CustomGameScreen::CustomGameScreen()
 
 	for (int i=0; i<16; i++)
 	{
-		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, 100+i);
+		isAI[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
 		addWidget(isAI[i]);
 		color[i]=new ColorButton(265, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 200+i);
 		addWidget(color[i]);
