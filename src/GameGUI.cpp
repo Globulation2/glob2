@@ -595,18 +595,18 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				break;
 				case InGameMainScreen::RETURN_GAME:
 				{
-					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
+					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
 					return true;
 				}
 				break;
 				case InGameMainScreen::QUIT_GAME:
 				{
-					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
-					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
+					inGameMenu=IGM_NONE;
 					gameMenuScreen=NULL;
+					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					return true;
 				}
 				break;
@@ -1028,7 +1028,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 		{
 			case SDLK_ESCAPE:
 				{
-					if ((inGameMenu==IGM_NONE) && (!pressed))
+					if ((inGameMenu==IGM_NONE) && (pressed))
 					{
 						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
 						inGameMenu=IGM_MAIN;
