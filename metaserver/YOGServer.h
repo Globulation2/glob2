@@ -43,6 +43,7 @@ public:
 	void send(IPaddress ip, YOGMessageType v);
 	void send(IPaddress ip, YOGMessageType v, Uint8 id);
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
+	void executeCommand(YOGClient *sender, char *s);
 	void run();
 	void lprintf(const char *msg, ...);
 	int strmlen(const char *s, int max);

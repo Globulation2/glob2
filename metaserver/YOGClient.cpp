@@ -190,6 +190,7 @@ void YOGClient::send(const Message &m)
 	if (rv!=1)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
+	lprintf("size=%d, m.textLength=%d, m.userNameLength=%d.\n", size, m.textLength, m.userNameLength);
 }
 
 void YOGClient::sendGames()

@@ -118,6 +118,61 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	SDLNet_FreePacket(packet);
 }
 
+void YOGServer::executeCommand(YOGClient *sender, char *s)
+{
+	if (s[0]!='/')
+		return;
+	switch (s[1])
+	{
+		case 'w':
+		case 'm':
+		{
+			if (s[2]==' ')
+			{
+				int n;
+				for (n=0; n<32; n++)
+					if (s[n+3]==' ' || s[n+3]==0)
+						break;
+				char userName[32];
+				memcpy(userName, s+3, n);
+				userName[n]=0;
+				
+				// We look for a client with this userName:
+				bool found=false;
+				std::list<YOGClient *>::iterator client;
+				for (client=clients.begin(); client!=clients.end(); ++client)
+					if (strncmp((*client)->userName, userName, 32)==0)
+						{
+							found=true;
+							break;
+						}
+				if (!found)
+					return;
+				
+				Message m;
+				int l;
+				l=strmlen(s+n+4, 256-n-4);
+				memcpy(m.text, s+n+4, l);
+				m.text[l-1]=0;
+				m.textLength=l;
+
+				l=strmlen(sender->userName, 32);
+				memcpy(m.userName, sender->userName, l);
+				m.userName[l-1]=0;
+				m.userNameLength=l;
+				
+				(*client)->messages.push_back(m);
+			}
+		}
+		break;
+		case 0:
+		{
+			return;
+		}
+		break;
+	}
+}
+
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 {
 	//lprintf("packet type (%d, %d) received by ip=%d.%d.%d.%d port=%d\n", data[0], data[1], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
@@ -239,28 +294,30 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		if (good)
 		{
 			char *s=(char *)data+4;
+			
+			YOGClient *c=*sender;
+			c->lastSentMessageID=messageID;
+			Message m;
+			int l;
+
+			l=strmlen(s, 256);
+			memcpy(m.text, s, l);
+			m.text[l-1]=0;
+			m.textLength=l;
+
+			l=strmlen(c->userName, 32);
+			memcpy(m.userName, c->userName, l);
+			m.userName[l-1]=0;
+			m.userNameLength=l;
+			
 			if (s[0]=='/')
 			{
 				// We received a command
+				executeCommand(c, s);
 			}
 			else
 			{
 				// Here we have to send this message to all clients!
-				YOGClient *c=*sender;
-				c->lastSentMessageID=messageID;
-				Message m;
-				int l;
-				
-				l=strmlen(s, 256);
-				memcpy(m.text, s, l);
-				m.text[l-1]=0;
-				m.textLength=l;
-				
-				l=strmlen(c->userName, 32);
-				memcpy(m.userName, c->userName, l);
-				m.userName[l-1]=0;
-				m.userNameLength=l;
-				
 				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
 				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 					if ((*client)->messages.size()<(256-2))
