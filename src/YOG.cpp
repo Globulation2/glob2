@@ -562,12 +562,12 @@ bool YOG::getNextFirewallActivation(void)
 		return false;
 }
 
-void YOG::sendFirewallActivation(const char *ip, Uint16 port)
+void YOG::sendFirewallActivation(const char *nick, Uint16 port)
 {
 	joinChannel(DEFAULT_FW_CHAN);
 
 	char activationMssage[IRC_MESSAGE_SIZE];
-	snprintf(activationMssage, sizeof(activationMssage), "PRIVMSG %s :%s %d", DEFAULT_FW_CHAN, ip, port);
+	snprintf(activationMssage, sizeof(activationMssage), "PRIVMSG %s :%s %d", DEFAULT_FW_CHAN, nick, port);
 	sendString(activationMssage);
 
 	quitChannel(DEFAULT_FW_CHAN);

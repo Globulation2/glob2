@@ -222,7 +222,7 @@ public:
 	//! Return true and get next firewall activation if there is at least one in list, false otherwise
 	bool getNextFirewallActivation(void);
 	//! Send a firewall activation request
-	void sendFirewallActivation(const char *ip, Uint16 port);
+	void sendFirewallActivation(const char *nick, Uint16 port);
 
 private:
 	//! Send a string in IRC format
