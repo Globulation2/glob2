@@ -784,7 +784,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 	}
 	else
 	{
-		er.type=ErrorReport::ET_UNKNOWN;
+		er.type=ErrorReport::ET_NO_SUCH_FILE;
 	}
 	return er;
 }

@@ -432,7 +432,15 @@ bool Game::load(SDL_RWops *stream)
 	ErrorReport er=script.loadScript("testscript.txt", this);
 	if (er.type!=ErrorReport::ET_OK)
 	{
-		printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+		if (er.type==ErrorReport::ET_NO_SUCH_FILE)
+		{
+			printf("SGSL : Can't find script file testscript.txt\n");
+		}
+		else
+		{
+			printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+			return false;
+		}
 	}
 	
 	return true;
