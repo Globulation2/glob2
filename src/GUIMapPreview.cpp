@@ -21,6 +21,7 @@
 #include "GUIMapPreview.h"
 #include "GlobalContainer.h"
 #include "Session.h"
+#include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, const char *mapName)
 {
@@ -58,6 +59,7 @@ void MapPreview::repaint(void)
 				Map map;
 				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
 				map.load(stream);
+				gfx->drawFilledRect(x,y,128,128,0,0,0);
 
 				int H[3]= { 0, 90, 0 };
 				int E[3]= { 0, 40, 120 };
@@ -74,13 +76,18 @@ void MapPreview::repaint(void)
 				float dMx, dMy;
 				float minidx, minidy;
 				int r, b, g;
+				// get data
+				int mMax;
+				int szX, szY;
+				int decX, decY;
+				Utilities::computeMinimapData(128, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
 
-				dMx=(float)map.getW()/128.0f;
-				dMy=(float)map.getH()/128.0f;
+				dMx=(float)mMax/128.0f;
+				dMy=(float)mMax/128.0f;
 
-				for (dy=0; dy<128; dy++)
+				for (dy=0; dy<szY; dy++)
 				{
-					for (dx=0; dx<128; dx++)
+					for (dx=0; dx<szX; dx++)
 					{
 						for (int i=0; i<7; i++)
 							pcol[i]=0;
@@ -116,7 +123,7 @@ void MapPreview::repaint(void)
 						g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 						b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 
-						gfx->drawPixel(x+dx, y+dy, r, g, b);
+						gfx->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
 					}
 				}
 

@@ -21,9 +21,6 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-//! if defined, enable fow and map invisible
-//#define DBG_ALL_MAP_DISCOVERED
-
 #include "GAG.h"
 #include "Unit.h"
 #include "Building.h"
@@ -61,7 +58,7 @@ public:
 	Sector() {}
 	Sector(Game *);
 	virtual ~Sector(void);
-	
+
 	void free(void);
 	
 	std::list<Bullet *> bullets;
