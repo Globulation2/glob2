@@ -140,7 +140,7 @@ bool AI::load(SDL_RWops *stream)
 			if (memcmp(signature,"GLO2",4)!=0)
 				return false;
 		}
-		else if (game->session.versionMinor>=3)
+		else
 			assert(false);
 	}
 	return true;
