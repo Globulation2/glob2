@@ -163,6 +163,12 @@ bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 		return false;
 	
 	char data[68];
+//TODO: ugly hack to make it work under OSX for now... 	
+#ifndef SOCKLEN_T
+#define socklen_t int
+#endif
+
+
 	socklen_t senderLen;
 	//printf("sizeof(senderAddr)=%d.\n", sizeof(senderAddr));
 	//printf("sizeof(sockaddr)=%d.\n", sizeof(sockaddr));

@@ -223,7 +223,7 @@ public:
 	int getMainTimer(void) { return mainTimer; }
 	
 	bool isTextShown;
-	string textShown;
+	std::string textShown;
 	
 private:
 	friend class Story;
@@ -231,8 +231,8 @@ private:
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
 	void reset(void);
 	bool testMainTimer(void);
-	bool doesFlagExist(string name);
-	bool getFlagPos(string name, int *x, int *y);
+	bool doesFlagExist(std::string name);
+	bool getFlagPos(std::string name, int *x, int *y);
 	
 	int mainTimer;
 	std::deque<Story> stories;
