@@ -40,6 +40,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	int n;
 	for (n=0;n<numberOfPlayer;n++)
 	{
+		assert(players[n]);
 		if (players[n]->type==Player::P_LOCAL)
 			localPlayerNumber=n;
 	}
