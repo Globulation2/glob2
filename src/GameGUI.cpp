@@ -1997,6 +1997,11 @@ void GameGUI::drawBuildingInfos(void)
 					j++;
 				}
 			}
+			if (buildingType->maxBullets)
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+(j*11), globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[Bullets]"), selBuild->bullets, buildingType->maxBullets).c_str());
+				j++;
+			}
 		}
 
 		// repair and upgrade

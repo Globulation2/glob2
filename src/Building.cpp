@@ -178,6 +178,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);
+	if (versionMinor>=24)
+		bullets=SDL_ReadBE32(stream);
+	else
+		bullets=0;
 
 	// type
 	typeNum=SDL_ReadBE32(stream);
@@ -257,6 +261,7 @@ void Building::save(SDL_RWops *stream)
 
 	SDL_WriteBE32(stream, shootingStep);
 	SDL_WriteBE32(stream, shootingCooldown);
+	SDL_WriteBE32(stream, bullets);
 
 	// type
 	SDL_WriteBE32(stream, typeNum);
@@ -1566,13 +1571,22 @@ void Building::swarmStep(void)
 
 void Building::turretStep(void)
 {
+	if (ressources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
+	{
+		ressources[STONE]--;
+		bullets+=type->multiplierStoneToBullets;
+		
+		// we need to be stone-feeded
+		updateCallLists();
+	}
+	
 	if (shootingCooldown>0)
 	{
 		shootingCooldown-=type->shootRythme;
 		return;
 	}
-
-	if (!ressources[STONE])
+	
+	if (bullets<=0)
 		return;
 
 	assert(type->width ==2);
@@ -1751,11 +1765,8 @@ void Building::turretStep(void)
 		//printf("%d insert: (px=%d, py=%d, sx=%d, sy=%d, tl=%d, sd=%d) \n", gid, px, py, speedX, speedY, ticksLeft, type->shootDamage);
 		s->bullets.push_front(b);
 
-		ressources[STONE]--;
+		bullets--;
 		shootingCooldown=SHOOTING_COOLDOWN_MAX;
-
-		// we need to be stone-feeded
-		updateCallLists();
 	}
 
 }

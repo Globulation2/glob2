@@ -73,6 +73,8 @@ shootingRange = 0
 shootDamage = 0
 shootSpeed = 0
 shootRythme = 0
+maxBullets = 0
+multiplierStoneToBullets = 0
 
 unitProductionTime = 0
 ressourceForOneUnit = 0
@@ -965,13 +967,14 @@ miniImage = 7
 
 fillable = 1
 maxStone = 4
-multiplierStone = 2
 maxUnitWorking = 1
 
 shootingRange = 5
 shootDamage = 30
 shootSpeed = 4700
 shootRythme = 1800
+maxBullets = 12
+multiplierStoneToBullets = 3
 
 width = 2
 height = 2
@@ -1015,14 +1018,15 @@ viewingRange = 5
 startImage = 14
 
 fillable = 1
-maxStone = 6
-multiplierStone = 3
+maxStone = 4
 maxUnitWorking = 1
 
 shootingRange = 7
 shootDamage = 40
 shootSpeed = 5700
 shootRythme = 2000
+maxBullets = 16
+multiplierStoneToBullets = 4
 
 width = 2
 height = 2
@@ -1067,14 +1071,15 @@ viewingRange = 6
 startImage = 21
 
 fillable = 1
-maxStone = 10
-multiplierStone = 2
+maxStone = 4
 maxUnitWorking = 1
 
 shootingRange = 7
 shootDamage = 60
 shootSpeed = 8000
 shootRythme = 2200
+maxBullets = 20
+multiplierStoneToBullets = 5
 
 width = 2
 height = 2
