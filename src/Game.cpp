@@ -1165,27 +1165,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					assert(variety<2);
 					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, (type*10)+(variety*5)+amount);
 				}
-
-				
-				// draw Unit or Building
-				#ifdef DBG_UID
-				if ((useMapDiscovered) || map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))
-				{
-					int UID=map.getUnit(x+viewportX,y+viewportY);
-					if (UID!=NOUID)
-					{
-						if (UID>=0)
-							globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 0, 0, 255);
-						else
-							globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
-					}
-					if (map.isRessource(x+viewportX, y+viewportY, (RessourceType)0/*ALGA*/))
-						globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 255);
-				}
-				#endif
-				
-				//(debug)if (map.isWaterOrAlga(x+viewportX, y+viewportY))
-				//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
 			}
 	}
 
