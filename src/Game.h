@@ -90,7 +90,7 @@ public:
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream, bool fileIsAMap, const char *name);
 
-	void buildProjectSyncStep(void);
+	void buildProjectSyncStep(Sint32 localTeam);
 	//! look for each team if it has won or not
 	void wonSyncStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed

@@ -225,7 +225,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 					{
 						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 						map.cases[index].forbidden|=teamMask;
-						map.localForbiddenMap.set(index, true);
+						if (oc->teamNumber == players[localPlayer]->teamNumber)
+							map.localForbiddenMap.set(index, true);
 					}
 			}
 		}
@@ -446,7 +447,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 							// Update real map
 							map.cases[index].forbidden|=teamMask;
 							// Update local map
-							map.localForbiddenMap.set(index, true);
+							if (oaf->teamNumber == players[localPlayer]->teamNumber)
+								map.localForbiddenMap.set(index, true);
 						}
 					}
 			}
@@ -463,7 +465,8 @@ void Game::executeOrder(Order *order, int localPlayer)
 							// Update real map
 							map.cases[index].forbidden&=notTeamMask;
 							// Update local map
-							map.localForbiddenMap.set(index, false);
+							if (oaf->teamNumber == players[localPlayer]->teamNumber)
+								map.localForbiddenMap.set(index, false);
 						}
 					}
 					
@@ -896,7 +899,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 
 }
 
-void Game::buildProjectSyncStep(void)
+void Game::buildProjectSyncStep(Sint32 localTeam)
 {
 	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end(); bpi++)
 	{
@@ -926,7 +929,8 @@ void Game::buildProjectSyncStep(void)
 						// Update real map
 						map.cases[index].forbidden&=notTeamMask;
 						// Update local map
-						map.localForbiddenMap.set(index, false);
+						if (teamNumber == localTeam)
+							map.localForbiddenMap.set(index, false);
 					}
 				b->owner->addToStaticAbilitiesLists(b);
 				b->update();
@@ -1015,7 +1019,7 @@ void Game::syncStep(Sint32 localTeam)
 			renderMiniMap(localTeam, false, stepCounter%25, 25);
 
 		if ((stepCounter&15)==1)
-			buildProjectSyncStep();
+			buildProjectSyncStep(localTeam);
 		
 		if ((stepCounter&31)==0)
 		{
@@ -1990,21 +1994,21 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if (map.isForbiddenLocal(x+viewportX, y+viewportY, teams[localTeam]->me))
+				if (map.isForbiddenLocal(x+viewportX, y+viewportY))
 				{
 					//globalContainer->gfx->drawFilledRect((x<<5), (y<<5), 32, 32, 128, 0, 0, 64);
 					globalContainer->gfx->drawLine((x<<5), (y<<5), 32+(x<<5), 32+(y<<5), 128, 0, 0);
 					globalContainer->gfx->drawLine(16+(x<<5), (y<<5), 32+(x<<5), 16+(y<<5), 128, 0, 0);
 					globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 16+(x<<5), 32+(y<<5), 128, 0, 0);
 					
-					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1, teams[localTeam]->me))
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY-1))
 						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 0, 0);
-					if (!map.isForbiddenLocal(x+viewportX, y+viewportY+1, teams[localTeam]->me))
+					if (!map.isForbiddenLocal(x+viewportX, y+viewportY+1))
 						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 0, 0);
 					
-					if (!map.isForbiddenLocal(x+viewportX-1, y+viewportY, teams[localTeam]->me))
+					if (!map.isForbiddenLocal(x+viewportX-1, y+viewportY))
 						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 0, 0);
-					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY, teams[localTeam]->me))
+					if (!map.isForbiddenLocal(x+viewportX+1, y+viewportY))
 						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 0, 0);
 				}
 			}
