@@ -41,7 +41,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	this->filenameToNameFunc=filenameToNameFunc;
 	this->nameToFilenameFunc=nameToFilenameFunc;
 
-	fileList=new List(10, 40, 280, 145, globalContainer->standardFont);
+	fileList=new List(10, 40, 280, 145, "standard");
 
 	if (globalContainer->fileManager->initDirectoryListing(directory, extension))
 	{

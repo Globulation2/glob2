@@ -26,7 +26,7 @@ LoadGameScreen::LoadGameScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
+	fileList=new List(20, 60, 180, 400, "standard");
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
 	addWidget(new Text(20, 18, "menu", globalContainer->texts.getString("[choose game]"), 600));

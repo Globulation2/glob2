@@ -21,15 +21,15 @@
 #include <functional>
 #include <algorithm>
 #include <assert.h>
+#include <Toolkit.h>
 
-List::List(int x, int y, int w, int h, base::Ptr<Font> font)
+List::List(int x, int y, int w, int h, const char *font)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
 	this->font=font;
-	textHeight=font->getStringHeight((const char *)NULL);
 	nth=-1;
 	disp=0;
 	blockLength=0;
@@ -152,9 +152,9 @@ void List::internalPaint(void)
 
 	assert(parent);
 	assert(parent->getSurface());
+	assert(fontPtr);
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	
-
 	unsigned count = (h-4) / textHeight;
 	if (strings.size() > count)
 	{
@@ -185,6 +185,11 @@ void List::internalPaint(void)
 			blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
 			parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
 		}
+		else
+		{
+			blockLength=0;
+			blockPos=0;
+		}
 
 		elementLength = w-22;
 		parent->getSurface()->setClipRect(x+1, y+1, w-22, h-2);
@@ -199,7 +204,7 @@ void List::internalPaint(void)
 
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		parent->getSurface()->drawString(x+2, yPos, font, "%s", (strings[i+disp]).c_str());
+		parent->getSurface()->drawString(x+2, yPos, fontPtr, "%s", (strings[i+disp]).c_str());
 		if (i+(int)disp==nth)
 			parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 		nextSize+=textHeight;
@@ -212,6 +217,10 @@ void List::internalPaint(void)
 
 void List::paint(void)
 {
+	fontPtr = Toolkit::getFont(font.c_str());
+	textHeight = fontPtr->getStringHeight((const char *)NULL);
+	assert(fontPtr);
+
 	if (visible)
 		internalPaint();
 }
@@ -229,10 +238,7 @@ void List::addText(const char *text, int pos)
 {
 	if ((pos>=0) && (pos<(int)strings.size()))
 	{
-		int textLength=strlen(text);
-		char *newText=new char[textLength+1];
-		strncpy(newText, text, textLength+1);
-		strings.insert(strings.begin()+pos, newText);
+		strings.insert(strings.begin()+pos, std::string(text));
 	}
 }
 
@@ -243,10 +249,7 @@ void List::sort(void)
 
 void List::addText(const char *text)
 {
-	int textLength=strlen(text);
-	char *newText=new char[textLength+1];
-	strncpy(newText, text, textLength+1);
-	strings.push_back(newText);
+	strings.push_back(std::string(text));
 }
 
 void List::removeText(int pos)

@@ -25,7 +25,7 @@
 class Glob2FileList: public FileList
 {
 public:
-	Glob2FileList(int x, int y, int w, int h, Font *font, 
+	Glob2FileList(int x, int y, int w, int h, const char *font, 
 								const char *dir, 
 								const char *extension=NULL, const bool recurse=false);
 	virtual ~Glob2FileList();

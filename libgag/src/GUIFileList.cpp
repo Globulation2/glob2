@@ -23,7 +23,7 @@
 #include <iostream>
 #include <Toolkit.h>
 
-FileList::FileList(int x, int y, int w, int h, base::Ptr<Font> font,
+FileList::FileList(int x, int y, int w, int h, const char *font,
 									 const char *dir,
 									 const char *extension, const bool recurse)
 	: List(x, y, w, h, font),

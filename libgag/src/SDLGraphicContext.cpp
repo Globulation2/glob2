@@ -887,7 +887,8 @@ void SDLDrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)
 	if (!surface)
 		return;
 
-	SDLDrawableSurface *sdlsurface=dynamic_cast<SDLDrawableSurface *>(surface);
+	//SDLDrawableSurface *sdlsurface=dynamic_cast<SDLDrawableSurface *>(surface);
+	SDLDrawableSurface *sdlsurface=(SDLDrawableSurface *)(void *)surface;
 	if ((sdlsurface) && (sdlsurface->surface))
 	{
 		SDL_Rect r;

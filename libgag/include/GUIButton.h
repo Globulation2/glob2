@@ -52,8 +52,8 @@ protected:
 class TextButton:public Button
 {
 public:
-	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicodeiShortcut=0);
-	virtual ~TextButton() { if (text) delete[] text; }
+	TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicodeShortcut=0);
+	virtual ~TextButton() { }
 
 	virtual void paint(void);
 	
@@ -66,7 +66,7 @@ protected:
 	void internalSetText(const char *text);
 
 protected:
-	char *text;
+	std::string text;
 	const Font *font;
 	int decX, decY;
 };

@@ -24,7 +24,7 @@ Ratio::Ratio(int x, int y, int w, int h, int size, int value, Font *font)
 {
 	assert(font);
 	this->font=font;
-	textHeight=font->getStringHeight(NULL);
+	textHeight=font->getStringHeight((const char *)NULL);
 	
 	this->x=x;
 	this->y=y;

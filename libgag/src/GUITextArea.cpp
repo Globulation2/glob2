@@ -30,7 +30,7 @@ TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly, 
 	this->font=font;
 	textBuffer=NULL;
 	assert(font);
-	charHeight=font->getStringHeight(NULL);
+	charHeight=font->getStringHeight((const char *)NULL);
 	assert(charHeight);
 	areaHeight=(h-8)/charHeight;
 	areaPos=0;
