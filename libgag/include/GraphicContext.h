@@ -83,12 +83,17 @@ class GraphicContext:public virtual DrawableSurface
 {
 private:
 	SDL_Rect **modes;
+	
+protected:
+	int minW, minH;
 
 public:
+	GraphicContext();
 	virtual ~GraphicContext(void);
 
 	//! this must be called before any Drawable Surface method.
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT)=0;
+	virtual void setMinRes(int w=0, int h=0);
 	virtual void beginVideoModeListing(void);
 	virtual bool getNextVideoMode(int *w, int *h);
 	virtual void setCaption(const char *title, const char *icon)=0;

@@ -53,6 +53,17 @@ GraphicContext *GraphicContext::createGraphicContext(GraphicContextType type)
 }
 
 
+GraphicContext::GraphicContext()
+{
+	minW = minH = 0;
+}
+
+void GraphicContext::setMinRes(int w, int h)
+{
+	minW = w;
+	minH = h;
+}
+
 void GraphicContext::beginVideoModeListing(void)
 {
 	modes=SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
@@ -60,15 +71,24 @@ void GraphicContext::beginVideoModeListing(void)
 
 bool GraphicContext::getNextVideoMode(int *w, int *h)
 {
-	if ((modes) && (*modes) && (modes!=(SDL_Rect **)-1))
+	if (modes && (modes!=(SDL_Rect **)-1))
 	{
-		*w=(*modes)->w;
-		*h=(*modes)->h;
-		modes++;
-		return true;
+		while (*modes)
+		{
+			int nw = (*modes)->w;
+			int nh = (*modes)->h;
+			modes++;
+			
+			if ( ((minW == 0) || (nw >= minW))
+				&& ((minH == 0) || (nh >= minH)))
+			{
+				*w = nw;
+				*h = nh;
+				return true;
+			}
+		}
 	}
-	else
-		return false;
+	return false;
 }
 
 GraphicContext::~GraphicContext(void)
