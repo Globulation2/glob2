@@ -21,9 +21,14 @@
 #define __YOGSCREEN_H
 
 #include "MultiplayersJoin.h"
-#include "GAG.h"
 #include <vector>
 #include "YOG.h"
+#include <GUIBase.h>
+
+class List;
+class TextInput;
+class TextArea;
+class TextButton;
 
 class YOGScreen:public Screen
 {
