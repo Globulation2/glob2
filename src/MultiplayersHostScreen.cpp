@@ -130,6 +130,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->playerName[31]=0;
 		strncpy(multiplayersJoin->serverNickName, globalContainer->userName, 32);
 		multiplayersJoin->serverNickName[31]=0;
+		multiplayersJoin->ipFromNAT=true;
 		
 		if (multiplayersHost->serverIP.host==0)
 		{
