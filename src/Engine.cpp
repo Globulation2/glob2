@@ -400,7 +400,6 @@ int Engine::run(void)
 				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 					gui.executeOrder(net->getOrder(i));
-				
 				net->stepExecuted();
 
 				// here we do the real work

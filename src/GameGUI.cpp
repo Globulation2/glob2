@@ -2710,24 +2710,25 @@ void GameGUI::executeOrder(Order *order)
 			if (order->sender==localPlayer)
 				isRunning=false;
 			game.executeOrder(order, localPlayer);
+			delete order;
 		}
 		break;
 		case ORDER_DECONNECTED :
 		{
 			int qp=order->sender;
 			addMessage(200, 200, 200, Toolkit::getStringTable()->getString("[%s has been deconnected of the game]"), game.players[qp]->name);
-			
 			game.executeOrder(order, localPlayer);
+			delete order;
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
 			addMessage(200, 200, 200, Toolkit::getStringTable()->getString("[%s has left the game]"), game.players[qp]->name);
-			
 			game.executeOrder(order, localPlayer);
 		}
 		break;
+		
 		case ORDER_MAP_MARK:
 		{
 			MapMarkOrder *mmo=(MapMarkOrder *)order;

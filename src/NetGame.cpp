@@ -57,7 +57,6 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	
 	logFile=globalContainer->logFileManager->getFile("NetGame.log");
 	
-	//logFile=stdout;
 	assert(logFile);
 	
 	for (int pi=0; pi<32; pi++)
@@ -207,6 +206,8 @@ void NetGame::init(void)
 		countDown[pi]=0;
 		// And everyone thinks that everyone is connected:
 		droppingPlayersMask[pi]=0;
+		
+		dropStatusCommuniquedToGui[pi]=false;
 		
 		// And all player's ping are equals.
 		for (int ri=0; ri<256; ri++)
@@ -634,6 +635,8 @@ Order *NetGame::getOrder(int playerNumber)
 {
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	
+	assert(players[playerNumber]->type!=Player::P_LOST_DROPPING);
+	
 	if (players[localPlayerNumber]->quitting)
 	{
 		if (playerNumber!=localPlayerNumber)
@@ -665,6 +668,7 @@ Order *NetGame::getOrder(int playerNumber)
 			players[playerNumber]->type=Player::P_LOST_FINAL;
 			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me, quited\\n", playerNumber);
 			order=new QuitedOrder();
+			dropStatusCommuniquedToGui[playerNumber]=true;
 		}
 		else
 			order=new NullOrder();
@@ -679,7 +683,14 @@ Order *NetGame::getOrder(int playerNumber)
 	}
 	else if (players[playerNumber]->type==Player::P_LOST_FINAL)
 	{
-		Order *order=new NullOrder();
+		Order *order;
+		if (dropStatusCommuniquedToGui[playerNumber])
+			order=new NullOrder();
+		else
+		{
+			order=new DeconnectedOrder();
+			dropStatusCommuniquedToGui[playerNumber]=true;
+		}
 		order->sender=playerNumber;
 		return order;
 	}
@@ -693,6 +704,7 @@ Order *NetGame::getOrder(int playerNumber)
 			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, quited\n", playerNumber);
 			assert(executeUStep==players[playerNumber]->quitUStep+latency);
 		}
+		dropStatusCommuniquedToGui[playerNumber]=true;
 		Order *order=new NullOrder();
 		order->sender=playerNumber;
 		return order;
@@ -1070,6 +1082,14 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 				delete order;
 				return;
 			}
+			else if (order->getOrderType()==ORDER_QUITED || order->getOrderType()==ORDER_DECONNECTED)
+			{
+				fprintf(logFile, "  Error, player %d with ip %s sent us an %d internal order",
+					player, Utilities::stringIP(ip), order->getOrderType());
+				delete order;
+				return;
+			}
+			
 			// We can store it:
 			delete oldOrder;
 			order->sender=player;
