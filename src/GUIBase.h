@@ -17,7 +17,8 @@ enum Action
 	BUTTON_PRESSED,
 	BUTTON_RELEASED,
 	TEXT_MODIFFIED,
-	TEXT_ACTIVATED
+	TEXT_ACTIVATED,
+	LIST_ELEMENT_SELECTED
 };
 
 class Screen;
@@ -43,8 +44,8 @@ class Screen
 public:
 	virtual ~Screen();
 
-	virtual void onTimer(Uint32 tick)=0;
-	virtual void onSDLEvent(SDL_Event *event)=0;
+	virtual void onTimer(Uint32 tick) { }
+	virtual void onSDLEvent(SDL_Event *event) { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2)=0;
 	virtual void paint();
 	virtual void paint(int x, int y, int w, int h)=0;
@@ -58,6 +59,7 @@ public:
 	void dispatchEvents(SDL_Event *event);
 	void dispatchTimer(Uint32 tick);
 	void dispatchPaint(GraphicContext *gfx);
+	void repaint(GraphicContext *gfx);
 
 protected:
 	bool run;

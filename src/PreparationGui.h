@@ -27,8 +27,6 @@ private:
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();
-	void onTimer(Uint32 tick);
-	void onSDLEvent(SDL_Event *event);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 	static int menu(void);
@@ -49,8 +47,6 @@ private:
 public:
 	MultiplayersOfferScreen();
 	virtual ~MultiplayersOfferScreen();
-	void onTimer(Uint32 tick);
-	void onSDLEvent(SDL_Event *event);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 	static int menu(void);
@@ -75,13 +71,13 @@ protected:
 	static const int hostiphost=0;
 	static const int hostipport=0;
 public:
-	
+
 	SessionInfo sessionInfo;
 	Sint32 myPlayerNumber;
 	UDPsocket socket;
 	bool destroyNet;
 	int channel;
-	
+
 };
 
 class MultiplayersChooseMapScreen:public SessionScreen
@@ -93,17 +89,15 @@ public:
 		SHARE = 4,
 		CANCEL = 5
 	};
-	
+
 private:
 	IMGGraphicArchive *arch;
 	TextInput *mapName;
 	Button *load, *share, *cancel;
-	
+
 public:
 	MultiplayersChooseMapScreen();
 	virtual ~MultiplayersChooseMapScreen();
-	void onTimer(Uint32 tick);
-	void onSDLEvent(SDL_Event *event);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 };
@@ -124,11 +118,11 @@ public:
 	enum
 	{
 		START = 1,
-		CANCEL = 5, 
-		
+		CANCEL = 5,
+
 		STARTED=11
 	};
-	
+
 	enum HostGlobalState
 	{
 		HGS_BAD=0,
@@ -138,7 +132,7 @@ public:
 		HGS_GAME_START_SENDED=4,
 		HGS_PLAYING_COUNTER=5 // the counter 5-4-3-2-1-0 is playing
 	};
-	
+
 	enum
 	{
 		SECONDS_BEFORE_START_GAME=5
@@ -146,9 +140,9 @@ public:
 private:
 	IMGGraphicArchive *arch;
 	TextInput *mapName;
-	
+
 	HostGlobalState hostGlobalState;
-	
+
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo);
 	virtual ~MultiplayersHostScreen();
@@ -168,7 +162,6 @@ public:
 	void sendingTime();
 	bool send(const int v);
 	bool send(const int u, const int v);
-	void onSDLEvent(SDL_Event *event);
 	void stopHosting(void);
 	void startGame(void);
 	void onAction(Widget *source, Action action, int par1, int par2);

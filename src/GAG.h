@@ -11,6 +11,7 @@
 #include "GUIBase.h"
 #include "GUIButton.h"
 #include "GUITextInput.h"
+#include "GUIList.h"
 #include "Header.h"
 
 #endif

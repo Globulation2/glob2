@@ -32,11 +32,7 @@ void Button::onSDLEvent(SDL_Event *event)
 			{
 				highlighted=true;
 				assert(gfx);
-				if (highlightID>=0)
-					gfx->drawSprite(arch->getSprite(highlightID), x, y);
- 				else
-					parent->paint(x, y, w, h);
-				parent->addUpdateRect(x, y, w, h);
+    			repaint();
 				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
 			}
 		}
@@ -46,25 +42,40 @@ void Button::onSDLEvent(SDL_Event *event)
 			{
 				highlighted=false;
 				assert(gfx);
-				if (standardId>=0)
-					gfx->drawSprite(arch->getSprite(standardId), x, y);
-				else
-					parent->paint(x, y, w, h);
-				parent->addUpdateRect(x, y, w, h);
+				repaint();
 				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 			}
 		}
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 	}
 	else if (event->type==SDL_MOUSEBUTTONUP)
 	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
+}
+
+void Button::repaint(void)
+{
+	if (highlighted)
+	{
+		if (highlightID>=0)
+			gfx->drawSprite(arch->getSprite(highlightID), x, y);
+		else
+			parent->paint(x, y, w, h);
+	}
+	else
+	{
+		if (standardId>=0)
+			gfx->drawSprite(arch->getSprite(standardId), x, y);
+		else
+			parent->paint(x, y, w, h);
+	}
+	parent->addUpdateRect(x, y, w, h);
 }
 
 void Button::paint(GraphicContext *gfx)
@@ -73,5 +84,33 @@ void Button::paint(GraphicContext *gfx)
 	if (standardId>=0)
 		gfx->drawSprite(arch->getSprite(standardId), x, y);
 	highlighted=false;
+}
+
+TextButton::TextButton(int x, int y, int w, int h, GraphicArchive *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode)
+:Button(x, y, w, h, arch, standardId, highlightID, returnCode)
+{
+	this->font=font;
+	setText(text);
+}
+
+void TextButton::paint(GraphicContext *gfx)
+{
+	Button::paint(gfx);
+	gfx->drawString(x+decX, y+decY, font, text);
+}
+
+void TextButton::setText(const char *text)
+{
+	int textLength=strlen(text);
+	this->text=new char[textLength+1];
+	strcpy(this->text, text);
+	decX=(w-font->getStringWidth(text))>>1;
+	decY=(h-font->getStringHeight(text))>>1;
+}
+
+void TextButton::repaint(void)
+{
+	Button::repaint();
+	gfx->drawString(x+decX, y+decY, font, text);
 }
 

@@ -22,12 +22,12 @@ SDLBitmapFont::~SDLBitmapFont()
 		delete[] CharPos;
 }
 
-int SDLBitmapFont::getStringWidth(const char *string)
+int SDLBitmapFont::getStringWidth(const char *string) const
 {
 	return textWidth(string);
 }
 
-int SDLBitmapFont::getStringHeight(const char *string)
+int SDLBitmapFont::getStringHeight(const char *string) const
 {
 	return height;
 }
@@ -38,7 +38,7 @@ bool SDLBitmapFont::load(const char *filename)
 	
 	SDL_Surface *temp, *sprite;
 /*	SDL_RWops *stream=SDL_RWFromFile(filename, "r");		
-	temp=IMG_Load_RW(stream, 0);	
+	temp=IMG_Load_RW(stream, 0);
 	SDL_FreeRW(stream);	
 	sprite=SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);	
@@ -51,7 +51,7 @@ bool SDLBitmapFont::load(const char *filename)
 	return load(sprite);
 }
 
-void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip)
+void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip) const
 {
 	if ((!picture) || (!Surface) || (!text))
 		return;
@@ -199,7 +199,7 @@ bool SDLBitmapFont::load(SDL_Surface *fontSurface)
 	
 	if (!fontSurface)
 	{
-    	fprintf(stderr, "VID : SDLBitmapFont recieved a NULL SDL_Surface\n");
+    	fprintf(stderr, "VID : SDLBitmapFont received a NULL SDL_Surface\n");
     	assert(false);
     	return false;
     }
@@ -224,7 +224,7 @@ bool SDLBitmapFont::load(SDL_Surface *fontSurface)
 	
 	lastChar=startChar+(i/2)-1;
 	setBackGround(0, height);
-	
+
 	
 	this->CharPos=new int[i];
 	memcpy(this->CharPos, CharPos, i*sizeof(int));
@@ -243,7 +243,7 @@ bool SDLBitmapFont::load(SDL_Surface *fontSurface)
 	return true;
 }
 
-int SDLBitmapFont::textWidth(const char *text, int min, int max)
+int SDLBitmapFont::textWidth(const char *text, int min, int max) const
 {
 	if (!picture)
 		return 0;
@@ -312,10 +312,7 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	}
 	else
 	{
-		clipRect.x=0;
-		clipRect.y=0;
-		clipRect.w=w;
-		clipRect.h=h;
+		setClipRect(NULL);
 		if (flags&SDL_FULLSCREEN)
 			fprintf(stderr, "VID : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
 		else
@@ -827,7 +824,7 @@ void SDLGraphicContext::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint
 	}
 }
 
-void SDLGraphicContext::drawString(int x, int y, Font *font, const char *msg, ...)
+void SDLGraphicContext::drawString(int x, int y, const Font *font, const char *msg, ...)
 {
 	va_list arglist;
 	char output[1024];
@@ -835,11 +832,25 @@ void SDLGraphicContext::drawString(int x, int y, Font *font, const char *msg, ..
 	va_start(arglist, msg);
 	vsprintf(output,  msg, arglist);
 	va_end(arglist);
-	
-	((SDLFont *)font)->drawString(screen, x, y, output, &clipRect);
+
+	((const SDLFont *)font)->drawString(screen, x, y, output, &clipRect);
 }
 
 void SDLGraphicContext::nextFrame(void)
 {
 	SDL_Flip(screen);
+}
+
+SDLOffScreenGraphicContext::SDLOffScreenGraphicContext(int w, int h, bool usePerPixelAlpha, Uint8 alphaValue)
+{
+	SDL_Surface *tempScreen=SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+
+	SDL_SetAlpha(tempScreen, SDL_SRCALPHA, alphaValue);
+	if (usePerPixelAlpha)
+		screen=SDL_DisplayFormatAlpha(tempScreen);
+	else
+		screen=SDL_DisplayFormat(tempScreen);
+	SDL_FreeSurface(tempScreen);
+
+	setClipRect(NULL);
 }

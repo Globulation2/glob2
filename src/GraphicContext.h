@@ -14,8 +14,8 @@ class Font
 public:
 	virtual ~Font() { }
 	virtual bool load(const char *filename)=0;
-	virtual int getStringWidth(const char *string)=0;
-	virtual int getStringHeight(const char *string)=0;
+	virtual int getStringWidth(const char *string) const=0;
+	virtual int getStringHeight(const char *string) const=0;
 	virtual bool printable(char c)=0;
 };
 
@@ -42,7 +42,7 @@ public:
 	virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE)=0;
 	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE)=0;
 	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE)=0;
-	virtual void drawString(int x, int y, Font *font, const char *msg, ...)=0;
+	virtual void drawString(int x, int y, const Font *font, const char *msg, ...)=0;
 	
 	virtual void nextFrame(void)=0;
 };
@@ -56,7 +56,7 @@ public:
 protected:
 	friend class SDLGraphicContext;
 
-	virtual void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL)=0;
+	virtual void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL) const=0;
 };
 
 class SDLBitmapFont: public SDLFont
@@ -65,20 +65,20 @@ public:
 	SDLBitmapFont(const char *filename);
 	virtual ~SDLBitmapFont();
 	bool load(const char *filename);
-	int getStringWidth(const char *string);
-	int getStringHeight(const char *string);
+	int getStringWidth(const char *string) const;
+	int getStringHeight(const char *string) const;
 	bool printable(char c);
 
 protected:
 	friend class SDLGraphicContext;
 
-	void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL);
+	void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL) const;
 
 	bool load(SDL_Surface *fontSurface);
-	
+
 	void init();
 	// Returns the width of "text" in pixels
-	int textWidth(const char *text, int min=0, int max=255);
+	int textWidth(const char *text, int min=0, int max=255) const;
 	
 
 	static const int startChar = 33;
@@ -109,30 +109,42 @@ public:
 	SDLGraphicContext(void);
 	virtual ~SDLGraphicContext(void);
 
-	bool setRes(int w, int h, int depth=16, Uint32 flags=SDL_SWSURFACE);
+	virtual bool setRes(int w, int h, int depth=16, Uint32 flags=SDL_SWSURFACE);
 
-	void dbgprintf(const char *msg, ...);
+	virtual void dbgprintf(const char *msg, ...);
 
-	void setClipRect(int x, int y, int w, int h);
-	void setClipRect(SDL_Rect *rect);
+	virtual void setClipRect(int x, int y, int w, int h);
+	virtual void setClipRect(SDL_Rect *rect);
 	
-	int getW(void) { return screen->w; }
-	int getH(void) { return screen->h; }
+	virtual int getW(void) { return screen->w; }
+	virtual int getH(void) { return screen->h; }
 
-	void drawSprite(Sprite *sprite, int x, int y);
-	void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
-	void drawString(int x, int y, Font *font, const char *msg, ...);
-	
-	void nextFrame(void);
+	virtual void drawSprite(Sprite *sprite, int x, int y);
+	virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=SDL_ALPHA_OPAQUE);
+	virtual void drawString(int x, int y, const Font *font, const char *msg, ...);
+
+	virtual void nextFrame(void);
+
 public:
 	SDL_Surface *screen;
 	SDL_Rect clipRect;
+};
+
+class SDLOffScreenGraphicContext: public SDLGraphicContext
+{
+public:
+	SDLOffScreenGraphicContext(int w, int h, bool usePerPixelAlpha, Uint8 alphaValue);
+	virtual ~SDLOffScreenGraphicContext(void) { if (screen) SDL_FreeSurface(screen); }
+
+	virtual bool setRes(int w, int h, int depth=16, Uint32 flags=SDL_SWSURFACE) { return false; }
+
+	virtual void nextFrame(void) { }
 };
 
 

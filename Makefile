@@ -1,5 +1,5 @@
 SRCDIR=src
-GLOB2FILES=GraphicContext.cpp Sprite.cpp Glob2.cpp NetGame.cpp Order.cpp EntityType.cpp Player.cpp Unit.cpp Building.cpp Team.cpp Map.cpp BuildingType.cpp Race.cpp PreparationGui.cpp MapEdit.cpp GUIBase.cpp GUIButton.cpp Game.cpp Session.cpp GlobalContainer.cpp Utilities.cpp UnitType.cpp Fatal.cpp Engine.cpp GameGUI.cpp AI.cpp StringTable.cpp GUITextInput.cpp
+GLOB2FILES=GraphicContext.cpp Sprite.cpp Glob2.cpp NetGame.cpp Order.cpp EntityType.cpp Player.cpp Unit.cpp Building.cpp Team.cpp Map.cpp BuildingType.cpp Race.cpp PreparationGui.cpp MapEdit.cpp GUIBase.cpp GUIButton.cpp Game.cpp Session.cpp GlobalContainer.cpp Utilities.cpp UnitType.cpp Fatal.cpp Engine.cpp GameGUI.cpp AI.cpp StringTable.cpp GUITextInput.cpp GUIList.cpp GameGUIDialog.cpp
 GLOB2OBJ=$(patsubst %.cpp,%.o,$(GLOB2FILES))
 GLOB2SRC=$(patsubst %,$(SRCDIR)/%,$(GLOB2FILES))
 

@@ -43,14 +43,6 @@ MainMenuScreen::~MainMenuScreen()
 	delete arch;
 }
 
-void MainMenuScreen::onTimer(Uint32 tick)
-{
-}
-
-void MainMenuScreen::onSDLEvent(SDL_Event *event)
-{
-}
-
 void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_PRESSED)
@@ -93,16 +85,6 @@ MultiplayersOfferScreen::~MultiplayersOfferScreen()
 {
 	delete font;
 	delete arch;
-}
-
-void MultiplayersOfferScreen::onTimer(Uint32 tick)
-{
-
-}
-
-void MultiplayersOfferScreen::onSDLEvent(SDL_Event *event)
-{
-
 }
 
 void MultiplayersOfferScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -256,15 +238,6 @@ MultiplayersChooseMapScreen::~MultiplayersChooseMapScreen()
 	delete arch;
 }
 
-void MultiplayersChooseMapScreen::onTimer(Uint32 tick)
-{	
-}
-
-void MultiplayersChooseMapScreen::onSDLEvent(SDL_Event *event)
-{
-
-}
-
 void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==BUTTON_PRESSED)
@@ -385,7 +358,7 @@ void MultiplayersHostScreen::initHostGlobalState(void)
 {
 	for (int i=0; i<32; i++)
 		crossPacketRecieved[i]=0;
-	
+
 	hostGlobalState=HGS_SHARING_SESSION_INFO;
 }
 
@@ -565,7 +538,7 @@ void MultiplayersHostScreen::newPlayer(char *data, int size, IPaddress ip)
 		if (sessionInfo.players[i].sameip(ip))
 		{
 			printf("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
-			
+
 			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
 			sessionInfo.players[i].netTimeout=0;
 			sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
@@ -785,7 +758,7 @@ void MultiplayersHostScreen::confirmPlayerStartGame(char *data, int size, IPaddr
 		printf("this ip(%x, %d) confirmed start game within %d seconds.\n", ip.host, ip.port, sgtc/20);
 		
 		crossPacketRecieved[i]=4;
-		
+
 		// let's check if all players are playing
 		stepHostGlobalState();
 		
@@ -965,7 +938,7 @@ void MultiplayersHostScreen::sendingTime()
 		{
 			update=true;
 			sessionInfo.players[i].netTimeout+=sessionInfo.players[i].netTimeoutSize;
-			
+
 			assert(sessionInfo.players[i].netTimeoutSize);
 			
 			if (--sessionInfo.players[i].netTOTL<0)
@@ -1113,11 +1086,6 @@ void MultiplayersHostScreen::sendingTime()
 			paintSessionInfo(hostGlobalState);
 		addUpdateRect();
 	}
-}
-
-void MultiplayersHostScreen::onSDLEvent(SDL_Event *event)
-{
-
 }
 
 void MultiplayersHostScreen::stopHosting(void)
@@ -1935,7 +1903,7 @@ bool MultiplayersJoinScreen::tryConnection()
 		printf("failed to find adresse\n");
 		return false;
 	}
-			
+
 	channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 			
 	if (channel != -1)

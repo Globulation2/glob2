@@ -6,6 +6,7 @@
 #include "GameGUI.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "GameGUIDialog.h"
 
 extern GlobalContainer globalContainer;
 
@@ -33,8 +34,11 @@ GameGUI::GameGUI()
 		viewportSpeedX[i]=0;
 		viewportSpeedY[i]=0;
 	}
-	
+
 	typingMessage=false;
+	inGameMenu=IGM_NONE;
+	gameMenuScreen=NULL;
+	gameMenuGfx=NULL;
 }
 
 GameGUI::~GameGUI()
@@ -46,7 +50,7 @@ void GameGUI::step(void)
 {
 	SDL_Event event, mouseMotionEvent;
 	bool wasMouseMotion=false;
-	
+
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
 	{
@@ -62,7 +66,7 @@ void GameGUI::step(void)
 	}
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);
-	
+
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
 	for (int i=0; i<8; i++)
@@ -72,14 +76,14 @@ void GameGUI::step(void)
 	}
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
-	
+
 	statStep();
 }
 
 void GameGUI::statStep(void)
 {
 	static int statPos=0;
-	
+
 	statPos++;
 	if (statPos==20)
 	{
@@ -87,14 +91,26 @@ void GameGUI::statStep(void)
 		statsPtr&=0x7F;
 		statPos=0;
 	}
-	
+
 	TeamStat newStats;
 	game.teams[localTeam]->computeStat(&newStats);
-	stats[statsPtr]=newStats;	
+	stats[statsPtr]=newStats;
 }
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+	// if there is a menu he get events first
+	if (inGameMenu)
+	{
+		gameMenuScreen->onSDLEvent(event);
+		if (gameMenuScreen->isEnded)
+		{
+			inGameMenu=IGM_NONE;
+			delete gameMenuScreen;
+			delete gameMenuGfx;
+		}
+	}
+
 	if (event->type==SDL_KEYDOWN)
 	{
 		handleKey(event->key.keysym, true);
@@ -161,11 +177,20 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			typedMessage[typedChar]=0;
 		}
 	}
-	
+
 	switch (key)
 	{
 		case SDLK_ESCAPE:
-			orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+			{
+				if (inGameMenu==IGM_NONE)
+				{
+					gameMenuGfx=new SDLOffScreenGraphicContext(400, 300, false, 128);
+					gameMenuScreen=new InGameMainScreen();
+					gameMenuScreen->dispatchPaint(gameMenuGfx);
+					inGameMenu=IGM_MAIN;
+				}
+				//orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+			}
 			break;
 		case SDLK_UP:
 			if (pressed)
@@ -337,7 +362,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			}
 		break;
 		default:
-			
+
 		break;
 	}
 }
@@ -627,7 +652,7 @@ Order *GameGUI::getOrder(void)
 	{
 		Order *order=orderQueue.front();
 		orderQueue.pop();
-		
+
 		return order;
 	}
 }
@@ -635,7 +660,7 @@ Order *GameGUI::getOrder(void)
 void GameGUI::draw(void)
 {
 	// TODO : compare building to see if something has changed
-	
+	// FIXME : shift this into a menu
 	if (game.anyPlayerWaited && game.maskAwayPlayer)
 	{
 		int nbap=0; // Number of away players
@@ -647,7 +672,7 @@ void GameGUI::draw(void)
 				nbap++;
 			pm=pm<<1;
 		}
-		
+
 		globalContainer.gfx.drawFilledRect(32, 32, globalContainer.gfx.getW()-128-64, 22+nbap*20, 0, 127, 255);
 		globalContainer.gfx.drawRect(32, 32, globalContainer.gfx.getW()-128-64, 22+nbap*20, 0, 255, 127);
 		pm=1;
@@ -656,7 +681,7 @@ void GameGUI::draw(void)
 		{
 			if (pm&apm)
 			{
-				
+
 				globalContainer.gfx.drawString(48, 48+pnb*20, font,"%s%d", globalContainer.texts.getString("[l waiting for player]"), pi, globalContainer.texts.getString("[r waiting for player]"));
 				pnb++;
 			}
@@ -683,7 +708,7 @@ void GameGUI::draw(void)
 			}
 		}
 	}
-	
+
 	if (typingMessage)
 	{
 		globalContainer.gfx.drawString(40, 440, font, ": %s", typedMessage);
@@ -836,7 +861,7 @@ void GameGUI::draw(void)
 			for (int i=0; i<NB_RESSOURCES; i++)
 				if (selBuild->type->maxRessource[i])
 					globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 256+54+(i*10), font, "%s : %d/%d", globalContainer.texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
-			
+
 			if (selBuild->type->defaultUnitStayRange)
 			{
 				globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 256+132, font, "%s : %d", globalContainer.texts.getString("[range]"), selBuild->unitStayRange);
@@ -875,7 +900,7 @@ void GameGUI::draw(void)
 				drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
 			globalContainer.gfx.drawString(globalContainer.gfx.getW()-128+4, 470, font, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
-				
+
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
@@ -974,7 +999,7 @@ void GameGUI::draw(void)
 
 		// we check for room
 		BuildingType *bt=game.buildingsTypes.buildingsTypes[typeNum];
-		
+
 		int tempX, tempY;
 		if (bt->width&0x1)
 			tempX=((mouseX)>>5)+viewportX;
@@ -1011,7 +1036,7 @@ void GameGUI::draw(void)
 		Sprite *sprite=globalContainer.buildings.getSprite(bt->startImage);
 		if (bt->hueImage)
 			((PalSprite *)sprite)->setPal(&(game.teams[localTeam]->palette));
-		
+
 		batX=(mapX-viewportX)<<5;
 		batY=(mapY-viewportY)<<5;
 		batW=(bt->width)<<5;
@@ -1052,6 +1077,22 @@ void GameGUI::draw(void)
 		else if (!selBuild->type->isVirtual)
 			globalContainer.gfx.drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 	}
+
+	// blit game menu surface
+	if (inGameMenu)
+	{
+		SDL_Rect src, dest;
+		src.x=0;
+		src.y=0;
+		src.w=gameMenuGfx->getW();
+		src.h=gameMenuGfx->getH();
+		dest=src;
+		dest.x=(globalContainer.gfx.getW()-src.w)>>1;
+		dest.y=(globalContainer.gfx.getH()-src.h)>>1;
+		globalContainer.gfx.setClipRect(NULL);
+		SDLGraphicContext *tempGfx=(SDLGraphicContext *)&(globalContainer.gfx);
+		SDL_BlitSurface(gameMenuGfx->screen, &src, tempGfx->screen, &dest);
+	}
 }
 
 void GameGUI::drawAll(int team)
@@ -1059,7 +1100,7 @@ void GameGUI::drawAll(int team)
 	globalContainer.gfx.setClipRect(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH());
 	bool drawBuildingRects=(typeToBuild>=0);
 	game.drawMap(0, 0, globalContainer.gfx.getW()-128, globalContainer.gfx.getH(),viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
-	
+
 	globalContainer.gfx.setClipRect(globalContainer.gfx.getW()-128, 0, 128, 128);
 	game.drawMiniMap(globalContainer.gfx.getW()-128, 0, 128, 128, viewportX, viewportY, team);
 
