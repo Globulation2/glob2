@@ -1037,6 +1037,7 @@ bool Building::fullInside(void)
 
 void Building::subscribeToBringRessourcesStep()
 {
+	//printf("bgid=(%d) subscribeToBringRessourcesStep()...\n", gid);
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
@@ -1048,6 +1049,7 @@ void Building::subscribeToBringRessourcesStep()
 			(*it)->needToRecheckMedical=true;
 		}
 		unitsWorkingSubscribe.clear();
+		//printf(" ...fullWorking()\n");
 		return;
 	}
 	
@@ -1182,12 +1184,12 @@ void Building::subscribeToBringRessourcesStep()
 
 			if (choosen)
 			{
-				//printf("unit %d choosen.\n", choosen->gid);
+				//printf("  unit %d choosen.\n", choosen->gid);
 				
 				unitsWorkingSubscribe.remove(choosen);
 				if (!neededRessource(choosen->destinationPurprose))
 				{
-					//printf("C-B(%x)gid=(%d), choosen=(%x) Ugid=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, gid, (int)choosen, (int)choosen->gid, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
@@ -1196,7 +1198,7 @@ void Building::subscribeToBringRessourcesStep()
 					choosen->subscribed=false;
 					choosen->activity=Unit::ACT_RANDOM;
 					choosen->needToRecheckMedical=true;
-
+					//printf(" ...!neededRessource(choosen->destinationPurprose)\n");
 					return;
 				}
 				else
@@ -1213,6 +1215,7 @@ void Building::subscribeToBringRessourcesStep()
 		
 		if ((signed)unitsWorking.size()>=maxUnitWorking)
 		{
+			//printf(" unitsWorking.size()>=maxUnitWorking\n");
 			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
 				(*it)->attachedBuilding=NULL;
@@ -1223,6 +1226,7 @@ void Building::subscribeToBringRessourcesStep()
 			unitsWorkingSubscribe.clear();
 		}
 	}
+	//printf(" ...done\n");
 }
 
 void Building::subscribeForFlagingStep()
