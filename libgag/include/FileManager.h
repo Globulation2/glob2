@@ -22,6 +22,8 @@
 
 #include "GAGSys.h"
 #include <vector>
+#include <fstream>
+#include <string>
 
 //! this is the host filesystem directory separator
 #ifndef DIR_SEPARATOR
@@ -84,6 +86,8 @@ public:
 	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
 	//! Open a file in the FILE* format
 	FILE *openFP(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
+	//! Open a file in the c++ stream format for reading
+	std::ifstream *openIFStream(const std::string &fileName);
 	//! Return the checksum of a file
 	Uint32 checksum(const char *filename);
 

@@ -87,14 +87,14 @@ public:
 			delete entries[i];
 	}
 	
-	void load(const std::string &fileName, bool isDefault)
+	void load(const std::string &fileName, bool isDefault = false)
 	{
 		bool first = true;
 		ConfigBlock b(defaultEntry);
 		std::string bName;
 		ConfigVector b;
 		
-		std::ifstream *stream = Toolkit::getFileManager()->openCppStream(fileName);
+		std::ifstream *stream = Toolkit::getFileManager()->openIFSream(fileName);
 		while (stream->good())
 		{
 			int c = stream->get();
@@ -148,6 +148,8 @@ public:
 		if (b.lines.size() > 0)
 			addBlock(bName, &b, isDefault);
 	}
+	
+	void loadDefault(const std::string &fileName) { load(fileName, true); }
 	
 	T* get(size_t id)
 	{

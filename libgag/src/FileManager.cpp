@@ -252,6 +252,44 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	return NULL;
 }
 
+std::ifstream *FileManager::openIFStream(const std::string &fileName)
+{
+	std::ifstream *fp = new std::ifstream();
+	
+	// try cache
+	if (dirListIndexCache>=0)
+	{
+		std::string path(dirList[dirListIndexCache]);
+		path += DIR_SEPARATOR;
+		path += fileName;
+		
+		fp->open(path.c_str());
+		
+		if (fp->good())
+			return fp;
+	}
+	
+	// otherwise search
+	int index=0;
+	for (size_t i=0; i<dirList.size(); ++i)
+	{
+		std::string path(dirList[index]);
+		path += DIR_SEPARATOR;
+		path += fileName;
+
+		fp->open(path.c_str());
+		
+		if (fp->good())
+		{
+			dirListIndexCache = index;
+			return fp;
+		}
+		index++;
+	}
+	
+	return NULL;
+}
+
 Uint32 FileManager::checksum(const char *filename)
 {
 	Uint32 cs = 0;
