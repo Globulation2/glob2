@@ -1116,7 +1116,7 @@ void Map::removeTeam(void)
 // TODO: completely recreate:
 void Map::growRessources(void)
 {
-	int dy=syncRand()&0x3;
+	int dy=(syncRand()&0x3);
 	for (int y=dy; y<h; y+=4)
 	{
 		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
@@ -1153,7 +1153,7 @@ void Map::growRessources(void)
 
 				if (expand)
 				{
-					if (r.amount<=(int)(syncRand()&7))
+					if (r.amount<=(syncRand()&7))
 					{
 						// we grow ressource:
 						incRessource(x, y, r.type, r.variety);
@@ -1162,7 +1162,7 @@ void Map::growRessources(void)
 					{
 						// we extand ressource:
 						int dx, dy;
-						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
+						Unit::dxdyfromDirection((syncRand()&7), &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
 						incRessource(nx, ny, r.type, r.variety);
