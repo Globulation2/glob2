@@ -103,8 +103,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		playerFileTra[p].wantsFile=false;
 		playerFileTra[p].receivedFile=false;
-		playerFileTra[p].packetSize=64;
-		playerFileTra[p].windowSize=20;
+		playerFileTra[p].packetSize=256;
+		playerFileTra[p].windowSize=32;
 		playerFileTra[p].unreceivedIndex=0;
 		for (int i=0; i<MAX_WINDOW_SIZE; i++)
 		{
@@ -113,6 +113,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		}
 		playerFileTra[p].totalLost=0;
 		playerFileTra[p].totalSent=0;
+		playerFileTra[p].totalReceived=0;
 		playerFileTra[p].onlyWaited=0;
 		for (int i=0; i<NET_WINDOW_SIZE; i++)
 		{
@@ -120,11 +121,9 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 			playerFileTra[p].window[i].sent=false;
 			playerFileTra[p].window[i].received=false;
 			playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-			playerFileTra[p].window[i].packetSize=64;
+			playerFileTra[p].window[i].packetSize=256;
 		}
 	}
-	
-	
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -183,6 +182,7 @@ MultiplayersHost::~MultiplayersHost()
 					fprintf(logFile, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
 					fprintf(logFile, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/playerFileTra[p].totalSent);
 					fprintf(logFile, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
+					fprintf(logFile, "playerFileTra[p].totalReceived=%d.\n", playerFileTra[p].totalReceived);
 					fprintf(logFile, "playerFileTra[p].onlyWaited=%d.\n", playerFileTra[p].onlyWaited);
 				}
 		}
@@ -507,10 +507,11 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	assert(p<32);
 	playerFileTra[p].wantsFile=false;
 	playerFileTra[p].receivedFile=false;
-	playerFileTra[p].packetSize=64;
-	playerFileTra[p].windowSize=20;
+	playerFileTra[p].packetSize=256;
+	playerFileTra[p].windowSize=32;
 	playerFileTra[p].totalLost=0;
 	playerFileTra[p].totalSent=0;
+	playerFileTra[p].totalReceived=0;
 	playerFileTra[p].onlyWaited=0;
 	playerFileTra[p].unreceivedIndex=0;
 	for (int i=0; i<NET_WINDOW_SIZE; i++)
@@ -519,7 +520,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 		playerFileTra[p].window[i].sent=false;
 		playerFileTra[p].window[i].received=false;
 		playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-		playerFileTra[p].window[i].packetSize=64;
+		playerFileTra[p].window[i].packetSize=256;
 	}
 	
 	sessionInfo.players[p].init();
@@ -661,11 +662,11 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				playerFileTra[p].window[i].sent=false;
 				playerFileTra[p].window[i].received=false;
 				playerFileTra[p].window[i].time=i%SECOND_TIMEOUT;
-				playerFileTra[p].window[i].packetSize=64;
+				playerFileTra[p].window[i].packetSize=256;
 			}
 
-			playerFileTra[p].packetSize=64;
-			playerFileTra[p].windowSize=20;
+			playerFileTra[p].packetSize=256;
+			playerFileTra[p].windowSize=32;
 		}
 		
 		Uint32 unreceivedIndex=getUint32(data, 4);
@@ -715,6 +716,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			fprintf(logFileDownload, "playerFileTra[p].packetSize=%d.\n", playerFileTra[p].packetSize);
 			fprintf(logFileDownload, "playerFileTra[p].totalLost=%d. (%f)\n", playerFileTra[p].totalLost, (float)playerFileTra[p].totalLost/playerFileTra[p].totalSent);
 			fprintf(logFileDownload, "playerFileTra[p].totalSent=%d.\n", playerFileTra[p].totalSent);
+			fprintf(logFileDownload, "playerFileTra[p].totalReceived=%d.\n", playerFileTra[p].totalReceived);
 			fprintf(logFileDownload, "playerFileTra[p].onlyWaited=%d.\n", playerFileTra[p].onlyWaited);
 			
 			stepHostGlobalState();
@@ -737,6 +739,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				if (index<unreceivedIndex && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
 				{
 					playerFileTra[p].windowSize++;
+					playerFileTra[p].totalReceived++;
 					playerFileTra[p].window[i].received=true;
 				}
 				else if (index>unreceivedIndex)
@@ -744,6 +747,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 						if (index==receivedIndex[ix] && playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received)
 						{
 							playerFileTra[p].windowSize++;
+							playerFileTra[p].totalReceived++;
 							playerFileTra[p].window[i].received=true;
 						}
 			}
@@ -753,41 +757,64 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 					assert(!playerFileTra[p].window[i].received);
 			
 			int totLost=0;
-			int maxTotLost=playerFileTra[p].totalSent/200;
-			int imax=-1;
+			int maxTotLost=playerFileTra[p].totalReceived/200;
+			if (maxTotLost<1)
+				maxTotLost=1;
+			int windowSize=playerFileTra[p].windowSize;
+			int imaxp=-1;
+			int imaxs=-1;
 			for (int i=0; i<MAX_WINDOW_SIZE; i++)
 			{
-				totLost+=playerFileTra[p].windowlosts[i];
-				if (totLost>maxTotLost)
+				int lost=playerFileTra[p].windowlosts[i];
+				totLost+=lost;
+				if (lost>0)
+					imaxs=i;
+				if (totLost>=maxTotLost)
 				{
-					imax=i;
+					imaxp=i;
 					break;
 				}
 			}
-			if (imax!=-1 && imax<playerFileTra[p].windowSize)
-				playerFileTra[p].windowSize=imax;
+			if (imaxp>0)
+				windowSize=imaxp-1;
+			else if (imaxs>0)
+				windowSize=imaxs+1;
 			
-			if (playerFileTra[p].windowSize>=MAX_WINDOW_SIZE)
+			if (windowSize<16)
+				windowSize=16;
+			else if (windowSize>64)
 			{
-				if (playerFileTra[p].packetSize>=32768)
+				int maxws=playerFileTra[p].totalReceived/2;
+				if (windowSize>maxws)
 				{
-					playerFileTra[p].windowSize=MAX_WINDOW_SIZE-1;
-					playerFileTra[p].packetSize=32768;
-				}
-				else
-				{
-					playerFileTra[p].windowSize/=2;
-					playerFileTra[p].packetSize*=2;
-					fprintf(logFileDownload, "new packetSize=%d.\n", playerFileTra[p].packetSize);
-					
-					for (int i=0; i<MAX_WINDOW_SIZE; i++)
-						playerFileTra[p].windowlosts[i]*=2;
+					windowSize=maxws;
+					fprintf(logFileDownload, "maxws=%d\n", maxws);
 				}
 			}
 			
-			
-			
-			fprintf(logFileDownload, "playerFileTra[p].windowSize=%d.\n", playerFileTra[p].windowSize);
+			int packetSize=playerFileTra[p].packetSize;
+			if (windowSize>=MAX_WINDOW_SIZE)
+			{
+				if (packetSize>=1024)
+				{
+					playerFileTra[p].windowSize=MAX_WINDOW_SIZE-1;
+					playerFileTra[p].packetSize=1024;
+				}
+				else
+				{
+					windowSize/=2;
+					packetSize*=2;
+					fprintf(logFileDownload, "new packetSize=%d.\n", packetSize);
+					int windowlosts[MAX_WINDOW_SIZE];
+					memcpy(windowlosts, playerFileTra[p].windowlosts, MAX_WINDOW_SIZE*sizeof(int));
+					memset(playerFileTra[p].windowlosts, 0, MAX_WINDOW_SIZE*sizeof(int));
+					for (int i=0; i<(MAX_WINDOW_SIZE/2); i++)
+						playerFileTra[p].windowlosts[i]=windowlosts[i*2]+windowlosts[1+i*2];
+					playerFileTra[p].packetSize=packetSize;
+				}
+			}
+			playerFileTra[p].windowSize=windowSize;
+			fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);
 		}
 	}
 	sessionInfo.players[p].netTimeout=sessionInfo.players[p].netTimeoutSize;
@@ -1243,7 +1270,7 @@ void MultiplayersHost::sendingTime()
 				toSend=0;
 			else
 			{
-				toSend=playerFileTra[p].windowSize/20;
+				toSend=(playerFileTra[p].windowSize-unreceived)/20;
 				if (toSend<1)
 					toSend=1;
 			}
@@ -1303,30 +1330,80 @@ void MultiplayersHost::sendingTime()
 					assert(success);
 					playerFileTra[p].totalLost++;
 					playerFileTra[p].totalSent++;
-					playerFileTra[p].windowstats[playerFileTra[p].windowSize]++;
+					
+					int windowStatSize=playerFileTra[p].windowSize*size/playerFileTra[p].packetSize;
+					if (windowStatSize<0)
+						windowStatSize=0;
+					else if(windowStatSize>=MAX_WINDOW_SIZE)
+						windowStatSize=MAX_WINDOW_SIZE-1;
+					playerFileTra[p].windowstats[windowStatSize]++;
 					onlyWait=false;
 
 					free(data);
 				}
 				
 				int windowSize=playerFileTra[p].windowSize;
-				playerFileTra[p].windowlosts[windowSize]++;
-				windowSize=(windowSize*90)/100;
-				windowSize--;
-				if (windowSize<20)
+				int packetSize=playerFileTra[p].packetSize;
+				int windowStatSize=windowSize*size/packetSize;
+				if (windowStatSize<0)
+					windowStatSize=0;
+				else if(windowStatSize>=MAX_WINDOW_SIZE)
+					windowStatSize=MAX_WINDOW_SIZE-1;
+				playerFileTra[p].windowlosts[windowStatSize]++;
+				
+				int totLost=0;
+				int maxTotLost=playerFileTra[p].totalReceived/200;
+				if (maxTotLost<1)
+					maxTotLost=1;
+				int imaxp=-1;
+				int imaxs=-1;
+				for (int i=0; i<MAX_WINDOW_SIZE; i++)
 				{
-					windowSize=20;
-					if (playerFileTra[p].packetSize>32)
+					int lost=playerFileTra[p].windowlosts[i];
+					totLost+=lost;
+					if (lost>0)
+						imaxs=i;
+					if (totLost>=maxTotLost)
 					{
-						playerFileTra[p].packetSize/=2;
+						imaxp=i;
+						break;
+					}
+				}
+				if (imaxp>0)
+					windowSize=imaxp-1;
+				else if (imaxs>0)
+					windowSize=imaxs+1;
+					
+				if (windowSize>64)
+				{
+					int maxws=playerFileTra[p].totalReceived/2;
+					if (windowSize>maxws)
+					{
+						windowSize=maxws;
+						fprintf(logFileDownload, "maxws=%d\n", maxws);
+					}
+				}
+				
+				if (windowSize<128)
+				{
+					if (windowSize<16)
+						windowSize=16;
+					int pspw=packetSize/windowSize;
+					if (pspw>=12)
+					{
+						packetSize/=2;
+						windowSize*=2;
+						int windowlosts[MAX_WINDOW_SIZE];
+						memcpy(windowlosts, playerFileTra[p].windowlosts, MAX_WINDOW_SIZE*sizeof(int));
+						memset(playerFileTra[p].windowlosts, 0, MAX_WINDOW_SIZE*sizeof(int));
 						for (int i=0; i<MAX_WINDOW_SIZE; i++)
-							playerFileTra[p].windowlosts[i]/=2;
-						windowSize=40;
-						fprintf(logFileDownload, "new packetSize=%d.\n", playerFileTra[p].packetSize);
+							playerFileTra[p].windowlosts[i]=windowlosts[i/2]/2;
+						fprintf(logFileDownload, "new packetSize=%d.\n", packetSize);
+						playerFileTra[p].packetSize=packetSize;
 					}
 				}
 				playerFileTra[p].windowSize=windowSize;
-				fprintf(logFileDownload, "windowSize=%d\n", windowSize);
+				fprintf(logFileDownload, "imax=(%d, %d), windowSize=%d.\n", imaxp, imaxs, windowSize);
 			}
 			
 			if (toSend)
