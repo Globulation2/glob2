@@ -1157,12 +1157,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			setSelection(UNIT_SELECTION, game.mouseUnit);
 			selectionPushed=true;
 		}
-		else if (game.map.isRessource(mapX, mapY))
-		{
-			setSelection(RESSOURCE_SELECTION, mapY*game.map.getW()+mapX);
-			selectionPushed=true;
-		}
-		else
+		else 
 		{
 			// then for building
 			Uint16 gbid=game.map.getBuilding(mapX, mapY);
@@ -1181,7 +1176,17 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			}
 			else
 			{
-				// TODO: here we have to handle rect-selection.
+				// and ressource
+				if (game.map.isRessource(mapX, mapY))
+				{
+					setSelection(RESSOURCE_SELECTION, mapY*game.map.getW()+mapX);
+					selectionPushed=true;
+				}
+				else
+				{
+					if (selectionMode == RESSOURCE_SELECTION)
+						clearSelection();
+				}
 			}
 		}
 	}
