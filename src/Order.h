@@ -429,6 +429,7 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return framesDatasLength+5; }
+	int getStrippedDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
 	Uint8 *getFramesData(void) { return data+5; }
 
