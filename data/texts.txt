@@ -9,7 +9,7 @@ Polski
 Langue
 Language
 
-
+Jazyk
 
 [hp]
 Pts vie
@@ -75,7 +75,7 @@ zborze
 Papyrus
 Papyrus
 
-
+Papyrus
 
 [Stone]
 Pierre
@@ -93,19 +93,19 @@ alga
 Cerise
 Cherry
 
-
+Třešně
 
 [Orange]
 Orange
 Orange
 
-
+Pomarenče
 
 [Prune]
 Prune
 Prune
 
-
+Švestky
 
 [range]
 Portée
@@ -207,7 +207,7 @@ Válečník
 Encore 
 Still 
 Noch
-Dosud
+Dosud 
 iągle
 [units working]
  unites travaillent
@@ -225,7 +225,7 @@ ciągle jednostka działa
 Encore 
 Still 
 Noch 
-Dosud
+Dosud 
 Wciąż jeszcze
 [units inside]
  unités dedans
@@ -297,25 +297,25 @@ Wierza obronna
 Drapeau d'exploration
 Exploration flag
 Entdeckerflagge
-Průzkumná vlajka
+Průzkumný prapor
 Flaga poszukiwacza
 [war flag]
 Drapeau de guerre
 War flag
 Kriegsflagge
-Válečná vlajka
+Válečný prapor
 Wojenna flaga
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
 Rodungsflagge
-Čistící vlajka
+Čisticí prapor
 Flaga usuwania
 [forbidden flag]
 Drapeau d'interdiction
 Forbidden flag
 
-
+Zákaz vstupu 
 
 [stone wall]
 Mur de pierre
@@ -693,19 +693,19 @@ Obranná věž postavena ...
 ?? Drapeau d'exploration terminé ??
 ?? Exploration flag finished ??
 ?? Entdeckerflagge fertig ??
-?? Průzkumná vlajka připravena ??
+?? Průzkumný prapor připraven ??
 
 [the war flag is finished]
 ?? Drapeau de guerre terminé ??
 ?? War flag finished ??
 ?? Kriegsflagge fertig ??
-?? Válečná vlajka připravena ??
+?? Válečná prapor připraven ??
 
 [the clearing flag is finished]
 ?? Drapeau de défrichage terminé ??
 ?? Clearing flag finished ??
 ?? Rodungsflagge fertig ??
-?? Čistící vlajka připravena ??
+?? Čistící prapor připraven ??
 
 [the forbidden flag is finished]
 ?? Drapeau d'interdiction terminé ??
@@ -777,25 +777,25 @@ Obranná věž je pod útokem
 ?? Drapeau d'exploration attaqué ??
 ?? Exploration flag under attack ??
 ?? Entdeckerflagge wird angegriffen ??
-?? Průzkumná vlajka v obležení nepřátel ??
+?? Průzkumný prapor v obležení nepřátel ??
 
 [the war flag is under attack]
 ?? Drapeau de guerre attaqué ??
 ?? War flag under attack ??
 ?? Kriegsflagge wird angegriffen ??
-?? Válečná vlajka v obležení nepřátel ??
+?? Válečná prapor v obležení nepřátel ??
 
 [the clearing flag is under attack]
 ?? Drapeau de défrichage attaqué ??
 ?? Clearing flag under attack ??
 ?? Rodungsflagge wird angegriffen ??
-?? Čistící vlajka v obležení nepřátel ??
+?? Čistící prapor v obležení nepřátel ??
 
 [the forbidden flag is under attack]
 ?? Drapeau d'interdiction attaqué ??
 ?? Forbidden flag under attack ??
 
-
+?? Zákaz vstupu v obležení nepřátel ??
 
 [the stone wall is under attack]
 L'ennemi est à vos murs
@@ -1659,35 +1659,35 @@ Gra nie została jeszcze zakończona
 Affichage
 Display
 
-
+Rozlišení
 
 [username]
 Nom d'utilisateur
 Username
 
-
+Jméno uživatele
 
 [fullscreen]
 Plein écran
 Fullscreen
 
-
+Fullscreen
 
 [hwaccel]
 Accélération matérielle
 Hardware acceleration
 
-
+Hardware akcelerace
 
 [dblbuff]
 Doube-tampon
 Double-buffering
 
-
+Double-buffering
 
 [lowquality]
 Basse qualité
 Low quality
 
-
+Nízká kvalita
 
