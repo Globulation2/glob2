@@ -22,9 +22,10 @@
 #define __MULTIPLAYERHOSTSCREEN_H
 
 #include "PreparationGui.h"
+#include "MultiplayersHost.h"
 #include "GAG.h"
 
-class MultiplayersHostScreen: public Screen, public MultiplayersCrossConnectable
+class MultiplayersHostScreen: public Screen
 {
 public:
 	enum
@@ -35,50 +36,18 @@ public:
 		STARTED=11
 	};
 
-	enum HostGlobalState
-	{
-		HGS_BAD=0,
-		HGS_SHARING_SESSION_INFO=1,
-		HGS_WAITING_CROSS_CONNECTIONS=2,
-		HGS_ALL_PLAYERS_CROSS_CONNECTED=3,
-		HGS_GAME_START_SENDED=4,
-		HGS_PLAYING_COUNTER=5 // the counter 5-4-3-2-1-0 is playing
-	};
-
-	enum
-	{
-		SECONDS_BEFORE_START_GAME=5
-	};
 private:
-
 	bool firstDraw;
-
-	HostGlobalState hostGlobalState;
 
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo);
 	virtual ~MultiplayersHostScreen();
-	void initHostGlobalState(void);
-	void stepHostGlobalState(void);
-	void removePlayer(int p);
-	void removePlayer(char *data, int size, IPaddress ip);
-	void newPlayer(char *data, int size, IPaddress ip);
-	void newHostPlayer(void);
-	void confirmPlayer(char *data, int size, IPaddress ip);
-	void confirmStartCrossConnection(char *data, int size, IPaddress ip);
-	void confirmStillCrossConnecting(char *data, int size, IPaddress ip);
-	void confirmCrossConnectionAchieved(char *data, int size, IPaddress ip);
-	void confirmPlayerStartGame(char *data, int size, IPaddress ip);
-	void treatData(char *data, int size, IPaddress ip);
+
 	void onTimer(Uint32 tick);
-	void sendingTime();
-	bool send(const int v);
-	bool send(const int u, const int v);
-	void stopHosting(void);
-	void startGame(void);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
 
+	MultiplayersHost *multiplayersHost;
 };
 
 #endif
