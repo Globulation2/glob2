@@ -134,7 +134,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 	anyPlayerWaited=false;
 	bool isPlayerAlive=players[order->sender]->team->isAlive;
 	if (!isPlayerAlive)
-		break;
+		return;
 	switch (order->getOrderType())
 	{
 		case ORDER_CREATE:
