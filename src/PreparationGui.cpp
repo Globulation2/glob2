@@ -258,14 +258,14 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	load=new Button(230, 150, 120, 60, arch, -1, 1, LOAD);
 	share=new Button(250, 230, 140, 60, arch, -1, 2, SHARE);
 	cancel=new Button(290, 310, 140, 60, arch, -1, 3, CANCEL);
+	fileList=new List(10, 10, 200, 400, globalContainer->standardFont);
+	mapPreview=new MapPreview(500, 100, "net.map");
 
 	addWidget(load);
 	addWidget(share);
 	addWidget(cancel);
-
+	addWidget(mapPreview);
 	addWidget(mapName);
-
-	fileList=new List(10, 10, 200, 400, globalContainer->standardFont);
 
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
@@ -288,6 +288,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		mapName->setText(fileList->getText(par1));
+		mapPreview->setMapThumbnail(fileList->getText(par1));
 	}
 	else if (action==BUTTON_RELEASED)
 	{
