@@ -1080,6 +1080,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	int imgid;
 	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
+	assert(unit->action>=0);
+	assert(unit->action<NB_MOVE);
 	imgid=ut->startImage[unit->action];
 	int px, py;
 	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
@@ -1094,12 +1096,22 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		// TODO : if looks ugly, do something intelligent here
 	}
 
+	
 	int dir=unit->direction;
+	int delta=unit->delta;
+	assert(dir>=0);
+	assert(dir<9);
+	assert(delta>=0);
+	assert(delta<256);
 	if (dir==8)
-		imgid+=8*((unit->delta)>>5);
+	{
+		imgid+=8*(delta>>5);
+	}
 	else
-		imgid+=(unit->delta)>>5;
+	{
 		imgid+=8*dir;
+		imgid+=(delta>>5);
+	}
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
@@ -1182,8 +1194,26 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					sprite=globalContainer->ressources;
 					id-=272;
 				}
-
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
+				
+				// draw ressource
+				Ressource r=map.getRessource(x+viewportX, y+viewportY);
+				if (r.id != NORESID)
+				{
+					sprite=globalContainer->ressources;
+					int type=r.field.type;
+					int amount=r.field.amount;
+					int variety=r.field.variety;
+					assert(type>=0);
+					assert(type<4);
+					assert(amount>=0);
+					assert(amount<5);
+					assert(variety>=0);
+					assert(variety<2);
+					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, (type*10)+(variety*5)+amount);
+				}
+
+				
 				// draw Unit or Building
 				#ifdef DBG_UID
 				if ((useMapDiscovered) || map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))
@@ -1228,8 +1258,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				
 				int id = Building::GIDtoID(gid);
 				int team = Building::GIDtoTeam(gid);
-				printf("%d\n", gid);
-
+				
 				Building *building=teams[team]->myBuildings[id];
 				assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 				if (useMapDiscovered
@@ -1255,8 +1284,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		// draw building
 		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
-		printf("%d painting building at (%d, %d), imgid=%d.\n", building->gid, x, y, imgid);
-
+		
 		if (!type->hueImage)
 		{
 			// Here we draw the sprite with a flag:

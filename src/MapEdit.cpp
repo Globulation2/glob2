@@ -976,8 +976,10 @@ void MapEdit::updateUnits(int x, int y, int w, int h)
 			Uint16 gid=game.map.getGroundUnit(dx, dy);
 			if (gid!=NOGUID)
 			{
-				int team=gid/1024;
-				int id=gid%1024;
+				int team=Unit::GIDtoTeam(gid);
+				int id=Unit::GIDtoID(gid);
+				assert(game.teams[team]);
+				assert(game.teams[team]->myUnits[id]);
 				game.teams[team]->myUnits[id]->selectPreferedMovement();
 			}
 		}
@@ -987,8 +989,10 @@ void MapEdit::updateUnits(int x, int y, int w, int h)
 			Uint16 gid=game.map.getAirUnit(dx, dy);
 			if (gid!=NOGUID)
 			{
-				int team=gid/1024;
-				int id=gid%1024;
+				int team=Unit::GIDtoTeam(gid);
+				int id=Unit::GIDtoID(gid);
+				assert(game.teams[team]);
+				assert(game.teams[team]->myUnits[id]);
 				game.teams[team]->myUnits[id]->selectPreferedMovement();
 			}
 		}

@@ -374,6 +374,7 @@ void Unit::selectPreferedMovement(void)
 		action=WALK;
 	else
 		assert(false);
+	printf("action=%d\n", action);
 }
 
 bool Unit::isUnitHungry(void)
