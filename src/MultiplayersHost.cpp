@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+Â  Â  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+Â  Â  This program is free software; you can redistribute it and/or modify
+Â  Â  it under the terms of the GNU General Public License as published by
+Â  Â  the Free Software Foundation; either version 2 of the License, or
+Â  Â  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Â  Â  This program is distributed in the hope that it will be useful,
+Â  Â  but WITHOUT ANY WARRANTY; without even the implied warranty of
+Â  Â  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Â See the
+Â  Â  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Â  Â  You should have received a copy of the GNU General Public License
+Â  Â  along with this program; if not, write to the Free Software
+Â  Â  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA Â 02111-1307 Â USA
 */
 
 #include "MultiplayersHost.h"
@@ -442,27 +442,6 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddress ip)
 {
-	/*if (ip.host==0)
-		return;
-	UDPpacket *packet=SDLNet_AllocPacket(4);
-	if (packet==NULL)
-		return;
-	packet->len=4;
-	char data[4];
-	data[0]=YMT_GAME_INFO_FROM_HOST;
-	data[1]=0;
-	data[2]=0;
-	data[3]=0;
-	memcpy(packet->data, data, 4);
-	packet->address=ip;
-	packet->channel=-1;
-	bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	if (!sucess)
-		fprintf(logFile, "YOG::failed to send packet!\n");
-	else
-		printf("MultiplayersHost::yogClientRequestsGameInfo to ip=%s\n",  Utilities::stringIP(ip));
-	SDLNet_FreePacket(packet);*/
-	
 	if (rsize!=8)
 	{
 		fprintf(logFile, "bad size for a yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
@@ -471,15 +450,23 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 	else
 		fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
 	
-	char sdata[128+8];
+	char sdata[128+12];
 	sdata[0]=YMT_GAME_INFO_FROM_HOST;
 	sdata[1]=0;
 	sdata[2]=0;
 	sdata[3]=0;
 	memcpy(sdata+4, rdata+4, 4); // we copy game's uid
-	snprintf(sdata+8, 128, "%s is a %d teams map", sessionInfo.map.getMapName(), sessionInfo.numberOfTeam); // TODO: customise this once it works
-	int ssize=Utilities::strmlen(sdata+8, 128)+8;
-	assert(ssize<128+8);
+	
+	addSint8(sdata, (Sint8)sessionInfo.numberOfPlayer, 8);
+	addSint8(sdata, (Sint8)sessionInfo.numberOfTeam, 9);
+	addSint8(sdata, (Sint8)sessionInfo.fileIsAMap, 10);
+	if (sessionInfo.mapGenerationDescriptor)
+		addSint8(sdata, (Sint8)sessionInfo.mapGenerationDescriptor->methode, 11);
+	else
+		addSint8(sdata, (Sint8)MapGenerationDescriptor::eNONE, 11);
+	strncpy(sdata+12, sessionInfo.map.getMapName(), 128);
+	int ssize=Utilities::strmlen(sdata+12, 128)+12;
+	assert(ssize<128+12);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
 	if (packet==NULL)
 		return;

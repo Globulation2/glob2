@@ -1,7 +1,7 @@
 /*
  *  Ysagoon Online Gaming
  *  Meta Server with chat for Ysagoon game (first is glob2)
- *  (c) 2002 Luc-Olivier de Charri�e <nuage@ysagoon.com>
+ *  (c) 2002 Luc-Olivier de Charriï¿½e <nuage@ysagoon.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -200,15 +200,20 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
 			if (game->uid==uid)
 			{
-				assert(size-8<128); // TODO: have a secure test.
-				memcpy(game->description, data+8, size-8);
-				game->description[127]=0;
+				assert(size-12<128); // TODO: have a secure test.
+				
+				game->numberOfPlayer=(int)getSint8(data, 8);
+				game->numberOfTeam=(int)getSint8(data, 9);
+				game->fileIsAMap=(bool)getSint8(data, 10);
+				game->mapGenerationMethode=(int)getSint8(data, 11);
+				memcpy(game->mapName, data+12, size-12);
+				game->mapName[127]=0;
 				if (isSelectedGame && selectedGame==uid)
 				{
 					newSelectedGameinfoAviable=true;
 					selectedGameinfoValid=true;
 				}
-				printf("YOG::new game->description=%s\n", game->description);
+				printf("YOG::new game->mapName=%s\n", game->mapName);
 			}
 	}
 	break;
@@ -335,7 +340,12 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			game.name[l-1]=0;
 			index+=l;
 			assert(index<=size);
-			memset(game.description, 0, 128);
+			
+			game.numberOfPlayer=0;
+			game.numberOfTeam=0;
+			game.fileIsAMap=false;
+			game.mapGenerationMethode=0xFF;
+			memset(game.mapName, 0, 128);
 			game.natSolved=false;
 			games.push_back(game);
 			fprintf(logFile, "index=%d.\n", index);
