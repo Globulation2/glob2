@@ -1387,6 +1387,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					buildingList.insert(building); //TODO: we may make it faster by pushing a Building* in the buildingList instead of a uid.
 			}
 		}
+	
 	for (std::set <Building *>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
 	{
 		Building *building = *it;
@@ -1600,7 +1601,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		int team=building->owner->teamNumber;
 
 		int imgid=type->startImage;
-		
+
 		int x, y;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 

@@ -97,11 +97,14 @@ private:
 	void handleMenuClick(int mx, int my, int button);
 	void handleActivation(Uint8 state, Uint8 gain);
 	void coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport=true);
+
+	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
+	void drawValueAlignedRight(int y, int v);
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
@@ -115,6 +118,8 @@ private:
 	void drawChoice(int pos, std::vector<int> &types);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
+	//! Draw the infos and actions from a building
+	void drawBuildingInfos(void);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
