@@ -73,6 +73,64 @@ void YOG::forceDisconnect(void)
 	}
 }
 
+void YOG::interpreteIRCMessage(const char *message)
+{
+	char tempMessage[IRC_MESSAGE_SIZE];
+	char *prefix;
+	char *cmd;
+	char *source;
+
+	strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
+
+	if (tempMessage[0]==':')
+	{
+		int i=1;
+		while ((tempMessage[i]!=' ') && (tempMessage[i]!='!') && (tempMessage[i]!=0))
+			i++;
+		if (tempMessage[i]=='!')
+		{
+			tempMessage[i]=0;
+			source=tempMessage+1;
+			prefix=strtok(&tempMessage[i+1], " ");
+			cmd=strtok(NULL, " ");
+		}
+		else if (tempMessage[i]==' ')
+		{
+			tempMessage[i]=0;
+			source=tempMessage+1;
+			cmd=strtok(&tempMessage[i+1], " ");
+			prefix=NULL;
+		}
+		else
+		{
+			source=NULL;
+			prefix=NULL;
+			cmd=NULL;
+		}
+	}
+	else
+	{
+		source=NULL;
+		prefix=NULL;
+		cmd=strtok(tempMessage, " ");
+	}
+
+	printf("IRC command is : [%s] Source is [%s]\n", cmd, source);
+
+	if (strcasecmp(cmd, "PRIVMSG")==0)
+	{
+		char *diffusion=strtok(NULL, " :");
+		char *message=strtok(NULL, ":\0");
+		ChatMessage msg;
+
+		strncpy(msg.source,  source, IRC_NICK_SIZE);
+		strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+		strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+
+		messages.push_back(msg);
+	}
+}
+
 void YOG::step(void)
 {
 	while (1)
@@ -83,7 +141,10 @@ void YOG::step(void)
 			char data[IRC_MESSAGE_SIZE];
 			bool res=getString(data);
 			if (res)
+			{
 				printf("YOG (IRC) has received [%s]\n", data);
+				interpreteIRCMessage(data);
+			}
 			else
 				printf("YOG (IRC) has received an error\n");
 
@@ -95,11 +156,68 @@ void YOG::step(void)
 	}
 }
 
-void YOG::sendChatMessage(const char *message, const char *channel)
+bool YOG::isChatMessage(void)
+{
+	return messages.size()>0;
+}
+
+const char *YOG::getChatMessage(void)
+{
+	if (messages.size()>0)
+		return messages[0].message;
+	else
+		return NULL;
+}
+
+const char *YOG::getChatMessageSource(void)
+{
+	if (messages.size()>0)
+		return messages[0].source;
+	else
+		return NULL;
+}
+
+const char *YOG::getMessageDiffusion(void)
+{
+	if (messages.size()>0)
+		return messages[0].diffusion;
+	else
+		return NULL;
+}
+
+void YOG::freeChatMessage(void)
+{
+	if (messages.size()>0)
+		messages.erase(messages.begin());
+}
+
+void YOG::sendCommand(const char *message)
 {
 	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s %s", channel, message);
-	sendString(command);
+	if (message[0]=='/')
+	{
+		char tempMessage[IRC_MESSAGE_SIZE];
+		strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
+		char *cmd=strtok(tempMessage, " \t");
+		char *arg1=strtok(NULL, " \t");
+		char *arg2=strtok(NULL, "\0");
+		printf ("c = [%s] a1 = [%s] a2 = [%s]\n", cmd, arg1, arg2);
+		if ((strcasecmp(cmd, "/msg")==0) && arg1 && arg2)
+		{
+			snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", arg1, arg2);
+			sendString(command);
+		}
+		else if ((strcasecmp(cmd, "/whois")==0) && arg1)
+		{
+			snprintf(command, IRC_MESSAGE_SIZE, "WHOIS %s", arg1);
+			sendString(command);
+		}
+	}
+	else
+	{
+		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", DEFAULT_CHAT_CHAN, message);
+		sendString(command);
+	}
 }
 
 void YOG::joinChannel(const char *channel)
@@ -109,7 +227,7 @@ void YOG::joinChannel(const char *channel)
 	sendString(command);
 }
 
-void YOG::quitChannel(const char *channel="#yog")
+void YOG::quitChannel(const char *channel)
 {
 	char command[IRC_MESSAGE_SIZE];
 	snprintf(command, IRC_MESSAGE_SIZE, "PART %s", channel);

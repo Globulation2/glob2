@@ -22,22 +22,39 @@
 #define __YOG_H
 
 #include "Header.h"
+#include <deque>
+
+#define DEFAULT_CHAT_CHAN "#yog"
 
 //! This class is a YOG client
 class YOG
 {
 public:
-	enum { IRC_MESSAGE_SIZE=512 };
+	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
 	enum InfoMessage
 	{
 		IRC_MSG_JOIN=0
 	};
 
-private:
+	struct ChatMessage
+	{
+		char message[IRC_MESSAGE_SIZE];
+		char source[IRC_NICK_SIZE];
+		char diffusion[IRC_CHANNEL_SIZE];
+	};
+
+protected:
 	//! the socket that we use to connect to IRC
 	TCPsocket socket;
 	//! the set for our socket; used to know if new data are available
 	SDLNet_SocketSet socketSet;
+
+	//! pending messages
+	deque<ChatMessage> messages;
+
+protected:
+	//! Interprete a message from IRC; do parsing etc
+	void interpreteIRCMessage(const char *message);
 
 public:
 	//! YOG Constructor
@@ -62,12 +79,14 @@ public:
 	bool isChatMessage(void);
 	//! Get message
 	const char *getChatMessage(void);
-	//! Get the channel (or the user) from where the message is
+	//! Get the user from where the message is
 	const char *getChatMessageSource(void);
+	//! Get where the message has been spawned
+	const char *getMessageDiffusion(void);
 	//! Free last message
 	void freeChatMessage(void);
-	//! Send a message to channel
-	void sendChatMessage(const char *message, const char *channel="#yog");
+	//! Send a message (or a command)
+	void sendCommand(const char *message);
 
 	// INFO
 	//! Return true if there is pending info message
@@ -79,12 +98,12 @@ public:
 	//! Get the channel (or the user) from where the message is
 	const char *getInfoMessageSource(void);
 	//! Free last message
-	void freeInfoessage(void);
+	void freeInfoMessage(void);
 
 	//! Join a given channel
-	void joinChannel(const char *channel="#yog");
+	void joinChannel(const char *channel=DEFAULT_CHAT_CHAN);
 	//! Quit a given channel
-	void quitChannel(const char *channel="#yog");
+	void quitChannel(const char *channel=DEFAULT_CHAT_CHAN);
 
 	// GAME
 	//! Create a new game and start the login room
