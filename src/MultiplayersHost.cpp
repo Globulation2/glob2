@@ -72,7 +72,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		fprintf(logFile, "sharing on YOG\n");
-		yog->shareGame(sessionInfo->map.getMapName());
+		yog->shareGame(sessionInfo->getMapName());
 		yog->setHostGameSocket(socket);
 	}
 	
@@ -82,17 +82,9 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		fprintf(logFile, "MultiplayersHost() random map.\n");
 	}
-	else if (sessionInfo->fileIsAMap)
-	{
-		const char *s=sessionInfo->map.getMapFileName();
-		assert(s);
-		assert(s[0]);
-		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
-		stream=globalContainer->fileManager->open(s,"rb");
-	}
 	else
 	{
-		const char *s=sessionInfo->map.getGameFileName();
+		const char *s=sessionInfo->getFileName();
 		assert(s);
 		assert(s[0]);
 		fprintf(logFile, "MultiplayersHost() fileName=%s.\n", s);
@@ -487,7 +479,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 		addSint8(sdata, (Sint8)sessionInfo.mapGenerationDescriptor->methode, 11);
 	else
 		addSint8(sdata, (Sint8)MapGenerationDescriptor::eNONE, 11);
-	strncpy(sdata+12, sessionInfo.map.getMapName(), 128);
+	strncpy(sdata+12, sessionInfo.getMapName(), 128);
 	int ssize=Utilities::strmlen(sdata+12, 128)+12;
 	assert(ssize<128+12);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
@@ -1060,12 +1052,12 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	sdata[2]=0;
 	sdata[3]=0;
 	memset(&sdata[4], 0, 32);
-	strncpy(&sdata[4], sessionInfo.map.getMapName(), 32);
+	strncpy(&sdata[4], sessionInfo.getMapName(), 32);
 	memset(&sdata[36], 0, 32);
 	strncpy(&sdata[36], globalContainer->userName, 32);
 
 	//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
+	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.getMapName());
 	//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
 	packet->len=68;
 	memcpy((char *)packet->data, sdata, 68);

@@ -68,7 +68,7 @@ public:
 	void setBase(const SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
 	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream, bool fileIsAMap, char *name);
+	void save(SDL_RWops *stream, bool fileIsAMap, const char *name);
 
 	//! look for each team if it has won or not
 	void wonStep(void);

@@ -159,7 +159,7 @@ char *BasePlayer::getData(bool compressed)
 		
 		addSint8(data, (Sint8)ipFromNAT, 11);
 
-		memcpy(data+12, name, MAX_NAME_LENGTH);
+		memcpy(data+12, name, MAX_NAME_LENGTH);//TODO: compress player's names too!
 	}
 	else
 	{

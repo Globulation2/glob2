@@ -31,6 +31,7 @@
 class Map;
 class Game;
 class MapGenerationDescriptor;
+class SessionGame;
 
 // a 1x1 piece of map
 struct Case
@@ -73,7 +74,7 @@ private:
 	Game *game;
 };
 
-class BaseMap: public Order
+/*class BaseMap: public Order
 {
 public:
 	BaseMap();
@@ -84,7 +85,7 @@ public:
 protected:
 	char mapName[MAP_NAME_MAX_SIZE];
 	char mapFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
-	char gameFileName[MAP_NAME_MAX_SIZE+4];//This is not saved in file
+	char gameFileName[MAP_NAME_MAX_SIZE+5];//This is not saved in file
 
 public:
 	//! Safely copy s to mapName[] and remove the extention if needed.
@@ -99,13 +100,13 @@ protected:
 public:
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
-	
+
 	Uint8 getOrderType();
 	char *getData();
 	bool setData(const char *data, int dataLength);
 	int getDataLength();
 	virtual Sint32 checkSum();
-};
+};*/
 
 //! Map, handle all physical localisations
 /*!
@@ -113,7 +114,7 @@ public:
 	game measurement unit.
 	All functions are wrap-safe, excepted the one specified otherwise.
 */
-class Map:public BaseMap
+class Map//:public BaseMap
 {
 public:
 	//! Type of terrain
@@ -131,7 +132,7 @@ public:
 	virtual ~Map(void);
 
 	//! Set the base map (name and initial infos)
-	void setBaseMap(const BaseMap *initial);
+//	void setBaseMap(const BaseMap *initial);
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
 	// !This call is needed to use the Map!
@@ -139,7 +140,7 @@ public:
 	//! Save a map
 	void save(SDL_RWops *stream);
 	//! Load a map from a stream and relink with associated game
-	bool load(SDL_RWops *stream, Game *game=NULL);
+	bool load(SDL_RWops *stream, SessionGame *sessionGame, Game *game=NULL);
 
 	//! Grow ressources on map
 	void growRessources(void);
@@ -303,7 +304,6 @@ protected:
 	Game *game;
 
 public:
-	Sint32 checkSum();
 	Sint32 checkSum(bool heavy);
 	int warpDistSquare(int px, int py, int qx, int qy);
 

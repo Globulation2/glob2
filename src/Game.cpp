@@ -133,7 +133,7 @@ void Game::setBase(const SessionInfo *initial)
 	}
 
 	// set the base map
-	map.setBaseMap(&(initial->map));
+	//map.setBaseMap(&(initial->map));
 
 	session.gameTPF=initial->gameTPF;
 	session.gameLatency=initial->gameLatency;
@@ -433,7 +433,7 @@ bool Game::load(SDL_RWops *stream)
 	SessionInfo tempSessionInfo;
 	if (!tempSessionInfo.load(stream))
 		return false;
-	
+
 	if (tempSessionInfo.mapGenerationDescriptor && tempSessionInfo.fileIsAMap)
 	{
 		tempSessionInfo.mapGenerationDescriptor->synchronizeNow();
@@ -443,13 +443,13 @@ bool Game::load(SDL_RWops *stream)
 	else
 	{
 		session=(SessionGame)tempSessionInfo;
-		map.setMapName(tempSessionInfo.map.getMapName());
+		//map.setMapName(tempSessionInfo.map.getMapName());
 
 		char signature[4];
 
 		if (session.versionMinor>1)
 			SDL_RWseek(stream, tempSessionInfo.gameOffset, SEEK_SET);
-		
+
 		if (session.versionMajor>=0 && session.versionMinor>=9)
 		{
 			char signature[4];
@@ -487,7 +487,7 @@ bool Game::load(SDL_RWops *stream)
 		// we have to load team before map
 		if (session.versionMinor>1)
 			SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
-		if(!map.load(stream, this))
+		if(!map.load(stream, &session, this))
 			return false;
 
 		if (session.versionMajor>=0 && session.versionMinor>=9)
@@ -538,20 +538,20 @@ bool Game::load(SDL_RWops *stream)
 	return true;
 }
 
-void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
+void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 {
 	int i;
 
 	assert(stream);
-	
 
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
-	
+
 	tempSessionInfo.fileIsAMap=(Sint32)fileIsAMap;
-	tempSessionInfo.map=map;
+	/*tempSessionInfo.map=map;
 	if (name)
-		tempSessionInfo.map.setMapName(name);
+		tempSessionInfo.map.setMapName(name);*/
+	tempSessionInfo.setMapName(name);
 
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
@@ -1766,7 +1766,7 @@ Sint32 Game::checkSum()
 	}
 	//printf(", %x", cs);
 	cs=(cs<<31)|(cs>>1);
-	cs^=map.checkSum();
+	cs^=map.checkSum(false);
 	cs=(cs<<31)|(cs>>1);
 	//printf(", %x", cs);
 

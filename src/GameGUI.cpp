@@ -272,7 +272,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen=new LoadSaveScreen(".", "game", false, game.map.getMapName());
+					gameMenuScreen=new LoadSaveScreen(".", "game", false, game.session.getMapName());
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 					return true;
 				}
@@ -383,11 +383,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					/*const*/ char *name=((LoadSaveScreen *)gameMenuScreen)->fileName;
+					const char *name=((LoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
 					{
-						strncpy(toLoadGameFileName, name, Map::MAP_NAME_MAX_SIZE+5);
-						toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+4]=0;
+						strncpy(toLoadGameFileName, name, sizeof(toLoadGameFileName));
+						toLoadGameFileName[sizeof(toLoadGameFileName)-1]=0;
 						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					}
 					else
@@ -1930,11 +1930,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 	}
 	else
 	{
-		const char *s;
-		if (initial->fileIsAMap)
-			s=initial->map.getMapFileName();
-		else
-			s=initial->map.getGameFileName();
+		const char *s=initial->getFileName();
 		assert(s);
 		assert(s[0]);
 		printf("GameGUI::loadBase::s=%s.\n", s);
@@ -1973,7 +1969,7 @@ bool GameGUI::load(SDL_RWops *stream)
 	return result;
 }
 
-void GameGUI::save(SDL_RWops *stream, char *name)
+void GameGUI::save(SDL_RWops *stream, const char *name)
 {
 	game.save(stream, false, name);
 	SDL_WriteBE32(stream, chatMask);

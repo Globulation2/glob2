@@ -245,10 +245,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		filename=NULL;
 		
 		fprintf(logFile, "we may need to download, we don't have a random map.\n");
-		if (sessionInfo.fileIsAMap)
-			filename=sessionInfo.map.getMapFileName();
-		else
-			filename=sessionInfo.map.getGameFileName();
+		filename=sessionInfo.getFileName();
 		
 		assert(filename);
 		assert(filename[0]);
