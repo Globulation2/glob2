@@ -6,16 +6,18 @@
 	objectVersion = 39;
 	objects = {
 		014CEA460018CE2711CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_DEBUGGING_SYMBOLS = used;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_GENERATE_PROFILING_CODE = YES;
+				GCC_MODEL_CPU = G4;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_OPENGL;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CPLUSPLUSFLAGS = "-falign-loops=16";
@@ -25,12 +27,11 @@
 			name = Development;
 		};
 		014CEA470018CE2711CA2923 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = HAVE_OPENGL;
 				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
@@ -1354,9 +1355,8 @@
 			};
 		};
 		5B58913E04C4381B0000000D = {
-			fallbackIsa = PBXFileReference;
 			fileEncoding = 4;
-			isa = PBXExecutableFileReference;
+			isa = PBXFileReference;
 			lastKnownFileType = text.script.sh;
 			name = staticlink.sh;
 			path = src/staticlink.sh;
@@ -5303,7 +5303,7 @@
 		};
 		5B63D66205BAE2670092D38A = {
 			isa = PBXFileReference;
-			lastKnownFileType = text.plist.xml;
+			lastKnownFileType = text.xml;
 			path = "Info-Globulation2.plist";
 			refType = 4;
 			sourceTree = "<group>";
@@ -5504,6 +5504,9 @@
 				5BC8F0CF0531F12F0000000D,
 				5BC8F0D00531F12F0000000D,
 				5B8FAE55044855050000000D,
+				763D76B406C3CF6B00D31024,
+				763D76B506C3CF6B00D31024,
+				763D76B206C3CF5D00D31024,
 				5B8FAE59044855050000000D,
 				5B8FAE5B044855050000000D,
 				5B8FAE5D044855050000000D,
@@ -5517,13 +5520,8 @@
 				5B8FAE6B044855050000000D,
 				5B8FAE71044855050000000D,
 				5B8FAE72044855050000000D,
-				5B8FAE74044855050000000D,
-				5B8FAE75044855050000000D,
-				5B8FAE77044855050000000D,
-				5B8FAE78044855050000000D,
 				5B8039DB057BB1A60017B7CB,
 				5B8FAE7D044855050000000D,
-				5BC2127904ADF1EB0000000D,
 				5B8C469304B84F600000000D,
 				5B8C469404B84F600000000D,
 				5BB5C74704C401490000000D,
@@ -5637,38 +5635,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5B8FAE74044855050000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = SDLFont.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5B8FAE75044855050000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = SDLFont.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5B8FAE77044855050000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = SDLGraphicContext.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5B8FAE78044855050000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = SDLGraphicContext.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		5B8FAE7D044855050000000D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -5679,8 +5645,11 @@
 		};
 		5B8FAEA6044855640000000D = {
 			children = (
+				76D3A18006D119C70083D9BA,
+				76D3A18106D119C70083D9BA,
 				5B8FAEA8044855640000000D,
 				5BC8F0C60531F0E30000000D,
+				763D76B806C3CF7D00D31024,
 				5BC8F0C70531F0E30000000D,
 				5BC8F0C80531F0E30000000D,
 				5B8FAEA9044855640000000D,
@@ -5696,7 +5665,6 @@
 				5B8FAEB3044855640000000D,
 				5B8FAEB4044855640000000D,
 				5B8FAEB8044855640000000D,
-				5BC2127A04ADF1EB0000000D,
 				5BC2127D04ADF1FD0000000D,
 				5BB5C72804C400D90000000D,
 			);
@@ -5938,8 +5906,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_CPU = G4;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREPROCESSOR_DEFINITIONS = DPS_NO_SOCKLEN_T;
+				GCC_PREPROCESSOR_DEFINITIONS = "DPS_NO_SOCKLEN_T HAVE_OPENGL";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include libgag/include /sw/include/SDL /usr/local/include /usr/local/include/SDL";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /sw/lib /sw/include";
@@ -5965,8 +5934,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BA694EC05F9E4330031CC2F,
-				5BA694ED05F9E4330031CC2F,
-				5BA694EE05F9E4330031CC2F,
 				5BA694EF05F9E4330031CC2F,
 				5BA694F005F9E4330031CC2F,
 				5BA694F105F9E4330031CC2F,
@@ -5981,30 +5948,21 @@
 				5BA694FA05F9E4330031CC2F,
 				5BA694FB05F9E4330031CC2F,
 				5BA694FC05F9E4330031CC2F,
-				5BA694FD05F9E4330031CC2F,
 				5BA694FE05F9E4330031CC2F,
 				5BA694FF05F9E4330031CC2F,
 				5BA6950005F9E4330031CC2F,
 				5BA6950105F9E4330031CC2F,
 				5BA6950205F9E4330031CC2F,
+				763D76B706C3CF6B00D31024,
+				763D76B906C3CF7D00D31024,
+				76D3A18206D119C70083D9BA,
+				76D3A18306D119C70083D9BA,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5BA694EC05F9E4330031CC2F = {
 			fileRef = 5B8FAE72044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BA694ED05F9E4330031CC2F = {
-			fileRef = 5B8FAE75044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BA694EE05F9E4330031CC2F = {
-			fileRef = 5B8FAE78044855050000000D;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -6093,12 +6051,6 @@
 			settings = {
 			};
 		};
-		5BA694FD05F9E4330031CC2F = {
-			fileRef = 5BC2127A04ADF1EB0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BA694FE05F9E4330031CC2F = {
 			fileRef = 5BC2127D04ADF1FD0000000D;
 			isa = PBXBuildFile;
@@ -6144,16 +6096,15 @@
 				5BA6950D05F9E4330031CC2F,
 				5BA6950E05F9E4330031CC2F,
 				5BA6950F05F9E4330031CC2F,
-				5BA6951005F9E4330031CC2F,
-				5BA6951105F9E4330031CC2F,
 				5BA6951205F9E4330031CC2F,
-				5BA6951305F9E4330031CC2F,
 				5BA6951405F9E4330031CC2F,
 				5BA6951505F9E4330031CC2F,
 				5BA6951605F9E4330031CC2F,
 				5BA6951705F9E4330031CC2F,
 				5BA6951805F9E4330031CC2F,
 				5BA6951905F9E4330031CC2F,
+				763D76B306C3CF5D00D31024,
+				763D76B606C3CF6B00D31024,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6230,26 +6181,8 @@
 			settings = {
 			};
 		};
-		5BA6951005F9E4330031CC2F = {
-			fileRef = 5B8FAE74044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BA6951105F9E4330031CC2F = {
-			fileRef = 5B8FAE77044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BA6951205F9E4330031CC2F = {
 			fileRef = 5B8FAE7D044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BA6951305F9E4330031CC2F = {
-			fileRef = 5BC2127904ADF1EB0000000D;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -6339,23 +6272,6 @@
 			path = Toolkit.cpp;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		5BC2127904ADF1EB0000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = GLGraphicContext.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5BC2127A04ADF1EB0000000D = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = GLGraphicContext.h;
-			path = libgag/src/GLGraphicContext.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
 		};
 		5BC2127D04ADF1FD0000000D = {
 			fileEncoding = 4;
@@ -9762,6 +9678,62 @@
 //762
 //763
 //764
+		763D76B206C3CF5D00D31024 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = glSDL.c;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		763D76B306C3CF5D00D31024 = {
+			fileRef = 763D76B206C3CF5D00D31024;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		763D76B406C3CF6B00D31024 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = TrueTypeFont.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		763D76B506C3CF6B00D31024 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = TrueTypeFont.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		763D76B606C3CF6B00D31024 = {
+			fileRef = 763D76B406C3CF6B00D31024;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		763D76B706C3CF6B00D31024 = {
+			fileRef = 763D76B506C3CF6B00D31024;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		763D76B806C3CF7D00D31024 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = glSDL.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		763D76B906C3CF7D00D31024 = {
+			fileRef = 763D76B806C3CF7D00D31024;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		76762A07068EEA7A001A930B = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -9800,6 +9772,34 @@
 		};
 		76762A0E068EF548001A930B = {
 			fileRef = 76762A0D068EF548001A930B;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76D3A18006D119C70083D9BA = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Stream.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76D3A18106D119C70083D9BA = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = Types.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		76D3A18206D119C70083D9BA = {
+			fileRef = 76D3A18006D119C70083D9BA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		76D3A18306D119C70083D9BA = {
+			fileRef = 76D3A18106D119C70083D9BA;
 			isa = PBXBuildFile;
 			settings = {
 			};

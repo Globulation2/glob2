@@ -1754,12 +1754,8 @@ int glSDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color)
 	Uint8 r, g, b;
 	
 	SDL_GetRGB(color, pf, &r, &g, &b);
-	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	a = color & 0x000000ff;
-	#else
 	a = color & 0xff000000;
 	a = a >> 24;
-	#endif
 
 	if(dst == fake_screen)
 		dst = vs;
