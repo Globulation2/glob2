@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "Building.h"
@@ -1488,6 +1488,142 @@ int Building::getMidY(void)
 bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 {
 	int testX, testY;
+	int exitQuality=0;
+	int oldQuality;
+	int exitX, exitY;
+	
+	//if (exitQuality<3)
+	{
+		testY=this->posY-1;
+		oldQuality=0;
+		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
+			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			{
+				if (owner->game->map.isRessource(testX, testY-1))
+				{
+					if (exitQuality<1+oldQuality)
+					{
+						exitQuality=1+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=0;
+				}
+				else
+				{
+					if (exitQuality<2+oldQuality)
+					{
+						exitQuality=2+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=1;
+				}
+			}
+	}
+	if (exitQuality<3)
+	{
+		testY=this->posY+type->height;
+		oldQuality=0;
+		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
+			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			{
+				if (owner->game->map.isRessource(testX, testY+1))
+				{
+					if (exitQuality<1+oldQuality)
+					{
+						exitQuality=1+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=0;
+				}
+				else
+				{
+					if (exitQuality<2+oldQuality)
+					{
+						exitQuality=2+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=1;
+				}
+			}
+	}
+	if (exitQuality<3)
+	{
+		oldQuality=0;
+		testX=this->posX-1;
+		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
+			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			{
+				if (owner->game->map.isRessource(testX-1, testY))
+				{
+					if (exitQuality<1+oldQuality)
+					{
+						exitQuality=1+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=0;
+				}
+				else
+				{
+					if (exitQuality<2+oldQuality)
+					{
+						exitQuality=2+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=1;
+				}
+			}
+	}
+	if (exitQuality<3)
+	{
+		oldQuality=0;
+		testX=this->posX+type->width;
+		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
+			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+			{
+				if (owner->game->map.isRessource(testX+1, testY))
+				{
+					if (exitQuality<1+oldQuality)
+					{
+						exitQuality=1+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=0;
+				}
+				else
+				{
+					if (exitQuality<2+oldQuality)
+					{
+						exitQuality=2+oldQuality;
+						exitX=testX;
+						exitY=testY;
+					}
+					oldQuality=1;
+				}
+			}
+	}
+	if (exitQuality>0)
+	{
+		bool shouldBeTrue=owner->game->map.doesPosTouchUID(exitX, exitY, UID, dx, dy);
+		assert(shouldBeTrue);
+		*dx=-*dx;
+		*dy=-*dy;
+		*posX=exitX & owner->game->map.getMaskW();
+		*posY=exitY & owner->game->map.getMaskH();
+		return true;
+	}
+	return false;
+}
+
+/*bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
+{
+	int testX, testY;
 	bool found=false;
 
 	if (!found)
@@ -1557,7 +1693,7 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 		return true;
 	}
 	return false;
-}
+}*/
 
 void Building::computeFlagStat(int *goingTo, int *attacking, int *removingBlack)
 {

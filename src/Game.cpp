@@ -1571,7 +1571,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int nCount;
 	Sint16 u;
 	bool isMeUnitOrBuilding, isEnemyUnitOrBuilding, isAllyUnitOrBuilding;
-	assert(teamSelected>=0);
+	assert(teamSelected>=-1);
 	assert(teamSelected<32);
 
 	int H[3]= { 0, 90, 0 };

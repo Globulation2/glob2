@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "Map.h"
@@ -248,6 +248,66 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 	*finalGrass=((double)grassCount)/((double)totalCount);
 }
 
+void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass)
+{
+	int n=smooth*2+1;
+	double finalWaters[n];
+	double finalSands[n];
+	double finalGrasss[n];
+	
+	for (int i=0; i<n; i++)
+		simulateRandomMap(4, baseWater, baseSand, baseGrass, &finalWaters[i], &finalSands[i], &finalGrasss[i]);
+	
+	double medianFinalWater=finalWaters[0];
+	double medianFinalSand =finalSands [0];
+	double medianFinalGrass=finalGrasss[0];
+	for (int i=0; i<n; i++)
+	{
+		double wf=finalWaters[i];
+		double sf=finalSands [i];
+		double gf=finalGrasss[i];
+		int ws=0;
+		int wb=0;
+		int we=0;
+		int ss=0;
+		int sb=0;
+		int se=0;
+		int gs=0;
+		int gb=0;
+		int ge=0;
+		for (int j=0; j<n; j++)
+		{
+			if (wf<finalWaters[j])
+				wb++;
+			else if (wf>finalWaters[j])
+				ws++;
+			else
+				we++;
+			if (sf<finalSands[j])
+				sb++;
+			else if (sf>finalSands[j])
+				ss++;
+			else
+				se++;
+			if (gf<finalGrasss[j])
+				gb++;
+			else if (gf>finalGrasss[j])
+				gs++;
+			else
+				ge++;
+		}
+		if (abs(wb-ws)<we)
+			medianFinalWater=wf;
+		if (abs(sb-ss)<se)
+			medianFinalSand=sf;
+		if (abs(gb-gs)<ge)
+			medianFinalGrass=gf;
+	}
+	*finalWater=medianFinalWater;
+	*finalSand=medianFinalSand;
+	*finalGrass=medianFinalGrass;
+}
+
 void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	int waterRatio=descriptor.waterRatio;
@@ -319,6 +379,8 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			
 			double projNom=(errBetaWater*errAlphaWater+errBetaSand*errAlphaSand+errBetaGrass*errAlphaGrass);
 			double projDen=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
+			if (projDen<=0)
+				continue;
 			double proj=projNom/projDen;
 			//printf("proj=%f.\n", proj);
 			
@@ -606,8 +668,9 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
-	int minDistSquare=(int)((w*h*grassCount)/(nbTeams*totalCount));
-	//printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
+	int minDistSquare=(int)((double)((double)w*(double)h*(double)grassCount)/(double)((double)nbTeams*(double)totalCount));
+	printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
+	assert(minDistSquare>0);
 	int* bootX=descriptor.bootX;
 	int* bootY=descriptor.bootY;
 	
@@ -672,6 +735,15 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				setUMTerrain(maxX+dx, maxY+dy, GRASS);
 		
 		//printf("team=%d, maxSurface=%d, maxX=%d, maxY=%d.\n", team, maxSurface, maxX, maxY);
+	}
+	
+	// Let's add some green space for teams:
+	int squareSize=5+(int)(sqrt(minDistSquare)/4.5);
+	printf("squareSize=%d.\n", squareSize);
+	for (int team=0; team<nbTeams; team++)
+	{
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, Map::GRASS, squareSize);
+		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+2, Map::GRASS, squareSize);
 	}
 	
 	controlSand();
@@ -1304,8 +1376,9 @@ void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	{
 		if (session.numberOfTeam<=s)
 			addTeam();
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, 5);
-		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, 5);
+		int squareSize=5+descriptor.islandsSize/10;
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, squareSize);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, squareSize);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
@@ -1321,6 +1394,7 @@ void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		}
 		teams[s]->createLists();
 	}
+	map.smoothRessources(descriptor.islandsSize/10);
 }
 
 void Game::makeRandomMap(MapGenerationDescriptor &descriptor)
