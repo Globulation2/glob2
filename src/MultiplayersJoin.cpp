@@ -27,7 +27,7 @@
 
 // If you don't have SDL_net 1.2.5 some features won't be aviable.
 #ifndef INADDR_BROADCAST
-#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#define INADDR_BROADCAST 0x7F000001
 #endif
 
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
@@ -225,7 +225,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	if (localPort)
 	{
 		fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", SDL_SwapBE16(localPort));
-		sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
+		sessionInfo.players[myPlayerNumber].ip.host=0x7F000001;
 		sessionInfo.players[myPlayerNumber].ip.port=localPort;
 	}
 	
@@ -1603,7 +1603,7 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 
 			packet->channel=-1;
 			IPaddress localAdress;
-			localAdress.host=SDL_SwapBE32(0x7F000001);
+			localAdress.host=0x7F000001;
 			localAdress.port=SDL_SwapBE16(tempPort);
 			packet->address=localAdress;
 			packet->len=4;
