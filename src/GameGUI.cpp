@@ -82,6 +82,22 @@ GameGUI::~GameGUI()
 
 }
 
+void GameGUI::flagSelectedStep(void)
+{
+	// update flag
+	int mx, my;
+	Uint8 button=SDL_GetMouseState(&mx, &my);
+	if (button&SDL_BUTTON(1))
+	{
+		if (selBuild && (selBuild->type->isVirtual))
+		{
+			int posX, posY;
+			game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
+			orderQueue.push(new OrderMoveFlags(&(selBuild->UID), &posX, &posY, 1));
+		}
+	}
+}
+
 void GameGUI::step(void)
 {
 	SDL_Event event, mouseMotionEvent, windowEvent;
@@ -111,6 +127,8 @@ void GameGUI::step(void)
 	if (wasWindowEvent)
 		processEvent(&windowEvent);
 
+	int oldViewportX=viewportX;
+	int oldViewportY=viewportY;
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
 	{
@@ -122,6 +140,9 @@ void GameGUI::step(void)
 	}
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
+
+	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
+		flagSelectedStep();
 
 	statStep();
 

@@ -102,6 +102,8 @@ private:
 	//! Draw the message input field
 	void drawInGameTextInput(void);
 	bool hasLocalTeamWon(void);
+	//! Of viewport have moved and a flag is selected, update it's position
+	void flagSelectedStep(void);
 
 public:
 	Game game;
