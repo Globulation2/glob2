@@ -268,23 +268,14 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	int writingSize=size-12;
 	fprintf(logFile, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
 	
-	if (windowIndex==-1)
+	if (windowIndex==-1 && writingSize!=0)
 	{
-		if (writingSize==12)
-		{
-			endOfFileIndex=writingIndex;
-			fprintf(logFile, "2 end of the file is %d.\n", endOfFileIndex);
-		}
-		else
-		{
-			fprintf(logFile, "MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
-			return;
-		}
+		fprintf(logFile, "1 we received an bad windowIndex in data file !!!.\n");
+		return;
 	}
-	
-	if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
+	else if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
 	{
-		fprintf(logFile, "MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFile, "2 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	

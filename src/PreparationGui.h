@@ -30,7 +30,7 @@ class TextInput;
 class SessionConnection
 {
 protected:
-	enum {MAX_PACKET_SIZE=4000};
+	enum {MAX_PACKET_SIZE=65536};
 public:
 	SessionConnection();
 	virtual ~SessionConnection();
