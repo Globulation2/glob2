@@ -203,15 +203,16 @@ Uint8 SessionGame::getOrderType()
 
 void SessionInfo::draw(DrawableSurface *gfx)
 {
-	char playerInfo[128];
-	gfx->drawFilledRect(20, 40, gfx->getW()-40, 20*numberOfPlayer, 0, 0, 0);
+	char playerName[32];
 	for (int i=0; i<numberOfPlayer; i++)
 	{
-		int teamNumber;
-		getPlayerInfo(i, &teamNumber, playerInfo, NULL, sizeof(playerInfo));
+		int teamNumber=players[i].teamNumber;
+		strncpy(playerName, players[i].name, 32);
+		int dx=320*(i/8);
+		int dy=20*(i%8);
 		BaseTeam &te=team[teamNumber];
-		gfx->drawFilledRect(22, 42+i*20, 16, 16, te.colorR, te.colorG, te.colorB);
-		gfx->drawString(40, 40+i*20, globalContainer->standardFont, "%s", playerInfo);
+		gfx->drawFilledRect(22+dx, 42+dy, 16, 16, te.colorR, te.colorG, te.colorB);
+		gfx->drawString(40+dx, 40+dy, globalContainer->standardFont, "%s", playerName);
 	}
 }
 

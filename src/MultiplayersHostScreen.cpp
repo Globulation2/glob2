@@ -35,7 +35,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	notReadyText=new Text(440, 390, globalContainer->menuFont, globalContainer->texts.getString("[not ready]"), 180, 25);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
-	gameFullText=new Text(2, 420, globalContainer->standardFont, globalContainer->texts.getString("[game full]"), 180, 40);
+	gameFullText=new Text(440, 345, globalContainer->menuFont, globalContainer->texts.getString("[game full]"), 180, 25);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
 	savedSessionInfo=NULL;
@@ -56,14 +56,15 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
-		int j;
-		color[i]=new ColorButton(22, 42+i*20, 16, 16, COLOR_BUTTONS+i);
-		for (j=0; j<sessionInfo->numberOfTeam; j++)
+		int dx=320*(i/8);
+		int dy=20*(i%8);
+		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, COLOR_BUTTONS+i);
+		for (int j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42, 42+i*20, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
+		text[i]=new Text(42+dx, 42+dy, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(520, 42+i*20, 100, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 		
 		wasSlotUsed[i]=false;
@@ -72,7 +73,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(20, 400, globalContainer->standardFont, "");
+	startTimer=new Text(440, 300, globalContainer->standardFont, "");
 	addWidget(startTimer);
 
 	timeCounter=0;
@@ -101,17 +102,17 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	{
 		if (multiplayersHost->sessionInfo.players[i].netState>BasePlayer::PNS_BAD)
 		{
-			int teamNumber;
-			char playerInfo[128];
+			int teamNumber=multiplayersHost->sessionInfo.players[i].teamNumber;
+			char playerName[32];
+			strncpy(playerName, multiplayersHost->sessionInfo.players[i].name, 32);
 			char shownInfo[128];
-			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, savedSessionInfo, 128);
 			if (multiplayersHost->playerFileTra[i].wantsFile && !multiplayersHost->playerFileTra[i].receivedFile)
 			{
 				int percent=(100*multiplayersHost->playerFileTra[i].unreceivedIndex)/multiplayersHost->fileSize;
-				snprintf(shownInfo, 128, "%s (%d)", playerInfo, percent);
+				snprintf(shownInfo, 128, "%s (%d)", playerName, percent);
 			}
 			else
-				strncpy(shownInfo, playerInfo, 128);
+				strncpy(shownInfo, playerName, 128);
 
 			if (strncmp(shownInfo, text[i]->getText(), 128))
 			{
