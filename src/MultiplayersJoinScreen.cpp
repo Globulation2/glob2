@@ -27,32 +27,32 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(false);
 
-	serverName=new TextInput(20, 170, 280, 30, "standard", "localhost", true);
+	serverName=new TextInput(20, 170, 280, 30, ALIGN_LEFT, ALIGN_LEFT, "standard", "localhost", true);
 	strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
 	multiplayersJoin->serverName[255]=0;
 	addWidget(serverName);
 
-	playerName=new TextInput(20, 270, 280, 30, "standard", globalContainer->getUsername(), false, 32);
+	playerName=new TextInput(20, 270, 280, 30, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), false, 32);
 	strncpy(multiplayersJoin->playerName, playerName->getText(), 32);
 	multiplayersJoin->playerName[31]=0;
 	addWidget(playerName);
 
-	serverText=new Text(20, 140, "menu", globalContainer->texts.getString("[svr hostname]"));
+	serverText=new Text(20, 140, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[svr hostname]"));
 	addWidget(serverText);
 
-	playerText=new Text(20, 240, "menu", globalContainer->texts.getString("[player name]"));
+	playerText=new Text(20, 240, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
 
-	aviableGamesText=new Text(320, 90, "menu", globalContainer->texts.getString("[aviable lan games]"));
+	aviableGamesText=new Text(320, 90, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[aviable lan games]"));
 	addWidget(aviableGamesText);
 
-	statusText=new Text(20, 390, "standard", "");
+	statusText=new Text(20, 390, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(statusText);
 
-	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
-	addWidget(new TextButton(280, 420, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
+	addWidget(new TextButton( 20, 420, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[connect]"), CONNECT, 13));
+	addWidget(new TextButton(280, 420, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
 
-	lanServers=new List(320, 120, 280, 180, "menu");
+	lanServers=new List(320, 120, 280, 180, ALIGN_LEFT, ALIGN_LEFT, "menu");
 	addWidget(lanServers);
 
 	wasVisible=false;

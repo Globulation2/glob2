@@ -35,7 +35,7 @@ MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, 
 :OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
 {
 	int w=titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth;
-	addWidget(new Text(0, 20, font, title, w));
+	addWidget(new Text(0, 20, ALIGN_LEFT, ALIGN_LEFT, font, title, w));
 
 	int dec;
 	if (titleWidth>totCaptionWidth)
@@ -44,7 +44,7 @@ MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, 
 		dec=20;
 	for (int i=0; i<captionCount; i++)
 	{
-		addWidget(new TextButton(dec, 50, captionWidth[i], 30, NULL, -1, -1, Toolkit::getFont(font), captionArray[i], i));
+		addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, font, captionArray[i], i));
 		dec+=20 + captionWidth[i];
 	}
 }

@@ -24,18 +24,18 @@
 #include "Utilities.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
-{	
-	addAI=new TextButton(440, 345, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Add AI]"), ADD_AI);
-	startButton=new TextButton(440, 390, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Start]"), START);
-	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL));
+{
+	addAI=new TextButton(440, 345, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Add AI]"), ADD_AI);
+	startButton=new TextButton(440, 390, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Start]"), START);
+	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL));
 	addWidget(addAI);
 
 	startButton->visible=false;
 	addWidget(startButton);
-	notReadyText=new Text(440, 390, "menu", globalContainer->texts.getString("[not ready]"), 180, 25);
+	notReadyText=new Text(440, 390, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[not ready]"), 180, 25);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
-	gameFullText=new Text(440, 345, "menu", globalContainer->texts.getString("[game full]"), 180, 25);
+	gameFullText=new Text(440, 345, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[game full]"), 180, 25);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
 	savedSessionInfo=NULL;
@@ -52,19 +52,19 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	multiplayersJoin=NULL;
 	this->shareOnYOG=shareOnYOG;
 
-	addWidget(new Text(20, 5, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
 		int dx=320*(i/8);
 		int dy=20*(i%8);
-		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, COLOR_BUTTONS+i);
+		color[i]=new ColorButton(22+dx, 42+dy, 16, 16, ALIGN_LEFT, ALIGN_LEFT, COLOR_BUTTONS+i);
 		for (int j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42+dx, 42+dy, "standard",  globalContainer->texts.getString("[open]"));
+		text[i]=new Text(42+dx, 42+dy, ALIGN_LEFT, ALIGN_LEFT, "standard",  globalContainer->texts.getString("[open]"));
 		addWidget(text[i]);
-		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
+		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
 		wasSlotUsed[i]=false;
@@ -73,14 +73,14 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(440, 300, "standard", "");
+	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(startTimer);
 
 	timeCounter=0;
 
-	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
+	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
 	addWidget(textInput);
 }
 

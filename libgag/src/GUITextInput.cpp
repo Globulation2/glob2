@@ -30,12 +30,15 @@ TextInput::TextInput()
 	maxLength=0;
 }
 
-TextInput::TextInput(int x, int y, int w, int h, const char *font, const char *text, bool activated, unsigned maxLength)
+TextInput::TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, unsigned maxLength)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
+
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
 
 	this->font=font;
 	this->text=text;

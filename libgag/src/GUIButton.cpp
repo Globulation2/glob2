@@ -18,26 +18,34 @@
 */
 
 #include <GUIButton.h>
+#include <Toolkit.h>
 #include <assert.h>
 
-Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
+Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
-	this->arch=arch;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+
+	this->sprite=sprite;
 	this->standardId=standardId;
 	this->highlightID=highlightID;
 	this->returnCode=returnCode;
 	this->unicodeShortcut=unicodeShortcut;
+
 	highlighted=false;
+	archPtr=NULL;
 }
 
 
 void Button::onSDLEvent(SDL_Event *event)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -81,21 +89,22 @@ void Button::onSDLEvent(SDL_Event *event)
 
 void Button::repaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (visible)
 	{
 		if (highlighted)
 		{
 			if (highlightID>=0)
-				parent->getSurface()->drawSprite(x, y, arch, highlightID);
+				parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
 			else
 				parent->paint(x, y, w, h);
 		}
 		else
 		{
 			if (standardId>=0)
-				parent->getSurface()->drawSprite(x, y, arch, standardId);
+				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
 			else
 				parent->paint(x, y, w, h);
 		}
@@ -105,58 +114,67 @@ void Button::repaint(void)
 
 void Button::paint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
-	if ((visible)&&(standardId>=0))
-		parent->getSurface()->drawSprite(x, y, arch, standardId);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	if ((visible)&&((standardId>=0)||(highlightID>=0)))
+	{
+		archPtr=Toolkit::getSprite(sprite.c_str());
+		assert(archPtr);
+		parent->getSurface()->drawSprite(x, y, archPtr, standardId);
+	}
 	highlighted=false;
 }
 
-TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode)
-:Button(x, y, w, h, arch, standardId, highlightID, returnCode, unicode)
+TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
+:Button(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, returnCode, unicode)
 {
 	assert(font);
 	assert(text);
 	this->font=font;
-	internalSetText(text);
+	this->text=text;
 }
 
 void TextButton::paint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
+	fontPtr=Toolkit::getFont(font.c_str());
+	assert(fontPtr);
+
+	int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
+	int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
+
 	Button::paint();
 	if (visible)
 	{
-		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text.c_str());
+		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
 		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	}
 }
 
-void TextButton::internalSetText(const char *text)
-{
-	assert(font);
-	assert(text);
-	this->text=text;
-	decX=(w-font->getStringWidth(this->text.c_str()))>>1;
-	decY=(h-font->getStringHeight(this->text.c_str()))>>1;
-}
-
 void TextButton::setText(const char *text)
 {
-	internalSetText(text);
+	assert(text);
+	this->text=text;
 	repaint();
 }
 
 void TextButton::repaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	assert(fontPtr);
+
 	Button::repaint();
 	parent->paint(x, y, w, h);
 	if (visible)
 	{
-		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text.c_str());
+		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
+		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
+
+		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
 		if (highlighted)
 		{
 			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -170,12 +188,15 @@ void TextButton::repaint(void)
 
 // FIXME : use intermediate class for highlight handling
 
-OnOffButton::OnOffButton(int x, int y, int w, int h, bool startState, int returnCode)
+OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+
 	this->state=startState;
 	this->returnCode=returnCode;
 	highlighted=false;
@@ -183,7 +204,9 @@ OnOffButton::OnOffButton(int x, int y, int w, int h, bool startState, int return
 
 void OnOffButton::onSDLEvent(SDL_Event *event)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -225,8 +248,9 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 
 void OnOffButton::internalPaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (highlighted)
 	{
 		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -252,6 +276,9 @@ void OnOffButton::paint(void)
 
 void OnOffButton::repaint(void)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	parent->paint(x, y, w, h);
 	if (visible)
 		internalPaint();
@@ -267,12 +294,15 @@ void OnOffButton::setState(bool newState)
 	}
 }
 
-ColorButton::ColorButton(int x, int y, int w, int h, int returnCode)
+ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	
 	this->returnCode=returnCode;
 	highlighted=false;
 	selColor=0;
@@ -280,7 +310,9 @@ ColorButton::ColorButton(int x, int y, int w, int h, int returnCode)
 
 void ColorButton::onSDLEvent(SDL_Event *event)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -304,12 +336,12 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && vr.size())
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && v.size())
 		{
 			if (event->button.button == SDL_BUTTON_LEFT)
 			{
 				selColor++;
-				if (selColor>=(signed)vr.size())
+				if (selColor>=(signed)v.size())
 					selColor=0;
 				repaint();
 
@@ -320,7 +352,7 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 			{
 				selColor--;
 				if (selColor<0)
-					selColor=(signed)vr.size()-1;
+					selColor=(signed)v.size()-1;
 				repaint();
 				
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
@@ -340,20 +372,21 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 
 void ColorButton::internalPaint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (highlighted)
 	{
 		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
 		parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
-		if (vr.size())
-			parent->getSurface()->drawFilledRect(x+2, y+2, w-4, h-4, vr[selColor], vg[selColor], vb[selColor]);
+		if (v.size())
+			parent->getSurface()->drawFilledRect(x+2, y+2, w-4, h-4, v[selColor].r, v[selColor].g, v[selColor].b);
 	}
 	else
 	{
 		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-		if (vr.size())
-			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, vr[selColor], vg[selColor], vb[selColor]);
+		if (v.size())
+			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
 	}
 }
 
@@ -366,6 +399,9 @@ void ColorButton::paint(void)
 
 void ColorButton::repaint(void)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	parent->paint(x, y, w, h);
 	if (visible)
 		internalPaint();

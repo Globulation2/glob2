@@ -31,7 +31,7 @@ class Ratio: public RectangularWidget
 
 public:
 	Ratio() { font=NULL; }
-	Ratio(int x, int y, int w, int h, int size, int value, Font *font);
+	Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
 	virtual ~Ratio();
 
 	virtual void onTimer(Uint32 tick);

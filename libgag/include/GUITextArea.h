@@ -33,7 +33,7 @@ protected:
 
 public:
 	TextArea() { font=NULL; textBuffer=NULL; }
-	TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true, const char *text="");
+	TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="");
 	virtual ~TextArea();
 
 	virtual void paint(void);

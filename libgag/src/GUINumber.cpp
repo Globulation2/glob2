@@ -26,14 +26,18 @@ Number::Number()
 	x = y = w = h = m = nth = 0;
 }
 
-Number::Number(int x, int y, int w, int h, int m, const char *font)
+Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
 {
 	assert(font);
 	this->font=font;
+
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+
 	if (m<1)
 		m=h;
 	this->m=m;

@@ -23,14 +23,14 @@
 
 YOGPreScreen::YOGPreScreen()
 {
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[login]"), LOGIN, 13));
-	addWidget(new Text(0, 18, "menu", globalContainer->texts.getString("[yog]"), 640));
+	addWidget(new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[login]"), LOGIN, 13));
+	addWidget(new Text(0, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[yog]"), 640));
 
-	login=new TextInput(20, 435, 400, 25, "standard", globalContainer->getUsername(), true, 32);
+	login=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(login);
 	
-	statusText=new TextArea(20, 290, 600, 50, globalContainer->standardFont);
+	statusText=new TextArea(20, 290, 600, 50, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(statusText);
 	oldYOGExternalStatusState=YOG::YESTS_BAD;
 	

@@ -23,10 +23,10 @@
 #include <iostream>
 #include <Toolkit.h>
 
-FileList::FileList(int x, int y, int w, int h, const char *font,
+FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
 									 const char *dir,
 									 const char *extension, const bool recurse)
-	: List(x, y, w, h, font),
+	: List(x, y, w, h, hAlign, vAlign, font),
 		dir(dir),
 		extension(extension), recurse(recurse), 
 		current("")

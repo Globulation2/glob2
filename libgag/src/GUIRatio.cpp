@@ -18,19 +18,22 @@
 */
 
 #include <GUIRatio.h>
+#include <Toolkit.h>
 #include <assert.h>
 
-Ratio::Ratio(int x, int y, int w, int h, int size, int value, Font *font)
+Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font)
 {
+	this->font=Toolkit::getFont(font);
 	assert(font);
-	this->font=font;
-	textHeight=font->getStringHeight((const char *)NULL);
+	textHeight=this->font->getStringHeight((const char *)NULL);
 	
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
-	
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+
 	this->size=size;
 	this->value=value;
 	oldValue=value;

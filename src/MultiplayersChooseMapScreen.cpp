@@ -26,12 +26,12 @@
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
 	this->shareOnYOG=shareOnYOG;
-	
-	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	toogleButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[the games]"), TOOGLE);
+
+	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	toogleButton=new TextButton(240, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[the games]"), TOOGLE);
 	mapPreview=new MapPreview(240, 60, "net.map");
-	title=new Text(20, 18, "menu", globalContainer->texts.getString("[choose map]"), 600);
+	title=new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose map]"), 600);
 
 	addWidget(ok);
 	addWidget(cancel);
@@ -39,18 +39,18 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(mapPreview);
 	addWidget(title);
 
-	mapName=new Text(440, 60+128+30, "standard", "", 180);
+	mapName=new Text(440, 60+128+30, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, "standard", "", 180);
+	mapInfo=new Text(440, 60+128+60, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, "standard", "", 180);
+	mapVersion=new Text(440, 60+128+90, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, "standard", "", 180);
+	mapSize=new Text(440, 60+128+120, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapSize);
-	methode=new Text(440, 60+128+150, "standard", "", 180);
+	methode=new Text(440, 60+128+150, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(methode);
 	
-	mapFileList=new List(20, 60, 200, 400, "standard");
+	mapFileList=new List(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	if (Toolkit::getFileManager()->initDirectoryListing("maps", "map"))
 	{
 		const char *fileName;
@@ -66,7 +66,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	}
 	addWidget(mapFileList);
 
-	gameFileList=new List(20, 60, 200, 400, "standard");
+	gameFileList=new List(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;

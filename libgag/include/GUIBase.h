@@ -45,6 +45,7 @@ enum Action
 {
 	SCREEN_CREATED,	// after first draw
 	SCREEN_DESTROYED,	// after endExectue
+	SCREEN_RESIZED,
 
 	BUTTON_GOT_MOUSEOVER,
 	BUTTON_LOST_MOUSEOVER,
@@ -99,6 +100,10 @@ protected:
 	Screen *parent;
 };
 
+#define ALIGN_LEFT 0
+#define ALIGN_RIGHT 1
+#define ALIGN_FILL 2
+
 //! The parent for all standards widgets like Button, texts, etc...
 class RectangularWidget:public Widget
 {
@@ -110,9 +115,13 @@ protected:
 		ITEM(Sint32, y)
 		ITEM(Sint32, w)
 		ITEM(Sint32, h)
+		ITEM(Uint32, hAlignFlag)
+		ITEM(Uint32, vAlignFlag)
 	CLASSEND;
 
 public:
+	//! RectangularWidget constructor, set all values to 0
+	RectangularWidget();
 	//! RectangularWidget destructor
 	virtual ~RectangularWidget() { }
 
@@ -122,6 +131,8 @@ public:
 	virtual void hide(void);
 	//! Show or hide the widget, depending on visible
 	virtual void setVisible(bool visible);
+	//! Compute the actual position from the layout informations
+	virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
 
 protected:
 	//! Repaint the widget in its environment

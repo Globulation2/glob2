@@ -23,18 +23,18 @@
 
 MainMenuScreen::MainMenuScreen()
 {
-	addWidget(new TextButton( 20,  20, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[campagn]"), CAMPAIN));
+	addWidget(new TextButton( 20,  20, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[campagn]"), CAMPAIN));
 	
-	addWidget(new TextButton( 20, 100, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(340, 100, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[custom game]"), CUSTOM));
+	addWidget(new TextButton( 20, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(340, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[custom game]"), CUSTOM));
 	
-	addWidget(new TextButton( 20, 180, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[yog]"), MULTIPLAYERS_YOG));
-	addWidget(new TextButton(340, 180, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[lan]"), MULTIPLAYERS_LAN));
+	addWidget(new TextButton( 20, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[yog]"), MULTIPLAYERS_YOG));
+	addWidget(new TextButton(340, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[lan]"), MULTIPLAYERS_LAN));
 	
-	addWidget(new TextButton( 20, 340, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[settings]"), GAME_SETUP));
-	addWidget(new TextButton(340, 340, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[editor]"), EDITOR));
+	addWidget(new TextButton( 20, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[settings]"), GAME_SETUP));
+	addWidget(new TextButton(340, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[editor]"), EDITOR));
 	
-	addWidget(new TextButton(340, 420, 280,  40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), QUIT, 27));
+	addWidget(new TextButton(340, 420, 20,  40, ALIGN_FILL, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), QUIT, 27));
 
 	globalContainer->gfx->setClipRect();
 	
@@ -54,10 +54,9 @@ void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void MainMenuScreen::paint(int x, int y, int w, int h)
 {
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	//gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 	gfxCtx->setClipRect(x, y, w, h);
 	gfxCtx->drawSurface(0, 0, background);
-	gfxCtx->setClipRect();
 	gfxCtx->drawString(gfxCtx->getW()-70, gfxCtx->getH()-18, globalContainer->standardFont, "V %d.%d", VERSION_MAJOR, VERSION_MINOR);
 }
 
