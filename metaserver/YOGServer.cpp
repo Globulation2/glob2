@@ -803,11 +803,9 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 						(*c)->updateClient(cuid, true);
 				(*sender)->hostGameip=ip;
 				(*sender)->playing=true;
-				lprintf("Client %s has a hostGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
+				lprintf("Client (%s) has a hostGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
 				if ((*sender)->joinedGame && (*sender)->joinedGame->host!=*sender)
-				{
-					Warning!
-				}
+					lprintf("Warning, Client (%s) has not joined his own game!\n", (*sender)->userName);
 				(*sender)->send(YMT_HOST_GAME_SOCKET);
 				break;
 			}
@@ -827,6 +825,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				(*sender)->joinGameip=ip;
 				(*sender)->playing=true;
 				lprintf("Client %s has a joinGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
+				if ((*sender)->sharingGame && (*sender)->sharingGame->host!=*sender)
+					lprintf("Warning, Client (%s) has not joined his own game!\n", (*sender)->userName);
 				
 				(*sender)->send(YMT_JOIN_GAME_SOCKET);
 				for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
