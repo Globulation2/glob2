@@ -1414,7 +1414,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				}
 		}
 		
-		ypos += YOFFSET_INFOS;
+		if (buildingType->armor)
+			ypos+=YOFFSET_TEXT_LINE;
+		if (buildingType->maxUnitInside)
+			ypos += YOFFSET_INFOS;
 		if (buildingType->shootDamage)
 			ypos += YOFFSET_TOWER;
 		ypos += YOFFSET_B_SEP;
@@ -2136,7 +2139,8 @@ void GameGUI::drawBuildingInfos(void)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[armor]"), buildingType->armor).c_str());
 		ypos+=YOFFSET_TEXT_LINE;
 	}
-	ypos += YOFFSET_INFOS;
+	if (buildingType->maxUnitInside)
+		ypos += YOFFSET_INFOS;
 	if (buildingType->shootDamage)
 	{
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+1, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[damage]"), buildingType->shootDamage).c_str());
@@ -2330,11 +2334,12 @@ void GameGUI::drawBuildingInfos(void)
 							if (bt->armor)
 							{
 								if (!buildingType->armor)
-									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
-								drawValueAlignedRight(blueYpos, bt->armor);
+									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
+								drawValueAlignedRight(blueYpos-1, bt->armor);
+								blueYpos+=YOFFSET_TEXT_LINE;
 							}
-							blueYpos += YOFFSET_INFOS;
-
+							if (buildingType->maxUnitInside)
+								blueYpos += YOFFSET_INFOS;
 							if (bt->shootDamage)
 							{
 								drawValueAlignedRight(blueYpos+1, bt->shootDamage);
@@ -2352,6 +2357,12 @@ void GameGUI::drawBuildingInfos(void)
 									drawValueAlignedRight(blueYpos+(j*11), bt->maxRessource[i]);
 									j++;
 								}
+							}
+							
+							if (bt->maxBullets)
+							{
+								drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
+								j++;
 							}
 
 							globalContainer->littleFont->popColor();
