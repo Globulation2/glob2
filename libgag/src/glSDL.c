@@ -2288,6 +2288,13 @@ int glSDL_DrawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2,
 	SDL_PixelFormat *pf = dst->format;
 	SDL_Rect dstrect;
 	Uint8 r, g, b;
+	
+	/* this little hacky coordinate transformation is mandatory to comply with the software appearance of lines */
+	if (y1 == y2)
+	{
+		y1++;
+		y2++;
+	}
 
 	if(dst == fake_screen)
 		dst = vs;
@@ -2304,14 +2311,13 @@ int glSDL_DrawLine(SDL_Surface *dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2,
 
 	SDL_GetRGB(color, pf, &r, &g, &b);
 
-	if (a < 255)
-	{
-		gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		gl_do_blend(1);
-	}
-	else
-		gl_do_blend(0);
+	gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	gl_do_blend(1);
 	gl_do_texture(0);
+	if ((y2-y1 == 0) || (x2-x1 == 0))
+		gl.Disable(GL_LINE_SMOOTH);
+	else
+		gl.Enable(GL_LINE_SMOOTH);
 
 	gl.Begin(GL_LINES);
 	if (a < 255)
@@ -2378,6 +2384,7 @@ int glSDL_DrawRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color, Uint8 a)
 	else
 		gl_do_blend(0);
 	gl_do_texture(0);
+	gl.Disable(GL_LINE_SMOOTH);
 
 	gl.Begin(GL_LINES);
 	if (a < 255)
@@ -2462,16 +2469,13 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 
 	SDL_GetRGB(color, pf, &r, &g, &b);
 
-	if (a < 255)
-	{
-		gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		gl_do_blend(1);
-	}
-	else
-		gl_do_blend(0);
+	gl_blendfunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	gl_do_blend(1);
 	gl_do_texture(0);
+	gl.Enable(GL_LINE_SMOOTH);
+	gl.LineWidth(2);
 
-	tot = ray>>1;
+	tot = ray;
 	fx = x;
 	fy = y;
 	fray = ray;
@@ -2481,7 +2485,6 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 		gl.Color4ub(r, g, b, a);
 	else
 		gl.Color3ub(r, g, b);
-	glLineWidth(2.5);
 	for (i=0; i<tot; i++)
 	{
 		double angle0 = (2*M_PI*(double)i)/((double)tot);
@@ -2490,6 +2493,7 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 		gl.Vertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 	}
 	gl.End();
+	gl.LineWidth(1);
 	
 	return 0;
 }
