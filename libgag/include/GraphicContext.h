@@ -23,6 +23,7 @@
 #include "GAGSys.h"
 #include <map>
 #include <vector>
+#include <string>
 
 class Font;
 class Sprite;
@@ -30,9 +31,121 @@ class Sprite;
 class DrawableSurface
 {
 protected:
+	//! the underlying SDL or glSDL surface
 	SDL_Surface *surface;
+	//! The clipping rect, we do not draw outside it
 	SDL_Rect clipRect;
+	//! Flags, can be a combination of ResolutionFlags
 	Uint32 flags;
+	//! if true, we only want to redraw part of screen at each frame. The backend has to queue commands to correcly handle double buffering
+	bool partialRedraw;
+	
+	//! A delayed drawing command that can be applyed to the surface
+	class DrawCommand
+	{
+	public:
+		virtual void apply(DrawableSurface *ds) = 0;
+		virtual ~DrawCommand() { }
+	};
+	
+	class SetClipRectCommand: public DrawCommand
+	{
+	protected:
+		int x, y, w, h;
+	public:
+		SetClipRectCommand(int x, int y, int w, int h) { this->x=x; this->y=y; this->w=w; this->h=h; }
+		virtual void apply(DrawableSurface *ds) { ds->setClipRect(x, y, w, h); }
+	};
+	
+	class SetNoClipRectCommand: public DrawCommand
+	{
+	public:
+		virtual void apply(DrawableSurface *ds) { ds->setClipRect(); }
+	};
+	
+	class DrawSpriteCommand: public DrawCommand
+	{
+	protected:
+		int x, y, index;
+		Sprite *sprite;
+	public:
+		DrawSpriteCommand(int x, int y, Sprite *sprite, int index) { this->x=x; this->y=y; this->sprite=sprite; this->index=index; }
+		virtual void apply(DrawableSurface *ds) { ds->drawSprite(x, y, sprite, index); }
+	};
+	
+	class DrawPixelCommand: public DrawCommand
+	{
+	protected:
+		int x, y;
+		Uint8 r, g, b, a;
+	public:
+		DrawPixelCommand(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a) { this->x=x; this->y=y; this->r=r; this->g=g; this->b=b; this->a=a; }
+		virtual void apply(DrawableSurface *ds) { ds->drawPixel(x, y, r, g, b, a); }
+	};
+	
+	class DrawFilledRectCommand: public DrawCommand
+	{
+	protected:
+		int x, y, w, h;
+		Uint8 r, g, b, a;
+	public:
+		DrawFilledRectCommand(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) { this->x=x; this->y=y; this->w=w; this->h=h; this->r=r; this->g=g; this->b=b; this->a=a; }
+		virtual void apply(DrawableSurface *ds) { ds->drawFilledRect(x, y, w, h, r, g, b, a); }
+	};
+	
+	class DrawRectCommand: public DrawCommand
+	{
+	protected:
+		int x, y, w, h;
+		Uint8 r, g, b, a;
+	public:
+		DrawRectCommand(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) { this->x=x; this->y=y; this->w=w; this->h=h; this->r=r; this->g=g; this->b=b; this->a=a; }
+		virtual void apply(DrawableSurface *ds) { ds->drawRect(x, y, w, h, r, g, b, a); }
+	};
+	
+	class DrawLineCommand: public DrawCommand
+	{
+	protected:
+		int x1, y1, x2, y2;
+		Uint8 r, g, b, a;
+	public:
+		DrawLineCommand(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a) { this->x1=x1; this->y1=y1; this->x2=x2; this->y2=y2; this->r=r; this->g=g; this->b=b; this->a=a; }
+		virtual void apply(DrawableSurface *ds) { ds->drawLine(x1, y1, x2, y2, r, g, b, a); }
+	};
+	
+	class DrawCircleCommand: public DrawCommand
+	{
+	protected:
+		int x, y, ray;
+		Uint8 r, g, b, a;
+	public:
+		DrawCircleCommand(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a) { this->x=x; this->y=y; this->ray=ray; this->r=r; this->g=g; this->b=b; this->a=a; }
+		virtual void apply(DrawableSurface *ds) { ds->drawCircle(x, y, ray, r, g, b, a); }
+	};
+	
+	class DrawStringCommand: public DrawCommand
+	{
+	protected:
+		int x, y, w;
+		Font *font;
+		std::string msg;
+	public:
+		DrawStringCommand(int x, int y, int w, Font *font, const char *msg) { this->x=x; this->y=y; this->w=w; this->font=font; this->msg=msg; }
+		virtual void apply(DrawableSurface *ds) { ds->drawString(x, y, w, font, msg.c_str()); }
+	};
+	
+	class DrawSurfaceCommand: public DrawCommand
+	{
+	protected:
+		int x, y;
+		DrawableSurface *s;
+	public:
+		DrawSurfaceCommand(int x, int y, DrawableSurface *) { this->x=x; this->y=y; this->s=s; }
+		virtual void apply(DrawableSurface *ds) { ds->drawSurface(x, y, s); }
+	};
+		
+	//! the commands vector used for partial redraw
+	std::vector<DrawCommand *> drawCommands;
 	
 public:
 	enum GraphicContextType
@@ -94,6 +207,10 @@ private:
 	
 protected:
 	int minW, minH;
+	//! draw all queued command due to the double buffering
+	void drawQueudCommands(void);
+	//! clear all queued commands
+	void clearQueudCommands(void);
 
 public:
 	GraphicContext();
@@ -112,6 +229,7 @@ public:
 	virtual void updateRects(SDL_Rect *rects, int size);
 	virtual void updateRect(int x, int y, int w, int h);
 	virtual void printScreen(const char *filename);
+	virtual void setPartialRedraw(bool value) { partialRedraw = value; }
 };
 
 

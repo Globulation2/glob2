@@ -140,8 +140,6 @@ int Engine::initCampain(const char *mapName)
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
-
 	return EE_NO_ERROR;
 }
 
@@ -312,8 +310,6 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	// we create the net game
 	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
-
 	printf("Engine::localPlayer=%d, localTeamNb=%d\n", gui.localPlayer, gui.localTeamNo);
 }
 
@@ -379,7 +375,10 @@ int Engine::run(void)
 	if (globalContainer->runNoX)
 		assert(globalContainer->mix==NULL);
 	else
+	{
 		globalContainer->mix->setNextTrack(2, true);
+		globalContainer->gfx->setPartialRedraw(false);
+	}
 	
 	while (doRunOnceAggain)
 	{
@@ -517,6 +516,7 @@ int Engine::run(void)
 		// Restart menu music
 		assert(globalContainer->mix);
 		globalContainer->mix->setNextTrack(1);
+		globalContainer->gfx->setPartialRedraw(true);
 		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
