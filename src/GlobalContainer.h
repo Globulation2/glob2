@@ -67,7 +67,6 @@ public:
 	Sprite *terrain;
 	Sprite *terrainBlack;
 	Sprite *terrainShader;
-	Sprite *forbiddenShader;
 	Sprite *ressources;
 	Sprite *units;
 	Sprite *buildings;
