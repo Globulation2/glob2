@@ -6,7 +6,6 @@ Gameplay:
 IngameGUI:
 -On ne devrait pas voir combien il y a d'unités dans un batiment ennemi.
 -On ne sait pas qui est mort.
--Les cercles de selection des unités enemies n'est plus rouge!
 
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.

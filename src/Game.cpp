@@ -1184,7 +1184,15 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 	if (unit==selectedUnit)
+	{
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
+		if (unit->owner->teamNumber == localTeam)
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
+		else if ((teams[localTeam]->allies) & (unit->owner->me))
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 196, 0);
+		else
+			globalContainer->gfx->drawCircle(px+16, py+16, 16, 190, 0, 0);
+	}
 
 	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
