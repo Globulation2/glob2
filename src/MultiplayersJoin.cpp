@@ -739,6 +739,7 @@ bool MultiplayersJoin::tryConnection()
 {
 	quitThisGame();
 
+	assert(socket==NULL);
 	socket=SDLNet_UDP_Open(ANY_PORT);
 
 	if (socket)

@@ -22,10 +22,13 @@
 #include "Order.h"
 #include "GlobalContainer.h"
 
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 5
+
 SessionGame::SessionGame()
 {
-	versionMajor=0;
-	versionMinor=5;
+	versionMajor=VERSION_MAJOR;
+	versionMinor=VERSION_MINOR;
 	sessionInfoOffset=0;
 	gameOffset=0;
 	teamsOffset=0;
@@ -47,8 +50,8 @@ SessionGame::SessionGame(const SessionGame &sessionGame)
 
 void SessionGame::save(SDL_RWops *stream)
 {
-	versionMajor=0;
-	versionMinor=5;
+	versionMajor=VERSION_MAJOR;
+	versionMinor=VERSION_MINOR;
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 	SDL_WriteBE32(stream, versionMajor);
 	SDL_WriteBE32(stream, versionMinor);

@@ -64,12 +64,12 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 
 MultiplayersHost::~MultiplayersHost()
 {
-
+	
 	if (shareOnYOG)
 	{
 		globalContainer->yog.unshareGame();
 	}
-
+	
 	if (destroyNet)
 	{
 		assert(channel==-1);
@@ -81,12 +81,19 @@ MultiplayersHost::~MultiplayersHost()
 		}
 		if (socket)
 		{
+			// We need to have the same Port openened to comunicate with all players to pass firewalls.
+			// Then, "socket" is the same in all players and in "MultiplayersHost".
+			// Therefore, we need to unbind players BEFORE deleting "socket".
+			
+			for (int p=0; p<sessionInfo.numberOfPlayer; p++)
+				if (sessionInfo.players[p].socket==socket)
+					sessionInfo.players[p].unbind();
 			SDLNet_UDP_Close(socket);
 			socket=NULL;
 			NETPRINTF("Socket closed.\n");
 		}
 	}
-
+	
 	if (savedSessionInfo)
 		delete savedSessionInfo;
 }
@@ -95,7 +102,7 @@ void MultiplayersHost::initHostGlobalState(void)
 {
 	for (int i=0; i<32; i++)
 		crossPacketRecieved[i]=0;
-
+	
 	hostGlobalState=HGS_SHARING_SESSION_INFO;
 }
 
@@ -782,6 +789,8 @@ void MultiplayersHost::sendingTime()
 				memcpy(data+8, sessionInfo.getData(), size);
 
 				sessionInfo.players[i].send(data, size+8);
+				
+				free(data);
 			}
 			break;
 

@@ -32,6 +32,7 @@ public:
 	~NetGame();
 
 	Order *getOrder(Sint32 playerNumber);
+	void orderHasBeenExecuted(Order *order);
 	void pushOrder(Order *order, Sint32 playerNumber);
 	void step(void);
 	void init(void);

@@ -82,7 +82,7 @@ void YOGScreen::updateList(void)
 	data[0]=0;
 
 	//sendString(socket, "listenoff");
-	/*sendString(socket, "listgames");
+	sendString(socket, "listgames");
 	while (strcasecmp(data, "end")!=0)
 	{
 		bool res=getString(socket, data);

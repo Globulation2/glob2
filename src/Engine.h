@@ -36,7 +36,7 @@ public:
 	int initCustom();
 	int initCustom(const char *gameName);
 	int initLoadGame();
-	void startMultiplayer(SessionConnection *screen);
+	void startMultiplayer(SessionConnection *sessionConnection);
 	int initMutiplayerHost(bool shareOnYOG);
 	int initMutiplayerJoin();
 	int initMutiplayerYOG();

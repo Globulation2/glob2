@@ -20,6 +20,11 @@
 
 #include "Order.h"
 
+Order::Order(void)
+{
+	inQueue=true;
+}
+
 Order *Order::getOrder(const char *netData, int netDataLength)
 {
 	if (netDataLength<1)
@@ -123,6 +128,7 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 // OrderCreate's code
 
 OrderCreate::OrderCreate(const char *data, int dataLength)
+:Order()
 {
 	assert(dataLength==16);
 	
@@ -165,6 +171,7 @@ bool OrderCreate::setData(const char *data, int dataLength)
 // OrderDelete's code
 
 OrderDelete::OrderDelete(const char *data, int dataLength)
+:Order()
 {
 	assert(dataLength==4);
 
@@ -229,6 +236,7 @@ bool OrderCancelDelete::setData(const char *data, int dataLength)
 // OrderUpgrade's code
 
 OrderUpgrade::OrderUpgrade(const char *data, int dataLength)
+:Order()
 {
 	assert(dataLength==4);
 	
@@ -262,6 +270,7 @@ bool OrderUpgrade::setData(const char *data, int dataLength)
 // OrderCancelUpgrade's code
 
 OrderCancelUpgrade::OrderCancelUpgrade(const char *data, int dataLength)
+:Order()
 {
 	assert(dataLength==4);
 	
@@ -284,7 +293,7 @@ bool OrderCancelUpgrade::setData(const char *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-	
+
 	this->UID=getSint32(data, 0);
 	
 	memcpy(this->data,data,dataLength);
@@ -292,9 +301,17 @@ bool OrderCancelUpgrade::setData(const char *data, int dataLength)
 	return true;
 }
 
+// OrderModify' code
+
+OrderModify::OrderModify()
+:Order()
+{
+}
+
 // OrderModifyUnits' code
 
 OrderModifyUnits::OrderModifyUnits(const char *data, int dataLength)
+:OrderModify()
 {
 	assert((dataLength%12)==0);
 	
@@ -366,6 +383,7 @@ bool OrderModifyUnits::setData(const char *data, int dataLength)
 // OrderModifyBuildings' code
 
 OrderModifyBuildings::OrderModifyBuildings(const char *data, int dataLength)
+:OrderModify()
 {
 	assert((dataLength%8)==0);
 
@@ -444,6 +462,7 @@ bool OrderModifyBuildings::setData(const char *data, int dataLength)
 // OrderModifySwarms' code
 
 OrderModifySwarms::OrderModifySwarms(const char *data, int dataLength)
+:OrderModify()
 {
 	assert(UnitType::NB_UNIT_TYPE==3);
 	assert((dataLength%16)==0);
@@ -514,6 +533,7 @@ bool OrderModifySwarms::setData(const char *data, int dataLength)
 // OrderModifyFlags' code
 
 OrderModifyFlags::OrderModifyFlags(const char *data, int dataLength)
+:OrderModify()
 {
 	assert((dataLength%8)==0);
 	
@@ -571,13 +591,14 @@ bool OrderModifyFlags::setData(const char *data, int dataLength)
    	}
 
 	memcpy(this->data,data,dataLength);
-	
+
 	return true;
 }
 
 // OrderMoveFlags' code
 
 OrderMoveFlags::OrderMoveFlags(const char *data, int dataLength)
+:OrderModify()
 {
 	assert((dataLength%12)==0);
 	
@@ -645,9 +666,31 @@ bool OrderMoveFlags::setData(const char *data, int dataLength)
 	return true;
 }
 
+// MiscOrder's code
+
+MiscOrder::MiscOrder()
+:Order()
+{
+}
+
+// NullOrder's code
+
+NullOrder::NullOrder()
+:MiscOrder()
+{
+}
+
+// QuitedOrder's code
+
+QuitedOrder::QuitedOrder()
+:MiscOrder()
+{
+}
+
 // MessageOrder's code
 
 MessageOrder::MessageOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength>=5);
 
@@ -688,9 +731,10 @@ bool MessageOrder::setData(const char *data, int dataLength)
 	return true;
 }
 
-// OrderDelete's code
+// SetAllianceOrder's code
 
 SetAllianceOrder::SetAllianceOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==12);
 
@@ -729,6 +773,7 @@ bool SetAllianceOrder::setData(const char *data, int dataLength)
 // SubmitCheckSum's code
 
 SubmitCheckSumOrder::SubmitCheckSumOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==4);
 
@@ -761,6 +806,7 @@ bool SubmitCheckSumOrder::setData(const char *data, int dataLength)
 // WaitingForPlayerOrder's code
 
 WaitingForPlayerOrder::WaitingForPlayerOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==4);
 
@@ -794,6 +840,7 @@ bool WaitingForPlayerOrder::setData(const char *data, int dataLength)
 // DroppingPlayerOrder's code
 
 DroppingPlayerOrder::DroppingPlayerOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==8);
 
@@ -830,6 +877,7 @@ bool DroppingPlayerOrder::setData(const char *data, int dataLength)
 // RequestingDeadAwayOrder's code
 
 RequestingDeadAwayOrder::RequestingDeadAwayOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==12);
 
@@ -868,6 +916,7 @@ bool RequestingDeadAwayOrder::setData(const char *data, int dataLength)
 // NoMoreOrdersAviable code
 
 NoMoreOrdersAviable::NoMoreOrdersAviable(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==8);
 
@@ -903,6 +952,7 @@ bool NoMoreOrdersAviable::setData(const char *data, int dataLength)
 // PlayerQuitsGameOrder code
 
 PlayerQuitsGameOrder::PlayerQuitsGameOrder(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==4);
 
@@ -934,6 +984,7 @@ bool PlayerQuitsGameOrder::setData(const char *data, int dataLength)
 // PlayerExplainsHostIP code
 
 PlayerExplainsHostIP::PlayerExplainsHostIP(const char *data, int dataLength)
+:MiscOrder()
 {
 	assert(dataLength==8);
 

@@ -72,11 +72,15 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	}
 	startTimer=new Text(20, 400, globalContainer->standardFont, "");
 	addWidget(startTimer);
+	
+	timeCounter=0;
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
 {
 	delete multiplayersHost;
+	if (multiplayersJoin)
+		delete multiplayersJoin;
 	if (savedSessionInfo)
 		delete savedSessionInfo;
 }
