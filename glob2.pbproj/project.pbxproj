@@ -56,7 +56,6 @@
 				5B3C242B062D38D60067E393,
 				5B3C2387062D38AC0067E393,
 				5B3C22E7062D38710067E393,
-				5B5E033003FD391B0000000D,
 				5B605CA505C32624001CDF00,
 				5B605CAB05C3264B001CDF00,
 				5B605CA805C32630001CDF00,
@@ -1263,6 +1262,48 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		597E4E05070781FB00F5C629 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			path = CursorManager.cpp;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		597E4E06070781FB00F5C629 = {
+			fileRef = 597E4E05070781FB00F5C629;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		597E4E090707821B00F5C629 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CursorManager.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		597E4E0A0707821B00F5C629 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = DX9GraphicContext.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		597E4E0B0707821B00F5C629 = {
+			fileRef = 597E4E090707821B00F5C629;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		597E4E0C0707821B00F5C629 = {
+			fileRef = 597E4E0A0707821B00F5C629;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		59C5D62C05F38CED00DE80AB = {
 			explicitFileType = text;
 			fileEncoding = 4;
@@ -1586,14 +1627,6 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		5B5E033003FD391B0000000D = {
-			isa = PBXFileReference;
-			lastKnownFileType = archive.ar;
-			name = libpng.a;
-			path = /usr/local/lib/libpng.a;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
 		5B5E036F03FD43AE0000000D = {
 			children = (
 				5B5E037003FD43F70000000D,
@@ -1699,7 +1732,7 @@
 				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/local/lib /usr/lib/gcc/darwin/default /sw/lib";
 				LIBRARY_STYLE = STATIC;
 				OTHER_CFLAGS = "-ffast-math";
-				OTHER_LDFLAGS = "-g -lstdc++ -Wall build/libgag.a  -framework Cocoa -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDLmain.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /usr/local/lib/libjpeg.a /usr/local/lib/libogg.a /usr/local/lib/libvorbis.a /usr/local/lib/libvorbisfile.a";
+				OTHER_LDFLAGS = "-g -lstdc++ -Wall build/libgag.a  -framework Cocoa -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDLmain.a /usr/local/lib/libSDL_net.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /usr/local/lib/libjpeg.a /usr/local/lib/libogg.a /usr/local/lib/libvorbis.a /usr/local/lib/libvorbisfile.a /usr/local/lib/libpng.a";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Globulation2 static";
 				REZ_EXECUTABLE = YES;
@@ -5736,6 +5769,7 @@
 		5B8FAE42044855050000000D = {
 			children = (
 				5957A9BC06FE26C300CAD5B0,
+				597E4E05070781FB00F5C629,
 				5B8FAE55044855050000000D,
 				763D76B206C3CF5D00D31024,
 				5B8FAE59044855050000000D,
@@ -5884,6 +5918,8 @@
 		};
 		5B8FAEA6044855640000000D = {
 			children = (
+				597E4E090707821B00F5C629,
+				597E4E0A0707821B00F5C629,
 				76D3A18006D119C70083D9BA,
 				76D3A18106D119C70083D9BA,
 				5B8FAEA8044855640000000D,
@@ -6200,6 +6236,8 @@
 				5957A9C806FE270F00CAD5B0,
 				5957A9C906FE271000CAD5B0,
 				5957A9CB06FE271A00CAD5B0,
+				597E4E0B0707821B00F5C629,
+				597E4E0C0707821B00F5C629,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6349,6 +6387,7 @@
 				763D76B306C3CF5D00D31024,
 				763D76B606C3CF6B00D31024,
 				5957A9CA06FE271500CAD5B0,
+				597E4E06070781FB00F5C629,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
