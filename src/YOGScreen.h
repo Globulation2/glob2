@@ -52,7 +52,7 @@ protected:
 	List *gameList;
 	TextInput *textInput;
 	TextArea *chatWindow;
-	std::vector<Uint32> IPs;
+	std::vector<char *> IPs;
 	Uint32 timerCounter; // used to update list every 32 timer call
 
 	void updateList(void);

@@ -24,7 +24,7 @@
 	DONE - implement a way to activate new game claiming
 	DONE - call yog.step from main game, multiplayerhost,
 	and yogscreen
-	TODO - do a lookup from nick to IP using IRC whois
+	DONE - do a lookup from nick to IP using IRC whois
 	command (need to parse the command).
 	TODO - clean and test all stuff
 
@@ -158,6 +158,25 @@ void YOG::interpreteIRCMessage(const char *message)
 
 				strncpy(msg.comment, comment, GAMEINFO_COMMENT_SIZE);
 				msg.comment[GAMEINFO_COMMENT_SIZE]=0;
+
+				if (prefix)
+				{
+					char *startIp;
+					if ((startIp=strrchr(prefix, '@'))!=NULL)
+					{
+						startIp++;
+						strncpy(msg.hostname, startIp, GAMEINFO_HOSTNAME_SIZE+prefix-startIp);
+					}
+					else
+					{
+						strncpy(msg.hostname, prefix, GAMEINFO_HOSTNAME_SIZE);
+					}
+					msg.hostname[GAMEINFO_HOSTNAME_SIZE]=0;
+				}
+				else
+				{
+					msg.hostname[0]=0;
+				}
 
 				msg.updatedTick=SDL_GetTicks();
 
@@ -456,6 +475,11 @@ const char *YOG::getGameVersion(void)
 const char *YOG::getGameComment(void)
 {
 	return (*gameInfoIt).comment;
+}
+
+const char *YOG::getGameHostname(void)
+{
+	return (*gameInfoIt).hostname;
 }
 
 bool YOG::getNextGame(void)
