@@ -117,8 +117,6 @@ int Engine::initCustom(void)
 	int i;
 	int nbPlayer=0;
 
-	// TODO : replace this by player name, that should have been saved globalContainer
-	//snprintf(name, 16, "Player 0");
 	for (i=0; i<8; i++)
 	{
 		if (customGameScreen.isAIactive(i))
@@ -126,7 +124,7 @@ int Engine::initCustom(void)
 			int teamColor=customGameScreen.getSelectedColor(i);
 			if (i==0)
 			{
-				gui.game.players[nbPlayer]=new Player(0, globalContainer->texts.getString("[player]"), gui.game.teams[teamColor], BasePlayer::P_LOCAL);
+				gui.game.players[nbPlayer]=new Player(0, globalContainer->settings.userName, gui.game.teams[teamColor], BasePlayer::P_LOCAL);
 				gui.localPlayer=nbPlayer;
 				gui.localTeam=teamColor;
 			}
