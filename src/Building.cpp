@@ -1246,11 +1246,12 @@ void Building::turretStep(void)
 	
 	Uint32 enemies=owner->enemies;
 	bool targetFound=false;
+	int bestTime=256;
 	Map *map=&(owner->game->map);
 	assert(map);
 
-	int targetX=-1;
-	int targetY=-1;
+	int targetX, targetY;
+	int bestTargetX, bestTargetY;
 	for (int i=0; i<=range && !targetFound; i++)
 		for (int j=0; j<=i && !targetFound; j++)
 			//for (int k=0; k<8; k++)
@@ -1295,15 +1296,26 @@ void Building::turretStep(void)
 				int targetUID=map->getUnit(targetX, targetY);
 				if (targetUID>=0)
 				{
-					int otherTeam=Unit::UIDtoTeam(targetUID);
+					Sint32 otherTeam=Unit::UIDtoTeam(targetUID);
+					Sint32 targetID=Unit::UIDtoID(targetUID);
 					Uint32 otherTeamMask=1<<otherTeam;
-					Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetUID];
-					if (enemies&otherTeamMask && testUnit->delta<testUnit->speed)
+					if (enemies&otherTeamMask)
 					{
-						targetFound=true;
+						Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetID];
+						int targetTime;
+						if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)
+							targetTime=0;
+						else
+							targetTime=(256-testUnit->delta)/testUnit->speed;
+						if (targetTime<bestTime)
+						{
+							bestTime=targetTime;
+							bestTargetX=targetX;
+							bestTargetY=targetY;
+							targetFound=true;
+						}
 						//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
-						shootingStep=0;
-						break;
+						//break;
 					}
 				}
 				else if (targetUID!=NOUID)
@@ -1314,16 +1326,23 @@ void Building::turretStep(void)
 					if (enemies&otherTeamMask)
 					{
 						Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
-						if (!b->type->defaultUnitStayRange)
+						if (b->hp>1 || !b->type->isBuildingSite)
 						{
 							targetFound=true;
-							shootingStep=0;
+							bestTargetX=targetX;
+							bestTargetY=targetY;
 							break;
+						}
+						else if (bestTime==256)
+						{
+							targetFound=true;
+							bestTargetX=targetX;
+							bestTargetY=targetY;
+							bestTime=255;
 						}
 					}
 				}
 			}
-				
 	/*for (i=0; i<=range && !targetFound; i++)
 	{
 		for (int k=0; k<2 && !targetFound; k++)
@@ -1370,6 +1389,8 @@ void Building::turretStep(void)
 	int midY=getMidY();
 	if (targetFound)
 	{
+		shootingStep=0;
+		
 		//printf("%d found target found: (%d, %d) \n", UID, targetX, targetY);
 		Sector *s=owner->game->map.getSector(midX, midY);
 
