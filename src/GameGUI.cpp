@@ -569,9 +569,25 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			orderQueue.push(new OrderDelete(selBuild->UID));
 		}
 
-		if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (my>256+172+16+8) && (my<256+172+16+8+16))
+		if ((my>256+172+16+8) && (my<256+172+16+8+16))
 		{
-			orderQueue.push(new OrderUpgrade(selBuild->UID));
+			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
+			{
+				if ((selBuild->type->lastLevelTypeNum!=-1))
+					orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+			}
+			else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+			{
+				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+			}
+			else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
+			{
+				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+			}
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+			{
+				orderQueue.push(new OrderUpgrade(selBuild->UID));
+			}
 		}
 	}
 	else if (displayMode==UNIT_SELECTION_VIEW)
@@ -819,18 +835,20 @@ void GameGUI::draw(void)
 			
 			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
 			{
-				drawTextCenter(globalContainer.gfx.getW()-128, 256+172+16+8, "[wait upgrade]");
+				if ((selBuild->type->lastLevelTypeNum!=-1))
+					drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 			}
 			else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
 			{
-				drawTextCenter(globalContainer.gfx.getW()-128, 256+172+16+8, "[wait upgrade room]");
+				drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (selBuild->buildingState==Building::ALIVE))
+			else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
 			{
-				if (!selBuild->isHardSpace())
-					drawTextCenter(globalContainer.gfx.getW()-128, 256+172+16+8, "[need room to start upgarde]");
-				else
-					drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[upgrade]");
+				drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+			}
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+			{
+				drawButton(globalContainer.gfx.getW()-128+16, 256+172+16+8, "[upgrade]");
 			}
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)

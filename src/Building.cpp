@@ -231,6 +231,69 @@ int Building::neededRessource(void)
 	return -1;
 }
 
+void Building::cancelUpgrade(void)
+{
+	owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
+	int midPosX=posX-type->decLeft;
+	int midPosY=posY-type->decTop;
+	
+	if (type->isBuildingSite)
+	{
+		int lastLevelTypeNum=type->lastLevelTypeNum;
+		if (lastLevelTypeNum!=-1)
+		{
+			typeNum=lastLevelTypeNum;
+			type=Game::buildingsTypes.getBuildingType(lastLevelTypeNum);
+		}
+		else
+			assert(false);
+	}
+	else if (buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
+	{
+		owner->buildingsToBeUpgraded.remove(this);
+		buildingState=Building::ALIVE;
+	}
+	else if (buildingState==Building::WAITING_FOR_UPGRADE)
+	{
+		buildingState=Building::ALIVE;
+	}
+	else
+		assert(false);
+	
+	posX=midPosX+type->decLeft;
+	posY=midPosY+type->decTop;
+	
+	owner->game->map.setBuilding(posX, posY, type->width, type->height, UID);
+	
+	if (type->maxUnitWorking)
+		maxUnitWorking=maxUnitWorkingPreferred;
+	else
+		maxUnitWorking=0;
+	maxUnitWorkingLocal=maxUnitWorking;
+	maxUnitInside=type->maxUnitInside;
+
+	if (hp>=type->hpInit)
+		hp=type->hpInit;
+	productionTimeout=type->unitProductionTime;
+
+	if (type->unitProductionTime)
+		owner->swarms.push_front(this);
+	if (type->shootingRange)
+		owner->turrets.push_front(this);
+	
+	totalRatio=0;
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+	{
+		ratio[i]=1;
+		totalRatio++;
+		percentUsed[i]=0;
+	}
+	
+	owner->game->map.setMapDiscovered(posX-1, posY-1, type->width+2, type->height+2, owner->teamNumber);
+	
+	update();
+}
+
 void Building::update(void)
 {
 	if (buildingState==DEAD)
@@ -250,31 +313,7 @@ void Building::update(void)
 	{
 		if (!isHardSpace())
 		{
-			printf ("cancelling upgrade\n");
-			
-			// we cancel the upgrade
-			buildingState=Building::ALIVE;
-			
-			type=Game::buildingsTypes.getBuildingType(typeNum);
-
-			// we don't need any worker any more
-			if (type->maxUnitWorking)
-				maxUnitWorking=maxUnitWorkingPreferred;
-			else
-				maxUnitWorking=0;
-			maxUnitWorkingLocal=maxUnitWorking;
-
-			maxUnitInside=type->maxUnitInside;
-
-			productionTimeout=type->unitProductionTime;
-			if (type->unitProductionTime)
-				owner->swarms.push_front(this);
-			
-			if (type->shootingRange)
-				owner->turrets.push_front(this);
-
-			// we need to do an update again
-			update();
+			cancelUpgrade();
 		}
 		else if ((unitsWorking.size()==0) && (unitsInside.size()==0))
 		{
@@ -465,6 +504,7 @@ bool Building::tryToUpgradeRoom(void)
 
 	if (isRoom)
 	{
+		owner->game->map.setBuilding(posX, posY, type->decLeft, type->decLeft, NOUID);
 		owner->game->map.setBuilding(newPosX, newPosY, newWidth, newHeight, UID);
 
 		typeNum=nextLevelTypeNum;

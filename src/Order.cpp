@@ -25,6 +25,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new OrderUpgrade(netData+4,netDataLength-4);
 	}
+	case ORDER_CANCEL_UPGRADE:
+	{
+		return new OrderCancelUpgrade(netData+4,netDataLength-4);
+	}
 	case PLAYER_EXPLAINS_HOST_IP:
 	{
 		return new PlayerExplainsHostIP(netData+4,netDataLength-4);
@@ -189,6 +193,39 @@ char *OrderUpgrade::getData(void)
 }
 
 bool OrderUpgrade::setData(const char *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+	
+	this->UID=getSint32(data, 0);
+	
+	memcpy(this->data,data,dataLength);
+	
+	return true;
+}
+
+// OrderCancelUpgrade's code
+
+OrderCancelUpgrade::OrderCancelUpgrade(const char *data, int dataLength)
+{
+	assert(dataLength==4);
+	
+	setData(data, dataLength);
+
+}
+
+OrderCancelUpgrade::OrderCancelUpgrade(Sint32 UID)
+{
+	this->UID=UID;
+}
+
+char *OrderCancelUpgrade::getData(void)
+{
+	addSint32(data, this->UID, 0);
+	return data;
+}
+
+bool OrderCancelUpgrade::setData(const char *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;

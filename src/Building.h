@@ -91,6 +91,7 @@ public:
 
 	bool isRessourceFull(void);
 	int neededRessource(void);
+	void cancelUpgrade(void);
 	void update(void);
 	bool tryToUpgradeRoom(void);
 	bool isHardSpace(void);
