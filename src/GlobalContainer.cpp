@@ -224,7 +224,7 @@ void GlobalContainer::load(void)
 {
 	// load texts
 	texts.load("data/texts.txt");
-
+	
 	if (!hostServer)
 	{
 		// create graphic context

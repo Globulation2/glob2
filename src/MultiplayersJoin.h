@@ -152,6 +152,7 @@ public:
 	void quitThisGame();
 	
 	Uint16 findLocalPort(UDPsocket socket);
+	bool isFileMapDownload(double &progress);
 
 private:
 	FILE *logFile;

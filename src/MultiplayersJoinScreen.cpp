@@ -42,7 +42,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	playerText=new Text(20, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
 	
-	aviableGamesText=new Text(320, 100, globalContainer->menuFont, globalContainer->texts.getString("[aviable lan games]"));
+	aviableGamesText=new Text(320, 90, globalContainer->menuFont, globalContainer->texts.getString("[aviable lan games]"));
 	addWidget(aviableGamesText);
 	
 	statusText=new Text(20, 390, globalContainer->standardFont, "");
