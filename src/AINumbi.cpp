@@ -66,7 +66,7 @@ AINumbi::~AINumbi()
 bool AINumbi::load(SDL_RWops *stream)
 {
 	assert(game);
-	
+
 	phase            =SDL_ReadBE32(stream);
 	attackPhase      =SDL_ReadBE32(stream);
 	phaseTime        =SDL_ReadBE32(stream);
@@ -87,7 +87,7 @@ void AINumbi::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, critticalWarriors);
 	SDL_WriteBE32(stream, critticalTime);
 	SDL_WriteBE32(stream, attackTimer);
-	
+
 	SDL_RWwrite(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
 }
 
@@ -249,9 +249,9 @@ int AINumbi::estimateFood(Building *building)
 		found=true;
 	else if (map->ressourceAviable(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
-	else 
+	else
 		found=false;
-	
+
 	if (found)
 	{
 		rx+=map->getW();
@@ -262,7 +262,7 @@ int AINumbi::estimateFood(Building *building)
 		int i;
 		int rxl, rxr, ryt, ryb;
 		int hole;
-		
+
 		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx+i, ry, CORN)||map->isRessource(rx+i, ry-1, CORN))
@@ -277,9 +277,9 @@ int AINumbi::estimateFood(Building *building)
 			else if (hole--<0)
 				break;
 		rxl=rx-i;
-		
+
 		rx=((rxr+rxl)>>1);
-		
+
 		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx-1, ry+i, CORN))
@@ -294,10 +294,10 @@ int AINumbi::estimateFood(Building *building)
 			else if (hole--<0)
 				break;
 		ryt=ry-i;
-		
+
 		ry=((ryb+ryt)>>1);
-		
-		
+
+
 		hole=2;
 		for (i=0; i<32; i++)
 			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx+1, ry+i, CORN))
@@ -312,7 +312,7 @@ int AINumbi::estimateFood(Building *building)
 			else if (hole--<0)
 				break;
 		ryt=ry-i;
-		
+
 		ry=((ryt+ryb)>>1);
 		w=0;
 		hole=2;
@@ -338,25 +338,30 @@ int AINumbi::estimateFood(Building *building)
 
 int AINumbi::countUnits(void)
 {
-	Unit **myUnits=team->myUnits;
-	int c=0;
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
-			c++;
-	return c;
+	return team->stats.getLatestStat()->totalUnit;
 }
 
 int AINumbi::countUnits(const int medicalState)
 {
-	Unit **myUnits=team->myUnits;
-	int c=0;
-	for (int i=0; i<1024; i++)
+	if (medicalState == Unit::MED_FREE)
 	{
-		Unit *u=myUnits[i];
-		if (u &&(u->medical==medicalState))
-			c++;
+		return team->stats.getLatestStat()->totalUnit
+			- team->stats.getLatestStat()->needFoodCritical
+			- team->stats.getLatestStat()->needFood;
+			- team->stats.getLatestStat()->needHeal;
 	}
-	return c;
+	else if (medicalState == Unit::MED_HUNGRY)
+	{
+		return team->stats.getLatestStat()->needFoodCritical
+			+ team->stats.getLatestStat()->needFood;
+	}
+	else if (medicalState == Unit::MED_DAMAGED)
+	{
+		return team->stats.getLatestStat()->needHeal;
+	}
+	else
+		assert(false);
+	return 0;
 }
 
 Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
@@ -775,24 +780,24 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 			printf("AI:stop attack.\n");
 			return new NullOrder();
 		}
-		
+
 		int teamNumber=player->team->teamNumber;
-		
+
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
 			if ((*bit)->type->type==BuildingType::WAR_FLAG)
 			{
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
 				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
-					return new OrderDelete(b->gid); // The target has beed sucessfuly killed.
-				
+					return new OrderDelete(b->gid); // The target has beed successfully killed.
+
 				if (b->maxUnitWorking!=numberRequested)
 				{
 					printf("AI: OrderModifyBuildings(%d, %d)\n", b->gid, numberRequested);
 					return new OrderModifyBuildings(&b->gid, &numberRequested, 1);
 				}
 			}
-		
+
 		// We look for a specific enemy:
 		Uint32 enemies=player->team->enemies;
 		int e=-1;
@@ -801,7 +806,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				e=i;
 		if (e==-1)
 			return new NullOrder();
-		
+
 		int ex=-1, ey=-1;
 		for (int i=0; i<1024; i++)
 		{
@@ -810,7 +815,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 			{
 				ex=b->posX;
 				ey=b->posY;
-				
+
 				if (syncRand()&0x1F==0)
 				{
 					bool already=false;
