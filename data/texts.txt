@@ -395,3 +395,9 @@ Total/free
 [Ok/hungry/wounded]
 Ok/faim/blessees
 Ok/hungry/wounded
+[in way]
+en chemin
+in way
+[on the spot]
+sur place
+on the spot

@@ -1249,6 +1249,24 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	return false;
 }
 
+void Building::computeFlagStat(int *goingTo, int *attacking, int *removingBlack)
+{
+	*goingTo=0;
+	*attacking=0;
+	*removingBlack=0;
+
+	for (std::list<Unit *>::iterator unitIt=unitsWorking.begin(); unitIt!=unitsWorking.end(); ++unitIt)
+	{
+		Unit *unit=*unitIt;
+		if (unit->displacement==Unit::DIS_GOING_TO_FLAG)
+			(*goingTo)++;
+		else if (unit->displacement==Unit::DIS_ATTACKING_AROUND)
+			(*attacking)++;
+		else if (unit->displacement==Unit::DIS_REMOVING_BLACK_AROUND)
+			(*removingBlack)++;
+	}
+}
+
 Sint32 Building::UIDtoID(Sint32 uid)
 {
 	return (-1-uid)%512;
