@@ -1,45 +1,35 @@
 Globulation 2
 http://www.ysagoon.com/glob2
 
-This game is still in heavy development:
-- graphics are not definitive
-- there is a lot of debug output
-- display is slow
-- it crashes sometimes
 
-If you get a crash, submit a bug report with the last lines of the output as well as the log files (in ${HOME}/.glob2/log) as attachement.
-Please use Savannah (http://sv.gnu.org/projects/glob2) for bug reports.
+This game is still in heavy development, so consider that:
+- the graphics are not definitive,
+- there is a lot of debug output,
+- it's slow,
+- it crashes sometimes.
+
+If you get a crash, submit a bug report with the last lines of the output as
+well as the log files (in ${HOME}/.glob2/log) as attachement.
+Please use Savannah(http://savannah.gnu.org/projects/glob2) for bug reports.
+If you got the source from CVS, read README.cvs first.
 
 
 GNU and UNIX
+------------
 
-If you have taken this from CVS and you want to build the package,
-run the bootstrap script first (you might use autoreconf if you have it).
-
-Then read the INSTALL file.
-
-Note : if SDL is not installed system wide but rather in $prefix,
-add the following flags to aclocal :
-aclocal -I $prefix/share/aclocal
-
-
-MacOS X
-
-Replace aclocal by
-aclocal -I /usr/local/share/aclocal
+First, configure the program by running the configure script.
+Then, run 'make' to build the package.
+Finaly, run 'make install' to install it.
+You can read the INSTALL file for more information about these steps.
 
 
 Microsoft Windows
+-----------------
 
-To build the data files, run makedata.bat in the data subdirectory, then use glob2.dsw
-with MSDEV to build glob2.
-
-
-!! WARNING !!
-The gfx are no more included in the CVS.
-To get them, run the getgfx script.
+To build the program, use glob2.dsw with MSDEV.
 
 
 Have fun,
 
 The Globulation 2 Team
+http://www.ysagoon.com/glob2
