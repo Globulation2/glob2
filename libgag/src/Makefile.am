@@ -17,4 +17,4 @@ libgag_a_SOURCES = FileManager.cpp\
 	SDLSprite.cpp\
 	SupportFunctions.cpp
 
-INCLUDES = @SDL_CFLAGS@ -I../include/
+INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I../include/
