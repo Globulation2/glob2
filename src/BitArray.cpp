@@ -20,6 +20,7 @@
 #include "BitArray.h"
 #include <assert.h>
 #include <algorithm>
+#include <iostream>
 
 namespace Utilities
 {
@@ -28,8 +29,19 @@ namespace Utilities
 		resize(size, defaultValue);
 	}
 	
+	void BitArray::assertPos(size_t pos)
+	{
+		size_t wordPos = pos / 8;
+		if (wordPos >= values.size())
+		{
+			std::cerr << "BitArray::assertPos(" << pos << ") : index out of bounds. Max size is " << bitLength << std::endl;
+			assert(false);
+		}
+	}
+	
 	void BitArray::resize(size_t size, bool defaultValue)
 	{
+		bitLength = size;
 		if (defaultValue)
 			values.resize(bitToByte(size), 1);
 		else
@@ -46,6 +58,8 @@ namespace Utilities
 	
 	void BitArray::set(size_t pos, bool value)
 	{
+		assertPos(pos);
+		
 		size_t wordPos = pos / 8;
 		size_t bitPos = pos % 8;
 		
@@ -57,10 +71,10 @@ namespace Utilities
 	
 	bool BitArray::get(size_t pos)
 	{
+		assertPos(pos);
+		
 		size_t wordPos = pos / 8;
 		size_t bitPos = pos % 8;
-
-		assert(wordPos < values.size());
 
 		return (values[wordPos] & (1<<bitPos)) != 0;
 	}
@@ -73,6 +87,7 @@ namespace Utilities
 	
 	void BitArray::deserialize(const unsigned char *stream, size_t size)
 	{
+		bitLength = size;
 		values.resize(bitToByte(size));
 		std::copy(stream, stream+values.size(), &values[0]);
 	}

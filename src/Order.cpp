@@ -623,12 +623,14 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 	acc->getBitmap(&mask, &dim);
 	this->teamNumber = teamNumber;
 	this->type = type;
-	x = dim.minX;
-	y = dim.minY;
-	w = dim.maxX-dim.minX;
-	h = dim.maxY-dim.minY;
-	assert(w<=512);
-	assert(h<=512);
+	centerX = dim.centerX;
+	centerY = dim.centerY;
+	minX = dim.minX;
+	minY = dim.minY;
+	maxX = dim.maxX;
+	maxY = dim.maxY;
+	assert(maxX-minX <= 512);
+	assert(maxY-minY <= 512);
 }
 
 OrderAlterateArea::~OrderAlterateArea(void)
@@ -645,18 +647,20 @@ Uint8 *OrderAlterateArea::getData(void)
 	
 	addUint8(_data, teamNumber, 0);
 	addUint8(_data, type, 1);
-	addSint16(_data, x, 2);
-	addSint16(_data, y, 4);
-	addUint16(_data, w, 6);
-	addUint16(_data, h, 8);
-	mask.serialize(_data+10);
+	addSint16(_data, centerX, 2);
+	addSint16(_data, centerY, 4);
+	addSint16(_data, minX, 6);
+	addSint16(_data, minY, 8);
+	addUint16(_data, maxX, 10);
+	addUint16(_data, maxY, 12);
+	mask.serialize(_data+14);
 	
 	return _data;
 }
 
 bool OrderAlterateArea::setData(const Uint8 *data, int dataLength)
 {
-	if (dataLength < 10)
+	if (dataLength < 14)
 	{
 		printf("OrderAlterateArea::setData(dataLength=%d) failure\n", dataLength);
 		for (int i=0; i<dataLength; i++)
@@ -666,21 +670,23 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength)
 	
 	teamNumber = getUint8(data, 0);
 	type = getUint8(data, 1);
-	x = getSint16(data, 2);
-	y = getSint16(data, 4);
-	w = getUint16(data, 6);
-	h = getUint16(data, 8);
-	assert(w<=512);
-	assert(h<=512);
-	mask.deserialize(data+10, w*h);
+	centerX = getSint16(data, 2);
+	centerY = getSint16(data, 4);
+	minX = getSint16(data, 6);
+	minY = getSint16(data, 8);
+	maxX = getUint16(data, 10);
+	maxY = getUint16(data, 12);
+	assert(maxX-minX <= 512);
+	assert(maxY-minY <= 512);
+	mask.deserialize(data+14, (maxX-minX)*(maxY-minY));
 	
 	return true;
 }
 
 int OrderAlterateArea::getDataLength(void)
 {
-	int length=10+mask.getByteLength();
-	assert(length>=10);
+	int length=14+mask.getByteLength();
+	assert(length>=14);
 	return length;
 }
 

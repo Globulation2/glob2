@@ -313,10 +313,12 @@ public:
 	
 	Uint8 teamNumber;
 	Uint8 type;
-	Sint16 x;
-	Sint16 y;
-	Uint16 w;
-	Uint16 h;
+	Sint16 centerX;
+	Sint16 centerY;
+	Sint16 minX;
+	Sint16 minY;
+	Sint16 maxX;
+	Sint16 maxY;
 	Utilities::BitArray mask;
 	
 protected:

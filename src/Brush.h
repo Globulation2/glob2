@@ -78,6 +78,8 @@ namespace Utilities
 	class BitArray;
 }
 
+class Map;
+
 //! Accumulator that can store brush and return the resulting bitmap
 class BrushAccumulator
 {
@@ -85,8 +87,11 @@ public:
 	//! Dimension of the resulting bitmap
 	struct AreaDimensions
 	{
+		int centerX, centerY;
 		int minX, minY, maxX, maxY;
 	};
+	
+	// FIXME : handle wrap !!!!!!!!!!
 	
 protected:
 	//! The list of brush applications
@@ -96,7 +101,7 @@ protected:
 	
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
-	void applyBrush(const BrushApplication &brush);
+	void applyBrush(const Map *map, const BrushApplication &brush);
 	//! Clear the vector of brush applications
 	void clear(void) { applications.clear(); }
 	//! Return a bitmap which is the result of the fusion of all accumulated brush applications

@@ -436,10 +436,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -449,15 +449,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, true);
 						}
+						orderMaskIndex++;
 					}
 			}
 			else if (oaa->type == BrushTool::MODE_DEL)
 			{
 				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -467,11 +468,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, false);
 						}
+						orderMaskIndex++;
 					}
 					
 				// We remove, so we need to refresh the gradients, unfortunatly
 				teams[oaa->teamNumber]->dirtyGlobalGradient();
-				map.dirtyLocalGradient(oaa->x-16, oaa->x-16, 32+oaa->w, 32+oaa->h, oaa->teamNumber);
+				map.dirtyLocalGradient(oaa->centerX+oaa->minX-16, oaa->centerY+oaa->minY-16, oaa->maxX-oaa->minX+32, oaa->maxY-oaa->minY+32, oaa->teamNumber);
 			}
 			else
 				assert(false);
@@ -485,10 +487,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -498,15 +500,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localGuardAreaMap.set(index, true);
 						}
+						orderMaskIndex++;
 					}
 			}
 			else if (oaa->type == BrushTool::MODE_DEL)
 			{
 				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -516,6 +519,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localGuardAreaMap.set(index, false);
 						}
+						orderMaskIndex++;
 					}
 			}
 			else
@@ -530,10 +534,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -543,15 +547,16 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localClearAreaMap.set(index, true);
 						}
+						orderMaskIndex++;
 					}
 			}
 			else if (oaa->type == BrushTool::MODE_DEL)
 			{
 				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
-				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
-					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+				size_t orderMaskIndex = 0;
+				for (int y=oaa->centerY+oaa->minY; y<oaa->centerY+oaa->maxY; y++)
+					for (int x=oaa->centerX+oaa->minX; x<oaa->centerX+oaa->maxX; x++)
 					{
-						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
 						if (oaa->mask.get(orderMaskIndex))
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
@@ -561,6 +566,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localClearAreaMap.set(index, false);
 						}
+						orderMaskIndex++;
 					}
 			}
 			else
