@@ -33,6 +33,7 @@ Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksL
 	this->py=py;
 	this->speedX=speedX;
 	this->speedY=speedY;
+	this->ticksInitial=ticksLeft;
 	this->ticksLeft=ticksLeft;
 	this->shootDamage=shootDamage;
 	this->targetX=targetX;
@@ -45,6 +46,7 @@ bool Bullet::load(SDL_RWops *stream)
 	py=SDL_ReadBE32(stream);
 	speedX=SDL_ReadBE32(stream);
 	speedY=SDL_ReadBE32(stream);
+	ticksInitial=0;
 	ticksLeft=SDL_ReadBE32(stream);
 	shootDamage=SDL_ReadBE32(stream);
 	targetX=SDL_ReadBE32(stream);

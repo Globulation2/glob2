@@ -34,6 +34,7 @@ public:
 public:
 	Sint32 px, py; // pixel precision point of x,y
 	Sint32 speedX, speedY; //pixel precision speed.
+	Sint32 ticksInitial;
 	Sint32 ticksLeft;
 	Sint32 shootDamage;
 	Sint32 targetX, targetY;

@@ -1943,15 +1943,28 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		{
 			int x=(*it)->px-(viewportX<<5);
 			int y=(*it)->py-(viewportY<<5);
+			int balisticShift = 0;
 
 			if (x<0)
 				x+=mapPixW;
 			if (y<0)
 				y+=mapPixH;
+			if ((*it)->ticksInitial)
+			{
+				float x = static_cast<float>((*it)->ticksLeft);
+				float T = static_cast<float>((*it)->ticksInitial);
+				float speedX = static_cast<float>((*it)->speedX);
+				float speedY = static_cast<float>((*it)->speedX);
+				float K = static_cast<float>(sqrt(speedX * speedX + speedY * speedY));
+				balisticShift = static_cast<int>(K * ((-1.0f * x * x) / T + x));
+			}
 
 			//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);
 			if ( (x<=sw) && (y<=sh) )
-				globalContainer->gfx->drawSprite(x, y, bulletSprite, BULLET_IMGID);
+			{
+				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
+				globalContainer->gfx->drawSprite(x+(balisticShift>>1), y, bulletSprite, BULLET_IMGID+1);
+			}
 		}
 	}
 	
