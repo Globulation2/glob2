@@ -705,7 +705,7 @@ void Aquisition::nextToken()
 	{
 		if (c=='#' && newLine)
 		{
-			while(c!='\n')
+			while ((c!=EOF) && (c!='\n'))
 			{
 				c=this->getChar();
 				HANDLE_ERROR_POS(c);
