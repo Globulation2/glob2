@@ -751,7 +751,23 @@ void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *
 	vsnprintf(output, 1024, msg, arglist);
 	va_end(arglist);
 
-	((const SDLFont *)font)->drawString(surface, x, y, output, &clipRect);
+	// passing 0 to width means infinite width
+	((const SDLFont *)font)->drawString(surface, x, y, 0, output, &clipRect);
+}
+
+void SDLDrawableSurface::drawString(int x, int y, int w, const Font *font, const char *msg, ...)
+{
+	if (!surface)
+		return;
+
+	va_list arglist;
+	char output[1024];
+
+	va_start(arglist, msg);
+	vsnprintf(output, 1024, msg, arglist);
+	va_end(arglist);
+
+	((const SDLFont *)font)->drawString(surface, x, y, w, output, &clipRect);
 }
 
 void SDLDrawableSurface::drawSurface(int x, int y, DrawableSurface *surface)

@@ -51,7 +51,7 @@ void TextArea::internalPaint(void)
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
 			assert(i+areaPos<lines.size());
-			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), font, (textBuffer+lines[i+areaPos]));
+			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, (textBuffer+lines[i+areaPos]));
 		}
 	}
 	/*if (areaPos>0)
@@ -148,6 +148,8 @@ void TextArea::setText(const char *text, int ap)
 		
 		temppos=0;
 		temp[temppos]=0;
+		
+		// TODO : add getStringWidth with a number of char paramater to get ride of temp
 		
 		while (pos<textBufferLength)
 		{

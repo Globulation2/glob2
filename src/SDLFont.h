@@ -32,7 +32,7 @@ protected:
 	friend class SDLDrawableSurface;
 
 	//! draw a string until we fint a \0, \r or \n in text
-	virtual void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL) const=0;
+	virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const=0;
 	virtual bool load(const char *filename)=0;	
 };
 
@@ -51,7 +51,7 @@ public:
 protected:
 	friend class SDLDrawableSurface;
 
-	void drawString(SDL_Surface *Surface, int x, int y, const char *text, SDL_Rect *clip=NULL) const;
+	void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const;
 
 	bool load(SDL_Surface *fontSurface);
 

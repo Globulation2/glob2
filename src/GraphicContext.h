@@ -86,6 +86,7 @@ public:
 	virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
 	virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE)=0;
 	virtual void drawString(int x, int y, const Font *font, const char *msg, ...)=0;
+	virtual void drawString(int x, int y, int w, const Font *font, const char *msg, ...)=0;
 	virtual void drawSurface(int x, int y, DrawableSurface *surface)=0;
 	virtual void updateRects(SDL_Rect *rects, int size)=0;
 	virtual void updateRect(int x, int y, int w, int h)=0;
