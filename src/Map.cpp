@@ -1014,7 +1014,7 @@ void Map::growRessources(void)
 					if (r.field.amount<=(int)(syncRand()&7))
 					{
 						// we grow ressource:
-						incRessource(x, y, r.field.type);
+						incRessource(x, y, r.field.type, r.field.variety);
 					}
 					else if (globalContainer->ressourcesTypes.get(r.field.type)->expendable)
 					{
@@ -1023,7 +1023,7 @@ void Map::growRessources(void)
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						incRessource(nx, ny, r.field.type);
+						incRessource(nx, ny, r.field.type, r.field.variety);
 					}
 				}
 			}
@@ -1139,7 +1139,7 @@ bool Map::decRessource(int x, int y, int ressourceType)
 		return false;
 }
 
-bool Map::incRessource(int x, int y, int ressourceType)
+bool Map::incRessource(int x, int y, int ressourceType, int variety)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource &r=*rp;
@@ -1156,7 +1156,7 @@ bool Map::incRessource(int x, int y, int ressourceType)
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
 			rp->field.type=ressourceType;
-			rp->field.variety=syncRand()%fulltype->varietiesCount;
+			rp->field.variety=variety;
 			rp->field.amount=1;
 			rp->field.animation=0;
 			return true;
