@@ -1021,7 +1021,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
-void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar, bool drawPathLines, const bool useMapDiscovered)
+void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, const bool useMapDiscovered)
 {
 	int id=Unit::GIDtoID(gid);
 	int team=Unit::GIDtoTeam(gid);
@@ -1031,7 +1031,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int dy=unit->dy;
 	
 	if (!useMapDiscovered)
-		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, teams[teamSelected]->me)))
+		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, teams[localTeam]->me)))
 			return;
 
 	int imgid;
@@ -1075,7 +1075,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (unit==selectedUnit)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
 
-	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))||(Unit::GIDtoTeam(gid)==teamSelected)))
+	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((useMapDiscovered)||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
 
 	if (drawHealthFoodBar)
@@ -1089,7 +1089,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
-	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVision & teams[teamSelected]->me))
+	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVision & teams[localTeam]->me))
 	{
 		int lsx, lsy, ldx, ldy;
 		lsx=px+16;
@@ -1108,9 +1108,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 }
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, bool drawHealthFoodBar, bool drawPathLines, bool drawBuildingRects, const bool useMapDiscovered)
+void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, bool drawHealthFoodBar, bool drawPathLines, bool drawBuildingRects, const bool useMapDiscovered)
 {
-	int x, y, id;
+	int id;
 	int left=(sx>>5);
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
@@ -1119,19 +1119,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	std::list<BuildingType *> localySeenBuildings;
 
 	// we draw the terrains, eventually with debug rects:
-	for (y=top; y<=bot; y++)
-	{
-		for (x=left; x<=right; x++)
+	for (int y=top; y<=bot; y++)
+		for (int x=left; x<=right; x++)
 			if (
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
 				(useMapDiscovered))
 			{
 				// draw terrain
@@ -1149,21 +1148,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
-	}
 
-	for (y=top; y<=bot; y++)
-	{
-		for (x=left; x<=right; x++)
+	for (int y=top; y<=bot; y++)
+		for (int x=left; x<=right; x++)
 			if (
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[teamSelected]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[teamSelected]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
+				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
 				(useMapDiscovered))
 			{
 				// draw ressource
@@ -1186,21 +1183,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
 				}
 			}
-	}
 
 	// We draw ground units:
 	mouseUnit=NULL;
-	for (y=top-1; y<=bot; y++)
-		for (x=left-1; x<=right; x++)
+	for (int y=top-1; y<=bot; y++)
+		for (int x=left-1; x<=right; x++)
 		{
 			Uint16 gid=map.getGroundUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, teamSelected, drawHealthFoodBar, drawPathLines, useMapDiscovered);
+				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
 		}
 	
 	// We draw ground buildings:
-	for (y=top-1; y<=bot; y++)
-		for (x=left-1; x<=right; x++)
+	for (int y=top-1; y<=bot; y++)
+		for (int x=left-1; x<=right; x++)
 		{
 			Uint16 gid=map.getBuilding(x+viewportX, y+viewportY);
 			if (gid!=NOGBID) // Then this is a building
@@ -1214,9 +1210,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				Building *building=teams[team]->myBuildings[id];
 				assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 				if (useMapDiscovered
-					|| Building::GIDtoTeam(gid)==teamSelected
-					|| (building->seenByMask & teams[teamSelected]->me)
-					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me))
+					|| Building::GIDtoTeam(gid)==localTeam
+					|| (building->seenByMask & teams[localTeam]->me)
+					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
 					buildingList.insert(building); //TODO: we may make it faster by pushing a Building* in the buildingList instead of a uid.
 			}
 		}
@@ -1228,6 +1224,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		Team *team=building->owner;
 		
 		int imgid=type->startImage;
+		int x, y;
 		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 		// select buildings and set the team colors
@@ -1284,7 +1281,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 		}
 
-		if (drawHealthFoodBar && (building->owner->sharedVision & teams[teamSelected]->me))
+		if (drawHealthFoodBar && (building->owner->sharedVision & teams[localTeam]->me))
 		{
 			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 			// TODO : find better color for this
@@ -1338,12 +1335,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	
 	
 	// We draw air units:
-	for (y=top-1; y<=bot; y++)
-		for (x=left-1; x<=right; x++)
+	for (int y=top-1; y<=bot; y++)
+		for (int x=left-1; x<=right; x++)
 		{
 			Uint16 gid=map.getAirUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
-				drawUnit(x, y, gid, viewportX, viewportY, teamSelected, drawHealthFoodBar, drawPathLines, useMapDiscovered);
+				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
 		}
 
 	// Let's paint the bullets:
@@ -1379,25 +1376,25 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (!useMapDiscovered)
 	{
 		// we have decrease on because we do unalign lookup
-		for (y=top-1; y<=bot; y++)
-			for (x=left-1; x<=right; x++)
+		for (int y=top-1; y<=bot; y++)
+			for (int x=left-1; x<=right; x++)
 			{
 				unsigned i0, i1, i2, i3;
 				
-				/*if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me)))
+				/*if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me)))
 				{
 					globalContainer->gfx->drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
 				}
-				else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->me)))
+				else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[localTeam]->me)))
 				{
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
 				}*/
 				
 				// first draw black
-				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
-				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 				if (blackValue==15)
 					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
@@ -1407,10 +1404,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				// then if it isn't full black, draw shade
 				if (blackValue!=15)
 				{
-					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, teams[teamSelected]->me) ? 1 : 0;
-					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
-					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[teamSelected]->me) ? 1 : 0;
+					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
+					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 					
 					if (shadeValue==15)
@@ -1423,72 +1420,71 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
+	for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
+		virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
 	{
-		for (std::list<Building *>::iterator virtualIt=teams[teamSelected]->virtualBuildings.begin();
-			virtualIt!=teams[teamSelected]->virtualBuildings.end(); ++virtualIt)
+		Building *building=*virtualIt;
+		BuildingType *type=building->type;
+
+		int team=building->owner->teamNumber;
+
+		int imgid=type->startImage;
+		
+		int x, y;
+		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+
+		// all flags are hued:
+		Sprite *buildingSprite=globalContainer->buildings;
+		buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+
+		// flag circle:
+		if (drawHealthFoodBar || (building==selectedBuilding))
+			globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
+
+		// FIXME : ugly copy past
+		if (drawHealthFoodBar)
 		{
-			Building *building=*virtualIt;
-			BuildingType *type=building->type;
+			int decy=(type->height*32);
+			int healDecx=(type->width-2)*16+1;
+			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 
-			int team=building->owner->teamNumber;
-
-			int imgid=type->startImage;
-
-			map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
-
-			// all flags are hued:
-			Sprite *buildingSprite=globalContainer->buildings;
-			buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
-			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
-
-			// flag circle:
-			if (drawHealthFoodBar || (building==selectedBuilding))
-				globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
-
-			// FIXME : ugly copy past
-			if (drawHealthFoodBar)
+			// TODO : find better color for this
+			// health
+			if (type->hpMax)
 			{
-				int decy=(type->height*32);
-				int healDecx=(type->width-2)*16+1;
-				//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-
-				// TODO : find better color for this
-				// health
-				if (type->hpMax)
-				{
-					float hpRatio=(float)building->hp/(float)type->hpMax;
-					if (hpRatio>0.6)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
-					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
-					else
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
-				}
-
-				// units
-
-				if (building->maxUnitInside>0)
-					drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-				if (building->maxUnitWorking>0)
-					drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
-
-				// food
-				if ((type->canFeedUnit) || (type->unitProductionTime))
-				{
-					// compute bar size, prevent oversize
-					int bDiv=1;
-					assert(type->height!=0);
-					while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-						bDiv++;
-					drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
-				}
-
+				float hpRatio=(float)building->hp/(float)type->hpMax;
+				if (hpRatio>0.6)
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+				else if (hpRatio>0.3)
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+				else
+					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
 			}
+
+			// units
+
+			if (building->maxUnitInside>0)
+				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+			if (building->maxUnitWorking>0)
+				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+
+			// food
+			if ((type->canFeedUnit) || (type->unitProductionTime))
+			{
+				// compute bar size, prevent oversize
+				int bDiv=1;
+				assert(type->height!=0);
+				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+					bDiv++;
+				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+			}
+
 		}
 	}
 }
 
-void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected)
+void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam)
 {
 	// draw the prerendered minimap, decide if we use low speed graphics or nor
 	if (globalContainer->optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
@@ -1514,10 +1510,10 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	int rx, ry, rw, rh, n;
 	rx=viewportX;
 	ry=viewportY;
-	if (teamSelected>=0)
+	if (localTeam>=0)
 	{
-		rx=(rx-teams[teamSelected]->startPosX+(map.getW()>>1));
-		ry=(ry-teams[teamSelected]->startPosY+(map.getH()>>1));
+		rx=(rx-teams[localTeam]->startPosX+(map.getW()>>1));
+		ry=(ry-teams[localTeam]->startPosY+(map.getH()>>1));
 		rx&=map.getMaskW();
 		ry&=map.getMaskH();
 	}
@@ -1545,7 +1541,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	}
 }
 
-void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
+void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 {
 	float dMx, dMy;
 	int dx, dy;
@@ -1553,8 +1549,8 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	int r, g, b;
 	int nCount;
 	bool isMeUnitOrBuilding, isEnemyUnitOrBuilding, isAllyUnitOrBuilding;
-	assert(teamSelected>=-1);
-	assert(teamSelected<32);
+	assert(localTeam>=-1);
+	assert(localTeam<32);
 
 	int H[3]= { 0, 90, 0 };
 	int E[3]= { 0, 40, 120 };
@@ -1581,10 +1577,10 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	dMx=(float)mMax/100.0f;
 	dMy=(float)mMax/100.0f;
 
-	if (teamSelected>=0)
+	if (localTeam>=0)
 	{
-		decSPX=teams[teamSelected]->startPosX+map.getW()/2;
-		decSPY=teams[teamSelected]->startPosY+map.getH()/2;
+		decSPX=teams[localTeam]->startPosX+map.getW()/2;
+		decSPY=teams[localTeam]->startPosY+map.getH()/2;
 	}
 	else
 	{
@@ -1620,18 +1616,18 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 						if (gid!=NOGUID)
 						{
 							teamId=gid/1024;
-							if (teamId==teamSelected)
+							if (teamId==localTeam)
 								isMeUnitOrBuilding=true;
-							else if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[teamSelected]->me))
+							else if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							{
-								if ((teams[teamSelected]->allies) & (teams[teamId]->me))
+								if ((teams[localTeam]->allies) & (teams[teamId]->me))
 									isAllyUnitOrBuilding=true;
 								else
 									isEnemyUnitOrBuilding=true;
 							}
 						}
 					}
-					if (teamSelected<0)
+					if (localTeam<0)
 					{
 						// get color to add
 						if (map.isRessource((int)minidx, (int)minidy, WOOD))
@@ -1650,7 +1646,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 
 						pcol[pcolIndex]+=pcolAddValue;
 					}
-					else if (map.isMapDiscovered((int)minidx, (int)minidy, teams[teamSelected]->me))
+					else if (map.isMapDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 					{
 						// get color to add
 						if (map.isRessource((int)minidx, (int)minidy, WOOD))
@@ -1665,7 +1661,7 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
 
 						// get weight to add
-						if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[teamSelected]->me))
+						if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							pcolAddValue=5;
 						else
 							pcolAddValue=3;
@@ -1707,9 +1703,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 	}
 
 	// overdraw flags
-	if (teamSelected>=0)
-		for (std::list<Building *>::iterator virtualIt=teams[teamSelected]->virtualBuildings.begin();
-				virtualIt!=teams[teamSelected]->virtualBuildings.end(); ++virtualIt)
+	if (localTeam>=0)
+		for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
+				virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
 		{
 			int fx, fy;
 			fx=(*virtualIt)->posXLocal-decSPX+map.getW();

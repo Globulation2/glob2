@@ -51,18 +51,9 @@ upgradeTimeHP = 0
 foodable = 0
 fillable = 0
 
-zonableStopWalk = 0
-zonableStopSwim = 0
-zonableStopFly = 0
-zonableWalk = 0
-zonableSwim = 0
-zonableFly = 0
-zonableBuild = 0
-zonableHarvest = 0
-zonableAttackSpeed = 0
-zonableAttackStrength = 0
-zonableArmor = 0
-zonableHP = 0
+zonableWorker = 0
+zonableExplorer = 0
+zonableWarrior = 0
 
 canFeedUnit = 0
 timeToFeedUnit = 0
@@ -1053,7 +1044,7 @@ viewingRange = 8
 startImage = 30
 hueImage = 1
 
-zonableFly = 1
+zonableExplorer = 1
 
 width = 1
 height =  1
@@ -1076,7 +1067,7 @@ maxUnitStayRange = 20
 startImage = 31
 hueImage = 1
 
-zonableAttackSpeed = 1
+zonableWarrior = 1
 
 width = 1
 height = 1
@@ -1099,7 +1090,7 @@ maxUnitStayRange = 8
 startImage = 32
 hueImage = 1
 
-zonableHarvest = 1
+zonableWorker = 1
 
 width = 1
 height = 1
