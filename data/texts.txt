@@ -824,10 +824,10 @@ grand
 large
 gross
 [network latency]
-Network latency
 Latence du réseau
+Network latency
 Netzlatenz
 [game speed]
-Game speed
 Vitesse du jeu
+Game speed
 Spielgeschwindigkeit
