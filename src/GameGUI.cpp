@@ -42,6 +42,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 {
+	int i;
 	isRunning=true;
 	exitGlobCompletely=false;
 	needRedraw=true;
@@ -54,16 +55,15 @@ GameGUI::GameGUI()
 	displayMode=BUILDING_AND_FLAG;
 	typeToBuild=-1;
 	selBuild=NULL;
+	showUnitWorkingToBuilding=false;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
 	statMode=STAT_TEXT;
 
+	for (i=0; i<9; i++)
 	{
-		for (int i=0; i<9; i++)
-		{
-			viewportSpeedX[i]=0;
-			viewportSpeedY[i]=0;
-		}
+		viewportSpeedX[i]=0;
+		viewportSpeedY[i]=0;
 	}
 
 	inGameMenu=IGM_NONE;
@@ -72,10 +72,9 @@ GameGUI::GameGUI()
 	typingInputScreenPos=0;
 
 	recentFreeUnitsIt=0;
-	{
-		for (int i=0; i<nbRecentFreeUnits; i++)
-			recentFreeUnits[i]=0;
-	}
+
+	for (i=0; i<nbRecentFreeUnits; i++)
+		recentFreeUnits[i]=0;
 }
 
 GameGUI::~GameGUI()
@@ -376,6 +375,10 @@ void GameGUI::processEvent(SDL_Event *event)
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
 			}
+		}
+		else if (event->type==SDL_MOUSEBUTTONUP)
+		{
+			showUnitWorkingToBuilding=false;
 		}
 	}
 	if (event->type==SDL_MOUSEMOTION)
@@ -751,6 +754,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 						game.selectedUnit=NULL;
 						selectionUID=UID;
 						checkValidSelection();
+						showUnitWorkingToBuilding=true;
 					}
 				}
 			}
@@ -1361,10 +1365,6 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	else if (selBuild)
 	{
-		// Enabl this if you want blinking circle
-		//static int circleAlphaT=0;
-		//circleAlphaT++;
-		//int alpha=148+107*sin(((double)circleAlphaT)/6.0);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		int centerX, centerY;
 		game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
@@ -1374,6 +1374,24 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 255, 196, 0);
 		else if (!selBuild->type->isVirtual)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
+
+		// draw a white circle around units that are working at building
+		if (showUnitWorkingToBuilding)
+		{
+			for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
+			{
+				Unit *unit=*unitsWorkingIt;
+				int px, py;
+				game.map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+				int deltaLeft=255-unit->delta;
+				if (unit->action<BUILD)
+				{
+					px-=(unit->dx*deltaLeft)>>3;
+					py-=(unit->dy*deltaLeft)>>3;
+				}
+				globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 255, 255, 180);
+			}
+		}
 	}
 	if (game.teams[localTeam]->isAlive==false)
 	{
