@@ -1699,9 +1699,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			else
 			{
 				nCount*=5;
-				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
-				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
-				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
+				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
+				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
 			}
 			minimap->drawPixel(dx+decX, dy+decY, r, g, b);
 		}

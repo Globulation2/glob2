@@ -26,7 +26,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	wDec=7;
 	hDec=7;
 	
-	terrainType=Map::GRASS;
+	terrainType=GRASS;
 	
 	methode=eUNIFORM;
 	waterRatio=50;
@@ -94,7 +94,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	wDec=getSint32(data, 0);
 	hDec=getSint32(data, 4);
 	
-	terrainType=(Map::TerrainType)getSint32(data, 8);
+	terrainType=(TerrainType)getSint32(data, 8);
 	
 	methode=(Methode)getSint32(data, 12);
 	waterRatio=getSint32(data, 16);
@@ -125,7 +125,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 		good=false;
 	if (hDec>=32)
 		good=false;
-	if (terrainType>Map::GRASS)
+	if (terrainType>GRASS)
 		good=false;
 	
 	return (good);
