@@ -65,8 +65,9 @@ public:
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	Sprite *terrain;
-	Sprite *terrainShader;
 	Sprite *terrainBlack;
+	Sprite *terrainShader;
+	Sprite *forbiddenShader;
 	Sprite *ressources;
 	Sprite *units;
 	Sprite *buildings;

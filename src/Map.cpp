@@ -24,6 +24,9 @@
 #include "LogFileManager.h"
 #include "Unit.h"
 
+#include <algorithm>
+#include <valarray>
+
 Map::Map()
 {
 	game=NULL;
@@ -781,6 +784,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	fogOfWar=fogOfWarA;
 	
+	localForbiddenMap.resize(size, 0xFFFFFFFF);
+	
 	cases=new Case[size];
 
 	Case initCase;
@@ -853,6 +858,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	fogOfWar=fogOfWarA;
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
+	localForbiddenMap.resize(size, 0xFFFFFFFF);
 
 	cases=new Case[size];
 

@@ -79,8 +79,9 @@ GlobalContainer::~GlobalContainer(void)
 	{
 		// releasing ressources
 		Toolkit::releaseSprite("terrain");
-		Toolkit::releaseSprite("shading");
 		Toolkit::releaseSprite("black");
+		Toolkit::releaseSprite("shading");
+		Toolkit::releaseSprite("redshading");
 		Toolkit::releaseSprite("ressources");
 		Toolkit::releaseSprite("units");
 		Toolkit::releaseSprite("buildings");
@@ -372,14 +373,18 @@ void GlobalContainer::load(void)
 		// load terrain data
 		gfx->loadSprite("data/gfx/terrain", "terrain");
 		terrain=Toolkit::getSprite("terrain");
+		
+		// black for unexplored terrain
+		gfx->loadSprite("data/gfx/black", "black");
+		terrainBlack=Toolkit::getSprite("black");
 
 		// load shader for unvisible terrain
 		gfx->loadSprite("data/gfx/shade", "shading");
 		terrainShader=Toolkit::getSprite("shading");
-
-		// black for unexplored terrain
-		gfx->loadSprite("data/gfx/black", "black");
-		terrainBlack=Toolkit::getSprite("black");
+		
+		// load red shader for interdiction area
+		gfx->loadSprite("data/gfx/redshade", "redshading");
+		forbiddenShader=Toolkit::getSprite("redshading");
 
 		updateLoadProgressBar(30);
 		// load ressources

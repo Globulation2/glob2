@@ -252,11 +252,7 @@ Uint32 BasePlayer::checkSum()
 	// (we could uses two differents check sums, but the framework would be heavier)
 	//cs^=netPort;
 
-#ifndef WIN32
 	int l=Utilities::strnlen(name, 32);
-#else
-	int l=std::min(strlen(name),(size_t)32);
-#endif
 	for (int i=0; i<l; i++)
 		cs^=name[i];
 	
