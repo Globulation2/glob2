@@ -1625,12 +1625,20 @@ struct BuildingPosComp
 
 void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	static int cloudDisplacement = -1023;
 	int id;
 	int left=(sx>>5);
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 	std::set<Building *, BuildingPosComp> buildingList;
+
+	// we draw water
+	int waterStartX = -((viewportX<<5) % 512);
+	int waterStartY = -((viewportY<<5) % 512);
+	for (int y=waterStartY; y<sh; y += 512)
+		for (int x=waterStartX; x<sw; x += 512)
+			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -1660,7 +1668,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					sprite=globalContainer->ressources;
 					id-=272;
 				}
-				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
+				if ((id < 256) || (id >= 256+16))
+					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
 
 	for (int y=top; y<=bot; y++)
@@ -2056,6 +2065,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, img, frame);
 			//std::cout << "Explosion at (" << x << "," << y << ") frame " << frame <<std::endl;
 		}
+	}
+	
+	// draw cloud if we are in high quality
+	if (cloudDisplacement > 0)
+		cloudDisplacement -= 1024;
+	else
+		cloudDisplacement++;
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	{
+		for (int y=waterStartY + (cloudDisplacement/2); y<sh; y+=512)
+			for (int x=waterStartX + (cloudDisplacement/2); x<sw; x+=512)
+				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);
 	}
 	
 	// draw black & shading

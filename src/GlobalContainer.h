@@ -71,6 +71,8 @@ public:
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	Sprite *terrain;
+	Sprite *terrainWater;
+	Sprite *terrainCloud;
 	Sprite *terrainBlack;
 	Sprite *terrainShader;
 	Sprite *ressources;
