@@ -73,13 +73,17 @@ public:
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
 
-	Sint32 gameTPF;//Tick per frame.
+	//! TPF = Tick per frame.
+	Sint32 gameTPF;
+	//! Number of tick between order issue and order commit. This is the maximum lag during a game
 	Sint32 gameLatency;
 private:
 	//! Serialized form of SessionGame
 	char data[24];
 };
 
+//! The session that indirectly derive from Order.
+//! This session will go through the network at connection time
 class SessionInfo:public SessionGame
 {
 public:
