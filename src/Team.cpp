@@ -748,7 +748,10 @@ void Team::step(void)
 				fprintf(logFile, "unit guid=%d deleted\n", u->gid);
 				if (u->attachedBuilding)
 					fprintf(logFile, " attachedBuilding->bgid=%d\n", u->attachedBuilding->gid);
-				
+
+				if(game->selectedUnit==u)
+					game->selectedUnit=NULL;
+
 				delete u;
 				myUnits[i]=NULL;
 			}
@@ -782,12 +785,12 @@ void Team::step(void)
 	}
 	if (isDirtyGlobalGradient)
 		dirtyGlobalGradient();
-	
+
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
 		fprintf(logFile, "building guid=%d deleted\n", building->gid);
-		
+
 		if (building->type->unitProductionTime)
 			swarms.remove(building);
 		if (building->type->shootingRange)
@@ -799,13 +802,16 @@ void Team::step(void)
 		assert(building->unitsInside.size()==0);
 		assert(building->unitsWorkingSubscribe.size()==0);
 		assert(building->unitsInsideSubscribe.size()==0);
-		
+
 		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 		subscribeForInside.remove(building);
 		subscribeToBringRessources.remove(building);
 		subscribeForFlaging.remove(building);
-		
+
+		if(game->selectedBuilding==building)
+			game->selectedBuilding=NULL;
+
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;
 	}
