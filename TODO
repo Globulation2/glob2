@@ -17,7 +17,7 @@ Net:
 Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Statistiques sur les gradients et le pathfinding pour optimiser.
-- Les drapeaux doivent pathfinder à 255 dans tout leut périmètre!
+- Il est peut-être interessant d'optimiser en regardant si le batiment est enfermé à une distance de zéro.
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
 - Debugger le "Clearing ressources system" pour les drapeaux de défrichage.
 - Enlever toutes les méthodes inutiles.

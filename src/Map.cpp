@@ -76,6 +76,25 @@ Map::Map()
 	
 	localBuildingGradientUpdate=0;
 	globalBuildingGradientUpdate=0;
+	
+	buildingAviableCountTot=0;
+	buildingAviableCountClose=0;
+	buildingAviableCountCloseSuccess=0;
+	buildingAviableCountCloseSuccessClosely=0;
+	buildingAviableCountCloseSuccessUpdate=0;
+	buildingAviableCountCloseSuccessUpdateClosely=0;
+	buildingAviableCountCloseFailure=0;
+	
+	buildingAviableCountIsFar=0;
+	buildingAviableCountFar=0;
+	buildingAviableCountFarNew=0;
+	buildingAviableCountFarNewSuccess=0;
+	buildingAviableCountFarNewSuccessClosely=0;
+	buildingAviableCountFarNewFailure=0;
+	buildingAviableCountFarOld=0;
+	buildingAviableCountFarOldSuccess=0;
+	buildingAviableCountFarOldSuccessClosely=0;
+	buildingAviableCountFarOldFailure=0;
 }
 
 Map::~Map(void)
@@ -202,8 +221,8 @@ void Map::clear()
 	printf("buildingGradientUpdate=%d\n", buildingGradientUpdate);
 	if (buildingGradientUpdate)
 	{
-	printf("|- localBuildingGradientUpdate=%d (%f %%)\n", localBuildingGradientUpdate, 100.*(double)localBuildingGradientUpdate/(double)buildingGradientUpdate);
-	printf("|- globalBuildingGradientUpdate=%d (%f %%)\n", globalBuildingGradientUpdate, 100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
+		printf("|- localBuildingGradientUpdate=%d (%f %%)\n", localBuildingGradientUpdate, 100.*(double)localBuildingGradientUpdate/(double)buildingGradientUpdate);
+		printf("|- globalBuildingGradientUpdate=%d (%f %%)\n", globalBuildingGradientUpdate, 100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
 	}
 	pathToBuildingCountTot=0;
 	pathToBuildingCountClose=0;
@@ -217,6 +236,53 @@ void Map::clear()
 	
 	localBuildingGradientUpdate=0;
 	globalBuildingGradientUpdate=0;
+	
+	
+	printf("\n");
+	printf("buildingAviableCountTot=%d\n", buildingAviableCountTot);
+	if (buildingAviableCountTot)
+	{
+		printf("|- buildingAviableCountClose=%d (%f %%)\n", buildingAviableCountClose, 100.*(double)buildingAviableCountClose/(double)buildingAviableCountTot);
+		printf("|-  buildingAviableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n", buildingAviableCountCloseSuccess, 100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountClose);
+		printf("|-  buildingAviableCountCloseSuccessClosely=%d (%f %% of tot) (%f %% of close)\n", buildingAviableCountCloseSuccessClosely, 100.*(double)buildingAviableCountCloseSuccessClosely/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountCloseSuccessClosely/(double)buildingAviableCountClose);
+		printf("|-  buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close)\n", buildingAviableCountCloseSuccessUpdate, 100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountClose);
+		printf("|-  buildingAviableCountCloseSuccessUpdateClosely=%d (%f %% of tot) (%f %% of close)\n", buildingAviableCountCloseSuccessUpdateClosely, 100.*(double)buildingAviableCountCloseSuccessUpdateClosely/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountCloseSuccessUpdateClosely/(double)buildingAviableCountClose);
+		printf("|-  buildingAviableCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n", buildingAviableCountCloseFailure, 100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountClose);
+		
+		
+		printf("|- buildingAviableCountFar=%d (%f %%)\n", buildingAviableCountFar, 100.*(double)buildingAviableCountFar/(double)buildingAviableCountTot);
+		printf("|-  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n", buildingAviableCountIsFar, 100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountFar);
+		
+		printf("|-  buildingAviableCountFarNew=%d (%f %% of tot) (%f %% of far)\n", buildingAviableCountFarNew, 100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountFar);
+		printf("|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n", buildingAviableCountFarNewSuccess, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
+		printf("|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n", buildingAviableCountFarNewSuccess, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
+		printf("|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n", buildingAviableCountFarNewFailure, 100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFarNew);
+		
+		printf("|-  buildingAviableCountFarOld=%d (%f %% of tot) (%f %% of far)\n", buildingAviableCountFarOld, 100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountFar);
+		printf("|-   buildingAviableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n", buildingAviableCountFarOldSuccess, 100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFarOld);
+		printf("|-   buildingAviableCountFarOldSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n", buildingAviableCountFarOldSuccessClosely, 100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarOldSuccessClosely/(double)buildingAviableCountFarOld);
+		printf("|-   buildingAviableCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n", buildingAviableCountFarOldFailure, 100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountTot, 100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountFar, 100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountFarOld);
+	}
+	
+	buildingAviableCountTot=0;
+	buildingAviableCountClose=0;
+	buildingAviableCountCloseSuccess=0;
+	buildingAviableCountCloseSuccessClosely=0;
+	buildingAviableCountCloseSuccessUpdate=0;
+	buildingAviableCountCloseSuccessUpdateClosely=0;
+	buildingAviableCountCloseFailure=0;
+	
+	buildingAviableCountIsFar=0;
+	buildingAviableCountFar=0;
+	buildingAviableCountFarNew=0;
+	buildingAviableCountFarNewSuccess=0;
+	buildingAviableCountFarNewSuccessClosely=0;
+	buildingAviableCountFarNewFailure=0;
+	buildingAviableCountFarOld=0;
+	buildingAviableCountFarOldSuccess=0;
+	buildingAviableCountFarOldSuccessClosely=0;
+	buildingAviableCountFarOldFailure=0;
+	
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -1609,6 +1675,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	localBuildingGradientUpdate++;
 	printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
+	assert(building->type);
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
@@ -1620,15 +1687,53 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	Uint8 *gradient=building->localGradient[canSwim];
 
 	memset(gradient, 1, 1024);
-	for (int dy=0; dy<posH; dy++)
-		for (int dx=0; dx<posW; dx++)
-			gradient[15+dx+(15+dy)*32]=255;
+	if (building->type->isVirtual)
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=yi*yi;
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<r2)
+				{
+					int xxi=15+xi;
+					int yyi=15+yi;
+					if (xxi<0)
+						xxi=0;
+					else if (xxi>31)
+						xxi=31;
+					if (yyi<0)
+						yyi=0;
+					else if (yyi>31)
+						xxi=31;
+					gradient[xxi+(yyi<<5)]=255;
+				}
+		}
+	}
+	else
+		for (int dy=0; dy<posH; dy++)
+			for (int dx=0; dx<posW; dx++)
+			{
+					int xxi=15+dx;
+					int yyi=15+dy;
+					if (xxi<0)
+						xxi=0;
+					else if (xxi>31)
+						xxi=31;
+					if (yyi<0)
+						yyi=0;
+					else if (yyi>31)
+						xxi=31;
+					gradient[xxi+(yyi<<5)]=255;
+				}
 
 	// Here g=Global(map axis), l=Local(map axis)
 
 	for (int yl=0; yl<32; yl++)
 	{
-		int wyl=32*yl;
+		int wyl=(yl<<5);
 		int yg=(yl+posY-15+h)&hMask;
 		int wyg=w*yg;
 		for (int xl=0; xl<32; xl++)
@@ -1688,16 +1793,16 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 							assert(x<32);
 							assert(y<32);
 
-							int wy=32*y;
+							int wy=(y<<5);
 							int wyu, wyd;
 							if (y==0)
-								wyu=32*0;
+								wyu=0;
 							else
-								wyu=32*(y-1);
+								wyu=((y-1)<<5);
 							if (y==31)
 								wyd=32*31;
 							else
-								wyd=32*(y+1);
+								wyd=((y+1)<<5);
 							Uint8 max=gradient[wy+x];
 							if (max && max!=255)
 							{
@@ -1811,13 +1916,12 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	{
 		assert(!building->type->zonableForbidden);
 		int r=building->unitStayRange;
-		int rm=(r<<1)+1;
-		int r2=rm*rm;
+		int r2=r*r;
 		for (int yi=-r; yi<=r; yi++)
 		{
-			int yi2=((yi*yi)<<2);
+			int yi2=(yi*yi);
 			for (int xi=-r; xi<=r; xi++)
-				if (yi2+((xi*xi)<<2)<r2)
+				if (yi2+(xi*xi)<r2)
 					gradient[((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask))]=255;
 		}
 	}
@@ -2069,6 +2173,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 
 bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *dist)
 {
+	buildingAviableCountTot++;
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
@@ -2079,13 +2184,15 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	
 	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use the last line! (on x and y)
 	{
+		buildingAviableCountClose++;
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
 		if (!building->dirtyLocalGradient[canSwim])
 		{
-			Uint8 currentg=gradient[lx+ly*32];
+			Uint8 currentg=gradient[lx+(ly<<5)];
 			if (currentg>1)
 			{
+				buildingAviableCountCloseSuccess++;
 				*dist=255-currentg;
 				return true;
 			}
@@ -2104,9 +2211,10 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 						lyddy=0;
 					else if(lyddy>31)
 						lyddy=31;
-					Uint8 g=gradient[lxddx+32*lyddy];
+					Uint8 g=gradient[lxddx+(lyddy<<5)];
 					if (g>1)
 					{
+						buildingAviableCountCloseSuccessClosely++;
 						*dist=255-g;
 						return true;
 					}
@@ -2119,6 +2227,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		
 		if (currentg>1)
 		{
+			buildingAviableCountCloseSuccessUpdate++;
 			*dist=255-currentg;
 			return true;
 		}
@@ -2137,27 +2246,35 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 					lyddy=0;
 				else if(lyddy>31)
 					lyddy=31;
-				Uint8 g=gradient[lxddx+32*lyddy];
+				Uint8 g=gradient[lxddx+(lyddy<<5)];
 				if (g>1)
 				{
+					buildingAviableCountCloseSuccessUpdateClosely++;
 					*dist=255-g;
 					return true;
 				}
 			}
+		buildingAviableCountCloseFailure++;
 	}
+	else
+		buildingAviableCountIsFar++;
+	buildingAviableCountFar++;
 	
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
+		buildingAviableCountFarNew++;
 		gradient=new Uint8[size];
 		printf("ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 	}
 	else
 	{
+		buildingAviableCountFarOld++;
 		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 		if (currentg>1)
 		{
+			buildingAviableCountFarOldSuccess++;
 			*dist=255-currentg;
 			return true;
 		}
@@ -2172,10 +2289,12 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 				Uint8 g=gradient[xddx+yddy*w];
 				if (g>1)
 				{
+					buildingAviableCountFarOldSuccessClosely++;
 					*dist=255-g;
 					return true;
 				}
 			}
+			buildingAviableCountFarOldFailure++;
 			printf("ba-a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
@@ -2186,6 +2305,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
+		buildingAviableCountFarNewSuccess++;
 		*dist=255-currentg;
 		return true;
 	}
@@ -2200,10 +2320,12 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			Uint8 g=gradient[xddx+yddy*w];
 			if (g>1)
 			{
+				buildingAviableCountFarNewSuccessClosely++;
 				*dist=255-g;
 				return true;
 			}
 		}
+		buildingAviableCountFarNewFailure++;
 		printf("ba-b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;
 	}
@@ -2228,7 +2350,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
 		int max=0;
-		Uint8 currentg=gradient[lx+ly*32];
+		Uint8 currentg=gradient[lx+(ly<<5)];
 		bool found=false;
 		bool gradientUsable=false;
 		
@@ -2258,7 +2380,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 						lyddy=0;
 					else if(lyddy>31)
 						lyddy=31;
-					Uint8 g=gradient[lxddx+32*lyddy];
+					Uint8 g=gradient[lxddx+(lyddy<<5)];
 					if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
 					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
@@ -2300,7 +2422,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 						lxddy=0;
 					else if(lxddy>31)
 						lxddy=31;
-					Uint8 g=gradient[lxddx+32*lxddy];
+					Uint8 g=gradient[lxddx+(lxddy<<5)];
 					if (!gradientUsable && (g>currentg) && isHardSpaceForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 						gradientUsable=true;
 					if (g>=max && isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))

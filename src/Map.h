@@ -385,6 +385,7 @@ protected:
 	int pathToRessourceCountFailure;
 	
 	int pathToBuildingCountTot;
+	
 	int pathToBuildingCountClose;
 	int pathToBuildingCountCloseSuccess;
 	int pathToBuildingCountCloseFailure;
@@ -394,6 +395,26 @@ protected:
 	int pathToBuildingCountFarSuccess;
 	int pathToBuildingCountFarFailure;
 	int pathToBuildingCountFarSuccessFar;
+	
+	int buildingAviableCountTot;
+	
+	int buildingAviableCountClose;
+	int buildingAviableCountCloseSuccess;
+	int buildingAviableCountCloseSuccessClosely;
+	int buildingAviableCountCloseSuccessUpdate;
+	int buildingAviableCountCloseSuccessUpdateClosely;
+	int buildingAviableCountCloseFailure;
+	
+	int buildingAviableCountIsFar;
+	int buildingAviableCountFar;
+	int buildingAviableCountFarNew;
+	int buildingAviableCountFarNewSuccess;
+	int buildingAviableCountFarNewSuccessClosely;
+	int buildingAviableCountFarNewFailure;
+	int buildingAviableCountFarOld;
+	int buildingAviableCountFarOldSuccess;
+	int buildingAviableCountFarOldSuccessClosely;
+	int buildingAviableCountFarOldFailure;
 	
 	int localBuildingGradientUpdate;
 	int globalBuildingGradientUpdate;
