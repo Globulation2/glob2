@@ -25,6 +25,11 @@
 #include "Utilities.h"
 #include "Game.h"
 
+#ifdef WIN32
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#endif
+
 int distSquare(int x1, int y1, int x2, int y2)
 {
 	int dx=x2-x1;
@@ -446,11 +451,7 @@ namespace Utilities
 	void stringIP(char *s, int n, Uint32 nip)
 	{
 		Uint32 ip=SDL_SwapBE32(nip);
-#ifndef WIN32
 		snprintf(s, n, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-#else
-		sprintf(s, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-#endif
 		s[n-1]=0;
 	}
 	
@@ -460,11 +461,7 @@ namespace Utilities
 	{
 		staticCounter=(staticCounter+1)&0x7;
 		Uint32 ip=SDL_SwapBE32(nip);
-#ifndef WIN32
 		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-#else
-		sprintf(staticStringIP[staticCounter], "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-#endif
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
 	}
@@ -472,11 +469,7 @@ namespace Utilities
 	{
 		staticCounter=(staticCounter+1)&0x7;
 		Uint32 ip=SDL_SwapBE32(host);
-#ifndef WIN32
 		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(port));
-#else
-		sprintf(staticStringIP[staticCounter], "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(port));
-#endif
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
 	}
@@ -485,11 +478,7 @@ namespace Utilities
 	{
 		staticCounter=(staticCounter+1)&0x7;
 		Uint32 ip=SDL_SwapBE32(nip.host);
-#ifndef WIN32
 		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(nip.port));
-#else
-		sprintf(staticStringIP[staticCounter], "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(nip.port));
-#endif
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
 	}
@@ -523,15 +512,8 @@ namespace Utilities
 		char buffer[256];
 		va_list arglist;
 		va_start(arglist, format);
-
-#ifndef WIN32
 		vsnprintf(buffer, 256, format, arglist);
-#else
-		vsprintf(buffer, format, arglist);
-#endif
-
 		SDL_RWwrite(stream, buffer, strlen(buffer), 1);
-
 		va_end(arglist);
 	}
 	
