@@ -139,17 +139,11 @@ private:
 	friend class InGameAlliance8Screen;
 	enum DisplayMode
 	{
-		BUILDING_AND_FLAG,
 		BUILDING_SELECTION_VIEW,
 		UNIT_SELECTION_VIEW,
-		STAT_VIEW,
-	};
-
-	enum StatMode
-	{
-		STAT_TEXT=0,
-		STAT_GRAPH=1,
-		NB_STAT_MODE=2
+		BUILDING_AND_FLAG_VIEW,
+		STAT_TEXT_VIEW,
+		STAT_GRAPH_VIEW,
 	};
 
 	DisplayMode displayMode;
@@ -175,7 +169,6 @@ private:
 
 	TeamStats *teamStats;
 	Team *localTeam;
-	StatMode statMode;
 
 	Uint32 chatMask;
 
