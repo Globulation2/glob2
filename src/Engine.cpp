@@ -186,6 +186,7 @@ void Engine::startMultiplayer(SessionConnection *screen)
 	printf("Engine::localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
 
+
 int Engine::initMutiplayerHost(bool shareOnYOG)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen;

@@ -317,102 +317,103 @@ bool BasePlayer::send(const int u, const int v)
 
 void BasePlayer::printNetState(char s[32])
 {
+	char t[32];
 	switch (netState)
 	{
 		case PNS_BAD:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_BAD]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_BAD]"));
 		}
 		break;
 		
 		case PNS_PLAYER_SILENT:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_PLAYER_SILENT]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SILENT]"));
 		}
 		break;
 		
 		case PNS_PLAYER_SEND_ONE_REQUEST:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_ONE_REQUEST]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_ONE_REQUEST]"));
 		}
 		break;
 		case PNS_SERVER_SEND_SESSION_INFO:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_SERVER_SEND_SESSION_INFO]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_SERVER_SEND_SESSION_INFO]"));
 		}
 		break;
 		case PNS_PLAYER_SEND_CHECK_SUM:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_CHECK_SUM]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_CHECK_SUM]"));
 		}
 		break;
 		
 		case PNS_OK:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_OK]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_OK]"));
 		}
 		break;
 		
 		case PNS_SERVER_SEND_CROSS_CONNECTION_START:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_SERVER_SEND_CROSS_CONNECTION_START]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_SERVER_SEND_CROSS_CONNECTION_START]"));
 		}
 		break;
 		case PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]"));
 		}
 		break;
 		case PNS_PLAYER_FINISHED_CROSS_CONNECTION:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_PLAYER_FINISHED_CROSS_CONNECTION]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_FINISHED_CROSS_CONNECTION]"));
 		}
 		break;
 		
 		case PNS_CROSS_CONNECTED:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
 		}
 		break;
 	
 		case PNS_SERVER_SEND_START_GAME:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
 		}
 		break;
 		case PNS_PLAYER_CONFIRMED_START_GAME:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
 		}
 		break;
 		case PNS_PLAYER_PLAYS:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_CROSS_CONNECTED]"));
 		}
 		break;
 		
 		case PNS_BINDED:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_BINDED]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_BINDED]"));
 		}
 		break;
 		case PNS_SENDING_FIRST_PACKET:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_SENDING_FIRST_PACKET]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_SENDING_FIRST_PACKET]"));
 		}
 		break;
 		case PNS_HOST:
 		{
-			snprintf(s, 32, globalContainer->texts.getString("[PNS_HOST]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_HOST]"));
 		}
 		break;
 		default:
 		{
-			snprintf(s, 32, "error");
+			snprintf(t, 32, "error");
 		}
 	}
 	
-	snprintf(s, 32, "%d-%s", netState, s);
+	snprintf(s, 32, "%d-%s", netState, t);
 }
 
 Player::Player()

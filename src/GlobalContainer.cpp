@@ -84,7 +84,18 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	{
 		if (strcmp(argv[i], "-host")==0)
 		{
-			hostServer=true;
+			if (i+1<argc)
+			{
+				strncpy(hostServerMapName, argv[i+1], 32);
+				hostServer=true;
+				i++;
+			}
+			else
+			{
+				printf("usage: -host MapName.\n");
+				hostServer=true;
+				strncpy(hostServerMapName, "default.map", 32);
+			}
 			continue;
 		}
 		if (strcmp(argv[i], "-f")==0)
@@ -115,7 +126,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-m\tspecify meta server hostname\n");
-			printf("-p\tspecify meta server port\n\n");
+			printf("-p\tspecify meta server port\n");
+			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
 		}
 
 		// the -d option appends a directory in the
