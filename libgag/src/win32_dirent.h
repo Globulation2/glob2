@@ -28,6 +28,7 @@ typedef struct DIR DIR;
 struct dirent
 {
     char *d_name;
+	int d_type;	// HACK:Non-standard! This is a hack! Get rid of it!
 };
 
 
@@ -35,6 +36,8 @@ DIR           *opendir(const char *);
 int           closedir(DIR *);
 struct dirent *readdir(DIR *);
 void          rewinddir(DIR *);
+
+#define DT_DIR	1
 
 #ifdef __cplusplus
 }

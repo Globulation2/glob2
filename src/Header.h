@@ -33,6 +33,7 @@
 #	include <assert.h>
 #	define snprintf _snprintf
 #	define vsnprintf _vsnprintf
+#   define S_ISDIR _S_ISDIR
 #	pragma warning (disable : 4786)
 #	pragma warning (disable : 4250)
 #else // Unix ??? autre ??? TODO a preciser...

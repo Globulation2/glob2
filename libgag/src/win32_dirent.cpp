@@ -50,6 +50,7 @@ DIR *opendir(const char *name)
             if((dir->handle = _findfirst(dir->name, &dir->info)) != -1)
             {
                 dir->result.d_name = 0;
+				dir->result.d_type = 0;
             }
             else /* rollback */
             {
@@ -106,7 +107,8 @@ struct dirent *readdir(DIR *dir)
         {
             result         = &dir->result;
             result->d_name = dir->info.name;
-        }
+ 			result->d_type = 0;
+       }
     }
     else
     {
@@ -123,6 +125,7 @@ void rewinddir(DIR *dir)
         _findclose(dir->handle);
         dir->handle = _findfirst(dir->name, &dir->info);
         dir->result.d_name = 0;
+		dir->result.d_type = 0;
     }
     else
     {
