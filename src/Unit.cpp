@@ -92,6 +92,8 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	else
 		trigHungry=hungry/4;
 	trigHungryCarying=hungry/10;
+	fruitMask=0;
+	fruitCount=0;
 
 
 	// NOTE : rewrite hp from level
@@ -154,8 +156,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	trigHungry=SDL_ReadBE32(stream);
 	trigHungryCarying=(trigHungry*4)/10;
 	fruitMask=SDL_ReadBE32(stream);
-
-	// quality parameters
+	fruitCount=SDL_ReadBE32(stream);
 
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
@@ -217,6 +218,7 @@ void Unit::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, hungry);
 	SDL_WriteBE32(stream, trigHungry);
 	SDL_WriteBE32(stream, fruitMask);
+	SDL_WriteBE32(stream, fruitCount);
 
 	// quality parameters
 	for (int i=0; i<NB_ABILITY; i++)
@@ -901,6 +903,18 @@ void Unit::handleDisplacement(void)
 						hungry=HUNGRY_MAX;
 						attachedBuilding->ressources[CORN]--;
 						assert(attachedBuilding->ressources[CORN]>=0);
+						fruitMask=0;
+						fruitCount=0;
+						for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
+						{
+							unsigned resId=i+HAPPYNESS_BASE;
+							if (attachedBuilding->ressources[resId])
+							{
+								attachedBuilding->ressources[resId]--;
+								fruitMask|=(1<<i);
+								fruitCount++;
+							}
+						}
 						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}

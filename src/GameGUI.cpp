@@ -107,7 +107,7 @@ void GameGUI::adjustInitialViewport()
 	assert(game.session.numberOfPlayer>0);
 	assert(game.session.numberOfPlayer<32);
 	assert(localTeamNo<game.session.numberOfPlayer);
-	
+
 	localTeam=game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats=&localTeam->stats;
@@ -472,7 +472,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				return false;
 			}
 		}
-		
+
 		case IGM_END_OF_GAME:
 		{
 			switch (gameMenuScreen->endValue)
@@ -1713,14 +1713,13 @@ void GameGUI::draw(void)
 			{ r=0; g=255; b=0; }
 
 		globalContainer->littleFont->pushColor(r, g, b);
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+36, globalContainer->littleFont, "%s : %2.0f %%", Toolkit::getStringTable()->getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX);
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+36, globalContainer->littleFont, "%s : %2.0f %% (%d)", Toolkit::getStringTable()->getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount);
 		globalContainer->littleFont->popColor();
 
 		if (selUnit->performance[HARVEST])
 		{
 			if (selUnit->caryedRessource>=0)
 			{
-
 				const RessourceType* r = globalContainer->ressourcesTypes->get(selUnit->caryedRessource);
 				unsigned resImg = r->gfxId + r->sizesCount - 1;
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, "%s", Toolkit::getStringTable()->getString("[carry]"));
