@@ -57,8 +57,12 @@ protected:
 	std::vector <unsigned int> lines;
 	
 	// edit mod variables
+	// this one is the only one always valid, other are recomputed from it
 	unsigned int cursorPos;
+	// this one can be invalid, but must be within textBufferLength
 	unsigned int cursorPosY;
+	// this one can be anything
+	unsigned int cursorScreenPosY;
 };
 
 #endif
