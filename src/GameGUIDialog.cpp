@@ -68,7 +68,7 @@ void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, in
 
 //! Alliance screen
 InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<8) ? 300 : 600, 325)
+:OverlayScreen(globalContainer->gfx, (gameGUI->game.session.numberOfPlayer<=8) ? 300 : 600, 390)
 {
 	// fill the slots
 	int i;
@@ -129,10 +129,10 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 	
-	if (gameGUI->game.session.numberOfPlayer<8)
+	if (gameGUI->game.session.numberOfPlayer<=8)
 	{
 		// add ok button
-		addWidget(new TextButton(10, 280, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(10, 345, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	else
 	{
@@ -143,12 +143,18 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 		
 		// add ok button
-		addWidget(new TextButton(150, 280, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+		addWidget(new TextButton(150, 345, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	}
 	
 	// add keyboard shortcut explanations
-	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation enter]")));
-	addWidget(new Text(10, 258, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation v]")));
+	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation A]")));
+	addWidget(new Text(10, 258, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation V]")));
+	addWidget(new Text(10, 271, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation Vf]")));
+	addWidget(new Text(10, 284, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation mV]")));
+	addWidget(new Text(10, 297, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation C]")));
+	
+	addWidget(new Text(10, 310, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation enter]")));
+	addWidget(new Text(10, 323, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation v]")));
 	
 	this->gameGUI=gameGUI;
 	dispatchInit();
