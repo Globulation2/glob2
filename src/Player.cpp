@@ -263,7 +263,7 @@ bool BasePlayer::sameip(IPaddress ip)
 	return ((this->ip.host==ip.host)&&(this->ip.port==ip.port));
 }
 
-bool BasePlayer::bind(UDPsocket socket, int channel)
+bool BasePlayer::bind(UDPsocket socket)
 {
 	this->socket=socket;
 	
@@ -272,7 +272,6 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 	if (socket==NULL)
 	{
 		socket=SDLNet_UDP_Open(ANY_PORT);
-	
 		if (socket!=NULL)
 			fprintf(logFile, "Socket opened at port to player %d.\n", number);
 		else
@@ -285,9 +284,8 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 		return false;
 	}
 	
-	channel=SDLNet_UDP_Bind(socket, channel, &ip);
-	this->channel=channel;
-	
+	assert(channel==-1);
+	channel=SDLNet_UDP_Bind(socket, -1, &ip);
 	if (channel != -1)
 	{
 		fprintf(logFile, "suceeded to bind socket to player %d, socket=(%x), channel=(%d), ip=(%s).\n", number, (int)socket, channel, Utilities::stringIP(ip));
@@ -302,14 +300,12 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 
 void BasePlayer::unbind()
 {
-	//fprintf(logFile, "BasePlayer::unbind() (channel=%d).\n", channel);
 	if (channel!=-1)
 	{
 		fprintf(logFile, "Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
 		assert(socket);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
-		netState=PNS_NOT_BINDED;
 		ip.host=0;
 		ip.port=0;
 	}
@@ -325,35 +321,18 @@ bool BasePlayer::send(Uint8 *data, int size)
 	if (packet==NULL)
 		return false;
 	packet->len=size;
-	
 	memcpy(packet->data, data, size);
-
-	bool sucess;
-	
-
+	bool success;
 	packet->address=ip;
-	packet->channel=channel;
-	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+	packet->channel=-1;
 	//if (abs(rand()%100)<98)
-		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-	// Notice that we can choose between giving a "channel", or the ip.
-	// Here we do both. Then "channel" could be -1.
-	// This is interesting because getFreeChannel() may return -1.
-	// We have no real use of "channel".
-	
+		success=SDLNet_UDP_Send(socket, -1, packet)==1;
 	//else
 	//	sucess=true; // WARNING : TODO : remove this artificial lost of packets!
-	//if (sucess)
-	//	fprintf(logFile, "suceeded to send packet to player %d (channel=%d).\n", number, channel);
-	//else
-	//	fprintf(logFile, "failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
-
-	if (!sucess)
+	if (!success)
 		fprintf(logFile, "failed to send packet!\n");
-	
 	SDLNet_FreePacket(packet);
-	
-	return sucess;
+	return success;
 }
 
 bool BasePlayer::send(Uint8 *data, int size, const Uint8 v)
@@ -364,23 +343,19 @@ bool BasePlayer::send(Uint8 *data, int size, const Uint8 v)
 	if (ip.host==0)
 		return false;
 	packet->len=size;
-			
 	memcpy(4+packet->data, data, size);
-
 	packet->data[0]=v;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	
-	bool sucess;
-
+	bool success;
 	packet->address=ip;
 	packet->channel=channel;
-	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-	
+	success=SDLNet_UDP_Send(socket, channel, packet)==1;
+	if (!success)
+		fprintf(logFile, "failed to send packet!\n");
 	SDLNet_FreePacket(packet);
-	
-	return sucess;
+	return success;
 }
 
 bool BasePlayer::send(const Uint8 v)
@@ -405,108 +380,6 @@ bool BasePlayer::send(const Uint8 u, const Uint8 v)
 	data[6]=0;
 	data[7]=0;
 	return send(data, 8);
-}
-
-void BasePlayer::printNetState(char s[32])
-{
-	char t[32];
-	switch (netState)
-	{
-		case PNS_BAD:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_BAD]"));
-		}
-		break;
-		
-		case PNS_PLAYER_SILENT:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_SILENT]"));
-		}
-		break;
-
-		case PNS_PLAYER_SEND_PRESENCE_REQUEST:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_SEND_PRESENCE_REQUEST]"));
-		}
-		break;
-		case PNS_PLAYER_SEND_SESSION_REQUEST:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_SEND_SESSION_REQUEST]"));
-		}
-		break;
-		case PNS_PLAYER_SEND_CHECK_SUM:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_SEND_CHECK_SUM]"));
-		}
-		break;
-		
-		case PNS_OK:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_OK]"));
-		}
-		break;
-		
-		case PNS_SERVER_SEND_CROSS_CONNECTION_START:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_SERVER_SEND_CROSS_CONNECTION_START]"));
-		}
-		break;
-		case PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]"));
-		}
-		break;
-		case PNS_PLAYER_FINISHED_CROSS_CONNECTION:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_PLAYER_FINISHED_CROSS_CONNECTION]"));
-		}
-		break;
-		
-		case PNS_CROSS_CONNECTED:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_CROSS_CONNECTED]"));
-		}
-		break;
-	
-		case PNS_SERVER_SEND_START_GAME:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_CROSS_CONNECTED]"));
-		}
-		break;
-		case PNS_PLAYER_CONFIRMED_START_GAME:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_CROSS_CONNECTED]"));
-		}
-		break;
-		case PNS_PLAYER_PLAYS:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_CROSS_CONNECTED]"));
-		}
-		break;
-		
-		case PNS_BINDED:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_BINDED]"));
-		}
-		break;
-		case PNS_SENDING_FIRST_PACKET:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_SENDING_FIRST_PACKET]"));
-		}
-		break;
-		case PNS_HOST:
-		{
-			snprintf(t, 32, Toolkit::getStringTable()->getString("[PNS_HOST]"));
-		}
-		break;
-		default:
-		{
-			snprintf(t, 32, "error");
-		}
-	}
-	
-	//snprintf(s, 32, "%d-%s", netState, t);
-	snprintf(s, 32, "%s %d", Toolkit::getStringTable()->getString("[state]"), netState);
 }
 
 Player::Player()

@@ -54,54 +54,27 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 		if (sessionInfo.players[j].type==BasePlayer::P_IP)
 			if (!sessionInfo.players[j].waitForNatResolution)
 			{
-				if (crossPacketRecieved[j]<3) // NOTE: is this still usefull ?
-				{
-					if (sessionInfo.players[j].netState<BasePlayer::PNS_BINDED)
+				if (sessionInfo.players[j].channel==-1)
+					if (!sessionInfo.players[j].bind(socket))
 					{
-						int freeChannel=getFreeChannel();
-						if (!sessionInfo.players[j].bind(socket, freeChannel))
-						{
-							fprintf(logFile, "Player %d with ip %s is not bindable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
-							sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
-							sucess=false;
-							break;
-						}
-					}
-					sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
-
-					if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
-					{
-						fprintf(logFile, "Player %d with ip %s is not sendable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
+						fprintf(logFile, "Player %d with ip %s is not bindable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 						sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
 						sucess=false;
 						break;
 					}
-					sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
-					fprintf(logFile, "We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
+
+				if (!sessionInfo.players[j].send(data, 8))
+				{
+					fprintf(logFile, "Player %d with ip %s is not sendable!\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
+					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
+					sucess=false;
+					break;
 				}
+				sessionInfo.players[j].netState=BasePlayer::PNS_SENDING_FIRST_PACKET;
+				fprintf(logFile, "We send player %d with ip(%s) the PLAYER_CROSS_CONNECTION_FIRST_MESSAGE\n", j, Utilities::stringIP(sessionInfo.players[j].ip));
 			}
 			else
 				fprintf(logFile, "We wait for nat resolution of player %d.\n", j);
-}
-
-int MultiplayersCrossConnectable::getFreeChannel()
-{
-	for (int channel=1; channel<SDLNET_MAX_UDPCHANNELS; channel++) // By glob2 convention, channel 0 is reserved for game host
-	{
-		bool good=true;
-		for (int i=0; i<32; i++)
-		{
-			if (sessionInfo.players[i].channel==channel)
-				good=false;
-		}
-		if (good)
-		{
-			fprintf(logFile, "good free channel=%d\n", channel);
-			return channel;
-		}
-	}
-	assert(false);
-	return -1;
 }
 
 bool MultiplayersCrossConnectable::sameip(IPaddress ip)
@@ -180,6 +153,7 @@ void MultiplayersCrossConnectable::sendingTime()
 			}
 			else
 			{
+				fprintf(logFile, "messageID=(%d) fully transmited\n", messageID);
 				sendingMessages.erase(mit);
 				break;
 			}
@@ -187,6 +161,7 @@ void MultiplayersCrossConnectable::sendingTime()
 	for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
 		if (mit->TOTL<=0)
 		{
+			fprintf(logFile, "messageID=(%d) erased!\n", messageID);
 			sendingMessages.erase(mit);
 			break;
 		}
@@ -201,7 +176,7 @@ void MultiplayersCrossConnectable::confirmedMessage(Uint8 *data, int size, IPadd
 	}
 	
 	Uint8 messageID=data[4];
-	fprintf(logFile, "received a confirmation messageID=%d\n", messageID);
+	fprintf(logFile, "received a confirmation messageID=(%d) from ip=(%s)\n", messageID, Utilities::stringIP(ip));
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		if (sessionInfo.players[j].sameip(ip))
@@ -296,6 +271,7 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 		}
 	if (!allready)
 	{
+		fprintf(logFile, "new messageID=%d received from ip=(%s9')", messageID, Utilities::stringIP(ip));
 		receivedMessages.push_back(m);
 		if (receivedMessages.size()>64)
 			receivedMessages.pop_front();
