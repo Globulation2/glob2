@@ -510,7 +510,7 @@ void Building::launchConstruction(void)
 			assert(u);
 			unitsInside.remove(u);
 		}
-
+		
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
@@ -1071,7 +1071,7 @@ bool Building::tryToBuildingSiteRoom(void)
 				ressources[i]=iVal;
 			}
 		}
-
+		
 		if (!type->isVirtual)
 		{
 			owner->map->setBuilding(posX, posY, type->decLeft, type->decLeft, NOGBID);
@@ -1085,6 +1085,21 @@ bool Building::tryToBuildingSiteRoom(void)
 		owner->prestige+=type->prestige;
 
 		buildingState=ALIVE;
+		
+		// towers may already have some stone!
+		if (constructionResultState==UPGRADE)
+			for (int i=0; i<MAX_NB_RESSOURCES; i++)
+			{
+				int res=ressources[i];
+				int resMax=type->maxRessource[i];
+				if (res>0 && resMax>0)
+				{
+					if (res>resMax)
+						res=resMax;
+					printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+					hp+=res*type->hpInc;
+				}
+			}
 
 		// units
 		if (verbose)
