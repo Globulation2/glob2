@@ -27,7 +27,6 @@ Pathfindig:
 - Il y a peut-être des osciliations entre le petit et le grand gradient. (bug pas sauvable).
 
 Optimisation:
-- Est-ce qu'il vaut la peine de mettre Team::forbiddentFlags ?
 - Utliser de Uint32 pour les ressource inexsitantes, sans endiansafe!
 
 Optimisation efficacité:

@@ -206,7 +206,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 					if (b->type->zonable[WORKER])
 						b->owner->clearingFlags.push_back(b);
 					if (b->type->zonableForbidden)
+					{
+						b->owner->zonableForbidden.push_back(b);
 						map.setForbiddenArea(posX, posY, b->unitStayRange, team->me);
+					}
 					b->update();
 				}
 			}

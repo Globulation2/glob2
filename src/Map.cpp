@@ -110,7 +110,7 @@ Map::Map()
 	
 	buildingAviableCountTot=0;
 	buildingAviableCountClose=0;
-	buildingAviableCountCloseSuccess=0;
+	buildingAviableCountCloseSuccessFast=0;
 	buildingAviableCountCloseSuccessAround=0;
 	buildingAviableCountCloseSuccessUpdate=0;
 	buildingAviableCountCloseSuccessUpdateAround=0;
@@ -126,7 +126,7 @@ Map::Map()
 	buildingAviableCountFarNewFailureVirtual=0;
 	buildingAviableCountFarNewFailureEnd=0;
 	buildingAviableCountFarOld=0;
-	buildingAviableCountFarOldSuccess=0;
+	buildingAviableCountFarOldSuccessFast=0;
 	buildingAviableCountFarOldSuccessAround=0;
 	buildingAviableCountFarOldFailureLocked=0;
 	buildingAviableCountFarOldFailureEnd=0;
@@ -230,7 +230,7 @@ void Map::clear()
 					fprintf(logFile, "| ressourceAviableCountFast[%d][%d]=%d (%f %%)\n", t, r,
 						ressourceAviableCountFast[t][r],
 						100.*(double)ressourceAviableCountFast[t][r]/(double)ressourceAviableCount[t][r]);
-					fprintf(logFile, "+ ressourceAviableCountFar[%d][%d]=%d (%f ratio)\n", t, r,
+					fprintf(logFile, "+ ressourceAviableCountFar[%d][%d]=%d (%f %% ratio)\n", t, r,
 						ressourceAviableCountFar[t][r],
 						100.*(double)ressourceAviableCountFar[t][r]/(double)ressourceAviableCount[t][r]);
 					fprintf(logFile, "| ressourceAviableCountSuccess[%d][%d]=%d (%f %%)\n", t, r,
@@ -426,12 +426,12 @@ void Map::clear()
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
 			+pathToBuildingCountFarOldFailureUnusable;
-		fprintf(logFile, "|-  pathToBuildingCountFarOld=%d (%f %% of tot) (%f %% of far))\n",
+		fprintf(logFile, "|-  pathToBuildingCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOld/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOld/(double)pathToBuildingCountFar);
 		
-		fprintf(logFile, "|-   pathToBuildingCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old))\n",
+		fprintf(logFile, "|-   pathToBuildingCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			pathToBuildingCountFarOldSuccess,
 			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountFar,
@@ -441,24 +441,24 @@ void Map::clear()
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
 			+pathToBuildingCountFarOldFailureUnusable;
-		fprintf(logFile, "|-   pathToBuildingCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old))\n",
+		fprintf(logFile, "|-   pathToBuildingCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			pathToBuildingCountFarOldFailure,
 			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldFailure/(double)pathToBuildingCountFarOld);
-		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
 			pathToBuildingCountFarOldFailureLocked,
 			100.*(double)pathToBuildingCountFarOldFailureLocked/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldFailureLocked/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldFailureLocked/(double)pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOldFailureLocked/(double)pathToBuildingCountFarOldFailure);
-		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureBad=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureBad=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
 			pathToBuildingCountFarOldFailureBad,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOldFailureBad/(double)pathToBuildingCountFarOldFailure);
-		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureUnusable=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarOldFailureUnusable=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
 			pathToBuildingCountFarOldFailureUnusable,
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountFar,
@@ -471,16 +471,16 @@ void Map::clear()
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad;
-		fprintf(logFile, "|-  pathToBuildingCountFarUpdate=%d (%f %% of tot) (%f %% of far))\n",
+		fprintf(logFile, "|-  pathToBuildingCountFarUpdate=%d (%f %% of tot) (%f %% of far)\n",
 			pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdate/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdate/(double)pathToBuildingCountFar);
-		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of update))\n",
+		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
 			pathToBuildingCountFarUpdateSuccess,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFarUpdate);
-		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of update))\n",
+		fprintf(logFile, "|-   pathToBuildingCountFarUpdateSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
 			pathToBuildingCountFarUpdateSuccessAround,
 			100.*(double)pathToBuildingCountFarUpdateSuccessAround/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateSuccessAround/(double)pathToBuildingCountFar,
@@ -490,24 +490,24 @@ void Map::clear()
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad;
-		fprintf(logFile, "|-   pathToBuildingCountFarUpdateFailure=%d (%f %% of tot) (%f %% of far) (%f %% of update))\n",
+		fprintf(logFile, "|-   pathToBuildingCountFarUpdateFailure=%d (%f %% of tot) (%f %% of far) (%f %% of update)\n",
 			pathToBuildingCountFarUpdateFailure,
 			100.*(double)pathToBuildingCountFarUpdateFailure/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateFailure/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateFailure/(double)pathToBuildingCountFarUpdate);
-		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure)\n",
 			pathToBuildingCountFarUpdateFailureLocked,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFarUpdateFailure);
-		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure)\n",
 			pathToBuildingCountFarUpdateFailureVirtual,
 			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFarUpdateFailure);
-		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureBad=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure))\n",
+		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureBad=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure)\n",
 			pathToBuildingCountFarUpdateFailureBad,
 			100.*(double)pathToBuildingCountFarUpdateFailureBad/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateFailureBad/(double)pathToBuildingCountFar,
@@ -570,22 +570,36 @@ void Map::clear()
 		fprintf(logFile, "|- buildingAviableCountClose=%d (%f %%)\n",
 			buildingAviableCountClose,
 			100.*(double)buildingAviableCountClose/(double)buildingAviableCountTot);
+		
+		int buildingAviableCountCloseSuccess=
+			+buildingAviableCountCloseSuccessFast
+			+buildingAviableCountCloseSuccessAround
+			+buildingAviableCountCloseSuccessUpdate
+			+buildingAviableCountCloseSuccessUpdateAround;
 		fprintf(logFile, "|-  buildingAviableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n",
 			buildingAviableCountCloseSuccess,
 			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountClose);
-		fprintf(logFile, "|-  buildingAviableCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close)\n",
+		fprintf(logFile, "|-   buildingAviableCountCloseSuccessFast=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
+			buildingAviableCountCloseSuccessFast,
+			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountTot,
+			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountClose,
+			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAviableCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
 			buildingAviableCountCloseSuccessAround,
 			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountClose);
-		fprintf(logFile, "|-  buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close)\n",
+			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountClose,
+			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
 			buildingAviableCountCloseSuccessUpdate,
 			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountClose);
-		fprintf(logFile, "|-  buildingAviableCountCloseSuccessUpdateAround=%d (%f %% of tot) (%f %% of close)\n",
+			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountClose,
+			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAviableCountCloseSuccessUpdateAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
 			buildingAviableCountCloseSuccessUpdateAround,
 			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountClose);
+			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountClose,
+			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountCloseSuccess);
 		
 		int buildingAviableCountCloseFailure=
 			+buildingAviableCountCloseFailureLocked
@@ -608,7 +622,7 @@ void Map::clear()
 		fprintf(logFile, "|- buildingAviableCountFar=%d (%f %%)\n",
 			buildingAviableCountFar,
 			100.*(double)buildingAviableCountFar/(double)buildingAviableCountTot);
-		fprintf(logFile, "|-  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
+		fprintf(logFile, "|+  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAviableCountIsFar,
 			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountFar);
@@ -617,16 +631,27 @@ void Map::clear()
 			buildingAviableCountFarOld,
 			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountFar);
+		
+		int buildingAviableCountFarOldSuccess=
+			+buildingAviableCountFarOldSuccessFast
+			+buildingAviableCountFarOldSuccessAround;
 		fprintf(logFile, "|-   buildingAviableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			buildingAviableCountFarOldSuccess,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFarOld);
-		fprintf(logFile, "|-   buildingAviableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
+			buildingAviableCountFarOldSuccessFast,
+			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountTot,
+			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFar,
+			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOld,
+			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOldSuccess);
+		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old success)\n",
 			buildingAviableCountFarOldSuccessAround,
 			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFarOld);
+			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFarOld,
+			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFarOldSuccess);
 		
 		int buildingAviableCountFarOldFailure=
 			+buildingAviableCountFarOldFailureLocked
@@ -696,7 +721,7 @@ void Map::clear()
 	buildingAviableCountTot=0;
 	
 	buildingAviableCountClose=0;
-	buildingAviableCountCloseSuccess=0;
+	buildingAviableCountCloseSuccessFast=0;
 	buildingAviableCountCloseSuccessAround=0;
 	buildingAviableCountCloseSuccessUpdate=0;
 	buildingAviableCountCloseSuccessUpdateAround=0;
@@ -712,7 +737,7 @@ void Map::clear()
 	buildingAviableCountFarNewFailureVirtual=0;
 	buildingAviableCountFarNewFailureEnd=0;
 	buildingAviableCountFarOld=0;
-	buildingAviableCountFarOldSuccess=0;
+	buildingAviableCountFarOldSuccessFast=0;
 	buildingAviableCountFarOldSuccessAround=0;
 	buildingAviableCountFarOldFailureLocked=0;
 	buildingAviableCountFarOldFailureEnd=0;	
@@ -3431,7 +3456,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			Uint8 currentg=gradient[lx+(ly<<5)];
 			if (currentg>1)
 			{
-				buildingAviableCountCloseSuccess++;
+				buildingAviableCountCloseSuccessFast++;
 				*dist=255-currentg;
 				return true;
 			}
@@ -3528,7 +3553,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 		if (currentg>1)
 		{
-			buildingAviableCountFarOldSuccess++;
+			buildingAviableCountFarOldSuccessFast++;
 			*dist=255-currentg;
 			return true;
 		}

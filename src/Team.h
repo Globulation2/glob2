@@ -191,6 +191,9 @@ public:
 	std::list<Building *> clearingFlags; // Have to update the clearing gradient time to time, and request worker if there is something to clear.
 
 	std::list<Building *> virtualBuildings;
+	
+	// Optimisation lists:
+	std::list<Building *> zonableForbidden;
 
 	Uint32 allies; // Who do I thrust and don't fire on. mask
 	Uint32 enemies; // Who I don't thrust and fire on. mask

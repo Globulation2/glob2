@@ -298,10 +298,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		endExecute(STARTED);
 	
 	if (shareOnYOG && yog->yogSharingState==YOG::YSS_NOT_SHARING_GAME && true)
-	{
-		printf("MultiplayersHostScreen::onTimer(), endExecute(executionMode=%d);\n", executionMode);//zzz
 		endExecute(executionMode);
-	}
 }
 
 void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, int par2)

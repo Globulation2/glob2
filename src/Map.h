@@ -434,7 +434,7 @@ protected:
 	int buildingAviableCountTot;
 	
 	int buildingAviableCountClose;
-	int buildingAviableCountCloseSuccess;
+	int buildingAviableCountCloseSuccessFast;
 	int buildingAviableCountCloseSuccessAround;
 	int buildingAviableCountCloseSuccessUpdate;
 	int buildingAviableCountCloseSuccessUpdateAround;
@@ -450,7 +450,7 @@ protected:
 	int buildingAviableCountFarNewFailureVirtual;
 	int buildingAviableCountFarNewFailureEnd;
 	int buildingAviableCountFarOld;
-	int buildingAviableCountFarOldSuccess;
+	int buildingAviableCountFarOldSuccessFast;
 	int buildingAviableCountFarOldSuccessAround;
 	int buildingAviableCountFarOldFailureLocked;
 	int buildingAviableCountFarOldFailureEnd;

@@ -1210,6 +1210,8 @@ void Team::syncStep(void)
 			clearingFlags.remove(building);
 		if (building->type->isVirtual)
 			virtualBuildings.remove(building);
+		if (building->type->zonableForbidden)
+			zonableForbidden.remove(building);
 
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
@@ -1305,10 +1307,10 @@ void Team::syncStep(void)
 void Team::computeForbiddenArea()
 {
 	map->clearForbiddenArea(me);
-	for (int id=0; id<1024; id++)
+	for (std::list<Building *>::iterator it=zonableForbidden.begin(); it!=zonableForbidden.end(); ++it)
 	{
-		Building *b=myBuildings[id];
-		if (b && b->buildingState==Building::ALIVE && b->type->zonableForbidden)
+		Building *b=*it;
+		if (b->buildingState==Building::ALIVE)
 			map->setForbiddenArea(b->posX, b->posY, b->unitStayRange, me);
 	}
 }
