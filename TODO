@@ -1,7 +1,6 @@
 To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
-- custom game should have a map choosing screen. (nct)
 - network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)

@@ -1241,6 +1241,7 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==STAT_VIEW)
 		{
+			// local variable to speed up access
 			GraphicContext *gfx=globalContainer->gfx;
 			Font *font=globalContainer->littleFontGreen;
 			StringTable *strings=&(globalContainer->texts);
@@ -1269,6 +1270,7 @@ void GameGUI::draw(void)
 					gfx->drawString(textStartPos, 132+133, font, "%d %s (%.0f %%)", newStats->needFood, strings->getString("[are hungry]"), ((float)newStats->needFood)*100.0f/((float)newStats->totalUnit));
 					gfx->drawString(textStartPos, 132+145, font, "%d %s (%.0f %%)", newStats->needHeal, strings->getString("[are wonded]"), ((float)newStats->needHeal)*100.0f/((float)newStats->totalUnit));
 
+					// upgrade state
 					gfx->drawString(globalContainer->gfx->getW()-124, 132+162, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats->upgradeState[WALK][0], newStats->upgradeState[WALK][1], newStats->upgradeState[WALK][2], newStats->upgradeState[WALK][3]);
 					gfx->drawString(globalContainer->gfx->getW()-124, 132+174, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats->upgradeState[SWIM][0], newStats->upgradeState[SWIM][1], newStats->upgradeState[SWIM][2], newStats->upgradeState[SWIM][3]);
 					gfx->drawString(globalContainer->gfx->getW()-124, 132+186, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats->upgradeState[BUILD][0], newStats->upgradeState[BUILD][1], newStats->upgradeState[BUILD][2], newStats->upgradeState[BUILD][3]);
@@ -1279,22 +1281,28 @@ void GameGUI::draw(void)
 			}
 			else
 			{
+				// compute total unites
 				int maxUnit=0;
-				for (int i=0; i<128; i++)
+				int i;
+				for (i=0; i<128; i++)
 				{
 					if (stats[i].totalUnit>maxUnit)
 						maxUnit=stats[i].totalUnit;
 				}
+
+				// captions
 				gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
 				gfx->drawString(textStartPos, 132+16, font, strings->getString("[Free/total]"));
 				gfx->drawString(textStartPos, 132+100, font, strings->getString("[Ok/hungry/wounded]"));
-				for (int i2=0; i2<128; i2++)
+
+				// graph
+				for (i=0; i<128; i++)
 				{
-					int index=(statsPtr+i2+1)&0x7F;
+					int index=(statsPtr+i+1)&0x7F;
 					int nbFree=(stats[index].totalFree*64)/maxUnit;
 					int nbTotal=(stats[index].totalUnit*64)/maxUnit;
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 36 +64-nbFree, nbFree, 0, 255, 0);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree, nbFree, 0, 255, 0);
 					int nbOk, nbNeedFood, nbNeedHeal;
 					if (stats[index].totalUnit)
 					{
@@ -1306,10 +1314,9 @@ void GameGUI::draw(void)
 					{
 						nbOk=nbNeedFood=nbNeedHeal=0;
 					}
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i2, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
-
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
+					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
 				}
 			}
 
