@@ -25,7 +25,7 @@
 #include "Game.h"
 #include "GameGUIDialog.h"
 #include <queue>
-class TeamStats; //#include "TeamStat.h"
+class TeamStats;
 
 #define MAX_UNIT_WORKING 20
 #define MAX_EXPLO_FLAG_RANGE 20

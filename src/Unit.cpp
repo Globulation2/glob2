@@ -363,9 +363,12 @@ bool Unit::step(void)
 		delta+=(speed-256);
 		bool b=endOfAction();
 		if (performance[FLY])
+		{
 			owner->game->map.setMapDiscovered(posX-3, posY-3, 7, 7, owner->teamNumber);
+			owner->game->map.setMapBuldingsDiscovered(posX-3, posY-3, 7, 7, owner->teamNumber, owner->game->teams);
+		}
 		else
-			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->teamNumber); 
+			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->teamNumber);
 		return b;
 	}
 	return false;
@@ -2383,4 +2386,5 @@ Sint32 Unit::checkSum()
 	
 	return cs;
 }
+
 

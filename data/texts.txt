@@ -188,7 +188,7 @@ Il manque
 
 Es fehlt 
 [r units needed]
- travailleur
+ travailleurs
  worker needed
  Arbeiter
 [one unit needed]

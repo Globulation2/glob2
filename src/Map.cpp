@@ -138,6 +138,7 @@ void Sector::setGame(Game *game)
 {
 	this->game=game;
 	this->map=&(game->map);
+	bullets.clear();
 }
 
 void Sector::free(void)

@@ -973,6 +973,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 	std::set<int> buildingList;
+	std::list<BuildingType *> localySeenBuildings;
 
 	// we draw the terrains, eventually with debug rects:
 	for (y=top; y<=bot; y++)
@@ -1126,8 +1127,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 				else if (uid >= -16385)  // Then this is a building or a flag.
 				{
-					if ((!useMapDiscovered) || map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->sharedVision) || (Building::UIDtoTeam(uid)==teamSelected))
-						buildingList.insert(uid);
+					//zzz if ((!useMapDiscovered) || map.isFOW(x+viewportX, y+viewportY, teams[teamSelected]->sharedVision) || (Building::UIDtoTeam(uid)==teamSelected))
+					//buildingList.insert(uid);
+					int id = Building::UIDtoID(uid);
+					int team = Building::UIDtoTeam(uid);
+
+					Building *building=teams[team]->myBuildings[id];
+					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
+					if (!useMapDiscovered
+						|| Building::UIDtoTeam(uid)==teamSelected
+						|| building->seenByMask & teams[teamSelected]->sharedVision
+						|| map.isFOW(viewportX, y+viewportY, teams[teamSelected]->sharedVision))
+						buildingList.insert(uid); //TODO: we may make it faster by pushing a Building* in the buildingList instead of a uid.
+					
 				}
 			}
 		}
@@ -1143,6 +1155,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			Building *building=teams[team]->myBuildings[id];
 			assert(building); // if this fails, and unwanted garbage-UID is on the ground.
+			if (useMapDiscovered
+				&& (Building::UIDtoTeam(uid)!=teamSelected)
+				&& !(building->seenByMask & teams[teamSelected]->sharedVision)
+				&& !map.isFOW(viewportX, y+viewportY, teams[teamSelected]->sharedVision))
+				continue;
+			
 			BuildingType *type=building->type;
 
 			if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
