@@ -612,6 +612,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint8 clientsPacketID=getUint8(data, 5);
 		fprintf(logFile, "we received a %d clients list, cpid=%d\n", nbClients, clientsPacketID);
 		int index=6;
+		bool firstTime=(clients.size()==0);
 		for (int i=0; i<nbClients; i++)
 		{
 			Client client;
@@ -637,6 +638,15 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (!allready)
 			{
 				clients.push_back(client);
+				
+				if (!firstTime)
+				{
+					Message message;
+					message.gameGuiPainted=false;
+					message.messageType=YCMT_EVENT_MESSAGE;
+					snprintf(message.text, 256, globalContainer->texts.getString("[The player %s has joined YOG]"), client.userName);
+					receivedMessages.push_back(message);
+				}
 				
 				for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
 					if (game->userName[0]==0 && game->huid==cuid)
@@ -685,8 +695,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						Message message;
 						message.gameGuiPainted=false;
 						message.messageType=YCMT_EVENT_MESSAGE;
-						snprintf(message.text, 256, "%s%s%s", globalContainer->texts.getString("[The player ]"),
-							client->userName, globalContainer->texts.getString("[ has left YOG]"));
+						snprintf(message.text, 256, globalContainer->texts.getString("[The player %s has left YOG]"), client->userName);
 						receivedMessages.push_back(message);
 						clients.erase(client);
 					}
