@@ -2452,7 +2452,14 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	
 	cs=(cs<<31)|(cs>>1);
 	
-	Uint32 mapCs=map.checkSum(true);
+	bool heavy=false;
+	for (int i=0; i<session.numberOfPlayer; i++)
+		if (players[i]->type==BasePlayer::P_IP)
+		{
+			heavy=true;
+			break;
+		}
+	Uint32 mapCs=map.checkSum(heavy);
 	cs^=mapCs;
 	if (checkSumsList)
 		checkSumsList->push_back(mapCs);// [3+t*20+p*2]
