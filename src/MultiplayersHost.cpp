@@ -558,7 +558,7 @@ void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 
 	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
 	{
-		fprintf(logFile, "newPlayerPresence::this ip(%s) is added in player list. (player %d)\n", Utilities::stringIP(ip), p);
+		fprintf(logFile, "newPlayerPresence::this ip(%s) is added in player list. (player %d), name=(%s)\n", Utilities::stringIP(ip), p, sessionInfo.players[p].name);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
@@ -709,7 +709,7 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 			return;
 		}
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
-		fprintf(logFileDownload, "player %d unreceivedIndex=%d\n", p, unreceivedIndex);
+		fprintf(logFileDownload, "player %d unreceivedIndex=%d (%dk)\n", p, unreceivedIndex, unreceivedIndex/1024);
 		
 		if (unreceivedIndex>=fileSize)
 		{
@@ -736,7 +736,7 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 			{
 				receivedBegin[ix]=getUint32(data, 8+ix*8);
 				receivedEnd[ix]=getUint32(data, 12+ix*8);
-				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix], receivedEnd[ix]);
+				fprintf(logFileDownload, "(%d to %d)+", receivedBegin[ix]/1024, receivedEnd[ix]/1024);
 				if (receivedBegin[ix]<=unreceivedIndex)
 				{
 					fprintf(logFileDownload, "Warning, critical error, (receivedBegin[ix]<=unreceivedIndex), (%d)(%d)\n", receivedBegin[ix], unreceivedIndex);
@@ -860,7 +860,6 @@ void MultiplayersHost::confirmPlayer(Uint8 *data, int size, IPaddress ip)
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
-		fprintf(logFile, "this ip(%x) is confirmed in player list.\n", ip.host);
 		return;
 	}
 }
@@ -1370,7 +1369,7 @@ void MultiplayersHost::sendingTime()
 					if (found)
 					{
 						sendingIndex=minIndexLost;
-						fprintf(logFileDownload, "Ressending-v1 now the lost packet, sendingIndex=%d, mini=%d.\n", sendingIndex, mini);
+						fprintf(logFileDownload, "Ressending-v1 now the lost packet, sendingIndex=%d (%dk), mini=%d.\n", sendingIndex, sendingIndex/1024, mini);
 						playerFileTra[p].totalLost++;
 					}
 					else
