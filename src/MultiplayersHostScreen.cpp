@@ -95,8 +95,17 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		{
 			int teamNumber;
 			char playerInfo[128];
+			char shownInfo[128];
 			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, savedSessionInfo, 128);
-			text[i]->setText(playerInfo);
+			if (multiplayersHost->playerFileTra[i].wantsFile && !multiplayersHost->playerFileTra[i].receivedFile)
+			{
+				int precent=(100*multiplayersHost->playerFileTra[i].unreceivedIndex)/multiplayersHost->fileSize;
+				snprintf(shownInfo, 128, "%s (%d)", playerInfo, precent);
+			}
+			else
+				strncpy(shownInfo, playerInfo, 128);
+			
+			text[i]->setText(shownInfo);
 			color[i]->setSelectedColor(teamNumber);
 			if (!wasSlotUsed[i])
 			{
