@@ -58,22 +58,21 @@ void MapPreview::repaint(void)
 {
 	assert(parent);
 	assert(parent->getSurface());
+	bool rv = true;
 	if (mapName!=0)
 	{
 		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb", false);
 		if (stream)
 		{
 			SessionGame session;
-			bool rv=session.load(stream);
-			assert(rv);
+			rv=session.load(stream);
 			if (rv)
 			{
 				Map map;
-				bool rv=true;
 				parent->getSurface()->drawFilledRect(x, y, 128, 128, 0, 0, 0);
 				if (session.mapGenerationDescriptor)
 				{
-					// TODO : uses mapGenerationDescriptor to generate map here 
+					// TODO : uses mapGenerationDescriptor to generate map here
 					lastW=1<<session.mapGenerationDescriptor->wDec;
 					lastH=1<<session.mapGenerationDescriptor->hDec;
 					randomGenerated=true;
@@ -155,14 +154,24 @@ void MapPreview::repaint(void)
 								parent->getSurface()->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
 							}
 						}
+
+						parent->addUpdateRect(x, y, 128, 128);
 					}
 				}
-				parent->addUpdateRect(x, y, 128, 128);
 				SDL_RWclose(stream);
 			}
 		}
+		else
+		{
+			rv = false;
+		}
 	}
 	else
+	{
+		rv = false;
+	}
+
+	if (rv == false)
 	{
 		parent->paint(x, y, 128, 128);
 		parent->getSurface()->drawLine(x, y, x+128, y+128, 255, 0, 0);
