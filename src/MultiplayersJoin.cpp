@@ -178,9 +178,12 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
-	// I set my own ip to localhost:
-	sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
-	sessionInfo.players[myPlayerNumber].ip.port=localPort;
+	fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", localPort);
+	if (localPort)
+	{
+		sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
+		sessionInfo.players[myPlayerNumber].ip.port=localPort;
+	}
 	
 	validSessionInfo=true;
 	waitingState=WS_WAITING_FOR_CHECKSUM_CONFIRMATION;
