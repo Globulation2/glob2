@@ -24,6 +24,7 @@
 #include "Order.h"
 #include "Game.h"
 #include <queue>
+#include <valarray>
 
 class TeamStats;
 class OverlayScreen;
@@ -282,8 +283,8 @@ private:
 	void addMark(MapMarkOrder *mmo);
 	
 	// how long the COU has been idle last tick
-	int lastStepTimeToWait;
-	int smoothedStepTimeToWait;
+	std::valarray<int> smoothedStepTimeToWait;
+	unsigned smoothedStepTimeToWaitPos;
 };
 
 #endif
