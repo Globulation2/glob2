@@ -122,7 +122,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		}
 	}
 	
-	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
+	if (multiplayersJoin==NULL)
 	{
 		multiplayersJoin=new MultiplayersJoin(shareOnYOG);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
@@ -130,21 +130,32 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->playerName[31]=0;
 		strncpy(multiplayersJoin->serverNickName, globalContainer->userName, 32);
 		multiplayersJoin->serverNickName[31]=0;
-		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address)
-		if (s)
+		
+		if (multiplayersHost->serverIP.host==0)
 		{
-			strncpy(multiplayersJoin->serverName, s, 128);
-			multiplayersJoin->serverName[127]=0;
+			strncpy(multiplayersJoin->serverName, "localhost", 128);
+			multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
+			multiplayersJoin->serverIP.port=SDL_SwapBE16(SERVER_PORT);
 		}
 		else
 		{
-			// a home made translation:
-			//zzz Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
-			//zzz snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
-			//zzz multiplayersJoin->serverName[127]=0;
-			Utilities::stringIP(multiplayersJoin->serverName, 128, multiplayersHost->serverIP.host);
+			char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP));//char *SDLNet_ResolveIP(IPaddress *address)
+			if (s)
+			{
+				strncpy(multiplayersJoin->serverName, s, 128);
+				multiplayersJoin->serverName[127]=0;
+			}
+			else
+			{
+				// a home made translation:
+				//zzz Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
+				//zzz snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+				//zzz multiplayersJoin->serverName[127]=0;
+				Utilities::stringIP(multiplayersJoin->serverName, 128, multiplayersHost->serverIP.host);
+			}
+			multiplayersJoin->serverIP=multiplayersHost->serverIP;
 		}
-		multiplayersJoin->serverIP=multiplayersHost->serverIP;
+		
 		
 		multiplayersJoin->tryConnection();
 	}

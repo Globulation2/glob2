@@ -121,8 +121,10 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
 	assert(logFile);
 	
+	fprintf(logFile, "new MultiplayersJoin\n");
+	
 	if (duplicatePacketFile)
-		fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
+		fprintf(logFile, "duplicatePacketFile=%d\n", duplicatePacketFile);
 	duplicatePacketFile=0;
 }
 
