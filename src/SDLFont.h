@@ -44,7 +44,6 @@ public:
 	virtual ~SDLBitmapFont();
 	bool load(const char *filename);
 	int getStringWidth(const char *string) const;
-	int getStringWidth(const int i) const; // angel > was decalred as const int not as int :)
 	int getStringHeight(const char *string) const;
 	bool printable(char c) const;
 
@@ -82,6 +81,26 @@ protected:
 	bool doStartNewChar(int x);
 	int shorteringChar(int x);
 
+};
+
+class SDLTTFont:public SDLFont
+{
+public:
+	SDLTTFont();
+	SDLTTFont(const char *filename);
+	virtual ~SDLTTFont();
+	bool load(const char *filename);
+	int getStringWidth(const char *string) const;
+	int getStringHeight(const char *string) const;
+	bool printable(char c) const;
+
+protected:
+	friend class SDLDrawableSurface;
+	
+	void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const;
+	
+protected:
+	TTF_Font *font;
 };
 
 #endif

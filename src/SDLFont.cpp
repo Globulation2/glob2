@@ -46,13 +46,6 @@ int SDLBitmapFont::getStringWidth(const char *string) const
 }
 
 
-int SDLBitmapFont::getStringWidth(const int i) const
-{
-	char temp[32];
-	snprintf(temp, 32, "%d", i);
-	return getStringWidth(temp);
-}
-
 int SDLBitmapFont::getStringHeight(const char *string) const
 {
 	return height;
@@ -297,4 +290,88 @@ bool SDLBitmapFont::printable(char c) const
 {
 	//printf("startChar=%d, lastChar=%d, ' '=%d \n", startChar, lastChar, ' ');
 	return (((c>=startChar)&&(c<=lastChar)) || (c==' '));
+}
+
+
+SDLTTFont::SDLTTFont()
+{
+	font = NULL;
+}
+
+SDLTTFont::SDLTTFont(const char *filename)
+{
+	load(filename);
+}
+
+SDLTTFont::~SDLTTFont()
+{
+	if (font)
+		TTF_CloseFont(font);
+		
+}
+
+bool SDLTTFont::load(const char *filename)
+{
+	// TODO : insert pt in font definition
+	font = TTF_OpenFont(filename, 14);
+	return (font!=NULL);
+}
+
+int SDLTTFont::getStringWidth(const char *string) const
+{
+	int w, h;
+	TTF_SizeText(font, string, &w, &h);
+	return w;
+}
+
+int SDLTTFont::getStringHeight(const char *string) const
+{
+	if (string)
+	{
+		int w, h;
+		TTF_SizeText(font, string, &w, &h);
+		return h;
+	}
+	else
+	{
+		return TTF_FontHeight(font);
+	}
+}
+
+bool SDLTTFont::printable(char c) const
+{
+	return (c>=32);
+}
+
+void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const
+{
+	assert(text);
+	
+	SDL_Color c;
+	c.r=255;
+	c.g=255;
+	c.b=255;
+	SDL_Surface *s=TTF_RenderText_Blended(font, text, c);
+	if (s == NULL)
+		return;
+	
+	SDL_Rect r;
+	r.x=x;
+	r.y=y;
+	r.w=w;
+	r.h=s->h;
+	
+	SDL_Rect oc;
+	if (clip)
+	{
+		SDL_GetClipRect(Surface, &oc);
+		SDL_SetClipRect(Surface, clip);
+	}
+	
+	SDL_BlitSurface(s, NULL, Surface, &r);
+	
+	if (clip)
+	{
+		SDL_SetClipRect(Surface, &oc);
+	}
 }

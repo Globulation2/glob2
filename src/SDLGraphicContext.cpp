@@ -794,11 +794,15 @@ SDLGraphicContext::SDLGraphicContext(void)
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
+	
+	TTF_Init();
 }
 
 SDLGraphicContext::~SDLGraphicContext(void)
 {
 	fprintf(stderr, "SDL : Graphic Context destroyed\n");
+	
+	TTF_Quit();
 }
 
 bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
@@ -1032,9 +1036,20 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 
 Font *SDLGraphicContext::loadFont(const char *name)
 {
+	SDLTTFont *ttf=new SDLTTFont();
+	if (ttf->load(name))
+		return ttf;
+	else
+		delete ttf;
+		
 	SDLBitmapFont *font=new SDLBitmapFont();
-	font->load(name);
-	return font;
+	if (font->load(name))
+		return font;
+	else
+		delete font;
+		
+	fprintf(stderr, "VID : Can't load font %s\n", name);
+	return NULL;
 }
 
 DrawableSurface *SDLGraphicContext::createDrawableSurface(const char *name)
