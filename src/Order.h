@@ -20,7 +20,7 @@
 #ifndef __ORDER_H
 #define __ORDER_H
 
-#include <GAG.h>
+#include "Header.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "NetConsts.h"
@@ -348,7 +348,7 @@ class SetAllianceOrder:public MiscOrder
 {
 public:
 	SetAllianceOrder(const Uint8 *data, int dataLength);
-	SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, UInt32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask);
+	SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask);
 	virtual ~SetAllianceOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }

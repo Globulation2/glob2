@@ -84,10 +84,10 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		if (mapSelectedName)
 		{
 			const char *mapFileName=fileList->listToFile(mapSelectedName);
-		
+
 			mapPreview->setMapThumbnail(mapFileName);
 			printf("CGS : Loading map '%s' ...\n", mapFileName);
-			SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
+			SDL_RWops *stream=Toolkit::getFileManager()->open(mapFileName,"rb");
 			if (stream==NULL)
 				printf("Map '%s' not found!\n", mapFileName);
 			else

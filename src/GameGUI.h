@@ -23,34 +23,15 @@
 #include "Header.h"
 #include "Order.h"
 #include "Game.h"
-#include "GameGUIDialog.h"
 #include <queue>
 class TeamStats;
+class OverlayScreen;
+class InGameTextInput;
 
 //! max unit working at a building
 #define MAX_UNIT_WORKING 20
 //! range of ratio for swarm
 #define MAX_RATIO_RANGE 16
-
-//! The screen that contains the text input while typing message in game
-class InGameTextInput:public OverlayScreen
-{
-protected:
-	//! the text input widget
-	TextInput *textInput;
-
-public:
-	//! InGameTextInput constructor
-	InGameTextInput(GraphicContext *parentCtx);
-	//! InGameTextInput destructor
-	virtual ~InGameTextInput() { }
-	//! React on action from any widget (but there is only one anyway)
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	//! Return the text typed
-	const char *getText(void) const { return textInput->getText(); }
-	//! Set the text
-	void setText(const char *text) const { textInput->setText(text); }
-};
 
 //! The Game Graphic User Interface
 /*!
@@ -61,7 +42,7 @@ class GameGUI
 public:
 	GameGUI();
 	~GameGUI();
-	
+
 	void init();
 	void adjustInitialViewport();
 	//! Handle mouse, keyboard and window resize inputs, and stats

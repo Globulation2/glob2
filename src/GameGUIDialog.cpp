@@ -19,6 +19,7 @@
 
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
+#include "GlobalContainer.h"
 
 
 //! Main menu screen

@@ -21,6 +21,7 @@
 #include "GAG.h"
 #include "YOGScreen.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {

@@ -42,10 +42,10 @@ LoadGameScreen::LoadGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	if (globalContainer->fileManager->initDirectoryListing("games", "game"))
+	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;
-		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
+		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
 		{
 			const char *tempFileName=Utilities::concat("games/", fileName);
 			const char *mapTempName=glob2FilenameToName(tempFileName);
@@ -70,10 +70,10 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
 		const char *mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
-		
+
 		mapPreview->setMapThumbnail(mapFileName);
 		printf("CGS : Loading map '%s' ...\n", mapFileName);
-		SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
+		SDL_RWops *stream=Toolkit::getFileManager()->open(mapFileName,"rb");
 		if (stream==NULL)
 			printf("Map '%s' not found!\n", mapFileName);
 		else

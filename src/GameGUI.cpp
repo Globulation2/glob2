@@ -23,12 +23,33 @@
 #include "GameGUILoadSave.h"
 #include "Utilities.h"
 #include "YOG.h"
+#include "GlobalContainer.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
+
+//! The screen that contains the text input while typing message in game
+class InGameTextInput:public OverlayScreen
+{
+protected:
+	//! the text input widget
+	TextInput *textInput;
+
+public:
+	//! InGameTextInput constructor
+	InGameTextInput(GraphicContext *parentCtx);
+	//! InGameTextInput destructor
+	virtual ~InGameTextInput() { }
+	//! React on action from any widget (but there is only one anyway)
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	//! Return the text typed
+	const char *getText(void) const { return textInput->getText(); }
+	//! Set the text
+	void setText(const char *text) const { textInput->setText(text); }
+};
 
 InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
 :OverlayScreen(parentCtx, 492, 34)
@@ -949,11 +970,11 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		if (typeNum==-1)
 		{
 			typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
-			assert(globalContainer->buildingsTypes.buildingsTypes[typeNum]->isVirtual);
+			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
 		}
 		assert (typeNum!=-1);
 
-		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
@@ -1276,6 +1297,7 @@ void GameGUI::draw(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
+
 	if (selectMode==BUILDING_SELECTION)
 	{
 		assert(selBuild);
@@ -1391,7 +1413,7 @@ void GameGUI::draw(void)
 					}
 				}
 			}
-			for (unsigned i=0; i<globalContainer->ressourcesTypes->number(); i++)
+			for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
 				if (buildingType->maxRessource[i])
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+64+(i*10)+12, globalContainer->littleFont, GAG::nsprintf("%s : %d/%d", Toolkit::getStringTable()->getString("[ressources]", i), selBuild->ressources[i], buildingType->maxRessource[i]).c_str());
 
@@ -1444,7 +1466,7 @@ void GameGUI::draw(void)
 
 								// We draw the ressources cost.
 								int typeNum=buildingType->nextLevelTypeNum;
-								BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+								BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont,
 									GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
 								globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont,
@@ -1459,7 +1481,7 @@ void GameGUI::draw(void)
 									GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
 
 								// We draw the new abilities:
-								bt=globalContainer->buildingsTypes.getBuildingType(bt->nextLevelTypeNum);
+								bt=globalContainer->buildingsTypes.get(bt->nextLevelTypeNum);
 								if (bt->hpMax)
 									globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+96, 256+2, globalContainer->littleFont, GAG::nsprintf("%d", bt->hpMax).c_str());
 
@@ -1542,7 +1564,7 @@ void GameGUI::draw(void)
 		{
 			if (selUnit->caryedRessource>=0)
 			{
-				const RessourceType* r = globalContainer->ressourcesTypes->get(selUnit->caryedRessource);
+				const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->caryedRessource);
 				unsigned resImg = r->gfxId + r->sizesCount - 1;
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
 				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, resImg);
@@ -1611,7 +1633,7 @@ void GameGUI::draw(void)
 		for (int i=0; i<13; i++)
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-			BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 			assert(bt);
 			int imgid=bt->startImage;
 			int x, y;
@@ -1698,7 +1720,7 @@ void GameGUI::draw(void)
 					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
 					if (typeNum!=-1)
 					{
-						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+						BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
 							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
 						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
@@ -1749,7 +1771,7 @@ void GameGUI::drawOverlayInfos(void)
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
 
 		// we check for room
-		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 
 		if (bt->width&0x1)
@@ -1765,13 +1787,13 @@ void GameGUI::drawOverlayInfos(void)
 		isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
 		// we find last's leve type num:
-		BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
 		int lastTypeNum=typeNum;
 		int max=0;
 		while(lastbt->nextLevelTypeNum>=0)
 		{
 			lastTypeNum=lastbt->nextLevelTypeNum;
-			lastbt=globalContainer->buildingsTypes.getBuildingType(lastTypeNum);
+			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
 			if (max++>200)
 			{
 				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");

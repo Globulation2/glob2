@@ -19,6 +19,7 @@
 
 #include "ScriptEditorScreen.h"
 #include "SGSL.h"
+#include "GlobalContainer.h"
 
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)

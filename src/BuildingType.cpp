@@ -22,46 +22,13 @@
 #include "GlobalContainer.h"
 #include <assert.h>
 
-BuildingsTypes::BuildingsTypes() 
-{
-}
-
-BuildingType *BuildingsTypes::getBuildingType(unsigned int typeNum)
-{
-	if ((typeNum)<buildingsTypes.size())
-		return buildingsTypes[typeNum];
-	else
-		return NULL;
-}
-
 void BuildingsTypes::load(const char *filename)
 {
-	// we load the building description now
-	SDL_RWops *stream=globalContainer->fileManager->open(filename, "r");
-
-	bool result=true;
-	
-	BuildingType defaultBuildingType;
-	result=defaultBuildingType.loadText(stream);
-	
-	while (result)
-	{
-		BuildingType *buildingType=new BuildingType();
-		*buildingType=defaultBuildingType;
-		result=buildingType->loadText(stream);
-		if (result)
-		{
-			buildingsTypes.push_back(buildingType);
-			//buildingType->dump();
-		}
-		else
-			delete buildingType;
-	}
-
-	SDL_RWclose(stream);
+	// load the file
+	EntitiesTypes<BuildingType>::load(filename);
 
 	// We resolve the nextLevelTypeNum references, used for upgrade.
-	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		(*it)->lastLevelTypeNum=-1;
 		(*it)->typeNum=-1;
@@ -70,13 +37,13 @@ void BuildingsTypes::load(const char *filename)
 	BuildingType *bt1;
 	BuildingType *bt2;
 	int j=0;
-	for (std::vector <BuildingType *>::iterator it1=buildingsTypes.begin(); it1!=buildingsTypes.end(); ++it1)
+	for (std::vector <BuildingType *>::iterator it1=entitiesTypes.begin(); it1!=entitiesTypes.end(); ++it1)
 	{
 		bt1=*it1;
 		bt1->nextLevelTypeNum=-1;
 		bt1->typeNum=j;
 		int i=0;
-		for (std::vector <BuildingType *>::iterator it2=buildingsTypes.begin(); it2!=buildingsTypes.end(); ++it2)
+		for (std::vector <BuildingType *>::iterator it2=entitiesTypes.begin(); it2!=entitiesTypes.end(); ++it2)
 		{
 			bt2=*it2;
 			if (bt1!=bt2)
@@ -103,7 +70,7 @@ void BuildingsTypes::load(const char *filename)
 		j++;
 	}
 	
-	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		bool needRessource=false;
 		for (int i=0; i<MAX_RESSOURCES; i++)
@@ -120,7 +87,7 @@ void BuildingsTypes::load(const char *filename)
 int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 {
 	int i=0;
-	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		BuildingType *bt=*it;
 		if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
@@ -129,12 +96,4 @@ int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 	}
 	// we can reach this point if we request a flag
 	return -1;
-}
-
-BuildingsTypes::~BuildingsTypes()
-{
-	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
-	{
-		delete (*it);
-	}
 }

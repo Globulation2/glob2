@@ -21,6 +21,9 @@
 #define __ENTITYTYPE_H
 
 #include "Header.h"
+#include <Toolkit.h>
+#include <vector>
+#include <assert.h>
 
 class EntityType
 {
@@ -38,5 +41,62 @@ private:
 	char *gets(char *dest, int size, SDL_RWops *stream);
 };
 
+template <class T> class EntitiesTypes
+{
+public:
+	virtual ~EntitiesTypes()
+	{
+		for (typename std::vector <T *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+		{
+			delete (*it);
+		}
+	}
+
+	virtual void load(const char *filename)
+	{
+		// we load the building description now
+		SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "r");
+
+		bool result=true;
+
+		T defaultEntityType;
+		result=defaultEntityType.loadText(stream);
+
+		while (result)
+		{
+			T *entityType=new T();
+			*entityType=defaultEntityType;
+			result=entityType->loadText(stream);
+			if (result)
+			{
+				entitiesTypes.push_back(entityType);
+				//buildingType->dump();
+			}
+			else
+				delete entityType;
+		}
+
+		SDL_RWclose(stream);
+	}
+
+	T* get(unsigned int num)
+	{
+		if ((num)<entitiesTypes.size())
+		{
+			return entitiesTypes[num];
+		}
+		else
+		{
+			assert(false);
+			return NULL;
+		}
+	}
+
+	unsigned size(void) { return entitiesTypes.size(); }
+
+protected:
+	std::vector<T*> entitiesTypes;
+};
+
 #endif
- 
+

@@ -24,6 +24,7 @@
 #include "Utilities.h"
 #include "GameGUILoadSave.h"
 #include "ScriptEditorScreen.h"
+#include "GlobalContainer.h"
 #include <math.h>
 
 
@@ -120,13 +121,13 @@ void MapEdit::drawMenu(void)
 
 	// ressources
 	globalContainer->gfx->drawFilledRect(menuStartW+0, 204, 128, 32, 0, 0, 0);
-	unsigned resCount=globalContainer->ressourcesTypes->number();
+	unsigned resCount=globalContainer->ressourcesTypes.size();
 	unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
 	unsigned i;
 	unsigned resWidth=126/halfResCount;
 	for (i=0; i<halfResCount; i++)
 	{
-		const RessourceType *rt=globalContainer->ressourcesTypes->get(i);
+		const RessourceType *rt=globalContainer->ressourcesTypes.get(i);
 		unsigned t=rt->terrain;
 		unsigned img=rt->gfxId+rt->sizesCount-1;
 		globalContainer->gfx->setClipRect(menuStartW+1+i*resWidth, 205, resWidth, 15);
@@ -135,7 +136,7 @@ void MapEdit::drawMenu(void)
 	}
 	for (;i<resCount; i++)
 	{
-		const RessourceType *rt=globalContainer->ressourcesTypes->get(i);
+		const RessourceType *rt=globalContainer->ressourcesTypes.get(i);
 		unsigned t=rt->terrain;
 		unsigned img=rt->gfxId+rt->sizesCount-1;
 		globalContainer->gfx->setClipRect(menuStartW+1+(i-halfResCount)*resWidth, 205+16, resWidth, 15);
@@ -190,7 +191,7 @@ void MapEdit::drawMenu(void)
 		else
 			typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
 		assert(typeNum!=-1);
-		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		assert(bt);
 		int imgid=bt->startImage;
 		int x=((i&0x3)<<5)+menuStartW;
@@ -402,7 +403,7 @@ void MapEdit::handleMapClick()
 	{
 		//game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
-		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mx, my, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
@@ -609,7 +610,7 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 		// we get the type of building
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
 		assert(typeNum!=-1);
-		BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 
 		// we check for room
 		int tempX, tempY;
@@ -651,7 +652,7 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 			int max=0;
 			while(nnbt->nextLevelTypeNum!=-1)
 			{
-				nnbt=globalContainer->buildingsTypes.getBuildingType(nnbt->nextLevelTypeNum);
+				nnbt=globalContainer->buildingsTypes.get(nnbt->nextLevelTypeNum);
 				if (max++>200)
 				{
 					printf("MapEdit: Error: nextLevelTypeNum architecture is broken.\n");
@@ -860,7 +861,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	{
 		editMode=EM_RESSOURCE;
 
-		unsigned resCount=globalContainer->ressourcesTypes->number();
+		unsigned resCount=globalContainer->ressourcesTypes.size();
 		unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
 		unsigned resWidth=126/halfResCount;
 

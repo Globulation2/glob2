@@ -19,7 +19,7 @@
 
 
 #include "Glob2.h"
-#include <GAG.h>
+#include "Header.h"
 #include "Game.h"
 #include "SessionConnection.h"
 #include "MainMenuScreen.h"
@@ -32,6 +32,7 @@
 #include "MultiplayersHost.h"
 #include "MultiplayersChooseMapScreen.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 
 
 #include <stdio.h>

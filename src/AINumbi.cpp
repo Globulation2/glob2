@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "Utilities.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 
 
 AINumbi::AINumbi(Player *player)
@@ -252,14 +253,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+i, ry-1, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx+i, ry, CORN)||map->isRessource(rx+i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-i, ry-1, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx-i, ry, CORN)||map->isRessource(rx-i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -269,14 +270,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-1, ry+i, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx-1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-1, ry-i, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx, ry-i, CORN)||map->isRessource(rx-1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -287,14 +288,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+1, ry+i, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx, ry+i, CORN)||map->isRessource(rx+1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+1, ry-i, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx, ry-i, CORN)||map->isRessource(rx+1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -304,13 +305,13 @@ int AINumbi::estimateFood(int x, int y)
 		w=0;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+i, ry+1, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx+i, ry, CORN)||map->isRessource(rx+i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-i, ry+1, (RessourcesTypes::intResType)CORN))
+			if (map->isRessource(rx-i, ry, CORN)||map->isRessource(rx-i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -634,7 +635,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		return false;
 	}
 	int typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
-	BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int width=bt->width;
 	int height=bt->height;
 	

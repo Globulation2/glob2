@@ -24,6 +24,7 @@
 #include "Marshaling.h"
 #include "Utilities.h"
 #include "LogFileManager.h"
+#include "GlobalContainer.h"
 
 #ifndef INADDR_BROADCAST
 #define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))

@@ -27,6 +27,8 @@
 #include "Utilities.h"
 #include "NetGame.h"
 #include "EndGameScreen.h"
+#include "Game.h"
+#include "GlobalContainer.h"
 
 Engine::Engine()
 {
@@ -45,7 +47,7 @@ Engine::~Engine()
 int Engine::initCampain(void)
 {
 	// we load map
-	SDL_RWops *stream=globalContainer->fileManager->open("default.map","rb");
+	SDL_RWops *stream=Toolkit::getFileManager()->open("default.map","rb");
 	if (gui.game.load(stream)==false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");

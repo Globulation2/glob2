@@ -23,6 +23,7 @@
 #include <string.h>
 #include "Utilities.h"
 #include "LogFileManager.h"
+#include "GlobalContainer.h"
 #include <set>
 #include <string>
 #include <functional>
@@ -132,12 +133,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 				break;
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
-			
+
 			int posX=((OrderCreate *)order)->posX;
 			int posY=((OrderCreate *)order)->posY;
 			int team=((OrderCreate *)order)->team;
 			int typeNumber=((OrderCreate *)order)->typeNumber;
-			if (globalContainer->buildingsTypes.buildingsTypes[typeNumber]->isVirtual || checkRoomForBuilding(posX, posY, typeNumber, team))
+			if (globalContainer->buildingsTypes.get(typeNumber)->isVirtual || checkRoomForBuilding(posX, posY, typeNumber, team))
 			{
 				if(posX<0)
 					posX+=map.getW();
@@ -851,8 +852,8 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	//ok, now we can safely deposite an building.
 	int gid=Building::GIDfrom(id, team);
 
-	int w=globalContainer->buildingsTypes.buildingsTypes[typeNum]->width;
-	int h=globalContainer->buildingsTypes.buildingsTypes[typeNum]->height;
+	int w=globalContainer->buildingsTypes.get(typeNum)->width;
+	int h=globalContainer->buildingsTypes.get(typeNum)->height;
 
 	Building *b=new Building(x, y, gid, typeNum, teams[team], &globalContainer->buildingsTypes);
 
@@ -952,7 +953,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, unsigned f
 
 bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=coordX+bt->decLeft;
 	int y=coordY+bt->decTop;
 
@@ -964,7 +965,7 @@ bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, 
 
 bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;
 	int h=bt->height;
 
@@ -1003,7 +1004,7 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 
 bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=coordX+bt->decLeft;
 	int y=coordY+bt->decTop;
 
@@ -1015,7 +1016,7 @@ bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *ma
 
 bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
+	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;
 	int h=bt->height;
 	assert(!bt->isVirtual); // This method is not for flags!
@@ -1236,12 +1237,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int type=r.field.type;
 					int amount=r.field.amount;
 					int variety=r.field.variety;
-					const RessourceType *rt=globalContainer->ressourcesTypes->get(type);
+					const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
 					int imgid=rt->gfxId+(variety*rt->varietiesCount)+amount;
 					int dx=(sprite->getW(imgid)-32)>>1;
 					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
-					assert(type<(int)globalContainer->ressourcesTypes->number());
+					assert(type<(int)globalContainer->ressourcesTypes.size());
 					assert(amount>=0);
 					assert(amount<rt->sizesCount);
 					assert(variety>=0);
@@ -1382,13 +1383,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			int typeNum=building->typeNum;
 			globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
 
-			BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
 			int lastTypeNum=typeNum;
 			int max=0;
 			while(lastbt->nextLevelTypeNum>=0)
 			{
 				lastTypeNum=lastbt->nextLevelTypeNum;
-				lastbt=globalContainer->buildingsTypes.getBuildingType(lastTypeNum);
+				lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
 				if (max++>200)
 				{
 					printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");

@@ -58,7 +58,7 @@ void MapPreview::repaint(void)
 	assert(parent->getSurface());
 	if (mapName!=0)
 	{
-		SDL_RWops *stream=globalContainer->fileManager->open(mapName, "rb", false);
+		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb", false);
 		if (stream)
 		{
 			SessionGame session;

@@ -185,7 +185,7 @@ NewMapScreen::NewMapScreen()
 	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	const char *text= Toolkit::getStringTable()->getString("[create map]");
-	addWidget(new Text(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, ALIGN_LEFT, ALIGN_LEFT, "menu", text));
+	addWidget(new Text(20+((600-Toolkit::getFont("menu")->getStringWidth(text))>>1), 18, ALIGN_LEFT, ALIGN_LEFT, "menu", text));
 	addWidget(new Text(130, 50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size x]")));
 	addWidget(new Text(130, 75, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size y]")));
 }

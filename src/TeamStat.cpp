@@ -20,6 +20,7 @@
 #include "TeamStat.h"
 #include "Team.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 
 TeamStats::TeamStats()
 {

@@ -17,10 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "EntityType.h"
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "EntityType.h"
 
 EntityType::EntityType()
 {
@@ -74,7 +74,7 @@ bool EntityType::loadText(SDL_RWops *stream)
 			val=atoi(token);
 		else
 			val=0;
-		
+
 		for (int i=0; i<varSize; i++)
 			if (strcmp(tab[i],varname)==0)
 			{
@@ -128,3 +128,4 @@ char *EntityType::gets(char *dest, int size, SDL_RWops *stream)
 	dest[i]=0;
 	return dest;
 }
+

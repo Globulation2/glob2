@@ -739,7 +739,7 @@ SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength)
 	assert(good);
 }
 
-SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, UInt32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask)
+SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask)
 {
 	this->teamNumber=teamNumber;
 	this->alliedMask=alliedMask;

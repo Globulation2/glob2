@@ -22,6 +22,7 @@
 #include "Team.h"
 #include "Game.h"
 #include "Utilities.h"
+#include "GlobalContainer.h"
 #include <list>
 #include <math.h>
 
@@ -40,7 +41,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	
 	// type
 	this->typeNum=typeNum;
-	type=types->buildingsTypes[typeNum];
+	type=types->get(typeNum);
 	owner->prestige+=type->prestige;
 
 	// construction state
@@ -161,7 +162,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 
 	// type
 	typeNum=SDL_ReadBE32(stream);
-	type=types->buildingsTypes[typeNum];
+	type=types->get(typeNum);
 	assert(type);
 	owner->prestige+=type->prestige;
 	
@@ -435,7 +436,7 @@ void Building::cancelConstruction(void)
 		if (targetLevelTypeNum!=-1)
 		{
 			recoverTypeNum=targetLevelTypeNum;
-			recoverType=globalContainer->buildingsTypes.getBuildingType(targetLevelTypeNum);
+			recoverType=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 		}
 		else
 			assert(false);
@@ -758,7 +759,7 @@ void Building::updateBuildingSite(void)
 
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevelTypeNum;
-		type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
+		type=globalContainer->buildingsTypes.get(type->nextLevelTypeNum);
 		assert(constructionResultState!=NO_CONSTRUCTION);
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
@@ -830,7 +831,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	else
 		assert(false);
 	
-	BuildingType *nextBt=globalContainer->buildingsTypes.getBuildingType(targetLevelTypeNum);
+	BuildingType *nextBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
 	int newPosX=midPosX+nextBt->decLeft;
 	int newPosY=midPosY+nextBt->decTop;
 
@@ -942,7 +943,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 	
 	if (tltn==-1)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(tltn);
+	BuildingType *bt=globalContainer->buildingsTypes.get(tltn);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;
