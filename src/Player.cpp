@@ -75,6 +75,7 @@ BasePlayer::~BasePlayer(void)
 
 void BasePlayer::close(void)
 {
+	//printf("Player::close (%d).\n", destroyNet);
 	if (destroyNet)
 	{
 		unbind();
@@ -84,8 +85,8 @@ void BasePlayer::close(void)
 			printf("Socket closed to player %d.\n", number);
 		}
 		socket=NULL;
-		channel=-1;zzz*/
-		destroyNet=false;
+		channel=-1;zzz
+		destroyNet=false;*/
 	}
 }
 
@@ -294,8 +295,10 @@ bool BasePlayer::bind(UDPsocket socket, int channel)
 
 void BasePlayer::unbind()
 {
+	//printf("BasePlayer::unbind() (channel=%d).\n", channel);
 	if (channel!=-1)
 	{
+		printf("Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;
 	}
@@ -311,15 +314,23 @@ bool BasePlayer::send(char *data, int size)
 	packet->len=size;
 			
 	memcpy((char *)packet->data, data, size);
-	packet->address=ip;
 	
 	bool sucess;
 	//if (abs(rand()%100)<70)
-	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+	
+	packet->address=ip;
+	packet->channel=channel;
+	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	// Notice that we can choose between giving a "channel", or the ip.
+	// Here we do both. Then "channel" could be -1.
+	// This is interesting because getFreeChannel() may return -1.
+	// We have no real use of "channel".
+	
 	//else
 	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	if (sucess)
-		printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
+		;//printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
 	else
 		printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
 			

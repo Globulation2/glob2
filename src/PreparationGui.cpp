@@ -223,7 +223,7 @@ void MultiplayersCrossConnectable::tryCrossConnections(void)
 				}
 				sessionInfo.players[j].netState=BasePlayer::PNS_BINDED;
 
-				if ( (sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)&&(!sessionInfo.players[j].send(data, 8)) )
+				if (!sessionInfo.players[j].send(data, 8))//&&(sessionInfo.players[j].netState<=BasePlayer::PNS_SENDING_FIRST_PACKET)*/
 				{
 					printf("Player %d with ip(%x, %d) is not sendable!\n", j, sessionInfo.players[j].ip.host, sessionInfo.players[j].ip.port);
 					sessionInfo.players[j].netState=BasePlayer::PNS_BAD;
