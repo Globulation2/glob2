@@ -883,6 +883,9 @@ void Building::subscribeForInsideStep()
 
 void Building::swarmStep(void)
 {
+	// increase HP
+	if (hp<type->hpMax)
+		hp++;
 	if (ressources[CORN]>=type->ressourceForOneUnit)
 		productionTimeout--;
 
