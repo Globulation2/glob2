@@ -370,6 +370,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		fprintf(logFile, "we received a %d games list (size=%d)\n", nbGames, size);
 		int index=8;
+		bool good=true;
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
@@ -382,12 +383,19 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			
 			Uint32 huid=getUint32safe(data, index);
 			index+=4;
+			bool found=false;
 			for (std::list<Client>::iterator clienti=clients.begin(); clienti!=clients.end(); ++clienti)
 				if (clienti->uid==huid)
 				{
 					memcpy(game.userName, clienti->userName, 32);
 					game.userName[31]=0;
+					found=true;
 				}
+			if (!found)
+			{
+				good=false;
+				break;
+			}
 			/*l=Utilities::strmlen((char *)data+index, 32);
 			memcpy(game.userName, data+index, l);
 			if (game.userName[l-1]!=0)
@@ -413,9 +421,12 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			fprintf(logFile, "index=%d.\n", index);
 			fprintf(logFile, "game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
 		}
-		assert(index==size);
-		newGameListAviable=true;
-		send(YMT_GAMES_LIST, nbGames);
+		if (good)
+		{
+			assert(index==size);
+			newGameListAviable=true;
+			send(YMT_GAMES_LIST, nbGames);
+		}
 	}
 	break;
 	case YMT_UNSHARED_LIST:
@@ -918,7 +929,11 @@ void YOG::step()
 				hostGameSocketTimeout=LONG_NETWORK_TIMEOUT;
 			else
 				hostGameSocketTimeout=DEFAULT_NETWORK_TIMEOUT;
-			fprintf(logFile, "Sending the hostGameSocket to YOG (selectedGame=%d)...\n", selectedGame);
+				
+			if (isSelectedGame)
+				fprintf(logFile, "Sending the hostGameSocket to YOG (selectedGame=%d)...\n", selectedGame);
+			else
+				fprintf(logFile, "Sending the hostGameSocket to YOG ...\n");
 			UDPpacket *packet=SDLNet_AllocPacket(8);
 			assert(packet);
 			packet->len=8;
@@ -937,8 +952,7 @@ void YOG::step()
 			SDLNet_FreePacket(packet);
 		}
 		
-		//if (joinGameSocket && (!isConnectedToGameHost || !joinGameSocketReceived) && joinGameSocketTimeout--<=0 && selectedGame && uid)
-		if (joinGameSocket && !joinGameSocketReceived && joinGameSocketTimeout--<=0 && selectedGame && uid)
+		if (joinGameSocket && !joinGameSocketReceived && joinGameSocketTimeout--<=0 && isSelectedGame && uid)
 		{
 			if (joinGameSocketTOTL--<=0)
 				fprintf(logFile, "Unable to deliver the joinGameSocket to YOG!\n"); // TODO!

@@ -1390,9 +1390,10 @@ bool MultiplayersJoin::tryConnection(bool detectLAN)
 	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
 	fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	
+	if (detectLAN)
+		ipFromNAT=true;
 	if (shareOnYOG && detectLAN)
 	{
-		ipFromNAT=true;
 		if (broadcastState==BS_DISABLE_YOG)
 			broadcastState=BS_ENABLE_YOG;
 		fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
