@@ -239,7 +239,7 @@ void GlobalContainer::load(void)
 	{
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
-		gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
+		gfx->setRes(graphicWidth, graphicHeight, 32, graphicFlags);
 
 		// load fonts
 		menuFont=gfx->loadFont("data/fonts/sans.ttf", 22);
