@@ -38,6 +38,7 @@ private:
 	TextInput *fileNameEntry;
 	bool isLoad;
 	const char *extension;
+	char *directory;
 
 public:
 	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);

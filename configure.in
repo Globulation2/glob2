@@ -57,6 +57,7 @@ AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile
 data/gfx/Makefile
 data/fonts/Makefile
 data/gui/Makefile
+maps/Makefile
 libgag/Makefile
 libgag/include/Makefile
 libgag/src/Makefile
