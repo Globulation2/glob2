@@ -86,6 +86,7 @@ GlobalContainer::~GlobalContainer(void)
 		Toolkit::releaseSprite("units");
 		Toolkit::releaseSprite("buildings");
 		Toolkit::releaseSprite("gamegui");
+		Toolkit::releaseSprite("brush");
 		Toolkit::releaseFont("menu");
 		Toolkit::releaseFont("standard");
 		Toolkit::releaseFont("little");
@@ -409,6 +410,8 @@ void GlobalContainer::load(void)
 		buildingmini=Toolkit::getSprite("buildingmini");
 		gfx->loadSprite("data/gfx/gamegui", "gamegui");
 		gamegui=Toolkit::getSprite("gamegui");
+		gfx->loadSprite("data/gfx/brush", "brush");
+		brush=Toolkit::getSprite("brush");
 
 		updateLoadProgressBar(95);
 		// load buildings types
