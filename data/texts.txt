@@ -188,5 +188,12 @@ Create game
 [update list]
 Mettre a jour
 Update list
+[connecting to]
+Connection a
+Connecting to
+[please wait]
+Attendre SVP
+Please wait
+
 
 
