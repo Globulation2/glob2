@@ -65,7 +65,17 @@ namespace GAGCore
 		virtual void writeUint32(const Uint32 v, const char *name = NULL) { printLevel(); *ofs << name << " = " << v << ";\n"; }
 		virtual void writeFloat(const float v, const char *name = NULL) { printLevel(); *ofs << name << " = " << v << ";\n"; }
 		virtual void writeDouble(const double v, const char *name = NULL) { printLevel(); *ofs << name << " = " << v << ";\n"; }
-		
+		virtual void writeText(const std::string &v, const char *name = NULL)
+		{
+			printLevel();
+			*ofs << name << " = \"";
+			for (size_t i = 0; i<v.size(); i++)
+				if (v[i] == '\"')
+					*ofs << "\\\"";
+				else
+					*ofs << v[i];
+			*ofs << "\";\n"; 
+		}
 		virtual void flush(void) { ofs->flush(); }
 		
 		virtual void writeEnterSection(const char *name) { printLevel(); *ofs << name << "\n"; printLevel(); *ofs << "{"; level++; *ofs << "\n"; }

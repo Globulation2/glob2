@@ -881,46 +881,26 @@ int StringAquisition::ungetChar(char c)
 Mapscript::Mapscript()
 {
 	reset();
-	sourceCode=NULL;
-	setSourceCode("");
 }
 
 Mapscript::~Mapscript(void)
 {
-	if (sourceCode)
-		delete[] sourceCode;
+	
 }
 
 bool Mapscript::load(GAGCore::InputStream *stream)
 {
-	if (sourceCode)
-		delete[] sourceCode;
-
 	stream->readEnterSection("SGSL");
-	unsigned len = stream->readUint32("len");
-	sourceCode = new char[len];
-	stream->read(sourceCode, len, "sourceCode");
+	sourceCode = stream->readText("sourceCode");
 	stream->readLeaveSection();
 	return true;
 }
 
 void Mapscript::save(GAGCore::OutputStream *stream)
 {
-	unsigned len = strlen(sourceCode) +1;
 	stream->writeEnterSection("SGSL");
-	stream->writeUint32(len, "len");
-	stream->write(sourceCode, len, "sourceCode");
+	stream->writeText(sourceCode, "sourceCode");
 	stream->writeLeaveSection();
-}
-
-void Mapscript::setSourceCode(const char *sourceCode)
-{
-	if (this->sourceCode)
-		delete[] this->sourceCode;
-
-	unsigned len=strlen(sourceCode)+1;
-	this->sourceCode=new char[len];
-	strcpy(this->sourceCode, sourceCode);
 }
 
 void Mapscript::reset(void)
@@ -968,7 +948,7 @@ ErrorReport Mapscript::compileScript(Game *game, const char *script)
 
 ErrorReport Mapscript::compileScript(Game *game)
 {
-	return compileScript(game, sourceCode);
+	return compileScript(game, sourceCode.c_str());
 }
 
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)

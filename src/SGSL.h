@@ -269,10 +269,10 @@ public:
 	ErrorReport compileScript(Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
 
+	//! Load a script, read source code
 	bool load(GAGCore::InputStream *stream);
+	//! Save a script, write source code
 	void save(GAGCore::OutputStream *stream);
-	void setSourceCode(const char *sourceCode);
-	const char *getSourceCode(void) { return sourceCode; }
 
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum();
@@ -283,6 +283,9 @@ public:
 	void reset(void);
 	bool isTextShown;
 	std::string textShown;
+	
+	//! source code of the script
+	std::string sourceCode;
 
 private:
 	friend class Story;
@@ -298,8 +301,6 @@ private:
 	AreaMap areas;
 
 	BuildingMap flags;
-
-	char *sourceCode;
 };
 
 

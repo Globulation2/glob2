@@ -41,7 +41,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 {
 	this->mapScript=mapScript;
 	this->game=game;
-	editor = new TextArea(10, 10, 580, 320, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->getSourceCode());
+	editor = new TextArea(10, 10, 580, 320, ALIGN_LEFT, ALIGN_LEFT, "standard", false, mapScript->sourceCode.c_str());
 	addWidget(editor);
 	compilationResult=new Text(10, 335, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
@@ -90,7 +90,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		{
 			if (testCompile())
 			{
-				mapScript->setSourceCode(editor->getText());
+				mapScript->sourceCode = editor->getText();
 				endValue=par1;
 			}
 		}

@@ -30,6 +30,8 @@
 	#include <netinet/in.h>
 #endif
 #include <stdio.h>
+#include <string>
+#include <valarray>
 
 namespace GAGCore
 {
@@ -70,6 +72,11 @@ namespace GAGCore
 		virtual void writeUint32(const Uint32 v, const char *name = NULL) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeFloat(const float v, const char *name = NULL) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeDouble(const double v, const char *name = NULL) { this->writeEndianIndependant(&v, 8, name); }
+		virtual void writeText(const std::string &v, const char *name = NULL)
+		{
+			writeUint32(v.size());
+			write(v.c_str(), v.size()); 
+		}
 		
 		virtual void flush(void) { backend->flush(); }
 		
@@ -122,6 +129,12 @@ namespace GAGCore
 		virtual Uint32 readUint32(const char *name = NULL) { Uint32 i; this->readEndianIndependant(&i, 4, name); return i; }
 		virtual float readFloat(const char *name = NULL) { float f; this->readEndianIndependant(&f, 4, name); return f; }
 		virtual double readDouble(const char *name = NULL) { double d; this->readEndianIndependant(&d, 8, name); return d; }
+		virtual std::string readText(const char *name = NULL)
+		{
+			std::valarray<char> buffer(readUint32());
+			read(&buffer[0], buffer.size());
+			return std::string(&buffer[0]);
+		}
 		
 		virtual void readEnterSection(const char *name) { }
 		virtual void readEnterSection(unsigned id) { }
