@@ -29,7 +29,6 @@ MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 	
 	serverIP.host=0;
 	serverIP.port=0;
-	ipFromNAT=false;
 }
 
 void MultiplayersCrossConnectable::tryCrossConnections(void)

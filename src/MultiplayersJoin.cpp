@@ -436,17 +436,19 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 	{
 		if (sessionInfo.players[p].ip.host!=ip.host)
 		{
+			fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
+			sessionInfo.players[p].ip=ip; // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
 			if (sessionInfo.players[p].waitForNatResolution)
 			{
-				fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
-				sessionInfo.players[p].ip=ip;
+				fprintf(logFile, "(this NAT is solved)\n");
 				sessionInfo.players[p].ipFromNAT=false;
 				sessionInfo.players[p].waitForNatResolution=false;
 			}
 			else
-				fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%s), but should be ip(%s)! (ip spoofing danger)\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
+				fprintf(logFile, "\n");
 		}
-		else if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
+		
+		if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
 		{
 			if (crossPacketRecieved[p]<1)
 				crossPacketRecieved[p]=1;
@@ -736,7 +738,7 @@ void MultiplayersJoin::receiveTime()
 							serverName=serverNameMemory;
 						}
 						ipFromNAT=true;
-						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n",Utilities::stringIP(serverIP), serverName);
+						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)

@@ -32,7 +32,6 @@ public:
 	
 public:
 	IPaddress serverIP;
-	bool ipFromNAT;
 
 private:
 	FILE *logFile;
