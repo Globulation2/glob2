@@ -19,7 +19,6 @@
 
 #include "Session.h"
 #include "Order.h"
-#include "GlobalContainer.h"
 #include "Marshaling.h"
 #include "Version.h"
 #include "LogFileManager.h"
@@ -209,9 +208,9 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		{
 			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
 				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
-				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, globalContainer->texts.getString("[was]"), savedSessionInfo->players[playerNumber].name, s, t);
+				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was]"), savedSessionInfo->players[playerNumber].name, s, t);
 			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
-				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, globalContainer->texts.getString("[was AI]"), savedSessionInfo->players[playerNumber].name, s, t);
+				snprintf(infoString, stringLen, "%s (%s %s) %s %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was AI]"), savedSessionInfo->players[playerNumber].name, s, t);
 			else
 				assert(false);
 		}
@@ -224,14 +223,14 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		{
 			if ((savedSessionInfo->players[playerNumber].type==BasePlayer::P_IP)
 				||(savedSessionInfo->players[playerNumber].type==BasePlayer::P_LOCAL))
-				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, globalContainer->texts.getString("[was]"), savedSessionInfo->players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was]"), savedSessionInfo->players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
 			else if (savedSessionInfo->players[playerNumber].type==BasePlayer::P_AI)
-				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, globalContainer->texts.getString("[was AI]"), savedSessionInfo->players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+				snprintf(infoString, stringLen, "%s (%s %s) %s", players[playerNumber].name, Toolkit::getStringTable()->getString("[was AI]"), savedSessionInfo->players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
 			else
 				assert(false);
 		}
 		else*/
-			snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, globalContainer->texts.getString("[AI]"));
+			snprintf(infoString, stringLen, "%s : (%s)", players[playerNumber].name, Toolkit::getStringTable()->getString("[AI]"));
 	}
 	else
 		assert(false);

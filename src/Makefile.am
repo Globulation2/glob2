@@ -58,8 +58,6 @@ Sector.h\
 Sector.cpp\
 Session.cpp\
 Session.h\
-StringTable.cpp\
-StringTable.h\
 SGSL.cpp \
 SGSL.h \
 Team.cpp\

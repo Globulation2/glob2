@@ -20,7 +20,6 @@
 #include "GAG.h"
 #include "Game.h"
 #include "MapEdit.h"
-#include "GlobalContainer.h"
 #include "UnitType.h"
 #include "Utilities.h"
 #include "GameGUILoadSave.h"
@@ -799,10 +798,10 @@ void MapEdit::askConfirmationToQuit()
 {
 	if (hasMapBeenModiffied)
 	{
-		const char *reallyquit = globalContainer->texts.getString("[save before quit?]");
-		const char *yes = globalContainer->texts.getString("[Yes]");
-		const char *no = globalContainer->texts.getString("[No]");
-		const char *save = globalContainer->texts.getString("[Cancel]");
+		const char *reallyquit = Toolkit::getStringTable()->getString("[save before quit?]");
+		const char *yes = Toolkit::getStringTable()->getString("[Yes]");
+		const char *no = Toolkit::getStringTable()->getString("[No]");
+		const char *save = Toolkit::getStringTable()->getString("[Cancel]");
 		int res=(int)MessageBox(globalContainer->gfx, "standard", MB_THREEBUTTONS, reallyquit, yes, no, save);
 
 		if (res==1) // no, quit

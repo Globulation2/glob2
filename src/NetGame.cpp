@@ -18,8 +18,8 @@
 */
 
 #include "NetGame.h"
-#include "Order.h"
 #include "GlobalContainer.h"
+#include "Order.h"
 #include "NetDefine.h"
 #include <assert.h>
 #include "Marshaling.h"

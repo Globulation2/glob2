@@ -20,8 +20,7 @@
 #ifndef __GLOBALCONTAINER_H
 #define __GLOBALCONTAINER_H
 
-#include "GAG.h"
-#include "StringTable.h"
+#include <GAG.h>
 #include "BuildingType.h"
 #include <string>
 
@@ -79,7 +78,7 @@ public:
 public:
 	FileManager *fileManager;
 	LogFileManager *logFileManager;
-	
+
 	GraphicContext *gfx;
 	Sprite *terrain;
 	Sprite *terrainShader;
@@ -92,8 +91,6 @@ public:
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
-
-	StringTable texts;
 
 	BuildingsTypes buildingsTypes;
 	base::Ptr<RessourcesTypes> ressourcesTypes;

@@ -75,13 +75,13 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	fileNameEntry=new TextInput(10, 195, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", defaultFileName, true);
 	addWidget(fileNameEntry);
 
-	addWidget(new TextButton(10, 230, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13));
-	addWidget(new TextButton(155, 230, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(10, 230, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(155, 230, 135, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
 	if (isLoad)
-		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[load game]"), 300));
+		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), 300));
 	else
-		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[save game]"), 300));
+		addWidget(new Text(0, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), 300));
 
 	generateFileName();
 }

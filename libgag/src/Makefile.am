@@ -21,6 +21,7 @@ libgag_a_SOURCES = base.cpp\
 	SDLSprite.cpp\
 	GUIMessageBox.cpp \
 	SupportFunctions.cpp \
+	StringTable.cpp \
 	Toolkit.cpp
 
 EXTRA_DIST = SDLFont.h \

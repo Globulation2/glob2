@@ -18,7 +18,6 @@
 */
 
 #include "ScriptEditorScreen.h"
-#include "GlobalContainer.h"
 
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
@@ -30,9 +29,9 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(editor);
 	compilationResult=new Text(10, 335, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	addWidget(compilationResult);
-	addWidget(new TextButton(10, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[ok]"), OK));
-	addWidget(new TextButton(100, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Cancel]"), CANCEL));
-	addWidget(new TextButton(190, 360, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[compile]"), COMPILE));
+	addWidget(new TextButton(10, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
+	addWidget(new TextButton(100, 360, 80, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
+	addWidget(new TextButton(190, 360, 400, 30, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 }
 
 bool ScriptEditorScreen::testCompile(void)

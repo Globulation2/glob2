@@ -2,6 +2,7 @@ SUBDIRS=dps
 
 EXTRA_DIST = xmlserializer.h \
 Toolkit.h \
+StringTable.h \
 FileManager.h \
 GAG.h \
 GAGSys.h \

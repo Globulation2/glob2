@@ -18,7 +18,6 @@
 */
 
 #include "MultiplayersJoin.h"
-#include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
 #include "Marshaling.h"
@@ -1039,31 +1038,31 @@ char *MultiplayersJoin::getStatusString()
 	switch (waitingState)
 	{
 		case WS_BAD:
-			s=globalContainer->texts.getString("[bad error in connection system]");
+			s=Toolkit::getStringTable()->getString("[bad error in connection system]");
 		break;
 		case WS_TYPING_SERVER_NAME:
-			s=globalContainer->texts.getString("[not connected]");
+			s=Toolkit::getStringTable()->getString("[not connected]");
 		break;
 		case WS_WAITING_FOR_PRESENCE:
-			s=globalContainer->texts.getString("[presence request sent]");
+			s=Toolkit::getStringTable()->getString("[presence request sent]");
 		break;
 		case WS_WAITING_FOR_SESSION_INFO:
-			s=globalContainer->texts.getString("[session request sent]");
+			s=Toolkit::getStringTable()->getString("[session request sent]");
 		break;
 		case WS_WAITING_FOR_CHECKSUM_CONFIRMATION:
-			s=globalContainer->texts.getString("[checksum sent]");
+			s=Toolkit::getStringTable()->getString("[checksum sent]");
 		break;
 		case WS_OK:
-			s=globalContainer->texts.getString("[connected to server]");
+			s=Toolkit::getStringTable()->getString("[connected to server]");
 		break;
 		case WS_CROSS_CONNECTING:
 		case WS_CROSS_CONNECTING_START_CONFIRMED:
-			s=globalContainer->texts.getString("[connecting to all players]");
+			s=Toolkit::getStringTable()->getString("[connecting to all players]");
 		break;
 		case WS_CROSS_CONNECTING_ACHIEVED:
 		case WS_CROSS_CONNECTING_SERVER_HEARD:
 		case WS_SERVER_START_GAME:
-			s=globalContainer->texts.getString("[connected to all players]");
+			s=Toolkit::getStringTable()->getString("[connected to all players]");
 		break;
 		default:
 			assert(false);

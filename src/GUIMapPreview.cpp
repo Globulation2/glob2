@@ -18,7 +18,6 @@
 */
 
 #include "GUIMapPreview.h"
-#include "GlobalContainer.h"
 #include "Session.h"
 #include "Utilities.h"
 
@@ -41,9 +40,9 @@ void MapPreview::paint(void)
 const char *MapPreview::getMethode(void)
 {
 	if (randomGenerated)
-		return globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
+		return Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", lastRandomGenerationMethode);
 	else
-		return globalContainer->texts.getString("[handmade map]");
+		return Toolkit::getStringTable()->getString("[handmade map]");
 }
 
 void MapPreview::setMapThumbnail(const char *mapName)

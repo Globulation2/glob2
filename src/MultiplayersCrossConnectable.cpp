@@ -19,7 +19,6 @@
 
 #include "MultiplayersCrossConnectable.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "YOG.h"
 

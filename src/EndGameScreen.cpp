@@ -18,7 +18,6 @@
 */
 
 #include "EndGameScreen.h"
-#include "GlobalContainer.h"
 #include <algorithm>
 
 EndGameStat::EndGameStat(int x, int y, Game *game)
@@ -109,15 +108,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	
 	if (!gui->getLocalTeam()->isAlive)
 	{
-		titleText=globalContainer->texts.getString("[Lost : your colony is dead]");
+		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
 	}
 	else if (!gui->game.isGameEnded)
 	{
-		titleText=globalContainer->texts.getString("[The game has not been finished]");
+		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
 	}
 	else if (!gui->game.totalPrestigeReached)
 	{
-		titleText=globalContainer->texts.getString("[Won : you defeated your opponents]");
+		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
 	else
 	{
@@ -125,15 +124,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		assert(t);
 		if (t==gui->getLocalTeam())
 		{
-			titleText=globalContainer->texts.getString("[Won : you have the biggest prestige]");
+			titleText=Toolkit::getStringTable()->getString("[Won : you have the biggest prestige]");
 		}
 		else
 		{
 			const char *strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
-				strText = globalContainer->texts.getString("[Won : your ally %s have the biggest prestige]");
+				strText = Toolkit::getStringTable()->getString("[Won : your ally %s have the biggest prestige]");
 			else
-				strText = globalContainer->texts.getString("[Lost : %s has more prestige than you]");
+				strText = Toolkit::getStringTable()->getString("[Lost : %s has more prestige than you]");
 
 			const char *playerText = t->getFirstPlayerName();
 			assert(strText);
@@ -152,10 +151,10 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(statWidget);
 	
 	// add buttons
-	addWidget(new TextButton(90, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", globalContainer->texts.getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(150, 415, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), 3, 13));
+	addWidget(new TextButton(90, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 350, 80, 20, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(150, 415, 340, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), 3, 13));
 	
 	// add players name
 	Text *text;

@@ -23,6 +23,7 @@
 #include "xmlserializer.h"
 #include "GAGSys.h"
 #include "FileManager.h"
+#include "StringTable.h"
 #include "GraphicContext.h"
 #include "SupportFunctions.h"
 #include "Toolkit.h"

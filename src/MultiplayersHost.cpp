@@ -18,7 +18,6 @@
 */
 
 #include "MultiplayersHost.h"
-#include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
 #include "YOG.h"
@@ -811,7 +810,7 @@ void MultiplayersHost::addAI()
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
 	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
-	strncpy(sessionInfo.players[p].name, globalContainer->texts.getString("[AI]", abs(rand())%globalContainer->texts.AI_NAME_SIZE), BasePlayer::MAX_NAME_LENGTH);
+	strncpy(sessionInfo.players[p].name, Toolkit::getStringTable()->getString("[AI]", abs(rand())%Toolkit::getStringTable()->AI_NAME_SIZE), BasePlayer::MAX_NAME_LENGTH);
 	
 	sessionInfo.numberOfPlayer++;
 	sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;

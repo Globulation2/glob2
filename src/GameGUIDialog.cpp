@@ -18,7 +18,6 @@
 */
 
 #include "GameGUIDialog.h"
-#include "GlobalContainer.h"
 #include "GameGUI.h"
 
 
@@ -26,12 +25,12 @@
 InGameMainScreen::InGameMainScreen()
 :OverlayScreen(globalContainer->gfx, 300, 275)
 {
-	addWidget(new TextButton(10, 10, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[save game]"), SAVE_GAME));
-	addWidget(new TextButton(10, 90, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[options]"), OPTIONS));
-	addWidget(new TextButton(10, 130, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[alliances]"), ALLIANCES));
-	addWidget(new TextButton(10, 180, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[quit the game]"), QUIT_GAME));
-	addWidget(new TextButton(10, 230, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[return to game]"), RETURN_GAME, 27));
+	addWidget(new TextButton(10, 10, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
+	addWidget(new TextButton(10, 90, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[options]"), OPTIONS));
+	addWidget(new TextButton(10, 130, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[alliances]"), ALLIANCES));
+	addWidget(new TextButton(10, 180, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
+	addWidget(new TextButton(10, 230, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
 }
 
 void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -44,9 +43,9 @@ InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue
 :OverlayScreen(globalContainer->gfx, 300, canContinue ? 150 : 100)
 {
 	addWidget(new Text(10, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", title, 280));
-	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  globalContainer->texts.getString("[ok]"), QUIT, 13));
+	addWidget(new TextButton(10, 50, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
-		addWidget(new TextButton(10, 100, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  globalContainer->texts.getString("[Continue playing]"), CONTINUE, 27));
+		addWidget(new TextButton(10, 100, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
 }
 
 void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -106,7 +105,7 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 	addWidget(new Text(272, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", "C"));
 
 	// add ok button
-	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 27));
+	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	this->gameGUI=gameGUI;
 }
 
@@ -178,31 +177,31 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	// speed
 	
 	const int speedDec=45;
-	addWidget(new Text(20, speedDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[game speed]")));
+	addWidget(new Text(20, speedDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[game speed]")));
 	speed[0]=new OnOffButton(30, speedDec, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, SPEED+0);
 	addWidget(speed[0]);
-	addWidget(new Text(60, speedDec, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[small]")));
+	addWidget(new Text(60, speedDec, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[small]")));
 	speed[1]=new OnOffButton(30, speedDec+25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, SPEED+1);
 	addWidget(speed[1]);
-	addWidget(new Text(60, speedDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[medium]")));
+	addWidget(new Text(60, speedDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[medium]")));
 	speed[2]=new OnOffButton(30, speedDec+50, 20, 20, ALIGN_LEFT, ALIGN_LEFT, true, SPEED+2);
 	addWidget(speed[2]);
-	addWidget(new Text(60, speedDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[large]")));
+	addWidget(new Text(60, speedDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[large]")));
 	
 	// latency
 	const int latDec=speedDec+120;
-	addWidget(new Text(20, latDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[network latency]")));
+	addWidget(new Text(20, latDec-35, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[network latency]")));
 	latency[0]=new OnOffButton(30, latDec, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, LATENCY+0);
 	addWidget(latency[0]);
-	addWidget(new Text(60, latDec, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[small]")));
+	addWidget(new Text(60, latDec, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[small]")));
 	latency[1]=new OnOffButton(30, latDec+25, 20, 20, ALIGN_LEFT, ALIGN_LEFT, false, LATENCY+1);
 	addWidget(latency[1]);
-	addWidget(new Text(60, latDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[medium]")));
+	addWidget(new Text(60, latDec+25, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[medium]")));
 	latency[2]=new OnOffButton(30, latDec+50, 20, 20, ALIGN_LEFT, ALIGN_LEFT, true, LATENCY+2);
 	addWidget(latency[2]);
-	addWidget(new Text(60, latDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[large]")));
+	addWidget(new Text(60, latDec+50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[large]")));
 	
-	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 27));
+	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	this->gameGUI=gameGUI;
 }
 

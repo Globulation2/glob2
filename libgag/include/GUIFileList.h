@@ -33,8 +33,8 @@ protected:
 	MEMBERS
 		ITEM(std::string, dir)
 		ITEM(std::string, extension)
-		ITEM(std::string, current)
 		ITEM(bool, recurse)
+		ITEM(std::string, current)
 	CLASSEND;
 
 public:
@@ -46,7 +46,7 @@ public:
 
 	//! converts file name to displayed name (default removes .extension)
 	virtual const char* fileToList(const char* fileName) const;
-	//! converts displayed name to file name (default appends .extension)
+	//! converts displayed name to file constname (default appends .extension)
 	virtual const char* listToFile(const char* listName) const;
 	//! returns the current full directory name (dir/current)
 	const char* fullDir() const;

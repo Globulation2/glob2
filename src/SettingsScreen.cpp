@@ -25,14 +25,14 @@
 SettingsScreen::SettingsScreen()
 {
 	// language part
-	addWidget(new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", globalContainer->texts.getString("[language]")));
+	addWidget(new Text(20, 60, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[language]")));
 	languageList=new List(20, 90, 160, 160, ALIGN_LEFT, ALIGN_TOP, "standard");
-	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
-		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
+	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
+		languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
 	addWidget(languageList);
 
 	// graphics part
-	addWidget(new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[display]")));
+	addWidget(new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]")));
 	modeList=new List(245, 90, 100, 160, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
@@ -46,34 +46,34 @@ SettingsScreen::SettingsScreen()
 
 	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	addWidget(new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[fullscreen]")));
+	addWidget(new Text(180, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]")));
 
 	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	addWidget(new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[hwaccel]")));
+	addWidget(new Text(180, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]")));
 
 	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
 	addWidget(nodblbuff);
-	addWidget(new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[nodblbuff]")));
+	addWidget(new Text(180, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]")));
 
 	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
-	addWidget(new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", globalContainer->texts.getString("[lowquality]")));
+	addWidget(new Text(180, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]")));
 
 	// Username part
 	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
-	addWidget(new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->texts.getString("[username]")));
+	addWidget(new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[username]")));
 
 	// Screen entry/quit part
-	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
+	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
-	cancel=new TextButton(60, 20, 200, 40, ALIGN_RIGHT, ALIGN_BOTTOM, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	cancel=new TextButton(60, 20, 200, 40, ALIGN_RIGHT, ALIGN_BOTTOM, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
-	title=new Text(0, 18, ALIGN_FILL, ALIGN_TOP, "menu", globalContainer->texts.getString("[settings]"));
+	title=new Text(0, 18, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[settings]"));
 	addWidget(title);
 
-	oldLanguage=globalContainer->texts.getLang();
+	oldLanguage=Toolkit::getStringTable()->getLang();
 	oldScreenW=globalContainer->settings->screenWidth;
 	oldScreenH=globalContainer->settings->screenHeight;
 }
@@ -94,7 +94,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==CANCEL)
 		{
-			globalContainer->texts.setLang(oldLanguage);
+			Toolkit::getStringTable()->setLang(oldLanguage);
 			globalContainer->settings->screenWidth=oldScreenW;
 			globalContainer->settings->screenHeight=oldScreenH;
 			endExecute(par1);
@@ -104,10 +104,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (source==languageList)
 		{
-			globalContainer->texts.setLang(par1);
-			ok->setText(globalContainer->texts.getString("[ok]"));
-			cancel->setText(globalContainer->texts.getString("[Cancel]"));
-			title->setText(globalContainer->texts.getString("[settings]"));
+			Toolkit::getStringTable()->setLang(par1);
+			ok->setText(Toolkit::getStringTable()->getString("[ok]"));
+			cancel->setText(Toolkit::getStringTable()->getString("[Cancel]"));
+			title->setText(Toolkit::getStringTable()->getString("[settings]"));
 		}
 		else if (source==modeList)
 		{

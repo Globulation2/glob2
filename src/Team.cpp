@@ -19,7 +19,6 @@
 
 #include "Team.h"
 #include "BuildingType.h"
-#include "GlobalContainer.h"
 #include "Game.h"
 #include "Utilities.h"
 #include <math.h>
@@ -162,7 +161,7 @@ void Team::init(void)
 		myBuildings[i]=NULL;
 
 	startPosX=startPosY=0;
-	
+
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
 
@@ -552,7 +551,7 @@ void Team::createLists(void)
 	assert(swarms.size()==0);
 	assert(turrets.size()==0);
 	assert(virtualBuildings.size()==0);
-	
+
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
@@ -616,7 +615,7 @@ void Team::step(void)
 			turrets.remove(building);
 		if (building->type->isVirtual)
 			virtualBuildings.remove(building);
-		
+
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
 		assert(building->unitsWorkingSubscribe.size()==0);
@@ -652,7 +651,7 @@ void Team::step(void)
 			it=subscribeForInside.erase(ittemp);
 		}
 
-	//subscribeToBringRessourcesStep 
+	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()>0)
 			(*it)->subscribeToBringRessourcesStep();
@@ -770,7 +769,7 @@ Sint32 Team::checkSum()
 	cs^=enemies;
 	cs^=sharedVision;
 	cs^=me;
-	
+
 	return cs;
 }
 
@@ -781,5 +780,5 @@ const char *Team::getFirstPlayerName(void)
 		if (game->players[i]->team == this)
 			return game->players[i]->name;
 	}
-	return  globalContainer->texts.getString("[Uncontrolled]");
+	return  Toolkit::getStringTable()->getString("[Uncontrolled]");
 }

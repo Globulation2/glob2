@@ -26,6 +26,7 @@
 class Sprite;
 class Font;
 class FileManager;
+class StringTable;
 
 class Toolkit
 {
@@ -43,6 +44,7 @@ public:
 	static void releaseSprite(const char *name);
 	static Font *getFont(const char *name);
 	static void releaseFont(const char *name);
+	static StringTable *const getStringTable(void) { return strings; }
 
 protected:
 	friend class SDLGraphicContext;
@@ -55,6 +57,8 @@ protected:
 	static FontMap fontMap;
 	//! The virtual file system
 	static FileManager *fileManager;
+	//! The table of strings
+	static StringTable *strings;
 };
 
 #endif

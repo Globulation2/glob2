@@ -18,7 +18,6 @@
 */
 
 #include "TeamStat.h"
-#include "GlobalContainer.h"
 #include "Team.h"
 #include "Game.h"
 
@@ -163,7 +162,7 @@ void TeamStats::drawText()
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
-	StringTable *strings=&(globalContainer->texts);
+	StringTable *strings=Toolkit::getStringTable();
 	int textStartPosX=gfx->getW()-124;
 	int textStartPosY=128+32;
 	
@@ -185,7 +184,7 @@ void TeamStats::drawText()
 		gfx->drawString(textStartPosX, textStartPosY+34, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[0], strings->getString("[workers]"), ((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPosX+5, textStartPosY+46, font, "%s %d %s", strings->getString("[of which]"), free, strings->getString("[free]"));
 		gfx->drawString(textStartPosX+5, textStartPosY+56, font, "%s %d %s", strings->getString("[and]"), seeking, strings->getString("[seeking a job]"));
-		
+
 		// explorer
 		gfx->drawString(textStartPosX, textStartPosY+73, font, "%d %s (%.0f %%)", newStats.numberUnitPerType[1], strings->getString("[explorers]"), ((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit));
 		gfx->drawString(textStartPosX+5, textStartPosY+85, font, "%s %d %s", strings->getString("[of which]"), newStats.isFree[1], strings->getString("[free]"));
@@ -216,7 +215,7 @@ void TeamStats::drawStat()
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
-	StringTable *strings=&(globalContainer->texts);
+	StringTable *strings=Toolkit::getStringTable();
 	int textStartPos=gfx->getW()-124;
 	int startPoxY=128+32;
 	

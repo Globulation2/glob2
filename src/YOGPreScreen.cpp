@@ -19,13 +19,12 @@
 
 #include "YOGScreen.h"
 #include "YOGPreScreen.h"
-#include "GlobalContainer.h"
 
 YOGPreScreen::YOGPreScreen()
 {
-	addWidget(new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[login]"), LOGIN, 13));
-	addWidget(new Text(0, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[yog]"), 640));
+	addWidget(new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
+	addWidget(new Text(0, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[yog]"), 640));
 
 	login=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(login);
