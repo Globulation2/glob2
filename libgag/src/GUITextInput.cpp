@@ -27,9 +27,10 @@ TextInput::TextInput()
 	cursPos=0;
 	textDep=0;
 	cursorScreenPos=0;
+	maxLength=0;
 }
 
-TextInput::TextInput(int x, int y, int w, int h, const char *font, const char *text, bool activated, unsigned textLength)
+TextInput::TextInput(int x, int y, int w, int h, const char *font, const char *text, bool activated, unsigned maxLength)
 {
 	this->x=x;
 	this->y=y;
@@ -40,6 +41,7 @@ TextInput::TextInput(int x, int y, int w, int h, const char *font, const char *t
 	this->text=text;
 
 	cursPos=this->text.length();
+	this->maxLength=maxLength;
 	textDep=0;
 	cursorScreenPos=0;
 
@@ -71,11 +73,9 @@ void TextInput::onSDLEvent(SDL_Event *event)
 				// we move cursor:
 				int dx=event->button.x-x-1;
 
-				std::string textBeforeCurs=text;
-				while((cursPos<text.length()) && textBeforeCurs[cursPos])
-					cursPos++;
-				while((cursPos>0) && (fontPtr->getStringWidth(textBeforeCurs.c_str()+textDep)>dx))
-					textBeforeCurs[--cursPos]=0;
+				cursPos = text.length();
+				while((cursPos>0) && (fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep)>dx))
+					--cursPos;
 
 				repaint();
 				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
@@ -165,32 +165,27 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		{
 			if (cursPos>0)
 			{
-				// TODO : fix this in a clean way
-				/*unsigned l=strlen(text);
 				unsigned last=getPrevUTF8Char(text.c_str(), cursPos);
 
-				memmove( &(text[last]), &(text[cursPos]), l-cursPos+1);
+				text.erase(last, cursPos-last);
 
 				cursPos=last;
 
 				repaint();
-				parent->onAction(this, TEXT_MODIFIED, 0, 0);*/
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 
 		}
 		else if (sym==SDLK_DELETE)
 		{
-			unsigned l=text.length();
-			if (cursPos<l)
+			if (cursPos<text.length())
 			{
-				// TODO : fix this in a clean way
-				/*
 				int utf8l=getNextUTF8Char(text[cursPos]);
 
-				memmove( &(text[cursPos]), &(text[cursPos+utf8l]), l-cursPos-utf8l+1);
+				text.erase(cursPos, utf8l);
 
 				repaint();
-				parent->onAction(this, TEXT_MODIFIED, 0, 0);*/
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
 			}
 		}
 		else if (sym==SDLK_HOME)
@@ -218,24 +213,18 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			Uint16 c=event->key.keysym.unicode;
 			if (c)
 			{
-				// TODO : fix this in a clean way
-				/*
 				char utf8text[4];
 				UCS16toUTF8(c, utf8text);
-				unsigned l=text.length();
 				unsigned lutf8=strlen(utf8text);
-				if (l+lutf8<textLength-1)
+				if (text.length()+lutf8<maxLength)
 				{
-					memmove( &(text[cursPos+lutf8]), &(text[cursPos]), l+1-cursPos);
-
-					memcpy( &(text[cursPos]), utf8text, lutf8);
+					text.insert(cursPos, utf8text);
 					cursPos+=lutf8;
 
 					repaint();
 
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
-				*/
 			}
 		}
 	}
@@ -243,33 +232,26 @@ void TextInput::onSDLEvent(SDL_Event *event)
 
 void TextInput::recomputeTextInfos(void)
 {
-	int textLength = text.length();
-	VARARRAY(char,temp, textLength);
-
 #define TEXTBOXSIDEPAD 30
 
 	// make sure we have always right space at left
 	if (cursPos<textDep)
 		textDep=cursPos;
-	strcpy(temp, text.c_str()+textDep);
-	temp[cursPos-textDep]=0;
-	cursorScreenPos=fontPtr->getStringWidth(temp);
-	while ((cursorScreenPos<TEXTBOXSIDEPAD)&&(textDep>0))
+
+	// we make cursor not out of the box at left
+	textDep++;
+	do
 	{
 		textDep--;
-		strcpy(temp,&(text[textDep]));
-		temp[cursPos-textDep]=0;
-		cursorScreenPos=fontPtr->getStringWidth(temp);
+		cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
 	}
-	
-	// make sure we have always right space at right
-	while ( (cursorScreenPos>w-TEXTBOXSIDEPAD-4) &&	(textDep<textLength) )
+	while ((textDep>0) && (cursorScreenPos<TEXTBOXSIDEPAD));
+
+	// we make cursor not out of the box at right
+	while ( (textDep<text.length()) && (cursorScreenPos>w-TEXTBOXSIDEPAD-4) )
 	{
 		textDep++;
-
-		strcpy(temp,&(text[textDep]));
-		temp[cursPos-textDep]=0;
-		cursorScreenPos=fontPtr->getStringWidth(temp);
+		cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
 	}
 
 }
@@ -287,17 +269,14 @@ void TextInput::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, r, g, b);
+	printf("textDep is %d, text is %s\n", textDep, text.c_str());
 	parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, "%s", text.c_str()+textDep);
 
 	// we draw the cursor:
 	if(activated)
 	{
-		VARARRAY(char,textBeforeCurs,text.length());
-		strncpy(textBeforeCurs, text.c_str(), text.length());
-		textBeforeCurs[cursPos]=0;
-		//int wbc=font->getStringWidth(textBeforeCurs);
-		int hbc=fontPtr->getStringHeight(textBeforeCurs);
-		parent->getSurface()->drawVertLine(x+2+cursorScreenPos/*wbc*/, y+3 , hbc, r, g, b);
+		int hbc=fontPtr->getStringHeight(text.c_str());
+		parent->getSurface()->drawVertLine(x+2+cursorScreenPos, y+3 , hbc, r, g, b);
 	}
 }
 

@@ -57,3 +57,24 @@ int Font::getStringWidth(const int i) const
 	snprintf(temp, 32, "%d", i);
 	return getStringWidth(temp);
 }
+
+int Font::getStringWidth(const char *string, int len) const
+{
+	std::string temp;
+	temp.append(string, len);
+	return getStringWidth(temp.c_str());
+}
+
+int Font::getStringHeight(const char *string, int len) const
+{
+	std::string temp;
+	temp.append(string, len);
+	return getStringHeight(temp.c_str());
+}
+
+int Font::getStringHeight(const int i) const
+{
+	char temp[32];
+	snprintf(temp, 32, "%d", i);
+	return getStringHeight(temp);
+}

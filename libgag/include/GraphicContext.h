@@ -112,8 +112,11 @@ public:
 	
 	// width and height
 	virtual int getStringWidth(const char *string) const=0;
+	virtual int getStringWidth(const char *string, int len) const;
 	virtual int getStringWidth(const int i) const;
 	virtual int getStringHeight(const char *string) const=0;
+	virtual int getStringHeight(const char *string, int len) const;
+	virtual int getStringHeight(const int i) const;
 	virtual bool printable(char c) const=0;
 	
 	// Style and color
