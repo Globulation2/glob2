@@ -89,7 +89,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				printf("PGU : Warning, Error during map load\n");
 		}
 	}
-	else if (action==BUTTON_RELEASED)
+	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (source==ok)
 		{

@@ -20,7 +20,7 @@
 
 #include "GUIButton.h"
 
-Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicode)
+Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
 {
 	this->x=x;
 	this->y=y;
@@ -30,7 +30,7 @@ Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int hig
 	this->standardId=standardId;
 	this->highlightID=highlightID;
 	this->returnCode=returnCode;
-	this->unicode=unicode;
+	this->unicodeShortcut=unicodeShortcut;
 	highlighted=false;
 }
 
@@ -63,9 +63,8 @@ void Button::onSDLEvent(SDL_Event *event)
 	else if (event->type==SDL_KEYDOWN)
 	{
 		Uint16 typedUnicode=event->key.keysym.unicode;
-		//printf("typedUnicode=%d.\n", typedUnicode);
-		if ((unicode)&&(typedUnicode==unicode))
-			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
+		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
+			parent->onAction(this, BUTTON_SHORTCUT, returnCode, unicodeShortcut);
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{

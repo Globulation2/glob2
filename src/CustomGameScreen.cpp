@@ -148,7 +148,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		}
 		delete[] mapFileName; 
 	}
-	else if (action==BUTTON_RELEASED)
+	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (source==ok)
 		{

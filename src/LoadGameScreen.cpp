@@ -95,7 +95,7 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		delete[] mapFileName; 
 	}
-	else if (action==BUTTON_RELEASED)
+	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (source==ok)
 		{

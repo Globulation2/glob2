@@ -58,7 +58,7 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 
 void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	if (action==BUTTON_RELEASED)
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==OK)
 		{
