@@ -1,3 +1,9 @@
+glob2 (alpha6) unstable; urgency=low
+
+  * Alpha6
+
+ -- Stephane Magnenat <nct@ysagoon.com>  Wed,  9 Jun 2004 21:29:08 +0200
+
 glob2 (alpha5-post) unstable; urgency=low
 
   * Post Alpha5 CVS
