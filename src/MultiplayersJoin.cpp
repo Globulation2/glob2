@@ -36,6 +36,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	assert((int)BROADCAST_REQUEST==(int)YMT_BROADCAST_REQUEST);
 	assert((int)BROADCAST_RESPONSE_LAN==(int)YMT_BROADCAST_RESPONSE_LAN);
 	assert((int)BROADCAST_RESPONSE_YOG==(int)YMT_BROADCAST_RESPONSE_YOG);
+	
 	yogGameInfo=NULL;
 	downloadStream=NULL;
 	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
@@ -623,7 +624,7 @@ void MultiplayersJoin::crossConnectionSecondMessage(Uint8 *data, int size, IPadd
 
 }
 
-void MultiplayersJoin::stillCrossConnectingConfirmation(IPaddress ip)
+void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, IPaddress ip)
 {
 	if (waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 	{
@@ -634,6 +635,41 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(IPaddress ip)
 			waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		}
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
+		
+		if (shareOnYOG)
+		{
+			if (size<8 || (size-8)%10)
+			{
+				fprintf(logFile, "Warning: ip(%s) sent us a stillCrossConnectingConfirmation with a bas size! (%d)\n", Utilities::stringIP(ip), size);
+				return;
+			}
+			int n=(size-8)/10;
+			int l=8;
+			for (int i=0; i<n; i++)
+			{
+				Uint32 uid=getUint32(data, l);
+				l+=4;
+				IPaddress ip;
+				ip.host=getUint32(data, l);
+				l+=4;
+				ip.port=getUint16(data, l);
+				l+=2;
+				char *userName=yog->userNameFromUID(uid);
+				if (userName)
+					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
+						{
+							if (sessionInfo.players[j].waitForNatResolution)
+							{
+								fprintf(logFile, " player (%d) (%s) switched to ip=(%s)", j, userName, Utilities::stringIP(ip));
+								sessionInfo.players[j].setip(ip);
+							}
+							else
+								fprintf(logFile, " player (%d) (%s) not switched to ip=(%s)", j, userName, Utilities::stringIP(ip));
+						}
+			}
+			assert(l==size);
+		}
 	}
 	else
 		fprintf(logFile, "Warning: ip(%s) sent us a stillCrossConnectingConfirmation while in a bad state!.\n", Utilities::stringIP(ip));
@@ -790,7 +826,7 @@ void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress 
 				sessionInfo.players[j].waitForNatResolution=false;
 				sessionInfo.players[j].ipFromNAT=true;
 				sessionInfo.players[j].setip(ip);
-				fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", name, j, Utilities::stringIP(ip));
+				fprintf(logFile, "joinerBroadcastResponse, The player (%d) (%s) has a new ip(%s)\n", j, name, Utilities::stringIP(ip));
 			}
 	}
 	else
@@ -875,7 +911,7 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 		break;
 
 		case SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING :
-			stillCrossConnectingConfirmation(ip);
+			stillCrossConnectingConfirmation(data, size, ip);
 		break;
 
 		case SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION :

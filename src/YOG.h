@@ -157,6 +157,7 @@ public:
 	void connectedToGameHost(); // Call this if you are trying to join a game, and the host responded.
 	
 	IPaddress ipFromUserName(char userName[32]);
+	char *userNameFromUID(Uint32 uid);
 	
 	bool isConnectedToGameHost;
 	
