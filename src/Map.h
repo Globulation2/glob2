@@ -161,6 +161,7 @@ public:
 	//! Returs true if map is discovered at position (x,y) for team p
 	bool isMapDiscovered(int x, int y, int p)
 	{
+		return true;
 		return ((*(mapDiscovered+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	/*void setFOW(int x, int y, int p) { (*(fogOfWar+w*(y&hMask)+(x&wMask)))|=(1<<p); }
@@ -168,6 +169,7 @@ public:
 	//! Return true if FOW (Fog of War) is not set at position (x,y) for team p (the function name is illogic, should be isFOWfree )
 	bool isFOW(int x, int y, int p)
 	{
+		return true;
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&(1<<p))!=0;
 	}
 	//! Set map to discovered state at rect (x,y) - (x+w, y+h) for team p
