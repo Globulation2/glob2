@@ -785,7 +785,7 @@ int MapEdit::run(void)
 						break;
 				}
 
-			if (event.type==SDL_MOUSEBUTTONDOWN)
+			if (event.type==SDL_MOUSEBUTTONUP)
 			{
 				int mx=event.button.x;
 				int my=event.button.y;
