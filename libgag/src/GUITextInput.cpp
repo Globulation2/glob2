@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include <GUITextInput.h>
@@ -204,23 +204,30 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		{
 			parent->onAction(this, TEXT_VALIDATED, 0, 0);
 		}
+		else if (sym==SDLK_ESCAPE)
+		{
+			parent->onAction(this, TEXT_CANCELED, 0, 0);
+		}
 		else
 		{
 			Uint16 c=event->key.keysym.unicode;
-			char utf8text[4];
-			UCS16toUTF8(c, utf8text);
-			int l=strlen(text);
-			int lutf8=strlen(utf8text);
-			if (l+lutf8<MAX_TEXT_SIZE-1)
+			if (c)
 			{
-				memmove( &(text[cursPos+lutf8]), &(text[cursPos]), l+1-cursPos);
+				char utf8text[4];
+				UCS16toUTF8(c, utf8text);
+				int l=strlen(text);
+				int lutf8=strlen(utf8text);
+				if (l+lutf8<MAX_TEXT_SIZE-1)
+				{
+					memmove( &(text[cursPos+lutf8]), &(text[cursPos]), l+1-cursPos);
 
-				memcpy( &(text[cursPos]), utf8text, lutf8);
-				cursPos+=lutf8;
+					memcpy( &(text[cursPos]), utf8text, lutf8);
+					cursPos+=lutf8;
 
-				repaint();
+					repaint();
 
-				parent->onAction(this, TEXT_MODIFIED, 0, 0);
+					parent->onAction(this, TEXT_MODIFIED, 0, 0);
+				}
 			}
 		}
 	}
