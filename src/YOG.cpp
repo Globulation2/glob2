@@ -928,11 +928,16 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 		return false;
 	}
 	
-	fprintf(logFile, "\nresolving YOG host name...\n");
-	int rv=SDLNet_ResolveHost(&serverIP, YOG_SERVER_IP, YOG_SERVER_PORT);
+	const char *yogHostname;
+	if (globalContainer->yogHostName.length() > 0)
+		yogHostname = globalContainer->yogHostName.c_str();
+	else
+		yogHostname = YOG_SERVER_IP;
+	fprintf(logFile, "\nresolving YOG host name %s\n", yogHostname);
+	int rv = SDLNet_ResolveHost(&serverIP, yogHostname, YOG_SERVER_PORT);
 	if (rv==-1)
 	{
-		fprintf(logFile, "failed to resolve YOG host name!\n");
+		fprintf(logFile, "failed to resolve YOG host name %s!\n", yogHostname);
 		return false;
 	}
 	
