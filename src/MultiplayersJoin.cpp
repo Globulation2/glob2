@@ -244,6 +244,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	if (downloadStream==NULL)
 	{
 		fprintf(logFile, "MultiplayersJoin:: no more data file wanted.\n");
+		fprintf(logFile, "endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
 		if (endOfFileIndex)
 		{
 			char data[72];
@@ -254,7 +255,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 			data[2]=0;
 			data[3]=0;
 
-			addUint32(data, unreceivedIndex, 4);
+			addUint32(data, 0xFFFFFFFF, 4);
 			//for (int ri=0; ri<16; ri++)
 			//	addUint32(data, firstReceived[ri], 8+ri*4);
 
@@ -267,6 +268,20 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	int writingSize=size-12;
 	fprintf(logFile, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
 	
+	if (windowIndex==-1)
+	{
+		if (writingSize==12)
+		{
+			endOfFileIndex=writingIndex;
+			fprintf(logFile, "2 end of the file is %d.\n", endOfFileIndex);
+		}
+		else
+		{
+			fprintf(logFile, "MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
+			return;
+		}
+	}
+	
 	if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
 	{
 		fprintf(logFile, "MultiplayersJoin:: we received an bad windowIndex in data file !!!.\n");
@@ -276,7 +291,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	if (writingSize==0)
 	{
 		endOfFileIndex=writingIndex;
-		fprintf(logFile, "end of the file is %d.\n", endOfFileIndex);
+		fprintf(logFile, "1 end of the file is %d.\n", endOfFileIndex);
 	}
 	else
 	{

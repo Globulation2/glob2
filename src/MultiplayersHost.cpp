@@ -608,6 +608,26 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			playerFileTra[p].packetSize=512;
 			playerFileTra[p].windowSize=1;
 		}
+		else
+		{
+			Uint32 unreceivedIndex=getUint32(data, 4);
+			if (unreceivedIndex!=0xFFFFFFFF)
+			{
+				char data[12];
+				data[0]=FULL_FILE_DATA;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				addSint32(data, (Sint32)-1, 4);
+				addUint32(data, fileSize, 8);
+
+				bool success=sessionInfo.players[p].send(data, 12);
+				assert(success);
+				playerFileTra[p].totalLost++;
+				playerFileTra[p].totalSent++;
+				playerFileTra[p].windowstats[playerFileTra[p].windowSize]++;
+			}
+		}
 	}
 	else
 	{
@@ -621,7 +641,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
 		fprintf(logFile, "unreceivedIndex=%d\n", unreceivedIndex);
 		
-		if (unreceivedIndex==fileSize)
+		if (unreceivedIndex==fileSize || unreceivedIndex==0xFFFFFFFF)
 		{
 			playerFileTra[p].wantsFile=false;
 			playerFileTra[p].receivedFile=true;
@@ -1265,7 +1285,7 @@ void MultiplayersHost::sendingTime()
 				if (windowSize<1)
 				{
 					windowSize=1;
-					if (playerFileTra[p].packetSize>256)
+					if (playerFileTra[p].packetSize>128)
 					{
 						playerFileTra[p].packetSize/=2;
 						for (int i=0; i<MAX_WINDOW_SIZE; i++)
