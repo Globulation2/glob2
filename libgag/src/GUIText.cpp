@@ -80,17 +80,18 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 	
+		parent->getSurface()->pushFontStyle(fontPtr, style);
+		
 		if (hAlignFlag==ALIGN_FILL)
-			wDec=(w-fontPtr->getStringWidth(text.c_str(), style.shape))>>1;
+			wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
 		else
 			wDec=0;
 	
 		if (vAlignFlag==ALIGN_FILL)
-			hDec=(h-fontPtr->getStringHeight(text.c_str(), style.shape))>>1;
+			hDec=(h-fontPtr->getStringHeight(text.c_str()))>>1;
 		else
 			hDec=0;
 	
-		parent->getSurface()->pushFontStyle(fontPtr, style);
 		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
 		parent->getSurface()->popFontStyle(fontPtr);
 	}
