@@ -1685,7 +1685,7 @@ void Unit::handleMovement(void)
 			{
 				movement=MOV_FLYING_TARGET;
 			}
-			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy))
+			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
 			{
 				if (verbose)
 					printf("guid=(%d) Unit found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
