@@ -213,12 +213,16 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	totalRatio = stream->readSint32("totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		std::ostringstream oss;
-		oss << "ratio[" << i << "]";
-		ratioLocal[i] = ratio[i] = stream->readSint32(oss.str().c_str());
-		oss.clear();
-		oss << "percentUsed[" << i << "]";
-		percentUsed[i] = stream->readSint32(oss.str().c_str());
+		{
+			std::ostringstream oss;
+			oss << "ratio[" << i << "]";
+			ratioLocal[i] = ratio[i] = stream->readSint32(oss.str().c_str());
+		}
+		{
+			std::ostringstream oss;
+			oss << "percentUsed[" << i << "]";
+			percentUsed[i] = stream->readSint32(oss.str().c_str());
+		}
 	}
 
 	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
@@ -323,12 +327,16 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(totalRatio, "totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		std::ostringstream oss;
-		oss << "ratio[" << i << "]";
-		stream->writeSint32(ratio[i], oss.str().c_str());
-		oss.clear();
-		oss << "percentUsed[" << i << "]";
-		stream->writeSint32(percentUsed[i], oss.str().c_str());
+		{
+			std::ostringstream oss;
+			oss << "ratio[" << i << "]";
+			stream->writeSint32(ratio[i], oss.str().c_str());
+		}
+		{
+			std::ostringstream oss;
+			oss << "percentUsed[" << i << "]";
+			stream->writeSint32(percentUsed[i], oss.str().c_str());
+		}
 	}
 
 	stream->writeUint32(receiveRessourceMask, "receiveRessourceMask");

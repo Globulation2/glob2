@@ -1320,12 +1320,24 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			// a unit is selected:
 			setSelection(UNIT_SELECTION, game.mouseUnit);
 			selectionPushed=true;
+			// handle dump of unit characteristics
+			if ((SDL_GetModState() & KMOD_SHIFT) != 0)
+			{
+				GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("unit.dump.txt", FileManager::STREAM_TEXT);
+				if (stream)
+				{
+					std::cerr << "Dump unit " << game.mouseUnit->gid << " memory" << std::endl;
+					game.mouseUnit->save(stream);
+					game.mouseUnit->saveCrossRef(stream);
+					delete stream;
+				}
+			}
 		}
 		else 
 		{
 			// then for building
 			Uint16 gbid=game.map.getBuilding(mapX, mapY);
-			if (gbid!=NOGBID)
+			if (gbid != NOGBID)
 			{
 				int buildingTeam=Building::GIDtoTeam(gbid);
 				// we can select for view buildings that are in shared vision
@@ -1337,6 +1349,18 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;
 					showUnitWorkingToBuilding=true;
+					// handle dump of building characteristics
+					if ((SDL_GetModState() & KMOD_SHIFT) != 0)
+					{
+						GAGCore::OutputStream *stream = globalContainer->fileManager->openOutputStream("building.dump.txt", FileManager::STREAM_TEXT);
+						if (stream)
+						{
+							std::cerr << "Dump building " << selection.building->gid << " memory" << std::endl;
+							selection.building->save(stream);
+							selection.building->saveCrossRef(stream);
+							delete stream;
+						}
+					}
 				}
 			}
 			else
