@@ -202,6 +202,9 @@ private:
 		const char *build;
 		int ressource;
 	} selection;
+	
+	//! Value between 0 and 1 that indicates if selection has to be highlighten
+	float highlightSelection;
 
 	//! Unset and clean everything related to the selection so a new one can be set
 	void cleanOldSelection(void);

@@ -170,7 +170,8 @@ namespace GAGCore
 	{
 		if (!surface)
 			return;
-			
+		
+		this->unlock();
 		sprite->draw(surface, &clipRect, x, y, index, alpha);
 	}
 	
@@ -238,7 +239,6 @@ namespace GAGCore
 				}
 				break;
 			}
-			unlock();
 		}
 	}
 	
@@ -262,7 +262,6 @@ namespace GAGCore
 			drawHorzLine(x, y+h-1, w, r, g, b, a);
 			drawVertLine(x, y, h, r, g, b, a);
 			drawVertLine(x+w-1, y, h, r, g, b, a);
-			unlock();
 		}
 	}
 	
@@ -413,7 +412,6 @@ namespace GAGCore
 				}
 				break;
 			}
-			unlock();
 		}
 	}
 	
@@ -558,7 +556,6 @@ namespace GAGCore
 				default:
 					break;
 			}
-			unlock();
 		}
 	}
 	
@@ -696,7 +693,6 @@ namespace GAGCore
 				default:
 					break;
 			}
-			unlock();
 		}
 	}
 	
@@ -892,7 +888,6 @@ namespace GAGCore
 				drawPixel(px,py,r,g,b,(Uint8)(I-(e>>FIXED)));
 				drawPixel(px+alphadecx,py+alphadecy,r,g,b,(Uint8)(e>>FIXED));
 			}
-			unlock();
 		}
 	}
 	
@@ -1027,7 +1022,6 @@ namespace GAGCore
 				}
 				while (dx<=dy);
 			}
-			unlock();
 		}
 	}
 	
@@ -1055,6 +1049,7 @@ namespace GAGCore
 		FILTER_OUT_CHAR(output.c_str(), '\n');
 		FILTER_OUT_CHAR(output.c_str(), '\r');
 		
+		this->unlock();
 		font->drawString(surface, x, y, w, output.c_str(), &clipRect);
 	}
 	
@@ -1086,6 +1081,8 @@ namespace GAGCore
 		r.w=static_cast<Uint16>(osurface->getW());
 		r.h=static_cast<Uint16>(osurface->getH());
 	
+		this->unlock();
+		osurface->unlock();
 		SDL_BlitSurface(osurface->surface, NULL, this->surface, &r);
 	}
 	
