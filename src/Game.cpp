@@ -1388,7 +1388,6 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			r=100;
 			g=255;
 			b=100;
-			printf("flag : %d %d\n", fx, fy);
 			ptr=((Uint8 *)minimap->pixels)+fy*minimap->pitch+fx*bpp;
 			switch (bpp)
 			{
