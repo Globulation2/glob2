@@ -102,6 +102,7 @@ MultiplayersConnectedScreen.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp \
+YOG.h \
 YOG.cpp
 
 glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
