@@ -170,7 +170,7 @@ protected:
 		//! allocate the internal surface suitable for fast blit, free the source
 		Surface(SDL_Surface *source);
 		~Surface();
-		//! of GL is enabled, upload the texture to GfxCard
+		//! if GL is enabled, upload the texture to GfxCard
 		void initTexture(void);
 	};
 
@@ -190,7 +190,12 @@ protected:
 
 	friend class GraphicContext;
 	void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
+	
+	//! create a hue-rotated image to actColor for index
+	Surface *createRotatedFrame(int index);
+	//! create a surface from an SDL one, if GL is enabled, the surface will also be in gfx memory
 	Surface *surfaceFromSDL(SDL_Surface *s);
+	//! check if index is valid for this sprite
 	void checkBound(int index);
 
 public:

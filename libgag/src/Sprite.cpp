@@ -83,6 +83,56 @@ Sprite::RotatedImage::~RotatedImage()
 	}
 }
 
+Sprite::Surface *Sprite::createRotatedFrame(int index)
+{
+	float hue, lum, sat;
+	float baseHue, hueDec;
+
+	GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+	GAG::RGBtoHSV( ((float)actColor.channel.r)/255, ((float)actColor.channel.g)/255, ((float)actColor.channel.b)/255, &hue, &sat, &lum);
+	hueDec = hue-baseHue;
+	int w = rotated[index]->orig->w;
+	int h = rotated[index]->orig->h;
+
+	SDL_Surface *newSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+
+	Uint32 *sPtr = (Uint32 *)rotated[index]->orig->pixels;
+	Uint32 *dPtr = (Uint32 *)newSurface->pixels;
+	for (int i=0; i<w*h; i++)
+	{
+		Uint8 sR, sG, sB, alpha;
+		Uint8 dR, dG, dB;
+		float nR, nG, nB;
+		SDL_GetRGBA(*sPtr, rotated[index]->orig->format, &sR, &sG, &sB, &alpha);
+
+		if (alpha != DrawableSurface::ALPHA_TRANSPARENT)
+		{
+			GAG::RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
+
+			float newHue = hue + hueDec;
+			if (newHue >= 360)
+				newHue -= 360;
+			if (newHue < 0)
+				newHue += 360;
+
+			GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
+
+			dR = static_cast<Uint8>(255.0f*nR);
+			dG = static_cast<Uint8>(255.0f*nG);
+			dB = static_cast<Uint8>(255.0f*nB);
+
+			*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
+		}
+		else
+			*dPtr = 0;
+
+		sPtr++;
+		dPtr++;
+	}
+
+	return new Surface(newSurface);
+}
+
 void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
 	checkBound(index);
@@ -146,54 +196,7 @@ void Sprite::drawSDL(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 		Surface *toBlit;
 		if (it == rotated[index]->rotationMap.end())
 		{
-			float hue, lum, sat;
-			float baseHue, hueDec;
-
-			GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
-			GAG::RGBtoHSV( ((float)actColor.channel.r)/255, ((float)actColor.channel.g)/255, ((float)actColor.channel.b)/255, &hue, &sat, &lum);
-			hueDec = hue-baseHue;
-			int w = rotated[index]->orig->w;
-			int h = rotated[index]->orig->h;
-
-			SDL_Surface *newSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-
-			Uint32 *sPtr = (Uint32 *)rotated[index]->orig->pixels;
-			Uint32 *dPtr = (Uint32 *)newSurface->pixels;
-			for (int i=0; i<w*h; i++)
-			{
-				Uint8 sR, sG, sB, alpha;
-				Uint8 dR, dG, dB;
-				float nR, nG, nB;
-				SDL_GetRGBA(*sPtr, rotated[index]->orig->format, &sR, &sG, &sB, &alpha);
-
-				if (alpha != DrawableSurface::ALPHA_TRANSPARENT)
-				{
-					GAG::RGBtoHSV( ((float)sR)/255, ((float)sG)/255, ((float)sB)/255, &hue, &sat, &lum);
-
-					float newHue = hue + hueDec;
-					if (newHue >= 360)
-						newHue -= 360;
-					if (newHue < 0)
-						newHue += 360;
-
-					GAG::HSVtoRGB(&nR, &nG, &nB, newHue, sat, lum);
-
-					dR = static_cast<Uint8>(255.0f*nR);
-					dG = static_cast<Uint8>(255.0f*nG);
-					dB = static_cast<Uint8>(255.0f*nB);
-
-					*dPtr = SDL_MapRGBA(newSurface->format, dR, dG, dB, alpha);
-				}
-				else
-					*dPtr = 0;
-
-
-				sPtr++;
-				dPtr++;
-			}
-
-			toBlit = new Surface(newSurface);
-			rotated[index]->rotationMap[actColor] = toBlit;
+			toBlit = rotated[index]->rotationMap[actColor] = createRotatedFrame(index);
 		}
 		else
 		{
@@ -233,11 +236,20 @@ void Sprite::drawGL(int x, int y, int index)
 	
 	if (rotated[index])
 	{
-		// TODO : update the rotation cache independently of the rendering backend then uncomment this
-		/*int w = rotated[index]->orig->w;
-		int h = rotated[index]->origorigh;
+		RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(actColor);
+		Surface *toBlit;
+		if (it == rotated[index]->rotationMap.end())
+		{
+			toBlit = rotated[index]->rotationMap[actColor] = createRotatedFrame(index);
+		}
+		else
+		{
+			toBlit = it->second;
+		}
+		int w = toBlit->s->w;
+		int h = toBlit->s->h;
 		
-		glBindTexture(GL_TEXTURE_2D, rotated[index]->t);
+		glBindTexture(GL_TEXTURE_2D, toBlit->t);
 		glBegin(GL_QUADS);
 		//glColor4ub(255, 255, 255, alpha);
 		glTexCoord2i(0, 0);
@@ -248,7 +260,7 @@ void Sprite::drawGL(int x, int y, int index)
 		glVertex2i(x+w, y+h);
 		glTexCoord2i(w, 0);
 		glVertex2i(x+w, y);
-		glEnd();*/
+		glEnd();
 	}
 	
 	glDisable(GL_TEXTURE_2D);
