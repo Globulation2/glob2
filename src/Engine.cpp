@@ -86,10 +86,7 @@ int Engine::initCampain(void)
 
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeam);
-	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
-	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
-	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
+	gui.adjustInitialViewport();
 
 	// FIXME : delete Team that hasn't any players and defrag array
 
@@ -151,10 +148,30 @@ int Engine::initCustom(void)
 
 	gui.game.session.numberOfPlayer=nbPlayer;
 	gui.game.renderMiniMap(gui.localTeam);
-	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
-	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
-	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
+	gui.adjustInitialViewport();
+
+	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
+
+	return EE_NO_ERROR;
+}
+
+int Engine::initCustom(char *gameName)
+{
+	SDL_RWops *stream=globalContainer->fileManager.open(gameName,"rb");
+	if (stream)
+	{
+		gui.load(stream);
+		SDL_RWclose(stream);
+		printf("Engine : game is loaded\n");
+	}
+	else
+	{
+		printf("Engine : Can't load map\n"); 
+		return EE_CANCEL;
+	}
+	
+	gui.game.renderMiniMap(gui.localTeam);
+	gui.adjustInitialViewport();
 
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
@@ -246,76 +263,88 @@ int Engine::initMutiplayerJoin(void)
 
 int Engine::run(void)
 {
-	//int ticknb=0;
-	Uint32 startTick, endTick, deltaTick;
-	while (gui.isRunning)
+	bool doRunOnceAggain=true;
+	
+	while (doRunOnceAggain)
 	{
-		//printf ("Engine::begin:%d\n", globalContainer->safe());
-		startTick=SDL_GetTicks();
-
-		// we get and push local orders
-
-		//printf ("Engine::bgu:%d\n", globalContainer->safe());
-
-		gui.step();
-
-		//printf ("Engine::bnp:%d\n", globalContainer->safe());
-
-		net->pushOrder(gui.getOrder(), gui.localPlayer);
-
-		// we get and push ai orders
+		//int ticknb=0;
+		Uint32 startTick, endTick, deltaTick;
+		while (gui.isRunning)
 		{
+			//printf ("Engine::begin:%d\n", globalContainer->safe());
+			startTick=SDL_GetTicks();
+
+			// we get and push local orders
+
+			//printf ("Engine::bgu:%d\n", globalContainer->safe());
+
+			gui.step();
+
+			//printf ("Engine::bnp:%d\n", globalContainer->safe());
+
+			net->pushOrder(gui.getOrder(), gui.localPlayer);
+
+			// we get and push ai orders
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
 				if (gui.game.players[i]->ai)
 					net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
 			}
-		}
 
-		//printf ("Engine::bns:%d\n", globalContainer->safe());
 
-		// we proceed network
-		net->step();
+			//printf ("Engine::bns:%d\n", globalContainer->safe());
 
-		//printf ("Engine::bge:%d\n", globalContainer->safe());
+			// we proceed network
+			net->step();
 
-		{
+			//printf ("Engine::bge:%d\n", globalContainer->safe());
+
 			for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 			{
 				gui.executeOrder(net->getOrder(i));
 			}
+
+			//printf ("Engine::bne:%d\n", globalContainer->safe());
+
+			// here we do the real work
+			gui.game.step(gui.localTeam);
+
+			//printf ("Engine::bdr:%d\n", globalContainer->safe());
+
+			// we draw
+			gui.drawAll(gui.localTeam);
+
+			//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
+			//ticknb=(ticknb+1)%(640-128);
+
+			globalContainer->gfx->nextFrame();
+
+			endTick=SDL_GetTicks();
+			deltaTick=endTick-startTick-net->advance();
+			//if (net->advance())
+			//	printf("advance=%d\n", net->advance());
+			if (deltaTick<(unsigned)gui.game.session.gameTPF)
+				SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
+
+			//printf ("Engine::end:%d\n", globalContainer->safe());
 		}
 
-		//printf ("Engine::bne:%d\n", globalContainer->safe());
-
-		// here we do the real work
-		gui.game.step(gui.localTeam);
-
-		//printf ("Engine::bdr:%d\n", globalContainer->safe());
-
-		// we draw
-		gui.drawAll(gui.localTeam);
-
-		//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
-		//ticknb=(ticknb+1)%(640-128);
-
-		globalContainer->gfx->nextFrame();
+		delete net;
+		net=NULL;
 		
-		endTick=SDL_GetTicks();
-		deltaTick=endTick-startTick-net->advance();
-		//if (net->advance())
-		//	printf("advance=%d\n", net->advance());
-		if (deltaTick<(unsigned)gui.game.session.gameTPF)
-			SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
+		if (gui.exitGlobCompletely)
+			return -1; // There is no bypass for the "close window button"
 		
-		//printf ("Engine::end:%d\n", globalContainer->safe());
+		doRunOnceAggain=false;
+		
+		if (gui.toLoadGameFileName[0])
+		{
+			int rv=initCustom(gui.toLoadGameFileName);
+			if (rv==EE_NO_ERROR)
+				doRunOnceAggain=true;
+			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
+		}
 	}
-
-	delete net;
-	net=NULL;
-
-	if (gui.exitGlobCompletely)
-		return -1;
-	else
-		return EE_NO_ERROR;
+	
+	return EE_NO_ERROR;
 }

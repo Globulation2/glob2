@@ -20,6 +20,7 @@
 
 #include "Utilities.h"
 #include <math.h>
+#include <assert.h>
 
 int sign(int s)
 {
@@ -78,6 +79,9 @@ Uint32 syncRand(void)
 
 	//return (randc>>3)|((randa^randb)&0xE0000000);
 	//return randc;
+	
+	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
+	
 	return (randc>>1)|((randa^randb)&0x80000000);
 }
 
@@ -86,6 +90,7 @@ void setSyncRandSeed()
 	randa=0x8FD2B1A1;
 	randb=0XF7F513DE;
 	randc=0x13DA757F;
+	//printf("ini rand=(%d, %d, %d).\n", randa, randb, randc);
 }
 void setSyncRandSeedA(Uint32 seed)
 {
@@ -98,6 +103,7 @@ void setSyncRandSeedB(Uint32 seed)
 void setSyncRandSeedC(Uint32 seed)
 {
 	randc=seed;
+	//printf("set rand=(%d, %d, %d).\n", randa, randb, randc);
 }
 
 Uint32 getSyncRandSeedA(void)
@@ -110,6 +116,7 @@ Uint32 getSyncRandSeedB(void)
 }
 Uint32 getSyncRandSeedC(void)
 {
+	//printf("get rand=(%d, %d, %d).\n", randa, randb, randc);
 	return randc;
 }
 

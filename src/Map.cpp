@@ -170,45 +170,44 @@ void Sector::load(SDL_RWops *stream, Game *game)
 void Sector::step(void)
 {
 	std::list<Bullet*>::iterator ittemp;
+	
+	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
-		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
+		if ( (*it)->ticksLeft > 0 )
 		{
-			if ( (*it)->ticksLeft > 0 )
+			(*it)->step();
+		}
+		else
+		{
+			int UID=map->getUnit((*it)->targetX, (*it)->targetY);
+			if (UID>=0)
 			{
-				(*it)->step();
+				int team=Unit::UIDtoTeam(UID);
+				int id=Unit::UIDtoID(UID);
+
+				game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::UNIT_UNDER_ATTACK_EVENT);
+				game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
 			}
-			else
+			else if (UID!=NOUID)
 			{
-				int UID=map->getUnit((*it)->targetX, (*it)->targetY);
-				if (UID>=0)
-				{
-					int team=Unit::UIDtoTeam(UID);
-					int id=Unit::UIDtoID(UID);
+				int team=Building::UIDtoTeam(UID);
+				int id=Building::UIDtoID(UID);
 
-					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::UNIT_UNDER_ATTACK_EVENT);
-					game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
-				}
-				else if (UID!=NOUID)
-				{
-					int team=Building::UIDtoTeam(UID);
-					int id=Building::UIDtoID(UID);
+				game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::BUILDING_UNDER_ATTACK_EVENT);
+				Building *b=game->teams[team]->myBuildings[id];
+				int damage=(*it)->shootDamage-b->type->armor; 
+				if (damage>0)
+					b->hp-=damage;
+				else
+					b->hp--;
+				if (b->hp<=0)
+					b->kill();
 
-					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::BUILDING_UNDER_ATTACK_EVENT);
-					Building *b=game->teams[team]->myBuildings[id];
-					int damage=(*it)->shootDamage-b->type->armor; 
-					if (damage>0)
-						b->hp-=damage;
-					else
-						b->hp--;
-					if (b->hp<=0)
-						b->kill();
-					
-					//printf("bullet hitted building %d \n", (int)b);
-				}
-				
-				ittemp=it;
-				it=bullets.erase(ittemp);
+				//printf("bullet hitted building %d \n", (int)b);
 			}
+
+			ittemp=it;
+			it=bullets.erase(ittemp);
 		}
 	}
 }
@@ -699,11 +698,8 @@ void Map::save(SDL_RWops *stream)
 }
 void Map::growRessources(void)
 {
-	static int dy=0;
-	dy++;
-	if (dy==3)
-		dy=0;
-	for (int y=dy; y<h; y+=3)
+	int dy=syncRand()&0x3;
+	for (int y=dy; y<h; y+=4)
 	{
 		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
 		//for (int x=0; x<w; x++)
@@ -773,7 +769,7 @@ void Map::step(void)
 	growRessources();
 	for (int i=0; i<(wSector*hSector); i++)
 		sectors[i].step();
-
+	
 	stepCounter++;
 }
 
