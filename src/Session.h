@@ -65,7 +65,7 @@ public:
 	//! Set the user-friendly name of the map
 	void setMapName(const char *s);
 	//! Return the user-friendly name of the map
-	std::string getMapName() const;
+	std::string getMapName(void) const;
 	//! Return the filename of the map, including std directories.
 	std::string getFileName(void) const;
 
