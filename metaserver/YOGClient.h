@@ -75,7 +75,7 @@ struct ClientUpdate
 class YOGClient
 {
 public:
-	static const int DEFAULT_NEW_MESSAGE_TIMEOUT=4;
+	static const int DEFAULT_NEW_MESSAGE_TIMEOUT=0;
 public:
 	YOGClient(IPaddress ip, UDPsocket socket, char userName[32]);
 	virtual ~YOGClient();
