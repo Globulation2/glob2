@@ -1303,6 +1303,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
 		selUnit->verbose=!selUnit->verbose;
+		printf("unit %d verbose %d\n", selUnit->gid, selUnit->verbose);
 	}
 }
 

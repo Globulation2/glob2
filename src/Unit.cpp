@@ -1046,14 +1046,18 @@ void Unit::handleMovement(void)
 
 		case DIS_ATTACKING_AROUND:
 		{
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
-			{
-				movement=MOV_ATTACKING_TARGET;
-			}
-			else
-			{
+			assert(performance[ATTACK_SPEED]);
+			//if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
+			//{
+			//	movement=MOV_ATTACKING_TARGET;
+			//}
+			//else
+			//{
 				int quality=256; // Smaller is better.
 				movement=MOV_RANDOM;
+				if (verbose)
+					printf("%d selecting movement\n", gid);
+				
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
 						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVision))
@@ -1076,10 +1080,17 @@ void Unit::handleMovement(void)
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
 									if (verbose)
-										printf("warrior %d found unit with newQuality=%d\n", gid, newQuality);
+										printf("warrior %d found building with newQuality=%d\n", this->gid, newQuality);
 									if (newQuality<quality)
 									{
-										movement=MOV_GOING_TARGET;
+										if (abs(x)<=1 && abs(y)<=1)
+										{
+											movement=MOV_ATTACKING_TARGET;
+											dx=x;
+											dy=y;
+										}
+										else
+											movement=MOV_GOING_TARGET;
 										targetX=posX+x;
 										targetY=posY+y;
 										quality=newQuality;
@@ -1098,10 +1109,17 @@ void Unit::handleMovement(void)
 									int strength=u->performance[ATTACK_STRENGTH];
 									int newQuality=(x*x+y*y)/(1+strength);
 									if (verbose)
-										printf("warrior %d found building with newQuality=%d\n", gid, newQuality);
+										printf("warrior %d found unit with newQuality=%d\n", this->gid, newQuality);
 									if (newQuality<quality)
 									{
-										movement=MOV_GOING_TARGET;
+										if (abs(x)<=1 && abs(y)<=1)
+										{
+											movement=MOV_ATTACKING_TARGET;
+											dx=x;
+											dy=y;
+										}
+										else
+											movement=MOV_GOING_TARGET;
 										targetX=posX+x;
 										targetY=posY+y;
 										quality=newQuality;
@@ -1109,7 +1127,7 @@ void Unit::handleMovement(void)
 								}
 							}
 						}
-			}
+			//}
 			break;
 		}
 		
