@@ -184,7 +184,7 @@ bool OrderDelete::setData(const char *data, int dataLength)
 		return false;
 	
 	this->UID=getSint32(data, 0);
-	
+
 	memcpy(this->data,data,dataLength);
 	
 	return true;
