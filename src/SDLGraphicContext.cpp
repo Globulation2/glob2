@@ -179,13 +179,28 @@ void SDLDrawableSurface::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, 
 
 void SDLDrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	SDL_Rect rect;
-	rect.x=x;
-	rect.y=y;
-	rect.w=w;
-	rect.h=h;
-	assert(surface);
-	SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b));
+	if (a==ALPHA_OPAQUE)
+	{
+		SDL_Rect rect;
+		rect.x=x;
+		rect.y=y;
+		rect.w=w;
+		rect.h=h;
+		assert(surface);
+		SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, r, g, b));
+	}
+	else
+	{
+		// TODO : write a fast version
+		int dx, dy;
+		for (dy=y; dy<y+h; dy++)
+		{
+			for (dx=x; dx<x+w; dx++)
+			{
+				drawPixel(dx, dy, r, g, b, a);
+			}
+		}
+	}
 }
 
 void SDLDrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -796,7 +811,12 @@ void SDLGraphicContext::loadImage(const char *name)
 			temp=IMG_Load_RW(imageStream, 0);
 			if (temp)
 			{
-				SDL_BlitSurface(temp, NULL, surface, NULL);
+				SDL_Rect dRect;
+				dRect.x=(surface->w-temp->w)>>1;
+				dRect.y=(surface->h-temp->h)>>1;
+				dRect.w=temp->w;
+				dRect.h=temp->h;
+				SDL_BlitSurface(temp, NULL, surface, &dRect);
 				SDL_FreeSurface(temp);
 			}
 			SDL_RWclose(imageStream);
