@@ -1007,7 +1007,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 void GameGUI::handleMapClick(int mx, int my, int button)
 {
-	if (selectionMode==BUILD_SELECTION)
+	if (selectionMode==TOOL_SELECTION)
 	{
 		// we get the type of building
 		int mapX, mapY;
@@ -1273,7 +1273,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int yNum=(my-YPOS_BASE_BUILDING)/46;
 		int id=yNum*2+xNum;
 		if (id<(int)buildingsChoice.size())
-			setSelection(BUILD_SELECTION, buildingsChoice[id]);
+			setSelection(TOOL_SELECTION, buildingsChoice[id]);
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
@@ -1281,7 +1281,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int yNum=(my-YPOS_BASE_FLAG)/46;
 		int id=yNum*2+xNum;
 		if (id<(int)flagsChoice.size())
-			setSelection(BUILD_SELECTION, flagsChoice[id]);
+			setSelection(TOOL_SELECTION, flagsChoice[id]);
 	}
 }
 
@@ -1377,8 +1377,9 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 
 	// draw selection if needed
-	if (sel>=0)
+	if (selectionMode==TOOL_SELECTION)
 	{
+		assert(sel>=0);
 		int x=((sel&0x1)*64)+globalContainer->gfx->getW()-128;
 		int y=((sel>>1)*46)+128+32;
 		globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
@@ -1797,7 +1798,7 @@ void GameGUI::drawPanel(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
-	if (selectionMode==BUILD_SELECTION)
+	if (selectionMode==TOOL_SELECTION)
 	{
 		// we get the type of building
 		int mapX, mapY;
@@ -2127,7 +2128,7 @@ void GameGUI::drawAll(int team)
 {
 	// draw the map
 	static const bool useMapDiscovered=false;
-	bool drawBuildingRects=(selectionMode==BUILD_SELECTION);
+	bool drawBuildingRects=(selectionMode==TOOL_SELECTION);
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16);
@@ -2469,7 +2470,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		selection.unit=game.teams[team]->myUnits[id];
 		game.selectedUnit=selection.unit;
 	}
-	else if (selectionMode==BUILD_SELECTION)
+	else if (selectionMode==TOOL_SELECTION)
 	{
 		selection.build=newSelection;
 	}
@@ -2496,7 +2497,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 		selection.unit=(Unit*)newSelection;
 		game.selectedUnit=selection.unit;
 	}
-	else if (selectionMode==BUILD_SELECTION)
+	else if (selectionMode==TOOL_SELECTION)
 	{
 		selection.build=*(unsigned*)newSelection;
 	}

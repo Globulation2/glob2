@@ -145,7 +145,7 @@ private:
 		NO_SELECTION=0,
 		BUILDING_SELECTION,
 		UNIT_SELECTION,
-		BUILD_SELECTION,
+		TOOL_SELECTION,
 	} selectionMode;
 	union
 	{
