@@ -272,7 +272,7 @@ We designed the folowwing: each player has a FIFO stack. In the real code, the s
 15 [NULL     ] [NULL     ]
 ...
 
-For easyer memory management and other tricks the FIFO is implemented as a 256 Order* static array. A "pushUStep" describes the place where you push a new order. And a "executeUStep" describes the place where you get orders.
+For easyer memory management and other tricks the FIFO is implemented as a 256 Order* static array. It's named "ordersQueue". A "pushUStep" describes the place where you push a new order. And a "executeUStep" describes the place where you get orders.
 
 On our computer, at the first loop of the engine, NetGame receive the first order, let's call it "OS8P0". ("O" for Order, "S8" for Step 8, "P0" for Player 0). On the other computer far away, the NetGame receive another order, let's call it "OS8P1". Both computer send thoses pushed orders at once. But it will take time untill they arrives. Then after pushStep("OrderS8P0") is called, we have localy:
 
@@ -451,6 +451,6 @@ At the net.step(), we'll receive a packet with the "OS8P1" order. It's taged wit
 
 This way, when the "executeUStep" will reach the UStep 8, NetGame will be able to provide an order for each players. And the game will be able to run smoothly.
 
-I hope this is clear! All other things are here for packet lost and deconnections troubles.
+I hope this is clear. All other things are here for packet lost, deconnections troubles, latency changing, and slower computers handling.
 
 
