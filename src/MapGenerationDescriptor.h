@@ -35,22 +35,41 @@ public:
 	bool setData(const char *data, int dataLength);
 	int getDataLength() {return DATA_SIZE; }
 	
+	void save(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
 	Sint32 checkSum();
+	void saveSyncronization(void);
+	void loadSyncronization(void);
+	void synchronizeNow(void);
 
 public:
 	Map::TerrainType terrainType;
 	enum Methode
 	{
-		eUNIFORM=0,
-		eRANDOM=1
+		eUNIFORM,
+		eRANDOM,
+		eISLANDS
 	};
 	Methode methode;
 	
-	int waterRatio, sandRatio, grassRatio;
-	int smooth;
+	Sint32 wDec, hDec;
+	
+	Sint32 waterRatio, sandRatio, grassRatio;
+	Sint32 smooth;
+	Sint32 nbIslands, islandsSize, beach;
+	Sint32 ressource[NB_RESSOURCES];
+
+	Sint32 nbWorkers;
+	
+	Uint32 randa, randb, randc;
+public:
+	// Thoses may not be in data
+	Sint32 bootX[32];
+	Sint32 bootY[32];
+public:
+	enum {DATA_SIZE=76};
 protected:
 	//! Serialized form of MapGenerationDescriptor
-	enum {DATA_SIZE=1};
 	char data[DATA_SIZE];
 };
 

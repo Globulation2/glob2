@@ -985,6 +985,8 @@ Order *AI::mayUpgrade(const int ptrigger, const int ntrigger)
 
 Order *AI::getOrder(void)
 {
+	if(!player->team->isAlive)
+		return new NullOrder();
 	timer++;
 	if (phaseTime==0)
 	{

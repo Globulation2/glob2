@@ -1098,6 +1098,28 @@ defaultUnitStayRange = 4
 
 *
 
+// Clearing Flag
+
+startImage = 69
+hueImage = 1
+
+attractHarvest = 1
+
+width = 1
+height = 1
+decLeft = 0
+decTop = 0
+isVirtual = 1
+isCloacked =  1
+
+maxUnitWorking = 1
+
+type = 10
+
+defaultUnitStayRange = 5
+
+*
+
 // wood wall building site
 startImage = 66
 
@@ -1112,7 +1134,7 @@ hpInit = 1
 hpMax = 50
 hpInc = 49
 level = 0
-type = 10
+type = 11
 maxUnitWorking = 1
 isBuildingSite = 1
 
@@ -1128,7 +1150,7 @@ decTop = 0
 hpInit = 50
 hpMax = 50
 level = 0
-type = 10
+type = 11
 armor = 2
 
 *
@@ -1148,7 +1170,7 @@ hpInit = 1
 hpMax = 150
 hpInc = 50
 level = 0
-type = 11
+type = 12
 maxUnitWorking = 1
 isBuildingSite = 1
 
@@ -1164,7 +1186,7 @@ decTop = 0
 hpInit = 150
 hpMax = 150
 level = 0
-type = 11
+type = 12
 armor = 5
 
 *

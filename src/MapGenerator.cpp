@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "MapGenerationDescriptor.h"
+#include "GlobalContainer.h"
 #include <math.h>
 #include <float.h>
 
@@ -578,19 +579,435 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	regenerateMap(0, 0, w, h);
 }
 
+
+void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
+{
+	// First, fill with water:
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+			undermap[y*w+x]=WATER;
+		
+	// Two, plants "bootstraps"
+	int bootX[32];
+	int bootY[32];
+	int nbIslands=descriptor.nbIslands;
+	int minDistSquare=(w*h)/nbIslands;
+	//printf("minDistSquare=%d.\n", minDistSquare);
+	
+	int c=0;
+	for (int i=0; i<descriptor.nbIslands; i++)
+	{
+		int x=syncRand()%w;
+		int y=syncRand()%h;
+		bool failed=false;
+		int j;
+		for (j=0; j<i; j++)
+			if (warpDistSquare(x, y, bootX[j], bootY[j])<minDistSquare)
+			{
+				failed=true;
+				break;
+			}
+		if (failed)
+		{
+			//printf("failed new(%d, %d) boot[%d](%d, %d).\n", x, y, i, bootX[j], bootY[j]);
+			i--;
+			if (c++>65536)
+			{
+				minDistSquare=minDistSquare>>1;
+				//I think that you need to do this only once, in worst case.
+				//With a few luck you doesn't need to.
+				c=0;
+				//printf("minDistSquare=%d.\n", minDistSquare);
+			}
+		}
+		else
+		{
+			descriptor.bootX[i]=bootX[i]=x;
+			descriptor.bootY[i]=bootY[i]=y;
+			for (int dx=-1; dx<6; dx++)
+				for (int dy=0; dy<6; dy++)
+					setUMTerrain(x+dx, y+dy, GRASS);
+		}
+	}
+	
+	//printf("w=%d, h=%d, m=%d\n", w, h, m);
+	//for (int i=0; i<descriptor.nbIslands; i++)
+	//	printf("boot[%d]=(%d, %d).\n", i, bootX[i], bootY[i]);
+	
+	
+	
+	// Three, expands islands
+	for (int s=0; s<descriptor.islandsSize; s++)
+	{
+		for (int y=0; y<h; y+=2)
+			for (int x=0; x<w; x+=2)
+			{
+				TerrainType umt=getUMTerrain(x, y);
+				if (umt==GRASS)
+					continue;
+				
+				int a, b;
+				switch (syncRand()&15)
+				{
+				case 0:
+					a=getUMTerrain(x+1, y);
+					b=getUMTerrain(x-1, y);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 1:
+					a=getUMTerrain(x, y-1);
+					b=getUMTerrain(x, y+1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 2:
+					a=getUMTerrain(x+1, y+1);
+					b=getUMTerrain(x-1, y-1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 3:
+					a=getUMTerrain(x+1, y-1);
+					b=getUMTerrain(x-1, y+1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 4:
+					a=getUMTerrain(x+2, y);
+					b=getUMTerrain(x-2, y);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 5:
+					a=getUMTerrain(x, y-2);
+					b=getUMTerrain(x, y+2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 6:
+					a=getUMTerrain(x+2, y+2);
+					b=getUMTerrain(x-2, y-2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 7:
+					a=getUMTerrain(x+2, y-2);
+					b=getUMTerrain(x-2, y+2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				default:
+				break;
+				}
+			}
+		for (int y=1; y<h; y+=2)
+			for (int x=1; x<w; x+=2)
+			{
+				TerrainType umt=getUMTerrain(x, y);
+				if (umt==GRASS)
+					continue;
+				
+				int a, b;
+				switch (syncRand()&15)
+				{
+				case 0:
+					a=getUMTerrain(x+1, y);
+					b=getUMTerrain(x-1, y);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 1:
+					a=getUMTerrain(x, y-1);
+					b=getUMTerrain(x, y+1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 2:
+					a=getUMTerrain(x+1, y+1);
+					b=getUMTerrain(x-1, y-1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 3:
+					a=getUMTerrain(x+1, y-1);
+					b=getUMTerrain(x-1, y+1);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 4:
+					a=getUMTerrain(x+2, y);
+					b=getUMTerrain(x-2, y);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 5:
+					a=getUMTerrain(x, y-2);
+					b=getUMTerrain(x, y+2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 6:
+					a=getUMTerrain(x+2, y+2);
+					b=getUMTerrain(x-2, y-2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				case 7:
+					a=getUMTerrain(x+2, y-2);
+					b=getUMTerrain(x-2, y+2);
+					if ((a==GRASS)||(b==GRASS))
+					{
+						setUMTerrain(x, y, GRASS);
+						continue;
+					}
+				break;
+				default:
+				break;
+				}
+			}
+	}
+	
+	// Four, avoid too much sand. Let's smooth
+	for (int s=0; s<(2-descriptor.beach); s++)
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				int a, b;
+				a=getUMTerrain(x+1, y);
+				b=getUMTerrain(x-1, y);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x, y-1);
+				b=getUMTerrain(x, y+1);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x+1, y+1);
+				b=getUMTerrain(x-1, y-1);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x+1, y-1);
+				b=getUMTerrain(x-1, y+1);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				/*a=getUMTerrain(x+2, y);
+				b=getUMTerrain(x-2, y);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x, y-2);
+				b=getUMTerrain(x, y+2);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x+2, y+2);
+				b=getUMTerrain(x-2, y-2);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}
+				a=getUMTerrain(x+2, y-2);
+				b=getUMTerrain(x-2, y+2);
+				if ((a==GRASS)&&(b==GRASS))
+				{
+					setUMTerrain(x, y, GRASS);
+					continue;
+				}*/
+			}
+	controlSand();
+	regenerateMap(0, 0, w, h);
+	
+	
+	// let's add ressources...
+	
+	for (int s=0; s<descriptor.nbIslands; s++)
+	{
+		int d, amount;
+		
+		for (d=0; d<h; d++)
+			if (!isGrass(bootX[s], bootY[s]-d))
+				break;
+		amount=descriptor.ressource[WOOD];
+		if (amount>2*d-5)
+			d=(amount+5)/2;
+		else if (2*amount<2*d-5)
+			d-=amount/2;
+		if (amount>2*d-5)
+			amount=2*d-5;
+			
+		//printf("s=%d, d=%d, amount=%d.\n", s, d, amount);
+		if (amount>0)
+			setResAtPos(bootX[s], bootY[s]-d, WOOD, amount);
+		
+		for (d=0; d<w; d++)
+			if (!isGrass(bootX[s]-d, bootY[s]))
+				break;
+		amount=descriptor.ressource[CORN];
+		if (amount>2*d-1)
+			d=(amount+5)/2;
+		else if (2*amount<2*d-9)
+			d-=amount/2;
+		if (amount>2*d-1)
+			amount=2*d-1;
+		if (amount>0)
+			setResAtPos(bootX[s]-d, bootY[s], CORN, amount);
+		
+		for (d=0; d<h; d++)
+			if (!isGrass(bootX[s], bootY[s]+d))
+				break;
+		amount=descriptor.ressource[STONE];
+		if (amount>2*d-9)
+			d=(amount+5)/2;
+		else if (2*amount<2*d-9)
+			d-=amount/2;
+		if (amount>2*d-9)
+			amount=2*d-9;
+		if (amount>0)
+			setResAtPos(bootX[s], bootY[s]+d, STONE, amount);
+		
+		for (d=0; d<h; d++)
+			if (isWater(bootX[s]+d, bootY[s]))
+				break;
+		amount=descriptor.ressource[ALGA];
+		if (amount>2*d-9)
+			amount=2*d-9;
+		if (amount>0)
+			setResAtPos(bootX[s]+d, bootY[s], ALGA, amount);
+	}
+	
+	// Let's smooth ressources...
+	for (int s=0; s<1; s++)
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				int d=getTerrain(x, y)-272;
+				int r=d/10;
+				int l=d%5;
+				if ((d>=0)&&(d<40)&&(syncRand()&4))
+				{
+					if (l<=(int)(syncRand()&3))
+						setTerrain(x, y, d+273);
+					else 
+					{
+						// we extand ressource:
+						int dx, dy;
+						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
+						int nx=x+dx;
+						int ny=y+dy;
+						if (getUnit(nx, ny)==NOUID)
+						if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+					}
+				}
+			}
+}
+
+void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
+{
+	for (int s=0; s<descriptor.nbIslands; s++)
+	{
+		if (session.numberOfTeam<=s)
+			addTeam();
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
+		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
+		assert(good);
+		teams[s]->startPosX=descriptor.bootX[s];
+		teams[s]->startPosY=descriptor.bootY[s];
+		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], s, typeNum);
+		assert(b);
+		for (int i=0; i<descriptor.nbWorkers; i++)
+		{
+			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			assert(u);
+		}
+		teams[s]->createLists();
+	}
+}
+
 void Game::generateMap(MapGenerationDescriptor &descriptor)
 {
+	descriptor.synchronizeNow();
+	map.setSize(descriptor.wDec, descriptor.hDec);
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eUNIFORM:
 			map.makeHomogenMap(descriptor.terrainType);
-		return;
+		break;
 		case MapGenerationDescriptor::eRANDOM:
 			map.makeRandomMap(descriptor);
-		return;
+		break;
+		case MapGenerationDescriptor::eISLANDS:
+			map.makeIslandsMap(descriptor);
+			makeIslandsMap(descriptor);
+		break;
 		default:
 			assert(false);
 	}
+	if (session.mapGenerationDescriptor)
+		delete session.mapGenerationDescriptor;
+	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
 }
 /*
 WATER=0,

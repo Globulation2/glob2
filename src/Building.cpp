@@ -1142,7 +1142,8 @@ void Building::swarmStep(void)
 	// increase HP
 	if (hp<type->hpMax)
 		hp++;
-	if (ressources[CORN]>=type->ressourceForOneUnit)
+	assert(UnitType::NB_UNIT_TYPE==3);
+	if ((ressources[CORN]>=type->ressourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
 		productionTimeout--;
 
 	if (productionTimeout<0)

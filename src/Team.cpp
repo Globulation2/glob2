@@ -691,6 +691,29 @@ void Team::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, startPosY);
 }
 
+void Team::createLists(void)
+{
+	// TODO : are thoses assert() right ?
+	assert(swarms.size()==0);
+	assert(turrets.size()==0);
+	assert(virtualBuildings.size()==0);
+	
+	swarms.clear();
+	turrets.clear();
+	virtualBuildings.clear();
+	
+	for (int i=0; i<512; i++)
+		if (myBuildings[i])
+		{
+			if (myBuildings[i]->type->unitProductionTime)
+				swarms.push_front(myBuildings[i]);
+			if (myBuildings[i]->type->shootingRange)
+				turrets.push_front(myBuildings[i]);
+			if (myBuildings[i]->type->isVirtual)
+				virtualBuildings.push_front(myBuildings[i]);
+		}
+}
+
 void Team::step(void)
 {
 	int nbUnits=0;

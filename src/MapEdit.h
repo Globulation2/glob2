@@ -29,7 +29,7 @@ class MapEdit
 public:
 	MapEdit();
 	~MapEdit();
-	void resize(int sizeX, int sizeY);
+	//void resize(int sizeX, int sizeY);
 	int run(int sizeX, int sizeY, Map::TerrainType terrainType);
 	int run(void);
 

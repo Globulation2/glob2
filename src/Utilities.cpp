@@ -393,6 +393,34 @@ namespace Utilities
 		s[length]=0;
 		return s;
 	}
+	
+	Sint32 log2(Sint32 a)
+	{
+		assert(a);
+		assert(a>0);
+		Sint32 m=1;
+		for (int i=0; i<32; i++)
+			if (m==a)
+				return i;
+			else
+				m=m<<1;
+		assert(false);
+		//failsafe relase case
+		m=1;
+		for (int i=0; i<32; i++)
+			if (m>=a)
+				return i;
+			else
+				m=m<<1;
+		return 32;
+	}
+	
+	Sint32 power2(Sint32 a)
+	{
+		assert(a>=0);
+		assert(a<32);
+		return 1<<a;
+	}
 }
 
 

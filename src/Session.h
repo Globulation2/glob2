@@ -26,6 +26,7 @@
 #include "Team.h"
 #include "Player.h"
 #include "Map.h"
+#include "MapGenerationDescriptor.h"
 
 //! Save in stream at offset the actual file pos
 #define SAVE_OFFSET(stream, offset) \
@@ -43,7 +44,8 @@ class SessionGame:public Order
 public:
 	SessionGame();
 	SessionGame(const SessionGame &sessionGame);
-	virtual ~SessionGame(void) { }
+	SessionGame& operator=(const SessionGame& sessionGame);
+	virtual ~SessionGame(void);
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 
@@ -70,6 +72,8 @@ public:
 	Uint32 playersOffset;
 	//! Offset of map (terrain) data from beginning of file
 	Uint32 mapOffset;
+	//! Offset of generationDescriptor data from beginning of file
+	Uint32 generationDescriptorOffset;
 
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;
@@ -80,9 +84,12 @@ public:
 	Sint32 gameLatency;
 	
 	Sint32 fileIsAMap;
+	
+	MapGenerationDescriptor *mapGenerationDescriptor;
 protected:
 	//! Serialized form of SessionGame
-	enum {S_GAME_DATA_SIZE=28};
+	enum {S_GAME_ONLY_DATA_SIZE=32};
+	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
 	char data[S_GAME_DATA_SIZE];
 };
 
@@ -122,7 +129,8 @@ public:
 	const char *getFileName(void) const;
 protected:
 	//! Serialized form of SessionInfo
-	enum {S_INFO_DATA_SIZE=2464+S_GAME_DATA_SIZE};
+	enum {S_INFO_ONLY_DATA_SIZE=2464};
+	enum {S_INFO_DATA_SIZE=S_INFO_ONLY_DATA_SIZE+S_GAME_DATA_SIZE};
 	char data[S_INFO_DATA_SIZE];
 };
 

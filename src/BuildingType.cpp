@@ -110,14 +110,12 @@ void BuildingsTypes::load(const char *filename)
 int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 {
 	int i=0;
+	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
 	{
-		for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
-		{
-			BuildingType *bt=*it;
-			if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
-				return i;
-			i++;
-		}
+		BuildingType *bt=*it;
+		if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
+			return i;
+		i++;
 	}
 	// we can arrive here if we request a flag
 	return -1;
@@ -125,10 +123,8 @@ int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 
 BuildingsTypes::~BuildingsTypes()
 {
+	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
 	{
-		for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
-		{
-			delete (*it);
-		}
+		delete (*it);
 	}
 }

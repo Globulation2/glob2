@@ -106,7 +106,8 @@ void Game::init()
 
 void Game::setBase(const SessionInfo *initial)
 {
-	assert (initial->numberOfTeam==session.numberOfTeam);
+	assert(initial);
+	assert(initial->numberOfTeam==session.numberOfTeam);
 	// TODO, we should be able to play with less team than planed on the map
 	// for instance, play at 2 on a 4 player map, and we will have to check the following code !!!
 
@@ -114,7 +115,6 @@ void Game::setBase(const SessionInfo *initial)
 
 	// set the base team, for now the number is corect but we should check that further
 	int i;
-	printf("session.fileIsAMap=%d.\n", session.fileIsAMap);
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
 		teams[i]->setBaseTeam(&(initial->team[i]), session.fileIsAMap);
@@ -475,7 +475,7 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 
 	SAVE_OFFSET(stream, 28);
 	map.save(stream);
-
+	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
 
@@ -648,6 +648,8 @@ void Game::addTeam(void)
 			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
 		}
 	}
+	else
+		assert(false);
 }
 
 Building *Game::addBuilding(int x, int y, int team, int typeNum)
@@ -655,14 +657,12 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	assert(team<session.numberOfTeam);
 
 	int id=-1;
+	for (int i=0; i<512; i++)//we search for a free place for a building.
 	{
-		for (int i=0; i<512; i++)//we search for a free place for a building.
+		if (teams[team]->myBuildings[i]==NULL)
 		{
-			if (teams[team]->myBuildings[i]==NULL)
-			{
-				id=i;
-				break;
-			}
+			id=i;
+			break;
 		}
 	}
 	if (id==-1)
@@ -748,8 +748,7 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
 	return somethingInRect;
 }
 
-bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX,
- int *mapY, Sint32 team)
+bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int x=coordX+bt->decLeft;

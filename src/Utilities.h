@@ -65,6 +65,9 @@ namespace Utilities
 
 	char *concat(const char *a, const char *b);
 	char *dencat(const char *a, const char *b);
+	
+	Sint32 log2(Sint32 a);
+	Sint32 power2(Sint32 a);
 };
 
 #endif
