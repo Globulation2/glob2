@@ -674,15 +674,26 @@ void SDLGraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 
 		return;
     if (y1 < clipRect.y)
 	{
-		x1 += (clipRect.y * dx) / dy;
+		x1=x2-( (y2-clipRect.y)*(x2-x1) ) / (y2-y1);
 		y1=clipRect.y;
+    }
+	if (y1==y2)
+	{
+		drawHorzLine(x1,y1,x2-x1,r,g,b,a);
+		return;
     }
     if (y2 >= clipRect.y+clipRect.h)
 	{
-		x2 -= ((y2 - (clipRect.y+clipRect.h))*dx) /dy;
-		y2 = clipRect.y+clipRect.h-1;
+		x2=x1-( (y1-(clipRect.y+clipRect.h))*(x1-x2) ) / (y1-y2);
+		y2=(clipRect.y+clipRect.h-1);
     }
-    /* X clipping */
+	if ( x1==x2)
+	{
+		drawVertLine(x1,y1,y2-y1,r,g,b,a);
+		return;
+    }
+
+	/* X clipping */
     if (dx<0)
 	{
 		test = -test;
@@ -698,19 +709,26 @@ void SDLGraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 
 		return;
     if (x1 < clipRect.x)
 	{
-		y1 += (clipRect.x * dy) / dx;
-		if (y1>=(clipRect.y+clipRect.w) || y1<clipRect.y)
-			return;
+		y1=y2-( (x2-clipRect.x)*(y2-y1) ) / (x2-x1);
 		x1=clipRect.x;
+    }
+	if ( x1==x2)
+	{
+		drawVertLine(x1,y1,y2-y1,r,g,b,a);
+		return;
     }
     if (x2 >= clipRect.x+clipRect.w)
 	{
-		y2 -= ((x2 - (clipRect.x+clipRect.w) )*dy) / dx;
-		x2 = clipRect.x+clipRect.w-1;
+		y2=y1-( (x1-(clipRect.x+clipRect.w))*(y1-y2) ) / (x1-x2);
+		x2=(clipRect.x+clipRect.w-1);
     }
+
+	// last return case
+	if (x1>=(clipRect.x+clipRect.w) || y1>=(clipRect.y+clipRect.h) || (x2<clipRect.x) || (y2<clipRect.y))
+		return;
+
     dx = x2-x1;
     dy = y2-y1;
-
 	/* prepare les variables pour dessiner la ligne
        dans la bonne direction */
 
