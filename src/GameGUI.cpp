@@ -96,6 +96,7 @@ void GameGUI::init()
 	teamStats=NULL;
 	
 	hasEndOfGameDialogBeenShown=false;
+	panPushed=false;
 }
 
 void GameGUI::adjustInitialViewport()
