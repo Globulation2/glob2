@@ -206,14 +206,15 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 			m.text[255]=0;
 			m.textLength=l-1;
 			
-			l=Utilities::strmlen((char *)data+4+m.textLength, 32);
-			memcpy(m.userName, (char *)data+4+m.textLength, l);
+			l=Utilities::strmlen((char *)data+4+m.textLength+1, 32);
+			memcpy(m.userName, (char *)data+4+m.textLength+1, l);
 			if (m.userName[l-1]!=0)
 				printf("YOG::warning, non-zero ending userName!\n");
 			m.userName[31]=0;
 			m.userNameLength=l-1;
 			
-			printf("YOG:new message:%s:%s\n", m.userName, m.text);
+			printf("YOG:new message:%s:%s %d:%d\n", m.userName, m.text, m.textLength, m.userNameLength);
+			printf("size=%d, m.textLength=%d, m.userNameLength=%d.\n", size, m.textLength, m.userNameLength);
 			receivedMessages.push_back(m);
 		}
 	}
