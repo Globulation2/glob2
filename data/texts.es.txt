@@ -1,0 +1,634 @@
+[language]
+Español
+[language-code]
+es
+[language-tr]
+Idioma
+[hp]
+Здоровье
+[heal]
+Salud
+[armor]
+Armadura
+[damage]
+Daño
+[food]
+Comida
+[working]
+Trabajando
+[inside]
+Dentro
+[ressources]
+Recursos
+[Wood]
+Madera
+[Corn]
+Maiz
+[Papyrus]
+Papiro
+[Stone]
+Piedra
+[Alga]
+Alga
+[Cherry]
+Cereza
+[Orange]
+Naranja
+[Prune]
+Pasa
+[Clearing:]
+Limpiando
+[Min required level:]
+Nivel Minimo requerido
+[Bullets]
+Balas
+[range]
+Rango
+[destroy]
+Destruir
+[cancel destroy]
+Cancelar destruccion
+[wait destroy]
+Esperar a destruir
+[upgrade]
+Mejorar
+[repair]
+Reparar
+[cancel upgrade]
+Cancelar mejorar
+[cancel repair]
+Cancelar reparar
+[units type]
+Tipo de unidad
+[workers]
+Trabajadores
+[explorers]
+Exploradores
+[warriors]
+Guerreros
+[Unit type]
+Tipo de unidad
+[Worker]
+Trabajador
+[Explorer]
+Explorador
+[Warrior]
+Guerrero
+[still (w)]
+Ahora
+[units working]
+ Unidades trabajando
+[still one unit working]
+Una unidad trabajando
+[Still (i)]
+Ahora
+[Still one]
+Ahora una
+[Building name]
+
+[swarm building]
+Enjambre
+[food building]
+Taberna
+[health building]
+Hospital
+[walkspeed building]
+Circuito
+[swimspeed building]
+Piscina
+[attack building]
+Cuartel
+[science building]
+Escuela
+[defense building]
+Torre
+[exploration flag]
+Bandera de exploracion
+[war flag]
+Bandera de guerra
+[clearing flag]
+Bandera de limpieza
+[stone wall]
+Muro de piedra
+[market]
+Mercado
+[forbidden area]
+
+[Building short explaination]
+
+[swarm building explaination]
+
+[food building explaination]
+
+[health building explaination]
+
+[walkspeed building explaination]
+
+[swimspeed building explaination]
+
+[attack building explaination]
+
+[science building explaination]
+
+[defense building explaination]
+
+[exploration flag explaination]
+
+[war flag explaination]
+
+[clearing flag explaination]
+
+[stone wall explaination]
+
+[market explaination]
+
+[Building short explaination 2]
+
+[swarm building explaination 2]
+
+[food building explaination 2]
+
+[health building explaination 2]
+
+[walkspeed building explaination 2]
+
+[swimspeed building explaination 2]
+
+[attack building explaination 2]
+
+[science building explaination 2]
+
+[defense building explaination 2]
+
+[exploration flag explaination 2]
+
+[war flag explaination 2]
+
+[clearing flag explaination 2]
+
+[stone wall explaination 2]
+
+[market explaination 2]
+
+[waiting for %s]
+Esperando a %s
+[%s has left the game]
+%s se ha ido del juego
+[%s has been deconnected of the game]
+%s se ha desconectado del juego
+[load game]
+Cargar partida
+[save game]
+Salvar partida
+[options]
+Opciones
+[alliances]
+Alianzas
+[return to game]
+Volver al juego
+[quit the game]
+Salir del juego
+[ok]
+OK
+[Cancel]
+Cancelar
+[you have lost]
+Has perdido
+[you have won]
+Has ganado
+[campagn]
+Campaña
+[tutorial]
+Tutorial
+[custom game]
+Juego personalizado
+[yog]
+Juego en linea con Ysagoon
+[Enter your nickname :]
+Introduce tu apodo :
+[Enter your password :]
+Introduce la contraseña :
+[lan]
+Juego en red LAN
+[settings]
+Opciones
+[Warning, you need to reboot the game for changes to take effect]
+
+[editor]
+Editor
+[credits]
+Creditos
+[quit]
+Salir
+[create game]
+Crear juego
+[update list]
+Actualizar lista
+[connecting to]
+Conectando a
+[connect]
+Conectado
+[Disconnect]
+Desconectado
+[please wait]
+Espere por favor
+[loading glob2]
+Cargando Globulation 2
+[host]
+Serivir una partida
+[join a game]
+Unirse a un juego
+[join]
+Unirse
+[goto main menu]
+Volver al menu principal
+[player name]
+Nombre del jugador
+[svr hostname]
+Nombre del servidor
+[hp]
+Здоровье
+[carry]
+Transporte :
+[don't carry anything]
+No transporta nada
+[level]
+Nivel
+[levels]
+Niveles
+[building site]
+Construyendo
+[create map]
+Crear mapa
+[map size x]
+Anchura del mapa
+[map size y]
+Altura del mapa
+[default terrain]
+Terreno predefinido
+[water]
+Agua
+[sand]
+Arena
+[grass]
+Hierba
+[teams]
+ Equipos
+[choose map]
+Elegir un mapa
+[choose game]
+Elegir un juego
+[awaiting players]
+Esperando a los jugadores
+[stat]
+Estadisticas
+[food left]
+Comida restante
+[the building is finished]
+Construccion finalizada
+[the swarm is finished]
+El enjambre ha sido construido
+[the food building is finished]
+La taberna ha sido construida
+[the health building is finished]
+El hospital ha sido construido
+[the walkspeed building is finished]
+El circuito ha sido construido
+[the swimspeed building is finished]
+La piscina ha sido contruida
+[the attack building is finished]
+El cuartel ha sido construido
+[the science building is finished]
+La escuela ha sido construida
+[the tower building is finished]
+La torre ha sido construida
+[the exploration flag is finished]
+?? Bandera de exploracion finalizada ??
+[the war flag is finished]
+?? Bandera de guerra finalizada ??
+[the clearing flag is finished]
+?? Bandera de limpieza finalizada ??
+[the stone wall is finished]
+El muro de piedra ha sido construido
+[the market is finished]
+El mercado ha sido construido
+[the building is under attack]
+Edificio esta siendo atacado
+[the swarm is under attack]
+El enjambre esta siendo atacado
+[the food building is under attack]
+La taberna esta siendo atacado
+[the health building is under attack]
+El hospital esta siendo atacado
+[the walkspeed building is under attack]
+El circuito esta siendo atacado
+[the swimspeed building is under attack]
+La piscina esta siendo atacada
+[the attack building is under attack]
+El cuartel esta siendo atacado
+[the science building is under attack]
+La escuela esta siendo atacada
+[the defense building is under attack]
+La torre esta siendo atacada
+[the exploration flag is under attack]
+?? La bandera de exploracion esta siendo atacada ??
+[the war flag is under attack]
+?? La bandera de guerra esta siendo atacada ??
+[the clearing flag is under attack]
+?? La bandera de limpieza esta siendo atacada ??
+[the stone wall is under attack]
+El enemigo esta en tu muralla
+[the market is under attack]
+El mercado esta siendo atacado
+[Your %s are under attack]
+Tu %s esta siendo atacado
+[Your unit got converted to another team]
+Tu unidad se ha convertido al bando enemigo
+[Another team's unit got converted to your team]
+La unidad enemiga se ha pasado a nuestro bando
+[Uncontrolled]
+Incontrolado
+[ai]
+IA
+[closed]
+Cerrado
+[close]
+Cerrado
+[player]
+Jugador
+[STARTING GAME ...]
+Iniciando la partida
+[Statistics]
+Estadisticas
+[Buildings]
+Edificios
+[Prestige]
+Prestigio
+[Units]
+Unidades
+[Attack]
+Ataque
+[Defense]
+Defensa
+[free]
+libre
+[of which]
+de los cuales
+[are ok]
+esta bien
+[are hungry]
+esta hambriento
+[are dying hungry]
+esta famelico
+[are wonded]
+esta herido
+[and]
+y
+[seeking a job]
+buscando trabajo
+[Walk]
+Andando
+[Swim]
+Nadando
+[Build]
+Construir
+[Harvest]
+Recolectar
+[At. speed]
+At. velocidad
+[At. strength]
+At. fuerza
+[Total]
+Total
+[free]
+libre
+[seeking]
+Buscando
+[Free]
+Libre
+[hungry]
+hambriento
+[starving]
+famelico
+[wounded]
+herido
+[In way]
+en camino
+[On the spot]
+Aqui
+[Version]
+Version
+[open]
+Abrir
+[Add AI]
+Añadir IA
+[AI]
+IA
+[AINone]
+IANone
+[AINumbi]
+IANumbi
+[AICastor]
+IACastor
+[AIToubib]
+IAToubib
+[the games]
+Juegos
+[the maps]
+Mapas
+[was]
+era
+[was AI]
+era un IA
+[state]
+estado
+[Start]
+Comenzar
+[not ready]
+sin preparar
+[has joined]
+ha entrado
+[has quit]
+se ha ido
+[yog-chat]
+#yog-es
+[speed]
+Velocidad
+[current speed]
+Velocidad actual
+[attack speed]
+Velocidad de ataqu
+[new]
+Nuevo
+[load]
+Cargar
+[handmade map]
+Mapa hecho a mano
+[mapGenerationDescriptor Methodes]
+Metodo de generacion del mapa
+[uniform terrain]
+Terreno uniforme
+[random terrain]
+Terreno aleatorio
+[islands terrain]
+Islas
+[ratios]
+Proporcion
+[smoothing]
+Liso
+[number of teams]
+Numero de equipos
+[islands size]
+Tamaño de las islas
+[beach size]
+Tamaño de la playa
+[workers]
+Trabajadores
+[bad error in connection system]
+Error en el sistema de conexion
+[not connected]
+No conectado
+[presence request sent]
+Invitacion enviada ...
+[session request sent]
+Peticion de sesion enviada ...
+[checksum sent]
+Checksum enviada ...
+[connected to server]
+Conectado al servidor
+[connecting to all players]
+Conectando a todos los jugadores
+[connected to all players]
+Conectados todos los jugadores
+[available lan games]
+juegos LAN disponibles
+[login]
+Login
+[from:]
+de:
+[to:]
+a:
+[away:]
+ausente:
+[compile]
+Compilar el script
+[downloaded at]
+Bajado al
+[percent]
+  porcentaje
+[download finished]
+Descarga terminada
+[Map name: %s]
+Nombre del mapa: %s.
+[one player]
+un jugador
+[number of players: %d]
+%d numero de jugadores
+[number of teams: %d]
+%d numero de equipos
+[game full]
+Partida completa
+[small]
+Pequeño
+[medium]
+mediano
+[large]
+grande
+[network latency]
+latencia
+[game speed]
+velocidad del juego
+[Paused]
+Pausa
+[Register a new YOG user with password]
+Registrar un nuevo jugador YOG con contraseña (inseguro)
+[Remember YOG password localy]
+Recordar la contraseña (inseguro)
+[YESTS_BAD]
+Inconsistencia interna mientras conectaba
+[YESTS_UNABLE_TO_CONNECT]
+Imposible conectar. Metaservidor YOG esta caido
+[YESTS_CREATED]
+El sistema de conexion esta listo para contactar con el metaservidor YOG
+[YESTS_CONNECTING]
+Conectando al metaservidor YOG...
+[YESTS_DECONNECTING]
+Desconectando del metaservidor YOG...
+[YESTS_YOG_KILLED]
+Un administrador a interrumpido el metaservidor YOG.
+[YESTS_CONNECTION_LOST]
+Conexion al metaservidor YOG perdida
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+No se puede conectar al metaservidor YOG, tu cliente globulation2 esta obsoleto
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+No se puede conectar al metaservidor YOG. Nombre de usuario en uso
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+No se puede conectar al metaservidor YOG. Contraseña incorrecta
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+El metaservidor YOG ha rechazado la conexión porque el usuario no tiene contraseña aun, activa la opción: Registrar un nuevo usuario YOG con contraseña
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Nombre de usuario ya registrado, intente otro
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+El servidor YOG ha rechazado la conexión por un error de autentificacion, intentalo en 45 segundos
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+El servidor YOG ha rechazado la conexion por un error interno, por favor reporta este fallo.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+El metaservidor YOG ha rechazado la conexión inexplicablemente.
+[The player %s has left YOG]
+El jugador %s ha abandonado YOG
+[The player %s has joined YOG]
+El jugador %s se ha unido a YOG
+[You are now marked as away]
+Estas marcado como ausente.
+[You are no more marked as away]
+Ya no estas marcado como ausente.
+[YOG_HELP]
+El sistema de mensajes YOG tiene dos comandos, "msg" y "awat". Escribe "/help <comando>" para aprender sobre uno de ellos.
+[YOG_HELP_AWAY]
+El comando "/away [<mensaje>]" te permite ausentarte dejando un mensaje a los demas
+[YOG_HELP_MSG]
+El comando "/msn <nick> <mensaje>" envia <mensaje> al usuario <nick>
+[save before quit?]
+Deseas guardar antes de salir?
+[Yes]
+Si
+[No]
+No
+[Save]
+Guardar
+[auto save]
+Autoguardado
+[Total prestige reached]
+Prestigio total alcanzado
+[Continue playing]
+Continuar jugando
+[Lost : your colony is dead]
+Perdedor: Tu colonia ha sido aniquilada
+[Won : you defeated your opponents]
+Vencedor: Has destruido a tus enemigos
+[Won : your ally %s has the most prestige]
+Vencedor: tu aliado %s ha alcanzado el mayor prestigio-
+[Lost : %s has more prestige than you]
+Perdedor: %s tiene mas prestigio que tu
+[Won : you have the most prestige]
+Ganador: Tu eres el que mas prestigio tiene
+[The game has not been finished]
+La partida no ha acabado
+[display]
+Visualizador
+[username]
+Nombre de usuario
+[fullscreen]
+Pantalla completa
+[hwaccel]
+Aceleración Hardaware
+[dblbuff]
+Buffer Doble
+[lowquality]
+Calidad Baja
+[audio]
+Audio
+[Music volume]
+Volumen (musica)
+[Happyness]
+Felicidad

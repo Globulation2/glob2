@@ -370,9 +370,9 @@ void GlobalContainer::destroyProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// load texts
-	if (!Toolkit::getStringTable()->load("data/texts.txt"))
+	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
 	{
-		fprintf(stderr, "Fatal error : the file \"data/texts.txt\" can't be found !");
+		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
 		assert(false);
 		exit(-1);
 	}

@@ -1,0 +1,634 @@
+[language]
+Deutsch
+[language-code]
+de
+[language-tr]
+Sprache
+[hp]
+Leben
+[heal]
+Gesundheit
+[armor]
+Rüstung
+[damage]
+Schaden
+[food]
+Nahrung
+[working]
+An der Arbeit
+[inside]
+Drinnen
+[ressources]
+Ressourcen
+[Wood]
+Holz
+[Corn]
+Weizen
+[Papyrus]
+Papyrus
+[Stone]
+Stein
+[Alga]
+Algen
+[Cherry]
+Kirsche
+[Orange]
+Orange
+[Prune]
+Pflaume
+[Clearing:]
+Rodung
+[Min required level:]
+Mindestlevel:
+[Bullets]
+Kugeln
+[range]
+Reichweite
+[destroy]
+Zerstören
+[cancel destroy]
+Zerstörung verhindern
+[wait destroy]
+Warten auf Zerstörung
+[upgrade]
+Verbessern
+[repair]
+Reparieren
+[cancel upgrade]
+Verbesserung stornieren
+[cancel repair]
+Reparatur stornieren
+[units type]
+Einheitentyp
+[workers]
+Arbeiter
+[explorers]
+Entdecker
+[warriors]
+Krieger
+[Unit type]
+Typ der Einheit
+[Worker]
+Arbeiter
+[Explorer]
+Entdecker
+[Warrior]
+Krieger
+[still (w)]
+Noch
+[units working]
+ Einheiten arbeiten
+[still one unit working]
+Eine Einheit arbeitet
+[Still (i)]
+Noch 
+[Still one]
+Noch eine
+[Building name]
+Gebäudename
+[swarm building]
+Stock
+[food building]
+Gasthof
+[health building]
+Spital
+[walkspeed building]
+Rennbahn
+[swimspeed building]
+Schwimmbecken
+[attack building]
+Trainingslager
+[science building]
+Schule
+[defense building]
+Panzerturm
+[exploration flag]
+Entdeckerflagge
+[war flag]
+Kriegsflagge
+[clearing flag]
+Rodungsflagge
+[stone wall]
+Steinmauer
+[market]
+Markt
+[forbidden area]
+
+[Building short explaination]
+
+[swarm building explaination]
+
+[food building explaination]
+
+[health building explaination]
+
+[walkspeed building explaination]
+
+[swimspeed building explaination]
+
+[attack building explaination]
+
+[science building explaination]
+
+[defense building explaination]
+
+[exploration flag explaination]
+
+[war flag explaination]
+
+[clearing flag explaination]
+
+[stone wall explaination]
+
+[market explaination]
+
+[Building short explaination 2]
+
+[swarm building explaination 2]
+
+[food building explaination 2]
+
+[health building explaination 2]
+
+[walkspeed building explaination 2]
+
+[swimspeed building explaination 2]
+
+[attack building explaination 2]
+
+[science building explaination 2]
+
+[defense building explaination 2]
+
+[exploration flag explaination 2]
+
+[war flag explaination 2]
+
+[clearing flag explaination 2]
+
+[stone wall explaination 2]
+
+[market explaination 2]
+
+[waiting for %s]
+Warten auf %s
+[%s has left the game]
+%s hat das Spiel verlassen.
+[%s has been deconnected of the game]
+Die Verbindung zu %s wurde getrennt.
+[load game]
+Spiel laden
+[save game]
+Spiel speichern
+[options]
+Einstellungen
+[alliances]
+Allianzen
+[return to game]
+Zurück zum Spiel
+[quit the game]
+Spiel beenden
+[ok]
+Ok
+[Cancel]
+Wiederrufen
+[you have lost]
+Sie haben verloren!
+[you have won]
+Sie haben gewonnen!
+[campagn]
+Feldzug
+[tutorial]
+Lernprogramm
+[custom game]
+Freies Spiel
+[yog]
+Ysagoon-Onlinespiel
+[Enter your nickname :]
+
+[Enter your password :]
+
+[lan]
+Spiel im lokalen Netz
+[settings]
+Einstellungen
+[Warning, you need to reboot the game for changes to take effect]
+
+[editor]
+Editor
+[credits]
+Kredite
+[quit]
+Beenden
+[create game]
+Spiel anlegen
+[update list]
+Aktualisieren
+[connecting to]
+Verbinden mit
+[connect]
+Verbinden
+[Disconnect]
+Trennen
+[please wait]
+Bitte warten
+[loading glob2]
+Globulation 2 wird geladen
+[host]
+Spiel veranstalten
+[join a game]
+Bei einem Spiel mitspielen
+[join]
+Mitspielen
+[goto main menu]
+Zurück zum Hauptmenu
+[player name]
+Spielerame
+[svr hostname]
+Server-Rechnername
+[hp]
+Lebenspunkt
+[carry]
+Transportiert :
+[don't carry anything]
+Transportiert nichts
+[level]
+Stufe
+[levels]
+Stufen
+[building site]
+baustelle
+[create map]
+Karte erzeugen
+[map size x]
+Breite der Karte
+[map size y]
+Höhe der Karte
+[default terrain]
+Vorgabeterrain
+[water]
+Wasser
+[sand]
+Sand
+[grass]
+Gras
+[teams]
+ Mannschaften
+[choose map]
+Karte auswählen
+[choose game]
+Spiel auswählen
+[awaiting players]
+Warten auf Spieler
+[stat]
+Statistiken
+[food left]
+Nahrung
+[the building is finished]
+Das Gebäude ist fertig
+[the swarm is finished]
+Der Stock ist fertig
+[the food building is finished]
+Der Gasthof ist fertig
+[the health building is finished]
+Das Hospital ist fertig
+[the walkspeed building is finished]
+Die Rennbahn ist fertig
+[the swimspeed building is finished]
+Das Schwimmbecken ist fertig
+[the attack building is finished]
+Das Trainingslager ist fertig
+[the science building is finished]
+Die Schule ist fertig
+[the tower building is finished]
+Der Panzerturm ist fertig
+[the exploration flag is finished]
+?? Entdeckerflagge fertig ??
+[the war flag is finished]
+?? Kriegsflagge fertig ??
+[the clearing flag is finished]
+?? Rodungsflagge fertig ??
+[the stone wall is finished]
+Ein Mauerteil ist fertig
+[the market is finished]
+Der Markt ist fertig
+[the building is under attack]
+Das Gebäude wird angegriffen
+[the swarm is under attack]
+Der Stock wird angegriffen
+[the food building is under attack]
+Der Gasthof wird angegriffen
+[the health building is under attack]
+Das Hospital wird angegriffen
+[the walkspeed building is under attack]
+Die Rennbahn wird angegriffen
+[the swimspeed building is under attack]
+Das Schwimmbecken wird angegriffen
+[the attack building is under attack]
+Das Trainingslager wird angegriffen
+[the science building is under attack]
+Die Schule wird angegriffen
+[the defense building is under attack]
+Ihre Befestigungen werden angegriffen
+[the exploration flag is under attack]
+?? Entdeckerflagge wird angegriffen ??
+[the war flag is under attack]
+?? Kriegsflagge wird angegriffen ??
+[the clearing flag is under attack]
+?? Rodungsflagge wird angegriffen ??
+[the stone wall is under attack]
+Der Feind steht vor Ihren Mauern
+[the market is under attack]
+Der Markt wird angegriffen
+[Your %s are under attack]
+Eure %s werden angegriffen
+[Your unit got converted to another team]
+Sie haben eine Einheit von einem anderen Team übernommen
+[Another team's unit got converted to your team]
+
+[Uncontrolled]
+Unkontrolliert
+[ai]
+KI
+[closed]
+Geschlossen
+[close]
+Schließen
+[player]
+Spieler
+[STARTING GAME ...]
+Spielbeginn... 
+[Statistics]
+Statistiken
+[Buildings]
+Gebäude
+[Prestige]
+Prestige
+[Units]
+Einheiten
+[Attack]
+Angriff
+[Defense]
+Verteidigung
+[free]
+frei
+[of which]
+davon
+[are ok]
+ok
+[are hungry]
+hungrig
+[are dying hungry]
+verhungern
+[are wonded]
+sind verletzt
+[and]
+und
+[seeking a job]
+suchen Arbeit
+[Walk]
+Geh
+[Swim]
+Schwimm
+[Build]
+Bau
+[Harvest]
+Ernte
+[At. speed]
+Geschwindigkeit
+[At. strength]
+Stärke
+[Total]
+Gesamt
+[free]
+frei
+[seeking]
+suchen
+[Free]
+Frei
+[hungry]
+hungrig
+[starving]
+verhungern
+[wounded]
+verletzt
+[In way]
+Unterwegs
+[On the spot]
+Vor Ort
+[Version]
+Version
+[open]
+offen
+[Add AI]
+KI hinzufügen
+[AI]
+KI
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AICastor]
+AICastor
+[AIToubib]
+AIToubib
+[the games]
+Spiele
+[the maps]
+Karten
+[was]
+vorher
+[was AI]
+vorher KI
+[state]
+Zustand
+[Start]
+Start
+[not ready]
+nicht bereit
+[has joined]
+ist angeschlossen
+[has quit]
+hat verlassen
+[yog-chat]
+#yog-de
+[speed]
+Geschwindigkeit
+[current speed]
+Aktuelle Geschwindigkeit
+[attack speed]
+Angriffsgeschw.
+[new]
+Neu
+[load]
+Laden
+[handmade map]
+Handgemachte Karte
+[mapGenerationDescriptor Methodes]
+Methoden der Zufallserzeugung von Karten
+[uniform terrain]
+Einheitliche Landschaft
+[random terrain]
+Zufallslandschaft
+[islands terrain]
+Inseln
+[ratios]
+Verhältnis
+[smoothing]
+Glättung
+[number of teams]
+Anzahl Mannschaften
+[islands size]
+Größe der Inseln
+[beach size]
+Größe des Strandes
+[workers]
+Arbeiterinnen
+[bad error in connection system]
+Fataler Fehler im Verbindungssystem
+[not connected]
+Nicht angeschlossen
+[presence request sent]
+Präsenzanfrage gesendet ...
+[session request sent]
+Sitzungsanfrage gesendet ... 
+[checksum sent]
+Prüfsumme gesendet ...
+[connected to server]
+Mit dem Server verbunden
+[connecting to all players]
+Verbinden mit allen Spielern
+[connected to all players]
+Verbunden mit allen Spielern
+[available lan games]
+Lokal verfügbare Spiele
+[login]
+Login
+[from:]
+von:
+[to:]
+auf:
+[away:]
+weg:
+[compile]
+Skript kompilieren
+[downloaded at]
+Heruntergeladen zu
+[percent]
+  Prozent
+[download finished]
+Herunterladen abgeschlossen
+[Map name: %s]
+Karte: %s.
+[one player]
+Ein Spieler spielt mit.
+[number of players: %d]
+%d Spieler spielen mit.
+[number of teams: %d]
+%d Mannschaften.
+[game full]
+Spiel komplett
+[small]
+klein
+[medium]
+mittel
+[large]
+groß
+[network latency]
+Netzlatenz
+[game speed]
+Spielgeschwindigkeit
+[Paused]
+Pause
+[Register a new YOG user with password]
+Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
+[Remember YOG password localy]
+Passwort lokal speichern. (unsicher)
+[YESTS_BAD]
+Interner Konsistenzfehler beim Verbinden.
+[YESTS_UNABLE_TO_CONNECT]
+Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
+[YESTS_CREATED]
+Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_CONNECTING]
+Verbindungsaufbau zum YOG-Metaserver...
+[YESTS_DECONNECTING]
+Beende Verbindung zum YOG Metaserver...
+[YESTS_YOG_KILLED]
+Ein Administrator hat gerade den YOG-Metaserver abgestellt.
+[YESTS_CONNECTION_LOST]
+Die Verbindung ui YOG wurde verloren.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihre Version von Globulation zu alt ist. 
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Pseudo schon vergeben ist.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Der YOG Metaserver hat die Verbindung abgewiesen da ihr Passwort falsch ist.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Der YOG Metaserver hat die Verbindung abgewiesen da ihr Benutzername noch kein Passwort hat. Wenn sie diesen Benutzernamen mit diesem Passwort registrieren wollen aktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden. 
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon registriert wurde. Wenn es ihr Benutzername ist deaktivieren sie die Option "Neuen YOG Benutzer mit Passwort registrieren".
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+Der YOG Metaserver hat die Verbindung abgewiesen da ein Protokolfehler aufgetreten ist: Sind schon angemeldet. Versuchen sie es in 45 Sekunden erneut.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+Der YOG Metaserver hat die Verbindung abgewiesen da ein interner Protokolfehler aufgetreten ist: Sie sind während der Anmeldung nicht verbunden. Bitten melden sie diesen Fehler.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Der YOG-Metaserver hat die Verbindung ohne weitere Erklärung verweigert.
+[The player %s has left YOG]
+Spieler %s hat YOG verlassen.
+[The player %s has joined YOG]
+Spieler %s ist zu YOG zurückgekehrt.
+[You are now marked as away]
+Sie sind als abwesend markiert.
+[You are no more marked as away]
+Sie sind wieder da.
+[YOG_HELP]
+Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" eingeben. 
+[YOG_HELP_AWAY]
+Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
+[YOG_HELP_MSG]
+"/msg <name> <Nachricht>" erlaubt Ihnen eine Nachricht an eine bestimmte Person zu senden. z.b. "/msg Karl Hallo, wie schlägst du dich ?". Alias "/m".
+[save before quit?]
+Möchten Sie vor dem Beenden abspeichern?
+[Yes]
+Ja
+[No]
+Nein
+[Save]
+Speichern
+[auto save]
+autosave
+[Total prestige reached]
+Höchstmögliches Prestige erreicht
+[Continue playing]
+Weiterspielen
+[Lost : your colony is dead]
+Verloren: Ihre Kolonie ist tot
+[Won : you defeated your opponents]
+Gewonnen: Sie haben Ihre Feinde besiegt
+[Won : your ally %s has the most prestige]
+Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
+[Lost : %s has more prestige than you]
+Verloren: %s hat mehr Prestige als Sie
+[Won : you have the most prestige]
+Gewonnen: Sie haben das höchste Prestige
+[The game has not been finished]
+Das Spiel wurde nicht abgeschlossen
+[display]
+Anzeige
+[username]
+Username
+[fullscreen]
+Vollbild
+[hwaccel]
+Hardware Beschleunigung
+[dblbuff]
+Double-buffering
+[lowquality]
+Niedrige Qualität
+[audio]
+Audio
+[Music volume]
+Volumen (Musik)
+[Happyness]
+Zufriedenheit

@@ -1,0 +1,634 @@
+[language]
+Русский
+[language-code]
+ru
+[language-tr]
+Язык
+[hp]
+Здоровье
+[heal]
+Лечение
+[armor]
+Броня
+[damage]
+Повреждения
+[food]
+Еда
+[working]
+Работает
+[inside]
+Внутри
+[ressources]
+Ресурсы
+[Wood]
+Дерево
+[Corn]
+Зерно
+[Papyrus]
+Папирус
+[Stone]
+Камень
+[Alga]
+Водоросли
+[Cherry]
+Вишни
+[Orange]
+Апельсины
+[Prune]
+Сливы
+[Clearing:]
+Очистка:
+[Min required level:]
+Минимальный необходимый уровень:
+[Bullets]
+Боеприпасы
+[range]
+Расстояние
+[destroy]
+Уничтожить
+[cancel destroy]
+Отмена уничтожения
+[wait destroy]
+Ожидает уничтожения
+[upgrade]
+Улучшение
+[repair]
+Починка
+[cancel upgrade]
+Отмена улучшения
+[cancel repair]
+Отмена починки
+[units type]
+Тип юнитов
+[workers]
+Рабочие
+[explorers]
+Разведчики
+[warriors]
+Воины
+[Unit type]
+Тип юнита
+[Worker]
+Рабочий
+[Explorer]
+Разведчик
+[Warrior]
+Воин
+[still (w)]
+Всё ещё
+[units working]
+ юнитов работает
+[still one unit working]
+Один юнит продолжает работать
+[Still (i)]
+Всё ещё
+[Still one]
+Один остаётся
+[Building name]
+Название здания
+[swarm building]
+Рой
+[food building]
+Кабак
+[health building]
+Больница
+[walkspeed building]
+Стадион
+[swimspeed building]
+Бассейн
+[attack building]
+Тренировочный лагерь
+[science building]
+Школа
+[defense building]
+Оборонительная башня
+[exploration flag]
+Флаг разведки
+[war flag]
+Флаг войны
+[clearing flag]
+Флаг очистки
+[stone wall]
+Каменная стена
+[market]
+Рынок
+[forbidden area]
+Запретная зона
+[Building short explaination]
+Краткое описание здания (max. 24 символа)
+[swarm building explaination]
+Создаёт новые юниты.
+[food building explaination]
+Еда для юнитов
+[health building explaination]
+Лечение юнитов
+[walkspeed building explaination]
+Улучшает скорость
+[swimspeed building explaination]
+Улучшает скорость
+[attack building explaination]
+Улучшает боевые
+[science building explaination]
+Повышает доступный
+[defense building explaination]
+Атакует вражеские
+[exploration flag explaination]
+Привлекает разведчиков
+[war flag explaination]
+Привлекает воинов
+[clearing flag explaination]
+Очистка ресурсов
+[stone wall explaination]
+Пассивная защита
+[market explaination]
+Позволяет меняться
+[Building short explaination 2]
+Краткое описание здания 2 (max. 24 символа)
+[swarm building explaination 2]
+
+[food building explaination 2]
+
+[health building explaination 2]
+
+[walkspeed building explaination 2]
+ходьбы юнитов
+[swimspeed building explaination 2]
+плавания юнитов
+[attack building explaination 2]
+характеристики воинов
+[science building explaination 2]
+уровень зданий
+[defense building explaination 2]
+строения и юниты
+[exploration flag explaination 2]
+ 
+[war flag explaination 2]
+ 
+[clearing flag explaination 2]
+
+[stone wall explaination 2]
+ 
+[market explaination 2]
+фруктами с другими
+[waiting for %s]
+Ожидание %s
+[%s has left the game]
+%s покинул игру.
+[%s has been deconnected of the game]
+%s был отключён от игры.
+[load game]
+Загрузить игру
+[save game]
+Сохранить игру
+[options]
+Настройки
+[alliances]
+Союзы
+[return to game]
+Вернуться в игру
+[quit the game]
+Выйти из игры
+[ok]
+Ok
+[Cancel]
+Отмена
+[you have lost]
+Вы проиграли!
+[you have won]
+Вы победили!
+[campagn]
+Кампания
+[tutorial]
+Самоучитель
+[custom game]
+Одиночная игра
+[yog]
+Ysagoon-игра в Интернете
+[Enter your nickname :]
+Введите Ваше прозвище :
+[Enter your password :]
+Введите Ваш пароль :
+[lan]
+Сетевая игра
+[settings]
+Настройки
+[Warning, you need to reboot the game for changes to take effect]
+Предупреждение: вам нужно перезапустить игру, чтобы изменения вступили в силу.
+[editor]
+Редактор
+[credits]
+Благодарности
+[quit]
+Выход
+[create game]
+Новая игра
+[update list]
+Обновить список
+[connecting to]
+Подключение к
+[connect]
+Подключиться
+[Disconnect]
+Отключиться
+[please wait]
+Пожалуйста, подождите
+[loading glob2]
+Загружается Globulation 2
+[host]
+Стать хостом игры
+[join a game]
+Присоединиться к игре
+[join]
+Присоединиться
+[goto main menu]
+Вернуться в главное меню
+[player name]
+Имя игрока
+[svr hostname]
+Имя хоста
+[hp]
+Здоровье
+[carry]
+Несёт :
+[don't carry anything]
+Ничего не несёт
+[level]
+Уровень
+[levels]
+Уровни
+[building site]
+стройка
+[create map]
+Создать карту
+[map size x]
+Ширина карты
+[map size y]
+Высота карты
+[default terrain]
+Ландшафт по умолчанию
+[water]
+Вода
+[sand]
+Песок
+[grass]
+Трава
+[teams]
+ команды
+[choose map]
+Выбрать карту
+[choose game]
+Выбрать игру
+[awaiting players]
+Ожидание игроков
+[stat]
+Статистика
+[food left]
+Осталось еды
+[the building is finished]
+Здание построено
+[the swarm is finished]
+Рой построен
+[the food building is finished]
+Кабак построен.
+[the health building is finished]
+Больница построена
+[the walkspeed building is finished]
+Стадион построен
+[the swimspeed building is finished]
+Бассейн построен
+[the attack building is finished]
+Тренировочный лагерь построен
+[the science building is finished]
+Школа построена
+[the tower building is finished]
+Оборонительная башня построена
+[the exploration flag is finished]
+?? Флаг разведки установлен ??
+[the war flag is finished]
+?? Флаг войны установлен ??
+[the clearing flag is finished]
+?? Флаг очистки установлен ??
+[the stone wall is finished]
+Каменная стена построена
+[the market is finished]
+Рынок построен
+[the building is under attack]
+Здание атаковано
+[the swarm is under attack]
+Рой атакован
+[the food building is under attack]
+Кабак атакован
+[the health building is under attack]
+Больница атакована
+[the walkspeed building is under attack]
+Стадион атакован
+[the swimspeed building is under attack]
+Бассейн атакован
+[the attack building is under attack]
+Тренировочный лагерь атакован
+[the science building is under attack]
+Школа атакована
+[the defense building is under attack]
+Оборонительная башня атакована
+[the exploration flag is under attack]
+?? Флаг разведки атакован ??
+[the war flag is under attack]
+?? Флаг войны атакован ??
+[the clearing flag is under attack]
+?? Флаг очистки атакован ??
+[the stone wall is under attack]
+Каменная стена атакована
+[the market is under attack]
+Рынок атакован
+[Your %s are under attack]
+%s
+[Your unit got converted to another team]
+Ваш юнит переметнулся к врагу
+[Another team's unit got converted to your team]
+Вражеский юнит переметнулся к Вам.
+[Uncontrolled]
+Неконтролируемый
+[ai]
+AI
+[closed]
+Закрыто
+[close]
+Закрыть
+[player]
+Игрок
+[STARTING GAME ...]
+Начало игры...
+[Statistics]
+Статистика
+[Buildings]
+Здания
+[Prestige]
+Престиж
+[Units]
+Юниты
+[Attack]
+Атака
+[Defense]
+Оборона
+[free]
+свободные
+[of which]
+из которых
+[are ok]
+ok
+[are hungry]
+голодны
+[are dying hungry]
+умирают от голода
+[are wonded]
+ранены
+[and]
+и
+[seeking a job]
+ищет работу
+[Walk]
+Идёт
+[Swim]
+Плавает
+[Build]
+Строит
+[Harvest]
+Собирает
+[At. speed]
+Скорость атаки
+[At. strength]
+Сила атаки
+[Total]
+Всего
+[free]
+свободные
+[seeking]
+ищущих
+[Free]
+Свободных
+[hungry]
+Голодных
+[starving]
+Умирающих от голода
+[wounded]
+раненых
+[In way]
+В пути
+[On the spot]
+На месте
+[Version]
+Версия
+[open]
+Открыть
+[Add AI]
+Добавить AI
+[AI]
+AI
+[AINone]
+AINone
+[AINumbi]
+AINumbi
+[AICastor]
+AICastor
+[AIToubib]
+AIToubib
+[the games]
+Игры
+[the maps]
+Карты
+[was]
+был
+[was AI]
+был AI
+[state]
+состояние
+[Start]
+Старт
+[not ready]
+не готов
+[has joined]
+присоединился
+[has quit]
+вышел
+[yog-chat]
+#yog-ru
+[speed]
+Скорость
+[current speed]
+Текущая скорость
+[attack speed]
+Скорость атаки
+[new]
+Новая
+[load]
+Загрузить
+[handmade map]
+Самодельная карта
+[mapGenerationDescriptor Methodes]
+Способы случайной генерации карт
+[uniform terrain]
+Одинаковый ландшафт
+[random terrain]
+Случайный ландшафт
+[islands terrain]
+Острова
+[ratios]
+Пропорции
+[smoothing]
+Сглаживание
+[number of teams]
+число команд
+[islands size]
+Размер островов
+[beach size]
+Размер пляжей
+[workers]
+Рабочие
+[bad error in connection system]
+Критическая ошибка в системе соединения
+[not connected]
+Не соединён
+[presence request sent]
+Послан запрос присутствия ...
+[session request sent]
+Послан запрос сессии ...
+[checksum sent]
+Послана контрольная сумма ...
+[connected to server]
+Установлено соединение с сервером
+[connecting to all players]
+Соединение со всеми игроками
+[connected to all players]
+Соедининение с игроками установлено
+[available lan games]
+Доступные сетевые игры
+[login]
+Login
+[from:]
+от:
+[to:]
+к:
+[away:]
+отсутствует:
+[compile]
+Компилировать скрипт
+[downloaded at]
+Скачано с
+[percent]
+  процентов
+[download finished]
+Скачивание закончено
+[Map name: %s]
+Название карты: %s.
+[one player]
+Подключился игрок.
+[number of players: %d]
+%d игроков в игре
+[number of teams: %d]
+%d команд
+[game full]
+Игра заполнена
+[small]
+маленькая
+[medium]
+средняя
+[large]
+большая
+[network latency]
+Латентность сети
+[game speed]
+Скорость игры
+[Paused]
+Пауза
+[Register a new YOG user with password]
+Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
+[Remember YOG password localy]
+Запомнить пароль локально. (небезопасно)
+[YESTS_BAD]
+Внутренняя ошибка согласования при соединении.
+[YESTS_UNABLE_TO_CONNECT]
+Невозможно соединиться. Очевидно, метасервер YOG не работает.
+[YESTS_CREATED]
+Система соединения готова обратиться к метасерверу YOG за подключением.
+[YESTS_CONNECTING]
+Подключение к метасерверу YOG...
+[YESTS_DECONNECTING]
+Отсоединение от метасервера YOG...
+[YESTS_YOG_KILLED]
+Администратор только что остановил метасервер YOG.
+[YESTS_CONNECTION_LOST]
+Соединение с YOG только что прервалось.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Метасервер YOG отказал в соединении, потому что Ваша версия globulation2 слишком старая, чтобы с ней соединяться.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Метасервер YOG отказал в соединении, потому что данному имени пользователя ещё не соответствует пароль. Вероятно, Вы хотите зарегистрировать это имя с этим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Метасервер YOG отказал в соединении, потому что это имя уже было зарегистрировано с паролем. Если Вы регистрировали этого пользователя, деактивируйте опцию "Регистрировать нового пользователя YOG с паролем" внизу.
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+Метасервер YOG отказал в соединении, из-за ошибки протокола: Вы уже аутентифицированы. Попробуйте снова через 45 секунд.
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+Метасервер YOG отказал в соединении из-за внутренней ошибки протокола: Вы не подключены при аутентификации. Пожалуйста, сообщите об этой ошибке.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Метасервер YOG отказал в соединении без объяснения причин!
+[The player %s has left YOG]
+Игрок %s покинул YOG.
+[The player %s has joined YOG]
+Игрок %s подсоединился к YOG.
+[You are now marked as away]
+Вы не помечены как неактивный.
+[You are no more marked as away]
+Вы больше не помечены как неактивный.
+[YOG_HELP]
+Система сообщений YOG имеет две команды: "msg" и "away". Введите "/help <команда>", чтобы подробнее узнать об одной из них.
+[YOG_HELP_AWAY]
+Команда "/away (<сообщение>)" позволяет другим пользователям YOG знать, что Вы временно отсутствуете. Вы можете добавить краткое объяснение. Например, "/away Ушёл к соседке. Вернусь к утру". Сокращение "/a".
+[YOG_HELP_MSG]
+Команда "/msg <имя> <сообщение>" позволяет послать сообщение кому-нибудь одному. Например "/msg Поздравляю тебя, Шарик, ты балбес!". Сокращение "/m".
+[save before quit?]
+Сохранить перед выходом?
+[Yes]
+Да
+[No]
+Нет
+[Save]
+Сохранение
+[auto save]
+Автосохранение
+[Total prestige reached]
+Общий достигнутый престиж
+[Continue playing]
+Продолжить игру
+[Lost : your colony is dead]
+Поражение: Ваша колония мертва.
+[Won : you defeated your opponents]
+Победа: Вы победили всех соперников.
+[Won : your ally %s has the most prestige]
+%s
+[Lost : %s has more prestige than you]
+Поражение: У %s больший престиж, чем у Вас.
+[Won : you have the most prestige]
+Benutzername
+[The game has not been finished]
+Игра не была закончена
+[display]
+Экран
+[username]
+Имя пользователя
+[fullscreen]
+Полный экран
+[hwaccel]
+Аппаратное ускорение
+[dblbuff]
+Двойная буферизация
+[lowquality]
+Низкое качество
+[audio]
+Звук
+[Music volume]
+Громкость (музыки)
+[Happyness]
+Счастье
