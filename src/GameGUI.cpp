@@ -1833,7 +1833,6 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawString(20, (globalContainer->gfx->getH()>>1)+30, globalContainer->littleFont, "%s", "total prestige reached");
 
 	// draw message List
-	// FIXME : shift this into a menu
 	if (game.anyPlayerWaited && game.maskAwayPlayer)
 	{
 		int nbap=0; // Number of away players
@@ -1855,7 +1854,7 @@ void GameGUI::drawOverlayInfos(void)
 			if (pm&apm)
 			{
 
-				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->standardFont,"%s%d%s", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
+				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, globalContainer->texts.getString("[waiting for %s]"), game.players[pi2]->name);
 				pnb++;
 			}
 			pm=pm<<1;
@@ -2113,7 +2112,7 @@ void GameGUI::executeOrder(Order *order)
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
-			addMessage(110, 0, 255,  "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
+			addMessage(200, 200, 200, globalContainer->texts.getString("[%s has left the game]"), game.players[qp]->name);
 			
 			game.executeOrder(order, localPlayer);
 		}

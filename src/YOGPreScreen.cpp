@@ -23,7 +23,7 @@
 
 YOGPreScreen::YOGPreScreen()
 {
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[login]"), LOGIN, 13));
 
 	login=new TextInput(20, 435, 400, 25, globalContainer->standardFont, globalContainer->userName, true, 32);

@@ -191,54 +191,14 @@ Entfernungs Fahne
 Mur de pierre
 Stone wall
 
-[l units free]
- 
-
- 
-[r units free]
- travailleurs libres
- free worker
- freie Arbeiter
-[one unit free]
-Un travailleur libre
-One free worker
-Ein freier Arbeiter
-[no unit free]
-Pas de travailleur libres
-No free worker
-Kein freier Arbeiter
-[l units needed]
-Il manque 
-
-Es fehlt 
-[r units needed]
- travailleurs
- worker needed
- Arbeiter
-[one unit needed]
-Il manque un travailleur
-One worker needed
-Ein Arbeiter fehlt
-[no unit needed]
-Equilibre du travail
-Work balanced  
-Arbeiter balanciert  
-[l waiting for player]
-Attente du joueur
-Waiting for player
-Warten auf Spieler
-[r waiting for player]
- 
-
- 
-[l has left the game]
- 
-
- 
-[r has left the game]
- a quitté la partie
- has quited the game
- hat des Spiel verlassen
+[waiting for %s]
+Attente de %s
+Waiting for %s
+Warten auf %s
+[%s has left the game]
+%s a quitté la partie
+%s has quited the game
+%s hat des Spiel verlassen
 [load game]
 Charger jeu
 Load Game
@@ -267,7 +227,7 @@ Spiel Beenden
 Accepter
 Ok
 Ok
-[cancel]
+[Cancel]
 Annuler
 Cancel
 Wiederrufen
@@ -727,9 +687,9 @@ Version
 ouvert
 open
 offen
-[add AI]
-ajouter IA
-add AI
+[Add AI]
+Ajouter IA
+Add AI
 KI zugeben
 [AI]
 IA
@@ -771,10 +731,10 @@ vorher KI
 état
 state
 Zuestand
-[start]
-départ
-start
-beginnen
+[Start]
+Départ
+Start
+Beginnen
 [not ready]
 pas prêt
 not ready

@@ -49,7 +49,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	addWidget(fileNameEntry);
 
 	addWidget(new TextButton(10, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
-	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+	addWidget(new TextButton(155, 230, 135, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
 
 	if (isLoad)
 		addWidget(new Text(0, 5, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), 300));

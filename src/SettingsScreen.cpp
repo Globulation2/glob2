@@ -32,7 +32,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(userName);
 	
 	ok    =new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(380, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27);
+	cancel=new TextButton(380, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
 	addWidget(ok);
 	addWidget(cancel);
 	
@@ -55,7 +55,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		globalContainer->texts.setLang(par1);
 		ok->setText(globalContainer->texts.getString("[ok]"));
-		cancel->setText(globalContainer->texts.getString("[cancel]"));
+		cancel->setText(globalContainer->texts.getString("[Cancel]"));
 	}
 }
 
