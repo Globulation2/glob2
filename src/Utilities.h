@@ -33,7 +33,6 @@ Uint32 getSyncRandSeedA(void);
 Uint32 getSyncRandSeedB(void);
 Uint32 getSyncRandSeedC(void);
 
-int sign(int s);
 int distSquare(int x1, int y1, int x2, int y2);
 #define SIGN(s) ((s) == 0 ? 0 : ((s)>0 ? 1 : -1) )
 

@@ -1141,11 +1141,10 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 	//printf("s=(%d, %d), g=%d, r=%d\n", x, y, g, ressourceType);
 	//Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	
-	Uint8 oldOldMax=1;
-	Uint8 oldMax=gradient[vx+w*vy];
 	while (true)
 	{
-		Uint8 max=1;
+		Uint8 max=gradient[vx+w*vy];
+		bool found=false;
 		int vddx, vddy;
 		
 		for (int sd=1; sd>=0; sd--)
@@ -1160,8 +1159,44 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 					max=g;
 					vddx=ddx;
 					vddy=ddy;
+					found=true;
 				}
 			}
+		
+		if (!found)
+		{
+			int mvx=vx-2;
+			int mvy=vy-2;
+			for (int ai=0; ai<4; ai++)
+			{
+				for (int mi=0; mi<5; mi++)
+				{
+					Uint8 g=*(gradient+((mvx+w)&wMask)+((mvy+h)&hMask)*w);
+					if (g>max)
+					{
+						max=g;
+						vddx=mvx-vx;
+						vddy=mvy-vy;
+						found=true;
+					}
+					switch (ai)
+					{
+						case 0:
+							mvx++;
+						break;
+						case 1:
+							mvy++;
+						break;
+						case 2:
+							mvx--;
+						break;
+						case 3:
+							mvy--;
+						break;
+					}
+				}
+			}
+		}
 		
 		vx=(vx+vddx+w)&wMask;
 		vy=(vy+vddy+h)&hMask;
@@ -1172,15 +1207,10 @@ bool Map::ressourceAviable(int teamNumber, Uint8 ressourceType, bool canSwim, in
 			*targetY=vy;
 			return true;
 		}
-		if (max==oldOldMax)
+		if (!found)
 		{
 			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			return false;
-		}
-		else
-		{
-			oldOldMax=oldMax;
-			oldMax=max;
 		}
 	}
 }
@@ -1220,7 +1250,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	
-	for (int depth=0; depth<1; depth++) // With a higher depth, we could afford more complex obstacles.
+	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 		/*for (int y=0; y<h; y++)
 		{
@@ -1272,14 +1302,14 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 					int xl=(x+wMask)&wMask;
 					int xr=(x+1)&wMask;
 					
-					Uint8 side[5];
+					Uint8 side[4];
 					side[0]=gradient[wyu+xl];
 					side[1]=gradient[wyu+x ];
 					side[2]=gradient[wyu+xr];
 					side[3]=gradient[wy +xl];
-					side[4]=gradient[wy +xr];
+					//side[4]=gradient[wy +xr];
 
-					for (int i=0; i<5; i++)
+					for (int i=0; i<4; i++)
 						if (side[i]>max)
 							max=side[i];
 					
@@ -1303,14 +1333,14 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 					int xl=(x+wMask)&wMask;
 					int xr=(x+1)&wMask;
 					
-					Uint8 side[5];
+					Uint8 side[4];
 					side[0]=gradient[wyd+xr];
 					side[1]=gradient[wyd+x ];
 					side[2]=gradient[wyd+xl];
 					side[3]=gradient[wy +xl];
-					side[4]=gradient[wy +xr];
+					//side[4]=gradient[wy +xr];
 
-					for (int i=0; i<5; i++)
+					for (int i=0; i<4; i++)
 						if (side[i]>max)
 							max=side[i];
 					if (max==1)
@@ -1332,14 +1362,14 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 				Uint8 max=gradient[wy+x];
 				if (max && max!=255)
 				{
-					Uint8 side[5];
+					Uint8 side[4];
 					side[0]=gradient[wyu+xl];
 					side[1]=gradient[wyd+xl];
 					side[2]=gradient[wy +xl];
 					side[3]=gradient[wyu+x ];
-					side[4]=gradient[wyd+x ];
+					//side[4]=gradient[wyd+x ];
 
-					for (int i=0; i<5; i++)
+					for (int i=0; i<4; i++)
 						if (side[i]>max)
 							max=side[i];
 					if (max==1)
@@ -1361,14 +1391,14 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 				Uint8 max=gradient[wy+x];
 				if (max && max!=255)
 				{
-					Uint8 side[5];
+					Uint8 side[4];
 					side[0]=gradient[wyu+xr];
 					side[1]=gradient[wy +xr];
 					side[2]=gradient[wyd+xr];
 					side[3]=gradient[wyu+x ];
-					side[4]=gradient[wyd+x ];
+					//side[4]=gradient[wyd+x ];
 
-					for (int i=0; i<5; i++)
+					for (int i=0; i<4; i++)
 						if (side[i]>max)
 							max=side[i];
 					if (max==1)
@@ -1390,7 +1420,6 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (max<2)
 		return false;
-	max=0;
 	
 	// We don't use for (int d=0; d<8; d++), this way units won't take two diagonals if not needed.
 	
@@ -1433,6 +1462,44 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 			}
 		}
 	
+	if (!found)
+	{
+		int mvx=x-2;
+		int mvy=y-2;
+		for (int ai=0; ai<4; ai++)
+			for (int mi=0; mi<5; mi++)
+			{
+				int ddx=SIGN(mvx-x);
+				int ddy=SIGN(mvy-y);
+				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+				{
+					Uint8 g=*(gradient+((mvx+w)&wMask)+((mvy+h)&hMask)*w);
+					if (g>max)
+					{
+						max=g;
+						*dx=ddx;
+						*dy=ddy;
+						found=true;
+					}
+				}
+				switch (ai)
+				{
+					case 0:
+						mvx++;
+					break;
+					case 1:
+						mvy++;
+					break;
+					case 2:
+						mvx--;
+					break;
+					case 3:
+						mvy--;
+					break;
+				}
+			}
+	}
+
 	if (!found)
 	{
 		printf("locked at (%d, %d)\n", x, y);
@@ -1481,162 +1548,76 @@ void Map::updateGradient(int posX, int posY, int posW, int posH, Uint8 buildingG
 		
 		static const int w=BUILDING_GRADIENT_W;
 		static const int h=BUILDING_GRADIENT_H;
+		static const int dw=BUILDING_GRADIENT_DW;
+		static const int dh=BUILDING_GRADIENT_DH;
 		static const int wMask=BUILDING_GRADIENT_W_MASK;
 		static const int hMask=BUILDING_GRADIENT_H_MASK;
 		
-		for (int depth=0; depth<1; depth++) // With a higher depth, we could afford more complex obstacles.
+		for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
 		{
-			/*for (int y=0; y<h; y++)
-			{
-				int wy=w*y;
-				int wyu=w*((y+hMask)&hMask);
-				int wyd=w*((y+1)&hMask);
-				for (int x=0; x<w; x++)
+			int x=dw;
+			int y=dh;
+			for (int di=1; di<dw; di+=2) //distance-iterator
+				for (int ai=0; ai<4; ai++) //angle-iterator
 				{
-					Uint8 max=gradient[wy+x];
-					if (max && max!=255)
+					for (int mi=0; mi<di; mi++) //move-iterator
 					{
-						int xl=(x+wMask)&wMask;
-						int xr=(x+1)&wMask;
+						assert(x>0);
+						assert(y>0);
+						assert(x<w);
+						assert(y<h);
+						
+						int wy=w*y;
+						int wyu=w*((y+hMask)&hMask);
+						int wyd=w*((y+1)&hMask);
+						Uint8 max=gradient[wy+x];
+						if (max && max!=255)
+						{
+							int xl=(x+wMask)&wMask;
+							int xr=(x+1)&wMask;
 
-						Uint8 side[8];
-						side[0]=gradient[wyu+xl];
-						side[1]=gradient[wyu+x ];
-						side[2]=gradient[wyu+xr];
+							Uint8 side[8];
+							side[0]=gradient[wyu+xl];
+							side[1]=gradient[wyu+x ];
+							side[2]=gradient[wyu+xr];
 
-						side[3]=gradient[wy +xr];
+							side[3]=gradient[wy +xr];
 
-						side[4]=gradient[wyd+xr];
-						side[5]=gradient[wyd+x ];
-						side[6]=gradient[wyd+xl];
+							side[4]=gradient[wyd+xr];
+							side[5]=gradient[wyd+x ];
+							side[6]=gradient[wyd+xl];
 
-						side[7]=gradient[wy +xl];
+							side[7]=gradient[wy +xl];
 
-						for (int i=0; i<8; i++)
-							if (side[i]>max)
-								max=side[i];
-						assert(max);
-						if (max==1)
-							gradient[wy+x]=1;
-						else
-							gradient[wy+x]=max-1;
+							for (int i=0; i<8; i++)
+								if (side[i]>max)
+									max=side[i];
+							assert(max);
+							if (max==1)
+								gradient[wy+x]=1;
+							else
+								gradient[wy+x]=max-1;
+						}
+						
+						switch (ai)
+						{
+							case 0:
+								x++;
+							break;
+							case 1:
+								y++;
+							break;
+							case 2:
+								x--;
+							break;
+							case 3:
+								y--;
+							break;
+						}
 					}
+					x--;
+					y--;
 				}
-			}*/
-
-			for (int y=0; y<h; y++)
-			{
-				int wy=w*y;
-				int wyu=w*((y+hMask)&hMask);
-				for (int x=0; x<w; x++)
-				{
-					Uint8 max=gradient[wy+x];
-					if (max && max!=255)
-					{
-						int xl=(x+wMask)&wMask;
-						int xr=(x+1)&wMask;
-
-						Uint8 side[4];
-						side[0]=gradient[wyu+xl];
-						side[1]=gradient[wyu+x ];
-						side[2]=gradient[wyu+xr];
-						side[3]=gradient[wy +xl];
-
-						for (int i=0; i<4; i++)
-							if (side[i]>max)
-								max=side[i];
-						if (max==1)
-							gradient[wy+x]=1;
-						else
-							gradient[wy+x]=max-1;
-					}
-				}
-			}
-
-			for (int y=hMask; y>=0; y--)
-			{
-				int wy=w*y;
-				int wyd=w*((y+1)&hMask);
-				for (int x=0; x<w; x++)
-				{
-					Uint8 max=gradient[wy+x];
-					if (max && max!=255)
-					{
-						int xl=(x+wMask)&wMask;
-						int xr=(x+1)&wMask;
-
-						Uint8 side[4];
-						side[0]=gradient[wyd+xr];
-						side[1]=gradient[wyd+x ];
-						side[2]=gradient[wyd+xl];
-						side[3]=gradient[wy +xl];
-
-						for (int i=0; i<4; i++)
-							if (side[i]>max)
-								max=side[i];
-						if (max==1)
-							gradient[wy+x]=1;
-						else
-							gradient[wy+x]=max-1;
-					}
-				}
-			}
-
-			for (int x=0; x<w; x++)
-			{
-				int xl=(x+wMask)&wMask;
-				for (int y=0; y<h; y++)
-				{
-					int wy=w*y;
-					int wyu=w*((y+hMask)&hMask);
-					int wyd=w*((y+1)&hMask);
-					Uint8 max=gradient[wy+x];
-					if (max && max!=255)
-					{
-						Uint8 side[4];
-						side[0]=gradient[wyu+xl];
-						side[1]=gradient[wyu+x ];
-						side[2]=gradient[wyd+xl];
-						side[3]=gradient[wy +xl];
-
-						for (int i=0; i<4; i++)
-							if (side[i]>max)
-								max=side[i];
-						if (max==1)
-							gradient[wy+x]=1;
-						else
-							gradient[wy+x]=max-1;
-					}
-				}
-			}
-
-			for (int x=wMask; x>0; x--)
-			{
-				int xr=(x+1)&wMask;
-				for (int y=0; y<h; y++)
-				{
-					int wy=w*y;
-					int wyu=w*((y+hMask)&hMask);
-					int wyd=w*((y+1)&hMask);
-					Uint8 max=gradient[wy+x];
-					if (max && max!=255)
-					{
-						Uint8 side[4];
-						side[0]=gradient[wyu+x ];
-						side[1]=gradient[wyu+xr];
-						side[2]=gradient[wy +xr];
-						side[3]=gradient[wyd+xr];
-
-						for (int i=0; i<4; i++)
-							if (side[i]>max)
-								max=side[i];
-						if (max==1)
-							gradient[wy+x]=1;
-						else
-							gradient[wy+x]=max-1;
-					}
-				}
-			}
 		}
 	}
 }

@@ -1932,8 +1932,8 @@ void Unit::pathFind(void)
 						ldx=mapw-ldx;
 					if (ldy>(maph>>1))
 						ldy=maph-ldy;
-					bapdx=sign(ldx);
-					bapdy=sign(ldy);
+					bapdx=SIGN(ldx);
+					bapdy=SIGN(ldy);
 					bDirection=directionFromDxDy(bdx, bdy);
 					if (verbose)
 						printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
@@ -2121,8 +2121,8 @@ void Unit::pathFind(void)
 						ldx=mapw-ldx;
 					if (ldy>(maph>>1))
 						ldy=maph-ldy;
-					bapdx=sign(ldx);
-					bapdy=sign(ldy);
+					bapdx=SIGN(ldx);
+					bapdy=SIGN(ldy);
 					bDirection=directionFromDxDy(bdx, bdy);
 					if (verbose)
 						printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
@@ -2363,18 +2363,18 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 	if (abs(ldx)>(2*abs(ldy)))
 	{
-		*cdx=sign(ldx);
+		*cdx=SIGN(ldx);
 		*cdy=0;
 	}
 	else if (abs(ldy)>(2*abs(ldx)))
 	{
 		*cdx=0;
-		*cdy=sign(ldy);
+		*cdy=SIGN(ldy);
 	}
 	else
 	{
-		*cdx=sign(ldx);
-		*cdy=sign(ldy);
+		*cdx=SIGN(ldx);
+		*cdy=SIGN(ldy);
 	}
 }
 
