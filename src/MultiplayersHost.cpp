@@ -634,7 +634,7 @@ void MultiplayersHost::playerWantsSession(Uint8 *data, int size, IPaddress ip)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
 		Uint16 newPort=SDL_SwapBE16(getUint16(data, 8));
-		fprintf(logFile, "serverIP=(%s), serverIP.host=%x, serverIP.port=%x, newHost=%x, newPort=%x\n", Utilities::stringIP(serverIP), serverIP.host, serverIP.port, newHost, newPort);
+		fprintf(logFile, "serverIP=(%s), new=(%s)\n", Utilities::stringIP(serverIP), Utilities::stringIP(newHost, newPort));
 		if (serverIP.host && (serverIP.host!=SDL_SwapBE32(0x7F000001)))
 		{
 			if (serverIP.host!=newHost)
@@ -1068,14 +1068,16 @@ void MultiplayersHost::confirmPlayerStartGame(Uint8 *data, int size, IPaddress i
 
 void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 {
-	if (size!=4)
+	if (size>5+32 || size<5+2)
 	{
-		fprintf(logFile, "broad:Bad size(%d) for a broadcast request from ip %s.\n", size, Utilities::stringIP(ip));
+		fprintf(logFile, "Warning, bad size for a joinerBroadcastRequest (%d) from ip=(%s)\n", size, Utilities::stringIP(ip));
 		return;
 	}
-
+	char name[32];
+	memcpy(name, data+5, size-5);
+	name[size-6]=0;
+	
 	UDPpacket *packet=SDLNet_AllocPacket(4+64+32);
-
 	if (packet==NULL)
 	{
 		fprintf(logFile, "broad:can't alocate packet!\n");
@@ -1113,7 +1115,7 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 
 	success=SDLNet_UDP_Send(socket, -1, packet)==1;
 	if (success)
-		fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
+		fprintf(logFile, "Successfuly sent a joinerBroadcastResponse packet to (%s) with ip=(%s).\n", name, Utilities::stringIP(ip));
 
 	SDLNet_FreePacket(packet);
 }
@@ -1538,7 +1540,7 @@ void MultiplayersHost::sendingTime()
 				else
 				{
 					sessionInfo.players[pi].netState=BasePlayer::PNS_BAD;
-					fprintf(logFile, "Last timeout for player %d has been spent.\n", pi);
+					fprintf(logFile, "\nLast timeout for player %d has been spent.\n", pi);
 				}
 			}
 
@@ -1552,14 +1554,14 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
 			{
-				fprintf(logFile, "Lets send the presence to player %d.\n", pi);
+				fprintf(logFile, "\nLets send the presence to player %d.\n", pi);
 				sessionInfo.players[pi].send(SERVER_PRESENCE, NET_PROTOCOL_VERSION);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST :
 			{
-				fprintf(logFile, "Lets send the session info to player %d. ip=%s\n", pi, Utilities::stringIP(sessionInfo.players[pi].ip));
+				fprintf(logFile, "\nLets send the session info to player %d. ip=%s\n", pi, Utilities::stringIP(sessionInfo.players[pi].ip));
 
 				BasePlayer *backupPlayer[32];
 				for (int pii=0; pii<sessionInfo.numberOfPlayer; pii++)
@@ -1621,7 +1623,7 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
 			{
-				fprintf(logFile, "Lets send the confiramtion for checksum to player %d.\n", pi);
+				fprintf(logFile, "\nLets send the confiramtion for checksum to player %d.\n", pi);
 				Uint8 data[8];
 				data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
 				data[1]=0;
@@ -1652,31 +1654,31 @@ void MultiplayersHost::sendingTime()
 					sessionInfo.players[pi].netTimeout=0;
 					sessionInfo.players[pi].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 					sessionInfo.players[pi].netTOTL++;
-					fprintf(logFile, "Player %d is newly all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+					fprintf(logFile, "\nPlayer %d is newly all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				}
 				else
-					fprintf(logFile, "Player %d is all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+					fprintf(logFile, "\nPlayer %d is all right, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				// players keeps ok.
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_CROSS_CONNECTION_START :
 			{
-				fprintf(logFile, "We have to inform player %d to start cross connection.\n", pi);
+				fprintf(logFile, "\nWe have to inform player %d to start cross connection.\n", pi);
 				sessionInfo.players[pi].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START :
 			{
-				fprintf(logFile, "Player %d is cross connecting, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				fprintf(logFile, "\nPlayer %d is cross connecting, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				sessionInfo.players[pi].send(PLAYERS_CAN_START_CROSS_CONNECTIONS);
 			}
 			break;
 
 			case BasePlayer::PNS_PLAYER_FINISHED_CROSS_CONNECTION :
 			{
-				fprintf(logFile, "We have to inform player %d that we recieved his crossConnection confirmation.\n", pi);
+				fprintf(logFile, "\nWe have to inform player %d that we recieved his crossConnection confirmation.\n", pi);
 				sessionInfo.players[pi].send(SERVER_HEARD_CROSS_CONNECTION_CONFIRMATION);
 
 				sessionInfo.players[pi].netState=BasePlayer::PNS_CROSS_CONNECTED;
@@ -1685,13 +1687,13 @@ void MultiplayersHost::sendingTime()
 
 			case BasePlayer::PNS_CROSS_CONNECTED :
 			{
-				fprintf(logFile, "Player %d is cross connected ! Yahoo !, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				fprintf(logFile, "\nPlayer %d is cross connected ! Yahoo !, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 			}
 			break;
 
 			case BasePlayer::PNS_SERVER_SEND_START_GAME :
 			{
-				fprintf(logFile, "We send start game to player %d, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				fprintf(logFile, "\nWe send start game to player %d, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 				sessionInfo.players[pi].send(SERVER_ASK_FOR_GAME_BEGINNING);
 			}
 			break;
@@ -1699,13 +1701,13 @@ void MultiplayersHost::sendingTime()
 			case BasePlayer::PNS_PLAYER_CONFIRMED_START_GAME :
 			{
 				// here we could tell other players
-				fprintf(logFile, "Player %d plays, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
+				fprintf(logFile, "\nPlayer %d plays, TOTL %d.\n", pi, sessionInfo.players[pi].netTOTL);
 			}
 			break;
 
 			default:
 			{
-				fprintf(logFile, "Buggy state for player %d.\n", pi);
+				fprintf(logFile, "\nBuggy state for player %d.\n", pi);
 			}
 
 			}

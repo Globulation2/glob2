@@ -138,6 +138,7 @@ public:
 	
 	void serverBroadcastResponse(Uint8 *data, int size, IPaddress ip);
 	void serverBroadcastStopHosting(Uint8 *data, int size, IPaddress ip);
+	void joinerBroadcastRR(Uint8 *data, int size, IPaddress ip, const char *rrName);
 	void joinerBroadcastRequest(Uint8 *data, int size, IPaddress ip);
 	void joinerBroadcastResponse(Uint8 *data, int size, IPaddress ip);
 	
