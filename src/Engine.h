@@ -37,6 +37,7 @@ public:
 	void startMultiplayer(SessionConnection *screen);
 	int initMutiplayerHost(void);
 	int initMutiplayerJoin(void);
+	int initMutiplayerYOG(void);
 	int run(void);
 
 	enum EngineError

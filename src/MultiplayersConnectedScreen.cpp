@@ -34,7 +34,7 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 
 MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
 {
-
+	//do not delete multiplayersJoin
 }
 
 void MultiplayersConnectedScreen::paint(int x, int y, int w, int h)

@@ -21,6 +21,7 @@
 #ifndef __YOGSCREEN_H
 #define __YOGSCREEN_H
 
+#include "MultiplayersJoin.h"
 #include "GAG.h"
 #include <SDL_net.h>
 #include <vector>
@@ -30,10 +31,11 @@ class YOGScreen:public Screen
 public:
 	enum
 	{
-		QUIT = 0,
-		JOIN = 1,
-		CREATE = 2,
-		UPDATE_LOST=3
+		CANCEL =2,
+		CREATE_GAME = 2,
+		UPDATE_LIST=3,
+		
+		STARTED =11
 	};
 
 	enum
@@ -43,6 +45,9 @@ public:
 
 public:
 	static TCPsocket socket;
+
+public:
+	MultiplayersJoin *multiplayersJoin;
 
 protected:
 	List *gameList;

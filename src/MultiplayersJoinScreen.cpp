@@ -52,7 +52,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 
 MultiplayersJoinScreen::~MultiplayersJoinScreen()
 {
-
+	delete multiplayersJoin;
 }
 
 void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
