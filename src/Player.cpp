@@ -42,7 +42,7 @@ BasePlayer::BasePlayer(Sint32 number, const char name[MAX_NAME_LENGTH], Sint32 t
 
 	setNumber(number);
 	setTeamNumber(teamNumber);
-	
+
 	memcpy(this->name, name, MAX_NAME_LENGTH);
 
 	this->type=type;
@@ -222,7 +222,7 @@ int BasePlayer::getDataLength(bool compressed)
 Sint32 BasePlayer::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	cs^=number;
 	cs^=numberMask;
 	cs^=teamNumber;
@@ -530,5 +530,5 @@ void Player::save(SDL_RWops *stream)
 
 Sint32 Player::checkSum()
 {
-
 	return BasePlayer::checkSum();
+}
