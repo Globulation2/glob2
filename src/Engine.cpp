@@ -152,6 +152,8 @@ int Engine::initCustom(void)
 
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
+	if (cgs==-1)
+		return -1;
 
 	if (!gui.loadBase(&(customGameScreen.sessionInfo)))
 	{

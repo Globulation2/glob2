@@ -284,25 +284,31 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::TUTORIAL:
 			{
 				Engine engine;
-				if (engine.initCampain("maps/tutorial.map")==Engine::EE_NO_ERROR)
-					if (engine.run()==-1)
-						isRunning=false;
+				int rv=engine.initCampain("maps/tutorial.map");
+				if (rv==Engine::EE_NO_ERROR)
+					rv=engine.run();
+				if (rv==-1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:
 			{
 				Engine engine;
-				if (engine.initLoadGame()==Engine::EE_NO_ERROR)
-					if (engine.run()==-1)
-						isRunning=false;
+				int rv=engine.initLoadGame();
+				if (rv==Engine::EE_NO_ERROR)
+					rv=engine.run();
+				if (rv==-1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::CUSTOM:
 			{
 				Engine engine;
-				if (engine.initCustom()==Engine::EE_NO_ERROR)
-					if (engine.run()==-1)
-						isRunning=false;
+				int rv=engine.initCustom();
+				if (rv==Engine::EE_NO_ERROR)
+					rv=engine.run();
+				if (rv==-1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
@@ -317,13 +323,10 @@ int Glob2::run(int argc, char *argv[])
 					case MultiplayersOfferScreen::HOST:
 					{
 						Engine engine;
-						int rc=engine.initMutiplayerHost(false);
-						if (rc==Engine::EE_NO_ERROR)
-						{
-							if (engine.run()==-1)
-								isRunning=false;
-						}
-						else if (rc==-1)
+						int rv=engine.initMutiplayerHost(false);
+						if (rv==Engine::EE_NO_ERROR)
+							rv=engine.run();
+						if (rv==-1)
 							isRunning=false;
 					}
 					break;
@@ -331,13 +334,10 @@ int Glob2::run(int argc, char *argv[])
 					case MultiplayersOfferScreen::JOIN:
 					{
 						Engine engine;
-						int rc=engine.initMutiplayerJoin();
-						if (rc==Engine::EE_NO_ERROR)
-						{
-							if (engine.run()==-1)
-								isRunning=false;
-						}
-						else if (rc==-1)
+						int rv=engine.initMutiplayerJoin();
+						if (rv==Engine::EE_NO_ERROR)
+							rv=engine.run();
+						if (rv==-1)
 							isRunning=false;
 					}
 					break;
