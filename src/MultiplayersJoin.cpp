@@ -1016,10 +1016,10 @@ bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)
 	strncpy(serverName, yogGameInfo->hostname, 128);
 	serverName[127]=0;
 	strncpy(playerName, globalContainer->settings.userName, 32);
-	playerName[32]=0;
+	playerName[31]=0;
 	//strncpy(gameName, "ilesAleatoires", 32); //TODO: add gameName in YOG
-	//gameName[32]=0;
+	//gameName[31]=0;
 	strncpy(serverNickName, yogGameInfo->source, 32);
-	serverNickName[32]=0;
+	serverNickName[31]=0;
 	return tryConnection();
 }
