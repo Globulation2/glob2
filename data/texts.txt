@@ -1153,7 +1153,7 @@ La torre da difesa è sotto attacco
 ?? Флаг запрета атакован ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
-The ennemi is at your walls
+The enemy is at your walls
 Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
 Mur został zaatakowany
@@ -1161,7 +1161,7 @@ Il muro di roccia è sotto attacco
 Каменная стена атакована
 [the wood wall is under attack]
 L'ennemi est à vos murs
-The ennemi is at your walls
+The enemy is at your walls
 Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
 Palisada została zaatakowana
@@ -1681,7 +1681,7 @@ Terreno a isole
 Острова
 [ratios]
 Proportions
-Rations
+Proportions
 Verhältnis
 Poměry
 Proporcje
@@ -1705,7 +1705,7 @@ Numero di squadre
 число команд
 [islands size]
 taille des îles
-islands size
+island size
 Größe der Inseln
 Velikost ostrovů
 Wielkość wysp
@@ -1881,7 +1881,7 @@ Giocatore singolo.
 Подключился игрок.
 [number of players: %d]
 %d joueurs présents.
-%d players has joined.
+%d players are present.
 %d Spieler spielen mit.
 %d hráčů se připojilo.
 %d graczy dołączyło do gry.
@@ -1953,7 +1953,7 @@ Pausa
 Пауза
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
-Register a new YOG user with password. (insecure)
+Register a new YOG user with a password. (insecure)
 
 
 
@@ -1961,7 +1961,7 @@ Registra un nuovo utente YOG con una passord. (non sicuro)
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
-Remember password locally. (insecure)
+Remember the password locally. (insecure)
 
 
 
@@ -1993,7 +1993,7 @@ Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 Система соединения готова обратиться к метасерверу YOG за подключением.
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
-Etablishing the connection to the YOG metaserver...
+Establishing the connection to the YOG metaserver...
 Verbindungsaufbau zum YOG-Metaserver...
 Navazuji spojení s YOG metaserverem...
 Nawiązuje połączenie z metaserwerem YOG...
@@ -2001,7 +2001,7 @@ Mi sto connettendo al metaserver YOG...
 Подключение к метасерверу YOG...
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
-Disconnecting from YOG metaserver...
+Disconnecting from the YOG metaserver...
 
 Odpojuji z YOG metaserveru...
 Rozłączam z metaserwerem YOG...
@@ -2041,7 +2041,7 @@ Il metaserver YOG ha rifiutato la tua connessione perch�il tuo username �gi�
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
-The YOG metaserver has refused connection because supplied password was incorrect.
+The YOG metaserver has refused connection because the supplied password was incorrect.
 
 
 
@@ -2057,7 +2057,7 @@ Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password 
 
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
-The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with password".
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
 
 
 
@@ -2121,7 +2121,7 @@ Non sei pi segnato come assente.
 Вы больше не помечены как неактивный.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
-The YOG messaging system have two commands, "msg" and "away". Type "/help <command>" to know more about one of them.
+The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
 Das YOG-Nachrichtensystem kennt zwei Befehle, "msg" und "away". Um mehr zu wissen, "/help <Befehl>" eingeben. 
 YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <příkaz>" pro více informací o příkazu.
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
@@ -2129,7 +2129,7 @@ Il sistema di messaggistica YOG ha due comandi: "msg" e "away". Scrivi "/help <c
 Система сообщений YOG имеет две команды: "msg" и "away". Введите "/help <команда>", чтобы подробнее узнать об одной из них.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
-The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explaination message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
+The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
 Der Befehl "/away (<Nachricht>)" zeigt anderen YOG-Spielern, dass Sie gerade weg sind. Sie können eine kleine Nachricht hinterlassen, .B. "Bin ein Bier trinken, bin um eins zurück!". Alias "/a"
 Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoji dočasnou nepřítomnost. Můžeš přidat i výmluvnou krátkou zprávu (důvod). Například "/away Du na cigaretu, za 5 minut sem zpátky ...", lze použít zkráceně "/a".
 Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników YOG o Twojej tymczasowej nieobecności. Możesz dodać krótką notę informacyjną. Np. "/away Jem obiad będę o 14". Możesz użyć też skrótu "/a".
@@ -2217,7 +2217,7 @@ Hai vinto: hai battuto i tuoi avversari
 Победа: Вы победили всех соперников.
 [Won : your ally %s has the most prestige]
 Gagné : votre allié %s a le plus de prestige
-Won : your ally %s have the biggest prestige
+Won: your ally %s has the biggest prestige
 Gewonnen: Ihr Verbündeter %s hat das höchste Prestige
 Tvůj spojenec %s má největší prestiž ...
 Wygrałeś: %s ma największy prestiż
@@ -2281,7 +2281,7 @@ Accelerazione HardWare
 Аппаратное ускорение
 [dblbuff]
 Doube-tampon
-Double-buffering
+Double buffering
 
 Double-buffering
 Double-buffering
@@ -2313,7 +2313,7 @@ Volume (musica)
 Громкость (музыки)
 [Happyness]
 Satisfaction
-Happyness
+Happiness
 
 
 Satysfakcja

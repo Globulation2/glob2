@@ -9,7 +9,7 @@ This game is still in heavy development, so consider that:
 - it crashes sometimes.
 
 If you get a crash, submit a bug report with the last lines of the output as
-well as the log files (in ${HOME}/.glob2/log) as attachement.
+well as the log files (in ${HOME}/.glob2/log) as attachments.
 Please use Savannah (http://savannah.gnu.org/projects/glob2) for bug reports.
 
 If you got the source from CVS, read README.cvs first.
@@ -20,7 +20,7 @@ GNU and UNIX
 
 First, configure the program by running the configure script.
 Then, run 'make' to build the package.
-Finaly, run 'make install' to install it.
+Finally, run 'make install' to install it.
 You can read the INSTALL file for more information about these steps.
 
 
