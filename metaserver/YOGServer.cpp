@@ -560,6 +560,14 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		connectedClients.erase(cci);
 		
+		if (data[1]==1 && strcmp(client->userName, "admin"))
+		{
+			admin=client;
+			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
+		}
+		else
+			lprintf("new client authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
+		
 		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
 			client->addClient(*aci);
 		
@@ -571,13 +579,6 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
 			(*aci)->addClient(client);
 		
-		if (data[1]==1 && strncmp(client->userName, "admin", 32))
-		{
-			admin=client;
-			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
-		}
-		else
-			lprintf("new client authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
 		
 		Uint8 data[8];
 		data[0]=YMT_AUTHENTICATING;
