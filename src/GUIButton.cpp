@@ -285,9 +285,8 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONUP)
 	{
-		// FIXME : there is a memory trash here : why ?
-		//if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
-		//	parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 }
 

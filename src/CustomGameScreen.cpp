@@ -119,7 +119,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		{
 			isAI[0]->setState(true);
 		}
-		else if (par1>10)
+		else if ((par1>10) && (par1<20))
 		{
 			int n=par1-10;
 			if (isAI[n]->getState())
