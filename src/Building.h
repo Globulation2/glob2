@@ -42,8 +42,12 @@ public:
 	Sint32 maxUnitWorking;  // (Uint16)
 	Sint32 maxUnitWorkingPreferred;
 	std::list<Unit *> unitsWorking;
-	Uint32 maxUnitInside;
+	std::list<Unit *> unitsWorkingSubscribe;
+	Sint32 lastWorkingSubscribe;
+	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
+	std::list<Unit *> unitsInsideSubscribe;
+	Sint32 lastInsideSubscribe;
 	
 	// identity
 	Sint32 UID; // Sint16, for reservation see below
@@ -96,6 +100,10 @@ public:
 	bool tryToUpgradeRoom(void);
 	bool isHardSpace(void);
 	void step(void);
+	bool fullWorking(void);
+	bool fullInside(void);
+	void subscribeForWorkingStep(void);
+	void subscribeForInsideStep(void);
 	void swarmStep(void);
 	void turretStep(void);
 	void kill(void);

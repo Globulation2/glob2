@@ -74,6 +74,7 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	
 	attachedBuilding=NULL;
 	destinationPurprose=-1;
+	subscribed=false;
 	
 	// debug vars:
 	verbose=false;
@@ -145,6 +146,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	}
 	
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
+	subscribed=(bool)SDL_ReadBE32(stream);
 	verbose=false;
 }
 
@@ -201,6 +203,7 @@ void Unit::save(SDL_RWops *stream)
 	}
 
 	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
+	SDL_WriteBE32(stream, (Uint32)subscribed);
 }
 
 void Unit::loadCrossRef(SDL_RWops *stream, Team *owner)
@@ -218,6 +221,55 @@ void Unit::saveCrossRef(SDL_RWops *stream)
 		SDL_WriteBE32(stream, attachedBuilding->UID);
 	else
 		SDL_WriteBE32(stream, NOUID);
+}
+
+void Unit::unsubscribed(void)
+{
+	subscribed=false;
+	switch(medical)
+	{
+		case MED_HUNGRY :
+		case MED_DAMAGED :
+		{
+			activity=ACT_UPGRADING;
+			displacement=DIS_GOING_TO_BUILDING;
+		}
+		break;
+		case MED_FREE:
+		{
+			switch(activity)
+			{
+				case ACT_BUILDING:
+				{
+					displacement=DIS_GOING_TO_RESSOURCE;
+				}
+				break;
+				case ACT_FLAG :
+				{
+					displacement=DIS_GOING_TO_FLAG;
+				}
+				break;
+				case ACT_UPGRADING :
+				{
+					displacement=DIS_GOING_TO_BUILDING;
+				}
+				break;
+				case ACT_HARVESTING :
+				{
+					displacement=DIS_GOING_TO_RESSOURCE;
+				}
+				break;
+				case ACT_RANDOM :
+				{
+					displacement=DIS_RANDOM;
+				}
+				break;
+				default:
+					assert(false); 
+			}
+		}
+		break;
+	}
 }
 
 bool Unit::step(void)
@@ -311,10 +363,13 @@ void Unit::handleMedical(void)
 			{
 				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
 				attachedBuilding->unitsWorking.remove(this);
-				// NOTE : we should NOT be in the building
 				attachedBuilding->unitsInside.remove(this);
+				attachedBuilding->unitsWorkingSubscribe.remove(this);
+				attachedBuilding->unitsInsideSubscribe.remove(this);
+				// NOTE : we should NOT be in the building
 				attachedBuilding->update();
 				attachedBuilding=NULL;
+				subscribed=false;
 			}
 			
 			activity=ACT_RANDOM;
@@ -359,7 +414,6 @@ void Unit::handleActivity(void)
 					jobFound=owner->game->map.nearestRessource(posX, posY, CORN, &targetX, &targetY);
 					if (jobFound)
 					{
-						
 						activity=ACT_HARVESTING;
 						displacement=DIS_GOING_TO_RESSOURCE;
 						destinationPurprose=(int)CORN;
@@ -368,8 +422,11 @@ void Unit::handleActivity(void)
 						//printf("Going to harvest for filling building\n");
 						
 						attachedBuilding=b;
-						b->unitsWorking.push_front(this);
-						b->update();
+						b->unitsWorkingSubscribe.push_front(this);
+						b->lastWorkingSubscribe=0;
+						subscribed=true;
+						owner->subscribeForWorkingStep.push_front(b);
+						//b->update();
 						
 						return;
 					}
@@ -394,8 +451,11 @@ void Unit::handleActivity(void)
 						targetX=attachedBuilding->getMidX();
 						targetY=attachedBuilding->getMidY();
 						newTargetWasSet();
-						b->unitsInside.push_front(this);
-						b->update();
+						b->unitsInsideSubscribe.push_front(this);
+						b->lastInsideSubscribe=0;
+						subscribed=true;
+						owner->subscribeForInsideStep.push_front(b);
+						///b->update();
 						
 						return;
 					}
@@ -420,8 +480,11 @@ void Unit::handleActivity(void)
 						//printf("Going to harvest to build building\n");
 						
 						attachedBuilding=b;
-						b->unitsWorking.push_front(this);
-						b->update();
+						b->unitsWorkingSubscribe.push_front(this);
+						b->lastWorkingSubscribe=0;
+						subscribed=true;
+						owner->subscribeForWorkingStep.push_front(b);
+						//b->update();
 						return;
 					}
 				}
@@ -443,9 +506,11 @@ void Unit::handleActivity(void)
 						targetX=attachedBuilding->getMidX();
 						targetY=attachedBuilding->getMidY();
 						newTargetWasSet();
-						b->unitsWorking.push_front(this);
-						b->update();
-						
+						b->unitsWorkingSubscribe.push_front(this);
+						b->lastWorkingSubscribe=0;
+						subscribed=true;
+						owner->subscribeForWorkingStep.push_front(b);
+						//b->update();
 						//printf("Going to flag for ability : %d - pos (%d, %d)\n", destinationPurprose, targetX, targetY);
 						
 						return;
@@ -476,8 +541,11 @@ void Unit::handleActivity(void)
 					targetX=attachedBuilding->getMidX();
 					targetY=attachedBuilding->getMidY();
 					newTargetWasSet();
-					b->unitsInside.push_front(this);
-					b->update();
+					b->unitsInsideSubscribe.push_front(this);
+					b->lastInsideSubscribe=0;
+					subscribed=true;
+					owner->subscribeForInsideStep.push_front(b);
+					//b->update();
 				}
 				else
 					activity=ACT_RANDOM;
@@ -495,8 +563,11 @@ void Unit::handleActivity(void)
 			//printf("Need medical assistant while working, abort work\n");
 			attachedBuilding->unitsWorking.remove(this);
 			attachedBuilding->unitsInside.remove(this);
+			attachedBuilding->unitsWorkingSubscribe.remove(this);
+			attachedBuilding->unitsInsideSubscribe.remove(this);
 			attachedBuilding->update();
 			attachedBuilding=NULL;
+			subscribed=false;
 		}
 		
 		if (medical==MED_HUNGRY)
@@ -505,7 +576,6 @@ void Unit::handleActivity(void)
 			b=owner->findNearestFood(posX, posY);
 			if ( b != NULL)
 			{
-				//printf("Going to food building\n");
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=FEED;
@@ -515,8 +585,11 @@ void Unit::handleActivity(void)
 				targetX=attachedBuilding->getMidX();
 				targetY=attachedBuilding->getMidY();
 				newTargetWasSet();
-				b->unitsInside.push_front(this);
-				b->update();
+				b->unitsInsideSubscribe.push_front(this);
+				b->lastInsideSubscribe=0;
+				subscribed=true;
+				owner->subscribeForInsideStep.push_front(b);
+				//b->update();
 			}
 			else
 				activity=ACT_RANDOM;
@@ -537,8 +610,11 @@ void Unit::handleActivity(void)
 				targetX=attachedBuilding->getMidX();
 				targetY=attachedBuilding->getMidY();
 				newTargetWasSet();
-				b->unitsInside.push_front(this);
-				b->update();
+				b->unitsInsideSubscribe.push_front(this);
+				b->lastInsideSubscribe=0;
+				subscribed=true;
+				owner->subscribeForInsideStep.push_front(b);
+				//b->update();
 			}
 			else
 				activity=ACT_RANDOM;
@@ -548,7 +624,11 @@ void Unit::handleActivity(void)
 
 void Unit::handleDisplacement(void)
 {
-	switch (activity)
+	if (subscribed)
+	{
+		displacement=DIS_RANDOM;
+	}
+	else switch (activity)
 	{
 		case ACT_RANDOM:
 		{
@@ -627,8 +707,10 @@ void Unit::handleDisplacement(void)
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
 						attachedBuilding->unitsWorking.remove(this);
+						attachedBuilding->unitsWorkingSubscribe.remove(this);
 						attachedBuilding->update();
 						attachedBuilding=NULL;
+						subscribed=false;
 						// TODO : search for other ressource to work for
 					}
 					else if (owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY))
@@ -653,8 +735,10 @@ void Unit::handleDisplacement(void)
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
 						attachedBuilding->unitsWorking.remove(this);
+						attachedBuilding->unitsWorkingSubscribe.remove(this);
 						attachedBuilding->update();
 						attachedBuilding=NULL;
+						subscribed=false;
 						
 					}
 				}
@@ -664,12 +748,14 @@ void Unit::handleDisplacement(void)
 					activity=ACT_RANDOM;
 					displacement=DIS_RANDOM;
 					attachedBuilding->unitsWorking.remove(this);
+					attachedBuilding->unitsWorkingSubscribe.remove(this);
 					attachedBuilding->update();
 					attachedBuilding=NULL;
+					subscribed=false;
 				}
 			}
 			else
-				assert(false);
+				displacement=DIS_RANDOM;
 			
 			break;
 		}
@@ -750,8 +836,7 @@ void Unit::handleDisplacement(void)
 				// we wants to get out, so we still stay in displacement==DIS_EXITING_BUILDING.
 			}
 			else
-				assert(false);
-			
+				displacement=DIS_RANDOM;
 			break;
 		}
 		
@@ -777,8 +862,10 @@ void Unit::handleDisplacement(void)
 				activity=ACT_RANDOM;
 				displacement=DIS_RANDOM;
 				attachedBuilding->unitsWorking.remove(this);
+				attachedBuilding->unitsWorkingSubscribe.remove(this);
 				attachedBuilding->update();
 				attachedBuilding=NULL;
+				subscribed=false;
 			}
 			else
 			{
@@ -852,8 +939,10 @@ void Unit::handleMovement(void)
 				movement=MOV_EXITING_BUILDING;
 				
 				attachedBuilding->unitsInside.remove(this);
+				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->update();
 				attachedBuilding=NULL;
+				subscribed=false;
 			}
 			else
 			{
