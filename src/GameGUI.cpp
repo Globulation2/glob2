@@ -954,7 +954,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 	else
 		modifier=-1;
 
-	if (!typingInputScreen)
+	if (typingInputScreen == NULL)
 	{
 		switch (key)
 		{
@@ -2876,6 +2876,7 @@ void GameGUI::drawInGameTextInput(void)
 	typingInputScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface(typingInputScreen->decX, typingInputScreen->decY, typingInputScreen->getSurface());
 	if (typingInputScreenInc>0)
+	{
 		if (typingInputScreenPos<TYPING_INPUT_MAX_POS-TYPING_INPUT_BASE_INC)
 			typingInputScreenPos+=typingInputScreenInc;
 		else
@@ -2883,7 +2884,9 @@ void GameGUI::drawInGameTextInput(void)
 			typingInputScreenInc=0;
 			typingInputScreenPos=TYPING_INPUT_MAX_POS;
 		}
+	}
 	else if (typingInputScreenInc<0)
+	{
 		if (typingInputScreenPos>TYPING_INPUT_BASE_INC)
 			typingInputScreenPos+=typingInputScreenInc;
 		else
@@ -2892,6 +2895,7 @@ void GameGUI::drawInGameTextInput(void)
 			delete typingInputScreen;
 			typingInputScreen=NULL;
 		}
+	}
 }
 
 

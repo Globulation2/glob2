@@ -251,7 +251,6 @@ int Glob2::run(int argc, char *argv[])
 		int ret=runHostServer();
 		delete yog;
 		delete globalContainer;
-		Toolkit::close();
 		return ret;
 	}
 	else if (globalContainer->runNoX)

@@ -2269,6 +2269,7 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 	decSPX=teams[localTeam]->startPosX-map.getW()/2;
 	decSPY=teams[localTeam]->startPosY-map.getH()/2;
 
+	minimap->lock();
 	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
 		for (dx=0; dx<szX; dx++)
@@ -2413,6 +2414,7 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 			if ((fy>=stepStart) && (fy<stepStart+stepLength))
 				minimap->drawPixel(fx+decX, fy+decY, r, g, b);
 		}*/
+	minimap->unlock();
 }
 
 Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings, std::list<Uint32> *checkSumsListForUnits)
