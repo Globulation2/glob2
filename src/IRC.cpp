@@ -51,15 +51,18 @@ bool IRC::connect(const char *serverName, int serverPort, const char *nick)
 	}
 
 	SDLNet_TCP_AddSocket(socketSet, socket);
+        
+	// Here we change the nick on yog for the IRC
+	// changing from nick = "nick" to YOGnick = "YOGnick"
+	memcpy(this->nick, "YOG", 3);
+	strncpy(this->nick + 3, nick, IRC_NICK_SIZE - 3);
+	this->nick[IRC_NICK_SIZE] = 0;
 
 	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef Glob2_User", nick);
+	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef Glob2_User", this->nick);
 	sendString(command);
-	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", nick);
+	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
 	sendString(command);
-
-	strncpy(this->nick, nick, IRC_NICK_SIZE);
-	this->nick[IRC_NICK_SIZE] = 0;
 
 	return true;
 }
@@ -209,7 +212,7 @@ void IRC::interpreteIRCMessage(const char *message)
 			
 			if (source)
 			{
-				strncpy(msg.source,  source, IRC_NICK_SIZE);
+				strncpy(msg.source,  source, IRC_NICK_SIZE );
 				msg.source[IRC_NICK_SIZE] = 0;
 			}
 			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
