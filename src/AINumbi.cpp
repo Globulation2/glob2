@@ -77,9 +77,10 @@ bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 
 	if (versionMinor<=32)
 	{
-		SDL_RWread(stream, mainBuilding, 15, 4); // IntBuildingType::NB_BUILDING==15, warning, explicit dirty hack...
+		fprintf(stderr, "AINumbi::load : trying to load too old AINumbi (versionMinor < 33)\n");
+		assert(false);
 	}
-	else if (versionMinor<=35)
+	else if (versionMinor<35)
 	{
 		SDL_RWread(stream, mainBuilding, 13, 4); // IntBuildingType::NB_BUILDING==13
 	}
@@ -102,7 +103,6 @@ void AINumbi::save(SDL_RWops *stream)
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		SDL_WriteBE32(stream, mainBuilding[bi]);
-	
 }
 
 
@@ -423,7 +423,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		/*int x, y;
 		if (findNewEmplacement(IntBuildingType::SWARM_BUILDING, &x, &y))
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=player->team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, typeNum);
 		}*/
@@ -822,6 +822,8 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 			return new NullOrder();
 
 		int ex=-1, ey=-1;
+		int count=0;
+		bool found=false;
 		for (int i=0; i<1024; i++)
 		{
 			Building *b=game->teams[e]->myBuildings[i];
@@ -833,20 +835,27 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				if ((syncRand()&0x1F)==0)
 				{
 					bool already=false;
+					count=0;
 					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
 						if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
-							if ((*bit)->posX==ex &&(*bit)->posX==ex)
+						{
+							count++;
+							if ((*bit)->posX==ex &&(*bit)->posY==ey)
 							{
 								already=true;
 								break;
 							}
+						}
 					if (!already)
+					{
+						found=true;
 						break;
+					}
 				}
 			}
 		}
 
-		if (ey!=-1)
+		if (ex!=-1 && ey!=-1 && found && count<5)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
@@ -942,7 +951,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 		int x, y;
 		if (findNewEmplacement(IntBuildingType::SWARM_BUILDING, &x, &y))
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, typeNum);
 		}
