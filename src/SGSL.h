@@ -69,7 +69,8 @@ struct Token
 		S_MARK=321,
 		S_GOBACKTO=322,
 		S_SETFLAG=323,
-		S_ALLY=324, 
+		S_ALLY=324,
+		S_SUMMON 
 	} type;
 	
 	struct TokenSymbolLookupTable
@@ -97,6 +98,8 @@ struct ErrorReport
 	enum ErrorType
 	{
 		ET_OK=0,
+		ET_INVALID_VALUE,
+		ET_INVALID_FLAG_NAME,
 		ET_SYNTAX_ERROR,
 		ET_INVALID_PLAYER,
 		ET_NO_SUCH_FILE,
@@ -169,7 +172,6 @@ public:
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
-	bool errorInScriptExecution;
 	int getMainTimer(void) { return mainTimer; }
 	
 	bool isTextShown;
@@ -181,6 +183,7 @@ private:
 	void reset(void);
 	bool testMainTimer(void);
 	bool getFlagPos(string name, int *x, int *y);
+	bool doesFlagExist(string name);
 	
 	int mainTimer;
 	std::deque<Story> stories;
