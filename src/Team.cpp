@@ -1026,13 +1026,15 @@ Building *Team::findBestFillable(Unit *unit)
 					{
 						Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
 						Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
+						Sint32 missingUnitsToWork=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 						int foreignBuildingDist;
-						if ((sendRessourceMask & foreignReceiveRessourceMask)
+						if (missingUnitsToWork
+							&& (sendRessourceMask & foreignReceiveRessourceMask)
 							&& (receiveRessourceMask & foreignSendRessourceMask)
 							&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
 							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
 						{
-							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
+							Sint32 newScore=((buildingDist+foreignBuildingDist)<<8)/missingUnitsToWork;
 							if (newScore<score)
 							{
 								choosen=*bi;
