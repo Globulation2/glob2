@@ -102,7 +102,6 @@ public:
 	char serverName[256];
 
 	char playerName[32];
-	char serverNickName[32];
 
 	WaitingState waitingState;
 	int waitingTimeout;

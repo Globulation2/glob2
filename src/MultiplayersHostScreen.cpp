@@ -193,15 +193,96 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		for (std::list<MultiplayersCrossConnectable::Message>::iterator mit=multiplayersHost->receivedMessages.begin(); mit!=multiplayersHost->receivedMessages.end(); ++mit)
 			if (!mit->guiPainted)
 			{
-				chatWindow->addText("<");
-				chatWindow->addText(mit->userName);
-				chatWindow->addText("> ");
-				chatWindow->addText(mit->text);
-				chatWindow->addText("\n");
-				chatWindow->scrollToBottom();
+				switch(mit->messageType)//set the text color
+				{
+				case MessageOrder::NORMAL_MESSAGE_TYPE:
+					chatWindow->addText("<");
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case MessageOrder::PRIVATE_MESSAGE_TYPE:
+					chatWindow->addText("<");
+					chatWindow->addText(globalContainer->texts.getString("[from:]"));
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case MessageOrder::PRIVATE_RECEIPT_TYPE:
+					chatWindow->addText("<");
+					chatWindow->addText(globalContainer->texts.getString("[to:]"));
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				default:
+					assert(false);
+				break;
+				}
 				mit->guiPainted=true;
 			}
 
+	for (std::list<YOG::Message>::iterator mit=yog->receivedMessages.begin(); mit!=yog->receivedMessages.end(); ++mit)
+		if (!mit->gameGuiPainted)
+		{
+			switch(mit->messageType)//set the text color
+			{
+				case YCMT_MESSAGE:
+					// We don't want YOG messages to appear while in the game.
+				break;
+				case YCMT_PRIVATE_MESSAGE:
+					chatWindow->addText("<");
+					chatWindow->addText(globalContainer->texts.getString("[from:]"));
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case YCMT_ADMIN_MESSAGE:
+					chatWindow->addText("<");
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case YCMT_PRIVATE_RECEIPT:
+					chatWindow->addText("<");
+					chatWindow->addText(globalContainer->texts.getString("[to:]"));
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
+					chatWindow->addText("<");
+					chatWindow->addText(globalContainer->texts.getString("[away:]"));
+					chatWindow->addText(mit->userName);
+					chatWindow->addText("> ");
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				case YCMT_EVENT_MESSAGE:
+					chatWindow->addText(mit->text);
+					chatWindow->addText("\n");
+					chatWindow->scrollToBottom();
+				break;
+				default:
+					assert(false);
+				break;
+			}
+			mit->gameGuiPainted=true;
+		}
+	
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
 }
