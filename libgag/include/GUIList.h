@@ -51,6 +51,7 @@ public:
 	void addText(const char *text, int pos);
 	void addText(const char *text);
 	void removeText(int pos);
+	bool isText(const char *text) const;
 	void clear(void);
 	const char *getText(int pos) const;
 	const char *get(void) const;

@@ -49,7 +49,8 @@ SettingsScreen::SettingsScreen()
 	{
 		std::ostringstream ost;
 		ost << w << "x" << h;
-		modeList->addText(ost.str().c_str());
+		if (!modeList->isText(ost.str().c_str()))
+			modeList->addText(ost.str().c_str());
 	}
 	addWidget(modeList);
 
