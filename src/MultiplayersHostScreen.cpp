@@ -32,7 +32,7 @@
 //#include "NetConsts.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
-:MultiplayersCrossConnectableScreen()
+:MultiplayersCrossConnectable()
 {
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
@@ -41,6 +41,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 
 	this->sessionInfo=*sessionInfo;
 	validSessionInfo=true;
+
 
 	// net things:
 	initHostGlobalState();
@@ -385,9 +386,9 @@ void MultiplayersHostScreen::confirmPlayer(char *data, int size, IPaddress ip)
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+	//	if (validSessionInfo)
+	//		paintSessionInfo(hostGlobalState);
+	//	addUpdateRect();
 		return;
 	}
 	else
@@ -397,9 +398,9 @@ void MultiplayersHostScreen::confirmPlayer(char *data, int size, IPaddress ip)
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
 		printf("this ip(%x) is confirmed in player list.\n", ip.host);
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+	//	if (validSessionInfo)
+	//		paintSessionInfo(hostGlobalState);
+	//	addUpdateRect();
 		return;
 	}
 }
@@ -422,9 +423,9 @@ void MultiplayersHostScreen::confirmStartCrossConnection(char *data, int size, I
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		printf("this ip(%x, %d) is start cross connection confirmed..\n", ip.host, ip.port);
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+		//if (validSessionInfo)
+		//	paintSessionInfo(hostGlobalState);
+		//addUpdateRect();
 		return;
 	}
 }
@@ -448,9 +449,9 @@ void MultiplayersHostScreen::confirmStillCrossConnecting(char *data, int size, I
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
 		printf("this ip(%x, %d) is continuing cross connection confirmed..\n", ip.host, ip.port);
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+		//if (validSessionInfo)
+		//	paintSessionInfo(hostGlobalState);
+		//addUpdateRect();
 		return;
 	}
 }
@@ -480,9 +481,9 @@ void MultiplayersHostScreen::confirmCrossConnectionAchieved(char *data, int size
 		// let's check if all players are cross Connected
 		stepHostGlobalState();
 
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+		//if (validSessionInfo)
+		//	paintSessionInfo(hostGlobalState);
+		//addUpdateRect();
 		return;
 	}
 }
@@ -524,9 +525,9 @@ void MultiplayersHostScreen::confirmPlayerStartGame(char *data, int size, IPaddr
 		// let's check if all players are playing
 		stepHostGlobalState();
 
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+		//if (validSessionInfo)
+		//	paintSessionInfo(hostGlobalState);
+		//addUpdateRect();
 		return;
 	}
 }
@@ -601,9 +602,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		else if (startGameTimeCounter%20==0)
 		{
 			send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
-			if (validSessionInfo)
-				paintSessionInfo(hostGlobalState);
-			addUpdateRect();
+			//if (validSessionInfo)
+			//	paintSessionInfo(hostGlobalState);
+			//addUpdateRect();
 		}
 	}
 	else
@@ -629,8 +630,8 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 
 			treatData((char *)(packet->data), packet->len, packet->address);
 
-			paintSessionInfo(hostGlobalState);
-			addUpdateRect();
+			//paintSessionInfo(hostGlobalState);
+			//addUpdateRect();
 		}
 
 		SDLNet_FreePacket(packet);
@@ -855,9 +856,9 @@ void MultiplayersHostScreen::sendingTime()
 
 	if (update)
 	{
-		if (validSessionInfo)
-			paintSessionInfo(hostGlobalState);
-		addUpdateRect();
+		//if (validSessionInfo)
+		//	paintSessionInfo(hostGlobalState);
+		//addUpdateRect();
 	}
 }
 
@@ -883,9 +884,9 @@ void MultiplayersHostScreen::startGame(void)
 	// let's check if all players are playing
 	stepHostGlobalState();
 
-	if (validSessionInfo)
-		paintSessionInfo(hostGlobalState);
-	addUpdateRect();
+	//if (validSessionInfo)
+	//	paintSessionInfo(hostGlobalState);
+	//addUpdateRect();
 }
 
 void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, int par2)

@@ -18,33 +18,46 @@
 
 */
 
-#ifndef __MULTIPLAYERJOINSCREEN_H
-#define __MULTIPLAYERJOINSCREEN_H
+#ifndef __MULTIPLAYERJOIN_H
+#define __MULTIPLAYERJOIN_H
 
 #include "PreparationGui.h"
-#include "MultiplayersJoin.h"
 
-class MultiplayersJoinScreen:public Screen
+class MultiplayersJoin:public MultiplayersCrossConnectable
 {
 public:
-	enum
+	enum WaitingState
 	{
-		CONNECT = 1,
-		QUIT = 5,
+		WS_BAD=0,
+		WS_TYPING_SERVER_NAME,
+		WS_WAITING_FOR_SESSION_INFO,
+		WS_WAITING_FOR_CHECKSUM_CONFIRMATION,
+		WS_OK,
 
-		STARTED=11
+		WS_CROSS_CONNECTING,
+		WS_CROSS_CONNECTING_START_CONFIRMED,
+		WS_CROSS_CONNECTING_ACHIEVED,
+
+		WS_CROSS_CONNECTING_SERVER_HEARD,
+
+		WS_SERVER_START_GAME
 	};
-	MultiplayersJoin multiplayersJoin;
-
-private:
-	//Sprite *arch;
-	TextInput *serverName;
-	TextInput *playerName;
 
 public:
-	MultiplayersJoinScreen();
-	virtual ~MultiplayersJoinScreen();
-	void paint(int x, int y, int w, int h);
+	char serverName[128];
+	char playerName[128];
+
+	WaitingState waitingState;
+	int waitingTimeout;
+	int waitingTimeoutSize;
+	int waitingTOTL;
+
+public:
+	MultiplayersJoin();
+	virtual ~MultiplayersJoin();
+
+	void dataSessionInfoRecieved(char *data, int size, IPaddress ip);
+	void checkSumConfirmationRecieved(char *data, int size, IPaddress ip);
 
 	void unCrossConnectSessionInfo(void);
 	void tryCrossConnections(void);
@@ -55,11 +68,19 @@ public:
 	void stillCrossConnectingConfirmation(IPaddress ip);
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
 
+	void serverAskForBeginning(char *data, int size, IPaddress ip);
+	void treatData(char *data, int size, IPaddress ip);
+	//void confirmPlayerStartGame(IPaddress ip);
+
 	void onTimer(Uint32 tick);
 
-	void onSDLEvent(SDL_Event *event);
+	void sendingTime();
+	bool sendSessionInfoRequest();
+	bool sendSessionInfoConfirmation();
+	bool send(const int v);
+	bool send(const int u, const int v);
 
-	void onAction(Widget *source, Action action, int par1, int par2);
+	bool tryConnection();
 };
 
 #endif

@@ -22,8 +22,9 @@
 #define __MULTIPLAYERHOSTSCREEN_H
 
 #include "PreparationGui.h"
+#include "GAG.h"
 
-class MultiplayersHostScreen:public MultiplayersCrossConnectableScreen
+class MultiplayersHostScreen: public Screen, public MultiplayersCrossConnectable
 {
 public:
 	enum
