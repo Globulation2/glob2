@@ -103,7 +103,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
-		Utilities::streamprintf(stream, "screenHeight=%d\n", screenDepth);
+		Utilities::streamprintf(stream, "screenDepth=%d\n", screenDepth);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);

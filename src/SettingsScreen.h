@@ -44,8 +44,10 @@ public:
 private:
 	List *languageList;
 	List *modeList;
+	List *rendererList;
+	List *depthList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH, oldScreenFlags, oldOptionFlags, oldMusicVol;
+	int oldLanguage, oldScreenW, oldScreenH, oldScreenDepth, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol;
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality;
@@ -54,6 +56,10 @@ private:
 	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
 
 	bool gfxAltered;
+	
+	//! If GL is enabled, hide useless options
+	void setVisibilityFromGraphicType(void);
+	//! reset res and redraw everything
 	void updateGfxCtx(void);
 
 public:

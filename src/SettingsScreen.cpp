@@ -55,26 +55,38 @@ SettingsScreen::SettingsScreen()
 			modeList->addText(ost.str().c_str());
 	}
 	addWidget(modeList);
+	
+	rendererList = new List(175, 90, 50, 45, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	rendererList->addText("SDL");
+	rendererList->addText("GL");
+	addWidget(rendererList);
+	
+	depthList = new List(110, 90, 50, 45, ALIGN_RIGHT, ALIGN_TOP, "standard");
+	depthList->addText("32");
+	depthList->addText("16");
+	addWidget(depthList);
 
-	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(200, 90+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
-	fullscreenText=new Text(20, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
+	fullscreenText=new Text(20, 90+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
+	
+	lowquality=new OnOffButton(200, 120+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	addWidget(lowquality);
+	lowqualityText=new Text(20, 120+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
+	addWidget(lowqualityText);
 
-	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
+	hwaccel=new OnOffButton(200, 180+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
-	hwaccelText=new Text(20, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
+	hwaccelText=new Text(20, 180+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
-	dblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
+	dblbuff=new OnOffButton(200, 150+60, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::DOUBLEBUF, DBLBUFF);
 	addWidget(dblbuff);
-	dblbuffText=new Text(20, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
+	dblbuffText=new Text(20, 150+60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[dblbuff]"), 160);
 	addWidget(dblbuffText);
-
-	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
-	addWidget(lowquality);
-	lowqualityText=new Text(20, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
-	addWidget(lowqualityText);
+	
+	setVisibilityFromGraphicType();
 
 	// Username part
 	userName=new TextInput(20, 80, 160, 25, ALIGN_LEFT, ALIGN_BOTTOM, "standard", globalContainer->getUsername(), true, 32);
@@ -98,13 +110,15 @@ SettingsScreen::SettingsScreen()
 	title=new Text(0, 18, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[settings]"));
 	addWidget(title);
 
-	oldLanguage=Toolkit::getStringTable()->getLang();
-	oldScreenW=globalContainer->settings.screenWidth;
-	oldScreenH=globalContainer->settings.screenHeight;
-	oldScreenFlags=globalContainer->settings.screenFlags;
-	oldOptionFlags=globalContainer->settings.optionFlags;
+	oldLanguage = Toolkit::getStringTable()->getLang();
+	oldScreenW = globalContainer->settings.screenWidth;
+	oldScreenH = globalContainer->settings.screenHeight;
+	oldScreenDepth = globalContainer->settings.screenDepth;
+	oldScreenFlags = globalContainer->settings.screenFlags;
+	oldGraphicType = globalContainer->settings.graphicType;
+	oldOptionFlags = globalContainer->settings.optionFlags;
 
-	gfxAltered=false;
+	gfxAltered = false;
 }
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -125,16 +139,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			Toolkit::getStringTable()->setLang(oldLanguage);
 
-			globalContainer->settings.musicVolume=oldMusicVol;
+			globalContainer->settings.musicVolume = oldMusicVol;
 			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
 
-			globalContainer->settings.screenWidth=oldScreenW;
-			globalContainer->settings.screenHeight=oldScreenH;
-			globalContainer->settings.screenFlags=oldScreenFlags;
+			globalContainer->settings.screenWidth = oldScreenW;
+			globalContainer->settings.screenHeight = oldScreenH;
+			globalContainer->settings.screenDepth = oldScreenDepth;
+			globalContainer->settings.screenFlags = oldScreenFlags;
+			globalContainer->settings.graphicType = oldGraphicType;
 			if (gfxAltered)
 				updateGfxCtx();
 
-			globalContainer->settings.optionFlags=oldOptionFlags;
+			globalContainer->settings.optionFlags = oldOptionFlags;
 
 			endExecute(par1);
 		}
@@ -168,6 +184,16 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenHeight=h;
 			updateGfxCtx();
 		}
+		else if (source==rendererList)
+		{
+			globalContainer->settings.graphicType = par1;
+			updateGfxCtx();
+		}
+		else if (source==depthList)
+		{
+			globalContainer->settings.screenDepth = atoi(depthList->getText(par1));
+			updateGfxCtx();
+		}
 	}
 	else if (action==VALUE_CHANGED)
 	{
@@ -194,7 +220,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			updateGfxCtx();
 		}
-		else if (source==hwaccel)
+		else if ((source==hwaccel) && (globalContainer->settings.graphicType != DrawableSurface::GC_GL))
 		{
 			if (hwaccel->getState())
 			{
@@ -206,7 +232,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			updateGfxCtx();
 		}
-		else if (source==dblbuff)
+		else if ((source==dblbuff) && (globalContainer->settings.graphicType != DrawableSurface::GC_GL))
 		{
 			if (dblbuff->getState())
 			{
@@ -221,9 +247,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 }
 
+void SettingsScreen::setVisibilityFromGraphicType(void)
+{
+	dblbuff->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
+	dblbuffText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
+	hwaccel->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
+	hwaccelText->visible = globalContainer->settings.graphicType != DrawableSurface::GC_GL;
+}
+
 void SettingsScreen::updateGfxCtx(void)
 {
-	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
+	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenDepth, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
+	setVisibilityFromGraphicType();
 	dispatchPaint(globalContainer->gfx);
 	addUpdateRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	gfxAltered = true;
