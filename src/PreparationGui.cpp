@@ -247,6 +247,8 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	fileList=new List(20, 60, 200, 400, globalContainer->standardFont);
 	mapPreview=new MapPreview(240, 60, "net.map");
 
+	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
+
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(mapPreview);
@@ -259,7 +261,6 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	}
 	addWidget(fileList);
 
-	firstDraw=true;
 	validSessionInfo=false;
 
 	globalContainer->gfx->setClipRect();
@@ -314,12 +315,6 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 void MultiplayersChooseMapScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	if (firstDraw)
-	{
-		char *text= globalContainer->texts.getString("[choose map]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
-		firstDraw=false;
-	}
 }
 
 

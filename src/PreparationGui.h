@@ -108,7 +108,6 @@ private:
 	Button *ok, *cancel;
 	List *fileList;
 	MapPreview *mapPreview;
-	bool firstDraw;
 	bool validSessionInfo;
 
 public:

@@ -291,9 +291,8 @@ int SDLBitmapFont::textWidth(const char *text, int min, int max) const
 	return x;
 }
 
-bool SDLBitmapFont::printable(char c)
+bool SDLBitmapFont::printable(char c) const
 {
-
 	//printf("startChar=%d, lastChar=%d, ' '=%d \n", startChar, lastChar, ' ');
 	return (((c>=startChar)&&(c<=lastChar)) || (c==' '));
 }

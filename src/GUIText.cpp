@@ -28,10 +28,22 @@ Text::Text(int x, int y,const Font *font, const char *text, int w, int h)
 	this->text=text;
 	this->w=w;
 	this->h=h;
+	this->gfx=NULL;
+}
+
+void Text::setText(const char *newText)
+{
+	assert(gfx);
+	this->text=text;
+	parent->paint(x, y, w, h);
+	paint(gfx);
+	parent->addUpdateRect(x, y, w, h);
+	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
 void Text::paint(DrawableSurface *gfx)
 {
+	this->gfx=gfx;
 	int wDec, hDec;
 
 	if (w)
