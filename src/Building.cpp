@@ -110,7 +110,6 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	{
 		globalGradient[i]=NULL;
 		dirtyLocalGradient[i]=true;
-		dirtyGlobalGradient[i]=true;
 	}
 }
 
@@ -175,11 +174,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	{
 		if (globalGradient[i])
 		{
-			delete globalGradient[i];
+			delete[] globalGradient[i];
 			globalGradient[i]=NULL;
 		}
 		dirtyLocalGradient[i]=true;
-		dirtyGlobalGradient[i]=true;
 	}
 	Map::clearBuildingGradient(localGradient);
 }

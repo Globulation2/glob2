@@ -749,7 +749,12 @@ void Team::dirtyGlobalGradient()
 		Building *b=myBuildings[id];
 		if (b)
 			for (int canSwim=0; canSwim<2; canSwim++)
-				b->dirtyGlobalGradient[canSwim]=true;
+				if (b->globalGradient[canSwim])
+				{
+					printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
+					delete[] b->globalGradient[canSwim];
+					b->globalGradient[canSwim]=NULL;
+				}
 	}
 }
 
