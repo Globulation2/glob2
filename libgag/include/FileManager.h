@@ -103,7 +103,7 @@ namespace GAGCore
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, const char *version
 		SDL_RWops *open(const char *filename, const char *mode="rb");
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, std::string version
-		SDL_RWops *open(const std::string &filename, const char *mode="rb") { return open(filename.c_str()); }
+		SDL_RWops *open(const std::string &filename, const char *mode="rb") { return open(filename.c_str(), mode); }
 		//! Open a file in the FILE* format
 		FILE *openFP(const char *filename, const char *mode="rb");
 		//! Open a file in the c++ stream format for reading
