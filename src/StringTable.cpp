@@ -36,8 +36,9 @@
 
 OneStringToken::OneStringToken(const char *name)
 {
-	this->name=(char *)malloc(strlen(name)+1);
-	strcpy(this->name, name);
+	int len=strlen(name)+1;
+	this->name=(char *)malloc(len);
+	strncpy(this->name, name, len);
 }
 
 OneStringToken::~OneStringToken()
@@ -49,8 +50,9 @@ OneStringToken::~OneStringToken()
 
 void OneStringToken::addData(char *data)
 {
-	char *temp=(char *)malloc(strlen(data)+1);
-	strcpy(temp, data);
+	int len=strlen(data)+1;
+	char *temp=(char *)malloc(len);
+	strncpy(temp, data, len);
 	this->data.push_back(temp);
 }
 
