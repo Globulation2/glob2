@@ -349,7 +349,7 @@ int AINumbi::countUnits(const int medicalState)
 	{
 		return team->stats.getLatestStat()->totalUnit
 			- team->stats.getLatestStat()->needFoodCritical
-			- team->stats.getLatestStat()->needFood;
+			- team->stats.getLatestStat()->needFood
 			- team->stats.getLatestStat()->needHeal;
 	}
 	else if (medicalState == Unit::MED_HUNGRY)
@@ -818,7 +818,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				ex=b->posX;
 				ey=b->posY;
 
-				if (syncRand()&0x1F==0)
+				if ((syncRand()&0x1F)==0)
 				{
 					bool already=false;
 					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)

@@ -1674,7 +1674,7 @@ char *YOG::getStatusString(ExternalStatusState externalStatusState)
 		assert(false);
 	break;
 	}
-	int l=strlen(s)+1;
+	size_t l=strlen(s)+1;
 	char *t=new char[l];
 	strncpy(t, s, l);
 	return t;

@@ -950,7 +950,7 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 		if (shareOnYOG)
 		{
 			assert(yog);
-			int size=8+10*yog->joiners.size();
+			int size=8+10*(int)yog->joiners.size();
 			VARARRAY(Uint8,data,size);
 			
 			data[0]=SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING;
@@ -958,7 +958,7 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 			data[2]=0;
 			data[3]=0;
 			
-			data[4]=yog->joiners.size();
+			data[4]=(Uint8)yog->joiners.size();
 			data[5]=0;
 			data[6]=0;
 			data[7]=0;
@@ -1578,7 +1578,7 @@ void MultiplayersHost::sendingTime()
 				int size=sessionInfo.getDataLength(true);
 
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
-				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
+				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%p.\n", sessionInfo.mapGenerationDescriptor);
 
 				int hostUserNameSize=Utilities::strmlen(globalContainer->getUsername(), 32);
 				data=(Uint8 *)malloc(12+hostUserNameSize+size);

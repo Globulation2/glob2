@@ -76,18 +76,18 @@ void TeamStats::step(Team *team)
 	{
 		std::list<Building *> foodable=team->foodable;
 		for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
 	}
 	{
 		std::list<Building *> fillable=team->fillable;
 		for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
 	}
 	{
 		std::list<Building *> zonable=team->clearingFlags;
 		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
 			if ((*bi)->anyRessourceToClear[0]!=2 || (*bi)->anyRessourceToClear[1]!=2)
-				smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+				smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(int)(*bi)->unitsWorking.size();
 	}
 	
 	smoothedIndex++;

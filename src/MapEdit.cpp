@@ -124,7 +124,7 @@ void MapEdit::drawMenu(void)
 
 	// ressources
 	globalContainer->gfx->drawFilledRect(menuStartW+0, 204, 128, 32, 0, 0, 0);
-	unsigned resCount=globalContainer->ressourcesTypes.size();
+	unsigned resCount=(unsigned)globalContainer->ressourcesTypes.size();
 	unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
 	unsigned i;
 	unsigned resWidth=126/halfResCount;
@@ -893,7 +893,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	{
 		editMode=EM_RESSOURCE;
 
-		unsigned resCount=globalContainer->ressourcesTypes.size();
+		unsigned resCount=(unsigned)globalContainer->ressourcesTypes.size();
 		unsigned halfResCount=(unsigned)ceil(resCount*0.5f);
 		unsigned resWidth=126/halfResCount;
 
