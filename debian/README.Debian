@@ -1,0 +1,6 @@
+glob2 for Debian
+----------------
+
+Use gcc-2.95 or gcc-3.3 if you want to compile this package yourself, not gcc-3.2
+
+ -- Vincent Deffontaines <vincent@gryzor.com>, Mon, 28 Apr 2003 16:39:25 +0200
