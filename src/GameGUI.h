@@ -114,6 +114,8 @@ private:
 	void drawPanelButtons(int pos);
 	//! Draw a choice of buildings or flags
 	void drawChoice(int pos, std::vector<int> &types);
+	//! Draw the infos from a unit
+	void drawUnitInfos(void);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
@@ -227,7 +229,7 @@ private:
 		// color
 		Uint8 r, g, b;
 	};
-	
+
 	std::list<Mark> markList;
 	
 	//! add a minimap mark
