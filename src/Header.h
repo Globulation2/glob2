@@ -22,20 +22,4 @@
 
 #include <GAGSys.h>
 
-#ifdef WIN32
-	#include <SDL_net.h>
-#else
-	#include <SDL/SDL_net.h>
-#endif
-
-
-//! if defined, enable UID debug code
-//#define DBG_UID
-
-//! if defined, enable pathfinding debug code
-#define DBG_PATHFINDING
-
-//! if defined, enable vPath listing
-//#define DBG_VPATH_LIST
-
 #endif

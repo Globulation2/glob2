@@ -60,6 +60,7 @@ The engine has to call NetGame::step() to give him time to process.
 */
 
 #include "Header.h"
+#include <SDL/SDL_net.h>
 
 class Player;
 class Order;

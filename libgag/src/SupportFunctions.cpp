@@ -19,6 +19,7 @@
 
 #include <SupportFunctions.h>
 #include <math.h>
+#include <string.h>
 #include <assert.h>
 #include <cstdarg>
 #include <cstdio>
@@ -260,5 +261,11 @@ namespace GAG
 		std::string ret(str);
 		free(str);
 		return ret;
+	}
+
+	char* newstrdup(const char* str)
+	{
+		char* newStr = new char[strlen(str)+1];
+		return strcpy(newStr, str);
 	}
 }

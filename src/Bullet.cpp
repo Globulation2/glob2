@@ -19,6 +19,7 @@
 
 #include "Bullet.h"
 #include <assert.h>
+#include <SDL/SDL_endian.h>
 
 Bullet::Bullet(SDL_RWops *stream)
 {

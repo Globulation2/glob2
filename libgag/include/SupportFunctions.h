@@ -55,6 +55,8 @@ namespace GAG
 	//! c++ version of asprintf (n for new instead of a for alloc)
 	std::string vnsprintf(const char* s, va_list args);
 
+	//! strdup function using new
+	char* newstrdup(const char* str);
 };
 
 #endif
