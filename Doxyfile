@@ -238,7 +238,7 @@ ALIASES                =
 
 ENABLED_SECTIONS       = 
 
-# The MAX_INITIALIZER_LINES tag determines the maximum number of lines 
+# The MAX_INITIALIZER_LINES tag determines the maximum number of lines
 # the initial value of a variable or define consist of for it to appear in 
 # the documentation. If the initializer consists of more lines than specified 
 # here it will be hidden. Use a value of 0 to hide initializers completely. 
@@ -665,16 +665,7 @@ INCLUDE_FILE_PATTERNS  =
 # or name=definition (no spaces). If the definition and the = are 
 # omitted =1 is assumed.
 
-PREDEFINED             = DPS_PLATFORM_POSIX \
-                         DPS_COMPILER_GCC \
-                         DPS_INSTRUMENT \
-                         "CLASSDEF(x)=public:" \
-                         "TEMPLATEDEF1(x,a)=public:" \
-                         "TEMPLATEDEF2(x,a,b)=public:" \
-                         "ITEM(a,b)=a b;" \
-                         BASECLASS(x)= \
-                         MEMBERS= \
-                         CLASSEND= \
+PREDEFINED             =
 
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 
@@ -682,13 +673,7 @@ PREDEFINED             = DPS_PLATFORM_POSIX \
 # The macro definition that is found in the sources will be used. 
 # Use the PREDEFINED tag if you want to use a different macro definition.
 
-EXPAND_AS_DEFINED      = IDENTIFY \
-                         CLASSDEF \
-                         ITEM \
-                         MEMBERS \
-                         CLASSEND \
-                         BASECLASS \
-                         BASECLASSN
+EXPAND_AS_DEFINED      = 
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then 
 # doxygen's preprocessor will remove all function-like macros that are alone 
