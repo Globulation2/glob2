@@ -36,6 +36,7 @@ public:
 
 private:
 	int timeCounter;
+	double progress, lastProgress;
 public:
 	Text *startTimer;
 

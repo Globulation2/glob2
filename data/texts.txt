@@ -763,3 +763,19 @@ zu:
 Compiler le script
 Compile script
 Script compilieren
+[downloaded at]
+Téléchargé à 
+Downloaded at 
+
+[percent]
+  pourcent
+  percent
+  
+[download finished]
+Téléchargement terminé
+Download finished
+
+
+
+
+

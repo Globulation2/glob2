@@ -36,6 +36,8 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 	addWidget(startTimer);
 	
 	timeCounter=0;
+	progress=0;
+	lastProgress=0;
 }
 
 MultiplayersConnectedScreen::~MultiplayersConnectedScreen()
@@ -72,6 +74,21 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			char s[128];
 			snprintf(s, 128, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
 			printf("s=%s.\n", s);
+			startTimer->setText(s);
+		}
+		
+		bool isFileMapDownload=multiplayersJoin->isFileMapDownload(progress);
+		if (lastProgress!=progress)
+		{
+			lastProgress=progress;
+			char s[128];
+			if (isFileMapDownload)
+			{
+				int percent=(int)(100.0*progress);
+				snprintf(s, 128, "%s%d%s", globalContainer->texts.getString("[downloaded at]"), percent, globalContainer->texts.getString("[percent]"));
+			}
+			else
+				snprintf(s, 128, "%s", globalContainer->texts.getString("[download finished]"));
 			startTimer->setText(s);
 		}
 	}

@@ -110,6 +110,8 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	
 	if (downloadStream)
 	{
+		fprintf(logFile, "MultiplayersJoin:: download not finished.\n");
+		//TODO: delete/remove the incomplete file !
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
 	}
@@ -282,41 +284,46 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	int writingSize=size-12;
 	fprintf(logFile, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
 	
-	if (windowIndex==-1 && writingSize!=0)
+	if (writingSize==0)
 	{
-		fprintf(logFile, "1 we received an bad windowIndex in data file !!!.\n");
+		if (windowIndex==-1)
+		{
+			endOfFileIndex=writingIndex;
+			fprintf(logFile, "1 end of the file is %d.\n", endOfFileIndex);
+		}
+		else
+			fprintf(logFile, "e1 we received an bad windowIndex in data file !!!.\n");
+		return;
+	}
+	else if (windowIndex==-1 && writingSize!=0)
+	{
+		fprintf(logFile, "e2 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	else if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
 	{
-		fprintf(logFile, "2 we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFile, "e3 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	
-	if (writingSize==0)
+	assert(writingSize>0);
+	if (netWindow[windowIndex].received && netWindow[windowIndex].index==writingIndex && netWindow[windowIndex].packetSize==writingSize)
 	{
-		endOfFileIndex=writingIndex;
-		fprintf(logFile, "1 end of the file is %d.\n", endOfFileIndex);
+		duplicatePacketFile++;
+		fprintf(logFile, "duplicated \n");
 	}
-	else
-	{
-		if (netWindow[windowIndex].received && netWindow[windowIndex].index==writingIndex && netWindow[windowIndex].packetSize==writingSize)
-		{
-			duplicatePacketFile++;
-			fprintf(logFile, "duplicated \n");
-		}
-		else if (startDownloadTimeout>2)
-			startDownloadTimeout=2;
-		
-		SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
-		SDL_RWwrite(downloadStream, data+12, writingSize, 1);
+	else if (startDownloadTimeout>2)
+		startDownloadTimeout=2;
 
-		netWindow[windowIndex].index=writingIndex;
-		netWindow[windowIndex].received=true;
-		netWindow[windowIndex].packetSize=writingSize;
+	SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
+	SDL_RWwrite(downloadStream, data+12, writingSize, 1);
 
-		fprintf(logFile, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
-	}
+	netWindow[windowIndex].index=writingIndex;
+	netWindow[windowIndex].received=true;
+	netWindow[windowIndex].packetSize=writingSize;
+
+	fprintf(logFile, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
+	
 	
 	bool hit=true;
 	bool anyHit=false;
@@ -1482,4 +1489,14 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 	}
 	
 	return localPort;
+}
+
+bool MultiplayersJoin::isFileMapDownload(double &progress)
+{
+	if (endOfFileIndex>0)
+			progress=(double)unreceivedIndex/(double)endOfFileIndex;
+	if (downloadStream)
+		return true;
+	else
+		return false;
 }
