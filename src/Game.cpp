@@ -1825,10 +1825,10 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 
 	int buildingsUnitsColor[6][3] = {
 		{ 10, 240, 20 }, // self
-		{ 220, 25, 30 }, // ally
+		{ 220, 200, 20 }, // ally
 		{ 220, 25, 30 }, // enemy
 		{ (10*3)/5, (240*3)/5, (20*3)/5 }, // self FOW
-		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // ally FOW
+		{ (220*3)/5, (200*3)/5, (20*3)/5 }, // ally FOW
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
