@@ -109,7 +109,7 @@ private:
 	void handleMenuClick(int mx, int my, int button);
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);
-	void coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport=true);
+	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
 
 	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
@@ -197,6 +197,7 @@ private:
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
+	//! The position of the flag when it was pushed.
 	Sint32 selectionPushedPosX, selectionPushedPosY;
 	//! True if the mouse's button way never relased since click im minimap.
 	bool miniMapPushed;

@@ -191,8 +191,8 @@ void GameGUI::adjustInitialViewport()
 
 	viewportX=localTeam->startPosX-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=localTeam->startPosY-(globalContainer->gfx->getH()>>6);
-	viewportX=(viewportX+game.map.getW())%game.map.getW();
-	viewportY=(viewportY+game.map.getH())%game.map.getH();
+	viewportX&=game.map.getMaskW();
+	viewportY&=game.map.getMaskH();
 }
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
@@ -1048,7 +1048,7 @@ void GameGUI::handleKeyAlways(void)
 	}
 }
 
-void GameGUI::coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewport)
+void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport)
 {
 	// get data for minimap
 	int mMax;
@@ -1060,13 +1060,13 @@ void GameGUI::coordinateFromMxMY(int mx, int my, int *cx, int *cy, bool useviewp
 	my-=14+decY;
 	*cx=((mx*game.map.getW())/szX);
 	*cy=((my*game.map.getH())/szY);
-	if (useviewport)
+	*cx+=localTeam->startPosX-(game.map.getW()/2);
+	*cy+=localTeam->startPosY-(game.map.getH()/2);
+	if (forScreenViewport)
 	{
 		*cx-=((globalContainer->gfx->getW()-128)>>6);
 		*cy-=((globalContainer->gfx->getH())>>6);
 	}
-	*cx+=localTeam->startPosX+(game.map.getW()>>1);
-	*cy+=localTeam->startPosY+(game.map.getH()>>1);
 
 	*cx&=game.map.getMaskW();
 	*cy&=game.map.getMaskH();
@@ -1080,7 +1080,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (miniMapPushed)
 	{
-		coordinateFromMxMY(mx-globalContainer->gfx->getW()+128, my, &viewportX, &viewportY);
+		minimapMouseToPos(mx-globalContainer->gfx->getW()+128, my, &viewportX, &viewportY, true);
 	}
 	else
 	{
@@ -1216,14 +1216,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (putMark)
 		{
 			int markx, marky;
-			coordinateFromMxMY(mx, my, &markx, &marky, false);
+			minimapMouseToPos(mx, my, &markx, &marky, false);
 			orderQueue.push_back(new MapMarkOrder(localTeamNo, markx, marky));
 			putMark = false;
 		}
 		else
 		{
 			miniMapPushed=true;
-			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
+			minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
 		}
 	}
 	else if (my<128+32)

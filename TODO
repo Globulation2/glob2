@@ -1,10 +1,11 @@
 To First release :
 
+Nouveau bug : dans la carte Easy Three que j'ai chez moi, quand on clique sur la minimap ca ne va pas a la bonne position, il y a un decalage d'une demi-carte. Idem quand on drag
+
 -les guerrières ne sont toujours pas intelligentes.
 -Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 -Avec des explo seulement, on n'a pas perdu.
 -Pourqoi ça marche mal sans ruche ?
--Arrêter de travailler pour un drapeau de défrichage vide.
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
@@ -31,6 +32,7 @@ Optimisation:
 
 Optimisation efficacité:
 - Choisir une ressource qui tienne compte de ce que les autres unités vont déja chercher.
+- Arrêter de travailler pour un drapeau de défrichage vide.
 
 Technique :
 - optimiser l'affichage des boulets
@@ -49,6 +51,7 @@ Propreté du code:
 MapEditor:
 -http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
 -La génération automatique est de nouveau cassée!
+-La touche "exc" est saisie au KEY_DOWN, alors qu'elle est saisie au KEY_Up dans le main screen.
 
 YOG:
 -Ajouter des chambres
