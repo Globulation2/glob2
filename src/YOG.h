@@ -88,13 +88,13 @@ protected:
 
 	//! pending firewall activations
 	std::deque<FirewallActivation> firewallActivations;
-	
+
 	//! games infos
 	std::vector<GameInfo> gameInfos;
 
 	//! iterator for get function from user
 	std::vector<GameInfo>::iterator gameInfoIt;
-	
+
 	//! true if a game is actually shared
 	bool isSharedGame;
 	//! the string corresponding to the game beeing shared
@@ -103,6 +103,8 @@ protected:
 	Uint32 sharedGameLastUpdated;
 	//! The chat where default chat will go
 	char chatChan[IRC_CHANNEL_SIZE+1];
+	//! copy of the nick
+	char nick[IRC_NICK_SIZE+1];
 
 protected:
 	//! Interprete a message from IRC; do parsing etc

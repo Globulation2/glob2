@@ -70,6 +70,10 @@ bool YOG::connect(const char *serverName, int serverPort, const char *nick)
 	sendString(command);
 	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", nick);
 	sendString(command);
+
+	strncpy(this->nick, nick, IRC_NICK_SIZE);
+	this->nick[IRC_NICK_SIZE]=0;
+
 	return true;
 }
 
@@ -139,16 +143,29 @@ void YOG::interpreteIRCMessage(const char *message)
 		char *diffusion=strtok(NULL, " :");
 		if ((diffusion) && (strncmp(diffusion, DEFAULT_FW_CHAN, IRC_CHANNEL_SIZE)==0))
 		{
-			char *hostname=strtok(NULL, " \0");
+			char *nick=strtok(NULL, " \0");
 			char *port=strtok(NULL, " \0");
 
-			FirewallActivation fwAct;
+			if ((nick) && (port) && (prefix) && (strncmp(this->nick, nick, IRC_NICK_SIZE)==0))
+			{
+				FirewallActivation fwAct;
 
-			strncpy(fwAct.hostname, hostname, FW_ACT_HOSTNAME_SIZE);
-			fwAct.hostname[FW_ACT_HOSTNAME_SIZE]=0;
-			fwAct.port=atoi(port);
+				char *startIp;
+				if ((startIp=strrchr(prefix, '@'))!=NULL)
+				{
+					startIp++;
+					strncpy(fwAct.hostname, startIp, FW_ACT_HOSTNAME_SIZE+prefix-startIp);
+				}
+				else
+				{
+					strncpy(fwAct.hostname, prefix, FW_ACT_HOSTNAME_SIZE);
+				}
+				fwAct.hostname[FW_ACT_HOSTNAME_SIZE]=0;
 
-			firewallActivations.push_back(fwAct);
+				fwAct.port=atoi(port);
+
+				firewallActivations.push_back(fwAct);
+			}
 		}
 		else if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))
 		{
@@ -454,6 +471,7 @@ void YOG::quitChannel(const char *channel)
 void YOG::unshareGame(void)
 {
 	isSharedGame=false;
+	quitChannel(DEFAULT_FW_CHAN);
 }
 
 void YOG::shareGame(const char *id, const char *version, const char *comment)
@@ -462,6 +480,7 @@ void YOG::shareGame(const char *id, const char *version, const char *comment)
 	sharedGameLastUpdated=SDL_GetTicks();
 	snprintf(sharedGame, sizeof(sharedGame), "PRIVMSG %s :%s %s %s", DEFAULT_GAME_CHAN, id, version, comment);
 	sendString(sharedGame);
+	joinChannel(DEFAULT_FW_CHAN);
 }
 
 
@@ -542,9 +561,13 @@ bool YOG::getNextFirewallActivation(void)
 
 void YOG::sendFirewallActivation(const char *ip, Uint16 port)
 {
+	joinChannel(DEFAULT_FW_CHAN);
+
 	char activationMssage[IRC_MESSAGE_SIZE];
 	snprintf(activationMssage, sizeof(activationMssage), "PRIVMSG %s :%s %d", DEFAULT_FW_CHAN, ip, port);
 	sendString(activationMssage);
+
+	quitChannel(DEFAULT_FW_CHAN);
 }
 
 bool YOG::getString(char data[IRC_MESSAGE_SIZE])
