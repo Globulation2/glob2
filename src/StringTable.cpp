@@ -166,6 +166,27 @@ char *StringTable::getString(const char *stringname)
 	}
 }
 
+char *StringTable::getStringInLang(const char *stringname, int lang)
+{
+	if ((lang<numberoflanguages) && (lang>=0))
+	{
+		{
+			for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+			{
+				if (strcmp(stringname, (*it)->name)==0)
+				{
+					return ((*it)->data[lang]);
+				}
+			}
+		}
+		return "ERROR : NO STRING";
+	}
+	else
+	{
+		return "ERROR, BAD LANG ID";
+	}
+}
+
 char *StringTable::getString(const char *stringname, int index)
 {
 	if (actlang<numberoflanguages)

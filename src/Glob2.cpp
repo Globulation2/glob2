@@ -11,6 +11,7 @@
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "YOGScreen.h"
+#include "SettingsScreen.h"
 #include <SDL_net.h>
 
 GlobalContainer *globalContainer=0;
@@ -130,7 +131,16 @@ int main(int argc, char *argv[])
 				}
 			}
 			break;
-			case 4: break;
+			case 4:
+			{
+				int settingReturnValue;
+				do
+				{
+					settingReturnValue=SettingsScreen::menu();
+				}
+				while (settingReturnValue);
+			}
+			break;
 			case 5:
 			{
 				MapEdit mapEdit;

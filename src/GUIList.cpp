@@ -38,9 +38,9 @@ void List::onSDLEvent(SDL_Event *event)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
 		{
-			int id=event->button.y-y;
+			int id=event->button.y-y-2;
 			id/=textHeight;
-			if (id<(int)strings.size())
+			if ((id>=0) &&(id<(int)strings.size()))
 				parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
 		}
 	}
