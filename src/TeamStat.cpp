@@ -343,7 +343,7 @@ void TeamStats::drawStat(int pos)
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
 				nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
 				nbNeedFoodCritical=(stats[index].needFoodCritical*64)/stats[index].totalUnit;
-				nbNeedFood=64-(nbNeedHeal-nbNeedFoodCritical);
+				nbNeedFood=64-(nbNeedHeal+nbNeedFoodCritical);
 				nbOk=0;
 			}
 			else if (stats[index].needFoodCritical>0)
