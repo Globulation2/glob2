@@ -742,12 +742,16 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			// then for building
 			if (UID!=NOUID)
 			{
-				if ((UID<0)&&((Building::UIDtoTeam(UID)==localTeam))||(game.map.isFOW(mapX, mapY, localTeam)))
+				if ((UID<0) && game.map.isFOW(mapX, mapY,  game.teams[localTeam]->sharedVision))
 				{
-					displayMode=BUILDING_SELECTION_VIEW;
-					game.selectedUnit=NULL;
-					selectionUID=UID;
-					checkValidSelection();
+					int buildingTeam=Building::UIDtoTeam(UID);
+					if ((game.teams[buildingTeam]->allies) &(1<<localTeam))
+					{
+						displayMode=BUILDING_SELECTION_VIEW;
+						game.selectedUnit=NULL;
+						selectionUID=UID;
+						checkValidSelection();
+					}
 				}
 			}
 			else
