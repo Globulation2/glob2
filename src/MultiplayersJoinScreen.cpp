@@ -97,7 +97,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
-		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 50);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			dispatchPaint(gfxCtx);

@@ -111,7 +111,7 @@ int Engine::initCustom(void)
 {
 	CustomGameScreen customGameScreen;
 
-	int cgs=customGameScreen.execute(globalContainer->gfx, 50);
+	int cgs=customGameScreen.execute(globalContainer->gfx, 40);
 
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
@@ -219,7 +219,7 @@ int Engine::initLoadGame()
 {
 	// TODO: It's maybe cleaner to only use a string instead of all sessionInfo.
 	LoadGameScreen loadGameScreen;
-	int lgs=loadGameScreen.execute(globalContainer->gfx, 50);
+	int lgs=loadGameScreen.execute(globalContainer->gfx, 40);
 	if (lgs==LoadGameScreen::CANCEL)
 		return EE_CANCEL;
 
@@ -262,7 +262,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen(shareOnYOG);
 
-	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
+	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 40);
 
 	if (mpcms==MultiplayersChooseMapScreen::CANCEL)
 		return EE_CANCEL;
@@ -272,7 +272,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	printf("Engine::the game is sharing ...\n");
 	
 	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
-	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 50);
+	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 40);
 	if (rc==MultiplayersHostScreen::STARTED)
 	{
 		if (multiplayersHostScreen.multiplayersJoin==NULL)
@@ -298,7 +298,7 @@ int Engine::initMutiplayerJoin(void)
 {
 	MultiplayersJoinScreen multiplayersJoinScreen;
 
-	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 50);
+	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 40);
 	if (rc==MultiplayersJoinScreen::STARTED)
 	{
 		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);

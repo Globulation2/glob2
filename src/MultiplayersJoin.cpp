@@ -337,7 +337,10 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	}
 	int brandwidth=getSint32(data, 4);
 	if (this->brandwidth>brandwidth)
+	{
 		this->brandwidth=brandwidth;
+		fprintf(logFileDownload, "new brandwidth=%d\n", brandwidth);
+	}
 	Uint32 writingIndex=getUint32(data, 8);
 	int writingSize=size-12;
 	assert(writingSize>0);
@@ -1148,8 +1151,7 @@ void MultiplayersJoin::sendingTime()
 			bool success=send(data, size);
 			assert(success);
 			
-			receivedCounter-=brandwidth;
-			
+			receivedCounter=0;
 			// We compute the new brandwidth, which is the most recent brandwidth:
 			int maxi=-1;
 			Uint32 maxIndex=0;

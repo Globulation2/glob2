@@ -70,7 +70,7 @@ void Glob2::mutiplayerYOG(void)
 {
 	printf("Glob2:: starting YOGPreScreen...\n");
 	YOGPreScreen yogPreScreen;
-	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 50);
+	int yogReturnCode=yogPreScreen.execute(globalContainer->gfx, 40);
 	if (yogReturnCode==YOGPreScreen::CANCEL)
 		return;
 	if (yogReturnCode==-1)
@@ -314,20 +314,20 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::GAME_SETUP:
 			{
 				SettingsScreen settingsScreen;
-				settingsScreen.execute(globalContainer->gfx, 50);
+				settingsScreen.execute(globalContainer->gfx, 40);
 			}
 			break;
 			case MainMenuScreen::EDITOR:
 			{
 				HowNewMapScreen howNewMapScreen;
-				int rc=howNewMapScreen.execute(globalContainer->gfx, 50);
+				int rc=howNewMapScreen.execute(globalContainer->gfx, 40);
 				if (rc==HowNewMapScreen::NEW)
 				{
 					bool retryNewMapScreen=true;
 					while (retryNewMapScreen)
 					{
 						NewMapScreen newMapScreen;
-						if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+						if (newMapScreen.execute(globalContainer->gfx, 40)==NewMapScreen::OK)
 						{
 							MapEdit mapEdit;
 							//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
@@ -351,7 +351,7 @@ int Glob2::run(int argc, char *argv[])
 				else if (rc==HowNewMapScreen::LOAD)
 				{
 					MultiplayersChooseMapScreen multiplayersChooseMapScreen(false);
-					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
+					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 40);
 					if (rc==MultiplayersChooseMapScreen::OK)
 					{
 						MapEdit mapEdit;
