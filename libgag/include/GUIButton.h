@@ -22,11 +22,11 @@
 
 #include "GUIBase.h"
 
-class Button: public RectangularWidget
+class Button: public HighlightableWidget
 {
 protected:
 	CLASSDEF(Button)
-		BASECLASS(RectangularWidget)
+		BASECLASS(HighlightableWidget)
 	MEMBERS
 		ITEM(Sint32, returnCode)
 		ITEM(Uint16, unicodeShortcut)
@@ -35,9 +35,8 @@ protected:
 		ITEM(std::string, sprite)
 	CLASSEND;
 
-	//! cache, recomputed at least on paint
+	//! cache, recomputed on internalInit
 	Sprite *archPtr;
-	bool highlighted;
 
 public:
 	Button() { returnCode=unicodeShortcut=0; highlighted=false; standardId=-1; highlightID=-1; archPtr=NULL; }
@@ -45,11 +44,10 @@ public:
 	virtual ~Button() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(void);
 
 protected:
-	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
-	virtual void repaint(void);
+	virtual void internalInit(int x, int y, int w, int h);
+	virtual void internalRepaint(int x, int y, int w, int h);
 };
 
 class TextButton:public Button
@@ -62,7 +60,7 @@ protected:
 		ITEM(std::string, font)
 	CLASSEND;
 
-	// cache, recomputed at least on paint
+	// cache, recomputed on interHighlightableWidget(returnCode)nalInit
 	Font *fontPtr;
 
 public:
@@ -70,21 +68,18 @@ public:
 	TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
 	virtual ~TextButton() { }
 
-	virtual void paint(void);
-
 	void setText(const char *text);
 
 protected:
-	//! Repaint method, call parent->paint(), internalPaint() and parent->addUpdateRect()
-	virtual void repaint(void);
-	virtual void internalPaint(void);
+	virtual void internalInit(int x, int y, int w, int h);
+	virtual void internalRepaint(int x, int y, int w, int h);
 };
 
-class OnOffButton:public RectangularWidget
+class OnOffButton:public HighlightableWidget
 {
 protected:
 	CLASSDEF(OnOffButton)
-		BASECLASS(RectangularWidget)
+		BASECLASS(HighlightableWidget)
 	MEMBERS
 		ITEM(bool, state)
 		ITEM(Sint32, returnCode)

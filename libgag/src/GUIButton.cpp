@@ -22,6 +22,7 @@
 #include <assert.h>
 
 Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, int returnCode, Uint16 unicodeShortcut)
+:HighlightableWidget(returnCode)
 {
 	this->x=x;
 	this->y=y;
@@ -34,10 +35,8 @@ Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const c
 		this->sprite=sprite;
 	this->standardId=standardId;
 	this->highlightID=highlightID;
-	this->returnCode=returnCode;
 	this->unicodeShortcut=unicodeShortcut;
 
-	highlighted=false;
 	archPtr=NULL;
 }
 
@@ -47,28 +46,9 @@ void Button::onSDLEvent(SDL_Event *event)
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 
-	if (event->type==SDL_MOUSEMOTION)
-	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
-		{
-			if (!highlighted)
-			{
-				highlighted=true;
-				repaint();
-				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
-			}
-		}
-		else
-		{
-			if (highlighted)
-			{
-				highlighted=false;
-				repaint();
-				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
-			}
-		}
-	}
-	else if (event->type==SDL_KEYUP)
+	HighlightableWidget::onSDLEvent(event);
+
+	if (event->type==SDL_KEYUP)
 	{
 		Uint16 typedUnicode=event->key.keysym.unicode;
 		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
@@ -88,41 +68,34 @@ void Button::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void Button::repaint(void)
+void Button::internalInit(int x, int y, int w, int h)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
-	if (visible)
-	{
-		if (highlighted)
-		{
-			if (highlightID>=0)
-				parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
-			else
-				parent->paint(x, y, w, h);
-		}
-		else
-		{
-			if (standardId>=0)
-				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
-			else
-				parent->paint(x, y, w, h);
-		}
-	}
-	parent->addUpdateRect(x, y, w, h);
-}
-
-void Button::paint(void)
-{
-	if ((visible)&&((standardId>=0)||(highlightID>=0)))
+	if ((standardId>=0)||(highlightID>=0))
 	{
 		archPtr=Toolkit::getSprite(sprite.c_str());
 		assert(archPtr);
-		repaint();
 	}
 	highlighted=false;
 }
+
+void Button::internalRepaint(int x, int y, int w, int h)
+{
+	if (highlighted)
+	{
+		if (highlightID>=0)
+			parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
+		else
+			parent->paint(x, y, w, h);
+	}
+	else
+	{
+		if (standardId>=0)
+			parent->getSurface()->drawSprite(x, y, archPtr, standardId);
+		else
+			parent->paint(x, y, w, h);
+	}
+}
+
 
 TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *sprite, int standardId, int highlightID, const char *font, const char *text, int returnCode, Uint16 unicode)
 :Button(x, y, w, h, hAlign, vAlign, sprite, standardId, highlightID, returnCode, unicode)
@@ -134,52 +107,30 @@ TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign,
 	fontPtr=NULL;
 }
 
-void TextButton::internalPaint(void)
+void TextButton::internalInit(int x, int y, int w, int h)
 {
-	if (visible)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-
-		fontPtr=Toolkit::getFont(font.c_str());
-		assert(fontPtr);
-
-		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
-		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
-
-		Button::repaint();
-		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
-		if (highlighted)
-		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
-		}
-		else
-		{
-			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-		}
-		parent->addUpdateRect(x, y, w, h);
-	}
+	Button::internalInit(x, y, w, h);
+	fontPtr=Toolkit::getFont(font.c_str());
+	assert(fontPtr);
 }
 
-void TextButton::paint(void)
+void TextButton::internalRepaint(int x, int y, int w, int h)
 {
-	if ((visible)&&((standardId>=0)||(highlightID>=0)))
+	Button::internalRepaint(x, y, w, h);
+
+	int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
+	int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
+
+	parent->getSurface()->drawString(x+decX, y+decY, fontPtr, "%s", text.c_str());
+	if (highlighted)
 	{
-		archPtr=Toolkit::getSprite(sprite.c_str());
-		assert(archPtr);
+		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+		parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
 	}
-	internalPaint();
-	highlighted=false;
-}
-
-void TextButton::repaint(void)
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
-	parent->paint(x, y, w, h);
-	paint();
+	else
+	{
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+	}
 }
 
 void TextButton::setText(const char *text)
@@ -190,9 +141,8 @@ void TextButton::setText(const char *text)
 }
 
 
-// FIXME : use intermediate class for highlight handling
-
 OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode)
+:HighlightableWidget(returnCode)
 {
 	this->x=x;
 	this->y=y;
@@ -211,28 +161,7 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 
-	if (event->type==SDL_MOUSEMOTION)
-	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
-		{
-			if (!highlighted)
-			{
-				highlighted=true;
-				repaint();
-				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
-			}
-		}
-		else
-		{
-			if (highlighted)
-			{
-				highlighted=false;
-				repaint();
-				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
-			}
-		}
-	}
-	else if (event->type==SDL_MOUSEBUTTONDOWN)
+	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
 			(event->button.button == SDL_BUTTON_LEFT))

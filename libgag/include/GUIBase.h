@@ -128,17 +128,67 @@ public:
 	virtual ~RectangularWidget() { }
 
 	//! Show the widget
+	/*! By default, call (with reals x, y, w, h) :
+		- paint();
+		- parent->updateRect(x, y, w, h)
+	*/
 	virtual void show(void);
+
 	//! Hide the widget
+	/*! By default, call (with reals x, y, w, h) :
+		- parent->paint(x, y, w, h);
+		- parent->updateRect(x, y, w, h)
+	*/
 	virtual void hide(void);
-	//! Show or hide the widget, depending on visible
+
+	//! Show or hide the widget, call show or hide depending on visibe
 	virtual void setVisible(bool visible);
-	//! Compute the actual position from the layout informations
-	virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
+
+	//! Drawing methode of the widget, called on a clean screen and doesn't need to do any addUpdateRect()
+	/*! By default, call (with reals x, y, w, h) :
+		- internalInit(x, y, w, h);
+		- internalRepaint(x, y, w, h);
+	*/
+	virtual void paint(void);
 
 protected:
+
+	//! Called before a paint or a show event, init the paint dependant stuff
+	virtual void internalInit(int x, int y, int w, int h) { }
+
+	//! Do the actual drawing, considering things are initialized
+	virtual void internalRepaint(int x, int y, int w, int h) { }
+
 	//! Repaint the widget in its environment
-	virtual void repaint(void)=0;
+	/*! By default, call (with reals x, y, w, h) :
+		- parent->paint(x, y, w, h);
+		- internalRepaint(x, y, w, h);
+		- parent->updateRect(x, y, w, h)
+	*/
+	virtual void repaint(void);
+
+	//! Compute the actual position from the layout informations
+	virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
+};
+
+//! This class provides highlight support through mouse motion detection
+class HighlightableWidget:public RectangularWidget
+{
+public:
+	CLASSDEFNOREG(HighlightableWidget)
+		BASECLASS(RectangularWidget)
+	MEMBERS
+		ITEM(bool, highlighted)
+		ITEM(Sint32, returnCode)
+	CLASSEND;
+
+public:
+	HighlightableWidget() { highlighted=false; this->returnCode=0; }
+	HighlightableWidget(Sint32 returnCode) { highlighted=false; this->returnCode=returnCode; }
+
+	virtual ~HighlightableWidget() {}
+
+	virtual void onSDLEvent(SDL_Event *event);
 };
 
 //! The screen is the widget container and has a background
