@@ -12,6 +12,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>false</granular>
    <multiplicator>1</multiplicator>
@@ -24,6 +25,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
@@ -36,6 +38,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>false</expendable>
    <eternal>false</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
@@ -48,6 +51,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>false</shrinkable>
+   <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>1</multiplicator>
@@ -60,6 +64,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>2</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>true</expendable>
    <eternal>false</eternal>
    <granular>false</granular>
    <multiplicator>1</multiplicator>
@@ -72,6 +77,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>1</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>10</multiplicator>
@@ -84,6 +90,7 @@
    <sizesCount>5</sizesCount>
    <varietiesCount>1</varietiesCount>
    <shrinkable>true</shrinkable>
+   <expendable>false</expendable>
    <eternal>true</eternal>
    <granular>true</granular>
    <multiplicator>10</multiplicator>

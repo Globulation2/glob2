@@ -112,7 +112,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	// unit specification
 	typeNum=SDL_ReadBE32(stream);
 	race=&(owner->race);
-	
+
 	// identity
 	gid=SDL_ReadBE16(stream);
 	this->owner=owner;
@@ -207,7 +207,7 @@ void Unit::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, (Uint32)obstacleY);
 	SDL_WriteBE32(stream, (Uint32)borderX);
 	SDL_WriteBE32(stream, (Uint32)borderY);
-	
+
 	// trigger parameters
 	SDL_WriteBE32(stream, hp);
 	SDL_WriteBE32(stream, trigHP);
@@ -440,7 +440,7 @@ void Unit::handleActivity(void)
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
-	
+
 	if (medical==MED_FREE)
 	{
 		if (activity==ACT_RANDOM)
@@ -448,7 +448,7 @@ void Unit::handleActivity(void)
 			// look for a "job"
 			// else keep walking around
 			bool jobFound=false;
-			
+
 			// first we look for a food building to fill, because it is the first priority.
 			if (performance[HARVEST])
 			{
@@ -741,7 +741,10 @@ void Unit::handleDisplacement(void)
 				{
 					assert(attachedBuilding);
 					//printf("Giving ressource to building : res : %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
-					attachedBuilding->ressources[caryedRessource]++;
+					attachedBuilding->ressources[caryedRessource]+=globalContainer->ressourcesTypes->get(caryedRessource)->multiplicator;
+					if (attachedBuilding->ressources[caryedRessource] >
+							attachedBuilding->type->maxRessource[caryedRessource])
+						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
 					caryedRessource=-1;
 					if (displacement==DIS_BUILDING)
 					{
@@ -874,7 +877,7 @@ void Unit::handleDisplacement(void)
 						level[destinationPurprose]=attachedBuilding->type->level+1;
 						UnitType *ut=race->getUnitType(typeNum, level[destinationPurprose]);
 						performance[destinationPurprose]=ut->performance[destinationPurprose];
-						
+
 						//printf("New performance[%d]=%d\n", destinationPurprose, performance[destinationPurprose]);
 					}
 				}
@@ -1032,7 +1035,7 @@ void Unit::handleMovement(void)
 					}
 				}
 			}
-			
+
 			assert(performance[FLY]);
 			if (movement!=MOV_GOING_DXDY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
 				movement=MOV_RANDOM;
@@ -1216,13 +1219,13 @@ void Unit::handleMovement(void)
 			movement=MOV_HARVESTING;
 			break;
 		}
-		
+
 		case DIS_GIVING_TO_BUILDING:
 		{
 			movement=MOV_GIVING;
 			break;
 		}
-		
+
 		case DIS_BUILDING:
 		{
 			movement=MOV_BUILDING;
@@ -1262,7 +1265,7 @@ void Unit::handleAction(void)
 				owner->map->setGroundUnit(posX, posY, gid);
 			break;
 		}
-		
+
 		case MOV_GOING_TARGET:
 		{
 			bool fly=performance[FLY];
@@ -1270,15 +1273,15 @@ void Unit::handleAction(void)
 				owner->map->setAirUnit(posX, posY, NOGUID);
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
-			
+
 			pathFind();
 			//printf("%d d=(%d, %d)!\n", (int)this, dx, dy);
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
-			
+
 			selectPreferedMovement();
 			speed=performance[action];
-			
+
 			if (fly)
 				owner->map->setAirUnit(posX, posY, gid);
 			else
@@ -1330,7 +1333,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			selectPreferedMovement();
 			speed=performance[action];
-			
+
 			if (performance[FLY])
 				owner->map->setAirUnit(posX, posY, gid);
 			else
@@ -1410,7 +1413,7 @@ void Unit::setNewValidDirection(void)
 			dxdyfromDirection();
 		}
 	}
-	
+
 }
 
 bool Unit::valid(int x, int y)
@@ -1480,13 +1483,13 @@ void Unit::pathFind(void)
 		dxdyfromDirection();
 		if (valid(posX+dx, posY+dy))
 			return;
-		
+
 		direction=(cDirection+7)&7;
 		dxdyfromDirection();
 		if (valid(posX+dx, posY+dy))
 			return;
-		
-		
+
+
 		if (areOnlyUnitsInFront(cdx, cdy))
 		{
 			if (verbose)
@@ -1711,7 +1714,7 @@ void Unit::pathFind(void)
 					bypassDirection=DIR_UNSET;
 					return;
 				}
-				
+
 				int dctpx, dctpy;
 				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
 
@@ -1957,7 +1960,7 @@ void Unit::pathFind(void)
 				dxdyfromDirection((bapDir+1)&7, &bapdxr, &bapdyr);
 				dxdyfromDirection((bapDir+7)&7, &bapdxl, &bapdyl);
 				if (verbose)
-					printf("bapDir=%d, bapd=(%d, %d), bapdr=(%d, %d), bapdl=(%d, %d)\n", bapDir, bapdx, bapdy, bapdxr, bapdyr, bapdxl, bapdyl); 
+					printf("bapDir=%d, bapd=(%d, %d), bapdr=(%d, %d), bapdl=(%d, %d)\n", bapDir, bapdx, bapdy, bapdxr, bapdyr, bapdxl, bapdyl);
 
 				if ((!validHard(posX+bapdxr, posY+bapdyr)) && (!validHard(posX+bapdxl, posY+bapdyl)))
 					broken=true;
@@ -2101,26 +2104,26 @@ bool Unit::areOnlyUnitsInFront(int dx, int dy)
 {
 	if (!validHard(posX+dx, posY+dy))
 		return false;
-		
+
 	int dir=directionFromDxDy(dx, dy);
 	int ldx, ldy;
-	
+
 	dxdyfromDirection((dir+1)&7, &ldx, &ldy);
-	
+
 	if (!validHard(posX+ldx, posY+ldy))
 		return false;
-	
+
 	dxdyfromDirection((dir+7)&7, &ldx, &ldy);
-	
+
 	if (!validHard(posX+ldx, posY+ldy))
 		return false;
-	
+
 	return true;
 }
 
 void Unit::gotoTarget(int targetX, int targetY)
 {
-	
+
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
 	
