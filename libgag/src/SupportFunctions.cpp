@@ -251,7 +251,7 @@ namespace GAG
 	std::string vnsprintf(const char* f, va_list arglist)
 	{
 		char* str;
-#ifdef __GNUC__
+#if defined __GNUC__ && __GNUC__ >= 3
 		vasprintf(&str, f, arglist);
 #else
 		str = (char*)malloc(256);
