@@ -520,7 +520,22 @@ namespace GAGGUI
 			// compute displayable cursor Pos
 			unsigned cursorPosX = cursorPos-lines[cursorPosY];
 			const std::string &temp = text.substr(lines[cursorPosY], cursorPosX);
-			cursorScreenPosY=font->getStringWidth(temp.c_str());
+			cursorScreenPosY = getStringWidth(temp);
+		}
+	}
+	
+	int TextArea::getStringWidth(const std::string &s)
+	{
+		std::map<std::string, int>::iterator it = stringWidthCache.find(s);
+		if (it != stringWidthCache.end())
+		{
+			return it->second;
+		}
+		else
+		{
+			int w = font->getStringWidth(s.c_str());
+			stringWidthCache[s] = w;
+			return w;
 		}
 	}
 	
@@ -530,13 +545,13 @@ namespace GAGGUI
 		getScreenPos(&x, &y, &w, &h);
 		
 		unsigned pos = 0;
-		int length = w-4-font->getStringWidth("W");
+		int length = w-4-getStringWidth("W");
 		
 		lines.clear();
 		lines.push_back(0);
 		std::string lastWord;
 		std::string lastLine;
-		int spaceLength = font->getStringWidth(" ");
+		int spaceLength = getStringWidth(" ");
 		
 		while (pos<text.length())
 		{
@@ -545,8 +560,8 @@ namespace GAGGUI
 				case ' ':
 				case '\t':
 				{
-					int actLineLength = font->getStringWidth(lastLine.c_str());
-					int actWordLength = font->getStringWidth(lastWord.c_str());
+					int actLineLength = getStringWidth(lastLine);
+					int actWordLength = getStringWidth(lastWord);
 					if (actWordLength+actLineLength+spaceLength < length)
 					{
 						if (lastLine.length())
@@ -566,8 +581,8 @@ namespace GAGGUI
 				case '\n':
 				case '\r':
 				{
-					int actLineLength = font->getStringWidth(lastLine.c_str());
-					int actWordLength = font->getStringWidth(lastWord.c_str());
+					int actLineLength = getStringWidth(lastLine);
+					int actWordLength = getStringWidth(lastWord);
 					if (actWordLength+actLineLength+spaceLength >= length)
 						lines.push_back(pos-lastWord.size());
 					lines.push_back(pos+1);
@@ -584,8 +599,8 @@ namespace GAGGUI
 			pos++;
 		}
 		
-		int actLineLength = font->getStringWidth(lastLine.c_str());
-		int actWordLength = font->getStringWidth(lastWord.c_str());
+		int actLineLength = getStringWidth(lastLine);
+		int actWordLength = getStringWidth(lastWord);
 		if (actWordLength+actLineLength+spaceLength >= length)
 		{
 			lines.push_back(pos-lastWord.size());
