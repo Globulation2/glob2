@@ -1119,7 +1119,7 @@ Order *AICastor::controlStrikes()
 			for (int bi=0; bi<1024; bi++)
 			{
 				Building *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0))
+				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
 					continue;
 				int level=b->type->level;
 				if (bestLevel<level)
@@ -1139,7 +1139,7 @@ Order *AICastor::controlStrikes()
 			for (int bi=0; bi<1024; bi++)
 			{
 				Building *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0) || b->type->level<bestLevel)
+				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim] || b->type->level<bestLevel)
 					continue;
 				int shortTypeNum=b->type->shortTypeNum;
 				if (shortTypeNum==IntBuildingType::ATTACK_BUILDING
@@ -1176,7 +1176,7 @@ Order *AICastor::controlStrikes()
 	for (int bi=0; bi<1024; bi++)
 	{
 		Building *b=enemyBuildings[bi];
-		if (b==NULL || ((b->seenByMask&me)==0))
+		if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
 			continue;
 		int x=b->posX;
 		int y=b->posY;
