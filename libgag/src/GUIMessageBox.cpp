@@ -21,16 +21,17 @@
 #include <GUIBase.h>
 #include <GUIText.h>
 #include <GUIButton.h>
+#include <Toolkit.h>
 
 class MessageBoxScreen:public OverlayScreen
 {
 public:
-	MessageBoxScreen(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
+	MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
 	virtual ~MessageBoxScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
 
-MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
+MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
 :OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
 {
 	int w=titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth;
@@ -43,7 +44,7 @@ MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, Font *font, Messag
 		dec=20;
 	for (int i=0; i<captionCount; i++)
 	{
-		addWidget(new TextButton(dec, 50, captionWidth[i], 30, NULL, -1, -1, font, captionArray[i], i));
+		addWidget(new TextButton(dec, 50, captionWidth[i], 30, NULL, -1, -1, Toolkit::getFont(font), captionArray[i], i));
 		dec+=20 + captionWidth[i];
 	}
 }
@@ -54,7 +55,7 @@ void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par
 		endValue=par1;
 }
 
-int MessageBox(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
+int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
 {
 	// for passing captions to class
 	const char *captionArray[3]={
@@ -64,30 +65,31 @@ int MessageBox(GraphicContext *parentCtx, Font *font, MessageBoxType type, const
 
 	int captionWidth[3];
 	memset(captionWidth, 0, sizeof(captionWidth));
+	Font *fontPtr=Toolkit::getFont(font);
 
 	// compute number of caption
 	unsigned captionCount;
 	if (caption3!=NULL)
 	{
 		captionCount = 3;
-		captionWidth[2] = font->getStringWidth(captionArray[2])+10;
-		captionWidth[1] = font->getStringWidth(captionArray[1])+10;
-		captionWidth[0] = font->getStringWidth(captionArray[0])+10;
+		captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+10;
+		captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
+		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
 	}
 	else if (caption2!=NULL)
 	{
 		captionCount = 2;
-		captionWidth[1] = font->getStringWidth(captionArray[1])+10;
-		captionWidth[0] = font->getStringWidth(captionArray[0])+10;
+		captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
+		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
 	}
 	else
 	{
 		captionCount = 1;
-		captionWidth[0] = font->getStringWidth(captionArray[0])+10;
+		captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
 	}
 
 	int totCaptionWidth = captionWidth[0]+captionWidth[1]+captionWidth[2]+(captionCount-1)*20+40;
-	int titleWidth =  font->getStringWidth(title)+10;
+	int titleWidth =  fontPtr->getStringWidth(title)+10;
 
 	MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
 

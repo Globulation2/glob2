@@ -29,15 +29,19 @@ protected:
 	CLASSDEF(Number)
 		BASECLASS(RectangularWidget)
 	MEMBERS
-		ITEM(base::Ptr<Font>, font)
-		ITEM(Sint32, textHeight)
+		ITEM(std::string, font)
 		ITEM(Sint32, nth)
-		ITEM(Uint32, m)
+		ITEM(Sint32, m)
 		ITEM(std::vector<int>, numbers)
 	CLASSEND;
 
+	// cache, recomputed at least on paint
+	Font *fontPtr;
+	int textHeight;
+
 public:
-	Number(int x, int y, int w, int h, int m, const Font *font);
+	Number();
+	Number(int x, int y, int w, int h, int m, const char *font);
 	virtual ~Number();
 
 	virtual void onTimer(Uint32 tick) { }

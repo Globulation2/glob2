@@ -28,26 +28,27 @@ protected:
 	CLASSDEF(TextInput)
 		BASECLASS(RectangularWidget)
 	MEMBERS
-		ITEM(base::Ptr<Font>, font)
-		ITEM(std::string, textLength)
+		ITEM(std::string, font)
+		ITEM(std::string, text)
 		ITEM(bool, activated)
 		ITEM(Uint32, cursPos)
 	CLASSEND;
 
-	// cache, recomputed on paint
+	// cache, recomputed at least on paint
+	Font *fontPtr;
 	unsigned textDep;
 	int cursorScreenPos;
 
 public:
-	TextInput() { textDep=0; cursorScreenPos=0; }
-	TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated, unsigned textLength=512);
-	virtual ~TextInput() { delete[] text; }
+	TextInput();
+	TextInput(int x, int y, int w, int h, const char *font, const char *text, bool activated, unsigned textLength=512);
+	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(void);
 	virtual void setText(const char *newText);
-	virtual const char *getText(void) { return text; }
+	virtual const char *getText(void) { return text.c_str(); }
 
 protected:
 	virtual void repaint(void);
