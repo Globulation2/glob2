@@ -63,6 +63,8 @@
 #define YOFFSET_TEXT_PARA 14
 #define YOFFSET_TEXT_LINE 12
 
+#define YOFFSET_PROGRESS_BAR 7
+
 enum GameGUIGfxId
 {
 	EXCHANGE_BUILDING_ICONS = 21
@@ -1983,7 +1985,7 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
 	
-	// cleared ressources fo clearing flags:
+	// cleared ressources for clearing flags:
 	if (buildingType->type==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		ypos+=YOFFSET_B_SEP;
@@ -2011,7 +2013,10 @@ void GameGUI::drawBuildingInfos(void)
 
 	// other infos
 	if (buildingType->armor)
+	{
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s : %d", Toolkit::getStringTable()->getString("[armor]"), buildingType->armor).c_str());
+		ypos+=YOFFSET_TEXT_LINE;
+	}
 	ypos += YOFFSET_INFOS;
 	if (buildingType->shootDamage)
 	{
@@ -2020,6 +2025,44 @@ void GameGUI::drawBuildingInfos(void)
 		ypos += YOFFSET_TOWER;
 	}
 
+	if ((selBuild->owner->allies) & (1<<localTeamNo))
+	{
+		// we select food buildings, heal buildings, and upgrade buildings:
+		int maxTimeTo=0;
+		if (buildingType->timeToFeedUnit)
+			maxTimeTo=buildingType->timeToFeedUnit;
+		else if (buildingType->timeToHealUnit)
+			maxTimeTo=buildingType->timeToHealUnit;
+		else
+			for (int i=0; i<NB_ABILITY; i++)
+				if (buildingType->upgradeTime[i])
+					maxTimeTo=buildingType->upgradeTime[i];
+		if (maxTimeTo)
+		{
+			int leftMin=128;
+			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
+			{
+				Unit *u=*it;
+				assert(u);
+				if (u->displacement==Unit::DIS_INSIDE)
+				{
+					int left=(-u->insideTimeout*128+128-u->delta/2)/(1+maxTimeTo);
+					//printf("  left=%d (insideTimeout=%d, delta=%d)\n", left, u->insideTimeout, u->delta);
+					if (leftMin>left)
+						leftMin=left;
+				}
+			}
+			if (leftMin<128)
+			{
+				int left=leftMin;
+				int elapsed=128-left;
+				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, ypos, elapsed, 7, 100, 100, 255);
+				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+elapsed, ypos, left, 7, 128, 128, 128);
+			}
+			ypos+=YOFFSET_PROGRESS_BAR;
+		}
+	}
+	
 	ypos += YOFFSET_B_SEP;
 
 	// exchange building
@@ -2052,22 +2095,23 @@ void GameGUI::drawBuildingInfos(void)
 
 	if ((selBuild->owner->allies) & (1<<localTeamNo))
 	{
+		if (buildingType->unitProductionTime) // swarm
+		{
+			int left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
+			int elapsed=128-left;
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, elapsed, 7, 100, 100, 255);
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+elapsed, 256+65+12, left, 7, 128, 128, 128);
+
+			for (int i=0; i<NB_UNIT_TYPE; i++)
+			{
+				drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
+			}
+		}
+		
+		// ressorces for every building except exchange building
 		if (!buildingType->canExchange)
 		{
-			// swarm
-			if (buildingType->unitProductionTime)
-			{
-				int Left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
-				int Elapsed=128-Left;
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, Elapsed, 7, 100, 100, 255);
-				globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+65+12, Left, 7, 128, 128, 128);
-
-				for (int i=0; i<NB_UNIT_TYPE; i++)
-				{
-					drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, Toolkit::getStringTable()->getString("[Unit type]", i));
-				}
-			}
 
 			// ressources in
 			unsigned j = 0;
@@ -2577,17 +2621,25 @@ void GameGUI::drawOverlayInfos(void)
 	// draw network latency
 	dec += 110;
 	int cpuLoadMax=0;
+	int cpuLoadMaxIndex=0;
 	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
 		if (cpuLoadMax<smoothedCpuLoad[i])
+		{
 			cpuLoadMax=smoothedCpuLoad[i];
-	if (cpuLoadMax<game.session.gameTPF-8)
+			cpuLoadMaxIndex=i;
+		}
+	int cpuLoad=0;
+	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+		if (i!=cpuLoadMaxIndex && cpuLoad<smoothedCpuLoad[i])
+			cpuLoad=smoothedCpuLoad[i];
+	if (cpuLoad<game.session.gameTPF-8)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (cpuLoadMax<game.session.gameTPF)
+	else if (cpuLoad<game.session.gameTPF)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
 	
-	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoadMax, 8, actC[0], actC[1], actC[2]);
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoad, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	

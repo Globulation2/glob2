@@ -1,7 +1,8 @@
 To First release :
 
--les guerrières ne sont toujours pas intelligentes.
--Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
+- les guerrières ne sont toujours pas intelligentes.
+- Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
+- Implémenter AICastor
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
@@ -43,17 +44,18 @@ Propreté du code:
 - (Traduction) Regarder si il y a des %s/%d à rajouter au lieu de deux traductions. GameGUI::addMessage()
 
 MapEditor:
--http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
+- http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
 
 YOG:
--Ajouter des chambres
+- Ajouter des chambres
+- Mettre yog1 get yog2 si yog1 est down.
 
 Tutorial:
--Moins vite.
--Plus gros.
+- Moins vite.
+- Plus gros.
 
 SGSL:
--lire "sgslLangCount" depuis texts.txt
+-l ire "sgslLangCount" depuis texts.txt
 
 To Next version :
 
