@@ -134,7 +134,7 @@
 //593
 //594
 		5967D2C005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = AI.cpp;
@@ -142,7 +142,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AI.h;
@@ -150,7 +150,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = AICastor.cpp;
@@ -158,7 +158,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AICastor.h;
@@ -166,7 +166,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AIImplementation.h;
@@ -174,7 +174,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = AINumbi.cpp;
@@ -182,7 +182,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2C605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AINumbi.h;
@@ -190,7 +190,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2CB05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Bullet.cpp;
@@ -198,7 +198,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2CC05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Bullet.h;
@@ -206,7 +206,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2CD05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = CreditScreen.cpp;
@@ -214,7 +214,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2CE05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = CreditScreen.h;
@@ -222,7 +222,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2CF05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = CustomGameScreen.cpp;
@@ -230,7 +230,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = CustomGameScreen.h;
@@ -238,7 +238,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = EndGameScreen.cpp;
@@ -246,7 +246,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = EndGameScreen.h;
@@ -254,7 +254,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Engine.cpp;
@@ -262,7 +262,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Engine.h;
@@ -270,7 +270,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2D905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = EntityType.cpp;
@@ -278,7 +278,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DA05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = EntityType.h;
@@ -286,7 +286,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DB05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Fatal.cpp;
@@ -294,7 +294,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DC05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Fatal.h;
@@ -302,7 +302,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DD05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Game.cpp;
@@ -310,7 +310,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DE05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Game.h;
@@ -318,7 +318,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2DF05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GameGUI.cpp;
@@ -326,7 +326,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GameGUI.h;
@@ -334,7 +334,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GameGUIDialog.cpp;
@@ -342,7 +342,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GameGUIDialog.h;
@@ -350,7 +350,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GameGUILoadSave.cpp;
@@ -358,7 +358,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GameGUILoadSave.h;
@@ -366,7 +366,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Glob2.cpp;
@@ -374,7 +374,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Glob2.h;
@@ -382,7 +382,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GlobalContainer.cpp;
@@ -390,7 +390,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2E805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GlobalContainer.h;
@@ -398,7 +398,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2EA05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIGlob2FileList.cpp;
@@ -406,7 +406,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2EB05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIGlob2FileList.h;
@@ -414,7 +414,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2EC05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIMapPreview.cpp;
@@ -422,7 +422,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2ED05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIMapPreview.h;
@@ -430,7 +430,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2EE05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Header.h;
@@ -438,7 +438,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2EF05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = LoadGameScreen.cpp;
@@ -446,7 +446,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = LoadGameScreen.h;
@@ -454,7 +454,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = LogFileManager.cpp;
@@ -462,7 +462,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = LogFileManager.h;
@@ -470,7 +470,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MainMenuScreen.cpp;
@@ -478,7 +478,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MainMenuScreen.h;
@@ -486,7 +486,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Map.cpp;
@@ -494,7 +494,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Map.h;
@@ -502,7 +502,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2F905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MapEdit.cpp;
@@ -510,7 +510,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FA05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MapEdit.h;
@@ -518,7 +518,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FB05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MapGenerationDescriptor.cpp;
@@ -526,7 +526,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FC05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MapGenerationDescriptor.h;
@@ -534,7 +534,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FD05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MapGenerator.cpp;
@@ -542,7 +542,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FE05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Marshaling.h;
@@ -550,7 +550,7 @@
 			sourceTree = "<group>";
 		};
 		5967D2FF05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersChooseMapScreen.cpp;
@@ -558,7 +558,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersChooseMapScreen.h;
@@ -566,7 +566,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersConnectedScreen.cpp;
@@ -574,7 +574,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersConnectedScreen.h;
@@ -582,7 +582,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersCrossConnectable.cpp;
@@ -590,7 +590,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersCrossConnectable.h;
@@ -598,7 +598,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersHost.cpp;
@@ -606,7 +606,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersHost.h;
@@ -614,7 +614,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersHostScreen.cpp;
@@ -622,7 +622,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersHostScreen.h;
@@ -630,7 +630,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersJoin.cpp;
@@ -638,7 +638,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30A05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersJoin.h;
@@ -646,7 +646,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30B05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersJoinScreen.cpp;
@@ -654,7 +654,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30C05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersJoinScreen.h;
@@ -662,7 +662,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30D05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = MultiplayersOfferScreen.cpp;
@@ -670,7 +670,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30E05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = MultiplayersOfferScreen.h;
@@ -678,7 +678,7 @@
 			sourceTree = "<group>";
 		};
 		5967D30F05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = NetConsts.h;
@@ -686,7 +686,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = NetDefine.h;
@@ -694,7 +694,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = NetGame.cpp;
@@ -702,7 +702,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = NetGame.h;
@@ -710,7 +710,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = NewMapScreen.cpp;
@@ -718,7 +718,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = NewMapScreen.h;
@@ -726,7 +726,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = NonANSICStdWrapper.h;
@@ -734,7 +734,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Order.cpp;
@@ -742,7 +742,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Order.h;
@@ -750,7 +750,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Player.cpp;
@@ -758,7 +758,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Player.h;
@@ -766,7 +766,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31A05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Race.cpp;
@@ -774,7 +774,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31B05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Race.h;
@@ -782,7 +782,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31C05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Ressource.cpp;
@@ -790,7 +790,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31D05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Ressource.h;
@@ -798,7 +798,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31E05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = ScriptEditorScreen.cpp;
@@ -806,7 +806,7 @@
 			sourceTree = "<group>";
 		};
 		5967D31F05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = ScriptEditorScreen.h;
@@ -814,7 +814,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Sector.cpp;
@@ -822,7 +822,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Sector.h;
@@ -830,7 +830,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Session.cpp;
@@ -838,7 +838,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Session.h;
@@ -846,7 +846,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SessionConnection.cpp;
@@ -854,7 +854,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SessionConnection.h;
@@ -862,7 +862,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Settings.cpp;
@@ -870,7 +870,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Settings.h;
@@ -878,7 +878,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SettingsScreen.cpp;
@@ -886,7 +886,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SettingsScreen.h;
@@ -894,7 +894,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32A05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SGSL.cpp;
@@ -902,7 +902,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32B05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SGSL.h;
@@ -910,7 +910,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32C05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SoundMixer.cpp;
@@ -918,7 +918,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32D05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SoundMixer.h;
@@ -926,7 +926,7 @@
 			sourceTree = "<group>";
 		};
 		5967D32F05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Team.cpp;
@@ -934,7 +934,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Team.h;
@@ -942,7 +942,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33105AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = TeamStat.cpp;
@@ -950,7 +950,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33205AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = TeamStat.h;
@@ -958,7 +958,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33305AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Unit.cpp;
@@ -966,7 +966,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33405AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Unit.h;
@@ -974,7 +974,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33505AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = UnitType.cpp;
@@ -982,7 +982,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33605AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = UnitType.h;
@@ -990,7 +990,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33705AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Utilities.cpp;
@@ -998,7 +998,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33805AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Utilities.h;
@@ -1006,7 +1006,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33905AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Version.h;
@@ -1014,7 +1014,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33A05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = YOG.cpp;
@@ -1022,7 +1022,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33B05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = YOG.h;
@@ -1030,7 +1030,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33C05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = YOGConsts.h;
@@ -1038,7 +1038,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33D05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = YOGPreScreen.cpp;
@@ -1046,7 +1046,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33E05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = YOGPreScreen.h;
@@ -1054,7 +1054,7 @@
 			sourceTree = "<group>";
 		};
 		5967D33F05AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = YOGScreen.cpp;
@@ -1062,7 +1062,7 @@
 			sourceTree = "<group>";
 		};
 		5967D34005AB553A000536C3 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = YOGScreen.h;
@@ -1070,49 +1070,49 @@
 			sourceTree = "<group>";
 		};
 		59C5D62C05F38CED00DE80AB = {
-			fileEncoding = 30;
+			explicitFileType = text;
+			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = units.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		59C5D62D05F38CED00DE80AB = {
+			explicitFileType = text;
 			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = texts.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		59C5D62E05F38CED00DE80AB = {
-			fileEncoding = 30;
+			explicitFileType = text;
+			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = ressources.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		59C5D62F05F38CED00DE80AB = {
-			fileEncoding = 30;
+			explicitFileType = text;
+			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = pal.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		59C5D63005F38CED00DE80AB = {
-			fileEncoding = 30;
+			explicitFileType = text;
+			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = buildings.txt;
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		59C5D63105F38CED00DE80AB = {
-			fileEncoding = 30;
+			explicitFileType = text;
+			fileEncoding = 4;
 			isa = PBXFileReference;
-			lastKnownFileType = text;
 			path = guiscr.txt;
 			refType = 4;
 			sourceTree = "<group>";
@@ -1124,8 +1124,7 @@
 				59C5D63D05F38D3C00DE80AB,
 			);
 			isa = PBXGroup;
-			name = zik;
-			path = gui/zik;
+			path = zik;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1337,7 +1336,7 @@
 			sourceTree = "<absolute>";
 		};
 		5B63D43305BAE2080092D38A = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = AINull.cpp;
@@ -1345,7 +1344,7 @@
 			sourceTree = "<group>";
 		};
 		5B63D43405BAE2080092D38A = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AINull.h;
@@ -5419,7 +5418,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE55044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = FileManager.cpp;
@@ -5427,7 +5426,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE59044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GraphicContext.cpp;
@@ -5435,7 +5434,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE5B044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIBase.cpp;
@@ -5443,7 +5442,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE5D044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIButton.cpp;
@@ -5451,7 +5450,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE5F044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIList.cpp;
@@ -5459,7 +5458,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE61044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIMessageBox.cpp;
@@ -5467,7 +5466,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE63044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUINumber.cpp;
@@ -5475,7 +5474,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE65044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIRatio.cpp;
@@ -5483,7 +5482,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE67044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUIText.cpp;
@@ -5491,7 +5490,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE69044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUITextArea.cpp;
@@ -5499,7 +5498,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE6B044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GUITextInput.cpp;
@@ -5507,7 +5506,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE71044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			path = SDL_ttf.c;
@@ -5515,7 +5514,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE72044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SDL_ttf.h;
@@ -5523,7 +5522,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE74044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SDLFont.cpp;
@@ -5531,7 +5530,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE75044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SDLFont.h;
@@ -5539,7 +5538,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE77044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SDLGraphicContext.cpp;
@@ -5547,7 +5546,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE78044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SDLGraphicContext.h;
@@ -5555,7 +5554,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAE7D044855050000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = SupportFunctions.cpp;
@@ -5592,7 +5591,7 @@
 			sourceTree = SOURCE_ROOT;
 		};
 		5B8FAEA8044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = FileManager.h;
@@ -5600,7 +5599,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEA9044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GAG.h;
@@ -5608,7 +5607,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAA044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GAGSys.h;
@@ -5616,7 +5615,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAB044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GraphicContext.h;
@@ -5624,7 +5623,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAC044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIBase.h;
@@ -5632,7 +5631,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAD044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIButton.h;
@@ -5640,7 +5639,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAE044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIList.h;
@@ -5648,7 +5647,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEAF044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIMessageBox.h;
@@ -5656,7 +5655,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB0044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUINumber.h;
@@ -5664,7 +5663,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB1044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIRatio.h;
@@ -5672,7 +5671,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB2044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUIText.h;
@@ -5680,7 +5679,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB3044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUITextArea.h;
@@ -5688,7 +5687,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB4044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GUITextInput.h;
@@ -5696,7 +5695,7 @@
 			sourceTree = "<group>";
 		};
 		5B8FAEB8044855640000000D = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = SupportFunctions.h;
@@ -5742,7 +5741,7 @@
 			};
 		};
 		5B981DE7060AC8CD00C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = GameUtilities.cpp;
@@ -5750,7 +5749,7 @@
 			sourceTree = "<group>";
 		};
 		5B981DE8060AC8CD00C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = GameUtilities.h;
@@ -5770,7 +5769,7 @@
 			};
 		};
 		5B981DEB060AC8E900C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = BuildingsTypes.cpp;
@@ -5778,7 +5777,7 @@
 			sourceTree = "<group>";
 		};
 		5B981DEC060AC8E900C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = BuildingsTypes.h;
@@ -5786,7 +5785,7 @@
 			sourceTree = "<group>";
 		};
 		5B981DED060AC8E900C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = BuildingType.cpp;
@@ -5794,7 +5793,7 @@
 			sourceTree = "<group>";
 		};
 		5B981DEE060AC8E900C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = BuildingType.h;
@@ -5826,7 +5825,7 @@
 			};
 		};
 		5B981DF3060AC97200C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			path = Building.cpp;
@@ -5834,7 +5833,7 @@
 			sourceTree = "<group>";
 		};
 		5B981DF4060AC97200C1AE77 = {
-			fileEncoding = 10;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = Building.h;
