@@ -168,7 +168,8 @@ private:
 	
 	void computeEnemyPowerMap();
 	void computeEnemyRangeMap();
-	
+	void computeEnemyWarriorsMap();
+
 	Order *findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
 	void computeRessourcesCluster();
@@ -207,6 +208,7 @@ public:
 	Uint32 lastWheatGrowthMapComputed;
 	Uint32 lastEnemyRangeMapComputed;
 	Uint32 lastEnemyPowerMapComputed;
+	Uint32 lastEnemyWarriorsMapComputed;
 	
 	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
@@ -239,6 +241,7 @@ public:
 	
 	Uint8 *enemyPowerMap;
 	Uint8 *enemyRangeMap;
+	Uint8 *enemyWarriorsMap;
 	
 	Uint16 *ressourcesCluster;
 	

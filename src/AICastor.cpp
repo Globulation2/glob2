@@ -174,6 +174,7 @@ void AICastor::init(Player *player)
 	lastWheatGrowthMapComputed=(Uint32)-1;
 	lastEnemyRangeMapComputed=(Uint32)-1;
 	lastEnemyPowerMapComputed=(Uint32)-1;
+	lastEnemyWarriorsMapComputed=(Uint32)-1;
 	computeNeedSwimTimer=0;
 	controlSwarmsTimer=0;
 	expandFoodTimer=0;
@@ -290,6 +291,10 @@ void AICastor::init(Player *player)
 		delete[] enemyRangeMap;
 	enemyRangeMap=new Uint8[size];
 	
+	if (enemyWarriorsMap!=NULL)
+		delete[] enemyWarriorsMap;
+	enemyWarriorsMap=new Uint8[size];
+	
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
 	ressourcesCluster=new Uint16[size];
@@ -345,6 +350,9 @@ AICastor::~AICastor()
 	if (enemyRangeMap!=NULL)
 		delete[] enemyRangeMap;
 	
+	if (enemyWarriorsMap!=NULL)
+		delete[] enemyWarriorsMap;
+	
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
 }
@@ -390,7 +398,7 @@ Order *AICastor::getOrder()
 		computeBoot++;
 		return new NullOrder();
 	}
-	else if (computeBoot<16+32)
+	else if (computeBoot<17+32)
 	{
 		switch (computeBoot-32)
 		{
@@ -449,6 +457,9 @@ Order *AICastor::getOrder()
 			break;
 			case 15:
 			computeEnemyRangeMap();
+			break;
+			case 16:
+			computeEnemyWarriorsMap();
 			break;
 			default:
 			assert(false);
@@ -554,6 +565,10 @@ Order *AICastor::getOrder()
 	if (timer>lastEnemyRangeMapComputed+1024) // each 41s
 	{
 		computeEnemyRangeMap();
+	}
+	if (timer>lastEnemyWarriorsMapComputed+1024) // each 41s
+	{
+		computeEnemyWarriorsMap();
 	}
 	
 	/*if (onStrike)
@@ -2602,6 +2617,40 @@ void AICastor::computeEnemyRangeMap()
 		}
 	}
 	
+	map->updateGlobalGradient(gradient);
+}
+
+void AICastor::computeEnemyWarriorsMap()
+{
+	if (lastEnemyWarriorsMapComputed==timer)
+		return;
+	lastEnemyWarriorsMapComputed=timer;
+	printf("computeEnemyWarriorsMap()\n");
+	
+	int w=map->w;
+	int h=map->h;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	//int hDec=map->hDec;
+	//int wDec=map->wDec;
+	size_t size=w*h;
+	Uint8 *gradient=enemyWarriorsMap;
+	
+	memcpy(gradient, obstacleUnitMap, size);
+	Case *cases=cases;
+	Uint32 enemies=enemies;
+	for (size_t i=0; i<size; i++)
+	{
+		if ((map->fogOfWar[i]&team->me)==0)
+			continue;
+		Uint16 guid=map->cases[i].groundUnit;
+		if (guid==NOGUID)
+			continue;
+		Uint32 teamMask=(1<<(guid>>10));
+		if ((teamMask&team->enemies)==0)
+			continue;
+		gradient[i]=32;
+	}
 	map->updateGlobalGradient(gradient);
 }
 
