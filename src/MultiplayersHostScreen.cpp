@@ -87,10 +87,6 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			color[i]->setSelectedColor(teamNumber);
 			if (!wasSlotUsed[i])
 			{
-				/*text[i]->visible=true;
-				color[i]->visible=true;
-				kickButton[i]->visible=true;
-				kickButton[i]->repaint();*/
 				text[i]->show();
 				color[i]->show();
 				kickButton[i]->show();
@@ -105,20 +101,10 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 				text[i]->hide();
 				color[i]->hide();
 				kickButton[i]->hide();
-				/*visible=false;
-				color[i]->visible=false;
-				kickButton[i]->visible=false;
-*/
-
 				wasSlotUsed[i]=false;
 
 				//text[i]->setText(globalContainer->texts.getString("[open]"));
 				//color[i]->setSelectedColor(0);
-
-				/*text[i]->repaint();
-				color[i]->repaint();
-				kickButton[i]->repaint();*/
-				
 			}
 		}
 	}
