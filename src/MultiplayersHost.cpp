@@ -308,8 +308,8 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 
 	if (serverIP.host)
 	{
-		Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));
-		Uint16 newPort=SDL_SwapBE16(getUint32(data, 24));
+		Uint32 newHost=(Uint32)SDL_SwapBE32(getUint32(data, 20));
+		Uint16 newPort=(Uint16)SDL_SwapBE32(getUint32(data, 24));
 		if (serverIP.host!=newHost)
 		{
 			printf("Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
@@ -317,14 +317,14 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		}
 		if (serverIP.port!=newPort)
 		{
-			printf("Bad port received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.port, newPort);
+			printf("Bad port received by(%x:%d). old=(%d) new=(%d)\n", ip.host, ip.port, serverIP.port, newPort);
 			return;
 		}
 	}
 	else
 	{
-		serverIP.host=SDL_SwapBE32(getUint32(data, 20));
-		serverIP.port=SDL_SwapBE16(getUint32(data, 24));
+		serverIP.host=(Uint32)SDL_SwapBE32(getUint32(data, 20));
+		serverIP.port=(Uint16)SDL_SwapBE32(getUint32(data, 24));
 		printf("I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
 	}
 

@@ -565,8 +565,8 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	strncpy((char *)(packet->data+4), playerName, 16);
 
 	memset(packet->data+20, 0, 8);
-	addUint32(packet->data, SDL_SwapBE32(serverIP.host), 20);
-	addUint32(packet->data, SDL_SwapBE32(serverIP.port), 24);
+	addUint32(packet->data, SDL_SwapBE32((Uint32)serverIP.host), 20);
+	addUint32(packet->data, SDL_SwapBE32((Uint32)serverIP.port), 24);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
