@@ -78,13 +78,15 @@ struct ErrorReport
 	ErrorReport() { line=0; col=0; }
 	enum ErrorType
 	{
-		ET_OK,
+		ET_OK=0,
 		ET_SYNTAX_ERROR,
 		ET_INVALID_PLAYER,
 		ET_UNKNOWN,
 	} type;
 	unsigned line;
 	unsigned col;
+	
+	const char *getErrorString(void);
 };
 
 class Aquisition
