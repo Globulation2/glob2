@@ -555,6 +555,61 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 		lpx=px;
 		lpy=py;
 	}*/
+	int dx, dy, d;
+	dx=0;
+	dy=ray;
+	d=0;
+	do
+	{
+		// d is positive when point is outside
+		int decAA, ad, alpha, oneMinusAlpha;
+		decAA=0;
+		ad=0;
+		if (d>0)
+		{
+			// point trop dehors
+			ad=d;
+			decAA=-1;
+		}
+		else if (d<0)
+		{
+			// point trop dedans
+			ad=-d;
+			decAA=1;
+		}
+		oneMinusAlpha=((ad<<8)/(ray<<1));
+		alpha=255-alpha;
+		drawPixel(x+dx, y+dy, r, g, b, alpha);
+		drawPixel(x+dx, y-dy, r, g, b, alpha);
+		drawPixel(x-dx, y+dy, r, g, b, alpha);
+		drawPixel(x-dx, y-dy, r, g, b, alpha);
+		drawPixel(x+dy, y+dx, r, g, b, alpha);
+		drawPixel(x+dy, y-dx, r, g, b, alpha);
+		drawPixel(x-dy, y+dx, r, g, b, alpha);
+		drawPixel(x-dy, y-dx, r, g, b, alpha);
+		if (d)
+		{
+			drawPixel(x+dx, y+dy+decAA, r, g, b, oneMinusAlpha);
+			drawPixel(x+dx, y-dy-decAA, r, g, b, oneMinusAlpha);
+			drawPixel(x-dx, y+dy+decAA, r, g, b, oneMinusAlpha);
+			drawPixel(x-dx, y-dy-decAA, r, g, b, oneMinusAlpha);
+			drawPixel(x+dy+decAA, y+dx, r, g, b, oneMinusAlpha);
+			drawPixel(x+dy+decAA, y-dx, r, g, b, oneMinusAlpha);
+			drawPixel(x-dy-decAA, y+dx, r, g, b, oneMinusAlpha);
+			drawPixel(x-dy-decAA, y-dx, r, g, b, oneMinusAlpha);
+		}
+		dx++;
+		if (d>=0)
+		{
+			dy--;
+			d += ((dx-dy)<<1)+2;			
+		}
+		else
+		{
+			d +=(dx<<1) +1;
+		}
+	}
+	while (dx<=dy);
 }
 
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg, ...)
