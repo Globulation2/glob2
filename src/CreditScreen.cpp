@@ -148,9 +148,7 @@ void ScrollingText::paint()
 			// If we can find a star in this line
 			if (deco != std::string::npos)
 			{
-				yPos += 10;
-				
-				int px = h+(offset-yPos)*4;
+				int px = 2*h+(offset-yPos)*4;
 				int py = yPos-offset;
 				
 				Sprite *unitSprite=globalContainer->units;
@@ -159,7 +157,7 @@ void ScrollingText::paint()
 				int decY = (unitSprite->getH(imgid)-32)>>1;
 				globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 				
-				yPos += 10;
+				yPos += 20;
 			}
 			else
 				parent->getSurface()->drawString(xPos[i], yPos-offset, fontPtr, s.c_str());
