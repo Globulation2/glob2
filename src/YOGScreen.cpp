@@ -196,7 +196,12 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		Uint32 ip;
 		//ip=atoi(token);
 		sscanf(token, "%x", &ip);
+		
+		ip=SDL_SwapLE32(ip); //TODO: YOG should work in BigEndian.
+		
 		printf("YOG : selected ip is %d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
+		
+		// we create a new screen to join this game:
 	}
 }
 

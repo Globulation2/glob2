@@ -75,6 +75,7 @@ public:
 	void addUpdateRect();
 	void addUpdateRect(int x, int y, int w, int h);
 	void addWidget(Widget *widget);
+	void removeWidget(Widget *widget);
 	void dispatchEvents(SDL_Event *event);
 	void dispatchTimer(Uint32 tick);
 	void dispatchPaint(DrawableSurface *gfx);

@@ -40,7 +40,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 
 	firstDraw=true;
 
-	multiplayersHost=new MultiplayersHost(sessionInfo);
+	multiplayersHost=new MultiplayersHost(sessionInfo, true);
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()

@@ -31,7 +31,7 @@
 #include "YOGScreen.h"
 //#include "NetConsts.h"
 
-MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo)
+MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG)
 :MultiplayersCrossConnectable()
 {
 	this->sessionInfo=*sessionInfo;
@@ -59,20 +59,28 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo)
 
 	firstDraw=true;
 
-	// tell YOG to open the game
-	YOGScreen::openYOG();
-	char newGameText[YOGScreen::GAME_INFO_MAX_SIZE];
-	snprintf(newGameText, YOGScreen::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
-	YOGScreen::sendString(YOGScreen::socket, newGameText);
-	YOGScreen::closeYOG();
+	this->shareOnYOG=shareOnYOG;
+	if (shareOnYOG)
+	{
+		// tell YOG to open the game
+		YOGScreen::openYOG();
+		char newGameText[YOGScreen::GAME_INFO_MAX_SIZE];
+		snprintf(newGameText, YOGScreen::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
+		YOGScreen::sendString(YOGScreen::socket, newGameText);
+		YOGScreen::closeYOG();
+	}
 }
 
 MultiplayersHost::~MultiplayersHost()
 {
-	// tell YOG to remove the game
-	YOGScreen::openYOG();
-	YOGScreen::sendString(YOGScreen::socket, "deletegame");
-	YOGScreen::closeYOG();
+	
+	if (shareOnYOG)
+	{
+		// tell YOG to remove the game
+		YOGScreen::openYOG();
+		YOGScreen::sendString(YOGScreen::socket, "deletegame");
+		YOGScreen::closeYOG();
+	}
 
 	if (destroyNet)
 	{
