@@ -131,7 +131,6 @@ public:
 	bool fullInside(void);
 	void subscribeToBringRessourcesStep(void);
 	void subscribeForFlagingStep();
-	//void subscribeForWorkingStep(void);
 	void subscribeForInsideStep(void);
 	void swarmStep(void);
 	void turretStep(void);

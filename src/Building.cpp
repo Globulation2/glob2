@@ -1071,17 +1071,6 @@ void Building::subscribeForFlagingStep()
 	}
 }
 
-/*void Building::subscribeForWorkingStep()
-{
-	// TODO : add new lists to Building, to make the difference between
-	// workers for ressources (construction and reparation), and workers
-	// for the building (Fighters).
-	if (!isRessourceFull())
-		subscribeForConstructionStep();
-	else
-		subscribeForFightingStep();
-}*/
-
 void Building::subscribeForInsideStep()
 {
 	std::list<Unit *>::iterator it;

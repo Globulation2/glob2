@@ -258,44 +258,6 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 	return b;
 }
 
-/*Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
-{
-	Building *b=NULL;
-	float score=1e9;
-	float newScore;
-	float newScoreA;
-	float newScoreB;
-	Sint32 maxUnitWorking;
-	//Sint32 dist=MAX_SINT32;
-	//Sint32 newDist;
-	{
-		for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
-		{
-			if ((*it)->type->level<=actLevel)
-			{
-				// this is balance code, take user's wishes in account
-				newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-				maxUnitWorking=(*it)->maxUnitWorking;
-				if (maxUnitWorking)
-				{
-					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
-				}
-				else
-				{
-					newScoreB=1e9;
-				}
-				newScore=newScoreA+newScoreB;
-				if ( newScore<score )
-				{
-					b=*it;
-					score=newScore;
-				}
-			}
-		}
-	}
-	return b;
-}*/
-
 Building *Team::findBestConstruction(Unit *unit)
 {
 	Building *choosen=NULL;
@@ -366,18 +328,18 @@ Building *Team::findBestConstruction(Unit *unit)
 	}
 	
 	// Ehanced ways to find a building has failed, choose any building aviable
+	float floatDist=1e9;
 	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
 	{
 		Building *building=(*it);
 		if (building->type->level<=actLevel)
 		{
-			newDist=distSquare(building->getMidX(), building->getMidY(), x, y);
-			int maxUnitWorking=building->maxUnitWorking;
-			newDist-=maxUnitWorking*maxUnitWorking;
-			if (newDist<dist)
+			//This is a balancing system: Reduce virtualy the distance if more units are requested:
+			float newDist=(float)distSquare(building->getMidX(), building->getMidY(), x, y)/(float)(building->maxUnitWorking-building->unitsWorking.size());
+			if (newDist<floatDist)
 			{
 				choosen=building;
-				dist=newDist;
+				floatDist=newDist;
 			}
 		}
 	}
@@ -391,69 +353,33 @@ Building *Team::findNearestAttract(int x, int y, Abilities ability)
 {
 	Building *b=NULL;
 	float score=1e9;
-	float newScore;
-	float newScoreA;
-	float newScoreB;
-	Sint32 maxUnitWorking;
-	
 	for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
 	{
-		// this is balance code, take user's wishes in account TODO: make this better!
-		newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-		maxUnitWorking=(*it)->maxUnitWorking;
-		if (maxUnitWorking)
-			newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
-		else
-			newScoreB=1e9;
-		newScore=newScoreA+newScoreB;
-		if ( newScore<score )
+		//This is a balancing system: Reduce virtualy the distance if more units are requested:
+		float newScore=(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y)/(float)((*it)->maxUnitWorking-(*it)->unitsWorking.size());
+		if (newScore<score)
 		{
 			b=*it;
 			score=newScore;
 		}
 	}
-	
 	return b;
 }
 
 Building *Team::findNearestFillableFood(int x, int y)
 {
 	Building *b=NULL;
-	//Sint32 dist=MAX_SINT32;
-	//Sint32 newDist;
 	float score=1e9;
-	float newScore;
-	float newScoreA;
-	float newScoreB;
-	Sint32 maxUnitWorking;
+	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
 	{
-		for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
+		if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
 		{
-			if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
+			//This is a balancing system: Reduce virtualy the distance if more units are requested:
+			float newScore=(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y)/(float)((*it)->maxUnitWorking-(*it)->unitsWorking.size());
+			if ( newScore<score )
 			{
-				// this is balance code, take user's wishes in account
-				newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-				maxUnitWorking=(*it)->maxUnitWorking;
-				if (maxUnitWorking)
-				{
-					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
-				}
-				else
-				{
-					newScoreB=1e9;
-				}
-				newScore=newScoreA+newScoreB;
-				if ( newScore<score )
-				{
-					b=*it;
-					score=newScore;
-				}
-				/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-				if ( newDist<dist )
-				{
-					b=*it;
-					dist=newDist;
-				}*/
+				b=*it;
+				score=newScore;
 			}
 		}
 	}
@@ -465,15 +391,13 @@ Building *Team::findNearestHeal(int x, int y)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
+	for (std::list<Building *>::iterator it=canHealUnit.begin(); it!=canHealUnit.end(); it++)
 	{
-		for (std::list<Building *>::iterator it=canHealUnit.begin(); it!=canHealUnit.end(); it++)
+		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+		if ( newDist<dist )
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
-			{
-				b=*it;
-				dist=newDist;
-			}
+			b=*it;
+			dist=newDist;
 		}
 	}
 	return b;
@@ -484,15 +408,13 @@ Building *Team::findNearestFood(int x, int y)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
+	for (std::list<Building *>::iterator it=canFeedUnit.begin(); it!=canFeedUnit.end(); it++)
 	{
-		for (std::list<Building *>::iterator it=canFeedUnit.begin(); it!=canFeedUnit.end(); it++)
+		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+		if ( newDist<dist )
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
-			{
-				b=*it;
-				dist=newDist;
-			}
+			b=*it;
+			dist=newDist;
 		}
 	}
 	return b;
