@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include <GUIList.h>
@@ -30,6 +30,7 @@ List::List(int x, int y, int w, int h, const Font *font)
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
 	nth=-1;
+	disp=0;
 }
 
 List::~List()
@@ -54,10 +55,36 @@ void List::onSDLEvent(SDL_Event *event)
 {
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		unsigned count = (h-4) / textHeight;
+		unsigned wSel;
+		if (strings.size() > count)
+		{
+			if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
+			{
+				if (disp)
+				{
+					disp--;
+					repaint();
+				}
+			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
+			{
+				if (disp<strings.size()-count)
+				{
+					disp++;
+					repaint();
+				}
+			}
+			wSel = w-20;
+		}
+		else
+			wSel = w;
+
+		if (isPtInRect(event->button.x, event->button.y, x, y, wSel, h))
 		{
 			int id=event->button.y-y-2;
 			id/=textHeight;
+			id+=disp;
 			if ((id>=0) &&(id<(int)strings.size()))
 			{
 				nth=id;
@@ -73,14 +100,56 @@ void List::internalPaint(void)
 	int nextSize=textHeight;
 	int yPos=y+2;
 	int i=0;
+	unsigned elementLength;
+
 	assert(parent);
 	assert(parent->getSurface());
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+
+	unsigned count = (h-4) / textHeight;
+	if (strings.size() > count)
+	{
+		// draw line and arrows
+		parent->getSurface()->drawVertLine(x+w-21, y, h, 180, 180, 180);
+		parent->getSurface()->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
+		parent->getSurface()->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
+
+		unsigned j;
+		int baseX = x+w-11;
+		int baseY1 = y+11;
+		int baseY2 = y+h-11;
+		for (j=7; j>4; j--)
+		{
+			parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
+			parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
+			parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
+			parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
+			parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
+			parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
+		}
+
+		// draw slider
+		int leftSpace = h-43;
+		if (leftSpace)
+		{
+			unsigned blockLength = (count * leftSpace) / strings.size();
+			unsigned blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
+			parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
+		}
+
+		elementLength = w-22;
+	}
+	else
+	{
+		elementLength = w-2;
+		disp = 0;
+	}
+
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
-		parent->getSurface()->drawString(x+2, yPos, font, strings[i]);
-		if (i==nth)
-			parent->getSurface()->drawRect(x+1, yPos-1, w-2, textHeight, 170, 170, 240);
+		parent->getSurface()->drawString(x+2, yPos, font, strings[i+disp]);
+		if (i+(int)disp==nth)
+			parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 		nextSize+=textHeight;
 		i++;
 		yPos+=textHeight;
