@@ -159,9 +159,25 @@ namespace GAGCore
 		virtual void nextFrame(void) { }
 		virtual void *getPixelPointer(void)  { return surface->pixels; }
 		//! lock only if necessary
-		virtual void lock(void) { if (glSDL_MustLock(surface)) SDL_LockSurface(surface); }
+		virtual void lock(void)
+		{
+			#ifdef HAVE_OPENGL
+			if (glSDL_MustLock(surface))
+			#else
+			if (SDL_MUSTLOCK(surface))
+			#endif
+				SDL_LockSurface(surface);
+		}
 		//! unlock only if necessary
-		virtual void unlock(void) { if (glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
+		virtual void unlock(void)
+		{
+			#ifdef HAVE_OPENGL
+			if (glSDL_MustLock(surface))
+			#else
+			if (SDL_MUSTLOCK(surface))
+			#endif
+				SDL_UnlockSurface(surface);
+		}
 	};
 	
 	class GraphicContext:public DrawableSurface
@@ -190,9 +206,25 @@ namespace GAGCore
 		virtual void printScreen(const char *filename);
 		
 		//! lock only if necessary, we do not lock GL graphic context
-		virtual void lock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_LockSurface(surface); }
+		virtual void lock(void)
+		{
+			#ifdef HAVE_OPENGL
+			if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
+			#else
+			if (SDL_MUSTLOCK(surface))
+			#endif
+				SDL_LockSurface(surface);
+		}
 		//! unlock only if necessary, we do not lock GL graphic context
-		virtual void unlock(void) { if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface)) SDL_UnlockSurface(surface); }
+		virtual void unlock(void)
+		{
+			#ifdef HAVE_OPENGL
+			if (!glSDL_IsGLSDLSurface(surface) && glSDL_MustLock(surface))
+			#else
+			if (SDL_MUSTLOCK(surface))
+			#endif
+				SDL_UnlockSurface(surface);
+		}
 	};
 	
 	union Color32
