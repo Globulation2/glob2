@@ -526,20 +526,33 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 	}
 
 	Sint32 p=data[4];
-	fprintf(logFile, " p=%d\n", p);
 
 	if ((p>=0)&&(p<sessionInfo.numberOfPlayer))
 	{
 		if (sessionInfo.players[p].waitForNatResolution)
 		{
 			fprintf(logFile, " player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
-			sessionInfo.players[p].ip=ip; // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
+			
+			sessionInfo.players[p].setip(ip); // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
 			
 			fprintf(logFile, " (this NAT is solved)\n");
 			sessionInfo.players[p].waitForNatResolution=false;
 
 			if (waitingTimeout>4 && waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 				waitingTimeout=2;
+		}
+		else if (sessionInfo.players[p].ip.host==ip.host)
+		{
+			if (sessionInfo.players[p].ip.port!=ip.port)
+			{
+				fprintf(logFile, " changing port for firewall tolerance for player p=(%d) from ip=(%s) to ip=(%s)\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
+				sessionInfo.players[p].setip(ip);
+			}
+		}
+		else
+		{
+			fprintf(logFile, " warning, a different ip.host recevied! p=(%d) current ip=(%s), received ip=(%s)\n", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
+			return;
 		}
 		
 		if (sessionInfo.players[p].channel==-1)
@@ -553,7 +566,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddr
 		{
 			if (crossPacketRecieved[p]<1)
 				crossPacketRecieved[p]=1;
-			fprintf(logFile, " crossConnectionFirstMessage packet recieved (%d)\n", p);
+			fprintf(logFile, " crossConnectionFirstMessage packet recieved (%d) from ip=(%s)\n", p, Utilities::stringIP(ip));
 
 			Uint8 data[8];
 			data[0]=PLAYER_CROSS_CONNECTION_SECOND_MESSAGE;
@@ -665,10 +678,10 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 				char *userName=yog->userNameFromUID(uid);
 				if (userName)
 				{
-					fprintf(logFile, " userName=(%s), ip=(%s)", userName, Utilities::stringIP(ip));
+					fprintf(logFile, " userName=(%s), to ip=(%s)\n", userName, Utilities::stringIP(ip));
 					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 					{
-						fprintf(logFile, "  type[%d]=%d\n", j, sessionInfo.players[j].type);
+						//fprintf(logFile, "  type[%d]=%d\n", j, sessionInfo.players[j].type);
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
 							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
