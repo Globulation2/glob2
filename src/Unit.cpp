@@ -325,23 +325,49 @@ void Unit::subscriptionSuccess(void)
 					}
 					else if (ownExchangeBuilding)
 					{
-						assert(foreingExchangeBuilding);
-						if (caryedRessource>=HAPPYNESS_BASE
-							&& (foreingExchangeBuilding->receiveRessourceMask & (1<<(caryedRessource-HAPPYNESS_BASE)))
-							&& (foreingExchangeBuilding->ressources[caryedRessource]<foreingExchangeBuilding->type->maxRessource[caryedRessource]))
+						if (foreingExchangeBuilding)
 						{
-							displacement=DIS_GOING_TO_BUILDING;
-							targetBuilding=foreingExchangeBuilding;
-							assert((Uint32)destinationPurprose==(ownExchangeBuilding->receiveRessourceMask & foreingExchangeBuilding->sendRessourceMask));
-							targetX=targetBuilding->getMidX();
-							targetY=targetBuilding->getMidY();
+							// Here we are exchanging fruits between ownExchangeBuilding and foreingExchangeBuilding.
+							if (caryedRessource>=HAPPYNESS_BASE
+								&& (foreingExchangeBuilding->receiveRessourceMask & (1<<(caryedRessource-HAPPYNESS_BASE)))
+								&& (foreingExchangeBuilding->ressources[caryedRessource]<foreingExchangeBuilding->type->maxRessource[caryedRessource]))
+							{
+								assert((Uint32)destinationPurprose==(ownExchangeBuilding->receiveRessourceMask & foreingExchangeBuilding->sendRessourceMask));
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=foreingExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
+							else
+							{
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=ownExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
 						}
 						else
 						{
-							displacement=DIS_GOING_TO_BUILDING;
-							targetBuilding=ownExchangeBuilding;
-							targetX=targetBuilding->getMidX();
-							targetY=targetBuilding->getMidY();
+							assert(false); // Units never get subscription success to fill a food building from an exchange building. (yet)
+							// Here we are taking fruits from ownExchangeBuilding to a food building (attachedBuilding).
+							
+							if (caryedRessource>=HAPPYNESS_BASE
+								&& (attachedBuilding->ressources[caryedRessource]<attachedBuilding->type->maxRessource[caryedRessource]))
+							{
+								assert(destinationPurprose==caryedRessource);
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=attachedBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
+							else
+							{
+								assert(destinationPurprose>=HAPPYNESS_BASE);
+								displacement=DIS_GOING_TO_BUILDING;
+								targetBuilding=ownExchangeBuilding;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
 						}
 					}
 					else
@@ -885,10 +911,19 @@ void Unit::handleDisplacement(void)
 				bool exchangeReady=false;
 				assert(targetBuilding);
 				
-				if (targetBuilding==foreingExchangeBuilding)
+				if (foreingExchangeBuilding && (targetBuilding==foreingExchangeBuilding))
 				{
+					// Here we are aside a foreing exchange building, to drop our own ressource and take a foreign ressource:
+					assert(targetBuilding);
+					assert(ownExchangeBuilding);
+					assert(foreingExchangeBuilding);
 					assert(targetBuilding->type->canExchange);
+					assert(ownExchangeBuilding->type->canExchange);
+					assert(foreingExchangeBuilding->type->canExchange);
 					assert(owner!=targetBuilding->owner);
+					assert(owner==ownExchangeBuilding->owner);
+					assert(owner!=foreingExchangeBuilding->owner);
+					
 					assert(caryedRessource>=HAPPYNESS_BASE);
 					// Let's check for possible exchange ressources:
 					
@@ -933,8 +968,27 @@ void Unit::handleDisplacement(void)
 						loopMove=true;
 					}
 				}
-				else if (targetBuilding==ownExchangeBuilding)
+				else if (foreingExchangeBuilding && (targetBuilding==ownExchangeBuilding))
 				{
+					// Here we are aside our own exchange building, to take one of our ressource and maybe to drop a (foreign) ressource.
+					assert(targetBuilding);
+					assert(ownExchangeBuilding);
+					assert(foreingExchangeBuilding);
+					assert(targetBuilding->type->canExchange);
+					assert(ownExchangeBuilding->type->canExchange);
+					assert(foreingExchangeBuilding->type->canExchange);
+					assert(owner==targetBuilding->owner);
+					assert(owner==ownExchangeBuilding->owner);
+					assert(owner!=foreingExchangeBuilding->owner);
+					
+					if (caryedRessource>=0)
+					{
+						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+						caryedRessource=-1;
+					}
+					
 					// Let's grab the right ressource.
 					
 					bool goodToTake=false;
@@ -952,10 +1006,9 @@ void Unit::handleDisplacement(void)
 						targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
 						if (targetBuilding->ressources[ressourceToTake]<0)
 							targetBuilding->ressources[ressourceToTake]=0;
+						caryedRessource=ressourceToTake;
 						
 						targetBuilding=foreingExchangeBuilding;
-						
-						caryedRessource=ressourceToTake;
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
@@ -964,41 +1017,70 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
 					}
 				}
-				else
+				else if ((foreingExchangeBuilding==NULL) && (targetBuilding==ownExchangeBuilding))
 				{
-					if (targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource])
+					assert(targetBuilding);
+					assert(ownExchangeBuilding);
+					assert(foreingExchangeBuilding==NULL);
+					assert(targetBuilding->type->canExchange);
+					assert(ownExchangeBuilding->type->canExchange);
+					assert(owner==targetBuilding->owner);
+					assert(owner==ownExchangeBuilding->owner);
+					
+					assert(attachedBuilding);
+					assert(attachedBuilding->type->canFeedUnit);
+					assert(destinationPurprose>=HAPPYNESS_BASE);
+					
+					// Let's grab the right ressource.
+					
+					if (targetBuilding->ressources[destinationPurprose]>0)
 					{
+						targetBuilding->ressources[destinationPurprose]-=targetBuilding->type->multiplierRessource[destinationPurprose];
+						if (targetBuilding->ressources[destinationPurprose]<0)
+							targetBuilding->ressources[destinationPurprose]=0;
+						caryedRessource=destinationPurprose;
+						
+						targetBuilding=attachedBuilding;
+						displacement=DIS_GOING_TO_BUILDING;
+						targetX=targetBuilding->getMidX();
+						targetY=targetBuilding->getMidY();
+						exchangeReady=true;
 						if (verbose)
-							printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
-						targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
-						if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
-							targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
-						caryedRessource=-1;
-						BuildingType *bt=targetBuilding->type;
-						switch (targetBuilding->constructionResultState)
+							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
+					}
+				}
+				else if ((caryedRessource>=0) && (targetBuilding->ressources[caryedRessource]<targetBuilding->type->maxRessource[caryedRessource]))
+				{
+					if (verbose)
+						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
+					targetBuilding->ressources[caryedRessource]+=targetBuilding->type->multiplierRessource[caryedRessource];
+					if (targetBuilding->ressources[caryedRessource]>targetBuilding->type->maxRessource[caryedRessource])
+						targetBuilding->ressources[caryedRessource]=targetBuilding->type->maxRessource[caryedRessource];
+					caryedRessource=-1;
+					BuildingType *bt=targetBuilding->type;
+					switch (targetBuilding->constructionResultState)
+					{
+						case Building::NO_CONSTRUCTION:
+						break;
+
+						case Building::NEW_BUILDING:
+						case Building::UPGRADE: 
 						{
-							case Building::NO_CONSTRUCTION:
-							break;
-
-							case Building::NEW_BUILDING:
-							case Building::UPGRADE: 
-							{
-								attachedBuilding->hp+=bt->hpInc;
-							}
-							break;
-
-							case Building::REPAIR:
-							{
-								int totRessources=0;
-								for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-									totRessources+=bt->maxRessource[i];
-								attachedBuilding->hp+=bt->hpMax/totRessources;
-							}
-							break;
-
-							default:
-								assert(false);
+							attachedBuilding->hp+=bt->hpInc;
 						}
+						break;
+
+						case Building::REPAIR:
+						{
+							int totRessources=0;
+							for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
+								totRessources+=bt->maxRessource[i];
+							attachedBuilding->hp+=bt->hpMax/totRessources;
+						}
+						break;
+
+						default:
+							assert(false);
 					}
 				}
 				
@@ -1024,6 +1106,7 @@ void Unit::handleDisplacement(void)
 						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
 						int bestRessource=-1;
 						int minValue=owner->map->getW()+owner->map->getW();
+						bool takeInExchangeBuilding;
 						Map* map=owner->map;
 						for (int r=0; r<MAX_NB_RESSOURCES; r++)
 						{
@@ -1040,39 +1123,74 @@ void Unit::handleDisplacement(void)
 									{
 										bestRessource=r;
 										minValue=value;
+										takeInExchangeBuilding=false;
 									}
 								}
+								
+								if (attachedBuilding->type->canFeedUnit)
+									for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
+										if ((*bi)->ressources[r]>0)
+										{
+											int buildingDist;
+											if (map->buildingAviable(*bi, canSwim, posX, posY, &buildingDist))
+											{
+												int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
+												if (value<minValue)
+												{
+													bestRessource=r;
+													minValue=value;
+
+													ownExchangeBuilding=*bi;
+													foreingExchangeBuilding=NULL;
+													targetBuilding=*bi;
+													takeInExchangeBuilding=true;
+												}
+											}
+										}
 							}
 						}
-
+						
 						if (verbose)
-							printf("guid=(%d) destinationPurprose=%d, minValue=%d\n", gid, destinationPurprose, minValue);
+							printf("guid=(%d) bestRessource=%d, minValue=%d\n", gid, bestRessource, minValue);
 
 						if (bestRessource>=0)
 						{
 							destinationPurprose=bestRessource;
 							assert(activity==ACT_FILLING);
-							int dummyDist;
-							if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
-								displacement=DIS_HARVESTING;
-							else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
-								displacement=DIS_GOING_TO_RESSOURCE;
+							if (takeInExchangeBuilding)
+							{
+								displacement=DIS_GOING_TO_BUILDING;
+								targetX=targetBuilding->getMidX();
+								targetY=targetBuilding->getMidY();
+							}
 							else
 							{
-								assert(false);//You can remove this assert(), but *do* notice me!
-								activity=ACT_RANDOM;
-								displacement=DIS_RANDOM;
-								subscribed=false;
-								assert(needToRecheckMedical);
+								int dummyDist;
+								if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+									displacement=DIS_HARVESTING;
+								else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									displacement=DIS_GOING_TO_RESSOURCE;
+								else
+								{
+									assert(false);//You can remove this assert(), but *do* notice me!
+									activity=ACT_RANDOM;
+									displacement=DIS_RANDOM;
+									subscribed=false;
+									assert(needToRecheckMedical);
+								}
 							}
 						}
-						else if (owner==targetBuilding->owner && attachedBuilding->type->canExchange && owner->openMarket())
+						else if (targetBuilding!=foreingExchangeBuilding && attachedBuilding->type->canExchange && owner->openMarket())
 						{
+							// Here we try to start a new exchange with a foreign exchange building:
+							assert(owner==targetBuilding->owner);
 							if (ownExchangeBuilding)
 							{
+								assert(owner==ownExchangeBuilding->owner);
 								assert(ownExchangeBuilding==attachedBuilding);
-								assert(foreingExchangeBuilding);
 							}
+							if (foreingExchangeBuilding)
+								assert(owner!=foreingExchangeBuilding->owner);
 							
 							ownExchangeBuilding=attachedBuilding;
 
