@@ -50,21 +50,29 @@ private:
 	enum BroadcastState
 	{
 		BS_BAD=0,
-		BS_ENABLE,
-		BS_JOINED
+		
+		BS_ENABLE_LAN, //In this state we are looking for local shared games
+		BS_JOINED_LAN,
+		
+		BS_ENABLE_YOG, //In this statem we are looking for games shared on yog, but maybe hidden by NAT.
+		BS_JOINED_YOG,
+		BS_DISABLE_YOG
 	};
 	BroadcastState broadcastState;
 	int broadcastTimeout;
 	
+public:
+	bool listHasChanged;
 	struct LANHost
 	{
 		Uint32 ip;
+		char gameName[32];
 		int timeout;
 	};
 	
 	std::list<LANHost> LANHosts;
+	char gameName[32];
 	
-	bool listHasChanged;
 private:
 	bool shareOnYOG;
 
@@ -103,7 +111,7 @@ public:
 	void treatData(char *data, int size, IPaddress ip);
 	//void confirmPlayerStartGame(IPaddress ip);
 
-	bool getList(char ***list, int *length);
+	//bool getList(char ***list, int *length);
 	void receiveTime();
 	void onTimer(Uint32 tick);
 	char *getStatusString();

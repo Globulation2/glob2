@@ -45,7 +45,7 @@ public:
 	bool enable(Uint16 port);
 	bool send(int v);
 	bool socketReady(void);
-	bool receive(int *v);
+	bool receive(int *v, char gameName[32]);
 	Uint32 getSenderIP();
 
 private:
