@@ -27,6 +27,7 @@ class TextInput;
 class TextButton;
 class OnOffButton;
 class Text;
+class Selector;
 
 class SettingsScreen:public Screen
 {
@@ -38,7 +39,7 @@ public:
 		FULLSCREEN = 3,
 		HWACCLEL = 4,
 		DBLBUFF = 5,
-		LOWQUALITY = 6
+		LOWQUALITY = 6,
 	};
 private:
 	List *languageList;
@@ -48,8 +49,9 @@ private:
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality;
-	Text *title, *language, *display, *usernameText;
-	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText;
+	Selector *musicVol;
+	Text *title, *language, *display, *usernameText, *audio;
+	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *musicVolText;
 
 public:
 	SettingsScreen();

@@ -1661,6 +1661,18 @@ Low quality
 
 Nízká kvalita
 
+[audio]
+Audio
+Audio
+
+
+
+[Music volume]
+Volume (musique)
+Volume (music)
+
+
+
 [Happyness]
 Satisfaction
 Happyness

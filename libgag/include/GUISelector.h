@@ -30,6 +30,7 @@ class Selector: public RectangularWidget
 {
 protected:
 	Uint32 count;
+	Uint32 markStep;
 	Uint32 size;
 	Uint32 value;
 	Sint32 id;
@@ -40,7 +41,7 @@ protected:
 
 public:
 	Selector() { count=0; value=0; id=0; archPtr=NULL; }
-	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
+	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned markStep=1, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
 	virtual ~Selector() { }
 
 	virtual void onSDLEvent(SDL_Event *event);
@@ -51,6 +52,7 @@ public:
 protected:
 	virtual void internalInit(int x, int y, int w, int h);
 	virtual void internalRepaint(int x, int y, int w, int h);
+	void clipValue(int v);
 };
 
 #endif
