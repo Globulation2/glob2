@@ -489,13 +489,13 @@ void Building::launchConstruction(void)
 	{
 		if (hp<type->hpMax)
 		{
-			if ((type->lastLevelTypeNum==-1) || !isHardSpaceForBuildingSite(REPAIR))
+			if ((type->prevLevel==-1) || !isHardSpaceForBuildingSite(REPAIR))
 				return;
 			constructionResultState=REPAIR;
 		}
 		else
 		{
-			if ((type->nextLevelTypeNum==-1) || !isHardSpaceForBuildingSite(UPGRADE))
+			if ((type->nextLevel==-1) || !isHardSpaceForBuildingSite(UPGRADE))
 				return;
 			constructionResultState=UPGRADE;
 		}
@@ -546,9 +546,9 @@ void Building::cancelConstruction(void)
 		int targetLevelTypeNum;
 		
 		if (constructionResultState==UPGRADE)
-			targetLevelTypeNum=type->lastLevelTypeNum;
+			targetLevelTypeNum=type->prevLevel;
 		else if (constructionResultState==REPAIR)
-			targetLevelTypeNum=type->nextLevelTypeNum;
+			targetLevelTypeNum=type->nextLevel;
 		else
 			assert(false);
 		
@@ -961,8 +961,8 @@ void Building::updateBuildingSite(void)
 			ressources[i]-=type->maxRessource[i];
 
 		owner->prestige-=type->prestige;
-		typeNum=type->nextLevelTypeNum;
-		type=globalContainer->buildingsTypes.get(type->nextLevelTypeNum);
+		typeNum=type->nextLevel;
+		type=globalContainer->buildingsTypes.get(type->nextLevel);
 		assert(constructionResultState!=NO_CONSTRUCTION);
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
@@ -1032,7 +1032,7 @@ void Building::update(void)
 void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 {
 	assert(!type->isBuildingSite);
-	int repairLevelTypeNum=type->lastLevelTypeNum;
+	int repairLevelTypeNum=type->prevLevel;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
 	Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
@@ -1058,9 +1058,9 @@ bool Building::tryToBuildingSiteRoom(void)
 
 	int targetLevelTypeNum;
 	if (constructionResultState==UPGRADE)
-		targetLevelTypeNum=type->nextLevelTypeNum;
+		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		targetLevelTypeNum=type->lastLevelTypeNum;
+		targetLevelTypeNum=type->prevLevel;
 	else
 		assert(false);
 
@@ -1167,9 +1167,9 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 {
 	int tltn;
 	if (constructionResultState==UPGRADE)
-		tltn=type->nextLevelTypeNum;
+		tltn=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		tltn=type->lastLevelTypeNum;
+		tltn=type->prevLevel;
 	else
 		assert(false);
 	

@@ -55,12 +55,12 @@ inline static void dxdyfromDirection(int direction, int *dx, int *dy)
 
 // AICastor::Project part:
 
-AICastor::Project::Project(BuildingType::BuildingTypeShortNumber shortTypeNum, const char *suffix)
+AICastor::Project::Project(IntBuildingType::Number shortTypeNum, const char *suffix)
 {
 	this->shortTypeNum=shortTypeNum;
 	init(suffix);
 }
-AICastor::Project::Project(BuildingType::BuildingTypeShortNumber shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix)
+AICastor::Project::Project(IntBuildingType::Number shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix)
 {
 	this->shortTypeNum=shortTypeNum;
 	init(suffix);
@@ -70,9 +70,9 @@ AICastor::Project::Project(BuildingType::BuildingTypeShortNumber shortTypeNum, i
 void AICastor::Project::init(const char *suffix)
 {
 	amount=1;
-	food=(this->shortTypeNum==BuildingType::SWARM_BUILDING
-		|| this->shortTypeNum==BuildingType::FOOD_BUILDING);
-	defense=(this->shortTypeNum==BuildingType::DEFENSE_BUILDING);
+	food=(this->shortTypeNum==IntBuildingType::SWARM_BUILDING
+		|| this->shortTypeNum==IntBuildingType::FOOD_BUILDING);
+	defense=(this->shortTypeNum==IntBuildingType::DEFENSE_BUILDING);
 	
 	debugStdName += Toolkit::getStringTable()->getString("[building name]", this->shortTypeNum);
 	debugStdName += "-";
@@ -616,91 +616,91 @@ void AICastor::defineStrategy()
 {
 	strategy.defined=true;
 	
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].baseOrder=-1;
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].newOrder=-1;
 	
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].finalWorkers=-1;
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].baseOrder=0;
-	strategy.build[BuildingType::SWARM_BUILDING].baseOrder=1;
-	strategy.build[BuildingType::ATTACK_BUILDING].baseOrder=2;
-	strategy.build[BuildingType::DEFENSE_BUILDING].baseOrder=3;
-	strategy.build[BuildingType::FOOD_BUILDING].baseOrder=4;
-	strategy.build[BuildingType::HEAL_BUILDING].baseOrder=5;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseOrder=6;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].baseOrder=7;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseOrder=0;
+	strategy.build[IntBuildingType::SWARM_BUILDING].baseOrder=1;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].baseOrder=2;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseOrder=3;
+	strategy.build[IntBuildingType::FOOD_BUILDING].baseOrder=4;
+	strategy.build[IntBuildingType::HEAL_BUILDING].baseOrder=5;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseOrder=6;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseOrder=7;
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].base=2;
-	strategy.build[BuildingType::SWARM_BUILDING].base=2;
-	strategy.build[BuildingType::ATTACK_BUILDING].base=2;
-	strategy.build[BuildingType::DEFENSE_BUILDING].base=2;
-	strategy.build[BuildingType::FOOD_BUILDING].base=4;
-	strategy.build[BuildingType::HEAL_BUILDING].base=2;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].base=1;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].base=1;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].base=2;
+	strategy.build[IntBuildingType::SWARM_BUILDING].base=2;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].base=2;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].base=2;
+	strategy.build[IntBuildingType::FOOD_BUILDING].base=4;
+	strategy.build[IntBuildingType::HEAL_BUILDING].base=2;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].base=1;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].base=1;
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].baseWorkers=5;
-	strategy.build[BuildingType::SWARM_BUILDING].baseWorkers=2;
-	strategy.build[BuildingType::ATTACK_BUILDING].baseWorkers=2;
-	strategy.build[BuildingType::DEFENSE_BUILDING].baseWorkers=2;
-	strategy.build[BuildingType::FOOD_BUILDING].baseWorkers=3;
-	strategy.build[BuildingType::HEAL_BUILDING].baseWorkers=1;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseWorkers=3;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].baseWorkers=5;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseWorkers=5;
+	strategy.build[IntBuildingType::SWARM_BUILDING].baseWorkers=2;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].baseWorkers=2;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseWorkers=2;
+	strategy.build[IntBuildingType::FOOD_BUILDING].baseWorkers=3;
+	strategy.build[IntBuildingType::HEAL_BUILDING].baseWorkers=1;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseWorkers=3;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseWorkers=5;
 	
-	strategy.build[BuildingType::SCIENCE_BUILDING].baseUpgrade=2;
-	strategy.build[BuildingType::SWARM_BUILDING].baseUpgrade=0;
-	strategy.build[BuildingType::ATTACK_BUILDING].baseUpgrade=2;
-	strategy.build[BuildingType::DEFENSE_BUILDING].baseUpgrade=1;
-	strategy.build[BuildingType::FOOD_BUILDING].baseUpgrade=2;
-	strategy.build[BuildingType::HEAL_BUILDING].baseUpgrade=2;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].baseUpgrade=0;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].baseUpgrade=0;
-	
-	
-	strategy.build[BuildingType::SWARM_BUILDING].finalWorkers=2;
-	strategy.build[BuildingType::FOOD_BUILDING].finalWorkers=1;
-	strategy.build[BuildingType::DEFENSE_BUILDING].finalWorkers=2;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseUpgrade=2;
+	strategy.build[IntBuildingType::SWARM_BUILDING].baseUpgrade=0;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].baseUpgrade=2;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseUpgrade=1;
+	strategy.build[IntBuildingType::FOOD_BUILDING].baseUpgrade=2;
+	strategy.build[IntBuildingType::HEAL_BUILDING].baseUpgrade=2;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseUpgrade=0;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseUpgrade=0;
 	
 	
-	strategy.build[BuildingType::DEFENSE_BUILDING].newOrder=0;
-	strategy.build[BuildingType::SWARM_BUILDING].newOrder=1;
-	strategy.build[BuildingType::FOOD_BUILDING].newOrder=2;
-	strategy.build[BuildingType::SCIENCE_BUILDING].newOrder=3;
-	strategy.build[BuildingType::ATTACK_BUILDING].newOrder=4;
-	strategy.build[BuildingType::HEAL_BUILDING].newOrder=5;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].newOrder=6;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].newOrder=7;
+	strategy.build[IntBuildingType::SWARM_BUILDING].finalWorkers=2;
+	strategy.build[IntBuildingType::FOOD_BUILDING].finalWorkers=1;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].finalWorkers=2;
 	
-	strategy.build[BuildingType::DEFENSE_BUILDING].news=10;
-	strategy.build[BuildingType::SWARM_BUILDING].news=1;
-	strategy.build[BuildingType::FOOD_BUILDING].news=7;
-	strategy.build[BuildingType::SCIENCE_BUILDING].news=2;
-	strategy.build[BuildingType::ATTACK_BUILDING].news=2;
-	strategy.build[BuildingType::HEAL_BUILDING].news=5;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].news=1;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].news=1;
 	
-	strategy.build[BuildingType::DEFENSE_BUILDING].newWorkers=4;
-	strategy.build[BuildingType::SWARM_BUILDING].newWorkers=3;
-	strategy.build[BuildingType::FOOD_BUILDING].newWorkers=2;
-	strategy.build[BuildingType::SCIENCE_BUILDING].newWorkers=7;
-	strategy.build[BuildingType::ATTACK_BUILDING].newWorkers=5;
-	strategy.build[BuildingType::HEAL_BUILDING].newWorkers=2;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].newWorkers=4;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].newWorkers=4;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].newOrder=0;
+	strategy.build[IntBuildingType::SWARM_BUILDING].newOrder=1;
+	strategy.build[IntBuildingType::FOOD_BUILDING].newOrder=2;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].newOrder=3;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].newOrder=4;
+	strategy.build[IntBuildingType::HEAL_BUILDING].newOrder=5;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newOrder=6;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newOrder=7;
 	
-	strategy.build[BuildingType::DEFENSE_BUILDING].newUpgrade=10;
-	strategy.build[BuildingType::SWARM_BUILDING].newUpgrade=0;
-	strategy.build[BuildingType::FOOD_BUILDING].newUpgrade=3;
-	strategy.build[BuildingType::SCIENCE_BUILDING].newUpgrade=2;
-	strategy.build[BuildingType::ATTACK_BUILDING].newUpgrade=2;
-	strategy.build[BuildingType::HEAL_BUILDING].newUpgrade=5;
-	strategy.build[BuildingType::WALKSPEED_BUILDING].newUpgrade=0;
-	strategy.build[BuildingType::SWIMSPEED_BUILDING].newUpgrade=0;
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].news=10;
+	strategy.build[IntBuildingType::SWARM_BUILDING].news=1;
+	strategy.build[IntBuildingType::FOOD_BUILDING].news=7;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].news=2;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].news=2;
+	strategy.build[IntBuildingType::HEAL_BUILDING].news=5;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].news=1;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].news=1;
+	
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].newWorkers=4;
+	strategy.build[IntBuildingType::SWARM_BUILDING].newWorkers=3;
+	strategy.build[IntBuildingType::FOOD_BUILDING].newWorkers=2;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].newWorkers=7;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].newWorkers=5;
+	strategy.build[IntBuildingType::HEAL_BUILDING].newWorkers=2;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newWorkers=4;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newWorkers=4;
+	
+	strategy.build[IntBuildingType::DEFENSE_BUILDING].newUpgrade=10;
+	strategy.build[IntBuildingType::SWARM_BUILDING].newUpgrade=0;
+	strategy.build[IntBuildingType::FOOD_BUILDING].newUpgrade=3;
+	strategy.build[IntBuildingType::SCIENCE_BUILDING].newUpgrade=2;
+	strategy.build[IntBuildingType::ATTACK_BUILDING].newUpgrade=2;
+	strategy.build[IntBuildingType::HEAL_BUILDING].newUpgrade=5;
+	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newUpgrade=0;
+	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newUpgrade=0;
 	
 	strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
 	strategy.isFreePart=10; // good in [3..20]
@@ -848,10 +848,10 @@ Order *AICastor::expandFood()
 {
 	if (foodSurplus
 		|| (!foodWarning && !enoughFreeWorkers())
-		|| buildingSum[BuildingType::FOOD_BUILDING][1]>buildingSum[BuildingType::FOOD_BUILDING][0]+1)
+		|| buildingSum[IntBuildingType::FOOD_BUILDING][1]>buildingSum[IntBuildingType::FOOD_BUILDING][0]+1)
 		return NULL;
 	
-	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
 	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
 	assert(bw==bh);
@@ -891,7 +891,7 @@ Order *AICastor::controlFood()
 		}
 	if (b==NULL)
 		return NULL;
-	if (b->type->shortTypeNum!=BuildingType::FOOD_BUILDING && b->type->shortTypeNum!=BuildingType::SWARM_BUILDING)
+	if (b->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING && b->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING)
 		return NULL;
 	
 	int bx=b->posX;
@@ -945,7 +945,7 @@ Order *AICastor::controlFood()
 	}
 	else
 	{
-		if (b->type->shortTypeNum==BuildingType::FOOD_BUILDING)
+		if (b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
 		{
 			Sint32 workers;
 			if (foodWarning && b->type->isBuildingSite)
@@ -957,7 +957,7 @@ Order *AICastor::controlFood()
 			b->update();
 			return new OrderModifyBuilding(b->gid, workers);
 		}
-		else if (b->type->shortTypeNum==BuildingType::SWARM_BUILDING)
+		else if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 		{
 			Sint32 workers;
 			if (foodWarning)
@@ -996,7 +996,7 @@ Order *AICastor::controlUpgrades()
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
-		if (b->type->DEFENSE_BUILDING)
+		if (b->type->type == "defencetower")
 		{
 			if (b->hp*4<b->type->hpMax*1)
 				return new OrderConstruction(b->gid);
@@ -1042,7 +1042,7 @@ Order *AICastor::controlUpgrades()
 	if (sumOver>=upgradeAmountGoal)
 		return NULL;
 	
-	if (shortTypeNum==BuildingType::SCIENCE_BUILDING)
+	if (shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 	{
 		int buildBase=team->stats.getWorkersLevel(0);
 		int buildSum=0;
@@ -1074,7 +1074,7 @@ Order *AICastor::controlUpgrades()
 	{
 		int x, y;
 		team->getEventPos(&x, &y);
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::WAR_FLAG, 0, false);
 		fprintf(logFile, "controlBaseDefense()\n I'm, under attack !\n Defense war flag set at (%d,%d)\n", x, y);
 		onStrike = true;
 		return new OrderCreate(team->teamNumber, x, y, typeNum);
@@ -1093,7 +1093,7 @@ Order *AICastor::controlStrikes()
 	
 	int warriors=team->stats.getTotalUnits(WARRIOR);
 	int warFlagsGoal=(warriors+16)/32;
-	int warFlagsReal=buildingSum[BuildingType::WAR_FLAG][0];
+	int warFlagsReal=buildingSum[IntBuildingType::WAR_FLAG][0];
 	fprintf(logFile,  " warriors=%d, warFlagsGoal=%d, warFlagsReal=%d\n", warriors, warFlagsGoal, warFlagsReal);
 	
 	if (!strikeTeamSelected)
@@ -1132,8 +1132,8 @@ Order *AICastor::controlStrikes()
 				if (b==NULL || ((b->seenByMask&me)==0) || b->type->level<bestLevel)
 					continue;
 				int shortTypeNum=b->type->shortTypeNum;
-				if (shortTypeNum==BuildingType::ATTACK_BUILDING
-					|| shortTypeNum==BuildingType::SCIENCE_BUILDING)
+				if (shortTypeNum==IntBuildingType::ATTACK_BUILDING
+					|| shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 					score+=2;
 				else
 					score++;
@@ -1177,8 +1177,8 @@ Order *AICastor::controlStrikes()
 		if (b->type->isBuildingSite)
 			score=(score>>2);
 		int shortTypeNum=b->type->shortTypeNum;
-		if (shortTypeNum==BuildingType::ATTACK_BUILDING
-			||shortTypeNum==BuildingType::SCIENCE_BUILDING)
+		if (shortTypeNum==IntBuildingType::ATTACK_BUILDING
+			||shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 			score=(score<<1);
 		if (bestScore<score)
 		{
@@ -1197,7 +1197,7 @@ Order *AICastor::controlStrikes()
 		
 		if (warFlagsReal<warFlagsGoal)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			fprintf(logFile,  " create\n");
 			return new OrderCreate(team->teamNumber, x, y, typeNum);
 		}
@@ -1206,7 +1206,7 @@ Order *AICastor::controlStrikes()
 			Sint32 maxSqDist=0;
 			Building *maxFlag=NULL;
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
-				if ((*it)->type->shortTypeNum==BuildingType::WAR_FLAG)
+				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 				{
 					Sint32 dx=x-(*it)->posX;
 					Sint32 dy=y-(*it)->posY;
@@ -1223,7 +1223,7 @@ Order *AICastor::controlStrikes()
 				return new OrderMoveFlag(maxFlag->gid, x, y, true);
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
-				if ((*it)->type->shortTypeNum==BuildingType::WAR_FLAG
+				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG
 					&& (*it)->maxUnitWorking<20)
 				{
 					fprintf(logFile,  " modify %d\n", (*it)->gid);
@@ -1234,7 +1234,7 @@ Order *AICastor::controlStrikes()
 	else
 	{
 		for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
-			if ((*it)->type->shortTypeNum==BuildingType::WAR_FLAG)
+			if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
 				fprintf(logFile,  " removed %d\n", (*it)->gid);
 				return new OrderDelete((*it)->gid);
@@ -1287,9 +1287,9 @@ void AICastor::addProjects()
 	
 	buildsAmount=-1;
 	
-	if (buildingSum[BuildingType::FOOD_BUILDING][0]==0)
+	if (buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
 	{
-		Project *project=new Project(BuildingType::FOOD_BUILDING, "boot");
+		Project *project=new Project(IntBuildingType::FOOD_BUILDING, "boot");
 		
 		project->successWait=strategy.successWait;
 		project->critical=true;
@@ -1307,9 +1307,9 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[BuildingType::SWARM_BUILDING][0]+buildingSum[BuildingType::SWARM_BUILDING][1]==0)
+	if (buildingSum[IntBuildingType::SWARM_BUILDING][0]+buildingSum[IntBuildingType::SWARM_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::SWARM_BUILDING, "boot");
+		Project *project=new Project(IntBuildingType::SWARM_BUILDING, "boot");
 		
 		project->successWait=strategy.successWait;
 		project->critical=true;
@@ -1327,7 +1327,7 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[BuildingType::SWIMSPEED_BUILDING][0]+buildingSum[BuildingType::SWIMSPEED_BUILDING][1]==0)
+	if (buildingSum[IntBuildingType::SWIMSPEED_BUILDING][0]+buildingSum[IntBuildingType::SWIMSPEED_BUILDING][1]==0)
 	{
 		if (timer>computeNeedSwimTimer)
 		{
@@ -1336,7 +1336,7 @@ void AICastor::addProjects()
 		}
 		if (needSwim)
 		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 2, "boot");
+			Project *project=new Project(IntBuildingType::SWIMSPEED_BUILDING, 1, 2, "boot");
 			project->successWait=strategy.successWait;
 			project->critical=true;
 			project->priority=0;
@@ -1344,34 +1344,34 @@ void AICastor::addProjects()
 				return;
 		}
 	}
-	if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]==0)
+	if (buildingSum[IntBuildingType::ATTACK_BUILDING][0]+buildingSum[IntBuildingType::ATTACK_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 2, "boot");
+		Project *project=new Project(IntBuildingType::ATTACK_BUILDING, 1, 2, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
 			return;
 	}
-	/*if (buildingSum[BuildingType::WALKSPEED_BUILDING][0]+buildingSum[BuildingType::WALKSPEED_BUILDING][1]==0)
+	/*if (buildingSum[IntBuildingType::WALKSPEED_BUILDING][0]+buildingSum[IntBuildingType::WALKSPEED_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, 1, 7, "boot");
+		Project *project=new Project(IntBuildingType::WALKSPEED_BUILDING, 1, 7, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[BuildingType::HEAL_BUILDING][0]+buildingSum[BuildingType::HEAL_BUILDING][1]==0)
+	if (buildingSum[IntBuildingType::HEAL_BUILDING][0]+buildingSum[IntBuildingType::HEAL_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::HEAL_BUILDING, 1, 3, "boot");
+		Project *project=new Project(IntBuildingType::HEAL_BUILDING, 1, 3, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		project->multipleStart=true;
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[BuildingType::SCIENCE_BUILDING][0]+buildingSum[BuildingType::SCIENCE_BUILDING][1]==0)
+	if (buildingSum[IntBuildingType::SCIENCE_BUILDING][0]+buildingSum[IntBuildingType::SCIENCE_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::SCIENCE_BUILDING, 1, 5, "boot");
+		Project *project=new Project(IntBuildingType::SCIENCE_BUILDING, 1, 5, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
@@ -1390,13 +1390,13 @@ void AICastor::addProjects()
 			if (bpi==strategy.build[bi].baseOrder)
 				if (buildingSum[bi][0]+buildingSum[bi][1]<strategy.build[bi].base)
 				{
-					if (bi==BuildingType::SWARM_BUILDING
+					if (bi==IntBuildingType::SWARM_BUILDING
 						&& (foodWarning
 							|| foodLockStats[1]>foodLockStats[0]
 							|| starvingWarning
 							|| starvingWarningStats[1]>starvingWarningStats[0]))
 						continue;
-					Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
+					Project *project=new Project((IntBuildingType::Number)bi,
 						strategy.build[bi].base, strategy.build[bi].baseWorkers, "base");
 					project->successWait=strategy.successWait;
 					project->finalWorkers=strategy.build[bi].finalWorkers;
@@ -1436,13 +1436,13 @@ void AICastor::addProjects()
 				if (bi==strategy.build[bpi].newOrder)
 					if (buildingSum[bi][0]+buildingSum[bi][1]<amountGoal[bi])
 					{
-						if (bi==BuildingType::SWARM_BUILDING
+						if (bi==IntBuildingType::SWARM_BUILDING
 							&& (foodWarning
 								|| foodLockStats[1]>foodLockStats[0]
 								|| starvingWarning
 								|| starvingWarningStats[1]>starvingWarningStats[0]))
 							continue;
-						Project *project=new Project((BuildingType::BuildingTypeShortNumber)bi,
+						Project *project=new Project((IntBuildingType::Number)bi,
 							amountGoal[bi], strategy.build[bi].newWorkers+(agi-1), "loop");
 						project->successWait=strategy.successWait;
 						project->finalWorkers=strategy.build[bi].finalWorkers;
@@ -1478,7 +1478,7 @@ Order *AICastor::continueProject(Project *project)
 	if (timer<project->timer+32)
 		return NULL;
 	
-	if (foodLock && !project->critical && project->shortTypeNum==BuildingType::SWARM_BUILDING)
+	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
 		fprintf(logFile,  "(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
 		if (starvingWarning)
@@ -1504,7 +1504,7 @@ Order *AICastor::continueProject(Project *project)
 		}
 		// find any good building place
 		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(project->shortTypeNum), 0, true);
 		int bw=globalContainer->buildingsTypes.get(typeNum)->width;
 		int bh=globalContainer->buildingsTypes.get(typeNum)->height;
 		assert(bw==bh);
@@ -1641,8 +1641,8 @@ Order *AICastor::continueProject(Project *project)
 						}
 					}
 				}
-				else if (b->type->shortTypeNum==BuildingType::SWARM_BUILDING
-					|| b->type->shortTypeNum==BuildingType::FOOD_BUILDING)
+				else if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
+					|| b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
 				{
 					// food buildings
 					if (project->foodWorkers>=0 && b->maxUnitWorking!=project->foodWorkers)
@@ -1888,7 +1888,7 @@ void AICastor::computeNeedSwim()
 
 void AICastor::computeBuildingSum()
 {
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<4; li++)
 				buildingLevels[bi][si][li]=0;
@@ -1905,7 +1905,7 @@ void AICastor::computeBuildingSum()
 				buildingLevels[b->type->shortTypeNum][b->type->isBuildingSite][b->type->level]++;
 		}
 	}
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
 		{
 			int sum=0;
@@ -1914,7 +1914,7 @@ void AICastor::computeBuildingSum()
 			buildingSum[bi][si]=sum;
 		}
 	
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<4; li++)
 				if (buildingLevels[bi][si][li]>0)
@@ -1937,7 +1937,7 @@ void AICastor::computeWarLevel()
 	int sum=0;
 	for (int si=0; si<2; si++)
 		for (int li=strategy.warLevelTriger; li<4; li++)
-			sum+=buildingLevels[BuildingType::ATTACK_BUILDING][si][li];
+			sum+=buildingLevels[IntBuildingType::ATTACK_BUILDING][si][li];
 	if (sum>1)
 		warLevelTrigerLevel=2;
 	else if (sum>0)

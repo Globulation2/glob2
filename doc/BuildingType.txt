@@ -1,0 +1,21 @@
+Short documentation on how building type should be accessed in Glob2
+
+Stephane Magnenat 2004
+
+In glob2, each version of a building has a BuildingType. For instance, a inn level 0
+has a different one from a inn level 1 and a different one from a inn level 0 building site.
+
+They are stored in the BuildingsTypes container during game and in data/building.txt
+on disk. In game, the prefered way to access a BuildingType is a pointer that can be queried
+to BuildingsTypes. When a pointer is not possible (for network message for instance), the
+index in BuildingsTypes can be passed. This integer is then called a typeNum.
+
+This is simple. Now the complex part.
+
+In the data/building.txt, each BuildingType has a field named type, that is a string and
+refers to the user type of building (inn, hospital, ...). The corresponding BuildingType pointer
+(or index) can be queried to BuildingsTypes by passing the user type (string), the level (int),
+whether it is a building site (bool). When working with user type, the prefered format is string.
+However, for historical or efficiency reasons, it is sometimes necessary to have an int. The
+transformation between user type in string and in int can be done by the IntBuildingType static
+translator. A user type in int is called a ShortNumberBuildingType.

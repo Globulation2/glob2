@@ -27,6 +27,7 @@
 class MapGenerationDescriptor;
 class GameGUI;
 class DrawableSurface;
+class BuilgingType;
 
 class Game
 {
@@ -115,10 +116,10 @@ public:
 	bool removeUnitAndBuildingAndFlags(int x, int y, SDL_Rect* r, unsigned flags);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 
-	bool checkRoomForBuilding(int mousePosX, int mousePosY, int typeNum, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
-	bool checkRoomForBuilding(int x, int y, int typeNum, int teamNumber, bool checkFow=true);
-	bool checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY);
-	bool checkHardRoomForBuilding(int x, int y, int typeNum);
+	bool checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow=true);
+	bool checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow=true);
+	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
+	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0);

@@ -21,7 +21,8 @@
 #define __TEAM_STAT_H
 
 #include "UnitConsts.h"
-#include "BuildingType.h"
+#include "IntBuildingType.h"
+#include "Ressource.h"
 
 struct TeamStat
 {
@@ -32,8 +33,8 @@ struct TeamStat
 	int totalNeeded;
 
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
-	int numberBuildingPerType[BuildingType::NB_BUILDING];
-	int numberBuildingPerTypePerLevel[BuildingType::NB_BUILDING][6];
+	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
+	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][6];
 
 	int needFoodCritical;
 	int needFood;

@@ -45,7 +45,7 @@ void AINumbi::init(Player *player)
 	critticalWarriors=20;
 	critticalTime=1024;
 	attackTimer=0;
-	for (int i=0; i<BuildingType::NB_BUILDING; i++)
+	for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
 	
 	assert(player);
@@ -77,15 +77,15 @@ bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 
 	if (versionMinor<=32)
 	{
-		SDL_RWread(stream, mainBuilding, 15, 4); // BuildingType::NB_BUILDING==15, warning, explicit dirty hack...
+		SDL_RWread(stream, mainBuilding, 15, 4); // IntBuildingType::NB_BUILDING==15, warning, explicit dirty hack...
 	}
 	else if (versionMinor<=35)
 	{
-		SDL_RWread(stream, mainBuilding, 13, 4); // BuildingType::NB_BUILDING==13
+		SDL_RWread(stream, mainBuilding, 13, 4); // IntBuildingType::NB_BUILDING==13
 	}
 	else
 	{
-		for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+		for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 			mainBuilding[bi]=SDL_ReadBE32(stream);
 	}
 	return true;
@@ -100,7 +100,7 @@ void AINumbi::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, critticalTime);
 	SDL_WriteBE32(stream, attackTimer);
 
-	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		SDL_WriteBE32(stream, mainBuilding[bi]);
 	
 }
@@ -124,7 +124,7 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 4, 7, 1, 0);
 			case 1:
-				return adjustBuildings(4, 1, 3, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(4, 1, 3, IntBuildingType::FOOD_BUILDING);
 		}
 	}
 	else if (phase==1)
@@ -135,7 +135,7 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 5, 14, 0, 0);
 			case 1:
-				return adjustBuildings(4, 1, 3, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(4, 1, 3, IntBuildingType::FOOD_BUILDING);
 		}
 	}
 	else if (phase<4)
@@ -146,17 +146,17 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 9, 14, 0, 0);
 			case 1:
-				return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(4, 1, 1, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(44, 1, 1, BuildingType::HEAL_BUILDING);
+				return adjustBuildings(44, 1, 1, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(40, 1, 2, BuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(40, 1, 2, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 1, 0, BuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(70, 1, 0, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(70, 1, 0, BuildingType::ATTACK_BUILDING);
+				return adjustBuildings(70, 1, 0, IntBuildingType::ATTACK_BUILDING);
 			case 6:
-				return adjustBuildings(25, 1, 1, BuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(25, 1, 1, IntBuildingType::DEFENSE_BUILDING);
 		}
 	}
 	else if (phase<6)
@@ -167,13 +167,13 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 9, 14, 1, 0);
 			case 1:
-				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 1, 1, BuildingType::HEAL_BUILDING);
+				return adjustBuildings(37, 1, 1, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(32, 1, 2, BuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(32, 1, 2, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(25, 1, 1, BuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(25, 1, 1, IntBuildingType::DEFENSE_BUILDING);
 			case 5:
 				return mayUpgrade(16, 8);
 		}
@@ -186,11 +186,11 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 4, 14, 0, 0);
 			case 1:
-				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(34, 2, 1, BuildingType::HEAL_BUILDING);
+				return adjustBuildings(34, 2, 1, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(32, 2, 4, BuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(32, 2, 4, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
 				return mayUpgrade(16, 4);
 		}
@@ -203,17 +203,17 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 9, 14, 1, 1);
 			case 1:
-				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(32, 2, 1, BuildingType::HEAL_BUILDING);
+				return adjustBuildings(32, 2, 1, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(40, 2, 3, BuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(40, 2, 3, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 1, 5, BuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(70, 1, 5, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(20, 1, 1, BuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(20, 1, 1, IntBuildingType::DEFENSE_BUILDING);
 			case 6:
-				return adjustBuildings(70, 1, 3, BuildingType::ATTACK_BUILDING);
+				return adjustBuildings(70, 1, 3, IntBuildingType::ATTACK_BUILDING);
 			case 7:
 				return checkoutExpands(80, 5);
 			case 8:
@@ -228,17 +228,17 @@ Order *AINumbi::getOrder(void)
 			case 0:
 				return swarmsForWorkers(1, 10, 3, 1, 14);
 			case 1:
-				return adjustBuildings(6, 2, 1, BuildingType::FOOD_BUILDING);
+				return adjustBuildings(6, 2, 1, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 2, 1, BuildingType::HEAL_BUILDING);
+				return adjustBuildings(37, 2, 1, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(38, 2, 2, BuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(38, 2, 2, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 2, 5, BuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(70, 2, 5, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(20, 2, 2, BuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(20, 2, 2, IntBuildingType::DEFENSE_BUILDING);
 			case 6:
-				return adjustBuildings(70, 2, 3, BuildingType::ATTACK_BUILDING);
+				return adjustBuildings(70, 2, 3, IntBuildingType::ATTACK_BUILDING);
 			case 7:
 				return mayAttack(critticalWarriors, critticalTime, 10);
 			case 8:
@@ -421,7 +421,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		// TODO !
 		// assert(false);
 		/*int x, y;
-		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
+		if (findNewEmplacement(IntBuildingType::SWARM_BUILDING, &x, &y))
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
 			int teamNumber=player->team->teamNumber;
@@ -605,7 +605,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 
 bool AINumbi::parseBuildingType(const int buildingType)
 {
-	return (buildingType==BuildingType::DEFENSE_BUILDING);
+	return (buildingType==IntBuildingType::DEFENSE_BUILDING);
 }
 
 void AINumbi::squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
@@ -649,7 +649,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	}
 	if (b==NULL)
 	{
-		for (int i=0; i<BuildingType::NB_BUILDING; i++)
+		for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		{
 			if (myBuildings[mainBuilding[i]])
 			{
@@ -663,7 +663,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		// TODO : scan the units and find a ressoucefull place.
 		return false;
 	}
-	int typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
+	int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int width=bt->width;
 	int height=bt->height;
@@ -718,7 +718,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			if (map->isFreeForBuilding(px, py, width, height))
 			{
 				int valid=nbFreeAround(buildingType, px, py, width, height);
-				if ((valid>299)&&(game->checkRoomForBuilding(px, py, typeNum, player->team->teamNumber)))
+				if ((valid>299)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
 					bool nr=map->ressourceAvailable(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
@@ -798,7 +798,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		int teamNumber=player->team->teamNumber;
 
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
+			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
@@ -834,7 +834,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				{
 					bool already=false;
 					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-						if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
+						if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 							if ((*bit)->posX==ex &&(*bit)->posX==ex)
 							{
 								already=true;
@@ -848,7 +848,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 
 		if (ey!=-1)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
 			return new OrderCreate(teamNumber, ex, ey, typeNum);
 		}
@@ -863,7 +863,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 	else if (attackPhase==3)
 	{
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
+			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 				return new OrderDelete((*bit)->gid);
 		attackPhase=0;
 		critticalWarriors*=2;
@@ -898,9 +898,9 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 	
 	int wr=countUnits();
 	
-	if (buildingType==BuildingType::FOOD_BUILDING)
+	if (buildingType==IntBuildingType::FOOD_BUILDING)
 		wr+=2*countUnits(Unit::MED_HUNGRY);
-	else if (buildingType==BuildingType::HEAL_BUILDING)
+	else if (buildingType==IntBuildingType::HEAL_BUILDING)
 		wr+=4*countUnits(Unit::MED_DAMAGED);
 	
 	if (fb<((wr/numbers)+numbersInc))
@@ -909,7 +909,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 		int x, y;
 		if (findNewEmplacement(buildingType, &x, &y))
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(buildingType, 0, true);
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 			int teamNumber=team->teamNumber;
 			return new OrderCreate(teamNumber, x, y, typeNum);
 		}
@@ -940,7 +940,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 	{
 		//printf("AI: checkoutExpands(%d<%d=(%d/%d)).\n", ss, (wr/numbers), wr, numbers);
 		int x, y;
-		if (findNewEmplacement(BuildingType::SWARM_BUILDING, &x, &y))
+		if (findNewEmplacement(IntBuildingType::SWARM_BUILDING, &x, &y))
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(0, 0, true);
 			int teamNumber=team->teamNumber;
@@ -982,7 +982,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			BuildingType *bt=b->type;
 			int l=bt->level;
-			if (bt->shortTypeNum==BuildingType::FOOD_BUILDING)
+			if (bt->shortTypeNum==IntBuildingType::FOOD_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingFood[l]++;
@@ -993,7 +993,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						foodBuilding[l]=b;
 				}
 			}
-			else if (bt->shortTypeNum==BuildingType::HEAL_BUILDING)
+			else if (bt->shortTypeNum==IntBuildingType::HEAL_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingHealth[l]++;
@@ -1004,7 +1004,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						healthBuilding[l]=b;
 				}
 			}
-			else if (bt->shortTypeNum==BuildingType::ATTACK_BUILDING)
+			else if (bt->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingAttack[l]++;
@@ -1015,7 +1015,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						attackBuilding[l]=b;
 				}
 			}
-			else if (bt->shortTypeNum==BuildingType::SCIENCE_BUILDING)
+			else if (bt->shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingScience[l]++;
@@ -1026,7 +1026,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						scienceBuilding[l]=b;
 				}
 			}
-			else if (bt->shortTypeNum==BuildingType::DEFENSE_BUILDING)
+			else if (bt->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingDefense[l]++;

@@ -28,7 +28,7 @@
 #include <map>
 #include <stdio.h>
 #include "Marshaling.h"
-#include "BuildingType.h"
+#include "IntBuildingType.h"
 
 struct Token
 {
@@ -89,7 +89,7 @@ struct Token
 		S_SCIENCE_B,
 		S_DEFENCE_B,
 
-		S_WALL_B=S_SWARM_B+BuildingType::STONE_WALL,
+		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
 		S_WOODWALL_B,
 		S_MARKET_B,
 

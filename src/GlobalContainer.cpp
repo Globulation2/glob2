@@ -29,6 +29,7 @@
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
 #include "SoundMixer.h"
+#include "IntBuildingType.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -364,17 +365,12 @@ void GlobalContainer::load(void)
 	
 	// load buildings types
 	buildingsTypes.load();
+	IntBuildingType::init();
 	// load ressources types
 	ressourcesTypes.load("data/ressources.txt");
 	
 	if (!runNoX)
 	{
-		// create graphic context
-		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
-		gfx->setMinRes(640, 480);
-		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
-		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
-
 		initProgressBar();
 		
 		// create mixer

@@ -199,7 +199,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int h=bt->height;
 			if (!isVirtual && (team->noMoreBuildingSitesCountdown>0))
 				break;
-			bool isRoom=checkRoomForBuilding(posX, posY, oc->typeNum, oc->teamNumber);
+			bool isRoom=checkRoomForBuilding(posX, posY, bt, oc->teamNumber);
 			if (isVirtual || isRoom)
 			{
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
@@ -916,7 +916,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 			buildProjects.erase(bpi);
 			break;
 		}
-		if (checkRoomForBuilding(posX, posY, typeNum, teamNumber))
+		if (checkRoomForBuilding(posX, posY, bt, teamNumber))
 		{
 			Building *b=addBuilding(posX, posY, typeNum, teamNumber);
 			if (b)
@@ -1294,24 +1294,22 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, SDL_Rect* r, un
 	return somethingInRect;
 }
 
-bool Game::checkRoomForBuilding(int mousePosX, int mousePosY, int typeNum, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow)
+bool Game::checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=mousePosX+bt->decLeft;
 	int y=mousePosY+bt->decTop;
 
 	*buildingPosX=x;
 	*buildingPosY=y;
 
-	return checkRoomForBuilding(x, y, typeNum, teamNumber, checkFow);
+	return checkRoomForBuilding(x, y, bt, teamNumber, checkFow);
 }
 
-bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber, bool checkFow)
+bool Game::checkRoomForBuilding(int x, int y, const BuildingType *bt, int teamNumber, bool checkFow)
 {
 	Team *team=teams[teamNumber];
 	assert(team);
 	
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;
 	int h=bt->height;
 
@@ -1347,21 +1345,19 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, int teamNumber, bool 
 		return false;
 }
 
-bool Game::checkHardRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY)
+bool Game::checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int x=coordX+bt->decLeft;
 	int y=coordY+bt->decTop;
 
 	*mapX=x;
 	*mapY=y;
 
-	return checkHardRoomForBuilding(x, y, typeNum);
+	return checkHardRoomForBuilding(x, y, bt);
 }
 
-bool Game::checkHardRoomForBuilding(int x, int y, int typeNum)
+bool Game::checkHardRoomForBuilding(int x, int y, const BuildingType *bt)
 {
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int w=bt->width;
 	int h=bt->height;
 	assert(!bt->isVirtual); // This method is not for flags!
@@ -1846,9 +1842,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
 			int lastTypeNum=typeNum;
 			int max=0;
-			while(lastbt->nextLevelTypeNum>=0)
+			while(lastbt->nextLevel>=0)
 			{
-				lastTypeNum=lastbt->nextLevelTypeNum;
+				lastTypeNum=lastbt->nextLevel;
 				lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
 				if (max++>200)
 				{
