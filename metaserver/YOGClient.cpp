@@ -21,7 +21,7 @@
 #include "../src/Marshaling.h"
 #include "../src/Utilities.h"
 
-extern FILE *logServer;
+extern FILE *logServerFile;
 extern YOGClient *admin;
 
 inline void standardTimeout(int *timeout, const unsigned size, const int base, const int div)
@@ -631,8 +631,12 @@ void YOGClient::lprintf(const char *msg, ...)
 	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
 		printf("%s", output);
 	
-	if (logServer)
-		fputs(output, logServer);
+	if (logServerFile)
+	{
+		fputs(output, logServerFile);
+		int fflushRv=fflush(logServerFile);
+		assert(fflushRv==0);
+	}
 	
 	int i;
 	for (i=0; i<256; i++)

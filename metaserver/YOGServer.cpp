@@ -21,8 +21,9 @@
 #include "../src/Marshaling.h"
 #include "YOGServer.h"
 #include "../src/Utilities.h"
+#include <errno.h>
 
-FILE *logServer;
+FILE *logServerFile=NULL;
 YOGClient *admin=NULL;
 
 YOGServer::YOGServer()
@@ -522,7 +523,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		if (dosend)
 		{
-			char data[8];
+			Uint8 data[8];
 			data[0]=YMT_SHARING_GAME;
 			data[1]=0;
 			data[2]=0;
@@ -796,18 +797,18 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		if (id)
 		{
-			if (logServer)
-				fclose(logServer);
+			if (logServerFile)
+				fclose(logServerFile);
 			send(ip, YMT_FLUSH_FILES);
 			char s[128];
 			snprintf(s, 128, "YOGServer%d.log", id);
-			logServer=fopen(s, "w");
+			logServerFile=fopen(s, "w");
 		}
 		else
 		{
-			fclose(logServer);
-			logServer=NULL;
-			lprintf("logServer closed\n");
+			fclose(logServerFile);
+			logServerFile=NULL;
+			lprintf("logServerFile closed\n");
 		}
 	}
 	break;
@@ -1117,8 +1118,12 @@ void YOGServer::lprintf(const char *msg, ...)
 	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
 		printf("%s", output);
 	
-	if (logServer)
-		fputs(output, logServer);
+	if (logServerFile)
+	{
+		fputs(output, logServerFile);
+		int fflushRv=fflush(logServerFile);
+		assert(fflushRv==0);
+	}
 	
 	int i;
 	for (i=0; i<256; i++)
@@ -1134,7 +1139,7 @@ void YOGServer::lprintf(const char *msg, ...)
 int main(int argc, char *argv[])
 {
 	admin=NULL;
-	logServer=fopen("YOGServer.log", "w");
+	logServerFile=fopen("YOGServer.log", "w");
 	
 	YOGServer yogServer;
 	if (yogServer.init())
