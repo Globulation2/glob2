@@ -2,6 +2,7 @@ EXTRA_DIST = glSDL.h \
 Toolkit.h \
 StringTable.h \
 FileManager.h \
+Types.h \
 GAG.h \
 GAGSys.h \
 GUIBase.h \
