@@ -1,3 +1,7 @@
+Pending small changes:
+- Add doesFileExists in FileManager and fix line 315 MultiplayerJoin.cpp
+- Add ->checkSum() to ::SteamBackend.
+
 To First release :
 
 - les guerrières ne sont toujours pas intelligentes.
