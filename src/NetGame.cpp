@@ -384,7 +384,6 @@ Uint32 NetGame::lastUsableUStepReceivedFromHim(int player)
 
 void NetGame::sendPushOrder(int targetPlayer)
 {
-	NullOrder nullOrder;
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
@@ -408,11 +407,12 @@ void NetGame::sendPushOrder(int targetPlayer)
 			assert(order);
 			assert(order->ustep==ustep);
 		}
-		// replace order by NullOrder if it is an OrderVoiceData and targetPlayer should not receive it
+		// if target player should not receive it, do not send any audio data. Order is only 5 bytes
 		if ((order->getOrderType() == ORDER_VOICE_DATA)
 			&& (( ((OrderVoiceData *)order)->recepientsMask & (1<<targetPlayer)) == 0))
-				order = &nullOrder;
-		totalSize+=12+order->getDataLength();
+			totalSize += 12+((OrderVoiceData *)order)->getStrippedDataLength();
+		else
+			totalSize += 12+order->getDataLength();
 		if (ustep==executeUStep)
 		{
 			n++;
@@ -451,11 +451,13 @@ void NetGame::sendPushOrder(int targetPlayer)
 			assert(order);
 			assert(order->ustep==ustep);
 		}
-		// replace order by NullOrder if it is an OrderVoiceData and targetPlayer should not receive it
+		int orderSize;
+		// if target player should not receive it, do not send any audio data. Order is only 5 bytes
 		if ((order->getOrderType() == ORDER_VOICE_DATA)
 			&& (( ((OrderVoiceData *)order)->recepientsMask & (1<<targetPlayer)) == 0))
-				order = &nullOrder;
-		int orderSize=order->getDataLength();
+			orderSize = ((OrderVoiceData *)order)->getStrippedDataLength();
+		else
+			orderSize = order->getDataLength();
 		addUint32(data, order->ustep, l);
 		l+=4;
 		addUint32(data, order->gameCheckSum, l);

@@ -3203,7 +3203,10 @@ void GameGUI::executeOrder(Order *order)
 		break;
 		case ORDER_VOICE_DATA:
 		{
-			globalContainer->mix->addVoiceData((OrderVoiceData *)order);
+			OrderVoiceData *ov = (OrderVoiceData *)order;
+			if (ov->recepientsMask & (1<<localPlayer))
+				globalContainer->mix->addVoiceData(ov);
+			game.executeOrder(order, localPlayer);
 		}
 		break;
 		case ORDER_QUITED :
