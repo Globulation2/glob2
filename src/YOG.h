@@ -25,6 +25,7 @@
 #include <deque>
 
 #define DEFAULT_CHAT_CHAN "#yog"
+#define DEFAULT_GAME_CHAN "#yog-games"
 
 //! This class is a YOG client
 class YOG
@@ -41,6 +42,13 @@ public:
 		char message[IRC_MESSAGE_SIZE];
 		char source[IRC_NICK_SIZE];
 		char diffusion[IRC_CHANNEL_SIZE];
+	};
+
+	struct GameInfo
+	{
+		char source[IRC_NICK_SIZE];
+		char infos[IRC_MESSAGE_SIZE];
+		Uint32 updatedTick;
 	};
 
 protected:
@@ -114,13 +122,11 @@ public:
 	void setGameParameters(const char *gameIdentifier, const char *gameInfo);
 
 	//! Request all game for software gameIdentifier in YOG
-	void requestYOGGames(const char *gameIdentifier);
-	//! Return true if there is games pending
-	bool isYOGGame(void);
+	void getFirstYOGGame(const char *gameIdentifier);
 	//! Get parameters from pending game
-	const char *getYOGGame(void);
-	//! Free last game parameters
-	void freeYOGGame(void);
+	const char *getNextYOGGame(void);
+	//! Return true if there is games pending
+	bool isNextYOGGame(void);
 
 private:
 	//! Send a string in IRC format

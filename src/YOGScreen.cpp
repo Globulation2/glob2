@@ -227,6 +227,14 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		snprintf(data, GAME_INFO_MAX_SIZE, "say <%s> %s", globalContainer->settings.userName, textInput->text);
 		sendString(socket, data);
 		yog.sendCommand(textInput->text);
+
+		chatWindow->addText("<");
+		chatWindow->addText(globalContainer->settings.userName);
+		chatWindow->addText("> ");
+		chatWindow->addText(textInput->text);
+		chatWindow->addText("\n");
+		chatWindow->scrollToBottom();
+
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -275,6 +283,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		chatWindow->addText("> ");
 		chatWindow->addText(yog.getChatMessage());
 		chatWindow->addText("\n");
+		chatWindow->scrollToBottom();
 		yog.freeChatMessage();
 	}
 
