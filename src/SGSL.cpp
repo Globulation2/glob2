@@ -693,7 +693,7 @@ void Mapscript::step()
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
 
-#define NEXT_TOKEN { donnees.nextToken(); er.line=donnees.getLine(); er.col=donnees.getCol(); }
+#define NEXT_TOKEN {  er.line=donnees.getLine(); er.col=donnees.getCol(); donnees.nextToken(); }
 
 	ErrorReport er;
 	er.type=ErrorReport::ET_OK;
