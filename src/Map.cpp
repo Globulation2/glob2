@@ -656,7 +656,11 @@ void Map::save(SDL_RWops *stream)
 }
 void Map::growRessources(void)
 {
-	for (int y=0; y<h; y++)
+	static int dy=0;
+	dy++;
+	if (dy==3)
+		dy=0;
+	for (int y=dy; y<h; y+=3)
 	{
 		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
 		//for (int x=0; x<w; x++)
@@ -681,10 +685,10 @@ void Map::growRessources(void)
 				
 				int wax3=x-dwax*2;
 				int way3=y-dway*2;
-				
+
 				//int wax4=x+dway*2;
 				//int way4=y-dwax*2;
-				
+
 				bool expand=false;
 				if (r==ALGA)
 				{
