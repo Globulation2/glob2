@@ -91,7 +91,7 @@ public:
 	Sint32 unitProductionTime; // Uint8, nb tick to produce one unit
 	Sint32 ressourceForOneUnit;
 	
-	Sint32 maxRessource[NB_RESSOURCES];
+	Sint32 maxRessource[MAX_NB_RESSOURCES];
 	Sint32 maxUnitInside;
 	Sint32 maxUnitWorking;
 
@@ -189,6 +189,22 @@ public:
 			"maxFungus",
 			"maxStone",
 			"maxAlgue",
+			"maxRes5",
+			"maxRes6",
+			"maxRes7",
+			"maxRes8",
+			"maxRes9",
+			"maxRes10",
+			"maxRes11",
+			"maxRes12",
+			"maxRes13",
+			"maxRes14",
+			"maxRes15",
+			"maxRes16",
+			"maxRes17",
+			"maxRes18",
+			"maxRes19",
+
 			"maxUnitInside",
 			"maxUnitWorking",
 

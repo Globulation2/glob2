@@ -43,6 +43,8 @@
 	#include <SDL/SDL_net.h>
 #endif
 
+#include <GAG.h>
+
 // usefull macros
 #ifndef MAX
 #define MAX(a, b) ((a)>(b) ? (a) : (b))

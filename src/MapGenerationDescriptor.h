@@ -57,7 +57,7 @@ public:
 	Sint32 waterRatio, sandRatio, grassRatio;
 	Sint32 smooth;
 	Sint32 islandsSize, beach;
-	Sint32 ressource[NB_RESSOURCES];
+	Sint32 ressource[MAX_NB_RESSOURCES];
 
 	Sint32 nbTeams, nbWorkers;
 	
@@ -67,7 +67,7 @@ public:
 	Sint32 bootX[32];
 	Sint32 bootY[32];
 public:
-	enum {DATA_SIZE=76};
+	enum {DATA_SIZE=60+MAX_NB_RESSOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];

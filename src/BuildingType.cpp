@@ -38,7 +38,6 @@ void BuildingsTypes::load(const char *filename)
 {
 	// we load the building description now
 	SDL_RWops *stream=globalContainer->fileManager->open(filename, "r");
-	assert(NB_RESSOURCES==5); // You have to case about parsing.
 
 	bool result=true;
 	

@@ -64,7 +64,7 @@ namespace base
 		virtual void writeBool(const Bool& item) { writer->write(item ? "true" : "false"); }
 		virtual void writeString(const std::string& item) { writer->write(item.c_str()); }
 
-		virtual void writeArray(const void *data, const Size count, const Size size) 
+		virtual void writeArray(const void *data, const Size count, const Size size)
 		{ 
 			UInt8 *d=(UInt8*)data;
 			char *t=(char*)malloc(count*10+1);
@@ -159,7 +159,7 @@ namespace base
 
 			for(Size i=1;i<refs.size();i++)
 			{
-				enter("item");			
+				enter("item");
 				refs.elementAt(i)->readV(this);
 				leave("item");			
 			}
@@ -174,8 +174,19 @@ namespace base
 	*/
 	class XMLFileWriter
 	{
+	private:
 		//! File pointer
 		FILE *fptr;
+		//! counter for indentation. Increased on enter, decreased on leave
+		int indent;
+
+		enum LastCall
+		{
+			ENTER,
+			LEAVE,
+			WRITE,
+			NONE
+		} lastCall;
 	public:
 		//! Constructor
 		XMLFileWriter(const char *fname)
@@ -183,6 +194,8 @@ namespace base
 			fptr=Toolkit::getFileManager()->openFP(fname,"w");
 			fprintf(fptr,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
 			fprintf(fptr,"<xmlserializeddata>\n");
+			indent=0;
+			lastCall=NONE;
 		}
 		//! Destructor
 		~XMLFileWriter()
@@ -193,19 +206,33 @@ namespace base
 		//! Enter a new object/item
 		void enter(const char *str)
 		{
+			if (lastCall==ENTER)
+				fprintf(fptr, "\n");
+			for(int i=0;i<indent;i++)
+				fprintf(fptr, " ");
 			fprintf(fptr,"<%s>",str);
+			indent++;
+			lastCall=ENTER;
 		}
 
 		//! Leave current object/item
 		void leave(const char *str)
 		{
-			fprintf(fptr,"</%s>",str);
+			indent--;
+			if (lastCall==LEAVE)
+			{
+				for(int i=0;i<indent;i++)
+					fprintf(fptr, " ");
+			}
+			fprintf(fptr,"</%s>\n",str);
+			lastCall=LEAVE;
 		}
 
 		//! Write string to target
 		void write(const char *str)
 		{
 			fprintf(fptr,str);
+			lastCall=WRITE;
 		}
 
 		//! Serialize an object to this target
@@ -353,7 +380,7 @@ namespace base
 			ITEM(Vector<XMLNode>,childNodes)
 			//! Attributes of this node
 			ITEM(Vector<XMLNode>,attributes)
-	
+
 			//! Name of the node
 			ITEM(std::string,nodeName)
 			//! Value of the node
@@ -440,7 +467,7 @@ namespace base
 			{
 				if(childNodes[i]->nodeName==node)
 					return childNodes[i];
-			}		
+			}
 			return NULL;
 		}
 	};
@@ -473,6 +500,8 @@ namespace base
 			root=readXML(fname);
 			if (root==NULL)
 				current.valid=false;
+			else
+				current.valid=true;
 		}
 		//! Read a string from document
 		const char *read();
@@ -547,6 +576,23 @@ namespace base
 	};
 
 
+}
+
+template<typename T>
+T* deserialize(const char *filename)
+{
+	T* obj;
+	base::XMLFileReader xr(filename);
+	if (xr.valid())
+	{
+		base::TextInputStream<base::XMLFileReader> tis(&xr);
+		obj=(T*)(base::Object*)tis.read();
+	}
+	else
+	{
+		obj=new T();
+	}
+	return obj;
 }
 
 #endif

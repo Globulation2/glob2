@@ -536,8 +536,8 @@ void Unit::handleActivity(void)
 					//destinationPurprose=b->neededRessource();
 					assert(destinationPurprose>=0);
 					assert(b->neededRessource(destinationPurprose));
-					
-					jobFound=owner->map->nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
+
+					jobFound=owner->map->nearestRessource(posX, posY, (RessourcesTypes::intResType)destinationPurprose, &targetX, &targetY);
 					if (jobFound)
 					{
 						activity=ACT_BUILDING;
@@ -687,14 +687,14 @@ void Unit::handleDisplacement(void)
 				displacement=DIS_RANDOM;
 			break;
 		}
-		
+
 		case ACT_BUILDING:
 		case ACT_HARVESTING:
 		{
 			assert(attachedBuilding);
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
-				if (owner->map->doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
+				if (owner->map->doesUnitTouchRessource(this, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy))
 				{
 					displacement=DIS_HARVESTING;
 					//printf("I found ressource\n");
@@ -704,7 +704,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				caryedRessource=destinationPurprose;
-				owner->map->decRessource(posX+dx, posY+dy, (RessourceType)caryedRessource);
+				owner->map->decRessource(posX+dx, posY+dy, (RessourcesTypes::intResType)caryedRessource);
 				
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
@@ -749,7 +749,7 @@ void Unit::handleDisplacement(void)
 						if (attachedBuilding->constructionResultState==Building::REPAIR)
 						{
 							int totRessources=0;
-							for (unsigned i=0; i<NB_RESSOURCES; i++)
+							for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 								totRessources+=bt->maxRessource[i];
 							attachedBuilding->hp+=bt->hpMax/totRessources;
 						}
@@ -775,10 +775,10 @@ void Unit::handleDisplacement(void)
 				if (verbose)
 					printf("(%d) destinationPurprose=%d.\n", gid, destinationPurprose);
 				
-				if ((destinationPurprose>=0)&&(owner->map->nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
+				if ((destinationPurprose>=0)&&(owner->map->nearestRessource(posX, posY, (RessourcesTypes::intResType)destinationPurprose, &targetX, &targetY)))
 				{
 					newTargetWasSet();
-					if (owner->map->doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
+					if (owner->map->doesUnitTouchRessource(this, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy))
 					{
 						displacement=DIS_HARVESTING;
 						//printf("I found ressource\n");
@@ -1440,9 +1440,9 @@ void Unit::pathFind(void)
 
 	if (bypassDirection==DIR_UNSET)
 	{
-		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->map->isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
+		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->map->isRessource(targetX, targetY, (RessourcesTypes::intResType)destinationPurprose)))
 		{
-			bool aviable=owner->map->nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			bool aviable=owner->map->nearestRessource(targetX, targetY, (RessourcesTypes::intResType)destinationPurprose, &targetX, &targetY);
 			if (!aviable)
 			{
 				// We can't see the needed ressource one the map!
@@ -1557,7 +1557,7 @@ void Unit::pathFind(void)
 		int centerSquareDist=owner->map->warpDistSquare(centerX, centerY, targetX, targetY);
 		if (verbose)
 			printf("centerSquareDist=%d\n", centerSquareDist);
-		
+
 		assert(bypassDirection==DIR_UNSET);
 		int count=0;
 		while(true)
@@ -1618,12 +1618,12 @@ void Unit::pathFind(void)
 			if (verbose)
 				printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
 			if ((lDist<=centerSquareDist)
-				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy)))
 				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->map->doesPosTouchBuilding(ptlx, ptly, attachedBuilding->gid)))
 				)
 			{
 				bypassDirection=DIR_LEFT;
-				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptlx, ptly, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy)))
 				{
 					targetX=ptlx;
 					targetY=ptly;
@@ -1633,14 +1633,14 @@ void Unit::pathFind(void)
 				break;
 			}
 			if ((rDist<=centerSquareDist)
-				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy)))
 				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->map->doesPosTouchBuilding(ptrx, ptry, attachedBuilding->gid)))
 				|| ((ptlx==ptrx)&&(ptly==ptry))
 				|| ((count++)>1024)
 				)
 			{
 				bypassDirection=DIR_RIGHT;
-				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
+				if ((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->doesPosTouchRessource(ptrx, ptry, (RessourcesTypes::intResType)destinationPurprose, &dx, &dy)))
 				{
 					targetX=ptrx;
 					targetY=ptry;
@@ -1665,7 +1665,7 @@ void Unit::pathFind(void)
 			borderX+=mapw;
 		while (borderY<0)
 			borderY+=maph;
-		
+
 		while (obstacleX>=mapw)
 			obstacleX-=mapw;
 		while (obstacleY>=maph)
@@ -1859,7 +1859,7 @@ void Unit::pathFind(void)
 						borderX=testBorderX;
 						borderY=testBorderY;
 						
-						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourcesTypes::intResType)destinationPurprose))))
 							break;
 					}
 					else
@@ -1941,7 +1941,7 @@ void Unit::pathFind(void)
 			
 			if (verbose)
 				printf("r d=(%d, %d) bd=(%d, %d) od=(%d, %d) ld=(%d, %d) \n", dx, dy, bdx, bdy, odx, ody, ldx, ldy);
-			
+
 			int bapx=posX; // BorderAdvancePossiblitiy
 			int bapy=posY;
 			int bapdx=dx;
@@ -2048,7 +2048,7 @@ void Unit::pathFind(void)
 						borderX=testBorderX;
 						borderY=testBorderY;
 						
-						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourceType)destinationPurprose))))
+						if ((currentDistSquare>centerSquareDist)||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->map->isRessource(testObstacleX, testObstacleY, (RessourcesTypes::intResType)destinationPurprose))))
 							break;
 					}
 					else

@@ -233,7 +233,7 @@ Order *AINumbi::getOrder(void)
 				return mayUpgrade(16, 4);
 		}
 	}
-	
+
 	return new NullOrder();
 }
 
@@ -253,14 +253,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, (RessourceType)CORN)||map->isRessource(rx+i, ry-1, (RessourceType)CORN))
+			if (map->isRessource(rx+i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+i, ry-1, (RessourcesTypes::intResType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, (RessourceType)CORN)||map->isRessource(rx-i, ry-1, (RessourceType)CORN))
+			if (map->isRessource(rx-i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-i, ry-1, (RessourcesTypes::intResType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -270,14 +270,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, (RessourceType)CORN)||map->isRessource(rx-1, ry+i, (RessourceType)CORN))
+			if (map->isRessource(rx, ry+i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-1, ry+i, (RessourcesTypes::intResType)CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, (RessourceType)CORN)||map->isRessource(rx-1, ry-i, (RessourceType)CORN))
+			if (map->isRessource(rx, ry-i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-1, ry-i, (RessourcesTypes::intResType)CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -288,14 +288,14 @@ int AINumbi::estimateFood(int x, int y)
 		
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry+i, (RessourceType)CORN)||map->isRessource(rx+1, ry+i, (RessourceType)CORN))
+			if (map->isRessource(rx, ry+i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+1, ry+i, (RessourcesTypes::intResType)CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx, ry-i, (RessourceType)CORN)||map->isRessource(rx+1, ry-i, (RessourceType)CORN))
+			if (map->isRessource(rx, ry-i, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+1, ry-i, (RessourcesTypes::intResType)CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -305,19 +305,19 @@ int AINumbi::estimateFood(int x, int y)
 		w=0;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx+i, ry, (RessourceType)CORN)||map->isRessource(rx+i, ry+1, (RessourceType)CORN))
+			if (map->isRessource(rx+i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx+i, ry+1, (RessourcesTypes::intResType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessource(rx-i, ry, (RessourceType)CORN)||map->isRessource(rx-i, ry+1, (RessourceType)CORN))
+			if (map->isRessource(rx-i, ry, (RessourcesTypes::intResType)CORN)||map->isRessource(rx-i, ry+1, (RessourcesTypes::intResType)CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		
 		//printf("r=(%d, %d), w=%d, h=%d, s=%d.\n", rx, ry, w, h, w*h);
-		
+
 		return (w*h);
 	}
 	else
@@ -663,7 +663,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		
 		sx=bposX-width-margin;
 		sy=bposY-height-margin;
-		
+
 		px=sx;
 		py=sy;
 		
@@ -740,7 +740,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 	for (int i=0; i<1024; i++)
 		if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
 			ft++;
-	
+
 	if (attackPhase==0)
 	{
 		if (ft>=critticalMass)
@@ -816,7 +816,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				}
 			}
 		}
-		
+
 		if (ey!=-1)
 		{
 			int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WAR_FLAG, 0, false);

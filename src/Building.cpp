@@ -71,7 +71,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	unitStayRangeLocal=unitStayRange;
 
 	// building specific :
-	for(int i=0; i<NB_RESSOURCES; i++)
+	for(int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressources[i]=0;
 
 	// quality parameters
@@ -104,7 +104,7 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	// optimisation parameters
 	// FIXME: we don't know it this would be usefull or not !
 	// Now, it's not used.
-	//Sint32 closestRessourceX[NB_RESSOURCES], closestRessourceY[NB_RESSOURCES];
+	//Sint32 closestRessourceX[MAX_NB_RESSOURCES], closestRessourceY[MAX_NB_RESSOURCES];
 }
 
 void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -128,7 +128,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	unitStayRangeLocal=unitStayRange;
 
 	// Building Specific
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressources[i]=SDL_ReadBE32(stream);
 
 	// quality parameters
@@ -147,7 +147,7 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	shootingCooldown=SDL_ReadBE32(stream);
 
 	// optimisation parameters
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 	{
 		closestRessourceX[i]=SDL_ReadBE32(stream);
 		closestRessourceY[i]=SDL_ReadBE32(stream);
@@ -186,7 +186,7 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, unitStayRange);
 
 	// Building Specific
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		SDL_WriteBE32(stream, ressources[i]);
 
 	// quality parameters
@@ -205,7 +205,7 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, shootingCooldown);
 
 	// optimisation parameters
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 	{
 		SDL_WriteBE32(stream, closestRessourceX[i]);
 		SDL_WriteBE32(stream, closestRessourceY[i]);
@@ -279,7 +279,7 @@ void Building::saveCrossRef(SDL_RWops *stream)
 
 bool Building::isRessourceFull(void)
 {
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		if (ressources[i]<type->maxRessource[i])
 			return false;
 	return true;
@@ -289,10 +289,10 @@ int Building::neededRessource(void)
 {
 	float minProportion=1.0;
 	int minType=-1;
-	int deci=syncRand()%NB_RESSOURCES;
-	for (int ib=0; ib<NB_RESSOURCES; ib++)
+	int deci=syncRand()%MAX_NB_RESSOURCES;
+	for (int ib=0; ib<MAX_NB_RESSOURCES; ib++)
 	{
-		int i=(ib+deci)%NB_RESSOURCES;
+		int i=(ib+deci)%MAX_NB_RESSOURCES;
 		int maxr=type->maxRessource[i];
 		if (maxr)
 		{
@@ -691,7 +691,7 @@ void Building::updateBuildingSite(void)
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		// we really uses the resources of the buildingsite:
-		for(int i=0; i<NB_RESSOURCES; i++)
+		for(int i=0; i<MAX_NB_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
 		owner->prestige-=type->prestige;
@@ -785,7 +785,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			float destructionRatio = (float)hp/(float)type->hpMax;
 			float fTotErr=0;
-			for (int i=0; i<NB_RESSOURCES; i++)
+			for (int i=0; i<MAX_NB_RESSOURCES; i++)
 			{
 				float fVal=destructionRatio*(float)nextBt->maxRessource[i];
 				int iVal=(int)fVal;
@@ -1000,7 +1000,7 @@ void Building::subscribeToBringRessourcesStep()
 					int y=unit->posY;
 					int dx, dy;
 					int r=-1;
-					if (map->nearestRessource(x, y, (RessourceType *)&r, &dx, &dy) && neededRessource(r))
+					if (map->nearestRessource(x, y, (RessourcesTypes::intResType *)&r, &dx, &dy) && neededRessource(r))
 					{
 						int dist=map->warpDistSquare(dx, dy, posX, posY);
 						dist+=(x-dx)*(x-dx)+(y-dy)*(y-dy);
@@ -1050,7 +1050,7 @@ void Building::subscribeToBringRessourcesStep()
 					choosen->subscribed=false;
 					choosen->activity=Unit::ACT_RANDOM;
 					choosen->needToRecheckMedical=true;
-					
+
 					return;
 				}
 				else
@@ -1756,7 +1756,7 @@ Sint32 Building::checkSum()
 
 	cs^=unitStayRange;
 
-	for (int i=0; i<NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		cs^=ressources[i];
 
 	cs^=hp;

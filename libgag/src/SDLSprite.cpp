@@ -551,7 +551,9 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	{
 		SDL_Surface *temp, *sprite;
 		temp=IMG_Load_RW(frameStream, 0);
+		assert(temp);
 		sprite=SDL_DisplayFormatAlpha(temp);
+		assert(sprite);
 		SDL_FreeSurface(temp);
 		images.push_back(sprite);
 	}
@@ -562,6 +564,7 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	{
 		SDL_Surface *sprite;
 		sprite=IMG_Load_RW(overlayStream, 0);
+		assert(sprite);
 		masks.push_back(sprite);
 	}
 	else
@@ -571,6 +574,7 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	{
 		SDL_Surface *sprite;
 		sprite=IMG_Load_RW(paletizedStream, 0);
+		assert(sprite);
 		paletizeds.push_back(sprite);
 	}
 	else
@@ -580,6 +584,7 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	{
 		SDL_Surface *sprite;
 		sprite=IMG_Load_RW(rotatedStream, 0);
+		assert(sprite);
 		if (sprite->format->BitsPerPixel==32)
 		{
 			PalImage *image=new PalImage(sprite->w, sprite->h);

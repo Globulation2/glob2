@@ -95,7 +95,8 @@ public:
 	StringTable texts;
 
 	BuildingsTypes buildingsTypes;
-	
+	base::Ptr<RessourcesTypes> ressourcesTypes;
+
 	bool hostServer;
 	char hostServerMapName[32];
 };

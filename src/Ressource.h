@@ -21,6 +21,7 @@
 #define __RESSOURCE_H
 
 #include "Header.h"
+#include <assert.h>
 
 //! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are undefined.
 #define NORESID 0xFFFFFFFF
@@ -38,14 +39,60 @@ union Ressource
 	} field;
 };
 
-enum RessourceType
+class RessourceType : public base::Object
 {
-	WOOD=0,
-	CORN=1,
-	FUNGUS=2,
-	STONE=3,
-	ALGA=4,
-	NB_RESSOURCES
+protected:
+	CLASSDEF(RessourceType)
+		BASECLASS(base::Object)
+	MEMBERS
+		//! the name of the ressource, will be lookuped for internationalisation
+		ITEM(std::string, name)
+		//! The type of terrain of which this ressource can grow
+		ITEM(Sint32, terrain)
+		//! The First image of the ressource
+		ITEM(Sint32, gfxId)
+		//! The number of images this ressource has for a given variety
+		ITEM(Sint32, sizesCount)
+		//! The number of veriety this ressource has
+		ITEM(Sint32, varietiesCount)
+		//! Does this ressource shrinks when harvested
+		ITEM(Sint32, shrinkable)
+		//! ~Can we fully harvest this ressource
+		ITEM(Sint32, eternal)
+	CLASSEND;
+public:
+	RessourceType();
 };
+
+class RessourcesTypes : public base::Object
+{
+public:
+	typedef Sint32 intResType;
+
+public:
+	CLASSDEF(RessourcesTypes)
+		BASECLASS(base::Object)
+	MEMBERS
+		ITEM(std::vector<RessourceType>, res)
+		ITEM(intResType, wood)
+		ITEM(intResType, corn)
+		ITEM(intResType, fungus)
+		ITEM(intResType, stone)
+		ITEM(intResType, alga)
+	CLASSEND;
+
+public:
+	RessourceType& operator [](const unsigned i) { assert(i < res.size()); return res[i]; }
+	unsigned int number() { return res.size(); }
+
+	RessourcesTypes();
+};
+
+#define MAX_NB_RESSOURCES 20
+#define WOOD (globalContainer->ressourcesTypes->wood)
+#define CORN (globalContainer->ressourcesTypes->corn)
+#define FUNGUS (globalContainer->ressourcesTypes->fungus)
+#define STONE (globalContainer->ressourcesTypes->stone)
+#define ALGA (globalContainer->ressourcesTypes->alga)
 
 #endif

@@ -53,6 +53,7 @@ SessionConnection.h\
 Race.cpp\
 Race.h\
 Ressource.h\
+Ressource.cpp\
 Sector.h\
 Sector.cpp\
 Session.cpp\

@@ -25,7 +25,7 @@
 Map::Map()
 {
 	game=NULL;
-	
+
 	arraysBuilt=false;
 	
 	mapDiscovered=NULL;
@@ -117,7 +117,7 @@ void Map::clear()
 	wDec=hDec=0;
 	wSector=hSector=0;
 	sizeSector=0;
-	
+
 	stepCounter=0;
 }
 
@@ -195,7 +195,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	assert(sessionGame->versionMinor>=16);
 	
 	clear();
-	
+
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature, "MapB", 4)!=0)
@@ -234,7 +234,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 		
 		cases[i].groundUnit=SDL_ReadBE16(stream);
 		cases[i].airUnit=SDL_ReadBE16(stream);
-		
+
 		cases[i].forbidden=SDL_ReadBE32(stream);
 	}
 
@@ -273,7 +273,7 @@ void Map::save(SDL_RWops *stream)
 	// We save size:
 	SDL_WriteBE32(stream, wDec);
 	SDL_WriteBE32(stream, hDec);
-	
+
 	// We write what's inside the map:
 	SDL_RWwrite(stream, undermap, size, 1);
 	for (int i=0; i<size ;i++)
@@ -341,7 +341,7 @@ void Map::growRessources(void)
 				{
 					//if (l<4)
 					if (r.field.amount<=(int)(syncRand()&7))
-						incRessource(x, y, (RessourceType)r.field.type);
+						incRessource(x, y, (RessourcesTypes::intResType)r.field.type);
 					else
 					{
 						// we extand ressource:
@@ -350,7 +350,7 @@ void Map::growRessources(void)
 						int nx=x+dx;
 						int ny=y+dy;
 						if (getGroundUnit(nx, ny)==NOGUID)
-							incRessource(nx, ny, (RessourceType)r.field.type);
+							incRessource(nx, ny, (RessourcesTypes::intResType)r.field.type);
 					}
 				}
 			}
@@ -404,11 +404,11 @@ bool Map::decRessource(int x, int y)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
-	
+
 	if (r.id==NORESID)
 		return false;
-	
-	RessourceType type=(RessourceType)r.field.type;
+
+	RessourcesTypes::intResType type=(RessourcesTypes::intResType)r.field.type;
 	unsigned amount=r.field.amount;
 	assert(amount);
 	if (type==STONE)
@@ -422,7 +422,7 @@ bool Map::decRessource(int x, int y)
 	return true;
 }
 
-bool Map::decRessource(int x, int y, RessourceType ressourceType)
+bool Map::decRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 {
 	if (isRessource(x, y, ressourceType))
 		return decRessource(x, y);
@@ -430,7 +430,7 @@ bool Map::decRessource(int x, int y, RessourceType ressourceType)
 		return false;
 }
 
-bool Map::incRessource(int x, int y, RessourceType ressourceType)
+bool Map::incRessource(int x, int y, RessourcesTypes::intResType ressourceType)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
@@ -652,7 +652,7 @@ bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy)
+bool Map::doesUnitTouchRessource(Unit *unit, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -668,7 +668,7 @@ bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *d
 	return false;
 }
 
-bool Map::doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+bool Map::doesPosTouchRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -896,7 +896,7 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*my+=buildingHeight*16;
 }
 
-bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+bool Map::nearestRessource(int x, int y, RessourcesTypes::intResType ressourceType, int *dx, int *dy)
 {
 	for (int i=1; i<32; i++)
 	{
@@ -931,7 +931,7 @@ bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, i
     return false;
 }
 
-bool Map::nearestRessource(int x, int y, RessourceType *ressourceType, int *dx, int *dy)
+bool Map::nearestRessource(int x, int y, RessourcesTypes::intResType *ressourceType, int *dx, int *dy)
 {
 	for (int i=1; i<32; i++)
 	{

@@ -57,16 +57,7 @@ GlobalContainer::GlobalContainer(void)
 	logFileManager=new LogFileManager(fileManager);
 
 	// load user preference
-	base::XMLFileReader xr("preferences.xml");
-	if (xr.valid())
-	{
-		base::TextInputStream<base::XMLFileReader> tis(&xr);
-		settings=(Settings*)(base::Object*)tis.read();
-	}
-	else
-	{
-		settings=new Settings();
-	}
+	settings = deserialize<Settings>("preferences.xml");
 	userName=settings->username.c_str();
 
 	hostServer=false;
@@ -342,6 +333,9 @@ void GlobalContainer::load(void)
 		updateLoadProgressBar(95);
 		// load buildings types
 		buildingsTypes.load("data/buildings.txt");
+
+		// load ressources types
+		ressourcesTypes=deserialize<RessourcesTypes>("data/ressources.xml");
 		updateLoadProgressBar(100);
 	}
 };

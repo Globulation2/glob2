@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmlserializeddata>
+<item>
+ <Object></Object>
+ <res>
+  <size>5</size>
+  <element>
+   <Object></Object>
+   <name>wood</name>
+   <terrain>2</terrain>
+   <gfxId>0</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>2</varietiesCount>
+   <shrinkable>1</shrinkable>
+   <eternal>0</eternal>
+  </element>
+  <element>
+   <Object></Object>
+   <name>corn</name>
+   <terrain>2</terrain>
+   <gfxId>10</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>2</varietiesCount>
+   <shrinkable>1</shrinkable>
+   <eternal>0</eternal>
+  </element>
+  <element>
+   <Object></Object>
+   <name>fungus</name>
+   <terrain>2</terrain>
+   <gfxId>20</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>2</varietiesCount>
+   <shrinkable>1</shrinkable>
+   <eternal>0</eternal>
+  </element>
+  <element>
+   <Object></Object>
+   <name>stone</name>
+   <terrain>2</terrain>
+   <gfxId>30</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>2</varietiesCount>
+   <shrinkable>0</shrinkable>
+   <eternal>1</eternal>
+  </element>
+  <element>
+   <Object></Object>
+   <name>alga</name>
+   <terrain>2</terrain>
+   <gfxId>40</gfxId>
+   <sizesCount>5</sizesCount>
+   <varietiesCount>2</varietiesCount>
+   <shrinkable>1</shrinkable>
+   <eternal>0</eternal>
+  </element>
+ </res>
+ <wood>0</wood>
+ <corn>1</corn>
+ <fungus>2</fungus>
+ <stone>3</stone>
+ <alga>4</alga>
+</item>
+ <refs>
+  <ref type="RessourcesTypes"/>
+ </refs>
+</xmlserializeddata>
