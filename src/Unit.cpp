@@ -73,6 +73,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
 		this->level[i]=level;
+		this->canLearn[i]=race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
 	}
 
 	// trigger parameters
@@ -86,7 +87,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	// warriors wait more tiem before going to eat
 	hungry=HUNGRY_MAX;
-	if (performance[ATTACK_SPEED])
+	if (this->performance[ATTACK_SPEED])
 		trigHungry=(hungry*2)/10;
 	else
 		trigHungry=hungry/4;
@@ -160,6 +161,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	{
 		performance[i]=SDL_ReadBE32(stream);
 		level[i]=SDL_ReadBE32(stream);
+		canLearn[i]=(bool)SDL_ReadBE32(stream);
 	}
 
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
@@ -219,6 +221,7 @@ void Unit::save(SDL_RWops *stream)
 	{
 		SDL_WriteBE32(stream, performance[i]);
 		SDL_WriteBE32(stream, level[i]);
+		SDL_WriteBE32(stream, (Uint32)canLearn[i]);
 	}
 
 	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
@@ -867,6 +870,7 @@ void Unit::handleDisplacement(void)
 					else
 					{
 						//printf("Ability %d got level %d\n", destinationPurprose, attachedBuilding->type->level+1);
+						assert(canLearn[destinationPurprose]);
 						level[destinationPurprose]=attachedBuilding->type->level+1;
 						UnitType *ut=race->getUnitType(typeNum, level[destinationPurprose]);
 						performance[destinationPurprose]=ut->performance[destinationPurprose];
@@ -2352,7 +2356,10 @@ Sint32 Unit::checkSum()
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		cs^=performance[i];
+		cs=(cs<<1)|(cs>>31);
 		cs^=level[i];
+		cs=(cs<<1)|(cs>>31);
+		cs^=canLearn[i];
 		cs=(cs<<1)|(cs>>31);
 	}
 	

@@ -557,12 +557,6 @@ void Building::updateCallLists(void)
 				owner->zonable[i].remove(this);
 				zonable[i]=2;
 			}
-		for (int i=0; i<NB_ABILITY; i++)
-			if (upgrade[i]!=2)
-			{
-				owner->upgrade[i].remove(this);
-				upgrade[i]=2;
-			}
 		while (unitsWorking.size()>(unsigned)maxUnitWorking) // TODO : the same with insides units
 		{
 			int maxDistSquare=0;
