@@ -103,6 +103,8 @@ protected:
 #define ALIGN_LEFT 0
 #define ALIGN_RIGHT 1
 #define ALIGN_FILL 2
+#define ALIGN_TOP 0
+#define ALIGN_BOTTOM 1
 
 //! The parent for all standards widgets like Button, texts, etc...
 class RectangularWidget:public Widget

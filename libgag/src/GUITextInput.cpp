@@ -67,6 +67,9 @@ void TextInput::setText(const char *newText)
 
 void TextInput::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
@@ -235,6 +238,8 @@ void TextInput::onSDLEvent(SDL_Event *event)
 
 void TextInput::recomputeTextInfos(void)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
 #define TEXTBOXSIDEPAD 30
 
 	// make sure we have always right space at left
@@ -265,6 +270,9 @@ void TextInput::paint(void)
 	static const int g= 180;
 	static const int b= 180;
 
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
 	recomputeTextInfos();
@@ -284,7 +292,9 @@ void TextInput::paint(void)
 
 void TextInput::repaint(void)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	parent->paint(x, y, w, h);
 	paint();
 	parent->addUpdateRect(x, y, w, h);

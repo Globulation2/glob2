@@ -30,7 +30,8 @@ Button::Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const c
 	this->hAlignFlag=hAlign;
 	this->vAlignFlag=vAlign;
 
-	this->sprite=sprite;
+	if (sprite)
+		this->sprite=sprite;
 	this->standardId=standardId;
 	this->highlightID=highlightID;
 	this->returnCode=returnCode;

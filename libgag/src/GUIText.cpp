@@ -43,7 +43,9 @@ Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const c
 
 void Text::setText(const char *newText, ...)
 {
-	assert(parent);
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+
 	assert(newText);
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
@@ -99,8 +101,8 @@ void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void Text::paint(void)
 {
-	assert(parent);
-	assert(parent->getSurface());
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
 	
