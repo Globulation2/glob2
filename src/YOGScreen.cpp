@@ -96,7 +96,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			updateList();
 			gameList->commit();
 			dispatchPaint(gfxCtx);
-			globalContainer->yog->unshareGame();
+			globalContainer->yog->unshareGame(); // zzz Don't we stop sharing game when it start ?
 		}
 		else if (par1==-1)
 		{

@@ -366,8 +366,8 @@ void YOG::deconnect()
 	
 	if (yogGlobalState>=YGS_CONNECTING)
 		yogGlobalState=YGS_DECONNECTING;
-	else
-		yogGlobalState=YGS_NOT_CONNECTING;;
+	else if (yogGlobalState!=YGS_DECONNECTING)
+		printf("YOG::deconnect() in a bad state (yogGlobalState=%d).\n", yogGlobalState);
 	connectionTimeout=0;
 	connectionTOTL=3;
 	
@@ -439,19 +439,7 @@ void YOG::step()
 				}
 			break;
 			case YSS_STOP_SHARING_GAME:
-				if (sharingGameTimeout--<=0)
-				{
-					if (sharingGameTOTL--<=0)
-					{
-						printf("YOG::failed to unshare game!\n");
-						yogSharingState=YSS_NOT_SHARING_GAME;
-					}
-					else
-					{
-						send(YMT_STOP_SHARING_GAME);
-						sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
-					}
-				}
+				// We do stop sharing game also if we are decinnecting
 			break;
 			case YSS_SHARING_GAME:
 				if (sharingGameTimeout--<=0)
@@ -509,6 +497,21 @@ void YOG::step()
 		default:
 
 		break;
+		}
+		
+		if (yogSharingState==YSS_STOP_SHARING_GAME && sharingGameTimeout--<=0)
+		{
+			if (sharingGameTOTL--<=0)
+			{
+				printf("YOG::failed to unshare game!\n");
+				yogSharingState=YSS_NOT_SHARING_GAME;
+			}
+			else
+			{
+				printf("YOG::Sending a stop sharing game ...!\n");
+				send(YMT_STOP_SHARING_GAME);
+				sharingGameTimeout=DEFAULT_NETWORK_TIMEOUT;
+			}
 		}
 		
 		if (gameSocket && gameSocketTimeout--<=0)

@@ -100,15 +100,22 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runHostServer(int argc, char *argv[])
 {
-	//TODO: reimplément runHostServer !!! zzz
-	/*printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->settings.userName);
-	if (!globalContainer->yog.connect(globalContainer->settings.ircURL, globalContainer->settings.ircPort, globalContainer->settings.userName))
+	//TODO: test runHostServer !!! zzz
+	
+	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->userName);
+	globalContainer->yog->enableConnection(globalContainer->userName);
+	
+	while(globalContainer->yog->yogGlobalState==YOG::YGS_CONNECTING)
 	{
-		printf("Glob2::runHostServer():connection to YOG failed!\n");
+		globalContainer->yog->step();
+		SDL_Delay(50);
+	}
+	if (globalContainer->yog->yogGlobalState<YOG::YGS_CONNECTED)
+	{
+		printf("Glob2::failed to connect to YOG!.\n");
 		return 0;
 	}
 	
-	bool validSessionInfo;
 	SessionInfo sessionInfo;
 	
 	char *mapName=globalContainer->hostServerMapName;
@@ -122,7 +129,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	}
 	else
 	{
-		validSessionInfo=sessionInfo.load(stream);
+		bool validSessionInfo=sessionInfo.load(stream);
 		SDL_RWclose(stream);
 		if (!validSessionInfo)
 		{
@@ -133,6 +140,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
+	globalContainer->yog->shareGame(mapName);
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
@@ -192,17 +200,22 @@ int Glob2::runHostServer(int argc, char *argv[])
 		if (frameWaitTime>0)
 			SDL_Delay(frameWaitTime);
 	}
-	//multiplayersHost->onTimer(tick);
-	//multiplayersHost->startGame();
-	//multiplayersHost->stopHosting();
+	
+	globalContainer->yog->unshareGame();
 	
 	
 	delete multiplayersHost;
 	
 	printf("Glob2::runHostServer(): disconnecting YOG.\n");
-	globalContainer->yog.forceDisconnect();
 	
-	printf("Glob2::runHostServer():end.\n");*/
+	globalContainer->yog->deconnect();
+	while(globalContainer->yog->yogGlobalState==YOG::YGS_DECONNECTING)
+	{
+		globalContainer->yog->step();
+		SDL_Delay(50);
+	}
+	
+	printf("Glob2::runHostServer():end.\n");
 
 	return 0;
 }
