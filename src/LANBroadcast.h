@@ -75,9 +75,9 @@ private:
 #ifndef DISABLE_GLOB_LAN_BROADCAST
 private:
 	hostent *hostEnt;
-	sockaddr_in cliAddr;
-	sockaddr_in servAddr;
-	sockaddr_in senderAddr;
+	struct sockaddr_in cliAddr;
+	struct sockaddr_in servAddr;
+	struct sockaddr_in senderAddr;
 	int socketDefinition;
 #endif
 
