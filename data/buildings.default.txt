@@ -70,6 +70,7 @@ timeToFeedUnit 0
 canHealUnit 0
 timeToHealUnit 0
 insideSpeed 4
+canExchange 0
 
 width 0
 height 0
