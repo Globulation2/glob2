@@ -523,6 +523,50 @@ void Game::executeOrder(Order *order, int localPlayer)
 			map.updateGuardAreasGradient(oaa->teamNumber);
 		}
 		break;
+		case ORDER_ALTERATE_CLEAR_AREA:
+		{
+			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
+			OrderAlterateClearArea *oaa = (OrderAlterateClearArea *)order;
+			if (oaa->type == BrushTool::MODE_ADD)
+			{
+				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
+						{
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							// Update real map
+							map.cases[index].clearArea |= teamMask;
+							// Update local map
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
+								map.localClearAreaMap.set(index, true);
+						}
+					}
+			}
+			else if (oaa->type == BrushTool::MODE_DEL)
+			{
+				Uint32 notTeamMask = ~Team::teamNumberToMask(oaa->teamNumber);
+				for (int y=oaa->y; y<oaa->y+oaa->h; y++)
+					for (int x=oaa->x; x<oaa->x+oaa->w; x++)
+					{
+						size_t orderMaskIndex = (y-oaa->y)*oaa->w+(x-oaa->x);
+						if (oaa->mask.get(orderMaskIndex))
+						{
+							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+							// Update real map
+							map.cases[index].clearArea &= notTeamMask;
+							// Update local map
+							if (oaa->teamNumber == players[localPlayer]->teamNumber)
+								map.localClearAreaMap.set(index, false);
+						}
+					}
+			}
+			else
+				assert(false);
+		}
+		break;
 		case ORDER_MODIFY_SWARM:
 		{
 			if (!isPlayerAlive)
@@ -2163,6 +2207,21 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 0, 0, 255);
 					if (!map.isGuardAreaLocal(x+viewportX+1, y+viewportY))
 						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 0, 0, 255);
+				}
+				if (map.isClearAreaLocal(x+viewportX, y+viewportY))
+				{
+					globalContainer->gfx->drawLine(8+(x<<5), (y<<5), 8+(x<<5), 32+(y<<5), 255, 255, 0);
+					globalContainer->gfx->drawLine(24+(x<<5), (y<<5), 24+(x<<5), 32+(y<<5), 255, 255, 0);
+					
+					if (!map.isClearAreaLocal(x+viewportX, y+viewportY-1))
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 255, 0);
+					if (!map.isClearAreaLocal(x+viewportX, y+viewportY+1))
+						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 255, 0);
+					
+					if (!map.isClearAreaLocal(x+viewportX-1, y+viewportY))
+						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 255, 0);
+					if (!map.isClearAreaLocal(x+viewportX+1, y+viewportY))
+						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 255, 0);
 				}
 			}
 

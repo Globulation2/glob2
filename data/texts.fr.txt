@@ -116,6 +116,8 @@ Marché
 Zone interdite
 [guard area]
 Zone de garde
+[clear area]
+Zone de défrichage
 [Building short explanation]
 Courte explication du bâtiment  (24 caractères max)
 [swarm building explanation]

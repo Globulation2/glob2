@@ -217,7 +217,9 @@ private:
 	enum BrushType
 	{
 		FORBIDDEN_BRUSH = 0,
-		GUARD_AREA_BRUSH = 1
+		GUARD_AREA_BRUSH = 1,
+		CLEAR_AREA_BRUSH = 2
+		
 	} brushType;
 	BrushTool brush;
 	BrushAccumulator brushAccumulator;

@@ -188,6 +188,12 @@ public:
 		return localGuardAreaMap.get(w*(y&hMask)+(x&wMask));
 	}
 	
+	//! Return true if the position (x,y) is a clear area set by the user
+	bool isClearAreaLocal(int x, int y)
+	{
+		return localClearAreaMap.get(w*(y&hMask)+(x&wMask));
+	}
+	
 	//! Compute localForbiddenMap from cases array
 	void computeLocalForbidden(int localTeamNo);
 	//! Compute localGuardAreaMap from cases array

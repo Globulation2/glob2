@@ -341,6 +341,14 @@ public:
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
 };
 
+class OrderAlterateClearArea:public OrderAlterateArea
+{
+public:
+	OrderAlterateClearArea(const Uint8 *data, int dataLength) : OrderAlterateArea(data, dataLength) { }
+	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc) : OrderAlterateArea(teamNumber, type, acc) { }
+	
+	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
+};
 
 
 // Misc orders
