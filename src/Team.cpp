@@ -23,6 +23,7 @@
 #include "Team.h"
 #include "BuildingType.h"
 #include "Game.h"
+#include "NetConsts.h"
 #include "Utilities.h"
 #include <math.h>
 #include "Marshaling.h"

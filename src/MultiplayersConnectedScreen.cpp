@@ -19,6 +19,7 @@
 
 #include "MultiplayersConnectedScreen.h"
 #include "MultiplayersJoin.h"
+#include "Order.h"
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUITextInput.h>

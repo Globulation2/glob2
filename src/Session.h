@@ -34,7 +34,7 @@
 
 //! This is named SessionGame but in fact it is Glob2's map headers.
 //! Map Specific infos are not serialized and don't go through network
-class SessionGame:public Order
+class SessionGame
 {
 public:
 	SessionGame();

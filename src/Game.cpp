@@ -32,6 +32,7 @@
 #include "Utilities.h"
 #include "LogFileManager.h"
 #include "GlobalContainer.h"
+#include "Order.h"
 
 #define BULLET_IMGID 35
 

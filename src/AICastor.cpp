@@ -22,6 +22,7 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "Order.h"
 
 
 AICastor::AICastor(Player *player)
