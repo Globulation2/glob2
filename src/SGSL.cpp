@@ -1193,6 +1193,11 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
+					if (donnees->getToken()->value == 0)
+					{
+						er.type=ErrorReport::ET_INVALID_VALUE;
+						break;
+					}
 					area.r=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
 
