@@ -66,12 +66,14 @@ void Button::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 			parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 	}
 	else if (event->type==SDL_MOUSEBUTTONUP)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
 }
@@ -206,7 +208,8 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 		{
 			state=!state;
 			repaint();
@@ -302,7 +305,8 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 		{
 			selColor++;
 			if (selColor>=(signed)vr.size())
@@ -315,7 +319,8 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEBUTTONUP)
 	{
-		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) &&
+			(event->button.button == SDL_BUTTON_LEFT))
 		{
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}

@@ -31,6 +31,8 @@ List::List(int x, int y, int w, int h, const Font *font)
 	textHeight=font->getStringHeight(NULL);
 	nth=-1;
 	disp=0;
+	blockLength=0;
+	blockPos=0;
 }
 
 List::~List()
@@ -61,14 +63,33 @@ void List::onSDLEvent(SDL_Event *event)
 		{
 			if (isPtInRect(event->button.x, event->button.y, x+w-21, y, 21, 21))
 			{
+				// we scroll one line up
 				if (disp)
 				{
 					disp--;
 					repaint();
 				}
 			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
+			{
+				// we one page up
+				if (disp<count)
+					disp=0;
+				else
+					disp-=count;
+				repaint();
+			}
+			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
+			{
+				// we one page down
+				disp+=count;
+				if (disp>strings.size()-count)
+					disp=strings.size()-count;
+				repaint();
+			}
 			else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
 			{
+				// we scroll one line down
 				if (disp<strings.size()-count)
 				{
 					disp++;
@@ -82,14 +103,35 @@ void List::onSDLEvent(SDL_Event *event)
 
 		if (isPtInRect(event->button.x, event->button.y, x, y, wSel, h))
 		{
-			int id=event->button.y-y-2;
-			id/=textHeight;
-			id+=disp;
-			if ((id>=0) &&(id<(int)strings.size()))
+			if (event->button.button == SDL_BUTTON_LEFT)
 			{
-				nth=id;
-				repaint();
-				parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
+				int id=event->button.y-y-2;
+				id/=textHeight;
+				id+=disp;
+				if ((id>=0) &&(id<(int)strings.size()))
+				{
+					nth=id;
+					repaint();
+					parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
+				}
+			}
+			else if (event->button.button == 4)
+			{
+				// we scroll one line up
+				if (disp)
+				{
+					disp--;
+					repaint();
+				}
+			}
+			else if (event->button.button == 5)
+			{
+				// we scroll one line down
+				if (disp<strings.size()-count)
+				{
+					disp++;
+					repaint();
+				}
 			}
 		}
 	}
@@ -133,8 +175,8 @@ void List::internalPaint(void)
 		int leftSpace = h-43;
 		if (leftSpace)
 		{
-			unsigned blockLength = (count * leftSpace) / strings.size();
-			unsigned blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
+			blockLength = (count * leftSpace) / strings.size();
+			blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
 			parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
 		}
 
