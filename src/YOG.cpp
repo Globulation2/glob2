@@ -285,6 +285,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			m.messageType=(YOGMessageType)data[0];
 			m.timeout=0;
 			m.TOTL=3;
+			m.gameGuiPainted=false;
 			int l;
 			
 			l=Utilities::strmlen((char *)data+4, 256);

@@ -161,16 +161,14 @@ void YOGServer::executeCommand(YOGClient *sender, char *s)
 				m.userNameLength=l;
 				
 				m.messageType=YMT_PRIVATE_MESSAGE;
-				m.messageID=++(*client)->lastMessageID;
-				(*client)->messages.push_back(m);
+				(*client)->addMessage(&m);
 				
 				l=strmlen((*client)->userName, 32);
 				memcpy(m.userName, (*client)->userName, l);
 				m.userName[l-1]=0;
 				m.userNameLength=l;
 				m.messageType=YMT_PRIVATE_RECEIPT;
-				m.messageID=++sender->lastMessageID;//TODO: we could save a lot of brandwith if we clervery uses "lastMessageID".
-				sender->messages.push_back(m);
+				sender->addMessage(&m);//TODO: we could save a lot of brandwith if we clervery uses "lastMessageID".
 			}
 		}
 		break;
@@ -406,15 +404,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
 				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
 					if ((*client!=admin) || (c!=admin))
-					{
-						if ((*client)->messages.size()<(256-2))
-						{
-							m.messageID=++(*client)->lastMessageID;
-							(*client)->messages.push_back(m);
-						}
-						else
-							lprintf("Client %s is being flooded!\n", (*client)->userName);
-					}
+						(*client)->addMessage(&m);
 			}
 		}
 	}
@@ -436,17 +426,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				good=true; // ok, he's connected
 				break;
 			}
-		if (good && (*sender)->messages.size()>0)
-		{
-			std::list<Message>::iterator mit=(*sender)->messages.begin();
-			if (mit->messageID==messageID)
-			{
-				lprintf("message (%s) delivered to (%s)\n", mit->text, (*sender)->userName);
-				(*sender)->messages.erase(mit);
-				(*sender)->messageTOTL=3;
-				(*sender)->messageTimeout=1;//TODO:here you can improve the TCP/IP friendlyness
-			}
-		}
+		if (good)
+			(*sender)->deleteMessage(messageID);
 	}
 	break;
 	case YMT_SHARING_GAME:
@@ -1060,7 +1041,8 @@ void YOGServer::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	//printf("%s", output);
+	if (strcmp(YOG_SERVER_IP, "192.168.1.5")==0)
+		printf("%s", output);
 	
 	if (logServer)
 		fputs(output, logServer);

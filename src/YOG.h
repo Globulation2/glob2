@@ -76,6 +76,7 @@ public:
 		char userName[32];
 		int userNameLength;
 		YOGMessageType messageType;
+		bool gameGuiPainted;
 		Uint8 messageID;
 		Uint8 pad1;
 		Uint8 pad2;

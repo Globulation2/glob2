@@ -77,6 +77,8 @@ public:
 	void sendGames();
 	void sendUnshared();
 	void addGame(Game *game);
+	void addMessage(Message *message);
+	void deleteMessage(Uint8 messageID);
 	void removeGame(Uint32 uid);
 	void removeUselessGames();
 	void computeGamesSize();
@@ -96,7 +98,6 @@ public:
 	UDPsocket socket;
 	Uint8 lastSentMessageID; // The last message id that client has sent to YOG. Used to ignore doubles.
 	char userName[32];
-	
 	std::list<Message> messages; // messages to send
 	Uint8 lastMessageID; // The last message id sent by YOG to client. Used to give new messages an unique id.
 	int messageTimeout;
