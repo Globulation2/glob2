@@ -64,6 +64,7 @@ public:
 
 	void init();
 	void adjustInitialViewport();
+	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
@@ -148,10 +149,13 @@ private:
 	void brushStep(int mx, int my);
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(void);
+	
+public:
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
-
 	friend class InGameAllianceScreen;
+	
+private:
 
 	//! Display mode
 	enum DisplayMode
@@ -246,8 +250,10 @@ private:
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
 
+public:
 	bool hasEndOfGameDialogBeenShown;
-
+	
+private:
 	// On screen message handling
 	struct Message
 	{

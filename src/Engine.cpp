@@ -129,8 +129,12 @@ int Engine::initCampain(const char *mapName)
 	gui.game.session.numberOfPlayer=playerNumber;
 	
 	// We do some cosmetic fix
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
+	gui.adjustLocalTeam();
+	if (!globalContainer->runNoX)
+	{
+		gui.game.renderMiniMap(gui.localTeamNo);
+		gui.adjustInitialViewport();
+	}
 
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -193,8 +197,12 @@ int Engine::initCustom(void)
 	gui.game.setAIAlliance();
 
 	// We do some cosmetic fix
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
+	gui.adjustLocalTeam();
+	if (!globalContainer->runNoX)
+	{
+		gui.game.renderMiniMap(gui.localTeamNo);
+		gui.adjustInitialViewport();
+	}
 
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -241,9 +249,13 @@ int Engine::initCustom(const char *gameName)
 	}
 
 	// We do some cosmetic fix
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
-
+	gui.adjustLocalTeam();
+	if (!globalContainer->runNoX)
+	{
+		gui.game.renderMiniMap(gui.localTeamNo);
+		gui.adjustInitialViewport();
+	}
+	
 	// set the correct alliance
 	gui.game.setAIAlliance();
 
@@ -287,8 +299,12 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	gui.game.setAIAlliance();
 
 	// We do some cosmetic fix
-	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.adjustInitialViewport();
+	gui.adjustLocalTeam();
+	if (!globalContainer->runNoX)
+	{
+		gui.game.renderMiniMap(gui.localTeamNo);
+		gui.adjustInitialViewport();
+	}
 
 	// we create the net game
 	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
@@ -369,7 +385,10 @@ int Engine::run(void)
 		while (gui.isRunning)
 		{
 			// We allways allow the user ot use the gui:
-			gui.step();
+			if (globalContainer->runNoX)
+				gui.checkWonConditions();
+			else
+				gui.step();
 			
 			Sint32 ticksDelayedInside=0;
 			if (!gui.hardPause)
@@ -415,33 +434,41 @@ int Engine::run(void)
 					gui.game.syncStep(gui.localTeamNo);
 			}
 
-			// we draw
-			gui.drawAll(gui.localTeamNo);
-
-			//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
-			//ticknb=(ticknb+1)%(640-128);
-
-			globalContainer->gfx->nextFrame();
-
-			endTick=SDL_GetTicks();
-			Sint32 spentTicks=endTick-startTick;
-			ticksSpentInComputation=spentTicks-ticksDelayedInside;
-			computationAviableTicks=40-ticksSpentInComputation;
-			Sint32 ticksToWait=computationAviableTicks+ticksToDelayInside;
-			if (ticksToWait>0)
-				SDL_Delay(ticksToWait);
-			startTick=SDL_GetTicks();
-			
-			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
-			gui.setCpuLoad(ticksSpentInComputation);
-			if (networkReadyToExecute && !gui.gamePaused)
+			if (globalContainer->runNoX)
 			{
-				Sint32 i=computationAviableTicks;
-				if (i<0)
-					i=0;
-				else if (i>=40)
-					i=40;
-				cpuStats[i]++;
+				if (gui.hasEndOfGameDialogBeenShown)
+					gui.isRunning=false;
+			}
+			else
+			{
+				// we draw
+				gui.drawAll(gui.localTeamNo);
+
+				//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
+				//ticknb=(ticknb+1)%(640-128);
+	
+				globalContainer->gfx->nextFrame();
+	
+				endTick=SDL_GetTicks();
+				Sint32 spentTicks=endTick-startTick;
+				ticksSpentInComputation=spentTicks-ticksDelayedInside;
+				computationAviableTicks=40-ticksSpentInComputation;
+				Sint32 ticksToWait=computationAviableTicks+ticksToDelayInside;
+				if (ticksToWait>0)
+					SDL_Delay(ticksToWait);
+				startTick=SDL_GetTicks();
+				
+				net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
+				gui.setCpuLoad(ticksSpentInComputation);
+				if (networkReadyToExecute && !gui.gamePaused)
+				{
+					Sint32 i=computationAviableTicks;
+					if (i<0)
+						i=0;
+					else if (i>=40)
+						i=40;
+					cpuStats[i]++;
+				}
 			}
 		}
 

@@ -84,6 +84,9 @@ public:
 	BuildingsTypes buildingsTypes;
 	RessourcesTypes ressourcesTypes;
 
+	bool runNoX;
+	char runNoXGameName[32];
+	
 	bool hostServer;
 	char hostServerMapName[32];
 	char hostServerUserName[32];

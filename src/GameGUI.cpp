@@ -182,18 +182,22 @@ void GameGUI::init()
 	smoothedCpuLoadPos=0;
 }
 
-void GameGUI::adjustInitialViewport()
+void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
 	assert(localTeamNo<32);
 	assert(game.session.numberOfPlayer>0);
 	assert(game.session.numberOfPlayer<32);
 	assert(localTeamNo<game.session.numberOfPlayer);
-
+	
 	localTeam=game.teams[localTeamNo];
 	assert(localTeam);
 	teamStats=&localTeam->stats;
+}
 
+void GameGUI::adjustInitialViewport()
+{
+	assert(localTeam);
 	viewportX=localTeam->startPosX-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=localTeam->startPosY-(globalContainer->gfx->getH()>>6);
 	viewportX&=game.map.getMaskW();
@@ -408,7 +412,6 @@ void GameGUI::step(void)
 
 	// do we have won or lost conditions
 	checkWonConditions();
-	
 	
 	if (game.anyPlayerWaited) // TODO: warning valgrind
 		game.anyPlayerWaitedTimeFor++;
