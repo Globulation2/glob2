@@ -195,9 +195,11 @@ public:
 	virtual ~Story();
 
 public:
-	void step();
 	std::deque<Token> line;
 	bool hasWon, hasLost;
+
+	void step();
+	Sint32 checkSum() { return lineSelector; }
 
 private:
 	bool conditionTesterBuildings();
@@ -227,16 +229,18 @@ public:
 	ErrorReport compileScript(Game *game, const char *script);
 	ErrorReport compileScript(Game *game);
 	ErrorReport loadScript(const char *filename, Game *game);
-	
+
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	void setSourceCode(const char *sourceCode);
 	const char *getSourceCode(void) { return sourceCode; }
 	
 	void step();
+	Sint32 checkSum();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
 	int getMainTimer(void) { return mainTimer; }
+
 	void reset(void);
 	bool isTextShown;
 	std::string textShown;
