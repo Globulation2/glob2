@@ -118,6 +118,9 @@ void Game::setBase(const SessionInfo *initial)
 void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
+	assert(order->sender>=0);
+	assert(order->sender<32);
+	assert(order->sender<session.numberOfPlayer);
 	bool isPlayerAlive=players[order->sender]->team->isAlive;
 	switch (order->getOrderType())
 	{

@@ -132,7 +132,7 @@ Uint8 BasePlayer::getOrderType()
 	return DATA_BASE_PLAYER;
 }
 
-char *BasePlayer::getData(bool compressed)
+Uint8 *BasePlayer::getData(bool compressed)
 {
 	if (compressed)
 	{
@@ -170,7 +170,7 @@ char *BasePlayer::getData(bool compressed)
 	return data;
 }
 
-bool BasePlayer::setData(const char *data, int dataLength, bool compressed)
+bool BasePlayer::setData(const Uint8 *data, int dataLength, bool compressed)
 {
 	if (dataLength!=getDataLength(compressed))
 		return false;
@@ -224,7 +224,7 @@ Sint32 BasePlayer::checkSum()
 	Sint32 cs=0;
 	
 	
-	cs^=(type==P_AI)+(type==P_LOST_A)+(type==P_LOST_B);
+	cs^=type;
 	cs^=number;
 	cs^=numberMask;
 	cs^=teamNumber;
@@ -319,7 +319,7 @@ void BasePlayer::unbind()
 	}
 }
 
-bool BasePlayer::send(char *data, int size)
+bool BasePlayer::send(Uint8 *data, int size)
 {
 	if (ip.host==0)
 		return false;
@@ -328,22 +328,22 @@ bool BasePlayer::send(char *data, int size)
 		return false;
 	packet->len=size;
 			
-	memcpy((char *)packet->data, data, size);
+	memcpy(packet->data, data, size);
 
 	bool sucess;
 
 	packet->address=ip;
 	packet->channel=channel;
 	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	//if (abs(rand()%100)<70)
+	if (abs(rand()%100)<90)
 		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
 	// Notice that we can choose between giving a "channel", or the ip.
 	// Here we do both. Then "channel" could be -1.
 	// This is interesting because getFreeChannel() may return -1.
 	// We have no real use of "channel".
 	
-	//else
-	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
+	else
+		sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	//if (sucess)
 	//	fprintf(logFile, "suceeded to send packet to player %d (channel=%d).\n", number, channel);
 	//else
@@ -357,7 +357,7 @@ bool BasePlayer::send(char *data, int size)
 	return sucess;
 }
 
-bool BasePlayer::send(char *data, int size, const int v)
+bool BasePlayer::send(Uint8 *data, int size, const int v)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
@@ -366,7 +366,7 @@ bool BasePlayer::send(char *data, int size, const int v)
 		return false;
 	packet->len=size;
 			
-	memcpy(4+(char *)packet->data, data, size);
+	memcpy(4+packet->data, data, size);
 
 	packet->data[0]=v;
 	packet->data[1]=0;
@@ -386,7 +386,7 @@ bool BasePlayer::send(char *data, int size, const int v)
 
 bool BasePlayer::send(const int v)
 {
-	char data[4];
+	Uint8 data[4];
 	data[0]=v;
 	data[1]=0;
 	data[2]=0;
@@ -396,7 +396,7 @@ bool BasePlayer::send(const int v)
 
 bool BasePlayer::send(const int u, const int v)
 {
-	char data[8];
+	Uint8 data[8];
 	data[0]=u;
 	data[1]=0;
 	data[2]=0;

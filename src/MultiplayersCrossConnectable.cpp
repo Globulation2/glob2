@@ -35,7 +35,7 @@ MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 void MultiplayersCrossConnectable::tryCrossConnections(void)
 {
 	bool sucess=true;
-	char data[8];
+	Uint8 data[8];
 	data[0]=PLAYER_CROSS_CONNECTION_FIRST_MESSAGE;
 	data[1]=0;
 	data[2]=0;

@@ -119,29 +119,29 @@ private:
 	void init(bool shareOnYOG);
 
 public:
-	void dataPresenceRecieved(char *data, int size, IPaddress ip);
-	void dataSessionInfoRecieved(char *data, int size, IPaddress ip);
-	void dataFileRecieved(char *data, int size, IPaddress ip);
-	void checkSumConfirmationRecieved(char *data, int size, IPaddress ip);
+	void dataPresenceRecieved(Uint8 *data, int size, IPaddress ip);
+	void dataSessionInfoRecieved(Uint8 *data, int size, IPaddress ip);
+	void dataFileRecieved(Uint8 *data, int size, IPaddress ip);
+	void checkSumConfirmationRecieved(Uint8 *data, int size, IPaddress ip);
 	
 
 	void unCrossConnectSessionInfo();
 	void tryCrossConnections();
 	void startCrossConnections();
-	void crossConnectionFirstMessage(char *data, int size, IPaddress ip);
+	void crossConnectionFirstMessage(Uint8 *data, int size, IPaddress ip);
 	void checkAllCrossConnected();
-	void crossConnectionSecondMessage(char *data, int size, IPaddress ip);
+	void crossConnectionSecondMessage(Uint8 *data, int size, IPaddress ip);
 	void stillCrossConnectingConfirmation(IPaddress ip);
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
 
-	void serverAskForBeginning(char *data, int size, IPaddress ip);
+	void serverAskForBeginning(Uint8 *data, int size, IPaddress ip);
 	
-	void serverBroadcastResponse(char *data, int size, IPaddress ip);
-	void serverBroadcastStopHosting(char *data, int size, IPaddress ip);
-	void joinerBroadcastRequest(char *data, int size, IPaddress ip);
-	void joinerBroadcastResponse(char *data, int size, IPaddress ip);
+	void serverBroadcastResponse(Uint8 *data, int size, IPaddress ip);
+	void serverBroadcastStopHosting(Uint8 *data, int size, IPaddress ip);
+	void joinerBroadcastRequest(Uint8 *data, int size, IPaddress ip);
+	void joinerBroadcastResponse(Uint8 *data, int size, IPaddress ip);
 	
-	void treatData(char *data, int size, IPaddress ip);
+	void treatData(Uint8 *data, int size, IPaddress ip);
 
 	void onTimer(Uint32 tick);
 	char *getStatusString();
@@ -150,7 +150,7 @@ public:
 	bool sendPresenceRequest();
 	bool sendSessionInfoRequest();
 	bool sendSessionInfoConfirmation();
-	bool send(char *data, int size);
+	bool send(Uint8 *data, int size);
 	bool send(const int v);
 	bool send(const int u, const int v);
 	void sendBroadcastRequest(IPaddress ip);

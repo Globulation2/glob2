@@ -261,7 +261,7 @@ void SessionInfo::getPlayerInfo(int playerNumber, int *teamNumber, char *infoStr
 		assert(false);
 }
 
-char *SessionGame::getData(bool compressed)
+Uint8 *SessionGame::getData(bool compressed)
 {
 	if (compressed)
 	{
@@ -313,7 +313,7 @@ char *SessionGame::getData(bool compressed)
 	return data;
 }
 
-bool SessionGame::setData(const char *data, int dataLength, bool compressed)
+bool SessionGame::setData(const Uint8 *data, int dataLength, bool compressed)
 {
 	if (compressed)
 	{
@@ -328,7 +328,7 @@ bool SessionGame::setData(const char *data, int dataLength, bool compressed)
 		gameLatency=getSint8(data, 5);
 		fileIsAMap=getSint8(data, 6);
 
-		int l=Utilities::strmlen(data+7, sizeof(mapName));
+		int l=Utilities::strmlen((char *)(data+7), sizeof(mapName));
 		memcpy(mapName, data+7, l);
 		regenerateInternalMapNames();
 		assert(mapName[sizeof(mapName)-1]==0);
@@ -559,7 +559,7 @@ Uint8 SessionInfo::getOrderType()
 	return DATA_SESSION_INFO;
 }
 
-char *SessionInfo::getData(bool compressed)
+Uint8 *SessionInfo::getData(bool compressed)
 {
 	if (compressed)
 	{
@@ -612,7 +612,7 @@ char *SessionInfo::getData(bool compressed)
 	}
 }
 
-bool SessionInfo::setData(const char *data, int dataLength, bool compressed)
+bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 {
 	if (compressed)
 	{

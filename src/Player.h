@@ -31,11 +31,11 @@ public:
  	enum PlayerType
 	{
 		P_NONE=0, // NOTE : we don't need any more because null player are not created
-		P_LOST_A=1, // Player will be droped in any cases, but we still have to exchange orders
-		P_LOST_B=2, // Player is no longer considered, may be later changed to P_AI
-		P_AI=3,
-		P_IP=4,
-		P_LOCAL=5
+		P_LOST_DROPPING=8, // Player will be droped in any cases, but we still have to exchange orders
+		P_LOST_FINAL=12, // Player is no longer considered, may be later changed to P_AI. All orders are NULLs.
+		P_AI=16,
+		P_IP=20,
+		P_LOCAL=24
 	};
 
 	enum {MAX_NAME_LENGTH = 32};
@@ -55,7 +55,7 @@ public:
 	bool ipFromNAT;
 	bool waitForNatResolution;
 	
-	bool quitting; // forNetGame: true while the player is fairly quitting.
+	bool quitting; // We have executed the quitting order of player, but we did not freed all his orders.
 	int quitStep;
 	enum PlayerNetworkState
 	{
@@ -98,7 +98,7 @@ public:
 	int netTOTL; // Number of timeout allowed. TimeOut To Live
 
 private:
-	char data[32+MAX_NAME_LENGTH];
+	Uint8 data[32+MAX_NAME_LENGTH];
 	
 public:
 	
@@ -114,12 +114,12 @@ public:
 	
 	Uint8 getOrderType();
 	
-	char *getData(bool compressed);
-	bool setData(const char *data, int dataLength, bool compressed);
+	Uint8 *getData(bool compressed);
+	bool setData(const Uint8 *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
 	
-	char *getData() { return getData(false); }
-	bool setData(const char *data, int dataLength) { return setData(data, dataLength, false); }
+	Uint8 *getData() { return getData(false); }
+	bool setData(const Uint8 *data, int dataLength) { return setData(data, dataLength, false); }
 	int getDataLength() { return getDataLength(false); }
 	
 	virtual Sint32 checkSum();
@@ -131,8 +131,8 @@ public:
 	bool bind(UDPsocket socket, int channel);
 	void unbind();
 	
-	bool send(char *data, int size);
-	bool send(char *data, int size, const int v);
+	bool send(Uint8 *data, int size);
+	bool send(Uint8 *data, int size, const int v);
 	bool send(const int v);
 	bool send(const int u, const int v);
 

@@ -1123,7 +1123,7 @@ void YOG::step()
 			UDPpacket *packet=SDLNet_AllocPacket(8);
 			assert(packet);
 			packet->len=8;
-			char data[8];
+			Uint8 data[8];
 			data[0]=YMT_HOST_GAME_SOCKET;
 			data[1]=0;
 			data[2]=0;
@@ -1150,7 +1150,7 @@ void YOG::step()
 			UDPpacket *packet=SDLNet_AllocPacket(12);
 			assert(packet);
 			packet->len=12;
-			char data[12];
+			Uint8 data[12];
 			data[0]=YMT_JOIN_GAME_SOCKET;
 			data[1]=0;
 			data[2]=0;
@@ -1213,7 +1213,7 @@ void YOG::sendGameinfoRequest()
 			if (packet==NULL)
 				return;
 			packet->len=8;
-			char data[8];
+			Uint8 data[8];
 			data[0]=YOG_CLIENT_REQUESTS_GAME_INFO;
 			data[1]=0;
 			data[2]=0;

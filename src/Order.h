@@ -34,10 +34,10 @@ public:
 	virtual ~Order(void) { }
 	virtual Uint8 getOrderType(void)=0;
 
-	static Order *getOrder(const char *netData, int netDataLength);
+	static Order *getOrder(const Uint8 *netData, int netDataLength);
 
-	virtual char *getData(void)=0;
-	virtual bool setData(const char *data, int dataLength)=0;
+	virtual Uint8 *getData(void)=0;
+	virtual bool setData(const Uint8 *data, int dataLength)=0;
 	virtual int getDataLength(void)=0;
 	
 	virtual Sint32 checkSum()=0;
@@ -52,12 +52,12 @@ public:
 class OrderCreate:public Order
 {
 public:
-	OrderCreate(const char *data, int dataLength);
+	OrderCreate(const Uint8 *data, int dataLength);
 	OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::BuildingTypeNumber typeNumber);
 	virtual ~OrderCreate(void) { }
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 16; }
 	Sint32 checkSum() { return ORDER_CREATE; }
 
@@ -67,7 +67,7 @@ public:
 	BuildingType::BuildingTypeNumber typeNumber;
 
  private:
-	char data[16];
+	Uint8 data[16];
 };
 
 
@@ -76,74 +76,74 @@ public:
 class OrderDelete:public Order
 {
 public:
-	OrderDelete(const char *data, int dataLength);
+	OrderDelete(const Uint8 *data, int dataLength);
 	OrderDelete(Sint32 UID);
 	virtual ~OrderDelete(void) { }
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_DELETE; }
 
 	Sint32 UID;
 
 protected:
-	char data[4];
+	Uint8 data[4];
 };
 
 class OrderCancelDelete:public Order
 {
 public:
-	OrderCancelDelete(const char *data, int dataLength);
+	OrderCancelDelete(const Uint8 *data, int dataLength);
 	OrderCancelDelete(Sint32 UID);
 	virtual ~OrderCancelDelete(void) { }
 	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_CANCEL_DELETE; }
 
 	Sint32 UID;
 
 protected:
-	char data[4];
+	Uint8 data[4];
 };
 
 
 class OrderConstruction:public Order
 {
 public:
-	OrderConstruction(const char *data, int dataLength);
+	OrderConstruction(const Uint8 *data, int dataLength);
 	OrderConstruction(Sint32 UID);
 	virtual ~OrderConstruction(void) { }
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_CONSTRUCTION; }
 
 	Sint32 UID;
 
 protected:
-	char data[4];
+	Uint8 data[4];
 };
 
 class OrderCancelConstruction:public Order
 {
 public:
-	OrderCancelConstruction(const char *data, int dataLength);
+	OrderCancelConstruction(const Uint8 *data, int dataLength);
 	OrderCancelConstruction(Sint32 UID);
 	virtual ~OrderCancelConstruction(void) { }
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_CANCEL_CONSTRUCTION; }
 
 	Sint32 UID;
 
 protected:
-	char data[4];
+	Uint8 data[4];
 };
 
 
@@ -157,19 +157,19 @@ public:
 
 	Uint8 getOrderType(void) { return 40; }
  protected:
-	char *data;
+	Uint8 *data;
 	int length;
 };
 
 class OrderModifyUnits:public OrderModify
 {
 public:
-	OrderModifyUnits(const char *data, int dataLength);
+	OrderModifyUnits(const Uint8 *data, int dataLength);
 	OrderModifyUnits(Sint32 *UID, Sint32 *trigHP, Sint32 *trigHungry, int length);
 	virtual ~OrderModifyUnits(void);
 	
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length*12; }
 	int getNumberOfUnit(void) { return length; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_UNIT; }
@@ -183,12 +183,12 @@ public:
 class OrderModifyBuildings:public OrderModify
 {
 public:
-	OrderModifyBuildings(const char *data, int dataLength);
+	OrderModifyBuildings(const Uint8 *data, int dataLength);
 	OrderModifyBuildings(Sint32 *UID, Sint32 *numberRequested, int length);
 	virtual ~OrderModifyBuildings(void);
 
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length*8; }
 	int getNumberOfBuilding(void) { return length; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_BUILDING; }
@@ -201,12 +201,12 @@ public:
 class OrderModifySwarms:public OrderModify
 {
 public:
-	OrderModifySwarms(const char *data, int dataLength);
+	OrderModifySwarms(const Uint8 *data, int dataLength);
 	OrderModifySwarms(Sint32 *UID, Sint32 ratio[][UnitType::NB_UNIT_TYPE], int length);
 	virtual ~OrderModifySwarms(void);
 
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { assert(UnitType::NB_UNIT_TYPE==3); return length*16; }
 	int getNumberOfSwarm(void) { return length; }
 
@@ -221,12 +221,12 @@ public:
 class OrderModifyFlags:public OrderModify
 {
 public:
-	OrderModifyFlags(const char *data, int dataLength);
+	OrderModifyFlags(const Uint8 *data, int dataLength);
 	OrderModifyFlags(Sint32 *UID, Sint32 *range, int length);
 	virtual ~OrderModifyFlags(void);
 
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length*8; }
 	int getNumberOfBuilding(void) { return length; }
 
@@ -240,12 +240,12 @@ public:
 class OrderMoveFlags:public OrderModify
 {
 public:
-	OrderMoveFlags(const char *data, int dataLength);
+	OrderMoveFlags(const Uint8 *data, int dataLength);
 	OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length);
 	virtual ~OrderMoveFlags(void);
 
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length*12; }
 	int getNumberOfBuilding(void) { return length; }
 
@@ -276,8 +276,8 @@ public:
 	NullOrder();
 	virtual ~NullOrder(void) { }
 
-	char *getData(void) { return NULL; }
-	bool setData(const char *data, int dataLength) { return (dataLength==0);}
+	Uint8 *getData(void) { return NULL; }
+	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_NULL; }
 	Sint32 checkSum() { return ORDER_NULL; }
@@ -290,8 +290,8 @@ public:
 	QuitedOrder();
 	virtual ~QuitedOrder(void) { }
 
-	char *getData(void) { return NULL; }
-	bool setData(const char *data, int dataLength) { return (dataLength==0);}
+	Uint8 *getData(void) { return NULL; }
+	bool setData(const Uint8 *data, int dataLength) { return (dataLength==0);}
 	int getDataLength(void) { return 0; }
 	Uint8 getOrderType(void) { return ORDER_QUITED; }
 	Sint32 checkSum() { return ORDER_QUITED; }
@@ -300,14 +300,14 @@ public:
 class MessageOrder:public MiscOrder
 {
 public:
-	MessageOrder(const char *data, int dataLength);
+	MessageOrder(const Uint8 *data, int dataLength);
 	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text);
 	virtual ~MessageOrder(void);
 
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return length; }
-	char *getText(void) { return (data+8); }
+	char *getText(void) { return (char *)(data+8); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
 	Sint32 checkSum() { return ORDER_TEXT_MESSAGE; }
 
@@ -321,20 +321,20 @@ public:
 	Uint32 messageOrderType;
 
  protected:
-	char *data;
+	Uint8 *data;
 	int length;
 };
 
 class SetAllianceOrder:public MiscOrder
 {
 public:
-	SetAllianceOrder(const char *data, int dataLength);
+	SetAllianceOrder(const Uint8 *data, int dataLength);
 	SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask);
 	virtual ~SetAllianceOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 12; }
 	Sint32 checkSum() { return ORDER_SET_ALLIANCE; }
 
@@ -343,38 +343,38 @@ public:
 	Uint32 visionMask;
 
  protected:
-	char data[12];
+	Uint8 data[12];
 };
 
 class SubmitCheckSumOrder:public MiscOrder
 {
 public:
-	SubmitCheckSumOrder(const char *data, int dataLength);
+	SubmitCheckSumOrder(const Uint8 *data, int dataLength);
 	SubmitCheckSumOrder(Sint32 checkSumValue);
 	virtual ~SubmitCheckSumOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SUBMIT_CHECK_SUM; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_SUBMIT_CHECK_SUM; }
 
 	Sint32 checkSumValue;
 
  private:
-	char data[4];
+	Uint8 data[4];
 };
 
 class MapMarkOrder:public MiscOrder
 {
 public:
-	MapMarkOrder(const char *data, int dataLength);
+	MapMarkOrder(const Uint8 *data, int dataLength);
 	MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y);
 	virtual ~MapMarkOrder(void) { }
 	
 	Uint8 getOrderType(void) { return ORDER_MAP_MARK; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 12; }
 	Sint32 checkSum() { return ORDER_MAP_MARK; }
 
@@ -383,7 +383,7 @@ public:
 	Sint32 y;
 
 private:
-	char data[12];
+	Uint8 data[12];
 };
 
 // Net orders
@@ -391,52 +391,51 @@ private:
 class WaitingForPlayerOrder:public MiscOrder
 {
 public:
-	WaitingForPlayerOrder(const char *data, int dataLength);
+	WaitingForPlayerOrder(const Uint8 *data, int dataLength);
 	WaitingForPlayerOrder(Uint32 maskAwayPlayer);
 	virtual ~WaitingForPlayerOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_WAITING_FOR_PLAYER; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_WAITING_FOR_PLAYER; }
 
 	Uint32 maskAwayPlayer;
 	
- private:
-	char data[4];
+private:
+	Uint8 data[4];
 };
 
 class DroppingPlayerOrder:public MiscOrder
 {
 public:
-	DroppingPlayerOrder(const char *data, int dataLength);
-	DroppingPlayerOrder(Uint32 stayingPlayersMask, Sint32 dropState);
+	DroppingPlayerOrder(const Uint8 *data, int dataLength);
+	DroppingPlayerOrder(Uint32 dropingPlayersMask);
 	virtual ~DroppingPlayerOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_DROPPING_PLAYER; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
-	int getDataLength(void) { return 8; }
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_DROPPING_PLAYER; }
 	
-	Uint32 stayingPlayersMask;
-	Sint32 dropState;
+	Uint32 dropingPlayersMask;
 	
- private:
-	char data[8];
+private:
+	Uint8 data[4];
 };
 
 class RequestingDeadAwayOrder:public MiscOrder
 {
 public:
-	RequestingDeadAwayOrder(const char *data, int dataLength);
+	RequestingDeadAwayOrder(const Uint8 *data, int dataLength);
 	RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAviableStep);
 	virtual ~RequestingDeadAwayOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_REQUESTING_AWAY; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 12; }
 	Sint32 checkSum() { return ORDER_REQUESTING_AWAY; }
 	
@@ -444,68 +443,47 @@ public:
 	Sint32 missingStep;
 	Sint32 lastAviableStep;
 	
- private:
-	char data[12];
+private:
+	Uint8 data[12];
 };
 
 class NoMoreOrdersAviable:public MiscOrder
 {
 public:
-	NoMoreOrdersAviable(const char *data, int dataLength);
+	NoMoreOrdersAviable(const Uint8 *data, int dataLength);
 	NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep);
 	virtual ~NoMoreOrdersAviable(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_NO_MORE_ORDER_AVIABLES; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 8; }
 	Sint32 checkSum() { return ORDER_NO_MORE_ORDER_AVIABLES; }
 
 	Sint32 player;
 	Sint32 lastAviableStep;
 	
- private:
-	char data[8];
+private:
+	Uint8 data[8];
 };
 
 class PlayerQuitsGameOrder:public MiscOrder
 {
 public:
-	PlayerQuitsGameOrder(const char *data, int dataLength);
+	PlayerQuitsGameOrder(const Uint8 *data, int dataLength);
 	PlayerQuitsGameOrder(Sint32 player);
 	virtual ~PlayerQuitsGameOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_PLAYER_QUIT_GAME; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength(void) { return 4; }
 	Sint32 checkSum() { return ORDER_PLAYER_QUIT_GAME; }
 	
 	Sint32 player;
 	
- private:
-	char data[4];
-};
-
-
-class PlayerExplainsHostIP:public MiscOrder
-{
-public:
-	PlayerExplainsHostIP(const char *data, int dataLength);
-	PlayerExplainsHostIP(Uint32 host, Uint32 port);
-	virtual ~PlayerExplainsHostIP(void) { }
-
-	Uint8 getOrderType(void) { return PLAYER_EXPLAINS_HOST_IP; }
-	char *getData(void);
-	bool setData(const char *data, int dataLength);
-	int getDataLength(void) { return 8; }
-	Sint32 checkSum() { return PLAYER_EXPLAINS_HOST_IP; }
-	
-	Uint32 host;
-	Uint32 port; // Uint16
-	
- private:
-	char data[8];
+private:
+	Uint8 data[4];
 };
 
 #endif

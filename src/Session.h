@@ -50,12 +50,12 @@ public:
 
 	virtual Uint8 getOrderType();
 
-	virtual char *getData(bool compressed);
-	virtual bool setData(const char *data, int dataLength, bool compressed);
+	virtual Uint8 *getData(bool compressed);
+	virtual bool setData(const Uint8 *data, int dataLength, bool compressed);
 	virtual int getDataLength(bool compressed);
 
-	virtual char *getData() { return SessionGame::getData(false); }
-	virtual bool setData(const char *data, int dataLength) { return SessionGame::setData(data, dataLength, false); }
+	virtual Uint8 *getData() { return SessionGame::getData(false); }
+	virtual bool setData(const Uint8 *data, int dataLength) { return SessionGame::setData(data, dataLength, false); }
 	virtual int getDataLength() { return SessionGame::getDataLength(false); }
 
 	virtual Sint32 checkSum();
@@ -114,7 +114,7 @@ protected:
 	//! Serialized form of SessionGame
 	enum {S_GAME_ONLY_DATA_SIZE=32+MAP_NAME_MAX_SIZE};
 	enum {S_GAME_DATA_SIZE=S_GAME_ONLY_DATA_SIZE+MapGenerationDescriptor::DATA_SIZE};
-	char data[S_GAME_DATA_SIZE];
+	Uint8 data[S_GAME_DATA_SIZE];
 protected:
 	FILE *logFile;
 };
@@ -132,12 +132,12 @@ public:
 
 	Uint8 getOrderType();
 
-	char *getData(bool compressed);
-	bool setData(const char *data, int dataLength, bool compressed);
+	Uint8 *getData(bool compressed);
+	bool setData(const Uint8 *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
 	
-	char *getData() { return SessionInfo::getData(false); }
-	bool setData(const char *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
+	Uint8 *getData() { return SessionInfo::getData(false); }
+	bool setData(const Uint8 *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
 	int getDataLength() { return SessionInfo::getDataLength(false); }
 
 	Sint32 checkSum();
@@ -161,7 +161,7 @@ protected:
 	//! Serialized form of SessionInfo
 	enum {S_INFO_ONLY_DATA_SIZE=2560};
 	enum {S_INFO_DATA_SIZE=S_INFO_ONLY_DATA_SIZE+S_GAME_DATA_SIZE};
-	char data[S_INFO_DATA_SIZE];
+	Uint8 data[S_INFO_DATA_SIZE];
 };
 
 #endif 
