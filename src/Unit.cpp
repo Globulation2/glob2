@@ -628,8 +628,8 @@ void Unit::handleActivity(void)
 		return;
 	
 	if (verbose)
-		printf("guid=(%d) handleActivity (medical=%d) (needToRecheckMedical=%d) (attachedBuilding=%p)...\n",
-			gid, medical, needToRecheckMedical, attachedBuilding);
+		printf("guid=(%d) handleActivity (medical=%d, activity=%d) (needToRecheckMedical=%d) (attachedBuilding=%p)...\n",
+			gid, medical, activity, needToRecheckMedical, attachedBuilding);
 	
 	if (medical==MED_FREE)
 	{
@@ -658,9 +658,10 @@ void Unit::handleActivity(void)
 					if (b->subscribeToBringRessources!=1)
 					{
 						b->subscribeToBringRessources=1;
-						b->lastWorkingSubscribe=0;
 						owner->subscribeToBringRessources.push_front(b);
 					}
+					if (b->subscriptionTimer<=0)
+						b->subscriptionTimer=1;
 					return;
 				}
 			}
@@ -704,9 +705,10 @@ void Unit::handleActivity(void)
 				if (b->subscribeForFlaging!=1)
 				{
 					b->subscribeForFlaging=1;
-					b->lastWorkingSubscribe=0;
 					owner->subscribeForFlaging.push_back(b);
 				}
+				if (b->subscriptionTimer<=0)
+					b->subscriptionTimer=1;
 				return;
 			}
 			
@@ -728,9 +730,10 @@ void Unit::handleActivity(void)
 					if (b->subscribeToBringRessources!=1)
 					{
 						b->subscribeToBringRessources=1;
-						b->lastWorkingSubscribe=0;
 						owner->subscribeToBringRessources.push_front(b);
 					}
+					if (b->subscriptionTimer<=0)
+						b->subscriptionTimer=1;
 					return;
 				}
 			}
@@ -894,6 +897,8 @@ void Unit::handleDisplacement(void)
 {
 	if (subscribed)
 	{
+		if (verbose)
+			printf("guid=(%d) handleDisplacement() subscribed, then displacement=DIS_RANDOM\n", gid);
 		displacement=DIS_RANDOM;
 	}
 	else switch (activity)
@@ -916,6 +921,9 @@ void Unit::handleDisplacement(void)
 		{
 			assert(attachedBuilding);
 			assert(displacement!=DIS_RANDOM);
+			
+			if (verbose)
+				printf("guid=(%d) handleDisplacement() ACT_FILLING, displacement=%d\n", gid, displacement);
 			
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{

@@ -1415,7 +1415,7 @@ void Team::syncStep(void)
 	
 	//printf("subscribeForInside.size()=%d\n", subscribeForInside.size());
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-		if ((*it)->unitsInsideSubscribe.size()>0)
+		if (!(*it)->unitsInsideSubscribe.empty())
 			(*it)->subscribeForInsideStep();
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
@@ -1428,11 +1428,11 @@ void Team::syncStep(void)
 	
 	//subscribeToBringRessourcesStep
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
-		if ((*it)->unitsWorkingSubscribe.size()>0)
+		if (!(*it)->unitsWorkingSubscribe.empty())
 			(*it)->subscribeToBringRessourcesStep();
 
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
-		if ((*it)->unitsWorkingSubscribe.size()==0)
+		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
 		{
 			(*it)->subscribeToBringRessources=2;
 			std::list<Building *>::iterator ittemp=it;
@@ -1441,11 +1441,11 @@ void Team::syncStep(void)
 	
 	//subscribeForFlagingStep
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
-		if ((*it)->unitsWorkingSubscribe.size()>0)
+		if (!(*it)->unitsWorkingSubscribe.empty())
 			(*it)->subscribeForFlagingStep();
 
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
-		if ((*it)->unitsWorkingSubscribe.size()==0)
+		if ((Sint32)(*it)->unitsWorking.size()>=(*it)->maxUnitWorking)
 		{
 			(*it)->subscribeForFlaging=2;
 			std::list<Building *>::iterator ittemp=it;

@@ -1379,6 +1379,11 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					std::cerr << "Dump unit " << game.mouseUnit->gid << " memory" << std::endl;
 					game.mouseUnit->save(stream);
 					game.mouseUnit->saveCrossRef(stream);
+					if (game.mouseUnit->attachedBuilding)
+					{
+						game.mouseUnit->attachedBuilding->save(stream);
+						game.mouseUnit->attachedBuilding->saveCrossRef(stream);
+					}
 				}
 				delete stream;
 			}
