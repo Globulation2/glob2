@@ -60,7 +60,9 @@ void GlobalContainer::load(void)
 
 	// load texts
 	texts.load("data/texts.txt");
-	
+
+	// load fonts
+	menuFont.load("data/menuFont.png");
 	printf ("GlobalContainer::safe()=%d\n", safe());
 };
 

@@ -40,8 +40,9 @@ public:
 	SDLGraphicContext gfx;
 	char safer8[1024];
 	StringTable texts;
-	
+
 	char safer9[1024];
+	SDLBitmapFont menuFont;
 };
 
 #endif 

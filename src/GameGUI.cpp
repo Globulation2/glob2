@@ -38,7 +38,6 @@ GameGUI::GameGUI()
 	typingMessage=false;
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
-	gameMenuGfx=NULL;
 }
 
 GameGUI::~GameGUI()
@@ -97,19 +96,42 @@ void GameGUI::statStep(void)
 	stats[statsPtr]=newStats;
 }
 
+void GameGUI::processGameMenu(SDL_Event *event)
+{
+	gameMenuScreen->translateAndProcessEvent(event);
+	switch (inGameMenu)
+	{
+		case IGM_MAIN:
+		{
+			switch (gameMenuScreen->endValue)
+			{
+				case 4:
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				break;
+
+				case 5:
+				orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				break;
+
+				default:
+				break;
+			}
+		}
+		break;
+
+		default:
+		break;
+	}
+}
+
 void GameGUI::processEvent(SDL_Event *event)
 {
 	// if there is a menu he get events first
 	if (inGameMenu)
-	{
-		gameMenuScreen->onSDLEvent(event);
-		if (gameMenuScreen->isEnded)
-		{
-			inGameMenu=IGM_NONE;
-			delete gameMenuScreen;
-			delete gameMenuGfx;
-		}
-	}
+		processGameMenu(event);
 
 	if (event->type==SDL_KEYDOWN)
 	{
@@ -161,14 +183,14 @@ void GameGUI::handleRightClick(void)
 void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 {
 	SDLKey key=keySym.sym;
-	 
+
 	int modifier;
-	
+
 	if (pressed)
 		modifier=1;
 	else
 		modifier=-1;
-	
+
 	if (pressed && typingMessage && (font->printable(keySym.unicode)))
 	{
 		if (typedChar<MAX_MESSAGE_SIZE)
@@ -184,9 +206,8 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			{
 				if (inGameMenu==IGM_NONE)
 				{
-					gameMenuGfx=new SDLOffScreenGraphicContext(400, 300, false, 128);
 					gameMenuScreen=new InGameMainScreen();
-					gameMenuScreen->dispatchPaint(gameMenuGfx);
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getGraphicContext());
 					inGameMenu=IGM_MAIN;
 				}
 				//orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
@@ -872,7 +893,7 @@ void GameGUI::draw(void)
 				else
 					assert(false);
 				}
-			
+
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
 				drawTextCenter(globalContainer.gfx.getW()-128, 256+172, "[wait destroy]");
@@ -979,7 +1000,7 @@ void GameGUI::draw(void)
 					}
 					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
 					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);   
+					globalContainer.gfx.drawVertLine(globalContainer.gfx.getW()-128+i, 128+ 80 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
 
 				}
 			}
@@ -1063,7 +1084,7 @@ void GameGUI::draw(void)
 		}
 		else
 			globalContainer.gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-		
+
 	}
 	else if (selBuild)
 	{
@@ -1082,16 +1103,18 @@ void GameGUI::draw(void)
 	if (inGameMenu)
 	{
 		SDL_Rect src, dest;
+		SDLGraphicContext *tempDestGfx=(SDLGraphicContext *)&(globalContainer.gfx);
+		SDLGraphicContext *tempSrcGfx=(SDLGraphicContext *)gameMenuScreen->getGraphicContext();
+
 		src.x=0;
 		src.y=0;
-		src.w=gameMenuGfx->getW();
-		src.h=gameMenuGfx->getH();
+		src.w=tempSrcGfx->getW();
+		src.h=tempSrcGfx->getH();
 		dest=src;
-		dest.x=(globalContainer.gfx.getW()-src.w)>>1;
-		dest.y=(globalContainer.gfx.getH()-src.h)>>1;
+		dest.x=gameMenuScreen->decX;
+		dest.y=gameMenuScreen->decY;
 		globalContainer.gfx.setClipRect(NULL);
-		SDLGraphicContext *tempGfx=(SDLGraphicContext *)&(globalContainer.gfx);
-		SDL_BlitSurface(gameMenuGfx->screen, &src, tempGfx->screen, &dest);
+		SDL_BlitSurface(tempSrcGfx->screen, &src, tempDestGfx->screen, &dest);
 	}
 }
 

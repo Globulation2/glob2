@@ -37,6 +37,7 @@ public:
 	void save(SDL_RWops *stream);
 
 	void processEvent(SDL_Event *event);
+	void processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_keysym keySym, bool pressed);
 	void handleMouseMotion(int mx, int my);
@@ -101,7 +102,6 @@ private:
 		IGM_SAVE
 	} inGameMenu;
 	InGameScreen *gameMenuScreen;
-	SDLOffScreenGraphicContext *gameMenuGfx;
 
 	// message related functions : FIXME : move this to a class
 	static const int MAX_MESSAGE_SIZE=64; // avoid network overflow

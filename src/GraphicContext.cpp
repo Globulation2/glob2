@@ -9,6 +9,12 @@
 #include <math.h>
 #include "Utilities.h"
 
+SDLBitmapFont::SDLBitmapFont()
+{
+	picture=NULL;
+	CharPos=NULL;
+}
+
 SDLBitmapFont::SDLBitmapFont(const char *filename)
 {
 	load(filename);
