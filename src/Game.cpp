@@ -1363,7 +1363,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	
 	// We draw debug area:
-	//if (false)
+	if (false)
 		//if (selectedUnit && selectedUnit->verbose)
 		//if (selectedBuilding && selectedBuilding->verbose)
 		{

@@ -461,18 +461,24 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
-					for (int i=0; i<game.session.numberOfPlayer; i++)
+					for (int pi=0; pi<game.session.numberOfPlayer; pi++)
 					{
-						int otherTeam=game.players[i]->teamNumber;
-						for (int j=0; j<5; j++)
+						int otherTeam=game.players[pi]->teamNumber;
+						for (int mi=0; mi<5; mi++)
 						{
-							if (playerMask[j]&(1<<i))
+							if (playerMask[mi]&(1<<pi))
 							{
 								// player is set, set team
-								teamMask[j]|=(1<<otherTeam);
+								teamMask[mi]|=(1<<otherTeam);
 							}
 						}
 					}
+					
+					// we have a special cases for uncontroled Teams:
+					for (int ti=0; ti<game.session.numberOfTeam; ti++)
+						if (game.teams[ti]->playersMask==0)
+							teamMask[1]|=(1<<ti); // we want to hit them.
+					
 					orderQueue.push_back(new SetAllianceOrder(localTeamNo,
 						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4]));
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
