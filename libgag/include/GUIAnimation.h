@@ -18,36 +18,32 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUISELECTOR_H
-#define __GUISELECTOR_H
+#ifndef __GUIANIMATION_H
+#define __GUIANIMATION_H
 
 #include "GUIBase.h"
 
-class Selector: public RectangularWidget
+class Animation: public RectangularWidget
 {
 protected:
-	CLASSDEF(Selector)
+	CLASSDEF(Animation)
 		BASECLASS(RectangularWidget)
 	MEMBERS
+		ITEM(Uint32, duration)
 		ITEM(Uint32, count)
-		ITEM(Uint32, size)
-		ITEM(Uint32, value)
-		ITEM(Sint32, id)
+		ITEM(Sint32, start)
 		ITEM(std::string, sprite)
 	CLASSEND;
 
-	//! cache, recomputed on internalInit
+	// cache, recomputed on internalInit
 	Sprite *archPtr;
+	unsigned pos, durationLeft;
 
 public:
-	Selector() { count=0; value=0; id=0; archPtr=NULL; }
-	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue=0, unsigned size=16, const char *sprite=NULL, Sint32 id=-1);
-	virtual ~Selector() { }
-
-	virtual void onSDLEvent(SDL_Event *event);
-	virtual Uint32 getValue(void) { return value; }
-	virtual void setValue(Uint32 v) { this->value=v; repaint(); }
-	virtual Uint32 getCount(void) { return count; }
+	Animation() { duration=count=start=0; pos=durationLeft=0; archPtr=NULL; }
+	Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);
+	virtual ~Animation() { }
+	virtual void onTimer(Uint32 tick);
 
 protected:
 	virtual void internalInit(int x, int y, int w, int h);
