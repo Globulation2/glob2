@@ -160,7 +160,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1 ==3)
 		{
-			// TODO : some update here
 			updateList();
 			gameList->repaint();
 		}
@@ -173,6 +172,17 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		snprintf(data, GAME_INFO_MAX_SIZE, "say <%s> %s", globalContainer->settings.userName, textInput->text);
 		sendString(socket, data);
 		textInput->setText("");
+	}
+	else if (action==LIST_ELEMENT_SELECTED)
+	{
+		const char *listElement=gameList->getText(par1);
+		char text[GAME_INFO_MAX_SIZE];
+		strncpy(text, listElement, GAME_INFO_MAX_SIZE);
+		char *token=strtok(text, ":");
+		Uint32 ip;
+		//ip=atoi(token);
+		sscanf(token, "%x", &ip);
+		printf("YOG : selected ip is %d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
 	}
 }
 
