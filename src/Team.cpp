@@ -159,25 +159,23 @@ Team::~Team()
 
 void Team::init(void)
 {
+	int i;
+
+	for (i=0; i<1024; i++)
 	{
-		for (int i=0;i<1024;++i)
-		{
-			myUnits[i]=NULL;
-		}
+		myUnits[i]=NULL;
 	}
+
+	for (i=0; i<512; i++)
 	{
-		for (int i=0;i<512;++i)
-		{
-			myBuildings[i]=NULL;
-		}
+		myBuildings[i]=NULL;
 	}
+
+	for (i=0; i<256; i++)
 	{
-		for (int i=0;i<256;i++)
-		{
-			myBullets[i]=NULL;
-		}
+		myBullets[i]=NULL;
 	}
-	freeUnits=0;
+
 	startPosX=startPosY=0;
 	
 	subscribeForInsideStep.clear();
@@ -277,26 +275,32 @@ void Team::HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 void Team::computeStat(TeamStat *stats)
 {
 	memset(stats, 0, sizeof(TeamStat));
+	int i, j;
+
+	for (i=0; i<1024; i++)
 	{
-		for (int i=0; i<1024; i++)
+		if (myUnits[i])
 		{
-			if (myUnits[i])
+			stats->totalUnit++;
+			stats->numberPerType[(int)myUnits[i]->typeNum]++;
+
+			if (myUnits[i]->medical==Unit::MED_HUNGRY)
+				stats->needFood++;
+			else if (myUnits[i]->medical==Unit::MED_DAMAGED)
+				stats->needHeal++;
+			else
 			{
-				stats->totalUnit++;
-				stats->numberPerType[(int)myUnits[i]->typeNum]++;
+				stats->needNothing++;
 				if (myUnits[i]->activity==Unit::ACT_RANDOM)
-					stats->isFree++;
-				if (myUnits[i]->medical==Unit::MED_HUNGRY)
-					stats->needFood++;
-				else if (myUnits[i]->medical==Unit::MED_DAMAGED)
-					stats->needHeal++;
-				else
-					stats->needNothing++;
-				for (int j=0; j<NB_ABILITY; j++)
 				{
-					if (myUnits[i]->performance[j])
-						stats->upgradeState[j][myUnits[i]->level[j]]++;
+					stats->isFree[(int)myUnits[i]->typeNum]++;
+					stats->totalFree++;
 				}
+			}
+			for (j=0; j<NB_ABILITY; j++)
+			{
+				if (myUnits[i]->performance[j])
+					stats->upgradeState[j][myUnits[i]->level[j]]++;
 			}
 		}
 	}
@@ -670,25 +674,18 @@ void Team::save(SDL_RWops *stream)
 void Team::step(void)
 {
 	int nbUnits=0;
-	freeUnits=0;
+	int i;
+	for (i=0; i<1024; i++)
 	{
-		for (int i=0; i<1024; i++)
+		if (myUnits[i])
 		{
-			if (myUnits[i])
+			nbUnits++;
+			myUnits[i]->step();
+			if (myUnits[i]->isDead)
 			{
-				nbUnits++;
-				myUnits[i]->step();
-				if (myUnits[i]->isDead)
-				{
-					//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
-					delete myUnits[i];
-					myUnits[i]=NULL;
-				}
-				// FIXME : remove this from here, it is a hack
-				else if ((myUnits[i]->activity==Unit::ACT_RANDOM)&&(myUnits[i]->medical==Unit::MED_FREE)&&(myUnits[i]->performance[HARVEST]))
-				{
-					freeUnits++;
-				}
+				//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
+				delete myUnits[i];
+				myUnits[i]=NULL;
 			}
 		}
 	}
@@ -696,11 +693,9 @@ void Team::step(void)
 	/*for (int i=0; i<512; i++)
 		if (myBuildings[i])
 			myBuildings[i]->step();*/
-	{
-		for (int i=0; i<256; i++)
-			if (myBullets[i])
-				myBullets[i]->step();
-	}
+	for (i=0; i<256; i++)
+		if (myBullets[i])
+			myBullets[i]->step();
 
 	// this is roughly equivalent to building.step()
 	{
