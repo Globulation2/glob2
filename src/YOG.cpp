@@ -235,6 +235,9 @@ void YOG::interpreteIRCMessage(const char *message)
 
 void YOG::step(void)
 {
+	if (!socket)
+		return;
+		
 	while (1)
 	{
 		int check=SDLNet_CheckSockets(socketSet, 0);
