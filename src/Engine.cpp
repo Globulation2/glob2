@@ -373,13 +373,13 @@ int Engine::run(void)
 			endTick=SDL_GetTicks();
 			Sint32 spentTick=endTick-startTick;
 			Sint32 leftTicks=gui.game.session.gameTPF-spentTick;
+			Sint32 ticksToWait=leftTicks+net->ticksToDelay();
 			if (leftTicks<0)
 				net->setWishedDelay(-leftTicks);//We have to tell others IP players to wait for our slow computer.
 			else
-			{
 				net->setWishedDelay(0);
-				SDL_Delay(leftTicks+net->ticksToDelay());//We may need to wait a bit more, to wait other computers which are slower.
-			}
+			if (ticksToWait>0)
+				SDL_Delay(ticksToWait);//We may need to wait a bit more, to wait other computers which are slower.
 		}
 
 		delete net;
