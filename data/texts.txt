@@ -53,25 +53,25 @@ Resources
 Ressourcen
 Prostředky
 zasoby
-[wood]
+[Wood]
 Bois
 Wood
 Holz
 Dřevo
 drewno
-[corn]
+[Corn]
 Blé
 Wheat
 Weizen
 Obilí
 zborze
-[fungus]
-Champignons
-Fungus
+[Papyrus]
+Papyrus
+Papyrus
 
 
 
-[stone]
+[Stone]
 Pierre
 Stone
 Stein
@@ -83,6 +83,18 @@ Algae
 Algen
 Řasy
 alga
+[Cherry]
+Cerise
+Cherry
+
+
+
+[Orange]
+Orange
+Orange
+
+
+
 [range]
 Portée
 Range
