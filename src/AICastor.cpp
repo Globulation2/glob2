@@ -1010,7 +1010,7 @@ Order *AICastor::controlUpgrades()
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
-	if (shortTypeNum<NB_HARD_BUILDING)
+	if (shortTypeNum>=NB_HARD_BUILDING)
 		return NULL;
 	int level=b->type->level;
 	int upgradeLevelGoal=((buildsAmount+1)>>1);
@@ -1027,8 +1027,12 @@ Order *AICastor::controlUpgrades()
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
 	
-	fprintf(logFile,  "controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
-		bi, shortTypeNum, sumOver, upgradeAmountGoal);
+	fprintf(logFile,  "controlUpgrades(%d)\n", bi);
+	fprintf(logFile,  " shortTypeNum=%d\n", shortTypeNum);
+	fprintf(logFile,  " sumOver=%d\n", sumOver);
+	fprintf(logFile,  " upgradeAmountGoal=%d\n", upgradeAmountGoal);
+	//fprintf(logFile,  "controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
+	//	bi, shortTypeNum, sumOver, upgradeAmountGoal);
 	
 	if (sumOver>=upgradeAmountGoal)
 		return NULL;
