@@ -246,7 +246,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		{
 			printf("PGU : Loading map '%s' ...\n", mapName->text);
 			
-			SDL_RWops *stream=SDL_RWFromFile(mapName->text,"rb");
+			SDL_RWops *stream=globalContainer.fileManager.open(mapName->text,"rb");
 			if (stream==NULL)
 				printf("Map '%s' not found!\n", mapName->text);
 			else

@@ -9,6 +9,7 @@
 
 #include "GAG.h"
 #include "StringTable.h"
+#include "FileManager.h"
 
 class GlobalContainer
 {
@@ -40,6 +41,7 @@ public:
 	SDLGraphicContext gfx;
 	char safer8[1024];
 	StringTable texts;
+	FileManager fileManager;
 
 	char safer9[1024];
 	SDLBitmapFont menuFont;

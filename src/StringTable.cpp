@@ -5,6 +5,9 @@
 
 
 #include "StringTable.h"
+#include "GlobalContainer.h"
+
+extern GlobalContainer globalContainer;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +16,8 @@
 #ifdef win32
 #include <malloc.h>
 #endif
+
+
 
 OneStringToken::OneStringToken(const char *name)
 {
@@ -70,7 +75,7 @@ bool StringTable::load(char *filename)
 	char* tempp;
 	int n;
 
-	if ((fp=fopen(filename,"r"))==NULL)
+	if ((fp=globalContainer.fileManager.openFP(filename,"r"))==NULL)
 	{
 		return false;
 	}

@@ -34,7 +34,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 void GlobalContainer::load(void)
 {
 	// load palette
-	SDL_RWops *stream=SDL_RWFromFile("data/MacPal","rb");
+	SDL_RWops *stream=fileManager.open("data/MacPal","rb");
 	macPal.load(stream, gfx.screen->format);
 	SDL_RWclose(stream);
 	ShadedPal=macPal;

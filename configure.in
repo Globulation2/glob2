@@ -31,19 +31,19 @@ AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(vector,,AC_MSG_WARN(STL classes missing ?))
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-dnl if test "x${datadir}" = 'x${prefix}/share'; then
-dnl   if test "x${prefix}" = "xNONE"; then
-dnl     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
-dnl   else
-dnl     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
-dnl   fi
-dnl else
-dnl   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
-dnl fi
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
-dnl packagesrcdir=`cd $srcdir && pwd`
-dnl AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
 AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile data/src/Makefile] )
 

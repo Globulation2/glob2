@@ -8,6 +8,9 @@
 #include "GraphicContext.h"
 #include <math.h>
 #include "Utilities.h"
+#include "GlobalContainer.h"
+
+extern GlobalContainer globalContainer;
 
 SDLBitmapFont::SDLBitmapFont()
 {
@@ -43,17 +46,12 @@ bool SDLBitmapFont::load(const char *filename)
 	init();
 	
 	SDL_Surface *temp, *sprite;
-/*	SDL_RWops *stream=SDL_RWFromFile(filename, "r");		
+	SDL_RWops *stream=globalContainer.fileManager.open(filename, "r");		
 	temp=IMG_Load_RW(stream, 0);
 	SDL_FreeRW(stream);	
 	sprite=SDL_DisplayFormatAlpha(temp);
 	SDL_FreeSurface(temp);	
 
-	return load(sprite);
-*/
-	temp=IMG_Load(filename);
-	sprite=SDL_DisplayFormatAlpha(temp);
-	SDL_FreeSurface(temp);
 	return load(sprite);
 }
 
