@@ -123,17 +123,39 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					inGameMenu=IGM_ALLIANCE8;
 					gameMenuScreen=new InGameAlliance8Screen(this);
+
+					// fill the names
 					int i;
 					for (i=0; i<game.session.numberOfPlayer; i++)
 					{
-						int team=game.players[i]->teamNumber;
 						strncpy(((InGameAlliance8Screen *)gameMenuScreen)->names[i], game.players[i]->name, BasePlayer::MAX_NAME_LENGTH);
-						// FIXME :  there is a segfault here
-						((InGameAlliance8Screen *)gameMenuScreen)->allied[i]->setState(game.teams[localTeam]->allies&team);
-						((InGameAlliance8Screen *)gameMenuScreen)->vision[i]->setState(game.teams[localTeam]->sharedVision&team);
 					}
 
 					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+
+					// set correct values to choice boxes
+					OnOffButton *button;
+					Team *teamPtr=game.teams[localTeam];
+					assert(teamPtr);
+
+					for (i=0; i<game.session.numberOfPlayer; i++)
+					{
+						int otherTeam=game.players[i]->teamNumber;
+
+						button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
+						assert(button);
+						button->setState((teamPtr->allies)&(1<<otherTeam));
+
+						button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
+						assert(button);
+						button->setState((teamPtr->sharedVision)&(1<<otherTeam));
+
+						button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
+						assert(button);
+						button->setState(chatMask&(1<<otherTeam));
+					}
+
+
 				}
 				else
 				{
@@ -594,7 +616,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (displayMode==STAT_VIEW)
 	{
-		// do nothibg for now, it's stat
+		// do nothing for now, it's stat
 #		ifndef WIN32
 			((int)statMode)++;
 			if (((int)statMode)==NB_STAT_MODE)
