@@ -114,61 +114,61 @@ ru
 Рынок
 [forbidden area]
 Запретная зона
-[Building short explaination]
+[Building short explanation]
 Краткое описание здания (max. 24 символа)
-[swarm building explaination]
+[swarm building explanation]
 Создаёт новые юниты.
-[food building explaination]
+[food building explanation]
 Еда для юнитов
-[health building explaination]
+[health building explanation]
 Лечение юнитов
-[walkspeed building explaination]
+[walkspeed building explanation]
 Улучшает скорость
-[swimspeed building explaination]
+[swimspeed building explanation]
 Улучшает скорость
-[attack building explaination]
+[attack building explanation]
 Улучшает боевые
-[science building explaination]
+[science building explanation]
 Повышает доступный
-[defense building explaination]
+[defense building explanation]
 Атакует вражеские
-[exploration flag explaination]
+[exploration flag explanation]
 Привлекает разведчиков
-[war flag explaination]
+[war flag explanation]
 Привлекает воинов
-[clearing flag explaination]
+[clearing flag explanation]
 Очистка ресурсов
-[stone wall explaination]
+[stone wall explanation]
 Пассивная защита
-[market explaination]
+[market explanation]
 Позволяет меняться
-[Building short explaination 2]
+[Building short explanation 2]
 Краткое описание здания 2 (max. 24 символа)
-[swarm building explaination 2]
+[swarm building explanation 2]
 
-[food building explaination 2]
+[food building explanation 2]
 
-[health building explaination 2]
+[health building explanation 2]
 
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 ходьбы юнитов
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 плавания юнитов
-[attack building explaination 2]
+[attack building explanation 2]
 характеристики воинов
-[science building explaination 2]
+[science building explanation 2]
 уровень зданий
-[defense building explaination 2]
+[defense building explanation 2]
 строения и юниты
-[exploration flag explaination 2]
+[exploration flag explanation 2]
  
-[war flag explaination 2]
+[war flag explanation 2]
  
-[clearing flag explaination 2]
+[clearing flag explanation 2]
 
-[stone wall explaination 2]
+[stone wall explanation 2]
  
-[market explaination 2]
+[market explanation 2]
 фруктами с другими
 [waiting for %s]
 Ожидание %s

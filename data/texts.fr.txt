@@ -67,7 +67,7 @@ exploratrices
 [warriors]
 guerrières
 [Unit type]
-Type d'unite
+Type d'unité
 [Worker]
 Ouvrière
 [Explorer]
@@ -77,7 +77,7 @@ Guerrière
 [still (w)]
 Encore 
 [units working]
- unites travaillent
+ unités travaillent
 [still one unit working]
 Une unité travaille encore
 [Still (i)]
@@ -85,7 +85,7 @@ Encore
 [Still one]
 Encore une
 [Building name]
-Nom du batiment
+Nom du bâtiment
 [swarm building]
 Ruche
 [food building]
@@ -114,61 +114,61 @@ Mur de pierre
 Marché
 [forbidden area]
 Zone interdites
-[Building short explaination]
-Courte explication du batiment  (24 caractères max)
-[swarm building explaination]
+[Building short explanation]
+Courte explication du bâtiment  (24 caractères max)
+[swarm building explanation]
 Crée de nouvelles unités
-[food building explaination]
+[food building explanation]
 Nourrit vos unités
-[health building explaination]
+[health building explanation]
 Soigne vos unités 
-[walkspeed building explaination]
-Améliore la vitesse de
-[swimspeed building explaination]
-Améliore la vitesse de
-[attack building explaination]
-Améliore le niveau d'ataque
-[science building explaination]
-Améliore le niveau de
-[defense building explaination]
-Attaque les unité ennmies
-[exploration flag explaination]
+[walkspeed building explanation]
+Améliore la vitesse de marche
+[swimspeed building explanation]
+Améliore la vitesse de nage
+[attack building explanation]
+Améliore le niveau d'attaque
+[science building explanation]
+Améliore le savoir
+[defense building explanation]
+Attaque les unités ennemies
+[exploration flag explanation]
 Attire des exploratrices
-[war flag explaination]
+[war flag explanation]
 Attire des guerrières
-[clearing flag explaination]
+[clearing flag explanation]
 Enlève les ressources
-[stone wall explaination]
+[stone wall explanation]
 Elément passif de défense
-[market explaination]
-Permet d'échanger des
-[Building short explaination 2]
-Courte explication 2 du batiment  (24 caractères max)
-[swarm building explaination 2]
+[market explanation]
+Permet d'échanger des ressources
+[Building short explanation 2]
+Courte explication 2 du bâtiment  (24 caractères max.)
+[swarm building explanation 2]
  
-[food building explaination 2]
+[food building explanation 2]
  
-[health building explaination 2]
+[health building explanation 2]
  
-[walkspeed building explaination 2]
+[walkspeed building explanation 2]
 marche de vos unités
-[swimspeed building explaination 2]
+[swimspeed building explanation 2]
 nage de vos unités
-[attack building explaination 2]
+[attack building explanation 2]
 d'attaque de vos guerrières
-[science building explaination 2]
+[science building explanation 2]
 construction des ouvières
-[defense building explaination 2]
+[defense building explanation 2]
 avoisinantes
-[exploration flag explaination 2]
+[exploration flag explanation 2]
  
-[war flag explaination 2]
+[war flag explanation 2]
  
-[clearing flag explaination 2]
+[clearing flag explanation 2]
  
-[stone wall explaination 2]
+[stone wall explanation 2]
  
-[market explaination 2]
+[market explanation 2]
 fruits avec les autres
 [waiting for %s]
 Attente de %s
@@ -485,7 +485,7 @@ taille de la plage
 [workers]
 Ouvrières
 [bad error in connection system]
-Mauvaise erreur dans le système de connection
+Mauvaise erreur dans le système de connexion
 [not connected]
 Non connecté
 [presence request sent]
@@ -545,35 +545,35 @@ Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 [YESTS_BAD]
-Erreur de cohérence interne lors de la connection.
+Erreur de cohérence interne lors de la connexion.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 [YESTS_CREATED]
-Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
+Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
 [YESTS_CONNECTING]
-Etablissement de la connection au metaserveur YOG...
+Etablissement de la connexion au metaserveur YOG...
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 [YESTS_CONNECTION_LOST]
-La connection à YOG à été perdue.
+La connexion à YOG à été perdue.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
+Le metaserveur YOG a refusé la connexion car votre version de globulation2 est trop ancienne pour communiquer avec.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
+Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà utilisé par une autre personne.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Le metaserveur YOG a refusé la connection car le mot de passe est faux.
+Le metaserveur YOG a refusé la connexion car le mot de passe est faux.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
+Le metaserveur YOG a refusé la connexion car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregistrer votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
+Le metaserveur YOG a refusé la connexion car ce nom d'utilisateur a déjà été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
+Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déjà authentifié. Réessayez dans 45 secondes.
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Le metaserveur YOG a refusé la connection pour une raison inconnue!
+Le metaserveur YOG a refusé la connexion pour une raison inconnue!
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 [The player %s has joined YOG]
@@ -585,7 +585,7 @@ Vous êtes à nouveau considéré comme étant présent.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 [YOG_HELP_AWAY]
-La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
+La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possibilité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 [save before quit?]
@@ -623,7 +623,7 @@ Plein écran
 [hwaccel]
 Accélération matérielle
 [dblbuff]
-Doube-tampon
+Double-tampon
 [lowquality]
 Basse qualité
 [audio]

@@ -956,7 +956,7 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 		case SERVER_KICKED_YOU :
 			if (waitingState<WS_SERVER_START_GAME)
 			{
-				//TODO : show an explaination pannel for the joiner.
+				//TODO : show an explanation pannel for the joiner.
 				fprintf(logFile, "Server kicked you.\n");
 				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;
@@ -966,7 +966,7 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 		case SERVER_QUIT_NEW_GAME :
 			if (waitingState<WS_SERVER_START_GAME)
 			{
-				//TODO : show an explaination pannel for the joiner.
+				//TODO : show an explanation pannel for the joiner.
 				fprintf(logFile, "Server has quit.\n");
 				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;

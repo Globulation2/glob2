@@ -1778,8 +1778,8 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
 					
 					globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explaination]", typeId);
-					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explaination 2]", typeId);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explanation]", typeId);
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explanation 2]", typeId);
 					globalContainer->gfx->popFontStyle(globalContainer->littleFont);
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
