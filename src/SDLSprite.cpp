@@ -63,7 +63,7 @@ void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
 		{
 			RGBtoHSV( ((float)origR[i])/255, ((float)origG[i])/255, ((float)origB[i])/255, &hue, &sat, &lum);
 			HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
-			colors[i]=((Uint32)(255*nR)<<16)+((Uint32)(255*nG)<<8)+(Uint32)(255*nB);
+			colors[i]=SDL_MapRGB(SDLSprite::getGlobalContainerGfxSurface()->format, (Uint32)(255*nR), (Uint32)(255*nG), (Uint32)(255*nB));
 		}
 		rTransformed=r;
 		gTransformed=g;
@@ -164,6 +164,12 @@ float SDLSprite::Palette::fmax(float f1, float f2, float f3)
 		return f2;
 	else
 		return f3;
+}
+
+SDL_Surface *SDLSprite::getGlobalContainerGfxSurface(void)
+{
+	SDLGraphicContext *SDLgc=dynamic_cast<SDLGraphicContext *>(globalContainer->gfx);
+	return SDLgc->surface;
 }
 
 void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)

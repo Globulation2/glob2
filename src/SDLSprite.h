@@ -52,6 +52,9 @@ protected:
 
 	Palette pal;
 
+	friend class Palette;
+	static SDL_Surface *getGlobalContainerGfxSurface(void);
+
 protected:
 	std::vector <SDL_Surface *> images;
 	std::vector <SDL_Surface *> masks;
