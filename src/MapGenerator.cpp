@@ -70,6 +70,34 @@ void Map::controlSand(void)
 		}
 }
 
+void Map::smoothRessources(int times)
+{
+	for (int s=0; s<times; s++)
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				int d=getTerrain(x, y)-272;
+				int r=d/10;
+				int l=d%5;
+				if ((d>=0)&&(d<40)&&(syncRand()&4))
+				{
+					if (l<=(int)(syncRand()&3))
+						setTerrain(x, y, d+273);
+					else 
+					{
+						// we extand ressource:
+						int dx, dy;
+						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
+						int nx=x+dx;
+						int ny=y+dy;
+						if (getUnit(nx, ny)==NOUID)
+						if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+					}
+				}
+			}
+}
+
 void simulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass)
 {
 	int w=32<<(smooth>>2);
@@ -576,9 +604,244 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	printf("makeRandomMap::final count=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
 	
 	controlSand();
+	
+	//Now, we have to find suitable places for teams:
+	int nbTeams=descriptor.nbTeams;
+	int minDistSquare=(int)((w*h*grassCount)/(nbTeams*totalCount));
+	//printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
+	int* bootX=descriptor.bootX;
+	int* bootY=descriptor.bootY;
+	
+	for (int team=0; team<nbTeams; team++)
+	{
+		int maxSurface=0;
+		int maxX=0;
+		int maxY=0;
+		for (int y=0; y<h; y++)
+		{
+			int width=0;
+			int startx=0;
+			for (int x=0; x<w; x++)
+			{
+				int a=undermap[y*w+x];
+				if (a==GRASS)
+					width++;
+				else
+				{
+					if (width>7)
+					{
+						int centerx=((x+startx)>>1);
+						int top, bot;
+						for (top=0; top<h; top++)
+							if (getUMTerrain(centerx, y-top)!=GRASS)
+								break;
+						for (bot=0; bot<h; bot++)
+							if (getUMTerrain(centerx, y+bot)!=GRASS)
+								break;
+						int height=top+bot-1;
+						int surface=height*width;
+						assert(surface>0);
+						
+						int centery=y+((bot-top)>>1);
+						bool farEnough=true;
+						for (int ti=0; ti<team; ti++)
+							if (warpDistSquare(centerx, centery, bootX[ti], bootY[ti])<minDistSquare)
+							{
+								farEnough=false;
+								break;
+							}
+						
+						if (surface>maxSurface && farEnough)
+						{
+							maxSurface=surface;
+							maxX=centerx;
+							maxY=centery;
+						}
+					}
+					width=0;
+					startx=x;
+				}
+			}
+		}
+		
+		assert(maxSurface);
+		bootX[team]=maxX;
+		bootY[team]=maxY;
+		
+		for (int dx=-1; dx<6; dx++)
+			for (int dy=0; dy<6; dy++)
+				setUMTerrain(maxX+dx, maxY+dy, GRASS);
+		
+		//printf("team=%d, maxSurface=%d, maxX=%d, maxY=%d.\n", team, maxSurface, maxX, maxY);
+	}
+	
+	controlSand();
 	regenerateMap(0, 0, w, h);
 }
 
+void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
+{
+	int *bootX=descriptor.bootX;
+	int *bootY=descriptor.bootY;
+	int nbTeams=descriptor.nbTeams;
+	int limiteDist=(w+h)/(2*nbTeams);
+	
+	// let's add ressources...
+	for (int team=0; team<nbTeams; team++)
+	{
+		int smallestWidth=limiteDist;
+		int smallestRessource=0;
+		
+		bool dirUsed[8];
+		for (int i=0; i<8; i++)
+			dirUsed[i]=false;
+		int ressOrder[8];
+		ressOrder[0]=CORN;
+		ressOrder[1]=WOOD;
+		ressOrder[2]=CORN;
+		ressOrder[3]=STONE;
+		ressOrder[4]=WOOD;
+		
+		int distWeight[8];
+		distWeight[0]=1;
+		distWeight[1]=1;
+		distWeight[2]=1;
+		distWeight[3]=1;
+		distWeight[4]=1;
+		
+		int widthWeight[8];
+		widthWeight[0]=1;
+		widthWeight[1]=1;
+		widthWeight[2]=1;
+		widthWeight[3]=1;
+		widthWeight[4]=1;
+		
+		for (int resi=0; resi<=4; resi++)
+		{
+			int ress=ressOrder[resi];
+			int maxDir=0;
+			int maxWidth=0;
+			int maxDist=0;
+			for (int dir=0; dir<8; dir++)
+				if (!dirUsed[dir])
+				{
+					int width=0;
+					int dx, dy, dist;
+					Unit::dxdyfromDirection(dir, &dx, &dy);
+					for (dist=0; dist<limiteDist; dist++)
+						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
+							width++;
+						else if (width>3)
+							break;
+						else
+							width=1;
+
+					if (dist*distWeight[resi]+width*widthWeight[resi]>maxDist*distWeight[resi]+maxWidth*widthWeight[resi])
+					{
+						maxWidth=width;
+						maxDist=dist;
+						maxDir=dir;
+					}
+				}
+			dirUsed[maxDir]=true;
+			if (maxWidth<smallestWidth)
+			{
+				smallestWidth=maxWidth;
+				smallestRessource=ress;
+			}
+			
+			int dx, dy;
+			Unit::dxdyfromDirection(maxDir, &dx, &dy);
+			int d=maxDist-(maxWidth>>1);
+			dx*=d;
+			dy*=d;
+			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", ress, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
+			int amount=descriptor.ressource[ress];
+			if (amount>0)
+				setResAtPos(bootX[team]+dx, bootY[team]+dy, (RessourceType)ress, amount);
+		}
+
+		if (smallestWidth<limiteDist)
+		{
+			int maxDir=0;
+			int maxWidth=0;
+			int maxDist=0;
+			for (int dir=0; dir<8; dir++)
+				if (!dirUsed[dir])
+				{
+					int width=0;
+					int dx, dy, dist;
+					Unit::dxdyfromDirection(dir, &dx, &dy);
+					for (dist=0; dist<2*limiteDist; dist++)
+						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
+							width++;
+						else if (width>3)
+							break;
+						else
+							width=1;
+
+					if (dist+width>maxDist+maxWidth)
+					{
+						maxWidth=width;
+						maxDist=dist;
+						maxDir=dir;
+					}
+				}
+			dirUsed[maxDir]=true;
+			
+			int dx, dy;
+			Unit::dxdyfromDirection(maxDir, &dx, &dy);
+			int d=maxDist-(maxWidth>>1);
+			dx*=d;
+			dy*=d;
+			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", smallestRessource, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
+			int amount=descriptor.ressource[smallestRessource];
+			if (amount>0)
+				setResAtPos(bootX[team]+dx, bootY[team]+dy, (RessourceType)smallestRessource, amount);
+		}
+		
+		int maxDir=0;
+		int maxWidth=0;
+		int maxDist=0;
+		for (int dir=0; dir<8; dir++)
+		{
+			int width=0;
+			int dx, dy, dist;
+			Unit::dxdyfromDirection(dir, &dx, &dy);
+			for (dist=0; dist<2*limiteDist; dist++)
+				if (isWater(bootX[team]+dx*dist, bootY[team]+dy*dist))
+					width++;
+				else if (width>3)
+					break;
+				else
+					width=1;
+				
+			if (dist+width>width+maxWidth)
+			{
+				maxWidth=width;
+				maxDist=dist;
+				maxDir=dir;
+			}
+		}
+		
+		int dx, dy;
+		Unit::dxdyfromDirection(maxDir, &dx, &dy);
+		int d=maxDist-(maxWidth>>1);
+		dx*=d;
+		dy*=d;
+		//printf("ALGA, maxDir=%d, maxWidth=%d, d=(%d, %d), pos=(%d, %d).\n", maxDir, maxWidth, dx, dy, bootX[team]+dx, bootY[team]+dy);
+		int amount=descriptor.ressource[ALGA];
+		if (amount>0)
+			setResAtPos(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
+	}
+	
+	// Let's smooth ressources...
+	int maxAmount=0;
+	for (int r=0; r<4; r++)
+		if (maxAmount<descriptor.ressource[r])
+			maxAmount=descriptor.ressource[r];
+	smoothRessources(maxAmount*3);
+}
 
 void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
@@ -588,17 +851,17 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 			undermap[y*w+x]=WATER;
 		
 	// Two, plants "bootstraps"
-	int bootX[32];
-	int bootY[32];
-	int nbIslands=descriptor.nbIslands;
-	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbIslands)));
+	int* bootX=descriptor.bootX;
+	int* bootY=descriptor.bootY;
+	int nbIslands=descriptor.nbTeams;
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(nbIslands)));
 	if (islandsSize<8)
 		islandsSize=8;
 	int minDistSquare=(w*h)/nbIslands;
 	//printf("minDistSquare=%d.\n", minDistSquare);
 	
 	int c=0;
-	for (int i=0; i<descriptor.nbIslands; i++)
+	for (int i=0; i<nbIslands; i++)
 	{
 		int x=syncRand()%w;
 		int y=syncRand()%h;
@@ -625,8 +888,8 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		}
 		else
 		{
-			descriptor.bootX[i]=bootX[i]=x;
-			descriptor.bootY[i]=bootY[i]=y;
+			bootX[i]=x;
+			bootY[i]=y;
 			for (int dx=-1; dx<6; dx++)
 				for (int dy=0; dy<6; dy++)
 					setUMTerrain(x+dx, y+dy, GRASS);
@@ -634,7 +897,7 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	}
 	
 	//printf("w=%d, h=%d, m=%d\n", w, h, m);
-	//for (int i=0; i<descriptor.nbIslands; i++)
+	//for (int i=0; i<descriptor.nbTeams; i++)
 	//	printf("boot[%d]=(%d, %d).\n", i, bootX[i], bootY[i]);
 	
 	// Three, expands islands
@@ -848,34 +1111,6 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 					setUMTerrain(x, y, GRASS);
 					continue;
 				}
-				/*a=getUMTerrain(x+2, y);
-				b=getUMTerrain(x-2, y);
-				if ((a==GRASS)&&(b==GRASS))
-				{
-					setUMTerrain(x, y, GRASS);
-					continue;
-				}
-				a=getUMTerrain(x, y-2);
-				b=getUMTerrain(x, y+2);
-				if ((a==GRASS)&&(b==GRASS))
-				{
-					setUMTerrain(x, y, GRASS);
-					continue;
-				}
-				a=getUMTerrain(x+2, y+2);
-				b=getUMTerrain(x-2, y-2);
-				if ((a==GRASS)&&(b==GRASS))
-				{
-					setUMTerrain(x, y, GRASS);
-					continue;
-				}
-				a=getUMTerrain(x+2, y-2);
-				b=getUMTerrain(x-2, y+2);
-				if ((a==GRASS)&&(b==GRASS))
-				{
-					setUMTerrain(x, y, GRASS);
-					continue;
-				}*/
 			}
 	
 	controlSand();
@@ -972,18 +1207,17 @@ void Map::makeIslandsMap(MapGenerationDescriptor &descriptor)
 	regenerateMap(0, 0, w, h);
 }
 
-void Map::addRessources(MapGenerationDescriptor &descriptor)
+void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 {
-	int bootX[32];
-	int bootY[32];
-	bootX=descriptor.bootX;
-	bootY=descriptor.bootY;
-	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbIslands)));
+	int *bootX=descriptor.bootX;
+	int *bootY=descriptor.bootY;
+	
+	int islandsSize=(int)(((w+h)*descriptor.islandsSize)/(400.0*sqrt(descriptor.nbTeams)));
 	if (islandsSize<8)
 		islandsSize=8;
 	// let's add ressources...
 	int smoothRessources=islandsSize/4;
-	for (int s=0; s<descriptor.nbIslands; s++)
+	for (int s=0; s<descriptor.nbTeams; s++)
 	{
 		int d, p, amount;
 		int smallestAmount;
@@ -1062,39 +1296,45 @@ void Map::addRessources(MapGenerationDescriptor &descriptor)
 	}
 	
 	// Let's smooth ressources...
-	for (int s=0; s<smoothRessources*2; s++)
-		for (int y=0; y<h; y++)
-			for (int x=0; x<w; x++)
-			{
-				int d=getTerrain(x, y)-272;
-				int r=d/10;
-				int l=d%5;
-				if ((d>=0)&&(d<40)&&(syncRand()&4))
-				{
-					if (l<=(int)(syncRand()&3))
-						setTerrain(x, y, d+273);
-					else 
-					{
-						// we extand ressource:
-						int dx, dy;
-						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
-						int nx=x+dx;
-						int ny=y+dy;
-						if (getUnit(nx, ny)==NOUID)
-						if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
-					}
-				}
-			}
+	this->smoothRessources(smoothRessources*2);
 }
-
 
 void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 {
-	for (int s=0; s<descriptor.nbIslands; s++)
+	for (int s=0; s<descriptor.nbTeams; s++)
 	{
 		if (session.numberOfTeam<=s)
 			addTeam();
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, 5);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, 5);
+		
+		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
+		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
+		assert(good);
+		teams[s]->startPosX=descriptor.bootX[s];
+		teams[s]->startPosY=descriptor.bootY[s];
+		Building *b=addBuilding(descriptor.bootX[s], descriptor.bootY[s], s, typeNum);
+		assert(b);
+		for (int i=0; i<descriptor.nbWorkers; i++)
+		{
+			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			assert(u);
+		}
+		teams[s]->createLists();
+	}
+}
+
+void Game::makeRandomMap(MapGenerationDescriptor &descriptor)
+{
+	for (int s=0; s<descriptor.nbTeams; s++)
+	{
+		assert(session.numberOfTeam==s);
+		if (session.numberOfTeam<=s)
+			addTeam();
+		
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, Map::GRASS, 5);
+		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, Map::GRASS, 5);
+		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		bool good=checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], typeNum, -1);
 		assert(good);
@@ -1113,6 +1353,7 @@ void Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 
 void Game::generateMap(MapGenerationDescriptor &descriptor)
 {
+	printf("Generating map, please wait ....\n");
 	descriptor.synchronizeNow();
 	map.setSize(descriptor.wDec, descriptor.hDec);
 	map.setGame(this);
@@ -1120,14 +1361,17 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 	{
 		case MapGenerationDescriptor::eUNIFORM:
 			map.makeHomogenMap(descriptor.terrainType);
+			addTeam();
 		break;
 		case MapGenerationDescriptor::eRANDOM:
 			map.makeRandomMap(descriptor);
+			map.addRessourcesRandomMap(descriptor);
+			makeRandomMap(descriptor);
 		break;
 		case MapGenerationDescriptor::eISLANDS:
 			map.makeIslandsMap(descriptor);
+			map.addRessourcesIslandsMap(descriptor);
 			makeIslandsMap(descriptor);
-			map.addRessources(descriptor);
 		break;
 		default:
 			assert(false);
@@ -1135,6 +1379,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 	if (session.mapGenerationDescriptor)
 		delete session.mapGenerationDescriptor;
 	session.mapGenerationDescriptor=new MapGenerationDescriptor(descriptor);
+	printf(".... map generated.\n");
 }
 /*
 WATER=0,

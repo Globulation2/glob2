@@ -45,7 +45,7 @@ private:
 	Text *title;
 	TextButton *toogleButton;
 	MapPreview *mapPreview;
-	Text *mapName, *mapInfo, *mapVersion, *mapSize;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *methode;
 	bool validSessionInfo;
 
 public:

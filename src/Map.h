@@ -295,6 +295,7 @@ protected:
 
 public:
 	Sint32 checkSum();
+	Sint32 checkSum(bool heavy);
 	int warpDistSquare(int px, int py, int qx, int qy);
 
 protected:
@@ -304,9 +305,11 @@ protected:
 public:
 	void makeHomogenMap(Map::TerrainType terrainType);
 	void controlSand(void);
+	void smoothRessources(int times);
 	void makeRandomMap(MapGenerationDescriptor &descriptor);
+	void addRessourcesRandomMap(MapGenerationDescriptor &descriptor);
 	void makeIslandsMap(MapGenerationDescriptor &descriptor);
-	void addRessources(MapGenerationDescriptor &descriptor);
+	void addRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
 };
 
 #endif

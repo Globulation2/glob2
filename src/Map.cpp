@@ -851,7 +851,7 @@ void Map::setUMatPos(int x, int y, TerrainType t, int size)
 				if (getUMTerrain(dx-1,dy+1)==WATER)
 					setUMTerrain(dx-1,dy+1,SAND);
 			}
-			if (t==WATER)
+			else if (t==WATER)
 			{
 				if (getUMTerrain(dx,dy-1)==GRASS)
 					setUMTerrain(dx,dy-1,SAND);
@@ -1185,15 +1185,22 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
 		}
     return false;
 }
+
 Sint32 Map::checkSum()
 {
+	return BaseMap::checkSum();
+}
+
+Sint32 Map::checkSum(bool heavy)
+{
 	Sint32 cs=BaseMap::checkSum();
-	for (int y=0; y<h; y++)
-		for (int x=0; x<w; x++)
-		{
-			cs^=getTerrain(x, y)-272;
-			cs=(cs<<31)|(cs>>1);
-		}
+	if (heavy)
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				cs^=getTerrain(x, y)-272;
+				cs=(cs<<31)|(cs>>1);
+			}
 	return cs;
 }
 

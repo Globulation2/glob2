@@ -22,6 +22,7 @@
 #define __GUIMAPPREVIEW_H
 
 #include "GUIBase.h"
+#include "MapGenerationDescriptor.h"
 
 //! Widget to preview map
 /*!
@@ -44,6 +45,7 @@ public:
 	int getLastWidth(void) { return lastW; }
 	//! Returns last map height
 	int getLastHeight(void) { return lastH; }
+	char *getMethode(void);
 protected:
 	//! internal paint routine
 	void repaint(void);
@@ -54,6 +56,8 @@ protected:
 	int x, y;
 	//! map last size
 	int lastW, lastH;
+	bool randomGenerated;
+	MapGenerationDescriptor::Methode lastRandomGenerationMethode;
 };
 
 #endif

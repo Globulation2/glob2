@@ -639,6 +639,14 @@ Neu
 Charger
 Load
 
+[handmade map]
+Carte faite a la main
+Handmade map
+
+[mapGenerationDescriptor Methodes]
+Methodes de generation de cartes aleatoires
+Methodes of random generated maps
+
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
@@ -659,9 +667,9 @@ Rations
 Lissage
 Smoothing
 
-[islands number]
-nombre d'iles
-islands number
+[number of teams]
+nombre d'equipes
+number of teams
 
 [islands size]
 taille des iles

@@ -44,8 +44,12 @@ private:
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
 	void handleMapClick(void);
+	void paintCoordodinates(int mx, int my);
+	void paintCoordodinates(void);
 	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
 	void paintEditMode(bool clearOld, bool mayUpdate);
+	
+	void mapHasBeenModiffied(void);
 	
 	void handleKeyPressed(SDLKey key, bool pressed);
 public:
@@ -73,6 +77,7 @@ private:
 
 public:
 	Game game;
+	bool hasMapBeenModiffied;
 private:
 	bool isRunning;
 
