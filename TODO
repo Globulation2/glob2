@@ -45,6 +45,10 @@ Technique :
 Options:
 - glob2 --benchmark
 
+Network:
+- Checksum des cartes pour retélécherrger au besoin
+- Vérification du no. de réseau.
+
 To Next version :
 
 - Ressuciter le concept de race.

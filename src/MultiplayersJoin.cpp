@@ -30,7 +30,7 @@
 #define INADDR_BROADCAST (0x7F000001)
 #endif
 
-MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
+MultiplayersJoin::MultiplayersJoin(bool shareOnYog)
 :MultiplayersCrossConnectable()
 {
 	assert((int)BROADCAST_REQUEST==(int)YMT_BROADCAST_REQUEST);
@@ -45,7 +45,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	assert(logFile);
 	duplicatePacketFile=0;
 	filename=NULL;
-	init(shareOnYOG);
+	init(shareOnYog);
 }
 
 MultiplayersJoin::~MultiplayersJoin()
@@ -87,7 +87,7 @@ MultiplayersJoin::~MultiplayersJoin()
 	}
 }
 
-void MultiplayersJoin::init(bool shareOnYOG)
+void MultiplayersJoin::init(bool shareOnYog)
 {
 	waitingState=WS_TYPING_SERVER_NAME;
 	waitingTimeout=0;
@@ -107,14 +107,14 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	
 	kicked=false;
 	
-	if (shareOnYOG)
+	if (shareOnYog)
 		broadcastState=BS_DISABLE_YOG;
 	else
 		broadcastState=BS_ENABLE_LAN;
 	broadcastTimeout=0;
 	listHasChanged=false;
 	
-	this->shareOnYOG=shareOnYOG;
+	this->shareOnYog=shareOnYog;
 	
 	if (yogGameInfo)
 	{
@@ -198,7 +198,8 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 	if (serverNetProtocolVersion!=NET_PROTOCOL_VERSION)
 	{
 		fprintf(logFile, " bad serverNetProtocolVersion!=%d)\n", NET_PROTOCOL_VERSION);
-		yog->unjoinGame();
+		if (shareOnYog)
+			yog->unjoinGame(false);
 		waitingState=WS_TYPING_SERVER_NAME;
 		waitingTimeout=0;
 		waitingTimeoutSize=0;
@@ -211,7 +212,7 @@ void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 	waitingTimeoutSize=LONG_NETWORK_TIMEOUT;
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
 	
-	if (shareOnYOG)
+	if (shareOnYog)
 		yog->connectedToGameHost();
 }
 
@@ -257,7 +258,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	
 	fprintf(logFile, " sessionInfo.numberOfPlayer=%d, numberOfTeam=%d, ipFromNAT=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam, ipFromNAT);
 	
-	if (ipFromNAT || !shareOnYOG)
+	if (ipFromNAT || !shareOnYog)
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 			sessionInfo.players[j].waitForNatResolution=false;
 	else
@@ -670,7 +671,7 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 		}
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 		
-		if (shareOnYOG)
+		if (shareOnYog)
 		{
 			if (size<8 || (size-8)%10)
 			{
@@ -762,16 +763,14 @@ void MultiplayersJoin::serverAskForBeginning(Uint8 *data, int size, IPaddress ip
 void MultiplayersJoin::serverBroadcastResponse(Uint8 *data, int size, IPaddress ip)
 {
 	int v=data[0];
-	if (size>4+64+32)
+	if (size!=4+64+32)
 	{
 		fprintf(logFile, "Warning, bad size for a gameHostBroadcastResponse (size=%d, v=%d).\n", size, v);
 		return;
 	}
 	LANHost lanhost;
-	int gnl=Utilities::strmlen((char *)(data+4), 64);
-	memcpy(lanhost.gameName, data+4, gnl);
-	int snnl=Utilities::strmlen((char *)(data+4+gnl), 32);
-	memcpy(lanhost.serverNickName, data+4+gnl, snnl);
+	memcpy(lanhost.gameName, data+4, 64);
+	memcpy(lanhost.serverNickName, data+4+64, 32);
 	
 	fprintf(logFile, "broadcastState=%d.\n", broadcastState);
 	fprintf(logFile, "received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, lanhost.gameName, lanhost.serverNickName);
@@ -982,7 +981,7 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 		break;
 		
 		case BROADCAST_LAN_GAME_HOSTING:
-			if (!shareOnYOG)
+			if (!shareOnYog)
 			{
 				if (data[1])
 					sendBroadcastRequest(ip);
@@ -1007,7 +1006,7 @@ void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
-	if (shareOnYOG)
+	if (shareOnYog)
 		yog->step(); // YOG cares about firewall and NATipFromNAT
 	
 	sendingTime();
@@ -1173,7 +1172,7 @@ void MultiplayersJoin::sendingTime()
 	if (socket && (--broadcastTimeout<0))
 	{
 		if ((broadcastState==BS_ENABLE_LAN || broadcastState==BS_ENABLE_YOG) 
-			&& (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYOG))
+			&& (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYog))
 			sendBroadcastRequest(GAME_SERVER_PORT);
 		
 		bool needLocalBroadcasting=false;
@@ -1321,7 +1320,8 @@ void MultiplayersJoin::sendingTime()
 		{
 			fprintf(logFile, "Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
-			
+			if (shareOnYog)
+				yog->unjoinGame(false);
 			if (broadcastState==BS_ENABLE_YOG)
 				broadcastState=BS_DISABLE_YOG;
 			fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
@@ -1685,7 +1685,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 		return false;
 	}
 	
-	if (!shareOnYOG)
+	if (!shareOnYog)
 	{
 		if (SDLNet_ResolveHost(&serverIP, serverName, GAME_SERVER_PORT)==0)
 		{
@@ -1715,7 +1715,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 		return false;
 	}
 	
-	if (shareOnYOG)
+	if (shareOnYog)
 	{
 		yog->setJoinGameSocket(socket);
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
@@ -1730,14 +1730,14 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 	
 	if (isHostToo)
 		ipFromNAT=true;
-	if (shareOnYOG)
+	if (shareOnYog)
 	{
 		if (broadcastState==BS_DISABLE_YOG)
 			broadcastState=BS_ENABLE_YOG;
 		fprintf(logFile, "enabling NAT detection too. bs=(%d)\n", broadcastState);
 	}
 	else
-		fprintf(logFile, "not enabling NAT detection. shareOnYOG=%d, ipFromNAT=%d, broadcastState=%d\n", shareOnYOG, ipFromNAT, broadcastState);
+		fprintf(logFile, "not enabling NAT detection. shareOnYog=%d, ipFromNAT=%d, broadcastState=%d\n", shareOnYog, ipFromNAT, broadcastState);
 	
 	return sendPresenceRequest();
 }
@@ -1746,6 +1746,8 @@ void MultiplayersJoin::quitThisGame()
 {
 	fprintf(logFile, "\nquitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
 	unCrossConnectSessionInfo();
+	if (shareOnYog)
+		yog->unjoinGame(false);
 	
 	if (waitingState>WS_TYPING_SERVER_NAME)
 		send(CLIENT_QUIT_NEW_GAME);

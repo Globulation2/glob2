@@ -457,15 +457,19 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	sdata[3]=0;
 	memcpy(sdata+4, rdata+4, 4); // we copy game's uid
 	
-	addSint8(sdata, (Sint8)sessionInfo.numberOfPlayer, 8);
-	addSint8(sdata, (Sint8)sessionInfo.numberOfTeam, 9);
-	addSint8(sdata, (Sint8)sessionInfo.fileIsAMap, 10);
+	sdata[ 8]=(Uint8)sessionInfo.numberOfPlayer;
+	sdata[ 9]=(Uint8)sessionInfo.numberOfTeam;
+	sdata[10]=(Uint8)sessionInfo.fileIsAMap;
 	if (sessionInfo.mapGenerationDescriptor)
-		addSint8(sdata, (Sint8)sessionInfo.mapGenerationDescriptor->methode, 11);
+		sdata[11]=(Uint8)sessionInfo.mapGenerationDescriptor->methode;
 	else
-		addSint8(sdata, (Sint8)MapGenerationDescriptor::eNONE, 11);
-	strncpy((char *)(sdata+12), sessionInfo.getMapName(), 64);
-	int ssize=Utilities::strmlen((char *)(sdata+12), 64)+12;
+		sdata[11]=(Uint8)MapGenerationDescriptor::eNONE;
+	sdata[12]='n'; // pad and trick to show a pseudo game name
+	sdata[13]='a'; // pad and trick to show a pseudo game name
+	sdata[14]=0; // pad
+	sdata[15]=NET_PROTOCOL_VERSION;
+	strncpy((char *)(sdata+16), sessionInfo.getMapName(), 64);
+	int ssize=Utilities::strmlen((char *)(sdata+12), 64)+16;
 	assert(ssize<64+12);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
 	if (packet==NULL)
@@ -1058,17 +1062,13 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	sdata[1]=0;
 	sdata[2]=0;
 	sdata[3]=0;
+	memcpy(sdata+4, sessionInfo.getMapName(), 64);
+	memcpy(sdata+4+64, globalContainer->getUsername(), 32);
+	
 	// TODO: allow to use a game name different than mapName.
-	int mnl=Utilities::strmlen(sessionInfo.getMapName(), 64);
-	memcpy(sdata+4, sessionInfo.getMapName(), mnl);
-	int unl=Utilities::strmlen(globalContainer->getUsername(), 32);
-	memcpy(sdata+4+mnl, globalContainer->getUsername(), unl);
-
-	//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
-	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.getMapName());
-	//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
-	packet->len=4+mnl+unl;
-	memcpy(packet->data, sdata, 4+mnl+unl);
+	
+	packet->len=4+64+32;
+	memcpy(packet->data, sdata, 4+64+32);
 
 	bool sucess;
 
@@ -1459,6 +1459,8 @@ void MultiplayersHost::sendingTime()
 				SDL_RWseek(stream, sendingIndex, SEEK_SET);
 				SDL_RWread(stream, data+12, size, 1);
 				bool success=sessionInfo.players[p].send(data, 12+size);
+				if (!success)
+					printf("Error, p=%d, size=%d\n", p, size);
 				assert(success);
 				free(data);
 				playerFileTra[p].totalSent++;
