@@ -478,7 +478,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
 
-		if (isRoom)
+		if (isRoom || bt->isVirtual)
 		{
 			orderQueue.push(new OrderCreate(localTeam, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
 		}
@@ -518,6 +518,20 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			selBuild=NULL;
 			selUnit=NULL;
 			needRedraw=true;*/
+		}
+		//! look if there is a virtual building (flag) selected
+		for (std::list<Building *>::iterator virtualIt=game.teams[localTeam]->virtualBuildings.begin();
+			virtualIt!=game.teams[localTeam]->virtualBuildings.end(); ++virtualIt)
+		{
+			Building *b=*virtualIt;
+			if ((b->posX==mapX) && (b->posY==mapY))
+			{
+				displayMode=BUILDING_SELECTION_VIEW;
+				game.selectedUnit=NULL;
+				selectionUID=b->UID;
+				checkValidSelection();
+				break;
+			}
 		}
 	}
 }
@@ -756,7 +770,7 @@ void GameGUI::draw(void)
 			pm=pm<<1;
 		}
 
-		
+
 	}
 	else
 	{
@@ -781,7 +795,7 @@ void GameGUI::draw(void)
 	{
 		globalContainer->gfx.drawString(40, 440, font, ": %s", typedMessage);
 	}
-	
+
 	//if (needRedraw)
 	checkValidSelection();
 	{
@@ -802,7 +816,7 @@ void GameGUI::draw(void)
 
 				globalContainer->gfx.setClipRect(x+6, y+6, 52, 52);
 				PalSprite *buildingSprite=(PalSprite *)globalContainer->buildings.getSprite(imgid);
-			
+
 				if (buildingSprite->getW()<=32)
 					decX=-16;
 				else if (buildingSprite->getW()>64)
@@ -811,15 +825,15 @@ void GameGUI::draw(void)
 					decY=-16;
 				else if (buildingSprite->getH()>64)
 					decY=20;
-			
+
 				if (bt->hueImage)
 					buildingSprite->setPal(&(game.teams[localTeam]->palette));
 				else
 					buildingSprite->setPal(&(globalContainer->macPal));
-		
+
 				globalContainer->gfx.drawSprite(buildingSprite, x-decX, y-decY);
 			}
-			
+
 			if (typeToBuild>=0)
 			{
 				int x=((typeToBuild&0x1)<<6)+globalContainer->gfx.getW()-128;
@@ -852,10 +866,10 @@ void GameGUI::draw(void)
 			globalContainer->gfx.drawSprite(buildingSprite,
 				globalContainer->gfx.getW()-128+64-selBuild->type->width*16,
 				128+64-selBuild->type->height*16);
-				
+
 			// building text
 			drawTextCenter(globalContainer->gfx.getW()-128, 128+8, "[building name]", selBuild->type->type);
-			
+
 			// building Infos
 			globalContainer->gfx.setClipRect(globalContainer->gfx.getW()-128, 128, 128, globalContainer->gfx.getH()-128);
 
@@ -949,7 +963,7 @@ void GameGUI::draw(void)
 			{
 				drawButton(globalContainer->gfx.getW()-128+16, 256+172, "[destroy]");
 			}
-			
+
 			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
 			{
 				if ((selBuild->type->lastLevelTypeNum!=-1))
@@ -995,7 +1009,7 @@ void GameGUI::draw(void)
 			globalContainer->gfx.drawString(globalContainer->gfx.getW()-124, 128+285, font, "verbose=%d", selUnit->verbose);
 			globalContainer->gfx.drawString(globalContainer->gfx.getW()-124, 128+300, font, "subscribed=%d", selUnit->subscribed);
 			globalContainer->gfx.drawString(globalContainer->gfx.getW()-124, 128+315, font, "ndToRckMed=%d", selUnit->needToRecheckMedical);
-			
+
 		}
 		else if (displayMode==STAT_VIEW)
 		{
@@ -1054,7 +1068,10 @@ void GameGUI::draw(void)
 
 		}
 	}
+}
 
+void GameGUI::drawOverlayInfos(void)
+{
 	if (typeToBuild>=0)
 	{
 		// we get the type of building
@@ -1062,26 +1079,29 @@ void GameGUI::draw(void)
 		int batX, batY, batW, batH;
 		int exMapX, exMapY; // ex suffix means EXtended building; the last level building type.
 		int exBatX, exBatY, exBatW, exBatH;
+		int tempX, tempY;
+		bool isRoom, isExtendedRoom;
 
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(typeToBuild, 0, false);
 
 		// we check for room
 		BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 
-		int tempX, tempY;
+
 		if (bt->width&0x1)
 			tempX=((mouseX)>>5)+viewportX;
 		else
 			tempX=((mouseX+16)>>5)+viewportX;
-			
+
 		if (bt->height&0x1)
 			tempY=((mouseY)>>5)+viewportY;
 		else
 			tempY=((mouseY+16)>>5)+viewportY;
-		
-		
-		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
-		
+
+		isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
+		if (bt->isVirtual)
+			isRoom=true;
+
 		// we find last's leve type num:
 		BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 		int lastTypeNum=typeNum;
@@ -1097,8 +1117,11 @@ void GameGUI::draw(void)
 				break;
 			}
 		}
-		
-		bool isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
+
+		// we check room for extension
+		isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
+		if (bt->isVirtual)
+			isExtendedRoom=true;
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings.getSprite(bt->startImage);
@@ -1109,15 +1132,14 @@ void GameGUI::draw(void)
 		batY=(mapY-viewportY)<<5;
 		batW=(bt->width)<<5;
 		batH=(bt->height)<<5;
-		
+
 		// we get extended building sizes:
-		
+
 		exBatX=(exMapX-viewportX)<<5;
 		exBatY=(exMapY-viewportY)<<5;
 		exBatW=(lastbt->width)<<5;
 		exBatH=(lastbt->height)<<5;
-		
-		
+
 		globalContainer->gfx.setClipRect(0, 0, globalContainer->gfx.getW()-128, globalContainer->gfx.getH());
 		globalContainer->gfx.drawSprite(sprite, batX, batY);
 
@@ -1146,23 +1168,23 @@ void GameGUI::draw(void)
 			globalContainer->gfx.drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 	}
 
-	// blit game menu surface
-	if (inGameMenu)
-	{
-		SDL_Rect src, dest;
-		SDLGraphicContext *tempDestGfx=(SDLGraphicContext *)&(globalContainer->gfx);
-		SDLGraphicContext *tempSrcGfx=(SDLGraphicContext *)gameMenuScreen->getGraphicContext();
+}
 
-		src.x=0;
-		src.y=0;
-		src.w=tempSrcGfx->getW();
-		src.h=tempSrcGfx->getH();
-		dest=src;
-		dest.x=gameMenuScreen->decX;
-		dest.y=gameMenuScreen->decY;
-		globalContainer->gfx.setClipRect(NULL);
-		SDL_BlitSurface(tempSrcGfx->screen, &src, tempDestGfx->screen, &dest);
-	}
+void GameGUI::drawInGameMenu(void)
+{
+	SDL_Rect src, dest;
+	SDLGraphicContext *tempDestGfx=(SDLGraphicContext *)&(globalContainer->gfx);
+	SDLGraphicContext *tempSrcGfx=(SDLGraphicContext *)gameMenuScreen->getGraphicContext();
+
+	src.x=0;
+	src.y=0;
+	src.w=tempSrcGfx->getW();
+	src.h=tempSrcGfx->getH();
+	dest=src;
+	dest.x=gameMenuScreen->decX;
+	dest.y=gameMenuScreen->decY;
+	globalContainer->gfx.setClipRect(NULL);
+	SDL_BlitSurface(tempSrcGfx->screen, &src, tempDestGfx->screen, &dest);
 }
 
 void GameGUI::drawAll(int team)
@@ -1176,6 +1198,11 @@ void GameGUI::drawAll(int team)
 
 	globalContainer->gfx.setClipRect(0, 0, globalContainer->gfx.getW(), globalContainer->gfx.getH());
 	draw();
+
+	drawOverlayInfos();
+
+	if (inGameMenu)
+		drawInGameMenu();
 }
 
 void GameGUI::executeOrder(Order *order)

@@ -119,6 +119,8 @@ public:
 	std::list<Building *> swarms;
 	std::list<Building *> turrets;
 
+	std::list<Building *> virtualBuildings;
+
 	Uint32 allies, enemies, sharedVision, me; //mask
 
 	int startPosX, startPosY;
