@@ -81,6 +81,10 @@ namespace Utilities
 	void stringIP(char *s, int n, Uint32 ip);
 	char *stringIP(Uint32 ip);
 	char *stringIP(IPaddress ip);
+
+	//! read a string from a stream
+	char *gets(char *dest, int size, SDL_RWops *stream);
+	void streamprintf(SDL_RWops *stream, const char *format, ...);
 };
 
 #endif

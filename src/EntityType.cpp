@@ -18,6 +18,7 @@
 */
 
 #include "EntityType.h"
+#include "Utilities.h"
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -25,6 +26,7 @@
 EntityType::EntityType()
 {
 }
+
 EntityType::EntityType(SDL_RWops *stream)
 {
 	load(stream);
@@ -61,7 +63,7 @@ bool EntityType::loadText(SDL_RWops *stream)
 	assert(stream);
 	while (true)
 	{
-		if (!gets(temp,256,stream))
+		if (!Utilities::gets(temp,256,stream))
 			return false;
 		if (temp[0]=='*')
 			return true;
@@ -104,28 +106,3 @@ void EntityType::dump(void)
 	for (int i=0; i<varSize;i++)
 		printf("\t%s = %d\n",tab[i],*(startData+i));
 }
-
-char *EntityType::gets(char *dest, int size, SDL_RWops *stream)
-{
-	int i;
-	for (i=0;i<size-1;i++)
-	{
-		char c;
-		int res=SDL_RWread(stream, &c, 1, 1);
-		if (res<1)
-			return NULL;
-		switch (c)
-		{
-		case '\n':
-		case '\r':
-		case 0:
-			dest[i]=0;
-			return dest;
-		default:
-			dest[i]=c;
-		}
-	}
-	dest[i]=0;
-	return dest;
-}
-

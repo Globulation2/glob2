@@ -46,22 +46,22 @@ SettingsScreen::SettingsScreen()
 	}
 	addWidget(modeList);
 
-	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(200, 90, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::FULLSCREEN, FULLSCREEN);
 	addWidget(fullscreen);
 	fullscreenText=new Text(20, 90, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 160);
 	addWidget(fullscreenText);
 
-	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
+	hwaccel=new OnOffButton(200, 120, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::HWACCELERATED, HWACCLEL);
 	addWidget(hwaccel);
 	hwaccelText=new Text(20, 120, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hwaccel]"), 160);
 	addWidget(hwaccelText);
 
-	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
+	nodblbuff=new OnOffButton(200, 150, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.screenFlags&DrawableSurface::NO_DOUBLEBUF, NODBLBUFF);
 	addWidget(nodblbuff);
 	nodblbuffText=new Text(20, 150, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[nodblbuff]"), 160);
 	addWidget(nodblbuffText);
 
-	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	lowquality=new OnOffButton(200, 180, 25, 25, ALIGN_RIGHT, ALIGN_TOP, globalContainer->settings.optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidget(lowquality);
 	lowqualityText=new Text(20, 180, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 160);
 	addWidget(lowqualityText);
@@ -81,8 +81,8 @@ SettingsScreen::SettingsScreen()
 	addWidget(title);
 
 	oldLanguage=Toolkit::getStringTable()->getLang();
-	oldScreenW=globalContainer->settings->screenWidth;
-	oldScreenH=globalContainer->settings->screenHeight;
+	oldScreenW=globalContainer->settings.screenWidth;
+	oldScreenH=globalContainer->settings.screenHeight;
 }
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -92,18 +92,18 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		if (par1==OK)
 		{
 			globalContainer->setUserName(userName->getText());
-			globalContainer->settings->optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
-			globalContainer->settings->screenFlags=DrawableSurface::DEFAULT;
-			globalContainer->settings->screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
-			globalContainer->settings->screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
-			globalContainer->settings->screenFlags|=nodblbuff->getState() ? DrawableSurface::NO_DOUBLEBUF : 0;
+			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
+			globalContainer->settings.screenFlags=DrawableSurface::DEFAULT;
+			globalContainer->settings.screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
+			globalContainer->settings.screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
+			globalContainer->settings.screenFlags|=nodblbuff->getState() ? DrawableSurface::NO_DOUBLEBUF : 0;
 			endExecute(par1);
 		}
 		else if (par1==CANCEL)
 		{
 			Toolkit::getStringTable()->setLang(oldLanguage);
-			globalContainer->settings->screenWidth=oldScreenW;
-			globalContainer->settings->screenHeight=oldScreenH;
+			globalContainer->settings.screenWidth=oldScreenW;
+			globalContainer->settings.screenHeight=oldScreenH;
 			endExecute(par1);
 		}
 	}
@@ -129,8 +129,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			int w, h;
 			sscanf(modeList->getText(par1), "%dx%d", &w, &h);
-			globalContainer->settings->screenWidth=w;
-			globalContainer->settings->screenHeight=h;
+			globalContainer->settings.screenWidth=w;
+			globalContainer->settings.screenHeight=h;
 		}
 	}
 }

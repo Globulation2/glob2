@@ -21,6 +21,7 @@
 #include <math.h>
 #include <assert.h>
 #include <string.h>
+#include <stdarg.h>
 
 int distSquare(int x1, int y1, int x2, int y2)
 {
@@ -482,6 +483,43 @@ namespace Utilities
 		snprintf(staticStringIP[staticCounter], 128, "%d.%d.%d.%d:%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF), SDL_SwapBE16(nip.port));
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
+	}
+
+	char *gets(char *dest, int size, SDL_RWops *stream)
+	{
+		int i;
+		for (i=0;i<size-1;i++)
+		{
+			char c;
+			int res=SDL_RWread(stream, &c, 1, 1);
+			if (res<1)
+				return NULL;
+			switch (c)
+			{
+			case '\n':
+			case '\r':
+			case 0:
+				dest[i]=0;
+				return dest;
+			default:
+				dest[i]=c;
+			}
+		}
+		dest[i]=0;
+		return dest;
+	}
+
+	void streamprintf(SDL_RWops *stream, const char *format, ...)
+	{
+		char buffer[256];
+		va_list arglist;
+		va_start(arglist, format);
+
+		vsnprintf(buffer, 256, format, arglist);
+
+		SDL_RWwrite(stream, buffer, strlen(buffer), 1);
+
+		va_end(arglist);
 	}
 }
 

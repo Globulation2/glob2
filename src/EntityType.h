@@ -37,8 +37,6 @@ public:
 	virtual bool loadText(SDL_RWops *stream);
 	virtual void save(SDL_RWops *stream);
 	virtual void dump(void);
-private:
-	char *gets(char *dest, int size, SDL_RWops *stream);
 };
 
 template <class T> class EntitiesTypes
