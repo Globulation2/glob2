@@ -66,21 +66,6 @@ public:
 	Sint32 hungryness;
 
 	Sint32 performance[NB_ABILITY];
-	
-	/*enum TypeNum
-	{
-		WORKER=0,
-		EXPLORER=1,
-		WARRIOR=2,
-		NB_UNIT_TYPE=3
-	};
-	
-	enum
-	{
-		NB_UNIT_LEVELS=4
-	};*/
-
-	
 
 public:
 	UnitType() { init(); }

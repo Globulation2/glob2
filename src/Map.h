@@ -231,9 +231,10 @@ public:
 	}
 
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
-	void decRessource(int x, int y);
+	bool decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	void decRessource(int x, int y, RessourceType ressourceType);
+	bool decRessource(int x, int y, RessourceType ressourceType);
+	bool incRessource(int x, int y, RessourceType ressourceType);
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim);

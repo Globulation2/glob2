@@ -305,11 +305,8 @@ void Map::growRessources(void)
 		//for (int x=0; x<w; x++)
 		{
 			//int y=syncRand()&hMask;
-
-			int d=getTerrain(x, y)-272;
-			int r=d/10;
-			int l=d%5;
-			if ((d>=0)&&(d<40))
+			Ressource r=getRessource(x, y);
+			if (r.id!=NORESID)
 			{
 				// we look around to see if there is any water :
 				// TODO: uses UnderMap.
@@ -329,18 +326,18 @@ void Map::growRessources(void)
 				//int way4=y-dwax*2;
 
 				bool expand=false;
-				if (r==ALGA)
+				if (r.field.type==ALGA)
 					expand=isWater(wax1, way1)&&isSand(wax2, way2);
-				else if (r==WOOD)
+				else if (r.field.type==WOOD)
 					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
-				else if (r==CORN)
+				else if (r.field.type==CORN)
 					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
 
 				if (expand)
 				{
 					//if (l<4)
-					if (l<=(int)(syncRand()&3))
-						setTerrain(x, y, d+273);
+					if (r.field.amount<=(int)(syncRand()&7))
+						incRessource(x, y, (RessourceType)r.field.type);
 					else
 					{
 						// we extand ressource:
@@ -349,8 +346,7 @@ void Map::growRessources(void)
 						int nx=x+dx;
 						int ny=y+dy;
 						if (getGroundUnit(nx, ny)==NOGUID)
-							if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-								setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+							incRessource(nx, ny, (RessourceType)r.field.type);
 					}
 				}
 			}
@@ -376,13 +372,13 @@ void Map::switchFogOfWar(void)
 		fogOfWar=fogOfWarA;
 }
 
-void Map::decRessource(int x, int y)
+bool Map::decRessource(int x, int y)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
 	
 	if (r.id==NORESID)
-		return;
+		return false;
 	
 	RessourceType type=(RessourceType)r.field.type;
 	unsigned amount=r.field.amount;
@@ -391,14 +387,59 @@ void Map::decRessource(int x, int y)
 		rp->id=NORESID;
 	else if (type==CORN || type==ALGA || type==FUNGUS)
 		rp->field.amount=amount-1;
-	else if (type!=STONE)
+	else if (type==STONE)
+		return false;
+	else
 		assert(false);
+	return true;
 }
 
-void Map::decRessource(int x, int y, RessourceType ressourceType)
+bool Map::decRessource(int x, int y, RessourceType ressourceType)
 {
 	if (isRessource(x, y, ressourceType))
-		decRessource(x, y);
+		return decRessource(x, y);
+	else
+		return false;
+}
+
+bool Map::incRessource(int x, int y, RessourceType ressourceType)
+{
+	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
+	Ressource r=*rp;
+	if (r.id==NORESID)
+	{
+		if (getBuilding(x, y)!=NOGBID)
+			return false;
+		if (getGroundUnit(x, y)!=NOGUID)
+			return false;
+		bool canGrowth;
+		if (ressourceType==WOOD || ressourceType==CORN || ressourceType==FUNGUS)
+			canGrowth=isGrass(x, y);
+		else if (ressourceType==ALGA)
+			canGrowth=isWater(x, y);
+		else
+			assert(false);
+		if (canGrowth)
+		{
+			rp->field.type=(Uint8)ressourceType;
+			rp->field.variety=0; //TODO:syncRand()%maxVariety
+			rp->field.amount=1;
+			rp->field.animation=0;
+			return true;
+		}
+		else
+			return false;
+	}
+	if (r.field.type!=ressourceType)
+		return false;
+	if (r.field.type==STONE)
+		return false;
+	if (r.field.amount<4) //TODO: change this value with new ressources.
+	{
+		rp->field.amount=r.field.amount+1;
+		return true;
+	}
+	return false;
 }
 
 bool Map::isFreeForGroundUnit(int x, int y, bool canSwim)
