@@ -24,22 +24,29 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 
+#define AI_FILE_MIN_VERSION 1
+#define AI_FILE_VERSION 1
 
 AICastor::AICastor(Player *player)
 {
 	init(player);
 }
 
-AICastor::AICastor(SDL_RWops *stream, Player *player)
+AICastor::AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	load(stream);
+	bool goodLoad=load(stream, versionMinor);
+	assert(goodLoad);
 }
 
 void AICastor::init(Player *player)
 {
 	assert(player);
+	
+	// Logical :
+	timer=0;
 
+	// Structural:
 	this->player=player;
 	this->team=player->team;
 	this->game=player->game;
@@ -54,18 +61,30 @@ AICastor::~AICastor()
 {
 }
 
-bool AICastor::load(SDL_RWops *stream)
+bool AICastor::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	assert(game);
+	if (versionMinor<29)
+	{
+		//TODO:init
+		return true;
+	}
+	
+	Sint32 fileVersionMinor=SDL_ReadBE32(stream);
+	if (fileVersionMinor < AI_FILE_MIN_VERSION)
+		return false;
+	
 	return true;
 }
 
 void AICastor::save(SDL_RWops *stream)
 {
+	SDL_WriteBE32(stream, AI_FILE_VERSION);
 }
 
 
 Order *AICastor::getOrder(void)
 {
+	timer++;
 	return new NullOrder();
 }
