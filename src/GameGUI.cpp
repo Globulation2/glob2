@@ -1476,12 +1476,40 @@ void GameGUI::drawUnitInfos(void)
 	ypos += YOFFSET_NAME;
 
 	// draw unit's image
+	Unit* unit=selUnit;
+	int imgid;
+	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
+	assert(unit->action>=0);
+	assert(unit->action<NB_MOVE);
+	imgid=ut->startImage[unit->action];
+	
+	int dir=unit->direction;
+	int delta=unit->delta;
+	assert(dir>=0);
+	assert(dir<9);
+	assert(delta>=0);
+	assert(delta<256);
+	if (dir==8)
+	{
+		imgid+=8*(delta>>5);
+	}
+	else
+	{
+		imgid+=8*dir;
+		imgid+=(delta>>5);
+	}
+
+	Sprite *unitSprite=globalContainer->units;
+	unitSprite->setBaseColor(unit->owner->colorR, unit->owner->colorG, unit->owner->colorB);
+
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, ypos, globalContainer->gamegui, 18);
-	UnitType *ut=selUnit->race->getUnitType(selUnit->typeNum, 0);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+12, ypos+7, unitSprite, imgid);
+
+	/*UnitType *ut=selUnit->race->getUnitType(selUnit->typeNum, 0);
 	int imgid=ut->startImage[selUnit->action];
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(selUnit->owner->colorR, selUnit->owner->colorG, selUnit->owner->colorB);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+12, ypos+7, unitSprite, imgid);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+12, ypos+7, unitSprite, imgid);*/
 
 	// draw HP
 	if (selUnit->hp<=selUnit->trigHP)
@@ -2652,5 +2680,3 @@ void GameGUI::addMark(MapMarkOrder *mmo)
 	
 	markList.push_front(mark);
 }
-
-
