@@ -55,7 +55,7 @@ YOG::YOG()
 	selectedGameinfoTOTL=0;
 	
 	enableLan=lan.enable(SERVER_PORT);
-	printf("YOG::enableLan=%d.\n", enableLan);
+	//printf("YOG::enableLan=%d.\n", enableLan);
 	
 	// Funny, LogFileManager is not initialised !
 	//logFile=globalContainer->logFileManager.getFile("YOG.log");
@@ -208,7 +208,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					newSelectedGameinfoAviable=true;
 					selectedGameinfoValid=true;
 				}
-				printf("YMT_GAME_INFO_FROM_HOST (%s)\n", game->description);
+				printf("YOG::new game->description=%s\n", game->description);
 			}
 	}
 	break;
@@ -761,7 +761,6 @@ void YOG::sendGameinfoRequest()
 			else
 				printf("YOG::sendGameinfoRequest() to ip=%s\n",  Utilities::stringIP(game->ip));
 			SDLNet_FreePacket(packet);
-			
 			
 			if (!game->natSolved && enableLan)
 			{

@@ -141,7 +141,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
-		printf("YOG : LIST_ELEMENT_SELECTED\n");
+		//printf("YOG : LIST_ELEMENT_SELECTED\n");
 		if (!globalContainer->yog->newGameList(false))
 		{
 			std::list<YOG::GameInfo>::iterator game;
@@ -149,7 +149,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			for (game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
 				if (i==par1)
 				{
-					printf("i=%d\n", i);
+					//printf("i=%d\n", i);
 					globalContainer->yog->selectGame(game->uid);
 					assert(game!=globalContainer->yog->games.end());
 					break;
