@@ -316,10 +316,18 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int grassRatio=descriptor.grassRatio;
 	int totalRatio=waterRatio+sandRatio+grassRatio;
 	int smooth=descriptor.smooth;
+	double baseWater, baseSand, baseGrass;
 	
-	double baseWater=(float)waterRatio/(float)totalRatio;
-	double baseSand =(float)sandRatio /(float)totalRatio;
-	double baseGrass=(float)grassRatio/(float)totalRatio;
+	if (totalRatio == 0)
+	{
+		baseWater = baseSand = baseGrass = 1.0/3.0;
+	}
+	else
+	{
+		baseWater=(float)waterRatio/(float)totalRatio;
+		baseSand =(float)sandRatio /(float)totalRatio;
+		baseGrass=(float)grassRatio/(float)totalRatio;
+	}
 	printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
 	
 	//Sorry, the equation is too complex for me. We uses a numeric aproach:
