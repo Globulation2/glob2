@@ -26,7 +26,7 @@
 class TextInput: public Widget
 {
 public:
-	TextInput(int x, int y, int w, int h, Font *font, const char *text, bool activated);
+	TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);
@@ -37,7 +37,7 @@ public:
 
 protected:
 	int x, y, w, h;
-	Font *font;
+	const Font *font;
 	DrawableSurface *gfx;
 	int cursPos;
 

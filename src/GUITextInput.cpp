@@ -20,7 +20,7 @@
 
 #include "GUITextInput.h"
 
-TextInput::TextInput(int x, int y, int w, int h, Font *font, const char *text, bool activated)
+TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated)
 {
 	this->x=x;
 	this->y=y;

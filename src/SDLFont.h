@@ -47,7 +47,7 @@ public:
 	int getStringWidth(const char *string) const;
 	int getStringWidth(int i) const;
 	int getStringHeight(const char *string) const;
-	bool printable(char c);
+	bool printable(char c) const;
 
 protected:
 	friend class SDLDrawableSurface;

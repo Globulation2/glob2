@@ -31,7 +31,7 @@ public:
 	virtual int getStringWidth(const char *string) const=0;
 	virtual int getStringWidth(const int i) const=0;
 	virtual int getStringHeight(const char *string) const=0;
-	virtual bool printable(char c)=0;
+	virtual bool printable(char c) const=0;
 };
 
 

@@ -2,7 +2,7 @@ To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - custom game should have a map choosing screen. (nct)
-- network must work correctly, and screen must be easy to understand. (nct)
+- network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - map must have version, and little backward compatibility should be keeped. (nct)
@@ -10,11 +10,12 @@ To First release :
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Stat screen must be internationalized and don't display NaN. (nct)
+- Clicking on a game on YOG whould to to this game. (nct)
 
-Bug to fix :
-- some people doesn't begin in center of map ???
-- tree and (alos corn) grow to fast
-- when there is one team alive, this team has won 
+Bug to fix : (WHO HAS WRITTEN THIS, PLEASE ADD NAME SO WE CAN CONTACT YOU (nct))
+- some people doesn't begin in center of map ??? (unknown)
+- tree and (alos corn) grow to fast (unknown)
+- when there is one team alive, this team has won (unknown)
 
 To Next version :
 
@@ -28,3 +29,4 @@ To Next version :
 - do icons for buildings. (nct)
 - message when team is defeated. (nct)
 - makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
+- map and map icon must have correct aspect ratio. (nct)
