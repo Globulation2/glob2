@@ -237,7 +237,7 @@ void YOG::step(void)
 {
 	if (!socket)
 		return;
-		
+
 	while (1)
 	{
 		int check=SDLNet_CheckSockets(socketSet, 0);
@@ -386,15 +386,23 @@ void YOG::sendCommand(const char *message)
 	}
 	else
 	{
-		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", DEFAULT_CHAT_CHAN, message);
+		snprintf(command, IRC_MESSAGE_SIZE, "PRIVMSG %s :%s", chatChan, message);
 		sendString(command);
 	}
 }
 
+void YOG::setChatChannel(const char *chan)
+{
+	strncpy(chatChan, chan, IRC_CHANNEL_SIZE);
+	chatChan[IRC_CHANNEL_SIZE]=0;
+}
 
 void YOG::joinChannel(const char *channel)
 {
 	char command[IRC_MESSAGE_SIZE];
+	
+	if (channel==NULL)
+		channel=chatChan;
 	snprintf(command, IRC_MESSAGE_SIZE, "JOIN %s", channel);
 	sendString(command);
 }
@@ -402,6 +410,9 @@ void YOG::joinChannel(const char *channel)
 void YOG::quitChannel(const char *channel)
 {
 	char command[IRC_MESSAGE_SIZE];
+
+	if (channel==NULL)
+		channel=chatChan;
 	snprintf(command, IRC_MESSAGE_SIZE, "PART %s", channel);
 	sendString(command);
 }

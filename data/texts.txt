@@ -619,3 +619,7 @@ ist angeschlossen
 a quitte
 has quit
 hat verlassen
+[yog-chat]
+#yog-fr
+#yog-en
+#yog-de
