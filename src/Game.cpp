@@ -888,7 +888,7 @@ bool Game::removeUnitAndBuilding(int x, int y, SDL_Rect* r, int flags)
 	{
 		int id=Unit::GIDtoID(gguid);
 		int team=Unit::GIDtoTeam(gguid);
-		map.setAirUnit(x, y, NOGUID);
+		map.setGroundUnit(x, y, NOGUID);
 		r->x=x;
 		r->y=y;
 		r->w=1;
@@ -1095,7 +1095,6 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		// TODO : if looks ugly, do something intelligent here
 	}
-
 	
 	int dir=unit->direction;
 	int delta=unit->delta;
