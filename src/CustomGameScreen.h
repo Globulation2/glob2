@@ -36,29 +36,31 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
+//! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
 {
-public:
-	enum
-	{
-		OK = 1,
-		CANCEL = 2
-	};
-	//SessionInfo sessionInfo;
-
 private:
+	//! AI enable/disable buttons
 	OnOffButton *isAI[16];
+	//! Team color buttons
 	ColorButton *color[16];
+	//! Text shown when entry is disabled
 	Text *closedText[16];
+	//! Multi-text button containing names of availables AIs
 	MultiTextButton *aiSelector[16];
 
 public:
+	//! Constructor, builds a ChooseMapScreen for maps
 	CustomGameScreen();
+	//! Destructor
 	virtual ~CustomGameScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void validMapSelectedhandler(void);
+	//! Returns true if AI i is enabled
 	bool isAIactive(int i);
+	//! Returns the implementation of AI i. If AI is disabled, result is undefined
 	AI::ImplementitionID getAiImplementation(int i);
+	//! Returns the color of AI i. If AI is disabled, result is undefined
 	int getSelectedColor(int i);
 };
 
