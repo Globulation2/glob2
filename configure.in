@@ -2,7 +2,7 @@ AC_INIT(src/Game.cpp)
 AM_INIT_AUTOMAKE(glob2, 0.1)
 AM_CONFIG_HEADER(config.h)
 
-CXXFLAGS="-g -Wall $CXXFLAGS"
+CXXFLAGS="-g -Wall -lpng $CXXFLAGS"
 
 dnl Programs 
 AC_PROG_CC

@@ -591,7 +591,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				break;
 			case SDLK_PLUS:
 			case SDLK_KP_PLUS:
-				{
+			    {
 					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
