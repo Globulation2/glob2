@@ -60,6 +60,7 @@ public:
 	NetWindowSlot netWindow[NET_WINDOW_SIZE];
 	Uint32 unreceivedIndex;
 	Uint32 endOfFileIndex;
+	int duplicatePacketFile;
 	
 private:
 	LANBroadcast lan;

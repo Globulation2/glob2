@@ -59,10 +59,13 @@ public:
 		int packetSize;
 		int windowSize;
 		Uint32 unreceivedIndex;
+		
+		int totalLost;
+		int totalSent;
+		int windowstats[MAX_WINDOW_SIZE];
+		int windowlosts[MAX_WINDOW_SIZE];
 	};
 	PlayerFileTransmission playerFileTra[32];
-	int windowstats[MAX_WINDOW_SIZE];
-	
 public:
 
 	bool firstDraw;

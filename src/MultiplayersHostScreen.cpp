@@ -154,7 +154,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		startTimer->setText(s);
 	}
 	
-	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_ALL_PLAYERS_CROSS_CONNECTED)
+	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_ALL_PLAYERS_CROSS_CONNECTED_AND_HAVE_FILE)
 	{
 		if (!showsReady)
 		{

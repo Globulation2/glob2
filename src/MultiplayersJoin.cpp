@@ -28,6 +28,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	yogGameInfo=NULL;
 	downloadStream=NULL;
 	logFile=NULL;
+	duplicatePacketFile=0;
 	init(shareOnYOG);
 }
 
@@ -48,7 +49,8 @@ MultiplayersJoin::~MultiplayersJoin()
 			fprintf(logFile, "Socket closed.\n");
 		}
 	}
-	
+	if (duplicatePacketFile)
+		fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
 	if (downloadStream)
 	{
 		fprintf(logFile, "MultiplayersJoin:: download not finished.\n");
@@ -114,8 +116,8 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		netWindow[i].received=false;
 		netWindow[i].packetSize=0; //set 512 in release
 	}
-	
 	localPort=0;
+	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	
 	if (logFile)
 	{
@@ -127,6 +129,10 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	if (logFile==NULL)
 		logFile=stdout;
 	assert(logFile);
+	
+	if (duplicatePacketFile)
+		fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
+	duplicatePacketFile=0;
 }
 
 void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
@@ -210,6 +216,9 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		{
 			if (downloadStream)
 			{
+				if (duplicatePacketFile)
+					fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
+				duplicatePacketFile=0;
 				SDL_RWclose(downloadStream);
 				downloadStream=NULL;
 			}
@@ -271,6 +280,14 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	}
 	else
 	{
+		if (netWindow[windowIndex].received && netWindow[windowIndex].index==writingIndex && netWindow[windowIndex].packetSize==writingSize)
+		{
+			duplicatePacketFile++;
+			fprintf(logFile, "duplicated \n");
+		}
+		else if (startDownloadTimeout>2)
+			startDownloadTimeout=2;
+		
 		SDL_RWseek(downloadStream, writingIndex, SEEK_SET);
 		SDL_RWwrite(downloadStream, data+12, writingSize, 1);
 
@@ -279,9 +296,6 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		netWindow[windowIndex].packetSize=writingSize;
 
 		fprintf(logFile, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
-		
-		if (startDownloadTimeout>2)
-			startDownloadTimeout=2;
 	}
 	
 	bool hit=true;
@@ -307,6 +321,9 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	
 	if (endOfFileIndex==unreceivedIndex)
 	{
+		if (duplicatePacketFile)
+			fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
+		duplicatePacketFile=0;
 		fprintf(logFile, "download's file closed\n");
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
