@@ -74,6 +74,8 @@ SDLGraphicContext.h\
 SDLGraphicContext.cpp\
 StringTable.cpp\
 StringTable.h\
+SGSL.cpp \
+SGSL.h \
 Team.cpp\
 Team.h\
 TeamStat.h\
