@@ -173,6 +173,7 @@ void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
 void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress ip)
 {
 	int pn=getSint32(data, 4);
+	myPlayerNumber=pn;
 
 	if ((pn<0)||(pn>=32))
 	{
@@ -181,7 +182,6 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		return;
 	}
 
-	myPlayerNumber=pn;
 	fprintf(logFile, "dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
 
 	unCrossConnectSessionInfo();
@@ -203,7 +203,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 	
 	if (localPort)
 	{
-		fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", localPort);
+		fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", SDL_SwapBE16(localPort));
 		sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
 		sessionInfo.players[myPlayerNumber].ip.port=localPort;
 	}
@@ -454,21 +454,22 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 
 	if ((p>=0)&&(p<sessionInfo.numberOfPlayer))
 	{
-		if (sessionInfo.players[p].ip.host!=ip.host)
+		if (sessionInfo.players[p].waitForNatResolution)
+		//zzz if (sessionInfo.players[p].ip.host!=ip.host)
 		{
 			fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!", p, Utilities::stringIP(sessionInfo.players[p].ip), Utilities::stringIP(ip));
 			sessionInfo.players[p].ip=ip; // TODO: This is a security question. Can we avoid to thrust any packet from anyone.
-			if (sessionInfo.players[p].waitForNatResolution)
-			{
+			//if (sessionInfo.players[p].waitForNatResolution)
+			//{
 				fprintf(logFile, "(this NAT is solved)\n");
 				sessionInfo.players[p].ipFromNAT=false;
 				sessionInfo.players[p].waitForNatResolution=false;
 				
 				if (waitingTimeout>4 && waitingState==WS_CROSS_CONNECTING_START_CONFIRMED)
 					waitingTimeout=2;
-			}
-			else
-				fprintf(logFile, "\n");
+			//}
+			//else
+			//	fprintf(logFile, "\n");
 		}
 		
 		if (sessionInfo.players[p].netState<BasePlayer::PNS_BINDED)

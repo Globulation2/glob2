@@ -56,13 +56,13 @@ public:
 	{
 		IPaddress hostip;
 		char userName[32];
-		char name[128];
+		char name[64];
 		Uint32 uid;
 		int numberOfPlayer;
 		int numberOfTeam;
 		bool fileIsAMap;
 		int mapGenerationMethode;
-		char mapName[128];
+		char mapName[64];
 		bool natSolved;
 		Uint32 huid; //the uid of the game host
 	};
@@ -165,7 +165,7 @@ public:
 	std::list<Message> receivedMessages;
 	
 	YOGSharingState yogSharingState;
-	char sharingGameName[128];
+	char sharingGameName[64];
 	int sharingGameTimeout;
 	int sharingGameTOTL;
 	

@@ -925,7 +925,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		fprintf(logFile, "this ip(%s) is cross connection achievement confirmed..\n", Utilities::stringIP(ip));
+		fprintf(logFile, "this ip(%s) player(%d) is cross connection achievement confirmed..\n", Utilities::stringIP(ip), i);
 
 		crossPacketRecieved[i]=3;
 
@@ -1478,7 +1478,7 @@ void MultiplayersHost::sendingTime()
 						if (sessionInfo.players[i].ipFromNAT)
 						{
 							IPaddress newip=globalContainer->yog->ipFromUserName(sessionInfo.players[i].name);
-							fprintf(logFile, "may replace ip(%s) by ip(%s)\n", Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
+							fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
 							if (newip.host)
 							{
 								sessionInfo.players[i].ip=newip;
