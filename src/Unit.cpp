@@ -808,7 +808,7 @@ void Unit::handleDisplacement(void)
 				{
 					//printf("Exiting building\n");
 					displacement=DIS_EXITING_BUILDING;
-					
+
 					if (destinationPurprose==FEED)
 					{
 						hungry=100000;
@@ -882,7 +882,7 @@ void Unit::handleDisplacement(void)
 
 			break;
 		}
-		
+
 		default:
 		{
 			assert (false);
@@ -895,7 +895,7 @@ void Unit::handleMovement(void)
 {
 	switch (displacement)
 	{
-		
+
 		case DIS_REMOVING_BLACK_AROUND:
 		{
 			if (attachedBuilding)
@@ -903,15 +903,15 @@ void Unit::handleMovement(void)
 				movement=MOV_GOING_DXDY;
 				int bposX=attachedBuilding->posX;
 				int bposY=attachedBuilding->posY;
-				
+
 				int ldx=bposX-posX;
 				int ldy=bposY-posY;
 				int cdx, cdy;
 				simplifyDirection(ldx, ldy, &cdx, &cdy);
-				
-				
+
+
 				dx=-cdy;
-				dy=cdx;	
+				dy=cdx;
 				if (!owner->game->map.isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->teamNumber))
 				{
 					dx=cdx;
@@ -946,7 +946,7 @@ void Unit::handleMovement(void)
 						dx=0;
 						dy=-1;
 					}
-					
+
 					if ((syncRand()<0x0BFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY+i, owner->teamNumber)))
 					{
 						movement=MOV_GOING_DXDY;
@@ -983,30 +983,38 @@ void Unit::handleMovement(void)
 			{
 				movement=MOV_ATTACKING_TARGET;
 			}
-			else 
+			else
 			{
 				movement=MOV_RANDOM;
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
-					{
-						int uid=owner->game->map.getUnit(posX+x, posY+y);
-						if (uid!=NOUID)
+						if (owner->game->map.isFOW(posX+x, posY+y, owner->teamNumber))
 						{
-							int team;
-							if (uid<0)
-								team=Building::UIDtoTeam(uid);
-							else
-								team=Unit::UIDtoTeam(uid);
-							Uint32 tm=1<<team;
-							if (owner->enemies & tm)
+							int uid=owner->game->map.getUnit(posX+x, posY+y);
+							if (uid!=NOUID)
 							{
-								movement=MOV_GOING_TARGET;
-								targetX=posX+x;
-								targetY=posY+y;
-								break;
+								int team, id;
+								if (uid<0)
+								{
+									team=Building::UIDtoTeam(uid);
+									id=Building::UIDtoID(uid);
+									if (owner->game->teams[team]->myBuildings[id]->type->isVirtual)
+										continue;
+								}
+								else
+								{
+									team=Unit::UIDtoTeam(uid);
+								}
+								Uint32 tm=1<<team;
+								if (owner->enemies & tm)
+								{
+									movement=MOV_GOING_TARGET;
+									targetX=posX+x;
+									targetY=posY+y;
+									break;
+								}
 							}
 						}
-					}
 			}
 		}
 		break;
@@ -1022,7 +1030,7 @@ void Unit::handleMovement(void)
 			}
 		}
 		break;
-		
+
 		case DIS_GOING_TO_FLAG:
 		case DIS_GOING_TO_BUILDING:
 		{
