@@ -177,6 +177,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					// if in edit mode, replace cursor
 					if (!readOnly)
 					{
+						// TODO : UTF8 clean cursor displacement in text
 						unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 						unsigned int newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
 						if (newPosY!=cursorPosY)
@@ -213,6 +214,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 						// if in edit mode, replace cursor
 						if (!readOnly)
 						{
+							// TODO : UTF8 clean cursor displacement in text
 							unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 							unsigned int newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
 							if (newPosY!=cursorPosY)
@@ -250,6 +252,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if ((!readOnly) && (cursorPosY>0))
 				{
+					// TODO : UTF8 clean cursor displacement in text
 					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 					unsigned int newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
 					
@@ -272,6 +275,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if ((!readOnly) && (cursorPosY+1<lines.size()))
 				{
+					// TODO : UTF8 clean cursor displacement in text
 					unsigned int cursorPosX=cursorPos-lines[cursorPosY];
 					unsigned int newLineLen;
 					
@@ -476,6 +480,7 @@ void TextArea::computeAndRepaint(void)
 				areaPos++;
 		}
 
+		// TODO : UTF8 clean cursor displacement in text should lead to the removal of this code !!
 		// we need to assert cursorPos will point on the beginning of a valid UTF8 char
 		unsigned utf8CleanCursorPos = lines[cursorPosY];
 		while (utf8CleanCursorPos + getNextUTF8Char(textBuffer[utf8CleanCursorPos]) <= cursorPos)
