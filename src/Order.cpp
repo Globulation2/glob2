@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "Order.h"
@@ -97,6 +97,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	case ORDER_SUBMIT_CHECK_SUM:
 	{
 		return new SubmitCheckSumOrder(netData+4,netDataLength-4);
+	}
+	case ORDER_MAP_MARK:
+	{
+		return new MapMarkOrder(netData+4,netDataLength-4);
 	}
 	case ORDER_WAITING_FOR_PLAYER:
 	{
@@ -800,6 +804,45 @@ bool SubmitCheckSumOrder::setData(const char *data, int dataLength)
 	
 	memcpy(this->data,data,dataLength);
 	
+	return true;
+}
+
+// MapMarkOrder's code
+
+MapMarkOrder::MapMarkOrder(const char *data, int dataLength)
+:MiscOrder()
+{
+	assert(dataLength==12);
+
+	setData(data, dataLength);
+}
+
+MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
+{
+	this->teamNumber=teamNumber;
+	this->x=x;
+	this->y=y;
+}
+
+char *MapMarkOrder::getData(void)
+{
+	addUint32(data, this->teamNumber, 0);
+	addUint32(data, this->x, 4);
+	addUint32(data, this->y, 8);
+	return data;
+}
+
+bool MapMarkOrder::setData(const char *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+
+	this->teamNumber=getUint32(data, 0);
+	this->x=getUint32(data, 4);
+	this->y=getUint32(data, 8);
+
+	memcpy(this->data,data,dataLength);
+
 	return true;
 }
 
