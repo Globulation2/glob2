@@ -1,5 +1,7 @@
 Globulation 2
 
+Under UNIX :
+
 If you have taken this from CVS and you want to build the package;
 type this in the same directory as this file :
 
@@ -7,3 +9,8 @@ autoheader && aclocal && automake --add-missing && autoconf
 
 Then read the INSTALL file.
 
+
+Under Win32 :
+
+To build the data file,s run makedata.bat in the data subdirectory, then use glob2.dsw
+with MSDEV to build glob2
