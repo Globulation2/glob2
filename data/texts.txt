@@ -511,7 +511,7 @@ Připojit
 Łączę
 [Disconnect]
 Déconnecter
-Disonnect
+Disconnect
 Trennen
 Odpojit
 Zrywam połączenie
