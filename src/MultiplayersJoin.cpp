@@ -1082,7 +1082,7 @@ void MultiplayersJoin::sendingTime()
 			Uint32 receivedEnd[8];
 			memset(receivedBegin, 0, 8*sizeof(Uint32));
 			memset(receivedEnd, 0, 8*sizeof(Uint32));
-			Uint32 localUnreceivedIndex=unreceivedIndex;
+			Uint32 alreadyCountedIndex=unreceivedIndex;
 			int ixend=0;
 			for (int ix=0; ix<8; ix++)
 			{
@@ -1092,7 +1092,7 @@ void MultiplayersJoin::sendingTime()
 					if (packetSlot[i].received)
 					{
 						Uint32 index=packetSlot[i].index;
-						if (index>localUnreceivedIndex && index<minIndex)
+						if (index>alreadyCountedIndex && index<minIndex)
 						{
 							minIndex=index;
 							mini=i;
@@ -1111,13 +1111,18 @@ void MultiplayersJoin::sendingTime()
 					{
 						hit=false;
 						for (int i=0; i<PACKET_SLOTS; i++)
-							if (packetSlot[i].received && packetSlot[i].index==minIndex)
+						if (packetSlot[i].received)
+						{
+							Uint32 index=packetSlot[i].index;
+							if (index>alreadyCountedIndex && index==minIndex)
 							{
 								minIndex+=1024;
 								hit=true;
 							}
+						}
 					}
 					receivedEnd[ix]=minIndex;
+					alreadyCountedIndex=minIndex;
 					ixend=ix;
 				}
 			}
