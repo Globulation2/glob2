@@ -423,7 +423,7 @@ void MultiplayersHost::switchPlayerTeam(int p)
 	reinitPlayersState();
 }
 
-void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
+void MultiplayersHost::removePlayer(Uint8 *data, int size, IPaddress ip)
 {
 	int i;
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -437,7 +437,7 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 	removePlayer(i);
 }
 
-void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddress ip)
+void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddress ip)
 {
 	if (rsize!=8)
 	{
@@ -447,7 +447,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 	else
 		fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
 	
-	char sdata[128+12];
+	Uint8 sdata[128+12];
 	sdata[0]=YMT_GAME_INFO_FROM_HOST;
 	sdata[1]=0;
 	sdata[2]=0;
@@ -461,8 +461,8 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 		addSint8(sdata, (Sint8)sessionInfo.mapGenerationDescriptor->methode, 11);
 	else
 		addSint8(sdata, (Sint8)MapGenerationDescriptor::eNONE, 11);
-	strncpy(sdata+12, sessionInfo.getMapName(), 64);
-	int ssize=Utilities::strmlen(sdata+12, 64)+12;
+	strncpy((char *)(sdata+12), sessionInfo.getMapName(), 64);
+	int ssize=Utilities::strmlen((char *)(sdata+12), 64)+12;
 	assert(ssize<64+12);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
 	if (packet==NULL)
@@ -471,7 +471,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 		return;
 	packet->len=ssize;
 
-	memcpy((char *)packet->data, sdata, ssize);
+	memcpy(packet->data, sdata, ssize);
 
 	bool sucess;
 
@@ -484,7 +484,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 	SDLNet_FreePacket(packet);
 }
 
-void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
+void MultiplayersHost::newPlayerPresence(Uint8 *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
 	if (size!=40)
@@ -498,7 +498,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	if (savedSessionInfo)
 	{
 		char playerName[BasePlayer::MAX_NAME_LENGTH];
-		memcpy(playerName, (char *)(data+8), 32);
+		memcpy(playerName, data+8, 32);
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
 	
@@ -526,7 +526,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
-	memcpy(sessionInfo.players[p].name, (char *)(data+8), 32);
+	memcpy(sessionInfo.players[p].name, data+8, 32);
 	sessionInfo.players[p].setip(ip);
 	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
 	fprintf(logFile, "this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
@@ -568,7 +568,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	}
 }
 
-void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
+void MultiplayersHost::playerWantsSession(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=10)
 	{
@@ -629,7 +629,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 		sessionInfo.players[p].netTimeout=3; // =1 would be enough, if loopback where safe.
 }
 
-void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
+void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 {
 	if (size>72)
 	{
@@ -651,7 +651,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 	
 	if (data[1]&1)
 	{
-		char data[12];
+		Uint8 data[12];
 		data[0]=FULL_FILE_DATA;
 		data[1]=1;
 		data[2]=0;
@@ -827,7 +827,7 @@ void MultiplayersHost::addAI()
 	reinitPlayersState();
 }
 
-void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
+void MultiplayersHost::confirmPlayer(Uint8 *data, int size, IPaddress ip)
 {
 	Sint32 rcs=getSint32(data, 4);
 	Sint32 lcs=sessionInfo.checkSum();
@@ -863,7 +863,7 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 		return;
 	}
 }
-void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddress ip)
+void MultiplayersHost::confirmStartCrossConnection(Uint8 *data, int size, IPaddress ip)
 {
 	int i;
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -887,7 +887,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 	else
 		fprintf(logFile, "this ip(%s) is start cross connection confirmed too early ??\n", Utilities::stringIP(ip));
 }
-void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddress ip)
+void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddress ip)
 {
 	int i;
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -911,7 +911,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 	}
 }
 
-void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPaddress ip)
+void MultiplayersHost::confirmCrossConnectionAchieved(Uint8 *data, int size, IPaddress ip)
 {
 	int i;
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
@@ -940,7 +940,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 	}
 }
 
-void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip)
+void MultiplayersHost::confirmPlayerStartGame(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=8)
 	{
@@ -981,7 +981,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 	}
 }
 
-void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
+void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
@@ -1021,7 +1021,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.getMapName());
 	//fprintf(logFile, "MultiplayersHost sendingB (%s).\n", &data[4]);
 	packet->len=4+mnl+unl;
-	memcpy((char *)packet->data, sdata, 4+mnl+unl);
+	memcpy(packet->data, sdata, 4+mnl+unl);
 
 	bool sucess;
 
@@ -1045,7 +1045,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 	channel=-1;
 }
 
-void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
+void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
 {
 	if (data[0]!=NEW_PLAYER_WANTS_FILE)
 		fprintf(logFile, "\nMultiplayersHost::treatData (%d)\n", data[0]);
@@ -1136,7 +1136,7 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
 			if ((startGameTimeCounter%10)==(i%10))
 			{
-				char data[8];
+				Uint8 data[8];
 				data[0]=SERVER_ASK_FOR_GAME_BEGINNING;
 				data[1]=0;
 				data[2]=0;
@@ -1168,7 +1168,7 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 
 			//fprintf(logFile, "packet->data=%s\n", packet->data);
 
-			treatData((char *)(packet->data), packet->len, packet->address);
+			treatData(packet->data, packet->len, packet->address);
 
 			//paintSessionInfo(hostGlobalState);
 			//addUpdateRect();
@@ -1181,7 +1181,7 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 bool MultiplayersHost::send(const int v)
 {
 	//fprintf(logFile, "Sending packet to all players (%d).\n", v);
-	char data[4];
+	Uint8 data[4];
 	data[0]=v;
 	data[1]=0;
 	data[2]=0;
@@ -1194,7 +1194,7 @@ bool MultiplayersHost::send(const int v)
 bool MultiplayersHost::send(const int u, const int v)
 {
 	//fprintf(logFile, "Sending packet to all players (%d;%d).\n", u, v);
-	char data[8];
+	Uint8 data[8];
 	data[0]=u;
 	data[1]=0;
 	data[2]=0;
@@ -1407,7 +1407,7 @@ void MultiplayersHost::sendingTime()
 					break;
 				}
 				
-				char *data=(char *)malloc(12+size);
+				Uint8 *data=(Uint8 *)malloc(12+size);
 				assert(data);
 				data[0]=FULL_FILE_DATA;
 				data[1]=0;
@@ -1507,13 +1507,13 @@ void MultiplayersHost::sendingTime()
 							}
 				}
 				
-				char *data=NULL;
+				Uint8 *data=NULL;
 				int size=sessionInfo.getDataLength(true);
 
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
 
-				data=(char *)malloc(size+8);
+				data=(Uint8 *)malloc(size+8);
 				assert(data);
 
 				data[0]=DATA_SESSION_INFO;
@@ -1540,7 +1540,7 @@ void MultiplayersHost::sendingTime()
 			case BasePlayer::PNS_PLAYER_SEND_CHECK_SUM :
 			{
 				fprintf(logFile, "Lets send the confiramtion for checksum to player %d.\n", i);
-				char data[8];
+				Uint8 data[8];
 				data[0]=SERVER_SEND_CHECKSUM_RECEPTION;
 				data[1]=0;
 				data[2]=0;

@@ -320,58 +320,49 @@ int Engine::run(void)
 	{
 		//int ticknb=0;
 		Uint32 startTick, endTick, deltaTick;
-		bool isNowWaiting=false;
+		bool networkReadyToExecute=true;
 		while (gui.isRunning)
 		{
-			//printf ("Engine::begin:%d\n", globalContainer->safe());
 			startTick=SDL_GetTicks();
 
-			// we get and push local orders
-
-			//printf ("Engine::bgu:%d\n", globalContainer->safe());
-
+			// We allways allow the user ot use the gui:
 			gui.step();
 			
-			if (!isNowWaiting)
-				gui.synchroneStep(); // This is better to call it "synchronously." Otherwise stats may appear wrongly extended...
+			// But some jobs have to be executed synchronously:
+			if (networkReadyToExecute)
+				gui.synchroneStep();
 
-			//printf ("Engine::bnp:%d\n", globalContainer->safe());
-			if (!gui.paused)
+			if (!gui.paused) // TODO: this is an ugly pause !
 			{
-				if (!isNowWaiting)
+				if (networkReadyToExecute)
+				{
+					// We get and push local orders
 					net->pushOrder(gui.getOrder(), gui.localPlayer);
 
-				// we get and push ai orders
-				if (!isNowWaiting)
-					for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
-					{
-						if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
-						{
+					// we get and push ai orders
+					for (int i=0; i<gui.game.session.numberOfPlayer; i++)
+						if (gui.game.players[i]->ai)
 							net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
-						}
-					}
-				//printf ("Engine::bns:%d\n", globalContainer->safe());
+				}
+				
+				// We proceed network:
+				networkReadyToExecute=net->stepReadyToExecute();
 
-				// we proceed network
-				net->step();
-				isNowWaiting=net->isNowWaiting();
-
-				//printf ("Engine::bge:%d\n", globalContainer->safe());
+				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 				{
 					Order *order=net->getOrder(i);
 					gui.executeOrder(order);
+					
 					// Some orders needs to be freed:
 					net->orderHasBeenExecuted(order);
 				}
-
-				//printf ("Engine::bne:%d\n", globalContainer->safe());
+				
+				net->stepExecuted();
 
 				// here we do the real work
 				gui.game.step(gui.localTeamNo);
 			}
-
-			//printf ("Engine::bdr:%d\n", globalContainer->safe());
 
 			// we draw
 			gui.drawAll(gui.localTeamNo);
@@ -382,13 +373,9 @@ int Engine::run(void)
 			globalContainer->gfx->nextFrame();
 
 			endTick=SDL_GetTicks();
-			deltaTick=endTick-startTick-net->advance();
-			//if (net->advance())
-			//	printf("advance=%d\n", net->advance());
+			deltaTick=endTick-startTick;
 			if (deltaTick<(unsigned)gui.game.session.gameTPF)
 				SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
-
-			//printf ("Engine::end:%d\n", globalContainer->safe());
 		}
 
 		delete net;

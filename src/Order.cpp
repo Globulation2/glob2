@@ -25,7 +25,7 @@ Order::Order(void)
 	inQueue=true;
 }
 
-Order *Order::getOrder(const char *netData, int netDataLength)
+Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 {
 	if (netDataLength<1)
 		return NULL;
@@ -35,48 +35,44 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 
 	case ORDER_CREATE:
 	{
-		return new OrderCreate(netData+4,netDataLength-4);	  
+		return new OrderCreate(netData+1, netDataLength-1);
 	}
 	case ORDER_DELETE:
 	{
-		return new OrderDelete(netData+4,netDataLength-4);
+		return new OrderDelete(netData+1, netDataLength-1);
 	}
 	case ORDER_CANCEL_DELETE:
 	{
-		return new OrderCancelDelete(netData+4,netDataLength-4);
+		return new OrderCancelDelete(netData+1, netDataLength-1);
 	}
 	case ORDER_CONSTRUCTION:
 	{
-		return new OrderConstruction(netData+4,netDataLength-4);
+		return new OrderConstruction(netData+1, netDataLength-1);
 	}
 	case ORDER_CANCEL_CONSTRUCTION:
 	{
-		return new OrderCancelConstruction(netData+4,netDataLength-4);
-	}
-	case PLAYER_EXPLAINS_HOST_IP:
-	{
-		return new PlayerExplainsHostIP(netData+4,netDataLength-4);
+		return new OrderCancelConstruction(netData+1, netDataLength-1);
 	}
 	case ORDER_MODIFY_UNIT:
 	{
 		assert(false);
-		return new OrderModifyUnits(netData+4,netDataLength-4);
+		return new OrderModifyUnits(netData+1, netDataLength-1);
 	}
 	case ORDER_MODIFY_BUILDING:
 	{
-		return new OrderModifyBuildings(netData+4,netDataLength-4);
+		return new OrderModifyBuildings(netData+1, netDataLength-1);
 	}
 	case ORDER_MODIFY_SWARM:
 	{
-		return new OrderModifySwarms(netData+4,netDataLength-4);
+		return new OrderModifySwarms(netData+1, netDataLength-1);
 	}
 	case ORDER_MODIFY_FLAG:
 	{
-		return new OrderModifyFlags(netData+4,netDataLength-4);
+		return new OrderModifyFlags(netData+1, netDataLength-1);
 	}
 	case ORDER_MOVE_FLAG:
 	{
-		return new OrderMoveFlags(netData+4,netDataLength-4);
+		return new OrderMoveFlags(netData+1, netDataLength-1);
 	}
 	case ORDER_QUITED:
 	{
@@ -88,39 +84,39 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	}
 	case ORDER_TEXT_MESSAGE:
 	{
-		return new MessageOrder(netData+4,netDataLength-4);
+		return new MessageOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_SET_ALLIANCE:
 	{
-		return new SetAllianceOrder(netData+4,netDataLength-4);
+		return new SetAllianceOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_SUBMIT_CHECK_SUM:
 	{
-		return new SubmitCheckSumOrder(netData+4,netDataLength-4);
+		return new SubmitCheckSumOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_MAP_MARK:
 	{
-		return new MapMarkOrder(netData+4,netDataLength-4);
+		return new MapMarkOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_WAITING_FOR_PLAYER:
 	{
-		return new WaitingForPlayerOrder(netData+4,netDataLength-4);
+		return new WaitingForPlayerOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_DROPPING_PLAYER:
 	{
-		return new DroppingPlayerOrder(netData+4,netDataLength-4);
+		return new DroppingPlayerOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_REQUESTING_AWAY:
 	{
-		return new RequestingDeadAwayOrder(netData+4,netDataLength-4);
+		return new RequestingDeadAwayOrder(netData+1, netDataLength-1);
 	}
 	case ORDER_NO_MORE_ORDER_AVIABLES:
 	{
-		return new NoMoreOrdersAviable(netData+4,netDataLength-4);
+		return new NoMoreOrdersAviable(netData+1, netDataLength-1);
 	}
 	case ORDER_PLAYER_QUIT_GAME :
 	{
-		return new PlayerQuitsGameOrder(netData+4,netDataLength-4);
+		return new PlayerQuitsGameOrder(netData+1, netDataLength-1);
 	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
@@ -131,7 +127,7 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 
 // OrderCreate's code
 
-OrderCreate::OrderCreate(const char *data, int dataLength)
+OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==16);
@@ -147,7 +143,7 @@ OrderCreate::OrderCreate(Uint32 team, Sint32 posX, Sint32 posY, BuildingType::Bu
 	this->typeNumber=typeNumber;
 }
 
-char *OrderCreate::getData(void)
+Uint8 *OrderCreate::getData(void)
 {
 	addSint32(data, this->team, 0);
 	addSint32(data, this->posX, 4);
@@ -157,7 +153,7 @@ char *OrderCreate::getData(void)
 	return data;
 }
 
-bool OrderCreate::setData(const char *data, int dataLength)
+bool OrderCreate::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -174,7 +170,7 @@ bool OrderCreate::setData(const char *data, int dataLength)
 
 // OrderDelete's code
 
-OrderDelete::OrderDelete(const char *data, int dataLength)
+OrderDelete::OrderDelete(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==4);
@@ -187,13 +183,13 @@ OrderDelete::OrderDelete(Sint32 UID)
 	this->UID=UID;
 }
 
-char *OrderDelete::getData(void)
+Uint8 *OrderDelete::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderDelete::setData(const char *data, int dataLength)
+bool OrderDelete::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -207,7 +203,7 @@ bool OrderDelete::setData(const char *data, int dataLength)
 
 // OrderCancelDelete's code
 
-OrderCancelDelete::OrderCancelDelete(const char *data, int dataLength)
+OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength)
 {
 	assert(dataLength==4);
 
@@ -219,13 +215,13 @@ OrderCancelDelete::OrderCancelDelete(Sint32 UID)
 	this->UID=UID;
 }
 
-char *OrderCancelDelete::getData(void)
+Uint8 *OrderCancelDelete::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderCancelDelete::setData(const char *data, int dataLength)
+bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -239,7 +235,7 @@ bool OrderCancelDelete::setData(const char *data, int dataLength)
 
 // OrderConstruction's code
 
-OrderConstruction::OrderConstruction(const char *data, int dataLength)
+OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==4);
@@ -253,13 +249,13 @@ OrderConstruction::OrderConstruction(Sint32 UID)
 	this->UID=UID;
 }
 
-char *OrderConstruction::getData(void)
+Uint8 *OrderConstruction::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderConstruction::setData(const char *data, int dataLength)
+bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -273,7 +269,7 @@ bool OrderConstruction::setData(const char *data, int dataLength)
 
 // OrderCancelConstruction's code
 
-OrderCancelConstruction::OrderCancelConstruction(const char *data, int dataLength)
+OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
 	assert(dataLength==4);
@@ -287,13 +283,13 @@ OrderCancelConstruction::OrderCancelConstruction(Sint32 UID)
 	this->UID=UID;
 }
 
-char *OrderCancelConstruction::getData(void)
+Uint8 *OrderCancelConstruction::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderCancelConstruction::setData(const char *data, int dataLength)
+bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -314,7 +310,7 @@ OrderModify::OrderModify()
 
 // OrderModifyUnits' code
 
-OrderModifyUnits::OrderModifyUnits(const char *data, int dataLength)
+OrderModifyUnits::OrderModifyUnits(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%12)==0);
@@ -330,7 +326,7 @@ OrderModifyUnits::OrderModifyUnits(Sint32 *UID, Sint32 *trigHP, Sint32 *trigHung
 	this->trigHP=(Sint32 *)malloc(length*4);
 	this->trigHungry=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(12*length);
+	this->data=(Uint8 *)malloc(12*length);
 
 	memcpy(this->UID,UID,length);
 	memcpy(this->trigHP,trigHP,length);
@@ -345,7 +341,7 @@ OrderModifyUnits::~OrderModifyUnits()
 	free(trigHungry);
 }
 
-char *OrderModifyUnits::getData(void)
+Uint8 *OrderModifyUnits::getData(void)
 {
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -357,7 +353,7 @@ char *OrderModifyUnits::getData(void)
 	return data;
 }
 
-bool OrderModifyUnits::setData(const char *data, int dataLength)
+bool OrderModifyUnits::setData(const Uint8 *data, int dataLength)
 {
 	if ((dataLength%12)!=0)
 		return false;
@@ -368,7 +364,7 @@ bool OrderModifyUnits::setData(const char *data, int dataLength)
 	this->trigHP=(Sint32 *)malloc(length*4);
 	this->trigHungry=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(12*length);
+	this->data=(Uint8 *)malloc(12*length);
 
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -386,7 +382,7 @@ bool OrderModifyUnits::setData(const char *data, int dataLength)
 
 // OrderModifyBuildings' code
 
-OrderModifyBuildings::OrderModifyBuildings(const char *data, int dataLength)
+OrderModifyBuildings::OrderModifyBuildings(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%8)==0);
@@ -395,7 +391,7 @@ OrderModifyBuildings::OrderModifyBuildings(const char *data, int dataLength)
 
 	this->UID=(Sint32 *)malloc(length*4);
 	this->numberRequested=(Sint32 *)malloc(length*4);
-	this->data=(char *)malloc(8*length);
+	this->data=(Uint8 *)malloc(8*length);
 	
 	setData(data, dataLength);
 }
@@ -406,7 +402,7 @@ OrderModifyBuildings::OrderModifyBuildings(Sint32 *UID, Sint32 *numberRequested,
 
 	this->UID=(Sint32 *)malloc(length*4);
 	this->numberRequested=(Sint32 *)malloc(length*4);
-	this->data=(char *)malloc(8*length);
+	this->data=(Uint8 *)malloc(8*length);
 
 	memcpy(this->UID,UID,length*4);
 	memcpy(this->numberRequested,numberRequested,length*4);
@@ -420,7 +416,7 @@ OrderModifyBuildings::~OrderModifyBuildings()
 	free(numberRequested);
 }
 
-char *OrderModifyBuildings::getData(void)
+Uint8 *OrderModifyBuildings::getData(void)
 {
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -431,7 +427,7 @@ char *OrderModifyBuildings::getData(void)
 	return data;
 }
 
-bool OrderModifyBuildings::setData(const char *data, int dataLength)
+bool OrderModifyBuildings::setData(const Uint8 *data, int dataLength)
 {
 	if ((dataLength%8)!=0)
 		return false;
@@ -446,7 +442,7 @@ bool OrderModifyBuildings::setData(const char *data, int dataLength)
 
 		this->UID=(Sint32 *)malloc(length*4);
 		this->numberRequested=(Sint32 *)malloc(length*4);
-		this->data=(char *)malloc(8*length);
+		this->data=(Uint8 *)malloc(8*length);
 		
 		assert(false);//remove this assert when you wants to use more than one building modification.
 	}
@@ -465,7 +461,7 @@ bool OrderModifyBuildings::setData(const char *data, int dataLength)
 
 // OrderModifySwarms' code
 
-OrderModifySwarms::OrderModifySwarms(const char *data, int dataLength)
+OrderModifySwarms::OrderModifySwarms(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert(UnitType::NB_UNIT_TYPE==3);
@@ -481,7 +477,7 @@ OrderModifySwarms::OrderModifySwarms(Sint32 *UID, Sint32 ratio[][UnitType::NB_UN
 
 	this->UID=(Sint32 *)malloc(length*4);
 	this->ratio=(Sint32 *)malloc(UnitType::NB_UNIT_TYPE*length*4);
-	this->data=(char *)malloc(16*length);
+	this->data=(Uint8 *)malloc(16*length);
 
 	memcpy(this->UID, UID, length*4);
 	memcpy(this->ratio, ratio, UnitType::NB_UNIT_TYPE*length*4);
@@ -494,7 +490,7 @@ OrderModifySwarms::~OrderModifySwarms()
 	free(data);
 }
 
-char *OrderModifySwarms::getData(void)
+Uint8 *OrderModifySwarms::getData(void)
 {
 	assert(UnitType::NB_UNIT_TYPE==3);
 	
@@ -508,7 +504,7 @@ char *OrderModifySwarms::getData(void)
 	return data;
 }
 
-bool OrderModifySwarms::setData(const char *data, int dataLength)
+bool OrderModifySwarms::setData(const Uint8 *data, int dataLength)
 {
 	if (UnitType::NB_UNIT_TYPE!=3)
 		return false;
@@ -519,7 +515,7 @@ bool OrderModifySwarms::setData(const char *data, int dataLength)
 
 	this->UID=(Sint32 *)malloc(length*4);
 	this->ratio=(Sint32 *)malloc(UnitType::NB_UNIT_TYPE*length*4);
-	this->data=(char *)malloc(16*length);
+	this->data=(Uint8 *)malloc(16*length);
 
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -536,7 +532,7 @@ bool OrderModifySwarms::setData(const char *data, int dataLength)
 
 // OrderModifyFlags' code
 
-OrderModifyFlags::OrderModifyFlags(const char *data, int dataLength)
+OrderModifyFlags::OrderModifyFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%8)==0);
@@ -551,7 +547,7 @@ OrderModifyFlags::OrderModifyFlags(Sint32 *UID, Sint32 *range, int length)
 	this->UID=(Sint32 *)malloc(length*4);
 	this->range=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(8*length);
+	this->data=(Uint8 *)malloc(8*length);
 
 	memcpy(this->UID,UID,length*4);
 	memcpy(this->range,range,length*4);
@@ -564,7 +560,7 @@ OrderModifyFlags::~OrderModifyFlags()
 	free(data);
 }
 
-char *OrderModifyFlags::getData(void)
+Uint8 *OrderModifyFlags::getData(void)
 {
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -575,7 +571,7 @@ char *OrderModifyFlags::getData(void)
 	return data;
 }
 
-bool OrderModifyFlags::setData(const char *data, int dataLength)
+bool OrderModifyFlags::setData(const Uint8 *data, int dataLength)
 {
 	if((dataLength%8)!=0)
 		return false;
@@ -585,7 +581,7 @@ bool OrderModifyFlags::setData(const char *data, int dataLength)
 	this->UID=(Sint32 *)malloc(length*4);
 	this->range=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(8*length);
+	this->data=(Uint8 *)malloc(8*length);
 
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -601,7 +597,7 @@ bool OrderModifyFlags::setData(const char *data, int dataLength)
 
 // OrderMoveFlags' code
 
-OrderMoveFlags::OrderMoveFlags(const char *data, int dataLength)
+OrderMoveFlags::OrderMoveFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%12)==0);
@@ -617,7 +613,7 @@ OrderMoveFlags::OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length)
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(12*length);
+	this->data=(Uint8 *)malloc(12*length);
 
 	memcpy(this->UID,UID,length*4);
 	memcpy(this->x,x,length*4);
@@ -632,7 +628,7 @@ OrderMoveFlags::~OrderMoveFlags()
 	free(data);
 }
 
-char *OrderMoveFlags::getData(void)
+Uint8 *OrderMoveFlags::getData(void)
 {
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -644,7 +640,7 @@ char *OrderMoveFlags::getData(void)
 	return data;
 }
 
-bool OrderMoveFlags::setData(const char *data, int dataLength)
+bool OrderMoveFlags::setData(const Uint8 *data, int dataLength)
 {
 	if((dataLength%12)!=0)
 		return false;
@@ -655,7 +651,7 @@ bool OrderMoveFlags::setData(const char *data, int dataLength)
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
 
-	this->data=(char *)malloc(12*length);
+	this->data=(Uint8 *)malloc(12*length);
 
 	int i;
 	for (i=0; i<(this->length); i++)
@@ -693,7 +689,7 @@ QuitedOrder::QuitedOrder()
 
 // MessageOrder's code
 
-MessageOrder::MessageOrder(const char *data, int dataLength)
+MessageOrder::MessageOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength>=5);
@@ -704,7 +700,7 @@ MessageOrder::MessageOrder(const char *data, int dataLength)
 MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text)
 {
 	this->length=strlen(text)+9;
-	this->data=(char *)malloc(length);
+	this->data=(Uint8 *)malloc(length);
 	memcpy(data+8, text, length-9);
 	this->data[length-1]=0;
 	addUint32(data, recepientsMask, 0);
@@ -718,12 +714,12 @@ MessageOrder::~MessageOrder()
 	free(this->data);
 }
 
-char *MessageOrder::getData(void)
+Uint8 *MessageOrder::getData(void)
 {
 	return this->data;
 }
 
-bool MessageOrder::setData(const char *data, int dataLength)
+bool MessageOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength<5)
 		return false;
@@ -732,7 +728,7 @@ bool MessageOrder::setData(const char *data, int dataLength)
 	this->recepientsMask=getUint32(data, 0);
 	this->messageOrderType=getUint32(data, 4);
 
-	this->data=(char *)malloc(dataLength);
+	this->data=(Uint8 *)malloc(dataLength);
 	memcpy(this->data, data, dataLength);
 
 	return true;
@@ -740,7 +736,7 @@ bool MessageOrder::setData(const char *data, int dataLength)
 
 // SetAllianceOrder's code
 
-SetAllianceOrder::SetAllianceOrder(const char *data, int dataLength)
+SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==12);
@@ -755,7 +751,7 @@ SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint3
 	this->visionMask=visionMask;
 }
 
-char *SetAllianceOrder::getData(void)
+Uint8 *SetAllianceOrder::getData(void)
 {
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->allianceMask, 4);
@@ -763,7 +759,7 @@ char *SetAllianceOrder::getData(void)
 	return data;
 }
 
-bool SetAllianceOrder::setData(const char *data, int dataLength)
+bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -779,7 +775,7 @@ bool SetAllianceOrder::setData(const char *data, int dataLength)
 
 // SubmitCheckSum's code
 
-SubmitCheckSumOrder::SubmitCheckSumOrder(const char *data, int dataLength)
+SubmitCheckSumOrder::SubmitCheckSumOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
@@ -792,13 +788,13 @@ SubmitCheckSumOrder::SubmitCheckSumOrder(Sint32 checkSumValue)
 	this->checkSumValue=checkSumValue;
 }
 
-char *SubmitCheckSumOrder::getData(void)
+Uint8 *SubmitCheckSumOrder::getData(void)
 {
 	addUint32(data, this->checkSumValue, 0);
 	return data;
 }
 
-bool SubmitCheckSumOrder::setData(const char *data, int dataLength)
+bool SubmitCheckSumOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -812,7 +808,7 @@ bool SubmitCheckSumOrder::setData(const char *data, int dataLength)
 
 // MapMarkOrder's code
 
-MapMarkOrder::MapMarkOrder(const char *data, int dataLength)
+MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==12);
@@ -827,7 +823,7 @@ MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
 	this->y=y;
 }
 
-char *MapMarkOrder::getData(void)
+Uint8 *MapMarkOrder::getData(void)
 {
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->x, 4);
@@ -835,7 +831,7 @@ char *MapMarkOrder::getData(void)
 	return data;
 }
 
-bool MapMarkOrder::setData(const char *data, int dataLength)
+bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -851,7 +847,7 @@ bool MapMarkOrder::setData(const char *data, int dataLength)
 
 // WaitingForPlayerOrder's code
 
-WaitingForPlayerOrder::WaitingForPlayerOrder(const char *data, int dataLength)
+WaitingForPlayerOrder::WaitingForPlayerOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
@@ -864,13 +860,13 @@ WaitingForPlayerOrder::WaitingForPlayerOrder(Uint32 maskAwayPlayer)
 	this->maskAwayPlayer=maskAwayPlayer;
 }
 
-char *WaitingForPlayerOrder::getData(void)
+Uint8 *WaitingForPlayerOrder::getData(void)
 {
 	addUint32(data, this->maskAwayPlayer, 0);
 	return data;
 }
 
-bool WaitingForPlayerOrder::setData(const char *data, int dataLength)
+bool WaitingForPlayerOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -885,48 +881,40 @@ bool WaitingForPlayerOrder::setData(const char *data, int dataLength)
 
 // DroppingPlayerOrder's code
 
-DroppingPlayerOrder::DroppingPlayerOrder(const char *data, int dataLength)
+DroppingPlayerOrder::DroppingPlayerOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
-	assert(dataLength==8);
-
+	assert(dataLength==4);
 	setData(data, dataLength);
 }
 
-DroppingPlayerOrder::DroppingPlayerOrder(Uint32 stayingPlayersMask, Sint32 dropState)
+DroppingPlayerOrder::DroppingPlayerOrder(Uint32 dropingPlayersMask)
 {
-	this->stayingPlayersMask=stayingPlayersMask;
-	this->dropState=dropState;
+	this->dropingPlayersMask=dropingPlayersMask;
 }
 
-char *DroppingPlayerOrder::getData(void)
+Uint8 *DroppingPlayerOrder::getData(void)
 {
-	addUint32(data, this->stayingPlayersMask, 0);
-	addUint32(data, this->dropState, 4);
+	addUint32(data, this->dropingPlayersMask, 0);
 	return data;
 }
 
-bool DroppingPlayerOrder::setData(const char *data, int dataLength)
+bool DroppingPlayerOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-
-	this->stayingPlayersMask=getUint32(data, 0);
-	this->dropState=getUint32(data, 4);
-	
-	memcpy(this->data,data,dataLength);
-	
+	this->dropingPlayersMask=getUint32(data, 0);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 
 // RequestingDeadAwayOrder's code
 
-RequestingDeadAwayOrder::RequestingDeadAwayOrder(const char *data, int dataLength)
+RequestingDeadAwayOrder::RequestingDeadAwayOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==12);
-
 	setData(data, dataLength);
 }
 
@@ -937,7 +925,7 @@ RequestingDeadAwayOrder::RequestingDeadAwayOrder(Sint32 player, Sint32 missingSt
 	this->lastAviableStep=lastAviableStep;
 }
 
-char *RequestingDeadAwayOrder::getData(void)
+Uint8 *RequestingDeadAwayOrder::getData(void)
 {
 	addUint32(data, this->player, 0);
 	addUint32(data, this->missingStep, 4);
@@ -945,7 +933,7 @@ char *RequestingDeadAwayOrder::getData(void)
 	return data;
 }
 
-bool RequestingDeadAwayOrder::setData(const char *data, int dataLength)
+bool RequestingDeadAwayOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -961,11 +949,10 @@ bool RequestingDeadAwayOrder::setData(const char *data, int dataLength)
 
 // NoMoreOrdersAviable code
 
-NoMoreOrdersAviable::NoMoreOrdersAviable(const char *data, int dataLength)
+NoMoreOrdersAviable::NoMoreOrdersAviable(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==8);
-
 	setData(data, dataLength);
 }
 
@@ -975,14 +962,14 @@ NoMoreOrdersAviable::NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep)
 	this->lastAviableStep=lastAviableStep;
 }
 
-char *NoMoreOrdersAviable::getData(void)
+Uint8 *NoMoreOrdersAviable::getData(void)
 {
 	addUint32(data, this->player, 0);
 	addUint32(data, this->lastAviableStep, 4);
 	return data;
 }
 
-bool NoMoreOrdersAviable::setData(const char *data, int dataLength)
+bool NoMoreOrdersAviable::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -997,11 +984,10 @@ bool NoMoreOrdersAviable::setData(const char *data, int dataLength)
 
 // PlayerQuitsGameOrder code
 
-PlayerQuitsGameOrder::PlayerQuitsGameOrder(const char *data, int dataLength)
+PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
 	assert(dataLength==4);
-
 	setData(data, dataLength);
 }
 
@@ -1010,53 +996,18 @@ PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
 	this->player=player;
 }
 
-char *PlayerQuitsGameOrder::getData(void)
+Uint8 *PlayerQuitsGameOrder::getData(void)
 {
 	addUint32(data, this->player, 0);
 	return data;
 }
 
-bool PlayerQuitsGameOrder::setData(const char *data, int dataLength)
+bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
 
 	this->player=getUint32(data, 0);
-	
-	memcpy(this->data,data,dataLength);
-	
-	return true;
-}
-// PlayerExplainsHostIP code
-
-PlayerExplainsHostIP::PlayerExplainsHostIP(const char *data, int dataLength)
-:MiscOrder()
-{
-	assert(dataLength==8);
-
-	setData(data, dataLength);
-}
-
-PlayerExplainsHostIP::PlayerExplainsHostIP(Uint32 host, Uint32 port)
-{
-	this->host=host;
-	this->port=port;
-}
-
-char *PlayerExplainsHostIP::getData(void)
-{
-	addUint32(data, this->host, 0);
-	addUint32(data, this->port, 4);
-	return data;
-}
-
-bool PlayerExplainsHostIP::setData(const char *data, int dataLength)
-{
-	if(dataLength!=getDataLength())
-		return false;
-
-	this->host=getUint32(data, 0);
-	this->port=getUint32(data, 4);
 	
 	memcpy(this->data,data,dataLength);
 	

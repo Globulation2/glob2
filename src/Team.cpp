@@ -73,7 +73,7 @@ Uint8 BaseTeam::getOrderType()
 	return DATA_BASE_TEAM;
 }
 
-char *BaseTeam::getData()
+Uint8 *BaseTeam::getData()
 {
 	addSint32(data, teamNumber, 0);
 	addSint32(data, numberOfPlayer, 4);
@@ -87,7 +87,7 @@ char *BaseTeam::getData()
 	return data;
 }
 
-bool BaseTeam::setData(const char *data, int dataLength)
+bool BaseTeam::setData(const Uint8 *data, int dataLength)
 {
 	if (dataLength!=getDataLength())
 		return false;

@@ -68,81 +68,79 @@ class NetGame
 public:
 	NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32]);
 	~NetGame();
-
-	void printQueue(char *str);
-	void orderHasBeenExecuted(Order *order);
-	Order *getOrder(Sint32 playerNumber);
-	void pushOrder(Order *order, Sint32 playerNumber);
-	void step(void);
 	void init(void);
 	
 private:
-	void treatData(char *data, int size, IPaddress ip);
-	bool isStepReady(Sint32 step);
-	int numberStepsReady(Sint32 step);
+	Uint32 whoMaskAreWeWaitingFor(void);
+	Uint32 whoMaskCountedOut(void);
+	Uint8 lastReceivedFromHim(int player);
+	void sendPushOrder(int targetPlayer);
+	void sendWaitingForPlayerOrder(int targetPlayer);
+	void sendDroppingPlayersMask(int targetPlayer, bool askForReply);
+	void sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resendingStep);
+	void sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resendingStep);
+	
 public:
-	int advance();
+	void pushOrder(Order *order, int playerNumber);
+	Order *getOrder(int playerNumber);
+	void orderHasBeenExecuted(Order *order);
+	
+	bool stepReadyToExecute(void);
+	void receptionStep(void);
+	void stepExecuted(void);
+	
 private:
-	bool smaller(int a, int b);
-	bool smalleroe(int a, int b);
-	bool nextUnrecievedStep(int currentStep, int *player, int *step);
-	bool nextUnrecievedStep(int currentStep, int player, int *step);
-	Uint32 whoMaskAreWeWaitingFor(Sint32 step);
-	void confirmNewStepRecievedFromHim(Sint32 recievedStep, Sint32 recievedFromPlayerNumber);
-	void sendMyOrderThroughUDP(Order *order, Sint32 orderStep, Sint32 targetPlayer, Sint32 confirmedStep);
+	void treatData(Uint8 *data, int size, IPaddress ip);
 
-	Sint32 numberOfPlayer;
-	Sint32 localPlayerNumber;
-	Sint32 currentStep;
+	int numberOfPlayer;
+	int localPlayerNumber;
+	
+	// The next step to push an order at.
+	// Should points to a freed order.
+	Uint8 pushStep;
+	
+	// The next step to be executed.
+	// Should points to a valid order, unless network possible packet loss.
+	// Mainly used by getOrder().
+	Uint8 executeStep;
+	
+	// The next step to be freed.
+	// Have to points to a valid order.
+	Uint8 freeingStep;
+	
+	// This is the number of orders by packet:
+	int ordersByPackets;
+	
+	Uint32 waitingForPlayerMask;
+	
 	Player *players[32];
 
-	enum {queueSize=256};//256
-	enum {latency=10};
-	enum {lostPacketLatencyMargin=2};
-	enum {MAX_GAME_PACKET_SIZE=2000};
-	enum {COUNT_DOWN_MIN=16};
-	enum {COUNT_DOWN_DEATH=200};
-
-	typedef struct
-	{
-		Order *order;
-		Sint32 packetID;
-		Sint32 ackID;
-	} playersNetQueueStruct;
+	enum {defaultLatency=8};//320[ms]
+	enum {MAX_GAME_PACKET_SIZE=1500};
+	enum {COUNT_DOWN_DEATH=100};
 	
-	playersNetQueueStruct playersNetQueue[32][queueSize];
-	bool isWaitingForPlayer;
-
-	Uint32 lastReceivedFromMe[32];
-	Uint32 lastReceivedFromHim[32];
-	
-	enum DropState
-	{
-		NO_DROP_PROCESSING=0,
-		STARTING_DROPPING_PROCESS=1,
-		ONE_STAY_MASK_RECIEVED=2,
-		CROSS_SENDING_STAY_MASK=3,
-		ALL_STAY_MASK_RECIEVED=4
-	};
+	Order *ordersQueue[32][256];
+	Uint8 lastReceivedFromMe[32];
 	
 	int countDown[32];
-	Uint32 stayingPlayersMask[32];
+	Uint32 droppingPlayersMask[32];
+	enum DropState
+	{
+		DS_NO_DROP_PROCESSING=0,
+		DS_EXCHANGING_DROPPING_MASK=1,
+		DS_EXCHANGING_ORDERS=2,
+		
+	};
 	DropState dropState;
-	int lastAviableStep[32][32];
-	std::list<Order *> localOrderQueue[32];
+	Uint8 theLastExecutedStep;
+	Uint8 lastExecutedStep[32];
+	Uint8 lastAviableStep[32][32];
 	
 	UDPsocket socket;
-	
-	int time;
 
-public:
-	bool isNowWaiting();
-
-private:
-	Sint32 checkSumsLocal[queueSize];
-	Sint32 checkSumsRemote[queueSize];
+	Sint32 checkSumsLocal[256];
+	Sint32 checkSumsRemote[256];
 	
-private:
 	FILE *logFile;
 };
 

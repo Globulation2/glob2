@@ -30,8 +30,8 @@ public:
 	virtual ~MapGenerationDescriptor(void);
 	
 	Uint8 getOrderType() {return ORDER_MAP_GENERATION_DEFINITION; }
-	char *getData();
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData();
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength() {return DATA_SIZE; }
 	
 	void save(SDL_RWops *stream);
@@ -70,7 +70,7 @@ public:
 	enum {DATA_SIZE=76};
 protected:
 	//! Serialized form of MapGenerationDescriptor
-	char data[DATA_SIZE];
+	Uint8 data[DATA_SIZE];
 };
 
 

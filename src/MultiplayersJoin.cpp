@@ -176,7 +176,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	}
 }
 
-void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
+void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
@@ -195,7 +195,7 @@ void MultiplayersJoin::dataPresenceRecieved(char *data, int size, IPaddress ip)
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
 }
 
-void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress ip)
+void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress ip)
 {
 	int pn=getSint32(data, 4);
 	myPlayerNumber=pn;
@@ -298,7 +298,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		startDownloadTimeout=2;
 }
 
-void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
+void MultiplayersJoin::dataFileRecieved(Uint8 *data, int size, IPaddress ip)
 {
 	if (data[1]==1)
 	{
@@ -319,7 +319,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		fprintf(logFile, " no more data file wanted. endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
 		fprintf(logFileDownload, " no more data file wanted. endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
 		
-		char data[8];
+		Uint8 data[8];
 		memset(data, 0, 8);
 		data[0]=NEW_PLAYER_WANTS_FILE;
 		data[1]=0;
@@ -403,7 +403,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 		downloadStream=NULL;
 		
 		// We have to tell the server that we finished correctly the download:
-		char data[8];
+		Uint8 data[8];
 		memset(data, 0, 8);
 		data[0]=NEW_PLAYER_WANTS_FILE;
 		data[1]=0;
@@ -416,7 +416,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	waitingTOTL=DEFAULT_NETWORK_TOTL;
 }
 
-void MultiplayersJoin::checkSumConfirmationRecieved(char *data, int size, IPaddress ip)
+void MultiplayersJoin::checkSumConfirmationRecieved(Uint8 *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "checkSumConfirmationRecieved\n");
 
@@ -477,7 +477,7 @@ void MultiplayersJoin::startCrossConnections(void)
 	checkAllCrossConnected();
 }
 
-void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddress ip)
+void MultiplayersJoin::crossConnectionFirstMessage(Uint8 *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "crossConnectionFirstMessage\n");
 
@@ -522,7 +522,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 				crossPacketRecieved[p]=1;
 			fprintf(logFile, "crossConnectionFirstMessage packet recieved (%d)\n", p);
 
-			char data[8];
+			Uint8 data[8];
 			data[0]=PLAYER_CROSS_CONNECTION_SECOND_MESSAGE;
 			data[1]=0;
 			data[2]=0;
@@ -577,7 +577,7 @@ void MultiplayersJoin::checkAllCrossConnected()
 	}
 }
 
-void MultiplayersJoin::crossConnectionSecondMessage(char *data, int size, IPaddress ip)
+void MultiplayersJoin::crossConnectionSecondMessage(Uint8 *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "crossConnectionSecondMessage\n");
 
@@ -629,7 +629,7 @@ void MultiplayersJoin::crossConnectionsAchievedConfirmation(IPaddress ip)
 		fprintf(logFile, "Warning: ip(%s) sent us a crossConnection achieved state while in a bad state!.\n", Utilities::stringIP(ip));
 }
 
-void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
+void MultiplayersJoin::serverAskForBeginning(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=8)
 	{
@@ -653,7 +653,7 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 
 }
 
-void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress ip)
+void MultiplayersJoin::serverBroadcastResponse(Uint8 *data, int size, IPaddress ip)
 {
 	int v=data[0];
 	if (size>4+64+32)
@@ -662,9 +662,9 @@ void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress i
 		return;
 	}
 	LANHost lanhost;
-	int gnl=Utilities::strmlen(data+4, 64);
+	int gnl=Utilities::strmlen((char *)(data+4), 64);
 	memcpy(lanhost.gameName, data+4, gnl);
-	int snnl=Utilities::strmlen(data+4+gnl, 32);
+	int snnl=Utilities::strmlen((char *)(data+4+gnl), 32);
 	memcpy(lanhost.serverNickName, data+4+gnl, snnl);
 	
 	fprintf(logFile, "broadcastState=%d.\n", broadcastState);
@@ -695,7 +695,7 @@ void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress i
 		fprintf(logFile, "bad state to remember broadcasting (broadcastState=%d, c=%d)\n", broadcastState, v);
 }
 
-void MultiplayersJoin::serverBroadcastStopHosting(char *data, int size, IPaddress ip)
+void MultiplayersJoin::serverBroadcastStopHosting(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
@@ -718,7 +718,7 @@ void MultiplayersJoin::serverBroadcastStopHosting(char *data, int size, IPaddres
 		fprintf(logFile, "bad state to remember serverBroadcastStopHosting (broadcastState=%d)\n", broadcastState);
 }
 
-void MultiplayersJoin::joinerBroadcastRequest(char *data, int size, IPaddress ip)
+void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
@@ -746,7 +746,7 @@ void MultiplayersJoin::joinerBroadcastRequest(char *data, int size, IPaddress ip
 	SDLNet_FreePacket(packet);
 }
 
-void MultiplayersJoin::joinerBroadcastResponse(char *data, int size, IPaddress ip)
+void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress ip)
 {
 	if (size>4+32 || size<4+2)
 	{
@@ -773,7 +773,7 @@ void MultiplayersJoin::joinerBroadcastResponse(char *data, int size, IPaddress i
 		fprintf(logFile, "Warning, joinerBroadcastResponse packet received while in a bad state. (ws=%d).\n", waitingState);
 }
 
-void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
+void MultiplayersJoin::treatData(Uint8 *data, int size, IPaddress ip)
 {
 	if (data[0]!=FULL_FILE_DATA)
 		fprintf(logFile, "\nMultiplayersJoin::treatData (%d)\n", data[0]);
@@ -978,7 +978,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			treatData((char *)(packet->data), packet->len, packet->address);
+			treatData(packet->data, packet->len, packet->address);
 			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
 			//fprintf(logFile, "packet->len=%d\n", packet->len);
 			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
@@ -1132,7 +1132,7 @@ void MultiplayersJoin::sendingTime()
 			
 			// Let's create the packet:
 			int size=8+8*ixend;
-			char data[size];
+			Uint8 data[size];
 			memset(data, 0, size);
 			data[0]=NEW_PLAYER_WANTS_FILE;
 			data[1]=(endOfFileIndex==0xFFFFFFFF);
@@ -1394,7 +1394,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	packet->data[3]=0;
 	Sint32 cs=sessionInfo.checkSum();
 	fprintf(logFile, "cs=%x.\n", cs);
-	addSint32((char *)(packet->data), cs, 4);
+	addSint32(packet->data, cs, 4);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 		fprintf(logFile, "suceeded to send confirmation packet\n");
@@ -1415,7 +1415,7 @@ bool MultiplayersJoin::sendSessionInfoConfirmation()
 	return true;
 }
 
-bool MultiplayersJoin::send(char *data, int size)
+bool MultiplayersJoin::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 

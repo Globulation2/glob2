@@ -51,15 +51,15 @@ public:
 	bool disableRecursiveDestruction;
 	
 private:
-	char data[16];
+	Uint8 data[16];
 
 public:
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
-	char *getData();
-	bool setData(const char *data, int dataLength);
+	Uint8 *getData();
+	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength();
 	Sint32 checkSum();
 };

@@ -51,7 +51,7 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 	// Tuut-tuut bom-bom
 }
 
-char *MapGenerationDescriptor::getData()
+Uint8 *MapGenerationDescriptor::getData()
 {
 	assert(DATA_SIZE==76);
 	
@@ -85,7 +85,7 @@ char *MapGenerationDescriptor::getData()
 	return data;
 }
 
-bool MapGenerationDescriptor::setData(const char *data, int dataLength)
+bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
 	assert(DATA_SIZE==76);
 	assert(getDataLength()==DATA_SIZE);
