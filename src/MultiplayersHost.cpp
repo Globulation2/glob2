@@ -872,8 +872,9 @@ void MultiplayersHost::onTimer(Uint32 tick)
 			{
 				Uint16 port=globalContainer->yog.getFirewallActivationPort();
 				char *hostName=globalContainer->yog.getFirewallActivationHostname();
+				NETPRINTF("have to send water to firewall. port=(%d)\n", port);
 				IPaddress ip;
-				if(SDLNet_ResolveHost(&ip, hostName, port)!=0)
+				if(SDLNet_ResolveHost(&ip, hostName, SDL_SwapBE16(port))!=0)
 				{
 					printf("failed to resolve host (%s).\n", hostName);
 					continue;
@@ -894,6 +895,8 @@ void MultiplayersHost::onTimer(Uint32 tick)
 				SDLNet_FreePacket(packet);
 				if (!success)
 					printf("MultiplayersHost::failed to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
+				else
+					printf("MultiplayersHost::sucess to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
 				
 				isNext=globalContainer->yog.getNextFirewallActivation();
 			}
