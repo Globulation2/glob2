@@ -24,6 +24,8 @@
 #include "../src/Utilities.h"
 #include <errno.h>
 #include <stdarg.h>
+#include <locale.h>
+#include <time.h>
 
 FILE *logServerFile=NULL;
 YOGClient *admin=NULL;
@@ -1463,30 +1465,35 @@ void YOGServer::lprintf(const char *msg, ...)
 {
 	va_list arglist;
 	char output[256];
-
 	va_start(arglist, msg);
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
+	char outputDated[256];
+	
+	time_t ts=time(NULL);
+	tm *p=localtime(&ts);
+	snprintf(outputDated, 256, "[%4d/%2d/%2d %2d:%2d:%2d] %s", p->tm_year+1900, p->tm_mon+1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, output);
+	
 	if (strncmp(YOG_SERVER_IP, "192.168", 7)==0)
-		printf("%s", output);
+		printf("%s", outputDated);
 	
 	if (logServerFile)
 	{
-		fputs(output, logServerFile);
+		fputs(outputDated, logServerFile);
 		int fflushRv=fflush(logServerFile);
 		assert(fflushRv==0);
 	}
 	
 	int i;
 	for (i=0; i<256; i++)
-		if (output[i]=='\n' || output[i]==0)
+		if (outputDated[i]=='\n' || outputDated[i]==0)
 		{
-			output[i]=0;
+			outputDated[i]=0;
 			break;
 		}
 	if (admin)
-		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)output, i+1);
+		admin->send(YMT_ADMIN_MESSAGE, (Uint8 *)outputDated, i+1);
 }
 
 int main(int argc, char *argv[])
