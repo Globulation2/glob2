@@ -143,7 +143,7 @@ private:
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
 
-	friend class InGameAlliance8Screen;
+	friend class InGameAllianceScreen;
 
 	//! Display mode
 	enum DisplayMode
@@ -224,7 +224,7 @@ private:
 		IGM_LOAD,
 		IGM_SAVE,
 		IGM_OPTION,
-		IGM_ALLIANCE8,
+		IGM_ALLIANCE,
 		IGM_END_OF_GAME
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
