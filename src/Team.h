@@ -126,7 +126,7 @@ public:
 	
 	//! Return the name of the first player in the team
 	const char *getFirstPlayerName(void);
-
+	
 private:
 	void init(void);
 
@@ -162,6 +162,7 @@ public:
 	Uint32 me; // Who am I. mask.
 
 	int startPosX, startPosY;
+	int prestige;
 
 	// TODO : use a subtil way to allocate UID
 	//Sint32 newUnitUID zzz

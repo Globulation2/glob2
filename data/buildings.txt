@@ -114,6 +114,8 @@ defaultUnitStayRange = 0
 viewingRange = 1
 regenerationSpeed = 0
 
+prestige = 0
+
 *
 
 // swarm building site
@@ -873,9 +875,9 @@ height = 2
 decLeft = -1
 decTop = -1
 maxFood = 4
-maxWood = 5
-maxStone = 5
-maxAlgue = 14
+maxWood = 7
+maxStone = 12
+maxAlgue = 10
 hpInit = 260
 hpMax = 350
 hpInc = 3
@@ -902,9 +904,10 @@ decTop = -1
 maxUnitInside = 9
 hpInit = 350
 hpMax = 350
-armor = 2
+armor = 8
 level = 2
 type = 6
+prestige = 50
 
 *
 

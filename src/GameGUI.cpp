@@ -62,7 +62,6 @@ void GameGUI::init()
 	isRunning=true;
 	exitGlobCompletely=false;
 	toLoadGameFileName[0]=0;
-	needRedraw=true;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
 	viewportX=0;
@@ -646,7 +645,6 @@ void GameGUI::handleRightClick(void)
 		selUnit=NULL;
 		selectionUID=0;
 		typeToBuild=-1;
-		needRedraw=true;
 	}
 }
 
@@ -1017,8 +1015,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				game.selectedUnit=NULL;
 				game.selectedBuilding=NULL;
 				selBuild=NULL;
-				selUnit=NULL;
-				needRedraw=true;*/
+				selUnit=NULL;*/
 			}
 			//! look if there is a virtual building (flag) selected
 		}
@@ -1078,7 +1075,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					inGameMenu=IGM_NONE;
 				}*/
 			}
-			needRedraw=true;
 		}
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
@@ -1090,7 +1086,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int xNum=mx>>6;
 			int yNum=(my-128-32)/46;
 			typeToBuild=yNum*2+xNum;
-			needRedraw=true;
 		}
 	}
 	else if (displayMode==STAT_VIEW)
@@ -1283,7 +1278,6 @@ void GameGUI::draw(void)
 {
 	checkValidSelection();
 	{
-		needRedraw=false;
 		globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 		
 		// draw menu background, black if low speed graphics, transparent otherwise
@@ -1835,6 +1829,8 @@ void GameGUI::drawOverlayInfos(void)
 		// TODO : draw lost screen
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, "%s", globalContainer->texts.getString("[you have won]"));
 	}
+	if (game.totalPrestigeReached)
+		globalContainer->gfx->drawString(20, (globalContainer->gfx->getH()>>1)+30, globalContainer->littleFont, "%s", "total prestige reached");
 
 	// draw message List
 	// FIXME : shift this into a menu
@@ -1968,7 +1964,7 @@ void GameGUI::drawOverlayInfos(void)
 	int free, tot, i;
 	
 	int dec=(globalContainer->gfx->getW()-640)>>2;
-	dec += 32;
+	dec += 20;
 	
 	globalContainer->unitmini->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 	for (i=0; i<3; i++)
@@ -1990,8 +1986,10 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawString(dec+22, 3, globalContainer->littleFont, "%d / %d", free, tot);
 		globalContainer->littleFont->popColor();
 		
-		dec += 148;
+		dec += 118;
 	}
+	
+	globalContainer->gfx->drawString(dec+22, 3, globalContainer->littleFont, "%d / %d", localTeam->prestige, game.totalPrestige);
 }
 
 void GameGUI::drawInGameMenu(void)
@@ -2312,7 +2310,6 @@ void GameGUI::checkValidSelection(void)
 			game.selectedUnit=NULL;
 			game.selectedBuilding=NULL;
 			displayMode=BUILDING_AND_FLAG;
-			needRedraw=true;
 		}
 	}
 	else if (displayMode==UNIT_SELECTION_VIEW)
@@ -2331,7 +2328,6 @@ void GameGUI::checkValidSelection(void)
 			game.selectedUnit=NULL;
 			game.selectedBuilding=NULL;
 			displayMode=BUILDING_AND_FLAG;
-			needRedraw=true;
 		}
 	}
 	else

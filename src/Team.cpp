@@ -192,6 +192,7 @@ void Team::init(void)
 	eventPosY=startPosY;
 	isAlive=true;
 	hasWon=false;
+	prestige=0;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
@@ -467,6 +468,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	swarms.clear();
 	turrets.clear();
 	virtualBuildings.clear();
+	prestige=0;
 	for (i=0; i<512; i++)
 	{
 		if (myBuildings[i])
