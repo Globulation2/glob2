@@ -52,6 +52,7 @@ GlobalContainer::GlobalContainer(void)
 	assert(fileManager);
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
+	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	logFileManager = new LogFileManager(fileManager);

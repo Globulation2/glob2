@@ -636,3 +636,5 @@ Volume (music)
 Happiness
 [customcur]
 Custom cursor
+[choose campaign]
+Choose a campaign

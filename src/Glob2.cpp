@@ -272,9 +272,8 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CAMPAIN:
 			{
-				//MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, "Campaign not available", "Ok");
 				Engine engine;
-				if (engine.initCampain("maps/test.map") == Engine::EE_NO_ERROR)
+				if (engine.initCampain() == Engine::EE_NO_ERROR)
 					isRunning = (engine.run() != -1);
 			}
 			break;

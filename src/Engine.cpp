@@ -79,6 +79,16 @@ Engine::~Engine()
 	}
 }
 
+int Engine::initCampain()
+{
+	ChooseMapScreen loadCampaignScreen("campaigns", "map", true);;
+	int lgs = loadCampaignScreen.execute(globalContainer->gfx, 40);
+	if (lgs == ChooseMapScreen::CANCEL)
+		return EE_CANCEL;
+
+	return initCampain(loadCampaignScreen.sessionInfo.getFileName());
+}
+
 int Engine::initCampain(const std::string &mapName)
 {
 	if (!loadGame(mapName))
