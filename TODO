@@ -7,14 +7,12 @@ To First release :
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
-- Find a solution to the problem of units exiting buildings (remove ressources round building which train units ?) (nct)
 
 To Next version :
 
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - units have experience. (nct)
 - building finished message must contain building type. Select building when doing this. (nct)
-- do icons for buildings. (nct)
 - makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 
 For later later :
