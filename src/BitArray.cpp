@@ -19,6 +19,7 @@
 
 #include "BitArray.h"
 #include <assert.h>
+#include <algorithm>
 
 namespace Utilities
 {
