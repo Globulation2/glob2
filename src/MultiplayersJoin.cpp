@@ -176,6 +176,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 		broadcastState=BS_BAD;
 		localPort=0;
 	}
+	fprintf(logFile, "broadcastState=%d\n", broadcastState);
 }
 
 void MultiplayersJoin::dataPresenceRecieved(Uint8 *data, int size, IPaddress ip)
@@ -1095,18 +1096,21 @@ void MultiplayersJoin::sendingTime()
 			broadcastState=BS_ENABLE_YOG;
 	}
 	
-	if (socket&&(broadcastState==BS_ENABLE_LAN || broadcastState==BS_ENABLE_YOG)&&(--broadcastTimeout<0))
+	if (socket && (--broadcastTimeout<0))
 	{
-		if (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYOG)
+		if ((broadcastState==BS_ENABLE_LAN || broadcastState==BS_ENABLE_YOG) 
+			&& (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYOG))
 			sendBroadcastRequest(GAME_SERVER_PORT);
-		if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
-		{
-			sendBroadcastRequest(GAME_JOINER_PORT_1);
-			SDL_Delay(10);
-			sendBroadcastRequest(GAME_JOINER_PORT_2);
-			SDL_Delay(10);
-			sendBroadcastRequest(GAME_JOINER_PORT_3);
-		}
+		
+		if ((broadcastState==BS_ENABLE_YOG || broadcastState==BS_JOINED_YOG)
+			&& (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION))
+			{
+				sendBroadcastRequest(GAME_JOINER_PORT_1);
+				SDL_Delay(10);
+				sendBroadcastRequest(GAME_JOINER_PORT_2);
+				SDL_Delay(10);
+				sendBroadcastRequest(GAME_JOINER_PORT_3);
+			}
 	}
 	
 	if ((waitingState!=WS_TYPING_SERVER_NAME) && downloadStream)
@@ -1222,7 +1226,7 @@ void MultiplayersJoin::sendingTime()
 			fprintf(logFile, "Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
 			
-			if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
+			if (broadcastState==BS_ENABLE_YOG)
 				broadcastState=BS_DISABLE_YOG;
 			fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 		}
