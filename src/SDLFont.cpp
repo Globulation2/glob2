@@ -313,15 +313,18 @@ SDLTTFont::~SDLTTFont()
 
 bool SDLTTFont::load(const char *filename, unsigned size)
 {
-	font = TTF_OpenFont(filename, size);
-	if (font)
+	SDL_RWops *fontStream = globalContainer->fileManager.open(filename, "rb", false);
+	if (fontStream)
 	{
-		setColor(0, 0, 0, DrawableSurface::ALPHA_OPAQUE);
-		setStyle(Font::STYLE_NORMAL);
-		return true;
+		font = TTF_OpenFontRW(fontStream, 1, size);
+		if (font)
+		{
+			setColor(0, 0, 0, DrawableSurface::ALPHA_OPAQUE);
+			setStyle(Font::STYLE_NORMAL);
+			return true;
+		}
 	}
-	else
-		return false;
+	return false;
 }
 
 int SDLTTFont::getStringWidth(const char *string) const
