@@ -39,6 +39,8 @@
 #define DEFAULT_NETWORK_TOTL 3
 #endif
 
+#define MAX_PACKET_SIZE 65536
+
 enum OrderTypes
 {
 	BAD_ORDER=0,

@@ -32,7 +32,7 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	multiplayersJoin->serverName[255]=0;
 	addWidget(serverName);
 
-	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false);
+	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false, 32);
 	strncpy(multiplayersJoin->playerName, playerName->text, 32);
 	multiplayersJoin->playerName[31]=0;
 	addWidget(playerName);

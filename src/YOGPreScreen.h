@@ -45,7 +45,7 @@ public:
 	void paint(int x, int y, int w, int h);
 	
 	int endExecutionValue;
-	TextInput *textInput;
+	TextInput *login;
 	TextArea *statusText;
 	YOG::ExternalStatusState oldYOGExternalStatusState;
 	

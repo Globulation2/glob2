@@ -41,8 +41,8 @@ Order.cpp\
 Order.h\
 Player.cpp\
 Player.h\
-PreparationGui.cpp\
-PreparationGui.h\
+SessionConnection.cpp\
+SessionConnection.h\
 Race.cpp\
 Race.h\
 Session.cpp\

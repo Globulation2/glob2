@@ -20,7 +20,6 @@
 #ifndef __MULTIPLAYER_CONNECTED_SCREEN_H
 #define __MULTIPLAYER_CONNECTED_SCREEN_H
 
-#include "PreparationGui.h"
 #include "MultiplayersJoin.h"
 
 class MultiplayersConnectedScreen:public Screen

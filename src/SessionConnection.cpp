@@ -17,13 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "PreparationGui.h"
-#include "GlobalContainer.h"
-#include "GAG.h"
-#include "NetConsts.h"
-#include "YOGScreen.h"
-
-// SessionConnection pannel uniformisation part !!
+#include "SessionConnection.h"
 
 SessionConnection::SessionConnection()
 {

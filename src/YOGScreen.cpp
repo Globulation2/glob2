@@ -52,7 +52,7 @@ YOGScreen::YOGScreen()
 	
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
+	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
 	addWidget(textInput);
 
 	selectedGameInfo=NULL;

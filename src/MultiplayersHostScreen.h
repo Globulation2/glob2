@@ -20,7 +20,7 @@
 #ifndef __MULTIPLAYERHOSTSCREEN_H
 #define __MULTIPLAYERHOSTSCREEN_H
 
-#include "PreparationGui.h"
+#include "SessionConnection.h"
 #include "MultiplayersHost.h"
 #include "MultiplayersJoin.h"
 #include "GAG.h"

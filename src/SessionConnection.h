@@ -17,32 +17,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __PREPARATIONGUI_H
-#define __PREPARATIONGUI_H
+#ifndef __SESSION_CONNECTION_H
+#define __SESSION_CONNECTION_H
 
-#include "GAG.h"
-#include "Race.h"
 #include "Session.h"
-#include "GUIMapPreview.h"
-
-class TextInput;
 
 class SessionConnection
 {
-protected:
-	enum {MAX_PACKET_SIZE=65536};
 public:
 	SessionConnection();
 	virtual ~SessionConnection();
 	bool validSessionInfo;
-	//Font *font;
 	int crossPacketRecieved[32];
 	int startGameTimeCounter;
-protected:
-	enum {hostiphost=0};
-	enum {hostipport=0};
+	
 public:
-
 	SessionInfo sessionInfo;
 	Sint32 myPlayerNumber;
 	UDPsocket socket;
@@ -50,8 +39,5 @@ public:
 	int channel;
 
 };
-
-void raceMenu(Race *race);
-
 
 #endif
