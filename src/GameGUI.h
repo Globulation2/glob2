@@ -63,6 +63,7 @@ private:
 	void centerViewportOnSelection(void);
 	void drawOverlayInfos(void);
 	void drawInGameMenu(void);
+	bool hasLocalTeamWon(void);
 
 private:
 	enum DisplayMode

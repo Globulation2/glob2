@@ -607,7 +607,7 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 	else
 	{
 		setClipRect();
-		if (flags&SDL_FULLSCREEN)
+		if (flags&FULLSCREEN)
 			fprintf(stderr, "VID : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
 		else
 			fprintf(stderr, "VID : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
