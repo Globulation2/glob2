@@ -40,7 +40,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#ifndef DX9_BACKEND
 #include "glSDL.h"
+#endif
 
 // usefull macros
 #ifndef MAX
