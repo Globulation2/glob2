@@ -8,9 +8,6 @@ IngameGUI:
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 
-Net:
-- Ajouter des versions de protocole (net + YOG).
-
 Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Utiliser le gradient local si il y a une ligne directe qui y mène.

@@ -447,6 +447,25 @@ private:
 	Uint8 data[4];
 };
 
+class PauseGameOrder:public MiscOrder
+{
+public:
+	PauseGameOrder(const Uint8 *data, int dataLength);
+	PauseGameOrder(bool startPause);
+	virtual ~PauseGameOrder(void) { }
+
+	Uint8 getOrderType(void) { return ORDER_PAUSE_GAME; }
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength(void) { return 1; }
+	Sint32 checkSum() { return ORDER_PAUSE_GAME; }
+
+	bool pause;
+	
+private:
+	Uint8 data[1];
+};
+
 class DroppingPlayerOrder:public MiscOrder
 {
 public:

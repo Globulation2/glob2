@@ -728,12 +728,7 @@ void Game::scriptStep(void)
 
 void Game::step(Sint32 localTeam)
 {
-	if (anyPlayerWaited)
-	{
-		anyPlayerWaitedTimeFor++;
-		//printf("waiting for player (%x,%d)\n", maskAwayPlayer, maskAwayPlayer);
-	}
-	else
+	if (!anyPlayerWaited)
 	{
 		for (int i=0; i<session.numberOfTeam; i++)
 			teams[i]->step();
@@ -758,14 +753,14 @@ void Game::step(Sint32 localTeam)
 				}
 		}
 		
-		if ((stepCounter&31)==0)
+		if ((stepCounter&31)==2)
 		{
 			// TODO : allow visual alliances.
 			renderMiniMap(localTeam, true);
 		}
 		
 		stepCounter++;
-		if (((stepCounter+16)&31)==0)
+		if ((stepCounter&31)==4)
 		{
 			wonStep();
 			scriptStep();

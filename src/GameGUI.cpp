@@ -103,6 +103,7 @@ GameGUI::~GameGUI()
 void GameGUI::init()
 {
 	paused=false;
+	scroolLocked=false;
 	exitGlobCompletely=false;
 	toLoadGameFileName[0]=0;
 	drawHealthFoodBar=true;
@@ -345,6 +346,10 @@ void GameGUI::step(void)
 
 	// do we have won or lost conditions
 	checkWonConditions();
+	
+	
+	if (game.anyPlayerWaited)
+		game.anyPlayerWaitedTimeFor++;
 }
 
 void GameGUI::synchroneStep(void)
@@ -954,7 +959,11 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			case SDLK_w:
 			case SDLK_PAUSE:
 				if (pressed)
-					paused=!paused;
+					orderQueue.push_back(new PauseGameOrder(!paused));
+				break;
+			case SDLK_SCROLLOCK:
+				if (pressed)
+					scroolLocked=!scroolLocked;
 				break;
 			default:
 			break;
@@ -2576,16 +2585,21 @@ void GameGUI::executeOrder(Order *order)
 			game.executeOrder(order, localPlayer);
 		}
 		break;
-		case  ORDER_MAP_MARK:
+		case ORDER_MAP_MARK:
 		{
 			MapMarkOrder *mmo=(MapMarkOrder *)order;
 
 			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
-			{
 				addMark(mmo);
-			}
 		}
+		break;
+		case ORDER_PAUSE_GAME:
+		{
+			PauseGameOrder *pgo=(PauseGameOrder *)order;
+			paused=pgo->pause;
+		}
+		break;
 		default:
 		{
 			game.executeOrder(order, localPlayer);
