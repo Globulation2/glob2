@@ -751,3 +751,11 @@ Local aviable games
 Login
 Login
 
+[from:]
+de:
+from:
+von:
+[to:]
+à:
+to:
+zu:
