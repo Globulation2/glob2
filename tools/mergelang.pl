@@ -37,6 +37,9 @@ while ($h = <FILE>) {
 			$p = <PATCH>;
 		}
 	}
+	if ($i < $plangs) {
+		$p = <PATCH>;
+	}
 	if ($p) {
 		print $p;
 	}

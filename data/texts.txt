@@ -1,4 +1,4 @@
-7
+8
 [language]
 Français
 English
@@ -7,6 +7,7 @@ Deutsch
 Polski
 Italiano
 Русский
+Español
 [language-code]
 fr
 en
@@ -15,6 +16,7 @@ cz
 pl
 it
 ru
+es
 [language-tr]
 Langue
 Language
@@ -23,6 +25,7 @@ Jazyk
 Język
 Lingua
 Язык
+Idioma
 [hp]
 Pts vie
 HP
@@ -30,6 +33,7 @@ Leben
 Životy
 Życie
 HP
+Здоровье
 Здоровье
 [heal]
 Santé
@@ -39,6 +43,7 @@ Zdravý
 Leczenie
 Guarisci
 Лечение
+Salud
 [armor]
 Armure
 Armour
@@ -47,6 +52,7 @@ Opevnění
 Zbroja
 Armatura
 Броня
+Armadura
 [damage]
 Dommages
 Damage
@@ -55,6 +61,7 @@ Poškození
 Uszkodzenia
 Danno
 Повреждения
+Daño
 [food]
 Nourriture
 Food
@@ -63,6 +70,7 @@ Potrava
 Jedzenie
 Cibo
 Еда
+Comida
 [working]
 Travaillant
 Working
@@ -71,6 +79,7 @@ Pracují
 Praca
 Al lavoro
 Работает
+Trabajando
 [inside]
 Dedans
 Inside
@@ -79,6 +88,7 @@ Uvnitř
 Wewnątrz
 Interno
 Внутри
+Dentro
 [ressources]
 Ressources
 Resources
@@ -87,6 +97,7 @@ Prostředky
 Zasoby
 Risorse
 Ресурсы
+Recursos
 [Wood]
 Bois
 Wood
@@ -95,6 +106,7 @@ Dřevo
 Drewno
 Legno
 Дерево
+Madera
 [Corn]
 Blé
 Wheat
@@ -103,6 +115,7 @@ Obilí
 Zboże
 Frumento
 Зерно
+Maiz
 [Papyrus]
 Papyrus
 Papyrus
@@ -111,6 +124,7 @@ Papyrus
 Papyrus
 Papyrus
 Папирус
+Papiro
 [Stone]
 Pierre
 Stone
@@ -119,6 +133,7 @@ Kamení
 Kamień
 Pietra
 Камень
+Piedra
 [Alga]
 Algue
 Algae
@@ -127,6 +142,7 @@ Algen
 Algi
 Alghe
 Водоросли
+Alga
 [Cherry]
 Cerise
 Cherry
@@ -135,6 +151,7 @@ Třešně
 Wiśnie
 Ciliegia
 Вишни
+Cereza
 [Orange]
 Orange
 Orange
@@ -143,6 +160,7 @@ Pomarenče
 Pomarańcze
 Arancia
 Апельсины
+Naranja
 [Prune]
 Prune
 Prune
@@ -151,6 +169,7 @@ Pflaume
 Śliwki
 Prugna
 Сливы
+Pasa
 [Clearing:]
 Défrichage de:
 Clearing:
@@ -159,6 +178,7 @@ Vyčištění:
 
 
 
+Limpiando
 [Min required level:]
 Niveau minimum requis:
 Minimum required level:
@@ -167,6 +187,7 @@ Min. úroveň bojovníků:
 
 
 
+Nivel Minimo requerido
 [Bullets]
 Boulets
 Bullets
@@ -175,6 +196,7 @@ Střelivo
 Amunicja
 Proiettili
 Боеприпасы
+Balas
 [range]
 Portée
 Range
@@ -183,6 +205,7 @@ Rozsah
 Zasięg
 Intervallo
 Расстояние
+Rango
 [destroy]
 Détruire
 Destroy
@@ -191,6 +214,7 @@ Zničit
 Zniszcz
 Distruggi
 Уничтожить
+Destruir
 [cancel destroy]
 Annuler destruction
 Cancel destruction
@@ -199,6 +223,7 @@ Stornuj zničeni
 Przerwij niszczenie
 Annulla distruggi
 Отмена уничтожения
+Cancelar destruccion
 [wait destroy]
 En attente de destruction
 Awaiting destruction
@@ -207,6 +232,7 @@ Očekávám zničení
 Oczekiwanie na zniszczenie
 Aspetta distruggi
 Ожидает уничтожения
+Esperar a destruir
 [upgrade]
 Améliorer
 Upgrade
@@ -215,6 +241,7 @@ Vylepšit
 Rozbudowa
 Aggiorna
 Улучшение
+Mejorar
 [repair]
 Réparer
 Repair
@@ -223,6 +250,7 @@ Opravit
 Naprawa
 Ripara
 Починка
+Reparar
 [cancel upgrade]
 Annuler amélioration
 Cancel upgrade
@@ -231,6 +259,7 @@ Stornuj vylepšeni
 Przerwij rozbudowę
 Annulla aggiorna
 Отмена улучшения
+Cancelar mejorar
 [cancel repair]
 Annuler réparation
 Cancel repair
@@ -239,6 +268,7 @@ Stornuj opravu
 Przerwij naprawę
 Annulla ripara
 Отмена починки
+Cancelar reparar
 [units type]
 type d'unités
 unit type
@@ -247,6 +277,7 @@ druh jednotek
 Typ jednostek
 Tipo di unità
 Тип юнитов
+Tipo de unidad
 [workers]
 ouvrières
 workers
@@ -255,6 +286,7 @@ dělníci
 pracownicy
 operai
 Рабочие
+Trabajadores
 [explorers]
 exploratrices
 explorers
@@ -263,6 +295,7 @@ průzkumníci
 odkrywcy
 esploratori
 Разведчики
+Exploradores
 [warriors]
 guerrières
 warriors
@@ -271,6 +304,7 @@ válečníci
 wojownicy
 guerrieri
 Воины
+Guerreros
 [Unit type]
 Type d'unite
 Unit type
@@ -279,6 +313,7 @@ Druh jednotky
 Typ jednostki
 Tipo di unità
 Тип юнита
+Tipo de unidad
 [Worker]
 Ouvrière
 Worker
@@ -287,6 +322,7 @@ Dělník
 Pracownik
 Operaio
 Рабочий
+Trabajador
 [Explorer]
 Exploratrice
 Explorer
@@ -295,6 +331,7 @@ Průzkumník
 Poszukiwacz
 Esploratore
 Разведчик
+Explorador
 [Warrior]
 Guerrière
 Warrior
@@ -303,6 +340,7 @@ Válečník
 Wojownik
 Guerriero
 Воин
+Guerrero
 [still (w)]
 Encore 
 Still
@@ -311,6 +349,7 @@ Dosud
 Ciągle
 Ancora
 Всё ещё
+Ahora
 [units working]
  unites travaillent
  units work
@@ -319,6 +358,7 @@ Ancora
  jednostek pracujących
  unit�al lavoro
  юнитов работает
+ Unidades trabajando
 [still one unit working]
 Une unité travaille
 One unit left working
@@ -327,6 +367,7 @@ Ještě 1 jednotka pracuje
 Jeszcze 1 jednostka pracująca
 Ancora un unità al lavoro
 Один юнит продолжает работать
+Una unidad trabajando
 [Still (i)]
 Encore
 Still 
@@ -335,6 +376,7 @@ Dosud
 Wciąż
 Ancora
 Всё ещё
+Ahora
 [Still one]
 Encore une
 One left
@@ -343,6 +385,7 @@ Ještě 1
 Jeszcze jedna
 Ancora uno
 Один остаётся
+Ahora una
 [Building name]
 Nom du batiment
 Building name
@@ -351,6 +394,7 @@ Jméno budovy
 Nazwa budowli
 Nome della costruzione
 Название здания
+
 [swarm building]
 Ruche
 Swarm
@@ -359,6 +403,7 @@ Stock
 Rój
 Magazzino
 Рой
+Enjambre
 [food building]
 Auberge
 Inn
@@ -367,6 +412,7 @@ Hospoda
 Gospoda
 Mensa
 Кабак
+Taberna
 [health building]
 Hôpital
 Hospital
@@ -375,6 +421,7 @@ Nemocnice
 Szpital
 Ospedale
 Больница
+Hospital
 [walkspeed building]
 Piste de course
 Racetrack
@@ -383,6 +430,7 @@ Závodní dráha
 Tor wyścigowy
 Circuito
 Стадион
+Circuito
 [swimspeed building]
 Piscine
 Swimming pool
@@ -391,6 +439,7 @@ Koupaliště
 Pływalnia
 Piscina
 Бассейн
+Piscina
 [attack building]
 Camp d'entraînement
 Barracks
@@ -399,6 +448,7 @@ Cvičiště
 Baraki
 Caserma
 Тренировочный лагерь
+Cuartel
 [science building]
 Ecole
 School
@@ -407,6 +457,7 @@ Schule
 Szkoła
 Scuola
 Школа
+Escuela
 [defense building]
 Tourelle
 Defence Tower
@@ -415,6 +466,7 @@ Obranná věž
 Wieża obronna
 Torre di difesa
 Оборонительная башня
+Torre
 [exploration flag]
 Drapeau d'exploration
 Exploration flag
@@ -423,6 +475,7 @@ Průzkumný prapor
 Flaga eksploracji
 Bandiera di esplorazione
 Флаг разведки
+Bandera de exploracion
 [war flag]
 Drapeau de guerre
 War flag
@@ -431,6 +484,7 @@ Válečný prapor
 Flaga wojenna
 Bandiera di guerra
 Флаг войны
+Bandera de guerra
 [clearing flag]
 Drapeau de défrichage
 Clearing flag
@@ -439,6 +493,7 @@ Rodungsflagge
 Flaga oczyszczania
 Bandiera pulitrice
 Флаг очистки
+Bandera de limpieza
 [stone wall]
 Mur de pierre
 Stone wall
@@ -447,6 +502,7 @@ Kamenná hradba
 Mur kamienny
 Muro di pietra
 Каменная стена
+Muro de piedra
 [market]
 Marché
 Market
@@ -455,6 +511,7 @@ Tržiště
 Bazar
 Mercato
 Рынок
+Mercado
 [exchange]
 Echange
 Exchange
@@ -463,11 +520,13 @@ Směnit
 Wymiana
 Cambio
 Обмен
+Cambio
 [Building short explaination]
 Courte explication du batiment  (24 caractères max)
 Building short explaination (24 chars max)
 
 Krátké vysvětlení (24 znaků max)
+
 
 
 
@@ -479,11 +538,13 @@ Vytvoř nové jednotky
 
 
 
+
 [food building explaination]
 Nourit vos unités
 Foods your units
 
 Potrava tvých jednotek
+
 
 
 
@@ -495,11 +556,13 @@ Zdravý tvých jednotek
 
 
 
+
 [walkspeed building explaination]
 Améliore la vitesse de
 Improves the walking
 
 Zlepši chůzi
+
 
 
 
@@ -511,11 +574,13 @@ Zlepši plavání
 
 
 
+
 [attack building explaination]
 Améliore le niveau
 Improves fighting level
 
 Zlepši bojeschopnost
+
 
 
 
@@ -527,11 +592,13 @@ Zlepši uroveň stavitelství
 
 
 
+
 [defense building explaination]
 Attaque les unité ennmies
 Attacks nearby enemy
 
 Zaútoč na blízkého nepřítele
+
 
 
 
@@ -543,11 +610,13 @@ Přilákáno průzkumníků
 
 
 
+
 [war flag explaination]
 Attire des guerrières
 Attracts warriors
 
 Přilákáno válečníků
+
 
 
 
@@ -559,11 +628,13 @@ Clear ressources
 
 
 
+
 [stone wall explaination]
 Elément passif de défense
 Passive defense element
 
 Pasivní ochraná část
+
 
 
 
@@ -575,6 +646,7 @@ Povolení vyměnit ovoce
 
 
 
+
 [Building short explaination 2]
 Courte explication 2 du batiment  (24 caractères max)
 Building short explaination 2 (24 chars max)
@@ -583,9 +655,11 @@ Krátké vysvětlení 2 (24 znaků max)
 
 
 
+
 [swarm building explaination 2]
  
  
+
 
 
 
@@ -599,9 +673,11 @@ Krátké vysvětlení 2 (24 znaků max)
 
 
 
+
 [health building explaination 2]
  
  
+
 
 
 
@@ -615,9 +691,11 @@ speed level of your units
 
 
 
+
 [swimspeed building explaination 2]
 nage de vos unités
 speed level of your units
+
 
 
 
@@ -631,9 +709,11 @@ of your warriors
 
 
 
+
 [science building explaination 2]
 construction des ouvières
 of your workers
+
 
 
 
@@ -647,9 +727,11 @@ units or buildings
 
 
 
+
 [exploration flag explaination 2]
  
  
+
 
 
 
@@ -663,9 +745,11 @@ units or buildings
 
 
 
+
 [clearing flag explaination 2]
  
  
+
 
 
 
@@ -679,9 +763,11 @@ units or buildings
 
 
 
+
 [market explaination 2]
 fruits avec les autres
 with the others
+
 
 
 
@@ -695,6 +781,7 @@ Warten auf %s
 Czeka na %s
 Aspettando %s
 Ожидание %s
+Esperando a %s
 [%s has left the game]
 %s a quitté la partie.
 %s has quit the game.
@@ -703,6 +790,7 @@ Aspettando %s
 %s opuścił grę.
 %s ha lasciato il gioco.
 %s покинул игру.
+%s se ha ido del juego
 [%s has been deconnected of the game]
 %s s'est fait déconnecté de la partie.
 %s has been disconnected.
@@ -711,6 +799,7 @@ Die Verbindung zu %s wurde getrennt.
 %s się rozłączył.
 %s si è disconnesso dal gioco.
 %s был отключён от игры.
+%s se ha desconectado del juego
 [load game]
 Charger jeu
 Load game
@@ -719,6 +808,7 @@ Nahrát hru
 Załaduj grę
 Carica partita
 Загрузить игру
+Cargar partida
 [save game]
 Sauvegarder jeu
 Save game
@@ -727,6 +817,7 @@ Uložit hru
 Zapisz grę
 Salva partita
 Сохранить игру
+Salvar partida
 [options]
 Options
 Options
@@ -735,6 +826,7 @@ Nastavení
 Opcje
 Opzioni
 Настройки
+Opciones
 [alliances]
 Alliances
 Alliances
@@ -743,6 +835,7 @@ Spojenectví
 Sojusze
 Alleanze
 Союзы
+Alianzas
 [return to game]
 Retour au jeu
 Return to game
@@ -751,6 +844,7 @@ Zpět do hry
 Powrót do gry
 Ritorna al gioco
 Вернуться в игру
+Volver al juego
 [quit the game]
 Quitter le jeu
 Quit the game
@@ -759,6 +853,7 @@ Opustit hru
 Zakończ grę
 Esci dal gioco
 Выйти из игры
+Salir del juego
 [ok]
 Accepter
 Ok
@@ -767,6 +862,7 @@ Budiž
 Ok
 Ok
 Ok
+OK
 [Cancel]
 Annuler
 Cancel
@@ -775,6 +871,7 @@ Zrušit
 Anuluj
 Annulla
 Отмена
+Cancelar
 [you have lost]
 Vous avez perdu!
 You have lost!
@@ -783,6 +880,7 @@ Jsi ztracen...
 Przegrałeś...
 Hai perso
 Вы проиграли!
+Has perdido
 [you have won]
 Vous avez gagné!
 You have won!
@@ -791,6 +889,7 @@ Vyhrál jsi!
 Wygrałeś !!!
 Hai vinto!!!!
 Вы победили!
+Has ganado
 [campagn]
 Campagne
 Campaign
@@ -799,6 +898,7 @@ Nová hra
 Kampania
 Campagna
 Кампания
+Campaña
 [tutorial]
 Didacticiel
 Tutorial
@@ -807,6 +907,7 @@ Tutoriál
 Samouczek
 Esercitazione
 Самоучитель
+Tutorial
 [custom game]
 Jeu libre
 Custom game
@@ -815,6 +916,7 @@ Volitelná hra
 Własna gra
 Gioco personalizzato
 Одиночная игра
+Juego personalizado
 [yog]
 Jeu en ligne Ysagoon
 Ysagoon Online Gaming
@@ -823,6 +925,7 @@ Ysagoon Online Gaming
 Ysagoon-Gra w Internecie
 Gioca on-line a Ysagoon
 Ysagoon-игра в Интернете
+Juego en linea con Ysagoon
 [Enter your nickname :]
 Entrez votre pseudo :
 Enter your nickname :
@@ -831,6 +934,7 @@ Zadej přezdívku :
 
 Inserisci il tuo soprannome :
 Введите Ваше прозвище :
+Introduce tu apodo :
 [Enter your password :]
 Entrez votre mot de passe :
 Enter your password :
@@ -839,6 +943,7 @@ Zadej heslo:
 
 Inserisci la tua password :
 Введите Ваш пароль :
+Introduce la contraseña :
 [lan]
 Jeu en réseau local
 LAN Game
@@ -847,6 +952,7 @@ Síťová hra
 Gra sieciowa
 Gioca in rete (LAN)
 Сетевая игра
+Juego en red LAN
 [settings]
 Paramètres
 Settings
@@ -855,6 +961,7 @@ Nastavení
 Ustawienia
 Impostazioni
 Настройки
+Opciones
 [editor]
 Editeur
 Editor
@@ -863,6 +970,7 @@ Editor
 Edytor
 Editor
 Редактор
+Editor
 [credits]
 Crédits
 Credits
@@ -871,6 +979,7 @@ Poděkování
 O twórcach
 Credits
 Благодарности
+Creditos
 [quit]
 Quitter
 Quit
@@ -879,6 +988,7 @@ Konec
 Zakończ
 Esci
 Выход
+Salir
 [create game]
 Créer partie
 Create game
@@ -887,6 +997,7 @@ Vytvoř hru
 Nowa gra
 Crea il gioco
 Новая игра
+Crear juego
 [update list]
 Mettre à jour
 Update list
@@ -895,6 +1006,7 @@ Obnovit seznam
 Uaktualnij listę
 Aggiorna la lista
 Обновить список
+Actualizar lista
 [connecting to]
 Connection à
 Connecting to
@@ -903,6 +1015,7 @@ Připojuji se k
 Połącz z
 Mi sto connettendo a
 Подключение к
+Conectando a
 [connect]
 Connecter
 Connect
@@ -911,6 +1024,7 @@ Připojit
 Łączę
 Connesso
 Подключиться
+Conectado
 [Disconnect]
 Déconnecter
 Disconnect
@@ -919,6 +1033,7 @@ Odpojit
 Zrywam połączenie
 Disconnettiti
 Отключиться
+Desconectado
 [please wait]
 Attendre SVP
 Please wait
@@ -927,6 +1042,7 @@ Bitte warten
 Proszę czekaj
 Aspetta un momento
 Пожалуйста, подождите
+Espere por favor
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
@@ -935,6 +1051,7 @@ Nahrávám Globulation 2
 Wczytuję Globulation 2
 Sto caricando Globulation 2
 Загружается Globulation 2
+Cargando Globulation 2
 [host]
 Héberger une partie
 Host a game
@@ -943,6 +1060,7 @@ Hostuj hru
 Host w grze
 Ospita una partita
 Стать хостом игры
+Serivir una partida
 [join a game]
 Joindre une partie
 Join a game
@@ -951,6 +1069,7 @@ Připojit se do hry
 Przyłącz się do gry
 Unisciti ad una partita
 Присоединиться к игре
+Unirse a un juego
 [join]
 Joindre
 Join
@@ -959,6 +1078,7 @@ Připojit se
 Przyłącz się
 Unisci
 Присоединиться
+Unirse
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
@@ -967,6 +1087,7 @@ Zpět do hlavního menu
 Wróć do menu głównego
 Torna al menu principale
 Вернуться в главное меню
+Volver al menu principal
 [player name]
 Nom du joueur
 Player name
@@ -975,6 +1096,7 @@ Jméno
 Nazwa Gracza
 Nome del giocatore
 Имя игрока
+Nombre del jugador
 [svr hostname]
 Nom du serveur hôte
 Server hostname
@@ -983,6 +1105,7 @@ Server hostname
 Nazwa hosta
 Nome del server
 Имя хоста
+Nombre del servidor
 [hp]
 Point de vie
 Hitpoint
@@ -990,6 +1113,7 @@ Lebenspunkt
 Životy
 Punkty życia
 Punti vita
+Здоровье
 Здоровье
 [carry]
 Transporte :
@@ -999,6 +1123,7 @@ Nesu :
 Transport :
 Trasporto :
 Несёт :
+Transporte :
 [don't carry anything]
 Ne transporte rien
 Not carrying anything
@@ -1007,6 +1132,7 @@ Nic nenesu
 Nic nie transportuje
 Non Ttrasportare niente
 Ничего не несёт
+No transporta nada
 [level]
 Niveau
 Level
@@ -1015,6 +1141,7 @@ Stufe
 Poziom
 Lvivello
 Уровень
+Nivel
 [levels]
 Niveaux
 Levels
@@ -1023,6 +1150,7 @@ Stufen
 Poziomy
 Livelli
 Уровни
+Niveles
 [building site]
 chantier
 construction site
@@ -1031,6 +1159,7 @@ staveniště
 plac budowy
 Sito in costruzione
 стройка
+Construyendo
 [create map]
 Créer carte
 Create map
@@ -1039,6 +1168,7 @@ Vytvořit mapu
 Stwórz mapę
 Crea una mappa
 Создать карту
+Crear mapa
 [map size x]
 Largeur de la carte
 Map width
@@ -1047,6 +1177,7 @@ Breite der Karte
 Szerokość mapy
 Grandezza x della mappa
 Ширина карты
+Anchura del mapa
 [map size y]
 Hauteur de la carte
 Map height
@@ -1055,6 +1186,7 @@ Výška mapy
 Wysokość mapy
 Grandezza y della mappa
 Высота карты
+Altura del mapa
 [default terrain]
 Terrain par défaut
 Default terrain
@@ -1063,6 +1195,7 @@ Předvolená krajina
 Domyślny teren
 Terreno predefinito
 Ландшафт по умолчанию
+Terreno predefinido
 [water]
 Eau
 Water
@@ -1071,6 +1204,7 @@ Voda
 Woda
 Acqua
 Вода
+Agua
 [sand]
 Sable
 Sand
@@ -1079,6 +1213,7 @@ Písek
 Piasek
 Sabbia
 Песок
+Arena
 [grass]
 Herbe
 Grass
@@ -1087,6 +1222,7 @@ Tráva
 Trawa
 Erba
 Трава
+Hierba
 [teams]
  équipes
  teams
@@ -1095,6 +1231,7 @@ Erba
  zespoły
  Squadre
  команды
+ Equipos
 [choose map]
 Choisir une carte
 Choose a map
@@ -1103,6 +1240,7 @@ Výběr mapy
 Wybierz mapę
 Seleziona una mappa
 Выбрать карту
+Elegir un mapa
 [choose game]
 Choisir une partie
 Choose a game
@@ -1111,6 +1249,7 @@ Výběr hry
 Wybierz grę
 Seleziona un gioco
 Выбрать игру
+Elegir un juego
 [awaiting players]
 En attente des joueurs
 Awaiting players
@@ -1119,6 +1258,7 @@ Warten auf Spieler
 Oczekuj graczy
 In attesa di altri giocatori
 Ожидание игроков
+Esperando a los jugadores
 [stat]
 Statistiques
 Statistics
@@ -1127,6 +1267,7 @@ Statistické údaje
 Statystyki
 Statistiche
 Статистика
+Estadisticas
 [food left]
 Nourriture
 Food left
@@ -1135,6 +1276,7 @@ Potrava
 Pozostało jedzenia
 Cibo rimasto
 Осталось еды
+Comida restante
 [the building is finished]
 Le bâtiment est terminé
 The building is finished
@@ -1143,6 +1285,7 @@ Budova je postavena ...
 Postawiono budowlę
 L'edificio �completato
 Здание построено
+Construccion finalizada
 [the swarm is finished]
 La ruche est terminée
 The swarm is finished
@@ -1151,6 +1294,7 @@ Der Stock ist fertig
 Rój został zbudowany
 Il magazzino è completato
 Рой построен
+El enjambre ha sido construido
 [the food building is finished]
 L'auberge est terminée
 The Inn is finished
@@ -1159,6 +1303,7 @@ Hospoda postavena ...
 Zbudowano gospodę
 La mensa è stata completata
 Кабак построен.
+La taberna ha sido construida
 [the health building is finished]
 L'hôpital est terminé
 The hospital is finished
@@ -1167,6 +1312,7 @@ Nemocnice postavena ...
 Zbudowano szpital
 L'ospedale è stato completato
 Больница построена
+El hospital ha sido construido
 [the walkspeed building is finished]
 La piste de course est terminée
 The racetrack is finished
@@ -1175,6 +1321,7 @@ Zavodní dráha postavena ...
 Zbudowano tor wyścigowy
 Il circuito è stato completato
 Стадион построен
+El circuito ha sido construido
 [the swimspeed building is finished]
 La piscine est terminée
 The swimming pool is finished
@@ -1183,6 +1330,7 @@ Koupaliště postaveno ...
 Zbudowano pływalnię
 La piscina è stata completata
 Бассейн построен
+La piscina ha sido contruida
 [the attack building is finished]
 Le camp d'entraînement est terminé
 The training camp is finished
@@ -1191,6 +1339,7 @@ Cvičiště postaveno ...
 Zbudowano baraki
 La caserma è stata completata
 Тренировочный лагерь построен
+El cuartel ha sido construido
 [the science building is finished]
 L'école est terminée
 The school is finished
@@ -1199,6 +1348,7 @@ Die Schule ist fertig
 Zbudowano szkołę
 La scuola è stata completata
 Школа построена
+La escuela ha sido construida
 [the tower building is finished]
 La tour de défense est terminée
 The defense tower is finished
@@ -1207,6 +1357,7 @@ Obranná věž postavena ...
 Zbudowano wieżę obronną
 La torre da difesa è stata completata
 Оборонительная башня построена
+La torre ha sido construida
 [the exploration flag is finished]
 ?? Drapeau d'exploration terminé ??
 ?? Exploration flag finished ??
@@ -1215,6 +1366,7 @@ La torre da difesa è stata completata
 ?? Postawiono flagę eksploracji ??
 ?? Bandiera d'esplorazione finita ??
 ?? Флаг разведки установлен ??
+?? Bandera de exploracion finalizada ??
 [the war flag is finished]
 ?? Drapeau de guerre terminé ??
 ?? War flag finished ??
@@ -1223,6 +1375,7 @@ La torre da difesa è stata completata
 ?? Postawiono flagę wojenną ??
 ?? La bandiera da guerra finita ??
 ?? Флаг войны установлен ??
+?? Bandera de guerra finalizada ??
 [the clearing flag is finished]
 ?? Drapeau de défrichage terminé ??
 ?? Clearing flag finished ??
@@ -1231,6 +1384,7 @@ La torre da difesa è stata completata
 ?? Postawiono flagę ... ??
 ?? La bandiera pulitrice finita ??
 ?? Флаг очистки установлен ??
+?? Bandera de limpieza finalizada ??
 [the stone wall is finished]
 Un élément de mur est terminé
 A wall section is finished
@@ -1239,6 +1393,7 @@ Kus hradby hotov ...
 Zbudowano część muru
 Il muro di pietra è stato completato
 Каменная стена построена
+El muro de piedra ha sido construido
 [the market is finished]
 Le marché est terminé
 The market is finished
@@ -1247,6 +1402,7 @@ Tržiště postaveno ...
 Zbudowano bazar 
 Il mercato è finito
 Рынок построен
+El mercado ha sido construido
 [the building is under attack]
 Le bâtiment est attaqué
 The building is under attack
@@ -1255,6 +1411,7 @@ Budova pod útokem
 Budowla została zaatakowana
 L'edificio è sotto attacco
 Здание атаковано
+Edificio esta siendo atacado
 [the swarm is under attack]
 La ruche est attaquée
 The swarm is under attack
@@ -1263,6 +1420,7 @@ Der Stock wird angegriffen
 Rój został zaatakowany
 Il magazzino è sotto attacco
 Рой атакован
+El enjambre esta siendo atacado
 [the food building is under attack]
 L'auberge est attaquée
 The Inn is under attack
@@ -1271,6 +1429,7 @@ Hospoda je pod útokem
 Gospoda została zaatakowana
 La mensa è sotto attacco
 Кабак атакован
+La taberna esta siendo atacado
 [the health building is under attack]
 L'hôpital est attaqué
 The hospital is under attack
@@ -1279,6 +1438,7 @@ Nemocnice je pod útokem
 Szpital został zaatakowany
 L'ospedale è sotto attacco
 Больница атакована
+El hospital esta siendo atacado
 [the walkspeed building is under attack]
 La piste de course est attaquée
 The racetrack is under attack
@@ -1287,6 +1447,7 @@ Závodní dráha pod útokem
 Tor wyścigowy został zaatakowany
 Il circuito è sotto attacco
 Стадион атакован
+El circuito esta siendo atacado
 [the swimspeed building is under attack]
 La piscine est attaquée
 The swimming pool is under attack
@@ -1295,6 +1456,7 @@ Koupaliště je pod útokem
 Pływalnia została zaatakowana
 La piscina è sotto attacco
 Бассейн атакован
+La piscina esta siendo atacada
 [the attack building is under attack]
 Le camp d'entraînement est attaqué
 The training camp is under attack
@@ -1303,6 +1465,7 @@ Cvičiště je pod útokem
 Baraki zostały zaatakowane
 La caserma è sotto attacco
 Тренировочный лагерь атакован
+El cuartel esta siendo atacado
 [the science building is under attack]
 L'école est attaquée
 The school is under attack
@@ -1311,6 +1474,7 @@ Die Schule wird angegriffen
 Szkoła została zaatakowana
 La scuola è sotto attacco
 Школа атакована
+La escuela esta siendo atacada
 [the defense building is under attack]
 Vos défenses sont attaquées
 Your defenses are under attack
@@ -1319,6 +1483,7 @@ Obranná věž je pod útokem
 Wieża obronna została zaatakowana
 La torre da difesa è sotto attacco
 Оборонительная башня атакована
+La torre esta siendo atacada
 [the exploration flag is under attack]
 ?? Drapeau d'exploration attaqué ??
 ?? Exploration flag under attack ??
@@ -1327,6 +1492,7 @@ La torre da difesa è sotto attacco
 ?? Flaga eksploracji została zaatakowana ??
 ?? La bandiera esploratrice è sotto attacco ??
 ?? Флаг разведки атакован ??
+?? La bandera de exploracion esta siendo atacada ??
 [the war flag is under attack]
 ?? Drapeau de guerre attaqué ??
 ?? War flag under attack ??
@@ -1335,6 +1501,7 @@ La torre da difesa è sotto attacco
 ?? Flaga wojenna została zaatakowana ??
 ?? La bandiera da guerra è sotto attacco ??
 ?? Флаг войны атакован ??
+?? La bandera de guerra esta siendo atacada ??
 [the clearing flag is under attack]
 ?? Drapeau de défrichage attaqué ??
 ?? Clearing flag under attack ??
@@ -1343,6 +1510,7 @@ La torre da difesa è sotto attacco
 ?? Flaga ... została zaatakowana ??
 ?? La bandiera pulitrice è sotto attacco ??
 ?? Флаг очистки атакован ??
+?? La bandera de limpieza esta siendo atacada ??
 [the stone wall is under attack]
 L'ennemi est à vos murs
 The enemy is at your walls
@@ -1351,6 +1519,7 @@ Nepřítel utočí na hradby
 Mur został zaatakowany
 Il muro di roccia è sotto attacco
 Каменная стена атакована
+El enemigo esta en tu muralla
 [the market is under attack]
 Le marché est attaqué
 The market is under attack
@@ -1359,6 +1528,7 @@ Tržiště je pod útokem
 Bazar został zaatakowany
 Il ercato è sotto attacco
 Рынок атакован
+El mercado esta siendo atacado
 [Your %s are under attack]
 Vos %s sont attaquées
 Your %s are under attack
@@ -1367,6 +1537,7 @@ Tvoji %s jsou pod útokem
 Twój %s jesteś atakowany
 Il tuo %s sotto attacco
 %s
+Tu %s esta siendo atacado
 [Your unit got converted to another team]
 Votre unité est passée à l'équipe adverse
 Your unit got converted to another team
@@ -1375,6 +1546,7 @@ Tva jednotka změnila víru v jiného hráče
 Twoja jednostka została przeciągnięta na stronę wroga
 La tua unità è stata convertita in un'altra squadra
 Ваш юнит переметнулся к врагу
+Tu unidad se ha convertido al bando enemigo
 [Another team's unit got converted to your team]
 Une unité ennemie s'est convertie à votre équipe
 Another team's unit got converted to your team
@@ -1383,6 +1555,7 @@ Cizí tým změnil víru v Tebe
 Jednostka wroga została przeciągnięta na Twoją stronę
 Un'altra sqadra ha convertito la tua unità
 Вражеский юнит переметнулся к Вам.
+La unidad enemiga se ha pasado a nuestro bando
 [Uncontrolled]
 Incontrôlé
 Uncontrolled
@@ -1391,6 +1564,7 @@ Neovládaný
 Niekontrolowany
 Incontrollato
 Неконтролируемый
+Incontrolado
 [ai]
 IA
 AI
@@ -1399,6 +1573,7 @@ Počítač
 SI
 IA
 AI
+IA
 [closed]
 Fermé
 Closed
@@ -1407,6 +1582,7 @@ Uzavřeno
 Zamknięte
 Chiuso
 Закрыто
+Cerrado
 [close]
 Fermer
 Close
@@ -1415,6 +1591,7 @@ Uzavři
 Zamknij
 Chiuso
 Закрыть
+Cerrado
 [player]
 Joueur
 Player
@@ -1423,6 +1600,7 @@ Hráč
 Gracz
 Giocatore
 Игрок
+Jugador
 [STARTING GAME ...]
 Début du jeu... 
 Starting game... 
@@ -1431,6 +1609,7 @@ Startuji hru...
 Początek gry...
 Inizio gioco...
 Начало игры...
+Iniciando la partida
 [Statistics]
 Statistiques
 Statistics
@@ -1439,6 +1618,7 @@ Statistiky
 Statystyka
 Statistiche
 Статистика
+Estadisticas
 [Buildings]
 Bâtiments
 Buildings
@@ -1447,6 +1627,7 @@ Budovy
 Budowle
 Costruzioni
 Здания
+Edificios
 [Prestige]
 Prestige
 Prestige
@@ -1455,6 +1636,7 @@ Prestiž
 Prestiż
 Prestigio
 Престиж
+Prestigio
 [Units]
 Unités
 Units
@@ -1463,6 +1645,7 @@ Jednotky
 Jednostki
 Unità
 Юниты
+Unidades
 [Attack]
 Attaque
 Attack
@@ -1471,6 +1654,7 @@ Attack
 
 
 
+Ataque
 [Defense]
 Défense
 Defense
@@ -1479,6 +1663,7 @@ Obrana
 
 
 
+Defensa
 [free]
 libres
 free
@@ -1487,6 +1672,7 @@ se nudí
 wolne
 liberi
 свободные
+libre
 [of which]
 dont
 of which
@@ -1495,6 +1681,7 @@ z toho
 z czego
 dei quali
 из которых
+de los cuales
 [are ok]
 sont ok
 are ok
@@ -1503,6 +1690,7 @@ v pohodě :-)
 jest ok
 sono ok
 ok
+esta bien
 [are hungry]
 ont faim
 are hungry
@@ -1511,6 +1699,7 @@ o hladu
 odczuwa głód
 hanno fame
 голодны
+esta hambriento
 [are dying hungry]
 meurent de faim
 are starving to death
@@ -1519,6 +1708,7 @@ umírají hlady
 umiera z głodu
 stanno morendo di fame
 умирают от голода
+esta famelico
 [are wonded]
 blessées
 are wounded
@@ -1527,6 +1717,7 @@ je zraněných
 rannych
 sono feriti
 ранены
+esta herido
 [and]
 et
 and
@@ -1535,6 +1726,7 @@ a
 i
 e
 и
+y
 [seeking a job]
 cherchent du travail
 are looking for a job
@@ -1543,6 +1735,7 @@ hledá práci
 szuka pracy
 cercano lavoro
 ищет работу
+buscando trabajo
 [Walk]
 Marche
 Walk
@@ -1551,6 +1744,7 @@ Chůze
 Chodzi
 Cammina
 Идёт
+Andando
 [Swim]
 Nage
 Swim
@@ -1559,6 +1753,7 @@ Plavání
 Pływa
 Nuota
 Плавает
+Nadando
 [Build]
 Construit
 Build
@@ -1567,6 +1762,7 @@ Stavba
 Buduje
 Costruisci
 Строит
+Construir
 [Harvest]
 Récolte
 Harvest
@@ -1575,6 +1771,7 @@ Těžba
 Zbiera
 Raccola
 Собирает
+Recolectar
 [At. speed]
 Vitesse at.
 Att. speed
@@ -1583,6 +1780,7 @@ Rychlost útoku
 Prędkość ataku
 At. velocità
 Скорость атаки
+At. velocidad
 [At. strength]
 Force at.
 Att. strength
@@ -1591,6 +1789,7 @@ Síla útoku
 Siła ataku
 At. resistenza
 Сила атаки
+At. fuerza
 [Total]
 Total
 Total
@@ -1599,6 +1798,7 @@ Celkem
 Łącznie
 Totale
 Всего
+Total
 [free]
 libres
 free
@@ -1607,6 +1807,7 @@ Volný
 wolnych
 Libero
 свободные
+libre
 [seeking]
 recherche
 seeking
@@ -1615,6 +1816,7 @@ Hledá
 szukających
 Ricerca
 ищущих
+Buscando
 [Free]
 Libre
 Free
@@ -1623,6 +1825,7 @@ OK
 Wolnych
 Libero
 Свободных
+Libre
 [hungry]
 faim
 hungry
@@ -1631,6 +1834,7 @@ Hladový
 Głodnych
 Fame
 Голодных
+hambriento
 [starving]
 trop faim
 starving
@@ -1639,6 +1843,7 @@ Umírá hlady
 umierających z głodu
 troppa fame
 Умирающих от голода
+famelico
 [wounded]
 blessées
 wounded
@@ -1647,6 +1852,7 @@ Zraněných
 rannych
 ferito
 раненых
+herido
 [In way]
 En chemin
 On the way
@@ -1655,6 +1861,7 @@ Na cestě
 W drodze
 sulla strada
 В пути
+en camino
 [On the spot]
 Sur place
 Here
@@ -1663,6 +1870,7 @@ Na místě
 Na miejscu
 Sul posto
 На месте
+Aqui
 [Version]
 Version
 Version
@@ -1671,6 +1879,7 @@ Verze
 Wersja
 versione
 Версия
+Version
 [open]
 ouvert
 open
@@ -1679,6 +1888,7 @@ Otevřít
 Otwarty
 Apri
 Открыть
+Abrir
 [Add AI]
 Ajouter IA
 Add AI
@@ -1687,6 +1897,7 @@ Přidej počítač
 Dodaj SI
 Aggiungi un IA
 Добавить AI
+Añadir IA
 [AI]
 IA
 AI
@@ -1695,6 +1906,7 @@ Počítač
 SI
 IA
 AI
+IA
 [AINone]
 AINone
 AINone
@@ -1703,6 +1915,7 @@ AINone
 AINone
 NienteIA
 AINone
+IANone
 [AINumbi]
 AINumbi
 AINumbi
@@ -1711,6 +1924,7 @@ AINumbi
 AINumbi
 IANumbi
 AINumbi
+IANumbi
 [AICastor]
 AICastor
 AICastor
@@ -1719,6 +1933,7 @@ AICastor
 AICastor
 IACastor
 AICastor
+IACastor
 [the games]
 Parties
 Games
@@ -1727,6 +1942,7 @@ Hry
 Gry
 Giochi
 Игры
+Juegos
 [the maps]
 Cartes
 Maps
@@ -1735,6 +1951,7 @@ Mapy
 Mapy
 Mappe
 Карты
+Mapas
 [was]
 auparavant
 was
@@ -1743,6 +1960,7 @@ byl
 był
 era
 был
+era
 [was AI]
 auparavant IA
 was AI
@@ -1751,6 +1969,7 @@ byl počítač
 był SI
 era un IA
 был AI
+era un IA
 [state]
 état
 state
@@ -1759,6 +1978,7 @@ stav
 stan
 stato
 состояние
+estado
 [Start]
 Départ
 Start
@@ -1767,6 +1987,7 @@ Start
 Start
 Start
 Старт
+Comenzar
 [not ready]
 pas prêt
 not ready
@@ -1775,6 +1996,7 @@ nepřipraven
 nie gotowy
 non pronto
 не готов
+sin preparar
 [has joined]
 a rejoint
 has joined
@@ -1783,6 +2005,7 @@ připojen
 dołączył(a)
 è entrato
 присоединился
+ha entrado
 [has quit]
 a quitté
 has quit
@@ -1791,6 +2014,7 @@ odpojil
 wylogował się
 se ne è andato
 вышел
+se ha ido
 [yog-chat]
 #yog-fr
 #yog-en
@@ -1799,6 +2023,7 @@ se ne è andato
 #yog-pl
 #yog-it
 #yog-ru
+#yog-es
 [speed]
 Vitesse
 Speed
@@ -1807,6 +2032,7 @@ Rychlost
 Prędkość
 Velocità
 Скорость
+Velocidad
 [current speed]
 Vitesse actuelle
 Current speed
@@ -1815,6 +2041,7 @@ Současná rychlost
 Aktualna prędkość
 Velocità corrente
 Текущая скорость
+Velocidad actual
 [attack speed]
 Vit. attaque
 Attack speed
@@ -1823,6 +2050,7 @@ Angriffsgeschw.
 Prędkość ataku
 Velocità d'attacco
 Скорость атаки
+Velocidad de ataqu
 [new]
 Nouveau
 New
@@ -1831,6 +2059,7 @@ Nová
 Nowa
 Nuovo
 Новая
+Nuevo
 [load]
 Charger
 Load
@@ -1839,6 +2068,7 @@ Nahrát
 Ładuj
 Carica
 Загрузить
+Cargar
 [handmade map]
 Carte faite à la main
 Handmade map
@@ -1847,6 +2077,7 @@ Ručně vyrobená mapa
 Własna mapa
 Gestisci mappa
 Самодельная карта
+Mapa hecho a mano
 [mapGenerationDescriptor Methodes]
 Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
@@ -1855,6 +2086,7 @@ Metody náhodně vytvořených map
 Metody generowania losowych map
 Metodi di generazione casuale della mappa
 Способы случайной генерации карт
+Metodo de generacion del mapa
 [uniform terrain]
 Terrain uniforme
 Uniform terrain
@@ -1863,6 +2095,7 @@ Jednotná krajina
 Rodzaj terenu
 Terreno uniforme
 Одинаковый ландшафт
+Terreno uniforme
 [random terrain]
 Terrain aléatoire
 Random terrain
@@ -1871,6 +2104,7 @@ Náhodná krajina
 Losowy teren
 Terreno a caso
 Случайный ландшафт
+Terreno aleatorio
 [islands terrain]
 Iles
 Islands
@@ -1879,6 +2113,7 @@ Ostrovy
 Wyspy
 Terreno a isole
 Острова
+Islas
 [ratios]
 Proportions
 Proportions
@@ -1887,6 +2122,7 @@ Poměry
 Proporcje
 Razioni
 Пропорции
+Proporcion
 [smoothing]
 Lissage
 Smoothing
@@ -1895,6 +2131,7 @@ Vyhlazení
 Wygładzanie
 Spianatura
 Сглаживание
+Liso
 [number of teams]
 nombre d'équipes
 number of teams
@@ -1903,6 +2140,7 @@ Počet hráčů
 Ilość drużyn
 Numero di squadre
 число команд
+Numero de equipos
 [islands size]
 taille des îles
 island size
@@ -1911,6 +2149,7 @@ Velikost ostrovů
 Wielkość wysp
 Grandezza delle isole
 Размер островов
+Tamaño de las islas
 [beach size]
 taille de la plage
 beach size
@@ -1919,6 +2158,7 @@ Velikost pláží
 Wielkość plaż
 Grandezza della spiaggia
 Размер пляжей
+Tamaño de la playa
 [workers]
 Ouvrières
 Workers
@@ -1927,6 +2167,7 @@ Dělníci
 Pracownicy
 Operai
 Рабочие
+Trabajadores
 [bad error in connection system]
 Mauvaise erreur dans le système de connection
 Bad error in connection system
@@ -1935,6 +2176,7 @@ Kritická chyba v systému připojení
 Bład w systemie połączeń
 Brutto errore nel sistema di connessione
 Критическая ошибка в системе соединения
+Error en el sistema de conexion
 [not connected]
 Non connecté
 Not connected
@@ -1943,6 +2185,7 @@ Nepřipojen
 Nie połączony
 non connesso
 Не соединён
+No conectado
 [presence request sent]
 Requête pour présence envoyée ...
 Presence request sent ...
@@ -1951,6 +2194,7 @@ Požadavek připojení odeslán ...
 Wysłano rządanie stanu ...
 Richiesta di presenza inviata ...
 Послан запрос присутствия ...
+Invitacion enviada ...
 [session request sent]
 Requête pour la session envoyée ...
 Session request sent ...
@@ -1959,6 +2203,7 @@ Požadavek na navázání relace odeslán ...
 Wysłano rządanie sesji ...
 Richiesta di sessione inviata ...
 Послан запрос сессии ...
+Peticion de sesion enviada ...
 [checksum sent]
 Somme de contrôle envoyée ...
 Checksum sent ...
@@ -1967,6 +2212,7 @@ Kontrolní součet odeslán ...
 Wysłano sumę kontrolną ...
 Richiesta di checksum inviata ...
 Послана контрольная сумма ...
+Checksum enviada ...
 [connected to server]
 Connecté au serveur
 Connected to server
@@ -1975,6 +2221,7 @@ Server připojen
 Połączono z serwerem
 Connesso al server
 Установлено соединение с сервером
+Conectado al servidor
 [connecting to all players]
 En train de se connecter avec les joueurs
 Connecting to all players
@@ -1983,6 +2230,7 @@ Připojuji se ke všem hráčům
 Łączenie z resztą graczy
 Mi sto connettendo agli altri giocatori
 Соединение со всеми игроками
+Conectando a todos los jugadores
 [connected to all players]
 Connecté avec tous les joueurs
 Connected to all players
@@ -1991,6 +2239,7 @@ Připojen ke všem hráčům
 Połączono z resztą graczy
 Connesso a tutti i giocatori
 Соедининение с игроками установлено
+Conectados todos los jugadores
 [aviable lan games]
 Parties locales disponibles
 Available local games
@@ -1999,11 +2248,13 @@ Dostupné místní hry
 Dostępne gry sieciowe
 iochi LAN diponibili
 Доступные сетевые игры
+juegos LAN disponibles
 [login]
 Login
 Login
 Login
 Přihlásit
+Login
 Login
 Login
 Login
@@ -2015,6 +2266,7 @@ od:
 od:
 da:
 от:
+de:
 [to:]
 à:
 to:
@@ -2023,6 +2275,7 @@ pro:
 do:
 a:
 к:
+a:
 [away:]
 absent:
 away:
@@ -2031,6 +2284,7 @@ pryč:
 zajęty:
 assente:
 отсутствует:
+ausente:
 [compile]
 Compiler le script
 Compile script
@@ -2039,6 +2293,7 @@ Sestavit skript
 Kompiluj skrypt
 Compila lo script
 Компилировать скрипт
+Compilar el script
 [downloaded at]
 Téléchargé à 
 Downloaded at 
@@ -2047,6 +2302,7 @@ Stahuji
 Ściągniete z
 Scaricato a
 Скачано с
+Bajado al
 [percent]
   pourcent
   percent
@@ -2055,6 +2311,7 @@ Scaricato a
   procent
   percento
   процентов
+  porcentaje
 [download finished]
 Téléchargement terminé
 Download finished
@@ -2063,6 +2320,7 @@ Stáhnuto
 Pobieranie zakończone
 Download completato
 Скачивание закончено
+Descarga terminada
 [Map name: %s]
 Carte: %s.
 Map name: %s.
@@ -2071,6 +2329,7 @@ Jméno mapy: %s.
 Nazwa mapy: %s.
 Nome della mappa: %s.
 Название карты: %s.
+Nombre del mapa: %s.
 [one player]
 Un joueur présent.
 A player has joined.
@@ -2079,6 +2338,7 @@ Jeden hráč se připojil.
 Gracz dołaczył do gry.
 Giocatore singolo.
 Подключился игрок.
+un jugador
 [number of players: %d]
 %d joueurs présents.
 %d players are present.
@@ -2087,6 +2347,7 @@ Giocatore singolo.
 %d graczy dołączyło do gry.
 %d numero di giocatori.
 %d игроков в игре
+%d numero de jugadores
 [number of teams: %d]
 %d équipes.
 %d teams.
@@ -2095,6 +2356,7 @@ Giocatore singolo.
 %d drużyny
 %d numero di sqadre.
 %d команд
+%d numero de equipos
 [game full]
 Jeu complet
 Game full
@@ -2103,6 +2365,7 @@ Plně obsazená hra
 Komplet graczy
 Gioco completo
 Игра заполнена
+Partida completa
 [small]
 faible
 small
@@ -2111,6 +2374,7 @@ malá
 mała
 piccolo
 маленькая
+Pequeño
 [medium]
 moyen
 medium
@@ -2119,6 +2383,7 @@ střední
 średnia
 medio
 средняя
+mediano
 [large]
 grand
 large
@@ -2127,6 +2392,7 @@ velká
 duża
 largo
 большая
+grande
 [network latency]
 Latence du réseau
 Network latency
@@ -2135,6 +2401,7 @@ Network latency
 Opóźnienie sieci
 Latenza della rete
 Латентность сети
+latencia
 [game speed]
 Vitesse du jeu
 Game speed
@@ -2143,6 +2410,7 @@ Rychlost hry
 Prędkość gry
 Velocità di gioco
 Скорость игры
+velocidad del juego
 [Paused]
 Pause
 Paused
@@ -2151,6 +2419,7 @@ Pauza
 Pauza
 Pausa
 Пауза
+Pausa
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 Register a new YOG user with a password. (insecure)
@@ -2159,6 +2428,7 @@ Registrace nového YOG uživatele s heslem. (nejisté)
 
 Registra un nuovo utente YOG con una passord. (non sicuro)
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
+Registrar un nuevo jugador YOG con contraseña (inseguro)
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 Remember the password locally. (insecure)
@@ -2167,6 +2437,7 @@ Zapamatovat si heslo lokálně? (nejisté)
 
 Ricordati la password localmente. (non sicuro)
 Запомнить пароль локально. (небезопасно)
+Recordar la contraseña (inseguro)
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
@@ -2175,6 +2446,7 @@ Vnitřní chyba spojitosti během připojovaní.
 Błąd spójności podczas łączenia.
 Errore interno di connessione.
 Внутренняя ошибка согласования при соединении.
+Inconsistencia interna mientras conectaba
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 Unable to connect. Apparently the YOG metaserver is down.
@@ -2183,6 +2455,7 @@ Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 Non mi riesco a connettere, apparentemente il master server YOG �offline.
 Невозможно соединиться. Очевидно, метасервер YOG не работает.
+Imposible conectar. Metaservidor YOG esta caido
 [YESTS_CREATED]
 Le système de connection est prêt à contacter le metaserveur YOG pour se connecter.
 The connection system is ready to contact the YOG metaserver for connection.
@@ -2191,6 +2464,7 @@ Systém připojení je připraven na kontakt s YOG metaserverem.
 System jest gotowy do połączenia z metaserwerem YOG.
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
 Система соединения готова обратиться к метасерверу YOG за подключением.
+El sistema de conexion esta listo para contactar con el metaservidor YOG
 [YESTS_CONNECTING]
 Etablissement de la connection au metaserveur YOG...
 Establishing the connection to the YOG metaserver...
@@ -2199,6 +2473,7 @@ Navazuji spojení s YOG metaserverem...
 Nawiązuje połączenie z metaserwerem YOG...
 Mi sto connettendo al metaserver YOG...
 Подключение к метасерверу YOG...
+Conectando al metaservidor YOG...
 [YESTS_DECONNECTING]
 Déconnection du metaserveur YOG...
 Disconnecting from the YOG metaserver...
@@ -2207,6 +2482,7 @@ Odpojuji z YOG metaserveru...
 Rozłączam z metaserwerem YOG...
 Disconnessione dal metaserver YOG in corso...
 Отсоединение от метасервера YOG...
+Desconectando del metaservidor YOG...
 [YESTS_YOG_KILLED]
 Un administrateur vient d'arrêter le metaserveur YOG.
 An administrator has just stopped the YOG metaserver.
@@ -2215,6 +2491,7 @@ Správce zastavil YOG metaserver.
 Administrator wyłączył metaserwer YOG.
 Un amministratore ha appena fermato il metaserver YOG.
 Администратор только что остановил метасервер YOG.
+Un administrador a interrumpido el metaservidor YOG.
 [YESTS_CONNECTION_LOST]
 La connection à YOG à été perdue.
 The connection to YOG has been lost.
@@ -2223,6 +2500,7 @@ Spojení s YOG metaserverem bylo ztraceno.
 Połączenie z YOG zostało utracone.
 La connessione a YOG �stat persa.
 Соединение с YOG только что прервалось.
+Conexion al metaservidor YOG perdida
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connection car votre version de globulation2 est trop ancienne pour communiquer avec.
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
@@ -2231,6 +2509,7 @@ YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globula
 Metaserwere YOG odmówił połączenia, ponieważ Twoja wersja globulation2 jest zbyt stara, by mógł się z nią komunikować.
 Il metaserver YOG ha rifiutato la connessione perchè la versione di Globulation2 che hai installato è troppo vecchia
 Метасервер YOG отказал в соединении, потому что Ваша версия globulation2 слишком старая, чтобы с ней соединяться.
+No se puede conectar al metaservidor YOG, tu cliente globulation2 esta obsoleto
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connection car votre nom d'utilisateur est deja utilisé par une autre personne.
 The YOG metaserver has refused the connection because your username is already used by someone else.
@@ -2239,6 +2518,7 @@ YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jin
 Metaserwer YOG odmówił połączenia ponieważ twój login jest już zajęty przez kogoś innego.
 Il metaserver YOG ha rifiutato la tua connessione perch�il tuo username �gi�in uso da qualcun altro.
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
+No se puede conectar al metaservidor YOG. Nombre de usuario en uso
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
 The YOG metaserver has refused connection because the supplied password was incorrect.
@@ -2247,6 +2527,7 @@ YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 
 
 Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
+No se puede conectar al metaservidor YOG. Contraseña incorrecta
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
@@ -2255,6 +2536,7 @@ YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přid
 
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
 
+El metaservidor YOG ha rechazado la conexión porque el usuario no tiene contraseña aun, activa la opción: Registrar un nuevo usuario YOG con contraseña
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
@@ -2263,6 +2545,7 @@ YOG metaserver odmítnul spojení, protože tato přezdívka je už zaregistovan
 
 Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
 Метасервер YOG отказал в соединении, потому что это имя уже было зарегистрировано с паролем. Если Вы регистрировали этого пользователя, деактивируйте опцию "Регистрировать нового пользователя YOG с паролем" внизу.
+Nombre de usuario ya registrado, intente otro
 [YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
 The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
@@ -2271,6 +2554,7 @@ YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: už jsi b
 
 Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel protocollo: sei già autenticato. Riprova tra 45 secondi.
 Метасервер YOG отказал в соединении, из-за ошибки протокола: Вы уже аутентифицированы. Попробуйте снова через 45 секунд.
+El servidor YOG ha rechazado la conexión por un error de autentificacion, intentalo en 45 segundos
 [YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
@@ -2279,6 +2563,7 @@ YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: nejsi je�
 
 Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
 Метасервер YOG отказал в соединении из-за внутренней ошибки протокола: Вы не подключены при аутентификации. Пожалуйста, сообщите об этой ошибке.
+El servidor YOG ha rechazado la conexion por un error interno, por favor reporta este fallo.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!
@@ -2287,6 +2572,7 @@ YOG metaserver odmítnul spojení bez udání důvodu.
 Metaserver YOG odmówił połączenia bez dalszego wyjaśnienia.
 Il metaserver YOG ha respinto la connessione senza spiegazione!
 Метасервер YOG отказал в соединении без объяснения причин!
+El metaservidor YOG ha rechazado la conexión inexplicablemente.
 [The player %s has left YOG]
 Le joueur %s a quitté YOG.
 %s has left YOG.
@@ -2295,6 +2581,7 @@ Hráč %s se odpojil od YOG.
 Gracz %s opuścił YOG.
 Il giocatore %s se n'�andato da YOG.
 Игрок %s покинул YOG.
+El jugador %s ha abandonado YOG
 [The player %s has joined YOG]
 Le joueur %s a rejoint YOG.
 %s has joined YOG.
@@ -2303,6 +2590,7 @@ Hráč %s se připojil k YOG.
 Gracz %s przyłączył się do YOG.
 Il giocatore %s è entrato in YOG.
 Игрок %s подсоединился к YOG.
+El jugador %s se ha unido a YOG
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
 You are marked as away.
@@ -2311,6 +2599,7 @@ Jsi označen, že jsi pryč.
 Jesteś oznaczony jako nieaktywny.
 Adesso sei segnato come assente.
 Вы не помечены как неактивный.
+Estas marcado como ausente.
 [You are no more marked as away]
 Vous êtes à nouveau considéré comme étant présent.
 You are no longer marked as away.
@@ -2319,6 +2608,7 @@ Nejsi označen, že jsi pryč.
 Już nie jesteś oznaczony jako nieaktywny.
 Non sei pi segnato come assente.
 Вы больше не помечены как неактивный.
+Ya no estas marcado como ausente.
 [YOG_HELP]
 Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
 The YOG messaging system has two commands, "msg" and "away". Type "/help <command>" to learn more about one of them.
@@ -2327,6 +2617,7 @@ YOG komunikační systém má dva příkazy, "msg" a "away". Napiš "/help <př�
 System komunikacji YOG ma dwie komendy, "msg" oraz "away". Napisz "/help <komenda>" aby się o nich więcej dowiedzieć.
 Il sistema di messaggistica YOG ha due comandi: "msg" e "away". Scrivi "/help <comando>" per saperne di più.
 Система сообщений YOG имеет две команды: "msg" и "away". Введите "/help <команда>", чтобы подробнее узнать об одной из них.
+El sistema de mensajes YOG tiene dos comandos, "msg" y "awat". Escribe "/help <comando>" para aprender sobre uno de ellos.
 [YOG_HELP_AWAY]
 La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
 The "/away (<message>)" command allows you to let the other YOG users know that you are temporarily away.  You may add a short explanation message.  For instance "/away I'm eating a hamburger and I'll be back at 1 o'clock". Alias "/a"
@@ -2335,6 +2626,7 @@ Příkazem "/away (<zpráva>)" dáš na vědomí ostatním YOG uživatelům svoj
 Komenda "/away (<wiadomość>)" pozwala Ci poinformować innych użytkowników YOG o Twojej tymczasowej nieobecności. Możesz dodać krótką notę informacyjną. Np. "/away Jem obiad będę o 14". Możesz użyć też skrótu "/a".
 Il comando "/away [<messaggio>]" permette agli altri utenti YOG di sapere che temporaneamente ti sei assentato. Puoi aggiungere un breve messaggio di spiegazione. Per esempio "/away Sto mangiando un hamburger e torno alle 13.". Alias "/a"
 Команда "/away (<сообщение>)" позволяет другим пользователям YOG знать, что Вы временно отсутствуете. Вы можете добавить краткое объяснение. Например, "/away Ушёл к соседке. Вернусь к утру". Сокращение "/a".
+El comando "/away [<mensaje>]" te permite ausentarte dejando un mensaje a los demas
 [YOG_HELP_MSG]
 La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
 The "/msg <name> <message>" command sends a private message.  For instance, "/msg John Hi John, how are you?".  Alias "/m".
@@ -2343,6 +2635,7 @@ Příkaz "/msg <jméno> <zpráva>" pošle zprávu jen dotyčnému, nikdo jiný s
 Komenda "/msg <nazwa> <wiadomość>" pozwala Ci przesłać wiadomość do jednej osoby. Np. "/msg Daemon42 Twoje tłumaczenie ssie...". W skrócie "/m"
 Il comando "/msg <nome> <messaggio>" permette di spedire un messaggio solo ad una persona specifica. Per esempio: "/msg john hi john, how are you?". Alias "/m"
 Команда "/msg <имя> <сообщение>" позволяет послать сообщение кому-нибудь одному. Например "/msg Поздравляю тебя, Шарик, ты балбес!". Сокращение "/m".
+El comando "/msn <nick> <mensaje>" envia <mensaje> al usuario <nick>
 [save before quit?]
 Voulez-vous sauver avant de quitter ?
 Do you want to save before quitting?
@@ -2351,6 +2644,7 @@ Chceš uložit před odchodem ?
 Chcesz zapisać stan gry, przed jej zakończeniem ?
 Voui salvare prima di uscire?
 Сохранить перед выходом?
+Deseas guardar antes de salir?
 [Yes]
 Oui
 Yes
@@ -2359,6 +2653,7 @@ Ano
 Tak
 Sì
 Да
+Si
 [No]
 Non
 No
@@ -2367,6 +2662,7 @@ Ne
 Nie
 No
 Нет
+No
 [Save]
 Sauvegarder
 Save
@@ -2375,6 +2671,7 @@ Uložit
 Zapisz
 Salva
 Сохранение
+Guardar
 [auto save]
 Sauvegarde automatique
 Auto save
@@ -2383,6 +2680,7 @@ Auto save
 Autozapis
 Salvataggio automatico
 Автосохранение
+Autoguardado
 [Total prestige reached]
 Le prestige total a été atteint
 Total prestige reached
@@ -2391,6 +2689,7 @@ Dosažená celková prestiž
 Osiągnięty prestiż
 Totale prestigio raggiunto
 Общий достигнутый престиж
+Prestigio total alcanzado
 [Continue playing]
 Continuer à jouer
 Continue playing
@@ -2399,6 +2698,7 @@ Pokračovat ve hře
 Kontynuuj grę
 Continua a giocare
 Продолжить игру
+Continuar jugando
 [Lost : your colony is dead]
 Perdu : votre colonie est morte
 Lost: your colony is dead
@@ -2407,6 +2707,7 @@ Tvoje kolonie je zničená ...
 Przegrałeś: Twoja kolonia została wybita.
 Hai perso: la tua colonia �morta.
 Поражение: Ваша колония мертва.
+Perdedor: Tu colonia ha sido aniquilada
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
 Won : you defeated your opponents
@@ -2415,6 +2716,7 @@ Tvoji nepřátelé byli poraženi ...
 Wygrałeś: pokonałeś swoich przeciwników
 Hai vinto: hai battuto i tuoi avversari
 Победа: Вы победили всех соперников.
+Vencedor: Has destruido a tus enemigos
 [Won : your ally %s has the most prestige]
 Gagné : votre allié %s a le plus de prestige
 Won: your ally %s has the biggest prestige
@@ -2423,6 +2725,7 @@ Tvůj spojenec %s má největší prestiž ...
 Wygrałeś: %s ma największy prestiż
 Hai vinto: il tuo alleato %s ha il maggior prestigio.
 %s
+Vencedor: tu aliado %s ha alcanzado el mayor prestigio-
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
@@ -2431,6 +2734,7 @@ Verloren: %s hat mehr Prestige als Sie
 Przegrałeś: %s ma większy prestiż od Twojego
 Hai perso: %s ha pi prestigio di te
 Поражение: У %s больший престиж, чем у Вас.
+Perdedor: %s tiene mas prestigio que tu
 [Won : you have the most prestige]
 Gagné : vous avez le plus de prestige
 Won : you have the biggest prestige
@@ -2439,6 +2743,7 @@ Ty máš největší prestiž ...
 Wygrałeś: Masz największy prestiż
 Hai vinto: hai il magior prestigio
 
+Ganador: Tu eres el que mas prestigio tiene
 [The game has not been finished]
 La partie n'a pas été terminée
 The game has not been finished
@@ -2447,6 +2752,7 @@ Hra neskončila
 Gra nie została skończona
 La partita non è finita
 Игра не была закончена
+La partida no ha acabado
 [display]
 Affichage
 Display
@@ -2455,6 +2761,7 @@ Rozlišení
 Wyświetlanie
 Visualizza
 Экран
+Visualizador
 [username]
 Nom d'utilisateur
 Username
@@ -2463,6 +2770,7 @@ Jméno uživatele
 Nazwa użytkownika
 Username
 Имя пользователя
+Nombre de usuario
 [fullscreen]
 Plein écran
 Fullscreen
@@ -2471,6 +2779,7 @@ Fullscreen
 Pełen ekran
 Schermo intero
 Полный экран
+Pantalla completa
 [hwaccel]
 Accélération matérielle
 Hardware acceleration
@@ -2479,6 +2788,7 @@ Hardware akcelerace
 Dopalanie sprzętowe
 Accelerazione HardWare
 Аппаратное ускорение
+Aceleración Hardaware
 [dblbuff]
 Doube-tampon
 Double buffering
@@ -2487,6 +2797,7 @@ Double-buffering
 Double-buffering
 Double-buffering
 Двойная буферизация
+Buffer Doble
 [lowquality]
 Basse qualité
 Low quality
@@ -2495,6 +2806,7 @@ Nízká kvalita
 Niska jakość
 Bassa qualità
 Низкое качество
+Calidad Baja
 [audio]
 Audio
 Audio
@@ -2503,6 +2815,7 @@ Audio
 Audio
 Audio
 Звук
+Audio
 [Music volume]
 Volume (musique)
 Volume (music)
@@ -2511,6 +2824,7 @@ Hlasitost (hudba)
 Głośność (muzyka)
 Volume (musica)
 Громкость (музыки)
+Volumen (musica)
 [Happyness]
 Satisfaction
 Happiness
@@ -2519,3 +2833,4 @@ Zadostiučinění
 Satysfakcja
 Soddisfazione
 Счастье
+Felicidad
