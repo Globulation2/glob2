@@ -585,7 +585,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					case (Token::S_MARK):
 					case (Token::S_GOBACKTO):
 					{
-						cout << donnees.getToken().type << endl;
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::STRING)
@@ -644,9 +643,10 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						}
 						else if (donnees.getToken().type == Token::INT)
 						{
-							cout << donnees.getToken().type;
+							cout << "wait int" << endl;
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
+							break;
 						}
 						else if ((donnees.getToken().type > 100) && (donnees.getToken().type < 300))
 						{
@@ -752,13 +752,9 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						donnees.nextToken();
 					}
 					break;
-					case (Token::S_WIN):
-					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-					}
-					break;
 					case (Token::S_LOOSE):
+					case (Token::S_WIN):
+					case (Token::S_HIDE):
 					{
 						thisone.line.push_back(donnees.getToken());
 						donnees.nextToken();
