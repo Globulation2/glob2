@@ -125,6 +125,7 @@ void TeamStats::step(Team *team)
 		{
 			stat.totalUnit++;
 			stat.numberUnitPerType[(int)u->typeNum]++;
+			stat.totalHP+=u->hp;
 
 			if (u->isUnitHungry())
 				if (u->hp<u->performance[HP])
