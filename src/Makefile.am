@@ -68,6 +68,5 @@ Utilities.h \
 FileManager.h \
 FileManager.cpp
 
-glob2_LDADD= @LIBS@ @SDL_LIBS@ -lSDL_net -lSDL_image
-
+glob2_LDADD= -lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

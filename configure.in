@@ -2,6 +2,8 @@ AC_INIT(src/Game.cpp)
 AM_INIT_AUTOMAKE(glob2, 0.1)
 AM_CONFIG_HEADER(config.h)
 
+CXXFLAGS="-ansi -Wall $CXXFLAGS"
+
 dnl Programs 
 AC_PROG_CC
 AC_PROG_CXX
@@ -19,9 +21,9 @@ AC_LANG_C
 dnl Check for SDL
 SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION,
-            :,
+:,
 AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-			)
+)
 dnl CFLAGS="$CFLAGS $SDL_CFLAGS"
 dnl LIBS="$LIBS $SDL_LIBS"
 
