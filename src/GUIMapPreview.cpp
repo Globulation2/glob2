@@ -23,20 +23,19 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 
-MapPreview::MapPreview(int x, int y, const char *mapName)
+MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *mapName)
 {
 	this->x=x;
 	this->y=y;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	this->w=128;
+	this->h=128;
 	this->mapName=mapName;
 	lastW=0;
 	lastH=0;
 	randomGenerated=false;
 	//lastRandomGenerationMethode=eUNIFORM;
-}
-
-void MapPreview::paint(void)
-{
-	repaint();
 }
 
 const char *MapPreview::getMethode(void)
@@ -54,10 +53,16 @@ void MapPreview::setMapThumbnail(const char *mapName)
 	repaint();
 }
 
-void MapPreview::repaint(void)
+void MapPreview::internalRepaint(int x, int y, int w, int h)
 {
 	assert(parent);
 	assert(parent->getSurface());
+	
+	if (hAlignFlag == ALIGN_FILL)
+		x += (w-128)>>1;
+	if (vAlignFlag == ALIGN_FILL)
+		y += (h-128)>>1;
+	
 	bool rv = true;
 	if (mapName!=0)
 	{
@@ -77,8 +82,6 @@ void MapPreview::repaint(void)
 					lastH=1<<session.mapGenerationDescriptor->hDec;
 					randomGenerated=true;
 					lastRandomGenerationMethode=session.mapGenerationDescriptor->methode;
-					parent->paint(x, y, 128, 128);
-					parent->addUpdateRect(x, y, 128, 128);
 				}
 				else
 				{
@@ -156,8 +159,6 @@ void MapPreview::repaint(void)
 								parent->getSurface()->drawPixel(x+dx+decX, y+dy+decY, r, g, b);
 							}
 						}
-
-						parent->addUpdateRect(x, y, 128, 128);
 					}
 				}
 				SDL_RWclose(stream);
@@ -175,9 +176,7 @@ void MapPreview::repaint(void)
 
 	if (rv == false)
 	{
-		parent->paint(x, y, 128, 128);
 		parent->getSurface()->drawLine(x, y, x+127, y+127, 255, 0, 0);
 		parent->getSurface()->drawLine(x+127, y, x, y+127, 255, 0, 0);
-		parent->addUpdateRect(x, y, 128, 128);
 	}
 }
