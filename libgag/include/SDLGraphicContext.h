@@ -145,6 +145,7 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		virtual void loadImage(const char *name);
 		virtual void drawSprite(int x, int y, Sprite *sprite, int index=0, Uint8 alpha = DrawableSurface::ALPHA_OPAQUE);
+		virtual void drawSprite(int x, int y, int w, int h, Sprite *sprite, int index=0, Uint8 alpha = DrawableSurface::ALPHA_OPAQUE);
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);

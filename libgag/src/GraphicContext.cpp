@@ -175,6 +175,14 @@ namespace GAGCore
 		sprite->draw(surface, &clipRect, x, y, index, alpha);
 	}
 	
+	void DrawableSurface::drawSprite(int x, int y, int w, int h, Sprite *sprite, int index, Uint8 alpha)
+	{
+		if (!surface)
+			return;
+		// TODO : implement this, BOTH in software and with GL
+		drawRect(x, y, w, h, 255, 255, 255, alpha);
+	}
+	
 	void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		if (!surface)
