@@ -115,7 +115,8 @@ void Button::paint(void)
 TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode)
 :Button(x, y, w, h, arch, standardId, highlightID, returnCode, unicode)
 {
-	this->text=NULL;
+	assert(font);
+	assert(text);
 	this->font=font;
 	internalSetText(text);
 }
@@ -127,7 +128,7 @@ void TextButton::paint(void)
 	Button::paint();
 	if (visible)
 	{
-		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text);
+		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text.c_str());
 		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	}
 }
@@ -135,13 +136,10 @@ void TextButton::paint(void)
 void TextButton::internalSetText(const char *text)
 {
 	assert(font);
-	int textLength=strlen(text);
-	if (this->text)
-		delete[] this->text;
-	this->text=new char[textLength+1];
-	strncpy(this->text, text, textLength+1);
-	decX=(w-font->getStringWidth(text))>>1;
-	decY=(h-font->getStringHeight(text))>>1;
+	assert(text);
+	this->text=text;
+	decX=(w-font->getStringWidth(this->text.c_str()))>>1;
+	decY=(h-font->getStringHeight(this->text.c_str()))>>1;
 }
 
 void TextButton::setText(const char *text)
@@ -158,7 +156,7 @@ void TextButton::repaint(void)
 	parent->paint(x, y, w, h);
 	if (visible)
 	{
-		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text);
+		parent->getSurface()->drawString(x+decX, y+decY, font, "%s", text.c_str());
 		if (highlighted)
 		{
 			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);

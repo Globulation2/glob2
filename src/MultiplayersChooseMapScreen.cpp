@@ -50,7 +50,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	methode=new Text(440, 60+128+150, "standard", "", 180);
 	addWidget(methode);
 	
-	mapFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
+	mapFileList=new List(20, 60, 200, 400, "standard");
 	if (Toolkit::getFileManager()->initDirectoryListing("maps", "map"))
 	{
 		const char *fileName;
@@ -66,7 +66,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	}
 	addWidget(mapFileList);
 
-	gameFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
+	gameFileList=new List(20, 60, 200, 400, "standard");
 	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;

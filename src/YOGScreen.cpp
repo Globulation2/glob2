@@ -34,15 +34,15 @@ YOGScreen::YOGScreen()
 
 	addWidget(new TextButton(440, 390, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
 	addWidget(new TextButton(440, 435, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
-	
-	gameList=new List(20, 40, 400, 150, globalContainer->standardFont);
+
+	gameList=new List(20, 40, 400, 150, "standard");
 	addWidget(gameList);
 	gameInfo=new TextArea(440, 40, 180, 105, globalContainer->standardFont);
 	addWidget(gameInfo);
 	joinButton=new TextButton(440, 165, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN);
 	addWidget(joinButton);
 
-	playerList=new List(440, 210, 180, 160, globalContainer->standardFont);
+	playerList=new List(440, 210, 180, 160, "standard");
 	addWidget(playerList);
 
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);

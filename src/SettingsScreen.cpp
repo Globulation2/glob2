@@ -24,7 +24,7 @@
 SettingsScreen::SettingsScreen()
 {
 	//int decX=(globalContainer->gfx->getW()-400)>>1;
-	languageList=new List(120, 60, 400, 200, globalContainer->standardFont);
+	languageList=new List(120, 60, 400, 200, "standard");
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);

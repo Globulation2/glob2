@@ -21,7 +21,7 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 
-Glob2FileList::Glob2FileList(int x, int y, int w, int h, Font *font, 
+Glob2FileList::Glob2FileList(int x, int y, int w, int h, const char *font, 
 														 const char *dir,
 														 const char *extension, const bool recurse)
 	: FileList(x, y, w, h, font, dir, extension, recurse)

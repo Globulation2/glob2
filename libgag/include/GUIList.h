@@ -29,22 +29,20 @@ protected:
 	CLASSDEF(List)
 		BASECLASS(RectangularWidget)
 	MEMBERS
-		ITEM(base::Ptr<Font>, font)
-		ITEM(Sint32, textHeight)
+		ITEM(std::string, font)
+		ITEM(std::vector<std::string>, strings)
 		ITEM(Sint32, nth)
 		ITEM(Uint32, disp)
-		ITEM(std::vector<std::string>, strings)
-		//! Pos of the scroll box
-		ITEM(Uint32, blockPos)
 	CLASSEND;
 
 	//! Cached variables, do not serialise, reconstructed on paint() call
 	//! Length of the scroll box, this is a cache
-	unsigned blockLength;
+	unsigned blockLength, blockPos, textHeight;
+	Font *fontPtr;
 
 public:
-	List():RectangularWidget() { font = NULL; }
-	List(int x, int y, int w, int h, base::Ptr<Font> font);
+	List():RectangularWidget() { fontPtr = NULL; }
+	List(int x, int y, int w, int h, const char *font);
 	virtual ~List();
 
 	virtual void onTimer(Uint32 tick) { }

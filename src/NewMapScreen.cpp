@@ -61,7 +61,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeY->setNth(descriptor.hDec-6);
 	addWidget(mapSizeY);
 	
-	methodes=new List(20, 100, 280, 300, globalContainer->menuFont);
+	methodes=new List(20, 100, 280, 300, "menu");
 	methodes->addText(globalContainer->texts.getString("[uniform terrain]"));
 	methodes->addText(globalContainer->texts.getString("[random terrain]"));
 	methodes->addText(globalContainer->texts.getString("[islands terrain]"));
@@ -70,7 +70,7 @@ NewMapScreen::NewMapScreen()
 	
 	// eUNIFORM
 
-	terrains=new List(340, 100, 280, 300, globalContainer->menuFont);
+	terrains=new List(340, 100, 280, 300, "menu");
 	terrains->addText(globalContainer->texts.getString("[water]"));
 	terrains->addText(globalContainer->texts.getString("[sand]"));
 	terrains->addText(globalContainer->texts.getString("[grass]"));

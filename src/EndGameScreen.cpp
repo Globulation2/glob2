@@ -160,7 +160,6 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// add players name
 	Text *text;
 	int inc = (gui->game.session.numberOfTeam < 16) ? 20 : 10;
-	Font *font = (gui->game.session.numberOfTeam < 16) ? globalContainer->standardFont : globalContainer->littleFont;
 
 	// set teams entries for later sort
 	for (int i=0; i<gui->game.session.numberOfTeam; i++)
