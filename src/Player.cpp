@@ -597,7 +597,10 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 		char signature[4];
 		SDL_RWread(stream, signature, 4, 1);
 		if (memcmp(signature,"PLYb",4)!=0)
+		{
+			fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
 			return false;
+		}
 	}
 	
 	// if AI, delete
@@ -607,7 +610,10 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	// base player
 	bool success=BasePlayer::load(stream, versionMinor);
 	if (!success)
+	{
+		fprintf(stderr, "Player::load: Error during BasePlayer load\n");
 		return false;
+	}
 
 	// player
 	startPositionX=SDL_ReadBE32(stream);
@@ -628,7 +634,10 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 		char signature[4];
 		SDL_RWread(stream, signature, 4, 1);
 		if (memcmp(signature,"PLYe",4)!=0)
+		{
+			fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
 			return false;
+		}
 	}
 	
 	return true;
