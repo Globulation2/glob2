@@ -23,10 +23,8 @@
 
 CustomGameScreen::CustomGameScreen()
 {
-	int i;
-
-	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK);
-	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL);
+	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27);
 	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
@@ -44,7 +42,7 @@ CustomGameScreen::CustomGameScreen()
 	addWidget(cancel);
 	addWidget(mapPreview);
 
-	for (i=0; i<8; i++)
+	for (int i=0; i<8; i++)
 	{
 		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, true, 10+i);
 		addWidget(isAI[i]);
@@ -56,9 +54,16 @@ CustomGameScreen::CustomGameScreen()
 
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
-		const char *file;
-		while ((file=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
-			fileList->addText(file);
+		const char *fileName;
+		while ((fileName=globalContainer->fileManager.getNextDirectoryEntry())!=NULL)
+		{
+			int textLength=strlen(fileName)-strlen(".map");
+			assert(textLength>0);
+			char *newText=new char[textLength+1];
+			memcpy(newText, fileName, textLength+1);
+			newText[textLength]=0;
+			fileList->addText(newText);
+		}
 	}
 	addWidget(fileList);
 
@@ -74,11 +79,17 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=fileList->getText(par1);
-		mapPreview->setMapThumbnail(mapSelectedName);
-		printf("CGS : Loading map '%s' ...\n", mapSelectedName);
-		SDL_RWops *stream=globalContainer->fileManager.open(mapSelectedName,"rb");
+		int oldTextLength=strlen(mapSelectedName);
+		int newTextLength=oldTextLength+strlen(".map");
+		char *mapFileName=new char[newTextLength+1];
+		memcpy(mapFileName, mapSelectedName, oldTextLength);
+		memcpy(&mapFileName[oldTextLength], ".map", strlen(".map")+1);
+		
+		mapPreview->setMapThumbnail(mapFileName);
+		printf("CGS : Loading map '%s' ...\n", mapFileName);
+		SDL_RWops *stream=globalContainer->fileManager.open(mapFileName,"rb");
 		if (stream==NULL)
-			printf("Map '%s' not found!\n", mapSelectedName);
+			printf("Map '%s' not found!\n", mapFileName);
 		else
 		{
 			validSessionInfo=sessionInfo.load(stream);
@@ -95,13 +106,13 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
 				mapSize->setText(textTemp);
 
-				int i, j;
+				int i;
 				int nbTeam=sessionInfo.numberOfTeam;
 				// set the correct number of colors
 				for (i=0; i<8; i++)
 				{
 					color[i]->clearColors();
-					for (j=0; j<nbTeam; j++)
+					for (int j=0; j<nbTeam; j++)
 					{
 						color[i]->addColor(sessionInfo.team[j].colorR, sessionInfo.team[j].colorG, sessionInfo.team[j].colorB);
 					}
@@ -135,6 +146,7 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 			else
 				printf("CGS : Warning, Error during map load\n");
 		}
+		delete[] mapFileName; 
 	}
 	else if (action==BUTTON_RELEASED)
 	{

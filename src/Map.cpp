@@ -61,6 +61,7 @@ void BaseMap::setMapName(const char *s)
 		*c=0;
 	// set filename from mapname
 	snprintf(mapFileName, MAP_NAME_MAX_SIZE+4, "%s.map", mapName);
+	snprintf(gameFileName, MAP_NAME_MAX_SIZE+4, "%s.game", mapName);
 	//printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
 }
 
@@ -74,6 +75,12 @@ const char *BaseMap::getMapFileName() const
 {
 	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
 	return mapFileName;
+}
+
+const char *BaseMap::getGameFileName() const
+{
+	//printf(gameFileName=(%s), mapName=(%s).\n", gameFileName, mapName);
+	return gameFileName;
 }
 
 Uint8 BaseMap::getOrderType()

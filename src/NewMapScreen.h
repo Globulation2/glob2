@@ -27,6 +27,12 @@
 class NewMapScreen:public Screen
 {
 public:
+	enum
+	{
+		OK = 1,
+		CANCEL = 2
+	};
+public:
 	//! Size in bit of the map (6=64, 7=128, 8=256, 9=512) on x
 	int sizeX;
 	//! Size in bit of the map (6=64, 7=128, 8=256, 9=512) on y
@@ -56,4 +62,3 @@ public:
 };
 
 #endif
-

@@ -41,6 +41,7 @@ public:
 	StringTable();
 	~StringTable();
 	void setLang(int l) { actlang=l; }
+	int getLang(void) { return actlang; }
 	int getNumberOfLanguage(void) { return numberoflanguages; }
 	bool load(char *filename);
 	char *getString(const char *stringname);

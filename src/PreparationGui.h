@@ -26,47 +26,6 @@
 #include "Session.h"
 #include "GUIMapPreview.h"
 
-class MainMenuScreen:public Screen
-{
-public:
-	enum
-	{
-		CAMPAIN = 1,
-		CUSTOM = 2,
-		MULTIPLAYERS = 3,
-		GAME_SETUP = 4,
-		QUIT = 5
-	};
-private:
-	//Sprite *arch;
-public:
-	MainMenuScreen();
-	virtual ~MainMenuScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	static int menu(void);
-};
-
-class MultiplayersOfferScreen:public Screen
-{
-public:
-	enum
-	{
-		HOST = 1,
-		JOIN = 4,
-		QUIT = 5
-	};
-private:
-	//Sprite *arch;
-	//Font *font;
-public:
-	MultiplayersOfferScreen();
-	virtual ~MultiplayersOfferScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	static int menu(void);
-};
-
 class TextInput;
 
 class SessionConnection
@@ -91,43 +50,6 @@ public:
 	bool destroyNet;
 	int channel;
 
-};
-
-class MultiplayersChooseMapScreen:public Screen
-{
-public:
-	enum
-	{
-		OK = 1,
-		CANCEL = 2
-	};
-	SessionInfo sessionInfo;
-
-private:
-	Button *ok, *cancel;
-	List *fileList;
-	MapPreview *mapPreview;
-	Text *mapName, *mapInfo, *mapVersion, *mapSize;
-	bool validSessionInfo;
-
-public:
-	MultiplayersChooseMapScreen();
-	virtual ~MultiplayersChooseMapScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-};
-
-
-class MultiplayersCrossConnectable:public SessionConnection
-{
-public:
-	MultiplayersCrossConnectable():SessionConnection() { }
-	virtual ~MultiplayersCrossConnectable() { }
-	void tryCrossConnections(void);
-	int getFreeChannel();
-	
-public:
-	IPaddress serverIP;
 };
 
 void raceMenu(Race *race);

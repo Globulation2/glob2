@@ -21,7 +21,7 @@
 #ifndef __ENTITYTYPE_H
 #define __ENTITYTYPE_H
 
-#include "GAG.h"
+#include "Header.h"
 
 class EntityType
 {

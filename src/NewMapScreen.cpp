@@ -49,7 +49,8 @@ NewMapScreen::NewMapScreen()
 	for (i=0; i<3; i++)
 		addWidget(defaultTerrainTypeButton[i]);
 
-	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 0));
+	addWidget(new TextButton( 60, 415, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
+	addWidget(new TextButton(380, 415, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
 }
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -57,10 +58,8 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	int i, id;
 	if (action==BUTTON_RELEASED)
 	{
-		if (par1==0)
-		{
-			endExecute(0);
-		}
+		if ((par1==OK)||(par1==CANCEL))
+			endExecute(par1);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{

@@ -22,7 +22,9 @@
 #include "GlobalContainer.h"
 #include "MultiplayersHostScreen.h"
 #include "MultiplayersJoinScreen.h"
+#include "MultiplayersChooseMapScreen.h"
 #include "CustomGameScreen.h"
+#include "LoadGameScreen.h"
 #include "YOGScreen.h"
 
 Engine::Engine()
@@ -108,11 +110,11 @@ int Engine::initCustom(void)
 {
 	CustomGameScreen customGameScreen;
 
-	int cgs = customGameScreen.execute(globalContainer->gfx, 20);
+	int cgs=customGameScreen.execute(globalContainer->gfx, 20);
 
-	if (cgs == CustomGameScreen::CANCEL)
+	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
-
+	
 	if (!gui.game.loadBase(&(customGameScreen.sessionInfo)))
 	{
 		printf("Engine : Can't load map\n");
@@ -159,14 +161,24 @@ int Engine::initCustom(void)
 	return EE_NO_ERROR;
 }
 
-int Engine::initCustom(char *gameName)
+int Engine::initCustom(const char *gameName)
 {
+	assert(gameName);
+	assert(gameName[0]);
 	SDL_RWops *stream=globalContainer->fileManager.open(gameName,"rb");
 	if (stream)
 	{
-		gui.load(stream);
-		SDL_RWclose(stream);
-		printf("Engine : game is loaded\n");
+		if (gui.load(stream))
+		{
+			printf("Engine : game is loaded\n");
+			SDL_RWclose(stream);
+		}
+		else
+		{
+			printf("Engine : Can't load map\n"); 
+			SDL_RWclose(stream);
+			return EE_CANCEL;
+		}
 	}
 	else
 	{
@@ -179,6 +191,18 @@ int Engine::initCustom(char *gameName)
 
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
+	return EE_NO_ERROR;
+}
+
+int Engine::initLoadGame()
+{
+	LoadGameScreen loadGameScreen;
+	int lgs=loadGameScreen.execute(globalContainer->gfx, 20);
+	if (lgs==LoadGameScreen::CANCEL)
+		return EE_CANCEL;
+	
+	initCustom(loadGameScreen.sessionInfo.map.getGameFileName());
+	
 	return EE_NO_ERROR;
 }
 

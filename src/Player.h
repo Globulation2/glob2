@@ -104,7 +104,7 @@ public:
 	void close(void);
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
-	void load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();
@@ -140,7 +140,7 @@ public:
 	virtual ~Player(void);
 
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
-	void load(SDL_RWops *stream, Team *teams[32]);
+	bool load(SDL_RWops *stream, Team *teams[32]);
 	void save(SDL_RWops *stream);
 	
 public:

@@ -41,6 +41,16 @@ public:
 class InGameMainScreen:public InGameScreen
 {
 public:
+	enum
+	{
+		LOAD_GAME = 0,
+		SAVE_GAME = 1,
+		OPTIONS = 2,
+		ALLIANCES = 3,
+		RETURN_GAME = 4,
+		QUIT_GAME = 5
+	};
+public:
 	InGameMainScreen();
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);

@@ -338,6 +338,8 @@ namespace Utilities
 
 	void computeMinimapData(int resolution, int mW, int mH, int *maxSize, int *sizeX, int *sizeY, int *decX, int *decY)
 	{
+		assert(mW>0);
+		assert(mH>0);
 		// get data
 		if (mW>mH)
 		{
@@ -355,6 +357,26 @@ namespace Utilities
 			*sizeY=resolution;
 			*decY=0;
 		}
+	}
+	
+	char *concat(const char *a, const char *b)
+	{
+		int length=strlen(a);
+		int sumLength=length+strlen(b);
+		char *s=new char[sumLength+1];
+		memcpy(s, a, length);
+		memcpy(&s[length], b, strlen(b)+1);
+		return s;
+	}
+	
+	char *dencat(const char *a, const char *b)
+	{
+		int length=strlen(a)-strlen(b);
+		assert(length>=0);
+		char *s=new char[length+1];
+		memcpy(s, a, length);
+		s[length]=0;
+		return s;
 	}
 }
 

@@ -83,6 +83,12 @@ FileManager.h \
 FileManager.cpp \
 CustomGameScreen.h \
 CustomGameScreen.cpp \
+LoadGameScreen.h \
+LoadGameScreen.cpp \
+MainMenuScreen.h \
+MainMenuScreen.cpp \
+MultiplayersOfferScreen.h\
+MultiplayersOfferScreen.cpp \
 YOGScreen.h \
 YOGScreen.cpp \
 YOGConnector.h \
@@ -99,6 +105,10 @@ MultiplayersJoin.h \
 MultiplayersJoin.cpp \
 MultiplayersConnectedScreen.h \
 MultiplayersConnectedScreen.cpp \
+MultiplayersChooseMapScreen.h \
+MultiplayersChooseMapScreen.cpp \
+MultiplayersCrossConnectable.h \
+MultiplayersCrossConnectable.cpp \
 NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp \

@@ -78,7 +78,7 @@ public:
 	void drawAll(int team);
 	void executeOrder(Order *order);
 
-	void load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 
 	void processEvent(SDL_Event *event);
