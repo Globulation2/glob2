@@ -31,7 +31,7 @@ extern SDLGraphicContext *screen;
 
 struct TransformedPalEntry
 {
-	Uint16 r, g, b, na;
+	Uint16 r, g, b, pad;
 };
 
 struct TransformedPal
@@ -39,7 +39,7 @@ struct TransformedPal
 	// datas
 	TransformedPalEntry colors[STATIC_PALETTE_SIZE];
 	// lookup infos
-	Uint8 rotr, rotg, rotb, rota;
+	Uint8 rotr, rotg, rotb;
 };
 
 struct OriginalPal
@@ -48,47 +48,57 @@ struct OriginalPal
 	Uint8 r[STATIC_PALETTE_SIZE];
 	Uint8 g[STATIC_PALETTE_SIZE];
 	Uint8 b[STATIC_PALETTE_SIZE];
-	Uint8 a[STATIC_PALETTE_SIZE];
 };
 
 //! This class contains all statically allocated color for color shifting
 struct StaticPalContainer
 {
+	//! The original palette, used for new rotation
 	OriginalPal originalPal;
+	
+	//! Teh array of transformed palette, one for each color
 	TransformedPal rotatedPal[COLOR_ROTATION_COUNT];
 	
+	//! The number of color allocated in the palette (0..255)
 	unsigned allocatedCount;
+	//! the number of palette allocated (0..COLOR_ROTATION_COUNT)
 	unsigned rotatedCount;
+	//! The active pallette (0..rotatedCount)
+	unsigned activePalette;
 	
 	//! Constructor
 	StaticPalContainer();
 	
 	//! Allocate a color, return the index
-	unsigned allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-};
+	unsigned allocate(Uint8 r, Uint8 g, Uint8 b);
+	
+	//! Activate a color, if needed, do the rotation
+	void setColor(Uint8 r, Uint8 g, Uint8 b);
+} palContainer;
 
 StaticPalContainer::StaticPalContainer()
 {
 	allocatedCount = 0;
 	rotatedCount = 0;
+	activePalette = 0;
 }
 
-unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b)
 {
 	unsigned i = 0;
 	unsigned len = 1000000000;
 	unsigned nearestIdx = 0;
+	unsigned dr, dg, db;
 	unsigned nlen;
-	int dr, dg, db, da;
 	
+	// TODO : improve this
 	while (i<allocatedCount)
 	{
 		dr = (r-originalPal.r[i]);
 		dg = (g-originalPal.g[i]);
 		db = (b-originalPal.b[i]);
-		da = (a-originalPal.a[i]);
 		
-		nlen=dr*dr + dg*dg + db*db + da*da;
+		nlen=dr*dr + dg*dg + db*db;
 		if (nlen < PAL_COLOR_MERGE_THRESHOLD)
 		{
 			return i;
@@ -105,14 +115,65 @@ unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 		originalPal.r[i]=r;
 		originalPal.g[i]=g;
 		originalPal.b[i]=b;
-		originalPal.a[i]=a;
 		allocatedCount++;
 		return i;
 	}
 	return nearestIdx;
 }
 
-// TODO : the rotation part and the render part
+void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
+{
+	unsigned i;
+	for (i=0; i<rotatedCount; i++)
+	{
+		if ((rotatedPal[i].rotr == r) && (rotatedPal[i].rotg == g) && (rotatedPal[i].rotb == b))
+		{
+			// we have found a previous one
+			activePalette = i;
+			return;
+		}
+	}
+	// we have not found a previous one
+	if (rotatedCount == COLOR_ROTATION_COUNT-1)
+	{
+		fprintf(stderr, "GAG : Warning, no more free color entry in the lookup table\n");
+		assert(false);
+		return;
+	}
+	else
+	{
+		// activate the palette
+		activePalette = rotatedCount;
+		
+		// do the transformation
+		float hue, lum, sat;
+		float baseHue;
+		float hueDec;
+		float nR, nG, nB;
+		int i;
+		GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+		GAG::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
+		hueDec=hue-baseHue;
+		for (i=0; i<256; i++)
+		{
+			GAG::RGBtoHSV( ((float)originalPal.r[i])/255, ((float)originalPal.g[i])/255, ((float)originalPal.b[i])/255, &hue, &sat, &lum);
+			GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
+			rotatedPal[rotatedCount].colors[i].r=(Uint32)(255*nR);
+			rotatedPal[rotatedCount].colors[i].g=(Uint32)(255*nG);
+			rotatedPal[rotatedCount].colors[i].b=(Uint32)(255*nB);
+			rotatedPal[rotatedCount].colors[i].pad=0;
+		}
+		
+		// save the color
+		rotatedPal[rotatedCount].rotr=r;
+		rotatedPal[rotatedCount].rotg=g;
+		rotatedPal[rotatedCount].rotb=b;
+		
+		// increment the used palette counter
+		rotatedCount++;
+	}
+}
+
 
 SDLSprite::Palette::Palette()
 {
@@ -168,6 +229,21 @@ void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
 		bTransformed=b;
 	}
 }
+
+// Paletized image, used for rotation
+SDLSprite::PalImage::PalImage(int w, int h)
+{
+	this->w=w;
+	this->h=h;
+	data=new PalImageEntry[w*h];
+}
+
+SDLSprite::PalImage::~PalImage()
+{
+	if (data)
+		delete[] data;
+}
+
 
 SDL_Surface *SDLSprite::getGlobalContainerGfxSurface(void)
 {
@@ -272,7 +348,7 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 					dG=((sVal*bcG)+(sValM*dG))>>8;
 					dB=((sVal*bcB)+(sValM*dB))>>8;
 
-					dVal=(dVal&0xFF000000)|((dR<<Rshift)+(dG<<Gshift)+(dB<<Bshift));
+					dVal=(dVal&0xFF000000)|((dR<<Rshift)|(dG<<Gshift)|(dB<<Bshift));
 					*dPtr=dVal;
 				}
 				dPtr++;
@@ -311,11 +387,78 @@ void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int 
 			sy++;
 		}
 	}
+	
+	if (rotated[index])
+	{
+		int dx, dy;
+		int sy;
+		Uint32 *dPtr;
+		
+		TransformedPalEntry color;
+		TransformedPalEntry *colors=palContainer.rotatedPal[palContainer.activePalette].colors;
+		PalImageEntry *sPtr;
+		PalImageEntry entry;
+		
+		Uint32 a, na;
+		Uint32 dR, dG, dB;
+		Uint32 Rshift, Gshift, Bshift;
+		Uint32 dVal;
+
+		Rshift=dest->format->Rshift;
+		Gshift=dest->format->Gshift;
+		Bshift=dest->format->Bshift;
+		
+		sy=src.y;
+		for (dy=r.y; dy<r.y+r.h; dy++)
+		{
+			sPtr=rotated[index]->data+sy*rotated[index]->w+src.x;
+			dPtr=((Uint32 *)(dest->pixels))+dy*(dest->pitch>>2)+r.x;
+			dx=w;
+			do
+			{
+				// get the values
+				entry=*sPtr;
+				dVal=*dPtr;
+				
+				// get the color
+				color=colors[entry.index];
+				
+				// get the alpha
+				a=entry.alpha;
+				na=255-a;
+				
+				dR=(dVal>>Rshift)&0xFF;
+				dG=(dVal>>Gshift)&0xFF;
+				dB=(dVal>>Bshift)&0xFF;
+				
+				dR=((a*color.r)+(na*dR))>>8;
+				dG=((a*color.g)+(na*dG))>>8;
+				dB=((a*color.b)+(na*dB))>>8;
+				
+				dVal=(dVal&0xFF000000)|((dR<<Rshift)|(dG<<Gshift)|(dB<<Bshift));
+				//dVal=entry.index*a;
+				*dPtr=dVal;
+				
+				dPtr++;
+				sPtr++;
+			}
+			while (--dx);
+			sy++;
+		}
+	}
 
 	SDL_UnlockSurface(dest);
 	SDL_SetClipRect(dest, &oldr);
 }
 
+void SDLSprite::setBaseColor(Uint8 r, Uint8 g, Uint8 b)
+{
+	bcR=r;
+	bcG=g;
+	bcB=b;
+	pal.setColor(r, g, b);
+	palContainer.setColor(r, g, b);
+}
 
 SDLSprite::~SDLSprite()
 {
@@ -334,9 +477,14 @@ SDLSprite::~SDLSprite()
 		if (*paletizedsIt)
 			SDL_FreeSurface((*paletizedsIt));
 	}
+	for (std::vector <PalImage *>::iterator rotatedIt=rotated.begin(); rotatedIt!=rotated.end(); ++rotatedIt)
+	{
+		if (*rotatedIt)
+			delete (*rotatedIt);
+	}
 }
 
-void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_RWops *paletizedStream)
+void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_RWops *paletizedStream, SDL_RWops *rotatedStream)
 {
 	if (frameStream)
 	{
@@ -366,6 +514,34 @@ void SDLSprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *overlayStream, SDL_
 	}
 	else
 		paletizeds.push_back(NULL);
+		
+	if (rotatedStream)
+	{
+		SDL_Surface *sprite;
+		sprite=IMG_Load_RW(rotatedStream, 0);
+		if (sprite->format->BitsPerPixel==32)
+		{
+			PalImage *image=new PalImage(sprite->w, sprite->h);
+			
+			Uint32 *ptr=(Uint32 *)(sprite->pixels);
+			for (int i=0; i<sprite->w*sprite->h; i++)
+			{
+				Uint8 r, g, b, a;
+				SDL_GetRGBA(*ptr, sprite->format, &r, &g, &b, &a);
+				image->data[i].index=palContainer.allocate(r, g, b);
+				image->data[i].alpha=a;
+				ptr++;
+			}
+			rotated.push_back(image);
+		}
+		else
+		{
+			fprintf(stderr, "GAG : Warning, rotated image is in wrong for (%d) bpp istead of 32\n", sprite->format->BitsPerPixel);
+			rotated.push_back(NULL);
+		}
+	}
+	else
+		rotated.push_back(NULL);
 }
 
 int SDLSprite::getW(int index)
@@ -378,6 +554,8 @@ int SDLSprite::getW(int index)
 		return masks[index]->w;
 	else if (paletizeds[index])
 		return paletizeds[index]->w;
+	else if (rotated[index])
+		return rotated[index]->w;
 	else
 		return 0;
 }
@@ -392,6 +570,8 @@ int SDLSprite::getH(int index)
 		return masks[index]->h;
 	else if (paletizeds[index])
 		return paletizeds[index]->h;
+	else if (rotated[index])
+		return rotated[index]->h;
 	else
 		return 0;
 }

@@ -146,7 +146,7 @@ void MapEdit::drawMenu(void)
 	globalContainer->gfx->drawFilledRect(menuStartW, 275, 128, 96, 0, 0, 0);
 
 	Sprite *unitSprite=globalContainer->units;
-	unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+	unitSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
 	globalContainer->gfx->drawSprite(menuStartW+0, 275, unitSprite, 64);
 	globalContainer->gfx->drawSprite(menuStartW+32, 275, unitSprite, 0);
@@ -170,7 +170,7 @@ void MapEdit::drawMenu(void)
 			Sprite *buildingSprite=globalContainer->buildings;
 			//int w=buildingSprite->getW();
 			//int h=buildingSprite->getH();
-			buildingSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+			buildingSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 			globalContainer->gfx->drawSprite(x-20, y-20, buildingSprite, imgid);
 		}
 	}
@@ -525,7 +525,7 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 		}
 
 		Sprite *unitSprite=globalContainer->units;
-		unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+		unitSprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
 		globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
 
@@ -575,7 +575,7 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings;
-		sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+		sprite->setBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
 		batX=(mapX-viewportX)<<5;
 		batY=(mapY-viewportY)<<5;
