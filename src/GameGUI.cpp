@@ -2255,15 +2255,11 @@ bool GameGUI::load(SDL_RWops *stream)
 	{
 		// load gui's specific infos
 		chatMask=SDL_ReadBE32(stream);
-
-		if (game.session.versionMinor>3)
-		{
-			localPlayer=SDL_ReadBE32(stream);
-			localTeamNo=SDL_ReadBE32(stream);
-		}
-		if (game.session.versionMinor>4)
-			assert(!game.session.fileIsAMap);
 		
+		localPlayer=SDL_ReadBE32(stream);
+		localTeamNo=SDL_ReadBE32(stream);
+
+		assert(!game.session.fileIsAMap);
 	}
 
 	return true;

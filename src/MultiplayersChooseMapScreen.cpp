@@ -131,12 +131,6 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				mapSize->setText(textTemp);
 				
 				methode->setText(mapPreview->getMethode());
-				
-				if ((!mapMode)&&(sessionInfo.versionMinor<5)&&(sessionInfo.fileIsAMap))
-				{
-					sessionInfo.fileIsAMap=false;
-					printf("PGU : Old game file version: Warning, data has been modiffied because this is a game and not a map...\n");
-				}
 				//printf("PGU:sessionInfo.fileIsAMap=%d.\n", sessionInfo.fileIsAMap);
 			}
 			else

@@ -66,22 +66,16 @@ AINumbi::~AINumbi()
 bool AINumbi::load(SDL_RWops *stream)
 {
 	assert(game);
-	if (game->session.versionMajor>=0)
-	{
-		if (game->session.versionMinor>=8)
-		{
-			phase            =SDL_ReadBE32(stream);
-			attackPhase      =SDL_ReadBE32(stream);
-			phaseTime        =SDL_ReadBE32(stream);
-			critticalWarriors=SDL_ReadBE32(stream);
-			critticalTime    =SDL_ReadBE32(stream);
-			attackTimer      =SDL_ReadBE32(stream);
+	
+	phase            =SDL_ReadBE32(stream);
+	attackPhase      =SDL_ReadBE32(stream);
+	phaseTime        =SDL_ReadBE32(stream);
+	critticalWarriors=SDL_ReadBE32(stream);
+	critticalTime    =SDL_ReadBE32(stream);
+	attackTimer      =SDL_ReadBE32(stream);
 
-			SDL_RWread(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
-		}
-		else
-			assert(false);
-	}
+	SDL_RWread(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
+
 	return true;
 }
 
