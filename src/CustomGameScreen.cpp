@@ -150,7 +150,10 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		{
 			endExecute(par1);
 		}
-		else if (par1==10)
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (par1==10)
 		{
 			isAI[0]->setState(true);
 		}
