@@ -9,26 +9,38 @@
 
 GlobalContainer::GlobalContainer(void)
 {
-	memset(safer0, 7, 1024);
-	memset(safer1, 7, 1024);
-	memset(safer2, 7, 1024);
-	memset(safer3, 7, 1024);
-	memset(safer4, 7, 1024);
-	memset(safer5, 7, 1024);
-	memset(safer6, 7, 1024);
-	memset(safer7, 7, 1024);
-	memset(safer8, 7, 1024);
-	memset(safer9, 7, 1024);
-	graphicFlags=SDL_ANYFORMAT|SDL_SWSURFACE;
+	graphicFlags=DrawableSurface::DEFAULT;
+}
 
-};
+GlobalContainer::~GlobalContainer(void)
+{
+	if (terrain)
+		delete terrain;
+	if (terrainShader)
+		delete terrainShader;
+	if (ressources)
+		delete ressources;
+	if (units)
+		delete units;
+	if (buildings)
+		delete buildings;
+	if (menuFont)
+		delete menuFont;
+	if (gfx)
+		delete gfx;
+}
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
 		if (strcmp(argv[i], "-f")==0) {
-			graphicFlags|=SDL_FULLSCREEN;
+			graphicFlags|=DrawableSurface::FULLSCREEN;
+			continue;
+		}
+
+		if (strcmp(argv[i], "-a")==0) {
+			graphicFlags|=DrawableSurface::HWACCELERATED;
 			continue;
 		}
 
@@ -48,62 +60,29 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 void GlobalContainer::load(void)
 {
-	// load palette
-	SDL_RWops *stream=fileManager.open("data/MacPal","rb");
-	macPal.load(stream, gfx.screen->format);
-	SDL_RWclose(stream);
-	ShadedPal=macPal;
-	ShadedPal.toBlackAndWhite();
+	// create graphic context
+	gfx=GraphicContext::createGraphicContext(DrawableSurface::GC_SDL);
+	gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
 
 	// load terrain data
-	terrain.setDefaultPal(&macPal);
-	terrain.load("data/terrain.data");
+	terrain=gfx->loadSprite("data/gfx/terrain");
+
+	// load shader for unvisible terrain
+	terrainShader=gfx->loadSprite("data/gfx/shade");
 
 	// load ressources
-	ressources.setDefaultPal(&macPal);
-	ressources.load("data/ressources.data");
+	ressources=gfx->loadSprite("data/gfx/ressource");
 
 	// load units
-	units.setDefaultPal(&macPal);
-	units.load("data/units.data");
-	units.enableColorKey(0);
+	units=gfx->loadSprite("data/gfx/unit");
 
 	// load buildings
-	buildings.setDefaultPal(&macPal);
-	buildings.load("data/buildings.data");
-	buildings.enableColorKey(0);
+	buildings=gfx->loadSprite("data/gfx/building");
+
+	// load fonts
+	menuFont=gfx->loadFont("data/fonts/arial24.png");
 
 	// load texts
 	texts.load("data/texts.txt");
 
-	// load fonts
-	menuFont.load("data/menuFont.png");
-	printf ("GlobalContainer::safe()=%d\n", safe());
-};
-
-bool GlobalContainer::safe(void)
-{
-	memset(safer0, 7, 1024);
-	
-	if (memcmp(safer1, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer2, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer3, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer4, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer5, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer6, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer7, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer8, safer0, 1024)!=0)
-		return false;
-	if (memcmp(safer9, safer0, 1024)!=0)
-		return false;
-	
-	
-	return true;
 };

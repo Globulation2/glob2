@@ -21,7 +21,7 @@ void Screen::paint()
 	paint(0, 0, gfxCtx->getW(), gfxCtx->getH());
 }
 
-int Screen::execute(GraphicContext *gfx, int stepLength)
+int Screen::execute(DrawableSurface *gfx, int stepLength)
 {
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
@@ -129,7 +129,7 @@ void Screen::dispatchTimer(Uint32 tick)
 	}
 }
 
-void Screen::dispatchPaint(GraphicContext *gfx)
+void Screen::dispatchPaint(DrawableSurface *gfx)
 {
 	gfxCtx=gfx;
 	paint();
@@ -141,7 +141,7 @@ void Screen::dispatchPaint(GraphicContext *gfx)
 	}
 }
 
-void Screen::repaint(GraphicContext *gfx)
+void Screen::repaint(DrawableSurface *gfx)
 {
 	if (updateRects.size()>0)
 	{
@@ -150,7 +150,7 @@ void Screen::repaint(GraphicContext *gfx)
 			for (unsigned int i=0; i<updateRects.size(); i++)
 				rects[i]=updateRects[i];
 		}
-		SDL_UpdateRects(((SDLGraphicContext *)gfx)->screen, updateRects.size(), rects);
+		gfx->updateRects(rects, updateRects.size());
 		delete[] rects;
 		updateRects.clear();
 	}

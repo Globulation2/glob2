@@ -31,7 +31,7 @@ public:
 
 	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event) { }
-	virtual void paint(GraphicContext *gfx)=0;
+	virtual void paint(DrawableSurface *gfx)=0;
 
 protected:
 	friend class Screen;
@@ -52,23 +52,23 @@ public:
 	virtual void paint(int x, int y, int w, int h)=0;
 	virtual void paint(SDL_Rect *r) { paint(r->x, r->y, r->w, r->h); }
 
-	int execute(GraphicContext *gfx, int stepLength);
+	int execute(DrawableSurface *gfx, int stepLength);
 	void endExecute(int returnCode);
 	void addUpdateRect();
 	void addUpdateRect(int x, int y, int w, int h);
 	void addWidget(Widget *widget);
 	void dispatchEvents(SDL_Event *event);
 	void dispatchTimer(Uint32 tick);
-	void dispatchPaint(GraphicContext *gfx);
-	void repaint(GraphicContext *gfx);
-	GraphicContext *getGraphicContext(void) { return gfxCtx; }
+	void dispatchPaint(DrawableSurface *gfx);
+	void repaint(DrawableSurface *gfx);
+	DrawableSurface *getSurface(void) { return gfxCtx; }
 
 protected:
 	bool run;
 	int returnCode;
 	std::vector<Widget *> widgets;
 	std::vector<SDL_Rect> updateRects;
-	GraphicContext *gfxCtx;
+	DrawableSurface *gfxCtx;
 };
 
 #endif 

@@ -6,13 +6,15 @@
 #ifndef __GAG_H
 #define __GAG_H
 
+#include "Header.h"
 #include "GraphicContext.h"
-#include "Sprite.h"
+#include "SDLGraphicContext.h"
+#include "SDLSprite.h"
+#include "SDLFont.h"
 #include "GUIBase.h"
 #include "GUIButton.h"
 #include "GUITextInput.h"
 #include "GUIList.h"
-#include "Header.h"
 
 #endif
  

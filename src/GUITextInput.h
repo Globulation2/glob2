@@ -7,7 +7,6 @@
 #define __GUITEXTINPUT_H
 
 #include "GUIBase.h"
-#include "Sprite.h"
 
 class TextInput: public Widget
 {
@@ -17,12 +16,12 @@ public:
 
 	virtual void onTimer(Uint32 tick);
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(GraphicContext *gfx);
+	virtual void paint(DrawableSurface *gfx);
 
 protected:
 	int x, y, w, h;
 	Font *font;
-	GraphicContext *gfx;
+	DrawableSurface *gfx;
 	int cursPos;
 	
 public:

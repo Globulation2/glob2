@@ -26,8 +26,8 @@ MapEdit::MapEdit()
 	editMode=TERRAIN; // terrain
 
 	// load menu
-	menu=new IMGGraphicArchive("data/guiedit.data");
-	font=new SDLBitmapFont("data/font.png");
+	menu=globalContainer->gfx->loadSprite("data/gui/editor");
+	font=globalContainer->gfx->loadFont("data/fonts/arial8black.png");
 }
 
 MapEdit::~MapEdit()
@@ -39,21 +39,22 @@ MapEdit::~MapEdit()
 void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate)
 {
 	Utilities::rectClipRect(sx, sy, sw, sh, mapClip);
-	
-	globalContainer->gfx.setClipRect(sx, sy, sw, sh);
+
+	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
 	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team);
 
-	globalContainer->gfx.setClipRect(&screenClip);
-	
+	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+
+
 	if (needUpdate)
-		SDL_UpdateRect(globalContainer->gfx.screen, sx, sy, sw, sh);
+		globalContainer->gfx->updateRect(sx, sy, sw, sh);
 }
 
 void MapEdit::drawMiniMap(void)
 {
-	game.drawMiniMap(globalContainer->gfx.getW()-128, 0, 128, 128, viewportX, viewportY);
-	SDL_UpdateRect(globalContainer->gfx.screen, globalContainer->gfx.getW()-128, 0, 128, 128);
+	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY);
+	globalContainer->gfx->updateRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 }
 
 void MapEdit::renderMiniMap(void)
@@ -64,62 +65,57 @@ void MapEdit::renderMiniMap(void)
 
 void MapEdit::drawMenu(void)
 {
-	int menuStartW=globalContainer->gfx.getW()-128;
+	int menuStartW=globalContainer->gfx->getW()-128;
 
 	// draw buttons
-	globalContainer->gfx.drawSprite(menu->getSprite(0), menuStartW+0, 129);
-	globalContainer->gfx.drawSprite(menu->getSprite(0), menuStartW+0, 167);
-	globalContainer->gfx.drawSprite(menu->getSprite(0), menuStartW+0, 269);
-	globalContainer->gfx.drawSprite(menu->getSprite(0), menuStartW+0, 455);
-	globalContainer->gfx.drawSprite(menu->getSprite(1), menuStartW+0, 135);
-	globalContainer->gfx.drawSprite(menu->getSprite(2), menuStartW+32, 135);
-	globalContainer->gfx.drawSprite(menu->getSprite(3), menuStartW+64, 135);
-	globalContainer->gfx.drawSprite(menu->getSprite(4), menuStartW+96, 135);
-	globalContainer->gfx.drawSprite(menu->getSprite(5), menuStartW+0, 173);
-	globalContainer->gfx.drawSprite(menu->getSprite(6), menuStartW+32, 173);
-	globalContainer->gfx.drawSprite(menu->getSprite(7), menuStartW+64, 173);
-	globalContainer->gfx.drawSprite(menu->getSprite(8), menuStartW+96, 173);
-	globalContainer->gfx.drawSprite(menu->getSprite(9), menuStartW+0, 205);
-	globalContainer->gfx.drawSprite(menu->getSprite(10), menuStartW+32, 205);
-	globalContainer->gfx.drawSprite(menu->getSprite(11), menuStartW+64, 205);
-	globalContainer->gfx.drawSprite(menu->getSprite(12), menuStartW+96, 205);
-	globalContainer->gfx.drawSprite(menu->getSprite(13), menuStartW+0, 237);
-	globalContainer->gfx.drawSprite(menu->getSprite(14), menuStartW+32, 237);
-	globalContainer->gfx.drawSprite(menu->getSprite(15), menuStartW+64, 237);
-	globalContainer->gfx.drawSprite(menu->getSprite(16), menuStartW+96, 237);
-	//globalContainer->gfx.drawSprite(menu->getSprite(17), menuStartW+0, 275);
-	//globalContainer->gfx.drawSprite(menu->getSprite(18), menuStartW+32, 275);
-	//globalContainer->gfx.drawSprite(menu->getSprite(19), menuStartW+64, 275);
-	//globalContainer->gfx.drawSprite(menu->getSprite(20), menuStartW+96, 275);
-	/*globalContainer->gfx.drawSprite(menu->getSprite(21), menuStartW+0, 307);
-	globalContainer->gfx.drawSprite(menu->getSprite(22), menuStartW+32, 307);
-	globalContainer->gfx.drawSprite(menu->getSprite(23), menuStartW+64, 307);
-	globalContainer->gfx.drawSprite(menu->getSprite(24), menuStartW+96, 307);
-	globalContainer->gfx.drawSprite(menu->getSprite(25), menuStartW+0, 339);
-	globalContainer->gfx.drawSprite(menu->getSprite(26), menuStartW+32, 339);
-	globalContainer->gfx.drawSprite(menu->getSprite(27), menuStartW+64, 339);
-	globalContainer->gfx.drawSprite(menu->getSprite(28), menuStartW+96, 339);*/
-	globalContainer->gfx.drawSprite(menu->getSprite(29), menuStartW+0, 371);
-	globalContainer->gfx.drawSprite(menu->getSprite(30), menuStartW+0, 423);
-	globalContainer->gfx.drawSprite(menu->getSprite(31), menuStartW+32, 423);
-	globalContainer->gfx.drawSprite(menu->getSprite(32), menuStartW+64, 423);
-	globalContainer->gfx.drawSprite(menu->getSprite(33), menuStartW+96, 423);
-	
+	globalContainer->gfx->drawSprite(menuStartW+0, 129, menu, 0);
+	globalContainer->gfx->drawSprite(menuStartW+0, 167, menu, 0);
+	globalContainer->gfx->drawSprite(menuStartW+0, 269, menu, 0);
+	globalContainer->gfx->drawSprite(menuStartW+0, 455, menu, 0);
+	globalContainer->gfx->drawSprite(menuStartW+0, 135, menu, 1);
+	globalContainer->gfx->drawSprite(menuStartW+32, 135, menu, 2);
+	globalContainer->gfx->drawSprite(menuStartW+64, 135, menu, 3);
+	globalContainer->gfx->drawSprite(menuStartW+96, 135, menu, 4);
+	globalContainer->gfx->drawSprite(menuStartW+0, 173, menu, 5);
+	globalContainer->gfx->drawSprite(menuStartW+32, 173, menu, 6);
+	globalContainer->gfx->drawSprite(menuStartW+64, 173, menu, 7);
+	globalContainer->gfx->drawSprite(menuStartW+96, 173, menu, 8);
+	globalContainer->gfx->drawSprite(menuStartW+0, 205, menu, 9);
+	globalContainer->gfx->drawSprite(menuStartW+32, 205, menu, 10);
+	globalContainer->gfx->drawSprite(menuStartW+64, 205, menu, 11);
+	globalContainer->gfx->drawSprite(menuStartW+96, 205, menu, 12);
+	globalContainer->gfx->drawSprite(menuStartW+0, 237, menu, 13);
+	globalContainer->gfx->drawSprite(menuStartW+32, 237, menu, 14);
+	globalContainer->gfx->drawSprite(menuStartW+64, 237, menu, 15);
+	globalContainer->gfx->drawSprite(menuStartW+96, 237, menu, 16);
+	//globalContainer->gfx->drawSprite(menu(17), menuStartW+0, 275);
+	//globalContainer->gfx->drawSprite(menu(18), menuStartW+32, 275);
+	//globalContainer->gfx->drawSprite(menu(19), menuStartW+64, 275);
+	//globalContainer->gfx->drawSprite(menu(20), menuStartW+96, 275);
+	/*globalContainer->gfx->drawSprite(menu(21), menuStartW+0, 307);
+	globalContainer->gfx->drawSprite(menu(22), menuStartW+32, 307);
+	globalContainer->gfx->drawSprite(menu(23), menuStartW+64, 307);
+	globalContainer->gfx->drawSprite(menu(24), menuStartW+96, 307);
+	globalContainer->gfx->drawSprite(menu(25), menuStartW+0, 339);
+	globalContainer->gfx->drawSprite(menu(26), menuStartW+32, 339);
+	globalContainer->gfx->drawSprite(menu(27), menuStartW+64, 339);
+	globalContainer->gfx->drawSprite(menu(28), menuStartW+96, 339);*/
+	globalContainer->gfx->drawSprite(menuStartW+0, 371, menu, 29);
+	globalContainer->gfx->drawSprite(menuStartW+0, 423, menu, 30);
+	globalContainer->gfx->drawSprite(menuStartW+32, 423, menu, 31);
+	globalContainer->gfx->drawSprite(menuStartW+64, 423, menu,  32);
+	globalContainer->gfx->drawSprite(menuStartW+96, 423, menu, 33);
+
 	// draw units
-	globalContainer->gfx.drawFilledRect(menuStartW, 275, 128, 96, 0, 0, 0);
+	globalContainer->gfx->drawFilledRect(menuStartW, 275, 128, 96, 0, 0, 0);
 
-	PalSprite *unitSprite=(PalSprite *)globalContainer->units.getSprite(64);
-	unitSprite->setPal(&(game.teams[team]->palette));
-	globalContainer->gfx.drawSprite(unitSprite,menuStartW+0, 275);
+	Sprite *unitSprite=globalContainer->units;
+	unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
-	unitSprite=(PalSprite *)globalContainer->units.getSprite(0);
-	unitSprite->setPal(&(game.teams[team]->palette));
-	globalContainer->gfx.drawSprite(unitSprite,menuStartW+32, 275);
+	globalContainer->gfx->drawSprite(menuStartW+0, 275, unitSprite, 64);
+	globalContainer->gfx->drawSprite(menuStartW+32, 275, unitSprite, 0);
+	globalContainer->gfx->drawSprite(menuStartW+64, 275, unitSprite, 256);
 
-	unitSprite=(PalSprite *)globalContainer->units.getSprite(256);
-	unitSprite->setPal(&(game.teams[team]->palette));
-	globalContainer->gfx.drawSprite(unitSprite,menuStartW+64, 275);
-	
 	// draw buildings
 	{
 		for (int i=0; i<8; i++)
@@ -133,21 +129,17 @@ void MapEdit::drawMenu(void)
 			int imgid=bt->startImage;
 			int x=((i&0x3)<<5)+menuStartW;
 			int y=((i>>2)<<5)+307;
-			
-			globalContainer->gfx.setClipRect( x+1, y+1, 30, 30);
-			PalSprite *buildingSprite=(PalSprite *)globalContainer->buildings.getSprite(imgid);
+
+			globalContainer->gfx->setClipRect( x+1, y+1, 30, 30);
+			Sprite *buildingSprite=globalContainer->buildings;
 			//int w=buildingSprite->getW();
 			//int h=buildingSprite->getH();
-			if (bt->hueImage)
-				buildingSprite->setPal(&(game.teams[team]->palette));
-			else
-				buildingSprite->setPal(&(globalContainer->macPal));
-			
-			globalContainer->gfx.drawSprite(buildingSprite, x-20, y-20);
+			buildingSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+			globalContainer->gfx->drawSprite(x-20, y-20, buildingSprite, imgid);
 		}
 	}
-	globalContainer->gfx.setClipRect(&screenClip);	
-	
+	globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
+
 	// draw selections
 	drawSelRect(menuStartW+((terrainSize-1)*16), 237, 32, 32);
 	drawSelRect(menuStartW+(level*32), 423, 32, 32);
@@ -173,12 +165,7 @@ void MapEdit::drawMenu(void)
 			{
 				int line=i/4;
 				int dec=i%4;
-				float r, g, b;
-				float h=(float)(game.teams[i]->color);
-				float s=1.0f;
-				float v=1.0f;
-				Palette::HSVtoRGB(&r, &g, &b, h, s, v);
-				globalContainer->gfx.drawFilledRect(menuStartW+12+1+dec*26, 371+1+line*26, 24, 24, (Uint8)(r*255), (Uint8)(g*255), (Uint8)(b*255));
+				globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*26, 371+1+line*26, 24, 24, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
 			}
 		}
 	}
@@ -189,22 +176,11 @@ void MapEdit::drawMenu(void)
 			{
 				int line=i/8;
 				int dec=i%8;
-				float r, g, b;
-				float h=(float)(game.teams[i]->color);
-				float s=1.0f;
-				float v=1.0f;
-				Palette::HSVtoRGB(&r, &g, &b, h, s, v);
-				globalContainer->gfx.drawFilledRect(menuStartW+12+1+dec*13, 371+1+line*13, 11, 11, (Uint8)(r*255), (Uint8)(g*255), (Uint8)(b*255));
+				globalContainer->gfx->drawFilledRect(menuStartW+12+1+dec*13, 371+1+line*13, 11, 11, game.teams[i]->colorR, game.teams[i]->colorG, game.teams[i]->colorB);
 			}
 		}
 	}
 
-	float r, g, b;
-	float h=(float)(game.teams[team]->color);
-	float s=1.0f;
-	float v=1.0f;
-	Palette::HSVtoRGB(&r, &g, &b, h, s, v);
-	
 	// draw team selection
 	if (game.session.numberOfTeam<=8)
 	{
@@ -215,14 +191,14 @@ void MapEdit::drawMenu(void)
 				line=i/4;
 				dec=i%4;
 				if (game.teams[team]->allies & game.teams[i]->me)
-					globalContainer->gfx.drawFilledRect(menuStartW+20+dec*26, 379+line*26, 10, 10, (Uint8)(r*255), (Uint8)(g*255), (Uint8)(b*255));
+					globalContainer->gfx->drawFilledRect(menuStartW+20+dec*26, 379+line*26, 10, 10, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
 			}
 		}
-		
+
 		line=team/4;
 		dec=team%4;
-		globalContainer->gfx.drawRect(menuStartW+12+dec*26, 371+line*26, 26, 26, 255, 0, 0);
-		globalContainer->gfx.drawRect(menuStartW+13+dec*26, 372+line*26, 24, 24, 0, 0, 0);
+		globalContainer->gfx->drawRect(menuStartW+12+dec*26, 371+line*26, 26, 26, 255, 0, 0);
+		globalContainer->gfx->drawRect(menuStartW+13+dec*26, 372+line*26, 24, 24, 0, 0, 0);
 
 	}
 	else
@@ -234,18 +210,18 @@ void MapEdit::drawMenu(void)
 				line=i/8;
 				dec=i%8;
 				if (game.teams[team]->allies & game.teams[i]->me)
-					globalContainer->gfx.drawFilledRect(menuStartW+16+dec*13, 375+line*13, 5, 5, (Uint8)(r*255), (Uint8)(g*255), (Uint8)(b*255));
+					globalContainer->gfx->drawFilledRect(menuStartW+16+dec*13, 375+line*13, 5, 5, game.teams[team]->colorR, game.teams[team]->colorG,  game.teams[team]->colorB);
 			}
 		}
-		
+
 		line=team/8;
 		dec=team%8;
-		globalContainer->gfx.drawRect(menuStartW+12+dec*13, 371+line*13, 13, 13, 255, 0, 0);
-		globalContainer->gfx.drawRect(menuStartW+13+dec*13, 372+line*13, 11, 11, 0, 0, 0);
+		globalContainer->gfx->drawRect(menuStartW+12+dec*13, 371+line*13, 13, 13, 255, 0, 0);
+		globalContainer->gfx->drawRect(menuStartW+13+dec*13, 372+line*13, 11, 11, 0, 0, 0);
 
 	}
 
-	SDL_UpdateRect(globalContainer->gfx.screen,menuStartW, 128, 128, globalContainer->gfx.getH()-128);
+	globalContainer->gfx->updateRect(menuStartW, 128, 128, globalContainer->gfx->getH()-128);
 }
 
 void MapEdit::draw(void)
@@ -392,8 +368,8 @@ void MapEdit::regenerateClipRect(void)
 {
 	screenClip.x=0;
 	screenClip.y=0;
-	screenClip.w=globalContainer->gfx.getW();
-	screenClip.h=globalContainer->gfx.getH();
+	screenClip.w=globalContainer->gfx->getW();
+	screenClip.h=globalContainer->gfx->getH();
 	mapClip.x=0;
 	mapClip.y=0;
 	mapClip.w=screenClip.w-128;
@@ -404,13 +380,13 @@ void MapEdit::regenerateClipRect(void)
 
 void MapEdit::drawSelRect(int x, int y, int w, int h)
 {
-	globalContainer->gfx.drawRect(x, y, w, h, 255, 0, 0);
-	globalContainer->gfx.drawRect(x+1, y+1, w-2, h-2, 255, 0, 0);
+	globalContainer->gfx->drawRect(x, y, w, h, 255, 0, 0);
+	globalContainer->gfx->drawRect(x+1, y+1, w-2, h-2, 255, 0, 0);
 }
 
 void MapEdit::handleMenuClick(int mx, int my, int button)
 {
-	mx-=globalContainer->gfx.getW()-128;
+	mx-=globalContainer->gfx->getW()-128;
 	if ((my>135) && (my<167))
 	{
 		if (mx<32)
@@ -501,7 +477,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 						game.teams[team]->allies^=(1<<newteam);
 						game.teams[team]->enemies^=(1<<newteam);
 						game.teams[team]->sharedVision^=(1<<newteam);
-						
+
 					}
 				}
 			}
@@ -525,7 +501,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					}
 				}
 			}
-			
+
 			// set Team alliance
 		}
 	}
@@ -572,7 +548,7 @@ void MapEdit::save(void)
 void MapEdit::updateUnits(int x, int y, int w, int h)
 {
 	int uid;
-	
+
 	for (int dy=y; dy<y+h; dy++)
 		for (int dx=x; dx<x+w; dx++)
 			if ((uid=game.map.getUnit(dx, dy))>=0)
@@ -658,9 +634,9 @@ void MapEdit::handleKeyPressed(SDLKey key)
 int MapEdit::run(void)
 {
 	game.map.setSize(7,7, &game);
-	globalContainer->gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE|SDL_RESIZABLE);
+	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
 	regenerateClipRect();
-	globalContainer->gfx.setClipRect(NULL);
+	globalContainer->gfx->setClipRect();
 	draw();
 
 	isRunning=true;
@@ -682,13 +658,13 @@ int MapEdit::run(void)
 		{
 			int mx=event.button.x;
 			int my=event.button.y;
-			if (mx>=globalContainer->gfx.screen->w-128)
+			if (mx>=globalContainer->gfx->getW()-128)
 			{
 				if (my<128)
 				{
-					mx=mx-globalContainer->gfx.screen->w+128;
-					viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx.screen->w-128)>>6);
-					viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx.screen->h)>>6);
+					mx=mx-globalContainer->gfx->getW()+128;
+					viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
+					viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
 					if (viewportX<0)
 						viewportX+=game.map.getW();
 					if (viewportY<0)
@@ -710,15 +686,15 @@ int MapEdit::run(void)
 		{
 			int mx=event.motion.x;
 			int my=event.motion.y;
-			
-			int x=globalContainer->gfx.getW()-128;
+
+			int x=globalContainer->gfx->getW()-128;
 			int y=460;
-			
+
 			// NOTE : this is just to test fonts
-			globalContainer->gfx.drawFilledRect(x, y, 128, 20, 0, 255, 0);
-			globalContainer->gfx.drawString(x, y, font, "(%d, %d)", mx, my);
-			SDL_UpdateRect(globalContainer->gfx.screen, x, y, 128, 20);
-			
+			globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
+			globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
+			globalContainer->gfx->updateRect(x, y, 128, 20);
+
 			static int oldBrush=NONE;
 			static int orX=0, orY=0, orW=0, orH=0;
 			const int maxNbRefreshZones=2;
@@ -765,7 +741,7 @@ int MapEdit::run(void)
 
 					Utilities::rectClipRect(x, y, w, h, mapClip);
 
-					globalContainer->gfx.drawRect(x, y, w, h, 255, 255, 255, 128);
+					globalContainer->gfx->drawRect(x, y, w, h, 255, 255, 255, 128);
 
 					refreshZones[nbRefreshZones].x=x;
 					refreshZones[nbRefreshZones].y=y;
@@ -801,20 +777,20 @@ int MapEdit::run(void)
 					else if (type==UnitType::WARRIOR)
 						imgid=256;
 
-					PalSprite *unitSprite=(PalSprite *)globalContainer->units.getSprite(imgid);
-					unitSprite->setPal(&(game.teams[team]->palette));
+					Sprite *unitSprite=globalContainer->units;
+					unitSprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
 
-					globalContainer->gfx.setClipRect(&mapClip);
+					globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
 
-					globalContainer->gfx.drawSprite(unitSprite, px, py);
+					globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 
 					Utilities::rectClipRect(px, py, pw, ph, mapClip);
 					if (isRoom)
-						globalContainer->gfx.drawRect(px, py, pw, ph, 255, 255, 255, 128);
+						globalContainer->gfx->drawRect(px, py, pw, ph, 255, 255, 255, 128);
 					else
-						globalContainer->gfx.drawRect(px, py, pw, ph, 255, 0, 0, 128);
+						globalContainer->gfx->drawRect(px, py, pw, ph, 255, 0, 0, 128);
 
-					globalContainer->gfx.setClipRect(&screenClip);
+					globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 
 					refreshZones[nbRefreshZones].x=px;
 					refreshZones[nbRefreshZones].y=py;
@@ -836,40 +812,38 @@ int MapEdit::run(void)
 					// we get the type of building
 					int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
 					BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-					
+
 					// we check for room
 					int tempX, tempY;
 					if (bt->width&0x1)
 						tempX=((mx)>>5)+viewportX;
 					else
 						tempX=((mx+16)>>5)+viewportX;
-			
+
 					if (bt->height&0x1)
 						tempY=((my)>>5)+viewportY;
 					else
 						tempY=((my+16)>>5)+viewportY;
 					bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
-					
+
 					// we get the datas
-					Sprite *sprite=globalContainer->buildings.getSprite(bt->startImage);
-					if (bt->hueImage)
-						((PalSprite *)sprite)->setPal(&(game.teams[team]->palette));
-					
+					Sprite *sprite=globalContainer->buildings;
+					sprite->enableBaseColor(game.teams[team]->colorR, game.teams[team]->colorG, game.teams[team]->colorB);
+
 					batX=(mapX-viewportX)<<5;
 					batY=(mapY-viewportY)<<5;
 					batW=(bt->width)<<5;
 					batH=(bt->height)<<5;
 
-					globalContainer->gfx.setClipRect(&mapClip);
-					globalContainer->gfx.drawSprite(sprite, batX, batY);
+					globalContainer->gfx->setClipRect(mapClip.x, mapClip.y, mapClip.w, mapClip.h);
+					globalContainer->gfx->drawSprite(batX, batY, sprite, bt->startImage);
 
 					Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
 
 					if (isRoom)
-						globalContainer->gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
 					else
-						globalContainer->gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
-					
+						globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
 					
 					if (isRoom)
 					{
@@ -886,24 +860,26 @@ int MapEdit::run(void)
 							}
 						}
 						int typeNum=nnbt->typeNum;
-						
+
 						tempX+=((-bt->decLeft+nnbt->decLeft)<<5);
 						tempY+=((-bt->decTop +nnbt->decTop )<<5);
-						
+
 						isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, -1);
-						
+
 						batX=(mapX-viewportX)<<5;
 						batY=(mapY-viewportY)<<5;
 						batW=(nnbt->width)<<5;
 						batH=(nnbt->height)<<5;
-					
+
+						Utilities::rectClipRect(batX, batY, batW, batH, mapClip);
+
 						if (isRoom)
-							globalContainer->gfx.drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
+							globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 128);
 						else
-							globalContainer->gfx.drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
+							globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 128);
 
 					}
-					
+
 					refreshZones[nbRefreshZones].x=batX;
 					refreshZones[nbRefreshZones].y=batY;
 					refreshZones[nbRefreshZones].w=batW;
@@ -913,8 +889,8 @@ int MapEdit::run(void)
 					orY=batY;
 					orW=batW;
 					orH=batH;
-					
-					globalContainer->gfx.setClipRect(&screenClip);
+
+					globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
 					oldBrush=BUILDING;
 				}
 			}
@@ -922,7 +898,7 @@ int MapEdit::run(void)
 			assert(nbRefreshZones<=maxNbRefreshZones);
 			if (nbRefreshZones>0)
 			{
-				SDL_UpdateRects(globalContainer->gfx.screen, nbRefreshZones, refreshZones);
+				globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
 			}
 
 
@@ -939,7 +915,7 @@ int MapEdit::run(void)
 				newW=256;
 			if (newH<288)
 				newH=288;
-			globalContainer->gfx.setRes(newW, newH, 32, SDL_ANYFORMAT|SDL_SWSURFACE|SDL_RESIZABLE);
+			globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
 			regenerateClipRect();
 			draw();
 		}
@@ -949,7 +925,7 @@ int MapEdit::run(void)
 			isRunning=false;
 		}
 	}
-	
-	globalContainer->gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE);
+
+	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
 	return returnCode;
 }

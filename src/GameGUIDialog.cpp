@@ -10,9 +10,11 @@
 
 InGameScreen::InGameScreen(int w, int h)
 {
-	gfxCtx=new SDLOffScreenGraphicContext(w, h, false, 128);
-	decX=(globalContainer->gfx.getW()-w)>>1;
-	decY=(globalContainer->gfx.getH()-h)>>1;
+	gfxCtx=globalContainer->gfx->createDrawableSurface();
+	gfxCtx->setRes(w, h);
+	gfxCtx->setAlpha(false, 128);
+	decX=(globalContainer->gfx->getW()-w)>>1;
+	decY=(globalContainer->gfx->getH()-h)>>1;
 	endValue=-1;
 }
 
@@ -68,12 +70,12 @@ void InGameSaveScreen::onSDLEvent(SDL_Event *event)
 InGameMainScreen::InGameMainScreen()
 :InGameScreen(300, 275)
 {
-	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[load game]"), 0));
-	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 1));
-	addWidget(new TextButton(10, 90, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[options]"), 2));
-	addWidget(new TextButton(10, 130, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[alliances]"), 3));
-	addWidget(new TextButton(10, 180, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[return to game]"), 4));
-	addWidget(new TextButton(10, 230, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[quit the game]"), 5));
+	addWidget(new TextButton(10, 10, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load game]"), 0));
+	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[save game]"), 1));
+	addWidget(new TextButton(10, 90, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[options]"), 2));
+	addWidget(new TextButton(10, 130, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[alliances]"), 3));
+	addWidget(new TextButton(10, 180, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[return to game]"), 4));
+	addWidget(new TextButton(10, 230, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit the game]"), 5));
 }
 
 void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -101,7 +103,7 @@ InGameAlliance8Screen::InGameAlliance8Screen()
 			addWidget(chat[i]);
 		}
 	}
-	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, &globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 30));
+	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 30));
 	firstPaint=true;
 }
 
@@ -122,12 +124,12 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 	InGameScreen::paint(x, y, w, h);
 	if (firstPaint)
 	{
-		gfxCtx->drawString(231, 10, &globalContainer->menuFont, "A");
-		gfxCtx->drawString(272, 10, &globalContainer->menuFont, "C");
+		gfxCtx->drawString(231, 10, globalContainer->menuFont, "A");
+		gfxCtx->drawString(272, 10, globalContainer->menuFont, "C");
 		{
 			for (int i=0; i<8; i++)
 			{
-				gfxCtx->drawString(10, 40+i*25, &globalContainer->menuFont, names[i]);
+				gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
 			}
 		}
 		firstPaint=false;

@@ -39,7 +39,7 @@ void List::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void List::paint(GraphicContext *gfx)
+void List::paint(DrawableSurface *gfx)
 {
 	int nextSize=textHeight;
 	int yPos=y;

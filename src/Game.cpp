@@ -36,30 +36,25 @@ void Game::loadBase(const SessionInfo *initial)
 Game::~Game()
 {
 	// delete existing teams and players
+	int i;
+	for (i=0; i<session.numberOfTeam; i++)
 	{
-		for (int i=0; i<session.numberOfTeam; i++)
-		{
-			delete teams[i];
-		}
+		delete teams[i];
 	}
+	for (i=0; i<session.numberOfPlayer; i++)
 	{
-		for (int i=0; i<session.numberOfPlayer; i++)
-		{
-			delete players[i];
-		}
+		delete players[i];
 	}
-	
-	SDL_FreeSurface(minimap);
+
+	delete minimap;
 }
 
 void Game::init()
 {
 	// init minimap
-	minimap=SDL_CreateRGBSurface(SDL_SWSURFACE,128,128,globalContainer->gfx.screen->format->BitsPerPixel,
-									globalContainer->gfx.screen->format->Rmask,
-									globalContainer->gfx.screen->format->Gmask,
-									globalContainer->gfx.screen->format->Bmask,
-									globalContainer->gfx.screen->format->Amask);
+	minimap=globalContainer->gfx->createDrawableSurface();
+	minimap->setRes(128, 128);
+
 	session.numberOfTeam=0;
 	session.numberOfPlayer=0;
 	{
@@ -90,27 +85,24 @@ void Game::setBase(const SessionInfo *initial)
 	// the GUI asserts that we have not more team that planed on the map
 
 	// set the base team, for now the number is corect but we should check that further
+	int i;
+	for (i=0; i<session.numberOfTeam; ++i)
 	{
-		for (int i=0; i<session.numberOfTeam; ++i)
-		{
-			teams[i]->setBaseTeam(&(initial->team[i]));
-		}
+		teams[i]->setBaseTeam(&(initial->team[i]));
 	}
 
 	// set the base players
+	for (i=0; i<session.numberOfPlayer; ++i)
 	{
-		for (int i=0; i<session.numberOfPlayer; ++i)
-		{
-			delete players[i];
-		}
+		delete players[i];
 	}
+
 	session.numberOfPlayer=initial->numberOfPlayer;
+
+	for (i=0; i<initial->numberOfPlayer; ++i)
 	{
-		for (int i=0; i<initial->numberOfPlayer; ++i)
-		{
-			players[i]=new Player();
-			players[i]->setBasePlayer(&(initial->players[i]), teams);
-		}
+		players[i]=new Player();
+		players[i]->setBasePlayer(&(initial->players[i]), teams);
 	}
 
 	// set the base map
@@ -365,7 +357,7 @@ bool Game::load(SDL_RWops *stream)
 		}
 	}
 	stepCounter=SDL_ReadBE32(stream);
-	
+
 	// we have to load team before map
 	map.load(stream, this);
 
@@ -414,7 +406,7 @@ void Game::save(SDL_RWops *stream)
 	}
 	
 	tempSessionInfo.save(stream);
-	
+
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 
 	SDL_WriteBE32(stream, getSyncRandSeedA());
@@ -492,43 +484,33 @@ void Game::removeTeam(void)
 {
 	if (session.numberOfTeam>0)
 	{
+		int i;
 		// TODO : remove stuff left on the map in a cleany way
 		Team *team=teams[--session.numberOfTeam];
 
+		for (i=0; i<1024; ++i)
 		{
-			for (int i=0; i<1024; ++i)
-			{
-				if (team->myUnits[i])
-					map.setUnit(team->myUnits[i]->posX, team->myUnits[i]->posY, NOUID);
-			}
+			if (team->myUnits[i])
+				map.setUnit(team->myUnits[i]->posX, team->myUnits[i]->posY, NOUID);
 		}
+		for (i=0; i<512; ++i)
 		{
-			for (int i=0; i<512; ++i)
-			{
-				if (team->myBuildings[i])
-					if (!team->myBuildings[i]->type->isVirtual)
-						map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOUID);
-			}
+			if (team->myBuildings[i])
+				if (!team->myBuildings[i]->type->isVirtual)
+					map.setBuilding(team->myBuildings[i]->posX, team->myBuildings[i]->posY, team->myBuildings[i]->type->width, team->myBuildings[i]->type->height, NOUID);
 		}
+		for (int i=0; i<256; ++i)
 		{
-			for (int i=0; i<256; ++i)
-			{
-				//if (team->myBullets[i])
-				// TODO : handle bullets destruction
-			}
+			//if (team->myBullets[i])
+			// TODO : handle bullets destruction
 		}
 
 		delete team;
 
 		assert (session.numberOfTeam!=0);
-		int color=0;
-		int colorInc=360/session.numberOfTeam;
+		for (i=0; i<session.numberOfTeam; ++i)
 		{
-			for (int i=0; i<session.numberOfTeam; ++i)
-			{
-				teams[i]->setCorrectColor(color);
-				color+=colorInc;
-			}
+			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
 		}
 	}
 }
@@ -561,12 +543,13 @@ void Game::regenerateDiscoveryMap(void)
 	}
 }
 
-Unit *Game::addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy)
+Unit *Game::addUnit(int x, int y, int team, int type, int level, int delta, int
+ dx, int dy)
 {
 	assert(team<session.numberOfTeam);
-	
+
 	UnitType *ut=teams[team]->race.getUnitType((UnitType::TypeNum)type, level);
-	
+
 #	ifdef WIN32
 #		pragma warning (disable : 4800)
 #	endif
@@ -614,14 +597,10 @@ void Game::addTeam(void)
 		teams[session.numberOfTeam]->setCorrectMasks();
 
 		session.numberOfTeam++;
-		int color=0;
-		int colorInc=360/session.numberOfTeam;
+		int i;
+		for (i=0; i<session.numberOfTeam; i++)
 		{
-			for (int i=0; i<session.numberOfTeam; i++)
-			{
-				teams[i]->setCorrectColor(color);
-				color+=colorInc;
-			}
+			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)session.numberOfTeam );
 		}
 	}
 }
@@ -727,7 +706,8 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
 	return rv;
 }
 
-bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX, int *mapY, Sint32 team)
+bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX,
+ int *mapY, Sint32 team)
 {
 	BuildingType *bt=globalContainer->buildingsTypes.buildingsTypes[typeNum];
 	int x=coordX+bt->decLeft;
@@ -809,10 +789,11 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	{
 		for (int dy=y; dy<y+h; dy++)
 			for (int dx=x; dx<x+w; dx++)
-				if ((!map.isGrass(dx, dy)) || ((map.getUnit(dx, dy)!=NOUID) && (map.getUnit(dx, dy)<0)))
+				if ((!map.isGrass(dx, dy)) || ((map.getUnit(dx, dy)!=NOUID) &&
+ (map.getUnit(dx, dy)<0)))
 					isRoom=false;
 	}
-	
+
 	return isRoom;
 }
 
@@ -825,46 +806,49 @@ bool Game::checkHardRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	return isRoom;
 }*/
 
-void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
+void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
+ int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
-		/*globalContainer->gfx.drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx.drawHorzLine(x, y+barWidth+1, maxLength*3+1, 32, 32, 32);
+		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
+		globalContainer->gfx->drawHorzLine(x, y+barWidth+1, maxLength*3+1, 32, 32, 32);
 		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx.drawVertLine(x+i*3, y+1, barWidth, 32, 32, 32);
+			globalContainer->gfx->drawVertLine(x+i*3, y+1, barWidth, 32, 32, 32);
 		*/
-		globalContainer->gfx.drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
-			
+		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
+
 		if (orientation==LEFT_TO_RIGHT)
 		{
 			for (int i=0; i<actLength; i++)
-				globalContainer->gfx.drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
 		}
 		else
 		{
 			for (int i=maxLength-actLength; i<maxLength; i++)
-				globalContainer->gfx.drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+i*3+1, y+1, 2, barWidth, r, g, b);
 		}
 	}
 	else if ((orientation==BOTTOM_TO_TOP) || (orientation==TOP_TO_BOTTOM))
 	{
-		/*globalContainer->gfx.drawVertLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx.drawVertLine(x+barWidth+1, y, maxLength*3+1, 32, 32, 32);
+		/*globalContainer->gfx->drawVertLine(x, y, maxLength*3+1, 32, 32, 32);
+		globalContainer->gfx->drawVertLine(x+barWidth+1, y, maxLength*3+1, 32, 32, 32);
 		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx.drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
+			globalContainer->gfx->drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
 		*/
-		globalContainer->gfx.drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
-	
+
+
+	globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
+
 		if (orientation==TOP_TO_BOTTOM)
 		{
 			for (int i=0; i<actLength; i++)
-				globalContainer->gfx.drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
 		}
 		else
 		{
 			for (int i=maxLength-actLength; i<maxLength; i++)
-				globalContainer->gfx.drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
+				globalContainer->gfx->drawFilledRect(x+1, y+i*3+1, barWidth, 2, r, g, b);
 		}
 	}
 	else
@@ -888,22 +872,24 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				// draw terrain
 				id=map.getTerrain(x+viewportX, y+viewportY);
-				PalSprite *sprite;
+				Sprite *sprite;
 				if (id<272)
 				{
-					sprite=(PalSprite *)globalContainer->terrain.getSprite(id);
+					sprite=globalContainer->terrain;
 				}
 				else
 				{
-					sprite=(PalSprite *)globalContainer->ressources.getSprite(id-272);
+					sprite=globalContainer->ressources;
+					id-=272;
 				}
 
-				if (map.isFOW(x+viewportX, y+viewportY, teamSelected)||(!useMapDiscovered))
+				// FIXME : do fow with the newgfx
+				/*if (map.isFOW(x+viewportX, y+viewportY, teamSelected)||(!useMapDiscovered))
 					sprite->setPal(&globalContainer->macPal);
 				else
-					sprite->setPal(&globalContainer->ShadedPal);
+					sprite->setPal(&globalContainer->ShadedPal);*/
 
-				globalContainer->gfx.drawSprite(sprite , x<<5, y<<5);
+				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 				// draw Unit or Building
 				#ifdef DBG_UID
 				if ((!useMapDiscovered) || map.isMapDiscovered(x+viewportX, y+viewportY, teamSelected))
@@ -912,12 +898,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					if (UID!=NOUID)
 					{
 						if (UID>=0)
-							globalContainer->gfx.drawRect(x<<5, y<<5, 32, 32, 0, 0, 255);
+							globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 0, 0, 255);
 						else
-							globalContainer->gfx.drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
+							globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 0);
 					}
 					if (map.isRessource(x+viewportX, y+viewportY, (RessourceType)0/*ALGA*/))
-						globalContainer->gfx.drawRect(x<<5, y<<5, 32, 32, 255, 0, 255);
+						globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 0, 255);
 				}
 				#endif
 			}
@@ -984,12 +970,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						imgid+=8*dir;
 					}
 
-					PalSprite *unitSprite=(PalSprite *)globalContainer->units.getSprite(imgid);
-					unitSprite->setPal(&(teams[team]->palette));
+					Sprite *unitSprite=globalContainer->units;
+					unitSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 
-					globalContainer->gfx.drawSprite(unitSprite, px, py);
+					globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 					if (unit==selectedUnit)
-						globalContainer->gfx.drawCircle(px+16, py+16, 16, 0, 0, 255);
+						globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
 
 					if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&((!useMapDiscovered)||(map.isFOW(x+viewportX, y+viewportY, teamSelected))||(Unit::UIDtoTeam(uid)==teamSelected)))
 						mouseUnit=unit;
@@ -1014,15 +1000,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 						if (unit->bypassDirection && unit->verbose)
 						{
 							unit->owner->game->map.mapCaseToDisplayable(unit->tempTargetX, unit->tempTargetY, &ldx, &ldy, viewportX, viewportY);
-							globalContainer->gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
+							globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 100, 100, 250);
 							unit->owner->game->map.mapCaseToDisplayable(unit->borderX, unit->borderY, &ldx, &ldy, viewportX, viewportY);
-							globalContainer->gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
+							globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 100, 100);
 							unit->owner->game->map.mapCaseToDisplayable(unit->obstacleX, unit->obstacleY, &ldx, &ldy, viewportX, viewportY);
-							globalContainer->gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
+							globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 0, 50, 50);
 						}
 						//#endif
 						unit->owner->game->map.mapCaseToDisplayable(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY);
-						globalContainer->gfx.drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
+						globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
 					}
 				}
 				else if (uid >= -16385)  // Then this is a building or a flag.
@@ -1052,51 +1038,38 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
 
-			if (type->hueImage)
-			{
-				// Here he hue all the sprite:
+			// select buildings and set the team colors
+			Sprite *buildingSprite=globalContainer->buildings;
+			buildingSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 
-				PalSprite *buildingSprite=(PalSprite *)globalContainer->buildings.getSprite(imgid);
-				buildingSprite->setPal(&(teams[team]->palette));
-				globalContainer->gfx.drawSprite(buildingSprite, x, y);
-			}
-			else
+			// draw building
+			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+
+			if (!type->hueImage)
 			{
 				// Here we draw the sprite with a flag:
-
-				// First the sprite
-				PalSprite *buildingSprite=(PalSprite *)globalContainer->buildings.getSprite(imgid);
-				buildingSprite->setPal(&(globalContainer->macPal));
-				globalContainer->gfx.drawSprite(buildingSprite, x, y);
-
 				// Then we draw a hued flag of the team.
 				int flagImgid=type->flagImage;
 				//int w=building->type->width;
 				int h=type->height;
 
 				//We draw the flag at left bottom corner on the building
-				PalSprite *flagSprite=(PalSprite *)globalContainer->buildings.getSprite(flagImgid);
-				int fw=flagSprite->getW();
+				int fw=buildingSprite->getW(flagImgid);
 				//int fh=flagSprite->getH();
-				flagSprite->setPal(&(globalContainer->macPal));
 
-
-				globalContainer->gfx.drawSprite(flagSprite, x/*+(w<<5)-fh*/, y+(h<<5)-fw);
+				globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid);
 
 				//We add a hued color over the flag
-				PalSprite *flagHue=(PalSprite *)globalContainer->buildings.getSprite(flagImgid+1);
-				flagHue->setPal(&(teams[team]->palette));
-
-				globalContainer->gfx.drawSprite(flagHue, x/*+(w<<5)-fh*/, y+(h<<5)-fw);
+				globalContainer->gfx->drawSprite(x/*+(w<<5)-fh*/, y+(h<<5)-fw, buildingSprite, flagImgid+1);
 			}
-			
+
 			if (drawBuildingRects)
 			{
 				int batW=(type->width )<<5;
 				int batH=(type->height)<<5;
 				int typeNum=building->typeNum;
-				globalContainer->gfx.drawRect(x, y, batW, batH, 255, 255, 255, 127);
-				
+				globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
+
 				BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 				int lastTypeNum=typeNum;
 				int max=0;
@@ -1115,10 +1088,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				int exBatY=y+((lastbt->decTop-type->decTop)<<5);
 				int exBatW=(lastbt->width)<<5;
 				int exBatH=(lastbt->height)<<5;
-				
-				globalContainer->gfx.drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
+
+				globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 			}
-			
+
 			if (drawHealthFoodBar)
 			{
 				int decy=(type->height*32);
@@ -1162,13 +1135,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// Let's paint the bullets:
 	// TODO : optimise : test only possible sectors to show bullets.
 
-	PalSprite *bulletSprite=(PalSprite *)globalContainer->buildings.getSprite(BULLET_IMGID);
-	bulletSprite->setPal(&(globalContainer->macPal));       				
+	Sprite *bulletSprite=globalContainer->buildings;
+	// FIXME : have team in bullets to have the correct color
 
 	int mapPixW=(map.w)<<5;
 	int mapPixH=(map.h)<<5;
 
-	{	
+	{
 		for (int i=0; i<(map.wSector*map.hSector); i++)
 		{
 			Sector *s=&(map.sectors[i]);
@@ -1176,15 +1149,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				int x=(*it)->px-(viewportX<<5);
 				int y=(*it)->py-(viewportY<<5);
-				
+
 				if (x<0)
 					x+=mapPixW;
 				if (y<0)
 					y+=mapPixH;
 
-				//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);	
+				//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);
 				if ( (x<=sw) && (y<=sh) )
-					globalContainer->gfx.drawSprite(bulletSprite, x, y);
+					globalContainer->gfx->drawSprite(x, y, bulletSprite, BULLET_IMGID);
 			}
 		}
 	}
@@ -1198,16 +1171,17 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			{
 				if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teamSelected)))
 				{
-					globalContainer->gfx.drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
+					globalContainer->gfx->drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
 				}
-				/*else if ( (!map.isFOW(x+viewportX, y+viewportY, teamSelected)))
+				else if ( (!map.isFOW(x+viewportX, y+viewportY, teamSelected)))
 				{
-					for (int i=0; i<16; i++)
+					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
+					/*for (int i=0; i<16; i++)
 					{
-						globalContainer->gfx.drawVertLine((x<<5)+(i<<1), y<<5, 32, 10, 10, 10);
-						globalContainer->gfx.drawHorzLine((x<<5), (y<<5)+(i<<1), 32, 10, 10, 10);
-					}
-				}*/
+						globalContainer->gfx->drawVertLine((x<<5)+(i<<1), y<<5, 32, 10, 10, 10);
+						globalContainer->gfx->drawHorzLine((x<<5), (y<<5)+(i<<1), 32, 10, 10, 10);
+					}*/
+				}
 			}
 	}
 
@@ -1227,13 +1201,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
 
 			// all flags are hued:
-			PalSprite *buildingSprite=(PalSprite *)globalContainer->buildings.getSprite(imgid);
-			buildingSprite->setPal(&(teams[team]->palette));
-			globalContainer->gfx.drawSprite(buildingSprite, x, y);
+			Sprite *buildingSprite=globalContainer->buildings;
+			buildingSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 			// flag circle:
 			if (drawHealthFoodBar || (building==selectedBuilding))
-				globalContainer->gfx.drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
+				globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
 			// FIXME : ugly copy past
 			if (drawHealthFoodBar)
@@ -1280,13 +1254,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected)
 {
-	SDL_Rect minimapZone;
-	int rx, ry, rw, rh;
-	minimapZone.x=globalContainer->gfx.getW()-128;
-	minimapZone.y=0;
-	minimapZone.w=128;
-	minimapZone.h=128;
-	SDL_BlitSurface(minimap,0,globalContainer->gfx.screen, &minimapZone);
+	// draw the prerendered minimap
+	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-128, 0, minimap);
+
+	// draw screen lines
+	int rx, ry, rw, rh, n;
 	rx=viewportX;
 	ry=viewportY;
 	if (teamSelected>=0)
@@ -1298,51 +1270,22 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	}
 	rx=(rx*128)/map.getW();
 	ry=(ry*128)/map.getH();
-	rw=((globalContainer->gfx.getW()-128)*128)/(32*map.getW());
-	rh=(globalContainer->gfx.getH()*128)/(32*map.getH());
-	// horizontal line
-	// WARNING : ugly copy paste, does anyone have any better idea ?
-	if (globalContainer->gfx.screen->format->BitsPerPixel==16)
-	{
-		Uint16 *ptr1, *ptr2;
-		// angel > merchi
-		int n;
-		for (n=0;n<rw+1;n++)
-		{
-			ptr1=(Uint16 *)globalContainer->gfx.screen->pixels+((ry&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+n)&0x7F);
-			ptr2=(Uint16 *)globalContainer->gfx.screen->pixels+(((ry+rh)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+n)&0x7F);
-			*ptr1=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-			*ptr2=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-		}
-		for (n=0;n<rh+1;n++)
-		{
-			ptr1=(Uint16 *)globalContainer->gfx.screen->pixels+(((ry+n)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx)&0x7F);
-			ptr2=(Uint16 *)globalContainer->gfx.screen->pixels+(((ry+n)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+rw)&0x7F);
-			*ptr1=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-			*ptr2=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-		}
-	}
-	else
-	{
-		Uint32 *ptr1, *ptr2;
-		// re
-		int n;
-		for (n=0;n<rw+1;n++)
-		{
-			ptr1=(Uint32 *)globalContainer->gfx.screen->pixels+((ry&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+n)&0x7F);
-			ptr2=(Uint32 *)globalContainer->gfx.screen->pixels+(((ry+rh)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+n)&0x7F);
-			*ptr1=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-			*ptr2=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-		}
-		for (n=0;n<rh+1;n++)
-		{
-			ptr1=(Uint32 *)globalContainer->gfx.screen->pixels+(((ry+n)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx)&0x7F);
-			ptr2=(Uint32 *)globalContainer->gfx.screen->pixels+(((ry+n)&0x7F)*globalContainer->gfx.screen->w)+globalContainer->gfx.screen->w-128+((rx+rw)&0x7F);
-			*ptr1=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-			*ptr2=SDL_MapRGB(globalContainer->gfx.screen->format,255,0,0);
-		}
-	}
+	rw=((globalContainer->gfx->getW()-128)*128)/(32*map.getW());
+	rh=(globalContainer->gfx->getH()*128)/(32*map.getH());
 
+	for (n=0; n<rw+1; n++)
+	{
+	
+	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), ry&0x7F, 255, 255, 255);
+	
+	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+n)&0x7F), (ry+rh)&0x7F, 255, 255, 255);
+	}
+	for (n=0; n<rh+1; n++)
+	{
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+(rx&0x7F), (ry+n)&0x7F, 255, 255, 255);
+	
+	globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-128+((rx+rw)&0x7F), (ry+n)&0x7F, 255, 255, 255);
+	}
 }
 
 void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
@@ -1378,12 +1321,8 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 		decSPY=0;
 	}
 
-	Uint8 *ptr;
-	int bpp=globalContainer->gfx.screen->format->BytesPerPixel;
-	ptr=((Uint8 *)minimap->pixels);
 	for (dy=0; dy<128; dy++)
 	{
-		ptr=((Uint8 *)minimap->pixels)+dy*minimap->pitch;
 		for (dx=0; dx<128; dx++)
 		{
 			pcol[0]=0;
@@ -1450,20 +1389,14 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			else
 			{
 				nCount*=3;
-				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+			
+	r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
+			
+	g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
+			
+	b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
 			}
-			switch (bpp)
-			{
-			case 1:
-				*ptr=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			case 2:
-				*((Uint16 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			case 4:
-				*((Uint32 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			}
-			ptr+=bpp;
+			minimap->drawPixel(dx, dy, r, g, b);
 		}
 	}
 
@@ -1477,19 +1410,10 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 			fx&=map.getMaskW();
 			fy=(*virtualIt)->posY-decSPY+map.getH();
 			fy&=map.getMaskH();
-			r=100;
+			r=200;
 			g=255;
-			b=100;
-			ptr=((Uint8 *)minimap->pixels)+fy*minimap->pitch+fx*bpp;
-			switch (bpp)
-			{
-			case 1:
-				*ptr=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			case 2:
-				*((Uint16 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			case 4:
-				*((Uint32 *)ptr)=SDL_MapRGB(globalContainer->gfx.screen->format,r,g,b);
-			}
+			b=200;
+			minimap->drawPixel(fx, fy, r, g, b);
 		}
 }
 

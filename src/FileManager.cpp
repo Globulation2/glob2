@@ -47,7 +47,7 @@ void FileManager::addDir(const char *dir)
 	dirList.push_back(newDir);
 }
 
-SDL_RWops *FileManager::open(const char *filename, const char *mode)
+SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verboseIfNotFound)
 {
 	{
 		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
@@ -57,19 +57,22 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode)
 
 			SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
 			delete[] fn;
-			if (fp) 
+			if (fp)
 				return fp;
 		}
 	}
 
-	fprintf(stderr, "FILE %s not found.\n", filename);
-	assert(false);
+	if (verboseIfNotFound)
+	{
+		fprintf(stderr, "FILE %s not found.\n", filename);
+		assert(false);
+	}
 
 	return NULL;
 }
 
 
-FILE *FileManager::openFP(const char *filename, const char *mode)
+FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIfNotFound)
 {
 	{
 		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
@@ -84,8 +87,11 @@ FILE *FileManager::openFP(const char *filename, const char *mode)
 		}
 	}
 
-	fprintf(stderr, "FILE %s not found.\n", filename);
-	assert(false);
+	if (verboseIfNotFound)
+	{
+		fprintf(stderr, "FILE %s not found.\n", filename);
+		assert(false);
+	}
 
 	return NULL;
 }

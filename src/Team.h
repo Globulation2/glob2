@@ -28,7 +28,7 @@ public:
 	TeamType type;
 	Sint32 teamNumber;
 	Sint32 numberOfPlayer;
-	Sint32 color;
+	Uint8 colorR, colorG, colorB, colorPAD;
 	Uint32 playersMask;
 	Race race;
 	
@@ -79,7 +79,8 @@ public:
 	void step(void);
 	
 	void setCorrectMasks(void);
-	void setCorrectColor(Sint32 color);
+	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
+	void setCorrectColor(float value);
 
 	void computeStat(TeamStat *stats);
 	
@@ -95,6 +96,7 @@ public:
 
 private:
 	void init(void);
+	void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 
 public:
 	Game *game;
@@ -127,8 +129,6 @@ public:
 
 	// TODO : use a subtil way to allocate UID
 	//Sint32 newUnitUID zzz
-
-	Palette palette;
 
 public:
 	int freeUnits;

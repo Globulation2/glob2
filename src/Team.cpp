@@ -8,14 +8,17 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Utilities.h"
-
+#include <math.h>
 
 
 BaseTeam::BaseTeam()
 {
 	teamNumber=0;
 	numberOfPlayer=0;
-	color=0;
+	colorR=0;
+	colorG=0;
+	colorB=0;
+	colorPAD=0;
 	playersMask=0;
 	type=T_HUMAM;
 }
@@ -25,7 +28,10 @@ void BaseTeam::load(SDL_RWops *stream)
 	// loading baseteam
 	teamNumber=SDL_ReadBE32(stream);
 	numberOfPlayer=SDL_ReadBE32(stream);
-	color=SDL_ReadBE32(stream);
+	SDL_RWread(stream, &colorR, 1, 1);
+	SDL_RWread(stream, &colorG, 1, 1);
+	SDL_RWread(stream, &colorB, 1, 1);
+	SDL_RWread(stream, &colorPAD, 1, 1);
 	playersMask=SDL_ReadBE32(stream);
 	race.load(stream);
 }
@@ -35,7 +41,10 @@ void BaseTeam::save(SDL_RWops *stream)
 	// saving baseteam
 	SDL_WriteBE32(stream, teamNumber);
 	SDL_WriteBE32(stream, numberOfPlayer);
-	SDL_WriteBE32(stream, color);
+	SDL_RWwrite(stream, &colorR, 1, 1);
+	SDL_RWwrite(stream, &colorG, 1, 1);
+	SDL_RWwrite(stream, &colorB, 1, 1);
+	SDL_RWwrite(stream, &colorPAD, 1, 1);
 	SDL_WriteBE32(stream, playersMask);
 	race.save(stream);
 }
@@ -49,7 +58,10 @@ char *BaseTeam::getData()
 {
 	addSint32(data, teamNumber, 0);
 	addSint32(data, numberOfPlayer, 4);
-	addSint32(data, color, 8);
+	addUint8(data, colorR, 8);
+	addUint8(data, colorG, 9);
+	addUint8(data, colorB, 10);
+	addUint8(data, colorPAD, 11);
 	addSint32(data, playersMask, 12);
 	// TODO : give race to the network here.
 
@@ -60,13 +72,16 @@ bool BaseTeam::setData(const char *data, int dataLength)
 {
 	if (dataLength!=getDataLength())
 		return false;
-	
+
 	teamNumber=getSint32(data, 0);
 	numberOfPlayer=getSint32(data, 4);
-	color=getSint32(data, 8);
+	colorR=getUint8(data, 8);
+	colorG=getUint8(data, 9);
+	colorB=getUint8(data, 10);
+	colorPAD=getUint8(data, 11);
 	playersMask=getSint32(data, 12);
 	// TODO : create the race from the network here.
-	
+
 	return true;
 }
 
@@ -78,12 +93,11 @@ int BaseTeam::getDataLength()
 Sint32 BaseTeam::checkSum()
 {
 	Sint32 cs=0;
-	
+
 	cs^=teamNumber;
 	cs^=numberOfPlayer;
-	cs^=color;
 	cs^=playersMask;
-	
+
 	return cs;
 }
 
@@ -148,7 +162,6 @@ void Team::init(void)
 			myBullets[i]=NULL;
 		}
 	}
-	palette=globalContainer->macPal;
 	freeUnits=0;
 	startPosX=startPosY=0;
 	
@@ -163,7 +176,7 @@ void Team::setBaseTeam(const BaseTeam *initial)
 	playersMask=initial->playersMask;
 	race=initial->race;
 
-	setCorrectColor(initial->color);
+	setCorrectColor(initial->colorR, initial->colorG, initial->colorB);
 	setCorrectMasks();
 }
 
@@ -175,11 +188,69 @@ void Team::setCorrectMasks(void)
 	me=1<<teamNumber;
 }
 
-void Team::setCorrectColor(Sint32 color)
+void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
 {
-	this->color=color;
-	this->palette=globalContainer->macPal;
-	this->palette.decHue((float)(this->color-120));
+	this->colorR=r;
+	this->colorG=g;
+	this->colorB=b;
+}
+
+void Team::setCorrectColor(float value)
+{
+	float r, g, b;
+	HSVtoRGB(&r, &g, &b, value, 1.0f, 1.0f);
+	this->colorR=(Uint8)(255.0f*r);
+	this->colorG=(Uint8)(255.0f*g);
+	this->colorB=(Uint8)(255.0f*b);
+}
+
+void Team::HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
+{
+	int i;
+	float f, p, q, t;
+	if( s == 0 ) {
+		// achromatic (grey)
+		*r = *g = *b = v;
+		return;
+	}
+	h /= 60;			// sector 0 to 5
+	i = (int)floor( h );
+	f = h - i;			// factorial part of h
+	p = v * ( 1 - s );
+	q = v * ( 1 - s * f );
+	t = v * ( 1 - s * ( 1 - f ) );
+	switch( i ) {
+		case 0:
+			*r = v;
+			*g = t;
+			*b = p;
+			break;
+		case 1:
+			*r = q;
+			*g = v;
+			*b = p;
+			break;
+		case 2:
+			*r = p;
+			*g = v;
+			*b = t;
+			break;
+		case 3:
+			*r = p;
+			*g = q;
+			*b = v;
+			break;
+		case 4:
+			*r = t;
+			*g = p;
+			*b = v;
+			break;
+		default:		// case 5:
+			*r = v;
+			*g = p;
+			*b = q;
+			break;
+	}
 }
 
 void Team::computeStat(TeamStat *stats)
@@ -341,10 +412,6 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	// loading baseteam
 	BaseTeam::load(stream);
 
-	// loading team
-	palette=globalContainer->macPal;
-	palette.decHue((float)(color-120));
-	
 	// normal load
 	{
 		for (int i=0; i< 1024; i++)
@@ -610,12 +677,11 @@ Sint32 Team::checkSum()
 	Sint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
-	
+
 	cs=(cs<<31)|(cs>>1);
-	
+
 	cs^=teamNumber;
 	cs^=numberOfPlayer;
-	cs^=color;
 	cs^=playersMask;
 	
 	// Let's avoid to have too much calculation

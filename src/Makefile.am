@@ -53,8 +53,12 @@ Race.cpp\
 Race.h\
 Session.cpp\
 Session.h\
-Sprite.cpp\
-Sprite.h\
+SDLSprite.cpp\
+SDLSprite.h\
+SDLFont.h\
+SDLFont.cpp\
+SDLGraphicContext.h\
+SDLGraphicContext.cpp\
 StringTable.cpp\
 StringTable.h\
 Team.cpp\

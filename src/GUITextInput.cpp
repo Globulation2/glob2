@@ -152,7 +152,7 @@ void TextInput::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void TextInput::paint(GraphicContext *gfx)
+void TextInput::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
 	

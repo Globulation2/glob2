@@ -484,5 +484,15 @@ inline Uint32 getUint32(const Uint8 *data, int pos)
 	return (Uint32)SDL_SwapBE32( *( (Uint32 *) (((Uint8 *)data) +pos) ) );
 }
 
+inline void addUint8(const char *data, Uint8 val, int pos)
+{
+	*(((Uint8 *)data)+pos)=val;
+}
+
+inline Uint8 getUint8(const char *data, int pos)
+{
+	return *(((Uint8 *)data)+pos);
+}
+
 #endif
  
