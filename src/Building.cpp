@@ -896,15 +896,15 @@ void Building::update(void)
 void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 {
 	assert(!type->isBuildingSite);
-	int repairLevelTypeNum = type->lastLevelTypeNum;
-	BuildingType *repairBt = globalContainer->buildingsTypes.get(repairLevelTypeNum);
+	int repairLevelTypeNum=type->lastLevelTypeNum;
+	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
 
-	float destructionRatio = (float)hp/(float)type->hpMax;
+	float destructionRatio=(float)hp/(float)type->hpMax;
 	float fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		float fVal=(1.0f-destructionRatio)*(float)repairBt->maxRessource[i];
+		float fVal=destructionRatio*(float)repairBt->maxRessource[i];
 		int iVal=(int)fVal;
 		fTotErr+=fVal-(float)iVal;
 		if (fTotErr>1)
@@ -912,7 +912,7 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 			fTotErr-=1;
 			iVal++;
 		}
-		ressources[i]=iVal;
+		ressources[i]=repairBt->maxRessource[i]-iVal;
 	}
 }
 
@@ -929,12 +929,12 @@ bool Building::tryToBuildingSiteRoom(void)
 	else
 		assert(false);
 
-	BuildingType *nextBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
-	int newPosX=midPosX+nextBt->decLeft;
-	int newPosY=midPosY+nextBt->decTop;
+	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	int newPosX=midPosX+targetBt->decLeft;
+	int newPosY=midPosY+targetBt->decTop;
 
-	int newWidth=nextBt->width;
-	int newHeight=nextBt->height;
+	int newWidth=targetBt->width;
+	int newHeight=targetBt->height;
 
 	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
@@ -942,11 +942,11 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			float destructionRatio = (float)hp/(float)type->hpMax;
+			float destructionRatio=(float)hp/(float)type->hpMax;
 			float fTotErr=0;
 			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
-				float fVal=destructionRatio*(float)nextBt->maxRessource[i];
+				float fVal=destructionRatio*(float)targetBt->maxRessource[i];
 				int iVal=(int)fVal;
 				fTotErr+=fVal-(float)iVal;
 				if (fTotErr>1)
@@ -967,7 +967,7 @@ bool Building::tryToBuildingSiteRoom(void)
 
 		owner->prestige-=type->prestige;
 		typeNum=targetLevelTypeNum;
-		type=nextBt;
+		type=targetBt;
 		owner->prestige+=type->prestige;
 
 		buildingState=ALIVE;
