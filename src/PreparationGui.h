@@ -25,6 +25,7 @@
 #include "Race.h"
 #include "Session.h"
 #include "SDL_net.h"
+#include "GUIMapPreview.h"
 
 class MainMenuScreen:public Screen
 {
@@ -110,6 +111,7 @@ private:
 	TextInput *mapName;
 	Button *load, *share, *cancel;
 	List *fileList;
+	MapPreview *mapPreview;
 
 public:
 	MultiplayersChooseMapScreen();
