@@ -992,11 +992,6 @@ startImage = 25
 
 fillable = 1
 
-shootingRange = 4
-shootDamage = 30
-shootSpeed = 4700
-shootRythme = 150
-
 width = 2
 height = 2
 decLeft = -1
@@ -1012,7 +1007,7 @@ type = 7
 maxUnitWorking = 1
 isBuildingSite = 1
 
-viewingRange = 5 
+viewingRange = 5
 
 *
 
@@ -1047,11 +1042,6 @@ viewingRange = 8
 startImage = 25
 
 fillable = 1
-
-shootingRange = 5
-shootDamage = 40
-shootSpeed = 5700
-shootRythme = 2000
 
 width = 2
 height = 2
