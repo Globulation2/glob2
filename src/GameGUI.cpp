@@ -737,17 +737,19 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
 	{
-		if (my<480-16)
-		{
-			int xNum=mx>>6;
-			int yNum=(my-128)/56;
-			typeToBuild=yNum*2+xNum;
-			needRedraw=true;
-		}
-		else
+		if (my<128+20)
 		{
 			handleRightClick();
 			displayMode=STAT_VIEW;
+			needRedraw=true;	
+		}
+		// NOTE : here 6 is 12 /2. 12 is the number of buildings in menu
+		else if (my<128+20+6*48)
+		{
+			
+			int xNum=mx>>6;
+			int yNum=(my-128-20)/48;
+			typeToBuild=yNum*2+xNum;
 			needRedraw=true;
 		}
 	}
@@ -959,11 +961,11 @@ void GameGUI::draw(void)
 				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 				int imgid=bt->startImage;
 				int x=((i&0x1)*64)+globalContainer->gfx->getW()-128;
-				int y=((i>>1)*56)+128;
+				int y=((i>>1)*48)+128+20;
 				int decX=0;
 				int decY=0;
 
-				globalContainer->gfx->setClipRect(x+6, y+3, 52, 50);
+				globalContainer->gfx->setClipRect(x+6, y+3, 52, 42);
 				Sprite *buildingSprite=globalContainer->buildings;
 
 				if (buildingSprite->getW(imgid)<=32)
@@ -971,24 +973,25 @@ void GameGUI::draw(void)
 				else if (buildingSprite->getW(imgid)>64)
 					decX=20;
 				if (buildingSprite->getH(imgid)<=32)
-					decY=-16;
+					decY=-8;
 				else if (buildingSprite->getH(imgid)>64)
-					decY=20;
+					decY=26;
 
 				buildingSprite->enableBaseColor(game.teams[localTeam]->colorR, game.teams[localTeam]->colorG, game.teams[localTeam]->colorB);
 				globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
 			}
 
+			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 			if (typeToBuild>=0)
 			{
 				int x=((typeToBuild&0x1)*64)+globalContainer->gfx->getW()-128;
-				int y=((typeToBuild>>1)*56)+128;
-				globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
-				globalContainer->gfx->drawRect(x+6, y+3, 52, 50, 255, 0, 0);
-				globalContainer->gfx->drawRect(x+5, y+2, 54, 52, 255, 0, 0);
+				int y=((typeToBuild>>1)*48)+128+20;
+				globalContainer->gfx->drawRect(x+6, y+3, 52, 42, 255, 0, 0);
+				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
 			}
 
 			int nowFu=game.teams[localTeam]->freeUnits;
+			
 			// we have to smooth the free units function for visual conveniance.
 			recentFreeUnits[recentFreeUnitsIt]=nowFu;
 			recentFreeUnitsIt=(recentFreeUnitsIt+1)%nbRecentFreeUnits;
@@ -997,13 +1000,41 @@ void GameGUI::draw(void)
 				if (viewFu<recentFreeUnits[i])
 					viewFu=recentFreeUnits[i];
 
-			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 460, 128, 20);
+			char buttonText[64];
 			if (viewFu<=0)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s",globalContainer->texts.getString("[no unit free]"));
+				snprintf(buttonText, 64, "%s",globalContainer->texts.getString("[no unit free]"));
 			else if (viewFu==1)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s",globalContainer->texts.getString("[one unit free]"));
+				snprintf(buttonText, 64, "%s",globalContainer->texts.getString("[one unit free]"));
 			else
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-120, 460, globalContainer->littleFontGreen,"%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
+				snprintf(buttonText, 64, "%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
+			
+			// draw button, for stat			
+			drawButton(globalContainer->gfx->getW()-128+16, 128+4, buttonText, false);
+			
+			// draw building infos
+			if (mouseX>globalContainer->gfx->getW()-128)
+			{
+				if ((mouseY>128+20) && (mouseY<128+20+6*48))
+				{
+					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
+					int yNum=(mouseY-128-20)/48;
+					int typeId=yNum*2+xNum;
+					drawTextCenter(globalContainer->gfx->getW()-128, 128+22+6*48, "[building name]", typeId);
+					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
+					if (typeNum!=-1)
+					{
+						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 128+36+6*48, globalContainer->littleFontGreen, 
+							"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);								
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+36+6*48, globalContainer->littleFontGreen, 
+							"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 128+48+6*48, globalContainer->littleFontGreen, 
+							"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+48+6*48, globalContainer->littleFontGreen, 
+							"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
+					}
+				}
+			}
 		}
 		else if (displayMode==BUILDING_SELECTION_VIEW)
 		{
@@ -1530,14 +1561,19 @@ void GameGUI::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, chatMask);
 }
 
-void GameGUI::drawButton(int x, int y, const char *caption)
+void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
 	globalContainer->gfx->drawFilledRect(x, y, 96, 16, 128, 128, 128);
 	globalContainer->gfx->drawHorzLine(x, y, 96, 200, 200, 200);
 	globalContainer->gfx->drawHorzLine(x, y+15, 96, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(x+95, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFontGreen, globalContainer->texts.getString(caption));
+	const char *textToDraw;
+	if (doLanguageLookup)
+		textToDraw=globalContainer->texts.getString(caption);
+	else
+		textToDraw=caption;
+	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFontGreen, textToDraw);
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)

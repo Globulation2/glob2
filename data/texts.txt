@@ -96,7 +96,7 @@ Food building
 Hopital
 Health building
 [walkspeed building]
-Batiment de marche
+Piste de course
 Walk building
 [swimspeed building]
 Piscine
@@ -116,6 +116,12 @@ Exporation flag
 [war flag]
 Drapeau de guerre
 War flag
+[wood wall]
+Mur de bois
+Wood wall
+[stone wall]
+Mur de pierre
+Stone wall
 [l units free]
  
  
@@ -269,3 +275,6 @@ Choose a map
 [awaiting players]
 Attente des joueurs
 Awaiting players
+[stat]
+Statistiques
+Statistic
