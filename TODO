@@ -7,7 +7,6 @@ Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 - Les viewportX/Y ils n'ont pas l'air de se charger correctement dans l'éditeur (la touche "tab" bug),
 	et lorsque on sauve une partie, on ne se retrouve pas centré sur le premier batiment.
-- Réparer un batiment de dernier niveau assert(false); (fixed)
 
 ingameGUI:
 - Les info en bleu pour upgrader un batiment de nouriture viennent pas dessus les fruits.
@@ -23,7 +22,6 @@ Pathfindig:
 - Aller chercher la ressource qui est aussi proche du batiment.
 - si un batiment est enfermé, il faut gérer!
 - Gérer les unités piégées dans un drapeau d'interrdiction.
-- Ne pas prendre des ressources en dehosr du drapeau de défrichage.
 - Le comportement de guerrières doit-être amélioré.
 
 Technique :
