@@ -768,7 +768,7 @@ void Unit::handleDisplacement(void)
 					attachedBuilding->neededRessources(needs);
 					int teamNumber=owner->teamNumber;
 					bool canSwim=performance[SWIM];
-					int timeLeft=hungry/race->unitTypes[0][0].hungryness;
+					int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
 					destinationPurprose=-1;
 					int minValue=owner->map->getW()+owner->map->getW();
 					Map* map=owner->map;
@@ -1359,32 +1359,6 @@ void Unit::handleAction(void)
 			break;
 		}
 		
-		/*case MOV_GOING_TARGET:
-		{
-			bool fly=performance[FLY];
-			if (fly)
-				owner->map->setAirUnit(posX, posY, NOGUID);
-			else
-				owner->map->setGroundUnit(posX, posY, NOGUID);
-
-			gotoTarget();
-			
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-
-			selectPreferedMovement();
-			speed=performance[action];
-
-			if (fly)
-				owner->map->setAirUnit(posX, posY, gid);
-			else
-			{
-				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-				owner->map->setGroundUnit(posX, posY, gid);
-			}
-			break;
-		}*/
-		
 		case MOV_FLYING_TARGET:
 		{
 			owner->map->setAirUnit(posX, posY, NOGUID);
@@ -1545,7 +1519,7 @@ void Unit::setNewValidDirectionAir(void)
 	}
 }
 
-bool Unit::valid(int x, int y)
+/*bool Unit::valid(int x, int y)
 {
 	// Is there anythig that could block an unit?
 	if (performance[FLY])
@@ -1580,7 +1554,7 @@ bool Unit::areOnlyUnitsInFront(int dx, int dy)
 		return false;
 
 	return true;
-}
+}*/
 
 void Unit::flytoTarget()
 {
@@ -1634,37 +1608,38 @@ void Unit::gotoGroundTarget()
 	int ldy=targetY-posY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
-	int cDirection=direction;
-	if (valid(posX+dx, posY+dy))
-		return;
+	bool canSwim=performance[SWIM];
 	Map *map=owner->map;
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
+		return;
+	int cDirection=direction;
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnit(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnit(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 }
 
@@ -1674,37 +1649,38 @@ void Unit::escapeGroundTarget()
 	int ldy=posY-targetY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
-	int cDirection=direction;
-	if (valid(posX+dx, posY+dy))
-		return;
+	bool canSwim=performance[SWIM];
 	Map *map=owner->map;
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
+		return;
+	int cDirection=direction;
 	direction=(cDirection+1)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+7)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+2)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+6)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+3)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+5)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	direction=(cDirection+4)&7;
 	dxdyfromDirection();
-	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, performance[SWIM], owner->me))
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim, owner->me))
 		return;
 	dx=0;
 	dy=0;

@@ -1074,7 +1074,7 @@ void Building::subscribeToBringRessourcesStep()
 			{
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
-				int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
 				int x=unit->posX;
 				int y=unit->posY;
 				bool canSwim=unit->performance[SWIM];
@@ -1109,7 +1109,7 @@ void Building::subscribeToBringRessourcesStep()
 						int x=unit->posX;
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
-						int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
 
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
@@ -1150,7 +1150,7 @@ void Building::subscribeToBringRessourcesStep()
 							int x=unit->posX;
 							int y=unit->posY;
 							bool canSwim=unit->performance[SWIM];
-							int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+							int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
 
 							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
