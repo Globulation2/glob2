@@ -183,7 +183,7 @@ Uint32 InGameAlliance8Screen::getEnemyMask(void)
 	Uint32 mask=0;
 	for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		if (alliance[i]->getValue()==3)
+		if (alliance[i]->getValue()!=0)
 			mask|=1<<i;
 	}
 	return mask;
