@@ -144,7 +144,7 @@ Waiting for player
  
  
 [r has left the game]
-  a quite la partie
+  a quitte la partie
   has quited the game
 [load game]
 Charger jeu
@@ -299,3 +299,54 @@ Closed
 [player]
 Joueur
 Player
+[PNS_BAD]
+Inconnu
+Unknow
+[PNS_BINDED]
+Connu
+Know
+[PNS_SENDING_FIRST_PACKET]
+Connecte
+Connected
+[PNS_HOST]
+PNS_HOST
+PNS_HOST
+[PNS_PLAYER_SILENT]
+Joueur silencieux
+Silent player
+[PNS_PLAYER_SEND_ONE_REQUEST]
+Une requetre recue
+One request received
+[PNS_SERVER_SEND_SESSION_INFO]
+Informations envoyee
+Informations sended
+[PNS_PLAYER_SEND_CHECK_SUM]
+Verification recue
+Check received
+[PNS_OK]
+OK
+OK
+[PNS_SERVER_SEND_CROSS_CONNECTION_START]
+Debut d'interconnection
+Begin of interconnection
+[PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
+Interconnection confirmee
+Interconnection confirmed
+[PNS_PLAYER_FINISHED_CROSS_CONNECTION]
+Interconnection terminee
+Interconnection finished
+[PNS_CROSS_CONNECTED]
+Interconnecte
+Interconnected
+[PNS_SERVER_SEND_START_GAME]
+Debut de partie envoye
+Begin of the game sended
+[PNS_PLAYER_CONFIRMED_START_GAME]
+Debut de partie confirme
+Begin of the game confirmed
+[PNS_PLAYER_PLAYS]
+Joue
+Plays
+[STARTING GAME ...]
+Departe du jeu...
+Starting gaem...

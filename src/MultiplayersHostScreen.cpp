@@ -73,6 +73,10 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	
 	if (multiplayersJoin)
 		multiplayersJoin->onTimer(tick);
+		
+	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
+		if (multiplayersHost->startGameTimeCounter%20==0)
+			dispatchPaint(gfxCtx);
 
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
@@ -102,4 +106,13 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
+	{
+		char s[256];
+		snprintf(s, 256, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);		
+		int h=globalContainer->menuFont->getStringHeight(s);
+		printf("s=%s.\n", s);
+		gfxCtx->drawString(20, 460-h, globalContainer->menuFont, s);
+		addUpdateRect(20, 460-h, gfxCtx->getW()-40, h);
+	}
 }

@@ -71,7 +71,9 @@ void SessionInfo::draw(DrawableSurface *gfx)
 	{
 		char s[32];
 		players[i].printip(s);
-		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %s (%d)", players[i].name, s, players[i].netState);
+		char t[32];
+		players[i].printNetState(t);
+		gfx->drawString(20, 60+i*20, globalContainer->standardFont, "%s : %s (%s)", players[i].name, s, t);
 	}
 
 }
