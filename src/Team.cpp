@@ -276,7 +276,7 @@ Building *Team::findNearestFood(Unit *unit)
 	
 	bool concurency=false;
 	for (int ti=0; ti<session.numberOfTeam; ti++)
-		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me))
+		if (ti!=teamNumber && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me))
 		{
 			concurency=true;
 			break;
@@ -293,7 +293,7 @@ Building *Team::findNearestFood(Unit *unit)
 				if (ti!=teamNumber)
 				{
 					Team *t=game->teams[ti];
-					if (t->sharedVisionFood & me)
+					if ((t->sharedVisionFood & me) && !(t->allies & me))
 						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
 							int h=(*bi)->aviableHappynessLevel();
@@ -315,7 +315,7 @@ Building *Team::findNearestFood(Unit *unit)
 				if (ti!=teamNumber)
 				{
 					Team *t=game->teams[ti];
-					if (t->sharedVisionFood & me)
+					if ((t->sharedVisionFood & me) && !(t->allies & me))
 						for (std::list<Building *>::iterator bi=t->canFeedUnit.begin(); bi!=t->canFeedUnit.end(); ++bi)
 						{
 							int h=(*bi)->aviableHappynessLevel();
@@ -385,7 +385,7 @@ Building *Team::findNearestFood(Unit *unit)
 		
 	for (int ti=0; ti<session.numberOfTeam; ti++)
 		if (ti!=teamNumber)
-			concurent[ti]=(game->teams[ti]->sharedVisionFood & me) && (maxHappyness[ti]>=enemyHappyness);
+			concurent[ti]=(maxHappyness[ti]>=enemyHappyness) && (game->teams[ti]->sharedVisionFood & me) && !(game->teams[ti]->allies & me);
 	
 	if (unit->performance[FLY])
 	{
