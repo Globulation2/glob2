@@ -31,7 +31,7 @@ class Engine
 public:
 	Engine();
 	~Engine();
-	int initCampain();
+	int initCampain(const char *mapName);
 	int initCustom();
 	int initCustom(const char *gameName);
 	int initLoadGame();

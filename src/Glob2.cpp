@@ -250,9 +250,17 @@ int Glob2::run(int argc, char *argv[])
 			{
 				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, "Campaign not available", "Ok");
 				/*Engine engine;
-				if (engine.initCampain()==Engine::EE_NO_ERROR)
+				if (engine.initCampain("maps/default.map")==Engine::EE_NO_ERROR)
 					if (engine.run()==-1)
 						isRunning=false;*/
+			}
+			break;
+			case MainMenuScreen::TUTORIAL:
+			{
+				Engine engine;
+				if (engine.initCampain("maps/tutorial.map")==Engine::EE_NO_ERROR)
+					if (engine.run()==-1)
+						isRunning=false;
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:

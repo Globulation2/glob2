@@ -43,9 +43,11 @@ BaseTeam::BaseTeam()
 	disableRecursiveDestruction=false;
 }
 
-bool BaseTeam::load(SDL_RWops *stream)
+bool BaseTeam::load(SDL_RWops *stream, Sint32 versionMinor)
 {
 	// loading baseteam
+	if (versionMinor>25)
+		type=(TeamType)SDL_ReadBE32(stream);
 	teamNumber=SDL_ReadBE32(stream);
 	numberOfPlayer=SDL_ReadBE32(stream);
 	SDL_RWread(stream, &colorR, 1, 1);
@@ -61,6 +63,7 @@ bool BaseTeam::load(SDL_RWops *stream)
 void BaseTeam::save(SDL_RWops *stream)
 {
 	// saving baseteam
+	SDL_WriteBE32(stream, (Uint32)type);
 	SDL_WriteBE32(stream, teamNumber);
 	SDL_WriteBE32(stream, numberOfPlayer);
 	SDL_RWwrite(stream, &colorR, 1, 1);
@@ -821,7 +824,7 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 	buildingsTryToBuildingSiteRoom.clear();
 	
 	// loading baseteam
-	if(!BaseTeam::load(stream))
+	if(!BaseTeam::load(stream, versionMinor))
 		return false;
 
 	// normal load

@@ -17,35 +17,28 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAIN_MENU_SCREEN_H
-#define __MAIN_MENU_SCREEN_H
+#ifndef __AI_NULL_H
+#define __AI_NULL_H
 
-#include "GAG.h"
+#include "AIImplementation.h"
 
-class MainMenuScreen:public Screen
+class AINull : public AIImplementation
 {
 public:
-	enum
-	{
-		CAMPAIN,
-		TUTORIAL,
-		LOAD_GAME,
-		CUSTOM,
-		MULTIPLAYERS_YOG,
-		MULTIPLAYERS_LAN,
-		GAME_SETUP,
-		EDITOR,
-		CREDITS,
-		QUIT,
-	};
+	AINull() { }
+	~AINull() { }
+	
+	void init(Player *player) { }
+
+	bool load(SDL_RWops *stream) { return true; }
+	void save(SDL_RWops *stream) { }
+	
+	Order *getOrder(void);
+	
 private:
-	DrawableSurface *background;
-public:
-	MainMenuScreen();
-	virtual ~MainMenuScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
-	static int menu(void);
 };
 
 #endif
+
+ 
+

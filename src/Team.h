@@ -35,8 +35,9 @@ class BaseTeam: public Order
 public:
 	enum TeamType
 	{
+		T_HUMAN,
 		T_AI,
-		T_HUMAN
+		// Note : T_AI + n is AI type n
 	};
 
 	BaseTeam();
@@ -56,7 +57,7 @@ private:
 	Uint8 data[16];
 
 public:
-	bool load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	Uint8 getOrderType();

@@ -23,6 +23,7 @@
 #include "Game.h"
 #include <assert.h>
 
+#include "AINull.h"
 #include "AINumbi.h"
 #include "AICastor.h"
 
@@ -40,7 +41,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 	switch (implementitionID)
 	{
 		case NONE:
-			assert(false);
+			aiImplementation=new AINull();
 		break;
 		case NUMBI:
 			aiImplementation=new AINumbi(player);
@@ -99,7 +100,7 @@ bool AI::load(SDL_RWops *stream)
 	switch (implementitionID)
 	{
 		case NONE:
-			assert(false);
+			aiImplementation=new AINull();
 		break;
 		case NUMBI:
 			aiImplementation=new AINumbi(stream, player);
