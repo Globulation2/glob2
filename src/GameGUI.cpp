@@ -2277,7 +2277,7 @@ void GameGUI::drawOverlayInfos(void)
 		// if either script text or script timer has been shown, increment line count
 		if (game.script.isTextShown || game.script.getMainTimer())
 			ymesg+=32;
-		
+
 		// display messages
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
@@ -2303,11 +2303,11 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->setClipRect();
 		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
 		{
-			
+
 			//int ray = Mark::DEFAULT_MARK_SHOW_TICKS-it->showTicks;
 			int ray = (int)(sin((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
 			int ray2 = (int)(cos((double)(it->showTicks)/(double)(Mark::DEFAULT_MARK_SHOW_TICKS)*3.141592)*Mark::DEFAULT_MARK_SHOW_TICKS/2);
-			Uint8 a;			
+			Uint8 a;
 			/*if (ray < (Mark::DEFAULT_MARK_SHOW_TICKS>>1))
 				a = DrawableSurface::ALPHA_OPAQUE;
 			else
@@ -2315,22 +2315,14 @@ void GameGUI::drawOverlayInfos(void)
 				//float coef = (float)(it->showTicks)/(float)(Mark::DEFAULT_MARK_SHOW_TICKS);//>>1);
 				a = (it->showTicks*DrawableSurface::ALPHA_OPAQUE)/(Mark::DEFAULT_MARK_SHOW_TICKS);
 			//}
-			
+
 			int mMax;
 			int szX, szY;
 			int decX, decY;
 			int x, y;
 
-			// FIXME : if needed, move this into a function like coordinateFromMxMY,
-			// copy - pasted from Game.drawMiniMap
 			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
-			
-			x = it->x;
-			y = it->y;
-			x = x - localTeam->startPosX + (game.map.getW()>>1);
-			y = y - localTeam->startPosY + (game.map.getH()>>1);
-			x &= game.map.getMaskW();
-			y &= game.map.getMaskH();
+			Utilities::globalCoordToLocalView(&game, localTeamNo, it->x, it->y, &x, &y);
 			x = (x*100)/mMax;
 			y = (y*100)/mMax;
 			x += globalContainer->gfx->getW()-128+14+decX;

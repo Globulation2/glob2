@@ -776,7 +776,7 @@ void Game::step(Sint32 localTeam)
 				}
 		}
 		
-		renderMiniMap(localTeam, true, stepCounter%20, 20);
+		renderMiniMap(localTeam, true, stepCounter%25, 25);
 
 		if ((stepCounter&31)==4)
 		{
@@ -1758,24 +1758,16 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	assert(minimap);
 	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-114, 14, minimap);
 
-	// draw screen lines
-	int rx, ry, rw, rh, n;
-	rx=viewportX;
-	ry=viewportY;
-	if (localTeam>=0)
-	{
-		rx=(rx-teams[localTeam]->startPosX+(map.getW()>>1));
-		ry=(ry-teams[localTeam]->startPosY+(map.getH()>>1));
-		rx&=map.getMaskW();
-		ry&=map.getMaskH();
-	}
 
 	// get data for minimap
+	int rx, ry, rw, rh, n;
 	int mMax;
 	int szX, szY;
 	int decX, decY;
+	Utilities::globalCoordToLocalView(this, localTeam, viewportX, viewportY, &rx, &ry);
 	Utilities::computeMinimapData(100, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
 
+	// draw screen lines
 	rx=(rx*100)/mMax;
 	ry=(ry*100)/mMax;
 	rw=((globalContainer->gfx->getW()-128)*100)/(32*mMax);
@@ -1791,6 +1783,19 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%szX)+decX, 14+((ry+n)%szY)+decY, 255, 255, 255);
 		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%szX)+decX, 14+((ry+n)%szY)+decY, 255, 255, 255);
 	}
+
+	// draw flags
+	if (localTeam>=0)
+		for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
+				virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
+		{
+			int fx, fy;
+			Utilities::globalCoordToLocalView(this, localTeam, (*virtualIt)->posXLocal, (*virtualIt)->posYLocal, &fx, &fy);
+			fx = ((fx*100)/mMax);
+			fy = ((fy*100)/mMax);
+
+			globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+fx+decX, 14+fy+decY, 210, 255, 210);
+		}
 }
 
 void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, int stepCount)
@@ -1988,10 +1993,10 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 
 	if (stepStart+stepLength<szY)
 	{
-		minimap->drawHorzLine(decX, decY+stepStart+stepLength, szY, 100, 100, 100);
+		minimap->drawHorzLine(decX, decY+stepStart+stepLength, szX, 100, 100, 100);
 	}
 
-	// overdraw flags
+	/*// overdraw flags
 	if (localTeam>=0)
 		for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
 				virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
@@ -2009,7 +2014,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 
 			if ((fy>=stepStart) && (fy<stepStart+stepLength))
 				minimap->drawPixel(fx+decX, fy+decY, r, g, b);
-		}
+		}*/
 }
 
 Sint32 Game::checkSum()

@@ -103,17 +103,17 @@ public:
 	void switchFogOfWar(void);
 
 	//! Return map width
-	int getW(void) { return w; }
+	int getW(void) const { return w; }
 	//! Return map height
-	int getH(void) { return h; }
+	int getH(void) const { return h; }
 	//! Return map width mask
-	int getMaskW(void) { return wMask; }
+	int getMaskW(void) const { return wMask; }
 	//! Return map height maskint
-	int getMaskH(void) { return hMask; }
+	int getMaskH(void) const { return hMask; }
 	//! Return the number of sectors on x, which corresponds to the sector map width
-	int getSectorW(void) { return wSector; }
+	int getSectorW(void) const { return wSector; }
 	//! Return the number of sectors on y, which corresponds to the sector map height
-	int getSectorH(void) { return hSector; }
+	int getSectorH(void) const { return hSector; }
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
 	void setMapDiscovered(int x, int y, Uint32 sharedVision)

@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdarg.h>
+#include "Game.h"
 
 int distSquare(int x1, int y1, int x2, int y2)
 {
@@ -362,7 +363,24 @@ namespace Utilities
 			*decY=0;
 		}
 	}
-	
+
+	void globalCoordToLocalView(const Game *game, int localTeam, int globalX, int globalY, int *localX, int *localY)
+	{
+		assert(game);
+		assert(localX);
+		assert(localY);
+		if (localTeam>=0)
+		{
+			*localX = (globalX - game->teams[localTeam]->startPosX + (game->map.getW()>>1)) & game->map.getMaskW();
+			*localY = (globalY - game->teams[localTeam]->startPosY + (game->map.getH()>>1)) & game->map.getMaskH();
+		}
+		else
+		{
+			*localX = globalX;
+			*localY = globalY;
+		}
+	}
+
 	char *concat(const char *a, const char *b)
 	{
 		assert(a);
