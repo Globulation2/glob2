@@ -22,6 +22,7 @@
 
 #include <string>
 #include <deque>
+#include <vector>
 #include <stdio.h>
 
 struct Token
@@ -66,7 +67,9 @@ struct Token
 		S_STORY=319,
 		S_HIDE=320,
 		S_MARK=321,
-		S_GOBACKTO=322
+		S_GOBACKTO=322,
+		S_SETFLAG=323,
+		S_ALLY=324, 
 	} type;
 	
 	struct TokenSymbolLookupTable
@@ -149,6 +152,12 @@ private:
 
 class Game;
 
+struct Flag
+{
+	int x, y;
+	std::string name;
+};
+
 class Mapscript
 {
 public:
@@ -171,9 +180,11 @@ private:
 	
 	void reset(void);
 	bool testMainTimer(void);
+	bool getFlagPos(string name, int *x, int *y);
 	
 	int mainTimer;
 	std::deque<Story> stories;
+	std::vector<Flag> flags;
 	Aquisition donnees;
 	Game *game;
 };
