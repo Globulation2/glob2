@@ -43,6 +43,10 @@
 	#include <SDL/SDL_net.h>
 #endif
 
+// usefull macros
+#define MAX(a, b) ((a)>(b) ? (a) : (b))
+#define MIN(a, b) ((a)<(b) ? (a) : (b))
+
 //#define DBG_UID
 #undef DBG_UID
 #define DBG_PATHFINDING

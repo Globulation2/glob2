@@ -33,18 +33,45 @@ Text::Text(int x, int y,const Font *font, const char *text, int w, int h)
 
 void Text::setText(const char *newText)
 {
+	int upW, upH, nW, nH;
+
 	assert(gfx);
-	this->text=text;
-	parent->paint(x, y, w, h);
+	assert(font);
+	assert(text);
+	assert(newText);
+
+	// erase old
+	if (w)
+		nW=upW=w;
+	else
+	{
+		upW=font->getStringWidth(text);
+		nW=font->getStringWidth(newText);
+	}
+	if (h)
+		nH=upH=h;
+	else
+	{
+		upH=font->getStringHeight(text);
+		nH=font->getStringHeight(newText);
+	}
+	parent->paint(x, y, upW, upH);
+
+	this->text=newText;
+
+	// draw new
 	paint(gfx);
-	parent->addUpdateRect(x, y, w, h);
+	parent->addUpdateRect(x, y, MAX(nW, upW), MAX(nH, upH));
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
 void Text::paint(DrawableSurface *gfx)
 {
-	this->gfx=gfx;
 	int wDec, hDec;
+
+	assert(gfx);
+
+	this->gfx=gfx;
 
 	if (w)
 		wDec=(w-font->getStringWidth(text))>>1;
