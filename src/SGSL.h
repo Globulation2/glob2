@@ -82,6 +82,9 @@ struct Token
 	int value;
 	std::string msg;
 	
+	//! Constructor, set logic default values
+	Token() { type=NIL; value=0; }
+	
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
 	
@@ -94,7 +97,7 @@ struct Token
 
 struct ErrorReport
 {
-	ErrorReport() { line=0; col=0; }
+	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; }
 	enum ErrorType
 	{
 		ET_OK=0,
@@ -104,6 +107,7 @@ struct ErrorReport
 		ET_NO_SUCH_FILE,
 		ET_INVALID_FLAG_NAME,
 		ET_UNKNOWN,
+		ET_NB_ET,
 	} type;
 	unsigned line;
 	unsigned col;
@@ -118,7 +122,7 @@ public:
 	virtual ~Aquisition(void);
 
 public:
-	Token getToken() { return token; }
+	const Token *getToken() { return &token; }
 	void nextToken();
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }

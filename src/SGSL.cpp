@@ -512,6 +512,9 @@ using namespace std;
 const char *ErrorReport::getErrorString(void)
 {
 	static const char *strings[]={ "No error", "Invalid Value ", "Syntax error", "Invalid player", "No such file", "Invalid Falg name", "Unknown error" };
+	assert(type >= 0);
+	assert(type < ET_NB_ET);
+	assert(ET_NB_ET == sizeof(strings)/sizeof(const char *));
 	return strings[(int)type];
 }
 
@@ -611,6 +614,7 @@ void Aquisition::nextToken()
 			if ((start!=string::npos) && (end!=string::npos))
 			{
 				token.type = Token::STRING;
+				assert(end-start-1>=0);
 				token.msg = mot.substr(start+1, end-start-1);
 			}
 			else
@@ -688,6 +692,9 @@ void Mapscript::step()
 
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
+
+#define NEXT_TOKEN { donnees.nextToken(); er.line=donnees.getLine(); er.col=donnees.getCol(); }
+
 	ErrorReport er;
 	er.type=ErrorReport::ET_OK;
 	if (donnees.newFile(filename))
@@ -695,87 +702,83 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 		reset();
 		this->game=game;
 		
-		donnees.nextToken();
-		while (donnees.getToken().type != Token::S_EOF)
+		NEXT_TOKEN;
+		while (donnees.getToken()->type != Token::S_EOF)
 		{
 			Story thisone(this);
 			if (er.type != ErrorReport::ET_OK)
 			{
-				er.line=donnees.getLine();
-				er.col=donnees.getCol();
 				break;
 			}
-			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
+			while ((donnees.getToken()->type != Token::S_STORY) && (donnees.getToken()->type !=Token::S_EOF))
 			{
 				if (er.type != ErrorReport::ET_OK)
 				{
-					er.line=donnees.getLine();
-					er.col=donnees.getCol();
 					break;
 				}
 				// Grammar check
-				switch (donnees.getToken().type)
+				switch (donnees.getToken()->type)
 				{
 					//Grammar for summon |summon(globules_amount globule_type(player_int . level) flag_name)
 					case (Token::S_SUMMON):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value > 30)
+						else if (donnees.getToken()->value > 30)
 						{
 							er.type=ErrorReport::ET_INVALID_VALUE;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if ((donnees.getToken().type != Token::S_WARRIOR) && (donnees.getToken().type != Token::S_WORKER) && (donnees.getToken().type != Token::S_EXPLORER))
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if ((donnees.getToken()->type != Token::S_WARRIOR) && (donnees.getToken()->type != Token::S_WORKER) && (donnees.getToken()->type != Token::S_EXPLORER))
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value >= game->session.numberOfTeam)
+						else if (donnees.getToken()->value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value > 3)
+						else if (donnees.getToken()->value > 3)
 						{
 							er.type=ErrorReport::ET_INVALID_VALUE;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::STRING)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::STRING)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (!doesFlagExist(donnees.getToken().msg))
+						else if (!doesFlagExist(donnees.getToken()->msg))
 						{
 							er.type=ErrorReport::ET_INVALID_FLAG_NAME;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					//Grammar for setflag | setflag(flag_name)(x.y)
@@ -783,30 +786,30 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					{
 						Flag flag;
 						bool found=false;
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::STRING)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::STRING)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						flag.name=donnees.getToken().msg;
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						flag.name=donnees.getToken()->msg;
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						flag.x=donnees.getToken().value;
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						flag.x=donnees.getToken()->value;
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						flag.y=donnees.getToken().value;
+						flag.y=donnees.getToken()->value;
 						for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
 						{
 							if ((*it).name==flag.name)
@@ -818,8 +821,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						}
 						if (!found)
 							flags.push_back(flag);
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					//Grammar of Show Mark Gobackto
@@ -827,124 +830,124 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					case (Token::S_MARK):
 					case (Token::S_GOBACKTO):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::STRING)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::STRING)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					//Grammar Of Wait
 					case (Token::S_WAIT):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if ((donnees.getToken().type == Token::S_DEAD) || (donnees.getToken().type == Token::S_ALIVE))
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if ((donnees.getToken()->type == Token::S_DEAD) || (donnees.getToken()->type == Token::S_ALIVE))
 						{
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
-							if (donnees.getToken().type != Token::INT)
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
+							if (donnees.getToken()->type != Token::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees.getToken().value >= game->session.numberOfTeam)
+							else if (donnees.getToken()->value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_PLAYER;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
 						}
-						else if (donnees.getToken().type == Token::S_FLAG)
+						else if (donnees.getToken()->type == Token::S_FLAG)
 						{
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
-							if (donnees.getToken().type != Token::STRING)
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
+							if (donnees.getToken()->type != Token::STRING)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (!doesFlagExist(donnees.getToken().msg))
+							else if (!doesFlagExist(donnees.getToken()->msg))
 							{
 								er.type=ErrorReport::ET_INVALID_FLAG_NAME;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
-							if ((donnees.getToken().type != Token::S_YOU) && (donnees.getToken().type != Token::S_NOENEMY) && (donnees.getToken().type != Token::S_ALLY))
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
+							if ((donnees.getToken()->type != Token::S_YOU) && (donnees.getToken()->type != Token::S_NOENEMY) && (donnees.getToken()->type != Token::S_ALLY))
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
 						}
-						else if (donnees.getToken().type == Token::INT)
+						else if (donnees.getToken()->type == Token::INT)
 						{
-							if (donnees.getToken().value <=0)
+							if (donnees.getToken()->value <=0)
 							{
 								er.type=ErrorReport::ET_INVALID_VALUE;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
 							break;
 						}
-						else if ((donnees.getToken().type > 100) && (donnees.getToken().type < 300))
+						else if ((donnees.getToken()->type > 100) && (donnees.getToken()->type < 300))
 						{
-							if ((donnees.getToken().type > 200) && (donnees.getToken().type < 300))
+							if ((donnees.getToken()->type > 200) && (donnees.getToken()->type < 300))
 							{
-								thisone.line.push_back(donnees.getToken());
-								donnees.nextToken();
-								if (donnees.getToken().type != Token::INT)
+								thisone.line.push_back(*donnees.getToken());
+								NEXT_TOKEN;
+								if (donnees.getToken()->type != Token::INT)
 								{
 									er.type=ErrorReport::ET_SYNTAX_ERROR;
 									break;
 								}
-								else if ((donnees.getToken().value < 0) || (donnees.getToken().value > 5))
+								else if ((donnees.getToken()->value < 0) || (donnees.getToken()->value > 5))
 								{
 									er.type=ErrorReport::ET_INVALID_VALUE;
 									break;
 								}
-								thisone.line.push_back(donnees.getToken());
-								donnees.nextToken();
+								thisone.line.push_back(*donnees.getToken());
+								NEXT_TOKEN;
 							}
 							else
 							{
-								thisone.line.push_back(donnees.getToken());
-								donnees.nextToken();
+								thisone.line.push_back(*donnees.getToken());
+								NEXT_TOKEN;
 							}
-							if (donnees.getToken().type != Token::INT)
+							if (donnees.getToken()->type != Token::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							else if (donnees.getToken().value >= game->session.numberOfTeam)
+							else if (donnees.getToken()->value >= game->session.numberOfTeam)
 							{
 								er.type=ErrorReport::ET_INVALID_PLAYER;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
-							if ((donnees.getToken().type < 301) && (donnees.getToken().type > 303))
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
+							if ((donnees.getToken()->type < 301) && (donnees.getToken()->type > 303))
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
-							if (donnees.getToken().type != Token::INT)
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
+							if (donnees.getToken()->type != Token::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
-							thisone.line.push_back(donnees.getToken());
-							donnees.nextToken();
+							thisone.line.push_back(*donnees.getToken());
+							NEXT_TOKEN;
 						}
 						else
 						{
@@ -955,83 +958,83 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					break;
 					case (Token::NIL):
 					{
-						donnees.nextToken();
+						NEXT_TOKEN;
 					}
 					break;
 					case (Token::S_FRIEND):
 					case (Token::S_ENEMY):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value >= game->session.numberOfTeam)
+						else if (donnees.getToken()->value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value >= game->session.numberOfTeam)
+						else if (donnees.getToken()->value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					case (Token::S_TIMER):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						if (donnees.getToken().value <=0)
+						if (donnees.getToken()->value <=0)
 						{
 							er.type=ErrorReport::ET_INVALID_VALUE;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					case (Token::S_ACTIVATE):
 					case (Token::S_DEACTIVATE):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
-						if (donnees.getToken().type != Token::INT)
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
+						if (donnees.getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
-						else if (donnees.getToken().value >= game->session.numberOfTeam)
+						else if (donnees.getToken()->value >= game->session.numberOfTeam)
 						{
 							er.type=ErrorReport::ET_INVALID_PLAYER;
 							break;
 						}
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					case (Token::S_LOOSE):
 					case (Token::S_WIN):
 					case (Token::S_HIDE):
 					{
-						thisone.line.push_back(donnees.getToken());
-						donnees.nextToken();
+						thisone.line.push_back(*donnees.getToken());
+						NEXT_TOKEN;
 					}
 					break;
 					case (Token::S_EOF):
@@ -1047,7 +1050,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 			printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 			for (unsigned  i=0; i<thisone.line.size(); i++)
 				cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;
-			donnees.nextToken();
+			NEXT_TOKEN;
 		}
 	}
 	else
