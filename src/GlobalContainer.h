@@ -24,29 +24,27 @@
 #include "StringTable.h"
 #include "FileManager.h"
 #include "BuildingType.h"
-#include "Player.h"
-#include "YOG.h"
 #include "LogFileManager.h"
-
-struct Settings
-{
-	char userName[BasePlayer::MAX_NAME_LENGTH];
-	Uint16 ircPort;
-	char *ircURL;
-};
+class YOG;
 
 class GlobalContainer
 {
+public:
+	enum{USERNAME_MAX_LENGTH=32};
+	
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
 	void load(void);
+	
+public:
+	void setUserName(const char *name);
+	void pushUserName(const char *name);
+	void popUserName();
 
 private:
-	void setIRCURL(const char *name);
-	void setUserName(const char *name);
 	void initProgressBar(void);
 	void updateLoadProgressBar(int value);
 
@@ -54,13 +52,14 @@ public:
 	Uint32 graphicFlags;
 	int graphicWidth, graphicHeight;
 
-	Settings settings;
+	char userNameMemory[USERNAME_MAX_LENGTH];
+	const char *userName;
 
 	FileManager fileManager;
 	LogFileManager logFileManager;
 	
 	//! Ysagoon Online Game connector and session handler
-	YOG yog;
+	YOG *yog;
 
 	GraphicContext *gfx;
 	Sprite *terrain;

@@ -21,19 +21,17 @@
 #include "Header.h"
 #include <string.h>
 #include "NonANSICStdWrapper.h"
+#include "Player.h"
+#include "YOG.h"
 
 GlobalContainer::GlobalContainer(void)
 {
+	yog=new YOG();
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
 
-	settings.ircURL=NULL;
-	setIRCURL("irc.debian.org");
-	settings.ircPort=6667;
-
 	// set default values in settings or load them
-	settings.userName[0]=0;
 	char *userName;
 #	ifdef WIN32
 		userName=getenv("USERNAME");
@@ -55,6 +53,8 @@ GlobalContainer::GlobalContainer(void)
 	menuFont=NULL;
 	standardFont=NULL;
 	littleFontGreen=NULL;
+	
+	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
 
 GlobalContainer::~GlobalContainer(void)
@@ -77,23 +77,25 @@ GlobalContainer::~GlobalContainer(void)
 		delete littleFontGreen;
 	if (gfx)
 		delete gfx;
-	if (settings.ircURL)
-		delete[] settings.ircURL;
-}
-
-void GlobalContainer::setIRCURL(const char *name)
-{
-	if (settings.ircURL)
-		delete[] settings.ircURL;
-	int len=strlen(name)+1;
-	settings.ircURL=new char[len];
-	strncpy(settings.ircURL, name, len);
+	assert(yog);
+	delete yog;
 }
 
 void GlobalContainer::setUserName(const char *name)
 {
-	strncpy(settings.userName, name, BasePlayer::MAX_NAME_LENGTH);
-	settings.userName[BasePlayer::MAX_NAME_LENGTH-1]=0;
+	strncpy(userNameMemory, name, USERNAME_MAX_LENGTH);
+	userNameMemory[USERNAME_MAX_LENGTH-1]=0;
+	userName=userNameMemory;
+}
+
+void GlobalContainer::pushUserName(const char *name)
+{
+	userName=name;
+}
+
+void GlobalContainer::popUserName()
+{
+	userName=userNameMemory;
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
@@ -143,8 +145,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-s\tset resolution (for instance : -s640x480)\n");
 			printf("-a\tset hardware accelerated gfx\n");
 			printf("-d\tadd a directory to the directory search list\n");
-			printf("-m\tspecify meta server hostname\n");
-			printf("-p\tspecify meta server port\n");
 			printf("-u\tspecify an user name\n");
 			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
 			exit(0);
@@ -165,28 +165,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 					i++;
 					if (i < argc)
 						fileManager.addDir(argv[i]);
-				}
-			}
-			else if (argv[i][1] == 'm')
-			{
-				if (argv[i][2] != 0)
-					setIRCURL(&argv[i][2]);
-				else
-				{
-					i++;
-					if (i < argc)
-						setIRCURL(argv[i]);
-				}
-			}
-			else if (argv[i][1] == 'p')
-			{
-				if (argv[i][2] != 0)
-					settings.ircPort=atoi(&argv[i][2]);
-				else
-				{
-					i++;
-					if (i < argc)
-						settings.ircPort=atoi(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 'u')

@@ -124,7 +124,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	{
 		multiplayersJoin=new MultiplayersJoin(false);
 		assert(BasePlayer::MAX_NAME_LENGTH==32);
-		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 32);
+		strncpy(multiplayersJoin->playerName, globalContainer->userName, 32);
 		multiplayersJoin->playerName[37]=0;
 		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address)
 		if (s)

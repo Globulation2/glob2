@@ -723,3 +723,7 @@ Connected to all players
 Parties locales disponibles
 Local aviable games
 
+[login]
+Login
+Login
+

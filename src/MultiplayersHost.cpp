@@ -21,6 +21,8 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
+#include "YOG.h"
+#include "Marshaling.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
@@ -60,7 +62,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		fprintf(logFile, "sharing on YOG\n");
-		globalContainer->yog.shareGame("glob2", "0.1-pre", sessionInfo->map.getMapName());
+		globalContainer->yog->shareGame(sessionInfo->map.getMapName());
 	}
 	
 	stream=NULL;
@@ -126,7 +128,7 @@ MultiplayersHost::~MultiplayersHost()
 	
 	if (shareOnYOG)
 	{
-		globalContainer->yog.unshareGame();
+		globalContainer->yog->unshareGame();
 	}
 	
 	if (destroyNet)
@@ -951,7 +953,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 		memset(&data[4], 0, 32);
 		strncpy(&data[4], sessionInfo.map.getMapName(), 32);
 		memset(&data[36], 0, 32);
-		strncpy(&data[36], globalContainer->settings.userName, 32);
+		strncpy(&data[36], globalContainer->userName, 32);
 		
 		//fprintf(logFile, "MultiplayersHost sending1 (%d, %d, %d, %d).\n", data[4], data[5], data[6], data[7]);
 		//fprintf(logFile, "MultiplayersHost sending2 (%s).\n", sessionInfo.map.getMapName());
@@ -1056,15 +1058,17 @@ void MultiplayersHost::onTimer(Uint32 tick)
 	// call yog step
 	if (shareOnYOG)
 	{
-		globalContainer->yog.step();
+		globalContainer->yog->step();
 		
-		if (globalContainer->yog.isFirewallActivation())
+		/*
+		TODO:isFirewallActivation !! zzz
+		if (globalContainer->yog->isFirewallActivation())
 		{
 			bool isNext=true;
 			while(isNext)
 			{
-				Uint16 port=globalContainer->yog.getFirewallActivationPort();
-				char *hostName=globalContainer->yog.getFirewallActivationHostname();
+				Uint16 port=globalContainer->yog->getFirewallActivationPort();
+				char *hostName=globalContainer->yog->getFirewallActivationHostname();
 				fprintf(logFile, "have to send water to firewall. port=(%d)\n", port);
 				IPaddress ip;
 				if(SDLNet_ResolveHost(&ip, hostName, SDL_SwapBE16(port))!=0)
@@ -1091,9 +1095,9 @@ void MultiplayersHost::onTimer(Uint32 tick)
 				else
 					fprintf(logFile, "MultiplayersHost::sucess to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
 				
-				isNext=globalContainer->yog.getNextFirewallActivation();
+				isNext=globalContainer->yog->getNextFirewallActivation();
 			}
-		}
+		}*/
 	}
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
@@ -1573,7 +1577,7 @@ void MultiplayersHost::stopHosting(void)
 	
 	if (shareOnYOG)
 	{
-		globalContainer->yog.unshareGame();
+		globalContainer->yog->unshareGame();
 	}
 }
 

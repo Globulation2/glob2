@@ -21,6 +21,7 @@
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "NetDefine.h"
+#include "Marshaling.h"
 
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
@@ -886,12 +887,14 @@ void MultiplayersJoin::sendingTime()
 		{
 			if (sendPresenceRequest())
 			{
+				/*
+				TODO: is it still any reason to do something like this ?
 				if (yogGameInfo)
 				{
 					assert(shareOnYOG);
 					fprintf(logFile, "requesting sending water to firewall. (%s) (%d)\n", yogGameInfo->source, localPort);
 					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, localPort);
-				}
+				}*/
 				
 				if (shareOnYOG)
 				{
@@ -1399,20 +1402,34 @@ void MultiplayersJoin::quitThisGame()
 	fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 }
 
-bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)
+bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 {
+	assert(yogGameInfo);
 	if (this->yogGameInfo)
 		delete this->yogGameInfo;
 	this->yogGameInfo=yogGameInfo;
 	
 	serverName=serverNameMemory;
-	strncpy(serverName, yogGameInfo->hostname, 128);
-	serverName[127]=0;
-	strncpy(playerName, globalContainer->settings.userName, 32);
+	char *s=SDLNet_ResolveIP(&yogGameInfo->ip);
+	if (s)
+	{
+		strncpy(serverName, s, 128);
+		serverName[127]=0;
+	}
+	else
+	{
+		Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
+		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>24)%0xFF, (lip>>16)%0xFF, (lip>>8)%0xFF, (lip>>0)%0xFF);
+	}
+	serverIP=yogGameInfo->ip;
+	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);
+	//TODO: is the serverName string usefull ? If it is, the port needs to be passed too !
+	
+	strncpy(playerName, globalContainer->userName, 32);
 	playerName[31]=0;
 	//strncpy(gameName, "ilesAleatoires", 32); //TODO: add gameName in YOG
 	//gameName[31]=0;
-	strncpy(serverNickName, yogGameInfo->source, 32);
+	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;
 	return tryConnection();
 }

@@ -109,7 +109,7 @@ int Engine::initCustom(void)
 {
 	CustomGameScreen customGameScreen;
 
-	int cgs=customGameScreen.execute(globalContainer->gfx, 20);
+	int cgs=customGameScreen.execute(globalContainer->gfx, 50);
 
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
@@ -135,7 +135,7 @@ int Engine::initCustom(void)
 			int teamColor=customGameScreen.getSelectedColor(i);
 			if (i==0)
 			{
-				gui.game.players[nbPlayer]=new Player(0, globalContainer->settings.userName, gui.game.teams[teamColor], BasePlayer::P_LOCAL);
+				gui.game.players[nbPlayer]=new Player(0, globalContainer->userName, gui.game.teams[teamColor], BasePlayer::P_LOCAL);
 				gui.localPlayer=nbPlayer;
 				gui.localTeam=teamColor;
 			}
@@ -208,7 +208,7 @@ int Engine::initCustom(const char *gameName)
 int Engine::initLoadGame()
 {
 	LoadGameScreen loadGameScreen;
-	int lgs=loadGameScreen.execute(globalContainer->gfx, 20);
+	int lgs=loadGameScreen.execute(globalContainer->gfx, 50);
 	if (lgs==LoadGameScreen::CANCEL)
 		return EE_CANCEL;
 	
@@ -253,7 +253,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 {
 	MultiplayersChooseMapScreen multiplayersChooseMapScreen;
 
-	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
+	int mpcms=multiplayersChooseMapScreen.execute(globalContainer->gfx, 50);
 
 	if (mpcms==MultiplayersChooseMapScreen::CANCEL)
 		return EE_CANCEL;
@@ -263,7 +263,7 @@ int Engine::initMutiplayerHost(bool shareOnYOG)
 	printf("Engine::the game is sharing ...\n");
 	
 	MultiplayersHostScreen multiplayersHostScreen(&(multiplayersChooseMapScreen.sessionInfo), shareOnYOG);
-	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 20);
+	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 50);
 	if (rc==MultiplayersHostScreen::STARTED)
 	{
 		if (multiplayersHostScreen.multiplayersJoin==NULL)
@@ -289,7 +289,7 @@ int Engine::initMutiplayerJoin(void)
 {
 	MultiplayersJoinScreen multiplayersJoinScreen;
 
-	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 20);
+	int rc=multiplayersJoinScreen.execute(globalContainer->gfx, 50);
 	if (rc==MultiplayersJoinScreen::STARTED)
 	{
 		startMultiplayer(multiplayersJoinScreen.multiplayersJoin);
