@@ -23,9 +23,6 @@
 #include "Marshaling.h"
 #include "Version.h"
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 8
-
 SessionGame::SessionGame()
 {
 	versionMajor=VERSION_MAJOR;
