@@ -86,9 +86,8 @@ namespace GAGCore
 		return false;
 	}
 	
-	int TrueTypeFont::getStringWidth(const char *string, Shape shape)
+	int TrueTypeFont::getStringWidth(const char *string)
 	{
-		pushStyle(Style(shape, styleStack.top().r, styleStack.top().g, styleStack.top().b, styleStack.top().a));
 		SDL_Surface *s = getStringCached(string);
 		int w;
 		if (s)
@@ -98,16 +97,14 @@ namespace GAGCore
 		}
 		else
 			w = 0;
-		popStyle();
 		return w;
 	}
 	
-	int TrueTypeFont::getStringHeight(const char *string, Shape shape)
+	int TrueTypeFont::getStringHeight(const char *string)
 	{
 		int h;
 		if (string)
 		{
-			pushStyle(Style(shape, styleStack.top().r, styleStack.top().g, styleStack.top().b, styleStack.top().a));
 			SDL_Surface *s = getStringCached(string);
 			if (s)
 			{
@@ -116,14 +113,10 @@ namespace GAGCore
 			}
 			else
 				h = 0;
-			popStyle();
 		}
 		else
 		{
-			int oldShape = TTF_GetFontStyle(font);
-			TTF_SetFontStyle(font, shape);
 			h = TTF_FontHeight(font);
-			TTF_SetFontStyle(font, oldShape);
 		}
 		return h;
 	}
