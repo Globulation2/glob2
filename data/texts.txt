@@ -551,3 +551,7 @@ Vorort
 Version
 Version
 Version
+[open]
+Ouvert
+Open
+nicht geschlossen

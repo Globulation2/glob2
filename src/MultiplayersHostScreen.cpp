@@ -43,9 +43,14 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
+		int j;
 		color[i]=new ColorButton(22, 62+i*20, 16, 16, COLOR_BUTTONS+i);
-		color[i]->visible=false;
+		for (j=0; j<sessionInfo->numberOfTeam; j++)
+			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
+		text[i]=new Text(42, 62+i*20, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
+		addWidget(text[i]);
+		wasSlotUsed[i]=false;
 	}
 }
 
@@ -58,24 +63,35 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 {
 	multiplayersHost->onTimer(tick);
 
-	multiplayersHost->sessionInfo.draw(gfxCtx);
+	// TODO : don't update this every step
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
 		if (multiplayersHost->sessionInfo.players[i].netState>BasePlayer::PNS_BAD)
 		{
-			color[i]->paint(gfxCtx);
-			color[i]->visible=true;
+			int teamNumber;
+			char playerInfo[128];
+			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, sizeof(playerInfo));
+			text[i]->setText(playerInfo);
+			color[i]->setSelectedColor(teamNumber);
+			wasSlotUsed[i]=true;
 		}
 		else
-			color[i]->visible=false;
+		{
+			if (wasSlotUsed[i])
+			{
+				text[i]->setText(globalContainer->texts.getString("[open]"));
+				color[i]->setSelectedColor(0);
+				wasSlotUsed[i]=false;
+			}
+		}
 	}
-	addUpdateRect(20, 20, gfxCtx->getW()-40, 400);
-	
+	//addUpdateRect(20, 20, gfxCtx->getW()-40, 400);
+
 	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
 	{
 		multiplayersJoin=new MultiplayersJoin();
 		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
-		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address) 
+		char *s=SDLNet_ResolveIP(&(multiplayersHost->serverIP)) ;//char *SDLNet_ResolveIP(IPaddress *address)
 		if (s)
 			strncpy(multiplayersJoin->serverName, s, 128);
 		else
@@ -84,13 +100,14 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 			Uint32 ip=SDL_SwapBE32(multiplayersHost->serverIP.host);
 			snprintf(multiplayersJoin->serverName, 128, "%d.%d.%d.%d\n", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
 		}
-		
+
 		multiplayersJoin->tryConnection();
 	}
-	
+
 	if (multiplayersJoin)
 		multiplayersJoin->onTimer(tick);
-		
+
+	// TODO: handle this in a nicer way, this should be moved in a text
 	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
 		if (multiplayersHost->startGameTimeCounter%20==0)
 			dispatchPaint(gfxCtx);
@@ -132,7 +149,7 @@ void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
 	{
 		char s[256];
-		snprintf(s, 256, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);		
+		snprintf(s, 256, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
 		int h=globalContainer->menuFont->getStringHeight(s);
 		printf("s=%s.\n", s);
 		gfxCtx->drawString(20, 460-h, globalContainer->menuFont, s);
