@@ -47,7 +47,7 @@ class YOGClient;
 
 struct Game
 {
-	char name[128];
+	char name[64];
 	YOGClient *host;
 	Uint32 uid;
 	std::list<YOGClient *> joiners; // Firewalls extermination system

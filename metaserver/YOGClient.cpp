@@ -237,12 +237,8 @@ void YOGClient::sendGames()
 			
 			addUint32(data, (*game)->host->uid, index);
 			index+=4;
-			/*int l;
-			l=strmlen((*game)->host->userName, 32);
-			memcpy(data+index, (*game)->host->userName, l);
-			index+=l;*/
 
-			int l=strmlen((*game)->name, 64); //TODO: set game's name's length to 64 everywhere !
+			int l=strmlen((*game)->name, 64);
 			memcpy(data+index, (*game)->name, l);
 			index+=l;
 			lprintf("%d index=%d.\n", nbGames, index);
