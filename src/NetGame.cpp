@@ -59,27 +59,27 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	//logFile=stdout;
 	assert(logFile);
 	
-	for (int p=0; p<32; p++)
-		for (int step=0; step<256; step++)
-			ordersQueue[p][step]=NULL;
+	for (int pi=0; pi<32; pi++)
+		for (int stepi=0; stepi<256; stepi++)
+			ordersQueue[pi][stepi]=NULL;
 	
-	for (int i=0; i<10; i++)
-		latencyStats[i]=0;
-	for (int i=0; i<40; i++)
-		wishedDelayStats[i]=0;
-	for (int i=0; i<40; i++)
-		maxMedianWishedDelayStats[i]=0;
+	for (int di=0; di<40; di++)
+	{
+		delayInsideStats[di]=0;
+		wishedDelayStats[di]=0;
+		maxMedianWishedDelayStats[di]=0;
+	}
 	init();
 };
 
 NetGame::~NetGame()
 {
 	int sum=0;
+	for (int i=0; i<40; i++)
+		sum+=delayInsideStats[i];
+	fprintf(logFile, "delayInsideStats: (sum=%d)\n", sum);
 	for (int i=0; i<10; i++)
-		sum+=latencyStats[i];
-	fprintf(logFile, "latencyStats: (sum=%d)\n", sum);
-	for (int i=0; i<10; i++)
-		fprintf(logFile, "latencyStats[%2d]=%5d (%4f)\n", i, latencyStats[i], (float)(100.*latencyStats[i])/(float)sum);
+		fprintf(logFile, "delayInsideStats[%2d]=%5d (%4f%%)\n", i, delayInsideStats[i], (float)(100.*delayInsideStats[i])/(float)sum);
 	fprintf(logFile, "\n");
 	
 	sum=0;
@@ -87,7 +87,7 @@ NetGame::~NetGame()
 		sum+=wishedDelayStats[i];
 	fprintf(logFile, "wishedDelayStats: (sum=%d)\n", sum);
 	for (int i=0; i<40; i++)
-		fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
+		fprintf(logFile, "wishedDelayStats[%2d]=%5d (%4f%%)\n", i, wishedDelayStats[i], (float)(100.*wishedDelayStats[i])/(float)sum);
 	fprintf(logFile, "\n");
 	
 	sum=0;
@@ -95,26 +95,24 @@ NetGame::~NetGame()
 		sum+=maxMedianWishedDelayStats[i];
 	fprintf(logFile, "maxMedianWishedDelayStats: (sum=%d)\n", sum);
 	for (int i=0; i<40; i++)
-		fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
+		fprintf(logFile, "maxMedianWishedDelayStats[%2d]=%5d (%4f%%)\n", i, maxMedianWishedDelayStats[i], (float)(100.*maxMedianWishedDelayStats[i])/(float)sum);
 	fprintf(logFile, "\n");
-		
+	
 	fflush(logFile);
 	
-	for (int p=0; p<32; p++)
-	{
-		for (int step=0; step<256; step++)
-			if (ordersQueue[p][step])
+	for (int pi=0; pi<32; pi++)
+		for (int stepi=0; stepi<256; stepi++)
+			if (ordersQueue[pi][stepi])
 			{
-				delete ordersQueue[p][step];
-				ordersQueue[p][step]=NULL;
+				delete ordersQueue[pi][stepi];
+				ordersQueue[pi][stepi]=NULL;
 			}
-	}
 	if (socket)
 	{
 		// We have to prevents players to close the same socket:
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->socket==socket)
-				players[p]->channel=-1;
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->socket==socket)
+				players[pi]->channel=-1;
 		SDLNet_UDP_Close(socket);
 		socket=NULL;
 	}
@@ -123,16 +121,16 @@ NetGame::~NetGame()
 void NetGame::init(void)
 {
 	int sum=0;
-	for (int i=0; i<10; i++)
-		sum+=latencyStats[i];
+	for (int i=0; i<40; i++)
+		sum+=delayInsideStats[i];
 	if (sum)
 	{
-		fprintf(logFile, "latencyStats: (sum=%d)\n", sum);
-		for (int i=0; i<10; i++)
-			fprintf(logFile, "latencyStats[%2d]=%5d (%4f)\n", i, latencyStats[i], (float)(100.*latencyStats[i])/(float)sum);
+		fprintf(logFile, "delayInsideStats: (sum=%d)\n", sum);
+		for (int i=0; i<40; i++)
+			fprintf(logFile, "delayInsideStats[%2d]=%5d (%4f)\n", i, delayInsideStats[i], (float)(100.*delayInsideStats[i])/(float)sum);
 		fprintf(logFile, "\n");
-		for (int i=0; i<10; i++)
-			latencyStats[i]=0;
+		for (int i=0; i<40; i++)
+			delayInsideStats[i]=0;
 	}
 	sum=0;
 	for (int i=0; i<40; i++)
@@ -156,95 +154,81 @@ void NetGame::init(void)
 	}
 	fflush(logFile);
 	
-	executeStep=0;
-	pushStep=0+defaultLatency;
-	freeingStep=256-maxLatency-2;
+	executeUStep=0;
+	pushUStep=0+defaultLatency;
 	myLocalWishedLatency=defaultLatency;
-	for (int p=0; p<numberOfPlayer; p++)
-		wishedLatency[p]=defaultLatency;
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		wishedLatency[pi]=defaultLatency;
 	myLocalWishedDelay=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		for (int i=0; i<64; i++)
-			recentsWishedDelay[p][i]=0;
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		for (int si=0; si<256; si++)
+			recentsWishedDelay[pi][si]=0;
 	
 	waitingForPlayerMask=0;
 	
-	// We start with no checkSum aviable:
-	for (int i=0; i<256; i++)
-	{
-		checkSumsLocal[i]=0;
-		checkSumsRemote[i]=0;
-	}
 	
-	for (int p=0; p<numberOfPlayer; p++)
+	for (int pi=0; pi<numberOfPlayer; pi++)
 	{
-		// We free any order:
-		for (int step=0; step<256; step++)
-		{
-			if (ordersQueue[p][step])
-				delete ordersQueue[p][step];
-			ordersQueue[p][step]=NULL;
-		}
+		// We start with no checkSum aviable:
+		for (int stepi=0; stepi<256; stepi++)
+			gameCheckSums[pi][stepi]=0;
 		
-		// We have to create new orders to be freed:
-		for (int step=freeingStep; step<256; step++)
+		// We free any order:
+		for (int stepi=0; stepi<256; stepi++)
 		{
-			Order *order=new NullOrder();
-			order->sender=p;
-			order->inQueue=true;
-			ordersQueue[p][step]=order;
+			if (ordersQueue[pi][stepi])
+				delete ordersQueue[pi][stepi];
+			ordersQueue[pi][stepi]=NULL;
 		}
 		
 		// We have to create the first unsent orders:
-		for (int step=0; step<pushStep; step++)
+		for (Uint32 si=0; si<pushUStep; si++)
 		{
 			Order *order=new NullOrder();
-			order->sender=p;
-			order->inQueue=true;
-			ordersQueue[p][step]=order;
+			order->sender=pi;
+			order->ustep=si;
+			ordersQueue[pi][si]=order;
+		}
+		// We have to create new orders to be freed:
+		for (Uint32 si=pushUStep; si<256; si++)
+		{
+			Order *order=new NullOrder();
+			order->sender=pi;
+			order->ustep=0;
+			ordersQueue[pi][si]=order;
 		}
 		
 		// We write that the first unsent orders are received:
-		lastReceivedFromMe[p]=pushStep-1;
+		lastUStepReceivedFromMe[pi]=pushUStep-1;
+		lastSdlTickReceivedFromHim[pi]=0;
 		
 		// At the beginning, no-one is late:
-		countDown[p]=0;
+		countDown[pi]=0;
 		// And everyone thinks that everyone is connected:
-		droppingPlayersMask[p]=0;
+		droppingPlayersMask[pi]=0;
 		
-		for (int i=0; i<64; i++)
-			recentsPingPong[p][i]=defaultLatency;
-		pingPongCount[p]=0;
-		recentsPingPong[p][pingPongCount[p]]=0;
-		pingPongMax[p]=defaultLatency;
-		
-		for (int i=0; i<64; i++)
-			recentOrderMarginTime[p][i]=defaultLatency;
-		orderMarginTimeCount[p]=0;
-		orderMarginTimeMin[p]=defaultLatency;
-		orderMarginTimeMax[p]=defaultLatency;
+		// And all player's ping are equals.
+		for (int ri=0; ri<256; ri++)
+			recentsPingPong[pi][ri]=40*defaultLatency;
 	}
 	
-	dropState=DS_NO_DROP_PROCESSING;
+	dropState=DS_NoDropProcessing;
 };
 
 Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 {
 	Uint32 waitingPlayersMask=0;
-	for (int p=0; p<numberOfPlayer; p++)
+	for (int pi=0; pi<numberOfPlayer; pi++)
 	{
-		int type=players[p]->type;
-		if (type==Player::P_IP && !players[p]->quitting)
+		int type=players[pi]->type;
+		if (type==Player::P_IP && !players[pi]->quitting)
 		{
-			if (ordersQueue[p][executeStep]==NULL)
+			Order *order=ordersQueue[pi][executeUStep&255];
+			assert(order);
+			if (order->ustep!=executeUStep)
 			{
-				printf("Can't execute step=%d of player=%d.\n", executeStep, p);
-				waitingPlayersMask|=1<<p;
-			}
-			if ((lastReceivedFromMe[p]+1)==freeingStep)
-			{
-				printf("Can't free step=%d of player=%d.\n", freeingStep, p);
-				waitingPlayersMask|=1<<p;
+				printf("Can't execute ustep=%d (hash=%d) of player=%d.\n", executeUStep, executeUStep&255, pi);
+				waitingPlayersMask|=1<<pi;
 			}
 		}
 	}
@@ -254,18 +238,22 @@ Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 Uint32 NetGame::whoMaskCountedOut(void)
 {
 	Uint32 countedOutMask=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP && countDown[p]>1)
-			countedOutMask|=1<<p;
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP && countDown[pi]>1)
+			countedOutMask|=1<<pi;
 	return countedOutMask;
 };
 
-Uint8 NetGame::lastReceivedFromHim(int player)
+Uint32 NetGame::lastUStepReceivedFromHim(int player)
 {
-	Uint8 step=freeingStep;
-	while (ordersQueue[player][step])
-		step++;
-	return (step-1);
+	Uint32 lastUStep=0;
+	for (int stepi=0; stepi<256; stepi++)
+	{
+		Uint32 s=ordersQueue[player][stepi]->ustep;
+		if (lastUStep<s)
+			lastUStep=s;
+	}
+	return lastUStep;
 }
 
 void NetGame::sendPushOrder(int targetPlayer)
@@ -275,64 +263,76 @@ void NetGame::sendPushOrder(int targetPlayer)
 	
 	fprintf(logFile, "sendPushOrder.\n");
 	
-	int totalSize=3;
-	Uint8 step=pushStep;
+	int totalSize=16;
+	Uint32 ustep=pushUStep;
 	int n;
-	for (n=0; n<ordersByPackets; n++) //TODO: only send twice small orders. This means if size<=16
+	for (n=0; n<ordersByPackets; n++)
 	{
-		Order *order=ordersQueue[localPlayerNumber][step];
+		Order *order=ordersQueue[localPlayerNumber][ustep&255];
 		assert(order);
+		assert(order->ustep==ustep);
 		if (order->latencyPadding)
 		{
-			fprintf(logFile, " skipped step=%d.\n", step);
+			fprintf(logFile, " skipped ustep=%d.\n", ustep);
 			assert(order->getOrderType()==ORDER_NULL);
-			step++; // We skip orders which have been added to increase latency.
-			order=ordersQueue[localPlayerNumber][step];
+			assert(order->ustep==ustep);
+			ustep--; // We skip orders which have been added to increase latency.
+			order=ordersQueue[localPlayerNumber][ustep&255];
 			assert(order);
+			assert(order->ustep==ustep);
 		}
-		totalSize+=5+order->getDataLength();
-		if (step==executeStep)
+		totalSize+=12+order->getDataLength();
+		if (ustep==executeUStep)
 		{
 			n++;
 			break;
 		}
-		step--;
+		ustep--;
 	}
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=MULTIPLE_ORDERS;
-	data[1]=localPlayerNumber;
-	data[2]=lastReceivedFromHim(targetPlayer);
-	fprintf(logFile, " lastReceivedFromHim(%d)=%d\n", targetPlayer, lastReceivedFromHim(targetPlayer));
-	int l=3;
-	step=pushStep;
+	data[1]=0; //pad
+	data[2]=localPlayerNumber;
+	data[3]=0; //pad
+	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
+	addUint32(data, SDL_GetTicks(), 12);
+	int l=16;
+	fprintf(logFile, " lastUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUStepReceivedFromHim(targetPlayer));
+	ustep=pushUStep;
 	for (int i=0; i<n; i++)
 	{
-		Order *order=ordersQueue[localPlayerNumber][step];
+		Order *order=ordersQueue[localPlayerNumber][ustep&255];
 		assert(order);
+		assert(order->ustep==ustep);
 		if (order->latencyPadding)
 		{
 			assert(order->getOrderType()==ORDER_NULL);
-			step++; // We skip orders which have been added to increase latency.
-			order=ordersQueue[localPlayerNumber][step];
+			ustep--; // We skip orders which have been added to increase latency.
+			order=ordersQueue[localPlayerNumber][ustep&255];
 			assert(order);
+			assert(order->ustep==ustep);
 		}
 		int orderSize=order->getDataLength();
-		data[l++]=step;
+		addUint32(data, order->ustep, l);
+		l+=4;
+		addUint32(data, order->gameCheckSum, l);
+		l+=4;
 		data[l++]=orderSize;
 		data[l++]=order->wishedLatency;
 		data[l++]=order->wishedDelay;
 		data[l++]=order->getOrderType();
-		fprintf(logFile, " sending, step=%d, orderSize=%d, wishedLatency=%d, wishedDelay=%d, orderType=%d\n",
-				step, orderSize, order->wishedLatency, order->wishedDelay, order->getOrderType());
+		fprintf(logFile, " sending, ustep=%d, orderSize=%d, wishedLatency=%d, wishedDelay=%d, orderType=%d\n",
+				ustep, orderSize, order->wishedLatency, order->wishedDelay, order->getOrderType());
 		memcpy(data+l, order->getData(), orderSize);
 		l+=orderSize;
-		step--;
+		ustep--;
 	}
 	assert(l==totalSize);
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%2d]%d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	fprintf(logFile, " %d orders, totalSize=%d.\n", n, totalSize);
@@ -346,37 +346,54 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	assert(players[targetPlayer]->type==Player::P_IP || (players[targetPlayer]->type==Player::P_LOST_FINAL && players[targetPlayer]->quitting));
 	assert(targetPlayer!=localPlayerNumber);
 	fprintf(logFile, "sendWaitingForPlayerOrder (%x)\n", waitingForPlayerMask);
-
+	
+	int totalSize=16;
+	
 	WaitingForPlayerOrder *wfpo=new WaitingForPlayerOrder(waitingForPlayerMask);
-	int totalSize=3+5+wfpo->getDataLength();
+	totalSize+=12+wfpo->getDataLength();
 
-	Uint8 resendStep=lastReceivedFromMe[targetPlayer]+1;
-	Order *order=ordersQueue[localPlayerNumber][resendStep];
-	if (order)
+	Uint32 resendUStep=lastUStepReceivedFromMe[targetPlayer]+1;
+	Order *order=ordersQueue[localPlayerNumber][resendUStep&255];
+	assert(order);
+	if (order->ustep==resendUStep)
 	{
-		totalSize+=5+order->getDataLength();
-		fprintf(logFile, " resendAviable, resendStep[%d]=%d, v-wfpo\n", targetPlayer, resendStep);
+		order=NULL;
+		fprintf(logFile, " resend not aviable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
+	}
+	else
+	{
+		totalSize+=12+order->getDataLength();
+		fprintf(logFile, " resendAviable, targetPlayer=%d, resendUStep=%d, v-wfpo\n", targetPlayer, resendUStep);
 	}
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
-	data[0]=MULTIPLE_ORDERS;
-	data[1]=localPlayerNumber;
-	data[2]=lastReceivedFromHim(targetPlayer);
-
-	int l=3;
+	data[ 0]=MULTIPLE_ORDERS;
+	data[ 1]=0; //pad
+	data[ 2]=localPlayerNumber;
+	data[ 3]=0; //pad
+	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
+	addUint32(data, SDL_GetTicks(), 12);
+	fprintf(logFile, " lastUStepReceivedFromHim(%d)=%d\n", targetPlayer, lastUStepReceivedFromHim(targetPlayer));
+	
+	
 	int size=wfpo->getDataLength();
-	data[l++]=executeStep;
-	data[l++]=size;
-	data[l++]=0;
-	data[l++]=0;
-	data[l++]=wfpo->getOrderType();
-	memcpy(data+l, wfpo->getData(), size);
-	l+=size;
+	addUint32(data, executeUStep, 16);
+	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	data[24]=size;
+	data[25]=0; //wishedLatency is networkly synchrone
+	data[26]=0; //wishedDelay is networkly synchrone
+	data[27]=wfpo->getOrderType();
+	memcpy(data+28, wfpo->getData(), size);
+	int l=28+size;
 
 	if (order)
 	{
 		int orderSize=order->getDataLength();
-		data[l++]=resendStep;
+		addUint32(data, order->ustep, l);
+		l+=4;
+		addUint32(data, order->gameCheckSum, l);
+		l+=4;
 		data[l++]=orderSize;
 		data[l++]=order->wishedLatency;
 		data[l++]=order->wishedDelay;
@@ -384,11 +401,12 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 		memcpy(data+l, order->getData(), orderSize);
 		l+=orderSize;
 	}
+	
 	assert(l==totalSize);
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%2d]%d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	fprintf(logFile, " totalSize=%d.\n", totalSize);
@@ -404,40 +422,51 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	assert(targetPlayer!=localPlayerNumber);
 	fprintf(logFile, "sendDroppingPlayersMask\n");
 
+	int totalSize=16;
 	int n=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<pi)))
 			n++;
-	int totalSize=13+n;
-	fprintf(logFile, " to player %d, myDroppingPlayersMask=%x, executeStep=%d, n=%d\n",
-			targetPlayer, droppingPlayersMask[localPlayerNumber], executeStep, n);
+	int orderDataLength=8+4*n;
+	totalSize+=12+orderDataLength;
+	fprintf(logFile, " to player %d, myDroppingPlayersMask=%x, executeUStep=%d, n=%d\n",
+			targetPlayer, droppingPlayersMask[localPlayerNumber], executeUStep, n);
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
-	data[0]=MULTIPLE_ORDERS;
-	data[1]=localPlayerNumber;
-	data[2]=lastReceivedFromHim(targetPlayer);
+	data[ 0]=MULTIPLE_ORDERS;
+	data[ 1]=0; //pad
+	data[ 2]=localPlayerNumber;
+	data[ 3]=0; //pad
+	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
+	addUint32(data, SDL_GetTicks(), 12);
 	
-	data[3]=executeStep;
-	data[4]=5+n;
-	data[5]=myLocalWishedLatency;
-	data[6]=myLocalWishedDelay;
-	data[7]=ORDER_DROPPING_PLAYER;
-	data[8]=askForReply;
-	addUint32(data, droppingPlayersMask[localPlayerNumber], 9);
+	addUint32(data, executeUStep, 16);
+	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	data[24]=orderDataLength;
+	data[25]=myLocalWishedLatency;
+	data[26]=myLocalWishedDelay;
+	data[27]=ORDER_DROPPING_PLAYER;
 	
-	int l=13;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
+	addUint32(data, droppingPlayersMask[localPlayerNumber], 28);
+	data[32]=askForReply;
+	data[33]=0; //pad
+	data[34]=0; //pad
+	data[35]=0; //pad
+	
+	int l=36;
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<pi)))
 		{
-			data[l]=lastReceivedFromHim(p);
-			fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", p, data[l]);
-			l++;
+			addUint32(data, lastUStepReceivedFromHim(pi), l);
+			fprintf(logFile, " lastUStepReceivedFromHim(%2d)=%d.\n", pi, lastUStepReceivedFromHim(pi));
+			l+=4;
 		}
 	assert(l==totalSize);
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%2d]%d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	players[targetPlayer]->send(data, totalSize);
@@ -445,69 +474,92 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	free(data);
 }
 
-void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resendingStep)
+void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 resendingUStep)
 {
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 
-	Uint8 *data=(Uint8 *)malloc(9);
-	data[0]=MULTIPLE_ORDERS;
-	data[1]=localPlayerNumber;
-	data[2]=lastReceivedFromHim(targetPlayer);
+	fprintf(logFile, "sendRequestingDeadAwayOrder");
 	
-	data[3]=resendingStep;
-	data[4]=1;
-	data[5]=myLocalWishedLatency;
-	data[6]=myLocalWishedDelay;
-	data[7]=ORDER_REQUESTING_AWAY;
+	Uint8 *data=(Uint8 *)malloc(28);
+	data[ 0]=MULTIPLE_ORDERS;
+	data[ 1]=0; //pad
+	data[ 2]=localPlayerNumber;
+	data[ 3]=0; //pad
+	addUint32(data, lastUStepReceivedFromHim(targetPlayer), 4);
+	addUint32(data, lastSdlTickReceivedFromHim[targetPlayer], 8);
+	addUint32(data, SDL_GetTicks(), 12);
 	
-	data[8]=missingPlayer;
+	addUint32(data, resendingUStep, 16);
+	addUint32(data, 0, 20); // no revealant gameCheckSum aviable
+	data[20]=1;
+	data[21]=myLocalWishedLatency;
+	data[22]=myLocalWishedDelay;
+	data[23]=ORDER_REQUESTING_AWAY;
+	
+	data[24]=missingPlayer;
+	data[25]=0; //pad
+	data[26]=0; //pad
+	data[27]=0; //pad
 	
 	fprintf(logFile, " data ");
-	for (int i=0; i<9; i++)
+	for (int i=0; i<28; i++)
 		fprintf(logFile, "[%d]%d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
-	players[targetPlayer]->send(data, 9);
+	players[targetPlayer]->send(data, 28);
 
 	free(data);
 }
 
-void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resendingStep)
+void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 resendingUStep)
 {
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
-	int totalSize=3;
-	Uint8 step=resendingStep;
+	int totalSize=16;
+	Uint32 ustep=resendingUStep;
 	int nbp=0;
 	for (int n=0; n<ordersByPackets; n++)
 	{
-		Order *order=ordersQueue[missingPlayer][step];
-		if (order)
+		Order *order=ordersQueue[missingPlayer][ustep&255];
+		if (order && order->ustep==ustep)
 		{
-			totalSize+=5+order->getDataLength();
+			totalSize+=8+order->getDataLength();
 			nbp++;
 		}
-		step--;
+		ustep--;
+	}
+	if (nbp==0)
+	{
+		fprintf(logFile, " Warning, player=%d requested order ustep=%d of dead away player=%d, but we don't have it.\n",
+			targetPlayer, resendingUStep, missingPlayer);
+		return;
 	}
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	
 	data[0]=MULTIPLE_ORDERS;
-	data[1]=missingPlayer;
-	data[2]=0;
+	data[1]=0; //pad
+	data[2]=missingPlayer;
+	data[3]=0; //pad
+	addUint32(data, 0,  4); //no good lastUStepReceivedFromHim() aviable
+	addUint32(data, 0,  8); //no good lastSdlTickReceivedFromHim[] aviable
+	addUint32(data, 0, 12); //no good SDL_GetTicks() aviable
 	
-	fprintf(logFile, "sendDeadAwayOrder missingPlayer=%d, targetPlayer=%d.\n", missingPlayer, targetPlayer);
-	int l=3;
-	step=resendingStep;
+	fprintf(logFile, "sendDeadAwayOrder missingPlayer=%d, targetPlayer=%d, resendingUStep=%d\n", missingPlayer, targetPlayer, resendingUStep);
+	int l=16;
+	ustep=resendingUStep;
 	for (int n=0; n<ordersByPackets; n++)
 	{
-		Order *order=ordersQueue[missingPlayer][step];
-		if (order)
+		Order *order=ordersQueue[missingPlayer][ustep&255];
+		if (order && order->ustep==ustep)
 		{
 			int orderSize=order->getDataLength();
-			data[l++]=step;
+			addUint32(data, order->ustep, l);
+			l+=4;
+			addUint32(data, order->gameCheckSum, l);
+			l+=4;
 			data[l++]=orderSize;
 			data[l++]=order->wishedLatency;
 			data[l++]=order->wishedDelay;
@@ -515,7 +567,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 			memcpy(data+l, order->getData(), orderSize);
 			l+=orderSize;
 		}
-		step--;
+		ustep--;
 	}
 	assert(l==totalSize);
 	
@@ -536,12 +588,12 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	assert(players[playerNumber]->type>=Player::P_AI || players[playerNumber]->type==Player::P_LOCAL);
 	
-	//if ((order->getOrderType()!=73)&&(order->getOrderType()!=51))
-	
-	fprintf(logFile, "\n");
-	fprintf(logFile, "pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
-	
-	assert(ordersQueue[playerNumber][pushStep]==NULL);
+	if (order->getOrderType()!=ORDER_NULL)
+	{
+		fprintf(logFile, "\n");
+		fprintf(logFile, "pushOrder playerNumber=(%d), pushUStep=(%d)[%d], getOrderType=(%d).\n",
+			playerNumber, pushUStep, pushUStep&255, order->getOrderType());
+	}
 	
 	if (players[playerNumber]->quitting)
 	{
@@ -549,22 +601,30 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 		order=new NullOrder();
 	}
 	
-	if (order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)
-		checkSumsLocal[pushStep]=((SubmitCheckSumOrder *)order)->checkSumValue;
+	Order *oldOrder=ordersQueue[playerNumber][pushUStep&255];
+	assert(oldOrder);
+	assert(oldOrder->ustep<pushUStep);
+	delete oldOrder;
 	
 	order->sender=playerNumber;
-	order->inQueue=true;
 	order->wishedLatency=myLocalWishedLatency;
 	order->wishedDelay=myLocalWishedDelay;
-	ordersQueue[playerNumber][pushStep]=order;
-	
-	if (localPlayerNumber==playerNumber && ((pushStep&1)==1))
+	order->ustep=pushUStep;
+	ordersQueue[playerNumber][pushUStep&255]=order;
+	if (!order->gameCheckSum && players[playerNumber]->type==Player::P_LOCAL)
 	{
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP)
-				sendPushOrder(p);
+		printf("Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
+		fprintf(logFile, "Warning, no gameCheckSum localy provided for player %d, at pushUStep %d\n", playerNumber, pushUStep);
+	}
+	gameCheckSums[playerNumber][pushUStep&255]=order->gameCheckSum;
+	
+	if (localPlayerNumber==playerNumber && ((pushUStep&1)==1))
+	{
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->type==Player::P_IP)
+				sendPushOrder(pi);
 			else
-				lastReceivedFromMe[p]=pushStep; // for AI and local player.
+				lastUStepReceivedFromMe[pi]=pushUStep; // for AI and local player.
 	}
 }
 
@@ -578,283 +638,169 @@ Order *NetGame::getOrder(int playerNumber)
 		{
 			Order *order=new NullOrder();
 			order->sender=playerNumber;
-			order->inQueue=false;
 			return order;
 		}
 		bool canQuit=true;
-		for (int p=0; p<numberOfPlayer; p++)
-		{
-			bool good=false;
-			Uint8 step=freeingStep;
-			while (true)
-				if (step==players[playerNumber]->quitStep)
-				{
-					good=true;
-					break;
-				}
-				else if (step==lastReceivedFromMe[p])
-					break;
-				else
-					step++;
-
-			if (!good)
+		Uint32 minUStep=0xFFFFFFFF;
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->type==Player::P_IP)
 			{
-				fprintf(logFile, "bad lastReceivedFromMe[%d]=%d.\n", p, lastReceivedFromMe[playerNumber]);
-				canQuit=false;
-				break;
+				Uint32 us=lastUStepReceivedFromMe[pi];
+				if (minUStep<us)
+					minUStep=us;
 			}
+		if (minUStep<players[playerNumber]->quitUStep)
+		{
+			fprintf(logFile, "can't quit now while (minUStep=%d < quitUStep=%d)\n", minUStep, minUStep<players[playerNumber]->quitUStep);
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (players[pi]->type==Player::P_IP)
+					fprintf(logFile, " lastUStepReceivedFromMe[%d]=%d\n", pi, lastUStepReceivedFromMe[pi]);
+			canQuit=false;
 		}
 		Order *order;
 		if (canQuit)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
-			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me\n", playerNumber);
-			Uint8 step=freeingStep;
-			while (step!=pushStep)
-			{
-				Order *order=ordersQueue[playerNumber][step];
-				assert(order);
-				delete order;
-				ordersQueue[playerNumber][step]=NULL;
-				step++;
-			}
-			for (int i=0; i<256; i++)
-			{
-				Order *order=ordersQueue[playerNumber][i];
-				if (order)
-				{
-					assert(order->getOrderType()==ORDER_NULL);
-					delete order;
-					ordersQueue[playerNumber][i]=NULL;
-				}
-			}
+			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, me, quited\\n", playerNumber);
 			order=new QuitedOrder();
 		}
 		else
 			order=new NullOrder();
 		order->sender=playerNumber;
-		order->inQueue=false;
 		return order;
 	}
 	else if (waitingForPlayerMask)
 	{
 		Order *order=new WaitingForPlayerOrder(whoMaskCountedOut());
 		order->sender=playerNumber;
-		order->inQueue=false;
 		return order;
 	}
-	else if (players[playerNumber]->type==Player::P_LOST_FINAL || players[playerNumber]->quitting)
+	else if (players[playerNumber]->type==Player::P_LOST_FINAL)
 	{
 		Order *order=new NullOrder();
 		order->sender=playerNumber;
-		order->inQueue=false;
+		return order;
+	}
+	else if (players[playerNumber]->quitting)
+	{
+		Uint8 latency=pushUStep-executeUStep;
+		if (executeUStep>=players[playerNumber]->quitUStep+latency)
+		{
+			players[playerNumber]->type=Player::P_LOST_FINAL;
+			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, quited\n", playerNumber);
+			assert(executeUStep==players[playerNumber]->quitUStep+latency);
+		}
+		Order *order=new NullOrder();
+		order->sender=playerNumber;
 		return order;
 	}
 	else
 	{
-		Order *order=ordersQueue[playerNumber][executeStep];
-		if (players[playerNumber]->type==Player::P_LOST_DROPPING && order==NULL)
+		Order *order=ordersQueue[playerNumber][executeUStep&255];
+		if (!order)
 		{
-			order=new DeconnectedOrder();
-			order->sender=playerNumber;
-			order->inQueue=false;
+			fprintf(logFile, "getOrder::error::!order at playerNumber=%d, executeUStep=%d\n", playerNumber, executeUStep);
+			fclose(logFile);
+		}
+		assert(order);
+		if (order->ustep)
+			assert(order->ustep==executeUStep);
+		if (players[playerNumber]->type==Player::P_LOST_DROPPING && executeUStep==players[playerNumber]->lastUStepToExecute)
+		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
-			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, dropped, executeStep=%d\n", playerNumber, executeStep);
-			Uint8 step=freeingStep;
-			while (step!=executeStep)
-			{
-				Order *order=ordersQueue[playerNumber][step];
-				assert(order);
-				delete order;
-				ordersQueue[playerNumber][step]=NULL;
-				step++;
-			}
-			for (int i=0; i<256; i++)
-			{
-				Order *order=ordersQueue[playerNumber][i];
-				if (order)
-				{
-					assert(order->getOrderType()==ORDER_NULL);
-					delete order;
-					ordersQueue[playerNumber][i]=NULL;
-				}
-			}
+			fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, dropped, executeUStep=%d\n", playerNumber, executeUStep);
 		}
-		else
-		{
-			if (order==NULL)
-				fclose(logFile);
-			assert(order);
-			assert(order->inQueue);
-		}
+		
 		assert(whoMaskAreWeWaitingFor()==0);
 		
-		if (checkSumsLocal[executeStep] && checkSumsRemote[executeStep])
+		bool good=true;
+		for (int pai=0; pai<numberOfPlayer; pai++)
+			if (!players[pai]->quitting && (players[pai]->type==Player::P_IP || players[pai]->type==Player::P_LOCAL))
+				for (int pbi=0; pbi<pai; pbi++)
+					if (!players[pbi]->quitting && (players[pbi]->type==Player::P_IP || players[pbi]->type==Player::P_LOCAL))
+					{
+						Uint32 checkSumsA=gameCheckSums[pai][executeUStep&255];
+						Uint32 checkSumsB=gameCheckSums[pbi][executeUStep&255];
+						if (checkSumsA && checkSumsB)
+						{
+							if (checkSumsA!=checkSumsB)
+							{
+								printf("World desynchronisation at executeUStep %d.\n", executeUStep);
+								printf(" player %2d has a checkSum=%x\n", pai, checkSumsA);
+								printf(" player %2d has a checkSum=%x\n", pbi, checkSumsB);
+								fprintf(logFile, "World desynchronisation at executeUStep %d.\n", executeUStep);
+								fprintf(logFile, " player %2d has a checkSum=%x\n", pai, checkSumsA);
+								fprintf(logFile, " player %2d has a checkSum=%x\n", pbi, checkSumsB);
+								good=false;
+							}
+							//else
+							//	printf("Player %d and %d both have gameCheckSum=%x at executeUStep=%d\n", pai, pbi, checkSumsA, executeUStep);
+						}
+					}
+		if (!good)
 		{
-			if (checkSumsLocal[executeStep]!=checkSumsRemote[executeStep])
-			{
-				printf("World desynchronisation at executeStep %d: %x!=%x\n",
-						executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
-				fprintf(logFile, "World desynchronisation at executeStep %d: %x!=%x\n",
-						executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
-				assert(false);
-			}
-			
-			//else
-			//	printf("World synchronised at executeStep %d: %x==%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
+			fflush(logFile);
+			assert(false);
 		}
-		// TODO: check check-sums here
-		assert(order);
+		
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
 		{
 			PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
-			int ap=pqgo->player;
-			fprintf(logFile, "players[%d]->quitting, executeStep=%d\n", ap, executeStep);
+			assert(pqgo->player==playerNumber);
+			fprintf(logFile, "players[%d]->quitting, executeUStep=%d\n", playerNumber, executeUStep);
 			players[playerNumber]->quitting=true;
-			players[ap]->quitStep=executeStep;
+			players[playerNumber]->quitUStep=executeUStep;
 		}
 		
 		wishedLatency[playerNumber]=order->wishedLatency;
-		recentsWishedDelay[playerNumber][executeStep&63]=order->wishedDelay;
-		fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, order->wishedLatency);
-		//fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
-		
+		recentsWishedDelay[playerNumber][executeUStep&255]=order->wishedDelay;
+		if (players[playerNumber]->type==Player::P_IP)
+		{
+			fprintf(logFile, "wishedLatency[%d]=%d\n", playerNumber, order->wishedLatency);
+			fprintf(logFile, "wishedDelay[%d]=%d\n", playerNumber, order->wishedDelay);
+		}
 		return order;
 	}
 }
 
-
-void NetGame::orderHasBeenExecuted(Order *order)
-{
-	// "order" is used as a communication channel from "NetGame" to "Game" and "GameGUI".
-	// The ordred in queue "playersNetQueue" are deleted when new orders comes,
-	// or in the netGame destructor. The other orders which are not in the queue
-	// need to be deleted after use (by "Game" or "GameGUI").
-	assert(order);
-	if (!order->inQueue)
-	{
-		fprintf(logFile, "deleting order type %d, executeStep=%d\n", order->getOrderType(), executeStep);
-		delete order;
-	};
-}
-
-void NetGame::updateDelays(int player, Uint8 receivedStep)
-{
-	// We compute the ping-pongs times:
-	
-	// We compute the delay from pushStep to receivedStep:
-	Uint8 step=pushStep-1;
-	Uint8 delay=0;
-	while (true)
-		if (step==receivedStep)
-			break;
-		else if (step==freeingStep)
-			return;
-		else
-		{
-			step--;
-			delay++;
-		}
-
-	// We update the pingPongCount[] record:
-	int count=pingPongCount[player];
-	recentsPingPong[player][count]+=delay;
-	count=(count+1)&63;
-	recentsPingPong[player][count]=0;
-	pingPongCount[player]=count;
-
-	// We compute the pingPongMax[p] and pingPongMin[p]:
-	int min=255;
-	int max=0;
-	for (int i=0; i<64; i++)
-	{
-		int delay=recentsPingPong[player][i];
-		if (delay<min)
-			min=delay;
-		if (delay>max)
-			max=delay;
-	}
-	pingPongMin[player]=min;
-	pingPongMax[player]=max;
-	//printf("pingPongMax[%d]=%d\n", player, pingPongMax[player]);
-	
-	countDown[player]=0;
-}
-
 void NetGame::computeMyLocalWishedLatency()
 {
-	//for (int p=0; p<numberOfPlayer; p++)
-	//	if (players[p]->type==Player::P_IP)
-	//		printf("pingPongMax[%d]=%d, ", p, pingPongMax[p]);
-	
-	// First, the Order Margin Times:
-	
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
+	int pingPongMin[32];
+	int pingPongMax[32];
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP)
 		{
-			int delay=0;
-			Uint8 step=executeStep;
-			while (ordersQueue[p][step])
-			{
-				step++;
-				delay++;
-				assert(delay<255);
-			}
-
-			int count=orderMarginTimeCount[p];
-			recentOrderMarginTime[p][count]=delay;
-			orderMarginTimeCount[p]=(count+1)&63;
-			//printf("delay=%d, ", delay);
-			
-			int min=255;
+			// We compute the pingPongMax[pi] and pingPongMin[pi]:
+			int min=INT_MAX;
 			int max=0;
-			for (int i=0; i<64; i++)
+			for (int ri=0; ri<256; ri++)
 			{
-				int delay=recentOrderMarginTime[p][i];
+				int delay=recentsPingPong[pi][ri];
 				if (delay<min)
 					min=delay;
 				if (delay>max)
 					max=delay;
 			}
-			orderMarginTimeMin[p]=min;
-			orderMarginTimeMax[p]=max;
-			//printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
+			pingPongMin[pi]=min;
+			pingPongMax[pi]=max;
 		}
 	
-	
-	Uint8 latency=pushStep-executeStep;
-	//printf("latency=%d, ", latency);
-	
-	int minTicksToWait=255;
-	int n=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			n++;
-			int goodOrderMarginTime=latency-((1+pingPongMax[p])/2);
-			int realOrderMarginTime=orderMarginTimeMin[p];
-			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
-			if (ticksToWait<minTicksToWait)
-				minTicksToWait=ticksToWait;
-		}
-	if (n==0 || minTicksToWait<0)
-		minTicksToWait=0;
-	//printf("minTicksToWait=%d, ", minTicksToWait);
-	
-	int maxPingPong=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			int pingPong=pingPongMax[p];
-			if (pingPong>maxPingPong)
-				maxPingPong=pingPong;
-		}
-	//printf("maxPingPong=%d, ", maxPingPong);
-	
-	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1)+((minTicksToWait+1)>>1);
+	int maxPingPongMax=0; // max over each player.
+	static int lastMaxPingPongMax=-1;
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (maxPingPongMax<pingPongMax[pi] && players[pi]->type==Player::P_IP)
+			maxPingPongMax=pingPongMax[pi];
+	if (maxPingPongMax!=lastMaxPingPongMax)
+	{
+		printf("new maxPingPongMax=%d[ms]\n", maxPingPongMax);
+		fprintf(logFile, "new maxPingPongMax=%d[ms]\n", maxPingPongMax);
+		lastMaxPingPongMax=maxPingPongMax;
+	}
+	int goodLatency=ordersByPackets+1+maxPingPongMax/80;
 	if (goodLatency<1)
 		goodLatency=1;
-	//printf("goodLatency=%d, ", goodLatency);
+	
+	Uint8 latency=pushUStep-executeUStep;
 	
 	if (goodLatency<latency)
 		myLocalWishedLatency=latency-1;
@@ -862,60 +808,102 @@ void NetGame::computeMyLocalWishedLatency()
 		myLocalWishedLatency=latency+1;
 	else
 		myLocalWishedLatency=latency;
-	
-	//WARNING: debugg only!: myLocalWishedLatency=1+(rand()&15);
-	
-	//printf("myLocalWishedLatency=%d. ", myLocalWishedLatency);
+	if (myLocalWishedLatency!=latency)
+	{
+		static int lastMyLocalWishedLatency=-1;
+		if (lastMyLocalWishedLatency!=myLocalWishedLatency)
+		{
+			printf("myLocalWishedLatency=%d[ticks]\n", myLocalWishedLatency);
+			lastMyLocalWishedLatency=myLocalWishedLatency;
+		}
+		fprintf(logFile, "myLocalWishedLatency=%d[ticks]\n", myLocalWishedLatency);
+	}
 }
 
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 {
+	fprintf(logFile, "treatData\n");
+	if (size<16)
+	{
+		fprintf(logFile, " Error, dangerous too small packet received from %s, v1\n", Utilities::stringIP(ip));
+		return;
+	}
 	if (data[0]!=MULTIPLE_ORDERS)
 	{
-		fprintf(logFile, "Other packet data[0]=%d packet received from %s, v1\n", data[0], Utilities::stringIP(ip));
+		fprintf(logFile, " Error, packet data[0]=%d packet received from %s, v2\n", data[0], Utilities::stringIP(ip));
 		return;
 	}
-	if (size<3)
+	if (data[1]!=0 || data[3]!=0)
 	{
-		fprintf(logFile, "Warning, dangerous too small packet received from %s, v2\n", Utilities::stringIP(ip));
+		fprintf(logFile, " Error, bad pad item received from %s, v3\n", Utilities::stringIP(ip));
 		return;
 	}
+	int player=data[2];
+	fprintf(logFile, " player=%d\n", player);
+	if (player<0 || player>=32 || player>=numberOfPlayer)
+	{
+		fprintf(logFile, " Error, bad player number (%d) received from %s, v4\n", player, Utilities::stringIP(ip));
+		return;
+	}
+	Uint32 receivedUStep=getUint32(data, 4);
+	if (receivedUStep)
+	{
+		if (lastUStepReceivedFromMe[player]>receivedUStep)
+		{
+			fprintf(logFile, " Error, bad receivedUStep=%d while lastUStepReceivedFromMe[%d]=%d received from %s, v5\n",
+				receivedUStep, player, lastUStepReceivedFromMe[player], Utilities::stringIP(ip));
+			return;
+		}
+		lastUStepReceivedFromMe[player]=receivedUStep;
+	}
+	fprintf(logFile, " receivedUStep=%d\n", player, receivedUStep);
+	Uint32 sdlTicksStart=getUint32(data, 8);
+	if (sdlTicksStart)
+	{
+		Uint32 pingPong=SDL_GetTicks()-sdlTicksStart;
+		recentsPingPong[player][receivedUStep&255]=pingPong;
+		fprintf(logFile, " pingPong=%d\n", pingPong);
+	}
+	lastSdlTickReceivedFromHim[player]=getUint32(data, 12);
 	
-	int player=data[1];
-	Uint8 receivedStep=data[2];
-	assert(player>=0);
-	assert(player<32);
-	lastReceivedFromMe[player]=receivedStep;
-	
-	fprintf(logFile, "treatData, lastReceivedFromMe[%d]=%d\n", player, receivedStep);
 	fprintf(logFile, " data ");
 	for (int i=0; i<size; i++)
 		fprintf(logFile, "[%d]%d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
-	int l=3;
+	int l=16;
 	while (l<size)
 	{
-		if (size-l<5)
+		if (size-l<8)
 		{
-			fprintf(logFile, " Warning, dangerous too small packet received from %s, v3\n", Utilities::stringIP(ip));
+			fprintf(logFile, " Error, too small packet received from %s, v6\n", Utilities::stringIP(ip));
 			return;
 		}
-		
-		Uint8 orderStep=data[l++];
+		Uint32 orderUStep=getUint32(data, l);
+		fprintf(logFile, " orderUStep=%d\n", orderUStep);
+		if (orderUStep==0)
+		{
+			fprintf(logFile, " Error, can't treat packet order with no orderUStep, received from %s, v7\n", Utilities::stringIP(ip));
+			return;
+		}
+		l+=4;
+		Uint32 gameCheckSum=getUint32(data, l);
+		l+=4;
 		int orderSize=data[l++];
 		Uint8 receivedWishedLatency=data[l++];
 		Uint8 receivedWishedDelay=data[l++];
 		Uint8 orderType=data[l++];
-		fprintf(logFile, " oneOrder player=%d, orderStep=%d, orderSize=%d, orderType=%d, receivedWishedLatency=%d, receivedWishedDelay=%d\n",
-				player, orderStep, orderSize, orderType, receivedWishedLatency, receivedWishedDelay);
+		fprintf(logFile, " oneOrder player=%d, orderUStep=%d, orderSize=%d, orderType=%d, receivedWishedLatency=%d, receivedWishedDelay=%d\n",
+				player, orderUStep, orderSize, orderType, receivedWishedLatency, receivedWishedDelay);
 	
 		if (!players[player]->sameip(ip))
-			if (dropState!=DS_EXCHANGING_ORDERS)
+			if (dropState!=DS_ExchangingOrders)
 				fprintf(logFile, "  Warning, late packet or bad packet from ip=%s, dropState=%d\n", Utilities::stringIP(ip), dropState);
 		
-		assert(players[player]->type<Player::P_AI);
-		assert(players[player]->type!=Player::P_LOCAL);
+		assert(players[player]->type==Player::P_NONE
+			|| players[player]->type==Player::P_LOST_DROPPING
+			|| players[player]->type==Player::P_LOST_FINAL
+			|| players[player]->type==Player::P_IP);
 
 		if (players[player]->type==Player::P_LOST_FINAL)
 		{
@@ -925,139 +913,151 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		}
 		else if (orderType==ORDER_WAITING_FOR_PLAYER)
 		{
-			assert(orderSize==4);
+			if (orderSize!=4)
+			{
+				fprintf(logFile, "  Error, bad size (%d) of ORDER_WAITING_FOR_PLAYER order from ip=%s\n",
+					orderSize, Utilities::stringIP(ip));
+				return;
+			}
+			if (gameCheckSum!=0)
+			{
+				fprintf(logFile, "  Error, non-null gameCheckSum (%d) of ORDER_WAITING_FOR_PLAYER order from ip=%s\n",
+					gameCheckSum, Utilities::stringIP(ip));
+				return;
+			}
 			Uint32 wfpm=getUint32(data, l);
 			l+=4;
 			fprintf(logFile, "  player %d has wfpm=%x\n", player, wfpm);
 		}
 		else if (orderType==ORDER_DROPPING_PLAYER)
 		{
-			assert(orderSize>=5);
-			bool askForReply=(data[l++]!=0);
-			Uint32 dropMask=getUint32(data+l, 0);
+			if (orderSize<8+4*numberOfPlayer)
+			{
+				fprintf(logFile, "  Error, too small (%d) ORDER_DROPPING_PLAYER order from ip=%s\n",
+					orderSize, Utilities::stringIP(ip));
+				return;
+			}
+			if (gameCheckSum!=0)
+			{
+				fprintf(logFile, "  Error, non-null gameCheckSum (%d) of ORDER_DROPPING_PLAYER order from ip=%s\n",
+					gameCheckSum, Utilities::stringIP(ip));
+				return;
+			}
+			if (dropState<DS_ExchangingDroppingMasks)
+			{
+				dropState=DS_ExchangingDroppingMasks;
+				fprintf(logFile, "  dropState=DS_ExchangingDroppingMasks, player %d request.\n", player);
+				for (int p=0; p<numberOfPlayer; p++)
+					droppingPlayersMask[p]=0;
+			}
+			bool askForReply=(data[l]!=0);
+			if (data[l+1]!=0 || data[l+2]!=0 || data[l+3]!=0)
+			{
+				fprintf(logFile, "  Error, bad pad in ORDER_DROPPING_PLAYER order from ip=%s\n", Utilities::stringIP(ip));
+				return;
+			}
 			l+=4;
-			droppingPlayersMask[player]=dropMask;
-			lastExecutedStep[player]=orderStep-1;
+			Uint32 dropMask=getUint32(data, l);
+			l+=4;
+			if (dropState==DS_ExchangingDroppingMasks)
+			{
+				droppingPlayersMask[player]=dropMask;
+				droppingPlayersMask[localPlayerNumber]|=dropMask;
+			}
+			else
+			{
+				fprintf(logFile, "  Warning, received an ORDER_DROPPING_PLAYER from ip=%s, while dropState=%d\n", Utilities::stringIP(ip), dropState);
+				return;
+			}
+			assert(orderUStep);
+			lastExecutedUStep[player]=orderUStep-1;
 			
 			fprintf(logFile, "  player %d has askForReply=%d, dropMask=%x, lastExecutedStep=%d, orderSize=%d\n",
-					player, askForReply, dropMask, orderStep-1, orderSize);
+					player, askForReply, dropMask, orderUStep-1, orderSize);
 			
 			if (askForReply && players[player]->type==Player::P_IP)
 				sendDroppingPlayersMask(player, false);
 			
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_IP && dropMask&(1<<p))
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (players[pi]->type==Player::P_IP && dropMask&(1<<pi))
 				{
-					lastAviableStep[player][p]=data[l];
-					fprintf(logFile, "  lastReceivedFromHim(%d)=%d.\n", player, p);
-					l++;
+					lastAviableUStep[player][pi]=getUint32(data, l);
+					l+=4;
+					fprintf(logFile, "  lastAviableUStep[%d][%d]=%d.\n", player, pi, lastAviableUStep[player][pi]);
 				}
-			if (dropState<DS_EXCHANGING_DROPPING_MASK)
-			{
-				dropState=DS_EXCHANGING_DROPPING_MASK;
-				fprintf(logFile, "  dropState=DS_EXCHANGING_DROPPING_MASK, player %d request.\n", player);
-				for (int p=0; p<numberOfPlayer; p++)
-					droppingPlayersMask[p]=0;
-			}
 		}
 		else if (orderType==ORDER_REQUESTING_AWAY)
 		{
-			Uint8 missingPlayer=data[l++];
-			sendDeadAwayOrder(missingPlayer, player, orderStep);
-		}
-		else if (players[player]->type==Player::P_LOST_DROPPING)
-		{
-			if (dropState==DS_EXCHANGING_ORDERS)
+			Uint8 missingPlayer=data[l];
+			if (data[l+1]!=0 || data[l+2]!=0 || data[l+3]!=0)
 			{
-				Uint8 step=freeingStep;
-				bool valid;
-				while (true)
-				{
-					if (step==orderStep)
-					{
-						valid=true;
-						break;
-					}
-					else if (step==theLastExecutedStep)
-					{
-						valid=false;
-						break;
-					}
-					else
-						step++;
-				}
-				if (valid)
-				{
-					Order *order=Order::getOrder(data+l-1, orderSize+1);
-					l+=orderSize;
-					assert(order);
-					assert(order->getOrderType()==orderType);
-
-					if (orderType==ORDER_SUBMIT_CHECK_SUM)
-						checkSumsRemote[orderStep]=((SubmitCheckSumOrder *)order)->checkSumValue;
-
-					if (ordersQueue[player][orderStep])
-					{
-						fprintf(logFile, "  duplicated packet. player=%d, orderStep=%d, v-f\n", player, orderStep);
-						Order *order=ordersQueue[player][orderStep];
-						assert(order->getOrderType()==orderType);
-						delete order;
-						ordersQueue[player][orderStep]=NULL;
-					}
-					order->sender=player;
-					order->inQueue=true;
-					order->wishedLatency=receivedWishedLatency;
-					order->wishedDelay=receivedWishedDelay;
-					ordersQueue[player][orderStep]=order;
-					
-					lastAviableStep[localPlayerNumber][player]=lastReceivedFromHim(player);
-				}
-				else
-					fprintf(logFile, "  packet from a P_LOST_DROPPING player=%d, outside range, freeingStep=%d, orderStep=%d, theLastExecutedStep=%d\n", player, freeingStep, orderStep, theLastExecutedStep);
+				fprintf(logFile, "  Error, bad pad in ORDER_REQUESTING_AWAY order from ip=%s\n", Utilities::stringIP(ip));
+				return;
 			}
-			else
-				fprintf(logFile, "  packet from a P_LOST_DROPPING player=%d, while dropState=%d, orderStep=%d\n", player, dropState, orderStep);
+			if (gameCheckSum!=0)
+			{
+				fprintf(logFile, "  Error, non-null gameCheckSum (%d) of ORDER_REQUESTING_AWAY order from ip=%s\n",
+					gameCheckSum, Utilities::stringIP(ip));
+				return;
+			}
+			l+=4;
+			sendDeadAwayOrder(missingPlayer, player, orderUStep);
 		}
 		else
 		{
+			if (players[player]->type==Player::P_LOST_DROPPING && dropState!=DS_ExchangingOrders)
+			{
+				fprintf(logFile, "  packet from a P_LOST_DROPPING player=%d, while dropState=%d, orderUStep=%d\n", player, dropState, orderUStep);
+				return;
+			}
 			Order *order=Order::getOrder(data+l-1, orderSize+1);
 			l+=orderSize;
 			assert(order);
 			assert(order->getOrderType()==orderType);
+			order->ustep=orderUStep;
 			
-			if (orderType==ORDER_SUBMIT_CHECK_SUM)
+			// Is this order late ?
+			Order *oldOrder=ordersQueue[player][orderUStep&255];
+			assert(oldOrder);
+			if (oldOrder->ustep>orderUStep)
 			{
-				SubmitCheckSumOrder *cso=(SubmitCheckSumOrder *)order;
-				checkSumsRemote[orderStep]=cso->checkSumValue;
-				fprintf(logFile, "  checkSumsRemote[%d]=%x\n", orderStep, cso->checkSumValue);
+				fprintf(logFile, "  Warning, late order with ustep=%d, can't replace allready stored order with ustep=%d, as hash=%d for both.\n",
+					orderUStep, oldOrder->ustep, orderUStep&255);
+				delete order;
+				return;
 			}
-			
-			if (ordersQueue[player][orderStep])
+			else if (oldOrder->ustep==orderUStep)
 			{
-				fprintf(logFile, "  duplicated packet. player=%d, orderStep=%d, v-n\n", player, orderStep);
-				Order *order=ordersQueue[player][orderStep];
-				if (orderType!=ORDER_WAITING_FOR_PLAYER && order->getOrderType()!=orderType &&
-					!(order->getOrderType()==ORDER_NULL && (orderType==ORDER_SUBMIT_CHECK_SUM || orderType==ORDER_NULL)))
+				fprintf(logFile, "  Warning, duplicated packet. player=%d, orderUStep=%d, v-n\n", player, orderUStep);
+				if (oldOrder->getOrderType()!=order->getOrderType())
 				{
-					fprintf(logFile, "  old type=%d, new type=%d\n", order->getOrderType(), orderType);
-					fclose(logFile);
+					fprintf(logFile, "  Error, oldOrderType=%d, newOrderType=%d\n", oldOrder->getOrderType(), order->getOrderType());
+					fflush(logFile);
 					assert(false);
 				}
 				delete order;
-				ordersQueue[player][orderStep]=NULL;
+				return;
 			}
+			// We can store it:
+			delete oldOrder;
 			order->sender=player;
-			order->inQueue=true;
 			order->wishedLatency=receivedWishedLatency;
 			order->wishedDelay=receivedWishedDelay;
-			ordersQueue[player][orderStep]=order;
-			fprintf(logFile, "  ordersQueue[%d][%d]->getOrderType()=%d\n", player, orderStep, ordersQueue[player][orderStep]->getOrderType());
+			order->gameCheckSum=gameCheckSum;
+			ordersQueue[player][orderUStep&255]=order;
+			// Let's store checkSum:
+			gameCheckSums[player][orderUStep&255]=gameCheckSum;
+			fprintf(logFile, "  orderUStep=%d, hash=%d\n", orderUStep, orderUStep&255);
+			fprintf(logFile, "  orderType=%d\n", orderType);
+			fprintf(logFile, "  gameCheckSum=%x\n", order->gameCheckSum);
+			
+			if (players[player]->type==Player::P_LOST_DROPPING && dropState==DS_ExchangingOrders)
+				lastAviableUStep[localPlayerNumber][player]=lastUStepReceivedFromHim(player);
 		}
-		
 		assert(l<=size);
 	}
 	
-	updateDelays(player, receivedStep);
+	countDown[player]=0;
 }
 
 void NetGame::receptionStep(void)
@@ -1075,168 +1075,158 @@ void NetGame::receptionStep(void)
 
 bool NetGame::stepReadyToExecute(void)
 {
-	if (dropState<DS_EXCHANGING_ORDERS)
+	receptionStep();
+	
+	if (dropState<DS_ExchangingOrders)
 	{
 		bool someoneToDrop=false;
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP && countDown[p]++>COUNT_DOWN_DEATH)
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->type==Player::P_IP && !players[pi]->quitting && countDown[pi]++>countDownMax)
 				someoneToDrop=true;
 		if (someoneToDrop)
 		{
-			if (dropState<DS_EXCHANGING_DROPPING_MASK)
+			if (dropState<DS_ExchangingDroppingMasks)
 			{
-				dropState=DS_EXCHANGING_DROPPING_MASK;
-				fprintf(logFile, "dropState=DS_EXCHANGING_DROPPING_MASK, I choosed.\n");
+				dropState=DS_ExchangingDroppingMasks;
+				fprintf(logFile, "dropState=DS_ExchangingDroppingMasks, I choosed.\n");
 				for (int p=0; p<numberOfPlayer; p++)
 					droppingPlayersMask[p]=0;
 			}
 			Uint32 myDroppingPlayersMask=0;
-			for (int p=numberOfPlayer; p<32; p++)
-				myDroppingPlayersMask|=1<<p;
-			for (int p=0; p<numberOfPlayer; p++)
-				if (countDown[p]>COUNT_DOWN_DEATH)
-					myDroppingPlayersMask|=1<<p;
+			for (int pi=numberOfPlayer; pi<32; pi++)
+				myDroppingPlayersMask|=1<<pi;
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (countDown[pi]>countDownMax)
+					myDroppingPlayersMask|=1<<pi;
 			assert(myDroppingPlayersMask);
 			droppingPlayersMask[localPlayerNumber]|=myDroppingPlayersMask;
 		}
 	}
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP && countDown[p]>=COUNT_DOWN_DEATH)
-			fprintf(logFile, "countDown[%d]=%d\n", p, countDown[p]);
-	
-	receptionStep();
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP && !players[pi]->quitting && countDown[pi]>=countDownMax)
+			fprintf(logFile, "countDown[%d]=%d\n", pi, countDown[pi]);
 	
 	if (dropState)
 	{
-		if (dropState==DS_EXCHANGING_DROPPING_MASK)
+		if (dropState==DS_ExchangingDroppingMasks)
 		{
 			Uint32 myDroppingPlayersMask=droppingPlayersMask[localPlayerNumber];
-			for (int p=0; p<numberOfPlayer; p++)
-				if ((myDroppingPlayersMask&(1<<p))==0 && players[p]->type==Player::P_IP)
-					myDroppingPlayersMask|=droppingPlayersMask[p];
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if ((myDroppingPlayersMask&(1<<pi))==0 && players[pi]->type==Player::P_IP && !players[pi]->quitting)
+					myDroppingPlayersMask|=droppingPlayersMask[pi];
 			droppingPlayersMask[localPlayerNumber]|=myDroppingPlayersMask;
 			bool iAgreeWithEveryone=true;
-			for (int p=0; p<numberOfPlayer; p++)
-				if ((myDroppingPlayersMask&(1<<p))==0 && players[p]->type==Player::P_IP)
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if ((myDroppingPlayersMask&(1<<pi))==0 && players[pi]->type==Player::P_IP && !players[pi]->quitting)
 				{
-					if (myDroppingPlayersMask!=droppingPlayersMask[p])
+					if (myDroppingPlayersMask!=droppingPlayersMask[pi])
 					{
 						iAgreeWithEveryone=false;
-						sendDroppingPlayersMask(p, true);
+						sendDroppingPlayersMask(pi, true);
 					}
 					else
-						sendDroppingPlayersMask(p, false); // Only to tell player p that we are alive.
+						sendDroppingPlayersMask(pi, false); // Only to tell player p that we are alive.
 				}
 			if (iAgreeWithEveryone)
 			{
 				fprintf(logFile, "iAgreeWithEveryone, myDroppingPlayersMask=%x.\n", myDroppingPlayersMask);
-				for (int p=0; p<numberOfPlayer; p++)
-					if (players[p]->type==Player::P_IP && (myDroppingPlayersMask&(1<<p)))
-						players[p]->type=Player::P_LOST_DROPPING;
-				dropState=DS_EXCHANGING_ORDERS;
+				for (int pi=0; pi<numberOfPlayer; pi++)
+					if (players[pi]->type==Player::P_IP && !players[pi]->quitting && (myDroppingPlayersMask&(1<<pi)))
+						players[pi]->type=Player::P_LOST_DROPPING;
+				dropState=DS_ExchangingOrders;
 			}
 		}
-		if (dropState==DS_EXCHANGING_ORDERS)
+		if (dropState==DS_ExchangingOrders)
 		{
-			lastExecutedStep[localPlayerNumber]=executeStep-1;
-			for (int p=0; p<numberOfPlayer; p++)
-				lastAviableStep[localPlayerNumber][p]=lastReceivedFromHim(p);
-			
-			//Uint32 myDroppingPlayersMask=droppingPlayersMask[localPlayerNumber];
+			lastExecutedUStep[localPlayerNumber]=executeUStep-1;
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				lastAviableUStep[localPlayerNumber][pi]=lastUStepReceivedFromHim(pi);
 			int n=0;
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if ((players[pi]->type==Player::P_IP && !players[pi]->quitting) || players[pi]->type==Player::P_LOCAL)
 					n++;
 			fprintf(logFile, " n=%d\n", n);
 			assert(n);
-			
-			Uint8 les=0;
-			Uint8 upToDatePlayer=0;
-			Uint8 step=freeingStep;
-			int c=0;
-			while (c!=n)
-			{
-				for (int p=0; p<numberOfPlayer; p++)
-					if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
-						if (lastExecutedStep[p]==step)
-						{
-							les=step;
-							upToDatePlayer=p;
-							fprintf(logFile, " les[%d]=%d.\n", p, les);
-							c++;
-						}
-				step++;
-			}
-			theLastExecutedStep=les;
-			fprintf(logFile, " theLastExecutedStep=%d.\n", theLastExecutedStep);
-			
+			Uint32 maxLastExecutedUStep=0; // What is the last order executed by any player ? All players will have to reach this ustep too.
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if ((players[pi]->type==Player::P_IP && !players[pi]->quitting) || players[pi]->type==Player::P_LOCAL)
+				{
+					Uint32 les=lastExecutedUStep[pi];
+					if (maxLastExecutedUStep<les)
+						maxLastExecutedUStep=les;
+				}
+			fprintf(logFile, " maxLastExecutedUStep=%d.\n", maxLastExecutedUStep);
+			bool upToDatePlayer[32]; // Which players has all needed orders ?
+			for (int pi=0; pi<32; pi++)
+				upToDatePlayer[pi]=false;
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if ((players[pi]->type==Player::P_IP && !players[pi]->quitting) || players[pi]->type==Player::P_LOCAL)
+					if (lastExecutedUStep[pi]==maxLastExecutedUStep)
+					{
+						upToDatePlayer[pi]=true;
+						fprintf(logFile, " player %d is upToDate (leus=%d)\n", pi, lastExecutedUStep[pi]);
+					}
+					else
+						fprintf(logFile, " player %d is not upToDate (leus=%d)\n", pi, lastExecutedUStep[pi]);
 			
 			// Has everyone all orders ?
 			bool hasAllOrder[32][32];
-			for (int player=0; player<numberOfPlayer; player++)
-				if (players[player]->type==Player::P_IP || players[player]->type==Player::P_LOCAL)
-					for (int p=0; p<numberOfPlayer; p++)
-						if (players[p]->type==Player::P_LOST_DROPPING)
-							hasAllOrder[player][p]=true;
-
-			for (int player=0; player<numberOfPlayer; player++)
-				if (players[player]->type==Player::P_IP || players[player]->type==Player::P_LOCAL)
-					for (int p=0; p<numberOfPlayer; p++)
-						if (players[p]->type==Player::P_LOST_DROPPING)
+			for (int pai=0; pai<32; pai++)
+				for (int pbi=0; pbi<32; pbi++)
+					hasAllOrder[pai][pbi]=true;
+			for (int pai=0; pai<numberOfPlayer; pai++)
+				if ((players[pai]->type==Player::P_IP && !players[pai]->quitting) || players[pai]->type==Player::P_LOCAL)
+					for (int pbi=0; pbi<numberOfPlayer; pbi++)
+						if (players[pbi]->type==Player::P_LOST_DROPPING)
 						{
-							Uint8 step=freeingStep;
-							while (true)
+							if (lastAviableUStep[pai][pbi]<maxLastExecutedUStep)
+								hasAllOrder[pai][pbi]=false;
+							fprintf(logFile, " lastAviableUStep[%d][%d]=%d\n", pai, pbi, lastAviableUStep[pai][pbi]);
+							fprintf(logFile, " hasAllOrder[%d][%d]=%d\n", pai, pbi, hasAllOrder[pai][pbi]);
+						}
+			bool sentPacketToPlayer[32];
+			for (int pi=0; pi<32; pi++)
+				sentPacketToPlayer[pi]=false;
+			for (int pbi=0; pbi<numberOfPlayer; pbi++)
+				if (players[pbi]->type==Player::P_LOST_DROPPING)
+				{
+					Uint32 resendingUStep=lastAviableUStep[localPlayerNumber][pbi]+1;
+					for (int pai=0; pai<numberOfPlayer; pai++)
+						if ((players[pai]->type==Player::P_IP && !players[pai]->quitting) || players[pai]->type==Player::P_LOCAL)
+							if (lastAviableUStep[pai][pbi]>=resendingUStep)
 							{
-								if (step==les)
+								fprintf(logFile, " we request player=%d to send us order ustep=%d of player=%d\n", pai, resendingUStep, pbi);
+								sendRequestingDeadAwayOrder(pbi, pai, resendingUStep);
+								sentPacketToPlayer[pai]=true;
+								resendingUStep++;
+								if (resendingUStep>=maxLastExecutedUStep)
 									break;
-								else if (step==lastAviableStep[player][p])
-									hasAllOrder[player][p]=false;
-								step++;
 							}
-						}
-			
-			for (int player=0; player<numberOfPlayer; player++)
-				if (players[player]->type==Player::P_IP || players[player]->type==Player::P_LOCAL)
-					for (int p=0; p<numberOfPlayer; p++)
-						if (players[p]->type==Player::P_LOST_DROPPING)
-						{
-							fprintf(logFile, " lastAviableStep[%d][%d]=%d\n", player, p, lastAviableStep[player][p]);
-							fprintf(logFile, " hasAllOrder[%d][%d]=%d\n", player, p, hasAllOrder[player][p]);
-						}
-			
-			// TODO: add a pipeline to avoid to request too many times for the same order !
+				}
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (!sentPacketToPlayer[pi] && players[pi]->type==Player::P_IP && !players[pi]->quitting)
+					sendDroppingPlayersMask(pi, false); // Only to tell player p that we are alive.
+					
 			bool iHaveAll=true;
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_LOST_DROPPING)
-					if (!hasAllOrder[localPlayerNumber][p])
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (players[pi]->type==Player::P_LOST_DROPPING)
+					if (!hasAllOrder[localPlayerNumber][pi])
 					{
-						Uint8 resendingStep=lastAviableStep[localPlayerNumber][p]+1;
-						fprintf(logFile, " for player %d, we request player %d for step=%d.\n", p, upToDatePlayer, resendingStep);
-						sendRequestingDeadAwayOrder(p, upToDatePlayer, resendingStep);
 						iHaveAll=false;
+						break;
 					}
-			
 			if (iHaveAll)
 			{
+				for (int pi=0; pi<numberOfPlayer; pi++)
+					if (players[pi]->type==Player::P_LOST_DROPPING)
+						players[pi]->lastUStepToExecute=maxLastExecutedUStep;
+				assert(maxLastExecutedUStep>=executeUStep-1);
+				if (maxLastExecutedUStep==executeUStep-1)
+					for (int pi=0; pi<numberOfPlayer; pi++)
+						if (players[pi]->type==Player::P_LOST_DROPPING)
+							players[pi]->type=Player::P_LOST_FINAL;
 				fprintf(logFile, " we have all needed orders.\n");
-				for (int p=0; p<numberOfPlayer; p++)
-					if (players[p]->type==Player::P_LOST_DROPPING)
-					{
-						Uint8 step=les+1;
-						while (step!=freeingStep)
-						{
-							Order *order=ordersQueue[p][step];
-							if (order)
-							{
-								delete order;
-								ordersQueue[p][step]=NULL;
-							}
-							step++;
-						}
-					}
-				dropState=DS_NO_DROP_PROCESSING;
-				for (int p=0; p<numberOfPlayer; p++)
-					droppingPlayersMask[p]=0;
+				dropState=DS_NoDropProcessing;
 			}
 		}
 		hadToWaitThisStep=true;
@@ -1245,330 +1235,192 @@ bool NetGame::stepReadyToExecute(void)
 	else
 	{
 		waitingForPlayerMask=whoMaskAreWeWaitingFor();
-		fprintf(logFile, "waitingForPlayerMask=%x\n", waitingForPlayerMask);
+		if (waitingForPlayerMask)
+			fprintf(logFile, "waitingForPlayerMask=%x\n", waitingForPlayerMask);
 		if (waitingForPlayerMask==0)
 		{
+			hadToWaitThisStep=false;
 			computeMyLocalWishedLatency();
-			hadToWaitThisStep=!computeNumberOfStepsToEat();
+			computeNumberOfStepsToEat();
+			return true;
 		}
 		else
+		{
 			hadToWaitThisStep=true;
-		
-		// We have to tell the others that we are still here, but we are waiting for someone:
-		if (waitingForPlayerMask)
+			// We have to tell the others that we are still here, but we are waiting for someone:
 			for (int p=0; p<numberOfPlayer; p++)
 				if (players[p]->type==Player::P_IP)
 					sendWaitingForPlayerOrder(p);
-		return !hadToWaitThisStep;
+			return false;
+		}
 	}
 }
 
-bool NetGame::computeNumberOfStepsToEat(void)
+void NetGame::computeNumberOfStepsToEat(void)
 {
 	Uint8 targetLatency=0;// The gobaly-choosen-latency, we have to reach.
 	int n=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL)
 		{
-			Uint8 latency=wishedLatency[p];
-			if (latency)
+			Uint8 l=wishedLatency[pi];
+			if (l)
 			{
 				n++;
-				if (latency>targetLatency)
-					targetLatency=latency;
+				if (targetLatency<l)
+					targetLatency=l;
 			}
 		}
-	Uint8 latency=pushStep-executeStep;
-
+	Uint8 latency=pushUStep-executeUStep;
 	if (n==0)
 		targetLatency=latency;
 	else if (latency!=targetLatency)
-		fprintf(logFile, "computeNumberOfStepsToEat executeStep=%d, wishedLatency=(%d, %d), latency=%d, targetLatency=%d.\n",
-				executeStep, wishedLatency[0], wishedLatency[1], latency, targetLatency);
-
+		fprintf(logFile, "computeNumberOfStepsToEat executeUStep=%d, wishedLatency=(%d, %d), latency=%d, targetLatency=%d.\n",
+				executeUStep, wishedLatency[0], wishedLatency[1], latency, targetLatency);
 	numberOfStepsToEat=1;
-	bool success=true;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->quitting && (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL))
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->quitting && (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL))
 		{
-			fprintf(logFile, " player %d quitting, no latency changing aviable\n", p);
-			return true;
+			fprintf(logFile, " player %d quitting, no latency changing aviable\n", pi);
+			return;
 		}
-
 	if (targetLatency>latency)
 	{
 		bool allNullOrders=true;
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL)
 			{
-				Order *order=ordersQueue[p][executeStep];
-				if (order==NULL)
+				Order *order=ordersQueue[pi][executeUStep&255];
+				assert(order);
+				assert(order->ustep==executeUStep);
+				Uint8 type=order->getOrderType();
+				if (type!=ORDER_NULL)
 				{
-					waitingForPlayerMask|=1<<p;
-					success=false;
 					allNullOrders=false;
-				}
-				else
-				{
-					Uint8 type=order->getOrderType();
-					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
-						allNullOrders=false;
+					break;
 				}
 			}
 		if (allNullOrders)
 		{
 			numberOfStepsToEat=0;
 			 // We simply execute all thoses useless orders twice.
-			for (int p=0; p<numberOfPlayer; p++)
-				if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL)
 				{
-					Order *order=ordersQueue[p][executeStep];
+					Order *order=ordersQueue[pi][executeUStep&255];
 					if (order)
 						delete order;
-					ordersQueue[p][executeStep]=NULL;
+					ordersQueue[pi][executeUStep&255]=NULL;
 					NullOrder *nullOrder=new NullOrder();
-					nullOrder->sender=p;
-					nullOrder->inQueue=true;
+					nullOrder->sender=pi;
 					nullOrder->wishedLatency=0;
 					nullOrder->latencyPadding=true;
-					ordersQueue[p][executeStep]=nullOrder;
+					nullOrder->ustep=executeUStep;
+					ordersQueue[pi][executeUStep&255]=nullOrder;
 				}
 		}
 	}
 	else if (targetLatency<latency)
 	{
 		bool allNullOrders=true;
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			if (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL)
 			{
-				Order *order=ordersQueue[p][executeStep+1];
-				if (order==NULL)
+				Order *order=ordersQueue[pi][(executeUStep+1)&255];
+				assert(order);
+				Uint8 type=order->getOrderType();
+				if ((order->ustep!=executeUStep+1) || (type!=ORDER_NULL))
 				{
-					waitingForPlayerMask|=1<<p;
-					success=false;
 					allNullOrders=false;
-				}
-				else
-				{
-					Uint8 type=order->getOrderType();
-					if (type!=ORDER_SUBMIT_CHECK_SUM && type!=ORDER_NULL)
-						allNullOrders=false;
+					break;
 				}
 			}
 		if (allNullOrders)
 			numberOfStepsToEat=2; // We simply skip all thoses useless orders !
 	}
-
 	if (latency!=targetLatency)
-		fprintf(logFile, " numberOfStepsToEat=%d, success=%d, waitingForPlayerMask=%x\n", numberOfStepsToEat, success, waitingForPlayerMask);
-	return success;
+		fprintf(logFile, " numberOfStepsToEat=%d, waitingForPlayerMask=%x\n", numberOfStepsToEat, waitingForPlayerMask);
 }
 
 void NetGame::stepExecuted(void)
 {
-	if (hadToWaitThisStep)
-	{
-		for (int p=0; p<numberOfPlayer; p++)
-			recentsPingPong[p][pingPongCount[p]]++;
-	}
-	else
+	if (!hadToWaitThisStep)
 	{
 		assert(numberOfStepsToEat>=0);
 		assert(numberOfStepsToEat<=2);
 		for (int i=0; i<numberOfStepsToEat; i++)
 		{
-			// OK, we have executed the "executeStep"s orders, next we will get the next:
-			executeStep++;
-
-			for (int p=0; p<numberOfPlayer; p++)
-			{
-				Order *order=ordersQueue[p][freeingStep];
-				if (players[p]->type==Player::P_LOST_FINAL)
+			// OK, we have executed the "executeUStep"s orders, next we will get the next:
+			executeUStep++;
+			for (int pi=0; pi<numberOfPlayer; pi++)
+				if (ordersQueue[pi][executeUStep&255]==NULL)
 				{
-					// By definition, a LOST_FINAL player have only NULLs on orders queue.
-					if (order)
-						fclose(logFile);
-					assert(order==NULL);
+					fprintf(logFile, "ordersQueue[%d][%d]!=NULL\n", pi, executeUStep&255);
+					fflush(logFile);
+					assert(false);
 				}
-				else if (players[p]->type==Player::P_LOST_DROPPING)
-				{
-					if (order)
-					{
-						delete order;
-						ordersQueue[p][freeingStep]=NULL;
-					}
-					else
-					{
-						players[p]->type=Player::P_LOST_FINAL;
-						fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, deconnect, freeingStep=%d\n", p, freeingStep);
-						for (int i=0; i<256; i++)
-						{
-							Order *order=ordersQueue[p][i];
-							if (order)
-							{
-								assert(order->getOrderType()==ORDER_NULL);
-								delete order;
-								ordersQueue[p][i]=NULL;
-							}
-						}
-					}
-				}
-				else
-				{
-					// All others queues have to have orders.
-					assert(order);
-					if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
-					{
-						assert(players[p]->quitting);
-						players[p]->type=Player::P_LOST_FINAL; // We freed the last order of a LOST_QUIT player, then he becomes a LOST_FINAL.
-						// We may have received extra-packets, which we have to clean:
-						for (int step=0; step<256; step++)
-						{
-							Order *order=ordersQueue[p][step];
-							if (order)
-							{
-								delete order;
-								ordersQueue[p][step]=NULL;
-							}
-						}
-						fprintf(logFile, "players[%d]->type=Player::P_LOST_FINAL, he, freeingStep=%d\n", p, freeingStep);
-						for (int i=0; i<256; i++)
-						{
-							Order *order=ordersQueue[p][i];
-							if (order)
-							{
-								assert(order->getOrderType()==ORDER_NULL);
-								delete order;
-								ordersQueue[p][i]=NULL;
-							}
-						}
-					}
-					else
-					{
-						delete order;
-						ordersQueue[p][freeingStep]=NULL;
-					}
-				}
-			}
-			
-			checkSumsLocal[freeingStep]=0;
-			checkSumsRemote[freeingStep]=0;
-			// OK, we just freed the "freeingStep"s orders, we have to point valid orders now:
-			freeingStep++;
 		}
 		
-		// We currently don't change latency, then we simply also increment "pushStep".
-		pushStep++;
+		// We currently don't change latency, then we simply also increment "pushUStep".
+		// "pushUStep" allways increments on synchrone steps (when everything goes right). Latency changings
+		pushUStep++;
 
 		fprintf(logFile, "\n");
-		fprintf(logFile, "freeingStep=%d.\n", freeingStep);
-		fprintf(logFile, "executeStep=%d.\n", executeStep);
-		fprintf(logFile, "pushStep=%d.\n", pushStep);
+		fprintf(logFile, "executeUStep=%d [%d]\n", executeUStep, executeUStep&255);
+		fprintf(logFile, "pushUStep=%d [%d]\n", pushUStep, pushUStep&255);
 
 		// let's checkout for anything wrong...
 
-		Uint8 step=pushStep+maxLatency+3;
-		while(step!=freeingStep)
-		{
-			for (int p=0; p<numberOfPlayer; p++)
-			{
-				Order *order=ordersQueue[p][step];
-				if (order)
-					fclose(logFile);
-				assert(order==NULL);
-			}
-			step++;
-		}
-		for (int p=0; p<numberOfPlayer; p++)
-			if (players[p]->type==Player::P_LOST_FINAL)
-				for (int i=0; i<256; i++)
-				{
-					Order *order=ordersQueue[p][i];
-					if (order)
-						fclose(logFile);
-					assert(order==NULL);
-				}
+		for (int pi=0; pi<numberOfPlayer; pi++)
+			for (int si=0; si<256; si++)
+				assert(ordersQueue[pi][si]);
 	}
 }
 
-int NetGame::ticksToDelay(void)
+int NetGame::ticksToDelayInside(void)
 {
 	//We look for the slowest player, and get his median delay:
 	int maxMedianWishedDelay=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
+	for (int pi=0; pi<numberOfPlayer; pi++)
+		if (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL)
 		{
 			int medianWishedDelay;
 			for (medianWishedDelay=0; medianWishedDelay<40; medianWishedDelay++)
 			{
 				int underCount=0;
-				for (int i=0; i<64; i++)
-					if (recentsWishedDelay[p][i]<=medianWishedDelay)
+				for (int si=0; si<256; si++)
+					if (recentsWishedDelay[pi][si]<=medianWishedDelay)
 						underCount++;
-				if (underCount>=32)
+				if (underCount>=128)
 					break;
 			}
 			if (maxMedianWishedDelay<medianWishedDelay)
 				maxMedianWishedDelay=medianWishedDelay;
 	}
-	assert(maxMedianWishedDelay<40);
+	static int lastMaxMedianWishedDelay=-1;
+	if (lastMaxMedianWishedDelay!=maxMedianWishedDelay)
+	{
+		fprintf(logFile, "new maxMedianWishedDelay=%d\n", maxMedianWishedDelay);
+		lastMaxMedianWishedDelay=maxMedianWishedDelay;
+	}
+	if (maxMedianWishedDelay>=40)
+	{
+		fprintf(logFile, "Error, maxMedianWishedDelay out of bounds.\n");
+		maxMedianWishedDelay=39;
+	}
 	maxMedianWishedDelayStats[maxMedianWishedDelay]++;
-	//fprintf(logFile, "maxMedianWishedDelay=%d\n", maxMedianWishedDelay);
 	
-	Uint8 latency=pushStep-executeStep;
-	
-	//We compute a delay, which has to be used to improve global timing synchronisation between distant computers:
-	//If we compute
-	int minTicksToWait=255;
-	int n=0;
-	for (int p=0; p<numberOfPlayer; p++)
-		if (players[p]->type==Player::P_IP)
-		{
-			n++;
-			int goodOrderMarginTime=latency-((1+pingPongMax[p])/2);
-			//printf("pingPongMin[%d]=%d, ", p, pingPongMin[p]);
-			int realOrderMarginTime=orderMarginTimeMin[p];
-			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
-			if (ticksToWait<minTicksToWait)
-				minTicksToWait=ticksToWait;
-		}
-	if (n==0 || minTicksToWait<0)
-	{
-		latencyStats[0]++;
-		minTicksToWait=0;
-	}
-	else
-	{
-		if (minTicksToWait>9)
-			minTicksToWait=9;
-		latencyStats[minTicksToWait]++;
-		if (minTicksToWait==1)
-			minTicksToWait=4;
-		else if (minTicksToWait==2)
-			minTicksToWait=8;
-		else if (minTicksToWait==3)
-			minTicksToWait=12;
-		else if (minTicksToWait==4)
-			minTicksToWait=16;
-		else
-			minTicksToWait=20;//Because "Ticks" are 40ms in NetGame and "Ticks" are 1ms int SDL.
-	}
-	
-	
-	int delay=maxMedianWishedDelay+minTicksToWait;
-	
-	//printf("minTicksToWait=%d, maxAverageWishedDelay=%d, delay=%d\n", minTicksToWait, maxAverageWishedDelay, delay);
-	
-	return delay;
+	int delayInside=maxMedianWishedDelay-myLocalWishedDelay;
+	if (delayInside<0)
+		delayInside=0;
+	assert(delayInside<40);
+	delayInsideStats[delayInside]++;
+	return delayInside;
 }
 
 void NetGame::setLeftTicks(int leftTicks)
 {
-	if (leftTicks>=4)
-		myLocalWishedDelay=0;
-	else
-		myLocalWishedDelay=4-leftTicks;
-	
+	myLocalWishedDelay=-leftTicks;
 	if (myLocalWishedDelay<0)
 		myLocalWishedDelay=0;
 	else if (myLocalWishedDelay>39)

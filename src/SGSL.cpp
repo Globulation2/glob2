@@ -616,7 +616,7 @@ bool Story::testCondition(GameGUI *gui)
 	return false;
 }
 
-void Story::step(GameGUI *gui)
+void Story::syncStep(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
@@ -933,13 +933,13 @@ bool Mapscript::testMainTimer()
 	return (mainTimer <= 0);
 }
 
-void Mapscript::step(GameGUI *gui)
+void Mapscript::syncStep(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		it->step(gui);
+		it->syncStep(gui);
 	}
 }
 

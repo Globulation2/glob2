@@ -366,14 +366,14 @@ int Engine::run(void)
 			// We allways allow the user ot use the gui:
 			gui.step();
 			
-			// But some jobs have to be executed synchronously:
-			if (networkReadyToExecute)
-				gui.synchroneStep();
-
 			Sint32 ticksToDelay=0;
 			Sint32 ticksDelayedInside=0;
-			if (!gui.scroolLocked)
+			if (!gui.hardPause)
 			{
+				// But some jobs have to be executed synchronously:
+				if (networkReadyToExecute)
+					gui.syncStep();
+	
 				if (networkReadyToExecute)
 				{
 					// We get and push local orders
@@ -382,13 +382,9 @@ int Engine::run(void)
 					// we get and push ai orders
 					for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 						if (gui.game.players[i]->ai)
-							net->pushOrder(gui.game.players[i]->ai->getOrder(gui.paused), i);
+							net->pushOrder(gui.game.players[i]->ai->getOrder(gui.gamePaused), i);
 					
-					ticksToDelay=net->ticksToDelay();
-					if (ticksToDelay>computationAviableTicks)
-						ticksDelayedInside=computationAviableTicks;
-					else
-						ticksDelayedInside=ticksToDelay;
+					ticksDelayedInside=net->ticksToDelayInside()+computationAviableTicks/2;
 					if (ticksDelayedInside>0)
 						SDL_Delay(ticksDelayedInside);//Here we may need to wait a bit more, to wait other computers which are slower.
 					else
@@ -400,20 +396,14 @@ int Engine::run(void)
 
 				// We get all currents orders from the network and execute them:
 				for (int i=0; i<gui.game.session.numberOfPlayer; i++)
-				{
-					Order *order=net->getOrder(i);
-					gui.executeOrder(order);
-					
-					// Some orders needs to be freed:
-					net->orderHasBeenExecuted(order);
-				}
+					gui.executeOrder(net->getOrder(i));
 				
 				net->stepExecuted();
 
 				// here we do the real work
 				
-				if (!gui.paused)
-					gui.game.step(&gui, gui.localTeamNo);
+				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
+					gui.game.syncStep(&gui, gui.localTeamNo);
 			}
 
 			// we draw
@@ -432,7 +422,7 @@ int Engine::run(void)
 			
 			computationAviableTicks=gui.game.session.gameTPF-ticksSpentInComputation;
 			
-			if (!gui.paused)
+			if (networkReadyToExecute && !gui.gamePaused)
 			{
 				Sint32 i=computationAviableTicks;
 				if (i<0)
@@ -443,7 +433,6 @@ int Engine::run(void)
 			}
 			
 			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
-			
 			Sint32 ticksToWait=computationAviableTicks+ticksToDelay-ticksDelayedInside;
 			if (ticksToWait>0)
 				SDL_Delay(ticksToWait);

@@ -236,7 +236,7 @@ public:
 	std::deque<Token> line;
 	std::map<std::string, int> labels;
 
-	void step(GameGUI *gui);
+	void syncStep(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
 
 private:
@@ -274,7 +274,7 @@ public:
 	void setSourceCode(const char *sourceCode);
 	const char *getSourceCode(void) { return sourceCode; }
 
-	void step(GameGUI *gui);
+	void syncStep(GameGUI *gui);
 	Sint32 checkSum();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);

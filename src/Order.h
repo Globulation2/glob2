@@ -42,10 +42,11 @@ public:
 	virtual Sint32 checkSum()=0;
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
-	bool inQueue; // False if it has to be freed by NetGame::orderHasBeenExecuted() instead of NetGame::freeingStep.
 	Uint8 wishedLatency;
 	Uint8 wishedDelay;
 	bool latencyPadding; // True if this order has been added to increase latency.
+	Uint32 ustep;
+	Uint32 gameCheckSum; //TODO: remove SubmitCheckSumOrder
 };
 
 
@@ -386,7 +387,7 @@ public:
 	Uint8 data[24];
 };
 
-class SubmitCheckSumOrder:public MiscOrder
+/*class SubmitCheckSumOrder:public MiscOrder
 {
 public:
 	SubmitCheckSumOrder(const Uint8 *data, int dataLength);
@@ -403,7 +404,7 @@ public:
 
  private:
 	Uint8 data[4];
-};
+};*/
 
 class MapMarkOrder:public MiscOrder
 {

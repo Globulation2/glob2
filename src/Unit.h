@@ -42,7 +42,7 @@ public:
 	void saveCrossRef(SDL_RWops *stream);
 	
 	void subscriptionSuccess(void); //Called by the building the unit has subscribed to.
-	void step(void);
+	void syncStep(void);
 	
 	void directionFromDxDy(void);
 	void dxdyfromDirection(void);

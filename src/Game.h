@@ -73,11 +73,11 @@ public:
 	void save(SDL_RWops *stream, bool fileIsAMap, const char *name);
 
 	//! look for each team if it has won or not
-	void wonStep(void);
+	void wonSyncStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed
-	void scriptStep(GameGUI *gui);
+	void scriptSyncStep(GameGUI *gui);
 	//! called by gui, execute a step for this game. The gui parameter is for the script
-	void step(GameGUI *gui, Sint32 localTeam);
+	void syncStep(GameGUI *gui, Sint32 localTeam);
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator

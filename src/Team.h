@@ -106,7 +106,7 @@ public:
 	void integrity(void);
 	
 	//! Do a step for each unit, building and bullet in team.
-	void step(void);
+	void syncStep(void);
 
 	//! The team is now under attack or a building is finished, push event
 	void setEvent(int posX, int posY, EventType newEvent, Sint32 id) { if (eventCooldown[newEvent]==0)  { isEvent[newEvent]=true; eventPosX=posX; eventPosY=posY; eventId=id; } eventCooldown[newEvent]=50; }

@@ -55,6 +55,7 @@ public:
 
 protected:
 	int cpuStats[41];
+	int ticksToWaitStats[41];
 	FILE *logFile;
 };
 

@@ -70,7 +70,8 @@ void BasePlayer::init()
 	netTOTL=0;
 	destroyNet=true;
 	quitting=false;
-	quitStep=-1;
+	quitUStep=0;
+	lastUStepToExecute=0;
 	
 	disableRecursiveDestruction=false;
 	

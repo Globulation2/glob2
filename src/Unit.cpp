@@ -391,7 +391,7 @@ void Unit::subscriptionSuccess(void)
 	}
 }
 
-void Unit::step(void)
+void Unit::syncStep(void)
 {
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))

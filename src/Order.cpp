@@ -23,10 +23,11 @@
 Order::Order(void)
 {
 	sender=-1;
-	inQueue=true;
 	wishedLatency=0;
 	wishedDelay=0;
 	latencyPadding=false;
+	ustep=0;
+	gameCheckSum=0;
 }
 
 Order *Order::getOrder(const Uint8 *netData, int netDataLength)
@@ -104,10 +105,10 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new SetAllianceOrder(netData+1, netDataLength-1);
 	}
-	case ORDER_SUBMIT_CHECK_SUM:
+	/*case ORDER_SUBMIT_CHECK_SUM:
 	{
 		return new SubmitCheckSumOrder(netData+1, netDataLength-1);
-	}
+	}*/
 	case ORDER_MAP_MARK:
 	{
 		return new MapMarkOrder(netData+1, netDataLength-1);
@@ -866,7 +867,7 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 }
 
 // SubmitCheckSum's code
-
+/*
 SubmitCheckSumOrder::SubmitCheckSumOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
@@ -897,7 +898,7 @@ bool SubmitCheckSumOrder::setData(const Uint8 *data, int dataLength)
 	
 	return true;
 }
-
+*/
 // MapMarkOrder's code
 
 MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength)

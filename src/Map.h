@@ -98,7 +98,7 @@ public:
 	//! Grow ressources on map
 	void growRessources(void);
 	//! Do a step associated woth map (grow ressources and process bullets)
-	void step(Sint32 stepCounter);
+	void syncStep(Sint32 stepCounter);
 	//! Switch the Fog of War bufferRessourceType
 	void switchFogOfWar(void);
 
