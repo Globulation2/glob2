@@ -225,6 +225,10 @@ public:
 public:
 	ExternalStatusState externalStatusState;
 	char *getStatusString();
+	
+	// This methode modiffy the "message" to replace "/msg " by "/m ", because YOG only understand "/m".
+	// This also allow GameGUI to make simpler tests.
+	void handleMessageAliasing(char *message, int maxSize);
 };
 
 #endif
