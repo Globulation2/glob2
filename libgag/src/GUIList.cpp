@@ -115,7 +115,10 @@ void List::onSDLEvent(SDL_Event *event)
 					parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
 				}
 			}
-			else if (event->button.button == 4)
+		}
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
+		{
+			if (event->button.button == 4)
 			{
 				// we scroll one line up
 				if (disp)
