@@ -53,7 +53,7 @@ GlobalContainer::GlobalContainer(void)
 	logFileManager=new LogFileManager(fileManager);
 
 	// load user preference
-	settings.load("preferences.txt");
+	settings.load();
 	userName=settings.username.c_str();
 
 	hostServer=false;

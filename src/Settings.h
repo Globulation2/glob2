@@ -27,6 +27,7 @@ class Settings
 {
 public:
 	std::string username;
+	std::string password;
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;
@@ -36,8 +37,8 @@ public:
 	Uint32 musicVolume;
 
 public:
-	void load(const char *filename);
-	void save(const char *filename);
+	void load(const char *filename="preferences.txt");
+	void save(const char *filename="preferences.txt");
 	Settings();
 };
 

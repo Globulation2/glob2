@@ -117,7 +117,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
 
-			globalContainer->settings.save("preferences.txt");
+			globalContainer->settings.save();
 
 			endExecute(par1);
 		}

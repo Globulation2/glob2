@@ -1464,8 +1464,14 @@ Pause
 Pauza
 Pauza
 [Register a new YOG user with password]
-Enregistrer le nouvel utilisateur YOG avec mot de passe
-Register a new YOG user with password
+Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
+Register a new YOG user with password. (insecure)
+
+
+
+[Remember YOG password localy]
+Mémoriser le mot de passe localement. (non sécurisé)
+Remember password localy. (insecure)
 
 
 
@@ -1530,8 +1536,8 @@ The YOG metaserver has refused the connection because your entered a wrong passw
 
 
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option ci-dessous.
-The YOG metaserver has refused the connection because this user name has already been registered with a password. If you registered this user, disactivate the option at the bottom of this screen.
+Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
+The YOG metaserver has refused the connection because this user name has already been registered with a password. If you registered this user, disactivate the option "Register a new YOG user with password" just under.
 
 
 

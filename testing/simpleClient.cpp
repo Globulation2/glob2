@@ -199,17 +199,18 @@ namespace simpleClient
 				unsigned char xored[32];
 					for (int i=0; i<32; i++)
 						xored[i]=passWord[i]^xorpassw[i];
-				SHA1_CONTEXT hd;
-				sha1_init(&hd);
-				sha1_write(&hd, xored, 32);
-				sha1_final(&hd);
-				Uint8 *hashed=sha1_read(&hd);
+				
+				unsigned char computedDigest[20];
+				SHA1_CTX context;
+				SHA1Init(&context);
+				SHA1Update(&context, xored, 32);
+				SHA1Final(computedDigest, &context);
 				
 				printf("authenticating to YOG with asAdmin=%d, passWord=(%s)...\n", asAdmin, passWord);
 				if (asAdmin)
-					send(YMT_AUTHENTICATING, 3, (Uint8 *)hashed, 20);
+					send(YMT_AUTHENTICATING, 3, (Uint8 *)computedDigest, 20);
 				else
-					send(YMT_AUTHENTICATING, 2, (Uint8 *)hashed, 20);
+					send(YMT_AUTHENTICATING, 2, (Uint8 *)computedDigest, 20);
 			}
 		break;
 		case YMT_AUTHENTICATING:

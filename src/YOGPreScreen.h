@@ -52,8 +52,8 @@ public:
 	
 	int endExecutionValue;
 	TextInput *login, *password;
-	OnOffButton *newYogPassword;
-	Text *newYogPasswordText;
+	OnOffButton *newYogPassword, *rememberYogPassword;
+	Text *newYogPasswordText, *rememberYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
 	YOG::ExternalStatusState oldYOGExternalStatusState;

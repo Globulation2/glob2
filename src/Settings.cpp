@@ -81,6 +81,7 @@ void Settings::load(const char *filename)
 
 		// read values
 		READ_PARSED_STRING(username);
+		READ_PARSED_STRING(password);
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
@@ -97,6 +98,7 @@ void Settings::save(const char *filename)
 	if (stream)
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
+		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
