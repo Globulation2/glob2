@@ -1,8 +1,5 @@
 To First release :
 
-Gameplay :
-// - Unites tirent une pierre.
-
 Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 - Les viewportX/Y ils n'ont pas l'air de se charger correctement dans l'éditeur (la touche "tab" bug),
