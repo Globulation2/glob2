@@ -211,10 +211,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_EQUAL):
 		{
-			int val = valueOfVariable(game, type, teamNumber, level);
-			printf("SGSL::conditionTester : val = %d\n", val);
-			return (val == amount);
-			//return (valueOfVariable(game, type, teamNumber, level) == amount);
+			return (valueOfVariable(game, type, teamNumber, level) == amount);
 		}
 		default:
 			return false;
@@ -608,12 +605,12 @@ void Story::step(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
-	std::cout << "SGSL PC : " << lineSelector << std::endl;
+	std::cout << "SGSL thread " << this << " PC : " << lineSelector << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
-		std::cout << "SGSL PC : " << lineSelector << std::endl;
+		std::cout << "SGSL thread " << this << " PC : " << lineSelector << std::endl;
 	}
 
 	if (!cycleLeft)
