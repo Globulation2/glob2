@@ -77,6 +77,8 @@ public:
 	
 private:
 	bool shareOnYOG;
+	const YOG::GameInfo *yogGameInfo;
+	Uint16 localPort;
 
 public:
 	char serverNameMemory[128];
@@ -125,6 +127,10 @@ public:
 	bool send(const int v);
 	bool send(const int u, const int v);
 
+	//! This uses loopback adress to find local "socket"'s host port.
+	//! It's given in network order
+	static Uint16 findLocalPort(UDPsocket socket);
+	
 	bool tryConnection();
 	bool tryConnection(const YOG::GameInfo *yogGameInfo);
 	
