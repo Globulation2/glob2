@@ -19,7 +19,7 @@
 
 #include <GUITextArea.h>
 
-TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=true, const char *text="")
+TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly, const char *text)
 {
 	this->readOnly=readOnly;
 	this->x=x;
