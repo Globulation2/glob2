@@ -51,6 +51,7 @@ int Screen::execute(DrawableSurface *gfx, int stepLength)
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
 
+	gfx->setClipRect();
 	dispatchPaint(gfx);
 	addUpdateRect(0, 0, gfx->getW(), gfx->getH());
 	run=true;

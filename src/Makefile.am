@@ -79,6 +79,8 @@ Utilities.cpp\
 Utilities.h \
 FileManager.h \
 FileManager.cpp \
+CustomGameScreen.h \
+CustomGameScreen.cpp \
 YOGScreen.h \
 YOGScreen.cpp \
 SettingsScreen.h \

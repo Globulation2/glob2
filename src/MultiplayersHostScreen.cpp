@@ -36,8 +36,6 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
 
-	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
-
 	multiplayersHost=new MultiplayersHost(sessionInfo, true);
 	multiplayersJoin=NULL;
 
