@@ -59,6 +59,8 @@ private:
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 	void statStep(void);
+	void iterateSelection(void);
+	void centerViewportOnSelection(void);
 
 private:
 	enum DisplayMode

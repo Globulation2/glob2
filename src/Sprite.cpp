@@ -375,7 +375,7 @@ GraphicArchive::GraphicArchive()
 
 void GraphicArchive::load(const char *filename)
 {
-	int i=0;
+	//int i=0;
 	SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
 	if (stream)
 	{
@@ -386,7 +386,7 @@ void GraphicArchive::load(const char *filename)
 		{
 			Sprite *sprite=loadSprite(stream);
 			sprites.push_back(sprite);
-			fprintf(stderr, " |- Sprite %d : %d x %d\n", i++, sprite->getW(), sprite->getH());
+			//fprintf(stderr, " |- Sprite %d : %d x %d\n", i++, sprite->getW(), sprite->getH());
 		}
 		SDL_RWclose(stream);
 	}
