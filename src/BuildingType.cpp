@@ -17,7 +17,7 @@ BuildingType *BuildingsTypes::getBuildingType(unsigned int typeNum)
 		return NULL;
 }
 
-BuildingsTypes::BuildingsTypes(const char *filename)
+void BuildingsTypes::load(const char *filename)
 {
 	// we load the building description now
 	SDL_RWops *stream=globalContainer->fileManager.open(filename, "r");

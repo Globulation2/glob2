@@ -54,6 +54,10 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDL_image.lib SDLmain.lib SDL_net.lib /nologo /subsystem:windows /machine:I386
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Cmds=.\data\makedata.bat
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "glob2 - Win32 Debug"
 
@@ -80,6 +84,10 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDL_image.lib SDLmain.lib SDL_net.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Cmds=.\data\makedata.bat
+# End Special Build Tool
 
 !ENDIF 
 
@@ -113,6 +121,10 @@ SOURCE=.\src\EntityType.cpp
 # Begin Source File
 
 SOURCE=.\src\Fatal.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\src\FileManager.cpp
 # End Source File
 # Begin Source File
 
@@ -240,6 +252,10 @@ SOURCE=.\src\Fatal.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\src\FileManager.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\src\GAG.h
 # End Source File
 # Begin Source File
@@ -351,5 +367,9 @@ SOURCE=.\src\Utilities.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\data\makedata.bat
+# End Source File
 # End Target
 # End Project

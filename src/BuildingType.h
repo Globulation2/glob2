@@ -204,8 +204,8 @@ public:
 class BuildingsTypes
 {
 public:
-	BuildingsTypes() { }
-	BuildingsTypes(const char *filename);
+	// BuildingsTypes() { }
+	void load(const char *filename);
 	~BuildingsTypes();
 
 	int getTypeNum(int type, int level, bool isBuildingSite);

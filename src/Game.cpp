@@ -11,12 +11,12 @@
 #include "Utilities.h"
 #include <set>
 
-
-
-BuildingsTypes Game::buildingsTypes("data/buildings.txt");
+// BOUUUU c est laid!!!
+// BuildingsTypes Game::buildingsTypes("data/buildings.txt");
 
 Game::Game()
 {
+	Game::buildingsTypes.load("data/buildings.txt");
 	init();
 }
 
