@@ -895,3 +895,15 @@ You are marked as being away.
 Vous êtes désormais considéré comme étant présent.
 You are no longer marked as away.
 
+[YOG_HELP]
+Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help commande" pour en savoir plus.
+The YOG messaging system have two commands, "msg" and "away". Type "/help command" to know more about one of them.
+ 
+[YOG_HELP_AWAY]
+La commande "/away (message)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possiblité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
+The "/away (message)" command allows you to let the others YOG users know that you are temporarily away. You may add a short explaination message. For instance "/m I'm eating a hamburger and I'm back for 13o'clock". Alias "/a"
+
+[YOG_HELP_MSG]
+La commande "/msg nom message" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
+The "/msg name message" command allows you to send a message to someone only. For instance, "/msg John Hi John, how are you?". Alias "/a".
+
