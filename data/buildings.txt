@@ -21,6 +21,7 @@
 startImage = 0
 hueImage = 0
 flagImage = 34
+miniImage = 0
 
 upgradeStopWalk = 0
 upgradeStopSwim = 0
@@ -195,6 +196,7 @@ isBuildingSite = 1
 
 // food building, level 0
 startImage = 1
+miniImage = 1
 
 foodable = 1
 canFeedUnit = 1
@@ -310,6 +312,7 @@ maxUnitWorking = 1
 // health building site, level 0
 startImage = 25
 
+
 fillable = 1
 
 width = 2
@@ -329,6 +332,7 @@ isBuildingSite = 1
 
 // health building, level 0
 startImage = 2
+miniImage = 2
 
 canHealUnit = 1
 timeToHealUnit = 12
@@ -447,6 +451,7 @@ isBuildingSite = 1
 
 // Walk building, level 0
 startImage = 3
+miniImage = 3
 
 upgradeWalk = 1
 upgradeTimeWalk = 7
@@ -569,6 +574,7 @@ isBuildingSite = 1
 
 // Swim building, level 0
 startImage = 4
+miniImage = 4
 
 upgradeSwim = 1
 upgradeTimeSwim = 7
@@ -693,6 +699,7 @@ isBuildingSite = 1
 
 // Attack building, level 0
 startImage = 5
+miniImage = 5
 
 upgradeAttackStrength = 1
 upgradeTimeAttackStrength = 4
@@ -821,6 +828,7 @@ isBuildingSite = 1
 
 // Science building, level 0
 startImage = 6
+miniImage = 6
 
 upgradeBuild = 1
 upgradeTimeBuild = 4
@@ -953,6 +961,7 @@ isBuildingSite = 1
 
 // Defense building, level 0
 startImage = 7
+miniImage = 7
 
 fillable = 1
 maxStone = 4
@@ -1095,6 +1104,7 @@ viewingRange = 8
 
 startImage = 30
 hueImage = 1
+miniImage = -1
 
 zonableExplorer = 1
 
@@ -1118,6 +1128,7 @@ maxUnitStayRange = 20
 
 startImage = 31
 hueImage = 1
+miniImage = -1
 
 zonableWarrior = 1
 
@@ -1141,6 +1152,7 @@ maxUnitStayRange = 8
 
 startImage = 32
 hueImage = 1
+miniImage = -1
 
 zonableWorker = 1
 
@@ -1164,6 +1176,7 @@ maxUnitStayRange = 14
 
 startImage = 33
 hueImage = 0
+miniImage = -1
 
 zonableForbidden = 1
 
@@ -1207,6 +1220,7 @@ isBuildingSite = 1
 
 // stone wall
 startImage = 22
+miniImage = -1
 
 width = 1
 height = 1
@@ -1242,6 +1256,7 @@ isBuildingSite = 1
 
 // wood wall
 startImage = 22
+miniImage = -1
 
 width = 1
 height = 1

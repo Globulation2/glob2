@@ -58,6 +58,7 @@ public:
 	Sint32 startImage;
 	Sint32 hueImage; // bool. The way we show the building's team (false=we draw a flag, true=we hue all the sprite)
 	Sint32 flagImage;
+	Sint32 miniImage;
 	//Sint32 nbDifferentImages;
 	//Sint32 timeBetweenImages;
 
@@ -130,6 +131,7 @@ public:
 			"startImage",
 			"hueImage",
 			"flagImage",
+			"miniImage",
 
 			"upgradeStopWalk",
 			"upgradeStopSwim",

@@ -66,6 +66,7 @@ public:
 	Sprite *units;
 	Sprite *buildings;
 	Sprite *unitmini;
+	Sprite *buildingmini;
 	Sprite *gamegui;
 	Font *menuFont;
 	Font *standardFont;
