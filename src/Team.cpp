@@ -741,7 +741,7 @@ Sint32 Team::checkSum()
 			cs=(cs<<31)|(cs>>1);
 			cs^=job[i].size();
 			cs^=attract[i].size();
-			
+
 		}
 	}
 	cs=(cs<<31)|(cs>>1);
@@ -752,7 +752,7 @@ Sint32 Team::checkSum()
 	cs^=buildingsToBeDestroyed.size();
 	cs^=buildingsToBeUpgraded.size();
 	
-       	cs^=swarms.size();
+	cs^=swarms.size();
 	cs^=turrets.size();
 
 	cs^=allies;
