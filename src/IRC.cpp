@@ -18,6 +18,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+/*
+	About IRC
+	IRC is defined by RFC 2812
+	Recent servers allows some inofficial protocol upgrades like longer nick length (16 on freenode instead of 9) for instance
+*/
+
 #include "IRC.h"
 
 IRC::IRC()
@@ -54,8 +60,8 @@ bool IRC::connect(const char *serverName, int serverPort, const char *nick)
         
 	// Here we change the nick on yog for the IRC
 	// changing from nick = "nick" to YOGnick = "YOGnick"
-	memcpy(this->nick, "YOG", 3);
-	strncpy(this->nick + 3, nick, IRC_NICK_SIZE - 3);
+	memcpy(this->nick, "[YOG]", 5);
+	strncpy(this->nick + 5, nick, IRC_NICK_SIZE - 5);
 	this->nick[IRC_NICK_SIZE] = 0;
 
 	char command[IRC_MESSAGE_SIZE];

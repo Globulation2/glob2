@@ -45,7 +45,8 @@ public:
 	{
 		IRC_CHANNEL_SIZE = 200,
 		IRC_MESSAGE_SIZE=512,
-		IRC_NICK_SIZE=9
+		//! we are using freenode, and doc sates that maxlength is 16, as stated here: http://searchirc.com/network/freenode
+		IRC_NICK_SIZE=16
 	};
 	
 	enum InfoMessageType
