@@ -25,6 +25,9 @@
 #include "GraphicContext.h"
 #include <vector>
 
+//! if defined, widget added twice are handeld correctly
+#undef ENABLE_MULTIPLE_ADD_WIDGET
+
 enum Action
 {
 	BUTTON_GOT_MOUSEOVER,
@@ -45,11 +48,14 @@ class Screen;
 class Widget
 {
 public:
-	virtual ~Widget() { }
+	virtual ~Widget() { visible=true; }
 
 	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event) { }
 	virtual void paint(DrawableSurface *gfx)=0;
+
+	//! if the widget is visible it receive paint event, timer event and SDL event. Otherwise it receive no events.
+	bool visible;
 
 protected:
 	friend class Screen;
@@ -74,7 +80,9 @@ public:
 	void endExecute(int returnCode);
 	void addUpdateRect();
 	void addUpdateRect(int x, int y, int w, int h);
+	//! Add widget, added widget are garbage collected
 	void addWidget(Widget *widget);
+	//! Remove widget, note that removed widget are not garbage collected
 	void removeWidget(Widget *widget);
 	void dispatchEvents(SDL_Event *event);
 	void dispatchTimer(Uint32 tick);
