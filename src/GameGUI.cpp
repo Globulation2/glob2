@@ -660,45 +660,51 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==4)
 			{
-				Building* selBuild=selection.building;
-				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) &&
-					(selBuild->buildingState==Building::ALIVE))
+				if (selectionMode==BUILDING_SELECTION)
 				{
-					if ((selBuild->type->maxUnitWorking) &&
-						(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
-						!(SDL_GetModState()&KMOD_SHIFT))
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) &&
+						(selBuild->buildingState==Building::ALIVE))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
-					}
-					else if ((selBuild->type->defaultUnitStayRange) &&
-						(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
-						(SDL_GetModState()&KMOD_SHIFT))
-					{
-						int nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+						if ((selBuild->type->maxUnitWorking) &&
+							(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)&&
+							!(SDL_GetModState()&KMOD_SHIFT))
+						{
+							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						}
+						else if ((selBuild->type->defaultUnitStayRange) &&
+							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
+							(SDL_GetModState()&KMOD_SHIFT))
+						{
+							int nbReq=(selBuild->unitStayRangeLocal+=1);
+							orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+						}
 					}
 				}
 			}
 			else if (button==5)
 			{
-				Building* selBuild=selection.building;
-				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) &&
-					(selBuild->buildingState==Building::ALIVE))
+				if (selectionMode==BUILDING_SELECTION)
 				{
-					if ((selBuild->type->maxUnitWorking) &&
-						(selBuild->maxUnitWorkingLocal>0)&&
-						!(SDL_GetModState()&KMOD_SHIFT))
+					Building* selBuild=selection.building;
+					if ((selBuild->owner->teamNumber==localTeamNo) &&
+						(selBuild->buildingState==Building::ALIVE))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
-					}
-					else if ((selBuild->type->defaultUnitStayRange) &&
-						(selBuild->unitStayRangeLocal>0) &&
-						(SDL_GetModState()&KMOD_SHIFT))
-					{
-						int nbReq=(selBuild->unitStayRangeLocal-=1);
-						orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+						if ((selBuild->type->maxUnitWorking) &&
+							(selBuild->maxUnitWorkingLocal>0)&&
+							!(SDL_GetModState()&KMOD_SHIFT))
+						{
+							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						}
+						else if ((selBuild->type->defaultUnitStayRange) &&
+							(selBuild->unitStayRangeLocal>0) &&
+							(SDL_GetModState()&KMOD_SHIFT))
+						{
+							int nbReq=(selBuild->unitStayRangeLocal-=1);
+							orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+						}
 					}
 				}
 			}
@@ -797,50 +803,65 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 			case SDLK_PLUS:
 			case SDLK_KP_PLUS:
 				{
-					Building* selBuild=selection.building;
-					if ((pressed) && (selectionMode==BUILDING_SELECTION) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						Building* selBuild=selection.building;
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+						{
+							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
+							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						}
 					}
 				}
 				break;
 			case SDLK_MINUS:
 			case SDLK_KP_MINUS:
 				{
-					Building* selBuild=selection.building;
-					if ((pressed) && (selectionMode==BUILDING_SELECTION) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
+					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
-						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						Building* selBuild=selection.building;
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
+						{
+							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
+							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+						}
 					}
 				}
 				break;
 			case SDLK_d:
 				{
-					Building* selBuild=selection.building;
-					if ((pressed) && (selectionMode==BUILDING_SELECTION) && (selBuild->owner->teamNumber==localTeamNo))
+					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
-						orderQueue.push_back(new OrderDelete(selBuild->gid));
+						Building* selBuild=selection.building;
+						if (selBuild->owner->teamNumber==localTeamNo)
+						{
+							orderQueue.push_back(new OrderDelete(selBuild->gid));
+						}
 					}
 				}
 				break;
 			case SDLK_u:
 			case SDLK_a:
 				{
-					Building* selBuild=selection.building;
-					if ((pressed) && (selectionMode==BUILDING_SELECTION) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
-						orderQueue.push_back(new OrderConstruction(selBuild->gid));
+						Building* selBuild=selection.building;
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+						{
+							orderQueue.push_back(new OrderConstruction(selBuild->gid));
+						}
 					}
 				}
 				break;
 			case SDLK_r:
 				{
-					Building* selBuild=selection.building;
-					if ((pressed) && (selectionMode==BUILDING_SELECTION) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->hp<selBuild->type->hpMax) && (!selBuild->type->isBuildingSite))
+					if ((pressed) && (selectionMode==BUILDING_SELECTION))
 					{
-						orderQueue.push_back(new OrderConstruction(selBuild->gid));
+						Building* selBuild=selection.building;
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->hp<selBuild->type->hpMax) && (!selBuild->type->isBuildingSite))
+						{
+							orderQueue.push_back(new OrderConstruction(selBuild->gid));
+						}
 					}
 				}
 				break;
