@@ -19,4 +19,22 @@
 */
 
 #include "GAG.h"
- 
+
+#ifndef __GLOB2_H
+#define __GLOB2_H
+
+//! This class is used to handle the whole game
+class Glob2
+{
+public:
+	//! true while the game is running
+	bool isRunning;
+
+public:
+	void drawYOGSplashScreen();
+	void mutiplayerYOG();
+	//! run the game
+	int run(int argc, char *argv[]);
+};
+
+#endif

@@ -32,7 +32,48 @@
 
 GlobalContainer *globalContainer=0;
 
-int main(int argc, char *argv[])
+
+void Glob2::drawYOGSplashScreen(void)
+{
+	int w, h;
+	w=globalContainer->gfx->getW();
+	h=globalContainer->gfx->getH();
+	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
+	char *text[3];
+	text[0]=globalContainer->texts.getString("[connecting to]");
+	text[1]=globalContainer->texts.getString("[yog]");
+	text[2]=globalContainer->texts.getString("[please wait]");
+	for (int i=0; i<3; ++i)
+	{
+		int size=globalContainer->menuFont->getStringWidth(text[i]);
+		int dec=(w-size)>>1;
+		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
+	}
+	globalContainer->gfx->updateRect(0, 0, w, h);
+}
+
+void Glob2::mutiplayerYOG(void)
+{
+	YOGScreen yogScreen;
+	drawYOGSplashScreen();
+	yogScreen.createConnection();
+	if (yogScreen.socket!=NULL)
+	{
+		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
+		yogScreen.closeConnection();
+		printf("Engine::yogReturnCode=%d\n", yogReturnCode);
+		if (yogReturnCode==YOGScreen::CANCEL)
+			return;
+		if (yogReturnCode==-1)
+		{
+			isRunning=false;
+			return;
+		}
+		printf("Engine::YOG game has ended ...\n");
+	}
+}
+
+int Glob2::run(int argc, char *argv[])
 {
 	globalContainer = new GlobalContainer();
 
@@ -47,14 +88,14 @@ int main(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
-	bool run=true;
-	while (run)
+	isRunning=true;
+	while (isRunning)
 	{
 		switch (MainMenuScreen::menu())
 		{
 			case -1:
 			{
-				run=false;
+				isRunning=false;
 			}
 			break;
 			case 0:
@@ -62,7 +103,7 @@ int main(int argc, char *argv[])
 				Engine engine;
 				if (engine.initCampain()==Engine::NO_ERROR)
 					if (engine.run()==-1)
-						run=false;
+						isRunning=false;
 			}
 			break;
 			case 1:
@@ -70,20 +111,12 @@ int main(int argc, char *argv[])
 				Engine engine;
 				if (engine.initCustom()==Engine::NO_ERROR)
 					if (engine.run()==-1)
-						run=false;
+						isRunning=false;
 			}
 			break;
 			case 2:
 			{
-				Engine engine;
-				int rc=engine.initMutiplayerYOG();
-				if (rc==Engine::NO_ERROR)
-				{
-					if (engine.run()==-1)
-						run=false;
-				}
-				else if (rc==-1)
-					run=false;
+				mutiplayerYOG();
 				
 				/*YOGScreen yogScreen;
 				drawYOGSplashScreen();
@@ -114,10 +147,10 @@ int main(int argc, char *argv[])
 						if (rc==Engine::NO_ERROR)
 						{
 							if (engine.run()==-1)
-								run=false;
+								isRunning=false;
 						}
 						else if (rc==-1)
-							run=false;
+							isRunning=false;
 					}
 					break;
 
@@ -129,10 +162,10 @@ int main(int argc, char *argv[])
 						if (rc==Engine::NO_ERROR)
 						{
 							if (engine.run()==-1)
-								run=false;
+								isRunning=false;
 						}
 						else if (rc==-1)
-							run=false;
+							isRunning=false;
 					}
 					break;
 
@@ -144,7 +177,7 @@ int main(int argc, char *argv[])
 
 					case -1 :
 					{
-						run=false;
+						isRunning=false;
 					}
 					break;
 				}
@@ -166,12 +199,12 @@ int main(int argc, char *argv[])
 				newMapScreen.execute(globalContainer->gfx, 30);
 				MapEdit mapEdit;
 				if (mapEdit.run(newMapScreen.sizeX, newMapScreen.sizeY, newMapScreen.defaultTerrainType))
-					run=false;
+					isRunning=false;
 			}
 			break;
 			case 6:
 			{
-				run=false;
+				isRunning=false;
 			}
 			break;
 			default:
@@ -181,6 +214,12 @@ int main(int argc, char *argv[])
 
 	delete globalContainer;
 	return 0;
+}
+
+int main(int argc, char *argv[])
+{
+	Glob2 glob2;
+	return glob2.run(argc, argv);
 }
 
 

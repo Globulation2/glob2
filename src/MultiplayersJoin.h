@@ -54,6 +54,7 @@ public:
 
 public:
 	MultiplayersJoin();
+	void init();
 	virtual ~MultiplayersJoin();
 
 	void dataSessionInfoRecieved(char *data, int size, IPaddress ip);

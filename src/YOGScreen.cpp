@@ -187,6 +187,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (par1==CREATE_GAME)
 		{
 			multiplayersJoin->quitThisGame();
+			
 			Engine engine;
 			int rc=engine.initMutiplayerHost();
 			if (rc==Engine::NO_ERROR)
@@ -197,7 +198,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			else if (rc==-1)
 				endExecute(-1);
-			printf("YOG::initMutiplayerHost() ended.\n");
+			printf("YOG::initMutiplayerHost() ended (rc=%d).\n", rc);
+			updateList();
+			gameList->repaint();
 			dispatchPaint(gfxCtx);
 		}
 		else if (par1==UPDATE_LIST)
@@ -240,6 +243,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		
 		// we create a new screen to join this game:
 		strncpy(multiplayersJoin->serverName, s, 128);
+		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
 		multiplayersJoin->tryConnection();
 	}
 }
@@ -272,12 +276,19 @@ void YOGScreen::onTimer(Uint32 tick)
 		}
 		else if (rv==MultiplayersConnectedScreen::STARTED)
 		{
-			delete multiplayersConnectedScreen;
-			endExecute(STARTED);
+			Engine engine;
+			engine.startMultiplayer(multiplayersJoin);
+			int rc=engine.run();
+			multiplayersJoin->init();
+			if (rc==-1)
+				endExecute(EXIT);
+			printf("YOG::startMultiplayer() in join ended (rc=%d).\n", rc);
+			updateList();
+			gameList->repaint();
+			dispatchPaint(gfxCtx);
 		}
 		else if (rv==-1)
 		{
-			delete multiplayersConnectedScreen;
 			endExecute(-1);
 		}
 		else

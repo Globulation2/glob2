@@ -25,6 +25,11 @@
 MultiplayersJoin::MultiplayersJoin()
 :MultiplayersCrossConnectable()
 {
+	init();
+}
+
+void MultiplayersJoin::init()
+{
 	// net things:
 
 	waitingState=WS_TYPING_SERVER_NAME;
@@ -36,8 +41,8 @@ MultiplayersJoin::MultiplayersJoin()
 
 	serverName[0]=0;
 	playerName[0]=0;
+	
 }
-
 
 MultiplayersJoin::~MultiplayersJoin()
 {
@@ -761,7 +766,7 @@ bool MultiplayersJoin::tryConnection()
 
 void MultiplayersJoin::quitThisGame()
 {
-	printf("quitThisGame() (this=%x)(socket=%x).\n", this, socket);
+	printf("quitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
 	unCrossConnectSessionInfo();
 
 	if (socket)
