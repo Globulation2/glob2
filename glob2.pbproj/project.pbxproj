@@ -43,6 +43,13 @@
 //024
 		0249A662FF388D9811CA2CEA = {
 			children = (
+				5B3C248D062D3DD80067E393,
+				5B3C2462062D39460067E393,
+				5B3C244F062D39290067E393,
+				5B3C242A062D38D60067E393,
+				5B3C242B062D38D60067E393,
+				5B3C2387062D38AC0067E393,
+				5B3C22E7062D38710067E393,
 				5B5E033003FD391B0000000D,
 				5B605CA505C32624001CDF00,
 				5B605CAB05C3264B001CDF00,
@@ -179,22 +186,6 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = AINumbi.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5967D2C905AB553A000536C3 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			path = BuildingType.cpp;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		5967D2CA05AB553A000536C3 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = BuildingType.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1170,6 +1161,104 @@
 //5B2
 //5B3
 //5B4
+		5B3C22E7062D38710067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = IOKit.framework;
+			path = /System/Library/Frameworks/IOKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C22E8062D38710067E393 = {
+			fileRef = 5B3C22E7062D38710067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C2387062D38AC0067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C2388062D38AC0067E393 = {
+			fileRef = 5B3C2387062D38AC0067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C242A062D38D60067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AudioToolbox.framework;
+			path = /System/Library/Frameworks/AudioToolbox.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C242B062D38D60067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AudioUnit.framework;
+			path = /System/Library/Frameworks/AudioUnit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C242C062D38D60067E393 = {
+			fileRef = 5B3C242A062D38D60067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C242D062D38D60067E393 = {
+			fileRef = 5B3C242B062D38D60067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C244F062D39290067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = OpenGL.framework;
+			path = /System/Library/Frameworks/OpenGL.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C2450062D39290067E393 = {
+			fileRef = 5B3C244F062D39290067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C2462062D39460067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = QuickTime.framework;
+			path = /System/Library/Frameworks/QuickTime.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C2463062D39460067E393 = {
+			fileRef = 5B3C2462062D39460067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5B3C248D062D3DD80067E393 = {
+			isa = PBXFileReference;
+			lastKnownFileType = archive.ar;
+			name = libz.a;
+			path = /usr/local/lib/libz.a;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5B3C248E062D3DD80067E393 = {
+			fileRef = 5B3C248D062D3DD80067E393;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		5B58913E04C4381B0000000D = {
 			fallbackIsa = PBXFileReference;
 			fileEncoding = 4;
@@ -1199,7 +1288,6 @@
 		5B5E036F03FD43AE0000000D = {
 			children = (
 				5BE9C98403FFA23E0000000D,
-				5BE9C98203FFA1DE0000000D,
 				5B5E037003FD43F70000000D,
 			);
 			isa = PBXGroup;
@@ -1224,12 +1312,6 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		5B605CA305C32612001CDF00 = {
-			fileRef = 5B605CA205C32612001CDF00;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B605CA505C32624001CDF00 = {
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
@@ -1237,12 +1319,6 @@
 			path = /usr/local/lib/libSDL_net.a;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		5B605CA605C32624001CDF00 = {
-			fileRef = 5B605CA505C32624001CDF00;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5B605CA805C32630001CDF00 = {
 			isa = PBXFileReference;
@@ -1252,12 +1328,6 @@
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
-		5B605CA905C32630001CDF00 = {
-			fileRef = 5B605CA805C32630001CDF00;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B605CAB05C3264B001CDF00 = {
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
@@ -1265,12 +1335,6 @@
 			path = /usr/local/lib/libSDL_image.a;
 			refType = 0;
 			sourceTree = "<absolute>";
-		};
-		5B605CAC05C3264B001CDF00 = {
-			fileRef = 5B605CAB05C3264B001CDF00;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5B63D43305BAE2080092D38A = {
 			fileEncoding = 10;
@@ -1307,12 +1371,14 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL libgag/include";
+				GENERATE_PKGINFO = YES;
+				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL libgag/include /usr/local/include /usr/local/include/SDL";
 				INFOPLIST_FILE = "Info-Globulation2.plist";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL /usr/lib/gcc/darwin/2.95.2 /Users/martin/Library/zlib-1.1.4";
+				LIBRARY_STYLE = STATIC;
 				OTHER_CFLAGS = "-ffast-math";
-				OTHER_LDFLAGS = "-g -Wall build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image -framework Cocoa -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /sw/lib/libjpeg.a -lvorbisfile -lvorbis";
+				OTHER_LDFLAGS = "-g -lstdc++ -Wall build/libgag.a  -L/usr/X11R6/lib  /usr/local/lib/libz.a -framework Cocoa -lpthread  /usr/local/lib/libfreetype.a /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDLmain.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /sw/lib/libjpeg.a /sw/lib/libogg.a /sw/lib/libvorbis.a /sw/lib/libvorbisfile.a";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Globulation2 static";
 				REZ_EXECUTABLE = YES;
@@ -1339,7 +1405,6 @@
 				5B63D44105BAE2670092D38A,
 				5B63D44205BAE2670092D38A,
 				5B63D44305BAE2670092D38A,
-				5B63D44505BAE2670092D38A,
 				5B63D44605BAE2670092D38A,
 				5B63D44705BAE2670092D38A,
 				5B63D44805BAE2670092D38A,
@@ -1428,12 +1493,6 @@
 		};
 		5B63D44305BAE2670092D38A = {
 			fileRef = 5967D2C605AB553A000536C3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B63D44505BAE2670092D38A = {
-			fileRef = 5967D2CA05AB553A000536C3;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1796,7 +1855,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B63D48305BAE2670092D38A,
-				5B63D48505BAE2670092D38A,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1807,19 +1865,12 @@
 			settings = {
 			};
 		};
-		5B63D48505BAE2670092D38A = {
-			fileRef = 5BE9CEBC03FFA2400000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B63D48605BAE2670092D38A = {
 			buildActionMask = 2147483647;
 			files = (
 				5B63D48705BAE2670092D38A,
 				5B63D48805BAE2670092D38A,
 				5B63D48905BAE2670092D38A,
-				5B63D48B05BAE2670092D38A,
 				5B63D48C05BAE2670092D38A,
 				5B63D48D05BAE2670092D38A,
 				5B63D48E05BAE2670092D38A,
@@ -1896,12 +1947,6 @@
 		};
 		5B63D48905BAE2670092D38A = {
 			fileRef = 5967D2C505AB553A000536C3;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B63D48B05BAE2670092D38A = {
-			fileRef = 5967D2C905AB553A000536C3;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2227,10 +2272,13 @@
 		5B63D4C105BAE2670092D38A = {
 			buildActionMask = 2147483647;
 			files = (
-				5B605CA305C32612001CDF00,
-				5B605CA605C32624001CDF00,
-				5B605CA905C32630001CDF00,
-				5B605CAC05C3264B001CDF00,
+				5B3C22E8062D38710067E393,
+				5B3C2388062D38AC0067E393,
+				5B3C242C062D38D60067E393,
+				5B3C242D062D38D60067E393,
+				5B3C2450062D39290067E393,
+				5B3C2463062D39460067E393,
+				5B3C248E062D3DD80067E393,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5821,7 +5869,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = DPS_NO_SOCKLEN_T;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include libgag/include /sw/include/SDL";
+				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include libgag/include /sw/include/SDL /usr/local/include /usr/local/include/SDL";
 				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /sw/lib /sw/include";
 				LIBRARY_STYLE = STATIC;
 				OTHER_CFLAGS = "";
@@ -6298,14 +6346,6 @@
 			path = libgag/src/StringTable.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		5BE9C98203FFA1DE0000000D = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = Icons.icns;
-			path = Resources/Icons.icns;
-			refType = 4;
-			sourceTree = "<group>";
 		};
 		5BE9C98403FFA23E0000000D = {
 			children = (
