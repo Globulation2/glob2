@@ -11,6 +11,9 @@
 #ifdef WIN32
 	#include <SDL.h>
 	#include <SDL_endian.h>
+#	include <SDL_image.h>
+#	include <assert.h>
+#	pragma warning (disable : 4786)
 #elif macintosh
 	#include "SDL.h"
 	#include "SDL_endian.h"

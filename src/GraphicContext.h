@@ -82,7 +82,9 @@ protected:
 	int textWidth(const char *text, int min=0, int max=255) const;
 	
 
-	static const int startChar = 33;
+	enum {
+		startChar = 33
+	};
 	int lastChar;
 
 protected:

@@ -3,7 +3,7 @@
  * (c) 2001 Stephane Magnenat, Luc-Olivier de Charriere, Ysagoon
  */
 
-#ifndef __GNUC__
+#if (!defined (__GNUC__)) && (!defined (WIN32))
 
 #include <mcheck.h>
 #include <signal.h>

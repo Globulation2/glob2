@@ -646,9 +646,9 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					
 					// we have to inform other players about the last step we have from him.
 					
-					for (int p=0; p<numberOfPlayer; p++)
-						if (p!=localPlayerNumber)
-							stayingPlayersMask[p]=0;
+					for (int p2=0; p2<numberOfPlayer; p2++)
+						if (p2!=localPlayerNumber)
+							stayingPlayersMask[p2]=0;
 					
 					dropState=NO_DROP_PROCESSING;
 					lastSmallerMspm=0;
@@ -678,10 +678,10 @@ void NetGame::treatData(char *data, int size, IPaddress ip)
 					// we send it to all players:
 					Order *order=new DroppingPlayerOrder(mwspm, CROSS_SENDING_STAY_MASK);
 					pm=1;
-					for (int p=0; p<numberOfPlayer; p++)
+					for (int p2=0; p2<numberOfPlayer; p2++)
 					{
 						if (pm&mwspm)
-							sendMyOrderThroughUDP(order, -1, p, lastReceivedFromHim[p]);
+							sendMyOrderThroughUDP(order, -1, p2, lastReceivedFromHim[p2]);
 						pm=pm<<1;
 					}
 					delete order;
@@ -912,12 +912,12 @@ void NetGame::step(void)
 					
 					int nbipp=0; // Number Of IP players
 					Uint32 pm=1;
-					for (int eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+					for (int eachPlayer2=0; eachPlayer2<numberOfPlayer; eachPlayer2++)
 					{
-						printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer, players[eachPlayer]->type, pm, pm, stayMask, stayMask);
-						if (((players[eachPlayer]->type==BasePlayer::P_IP)||(players[eachPlayer]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
+						printf("players[%d]->type=%d, pm=%x(%d), stayMask=%x(%d)\n", eachPlayer2, players[eachPlayer2]->type, pm, pm, stayMask, stayMask);
+						if (((players[eachPlayer2]->type==BasePlayer::P_IP)||(players[eachPlayer2]->type==BasePlayer::P_LOST_A))&&((pm & stayMask)!=0))
 						{
-							printf("m: player %d stay.\n", eachPlayer);
+							printf("m: player %d stay.\n", eachPlayer2);
 							nbipp++;
 							pm=pm<<1;
 						}

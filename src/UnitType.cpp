@@ -11,10 +11,11 @@ UnitType& UnitType::operator+=(const UnitType &a)
 		startImage[i]=a.startImage[i];
 
 	hungryness+=a.hungryness;
-	
-	for (int i=0; i<NB_ABILITY; i++)
-		performance[i]+=a.performance[i];
-	
+
+	{	
+		for (int i=0; i<NB_ABILITY; i++)
+			performance[i]+=a.performance[i];
+	}
 	return *this;	
 }
 
@@ -80,10 +81,11 @@ void UnitType::copyIf(const UnitType a, const UnitType b)
 
 	if (b.hungryness)
 		hungryness=a.hungryness;
-	
-	for (int i=0; i<NB_ABILITY; i++)
-		if (b.performance[i])
-			performance[i]=a.performance[i];
+	{
+		for (int i=0; i<NB_ABILITY; i++)
+			if (b.performance[i])
+				performance[i]=a.performance[i];
+	}
 }
 
 
@@ -95,8 +97,10 @@ void UnitType::copyIfNot(const UnitType a, const UnitType b)
 	
 	if (!(b.hungryness))
 		hungryness=a.hungryness;
-	
+
+	{	
 	for (int i=0; i<NB_ABILITY; i++)
 		if (!(b.performance[i]))
 			performance[i]=a.performance[i];
+	}
 }

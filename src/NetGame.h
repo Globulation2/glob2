@@ -40,12 +40,12 @@ private:
 	Sint32 currentStep;
 	Player *players[32];
 	
-	static const int queueSize=256;//256
-	static const int latency=10;
-	static const int lostPacketLatencyMargin=2;
-	static const int MAX_GAME_PACKET_SIZE=2000;
-	static const int COUNT_DOWN_MIN=16;
-	static const int COUNT_DOWN_DEATH=200;
+	enum {queueSize=256};//256
+	enum {latency=10};
+	enum {lostPacketLatencyMargin=2};
+	enum {MAX_GAME_PACKET_SIZE=2000};
+	enum {COUNT_DOWN_MIN=16};
+	enum {COUNT_DOWN_DEATH=200};
 
 	typedef struct
 	{
@@ -73,7 +73,7 @@ private:
 	Uint32 stayingPlayersMask[32];
 	DropState dropState;
 	int lastAviableStep[32][32];
-	queue<Order *> localOrderQueue[32];
+	std::queue<Order *> localOrderQueue[32];
 	
 	UDPsocket socket;
 	

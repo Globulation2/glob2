@@ -104,14 +104,20 @@ private:
 	InGameScreen *gameMenuScreen;
 
 	// message related functions : FIXME : move this to a class
-	static const int MAX_MESSAGE_SIZE=64; // avoid network overflow
+public :
+	enum {
+		MAX_MESSAGE_SIZE = 64
+	}; // avoid network overflow
+private :
 	typedef struct
 	{
 		int showTicks;
 		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4];
 	} Message;
 	std::list<Message> messagesList;
-	static const int DEFAULT_MESSAGE_SHOW_TICKS=100;
+	enum {
+		DEFAULT_MESSAGE_SHOW_TICKS = 100
+	};
 	bool typingMessage;
 	char typedMessage[MAX_MESSAGE_SIZE];
 	int typedChar;

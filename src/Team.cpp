@@ -110,16 +110,17 @@ Team::~Team()
 			delete myUnits[i];
 	}
 
-	for (int i=0; i<512; i++)
+	for (int i2=0; i2<512; i2++)
 	{
-		if (myBuildings[i])
-			delete myBuildings[i];
+		if (myBuildings[i2])
+			delete myBuildings[i2];
 	}
-
-	for (int i=0; i<256; i++)
 	{
-		if (myBullets[i])
-			delete myBuildings[i];
+		for (int i=0; i<256; i++)
+		{
+			if (myBullets[i])
+				delete myBuildings[i];
+		}
 	}
 }
 
@@ -129,13 +130,15 @@ void Team::init(void)
 	{
 		myUnits[i]=NULL;
 	}
-	for (int i=0;i<512;i++)
+	for (int i2=0;i2<512;i2++)
 	{
-		myBuildings[i]=NULL;
+		myBuildings[i2]=NULL;
 	}
-	for (int i=0;i<256;i++)
 	{
-		myBullets[i]=NULL;
+		for (int i=0;i<256;i++)
+		{
+			myBullets[i]=NULL;
+		}
 	}
 	palette=globalContainer.macPal;
 	freeUnits=0;
@@ -333,22 +336,24 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 
 	swarms.clear();
 	turrets.clear();
-	for (int i=0; i<512; i++)
 	{
-		if (myBuildings[i])
-			delete myBuildings[i];
-
-		Uint32 isUsed=SDL_ReadBE32(stream);
-		if (isUsed)
+		for (int i=0; i<512; i++)
 		{
-			myBuildings[i]=new Building(stream, buildingstypes, this);
-			if (myBuildings[i]->type->unitProductionTime)
-				myBuildings[i]->owner->swarms.push_front(myBuildings[i]);
-			if (myBuildings[i]->type->shootingRange)
-				myBuildings[i]->owner->turrets.push_front(myBuildings[i]);
+			if (myBuildings[i])
+				delete myBuildings[i];
+
+			Uint32 isUsed=SDL_ReadBE32(stream);
+			if (isUsed)
+			{
+				myBuildings[i]=new Building(stream, buildingstypes, this);
+				if (myBuildings[i]->type->unitProductionTime)
+					myBuildings[i]->owner->swarms.push_front(myBuildings[i]);
+				if (myBuildings[i]->type->shootingRange)
+					myBuildings[i]->owner->turrets.push_front(myBuildings[i]);
+			}
+			else
+				myBuildings[i]=NULL;
 		}
-		else
-			myBuildings[i]=NULL;
 	}
 
 	/*for (int i=0; i<256; i++)
@@ -364,17 +369,21 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	}*/
 	
 	// resolve cross reference
-	for (int i=0; i< 1024; i++)
 	{
-		if (myUnits[i])
-			myUnits[i]->loadCrossRef(stream, this);
-	}
-	for (int i=0; i<512; i++)
-	{
-		if (myBuildings[i])
+		for (int i=0; i< 1024; i++)
 		{
-			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
-			myBuildings[i]->update();
+			if (myUnits[i])
+				myUnits[i]->loadCrossRef(stream, this);
+		}
+	}
+	{	
+		for (int i=0; i<512; i++)
+		{
+			if (myBuildings[i])
+			{
+				myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
+				myBuildings[i]->update();
+			}
 		}
 	}
 
@@ -406,19 +415,20 @@ void Team::save(SDL_RWops *stream)
 		}
 	}
 
-	for (int i=0; i<512; i++)
 	{
-		if (myBuildings[i])
+		for (int i=0; i<512; i++)
 		{
-			SDL_WriteBE32(stream, true);
-			myBuildings[i]->save(stream);
-		}
-		else
-		{
-			SDL_WriteBE32(stream, false);
+			if (myBuildings[i])
+			{
+				SDL_WriteBE32(stream, true);
+				myBuildings[i]->save(stream);
+			}
+			else
+			{
+				SDL_WriteBE32(stream, false);
+			}
 		}
 	}
-
 	/*for (int i=0; i<256; i++)
 	{
 		if (myBullets[i])
@@ -433,15 +443,19 @@ void Team::save(SDL_RWops *stream)
 	} */
 	
 	// save cross reference
-	for (int i=0; i< 1024; i++)
 	{
-		if (myUnits[i])
-			myUnits[i]->saveCrossRef(stream);
+		for (int i=0; i< 1024; i++)
+		{
+			if (myUnits[i])
+				myUnits[i]->saveCrossRef(stream);
+		}
 	}
-	for (int i=0; i<512; i++)
 	{
-		if (myBuildings[i])
-			myBuildings[i]->saveCrossRef(stream);
+		for (int i=0; i<512; i++)
+		{
+			if (myBuildings[i])
+				myBuildings[i]->saveCrossRef(stream);
+		}
 	}
 
 	SDL_WriteBE32(stream, allies);
@@ -474,10 +488,11 @@ void Team::step(void)
 	/*for (int i=0; i<512; i++)
 		if (myBuildings[i])
 			myBuildings[i]->step();*/
-			
-	for (int i=0; i<256; i++)
-		if (myBullets[i])
-			myBullets[i]->step();
+	{		
+		for (int i=0; i<256; i++)
+			if (myBullets[i])
+				myBullets[i]->step();
+	}
 			
 	// this is roughly equivalent to building.step()
 	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
@@ -493,51 +508,60 @@ void Team::step(void)
 	}
 	buildingsToBeDestroyed.clear();
 	
-	
-	for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
-	{
-		if ( (*it)->tryToUpgradeRoom() )
+	{	
+		for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
 		{
-			std::list<Building *>::iterator ittemp=it;
-			it=buildingsToBeUpgraded.erase(ittemp);
+			if ( (*it)->tryToUpgradeRoom() )
+			{
+				std::list<Building *>::iterator ittemp=it;
+				it=buildingsToBeUpgraded.erase(ittemp);
+			}
 		}
-	}
-	
-	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
-		if ((*it)->unitsInsideSubscribe.size()>0)
-			(*it)->subscribeForInsideStep();
-	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
-	{
-		if ( ((*it)->fullInside()) || ((*it)->unitsInsideSubscribe.size()==0) )
-		{
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForInsideStep.erase(ittemp);
-		}
-	}
-	
-	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
-		if ((*it)->unitsWorkingSubscribe.size()>0)
-			(*it)->subscribeForWorkingStep();
-	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
-	{
-		if ( ((*it)->fullWorking()) || ((*it)->unitsWorkingSubscribe.size()==0) )
-		{
-			std::list<Building *>::iterator ittemp=it;
-			it=subscribeForWorkingStep.erase(ittemp);
-		}
-	}
-	
-	
-	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
-	{
-		(*it)->swarmStep();
 	}
 
-	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 	{
-		(*it)->turretStep();
+		for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+			if ((*it)->unitsInsideSubscribe.size()>0)
+				(*it)->subscribeForInsideStep();
 	}
-	
+	{
+		for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+		{
+			if ( ((*it)->fullInside()) || ((*it)->unitsInsideSubscribe.size()==0) )
+			{
+				std::list<Building *>::iterator ittemp=it;
+				it=subscribeForInsideStep.erase(ittemp);
+			}
+		}
+	}
+	{
+		for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+			if ((*it)->unitsWorkingSubscribe.size()>0)
+				(*it)->subscribeForWorkingStep();
+	}
+	{
+		for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+		{
+			if ( ((*it)->fullWorking()) || ((*it)->unitsWorkingSubscribe.size()==0) )
+			{
+				std::list<Building *>::iterator ittemp=it;
+				it=subscribeForWorkingStep.erase(ittemp);
+			}
+		}
+	}
+	{
+		for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
+		{
+			(*it)->swarmStep();
+		}
+	}
+
+	{
+		for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
+		{
+			(*it)->turretStep();
+		}
+	}
 }
 
 Sint32 Team::checkSum()
@@ -564,21 +588,27 @@ Sint32 Team::checkSum()
 		}
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)2cs=%x\n", teamNumber, cs);
-	for (int i=0; i<512; i++)
-		if (myBuildings[i])
+	{
+		for (int i=0; i<512; i++)
 		{
-			cs^=myBuildings[i]->checkSum();
-			cs=(cs<<31)|(cs>>1);
+			if (myBuildings[i])
+			{
+				cs^=myBuildings[i]->checkSum();
+				cs=(cs<<31)|(cs>>1);
+			}
 		}
+	}
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)3cs=%x\n", teamNumber, cs);
-	for (int i=0; i<NB_ABILITY; i++)
 	{
-		cs^=upgrade[i].size();
-		cs=(cs<<31)|(cs>>1);
-		cs^=job[i].size();
-		cs^=attract[i].size();
-		
+		for (int i=0; i<NB_ABILITY; i++)
+		{
+			cs^=upgrade[i].size();
+			cs=(cs<<31)|(cs>>1);
+			cs^=job[i].size();
+			cs^=attract[i].size();
+			
+		}
 	}
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)4cs=%x\n", teamNumber, cs);

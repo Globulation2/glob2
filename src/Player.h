@@ -24,8 +24,10 @@ public:
 		P_IP,
 		P_LOCAL
 	};
-	
-	static const int MAX_NAME_LENGTH = 16;
+
+	enum {
+		MAX_NAME_LENGTH = 16
+	};
 	
 	PlayerType type;
 	

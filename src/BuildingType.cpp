@@ -87,7 +87,7 @@ int BuildingsTypes::getTypeNum(int type, int level, bool isBuildingSite)
 	for (std::vector <BuildingType *>::iterator it=buildingsTypes.begin(); it!=buildingsTypes.end(); ++it)
 	{
 		BuildingType *bt=*it;
-		if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==isBuildingSite))
+		if ((bt->type==type) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))
 			return i;
 		i++;
 	}

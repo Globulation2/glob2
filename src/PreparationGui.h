@@ -57,7 +57,7 @@ class TextInput;
 class SessionScreen:public Screen
 {
 protected:
-	static const int MAX_PACKET_SIZE=4000;
+	enum {MAX_PACKET_SIZE=4000};
 public:
 	SessionScreen();
 	virtual ~SessionScreen();
@@ -68,8 +68,8 @@ protected:
 	int startGameTimeCounter;
 protected:
 	void paintSessionInfo(int state);
-	static const int hostiphost=0;
-	static const int hostipport=0;
+	enum {hostiphost=0};
+	enum {hostipport=0};
 public:
 
 	SessionInfo sessionInfo;
