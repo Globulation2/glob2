@@ -81,11 +81,16 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	clientsUpdatePacketID=0;
 	playing=false;
 	away=false;
+	memset(awayMessage, 0, 64);
 	
 	clientsTimeout=DEFAULT_NETWORK_TIMEOUT;
 	clientsTOTL=3;
 	clientsUpdatesTimeout=DEFAULT_NETWORK_TIMEOUT;
 	clientsUpdatesTOTL=3;
+	
+	memset(userName, 0, 32);
+	memset(passWord, 0, 32);
+	memset(xorpassw, 0, 32);
 }
 
 YOGClient::~YOGClient()
@@ -618,6 +623,77 @@ void YOGClient::updateClient(Uint32 uid, Uint16 change)
 			importance++;
 	standardTimeout(&clientsUpdatesTimeout, importance, 16, 4);
 	clientsUpdatesTOTL=3;
+}
+
+void YOGClient::deconnected()
+{
+	hostGameip.host=0;
+	hostGameip.port=0;
+	joinGameip.host=0;
+	joinGameip.port=0;
+	memset(xorpassw, 0, 32);
+	
+	messages.clear();
+	privateReceipts.clear();
+	joiners.clear();
+	games.clear();
+	unshared.clear();
+	clients.clear();
+	for (int i=0; i<16; i++)
+		lastSentClients[i].clear();
+	clientsUpdates.clear();
+	for (int i=0; i<16; i++)
+		lastSentClientsUpdates[i].clear();
+}
+
+void YOGClient::reconnected(IPaddress ip)
+{
+	this->ip=ip;
+	
+	lastSentMessageID=0;
+	lastMessageID=0;
+	messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+	messageTOTL=3;
+	
+	lastSentReceiptID=0;
+	receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
+	receiptTOTL=3;
+	
+	joinersTimeout=DEFAULT_NETWORK_TIMEOUT;
+	sharingGame=NULL;
+	joinedGame=NULL;
+	
+	timeout=DEFAULT_NETWORK_TIMEOUT;
+	TOTL=3;
+	
+	gamesSize=0;
+	gamesTimeout=DEFAULT_NETWORK_TIMEOUT;
+	gamesTOTL=3;
+	unsharedTimeout=DEFAULT_NETWORK_TIMEOUT;
+	unsharedTOTL=3;
+	
+	static Uint32 clientUID=1;
+	clientUID++;
+	if (clientUID==0)
+		clientUID++;
+	uid=clientUID;
+	
+	clientsPacketID=0;
+	clientsUpdatePacketID=0;
+	playing=false;
+	away=false;
+	memset(awayMessage, 0, 64);
+	
+	clientsTimeout=DEFAULT_NETWORK_TIMEOUT;
+	clientsTOTL=3;
+	clientsUpdatesTimeout=DEFAULT_NETWORK_TIMEOUT;
+	clientsUpdatesTOTL=3;
+}
+
+void YOGClient::newRandomXorPassw()
+{
+	for (int i=0; i<32; i++)
+		xorpassw[i]=rand()/(RAND_MAX*256);
 }
 
 void YOGClient::lprintf(const char *msg, ...)

@@ -1463,6 +1463,12 @@ Paused
 Pause
 Pauza
 Pauza
+[Register a new YOG user with password]
+Enregistrer le nouvel utilisateur YOG avec mot de passe
+Register a new YOG user with password
+
+
+
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.
@@ -1517,6 +1523,30 @@ The YOG metaserver has refused the connection because your username is already u
 Der YOG-Metaserver hat die Verbindung verweigert, da Ihr Pseudo schon vergeben ist.
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 Metaserwer YOG odmówił połączenia ponieważ twój login jest już zajęty przez kogoś innego.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Le metaserveur YOG a refusé la connection car le mot de passe est faux.
+The YOG metaserver has refused the connection because your entered a wrong password.
+
+
+
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option ci-dessous.
+The YOG metaserver has refused the connection because this user name has already been registered with a password. If you registered this user, disactivate the option at the bottom of this screen.
+
+
+
+[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
+Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
+The YOG metaserver has refused the connection because because a protocol error occured: you are already authenticated. Try again 45 seconds later.
+
+
+
+[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
+Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
+The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
+
+
+
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connection pour une raison inconnue!
 The YOG metaserver has refused the connection without explanation!

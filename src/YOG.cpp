@@ -18,6 +18,10 @@
 */
  
 // TODO:remove useless includes
+
+#include <openssl/sha.h>
+#include "../gnupg/sha1.c"
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_endian.h>
 #include <SDL/SDL_image.h>
@@ -34,6 +38,7 @@
 #include "NetConsts.h"
 #include "LogFileManager.h"
 #include <StringTable.h>
+
 
 // If you don't have SDL_net 1.2.5 some features won't be aviable.
 #ifndef INADDR_BROADCAST
@@ -78,6 +83,10 @@ YOG::YOG()
 	connectionLost=false;
 	
 	externalStatusState=YESTS_CREATED;
+	
+	memset(userName, 0, 32);
+	memset(passWord, 0, 32);
+	memset(xorpassw, 0, 32);
 }
 
 YOG::~YOG()
@@ -373,8 +382,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						int l=unl;
 						if (l<32)
 							l++;
-						char *userName=mit->text+3;
-						memcpy(m.userName, userName, l);
+						memcpy(m.userName, mit->text+3, l);
 						m.userName[l-1]=0;
 						m.userNameLength=l;
 						
@@ -436,11 +444,25 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTING:
 	{
+		if (size==36)
+		{
+			yogGlobalState=YGS_AUTHENTICATING;
+			fprintf(logFile, "connected (uid=%d)\n", uid);
+			memcpy(xorpassw, data+4, 32);
+			connectionTimeout=0;
+			connectionTOTL=3;
+		}
+		else
+			fprintf(logFile, "bad YOG-connected packet\n");
+	}
+	break;
+	case YMT_AUTHENTICATING:
+	{
 		if (size==8)
 		{
 			yogGlobalState=YGS_CONNECTED;
 			uid=getUint32(data, 4);
-			fprintf(logFile, "connected (uid=%d)\n", uid);
+			fprintf(logFile, "authenticated (uid=%d)\n", uid);
 		}
 		else
 			fprintf(logFile, "bad YOG-connected packet\n");
@@ -448,16 +470,32 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTION_REFUSED:
 	{
-		fprintf(logFile, "connection refused! (sameName=%d, YOG_PROTOCOL_VERSION=%d, PROTOCOL_VERSION=%d)\n", data[4], data[5], YOG_PROTOCOL_VERSION);
-		
-		if (data[5]!=YOG_PROTOCOL_VERSION)
-			externalStatusState=YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD;
-		else if (data[4])
-			externalStatusState=YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED;
+		if (yogGlobalState==YGS_CONNECTING || yogGlobalState==YGS_AUTHENTICATING)
+		{
+			fprintf(logFile, "connection refused! (param=%d, YOG_PROTOCOL_VERSION=%d, PROTOCOL_VERSION=%d)\n",
+				data[4], data[5], YOG_PROTOCOL_VERSION);
+			
+			if (data[5]!=YOG_PROTOCOL_VERSION)
+				externalStatusState=YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD;
+			else if (data[4]==YCRT_PROTOCOL_TOO_OLD)
+				externalStatusState=YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD;
+			else if (data[4]==YCRT_USERNAME_ALLREADY_USED)
+				externalStatusState=YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED;
+			else if (data[4]==YCRT_BAD_PASSWORD)
+				externalStatusState=YESTS_CONNECTION_REFUSED_BAD_PASSWORD;
+			else if (data[4]==YCRT_ALREADY_PASSWORD)
+				externalStatusState=YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD;
+			else if (data[4]==YCRT_ALREADY_AUTHENTICATED)
+				externalStatusState=YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED;
+			else
+				externalStatusState=YESTS_CONNECTION_REFUSED_UNEXPLAINED;
+			
+			yogGlobalState=YGS_NOT_CONNECTING;
+			globalContainer->popUserName();
+		}
 		else
-			externalStatusState=YESTS_CONNECTION_REFUSED_UNEXPLAINED;
-		yogGlobalState=YGS_NOT_CONNECTING;
-		globalContainer->popUserName();
+			fprintf(logFile, "Warning, ignored connection refused packet. (param=%d, YOG_PROTOCOL_VERSION=%d, PROTOCOL_VERSION=%d)\n",
+				data[4], data[5], YOG_PROTOCOL_VERSION);
 	}
 	break;
 	case YMT_DECONNECTING:
@@ -864,10 +902,13 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	}
 }
 
-bool YOG::enableConnection(const char *userName, const char *password)
+bool YOG::enableConnection(const char *userName, const char *passWord, bool newYogPassword)
 {
 	memset(this->userName, 0, 32);
 	strncpy(this->userName, userName, 31);
+	memset(this->passWord, 0, 32);
+	strncpy(this->passWord, passWord, 31);
+	this->newYogPassword=newYogPassword;
 
 	if (socket)
 		SDLNet_UDP_Close(socket);
@@ -917,7 +958,7 @@ bool YOG::enableConnection(const char *userName, const char *password)
 	
 	uid=0;
 	
-	fprintf(logFile, "enableConnection(%s)\n", userName);
+	fprintf(logFile, "enableConnection(), userName=%s\n", userName);
 	
 	return true;
 }
@@ -991,27 +1032,78 @@ void YOG::step()
 				else
 				{
 					fprintf(logFile, "sending connection request...\n");
-					
-					int tl=Utilities::strmlen(userName, 32);
-					
-					UDPpacket *packet=SDLNet_AllocPacket(8+tl);
+					int unl=Utilities::strmlen(userName, 32);
+					UDPpacket *packet=SDLNet_AllocPacket(8+unl);
 					assert(packet);
-					VARARRAY(Uint8,sdata,8+tl);
-					sdata[0]=YMT_CONNECTING;
-					sdata[1]=0;
-					sdata[2]=0;
-					sdata[3]=0;
-					addUint32(sdata, YOG_PROTOCOL_VERSION, 4);
-					memcpy(sdata+8, (Uint8 *)userName, tl);
-					memcpy((char *)packet->data, sdata, 8+tl);
-					packet->len=8+tl;
+					packet->data[0]=YMT_CONNECTING;
+					packet->data[1]=0;
+					packet->data[2]=0;
+					packet->data[3]=0;
+					addUint32(packet->data, YOG_PROTOCOL_VERSION, 4);
+					memcpy(packet->data+8, (Uint8 *)userName, unl);
+					packet->len=8+unl;
 					packet->address=serverIP;
 					packet->channel=-1;
 					int rv=SDLNet_UDP_Send(socket, -1, packet);
 					if (rv!=1)
 						fprintf(logFile, "Failed to send the packet!\n");
 					SDLNet_FreePacket(packet);
-					
+					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
+				}
+		}
+		break;
+		case YGS_AUTHENTICATING:
+		{
+			if (connectionTimeout--<=0)
+				if (connectionTOTL--<=0)
+				{
+					yogGlobalState=YGS_UNABLE_TO_CONNECT;
+					globalContainer->popUserName();
+					externalStatusState=YESTS_UNABLE_TO_CONNECT;
+					fprintf(logFile, "unable to connect!\n");
+				}
+				else
+				{
+					fprintf(logFile, "sending authentication info...newYogPassword=%d\n", newYogPassword);
+					UDPpacket *packet;
+					unsigned char xored[32];
+					for (int i=0; i<32; i++)
+						xored[i]=passWord[i]^xorpassw[i];
+					if (newYogPassword)
+					{
+						packet=SDLNet_AllocPacket(36);
+						assert(packet);
+						packet->data[0]=YMT_AUTHENTICATING;
+						packet->data[1]=0;
+						packet->data[2]=0;
+						packet->data[3]=0;
+						memcpy(packet->data+4, (Uint8 *)xored, 32);
+						packet->len=36;
+					}
+					else
+					{
+						packet=SDLNet_AllocPacket(24);
+						assert(packet);
+						packet->data[0]=YMT_AUTHENTICATING;
+						packet->data[1]=2;
+						packet->data[2]=0;
+						packet->data[3]=0;
+						
+						SHA1_CONTEXT hd;
+						sha1_init(&hd);
+						sha1_write(&hd, xored, 32);
+						sha1_final(&hd);
+						Uint8 *hashed=sha1_read(&hd);
+						
+						memcpy(packet->data+4, (Uint8 *)hashed, 20);
+						packet->len=24;
+					}
+					packet->address=serverIP;
+					packet->channel=-1;
+					int rv=SDLNet_UDP_Send(socket, -1, packet);
+					if (rv!=1)
+						fprintf(logFile, "Failed to send the packet!\n");
+					SDLNet_FreePacket(packet);
 					connectionTimeout=DEFAULT_NETWORK_TIMEOUT;
 				}
 		}
@@ -1552,10 +1644,23 @@ char *YOG::getStatusString(ExternalStatusState externalStatusState)
 	case YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED:
 		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]");
 	break;
+	case YESTS_CONNECTION_REFUSED_BAD_PASSWORD:
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]");
+	break;
+	case YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD:
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]");
+	break;
+	case YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED:
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]");
+	break;
+	case YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET:
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]");
+	break;
 	case YESTS_CONNECTION_REFUSED_UNEXPLAINED:
 		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]");
 	break;
 	default:
+		printf("externalStatusState=%d\n", externalStatusState);
 		assert(false);
 	break;
 	}

@@ -37,9 +37,11 @@ public:
 		YGS_NOT_CONNECTING=2,
 		YGS_DECONNECTING=3,
 		YGS_CONNECTING=4,
-		YGS_CONNECTED=5,
-		YGS_PLAYING=6
+		YGS_AUTHENTICATING=5,
+		YGS_CONNECTED=6,
+		YGS_PLAYING=7
 	};
+	
 	
 	enum YOGSharingState
 	{
@@ -54,16 +56,20 @@ public:
 	enum ExternalStatusState
 	{
 		YESTS_BAD=0,
-		YESTS_UNABLE_TO_CONNECT=2,
-		YESTS_DECONNECTED=4,
-		YESTS_CREATED=8,
-		YESTS_CONNECTING=10,
-		YESTS_DECONNECTING=12,
-		YESTS_YOG_KILLED=14,
-		YESTS_CONNECTION_LOST=16,
-		YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD=18,
-		YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED=20,
-		YESTS_CONNECTION_REFUSED_UNEXPLAINED=22
+		YESTS_UNABLE_TO_CONNECT=10,
+		YESTS_DECONNECTED=20,
+		YESTS_CREATED=30,
+		YESTS_CONNECTING=40,
+		YESTS_DECONNECTING=50,
+		YESTS_YOG_KILLED=60,
+		YESTS_CONNECTION_LOST=70,
+		YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD=80,
+		YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED=90,
+		YESTS_CONNECTION_REFUSED_BAD_PASSWORD=100,
+		YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD=110,
+		YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED=120,
+		YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET=130,
+		YESTS_CONNECTION_REFUSED_UNEXPLAINED=140
 	};
 	
 	struct GameInfo
@@ -125,7 +131,7 @@ public:
 	
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	
-	bool enableConnection(const char *userName, const char *password);
+	bool enableConnection(const char *userName, const char *passWord, bool newYogPassword);
 	void step();
 	
 	void sendGameinfoRequest();
@@ -175,6 +181,9 @@ public:
 	
 	void deconnect();
 	char userName[32];
+	char passWord[32];
+	unsigned char xorpassw[32];
+	bool newYogPassword;
 	Uint32 uid;
 	
 	std::list<Message> sendingMessages;

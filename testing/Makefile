@@ -7,7 +7,7 @@ simpleServer: simpleServer.cpp
 	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleServer.cpp -o simpleServer
 	
 simpleClient: simpleClient.cpp
-	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleClient.cpp -o simpleClient
+	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleClient.cpp ../src/Utilities.o -o simpleClient
 	
 chaterYog: chaterYog.cpp
 	g++ -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` chaterYog.cpp -o chaterYog

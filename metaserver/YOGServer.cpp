@@ -18,6 +18,9 @@
 */
 
 
+#include <openssl/sha.h>
+#include "../gnupg/sha1.c"
+
 #include "../src/Marshaling.h"
 #include "YOGServer.h"
 #include "../src/Utilities.h"
@@ -38,7 +41,12 @@ YOGServer::~YOGServer()
 {
 	if (socket)
 		SDLNet_UDP_Close(socket);
-	for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+	
+	for (std::list<YOGClient *>::iterator client=unconnectedClients.begin(); client!=unconnectedClients.end(); ++client)
+		delete (*client);
+	for (std::list<YOGClient *>::iterator client=connectedClients.begin(); client!=connectedClients.end(); ++client)
+		delete (*client);
+	for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 		delete (*client);
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
 		delete (*game);
@@ -46,6 +54,8 @@ YOGServer::~YOGServer()
 
 bool YOGServer::init()
 {
+	lprintf("YOGServer::init()\n");
+	
 	socket=SDLNet_UDP_Open(YOG_SERVER_PORT);
 	if (!socket)
 	{
@@ -132,7 +142,7 @@ void YOGServer::executeCommand(YOGClient *sender, char *s, Uint8 messageID)
 			PrivateReceipt privateReceipt;
 			privateReceipt.messageID=messageID;
 
-			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+			for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 			{
 				char *name=(*client)->userName;
 				int unl=Utilities::strnlen(name, 32);
@@ -188,7 +198,7 @@ void YOGServer::executeCommand(YOGClient *sender, char *s, Uint8 messageID)
 				change|=CUP_AWAY;
 			else
 				change|=CUP_NOT_AWAY;
-			for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+			for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 				(*client)->updateClient(uid, change);
 			if (away)
 			{
@@ -238,7 +248,7 @@ void YOGServer::removeGame(YOGClient *host)
 			lprintf("removed (%s) from game (%s).\n", (*c)->userName, game->name);
 		}
 	
-	for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+	for (std::list<YOGClient *>::iterator c=authentifiedClients.begin(); c!=authentifiedClients.end(); ++c)
 	{
 		(*c)->removeGame(uid);
 		(*c)->removeUselessGames();
@@ -266,12 +276,13 @@ void YOGServer::deconnectClient(YOGClient *client)
 	}
 
 	Uint32 uid=client->uid;
-	for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+	for (std::list<YOGClient *>::iterator c=authentifiedClients.begin(); c!=authentifiedClients.end(); ++c)
 		(*c)->removeClient(uid);
 
 	if (client==admin)
 		admin=NULL;
-	delete client;
+	
+	client->deconnected();
 }
 
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
@@ -289,60 +300,36 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	break;
 	case YMT_CONNECTING:
 	{
-		if (size>8+32 ||  size <8+2)
+		if (size>8+32 || size<8+2)
 		{
 			lprintf("bad YMT_CONNECTING message size (%d).\n", size);
 			break;
 		}
-		bool connected=false;
-		bool sameName=false;
-		Uint32 uid=0;
 		Uint32 protocolVersion=getUint32(data, 4);
-		bool compatibleProtocol=(protocolVersion==YOG_PROTOCOL_VERSION);
-		
-		std::list<YOGClient *>::iterator client;
-		for (client=clients.begin(); client!=clients.end(); ++client)
-			if ((*client)->hasip(ip))
-			{
-				(*client)->TOTL=3;
-				uid=(*client)->uid;
-				connected=true;
-			}
-			else if (strncmp((*client)->userName, (char *)data+8, 32)==0)
-				sameName=true;
-		
-		if (!connected && !sameName && compatibleProtocol)
+		if (protocolVersion!=YOG_PROTOCOL_VERSION)
 		{
-			char userName[32];
-			memset(userName, 0, 32);
-			strncpy(userName, (char *)data+8, 32);
-			userName[31]=0;
+			lprintf("bad protocolVersion=%d, YOG_PROTOCOL_VERSION=%d\n", protocolVersion, YOG_PROTOCOL_VERSION);
+			Uint8 data[8];
+			data[0]=YMT_CONNECTION_REFUSED;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
 			
-			YOGClient *yogClient=new YOGClient(ip, socket, userName);
-			
-			for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
-				yogClient->addClient(*c);
-			
-			clients.push_back(yogClient);
-			
-			for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); game++)
-				yogClient->addGame(*game);
-			
-			for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
-				(*c)->addClient(yogClient);
-			
-			uid=yogClient->uid;
-			
-			if (data[1]==1)
-			{
-				admin=yogClient;
-				lprintf("new admin connected as (%s), from (%s)\n", userName, Utilities::stringIP(ip));
-			}
-			else
-				lprintf("new client connected as (%s), from (%s), uid=(%d)\n", userName, Utilities::stringIP(ip), uid);
+			data[4]=YCRT_PROTOCOL_TOO_OLD;
+			data[5]=YOG_PROTOCOL_VERSION;
+			data[6]=0;
+			data[7]=0;
+			send(ip, data, 8);
+			return;
 		}
-		
-		if (sameName || !compatibleProtocol)
+		YOGClient *authentifiedClient=NULL;
+		for (std::list<YOGClient *>::iterator ci=authentifiedClients.begin(); ci!=authentifiedClients.end(); ++ci)
+			if ((*ci)->hasip(ip))
+			{
+				authentifiedClient=*ci;
+				break;
+			}
+		if (authentifiedClient)
 		{
 			Uint8 data[8];
 			data[0]=YMT_CONNECTION_REFUSED;
@@ -350,35 +337,283 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			data[2]=0;
 			data[3]=0;
 			
-			data[4]=sameName;
+			data[4]=YCRT_ALREADY_AUTHENTICATED;
 			data[5]=YOG_PROTOCOL_VERSION;
 			data[6]=0;
 			data[7]=0;
 			send(ip, data, 8);
+			return;
+		}
+		char userName[32];
+		memset(userName, 0, 32);
+		strncpy(userName, (char *)data+8, 32);
+		userName[31]=0;
+		YOGClient *client=NULL;
+		YOGClient *connectedClient=NULL;
+		YOGClient *unconnectedClient=NULL;
+		std::list<YOGClient *>::iterator cci;
+		for (cci=connectedClients.begin(); cci!=connectedClients.end(); ++cci)
+			if (strncmp((*cci)->userName, userName, 32)==0)
+			{
+				connectedClient=*cci;
+				break;
+			}
+		std::list<YOGClient *>::iterator uci;
+		for (uci=unconnectedClients.begin(); uci!=unconnectedClients.end(); ++uci)
+			if (strncmp((*uci)->userName, userName, 32)==0)
+			{
+				unconnectedClient=*uci;
+				break;
+			}
+		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
+			if (strncmp((*aci)->userName, userName, 32)==0)
+			{
+				Uint8 data[8];
+				data[0]=YMT_CONNECTION_REFUSED;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				
+				data[4]=YCRT_USERNAME_ALLREADY_USED;
+				data[5]=YOG_PROTOCOL_VERSION;
+				data[6]=0;
+				data[7]=0;
+				send(ip, data, 8);
+				return;
+			}
+		if (connectedClient)
+		{
+			if (unconnectedClient)
+			{
+				lprintf("Internal integrity error, (connectedClient && unconnectedClient), userName=(%s) ip=(%s)\n",
+					userName, Utilities::stringIP(ip));
+				unconnectedClients.erase(uci);
+				unconnectedClient=NULL;
+			}
+			client=connectedClient;
+		}
+		else
+		{
+			if (unconnectedClient)
+			{
+				client=unconnectedClient;
+				unconnectedClients.erase(uci);
+			}
+			else
+				client=new YOGClient(ip, socket, userName);
+			connectedClients.push_back(client);
+		}
+		client->reconnected(ip);
+		if (data[1]==1)
+		{
+			admin=client;
+			lprintf("admin (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
+		}
+		else
+			lprintf("client (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
+		Uint8 data[36];
+		data[0]=YMT_CONNECTING;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		client->newRandomXorPassw();
+		memcpy(data+4, client->xorpassw, 32);
+		send(ip, data, 36);
+	}
+	break;
+	case YMT_AUTHENTICATING:
+	{
+		if (size!=24 && size!=36)
+		{
+			lprintf("bad YMT_AUTHENTIFING message size (%d).\n", size);
+			break;
+		}
+		YOGClient *authentifiedClient=NULL;
+		for (std::list<YOGClient *>::iterator ci=authentifiedClients.begin(); ci!=authentifiedClients.end(); ++ci)
+			if ((*ci)->hasip(ip))
+			{
+				(*ci)->TOTL=3;
+				authentifiedClient=*ci;
+				break;
+			}
+		if (authentifiedClient)
+		{
+			Uint8 data[8];
+			data[0]=YMT_AUTHENTICATING;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+			addSint32(data, authentifiedClient->uid, 4);
+			send(ip, data, 8);
+		}
+		YOGClient *connectedClient=NULL;
+		std::list<YOGClient *>::iterator cci;
+		for (cci=connectedClients.begin(); cci!=connectedClients.end(); ++cci)
+			if ((*cci)->hasip(ip))
+			{
+				connectedClient=*cci;
+				break;
+			}
+		if (connectedClient==NULL)
+		{
+			Uint8 data[8];
+			data[0]=YMT_CONNECTION_REFUSED;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+			
+			data[4]=YCRT_NOT_CONNECTED_YET;
+			data[5]=YOG_PROTOCOL_VERSION;
+			data[6]=0;
+			data[7]=0;
+			send(ip, data, 8);
+			return;
+		}
+		YOGClient *client=connectedClient;
+		
+		if (data[1]==0 && size==36)
+		{
+			// newYogPassword
+			// We received xored (password):
+			Uint8 xored[32];
+			memcpy(xored, (char *)data+4, 32);
+			// We compute real password:
+			Uint8 passWord[32];
+			for (int i=0; i<32; i++)
+				passWord[i]=xored[i]^client->xorpassw[i];
+			printf("newYogPassword (%s) for client (%s) \n", passWord, client->userName);
+			if (client->passWord[0]==0)
+				memcpy(client->passWord, passWord, 32);
+			else
+			{
+				Uint8 data[8];
+				data[0]=YMT_CONNECTION_REFUSED;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				
+				data[4]=YCRT_ALREADY_PASSWORD;
+				data[5]=YOG_PROTOCOL_VERSION;
+				data[6]=0;
+				data[7]=0;
+				send(ip, data, 8);
+				return;
+			}
+		}
+		else if (data[1]==2 && size==24)
+		{
+			// hashed
+			// We received hashed:
+			Uint8 receivedHashed[20];
+			memcpy(receivedHashed, (char *)data+4, 20);
+			// We compute hashed:
+			Uint8 xored[32];
+			for (int i=0; i<32; i++)
+				xored[i]=client->passWord[i]^client->xorpassw[i];
+			
+			/*printf("passWord=");
+			for (int i=0; i<32; i+=4)
+				printf("[%2d %2d %2d %2d] ", client->passWord[i], client->passWord[i+1], client->passWord[i+2], client->passWord[i+3]);
+			printf("\n");
+			printf("xorpassw=");
+			for (int i=0; i<32; i+=4)
+				printf("[%2d %2d %2d %2d] ", client->xorpassw[i], client->xorpassw[i+1], client->xorpassw[i+2], client->xorpassw[i+3]);
+			printf("\n");
+			printf("xored   =");
+			for (int i=0; i<32; i+=4)
+				printf("[%2d %2d %2d %2d] ", xored[i], xored[i+1], xored[i+2], xored[i+3]);
+			printf("\n");*/
+			
+			SHA1_CONTEXT hd;
+			sha1_init(&hd);
+			sha1_write(&hd, xored, 32);
+			sha1_final(&hd);
+			Uint8 *computedHashed=sha1_read(&hd);
+			
+			// We compare:
+			if (memcmp(computedHashed, receivedHashed, 20)!=0)
+			{
+				Uint8 data[8];
+				data[0]=YMT_CONNECTION_REFUSED;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				
+				data[4]=YCRT_BAD_PASSWORD;
+				data[5]=YOG_PROTOCOL_VERSION;
+				data[6]=0;
+				data[7]=0;
+				send(ip, data, 8);
+				return;
+			}
 		}
 		else
 		{
 			Uint8 data[8];
-			data[0]=YMT_CONNECTING;
+			data[0]=YMT_CONNECTION_REFUSED;
 			data[1]=0;
 			data[2]=0;
 			data[3]=0;
-			addSint32(data, uid, 4);
+			
+			data[4]=YCRT_PROTOCOL_TOO_OLD;
+			data[5]=YOG_PROTOCOL_VERSION;
+			data[6]=0;
+			data[7]=0;
 			send(ip, data, 8);
+			return;
 		}
+		
+		connectedClients.erase(cci);
+		
+		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
+			client->addClient(*aci);
+		
+		authentifiedClients.push_back(connectedClient);
+		
+		for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); game++)
+			client->addGame(*game);
+		
+		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
+			(*aci)->addClient(client);
+		
+		if (data[1]==1)
+		{
+			admin=client;
+			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
+		}
+		else
+			lprintf("new client authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
+		
+		Uint8 data[8];
+		data[0]=YMT_AUTHENTICATING;
+		data[1]=0;
+		data[2]=0;
+		data[3]=0;
+		addSint32(data, client->uid, 4);
+		send(ip, data, 8);
 	}
 	break;
 	case YMT_DECONNECTING:
 	{
 		send(ip, YMT_DECONNECTING);
 		std::list<YOGClient *>::iterator client;
-		for (client=clients.begin(); client!=clients.end(); ++client)
+		for (client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 			if ((*client)->hasip(ip))
 			{
-				lprintf("client \"%s\" deconnected.\n", (*client)->userName);
+				lprintf("(authentified)client \"%s\" deconnected.\n", (*client)->userName);
 				deconnectClient(*client);
-				clients.erase(client);
-				break;
+				authentifiedClients.erase(client);
+				unconnectedClients.push_back(*client);
+				return;
+			}
+		for (client=connectedClients.begin(); client!=connectedClients.end(); ++client)
+			if ((*client)->hasip(ip))
+			{
+				lprintf("(connected)client \"%s\" deconnected.\n", (*client)->userName);
+				deconnectClient(*client);
+				connectedClients.erase(client);
+				unconnectedClients.push_back(*client);
+				return;
 			}
 	}
 	break;
@@ -394,7 +629,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false;
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -433,9 +668,9 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				else
 					m.messageType=YMT_MESSAGE;
 				
-				// Here we have to send this message to all clients!
+				// Here we have to send this message to all authentifiedClients!
 				lprintf("%d:%d %s:%s\n", m.textLength, m.userNameLength, m.userName, m.text);
-				for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+				for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 					if ((*client!=admin) || (c!=admin))
 						(*client)->addMessage(&m);
 			}
@@ -452,7 +687,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint8 messageID=data[1];
 		bool good=false;
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -473,7 +708,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint8 receiptID=data[1];
 		bool good=false;
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -495,7 +730,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		bool good=false;
 		bool dosend=false;
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -546,7 +781,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false;
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip) && (*sender)->sharingGame)
 			{
 				(*sender)->TOTL=3;
@@ -572,7 +807,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		send(ip, YMT_STOP_PLAYING_GAME);
 		
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -581,7 +816,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				{
 					lprintf("(ok)\n");
 					Uint32 cuid=(*sender)->uid;
-					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+					for (std::list<YOGClient *>::iterator c=authentifiedClients.begin(); c!=authentifiedClients.end(); ++c)
 						(*c)->updateClient(cuid, (Uint16)CUP_NOT_PLAYING);
 					(*sender)->joinGameip.host=0;
 					(*sender)->joinGameip.port=0;
@@ -603,7 +838,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false; // is he connected ?
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -635,7 +870,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false; // is he connected ?
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -666,7 +901,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false; // is he connected ?
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -724,7 +959,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		bool good=false; // is he connected ?
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -780,7 +1015,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			break;
 		}
 		send(ip, YMT_CONNECTION_PRESENCE);
-		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (std::list<YOGClient *>::iterator sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip))
 			{
 				(*sender)->TOTL=3;
@@ -823,10 +1058,10 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		if (id)
 		{
-			lprintf("YOG metaserver closing(%d)\n");
+			lprintf("YOG metaserver closing\n");
 			send(ip, YMT_CLOSE_YOG);
 			std::list<YOGClient *>::iterator client;
-			for (client=clients.begin(); client!=clients.end(); ++client)
+			for (client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 				 (*client)->send(YMT_CLOSE_YOG);
 			running=false;
 		}
@@ -836,14 +1071,14 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		Uint32 cuid=getUint32(data, 4);
 		lprintf("YMT_HOST_GAME_SOCKET %d\n", cuid);
-		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (std::list<YOGClient *>::iterator sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->ip.host==ip.host && (*sender)->sharingGame && (*sender)->uid==cuid)
 			{
 				if ((*sender)->hostGameip.host==0) // Is the game newly ready ?
-					for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+					for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 						(*client)->addGame((*sender)->sharingGame);
 				if (!(*sender)->playing)
-					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+					for (std::list<YOGClient *>::iterator c=authentifiedClients.begin(); c!=authentifiedClients.end(); ++c)
 						(*c)->updateClient(cuid, (Uint16)CUP_PLAYING);
 				(*sender)->hostGameip=ip;
 				(*sender)->playing=true;
@@ -860,11 +1095,11 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		Uint32 cuid=getUint32(data, 4);//Client UID
 		Uint32 guid=getUint32(data, 8);//Game UID
 		lprintf("YMT_JOIN_GAME_SOCKET cuid=%d guid=%d\n", cuid, guid);
-		for (std::list<YOGClient *>::iterator sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (std::list<YOGClient *>::iterator sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->ip.host==ip.host && (*sender)->uid==cuid)
 			{
 				if (!(*sender)->playing)
-					for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
+					for (std::list<YOGClient *>::iterator c=authentifiedClients.begin(); c!=authentifiedClients.end(); ++c)
 						(*c)->updateClient(cuid, (Uint16)CUP_PLAYING);
 				(*sender)->joinGameip=ip;
 				(*sender)->playing=true;
@@ -900,7 +1135,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		bool good=false; // is he connected ?
 		std::list<YOGClient *>::iterator sender;
-		for (sender=clients.begin(); sender!=clients.end(); ++sender)
+		for (sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
 			if ((*sender)->hasip(ip) && (*sender)->sharingGame)
 			{
 				(*sender)->TOTL=3;
@@ -955,14 +1190,14 @@ void YOGServer::run()
 			lprintf("packet->maxlen=%d\n", packet->maxlen);
 			lprintf("packet->status=%d\n", packet->status);
 			lprintf("packet->address=%x,%d\n", packet->address.host, packet->address.port);
-			lprintf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));
-			lprintf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);*/
+			lprintf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));*/
+			lprintf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
 			treatPacket(packet->address, packet->data, packet->len);
 		}
 		SDLNet_FreePacket(packet);
 		
 		// We look for resending events:
-		for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+		for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 		{
 			YOGClient *c=*client;
 			if (c->messages.size()>0 && c->messageTimeout--<=0)
@@ -1088,7 +1323,7 @@ void YOGServer::run()
 		}
 		
 		// We look for disconnected clients:
-		for (std::list<YOGClient *>::iterator client=clients.begin(); client!=clients.end(); ++client)
+		for (std::list<YOGClient *>::iterator client=authentifiedClients.begin(); client!=authentifiedClients.end(); ++client)
 		{
 			YOGClient *c=*client;
 			if (c->timeout--<=0)
@@ -1097,7 +1332,8 @@ void YOGServer::run()
 				{
 					lprintf("Client %s timed out.\n", (*client)->userName);
 					deconnectClient(*client);
-					clients.erase(client);
+					authentifiedClients.erase(client);
+					unconnectedClients.push_back(*client);
 					break;
 				}
 				else
@@ -1121,7 +1357,7 @@ void YOGServer::lprintf(const char *msg, ...)
 	vsnprintf(output, 256, msg, arglist);
 	va_end(arglist);
 	output[255]=0;
-	if (strcmp(YOG_SERVER_IP, "192.168.1.10")==0)
+	if (strncmp(YOG_SERVER_IP, "192.168", 7)==0)
 		printf("%s", output);
 	
 	if (logServerFile)

@@ -122,12 +122,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			if (i+3<argc)
 			{
 				strncpy(hostServerMapName, argv[i+1], 32);
-				strncpy(hostServerUsername, argv[i+2], 32);
-				strncpy(hostServerPassword, argv[i+3], 32);
+				strncpy(hostServerUserName, argv[i+2], 32);
+				strncpy(hostServerPassWord, argv[i+3], 32);
 				hostServer=true;
 				pushUserName(argv[i+2]);
 				i+=3;
-				pushUserName(hostServerUsername);
+				pushUserName(hostServerUserName);
 			}
 			else
 			{

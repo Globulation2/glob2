@@ -20,6 +20,7 @@
 #ifndef __YOG_CONSTS_H
 #define __YOG_CONSTS_H
 
+//#define YOG_SERVER_IP "192.168.1.37"
 #define YOG_SERVER_IP "yog1.ysagoon.com"
 #define YOG_SERVER_PORT 7486
 
@@ -46,7 +47,7 @@
 //Max size is defined by games lists. (4+2+4+2+4+4+64)*16+4=1348
 //or clients (4+32+2)*32+1=1217
 #define YOG_MAX_PACKET_SIZE 1348
-#define YOG_PROTOCOL_VERSION 4
+#define YOG_PROTOCOL_VERSION 5
 
 enum clientUpdateChange
 {
@@ -72,6 +73,18 @@ enum YOGClientMessageType
 	YCMT_ADMIN_MESSAGE=20,
 };
 
+// data[4] of a YMT_CONNECTION_REFUSED message:
+enum YogConnectionRefusedType
+{
+	YCRT_NOTHING=0,
+	YCRT_PROTOCOL_TOO_OLD=10,
+	YCRT_USERNAME_ALLREADY_USED=20,
+	YCRT_BAD_PASSWORD=30,
+	YCRT_ALREADY_PASSWORD=40,
+	YCRT_ALREADY_AUTHENTICATED=50,
+	YCRT_NOT_CONNECTED_YET=60
+};
+
 // Those are all the possible UDP packet identifier,
 // used to communicate betweem the YOG-client and the YOG-metaserver.
 enum YOGMessageType
@@ -86,8 +99,9 @@ enum YOGMessageType
 	YMT_GAME_INFO_FROM_HOST=5,
 	
 	YMT_CONNECTING=6,
-	YMT_DECONNECTING=7,
-	YMT_CONNECTION_REFUSED=8,
+	YMT_AUTHENTICATING=7,
+	YMT_DECONNECTING=8,
+	YMT_CONNECTION_REFUSED=9,
 	
 	YMT_SEND_MESSAGE=10,
 	YMT_MESSAGE=12,

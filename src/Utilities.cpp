@@ -539,6 +539,45 @@ namespace Utilities
 
 		va_end(arglist);
 	}
+	
+	int staticTokenize(const char *s, int n, char token[32][256])
+	{
+		int tokenNumber=0;
+		for (int i=0; i<32; i++)
+			token[i][0]=0;
+		int tokenCharIndex=0;
+		bool wasSpace=true;
+		for (int i=0; i<n; i++)
+		{
+			char c=s[i];
+			bool space=(c==' ')||(c=='=');
+			if (space)
+			{
+				if (!wasSpace)
+				{
+					token[tokenNumber++][tokenCharIndex]=0;
+					if (tokenNumber<32)
+						tokenCharIndex=0;
+					else
+						break;
+				}
+			}
+			else if (c==0 || c=='\n')
+			{
+				token[tokenNumber][tokenCharIndex]=0;
+				if (tokenCharIndex>0)
+					tokenNumber++;
+				break;
+			}
+			else
+			{
+				if (tokenCharIndex<255)
+					token[tokenNumber][tokenCharIndex++]=c;
+			}
+			wasSpace=space;
+		}
+		return tokenNumber;
+	}
 }
 
 

@@ -102,6 +102,9 @@ namespace Utilities
 	//! read a string from a stream
 	char *gets(char *dest, int size, SDL_RWops *stream);
 	void streamprintf(SDL_RWops *stream, const char *format, ...);
+	
+	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
+	int staticTokenize(const char *s, int n, char token[32][256]);
 };
 
 #endif
