@@ -87,6 +87,7 @@ void GameGUI::init()
 	typingInputScreenPos=0;
 	
 	messagesList.clear();
+	markList.clear();
 	localTeam=NULL;
 	teamStats=NULL;
 }
@@ -196,11 +197,11 @@ void GameGUI::step(void)
 	
 	assert(localTeam);
 	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
-		addMessage(globalContainer->texts.getString("[your units are under attack]"), 200, 30, 30);
+		addMessage(200, 30, 30, globalContainer->texts.getString("[your units are under attack]"));
 	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
-		addMessage(globalContainer->texts.getString("[your buildings are under attack]"), 255, 0, 0);
+		addMessage(255, 0, 0, globalContainer->texts.getString("[your buildings are under attack]"));
 	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
-		addMessage(globalContainer->texts.getString("[building has been finished]"), 30, 255, 30);
+		addMessage(30, 255, 30, globalContainer->texts.getString("[building has been finished]"));
 		
 	// do a yog step
 	globalContainer->yog->step();
@@ -236,10 +237,7 @@ void GameGUI::step(void)
 			break;
 		}
 		
-		char msg[YOG::MAX_MESSAGE_SIZE];
-		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "<%s> %s", m->userName, m->text);
-		msg[YOG::MAX_MESSAGE_SIZE-1]=0;
-		addMessage(msg, r, g, b);
+		addMessage(r, g, b, "<%s> %s", m->userName, m->text);
 		globalContainer->yog->receivedMessages.erase(m);
 	}
 
@@ -1636,8 +1634,9 @@ void GameGUI::drawOverlayInfos(void)
 		// if either script text or script timer has been shown, increment line count
 		if (game.script.isTextShown || game.script.getMainTimer())
 			ymesg+=32;
-			
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
+		
+		// display messages
+		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
 			/*globalContainer->standardFont->pushColor(0, 0, 0);
 			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
@@ -1648,8 +1647,17 @@ void GameGUI::drawOverlayInfos(void)
 			globalContainer->standardFont->popStyle();
 			globalContainer->standardFont->popColor();
 			ymesg+=20;
-			it->showTicks--;
+			if (!(--it->showTicks))
+			{
+				it=messagesList.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+			
 		}
+		/*
 		for (std::list <Message>::iterator it2=messagesList.begin(); it2!=messagesList.end(); ++it2)
 		{
 			if (it2->showTicks<0)
@@ -1657,7 +1665,7 @@ void GameGUI::drawOverlayInfos(void)
 				std::list<Message>::iterator ittemp=it2;
 				it2=messagesList.erase(ittemp);
 			}
-		}
+		}*/
 	}
 }
 
@@ -1732,10 +1740,7 @@ void GameGUI::executeOrder(Order *order)
 
 			if (mo->recepientsMask &(1<<localPlayer))
 			{
-				char text[MAX_DISPLAYED_MESSAGE_SIZE];
-				snprintf(text, MAX_MESSAGE_SIZE, "%s : %s", game.players[sp]->name, mo->getText());
-				text[MAX_DISPLAYED_MESSAGE_SIZE-1] = 0;
-				addMessage(text);
+				addMessage(230, 230, 230, "%s : %s", game.players[sp]->name, mo->getText());
 			}
 			game.executeOrder(order, localPlayer);
 		}
@@ -1751,14 +1756,21 @@ void GameGUI::executeOrder(Order *order)
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
-			char text[MAX_DISPLAYED_MESSAGE_SIZE];
-			snprintf(text, MAX_MESSAGE_SIZE, "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
-			text[MAX_DISPLAYED_MESSAGE_SIZE-1] = 0;
-			addMessage(text);
+			addMessage(110, 0, 255,  "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
 			
 			game.executeOrder(order, localPlayer);
 		}
 		break;
+		case  ORDER_MAP_MARK:
+		{
+			MapMarkOrder *mmo=(MapMarkOrder *)order;
+			
+			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
+			if (game.teams[mmo->teamNumber]->allies & localTeamNo)
+			{
+				addMark(mmo);
+			}
+		}
 		default:
 		{
 			game.executeOrder(order, localPlayer);
@@ -1989,5 +2001,34 @@ void GameGUI::centerViewportOnSelection(void)
 		viewportX=(viewportX+game.map.getW())&game.map.getMaskW();
 		viewportY=(viewportY+game.map.getH())&game.map.getMaskH();
 	}
+}
+
+void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
+{
+	Message message;
+	
+	va_list ap;
+	va_start(ap, msgText);
+	vsnprintf (message.text, Message::MAX_DISPLAYED_MESSAGE_SIZE, msgText, ap);
+	va_end(ap);
+	message.text[Message::MAX_DISPLAYED_MESSAGE_SIZE-1]=0;
+	
+	message.showTicks=Message::DEFAULT_MESSAGE_SHOW_TICKS;
+	message.r = r;
+	message.g = g;
+	message.b = b;
+	message.a = DrawableSurface::ALPHA_OPAQUE;
+	messagesList.push_front(message);
+}
+
+void GameGUI::addMark(MapMarkOrder *mmo)
+{
+	Mark mark;
+	mark.showTicks=Mark::DEFAULT_MARK_SHOW_TICKS;
+	mark.x=mmo->x;
+	mark.y=mmo->y;
+	mark.r=game.teams[mmo->teamNumber]->colorR;
+	mark.g=game.teams[mmo->teamNumber]->colorG;
+	mark.b=game.teams[mmo->teamNumber]->colorB;
 }
 

@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #ifndef __GAME_GUI_H
@@ -178,40 +178,53 @@ private:
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
 
-	// message related functions : FIXME : move this to a class
-public :
-	enum {
-		MAX_MESSAGE_SIZE = 64,
-		MAX_DISPLAYED_MESSAGE_SIZE = MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4
-	}; // avoid network overflow
 private :
-	typedef struct
+
+	// On screen message handling
+	// --------------------------
+
+	struct Message
 	{
+		enum { MAX_MESSAGE_SIZE = 64 };
+		enum { MAX_DISPLAYED_MESSAGE_SIZE = MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4 }; // avoid network overflow
+		enum { DEFAULT_MESSAGE_SHOW_TICKS = 100 };
+	
+		// since when it is shown
 		int showTicks;
 		char text[MAX_DISPLAYED_MESSAGE_SIZE];
+		// color
 		Uint8 r, g, b, a;
-	} Message;
-	std::list<Message> messagesList;
-	enum {
-		DEFAULT_MESSAGE_SHOW_TICKS = 100,
 	};
+	
+	std::list<Message> messagesList;
+
 	//! add a message to the window message list
-	void addMessage(const char *msgText, Uint8 r = 230, Uint8 g = 230, Uint8 b = 230, Uint8 a = DrawableSurface::ALPHA_OPAQUE)
-	{
-		Message message;
-		message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-		strncpy(message.text, msgText, MAX_DISPLAYED_MESSAGE_SIZE);
-		message.text[MAX_DISPLAYED_MESSAGE_SIZE-1]=0;
-		message.r = r;
-		message.g = g;
-		message.b = b;
-		message.a = a;
-		messagesList.push_front(message);
-	}
+	void addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...);
+	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
+	
+	// Minimap marking handling
+	// ------------------------
+	
+	struct Mark
+	{
+		enum { DEFAULT_MARK_SHOW_TICKS = 100 };
+		
+		// since when it is shown
+		int showTicks;
+		// position
+		int x, y;
+		// color
+		Uint8 r, g, b;
+	};
+	
+	std::list<Mark> markList;
+	
+	//! add a minimap mark
+	void addMark(MapMarkOrder *mmo);
 };
 
 #endif
