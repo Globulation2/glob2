@@ -46,7 +46,7 @@ public:
 	Uint8 wishedDelay;
 	bool latencyPadding; // True if this order has been added to increase latency.
 	Uint32 ustep;
-	Uint32 gameCheckSum; //TODO: remove SubmitCheckSumOrder
+	Uint32 gameCheckSum;
 };
 
 
@@ -386,25 +386,6 @@ public:
  protected:
 	Uint8 data[24];
 };
-
-/*class SubmitCheckSumOrder:public MiscOrder
-{
-public:
-	SubmitCheckSumOrder(const Uint8 *data, int dataLength);
-	SubmitCheckSumOrder(Sint32 checkSumValue);
-	virtual ~SubmitCheckSumOrder(void) { }
-
-	Uint8 getOrderType(void) { return ORDER_SUBMIT_CHECK_SUM; }
-	Uint8 *getData(void);
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_SUBMIT_CHECK_SUM; }
-
-	Sint32 checkSumValue;
-
- private:
-	Uint8 data[4];
-};*/
 
 class MapMarkOrder:public MiscOrder
 {

@@ -105,10 +105,6 @@ Order *Order::getOrder(const Uint8 *netData, int netDataLength)
 	{
 		return new SetAllianceOrder(netData+1, netDataLength-1);
 	}
-	/*case ORDER_SUBMIT_CHECK_SUM:
-	{
-		return new SubmitCheckSumOrder(netData+1, netDataLength-1);
-	}*/
 	case ORDER_MAP_MARK:
 	{
 		return new MapMarkOrder(netData+1, netDataLength-1);

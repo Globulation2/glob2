@@ -161,6 +161,7 @@ private:
 		DS_ExchangingDroppingMasks=1,
 		DS_ExchangingOrders=2
 	};
+	bool dropStatusCommuniquedToGui[32];
 	
 	DropState dropState;
 	Uint8 theLastExecutedStep;
