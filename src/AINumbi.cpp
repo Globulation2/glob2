@@ -365,9 +365,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 
 			printf("AI: (%d) ratioLocal changed.\n", b->gid);
 
-			Sint32 rdyPtr[1][NB_UNIT_TYPE];
-			memcpy(rdyPtr, b->ratioLocal, NB_UNIT_TYPE*sizeof(Sint32));
-			return new OrderModifySwarms(&(b->gid), rdyPtr, 1);
+			return new OrderModifySwarms(&(b->gid), b->ratioLocal, 1);
 		}
 
 		int f=estimateFood(b->posX, b->posY);

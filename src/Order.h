@@ -204,7 +204,7 @@ class OrderModifySwarms:public OrderModify
 {
 public:
 	OrderModifySwarms(const Uint8 *data, int dataLength);
-	OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], int length);
+	OrderModifySwarms(Uint16 *gid, Sint32 *ratios, int length);
 	virtual ~OrderModifySwarms(void);
 
 	Uint8 *getData(void);
