@@ -595,7 +595,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 {
-	if (size!=12)
+	if (size!=10)
 	{
 		fprintf(logFile, "Bad size(%d) for an Session request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
@@ -615,7 +615,8 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	if (!sessionInfo.players[p].ipFromNAT)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
-		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
+		Uint16 newPort=SDL_SwapBE16(getUint16(data, 8));
+		fprintf(logFile, "serverIP=(%s), serverIP.host=%x, serverIP.port=%x, newHost=%x, newPort=%x\n", Utilities::stringIP(serverIP), serverIP.host, serverIP.port, newHost, newPort);
 		if (serverIP.host && (serverIP.host!=SDL_SwapBE32(0x7F000001)))
 		{
 			if (serverIP.host!=newHost)
