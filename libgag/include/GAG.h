@@ -24,7 +24,7 @@
 #include "FileManager.h"
 #include "GraphicContext.h"
 #include "SupportFunctions.h"
-#include "Environment.h"
+#include "Toolkit.h"
 #include "GUIBase.h"
 #include "GUIButton.h"
 #include "GUIText.h"

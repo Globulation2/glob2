@@ -18,7 +18,7 @@
 */
 
 #include "SDLFont.h"
-#include <Environment.h>
+#include <Toolkit.h>
 #include <SupportFunctions.h>
 #include <assert.h>
 
@@ -57,7 +57,10 @@ bool SDLBitmapFont::load(const char *filename)
 	init();
 
 	SDL_Surface *temp, *sprite;
-	SDL_RWops *stream=GAG::fileManager->open(filename, "rb");
+	printf("%p\n", Toolkit::getFileManager());
+	SDL_RWops *stream=Toolkit::getFileManager()->open(filename, "rb");
+	if (!stream)
+		return false;
 	temp=IMG_Load_RW(stream, 0);
 	SDL_RWclose(stream);
 	sprite=SDL_DisplayFormatAlpha(temp);
@@ -314,7 +317,7 @@ SDLTTFont::~SDLTTFont()
 
 bool SDLTTFont::load(const char *filename, unsigned size)
 {
-	SDL_RWops *fontStream = GAG::fileManager->open(filename, "rb", false);
+	SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb", false);
 	if (fontStream)
 	{
 		font = TTF_OpenFontRW(fontStream, 1, size);

@@ -32,14 +32,14 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 
 	startButton->visible=false;
 	addWidget(startButton);
-	notReadyText=new Text(440, 390, globalContainer->menuFont, globalContainer->texts.getString("[not ready]"), 180, 25);
+	notReadyText=new Text(440, 390, "menu", globalContainer->texts.getString("[not ready]"), 180, 25);
 	notReadyText->visible=true;
 	addWidget(notReadyText);
-	gameFullText=new Text(440, 345, globalContainer->menuFont, globalContainer->texts.getString("[game full]"), 180, 25);
+	gameFullText=new Text(440, 345, "menu", globalContainer->texts.getString("[game full]"), 180, 25);
 	gameFullText->visible=false;
 	addWidget(gameFullText);
 	savedSessionInfo=NULL;
-	
+
 	if (!sessionInfo->fileIsAMap)
 	{
 		// We remember the sessionInfo at saving time.
@@ -52,7 +52,7 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	multiplayersJoin=NULL;
 	this->shareOnYOG=shareOnYOG;
 
-	addWidget(new Text(20, 5, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
 
 	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
 	{
@@ -62,25 +62,25 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		for (int j=0; j<sessionInfo->numberOfTeam; j++)
 			color[i]->addColor(sessionInfo->team[j].colorR, sessionInfo->team[j].colorG, sessionInfo->team[j].colorB);
 		addWidget(color[i]);
-		text[i]=new Text(42+dx, 42+dy, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
+		text[i]=new Text(42+dx, 42+dy, "standard",  globalContainer->texts.getString("[open]"));
 		addWidget(text[i]);
 		kickButton[i]=new TextButton(220+dx, 42+dy, 80, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
-		
+
 		wasSlotUsed[i]=false;
-		
+
 		text[i]->visible=false;
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	startTimer=new Text(440, 300, globalContainer->standardFont, "");
+	startTimer=new Text(440, 300, "standard", "");
 	addWidget(startTimer);
 
 	timeCounter=0;
-	
+
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
 	addWidget(textInput);
 }
 
@@ -338,7 +338,7 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		multiplayersHost->sendMessage(textInput->text);
+		multiplayersHost->sendMessage(textInput->getText());
 		textInput->setText("");
 	}
 }

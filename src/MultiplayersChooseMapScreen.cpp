@@ -31,30 +31,30 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
 	toogleButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[the games]"), TOOGLE);
 	mapPreview=new MapPreview(240, 60, "net.map");
-	title=new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600);
-	
+	title=new Text(20, 18, "menu", globalContainer->texts.getString("[choose map]"), 600);
+
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(toogleButton);
 	addWidget(mapPreview);
 	addWidget(title);
 
-	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
+	mapName=new Text(440, 60+128+30, "standard", "", 180);
 	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+60, globalContainer->standardFont, "", 180);
+	mapInfo=new Text(440, 60+128+60, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+90, globalContainer->standardFont, "", 180);
+	mapVersion=new Text(440, 60+128+90, "standard", "", 180);
 	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
+	mapSize=new Text(440, 60+128+120, "standard", "", 180);
 	addWidget(mapSize);
-	methode=new Text(440, 60+128+150, globalContainer->standardFont, "", 180);
+	methode=new Text(440, 60+128+150, "standard", "", 180);
 	addWidget(methode);
 	
 	mapFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
-	if (globalContainer->fileManager->initDirectoryListing("maps", "map"))
+	if (Toolkit::getFileManager()->initDirectoryListing("maps", "map"))
 	{
 		const char *fileName;
-		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
+		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
 		{
 			const char *tempFileName=Utilities::concat("maps/", fileName);
 			const char *mapTempName=glob2FilenameToName(tempFileName);
@@ -67,10 +67,10 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	addWidget(mapFileList);
 
 	gameFileList=new List(20, 60, 200, 400, globalContainer->standardFont);
-	if (globalContainer->fileManager->initDirectoryListing("games", "game"))
+	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
 	{
 		const char *fileName;
-		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
+		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
 		{
 			char *newText=Utilities::dencat(fileName, ".game");
 			gameFileList->addText(newText);
@@ -111,7 +111,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		}
 		mapPreview->setMapThumbnail(mapFileName);
 
-		SDL_RWops *stream=globalContainer->fileManager->open(mapFileName,"rb");
+		SDL_RWops *stream=Toolkit::getFileManager()->open(mapFileName,"rb");
 		if (stream==NULL)
 			printf("File '%s' not found!\n", mapFileName);
 		else

@@ -1185,10 +1185,10 @@ void SDLGraphicContext::loadSprite(const char *filename, const char *name)
 
 	while (true)
 	{
-		frameStream=tryOpenImage(name, i, NORMAL);
-		overlayStream=tryOpenImage(name, i, OVERLAY);
-		paletizedStream=tryOpenImage(name, i, PALETTE);
-		rotatedStream=tryOpenImage(name, i, ROTATED);
+		frameStream=tryOpenImage(filename, i, NORMAL);
+		overlayStream=tryOpenImage(filename, i, OVERLAY);
+		paletizedStream=tryOpenImage(filename, i, PALETTE);
+		rotatedStream=tryOpenImage(filename, i, ROTATED);
 
 		if (!((frameStream) || (overlayStream) || (paletizedStream) || (rotatedStream)))
 			break;
@@ -1213,7 +1213,7 @@ void SDLGraphicContext::loadFont(const char *filename, unsigned size, const char
 	Font *rf = NULL;
 	
 	SDLTTFont *ttf=new SDLTTFont();
-	if (ttf->load(name, size))
+	if (ttf->load(filename, size))
 		rf = ttf;
 	else
 		delete ttf;
@@ -1221,17 +1221,19 @@ void SDLGraphicContext::loadFont(const char *filename, unsigned size, const char
 	if (!rf)
 	{
 		SDLBitmapFont *font=new SDLBitmapFont();
-		if (font->load(name))
+		if (font->load(filename))
 			rf = font;
 		else
 			delete font;
 	}
-		
-	fprintf(stderr, "Toolkit : Can't load font %s from %s\n", name, filename);
-	
+
 	if (rf)
 	{
 		Toolkit::fontMap[std::string(name)] = rf;
+	}
+	else
+	{
+		fprintf(stderr, "GAG : Can't load font %s from %s\n", name, filename);
 	}
 }
 

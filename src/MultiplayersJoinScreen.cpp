@@ -27,26 +27,26 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(false);
 
-	serverName=new TextInput(20, 170, 280, 30, globalContainer->standardFont, "localhost", true);
-	strncpy(multiplayersJoin->serverName, serverName->text, 256);
+	serverName=new TextInput(20, 170, 280, 30, "standard", "localhost", true);
+	strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
 	multiplayersJoin->serverName[255]=0;
 	addWidget(serverName);
 
-	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false, 32);
-	strncpy(multiplayersJoin->playerName, playerName->text, 32);
+	playerName=new TextInput(20, 270, 280, 30, "standard", globalContainer->userName, false, 32);
+	strncpy(multiplayersJoin->playerName, playerName->getText(), 32);
 	multiplayersJoin->playerName[31]=0;
 	addWidget(playerName);
 
-	serverText=new Text(20, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+	serverText=new Text(20, 140, "menu", globalContainer->texts.getString("[svr hostname]"));
 	addWidget(serverText);
 
-	playerText=new Text(20, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+	playerText=new Text(20, 240, "menu", globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
-	
-	aviableGamesText=new Text(320, 90, globalContainer->menuFont, globalContainer->texts.getString("[aviable lan games]"));
+
+	aviableGamesText=new Text(320, 90, "menu", globalContainer->texts.getString("[aviable lan games]"));
 	addWidget(aviableGamesText);
-	
-	statusText=new Text(20, 390, globalContainer->standardFont, "");
+
+	statusText=new Text(20, 390, "standard", "");
 	addWidget(statusText);
 
 	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
@@ -54,9 +54,9 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 
 	lanServers=new List(320, 120, 280, 180, globalContainer->menuFont);
 	addWidget(lanServers);
-	
+
 	wasVisible=false;
-	
+
 	oldStatus=MultiplayersJoin::WS_BAD; //We wants redraw at first show.
 }
 
@@ -83,7 +83,7 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		delete[] s;
 		oldStatus=multiplayersJoin->waitingState;
 	}
-	
+
 	if (multiplayersJoin->listHasChanged)
 	{
 		lanServers->clear();
@@ -137,12 +137,12 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (source==serverName)
 		{
-			strncpy(multiplayersJoin->serverName, serverName->text, 256);
+			strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
 			multiplayersJoin->serverName[255]=0;
 		}
 		else if (source==playerName)
 		{
-			strncpy(multiplayersJoin->playerName, playerName->text, 32);
+			strncpy(multiplayersJoin->playerName, playerName->getText(), 32);
 			multiplayersJoin->playerName[31]=0;
 		}
 		else
@@ -185,7 +185,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 				if (i==par1)
 				{
 					serverName->setText(Utilities::stringIP(it->ip.host));
-					strncpy(multiplayersJoin->serverName, serverName->text, 256);
+					strncpy(multiplayersJoin->serverName, serverName->getText(), 256);
 					multiplayersJoin->serverName[255]=0;
 					break;
 				}

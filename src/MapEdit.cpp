@@ -52,7 +52,8 @@ MapEdit::MapEdit()
 	pushedBrush=EM_NONE;
 
 	// load menu
-	menu=globalContainer->gfx->loadSprite("data/gui/editor");
+	globalContainer->gfx->loadSprite("data/gui/editor", "editor");
+	menu=Toolkit::getSprite("editor");
 	// TODO FIXME here:
 	font=globalContainer->littleFont; //globalContainer->gfx->loadFont("data/fonts/arial8black.png");
 
@@ -68,7 +69,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
-	delete menu;
+	Toolkit::releaseSprite("editor");
 	//delete font;
 }
 
@@ -778,7 +779,7 @@ void MapEdit::askConfirmationToQuit()
 		const char *yes = globalContainer->texts.getString("[Yes]");
 		const char *no = globalContainer->texts.getString("[No]");
 		const char *save = globalContainer->texts.getString("[Cancel]");
-		int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
+		int res=(int)MessageBox(globalContainer->gfx, "standard", MB_THREEBUTTONS, reallyquit, yes, no, save);
 
 		if (res==1) // no, quit
 			isRunning=false;

@@ -93,6 +93,8 @@ void Text::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	fontPtr = Toolkit::getFont(font.c_str());
+	assert(fontPtr);
+	
 	if (visible)
 	{
 		int wDec, hDec;

@@ -28,7 +28,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	this->game=game;
 	editor = new TextArea(10, 10, 580, 320, globalContainer->standardFont, false, mapScript->getSourceCode());
 	addWidget(editor);
-	compilationResult=new Text(10, 335, globalContainer->standardFont);
+	compilationResult=new Text(10, 335, "standard");
 	addWidget(compilationResult);
 	addWidget(new TextButton(10, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[ok]"), OK));
 	addWidget(new TextButton(100, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Cancel]"), CANCEL));

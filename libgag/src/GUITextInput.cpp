@@ -281,6 +281,7 @@ void TextInput::paint(void)
 	static const int b= 180;
 
 	fontPtr = Toolkit::getFont(font.c_str());
+	assert(fontPtr);
 	recomputeTextInfos();
 
 	assert(parent);

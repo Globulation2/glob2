@@ -41,13 +41,13 @@ YOGScreen::YOGScreen()
 	addWidget(gameInfo);
 	joinButton=new TextButton(440, 165, 180, 25, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN);
 	addWidget(joinButton);
-	
+
 	playerList=new List(440, 210, 180, 160, globalContainer->standardFont);
 	addWidget(playerList);
-	
+
 	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true, 256);
+	textInput=new TextInput(20, 435, 400, 25, "standard", "", true, 256);
 	addWidget(textInput);
 
 	selectedGameInfo=NULL;
@@ -155,7 +155,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		yog->sendMessage(textInput->text);
+		yog->sendMessage(textInput->getText());
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)

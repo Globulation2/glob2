@@ -13,7 +13,6 @@ libgag_a_SOURCES = base.cpp\
 	SDLGraphicContext.cpp\
 	GLGraphicContext.cpp \
 	SDL_ttf.c\
-	GAG.cpp\
 	GUIButton.cpp\
 	GUINumber.cpp\
 	GUIText.cpp\
@@ -21,7 +20,8 @@ libgag_a_SOURCES = base.cpp\
 	SDLFont.cpp\
 	SDLSprite.cpp\
 	GUIMessageBox.cpp \
-	SupportFunctions.cpp
+	SupportFunctions.cpp \
+	Toolkit.cpp
 
 EXTRA_DIST = SDLFont.h \
         SDLGraphicContext.h \

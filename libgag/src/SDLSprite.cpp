@@ -20,7 +20,7 @@
 #include "SDLSprite.h"
 #include "SDLGraphicContext.h"
 #include <math.h>
-#include <Environment.h>
+#include <Toolkit.h>
 #include <SupportFunctions.h>
 #include <assert.h>
 
@@ -239,7 +239,7 @@ void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
 
 SDLSprite::Palette::Palette()
 {
-	FILE *palFP=GAG::fileManager->openFP("data/pal.txt", "rb");
+	FILE *palFP=Toolkit::getFileManager()->openFP("data/pal.txt", "rb");
 	assert (palFP);
 	if (palFP)
 	{
