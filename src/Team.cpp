@@ -150,37 +150,23 @@ Team::~Team()
 		for (int i=0; i<1024; ++i)
 			if (myBuildings[i])
 				delete myBuildings[i];
-		for (int i=0; i<256; ++i)
-			if (myBullets[i])
-				delete myBuildings[i];
 	}
 }
 
 void Team::init(void)
 {
-	int i;
-
-	for (i=0; i<1024; i++)
-	{
+	for (int i=0; i<1024; i++)
 		myUnits[i]=NULL;
-	}
 
-	for (i=0; i<1024; i++)
-	{
+	for (int i=0; i<1024; i++)
 		myBuildings[i]=NULL;
-	}
-
-	for (i=0; i<256; i++)
-	{
-		myBullets[i]=NULL;
-	}
 
 	startPosX=startPosY=0;
 	
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
 
-	for (i=0; i<EVENT_TYPE_SIZE; i++)
+	for (int i=0; i<EVENT_TYPE_SIZE; i++)
 	{
 		isEvent[i]=false;
 		eventCooldown[i]=0;
@@ -485,18 +471,6 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 			myBuildings[i]=NULL;
 	}
 
-	/*for (i=0; i<256; i++)
-	{
-		if (myBullets[i])
-			delete myBullets[i];
-
-		Uint32 isUsed=SDL_ReadBE32(stream);
-		if (isUsed)
-			myBullets[i]=new Bullet(stream);
-		else
-			myBullets[i]=NULL;
-	}*/
-
 	// resolve cross reference
 	for (i=0; i< 1024; i++)
 		if (myUnits[i])
@@ -575,18 +549,6 @@ void Team::save(SDL_RWops *stream)
 			SDL_WriteBE32(stream, false);
 		}
 	}
-	/*for (int i=0; i<256; i++)
-	{
-		if (myBullets[i])
-		{
-			SDL_WriteBE32(stream, true);
-			myBullets[i]->save(stream);
-		}
-		else
-		{
-			SDL_WriteBE32(stream, false);
-		}
-	} */
 	
 	// save cross reference
 	for (int i=0; i< 1024; i++)
@@ -661,15 +623,6 @@ void Team::step(void)
 		}
 	
 	}
-	
-	//for (int i=0; i<512; i++)
-	//	if (myBuildings[i])
-	//		myBuildings[i]->step();
-	for (i=0; i<256; i++)
-		if (myBullets[i])
-			myBullets[i]->step();
-
-	// this is roughly equivalent to building.step()
 	
 	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
