@@ -65,7 +65,7 @@ SettingsScreen::SettingsScreen()
 	rendererList->addText("GL");
 	addWidget(rendererList);
 	#else
-	renderList = NULL;
+	rendererList = NULL;
 	#endif
 	
 	depthList = new List(110, 90, 50, 65, ALIGN_RIGHT, ALIGN_TOP, "standard");
