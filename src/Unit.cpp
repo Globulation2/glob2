@@ -1497,7 +1497,7 @@ void Unit::handleMovement(void)
 			//}
 			//else
 			//{
-				int quality=256; // Smaller is better.
+				int quality=INT_MAX; // Smaller is better.
 				movement=MOV_RANDOM_GROUND;
 				if (verbose)
 					printf("guid=(%d) selecting movement\n", gid);
@@ -1506,7 +1506,7 @@ void Unit::handleMovement(void)
 					for (int y=-8; y<=8; y++)
 						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
 						{
-							if (attachedBuilding&&
+							if (attachedBuilding &&
 								owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
 									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
 								continue;
@@ -1515,11 +1515,10 @@ void Unit::handleMovement(void)
 							if (gid!=NOGBID)
 							{
 								int team=Building::GIDtoTeam(gid);
-								Uint32 tm=1<<team;
-								if (owner->enemies & tm)
+								if (owner->enemies & (1<<team))
 								{
 									int id=Building::GIDtoID(gid);
-									int newQuality=(x*x+y*y);
+									int newQuality=((x*x+y*y)<<8);
 									BuildingType *bt=owner->game->teams[team]->myBuildings[id]->type;
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
@@ -1545,28 +1544,31 @@ void Unit::handleMovement(void)
 							if (gid!=NOGUID)
 							{
 								int team=Unit::GIDtoTeam(gid);
-								Uint32 tm=1<<team;
+								Uint32 tm=(1<<team);
 								if (owner->enemies & tm)
 								{
 									int id=Building::GIDtoID(gid);
 									Unit *u=owner->game->teams[team]->myUnits[id];
-									int strength=u->performance[ATTACK_STRENGTH];
-									int newQuality=(x*x+y*y)/(1+strength);
-									if (verbose)
-										printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
-									if (newQuality<quality)
+									if (((owner->sharedVisionExchange & tm)==0) || (u->foreingExchangeBuilding==NULL))
 									{
-										if (abs(x)<=1 && abs(y)<=1)
+										int attackStrength=u->performance[ATTACK_STRENGTH];
+										int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
+										if (verbose)
+											printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
+										if (newQuality<quality)
 										{
-											movement=MOV_ATTACKING_TARGET;
-											dx=x;
-											dy=y;
+											if (abs(x)<=1 && abs(y)<=1)
+											{
+												movement=MOV_ATTACKING_TARGET;
+												dx=x;
+												dy=y;
+											}
+											else
+												movement=MOV_GOING_TARGET;
+											targetX=posX+x;
+											targetY=posY+y;
+											quality=newQuality;
 										}
-										else
-											movement=MOV_GOING_TARGET;
-										targetX=posX+x;
-										targetY=posY+y;
-										quality=newQuality;
 									}
 								}
 							}

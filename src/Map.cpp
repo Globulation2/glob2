@@ -1440,11 +1440,17 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 					if (!b->type->defaultUnitStayRange)
 					{
 						if (b->type->shootingRange)
+						{
+							bdx=tdx;
+							bdy=tdy;
 							bestTime=0;
-						else
+						}
+						else if (bestTime>255)
+						{
+							bdx=tdx;
+							bdy=tdy;
 							bestTime=255;
-						bdx=tdx;
-						bdy=tdy;
+						}
 					}
 				}
 			}
@@ -1459,12 +1465,15 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 					assert(game->teams[otherTeam]);
 					int otherID=Unit::GIDtoID(guid);
 					Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
-					int time=(256-otherUnit->delta)/otherUnit->speed;
-					if (time<bestTime)
+					if ((otherUnit->foreingExchangeBuilding==NULL) || ((unit->owner->sharedVisionExchange & otherTeamMask)==0))
 					{
-						bestTime=time;
-						bdx=tdx;
-						bdy=tdy;
+						int time=(256-otherUnit->delta)/otherUnit->speed;
+						if (time<bestTime)
+						{
+							bestTime=time;
+							bdx=tdx;
+							bdy=tdy;
+						}
 					}
 				}
 			}
