@@ -64,7 +64,7 @@ YOG::YOG()
 	isConnectedToGameHost=false;
 	
 	isSelectedGame=false;
-	newSelectedGameinfoAviable=false;
+	newSelectedGameinfoAvailable=false;
 	selectedGameinfoValid=false;
 	selectedGameinfoTimeout=0;
 	selectedGameinfoTOTL=0;
@@ -268,7 +268,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					game->mapName[63]=0;
 					if (isSelectedGame && selectedGame==uid)
 					{
-						newSelectedGameinfoAviable=true;
+						newSelectedGameinfoAvailable=true;
 						selectedGameinfoValid=true;
 					}
 					printf("new game->mapName=%s\n", game->mapName);
@@ -590,7 +590,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		assert(index==size);
 		if (isAnyCompleteNewGame)
-			newGameListAviable=true;
+			newGameListAvailable=true;
 		send(YMT_GAMES_LIST, nbGames);
 	}
 	break;
@@ -614,13 +614,13 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					if (isSelectedGame && uid==selectedGame)
 					{
 						isSelectedGame=false;
-						newSelectedGameinfoAviable=selectedGameinfoValid;
+						newSelectedGameinfoAvailable=selectedGameinfoValid;
 					}
 					games.erase(game);
 					break;
 				}
 		}
-		newGameListAviable=true;
+		newGameListAvailable=true;
 		send(YMT_UNSHARED_LIST, nbUnshared);
 	}
 	break;
@@ -705,14 +705,14 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					if (game->userName[0]==0 && game->huid==cuid)
 					{
 						strncpy(game->userName, client.userName, 32);
-						newGameListAviable=true;
+						newGameListAvailable=true;
 						fprintf(logFile, "Game (%s) from (%s) newly aviable!\n", game->name, game->userName);
 						break;
 					}
 			}
 			fprintf(logFile, "client uid=%d name=%s\n", client.uid, client.userName);
 		}
-		newClientListAviable=true;
+		newClientListAvailable=true;
 		
 		Uint8 data[2];
 		addUint8(data, (Uint8)nbClients, 0);
@@ -795,7 +795,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 				}
 			
 		}
-		newClientListAviable=true;
+		newClientListAvailable=true;
 		
 		Uint8 data[2];
 		addUint8(data, (Uint8)nbClients, 0);
@@ -943,7 +943,7 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 	connectionLost=false;
 	
 	games.clear();
-	newGameListAviable=false;
+	newGameListAvailable=false;
 	
 	presenceTimeout=0+8;//8 instead of 0 to share brandwith with others timouts
 	presenceTOTL=3;
@@ -955,7 +955,7 @@ bool YOG::enableConnection(const char *userName, const char *passWord, bool newY
 	joiners.clear();
 	
 	clients.clear();
-	newClientListAviable=false;
+	newClientListAvailable=false;
 	
 	uid=0;
 	
@@ -1282,7 +1282,7 @@ void YOG::step()
 			SDLNet_FreePacket(packet);
 		}
 		
-		if (isSelectedGame && !newSelectedGameinfoAviable && selectedGameinfoTimeout--<0 && selectedGameinfoTOTL-->0)
+		if (isSelectedGame && !newSelectedGameinfoAvailable && selectedGameinfoTimeout--<0 && selectedGameinfoTOTL-->0)
 		{
 			selectedGameinfoTimeout=DEFAULT_NETWORK_TIMEOUT;
 			sendGameinfoRequest();
@@ -1450,10 +1450,10 @@ void YOG::sendMessage(const char *message)
 
 bool YOG::newGameList(bool reset)
 {
-	if (newGameListAviable)
+	if (newGameListAvailable)
 	{
 		if (reset)
-			newGameListAviable=false;
+			newGameListAvailable=false;
 		return true;
 	}
 	else
@@ -1462,10 +1462,10 @@ bool YOG::newGameList(bool reset)
 
 bool YOG::newPlayerList(bool reset)
 {
-	if (newClientListAviable)
+	if (newClientListAvailable)
 	{
 		if (reset)
-			newClientListAviable=false;
+			newClientListAvailable=false;
 		return true;
 	}
 	else
@@ -1479,7 +1479,7 @@ bool YOG::selectGame(Uint32 uid)
 		{
 			selectedGame=uid;
 			isSelectedGame=true;
-			newSelectedGameinfoAviable=false;
+			newSelectedGameinfoAvailable=false;
 			selectedGameinfoValid=false;
 			selectedGameinfoTimeout=2;
 			selectedGameinfoTOTL=3;
@@ -1488,16 +1488,16 @@ bool YOG::selectGame(Uint32 uid)
 	
 	selectedGame=uid;
 	isSelectedGame=false;
-	newSelectedGameinfoAviable=false;
+	newSelectedGameinfoAvailable=false;
 	selectedGameinfoValid=false;
 	return false;
 }
 
 bool YOG::selectedGameinfoUpdated(bool reset)
 {
-	bool rv=newSelectedGameinfoAviable;
+	bool rv=newSelectedGameinfoAvailable;
 	if (reset)
-		newSelectedGameinfoAviable=false;
+		newSelectedGameinfoAvailable=false;
 	return rv;
 }
 

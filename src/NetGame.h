@@ -167,7 +167,7 @@ private:
 	DropState dropState;
 	Uint8 theLastExecutedStep;
 	Uint32 lastExecutedUStep[32];
-	Uint32 lastAviableUStep[32][32];
+	Uint32 lastAvailableUStep[32][32];
 	
 	// We want tu update latency automatically:
 	int recentsPingPong[32][256]; // The 256 last ping+pong times. [ms]

@@ -1247,7 +1247,7 @@ void Building::subscribeToBringRessourcesStep()
 				if ((r>=0)&& neededRessource(r))
 				{
 					int dist;
-					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
+					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
 					{
 						int value=dist-(timeLeft>>1);
 						unit->destinationPurprose=r;
@@ -1282,10 +1282,10 @@ void Building::subscribeToBringRessourcesStep()
 							if (need>0)
 							{
 								int distUnitRessource;
-								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
+								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 								{
 									int distUnitBuilding;
-									if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+									if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										if (value<minValue)
@@ -1346,7 +1346,7 @@ void Building::subscribeToBringRessourcesStep()
 						bool canSwim=unit->performance[SWIM];
 						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
 						int buildingDist;
-						if (map->buildingAviable(this, canSwim, x, y, &buildingDist)
+						if (map->buildingAvailable(this, canSwim, x, y, &buildingDist)
 							&& (buildingDist<timeLeft))
 							for (int ti=0; ti<session.numberOfTeam; ti++)
 								if (ti!=owner->teamNumber)
@@ -1362,7 +1362,7 @@ void Building::subscribeToBringRessourcesStep()
 											int foreignBuildingDist;
 											if ((sendRessourceMask & foreignReceiveRessourceMask)
 												&& (receiveRessourceMask & foreignSendRessourceMask)
-												&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist)
+												&& map->buildingAvailable(*fbi, canSwim, x, y, &foreignBuildingDist)
 												&& (buildingDist+(foreignBuildingDist<<1)<timeLeft))
 											{
 												int dist=buildingDist+foreignBuildingDist;
@@ -1406,10 +1406,10 @@ void Building::subscribeToBringRessourcesStep()
 							if (need>0)
 							{
 								int distUnitRessource;
-								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
+								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 								{
 									int distUnitBuilding;
-									if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+									if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 									{
 										int value=((distUnitRessource+distUnitBuilding)<<8)/need;
 										if (value<minValue)
@@ -1526,7 +1526,7 @@ void Building::subscribeForFlagingStep()
 					int dist;
 					bool canSwim=unit->performance[SWIM];
 					if (anyRessourceToClear[canSwim]!=2
-						&& map->buildingAviable(this, canSwim, unit->posX, unit->posY, &dist)
+						&& map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &dist)
 						&& (dist<timeLeft))
 					{
 						int value=dist-timeLeft-hp;
@@ -1583,7 +1583,7 @@ void Building::subscribeForInsideStep()
 				else
 				{
 					int dist=map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<mindist))
+					if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<mindist))
 					{
 						mindist=dist;
 						u=*it;

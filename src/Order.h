@@ -475,7 +475,7 @@ class RequestingDeadAwayOrder:public MiscOrder
 {
 public:
 	RequestingDeadAwayOrder(const Uint8 *data, int dataLength);
-	RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAviableStep);
+	RequestingDeadAwayOrder(Sint32 player, Sint32 missingStep, Sint32 lastAvailableStep);
 	virtual ~RequestingDeadAwayOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_REQUESTING_AWAY; }
@@ -485,18 +485,18 @@ public:
 	
 	Sint32 player;
 	Sint32 missingStep;
-	Sint32 lastAviableStep;
+	Sint32 lastAvailableStep;
 	
 private:
 	Uint8 data[12];
 };
 
-class NoMoreOrdersAviable:public MiscOrder
+class NoMoreOrdersAvailable:public MiscOrder
 {
 public:
-	NoMoreOrdersAviable(const Uint8 *data, int dataLength);
-	NoMoreOrdersAviable(Sint32 player, Sint32 lastAviableStep);
-	virtual ~NoMoreOrdersAviable(void) { }
+	NoMoreOrdersAvailable(const Uint8 *data, int dataLength);
+	NoMoreOrdersAvailable(Sint32 player, Sint32 lastAvailableStep);
+	virtual ~NoMoreOrdersAvailable(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_NO_MORE_ORDER_AVIABLES; }
 	Uint8 *getData(void);
@@ -504,7 +504,7 @@ public:
 	int getDataLength(void) { return 8; }
 
 	Sint32 player;
-	Sint32 lastAviableStep;
+	Sint32 lastAvailableStep;
 	
 private:
 	Uint8 data[8];

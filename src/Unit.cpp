@@ -376,7 +376,7 @@ void Unit::subscriptionSuccess(void)
 					{
 						displacement=DIS_GOING_TO_RESSOURCE;
 						targetBuilding=NULL;
-						bool rv=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						bool rv=owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 						fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
 					}
 				}
@@ -1013,7 +1013,7 @@ void Unit::handleDisplacement(void)
 					{
 						int foreignBuildingDist;
 						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
-						if (owner->map->buildingAviable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
+						if (owner->map->buildingAvailable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
 							&& (foreignBuildingDist<(timeLeft>>1)))
 						{
 							targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
@@ -1132,7 +1132,7 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToRessource;
-									if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))
+									if (map->ressourceAvailable(teamNumber, r, canSwim, posX, posY, &distToRessource))
 									{
 										if ((distToRessource<<1)>=timeLeft)
 											continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
@@ -1150,7 +1150,7 @@ void Unit::handleDisplacement(void)
 											if ((*bi)->ressources[r]>0)
 											{
 												int buildingDist;
-												if (map->buildingAviable(*bi, canSwim, posX, posY, &buildingDist))
+												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
 													int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
 													if (value<minValue)
@@ -1187,7 +1187,7 @@ void Unit::handleDisplacement(void)
 									int dummyDist;
 									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 										displacement=DIS_HARVESTING;
-									else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->ressourceAvailable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
@@ -1231,7 +1231,7 @@ void Unit::handleDisplacement(void)
 												int foreignBuildingDist;
 												if ((sendRessourceMask & foreignReceiveRessourceMask)
 													&& (receiveRessourceMask & foreignSendRessourceMask)
-													&& map->buildingAviable(*fbi, canSwim, posX, posY, &foreignBuildingDist)
+													&& map->buildingAvailable(*fbi, canSwim, posX, posY, &foreignBuildingDist)
 													&& foreignBuildingDist<(timeLeft>>1)
 													&& foreignBuildingDist<minDist)
 												{

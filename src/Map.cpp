@@ -67,12 +67,12 @@ Map::Map()
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 		{
-			ressourceAviableCount[t][r]=0;
-			ressourceAviableCountFast[t][r]=0;
-			ressourceAviableCountFar[t][r]=0;
-			ressourceAviableCountSuccess[t][r]=0;
-			ressourceAviableCountFailureBase[t][r]=0;
-			ressourceAviableCountFailureOvercount[t][r]=0;
+			ressourceAvailableCount[t][r]=0;
+			ressourceAvailableCountFast[t][r]=0;
+			ressourceAvailableCountFar[t][r]=0;
+			ressourceAvailableCountSuccess[t][r]=0;
+			ressourceAvailableCountFailureBase[t][r]=0;
+			ressourceAvailableCountFailureOvercount[t][r]=0;
 		}
 	
 	pathToRessourceCountTot=0;
@@ -117,28 +117,28 @@ Map::Map()
 	globalBuildingGradientUpdate=0;
 	globalBuildingGradientUpdateLocked=0;
 	
-	buildingAviableCountTot=0;
-	buildingAviableCountClose=0;
-	buildingAviableCountCloseSuccessFast=0;
-	buildingAviableCountCloseSuccessAround=0;
-	buildingAviableCountCloseSuccessUpdate=0;
-	buildingAviableCountCloseSuccessUpdateAround=0;
-	buildingAviableCountCloseFailureLocked=0;
-	buildingAviableCountCloseFailureEnd=0;
+	buildingAvailableCountTot=0;
+	buildingAvailableCountClose=0;
+	buildingAvailableCountCloseSuccessFast=0;
+	buildingAvailableCountCloseSuccessAround=0;
+	buildingAvailableCountCloseSuccessUpdate=0;
+	buildingAvailableCountCloseSuccessUpdateAround=0;
+	buildingAvailableCountCloseFailureLocked=0;
+	buildingAvailableCountCloseFailureEnd=0;
 	
-	buildingAviableCountIsFar=0;
-	buildingAviableCountFar=0;
-	buildingAviableCountFarNew=0;
-	buildingAviableCountFarNewSuccessFast=0;
-	buildingAviableCountFarNewSuccessClosely=0;
-	buildingAviableCountFarNewFailureLocked=0;
-	buildingAviableCountFarNewFailureVirtual=0;
-	buildingAviableCountFarNewFailureEnd=0;
-	buildingAviableCountFarOld=0;
-	buildingAviableCountFarOldSuccessFast=0;
-	buildingAviableCountFarOldSuccessAround=0;
-	buildingAviableCountFarOldFailureLocked=0;
-	buildingAviableCountFarOldFailureEnd=0;
+	buildingAvailableCountIsFar=0;
+	buildingAvailableCountFar=0;
+	buildingAvailableCountFarNew=0;
+	buildingAvailableCountFarNewSuccessFast=0;
+	buildingAvailableCountFarNewSuccessClosely=0;
+	buildingAvailableCountFarNewFailureLocked=0;
+	buildingAvailableCountFarNewFailureVirtual=0;
+	buildingAvailableCountFarNewFailureEnd=0;
+	buildingAvailableCountFarOld=0;
+	buildingAvailableCountFarOldSuccessFast=0;
+	buildingAvailableCountFarOldSuccessAround=0;
+	buildingAvailableCountFarOldFailureLocked=0;
+	buildingAvailableCountFarOldFailureEnd=0;
 	
 	pathfindForbiddenCount=0;
 	pathfindForbiddenCountSuccess=0;
@@ -248,42 +248,42 @@ void Map::clear()
 	if (game)
 		for (int t=0; t<16; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
-				if (ressourceAviableCount[t][r])
+				if (ressourceAvailableCount[t][r])
 				{
-					fprintf(logFile, "ressourceAviableCount[%d][%d]=%d\n", t, r,
-						ressourceAviableCount[t][r]);
-					fprintf(logFile, "| ressourceAviableCountFast[%d][%d]=%d (%f %%)\n", t, r,
-						ressourceAviableCountFast[t][r],
-						100.*(double)ressourceAviableCountFast[t][r]/(double)ressourceAviableCount[t][r]);
-					fprintf(logFile, "+ ressourceAviableCountFar[%d][%d]=%d (%f %% ratio)\n", t, r,
-						ressourceAviableCountFar[t][r],
-						100.*(double)ressourceAviableCountFar[t][r]/(double)ressourceAviableCount[t][r]);
-					fprintf(logFile, "| ressourceAviableCountSuccess[%d][%d]=%d (%f %%)\n", t, r,
-						ressourceAviableCountSuccess[t][r],
-						100.*(double)ressourceAviableCountSuccess[t][r]/(double)ressourceAviableCount[t][r]);
-					int ressourceAviableCountFailure=ressourceAviableCountFailureBase[t][r]+ressourceAviableCountFailureOvercount[t][r];
-					fprintf(logFile, "| ressourceAviableCountFailure[%d][%d]=%d (%f %%)\n", t, r,
-						ressourceAviableCountFailure,
-						100.*(double)ressourceAviableCountFailure/(double)ressourceAviableCount[t][r]);
-					fprintf(logFile, "|- ressourceAviableCountFailureBase[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
-						ressourceAviableCountFailureBase[t][r],
-						100.*(double)ressourceAviableCountFailureBase[t][r]/(double)ressourceAviableCount[t][r],
-						100.*(double)ressourceAviableCountFailureBase[t][r]/(double)ressourceAviableCountFailure);
-					fprintf(logFile, "|- ressourceAviableCountFailureOvercount[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
-						ressourceAviableCountFailureOvercount[t][r],
-						100.*(double)ressourceAviableCountFailureOvercount[t][r]/(double)ressourceAviableCount[t][r],
-						100.*(double)ressourceAviableCountFailureOvercount[t][r]/(double)ressourceAviableCountFailure);
+					fprintf(logFile, "ressourceAvailableCount[%d][%d]=%d\n", t, r,
+						ressourceAvailableCount[t][r]);
+					fprintf(logFile, "| ressourceAvailableCountFast[%d][%d]=%d (%f %%)\n", t, r,
+						ressourceAvailableCountFast[t][r],
+						100.*(double)ressourceAvailableCountFast[t][r]/(double)ressourceAvailableCount[t][r]);
+					fprintf(logFile, "+ ressourceAvailableCountFar[%d][%d]=%d (%f %% ratio)\n", t, r,
+						ressourceAvailableCountFar[t][r],
+						100.*(double)ressourceAvailableCountFar[t][r]/(double)ressourceAvailableCount[t][r]);
+					fprintf(logFile, "| ressourceAvailableCountSuccess[%d][%d]=%d (%f %%)\n", t, r,
+						ressourceAvailableCountSuccess[t][r],
+						100.*(double)ressourceAvailableCountSuccess[t][r]/(double)ressourceAvailableCount[t][r]);
+					int ressourceAvailableCountFailure=ressourceAvailableCountFailureBase[t][r]+ressourceAvailableCountFailureOvercount[t][r];
+					fprintf(logFile, "| ressourceAvailableCountFailure[%d][%d]=%d (%f %%)\n", t, r,
+						ressourceAvailableCountFailure,
+						100.*(double)ressourceAvailableCountFailure/(double)ressourceAvailableCount[t][r]);
+					fprintf(logFile, "|- ressourceAvailableCountFailureBase[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
+						ressourceAvailableCountFailureBase[t][r],
+						100.*(double)ressourceAvailableCountFailureBase[t][r]/(double)ressourceAvailableCount[t][r],
+						100.*(double)ressourceAvailableCountFailureBase[t][r]/(double)ressourceAvailableCountFailure);
+					fprintf(logFile, "|- ressourceAvailableCountFailureOvercount[%d][%d]=%d (%f %%) (%f %% of failure)\n", t, r,
+						ressourceAvailableCountFailureOvercount[t][r],
+						100.*(double)ressourceAvailableCountFailureOvercount[t][r]/(double)ressourceAvailableCount[t][r],
+						100.*(double)ressourceAvailableCountFailureOvercount[t][r]/(double)ressourceAvailableCountFailure);
 				}
 	
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 		{
-			ressourceAviableCount[t][r]=0;
-			ressourceAviableCountFast[t][r]=0;
-			ressourceAviableCountFar[t][r]=0;
-			ressourceAviableCountSuccess[t][r]=0;
-			ressourceAviableCountFailureBase[t][r]=0;
-			ressourceAviableCountFailureOvercount[t][r]=0;
+			ressourceAvailableCount[t][r]=0;
+			ressourceAvailableCountFast[t][r]=0;
+			ressourceAvailableCountFar[t][r]=0;
+			ressourceAvailableCountSuccess[t][r]=0;
+			ressourceAvailableCountFailureBase[t][r]=0;
+			ressourceAvailableCountFailureOvercount[t][r]=0;
 		}
 	
 	fprintf(logFile, "\n");
@@ -604,192 +604,192 @@ void Map::clear()
 	globalBuildingGradientUpdateLocked=0;
 	
 	fprintf(logFile, "\n");
-	fprintf(logFile, "buildingAviableCountTot=%d\n", buildingAviableCountTot);
-	if (buildingAviableCountTot)
+	fprintf(logFile, "buildingAvailableCountTot=%d\n", buildingAvailableCountTot);
+	if (buildingAvailableCountTot)
 	{
-		fprintf(logFile, "|- buildingAviableCountClose=%d (%f %%)\n",
-			buildingAviableCountClose,
-			100.*(double)buildingAviableCountClose/(double)buildingAviableCountTot);
+		fprintf(logFile, "|- buildingAvailableCountClose=%d (%f %%)\n",
+			buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountClose/(double)buildingAvailableCountTot);
 		
-		int buildingAviableCountCloseSuccess=
-			+buildingAviableCountCloseSuccessFast
-			+buildingAviableCountCloseSuccessAround
-			+buildingAviableCountCloseSuccessUpdate
-			+buildingAviableCountCloseSuccessUpdateAround;
-		fprintf(logFile, "|-  buildingAviableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n",
-			buildingAviableCountCloseSuccess,
-			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccess/(double)buildingAviableCountClose);
-		fprintf(logFile, "|-   buildingAviableCountCloseSuccessFast=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
-			buildingAviableCountCloseSuccessFast,
-			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseSuccessFast/(double)buildingAviableCountCloseSuccess);
-		fprintf(logFile, "|-   buildingAviableCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
-			buildingAviableCountCloseSuccessAround,
-			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseSuccessAround/(double)buildingAviableCountCloseSuccess);
-		fprintf(logFile, "|-   buildingAviableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
-			buildingAviableCountCloseSuccessUpdate,
-			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseSuccessUpdate/(double)buildingAviableCountCloseSuccess);
-		fprintf(logFile, "|-   buildingAviableCountCloseSuccessUpdateAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
-			buildingAviableCountCloseSuccessUpdateAround,
-			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseSuccessUpdateAround/(double)buildingAviableCountCloseSuccess);
+		int buildingAvailableCountCloseSuccess=
+			+buildingAvailableCountCloseSuccessFast
+			+buildingAvailableCountCloseSuccessAround
+			+buildingAvailableCountCloseSuccessUpdate
+			+buildingAvailableCountCloseSuccessUpdateAround;
+		fprintf(logFile, "|-  buildingAvailableCountCloseSuccess=%d (%f %% of tot) (%f %% of close)\n",
+			buildingAvailableCountCloseSuccess,
+			100.*(double)buildingAvailableCountCloseSuccess/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseSuccess/(double)buildingAvailableCountClose);
+		fprintf(logFile, "|-   buildingAvailableCountCloseSuccessFast=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
+			buildingAvailableCountCloseSuccessFast,
+			100.*(double)buildingAvailableCountCloseSuccessFast/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseSuccessFast/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseSuccessFast/(double)buildingAvailableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAvailableCountCloseSuccessAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
+			buildingAvailableCountCloseSuccessAround,
+			100.*(double)buildingAvailableCountCloseSuccessAround/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseSuccessAround/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseSuccessAround/(double)buildingAvailableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAvailableCountCloseSuccessUpdate=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
+			buildingAvailableCountCloseSuccessUpdate,
+			100.*(double)buildingAvailableCountCloseSuccessUpdate/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseSuccessUpdate/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseSuccessUpdate/(double)buildingAvailableCountCloseSuccess);
+		fprintf(logFile, "|-   buildingAvailableCountCloseSuccessUpdateAround=%d (%f %% of tot) (%f %% of close) (%f %% of close success)\n",
+			buildingAvailableCountCloseSuccessUpdateAround,
+			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountCloseSuccess);
 		
-		int buildingAviableCountCloseFailure=
-			+buildingAviableCountCloseFailureLocked
-			+buildingAviableCountCloseFailureEnd;
-		fprintf(logFile, "|-  buildingAviableCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
-			buildingAviableCountCloseFailure,
-			100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseFailure/(double)buildingAviableCountClose);
-		fprintf(logFile, "|-   buildingAviableCountCloseFailureLocked=%d (%f %% of tot) (%f %% of close) (%f %% of failure)\n",
-			buildingAviableCountCloseFailureLocked,
-			100.*(double)buildingAviableCountCloseFailureLocked/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseFailureLocked/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseFailureLocked/(double)buildingAviableCountCloseFailure);
-		fprintf(logFile, "|-   buildingAviableCountCloseFailureEnd=%d (%f %% of tot) (%f %% of close) (%f %% of failure)\n",
-			buildingAviableCountCloseFailureEnd,
-			100.*(double)buildingAviableCountCloseFailureEnd/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountCloseFailureEnd/(double)buildingAviableCountClose,
-			100.*(double)buildingAviableCountCloseFailureEnd/(double)buildingAviableCountCloseFailure);
+		int buildingAvailableCountCloseFailure=
+			+buildingAvailableCountCloseFailureLocked
+			+buildingAvailableCountCloseFailureEnd;
+		fprintf(logFile, "|-  buildingAvailableCountCloseFailure=%d (%f %% of tot) (%f %% of close)\n",
+			buildingAvailableCountCloseFailure,
+			100.*(double)buildingAvailableCountCloseFailure/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseFailure/(double)buildingAvailableCountClose);
+		fprintf(logFile, "|-   buildingAvailableCountCloseFailureLocked=%d (%f %% of tot) (%f %% of close) (%f %% of failure)\n",
+			buildingAvailableCountCloseFailureLocked,
+			100.*(double)buildingAvailableCountCloseFailureLocked/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseFailureLocked/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseFailureLocked/(double)buildingAvailableCountCloseFailure);
+		fprintf(logFile, "|-   buildingAvailableCountCloseFailureEnd=%d (%f %% of tot) (%f %% of close) (%f %% of failure)\n",
+			buildingAvailableCountCloseFailureEnd,
+			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountClose,
+			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountCloseFailure);
 		
-		fprintf(logFile, "|- buildingAviableCountFar=%d (%f %%)\n",
-			buildingAviableCountFar,
-			100.*(double)buildingAviableCountFar/(double)buildingAviableCountTot);
-		fprintf(logFile, "|+  buildingAviableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
-			buildingAviableCountIsFar,
-			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountIsFar/(double)buildingAviableCountFar);
+		fprintf(logFile, "|- buildingAvailableCountFar=%d (%f %%)\n",
+			buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFar/(double)buildingAvailableCountTot);
+		fprintf(logFile, "|+  buildingAvailableCountIsFar=%d (%f %% of tot) (%f %% of far)\n",
+			buildingAvailableCountIsFar,
+			100.*(double)buildingAvailableCountIsFar/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountIsFar/(double)buildingAvailableCountFar);
 		
-		fprintf(logFile, "|-  buildingAviableCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
-			buildingAviableCountFarOld,
-			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOld/(double)buildingAviableCountFar);
+		fprintf(logFile, "|-  buildingAvailableCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
+			buildingAvailableCountFarOld,
+			100.*(double)buildingAvailableCountFarOld/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOld/(double)buildingAvailableCountFar);
 		
-		int buildingAviableCountFarOldSuccess=
-			+buildingAviableCountFarOldSuccessFast
-			+buildingAviableCountFarOldSuccessAround;
-		fprintf(logFile, "|-   buildingAviableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
-			buildingAviableCountFarOldSuccess,
-			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldSuccess/(double)buildingAviableCountFarOld);
-		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
-			buildingAviableCountFarOldSuccessFast,
-			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOld,
-			100.*(double)buildingAviableCountFarOldSuccessFast/(double)buildingAviableCountFarOldSuccess);
-		fprintf(logFile, "|-    buildingAviableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
-			buildingAviableCountFarOldSuccessAround,
-			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFarOld,
-			100.*(double)buildingAviableCountFarOldSuccessAround/(double)buildingAviableCountFarOldSuccess);
+		int buildingAvailableCountFarOldSuccess=
+			+buildingAvailableCountFarOldSuccessFast
+			+buildingAvailableCountFarOldSuccessAround;
+		fprintf(logFile, "|-   buildingAvailableCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+			buildingAvailableCountFarOldSuccess,
+			100.*(double)buildingAvailableCountFarOldSuccess/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldSuccess/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldSuccess/(double)buildingAvailableCountFarOld);
+		fprintf(logFile, "|-    buildingAvailableCountFarOldSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
+			buildingAvailableCountFarOldSuccessFast,
+			100.*(double)buildingAvailableCountFarOldSuccessFast/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldSuccessFast/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldSuccessFast/(double)buildingAvailableCountFarOld,
+			100.*(double)buildingAvailableCountFarOldSuccessFast/(double)buildingAvailableCountFarOldSuccess);
+		fprintf(logFile, "|-    buildingAvailableCountFarOldSuccessAround=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of old success)\n",
+			buildingAvailableCountFarOldSuccessAround,
+			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFarOld,
+			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFarOldSuccess);
 		
-		int buildingAviableCountFarOldFailure=
-			+buildingAviableCountFarOldFailureLocked
-			+buildingAviableCountFarOldFailureEnd;
-		fprintf(logFile, "|-   buildingAviableCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
-			buildingAviableCountFarOldFailure,
-			100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldFailure/(double)buildingAviableCountFarOld);
-		fprintf(logFile, "|-    buildingAviableCountFarOldFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
-			buildingAviableCountFarOldFailureLocked,
-			100.*(double)buildingAviableCountFarOldFailureLocked/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldFailureLocked/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldFailureLocked/(double)buildingAviableCountFarOld,
-			100.*(double)buildingAviableCountFarOldFailureLocked/(double)buildingAviableCountFarOldFailure);
-		fprintf(logFile, "|-    buildingAviableCountFarOldFailureEnd=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
-			buildingAviableCountFarOldFailureEnd,
-			100.*(double)buildingAviableCountFarOldFailureEnd/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarOldFailureEnd/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarOldFailureEnd/(double)buildingAviableCountFarOld,
-			100.*(double)buildingAviableCountFarOldFailureEnd/(double)buildingAviableCountFarOldFailure);
+		int buildingAvailableCountFarOldFailure=
+			+buildingAvailableCountFarOldFailureLocked
+			+buildingAvailableCountFarOldFailureEnd;
+		fprintf(logFile, "|-   buildingAvailableCountFarOldFailure=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
+			buildingAvailableCountFarOldFailure,
+			100.*(double)buildingAvailableCountFarOldFailure/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldFailure/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldFailure/(double)buildingAvailableCountFarOld);
+		fprintf(logFile, "|-    buildingAvailableCountFarOldFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
+			buildingAvailableCountFarOldFailureLocked,
+			100.*(double)buildingAvailableCountFarOldFailureLocked/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldFailureLocked/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldFailureLocked/(double)buildingAvailableCountFarOld,
+			100.*(double)buildingAvailableCountFarOldFailureLocked/(double)buildingAvailableCountFarOldFailure);
+		fprintf(logFile, "|-    buildingAvailableCountFarOldFailureEnd=%d (%f %% of tot) (%f %% of far) (%f %% of old) (%f %% of failure)\n",
+			buildingAvailableCountFarOldFailureEnd,
+			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFarOld,
+			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFarOldFailure);
 		
-		fprintf(logFile, "|-  buildingAviableCountFarNew=%d (%f %% of tot) (%f %% of far)\n",
-			buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNew/(double)buildingAviableCountFar);
+		fprintf(logFile, "|-  buildingAvailableCountFarNew=%d (%f %% of tot) (%f %% of far)\n",
+			buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNew/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNew/(double)buildingAvailableCountFar);
 		
-		int buildingAviableCountFarNewSuccess=buildingAviableCountFarNewSuccessFast+buildingAviableCountFarNewSuccessClosely;
-		fprintf(logFile, "|-    buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
-			buildingAviableCountFarNewSuccess,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
-		fprintf(logFile, "|-    buildingAviableCountFarNewSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
-			buildingAviableCountFarNewSuccessFast,
-			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNewSuccessFast/(double)buildingAviableCountFarNewSuccess);
-		fprintf(logFile, "|-   buildingAviableCountFarNewSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
-			buildingAviableCountFarNewSuccessClosely,
-			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNewSuccessClosely/(double)buildingAviableCountFarNewSuccess);
+		int buildingAvailableCountFarNewSuccess=buildingAvailableCountFarNewSuccessFast+buildingAvailableCountFarNewSuccessClosely;
+		fprintf(logFile, "|-    buildingAvailableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+			buildingAvailableCountFarNewSuccess,
+			100.*(double)buildingAvailableCountFarNewSuccess/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewSuccess/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewSuccess/(double)buildingAvailableCountFarNew);
+		fprintf(logFile, "|-    buildingAvailableCountFarNewSuccessFast=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
+			buildingAvailableCountFarNewSuccessFast,
+			100.*(double)buildingAvailableCountFarNewSuccessFast/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewSuccessFast/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewSuccessFast/(double)buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNewSuccessFast/(double)buildingAvailableCountFarNewSuccess);
+		fprintf(logFile, "|-   buildingAvailableCountFarNewSuccessClosely=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of success)\n",
+			buildingAvailableCountFarNewSuccessClosely,
+			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFarNewSuccess);
 		
-		int buildingAviableCountFarNewFailure=
-			+buildingAviableCountFarNewFailureLocked
-			+buildingAviableCountFarNewFailureVirtual
-			+buildingAviableCountFarNewFailureEnd;
-		fprintf(logFile, "|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
-			buildingAviableCountFarNewFailure,
-			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountFarNew);
-		fprintf(logFile, "|-    buildingAviableCountFarNewFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
-			buildingAviableCountFarNewFailureLocked,
-			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFarNewFailure);
-		fprintf(logFile, "|-    buildingAviableCountFarNewFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
-			buildingAviableCountFarNewFailureVirtual,
-			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFarNewFailure);
-		fprintf(logFile, "|-    buildingAviableCountFarNewFailureEnd=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
-			buildingAviableCountFarNewFailureEnd,
-			100.*(double)buildingAviableCountFarNewFailureEnd/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewFailureEnd/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewFailureEnd/(double)buildingAviableCountFarNew,
-			100.*(double)buildingAviableCountFarNewFailureEnd/(double)buildingAviableCountFarNewFailure);
+		int buildingAvailableCountFarNewFailure=
+			+buildingAvailableCountFarNewFailureLocked
+			+buildingAvailableCountFarNewFailureVirtual
+			+buildingAvailableCountFarNewFailureEnd;
+		fprintf(logFile, "|-   buildingAvailableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
+			buildingAvailableCountFarNewFailure,
+			100.*(double)buildingAvailableCountFarNewFailure/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewFailure/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewFailure/(double)buildingAvailableCountFarNew);
+		fprintf(logFile, "|-    buildingAvailableCountFarNewFailureLocked=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
+			buildingAvailableCountFarNewFailureLocked,
+			100.*(double)buildingAvailableCountFarNewFailureLocked/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewFailureLocked/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewFailureLocked/(double)buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNewFailureLocked/(double)buildingAvailableCountFarNewFailure);
+		fprintf(logFile, "|-    buildingAvailableCountFarNewFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
+			buildingAvailableCountFarNewFailureVirtual,
+			100.*(double)buildingAvailableCountFarNewFailureVirtual/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewFailureVirtual/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewFailureVirtual/(double)buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNewFailureVirtual/(double)buildingAvailableCountFarNewFailure);
+		fprintf(logFile, "|-    buildingAvailableCountFarNewFailureEnd=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
+			buildingAvailableCountFarNewFailureEnd,
+			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountTot,
+			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountFar,
+			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountFarNew,
+			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountFarNewFailure);
 	}
 	
-	buildingAviableCountTot=0;
+	buildingAvailableCountTot=0;
 	
-	buildingAviableCountClose=0;
-	buildingAviableCountCloseSuccessFast=0;
-	buildingAviableCountCloseSuccessAround=0;
-	buildingAviableCountCloseSuccessUpdate=0;
-	buildingAviableCountCloseSuccessUpdateAround=0;
-	buildingAviableCountCloseFailureLocked=0;
-	buildingAviableCountCloseFailureEnd=0;
+	buildingAvailableCountClose=0;
+	buildingAvailableCountCloseSuccessFast=0;
+	buildingAvailableCountCloseSuccessAround=0;
+	buildingAvailableCountCloseSuccessUpdate=0;
+	buildingAvailableCountCloseSuccessUpdateAround=0;
+	buildingAvailableCountCloseFailureLocked=0;
+	buildingAvailableCountCloseFailureEnd=0;
 	
-	buildingAviableCountIsFar=0;
-	buildingAviableCountFar=0;
-	buildingAviableCountFarNew=0;
-	buildingAviableCountFarNewSuccessFast=0;
-	buildingAviableCountFarNewSuccessClosely=0;
-	buildingAviableCountFarNewFailureLocked=0;
-	buildingAviableCountFarNewFailureVirtual=0;
-	buildingAviableCountFarNewFailureEnd=0;
-	buildingAviableCountFarOld=0;
-	buildingAviableCountFarOldSuccessFast=0;
-	buildingAviableCountFarOldSuccessAround=0;
-	buildingAviableCountFarOldFailureLocked=0;
-	buildingAviableCountFarOldFailureEnd=0;
+	buildingAvailableCountIsFar=0;
+	buildingAvailableCountFar=0;
+	buildingAvailableCountFarNew=0;
+	buildingAvailableCountFarNewSuccessFast=0;
+	buildingAvailableCountFarNewSuccessClosely=0;
+	buildingAvailableCountFarNewFailureLocked=0;
+	buildingAvailableCountFarNewFailureVirtual=0;
+	buildingAvailableCountFarNewFailureEnd=0;
+	buildingAvailableCountFarOld=0;
+	buildingAvailableCountFarOldSuccessFast=0;
+	buildingAvailableCountFarOldSuccessAround=0;
+	buildingAvailableCountFarOldFailureLocked=0;
+	buildingAvailableCountFarOldFailureEnd=0;
 	
 	fprintf(logFile, "\n");
 	fprintf(logFile, "pathfindForbiddenCount=%d\n", pathfindForbiddenCount);
@@ -1737,13 +1737,13 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 	*my+=buildingHeight*16;
 }
 
-bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
 {
 	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
 	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist)
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist)
 {
 	Uint8 g=getGradient(teamNumber, ressourceType, canSwim, x, y);
 	if (g>1)
@@ -1755,9 +1755,9 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		return false;
 }
 
-bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
-	ressourceAviableCount[teamNumber][ressourceType]++;
+	ressourceAvailableCount[teamNumber][ressourceType]++;
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	x&=wMask;
@@ -1765,14 +1765,14 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	Uint8 g=gradient[(y<<wDec)+x];
 	if (g<2)
 	{
-		ressourceAviableCountFast[teamNumber][ressourceType]++;
+		ressourceAvailableCountFast[teamNumber][ressourceType]++;
 		return false;
 	}
 	if (dist)
 		*dist=255-g;
 	if (g>=255)
 	{
-		ressourceAviableCountFast[teamNumber][ressourceType]++;
+		ressourceAvailableCountFast[teamNumber][ressourceType]++;
 		*targetX=x;
 		*targetY=y;
 		return true;
@@ -1815,7 +1815,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 		else
 		{
-			ressourceAviableCountFar[teamNumber][ressourceType]++;
+			ressourceAvailableCountFar[teamNumber][ressourceType]++;
 			Uint8 miniGrad[25];
 			for (int ry=0; ry<5; ry++)
 				for (int rx=0; rx<5; rx++)
@@ -1837,7 +1837,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 		if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
 		{
-			ressourceAviableCountSuccess[teamNumber][ressourceType]++;
+			ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
 			*targetX=vx;
 			*targetY=vy;
 			return true;
@@ -1918,7 +1918,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 				}
 			}
 			
-			ressourceAviableCountFailureBase[teamNumber][ressourceType]++;
+			ressourceAvailableCountFailureBase[teamNumber][ressourceType]++;
 			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			*targetX=vx;
@@ -2001,7 +2001,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 	}
 	
-	ressourceAviableCountFailureOvercount[teamNumber][ressourceType]++;
+	ressourceAvailableCountFailureOvercount[teamNumber][ressourceType]++;
 	fprintf(logFile, "target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
 	printf("target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
 	*targetX=vx;
@@ -3265,9 +3265,9 @@ void Map::expandLocalGradient(Uint8 *gradient)
 	}
 }
 
-bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *dist)
+bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist)
 {
-	buildingAviableCountTot++;
+	buildingAvailableCountTot++;
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;
@@ -3280,7 +3280,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	
 	if (isInLocalGradient(x, y, bx, by))
 	{
-		buildingAviableCountClose++;
+		buildingAvailableCountClose++;
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
 		if (!building->dirtyLocalGradient[canSwim])
@@ -3288,7 +3288,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			Uint8 currentg=gradient[lx+(ly<<5)];
 			if (currentg>1)
 			{
-				buildingAviableCountCloseSuccessFast++;
+				buildingAvailableCountCloseSuccessFast++;
 				*dist=255-currentg;
 				return true;
 			}
@@ -3310,7 +3310,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 					Uint8 g=gradient[lxddx+(lyddy<<5)];
 					if (g>1)
 					{
-						buildingAviableCountCloseSuccessAround++;
+						buildingAvailableCountCloseSuccessAround++;
 						*dist=255-g;
 						return true;
 					}
@@ -3320,7 +3320,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		updateLocalGradient(building, canSwim);
 		if (building->locked[canSwim])
 		{
-			buildingAviableCountCloseFailureLocked++;
+			buildingAvailableCountCloseFailureLocked++;
 			//printf("ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			//fprintf(logFile, "ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			
@@ -3331,7 +3331,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		
 		if (currentg>1)
 		{
-			buildingAviableCountCloseSuccessUpdate++;
+			buildingAvailableCountCloseSuccessUpdate++;
 			*dist=255-currentg;
 			return true;
 		}
@@ -3353,31 +3353,31 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
 				if (g>1)
 				{
-					buildingAviableCountCloseSuccessUpdateAround++;
+					buildingAvailableCountCloseSuccessUpdateAround++;
 					*dist=255-g;
 					return true;
 				}
 			}
-		buildingAviableCountCloseFailureEnd++;
+		buildingAvailableCountCloseFailureEnd++;
 	}
 	else
-		buildingAviableCountIsFar++;
-	buildingAviableCountFar++;
+		buildingAvailableCountIsFar++;
+	buildingAvailableCountFar++;
 	
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
-		buildingAviableCountFarNew++;
+		buildingAvailableCountFarNew++;
 		gradient=new Uint8[size];
 		fprintf(logFile, "ba- allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 	}
 	else
 	{
-		buildingAviableCountFarOld++;
+		buildingAvailableCountFarOld++;
 		if (building->locked[canSwim])
 		{
-			buildingAviableCountFarOldFailureLocked++;
+			buildingAvailableCountFarOldFailureLocked++;
 			//printf("ba-b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			//fprintf(logFile, "ba-b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
@@ -3385,7 +3385,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 		if (currentg>1)
 		{
-			buildingAviableCountFarOldSuccessFast++;
+			buildingAvailableCountFarOldSuccessFast++;
 			*dist=255-currentg;
 			return true;
 		}
@@ -3400,12 +3400,12 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 				Uint8 g=gradient[xddx+yddy*w];
 				if (g>1)
 				{
-					buildingAviableCountFarOldSuccessAround++;
+					buildingAvailableCountFarOldSuccessAround++;
 					*dist=255-g;
 					return true;
 				}
 			}
-			buildingAviableCountFarOldFailureEnd++;
+			buildingAvailableCountFarOldFailureEnd++;
 			//printf("ba-c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			//fprintf(logFile, "ba-c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
@@ -3415,7 +3415,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	updateGlobalGradient(building, canSwim);
 	if (building->locked[canSwim])
 	{
-		buildingAviableCountFarNewFailureLocked++;
+		buildingAvailableCountFarNewFailureLocked++;
 		//printf("ba-d- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		fprintf(logFile, "ba-d- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		return false;
@@ -3424,7 +3424,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
-		buildingAviableCountFarNewSuccessFast++;
+		buildingAvailableCountFarNewSuccessFast++;
 		*dist=255-currentg;
 		return true;
 	}
@@ -3439,7 +3439,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 			Uint8 g=gradient[xddx+yddy*w];
 			if (g>1)
 			{
-				buildingAviableCountFarNewSuccessClosely++;
+				buildingAvailableCountFarNewSuccessClosely++;
 				*dist=255-g;
 				return true;
 			}
@@ -3448,13 +3448,13 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		{
 			//printf("ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			//fprintf(logFile, "ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			buildingAviableCountFarNewFailureVirtual++;
+			buildingAvailableCountFarNewFailureVirtual++;
 		}
 		else
 		{
 			printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			fprintf(logFile, "ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			buildingAviableCountFarNewFailureEnd++;
+			buildingAvailableCountFarNewFailureEnd++;
 		}
 		return false;
 	}

@@ -198,12 +198,12 @@ public:
 	int sharingGameTOTL;
 	
 	std::list<GameInfo> games;
-	bool newGameListAviable;
+	bool newGameListAvailable;
 	
 	Uint32 selectedGame;
 	bool isSelectedGame;
 	bool selectedGameinfoValid;
-	bool newSelectedGameinfoAviable;
+	bool newSelectedGameinfoAvailable;
 	int selectedGameinfoTimeout;
 	int selectedGameinfoTOTL;
 	
@@ -218,7 +218,7 @@ public:
 	bool joinGameSocketReceived;
 	
 	std::list<Client> clients;
-	bool newClientListAviable;
+	bool newClientListAvailable;
 	
 	std::list<Joiner> joiners;
 	
