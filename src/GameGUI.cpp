@@ -161,7 +161,6 @@ void GameGUI::step(void)
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
-
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
 	{
@@ -256,7 +255,6 @@ void GameGUI::step(void)
 		
 		globalContainer->yog->receivedMessages.erase(m);
 	}
-
 }
 
 void GameGUI::synchroneStep(void)
@@ -1883,7 +1881,6 @@ void GameGUI::executeOrder(Order *order)
 		{
 			if (order->sender==localPlayer)
 				isRunning=false;
-
 			game.executeOrder(order, localPlayer);
 		}
 		break;
@@ -2148,9 +2145,9 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	
 	va_list ap;
 	va_start(ap, msgText);
-	vsnprintf (fullText, sizeof(fullText), msgText, ap);
+	vsnprintf (fullText, 1024, msgText, ap);
 	va_end(ap);
-	message.text[sizeof(fullText)-1]=0;
+	fullText[1023]=0;
 	
 	char *sLine=fullText;
 	char *ptr=fullText;
