@@ -1650,10 +1650,10 @@ void Building::turretStep(void)
 					Sint32 otherTeam=Unit::GIDtoTeam(targetGUID);
 					Sint32 targetID=Unit::GIDtoID(targetGUID);
 					Uint32 otherTeamMask=1<<otherTeam;
-					if (enemies&otherTeamMask)
+					if (enemies & otherTeamMask)
 					{
 						Unit *testUnit=owner->game->teams[otherTeam]->myUnits[targetID];
-						if (testUnit->foreingExchangeBuilding==NULL)
+						if (((owner->sharedVisionExchange & otherTeamMask)==0) || (testUnit->foreingExchangeBuilding==NULL))
 						{
 							int targetTime;
 							if (testUnit->movement==Unit::MOV_ATTACKING_TARGET)

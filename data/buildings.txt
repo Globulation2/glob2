@@ -1021,7 +1021,7 @@ fillable = 1
 maxStone = 4
 maxUnitWorking = 1
 
-shootingRange = 7
+shootingRange = 6
 shootDamage = 40
 shootSpeed = 5700
 shootRythme = 2000
@@ -1038,7 +1038,7 @@ armor = 12
 level = 1
 type = 7
 
-viewingRange = 8
+viewingRange = 7
 
 *
 
