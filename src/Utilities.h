@@ -22,6 +22,7 @@
 
 #include "Header.h"
 #include <stdlib.h>
+#include <SDL/SDL_net.h>
 
 Uint32 syncRand(void);
 void setSyncRandSeed();

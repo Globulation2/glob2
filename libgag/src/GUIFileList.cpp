@@ -18,6 +18,7 @@
 */
 
 #include <GUIFileList.h>
+#include <SupportFunctions.h>
 #include <functional>
 #include <algorithm>
 #include <iostream>
@@ -110,7 +111,7 @@ const char* FileList::fileToList(const char* fileName) const
 	std::string listName(fileName);
 	if (! extension.empty())
 		listName.resize(listName.size() - (extension.size() + 1));
-	return newstrdup(listName.c_str());
+	return GAG::newstrdup(listName.c_str());
 }
 
 const char* FileList::listToFile(const char* listName) const
@@ -122,7 +123,7 @@ const char* FileList::listToFile(const char* listName) const
 	{
 		fileName += "." + extension;
 	}
-	return newstrdup(fileName.c_str());
+	return GAG::newstrdup(fileName.c_str());
 }
 
 const char* FileList::fullDir() const
@@ -130,7 +131,7 @@ const char* FileList::fullDir() const
 	std::string fullDir = this->dir;
 	if (! this->current.empty())
 		fullDir += DIR_SEPARATOR + this->current;
-	return newstrdup(fullDir.c_str());
+	return GAG::newstrdup(fullDir.c_str());
 }
 
 const char* FileList::fullName(const char* fileName) const
@@ -140,7 +141,7 @@ const char* FileList::fullName(const char* fileName) const
 	fullName += DIR_SEPARATOR;
 	fullName += fileName;
 	delete[] fullDir;
-	return newstrdup(fullName.c_str());
+	return GAG::newstrdup(fullName.c_str());
 }
 
 struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>

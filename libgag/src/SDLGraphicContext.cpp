@@ -28,6 +28,7 @@
 #include <math.h>
 #include <assert.h>
 #include <sstream>
+#include <SDL/SDL_image.h>
 
 // here begin the SDL Drawable Surface part
 SDLGraphicContext *screen=NULL;

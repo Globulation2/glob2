@@ -24,6 +24,7 @@
 #include "AI.h"
 #include "Team.h"
 #include <queue>
+#include <SDL/SDL_net.h>
 
 class BasePlayer: public Order
 {

@@ -24,6 +24,7 @@
 #include <SupportFunctions.h>
 #include <FileManager.h>
 #include <assert.h>
+#include <SDL/SDL_image.h>
 
 extern SDLGraphicContext *screen;
 
