@@ -78,7 +78,9 @@ public:
 	void drawAll(int team);
 	void executeOrder(Order *order);
 
+	//!
 	bool loadBase(const SessionInfo *initial);
+	//! 
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream, char *name);
 

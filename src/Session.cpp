@@ -58,10 +58,6 @@ SessionGame::~SessionGame(void)
 SessionGame::SessionGame(const SessionGame &sessionGame)
 {
 	*this=sessionGame;
-	
-	//mapGenerationDescriptor=NULL;
-	//if (sessionGame.mapGenerationDescriptor)
-	//	mapGenerationDescriptor=new MapGenerationDescriptor(*sessionGame.mapGenerationDescriptor);
 }
 
 SessionGame& SessionGame::operator=(const SessionGame& sessionGame)

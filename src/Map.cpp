@@ -556,7 +556,7 @@ void Map::setBaseMap(const BaseMap *initial)
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
 	if (mapDiscovered)
-		delete mapDiscovered;
+		delete[] mapDiscovered;
 	if (fogOfWarA)
 		delete[] fogOfWarA;
 	if (fogOfWarB)
@@ -614,7 +614,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 void Map::setGame(Game *game)
 {
 	assert(game);
-	printf("Map::setGame(%x)\n", game);
+	printf("Map::setGame(%p)\n", game);
 	this->game=game;
 	int size=wSector*hSector;
 	assert(size);
@@ -644,7 +644,7 @@ bool Map::load(SDL_RWops *stream, Game *game)
 
 	// regenerate
 	if (mapDiscovered)
-		delete mapDiscovered;
+		delete[] mapDiscovered;
 	if (fogOfWarA)
 		delete[] fogOfWarA;
 	if (fogOfWarB)

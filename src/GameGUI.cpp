@@ -1904,7 +1904,7 @@ void GameGUI::executeOrder(Order *order)
 		case  ORDER_MAP_MARK:
 		{
 			MapMarkOrder *mmo=(MapMarkOrder *)order;
-			
+
 			assert(game.teams[mmo->teamNumber]->teamNumber<game.session.numberOfTeam);
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
 			{
@@ -1920,31 +1920,24 @@ void GameGUI::executeOrder(Order *order)
 
 bool GameGUI::loadBase(const SessionInfo *initial)
 {
-	if (initial->mapGenerationDescriptor && initial->fileIsAMap)
+	if (initial->mapGenerationDescriptor)
 	{
+		assert(initial->fileIsAMap);
 		initial->mapGenerationDescriptor->synchronizeNow();
 		if (!game.generateMap(*initial->mapGenerationDescriptor))
 			return false;
 		game.setBase(initial);
 	}
-	else if (initial->fileIsAMap)
-	{
-		const char *s=initial->map.getMapFileName();
-		assert(s);
-		assert(s[0]);
-		printf("GameGUI::loadBase[map]::s=%s.\n", s);
-		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
-		if (!game.load(stream))
-			return false;
-		SDL_RWclose(stream);
-		game.setBase(initial);
-	}
 	else
 	{
-		const char *s=initial->map.getGameFileName();
+		const char *s;
+		if (initial->fileIsAMap)
+			s=initial->map.getMapFileName();
+		else
+			s=initial->map.getGameFileName();
 		assert(s);
 		assert(s[0]);
-		printf("GameGUI::loadBase[game]::s=%s.\n", s);
+		printf("GameGUI::loadBase::s=%s.\n", s);
 		SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
 		if (!load(stream))
 			return false;
@@ -1958,21 +1951,25 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 bool GameGUI::load(SDL_RWops *stream)
 {
 	init();
-	
+
 	bool result=game.load(stream);
-	
-	chatMask=SDL_ReadBE32(stream);
-	
-	if (game.session.versionMinor>3)
+
+	if (!game.session.fileIsAMap)
 	{
-		localPlayer=SDL_ReadBE32(stream);
-		localTeamNo=SDL_ReadBE32(stream);
+		// load gui's specific infos
+		chatMask=SDL_ReadBE32(stream);
+
+		if (game.session.versionMinor>3)
+		{
+			localPlayer=SDL_ReadBE32(stream);
+			localTeamNo=SDL_ReadBE32(stream);
+		}
+		if (game.session.versionMinor>4)
+			assert(!game.session.fileIsAMap);
+		if (result==false)
+			printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
 	}
-	if (game.session.versionMinor>4)
-		assert(!game.session.fileIsAMap);
-	if (result==false)
-		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
-	
+
 	return result;
 }
 
