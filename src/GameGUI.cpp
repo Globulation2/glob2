@@ -24,7 +24,8 @@
 #include "GameGUILoadSave.h"
 #include "Utilities.h"
 #include "YOG.h"
-
+#include <stdio.h>
+#include <stdarg.h>
 
 InGameTextInput::InGameTextInput()
 :OverlayScreen(492, 34)
