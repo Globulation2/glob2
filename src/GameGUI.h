@@ -42,6 +42,7 @@ using namespace GAGGUI;
 
 class TeamStats;
 class InGameTextInput;
+class InGameScrollableText;
 
 
 //! max unit working at a building
@@ -111,12 +112,13 @@ public:
 
 	// Stats for engine
 	void setCpuLoad(int s);
-
+	
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
 	
 	bool processGameMenu(SDL_Event *event);
+	bool processScrollableWidget(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDLKey key, bool pressed, bool shift);
 	void handleKeyAlways(void);
@@ -162,7 +164,9 @@ private:
 	void drawInGameMenu(void);
 	//! Draw the message input field
 	void drawInGameTextInput(void);
-
+	//! Draw the message history field
+	void drawInGameScrollableText(void);
+	
 	void moveFlag(int mx, int my, bool drop);
 	//! Update the brush and the local map due to mouse motion
 	void brushStep(int mx, int my);
@@ -294,6 +298,7 @@ private:
 	};
 	
 	std::list<Message> messagesList;
+	std::vector<std::string> messageHistory;
 	
 	//! Transform a text to multi line according to screen width
 	void setMultiLine(const std::string &input, std::vector<std::string> *output);
@@ -303,6 +308,7 @@ private:
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
+	InGameScrollableText *scrollableText;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
 	
