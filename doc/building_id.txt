@@ -1,0 +1,54 @@
+Level 0
+
+0 : Ruche 0
+1 : Nourriture 0
+2 : Sante 0
+3 : Marche 0
+4 : Nage 0
+5 : Combat 0
+6 : Science 0
+7 : Tourelle 0
+
+Level 1
+
+8 : Nourriture 1
+9 : Sante 1
+10 : Marche 1
+11 : Nage 1
+12 : Combat 1
+13 : Science 1
+14 : Tourelle 1
+
+Level 2
+
+15 : Nourriture 2
+16 : Sante 2
+17 : Marche 2
+18 : Nage 2
+19 : Combat 2
+20 : Science 2
+21 : Tourelle 2
+
+Autre
+
+22 : Mur
+
+Building Site
+
+23 : Ruche
+24 : 1x1 (Mur)
+25 : 2x2
+26 : 3x3
+27 : 4x4
+28 : 6x6
+29 : 8x8
+
+Flag
+
+30 : Exploration
+31 : Guerre
+32 : Defrichage
+
+Misc
+
+33 : petit drapeau
