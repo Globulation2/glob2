@@ -1654,21 +1654,10 @@ void Unit::handleMovement(void)
 				movement=MOV_RANDOM_FLY;
 			else if (map->getForbidden(posX, posY)&owner->me)
 			{
-				int shortestDist=INT_MAX;
-				bool found=false;
-				for (std::list<Building *>::iterator it=owner->virtualBuildings.begin(); it!=owner->virtualBuildings.end(); ++it)
-					if ((*it)->type->zonableForbidden)
-					{
-						int dist=map->warpDistSquare(posX, posY, (*it)->posX, (*it)->posY);
-						if (dist<shortestDist)
-						{
-							targetX=(*it)->posX;
-							targetY=(*it)->posY;
-							found=true;
-						}
-					}
+				bool found=map->pathfindForbidden(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
 				assert(found);
-				movement=MOV_ESCAPING_FORBIDDEN;
+				directionFromDxDy();
+				movement=MOV_GOING_DXDY;
 			}
 			else
 				movement=MOV_RANDOM_GROUND;

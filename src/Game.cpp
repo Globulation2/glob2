@@ -450,6 +450,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 			else
 				assert(false);
+			map.updateForbiddenGradient();
 		}
 		break;
 		case ORDER_MODIFY_SWARM:

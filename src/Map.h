@@ -371,7 +371,7 @@ public:
 	}
 	
 	void updateGlobalGradient(Uint8 *gradient);
-	void updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
+	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool verbose);
@@ -388,6 +388,9 @@ public:
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
+	bool pathfindForbidden(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	void updateForbiddenGradient(int teamNumber, bool canSwim);
+	void updateForbiddenGradient();
 	
 protected:
 	// computationals pathfinding statistics:
@@ -464,6 +467,11 @@ protected:
 	int buildingAviableCountFarOldSuccessAround;
 	int buildingAviableCountFarOldFailureLocked;
 	int buildingAviableCountFarOldFailureEnd;
+	
+	int pathfindForbiddenCount;
+	int pathfindForbiddenCountFailureMini;
+	int pathfindForbiddenCountSuccess;
+	int pathfindForbiddenCountFailureFast;
 
 public:
 	Case *cases;

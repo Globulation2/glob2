@@ -45,6 +45,10 @@ Map::Map()
 				ressourcesGradient[t][r][s]=NULL;
 				gradientUpdatedDepth[t][r][s]=0;
 			}
+	for (int t=0; t<32; t++)
+		for (int s=0; s<2; s++)
+			forbiddenGradient[t][s]=NULL;
+	
 	undermap=NULL;
 	sectors=NULL;
 	
@@ -135,6 +139,11 @@ Map::Map()
 	buildingAviableCountFarOldFailureLocked=0;
 	buildingAviableCountFarOldFailureEnd=0;
 	
+	pathfindForbiddenCount=0;
+	pathfindForbiddenCountFailureMini=0;
+	pathfindForbiddenCountSuccess=0;
+	pathfindForbiddenCountFailureFast=0;
+	
 	logFile = globalContainer->logFileManager->getFile("Map.log");
 }
 
@@ -174,6 +183,15 @@ void Map::clear()
 						ressourcesGradient[t][r][s]=NULL;
 					}
 		
+		for (int t=0; t<32; t++)
+			if (forbiddenGradient[t][0])
+				for (int s=0; s<2; s++)
+				{
+					assert(forbiddenGradient[t][s]);
+					delete[] forbiddenGradient[t][s];
+					forbiddenGradient[t][s]=NULL;
+				}
+		
 		assert(undermap);
 		delete[] undermap;
 		undermap=NULL;
@@ -195,6 +213,9 @@ void Map::clear()
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 					assert(ressourcesGradient[t][r][s]==NULL);
+		for (int t=0; t<32; t++)
+			for (int s=0; s<2; s++)
+				assert(forbiddenGradient[t][s]==NULL);
 		assert(undermap==NULL);
 		assert(sectors==NULL);
 
@@ -758,7 +779,36 @@ void Map::clear()
 	buildingAviableCountFarOldSuccessFast=0;
 	buildingAviableCountFarOldSuccessAround=0;
 	buildingAviableCountFarOldFailureLocked=0;
-	buildingAviableCountFarOldFailureEnd=0;	
+	buildingAviableCountFarOldFailureEnd=0;
+	
+	fprintf(logFile, "\n");
+	fprintf(logFile, "pathfindForbiddenCount=%d\n", pathfindForbiddenCount);
+	if (buildingAviableCountTot)
+	{
+		fprintf(logFile, "|- pathfindForbiddenCountSuccess=%d (%f %%)\n",
+			pathfindForbiddenCountSuccess,
+			100.*(double)pathfindForbiddenCountSuccess/(double)pathfindForbiddenCount);
+		
+		int pathfindForbiddenCountFailure=pathfindForbiddenCountFailureFast+pathfindForbiddenCountFailureMini;
+		fprintf(logFile, "|- pathfindForbiddenCountFailure=%d (%f %%)\n",
+			pathfindForbiddenCountFailure,
+			100.*(double)pathfindForbiddenCountFailure/(double)pathfindForbiddenCount);
+		
+		fprintf(logFile, "|-  pathfindForbiddenCountFailureFast=%d (%f %%) (%f %% of failure)\n",
+			pathfindForbiddenCountFailureFast,
+			100.*(double)pathfindForbiddenCountFailureFast/(double)pathfindForbiddenCount,
+			100.*(double)pathfindForbiddenCountFailureFast/(double)pathfindForbiddenCountFailure);
+		fprintf(logFile, "|-  pathfindForbiddenCountFailureMini=%d (%f %%) (%f %% of failure)\n",
+			pathfindForbiddenCountFailureMini,
+			100.*(double)pathfindForbiddenCountFailureMini/(double)pathfindForbiddenCount,
+			100.*(double)pathfindForbiddenCountFailureMini/(double)pathfindForbiddenCountFailure);
+		
+	}
+	
+	pathfindForbiddenCount=0;
+	pathfindForbiddenCountFailureMini=0;
+	pathfindForbiddenCountSuccess=0;
+	pathfindForbiddenCountFailureFast=0;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
@@ -880,9 +930,9 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 			Ressource &r=cases[i].ressource;
 			if (r.type!=NO_RES_TYPE)
 			{
-			RessourceType *rt=globalContainer->ressourcesTypes.get(r.type);
-			if (r.amount>rt->sizesCount)
-				r.amount=rt->sizesCount;
+				RessourceType *rt=globalContainer->ressourcesTypes.get(r.type);
+				if (r.amount>rt->sizesCount)
+					r.amount=rt->sizesCount;
 			}
 		}
 		cases[i].groundUnit=SDL_ReadBE16(stream);
@@ -900,13 +950,20 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 				{
 					assert(ressourcesGradient[t][r][s]==NULL);
 					ressourcesGradient[t][r][s]=new Uint8[size];
-					updateGradient(t, r, (bool)s, true);
+					updateRessourcesGradient(t, r, (bool)s, true);
 				}
 		for (int t=0; t<32; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<1; s++)
 					gradientUpdatedDepth[t][r][s]=0;
 
+		for (int t=0; t<sessionGame->numberOfTeam; t++)
+			for (int s=0; s<2; s++)
+			{
+				assert(forbiddenGradient[t][s]==NULL);
+				forbiddenGradient[t][s]=new Uint8[size];
+				updateForbiddenGradient(t, s);
+			}
 		this->game=game;
 	}
 
@@ -987,7 +1044,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateGradient(t, r, (bool)s, true);
+			updateRessourcesGradient(t, r, (bool)s, true);
 		}
 }
 
@@ -1092,10 +1149,10 @@ void Map::syncStep(Sint32 stepCounter)
 				for (int s=0; s<2; s++)
 				{
 					int gud=gradientUpdatedDepth[t][r][s];
-					if (gud<2)
+					if (gud<1) // now we have only one filter.
 					{
-						//printf("updateGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
-						updateGradient(t, r, (bool)s, gud==0);
+						//printf("updateRessourcesGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
+						updateRessourcesGradient(t, r, (bool)s, gud==0);
 						gradientUpdatedDepth[t][r][s]++;
 						updated=true;
 						goto tripleBreak;
@@ -1954,135 +2011,6 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	return false;
 }
 
-/*void Map::updateGlobalGradient(Uint8 *gradient)
-{
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
-	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
-	
-	//start(2/4, 3/4)
-	for (int yi=(3*(h>>1)); yi<(h+3*(h>>1)); yi++)
-	{
-		int wy=((yi&hMask)<<wDec);
-		int wyu=(((yi-1)&hMask)<<wDec);
-		for (int xi=(w>>1); xi<(w+(w>>1)); xi++)
-		{
-			int x=xi&wMask;
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				int xl=(x-1)&wMask;
-				int xr=(x+1)&wMask;
-
-				Uint8 side[4];
-				side[0]=gradient[wyu+xl];
-				side[1]=gradient[wyu+x ];
-				side[2]=gradient[wyu+xr];
-				side[3]=gradient[wy +xl];
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-
-	//start(0/4, 2/4)
-	for (int yi=(h+(h>>2)); yi>=(h>>2); yi--)
-	{
-		int wy=((yi&hMask)<<wDec);
-		int wyd=(((yi+1)&hMask)<<wDec);
-		for (int x=0; x<w; x++)
-		{
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				int xl=(x-1)&wMask;
-				int xr=(x+1)&wMask;
-
-				Uint8 side[4];
-				side[0]=gradient[wyd+xr];
-				side[1]=gradient[wyd+x ];
-				side[2]=gradient[wyd+xl];
-				side[3]=gradient[wy +xl];
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-
-	//start(3/4, 1/4)
-	for (int xi=(3*(w>>2)); xi<(w+3*(w>>2)); xi++)
-	{
-		int x=(xi&wMask);
-		int xl=(xi-1)&wMask;
-		for (int yi=(h+(h>>2)); yi>=(h>>2); yi--)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyu=(((yi-1)&hMask)<<wDec);
-			int wyd=(((yi+1)&hMask)<<wDec);
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				Uint8 side[4];
-				side[0]=gradient[wyu+xl];
-				side[1]=gradient[wyd+xl];
-				side[2]=gradient[wy +xl];
-				side[3]=gradient[wyu+x ];
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-
-	//start(1/4, 0/4)
-	for (int xi=(w+(w>>2)); xi>=(w>>2); xi--)
-	{
-		int x=(xi&wMask);
-		int xr=(xi+1)&wMask;
-		for (int y=0; y<h; y++)
-		{
-			int wy=(y<<wDec);
-			int wyu=(((y-1)&hMask)<<wDec);
-			int wyd=(((y+1)&hMask)<<wDec);
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				Uint8 side[4];
-				side[0]=gradient[wyu+xr];
-				side[1]=gradient[wy +xr];
-				side[2]=gradient[wyd+xr];
-				side[3]=gradient[wyu+x ];
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}
-}*/
-
-
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
@@ -2209,7 +2137,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 	}
 }
 
-void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init)
+void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool init)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
@@ -2219,7 +2147,6 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 	{
 		assert(globalContainer);
 		bool visibleToBeCollected=(bool)globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
-		memset(gradient, 1, size);
 		for (int y=0; y<h; y++)
 		{
 			int wy=(y<<wDec);
@@ -2234,6 +2161,8 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 						gradient[wy+x]=0;
 					else if (!canSwim && isWater(x, y))
 						gradient[wy+x]=0;
+					else
+						gradient[wy+x]=1;
 				}
 				else
 				{
@@ -2250,9 +2179,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 			}
 		}
 	}
-	
-	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
-		updateGlobalGradient(gradient);
+	updateGlobalGradient(gradient);
 }
 
 bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose)
@@ -2566,7 +2493,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		pathToRessourceCountFailure++;
 		*stopWork=true;
-		return false;
+		return pathfindForbidden(teamNumber, canSwim, x, y, dx, dy);
 	}
 	
 	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
@@ -3107,161 +3034,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			y=(y-1)&hMask;
 		}
 	}
-	
 	updateGlobalGradient(gradient);
-	
-	/*for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
-	{
-	
-		for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyu=(((yi-1)&hMask)<<wDec);
-			for (int x=0; x<w; x++)
-			{
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					int xl=(x-1)&wMask;
-					int xr=(x+1)&wMask;
-					
-					Uint8 side[4];
-					side[0]=gradient[wyu+xl];
-					side[1]=gradient[wyu+x ];
-					side[2]=gradient[wyu+xr];
-					side[3]=gradient[wy +xl];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int yi=(h+(h>>1)); yi>=(h>>1); yi--)
-		{
-			int wy=((yi&hMask)<<wDec);
-			int wyd=(((yi+1)&hMask)<<wDec);
-			for (int x=0; x<w; x++)
-			{
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					int xl=(x-1)&wMask;
-					int xr=(x+1)&wMask;
-					
-					Uint8 side[4];
-					side[0]=gradient[wyd+xr];
-					side[1]=gradient[wyd+x ];
-					side[2]=gradient[wyd+xl];
-					side[3]=gradient[wy +xl];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int xi=(w>>1); xi<(w+(w>>1)); xi++)
-		{
-			int x=(xi&wMask);
-			int xl=(xi-1)&wMask;
-			for (int y=0; y<h; y++)
-			{
-				int wy=(y<<wDec);
-				int wyu=(((y-1)&hMask)<<wDec);
-				int wyd=(((y+1)&hMask)<<wDec);
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					Uint8 side[4];
-					side[0]=gradient[wyu+xl];
-					side[1]=gradient[wyd+xl];
-					side[2]=gradient[wy +xl];
-					side[3]=gradient[wyu+x ];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-
-		for (int xi=(w+(w>>1)); xi>=(w>>1); xi--)
-		{
-			int x=(xi&wMask);
-			int xr=(xi+1)&wMask;
-			for (int y=0; y<h; y++)
-			{
-				int wy=(y<<wDec);
-				int wyu=(((y-1)&hMask)<<wDec);
-				int wyd=(((y+1)&hMask)<<wDec);
-				Uint8 max=gradient[wy+x];
-				if (max && max!=255)
-				{
-					Uint8 side[4];
-					side[0]=gradient[wyu+xr];
-					side[1]=gradient[wy +xr];
-					side[2]=gradient[wyd+xr];
-					side[3]=gradient[wyu+x ];
-
-					for (int i=0; i<4; i++)
-						if (side[i]>max)
-							max=side[i];
-					if (max==1)
-						gradient[wy+x]=1;
-					else
-						gradient[wy+x]=max-1;
-				}
-			}
-		}
-	}*/
-	
-	/*for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
-	{
-		int wy=((yi&hMask)<<wDec);
-		int wyu=(((yi-1)&hMask)<<wDec);
-		for (int x=0; x<w; x++)
-		{
-			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
-			{
-				int xl=(x-1)&wMask;
-				int xr=(x+1)&wMask;
-
-				Uint8 side[4];
-				side[0]=gradient[wyu+xl];
-				side[1]=gradient[wyu+x ];
-				side[2]=gradient[wyu+xr];
-				side[3]=gradient[wy +xl];
-
-				for (int i=0; i<4; i++)
-					if (side[i]>max)
-						max=side[i];
-
-				if (max==1)
-					gradient[wy+x]=1;
-				else
-					gradient[wy+x]=max-1;
-			}
-		}
-	}*/
-	
-	//fprintf(logFile, "...updatedGlobalGradient\n");
 }
 
 bool Map::updateLocalRessources(Building *building, bool canSwim)
@@ -3686,8 +3459,14 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	assert(y>=0);
 	 
 	Uint32 teamMask=building->owner->me;
+	int teamNumber=building->owner->teamNumber;
 	
-	Uint8 * gradient;
+	Uint8 *gradient;
+	
+	gradient=forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
+	if (gradient[x+y*w]!=255)
+		return pathfindForbidden(teamNumber, canSwim, x, y, dx, dy);
 	
 	gradient=building->localGradient[canSwim];
 	
@@ -4016,6 +3795,73 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 				}
 		}
 	}
+}
+
+bool Map::pathfindForbidden(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
+	pathfindForbiddenCount++;
+	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
+	
+	Uint8 max=gradient[x+y*w];
+	
+	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	
+	if (max<2)
+	{
+		printf(" FailureFast (%d)\n", max);
+		pathfindForbiddenCountFailureFast++;
+		return false;
+	}
+	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false))
+	{
+		printf(" Success (%d)\n", max);
+		pathfindForbiddenCountSuccess++;
+		return true;
+	}
+	else
+	{
+		printf(" Failure (%d)\n", max);
+		pathfindForbiddenCountFailureMini++;
+		return false;
+	}
+}
+
+void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
+{
+	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
+	assert(gradient);
+	
+	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	for (int y=0; y<h; y++)
+	{
+		int wy=(y<<wDec);
+		for (int x=0; x<w; x++)
+		{
+			Case c=cases[wy+x];
+			if (c.ressource.type!=NO_RES_TYPE)
+				gradient[wy+x]=0;
+			else if (c.building!=NOGBID)
+				gradient[wy+x]=0;
+			else if (!canSwim && isWater(x, y))
+				gradient[wy+x]=0;
+			else if (c.forbidden&teamMask)
+				gradient[wy+x]=1;
+			else
+				gradient[wy+x]=255;
+		}
+	}
+	
+	updateGlobalGradient(gradient);
+}
+
+void Map::updateForbiddenGradient()
+{
+	int numberOfTeam=game->session.numberOfTeam;
+	for (int ti=0; ti<numberOfTeam; ti++)
+		for (int si=0; si<2; si++)
+			updateForbiddenGradient(ti, si);
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)
