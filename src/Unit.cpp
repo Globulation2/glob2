@@ -1614,14 +1614,13 @@ void Unit::handleMovement(void)
 					if (owner->map->pathfindBuilding(tempTargetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
 					{
 						if (verbose)
-							printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, targetBuilding->gid, dx, dy);
+							printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
 						movement=MOV_GOING_DXDY;
 					}
 					else
 					{
 						if (verbose)
-							printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, targetBuilding->gid, dx, dy);
-						stopAttachedForBuilding(true);
+							printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
 						movement=MOV_RANDOM_GROUND;
 					}
 				}
