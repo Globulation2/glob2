@@ -28,7 +28,7 @@
 #include "MultiplayersHost.h"
 #include "GlobalContainer.h"
 #include "GAG.h"
-#include "YOGScreen.h"
+#include "YOGConnector.h"
 //#include "NetConsts.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG)
@@ -63,11 +63,12 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG)
 	if (shareOnYOG)
 	{
 		// tell YOG to open the game
-		YOGScreen::openYOG();
-		char newGameText[YOGScreen::GAME_INFO_MAX_SIZE];
-		snprintf(newGameText, YOGScreen::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
-		YOGScreen::sendString(YOGScreen::socket, newGameText);
-		YOGScreen::closeYOG();
+		YOGConnector yogConnector;
+		yogConnector.open();
+		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
+		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
+		yogConnector.sendString(newGameText);
+		yogConnector.close();
 	}
 }
 
@@ -76,10 +77,13 @@ MultiplayersHost::~MultiplayersHost()
 	
 	if (shareOnYOG)
 	{
-		// tell YOG to remove the game
-		YOGScreen::openYOG();
-		YOGScreen::sendString(YOGScreen::socket, "deletegame");
-		YOGScreen::closeYOG();
+		// tell YOG to open the game
+		YOGConnector yogConnector;
+		yogConnector.open();
+		char newGameText[YOGConnector::GAME_INFO_MAX_SIZE];
+		snprintf(newGameText, YOGConnector::GAME_INFO_MAX_SIZE, "deletegame");
+		yogConnector.sendString(newGameText);
+		yogConnector.close();
 	}
 
 	if (destroyNet)
