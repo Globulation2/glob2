@@ -1439,6 +1439,12 @@ Game speed
 Spielgeschwindigkeit
 Rychlost hry
 Prędkość gry
+[Paused]
+Pause
+Paused
+
+
+
 [YESTS_BAD]
 Erreur de cohérence interne lors de la connection.
 Internal consistency error while connecting.

@@ -81,8 +81,8 @@ granular = 1
 
 // Cherry
 minimapR = 255
-minimapG = 100
-minimapB = 100
+minimapG = 127
+minimapB = 0
 gfxId = 50
 varietiesCount = 1
 expendable = 0
@@ -94,8 +94,8 @@ visibleToBeCollected = 1
 
 // Orange
 minimapR = 255
-minimapG = 100
-minimapB = 100
+minimapG = 127
+minimapB = 0
 gfxId = 55
 varietiesCount = 1
 expendable = 0
@@ -107,8 +107,8 @@ visibleToBeCollected = 1
 
 // Prune
 minimapR = 255
-minimapG = 100
-minimapB = 100
+minimapG = 127
+minimapB = 0
 gfxId = 60
 varietiesCount = 1
 expendable = 0

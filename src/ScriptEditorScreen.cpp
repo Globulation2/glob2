@@ -65,7 +65,7 @@ bool ScriptEditorScreen::testCompile(void)
 	else
 	{
 		compilationResult->setColor(255, 50, 50);
-		compilationResult->setText("Compilation failure : %d:%d:%s", er.line+1, er.col, er.getErrorString());
+		compilationResult->setText("Compilation failure : %d:%d:(%d):%s", er.line+1, er.col, er.pos, er.getErrorString());
 		editor->setCursorPos(er.pos);
 		return false;
 	}

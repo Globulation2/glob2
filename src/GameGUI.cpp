@@ -2496,6 +2496,15 @@ void GameGUI::drawAll(int team)
 		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, useMapDiscovered);
 	}
 
+	// if paused, tint the game area
+	if (paused)
+	{
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), 0, 0, 0, 127);
+		const char *s = Toolkit::getStringTable()->getString("[Paused]");
+		int x = (globalContainer->gfx->getW()-globalContainer->menuFont->getStringWidth(s))>>1;
+		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
+	}
+
 	// draw the panel
 	globalContainer->gfx->setClipRect();
 	drawPanel();

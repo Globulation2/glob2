@@ -62,6 +62,8 @@ Session.cpp\
 Session.h\
 SGSL.cpp \
 SGSL.h \
+SoundMixer.cpp \
+SoundMixer.h \
 Team.cpp\
 Team.h\
 TeamStat.h\
@@ -115,5 +117,5 @@ ScriptEditorScreen.cpp \
 EndGameScreen.h \
 EndGameScreen.cpp
 
-glob2_LDADD=-lSDL_net -lSDL_image @FT2_LIBS@ @SDL_LIBS@ ../libgag/src/libgag.a
+glob2_LDADD=-lvorbisfile -lvorbis -lSDL_net -lSDL_image @FT2_LIBS@ @SDL_LIBS@ ../libgag/src/libgag.a
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I@srcdir@/../libgag/include
