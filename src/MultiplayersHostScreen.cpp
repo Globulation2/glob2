@@ -148,8 +148,10 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		
 		strncpy(multiplayersJoin->serverName, "localhost", 256);
 		multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
-		multiplayersJoin->serverIP.port=SDL_SwapBE16(GAME_SERVER_PORT);
-		
+		if (multiplayersHost->serverIP.host)
+			multiplayersJoin->serverIP.port=SDL_SwapBE16(multiplayersHost->serverIP.host);
+		else
+			multiplayersJoin->serverIP.port=SDL_SwapBE16(GAME_SERVER_PORT);
 		multiplayersJoin->tryConnection(true);
 	}
 

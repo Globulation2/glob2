@@ -43,21 +43,24 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	initHostGlobalState();
 
 	socket=NULL;
-	socket=SDLNet_UDP_Open(GAME_SERVER_PORT);
-
 	serverIP.host=0;
 	serverIP.port=0;
-
 	fprintf(logFile, "Openning a socket...\n");
+	socket=SDLNet_UDP_Open(GAME_SERVER_PORT);
+	if (socket)
+		fprintf(logFile, "Socket opened at port (%d).\n", GAME_SERVER_PORT);
+	else
+		socket=SDLNet_UDP_Open(ANY_PORT);
 	if (socket)
 	{
-		fprintf(logFile, "Socket opened at port %d.\n", GAME_SERVER_PORT);
+		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
+		serverIP.port=localAddress->port;
+		fprintf(logFile, "Socket opened at unknow port (%d)\n", SDL_SwapBE16(serverIP.port));
 	}
 	else
-	{
 		fprintf(logFile, "failed to open a socket.\n");
-		return;
-	}
+		
+	
 
 	firstDraw=true;
 
