@@ -290,6 +290,8 @@ void GameGUI::synchroneStep(void)
 		if (stream)
 		{
 			char *name = strchr(locationName, '/');
+			assert(name);
+			name++;
 			save(stream, name);
 			SDL_RWclose(stream);
 		}
@@ -449,6 +451,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						if (stream)
 						{
 							char *name = strchr(locationName, '/');
+							assert(name);
+							name++;
 							save(stream, name);
 							SDL_RWclose(stream);
 						}
@@ -1421,8 +1425,7 @@ void GameGUI::draw(void)
 				
 			globalContainer->littleFont->pushColor(r, g, b);
 			textT=selBuild->owner->getFirstPlayerName();
-			if (!textT)
-				textT=globalContainer->texts.getString("[Uncontrolled]");
+			assert(textT);
 			decT=(128-globalContainer->littleFont->getStringWidth(textT)>>1);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+16, globalContainer->littleFont, "%s", textT);
 			globalContainer->littleFont->popColor();

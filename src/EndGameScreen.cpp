@@ -96,7 +96,9 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	this->gui=gui;
 	
 	// title & graph
-	const char *titleText;
+	char *titleText;
+	bool allocatedText=false;
+	
 	if (!gui->getLocalTeam()->isAlive)
 	{
 		titleText=globalContainer->texts.getString("[Lost : your colony is dead]");
@@ -114,12 +116,29 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		Team *t=gui->game.getTeamWithMostPrestige();
 		assert(t);
 		if (t==gui->getLocalTeam())
+		{
 			titleText=globalContainer->texts.getString("[Won : you have the biggest prestige]");
+		}
 		else
-			titleText=globalContainer->texts.getString("[Lost : %s has more prestige than you]");
+		{
+			const char *strText;
+			if ((t->allies) & (gui->getLocalTeam()->me))
+				strText = globalContainer->texts.getString("[Won : your ally %s have the biggest prestige]");
+			else
+				strText = globalContainer->texts.getString("[Lost : %s has more prestige than you]");
+
+			const char *playerText = t->getFirstPlayerName();
+			assert(strText);
+			assert(playerText);
+			int len=strlen(strText)+strlen(playerText)-1;
+			titleText=new char[len];
+			snprintf(titleText, len, strText, playerText);
+		}
 	}
 	
 	addWidget(new Text(20, 18, globalContainer->menuFont, titleText, 600));
+	if (allocatedText)
+		delete[] titleText;
 	statWidget=new EndGameStat(208, 80, &(gui->game));
 	addWidget(statWidget);
 	

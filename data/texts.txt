@@ -1031,6 +1031,10 @@ Lost : Your colony is dead
 Gagné : Vous avez vaincu vos adversaires
 Won : you defeated your opponents
 
+[Won : your ally %s have the biggest prestige]
+Gagné : votre allié %s a le plus de prestige
+Won : your ally %s have the biggest prestige
+%s
 [Lost : %s has more prestige than you]
 Perdu : %s a plus de prestige que vous
 Lost : %s has more prestige than you
