@@ -41,6 +41,8 @@
 #ifndef WIN32
 #	include <unistd.h>
 #	include <sys/time.h>
+#else
+#	include <time.h>
 #endif
 
 /*!	\mainpage Globulation 2 Reference documentation

@@ -140,6 +140,9 @@
 				RelativePath="src\Building.cpp">
 			</File>
 			<File
+				RelativePath=".\src\BuildingsTypes.cpp">
+			</File>
+			<File
 				RelativePath="src\BuildingType.cpp">
 			</File>
 			<File
@@ -174,6 +177,9 @@
 			</File>
 			<File
 				RelativePath="src\GameGUILoadSave.cpp">
+			</File>
+			<File
+				RelativePath=".\src\GameUtilities.cpp">
 			</File>
 			<File
 				RelativePath="src\Glob2.cpp">

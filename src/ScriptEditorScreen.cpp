@@ -30,6 +30,8 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
+#include <algorithm>
+
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400)

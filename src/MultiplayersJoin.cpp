@@ -1755,7 +1755,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 	return sendPresenceRequest();
 }
 
-void MultiplayersJoin::quitThisGame()
+void MultiplayersJoin::quitThisGame() 
 {
 	fprintf(logFile, "\nquitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
 	unCrossConnectSessionInfo();
