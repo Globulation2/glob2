@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "GameGUI.h"
@@ -1717,10 +1717,10 @@ void GameGUI::executeOrder(Order *order)
 
 			if (mo->recepientsMask &(1<<localPlayer))
 			{
-				Message message;
-				message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-				snprintf(message.text, MAX_MESSAGE_SIZE, "%s : %s", game.players[sp]->name, mo->getText());
-				messagesList.push_front(message);
+				char text[MAX_DISPLAYED_MESSAGE_SIZE];
+				snprintf(text, MAX_MESSAGE_SIZE, "%s : %s", game.players[sp]->name, mo->getText());
+				text[MAX_DISPLAYED_MESSAGE_SIZE-1] = 0;
+				addMessage(text);
 			}
 			game.executeOrder(order, localPlayer);
 		}
@@ -1736,12 +1736,11 @@ void GameGUI::executeOrder(Order *order)
 		case ORDER_PLAYER_QUIT_GAME :
 		{
 			int qp=order->sender;
-			Message message;
-			message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-			snprintf(message.text, MAX_MESSAGE_SIZE, "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
-			message.text[MAX_MESSAGE_SIZE-1]=0;
-			messagesList.push_front(message);
-
+			char text[MAX_DISPLAYED_MESSAGE_SIZE];
+			snprintf(text, MAX_MESSAGE_SIZE, "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
+			text[MAX_DISPLAYED_MESSAGE_SIZE-1] = 0;
+			addMessage(text);
+			
 			game.executeOrder(order, localPlayer);
 		}
 		break;
