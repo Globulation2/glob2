@@ -289,6 +289,7 @@ void MultiplayersHost::stepHostGlobalState(void)
 		{
 			fprintf(logFile, "Great, all players are cross connected, Game could start, except the file!.\n");
 			hostGlobalState=HGS_ALL_PLAYERS_CROSS_CONNECTED;
+			stepHostGlobalState();
 		}
 	}
 	break;
