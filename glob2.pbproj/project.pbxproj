@@ -10091,8 +10091,9 @@
 			);
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(HOME)/Library/Frameworks";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL libgag/include";
 				INFOPLIST_FILE = "Info-Globulation2_static__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
@@ -10105,6 +10106,7 @@
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
 			};
 			comments = "Satatic built for libraries installed mostly under /usr/local/lib";
 			dependencies = (
