@@ -179,6 +179,10 @@ namespace GAGGUI
 		GAGCore::DrawableSurface *gfx;
 		
 	public:
+		//! The animation frame for screen creation
+		int animationFrame;
+		
+	public:
 		Screen();
 	
 		virtual ~Screen();
