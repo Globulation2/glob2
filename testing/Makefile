@@ -1,10 +1,13 @@
-all: broad serv
+all: broadTest simpleServer simpleClient
 
-broad: broadTest.cpp
+broadTest: broadTest.cpp
 	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` broadTest.cpp -o broadTest
 	
-serv: simpleServ.cpp
-	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleServ.cpp -o simpleServ
+simpleServer: simpleServer.cpp
+	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleServer.cpp -o simpleServer
+	
+simpleClient: simpleClient.cpp
+	gcc -g `sdl-config --libs` -lSDL_net `sdl-config --cflags` simpleClient.cpp -o simpleClient
 	
 clean:
-	rm -f broadTest simpleServ core
+	rm -f broadTest simpleServer simpleClient core
