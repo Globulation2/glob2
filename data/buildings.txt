@@ -158,6 +158,7 @@ type inn
 
 gameSprite data/gfx/inn1b
 gameSpriteImage 0
+gameSpriteCount 2
 miniSprite data/gfx/miniinn1b
 miniSpriteImage 0
 
