@@ -555,7 +555,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			}
 		if (good)
 		{
-			lprintf("%s stop hosting the game called %s.\n", (*sender)->userName, (*sender)->sharingGame->name);
+			lprintf("(%s) stop hosting the game called (%s).\n", (*sender)->userName, (*sender)->sharingGame->name);
 			removeGame(*sender);
 		}
 		else
@@ -823,6 +823,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		}
 		if (id)
 		{
+			lprintf("YOG metaserver closing(%d)\n");
 			send(ip, YMT_CLOSE_YOG);
 			std::list<YOGClient *>::iterator client;
 			for (client=clients.begin(); client!=clients.end(); ++client)
@@ -867,11 +868,11 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 						(*c)->updateClient(cuid, (Uint16)CUP_PLAYING);
 				(*sender)->joinGameip=ip;
 				(*sender)->playing=true;
-				lprintf("Client %s has a joinGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
+				lprintf(" Client (%s) has a joinGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
 				if ((*sender)->sharingGame && (*sender)->sharingGame->host!=*sender)
-					lprintf("Warning, Client (%s) has not joined his own game!\n", (*sender)->userName);
+					lprintf(" Warning, Client (%s) has not joined his own game!\n", (*sender)->userName);
 				
-				(*sender)->send(YMT_JOIN_GAME_SOCKET);
+				bool found=false;
 				for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
 					if ((*game)->uid==guid)
 					{
@@ -885,8 +886,12 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 							(*game)->host->joinersTimeout=0;
 						else
 							(*game)->host->joinersTimeout=16-size;
+						lprintf(" joiners.size=%d, host->joiners.size=%d\n", (*game)->joiners.size(), (*game)->host->joiners.size());
+						found=true;
 						break;
 					}
+				if (found)
+					(*sender)->send(YMT_JOIN_GAME_SOCKET);
 				break;
 			}
 	}
@@ -921,7 +926,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 					if ((*ji)->uid==uid)
 					{
 						joiners.erase(ji);
-						lprintf("(%s) received the (%s) wants to join packet uid=(%d)\n", (*sender)->userName, (*ji)->userName, uid);
+						lprintf(" received the (%s) wants to join packet uid=(%d)\n", (*ji)->userName, uid);
 						break;
 					}
 			}
