@@ -151,7 +151,7 @@ void AICastor::computeRessourcesCluster()
 	Uint8 old=0xFF;
 	Uint16 id=0;
 	bool usedid[65536];
-	memset(usedid, 0, 65536);
+	memset(usedid, 0, 65536*sizeof(bool));
 	for (int y=0; y<h; y++)
 	{
 		for (int x=0; x<w; x++)
