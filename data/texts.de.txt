@@ -113,35 +113,37 @@ Steinmauer
 [market]
 Markt
 [forbidden area]
-
+Verbotene Zone
+[guard area]
+Zone Bewachen
 [Building short explanation]
 
 [swarm building explanation]
-
+Erstellt neue Einheiten
 [food building explanation]
-
+Füttert Ihre Einheiten
 [health building explanation]
-
+Heilt Ihre Einheiten
 [walkspeed building explanation]
-
+Erhöht die Gehgeschwin-
 [swimspeed building explanation]
-
+Erhöht das Schwimm-
 [attack building explanation]
-
+Verbessert die Kampf-
 [science building explanation]
-
+Verbessert die Bau-
 [defense building explanation]
-
+Greift Feindliche Ge-
 [exploration flag explanation]
-
+Zieht Entdecker an
 [war flag explanation]
-
+Ziehtt Krieger an
 [clearing flag explanation]
-
+Rode Ressourcen
 [stone wall explanation]
-
+Passives Verteidigungs-
 [market explanation]
-
+Erlaubt den Handel mit
 [Building short explanation 2]
 
 [swarm building explanation 2]
@@ -151,15 +153,15 @@ Markt
 [health building explanation 2]
 
 [walkspeed building explanation 2]
-
+digkeit Ihrer Einheiten
 [swimspeed building explanation 2]
-
+tempo Ihrer Einheiten
 [attack building explanation 2]
-
+kraft Ihrer Einheiten
 [science building explanation 2]
-
+fähigkeit Ihrer Einheiten
 [defense building explanation 2]
-
+bäude und Einheiten an
 [exploration flag explanation 2]
 
 [war flag explanation 2]
@@ -167,9 +169,9 @@ Markt
 [clearing flag explanation 2]
 
 [stone wall explanation 2]
-
+gebäude
 [market explanation 2]
-
+Früchten
 [waiting for %s]
 Warten auf %s
 [%s has left the game]
@@ -191,7 +193,7 @@ Spiel beenden
 [ok]
 Ok
 [Cancel]
-Wiederrufen
+Abbrechen
 [you have lost]
 Sie haben verloren!
 [you have won]
@@ -199,21 +201,21 @@ Sie haben gewonnen!
 [campaign]
 Feldzug
 [tutorial]
-Lernprogramm
+Lernprogramm (Englisch)
 [custom game]
 Freies Spiel
 [yog]
 Ysagoon-Onlinespiel
 [Enter your nickname :]
-
+Geben Sie ihren Spitznamen ein :
 [Enter your password :]
-
+Geben Sie ihr Passwort ein :
 [lan]
 Spiel im lokalen Netz
 [settings]
 Einstellungen
 [Warning, you need to reboot the game for changes to take effect]
-
+Achtung: Sie müssen das Spiel neu starten, damit die Änderungen wirksam werden
 [editor]
 Editor
 [credits]
@@ -343,9 +345,9 @@ Der Markt wird angegriffen
 [Your %s are under attack]
 Eure %s werden angegriffen
 [Your unit got converted to another team]
-Sie haben eine Einheit von einem anderen Team übernommen
+Eine Ihreer Einheiten wrde von einem andern Spieler übernommen
 [Another team's unit got converted to your team]
-
+Sie haben eine Einheit von einem anderen Team übernommen
 [Uncontrolled]
 Unkontrolliert
 [ai]
@@ -617,7 +619,7 @@ Das Spiel wurde nicht abgeschlossen
 [display]
 Anzeige
 [username]
-Username
+Benutzername
 [fullscreen]
 Vollbild
 [hwaccel]
@@ -632,5 +634,9 @@ Audio
 Volumen (Musik)
 [Happyness]
 Zufriedenheit
+[customcur]
+Eigener Mauszeiger
+[choose campaign]
+Wählen Sie eine Kampagne aus
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Leider ist Ihr Spitzname auf freenode schon besetzt, Sie könen nur durch YOG senden
