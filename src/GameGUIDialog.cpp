@@ -90,14 +90,22 @@ void InGameMainScreen::onSDLEvent(SDL_Event *event)
 InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 :OverlayScreen(300, 295)
 {
+	// fill the slots
 	int i;
 	for (i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 	{
-		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, false, ALLIED+i);
+		int otherTeam=gameGUI->game.players[i]->teamNumber;
+
+		bool alliedState = (gameGUI->localTeam->allies)&(1<<otherTeam);
+		allied[i]=new OnOffButton(200, 40+i*25, 20, 20, alliedState, ALLIED+i);
 		addWidget(allied[i]);
-		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, false, VISION+i);
+
+		bool visionState = (gameGUI->localTeam->sharedVision)&(1<<otherTeam);
+		vision[i]=new OnOffButton(235, 40+i*25, 20, 20, visionState, VISION+i);
 		addWidget(vision[i]);
-		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, CHAT+i);
+
+		bool chatState = (gameGUI->chatMask)&(1<<i);
+		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, chatState, CHAT+i);
 		addWidget(chat[i]);
 
 		Text *text = new Text(10, 40+i*25, globalContainer->menuFont, gameGUI->game.players[i]->name);
@@ -110,10 +118,12 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		allied[i]=vision[i]=chat[i]=NULL;
 	}
 
+	// add static text
 	addWidget(new Text(200, 10, globalContainer->menuFont, "A"));
 	addWidget(new Text(236, 10, globalContainer->menuFont, "V"));
 	addWidget(new Text(272, 10, globalContainer->menuFont, "C"));
-	
+
+	// add ok button
 	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 27));
 	this->gameGUI=gameGUI;
 }

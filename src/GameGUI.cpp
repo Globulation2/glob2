@@ -284,38 +284,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					{
 						inGameMenu=IGM_ALLIANCE8;
 						gameMenuScreen=new InGameAlliance8Screen(this);
-
 						gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
-
-						// set correct values to choice boxes
-						OnOffButton *button;
-						int i;
-
-						for (i=0; i<game.session.numberOfPlayer; i++)
-						{
-							int otherTeam=game.players[i]->teamNumber;
-
-							button=((InGameAlliance8Screen *)gameMenuScreen)->allied[i];
-							assert(button);
-#							ifdef WIN32
-#							pragma warning (disable : 4800)
-#							endif
-							button->setState((localTeam->allies)&(1<<otherTeam));
-
-							button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
-							assert(button);
-							bool state=localTeam->sharedVision&(1<<otherTeam);
-							button->setState(state);
-
-							button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
-							assert(button);
-							button->setState(chatMask&(1<<i));
-#							ifdef WIN32
-#							pragma warning (default : 4800)
-#							endif
-
-						}
-
 					}
 					else
 					{
