@@ -1930,6 +1930,8 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (init)
 	{
+		assert(globalContainer);
+		bool visibleToBeCollected=globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
 		memset(gradient, 1, size);
 		for (int y=0; y<h; y++)
 		{
@@ -1949,7 +1951,12 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 				else
 				{
 					if (c.ressource.field.type==ressourceType)
-						gradient[wy+x]=255;
+					{
+						if (visibleToBeCollected && !(fogOfWar[wy+x]&teamMask))
+							gradient[wy+x]=0;
+						else
+							gradient[wy+x]=255;
+					}
 					else
 						gradient[wy+x]=0;
 				}
