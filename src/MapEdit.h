@@ -42,12 +42,12 @@ private:
 	int processEvent(const SDL_Event *event);
 	void askConfirmationToQuit(void);
 	void handleMenuClick(int mx, int my, int button);
-	void handleMapClick(int mx, int my);
 	void handleMapClick(void);
+	void handleMapClick(int mx, int my);
 	void paintCoordinates(void);
 	void paintCoordinates(int mx, int my);
-	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
 	void paintEditMode(bool clearOld, bool mayUpdate);
+	void paintEditMode(int mx, int my, bool clearOld, bool mayUpdate);
 	
 	void mapHasBeenModiffied(void);
 	
