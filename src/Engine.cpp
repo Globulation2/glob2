@@ -95,6 +95,11 @@ void Engine::startMultiplayer(SessionScreen *screen)
 	gui.localTeam=gui.localTeam % screen->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	gui.game.renderMiniMap(gui.localTeam);
+	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer.gfx.getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer.gfx.getH()>>6);
+	gui.viewportX=(gui.viewportX+gui.game.map.w)%gui.game.map.w;
+	gui.viewportY=(gui.viewportY+gui.game.map.h)%gui.game.map.h;
+
 	// we create the net game
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
