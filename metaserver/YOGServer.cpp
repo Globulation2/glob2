@@ -84,7 +84,7 @@ bool YOGServer::init()
 		YOGClient *client=new YOGClient(ip, socket, username);
 		memcpy(client->password, password, 32);
 		unconnectedClients.push_back(client);
-		lprintf(" username=(%s) password=(%s) added\n", username, password);
+		lprintf(" username=(%s) added\n", username);
 	}
 	fclose(usersFile);
 	
@@ -94,7 +94,7 @@ bool YOGServer::init()
 	{
 		fwrite((*client)->username, 32, 1, usersFile);
 		fwrite((*client)->password, 32, 1, usersFile);
-		lprintf(" username=(%s) password=(%s) added\n", (*client)->username, (*client)->password);
+		lprintf(" username=(%s) added\n", (*client)->username);
 	}
 	fflush(usersFile);
 	
@@ -317,16 +317,8 @@ void YOGServer::deconnectClient(YOGClient *client)
 
 	if (client==admin)
 		admin=NULL;
-	else if (client->password[0])
-	{
-		fwrite(client->username, 32, 1, usersFile);
-		fwrite(client->password, 32, 1, usersFile);
-		fflush(usersFile);
-		lprintf("+wrote usersFile with username=(%s)\n", client->username);
-	}
 	
 	client->deconnected();
-	lprintf("total number of clients = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());
 }
 
 void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
@@ -456,7 +448,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (*cci!=client && (*cci)->hasip(ip))
 			{
 				lprintf(" unconnecting client (%s) with same ip!\n", (*cci)->username);
-				unconnectedClients.push_back(*cci);
+				if ((*cci)->password[0]!=0)
+					unconnectedClients.push_back(*cci);
 				std::list<YOGClient *>::iterator cciTemp=cci;
 				cci=connectedClients.erase(cciTemp);
 			}
@@ -544,7 +537,13 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			//lprintf(" xored a =[%2x %2x %2x %2x]\n", xored[0], xored[1], xored[2], xored[3]);
 			//printf("newYogPassword (%s) for client (%s) \n", password, client->username);
 			if (client->password[0]==0)
+			{
 				memcpy(client->password, password, 32);
+				fwrite(client->username, 32, 1, usersFile);
+				fwrite(client->password, 32, 1, usersFile);
+				fflush(usersFile);
+				lprintf("wrote usersFile with username=(%s)\n", client->username);
+			}
 			else
 			{
 				Uint8 data[8];
@@ -592,11 +591,20 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				data[1]=0;
 				data[2]=0;
 				data[3]=0;
-				
-				data[4]=YCRT_BAD_PASSWORD;
-				data[5]=YOG_PROTOCOL_VERSION;
-				data[6]=0;
-				data[7]=0;
+				if (client->password[0]==0)
+				{
+					data[4]=YCRT_BAD_PASSWORD_NON_ZERO;
+					data[5]=YOG_PROTOCOL_VERSION;
+					data[6]=0;
+					data[7]=0;
+				}
+				else
+				{
+					data[4]=YCRT_BAD_PASSWORD;
+					data[5]=YOG_PROTOCOL_VERSION;
+					data[6]=0;
+					data[7]=0;
+				}
 				send(ip, data, 8);
 				return;
 			}
@@ -660,6 +668,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				authenticatedClients.erase(client);
 				if ((*client)->password[0])
 					unconnectedClients.push_back(*client);
+				lprintf("total number of clients a = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());
 				return;
 			}
 		for (client=connectedClients.begin(); client!=connectedClients.end(); ++client)
@@ -670,6 +679,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				connectedClients.erase(client);
 				if ((*client)->password[0])
 					unconnectedClients.push_back(*client);
+				lprintf("total number of clients b = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());
 				return;
 			}
 	}
@@ -1416,6 +1426,7 @@ void YOGServer::run()
 					authenticatedClients.erase(client);
 					if ((*client)->password[0])
 						unconnectedClients.push_back(*client);
+					lprintf("total number of clients c = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());
 					break;
 				}
 				else
@@ -1434,6 +1445,7 @@ void YOGServer::run()
 					connectedClients.erase(client);
 					if ((*client)->password[0])
 						unconnectedClients.push_back(*client);
+					lprintf("total number of clients d = %d + %d + %d\n", unconnectedClients.size(), connectedClients.size(), authenticatedClients.size());
 					break;
 				}
 				else

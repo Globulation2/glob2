@@ -1541,9 +1541,15 @@ The YOG metaserver has refused connection because supplied password was incorrec
 
 
 
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
+The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+
+
+
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
-The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with password."
+The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with password".
 
 
 

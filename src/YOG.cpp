@@ -480,6 +480,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 				externalStatusState=YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED;
 			else if (data[4]==YCRT_BAD_PASSWORD)
 				externalStatusState=YESTS_CONNECTION_REFUSED_BAD_PASSWORD;
+			else if (data[4]==YCRT_BAD_PASSWORD_NON_ZERO)
+				externalStatusState=YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO;
 			else if (data[4]==YCRT_ALREADY_PASSWORD)
 				externalStatusState=YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD;
 			else if (data[4]==YCRT_NOT_CONNECTED_YET)
@@ -1651,6 +1653,9 @@ char *YOG::getStatusString(ExternalStatusState externalStatusState)
 	break;
 	case YESTS_CONNECTION_REFUSED_BAD_PASSWORD:
 		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]");
+	break;
+	case YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO:
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]");
 	break;
 	case YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD:
 		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]");
