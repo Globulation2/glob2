@@ -1633,13 +1633,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	int bot=((sy+sh+31)>>5);
 	std::set<Building *, BuildingPosComp> buildingList;
 
+	// compute cloud coordinates, used for displacement of clouds but also water
+	if (cloudDisplacement > 0)
+		cloudDisplacement -= 1024;
+	else
+		cloudDisplacement++;
+	
 	// we draw water
 	int waterStartX = -((viewportX<<5) % 512);
 	int waterStartY = -((viewportY<<5) % 512);
 	for (int y=waterStartY; y<sh; y += 512)
-		for (int x=waterStartX; x<sw; x += 512)
+		for (int x=waterStartX + (cloudDisplacement / 2); x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
-
+	
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -2067,15 +2073,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	}
 	
-	// draw cloud if we are in high quality
-	if (cloudDisplacement > 0)
-		cloudDisplacement -= 1024;
-	else
-		cloudDisplacement++;
+	// draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		for (int y=waterStartY + (cloudDisplacement/2); y<sh; y+=512)
-			for (int x=waterStartX + (cloudDisplacement/2); x<sw; x+=512)
+		for (int y=waterStartY + (cloudDisplacement % -512); y<sh; y+=512)
+			for (int x=waterStartX + (cloudDisplacement % -512); x<sw; x+=512)
 				globalContainer->gfx->drawSprite(x, y, globalContainer->terrainCloud, 0);
 	}
 	
