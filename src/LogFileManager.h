@@ -32,7 +32,7 @@ public:
 	
 	typedef struct
 	{
-		string name;
+		std::string name;
 		FILE *file;
 	} LogFMF; //FMF means FileManagerFile
 	
