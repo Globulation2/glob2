@@ -63,6 +63,7 @@ public:
 	Sprite *terrainBlack;
 	Sprite *ressources;
 	Sprite *units;
+	Sprite *unitmini;
 	Sprite *buildings;
 	Font *menuFont;
 	Font *standardFont;
