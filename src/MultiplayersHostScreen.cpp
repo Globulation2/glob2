@@ -141,7 +141,6 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		{
 			if (wasSlotUsed[i])
 			{
-
 				text[i]->hide();
 				color[i]->hide();
 				kickButton[i]->hide();

@@ -272,61 +272,60 @@ void YOGScreen::onTimer(Uint32 tick)
 		yog->receivedMessages.erase(m);
 	}
 
-	if (executionMode==-1 || executionMode==CANCEL)
+	if ((executionMode==-1) || (executionMode==CANCEL))
 	{
 		assert(yog);
-		if (yog->unjoiningConfirmed)
+		if (yog->unjoiningConfirmed || yog->connectionLost)
 			endExecute(executionMode);
 	}
-	else
+	
+	// the game connection part:
+	multiplayersJoin->onTimer(tick);
+	if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO) && (yog->unjoining==false))
 	{
-		// the game connection part:
-		multiplayersJoin->onTimer(tick);
-		if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)/* && (yog->unjoining==false)*/)
+		printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
+		yog->joinGame();
+		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
+		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
+		yog->unjoinGame();
+		printf("YOGScreen::rv=%d\n", rv);
+		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
-			printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
-			yog->joinGame();
-			MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
-			int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 40);
-			yog->unjoinGame();
-			if (rv==MultiplayersConnectedScreen::DISCONNECT)
-			{
-				printf("YOGScreen::yog game finished DISCONNECT returned.\n");
-			}
-			else if (rv==MultiplayersConnectedScreen::DISCONNECTED)
-			{
-				printf("YOGScreen::unable to join DISCONNECTED returned.\n");
-			}
-			else if (rv==MultiplayersConnectedScreen::STARTED)
-			{
-				Engine engine;
-				engine.startMultiplayer(multiplayersJoin);
-				yog->gameStarted();
-				int rc=engine.run();
-				yog->gameEnded();
-				delete multiplayersJoin;
-				multiplayersJoin=new MultiplayersJoin(true);
-				assert(multiplayersJoin);
-				if (rc==-1)
-					executionMode=-1;
-				printf("YOGScreen::startMultiplayer() in join ended (rc=%d).\n", rc);
-			}
-			else if (rv==-1)
-			{
-				executionMode=-1;
-			}
-			else
-			{
-				printf("YOGScreen::critical rv=%d\n", rv);
-				assert(false);
-			}
-			if (yog->newGameList(true))
-				updateGameList();
-			if (yog->newPlayerList(true))
-				updatePlayerList();
-			dispatchPaint(gfxCtx);
-			delete multiplayersConnectedScreen;
+			printf("YOGScreen::yog game finished DISCONNECT returned.\n");
 		}
+		else if (rv==MultiplayersConnectedScreen::DISCONNECTED)
+		{
+			printf("YOGScreen::unable to join DISCONNECTED returned.\n");
+		}
+		else if (rv==MultiplayersConnectedScreen::STARTED)
+		{
+			Engine engine;
+			engine.startMultiplayer(multiplayersJoin);
+			yog->gameStarted();
+			int rc=engine.run();
+			yog->gameEnded();
+			delete multiplayersJoin;
+			multiplayersJoin=new MultiplayersJoin(true);
+			assert(multiplayersJoin);
+			if (rc==-1)
+				executionMode=-1;
+			printf("YOGScreen::startMultiplayer() in join ended (rc=%d).\n", rc);
+		}
+		else if (rv==-1)
+		{
+			executionMode=-1;
+		}
+		else
+		{
+			printf("YOGScreen::critical rv=%d\n", rv);
+			assert(false);
+		}
+		if (yog->newGameList(true))
+			updateGameList();
+		if (yog->newPlayerList(true))
+			updatePlayerList();
+		dispatchPaint(gfxCtx);
+		delete multiplayersConnectedScreen;
 	}
 	
 	if (yog->selectedGameinfoUpdated(true))
