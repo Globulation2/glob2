@@ -14,6 +14,7 @@
 #include "GUIBase.h"
 #include "GUIButton.h"
 #include "GUITextInput.h"
+#include "GUITextArea.h"
 #include "GUIList.h"
 
 #endif

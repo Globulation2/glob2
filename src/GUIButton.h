@@ -51,6 +51,9 @@ public:
 
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(DrawableSurface *gfx);
+
+protected:
+	virtual void internalPaint(void);
 	virtual void repaint(void);
 
 protected:
