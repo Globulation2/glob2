@@ -177,6 +177,7 @@ void Team::init(void)
 	isAlive=true;
 	hasWon=false;
 	prestige=0;
+	noMoreBuildingSitesCountdown=0;
 }
 
 void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
@@ -950,6 +951,7 @@ void Team::clearMem(void)
 
 void Team::integrity(void)
 {
+	assert(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
 	for (int id=0; id<1024; id++)
 	{
 		Building *b=myBuildings[id];
@@ -974,6 +976,10 @@ void Team::integrity(void)
 void Team::step(void)
 {
 	integrity();
+	
+	if (noMoreBuildingSitesCountdown>0)
+		noMoreBuildingSitesCountdown--;
+	
 	int nbUnits=0;
 	for (int i=0; i<1024; i++)
 	{

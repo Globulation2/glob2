@@ -2150,7 +2150,7 @@ void GameGUI::drawOverlayInfos(void)
 		if (bt->isVirtual)
 			isExtendedRoom=true;
 		else
-			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeamNo);
+			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY);
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings;
@@ -2172,17 +2172,24 @@ void GameGUI::drawOverlayInfos(void)
 			exBatW=(lastbt->width)<<5;
 			exBatH=(lastbt->height)<<5;
 
-			if (isRoom)
+			if (localTeam->noMoreBuildingSitesCountdown>0)
 			{
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
+				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
 			}
 			else
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+			{
+				if (isRoom)
+					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+				else
+					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 
-			if (isRoom&&isExtendedRoom)
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
-			else
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
+				if (isRoom&&isExtendedRoom)
+					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
+				else
+					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
+			}
 		}
 
 	}

@@ -208,6 +208,10 @@ private:
 	Sint32 eventId;
 
 public:
+	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.
+	//! This is the time left you can't build for. time in ticks.
+	int noMoreBuildingSitesCountdown;
+	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
 	bool isAlive;
 	//! called by game, set to true if all others team has won or if script has forced
 	bool hasWon;
