@@ -104,7 +104,12 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 	Sint32 ratioLocal[NB_UNIT_TYPE];
 	Sint32 percentUsed[NB_UNIT_TYPE];
-	
+
+	// exchange building
+	Uint32 receiveRessourceMask;
+	Uint32 sendRessourceMask;
+
+	// turrets
 	Uint32 shootingStep;
 	Sint32 shootingCooldown;
 	

@@ -29,12 +29,35 @@ Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const c
 	this->y=y;
 	this->hAlignFlag=hAlign;
 	this->vAlignFlag=vAlign;
-	
+
 	this->font=font;
 	this->text=text;
-	this->w=w;
-	this->h=h;
-	fontPtr=NULL;
+
+	internalInit(0, 0, 0, 0);
+	assert(fontPtr);
+	assert(text);
+	if ((w) || (hAlignFlag==ALIGN_FILL))
+	{
+		this->w=w;
+		keepW=true;
+	}
+	else
+	{
+		this->w=fontPtr->getStringWidth(text);
+		keepW=false;
+	}
+
+	if ((h) || (vAlignFlag==ALIGN_FILL))
+	{
+		this->h=h;
+		keepH=true;
+	}
+	else
+	{
+		this->h=fontPtr->getStringHeight(text);
+		keepH=false;
+	}
+
 	cr = 255;
 	cg = 255;
 	cb = 255;
@@ -43,16 +66,8 @@ Text::Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const c
 
 void Text::setText(const char *newText, ...)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
-	assert(newText);
-	fontPtr = Toolkit::getFont(font.c_str());
-	assert(fontPtr);
-
 	va_list arglist;
 	char output[1024];
-	int upW, upH, nW, nH;
 
 	// handle printf-like outputs
 	va_start(arglist, newText);
@@ -60,34 +75,15 @@ void Text::setText(const char *newText, ...)
 	va_end(arglist);
 	output[1023]=0;
 
-	// erase old
-	if (w)
-		nW=upW=w;
-	else
-	{
-		upW=fontPtr->getStringWidth(text.c_str())+5;
-		nW=fontPtr->getStringWidth(output);
-	}
-	if (h)
-		nH=upH=h;
-	else
-	{
-		upH=fontPtr->getStringHeight(text.c_str());
-		nH=fontPtr->getStringHeight(output);
-	}
-
+	if (!keepW)
+		w=fontPtr->getStringWidth(output);
+	if (!keepH)
+		h=fontPtr->getStringHeight(output);
 
 	// copy text
 	this->text = output;
 
-	if (visible)
-	{
-		parent->paint(x, y, upW, upH);
-
-		// draw new
-		paint();
-		parent->addUpdateRect(x, y, MAX(nW, upW), MAX(nH, upH));
-	}
+	repaint();
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
@@ -99,72 +95,27 @@ void Text::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	ca = a;
 }
 
-void Text::paint(void)
+void Text::internalRepaint(int x, int y, int w, int h)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	fontPtr = Toolkit::getFont(font.c_str());
-	assert(fontPtr);
-	
-	if (visible)
-	{
-		int wDec, hDec;
+	int wDec, hDec;
 
-		if (w)
-			wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
-		else
-			wDec=0;
+	if (hAlignFlag==ALIGN_FILL)
+		wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
+	else
+		wDec=0;
 
-		if (h)
-			hDec=(h-fontPtr->getStringHeight(text.c_str()))>>1;
-		else
-			hDec=0;
+	if (vAlignFlag==ALIGN_FILL)
+		hDec=(h-fontPtr->getStringHeight(text.c_str()))>>1;
+	else
+		hDec=0;
 
-		fontPtr->pushColor(cr, cg, cb, ca);
-		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, "%s", text.c_str());
-		fontPtr->popColor();
-	}
+	fontPtr->pushColor(cr, cg, cb, ca);
+	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, "%s", text.c_str());
+	fontPtr->popColor();
 }
 
-void Text::repaint(void)
+void Text::internalInit(int x, int y, int w, int h)
 {
-	int upW, upH;
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
-	
-	DrawableSurface *s=parent->getSurface();
-	int rx=x, ry=y, rw=s->getW()-x, rh=s->getH()-y;
-	
-	if (w)
-	{
-		upW=w;
-	}
-	else
-	{
-		upW=fontPtr->getStringWidth(text.c_str())+2;
-	}
-	
-	if (h)
-	{
-		upH=h;
-	}
-	else
-	{
-		upH=fontPtr->getStringHeight(text.c_str());
-	}
-	
-	if (w || h)
-	{
-		SDL_Rect r = {0, 0, s->getW(), s->getH()};
-		GAG::rectClipRect(rx, ry, rw, rh, r);
-		s->setClipRect(rx, ry, rw, rh);
-	}
-	
-	parent->paint(x-1, y, upW, upH);
-	paint();
-	
-	if (w || h)
-		s->setClipRect();
-	
-	parent->addUpdateRect(x-1, y, upW, upH);
 }

@@ -30,7 +30,6 @@ RessourceType::RessourceType()
 	expendable=true;
 	eternal=false;
 	granular=true;
-	multiplicator=1;
 	visibleToBeCollected=false;
 }
 

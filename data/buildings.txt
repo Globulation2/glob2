@@ -81,6 +81,33 @@ maxCorn = 0
 maxFungus = 0
 maxStone = 0
 maxAlgue = 0
+maxFruit0 = 0
+maxFruit1 = 0
+maxFruit2 = 0
+maxFruit3 = 0
+maxFruit4 = 0
+maxFruit5 = 0
+maxFruit6 = 0
+maxFruit7 = 0
+maxFruit8 = 0
+maxFruit9 = 0
+
+multiplierWood = 1
+multiplierCorn = 1
+multiplierPapyrus = 1
+multiplierStone = 1
+multiplierAlgue = 1
+multiplierFruit0 = 10
+multiplierFruit1 = 10
+multiplierFruit2 = 10
+multiplierFruit3 = 10
+multiplierFruit4 = 10
+multiplierFruit5 = 10
+multiplierFruit6 = 10
+multiplierFruit7 = 10
+multiplierFruit8 = 10
+multiplierFruit9 = 10
+
 maxUnitInside = 0
 maxUnitWorking = 0
 
@@ -929,6 +956,7 @@ startImage = 7
 
 fillable = 1
 maxStone = 4
+multiplierStone = 2
 maxUnitWorking = 1
 
 shootingRange = 5
@@ -983,7 +1011,8 @@ viewingRange = 5
 startImage = 14
 
 fillable = 1
-maxStone = 5
+maxStone = 6
+multiplierStone = 3
 maxUnitWorking = 1
 
 shootingRange = 7
@@ -1013,7 +1042,7 @@ fillable = 1
 shootingRange = 5
 shootDamage = 40
 shootSpeed = 5700
-shootRythme = 200
+shootRythme = 2000
 
 width = 2
 height = 2
@@ -1039,11 +1068,12 @@ viewingRange = 6
 startImage = 21
 
 fillable = 1
-maxStone = 6
+maxStone = 10
+multiplierStone = 2
 maxUnitWorking = 1
 
 shootingRange = 7
-shootDamage = 45
+shootDamage = 60
 shootSpeed = 8000
 shootRythme = 2200
 

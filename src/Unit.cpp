@@ -758,7 +758,7 @@ void Unit::handleDisplacement(void)
 					assert(attachedBuilding);
 					if (verbose)
 						printf("(Unit gid=%d) Giving ressource to building gid=%d : res : %d\n", gid, attachedBuilding->gid, attachedBuilding->ressources[(int)destinationPurprose]);
-					attachedBuilding->ressources[caryedRessource]+=globalContainer->ressourcesTypes->get(caryedRessource)->multiplicator;
+					attachedBuilding->ressources[caryedRessource]+=attachedBuilding->type->multiplierRessource[caryedRessource];
 					if (attachedBuilding->ressources[caryedRessource] > attachedBuilding->type->maxRessource[caryedRessource])
 						attachedBuilding->ressources[caryedRessource]=attachedBuilding->type->maxRessource[caryedRessource];
 					caryedRessource=-1;
