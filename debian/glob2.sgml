@@ -20,7 +20,7 @@ manpage.1: manpage.sgml
   <!ENTITY dhfirstname "<firstname>Vincent</firstname>">
   <!ENTITY dhsurname   "<surname>Deffontaines</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>avril 27, 2003</date>">
+  <!ENTITY dhdate      "<date>october 20, 2003</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>6</manvolnum>">
@@ -65,11 +65,16 @@ manpage.1: manpage.sgml
 
       <arg><option>-h </option></arg>
       <arg><option>-f </option></arg>
+      <arg><option>-F </option></arg>
       <arg><option>-r </option></arg>
+      <arg><option>-R </option></arg>
       <arg><option>-s<replaceable>640x480</replaceable></option></arg>
       <arg><option>-a </option></arg>
+      <arg><option>-A </option></arg>
       <arg><option>-b </option></arg>
+      <arg><option>-B </option></arg>
       <arg><option>-l </option></arg>
+      <arg><option>-h </option></arg>
       <arg><option>-t <replaceable>[01]</replaceable></option></arg>
       <arg><option>-d <replaceable>/home/foo/bar</replaceable></option></arg>
       <arg><option>-u <replaceable>jack</replaceable></option></arg>
@@ -111,10 +116,24 @@ manpage.1: manpage.sgml
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>-F</option>
+        </term>
+        <listitem>
+          <para>Unset Full screen.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>-r</option>
         </term>
         <listitem>
           <para>Set resizable window.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-R</option>
+        </term>
+        <listitem>
+          <para>Unset resizable window.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -129,6 +148,20 @@ manpage.1: manpage.sgml
         </term>
         <listitem>
           <para>Set hardware accelerated gfx.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-A</option>
+        </term>
+        <listitem>
+          <para>Unset hardware accelerated gfx.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-b</option>
+        </term>
+        <listitem>
+          <para>Enable double buffering.</para>
         </listitem>
       </varlistentry>
       <varlistentry>

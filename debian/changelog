@@ -1,3 +1,129 @@
+glob2 (alpha3) unstable; urgency=low
+
+  * Alpha 3
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Fri, 20 Feb 2004 11:24:21 +0100
+
+glob2 (alpha0) unstable; urgency=low
+
+  * Alpha version
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Fri,  6 Feb 2004 12:22:09 +0100
+
+glob2cvs (20040119-1) unstable; urgency=low
+
+  * CVS Jan 19th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 19 Jan 2004 12:33:22 +0100
+
+glob2cvs (20040105-1) unstable; urgency=low
+
+  * CVS Jan 5th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  5 Jan 2004 22:44:10 +0100
+
+glob2cvs (20031225-1) unstable; urgency=low
+
+  * CVS Dec 25th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 21:29:48 +0100
+
+glob2cvs (20031224-1) unstable; urgency=low
+
+  * CVS Dec 24th (merry christmas) 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 01:58:48 +0100
+
+glob2cvs (20031127-1) unstable; urgency=low
+
+  * CVS Nov 27th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 27 Nov 2003 15:31:16 +0100
+
+glob2cvs (20031121-1) unstable; urgency=low
+
+  * CVS Nov 21st
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 22 Nov 2003 00:38:45 +0100
+
+glob2cvs (20031116-3) unstable; urgency=low
+
+  * CVS Nov 16th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 16 Nov 2003 14:14:16 +0100
+
+glob2cvs (20031112-1) unstable; urgency=low
+
+  * CVS Nov 12th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Wed, 12 Nov 2003 11:08:31 +0100
+
+glob2cvs (20031111-1) unstable; urgency=low
+
+  * CVS Nov 11th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 11 Nov 2003 12:11:54 +0100
+
+glob2cvs (20031110-1) unstable; urgency=low
+
+  * CVS Nov 10th 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 10 Nov 2003 18:19:29 +0100
+
+glob2cvs (20031103-1) unstable; urgency=low
+
+  * CVS Nov 3rd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue,  4 Nov 2003 01:40:57 +0100
+
+glob2cvs (20031101-1) unstable; urgency=low
+
+  * CVS Nov 1st 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat,  1 Nov 2003 15:07:10 +0100
+
+glob2cvs (20031027-1) unstable; urgency=low
+
+  * CVS Oct 27th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 27 Oct 2003 10:25:45 +0100
+
+glob2cvs (20031023-1) unstable; urgency=low
+
+  * CVS Oct 23rd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 18:02:16 +0200
+
+glob2cvs (20031022-1) unstable; urgency=low
+
+  * CVS Oct 22nd
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 01:16:34 +0200
+
+glob2cvs (20031019-1) unstable; urgency=low
+
+  * CVS Oct 19th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 19 Oct 2003 12:46:20 +0200
+
+glob2cvs (20031010-1) unstable; urgency=low
+
+  * CVS Oct 10th
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 11 Oct 2003 00:43:03 +0200
+
+glob2cvs (20031009-1) unstable; urgency=low
+
+  * CVS Oct 9th. 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Thu,  9 Oct 2003 12:28:33 +0200
+
+glob2cvs (20030715-1) unstable; urgency=low
+
+  * CVS July 15th. 
+
+ -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 15 Jul 2003 09:53:02 +0200
+
 glob2cvs (20030703-1) unstable; urgency=low
 
   * CVS Jul 3rd.
