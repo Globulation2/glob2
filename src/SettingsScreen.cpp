@@ -59,10 +59,14 @@ SettingsScreen::SettingsScreen()
 	}
 	addWidget(modeList);
 	
+	#ifdef HAVE_OPENGL
 	rendererList = new List(175, 90, 50, 45, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	rendererList->addText("SDL");
 	rendererList->addText("GL");
 	addWidget(rendererList);
+	#else
+	renderList = NULL;
+	#endif
 	
 	depthList = new List(110, 90, 50, 65, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	depthList->addText("auto");
