@@ -601,6 +601,8 @@ void Team::step(void)
 		assert(building->unitsWorkingSubscribe.size()==0);
 		assert(building->unitsInsideSubscribe.size()==0);
 		
+		//TODO: optimisation: we can avoid some of thoses remobe(Building *) by keeping a building state to detect which remove() are needed.
+		buildingsTryToBuildingSiteRoom.remove(building);
 		subscribeForInside.remove(building);
 		subscribeToBringRessources.remove(building);
 		subscribeForFlaging.remove(building);
