@@ -94,6 +94,7 @@ Game::~Game()
 void Game::init(GameGUI *gui)
 {
 	this->gui=gui;
+	buildProjects.clear();
 	
 	if (globalContainer->runNoX)
 		minimap=NULL;
