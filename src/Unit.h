@@ -22,7 +22,7 @@
 
 #include <assert.h>
 #include <string.h>
-#include <SDL/SDL_rwops.h>
+#include <SDL_rwops.h>
 
 #include "UnitConsts.h"
 

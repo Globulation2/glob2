@@ -37,7 +37,7 @@
 	#undef min
 #endif
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 // usefull macros
 #ifndef MAX

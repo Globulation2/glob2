@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <SDL/SDL_endian.h>
+#include <SDL_endian.h>
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H

@@ -21,7 +21,7 @@
 #define __ORDER_H
 
 #include <assert.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include "NetConsts.h"
 #include "UnitConsts.h"

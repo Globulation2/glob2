@@ -20,8 +20,8 @@
 #ifndef __MARSHALING_H
 #define __MARSHALING_H
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_endian.h>
+#include <SDL.h>
+#include <SDL_endian.h>
 #include <string.h>
 
 // Usefull function for marshalling

@@ -21,7 +21,7 @@
 #define __PLAYER_H
 
 #include <list>
-#include <SDL/SDL_net.h>
+#include <SDL_net.h>
 
 #include "AI.h"
 

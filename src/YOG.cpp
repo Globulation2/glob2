@@ -21,10 +21,10 @@
 
 #include "../gnupg/sha1.c"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_endian.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_net.h>
+#include <SDL.h>
+#include <SDL_endian.h>
+#include <SDL_image.h>
+#include <SDL_net.h>
 #include <stdio.h>
 #include <assert.h>
 #include <sys/types.h>

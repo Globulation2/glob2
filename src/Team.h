@@ -20,7 +20,7 @@
 #ifndef __TEAM_H
 #define __TEAM_H
 
-#include <SDL/SDL_rwops.h>
+#include <SDL_rwops.h>
 #include <list>
 
 #include "Race.h"
