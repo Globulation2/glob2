@@ -262,6 +262,8 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 	addWidget(mapInfo);
 	mapVersion=new Text(440, 60+128+90, globalContainer->standardFont, "", 180);
 	addWidget(mapVersion);
+	mapSize=new Text(440, 60+128+120, globalContainer->standardFont, "", 180);
+	addWidget(mapSize);
 
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
@@ -304,6 +306,8 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				mapInfo->setText(textTemp);
 				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
+				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
+				mapSize->setText(textTemp);
 			}
 			else
 				printf("PGU : Warning, Error during map load\n");

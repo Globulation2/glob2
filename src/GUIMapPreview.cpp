@@ -29,6 +29,8 @@ MapPreview::MapPreview(int x, int y, const char *mapName)
 	this->y=y;
 	this->gfx=NULL;
 	this->mapName=mapName;
+	lastW=0;
+	lastH=0;
 }
 
 void MapPreview::paint(DrawableSurface *gfx)
@@ -60,6 +62,9 @@ void MapPreview::repaint(void)
 				SDL_RWseek(stream, session.mapOffset , SEEK_SET);
 				map.load(stream);
 				gfx->drawFilledRect(x,y,128,128,0,0,0);
+
+				lastW=map.getW();
+				lastH=map.getH();
 
 				int H[3]= { 0, 90, 0 };
 				int E[3]= { 0, 40, 120 };
