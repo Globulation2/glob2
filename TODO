@@ -20,7 +20,7 @@ Pathfindig:
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
-- si un batiment est enfermé, il faut gérer!
+- si un batiment est enfermé, il faut gérer! (FIXED!)
 - Gérer les unités piégées dans un drapeau d'interrdiction.
 - Le comportement de guerrières doit-être amélioré.
 
