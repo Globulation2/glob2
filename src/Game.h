@@ -120,6 +120,7 @@ public:
 	
 	Sint32 stepCounter;
 	int totalPrestige;
+	int maxPresige;
 	bool totalPrestigeReached;
 	bool isGameEnded;
 	

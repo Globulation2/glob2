@@ -219,14 +219,8 @@ int Glob2::run(int argc, char *argv[])
 	Toolkit::init("glob2");
 
 	globalContainer=new GlobalContainer();
-
-	yog=new YOG();
-
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
-
-	if (!globalContainer->hostServer)
-		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
 	if ( SDLNet_Init() < 0 )
 	{
@@ -234,6 +228,8 @@ int Glob2::run(int argc, char *argv[])
 		exit(1);
 	}
 	atexit(SDLNet_Quit);
+
+	yog=new YOG();
 	
 	if (globalContainer->hostServer)
 	{

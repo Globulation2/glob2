@@ -280,6 +280,7 @@ void GlobalContainer::load(void)
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
 		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
+		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
 		// load fonts
 		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");

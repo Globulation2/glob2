@@ -81,9 +81,10 @@ void Game::init()
 	mouseUnit=NULL;
 	selectedUnit=NULL;
 	selectedBuilding=NULL;
-	
+
 	stepCounter=0;
 	totalPrestige=0;
+	maxPresige=0;
 	totalPrestigeReached=false;
 	isGameEnded=false;
 }
@@ -688,8 +689,7 @@ void Game::wonStep(void)
 		isGameEnded|=teams[i]->hasWon;
 		totalPrestige+=teams[i]->prestige;
 	}
-	// TODO: be generic here
-	if (totalPrestige>=1000)
+	if (totalPrestige >= maxPresige)
 	{
 		totalPrestigeReached=true;
 		isGameEnded=true;
