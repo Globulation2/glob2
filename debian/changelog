@@ -1,14 +1,20 @@
+glob2 (alpha11) unstable; urgency=low
+
+  * Alpha11
+
+ -- Stephane Magnenat <nct@ysagoon.com>  Sun, 16 Jan 2005 00:08:12 +0100
+
 glob2 (alpha10) unstable; urgency=low
 
   * Alpha10, working version
 
- -- Stephane Magnenat <nct@nctlin.ysagoon.com>  Wed, 29 Dec 2004 12:20:37 +0100
+ -- Stephane Magnenat <nct@ysagoon.com>  Wed, 29 Dec 2004 12:20:37 +0100
 
 glob2 (alpha10pre) unstable; urgency=low
 
   * Alpha10, preversion
 
- -- Stephane Magnenat <nct@nctlin.ysagoon.com>  Sun, 24 Oct 2004 19:15:00 +0200
+ -- Stephane Magnenat <nct@ysagoon.com>  Sun, 24 Oct 2004 19:15:00 +0200
 
 glob2 (alpha9) unstable; urgency=low
 
