@@ -81,27 +81,9 @@ void TextInput::onSDLEvent(SDL_Event *event)
 	
 	if (activated && event->type==SDL_KEYDOWN)
 	{
-		char c=event->key.keysym.unicode;
 		SDLKey sym=event->key.keysym.sym;
 
-		if (font->printable(c))
-		{
-			int l=strlen(text);
-			if (l<MAX_TEXT_SIZE)
-			{
-				memmove( &(text[cursPos+1]), &(text[cursPos]), l-cursPos);
-				
-				text[cursPos]=c;
-				cursPos++;
-		
-				assert(gfx);
-				repaint(gfx);
-
-				parent->addUpdateRect(x, y, w, h);
-				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
-			}
-		}
-		else if (sym==SDLK_RIGHT)
+		if (sym==SDLK_RIGHT)
 		{
 			int l=strlen(text);
 			if (cursPos<l)
@@ -177,7 +159,25 @@ void TextInput::onSDLEvent(SDL_Event *event)
 		}
 		else
 		{
-			//printf("unused c=%c(%d).\n", c, c);
+			char c=event->key.keysym.unicode;
+		
+			if (font->printable(c))
+			{
+				int l=strlen(text);
+				if (l<MAX_TEXT_SIZE)
+				{
+					memmove( &(text[cursPos+1]), &(text[cursPos]), l-cursPos);
+
+					text[cursPos]=c;
+					cursPos++;
+
+					assert(gfx);
+					repaint(gfx);
+
+					parent->addUpdateRect(x, y, w, h);
+					parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+				}
+			}
 		}
 
 	}
