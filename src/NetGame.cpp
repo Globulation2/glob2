@@ -477,7 +477,7 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 			localOrderQueue[playerNumber].push(order);
 			//printf("storing order\n");
 		}
-		
+
 		return;
 	}
 	else if ((localOrderQueue[playerNumber].size()>0)&&((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))

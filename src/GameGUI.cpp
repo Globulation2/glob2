@@ -1482,7 +1482,7 @@ void GameGUI::executeOrder(Order *order)
 			{
 				Message message;
 				message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-				sprintf(message.text, "%s : %s", game.players[sp]->name, mo->getText());
+				snprintf(message.text, MAX_MESSAGE_SIZE, "%s : %s", game.players[sp]->name, mo->getText());
 				messagesList.push_front(message);
 			}
 			game.executeOrder(order, localPlayer);
@@ -1501,7 +1501,7 @@ void GameGUI::executeOrder(Order *order)
 			int qp=order->sender;
 			Message message;
 			message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-			sprintf(message.text, "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
+			snprintf(message.text, MAX_MESSAGE_SIZE, "%s%s%s", globalContainer->texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer->texts.getString("[r has left the game]"));
 			message.text[MAX_MESSAGE_SIZE-1]=0;
 			messagesList.push_front(message);
 

@@ -98,8 +98,9 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	// try cache
 	if (dirListIndexCache>=0)
 	{
-		char *fn = new char[strlen(filename) + strlen(dirList[dirListIndexCache]) + 2];
-		sprintf(fn, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
+		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		char *fn = new char[allocatedLength];
+		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
 		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
 		delete[] fn;
 		//totTest++;
@@ -112,8 +113,9 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 	int index=0;
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		char *fn = new char[allocatedLength];
+		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
 		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
 		//totTest++;
@@ -141,8 +143,9 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	// try cache
 	if (dirListIndexCache>=0)
 	{
-		char *fn = new char[strlen(filename) + strlen(dirList[dirListIndexCache]) + 2];
-		sprintf(fn, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
+		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		char *fn = new char[allocatedLength];
+		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
 		FILE *fp =  fopen(fn, mode);
 		//totTest++;
 		delete[] fn;
@@ -154,8 +157,9 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 	int index=0;
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		int allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
+		char *fn = new char[allocatedLength];
+		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
 		FILE *fp =  fopen(fn, mode);
 		//totTest++;
@@ -224,8 +228,9 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 	clearFileList();
 	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		char *dn = new char[strlen(virtualDir) + strlen(*dirListIterator) + 2];
-		sprintf(dn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
+		int allocatedLength=strlen(virtualDir) + strlen(*dirListIterator) + 2;
+		char *dn = new char[allocatedLength];
+		snprintf(dn, allocatedLength,  "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
 		result=result||addListingForDir(dn, extension);
 		delete[] dn;
 	}

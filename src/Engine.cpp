@@ -51,7 +51,7 @@ int Engine::initCampain(void)
 		{
 			if (gui.game.teams[i]->type==BaseTeam::T_AI)
 			{
-				sprintf(name, "AI Player %d", playerNumber);
+				snprintf(name, 16, "AI Player %d", playerNumber);
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 			}
 			else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
@@ -60,13 +60,13 @@ int Engine::initCampain(void)
 				{
 					gui.localPlayer=playerNumber;
 					gui.localTeam=i;
-					sprintf(name, "Player %d", playerNumber);
+					snprintf(name, 16, "Player %d", playerNumber);
 					wasHuman=true;
 					gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
 				}
 				else
 				{
-					sprintf(name, "AI Player %d", playerNumber);
+					snprintf(name, 16, "AI Player %d", playerNumber);
 					gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 				}
 			}

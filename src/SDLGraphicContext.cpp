@@ -563,7 +563,7 @@ void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *
 	char output[1024];
 
 	va_start(arglist, msg);
-	vsprintf(output,  msg, arglist);
+	vsnprintf(output, 1024, msg, arglist);
 	va_end(arglist);
 
 	assert(surface);
@@ -677,105 +677,105 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageTy
 
 	if (type==OVERLAY)
 	{
-		sprintf(temp, "%s%dm.png", name, number);
+		snprintf(temp, 1024,"%s%dm.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
-		sprintf(temp, "%s%dm.bmp", name, number);
+		snprintf(temp, 1024,"%s%dm.bmp", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.jpg", name, number);
+		snprintf(temp, 1024,"%s%dm.jpg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.jpeg", name, number);
+		snprintf(temp, 1024,"%s%dm.jpeg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.pnm", name, number);
+		snprintf(temp, 1024,"%s%dm.pnm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.xpm", name, number);
+		snprintf(temp, 1024,"%s%dm.xpm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.lbm", name, number);
+		snprintf(temp, 1024,"%s%dm.lbm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.pcx", name, number);
+		snprintf(temp, 1024,"%s%dm.pcx", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.gif", name, number);
+		snprintf(temp, 1024,"%s%dm.gif", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dm.tga", name, number);
+		snprintf(temp, 1024,"%s%dm.tga", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else if (type==NORMAL)
 	{
-		sprintf(temp, "%s%d.png", name, number);
+		snprintf(temp, 1024,"%s%d.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
-		sprintf(temp, "%s%d.bmp", name, number);
+		snprintf(temp, 1024,"%s%d.bmp", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.jpg", name, number);
+		snprintf(temp, 1024,"%s%d.jpg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.jpeg", name, number);
+		snprintf(temp, 1024,"%s%d.jpeg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.pnm", name, number);
+		snprintf(temp, 1024,"%s%d.pnm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.xpm", name, number);
+		snprintf(temp, 1024,"%s%d.xpm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.lbm", name, number);
+		snprintf(temp, 1024,"%s%d.lbm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.pcx", name, number);
+		snprintf(temp, 1024,"%s%d.pcx", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.gif", name, number);
+		snprintf(temp, 1024,"%s%d.gif", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%d.tga", name, number);
+		snprintf(temp, 1024,"%s%d.tga", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else
 	{
-		sprintf(temp, "%s%dp.png", name, number);
+		snprintf(temp, 1024,"%s%dp.png", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
-		sprintf(temp, "%s%dp.bmp", name, number);
+		snprintf(temp, 1024,"%s%dp.bmp", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.jpg", name, number);
+		snprintf(temp, 1024,"%s%dp.jpg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.jpeg", name, number);
+		snprintf(temp, 1024,"%s%dp.jpeg", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.pnm", name, number);
+		snprintf(temp, 1024,"%s%dp.pnm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.xpm", name, number);
+		snprintf(temp, 1024,"%s%dp.xpm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.lbm", name, number);
+		snprintf(temp, 1024,"%s%dp.lbm", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.pcx", name, number);
+		snprintf(temp, 1024,"%s%dp.pcx", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.gif", name, number);
+		snprintf(temp, 1024,"%s%dp.gif", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
-		sprintf(temp, "%s%dp.tga", name, number);
+		snprintf(temp, 1024,"%s%dp.tga", name, number);
 		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
