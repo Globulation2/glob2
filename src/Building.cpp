@@ -26,9 +26,9 @@
 #include "GlobalContainer.h"
 
 
-Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
+Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	load(stream, types, owner);
+	load(stream, types, owner, versionMinor);
 }
 
 Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsTypes *types)
@@ -95,7 +95,7 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	//Sint32 closestRessourceX[NB_RESSOURCES], closestRessourceY[NB_RESSOURCES];
 }
 
-void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
+void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	// construction state
 	buildingState=(BuildingState)SDL_ReadBE32(stream);
@@ -115,12 +115,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	unitStayRangeLocal=unitStayRange;
 
 	// Building Specific
-	{
-		for (int i=0; i<NB_RESSOURCES; i++)
-		{
-			ressources[i]=SDL_ReadBE32(stream);
-		}
-	}
+	for (int i=0; i<NB_RESSOURCES; i++)
+		ressources[i]=SDL_ReadBE32(stream);
 
 	// quality parameters
 	hp=SDL_ReadBE32(stream);
@@ -128,31 +124,30 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	// prefered parameters
 	productionTimeout=SDL_ReadBE32(stream);
 	totalRatio=SDL_ReadBE32(stream);
+	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 	{
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-		{
-			ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
-			percentUsed[i]=SDL_ReadBE32(stream);
-		}
+		ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
+		percentUsed[i]=SDL_ReadBE32(stream);
 	}
 
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);
 
 	// optimisation parameters
+	for (int i=0; i<NB_RESSOURCES; i++)
 	{
-		for (int i=0; i<NB_RESSOURCES; i++)
-		{
-			closestRessourceX[i]=SDL_ReadBE32(stream);
-			closestRessourceY[i]=SDL_ReadBE32(stream);
-		}
+		closestRessourceX[i]=SDL_ReadBE32(stream);
+		closestRessourceY[i]=SDL_ReadBE32(stream);
 	}
 
 	// type
 	typeNum=SDL_ReadBE32(stream);
 	type=types->buildingsTypes[typeNum];
 	
-	seenByMask=0; //TODO: load it!
+	if (versionMinor>=11)
+		seenByMask=SDL_ReadBE32(stream);
+	else
+		seenByMask=0; //TODO: load it!
 }
 
 void Building::save(SDL_RWops *stream)
@@ -175,9 +170,7 @@ void Building::save(SDL_RWops *stream)
 
 	// Building Specific
 	for (i=0; i<NB_RESSOURCES; i++)
-	{
 		SDL_WriteBE32(stream, ressources[i]);
-	}
 
 	// quality parameters
 	SDL_WriteBE32(stream, hp);
@@ -204,6 +197,8 @@ void Building::save(SDL_RWops *stream)
 	// type
 	SDL_WriteBE32(stream, typeNum);
 	// we drop type
+	
+	SDL_WriteBE32(stream, seenByMask);
 }
 
 void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
@@ -214,16 +209,12 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	int nbWorking=SDL_ReadBE32(stream);
 	unitsWorking.clear();
 	for (i=0; i<nbWorking; i++)
-	{
 		unitsWorking.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
-	}
 
 	int nbWorkingSubscribe=SDL_ReadBE32(stream);
 	unitsWorkingSubscribe.clear();
 	for (i=0; i<nbWorkingSubscribe; i++)
-	{
 		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
-	}
 
 	lastWorkingSubscribe=SDL_ReadBE32(stream);
 
@@ -233,16 +224,12 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	int nbInside=SDL_ReadBE32(stream);
 	unitsInside.clear();
 	for (i=0; i<nbInside; i++)
-	{
 		unitsInside.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
-	}
 
 	int nbInsideSubscribe=SDL_ReadBE32(stream);
 	unitsInsideSubscribe.clear();
 	for (i=0; i<nbInsideSubscribe; i++)
-	{
 		unitsInsideSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
-	}
 	lastInsideSubscribe=SDL_ReadBE32(stream);
 }
 
@@ -254,15 +241,11 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
 	for (it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-	{
 		SDL_WriteBE32(stream, (*it)->UID);
-	}
 
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
 	for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
-	{
 		SDL_WriteBE32(stream, (*it)->UID);
-	}
 
 	SDL_WriteBE32(stream, lastWorkingSubscribe);
 
@@ -270,15 +253,11 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
 	for (it=unitsInside.begin(); it!=unitsInside.end(); ++it)
-	{
 		SDL_WriteBE32(stream, (*it)->UID);
-	}
 
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
 	for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
-	{
 		SDL_WriteBE32(stream, (*it)->UID);
-	}
 	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
 
@@ -394,7 +373,6 @@ void Building::cancelUpgrade(void)
 		// Congratulation, you have managed to click "cancel upgrade"
 		// when the building upgrade" was already canceled.
 		return;
-		assert(false);
 	}
 	
 	if (!type->isVirtual)

@@ -448,7 +448,7 @@ bool Game::load(SDL_RWops *stream)
 		char signature[4];
 
 		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.gameOffset , SEEK_SET);
+			SDL_RWseek(stream, tempSessionInfo.gameOffset, SEEK_SET);
 		
 		if (session.versionMajor>=0 && session.versionMinor>=9)
 		{
@@ -469,28 +469,24 @@ bool Game::load(SDL_RWops *stream)
 		setSyncRandSeedC(SDL_ReadBE32(stream));
 
 		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
+		if (memcmp(signature,"GLO2", 4)!=0)
 			return false;
 
 		// recreate new teams and players
 		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.teamsOffset , SEEK_SET);
+			SDL_RWseek(stream, tempSessionInfo.teamsOffset, SEEK_SET);
 		for (i=0; i<session.numberOfTeam; ++i)
-		{
-			teams[i]=new Team(stream, this);
-		}
+			teams[i]=new Team(stream, this, session.versionMinor);
 
 		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.playersOffset , SEEK_SET);
+			SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
 		for (i=0; i<session.numberOfPlayer; ++i)
-		{
 			players[i]=new Player(stream, teams, session.versionMinor);
-		}
 		stepCounter=SDL_ReadBE32(stream);
 
 		// we have to load team before map
 		if (session.versionMinor>1)
-			SDL_RWseek(stream, tempSessionInfo.mapOffset , SEEK_SET);
+			SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
 		if(!map.load(stream, this))
 			return false;
 
@@ -498,13 +494,13 @@ bool Game::load(SDL_RWops *stream)
 		{
 			char signature[4];
 			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GAMe",4)!=0)
+			if (memcmp(signature,"GAMe", 4)!=0)
 				return false;
 		}
 		else
 		{
 			SDL_RWread(stream, signature, 4, 1);
-			if (memcmp(signature,"GLO2",4)!=0)
+			if (memcmp(signature,"GLO2", 4)!=0)
 				return false;
 		}
 		
