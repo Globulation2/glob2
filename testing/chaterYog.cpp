@@ -1,7 +1,7 @@
 /*
  *  Ysagoon Online Gaming
  *  Meta Server with chat for Ysagoon game (first is glob2)
- *  (c) 2002 Luc-Olivier de Charri�e <nuage@ysagoon.com>
+ *  (c) 2004 Stéphane Magnenat <nct@ysagoon.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,20 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../src/YOGConsts.h"
+#include <string>
+#include <map>
+#include <cctype>
+
+namespace Utilities
+{
+	int strmlen(const char *s, int max)
+	{
+		for (int i=0; i<max; i++)
+			if (*(s+i)==0)
+				return i+1;
+		return max;
+	}
+}
 
 namespace simpleClient
 {
@@ -37,6 +51,28 @@ namespace simpleClient
 	int timeout=0;
 	int TOTL=3;
 	bool connected=false;
+	
+	typedef std::map<std::string, std::string> StringMap;
+	StringMap sm;
+	std::string me;
+	
+	void initSM()
+	{
+		sm["yog"] = "Yes, this is YOG, Ysagoon Online Game";
+		sm["hello"] = "Hi, how are you today ?";
+		sm["hi,"] = "Hello, how do you feel ?";
+		sm[" bot"] = "Yes, I'm a bot, but I'm nice :-)";
+		sm["robot"] = "Do you like Asimov ?";
+		sm[" you"] = "I'm fine, thanks.";
+		sm[" bad"] = "I do not like sad things.";
+		sm[" faq"] = "You FAQ is http://ysagoon.com/glob2";
+		sm[" web"] = "The web site is http://ysagoon.com/glob2";
+		sm[" forum"] = "The forum is http://forum.ysagoon.com/?c=2";
+		sm[" wiki"] = "The wiki is http://wiki.ysagoon.com/Glob2";
+		sm[" globulation"] = "Globulation 1 was cool, but the 2 is better !";
+		sm[" glob2"] = "Glob2 is my favourite game ;-)";
+		sm[" human"] = "I like humans";
+	}
 
 	bool init()
 	{
@@ -142,6 +178,7 @@ namespace simpleClient
 		if (rv!=1)
 			printf("Failed to send the packet!\n");
 	}
+	
 
 	void treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 	{
@@ -159,11 +196,26 @@ namespace simpleClient
 		case YMT_PRIVATE_MESSAGE:
 		case YMT_MESSAGE:
 		{
-			char s[256];
-			strncpy(s, (char *)data+4, 256);
-			s[255]=0;
-			printf("client:%s\n", s);
 			send(YMT_MESSAGE, data[1]);
+			
+			std::string msg((char *)data+4);
+			int l=Utilities::strmlen((char *)data+4, 256);
+			std::string user((char *)data+4+l);
+			std::string msgLower = msg;
+			transform (msgLower.begin(), msgLower.end(), msgLower.begin(), tolower);
+			
+			if (user != me)
+			{
+				printf("user is %s msg is %s\n", user.c_str(), msg.c_str());
+				for (StringMap::const_iterator i=sm.begin(); i!=sm.end(); ++i)
+				{
+					if (msgLower.find(i->first) != std::string::npos)
+					{
+						lastMessageID++;
+						send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)i->second.c_str(), i->second.length()+1);
+					}
+				}
+			}
 		}
 		break;
 		case YMT_ADMIN_MESSAGE:
@@ -186,6 +238,18 @@ namespace simpleClient
 
 	}
 
+	void connect()
+	{
+		char data[32+4];
+		data[0]=0;
+		data[1]=0;
+		data[2]=0;
+		data[3]=4;
+		strncpy(data+4, me.c_str(), 32);
+		data[31+4]=0;
+		send(YMT_CONNECTING, (Uint8 *)data, 32+4);
+	}
+	
 	void run()
 	{
 		running=true;
@@ -208,105 +272,7 @@ namespace simpleClient
 				printf("SDLNet_ResolveIP(ip)=%s\n", SDLNet_ResolveIP(&packet->address));*/
 				//printf("packet->data=[%d.%d.%d.%d]\n", packet->data[0], packet->data[1], packet->data[2], packet->data[3]);
 			}
-
-			// get first timer
-			fd_set rfds;
-			struct timeval tv;
-			int retval;
-
-			// Watch stdin (fd 0) to see when it has input.
-			FD_ZERO(&rfds);
-			FD_SET(0, &rfds);
-			// Wait up to one second.
-			tv.tv_sec = 0;
-			tv.tv_usec = 0;
-
-			retval = select(1, &rfds, NULL, NULL, &tv);
-			// Don't rely on the value of tv now!
-
-			if (retval)
-			{
-				char s[256];
-				fgets(s, 256, stdin);
-				int l=strlen(s);
-				if ((l>1)&&(s[l-1]=='\n'))
-					s[l-1]=0;
-				if (strncmp(s, "bad", 3)==0)
-				{
-					send(YMT_BAD);
-				}
-				else if (strncmp(s, "admin", 5)==0)
-				{
-					if (l>6)
-					{
-						char data[32+4];
-						data[0]=0;
-						data[1]=0;
-						data[2]=0;
-						data[3]=4;
-						strncpy(data+4, s+6, 32);
-						data[31+4]=0;
-						send(YMT_CONNECTING, 1, (Uint8 *)data, 32+4);
-					}
-				}
-				else if (strncmp(s, "connect", 7)==0)
-				{
-					if (l>8)
-					{
-						char data[32+4];
-						data[0]=0;
-						data[1]=0;
-						data[2]=0;
-						data[3]=4;
-						strncpy(data+4, s+6, 32);
-						data[31+4]=0;
-						send(YMT_CONNECTING, (Uint8 *)data, 32+4);
-					}
-				}
-				else if (strncmp(s, "deconnect", 9)==0)
-				{
-					send(YMT_DECONNECTING);
-				}
-				else if (strncmp(s, "close", 5)==0)
-				{
-					Uint8 id=1;
-					Uint8 data[4];
-					data[0]=0x12;
-					data[1]=0x23&id;
-					data[2]=0x34|id;
-					data[3]=0x45;
-					send(YMT_CLOSE_YOG, id, data, 4);
-					
-				}
-				else if (strncmp(s, "flush", 5)==0)
-				{
-					if (l>6)
-					{
-						char name[32];
-						memset(name, 0, 32);
-						strncpy(name, s+6, 32);
-						name[31]=0;
-						Uint8 id=atoi(name);
-						Uint8 data[4];
-						data[0]=0xAB;
-						data[1]=0xCD&id;
-						data[2]=0xEF|id;
-						data[3]=0x12;
-						send(YMT_FLUSH_FILES, id, data, 4);
-					}
-				}
-				else if (strncmp(s, "exit", 9)==0)
-				{
-					running=false;
-				}
-				else
-				{
-					s[255]=0;
-					lastMessageID++;
-					send(YMT_SEND_MESSAGE, lastMessageID, (Uint8 *)s, strlen(s)+1);
-				}
-			}
-
+			
 			SDLNet_FreePacket(packet);
 			
 			if (connected && timeout--<=0)
@@ -338,9 +304,24 @@ int main(int argc, char *argv[])
 	
 	if (!good)
 		return 1;
-	
+		
 	printf("simpleClient is initialised.\n");
 	
+	printf("* loading map...\n");
+	
+	simpleClient::initSM();
+	
+	printf("* connecting...\n");
+	
+	if (argc>1)
+		simpleClient::me = argv[1];
+	else
+		simpleClient::me = "chaterYog";
+		
+	simpleClient::connect();
+	
+	printf("simpleClient is running.\n");
+		
 	simpleClient::run();
 	
 	printf("simpleClient is quitting.\n");
