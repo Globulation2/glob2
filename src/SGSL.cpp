@@ -70,37 +70,45 @@ Story::~Story()
 
 int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 {
-	switch(nameOfVariable.type)
+	if (numberOfPlayer > mapscript->game->session.numberOfTeam)
 	{
-		case(Token::S_WORKER):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[0];
-		case(Token::S_EXPLORER):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[1];
-		case(Token::S_WARRIOR):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[2];
-		case(Token::S_SWARM_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[0][level];
-		case(Token::S_FOOD_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[1][level];
-		case(Token::S_HEALTH_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[2][level];
-		case(Token::S_WALKSPEED_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[3][level];
-		case(Token::S_FLYSPEED_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[4][level];
-		case(Token::S_ATTACK_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[5][level];
-		case(Token::S_SCIENCE_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[6][level];
-		case(Token::S_DEFENCE_B):
-			return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[7][level]; 
-		default:
-			return 0;
+		mapscript->errorInScriptExecution=true;
+		return 0;
+	}
+	else
+	{
+		switch(nameOfVariable.type)
+		{
+			case(Token::S_WORKER):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[0];
+			case(Token::S_EXPLORER):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[1];
+			case(Token::S_WARRIOR):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberUnitPerType[2];
+			case(Token::S_SWARM_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[0][level];
+			case(Token::S_FOOD_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[1][level];
+			case(Token::S_HEALTH_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[2][level];
+			case(Token::S_WALKSPEED_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[3][level];
+			case(Token::S_FLYSPEED_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[4][level];
+			case(Token::S_ATTACK_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[5][level];
+			case(Token::S_SCIENCE_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[6][level];
+			case(Token::S_DEFENCE_B):
+				return mapscript->game->teams[numberOfPlayer]->latestStat.numberBuildingPerTypePerLevel[7][level]; 
+			default:
+				return 0;
+		}
 	}
 }
 
 
-bool Story::conditionTester()
+bool Story::conditionTesterBuildings()
 {
 	switch (line[lineSelector+4].type)
 	{
@@ -115,6 +123,27 @@ bool Story::conditionTester()
 		case (Token::S_EQUAL):
 		{
 			return (valueOfVariable(line[lineSelector+1],line[lineSelector+3].value,line[lineSelector+2].value) == line[lineSelector+5].value);
+		}
+		default:
+			return false;		
+	}
+}
+
+bool Story::conditionTesterGlobules()
+{
+	switch (line[lineSelector+3].type)
+	{
+		case (Token::S_HIGHER):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value,0) > line[lineSelector+4].value);
+		}
+		case (Token::S_LOWER):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value,0) < line[lineSelector+4].value);
+		}
+		case (Token::S_EQUAL):
+		{
+			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value,0) == line[lineSelector+4].value);
 		}
 		default:
 			return false;		
@@ -190,9 +219,23 @@ bool Story::testCondition()
 						lineSelector +=3;
 						return true;
 					}
+					case (Token::S_WORKER):
+					case (Token::S_EXPLORER):
+					case (Token::S_WARRIOR):
+					{
+						if (conditionTesterGlobules())
+						{
+							lineSelector +=4;
+							mapscript->isTextShown=false;
+							return true;
+						}
+						else
+							return false;
+					}
+					break;
 					default: //Test conditions
 					{
-						if (conditionTester())
+						if (conditionTesterBuildings())
 						{
 							lineSelector +=5;
 							mapscript->isTextShown=false;
@@ -233,17 +276,37 @@ bool Story::testCondition()
 			//TODO make the right action ! HELP STEPH !!!
 			case (Token::S_FRIEND):
 			{
-				mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
-				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
-				lineSelector +=2;
-				return true;
+				if ((line[lineSelector+1].value > mapscript->game->session.numberOfTeam) || (line[lineSelector+2].value > mapscript->game->session.numberOfTeam))
+				{
+					mapscript->errorInScriptExecution=true;
+					return false;
+				}
+				else
+				{
+					mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
+					mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
+					mapscript->game->teams[line[lineSelector+2].value]->allies |= mapscript->game->teams[line[lineSelector+1].value]->me;
+					mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
+					lineSelector +=2;
+					return true;
+				}
 			}
 			case (Token::S_ENEMY):
 			{
-				mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
-				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
-				lineSelector +=2;
-				return true;
+				if ((line[lineSelector+1].value > mapscript->game->session.numberOfTeam) || (line[lineSelector+2].value > mapscript->game->session.numberOfTeam))
+				{
+					mapscript->errorInScriptExecution=true;
+					return false;
+				}
+				else
+				{
+					mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
+					mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
+					mapscript->game->teams[line[lineSelector+2].value]->allies &= ~ mapscript->game->teams[line[lineSelector+1].value]->me;
+					mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
+					lineSelector +=2;
+					return true;
+				}
 			}
 			case (Token::S_ACTIVATE):
 			{
@@ -535,6 +598,7 @@ Mapscript::~Mapscript(void)
 
 void Mapscript::reset(void)
 {
+	errorInScriptExecution=false;
 	isTextShown = false;
 	mainTimer=0;
 	game=NULL;
@@ -641,7 +705,6 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						}
 						else if (donnees.getToken().type == Token::INT)
 						{
-							cout << "wait int" << endl;
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
 							break;
