@@ -879,7 +879,7 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 				{
 					assert(ressourcesGradient[t][r][s]==NULL);
 					ressourcesGradient[t][r][s]=new Uint8[size];
-					updateGradient(t, r, s, true);
+					updateGradient(t, r, (bool)s, true);
 				}
 		for (int t=0; t<32; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
@@ -966,7 +966,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateGradient(t, r, s, true);
+			updateGradient(t, r, (bool)s, true);
 		}
 }
 
@@ -1075,7 +1075,7 @@ void Map::syncStep(Sint32 stepCounter)
 					if (gud<2)
 					{
 						//printf("updateGradient(%d, %d, %d, %d)\n", t, r, s, gud==0);
-						updateGradient(t, r, s, gud==0);
+						updateGradient(t, r, (bool)s, gud==0);
 						gradientUpdatedDepth[t][r][s]++;
 						updated=true;
 						goto tripleBreak;
@@ -2171,7 +2171,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 	if (init)
 	{
 		assert(globalContainer);
-		bool visibleToBeCollected=globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
+		bool visibleToBeCollected=(bool)globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected;
 		memset(gradient, 1, size);
 		for (int y=0; y<h; y++)
 		{

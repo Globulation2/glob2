@@ -217,8 +217,8 @@ Uint8 *SessionGame::getData(bool compressed)
 {
 	if (compressed)
 	{
-		fprintf(logFile, "getData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
-			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
+		fprintf(logFile, "getData::[%d, %d, %d, %d, %d, %d, %d, %p]\n",
+			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, mapGenerationDescriptor);
 		if (mapGenerationDescriptor)
 			fprintf(logFile, "mgscs=%x\n", mapGenerationDescriptor->checkSum());
 		addSint8(data, (Sint8)versionMajor, 0);
@@ -295,8 +295,8 @@ bool SessionGame::setData(const Uint8 *data, int dataLength, bool compressed)
 		}
 		else
 			mapGenerationDescriptor=NULL;
-		fprintf(logFile, "setData::[%d, %d, %d, %d, %d, %d, %d, %d]\n",
-			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, (int)mapGenerationDescriptor);
+		fprintf(logFile, "setData::[%d, %d, %d, %d, %d, %d, %d, %p]\n",
+			versionMajor, versionMinor, numberOfPlayer, numberOfTeam, gameTPF, gameLatency, fileIsAMap, mapGenerationDescriptor);
 		if (mapGenerationDescriptor)
 			fprintf(logFile, "mgscs=%x\n", mapGenerationDescriptor->checkSum());
 	}

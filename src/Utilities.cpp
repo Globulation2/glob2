@@ -352,8 +352,8 @@ namespace Utilities
 		assert(a);
 		assert(b);
 		
-		int length=strlen(a);
-		int sumLength=length+strlen(b);
+		size_t length=strlen(a);
+		size_t sumLength=length+strlen(b);
 		char *s=new char[sumLength+1];
 		memcpy(s, a, length);
 		memcpy(&s[length], b, strlen(b)+1);
@@ -366,16 +366,13 @@ namespace Utilities
 		assert(b);
 		assert(c);
 		
-		int aLen=strlen(a);
-		int bLen=strlen(b);
-		int cLen=strlen(c);
-		int totLen=aLen+bLen+cLen+1;
+		size_t aLen=strlen(a);
+		size_t bLen=strlen(b);
+		size_t cLen=strlen(c);
+		size_t totLen=aLen+bLen+cLen+1;
 		char *s=new char[totLen];
-#ifndef WIN32
-		snprintf(s, totLen, "%s%s%s", a, b, c);
-#else
 		sprintf(s, "%s%s%s", a, b, c);
-#endif
+		s[totLen-1]=0;
 		return s;
 	}
 	
@@ -384,7 +381,7 @@ namespace Utilities
 		assert(a);
 		assert(b);
 		
-		int length=strlen(a)-strlen(b);
+		size_t length=strlen(a)-strlen(b);
 		assert(length>=0);
 		char *s=new char[length+1];
 		memcpy(s, a, length);
@@ -396,7 +393,7 @@ namespace Utilities
 	{
 		assert(a);
 		
-		int length=strlen(a)+1;
+		size_t length=strlen(a)+1;
 		char *s=new char[length];
 		memcpy(s, a, length);
 		return s;

@@ -52,7 +52,7 @@ void Sector::free(void)
 
 void Sector::save(SDL_RWops *stream)
 {
-	SDL_WriteBE32(stream, bullets.size());
+	SDL_WriteBE32(stream, (Uint32)bullets.size());
 	// we write the number of bullets here
 	
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
@@ -62,11 +62,11 @@ void Sector::save(SDL_RWops *stream)
 
 bool Sector::load(SDL_RWops *stream, Game *game)
 {
-	int nbUsed;
+	Uint32 nbUsed;
 
 	free();
 	nbUsed=SDL_ReadBE32(stream);
-	for (int i=0; i<nbUsed; i++)
+	for (Uint32 i=0; i<nbUsed; i++)
 	{
 		bullets.push_front(new Bullet(stream));
 	}

@@ -239,7 +239,7 @@ int SoundMixer::loadTrack(const char *name)
 	}
 
 	tracks.push_back(oggFile);
-	return tracks.size()-1;
+	return (int)tracks.size()-1;
 }
 
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)

@@ -62,7 +62,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
 		this->level[i]=level;
-		this->canLearn[i]=race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
+		this->canLearn[i]=(bool)race->getUnitType(typeNum, 1)->performance[i]; //TODO: is is a better way to hack this?
 	}
 
 	// states
@@ -2371,7 +2371,7 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<1)|(cs>>31);
 		cs^=level[i];
 		cs=(cs<<1)|(cs>>31);
-		cs^=canLearn[i];
+		cs^=(Uint32)canLearn[i];
 		cs=(cs<<1)|(cs>>31);
 	}
 	if (checkSumsList)
@@ -2392,7 +2392,7 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	cs^=destinationPurprose;
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [17]
-	cs^=subscribed;
+	cs^=(Uint32)subscribed;
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [18]
 	cs^=caryedRessource;

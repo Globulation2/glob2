@@ -49,6 +49,10 @@ public:
 	Order *getOrder(void);
 	
 private:
+	Order *getStartSwarmOrder(void);
+	int getFoodPlace(int x, int y, int *fx, int *fy, int *score);
+	
+private:
 	Uint32 timer;
 };
 

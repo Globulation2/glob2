@@ -305,7 +305,7 @@ bool BasePlayer::bind(UDPsocket socket)
 	channel=SDLNet_UDP_Bind(socket, -1, &ip);
 	if (channel != -1)
 	{
-		fprintf(logFile, "suceeded to bind socket to player %d, socket=(%x), channel=(%d), ip=(%s).\n", number, (int)socket, channel, Utilities::stringIP(ip));
+		fprintf(logFile, "suceeded to bind socket to player %d, socket=(%p), channel=(%d), ip=(%s).\n", number, socket, channel, Utilities::stringIP(ip));
 		return true;
 	}
 	else
@@ -319,7 +319,7 @@ void BasePlayer::unbind()
 {
 	if (channel!=-1)
 	{
-		fprintf(logFile, "Unbinding player %d (socket=%x)(channel=%d).\n", number, (int)socket, channel);
+		fprintf(logFile, "Unbinding player %d (socket=%p)(channel=%d).\n", number, socket, channel);
 		assert(socket);
 		SDLNet_UDP_Unbind(socket, channel);
 		channel=-1;

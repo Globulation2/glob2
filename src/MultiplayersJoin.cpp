@@ -1072,7 +1072,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 					channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 					if (channel != -1)
 					{
-						fprintf(logFile, "MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
+						fprintf(logFile, "MultiplayersJoin:NAT:suceeded to bind socket (socket=%p) (channel=%d)\n", socket, channel);
 						fprintf(logFile, "MultiplayersJoin:NAT:serverIP=%s\n", Utilities::stringIP(serverIP));
 						
 						waitingState=WS_WAITING_FOR_PRESENCE;
@@ -1157,7 +1157,7 @@ char *MultiplayersJoin::getStatusString()
 			assert(false);
 		break;
 	}
-	int l=strlen(s)+1;
+	size_t l=strlen(s)+1;
 	char *t=new char[l];
 	strncpy(t, s, l);
 	return t;
@@ -1718,7 +1718,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 
 	if (channel != -1)
 	{
-		fprintf(logFile, "suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
+		fprintf(logFile, "suceeded to bind socket (socket=%p) (channel=%d)\n", socket, channel);
 		fprintf(logFile, "serverIP=(%s)\n", Utilities::stringIP(serverIP));
 	}
 	else
@@ -1757,7 +1757,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 
 void MultiplayersJoin::quitThisGame() 
 {
-	fprintf(logFile, "\nquitThisGame() (this=%x)(socket=%x).\n", (int)this, (int)socket);
+	fprintf(logFile, "\nquitThisGame() (this=%p)(socket=%p).\n", this, socket);
 	unCrossConnectSessionInfo();
 	if (shareOnYog)
 		yog->unjoinGame(false);

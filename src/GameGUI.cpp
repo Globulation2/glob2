@@ -1947,7 +1947,7 @@ void GameGUI::drawBuildingInfos(void)
 				globalContainer->littleFont->pushColor(185, 195, 21);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, working);
 				globalContainer->littleFont->popColor();
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d/%d", selBuild->unitsWorking.size(), selBuild->maxUnitWorking).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d/%d", (int)selBuild->unitsWorking.size(), selBuild->maxUnitWorking).c_str());
 				drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
 			else
