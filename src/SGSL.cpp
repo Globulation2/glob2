@@ -242,6 +242,11 @@ bool Story::testCondition(GameGUI *gui)
 	if (line.size())
 		switch (line[lineSelector].type)
 		{
+			case (Token::S_STORY):
+			{
+				return false;
+			}
+			
 			case (Token::S_SHOW):
 			{
 				unsigned lsInc=0;
@@ -625,6 +630,7 @@ void Story::syncStep(GameGUI *gui)
 	{
 		lineSelector++;
 		cycleLeft--;
+		
 		std::cout << "SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	}
 
@@ -937,6 +943,7 @@ void Mapscript::syncStep(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
+	std::cout << "We have " << stories.size() << " stories\n";
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
 		it->syncStep(gui);
@@ -1724,6 +1731,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					break;
 			}
 		}
+		thisone.line.push_back(Token(Token::S_STORY));
 		stories.push_back(thisone);
 		// Debug code
 		printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
