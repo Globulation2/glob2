@@ -20,11 +20,11 @@
 #ifndef __SCRIPT_EDITOR_SCREEN_H
 #define __SCRIPT_EDITOR_SCREEN_H
 
-#include "GAG.h"
 #include "GameGUIDialog.h"
-#include "Game.h"
 
-//Class in SGSL, imported in .cpp
+class TextArea;
+class Text;
+class Game;
 class Mapscript;
 
 class ScriptEditorScreen:public OverlayScreen

@@ -20,7 +20,13 @@
 #ifndef __SETTINGSSCREEN_H
 #define __SETTINGSSCREEN_H
 
-#include "GAG.h"
+#include <GUIBase.h>
+
+class List;
+class TextInput;
+class TextButton;
+class OnOffButton;
+class Text;
 
 class SettingsScreen:public Screen
 {

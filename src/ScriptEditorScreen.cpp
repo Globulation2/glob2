@@ -20,6 +20,12 @@
 #include "ScriptEditorScreen.h"
 #include "SGSL.h"
 #include "GlobalContainer.h"
+#include "Game.h"
+#include <GUIText.h>
+#include <GUITextArea.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)

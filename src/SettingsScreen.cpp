@@ -21,6 +21,13 @@
 #include "GlobalContainer.h"
 #include <assert.h>
 #include <sstream>
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <GUIList.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 SettingsScreen::SettingsScreen()
 {

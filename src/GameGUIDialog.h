@@ -20,8 +20,11 @@
 #ifndef __GAME_GUI_DIALOG_H
 #define __GAME_GUI_DIALOG_H
 
-#include "GAG.h"
-#include "Player.h"
+#include <GUIBase.h>
+
+class OnOffButton;
+class Selector;
+class GameGUI;
 
 class InGameMainScreen:public OverlayScreen
 {
@@ -69,8 +72,6 @@ public:
 	};
 
 public:
-	//OnOffButton *allied[8];
-	//OnOffButton *vision[8];
 	Selector *alliance[8];
 	OnOffButton *chat[8];
 	GameGUI *gameGUI;
