@@ -22,8 +22,10 @@
 
 #include "GAG.h"
 #include "GameGUIDialog.h"
-#include "SGSL.h"
 #include "Game.h"
+
+//Class in SGSL, imported in .cpp
+class Mapscript;
 
 class ScriptEditorScreen:public OverlayScreen
 {

@@ -20,32 +20,7 @@
 */
 
 /*
-Types associations with int numbers.
-11	wait(time in seconds): time to wait before exectuting the next command
-12	timer(time in seconds): same thing as wait but is drawn on the screen
-13	wait(condition)
-        condition:  untit_or_building number_of_player condition number 
-21	show(string): diplays a string on the screen until the next command is finished
-1   activate: activates the given player (on by default)
-2   deactivate: deactivate the given player
-3   friend: makes a player become your friend
-4   ennemy: makes a player become your ennemy (on by default)
-
-5   dead number_of_player: return true if the player is dead
-6   alive number_of_player: returns true if the player is alive
-4	flag(number).order: give orders to flags
-1   -you: returns true if one of your globule reaches the radius of the given flag
-2   -noenemy: returns true if no enemy is in the radius of the given flag
-3   -noally: returns true if no ally is in the radius of the given flag
-51	win: obwiously makes you win the game
-52	loose: bad for you...
-
-//condition number
-player xx -dead		xx0
-player xx -alive	xx1
-flag xx -you		xx5
-flag xx -noennemy	xx6
-flag xx -noally		xx7
+ TODO: Check for label/Jump coherency !
 
 for the parser:
 story: starts another parallel storyline, so multiple endings for a map are possible
@@ -73,8 +48,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_DEACTIVATE, "deactivate" },
 	{ S_FRIEND, "friend" },
 	{ S_ENEMY, "enemy" },
-	{ S_DEAD, "dead" },
-	{ S_ALIVE, "alive" },
+	{ S_ISDEAD, "isdead" },
 	{ S_FLAG, "flag" },
 	{ S_YOU, "you" },
 	{ S_NOENEMY, "noenemy" },
@@ -96,11 +70,15 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_SCIENCE_B, "nbSchool" },
 	{ S_DEFENCE_B, "nbTower" },
 	{ S_HIDE, "hide" },
-	{ S_MARK, "mark" },
-	{ S_GOBACKTO, "gobackto" },
+	{ S_LABEL, "label" },
+	{ S_JUMP, "jump" },
 	{ S_SETFLAG, "setflag"},
 	{ S_ALLY, "ally" },
 	{ S_SUMMON, "summon" },
+	{ S_NOT, "not" },
+	{ S_PAROPEN, "("},
+	{ S_PARCLOSE, ")"},
+	{ S_SEMICOL, ","},
 	{ INT, "int" },
 	{ STRING, "string" },
 	{ NIL, NULL }
@@ -110,7 +88,7 @@ Token::TokenType Token::getTypeByName(const char *name)
 {
 	int i = 0;
 	TokenType type=NIL;
-	
+
 	if (name != NULL)
 		while (table[i].type != NIL)
 		{
@@ -128,7 +106,7 @@ const char *Token::getNameByType(Token::TokenType type)
 {
 	int i = 0;
 	const char *name=NULL;
-	
+
 	if (type != NIL)
 		while (table[i].name != NULL)
 		{
@@ -153,9 +131,10 @@ Story::Story(Mapscript *mapscript)
 
 Story::~Story()
 {
-	
+
 }
 
+//get values from the game
 int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 {
 
@@ -183,13 +162,13 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 		case(Token::S_SCIENCE_B):
 			return latestStat->numberBuildingPerTypePerLevel[6][level];
 		case(Token::S_DEFENCE_B):
-			return latestStat->numberBuildingPerTypePerLevel[7][level]; 
+			return latestStat->numberBuildingPerTypePerLevel[7][level];
 		default:
 			return 0;
 	}
 }
 
-
+//code for testing conditions
 bool Story::conditionTesterBuildings()
 {
 	switch (line[lineSelector+4].type)
@@ -207,7 +186,7 @@ bool Story::conditionTesterBuildings()
 			return (valueOfVariable(line[lineSelector+1],line[lineSelector+3].value,line[lineSelector+2].value) == line[lineSelector+5].value);
 		}
 		default:
-			return false;		
+			return false;
 	}
 }
 
@@ -228,13 +207,14 @@ bool Story::conditionTesterGlobules()
 			return (valueOfVariable(line[lineSelector+1],line[lineSelector+2].value,0) == line[lineSelector+4].value);
 		}
 		default:
-			return false;		
+			return false;
 	}
 }
 
+//main step-by-step machine
 bool Story::testCondition()
 {
-
+	/* Not up-to date */
 	if (line.size())
 		switch (line[lineSelector].type)
 		{
@@ -245,29 +225,34 @@ bool Story::testCondition()
 				mapscript->textShown = line[lineSelector].msg;
 				return true;
 			}
-			
 			case (Token::S_WIN):
 			{
 				hasWon=true;
 				return false;
 			}
-			
+
 			case (Token::S_LOOSE):
 			{
 				hasLost=true;
 				return false;
 			}
-			
+
 			case (Token::S_TIMER):
 			{
 				lineSelector++;
 				mapscript->mainTimer=line[lineSelector].value;
 				return true;
 			}
-			
+
 			case (Token::S_WAIT):
 			{
-				switch (line[lineSelector+1].type)
+				bool negate = false;
+				if (line[lineSelector+1].type == Token::S_NOT)
+				{
+					negate = true;
+
+				}
+				switch (line[lineSelector+1 + negate].type)
 				{
 					case(Token::INT):
 					{
@@ -275,8 +260,8 @@ bool Story::testCondition()
 						internTimer=line[lineSelector].value;
 						return false;
 					}
-					case (Token::S_DEAD):
-					{				
+					case (Token::S_ISDEAD):
+					{
 						if (!mapscript->game->teams[line[lineSelector+2].value]->isAlive)
 						{
 							lineSelector+=2;
@@ -285,11 +270,15 @@ bool Story::testCondition()
 						else
 							return false;
 					}
+					case(Token::S_NOT):
+						//Execution Error, this chouldn't happoen !!!
+						assert(false);
+						break;
 					case (Token::S_FLAG):
 					{
-						int x, y;
-						mapscript->getFlagPos(line[lineSelector+2].msg, &x, &y);
-						if (line[lineSelector+3].type==Token::S_YOU)
+						int x, y ,r;
+						mapscript->getFlagPos(line[lineSelector+2+negate].msg, &x, &y, &r);
+						if (line[lineSelector+3+negate].type==Token::S_YOU)
 						{
 							int dx, dy;
 							for (dy=y-5; dy<y+5; dy++)
@@ -299,17 +288,16 @@ bool Story::testCondition()
 									if (gid!=NOGUID)
 									{
 										int team=Unit::GIDtoTeam(gid);
-										if (mapscript->game->teams[0]->teamNumber==team)
+										if (mapscript->game->teams[0]->teamNumber==team)//TODO XOR
 										{
-											lineSelector +=3;
+											lineSelector +=3+negate;
 											return true;
 										}
 									}
 								}
-							
 							return false;
 						}
-						else if (line[lineSelector+3].type==Token::S_ALLY)
+						else if (line[lineSelector+3+negate].type==Token::S_ALLY)
 						{
 							int dx, dy;
 							for (dy=y-5; dy<y+5; dy++)
@@ -320,19 +308,19 @@ bool Story::testCondition()
 									{
 										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->allies & tm)
+										if (mapscript->game->teams[0]->allies & tm) //TODO XOR
 										{
-											lineSelector +=3;
+											lineSelector +=3+negate;
 											return true;
 										}
 									}
 								}
-							
+
 							return false;
 						}
-						else if (line[lineSelector+3].type==Token::S_NOENEMY)
+						else if (line[lineSelector+3+negate].type==Token::S_NOENEMY)
 						{
-						
+
 							int dx, dy;
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
@@ -343,7 +331,7 @@ bool Story::testCondition()
 									{
 										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->enemies & tm)
+										if (mapscript->game->teams[0]->enemies & tm)//TODO XOR
 											return false;
 									}
 									gid=mapscript->game->map.getBuilding(dx, dy);
@@ -351,12 +339,12 @@ bool Story::testCondition()
 									{
 										int team=Building::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->enemies & tm)
+										if (mapscript->game->teams[0]->enemies & tm)//TODO XOR
 											return false;
 									}
 								}
-						
-							lineSelector +=3;
+
+							lineSelector +=3+negate;
 							return true;
 						}
 						else
@@ -367,9 +355,9 @@ bool Story::testCondition()
 					case (Token::S_EXPLORER):
 					case (Token::S_WARRIOR):
 					{
-						if (conditionTesterGlobules())
+						if (conditionTesterGlobules())//TODO XOR
 						{
-							lineSelector +=4;
+							lineSelector +=4+negate;
 							mapscript->isTextShown=false;
 							return true;
 						}
@@ -379,9 +367,9 @@ bool Story::testCondition()
 					break;
 					default: //Test conditions
 					{
-						if (conditionTesterBuildings())
+						if (conditionTesterBuildings())//TODO XOR
 						{
-							lineSelector +=5;
+							lineSelector +=5+negate;
 							mapscript->isTextShown=false;
 							return true;
 						}
@@ -390,17 +378,17 @@ bool Story::testCondition()
 					}
 				}
 			}
-			case (Token::S_MARK):
+			case (Token::S_LABEL):
 			{
 				lineSelector += 1;
 				return true;
 			}
-			case (Token::S_GOBACKTO):
+			case (Token::S_JUMP):
 			{
 				int newEmplacement;
 				for (newEmplacement =lineSelector; newEmplacement > 0; newEmplacement--)
 				{
-					if ((line[lineSelector+1].msg == line[newEmplacement].msg) && (line[newEmplacement-1].type=Token::S_MARK))
+					 if ((line[lineSelector+1].msg == line[newEmplacement].msg) && (line[newEmplacement-1].type=Token::S_LABEL))
 					{
 						break;
 					}
@@ -418,7 +406,6 @@ bool Story::testCondition()
 			}
 			case (Token::S_FRIEND):
 			{
-				
 				mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
 				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
 				mapscript->game->teams[line[lineSelector+2].value]->allies |= mapscript->game->teams[line[lineSelector+1].value]->me;
@@ -435,15 +422,14 @@ bool Story::testCondition()
 				mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
 				lineSelector +=2;
 				return true;
-
 			}
 			case (Token::S_SUMMON):
 			{
-				int x, y;
-				if (mapscript->getFlagPos(line[lineSelector+5].msg, &x, &y))
+				int x, y, r;
+				if (mapscript->getFlagPos(line[lineSelector+1].msg, &x, &y, &r))
 				{
 					int dx, dy;
-					int number =line[lineSelector+1].value;
+					int number =line[lineSelector+2].value;
 					int delta = (int)(sqrt((double)number)+1)/2;
 					for (dy=y-delta; dy<y+delta; dy++)
 					{
@@ -451,24 +437,24 @@ bool Story::testCondition()
 						{
 							if (number >= 0)
 							{
-								mapscript->game->addUnit(dx, dy, line[lineSelector+3].value, line[lineSelector+2].type-101, line[lineSelector+4].value, 0, 0, 0);
+								mapscript->game->addUnit(dx, dy, line[lineSelector+5].value, line[lineSelector+3].type-101, line[lineSelector+4].value, 0, 0, 0);
 								number --;
 							}
 						}
 					}
 				}
-				lineSelector +=5;
+				lineSelector +=4;
 				return true;
 			}
 			case (Token::S_SETFLAG):
 			{
 				Flag flag;
 				bool found=false;
-				
-				flag.name=line[lineSelector+2].msg;
+
+				flag.name=line[lineSelector+1].msg;
 				flag.x=line[lineSelector+2].value;
 				flag.y=line[lineSelector+3].value;
-				
+				flag.r=line[lineSelector+4].value;
 				for (std::vector<Flag>::iterator it=mapscript->flags.begin(); it != mapscript->flags.end(); ++it)
 				{
 					if ((*it).name==flag.name)
@@ -480,31 +466,30 @@ bool Story::testCondition()
 				}
 				if (!found)
 					mapscript->flags.push_back(flag);
-				
-				lineSelector+=3;
+
+				lineSelector+=4;
 				return true;
 			}
 			case (Token::S_ACTIVATE):
 			{
+				//TODO ?
 				lineSelector ++;
 				return true;
 			}
 			case (Token::S_DEACTIVATE):
 			{
+				//TODO ?
 				lineSelector ++;
 				return true;
 			}
-			
 			case (Token::S_HIDE):
 			{
 				mapscript->isTextShown = false;
 				return true;
 			}
-			
 			default:
 				return false;
 		}
-
 	return false;
 }
 
@@ -520,7 +505,7 @@ using namespace std;
 
 const char *ErrorReport::getErrorString(void)
 {
-	static const char *strings[]={ "No error", "Invalid Value ", "Syntax error", "Invalid player", "No such file", "Invalid Falg name", "Unknown error" };
+	static const char *strings[]={ "No error", "Invalid Value ", "Syntax error", "Invalid player", "No such file", "Invalid Falg name", "Flag name already defined","Missing \"(\"","Missing \")\"", "Missing \",\"", "Missing argument", "Unknown error" };
 	assert(type >= 0);
 	assert(type < ET_NB_ET);
 	assert(ET_NB_ET == sizeof(strings)/sizeof(const char *));
@@ -530,7 +515,7 @@ const char *ErrorReport::getErrorString(void)
 //Text aquisition by the parser
 Aquisition::~Aquisition(void)
 {
-	
+
 }
 
 Aquisition::Aquisition(void)
@@ -542,6 +527,7 @@ Aquisition::Aquisition(void)
 	lastLine=0;
 	lastCol=0;
 	lastPos=0;
+	newLine=true;
 }
 
 #define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
@@ -559,20 +545,28 @@ const char *index(const char *str, char f)
 }
 #endif
 
+//Tokenizer
 void Aquisition::nextToken()
 {
 	string mot;
 	int c;
-	
 	lastCol=actCol;
 	lastLine=actLine;
 	lastPos=actPos;
-
 	// eat empty char
 	while(( c=this->getChar() )!=EOF)
 	{
-		if (index(" \t\r\n().,", c)==NULL)
+		if (c=='#' && newLine)
 		{
+			while(c!='\n')
+				c=this->getChar();
+		}
+		newLine=false;
+		//if (index(" \t\r\n().,", c)==NULL)
+		if (index(" \t\r\n", c)==NULL)
+		{
+			if (c == '\n')
+				newLine=true;
 			this->ungetChar(c);
 			break;
 		}
@@ -587,6 +581,7 @@ void Aquisition::nextToken()
 
 	// push char in mot
 	bool isInString=false;
+	bool isInMot = false;
 	while(( c=this->getChar() )!=EOF)
 	{
 		if ((char)c=='"')
@@ -595,21 +590,41 @@ void Aquisition::nextToken()
 		{
 			if (index("\t\r\n", c)!=NULL)
 			{
+				if (c == '\n')
+					newLine=true;
 				this->ungetChar(c);
 				break;
 			}
 		}
 		else
 		{
-			if (index(" \t\r\n().,", c)!=NULL)
+			//if (index(" \t\r\n().,", c)!=NULL)
+			if (index(" \t\r\n", c)!=NULL)
 			{
+				if (c == '\n')
+					newLine=true;
+
 				this->ungetChar(c);
 				break;
 			}
+			else if (index("().,", c)!=NULL)
+			{
+				if (isInMot)
+					this->ungetChar(c);
+				else
+				{
+					//no need to come back
+					HANDLE_ERROR_POS(c);
+					mot+= (char)c;
+				}
+				break;
+			}
+			isInMot=true;
 		}
 		HANDLE_ERROR_POS(c);
 		mot+= (char)c;
 	}
+
 
 	if (mot.size()>0)
 	{
@@ -668,10 +683,10 @@ StringAquisition::~StringAquisition()
 void StringAquisition::open(const char *text)
 {
 	assert(text);
-	
+
 	if (buffer)
 		free (buffer);
-	
+
 	size_t len=strlen(text);
 	buffer=(char *)malloc(len+1);
 	memcpy(buffer, text, len+1);
@@ -716,7 +731,7 @@ bool Mapscript::load(SDL_RWops *stream)
 {
 	if (sourceCode)
 		delete[] sourceCode;
-	
+
 	unsigned len=SDL_ReadBE32(stream);
 	sourceCode=new char[len];
 	SDL_RWread(stream, sourceCode, len, 1);
@@ -734,13 +749,13 @@ void Mapscript::setSourceCode(const char *sourceCode)
 {
 	if (this->sourceCode)
 		delete[] this->sourceCode;
-		
+
 	unsigned len=strlen(sourceCode)+1;
 	this->sourceCode=new char[len];
 	strcpy(this->sourceCode, sourceCode);
 }
 
-bool Mapscript::getFlagPos(string name, int *x, int *y)
+bool Mapscript::getFlagPos(string name, int *x, int *y, int *r)
 {
 	for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
 	{
@@ -748,6 +763,7 @@ bool Mapscript::getFlagPos(string name, int *x, int *y)
 		{
 			*x=(*it).x;
 			*y=(*it).y;
+			*r=(*it).r;
 			return true;
 		}
 	}
@@ -772,10 +788,11 @@ void Mapscript::reset(void)
 	mainTimer=0;
 	game=NULL;
 	stories.clear();
+	flags.clear();
 }
 
 bool Mapscript::testMainTimer()
-{ 
+{
 	return (mainTimer <= 0);
 }
 
@@ -811,14 +828,40 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 		return ErrorReport(ErrorReport::ET_NO_SUCH_FILE);
 }
 
+//Control of the syntax of the script
 ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 {
 
-#define NEXT_TOKEN {  er.line=donnees->getLine(); er.col=donnees->getCol(); er.pos=donnees->getPos(); donnees->nextToken(); }
+//Gets next token and sets right error position
+#define NEXT_TOKEN { er.line=donnees->getLine(); er.col=donnees->getCol(); er.pos=donnees->getPos(); donnees->nextToken(); }
+//Check for open parentesis
+#define CHECK_PAROPEN { NEXT_TOKEN;\
+	if (donnees->getToken()->type != Token::S_PAROPEN){\
+		er.type=ErrorReport::ET_MISSING_PAROPEN;\
+		break;\
+	} }
+//Check for closed parentesis
+#define CHECK_PARCLOSE {NEXT_TOKEN;\
+if (donnees->getToken()->type != Token::S_PARCLOSE){\
+		er.type=ErrorReport::ET_MISSING_PARCLOSE;\
+		break;\
+} }
+//Checks for semicolon
+#define CHECK_SEMICOL {NEXT_TOKEN;\
+if (donnees->getToken()->type != Token::S_SEMICOL){\
+		er.type=ErrorReport::ET_MISSING_SEMICOL;\
+		break;\
+} }
+//Cheks for right number of arguments
+#define CHECK_ARGUMENT {\
+if (donnees->getToken()->type == Token::S_PARCLOSE || donnees->getToken()->type == Token::S_SEMICOL){\
+		er.type=ErrorReport::ET_MISSING_ARGUMENT;\
+		break;\
+} }
 
 	ErrorReport er;
 	er.type=ErrorReport::ET_OK;
-	
+
 	reset();
 	this->game=game;
 
@@ -839,54 +882,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
-				//Grammar for summon |summon(globules_amount globule_type(player_int . level) flag_name)
+				//Grammar for summon |summon(flag_name , globules_amount , globule_type , globule_level , player_int)
 				case (Token::S_SUMMON):
 				{
+					//<-summon
 					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
-					if (donnees->getToken()->type != Token::INT)
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					else if (donnees->getToken()->value > 30)
-					{
-						er.type=ErrorReport::ET_INVALID_VALUE;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
-					if ((donnees->getToken()->type != Token::S_WARRIOR) && (donnees->getToken()->type != Token::S_WORKER) && (donnees->getToken()->type != Token::S_EXPLORER))
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
-					if (donnees->getToken()->type != Token::INT)
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					else if (donnees->getToken()->value >= game->session.numberOfTeam)
-					{
-						er.type=ErrorReport::ET_INVALID_PLAYER;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
-					if (donnees->getToken()->type != Token::INT)
-					{
-						er.type=ErrorReport::ET_SYNTAX_ERROR;
-						break;
-					}
-					else if (donnees->getToken()->value > 3)
-					{
-						er.type=ErrorReport::ET_INVALID_VALUE;
-						break;
-					}
-					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
+					CHECK_PAROPEN;
+					NEXT_TOKEN; // <-falg_name
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -898,24 +901,85 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<-globules_amount
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					else if (donnees->getToken()->value > 30) //Max number of globules to summon
+					{
+						er.type=ErrorReport::ET_INVALID_VALUE;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<-globules type
+					CHECK_ARGUMENT;
+					if ((donnees->getToken()->type != Token::S_WARRIOR) && (donnees->getToken()->type != Token::S_WORKER) && (donnees->getToken()->type != Token::S_EXPLORER))
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<- globules level
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					else if (donnees->getToken()->value > 3)
+					{
+						er.type=ErrorReport::ET_INVALID_VALUE;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<- player
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					else if (donnees->getToken()->value >= game->session.numberOfTeam)
+					{
+						er.type=ErrorReport::ET_INVALID_PLAYER;
+						break;
+					}
+					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
-				//Grammar for setflag | setflag(flag_name)(x.y)
+				//Grammar for setflag | setflag("flag_name" , x , y , r )
 				case (Token::S_SETFLAG):
 				{
 					Flag flag;
 					bool found=false;
-					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
+					thisone.line.push_back(*donnees->getToken()); //<-setflag
+					CHECK_PAROPEN;
+					NEXT_TOKEN;//<-"flagName"
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
+					else if (doesFlagExist(donnees->getToken()->msg))
+					{
+						er.type=ErrorReport::ET_DOUBLE_FLAG_NAME;
+						break;
+					}
 					flag.name=donnees->getToken()->msg;
 					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<- x
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -923,13 +987,25 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					}
 					flag.x=donnees->getToken()->value;
 					thisone.line.push_back(*donnees->getToken());
-					NEXT_TOKEN;
+					CHECK_SEMICOL;
+					NEXT_TOKEN;//<- y
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
 					flag.y=donnees->getToken()->value;
+					CHECK_SEMICOL;
+					NEXT_TOKEN; //<- r
+					CHECK_ARGUMENT;
+					if (donnees->getToken()->type != Token::INT)
+					{
+						er.type=ErrorReport::ET_SYNTAX_ERROR;
+						break;
+					}
+					flag.r=donnees->getToken()->value;
+					thisone.line.push_back(*donnees->getToken());
 					for (vector<Flag>::iterator it=flags.begin(); it != flags.end(); ++it)
 					{
 						if ((*it).name==flag.name)
@@ -942,34 +1018,59 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					if (!found)
 						flags.push_back(flag);
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
-				//Grammar of Show Mark Gobackto
+				//Grammar of Show, Label, Jump
+		    //TODO: !! No check if label name exist !!!
 				case (Token::S_SHOW):
-				case (Token::S_MARK):
-				case (Token::S_GOBACKTO):
+				case (Token::S_LABEL):
+				case (Token::S_JUMP):
 				{
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
 					NEXT_TOKEN;
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
-				//Grammar Of Wait
+				//Grammar Of Wait | wait ( int) or wait ( isdead( playerid ) ) or wait( condition ) or wait( not( condition ) )
 				case (Token::S_WAIT):
 				{
+					bool enter = false;
+					bool negate = false;
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
 					NEXT_TOKEN;
-					if ((donnees->getToken()->type == Token::S_DEAD) || (donnees->getToken()->type == Token::S_ALIVE))
+					CHECK_ARGUMENT;
+					// int
+					if (donnees->getToken()->type == Token::INT  && !enter)
 					{
+						enter = true;
+						if (donnees->getToken()->value <=0)
+						{
+							er.type=ErrorReport::ET_INVALID_VALUE;
+							break;
+						}
 						thisone.line.push_back(*donnees->getToken());
+					}
+
+					// isdead( playerid )
+					if (donnees->getToken()->type == Token::S_ISDEAD && !enter)
+					{
+						enter = true;
+						thisone.line.push_back(*donnees->getToken());
+						CHECK_PAROPEN;
 						NEXT_TOKEN;
+						CHECK_ARGUMENT;
 						if (donnees->getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -981,12 +1082,28 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
-						NEXT_TOKEN;
+						CHECK_PARCLOSE;
+						//CHECK_PARCLOSE;
+						//NEXT_TOKEN;
+						//break;
 					}
-					else if (donnees->getToken()->type == Token::S_FLAG)
+					// following two arguments can be negated !
+					if (donnees->getToken()->type == Token::S_NOT && !enter)
 					{
+						negate = true;
 						thisone.line.push_back(*donnees->getToken());
+						CHECK_PAROPEN;
 						NEXT_TOKEN;
+						CHECK_ARGUMENT;
+					}
+					// flag ("flagname" , who*)
+					if (donnees->getToken()->type == Token::S_FLAG && !enter)
+					{
+						enter = true;
+						thisone.line.push_back(*donnees->getToken());
+						CHECK_PAROPEN;
+						NEXT_TOKEN;
+						CHECK_ARGUMENT;
 						if (donnees->getToken()->type != Token::STRING)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -998,32 +1115,32 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
+						CHECK_SEMICOL;
 						NEXT_TOKEN;
-						if ((donnees->getToken()->type != Token::S_YOU) && (donnees->getToken()->type != Token::S_NOENEMY) && (donnees->getToken()->type != Token::S_ALLY))
+						CHECK_ARGUMENT;
+						if ((donnees->getToken()->type != Token::S_YOU) && (donnees->getToken()->type != Token::S_ENEMY)
+						&& (donnees->getToken()->type != Token::S_ALLY) && (donnees->getToken()->type != Token::INT))
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
-						NEXT_TOKEN;
+						CHECK_PARCLOSE;
 					}
-					else if (donnees->getToken()->type == Token::INT)
+					//Comparaison| ( Variable( player , "flagName" ) cond value ) : variable = unit
+					//( Variable( level , player , "flagName" ) cond value ) : variable = building
+					//"flagName" can be omitted !
+					if ((donnees->getToken()->type > 100) && (donnees->getToken()->type < 300) && !enter)
 					{
-						if (donnees->getToken()->value <=0)
-						{
-							er.type=ErrorReport::ET_INVALID_VALUE;
-							break;
-						}
+						enter = true;
+						//Buildings
 						thisone.line.push_back(*donnees->getToken());
-						NEXT_TOKEN;
-						break;
-					}
-					else if ((donnees->getToken()->type > 100) && (donnees->getToken()->type < 300))
-					{
 						if ((donnees->getToken()->type > 200) && (donnees->getToken()->type < 300))
 						{
-							thisone.line.push_back(*donnees->getToken());
+							//level
+							CHECK_PAROPEN;
 							NEXT_TOKEN;
+							CHECK_ARGUMENT;
 							if (donnees->getToken()->type != Token::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1035,13 +1152,21 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								break;
 							}
 							thisone.line.push_back(*donnees->getToken());
+							CHECK_SEMICOL;
 							NEXT_TOKEN;
+						}
+						else if ((donnees->getToken()->type > 100) && (donnees->getToken()->type < 200))
+						{
+							CHECK_PAROPEN;
+							NEXT_TOKEN;
+							CHECK_ARGUMENT;
 						}
 						else
 						{
-							thisone.line.push_back(*donnees->getToken());
-							NEXT_TOKEN;
+							er.type=ErrorReport::ET_SYNTAX_ERROR;
+							break;
 						}
+						//player
 						if (donnees->getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1054,38 +1179,73 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
-						if ((donnees->getToken()->type < 301) && (donnees->getToken()->type > 303))
+						//Optional "flagName"
+						if (donnees->getToken()->type != Token::S_PARCLOSE)
+						{
+							NEXT_TOKEN;
+							//there is a flagName
+							if (donnees->getToken()->type != Token::STRING)
+							{
+								er.type=ErrorReport::ET_SYNTAX_ERROR;
+								break;
+							}
+							else if (!doesFlagExist(donnees->getToken()->msg))
+							{
+								er.type=ErrorReport::ET_INVALID_FLAG_NAME;
+								break;
+							}
+							thisone.line.push_back(*donnees->getToken());
+							CHECK_PARCLOSE;
+						}
+						else
+						{ // there was no flag name but a closing parenthesis
+						}
+						NEXT_TOKEN;
+						CHECK_ARGUMENT;
+						if ((donnees->getToken()->type < 301) || (donnees->getToken()->type > 303))
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
+						CHECK_ARGUMENT;
 						if (donnees->getToken()->type != Token::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
-						NEXT_TOKEN;
 					}
-					else
+					if (!enter)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
+					if (negate)
+					{
+						negate = !negate;
+						CHECK_PARCLOSE;
+					}
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+					break;
 				}
 				break;
 				case (Token::NIL):
 				{
-					NEXT_TOKEN;
+					//NEXT_TOKEN;
+					er.type=ErrorReport::ET_UNKNOWN;
 				}
 				break;
+					//friend/ennemy( player1 , player2 )
 				case (Token::S_FRIEND):
 				case (Token::S_ENEMY):
 				{
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
 					NEXT_TOKEN;
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1097,7 +1257,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_SEMICOL;
 					NEXT_TOKEN;
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1109,13 +1271,17 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
+					//Timer( int )
 				case (Token::S_TIMER):
 				{
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
 					NEXT_TOKEN;
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1127,14 +1293,18 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
+					//Activate/deactivate( playerid )
 				case (Token::S_ACTIVATE):
 				case (Token::S_DEACTIVATE):
 				{
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PAROPEN;
 					NEXT_TOKEN;
+					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
@@ -1146,6 +1316,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
@@ -1167,6 +1338,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			}
 		}
 		stories.push_back(thisone);
+//Debug code
 		printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 		for (unsigned  i=0; i<thisone.line.size(); i++)
 			cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;

@@ -60,8 +60,7 @@ struct Token
 		S_DEACTIVATE=309,
 		S_FRIEND=310,
 		S_ENEMY=311,
-		S_DEAD=312,
-		S_ALIVE=313,
+		S_ISDEAD=312,
 		S_FLAG=314,
 		S_YOU=315,
 		S_NOENEMY=316,
@@ -69,11 +68,15 @@ struct Token
 		S_LOOSE=318,
 		S_STORY=319,
 		S_HIDE=320,
-		S_MARK=321,
-		S_GOBACKTO=322,
+		S_LABEL=321,
+		S_JUMP=322,
 		S_SETFLAG=323,
 		S_ALLY=324,
-		S_SUMMON=345
+		S_SUMMON=345,
+		S_NOT=346,
+		S_PAROPEN=347,
+		S_PARCLOSE=348,
+		S_SEMICOL=349
 	} type;
 	
 	struct TokenSymbolLookupTable
@@ -84,16 +87,16 @@ struct Token
 
 	int value;
 	std::string msg;
-	
+
 	//! Constructor, set logic default values
 	Token() { type=NIL; value=0; }
-	
+
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
-	
+
 	//! Returns the type of a given name (parsing phase)
 	static TokenType getTypeByName(const char *name);
-	
+
 	//! Returns the name a of given type (debug & script recreation phase)
 	static const char *getNameByType(TokenType type);
 };
@@ -108,20 +111,26 @@ struct ErrorReport
 		ET_INVALID_PLAYER,
 		ET_NO_SUCH_FILE,
 		ET_INVALID_FLAG_NAME,
+		ET_DOUBLE_FLAG_NAME,
+		ET_MISSING_PAROPEN,
+		ET_MISSING_PARCLOSE,
+		ET_MISSING_SEMICOL,
+		ET_MISSING_ARGUMENT,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
-	
+
 	unsigned line;
 	unsigned col;
 	unsigned pos;
-	
+
 	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
 	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
-	
+
 	const char *getErrorString(void);
 };
 
+//Text parser, returns tokens
 class Aquisition
 {
 public:
@@ -135,39 +144,42 @@ public:
 	unsigned getLine(void) { return lastLine; }
 	unsigned getCol(void) { return lastCol; }
 	unsigned getPos(void) { return lastPos; }
-	
+
 	virtual int getChar(void) = 0;
 	virtual int ungetChar(char c) = 0;
 
 private:
 	Token token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
+	bool newLine;
 };
 
+//File parser
 class FileAquisition: public Aquisition
 {
 public:
 	FileAquisition() { fp=NULL; }
 	virtual ~FileAquisition() { if (fp) fclose(fp); }
 	bool open(const char *filename);
-	
+
 	virtual int getChar(void) { return ::fgetc(fp); }
 	virtual int ungetChar(char c) { return ::ungetc(c, fp); }
-	
+
 private:
 	FILE *fp;
 };
 
+//String parser
 class StringAquisition: public Aquisition
 {
 public:
 	StringAquisition();
 	virtual ~StringAquisition();
 	void open(const char *text);
-	
+
 	virtual int getChar(void);
 	virtual int ungetChar(char c);
-	
+
 private:
 	char *buffer;
 	int pos;
@@ -175,6 +187,7 @@ private:
 
 class Mapscript;
 
+//Independant story line
 class Story
 {
 public:
@@ -185,7 +198,7 @@ public:
 	void step();
 	std::deque<Token> line;
 	bool hasWon, hasLost;
-	
+
 private:
 	bool conditionTesterBuildings();
 	bool conditionTesterGlobules();
@@ -200,7 +213,7 @@ class Game;
 
 struct Flag
 {
-	int x, y;
+	int x, y, r;
 	std::string name;
 };
 
@@ -224,18 +237,17 @@ public:
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
 	int getMainTimer(void) { return mainTimer; }
-	
+	void reset(void);
 	bool isTextShown;
 	std::string textShown;
-	
+
 private:
 	friend class Story;
-	
+
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
-	void reset(void);
 	bool testMainTimer(void);
 	bool doesFlagExist(std::string name);
-	bool getFlagPos(std::string name, int *x, int *y);
+	bool getFlagPos(std::string name, int *x, int *y, int *r);
 	
 	int mainTimer;
 	std::deque<Story> stories;

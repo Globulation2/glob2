@@ -18,6 +18,7 @@
 */
 
 #include "ScriptEditorScreen.h"
+#include "SGSL.h"
 
 //! Main menu screen
 ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
@@ -45,6 +46,7 @@ bool ScriptEditorScreen::testCompile(void)
 
 	mapScript->setSourceCode(temp);
 	delete[] temp;*/
+	mapScript->reset();
 	ErrorReport er=mapScript->compileScript(game, editor->getText());
 
 	if (er.type==ErrorReport::ET_OK)
