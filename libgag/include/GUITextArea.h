@@ -56,6 +56,7 @@ protected:
 	bool readOnly;
 	const Font *font;
 	char *textBuffer;
+	const char *initialText;
 	unsigned int textBufferLength;
 	unsigned int areaHeight;
 	unsigned int areaPos;

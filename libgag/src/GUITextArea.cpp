@@ -46,7 +46,8 @@ TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, con
 	cursorPosY=0;
 	cursorScreenPosY=0;
 
-	//internalSetText(text);
+	// TODO : this is not clean because this pointer can disappear
+	initialText = text;
 }
 
 TextArea::~TextArea(void)
@@ -86,6 +87,7 @@ void TextArea::internalPaint(void)
 
 void TextArea::paint(void)
 {
+	internalSetText(initialText);
 	internalPaint();
 }
 
@@ -605,7 +607,7 @@ void TextArea::addText(const char *text)
 	assert(text);
 	assert(cursorPos <= textBufferLength);
 	assert(cursorPos >= 0);
-	
+
 	if (text)
 	{
 		int ts=strlen(text);
