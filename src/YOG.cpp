@@ -459,6 +459,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		fprintf(logFile, "deconnected\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
+		externalStatusState=YESTS_DECONNECTED;
 	}
 	break;
 	case YMT_SHARING_GAME:
@@ -577,6 +578,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_CONNECTION_PRESENCE:
 	{
 		presenceTOTL=3;
+		presenceTimeout=LONG_NETWORK_TIMEOUT;
 		if (connectionLost)
 		{
 			yogGlobalState=YGS_CONNECTING;
@@ -746,6 +748,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		fprintf(logFile, " YOG is dead (killed)!\n");
 		externalStatusState=YESTS_YOG_KILLED;
+		yogGlobalState=YGS_NOT_CONNECTING;
+		connectionLost=true;
 	}
 	break;
 	case YMT_PLAYERS_WANTS_TO_JOIN:
@@ -875,6 +879,7 @@ bool YOG::enableConnection(const char *userName)
 	
 	connectionTimeout=0+4;//4 instead of 0 to share brandwith with others timouts
 	connectionTOTL=3;
+	connectionLost=false;
 	
 	games.clear();
 	newGameListAviable=false;
@@ -939,6 +944,8 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_NOT_CONNECTING;
+					connectionLost=true;
+					externalStatusState=YESTS_DECONNECTED;
 					fprintf(logFile, "unable to deconnect!\n");
 				}
 				else
@@ -955,6 +962,7 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_UNABLE_TO_CONNECT;
+					externalStatusState=YESTS_UNABLE_TO_CONNECT;
 					fprintf(logFile, "unable to connect!\n");
 				}
 				else
@@ -1071,7 +1079,10 @@ void YOG::step()
 				connectionLost=true;
 			}
 			else
+			{
+				fprintf(logFile, "Sending YMT_CONNECTION_PRESENCE.\n");
 				send(YMT_CONNECTION_PRESENCE);
+			}
 			presenceTimeout=LONG_NETWORK_TIMEOUT;
 		}
 		
@@ -1471,6 +1482,10 @@ char *YOG::getStatusString()
 	case YESTS_BAD:
 		s=globalContainer->texts.getString("[YESTS_BAD]");
 	break;
+	case YESTS_UNABLE_TO_CONNECT:
+		s=globalContainer->texts.getString("[YESTS_UNABLE_TO_CONNECT]");
+	break;
+	case YESTS_DECONNECTED:
 	case YESTS_CREATED:
 		s=globalContainer->texts.getString("[YESTS_CREATED]");
 	break;
