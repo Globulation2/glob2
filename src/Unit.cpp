@@ -1003,18 +1003,24 @@ void Unit::handleDisplacement(void)
 					
 					if (goodToTake)
 					{
-						targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
-						if (targetBuilding->ressources[ressourceToTake]<0)
-							targetBuilding->ressources[ressourceToTake]=0;
-						caryedRessource=ressourceToTake;
-						
-						targetBuilding=foreingExchangeBuilding;
-						displacement=DIS_GOING_TO_BUILDING;
-						targetX=targetBuilding->getMidX();
-						targetY=targetBuilding->getMidY();
-						exchangeReady=true;
-						if (verbose)
-							printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
+						int foreignBuildingDist;
+						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
+						if (owner->map->buildingAviable(foreingExchangeBuilding, performance[SWIM], posX, posY, &foreignBuildingDist)
+							&& (foreignBuildingDist<(timeLeft>>1)))
+						{
+							targetBuilding->ressources[ressourceToTake]-=targetBuilding->type->multiplierRessource[ressourceToTake];
+							if (targetBuilding->ressources[ressourceToTake]<0)
+								targetBuilding->ressources[ressourceToTake]=0;
+							caryedRessource=ressourceToTake;
+
+							targetBuilding=foreingExchangeBuilding;
+							displacement=DIS_GOING_TO_BUILDING;
+							targetX=targetBuilding->getMidX();
+							targetY=targetBuilding->getMidY();
+							exchangeReady=true;
+							if (verbose)
+								printf("guid=(%d) exchangeReady at ownExchangeBuilding\n", gid);
+						}
 					}
 				}
 				else if ((foreingExchangeBuilding==NULL) && (targetBuilding==ownExchangeBuilding))
@@ -1104,144 +1110,154 @@ void Unit::handleDisplacement(void)
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
 						int timeLeft=(hungry-trigHungry)/race->unitTypes[0][0].hungryness;
-						int bestRessource=-1;
-						int minValue=owner->map->getW()+owner->map->getW();
-						bool takeInExchangeBuilding;
-						Map* map=owner->map;
-						for (int r=0; r<MAX_NB_RESSOURCES; r++)
+						
+						if (timeLeft>0)
 						{
-							int need=needs[r];
-							if (need)
+							int bestRessource=-1;
+							int minValue=owner->map->getW()+owner->map->getW();
+							bool takeInExchangeBuilding;
+							Map* map=owner->map;
+							for (int r=0; r<MAX_NB_RESSOURCES; r++)
 							{
-								int distToRessource;
-								if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))
+								int need=needs[r];
+								if (need)
 								{
-									if ((distToRessource<<1)>=timeLeft)
-										continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
-									int value=distToRessource/need;
-									if (value<minValue)
+									int distToRessource;
+									if (map->ressourceAviable(teamNumber, r, canSwim, posX, posY, &distToRessource))
 									{
-										bestRessource=r;
-										minValue=value;
-										takeInExchangeBuilding=false;
-									}
-								}
-								
-								if (attachedBuilding->type->canFeedUnit)
-									for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
-										if ((*bi)->ressources[r]>0)
+										if ((distToRessource<<1)>=timeLeft)
+											continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
+										int value=distToRessource/need;
+										if (value<minValue)
 										{
-											int buildingDist;
-											if (map->buildingAviable(*bi, canSwim, posX, posY, &buildingDist))
-											{
-												int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
-												if (value<minValue)
-												{
-													bestRessource=r;
-													minValue=value;
+											bestRessource=r;
+											minValue=value;
+											takeInExchangeBuilding=false;
+										}
+									}
 
-													ownExchangeBuilding=*bi;
-													foreingExchangeBuilding=NULL;
-													targetBuilding=*bi;
-													takeInExchangeBuilding=true;
+									if (attachedBuilding->type->canFeedUnit)
+										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
+											if ((*bi)->ressources[r]>0)
+											{
+												int buildingDist;
+												if (map->buildingAviable(*bi, canSwim, posX, posY, &buildingDist))
+												{
+													int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
+													if (value<minValue)
+													{
+														bestRessource=r;
+														minValue=value;
+
+														ownExchangeBuilding=*bi;
+														foreingExchangeBuilding=NULL;
+														targetBuilding=*bi;
+														takeInExchangeBuilding=true;
+													}
 												}
 											}
-										}
+								}
 							}
-						}
-						
-						if (verbose)
-							printf("guid=(%d) bestRessource=%d, minValue=%d\n", gid, bestRessource, minValue);
 
-						if (bestRessource>=0)
-						{
-							destinationPurprose=bestRessource;
-							assert(activity==ACT_FILLING);
-							if (takeInExchangeBuilding)
+							if (verbose)
+								printf("guid=(%d) bestRessource=%d, minValue=%d\n", gid, bestRessource, minValue);
+
+							if (bestRessource>=0)
 							{
-								displacement=DIS_GOING_TO_BUILDING;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
-							}
-							else
-							{
-								int dummyDist;
-								if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
-									displacement=DIS_HARVESTING;
-								else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
-									displacement=DIS_GOING_TO_RESSOURCE;
+								destinationPurprose=bestRessource;
+								assert(activity==ACT_FILLING);
+								if (takeInExchangeBuilding)
+								{
+									displacement=DIS_GOING_TO_BUILDING;
+									targetX=targetBuilding->getMidX();
+									targetY=targetBuilding->getMidY();
+								}
 								else
 								{
-									assert(false);//You can remove this assert(), but *do* notice me!
-									activity=ACT_RANDOM;
-									displacement=DIS_RANDOM;
-									subscribed=false;
-									assert(needToRecheckMedical);
+									int dummyDist;
+									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
+										displacement=DIS_HARVESTING;
+									else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+										displacement=DIS_GOING_TO_RESSOURCE;
+									else
+									{
+										assert(false);//You can remove this assert(), but *do* notice me!
+										activity=ACT_RANDOM;
+										displacement=DIS_RANDOM;
+										subscribed=false;
+										assert(needToRecheckMedical);
+									}
 								}
 							}
-						}
-						else if (targetBuilding!=foreingExchangeBuilding && attachedBuilding->type->canExchange && owner->openMarket())
-						{
-							// Here we try to start a new exchange with a foreign exchange building:
-							assert(owner==targetBuilding->owner);
-							if (ownExchangeBuilding)
+							else if (targetBuilding!=foreingExchangeBuilding && attachedBuilding->type->canExchange && owner->openMarket())
 							{
-								assert(owner==ownExchangeBuilding->owner);
-								assert(ownExchangeBuilding==attachedBuilding);
-							}
-							if (foreingExchangeBuilding)
-								assert(owner!=foreingExchangeBuilding->owner);
-							
-							ownExchangeBuilding=attachedBuilding;
-
-							foreingExchangeBuilding=NULL;
-							int minDist=INT_MAX;
-
-							Uint32 sendRessourceMask=ownExchangeBuilding->sendRessourceMask;
-							Uint32 receiveRessourceMask=ownExchangeBuilding->receiveRessourceMask;
-							for (int ti=0; ti<owner->game->session.numberOfTeam; ti++)
-								if (ti!=teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
+								// Here we try to start a new exchange with a foreign exchange building:
+								assert(owner==targetBuilding->owner);
+								if (ownExchangeBuilding)
 								{
-									Team *foreignTeam=owner->game->teams[ti];
-									std::list<Building *> foreignFillable=foreignTeam->fillable;
-									for (std::list<Building *>::iterator fbi=foreignFillable.begin(); fbi!=foreignFillable.end(); ++fbi)
-										if ((*fbi)->type->canExchange)
-										{
-											Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
-											Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
-											int foreignBuildingDist;
-											if ((sendRessourceMask & foreignReceiveRessourceMask)
-												&& (receiveRessourceMask & foreignSendRessourceMask)
-												&& map->buildingAviable(*fbi, canSwim, posX, posY, &foreignBuildingDist)
-												&& foreignBuildingDist<(timeLeft/2)
-												&& foreignBuildingDist<minDist)
-											{
-												foreingExchangeBuilding=*fbi;
-												minDist=foreignBuildingDist;
-												destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
-											}
-										}
+									assert(owner==ownExchangeBuilding->owner);
+									assert(ownExchangeBuilding==attachedBuilding);
 								}
+								if (foreingExchangeBuilding)
+									assert(owner!=foreingExchangeBuilding->owner);
 
-							if (foreingExchangeBuilding)
-							{
-								assert(activity==ACT_FILLING);
-								displacement=DIS_GOING_TO_BUILDING;
-								targetBuilding=ownExchangeBuilding;
-								targetX=targetBuilding->getMidX();
-								targetY=targetBuilding->getMidY();
+								ownExchangeBuilding=attachedBuilding;
+
+								foreingExchangeBuilding=NULL;
+								int minDist=INT_MAX;
+
+								Uint32 sendRessourceMask=ownExchangeBuilding->sendRessourceMask;
+								Uint32 receiveRessourceMask=ownExchangeBuilding->receiveRessourceMask;
+								for (int ti=0; ti<owner->game->session.numberOfTeam; ti++)
+									if (ti!=teamNumber && (owner->game->teams[ti]->sharedVisionExchange & owner->me))
+									{
+										Team *foreignTeam=owner->game->teams[ti];
+										std::list<Building *> foreignFillable=foreignTeam->fillable;
+										for (std::list<Building *>::iterator fbi=foreignFillable.begin(); fbi!=foreignFillable.end(); ++fbi)
+											if ((*fbi)->type->canExchange)
+											{
+												Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
+												Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
+												int foreignBuildingDist;
+												if ((sendRessourceMask & foreignReceiveRessourceMask)
+													&& (receiveRessourceMask & foreignSendRessourceMask)
+													&& map->buildingAviable(*fbi, canSwim, posX, posY, &foreignBuildingDist)
+													&& foreignBuildingDist<(timeLeft>>1)
+													&& foreignBuildingDist<minDist)
+												{
+													foreingExchangeBuilding=*fbi;
+													minDist=foreignBuildingDist;
+													destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+												}
+											}
+									}
+
+								if (foreingExchangeBuilding)
+								{
+									assert(activity==ACT_FILLING);
+									displacement=DIS_GOING_TO_BUILDING;
+									targetBuilding=ownExchangeBuilding;
+									targetX=targetBuilding->getMidX();
+									targetY=targetBuilding->getMidY();
+								}
+								else
+								{
+									if (verbose)
+										printf("guid=(%d) can't find any suitable foreign exchange building, unsubscribing.\n", gid);
+									stopAttachedForBuilding(false);
+								}
 							}
-							else
+							else 
 							{
 								if (verbose)
-									printf("guid=(%d) can't find any suitable foreign exchange building, unsubscribing.\n", gid);
+									printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
 								stopAttachedForBuilding(false);
 							}
 						}
-						else 
+						else
 						{
 							if (verbose)
-								printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
+								printf("guid=(%d) not enough time for anything, unsubscribing.\n", gid);
 							stopAttachedForBuilding(false);
 						}
 					}
