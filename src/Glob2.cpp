@@ -306,7 +306,7 @@ int Glob2::run(int argc, char *argv[])
 					{
 						MapEdit mapEdit;
 						mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
-						//setRandomSyncRandSeed();
+						setRandomSyncRandSeed();
 						mapEdit.game.generateMap(newMapScreen.descriptor);
 						if (mapEdit.run()==-1)
 							isRunning=false;

@@ -69,6 +69,7 @@ void GameGUI::init()
 	typeToBuild=-1;
 	selBuild=NULL;
 	selectionPushed=false;
+	miniMapPushed=false;
 	showUnitWorkingToBuilding=false;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
@@ -444,6 +445,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
+			miniMapPushed=false,
 			selectionPushed=false;
 			showUnitWorkingToBuilding=false;
 		}
@@ -733,35 +735,33 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;
 
-	if (mx<scrollZoneWidth)
-		viewportSpeedX[0]=-1;
-	else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
-		viewportSpeedX[0]=1;
+	if (miniMapPushed)
+	{
+		viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
+	}
 	else
-		viewportSpeedX[0]=0;
+	{
+		if (mx<scrollZoneWidth)
+			viewportSpeedX[0]=-1;
+		else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
+			viewportSpeedX[0]=1;
+		else
+			viewportSpeedX[0]=0;
 
-	if (my<scrollZoneWidth)
-		viewportSpeedY[0]=-1;
-	else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
-		viewportSpeedY[0]=1;
-	else
-		viewportSpeedY[0]=0;
+		if (my<scrollZoneWidth)
+			viewportSpeedY[0]=-1;
+		else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
+			viewportSpeedY[0]=1;
+		else
+			viewportSpeedY[0]=0;
+	}
 
 	if (button&SDL_BUTTON(1))
-	{
-		if (mx>globalContainer->gfx->getW()-128)
-		{
-			if (my<128)
-				viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-		}
-		else
-		{
+		if (mx<globalContainer->gfx->getW()-128)
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 			{
 				moveFlag(mx, my);
 			}
-		}
-	}
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
@@ -864,6 +864,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	// handle minimap
 	if (my<128)
 	{
+		miniMapPushed=true;
 		viewportFromMxMY(mx, my);
 	}
 	else if (displayMode==BUILDING_AND_FLAG)
@@ -1455,14 +1456,14 @@ void GameGUI::drawOverlayInfos(void)
 
 		if (isRoom)
 		{
-			if (isExtendedRoom)
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
-			else
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
 			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
 		}
 		else
 			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+		if (isRoom&&isExtendedRoom)
+			globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 255, 255, 255, 127);
+		else
+			globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+1, exBatH+1, 127, 0, 0, 127);
 
 	}
 	else if (selBuild)

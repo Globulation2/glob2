@@ -1314,7 +1314,7 @@ void Building::turretStep(void)
 		// FIXME : is it correct this way ? IS there a function for this ?
 		int dpx=(targetX*32)+16-4-px; // 4 is the half size of the bullet
 		int dpy=(targetY*32)+16-4-py;
-		printf("%d insert: dp=(%d, %d).\n", UID, dpx, dpy);
+		//printf("%d insert: dp=(%d, %d).\n", UID, dpx, dpy);
 		if (dpx>(owner->game->map.getW()<<4))
 			dpx=dpx-(owner->game->map.getW()<<5);
 		if (dpx<-(owner->game->map.getW()<<4))

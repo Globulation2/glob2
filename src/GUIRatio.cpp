@@ -21,8 +21,13 @@
 #include "GUIRatio.h"
 #include "GlobalContainer.h"
 
-Ratio::Ratio(int x, int y, int w, int h, int size, int value)
+Ratio::Ratio(int x, int y, int w, int h, int size, int value, Font *font)
 {
+	if (!font)
+		font=globalContainer->littleFontGreen;
+	this->font=font;
+	textHeight=font->getStringHeight(NULL);
+	
 	this->x=x;
 	this->y=y;
 	this->w=w;
@@ -111,6 +116,13 @@ void Ratio::internalPaint(void)
 		parent->getSurface()->drawVertLine(x+value+1, y+1, h-2, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+value+size-1, y+1, h-2, 180, 180, 180);
 	}
+	
+	// We center the string
+	char s[256];
+	snprintf(s, 256, "%d", value);
+	int tw=font->getStringWidth(s);
+	parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, font, "%d", value);
+
 	needRefresh=false;
 }
 

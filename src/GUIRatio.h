@@ -26,7 +26,7 @@
 class Ratio: public RectangularWidget
 {
 public:
-	Ratio(int x, int y, int w, int h, int size, int value);
+	Ratio(int x, int y, int w, int h, int size, int value, Font *font);
 	virtual ~Ratio();
 
 	virtual void onTimer(Uint32 tick);
@@ -42,6 +42,9 @@ protected:
 	virtual void internalPaint(void);
 
 protected:
+	int textHeight;
+	const Font *font;
+	
 	//! This is the wheight of the scrool bar
 	int size;
 	//! The current value of teh scrool bar

@@ -23,6 +23,7 @@
 #include "Utilities.h"
 #include "MapGenerationDescriptor.h"
 #include <math.h>
+#include <float.h>
 
 
 void Map::makeHomogenMap(TerrainType terrainType)
@@ -68,6 +69,157 @@ void Map::controlSand(void)
 		}
 }
 
+void simulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass)
+{
+	int w=32<<(smooth>>2);
+	int h=w;
+	int s=w*h;
+	int m=s-1;
+	int undermap[w*h];
+	
+	int totalRatio=0x7FFF;
+	int waterRatio=(int)(baseWater*((double)totalRatio));
+	int sandRatio =(int)(baseSand *((double)totalRatio));
+	int grassRatio=(int)(baseGrass*((double)totalRatio));
+	totalRatio=waterRatio+sandRatio+grassRatio;
+	
+	// First, we create a fully random patchwork:
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+		{
+			int r=syncRand()%totalRatio;
+			r-=waterRatio;
+			if (r<0)
+			{
+				undermap[y*w+x]=0;
+				continue;
+			}
+			r-=sandRatio;
+			if (r<0)
+			{
+				undermap[y*w+x]=1;
+				continue;
+			}
+			r-=grassRatio;
+			if (r<0)
+			{
+				undermap[y*w+x]=2;
+				continue;
+			}
+			assert(false);//Want's to sing ?
+		}
+	
+	for (int i=0; i<smooth; i++)
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				if (syncRand()&4)
+				{
+					int a=undermap[(y*w+x+1+s)&m];
+					int b=undermap[(y*w+x-1+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				else
+				{
+					int a=undermap[(y*w+x+w+s)&m];
+					int b=undermap[(y*w+x-w+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				if (syncRand()&4)
+				{
+					int a=undermap[(y*w+x+w+1+s)&m];
+					int b=undermap[(y*w+x-w-1+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				else
+				{
+					int a=undermap[(y*w+x+w-1+s)&m];
+					int b=undermap[(y*w+x-w+1+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				if (syncRand()&4)
+				{
+					int a=undermap[(y*w+x+w-2+s)&m];
+					int b=undermap[(y*w+x-w+2+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				else
+				{
+					int a=undermap[(y*w+x+w-(h<<1)+s)&m];
+					int b=undermap[(y*w+x-w+(h<<1)+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				if (syncRand()&4)
+				{
+					int a=undermap[(y*w+x+w+2+(h<<1)+s)&m];
+					int b=undermap[(y*w+x-w-2-(h<<1)+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+				else
+				{
+					int a=undermap[(y*w+x+w+2-(h<<1)+s)&m];
+					int b=undermap[(y*w+x-w-2+(h<<1)+s)&m];
+					if (a==b)
+					{
+						undermap[y*w+x]=a;
+						continue;
+					}
+				}
+			}
+	// What's finally in ?
+	int waterCount=0;
+	int sandCount =0;
+	int grassCount=0;
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+			switch (undermap[y*w+x])
+			{
+				case 0:
+					waterCount++;
+				continue;
+				case 1:
+					sandCount ++;
+				continue;
+				case 2:
+					grassCount++;
+				continue;
+			}
+	
+	int totalCount=waterCount+sandCount+grassCount;
+	
+	*finalWater=((double)waterCount)/((double)totalCount);
+	*finalSand =((double)sandCount )/((double)totalCount);
+	*finalGrass=((double)grassCount)/((double)totalCount);
+}
+
 void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	int waterRatio=descriptor.waterRatio;
@@ -76,178 +228,136 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int totalRatio=waterRatio+sandRatio+grassRatio;
 	int smooth=descriptor.smooth;
 	
-	//The smooth will emphasis the differences between the ratios.
-	//We have to correct them.
 	double baseWater=(float)waterRatio/(float)totalRatio;
-	double baseSand =(float)sandRatio /(float)totalRatio ;
+	double baseSand =(float)sandRatio /(float)totalRatio;
 	double baseGrass=(float)grassRatio/(float)totalRatio;
-	printf("one base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
-	
-	double biaisToWater=1.0-pow(1.0-pow(baseWater, 2.0), 4.0);
-	double biaisToSand =1.0-pow(1.0-pow(baseSand , 2.0), 4.0);
-	double biaisToGrass=1.0-pow(1.0-pow(baseGrass, 2.0), 4.0);
-	printf("one biais=(%f, %f, %f).\n", biaisToWater, biaisToSand, biaisToGrass);
-	
-	double stayWater=(1.0-biaisToSand )*(1.0-biaisToGrass);
-	double staySand =(1.0-biaisToWater)*(1.0-biaisToGrass);
-	double stayGrass=(1.0-biaisToWater)*(1.0-biaisToSand );
-	printf("one stay=(%f, %f, %f).\n", stayWater, staySand, stayGrass);
-	
-	double finalWater=baseWater*stayWater;
-	double finalSand =baseSand *staySand ;
-	double finalGrass=baseGrass*stayGrass;
-	double finalSum=finalWater+finalSand+finalGrass;
-	finalWater/=finalSum;
-	finalSand /=finalSum;
-	finalGrass/=finalSum;
-	printf("one final=(%f, %f, %f).\n", finalWater, finalSand, finalGrass);
+	printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
 	
 	//Sorry, the equation is too complex for me. We uses a numeric aproach:
-	double correctionWater=1.0;
-	double correctionSand =1.0;
-	double correctionGrass=1.0;
-	for (int r=1; r<smooth; r++)
-	{
-		for (int prec=0; prec<3; prec++)
-		{
-			double finalWater=baseWater*correctionWater;
-			double finalSand =baseSand *correctionSand ;
-			double finalGrass=baseGrass*correctionGrass;
-			double finalSum=finalWater+finalSand+finalGrass;
-			finalWater/=finalSum;
-			finalSand /=finalSum;
-			finalGrass/=finalSum;
-
-			for (int t=0; t<r; t++)
-			{
-				biaisToWater=1.0-pow(1.0-pow(finalWater, 2.0), 4.0);
-				biaisToSand =1.0-pow(1.0-pow(finalSand , 2.0), 4.0);
-				biaisToGrass=1.0-pow(1.0-pow(finalGrass, 2.0), 4.0);
-
-				stayWater=(1.0-biaisToSand )*(1.0-biaisToGrass);
-				staySand =(1.0-biaisToWater)*(1.0-biaisToGrass);
-				stayGrass=(1.0-biaisToWater)*(1.0-biaisToSand );
-
-				finalWater*=stayWater;
-				finalSand *=staySand ;
-				finalGrass*=stayGrass;
-				finalSum=finalWater+finalSand+finalGrass;
-				finalWater/=finalSum;
-				finalSand /=finalSum;
-				finalGrass/=finalSum;
-			}
-
-			double newCorrectionWater=correctionWater/stayWater;
-			double newCorrectionSand =correctionSand /staySand ;
-			double newCorrectionGrass=correctionGrass/stayGrass;
-			/*correctionWater/=stayWater;
-			correctionSand /=staySand ;
-			correctionGrass/=stayGrass;*/
-			// This is a first good aproximation for correction.
-
-			double errBaseWater=finalWater-baseWater;
-			double errBaseSand =finalSand -baseSand ;
-			double errBaseGrass=finalGrass-baseGrass;
-
-			printf("A%d-correction[%d]=(%f, %f, %f).\n", prec, r, correctionWater, correctionSand, correctionGrass);
-			printf("A%d-foundFinal[%d]=(%f, %f, %f).\n", prec, r, finalWater, finalSand, finalGrass);
-			printf("A%d-error base[%d]=(%f, %f, %f).\n", prec, r, errBaseWater, errBaseSand, errBaseGrass);
-
-			
-			finalWater=baseWater*newCorrectionWater;
-			finalSand =baseSand *newCorrectionSand ;
-			finalGrass=baseGrass*newCorrectionGrass;
-
-			finalSum=finalWater+finalSand+finalGrass;
-			finalWater/=finalSum;
-			finalSand /=finalSum;
-			finalGrass/=finalSum;
-
-			for (int t=0; t<r; t++)
-			{
-				biaisToWater=1.0-pow(1.0-pow(finalWater, 2.0), 4.0);
-				biaisToSand =1.0-pow(1.0-pow(finalSand , 2.0), 4.0);
-				biaisToGrass=1.0-pow(1.0-pow(finalGrass, 2.0), 4.0);
-
-				stayWater=(1.0-biaisToSand )*(1.0-biaisToGrass);
-				staySand =(1.0-biaisToWater)*(1.0-biaisToGrass);
-				stayGrass=(1.0-biaisToWater)*(1.0-biaisToSand );
-
-				finalWater*=stayWater;
-				finalSand *=staySand ;
-				finalGrass*=stayGrass;
-				finalSum=finalWater+finalSand+finalGrass;
-				finalWater/=finalSum;
-				finalSand /=finalSum;
-				finalGrass/=finalSum;
-			}
-			
-			printf("B%d-correction[%d]=(%f, %f, %f).\n", prec, r, newCorrectionWater, newCorrectionSand, newCorrectionGrass);
-			printf("B%d-foundFinal[%d]=(%f, %f, %f).\n", prec, r, finalWater, finalSand, finalGrass);
-			double errCorrWater=finalWater-baseWater;
-			double errCorrSand =finalSand -baseSand ;
-			double errCorrGrass=finalGrass-baseGrass;
-			printf("B%d-error base[%d]=(%f, %f, %f).\n", prec, r, errCorrWater, errCorrSand, errCorrGrass);
-
-			double proj=(errCorrWater*errBaseWater+errCorrSand*errBaseSand+errCorrGrass*errBaseGrass)
-				/(errBaseWater*errBaseWater+errBaseSand*errBaseSand+errBaseGrass*errBaseGrass);
-			printf("B%d-proj=%f.\n", prec, proj);
-			double corrFactor=1/proj;
-			correctionWater=(correctionWater+newCorrectionWater*corrFactor)/(1.0+corrFactor);
-			correctionSand =(correctionSand +newCorrectionSand *corrFactor)/(1.0+corrFactor);
-			correctionGrass=(correctionGrass+newCorrectionGrass*corrFactor)/(1.0+corrFactor);
-			/*correctionWater=(-proj*correctionWater+newCorrectionWater)/(1.0-proj);
-			correctionSand =(-proj*correctionSand +newCorrectionSand )/(1.0-proj);
-			correctionGrass=(-proj*correctionGrass+newCorrectionGrass)/(1.0-proj);*/
-			
-			printf("B%d-extra corr[%d]=(%f, %f, %f).\n", prec, r, correctionWater, correctionSand, correctionGrass);
-		}
-		finalWater=baseWater*correctionWater;
-		finalSand =baseSand *correctionSand ;
-		finalGrass=baseGrass*correctionGrass;
-		
-		finalSum=finalWater+finalSand+finalGrass;
-		finalWater/=finalSum;
-		finalSand /=finalSum;
-		finalGrass/=finalSum;
-		
-		for (int t=0; t<r; t++)
-		{
-			biaisToWater=1.0-pow(1.0-pow(finalWater, 2.0), 4.0);
-			biaisToSand =1.0-pow(1.0-pow(finalSand , 2.0), 4.0);
-			biaisToGrass=1.0-pow(1.0-pow(finalGrass, 2.0), 4.0);
-
-			stayWater=(1.0-biaisToSand )*(1.0-biaisToGrass);
-			staySand =(1.0-biaisToWater)*(1.0-biaisToGrass);
-			stayGrass=(1.0-biaisToWater)*(1.0-biaisToSand );
-
-			finalWater*=stayWater;
-			finalSand *=staySand ;
-			finalGrass*=stayGrass;
-			finalSum=finalWater+finalSand+finalGrass;
-			finalWater/=finalSum;
-			finalSand /=finalSum;
-			finalGrass/=finalSum;
-		}
-		
-		printf("C-foundFinal[%d]=(%f, %f, %f).\n", r, finalWater, finalSand, finalGrass);
-	}
-	printf("all final=(%f, %f, %f).\n", finalWater, finalSand, finalGrass);
+	double alphaWater=baseWater;
+	double alphaSand =baseSand ;
+	double alphaGrass=baseGrass;
+	double alphaSum=alphaWater+alphaSand+alphaGrass;
+	alphaWater/=alphaSum;
+	alphaSand /=alphaSum;
+	alphaGrass/=alphaSum;
 	
-	/*for (int r=0; r<smooth; r++)
+	for (int r=1; r<=smooth; r++)
 	{
-		biaisToWater=1.0-pow(1.0-pow(baseWater, 2.0), 4.0);
-		biaisToSand =1.0-pow(1.0-pow(baseSand , 2.0), 4.0);
-		biaisToGrass=1.0-pow(1.0-pow(baseGrass, 2.0), 4.0);
+		for (int prec=0; prec<3; prec++) 
+		{
+			double finalAlphaWater, finalAlphaSand, finalAlphaGrass;
+			simulateRandomMap(r, alphaWater, alphaSand, alphaGrass, &finalAlphaWater, &finalAlphaSand, &finalAlphaGrass);
+			//printf("alpha-alpha=(%f, %f, %f) (%f).\n", alphaWater, alphaSand, alphaGrass, alphaWater+alphaSand+alphaGrass);
+			//printf("alpha-final=(%f, %f, %f) (%f).\n", finalAlphaWater, finalAlphaSand, finalAlphaGrass, finalAlphaWater+finalAlphaSand+finalAlphaGrass);
+			
+			double errAlphaWater=finalAlphaWater-baseWater;
+			double errAlphaSand =finalAlphaSand -baseSand ;
+			double errAlphaGrass=finalAlphaGrass-baseGrass;
+			//double errAlpha=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
+			//printf("errAlpha=(%f, %f, %f) (%f).\n", errAlphaWater, errAlphaSand, errAlphaGrass, errAlpha);
+			
+			double betaWater;
+			double betaSand ; 
+			double betaGrass;
+			
+			if (finalAlphaWater)
+				betaWater=(alphaWater*baseWater)/finalAlphaWater;
+			else
+				betaWater=0;
+			if (finalAlphaSand)
+				betaSand =(alphaSand *baseSand )/finalAlphaSand ;
+			else
+				betaSand=0;
+			if (finalAlphaGrass)
+				betaGrass=(alphaGrass*baseGrass)/finalAlphaGrass;
+			else
+				betaGrass=0;
+			double betaSum=betaWater+betaSand+betaGrass;
+			betaWater/=betaSum;
+			betaSand /=betaSum;
+			betaGrass/=betaSum;
+			
+			double finalBetaWater, finalBetaSand, finalBetaGrass;
+			simulateRandomMap(r, betaWater, betaSand, betaGrass, &finalBetaWater, &finalBetaSand, &finalBetaGrass);
+			//printf("beta-beta=(%f, %f, %f) (%f).\n", betaWater, betaSand, betaGrass, betaWater+betaSand+betaGrass);
+			//printf("beta-final=(%f, %f, %f) (%f).\n", finalBetaWater, finalBetaSand, finalBetaGrass, finalBetaWater+finalBetaSand+finalBetaGrass);
+			
+			double errBetaWater=finalBetaWater-baseWater;
+			double errBetaSand =finalBetaSand -baseSand ;
+			double errBetaGrass=finalBetaGrass-baseGrass;
+			//double errBeta=(errBetaWater*errBetaWater+errBetaSand*errBetaSand+errBetaGrass*errBetaGrass);
+			//printf("errBeta=(%f, %f, %f) (%f).\n", errBetaWater, errBetaSand, errBetaGrass, errBeta);
+			
+			double projNom=(errBetaWater*errAlphaWater+errBetaSand*errAlphaSand+errBetaGrass*errAlphaGrass);
+			double projDen=(errAlphaWater*errAlphaWater+errAlphaSand*errAlphaSand+errAlphaGrass*errAlphaGrass);
+			double proj=projNom/projDen;
+			//printf("proj=%f.\n", proj);
+			
+			
+			double minErr=DBL_MAX;
+			for (double cfi=0.0; cfi<=1.0; cfi+=0.1)
+			{
+				double cf=cfi*proj;
+				
+				double sumCenter=1.0-cf;
+				double gammaWater=(-cf*betaWater+1.0*alphaWater)/sumCenter;
+				double gammaSand =(-cf*betaSand +1.0*alphaSand )/sumCenter;
+				double gammaGrass=(-cf*betaGrass+1.0*alphaGrass)/sumCenter;
+				if (gammaWater<0.0)
+					gammaWater=0.0;
+				if (gammaSand<0.0)
+					gammaSand=0.0;
+				if (gammaGrass<0.0)
+					gammaGrass=0.0;
+				double gammaSum=betaWater+betaSand+betaGrass;
+				if (gammaSum<=0)
+					continue;
+				gammaWater/=gammaSum;
+				gammaSand /=gammaSum;
+				gammaGrass/=gammaSum;
 
-		stayWater=(1.0-biaisToSand )*(1.0-biaisToGrass);
-		staySand =(1.0-biaisToWater)*(1.0-biaisToGrass);
-		stayGrass=(1.0-biaisToWater)*(1.0-biaisToSand );
-		
-		baseWater/=stayWater;
-		baseSand /=staySand ;
-		baseGrass/=stayGrass;
-	}*/
+				double finalGammaWater, finalGammaSand, finalGammaGrass;
+				simulateRandomMap(r, gammaWater, gammaSand, gammaGrass, &finalGammaWater, &finalGammaSand, &finalGammaGrass);
+				//printf("[%f]gamma-gamma=(%f, %f, %f) (%f).\n", cf, gammaWater, gammaSand, gammaGrass, gammaWater+gammaSand+gammaGrass);
+				//printf("[%f]gamma-final=(%f, %f, %f) (%f).\n", cf, finalGammaWater, finalGammaSand, finalGammaGrass,  finalGammaWater+finalGammaSand+finalGammaGrass);
+
+				double errGammaWater=finalGammaWater-baseWater;
+				double errGammaSand =finalGammaSand -baseSand ;
+				double errGammaGrass=finalGammaGrass-baseGrass;
+				double errGamma=(errGammaWater*errGammaWater+errGammaSand*errGammaSand+errGammaGrass*errGammaGrass);
+				//printf("[%f]err=%f.\n", cf, errGamma);
+				if (errGamma<minErr)
+				{
+					minErr=errGamma;
+					alphaWater=gammaWater;
+					alphaSand =gammaSand;
+					alphaGrass=gammaGrass;
+				}
+			}
+			//printf("best-gamma=(%f, %f, %f) (%f) err=%f.\n", alphaWater, alphaSand, alphaGrass, alphaWater+alphaSand+alphaGrass, minErr);
+			
+		}
+	}
+	
+	printf("makeRandomMap::new-base =(%f, %f, %f).\n", alphaWater, alphaSand, alphaGrass);
+	
+	double simWater, simSand, simGrass;
+	simulateRandomMap(smooth, alphaWater, alphaSand, alphaGrass, &simWater, &simSand, &simGrass);
+	printf("makeRandomMap::simulateRandomMap=(%f, %f, %f).\n", simWater, simSand, simGrass);
+	
+	totalRatio=0x7FFF;
+	waterRatio=(int)(((double)alphaWater)*((double)totalRatio));
+	sandRatio =(int)(((double)alphaSand )*((double)totalRatio));
+	grassRatio=(int)(((double)alphaGrass)*((double)totalRatio));
+	if (waterRatio<0)
+		waterRatio=0;
+	if (sandRatio<0)
+		sandRatio=0;
+	if (grassRatio<0)
+		grassRatio=0;
+	totalRatio=waterRatio+sandRatio+grassRatio;
+	//printf("ratios=(%d, %d, %d) / (%d).\n", waterRatio, sandRatio, grassRatio, totalRatio);
 	
 	// First, we create a fully random patchwork:
 	for (int y=0; y<h; y++)
@@ -272,40 +382,98 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				undermap[y*w+x]=GRASS;
 				continue;
 			}
-			assert(false);
+			assert(false);//Want's to sing ?
 		}
-
+	
+	// What's finally in ?
+	int waterCount=0;
+	int sandCount =0;
+	int grassCount=0;
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+		{
+			switch (undermap[y*w+x])
+			{
+				case WATER:
+					waterCount++;
+				continue;
+				case SAND :
+					sandCount ++;
+				continue;
+				case GRASS:
+					grassCount++;
+				continue;
+			}
+		}
+	double totalCount=(double)(waterCount+sandCount+grassCount);
+	printf("makeRandomMap::beforeCount=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
+	
 	for (int i=0; i<smooth; i++)
+	{
+		// What's in now?
+		waterCount=0;
+		sandCount =0;
+		grassCount=0;
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
-				Uint32 sr=syncRand();
-				if (sr&1)
+				switch (undermap[y*w+x])
 				{
-					int left=getUMTerrain(x+1, y);
-					int righ=getUMTerrain(x-1, y);
-					if (left==righ)
-					{
-						setUMTerrain(x, y, (TerrainType)left);
-						continue;
-					}
+					case WATER:
+						waterCount++;
+					continue;
+					case SAND :
+						sandCount ++;
+					continue;
+					case GRASS:
+						grassCount++;
+					continue;
 				}
-				else
+			}
+		double totalRatioCount=(double)(waterCount+sandCount+grassCount);
+		double waterRatioCount=waterCount/totalRatioCount;
+		double sandRatioCount =sandCount /totalRatioCount;
+		double grassRatioCount=grassCount/totalRatioCount;
+		
+		double errWaterRatioCount=waterRatioCount-baseWater;
+		double errSandRatioCount =sandRatioCount -baseSand ;
+		double errGrassRatioCount=grassRatioCount-baseGrass;
+		
+		//printf("[%d]errCount=(%f, %f, %f).\n", i, errWaterRatioCount, errSandRatioCount, errGrassRatioCount);
+		Uint32 allowed[3];
+		if (errWaterRatioCount>0)
+			allowed[0]=(Uint32)(pow(errWaterRatioCount, 0.125)*4294967296.0);
+		else
+			allowed[0]=0;
+		if (errSandRatioCount>0)
+			allowed[1]=(Uint32)(pow(errSandRatioCount , 0.125)*4294967296.0);
+		else
+			allowed[1]=0;
+		if (errGrassRatioCount>0)
+			allowed[2]=(Uint32)(pow(errGrassRatioCount, 0.125)*4294967296.0);
+		else
+			allowed[2]=0;
+		
+		assert(allowed[0]<=(Uint32)0xFFFFFFFF);
+		assert(allowed[1]<=(Uint32)0xFFFFFFFF);
+		assert(allowed[2]<=(Uint32)0xFFFFFFFF);
+		
+		if (i==0)
+		{
+			allowed[0]=0;
+			allowed[1]=0;
+			allowed[2]=0;
+		}
+		//printf("[%d]allowed=(%d, %d, %d).\n", i, allowed[0], allowed[1], allowed[2]);
+		
+		for (int y=0; y<h; y++)
+			for (int x=0; x<w; x++)
+			{
+				if (syncRand()&4)
 				{
-					int top=getUMTerrain(x, y-1);
-					int bot=getUMTerrain(x, y+1);
-					if (top==bot)
-					{
-						setUMTerrain(x, y, (TerrainType)top);
-						continue;
-					}
-				}
-				
-				if (sr&2)
-				{
-					int a=getUMTerrain(x-1, y-1);
-					int b=getUMTerrain(x+1, y+1);
-					if (a==b)
+					int a=getUMTerrain(x+1, y);
+					int b=getUMTerrain(x-1, y);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
 						setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -313,20 +481,19 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				}
 				else
 				{
-					int c=getUMTerrain(x+1, y-1);
-					int d=getUMTerrain(x-1, y+1);
-					if (c==d)
+					int a=getUMTerrain(x, y-1);
+					int b=getUMTerrain(x, y+1);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
-						setUMTerrain(x, y, (TerrainType)c);
+						setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
-
-				if (sr&4)
+				if (syncRand()&4)
 				{
-					int a=getUMTerrain(x-2, y);
-					int b=getUMTerrain(x+2, y);
-					if (a==b)
+					int a=getUMTerrain(x+1, y+1);
+					int b=getUMTerrain(x-1, y-1);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
 						setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -334,20 +501,19 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				}
 				else
 				{
-					int c=getUMTerrain(x, y-2);
-					int d=getUMTerrain(x, y+2);
-					if (c==d)
+					int a=getUMTerrain(x+1, y-1);
+					int b=getUMTerrain(x-1, y+1);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
-						setUMTerrain(x, y, (TerrainType)c);
+						setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
-
-				if (sr&8)
+				if (syncRand()&4)
 				{
-					int a=getUMTerrain(x-2, y-2);
-					int b=getUMTerrain(x+2, y+2);
-					if (a==b)
+					int a=getUMTerrain(x+2, y);
+					int b=getUMTerrain(x-2, y);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
 						setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -355,15 +521,58 @@ void Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				}
 				else
 				{
-					int c=getUMTerrain(x+2, y-2);
-					int d=getUMTerrain(x-2, y+2);
-					if (c==d)
+					int a=getUMTerrain(x, y-2);
+					int b=getUMTerrain(x, y+2);
+					if ((a==b)&&(allowed[a]<=syncRand()))
 					{
-						setUMTerrain(x, y, (TerrainType)c);
+						setUMTerrain(x, y, (TerrainType)a);
+						continue;
+					}
+				}
+				if (syncRand()&4)
+				{
+					int a=getUMTerrain(x+2, y+2);
+					int b=getUMTerrain(x-2, y-2);
+					if ((a==b)&&(allowed[a]<=syncRand()))
+					{
+						setUMTerrain(x, y, (TerrainType)a);
+						continue;
+					}
+				}
+				else
+				{
+					int a=getUMTerrain(x+2, y-2);
+					int b=getUMTerrain(x-2, y+2);
+					if ((a==b)&&(allowed[a]<=syncRand()))
+					{
+						setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
 			}
+	}
+	// What's finally in ?
+	waterCount=0;
+	sandCount =0;
+	grassCount=0;
+	for (int y=0; y<h; y++)
+		for (int x=0; x<w; x++)
+		{
+			switch (undermap[y*w+x])
+			{
+				case WATER:
+					waterCount++;
+				continue;
+				case SAND :
+					sandCount ++;
+				continue;
+				case GRASS:
+					grassCount++;
+				continue;
+			}
+		}
+	totalCount=(double)(waterCount+sandCount+grassCount);
+	printf("makeRandomMap::final count=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
 	
 	controlSand();
 	regenerateMap(0, 0, w, h);
