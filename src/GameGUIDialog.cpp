@@ -99,18 +99,22 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		addWidget(vision[i]);
 		chat[i]=new OnOffButton(270, 40+i*25, 20, 20, false, CHAT+i);
 		addWidget(chat[i]);
+
+		Text *text = new Text(10, 40+i*25, globalContainer->menuFont, gameGUI->game.players[i]->name);
+		Team *team = gameGUI->game.players[i]->team;
+		text->setColor(team->colorR, team->colorG, team->colorB);
+		addWidget(text);
 	}
 	for (;i<8;i++)
 	{
 		allied[i]=vision[i]=chat[i]=NULL;
 	}
-	
+
 	addWidget(new Text(200, 10, globalContainer->menuFont, "A"));
 	addWidget(new Text(236, 10, globalContainer->menuFont, "V"));
 	addWidget(new Text(272, 10, globalContainer->menuFont, "C"));
 	
 	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 27));
-	firstPaint=true;
 	this->gameGUI=gameGUI;
 }
 
@@ -122,19 +126,6 @@ void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, in
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 		setCorrectValueForPlayer(par1%32);
-}
-
-void InGameAlliance8Screen::paint(int x, int y, int w, int h)
-{
-	OverlayScreen::paint(x, y, w, h);
-	if (firstPaint)
-	{
-		for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
-		{
-			gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
-		}
-		firstPaint=false;
-	}
 }
 
 void InGameAlliance8Screen::setCorrectValueForPlayer(int i)

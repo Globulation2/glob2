@@ -74,15 +74,12 @@ public:
 	OnOffButton *allied[8];
 	OnOffButton *vision[8];
 	OnOffButton *chat[8];
-	char names[8][BasePlayer::MAX_NAME_LENGTH];
-	bool firstPaint;
 	GameGUI *gameGUI;
 
 public:
 	InGameAlliance8Screen(GameGUI *gameGUI);
 	virtual ~InGameAlliance8Screen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	virtual void paint(int x, int y, int w, int h);
 	Uint32 getAllianceMask(void);
 	Uint32 getVisionMask(void);
 	Uint32 getChatMask(void);
