@@ -2489,6 +2489,11 @@ void GameGUI::drawPanel(void)
 	{
 		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
 		forbiddenBrush.draw(globalContainer->gfx->getW()-128, YPOS_BASE_FLAG+YOFFSET_BRUSH);
+		if ((mouseX>globalContainer->gfx->getW()-128) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
+		{
+			int buildingInfoStart=globalContainer->gfx->getH()-50;
+			drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[forbidden area]");
+		}
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
 	{
