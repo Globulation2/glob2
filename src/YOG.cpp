@@ -800,7 +800,7 @@ void YOG::step()
 			memcpy(packet->data, data, 8);
 			packet->address=serverIP;
 			packet->channel=-1;
-			bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+			bool sucess=SDLNet_UDP_Send(hostGameSocket, -1, packet)==1;
 			if (!sucess)
 				fprintf(logFile, "failed to send the hostGameSocket to YOG!\n");
 			SDLNet_FreePacket(packet);
