@@ -101,6 +101,11 @@ int MultiplayersCrossConnectable::getFreeChannel()
 	return -1;
 }
 
+bool MultiplayersCrossConnectable::sameip(IPaddress ip)
+{
+	return ((serverIP.host==ip.host)&&(serverIP.port==ip.port));
+}
+
 bool MultiplayersCrossConnectable::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
@@ -108,6 +113,7 @@ bool MultiplayersCrossConnectable::send(Uint8 *data, int size)
 	memcpy(packet->data, data, size);
 	packet->channel=-1;
 	packet->address=serverIP;
+	packet->len=size;
 	if (SDLNet_UDP_Send(socket, -1, packet)!=1)
 	{
 		fprintf(logFile, "failed to send packet (size=%d)\n", size);
@@ -116,6 +122,20 @@ bool MultiplayersCrossConnectable::send(Uint8 *data, int size)
 	}
 	SDLNet_FreePacket(packet);
 	return true;
+}
+
+bool MultiplayersCrossConnectable::send(const Uint8 u, const Uint8 v)
+{
+	Uint8 data[8];
+	data[0]=u;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	data[4]=v;
+	data[5]=0;
+	data[6]=0;
+	data[7]=0;
+	return send(data, 8);
 }
 
 void MultiplayersCrossConnectable::sendingTime()
@@ -136,12 +156,29 @@ void MultiplayersCrossConnectable::sendingTime()
 			strncpy((char *)data+5, mit->userName, uSize);
 			strncpy((char *)data+5+uSize, mit->text, sSize);
 			
+			bool stillSomeone=false;
 			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-				sessionInfo.players[j].send(data, size);
-			send(data, size);
+				if (!mit->received[j])
+				{
+					sessionInfo.players[j].send(data, size);
+					stillSomeone=true;
+				}
+			if (!mit->received[32])
+			{
+				send(data, size);
+				stillSomeone=true;
+			}
 			
-			mit->TOTL--;
-			mit->timeout=DEFAULT_NETWORK_TIMEOUT; //TODO: have a confirmation system!
+			if (stillSomeone)
+			{
+				mit->TOTL--;
+				mit->timeout=DEFAULT_NETWORK_TIMEOUT;
+			}
+			else
+			{
+				sendingMessages.erase(mit);
+				break;
+			}
 		}
 	for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
 		if (mit->TOTL<=0)
@@ -149,6 +186,26 @@ void MultiplayersCrossConnectable::sendingTime()
 			sendingMessages.erase(mit);
 			break;
 		}
+}
+
+void MultiplayersCrossConnectable::confirmedMessage(Uint8 *data, int size, IPaddress ip)
+{
+	if (size!=8)
+	{
+		fprintf(logFile, "received a confirmation message with bad size=(%d) from ip=(%s)\n", size, Utilities::stringIP(ip));
+		return;
+	}
+	
+	Uint8 messageID=data[4];
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].sameip(ip))
+			for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
+				if (messageID==mit->messageID)
+					mit->received[j]=true;
+	if (sameip(ip))
+		for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
+			if (messageID==mit->messageID)
+				mit->received[32]=true;
 }
 
 void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddress ip)
@@ -185,7 +242,12 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 	strncpy(m.text, (char *)data+mStart, ml);
 	m.guiPainted=false;
 	
-	printf("received from (%s) message (%s).\n", m.userName, m.text);
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].sameip(ip))
+			sessionInfo.players[j].send(ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
+	if (sameip(ip))
+		send((Uint8)ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
+	
 	bool allready=false;
 	for (std::list<Message>::iterator mit=receivedMessages.begin(); mit!=receivedMessages.end(); ++mit)
 		if (strncmp(mit->userName, m.userName, 32)==0 && mit->messageID==m.messageID)
@@ -194,7 +256,11 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 			break;
 		}
 	if (!allready)
+	{
 		receivedMessages.push_back(m);
+		if (receivedMessages.size()>64)
+			receivedMessages.pop_front();
+	}
 }
 
 void MultiplayersCrossConnectable::sendMessage(const char *s)
@@ -205,7 +271,8 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 	strncpy(m.text, s, 256);
 	m.timeout=0;
 	m.TOTL=3;
+	for (int i=0; i<33; i++)
+		m.received[i]=false;
 	
 	sendingMessages.push_back(m);
-	printf("sending as (%s) message (%s).\n", m.userName, m.text);
 }

@@ -1047,11 +1047,16 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 
 void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
 {
+	if (size<=0)
+	{
+		fprintf(logFile, "Bad zero size packet recieved from ip=(%s)\n", Utilities::stringIP(ip));
+		return;
+	}
 	if (data[0]!=NEW_PLAYER_WANTS_FILE)
 		fprintf(logFile, "\nMultiplayersHost::treatData (%d)\n", data[0]);
 	if ((data[2]!=0)||(data[3]!=0))
 	{
-		printf("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
+		fprintf(logFile, "Bad packet recieved (%d,%d,%d,%d), size=(%d), ip=(%s)\n", data[0], data[1], data[2], data[3], size, Utilities::stringIP(ip));
 		return;
 	}
 	if (hostGlobalState<HGS_GAME_START_SENDED)
@@ -1096,6 +1101,10 @@ void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
 
 		case PLAYERS_CROSS_CONNECTIONS_ACHIEVED:
 			confirmCrossConnectionAchieved(data, size, ip);
+		break;
+		
+		case ORDER_TEXT_MESSAGE_CONFIRMATION:
+			confirmedMessage(data, size, ip);
 		break;
 		
 		case ORDER_TEXT_MESSAGE:

@@ -357,7 +357,7 @@ bool BasePlayer::send(Uint8 *data, int size)
 	return sucess;
 }
 
-bool BasePlayer::send(Uint8 *data, int size, const int v)
+bool BasePlayer::send(Uint8 *data, int size, const Uint8 v)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size+4);
 	if (packet==NULL)
@@ -384,7 +384,7 @@ bool BasePlayer::send(Uint8 *data, int size, const int v)
 	return sucess;
 }
 
-bool BasePlayer::send(const int v)
+bool BasePlayer::send(const Uint8 v)
 {
 	Uint8 data[4];
 	data[0]=v;
@@ -394,7 +394,7 @@ bool BasePlayer::send(const int v)
 	return send(data, 4);
 }
 
-bool BasePlayer::send(const int u, const int v)
+bool BasePlayer::send(const Uint8 u, const Uint8 v)
 {
 	Uint8 data[8];
 	data[0]=u;
