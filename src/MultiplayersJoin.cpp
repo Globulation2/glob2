@@ -1,20 +1,20 @@
 /*
-  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charri�e
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "MultiplayersJoin.h"
@@ -600,6 +600,8 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 
 void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 {
+	if (data[0]!=FULL_FILE_DATA)
+		fprintf(logFile, "\nMultiplayersJoin::treatData (%d)\n", data[0]);
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
 		fprintf(logFile, "Bad packet recieved (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
@@ -783,7 +785,6 @@ void MultiplayersJoin::receiveTime()
 
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
-	// call yog step TODO: avoit Host AND Join to 
 	if (shareOnYOG)
 		globalContainer->yog->step(); // YOG cares about firewall and NATipFromNAT
 	
@@ -798,7 +799,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			fprintf(logFile, "recieved packet (%d)\n", packet->data[0]);
+			//fprintf(logFile, "recieved packet (%d)\n", packet->data[0]);
 			//fprintf(logFile, "packet=%d\n", (int)packet);
 			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
 			//fprintf(logFile, "packet->len=%d\n", packet->len);
@@ -926,15 +927,15 @@ void MultiplayersJoin::sendingTime()
 			addUint32(data, firstReceived[ri], 8+ri*4);
 		
 		send(data, 72);
-		fprintf(logFile, "MultiplayersJoin::sending download request\n");
-		fprintf(logFile, "MultiplayersJoin::unreceivedIndex=%d\n", unreceivedIndex);
-		fprintf(logFile, "receivedIndex=(");
+		fprintf(logFileDownload, "MultiplayersJoin::sending download request\n");
+		fprintf(logFileDownload, "MultiplayersJoin::unreceivedIndex=%d\n", unreceivedIndex);
+		fprintf(logFileDownload, "receivedIndex=(");
 		for (int ix=0; ix<16; ix++)
 		{
 			firstReceived[ix]=getUint32(data, 8+ix*4);
-			fprintf(logFile, "%d, ", firstReceived[ix]);
+			fprintf(logFileDownload, "%d, ", firstReceived[ix]);
 		}
-		fprintf(logFile, ").\n");
+		fprintf(logFileDownload, ").\n");
 		
 		startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	}
@@ -1320,7 +1321,6 @@ bool MultiplayersJoin::tryConnection()
 		waitingState=WS_TYPING_SERVER_NAME;
 		return false;
 	}
-
 	
 	if (!shareOnYOG)
 	{
@@ -1354,7 +1354,7 @@ bool MultiplayersJoin::tryConnection()
 	
 	if (shareOnYOG)
 	{
-		//globalContainer->yog->setGameSocket(socket);//TODO: is may be usefull in some NAT or firewall extremes configuration.
+		globalContainer->yog->setJoinGameSocket(socket);
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
 		localPort=findLocalPort(socket);
 	}
@@ -1368,7 +1368,7 @@ bool MultiplayersJoin::tryConnection()
 	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
 	fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	
-	if (shareOnYOG && !ipFromNAT) // ipFromNAT will avoid to broadcast, if you are the joiner and host.
+	if (shareOnYOG && !ipFromNAT) // the (ipFromNAT test) will avoid to broadcast, if you are the joiner and host.
 	{
 		if (broadcastState==BS_DISABLE_YOG)
 			broadcastState=BS_ENABLE_YOG;
@@ -1399,7 +1399,7 @@ void MultiplayersJoin::quitThisGame()
 	}
 	
 	waitingState=WS_TYPING_SERVER_NAME;
-	if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
+	if (broadcastState==BS_ENABLE_YOG)
 		broadcastState=BS_DISABLE_YOG;
 	fprintf(logFile, "disabling NAT detection too. bs=(%d)\n", broadcastState);
 }
@@ -1412,7 +1412,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	this->yogGameInfo=yogGameInfo;
 	
 	serverName=serverNameMemory;
-	char *s=SDLNet_ResolveIP(&yogGameInfo->ip);
+	char *s=SDLNet_ResolveIP(&yogGameInfo->hostip);
 	if (s)
 	{
 		strncpy(serverName, s, 128);
@@ -1420,18 +1420,14 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	}
 	else
 	{
-		Utilities::stringIP(serverName, 128, yogGameInfo->ip.host);
-		//zzz Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
-		//zzz snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)&0xFF, (lip>>8)&0xFF, (lip>>16)&0xFF, (lip>>24)&0xFF);
+		Utilities::stringIP(serverName, 128, yogGameInfo->hostip.host);
 	}
-	serverIP=yogGameInfo->ip;
+	serverIP=yogGameInfo->hostip;
 	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);
 	//TODO: is the serverName string usefull ? If it is, the port needs to be passed too !
 	
 	strncpy(playerName, globalContainer->userName, 32);
 	playerName[31]=0;
-	//strncpy(gameName, "ilesAleatoires", 32); //TODO: add gameName in YOG
-	//gameName[31]=0;
 	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;
 	return tryConnection();

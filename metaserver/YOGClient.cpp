@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "YOGClient.h"
@@ -26,8 +26,10 @@ extern YOGClient *admin;
 YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 {
 	this->ip=ip;
-	gameip.host=0;
-	gameip.port=0;
+	hostGameip.host=0;
+	hostGameip.port=0;
+	joinGameip.host=0;
+	joinGameip.port=0;
 	this->socket=socket;
 	memcpy(this->userName, userName, 32);
 	
@@ -41,6 +43,7 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	timeout=0;
 	TOTL=3;
 	
+	gamesSize=0;
 	gamesTimeout=0;
 	gamesTOTL=3;
 	unsharedTimeout=0;
@@ -65,8 +68,10 @@ void YOGClient::send(YOGMessageType v)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
+	{
 		lprintf("Failed to allocate packet!\n");
-
+		return;
+	}
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
 	packet->address=ip;
@@ -86,8 +91,10 @@ void YOGClient::send(YOGMessageType v, Uint8 id)
 	data[3]=0;
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
+	{
 		lprintf("Failed to allocate packet!\n");
-
+		return;
+	}
 	packet->len=4;
 	memcpy((char *)packet->data, data, 4);
 	packet->address=ip;
@@ -102,8 +109,10 @@ void YOGClient::send(Uint8 *data, int size)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
+	{
 		lprintf("Failed to allocate packet!\n");
-
+		return;
+	}
 	packet->len=size;
 	memcpy((char *)packet->data, data, size);
 	packet->address=ip;
@@ -198,18 +207,23 @@ void YOGClient::send(const Message &m)
 void YOGClient::sendGames()
 {
 	int nbGames=games.size();
-	if (nbGames>16)
+	if (gamesSize>16)
 		nbGames=16;
-	int size=(4+2+4+32+128)*nbGames+4;
+	int size=(4+2+4+2+4+32+128)*nbGames+4;
 	Uint8 data[size];
-	addUint32(data, nbGames, 0); // This is redundancy
 	int index=4;
+	nbGames=0;
 	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-		if ((*game)->host->gameip.host && (*game)->host->gameip.port)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
+			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
 		{
-			addUint32(data, (*game)->host->gameip.host, index);
+			addUint32(data, (*game)->host->hostGameip.host, index);
 			index+=4;
-			addUint16(data, (*game)->host->gameip.port, index);
+			addUint16(data, (*game)->host->hostGameip.port, index);
+			index+=2;
+			addUint32(data, (*game)->host->joinGameip.host, index);
+			index+=4;
+			addUint16(data, (*game)->host->joinGameip.port, index);
 			index+=2;
 			addUint32(data, (*game)->uid, index);
 			index+=4;
@@ -221,10 +235,14 @@ void YOGClient::sendGames()
 			l=strmlen((*game)->name, 32);
 			memcpy(data+index, (*game)->name, l);
 			index+=l;
-			lprintf("index=%d.\n", index);
+			lprintf("%d index=%d.\n", nbGames, index);
+			nbGames++;
 		}
-	send(YMT_GAMES_LIST, data, index);
-	lprintf("sent a %d games list to %s\n", nbGames, userName);
+	addUint32(data, nbGames, 0); // This is redundancy
+	assert(nbGames=gamesSize);
+	lprintf("may send a %d/%d games list to %s\n", nbGames, gamesSize, userName);
+	if (nbGames>0)
+		send(YMT_GAMES_LIST, data, index);
 }
 
 
@@ -249,10 +267,11 @@ void YOGClient::sendUnshared()
 void YOGClient::addGame(Game *game)
 {
 	games.push_back(game);
-	if (games.size()>256)
+	computeGamesSize();
+	if (gamesSize>=16)
 		gamesTimeout=0;
 	else
-		gamesTimeout=10;
+		gamesTimeout=16-gamesSize;
 	gamesTOTL=3;
 }
 
@@ -275,24 +294,30 @@ void YOGClient::removeUselessGames()
 				games.erase(game);
 				break;
 			}
+	computeGamesSize();
 }
 
-void YOGClient::removeUselessGamesAndUnshared()
+void YOGClient::computeGamesSize()
 {
-	int size=unshared.size();
-	for (int i=0; i<size; i++)
-	{
-		for (std::list<Uint32>::iterator uid=unshared.begin(); uid!=unshared.end(); ++uid)
-			for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
-				if ((*game)->uid==*uid)
-				{
-					games.erase(game);
-					unshared.erase(uid);
-					goto doublebreak;
-				}
-		doublebreak:;
-	}
-	
+	gamesSize=0;
+	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
+			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
+			gamesSize++;
+}
+
+void YOGClient::gamesClear()
+{
+	// Actualy, we only remove one game.
+	gamesSize=0;
+	for (std::list<Game *>::iterator game=games.begin(); game!=games.end(); ++game)
+		if ((*game)->host->hostGameip.host && (*game)->host->hostGameip.port
+			&&(*game)->host->joinGameip.host && (*game)->host->joinGameip.port)
+		{
+			games.erase(game);
+			break;
+		}
+	computeGamesSize();
 }
 
 void YOGClient::sendClients()
