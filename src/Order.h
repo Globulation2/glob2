@@ -24,6 +24,8 @@ class Order
 	virtual int getDataLength(void)=0;
 	
 	virtual Sint32 checkSum()=0;
+	
+	int sender; // sender player number, setby NetGame in getOrder() only
 };
 
 
@@ -208,7 +210,7 @@ class MessageOrder:public MiscOrder
 {
  public:
 	MessageOrder(const char *data, int dataLength);
-	MessageOrder(const char *text, Uint32 recepientsMask);
+	MessageOrder(Uint32 recepientsMask, const char *text);
 	virtual ~MessageOrder(void);
 
 	char *getData(void);
@@ -344,6 +346,27 @@ class NoMoreOrdersAviable:public MiscOrder
  private:
 	char data[8];
 };
+
+class PlayerQuitsGameOrder:public MiscOrder
+{
+ public:
+	PlayerQuitsGameOrder(const char *data, int dataLength);
+	PlayerQuitsGameOrder(Sint32 player);
+	virtual ~PlayerQuitsGameOrder(void) { }
+
+	Uint8 getOrderType(void) { return ORDER_PLAYER_QUIT_GAME; }
+	char *getData(void);
+	bool setData(const char *data, int dataLength);
+	int getDataLength(void) { return 4; }
+	Sint32 checkSum() { return ORDER_PLAYER_QUIT_GAME; }
+	
+	Sint32 player;
+	
+ private:
+	char data[4];
+};
+
+
 
 // Usefull function for marshalling
 

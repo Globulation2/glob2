@@ -234,7 +234,13 @@ void Game::executeOrder(Order *order)
 			maskAwayPlayer=((WaitingForPlayerOrder *)order)->maskAwayPlayer;
 		}
 		break;
-		
+		case ORDER_PLAYER_QUIT_GAME:
+		{
+			//PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
+			//netGame have to handle this
+			// players[pqgo->player]->type=Player::P_LOST_B;
+		}
+		break;
 	}
 }
 

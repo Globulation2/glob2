@@ -5,24 +5,26 @@
 
 #include "GUITextInput.h"
 
-TextInput::TextInput(int x, int y, int w, int h, Font *font, const char *text)
+TextInput::TextInput(int x, int y, int w, int h, Font *font, const char *text, bool activated)
 {
 	this->x=x;
 	this->y=y;
 	this->w=w;
 	this->h=h;
-
+	
 	this->font=font;
 	this->gfx=NULL;
-
+	
 	if (text)
 		strncpy(this->text, text, MAX_TEXT_SIZE);
 	else
 		this->text[0]=0;
-
+	
 	this->text[MAX_TEXT_SIZE-1]=0;
-
+	
 	cursPos=strlen(text);
+	
+	this->activated=activated;
 }
 
 void TextInput::onTimer(Uint32 tick)
@@ -33,7 +35,38 @@ void TextInput::onSDLEvent(SDL_Event *event)
 {
 	// TODO : handle click in the box.
 	
-	if (event->type==SDL_KEYDOWN)
+	if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		{
+			if (activated)
+			{
+				// we move cursor:
+				int dx=event->motion.x-x-1;
+				
+				char textBeforeCurs[MAX_TEXT_SIZE];
+				strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
+				while(textBeforeCurs[cursPos]&&(cursPos<MAX_TEXT_SIZE))
+					cursPos++;
+				while((font->getStringWidth(textBeforeCurs)>dx)&&(cursPos>0))
+					textBeforeCurs[--cursPos]=0;
+				
+				assert(gfx);
+				paint(gfx);
+				parent->addUpdateRect(x, y, w, h);
+				parent->onAction(this, TEXT_MODIFFIED, 0, 0);
+			}
+			else
+			{
+				assert(gfx);
+				paint(gfx);
+				activated=true;
+				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
+			}
+		}
+	}
+	
+	if (activated && event->type==SDL_KEYDOWN)
 	{
 		char c=event->key.keysym.unicode;
 		SDLKey sym=event->key.keysym.sym;
@@ -45,8 +78,6 @@ void TextInput::onSDLEvent(SDL_Event *event)
 			{
 				memmove( &(text[cursPos+1]), &(text[cursPos]), l-cursPos);
 				
-				//printf("printable: l=%d, cursPos=%d, c=%c(%d) \n", l, cursPos, c, c);
-
 				text[cursPos]=c;
 				cursPos++;
 		
@@ -137,12 +168,15 @@ void TextInput::paint(GraphicContext *gfx)
 	
 	gfx->drawString(x+2, y+2, font, text);
 	
-	char textBeforeCurs[MAX_TEXT_SIZE];
-	strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
-	textBeforeCurs[cursPos]=0;
-	int wbc=font->getStringWidth(textBeforeCurs);
-	int hbc=font->getStringHeight(textBeforeCurs);
-	gfx->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
-	
+	// we draw the cursor:
+	if(activated)
+	{
+		char textBeforeCurs[MAX_TEXT_SIZE];
+		strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);
+		textBeforeCurs[cursPos]=0;
+		int wbc=font->getStringWidth(textBeforeCurs);
+		int hbc=font->getStringHeight(textBeforeCurs);
+		gfx->drawVertLine(x+2+wbc, y+2 , hbc, r, g, b);
+	}
 }
 
