@@ -613,6 +613,7 @@ void Team::step(void)
 			}
 		}
 	
+	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
 	{
 		Building *building=*it;
@@ -624,6 +625,7 @@ void Team::step(void)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					map->dirtyLocalGradient(building->posX-16, building->posY-16, 31+building->type->width, 31+building->type->height, teamNumber);
+					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;
 				prestige-=(*it)->type->prestige;
@@ -636,6 +638,8 @@ void Team::step(void)
 			it=buildingsWaitingForDestruction.erase(ittemp);
 		}
 	}
+	if (isDirtyGlobalGradient)
+		dirtyGlobalGradient();
 	
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
@@ -661,11 +665,9 @@ void Team::step(void)
 		delete building;
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 	}
+		
 	if (buildingsToBeDestroyed.size())
-	{
-		dirtyGlobalGradient();
 		buildingsToBeDestroyed.clear();
-	}
 	
 	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
 		if ((*it)->tryToBuildingSiteRoom())
