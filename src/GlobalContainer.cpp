@@ -25,10 +25,12 @@ GlobalContainer::GlobalContainer(void)
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
-	for (int  i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i], "-f")==0)
-			graphicFlags|=SDL_FULLSCREEN;
+		for (int  i=1; i<argc; i++)
+		{
+			if (strcmp(argv[i], "-f")==0)
+				graphicFlags|=SDL_FULLSCREEN;
+		}
 	}
 }
 

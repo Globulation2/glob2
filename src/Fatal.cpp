@@ -75,8 +75,10 @@ void installCrashHandler(void)
 {
 	mtrace ();
 	printf("DBG : Signal support enabled\n");
-	for (int i=0; fatal_signals[i]; ++i )
-		signal(fatal_signals[i], termination_handler);
+	{
+		for (int i=0; fatal_signals[i]; ++i )
+			signal(fatal_signals[i], termination_handler);
+	}
 }
 
 #else

@@ -48,8 +48,10 @@ StringTable::StringTable()
 
 StringTable::~StringTable()
 {
-	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
-		delete (*it);
+	{
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+			delete (*it);
+	}
 }
 
 
@@ -131,12 +133,14 @@ bool StringTable::load(char *filename)
 
 void StringTable::print()
 {
-	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 	{
-		printf("name=%s\n", (*it)->name);
-		for (int i=0; i<(int)((*it)->data.size()); i++)
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
-			printf("trad[%d]=%s\n", i, (*it)->data[i]);
+			printf("name=%s\n", (*it)->name);
+			for (int i=0; i<(int)((*it)->data.size()); i++)
+			{
+				printf("trad[%d]=%s\n", i, (*it)->data[i]);
+			}
 		}
 	}
 }
@@ -145,11 +149,13 @@ char *StringTable::getString(const char *stringname)
 {
 	if (actlang<numberoflanguages)
 	{
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
-			if (strcmp(stringname, (*it)->name)==0)
+			for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 			{
-				return ((*it)->data[actlang]);
+				if (strcmp(stringname, (*it)->name)==0)
+				{
+					return ((*it)->data[actlang]);
+				}
 			}
 		}
 		return "ERROR : NO STRING";
@@ -164,11 +170,13 @@ char *StringTable::getString(const char *stringname, int index)
 {
 	if (actlang<numberoflanguages)
 	{
-		for (int i=0; i<(int)(strings.size()); i++)
 		{
-			if (strcmp(stringname, strings[i]->name)==0)
+			for (int i=0; i<(int)(strings.size()); i++)
 			{
-				return (strings[i+index+1]->data[actlang]);
+				if (strcmp(stringname, strings[i]->name)==0)
+				{
+					return (strings[i+index+1]->data[actlang]);
+				}
 			}
 		}
 		return "ERROR : NO STRING";

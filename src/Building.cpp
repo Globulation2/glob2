@@ -47,8 +47,10 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	unitStayRangeLocal=unitStayRange;
 
 	// building specific :
-	for(int i=0; i<NB_RESSOURCES; i++)
-		ressources[i]=0;
+	{
+		for(int i=0; i<NB_RESSOURCES; i++)
+			ressources[i]=0;
+	}
 
 	// quality parameters
 	hp=type->hpInit; // (Uint16)
@@ -57,13 +59,14 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
-	for (int i2=0; i2<UnitType::NB_UNIT_TYPE; i2++)
 	{
-		ratioLocal[i2]=ratio[i2]=1;
-		totalRatio++;
-		percentUsed[i2]=0;
+		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		{
+			ratioLocal[i]=ratio[i]=1;
+			totalRatio++;
+			percentUsed[i]=0;
+		}
 	}
-
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
 	
@@ -93,9 +96,11 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	unitStayRangeLocal=unitStayRange;
 
 	// Building Specific
-	for (int i=0; i<NB_RESSOURCES; i++)
 	{
-		ressources[i]=SDL_ReadBE32(stream);
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			ressources[i]=SDL_ReadBE32(stream);
+		}
 	}
 
 	// quality parameters
@@ -104,20 +109,24 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	// prefered parameters
 	productionTimeout=SDL_ReadBE32(stream);
 	totalRatio=SDL_ReadBE32(stream);
-	for (int i2=0; i2<UnitType::NB_UNIT_TYPE; i2++)
 	{
-		ratioLocal[i2]=ratio[i2]=SDL_ReadBE32(stream);
-		percentUsed[i2]=SDL_ReadBE32(stream);
+		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		{
+			ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
+			percentUsed[i]=SDL_ReadBE32(stream);
+		}
 	}
 
 	shootingStep=SDL_ReadBE32(stream);
 	shootingCooldown=SDL_ReadBE32(stream);
 
 	// optimisation parameters
-	for (int i3=0; i3<NB_RESSOURCES; i3++)
 	{
-		closestRessourceX[i3]=SDL_ReadBE32(stream);
-		closestRessourceY[i3]=SDL_ReadBE32(stream);
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			closestRessourceX[i]=SDL_ReadBE32(stream);
+			closestRessourceY[i]=SDL_ReadBE32(stream);
+		}
 	}
 
 	// type
@@ -142,9 +151,11 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, unitStayRange);
 
 	// Building Specific
-	for (int i=0; i<NB_RESSOURCES; i++)
 	{
-		SDL_WriteBE32(stream, ressources[i]);
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			SDL_WriteBE32(stream, ressources[i]);
+		}
 	}
 
 	// quality parameters
@@ -153,20 +164,24 @@ void Building::save(SDL_RWops *stream)
 	// prefered parameters
 	SDL_WriteBE32(stream, productionTimeout);
 	SDL_WriteBE32(stream, totalRatio);
-	for (int i2=0; i2<UnitType::NB_UNIT_TYPE; i2++)
 	{
-		SDL_WriteBE32(stream, ratio[i2]);
-		SDL_WriteBE32(stream, percentUsed[i2]);
+		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		{
+			SDL_WriteBE32(stream, ratio[i]);
+			SDL_WriteBE32(stream, percentUsed[i]);
+		}
 	}
 
 	SDL_WriteBE32(stream, shootingStep);
 	SDL_WriteBE32(stream, shootingCooldown);
 
 	// optimisation parameters
-	for (int i3=0; i3<NB_RESSOURCES; i3++)
 	{
-		SDL_WriteBE32(stream, closestRessourceX[i3]);
-		SDL_WriteBE32(stream, closestRessourceY[i3]);
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			SDL_WriteBE32(stream, closestRessourceX[i]);
+			SDL_WriteBE32(stream, closestRessourceY[i]);
+		}
 	}
 
 	// type
@@ -180,15 +195,19 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	maxUnitInside=SDL_ReadBE32(stream);
 	int nbWorking=SDL_ReadBE32(stream);
 	unitsWorking.clear();
-	for (int i=0; i<nbWorking; i++)
 	{
-		unitsWorking.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		for (int i=0; i<nbWorking; i++)
+		{
+			unitsWorking.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		}
 	}
 	int nbWorkingSubscribe=SDL_ReadBE32(stream);
 	unitsWorkingSubscribe.clear();
-	for (int i2=0; i2<nbWorkingSubscribe; i2++)
 	{
-		unitsWorkingSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		for (int i=0; i<nbWorkingSubscribe; i++)
+		{
+			unitsWorkingSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		}
 	}
 	lastWorkingSubscribe=SDL_ReadBE32(stream);
 	
@@ -198,15 +217,19 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 	maxUnitWorkingLocal=maxUnitWorking;
 	int nbInside=SDL_ReadBE32(stream);
 	unitsInside.clear();
-	for (int i3=0; i3<nbInside; i3++)
 	{
-		unitsInside.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		for (int i=0; i<nbInside; i++)
+		{
+			unitsInside.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		}
 	}
 	int nbInsideSubscribe=SDL_ReadBE32(stream);
 	unitsInsideSubscribe.clear();
-	for (int i4=0; i4<nbInsideSubscribe; i4++)
 	{
-		unitsInsideSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		for (int i=0; i<nbInsideSubscribe; i++)
+		{
+			unitsInsideSubscribe.push_front(owner->myUnits[Unit::UIDtoID(SDL_ReadBE32(stream))]);
+		}
 	}
 	lastInsideSubscribe=SDL_ReadBE32(stream);
 }
@@ -216,28 +239,36 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	// units
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
-	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 	{
-		SDL_WriteBE32(stream, (*it)->UID);
+		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+		{
+			SDL_WriteBE32(stream, (*it)->UID);
+		}
 	}
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
-	for (std::list<Unit *>::iterator it2=unitsWorkingSubscribe.begin(); it2!=unitsWorkingSubscribe.end(); it2++)
 	{
-		SDL_WriteBE32(stream, (*it2)->UID);
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+		{
+			SDL_WriteBE32(stream, (*it)->UID);
+		}
 	}
 	SDL_WriteBE32(stream, lastWorkingSubscribe);
 
 	SDL_WriteBE32(stream, maxUnitWorking);
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
-	for (std::list<Unit *>::iterator it3=unitsInside.begin(); it3!=unitsInside.end(); it3++)
 	{
-		SDL_WriteBE32(stream, (*it3)->UID);
+		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
+		{
+			SDL_WriteBE32(stream, (*it)->UID);
+		}
 	}
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
-	for (std::list<Unit *>::iterator it4=unitsInsideSubscribe.begin(); it4!=unitsInsideSubscribe.end(); it4++)
 	{
-		SDL_WriteBE32(stream, (*it4)->UID);
+		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+		{
+			SDL_WriteBE32(stream, (*it)->UID);
+		}
 	}
 	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
@@ -245,20 +276,24 @@ void Building::saveCrossRef(SDL_RWops *stream)
 bool Building::isRessourceFull(void)
 {
 	bool isFull=true;
-	for (int i=0; i<NB_RESSOURCES; i++)
 	{
-		if (ressources[i]<type->maxRessource[i])
-			isFull=false;
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			if (ressources[i]<type->maxRessource[i])
+				isFull=false;
+		}
 	}
 	return isFull;
 }
 
 int Building::neededRessource(void)
 {
-	for (int i=0; i<NB_RESSOURCES; i++)
 	{
-		if (ressources[i]<type->maxRessource[i])
-			return i;
+		for (int i=0; i<NB_RESSOURCES; i++)
+		{
+			if (ressources[i]<type->maxRessource[i])
+				return i;
+		}
 	}
 	return -1;
 }
@@ -316,11 +351,13 @@ void Building::cancelUpgrade(void)
 		owner->turrets.push_front(this);
 	
 	totalRatio=0;
-	for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 	{
-		ratio[i]=1;
-		totalRatio++;
-		percentUsed[i]=0;
+		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		{
+			ratio[i]=1;
+			totalRatio++;
+			percentUsed[i]=0;
+		}
 	}
 	
 	owner->game->map.setMapDiscovered(posX-1, posY-1, type->width+2, type->height+2, owner->teamNumber);
@@ -368,33 +405,37 @@ void Building::update(void)
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 	{
 		// add itself in Call lists
-		for (int i=0; i<NB_ABILITY; i++)
 		{
-			if (type->job[i])
-				owner->job[i].push_front(this);
-			if (type->attract[i])
-				owner->attract[i].push_front(this);
+			for (int i=0; i<NB_ABILITY; i++)
+			{
+				if (type->job[i])
+					owner->job[i].push_front(this);
+				if (type->attract[i])
+					owner->attract[i].push_front(this);
+			}
 		}
 	}
 	else
 	{
 		// delete itself from all Call lists
-		for (int i=0; i<NB_ABILITY; i++)
 		{
-			if (type->job[i])
+			for (int i=0; i<NB_ABILITY; i++)
 			{
-				//if (owner->job[i].size()==1)
-				//	printf("last job removed (ability=%d)\n", i);
-				owner->job[i].remove(this);
-			}
+				if (type->job[i])
+				{
+					//if (owner->job[i].size()==1)
+					//	printf("last job removed (ability=%d)\n", i);
+					owner->job[i].remove(this);
+				}
 
-			if (type->attract[i])
-			{
-				//if (owner->attract[i].size()==1)
-				//	printf("last attract removed (ability=%d)\n", i);
-				owner->attract[i].remove(this);
-			}
+				if (type->attract[i])
+				{
+					//if (owner->attract[i].size()==1)
+					//	printf("last attract removed (ability=%d)\n", i);
+					owner->attract[i].remove(this);
+				}
 
+			}
 		}
 
 
@@ -404,14 +445,16 @@ void Building::update(void)
 
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
-			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 			{
-				int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
-				if (newDistSquare>maxDistSquare)
+				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
 				{
-					maxDistSquare=newDistSquare;
-					fu=(*it);
-					ittemp=it;
+					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (newDistSquare>maxDistSquare)
+					{
+						maxDistSquare=newDistSquare;
+						fu=(*it);
+						ittemp=it;
+					}
 				}
 			}
 
@@ -436,10 +479,12 @@ void Building::update(void)
 	if ((signed)unitsInside.size()<maxUnitInside)
 	{
 		// add itself in Call lists
-		for (int i=0; i<NB_ABILITY; i++)
 		{
-			if (type->upgrade[i])
-				owner->upgrade[i].push_front(this);
+			for (int i=0; i<NB_ABILITY; i++)
+			{
+				if (type->upgrade[i])
+					owner->upgrade[i].push_front(this);
+			}
 		}
 
 		// this is for food handling
@@ -461,10 +506,12 @@ void Building::update(void)
 	else
 	{
 		// delete itself from all Call lists
-		for (int i=0; i<NB_ABILITY; i++)
 		{
-			if (type->upgrade[i])
-				owner->upgrade[i].remove(this);
+			for (int i=0; i<NB_ABILITY; i++)
+			{
+				if (type->upgrade[i])
+					owner->upgrade[i].remove(this);
+			}
 		}
 		if (type->canFeedUnit)
 			owner->canFeedUnit.remove(this);
@@ -478,8 +525,10 @@ void Building::update(void)
 		if (type->isBuildingSite)
 		{
 			// we really uses the resources of the buildingsite:
-			for(int i=0; i<NB_RESSOURCES; i++)
-				ressources[i]-=type->maxRessource[i];
+			{
+				for(int i=0; i<NB_RESSOURCES; i++)
+					ressources[i]-=type->maxRessource[i];
+			}
 
 			typeNum=type->nextLevelTypeNum;
 			type=globalContainer->buildingsTypes.getBuildingType(type->nextLevelTypeNum);
@@ -535,14 +584,18 @@ bool Building::tryToUpgradeRoom(void)
 
 	bool isRoom=true;
 
-	for(int x=newPosX; x<lastNewPosX; x++)
-		for(int y=newPosY; y<lastNewPosY; y++)
+	{
+		for(int x=newPosX; x<lastNewPosX; x++)
 		{
-			// TODO : put this code in map.cpp to optimise speed.
-			Sint32 UID=owner->game->map.getUnit(x, y);
-			if ( (!owner->game->map.isGrass(x, y)) || ((UID!=this->UID) && (UID!=NOUID)) )
-				isRoom=false;
+			for(int y=newPosY; y<lastNewPosY; y++)
+			{
+				// TODO : put this code in map.cpp to optimise speed.
+				Sint32 UID=owner->game->map.getUnit(x, y);
+				if ( (!owner->game->map.isGrass(x, y)) || ((UID!=this->UID) && (UID!=NOUID)) )
+					isRoom=false;
+			}
 		}
+	}
 
 	if (isRoom)
 	{
@@ -578,11 +631,13 @@ bool Building::tryToUpgradeRoom(void)
 		productionTimeout=type->unitProductionTime;
 
 		totalRatio=0;
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 		{
-			ratio[i]=1;
-			totalRatio++;
-			percentUsed[i]=0;
+			for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+			{
+				ratio[i]=1;
+				totalRatio++;
+				percentUsed[i]=0;
+			}
 		}
 
 		update();
@@ -604,24 +659,32 @@ bool Building::isHardSpace(void)
 
 	if (bt->isVirtual)
 	{
-		for (int dy=y; dy<y+h; dy++)
-			for (int dx=x; dx<x+w; dx++)
+		{
+			for (int dy=y; dy<y+h; dy++)
 			{
-				Sint32 uid=owner->game->map.getUnit(dx, dy);
-				if ((uid<0)&&(uid!=NOUID)&&(uid!=UID))
-					return false;
+				for (int dx=x; dx<x+w; dx++)
+				{
+					Sint32 uid=owner->game->map.getUnit(dx, dy);
+					if ((uid<0)&&(uid!=NOUID)&&(uid!=UID))
+						return false;
+				}
 			}
+		}
 		return true;
 	}
 	else
 	{
-		for (int dy=y; dy<y+h; dy++)
-			for (int dx=x; dx<x+w; dx++)
+		{
+			for (int dy=y; dy<y+h; dy++)
 			{
-				Sint32 uid=owner->game->map.getUnit(dx, dy);
-				if (((uid<0)&&(uid!=NOUID)&&(uid!=UID))||(!(owner->game->map.isGrass(dx, dy))))
-					return false;
+				for (int dx=x; dx<x+w; dx++)
+				{
+					Sint32 uid=owner->game->map.getUnit(dx, dy);
+					if (((uid<0)&&(uid!=NOUID)&&(uid!=UID))||(!(owner->game->map.isGrass(dx, dy))))
+						return false;
+				}
 			}
+		}
 		return true;
 	}
 	assert(false);
@@ -637,21 +700,25 @@ void Building::step(void)
 
 void Building::removeSubscribers(void)
 {
-	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 	{
-		(*it)->attachedBuilding=NULL;
-		(*it)->subscribed=false;
-		(*it)->activity=Unit::ACT_RANDOM;
-		(*it)->needToRecheckMedical=true;
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
 	}
 	unitsWorkingSubscribe.clear();
 
-	for (std::list<Unit *>::iterator it2=unitsInsideSubscribe.begin(); it2!=unitsInsideSubscribe.end(); it2++)
 	{
-		(*it2)->attachedBuilding=NULL;
-		(*it2)->subscribed=false;
-		(*it2)->activity=Unit::ACT_RANDOM;
-		(*it2)->needToRecheckMedical=true;
+		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
 	}
 	unitsInsideSubscribe.clear();
 }
@@ -674,12 +741,14 @@ void Building::subscribeForWorkingStep()
 	lastWorkingSubscribe++;
 	if (fullWorking())
 	{
-		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->subscribed=false;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
+			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			{
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
+			}
 		}
 		unitsWorkingSubscribe.clear();
 		return;
@@ -691,13 +760,15 @@ void Building::subscribeForWorkingStep()
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
 			Unit *u=NULL;
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
-				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-				if (dist<mindist)
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
-					mindist=dist;
-					u=*it;
+					int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (dist<mindist)
+					{
+						mindist=dist;
+						u=*it;
+					}
 				}
 			}
 			if (u)
@@ -711,12 +782,14 @@ void Building::subscribeForWorkingStep()
 		
 		if ((signed)unitsWorking.size()>=maxUnitWorking)
 		{
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->subscribed=false;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					(*it)->attachedBuilding=NULL;
+					(*it)->subscribed=false;
+					(*it)->activity=Unit::ACT_RANDOM;
+					(*it)->needToRecheckMedical=true;
+				}
 			}
 			unitsWorkingSubscribe.clear();
 		}
@@ -728,12 +801,14 @@ void Building::subscribeForInsideStep()
 	lastInsideSubscribe++;
 	if (fullInside())
 	{
-		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 		{
-			(*it)->attachedBuilding=NULL;
-			(*it)->subscribed=false;
-			(*it)->activity=Unit::ACT_RANDOM;
-			(*it)->needToRecheckMedical=true;
+			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+			{
+				(*it)->attachedBuilding=NULL;
+				(*it)->subscribed=false;
+				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
+			}
 		}
 		unitsInsideSubscribe.clear();
 		return;
@@ -745,13 +820,15 @@ void Building::subscribeForInsideStep()
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
 			Unit *u=NULL;
-			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-				if (dist<mindist)
+				for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 				{
-					mindist=dist;
-					u=*it;
+					int dist=owner->game->map.warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (dist<mindist)
+					{
+						mindist=dist;
+						u=*it;
+					}
 				}
 			}
 			if (u)
@@ -765,12 +842,14 @@ void Building::subscribeForInsideStep()
 		
 		if ((signed)unitsInside.size()>=maxUnitInside)
 		{
-			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				(*it)->attachedBuilding=NULL;
-				(*it)->subscribed=false;
-				(*it)->activity=Unit::ACT_RANDOM;
-				(*it)->needToRecheckMedical=true;
+				for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+				{
+					(*it)->attachedBuilding=NULL;
+					(*it)->subscribed=false;
+					(*it)->activity=Unit::ACT_RANDOM;
+					(*it)->needToRecheckMedical=true;
+				}
 			}
 			unitsInsideSubscribe.clear();
 		}
@@ -788,13 +867,15 @@ void Building::swarmStep(void)
 		float propotion;
 		float minPropotion=1.0;
 		int minType=-1;
-		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 		{
-			propotion=((float)percentUsed[i])/((float)ratio[i]);
-			if (propotion<=minPropotion)
+			for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 			{
-				minPropotion=propotion;
-				minType=i;
+				propotion=((float)percentUsed[i])/((float)ratio[i]);
+				if (propotion<=minPropotion)
+				{
+					minPropotion=propotion;
+					minType=i;
+				}
 			}
 		}
 
@@ -836,14 +917,20 @@ void Building::swarmStep(void)
 				percentUsed[minType]++;
 
 				bool allDone=true;
-				for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 				{
-					if (percentUsed[i]<ratio[i])
-						allDone=false;
+					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+					{
+						if (percentUsed[i]<ratio[i])
+							allDone=false;
+					}
 				}
 				if (allDone)
-					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
-						percentUsed[i]=0;
+				{
+					{
+						for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+							percentUsed[i]=0;
+					}
+				}
 			}
 			else
 			{
@@ -880,39 +967,45 @@ void Building::turretStep(void)
 	int targetX;
 	int targetY;
 
-	for (unsigned i=0; i<=range && !targetFound; i++)
-	for (int k=0; k<2 && !targetFound; k++)
-	for (int l=0; l<2 && !targetFound; l++)
 	{
-		targetX=midX+(k)*(  dir)*(pos+1)-(1-k)*(  dir)*(pos)+(l)*(1-dir)*(i+width +1)-(1-l)*(1-dir)*(i);
-		targetY=midY+(k)*(1-dir)*(pos+1)-(1-k)*(1-dir)*(pos)+(l)*(  dir)*(i+height+1)-(1-l)*(  dir)*(i);
-		//printf("midX=%d, targetX=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midX, targetX, k, l, pos, dir, i);
-		//printf("midY=%d, targetY=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midY, targetY, k, l, pos, dir, i);
-
-		int targetUID=map->getUnit(targetX, targetY);
-		if (targetUID>=0)
+		for (unsigned i=0; i<=range && !targetFound; i++)
 		{
-			int otherTeam=Unit::UIDtoTeam(targetUID);
-			Uint32 otherTeamMask=1<<otherTeam;
-			if (enemies&otherTeamMask)
+			for (int k=0; k<2 && !targetFound; k++)
 			{
-				targetFound=true;
-				//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
-				shootingStep=0;
-			}
-		}
-		else if (targetUID!=NOUID)
-		{
-			int otherTeam=Building::UIDtoTeam(targetUID);
-			int otherID=Building::UIDtoID(targetUID);
-			Uint32 otherTeamMask=1<<otherTeam;
-			if (enemies&otherTeamMask)
-			{
-				Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
-				if (!b->type->defaultUnitStayRange)
+				for (int l=0; l<2 && !targetFound; l++)
 				{
-					targetFound=true;
-					shootingStep=0;
+					targetX=midX+(k)*(  dir)*(pos+1)-(1-k)*(  dir)*(pos)+(l)*(1-dir)*(i+width +1)-(1-l)*(1-dir)*(i);
+					targetY=midY+(k)*(1-dir)*(pos+1)-(1-k)*(1-dir)*(pos)+(l)*(  dir)*(i+height+1)-(1-l)*(  dir)*(i);
+					//printf("midX=%d, targetX=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midX, targetX, k, l, pos, dir, i);
+					//printf("midY=%d, targetY=%d, k=%d, l=%d, pos=%d, dir=%d, i=%d \n", midY, targetY, k, l, pos, dir, i);
+
+					int targetUID=map->getUnit(targetX, targetY);
+					if (targetUID>=0)
+					{
+						int otherTeam=Unit::UIDtoTeam(targetUID);
+						Uint32 otherTeamMask=1<<otherTeam;
+						if (enemies&otherTeamMask)
+						{
+							targetFound=true;
+							//printf("found unit target found: (%d, %d) t=%d, id=%d \n", targetX, targetY, otherTeam, Unit::UIDtoID(targetUID));
+							shootingStep=0;
+						}
+					}
+					else if (targetUID!=NOUID)
+					{
+						int otherTeam=Building::UIDtoTeam(targetUID);
+						int otherID=Building::UIDtoID(targetUID);
+						Uint32 otherTeamMask=1<<otherTeam;
+						if (enemies&otherTeamMask)
+						{
+							Building *b=owner->game->teams[otherTeam]->myBuildings[otherID];
+							if (!b->type->defaultUnitStayRange)
+							{
+								targetFound=true;
+								shootingStep=0;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -977,33 +1070,37 @@ void Building::turretStep(void)
 
 void Building::kill(void)
 {
-	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); it++)
 	{
-		Unit *u=*it;
-		if (u->displacement==Unit::DIS_INSIDE)
+		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); it++)
 		{
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
-			u->isDead=true;
+			Unit *u=*it;
+			if (u->displacement==Unit::DIS_INSIDE)
+			{
+				//printf("(%x)Building:: Unit(uid%d)(id%d) killed. dis=%d, mov=%d, ab=%x, ito=%d \n", this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
+				u->isDead=true;
+			}
+			
+			if (u->displacement==Unit::DIS_ENTERING_BUILDING)
+			{
+				owner->game->map.setUnit(u->posX-u->dx, u->posY-u->dy, NOUID);
+				//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
+				u->isDead=true;
+			}
+			u->attachedBuilding=NULL;
+			u->activity=Unit::ACT_RANDOM;
+			u->displacement=Unit::DIS_RANDOM;
+			(*it)->needToRecheckMedical=true;
 		}
-		
-		if (u->displacement==Unit::DIS_ENTERING_BUILDING)
-		{
-			owner->game->map.setUnit(u->posX-u->dx, u->posY-u->dy, NOUID);
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->UID, Unit::UIDtoID(u->UID), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
-			u->isDead=true;
-		}
-		u->attachedBuilding=NULL;
-		u->activity=Unit::ACT_RANDOM;
-		u->displacement=Unit::DIS_RANDOM;
-		(*it)->needToRecheckMedical=true;
 	}
 	unitsInside.clear();
 
-	for (std::list<Unit *>::iterator it2=unitsWorking.begin(); it2!=unitsWorking.end(); it2++)
 	{
-		(*it2)->attachedBuilding=NULL;
-		(*it2)->activity=Unit::ACT_RANDOM;
-		(*it2)->needToRecheckMedical=true;
+		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
 	}
 	unitsWorking.clear();
 
@@ -1033,45 +1130,61 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	if (!found)
 	{
 		testY=this->posY-1;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+		{
+			for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			{
-				found=true;
-				break;
+				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+				{
+					found=true;
+					break;
+				}
 			}
+		}
 	}
 
 	if (!found)
 	{
 		testY=this->posY+type->height;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+		{
+			for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			{
-				found=true;
-				break;
+				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+				{
+					found=true;
+					break;
+				}
 			}
+		}
 	}
 
 	if (!found)
 	{
 		testX=this->posX-1;
-		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+		{
+			for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			{
-				found=true;
-				break;
+				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+				{
+					found=true;
+					break;
+				}
 			}
+		}
 	}
 
 	if (!found)
 	{
 		testX=this->posX+type->width;
-		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+		{
+			for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			{
-				found=true;
-				break;
+				if (owner->game->map.isFreeForUnit(testX, testY, canFly))
+				{
+					found=true;
+					break;
+				}
 			}
+		}
 	}
 
 	if (found)
@@ -1123,18 +1236,22 @@ Sint32 Building::checkSum()
 
 	cs^=unitStayRange;
 
-	for (int i=0; i<NB_RESSOURCES; i++)
-		cs^=ressources[i];
+	{
+		for (int i=0; i<NB_RESSOURCES; i++)
+			cs^=ressources[i];
+	}
 
 	cs^=hp;
 
 	cs^=productionTimeout;
 	cs^=totalRatio;
-	for (int i2=0; i2<UnitType::NB_UNIT_TYPE; i2++)
 	{
-		cs^=ratio[i2];
-		cs^=percentUsed[i2];
-		cs=(cs<<31)|(cs>>1);
+		for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
+		{
+			cs^=ratio[i];
+			cs^=percentUsed[i];
+			cs=(cs<<31)|(cs>>1);
+		}
 	}
 	
 	cs^=shootingStep;

@@ -29,10 +29,12 @@ GameGUI::GameGUI()
 	memset(stats, 0, 128*sizeof(TeamStat));
 	statMode=STAT_TEXT;
 
-	for (int i=0; i<8; i++)
 	{
-		viewportSpeedX[i]=0;
-		viewportSpeedY[i]=0;
+		for (int i=0; i<8; i++)
+		{
+			viewportSpeedX[i]=0;
+			viewportSpeedY[i]=0;
+		}
 	}
 
 	typingMessage=false;
@@ -68,10 +70,12 @@ void GameGUI::step(void)
 
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
-	for (int i=0; i<8; i++)
 	{
-		viewportX+=viewportSpeedX[i];
-		viewportY+=viewportSpeedY[i];
+		for (int i=0; i<8; i++)
+		{
+			viewportX+=viewportSpeedX[i];
+			viewportY+=viewportSpeedY[i];
+		}
 	}
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();

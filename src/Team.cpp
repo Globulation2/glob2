@@ -104,19 +104,23 @@ Team::Team(SDL_RWops *stream, Game *game)
 
 Team::~Team()
 {
-	for (int i=0; i<1024; i++)
 	{
-		if (myUnits[i])
-			delete myUnits[i];
+		for (int i=0; i<1024; ++i)
+		{
+			if (myUnits[i])
+				delete myUnits[i];
+		}
 	}
 
-	for (int i2=0; i2<512; i2++)
 	{
-		if (myBuildings[i2])
-			delete myBuildings[i2];
+		for (int i=0; i<512; ++i)
+		{
+			if (myBuildings[i])
+				delete myBuildings[i];
+		}
 	}
 	{
-		for (int i=0; i<256; i++)
+		for (int i=0; i<256; ++i)
 		{
 			if (myBullets[i])
 				delete myBuildings[i];
@@ -126,13 +130,17 @@ Team::~Team()
 
 void Team::init(void)
 {
-	for (int i=0;i<1024;i++)
 	{
-		myUnits[i]=NULL;
+		for (int i=0;i<1024;++i)
+		{
+			myUnits[i]=NULL;
+		}
 	}
-	for (int i2=0;i2<512;i2++)
 	{
-		myBuildings[i2]=NULL;
+		for (int i=0;i<512;++i)
+		{
+			myBuildings[i]=NULL;
+		}
 	}
 	{
 		for (int i=0;i<256;i++)
@@ -177,25 +185,29 @@ void Team::setCorrectColor(Sint32 color)
 void Team::computeStat(TeamStat *stats)
 {
 	memset(stats, 0, sizeof(TeamStat));
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
+	{
+		for (int i=0; i<1024; i++)
 		{
-			stats->totalUnit++;
-			stats->numberPerType[(int)myUnits[i]->typeNum]++;
-			if (myUnits[i]->activity==Unit::ACT_RANDOM)
-				stats->isFree++;
-			if (myUnits[i]->medical==Unit::MED_HUNGRY)
-				stats->needFood++;
-			else if (myUnits[i]->medical==Unit::MED_DAMAGED)
-				stats->needHeal++;
-			else
-				stats->needNothing++;
-			for (int j=0; j<NB_ABILITY; j++)
+			if (myUnits[i])
 			{
-				if (myUnits[i]->performance[j])
-					stats->upgradeState[j][myUnits[i]->level[j]]++;
+				stats->totalUnit++;
+				stats->numberPerType[(int)myUnits[i]->typeNum]++;
+				if (myUnits[i]->activity==Unit::ACT_RANDOM)
+					stats->isFree++;
+				if (myUnits[i]->medical==Unit::MED_HUNGRY)
+					stats->needFood++;
+				else if (myUnits[i]->medical==Unit::MED_DAMAGED)
+					stats->needHeal++;
+				else
+					stats->needNothing++;
+				for (int j=0; j<NB_ABILITY; j++)
+				{
+					if (myUnits[i]->performance[j])
+						stats->upgradeState[j][myUnits[i]->level[j]]++;
+				}
 			}
 		}
+	}
 }
 
 Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel)
@@ -203,15 +215,17 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=upgrade[(int)ability].begin(); it!=upgrade[(int)ability].end(); it++)
 	{
-		if ((*it)->type->level>=actLevel)
+		for (std::list<Building *>::iterator it=upgrade[(int)ability].begin(); it!=upgrade[(int)ability].end(); it++)
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
+			if ((*it)->type->level>=actLevel)
 			{
-				b=*it;
-				dist=newDist;
+				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				if ( newDist<dist )
+				{
+					b=*it;
+					dist=newDist;
+				}
 			}
 		}
 	}
@@ -223,15 +237,17 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
 	{
-		if ((*it)->type->level<=actLevel)
+		for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
+			if ((*it)->type->level<=actLevel)
 			{
-				b=*it;
-				dist=newDist;
+				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				if ( newDist<dist )
+				{
+					b=*it;
+					dist=newDist;
+				}
 			}
 		}
 	}
@@ -243,13 +259,15 @@ Building *Team::findNearestAttract(int x, int y, Abilities ability)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
 	{
-		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-		if ( newDist<dist )
+		for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
 		{
-			b=*it;
-			dist=newDist;
+			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			if ( newDist<dist )
+			{
+				b=*it;
+				dist=newDist;
+			}
 		}
 	}
 	return b;
@@ -260,16 +278,20 @@ Building *Team::findNearestFillableFood(int x, int y)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
-		if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
+	{
+		for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-			if ( newDist<dist )
+			if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
 			{
-				b=*it;
-				dist=newDist;
+				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				if ( newDist<dist )
+				{
+					b=*it;
+					dist=newDist;
+				}
 			}
 		}
+	}
 	return b;
 }
 
@@ -278,13 +300,15 @@ Building *Team::findNearestHeal(int x, int y)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=canHealUnit.begin(); it!=canHealUnit.end(); it++)
 	{
-		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-		if ( newDist<dist )
+		for (std::list<Building *>::iterator it=canHealUnit.begin(); it!=canHealUnit.end(); it++)
 		{
-			b=*it;
-			dist=newDist;
+			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			if ( newDist<dist )
+			{
+				b=*it;
+				dist=newDist;
+			}
 		}
 	}
 	return b;
@@ -295,13 +319,15 @@ Building *Team::findNearestFood(int x, int y)
 	Building *b=NULL;
 	Sint32 dist=MAX_SINT32;
 	Sint32 newDist;
-	for (std::list<Building *>::iterator it=canFeedUnit.begin(); it!=canFeedUnit.end(); it++)
 	{
-		newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
-		if ( newDist<dist )
+		for (std::list<Building *>::iterator it=canFeedUnit.begin(); it!=canFeedUnit.end(); it++)
 		{
-			b=*it;
-			dist=newDist;
+			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			if ( newDist<dist )
+			{
+				b=*it;
+				dist=newDist;
+			}
 		}
 	}
 	return b;
@@ -320,18 +346,20 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	palette.decHue((float)(color-120));
 	
 	// normal load
-	for (int i=0; i< 1024; i++)
 	{
-		if (myUnits[i])
-			delete myUnits[i];
-
-		Uint32 isUsed=SDL_ReadBE32(stream);
-		if (isUsed)
+		for (int i=0; i< 1024; i++)
 		{
-			myUnits[i]=new Unit(stream, this);
+			if (myUnits[i])
+				delete myUnits[i];
+
+			Uint32 isUsed=SDL_ReadBE32(stream);
+			if (isUsed)
+			{
+				myUnits[i]=new Unit(stream, this);
+			}
+			else
+				myUnits[i]=NULL;
 		}
-		else
-			myUnits[i]=NULL;
 	}
 
 	swarms.clear();
@@ -405,16 +433,18 @@ void Team::save(SDL_RWops *stream)
 	BaseTeam::save(stream);
 
 	// saving team
-	for (int i=0; i< 1024; i++)
 	{
-		if (myUnits[i])
+		for (int i=0; i< 1024; i++)
 		{
-			SDL_WriteBE32(stream, true);
-			myUnits[i]->save(stream);
-		}
-		else
-		{
-			SDL_WriteBE32(stream, false);
+			if (myUnits[i])
+			{
+				SDL_WriteBE32(stream, true);
+				myUnits[i]->save(stream);
+			}
+			else
+			{
+				SDL_WriteBE32(stream, false);
+			}
 		}
 	}
 
@@ -472,21 +502,25 @@ void Team::save(SDL_RWops *stream)
 void Team::step(void)
 {
 	freeUnits=0;
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
+	{
+		for (int i=0; i<1024; i++)
 		{
-			myUnits[i]->step();
-			if (myUnits[i]->isDead)
+			if (myUnits[i])
 			{
-				//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
-				delete myUnits[i];
-				myUnits[i]=NULL;
-			}
-			else if ((myUnits[i]->activity==Unit::ACT_RANDOM)&&(myUnits[i]->medical==Unit::MED_FREE)&&(myUnits[i]->performance[HARVEST]))
-			{
-				freeUnits++;
+				myUnits[i]->step();
+				if (myUnits[i]->isDead)
+				{
+					//printf("Team:: Unit(uid%d)(id%d) deleted. dis=%d, mov=%d, ab=%x, ito=%d \n",myUnits[i]->UID, Unit::UIDtoID(myUnits[i]->UID), myUnits[i]->displacement, myUnits[i]->movement, (int)myUnits[i]->attachedBuilding, myUnits[i]->insideTimeout);
+					delete myUnits[i];
+					myUnits[i]=NULL;
+				}
+				else if ((myUnits[i]->activity==Unit::ACT_RANDOM)&&(myUnits[i]->medical==Unit::MED_FREE)&&(myUnits[i]->performance[HARVEST]))
+				{
+					freeUnits++;
+				}
 			}
 		}
+	}
 
 	/*for (int i=0; i<512; i++)
 		if (myBuildings[i])
@@ -498,18 +532,20 @@ void Team::step(void)
 	}
 
 	// this is roughly equivalent to building.step()
-	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
-		if ( myBuildings[*it]->type->unitProductionTime )
-			swarms.remove(myBuildings[*it]);
-		if ( myBuildings[*it]->type->shootingRange )
-			turrets.remove(myBuildings[*it]);
-		if ( myBuildings[*it]->type->isVirtual )
-			virtualBuildings.remove(myBuildings[*it]);
-		subscribeForInsideStep.remove(myBuildings[*it]);
-		subscribeForWorkingStep.remove(myBuildings[*it]);
-		delete myBuildings[*it];
-		myBuildings[*it]=NULL;
+		for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
+		{
+			if ( myBuildings[*it]->type->unitProductionTime )
+				swarms.remove(myBuildings[*it]);
+			if ( myBuildings[*it]->type->shootingRange )
+				turrets.remove(myBuildings[*it]);
+			if ( myBuildings[*it]->type->isVirtual )
+				virtualBuildings.remove(myBuildings[*it]);
+			subscribeForInsideStep.remove(myBuildings[*it]);
+			subscribeForWorkingStep.remove(myBuildings[*it]);
+			delete myBuildings[*it];
+			myBuildings[*it]=NULL;
+		}
 	}
 	buildingsToBeDestroyed.clear();
 
@@ -585,12 +621,16 @@ Sint32 Team::checkSum()
 	// Let's avoid to have too much calculation
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)1cs=%x\n", teamNumber, cs);
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
+	{
+		for (int i=0; i<1024; i++)
 		{
-			cs^=myUnits[i]->checkSum();
-			cs=(cs<<31)|(cs>>1);
+			if (myUnits[i])
+			{
+				cs^=myUnits[i]->checkSum();
+				cs=(cs<<31)|(cs>>1);
+			}
 		}
+	}
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)2cs=%x\n", teamNumber, cs);
 	{

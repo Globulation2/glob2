@@ -30,10 +30,12 @@ FileManager::FileManager()
 
 FileManager::~FileManager()
 {
-    for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-    {
-        delete[] const_cast<char*>(*dirListIterator);
-    }
+	{
+	    for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	    {
+	        delete[] const_cast<char*>(*dirListIterator);
+	    }
+	}
 }
 
 
@@ -47,15 +49,17 @@ void FileManager::addDir(const char *dir)
 
 SDL_RWops *FileManager::open(const char *filename, const char *mode)
 {
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+		{
+			char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
+			sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
-		SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
-		delete[] fn;
-		if (fp) 
-			return fp;
+			SDL_RWops *fp =  SDL_RWFromFile(fn, mode);
+			delete[] fn;
+			if (fp) 
+				return fp;
+		}
 	}
 
 	fprintf(stderr, "FILE %s not found.\n", filename);
@@ -67,15 +71,17 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode)
 
 FILE *FileManager::openFP(const char *filename, const char *mode)
 {
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+		{
+			char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
+			sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
-		FILE *fp =  fopen(fn, mode);
-		delete[] fn;
-		if (fp) 
-			return fp;
+			FILE *fp =  fopen(fn, mode);
+			delete[] fn;
+			if (fp) 
+				return fp;
+		}
 	}
 
 	fprintf(stderr, "FILE %s not found.\n", filename);

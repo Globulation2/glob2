@@ -66,11 +66,13 @@ int BaseMap::getDataLength()
 Sint32 BaseMap::checkSum()
 {
 	Sint32 cs=0;
-	
-	for (int i=0; i<(int)strlen(mapName); i++)
+
 	{
-		cs^=mapName[i];
-		cs=(cs<<31)|(cs>>1);
+		for (int i=0; i<(int)strlen(mapName); i++)
+		{
+			cs^=mapName[i];
+			cs=(cs<<31)|(cs>>1);
+		}
 	}
 	return cs;
 }
@@ -88,8 +90,10 @@ Sector::~Sector(void)
 
 void Sector::free(void)
 {
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-		delete (*it);
+	{
+		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
+			delete (*it);
+	}
 	bullets.clear();
 	game=NULL;
 	map=NULL;
@@ -99,8 +103,10 @@ void Sector::save(SDL_RWops *stream)
 {
 	SDL_WriteBE32(stream, bullets.size());
 	// we write the number of bullets here
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-		(*it)->save(stream);
+	{
+		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
+			(*it)->save(stream);
+	}
 }
 
 
@@ -110,9 +116,11 @@ void Sector::load(SDL_RWops *stream, Game *game)
 
 	free();
 	nbUsed=SDL_ReadBE32(stream);
-	for (int i=0; i<nbUsed; i++)
 	{
-		bullets.push_front(new Bullet(stream));
+		for (int i=0; i<nbUsed; i++)
+		{
+			bullets.push_front(new Bullet(stream));
+		}
 	}
 	this->game=game;
 	this->map=&(game->map);
@@ -121,41 +129,43 @@ void Sector::load(SDL_RWops *stream, Game *game)
 void Sector::step(void)
 {
 	std::list<Bullet*>::iterator ittemp;
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
-		if ( (*it)->ticksLeft > 0 )
+		for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 		{
-			(*it)->step();
-		}
-		else
-		{
-			int UID=map->getUnit((*it)->targetX, (*it)->targetY);
-			if (UID>=0)
+			if ( (*it)->ticksLeft > 0 )
 			{
-				int team=Unit::UIDtoTeam(UID);
-				int id=Unit::UIDtoID(UID);
-				
-				game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
+				(*it)->step();
 			}
-			else if (UID!=NOUID)
+			else
 			{
-				int team=Building::UIDtoTeam(UID);
-				int id=Building::UIDtoID(UID);
+				int UID=map->getUnit((*it)->targetX, (*it)->targetY);
+				if (UID>=0)
+				{
+					int team=Unit::UIDtoTeam(UID);
+					int id=Unit::UIDtoID(UID);
+					
+					game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
+				}
+				else if (UID!=NOUID)
+				{
+					int team=Building::UIDtoTeam(UID);
+					int id=Building::UIDtoID(UID);
+					
+					Building *b=game->teams[team]->myBuildings[id];
+					int damage=(*it)->shootDamage-b->type->armor; 
+					if (damage>0)
+						b->hp-=damage;
+					else
+						b->hp--;
+					if (b->hp<=0)
+						b->kill();
+					
+					//printf("bullet hitted building %d \n", (int)b);
+				}
 				
-				Building *b=game->teams[team]->myBuildings[id];
-				int damage=(*it)->shootDamage-b->type->armor; 
-				if (damage>0)
-					b->hp-=damage;
-				else
-					b->hp--;
-				if (b->hp<=0)
-					b->kill();
-				
-				//printf("bullet hitted building %d \n", (int)b);
+				ittemp=it;
+				it=bullets.erase(ittemp);
 			}
-			
-			ittemp=it;
-			it=bullets.erase(ittemp);
 		}
 	}
 }
@@ -435,10 +445,12 @@ bool Map::load(SDL_RWops *stream, Game *game)
 	sizeOfFogOfWar=size;
 	stepCounter=0;
 	cases=new Case[size];
-	for (int i=0;i<size;i++)
 	{
-		mapDiscovered[i]=SDL_ReadBE32(stream);
-		cases[i].setInteger(SDL_ReadBE32(stream));
+		for (int i=0;i<size;i++)
+		{
+			mapDiscovered[i]=SDL_ReadBE32(stream);
+			cases[i].setInteger(SDL_ReadBE32(stream));
+		}
 	}
 	memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
 	memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
@@ -456,16 +468,21 @@ bool Map::load(SDL_RWops *stream, Game *game)
 		sectors=new Sector[size](game);
 #	else
 		sectors=new Sector[size];
-		for (int i2 = 0; i < size; ++i)
 		{
-			sectors[i2].~Sector();
-			new (&sectors[i2])Sector(game);
+			for (int i = 0; i < size; ++i)
+			{
+				sectors[i].~Sector();
+				new (&sectors[i])Sector(game);
+			}
 		}
 #	endif
 
-	for (int i3=0;i3<size;i3++)
 	{
-		sectors[i3].load(stream, game); // TODO : make a bool sector.load to allow errors.
+		for (int i=0;i<size;++i)
+		{
+			// TODO : make a bool sector.load to allow errors.
+			sectors[i].load(stream, game);
+		}
 	}
 	
 	SDL_RWread(stream, signature, 4, 1);
@@ -485,19 +502,23 @@ void Map::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, wDec);
 	SDL_WriteBE32(stream, hDec);
 	int size=w*h;
-	for (int i=0;i<size;i++)
 	{
-		SDL_WriteBE32(stream, mapDiscovered[i]);
-		SDL_WriteBE32(stream, cases[i].getInteger());
+		for (int i=0;i<size;i++)
+		{
+			SDL_WriteBE32(stream, mapDiscovered[i]);
+			SDL_WriteBE32(stream, cases[i].getInteger());
+		}
 	}
 	SDL_RWwrite(stream, undermap, size, 1);
 
 	SDL_WriteBE32(stream, wSector);
 	SDL_WriteBE32(stream, hSector);
 	size=wSector*hSector;
-	for (int i2=0;i2<size;i2++)
 	{
-		sectors[i2].save(stream);
+		for (int i=0;i<size;++i)
+		{
+			sectors[i].save(stream);
+		}
 	}
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
@@ -505,8 +526,10 @@ void Map::save(SDL_RWops *stream)
 
 void Map::step(void)
 {
-	for (int i=0; i<(wSector*hSector); i++)
-		sectors[i].step();
+	{
+		for (int i=0; i<(wSector*hSector); i++)
+			sectors[i].step();
+	}
 	
 	stepCounter++;
 }
@@ -794,33 +817,35 @@ void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHei
 
 bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
 {
-	for (int i=1; i<32; i++)
 	{
-		for (int j=-i; j<i; j++)
+		for (int i=1; i<32; i++)
 		{
-			if (isRessource(x+i, y+j, ressourceType))
+			for (int j=-i; j<i; j++)
 			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y+j, ressourceType))
-			{
-				*dx=(x-i)&getMaskW();
-				*dy=(y+j)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y+i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+j, y-i, ressourceType))
-			{
-				*dx=(x+j)&getMaskW();
-				*dy=(y-i)&getMaskH();
-				return true;
+				if (isRessource(x+i, y+j, ressourceType))
+				{
+					*dx=(x+i)&getMaskW();
+					*dy=(y+j)&getMaskH();
+					return true;
+				}
+				if (isRessource(x-i, y+j, ressourceType))
+				{
+					*dx=(x-i)&getMaskW();
+					*dy=(y+j)&getMaskH();
+					return true;
+				}
+				if (isRessource(x+j, y+i, ressourceType))
+				{
+					*dx=(x+j)&getMaskW();
+					*dy=(y+i)&getMaskH();
+					return true;
+				}
+				if (isRessource(x+j, y-i, ressourceType))
+				{
+					*dx=(x+j)&getMaskW();
+					*dy=(y-i)&getMaskH();
+					return true;
+				}
 			}
 		}
 	}

@@ -167,10 +167,11 @@ Sint32 BasePlayer::checkSum()
 	cs^=teamNumberMask;
 	cs^=ip.host;
 	cs^=ip.port;
-	
-	for (int i=0; i<(int)strlen(name); i++)
-		cs^=name[i];
-	
+
+	{
+		for (int i=0; i<(int)strlen(name); i++)
+			cs^=name[i];
+	}
 	return cs;
 }
 
