@@ -34,7 +34,9 @@ public:
 	{
 		OK = 0,
 		CANCEL = 1,
-		COMPILE = 2
+		COMPILE = 2,
+		LOAD,
+		SAVE,
 	};
 	
 protected:
@@ -51,6 +53,9 @@ public:
 	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
+
+private:
+	void loadSave(bool isLoad);
 };
 
 #endif

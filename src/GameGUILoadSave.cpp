@@ -20,13 +20,52 @@
 #include "GameGUILoadSave.h"
 #include "GlobalContainer.h"
 #include "Utilities.h"
-#include <GUIList.h>
+#include <GUIFileList.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include "GUIGlob2FileList.h"
+
+class FuncFileList: public FileList
+{
+
+public:
+	FuncFileList::FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
+		const char *dir, const char *extension, const bool recurse, 
+		const char*(*filenameToNameFunc)(const char *filename),
+		const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
+		: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse), 
+			filenameToNameFunc(filenameToNameFunc), nameToFilenameFunc(nameToFilenameFunc)
+	{
+		this->generateList();
+	}
+	
+	FuncFileList::~FuncFileList()
+	{}
+
+private:
+	const char* FuncFileList::fileToList(const char* fileName) const
+	{
+		const char* fullName = this->fullName(fileName);
+		const char* listName = filenameToNameFunc(fullName);
+		delete[] fullName;
+		return listName;
+	}
+	
+	const char* FuncFileList::listToFile(const char* listName) const
+	{
+		const char* fullDir = this->fullDir();
+		const char* fullName = nameToFilenameFunc(fullDir, listName, this->extension.c_str());
+		delete[] fullDir;
+		return fullName;
+	}
+
+private:
+	const char*(*filenameToNameFunc)(const char *filename);
+	const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
+
+};
 
 //! Load/Save screen
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
@@ -48,7 +87,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	this->filenameToNameFunc=filenameToNameFunc;
 	this->nameToFilenameFunc=nameToFilenameFunc;
 
-	fileList=new Glob2FileList(10, 40, 280, 145, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true);
+	fileList=new FuncFileList(10, 40, 280, 145, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true, filenameToNameFunc, nameToFilenameFunc);
 	addWidget(fileList);
 
 	if (!defaultFileName)

@@ -37,6 +37,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("logs");
+	fileManager->addWriteSubdir("scripts");
 	logFileManager=new LogFileManager(fileManager);
 
 	// load user preference
