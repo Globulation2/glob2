@@ -23,6 +23,7 @@
 #include "NetDefine.h"
 #include "YOG.h"
 #include "Marshaling.h"
+#include "Utilities.h"
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
@@ -487,7 +488,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	{
 		if (sessionInfo.players[i].sameip(ip))
 		{
-			fprintf(logFile, "this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
+			fprintf(logFile, "this ip(%s) is already in the player list!\n", Utilities::stringIP(ip));
 
 			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
 			sessionInfo.players[i].netTimeout=0;
@@ -506,7 +507,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 
 	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
 	{
-		fprintf(logFile, "newPlayerPresence::this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
+		fprintf(logFile, "newPlayerPresence::this ip(%s) is added in player list. (player %d)\n", Utilities::stringIP(ip), p);
 		sessionInfo.numberOfPlayer++;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
 		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
@@ -542,12 +543,12 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	{
 		if (serverIP.host!=newHost)
 		{
-			fprintf(logFile, "Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
+			fprintf(logFile, "Bad ip received by(%s). old=(%s) new=(%s)\n", Utilities::stringIP(ip), Utilities::stringIP(serverIP.host), Utilities::stringIP(newHost));
 			return;
 		}
 		if (serverIP.port!=newPort)
 		{
-			fprintf(logFile, "Bad port received by(%x:%d). old=(%d) new=(%d)\n", ip.host, ip.port, serverIP.port, newPort);
+			fprintf(logFile, "Bad port received by(%s). old=(%d) new=(%d)\n", Utilities::stringIP(ip), serverIP.port, newPort);
 			return;
 		}
 	}
@@ -556,7 +557,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 		serverIP.host=newHost;
 		serverIP.port=newPort;
 		serverIPReceived=true;
-		fprintf(logFile, "I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
+		fprintf(logFile, "I recived my ip!:(%s).\n", Utilities::stringIP(serverIP));
 	}
 
 	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
@@ -564,7 +565,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].netTimeoutSize=LONG_NETWORK_TIMEOUT;
 	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
 
-	fprintf(logFile, "this ip(%x:%d) wantsSession (player %d)\n", ip.host, ip.port, p);
+	fprintf(logFile, "this ip(%s) wantsSession (player %d)\n", Utilities::stringIP(ip), p);
 	
 	// all other players are ignorant of the new situation:
 	initHostGlobalState();
@@ -578,7 +579,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 {
 	if (size!=72)
 	{
-		fprintf(logFile, "Bad size(%d) for an File request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an File request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -588,7 +589,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a File request !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a File request !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -596,7 +597,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 	{
 		if (!playerFileTra[p].receivedFile)
 		{
-			fprintf(logFile, "player (%x, %d) first requests file.\n", ip.host, ip.port);
+			fprintf(logFile, "player (%s) first requests file.\n", Utilities::stringIP(ip));
 			playerFileTra[p].wantsFile=true;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
 			{
@@ -776,13 +777,13 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a checksum !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a checksum !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
 	if (rcs!=lcs)
 	{
-		fprintf(logFile, "this ip(%x:%d) confirmed a wrong checksum (player %d)!\n", ip.host, ip.port, i);
+		fprintf(logFile, "this ip(%s) confirmed a wrong checksum (player %d)!\n", Utilities::stringIP(ip), i);
 		fprintf(logFile, "rcs=%x, lcs=%x.\n", rcs, lcs);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
 		sessionInfo.players[i].netTimeout=0;
@@ -792,7 +793,7 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 	}
 	else
 	{
-		fprintf(logFile, "this ip(%x:%d) confirmed a good checksum (player %d)\n", ip.host, ip.port, i);
+		fprintf(logFile, "this ip(%s) confirmed a good checksum (player %d)\n", Utilities::stringIP(ip), i);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_CHECK_SUM;
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -809,7 +810,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmStartCrossConnection !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a confirmStartCrossConnection !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -819,7 +820,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 		sessionInfo.players[i].netTimeout=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		fprintf(logFile, "this ip(%x, %d) is start cross connection confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%s) is start cross connection confirmed..\n", Utilities::stringIP(ip));
 		return;
 	}
 }
@@ -831,7 +832,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmStillCrossConnecting !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a confirmStillCrossConnecting !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -842,7 +843,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
-		fprintf(logFile, "this ip(%x, %d) is continuing cross connection confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip));
 		return;
 	}
 }
@@ -855,7 +856,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a confirmCrossConnectionAchieved !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a confirmCrossConnectionAchieved !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -865,7 +866,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
-		fprintf(logFile, "this ip(%x, %d) is cross connection achievement confirmed..\n", ip.host, ip.port);
+		fprintf(logFile, "this ip(%s) is cross connection achievement confirmed..\n", Utilities::stringIP(ip));
 
 		crossPacketRecieved[i]=3;
 
@@ -880,7 +881,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 {
 	if (size!=8)
 	{
-		fprintf(logFile, "A player (%x, %d) has sent a bad sized confirmPlayerStartGame.\n", ip.host, ip.port);
+		fprintf(logFile, "A player (%s) has sent a bad sized confirmPlayerStartGame.\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -890,7 +891,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 			break;
 	if (i>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sent a confirmPlayerStartGame.\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sent a confirmPlayerStartGame.\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -906,7 +907,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 			// ping=(startGameTimeCounter-sgtc)/2
 			// startGameTimeCounter=(startGameTimeCounter+sgtc)/2 would be a full direct correction
 			// but the division by 4 will gives a fair average ping between all players
-		fprintf(logFile, "this ip(%x, %d) confirmed start game within %d seconds.\n", ip.host, ip.port, sgtc/20);
+		fprintf(logFile, "this ip(%s) confirmed start game within %d seconds.\n", Utilities::stringIP(ip), sgtc/20);
 
 		crossPacketRecieved[i]=4;
 
@@ -921,7 +922,7 @@ void MultiplayersHost::broadcastRequest(char *data, int size, IPaddress ip)
 {
 	if (size!=4)
 	{
-		fprintf(logFile, "broad:Bad size(%d) for a broadcast request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "broad:Bad size(%d) for a broadcast request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
 
@@ -1038,7 +1039,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%d.%d.%d.%d:%d).\n", data[0], (ip.host>>0)&0xFF, (ip.host>>8)&0xFF, (ip.host>>16)&0xFF, (ip.host>>24)&0xFF, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%s).\n", data[0], Utilities::stringIP(ip));
 		};
 	}
 	else
@@ -1050,7 +1051,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%x:%d).\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved by ip(%s).\n", data[0], Utilities::stringIP(ip));
 		};
 	}
 }

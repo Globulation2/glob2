@@ -19,6 +19,14 @@
 
 #include "MultiplayersCrossConnectable.h"
 
+MultiplayersCrossConnectable::MultiplayersCrossConnectable()
+:SessionConnection()
+{
+	serverIP.host=0;
+	serverIP.port=0;
+	ipFromNAT=false;
+}
+
 void MultiplayersCrossConnectable::tryCrossConnections(void)
 {
 	bool sucess=true;

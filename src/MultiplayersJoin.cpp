@@ -22,6 +22,7 @@
 #include "GAG.h"
 #include "NetDefine.h"
 #include "Marshaling.h"
+#include "Utilities.h"
 
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
@@ -74,6 +75,10 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	serverName=serverNameMemory;
 	serverName[0]=0;
 	playerName[0]=0;
+	
+	serverIP.host=0;
+	serverIP.port=0;
+	ipFromNAT=false;
 	
 	kicked=false;
 	
@@ -401,7 +406,7 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 	{
 		if (sessionInfo.players[p].ip.host!=ip.host)
 		{
-			fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%x), but should be ip(%x)!\n", p, ip.host, sessionInfo.players[p].ip.host);
+			fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%s), but should be ip(%s)!\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
 		}
 		else if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
 		{
@@ -490,13 +495,13 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(IPaddress ip)
 {
 	if (waitingState>=WS_CROSS_CONNECTING_START_CONFIRMED)
 	{
-		fprintf(logFile, "server(%x,%d has recieved our stillCrossConnecting state.\n", ip.host, ip.port);
+		fprintf(logFile, "server(%s) has recieved our stillCrossConnecting state.\n", Utilities::stringIP(ip));
 		waitingTimeout=SHORT_NETWORK_TIMEOUT;
 		waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 	}
 	else
-		fprintf(logFile, "Warning: ip(%x,%d) sent us a stillCrossConnectingConfirmation while in a bad state!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%s) sent us a stillCrossConnectingConfirmation while in a bad state!.\n", Utilities::stringIP(ip));
 }
 
 void MultiplayersJoin::crossConnectionsAchievedConfirmation(IPaddress ip)
@@ -510,14 +515,14 @@ void MultiplayersJoin::crossConnectionsAchievedConfirmation(IPaddress ip)
 		waitingTOTL=DEFAULT_NETWORK_TOTL;
 	}
 	else
-		fprintf(logFile, "Warning: ip(%x,%d) sent us a crossConnection achieved state while in a bad state!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%s) sent us a crossConnection achieved state while in a bad state!.\n", Utilities::stringIP(ip));
 }
 
 void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 {
 	if (size!=8)
 	{
-		fprintf(logFile, "Warning: ip(%x,%d) sent us a bad serverAskForBeginning!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%s) sent us a bad serverAskForBeginning!.\n", Utilities::stringIP(ip));
 	}
 
 	if (waitingState>=WS_CROSS_CONNECTING_ACHIEVED)
@@ -529,10 +534,10 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 
 		startGameTimeCounter=data[4];
 
-		fprintf(logFile, "Server(%x,%d) asked for game start, timecounter=%d\n", ip.host, ip.port, startGameTimeCounter);
+		fprintf(logFile, "Server(%s) asked for game start, timecounter=%d\n", Utilities::stringIP(ip), startGameTimeCounter);
 	}
 	else
-		fprintf(logFile, "Warning: ip(%x,%d) sent us a serverAskForBeginning!.\n", ip.host, ip.port);
+		fprintf(logFile, "Warning: ip(%s) sent us a serverAskForBeginning!.\n", Utilities::stringIP(ip));
 
 }
 
@@ -551,7 +556,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 		break;
 	
 		case SERVER_WATER:
-			fprintf(logFile, "water received from ip(%x,%d)!\n", ip.host, ip.port);
+			fprintf(logFile, "water received from ip(%s)!\n", Utilities::stringIP(ip));
 		break;
 		
 		case SERVER_PRESENCE :
@@ -611,7 +616,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 		break;
 
 		default:
-			fprintf(logFile, "Unknow kind of packet(%d) recieved from ip(%x,%d)!\n", data[0], ip.host, ip.port);
+			fprintf(logFile, "Unknow kind of packet(%d) recieved from ip(%s)!\n", data[0], Utilities::stringIP(ip));
 	}
 }
 
@@ -645,7 +650,7 @@ void MultiplayersJoin::receiveTime()
 					}
 				if (!already)
 				{
-					fprintf(logFile, "added (%d.%d.%d.%d) LANHosts\n", (lanhost.ip>>24)&0xFF, (lanhost.ip>>16)&0xFF, (lanhost.ip>>8)&0xFF, (lanhost.ip>>0)&0xFF);
+					fprintf(logFile, "added (%s) LANHosts\n", Utilities::stringIP(lanhost.ip));
 					LANHosts.push_front(lanhost);
 					listHasChanged=true;
 				}
@@ -658,10 +663,10 @@ void MultiplayersJoin::receiveTime()
 		{
 			if (it->timeout<0)
 			{
+				fprintf(logFile, "removed (%s) LANHosts\n", Utilities::stringIP(it->ip));
 				std::list<LANHost>::iterator ittemp=it;
 				it=LANHosts.erase(ittemp);
 				listHasChanged=true;
-				fprintf(logFile, "removed (%d.%d.%d.%d) LANHosts\n", (lanhost.ip>>24)&0xFF, (lanhost.ip>>16)&0xFF, (lanhost.ip>>8)&0xFF, (lanhost.ip>>0)&0xFF);
 			}
 		}
 		
@@ -685,13 +690,16 @@ void MultiplayersJoin::receiveTime()
 						serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						fprintf(logFile, "Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
-						fprintf(logFile, "Trying NAT. serverIP.host=(%x)(%d.%d.%d.%d:%d)(%s)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port, s);
+						if (s==NULL)
+							s=Utilities::stringIP(serverIP.host);
+						ipFromNAT=true;
+						fprintf(logFile, "Trying NAT. serverIP.host=(%s)(%s)\n",Utilities::stringIP(serverIP), s);
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
 						{
 							fprintf(logFile, "MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
-							fprintf(logFile, "MultiplayersJoin:NAT:serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
+							fprintf(logFile, "MultiplayersJoin:NAT:serverIP.port=%d\n", SDL_SwapBE16(serverIP.port));
 						}
 						else
 						{
@@ -711,7 +719,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 {
 	// call yog step TODO: avoit Host AND Join to 
 	if (shareOnYOG)
-		globalContainer->yog->step(); // YOG cares about firewall and NAT
+		globalContainer->yog->step(); // YOG cares about firewall and NATipFromNAT
 	
 	sendingTime();
 	receiveTime();
@@ -1030,10 +1038,10 @@ bool MultiplayersJoin::sendPresenceRequest()
 	strncpy((char *)(packet->data+4), playerName, 32);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
-		fprintf(logFile, "succeded to send presence request packet to host=(%x)(%d.%d.%d.%d:%d)(%s)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port, serverName);
+		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);
 	else
 	{
-		fprintf(logFile, "failed to send presence request packet to host=(%x)(%d.%d.%d.%d:%d)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port);
+		fprintf(logFile, "failed to send presence request packet to host=(%s(%s))\n", Utilities::stringIP(serverIP), serverName);
 		waitingState=WS_TYPING_SERVER_NAME;
 		SDLNet_FreePacket(packet);
 		return false;
@@ -1065,7 +1073,7 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 
 	Uint32 netHost=SDL_SwapBE32((Uint32)serverIP.host);
 	Uint32 netPort=(Uint32)SDL_SwapBE16(serverIP.port);
-	fprintf(logFile, "sendSessionInfoRequest() host=%x, port=%x, netHost=%x netPort=%x\n", serverIP.host, serverIP.port, netHost, netPort);
+	fprintf(logFile, "sendSessionInfoRequest() stringIP=%s, netHost=%s netPort=%d\n", Utilities::stringIP(serverIP), Utilities::stringIP(netHost), netPort);
 	addUint32(packet->data, netHost, 4);
 	addUint32(packet->data, netPort, 8);
 
@@ -1261,7 +1269,7 @@ bool MultiplayersJoin::tryConnection()
 		if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
 		{
 			fprintf(logFile, "serverName=(%s)\n", serverName);
-			fprintf(logFile, "found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
+			fprintf(logFile, "found serverIP=%s\n", Utilities::stringIP(serverIP));
 		}
 		else
 		{
@@ -1277,7 +1285,7 @@ bool MultiplayersJoin::tryConnection()
 	if (channel != -1)
 	{
 		fprintf(logFile, "suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
-		fprintf(logFile, "serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
+		fprintf(logFile, "serverIP.port=%d\n", serverIP.port);
 	}
 	else
 	{
@@ -1343,8 +1351,9 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	}
 	else
 	{
-		Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
-		snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)&0xFF, (lip>>8)&0xFF, (lip>>16)&0xFF, (lip>>24)&0xFF);
+		Utilities::stringIP(serverName, 128, yogGameInfo->ip.host);
+		//zzz Uint32 lip=SDL_SwapBE32(yogGameInfo->ip.host);
+		//zzz snprintf(serverName, 128, "%d.%d.%d.%d", (lip>>0)&0xFF, (lip>>8)&0xFF, (lip>>16)&0xFF, (lip>>24)&0xFF);
 	}
 	serverIP=yogGameInfo->ip;
 	printf("MultiplayersJoin::tryConnection::serverName=%s\n", serverName);
