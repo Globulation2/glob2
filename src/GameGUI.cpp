@@ -109,9 +109,21 @@ void GameGUI::moveFlag(int mx, int my)
 	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY))
 	{
 		Sint32 UID=selBuild->UID;
-		// TODO : find all orderQueue for the same building in OrderMoveFlags, and remove them.
-		
-		orderQueue.push(new OrderMoveFlags(&UID, &posX, &posY, 1));
+		OrderMoveFlags *oms=new OrderMoveFlags(&UID, &posX, &posY, 1);
+		// First, we check if anoter move of the same flag is already in the "orderQueue".
+		bool found=false;
+		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
+		{
+			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( *((OrderMoveFlags *)(*it))->UID==UID) )
+			{
+				delete (*it);
+				(*it)=oms;
+				found=true;
+				break;
+			}
+		}
+		if (!found)
+			orderQueue.push_back(oms);
 		selBuild->posXLocal=posX;
 		selBuild->posYLocal=posY;
 	}
@@ -133,10 +145,10 @@ void GameGUI::flagSelectedStep(void)
 
 void GameGUI::step(void)
 {
+
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
-	int i;
 
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
@@ -160,24 +172,22 @@ void GameGUI::step(void)
 		processEvent(&mouseMotionEvent);
 	if (wasWindowEvent)
 		processEvent(&windowEvent);
-
+	
 	int oldViewportX=viewportX;
 	int oldViewportY=viewportY;
 	viewportX+=game.map.getW();
 	viewportY+=game.map.getH();
-	for (i=0; i<9; i++)
+	for (int i=0; i<9; i++)
 	{
 		viewportX+=viewportSpeedX[i];
 		viewportY+=viewportSpeedY[i];
 	}
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
-
+	
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 		flagSelectedStep();
-
-	statStep();
-
+	
 	if (game.teams[localTeam]->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
 		addMessage(globalContainer->texts.getString("[your units are under attack]"));
 	if (game.teams[localTeam]->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
@@ -187,7 +197,7 @@ void GameGUI::step(void)
 
 }
 
-void GameGUI::statStep(void)
+void GameGUI::synchroneStep(void)
 {
 	teamStats.step(game.teams[localTeam]);
 }
@@ -284,7 +294,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				break;
 				case InGameMainScreen::QUIT_GAME:
 				{
-					orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
 					return true;
@@ -322,7 +332,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 							teamVisionMask|=(1<<otherTeam);
 						}
 					}
-					orderQueue.push(new SetAllianceOrder(localTeam, teamAllianceMask, teamVisionMask));
+					orderQueue.push_back(new SetAllianceOrder(localTeam, teamAllianceMask, teamVisionMask));
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -347,7 +357,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					{
 						strncpy(toLoadGameFileName, name, Map::MAP_NAME_MAX_SIZE+5);
 						toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+4]=0;
-						orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					}
 					else
 					{
@@ -389,7 +399,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		{
 			if (typingInputScreen->getText()[0])
 			{
-				orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
+				orderQueue.push_back(new MessageOrder(chatMask, typingInputScreen->getText()));
 				typingInputScreen->setText("");
 			}
 			typingInputScreenInc=-10;
@@ -449,7 +459,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
-		orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+		orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 		//isRunning=false;
 	}
 	else if (event->type==SDL_VIDEORESIZE)
@@ -621,7 +631,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-						orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 					}
 				}
 				break;
@@ -631,7 +641,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-						orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 					}
 				}
 				break;
@@ -639,7 +649,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					if ((pressed) && selBuild && (selBuild->owner->teamNumber==localTeam))
 					{
-						orderQueue.push(new OrderDelete(selBuild->UID));
+						orderQueue.push_back(new OrderDelete(selBuild->UID));
 					}
 				}
 				break;
@@ -648,7 +658,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
 					{
-						orderQueue.push(new OrderUpgrade(selBuild->UID));
+						orderQueue.push_back(new OrderUpgrade(selBuild->UID));
 					}
 				}
 				break;
@@ -777,7 +787,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 		if (isRoom || bt->isVirtual)
 		{
-			orderQueue.push(new OrderCreate(localTeam, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
+			orderQueue.push_back(new OrderCreate(localTeam, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
 		}
 	}
 	else
@@ -909,20 +919,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				if(selBuild->maxUnitWorkingLocal>0)
 				{
 					nbReq=(selBuild->maxUnitWorkingLocal-=1);
-					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 				}
 			}
 			else if (mx<128-16)
 			{
 				nbReq=selBuild->maxUnitWorkingLocal=((mx-16)*MAX_UNIT_WORKING)/94;
-				orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+				orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
 			{
 				if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
 				{
 					nbReq=(selBuild->maxUnitWorkingLocal+=1);
-					orderQueue.push(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
+					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 				}
 			}
 		}
@@ -935,7 +945,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				if(selBuild->unitStayRangeLocal>0)
 				{
 					nbReq=(selBuild->unitStayRangeLocal-=1);
-					orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+					orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 				}
 			}
 			else if (mx<128-16)
@@ -946,7 +956,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					nbReq=selBuild->unitStayRangeLocal=((mx-16)*MAX_WAR_FLAG_RANGE)/94;
 				else
 					assert(false);
-				orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+				orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
 			{
@@ -955,7 +965,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->unitStayRangeLocal<MAX_EXPLO_FLAG_RANGE)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 					}
 				}
 				else if (selBuild->type->type==BuildingType::WAR_FLAG)
@@ -963,7 +973,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					if(selBuild->unitStayRangeLocal<MAX_WAR_FLAG_RANGE)
 					{
 						nbReq=(selBuild->unitStayRangeLocal+=1);
-						orderQueue.push(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
+						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 					}
 				}
 				else
@@ -986,7 +996,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 							Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
 							memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
+							orderQueue.push_back(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 						}
 					}
 					else if (mx<128-16)
@@ -995,7 +1005,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 						Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
 						memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
-						orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
+						orderQueue.push_back(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 					}
 					else
 					{
@@ -1005,7 +1015,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 							Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
 							memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
-							orderQueue.push(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
+							orderQueue.push_back(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -1017,11 +1027,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
-				orderQueue.push(new OrderCancelDelete(selBuild->UID));
+				orderQueue.push_back(new OrderCancelDelete(selBuild->UID));
 			}
 			else if (selBuild->buildingState==Building::ALIVE)
 			{
-				orderQueue.push(new OrderDelete(selBuild->UID));
+				orderQueue.push_back(new OrderDelete(selBuild->UID));
 			}
 		}
 
@@ -1030,19 +1040,19 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
 			{
 				if ((selBuild->type->lastLevelTypeNum!=-1))
-					orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+					orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
 			}
 			else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
 			{
-				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+				orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
 			}
 			else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
 			{
-				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
+				orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
 			}
 			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 			{
-				orderQueue.push(new OrderUpgrade(selBuild->UID));
+				orderQueue.push_back(new OrderUpgrade(selBuild->UID));
 			}
 		}
 	}
@@ -1063,8 +1073,7 @@ Order *GameGUI::getOrder(void)
 	else
 	{
 		Order *order=orderQueue.front();
-		orderQueue.pop();
-
+		orderQueue.pop_front();
 		return order;
 	}
 }
@@ -1322,7 +1331,15 @@ void GameGUI::draw(void)
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+48, globalContainer->littleFontGreen, globalContainer->texts.getString("[don't carry anything]"));
 				}
 			}
-
+			
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+80, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[speed]"), selUnit->speed);
+			
+			if (selUnit->performance[ATTACK_SPEED])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+96, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[attack speed]"), selUnit->performance[ATTACK_SPEED]);
+			
+			if (selUnit->performance[ATTACK_STRENGTH])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+112, globalContainer->littleFontGreen, "%s : %d", globalContainer->texts.getString("[damage]"), selUnit->performance[ATTACK_STRENGTH]);
+			
 			/* NOTE : I have comment this debug code that isn't used anymore
 			Sint32 UID=selUnit->UID;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFontGreen, "hp=%d", selUnit->hp);

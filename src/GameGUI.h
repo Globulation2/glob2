@@ -97,7 +97,9 @@ private:
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
-	void statStep(void);
+public:
+	void synchroneStep(void);
+private:
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
 	void drawOverlayInfos(void);
@@ -156,7 +158,7 @@ private:
 
 	Uint32 chatMask;
 
-	std::queue<Order *> orderQueue;
+	std::list<Order *> orderQueue;
 
 	int mouseX, mouseY;
 	int viewportSpeedX[9], viewportSpeedY[9];
