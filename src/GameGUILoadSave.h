@@ -41,6 +41,7 @@ private:
 	char *directory;
 
 public:
+	//! Constructor : directory and extension must be given without the / and the .
 	LoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);
 	virtual ~LoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);

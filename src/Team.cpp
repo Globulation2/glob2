@@ -842,5 +842,5 @@ const char *Team::getFirstPlayerName(void)
 		if (game->players[i]->team == this)
 			return game->players[i]->name;
 	}
-	return NULL;
+	return  globalContainer->texts.getString("[Uncontrolled]");
 }
