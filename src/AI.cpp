@@ -22,6 +22,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "Game.h"
+#include <assert.h>
 
 #include "AINumbi.h"
 

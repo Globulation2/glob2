@@ -54,7 +54,7 @@ void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par
 		endValue=par1;
 }
 
-int MessageBox(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2 = NULL, const char *caption3 = NULL)
+int MessageBox(GraphicContext *parentCtx, Font *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
 {
 	// for passing captions to class
 	const char *captionArray[3]={

@@ -22,6 +22,7 @@
 #include <math.h>
 #include <Environment.h>
 #include <SupportFunctions.h>
+#include <assert.h>
 
 extern SDLGraphicContext *screen;
 

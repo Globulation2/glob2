@@ -20,6 +20,7 @@
 #include "SDLFont.h"
 #include <Environment.h>
 #include <SupportFunctions.h>
+#include <assert.h>
 
 SDLBitmapFont::SDLBitmapFont()
 {
@@ -431,7 +432,7 @@ unsigned SDLTTFont::getStyle(void) const
 	return styleStack.top();
 }
 
-void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const
+void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip) const
 {
 	assert(text);
 	assert(font);

@@ -20,7 +20,7 @@
 #include <vector>
 #include "Race.h"
 #include "GlobalContainer.h"
-
+#include <assert.h>
 
 
 Race::~Race()

@@ -18,6 +18,7 @@
 */
 
 #include <GUIBase.h>
+#include <assert.h>
 
 // this function support base unicode (UCS16)
 void UCS16toUTF8(Uint16 ucs16, char utf8[4])

@@ -24,6 +24,8 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "NetConsts.h"
+#include <assert.h>
+
 
 class Order
 {

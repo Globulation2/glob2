@@ -54,9 +54,11 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include <iostream>
 #include <string>
 #include <deque>
+#include <vector>
 #include <strings.h>
 #include "SGSL.h"
 #include "Game.h"
+
 
 Token::TokenSymbolLookupTable Token::table[] =
 {
@@ -464,7 +466,7 @@ bool Story::testCondition()
 				flag.x=line[lineSelector+2].value;
 				flag.y=line[lineSelector+3].value;
 				
-				for (vector<Flag>::iterator it=mapscript->flags.begin(); it != mapscript->flags.end(); ++it)
+				for (std::vector<Flag>::iterator it=mapscript->flags.begin(); it != mapscript->flags.end(); ++it)
 				{
 					if ((*it).name==flag.name)
 					{

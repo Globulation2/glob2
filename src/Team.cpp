@@ -273,7 +273,7 @@ Building *Team::findBestConstruction(Unit *unit)
 	if (r==-1)
 	{
 		int dx, dy;
-		if (map.nearestRessource(x, y, &(RessourceType)r, &dx, &dy))
+		if (map.nearestRessource(x, y, (RessourceType *)&r, &dx, &dy))
 		{
 			// Ressouce "r" is aviable around here.
 			// I'll try to find a building who need this ressouce.

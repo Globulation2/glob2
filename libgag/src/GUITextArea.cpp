@@ -18,6 +18,7 @@
 */
 
 #include <GUITextArea.h>
+#include <assert.h>
 
 TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly, const char *text)
 {
