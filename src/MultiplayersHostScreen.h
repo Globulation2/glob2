@@ -55,6 +55,7 @@ public:
 
 	MultiplayersHost *multiplayersHost;
 	MultiplayersJoin *multiplayersJoin;
+	bool shareOnYOG;
 
 	TextButton *startButton;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];

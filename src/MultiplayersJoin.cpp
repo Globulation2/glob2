@@ -1036,7 +1036,7 @@ bool MultiplayersJoin::sendPresenceRequest()
 	}
 	else
 	{
-		fprintf(logFile, "failed to send session request packet\n");
+		fprintf(logFile, "failed to send presence request packet to host=(%x)(%d.%d.%d.%d:%d)\n", serverIP.host, (serverIP.host>>0)&0xFF, (serverIP.host>>8)&0xFF, (serverIP.host>>16)&0xFF, (serverIP.host>>24)&0xFF, serverIP.port);
 		waitingState=WS_TYPING_SERVER_NAME;
 		SDLNet_FreePacket(packet);
 		return false;
@@ -1298,8 +1298,8 @@ bool MultiplayersJoin::tryConnection()
 		waitingTOTL=DEFAULT_NETWORK_TOTL-1;
 	
 	
-		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
-		fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+	IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
+	fprintf(logFile, "Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	
 	return sendPresenceRequest();
 }

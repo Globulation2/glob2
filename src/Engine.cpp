@@ -238,11 +238,8 @@ void Engine::startMultiplayer(SessionConnection *sessionConnection)
 	gui.localTeamNo=gui.localTeamNo % sessionConnection->sessionInfo.numberOfTeam; // Ugly relase case.
 
 	gui.game.renderMiniMap(gui.localTeamNo);
-	gui.viewportX=gui.game.teams[gui.localTeamNo]->startPosX-((globalContainer->gfx->getW()-128)>>6);
-	gui.viewportY=gui.game.teams[gui.localTeamNo]->startPosY-(globalContainer->gfx->getH()>>6);
-	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
-	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
-
+	gui.adjustInitialViewport();
+	
 	// we create the net game
 	net=new NetGame(sessionConnection->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
