@@ -87,7 +87,7 @@ int Engine::initCampain()
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 
-	return initCampain(loadCampaignScreen.sessionInfo.getFileName());
+	return initCampain(glob2NameToFilename("campaigns", loadCampaignScreen.sessionInfo.getMapName().c_str(), "map"));
 }
 
 int Engine::initCampain(const std::string &mapName)
