@@ -162,19 +162,6 @@ void NetGame::init(void)
 	dropState=DS_NO_DROP_PROCESSING;
 };
 
-/*Uint32 NetGame::whoMaskAreWeWaitingFor(void)
-{
-	Uint32 waitingPlayersMask=0;
-	for (int p=0; p<numberOfPlayer; p++)
-	{
-		int type=players[p]->type;
-		if (type==Player::P_IP && !players[p]->quitting)
-			if (ordersQueue[p][executeStep]==NULL || (lastReceivedFromMe[p]+1)==freeingStep)
-				waitingPlayersMask|=1<<p;
-	}
-	return waitingPlayersMask;
-};*/
-
 Uint32 NetGame::whoMaskAreWeWaitingFor(void)
 {
 	Uint32 waitingPlayersMask=0;
@@ -220,7 +207,9 @@ void NetGame::sendPushOrder(int targetPlayer)
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
-	int totalSize=5;
+	fprintf(logFile, "sendPushOrder.\n");
+	
+	int totalSize=3;
 	Uint8 step=pushStep;
 	int n;
 	for (n=0; n<ordersByPackets; n++) //TODO: only send twice small orders. This means if size<=16
@@ -229,13 +218,13 @@ void NetGame::sendPushOrder(int targetPlayer)
 		assert(order);
 		if (order->latencyPadding)
 		{
-			fprintf(logFile, "sendPushOrder skipped step=%d.\n", step);
+			fprintf(logFile, " skipped step=%d.\n", step);
 			assert(order->getOrderType()==ORDER_NULL);
 			step++; // We skip orders which have been added to increase latency.
 			order=ordersQueue[localPlayerNumber][step];
 			assert(order);
 		}
-		totalSize+=3+order->getDataLength();
+		totalSize+=5+order->getDataLength();
 		if (step==executeStep)
 		{
 			n++;
@@ -247,13 +236,8 @@ void NetGame::sendPushOrder(int targetPlayer)
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
-	data[3]=myLocalWishedLatency;
-	data[4]=myLocalWishedDelay;
-	fprintf(logFile, "sendPushOrder.\n");
-	fprintf(logFile, " myLocalWishedLatency=%d.\n", myLocalWishedLatency);
-	fprintf(logFile, " myLocalWishedDelay=%d.\n", myLocalWishedDelay);
 	fprintf(logFile, " lastReceivedFromHim(%d)=%d\n", targetPlayer, lastReceivedFromHim(targetPlayer));
-	int l=5;
+	int l=3;
 	step=pushStep;
 	for (int i=0; i<n; i++)
 	{
@@ -269,15 +253,23 @@ void NetGame::sendPushOrder(int targetPlayer)
 		int orderSize=order->getDataLength();
 		data[l++]=step;
 		data[l++]=orderSize;
-		fprintf(logFile, " sending, step=%d, orderSize=%d\n", step, orderSize);
+		data[l++]=order->wishedLatency;
+		data[l++]=order->wishedDelay;
 		data[l++]=order->getOrderType();
+		fprintf(logFile, " sending, step=%d, orderSize=%d, wishedLatency=%d, wishedDelay=%d, orderType=%d\n",
+				step, orderSize, order->wishedLatency, order->wishedDelay, order->getOrderType());
 		memcpy(data+l, order->getData(), orderSize);
 		l+=orderSize;
 		step--;
 	}
 	assert(l==totalSize);
-	//printf("send data=[%d, %d, %d, %d, %d]\n", data[0], data[1], data[2], data[3], data[4]);
-	fprintf(logFile, " %d totalSize=%d.\n", n, totalSize);
+	
+	fprintf(logFile, " data ");
+	for (int i=0; i<totalSize; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
+	
+	fprintf(logFile, " %d orders, totalSize=%d.\n", n, totalSize);
 	players[targetPlayer]->send(data, totalSize);
 	
 	free(data);
@@ -287,30 +279,30 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 {
 	assert(players[targetPlayer]->type==Player::P_IP || (players[targetPlayer]->type==Player::P_LOST_FINAL && players[targetPlayer]->quitting));
 	assert(targetPlayer!=localPlayerNumber);
+	fprintf(logFile, "sendWaitingForPlayerOrder\n");
 
-	int totalSize=5;
 	WaitingForPlayerOrder *wfpo=new WaitingForPlayerOrder(waitingForPlayerMask);
-	totalSize+=3+wfpo->getDataLength();
+	int totalSize=3+5+wfpo->getDataLength();
 
 	Uint8 resendStep=lastReceivedFromMe[targetPlayer]+1;
 	Order *order=ordersQueue[localPlayerNumber][resendStep];
 	if (order)
 	{
-		totalSize+=3+order->getDataLength();
-		fprintf(logFile, "resendAviable, resendStep[%d]=%d, v-wfpo\n", targetPlayer, resendStep);
+		totalSize+=5+order->getDataLength();
+		fprintf(logFile, " resendAviable, resendStep[%d]=%d, v-wfpo\n", targetPlayer, resendStep);
 	}
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
-	data[3]=myLocalWishedLatency;
-	data[4]=myLocalWishedDelay;
 
-	int l=5;
+	int l=3;
 	int size=wfpo->getDataLength();
 	data[l++]=executeStep;
 	data[l++]=size;
+	data[l++]=0;
+	data[l++]=0;
 	data[l++]=wfpo->getOrderType();
 	memcpy(data+l, wfpo->getData(), size);
 	l+=size;
@@ -320,14 +312,20 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 		int orderSize=order->getDataLength();
 		data[l++]=resendStep;
 		data[l++]=orderSize;
+		data[l++]=order->wishedLatency;
+		data[l++]=order->wishedDelay;
 		data[l++]=order->getOrderType();
 		memcpy(data+l, order->getData(), orderSize);
 		l+=orderSize;
 	}
 	assert(l==totalSize);
-
-	//printf("send data=[%d, %d, %d, %d, %d]\n", data[0], data[1], data[2], data[3], data[4]);
-	fprintf(logFile, "totalSize=%d.\n", totalSize);
+	
+	fprintf(logFile, " data ");
+	for (int i=0; i<totalSize; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
+	
+	fprintf(logFile, " totalSize=%d.\n", totalSize);
 	players[targetPlayer]->send(data, totalSize);
 
 	free(data);
@@ -338,35 +336,43 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 {
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
+	fprintf(logFile, "sendDroppingPlayersMask\n");
 
 	int n=0;
 	for (int p=0; p<numberOfPlayer; p++)
 		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
 			n++;
 	int totalSize=13+n;
-	fprintf(logFile, "sending ORDER_DROPPING_PLAYER to player %d, myDroppingPlayersMask=%x, executeStep=%d, n=%d\n", targetPlayer, droppingPlayersMask[localPlayerNumber], executeStep, n);
+	fprintf(logFile, " to player %d, myDroppingPlayersMask=%x, executeStep=%d, n=%d\n",
+			targetPlayer, droppingPlayersMask[localPlayerNumber], executeStep, n);
 	
 	Uint8 *data=(Uint8 *)malloc(totalSize);
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
-	data[3]=myLocalWishedLatency;
-	data[4]=myLocalWishedDelay;
 	
-	data[5]=executeStep;
-	data[6]=5+n;
+	data[3]=executeStep;
+	data[4]=5+n;
+	data[5]=myLocalWishedLatency;
+	data[6]=myLocalWishedDelay;
 	data[7]=ORDER_DROPPING_PLAYER;
 	data[8]=askForReply;
 	addUint32(data, droppingPlayersMask[localPlayerNumber], 9);
 	
-	int l=0;
+	int l=13;
 	for (int p=0; p<numberOfPlayer; p++)
 		if (players[p]->type==Player::P_IP && (droppingPlayersMask[localPlayerNumber]&(1<<p)))
 		{
-			data[13+l]=lastReceivedFromHim(p);
-			fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", p, data[13+l]);
+			data[l]=lastReceivedFromHim(p);
+			fprintf(logFile, " lastReceivedFromHim(%d)=%d.\n", p, data[l]);
 			l++;
 		}
+	assert(l==totalSize);
+	
+	fprintf(logFile, " data ");
+	for (int i=0; i<totalSize; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
 	
 	players[targetPlayer]->send(data, totalSize);
 
@@ -382,14 +388,19 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=localPlayerNumber;
 	data[2]=lastReceivedFromHim(targetPlayer);
-	data[3]=myLocalWishedLatency;
-	data[4]=myLocalWishedDelay;
 	
-	data[5]=resendingStep;
-	data[6]=1;
+	data[3]=resendingStep;
+	data[4]=1;
+	data[5]=myLocalWishedLatency;
+	data[6]=myLocalWishedDelay;
 	data[7]=ORDER_REQUESTING_AWAY;
 	
 	data[8]=missingPlayer;
+	
+	fprintf(logFile, " data ");
+	for (int i=0; i<9; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
 	
 	players[targetPlayer]->send(data, 9);
 
@@ -401,7 +412,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 	assert(players[targetPlayer]->type==Player::P_IP);
 	assert(targetPlayer!=localPlayerNumber);
 	
-	int totalSize=5;
+	int totalSize=3;
 	Uint8 step=resendingStep;
 	int nbp=0;
 	for (int n=0; n<ordersByPackets; n++)
@@ -409,7 +420,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 		Order *order=ordersQueue[missingPlayer][step];
 		if (order)
 		{
-			totalSize+=3+order->getDataLength();
+			totalSize+=5+order->getDataLength();
 			nbp++;
 		}
 		step--;
@@ -420,11 +431,9 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 	data[0]=MULTIPLE_ORDERS;
 	data[1]=missingPlayer;
 	data[2]=0;
-	data[3]=0;
-	data[4]=0;
 	
 	fprintf(logFile, "sendDeadAwayOrder missingPlayer=%d, targetPlayer=%d.\n", missingPlayer, targetPlayer);
-	int l=5;
+	int l=3;
 	step=resendingStep;
 	for (int n=0; n<ordersByPackets; n++)
 	{
@@ -434,6 +443,8 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 			int orderSize=order->getDataLength();
 			data[l++]=step;
 			data[l++]=orderSize;
+			data[l++]=order->wishedLatency;
+			data[l++]=order->wishedDelay;
 			data[l++]=order->getOrderType();
 			memcpy(data+l, order->getData(), orderSize);
 			l+=orderSize;
@@ -441,6 +452,11 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint8 resen
 		step--;
 	}
 	assert(l==totalSize);
+	
+	fprintf(logFile, " data ");
+	for (int i=0; i<totalSize; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
 	
 	fprintf(logFile, "%d totalSize=%d.\n", nbp, totalSize);
 	players[targetPlayer]->send(data, totalSize);
@@ -611,7 +627,10 @@ Order *NetGame::getOrder(int playerNumber)
 		{
 			if (checkSumsLocal[executeStep]!=checkSumsRemote[executeStep])
 			{
-				printf("World desynchronisation at executeStep %d: %x!=%x\n", executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
+				printf("World desynchronisation at executeStep %d: %x!=%x\n",
+						executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
+				fprintf(logFile, "World desynchronisation at executeStep %d: %x!=%x\n",
+						executeStep, checkSumsLocal[executeStep], checkSumsRemote[executeStep]);
 				assert(false);
 			}
 			//else
@@ -789,7 +808,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		fprintf(logFile, "Other packet data[0]=%d packet received from %s, v1\n", data[0], Utilities::stringIP(ip));
 		return;
 	}
-	if (size<5)
+	if (size<3)
 	{
 		fprintf(logFile, "Warning, dangerous too small packet received from %s, v2\n", Utilities::stringIP(ip));
 		return;
@@ -800,26 +819,29 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	assert(player>=0);
 	assert(player<32);
 	lastReceivedFromMe[player]=receivedStep;
-	Uint8 receivedWishedLatency=data[3];
-	Uint8 receivedWishedDelay=data[4];
 	
-	fprintf(logFile, "treatData, receivedWishedLatency=%d, receivedWishedDelay=%d\n", receivedWishedLatency, receivedWishedDelay);
-	fprintf(logFile, " lastReceivedFromMe[%d]=%d\n", player, receivedStep);
+	fprintf(logFile, "treatData, lastReceivedFromMe[%d]=%d\n", player, receivedStep);
+	fprintf(logFile, " data ");
+	for (int i=0; i<size; i++)
+		fprintf(logFile, "[%d]%d ", i, data[i]);
+	fprintf(logFile, "\n");
 	
-	int l=5;
+	int l=3;
 	while (l<size)
 	{
-		if (size-l<3)
+		if (size-l<5)
 		{
 			fprintf(logFile, " Warning, dangerous too small packet received from %s, v3\n", Utilities::stringIP(ip));
 			return;
 		}
 		
-		//printf("treat data=[%d, %d, %d, %d, %d]\n", data[0], data[1], data[2], data[3], data[4]);
 		Uint8 orderStep=data[l++];
 		int orderSize=data[l++];
+		Uint8 receivedWishedLatency=data[l++];
+		Uint8 receivedWishedDelay=data[l++];
 		Uint8 orderType=data[l++];
-		fprintf(logFile, " oneOrder player=%d, orderStep=%d, orderSize=%d, orderType=%d\n", player, orderStep, orderSize, orderType);
+		fprintf(logFile, " oneOrder player=%d, orderStep=%d, orderSize=%d, orderType=%d, receivedWishedLatency=%d, receivedWishedDelay=%d\n",
+				player, orderStep, orderSize, orderType, receivedWishedLatency, receivedWishedDelay);
 	
 		if (!players[player]->sameip(ip))
 			if (dropState!=DS_EXCHANGING_ORDERS)
@@ -850,7 +872,8 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			droppingPlayersMask[player]=dropMask;
 			lastExecutedStep[player]=orderStep-1;
 			
-			fprintf(logFile, "  player %d has askForReply=%d, dropMask=%x, lastExecutedStep=%d, orderSize=%d\n", player, askForReply, dropMask, orderStep-1, orderSize);
+			fprintf(logFile, "  player %d has askForReply=%d, dropMask=%x, lastExecutedStep=%d, orderSize=%d\n",
+					player, askForReply, dropMask, orderStep-1, orderSize);
 			
 			if (askForReply && players[player]->type==Player::P_IP)
 				sendDroppingPlayersMask(player, false);
@@ -945,7 +968,8 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 			{
 				fprintf(logFile, "  duplicated packet. player=%d, orderStep=%d, v-n\n", player, orderStep);
 				Order *order=ordersQueue[player][orderStep];
-				if (orderType!=ORDER_SUBMIT_CHECK_SUM && orderType!=ORDER_WAITING_FOR_PLAYER && order->getOrderType()!=orderType)
+				if (orderType!=ORDER_WAITING_FOR_PLAYER && order->getOrderType()!=orderType &&
+					!(order->getOrderType()==ORDER_NULL && (orderType==ORDER_SUBMIT_CHECK_SUM || orderType==ORDER_NULL)))
 				{
 					fprintf(logFile, "  old type=%d, new type=%d\n", order->getOrderType(), orderType);
 					fclose(logFile);

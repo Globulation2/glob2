@@ -333,7 +333,7 @@ bool BasePlayer::send(Uint8 *data, int size)
 	packet->address=ip;
 	packet->channel=channel;
 	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	//if (abs(rand()%100)<70)
+	//if (abs(rand()%100)<80)
 		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
 	// Notice that we can choose between giving a "channel", or the ip.
 	// Here we do both. Then "channel" could be -1.
