@@ -352,19 +352,14 @@ bool Game::load(SDL_RWops *stream)
 	SessionInfo tempSessionInfo;
 	tempSessionInfo.load(stream);
 
-	session.numberOfPlayer=tempSessionInfo.numberOfPlayer;
-	session.numberOfTeam=tempSessionInfo.numberOfTeam;
-
-	session.gameTPF=tempSessionInfo.gameTPF;
-	session.gameLatency=tempSessionInfo.gameLatency;
-
+	memcpy(&session.versionMajor, &tempSessionInfo.versionMajor, 11*4);
 	memcpy(map.mapName, tempSessionInfo.map.mapName, 32);
-	// other informations are dropped
-
-	//session=*((SessionGame *)(&tempSessionInfo));
+	// other informations are dropped, are they used somewhere ????
 
 	char signature[4];
 
+	if (session.versionMinor>1)
+		SDL_RWseek(stream, tempSessionInfo.gameOffset , SEEK_SET);
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
@@ -378,10 +373,15 @@ bool Game::load(SDL_RWops *stream)
 		return false;
 
 	// recreate new teams and players
+	if (session.versionMinor>1)
+		SDL_RWseek(stream, tempSessionInfo.teamsOffset , SEEK_SET);
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
 		teams[i]=new Team(stream, this);
 	}
+
+	if (session.versionMinor>1)
+		SDL_RWseek(stream, tempSessionInfo.playersOffset , SEEK_SET);
 	for (i=0; i<session.numberOfPlayer; ++i)
 	{
 		players[i]=new Player(stream, teams);
@@ -389,6 +389,8 @@ bool Game::load(SDL_RWops *stream)
 	stepCounter=SDL_ReadBE32(stream);
 
 	// we have to load team before map
+	if (session.versionMinor>1)
+		SDL_RWseek(stream, tempSessionInfo.mapOffset , SEEK_SET);
 	map.load(stream, this);
 
 	SDL_RWread(stream, signature, 4, 1);
@@ -421,7 +423,6 @@ void Game::save(SDL_RWops *stream)
 	
 	tempSessionInfo.map=map;
 
-
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
 		tempSessionInfo.team[i]=*teams[i];
@@ -434,26 +435,30 @@ void Game::save(SDL_RWops *stream)
 	
 	tempSessionInfo.save(stream);
 
+	SAVE_OFFSET(stream, 16);
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 
 	SDL_WriteBE32(stream, getSyncRandSeedA());
 	SDL_WriteBE32(stream, getSyncRandSeedB());
 	SDL_WriteBE32(stream, getSyncRandSeedC());
-	
+
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 
+	SAVE_OFFSET(stream, 20);
 	for (i=0; i<session.numberOfTeam; ++i)
 	{
 		teams[i]->save(stream);
 	}
 
+	SAVE_OFFSET(stream, 24);
 	for (i=0; i<session.numberOfPlayer; ++i)
 	{
 		players[i]->save(stream);
 	}
-		
+
 	SDL_WriteBE32(stream, stepCounter);
-	
+
+	SAVE_OFFSET(stream, 28);
 	map.save(stream);
 
 	SDL_RWwrite(stream, "GLO2", 4, 1);

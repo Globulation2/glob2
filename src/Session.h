@@ -27,6 +27,17 @@
 #include "Player.h"
 #include "Map.h"
 
+//! Save in stream at offset the actual file pos
+#define SAVE_OFFSET(stream, offset) \
+	{ \
+		Uint32 pos=SDL_RWtell(stream); \
+		SDL_RWseek(stream, offset, SEEK_SET); \
+		SDL_WriteBE32(stream, pos); \
+		SDL_RWseek(stream, pos, SEEK_SET); \
+	}
+
+//! This is named SessionGame but in fact it is Glob2's map headers.
+//! Map Specific infos are not serialized and don't go through network
 class SessionGame:public Order
 {
 public:
@@ -48,10 +59,14 @@ public:
 	//! Minor map version. Change each time something has been changed in serialized version.
 	Sint32 versionMinor;
 
-	//! Offset of array of players from beginning of file
-	Uint32 playersOffset;
+	//! Offset of SessionInfo own's data from beginning of file
+	Uint32 sessionInfoOffset;
+	//! Offset of Game own's data from beginning of file
+	Uint32 gameOffset;
 	//! Offset of array of teams from beginning of file
 	Uint32 teamsOffset;
+	//! Offset of array of players from beginning of file
+	Uint32 playersOffset;
 	//! Offset of map (terrain) data from beginning of file
 	Uint32 mapOffset;
 

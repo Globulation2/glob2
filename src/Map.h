@@ -127,7 +127,7 @@ public:
 	//! Save a map
 	void save(SDL_RWops *stream);
 	//! Load a map from a stream and relink with associated game
-	bool load(SDL_RWops *stream, Game *game);
+	bool load(SDL_RWops *stream, Game *game=NULL);
 
 	//! Grow ressources on map
 	void growRessources(void);
@@ -257,7 +257,7 @@ public:
 	//! Return the nearest ressource from (x,y) for type ressourceType. The position is returned in (dx,dy)
 	bool nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
 	//! Save a thumbnail of the map in stream
-	void saveThumbnail(SDL_RWops *stream);
+	//void saveThumbnail(SDL_RWops *stream);
 
 protected:
 	// private functions, used for edition
