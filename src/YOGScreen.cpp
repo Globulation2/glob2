@@ -27,8 +27,6 @@
 YOGScreen::YOGScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(true);
-	//strncpy(multiplayersJoin->serverName, "nohost", 128);
-	//strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
 
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
@@ -270,15 +268,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		printf("YOG : selected ip is %s\n", s);
 		*/
 		// we create a new screen to join this game:
-		
-		/*printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
-		strncpy(multiplayersJoin->serverName, IPs[par1], 128);
-		multiplayersJoin->serverName[127]=0;
-		strncpy(multiplayersJoin->playerName, globalContainer->settings.userName, 128);
-		multiplayersJoin->playerName[127]=0;
-		strncpy(multiplayersJoin->gameName, "ilesAleatoires", 32);
-		multiplayersJoin->gameName[31]=0;
-		multiplayersJoin->tryConnection();*/
 		
 		printf("YOG : Selected hostname is [%s]\n", selectedGameInfo->hostname);
 		multiplayersJoin->tryConnection(selectedGameInfo);

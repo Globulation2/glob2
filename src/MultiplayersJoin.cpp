@@ -409,36 +409,6 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	}
 }
 
-/*bool MultiplayersJoin::getList(char ***list, int *length)
-{
-	if (listHasChanged)
-	{
-		listHasChanged=false;
-		
-		int l=LANHosts.size();
-		*list=new char*[l];
-		
-		std::list<LANHost>::iterator it;
-		int i=0;
-		for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
-		{
-			assert(i<l);
-			(*list)[i]=new char[16];
-			
-			Uint32 netHost=SDL_SwapBE32(it->ip);//do work on x86
-			//Uint32 netHost=SDL_SwapLE32(it->ip);//don't work on x86
-			//Uint32 netHost=it->ip;//don't work on x86
-			snprintf((*list)[i], 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
-			printf("getList::list[%d]=%s\n", i, (*list)[i]);
-			i++;
-		}
-		*length=l;
-		return true;
-	}
-	else
-		return false;
-}*/
-
 void MultiplayersJoin::receiveTime()
 {
 	if ((broadcastState==BS_ENABLE_LAN) || (broadcastState==BS_ENABLE_YOG))
@@ -488,10 +458,10 @@ void MultiplayersJoin::receiveTime()
 		if (broadcastState==BS_ENABLE_YOG)
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
 				if (strncmp(it->serverNickName, serverNickName, 32)==0)
-					if (serverIP.host!=SDL_SwapLE32(it->ip))
+					if (serverIP.host!=it->ip)
 					{
-						serverIP.host=SDL_SwapLE32(it->ip);
-						serverIP.port=SDL_SwapBE16(SERVER_PORT);
+						serverIP.host=it->ip;
+						//serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						NETPRINTF("Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
 						NETPRINTF("Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
@@ -1008,7 +978,10 @@ bool MultiplayersJoin::tryConnection()
 		return false;
 	}
 
-	waitingTOTL=DEFAULT_NETWORK_TOTL+1;
+	if (shareOnYOG)
+		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
+	else
+		waitingTOTL=DEFAULT_NETWORK_TOTL-1;
 	return sendPresenceRequest();
 }
 
@@ -1042,8 +1015,8 @@ bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)
 	serverName=serverNameMemory;
 	strncpy(serverName, yogGameInfo->hostname, 128);
 	serverName[127]=0;
-	strncpy(playerName, globalContainer->settings.userName, 128);
-	playerName[127]=0;
+	strncpy(playerName, globalContainer->settings.userName, 32);
+	playerName[32]=0;
 	//strncpy(gameName, "ilesAleatoires", 32); //TODO: add gameName in YOG
 	//gameName[32]=0;
 	strncpy(serverNickName, yogGameInfo->source, 32);

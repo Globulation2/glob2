@@ -65,6 +65,7 @@ public:
 	void removePlayer(char *data, int size, IPaddress ip);
 	void newPlayerPresence(char *data, int size, IPaddress ip);
 	void playerWantsSession(char *data, int size, IPaddress ip);
+	void playerWantsFile(char *data, int size, IPaddress ip);
 	void addAI();
 	void confirmPlayer(char *data, int size, IPaddress ip);
 	void confirmStartCrossConnection(char *data, int size, IPaddress ip);
