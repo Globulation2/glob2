@@ -6,6 +6,7 @@ To First release :
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
+- Mapeditor should let the user edit walls and flags. (nct)
 
 To Next version :
 
