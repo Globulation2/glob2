@@ -4,6 +4,8 @@ glob2_SOURCES= AI.cpp \
 AI.h\
 AIImplementation.cpp \
 AIImplementation.h\
+AINumbi.h \
+AINumbi.cpp \
 Building.cpp\
 Building.h\
 BuildingType.cpp\

@@ -23,11 +23,11 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 
-#include "AIImplementation.h"
+#include "AINumbi.h"
 
 AI::AI(Player *player)
 {
-	aiImplementation=new AIImplementation(player);
+	aiImplementation=new AINumbi(player);
 	this->implementitionID=NUMBI;
 	this->player=player;
 }
@@ -42,7 +42,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 			assert(false);
 		break;
 		case NUMBI:
-			aiImplementation=new AIImplementation(player);
+			aiImplementation=new AINumbi(player);
 		break;
 		default:
 			assert(false);
@@ -102,7 +102,7 @@ bool AI::load(SDL_RWops *stream)
 					assert(false);
 				break;
 				case NUMBI:
-					aiImplementation=new AIImplementation(stream, player);
+					aiImplementation=new AINumbi(stream, player);
 				break;
 				default:
 					assert(false);
@@ -128,7 +128,7 @@ bool AI::load(SDL_RWops *stream)
 					assert(false);
 				break;
 				case NUMBI:
-					aiImplementation=new AIImplementation(stream, player);
+					aiImplementation=new AINumbi(stream, player);
 				break;
 				default:
 					assert(false);
