@@ -63,9 +63,7 @@ public:
 	virtual void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void paint(int x, int y, int w, int h);
-	void closeConnection(void);
-	void createConnection(void);
-
+	
 	//bool getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE]);
 	//bool sendString(TCPsocket socket, char *data);
 };

@@ -21,12 +21,12 @@
 /*
 	TODO to finish :
 	
-	- implement a way to activate new game claiming
-	- call yog.step from main game, multiplayerhost,
+	DONE - implement a way to activate new game claiming
+	DONE - call yog.step from main game, multiplayerhost,
 	and yogscreen
-	- do a lookup from nick to IP using IRC whois
+	TODO - do a lookup from nick to IP using IRC whois
 	command (need to parse the command).
-	- clean and test all stuff
+	TODO - clean and test all stuff
 
 */
 
@@ -161,8 +161,22 @@ void YOG::interpreteIRCMessage(const char *message)
 
 				msg.updatedTick=SDL_GetTicks();
 
-				gameInfos.push_back(msg);
-				// todo , search game with same source
+				// search game with same source, and replace it
+				std::vector<GameInfo>::iterator alreadyExists;
+				bool isNew=true;
+
+				for (alreadyExists=gameInfos.begin(); alreadyExists!=gameInfos.end(); ++alreadyExists)
+				{
+					if (strncmp((*alreadyExists).source,  msg.source, IRC_NICK_SIZE)==0)
+					{
+						(*alreadyExists)=msg;
+						isNew=false;
+						break;
+					}
+				}
+
+				if (isNew)
+					gameInfos.push_back(msg);
 			}
 		}
 		else
