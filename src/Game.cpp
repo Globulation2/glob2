@@ -436,7 +436,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			OrderAlterateForbidden *oaf = (OrderAlterateForbidden *)order;
 			if (oaf->type == BrushTool::MODE_ADD)
 			{
-				Uint32 teamMask = teams[oaf->teamNumber]->me;
+				Uint32 teamMask = Team::teamNumberToMask(oaf->teamNumber);
 				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
 					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
 					{
@@ -454,7 +454,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			}
 			else if (oaf->type == BrushTool::MODE_DEL)
 			{
-				Uint32 notTeamMask = ~teams[oaf->teamNumber]->me;
+				Uint32 notTeamMask = ~Team::teamNumberToMask(oaf->teamNumber);
 				for (int y=oaf->y; y<oaf->y+oaf->h; y++)
 					for (int x=oaf->x; x<oaf->x+oaf->w; x++)
 					{

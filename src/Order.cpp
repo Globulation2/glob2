@@ -624,15 +624,14 @@ Uint8 *OrderAlterateForbidden::getData(void)
 	addSint16(_data, y, 4);
 	addUint16(_data, w, 6);
 	addUint16(_data, h, 8);
-	addUint16(_data, 177, 9);
-	mask.serialize(_data+11);
+	mask.serialize(_data+10);
 	
 	return _data;
 }
 
 bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 {
-	if (dataLength < 11)
+	if (dataLength < 10)
 	{
 		printf("OrderAlterateForbidden::setData(dataLength=%d) failure\n", dataLength);
 		for (int i=0; i<dataLength; i++)
@@ -646,18 +645,17 @@ bool OrderAlterateForbidden::setData(const Uint8 *data, int dataLength)
 	y = getSint16(data, 4);
 	w = getUint16(data, 6);
 	h = getUint16(data, 8);
-	assert(getUint16(data, 9)==177);
 	assert(w<=512);
 	assert(h<=512);
-	mask.deserialize(data+11, w*h);
+	mask.deserialize(data+10, w*h);
 	
 	return true;
 }
 
 int OrderAlterateForbidden::getDataLength(void)
 {
-	int length=11+mask.getByteLength();
-	assert(length>=11);
+	int length=10+mask.getByteLength();
+	assert(length>=10);
 	return length;
 }
 
