@@ -125,27 +125,27 @@ Swarm
 Ruesche
 [food building]
 Grenier
-Food building
+Granary
 Speicher
 [health building]
 Hopital
-Health building
+Hospital
 Spital
 [walkspeed building]
 Piste de course
-Walk building
+Racetrack
 Rennbahn
 [swimspeed building]
 Piscine
-Swim building
+Swimming pool
 Schwimmbecken
 [attack building]
-Batiment de combat
-Fighting building
+Camp d'entrainement
+Camp
 Kampfgebaeude
 [science building]
 Ecole
-Research center
+School
 Schuhle
 [defense building]
 Tourelle
