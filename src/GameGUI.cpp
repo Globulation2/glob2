@@ -954,7 +954,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		// TODO : handle this in a nice way
 		if (selBuild->owner->teamNumber!=localTeamNo)
 			return;
-		if ((my>256+35+12) && (my<256+35+16+12)  && (selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE))
+		if ((my>256+45+12) && (my<256+45+16+12)  && (selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE))
 		{
 			int nbReq;
 			if (mx<16)
@@ -1040,7 +1040,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 			{
-				if ((my>256+80+(i*20)+12)&&(my<256+80+(i*20)+16+12))
+				if ((my>256+90+(i*20)+12)&&(my<256+90+(i*20)+16+12))
 				{
 					if (mx<16)
 					{
@@ -1265,21 +1265,21 @@ void GameGUI::draw(void)
 				{
 					if (selBuild->buildingState==Building::ALIVE)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
-						drawScrollBox(globalContainer->gfx->getW()-128, 256+35+12, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[working]"), selBuild->unitsWorking.size(), selBuild->maxUnitWorking);
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+45+12, selBuild->maxUnitWorking, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 					}
 					else
 					{
 						if (selBuild->unitsWorking.size()>1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFont, "%s%d%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s%d%s",
 								globalContainer->texts.getString("[still (w)]"),
 								selBuild->unitsWorking.size(),
 								globalContainer->texts.getString("[units working]"));
 						}
 						else if (selBuild->unitsWorking.size()==1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+23+12, globalContainer->littleFont, "%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+33+12, globalContainer->littleFont, "%s",
 								globalContainer->texts.getString("[still one unit working]") );
 						}
 					}
@@ -1289,13 +1289,13 @@ void GameGUI::draw(void)
 				{
 					int Left=(selBuild->productionTimeout*128)/selBuild->type->unitProductionTime;
 					int Elapsed=128-Left;
-					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+55+12, Elapsed, 7, 100, 100, 255);
-					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+55+12, Left, 7, 128, 128, 128);
+					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, Elapsed, 7, 100, 100, 255);
+					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+65+12, Left, 7, 128, 128, 128);
 
 					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 					{
-						drawScrollBox(globalContainer->gfx->getW()-128, 256+80+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+83+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", i));
+						drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", i));
 					}
 				}
 
@@ -1303,27 +1303,27 @@ void GameGUI::draw(void)
 				{
 					if (selBuild->buildingState==Building::ALIVE)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+62+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[inside]"), selBuild->unitsInside.size(), selBuild->maxUnitInside);
 					}
 					else
 					{
 						if (selBuild->unitsInside.size()>1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFont, "%s%d%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+62+12, globalContainer->littleFont, "%s%d%s",
 								globalContainer->texts.getString("[still (i)]"),
 								selBuild->unitsInside.size(),
 								globalContainer->texts.getString("[units inside]"));
 						}
 						else if (selBuild->unitsInside.size()==1)
 						{
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+52+12, globalContainer->littleFont, "%s",
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+62+12, globalContainer->littleFont, "%s",
 								globalContainer->texts.getString("[still one unit inside]") );
 						}
 					}
 				}
 				for (int i=0; i<NB_RESSOURCES; i++)
 					if (selBuild->type->maxRessource[i])
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+54+(i*10)+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+64+(i*10)+12, globalContainer->littleFont, "%s : %d/%d", globalContainer->texts.getString("[ressources]", i), selBuild->ressources[i], selBuild->type->maxRessource[i]);
 
 				// it is a unit ranged attractor (aka flag)
 				if (selBuild->type->defaultUnitStayRange)
@@ -1365,6 +1365,22 @@ void GameGUI::draw(void)
 				else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
 				{
 					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[upgrade]");
+					
+					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+						&& mouseY>256+172 && mouseY<256+172+16 )
+						{
+							int typeNum=selBuild->type->nextLevelTypeNum;
+							BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-24, globalContainer->littleFont, 
+								"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);								
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-24, globalContainer->littleFont, 
+								"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-12, globalContainer->littleFont, 
+								"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
+							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-12, globalContainer->littleFont,
+								"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
+						}
+					
 				}
 
 				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
