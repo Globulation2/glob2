@@ -35,7 +35,7 @@
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
-	#define VERSION "System Specific - not using autoconf"
+	#define PACKAGE_VERSION "System Specific - not using autoconf"
 #endif
 #include "Version.h"
 #include "YOGConsts.h"
@@ -155,7 +155,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
 		{
-			printf("\nGlobulation 2 - %s\n\n", VERSION);
+			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
 			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
 #ifndef DX9_BACKEND
 			SDL_version v;
