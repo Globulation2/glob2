@@ -2986,7 +2986,6 @@ void GameGUI::enableBuildingsChoice(int id)
 	for (unsigned i=0; i<buildingsChoice.size(); ++i)
 	{
 		int idl=buildingsChoice[i];
-		assert(i<0);
 		if (-idl-1 == id)
 			buildingsChoice[i]=-idl-1;
 	}
@@ -2997,7 +2996,6 @@ void GameGUI::disableBuildingsChoice(int id)
 	for (unsigned i=0; i<buildingsChoice.size(); ++i)
 	{
 		int idl=buildingsChoice[i];
-		assert(i>=0);
 		if (idl == id)
 			buildingsChoice[i]=-id-1;
 	}
@@ -3008,7 +3006,6 @@ void GameGUI::enableFlagsChoice(int id)
 	for (unsigned i=0; i<flagsChoice.size(); ++i)
 	{
 		int idl=flagsChoice[i];
-		assert(i<0);
 		if (-idl-1 == id)
 			flagsChoice[i]=-idl-1;
 	}
@@ -3019,7 +3016,6 @@ void GameGUI::disableFlagsChoice(int id)
 	for (unsigned i=0; i<flagsChoice.size(); ++i)
 	{
 		int idl=flagsChoice[i];
-		assert(i>=0);
 		if (idl == id)
 			flagsChoice[i]=-id-1;
 	}
