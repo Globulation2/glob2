@@ -463,6 +463,10 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 
 void GameGUI::viewportFromMxMY(int mx, int my)
 {
+	mx-=14;
+	my-=14;
+	mx=(mx*128)/100;
+	my=(my*128)/100;
 	viewportX=((mx*game.map.getW())>>7)-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=((my*game.map.getH())>>7)-((globalContainer->gfx->getH())>>6);
 	viewportX+=game.teams[localTeam]->startPosX+(game.map.w>>1);
@@ -498,7 +502,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		if (mx>globalContainer->gfx->getW()-128)
 		{
 			if (my<128)
-				viewportFromMxMY(mx, my);
+				viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
 		}
 		else
 		{
