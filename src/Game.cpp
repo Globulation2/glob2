@@ -1326,7 +1326,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					assert(amount<=rt->sizesCount);
 					assert(variety>=0);
 					assert(variety<rt->varietiesCount);
-					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);
+					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 }			}
 
 	//for (int y=top; y<=bot; y++)

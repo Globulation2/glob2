@@ -279,7 +279,7 @@ public:
 	bool decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
 	bool decRessource(int x, int y, int ressourceType);
-	bool incRessource(int x, int y, int ressourceType);
+	bool incRessource(int x, int y, int ressourceType, int variety);
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
