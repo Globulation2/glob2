@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include "AI.h"
@@ -1144,23 +1143,22 @@ Order *AI::getOrder(void)
 			}
 		}
 	}
+	else
+		assert(false);
 	
 	return new NullOrder();
 }
 
 void AI::save(SDL_RWops *stream)
 {
-	//Game *game=player->team->game;
-	//assert((game->session.versionMajor>=0)&&(game->session.versionMinor>=3));
-	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_WriteBE32(stream, (Uint32)strategy);
 	SDL_WriteBE32(stream, phase);
 	SDL_WriteBE32(stream, attackPhase);
 	SDL_WriteBE32(stream, phaseTime);
 	SDL_WriteBE32(stream, critticalWarriors);
 	SDL_WriteBE32(stream, critticalTime);
 	SDL_WriteBE32(stream, attackTimer);
-	SDL_WriteBE32(stream, (Uint32)strategy);
 	
 	SDL_RWwrite(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
 	
@@ -1170,6 +1168,26 @@ void AI::save(SDL_RWops *stream)
 bool AI::load(SDL_RWops *stream)
 {
 	Game *game=player->team->game;
+	if ((game->session.versionMajor>=0)&&(game->session.versionMinor>=8))
+	{
+		char signature[4];
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+		strategy         =(Strategy)SDL_ReadBE32(stream);
+		phase            =SDL_ReadBE32(stream);
+		attackPhase      =SDL_ReadBE32(stream);
+		phaseTime        =SDL_ReadBE32(stream);
+		critticalWarriors=SDL_ReadBE32(stream);
+		critticalTime    =SDL_ReadBE32(stream);
+		attackTimer      =SDL_ReadBE32(stream);
+		
+		SDL_RWread(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
+		
+		SDL_RWread(stream, signature, 4, 1);
+		if (memcmp(signature,"GLO2",4)!=0)
+			return false;
+	}
 	if ((game->session.versionMajor>=0)&&(game->session.versionMinor>=3))
 	{
 		char signature[4];

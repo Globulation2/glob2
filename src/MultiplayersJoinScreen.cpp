@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include "MultiplayersJoinScreen.h"
@@ -23,11 +22,9 @@
 #include "GAG.h"
 #include "MultiplayersConnectedScreen.h"
 
-//MultiplayersJoinScreen pannel part !!
-
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
-	multiplayersJoin=new MultiplayersJoin();
+	multiplayersJoin=new MultiplayersJoin(false);
 
 	serverName=new TextInput(20, 170, 280, 30, globalContainer->standardFont, "localhost", true);
 	strncpy(multiplayersJoin->serverName, serverName->text, 128);
@@ -43,16 +40,21 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	playerText=new Text(20, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
 	addWidget(playerText);
 	
+	aviableGamesText=new Text(320, 100, globalContainer->menuFont, globalContainer->texts.getString("[aviable lan games]"));
+	addWidget(aviableGamesText);
+	
 	statusText=new Text(20, 390, globalContainer->standardFont, "");
 	addWidget(statusText);
 
 	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[connect]"), CONNECT, 13));
 	addWidget(new TextButton(280, 420, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
 
-	lanServers=new List(320, 100, 280, 200, globalContainer->menuFont);
+	lanServers=new List(320, 120, 280, 180, globalContainer->menuFont);
 	addWidget(lanServers);
 	
 	wasVisible=false;
+	
+	oldStatus=MultiplayersJoin::WS_BAD; //We wants redraw at first show.
 }
 
 MultiplayersJoinScreen::~MultiplayersJoinScreen()

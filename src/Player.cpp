@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include "Player.h"
@@ -391,14 +390,14 @@ void BasePlayer::printNetState(char s[32])
 		}
 		break;
 
-		case PNS_PLAYER_SEND_ONE_REQUEST:
+		case PNS_PLAYER_SEND_PRESENCE_REQUEST:
 		{
-			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_ONE_REQUEST]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_PRESENCE_REQUEST]"));
 		}
 		break;
-		case PNS_SERVER_SEND_SESSION_INFO:
+		case PNS_PLAYER_SEND_SESSION_REQUEST:
 		{
-			snprintf(t, 32, globalContainer->texts.getString("[PNS_SERVER_SEND_SESSION_INFO]"));
+			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_SESSION_REQUEST]"));
 		}
 		break;
 		case PNS_PLAYER_SEND_CHECK_SUM:

@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include "NetGame.h"
@@ -197,7 +196,7 @@ int NetGame::numberStepsReady(Sint32 step)
 int NetGame::advance()
 {
 	// this allow to be a bit more "TCP/IP Friendly" by waiting a bit more if
-	// a packet is lost. THe engine can call this function.
+	// a packet is lost. The engine can call this function.
 	int nsr=numberStepsReady(currentStep);
 	int hl=latency>>1;
 	if (dropState!=NO_DROP_PROCESSING)

@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #ifndef __MULTIPLAYERHOST_H
@@ -56,13 +55,16 @@ public:
 	virtual ~MultiplayersHost();
 
 public:
+	int newTeamIndice();
 	void initHostGlobalState(void);
+	void reinitPlayersState();
 	void stepHostGlobalState(void);
 	void switchPlayerTeam(int p);
 	void kickPlayer(int p);
 	void removePlayer(int p);
 	void removePlayer(char *data, int size, IPaddress ip);
-	void newPlayer(char *data, int size, IPaddress ip);
+	void newPlayerPresence(char *data, int size, IPaddress ip);
+	void playerWantsSession(char *data, int size, IPaddress ip);
 	void addAI();
 	void confirmPlayer(char *data, int size, IPaddress ip);
 	void confirmStartCrossConnection(char *data, int size, IPaddress ip);

@@ -1,6 +1,6 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriere
-    for any question or comment contact us at nct@ysagoon.com
+    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+    for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 #include "MultiplayersHost.h"
@@ -99,12 +98,54 @@ MultiplayersHost::~MultiplayersHost()
 		delete savedSessionInfo;
 }
 
+int MultiplayersHost::newTeamIndice()
+{
+	// We put the new player in a team with the less number of player
+	// and the shortest indice:
+	int t=0;
+	int lessPlayer=33;
+	for (int ti=0; ti<sessionInfo.numberOfTeam; ti++)
+	{
+		int numberOfPlayer=0;
+		Uint32 m=1;
+		Uint32 pm=sessionInfo.team[ti].playersMask;
+		for (int i=0; i<32; i++)
+		{
+			if (m&pm)
+				numberOfPlayer++;
+			m=m<<1;
+		}
+		if (numberOfPlayer<lessPlayer)
+		{
+			lessPlayer=numberOfPlayer;
+			t=ti;
+		}
+	}
+	assert(t>=0);
+	assert(t<32);
+	assert(t<sessionInfo.numberOfTeam);
+	
+	return t;
+}
+
 void MultiplayersHost::initHostGlobalState(void)
 {
 	for (int i=0; i<32; i++)
 		crossPacketRecieved[i]=0;
 	
 	hostGlobalState=HGS_SHARING_SESSION_INFO;
+}
+
+void MultiplayersHost::reinitPlayersState()
+{
+	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+		if (sessionInfo.players[j].netState>BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST)
+		{
+			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
+			sessionInfo.players[j].netTimeout=2*j; // we just split the sendings by 1/10 seconds.
+			sessionInfo.players[j].netTimeoutSize=LONG_NETWORK_TIMEOUT;
+			sessionInfo.players[j].netTOTL++;
+		}
 }
 
 void MultiplayersHost::stepHostGlobalState(void)
@@ -215,6 +256,7 @@ void MultiplayersHost::kickPlayer(int p)
 
 void MultiplayersHost::removePlayer(int p)
 {
+	bool wasKnownByOthers=(sessionInfo.players[p].netState>BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST);
 	int t=sessionInfo.players[p].teamNumber;
 	NETPRINTF("player %d quited the game, from team %d.\n", p, t);
 	sessionInfo.team[t].playersMask&=~sessionInfo.players[p].numberMask;
@@ -258,15 +300,12 @@ void MultiplayersHost::removePlayer(int p)
 	}
 	sessionInfo.numberOfPlayer--;
 	NETPRINTF("nop %d.\n", sessionInfo.numberOfPlayer);
-	// all other players are ignorant of the new situation:
-	initHostGlobalState();
 	
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+	if (wasKnownByOthers)
 	{
-		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-		if (sessionInfo.players[j].netTimeout>0)
-			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-		sessionInfo.players[j].netTOTL++;
+		// all other players are ignorant of the new situation:
+		initHostGlobalState();
+		reinitPlayersState();
 	}
 }
 
@@ -275,13 +314,7 @@ void MultiplayersHost::switchPlayerTeam(int p)
 	Sint32 teamNumber=(sessionInfo.players[p].teamNumber+1)%sessionInfo.numberOfTeam;
 	sessionInfo.players[p].setTeamNumber(teamNumber);
 	
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-	{
-		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-		if (sessionInfo.players[j].netTimeout>0)
-			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-		sessionInfo.players[j].netTOTL++;
-	}
+	reinitPlayersState();
 }
 
 void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
@@ -290,7 +323,7 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sended a quit game !!!\n", ip.host, ip.port);
 		return;
@@ -298,15 +331,15 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 	removePlayer(i);
 }
 
-void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
+void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 {
-	if (size!=44)
+	if (size!=36)
 	{
-		NETPRINTF("Bad size(%d) for an newPlayer request from ip %x.\n", size, ip.host);
+		NETPRINTF("Bad size(%d) for an Presence request from ip %x.\n", size, ip.host);
 		return;
 	}
 	int p=sessionInfo.numberOfPlayer;
-	int t=(p)%sessionInfo.numberOfTeam;
+	int t=newTeamIndice();
 	assert(BasePlayer::MAX_NAME_LENGTH==32);
 	if (savedSessionInfo)
 	{
@@ -314,7 +347,7 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		memcpy(playerName, (char *)(data+4), 32);
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
-
+	
 	sessionInfo.players[p].init();
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
@@ -330,7 +363,7 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		{
 			NETPRINTF("this ip(%x:%d) is already in the player list!\n", ip.host, ip.port);
 
-			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+			sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
 			sessionInfo.players[i].netTimeout=0;
 			sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
 			sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
@@ -344,11 +377,41 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		NETPRINTF("this ip(%x:%d) is not bindable\n", ip.host, ip.host);
 		return;
 	}
+
+	if ( sessionInfo.players[p].send(SERVER_PRESENCE) )
+	{
+		printf("this ip(%x:%d) is added in player list. (player %d)\n", ip.host, ip.port, p);
+		sessionInfo.numberOfPlayer++;
+		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
+		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
+		sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST;
+		sessionInfo.players[p].netTimeout=SHORT_NETWORK_TIMEOUT;
+		sessionInfo.players[p].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
+		sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL;
+	}
+}
+
+void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
+{
+	if (size!=12)
+	{
+		NETPRINTF("Bad size(%d) for an Session request from ip %x.\n", size, ip.host);
+		return;
+	}
 	
+	int p;
+	for (p=0; p<sessionInfo.numberOfPlayer; p++)
+		if (sessionInfo.players[p].sameip(ip))
+			break;
+	if (p>=sessionInfo.numberOfPlayer)
+	{
+		NETPRINTF("An unknow player (%x, %d) has sended a Session request !!!\n", ip.host, ip.port);
+		return;
+	}
 	
-		
-	Uint32 newHost=SDL_SwapBE32(getUint32(data, 36));
-	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 40));
+	bool serverIPReceived=false;
+	Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
+	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
 	if (serverIP.host)
 	{
 		if (serverIP.host!=newHost)
@@ -366,39 +429,29 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 	{
 		serverIP.host=newHost;
 		serverIP.port=newPort;
+		serverIPReceived=true;
 		NETPRINTF("I recived my ip!:(%x:%d).\n", serverIP.host, serverIP.port);
 	}
 
-	if ( sessionInfo.players[p].send(sessionInfo.getData(), sessionInfo.getDataLength()) )
-	{
-		// TODO : the player allways recieve a sessionInfo with one missing player !
-		// We have to add it before sending the sessionInfo !
-		NETPRINTF("this ip(%x:%d) is added in player list.\n", ip.host, ip.port);
-		sessionInfo.numberOfPlayer++;
-		sessionInfo.team[sessionInfo.players[p].teamNumber].playersMask|=sessionInfo.players[p].numberMask;
-		sessionInfo.team[sessionInfo.players[p].teamNumber].numberOfPlayer++;
-		sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-		sessionInfo.players[p].netTimeout=0;
-		sessionInfo.players[p].netTimeoutSize=LONG_NETWORK_TIMEOUT;
-		sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
+	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
+	sessionInfo.players[p].netTimeout=0;
+	sessionInfo.players[p].netTimeoutSize=LONG_NETWORK_TIMEOUT;
+	sessionInfo.players[p].netTOTL=DEFAULT_NETWORK_TOTL+1;
 
-		// all other players are ignorant of the new situation:
-		initHostGlobalState();
-		
-		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		{
-			sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-			if (sessionInfo.players[j].netTimeout>0)
-				sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-			sessionInfo.players[j].netTOTL++;
-		}
-	}
+	printf("this ip(%x:%d) wantsSession (player %d)\n", ip.host, ip.port, p);
+	
+	// all other players are ignorant of the new situation:
+	initHostGlobalState();
+	reinitPlayersState();
+	
+	if (serverIPReceived)
+		sessionInfo.players[p].netTimeout=3; // =1 would be enough, if loopback where safe.
 }
 
 void MultiplayersHost::addAI()
 {
 	int p=sessionInfo.numberOfPlayer;
-	int t=(p)%sessionInfo.numberOfTeam;
+	int t=newTeamIndice();
 	if (savedSessionInfo)
 		t=savedSessionInfo->getAITeamNumber(&sessionInfo, t);
 	
@@ -406,6 +459,7 @@ void MultiplayersHost::addAI()
 	sessionInfo.players[p].type=BasePlayer::P_AI;
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
+	sessionInfo.players[p].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
 	strncpy(sessionInfo.players[p].name, globalContainer->texts.getString("[AI]", abs(rand())%globalContainer->texts.AI_NAME_SIZE), BasePlayer::MAX_NAME_LENGTH);
 	
 	sessionInfo.numberOfPlayer++;
@@ -420,13 +474,7 @@ void MultiplayersHost::addAI()
 	
 	// all other players are ignorant of the new situation:
 	initHostGlobalState();
-	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-	{
-		sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-		if (sessionInfo.players[j].netTimeout>0)
-			sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-		sessionInfo.players[j].netTOTL++;
-	}
+	reinitPlayersState();
 }
 
 void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
@@ -438,7 +486,7 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sended a checksum !!!\n", ip.host, ip.port);
 		return;
@@ -446,16 +494,17 @@ void MultiplayersHost::confirmPlayer(char *data, int size, IPaddress ip)
 
 	if (rcs!=lcs)
 	{
-		printf("this ip(%x:%d) is has confirmed a wrong check sum !.\n", ip.host, ip.port);
+		printf("this ip(%x:%d) confirmed a wrong checksum (player %d)!\n", ip.host, ip.port, i);
 		NETPRINTF("rcs=%x, lcs=%x.\n", rcs, lcs);
-		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
+		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST;
 		sessionInfo.players[i].netTimeout=0;
-		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
+		sessionInfo.players[i].netTimeoutSize=LONG_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL+1;
 		return;
 	}
 	else
 	{
+		printf("this ip(%x:%d) confirmed a good checksum (player %d)\n", ip.host, ip.port, i);
 		sessionInfo.players[i].netState=BasePlayer::PNS_PLAYER_SEND_CHECK_SUM;
 		sessionInfo.players[i].netTimeout=0;
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
@@ -470,7 +519,7 @@ void MultiplayersHost::confirmStartCrossConnection(char *data, int size, IPaddre
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sended a confirmStartCrossConnection !!!\n", ip.host, ip.port);
 		return;
@@ -492,7 +541,7 @@ void MultiplayersHost::confirmStillCrossConnecting(char *data, int size, IPaddre
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sended a confirmStillCrossConnecting !!!\n", ip.host, ip.port);
 		return;
@@ -516,7 +565,7 @@ void MultiplayersHost::confirmCrossConnectionAchieved(char *data, int size, IPad
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sended a confirmCrossConnectionAchieved !!!\n", ip.host, ip.port);
 		return;
@@ -551,7 +600,7 @@ void MultiplayersHost::confirmPlayerStartGame(char *data, int size, IPaddress ip
 	for (i=0; i<sessionInfo.numberOfPlayer; i++)
 		if (sessionInfo.players[i].sameip(ip))
 			break;
-	if (i==sessionInfo.numberOfPlayer)
+	if (i>=sessionInfo.numberOfPlayer)
 	{
 		NETPRINTF("An unknow player (%x, %d) has sent a confirmPlayerStartGame.\n", ip.host, ip.port);
 		return;
@@ -655,8 +704,12 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 			broadcastRequest(data, size, ip);
 		break;
 		
+		case NEW_PLAYER_WANTS_PRESENCE:
+			newPlayerPresence(data, size, ip);
+		break;
+		
 		case NEW_PLAYER_WANTS_SESSION_INFO:
-			newPlayer(data, size, ip);
+			playerWantsSession(data, size, ip);
 		break;
 
 		case NEW_PLAYER_SEND_CHECKSUM_CONFIRMATION:
@@ -700,7 +753,44 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 void MultiplayersHost::onTimer(Uint32 tick)
 {
 	// call yog step
-	globalContainer->yog.step();
+	if (shareOnYOG)
+	{
+		globalContainer->yog.step();
+		
+		if (globalContainer->yog.isFirewallActivation())
+		{
+			bool isNext=true;
+			while(isNext)
+			{
+				Uint16 port=globalContainer->yog.getFirewallActivationPort();
+				char *hostName=globalContainer->yog.getFirewallActivationHostname();
+				IPaddress ip;
+				if(SDLNet_ResolveHost(&ip, hostName, port)!=0)
+				{
+					printf("failed to resolve host (%s).\n", hostName);
+					continue;
+				}
+				UDPpacket *packet=SDLNet_AllocPacket(4);
+				if (packet==NULL)
+					continue;
+				packet->len=4;
+				char data[4];
+				data[0]=SERVER_WATER;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				memcpy((char *)packet->data, data, 4);
+				bool success;
+				packet->address=ip;
+				success=(SDLNet_UDP_Send(socket, -1, packet)==1);
+				SDLNet_FreePacket(packet);
+				if (!success)
+					printf("MultiplayersHost::failed to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
+				
+				isNext=globalContainer->yog.getNextFirewallActivation();
+			}
+		}
+	}
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
 	{
@@ -796,13 +886,7 @@ void MultiplayersHost::sendingTime()
 		{
 			// all other players are ignorant of the new situation:
 			initHostGlobalState();
-			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			{
-				sessionInfo.players[j].netState=BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST;
-				if (sessionInfo.players[j].netTimeout>0)
-					sessionInfo.players[j].netTimeout-=sessionInfo.players[j].netTimeoutSize-2*j; // we just split the sendings by 1/10 seconds.
-				sessionInfo.players[j].netTOTL++;
-			}
+			reinitPlayersState();
 		}
 	}
 	
@@ -837,7 +921,14 @@ void MultiplayersHost::sendingTime()
 			}
 			break;
 
-			case BasePlayer::PNS_PLAYER_SEND_ONE_REQUEST :
+			case BasePlayer::PNS_PLAYER_SEND_PRESENCE_REQUEST :
+			{
+				NETPRINTF("Lets send the presence to player %d.\n", i);
+				sessionInfo.players[i].send(SERVER_PRESENCE);
+			}
+			break;
+
+			case BasePlayer::PNS_PLAYER_SEND_SESSION_REQUEST :
 			{
 				NETPRINTF("Lets send the session info to player %d.\n", i);
 
