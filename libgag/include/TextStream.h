@@ -24,6 +24,8 @@
 #include <StreamBackend.h>
 #include <ostream>
 #include <sstream>
+#include <map>
+#include <vector>
 
 namespace GAGCore
 {
@@ -75,6 +77,58 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { }
 		virtual size_t getPosition(void) { return backend->getPosition(); }
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
+	};
+	
+	//! Read data from a human readable form, C-like, supporting C and C++ comments
+	class TextInputStream : public InputStream
+	{
+	protected:
+		//! table of parsed value
+		std::map<std::string, std::string> table;
+		//! recursive keys
+		std::vector<std::string> levels;
+		//! actual complete key
+		std::string key;
+		
+		//! Read from table using keys key and name and put result to result
+		void readFromTableToString(const char *name, std::string *result);
+		
+		//! read from table and convert to type T using std::istringstream
+		template <class T>
+		T readFromTable(const char *name)
+		{
+			std::string s;
+			readFromTableToString(name, &s);
+			std::istringstream iss(s);
+			T v;
+			iss >> v;
+			return v;
+		}
+		
+	public:
+		TextInputStream(StreamBackend *backend);
+		
+		virtual void read(void *data, size_t size, const char *name = NULL);
+		virtual Sint8 readSint8(const char *name = NULL) { return readFromTable<Sint8>(name); }
+		virtual Uint8 readUint8(const char *name = NULL) { return readFromTable<Uint8>(name); }
+		virtual Sint16 readSint16(const char *name = NULL) { return readFromTable<Sint16>(name); }
+		virtual Uint16 readUint16(const char *name = NULL) { return readFromTable<Uint16>(name); }
+		virtual Sint32 readSint32(const char *name = NULL) { return readFromTable<Sint32>(name); }
+		virtual Uint32 readUint32(const char *name = NULL) { return readFromTable<Uint32>(name); }
+		virtual float readFloat(const char *name = NULL) { return readFromTable<float>(name); }
+		virtual double readDouble(const char *name = NULL) { return readFromTable<double>(name); }
+		virtual std::string readText(const char *name = NULL) { std::string s; readFromTableToString(name, &s); return s; }
+		
+		virtual void readEnterSection(const char *name);
+		virtual void readEnterSection(unsigned id);
+		virtual void readLeaveSection(size_t count = 1);
+		
+		virtual bool canSeek(void) { return false; }
+		virtual void seekFromStart(int displacement) { }
+		virtual void seekFromEnd(int displacement) { }
+		virtual void seekRelative(int displacement) { }
+		virtual size_t getPosition(void) { return 0; }
+		virtual bool isEndOfStream(void) { return false; }
 	};
 }
 
