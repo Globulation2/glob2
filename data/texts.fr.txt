@@ -642,7 +642,17 @@ Choisir une campagne
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [mute]
 mute
+[abreaviation explanation A]
+A : Alliés
+[abreaviation explanation V]
+V : Montrer tous les batiments
+[abreaviation explanation Vf]
+Vf : Montrer toutes les auberges (pour voler des unités)
+[abreaviation explanation mV]
+mV : Montrer tous les marchés (pour échanger des fruits)
+[abreaviation explanation C]
+C : Envoyer les messages à
 [shortcut explanation enter]
-entrée : envoye un message texte
+touche enter : envoyer un message
 [shortcut explanation v]
-v : maintenir pour parler
+touche v : presser pour parler

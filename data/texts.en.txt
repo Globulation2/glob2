@@ -642,7 +642,17 @@ Choose a campaign
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [mute]
 mute
+[abreaviation explanation A]
+A : Allies
+[abreaviation explanation V]
+V : Show vision for all buildings
+[abreaviation explanation Vf]
+Vf : Show vision for Inn buildings (to steal units)
+[abreaviation explanation mV]
+mV : Show vision for Markets buildings (to exchange fruits)
+[abreaviation explanation C]
+C : Send chat messages to
 [shortcut explanation enter]
-enter : send a text message
+key enter : send a chat message
 [shortcut explanation v]
-v : hold to speak
+key v : hold to speak
