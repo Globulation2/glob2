@@ -31,7 +31,6 @@ class Building;
 // a unit
 class Unit
 {
-
 public:
 	Unit(SDL_RWops *stream, Team *owner);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);

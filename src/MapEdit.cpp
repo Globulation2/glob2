@@ -760,17 +760,17 @@ void MapEdit::askConfirmationToQuit()
 {
 	if (hasMapBeenModiffied)
 	{
-		const char *reallyquit = globalContainer->texts.getString("[really quit without saving?]");
+		const char *reallyquit = globalContainer->texts.getString("[save before quit?]");
 		const char *yes = globalContainer->texts.getString("[Yes]");
 		const char *no = globalContainer->texts.getString("[No]");
-		const char *save = globalContainer->texts.getString("[Save]");
+		const char *save = globalContainer->texts.getString("[Cancel]");
 		int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
 
-		if (res==0) // yes, do quit
+		if (res==1) // no, quit
 			isRunning=false;
-		else if (res==1) // no, don't quit
+		else if (res==2) // cancel, don't quit
 			draw();
-		else if (res==2) // save if needed 
+		else if (res==0) // save if needed 
 		{
 			loadSave(false);
 			if (!hasMapBeenModiffied)
