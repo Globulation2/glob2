@@ -174,7 +174,7 @@ public:
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
 	Uint8 *obstacleBuildingMap; // where buildings can be built. included in {0, 1}
 	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
-	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 2]: direct neighbours count, bit 4: zero, bits [5, 7]; far neighbours count.
+	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 3]: direct neighbours count, bit 4: zero, bits [5, 7]; far neighbours count.
 	
 	Uint8 *twoSpaceNeighbourMap; // TODO: remove.
 	

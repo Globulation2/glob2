@@ -70,7 +70,7 @@ void AICastor::Project::init()
 	amount=1;
 	food=false;
 	
-	//printf("new project(%s)\n", debugName);
+	printf("new project(%s)\n", debugName);
 	
 	subPhase=0;;
 	
@@ -354,7 +354,7 @@ Order *AICastor::getOrder()
 	{
 		strategy.defined=true;
 		
-		strategy.successWait=2;
+		strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
 		
 		strategy.swarm=1+(syncRand()%2);
 		strategy.speed=1+(syncRand()%2);
@@ -368,7 +368,7 @@ Order *AICastor::getOrder()
 		strategy.warTimeTriger=8192+(syncRand()%8192);
 		strategy.maxAmountGoal=10;
 		
-		strategy.foodWorkers=1;
+		strategy.foodWorkers=1; // TODO: use "critical" one new food buildings flag.
 		strategy.swarmWorkers=2;
 		strategy.wheatCareLimit=4;
 		
@@ -1363,7 +1363,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 	Uint8 *gradient=buildingNeighbourMap;
 	Case *cases=map->cases;
 	
-	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(gradient, 0, size);
 	
 	Building **myBuildings=team->myBuildings;
@@ -1379,20 +1379,20 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			
 			// we skip building with already a neighbour:
 			bool neighbour=false;
-			bool wheat=false;
+			//bool wheat=false;
 			for (int xi=bx-1; xi<=bx+bw; xi++)
 			{
 				int index;
 				index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
 				if (cases[index].building!=NOGBID)
 					neighbour=true;
-				if (wheatGradient[index]==255)
-					wheat=true;
+				//if (wheatGradient[index]==255)
+				//	wheat=true;
 				index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
 				if (cases[index].building!=NOGBID)
 					neighbour=true;
-				if (wheatGradient[index]==255)
-					wheat=true;
+				//if (wheatGradient[index]==255)
+				//	wheat=true;
 			}
 			if (!neighbour)
 				for (int yi=by-1; yi<=by+bh; yi++)
@@ -1401,17 +1401,17 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 					index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
 					if (cases[index].building!=NOGBID)
 						neighbour=true;
-					if (wheatGradient[index]==255)
-						wheat=true;
+					//if (wheatGradient[index]==255)
+					//	wheat=true;
 					index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
 					if (cases[index].building!=NOGBID)
 						neighbour=true;
-					if (wheatGradient[index]==255)
-						wheat=true;
+					//if (wheatGradient[index]==255)
+					//	wheat=true;
 				}
 			
 			Uint8 dirty;
-			if (neighbour || !wheat)
+			if (neighbour || /*!wheat ||*/ bw!=dw || bh!=dh)
 				dirty=1;
 			else
 				dirty=0;
@@ -1455,7 +1455,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			}
 			
 			// At a range of 2 space case, without corners,
-			// we increment (from bit 5):
+			// we increment (bit 5 to 7):
 			Uint8 inc;
 			if (neighbour)
 				inc=32;
@@ -1716,10 +1716,10 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	size_t size=w*h;
 	Uint32 *mapDiscovered=map->mapDiscovered;
 	Uint32 me=team->me;
-	//printf("findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
+	printf("findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
 	
-	// first, we auto calibrate minWork:
-	Uint8 bestWorkScore=2;
+	// minWork computation:
+	Sint32 bestWorkScore=2;
 	for (size_t i=0; i<size; i++)
 	{
 		if ((mapDiscovered[i]&me)==0)
@@ -1728,68 +1728,45 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 		if (bestWorkScore<work)
 			bestWorkScore=work;
 	}
-	Uint32 minWork=bestWorkScore/2;
+	Sint32 minWork=bestWorkScore*2;
 	if (critical)
 	{
-		if (minWork>15)
-			minWork=15;
+		if (minWork>15*4)
+			minWork=15*4;
 	}
 	else
 	{
-		if (minWork>30)
-			minWork=30;
+		if (minWork>30*4)
+			minWork=30*4;
 	}
-	//printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
+	printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork/4);
 	
-	// second, we auto calibrate wheatLimit:
-	Uint16 wheatLimit;
+	// wheatGradientLimit computation:
+	Uint32 wheatGradientLimit;
 	if (food)
 	{
 		if (critical)
-			wheatLimit=2; // TODO: test a very bad map.
+			wheatGradientLimit=(255-16)*4;
 		else
-		{
-			Uint8 maxWheat=8;
-			for (size_t i=0; i<size; i++)
-			{
-				Uint8 work=workAbilityMap[i];
-				if (work<minWork)
-					continue;
-				Uint8 wheat=wheatGrowthMap[i];
-				if (maxWheat<wheat)
-					maxWheat=wheat;
-			}
-			wheatLimit=maxWheat-4;
-			//printf(" maxWheat=%d, wheatLimit=%d\n", maxWheat, wheatLimit);
-		}
+			wheatGradientLimit=(255-4)*4;
 	}
 	else
 	{
-		Uint8 minWheat=255;
-		for (size_t i=0; i<size; i++)
-		{
-			if ((mapDiscovered[i]&me)==0)
-				continue;
-			Uint8 work=workAbilityMap[i];
-			if (work<minWork)
-				continue;
-			Uint8 wheat=wheatGrowthMap[i];
-			if (minWheat>wheat)
-				minWheat=wheat;
-		}
 		if (critical)
-			wheatLimit=minWheat+6;
+			wheatGradientLimit=(255-5)*4;
 		else
-			wheatLimit=minWheat+3;
-		//printf(" minWheat=%d, wheatLimit=%d\n", minWheat, wheatLimit);
+			wheatGradientLimit=(255-15)*4;
 	}
+	printf(" wheatGradientLimit=%d\n", wheatGradientLimit/4);
 	
-	// third, we find the best place possible:
+	// we find the best place possible:
 	size_t bestIndex;
 	Sint32 bestScore=0;
-	minWork=(minWork<<2);
-	wheatLimit=(wheatLimit<<2);
+	
+	//wheatLimit=(wheatLimit<<2);
 	//printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
+	
+	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(goodBuildingMap, 0, size);
 	
 	for (int y=0; y<h; y++)
@@ -1807,39 +1784,59 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 				&& (mapDiscovered[corner3]&me)==0)
 				continue;
 			
+			//goodBuildingMap[corner0]=1;
+			
 			Uint8 space=spaceForBuildingMap[corner0];
 			if (space<bw)
 				continue;
 			
-			Uint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
+			//goodBuildingMap[corner0]=2;
+			
+			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 			if (work<minWork)
 				continue;
 			
-			Uint16 wheat=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
+			//goodBuildingMap[corner0]=3;
+			
+			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
 			if (food)
 			{
-				if (wheat<wheatLimit)
+				if (wheatGradient<wheatGradientLimit)
 					continue;
+				//if (wheatGrowth<wheatGrowthLimit)
+				//	continue;
 			}
-			else if (wheat>wheatLimit)
-				continue;
+			else
+			{
+				if (wheatGradient>wheatGradientLimit)
+					continue;
+				//if (wheatGrowth>wheatGrowthLimit)
+				//	continue;
+			}
+			
+			//goodBuildingMap[corner0]=4;
+			
+			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
 			
 			Uint8 neighbour=buildingNeighbourMap[corner0];
-			Uint8 directNeighboursCount=(neighbour>>1)&7;
-			Uint8 farNeighboursCount=(neighbour>>5)&7;
+			Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
+			Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7] doubled for non direct neighbours
 			if ((neighbour&1)||(directNeighboursCount>1))
 				continue;
 			
 			Sint32 score;
 			if (food)
-				score=(((Sint32)wheat<<8)+(Sint32)work)*(8+(directNeighboursCount<<2)+farNeighboursCount);
+				score=((wheatGrowth<<8)+work)*(8+(directNeighboursCount<<3)+farNeighboursCount);
 			else
-				score=(5120+(Sint32)work-((Sint32)wheat<<8))*(8+(directNeighboursCount<<2)+farNeighboursCount);
+				score=(4096+work-(wheatGrowth<<8))*(8+(directNeighboursCount<<3)+farNeighboursCount);
+			// 8 + directNeighboursCount*8 + farNeighboursCount*2
 			
-			//if ((score>>9)>=255)
-			//	goodBuildingMap[corner0]=255;
-			//else
-			//	goodBuildingMap[corner0]=(score>>9);
+			if (score<0)
+				goodBuildingMap[corner0]=0;
+			else if ((score>>9)>=255)
+				goodBuildingMap[corner0]=255;
+			else
+				goodBuildingMap[corner0]=(score>>9);
 			
 			if (bestScore<score)
 			{
@@ -1850,7 +1847,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	
 	if (bestScore>0)
 	{
-		//printf(" found a cool place, score=%d, wheat=%d, work=%d\n", bestScore, wheatGrowthMap[bestIndex], workAbilityMap[bestIndex]);
+		printf(" found a cool place, score=%d, wheat=%d, work=%d\n", bestScore, wheatGrowthMap[bestIndex], workAbilityMap[bestIndex]);
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return new OrderCreate(team->teamNumber, x, y, typeNum);
