@@ -672,7 +672,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			{
 				fprintf(logFile, "Solved a NAT from (%s) to (%s).\n", Utilities::stringIP(game->hostip), Utilities::stringIP(ip));
 				game->hostip=ip;
-				if ( game->hostip.port!=SDL_SwapBE16(SERVER_PORT))
+				if (game->hostip.port!=SDL_SwapBE16(GAME_SERVER_PORT))
 					fprintf(logFile, "Warning, the server port is not the standard port! Should not happen! (%d)\n", serverIP.port);
 				game->natSolved=true;
 				if (isSelectedGame && game->uid==selectedGame)
@@ -1064,7 +1064,7 @@ void YOG::sendGameinfoRequest()
 
 				packet->channel=-1;
 				packet->address.host=INADDR_BROADCAST;
-				packet->address.port=SDL_SwapBE16(SERVER_PORT);
+				packet->address.port=SDL_SwapBE16(GAME_SERVER_PORT);
 				packet->len=4;
 				packet->data[0]=YMT_BROADCAST_REQUEST;
 				packet->data[1]=0;
