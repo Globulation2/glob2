@@ -111,8 +111,8 @@ Globulation 2 developpers."
 </step>
 <step performance="optional"><para>If SDL aclocal's macro are installed at a standard place,
 just run :<command>aclocal</command></para></step>
-<step><para><command>automake --add-missing &amp;&amp; autoconf</command></para></step>
 <step><para><command>autoheader</command></para></step>
+<step><para><command>automake --add-missing &amp;&amp; autoconf</command></para></step>
 </substeps>
 </step>
 
