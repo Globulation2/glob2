@@ -35,7 +35,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	smooth=4;
 	
 	nbIslands=4;
-	islandsSize=12;
+	islandsSize=50;
 	beach=1;
 	for (int i=0; i<NB_RESSOURCES; i++)
 		ressource[i]=7;

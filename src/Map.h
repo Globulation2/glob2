@@ -306,6 +306,7 @@ public:
 	void controlSand(void);
 	void makeRandomMap(MapGenerationDescriptor &descriptor);
 	void makeIslandsMap(MapGenerationDescriptor &descriptor);
+	void addRessources(MapGenerationDescriptor &descriptor);
 };
 
 #endif

@@ -118,10 +118,7 @@ void setRandomSyncRandSeed(void)
 {
 	randa=(rand()<<16)|(rand()&0x0000FFFF);
 	randb=(rand()<<16)|(rand()&0x0000FFFF);
-	randc=(rand()<<16)|(rand()&0x0000FFFF);
-	printf("setRandomSyncRandSeed new=(%d, %d, %d).\n", getSyncRandSeedA(), getSyncRandSeedB(), getSyncRandSeedC());
-
-}
+	randc=(rand()<<16)|(rand()&0x0000FFFF);}
 
 Uint32 getSyncRandSeedA(void)
 {
