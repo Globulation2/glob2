@@ -232,11 +232,12 @@ void GlobalContainer::load(void)
 		gfx->setRes(graphicWidth, graphicHeight, 32, globalContainer->graphicFlags);
 
 		// load fonts
+		menuFont=gfx->loadFont("data/fonts/sans.ttf", 22);
 		menuFont=gfx->loadFont("data/fonts/arial.ttf", 22);
 		menuFont->setColor(255, 255, 255);
-		standardFont=gfx->loadFont("data/fonts/arial.ttf", 14);
+		standardFont=gfx->loadFont("data/fonts/sans.ttf", 14);
 		standardFont->setColor(255, 255, 255);
-		littleFont=gfx->loadFont("data/fonts/arial.ttf", 10);
+		littleFont=gfx->loadFont("data/fonts/sans.ttf", 10);
 		littleFont->setColor(255, 255, 255);
 
 		initProgressBar();
