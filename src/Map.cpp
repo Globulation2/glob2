@@ -1800,6 +1800,58 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 		return false;
 }
 
+bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY)
+{
+	// we start from our current position
+	int vx = x & wMask;
+	int vy = y & hMask;
+	// max is initiaslized to gradient value of current position
+	Uint8 max = gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+	
+	bool result = false;
+	// for up to 255 steps, we follow gradient
+	for (int count=0; count<255; count++)
+	{
+		bool found = false;
+		int vddx = 0;
+		int vddy = 0;
+		
+		// search all directions
+		for (int d=0; d<8; d++)
+		{
+			int ddx = deltaOne[d][0];
+			int ddy = deltaOne[d][1];
+			Uint8 g = gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+			if (g>max)
+			{
+				max = g;
+				vddx = ddx;
+				vddy = ddy;
+				found = true;
+			}
+		}
+		
+		// change position
+		vx = (vx+vddx) & wMask;
+		vy = (vy+vddy) & hMask;
+		
+		// if we have reached destionation break
+		if (max == 255)
+		{
+			result = true;
+			break;
+		}
+		// if we haven't found a suitable direction, we break, but we do not have exact destination
+		else if (!found)
+			break;
+	}
+	
+	// return best destination and wether it is exact or not
+	*targetX = vx;
+	*targetY = vy;
+	return result;
+}
+
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	ressourceAvailableCount[teamNumber][ressourceType]++;

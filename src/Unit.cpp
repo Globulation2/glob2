@@ -1546,41 +1546,70 @@ void Unit::handleMovement(void)
 		case DIS_ATTACKING_AROUND:
 		{
 			assert(performance[ATTACK_SPEED]);
-			//if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
-			//{
-			//	movement=MOV_ATTACKING_TARGET;
-			//}
-			//else
-			//{
-				int quality=INT_MAX; // Smaller is better.
-				movement=MOV_RANDOM_GROUND;
-				if (verbose)
-					printf("guid=(%d) selecting movement\n", gid);
-				
-				Building *tempTargetBuilding=NULL;
-				for (int x=-8; x<=8; x++)
-					for (int y=-8; y<=8; y++)
-						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
+			int quality=INT_MAX; // Smaller is better.
+			movement=MOV_RANDOM_GROUND;
+			if (verbose)
+				printf("guid=(%d) selecting movement\n", gid);
+			
+			// we look for the best target to attack around us
+			Building *tempTargetBuilding=NULL;
+			for (int x=-8; x<=8; x++)
+				for (int y=-8; y<=8; y++)
+					if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
+					{
+						if (attachedBuilding &&
+							owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
+								>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
+							continue;
+						Uint16 gid;
+						gid=owner->map->getBuilding(posX+x, posY+y);
+						if (gid!=NOGBID)
 						{
-							if (attachedBuilding &&
-								owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
-									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
-								continue;
-							Uint16 gid;
-							gid=owner->map->getBuilding(posX+x, posY+y);
-							if (gid!=NOGBID)
+							int team=Building::GIDtoTeam(gid);
+							if (owner->enemies & (1<<team))
 							{
-								int team=Building::GIDtoTeam(gid);
-								if (owner->enemies & (1<<team))
+								int id=Building::GIDtoID(gid);
+								int newQuality=((x*x+y*y)<<8);
+								Building *b=owner->game->teams[team]->myBuildings[id];
+								BuildingType *bt=b->type;
+								int shootDamage=bt->shootDamage;
+								newQuality/=(1+shootDamage);
+								if (verbose)
+									printf("guid=(%d) warrior found building with newQuality=%d\n", this->gid, newQuality);
+								if (newQuality<quality)
 								{
-									int id=Building::GIDtoID(gid);
-									int newQuality=((x*x+y*y)<<8);
-									Building *b=owner->game->teams[team]->myBuildings[id];
-									BuildingType *bt=b->type;
-									int shootDamage=bt->shootDamage;
-									newQuality/=(1+shootDamage);
+									if (abs(x)<=1 && abs(y)<=1)
+									{
+										movement=MOV_ATTACKING_TARGET;
+										dx=x;
+										dy=y;
+									}
+									else
+									{
+										movement=MOV_GOING_TARGET;
+										tempTargetBuilding=b;
+									}
+									targetX=posX+x;
+									targetY=posY+y;
+									quality=newQuality;
+								}
+							}
+						}
+						gid=owner->map->getGroundUnit(posX+x, posY+y);
+						if (gid!=NOGUID)
+						{
+							int team=Unit::GIDtoTeam(gid);
+							Uint32 tm=(1<<team);
+							if (owner->enemies & tm)
+							{
+								int id=Building::GIDtoID(gid);
+								Unit *u=owner->game->teams[team]->myUnits[id];
+								if (((owner->sharedVisionExchange & tm)==0) || (u->foreingExchangeBuilding==NULL))
+								{
+									int attackStrength=u->performance[ATTACK_STRENGTH];
+									int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
 									if (verbose)
-										printf("guid=(%d) warrior found building with newQuality=%d\n", this->gid, newQuality);
+										printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
 									if (newQuality<quality)
 									{
 										if (abs(x)<=1 && abs(y)<=1)
@@ -1592,7 +1621,7 @@ void Unit::handleMovement(void)
 										else
 										{
 											movement=MOV_GOING_TARGET;
-											tempTargetBuilding=b;
+											tempTargetBuilding=NULL;
 										}
 										targetX=posX+x;
 										targetY=posY+y;
@@ -1600,73 +1629,40 @@ void Unit::handleMovement(void)
 									}
 								}
 							}
-							gid=owner->map->getGroundUnit(posX+x, posY+y);
-							if (gid!=NOGUID)
-							{
-								int team=Unit::GIDtoTeam(gid);
-								Uint32 tm=(1<<team);
-								if (owner->enemies & tm)
-								{
-									int id=Building::GIDtoID(gid);
-									Unit *u=owner->game->teams[team]->myUnits[id];
-									if (((owner->sharedVisionExchange & tm)==0) || (u->foreingExchangeBuilding==NULL))
-									{
-										int attackStrength=u->performance[ATTACK_STRENGTH];
-										int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
-										if (verbose)
-											printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
-										if (newQuality<quality)
-										{
-											if (abs(x)<=1 && abs(y)<=1)
-											{
-												movement=MOV_ATTACKING_TARGET;
-												dx=x;
-												dy=y;
-											}
-											else
-											{
-												movement=MOV_GOING_TARGET;
-												tempTargetBuilding=NULL;
-											}
-											targetX=posX+x;
-											targetY=posY+y;
-											quality=newQuality;
-										}
-									}
-								}
-							}
 						}
-				// we try to go to enemy building
-				if (movement==MOV_GOING_TARGET && tempTargetBuilding!=NULL)
+					}
+			// we try to go to enemy building
+			if (movement==MOV_GOING_TARGET && tempTargetBuilding!=NULL)
+			{
+				if (owner->map->pathfindBuilding(tempTargetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
 				{
-					if (owner->map->pathfindBuilding(tempTargetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
-					{
-						if (verbose)
-							printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
-						movement=MOV_GOING_DXDY;
-					}
-					else
-					{
-						if (verbose)
-							printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
-						movement=MOV_RANDOM_GROUND;
-					}
+					if (verbose)
+						printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
+					movement=MOV_GOING_DXDY;
 				}
-				// if we haven't find anything satisfactory, follow guard area gradients
-				if (movement == MOV_RANDOM_GROUND)
+				else
 				{
-					if (owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
-					{
-						directionFromDxDy();
-						movement=MOV_GOING_DXDY;
-					}
-					else
-					{
-						// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
-						movement=MOV_RANDOM_GROUND;
-					}
+					if (verbose)
+						printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, tempTargetBuilding->gid, dx, dy);
+					movement=MOV_RANDOM_GROUND;
 				}
-			//}
+			}
+			// if we haven't find anything satisfactory, follow guard area gradients
+			if (movement == MOV_RANDOM_GROUND)
+			{
+				if (owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+				{
+					directionFromDxDy();
+					movement = MOV_GOING_DXDY;
+					// get the target position of guard area for display
+					owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+				}
+				else
+				{
+					// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
+					movement = MOV_RANDOM_GROUND;
+				}
+			}
 		}
 		break;
 		

@@ -379,6 +379,9 @@ public:
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
+	//! Starting from position (x, y) using gradient, returns the gradient destination in (targetX, targetY)
+	bool getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY);
+	
 	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{
 		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
