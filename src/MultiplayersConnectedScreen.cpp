@@ -62,8 +62,6 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 	if ((timeCounter++ % 10)==0)
 		dispatchPaint(gfxCtx);
 	
-	printf("tick=%d.\n", tick);
-	
 	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
 	{
 		if (multiplayersJoin->startGameTimeCounter<0)
