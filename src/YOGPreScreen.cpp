@@ -41,7 +41,7 @@ YOGPreScreen::YOGPreScreen()
 	addWidget(login);
 	
 	addWidget(new Text(20, 370, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
-	password=new TextInput(20, 400, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", true, 32);
+	password=new TextInput(20, 400, 200, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", true, 32, true);
 	addWidget(password);
 	
 	newYogPassword=new OnOffButton(20, 440, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, NEW_USER);
