@@ -1643,6 +1643,272 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 	assert(gradient);
 	x&=wMask;
 	y&=hMask;
+	Uint8 g=gradient[(y<<wDec)+x];
+	if (g<2)
+	{
+		ressourceAviableCountFast[teamNumber][ressourceType]++;
+		return false;
+	}
+	if (dist)
+		*dist=255-g;
+	if (g>=255)
+	{
+		ressourceAviableCountFast[teamNumber][ressourceType]++;
+		*targetX=x;
+		*targetY=y;
+		return true;
+	}
+	int vx=(x+w)&wMask;
+	int vy=(y+h)&hMask;
+	
+	int badCount=0;
+	for (int count=0; count<255; count++)
+	{
+		Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+		bool found=false;
+		int vddx=0;
+		int vddy=0;
+		for (int d=0; d<8; d++)
+		{
+			static const int tab[8][2]={
+				{ 0, -1},
+				{ 1,  0},
+				{ 0,  1},
+				{-1,  0},
+				{-1, -1},
+				{ 1, -1},
+				{ 1,  1},
+				{-1,  1}};
+			int ddx=tab[d][0];
+			int ddy=tab[d][1];
+			Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+			if (g>max)
+			{
+				max=g;
+				vddx=ddx;
+				vddy=ddy;
+				found=true;
+			}
+		}
+		if (found)
+		{
+			vx=(vx+vddx)&wMask;
+			vy=(vy+vddy)&hMask;
+		}
+		else
+		{
+			ressourceAviableCountFar[teamNumber][ressourceType]++;
+			Uint8 miniGrad[25];
+			for (int ry=0; ry<5; ry++)
+				for (int rx=0; rx<5; rx++)
+				{
+					int xg=(vx+rx+w-2)&wMask;
+					int yg=(vy+ry+h-2)&hMask;
+					miniGrad[rx+ry*5]=gradient[xg+yg*w];
+				}
+					
+			if (directionFromMinigrad(miniGrad, &vddx, &vddy))
+			{
+				vx=(vx+vddx)&wMask;
+				vy=(vy+vddy)&hMask;
+				Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+				if (g>=max)
+				{
+					found=true;
+					max=g;
+				}
+			}
+		}
+		if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
+		{
+			ressourceAviableCountSuccess[teamNumber][ressourceType]++;
+			*targetX=vx;
+			*targetY=vy;
+			return true;
+		}
+		if (!found)
+		{
+			{
+				int vx=(x+w)&wMask;
+				int vy=(y+h)&hMask;
+				printf("init v=(%d, %d)\n", vx, vy);
+				int badCount=0;
+				for (int count=0; count<255; count++)
+				{
+					Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+					bool found=false;
+					int vddx=0;
+					int vddy=0;
+					for (int d=0; d<8; d++)
+					{
+						static const int tab[8][2]={
+							{ 0, -1},
+							{ 1,  0},
+							{ 0,  1},
+							{-1,  0},
+							{-1, -1},
+							{ 1, -1},
+							{ 1,  1},
+							{-1,  1}};
+						int ddx=tab[d][0];
+						int ddy=tab[d][1];
+						Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+						if (g>max)
+						{
+							max=g;
+							vddx=ddx;
+							vddy=ddy;
+							found=true;
+						}
+					}
+					if (found)
+					{
+						vx=(vx+vddx)&wMask;
+						vy=(vy+vddy)&hMask;
+						printf("fast v=(%d, %d), max=%d, count=%d\n", vx, vy, max, count);
+					}
+					else
+					{
+						ressourceAviableCountFar[teamNumber][ressourceType]++;
+						Uint8 miniGrad[25];
+						for (int ry=0; ry<5; ry++)
+							for (int rx=0; rx<5; rx++)
+							{
+								int xg=(x+rx+w-2)&wMask;
+								int yg=(y+ry+h-2)&hMask;
+								miniGrad[rx+ry*5]=gradient[xg+yg*w];
+							}
+
+						if (directionFromMinigrad(miniGrad, &vddx, &vddy))
+						{
+							vx=(vx+vddx)&wMask;
+							vy=(vy+vddy)&hMask;
+							Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+							if (g>=max)
+							{
+								found=true;
+								max=g;
+								printf("far  v=(%d, %d), max=%d, count=%d\n", vx, vy, max, count);
+							}
+						}
+					}
+					if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
+					{
+						printf("return true\n");
+						break;
+					}
+					if (!found)
+					{
+						printf("return false\n");
+						break;
+					}
+				}
+			}
+			ressourceAviableCountFailure[teamNumber][ressourceType]++;
+			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+			return false;
+		}
+	}
+	
+	{
+		int vx=(x+w)&wMask;
+		int vy=(y+h)&hMask;
+		printf("init v=(%d, %d)\n", vx, vy);
+		int badCount=0;
+		for (int count=0; count<255; count++)
+		{
+			Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+			bool found=false;
+			int vddx=0;
+			int vddy=0;
+			for (int d=0; d<8; d++)
+			{
+				static const int tab[8][2]={
+					{ 0, -1},
+					{ 1,  0},
+					{ 0,  1},
+					{-1,  0},
+					{-1, -1},
+					{ 1, -1},
+					{ 1,  1},
+					{-1,  1}};
+				int ddx=tab[d][0];
+				int ddy=tab[d][1];
+				Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+				if (g>max)
+				{
+					max=g;
+					vddx=ddx;
+					vddy=ddy;
+					found=true;
+				}
+			}
+			if (found)
+			{
+				vx=(vx+vddx)&wMask;
+				vy=(vy+vddy)&hMask;
+				printf("fast v=(%d, %d), max=%d, count=%d\n", vx, vy, max, count);
+			}
+			else
+			{
+				ressourceAviableCountFar[teamNumber][ressourceType]++;
+				Uint8 miniGrad[25];
+				for (int ry=0; ry<5; ry++)
+					for (int rx=0; rx<5; rx++)
+					{
+						int xg=(x+rx+w-2)&wMask;
+						int yg=(y+ry+h-2)&hMask;
+						miniGrad[rx+ry*5]=gradient[xg+yg*w];
+					}
+
+				if (directionFromMinigrad(miniGrad, &vddx, &vddy))
+				{
+					vx=(vx+vddx)&wMask;
+					vy=(vy+vddy)&hMask;
+					Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+					if (g>=max)
+					{
+						if (g==max && badCount++)
+						{
+							ressourceAviableCountFailure[teamNumber][ressourceType]++;
+							fprintf(logFile, "target *not* found! (badCount>0) pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+							printf("target *not* found! (badCount>0) pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
+							return false;
+						}
+						found=true;
+						max=g;
+						printf("far  v=(%d, %d), max=%d, count=%d\n", vx, vy, max, count);
+					}
+				}
+			}
+			if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
+			{
+				printf("return true\n");
+				break;
+			}
+			if (!found)
+			{
+				printf("return false\n");
+				break;
+			}
+		}
+	}
+	
+	ressourceAviableCountFailure[teamNumber][ressourceType]++;
+	fprintf(logFile, "target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
+	printf("target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
+	return false;
+}
+
+/*
+bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+{
+	ressourceAviableCount[teamNumber][ressourceType]++;
+	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(gradient);
+	x&=wMask;
+	y&=hMask;
 	int wy=(y<<wDec);
 	Uint8 g=gradient[wy+x];
 	if (g<2)
@@ -1739,15 +2005,107 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 		if (!found)
 		{
-			//vx=(vx-vddx)&wMask;
-			//vy=(vy-vddy)&hMask;
+			vx=(vx-vddx)&wMask;
+			vy=(vy-vddy)&hMask;
 			ressourceAviableCountFailure[teamNumber][ressourceType]++;
+			{
+				int vx=x+w;
+				int vy=y+h;
+				vx&=wMask;
+				vy&=hMask;
+				printf("init v=(%d, %d)\n", vx, vy);
+				while (true)
+				{
+					Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+					printf("max=%d\n", max);
+					bool found=false;
+					int vddx, vddy;
+
+					for (int d=0; d<8; d++)
+					{
+						static const int tab[8][2]={
+							{-1, -1},
+							{ 1, -1},
+							{ 1,  1},
+							{-1,  1},
+							{ 0, -1},
+							{ 1,  0},
+							{ 0,  1},
+							{-1,  0}};
+						int ddx=tab[d][0];
+						int ddy=tab[d][1];
+						Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+						printf("is vd=(%d, %d), g=%d\n", ddx, ddy, g);
+						if (g>max)
+						{
+							max=g;
+							vddx=ddx;
+							vddy=ddy;
+							printf("found vdd=(%d, %d), max=%d\n", vddx, vddy, max);
+							found=true;
+						}
+					}
+					
+					if (!found)
+					{
+						printf("!found\n");
+						ressourceAviableCountFar[teamNumber][ressourceType]++;
+						for (int d=0; d<16; d++)
+						{
+							static const int tab[16][2]={
+								{ -2, -2},
+								{ -1, -2},
+								{  0, -2},
+								{ +1, -2},
+								{ +2, -2},
+								{ +2, -1},
+								{ +2,  0},
+								{ +2, +1},
+								{ +2, +2},
+								{ +1, +2},
+								{  0, +2},
+								{ -1, +2},
+								{ -2, +2},
+								{ -2, +1},
+								{ -2,  0},
+								{ -2, -1}};
+							int ddx=tab[d][0];
+							int ddy=tab[d][1];
+							Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+							if (g>max)
+							{
+								max=g;
+								vddx=ddx;
+								vddy=ddy;
+								printf("far found vdd=(%d, %d), max=%d\n", vddx, vddy, max);
+								found=true;
+							}
+						}
+					}
+
+					vx=(vx+vddx)&wMask;
+					vy=(vy+vddy)&hMask;
+					printf("v=(%d, %d), max=%d\n", vx, vy, max);
+					if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
+					{
+						printf("return true\n");
+						break;
+					}
+					if (!found)
+					{
+						printf("return false\n");
+						break;
+					}
+				}
+			}
+			
+			
 			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			return false;
 		}
 	}
-}
+}*/
 
 /*void Map::updateGlobalGradient(Uint8 *gradient)
 {
@@ -2051,7 +2409,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 {
 	Uint8 max;
 	Uint8 maxs[8];
-
+	
 	max=miniGrad[1+1*5];
 	if (max && max!=255)
 	{
@@ -2065,13 +2423,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<5; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[0]=1;
-		else
-			maxs[0]=max-1;
 	}
-	else
-		maxs[0]=max;
+	maxs[0]=max;
 	max=miniGrad[3+1*5];
 	if (max && max!=255)
 	{
@@ -2085,13 +2438,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<5; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[1]=1;
-		else
-			maxs[1]=max-1;
 	}
-	else
-		maxs[1]=max;
+	maxs[1]=max;
 	max=miniGrad[3+3*5];
 	if (max && max!=255)
 	{
@@ -2105,13 +2453,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<5; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[2]=1;
-		else
-			maxs[2]=max-1;
 	}
-	else
-		maxs[2]=max;
+	maxs[2]=max;
 	max=miniGrad[1+3*5];
 	if (max && max!=255)
 	{
@@ -2125,13 +2468,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<5; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[3]=1;
-		else
-			maxs[3]=max-1;
 	}
-	else
-		maxs[3]=max;
+	maxs[3]=max;
+	
 	
 	max=miniGrad[2+1*5];
 	if (max && max!=255)
@@ -2144,13 +2483,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<3; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[4]=1;
-		else
-			maxs[4]=max-1;
 	}
-	else
-		maxs[4]=max;
+	maxs[4]=max;
 	max=miniGrad[3+2*5];
 	if (max && max!=255)
 	{
@@ -2162,13 +2496,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<3; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[5]=1;
-		else
-			maxs[5]=max-1;
 	}
-	else
-		maxs[5]=max;
+	maxs[5]=max;
 	max=miniGrad[2+3*5];
 	if (max && max!=255)
 	{
@@ -2180,13 +2509,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<3; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[6]=1;
-		else
-			maxs[6]=max-1;
 	}
-	else
-		maxs[6]=max;
+	maxs[6]=max;
 	max=miniGrad[1+2*5];
 	if (max && max!=255)
 	{
@@ -2198,27 +2522,25 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 		for (int i=0; i<3; i++)
 			if (side[i]>max)
 				max=side[i];
-		if (max==1)
-			maxs[7]=1;
-		else
-			maxs[7]=max-1;
 	}
-	else
-		maxs[7]=max;
+	maxs[7]=max;
 	
-	int maxg=miniGrad[2+2*5];
+	int centerg=miniGrad[2+2*5];
+	int maxg=centerg;
 	int maxd=8;
+	int sumg=0;
 	for (int d=0; d<8; d++)
-		if (maxg<=maxs[d])
+	{
+		int g=maxs[d];
+		sumg+=g;
+		if (maxg<=g)
 		{
-			maxg=maxs[d];
+			maxg=g;
 			maxd=d;
 		}
-	int stdd;
-	if (maxd<4)
-		stdd=(maxd<<1);
-	else
-		stdd=1+((maxd-4)<<1);
+	}
+	if (sumg==(centerg<<3))
+		return false;
 	
 	/*printf("miniGrad:\n");
 	for (int ry=0; ry<5; ry++)
@@ -2230,11 +2552,18 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy)
 	printf("maxs:\n");
 	for (int d=0; d<8; d++)
 		printf("%4d\n", maxs[d]);
-	printf("maxd=%4d\n", maxd);
-	printf("stdd=%4d\n", maxd);*/
+	printf("maxd=%4d\n", maxd);*/
 	
-	if (maxg==0 || maxd==8)
-		return false;
+	int stdd;
+	if (maxd<4)
+		stdd=(maxd<<1);
+	else if (maxd!=8)
+		stdd=1+((maxd-4)<<1);
+	else
+		stdd=8;
+	
+	//printf("stdd=%4d\n", maxd);
+	
 	Unit::dxdyfromDirection(stdd, dx, dy);
 	return true;
 }

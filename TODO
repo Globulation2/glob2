@@ -51,3 +51,7 @@ To Next version :
 For later later :
 
 - Infos in Map editor
+
+- Crash:
+   glob2: NetGame.cpp:1044: void NetGame::treatData(Uint8*, int, IPaddress): Assertion `false' failed.
+Abandon
