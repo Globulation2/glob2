@@ -95,7 +95,7 @@ public:
 	std::list<LANHost> lanHosts;
 	
 private:
-	bool shareOnYOG;
+	bool shareOnYog;
 	const YOG::GameInfo *yogGameInfo;
 
 public:
@@ -112,10 +112,10 @@ public:
 
 	Uint16 localPort;
 public:
-	MultiplayersJoin(bool shareOnYOG);
+	MultiplayersJoin(bool shareOnYog);
 	virtual ~MultiplayersJoin();
 private:
-	void init(bool shareOnYOG);
+	void init(bool shareOnYog);
 
 public:
 	void dataPresenceRecieved(Uint8 *data, int size, IPaddress ip);

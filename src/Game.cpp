@@ -2025,22 +2025,22 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, in
 		}*/
 }
 
-Sint32 Game::checkSum(std::list<Uint32> *checkSumsList)
+Sint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
 {
 	Sint32 cs=0;
 
 	cs^=session.checkSum();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [0]
 
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
-		cs^=teams[i]->checkSum(checkSumsList);
+		cs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings);
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [1+t*10]
 	
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfPlayer; i++)
@@ -2049,23 +2049,23 @@ Sint32 Game::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [2+t*10]
 	
 	cs=(cs<<31)|(cs>>1);
 	cs^=map.checkSum(false);
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [3+t*10]
 
 	cs^=getSyncRandSeedA();
 	cs^=getSyncRandSeedB();
 	cs^=getSyncRandSeedC();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [4+t*10]
 
 	cs^=script.checkSum();
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [5+t*10]
 	
 	return cs;
 }

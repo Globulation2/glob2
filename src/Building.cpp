@@ -2111,45 +2111,92 @@ void Building::integrity()
 	}
 }
 
-Sint32 Building::checkSum()
+Sint32 Building::checkSum(std::list<Uint32> *checkSumsList)
 {
 	int cs=0;
 	
 	cs^=typeNum;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [1]
 
 	cs^=buildingState;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [2]
+	cs=(cs<<31)|(cs>>1);
 
 	cs^=maxUnitWorking;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [3]
 	cs^=maxUnitWorkingPreferred;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [4]
 	cs^=unitsWorking.size();
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [5]
 	cs^=maxUnitInside;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [6]
 	cs^=unitsInside.size();
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [7]
+	cs=(cs<<31)|(cs>>1);
 	
 	cs^=gid;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [8]
 
 	cs^=posX;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [9]
 	cs^=posY;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [10]
+	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [11]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=ressources[i];
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [12]
+	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [13]
 
 	cs^=productionTimeout;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [14]
 	cs^=totalRatio;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [15]
+	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		cs^=ratio[i];
 		cs^=percentUsed[i];
 		cs=(cs<<31)|(cs>>1);
 	}
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [16]
 
 	cs^=shootingStep;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [17]
 	cs^=shootingCooldown;
-	
-	
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [18]
+	cs^=bullets;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [19]
+	cs=(cs<<31)|(cs>>1);
+
+	cs^=seenByMask;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [19]
 	return cs;
 }
 

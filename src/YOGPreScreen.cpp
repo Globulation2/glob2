@@ -102,7 +102,7 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		if (yogReturnCode==YOGScreen::CANCEL)
 		{
 			yog->deconnect();
-			//endExecutionValue=CANCEL;
+			endExecutionValue=CANCEL;
 		}
 		else if (yogReturnCode==-1)
 		{

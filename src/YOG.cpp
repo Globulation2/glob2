@@ -243,16 +243,19 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_GAME_INFO_FROM_HOST:
 	{
 		Uint32 uid=getUint32(data, 4);
-		if (size>(4+4+4+64))
+		if (size>(4+4+4+4+64))
 			printf("Warning, bad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
 		else
 			for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
 				if (game->uid==uid)
 				{
-					game->numberOfPlayer=(int)getSint8(data, 8);
-					game->numberOfTeam=(int)getSint8(data, 9);
-					game->fileIsAMap=(bool)getSint8(data, 10);
-					game->mapGenerationMethode=(int)getSint8(data, 11);
+					game->numberOfPlayer=(int)data[8];
+					game->numberOfTeam=(int)data[9];
+					game->fileIsAMap=(bool)data[10];
+					game->mapGenerationMethode=(int)data[11];
+					if (data[14]!=0)
+						printf("Warning, bad pad YMT_GAME_INFO_FROM_HOST packet received from ip=(%s)\n", Utilities::stringIP(ip));
+					game->netProtocolVersion=(int)data[16];
 					memcpy(game->mapName, data+12, size-12);
 					game->mapName[63]=0;
 					if (isSelectedGame && selectedGame==uid)
@@ -452,12 +455,14 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		else
 			externalStatusState=YESTS_CONNECTION_REFUSED_UNEXPLAINED;
 		yogGlobalState=YGS_NOT_CONNECTING;
+		globalContainer->popUserName();
 	}
 	break;
 	case YMT_DECONNECTING:
 	{
 		fprintf(logFile, "deconnected\n");
 		yogGlobalState=YGS_NOT_CONNECTING;
+		globalContainer->popUserName();
 		externalStatusState=YESTS_DECONNECTED;
 	}
 	break;
@@ -535,6 +540,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			game.numberOfTeam=0;
 			game.fileIsAMap=false;
 			game.mapGenerationMethode=0xFF;
+			game.netProtocolVersion=0;
 			memset(game.mapName, 0, 64);
 			game.natSolved=false;
 			games.push_back(game);
@@ -584,6 +590,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		if (connectionLost)
 		{
 			yogGlobalState=YGS_CONNECTING;
+			globalContainer->pushUserName(this->userName);
 			connectionTimeout=8;
 			connectionTOTL=3;
 		}
@@ -760,6 +767,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 		fprintf(logFile, " YOG is dead (killed)!\n");
 		externalStatusState=YESTS_YOG_KILLED;
 		yogGlobalState=YGS_NOT_CONNECTING;
+		globalContainer->popUserName();
 		connectionLost=true;
 	}
 	break;
@@ -877,9 +885,8 @@ bool YOG::enableConnection(const char *userName)
 		return false;
 	}
 	
-	globalContainer->pushUserName(this->userName);
-	
 	yogGlobalState=YGS_CONNECTING;
+	globalContainer->pushUserName(this->userName);
 	externalStatusState=YESTS_CONNECTING;
 	sendingMessages.clear();
 	recentlySentMessages.clear();
@@ -915,11 +922,10 @@ bool YOG::enableConnection(const char *userName)
 
 void YOG::deconnect()
 {
-	globalContainer->popUserName();
-	
 	if (connectionLost)
 	{
 		yogGlobalState=YGS_NOT_CONNECTING;
+		globalContainer->popUserName();
 	}
 	else if (yogGlobalState>=YGS_CONNECTED)
 	{
@@ -942,6 +948,7 @@ void YOG::deconnect()
 		sharingGameTimeout=0;
 		sharingGameTOTL=3;
 	}
+	fprintf(logFile, "deconnect() yogGlobalState=%d\n", yogGlobalState);
 }
 
 void YOG::step()
@@ -956,6 +963,7 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_NOT_CONNECTING;
+					globalContainer->popUserName();
 					connectionLost=true;
 					externalStatusState=YESTS_DECONNECTED;
 					fprintf(logFile, "unable to deconnect!\n");
@@ -974,6 +982,7 @@ void YOG::step()
 				if (connectionTOTL--<=0)
 				{
 					yogGlobalState=YGS_UNABLE_TO_CONNECT;
+					globalContainer->popUserName();
 					externalStatusState=YESTS_UNABLE_TO_CONNECT;
 					fprintf(logFile, "unable to connect!\n");
 				}
@@ -1303,9 +1312,12 @@ void YOG::joinGame()
 	unjoiningConfirmed=false;
 }
 
-void YOG::unjoinGame()
+void YOG::unjoinGame(bool strict)
 {
-	assert(joinedGame);
+	fprintf(logFile, "unjoinGame(%d) yogGlobalState=%d\n", strict, yogGlobalState);
+	assert(yogGlobalState==YGS_CONNECTED);
+	if (strict)
+		assert(joinedGame);
 	joinedGame=false;
 	
 	joinGameSocketReceived=false;
@@ -1313,7 +1325,6 @@ void YOG::unjoinGame()
 	unjoinTimeout=0;
 	unjoining=true;
 	unjoiningConfirmed=false;
-	fprintf(logFile, "unjoinGame()\n");
 }
 
 void YOG::sendMessage(const char *message)

@@ -114,6 +114,7 @@ public:
 	int ticksToDelayInside(void);
 	void setLeftTicks(int leftTicks);
 	std::list<Uint32> *getCheckSumsListsStorage();
+	std::list<Uint32> *getCheckSumsListsStorageForBuildings();
 	
 private:
 	int numberOfPlayer;
@@ -173,6 +174,7 @@ private:
 
 	Sint32 gameCheckSums[32][256];
 	std::list<Uint32> checkSumsListsStorage[256];
+	std::list<Uint32> checkSumsListsStorageForBuildings[256];
 	
 	FILE *logFile;
 protected:

@@ -1285,14 +1285,14 @@ void Team::dirtyGlobalGradient()
 	}
 }
 
-Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
+Sint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
 {
 	Sint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [1+t*10]
 	
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
@@ -1301,16 +1301,16 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
 			cs=(cs<<31)|(cs>>1);
 		}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [2+t*10]
 		
 	for (int i=0; i<1024; i++)
 		if (myBuildings[i])
 		{
-			cs^=myBuildings[i]->checkSum();
+			cs^=myBuildings[i]->checkSum(checkSumsListForBuildings);
 			cs=(cs<<31)|(cs>>1);
 		}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [3+t*10]
 	
 	for (int i=0; i<NB_ABILITY; i++)
 	{
@@ -1318,14 +1318,14 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [4+t*10]
 	
 	cs^=foodable.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=fillable.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [5+t*10]
 	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
@@ -1333,28 +1333,28 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [6+t*10]
 	
 	cs^=canExchange.size();
 	cs^=canFeedUnit.size();
 	cs^=canHealUnit.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [7+t*10]
 	
 	cs^=buildingsToBeDestroyed.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=buildingsTryToBuildingSiteRoom.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [8+t*10]
 	
 	cs^=swarms.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=turrets.size();
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [9+t*10]
 
 	cs^=allies;
 	cs=(cs<<31)|(cs>>1);
@@ -1369,7 +1369,7 @@ Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
 	cs^=me;
 	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);
+		checkSumsList->push_back(cs);// [10+t*10]
 
 	return cs;
 }

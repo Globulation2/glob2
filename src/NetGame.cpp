@@ -742,22 +742,36 @@ Order *NetGame::getOrder(int playerNumber)
 					}
 		if (!good)
 		{
-			std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
-			int ci=0;
-			printf("my checkSum at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-				printf("[%3d] %x\n", ci++, *csi);
-			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
-			fflush(logFile);
+			{
+				int ci=0;
+				std::list<Uint32> checkSumsList=checkSumsListsStorageForBuildings[executeUStep&255];
+				printf("my checkSumForBuildings at ustep=%d is:\n", executeUStep);
+				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+					printf("[%3d] %x\n", ci++, *csi);
+				fprintf(logFile, "my checkSumForBuildings at ustep=%d is:\n", executeUStep);
+				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+					fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+				fflush(logFile);
+			}
+			{
+				int ci=0;
+				std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
+				printf("my checkSum at ustep=%d is:\n", executeUStep);
+				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+					printf("[%3d] %x\n", ci++, *csi);
+				fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
+				for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+					fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+				fflush(logFile);
+			}
+			
 			assert(false);
-			/*for (int pi=0; pi<numberOfPlayer; pi++)
+			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])
 				{
 					printf("Player %d dropped for checksum\n", pi);
 					players[pi]->type=Player::P_LOST_FINAL;
-				}*/
+				}
 		}
 		
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
@@ -1452,5 +1466,14 @@ void NetGame::setLeftTicks(int leftTicks)
 
 std::list<Uint32> *NetGame::getCheckSumsListsStorage()
 {
-	return &checkSumsListsStorage[pushUStep&255];
+	std::list<Uint32> *checkSumsListStorage=&checkSumsListsStorage[pushUStep&255];
+	checkSumsListStorage->clear();
+	return checkSumsListStorage;
+}
+
+std::list<Uint32> *NetGame::getCheckSumsListsStorageForBuildings()
+{
+	std::list<Uint32> *checkSumsListStorageForBuildings=&checkSumsListsStorageForBuildings[pushUStep&255];
+	checkSumsListStorageForBuildings->clear();
+	return checkSumsListStorageForBuildings;
 }

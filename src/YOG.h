@@ -76,6 +76,7 @@ public:
 		int numberOfTeam;
 		bool fileIsAMap;
 		int mapGenerationMethode;
+		int netProtocolVersion;
 		char mapName[64];
 		bool natSolved;
 		Uint32 huid; //the uid of the game host
@@ -133,7 +134,8 @@ public:
 	void unshareGame();
 	
 	void joinGame();
-	void unjoinGame();
+	void unjoinGame(bool strict=true);
+	void joinGameRefused();
 	bool joinedGame;
 	
 	void sendMessage(const char *message);
