@@ -49,6 +49,8 @@ void BasePlayer::init()
 	netTimeout=0;
 	netTOTL=0;
 	destroyNet=true;
+	quitting=false;
+	quitStep=-1;
 }
 
 BasePlayer::~BasePlayer(void)
@@ -237,10 +239,10 @@ bool BasePlayer::send(char *data, int size)
 	memcpy((char *)packet->data, data, size);
 	
 	bool sucess;
-	//if (abs(rand()%100)<70)
-	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-	//else
-	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
+	if (abs(rand()%100)<70)
+		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	else
+		sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	//if (sucess)
 	//	printf("suceeded to send packet to player %d.\n", number);
 	//else
@@ -248,7 +250,7 @@ bool BasePlayer::send(char *data, int size)
 			
 	SDLNet_FreePacket(packet);
 	
-	return sucess;		
+	return sucess;
 }
 
 bool BasePlayer::send(const int v)

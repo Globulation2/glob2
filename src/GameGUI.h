@@ -92,8 +92,7 @@ private:
 	typedef struct
 	{
 		int showTicks;
-		char text[MAX_MESSAGE_SIZE];
-		int sender;
+		char text[MAX_MESSAGE_SIZE+BasePlayer::MAX_NAME_LENGTH+4]; 
 	} Message;
 	std::list<Message> messagesList;
 	static const int DEFAULT_MESSAGE_SHOW_TICKS=100;

@@ -616,7 +616,7 @@ void GameGUI::draw(void)
 		int ymesg=32;
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
 		{
-			globalContainer.gfx.drawString(32, ymesg, font, "%s : %s", game.players[it->sender]->name, it->text);
+			globalContainer.gfx.drawString(32, ymesg, font, "%s", it->text);
 			ymesg+=20;
 			it->showTicks--;
 		}
@@ -994,23 +994,38 @@ void GameGUI::executeOrder(Order *order)
 		case ORDER_TEXT_MESSAGE :
 		{
 			MessageOrder *mo=(MessageOrder *)order;
+			int sp=mo->sender;
 			
 			if (mo->recepientsMask &(1<<localPlayer))
 			{
 				Message message;
 				message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
-				strncpy(message.text, mo->getText(), MAX_MESSAGE_SIZE);
-				message.text[MAX_MESSAGE_SIZE-1]=0;
-				message.sender=mo->sender;
+				sprintf(message.text, "%s : %s", game.players[sp]->name, mo->getText());
 				messagesList.push_front(message);
 			}
+			game.executeOrder(order);
 		}
+		break;
+		case ORDER_QUITED :
+		{
+			if (order->sender==localPlayer)
+				isRunning=false;
+			
+			game.executeOrder(order);
+		}
+		break;
 		case ORDER_PLAYER_QUIT_GAME :
 		{
-			PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
-			if (pqgo->player==localPlayer)
-				isRunning=false;
+			int qp=order->sender;
+			Message message;
+			message.showTicks=DEFAULT_MESSAGE_SHOW_TICKS;
+			sprintf(message.text, "%s%s%s", globalContainer.texts.getString("[l has left the game]"), game.players[qp]->name, globalContainer.texts.getString("[r has left the game]"));
+			message.text[MAX_MESSAGE_SIZE-1]=0;
+			messagesList.push_front(message);
+			
+			game.executeOrder(order);
 		}
+		break;
 		default:
 		{
 			game.executeOrder(order);

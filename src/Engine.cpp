@@ -76,7 +76,7 @@ int Engine::initCampain(void)
 void Engine::startMultiplayer(SessionScreen *screen)
 {
 	int p=screen->myPlayerNumber;
-		
+	
 	screen->destroyNet=false;
 	for (int j=0; j<screen->sessionInfo.numberOfPlayer; j++)
 		screen->sessionInfo.players[j].destroyNet=false;
@@ -95,6 +95,8 @@ void Engine::startMultiplayer(SessionScreen *screen)
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE);
+	
+	printf("localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
 
 int Engine::initMutiplayerHost(void)
@@ -109,11 +111,15 @@ int Engine::initMutiplayerHost(void)
 	printf("the game is sharing ...\n");
 	
 	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
+	multiplayersHostScreen.newHostPlayer();
+	if (multiplayersHostScreen.execute(&globalContainer.gfx, 20)==MultiplayersHostScreen::STARTED)
+	{
+		startMultiplayer(&multiplayersHostScreen);
+
+		return NO_ERROR;
+	}
 	
-	int mhsv=multiplayersHostScreen.execute(&globalContainer.gfx, 20);
-	
-	
-	return CANCEL;//zzz
+	return CANCEL;
 }
 
 int Engine::initMutiplayerJoin(void)

@@ -17,19 +17,22 @@ class BasePlayer: public Order
 public:
  	enum PlayerType
 	{
-		P_NONE=0,// NOTE : we don't need any more because null player are not created
-		P_LOST_A,
-		P_LOST_B,
+		P_NONE=0, // NOTE : we don't need any more because null player are not created
+		P_LOST_A, // Player will be droped in any cases, but we still have to exchange orders
+		P_LOST_B, // Player is no longer considered, may be later changed to P_AI
 		P_AI,
 		P_IP,
-		P_LOCAL
+		P_LOCAL,
+		P_HOST
 	};
-
+	
+	static const int MAX_NAME_LENGTH = 16;
+	
 	PlayerType type;
-
+	
 	Sint32 number;
 	Uint32 numberMask;
-	char name[16];
+	char name[MAX_NAME_LENGTH];
 	Sint32 teamNumber;
 	Uint32 teamNumberMask;
 
@@ -37,7 +40,8 @@ public:
 	UDPsocket socket;
 	int channel;
 	
-	
+	bool quitting; // forNetGame: true while the player is fairly quitting.
+	int quitStep;
 	enum PlayerNetworkState
 	{
 		PNS_BAD=0,
@@ -65,7 +69,8 @@ public:
 		// players to players states:
 		
 		PNS_BINDED,
-		PNS_SENDING_FIRST_PACKET
+		PNS_SENDING_FIRST_PACKET,
+		PNS_HOST
 	};
 	
 	PlayerNetworkState netState;
