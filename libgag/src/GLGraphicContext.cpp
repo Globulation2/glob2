@@ -34,6 +34,7 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <sstream>
 
 // Internal support functions
 int roundToNextPowerOfTwo(int v)
@@ -153,40 +154,28 @@ void GLGraphicContext::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8
 // usefull macro to replace some char (like newline) with \0 in string
 #define FILTER_OUT_CHAR(s, c) { char *_c; if ( (_c=(strchr(s, c)))!=NULL) *_c=0; }
 
-void GLGraphicContext::drawString(int x, int y, const Font *font, const char *msg, ...)
+void GLGraphicContext::drawString(int x, int y, const Font *font, int i)
 {
-	/*if (!surface)
-		return;
-
-	va_list arglist;
-	char output[1024];
-
-	va_start(arglist, msg);
-	vsnprintf(output, 1024, msg, arglist);
-	va_end(arglist);
-
-	FILTER_OUT_CHAR(output, '\n');
-	FILTER_OUT_CHAR(output, '\r');
-	
-	// passing 0 to width means infinite width
-	((const SDLFont *)font)->drawString(surface, x, y, 0, output, &clipRect);*/
+	std::stringstream str;
+	str << i;
+	return this->drawString(x, y, 0, font, str.str().c_str());
 }
 
-void GLGraphicContext::drawString(int x, int y, int w, const Font *font, const char *msg, ...)
+void GLGraphicContext::drawString(int x, int y, const Font *font, const char *msg)
+{
+	return this->drawString(x, y, 0, font, msg);
+}
+
+void GLGraphicContext::drawString(int x, int y, int w, const Font *font, const char *msg)
 {
 	/*if (!surface)
 		return;
 
-	va_list arglist;
-	char output[1024];
+	std::string output(msg);
 
-	va_start(arglist, msg);
-	vsnprintf(output, 1024, msg, arglist);
-	va_end(arglist);
-
-	FILTER_OUT_CHAR(output, '\n');
-	FILTER_OUT_CHAR(output, '\r');
-	((const SDLFont *)font)->drawString(surface, x, y, w, output, &clipRect);*/
+	FILTER_OUT_CHAR(output.c_str(), '\n');
+	FILTER_OUT_CHAR(output.c_str(), '\r');
+	((const SDLFont *)font)->drawString(surface, x, y, w, output.c_str(), &clipRect);*/
 }
 
 void GLGraphicContext::drawSurface(int x, int y, DrawableSurface *surface)
