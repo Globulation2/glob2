@@ -147,28 +147,27 @@ void NetGame::init(void)
 
 bool NetGame::isStepReady(Sint32 step)
 {
-	int eachPlayers;
-	for (eachPlayers=0;eachPlayers<numberOfPlayer;eachPlayers++)
+	for (int p=0; p<numberOfPlayer; p++)
 	{
-		if (players[eachPlayers]->type!=Player::P_LOST_B)
+		if (players[p]->type!=Player::P_LOST_B)
 		{
-			if (smaller(lastReceivedFromHim[eachPlayers], step))
+			if (smaller(lastReceivedFromHim[p], step))
 			{
-				fprintf(logFile, "player %d is not ready for step %d (nrfh). \n", eachPlayers, step);
+				fprintf(logFile, "player %d is not ready for step %d (nrfh). \n", p, step);
 				isWaitingForPlayer=true;
 				return false;
 			}
-			if (players[eachPlayers]->type==Player::P_IP)
-				if (smaller(lastReceivedFromMe[eachPlayers], step))
+			if (players[p]->type==Player::P_IP)
+				if (smaller(lastReceivedFromMe[p], step))
 				{
-					fprintf(logFile, "player %d is not ready for step %d (nrfm). \n", eachPlayers, step);
+					fprintf(logFile, "player %d is not ready for step %d (nrfm). \n", p, step);
 					isWaitingForPlayer=true;
 					return false;
 				}
 			
-			if ( playersNetQueue[eachPlayers][step].order==NULL)
+			if ( playersNetQueue[p][step].order==NULL)
 			{
-				fprintf(logFile, "player %d is not ready for step %d (noor). \n", eachPlayers, step);
+				fprintf(logFile, "player %d is not ready for step %d (noor). \n", p, step);
 				isWaitingForPlayer=true;
 				return false;
 			}
@@ -418,7 +417,7 @@ void NetGame::orderHasBeenExecuted(Order *order)
 	assert(order);
 	if (!order->inQueue)
 	{
-		fprintf(logFile, "deleting order type %d.\n", order->getOrderType());
+		fprintf(logFile, "deleting order type %d, currentStep=%d\n", order->getOrderType(), currentStep);
 		delete order;
 	};
 }
@@ -486,7 +485,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 				PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
 				int ap=pqgo->player;
 				//players[ap]->type=Player::P_LOST_B; only when all order are cross recieved.
-				fprintf(logFile, "players %d quitting\n", ap);
+				fprintf(logFile, "players %d quitting step=%d\n", ap, currentStep);
 				players[ap]->quitting=true;
 				players[ap]->quitStep=currentStep;
 				int s=lastReceivedFromHim[ap];
