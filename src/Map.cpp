@@ -1224,10 +1224,10 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	
+	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (init)
 	{
 		memset(gradient, 1, size);
-		Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 		for (int y=0; y<h; y++)
 		{
 			int wy=w*y;
@@ -1503,7 +1503,7 @@ void Map::clearBuildingGradient(Uint8 gradient[2][1024])
 	memset(gradient, 1, 2*1024);
 }
 
-void Map::updateGradient(Building *building, bool canSwim)
+void Map::updateLocalGradient(Building *building, bool canSwim)
 {
 	assert(building);
 	int posX=building->posX;
@@ -1513,7 +1513,7 @@ void Map::updateGradient(Building *building, bool canSwim)
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
 	
-	Uint8 *gradient=building->gradient[canSwim];
+	Uint8 *gradient=building->localGradient[canSwim];
 
 	memset(gradient, 1, 1024);
 	for (int dy=0; dy<posH; dy++)
@@ -1548,118 +1548,6 @@ void Map::updateGradient(Building *building, bool canSwim)
 
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 
-	/*for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
-	{
-		int x=15;
-		int y=15;
-		int dis=1;
-		int die=31;
-		int ddi=+2;
-
-		for (int di=dis; di!=die; di+=ddi) //distance-iterator
-		{
-			for (int bi=0; bi<2; bi++) //back-iterator
-			{
-				for (int ai=0; ai<4; ai++) //angle-iterator
-				{
-					for (int mi=0; mi<di; mi++) //move-iterator
-					{
-						//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
-						assert(x>=0);
-						assert(y>=0);
-						assert(x<32);
-						assert(y<32);
-
-						int wy=32*y;
-						int wyu, wyd;
-						if (y==0)
-							wyu=32*0;
-						else
-							wyu=32*(y-1);
-						if (y==31)
-							wyd=32*31;
-						else
-							wyd=32*(y+1);
-						Uint8 max=gradient[wy+x];
-						if (max && max!=255)
-						{
-							int xl, xr;
-							if (x==0)
-								xl=0;
-							else
-								xl=x-1;
-							if (x==31)
-								xr=31;
-							else
-								xr=x+1;
-
-							Uint8 side[8];
-							side[0]=gradient[wyu+xl];
-							side[1]=gradient[wyu+x ];
-							side[2]=gradient[wyu+xr];
-
-							side[3]=gradient[wy +xr];
-
-							side[4]=gradient[wyd+xr];
-							side[5]=gradient[wyd+x ];
-							side[6]=gradient[wyd+xl];
-
-							side[7]=gradient[wy +xl];
-
-							for (int i=0; i<8; i++)
-								if (side[i]>max)
-									max=side[i];
-							assert(max);
-							if (max==1)
-								gradient[wy+x]=1;
-							else
-								gradient[wy+x]=max-1;
-						}
-						
-						if (bi==0)
-						{
-							switch (ai)
-							{
-								case 0:
-									x++;
-								break;
-								case 1:
-									y++;
-								break;
-								case 2:
-									x--;
-								break;
-								case 3:
-									y--;
-								break;
-							}
-						}
-						else
-						{
-							switch (ai)
-							{
-								case 0:
-									y++;
-								break;
-								case 1:
-									x++;
-								break;
-								case 2:
-									y--;
-								break;
-								case 3:
-									x--;
-								break;
-							}
-						}
-					}
-				}
-			}
-			x--;
-			y--;
-		}
-	}*/
-	
 	for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
 	{
 		for (int down=0; down<2; down++)
@@ -1796,6 +1684,264 @@ void Map::updateGradient(Building *building, bool canSwim)
 	}
 }
 
+
+void Map::updateGlobalGradient(Building *building, bool canSwim)
+{
+	assert(building);
+	int posX=building->posX;
+	int posY=building->posY;
+	int posW=building->type->width;
+	int posH=building->type->height;
+	Uint32 teamMask=building->owner->me;
+	Uint16 bgid=building->gid;
+	
+	Uint8 *gradient=building->globalGradient[canSwim];
+	assert(gradient);
+
+	memset(gradient, 1, size);
+	for (int dy=0; dy<posH; dy++)
+		for (int dx=0; dx<posW; dx++)
+			gradient[posX+dx+(posY+dy)*w]=255;
+
+	for (int y=0; y<h; y++)
+	{
+		int wy=w*y;
+		for (int x=0; x<w; x++)
+		{
+			int wyx=wy+x;
+			Case c=cases[wyx];
+			if (c.building==NOGBID)
+			{
+				if (c.ressource.id!=NORESID)
+					gradient[wyx]=0;
+				else if (c.forbidden&teamMask)
+					gradient[wyx]=0;
+				else if (!canSwim && isWater(x, y))
+					gradient[wyx]=0;
+			}
+			else
+			{
+				if (c.building==bgid)
+					gradient[wyx]=255;
+				else
+					gradient[wyx]=0;
+			}
+		}
+	}
+
+	for (int depth=0; depth<2; depth++) // With a higher depth, we can have more complex obstacles.
+	{
+		int x=(posX+wMask)&wMask;
+		int y=(posY+hMask)&hMask;
+		
+		for (int di=posW; di<=128; di+=2) //distance-iterator
+		{
+			for (int bi=0; bi<2; bi++) //back-iterator
+				for (int ai=0; ai<4; ai++) //angle-iterator
+				{
+					for (int mi=0; mi<di; mi++) //move-iterator
+					{
+						//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
+						assert(x>=0);
+						assert(y>=0);
+						assert(x<w);
+						assert(y<h);
+
+						int wy =w*((y)&hMask);
+						int wyu=w*((y+hMask)&hMask);
+						int wyd=w*((y+1)&hMask);
+						
+						Uint8 max=gradient[wy+x];
+						if (max && max!=255)
+						{
+							int xl=(x+wMask)&wMask;
+							int xr=(x+1)&wMask;
+
+							Uint8 side[8];
+							side[0]=gradient[wyu+xl];
+							side[1]=gradient[wyu+x ];
+							side[2]=gradient[wyu+xr];
+
+							side[3]=gradient[wy +xr];
+
+							side[4]=gradient[wyd+xr];
+							side[5]=gradient[wyd+x ];
+							side[6]=gradient[wyd+xl];
+
+							side[7]=gradient[wy +xl];
+
+							for (int i=0; i<8; i++)
+								if (side[i]>max)
+									max=side[i];
+							if (max==1)
+								gradient[wy+x]=1;
+							else
+								gradient[wy+x]=max-1;
+						}
+
+						if (bi==0)
+						{
+							switch (ai)
+							{
+								case 0:
+									x=(x+1)&wMask;
+								break;
+								case 1:
+									y=(y+1)&hMask;
+								break;
+								case 2:
+									x=(x+wMask)&wMask;
+								break;
+								case 3:
+									y=(y+hMask)&hMask;
+								break;
+							}
+						}
+						else
+						{
+							switch (ai)
+							{
+								case 0:
+									y=(y+1)&hMask;
+								break;
+								case 1:
+									x=(x+1)&wMask;
+								break;
+								case 2:
+									y=(y+hMask)&hMask;
+								break;
+								case 3:
+									x=(x+wMask)&wMask;
+								break;
+							}
+						}
+					}
+				}
+			x=(x+wMask)&wMask;
+			y=(y+hMask)&hMask;
+		}
+	}
+	
+	for (int depth=0; depth<1; depth++) // With a higher depth, we can have more complex obstacles.
+	{
+		for (int y=0; y<h; y++)
+		{
+			int wy=w*y;
+			int wyu=w*((y+hMask)&hMask);
+			for (int x=0; x<w; x++)
+			{
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					int xl=(x+wMask)&wMask;
+					int xr=(x+1)&wMask;
+					
+					Uint8 side[4];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyu+x ];
+					side[2]=gradient[wyu+xr];
+					side[3]=gradient[wy +xl];
+
+					for (int i=0; i<4; i++)
+						if (side[i]>max)
+							max=side[i];
+					
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int y=hMask; y>=0; y--)
+		{
+			int wy=w*y;
+			int wyd=w*((y+1)&hMask);
+			for (int x=0; x<w; x++)
+			{
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					int xl=(x+wMask)&wMask;
+					int xr=(x+1)&wMask;
+					
+					Uint8 side[4];
+					side[0]=gradient[wyd+xr];
+					side[1]=gradient[wyd+x ];
+					side[2]=gradient[wyd+xl];
+					side[3]=gradient[wy +xl];
+
+					for (int i=0; i<4; i++)
+						if (side[i]>max)
+							max=side[i];
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int x=0; x<w; x++)
+		{
+			int xl=(x+wMask)&wMask;
+			for (int y=0; y<h; y++)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					Uint8 side[4];
+					side[0]=gradient[wyu+xl];
+					side[1]=gradient[wyd+xl];
+					side[2]=gradient[wy +xl];
+					side[3]=gradient[wyu+x ];
+
+					for (int i=0; i<4; i++)
+						if (side[i]>max)
+							max=side[i];
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+
+		for (int x=wMask; x>=0; x--)
+		{
+			int xr=(x+1)&wMask;
+			for (int y=0; y<h; y++)
+			{
+				int wy=w*y;
+				int wyu=w*((y+hMask)&hMask);
+				int wyd=w*((y+1)&hMask);
+				Uint8 max=gradient[wy+x];
+				if (max && max!=255)
+				{
+					Uint8 side[4];
+					side[0]=gradient[wyu+xr];
+					side[1]=gradient[wy +xr];
+					side[2]=gradient[wyd+xr];
+					side[3]=gradient[wyu+x ];
+
+					for (int i=0; i<4; i++)
+						if (side[i]>max)
+							max=side[i];
+					if (max==1)
+						gradient[wy+x]=1;
+					else
+						gradient[wy+x]=max-1;
+				}
+			}
+		}
+	}
+	
+}
+
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	assert(building);
@@ -1805,42 +1951,126 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	//int bh=building->type->height;
 	 
 	Uint32 teamMask=building->owner->me;
-	Uint8 *gradient=building->gradient[canSwim];
+	Uint8 *gradient=building->localGradient[canSwim];
 	
-	if (warpDistMax(x, y, bx, by)>=16) //TODO: allow the use ot the last line! (on x and y)
-		return false;
-	
-	int lx=(x-bx+15+32)&31;
-	int ly=(y-by+15+32)&31;
-	int max=gradient[lx+ly*32];
-	bool found=false;
-	
-	if (max>1)
+	if (warpDistMax(x, y, bx, by)<16) //TODO: allow the use ot the last line! (on x and y)
 	{
-		for (int sd=1; sd>=0; sd--)
-			for (int d=sd; d<8; d+=2)
-			{
-				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+		int lx=(x-bx+15+32)&31;
+		int ly=(y-by+15+32)&31;
+		int max=gradient[lx+ly*32];
+		bool found=false;
+
+		if (max>1)
+		{
+			for (int sd=1; sd>=0; sd--)
+				for (int d=sd; d<8; d+=2)
 				{
-					Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
-					if (g>max)
+					int ddx, ddy;
+					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 					{
-						max=g;
-						*dx=ddx;
-						*dy=ddy;
-						found=true;
+						int lxddx=lx+ddx;
+						if (lxddx<0)
+							lxddx=0;
+						else if(lxddx>31)
+							lxddx=31;
+						int lxddy=ly+ddy;
+						if (lxddy<0)
+							lxddy=0;
+						else if(lxddy>31)
+							lxddy=31;
+						Uint8 g=gradient[lxddx+32*lxddy];
+						if (g>max)
+						{
+							max=g;
+							*dx=ddx;
+							*dy=ddy;
+							found=true;
+						}
 					}
 				}
-			}
+			if (found)
+				return true;
+		}
+
+		updateLocalGradient(building, canSwim);
+
+		max=gradient[lx+ly*32];
+		if (max>1)
+			for (int sd=1; sd>=0; sd--)
+				for (int d=sd; d<8; d+=2)
+				{
+					int ddx, ddy;
+					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					{
+						int lxddx=lx+ddx;
+						if (lxddx<0)
+							lxddx=0;
+						else if(lxddx>31)
+							lxddx=31;
+						int lxddy=ly+ddy;
+						if (lxddy<0)
+							lxddy=0;
+						else if(lxddy>31)
+							lxddy=31;
+						Uint8 g=gradient[lxddx+32*lxddy];
+						if (g>max)
+						{
+							max=g;
+							*dx=ddx;
+							*dy=ddy;
+							found=true;
+						}
+					}
+				}
+
 		if (found)
 			return true;
 	}
 	
-	updateGradient(building, canSwim);
+	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
 	
-	max=gradient[lx+ly*32];
+	gradient=building->globalGradient[canSwim];
+	if (gradient==NULL)
+	{
+		gradient=new Uint8[size];
+		building->globalGradient[canSwim]=gradient;
+		updateGlobalGradient(building, canSwim);
+		printf("w=%d, h=%d, size=%d.\n", w, h, size);
+	}
+	else
+	{
+		bool found=false;
+		Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
+		if (max>1)
+			for (int sd=1; sd>=0; sd--)
+				for (int d=sd; d<8; d+=2)
+				{
+					int ddx, ddy;
+					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
+					{
+						Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
+						if (g>max)
+						{
+							max=g;
+							*dx=ddx;
+							*dy=ddy;
+							found=true;
+						}
+					}
+				}
+
+		//printf("found=%d, d=(%d, %d)\n", found, *dx, *dy);
+		if (found)
+			return true;
+	}
+	
+	updateGlobalGradient(building, canSwim);
+	
+	bool found=false;
+	Uint8 max=gradient[(x&wMask)+w*(y&hMask)];
 	if (max>1)
 		for (int sd=1; sd>=0; sd--)
 			for (int d=sd; d<8; d+=2)
@@ -1849,7 +2079,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
 				if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 				{
-					Uint8 g=gradient[((lx+ddx+32)&31)+((ly+ddy+32)&31)*32];
+					Uint8 g=gradient[((x+w+ddx)&wMask)+w*((y+h+ddy)&hMask)];
 					if (g>max)
 					{
 						max=g;
@@ -1859,11 +2089,13 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 					}
 				}
 			}
+
+	if (found)
+		return true;
 	
-	if (!found)
-		printf("failed to pathfind to a building gid=%d!\n", building->gid);
+	printf("global gradient to building gid=%d failed! p=(%d, %d)\n", building->gid, x, y);
 	
-	return found;
+	return false;
 }
 
 void Map::regenerateMap(int x, int y, int w, int h)

@@ -110,7 +110,8 @@ public:
 	
 	Uint32 seenByMask;
 	
-	Uint8 gradient[2][1024];
+	Uint8 localGradient[2][1024];
+	Uint8 *globalGradient[2];
 
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
