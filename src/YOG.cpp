@@ -142,8 +142,8 @@ void YOG::interpreteIRCMessage(const char *message)
 		char *diffusion=strtok(NULL, " :");
 		if ((diffusion) && (strncmp(diffusion, DEFAULT_FW_CHAN, IRC_CHANNEL_SIZE)==0))
 		{
-			char *nick=strtok(NULL, " \0");
-			char *port=strtok(NULL, " \0");
+			char *nick=strtok(NULL, " :\0");
+			char *port=strtok(NULL, " :\0");
 
 			if ((nick) && (port) && (prefix) && (strncmp(this->nick, nick, IRC_NICK_SIZE)==0))
 			{
@@ -164,6 +164,7 @@ void YOG::interpreteIRCMessage(const char *message)
 				fwAct.port=atoi(port);
 
 				firewallActivations.push_back(fwAct);
+				//printf("YOG : UDP : %s request UDP packet on port %d\n", fwAct.hostname, fwAct.port);
 			}
 		}
 		else if ((diffusion) && (strncmp(diffusion, DEFAULT_GAME_CHAN, IRC_CHANNEL_SIZE)==0))

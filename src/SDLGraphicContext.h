@@ -35,8 +35,8 @@ public:
 	virtual ~SDLDrawableSurface() { if (surface) SDL_FreeSurface(surface); }
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
 	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);
-	/*virtual*/ int getW(void) { return surface->w; }
-	/*virtual*/ int getH(void) { return surface->h; }
+	/*virtual*/ int getW(void) { if(surface) return surface->w; else return 0;}
+	/*virtual*/ int getH(void) { if(surface) return surface->h; else return 0; }
 	virtual void setClipRect(int x, int y, int w, int h);
 	virtual void setClipRect(void);
 	virtual void loadImage(const char *name);

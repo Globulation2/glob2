@@ -53,7 +53,7 @@ void MainMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void MainMenuScreen::paint(int x, int y, int w, int h)
 {
-	//gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 	gfxCtx->setClipRect(x, y, w, h);
 	gfxCtx->drawSurface(0, 0, background);
 	gfxCtx->setClipRect();
