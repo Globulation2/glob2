@@ -534,6 +534,7 @@ Building *Team::findBestFoodable(Unit *unit)
 		if (choosen)
 		{
 			unit->destinationPurprose=r;
+			fprintf(logFile, "[%d] tdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 			return choosen;
 		}
 	}
@@ -559,6 +560,7 @@ Building *Team::findBestFoodable(Unit *unit)
 								choosen=b;
 								score=newScore;
 								unit->destinationPurprose=ri;
+								fprintf(logFile, "[%d] tdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 							}
 						}
 					}
@@ -604,6 +606,7 @@ Building *Team::findBestFillable(Unit *unit)
 		if (choosen)
 		{
 			unit->destinationPurprose=r;
+			fprintf(logFile, "[%d] tdp3 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 			return choosen;
 		}
 	}
@@ -624,11 +627,13 @@ Building *Team::findBestFillable(Unit *unit)
 					if (need && map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						double newScore=(double)(buildingDist+ressourceDist)/((double)(b->maxUnitWorking-b->unitsWorking.size())*(double)need);
+						fprintf(logFile, "[%d] newScore=%f=f(%d, %d, %d, %d, %d)\n", b->gid, newScore, buildingDist, ressourceDist, b->maxUnitWorking, b->unitsWorking.size(), need);
 						if (newScore<score)
 						{
 							choosen=b;
 							score=newScore;
 							unit->destinationPurprose=ri;
+							fprintf(logFile, " [%d] tdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						}
 					}
 				}
@@ -725,6 +730,7 @@ Building *Team::findBestFillable(Unit *unit)
 								unit->ownExchangeBuilding=*bi;
 								unit->foreingExchangeBuilding=*fbi;
 								unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+								fprintf(logFile, "[%d] tdp5 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 							}
 						}
 					}
@@ -813,6 +819,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 					if (newScore<score)
 					{
 						unit->destinationPurprose=(Sint32)ability;
+						fprintf(logFile, "[%d] tdp6 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
 						choosen=b;
 						score=newScore;
 					}
@@ -1317,7 +1324,7 @@ void Team::dirtyGlobalGradient()
 	}
 }
 
-Uint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
+Uint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings, std::list<Uint32> *checkSumsListForUnits)
 {
 	Uint32 cs=0;
 
@@ -1329,7 +1336,7 @@ Uint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	for (int i=0; i<1024; i++)
 		if (myUnits[i])
 		{
-			cs^=myUnits[i]->checkSum();
+			cs^=myUnits[i]->checkSum(checkSumsListForUnits);
 			cs=(cs<<31)|(cs>>1);
 		}
 	if (checkSumsList)

@@ -374,7 +374,8 @@ void Unit::subscriptionSuccess(void)
 					{
 						displacement=DIS_GOING_TO_RESSOURCE;
 						targetBuilding=NULL;
-						owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						bool rv=owner->map->ressourceAviable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
 					}
 				}
 				break;
@@ -666,6 +667,7 @@ void Unit::handleActivity(void)
 			if (b)
 			{
 				destinationPurprose=-1;
+				fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_FLAG;
 				attachedBuilding=b;
 				targetBuilding=b;
@@ -719,6 +721,7 @@ void Unit::handleActivity(void)
 				if (b)
 				{
 					destinationPurprose=HEAL;
+					fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
 					targetBuilding=b;
@@ -807,6 +810,7 @@ void Unit::handleActivity(void)
 				}
 
 				destinationPurprose=FEED;
+				fprintf(logFile, "[%d] sdp3 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				targetBuilding=b;
@@ -832,6 +836,7 @@ void Unit::handleActivity(void)
 			if (b!=NULL)
 			{
 				destinationPurprose=HEAL;
+				fprintf(logFile, "[%d] sdp4 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				targetBuilding=b;
@@ -887,6 +892,7 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				caryedRessource=destinationPurprose;
+				fprintf(logFile, "[%d] sdp5 destinationPurprose=%d\n", gid, destinationPurprose);
 				owner->map->decRessource(posX+dx, posY+dy, caryedRessource);
 				
 				targetBuilding=attachedBuilding;
@@ -1045,6 +1051,7 @@ void Unit::handleDisplacement(void)
 						if (targetBuilding->ressources[destinationPurprose]<0)
 							targetBuilding->ressources[destinationPurprose]=0;
 						caryedRessource=destinationPurprose;
+						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
@@ -1165,6 +1172,7 @@ void Unit::handleDisplacement(void)
 							if (bestRessource>=0)
 							{
 								destinationPurprose=bestRessource;
+								fprintf(logFile, "[%d] sdp7 destinationPurprose=%d\n", gid, destinationPurprose);
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{
@@ -1178,7 +1186,10 @@ void Unit::handleDisplacement(void)
 									if (owner->map->doesUnitTouchRessource(this, destinationPurprose, &dx, &dy))
 										displacement=DIS_HARVESTING;
 									else if (map->ressourceAviable(teamNumber, destinationPurprose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									{
+										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
+									}
 									else
 									{
 										assert(false);//You can remove this assert(), but *do* notice me!
@@ -1225,6 +1236,7 @@ void Unit::handleDisplacement(void)
 													foreingExchangeBuilding=*fbi;
 													minDist=foreignBuildingDist;
 													destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+													fprintf(logFile, "[%d] sdp8 destinationPurprose=%d\n", gid, destinationPurprose);
 												}
 											}
 									}
@@ -2273,46 +2285,85 @@ void Unit::integrity()
 	}
 }
 
-Uint32 Unit::checkSum()
+Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 {
 	Uint32 cs=0;
 	
 	cs^=typeNum;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [0]
+	cs=(cs<<1)|(cs>>31);
 	
-	cs^=gid;
 	cs^=isDead;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [1]
+	cs=(cs<<1)|(cs>>31);
+	cs^=gid;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [2]
+	cs=(cs<<1)|(cs>>31);
 
 	cs^=posX;
+	cs=(cs<<1)|(cs>>31);
 	cs^=posY;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [3]
+	cs=(cs<<1)|(cs>>31);
 	cs^=delta;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [4]
+	cs=(cs<<1)|(cs>>31);
 	cs^=dx;
 	cs^=dy;
 	cs^=direction;
-	cs^=insideTimeout;
-	cs^=speed;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [5]
 	cs=(cs<<1)|(cs>>31);
-	//printf("%d,1,%x\n", gid, cs);
+	cs^=insideTimeout;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [6]
+	cs=(cs<<1)|(cs>>31);
+	cs^=speed;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [7]
+	cs=(cs<<1)|(cs>>31);
 
 	cs^=(int)needToRecheckMedical;
-	//printf("%d,1a,%x\n", gid, cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [8]
+	cs=(cs<<1)|(cs>>31);
 	cs^=medical;
 	cs^=activity;
 	cs^=displacement;
 	cs^=movement;
-	//printf("%d,1b,%x\n", gid, cs);
 	cs^=action;
-	//printf("%d,1c,%x\n", gid, cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [9]
+	cs=(cs<<1)|(cs>>31);
 	cs^=targetX;
 	cs^=targetY;
-	//printf("%d,1d,%x\n", gid, cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [10]
 	cs=(cs<<1)|(cs>>31);
-	//printf("%d,2,%x\n", gid, cs);
 
 	cs^=hp;
 	cs^=trigHP;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [11]
+	cs=(cs<<1)|(cs>>31);
 
 	cs^=hungry;
 	cs^=trigHungry;
+	cs^=trigHungryCarying;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [12]
+	cs=(cs<<1)|(cs>>31);
+	
+	cs^=fruitMask;
+	cs^=fruitCount;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [13]
+	cs=(cs<<1)|(cs>>31);
 
 	for (int i=0; i<NB_ABILITY; i++)
 	{
@@ -2323,10 +2374,30 @@ Uint32 Unit::checkSum()
 		cs^=canLearn[i];
 		cs=(cs<<1)|(cs>>31);
 	}
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [14]
+	cs=(cs<<1)|(cs>>31);
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [15]
+	cs=(cs<<1)|(cs>>31);
+	cs^=(targetBuilding!=NULL ? 1:0);
+	cs^=(ownExchangeBuilding!=NULL ? 2:0);
+	cs^=(foreingExchangeBuilding!=NULL ? 4:0);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [16]
+	cs=(cs<<1)|(cs>>31);
+	
 	cs^=destinationPurprose;
-	//printf("%d,3,%x***\n", gid, cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [17]
+	cs^=subscribed;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [18]
+	cs^=caryedRessource;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [19]
 	
 	return cs;
 }

@@ -164,9 +164,13 @@ void Game::executeOrder(Order *order, int localPlayer)
 	Team *team=players[order->sender]->team;
 	assert(team);
 	bool isPlayerAlive=team->isAlive;
-	if (order->getOrderType()!=ORDER_WAITING_FOR_PLAYER)
+	Uint8 orderType=order->getOrderType();
+	if (orderType!=ORDER_WAITING_FOR_PLAYER)
+	{
 		anyPlayerWaitedTimeFor=0;
-	switch (order->getOrderType())
+		fprintf(logFile, "[%d] %d (", order->ustep, order->getOrderType());
+	}
+	switch (orderType)
 	{
 		case ORDER_CREATE:
 		{
@@ -194,6 +198,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b);
 				if (b)
 				{
+					fprintf(logFile, "ORDER_CREATE");
 					if (b->type->unitProductionTime)
 						b->owner->swarms.push_back(b);
 					if (b->type->shootingRange)
@@ -218,6 +223,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
+				fprintf(logFile, "ORDER_MODIFY_BUILDING");
 				b->maxUnitWorking=omb->numberRequested;
 				b->maxUnitWorkingPreferred=b->maxUnitWorking;
 				if (order->sender!=localPlayer)
@@ -237,6 +243,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
+				fprintf(logFile, "ORDER_MODIFY_EXCHANGE");
 				b->receiveRessourceMask=ome->receiveRessourceMask;
 				b->sendRessourceMask=ome->sendRessourceMask;
 				if (order->sender!=localPlayer)
@@ -259,6 +266,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 			{
+				fprintf(logFile, "ORDER_MODIFY_FLAG");
 				int oldRange=b->unitStayRange;
 				int newRange=omf->range;
 				b->unitStayRange=newRange;
@@ -314,6 +322,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				&& b->type->defaultUnitStayRange
 				&& b->type->zonable[WORKER])
 			{
+				fprintf(logFile, "ORDER_MODIFY_CLEARING_FLAG");
 				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
 					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
@@ -334,6 +343,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 			{
+				fprintf(logFile, "ORDER_MOVE_FLAG");
 				if (drop && b->type->zonableForbidden)
 				{
 					int range=b->unitStayRange;
@@ -395,6 +405,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			assert(b);
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
 			{
+				fprintf(logFile, "ORDER_MODIFY_SWARM");
 				for (int j=0; j<NB_UNIT_TYPE; j++)
 				{
 					b->ratio[j]=oms->ratio[j];
@@ -413,6 +424,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if (b)
 			{
+				fprintf(logFile, "ORDER_DELETE");
 				b->launchDelete();
 				assert(b->type);
 				if (b->type->zonableForbidden)
@@ -432,7 +444,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
 			if (b)
+			{
+				fprintf(logFile, "ORDER_CANCEL_DELETE");
 				b->cancelDelete();
+			}
 		}
 		break;
 		case ORDER_CONSTRUCTION:
@@ -445,7 +460,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
 			if (b)
+			{
+				fprintf(logFile, "ORDER_CONSTRUCTION");
 				b->launchConstruction();
+			}
 		}
 		break;
 		case ORDER_CANCEL_CONSTRUCTION:
@@ -458,7 +476,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
 			if (b)
+			{
+				fprintf(logFile, "ORDER_CANCEL_CONSTRUCTION");
 				b->cancelConstruction();
+			}
 		}
 		break;
 		case ORDER_SET_ALLIANCE:
@@ -471,12 +492,14 @@ void Game::executeOrder(Order *order, int localPlayer)
 			teams[team]->sharedVisionFood=sao->visionFoodMask;
 			teams[team]->sharedVisionOther=sao->visionOtherMask;
 			setAIAlliance();
+			fprintf(logFile, "ORDER_SET_ALLIANCE");
 		}
 		break;
 		case ORDER_WAITING_FOR_PLAYER:
 		{
 			anyPlayerWaited=true;
 			maskAwayPlayer=((WaitingForPlayerOrder *)order)->maskAwayPlayer;
+			//fprintf(logFile, "ORDER_WAITING_FOR_PLAYER");
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME:
@@ -484,9 +507,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 			//PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
 			//netGame have to handle this
 			// players[pqgo->player]->type=Player::P_LOST_B;
+			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
 		}
 		break;
 	}
+	if (orderType!=ORDER_WAITING_FOR_PLAYER)
+		fprintf(logFile, ")\n");
 }
 
 bool Game::isHumanAllAllied(void)
@@ -2060,7 +2086,7 @@ void Game::renderMiniMap(int localTeam, const bool useMapDiscovered, int step, i
 		}*/
 }
 
-Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings)
+Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *checkSumsListForBuildings, std::list<Uint32> *checkSumsListForUnits)
 {
 	Uint32 cs=0;
 
@@ -2071,7 +2097,7 @@ Uint32 Game::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	cs=(cs<<31)|(cs>>1);
 	for (int i=0; i<session.numberOfTeam; i++)
 	{
-		cs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings);
+		cs^=teams[i]->checkSum(checkSumsList, checkSumsListForBuildings, checkSumsListForUnits);
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsList)

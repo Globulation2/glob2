@@ -20,6 +20,7 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
+#include <list>
 #include <assert.h>
 #include <string.h>
 #include <SDL_rwops.h>
@@ -214,7 +215,7 @@ public:
 
 public:
 	void integrity();
-	Uint32 checkSum();
+	Uint32 checkSum(std::list<Uint32> *checkSumsList);
 	bool verbose;
 	
 protected:

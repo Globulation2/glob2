@@ -109,12 +109,13 @@ private:
 public:
 	void receptionStep(void);
 	bool stepReadyToExecute(void);
-	void computeNumberOfStepsToEat(void); //Return false if failed
+	bool computeNumberOfStepsToEat(void); //Return false if failed
 	void stepExecuted(void);
 	int ticksToDelayInside(void);
 	void setLeftTicks(int leftTicks);
 	std::list<Uint32> *getCheckSumsListsStorage();
 	std::list<Uint32> *getCheckSumsListsStorageForBuildings();
+	std::list<Uint32> *getCheckSumsListsStorageForUnits();
 	
 private:
 	int numberOfPlayer;
@@ -141,7 +142,7 @@ private:
 	static const int defaultLatency=8; //8[t]x40[ms/t]=320[ms]
 	static const int maxLatency=24; //24[t]x40[ms/t]=960[ms]
 	
-	Uint8 myLocalWishedLatency; // The latency we want, but the other players don't know about it yet. (caused by network latency)
+	Uint8 myLocalWishedLatency; // The latency we want, but the other players don't know it yet. (caused by network latency)
 	Uint8 wishedLatency[32]; // The latency each player wants.
 	int myLocalWishedDelay; // The delay we want, but the other players don't know about it yet. (caused by a too slow computer)
 	Uint8 recentsWishedDelay[32][256]; // The delay each player wants. (recents)
@@ -176,6 +177,7 @@ private:
 	Sint32 gameCheckSums[32][256];
 	std::list<Uint32> checkSumsListsStorage[256];
 	std::list<Uint32> checkSumsListsStorageForBuildings[256];
+	std::list<Uint32> checkSumsListsStorageForUnits[256];
 	
 	FILE *logFile;
 protected:

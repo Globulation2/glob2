@@ -675,7 +675,7 @@ Order *NetGame::getOrder(int playerNumber)
 		order->sender=playerNumber;
 		return order;
 	}
-	else if (waitingForPlayerMask)
+	else if (waitingForPlayerMask || hadToWaitThisStep)
 	{
 		Order *order=new WaitingForPlayerOrder(whoMaskCountedOut());
 		order->sender=playerNumber;
@@ -754,20 +754,22 @@ Order *NetGame::getOrder(int playerNumber)
 					}
 		if (!good)
 		{
+			FILE *logFile = globalContainer->logFileManager->getFile("Checksum.log");
+			std::list<Uint32> checkSumsListForBuildings=checkSumsListsStorageForBuildings[executeUStep&255];
+			std::list<Uint32> checkSumsListForUnits=checkSumsListsStorageForUnits[executeUStep&255];
+			std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
 			int ci=0;
-			std::list<Uint32> checkSumsList=checkSumsListsStorageForBuildings[executeUStep&255];
-			//printf("my checkSumForBuildings at ustep=%d is:\n", executeUStep);
-			//for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-			//	printf("[%3d] %x\n", ci++, *csi);
-			//ci=0;
-			fprintf(logFile, "my checkSumForBuildings at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+			fprintf(logFile, "my checkSumsListForUnits at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsListForUnits.begin(); csi!=checkSumsListForUnits.end(); csi++)
 				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			ci=0;
-			checkSumsList=checkSumsListsStorage[executeUStep&255];
-			printf("my checkSum at ustep=%d is:\n", executeUStep);
-			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
-				printf("[%3d] %x\n", ci++, *csi);
+			fprintf(logFile, "my checkSumsListForBuildings at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsListForBuildings.begin(); csi!=checkSumsListForBuildings.end(); csi++)
+				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
+			//ci=0;
+			//printf("my checkSum at ustep=%d is:\n", executeUStep);
+			//for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+			//	printf("[%3d] %x\n", ci++, *csi);
 			ci=0;
 			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
 			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
@@ -1293,10 +1295,10 @@ bool NetGame::stepReadyToExecute(void)
 			fprintf(logFile, "waitingForPlayerMask=%x\n", waitingForPlayerMask);
 		if (waitingForPlayerMask==0)
 		{
-			hadToWaitThisStep=false;
 			computeMyLocalWishedLatency();
-			computeNumberOfStepsToEat();
-			return true;
+			bool success=computeNumberOfStepsToEat();
+			hadToWaitThisStep=!success;
+			return success;
 		}
 		else
 		{
@@ -1310,7 +1312,7 @@ bool NetGame::stepReadyToExecute(void)
 	}
 }
 
-void NetGame::computeNumberOfStepsToEat(void)
+bool NetGame::computeNumberOfStepsToEat(void)
 {
 	Uint8 targetLatency=0;// The gobaly-choosen-latency, we have to reach.
 	int n=0;
@@ -1336,7 +1338,7 @@ void NetGame::computeNumberOfStepsToEat(void)
 		if (players[pi]->quitting && (players[pi]->type==Player::P_IP || players[pi]->type==Player::P_LOCAL))
 		{
 			fprintf(logFile, " player %d quitting, no latency changing aviable\n", pi);
-			return;
+			return true;
 		}
 	if (targetLatency>latency)
 	{
@@ -1383,7 +1385,12 @@ void NetGame::computeNumberOfStepsToEat(void)
 				Order *order=ordersQueue[pi][(executeUStep+1)&255];
 				assert(order);
 				Uint8 type=order->getOrderType();
-				if ((order->ustep!=executeUStep+1) || (type!=ORDER_NULL))
+				if (order->ustep!=executeUStep+1)
+				{
+					fprintf(logFile, " step not ready.\n");
+					return false;
+				}
+				if (type!=ORDER_NULL)
 				{
 					allNullOrders=false;
 					break;
@@ -1394,6 +1401,7 @@ void NetGame::computeNumberOfStepsToEat(void)
 	}
 	if (latency!=targetLatency)
 		fprintf(logFile, " numberOfStepsToEat=%d, waitingForPlayerMask=%x\n", numberOfStepsToEat, waitingForPlayerMask);
+	return true;
 }
 
 void NetGame::stepExecuted(void)
@@ -1494,4 +1502,11 @@ std::list<Uint32> *NetGame::getCheckSumsListsStorageForBuildings()
 	std::list<Uint32> *checkSumsListStorageForBuildings=&checkSumsListsStorageForBuildings[pushUStep&255];
 	checkSumsListStorageForBuildings->clear();
 	return checkSumsListStorageForBuildings;
+}
+
+std::list<Uint32> *NetGame::getCheckSumsListsStorageForUnits()
+{
+	std::list<Uint32> *checkSumsListStorageForUnits=&checkSumsListsStorageForUnits[pushUStep&255];
+	checkSumsListStorageForUnits->clear();
+	return checkSumsListStorageForUnits;
 }
