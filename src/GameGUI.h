@@ -95,6 +95,7 @@ private:
 	void viewportFromMxMY(int mx, int my);
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
+	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 public:

@@ -72,7 +72,7 @@ Ameliorer
 Upgrade
 Verbessern
 [cancel upgrade]
-Annuler amelio.
+Annuler amelioration
 Cancel upgrade
 Verbes. wiederrufen
 [unit type]
@@ -531,6 +531,14 @@ sind hungrig
 blessees
 are wonded
 sind verletzt
+[and]
+et
+and
+und
+[seeking a job]
+cherchent du travail
+look for a job
+suchen ein Arbeit
 [Walk]
 Marche
 Walk
@@ -555,14 +563,14 @@ Geschwindigkeit
 Force at.
 At. strength
 Staerke
-[Free/total]
-Total/libres
-Total/free
-Total/Frei
+[Total/free/seeking]
+Total/libres/recherche
+Total/free/seeking
+Total/Frei/suchen
 [Ok/hungry/wounded]
-Ok/faim/blessees
-Ok/hungry/wounded
-Ok/Hungrig/Verletzt
+Libre/faim/blessees
+Free/hungry/wounded
+Frei/Hungrig/Verletzt
 [in way]
 en chemin
 in way

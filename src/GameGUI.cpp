@@ -1079,18 +1079,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 		if ((my>256+172) && (my<256+172+16))
 		{
-			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-			{
-				orderQueue.push_back(new OrderCancelDelete(selBuild->UID));
-			}
-			else if (selBuild->buildingState==Building::ALIVE)
-			{
-				orderQueue.push_back(new OrderDelete(selBuild->UID));
-			}
-		}
-
-		if ((my>256+172+16+8) && (my<256+172+16+8+16))
-		{
 			if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
 			{
 				if ((selBuild->type->lastLevelTypeNum!=-1))
@@ -1107,6 +1095,18 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
 			{
 				orderQueue.push_back(new OrderUpgrade(selBuild->UID));
+			}
+		}
+
+		if ((my>256+172+16+8) && (my<256+172+16+8+16))
+		{
+			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+			{
+				orderQueue.push_back(new OrderCancelDelete(selBuild->UID));
+			}
+			else if (selBuild->buildingState==Building::ALIVE)
+			{
+				orderQueue.push_back(new OrderDelete(selBuild->UID));
 			}
 		}
 	}
@@ -1182,10 +1182,7 @@ void GameGUI::draw(void)
 			}
 
 			char buttonText[64];
-			
 			int viewFu=teamStats->getFreeUnits()-teamStats->getUnitsNeeded();
-			
-			char freeUnitsText[64];
 			if (viewFu<-1)
 				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units needed]"), -viewFu, globalContainer->texts.getString("[r units needed]"));
 			else if (viewFu==-1)
@@ -1200,7 +1197,7 @@ void GameGUI::draw(void)
 				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
 			
 			// draw button, for stat
-			drawButton(globalContainer->gfx->getW()-128+16, 128+4, buttonText, false);
+			drawButton(globalContainer->gfx->getW()-128+12, 128+4, buttonText, false);
 
 			// draw building infos
 			if (mouseX>globalContainer->gfx->getW()-128)
@@ -1352,34 +1349,34 @@ void GameGUI::draw(void)
 						assert(false);
 				}
 
-				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-				{
-					drawButton(globalContainer->gfx->getW()-128+16, 256+172, "[cancel destroy]");
-				}
-				else if (selBuild->buildingState==Building::ALIVE)
-				{
-					drawButton(globalContainer->gfx->getW()-128+16, 256+172, "[destroy]");
-				}
-
 				if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE)
 				{
 					if ((selBuild->type->lastLevelTypeNum!=-1))
-						drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+						drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
 				}
 				else if (selBuild->buildingState==Building::WAITING_FOR_UPGRADE_ROOM)
 				{
-					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
 				}
 				else if ((selBuild->type->lastLevelTypeNum!=-1) && (selBuild->type->isBuildingSite))
 				{
-					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
+					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
 				}
 				else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
 				{
-					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
+					drawButton(globalContainer->gfx->getW()-128+12, 256+172, "[upgrade]");
+				}
+
+				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+				{
+					drawRedButton(globalContainer->gfx->getW()-128+12, 256+172+16+8, "[cancel destroy]");
+				}
+				else if (selBuild->buildingState==Building::ALIVE)
+				{
+					drawRedButton(globalContainer->gfx->getW()-128+12, 256+172+16+8, "[destroy]");
 				}
 				//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFont, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
-				}
+			}
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
@@ -1805,11 +1802,26 @@ void GameGUI::save(SDL_RWops *stream, char *name)
 
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawFilledRect(x, y, 96, 16, 128, 128, 128);
-	globalContainer->gfx->drawHorzLine(x, y, 96, 200, 200, 200);
-	globalContainer->gfx->drawHorzLine(x, y+15, 96, 28, 28, 28);
+	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 128, 128, 128);
+	globalContainer->gfx->drawHorzLine(x, y, 104, 200, 200, 200);
+	globalContainer->gfx->drawHorzLine(x, y+15, 104, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(x+95, y, 16, 200, 200, 200);
+	globalContainer->gfx->drawVertLine(x+103, y, 16, 200, 200, 200);
+	const char *textToDraw;
+	if (doLanguageLookup)
+		textToDraw=globalContainer->texts.getString(caption);
+	else
+		textToDraw=caption;
+	globalContainer->gfx->drawString(x+3, y+3, globalContainer->littleFont, textToDraw);
+}
+
+void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
+{
+	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 192, 128, 128);
+	globalContainer->gfx->drawHorzLine(x, y, 104, 255, 200, 200);
+	globalContainer->gfx->drawHorzLine(x, y+15, 104, 92, 28, 28);
+	globalContainer->gfx->drawVertLine(x, y, 16, 255, 200, 200);
+	globalContainer->gfx->drawVertLine(x+103, y, 16, 255, 200, 200);
 	const char *textToDraw;
 	if (doLanguageLookup)
 		textToDraw=globalContainer->texts.getString(caption);
