@@ -21,48 +21,20 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include "assert.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef win32
-#include <malloc.h>
-#endif
-
-OneStringToken::OneStringToken(const char *name)
-{
-	size_t len=strlen(name)+1;
-	this->name=(char *)malloc(len);
-	strncpy(this->name, name, len);
-}
-
-OneStringToken::~OneStringToken()
-{
-	free (name);
-	for (std::vector<char *>::iterator it=data.begin(); it!=data.end(); it++)
-		free (*it);
-}
-
-void OneStringToken::addData(char *data)
-{
-	size_t len=strlen(data)+1;
-	char *temp=(char *)malloc(len);
-	strncpy(temp, data, len);
-	this->data.push_back(temp);
-}
-
+#include <iostream>
 
 StringTable::StringTable()
 {
-	numberoflanguages=0;
+	languageCount = 0;
+	actLang = 0;
+	defaultLang = 0;
 }
 
 
 StringTable::~StringTable()
 {
-	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
-		delete (*it);
+	for (size_t i=0; i<strings.size(); i++)
+		delete strings[i];
 }
 
 
@@ -107,14 +79,15 @@ bool StringTable::load(char *filename)
 	char temp[1024];
 	unsigned line=0;
 
-	if ((fp=Toolkit::getFileManager()->openFP(filename, "r"))==NULL)
+	if ((fp = Toolkit::getFileManager()->openFP(filename, "r"))==NULL)
 	{
 		return false;
 	}
 	else
 	{
-		actlang=0;
-		// get length
+		actLang = 0;
+		
+		// get number of language
 		if (fgets(temp, 1024, fp)==NULL)
 		{
 			fclose(fp);
@@ -122,20 +95,28 @@ bool StringTable::load(char *filename)
 		}
 		line++;
 		terminateLine(temp, 1024);
-		numberoflanguages=atoi(temp);
+		languageCount = atoi(temp);
+		actLang = std::min(actLang, languageCount);
+		defaultLang = std::min(defaultLang, languageCount);
+		
+		// read entries
 		while (!feof(fp))
 		{
 			OneStringToken *myString;
+			std::string key;
 
+			// read from file and check format
 			if (fgets(temp, 1024, fp)==NULL)
 				break;
 			line++;
 			terminateLine(temp, 1024);
-			if (temp[0]!='[')
-				fprintf(stderr, "StringTable::load: warning, lookup entry at line %d lacks [ at start\n", line);
-			myString=new OneStringToken(temp);
+			if (temp[0] != '[')
+				std::cerr << "StringTable::load: warning, lookup entry at line " << line << " lacks [ at start" << std::endl;
+			key = temp;
+			myString = new OneStringToken();
 
-			for (int n=0; n<numberoflanguages; n++)
+			// read all strings
+			for (int n=0; n<languageCount; n++)
 			{
 				if (fgets(temp, 1024, fp)==NULL)
 				{
@@ -145,25 +126,25 @@ bool StringTable::load(char *filename)
 				line++;
 				terminateLine(temp, 1024);
 				if (temp==NULL)
-					myString->addData("");
+					myString->data.push_back("");
 				else
-					myString->addData(temp);
+					myString->data.push_back(temp);
 			}
+			stringAccess[key] = strings.size();
 			strings.push_back(myString);
 		}
 		doublebreak:
 		fclose(fp);
 
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 		{
-			char *s=(*it)->name;
-			size_t l=strlen(s);
 			bool lcwp=false;
 			int baseCountS=0;
 			int baseCountD=0;
-			for (size_t j=0; j<l; j++)
+			const std::string &s = it->first;
+			for (size_t j=0; j<s.length(); j++)
 			{
-				char c=s[j];
+				char c = s[j];
 				if (lcwp && c!=' ' && c!='%')
 				{
 					if (c=='s')
@@ -172,21 +153,20 @@ bool StringTable::load(char *filename)
 						baseCountD++;
 					else
 					{
-						printf("text=(%s), %s\n", s, "Only %d and %s are supported in translations!");
+						std::cerr << "text=(" << s << "), Only %d and %s are supported in translations !" << std::endl;
 						assert(false);
 						return false;
 					}
 				}
 				lcwp=(c=='%');
 			}
-			for (int i=0; i<(int)((*it)->data.size()); i++)
+			for (size_t i=0; i<strings[it->second]->data.size(); i++)
 			{
-				char *s=(*it)->data[i];
-				size_t l=strlen(s);
+				const std::string &s = strings[it->second]->data[i];
 				bool lcwp=false;
 				int countS=0;
 				int countD=0;
-				for (size_t j=0; j<l; j++)
+				for (size_t j=0; j<s.length(); j++)
 				{
 					char c=s[j];
 					if (lcwp && c!=' ' && c!='%')
@@ -197,7 +177,7 @@ bool StringTable::load(char *filename)
 							countD++;
 						else
 						{
-							printf("translation=(%s), %s\n", s, "Only %s and %d are supported in translations!");
+							std::cerr << "translation=(" << s << "Only %s and %d are supported in translations !" << std::endl;
 							assert(false);
 							return false;
 						}
@@ -206,7 +186,7 @@ bool StringTable::load(char *filename)
 				}
 				if (baseCountS!=countS ||baseCountD!=countD)
 				{
-					printf("text=[%d:%d](%s), translation=[%d:%d](%s), doesn\'t match!\n", baseCountS, baseCountD, (*it)->name, countS, countD, s);
+					std::cerr << "text=]" << baseCountS << ":" << baseCountD << "](" << it->first << "), translation=[" << countS << ":" << countD << "](" << s << "), doesn't match !" << std::endl;
 					assert(false);
 					return false;
 				}
@@ -220,34 +200,36 @@ bool StringTable::load(char *filename)
 
 void StringTable::print()
 {
-	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+	for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 	{
-		printf("name=%s\n", (*it)->name);
-		for (int i=0; i<(int)((*it)->data.size()); i++)
-		{
-			printf("trad[%d]=%s\n", i, (*it)->data[i]);
-		}
+		std::cout << "name=" << it->first << "\n";
+		for (size_t i=0; i<strings[it->second]->data.size(); i++)
+			std::cout<< "trad[" << i << "]=" << strings[it->second]->data[i];
+		std::cout << std::endl;
 	}
 }
 
-const char *StringTable::getString(const char *stringname) const
+const char *StringTable::getString(const char *stringname, int index) const
 {
-	if (actlang<numberoflanguages)
+	if ((actLang < languageCount) && (actLang >= 0))
 	{
-		for (std::vector<OneStringToken *>::const_iterator it=strings.begin(); it!=strings.end(); it++)
+		std::string key(stringname);
+		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+		if (accessIt == stringAccess.end())
 		{
-			if (strcmp(stringname, (*it)->name)==0)
-			{
-				const char *s=(*it)->data[actlang];
-				assert(s);
-				if (s[0]==0)
-					s=(*it)->data[0];
-				
-				assert(s);
-				return s;
-			}
+			return "ERROR : NO STRING";
 		}
-		return "ERROR : NO STRING";
+		else
+		{
+			int dec = index >= 0 ? index + 1 : 0;
+			if (accessIt->second+dec >= strings.size())
+				return "ERROR : INDEX OUT OF BOUND";
+			std::string &s = strings[accessIt->second+dec]->data[actLang];
+			if (s.length() == 0)
+				return strings[accessIt->second+dec]->data[defaultLang].c_str();
+			else
+				return s.c_str();
+		}
 	}
 	else
 	{
@@ -257,49 +239,22 @@ const char *StringTable::getString(const char *stringname) const
 
 const char *StringTable::getStringInLang(const char *stringname, int lang) const
 {
-	if ((lang<numberoflanguages) && (lang>=0))
+	if ((lang < languageCount) && (lang >= 0))
 	{
-		for (std::vector<OneStringToken *>::const_iterator it=strings.begin(); it!=strings.end(); it++)
+		std::string key(stringname);
+		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+		if (accessIt == stringAccess.end())
 		{
-			if (strcmp(stringname, (*it)->name)==0)
-			{
-				return ((*it)->data[lang]);
-			}
+			return "ERROR : NO STRING";
 		}
-		return "ERROR : NO STRING";
+		else
+		{
+			return strings[accessIt->second]->data[lang].c_str();
+		}
 	}
 	else
 	{
 		return "ERROR, BAD LANG ID";
-	}
-}
-
-const char *StringTable::getString(const char *stringname, int index) const
-{
-	if (actlang<numberoflanguages)
-	{
-		for (int i=0; i<(int)(strings.size()); i++)
-		{
-			if (strcmp(stringname, strings[i]->name)==0)
-			{
-				OneStringToken *token=strings[i+index+1];
-				assert(token);
-				
-				const char *s=token->data[actlang];
-				assert(s);
-				
-				if (s[0]==0)
-					s=token->data[0];
-					
-				assert(s);
-				return s;
-			}
-		}
-		return "ERROR : NO STRING";
-	}
-	else
-	{
-		return "ERROR, BAD LANG";
 	}
 }
 

@@ -21,17 +21,13 @@
 #define __STRINGTABLE_H
 
 #include <vector>
+#include <map>
+#include <string>
 
 class OneStringToken
 {
 public:
-	OneStringToken(const char *name);
-	~OneStringToken();
-	void addData(char *data);
-	
-public:
-	char *name;
-	std::vector<char *> data;
+	std::vector<std::string> data;
 };
 
 class StringTable
@@ -39,19 +35,21 @@ class StringTable
 public:
 	StringTable();
 	~StringTable();
-	void setLang(int l) { actlang=l; }
-	int getLang(void) { return actlang; }
-	int getNumberOfLanguage(void) { return numberoflanguages; }
+	void setLang(int l) { actLang = l; }
+	void setDefaultLang(int l) { defaultLang = l; }
+	int getLang(void) { return actLang; }
+	int getNumberOfLanguage(void) { return languageCount; }
 	bool load(char *filename);
-	const char *getString(const char *stringname) const;
-	const char *getString(const char *stringname, int index) const;
+	const char *getString(const char *stringname, int index = -1) const;
 	const char *getStringInLang(const char *stringname, int lang) const;
 	void print();
 
 private:
 	std::vector<OneStringToken *> strings;
-	int actlang;
-	int numberoflanguages;
+	std::map<std::string, size_t> stringAccess;
+	int actLang;
+	int defaultLang;
+	int languageCount;
 	
 public:
 	enum {AI_NAME_SIZE=4};
