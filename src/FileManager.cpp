@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+// here we handle compile time options
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #else
@@ -31,9 +32,18 @@
 #		define PACKAGE_DATA_DIR ".."
 #		define PACKAGE_SOURCE_DIR "../.."
 #	else
+#
 #		define PACKAGE_DATA_DIR ".."
 #		define PACKAGE_SOURCE_DIR "../.."
 #	endif
+#endif
+
+// include for directory listing
+#ifdef WIN32
+#	include <io.h>
+#else
+#	include <sys/types.h>
+#	include <dirent.h>
 #endif
 
 FileManager::FileManager()
@@ -41,18 +51,33 @@ FileManager::FileManager()
     addDir(".");
     addDir(PACKAGE_DATA_DIR);
     addDir(PACKAGE_SOURCE_DIR);
+	fileListIndex=-1;
 }
 
 FileManager::~FileManager()
 {
-	{
-	    for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-	    {
-	        delete[] const_cast<char*>(*dirListIterator);
-	    }
-	}
+	clearDirList();
+	clearFileList();
 }
 
+void FileManager::clearDirList(void)
+{
+	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	{
+		delete[] const_cast<char*>(*dirListIterator);
+	}
+	dirList.clear();
+}
+
+void FileManager::clearFileList(void)
+{
+	for (std::vector<const char *>::iterator fileListIterator=fileList.begin(); fileListIterator!=fileList.end(); ++fileListIterator)
+	{
+		delete[] const_cast<char*>(*fileListIterator);
+	}
+	fileList.clear();
+	fileListIndex=-1;
+}
 
 void FileManager::addDir(const char *dir) 
 {
@@ -89,17 +114,15 @@ SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verbos
 
 FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIfNotFound)
 {
+	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
 	{
-		for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-		{
-			char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
-			sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
+		char *fn = new char[strlen(filename) + strlen(*dirListIterator) + 2];
+		sprintf(fn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
 
-			FILE *fp =  fopen(fn, mode);
-			delete[] fn;
-			if (fp) 
-				return fp;
-		}
+		FILE *fp =  fopen(fn, mode);
+		delete[] fn;
+		if (fp)
+			return fp;
 	}
 
 	if (verboseIfNotFound)
@@ -108,6 +131,73 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 		assert(false);
 	}
 
+	return NULL;
+}
+
+bool FileManager::addListingForDir(const char *realDir, const char *extension)
+{
+#ifdef WIN32
+	// TODO : put Win32 directory listing (findfirst, findnext) here
+#else
+	DIR *dir=opendir(realDir);
+	struct dirent *dirEntry;
+
+	if (!dir)
+		return false;
+
+	while ((dirEntry=readdir(dir))!=NULL)
+	{
+		int l, nl;
+		l=strlen(extension);
+		nl=strlen(dirEntry->d_name);
+		if (strcmp(extension,dirEntry->d_name+(nl-l))==0)
+		{
+			// test if name already exists in vector
+			bool alreadyIn=false;
+			for (std::vector<const char *>::iterator fileListIterator=fileList.begin(); (fileListIterator!=fileList.end())&&(alreadyIn==false); ++fileListIterator)
+			{
+				if (strcmp(dirEntry->d_name, *fileListIterator)==0)
+					alreadyIn=true;
+			}
+			if (!alreadyIn)
+			{
+				char *fileName=new char[strlen(dirEntry->d_name)+1];
+				strcpy(fileName, dirEntry->d_name);
+				fileList.push_back(fileName);
+			}
+		}
+	}
+
+	closedir(dir);
+#endif
+	return true;
+}
+
+bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension)
+{
+	bool result=false;
+	clearFileList();
+	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	{
+		char *dn = new char[strlen(virtualDir) + strlen(*dirListIterator) + 2];
+		sprintf(dn, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
+		result=result||addListingForDir(dn, extension);
+		delete[] dn;
+	}
+	// TODO : for Gabriel, sort result
+	if (result)
+		fileListIndex=0;
+	else
+		fileListIndex=-1;
+	return result;
+}
+
+const char *FileManager::getNextDirectoryEntry(void)
+{
+	if ((fileListIndex>=0) && (fileListIndex<(signed)fileList.size()))
+	{
+		return fileList[fileListIndex++];
+	}
 	return NULL;
 }
 

@@ -117,3 +117,13 @@ void List::removeText(int pos)
 		strings.erase(strings.begin()+pos);
 	}
 }
+
+const char *List::getText(int pos)
+{
+	if ((pos>=0) && (pos<(int)strings.size()))
+	{
+		return strings[pos];
+	}
+	else
+		return NULL;
+}

@@ -22,7 +22,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "GameGUIDialog.h"
-
+#include "GameGUILoadSave.h"
 
 
 GameGUI::GameGUI()
@@ -140,6 +140,20 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
+				case 0:
+				delete gameMenuScreen;
+				inGameMenu=IGM_LOAD;
+				gameMenuScreen=new InGameLoadSaveScreen(".", "map");
+				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+				return true;
+
+				case 1:
+				delete gameMenuScreen;
+				inGameMenu=IGM_SAVE;
+				gameMenuScreen=new InGameLoadSaveScreen(".", "map", false, "default.map");
+				gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+				return true;
+
 				case 3:
 				delete gameMenuScreen;
 				if (game.session.numberOfPlayer<=8)
@@ -219,6 +233,25 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				return true;
+
+				default:
+				return false;
+			}
+		}
+
+		case IGM_LOAD:
+		case IGM_SAVE:
+		{
+			switch (gameMenuScreen->endValue)
+			{
+				case 0:
+				case 1:
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				return true;
+
+				default:
+				return false;
 			}
 		}
 
