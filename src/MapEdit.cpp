@@ -45,6 +45,7 @@ MapEdit::MapEdit()
 	level=0;
 	type=Map::WATER; // water
 	editMode=TERRAIN; // terrain
+	wasClickInMap=false;
 
 	// load menu
 	menu=globalContainer->gfx->loadSprite("data/gui/editor");
@@ -376,7 +377,7 @@ void MapEdit::handleMapClick(int mx, int my)
 	if (needRedraw)
 	{
 		drawMap(winX, winY, winW, winH);
-		renderMiniMap();
+		//renderMiniMap();
 	}
 
 	atype=type;
@@ -801,6 +802,11 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			handleMapClick(mx, my);
 		}
+		if (wasClickInMap)
+		{
+			wasClickInMap=false;
+			renderMiniMap();
+		}
 	}
 	else if ((event->type==SDL_ACTIVEEVENT) && (event->active.gain==0))
 	{
@@ -873,6 +879,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 		{
 			if (event->motion.state&SDL_BUTTON(1))
 			{
+				wasClickInMap=true;
 				handleMapClick(mx, my);
 			}
 			if ( (editMode==TERRAIN) || (editMode==RESSOURCE) || (editMode==DELETE) )

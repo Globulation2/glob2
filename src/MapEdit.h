@@ -79,6 +79,7 @@ private:
 	int level;
 	int type;
 	EditMode editMode;
+	bool wasClickInMap;
 
 	Sprite *menu;
 
