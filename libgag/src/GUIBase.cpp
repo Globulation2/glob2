@@ -219,6 +219,9 @@ void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 
 void HighlightableWidget::onSDLEvent(SDL_Event *event)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+	
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
