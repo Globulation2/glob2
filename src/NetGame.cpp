@@ -25,6 +25,8 @@
 #include "Marshaling.h"
 #include "LogFileManager.h"
 #include "Utilities.h"
+#include "Order.h"
+#include "Player.h"
 
 NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 {

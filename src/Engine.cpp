@@ -30,6 +30,9 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 Engine::Engine()
 {
