@@ -1781,13 +1781,15 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
+	// distance and availability
 	bool result;
 	if (dist)
 		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y, dist);
 	else
 		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y);
+		
+	// target position
 	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
-	
 	ressourceAvailableCount[teamNumber][ressourceType]++;
 	if (getGlobalGradientDestination(gradient, x, y, targetX, targetY))
 		ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
@@ -4117,37 +4119,35 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
-	Uint32 maxValue = 0;
-	int maxd = 0;
+	Uint8 max = gradient[x + (y<<wDec)];
+	if (max == 255)
+		return false; // we already are in an area.
+	if (max < 2)
+		return false; // any existing area are too far away.
+	bool found = false;
+	
+	// we look around us, searching for a usable position with a bigger gradient value 
 	for (int di=0; di<8; di++)
 	{
-		// compute coordinate
-		int rx = tabClose[di][0];
-		int ry = tabClose[di][1];
-		int xg = (x+rx)&wMask;
-		int yg = (y+ry)&hMask;
-		// if not possible, continue
-		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
-			continue;
-		// check if point is better
-		size_t addr = xg+(yg<<wDec);
-		Uint8 base = gradient[addr];
-		if (base > maxValue)
+		int ddx = deltaOne[di][0];
+		int ddy = deltaOne[di][1];
+		int xg = (x+ddx) & wMask;
+		int yg = (y+ddy) & hMask;
+		Uint8 g = gradient[xg+(yg<<wDec)];
+		if (g>max && isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
 		{
-			maxValue = base;
-			maxd = di;
+			max = g;
+			*dx = ddx;
+			*dy = ddy;
+			found = true;
 		}
 	}
-	// if solution is found, copy it in dx, dy and returns true.
-	// if no solution is found, which mean that either we are in gradient, there is no gradient, every direction is busy, return false.
-	if ((maxValue > 1) && (maxValue < 255))
-	{
-		*dx = tabClose[maxd][0];
-		*dy = tabClose[maxd][1];
-		return true;
-	}
-	else
-		return false;
+	
+	// we are in a blocked situation, so we have to regenerate the forbidden gradient
+	if (!found)
+		updateGuardAreasGradient(teamNumber, canSwim);
+	
+	return found;
 }
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
