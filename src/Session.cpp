@@ -415,3 +415,12 @@ int SessionInfo::getAITeamNumber(SessionInfo *currentSessionInfo, int team)
 			}
 	return team;
 }
+
+
+const char *SessionInfo::getFileName(void) const
+{
+	if (fileIsAMap)
+		return map.getMapFileName();
+	else
+		return map.getGameFileName();
+}

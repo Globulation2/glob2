@@ -26,6 +26,8 @@
 
 #define BULLET_IMGID 52
 
+class MapGenerationDescriptor;
+
 class Game
 {
 public:
@@ -73,6 +75,7 @@ public:
 	//void addUnit(int x, int y, int team, int type, int level);
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int team, int typeNum);
+	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuilding(int x, int y, SDL_Rect* r, int flags);
 	bool removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags=DEL_UNIT|DEL_BUILDING);
 
@@ -104,6 +107,9 @@ public:
 	Building *selectedBuilding;
 	
 	Sint32 stepCounter;
+	
+public:
+	void generateMap(MapGenerationDescriptor &descriptor);
 };
 
 #endif 

@@ -21,7 +21,6 @@
 #ifndef __BUILDING_H
 #define __BUILDING_H
 
-#include "GAG.h"
 #include "Unit.h"
 #include <list>
 #include <vector>

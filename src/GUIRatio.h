@@ -18,22 +18,47 @@
 
 */
 
-#ifndef __GAG_H
-#define __GAG_H
+#ifndef __GUI_RATIO_H
+#define __GUI_RATIO_H
 
-#include "Header.h"
-#include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
 #include "GUIBase.h"
-#include "GUIButton.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
-#include "GUIList.h"
-#include "GUINumber.h"
-#include "GUIRatio.h"
+
+class Ratio: public RectangularWidget
+{
+public:
+	Ratio(int x, int y, int w, int h, int size, int value);
+	virtual ~Ratio();
+
+	virtual void onTimer(Uint32 tick);
+	virtual void onSDLEvent(SDL_Event *event);
+	virtual void paint(void);
+
+	void set(int value);
+	int getMax(void);
+	int get(void);
+
+protected:
+	virtual void repaint(void);
+	virtual void internalPaint(void);
+
+protected:
+	//! This is the wheight of the scrool bar
+	int size;
+	//! The current value of teh scrool bar
+	int value;
+	int oldValue;
+	//! The max value of the scrool bar
+	int max;
+	
+	//! If scrool bar is pressed
+	bool pressed;
+	//! The mouse position when button was pressed
+	int px, py;
+	//! The value before the button was pressed
+	int pValue;
+	
+	bool needRefresh;
+};
 
 #endif
- 
+

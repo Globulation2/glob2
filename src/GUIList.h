@@ -39,9 +39,13 @@ public:
 	void removeText(int pos);
 	void clear(void);
 	char *getText(int pos) const;
+	char *get(void) const;
 	//! Call this after all add has been done
 	void commit(void) { repaint(); }
 	void sort(void);
+	
+	int getNth(void) const;
+	void setNth(int nth);
 
 protected:
 	virtual void repaint(void);
@@ -51,6 +55,7 @@ protected:
 	int textHeight;
 	const Font *font;
 	std::vector<char *> strings;
+	int nth;
 };
 
 #endif

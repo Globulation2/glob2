@@ -24,11 +24,14 @@
 #include "Header.h"
 #include <stdlib.h>
 
+// bit &1 looks good.
+// bit &3 looks poor.
 Uint32 syncRand(void);
 void setSyncRandSeed();
 void setSyncRandSeedA(Uint32 seed);
 void setSyncRandSeedB(Uint32 seed);
 void setSyncRandSeedC(Uint32 seed);
+void setRandomSyncRandSeed(void);
 Uint32 getSyncRandSeedA(void);
 Uint32 getSyncRandSeedB(void);
 Uint32 getSyncRandSeedC(void);

@@ -29,7 +29,9 @@ class MapEdit
 public:
 	MapEdit();
 	~MapEdit();
-	int run(int sizeX=7, int sizeY=7, Map::TerrainType terrainType=Map::WATER);
+	void resize(int sizeX, int sizeY);
+	int run(int sizeX, int sizeY, Map::TerrainType terrainType);
+	int run(void);
 
 private:
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate=true);
@@ -42,8 +44,9 @@ private:
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
 	void handleKeyPressed(SDLKey key, bool pressed);
-
-	void load(const char *name);
+public:
+	bool load(const char *name);
+private:
 	void save(/*const*/ char *name);
 	void loadSave(bool isLoad);
 
@@ -64,8 +67,9 @@ private:
 	void drawSelRect(int x, int y, int w, int h);
 	void viewportFromMxMY(int mx, int my);
 
-private:
+public:
 	Game game;
+private:
 	bool isRunning;
 
 	int viewportX, viewportY;

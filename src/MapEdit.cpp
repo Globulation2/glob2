@@ -248,7 +248,7 @@ void MapEdit::drawMenu(void)
 
 void MapEdit::draw(void)
 {
-	drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+	drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
 	renderMiniMap();
 	drawMenu();
 }
@@ -533,7 +533,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+						drawMap(screenClip.x, screenClip.y, screenClip.w-128,screenClip.h);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -554,7 +554,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 					if (button==SDL_BUTTON_LEFT)
 					{
 						team=newteam;
-						drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+						drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
 					}
 					else if ((button==SDL_BUTTON_RIGHT) && (team!=newteam))
 					{
@@ -583,24 +583,28 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	drawMenu();
 }
 
-void MapEdit::load(const char *name)
+bool MapEdit::load(const char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
-	if (stream)
-	{
-		if (game.load(stream)==false)
-			fprintf(stderr, "MED : Warning, Error during map load\n");
-		SDL_RWclose(stream);
+	if (!stream)
+		return false;
+	
+	bool rv=game.load(stream);
+	SDL_RWclose(stream);
+	if (!rv)
+		return false;
+	regenerateClipRect();
+	
+	// set the editor default values
+	team=0;
+	terrainSize=1; // terrain size 1
+	level=0;
+	type=0; // water
+	editMode=EM_TERRAIN; // terrain
 
-		// set the editor default values
-		team=0;
-		terrainSize=1; // terrain size 1
-		level=0;
-		type=0; // water
-		editMode=EM_TERRAIN; // terrain
-	}
-
-	draw();
+	if (rv);
+		draw();
+	return rv;
 }
 
 void MapEdit::save(/*const*/ char *name)
@@ -779,7 +783,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			if (my<128)
 			{
 				viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-				drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+				drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
 				drawMiniMap();
 			}
 			else
@@ -840,7 +844,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 				if (my<128)
 				{
 					viewportFromMxMY(mx-globalContainer->gfx->getW()+128, my);
-					drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+					drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
 					drawMiniMap();
 				}
 			}
@@ -1089,10 +1093,11 @@ int MapEdit::processEvent(const SDL_Event *event)
 	}
 	return returnCode;
 }
-
+/*
 int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 {
-	game.map.setSize(sizeX, sizeY, &game, terrainType);
+	game.map.setSize(sizeX, sizeY, terrainType);
+	game.map.setGame(&game);
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
 
 	regenerateClipRect();
@@ -1114,10 +1119,10 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 		// we get all pending events but for mousemotion we only keep the last one
 		while (SDL_PollEvent(&event))
 		{
-			/*if (event.type==SDL_VIDEORESIZE)
-			{
-				// we don't want video resize
-			}*/
+			//if (event.type==SDL_VIDEORESIZE)
+			//{
+			//	we don't want video resize
+			//}
 			if (event.type==SDL_MOUSEMOTION)
 			{
 				mouseMotionEvent=event;
@@ -1130,13 +1135,13 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 			}
 			else
 			{
-				returnCode=processEvent(&event) == -1 ? -1 : returnCode;
+				returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
 			}
 		}
 		if (wasMouseMotion)
-			returnCode=processEvent(&event) == -1 ? -1 : returnCode;
+			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
 		if (wasWindowEvent)
-			returnCode=processEvent(&event) == -1 ? -1 : returnCode;
+			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
 
 		// redraw on scroll
 		bool doRedraw=false;
@@ -1158,6 +1163,100 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 		if (doRedraw)
 		{
 			drawMap(screenClip.x,screenClip.y,screenClip.w-128,screenClip.h);
+			drawMiniMap();
+		}
+
+		endTick=SDL_GetTicks();
+		deltaTick=endTick-startTick;
+		if (deltaTick<33)
+			SDL_Delay(33-deltaTick);
+	}
+
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	return returnCode;
+}
+*/
+
+void MapEdit::resize(int sizeX, int sizeY)
+{
+	game.map.setSize(sizeX, sizeY);
+}
+
+int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
+{
+	game.map.setSize(sizeX, sizeY, terrainType);
+	game.map.setGame(&game);
+	return run();
+}
+
+
+int MapEdit::run(void)
+{
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+
+	regenerateClipRect();
+	globalContainer->gfx->setClipRect();
+	draw();
+
+	isRunning=true;
+	int returnCode=0;
+	Uint32 startTick, endTick, deltaTick;
+	while (isRunning)
+	{
+		//SDL_Event event;
+		startTick=SDL_GetTicks();
+
+		SDL_Event event, mouseMotionEvent, windowEvent;
+		bool wasMouseMotion=false;
+		bool wasWindowEvent=false;
+	
+		// we get all pending events but for mousemotion we only keep the last one
+		while (SDL_PollEvent(&event))
+		{
+			//if (event.type==SDL_VIDEORESIZE)
+			//{
+			//	we don't want video resize
+			//}
+			if (event.type==SDL_MOUSEMOTION)
+			{
+				mouseMotionEvent=event;
+				wasMouseMotion=true;
+			}
+			else if (event.type==SDL_ACTIVEEVENT)
+			{
+				windowEvent=event;
+				wasWindowEvent=true;
+			}
+			else
+			{
+				returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
+			}
+		}
+		if (wasMouseMotion)
+			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
+		if (wasWindowEvent)
+			returnCode=(processEvent(&event) == -1) ? -1 : returnCode;
+
+		// redraw on scroll
+		bool doRedraw=false;
+		int i;
+		viewportX+=game.map.getW();
+		viewportY+=game.map.getH();
+		{
+			for (i=0; i<9; i++)
+			{
+				viewportX+=viewportSpeedX[i];
+				viewportY+=viewportSpeedY[i];
+				if ((viewportSpeedX[i]!=0) || (viewportSpeedY[i]!=0))
+					doRedraw=true;
+			}
+		}
+		viewportX&=game.map.getMaskW();
+		viewportY&=game.map.getMaskH();
+
+		if (doRedraw)
+		{
+			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h);
 			drawMiniMap();
 		}
 

@@ -726,29 +726,26 @@ bool Game::removeUnitAndBuilding(int x, int y, int size, SDL_Rect* r, int flags)
 	int sts=size>>1;
 	int stp=(~size)&1;
 	SDL_Rect rl;
-	bool rv=false;
-	bool ri=false;
-
-	{
-		for (int scx=(x-sts); scx<=(x+sts-stp); scx++)
-		{
-			for (int scy=(y-sts); scy<=(y+sts-stp); scy++)
+	r->x=x;
+	r->y=y;
+	r->w=0;
+	r->h=0;
+	bool somethingInRect=false;
+	
+	for (int scx=(x-sts); scx<=(x+sts-stp); scx++)
+		for (int scy=(y-sts); scy<=(y+sts-stp); scy++)
+			if (removeUnitAndBuilding((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags))
 			{
-				rv=removeUnitAndBuilding((scx&(map.getMaskW())), (scy&(map.getMaskH())), &rl, flags) || rv;
-				if (ri)
-				{
+				if (somethingInRect)
 					Utilities::rectExtendRect(&rl, r);
-				}
 				else
 				{
 					*r=rl;
-					ri=true;
+					somethingInRect=true;
 				}
-
 			}
-		}
-	}
-	return rv;
+	
+	return somethingInRect;
 }
 
 bool Game::checkRoomForBuilding(int coordX, int coordY, int typeNum, int *mapX,

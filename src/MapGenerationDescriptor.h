@@ -18,22 +18,42 @@
 
 */
 
-#ifndef __GAG_H
-#define __GAG_H
+#ifndef __MAP_GENERATION_DESCRIPTOR_H
+#define __MAP_GENERATION_DESCRIPTOR_H
 
-#include "Header.h"
-#include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
-#include "GUIBase.h"
-#include "GUIButton.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
-#include "GUIList.h"
-#include "GUINumber.h"
-#include "GUIRatio.h"
+#include "Order.h"
+#include "Map.h"
 
-#endif
+class MapGenerationDescriptor:public Order
+{
+public:
+	MapGenerationDescriptor();
+	virtual ~MapGenerationDescriptor(void);
+	
+	Uint8 getOrderType() {return ORDER_MAP_GENERATION_DEFINITION; }
+	char *getData();
+	bool setData(const char *data, int dataLength);
+	int getDataLength() {return DATA_SIZE; }
+	
+	Sint32 checkSum();
+
+public:
+	Map::TerrainType terrainType;
+	enum Methode
+	{
+		eUNIFORM=0,
+		eRANDOM=1
+	};
+	Methode methode;
+	
+	int waterRatio, sandRatio, grassRatio;
+	int smooth;
+protected:
+	//! Serialized form of MapGenerationDescriptor
+	enum {DATA_SIZE=1};
+	char data[DATA_SIZE];
+};
+
+
+#endif 
  

@@ -45,34 +45,41 @@ Uint32 randb=0XF7F513DE;
 Uint32 randc=0x13DA757F;
 
 /*
-bad results:
-Uint32 syncRand(void)
-{
-	randValue+=3753454343u;
-	randValue%=2657467897u;
-	return randValue;
-}*/
-
-/*
-bad results:
-Uint32 syncRand(void)
-{
-	randa=randa<<3;
-	randa+=0x1377;
-	randa^=0xF088;
-
-	randb+=0xFB34;
-	randb^=0x78F4;
-
-	randc=randc+randc+randc;
-	randc^=0xEAC7;
-	
-	return ( randc^randa^randb );
-}
-*/
+average results
 Uint32 syncRand(void)
 {
 	randa+=0x13573DB1;
+	randb+=0x7B717315;
+
+	randc+=(randa&randb)^0x00000001;
+	randc=(randc<<1)|((randc>>29)&0x1);
+
+	//return (randc>>3)|((randa^randb)&0xE0000000);
+	//return randc;
+	
+	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
+	
+	return (randc>>1)|((randa^randb)&0x80000000);
+}*/
+
+void testRand()
+{
+	for (int m=1; m>0; m=m<<1)
+	{
+		int a=0;
+		int b=0;
+		for (int i=0; i<1000; i++)
+			if (syncRand()&m)
+				a++;
+			else
+				b++;
+		printf("&[%x]=(%d, %d).\n", m, a, b);
+	}
+}
+
+Uint32 syncRand(void)
+{
+	randa+=0x13573DC1;
 	randb+=0x7B717315;
 
 	randc+=(randa&randb)^0x00000001;
@@ -105,6 +112,13 @@ void setSyncRandSeedC(Uint32 seed)
 {
 	randc=seed;
 	//printf("set rand=(%d, %d, %d).\n", randa, randb, randc);
+}
+
+void setRandomSyncRandSeed(void)
+{
+	randa=(rand()<<16)|(rand()&0x0000FFFF);
+	randb=(rand()<<16)|(rand()&0x0000FFFF);
+	randc=(rand()<<16)|(rand()&0x0000FFFF);
 }
 
 Uint32 getSyncRandSeedA(void)

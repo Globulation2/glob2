@@ -20,6 +20,8 @@ GUIButton.cpp\
 GUIButton.h\
 GUIList.cpp\
 GUIList.h\
+GUINumber.cpp\
+GUINumber.h\
 GUIText.h \
 GUIText.cpp \
 GUITextInput.cpp\
@@ -28,6 +30,8 @@ GUITextArea.cpp \
 GUITextArea.h \
 GUIMapPreview.h \
 GUIMapPreview.cpp \
+GUIRatio.h \
+GUIRatio.cpp \
 Game.cpp\
 Game.h\
 GameGUI.cpp\
@@ -46,6 +50,7 @@ Header.h\
 Makefile.am\
 Map.cpp\
 Map.h\
+MapGenerator.cpp\
 MapEdit.cpp\
 MapEdit.h\
 NetConsts.h\
@@ -111,7 +116,9 @@ NonANSICStdWrapper.h \
 NewMapScreen.h \
 NewMapScreen.cpp \
 YOG.h \
-YOG.cpp
+YOG.cpp  \
+MapGenerationDescriptor.h \
+MapGenerationDescriptor.cpp
 
 glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
 INCLUDES = @SDL_CFLAGS@

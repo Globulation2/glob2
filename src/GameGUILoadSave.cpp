@@ -57,6 +57,11 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 	//printf("defaultFileName=(%s), fileName=(%s).\n", defaultFileName, fileName);
 }
 
+InGameLoadSaveScreen::~InGameLoadSaveScreen()
+{
+	delete[] fileName;
+}
+
 void InGameLoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))

@@ -118,6 +118,8 @@ public:
 	BasePlayer players[32];
 	BaseTeam team[32];
 
+public:
+	const char *getFileName(void) const;
 protected:
 	//! Serialized form of SessionInfo
 	enum {S_INFO_DATA_SIZE=2464+S_GAME_DATA_SIZE};

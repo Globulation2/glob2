@@ -22,7 +22,6 @@
 #ifndef __AI_H
 #define __AI_H
 
-#include "GAG.h"
 #include "Order.h"
 
 class Player;
