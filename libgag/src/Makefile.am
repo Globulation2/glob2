@@ -17,4 +17,10 @@ libgag_a_SOURCES = FileManager.cpp\
 	SDLSprite.cpp\
 	SupportFunctions.cpp
 
+EXTRA_DIST = SDLFont.h \
+        SDLGraphicContext.h \
+        SDLSprite.h \
+        SDL_ttf.h
+			
+
 INCLUDES = @FT2_CFLAGS@ @SDL_CFLAGS@ -I../include/
