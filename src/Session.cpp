@@ -22,6 +22,7 @@
 #include "GlobalContainer.h"
 #include "Marshaling.h"
 #include "Version.h"
+#include "LogFileManager.h"
 
 SessionGame::SessionGame()
 {
@@ -44,7 +45,7 @@ SessionGame::SessionGame()
 	
 	mapGenerationDescriptor=NULL;
 	
-	logFile=globalContainer->logFileManager.getFile("SessionGame.log");
+	logFile=globalContainer->logFileManager->getFile("SessionGame.log");
 }
 
 SessionGame::~SessionGame(void)

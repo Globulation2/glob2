@@ -103,7 +103,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	char *mapName=globalContainer->hostServerMapName;
 	
 	printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
-	SDL_RWops *stream=globalContainer->fileManager.open(mapName,"rb");
+	SDL_RWops *stream=globalContainer->fileManager->open(mapName,"rb");
 	if (stream==NULL)
 	{
 		printf("Map '%s' not found!\n", mapName);

@@ -23,14 +23,15 @@
 #include "NetDefine.h"
 #include "Marshaling.h"
 #include "Utilities.h"
+#include "LogFileManager.h"
 
 MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 :MultiplayersCrossConnectable()
 {
 	yogGameInfo=NULL;
 	downloadStream=NULL;
-	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
-	logFileDownload=globalContainer->logFileManager.getFile("MultiplayersJoinDownload.log");
+	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
+	logFileDownload=globalContainer->logFileManager->getFile("MultiplayersJoinDownload.log");
 	assert(logFile);
 	duplicatePacketFile=0;
 	init(shareOnYOG);
@@ -126,7 +127,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	}
 	startDownloadTimeout=SHORT_NETWORK_TIMEOUT;
 	
-	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
+	logFile=globalContainer->logFileManager->getFile("MultiplayersJoin.log");
 	assert(logFile);
 	
 	fprintf(logFile, "new MultiplayersJoin\n");
@@ -217,7 +218,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		assert(filename);
 		assert(filename[0]);
 		fprintf(logFile, "MultiplayersJoin::filename=%s.\n", filename);
-		SDL_RWops *stream=globalContainer->fileManager.open(filename,"rb");
+		SDL_RWops *stream=globalContainer->fileManager->open(filename,"rb");
 		if (stream)
 		{
 			fprintf(logFile, "MultiplayersJoin::we don't need to download, we do have the file!\n");
@@ -248,7 +249,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 				netWindow[i].packetSize=0; //set 512 in release
 			}
 			
-			downloadStream=globalContainer->fileManager.open(filename,"wb");
+			downloadStream=globalContainer->fileManager->open(filename,"wb");
 		}
 	}
 	

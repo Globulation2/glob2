@@ -893,7 +893,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 
 bool MapEdit::load(const char *name)
 {
-	SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
+	SDL_RWops *stream=globalContainer->fileManager->open(name,"rb");
 	if (!stream)
 		return false;
 	
@@ -917,7 +917,7 @@ bool MapEdit::load(const char *name)
 
 void MapEdit::save(/*const*/ char *name)
 {
-	SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
+	SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
 	if (stream)
 	{
 		game.map.setMapName(name);

@@ -44,7 +44,7 @@ Engine::~Engine()
 int Engine::initCampain(void)
 {
 	// we load map
-	SDL_RWops *stream=globalContainer->fileManager.open("default.map","rb");
+	SDL_RWops *stream=globalContainer->fileManager->open("default.map","rb");
 	if (gui.game.load(stream)==false)
 	{
 		fprintf(stderr, "ENG : Error during map load\n");
@@ -169,7 +169,7 @@ int Engine::initCustom(const char *gameName)
 {
 	assert(gameName);
 	assert(gameName[0]);
-	SDL_RWops *stream=globalContainer->fileManager.open(gameName,"rb");
+	SDL_RWops *stream=globalContainer->fileManager->open(gameName,"rb");
 	if (stream)
 	{
 		if (gui.load(stream))

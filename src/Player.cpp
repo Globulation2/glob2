@@ -21,6 +21,7 @@
 #include "NetConsts.h"
 #include "GlobalContainer.h"
 #include "Marshaling.h"
+#include "LogFileManager.h"
 
 BasePlayer::BasePlayer()
 {
@@ -70,7 +71,7 @@ void BasePlayer::init()
 	
 	disableRecursiveDestruction=false;
 	
-	logFile=globalContainer->logFileManager.getFile("Player.log");
+	logFile=globalContainer->logFileManager->getFile("Player.log");
 	assert(logFile);
 }
 

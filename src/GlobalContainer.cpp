@@ -23,10 +23,14 @@
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
 #include "YOG.h"
+#include "FileManager.h"
+#include "LogFileManager.h"
 
 GlobalContainer::GlobalContainer(void)
 {
-	yog=new YOG();
+	fileManager=new FileManager();
+	logFileManager=new LogFileManager(fileManager);
+	yog=new YOG(logFileManager);
 	graphicFlags=DrawableSurface::DEFAULT;
 	graphicWidth=640;
 	graphicHeight=480;
@@ -169,12 +173,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			if(argv[i][1] == 'd')
 			{
 				if (argv[i][2] != 0)
-					fileManager.addDir(&argv[i][2]);
+					fileManager->addDir(&argv[i][2]);
 				else
 				{
 					i++;
 					if (i < argc)
-						fileManager.addDir(argv[i]);
+						fileManager->addDir(argv[i]);
 				}
 			}
 			else if (argv[i][1] == 'u')

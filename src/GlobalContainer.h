@@ -22,10 +22,10 @@
 
 #include "GAG.h"
 #include "StringTable.h"
-#include "FileManager.h"
 #include "BuildingType.h"
-#include "LogFileManager.h"
 class YOG;
+class FileManager;
+class LogFileManager;
 
 class GlobalContainer
 {
@@ -55,8 +55,8 @@ public:
 	char userNameMemory[USERNAME_MAX_LENGTH];
 	const char *userName;
 
-	FileManager fileManager;
-	LogFileManager logFileManager;
+	FileManager *fileManager;
+	LogFileManager *logFileManager;
 	
 	//! Ysagoon Online Game connector and session handler
 	YOG *yog;

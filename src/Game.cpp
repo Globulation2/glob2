@@ -46,7 +46,7 @@ bool Game::loadBase(const SessionInfo *initial)
 	assert(s);
 	assert(s[0]);
 	printf("Game::loadBase::s=%s.\n", s);
-	SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
+	SDL_RWops *stream=globalContainer->fileManager->open(s,"rb");
 	if (!load(stream))
 		return false;
 	SDL_RWclose(stream);
