@@ -811,3 +811,23 @@ Ein Spieler
 Jeu complet
 Game full
 Spiel full
+[small]
+faible
+small
+klein
+[medium]
+moyen
+medium
+mittle
+[large]
+grand
+large
+gross
+[network latency]
+Network latency
+Latence du réseau
+Netzlatenz
+[game speed]
+Game speed
+Vitesse du jeu
+Spielgeschwindigkeit

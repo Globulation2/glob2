@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "GameGUIDialog.h"
@@ -104,6 +104,11 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 	{
 		allied[i]=vision[i]=chat[i]=NULL;
 	}
+	
+	addWidget(new Text(200, 10, globalContainer->menuFont, "A"));
+	addWidget(new Text(236, 10, globalContainer->menuFont, "V"));
+	addWidget(new Text(272, 10, globalContainer->menuFont, "C"));
+	
 	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 27));
 	firstPaint=true;
 	this->gameGUI=gameGUI;
@@ -114,14 +119,9 @@ void InGameAlliance8Screen::onAction(Widget *source, Action action, int par1, in
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		endValue=par1;
-		printf("par1=%d.\n", par1);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 		setCorrectValueForPlayer(par1%32);
-}
-
-void InGameAlliance8Screen::onSDLEvent(SDL_Event *event)
-{
 }
 
 void InGameAlliance8Screen::paint(int x, int y, int w, int h)
@@ -129,9 +129,6 @@ void InGameAlliance8Screen::paint(int x, int y, int w, int h)
 	OverlayScreen::paint(x, y, w, h);
 	if (firstPaint)
 	{
-		gfxCtx->drawString(200, 10, globalContainer->menuFont, "A");
-		gfxCtx->drawString(236, 10, globalContainer->menuFont, "V");
-		gfxCtx->drawString(272, 10, globalContainer->menuFont, "C");
 		for (int i=0; i<gameGUI->game.session.numberOfPlayer; i++)
 		{
 			gfxCtx->drawString(10, 40+i*25, globalContainer->menuFont, names[i]);
@@ -189,4 +186,68 @@ Uint32 InGameAlliance8Screen::getChatMask(void)
 			mask|=1<<i;
 	}
 	return mask;
+}
+
+//! Option Screen
+InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
+:OverlayScreen(300, 295)
+{
+	// speed
+	
+	const int speedDec=45;
+	addWidget(new Text(20, speedDec-35, globalContainer->menuFont, globalContainer->texts.getString("[game speed]")));
+	speed[0]=new OnOffButton(30, speedDec, 20, 20, false, SPEED+0);
+	addWidget(speed[0]);
+	addWidget(new Text(60, speedDec, globalContainer->standardFont, globalContainer->texts.getString("[small]")));
+	speed[1]=new OnOffButton(30, speedDec+25, 20, 20, false, SPEED+1);
+	addWidget(speed[1]);
+	addWidget(new Text(60, speedDec+25, globalContainer->standardFont, globalContainer->texts.getString("[medium]")));
+	speed[2]=new OnOffButton(30, speedDec+50, 20, 20, true, SPEED+2);
+	addWidget(speed[2]);
+	addWidget(new Text(60, speedDec+50, globalContainer->standardFont, globalContainer->texts.getString("[large]")));
+	
+	// latency
+	const int latDec=speedDec+120;
+	addWidget(new Text(20, latDec-35, globalContainer->menuFont, globalContainer->texts.getString("[network latency]")));
+	latency[0]=new OnOffButton(30, latDec, 20, 20, false, LATENCY+0);
+	addWidget(latency[0]);
+	addWidget(new Text(60, latDec, globalContainer->standardFont, globalContainer->texts.getString("[small]")));
+	latency[1]=new OnOffButton(30, latDec+25, 20, 20, false, LATENCY+1);
+	addWidget(latency[1]);
+	addWidget(new Text(60, latDec+25, globalContainer->standardFont, globalContainer->texts.getString("[medium]")));
+	latency[2]=new OnOffButton(30, latDec+50, 20, 20, true, LATENCY+2);
+	addWidget(latency[2]);
+	addWidget(new Text(60, latDec+50, globalContainer->standardFont, globalContainer->texts.getString("[large]")));
+	
+	addWidget(new TextButton(10, 250, 280, 35, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 27));
+	this->gameGUI=gameGUI;
+}
+
+void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		endValue=par1;
+	}
+	else if (action==BUTTON_STATE_CHANGED)
+	{
+		if (par1>=LATENCY)
+		{
+			int id=par1-LATENCY;
+			for (int i=0; i<3; i++)
+			{
+				if (i!=id)
+					latency[i]->setState(false);
+			}
+		}
+		else if (par1>=SPEED)
+		{
+			int id=par1-SPEED;
+			for (int i=0; i<3; i++)
+			{
+				if (i!=id)
+					speed[i]->setState(false);
+			}
+		}
+	}
 }
