@@ -347,7 +347,7 @@ void MapEdit::handleMapClick(int mx, int my)
 				delH=0;
 
 				SDL_Rect r;
-				if (game.removeUnitAndBuilding(x, y, terrainSize+dec, &r, Game::DEL_BUILDING))
+				if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize+dec, &r, Game::DEL_BUILDING))
 				{
 					game.map.mapCaseToDisplayable(r.x, r.y, &delX, &delY, viewportX, viewportY);
 					delW=r.w<<5;
@@ -379,7 +379,7 @@ void MapEdit::handleMapClick(int mx, int my)
 			int delX, delY, delW, delH;
 
 			SDL_Rect r;
-			if (game.removeUnitAndBuilding(x, y, terrainSize, &r))
+			if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize, &r, Game::DEL_BUILDING|Game::DEL_UNIT))
 			{
 				game.map.mapCaseToDisplayable(r.x, r.y, &delX, &delY, viewportX, viewportY);
 				delW=r.w<<5;
@@ -433,7 +433,7 @@ void MapEdit::handleMapClick(int mx, int my)
 	{
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
 		SDL_Rect r;
-		if (game.removeUnitAndBuilding(x, y, terrainSize, &r))
+		if (game.removeUnitAndBuildingAndFlags(x, y, terrainSize, &r))
 		{
 			game.regenerateDiscoveryMap();
 			game.map.mapCaseToDisplayable(r.x, r.y, &winX, &winY, viewportX, viewportY);

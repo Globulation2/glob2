@@ -2113,7 +2113,7 @@ void Building::integrity()
 	}
 }
 
-Sint32 Building::checkSum(std::list<Uint32> *checkSumsList)
+Uint32 Building::checkSum(std::list<Uint32> *checkSumsList)
 {
 	int cs=0;
 	

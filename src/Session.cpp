@@ -350,9 +350,9 @@ int SessionGame::getDataLength(bool compressed)
 	}
 }
 
-Sint32 SessionGame::checkSum()
+Uint32 SessionGame::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 
 	cs^=versionMajor;
 	cs^=versionMinor;
@@ -589,9 +589,9 @@ int SessionInfo::getDataLength(bool compressed)
 		return S_INFO_ONLY_DATA_SIZE+SessionGame::getDataLength();
 }
 
-Sint32 SessionInfo::checkSum()
+Uint32 SessionInfo::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 	
 	int l=Utilities::strmlen(mapName, sizeof(mapName));
 	for (int i=0; i<l; ++i)

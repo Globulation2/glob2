@@ -53,6 +53,8 @@ public:
 	void save(SDL_RWops *stream);
 	
 	Order *getOrder(bool paused);
+	
+	Uint32 step;
 };
 
 

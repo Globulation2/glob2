@@ -214,7 +214,7 @@ public:
 
 public:
 	void integrity();
-	Sint32 checkSum();
+	Uint32 checkSum();
 	bool verbose;
 	
 protected:

@@ -55,7 +55,7 @@ public:
 	virtual bool setData(const Uint8 *data, int dataLength) { return SessionGame::setData(data, dataLength, false); }
 	virtual int getDataLength() { return SessionGame::getDataLength(false); }
 
-	virtual Sint32 checkSum();
+	virtual Uint32 checkSum();
 
 	// internal and external map/game/file name manipulation
 	//! Safely copy s to mapName[] and remove the extention if needed.
@@ -134,7 +134,7 @@ public:
 	bool setData(const Uint8 *data, int dataLength) { return SessionInfo::setData(data, dataLength, false); }
 	int getDataLength() { return SessionInfo::getDataLength(false); }
 
-	Sint32 checkSum();
+	Uint32 checkSum();
 
 	bool setLocal(int p);
 

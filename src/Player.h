@@ -20,9 +20,9 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
-#include "AI.h"
-#include <queue>
 #include <SDL/SDL_net.h>
+
+#include "AI.h"
 
 class Game;
 class Map;
@@ -126,7 +126,7 @@ public:
 	bool setData(const Uint8 *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
 	
-	virtual Sint32 checkSum();
+	Uint32 checkSum();
 	
 	void setip(Uint32 host, Uint16 port);
 	void setip(IPaddress ip);
@@ -175,7 +175,7 @@ public:
 	AI *ai;
 
 public:
-	Sint32 checkSum();
+	Uint32 checkSum();
 };
 
 #endif

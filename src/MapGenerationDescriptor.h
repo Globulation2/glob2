@@ -35,7 +35,7 @@ public:
 	
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream);
-	Sint32 checkSum();
+	Uint32 checkSum();
 	void saveSyncronization(void);
 	void loadSyncronization(void);
 	void synchronizeNow(void);

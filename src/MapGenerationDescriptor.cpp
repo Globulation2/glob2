@@ -149,9 +149,9 @@ bool MapGenerationDescriptor::load(SDL_RWops *stream)
 	return true;
 }
 
-Sint32 MapGenerationDescriptor::checkSum()
+Uint32 MapGenerationDescriptor::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 	
 	cs^=wDec+(hDec<<16);
 	cs^=(Sint32)terrainType;

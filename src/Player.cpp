@@ -235,9 +235,9 @@ int BasePlayer::getDataLength(bool compressed)
 		return 32+MAX_NAME_LENGTH;
 }
 
-Sint32 BasePlayer::checkSum()
+Uint32 BasePlayer::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0;
 
 	cs^=number;
 	cs^=numberMask;
@@ -555,7 +555,13 @@ void Player::save(SDL_RWops *stream)
 	SDL_RWwrite(stream, "PLYe", 4, 1);
 }
 
-Sint32 Player::checkSum()
+Uint32 Player::checkSum()
 {
-	return BasePlayer::checkSum();
+	Uint32 cs;
+	if (ai)
+		cs=ai->step;
+	else
+		cs=0;
+	cs^=BasePlayer::checkSum();
+	return cs;
 }
