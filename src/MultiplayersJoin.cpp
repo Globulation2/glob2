@@ -249,7 +249,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
 	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		fprintf(logFile, " player=(%d) ip=(%s) waitForNatResolution=(%d)\n", j, Utilities::stringIP(sessionInfo.players[j].ip), sessionInfo.players[j].waitForNatResolution); 
+		fprintf(logFile, " player=(%d) ip=(%s) waitForNatResolution=(%d), ipFromNAT=(%d)\n", j, Utilities::stringIP(sessionInfo.players[j].ip), sessionInfo.players[j].waitForNatResolution, sessionInfo.players[j].ipFromNAT); 
 	
 	if (localPort)
 	{
@@ -659,13 +659,13 @@ void MultiplayersJoin::stillCrossConnectingConfirmation(Uint8 *data, int size, I
 					for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 						if (sessionInfo.players[j].type==BasePlayer::P_IP && strncmp(userName, sessionInfo.players[j].name, 32)==0)
 						{
-							if (sessionInfo.players[j].waitForNatResolution)
+							if ((ipFromNAT && !sessionInfo.players[j].ipFromNAT) || sessionInfo.players[j].waitForNatResolution)
 							{
-								fprintf(logFile, " player (%d) (%s) switched to ip=(%s)", j, userName, Utilities::stringIP(ip));
+								fprintf(logFile, " player (%d) (%s) switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
 								sessionInfo.players[j].setip(ip);
 							}
 							else
-								fprintf(logFile, " player (%d) (%s) not switched to ip=(%s)", j, userName, Utilities::stringIP(ip));
+								fprintf(logFile, " player (%d) (%s) not switched to ip=(%s)\n", j, userName, Utilities::stringIP(ip));
 						}
 			}
 			assert(l==size);

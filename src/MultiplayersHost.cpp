@@ -906,6 +906,8 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 		sessionInfo.players[i].netTimeoutSize=SHORT_NETWORK_TIMEOUT;
 		sessionInfo.players[i].netTOTL=DEFAULT_NETWORK_TOTL;
 		
+		fprintf(logFile, "this ip(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip));
+		
 		if (shareOnYOG)
 		{
 			assert(yog);
@@ -931,17 +933,17 @@ void MultiplayersHost::confirmStillCrossConnecting(Uint8 *data, int size, IPaddr
 				l+=4;
 				addUint16(data, ji->ip.port, l);
 				l+=2;
+				
+				fprintf(logFile, " with joiner info uid=%d, ip=(%s)\n", ji->uid, Utilities::stringIP(ji->ip));
 			}
 			assert(l==size);
+			
+		
 			sessionInfo.players[i].send(data, size);
 		}
 		else
 			sessionInfo.players[i].send(SERVER_CONFIRM_CLIENT_STILL_CROSS_CONNECTING);
 		
-		
-		
-		
-		fprintf(logFile, "this ip(%s) is continuing cross connection confirmed..\n", Utilities::stringIP(ip));
 		return;
 	}
 }
