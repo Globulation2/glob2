@@ -24,6 +24,8 @@
 
 SessionGame::SessionGame()
 {
+	versionMajor=0;
+	versionMinor=1;
 	numberOfPlayer=0;
 	numberOfTeam=0;
 	gameTPF=40;
@@ -33,6 +35,8 @@ SessionGame::SessionGame()
 void SessionGame::save(SDL_RWops *stream)
 {
 	SDL_RWwrite(stream, "GLO2", 4, 1);
+	SDL_WriteBE32(stream, versionMajor);
+	SDL_WriteBE32(stream, versionMinor);
 	SDL_WriteBE32(stream, numberOfPlayer);
 	SDL_WriteBE32(stream, numberOfTeam);
 	SDL_WriteBE32(stream, gameTPF);
@@ -47,6 +51,8 @@ bool SessionGame::load(SDL_RWops *stream)
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
 
+	versionMajor=SDL_ReadBE32(stream);
+	versionMinor=SDL_ReadBE32(stream);
 	numberOfPlayer=SDL_ReadBE32(stream);
 	numberOfTeam=SDL_ReadBE32(stream);
 	gameTPF=SDL_ReadBE32(stream);
@@ -80,10 +86,12 @@ void SessionInfo::draw(DrawableSurface *gfx)
 
 char *SessionGame::getData()
 {
-	addSint32(data, numberOfPlayer, 0);
-	addSint32(data, numberOfTeam, 4);
-	addSint32(data, gameTPF, 8);
-	addSint32(data, gameLatency, 12);
+	addSint32(data, versionMajor, 0);
+	addSint32(data, versionMinor, 4);
+	addSint32(data, numberOfPlayer, 8);
+	addSint32(data, numberOfTeam, 12);
+	addSint32(data, gameTPF, 16);
+	addSint32(data, gameLatency, 20);
 	
 	return data;
 }
@@ -92,11 +100,13 @@ bool SessionGame::setData(const char *data, int dataLength)
 {
 	if (dataLength!=SessionGame::getDataLength())
 		return false;
-	
-	printf("s nop=%d\n", numberOfPlayer=getSint32(data, 0));
-	printf("s not=%d\n", numberOfTeam=getSint32(data, 4));
-	gameTPF=getSint32(data, 8);
-	gameLatency=getSint32(data, 12);
+
+	versionMajor=getSint32(data, 0);
+	versionMinor=getSint32(data, 4);
+	printf("s nop=%d\n", numberOfPlayer=getSint32(data, 8));
+	printf("s not=%d\n", numberOfTeam=getSint32(data, 12));
+	gameTPF=getSint32(data, 16);
+	gameLatency=getSint32(data, 20);
 	
 	return true;
 }
@@ -104,13 +114,15 @@ bool SessionGame::setData(const char *data, int dataLength)
 
 int SessionGame::getDataLength()
 {
-	return 16;
+	return 24;
 }
 
 Sint32 SessionGame::checkSum()
 {
 	Sint32 cs=0;
 
+	cs^=versionMajor;
+	cs^=versionMinor;
 	cs^=numberOfPlayer;
 	cs^=numberOfTeam;
 	cs=(cs<<31)|(cs>>1);
@@ -129,21 +141,23 @@ SessionInfo::SessionInfo()
 
 void SessionInfo::save(SDL_RWops *stream)
 {
+	int i;
 	SessionGame::save(stream);
 	
 	map.save(stream);
 	
 	SDL_RWwrite(stream, "GLO2", 4, 1);
-	for (int i=0; i<numberOfPlayer; i++)
+	for (i=0; i<numberOfPlayer; i++)
 		players[i].save(stream);
-	for (int i2=0; i2<numberOfTeam; i2++)
-		team[i2].save(stream);
+	for (i=0; i<numberOfTeam; i++)
+		team[i].save(stream);
 		
 	SDL_RWwrite(stream, "GLO2", 4, 1);
 }
 
 bool SessionInfo::load(SDL_RWops *stream)
 {
+	int i;
 	if (!SessionGame::load(stream))
 		return false;
 	
@@ -155,15 +169,12 @@ bool SessionInfo::load(SDL_RWops *stream)
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
 
-	{
-		for (int i=0; i<numberOfPlayer; ++i)
-			players[i].load(stream);
-	}
-	{
-		for (int i=0; i<numberOfTeam; ++i)
-			team[i].load(stream);
-	}
-	
+	for (i=0; i<numberOfPlayer; ++i)
+		players[i].load(stream);
+
+	for (i=0; i<numberOfTeam; ++i)
+		team[i].load(stream);
+
 	SDL_RWread(stream, signature, 4, 1);
 	if (memcmp(signature,"GLO2",4)!=0)
 		return false;
@@ -179,30 +190,27 @@ Uint8 SessionInfo::getOrderType()
 char *SessionInfo::getData()
 {
 	int l=0;
+	int i;
 	
 	memcpy(l+data, map.getData(), map.getDataLength() );
 	l+=map.getDataLength();
 
+	for (i=0; i<32; ++i)
 	{
-		for (int i=0; i<32; ++i)
-		{
-			memcpy(l+data, players[i].getData(), players[i].getDataLength() );
-			l+=players[i].getDataLength();
-		}
+		memcpy(l+data, players[i].getData(), players[i].getDataLength() );
+		l+=players[i].getDataLength();
 	}
 
+	for (i=0; i<32; ++i)
 	{
-		for (int i=0; i<32; ++i)
-		{
-			memcpy(l+data, team[i].getData(), team[i].getDataLength() );
-			l+=team[i].getDataLength();
-		}
+		memcpy(l+data, team[i].getData(), team[i].getDataLength() );
+		l+=team[i].getDataLength();
 	}
-	
+
 	memcpy(l+data, SessionGame::getData(), SessionGame::getDataLength() );
 	l+=SessionGame::getDataLength();
 	
-	assert(l==1968);
+	assert(l==1976);
 	return data;
 }
 
@@ -210,30 +218,26 @@ bool SessionInfo::setData(const char *data, int dataLength)
 {
 	if (dataLength!=SessionInfo::getDataLength())
 		return false;
-	
+
 	int l=0;
-	
+	int i;
+
 	map.setData(l+data, map.getDataLength());
 	l+=map.getDataLength();
 
+	for (i=0; i<32; ++i)
 	{
-		for (int i=0; i<32; ++i)
-		{
-			players[i].setData(l+data, players[i].getDataLength());
-			l+=players[i].getDataLength();
-		}
+		players[i].setData(l+data, players[i].getDataLength());
+		l+=players[i].getDataLength();
 	}
 
+	for (i=0; i<32; ++i)
 	{
-		for (int i=0; i<32; ++i)
-		{
-			team[i].setData(l+data, team[i].getDataLength());
-			team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
-			l+=team[i].getDataLength();
-		}
+		team[i].setData(l+data, team[i].getDataLength());
+		team[i].race.create(Race::USE_DEFAULT); // TODO : pass the race trough the net.
+		l+=team[i].getDataLength();
 	}
-	
-	
+
 	SessionGame::setData(l+data, SessionGame::getDataLength() );
 	l+=SessionGame::getDataLength();
 	
@@ -245,7 +249,7 @@ bool SessionInfo::setData(const char *data, int dataLength)
 
 int SessionInfo::getDataLength()
 {
-	return (1968);
+	return (1976);
 }
 
 Sint32 SessionInfo::checkSum()

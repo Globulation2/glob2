@@ -4,7 +4,6 @@ To First release :
 - network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
-- map must have version, and little backward compatibility should be keeped. (nct)
 - AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
