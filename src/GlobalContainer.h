@@ -48,6 +48,7 @@ private:
 
 public:
 	Uint32 graphicFlags;
+	int graphicWidth, graphicHeight;
 	char *metaServerName;
 	Uint16 metaServerPort;
 

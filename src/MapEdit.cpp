@@ -1083,7 +1083,8 @@ int MapEdit::processEvent(const SDL_Event *event)
 int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, &game, terrainType);
-	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
 	draw();
@@ -1156,6 +1157,6 @@ int MapEdit::run(int sizeX, int sizeY, Map::TerrainType terrainType)
 			SDL_Delay(33-deltaTick);
 	}
 
-	globalContainer->gfx->setRes(640, 480, 32, globalContainer->graphicFlags);
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
 	return returnCode;
 }
