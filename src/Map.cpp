@@ -1812,7 +1812,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 					{ -2, -1}};
 				int ddx=tab[d][0];
 				int ddy=tab[d][1];
-				Uint8 g=*(gradient+((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec));
+				Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
 				if (g>max)
 				{
 					max=g;
@@ -1834,6 +1834,8 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 		}
 		if (!found)
 		{
+			//vx=(vx-vddx)&wMask;
+			//vy=(vy-vddy)&hMask;
 			ressourceAviableCountFailure[teamNumber][ressourceType]++;
 			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
 			printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
@@ -1844,12 +1846,14 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
-	for (int yi=(h>>1); yi<(h+(h>>1)); yi++)
+	//start(2/4, 3/4)
+	for (int yi=(3*(h>>1)); yi<(h+3*(h>>1)); yi++)
 	{
 		int wy=((yi&hMask)<<wDec);
 		int wyu=(((yi+hMask)&hMask)<<wDec);
-		for (int x=0; x<w; x++)
+		for (int xi=(w>>1); xi<(w+(w>>1)); xi++)
 		{
+			int x=xi&wMask;
 			Uint8 max=gradient[wy+x];
 			if (max && max!=255)
 			{
@@ -1874,7 +1878,8 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 		}
 	}
 
-	for (int yi=(h+(h>>1)); yi>=(h>>1); yi--)
+	//start(0/4, 2/4)
+	for (int yi=(h+(h>>2)); yi>=(h>>2); yi--)
 	{
 		int wy=((yi&hMask)<<wDec);
 		int wyd=(((yi+1)&hMask)<<wDec);
@@ -1903,15 +1908,16 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 		}
 	}
 
-	for (int xi=(w>>1); xi<(w+(w>>1)); xi++)
+	//start(3/4, 1/4)
+	for (int xi=(3*(w>>2)); xi<(w+3*(w>>2)); xi++)
 	{
 		int x=(xi&wMask);
 		int xl=(xi+wMask)&wMask;
-		for (int y=0; y<h; y++)
+		for (int yi=(h+(h>>2)); yi>=(h>>2); yi--)
 		{
-			int wy=(y<<wDec);
-			int wyu=(((y+hMask)&hMask)<<wDec);
-			int wyd=(((y+1)&hMask)<<wDec);
+			int wy=((yi&hMask)<<wDec);
+			int wyu=(((yi+hMask)&hMask)<<wDec);
+			int wyd=(((yi+1)&hMask)<<wDec);
 			Uint8 max=gradient[wy+x];
 			if (max && max!=255)
 			{
@@ -1932,7 +1938,8 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 		}
 	}
 
-	for (int xi=(w+(w>>1)); xi>=(w>>1); xi--)
+	//start(1/4, 0/4)
+	for (int xi=(w+(w>>2)); xi>=(w>>2); xi--)
 	{
 		int x=(xi&wMask);
 		int xr=(xi+1)&wMask;
@@ -2163,7 +2170,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	assert(ressourceType<MAX_RESSOURCES);
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
-	Uint8 max=*(gradient+x+y*w);
+	Uint8 max=gradient[x+y*w];
 	bool found=false;
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (max<2)
@@ -2181,7 +2188,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 			Unit::dxdyfromDirection(d, &ddx, &ddy);
 			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 			{
-				Uint8 g=*(gradient+((x+w+ddx)&wMask)+((y+h+ddy)&hMask)*w);
+				Uint8 g=gradient[((x+w+ddx)&wMask)+((y+h+ddy)&hMask)*w];
 				if (g>max)
 				{
 					max=g;
@@ -2209,7 +2216,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 			int ddy=SIGN(mvy-y);
 			if (isFreeForGroundUnit(x+w+ddx, y+h+ddy, canSwim, teamMask))
 			{
-				Uint8 g=*(gradient+((mvx+w)&wMask)+((mvy+h)&hMask)*w);
+				Uint8 g=gradient[((mvx+w)&wMask)+((mvy+h)&hMask)*w];
 				if (g>max)
 				{
 					max=g;
@@ -2244,8 +2251,8 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	else
 	{
 		pathToRessourceCountFailure++;
-		printf("locked at (%d, %d) for r=%d\n", x, y, ressourceType);
-		fprintf(logFile, "locked at (%d, %d) for r=%d\n", x, y, ressourceType);
+		printf("locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
+		fprintf(logFile, "locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		*stopWork=false;
 		return false;
 	}
