@@ -592,7 +592,6 @@ bool Story::testCondition(GameGUI *gui)
 						if (conditionResult)
 						{
 							lineSelector += 4+negate;
-							mapscript->isTextShown=false;
 							return true;
 						}
 						else
@@ -606,7 +605,6 @@ bool Story::testCondition(GameGUI *gui)
 						if (conditionResult)
 						{
 							lineSelector += 5+negate;
-							mapscript->isTextShown=false;
 							return true;
 						}
 						else
@@ -943,7 +941,6 @@ void Mapscript::syncStep(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
-	std::cout << "We have " << stories.size() << " stories\n";
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
 		it->syncStep(gui);
