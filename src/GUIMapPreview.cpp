@@ -54,8 +54,14 @@ const char *MapPreview::getMethode(void)
 
 void MapPreview::setMapThumbnail(const char *mapName)
 {
+	if (mapName == NULL)
+		return;
+		
 	if (mapThumbnail)
+	{
 		delete mapThumbnail;
+		mapThumbnail = NULL;
+	}
 	
 	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
 	if (stream)
