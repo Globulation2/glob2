@@ -27,6 +27,7 @@
 class SDLDrawableSurface: public virtual DrawableSurface
 {
 protected:
+	friend class SDLSprite;
 	SDL_Surface *surface;
 	SDL_Rect clipRect;
 
