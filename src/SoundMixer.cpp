@@ -23,6 +23,7 @@
 #include <iostream>
 #include <assert.h>
 #include <iostream>
+#include <SDL/SDL_endian.h>
 
 #define SAMPLE_COUNT_PER_SLICE 4096
 
@@ -105,8 +106,12 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// mix
 		for (unsigned i=0; i<nsamples; i++)
 		{
+			Sint16 t0 = track0[i];
+			Sint16 t1 = track1[i];
+			SDL_SwapLE16(t0);
+			SDL_SwapLE16(t1);
 			int intI = interpolationTable[i];
-			int val = (intI*track0[i]+(65535-intI*track1[1]))>>16;
+			int val = (intI*t0+(65535-intI*t1))>>16;
 			mix[i] = (val * vol)>>8;
 		}
 
@@ -141,7 +146,9 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// volume
 		for (unsigned i=0; i<nsamples; i++)
 		{
-			mix[i] = (mix[i] * vol)>>8;
+			Sint16 t = mix[i];
+			SDL_SwapLE16(t);
+			mix[i] = (t * vol)>>8;
 		}
 	}
 }
