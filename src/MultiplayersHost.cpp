@@ -305,11 +305,17 @@ void MultiplayersHost::newPlayer(char *data, int size, IPaddress ip)
 		printf("this ip(%x:%d) is not bindable\n", ip.host, ip.host);
 		return;
 	}
-
+	
+	
+		
+	Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));
+	Uint32 rawPort=getUint32(data, 24);
+	Uint32 newPort=SDL_SwapBE32(getUint32(data, 24));
+	printf("Data=%x, swapedData=%x, castedData=%x, allData=%x.\n", rawPort, SDL_SwapBE32(rawPort), (Uint16)rawPort, (Uint16)SDL_SwapBE32(rawPort));
 	if (serverIP.host)
 	{
-		Uint32 newHost=(Uint32)SDL_SwapBE32(getUint32(data, 20));
-		Uint16 newPort=(Uint16)SDL_SwapBE32(getUint32(data, 24));
+		Uint32 newHost=SDL_SwapBE32(getUint32(data, 20));	
+		Uint32 newPort=SDL_SwapBE32(getUint32(data, 24));
 		if (serverIP.host!=newHost)
 		{
 			printf("Bad ip received by(%x:%d). old=(%x) new=(%x)\n", ip.host, ip.port, serverIP.host, newHost);
