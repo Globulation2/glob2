@@ -2,7 +2,7 @@ AC_INIT(src/Game.cpp)
 AM_INIT_AUTOMAKE(glob2, 0.1)
 AM_CONFIG_HEADER(config.h)
 
-CXXFLAGS="-g -Wall $CXXFLAGS"
+CXXFLAGS="-g -Wall -ansi $CXXFLAGS"
 
 dnl Programs 
 AC_PROG_CC
@@ -47,5 +47,9 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile data/src/Makefile] )
+AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile 
+data/gfx/Makefile
+data/fonts/Makefile
+data/gui/Makefile
+] )
 
