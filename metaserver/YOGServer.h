@@ -51,7 +51,7 @@ public:
 	
 	std::list<YOGClient *> unconnectedClients;
 	std::list<YOGClient *> connectedClients;
-	std::list<YOGClient *> authentifiedClients;
+	std::list<YOGClient *> authenticatedClients;
 	
 	UDPsocket socket;
 	bool running;

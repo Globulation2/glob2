@@ -39,7 +39,7 @@ inline void standardTimeout(int *timeout, const unsigned size, const int base, c
 	}
 }
 
-YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
+YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char username[32])
 {
 	this->ip=ip;
 	hostGameip.host=0;
@@ -47,7 +47,7 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	joinGameip.host=0;
 	joinGameip.port=0;
 	this->socket=socket;
-	memcpy(this->userName, userName, 32);
+	memcpy(this->username, username, 32);
 	
 	lastSentMessageID=0;
 	lastMessageID=0;
@@ -88,8 +88,8 @@ YOGClient::YOGClient(IPaddress ip, UDPsocket socket, char userName[32])
 	clientsUpdatesTimeout=DEFAULT_NETWORK_TIMEOUT;
 	clientsUpdatesTOTL=3;
 	
-	memset(userName, 0, 32);
-	memset(passWord, 0, 32);
+	memset(username, 0, 32);
+	memset(password, 0, 32);
 	memset(xorpassw, 0, 32);
 }
 
@@ -215,7 +215,7 @@ void YOGClient::send(YOGMessageType v, Uint8 id, Uint8 *data, int size)
 
 void YOGClient::send(const Message &m)
 {
-	int size=4+m.textLength+m.userNameLength;
+	int size=4+m.textLength+m.usernameLength;
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 	{
@@ -232,14 +232,14 @@ void YOGClient::send(const Message &m)
 	memcpy((char *)packet->data, sdata, 4);
 	
 	memcpy((char *)packet->data+4, m.text, m.textLength);
-	memcpy((char *)packet->data+4+m.textLength, m.userName, m.userNameLength);
+	memcpy((char *)packet->data+4+m.textLength, m.username, m.usernameLength);
 	packet->address=ip;
 	packet->channel=-1;
 	int rv=SDLNet_UDP_Send(socket, -1, packet);
 	if (rv!=1)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
-	lprintf("Sent a  Message to (%s), size=%d, m.textLength=%d, m.userNameLength=%d.\n", userName, size, m.textLength, m.userNameLength);
+	lprintf("Sent a  Message to (%s), size=%d, m.textLength=%d, m.usernameLength=%d.\n", username, size, m.textLength, m.usernameLength);
 }
 
 void YOGClient::send(PrivateReceipt &privateReceipt)
@@ -265,7 +265,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 	{
 		if (awayi==privateReceipt.away.end())
 		{
-			lprintf("Warning! Critical error! awayi==away.end(), userName=(%s), index=(%d).\n", userName, index);
+			lprintf("Warning! Critical error! awayi==away.end(), username=(%s), index=(%d).\n", username, index);
 			return;
 		}
 		sdata[index]=*addri;
@@ -276,7 +276,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 		{
 			if (message==privateReceipt.awayMessages.end())
 			{
-				lprintf("Warning! Critical error! message==awayMessages.end(), userName=(%s), index=(%d).\n", userName, index);
+				lprintf("Warning! Critical error! message==awayMessages.end(), username=(%s), index=(%d).\n", username, index);
 				return;
 			}
 			int l=Utilities::strmlen(*message, 64);
@@ -307,7 +307,7 @@ void YOGClient::send(PrivateReceipt &privateReceipt)
 		lprintf("Failed to send the packet!\n");
 	SDLNet_FreePacket(packet);
 	
-	lprintf("Sent a YMT_PRIVATE_RECEIPT to (%s). size=%d, index=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", userName, size, index, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
+	lprintf("Sent a YMT_PRIVATE_RECEIPT to (%s). size=%d, index=%d, receiptID=%d, messageID=%d, privateReceipt.addr.size()=%d.\n", username, size, index, privateReceipt.receiptID, privateReceipt.messageID, privateReceipt.addr.size());
 }
 
 void YOGClient::sendGames()
@@ -340,7 +340,7 @@ void YOGClient::sendGames()
 		}
 	addUint32(data, nbGames, 0); // This is redundancy
 	assert(nbGames=gamesSize);
-	lprintf("may send a %d/%d games list to %s\n", nbGames, gamesSize, userName);
+	lprintf("may send a %d/%d games list to %s\n", nbGames, gamesSize, username);
 	if (nbGames>0)
 		send(YMT_GAMES_LIST, data, index);
 }
@@ -361,7 +361,7 @@ void YOGClient::sendUnshared()
 		index+=4;
 	}
 	send(YMT_UNSHARED_LIST, data, index);
-	lprintf("sent a %d unshared list to %s\n", nbUnshared, userName);
+	lprintf("sent a %d unshared list to %s\n", nbUnshared, username);
 }
 
 void YOGClient::addGame(Game *game)
@@ -387,7 +387,7 @@ void YOGClient::addMessage(Message *message)
 		messageTOTL=3;
 	}
 	else
-		lprintf("Warning!, client (%s) is being flooded!\n", userName);
+		lprintf("Warning!, client (%s) is being flooded!\n", username);
 }
 
 void YOGClient::deliveredMessage(Uint8 messageID)
@@ -398,7 +398,7 @@ void YOGClient::deliveredMessage(Uint8 messageID)
 	std::list<Message>::iterator mit=messages.begin();
 	if (mit->messageID==messageID)
 	{
-		lprintf("message (%s) delivered to (%s), (messageID=%d)\n", mit->text, userName, messageID);
+		lprintf("message (%s) delivered to (%s), (messageID=%d)\n", mit->text, username, messageID);
 		if (size>1)
 			messageTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		messages.erase(mit);
@@ -429,7 +429,7 @@ void YOGClient::deliveredReceipt(Uint8 receiptID)
 	std::list<PrivateReceipt>::iterator rit=privateReceipts.begin();
 	if (rit->receiptID==receiptID)
 	{
-		lprintf("receipt delivered to (%s), (receiptID=%d, messageID=%d) \n", userName, rit->receiptID, rit->messageID);
+		lprintf("receipt delivered to (%s), (receiptID=%d, messageID=%d) \n", username, rit->receiptID, rit->messageID);
 		if (size>1)
 			receiptTimeout=DEFAULT_NEW_MESSAGE_TIMEOUT;
 		for (std::list<char *>::iterator message=rit->awayMessages.begin(); message!=rit->awayMessages.end(); message++)
@@ -499,9 +499,9 @@ void YOGClient::sendClients()
 	{
 		addUint32(data, (*client)->uid, index);
 		index+=4;
-		int l=strlen((*client)->userName)+1;
+		int l=strlen((*client)->username)+1;
 		assert(l<=32);
-		memcpy(data+index, (*client)->userName, l);
+		memcpy(data+index, (*client)->username, l);
 		index+=l;
 		data[index]=(*client)->playing;
 		index++;
@@ -511,7 +511,7 @@ void YOGClient::sendClients()
 		lastSentClients[rri].push_back(*client);
 	}
 	send(YMT_CLIENTS_LIST, data, index);
-	lprintf("sent a (%d) clients list to (%s), cpid=%d\n", nbClients, userName, clientsPacketID);
+	lprintf("sent a (%d) clients list to (%s), cpid=%d\n", nbClients, username, clientsPacketID);
 }
 
 void YOGClient::sendClientsUpdates()
@@ -540,7 +540,7 @@ void YOGClient::sendClientsUpdates()
 	
 	if (nbClients>0)
 		send(YMT_UPDATE_CLIENTS_LIST, data, index);
-	lprintf("sent a (%d) clients update list to (%s), cupid=%d\n", nbClients, userName, clientsUpdatePacketID);
+	lprintf("sent a (%d) clients update list to (%s), cupid=%d\n", nbClients, username, clientsUpdatePacketID);
 }
 
 void YOGClient::addClient(YOGClient *client)
