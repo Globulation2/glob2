@@ -88,6 +88,7 @@ public:
 	bool stepReadyToExecute(void);
 	void receptionStep(void);
 	void stepExecuted(void);
+	int ticksToDelay(void);
 	
 private:
 	void updateDelays(int player, Uint8 receivedStep);
@@ -138,8 +139,14 @@ private:
 	Uint8 lastAviableStep[32][32];
 	
 	// We wants tu update latency automatically:
-	Uint8 recentDelays[32][256];
-	Uint8 delaysCount[32];
+	Uint8 recentsPingPong[32][256]; // The 256 last ping+pong times. [ticks]
+	Uint8 pingPongCount[32]; // The next recentDelays[][x] to write in. [ticks]
+	Uint8 pingPong[32]; // Average-like and usable ping+pong time to a player. [ticks]
+	
+	Uint8 recentOrderMarginTime[32][256]; 
+	Uint8 orderMarginTimeCount[32];
+	Uint8 orderMarginTime[32]; // Average-like and usable time before we run out of orders. [ticks]
+	
 	
 	UDPsocket socket;
 

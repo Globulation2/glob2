@@ -135,6 +135,11 @@ void NetGame::init(void)
 		countDown[p]=0;
 		// And everyone thinks that everyone is connected:
 		droppingPlayersMask[p]=0;
+		
+		for (int i=0; i<256; i++)
+			recentsPingPong[p][i]=0;
+		pingPongCount[p]=0;
+		pingPong[p]=0;
 	}
 	
 	dropState=DS_NO_DROP_PROCESSING;
@@ -530,41 +535,93 @@ void NetGame::orderHasBeenExecuted(Order *order)
 
 void NetGame::updateDelays(int player, Uint8 receivedStep)
 {
-	Uint8 step=pushStep-1;
-	Uint8 delay=0;
-	while (true)
-		if (step==receivedStep)
-			break;
-		else if (step==freeingStep)
-			return;
-		else
-		{
-			step--;
-			delay++;
-		}
-	Uint8 count=delaysCount[player]++;
-	recentDelays[player][count]=delay;
-	
-	Uint8 max=0;
-	Uint8 maxi;
-	for (int i=0; i<256; i++)
+	// First, the Order Margin Times:
 	{
-		Uint8 delay=recentDelays[player][i];
-		if (delay>max)
+		Uint8 delay=0;
+		Uint8 step=executeStep;
+		while (ordersQueue[player][step])
 		{
-			max=delay;
-			maxi=i;
+			step++;
+			delay++;
+			assert(delay<255);
 		}
+		
+		recentOrderMarginTime[player][orderMarginTimeCount[player]++]=delay;
+		
+		Uint8 max=0;
+		Uint8 maxi=0;
+		for (int i=0; i<256; i++)
+		{
+			Uint8 delay=recentOrderMarginTime[player][i];
+			if (delay>max)
+			{
+				max=delay;
+				maxi=i;
+			}
+		}
+		Uint8 maxb=0;
+		for (int i=0; i<256; i++)
+			if (i!=maxi)
+			{
+				Uint8 delay=recentOrderMarginTime[player][i];
+				if (delay>maxb)
+					maxb=delay;
+			}
+
+		orderMarginTime[player]=maxb;
+		printf("orderMarginTime[%d]=%d\n", player, orderMarginTime[player]);
+		
+		
+		/*int sum=0;
+		for (int i=0; i<256; i++)
+			sum+=(int)recentOrderMarginTime[player][i];
+		int average=(sum>>8);
+		assert(average>=0);
+		assert(average<256);
+		orderMarginTime[player]=average;
+		printf("orderMarginTime[%d]=%d\n", player, average);*/
 	}
-	Uint8 maxb=0;
-	for (int i=0; i<256; i++)
-		if (i!=maxi)
+	
+	// Second, the ping-pongs times:
+	{
+		// We compute the delay from pushStep to receivedStep
+		Uint8 step=pushStep-1;
+		Uint8 delay=0;
+		while (true)
+			if (step==receivedStep)
+				break;
+			else if (step==freeingStep)
+				return;
+			else
+			{
+				step--;
+				delay++;
+			}
+		recentsPingPong[player][pingPongCount[player]++]=delay;
+
+		Uint8 max=0;
+		Uint8 maxi=0;
+		for (int i=0; i<256; i++)
 		{
-			Uint8 delay=recentDelays[player][i];
-			if (delay>maxb)
-				maxb=delay;
+			Uint8 delay=recentsPingPong[player][i];
+			if (delay>max)
+			{
+				max=delay;
+				maxi=i;
+			}
 		}
-	//printf("max=(%d, %d).\n", max, maxb);
+		Uint8 maxb=0;
+		for (int i=0; i<256; i++)
+			if (i!=maxi)
+			{
+				Uint8 delay=recentsPingPong[player][i];
+				if (delay>maxb)
+					maxb=delay;
+			}
+
+		pingPong[player]=maxb;
+		printf("pingPong[%d]=%d\n", player, pingPong[player]);
+	}
 }
 
 void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
@@ -576,8 +633,8 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	}
 	int player=data[0];
 	Uint8 receivedStep=data[1];
-	countDown[player]=0;
 	lastReceivedFromMe[player]=receivedStep;
+	countDown[player]=0;
 	fprintf(logFile, "lastReceivedFromMe[%d]=%d\n", player, receivedStep);
 	updateDelays(player, receivedStep);
 	
@@ -824,8 +881,8 @@ bool NetGame::stepReadyToExecute(void)
 			fprintf(logFile, " n=%d\n", n);
 			assert(n);
 			
-			Uint8 les;
-			Uint8 upToDatePlayer;
+			Uint8 les=0;
+			Uint8 upToDatePlayer=0;
 			Uint8 step=freeingStep;
 			int c=0;
 			while (c!=n)
@@ -995,3 +1052,28 @@ void NetGame::stepExecuted(void)
 		fprintf(logFile, "pushStep=%d.\n", pushStep);
 	}
 }
+
+int NetGame::ticksToDelay(void)
+{
+	Uint8 latency=defaultLatency; // TODO: compute this latency!
+	
+	int minToWait=255; //The minimum number of executable orders available:
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			int goodOrderMarginTime=latency-(pingPong[p]>>1);
+			int realOrderMarginTime=orderMarginTime[p];
+			int toWait=goodOrderMarginTime-realOrderMarginTime;
+			if (toWait<minToWait)
+				minToWait=toWait;
+		}
+	printf("minToWait=%d.\n", minToWait);
+	if (minToWait<=0)
+		return 0;
+	else if (minToWait<5)
+		return (8*minToWait);
+	else
+		return 40;
+}
+
+
