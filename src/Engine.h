@@ -33,6 +33,7 @@ public:
 	Engine() { }
 	int init(void);
 	int initCampain(void);
+	int initCustom(void);
 	void startMultiplayer(SessionConnection *screen);
 	int initMutiplayerHost(void);
 	int initMutiplayerJoin(void);

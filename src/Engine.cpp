@@ -20,9 +20,9 @@
 
 #include "Engine.h"
 #include "GlobalContainer.h"
-#include "PreparationGui.h"
 #include "MultiplayersHostScreen.h"
 #include "MultiplayersJoinScreen.h"
+#include "CustomGameScreen.h"
 
 int Engine::init(void)
 {
@@ -46,35 +46,35 @@ int Engine::initCampain(void)
 	int playerNumber=0;
 	bool wasHuman=false;
 	char name[16];
+	int i;
+	for (i=0; i<gui.game.session.numberOfTeam; i++)
 	{
-		for (int i=0; i<gui.game.session.numberOfTeam; i++)
+		if (gui.game.teams[i]->type==BaseTeam::T_AI)
 		{
-			if (gui.game.teams[i]->type==BaseTeam::T_AI)
+			snprintf(name, 16, "AI Player %d", playerNumber);
+			gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
+		}
+		else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
+		{
+			if (!wasHuman)
+			{
+				gui.localPlayer=playerNumber;
+				gui.localTeam=i;
+				snprintf(name, 16, "Player %d", playerNumber);
+				wasHuman=true;
+				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
+			}
+			else
 			{
 				snprintf(name, 16, "AI Player %d", playerNumber);
 				gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
 			}
-			else if (gui.game.teams[i]->type==BaseTeam::T_HUMAM)
-			{
-				if (!wasHuman)
-				{
-					gui.localPlayer=playerNumber;
-					gui.localTeam=i;
-					snprintf(name, 16, "Player %d", playerNumber);
-					wasHuman=true;
-					gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_LOCAL);
-				}
-				else
-				{
-					snprintf(name, 16, "AI Player %d", playerNumber);
-					gui.game.players[playerNumber]=new Player(playerNumber, name, gui.game.teams[i], BasePlayer::P_AI);
-				}
-			}
-			gui.game.teams[i]->numberOfPlayer=1;
-			gui.game.teams[i]->playersMask=(1<<playerNumber);
-			playerNumber++;
 		}
+		gui.game.teams[i]->numberOfPlayer=1;
+		gui.game.teams[i]->playersMask=(1<<playerNumber);
+		playerNumber++;
 	}
+
 	gui.game.session.numberOfPlayer=playerNumber;
 	gui.game.renderMiniMap(gui.localTeam);
 	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
@@ -94,6 +94,61 @@ int Engine::initCampain(void)
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
+
+	return NO_ERROR;
+}
+
+int Engine::initCustom(void)
+{
+	CustomGameScreen customGameScreen;
+
+	int cgs = customGameScreen.execute(globalContainer->gfx, 20);
+
+	if (cgs == CustomGameScreen::CANCEL)
+		return CANCEL;
+
+	gui.game.loadBase(&(customGameScreen.sessionInfo));
+	int nbTeam=gui.game.session.numberOfTeam;
+	if (nbTeam==0)
+		return CANCEL;
+
+	// TODO : handle alliance & players nicely here (cf Starcraft)
+	char name[16];
+	int i;
+	int nbPlayer=1;
+	gui.localPlayer=0;
+	gui.localTeam=0;
+
+	// TODO : replace this by player name, that should have been saved globalContainer
+	snprintf(name, 16, "Player 0");
+	gui.game.players[0]=new Player(0, name, gui.game.teams[0], BasePlayer::P_LOCAL);
+	gui.game.teams[0]->numberOfPlayer=1;
+	gui.game.teams[0]->playersMask=1;
+	for (i=1; i<nbTeam; i++)
+	{
+		if (customGameScreen.isAIactive(i))
+		{
+			snprintf(name, 16, "AI Player %d", i);
+			gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[i], BasePlayer::P_AI);
+			gui.game.teams[i]->numberOfPlayer=1;
+			gui.game.teams[i]->playersMask=(1<<i);
+			nbPlayer++;
+		}
+		else
+		{
+			gui.game.teams[i]->numberOfPlayer=0;
+			gui.game.teams[i]->playersMask=0;
+		}
+	}
+
+	gui.game.session.numberOfPlayer=nbPlayer;
+	gui.game.renderMiniMap(gui.localTeam);
+	gui.viewportX=gui.game.teams[gui.localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
+	gui.viewportY=gui.game.teams[gui.localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
+	gui.viewportX=(gui.viewportX+gui.game.map.getW())%gui.game.map.getW();
+	gui.viewportY=(gui.viewportY+gui.game.map.getH())%gui.game.map.getH();
+
+	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
 	return NO_ERROR;
 }
@@ -125,7 +180,7 @@ void Engine::startMultiplayer(SessionConnection *screen)
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
 	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight, 32, globalContainer->graphicFlags);
-	
+
 	printf("localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }
 

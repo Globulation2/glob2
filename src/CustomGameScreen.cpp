@@ -23,16 +23,30 @@
 
 CustomGameScreen::CustomGameScreen()
 {
+	int i;
+
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL);
-	fileList=new List(20, 60, 200, 400, globalContainer->standardFont);
-	mapPreview=new MapPreview(240, 60, "net.map");
+	fileList=new List(20, 60, 180, 400, globalContainer->standardFont);
+	mapPreview=new MapPreview(640-20-26-128, 70, "net.map");
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600));
+	mapName=new Text(440, 60+128+30, globalContainer->standardFont, "", 180);
+	addWidget(mapName);
+	mapInfo=new Text(440, 60+128+60, globalContainer->standardFont, "", 180);
+	addWidget(mapInfo);
 
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(mapPreview);
+
+	for (i=0; i<7; i++)
+	{
+		isAI[i]=new OnOffButton(230, 60+i*30, 25, 25, true, 10+i);
+		addWidget(isAI[i]);
+		isAItext[i]=new Text(270, 60+i*30, globalContainer->standardFont, (i==0)  ? globalContainer->texts.getString("[player]") : globalContainer->texts.getString("[ai]"));
+		addWidget(isAItext[i]);
+	}
 
 	if (globalContainer->fileManager.initDirectoryListing(".", "map"))
 	{
@@ -53,25 +67,42 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapName=fileList->getText(par1);
-		mapPreview->setMapThumbnail(mapName);
-		printf("CGS : Loading map '%s' ...\n", mapName);
-		SDL_RWops *stream=globalContainer->fileManager.open(mapName,"rb");
+		const char *mapSelectedName=fileList->getText(par1);
+		mapPreview->setMapThumbnail(mapSelectedName);
+		printf("CGS : Loading map '%s' ...\n", mapSelectedName);
+		SDL_RWops *stream=globalContainer->fileManager.open(mapSelectedName,"rb");
 		if (stream==NULL)
-			printf("Map '%s' not found!\n", mapName);
+			printf("Map '%s' not found!\n", mapSelectedName);
 		else
 		{
 			validSessionInfo=sessionInfo.load(stream);
 			SDL_RWclose(stream);
 			if (validSessionInfo)
 			{
-				paint(388, 60, 640-388, 128);
+				// update map name & info
 				sessionInfo.map.mapName[31]=0;
-				gfxCtx->drawString(388, 60, globalContainer->standardFont, sessionInfo.map.mapName);
+				mapName->setText(sessionInfo.map.mapName);
 				char textTemp[256];
 				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
-				gfxCtx->drawString(388, 90, globalContainer->standardFont, textTemp);
-				addUpdateRect(388, 60, 640-388, 128);
+				mapInfo->setText(textTemp);
+
+				// hide/show widgets
+				paint(230, 60, 220, 30*8);
+				int i;
+				for (i=0; i<sessionInfo.numberOfTeam; i++)
+				{
+					isAI[i]->visible=true;
+					isAI[i]->paint(gfxCtx);
+					isAItext[i]->visible=true;
+					isAItext[i]->paint(gfxCtx);
+				}
+				// FIXME : there is a memory trash when this loop is active; probably a side effect
+				for (; i<8; i++)
+				{
+					isAI[i]->visible=false;
+					isAItext[i]->visible=false;
+				}
+				addUpdateRect(230, 60, 220, 30*8);
 			}
 			else
 				printf("CGS : Warning, Error during map load\n");
@@ -86,8 +117,22 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 			else
 				printf("CGS : This is not a valid map!\n");
 		}
-		else
+		else if (source==cancel)
+		{
 			endExecute(par1);
+		}
+		else if (par1==10)
+		{
+			isAI[0]->setState(true);
+		}
+		else if (par1>10)
+		{
+			int n=par1-10;
+			if (isAI[n]->getState())
+				isAItext[n]->setText(globalContainer->texts.getString("[ai]"));
+			else
+				isAItext[n]->setText(globalContainer->texts.getString("[closed]"));
+		}
 	}
 }
 

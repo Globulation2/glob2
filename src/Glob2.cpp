@@ -86,7 +86,10 @@ int main(int argc, char *argv[])
 			break;
 			case 1:
 			{
-				// TODO : call create game screen with special parameters if it is custom/yog/lan
+				Engine engine;
+				if (engine.initCustom()==Engine::NO_ERROR)
+					if (engine.run()==-1)
+						run=false;
 			}
 			break;
 			case 2:

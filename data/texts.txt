@@ -290,3 +290,12 @@ You are under attack
 [building has been finished]
 Le batiment est termine
 The building is finished
+[ai]
+IA
+AI
+[closed]
+Ferme
+Closed
+[player]
+Joueur
+Player
