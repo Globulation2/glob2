@@ -19,7 +19,9 @@
 <releaseinfo>0.0.1</releaseinfo>
 
 <abstract>
-	<para>This manual is for the Globulation 2 game (http://ysagoon.com/glob2).</para>
+	<para>
+	This manual is for the <ulink url="http://ysagoon.com/glob2"><application>Globulation</application> 2</ulink> game.
+	</para>
 </abstract>
 
 <keywordset>
@@ -41,7 +43,7 @@
 <title>This manual licensing</title>
 
 <para>
-This manual is for the http://ysagoon.com/glob2Globulation 2 game.
+This manual is for the <ulink url="http://ysagoon.com/glob2"><application>Globulation</application> 2</ulink> game.
 </para>
 
 <para>
@@ -77,21 +79,24 @@ Globulation 2 developpers."
 <title>Installation</title>
 
 <procedure>
-<title>Installing Globulation 2 from CVS</title>
+<title>Installing <application>Globulation</application> 2 from CVS</title>
 
 <step performance="required">
-<para>Download the CVS (modulename = glob2) as explained here (http://savannah.nongnu.org/cvs/?group=glob2)</para>
+<para>Download the CVS (modulename = glob2) as explained 
+	<ulink url="http://savannah.nongnu.org/cvs/?group=glob2">here</ulink></para>
 </step>
 
 <step performance="required">
-<para>Download the graphic archive as explained here (http://ysagoon.com/glob2)</para>
+<para>Download the graphic archive as explained <ulink url="http://ysagoon.com/glob2">here</ulink></para>
 </step>
 
 <step performance="required">
 <para>Uncompress the graphic archive in the glob2/data directory</para>
 <substeps>
 <step><para><command>cd glob2/data</command></para></step>
-<step><para><command>tar xvzf [path_to_downloaded_archive]</command></para></step>
+<step><para>
+<cmdsynopsis><command>tar xvzf</command><arg><replaceable>path_to_downloaded_archive</replaceable></arg></cmdsynopsis>
+</para></step>
 </substeps>
 </step>
 
@@ -113,7 +118,8 @@ just run :<command>aclocal</command></para></step>
 
 <step performance="required">
 <para>Then, you need to configure Glob2, run <command>./configure</command>.
-If you want to install Glob2 in a special place, run <command>./configure --prefix=[place to install glob2]</command>
+If you want to install Glob2 in a special place, run 
+<cmdsynopsis><command>./configure --prefix=</command><arg><replaceable>place to install glob2</replaceable></arg></cmdsynopsis>
 instead of just ./configure.</para>
 </step>
 
@@ -133,7 +139,7 @@ If you take Glob2 from the distribution .tar.gz, you can untar the distribution,
 </para>
 
 <para>
-Read the README and the INSTALL files in Globulation 2 distribution for additional informations.
+Read the README and the INSTALL files in <application>Globulation</application> 2 distribution for additional informations.
 </para>
 
 </chapter>
@@ -148,7 +154,8 @@ Upon installed, launch glob2 : <command moreinfo="none">glob2</command>
 </para>
 
 <para>
-Then click on Tutorial in the main menu and follow the tutorial. It will teach you everything you need to begin to play with Globulation 2.
+Then click on Tutorial in the main menu and follow the tutorial.
+It will teach you everything you need to begin to play with <application>Globulation</application> 2.
 </para>
 
 </chapter>
@@ -161,7 +168,7 @@ Then click on Tutorial in the main menu and follow the tutorial. It will teach y
 <chapter id="contributing">
 <title>Contributing</title>
 
-<para>The following sections will strongly help you if you are (or wanna be) a Globulation 2 contributor.</para>
+<para>The following sections will strongly help you if you are (or wanna be) a <application>Globulation</application> 2 contributor.</para>
 
 
 <!-- Contributing chapter, becoming a contributor section -->
@@ -170,7 +177,7 @@ Then click on Tutorial in the main menu and follow the tutorial. It will teach y
 <title>Becoming a contributor</title>
 
 <para>
-If you are interested in graphics/sounds/musics/web design/map design you only need to have a working Globulation 2.
+If you are interested in graphics/sounds/musics/web design/map design you only need to have a working <application>Globulation</application> 2.
 <link linkend="installation">installation</link>.
 </para>
 
@@ -195,7 +202,7 @@ If you are interested in code, you need to be able to rebuild everything from CV
 </itemizedlist>
 
 <para>
-Follow the instructions given in the README and INSTALL files in Globulation 2 distribution.
+Follow the instructions given in the README and INSTALL files in <application>Globulation</application> 2 distribution.
 </para>
 </sect1>
 
@@ -206,7 +213,7 @@ Follow the instructions given in the README and INSTALL files in Globulation 2 d
 <title>Coding guidelines</title>
 
 <para>
-All the code in Globulation 2 tree should follow thoses guidelines.
+All the code in <application>Globulation</application> 2 tree should follow thoses guidelines.
 If you wanna contribute, first read thoses guidelines and be sure to have fully understood them.
 Thanks.
 </para>
@@ -215,37 +222,37 @@ Thanks.
 
 <listitem>
 <para>
-Globulation 2 is coded in C++.
+<application>Globulation</application> 2 is coded in C++.
 However, usage of the standard C library is permitted when justified for the simplicity (use of FILE * pointer in the virtual filesystem).
 </para>
 </listitem>
 
 <listitem>
 
-<para>
-Indent like this :
-<screen>
+<example>
+<title>Indentation example</title>
+<programlisting>
 class Integer
 {
-	int i;
+    int i;
 
-	void setVal(int val);
-	int getVal(void) { return i; }
+    void setVal(int val);
+    int getVal(void) { return i; }
 };
 
 void Integer::setVal(int val)
 {
-	this-&gt;i = val;
+    this-&gt;i = val;
 }
 
 int main(int argc, char *argv[])
 {
-	Integer a;
-	a.setVal(3);
-	printf("%d\n", a.getVal());
+    Integer a;
+    a.setVal(3);
+    printf("%d\n", a.getVal());
 }
-</screen>
-</para>
+</programlisting>
+</example>
 
 <para>
 Always put { and } on a single line, excepted when { and } are on the same line.
@@ -319,7 +326,7 @@ Glob2 already takes minuts to compile. Don't let him take <emphasis>days</emphas
 <sect2 id="introduction">
 <title>Introduction</title>
 <para>
-SGSL is a little scripting language for Globulation 2. SGSL is simple and has a very
+SGSL is a little scripting language for <application>Globulation</application> 2. SGSL is simple and has a very
 easy syntax. A SGSL script is nothing else than a list of line which are executed
 sequencially. The power of SGSL is it's ability to execute several script at the
 same time. So there can be, for instance, two differents way to win the game, and
@@ -333,37 +340,53 @@ both will be valid. This is known as multi-threading-scripting (MTS).
 <variablelist>
 
 <varlistentry>
-<term>show</term>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>show</function></funcdef>
+<paramdef><parameter>"text"</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
 <listitem>
 <para>
-<command>show("text")</command>:
-Display the text <emphasis>text</emphasis> until <command>hide</command>
-is called or <command>show</command> is called again.
+Display the text <parameter>text</parameter> until <function >hide</function >
+is called or <function >show</function > is called again.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>hide</term>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>hide</function></funcdef><paramdef></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
 <listitem>
 <para>
-<command>hide</command>: Hide the text displayed by <command>show</command>.
+Hide the text displayed by <function>show</function>.
 </para>
 </listitem>
 </varlistentry>
 
 <varlistentry>
-<term>wait</term>
+<term>
+<funcsynopsis>
+<funcprototype>
+<funcdef><function>wait</function></funcdef>
+<paramdef><parameter>condition</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+</term>
 <listitem>
 <para>
-<command>wait (condition)</command>:
-Stop the execution of the thread until <emphasis>condition</emphasis> is true.
-<emphasis>condition</emphasis> is re-evaluated at each script tick.
+Stop the execution of the thread until <parameter>condition</parameter> is true.
+<parameter>condition</parameter> is re-evaluated at each script tick.
 </para>
 </listitem>
 </varlistentry>
-
-
 
 </variablelist>
 
@@ -389,23 +412,23 @@ Stop the execution of the thread until <emphasis>condition</emphasis> is true.
 
 <qandaentry>
 <question>
-<para>What is Globulation 2 ?</para>
+<para>What is <application>Globulation</application> 2 ?</para>
 </question>
 
 <answer>
-<para>Globulation 2 is a real-time strategic game which focus on middle-term goal
+<para><application>Globulation</application> 2 is a real-time strategic game which focus on middle-term goal
 and reduces micro-managment.</para>
 </answer>
 </qandaentry>
 
 <qandaentry>
 <question>
-<para>On which plateforme does Globulation 2 run ?</para>
+<para>On which plateforme does <application>Globulation</application> 2 run ?</para>
 </question>
 
 <answer>
 <para>
-Globulation 2 has successfully run on Win32 (win 95, 98, NT, 2000, XP), GNU/Linux, Mac OS X, Solaris.
+<application>Globulation</application> 2 has successfully run on Win32 (win 95, 98, NT, 2000, XP), GNU/Linux, Mac OS X, Solaris.
 It should also run on other Unix.</para>
 </answer>
 </qandaentry>
