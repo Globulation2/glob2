@@ -45,6 +45,7 @@
 #	include <sys/types.h>
 #	include <dirent.h>
 #	include <sys/stat.h>
+#	include <errno.h>
 #endif
 
 FileManager::FileManager(const char *gameName)
@@ -54,9 +55,8 @@ FileManager::FileManager(const char *gameName)
 	snprintf(gameLocal, sizeof(gameLocal), "%s/.%s", getenv("HOME"), gameName);
 	mkdir(gameLocal, S_IRWXU);
 	addDir(gameLocal);
-#else
-    addDir(".");
 #endif
+    addDir(".");
     addDir(PACKAGE_DATA_DIR);
     addDir(PACKAGE_SOURCE_DIR);
 	fileListIndex=-1;
@@ -115,9 +115,13 @@ void FileManager::addWriteSubdir(const char *subdir)
 		toCreate[dirLen]='/';
 		strncpy(toCreate+dirLen+1, subdir, subdirLen+1);
 		
-		mkdir(toCreate, S_IRWXU);
+		int result=mkdir(toCreate, S_IRWXU);
 		
 		delete[] toCreate;
+		if (result==0)
+			break;
+		if ((result==-1) && (errno==EEXIST))
+			break;
 	}
 #endif
 }
