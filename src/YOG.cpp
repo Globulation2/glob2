@@ -287,11 +287,11 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		for (int i=0; i<nbGames; i++)
 		{
 			GameInfo game;
-			game.ip.host=getUint32(data, index);
+			game.ip.host=getUint32safe(data, index);
 			index+=4;
-			game.ip.port=getUint16(data, index);
+			game.ip.port=getUint16safe(data, index);
 			index+=2;
-			game.uid=getUint32(data, index);
+			game.uid=getUint32safe(data, index);
 			index+=4;
 			int l;
 			l=Utilities::strmlen((char *)data+index, 32);
@@ -367,7 +367,7 @@ void YOG::treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size)
 		for (int i=0; i<nbClients; i++)
 		{
 			Client client;
-			client.uid=getUint32(data, index);
+			client.uid=getUint32safe(data, index);
 			index+=4;
 			int l=Utilities::strmlen((char *)data+index, 32);
 			memcpy(client.userName, data+index, l);
