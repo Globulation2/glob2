@@ -223,6 +223,17 @@ void IRC::interpreteIRCMessage(const char *message)
 			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
 			msg.message[IRC_MESSAGE_SIZE] = 0;
 		}
+		
+		// erase this nick from all chans
+		std::string user(source);
+		for (std::map<std::string, std::set<std::string> >::iterator it = usersOnChannels.begin(); it!=usersOnChannels.end(); ++it)
+		{
+			if (it->second.find(user) != it->second.end())
+			{
+				it->second.erase(user);
+				usersOnChannelsModified = true;
+			}
+		}
 
 		infoMessages.push_back(msg);
 	}
