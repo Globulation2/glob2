@@ -1103,30 +1103,24 @@ AI
 KI
 Počítač
 
-[AI name 1]
-Gros mechant
-Bad Guy
-Böser Bube
-Bad Guy
-
-[AI name 2]
-Destructeur
-Destroyer
-Zerstörer
-Destroyer
-Niszczyciel
-[AI name 3]
-Born to pète la geule
-Né pour break your neck
-Born to polier your Fresse
-Né pour break your neck
-
-[AI name 4]
-Tape-Sytème
-Agressman
-Agressor
-Agressman
-
+[AINone]
+AINone
+AINone
+AINone
+AINone
+AINone
+[AINumbi]
+AINumbi
+AINumbi
+AINumbi
+AINumbi
+AINumbi
+[AICastor]
+AICastor
+AICastor
+AICastor
+AICastor
+AICastor
 [the games]
 Parties
 Games
