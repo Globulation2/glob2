@@ -319,7 +319,7 @@ int Engine::run(void)
 	while (doRunOnceAggain)
 	{
 		//int ticknb=0;
-		Uint32 startTick, endTick, deltaTick;
+		Uint32 startTick, endTick;
 		bool networkReadyToExecute=true;
 		while (gui.isRunning)
 		{
@@ -373,9 +373,9 @@ int Engine::run(void)
 			globalContainer->gfx->nextFrame();
 
 			endTick=SDL_GetTicks();
-			deltaTick=endTick-startTick;
-			if (deltaTick<(unsigned)gui.game.session.gameTPF)
-				SDL_Delay((unsigned)gui.game.session.gameTPF-deltaTick);
+			Sint32 deltaTick=endTick-startTick-net->ticksToDelay();
+			if (deltaTick<gui.game.session.gameTPF)
+				SDL_Delay(gui.game.session.gameTPF-deltaTick);
 		}
 
 		delete net;
