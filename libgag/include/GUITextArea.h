@@ -52,6 +52,10 @@ namespace GAGGUI
 		virtual void scrollUp(void);
 		virtual void scrollToBottom(void);
 		virtual void setCursorPos(unsigned pos);
+		//! load content from filename
+		virtual bool load(const char *filename);
+		//! save content to filename. If file exists, it is overriden
+		virtual bool save(const char *filename);
 	
 	protected:
 		//! Lookup a string in cache for its size

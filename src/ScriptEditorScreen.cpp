@@ -26,6 +26,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
+#include <Stream.h>
 using namespace GAGCore;
 #include <GUIText.h>
 #include <GUITextArea.h>
@@ -135,6 +136,9 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
+	DrawableSurface *background = new DrawableSurface();
+	background->setRes(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	background->drawSurface(0, 0,globalContainer->gfx);
 
 	SDL_Event event;
 	while(loadSaveScreen->endValue<0)
@@ -143,6 +147,8 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
+		loadSaveScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 	}
@@ -151,40 +157,25 @@ void ScriptEditorScreen::loadSave(bool isLoad)
 	{
 		if (isLoad)
 		{
-			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"rb");
-			if (!stream)
+			if (!editor->load(loadSaveScreen->getFileName()))
 			{
 				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 				compilationResult->setText(GAGCore::nsprintf("Loading script from %s failed", loadSaveScreen->getName()).c_str());
-				return;
 			}
-			SDL_RWseek(stream, 0, SEEK_END);
-			unsigned len=SDL_RWtell(stream);
-			SDL_RWseek(stream, 0, SEEK_SET);
-			char* sourceCode=new char[len+1];
-			SDL_RWread(stream, sourceCode, len, 1);
-			sourceCode[len] = '\0';
-			editor->setText(sourceCode);
-			delete[] sourceCode;
-			SDL_RWclose(stream);
 		}
 		else
 		{
-			SDL_RWops *stream=globalContainer->fileManager->open(loadSaveScreen->getFileName(),"wb");
-			if (!stream)
+			if (!editor->save(loadSaveScreen->getFileName()))
 			{
 				compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 				compilationResult->setText(GAGCore::nsprintf("Saving script to %s failed", loadSaveScreen->getName()).c_str());
-				return;
 			}
-			const char* sourceCode=editor->getText();
-			SDL_RWwrite(stream, sourceCode, strlen(sourceCode), 1);
-			SDL_RWclose(stream);
 		}
 	}
 
 	// clean up
 	delete loadSaveScreen;
-
-	//draw();
+	
+	// destroy temporary surface
+	delete background;
 }
