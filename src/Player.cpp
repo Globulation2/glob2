@@ -252,7 +252,8 @@ Uint32 BasePlayer::checkSum()
 	// (we could uses two differents check sums, but the framework would be heavier)
 	//cs^=netPort;
 
-	for (int i=0; i<(int)strlen(name); i++)
+	int l=strnlen(name, 32);
+	for (int i=0; i<l; i++)
 		cs^=name[i];
 	
 	return cs;
@@ -555,13 +556,20 @@ void Player::save(SDL_RWops *stream)
 	SDL_RWwrite(stream, "PLYe", 4, 1);
 }
 
-Uint32 Player::checkSum()
+Uint32 Player::checkSum(std::list<Uint32> *checkSumsList)
 {
 	Uint32 cs;
 	if (ai)
 		cs=ai->step;
 	else
 		cs=0;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [2+t*20+p*2]
+	
 	cs^=BasePlayer::checkSum();
+	
+	if (checkSumsList)
+		checkSumsList->push_back(cs);// [3+t*20+p*2]
+	
 	return cs;
 }

@@ -57,6 +57,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 	
 	this->implementitionID=implementitionID;
 	this->player=player;
+	step=0;
 }
 
 AI::AI(SDL_RWops *stream, Player *player)
