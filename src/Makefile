@@ -1,0 +1,371 @@
+# Generated automatically from Makefile.in by configure.
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = /bin/sh
+
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
+
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/glob2
+pkglibdir = $(libdir)/glob2
+pkgincludedir = $(includedir)/glob2
+
+top_builddir = ..
+
+ACLOCAL = aclocal
+AUTOCONF = autoconf
+AUTOMAKE = automake
+AUTOHEADER = autoheader
+
+INSTALL = /usr/local/bin/ginstall -c
+INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL_PROGRAM}
+transform = s,x,x,
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+CC = gcc
+CXX = c++
+MAKEINFO = makeinfo
+PACKAGE = glob2
+RANLIB = ranlib
+SDL_CFLAGS = -I/home/smagnena/pub/include -I/home/smagnena/pub/include/SDL -D_REENTRANT
+SDL_CONFIG = /home/smagnena/pub/bin/sdl-config
+SDL_LIBS = -L/home/smagnena/pub/lib -R/home/smagnena/pub/lib -lSDL -lpthread -lposix4
+VERSION = 0.1
+
+bin_PROGRAMS = glob2
+
+glob2_SOURCES = AI.cpp AI.h Building.cpp Building.h BuildingType.cpp BuildingType.h CVS Engine.cpp Engine.h EntityType.cpp EntityType.h Fatal.cpp Fatal.h GAG.h GUIBase.cpp GUIBase.h GUIButton.cpp GUIButton.h GUIList.cpp GUIList.h GUIText.h GUIText.cpp GUITextInput.cpp GUITextInput.h GUITextArea.cpp GUITextArea.h GUIMapPreview.h GUIMapPreview.cpp Game.cpp Game.h GameGUI.cpp GameGUI.h GameGUIDialog.cpp GameGUIDialog.h GameGUILoadSave.cpp GameGUILoadSave.h Glob2.cpp Glob2.h GlobalContainer.cpp GlobalContainer.h GraphicContext.cpp GraphicContext.h Header.h Makefile.am Map.cpp Map.h MapEdit.cpp MapEdit.h NetConsts.h NetGame.cpp NetGame.h Order.cpp Order.h Player.cpp Player.h PreparationGui.cpp PreparationGui.h Race.cpp Race.h Session.cpp Session.h SDLSprite.cpp SDLSprite.h SDLFont.h SDLFont.cpp SDLGraphicContext.h SDLGraphicContext.cpp StringTable.cpp StringTable.h Team.cpp Team.h TeamStat.h TeamStat.cpp Unit.cpp Unit.h UnitType.cpp UnitType.h Utilities.cpp Utilities.h FileManager.h FileManager.cpp CustomGameScreen.h CustomGameScreen.cpp LoadGameScreen.h LoadGameScreen.cpp MainMenuScreen.h MainMenuScreen.cpp MultiplayersOfferScreen.h MultiplayersOfferScreen.cpp YOGScreen.h YOGScreen.cpp YOGConnector.h YOGConnector.cpp SettingsScreen.h SettingsScreen.cpp MultiplayersHostScreen.h MultiplayersHostScreen.cpp MultiplayersHost.h MultiplayersHost.cpp MultiplayersJoinScreen.h MultiplayersJoinScreen.cpp MultiplayersJoin.h MultiplayersJoin.cpp MultiplayersConnectedScreen.h MultiplayersConnectedScreen.cpp MultiplayersChooseMapScreen.h MultiplayersChooseMapScreen.cpp MultiplayersCrossConnectable.h MultiplayersCrossConnectable.cpp NonANSICStdWrapper.h NewMapScreen.h NewMapScreen.cpp YOG.h YOG.cpp
+
+
+glob2_LDADD = -lSDL_net -lSDL_image -L/home/smagnena/pub/lib -R/home/smagnena/pub/lib -lSDL -lpthread -lposix4 
+INCLUDES = -I/home/smagnena/pub/include -I/home/smagnena/pub/include/SDL -D_REENTRANT
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I..
+CPPFLAGS = 
+LDFLAGS = 
+LIBS = 
+glob2_OBJECTS =  AI.o Building.o BuildingType.o Engine.o EntityType.o \
+Fatal.o GUIBase.o GUIButton.o GUIList.o GUIText.o GUITextInput.o \
+GUITextArea.o GUIMapPreview.o Game.o GameGUI.o GameGUIDialog.o \
+GameGUILoadSave.o Glob2.o GlobalContainer.o GraphicContext.o Map.o \
+MapEdit.o NetGame.o Order.o Player.o PreparationGui.o Race.o Session.o \
+SDLSprite.o SDLFont.o SDLGraphicContext.o StringTable.o Team.o \
+TeamStat.o Unit.o UnitType.o Utilities.o FileManager.o \
+CustomGameScreen.o LoadGameScreen.o MainMenuScreen.o \
+MultiplayersOfferScreen.o YOGScreen.o YOGConnector.o SettingsScreen.o \
+MultiplayersHostScreen.o MultiplayersHost.o MultiplayersJoinScreen.o \
+MultiplayersJoin.o MultiplayersConnectedScreen.o \
+MultiplayersChooseMapScreen.o MultiplayersCrossConnectable.o \
+NewMapScreen.o YOG.o
+glob2_DEPENDENCIES = 
+glob2_LDFLAGS = 
+CXXFLAGS = -g -Wall -lpng 
+CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CFLAGS = -g -O2
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+DEP_FILES =  .deps/AI.P .deps/Building.P .deps/BuildingType.P \
+.deps/CustomGameScreen.P .deps/Engine.P .deps/EntityType.P \
+.deps/Fatal.P .deps/FileManager.P .deps/GUIBase.P .deps/GUIButton.P \
+.deps/GUIList.P .deps/GUIMapPreview.P .deps/GUIText.P \
+.deps/GUITextArea.P .deps/GUITextInput.P .deps/Game.P .deps/GameGUI.P \
+.deps/GameGUIDialog.P .deps/GameGUILoadSave.P .deps/Glob2.P \
+.deps/GlobalContainer.P .deps/GraphicContext.P .deps/LoadGameScreen.P \
+.deps/MainMenuScreen.P .deps/Map.P .deps/MapEdit.P \
+.deps/MultiplayersChooseMapScreen.P .deps/MultiplayersConnectedScreen.P \
+.deps/MultiplayersCrossConnectable.P .deps/MultiplayersHost.P \
+.deps/MultiplayersHostScreen.P .deps/MultiplayersJoin.P \
+.deps/MultiplayersJoinScreen.P .deps/MultiplayersOfferScreen.P \
+.deps/NetGame.P .deps/NewMapScreen.P .deps/Order.P .deps/Player.P \
+.deps/PreparationGui.P .deps/Race.P .deps/SDLFont.P \
+.deps/SDLGraphicContext.P .deps/SDLSprite.P .deps/Session.P \
+.deps/SettingsScreen.P .deps/StringTable.P .deps/Team.P \
+.deps/TeamStat.P .deps/Unit.P .deps/UnitType.P .deps/Utilities.P \
+.deps/YOG.P .deps/YOGConnector.P .deps/YOGScreen.P
+SOURCES = $(glob2_SOURCES)
+OBJECTS = $(glob2_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .cpp .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+glob2: $(glob2_OBJECTS) $(glob2_DEPENDENCIES)
+	@rm -f glob2
+	$(CXXLINK) $(glob2_LDFLAGS) $(glob2_OBJECTS) $(glob2_LDADD) $(LIBS)
+.cpp.o:
+	$(CXXCOMPILE) -c $<
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+
+%.o: %.cpp
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cpp
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-tags mostlyclean-depend mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-compile clean-tags clean-depend \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-tags \
+		distclean-depend distclean-generic clean-am
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-depend maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
