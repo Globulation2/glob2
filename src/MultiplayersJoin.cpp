@@ -96,6 +96,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 
 	serverName[0]=0;
 	playerName[0]=0;
+	serverNickName[0]=0;
 	
 	serverIP.host=0;
 	serverIP.port=0;
@@ -206,18 +207,36 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		waitingTimeout=0;
 		return;
 	}
-
 	fprintf(logFile, "dataSessionInfoRecieved myPlayerNumber=%d\n", myPlayerNumber);
+	
+	int serverNickNameSize=Utilities::strmlen((char *)data+8, 32);
+	if (serverNickName[0])
+	{
+		if (strncmp(serverNickName, (char *)data+8, serverNickNameSize)==0)
+		{
+			fprintf(logFile, " same serverNickName=(%s)\n", serverNickName);
+		}
+		else
+		{
+			fprintf(logFile, " Warning: old serverNickName=(%s), new serverNickName=(%s)\n", serverNickName, data+4);
+			return;
+		}
+	}
+	else
+	{
+		memcpy(serverNickName, data+8, serverNickNameSize);
+		fprintf(logFile, " serverNickName=(%s)\n", serverNickName);
+	}
 
 	unCrossConnectSessionInfo();
 
-	if (!sessionInfo.setData(data+8, size-8, true))
+	if (!sessionInfo.setData(data+8+serverNickNameSize, size-8-serverNickNameSize, true))
 	{
-		fprintf(logFile, "Bad content, or bad size for a sessionInfo packet recieved!\n");
+		fprintf(logFile, " Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;
 	}
 	
-	fprintf(logFile, "sessionInfo.numberOfPlayer=%d, numberOfTeam=%d, ipFromNAT=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam, ipFromNAT);
+	fprintf(logFile, " sessionInfo.numberOfPlayer=%d, numberOfTeam=%d, ipFromNAT=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam, ipFromNAT);
 	
 	if (ipFromNAT || !shareOnYOG)
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
@@ -228,7 +247,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	
 	if (localPort)
 	{
-		fprintf(logFile, "I set my own ip to localhost, localPort=%d \n", SDL_SwapBE16(localPort));
+		fprintf(logFile, " I set my own ip to localhost, localPort=%d \n", SDL_SwapBE16(localPort));
 		sessionInfo.players[myPlayerNumber].ip.host=SDL_SwapBE32(0x7F000001);
 		sessionInfo.players[myPlayerNumber].ip.port=localPort;
 	}
@@ -242,28 +261,28 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 	//do we need to download the file from host ? :
 	if (sessionInfo.mapGenerationDescriptor && sessionInfo.fileIsAMap)
 	{
-		fprintf(logFile, "no need for download, we have a random map.\n");
+		fprintf(logFile, " no need for download, we have a random map.\n");
 	}
 	else
 	{
 		filename=NULL;
 		
-		fprintf(logFile, "we may need to download, we don't have a random map.\n");
+		fprintf(logFile, " we may need to download, we don't have a random map.\n");
 		filename=sessionInfo.getFileName();
 		
 		assert(filename);
 		assert(filename[0]);
-		fprintf(logFile, "filename=%s.\n", filename);
+		fprintf(logFile, " filename=%s.\n", filename);
 		SDL_RWops *stream=globalContainer->fileManager->open(filename,"rb");
 		if (stream)
 		{
-			fprintf(logFile, "we don't need to download, we do have the file!\n");
+			fprintf(logFile, " we don't need to download, we do have the file!\n");
 			SDL_RWclose(stream);
 			filename=NULL;
 		}
 		else
 		{
-			fprintf(logFile, "we do need to download, we don't have the file!\n");
+			fprintf(logFile, " we do need to download, we don't have the file!\n");
 		}
 		
 		if (filename)
@@ -290,7 +309,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			receivedCounter=0;
 			downloadStream=globalContainer->fileManager->open(filename,"wb");
 			
-			fprintf(logFile, "downloadStream=%p\n", downloadStream);
+			fprintf(logFile, " downloadStream=%p\n", downloadStream);
 		}
 	}
 	
@@ -740,9 +759,9 @@ void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress i
 	packet->data[3]=0;
 	memcpy(packet->data+4, playerName, l);
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
-		fprintf(logFile, "send suceeded to send joinerBroadcastResponse packet to ip=(%s).\n", Utilities::stringIP(ip));
+		fprintf(logFile, "send suceeded to send joinerBroadcastRequest packet to ip=(%s).\n", Utilities::stringIP(ip));
 	else
-		fprintf(logFile, "send failed to send joinerBroadcastResponse packet to ip=(%s).\n", Utilities::stringIP(ip));
+		fprintf(logFile, "send failed to send joinerBroadcastRequest packet to ip=(%s).\n", Utilities::stringIP(ip));
 	SDLNet_FreePacket(packet);
 }
 

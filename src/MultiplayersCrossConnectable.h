@@ -39,11 +39,13 @@ public:
 	
 public:
 	IPaddress serverIP;
+	char serverNickName[32];
 	
 	Uint8 messageID;
 	struct Message
 	{
 		Uint8 messageID;
+		Uint8 messageType;
 		char userName[32];
 		char text[512];
 		int timeout;

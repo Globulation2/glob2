@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
+#include "YOG.h"
 
 MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 :SessionConnection()
@@ -32,6 +33,8 @@ MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 	serverIP.port=0;
 	
 	messageID=0;
+	
+	serverNickName[0]=0;
 }
 
 void MultiplayersCrossConnectable::tryCrossConnections(void)
@@ -145,7 +148,7 @@ void MultiplayersCrossConnectable::sendingTime()
 		{
 			int uSize=Utilities::strmlen(mit->userName, 32);
 			int sSize=Utilities::strmlen(mit->text, 256);
-			int size=4+1+uSize+sSize;
+			int size=4+2+uSize+sSize;
 			
 			VARARRAY(Uint8,data,size);
 			data[0]=ORDER_TEXT_MESSAGE;
@@ -153,8 +156,9 @@ void MultiplayersCrossConnectable::sendingTime()
 			data[2]=0;
 			data[3]=0;
 			data[4]=mit->messageID;
-			strncpy((char *)data+5, mit->userName, uSize);
-			strncpy((char *)data+5+uSize, mit->text, sSize);
+			data[5]=mit->messageType;
+			strncpy((char *)data+6, mit->userName, uSize);
+			strncpy((char *)data+6+uSize, mit->text, sSize);
 			
 			bool stillSomeone=false;
 			for (int j=0; j<sessionInfo.numberOfPlayer; j++)
@@ -197,15 +201,48 @@ void MultiplayersCrossConnectable::confirmedMessage(Uint8 *data, int size, IPadd
 	}
 	
 	Uint8 messageID=data[4];
+	fprintf(logFile, "received a confirmation messageID=%d\n", messageID);
+	
 	for (int j=0; j<sessionInfo.numberOfPlayer; j++)
 		if (sessionInfo.players[j].sameip(ip))
 			for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
 				if (messageID==mit->messageID)
-					mit->received[j]=true;
-	if (sameip(ip))
+					if (!mit->received[j])
+					{
+						if (mit->messageType==MessageOrder::PRIVATE_MESSAGE_TYPE)
+						{
+							Message m;
+							m.messageID=mit->messageID;
+							m.messageType=MessageOrder::PRIVATE_RECEIPT_TYPE;
+							strncpy(m.userName, sessionInfo.players[j].name, 32);
+							strncpy(m.text, mit->text, 256);
+							m.timeout=0;
+							m.TOTL=3;
+							m.guiPainted=false;
+							receivedMessages.push_back(m);
+						}
+						mit->received[j]=true;
+					}
+	
+	if (sameip(ip) && serverNickName[0])
 		for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
-			if (messageID==mit->messageID)
+			if (!mit->received[32])
+			{
+				if (mit->messageType==MessageOrder::PRIVATE_MESSAGE_TYPE)
+				{
+					Message m;
+					m.messageID=mit->messageID;
+					m.messageType=MessageOrder::PRIVATE_RECEIPT_TYPE;
+					strncpy(m.userName, serverNickName, 32);
+					strncpy(m.text, mit->text, 256);
+					m.timeout=0;
+					m.TOTL=3;
+					m.guiPainted=false;
+					receivedMessages.push_back(m);
+				}
 				mit->received[32]=true;
+			}
+	
 }
 
 void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddress ip)
@@ -218,7 +255,8 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 	
 	Message m;
 	m.messageID=data[4];
-	int at=5;
+	m.messageType=data[5];
+	int at=6;
 	int uStart=at;
 	int ul=1;
 	while(data[at] && at<size)
@@ -246,7 +284,8 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 		if (sessionInfo.players[j].sameip(ip))
 			sessionInfo.players[j].send(ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
 	if (sameip(ip))
-		send((Uint8)ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
+		send(ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
+		
 	
 	bool allready=false;
 	for (std::list<Message>::iterator mit=receivedMessages.begin(); mit!=receivedMessages.end(); ++mit)
@@ -268,14 +307,82 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 	assert(s);
 	if (*s==0)
 		return;
-	Message m;
-	m.messageID=messageID++;
-	strncpy(m.userName, globalContainer->userName, 32);
-	strncpy(m.text, s, 256);
-	m.timeout=0;
-	m.TOTL=3;
-	for (int i=0; i<33; i++)
-		m.received[i]=false;
 	
-	sendingMessages.push_back(m);
+	char message[256];
+	strncpy(message, s, 256);
+	bool foundLocal=false;
+	if (yog)
+		yog->handleMessageAliasing(message, 256);
+	if (strncmp(message, "/m ", 3)==0)
+	{
+		bool sentToHost=false;
+		if (serverNickName[0])
+		{
+			int l=Utilities::strnlen(serverNickName, 32);
+			if ((strncmp(serverNickName, message+3, l)==0)&&(message[3+l]==' '))
+			{
+				Message m;
+				m.messageID=messageID++;
+				m.messageType=MessageOrder::PRIVATE_MESSAGE_TYPE;
+				strncpy(m.userName, globalContainer->userName, 32);
+				strncpy(m.text, message+4+l, 256);
+				m.timeout=0;
+				m.TOTL=3;
+				for (int p=0; p<33; p++)
+					m.received[p]=true;
+				m.received[32]=false;
+				sendingMessages.push_back(m);
+				foundLocal=true;
+				
+				sentToHost=true;
+			}
+		}
+		if (!sentToHost)
+			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+			{
+				char *name=sessionInfo.players[i].name;
+				assert(name);
+				int l=Utilities::strnlen(name, 32);
+				if ((strncmp(name, message+3, l)==0)&&(message[3+l]==' '))
+				{
+					Message m;
+					m.messageID=messageID++;
+					m.messageType=MessageOrder::PRIVATE_MESSAGE_TYPE;
+					strncpy(m.userName, globalContainer->userName, 32);
+					strncpy(m.text, message+4+l, 256);
+					m.timeout=0;
+					m.TOTL=3;
+					for (int p=0; p<33; p++)
+						m.received[p]=true;
+					m.received[i]=false;
+					sendingMessages.push_back(m);
+					foundLocal=true;
+				}
+			}
+		
+		if (!foundLocal)
+		{
+			if (yog)
+				yog->sendMessage(message);
+		}
+	}
+	else if (message[0]=='/')
+	{
+		if (yog)
+			yog->sendMessage(message);
+	}
+	else
+	{
+		Message m;
+		m.messageID=messageID++;
+		m.messageType=MessageOrder::NORMAL_MESSAGE_TYPE;
+		strncpy(m.userName, globalContainer->userName, 32);
+		strncpy(m.text, s, 256);
+		m.timeout=0;
+		m.TOTL=3;
+		for (int i=0; i<33; i++)
+			m.received[i]=false;
+
+		sendingMessages.push_back(m);
+	}
 }

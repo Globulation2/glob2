@@ -1308,21 +1308,22 @@ void YOG::unjoinGame()
 
 void YOG::sendMessage(const char *message)
 {
-	if (!handleLocalMessageTreatment(message))
-	{
-		lastMessageID++;
-		Message m;
-		m.messageID=lastMessageID;
-		strncpy(m.text, message, 256);
-		m.text[255]=0;
-		handleMessageAliasing(m.text, 256);
-		m.timeout=0;
-		m.TOTL=3;
-		m.textLength=Utilities::strmlen(m.text, 256);
-		m.userName[0]=0;
-		m.userNameLength=0;
-		sendingMessages.push_back(m);
-	}
+	if (yogGlobalState>=YGS_CONNECTED)
+		if (!handleLocalMessageTreatment(message))
+		{
+			lastMessageID++;
+			Message m;
+			m.messageID=lastMessageID;
+			strncpy(m.text, message, 256);
+			m.text[255]=0;
+			handleMessageAliasing(m.text, 256);
+			m.timeout=0;
+			m.TOTL=3;
+			m.textLength=Utilities::strmlen(m.text, 256);
+			m.userName[0]=0;
+			m.userNameLength=0;
+			sendingMessages.push_back(m);
+		}
 }
 
 bool YOG::newGameList(bool reset)

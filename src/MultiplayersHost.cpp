@@ -65,7 +65,6 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		fprintf(logFile, "failed to open a socket.\n");
 		
 	
-
 	firstDraw=true;
 
 	this->shareOnYOG=shareOnYOG;
@@ -128,6 +127,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 		SDL_Delay(10);
 		sendBroadcastLanGameHosting(GAME_JOINER_PORT_3, true);
 	}
+	
+	strncpy(serverNickName, globalContainer->userName, 32);
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -1528,7 +1529,8 @@ void MultiplayersHost::sendingTime()
 				fprintf(logFile, "sessionInfo.getDataLength()=size=%d.\n", size);
 				fprintf(logFile, "sessionInfo.mapGenerationDescriptor=%x.\n", (int)sessionInfo.mapGenerationDescriptor);
 
-				data=(Uint8 *)malloc(size+8);
+				int hostUserNameSize=Utilities::strmlen(globalContainer->userName, 32);
+				data=(Uint8 *)malloc(size+8+hostUserNameSize);
 				assert(data);
 
 				data[0]=DATA_SESSION_INFO;
@@ -1536,10 +1538,11 @@ void MultiplayersHost::sendingTime()
 				data[2]=0;
 				data[3]=0;
 				addSint32(data, i, 4);
+				memcpy(data+8, globalContainer->userName, hostUserNameSize);
+				
+				memcpy(data+8+hostUserNameSize, sessionInfo.getData(true), size);
 
-				memcpy(data+8, sessionInfo.getData(true), size);
-
-				sessionInfo.players[i].send(data, size+8);
+				sessionInfo.players[i].send(data, size+8+hostUserNameSize);
 
 				free(data);
 				
