@@ -132,9 +132,9 @@ Ruche
 Swarm
 Ruesche
 [food building]
-Grenier
-Granary
-Speicher
+Auberge
+Inn
+gasthof
 [health building]
 Hopital
 Hospital
@@ -171,10 +171,10 @@ Kampf Fahne
 Drapeau de défrichage
 Clearing flag
 Entfernungs Fahne
-[wood wall]
-Mur de bois
-Wood wall
-Holzmauer
+[stone wall]
+Mur de pierre
+Stone wall
+
 [l units free]
  
 

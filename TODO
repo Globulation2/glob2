@@ -1,7 +1,3 @@
-Priority:
-
-- afficher des boites de dialogue modale. (nct)
-
 To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
@@ -17,6 +13,7 @@ To Next version :
 - while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
+- GUITextArea doit tout faire en UTF8, pas en ascii avec correction a 2 euros derriere. (nct)
 
 For later later :
 
