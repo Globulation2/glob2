@@ -1,5 +1,4 @@
-EXTRA_DIST = glSDL.h \
-Toolkit.h \
+EXTRA_DIST = Toolkit.h \
 StringTable.h \
 FileManager.h \
 Types.h \

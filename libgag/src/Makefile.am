@@ -12,7 +12,6 @@ libgag_a_SOURCES = \
 	SupportFunctions.cpp\
 	SDL_ttf.c\
 	SDL_ttf.h\
-	glSDL.c \
 	GUIBase.cpp\
 	GUIList.cpp\
 	GUIFileList.cpp\
