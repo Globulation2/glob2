@@ -2024,7 +2024,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// draw prestigestats
-	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, "%d / %d", localTeam->prestige, game.totalPrestige);
+	globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d", localTeam->prestige, game.totalPrestige).c_str());
 
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
