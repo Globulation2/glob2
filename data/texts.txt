@@ -1,6 +1,6 @@
 3
 [language]
-Francais
+Français
 English
 Deutsch
 [hp]
@@ -8,7 +8,7 @@ Pt vie
 HP
 leben
 [heal]
-Sante
+Santé
 Heal
 Gesundheit
 [armor]
@@ -40,7 +40,7 @@ Bois
 Wood
 Holz
 [corn]
-Ble
+Blé
 Corn
 Weizen
 [stone]
@@ -52,15 +52,15 @@ Algue
 Alga
 Alge
 [range]
-Portee
+Portée
 Range
 Reichweite
 [destroy]
-Detruire
+Détruire
 Destroy
 Zertoeren
 [cancel destroy]
-Annuler detsr.
+Annuler detsruction
 Cancel destoy
 Verhindern
 [wait destroy]
@@ -68,11 +68,11 @@ Attente destruction
 Waiting destruction
 Warten auf Zerstoerung
 [upgrade]
-Ameliorer
+Améliorer
 Upgrade
 Verbessern
 [cancel upgrade]
-Annuler amelioration
+Annuler amélioration
 Cancel upgrade
 Verbes. wiederrufen
 [unit type]
@@ -80,7 +80,7 @@ Type d'unite
 Unit type
 Art der Eineit
 [worker]
-Ouvriere
+Ouvrière
 Worker
 Arbeiter
 [Explorer]
@@ -88,7 +88,7 @@ Exploratrice
 Explorer
 Entdecker
 [Warrior]
-Guerriere
+Guerrière
 Warrior
 Krieger
 [still (w)]
@@ -100,7 +100,7 @@ Noch
  units work
  Einheiten arbeiten
 [still one unit working]
-Une unite travaille
+Une unité travaille
 Still one unit working
 Eine Einheit arbeitet
 [still (i)]
@@ -108,11 +108,11 @@ Encore
 Still
 Noch
 [units inside]
- unites dedans
+ unités dedans
  units inside
  Einheiten drinnen
 [still one unit inside]
-Une unite dedans
+Une unité dedans
 Still one unit inside
 Noch eine Einheit drinnen
 [building name]
@@ -153,14 +153,14 @@ Defence Tower
 Panzerturm
 [exploration flag]
 Drapeau d'exploration
-Exporation flag
+Exploration flag
 Entdecker Fahne
 [war flag]
 Drapeau de guerre
 War flag
 Kampf Fahne
 [clearing flag]
-Drapeau de defrichage
+Drapeau de défrichage
 Clearing flag
 
 [wood wall]
@@ -176,7 +176,7 @@ Holzmauer
  free worker
  freie Arbeiter
 [one unit free]
-Une travailleur libre
+Un travailleur libre
 One free worker
 Ein freier Arbeiter
 [no unit free]
@@ -212,7 +212,7 @@ Warten auf Spieler
 
  
 [r has left the game]
- a quitte la partie
+ a quitté la partie
  has quited the game
  hat des Spiel verlassen
 [load game]
@@ -252,7 +252,7 @@ Vous avez perdu !
 You have lost !
 Sie haben verlohren !
 [you have won]
-Vous avez gagne !!!
+Vous avez gagné !!!
 You have won !!!
 Sie haben gewonnen !!!
 [campagn]
@@ -272,7 +272,7 @@ Jeu en reseau local
 LAN Game
 Lokalnetz Spiel
 [settings]
-Parametres
+Paramètres
 Settings
 Einstellungen
 [editor]
@@ -284,7 +284,7 @@ Quitter
 Quit
 Beenden
 [create game]
-Creer partie
+Créer partie
 Create game
 Spiel kreieren
 [update list]
@@ -300,7 +300,7 @@ Connecter
 Connect
 Verbinden
 [disconnect]
-Deconnecter
+Déconnecter
 Disonnect
 Verbindung unterbrechen
 [please wait]
@@ -312,7 +312,7 @@ Chargement de Globulation 2
 Loading Globulation 2
 Globulation 2 Laden
 [host]
-Heberger une partie
+Héberger une partie
 Host a game
 Spiel unterbringen
 [join]
@@ -352,7 +352,7 @@ Chantier
 Building site
 Baustelle
 [create map]
-Creer carte
+Créer carte
 Create map
 Karte kreieren
 [map size x]
@@ -380,7 +380,7 @@ Herbe
 Grass
 Grass
 [teams]
- equipes
+ équipes
  teams
  Mannschaften
 [choose map]
@@ -404,11 +404,11 @@ Nourriture
 Food left
 Nahrung
 [your units are under attack]
-Vos unites sont attaquees !
+Vos unites sont attaquées !
 Your unites are under attack !
 Die Einheiten werden angegriffen !
 [your buildings are under attack]
-Vos batiments sont attaquees !
+Vos batiments sont attaqués !
 Your buildings are under attack !
 Gebaeude unter Angriff !
 [building has been finished]
@@ -420,7 +420,7 @@ IA
 AI
 KI
 [closed]
-Ferme
+Fermé
 Closed
 Geschlossen
 [close]
@@ -440,7 +440,7 @@ Connu
 Know
 bekannt
 [PNS_SENDING_FIRST_PACKET]
-Connecte
+Connecté
 Connected
 Verbindet
 [PNS_HOST]
@@ -452,19 +452,19 @@ Joueur silencieux
 Silent player
 Stiller Spieler
 [PNS_PLAYER_SEND_PRESENCE_REQUEST]
-Requete de presence recue
+Requête de présence reçue
 Presence request received
 
 [PNS_PLAYER_SEND_SESSION_REQUEST]
-Requete de session recue
+Requête de session reçue
 Session request received
 
 [PNS_SERVER_SEND_SESSION_INFO]
-Informations envoyee
+Informations envoyées
 Informations sended
 Information gesendet
 [PNS_PLAYER_SEND_CHECK_SUM]
-Verification recue
+Verification reçue
 Check received
 Pruefung bekommen
 [PNS_OK]
@@ -476,23 +476,23 @@ Debut d'interconnection
 Begin of interconnection
 Begin der Verbindung
 [PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
-Interconnection confirmee
+Interconnection confirmée
 Interconnection confirmed
 Verbindung bestaetigt
 [PNS_PLAYER_FINISHED_CROSS_CONNECTION]
-Interconnection terminee
+Interconnection terminée
 Interconnection finished
 Verbindung beendet
 [PNS_CROSS_CONNECTED]
-Interconnecte
+Interconnecté
 Interconnected
 Verbunden
 [PNS_SERVER_SEND_START_GAME]
-Debut de partie envoye
+Debut de partie envoyée
 Begin of the game sended
 Begin des Spiels gesendet
 [PNS_PLAYER_CONFIRMED_START_GAME]
-Debut de partie confirme
+Debut de partie confirmée
 Begin of the game confirmed
 Begin des Spiels bestaetigt
 [PNS_PLAYER_PLAYS]
@@ -508,7 +508,7 @@ Statistiques
 Statistics
 Statistiken
 [Units]
-Unites
+Unités
 Units
 Einheiten
 [free]
@@ -528,7 +528,7 @@ ont faim
 are hungry
 sind hungrig
 [are wonded]
-blessees
+blessées
 are wonded
 sind verletzt
 [and]
@@ -548,11 +548,11 @@ Nage
 Swim
 Schwimmt
 [Build]
-Constr.
+Construit
 Build
 Baut
 [Harvest]
-Recolte
+Récolte
 Harvest
 ernte
 [At. speed]
@@ -568,7 +568,7 @@ Total/libres/recherche
 Total/free/seeking
 Total/Frei/suchen
 [Ok/hungry/wounded]
-Libre/faim/blessees
+Libre/faim/blessées
 Free/hungry/wounded
 Frei/Hungrig/Verletzt
 [in way]
@@ -604,8 +604,8 @@ Destructeur
 Destroyer
 Zerstoerer
 [AI name 3]
-Born to pete la geule
-Ne pour beak your neck
+Born to pète la geule
+Né pour beak your neck
 geboren um zu zerstoeren
 [AI name 4]
 Cassecouille
@@ -628,15 +628,15 @@ auparavant IA
 was AI
 vorher KI
 [state]
-etat
+état
 state
 Zuestand
 [start]
-depart
+départ
 start
 beginnen
 [not ready]
-pas pret
+pas prêt
 not ready
 nicht bereit
 [has joined]
@@ -644,7 +644,7 @@ a rejoint
 has joined
 ist angeschlossen
 [has quit]
-a quitte
+a quitté
 has quit
 hat verlassen
 [yog-chat]
@@ -668,11 +668,11 @@ Charger
 Load
 
 [handmade map]
-Carte faite a la main
+Carte faite à la main
 Handmade map
 
 [mapGenerationDescriptor Methodes]
-Methodes de generation de cartes aleatoires
+Méthodes de génération de cartes aléatoires
 Methodes of random generated maps
 
 [uniform terrain]
@@ -680,7 +680,7 @@ Terrain uniforme
 Uniform terrain
 
 [random terrain]
-Terrain aleatoire
+Terrain aléatoire
 Random terrain
 
 [islands terrain]
@@ -708,31 +708,31 @@ taille de la plage
 beach size
 
 [workers]
-Ouvrieres
+Ouvrières
 Workers
 
 [bad error in connection system]
-Mauvaise erreur dans le systeme de connection
+Mauvaise erreure dans le système de connection
 Bad error in connection system
 
 [not connected]
-Pas connecte
+Pas connecté
 Not connected
 
 [presence request sent]
-Requete pour presence envoyee ...
+Requête pour présence envoyée ...
 Presence request sent ...
 
 [session request sent]
-Requete pour la session envoyee ...
+Requête pour la session envoyée ...
 Session request sent ...
 
 [checksum sent]
-Somme de verification envoyee ...
+Somme de contrôle envoyée ...
 Checksum sent ...
 
 [connected to server]
-Connecte au serveur
+Connecté au serveur
 Connected to server
 
 [connecting to all players]
@@ -740,7 +740,7 @@ En train de connecter avec les joueurs
 Connecting to all players
 
 [connected to all players]
-Connecte avec tous les joueurs
+Connecté avec tous les joueurs
 Connected to all players
 
 [aviable lan games]
