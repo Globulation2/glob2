@@ -1797,7 +1797,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 		else
 		{
-			int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+			// FIXME : why building->hp is > type->hpMax ?
+			int hp = std::min(building->hp, type->hpMax);
+			int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+			assert(damageImgShift >= 0);
 			imgid = type->gameSpriteImage + damageImgShift;
 		}
 		int x, y;
