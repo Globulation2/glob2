@@ -53,11 +53,49 @@ public:
 	Order *getOrder(void);
 	
 private:
+	
+	// All constants parameterizing AIToubib	
+	static const Uint8 MAX_NB_PROJECTS = 10;
+	static const Uint8 NB_HISTORY_STATES = 5;
+	
+	// Put here all the state variables
+	typedef struct {
+		// TODO
+		
+	} AIState;
+	
+	class AIProject {
+		// TODO
+	};
+	
+	// Put here all the history variables
+	
+	//! Circular buffer to store state's history
+	AIState history[NB_HISTORY_STATES];
+	Uint8 currentStateIndex;
+	
+	//std::list<int>::iterator pi;
+	
+	//std::list<int> myList;
+	//std::list<int, std::allocator<int> > t1;
+	/*std::priority_queue<
+		int, 
+		std::vector<
+		int, 
+		std::allocator<int> >,
+		std::less<int> > pq;*/
+	/*std::priority_queue< AIProject,
+		std::list< AIProject, std::allocator<AIProject> >,
+		std::less<AIProject> > pq;*/
+	//AIProject projects[];
+	
+	
 	//! Initialization (avoid duplicate code)
 	void init(Player *player);
+	
+	//! evaluate the current state 
+	void evalState();
+	
 };
 
 #endif
-
- 
-
