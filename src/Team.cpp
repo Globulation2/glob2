@@ -327,19 +327,37 @@ Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel
 Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 {
 	Building *b=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
+	float score=1000.0f;
+	float newScore;
+	float newScoreA;
+	float newScoreB;
+	Sint32 maxUnitWorking;
+	//Sint32 dist=MAX_SINT32;
+	//Sint32 newDist;
 	{
 		for (std::list<Building *>::iterator it=job[(int)ability].begin(); it!=job[(int)ability].end(); it++)
 		{
 			if ((*it)->type->level<=actLevel)
 			{
-				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				// this is balance code, take user's wishes in account
+				newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				maxUnitWorking=(*it)->maxUnitWorking;
+				if (maxUnitWorking)
+				{
+					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+				}
+				newScore=newScoreA+newScoreB;
+				if ( newScore<score )
+				{
+					b=*it;
+					score=newScore;
+				}
+				/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
 				if ( newDist<dist )
 				{
 					b=*it;
 					dist=newDist;
-				}
+				}*/
 			}
 		}
 	}
@@ -349,17 +367,35 @@ Building *Team::findNearestJob(int x, int y, Abilities ability, int actLevel)
 Building *Team::findNearestAttract(int x, int y, Abilities ability)
 {
 	Building *b=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
+	float score=1000.0f;
+	float newScore;
+	float newScoreA;
+	float newScoreB;
+	Sint32 maxUnitWorking;
+	//Sint32 dist=MAX_SINT32;
+	//Sint32 newDist;
 	{
 		for (std::list<Building *>::iterator it=attract[(int)ability].begin(); it!=attract[(int)ability].end(); it++)
 		{
-			newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			// this is balance code, take user's wishes in account
+			newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+			maxUnitWorking=(*it)->maxUnitWorking;
+			if (maxUnitWorking)
+			{
+				newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+			}
+			newScore=newScoreA+newScoreB;
+			if ( newScore<score )
+			{
+				b=*it;
+				score=newScore;
+			}
+			/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
 			if ( newDist<dist )
 			{
 				b=*it;
 				dist=newDist;
-			}
+			}*/
 		}
 	}
 	return b;
@@ -368,19 +404,37 @@ Building *Team::findNearestAttract(int x, int y, Abilities ability)
 Building *Team::findNearestFillableFood(int x, int y)
 {
 	Building *b=NULL;
-	Sint32 dist=MAX_SINT32;
-	Sint32 newDist;
+	//Sint32 dist=MAX_SINT32;
+	//Sint32 newDist;
+	float score=1000.0f;
+	float newScore;
+	float newScoreA;
+	float newScoreB;
+	Sint32 maxUnitWorking;
 	{
 		for (std::list<Building *>::iterator it=job[HARVEST].begin(); it!=job[HARVEST].end(); it++)
 		{
 			if ( ((*it)->type->canFeedUnit)  || ((*it)->type->unitProductionTime))
 			{
-				newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				// this is balance code, take user's wishes in account
+				newScoreA=0.03f*(float)distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
+				maxUnitWorking=(*it)->maxUnitWorking;
+				if (maxUnitWorking)
+				{
+					newScoreB=(float)((*it)->unitsWorking.size())/(float)maxUnitWorking;
+				}
+				newScore=newScoreA+newScoreB;
+				if ( newScore<score )
+				{
+					b=*it;
+					score=newScore;
+				}
+				/*newDist=distSquare((*it)->getMidX(), (*it)->getMidY(), x, y);
 				if ( newDist<dist )
 				{
 					b=*it;
 					dist=newDist;
-				}
+				}*/
 			}
 		}
 	}
