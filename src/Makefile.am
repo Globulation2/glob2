@@ -71,6 +71,8 @@ StringTable.cpp\
 StringTable.h\
 Team.cpp\
 Team.h\
+TeamStat.h\
+TeamStat.cpp\
 Unit.cpp\
 Unit.h\
 UnitType.cpp\

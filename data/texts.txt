@@ -315,7 +315,7 @@ PNS_HOST
 Joueur silencieux
 Silent player
 [PNS_PLAYER_SEND_ONE_REQUEST]
-Une requetre recue
+Une requete recue
 One request received
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyee

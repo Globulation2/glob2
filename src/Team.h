@@ -63,25 +63,6 @@ public:
 
 class Game;
 
-//! This structure handle stats for a team
-struct TeamStat
-{
-	int totalUnit;
-	int numberPerType[UnitType::NB_UNIT_TYPE];
-	int totalFree;
-	int isFree[UnitType::NB_UNIT_TYPE];
-	
-	int needFood;
-	int needHeal;
-	int needNothing;
-	int upgradeState[NB_ABILITY][4];
-
-	int totalFood;
-	int totalFoodCapacity;
-	int totalUnitFoodable;
-	int totalUnitFooded;
-};
-
 class Team:public BaseTeam
 {
 public:
@@ -116,9 +97,6 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(Uint8 r, Uint8 g, Uint8 b);
 	void setCorrectColor(float value);
-
-	//! Compute stats about the team
-	void computeStat(TeamStat *stats);
 
 	//! Called when unit wanna work to building. Distance is balanced with user's number of requested unit
 	Building *findNearestJob(int x, int y, Abilities ability, int actLevel);

@@ -527,7 +527,7 @@ void MultiplayersHost::treatData(char *data, int size, IPaddress ip)
 {
 	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
 	{
-		printf("Bad packet recieved (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
+		printf("Bad packet received (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
 	}
 	if (hostGlobalState<HGS_GAME_START_SENDED)
@@ -605,7 +605,7 @@ void MultiplayersHost::onTimer(Uint32 tick)
 
 		if (SDLNet_UDP_Recv(socket, packet)==1)
 		{
-			printf("Packet recieved.\n");
+			printf("Packet received.\n");
 			//printf("packet=%d\n", (int)packet);
 			//printf("packet->channel=%d\n", packet->channel);
 			//printf("packet->len=%d\n", packet->len);

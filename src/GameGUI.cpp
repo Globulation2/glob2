@@ -56,8 +56,6 @@ GameGUI::GameGUI()
 	selBuild=NULL;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
-	statsPtr=0;
-	memset(stats, 0, 128*sizeof(TeamStat));
 	statMode=STAT_TEXT;
 
 	{
@@ -140,19 +138,7 @@ void GameGUI::step(void)
 
 void GameGUI::statStep(void)
 {
-	static int statPos=0;
-
-	statPos++;
-	if (statPos==20)
-	{
-		statsPtr++;
-		statsPtr&=0x7F;
-		statPos=0;
-	}
-
-	TeamStat newStats;
-	game.teams[localTeam]->computeStat(&newStats);
-	stats[statsPtr]=newStats;
+	teamStats.step(game.teams[localTeam]);
 }
 
 bool GameGUI::processGameMenu(SDL_Event *event)
@@ -1039,18 +1025,7 @@ void GameGUI::draw(void)
 				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
 			}
 
-			TeamStat *newStats;
-			newStats=stats+statsPtr;
-			int nowFu=newStats->isFree[0];
-
-			// FIXME : delete thsi hack and use TeamStat instead
-			// we have to smooth the free units function for visual conveniance.
-			recentFreeUnits[recentFreeUnitsIt]=nowFu;
-			recentFreeUnitsIt=(recentFreeUnitsIt+1)%nbRecentFreeUnits;
-			int viewFu=0;
-			for (i=0; i<nbRecentFreeUnits; i++)
-				if (viewFu<recentFreeUnits[i])
-					viewFu=recentFreeUnits[i];
+			int viewFu=teamStats.getFreeUnits();
 
 			char buttonText[64];
 			if (viewFu<=0)
@@ -1281,85 +1256,10 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==STAT_VIEW)
 		{
-			// local variable to speed up access
-			GraphicContext *gfx=globalContainer->gfx;
-			Font *font=globalContainer->littleFontGreen;
-			StringTable *strings=&(globalContainer->texts);
-			int textStartPos=gfx->getW()-124;
-			TeamStat *newStats;
-			newStats=stats+statsPtr;
 			if (statMode==STAT_TEXT)
-			{
-				// general
-				gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
-				gfx->drawString(textStartPos, 132+17, font, "%d %s", newStats->totalUnit, strings->getString("[Units]"));
-				if (newStats->totalUnit)
-				{
-					// worker
-					gfx->drawString(textStartPos, 132+34, font, "%d %s (%.0f %%)", newStats->numberPerType[0], strings->getString("[worker]"), ((float)newStats->numberPerType[0])*100.0f/((float)newStats->totalUnit));
-					gfx->drawString(textStartPos+5, 132+46, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[0], strings->getString("[free]"));
-					// explorer
-					gfx->drawString(textStartPos, 132+63, font, "%d %s (%.0f %%)", newStats->numberPerType[1], strings->getString("[Explorer]"), ((float)newStats->numberPerType[1])*100.0f/((float)newStats->totalUnit));
-					gfx->drawString(textStartPos+5, 132+75, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[1], strings->getString("[free]"));
-					// warrior
-					gfx->drawString(textStartPos, 132+92, font, "%d %s (%.0f %%)", newStats->numberPerType[2], strings->getString("[Warrior]"), ((float)newStats->numberPerType[2])*100.0f/((float)newStats->totalUnit));
-					gfx->drawString(textStartPos+5, 132+104, font, "%s %d %s", strings->getString("[of which]"), newStats->isFree[2], strings->getString("[free]"));
-
-					// living state
-					gfx->drawString(textStartPos, 132+121, font, "%d %s (%.0f %%)", newStats->needNothing, strings->getString("[are ok]"), ((float)newStats->needNothing)*100.0f/((float)newStats->totalUnit));
-					gfx->drawString(textStartPos, 132+133, font, "%d %s (%.0f %%)", newStats->needFood, strings->getString("[are hungry]"), ((float)newStats->needFood)*100.0f/((float)newStats->totalUnit));
-					gfx->drawString(textStartPos, 132+145, font, "%d %s (%.0f %%)", newStats->needHeal, strings->getString("[are wonded]"), ((float)newStats->needHeal)*100.0f/((float)newStats->totalUnit));
-
-					// upgrade state
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+162, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats->upgradeState[WALK][0], newStats->upgradeState[WALK][1], newStats->upgradeState[WALK][2], newStats->upgradeState[WALK][3]);
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+174, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats->upgradeState[SWIM][0], newStats->upgradeState[SWIM][1], newStats->upgradeState[SWIM][2], newStats->upgradeState[SWIM][3]);
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+186, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Build]"), newStats->upgradeState[BUILD][0], newStats->upgradeState[BUILD][1], newStats->upgradeState[BUILD][2], newStats->upgradeState[BUILD][3]);
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+198, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats->upgradeState[HARVEST][0], newStats->upgradeState[HARVEST][1], newStats->upgradeState[HARVEST][2], newStats->upgradeState[HARVEST][3]);
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+210, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats->upgradeState[ATTACK_SPEED][0], newStats->upgradeState[ATTACK_SPEED][1], newStats->upgradeState[ATTACK_SPEED][2], newStats->upgradeState[ATTACK_SPEED][3]);
-					gfx->drawString(globalContainer->gfx->getW()-124, 132+222, globalContainer->littleFontGreen, "%s %d/%d/%d/%d", strings->getString("[At. strength]"), newStats->upgradeState[ATTACK_STRENGTH][0], newStats->upgradeState[ATTACK_STRENGTH][1], newStats->upgradeState[ATTACK_STRENGTH][2], newStats->upgradeState[ATTACK_STRENGTH][3]);
-				}
-			}
+				teamStats.drawText();
 			else
-			{
-				// compute total unites
-				int maxUnit=0;
-				int i;
-				for (i=0; i<128; i++)
-				{
-					if (stats[i].totalUnit>maxUnit)
-						maxUnit=stats[i].totalUnit;
-				}
-
-				// captions
-				gfx->drawString(textStartPos, 132, font, strings->getString("[Statistics]"));
-				gfx->drawString(textStartPos, 132+16, font, strings->getString("[Free/total]"));
-				gfx->drawString(textStartPos, 132+100, font, strings->getString("[Ok/hungry/wounded]"));
-
-				// graph
-				for (i=0; i<128; i++)
-				{
-					int index=(statsPtr+i+1)&0x7F;
-					int nbFree=(stats[index].totalFree*64)/maxUnit;
-					int nbTotal=(stats[index].totalUnit*64)/maxUnit;
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree, nbFree, 0, 255, 0);
-					int nbOk, nbNeedFood, nbNeedHeal;
-					if (stats[index].totalUnit)
-					{
-						nbOk=(stats[index].needNothing*64)/stats[index].totalUnit;
-						nbNeedFood=(stats[index].needFood*64)/stats[index].totalUnit;
-						nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
-					}
-					else
-					{
-						nbOk=nbNeedFood=nbNeedHeal=0;
-					}
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood-nbOk, nbOk, 0, 220, 0);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal-nbNeedFood, nbNeedFood, 224, 210, 17);
-					globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 120 +64-nbNeedHeal, nbNeedHeal, 255, 0, 0);
-				}
-			}
-
+				teamStats.drawStat();
 		}
 	}
 }

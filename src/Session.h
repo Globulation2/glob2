@@ -82,7 +82,7 @@ public:
 
 private:
 	//! Serialized form of SessionInfo
-	char data[1968];
+	char data[1976];
 };
 
 #endif 

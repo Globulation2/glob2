@@ -272,40 +272,6 @@ void Team::HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 	}
 }
 
-void Team::computeStat(TeamStat *stats)
-{
-	memset(stats, 0, sizeof(TeamStat));
-	int i, j;
-
-	for (i=0; i<1024; i++)
-	{
-		if (myUnits[i])
-		{
-			stats->totalUnit++;
-			stats->numberPerType[(int)myUnits[i]->typeNum]++;
-
-			if (myUnits[i]->medical==Unit::MED_HUNGRY)
-				stats->needFood++;
-			else if (myUnits[i]->medical==Unit::MED_DAMAGED)
-				stats->needHeal++;
-			else
-			{
-				stats->needNothing++;
-				if (myUnits[i]->activity==Unit::ACT_RANDOM)
-				{
-					stats->isFree[(int)myUnits[i]->typeNum]++;
-					stats->totalFree++;
-				}
-			}
-			for (j=0; j<NB_ABILITY; j++)
-			{
-				if (myUnits[i]->performance[j])
-					stats->upgradeState[j][myUnits[i]->level[j]]++;
-			}
-		}
-	}
-}
-
 Building *Team::findNearestUpgrade(int x, int y, Abilities ability, int actLevel)
 {
 	Building *b=NULL;

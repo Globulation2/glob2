@@ -26,6 +26,7 @@
 #include "Game.h"
 #include "GameGUIDialog.h"
 #include <queue>
+#include "TeamStat.h"
 
 #define MAX_UNIT_WORKING 20
 #define MAX_EXPLO_FLAG_RANGE 20
@@ -135,8 +136,9 @@ private:
 	bool needRedraw;
 	int typeToBuild;
 
-	TeamStat stats[128];
-	int statsPtr;
+	//TeamStat stats[128];
+	//int statsPtr;
+	TeamStats teamStats;
 	StatMode statMode;
 
 	Uint32 chatMask;
