@@ -22,7 +22,6 @@ Types associations with int numbers.
 12	timer(time in seconds): same thing as wait but is drawn on the screen
 13	wait(condition)
 21	show(string): diplays a string on the screen until the next command is finished
-22	show(string,time in seconds): displays a string for time seconds on the screen
 3	player(number).order: gives orders to players, orders are
 1   -activate: activates the given player (on by default)
 2   -deactivate: deactivate the given player
@@ -54,10 +53,13 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include "SGSL.h"
 #include "Game.h"
 
-Story::Story()
+Story::Story(Mapscript *mapscript)
 {
+	conditionWaiter = false;
+	internTimer=0;
 	hasWon=false;
 	hasLost=false;
+	this->mapscript=mapscript;
 }
 
 bool Story::testCondition()
@@ -69,10 +71,6 @@ bool Story::testCondition()
 	if (line.size())
 		switch (line.front().type)
 		{
-			case (Token::S_TIMER):
-							/* Il faut entrer le code pour le timer*/
-							return true;
-			
 			case (Token::S_SHOW):
 			{
 				line.pop_front();
@@ -91,9 +89,107 @@ bool Story::testCondition()
 				hasLost=true;
 				return true;
 			}
-
-			default:
+			
+			case (Token::S_TIMER):
+			{
+				line.pop_front();
+				mapscript->mainTimer=line.front().value;
+				return true;
+			}
+			
+			case (Token::S_WAIT):
+			{
+				line.pop_front();
+				if (line.front().type==Token::INT)
+				{
+					//TODO remplace 20 with the real tpf
+					internTimer=line.front().value*20;
+					//We don't pop the value, so we know we have to wait
+				}
+				else //Test conditions
+				{
+					line.pop_front();
+					//Extract the right data
+					if (line.front().type==Token::INT)
+					{
+						numberForCondition = line.front().value;
+						line.pop_front();
+						condition = line.front();
+						line.pop_front();
+						nameOfVariable = line.front();
+						line.pop_front();
+					}
+					else if ((line.front().type==Token::S_PLAYER) |(line.front().type==Token::S_FLAG))
+					{
+						nameOfVariable = line.front();
+						line.pop_front();
+						numberForCondition = line.front().value;
+						line.pop_front();
+						condition = line.front();
+						line.pop_front();
+					}
+					else
+					{
+						nameOfVariable = line.front();
+						line.pop_front();
+						condition = line.front();
+						line.pop_front();
+						numberForCondition = line.front().value;
+						line.pop_front();
+					}
+					Token conditionWaiter;
+					conditionWaiter.type=Token::W_CONDITION;
+					line.push_front(conditionWaiter);
+				}
 				return false;
+			}
+			
+			case (Token::INT):
+			{
+					//TODO verify that step is actually called once every tpf
+					internTimer-=1;
+					if (internTimer==0) return true;
+					else return false;
+			}
+			
+			case (Token::S_PLAYER):
+			{
+				//Here the only possibilities are: friend,activate,deactivate,enemy
+				line.pop_front();
+				int witchPlayer=line.front().value;
+				line.pop_front();
+				switch (line.front().type)
+				{
+					//TODO make the right action ! HELP STEPH !!!
+					case (Token::S_FRIEND):
+					{
+
+					}
+					case (Token::S_ENEMY):
+					{
+
+					}
+					case (Token::S_ACTIVATE):
+					{
+
+					}
+					case (Token::S_DEACTIVATE):
+					{
+
+					}
+					default:
+							return true;
+				}
+				return true;
+			}
+			
+			case (Token::W_CONDITION):
+			{
+					//Test all possible combination of possibilities !!!
+			}
+			
+			default:
+			return false;
 		}
 
 	return false;
@@ -298,15 +394,32 @@ Mapscript::~Mapscript(void)
 
 void Mapscript::reset(void)
 {
+	mainTimer=-1;
 	game=NULL;
 	stories.clear();
 }
 
+bool Mapscript::testMainTimer()
+{ 
+	//TODO afficher le main timer
+	mainTimer-=1;
+	if (mainTimer==0)
+		return true;
+	else
+		return false;
+}
 void Mapscript::step()
 {
-	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+	if(testMainTimer())
 	{
-		(*it).step();
+		//TODO perdu ou gagné ?
+	}
+	else
+	{
+		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+		{
+			(*it).step();
+		}
 	}
 }
 
@@ -321,7 +434,7 @@ bool Mapscript::loadScript(const char *filename, Game *game)
 		donnees.nextToken();
 		while (donnees.getToken().type != Token::S_EOF)
 		{
-			Story thisone;
+			Story thisone(this);
 			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
 			{
 				thisone.line.push_back(donnees.getToken());
@@ -342,15 +455,22 @@ bool Mapscript::loadScript(const char *filename, Game *game)
 bool Mapscript::hasTeamWon(unsigned teamNumber)
 {
 	// Can make win or loose only player 0
-	if (teamNumber==0)
+	//Impement Timer feature (can't win while timer is working !)
+	if (testMainTimer())
 	{
-		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+		if (teamNumber==0)
 		{
-			if ((*it).hasWon)
+			for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+			{
+				if ((*it).hasWon)
 				return true;
+			}
 		}
 	}
-	return false;
+	else
+	{
+		return false;
+	}
 }
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)

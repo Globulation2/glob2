@@ -49,6 +49,7 @@ struct Token
 		S_WIN,
 		S_LOOSE,
 		S_STORY,
+		W_CONDITION,
 		INT,
 		STRING
 	} type;
@@ -73,11 +74,12 @@ private:
 	FILE *fp;
 };
 
+class Mapscript;
 
 class Story
 {
 public:
-	Story();
+	Story(Mapscript *mapscript);
 	virtual ~Story() { }
 
 public:
@@ -86,6 +88,12 @@ public:
 	bool hasWon, hasLost;
 	
 private:
+	Mapscript *mapscript;
+	Token nameOfVariable;
+	int numberForCondition;
+	Token condition;
+	bool conditionWaiter;
+	int internTimer;
 	bool testCondition();
 };
 
@@ -104,7 +112,12 @@ public:
 	bool hasTeamLost(unsigned teamNumber);
 	
 private:
+	friend class Story;
+	
 	void reset(void);
+	bool testMainTimer(void);
+	
+	int mainTimer;
 	std::deque<Story> stories;
 	Aquisition donnees;
 	Game *game;
