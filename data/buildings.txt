@@ -1334,9 +1334,9 @@ armor 10
 type market
 
 gameSprite data/gfx/buildingsite
-gameSpriteImage 4
+gameSpriteImage 2
 miniSprite data/gfx/minibuildingsite
-miniSpriteImage 4
+miniSpriteImage 2
 
 width 3
 height 3
