@@ -105,8 +105,11 @@ public:
 	void sendMessage(const char *message);
 	
 	bool newGameList(bool reset);
-	
 	bool newPlayerList(bool reset);
+	
+	//bool selectGame(std::list<GameInfo>::iterator gameit);
+	//bool selectedGameinfoUpdated(bool reset);
+	//GameInfo *getSelectedGameInfo();
 	
 	void gameStarted();
 	void gameEnded();
