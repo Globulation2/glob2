@@ -241,56 +241,134 @@ Order *AICastor::getOrder(void)
 	
 	choosePhase();
 	
-	phase=P_ALPHA; // TODO zzz remove 
-	switch (phase)
-	{
-		case P_NONE:
-			return new NullOrder();
-		case P_ALPHA:
-			return phaseAlpha();
-		case P_END:
-			assert(false);
-	}
+	if (phase==P_NONE)
+		return new NullOrder();
+	else if (phase==P_ALPHA)
+		return phaseAlpha();
+	else
+		assert(false);
 	
-	return phaseAlpha();
-	assert(false);
 	return new NullOrder();
 }
-
-	/*computeObstacleUnitMap();
-	computeObstacleBuildingMap();
-	computeSpaceForBuildingMap();
-	computeBuildingNeighbourMap();
-	computeTwoSpaceNeighbourMap();
-	
-	computeWorkPowerMap();
-	computeWorkRangeMap();
-	computeWorkAbilityMap();
-	
-	computeWheatGrowthMap();*/
 	
 Order *AICastor::phaseAlpha()
 {
 	// Phase alpha will make a new Food Building at any price.
 	
-	computeCanSwim();
-	
-	computeObstacleBuildingMap();
-	computeSpaceForBuildingMap(2);
-	
-	computeBuildingNeighbourMap();
-	computeTwoSpaceNeighbourMap();
-	
-	computeWheatGrowthMap();
-	
-	computeObstacleUnitMap();
-	computeWorkPowerMap();
-	computeWorkRangeMap();
-	computeWorkAbilityMap();
-	
-	Order *gfbm=computeGoodFoodBuildingMap();
-	if (gfbm)
-		return gfbm;
+	if (subPhase==0)
+	{
+		// find any good food building place
+		
+		computeCanSwim();
+		computeObstacleBuildingMap();
+		computeSpaceForBuildingMap(2);
+		computeBuildingNeighbourMap();
+		computeWheatGrowthMap();
+		computeObstacleUnitMap();
+		computeWorkPowerMap();
+		computeWorkRangeMap();
+		computeWorkAbilityMap();
+		
+		Order *gfbm=findBestFoodBuilding();
+		if (gfbm)
+		{
+			subPhase=1;
+			printf(" Phase alpha, switching to next subphase 1.\n");
+			return gfbm;
+		}
+	}
+	else if (subPhase==1)
+	{
+		// focus all workers on the food building site, and maybe on the swarm.
+		
+		Uint32 swarmTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
+		Uint32 foodSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
+		
+		Building **myBuildings=team->myBuildings;
+		for (int i=0; i<1024; i++)
+		{
+			Building *b=myBuildings[i];
+			if (b)
+			{
+				if (b->typeNum==foodSiteTypeNum)
+				{
+					// set 3 workers.
+					if (b->maxUnitWorking!=3)
+						return new OrderModifyBuilding(b->gid, 3);
+				}
+				else if (b->typeNum==swarmTypeNum)
+				{
+					// set 1 worker.
+					
+					if (b->maxUnitWorking!=1)
+						return new OrderModifyBuilding(b->gid, 1);
+				}
+				else if (b->type->maxUnitWorking!=0)
+				{
+					// set 0 worker.
+					if (b->maxUnitWorking!=0)
+						return new OrderModifyBuilding(b->gid, 0);
+				}
+			}
+		}
+		
+		subPhase=2;
+		printf(" Phase alpha, switching to next subphase 2.\n");
+	}
+	else if (subPhase==2)
+	{
+		subPhase=3;
+		printf(" Phase alpha, switching to next subphase 3.\n");
+	}
+	else if (subPhase==3)
+	{
+		int isFree=team->stats.getFreeUnits(WORKER);
+		
+		if (isFree>0)
+		{
+			computeCanSwim();
+			computeObstacleBuildingMap();
+			computeSpaceForBuildingMap(2);
+			computeBuildingNeighbourMap();
+			computeWheatGrowthMap();
+			computeObstacleUnitMap();
+			computeWorkPowerMap();
+			computeWorkRangeMap();
+			computeWorkAbilityMap();
+			
+			Order *gfbm=findGoodFoodBuilding();
+			if (gfbm)
+			{
+				subPhase=1;
+				printf(" Phase alpha, switching back to subphase 1.\n");
+				return gfbm;
+			}
+		}
+		
+		subPhase=4;
+		printf(" Phase alpha, switching to next subphase 4.\n");
+	}
+	else if (subPhase==4)
+	{
+		Uint32 foodTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, false);
+		int count=0;
+		
+		Building **myBuildings=team->myBuildings;
+		for (int i=0; i<1024; i++)
+		{
+			Building *b=myBuildings[i];
+			if (b && b->typeNum==foodTypeNum)
+				count++;
+		}
+		
+		if (count>0)
+		{
+			printf(" Phase alpha, succeded.\n");
+			phase=P_NONE;
+		}
+	}
+	else
+		assert(false);
 	
 	return new NullOrder();
 }
@@ -299,17 +377,16 @@ void AICastor::choosePhase()
 {
 	if (phase==P_NONE)
 	{
+		subPhase=0;
+		
 		int canFeedUnit=0;
 		
 		Building **myBuildings=team->myBuildings;
 		for (int i=0; i<1024; i++)
 		{
 			Building *b=myBuildings[i];
-			if (b)
-			{
-				if (b->type->canFeedUnit)
-					canFeedUnit++;
-			}
+			if (b && b->type->canFeedUnit)
+				canFeedUnit++;
 		}
 		
 		if (canFeedUnit==0)
@@ -599,83 +676,47 @@ void AICastor::computeBuildingNeighbourMap()
 
 void AICastor::computeTwoSpaceNeighbourMap()
 {
-	int w=map->w;
+	/*int w=map->w;
 	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
 	//int hDec=map->hDec;
-	int wDec=map->wDec;
+	//int wDec=map->wDec;
 	size_t size=w*h;
-	Uint8 *gradient=twoSpaceNeighbourMap;
+	//memset(twoSpaceNeighbourMap, 9, size);
 	
-	memset(gradient, 0, size);
+	int delta[12];
 	
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	delta[ 0]=   -2*w;
+	delta[ 1]=+1 -2*w;
+	
+	delta[ 2]=-1 -  w;
+	delta[ 3]=+2 -  w;
+	
+	delta[ 4]=-2;
+	delta[ 5]=+3;
+	
+	delta[ 6]=-2 +  w;
+	delta[ 7]=+3 +  w;
+	
+	delta[ 8]=-1 +2*w;
+	delta[ 9]=+2 +2*w;
+	
+	delta[10]=   +3*w;
+	delta[11]=+1 +3*w;
+	
+	for (size_t ci=0; ci<size; ci++)
 	{
-		Building *b=myBuildings[i];
-		if (b && !b->type->isVirtual)
-		{
-			int bx=b->posX;
-			int by=b->posY;
-			int bw=b->type->width;
-			int bh=b->type->height;
-			
-			// dirty one case range:
-			for (int xi=bx-2; xi<=bx+bw; xi++)
-			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by -2)&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
-				(*p)|=1;
-			}
-			for (int yi=by-1; yi<by+bh; yi++)
-			{
-				Uint8 *p;
-				p=&gradient[((bx -2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
-			}
-			
-			// dirty two case range, without corners:
-			for (int xi=bx-2; xi<=bx+bw; xi++)
-			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by   -3)&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)];
-				(*p)|=1;
-			}
-			for (int yi=by-2; yi<=by+bh; yi++)
-			{
-				Uint8 *p;
-				p=&gradient[((bx   -3)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
-				p=&gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)];
-				(*p)|=1;
-			}
-			
-			// sum from bit 1 fro range 3, which are good places:
-			for (int xi=bx-4; xi<=bx+bw+2; xi++)
-			{
-				Uint8 *p;
-				p=&gradient[(xi&wMask)+(((by   -4)&hMask)<<wDec)];
-				(*p)+=2;
-				p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
-				(*p)+=2;
-			}
-			for (int yi=by-3; yi<=by+bh+1; yi++)
-			{
-				Uint8 *p;
-				p=&gradient[((bx   -4)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=2;
-				p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
-				(*p)+=2;
-			}
-		}
-	}
+		for (int di=0; di<12; di++)
+			if (obstacleBuildingMap[ci+delta[di]]==0)
+				goto doublebreak;
+		
+		twoSpaceNeighbourMap[ci]=1;
+		continue;
+		
+		doublebreak:
+		twoSpaceNeighbourMap[ci]=0;
+	}*/
 }
 
 
@@ -868,7 +909,7 @@ void AICastor::computeWheatGrowthMap()
 	}
 }
 
-Order *AICastor::computeGoodFoodBuildingMap()
+Order *AICastor::findGoodFoodBuilding()
 {
 	int w=map->w;
 	int h=map->w;
@@ -876,9 +917,7 @@ Order *AICastor::computeGoodFoodBuildingMap()
 	//int hMask=map->hMask;
 	size_t size=w*h;
 	
-	memset(goodFoodBuildingMap, 0, size);
-	
-	printf("computeGoodFoodBuildingMap()\n");
+	printf("findGoodFoodBuilding()\n");
 	
 	// first, we auto calibrate minWork:
 	Uint8 bestWorkScore=0;
@@ -932,10 +971,6 @@ Order *AICastor::computeGoodFoodBuildingMap()
 		neighbour++;
 		Uint32 score=((wheat<<8)+work)*neighbour;
 		
-		Uint32 show=(score>>8);
-		if (show>255)
-			show=255;
-		goodFoodBuildingMap[i]=show;
 		if (bestScore<score)
 		{
 			bestScore=score;
@@ -945,10 +980,63 @@ Order *AICastor::computeGoodFoodBuildingMap()
 	
 	if (bestScore>0)
 	{
+		printf(" found a cool place, score=%d\n", bestScore);
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
-		printf(" found a cool place, score=%d\n", bestScore);
+		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
+	}
+	
+	return NULL;
+}
+
+Order *AICastor::findBestFoodBuilding()
+{
+	int w=map->w;
+	int h=map->w;
+	//int wMask=map->wMask;
+	//int hMask=map->hMask;
+	size_t size=w*h;
+	
+	printf("findBestFoodBuilding()\n");
+	
+	Uint32 *fogOfWar=map->fogOfWar;
+	Uint32 me=team->me;
+	
+	// We find the best place possible:
+	size_t bestIndex;
+	Uint32 bestScore=0;
+	for (size_t i=0; i<size; i++)
+	{
+		Uint32 discovered=fogOfWar[i];
+		if ((discovered&me)==0)
+			continue;
+		
+		Uint8 space=spaceForBuildingMap[i];
+		if (space<2)
+			continue;
+		
+		Uint8 neighbour=buildingNeighbourMap[i];
+		Uint8 wheat=wheatGrowthMap[i];
+		Uint8 work=workAbilityMap[i];
+		if (neighbour&1)
+			continue;
+		neighbour++;
+		Uint32 score=((wheat<<8)+work)*neighbour;
+		
+		if (bestScore<score)
+		{
+			bestScore=score;
+			bestIndex=i;
+		}
+	}
+	
+	if (bestScore>0)
+	{
+		printf(" found a place, score=%d\n", bestScore);
+		Sint32 x=(bestIndex&map->wMask);
+		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
+		int typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
 		return new OrderCreate(team->teamNumber, x, y, (BuildingType::BuildingTypeNumber)typeNum);
 	}
 	

@@ -468,6 +468,7 @@ protected:
 	
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br);
 
+public:
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.

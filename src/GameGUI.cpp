@@ -2052,7 +2052,6 @@ void GameGUI::drawBuildingInfos(void)
 					int divisor=1+maxTimeTo;
 					int left=dividend/divisor;
 					int alpha=((dividend%divisor)*255)/divisor;
-					printf("dividend=%d, divisor=%d, left=%d, alpha=%d\n", dividend, divisor, left, alpha);
 					
 					if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 					{

@@ -68,7 +68,9 @@ private:
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
 	void computeWheatGrowthMap();
-	Order *computeGoodFoodBuildingMap();
+	
+	Order *findGoodFoodBuilding();
+	Order *findBestFoodBuilding();
 	
 	void computeRessourcesCluster();
 	
@@ -97,7 +99,7 @@ public:
 	Uint8 *obstacleBuildingMap; // where buildings can be built. included in {0, 1}
 	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
 	Uint8 *buildingNeighbourMap; // where you can build with exactly one neighbour. Bit 0 means bad place. Bit 1 to 7 is the sum of the neighbours.
-	Uint8 *twoSpaceNeighbourMap; // where you can build at a distance of 2 of another building. Bit 0 means bad place. Bit 1 to 7 is the sum of the neighbours.
+	Uint8 *twoSpaceNeighbourMap; // where you can build at a distance of 2 of another obstacle for building.
 	
 	Uint8 *workPowerMap;
 	Uint8 *workRangeMap;
