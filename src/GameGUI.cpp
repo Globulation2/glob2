@@ -2218,9 +2218,8 @@ void GameGUI::drawRessourceInfos(void)
 		if (rt->granular)
 		{
 			int sizesCount=rt->sizesCount;
-			if (rt->eternal)
-				sizesCount--;
-			const std::string amountS = GAG::nsprintf("%d/%d", r.amount, sizesCount);
+			int amount=r.amount;
+			const std::string amountS = GAG::nsprintf("%d/%d", amount, sizesCount);
 			int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 		}
