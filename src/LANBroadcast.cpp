@@ -37,7 +37,7 @@ LANBroadcast::~LANBroadcast()
 #endif
 }
 
-bool LANBroadcast::enable(Uint16 port)
+bool LANBroadcast::enable(unsigned short port)
 {
 	this->port=port;
 
@@ -202,7 +202,7 @@ bool LANBroadcast::receive(int *v, char gameName[32], char serverNickName[32])
 #endif
 }
 
-Uint32 LANBroadcast::getSenderIP()
+unsigned int LANBroadcast::getSenderIP()
 {
 #ifdef DISABLE_GLOB_LAN_BROADCAST
 	return 0;
