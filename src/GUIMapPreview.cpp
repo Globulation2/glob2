@@ -70,7 +70,7 @@ void MapPreview::internalRepaint(int x, int y, int w, int h)
 	bool rv = true;
 	if (mapName!=0)
 	{
-		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb", false);
+		SDL_RWops *stream=Toolkit::getFileManager()->open(mapName, "rb");
 		if (stream)
 		{
 			SessionGame session;

@@ -17,1274 +17,1155 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-// default building
-startImage = 0
-hueImage = 0
-flagImage = 49
-miniImage = 0
-crossConnectMultiImage = 0
-
-upgradeStopWalk = 0
-upgradeStopSwim = 0
-upgradeStopFly = 0
-upgradeWalk = 0
-upgradeSwim = 0
-upgradeFly = 0
-upgradeBuild = 0
-upgradeHarvest = 0
-upgradeAttackSpeed = 0
-upgradeAttackStrength = 0
-upgradeArmor = 0
-upgradeHP = 0
-
-upgradeTimeStopWalk = 0
-upgradeTimeStopSwim = 0
-upgradeTimeStopFly = 0
-upgradeTimeWalk = 0
-upgradeTimeSwim = 0
-upgradeTimeFly = 0
-upgradeTimeBuild = 0
-upgradeTimeHarvest = 0
-upgradeTimeAttackSpeed = 0
-upgradeTimeAttackStrength = 0
-upgradeTimeArmor = 0
-upgradeTimeHP = 0
-
-foodable = 0
-fillable = 0
-
-zonableWorker = 0
-zonableExplorer = 0
-zonableWarrior = 0
-zonableForbidden = 0
-
-canFeedUnit = 0
-timeToFeedUnit = 0
-canHealUnit = 0
-timeToHealUnit = 0
-insideSpeed = 4
-
-width = 0
-height = 0
-decLeft = 0
-decTop = 0
-isVirtual = 0
-isCloacked = 0
-shootingRange = 0
-shootDamage = 0
-shootSpeed = 0
-shootRythme = 0
-maxBullets = 0
-multiplierStoneToBullets = 0
-
-unitProductionTime = 0
-ressourceForOneUnit = 0
-
-maxWood = 0
-maxCorn = 0
-maxFungus = 0
-maxStone = 0
-maxAlgue = 0
-maxFruit0 = 0
-maxFruit1 = 0
-maxFruit2 = 0
-maxFruit3 = 0
-maxFruit4 = 0
-maxFruit5 = 0
-maxFruit6 = 0
-maxFruit7 = 0
-maxFruit8 = 0
-maxFruit9 = 0
-
-multiplierWood = 1
-multiplierCorn = 1
-multiplierPapyrus = 1
-multiplierStone = 1
-multiplierAlgue = 1
-multiplierFruit0 = 10
-multiplierFruit1 = 10
-multiplierFruit2 = 10
-multiplierFruit3 = 10
-multiplierFruit4 = 10
-multiplierFruit5 = 10
-multiplierFruit6 = 10
-multiplierFruit7 = 10
-multiplierFruit8 = 10
-multiplierFruit9 = 10
-
-maxUnitInside = 0
-maxUnitWorking = 0
-
-hpInit = 0
-hpMax = 0
-hpInc = 0
-armor = 0
-level = 0
-shortTypeNum = 0
-isBuildingSite = 0
-
-defaultUnitStayRange = 0
-
-viewingRange = 1
-regenerationSpeed = 0
-
-prestige = 0
-
-*
-
-// swarm building site
-startImage = 39
-miniImage = 39
-hueImage = 1
-
-fillable = 1
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxCorn = 10
-hpInit = 1
-hpMax = 700
-hpInc = 70
-level = 0
-shortTypeNum = 0
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// swarm
-startImage = 0
-miniImage = 0
-hueImage = 1
-
-fillable = 1
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-unitProductionTime = 150
-ressourceForOneUnit = 5
-maxCorn = 20
-hpInit = 700
-hpMax = 700
-level = 0
-shortTypeNum = 0
-maxUnitWorking = 1
-
-viewingRange = 4
-regenerationSpeed = 3
-
-*
-
-// food building site, level 0
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 3
-hpInit = 1
-hpMax = 100
-hpInc = 34
-level = 0
-shortTypeNum = 1
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// food building, level 0
-startImage = 1
-miniImage = 1
-
-foodable = 1
-canFeedUnit = 1
-timeToFeedUnit = 8
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxCorn = 10
-maxFruit0 = 40
-maxFruit1 = 40
-maxFruit2 = 40
-maxUnitInside = 4
-hpInit = 100
-hpMax = 100
-level = 0
-shortTypeNum = 1
-maxUnitWorking = 1
-
-*
-
-// food building site, level 1
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 8
-hpInit = 100
-hpMax = 250
-hpInc = 19
-level = 1
-shortTypeNum = 1
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// food building, level 1
-startImage = 8
-miniImage = 8
-
-foodable = 1
-canFeedUnit = 1
-timeToFeedUnit = 5
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxCorn = 30
-maxFruit0 = 80
-maxFruit1 = 80
-maxFruit2 = 80
-maxUnitInside = 7
-hpInit = 250
-hpMax = 250
-level = 1
-shortTypeNum = 1
-maxUnitWorking = 1
-
-*
-
-// food building site, level 2
-startImage = 42
-miniImage = 42
-
-fillable = 1
-
-width = 3
-height = 3
-decLeft = -1
-decTop = -1
-maxWood = 7
-maxStone = 5
-hpInit = 250
-hpMax = 350
-hpInc = 11
-level = 2
-shortTypeNum = 1
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// food building, level 2
-startImage = 15
-miniImage = 15
-
-foodable = 1
-canFeedUnit = 1
-timeToFeedUnit = 3
-
-width = 3
-height = 3
-decLeft = -1
-decTop = -1
-maxCorn = 50
-maxFruit0 = 200
-maxFruit1 = 200
-maxFruit2 = 200
-maxUnitInside = 17
-hpInit = 350
-hpMax = 350
-armor = 1
-level = 2
-shortTypeNum = 1
-maxUnitWorking = 1
-
-*
-
-// health building site, level 0
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 3
-hpInit = 1
-hpMax = 130
-hpInc = 43
-level = 0
-shortTypeNum = 2
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// health building, level 0
-startImage = 2
-miniImage = 2
-
-canHealUnit = 1
-timeToHealUnit = 12
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 2
-hpInit = 130
-hpMax = 130
-level = 0
-shortTypeNum = 2
-
-*
-
-// health building site, level 1
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 8
-hpInit = 130
-hpMax = 250
-hpInc = 15
-level = 1
-shortTypeNum = 2
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// health building, level 1
-startImage = 9
-miniImage = 9
-
-canHealUnit = 1
-timeToHealUnit = 7
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 5
-hpInit = 250
-hpMax = 250
-level = 1
-shortTypeNum = 2
-
-*
-
-// health building site, level 2
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 3
-maxStone = 5
-hpInit = 250
-hpMax = 350
-hpInc = 13
-level = 2
-shortTypeNum = 2
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// health building, level 2
-startImage = 16
-miniImage = 16
-
-canHealUnit = 1
-timeToHealUnit = 3
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 7
-hpInit = 350
-hpMax = 350
-armor = 1
-level = 2
-shortTypeNum = 2
-
-*
-
-// Walk building site, level 0
-startImage = 44
-miniImage = 44
-
-fillable = 1
-
-width = 6
-height = 6
-decLeft = -3
-decTop = -3
-maxWood = 6
-maxStone = 1
-hpInit = 1
-hpMax = 270
-hpInc = 39
-armor = 0
-level = 0
-shortTypeNum = 3
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Walk building, level 0
-startImage = 3
-miniImage = 3
-
-upgradeWalk = 1
-upgradeTimeWalk = 7
-
-width = 6
-height = 6
-decLeft = -3
-decTop = -3
-maxUnitInside = 4
-hpInit = 270
-hpMax = 270
-armor = 1
-level = 0
-shortTypeNum = 3
-
-*
-
-// Walk building site, level 1
-startImage = 45
-miniImage = 45
-
-fillable = 1
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxWood = 10
-maxStone = 5
-hpInit = 270
-hpMax = 400
-hpInc = 9
-armor = 1
-level = 1
-shortTypeNum = 3
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Walk building, level 1
-startImage = 10
-miniImage = 10
-
-upgradeWalk = 1
-upgradeTimeWalk = 7
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxUnitInside = 7
-hpInit = 400
-hpMax = 400
-armor = 3
-level = 1
-shortTypeNum = 3
-
-*
-
-// Walk building site, level 2
-startImage = 45
-miniImage = 45
-
-fillable = 1
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxWood = 15
-maxStone = 5
-hpInit = 400
-hpMax = 600
-hpInc = 10
-armor = 3
-level = 2
-shortTypeNum = 3
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Walk building, level 2
-startImage = 17
-miniImage = 17
-
-upgradeWalk = 1
-upgradeTimeWalk = 8
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxUnitInside = 9
-hpInit = 600
-hpMax = 600
-armor = 4
-level = 2
-shortTypeNum = 3
-
-*
-
-// Swim building site, level 0
-startImage = 44
-miniImage = 44
-
-fillable = 1
-
-width = 6
-height = 6
-decLeft = -3
-decTop = -3
-maxWood = 8
-hpInit = 1
-hpMax = 300
-hpInc = 38
-armor = 0
-level = 0
-shortTypeNum = 4
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Swim building, level 0
-startImage = 4
-miniImage = 4
-
-upgradeSwim = 1
-upgradeTimeSwim = 7
-
-width = 6
-height = 6
-decLeft = -3
-decTop = -3
-maxUnitInside = 3
-hpInit = 300
-hpMax = 300
-armor = 0
-level = 0
-shortTypeNum = 4
-
-*
-
-// Swim building site, level 1
-startImage = 45
-miniImage = 45
-
-fillable = 1
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxCorn = 6
-maxWood = 12
-hpInit = 300
-hpMax = 400
-hpInc = 6
-armor = 0
-level = 1
-shortTypeNum = 4
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Swim building, level 1
-startImage = 11
-miniImage = 11
-
-upgradeSwim = 1
-upgradeTimeSwim = 7
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxUnitInside = 7
-hpInit = 400
-hpMax = 400
-armor = 0
-level = 1
-shortTypeNum = 4
-
-*
-
-// Swim building site, level 2
-startImage = 45
-miniImage = 45
-
-fillable = 1
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxCorn = 4
-maxWood = 8
-maxStone = 6
-maxAlgue = 8
-hpInit = 400
-hpMax = 600
-hpInc = 8
-armor = 0
-level = 2
-shortTypeNum = 4
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Swim building, level 2
-startImage = 18
-miniImage = 18
-
-upgradeSwim = 1
-upgradeTimeSwim = 8
-
-width = 8
-height = 8
-decLeft = -4
-decTop = -4
-maxUnitInside = 11
-hpInit = 600
-hpMax = 600
-armor = 1
-level = 2
-shortTypeNum = 4
-
-*
-
-// Attack building site, level 0
-startImage = 43
-miniImage = 43
-
-fillable = 1
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxWood = 7
-hpInit = 1
-hpMax = 220
-hpInc = 32
-armor = 0
-level = 0
-shortTypeNum = 5
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Attack building, level 0
-startImage = 5
-miniImage = 5
-
-upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 4
-upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 3
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxUnitInside = 2
-hpInit = 220
-hpMax = 220
-armor = 1
-level = 0
-shortTypeNum = 5
-
-*
-
-// Attack building site, level 1
-startImage = 43
-miniImage = 43
-
-fillable = 1
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxStone = 10
-maxWood = 3
-hpInit = 220
-hpMax = 400
-hpInc = 14
-armor = 1
-level = 1
-shortTypeNum = 5
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Attack building, level 1
-startImage = 12
-miniImage = 12
-
-upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 7
-upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 3
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxUnitInside = 4
-hpInit = 400
-hpMax = 400
-armor = 4
-level = 1
-shortTypeNum = 5
-
-*
-
-// Attack building site, level 2
-startImage = 43
-miniImage = 43
-
-fillable = 1
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxWood = 10
-maxStone = 10
-hpInit = 400
-hpMax = 650
-hpInc = 13
-armor = 4
-level = 2
-shortTypeNum = 5
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Attack building, level 2
-startImage = 19
-miniImage = 19
-
-upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 7
-upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 7
-
-width = 4
-height = 4
-decLeft = -2
-decTop = -2
-maxUnitInside = 5
-hpInit = 650
-hpMax = 650
-armor = 7
-level = 2
-shortTypeNum = 5
-*
-
-// Science building site, level 0
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 7
-maxAlgue = 2
-hpInit = 1
-hpMax = 180
-hpInc = 20
-armor = 0
-level = 0
-shortTypeNum = 6
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Science building, level 0
-startImage = 6
-miniImage = 6
-
-upgradeBuild = 1
-upgradeTimeBuild = 4
-upgradeHarvest = 1
-upgradeTimeHarvest = 3
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 4
-hpInit = 180
-hpMax = 180
-armor = 0
-level = 0
-shortTypeNum = 6
-
-*
-
-// Science building site, level 1
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxStone = 5
-maxWood = 5
-maxAlgue = 12
-hpInit = 180
-hpMax = 260
-hpInc = 4
-armor = 0
-level = 1
-shortTypeNum = 6
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Science building, level 1
-startImage = 13
-miniImage = 13
-
-upgradeBuild = 1
-upgradeTimeBuild = 12
-upgradeHarvest = 1
-upgradeTimeHarvest = 7
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 7
-hpInit = 260
-hpMax = 260
-armor = 1
-level = 1
-shortTypeNum = 6
-
-*
-
-// Science building site, level 2
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxCorn = 4
-maxWood = 7
-maxStone = 12
-maxAlgue = 10
-hpInit = 260
-hpMax = 350
-hpInc = 3
-armor = 1
-level = 2
-shortTypeNum = 6
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Science building, level 2
-startImage = 20
-miniImage = 20
-
-upgradeBuild = 1
-upgradeTimeBuild = 7
-upgradeHarvest = 1
-upgradeTimeHarvest = 4
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxUnitInside = 9
-hpInit = 350
-hpMax = 350
-armor = 8
-level = 2
-shortTypeNum = 6
-prestige = 50
-
-*
-
-// Defense building site, level 0
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 6
-hpInit = 1
-hpMax = 200
-hpInc = 34
-armor = 0
-level = 0
-shortTypeNum = 7
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// Defense building, level 0
-startImage = 7
-miniImage = 7
-
-fillable = 1
-maxStone = 4
-maxUnitWorking = 1
-
-shootingRange = 5
-shootDamage = 30
-shootSpeed = 4700
-shootRythme = 1800
-maxBullets = 12
-multiplierStoneToBullets = 3
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-hpInit = 200
-hpMax = 200
-armor = 8
-level = 0
-shortTypeNum = 7
-
-viewingRange = 6
-
-*
-
-// Defense building site, level 1
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 3
-maxStone = 6
-hpInit = 200
-hpMax = 300
-hpInc = 12
-armor = 8
-level = 1
-shortTypeNum = 7
-maxUnitWorking = 1
-isBuildingSite = 1
-
-viewingRange = 5
-
-*
-
-// Defense building, level 1
-startImage = 14
-miniImage = 14
-
-fillable = 1
-maxStone = 4
-maxUnitWorking = 1
-
-shootingRange = 6
-shootDamage = 40
-shootSpeed = 5700
-shootRythme = 2000
-maxBullets = 16
-multiplierStoneToBullets = 4
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-hpInit = 300
-hpMax = 300
-armor = 12
-level = 1
-shortTypeNum = 7
-
-viewingRange = 7
-
-*
-
-// Defense building site, level 2
-startImage = 41
-miniImage = 41
-
-fillable = 1
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-maxWood = 5
-maxStone = 5
-maxAlgue = 3
-hpInit = 300
-hpMax = 450
-hpInc = 12
-armor = 12
-level = 2
-shortTypeNum = 7
-maxUnitWorking = 1
-isBuildingSite = 1
-
-viewingRange = 6
-
-*
-
-// Defense building, level 2
-startImage = 21
-miniImage = 21
-
-fillable = 1
-maxStone = 4
-maxUnitWorking = 1
-
-shootingRange = 7
-shootDamage = 60
-shootSpeed = 8000
-shootRythme = 2200
-maxBullets = 20
-multiplierStoneToBullets = 5
-
-width = 2
-height = 2
-decLeft = -1
-decTop = -1
-hpInit = 450
-hpMax = 450
-armor = 18
-level = 2
-shortTypeNum = 7
-
-viewingRange = 8
-
-*
-
-// Exploration Flag
-
-startImage = 46
-hueImage = 1
-miniImage = -1
-
-zonableExplorer = 1
-
-width = 1
-height =  1
-decLeft = 0
-decTop =  0
-isVirtual = 1
-isCloacked = 1
-
-maxUnitWorking = 1
-
-shortTypeNum = 8
-
-defaultUnitStayRange = 10
-maxUnitStayRange = 20
-
-*
-
-// War Flag
-
-startImage = 47
-hueImage = 1
-miniImage = -1
-
-zonableWarrior = 1
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-isVirtual = 1
-isCloacked =  1
-
-maxUnitWorking = 1
-
-shortTypeNum = 9
-
-defaultUnitStayRange = 4
-maxUnitStayRange = 8
-
-*
-
-// Clearing Flag
-
-startImage = 48
-hueImage = 1
-miniImage = -1
-
-zonableWorker = 1
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-isVirtual = 1
-isCloacked =  1
-
-maxUnitWorking = 1
-
-shortTypeNum = 10
-
-defaultUnitStayRange = 3
-maxUnitStayRange = 14
-
-*
-
-
-// stone wall building site
-startImage = 40
-miniImage = -1
-hueImage = 1;
-
-fillable = 1
-maxWood = 0
-maxStone = 2
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-hpInit = 1
-hpMax = 100
-hpInc = 50
-level = 0
-shortTypeNum = 11
-maxUnitWorking = 1
-isBuildingSite = 1
-
-*
-
-// stone wall
-startImage = 23
-miniImage = 23
-crossConnectMultiImage = 1
-hueImage = 1;
-
-width = 1
-height = 1
-decLeft = 0
-decTop = 0
-hpInit = 100
-hpMax = 100
-level = 0
-shortTypeNum = 11
-armor = 10
-
-*
-
-// market building site
-startImage = 42
-miniImage = 43
-
-width = 3
-height = 3
-decLeft = -1
-decTop = -1
-maxWood = 4
-maxStone = 4
-hpInit = 1
-hpMax = 200
-hpInc = 25
-level = 0
-shortTypeNum = 12
-maxUnitWorking = 1
-isBuildingSite = 1
-fillable = 1
-
-*
-
-// market (used for exchange)
-startImage = 22
-miniImage = 22
-
-width = 3
-height = 3
-decLeft = -1
-decTop = -1
-hpInit = 200
-hpMax = 200
-level = 0
-shortTypeNum = 12
-armor = 2
-fillable = 1
-canExchange = 1
-maxFruit0 = 200
-maxFruit1 = 200
-maxFruit2 = 200
-maxUnitWorking = 1
-
-*
+*swarm building site
+
+startImage 39
+miniImage 39
+hueImage 1
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxCorn 10
+hpInit 1
+hpMax 700
+hpInc 70
+level 0
+shortTypeNum 0
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*swarm
+
+startImage 0
+miniImage 0
+hueImage 1
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+unitProductionTime 150
+ressourceForOneUnit 5
+maxCorn 20
+hpInit 700
+hpMax 700
+level 0
+shortTypeNum 0
+maxUnitWorking 1
+
+viewingRange 4
+regenerationSpeed 3
+
+
+*food building site, level 0
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+hpInit 1
+hpMax 100
+hpInc 34
+level 0
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*food building, level 0
+
+startImage 1
+miniImage 1
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 8
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 10
+maxFruit0 40
+maxFruit1 40
+maxFruit2 40
+maxUnitInside 4
+hpInit 100
+hpMax 100
+level 0
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*food building site, level 1
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 8
+hpInit 100
+hpMax 250
+hpInc 19
+level 1
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*food building, level 1
+
+startImage 8
+miniImage 8
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 5
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 30
+maxFruit0 80
+maxFruit1 80
+maxFruit2 80
+maxUnitInside 7
+hpInit 250
+hpMax 250
+level 1
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*food building site, level 2
+
+startImage 42
+miniImage 42
+
+fillable 1
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxWood 7
+maxStone 5
+hpInit 250
+hpMax 350
+hpInc 11
+level 2
+shortTypeNum 1
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*food building, level 2
+
+startImage 15
+miniImage 15
+
+foodable 1
+canFeedUnit 1
+timeToFeedUnit 3
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxCorn 50
+maxFruit0 200
+maxFruit1 200
+maxFruit2 200
+maxUnitInside 17
+hpInit 350
+hpMax 350
+armor 1
+level 2
+shortTypeNum 1
+maxUnitWorking 1
+
+
+*health building site, level 0
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+hpInit 1
+hpMax 130
+hpInc 43
+level 0
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*health building, level 0
+
+startImage 2
+miniImage 2
+
+canHealUnit 1
+timeToHealUnit 12
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 2
+hpInit 130
+hpMax 130
+level 0
+shortTypeNum 2
+
+
+*health building site, level 1
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 8
+hpInit 130
+hpMax 250
+hpInc 15
+level 1
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*health building, level 1
+
+startImage 9
+miniImage 9
+
+canHealUnit 1
+timeToHealUnit 7
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 5
+hpInit 250
+hpMax 250
+level 1
+shortTypeNum 2
+
+
+*health building site, level 2
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+maxStone 5
+hpInit 250
+hpMax 350
+hpInc 13
+level 2
+shortTypeNum 2
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*health building, level 2
+
+startImage 16
+miniImage 16
+
+canHealUnit 1
+timeToHealUnit 3
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 7
+hpInit 350
+hpMax 350
+armor 1
+level 2
+shortTypeNum 2
+
+
+*Walk building site, level 0
+
+startImage 44
+miniImage 44
+
+fillable 1
+
+width 6
+height 6
+decLeft -3
+decTop -3
+maxWood 6
+maxStone 1
+hpInit 1
+hpMax 270
+hpInc 39
+armor 0
+level 0
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Walk building, level 0
+
+startImage 3
+miniImage 3
+
+upgradeWalk 1
+upgradeTimeWalk 7
+
+width 6
+height 6
+decLeft -3
+decTop -3
+maxUnitInside 4
+hpInit 270
+hpMax 270
+armor 1
+level 0
+shortTypeNum 3
+
+
+*Walk building site, level 1
+
+startImage 45
+miniImage 45
+
+fillable 1
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxWood 10
+maxStone 5
+hpInit 270
+hpMax 400
+hpInc 9
+armor 1
+level 1
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Walk building, level 1
+
+startImage 10
+miniImage 10
+
+upgradeWalk 1
+upgradeTimeWalk 7
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxUnitInside 7
+hpInit 400
+hpMax 400
+armor 3
+level 1
+shortTypeNum 3
+
+
+*Walk building site, level 2
+
+startImage 45
+miniImage 45
+
+fillable 1
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxWood 15
+maxStone 5
+hpInit 400
+hpMax 600
+hpInc 10
+armor 3
+level 2
+shortTypeNum 3
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Walk building, level 2
+
+startImage 17
+miniImage 17
+
+upgradeWalk 1
+upgradeTimeWalk 8
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxUnitInside 9
+hpInit 600
+hpMax 600
+armor 4
+level 2
+shortTypeNum 3
+
+
+*Swim building site, level 0
+
+startImage 44
+miniImage 44
+
+fillable 1
+
+width 6
+height 6
+decLeft -3
+decTop -3
+maxWood 8
+hpInit 1
+hpMax 300
+hpInc 38
+armor 0
+level 0
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Swim building, level 0
+
+startImage 4
+miniImage 4
+
+upgradeSwim 1
+upgradeTimeSwim 7
+
+width 6
+height 6
+decLeft -3
+decTop -3
+maxUnitInside 3
+hpInit 300
+hpMax 300
+armor 0
+level 0
+shortTypeNum 4
+
+
+*Swim building site, level 1
+
+startImage 45
+miniImage 45
+
+fillable 1
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxCorn 6
+maxWood 12
+hpInit 300
+hpMax 400
+hpInc 6
+armor 0
+level 1
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Swim building, level 1
+
+startImage 11
+miniImage 11
+
+upgradeSwim 1
+upgradeTimeSwim 7
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxUnitInside 7
+hpInit 400
+hpMax 400
+armor 0
+level 1
+shortTypeNum 4
+
+
+*Swim building site, level 2
+
+startImage 45
+miniImage 45
+
+fillable 1
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxCorn 4
+maxWood 8
+maxStone 6
+maxAlgue 8
+hpInit 400
+hpMax 600
+hpInc 8
+armor 0
+level 2
+shortTypeNum 4
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Swim building, level 2
+
+startImage 18
+miniImage 18
+
+upgradeSwim 1
+upgradeTimeSwim 8
+
+width 8
+height 8
+decLeft -4
+decTop -4
+maxUnitInside 11
+hpInit 600
+hpMax 600
+armor 1
+level 2
+shortTypeNum 4
+
+
+*Attack building site, level 0
+ 
+startImage 43
+miniImage 43
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxWood 7
+hpInit 1
+hpMax 220
+hpInc 32
+armor 0
+level 0
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Attack building, level 0
+
+startImage 5
+miniImage 5
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 4
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 3
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 2
+hpInit 220
+hpMax 220
+armor 1
+level 0
+shortTypeNum 5
+
+
+*Attack building site, level 1
+
+startImage 43
+miniImage 43
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxStone 10
+maxWood 3
+hpInit 220
+hpMax 400
+hpInc 14
+armor 1
+level 1
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Attack building, level 1
+
+startImage 12
+miniImage 12
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 7
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 3
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 4
+hpInit 400
+hpMax 400
+armor 4
+level 1
+shortTypeNum 5
+
+
+*Attack building site, level 2
+
+startImage 43
+miniImage 43
+
+fillable 1
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxWood 10
+maxStone 10
+hpInit 400
+hpMax 650
+hpInc 13
+armor 4
+level 2
+shortTypeNum 5
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Attack building, level 2
+
+startImage 19
+miniImage 19
+
+upgradeAttackStrength 1
+upgradeTimeAttackStrength 7
+upgradeAttackSpeed 1
+upgradeTimeAttackSpeed 7
+
+width 4
+height 4
+decLeft -2
+decTop -2
+maxUnitInside 5
+hpInit 650
+hpMax 650
+armor 7
+level 2
+shortTypeNum 5
+
+
+*Science building site, level 0
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 7
+maxAlgue 2
+hpInit 1
+hpMax 180
+hpInc 20
+armor 0
+level 0
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Science building, level 0
+
+startImage 6
+miniImage 6
+
+upgradeBuild 1
+upgradeTimeBuild 4
+upgradeHarvest 1
+upgradeTimeHarvest 3
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 4
+hpInit 180
+hpMax 180
+armor 0
+level 0
+shortTypeNum 6
+
+
+*Science building site, level 1
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxStone 5
+maxWood 5
+maxAlgue 12
+hpInit 180
+hpMax 260
+hpInc 4
+armor 0
+level 1
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Science building, level 1
+
+startImage 13
+miniImage 13
+
+upgradeBuild 1
+upgradeTimeBuild 12
+upgradeHarvest 1
+upgradeTimeHarvest 7
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 7
+hpInit 260
+hpMax 260
+armor 1
+level 1
+shortTypeNum 6
+
+
+*Science building site, level 2
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxCorn 4
+maxWood 7
+maxStone 12
+maxAlgue 10
+hpInit 260
+hpMax 350
+hpInc 3
+armor 1
+level 2
+shortTypeNum 6
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Science building, level 2
+
+startImage 20
+miniImage 20
+
+upgradeBuild 1
+upgradeTimeBuild 7
+upgradeHarvest 1
+upgradeTimeHarvest 4
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxUnitInside 9
+hpInit 350
+hpMax 350
+armor 8
+level 2
+shortTypeNum 6
+prestige 50
+
+
+*Defense building site, level 0
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 6
+hpInit 1
+hpMax 200
+hpInc 34
+armor 0
+level 0
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*Defense building, level 0
+
+startImage 7
+miniImage 7
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 5
+shootDamage 30
+shootSpeed 4700
+shootRythme 1800
+maxBullets 12
+multiplierStoneToBullets 3
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 200
+hpMax 200
+armor 8
+level 0
+shortTypeNum 7
+
+viewingRange 6
+
+
+*Defense building site, level 1
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 3
+maxStone 6
+hpInit 200
+hpMax 300
+hpInc 12
+armor 8
+level 1
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+viewingRange 5
+
+
+*Defense building, level 1
+
+startImage 14
+miniImage 14
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 6
+shootDamage 40
+shootSpeed 5700
+shootRythme 2000
+maxBullets 16
+multiplierStoneToBullets 4
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 300
+hpMax 300
+armor 12
+level 1
+shortTypeNum 7
+
+viewingRange 7
+
+
+*Defense building site, level 2
+
+startImage 41
+miniImage 41
+
+fillable 1
+
+width 2
+height 2
+decLeft -1
+decTop -1
+maxWood 5
+maxStone 5
+maxAlgue 3
+hpInit 300
+hpMax 450
+hpInc 12
+armor 12
+level 2
+shortTypeNum 7
+maxUnitWorking 1
+isBuildingSite 1
+
+viewingRange 6
+
+
+*Defense building, level 2
+
+startImage 21
+miniImage 21
+
+fillable 1
+maxStone 4
+maxUnitWorking 1
+
+shootingRange 7
+shootDamage 60
+shootSpeed 8000
+shootRythme 2200
+maxBullets 20
+multiplierStoneToBullets 5
+
+width 2
+height 2
+decLeft -1
+decTop -1
+hpInit 450
+hpMax 450
+armor 18
+level 2
+shortTypeNum 7
+
+viewingRange 8
+
+
+*Exploration Flag
+
+startImage 46
+hueImage 1
+miniImage -1
+
+zonableExplorer 1
+
+width 1
+height  1
+decLeft 0
+decTop  0
+isVirtual 1
+isCloacked 1
+
+maxUnitWorking 1
+
+shortTypeNum 8
+
+defaultUnitStayRange 10
+maxUnitStayRange 20
+
+
+*War Flag
+
+startImage 47
+hueImage 1
+miniImage -1
+
+zonableWarrior 1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+isVirtual 1
+isCloacked  1
+
+maxUnitWorking 1
+
+shortTypeNum 9
+
+defaultUnitStayRange 4
+maxUnitStayRange 8
+
+
+*Clearing Flag
+
+startImage 48
+hueImage 1
+miniImage -1
+
+zonableWorker 1
+
+width 1
+height 1
+decLeft 0
+decTop 0
+isVirtual 1
+isCloacked  1
+
+maxUnitWorking 1
+
+shortTypeNum 10
+
+defaultUnitStayRange 3
+maxUnitStayRange 14
+
+
+*stone wall building site
+
+startImage 40
+miniImage -1
+hueImage 1;
+
+fillable 1
+maxWood 0
+maxStone 2
+
+width 1
+height 1
+decLeft 0
+decTop 0
+hpInit 1
+hpMax 100
+hpInc 50
+level 0
+shortTypeNum 11
+maxUnitWorking 1
+isBuildingSite 1
+
+
+*stone wall
+
+startImage 23
+miniImage 23
+crossConnectMultiImage 1
+hueImage 1;
+
+width 1
+height 1
+decLeft 0
+decTop 0
+hpInit 100
+hpMax 100
+level 0
+shortTypeNum 11
+armor 10
+
+
+*market building site
+
+startImage 42
+miniImage 43
+
+width 3
+height 3
+decLeft -1
+decTop -1
+maxWood 4
+maxStone 4
+hpInit 1
+hpMax 200
+hpInc 25
+level 0
+shortTypeNum 12
+maxUnitWorking 1
+isBuildingSite 1
+fillable 1
+
+
+*market (used for exchange)
+
+startImage 22
+miniImage 22
+
+width 3
+height 3
+decLeft -1
+decTop -1
+hpInit 200
+hpMax 200
+level 0
+shortTypeNum 12
+armor 2
+fillable 1
+canExchange 1
+maxFruit0 200
+maxFruit1 200
+maxFruit2 200
+maxUnitWorking 1

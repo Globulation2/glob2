@@ -20,13 +20,12 @@
 #ifndef __BULDING_TYPES_H
 #define __BULDING_TYPES_H
 
-#include "EntitiesTypes.h"
 #include "BuildingType.h"
 
-class BuildingsTypes: public EntitiesTypes<BuildingType>
+class BuildingsTypes: public ConfigVector<BuildingType>
 {
 public:
-	virtual void load(const char *filename);
+	virtual void load();
 	virtual ~BuildingsTypes() { }
 
 	Sint32 getTypeNum(int shortTypeNum, int level, bool isBuildingSite);

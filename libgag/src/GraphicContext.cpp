@@ -107,11 +107,11 @@ void GraphicContext::loadSprite(const char *filename, const char *name)
 	{
 		std::ostringstream frameName;
 		frameName << filename << i << ".png";
-		frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb", false);
+		frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb");
 
 		std::ostringstream frameNameRot;
 		frameNameRot << filename << i << "r.png";
-		rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb", false);
+		rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb");
 
 		if (!((frameStream) || (rotatedStream)))
 			break;

@@ -20,12 +20,15 @@
 #ifndef __CONFIG_FILES_H
 #define __CONFIG_FILES_H
 
+#include <Toolkit.h>
+#include <FileManager.h>
 #include <vector>
 #include <map>
-#include <ofstream>
+#include <sstream>
+#include <iostream>
+#include <assert.h>
 
 class ConfigBlock;
-class ConfigVector;
 
 //! An interface for file that wish to be loaded from config file
 struct LoadableFromConfigFile
@@ -37,24 +40,26 @@ struct LoadableFromConfigFile
 class ConfigBlock
 {
 protected:
+	template<typename T>
 	friend class ConfigVector;
 	typedef std::map<std::string, std::string> StringMap;
 	StringMap lines;
 	
 public:
-	template<typename T> load(T &variable, const std::string &name)
+	template<typename T>
+	void load(T &variable, const std::string &name) const
 	{
 		StringMap::const_iterator valueIt = lines.find(name);
 		if (valueIt != lines.end())
 		{
-			std::ostringstream oss(valueIt->second);
-			oss >> variable;
+			std::istringstream iss(valueIt->second);
+			iss >> variable;
 		}
 	}
 };
 
 //! A configuration array holden that contains multiple time the same config type. Used to contain BuildingTypes and UnitTypes for instance
-template<LoadableFromConfigFile T>
+template<typename T>
 class ConfigVector
 {
 protected:
@@ -90,11 +95,12 @@ public:
 	void load(const std::string &fileName, bool isDefault = false)
 	{
 		bool first = true;
-		ConfigBlock b(defaultEntry);
+		ConfigBlock b;
 		std::string bName;
-		ConfigVector b;
 		
-		std::ifstream *stream = Toolkit::getFileManager()->openIFSream(fileName);
+		std::ifstream *stream = Toolkit::getFileManager()->openIFStream(fileName);
+		assert(stream);
+		
 		while (stream->good())
 		{
 			int c = stream->get();
@@ -109,7 +115,11 @@ public:
 						addBlock(bName, &b, isDefault);
 						b.lines.clear();
 					}
-					bName << stream;
+					else
+						first = false;
+					char temp[256];
+					stream->getline(temp, 256);
+					bName = temp;
 				}
 				break;
 				
@@ -135,18 +145,20 @@ public:
 				default:
 				{
 					stream->putback(c);
-					std::ofstream variable, value;
-					variable << stream;
-					value << stream;
+					std::string variable, value;
+					*stream >> variable;
+					*stream >> value;
 					
-					if (stream.good())
-						b.lines[variable.str()] = value.str();
+					if (stream->good())
+						b.lines[variable] = value;
 				}
 			}
 		}
 		
 		if (b.lines.size() > 0)
 			addBlock(bName, &b, isDefault);
+			
+		delete stream;
 	}
 	
 	void loadDefault(const std::string &fileName) { load(fileName, true); }

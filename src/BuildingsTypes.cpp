@@ -24,13 +24,14 @@
 #include "BuildingsTypes.h"
 #include "GlobalContainer.h"
 
-void BuildingsTypes::load(const char *filename)
+void BuildingsTypes::load()
 {
 	// load the file
-	EntitiesTypes<BuildingType>::load(filename);
+	ConfigVector<BuildingType>::load("data/buildings.default.txt", true);
+	ConfigVector<BuildingType>::load("data/buildings.txt");
 
 	// We resolve the nextLevelTypeNum references, used for upgrade.
-	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
 	{
 		(*it)->lastLevelTypeNum=-1;
 		(*it)->typeNum=-1;
@@ -39,13 +40,13 @@ void BuildingsTypes::load(const char *filename)
 	BuildingType *bt1;
 	BuildingType *bt2;
 	int j=0;
-	for (std::vector <BuildingType *>::iterator it1=entitiesTypes.begin(); it1!=entitiesTypes.end(); ++it1)
+	for (std::vector <BuildingType *>::iterator it1=entries.begin(); it1!=entries.end(); ++it1)
 	{
 		bt1=*it1;
 		bt1->nextLevelTypeNum=-1;
 		bt1->typeNum=j;
 		int i=0;
-		for (std::vector <BuildingType *>::iterator it2=entitiesTypes.begin(); it2!=entitiesTypes.end(); ++it2)
+		for (std::vector <BuildingType *>::iterator it2=entries.begin(); it2!=entries.end(); ++it2)
 		{
 			bt2=*it2;
 			if (bt1!=bt2)
@@ -72,7 +73,7 @@ void BuildingsTypes::load(const char *filename)
 		j++;
 	}
 	
-	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
 	{
 		//Need ressource integrity:
 		bool needRessource=false;
@@ -99,7 +100,7 @@ void BuildingsTypes::load(const char *filename)
 			if (bt1->level)
 			{
 				assert(bt1->lastLevelTypeNum!=-1);
-				BuildingType *bt2=entitiesTypes.at(bt1->lastLevelTypeNum);
+				BuildingType *bt2=get(bt1->lastLevelTypeNum);
 				assert(bt2);
 				if (bt1->hpInit!=bt2->hpMax)
 				{
@@ -154,7 +155,7 @@ void BuildingsTypes::load(const char *filename)
 Sint32 BuildingsTypes::getTypeNum(int shortTypeNum, int level, bool isBuildingSite)
 {
 	Sint32 i=0;
-	for (std::vector <BuildingType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+	for (std::vector <BuildingType *>::iterator it=entries.begin(); it!=entries.end(); ++it)
 	{
 		BuildingType *bt=*it;
 		if ((bt->shortTypeNum==shortTypeNum) && (bt->level==level) && (bt->isBuildingSite==(int)isBuildingSite))

@@ -22,11 +22,12 @@
 
 #include <vector>
 
-#include "EntityType.h"
+#include "ConfigFiles.h"
 #include "UnitConsts.h"
 #include "Ressource.h"
 
-class BuildingType: public EntityType
+
+class BuildingType: public LoadableFromConfigFile
 {
 public:
 	
@@ -53,8 +54,6 @@ public:
 
 		NB_BUILDING
 	};
-
-#define __STARTDATA_B ((Uint32*)&startImage)
 
 	// visualisation
 	Sint32 startImage;
@@ -127,133 +126,8 @@ public:
 	Sint32 lastLevelTypeNum;
 
 public:
-	BuildingType() { init(); }
-	BuildingType(SDL_RWops *stream) { load(stream); }
 	virtual ~BuildingType() { }
-	virtual const char **getVars(size_t *size, Uint32 **data)
-	{
-		static const char *vars[] =
-		{
-			"startImage",
-			"hueImage",
-			"flagImage",
-			"miniImage",
-			"crossConnectMultiImage",
-
-			"upgradeStopWalk",
-			"upgradeStopSwim",
-			"upgradeStopFly",
-			"upgradeWalk",
-			"upgradeSwim",
-			"upgradeFly",
-			"upgradeBuild",
-			"upgradeHarvest",
-			"upgradeAttackSpeed",
-			"upgradeAttackStrength",
-			"upgradeArmor",
-			"upgradeHP",
-
-			"upgradeTimeStopWalk",
-			"upgradeTimeStopSwim",
-			"upgradeTimeStopFly",
-			"upgradeTimeWalk",
-			"upgradeTimeSwim",
-			"upgradeTimeFly",
-			"upgradeTimeBuild",
-			"upgradeTimeHarvest",
-			"upgradeTimeAttackSpeed",
-			"upgradeTimeAttackStrength",
-			"upgradeTimeArmor",
-			"upgradeTimeHP",
-			
-			"foodable",
-			"fillable",
-
-			"zonableWorker",
-			"zonableExplorer",
-			"zonableWarrior",
-			"zonableForbidden",
-
-			"canFeedUnit",
-			"timeToFeedUnit",
-			"canHealUnit",
-			"timeToHealUnit",
-			"insideSpeed",
-			"canExchange",
-
-			"width",
-			"height",
-			"decLeft",
-			"decTop",
-			"isVirtual",
-			"isCloacked",
-			"shootingRange",
-			"shootDamage",
-			"shootSpeed",
-			"shootRythme",
-			"maxBullets",
-			"multiplierStoneToBullets",
-
-			"unitProductionTime",
-			"ressourceForOneUnit",
-			
-			"maxWood",
-			"maxCorn",
-			"maxPapyrus",
-			"maxStone",
-			"maxAlgue",
-			"maxFruit0",
-			"maxFruit1",
-			"maxFruit2",
-			"maxFruit3",
-			"maxFruit4",
-			"maxFruit5",
-			"maxFruit6",
-			"maxFruit7",
-			"maxFruit8",
-			"maxFruit9",
-
-			"multiplierWood",
-			"multiplierCorn",
-			"multiplierPapyrus",
-			"multiplierStone",
-			"multiplierAlgue",
-			"multiplierFruit0",
-			"multiplierFruit1",
-			"multiplierFruit2",
-			"multiplierFruit3",
-			"multiplierFruit4",
-			"multiplierFruit5",
-			"multiplierFruit6",
-			"multiplierFruit7",
-			"multiplierFruit8",
-			"multiplierFruit9",
-
-			"maxUnitInside",
-			"maxUnitWorking",
-
-			"hpInit",
-			"hpMax",
-			"hpInc",
-			"armor",
-			"level",
-			"shortTypeNum",
-			"isBuildingSite",
-
-			"defaultUnitStayRange",
-			"maxUnitStayRange",
-
-			"viewingRange",
-			"regenerationSpeed",
-			
-			"prestige",
-		};
-		if (size)
-			*size=(sizeof(vars)/sizeof(char *));
-		if (data)
-			*data=__STARTDATA_B;
-		return vars;
-	}
+	virtual void loadFromConfigFile(const ConfigBlock *configBlock);
 };
 
 #endif
