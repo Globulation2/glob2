@@ -1465,10 +1465,10 @@ void Unit::handleMovement(void)
 				Case mapCase = map->cases[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
 					&& (mapCase.ressource.type != NO_RES_TYPE)
-					&& (mapCase.ressource.type == WOOD)
+					&& ((mapCase.ressource.type == WOOD)
 						|| (mapCase.ressource.type == CORN)
 						|| (mapCase.ressource.type == PAPYRUS)
-						|| (mapCase.ressource.type == ALGA))
+						|| (mapCase.ressource.type == ALGA)))
 				{
 					dx = tdx;
 					dy = tdy;
