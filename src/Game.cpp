@@ -931,6 +931,8 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber)
 
 	Building *b=new Building(x, y, gid, typeNum, team, &globalContainer->buildingsTypes);
 
+	if (b->type->canExchange)
+		team->canExchange.push_front(b);
 	if (b->type->isVirtual)
 		team->virtualBuildings.push_front(b);
 	else

@@ -377,7 +377,7 @@ int Engine::run(void)
 					// we get and push ai orders
 					for (int i=0; i<gui.game.session.numberOfPlayer; i++)
 						if (gui.game.players[i]->ai)
-							net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+							net->pushOrder(gui.game.players[i]->ai->getOrder(gui.paused), i);
 					
 					ticksToDelay=net->ticksToDelay();
 					if (ticksToDelay>computationAviableTicks)

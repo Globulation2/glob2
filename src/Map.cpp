@@ -3395,8 +3395,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	else
 	{
 		pathToBuildingCountFarUpdateFailureBad++;
-		printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-		fprintf(logFile, "g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
+		fprintf(logFile, "g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
 	}
 	return false;
 }

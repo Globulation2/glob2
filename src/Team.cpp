@@ -17,6 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <float.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 #include "Team.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -24,10 +27,7 @@
 #include <math.h>
 #include "Marshaling.h"
 #include "GlobalContainer.h"
-#include <float.h>
 #include "LogFileManager.h"
-#include <Toolkit.h>
-#include <StringTable.h>
 
 BaseTeam::BaseTeam()
 {
@@ -221,6 +221,15 @@ void Team::setCorrectColor(float value)
 	this->colorR=(Uint8)(255.0f*r);
 	this->colorG=(Uint8)(255.0f*g);
 	this->colorB=(Uint8)(255.0f*b);
+}
+
+bool Team::openMarket()
+{
+	int numberOfTeam=game->session.numberOfTeam;
+	for (int ti=0; ti<numberOfTeam; ti++)
+		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
+			return true;
+	return false;
 }
 
 Building *Team::findNearestHeal(Unit *unit)
@@ -614,7 +623,102 @@ Building *Team::findBestFillable(Unit *unit)
 				}
 			}
 	}
-		
+	if (choosen)
+		return choosen;
+	
+	if (!openMarket())
+		return NULL;
+	
+	SessionGame &session=game->session;
+	// We compute all what's aviable from foreign ressources: (mask)
+	Uint32 allForeignSendRessourceMask=0;
+	Uint32 allForeignReceiveRessourceMask=0;
+	for (int ti=0; ti<session.numberOfTeam; ti++)
+		if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
+		{
+			std::list<Building *> foreignCanExchange=game->teams[ti]->canExchange;
+			for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
+			{
+				Uint32 sendRessourceMask=(*fbi)->sendRessourceMask;
+				for (int r=0; r<HAPPYNESS_COUNT; r++)
+					if ((sendRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]<=0))
+						sendRessourceMask&=(~(1<<r));
+				allForeignSendRessourceMask|=sendRessourceMask;
+
+				Uint32 receiveRessourceMask=(*fbi)->receiveRessourceMask;
+				for (int r=0; r<HAPPYNESS_COUNT; r++)
+					if ((receiveRessourceMask & (1<<r)) && ((*fbi)->ressources[HAPPYNESS_BASE+r]>=(*fbi)->type->maxRessource[HAPPYNESS_BASE+r]))
+						receiveRessourceMask&=(~(1<<r));
+				allForeignReceiveRessourceMask|=receiveRessourceMask;
+			}
+		}
+	
+	//printf(" allForeignSendRessourceMask=%d, allForeignReceiveRessourceMask=%d\n", allForeignSendRessourceMask, allForeignReceiveRessourceMask);
+	if (allForeignSendRessourceMask==0 || allForeignReceiveRessourceMask==0)
+		return NULL;
+	
+	// We compute all what's aviable from our own ressources: (mask)
+	Uint32 allOwnSendRessourceMask=0;
+	Uint32 allOwnReceiveRessourceMask=0;
+	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
+	{
+		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
+		for (int r=0; r<HAPPYNESS_COUNT; r++)
+			if ((sendRessourceMask & (1<<r)) && ((*bi)->ressources[HAPPYNESS_BASE+r]<=0))
+				sendRessourceMask&=(~(1<<r));
+		allOwnSendRessourceMask|=sendRessourceMask;
+
+		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
+		for (int r=0; r<HAPPYNESS_COUNT; r++)
+			if ((receiveRessourceMask & (1<<r)) && ((*bi)->ressources[HAPPYNESS_BASE+r]>=(*bi)->type->maxRessource[HAPPYNESS_BASE+r]))
+				receiveRessourceMask&=(~(1<<r));
+		allOwnReceiveRessourceMask|=receiveRessourceMask;
+	}
+	
+	//printf(" allOwnSendRessourceMask=%d, allOwnReceiveRessourceMask=%d\n", allOwnSendRessourceMask, allOwnReceiveRessourceMask);
+	if ((allForeignSendRessourceMask & allOwnReceiveRessourceMask)==0 || (allForeignReceiveRessourceMask & allOwnSendRessourceMask)==0)
+		return NULL;
+	
+	choosen=NULL;
+	score=DBL_MAX;
+	for (std::list<Building *>::iterator bi=canExchange.begin(); bi!=canExchange.end(); ++bi)
+	{
+		Uint32 sendRessourceMask=(*bi)->sendRessourceMask;
+		Uint32 receiveRessourceMask=(*bi)->receiveRessourceMask;
+		int buildingDist;
+		if ((sendRessourceMask & allForeignReceiveRessourceMask)
+			&& (receiveRessourceMask & allForeignSendRessourceMask)
+			&& map->buildingAviable(*bi, canSwim, x, y, &buildingDist)
+			&& (buildingDist<timeLeft))
+			for (int ti=0; ti<session.numberOfTeam; ti++)
+				if (ti!=teamNumber && (game->teams[ti]->sharedVisionExchange & me))
+				{
+					Team *foreignTeam=game->teams[ti];
+					std::list<Building *> foreignCanExchange=foreignTeam->canExchange;
+					for (std::list<Building *>::iterator fbi=foreignCanExchange.begin(); fbi!=foreignCanExchange.end(); ++fbi)
+					{
+						Uint32 foreignSendRessourceMask=(*fbi)->sendRessourceMask;
+						Uint32 foreignReceiveRessourceMask=(*fbi)->receiveRessourceMask;
+						int foreignBuildingDist;
+						if ((sendRessourceMask & foreignReceiveRessourceMask)
+							&& (receiveRessourceMask & foreignSendRessourceMask)
+							&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist) && (foreignBuildingDist<timeLeft))
+						{
+							double newScore=(double)(buildingDist+foreignBuildingDist)/(double)((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
+							if (newScore<score)
+							{
+								choosen=*bi;
+								score=newScore;
+								assert(choosen);
+								unit->ownExchangeBuilding=*bi;
+								unit->foreingExchangeBuilding=*fbi;
+								unit->destinationPurprose=receiveRessourceMask & foreignSendRessourceMask;
+							}
+						}
+					}
+				}
+	}
+	
 	return choosen;
 }
 
@@ -768,14 +872,25 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 		{
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
 			if (myBuildings[i]->unitsInsideSubscribe.size())
+			{
 				subscribeForInside.push_back(myBuildings[i]);
+				myBuildings[i]->subscribeForInside=1;
+			}
 			if (myBuildings[i]->unitsWorkingSubscribe.size())
 			{
 				if (myBuildings[i]->type->defaultUnitStayRange)
-					subscribeToBringRessources.push_back(myBuildings[i]);
-				else
+				{
 					subscribeForFlaging.push_back(myBuildings[i]);
+					myBuildings[i]->subscribeForFlaging=1;
+				}
+				else
+				{
+					subscribeToBringRessources.push_back(myBuildings[i]);
+					myBuildings[i]->subscribeToBringRessources=1;
+				}
 			}
+			if (myBuildings[i]->type->canExchange)
+				canExchange.push_back(myBuildings[i]);
 		}
 
 	allies=SDL_ReadBE32(stream);
@@ -904,6 +1019,7 @@ void Team::clearLists(void)
 		upgrade[i].clear();
 	canFeedUnit.clear();
 	canHealUnit.clear();
+	canExchange.clear();
 	subscribeForInside.clear();
 	subscribeToBringRessources.clear();
 	subscribeForFlaging.clear();
@@ -1080,6 +1196,7 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
 		if ((*it)->unitsInsideSubscribe.size()==0)
 		{
+			(*it)->subscribeForInside=2;
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeForInside.erase(ittemp);
 		}
@@ -1092,6 +1209,7 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=subscribeToBringRessources.begin(); it!=subscribeToBringRessources.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()==0)
 		{
+			(*it)->subscribeToBringRessources=2;
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeToBringRessources.erase(ittemp);
 		}
@@ -1104,6 +1222,7 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=subscribeForFlaging.begin(); it!=subscribeForFlaging.end(); ++it)
 		if ((*it)->unitsWorkingSubscribe.size()==0)
 		{
+			(*it)->subscribeForFlaging=2;
 			std::list<Building *>::iterator ittemp=it;
 			it=subscribeForFlaging.erase(ittemp);
 		}
@@ -1119,7 +1238,6 @@ void Team::step(void)
 	
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
-
 	
 	
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
@@ -1213,6 +1331,8 @@ Sint32 Team::checkSum()
 	
 	cs=(cs<<31)|(cs>>1);
 	//printf("t(%d)4cs=%x\n", teamNumber, cs);
+	cs^=canExchange.size();
+	cs=(cs<<31)|(cs>>1);
 	cs^=canFeedUnit.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=canHealUnit.size();

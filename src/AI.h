@@ -51,7 +51,7 @@ public:
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
 	
-	Order *getOrder(void);
+	Order *getOrder(bool paused);
 };
 
 
