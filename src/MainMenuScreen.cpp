@@ -30,6 +30,13 @@ using namespace GAGGUI;
 #include <SupportFunctions.h>
 using namespace GAGCore;
 
+// version related stuff
+#ifdef HAVE_CONFIG_H
+	#include <config.h>
+#else
+	#define PACKAGE_VERSION "System Specific - not using autoconf"
+#endif
+
 MainMenuScreen::MainMenuScreen()
 {
 	addWidget(new TextButton( 10,  20, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campaign]"), CAMPAIGN));
@@ -49,6 +56,8 @@ MainMenuScreen::MainMenuScreen()
 	addWidget(new TextButton(330, 420, 300,  40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	
 	addWidget(new Text(3, 0, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", GAGCore::nsprintf("V %d.%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, NET_PROTOCOL_VERSION, YOG_PROTOCOL_VERSION).c_str()));
+	
+	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
 
 	//background=globalContainer->gfx->createDrawableSurface("data/gfx/IntroMN.png");
 }
