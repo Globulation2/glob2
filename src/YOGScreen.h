@@ -57,7 +57,7 @@ protected:
 	void updateList(void);
 
 private:
-	const YOG::GameInfo *selectedGameInfo;
+	YOG::GameInfo selectedGameInfo;
 
 public:
 	YOGScreen();

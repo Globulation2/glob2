@@ -64,7 +64,6 @@ public:
 		
 		PNS_PLAYER_SEND_PRESENCE_REQUEST,
 		PNS_PLAYER_SEND_SESSION_REQUEST,
-		PNS_PLAYER_SEND_FILE_REQUEST,
 		PNS_PLAYER_SEND_CHECK_SUM,
 		
 		PNS_OK,
@@ -94,21 +93,6 @@ public:
 	int netTimeout; // time before next action to repeat.
 	int netTimeoutSize;
 	int netTOTL; // Number of timeout allowed. TimeOut To Live
-	
-	bool wantsFile;
-	enum WindowState
-	{
-		WS_BAD=0,
-		
-		WS_LOST=1,
-		WS_UNSENT=2,
-		WS_SENT=3,
-		WS_RECEIVED=4
-	};
-	enum {NETWORK_BETA = 512};
-	WindowState window[512];
-	int windowSize;
-	int windowIndex;
 
 private:
 	char data[28+MAX_NAME_LENGTH];

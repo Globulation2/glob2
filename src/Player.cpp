@@ -66,9 +66,6 @@ void BasePlayer::init()
 	quitStep=-1;
 	
 	disableRecursiveDestruction=false;
-	
-	wantsFile=false;
-	windowSize=1;
 }
 
 BasePlayer::~BasePlayer(void)

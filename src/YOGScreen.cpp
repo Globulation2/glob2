@@ -79,7 +79,7 @@ void YOGScreen::updateList(void)
 			const char *version=globalContainer->yog.getGameVersion();
 			const char *comment=globalContainer->yog.getGameComment();
 			const char *hostname=globalContainer->yog.getGameHostname();
-			selectedGameInfo=globalContainer->yog.getGameInfo();
+			selectedGameInfo=*globalContainer->yog.getGameInfo();
 
 			char data[128];
 			snprintf(data, sizeof(data), "%s : %s ver %s : %s", source, identifier, version, comment);
@@ -177,9 +177,21 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		printf("YOG : Selected hostname is [%s]\n", IPs[par1]);
-		// FIXME : this is wrong, we should access list element selected with par1, 
-		// not selected game info. Luc, plz look at this
-		multiplayersJoin->tryConnection(selectedGameInfo);
+		if (globalContainer->yog.resetGameLister())
+		{
+			int i=0;
+			do
+			{
+				if (par1==i)
+				{
+					selectedGameInfo=*globalContainer->yog.getGameInfo();
+					break;
+				}
+				i++;
+			}
+			while (globalContainer->yog.getNextGame());
+		}
+		multiplayersJoin->tryConnection(&selectedGameInfo);
 	}
 }
 

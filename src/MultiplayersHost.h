@@ -37,10 +37,39 @@ public:
 		HGS_PLAYING_COUNTER=5 // the counter 5-4-3-2-1-0 is playing
 	};
 
-	enum
+	enum{SECONDS_BEFORE_START_GAME=5};
+	
+	/*enum NetWindowState
 	{
-		SECONDS_BEFORE_START_GAME=5
+		WS_BAD=0,
+
+		WS_LOST=1,
+		WS_UNSENT=2,
+		WS_SENT=3,
+		WS_RECEIVED=4
+	};*/
+	
+	
+	enum{NET_WINDOW_SIZE=256};
+	struct NetWindowSlot
+	{
+		//NetWindowState state;
+		Uint32 index;
+		bool sent;
+		bool received;
+		int time;
+		int packetSize;
 	};
+	
+	struct PlayerFileTransmission
+	{
+		bool wantsFile;
+		NetWindowSlot window[256];
+		int packetSize;
+		int windowSize;
+	};
+	
+	PlayerFileTransmission playerFileTra[32];
 	
 public:
 
