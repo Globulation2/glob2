@@ -140,6 +140,9 @@ void TrueTypeFont::drawString(SDL_Surface *Surface, int x, int y, int w, const c
 		s = TTF_RenderUTF8_Blended(font, text, c);
 		if (s == NULL)
 			return;
+		/*SDL_Surface *temp = s;
+		s = SDL_DisplayFormatAlpha(temp);
+		SDL_FreeSurface(temp);*/
 			
 		// store in cache
 		cache[entry] = s;
