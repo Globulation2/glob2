@@ -54,8 +54,7 @@ MapEdit::MapEdit()
 	pushedBrush=EM_NONE;
 
 	// load menu
-	globalContainer->gfx->loadSprite("data/gui/editor", "editor");
-	menu=Toolkit::getSprite("editor");
+	menu=Toolkit::getSprite("data/gui/editor");
 	font=globalContainer->littleFont;
 
 	// static-like variables:
@@ -1412,7 +1411,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			newW=256;
 		if (newH<288)
 			newH=288;
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 		regenerateClipRect();
 		draw();
 	}
@@ -1428,7 +1427,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, terrainType);
 	game.map.setGame(&game);
-	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
@@ -1502,7 +1501,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 			SDL_Delay(33-deltaTick);
 	}
 
-	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	return returnCode;
 }
 */
@@ -1522,7 +1521,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 
 int MapEdit::run(void)
 {
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 
 	regenerateClipRect();
 	globalContainer->gfx->setClipRect();
@@ -1598,6 +1597,6 @@ int MapEdit::run(void)
 			SDL_Delay(33-deltaTick);
 	}
 
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags);
+	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	return returnCode;
 }

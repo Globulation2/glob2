@@ -223,7 +223,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void SettingsScreen::updateGfxCtx(void)
 {
-	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, 32, globalContainer->settings.screenFlags);
+	globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	dispatchPaint(globalContainer->gfx);
 	addUpdateRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	gfxAltered = true;

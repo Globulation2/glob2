@@ -61,8 +61,7 @@ YOGPreScreen::YOGPreScreen()
 	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	addWidget(statusText);
 	
-	globalContainer->gfx->loadSprite("data/gfx/rotatingEarth", "animation");
-	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "animation", 0, 20, 2);
+	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
 	

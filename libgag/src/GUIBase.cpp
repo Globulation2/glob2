@@ -495,7 +495,7 @@ int Screen::getH(void)
 
 OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
 {
-	gfxCtx=parentCtx->createDrawableSurface();
+	gfxCtx=new DrawableSurface();
 	gfxCtx->setRes(w, h);
 	gfxCtx->setAlpha(false, 180);
 	decX=(parentCtx->getW()-w)>>1;

@@ -23,6 +23,7 @@
 #include <GraphicContext.h>
 #include <assert.h>
 #include <iostream>
+#include "TrueTypeFont.h"
 
 Toolkit::SpriteMap Toolkit::spriteMap;
 Toolkit::FontMap Toolkit::fontMap;
@@ -41,33 +42,51 @@ void Toolkit::init(const char *gameName)
 		assert(false);
 }
 
+void Toolkit::initGraphic(void)
+{
+	gc = new GraphicContext();
+}
+
 void Toolkit::close(void)
 {
-	if (fileManager)
-	{
-		delete fileManager;
-		fileManager=NULL;
-		delete strings;
-		strings=NULL;
-	}
 	for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 		delete (*it).second;
 	spriteMap.clear();
 	for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
 		delete (*it).second;
 	fontMap.clear();
+	
+	if (fileManager)
+	{
+		delete fileManager;
+		fileManager = NULL;
+		delete strings;
+		strings = NULL;
+	}
+	
+	if (gc)
+	{
+		delete gc;
+		gc = NULL;
+	}
 }
 
 Sprite *Toolkit::getSprite(const char *name)
 {
 	if (spriteMap.find(name) == spriteMap.end())
 	{
-		if (gc)
-			gc->loadSprite(name, name);
+		Sprite *sprite = new Sprite();
+		if (sprite->load(name))
+		{
+			spriteMap[std::string(name)] = sprite;
+		}
 		else
+		{
+			delete sprite;
+			std::cerr << "GAG : Can't load sprite " << name << std::endl;
 			return NULL;
+		}
 	}
-	//std::cout << "Sprite " << name << " loaded, " << spriteMap[std::string(name)]->getFrameCount() << std::endl;
 	return spriteMap[std::string(name)];
 }
 
@@ -79,8 +98,28 @@ void Toolkit::releaseSprite(const char *name)
 	spriteMap.erase(it);
 }
 
+void Toolkit::loadFont(const char *filename, unsigned size, const char *name)
+{
+	TrueTypeFont *ttf = new TrueTypeFont();
+	if (ttf->load(filename, size))
+	{
+		Toolkit::fontMap[std::string(name)] = ttf;
+	}
+	else
+	{
+		delete ttf;
+		std::cerr << "GAG : Can't load font " << name << " with size " << size << " from " << filename << std::endl;
+	}
+}
+
 Font *Toolkit::getFont(const char *name)
 {
+	if (fontMap.find(name) == fontMap.end())
+	{
+		std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
+		assert(false);
+		return NULL;
+	}
 	return fontMap[std::string(name)];
 }
 

@@ -909,7 +909,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (newH<480)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->settings.screenFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	}
 }
 
@@ -1751,10 +1751,10 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					int typeId = IntBuildingType::shortNumberFromType(type);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-32, "[Building name]", typeId);
 					
-					globalContainer->littleFont->pushColor(128, 128, 128);
+					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-20, "[Building short explaination]", typeId);
 					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[Building short explaination 2]", typeId);
-					globalContainer->littleFont->popColor();
+					globalContainer->littleFont->popStyle();
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
 					{
@@ -1803,11 +1803,11 @@ void GameGUI::drawUnitInfos(void)
 	else
 		{ r=255; g=50; b=50; }
 
-	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 	int titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
 	int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
 	globalContainer->gfx->drawString(titlePos, ypos+5, globalContainer->littleFont, title.c_str());
-	globalContainer->littleFont->popColor();
+	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_NAME;
 
@@ -1849,9 +1849,9 @@ void GameGUI::drawUnitInfos(void)
 	else
 		{ r=0; g=255; b=0; }
 
-	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selUnit->hp, selUnit->performance[HP]).c_str());
-	globalContainer->littleFont->popColor();
+	globalContainer->littleFont->popStyle();
 
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAG::nsprintf("%s:", Toolkit::getStringTable()->getString("[food]")).c_str());
 
@@ -1861,9 +1861,9 @@ void GameGUI::drawUnitInfos(void)
 	else
 		{ r=0; g=255; b=0; }
 
-	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, GAG::nsprintf("%2.0f %% (%d)", ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, selUnit->fruitCount).c_str());
-	globalContainer->littleFont->popColor();
+	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_ICON+10;
 
@@ -1961,11 +1961,11 @@ void GameGUI::drawBuildingInfos(void)
 	else
 		{ r=255; g=50; b=50; }
 
-	globalContainer->littleFont->pushColor(r, g, b);
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 	int titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
 	int titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
 	globalContainer->gfx->drawString(titlePos, ypos, globalContainer->littleFont, title.c_str());
-	globalContainer->littleFont->popColor();
+	globalContainer->littleFont->popStyle();
 
 	// building text
 	title = "";
@@ -1987,9 +1987,9 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
 	titlePos = globalContainer->gfx->getW()-128+((128-titleLen)>>1);
-	globalContainer->littleFont->pushColor(200, 200, 200);
+	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 200));
 	globalContainer->gfx->drawString(titlePos, ypos+YOFFSET_TEXT_PARA-1, globalContainer->littleFont, title.c_str());
-	globalContainer->littleFont->popColor();
+	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_NAME;
 
@@ -2016,26 +2016,26 @@ void GameGUI::drawBuildingInfos(void)
 	// draw HP
 	if (buildingType->hpMax)
 	{
-		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[hp]"));
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 
 		if (selBuild->hp <= buildingType->hpMax/5)
 			{ r=255; g=0; b=0; }
 		else
 			{ r=0; g=255; b=0; }
 
-		globalContainer->littleFont->pushColor(r, g, b);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selBuild->hp, buildingType->hpMax).c_str());
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 	}
 
 	// inside
 	if (buildingType->maxUnitInside && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
-		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 		if (selBuild->buildingState==Building::ALIVE)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d/%d", selBuild->unitsInside.size(), selBuild->maxUnitInside).c_str());
@@ -2063,13 +2063,13 @@ void GameGUI::drawBuildingInfos(void)
 		int goingTo, onSpot;
 		selBuild->computeFlagStat(&goingTo, &onSpot);
 		// display flag stat
-		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAG::nsprintf("%s", Toolkit::getStringTable()->getString("[In way]")).c_str());
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d", goingTo).c_str());
-		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%s", Toolkit::getStringTable()->getString("[On the spot]")).c_str());
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-66, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, GAG::nsprintf("%d", onSpot).c_str());
 	}
 
@@ -2084,9 +2084,9 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				const char *working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
-				globalContainer->littleFont->pushColor(185, 195, 21);
+				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, working);
-				globalContainer->littleFont->popColor();
+				globalContainer->littleFont->popStyle();
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d/%d", (int)selBuild->unitsWorking.size(), selBuild->maxUnitWorkingLocal).c_str());
 				drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
@@ -2116,9 +2116,9 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			const char *range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
-			globalContainer->littleFont->pushColor(185, 195, 21);
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, range);
-			globalContainer->littleFont->popColor();
+			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d", selBuild->unitStayRange).c_str());
 			drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
 		}
@@ -2244,9 +2244,9 @@ void GameGUI::drawBuildingInfos(void)
 	// exchange building
 	if (buildingType->canExchange && ((selBuild->owner->sharedVisionExchange)&(1<<localTeamNo)))
 	{
-		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
@@ -2331,11 +2331,11 @@ void GameGUI::drawBuildingInfos(void)
 					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
 						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 						{
-							globalContainer->littleFont->pushColor(200, 200, 255);
+							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
 							int ressources[BASIC_COUNT];
 							selBuild->getRessourceCountToRepair(ressources);
 							drawCosts(ressources, globalContainer->littleFont);
-							globalContainer->littleFont->popColor();
+							globalContainer->littleFont->popStyle();
 						}
 				}
 			}
@@ -2348,7 +2348,7 @@ void GameGUI::drawBuildingInfos(void)
 					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
 						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 						{
-							globalContainer->littleFont->pushColor(200, 200, 255);
+							globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL,200, 200, 255));
 
 							// We draw the ressources cost.
 							int typeNum=buildingType->nextLevel;
@@ -2403,7 +2403,7 @@ void GameGUI::drawBuildingInfos(void)
 								j++;
 							}
 
-							globalContainer->littleFont->popColor();
+							globalContainer->littleFont->popStyle();
 						}
 				}
 			}
@@ -2545,9 +2545,9 @@ void GameGUI::drawOverlayInfos(void)
 				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
 				
-				globalContainer->littleFont->pushColor(255, 0, 0, 127);
+				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
 				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, GAG::nsprintf("%d.%d", localTeam->noMoreBuildingSitesCountdown/40, (localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
-				globalContainer->littleFont->popColor();
+				globalContainer->littleFont->popStyle();
 			}
 			else
 			{
@@ -2690,11 +2690,9 @@ void GameGUI::drawOverlayInfos(void)
 		// display messages
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
 		{
-			globalContainer->standardFont->pushColor(it->r, it->g, it->b, it->a);
-			globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
+			globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, it->r, it->g, it->b, it->a));
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, it->text.c_str());
 			globalContainer->standardFont->popStyle();
-			globalContainer->standardFont->popColor();
 			ymesg += 20;
 
 			// delete old messages
@@ -2786,9 +2784,9 @@ void GameGUI::drawOverlayInfos(void)
 			memcpy(actC, whiteC, sizeof(whiteC));
 
 		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
-		globalContainer->littleFont->pushColor(actC[0], actC[1], actC[2]);
+		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
 		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, GAG::nsprintf("%d / %d", free, tot).c_str());
-		globalContainer->littleFont->popColor();
+		globalContainer->littleFont->popStyle();
 
 		dec += 70;
 	}
@@ -3519,7 +3517,7 @@ void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)
 	std::string fullTextStr(fullText);
 	std::vector<std::string> messages;
 	
-	globalContainer->standardFont->pushStyle(Font::STYLE_BOLD);
+	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, 255, 255, 255));
 	setMultiLine(fullTextStr, &messages);
 	globalContainer->standardFont->popStyle();
 	

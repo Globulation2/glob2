@@ -119,9 +119,14 @@ void Text::internalRepaint(int x, int y, int w, int h)
 	else
 		hDec=0;
 
-	fontPtr->pushColor(cr, cg, cb, ca);
+	Font::Style style = fontPtr->getStyle();
+	style.r = cr;
+	style.g = cg;
+	style.b = cb;
+	style.a = ca;
+	fontPtr->pushStyle(style);
 	parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
-	fontPtr->popColor();
+	fontPtr->popStyle();
 }
 
 void Text::internalInit(int x, int y, int w, int h)

@@ -55,7 +55,7 @@ protected:
 
 protected:
 	bool readOnly;
-	const Font *font;
+	Font *font;
 	size_t areaHeight;
 	size_t areaPos;
 	unsigned int charHeight;
