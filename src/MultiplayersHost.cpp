@@ -494,7 +494,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
 	
-	
+	assert(p<32);
 	playerFileTra[p].wantsFile=false;
 	playerFileTra[p].receivedFile=false;
 	playerFileTra[p].packetSize=64;
