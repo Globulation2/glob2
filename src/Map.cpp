@@ -3183,7 +3183,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	//fprintf(logFile, "...updatedGlobalGradient\n");
 }
 
-void Map::updateLocalRessources(Building *building, bool canSwim)
+bool Map::updateLocalRessources(Building *building, bool canSwim)
 {
 	localRessourcesUpdateCount++;
 	assert(building);
@@ -3196,7 +3196,7 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 	Uint32 teamMask=building->owner->me;
 	
 	Uint8 *gradient=building->localRessources[canSwim];
-	if (!gradient)
+	if (gradient==NULL)
 	{
 		gradient=new Uint8[1024];
 		building->localRessources[canSwim]=gradient;
@@ -3204,6 +3204,7 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 	assert(gradient);
 	
 	bool *clearingRessources=building->clearingRessources;
+	bool anyRessourceToClear=false;
 	
 	memset(gradient, 1, 1024);
 	int range=building->unitStayRange;
@@ -3229,7 +3230,10 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 				{
 					Sint8 t=c.ressource.type;
 					if (t<BASIC_COUNT && clearingRessources[t])
+					{
 						gradient[addrl]=255;
+						anyRessourceToClear=true;
+					}
 					else
 						gradient[addrl]=0;
 				}
@@ -3244,8 +3248,16 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 				gradient[addrl]=0;
 		}
 	}
+	building->localRessourcesCleanTime[canSwim]=0;
+	if (anyRessourceToClear)
+		building->anyRessourceToClear[canSwim]=1;
+	else
+	{
+		building->anyRessourceToClear[canSwim]=2;
+		return false;
+	}
 	expandLocalGradient(gradient);
-	building->localRessourcesCleanTime=0;
+	return true;
 }
 
 
@@ -3745,6 +3757,12 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	Uint32 teamMask=building->owner->me;
 	
 	Uint8 *gradient=building->localRessources[canSwim];
+	if (gradient==NULL)
+	{
+		if (!updateLocalRessources(building, canSwim))
+			return false;
+		gradient=building->localRessources[canSwim];
+	}
 	assert(gradient);
 	assert(isInLocalGradient(x, y, bx, by));
 	
@@ -3755,10 +3773,11 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	bool found=false;
 	bool gradientUsable=false;
 	
-	if (currentg==1 && building->localRessourcesCleanTime++<8) 
+	if (currentg==1 && (building->localRessourcesCleanTime[canSwim]+=16)<128)
 	{
-		// We wait a bit and avoid immediate recalculation, because there is probably no ressources.
-		//printf("...pathfindedLocalRessource v0 failure waiting\n");
+		// This mean there are still ressources, but they are unreachable.
+		// We wait 5[s] before recomputing anything.
+		printf("...pathfindedLocalRessource v0 failure waiting\n");
 		pathfindLocalRessourceCountWait++;
 		return false;
 	}

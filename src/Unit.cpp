@@ -627,11 +627,11 @@ void Unit::handleActivity(void)
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFoodable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
-					//b->lastWorkingSubscribe=0;
 					subscribed=true;
 					if (b->subscribeToBringRessources!=1)
 					{
 						b->subscribeToBringRessources=1;
+						b->lastWorkingSubscribe=0;
 						owner->subscribeToBringRessources.push_front(b);
 					}
 					return;
@@ -651,11 +651,11 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsInsideSubscribe.push_front(this);
-				b->lastInsideSubscribe=0;
 				subscribed=true;
 				if (b->subscribeForInside!=1)
 				{
 					b->subscribeForInside=1;
+					b->lastInsideSubscribe=0;
 					owner->subscribeForInside.push_front(b);
 				}
 				return;
@@ -672,12 +672,12 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 				b->unitsWorkingSubscribe.push_front(this);
-				//b->lastWorkingSubscribe=0;
 				subscribed=true;
 				if (b->subscribeForFlaging!=1)
 				{
 					b->subscribeForFlaging=1;
-					owner->subscribeForFlaging.push_front(b);
+					b->lastWorkingSubscribe=0;
+					owner->subscribeForFlaging.push_back(b);
 				}
 				return;
 			}
@@ -696,11 +696,11 @@ void Unit::handleActivity(void)
 					if (verbose)
 						printf("guid=(%d) unitsWorkingSubscribe(findBestFillable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->unitsWorkingSubscribe.push_front(this);
-					//b->lastWorkingSubscribe=0;
 					subscribed=true;
 					if (b->subscribeToBringRessources!=1)
 					{
 						b->subscribeToBringRessources=1;
+						b->lastWorkingSubscribe=0;
 						owner->subscribeToBringRessources.push_front(b);
 					}
 					return;
@@ -1616,12 +1616,15 @@ void Unit::handleMovement(void)
 				}
 			bool canSwim=performance[SWIM];
 			assert(attachedBuilding);
-			if (attachedBuilding->localRessources[canSwim]==NULL)
-				map->updateLocalRessources(attachedBuilding, canSwim);
 			if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 			{
 				directionFromDxDy();
 				movement=MOV_GOING_DXDY;
+			}
+			else if (attachedBuilding->anyRessourceToClear[canSwim]==2)
+			{
+				stopAttachedForBuilding(false);
+				movement=MOV_RANDOM_GROUND;
 			}
 			else
 				movement=MOV_RANDOM_GROUND;

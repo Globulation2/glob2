@@ -22,9 +22,11 @@
 
 #include <list>
 #include <vector>
+
+#include "Bullet.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
-#include "Bullet.h"
+
 
 class Unit;
 class Team;
@@ -75,11 +77,13 @@ public:
 	// optimisation and consistency
 	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
 	Sint32 subscribeForInside, subscribeToBringRessources, subscribeForFlaging; 
-	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit
-	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit
+	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
+	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
 	Sint32 foodable; // Included in {0: unknow, 1:allready in owner->foodable, 2:not in owner->foodable
 	Sint32 fillable; // Included in {0: unknow, 1:allready in owner->fillable, 2:not in owner->fillable
-	Sint32 zonable[NB_UNIT_TYPE]; // Included in {0: unknow, 1:allready in owner->zonable, 2:not in owner->zonable}
+	Sint32 zonableWorkers[2]; // Included in {0: unknow, 1:allready in owner->zonableWorkers[x], 2:not in owner->zonableWorkers[x]}
+	Sint32 zonableExplorer; // Included in {0: unknow, 1:allready in owner->zonableExplorer, 2:not in owner->zonableExplorer}
+	Sint32 zonableWarrior;// Included in {0: unknow, 1:allready in owner->zonableWarrior, 2:not in owner->zonableWarrior}
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity
@@ -102,24 +106,25 @@ public:
 	// quality parameters
 	Sint32 hp; // (Uint16)
 
-	// prefered parameters
+	// swarm building parameters
 	Sint32 productionTimeout;
 	Sint32 totalRatio;
 	Sint32 ratio[NB_UNIT_TYPE];
 	Sint32 ratioLocal[NB_UNIT_TYPE];
 	Sint32 percentUsed[NB_UNIT_TYPE];
 
-	// exchange building
+	// exchange building parameters
 	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
 	Uint32 receiveRessourceMaskLocal;
 	Uint32 sendRessourceMaskLocal;
 
-	// turrets
+	// turrets building parameters
 	Uint32 shootingStep;
 	Sint32 shootingCooldown;
 	Sint32 bullets;
 	
+	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
 	
 	bool dirtyLocalGradient[2];
@@ -128,7 +133,8 @@ public:
 	bool locked[2]; //True if the building is not reachable.
 	
 	Uint8 *localRessources[2];
-	int localRessourcesCleanTime; //The time since the localRessources has not been updated.
+	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.
+	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
 
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
@@ -149,6 +155,7 @@ public:
 	void launchDelete(void);
 	void cancelDelete(void);
 	
+	void updateClearingFlag(bool canSwim);
 	void updateCallLists(void);
 	void updateConstructionState(void);
 	void updateBuildingSite(void);
@@ -171,6 +178,7 @@ public:
 	void subscribeForInsideStep(void);
 	void swarmStep(void);
 	void turretStep(void);
+	void clearingFlagsStep(void);
 	void kill(void);
 
 	int getMidX(void);

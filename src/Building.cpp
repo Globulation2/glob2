@@ -125,8 +125,11 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	canHealUnit=0;
 	foodable=0;
 	fillable=0;
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-		zonable[i]=0;
+	
+	zonableWorkers[0]=0; 
+	zonableWorkers[1]=0; 
+	zonableExplorer=0; 
+	zonableWarrior=0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
@@ -136,8 +139,11 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 		localRessources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
+		
+		localRessources[i]=0;
+		localRessourcesCleanTime[i]=0;
+		anyRessourceToClear[i]=0;
 	}
-	localRessourcesCleanTime=0;
 	
 	verbose=false;
 }
@@ -218,8 +224,11 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	canHealUnit=0;
 	foodable=0;
 	fillable=0;
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-		zonable[i]=0;
+	
+	zonableWorkers[0]=0; 
+	zonableWorkers[1]=0; 
+	zonableExplorer=0; 
+	zonableWarrior=0;
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
@@ -237,8 +246,10 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 		}
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
+		
+		localRessourcesCleanTime[i]=0;
+		anyRessourceToClear[i]=0;
 	}
-	localRessourcesCleanTime=0;
 	
 	verbose=false;
 }
@@ -631,6 +642,30 @@ void Building::cancelDelete(void)
 	updateCallLists();
 }
 
+void Building::updateClearingFlag(bool canSwim)
+{
+	if (owner->map->updateLocalRessources(this, canSwim))
+	{
+		if (zonableWorkers[canSwim]!=1)
+		{
+			owner->zonableWorkers[canSwim].push_front(this);
+			zonableWorkers[canSwim]=1;
+		}
+	}
+	else
+	{
+		if (zonableWorkers[canSwim]!=2)
+		{
+			owner->zonableWorkers[canSwim].remove(this);
+			zonableWorkers[canSwim]=2;
+		}
+		
+		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+			(*it)->standardRandomActivity();
+		unitsWorking.clear();
+	}
+}
+
 void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)
@@ -667,12 +702,24 @@ void Building::updateCallLists(void)
 				fillable=1;
 			}
 		}
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (zonable[i]!=1 && type->zonable[i])
-			{
-				owner->zonable[i].push_front(this);
-				zonable[i]=1;
-			}
+		
+		if (type->zonable[WORKER])
+			for (int canSwim=0; canSwim<2; canSwim++)
+				if (anyRessourceToClear[canSwim]!=2 && zonableWorkers[canSwim]!=1)
+				{
+					owner->zonableWorkers[canSwim].push_front(this);
+					zonableWorkers[canSwim]=1;
+				}
+		if (zonableExplorer!=1 && type->zonable[EXPLORER])
+		{
+			owner->zonableExplorer.push_front(this);
+			zonableExplorer=1;
+		}
+		if (zonableWarrior!=1 && type->zonable[WARRIOR])
+		{
+			owner->zonableWarrior.push_front(this);
+			zonableWarrior=1;
+		}
 	}
 	else
 	{
@@ -687,12 +734,25 @@ void Building::updateCallLists(void)
 			owner->fillable.remove(this);
 			fillable=2;
 		}
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-			if (zonable[i]!=2)
-			{
-				owner->zonable[i].remove(this);
-				zonable[i]=2;
-			}
+		
+		if (type->zonable[WORKER])
+			for (int canSwim=0; canSwim<2; canSwim++)
+				if (zonableWorkers[canSwim]!=2)
+				{
+					owner->zonableWorkers[canSwim].remove(this);
+					zonableWorkers[canSwim]=2;
+				}
+		if (zonableExplorer!=2 && type->zonable[EXPLORER])
+		{
+			owner->zonableExplorer.remove(this);
+			zonableExplorer=2;
+		}
+		if (zonableWarrior!=2 && type->zonable[WARRIOR])
+		{
+			owner->zonableWarrior.remove(this);
+			zonableWarrior=2;
+		}
+		
 		if (maxUnitWorking==0)
 		{
 			// This is only a special optimisation case:
@@ -913,7 +973,11 @@ void Building::update(void)
 {
 	if (buildingState==DEAD)
 		return;
-
+	if (type->zonable[WORKER])
+	{
+		updateClearingFlag(0);
+		updateClearingFlag(1);
+	}
 	updateCallLists();
 	updateConstructionState();
 	if (type->isBuildingSite)
@@ -1106,7 +1170,7 @@ void Building::subscribeToBringRessourcesStep()
 		return;
 	}
 	
-	if (lastWorkingSubscribe>32)
+	if (lastWorkingSubscribe>16)
 	{
 		if (verbose)
 			printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
@@ -1364,7 +1428,7 @@ void Building::subscribeForFlagingStep()
 		return;
 	}
 	
-	if (lastWorkingSubscribe>32)
+	if (lastWorkingSubscribe>16)
 	{
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
@@ -1377,7 +1441,7 @@ void Building::subscribeForFlagingStep()
 			2-the less the unit is hungry, the better it is.
 			2-the more hp the unit has, the better it is.
 			*/
-			if (zonable[EXPLORER])
+			if (type->zonable[EXPLORER])
 			{
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
@@ -1406,7 +1470,10 @@ void Building::subscribeForFlagingStep()
 					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
-					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					bool canSwim=unit->performance[SWIM];
+					if (anyRessourceToClear[canSwim]!=2
+						&& map->buildingAviable(this, canSwim, unit->posX, unit->posY, &dist)
+						&& (dist<timeLeft))
 					{
 						int value=dist-timeLeft-hp;
 						if (value<minValue)
@@ -1420,7 +1487,6 @@ void Building::subscribeForFlagingStep()
 			
 			if (choosen)
 			{
-				//printf("f(%x) choosen.\n", (int)choosen);
 				unitsWorkingSubscribe.remove(choosen);
 				unitsWorking.push_back(choosen);
 				choosen->subscriptionSuccess();
@@ -1441,7 +1507,7 @@ void Building::subscribeForInsideStep()
 		return;
 	}
 	
-	if (lastInsideSubscribe>32)
+	if (lastInsideSubscribe>16)
 	{
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
@@ -1773,6 +1839,14 @@ void Building::turretStep(void)
 		shootingCooldown=SHOOTING_COOLDOWN_MAX;
 	}
 
+}
+
+void Building::clearingFlagsStep(void)
+{
+	if (unitsWorking.size()<(unsigned)maxUnitWorking)
+		for (int canSwim=0; canSwim<2; canSwim++)
+			if (localRessourcesCleanTime[canSwim]++>128) // Update every 5[s]
+				updateClearingFlag(canSwim);
 }
 
 void Building::kill(void)

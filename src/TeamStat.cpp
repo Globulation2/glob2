@@ -84,9 +84,10 @@ void TeamStats::step(Team *team)
 			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
 	{
-		std::list<Building *> zonable=team->zonable[WORKER];
+		std::list<Building *> zonable=team->clearingFlags;
 		for (std::list<Building *>::iterator bi=zonable.begin(); bi!=zonable.end(); ++bi)
-			smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
+			if ((*bi)->anyRessourceToClear[0]!=2 || (*bi)->anyRessourceToClear[1]!=2)
+				smoothedStat.totalNeeded+=(*bi)->maxUnitWorking-(*bi)->unitsWorking.size();
 	}
 	
 	smoothedIndex++;

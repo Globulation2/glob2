@@ -741,8 +741,22 @@ Building *Team::findBestZonable(Unit *unit)
 	double score=DBL_MAX;
 	int x=unit->posX;
 	int y=unit->posY;
-	std::list<Building *> bl=zonable[unit->typeNum];
 	bool canSwim=unit->performance[SWIM];
+	std::list<Building *> bl;
+	switch (unit->typeNum)
+	{
+		case WORKER:
+			bl=zonableWorkers[canSwim];
+		break;
+		case EXPLORER:
+			bl=zonableExplorer;
+		break;
+		case WARRIOR:
+			bl=zonableWarrior;
+		break;
+		default:
+			assert(false);
+	}
 	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
 	
 	if (unit->performance[FLY])
@@ -1025,8 +1039,10 @@ void Team::clearLists(void)
 {
 	foodable.clear();
 	fillable.clear();
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-		zonable[i].clear();
+	zonableWorkers[0].clear(); 
+	zonableWorkers[1].clear(); 
+	zonableExplorer.clear(); 
+	zonableWarrior.clear();
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i].clear();
 	canFeedUnit.clear();
@@ -1091,6 +1107,14 @@ void Team::integrity(void)
 		assert(*it);
 		assert((*it)->type);
 		assert((*it)->type->isVirtual);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+	}
+	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		assert((*it)->type->isVirtual);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
 	for (int i=0; i<1024; i++)
@@ -1169,6 +1193,8 @@ void Team::syncStep(void)
 			swarms.remove(building);
 		if (building->type->shootingRange)
 			turrets.remove(building);
+		if (building->type->zonable[WORKER])
+			clearingFlags.remove(building);
 		if (building->type->isVirtual)
 			virtualBuildings.remove(building);
 
@@ -1250,7 +1276,9 @@ void Team::syncStep(void)
 	
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep();
-	
+		
+	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
+		(*it)->clearingFlagsStep();
 	
 	isAlive=isAlive && (isEnoughFoodInSwarm || (nbUnits!=0));
 	// decount event cooldown counter
@@ -1333,11 +1361,11 @@ Uint32 Team::checkSum(std::list<Uint32> *checkSumsList, std::list<Uint32> *check
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [6+t*20]
 	
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-	{
-		cs^=zonable[i].size();
-		cs=(cs<<31)|(cs>>1);
-	}
+	cs^=zonableWorkers[0].size();
+	cs^=zonableWorkers[1].size();
+	cs^=zonableExplorer.size();
+	cs^=zonableWarrior.size();
+	cs=(cs<<31)|(cs>>1);
 	if (checkSumsList)
 		checkSumsList->push_back(cs);// [7+t*20]
 	
