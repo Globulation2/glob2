@@ -53,6 +53,7 @@ public:
 	Sint32 eternal;
 	Sint32 granular;
 	Sint32 visibleToBeCollected;
+	Sint32 minimapR, minimapG, minimapB;
 
 public:
 	RessourceType() { init(); }
@@ -71,6 +72,9 @@ public:
 			"eternal",
 			"granular",
 			"visibleToBeCollected",
+			"minimapR",
+			"minimapG",
+			"minimapB",
 		};
 		if (size)
 			*size=(sizeof(vars)/sizeof(char *));
