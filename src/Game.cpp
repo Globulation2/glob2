@@ -85,6 +85,7 @@ void Game::init()
 	// init minimap
 	minimap=globalContainer->gfx->createDrawableSurface();
 	minimap->setRes(100, 100);
+	minimap->drawFilledRect(0, 0, 100, 100, 0, 0, 0);
 
 	session.numberOfTeam=0;
 	session.numberOfPlayer=0;
@@ -777,11 +778,14 @@ void Game::step(Sint32 localTeam)
 		
 		if ((stepCounter&31)==2)
 		{
-			// TODO : allow visual alliances.
-			renderMiniMap(localTeam, true);
+			renderMiniMap(localTeam, true, 0, 2);
 		}
-		
-		
+
+		if ((stepCounter&31)==2+16)
+		{
+			renderMiniMap(localTeam, true, 1, 2);
+		}
+
 		if ((stepCounter&31)==4)
 		{
 			wonStep();
@@ -1757,7 +1761,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 0, 0, 40, 180);
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 0, 0, 40, 180);
 	}
-	
+
 	globalContainer->gfx->drawRect(globalContainer->gfx->getW()-115, 13, 102, 102, 200, 200, 200);
 	assert(minimap);
 	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-114, 14, minimap);
@@ -1797,7 +1801,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	}
 }
 
-void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
+void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings, int step, int stepCount)
 {
 	float dMx, dMy;
 	int dx, dy;
@@ -1830,6 +1834,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 	int decX, decY;
 	Utilities::computeMinimapData(100, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
 
+	int stepLength = szY/stepCount;
+	int stepStart = step * stepLength;
+
 	dMx=(float)mMax/100.0f;
 	dMy=(float)mMax/100.0f;
 
@@ -1844,8 +1851,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 		decSPY=0;
 	}
 
-	minimap->drawFilledRect(0,0,100,100,0,0,0);
-	for (dy=0; dy<szY; dy++)
+	for (dy=stepStart; dy<stepStart+stepLength; dy++)
 	{
 		for (dx=0; dx<szX; dx++)
 		{
