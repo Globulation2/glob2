@@ -106,6 +106,7 @@ public:
 	int nextLevel;
 
 public:
+	BuildingType();
 	virtual ~BuildingType() { }
 	virtual void loadFromConfigFile(const ConfigBlock *configBlock);
 };
