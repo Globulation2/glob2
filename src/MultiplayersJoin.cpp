@@ -30,6 +30,7 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYOG)
 	yogGameInfo=NULL;
 	downloadStream=NULL;
 	logFile=globalContainer->logFileManager.getFile("MultiplayersJoin.log");
+	logFileDownload=globalContainer->logFileManager.getFile("MultiplayersJoinDownload.log");
 	assert(logFile);
 	duplicatePacketFile=0;
 	init(shareOnYOG);
@@ -261,6 +262,9 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	{
 		fprintf(logFile, "MultiplayersJoin:: no more data file wanted.\n");
 		fprintf(logFile, "endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
+		fprintf(logFileDownload, "MultiplayersJoin:: no more data file wanted.\n");
+		fprintf(logFileDownload, "endOfFileIndex=%d, unreceivedIndex=%d\n", endOfFileIndex, unreceivedIndex);
+		
 		if (endOfFileIndex)
 		{
 			char data[72];
@@ -282,27 +286,27 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	int windowIndex=(int)getSint32(data, 4);
 	Uint32 writingIndex=getUint32(data, 8);
 	int writingSize=size-12;
-	fprintf(logFile, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
+	fprintf(logFileDownload, "MultiplayersJoin:: received data. size=%d, writingIndex=%d, windowIndex=%d, writingSize=%d\n", size, writingIndex, windowIndex, writingSize);
 	
 	if (writingSize==0)
 	{
 		if (windowIndex==-1)
 		{
 			endOfFileIndex=writingIndex;
-			fprintf(logFile, "1 end of the file is %d.\n", endOfFileIndex);
+			fprintf(logFileDownload, "1 end of the file is %d.\n", endOfFileIndex);
 		}
 		else
-			fprintf(logFile, "e1 we received an bad windowIndex in data file !!!.\n");
+			fprintf(logFileDownload, "e1 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	else if (windowIndex==-1 && writingSize!=0)
 	{
-		fprintf(logFile, "e2 we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFileDownload, "e2 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	else if ((windowIndex<0)||(windowIndex>=NET_WINDOW_SIZE))
 	{
-		fprintf(logFile, "e3 we received an bad windowIndex in data file !!!.\n");
+		fprintf(logFileDownload, "e3 we received an bad windowIndex in data file !!!.\n");
 		return;
 	}
 	
@@ -310,7 +314,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	if (netWindow[windowIndex].received && netWindow[windowIndex].index==writingIndex && netWindow[windowIndex].packetSize==writingSize)
 	{
 		duplicatePacketFile++;
-		fprintf(logFile, "duplicated \n");
+		fprintf(logFileDownload, "duplicated \n");
 	}
 	else if (startDownloadTimeout>2)
 		startDownloadTimeout=2;
@@ -322,7 +326,7 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 	netWindow[windowIndex].received=true;
 	netWindow[windowIndex].packetSize=writingSize;
 
-	fprintf(logFile, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
+	fprintf(logFileDownload, "unreceivedIndex=%d, writingIndex=%d.\n", unreceivedIndex, writingIndex);
 	
 	
 	bool hit=true;
@@ -344,18 +348,19 @@ void MultiplayersJoin::dataFileRecieved(char *data, int size, IPaddress ip)
 			}
 	}
 	if (anyHit)
-		fprintf(logFile, "MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
+		fprintf(logFileDownload, "MultiplayersJoin::new unreceivedIndex=%d.\n", unreceivedIndex);
 	
 	if (endOfFileIndex==unreceivedIndex)
 	{
 		if (duplicatePacketFile)
-			fprintf(logFile, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
+			fprintf(logFileDownload, "MultiplayersJoin:: duplicatePacketFile=%d\n", duplicatePacketFile);
 		duplicatePacketFile=0;
-		fprintf(logFile, "download's file closed\n");
+		fprintf(logFileDownload, "download's file closed\n");
 		SDL_RWclose(downloadStream);
 		downloadStream=NULL;
 	}
 	
+	waitingTOTL=DEFAULT_NETWORK_TOTL;
 }
 
 void MultiplayersJoin::checkSumConfirmationRecieved(char *data, int size, IPaddress ip)
