@@ -313,7 +313,8 @@ void GameGUI::processEvent(SDL_Event *event)
 
 		if (typingInputScreen->endValue!=-1)
 		{
-			orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
+			if (typingInputScreen->getText()[0])
+				orderQueue.push(new MessageOrder(chatMask, typingInputScreen->getText()));
 			delete typingInputScreen;
 			typingInputScreen=NULL;
 			return;
@@ -1357,8 +1358,6 @@ void GameGUI::drawOverlayInfos(void)
 			}
 			pm=pm<<1;
 		}
-
-
 	}
 	else
 	{
