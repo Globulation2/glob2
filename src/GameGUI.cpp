@@ -285,10 +285,11 @@ void GameGUI::synchroneStep(void)
 	
 	if ((game.stepCounter&255)==79)
 	{
-		const char *name=globalContainer->texts.getString("[auto save]");
-		SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
+		const char *locationName=globalContainer->texts.getString("[auto save]");
+		SDL_RWops *stream=globalContainer->fileManager->open(locationName, "wb");
 		if (stream)
 		{
+			char *name = strchr(locationName, '/');
 			save(stream, name);
 			SDL_RWclose(stream);
 		}
@@ -435,18 +436,19 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					const char *name=((LoadSaveScreen *)gameMenuScreen)->fileName;
+					const char *locationName=((LoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
 					{
-						strncpy(toLoadGameFileName, name, sizeof(toLoadGameFileName));
+						strncpy(toLoadGameFileName, locationName, sizeof(toLoadGameFileName));
 						toLoadGameFileName[sizeof(toLoadGameFileName)-1]=0;
 						orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					}
 					else
 					{
-						SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
+						SDL_RWops *stream=globalContainer->fileManager->open(locationName,"wb");
 						if (stream)
 						{
+							char *name = strchr(locationName, '/');
 							save(stream, name);
 							SDL_RWclose(stream);
 						}

@@ -181,14 +181,14 @@ int Engine::initCustom(const char *gameName)
 		}
 		else
 		{
-			printf("Engine : Can't load map\n");
+			printf("Engine : Error during load of %s\n", gameName);
 			SDL_RWclose(stream);
 			return EE_CANCEL;
 		}
 	}
 	else
 	{
-		printf("Engine : Can't load map\n");
+		printf("Engine : Can't load map %s\n", gameName);
 		return EE_CANCEL;
 	}
 

@@ -953,7 +953,8 @@ bool MapEdit::save(const char *name)
 	SDL_RWops *stream=globalContainer->fileManager->open(name,"wb");
 	if (stream)
 	{
-		game.save(stream, true, name);
+		char *mapName = strchr(name, '/');
+		game.save(stream, true, mapName);
 		SDL_RWclose(stream);
 		return true;
 	}
