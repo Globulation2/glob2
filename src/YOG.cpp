@@ -56,6 +56,7 @@ bool YOG::connect(const char *serverName, int serverPort, const char *nick)
 	snprintf(command, IRC_MESSAGE_SIZE, "NICK %s", nick);
 	sendString(command);
 	joinChannel();
+	//joinChannel(DEFAULT_GAME_CHAN);
 	return true;
 }
 
@@ -82,6 +83,7 @@ void YOG::interpreteIRCMessage(const char *message)
 
 	strncpy(tempMessage, message, IRC_MESSAGE_SIZE);
 
+	// get informations about packet, homemade parser
 	if (tempMessage[0]==':')
 	{
 		int i=1;
@@ -211,6 +213,14 @@ void YOG::sendCommand(const char *message)
 		{
 			snprintf(command, IRC_MESSAGE_SIZE, "WHOIS %s", arg1);
 			sendString(command);
+		}
+		else if ((strcasecmp(cmd, "/join")==0) && arg1)
+		{
+			joinChannel(arg1);
+		}
+		else if ((strcasecmp(cmd, "/part")==0) && arg1)
+		{
+			quitChannel(arg1);
 		}
 	}
 	else
