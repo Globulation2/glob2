@@ -541,10 +541,13 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if (client->password[0]==0)
 			{
 				memcpy(client->password, password, 32);
-				fwrite(client->username, 32, 1, usersFile);
-				fwrite(client->password, 32, 1, usersFile);
-				fflush(usersFile);
-				lprintf("wrote usersFile with username=(%s)\n", client->username);
+				if (strncmp(client->username, "admin", 32)==0)
+				{
+					fwrite(client->username, 32, 1, usersFile);
+					fwrite(client->password, 32, 1, usersFile);
+					fflush(usersFile);
+					lprintf("wrote usersFile with username=(%s)\n", client->username);
+				}
 			}
 			else
 			{
