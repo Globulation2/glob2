@@ -91,6 +91,8 @@ MainMenuScreen.h \
 MainMenuScreen.cpp \
 CreditScreen.h \
 CreditScreen.cpp \
+CampaignScreen.h \
+CampaignScreen.cpp \
 MultiplayersOfferScreen.h\
 MultiplayersOfferScreen.cpp \
 YOGScreen.h \

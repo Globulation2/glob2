@@ -212,7 +212,6 @@ int Glob2::runHostServer()
 
 	yog->unshareGame();
 
-
 	delete multiplayersHost;
 
 	printf("Glob2::runHostServer(): disconnecting YOG.\n");
