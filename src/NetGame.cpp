@@ -425,6 +425,11 @@ void NetGame::sendPushOrder(int targetPlayer)
 	if (totalSize > MAX_GAME_PACKET_SIZE)
 	{
 		fprintf(stderr, "NetGame::sendPushOrder : attempting to send packet size over MTU size (%d bytes when limit is %d bytes)\n", totalSize, MAX_GAME_PACKET_SIZE);
+		for (n=0; n<ordersByPackets; n++)
+		{
+			Order *order = ordersQueue[localPlayerNumber][(pushUStep-n)&255];
+			fprintf(stderr, "Suborder %d type is %d\n", (pushUStep-n)&255, order->getOrderType());
+		}
 		assert(false);
 	}
 	Uint8 *data=(Uint8 *)malloc(totalSize);

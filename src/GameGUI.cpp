@@ -269,7 +269,7 @@ void GameGUI::brushStep(int mx, int my)
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig));
+	brushAccumulator.applyBrush(&game.map, BrushApplication(mapX, mapY, fig));
 	// we get coordinates
 	int startX = mapX-BrushTool::getBrushDimX(fig);
 	int startY = mapY-BrushTool::getBrushDimY(fig);

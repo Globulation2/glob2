@@ -4035,6 +4035,8 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 
 void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 {
+	y &= hMask;
+	x &= wMask;
 	fprintf(logFile, "Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
 	for (int hi=0; hi<hl; hi++)
 	{

@@ -20,6 +20,7 @@
 #include "Brush.h"
 #include "BitArray.h"
 #include "GlobalContainer.h"
+#include "Map.h"
 #include <GraphicContext.h>
 
 BrushTool::BrushTool()
@@ -155,30 +156,55 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y)
 	return (brushes[figure][y*getBrushWidth(figure)+x] != 0);
 }
 
-void BrushAccumulator::applyBrush(const BrushApplication &brush)
+void BrushAccumulator::applyBrush(const Map *map, const BrushApplication &brush)
 {
+	BrushApplication ba = brush;
+	
 	// extend coordinates
 	if (applications.size() == 0)
 	{
 		//std::cout << "BrushAccumulator::applyBrush : new brush" << std::endl;
 		// first call, set coordinates
-		dim.minX = brush.x - BrushTool::getBrushDimX(brush.figure);
-		dim.maxX = brush.x + BrushTool::getBrushDimX(brush.figure) + 1;
-		dim.minY = brush.y - BrushTool::getBrushDimY(brush.figure);
-		dim.maxY = brush.y + BrushTool::getBrushDimY(brush.figure) + 1;
+		dim.centerX = brush.x;
+		dim.centerY = brush.y;
+		ba.x = 0;
+		ba.y = 0;
+		dim.minX = 0 - BrushTool::getBrushDimX(brush.figure);
+		dim.maxX = 0 + BrushTool::getBrushDimX(brush.figure) + 1;
+		dim.minY = 0 - BrushTool::getBrushDimY(brush.figure);
+		dim.maxY = 0 + BrushTool::getBrushDimY(brush.figure) + 1;
 	}
 	else
 	{
 		//std::cout << "BrushAccumulator::applyBrush : extend from " << getAreaSurface();
 		// other call, extend
-		dim.minX = std::min(dim.minX, brush.x - BrushTool::getBrushDimX(brush.figure));
-		dim.maxX = std::max(dim.maxX, brush.x + BrushTool::getBrushDimX(brush.figure) + 1);
-		dim.minY = std::min(dim.minY, brush.y - BrushTool::getBrushDimY(brush.figure));
-		dim.maxY = std::max(dim.maxY, brush.y + BrushTool::getBrushDimY(brush.figure) + 1);
+		
+		// center on this brush position
+		int px = brush.x - dim.centerX;
+		int py = brush.y - dim.centerY;
+		int mapW = map->getW();
+		int mapH = map->getH();
+		if (px < -(mapW/2))
+			px += mapW;
+		else if (px > (mapW/2))
+			px -= mapW;
+		if (py < -(mapH/2))
+			py += mapH;
+		else if (py > (mapH/2))
+			py -= mapH;
+		ba.x = px;
+		ba.y = py;
+		
+		// extend dimensions
+		dim.minX = std::min(dim.minX, px - BrushTool::getBrushDimX(brush.figure));
+		dim.maxX = std::max(dim.maxX, px + BrushTool::getBrushDimX(brush.figure) + 1);
+		dim.minY = std::min(dim.minY, py - BrushTool::getBrushDimY(brush.figure));
+		dim.maxY = std::max(dim.maxY, py + BrushTool::getBrushDimY(brush.figure) + 1);
 		//std::cout << " to " << getAreaSurface() << std::endl;
 	}
+	
 	// and add to vector
-	applications.push_back(brush);
+	applications.push_back(ba);
 }
 
 bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim)
