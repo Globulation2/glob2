@@ -59,7 +59,7 @@ canFeedUnit = 0
 timeToFeedUnit = 0
 canHealUnit = 0
 timeToHealUnit = 0
-insideSpeed = 256
+insideSpeed = 4
 
 width = 0
 height = 0
@@ -161,7 +161,7 @@ startImage = 2
 
 jobHarvest = 1
 canFeedUnit = 1
-timeToFeedUnit = 800
+timeToFeedUnit = 8
 
 width = 2
 height = 2
@@ -202,7 +202,7 @@ startImage = 10
 
 jobHarvest = 1
 canFeedUnit = 1
-timeToFeedUnit = 500
+timeToFeedUnit = 5
 
 width = 2
 height = 2
@@ -244,7 +244,7 @@ startImage = 18
 
 jobHarvest = 1
 canFeedUnit = 1
-timeToFeedUnit = 300
+timeToFeedUnit = 3
 
 width = 3
 height = 3
@@ -285,7 +285,7 @@ isBuildingSite = 1
 startImage = 1
 
 canHealUnit = 1
-timeToHealUnit = 1200
+timeToHealUnit = 12
 
 width = 2
 height = 2
@@ -323,7 +323,7 @@ isBuildingSite = 1
 startImage = 9
 
 canHealUnit = 1
-timeToHealUnit = 700
+timeToHealUnit = 7
 
 width = 2
 height = 2
@@ -362,7 +362,7 @@ isBuildingSite = 1
 startImage = 17
 
 canHealUnit = 1
-timeToHealUnit = 300
+timeToHealUnit = 3
 
 width = 2
 height = 2
@@ -403,7 +403,7 @@ isBuildingSite = 1
 startImage = 5
 
 upgradeWalk = 1
-upgradeTimeWalk = 1000
+upgradeTimeWalk = 7
 
 width = 6
 height = 6
@@ -444,7 +444,7 @@ isBuildingSite = 1
 startImage = 21
 
 upgradeWalk = 1
-upgradeTimeWalk = 1000
+upgradeTimeWalk = 7
 
 width = 8
 height = 8
@@ -485,7 +485,7 @@ isBuildingSite = 1
 startImage = 29
 
 upgradeWalk = 1
-upgradeTimeWalk = 1000
+upgradeTimeWalk = 8
 
 width = 8
 height = 8
@@ -525,7 +525,7 @@ isBuildingSite = 1
 startImage = 7
 
 upgradeSwim = 1
-upgradeTimeSwim = 900
+upgradeTimeSwim = 7
 
 width = 6
 height = 6
@@ -566,7 +566,7 @@ isBuildingSite = 1
 startImage = 23
 
 upgradeSwim = 1
-upgradeTimeSwim = 1100
+upgradeTimeSwim = 7
 
 width = 8
 height = 8
@@ -609,7 +609,7 @@ isBuildingSite = 1
 startImage = 31
 
 upgradeSwim = 1
-upgradeTimeSwim = 900
+upgradeTimeSwim = 8
 
 width = 8
 height = 8
@@ -649,9 +649,9 @@ isBuildingSite = 1
 startImage = 14
 
 upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 600
+upgradeTimeAttackStrength = 4
 upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 500
+upgradeTimeAttackSpeed = 3
 
 width = 4
 height = 4
@@ -692,9 +692,9 @@ isBuildingSite = 1
 startImage = 22
 
 upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 500
+upgradeTimeAttackStrength = 7
 upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 300
+upgradeTimeAttackSpeed = 3
 
 width = 4
 height = 4
@@ -735,9 +735,9 @@ isBuildingSite = 1
 startImage = 38
 
 upgradeAttackStrength = 1
-upgradeTimeAttackStrength = 1000
+upgradeTimeAttackStrength = 7
 upgradeAttackSpeed = 1
-upgradeTimeAttackSpeed = 500
+upgradeTimeAttackSpeed = 7
 
 width = 4
 height = 4
@@ -777,9 +777,9 @@ isBuildingSite = 1
 startImage = 4
 
 upgradeBuild = 1
-upgradeTimeBuild = 700
+upgradeTimeBuild = 4
 upgradeHarvest = 1
-upgradeTimeHarvest = 300
+upgradeTimeHarvest = 3
 
 width = 2
 height = 2
@@ -821,9 +821,9 @@ isBuildingSite = 1
 startImage = 12
 
 upgradeBuild = 1
-upgradeTimeBuild = 1200
+upgradeTimeBuild = 12
 upgradeHarvest = 1
-upgradeTimeHarvest = 700
+upgradeTimeHarvest = 7
 
 width = 2
 height = 2
@@ -866,9 +866,9 @@ isBuildingSite = 1
 startImage = 20
 
 upgradeBuild = 1
-upgradeTimeBuild = 700
+upgradeTimeBuild = 7
 upgradeHarvest = 1
-upgradeTimeHarvest = 300
+upgradeTimeHarvest = 4
 
 width = 2
 height = 2
@@ -929,7 +929,7 @@ startImage = 41
 
 jobHarvest = 1
 
-shootingRange = 5
+shootingRange = 4
 shootDamage = 30
 shootSpeed = 4700
 shootRythme = 150
@@ -954,7 +954,7 @@ isBuildingSite = 1
 // Defense building, level 1
 startImage = 11
 
-shootingRange = 6
+shootingRange = 7
 shootDamage = 40
 shootSpeed = 5700
 shootRythme = 2000
@@ -976,7 +976,7 @@ startImage = 41
 
 jobHarvest = 1
 
-shootingRange = 6
+shootingRange = 5
 shootDamage = 40
 shootSpeed = 5700
 shootRythme = 200
@@ -1002,7 +1002,7 @@ isBuildingSite = 1
 // Defense building, level 2
 startImage = 19
 
-shootingRange = 8
+shootingRange = 7
 shootDamage = 45
 shootSpeed = 8000
 shootRythme = 2200
@@ -1037,7 +1037,7 @@ maxUnitWorking = 1
 
 type = 8
 
-defaultUnitStayRange = 1
+defaultUnitStayRange = 10
 
 *
 
@@ -1059,6 +1059,6 @@ maxUnitWorking = 1
 
 type = 9
 
-defaultUnitStayRange = 1
+defaultUnitStayRange = 4
 
 *

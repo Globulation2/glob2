@@ -486,6 +486,8 @@ void Team::step(void)
 			swarms.remove(myBuildings[*it]);
 		if (  myBuildings[*it]->type->shootingRange )
 			turrets.remove(myBuildings[*it]);
+		subscribeForInsideStep.remove(myBuildings[*it]);
+		subscribeForWorkingStep.remove(myBuildings[*it]);
 		delete myBuildings[*it];
 		myBuildings[*it]=NULL;
 	}

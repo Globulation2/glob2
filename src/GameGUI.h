@@ -12,7 +12,7 @@
 #include <queue>
 
 #define MAX_UNIT_WORKING 20
-#define MAX_EXPLO_FLAG_RANGE 15
+#define MAX_EXPLO_FLAG_RANGE 20
 #define MAX_WAR_FLAG_RANGE 8
 #define MAX_RATIO_RANGE 16
 

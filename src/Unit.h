@@ -120,6 +120,7 @@ protected:
 	void gotoTarget(int targetX, int targetY);
 	void newTargetWasSet(void);
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
+	void secondaryDirection(int ldx, int ldy, int *cdx, int *cdy);
 	
 public:
 	

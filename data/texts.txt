@@ -48,7 +48,7 @@ Waiting destruction
 Ameliorer
 Upgrade
 [cancel upgrade]
-Anuler amelio.
+Annuler amelio.
 Cancel upgrade
 [unit type]
 Type d'unite
