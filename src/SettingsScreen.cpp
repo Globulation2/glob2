@@ -129,6 +129,7 @@ SettingsScreen::SettingsScreen()
 	oldScreenFlags = globalContainer->settings.screenFlags;
 	oldGraphicType = globalContainer->settings.graphicType;
 	oldOptionFlags = globalContainer->settings.optionFlags;
+	oldMusicVol = globalContainer->settings.musicVolume;
 
 	gfxAltered = false;
 }
@@ -163,6 +164,9 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 				updateGfxCtx();
 
 			globalContainer->settings.optionFlags = oldOptionFlags;
+			
+			globalContainer->settings.musicVolume = oldMusicVol;
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
 
 			endExecute(par1);
 		}
@@ -214,7 +218,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->settings.musicVolume=musicVol->getValue();
+		globalContainer->settings.musicVolume = musicVol->getValue();
 		globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
