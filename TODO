@@ -36,11 +36,9 @@ To Next version :
 - Ressuciter le concept de race.
 - Il faudrait gérer des vitesses différentes, que çe soit pour 1:le GUI, 2:le motteur 3:le réseau.
 - Il faudrait que le réseau soit plus léger, en particuler que la taille des packets soit plus optimale.
-- while following pathfinded way to go to heal or food building, recheck to see if there is one nearer. (nct)
 - Permettre des téléchargements non terminés de fichiers, et reprendre à la prochaine connection.
 - GUITextArea doit tout faire en UTF8, pas en ascii avec correction a 2 euros derriere. (nct)
 
 For later later :
 
 - Infos in Map editor
-- Units have experience. (nct)
