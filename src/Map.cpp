@@ -806,69 +806,6 @@ bool Map::nearestRessource(int x, int y, RessourceType ressourceType, int *dx, i
 	}
     return false;
 }
-/*bool Map::nearestRessource(int ix, int iy, RessourceType ressourceType, int *dx, int *dy)
-{
-	// TODO : make a better ressource path finding, increase it
-
-	int x, y;
-	for (int i=1; i<16; i++)
-	{
-		for (int j=0; j<25; j++)
-		{
-			x=ix+(j%5);
-			y=iy+(j/5);
-			if (isRessource(x+i, y, ressourceType))
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=y;
-				return true;
-			}
-			if (isRessource(x, y+i, ressourceType))
-			{
-				*dx=x;
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y, ressourceType))
-			{
-				*dx=(x+getW()-i)&getMaskW();
-				*dy=y;
-				return true;
-			}
-			if (isRessource(x, y-i, ressourceType))
-			{
-				*dx=x;
-				*dy=(y+getH()-i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+i, y+i, ressourceType))
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y-i, ressourceType))
-			{
-				*dx=(x+getW()-i)&getMaskW();
-				*dy=(y+getH()-i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x+i, y-i, ressourceType))
-			{
-				*dx=(x+i)&getMaskW();
-				*dy=(y+getH()-i)&getMaskH();
-				return true;
-			}
-			if (isRessource(x-i, y+i, ressourceType))
-			{
-				*dx=(x+getW()-i)&getMaskW();
-				*dy=(y+i)&getMaskH();
-				return true;
-			}
-		}
-	}
-    return false;
-}*/
 
 Sint32 Map::checkSum()
 {

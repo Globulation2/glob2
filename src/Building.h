@@ -100,6 +100,7 @@ public:
 	bool tryToUpgradeRoom(void);
 	bool isHardSpace(void);
 	void step(void);
+	void removeSubscribers(void);
 	bool fullWorking(void);
 	bool fullInside(void);
 	void subscribeForWorkingStep(void);

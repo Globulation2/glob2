@@ -80,16 +80,6 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	verbose=false;
 }
 
-/* TODO : if this is useless, delete it one day
-void Unit::die(void)
-{
-	if (attachedBuilding)
-	{
-		attachedBuilding->unitsInside.remove(this);
-		attachedBuilding->update();
-	}
-}*/
-
 void Unit::load(SDL_RWops *stream, Team *owner)
 {
 	// unit specification
@@ -225,6 +215,8 @@ void Unit::saveCrossRef(SDL_RWops *stream)
 
 void Unit::unsubscribed(void)
 {
+	if (verbose)
+		printf("Unsubscribed.\n");
 	subscribed=false;
 	switch(medical)
 	{
@@ -339,8 +331,6 @@ void Unit::handleMedical(void)
 	
 	medical=MED_FREE;
 	
-	// NOTE : hungryness values are not in the right magnitude order
-	// TODO : put hungryness in race
 	hungry-=race->unitTypes[0][0].hungryness;
 	if (hp<=trigHP)
 	{
@@ -356,7 +346,6 @@ void Unit::handleMedical(void)
 	{
 		if (!isDead)
 		{
-			// TODO : we will have to decrease Unit count when it will exist.
 			//printf("Unit:: Unit(uid%d)(id%d) died. dis=%d, mov=%d, ab=%x, ito=%d \n", UID, UIDtoID(UID), displacement, movement, (int)attachedBuilding, insideTimeout);
 			
 			if (attachedBuilding)
@@ -519,8 +508,6 @@ void Unit::handleActivity(void)
 					}
 				}
 			
-			// sixth we attack enemy if we found it
-			// TODO
 			if ( (!jobFound) )
 			{
 				// find another job.
@@ -562,7 +549,8 @@ void Unit::handleActivity(void)
 	{
 		if (attachedBuilding)
 		{
-			//printf("Need medical assistant while working, abort work\n");
+			if (verbose)
+				printf("Need medical assistant while working, abort work\n");
 			attachedBuilding->unitsWorking.remove(this);
 			attachedBuilding->unitsInside.remove(this);
 			attachedBuilding->unitsWorkingSubscribe.remove(this);
@@ -578,6 +566,7 @@ void Unit::handleActivity(void)
 			b=owner->findNearestFood(posX, posY);
 			if ( b != NULL)
 			{
+				
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=FEED;
@@ -591,6 +580,8 @@ void Unit::handleActivity(void)
 				b->lastInsideSubscribe=0;
 				subscribed=true;
 				owner->subscribeForInsideStep.push_front(b);
+				if (verbose)
+					printf("Subscribed to food building %d\n", b->UID);
 				//b->update();
 			}
 			else
@@ -602,7 +593,8 @@ void Unit::handleActivity(void)
 			b=owner->findNearestHeal(posX, posY);
 			if ( b != NULL)
 			{
-				//printf("Going to heal building\n");
+				if (verbose)
+					printf("Subscribed to heal building %d\n", b->UID);
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=HEAL;
@@ -634,15 +626,14 @@ void Unit::handleDisplacement(void)
 	{
 		case ACT_RANDOM:
 		{
-			displacement=DIS_RANDOM;
-			
-			if (medical==MED_FREE)
+			if ((medical==MED_FREE)&&(displacement==DIS_RANDOM))
 			{
 				if (performance[FLY])
 					displacement=DIS_REMOVING_BLACK_AROUND;
 				else if (performance[ATTACK_SPEED])
 					displacement=DIS_ATTACKING_AROUND;
 			}
+			displacement=DIS_RANDOM;
 			break;
 		}
 		
@@ -721,7 +712,6 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->update();
 						attachedBuilding=NULL;
 						subscribed=false;
-						// TODO : search for other ressource to work for
 					}
 					else if (owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY))
 					{
@@ -740,7 +730,6 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						// TODO : do something usefull
 						//printf("Don't find any ressource !!!!\n");
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
@@ -837,7 +826,6 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
-					// TODO : here is the code to check if we are FORCED to exit
 					insideTimeout++;
 				}
 			}
@@ -974,7 +962,7 @@ void Unit::handleMovement(void)
 					}
 				}
 			}
-			if (owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID)
+			if ((movement!=MOV_GOING_DXDY)||(owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID))
 				movement=MOV_RANDOM;
 			break;
 		}
@@ -1341,15 +1329,74 @@ void Unit::pathFind(void)
 			return;
 		}
 		
+		if (displacement==DIS_GOING_TO_RESSOURCE)
+		{
+			owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			ldx=targetX-posX;
+			ldy=targetY-posY;
+			if (syncRand()<0x1FFFFFFF)
+			{
+				ldx-=dy;
+				ldy+=dx;
+			}
+			else if (syncRand()<0x2FFFFFFF)
+			{
+				ldx+=dy;
+				ldy-=dx;
+			}
+
+			if (verbose)
+				printf("(%d),rec pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", UID, posX, posY, targetX, targetY, ldx, ldy);
+
+			simplifyDirection(ldx, ldy, &cdx, &cdy);
+
+			dx=cdx;
+			dy=cdy;
+			directionFromDxDy();
+
+			int cDirection=direction;
+
+			if (direction==8)
+				return;
+
+			if (valid(posX+dx, posY+dy))
+				return;	
+
+			direction=(cDirection+1)&7;
+			dxdyfromDirection();
+			if (valid(posX+dx, posY+dy))
+				return;	
+
+			direction=(cDirection+7)&7;
+			dxdyfromDirection();
+			if (valid(posX+dx, posY+dy))
+				return;	
+
+			if (areOnlyUnitsInFront(cdx, cdy))
+			{
+				if (verbose)
+					printf("rec look at front and simply go!\n");
+				gotoTarget(targetX, targetY);
+				return;
+			}
+			if (areOnlyUnitsAround())
+			{
+				if (verbose)
+					printf("rec Simple go, only units around!\n");
+				gotoTarget(targetX, targetY);
+				return;
+			}
+		}
+		//nearestRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy);
+		
 		if (verbose)
-				printf("%d no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (int)this, posX, posY, cdx, cdy);
+			printf("%d no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (int)this, posX, posY, cdx, cdy);
 		
 		// we look for a center:
 		int tdx=cdx;
 		int tdy=cdy;
 		int c=0;
 		// we ignore the units as obstacle:
-		// TODO better : use validHard? Right man, that was a bug !
 		while(validHard(posX+tdx, posY+tdy))
 		{
 			tdx+=cdx;
@@ -1482,9 +1529,6 @@ void Unit::pathFind(void)
 	
 	if (bypassDirection!=DIR_UNSET)
 	{
-		// TODO : something if obstacle==border
-		// TODO : something if the validHard configuration uf the map has changed.
-		
 		while (obstacleX<0)
 			obstacleX+=mapw;
 		while (obstacleY<0)
@@ -1511,13 +1555,13 @@ void Unit::pathFind(void)
 		{
 			int c=0;
 			if (verbose)
-					printf("l o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
+				printf("l o=(%d, %d) b=(%d, %d) \n", obstacleX, obstacleY, borderX, borderY);
 			int bdx;
 			int bdy;
 			int bDirection;
 			int odx;
 			int ody;
-			assert(validHard(borderX, borderY));
+			assert(validHard(borderX, borderY));// TODO : avoid this assertion, because it may fail.
 			
 			if (validHard(obstacleX, obstacleY))
 			{
@@ -1685,7 +1729,7 @@ void Unit::pathFind(void)
 			int bDirection;
 			int odx;
 			int ody;
-			assert(validHard(borderX, borderY));
+			assert(validHard(borderX, borderY)); // TODO : avoid this assertion, because it may fail.
 			
 			if (validHard(obstacleX, obstacleY))
 			{
@@ -1777,16 +1821,6 @@ void Unit::pathFind(void)
 				printf("r maxDist=%d \n", maxDist);
 			
 			maxDist*=maxDist;
-			
-/*bug:
-p=(0, 8)
-r o=(1, 8) b=(128, 8)
-r d=(0, 0) bd=(1, 0) od=(127, 0) ld=(0, 0)
-r bapd=(0, 0), border-bapd=(128, 8)
-r maxDist=2
-r tobstacle=(129, 8) tborder=(128, 8) bd=(1, 0)
-r new tobstacle=(129, 8) tborder=(129, 9) bd=(1, 1)
-gotoTarget pos=(0, 8) target=(128, 8) ld=(0, 0) cd=(0, 0) d=(0, 0)*/
 			
 			int distSq=owner->game->map.warpDistSquare(posX, posY, borderX, borderY);
 			int testObstacleX=obstacleX;
@@ -1913,37 +1947,13 @@ void Unit::gotoTarget(int targetX, int targetY)
 	
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
-	int cdx, cdy;
 	
-	int mapw=owner->game->map.w;
-	int maph=owner->game->map.h;
-	int mapwm=owner->game->map.wMask;
-	int maphm=owner->game->map.hMask;
-	
-	while (ldx<0)
-		ldx+=mapw;
-	while (ldy<0)
-		ldy+=maph;
-	ldx&=mapwm;
-	ldy&=maphm;
-	
-	// TODO : is it warp safe ?
-	if ( abs(ldx)>(mapw>>1) )
-		cdx=-sign(ldx);
-	else
-		cdx=sign(ldx);
-	
-	if ( abs(ldy)>(maph>>1) )
-		cdy=-sign(ldy);
-	else
-		cdy=sign(ldy);
+	simplifyDirection(ldx, ldy, &dx, &dy);
 
-	dx=cdx;
-	dy=cdy;
 	directionFromDxDy();
 	
 	if (verbose)
-		printf("gotoTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) cd=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, cdx, cdy, dx, dy);
+		printf("gotoTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
 	
 	int cDirection=direction;
 		
@@ -1998,27 +2008,6 @@ void Unit::newTargetWasSet(void)
 	tempTargetY=targetY;
 	bypassDirection=DIR_UNSET;
 }
-
-/*void Unit::pathFind(void)
-{
-	// TODO : a real path finding
-	int ldx=targetX-posX;
-	int ldy=targetY-posY;
-	
-	if ( abs(ldx)>((owner->game->map.getW())>>1) )
-		dx=-sign(ldx);
-	else
-		dx=sign(ldx);
-		
-	if ( abs(ldy)>((owner->game->map.getH())>>1) )
-		dy=-sign(ldy);
-	else
-		dy=sign(ldy);
-	
-	directionFromDxDy();
-
-	setNewValidDirection();
-}*/
 
 bool Unit::endOfAction(void)
 {
@@ -2098,8 +2087,13 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 	int maph=owner->game->map.h;
 	if (ldx>(mapw>>1))
 		ldx-=mapw;
+	else if (ldx<-(mapw>>1))
+		ldx+=mapw;
 	if (ldy>(maph>>1))
 		ldy-=maph;
+	else if (ldy<-(maph>>1))
+		ldy+=maph;
+		
 	if (abs(ldx)>(2*abs(ldy)))
 	{
 		if ( abs(ldx)>((owner->game->map.getW())>>1) )

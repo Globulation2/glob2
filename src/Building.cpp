@@ -29,7 +29,7 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	maxUnitInside=type->maxUnitInside;
 	maxUnitWorking=type->maxUnitWorking;
 	maxUnitWorkingLocal=maxUnitWorking;
-	maxUnitWorkingPreferred=maxUnitWorking;
+	maxUnitWorkingPreferred=1;
 	lastInsideSubscribe=0;
 	lastWorkingSubscribe=0;
 	
@@ -338,6 +338,10 @@ void Building::update(void)
 			buildingState=DEAD;
 			owner->buildingsToBeDestroyed.push_front(UIDtoID(UID));
 		}
+		else
+		{
+			printf("(%d)Building wait for destruction, uws=%d, uis=%d, uwss=%d, uiss=%d.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
+		}
 	}
 
 	if ((buildingState==WAITING_FOR_UPGRADE) || (buildingState==WAITING_FOR_UPGRADE_ROOM))
@@ -352,6 +356,8 @@ void Building::update(void)
 			owner->buildingsToBeUpgraded.push_front(this);
 			//printf("inserted %d, w=%d\n", (int)this, type->width);
 		}
+		else
+			printf("(%d)Building wait for upgrade, uws=%d, uis=%d, uwss=%d, uiss=%d.\n", UID, unitsWorking.size(), unitsInside.size(), unitsWorkingSubscribe.size(), unitsInsideSubscribe.size());
 	}
 
 	// TODO : save the knowledge weather or not the building is already in the Call list in the building
@@ -415,6 +421,7 @@ void Building::update(void)
 				unitsWorking.erase(ittemp);
 				update();
 				fu->attachedBuilding=NULL;
+				fu->needToRecheckMedical=true;
 			}
 			else
 				break;
@@ -621,6 +628,27 @@ void Building::step(void)
 	// NOTE : Unit needs to update itself when it is in a building
 }
 
+void Building::removeSubscribers(void)
+{
+	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+	{
+		(*it)->attachedBuilding=NULL;
+		(*it)->subscribed=false;
+		(*it)->activity=Unit::ACT_RANDOM;
+		(*it)->needToRecheckMedical=true;
+	}
+	unitsWorkingSubscribe.clear();
+	
+	for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+	{
+		(*it)->attachedBuilding=NULL;
+		(*it)->subscribed=false;
+		(*it)->activity=Unit::ACT_RANDOM;
+		(*it)->needToRecheckMedical=true;
+	}
+	unitsInsideSubscribe.clear();
+}
+
 bool Building::fullWorking(void)
 {
 	return ((signed)unitsWorking.size()>=maxUnitWorking);
@@ -637,8 +665,25 @@ bool Building::fullInside(void)
 void Building::subscribeForWorkingStep()
 {
 	lastWorkingSubscribe++;
+	if (fullWorking())
+	{
+		for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
+		unitsWorkingSubscribe.clear();
+		return;
+	}
+	
 	if (lastWorkingSubscribe>32)
 	{
+		printf("(%d) Building::subscribeForWorkingStep(). s=%d\n", UID, unitsWorkingSubscribe.size());
+		
+		
+		
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
@@ -668,6 +713,7 @@ void Building::subscribeForWorkingStep()
 				(*it)->attachedBuilding=NULL;
 				(*it)->subscribed=false;
 				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
 			}
 			unitsWorkingSubscribe.clear();
 		}
@@ -677,8 +723,22 @@ void Building::subscribeForWorkingStep()
 void Building::subscribeForInsideStep()
 {
 	lastInsideSubscribe++;
+	if (fullInside())
+	{
+		for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
+		{
+			(*it)->attachedBuilding=NULL;
+			(*it)->subscribed=false;
+			(*it)->activity=Unit::ACT_RANDOM;
+			(*it)->needToRecheckMedical=true;
+		}
+		unitsInsideSubscribe.clear();
+		return;
+	}
+	
 	if (lastInsideSubscribe>32)
 	{
+		printf("(%d) Building::subscribeForInsideStep(). s=%d\n", UID, unitsInsideSubscribe.size());
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
@@ -708,6 +768,7 @@ void Building::subscribeForInsideStep()
 				(*it)->attachedBuilding=NULL;
 				(*it)->subscribed=false;
 				(*it)->activity=Unit::ACT_RANDOM;
+				(*it)->needToRecheckMedical=true;
 			}
 			unitsInsideSubscribe.clear();
 		}
@@ -926,6 +987,7 @@ void Building::kill(void)
 		u->attachedBuilding=NULL;
 		u->activity=Unit::ACT_RANDOM;
 		u->displacement=Unit::DIS_RANDOM;
+		(*it)->needToRecheckMedical=true;
 	}
 	unitsInside.clear();
 
@@ -933,6 +995,7 @@ void Building::kill(void)
 	{
 		(*it)->attachedBuilding=NULL;
 		(*it)->activity=Unit::ACT_RANDOM;
+		(*it)->needToRecheckMedical=true;
 	}
 	unitsWorking.clear();
 
