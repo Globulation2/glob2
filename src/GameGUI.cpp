@@ -393,7 +393,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 							teamVisionMask|=(1<<otherTeam);
 						}
 					}
-					orderQueue.push_back(new SetAllianceOrder(localTeamNo, teamAllianceMask, teamVisionMask));
+					orderQueue.push_back(new SetAllianceOrder(localTeamNo, teamAllianceMask, teamVisionMask, teamVisionMask, teamVisionMask));
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -2066,7 +2066,7 @@ void GameGUI::drawAll(int team)
 	else
 	{
 		globalContainer->gfx->setClipRect();
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);//zzz
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, false);//zzz
 	}
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);

@@ -348,21 +348,23 @@ class SetAllianceOrder:public MiscOrder
 {
 public:
 	SetAllianceOrder(const Uint8 *data, int dataLength);
-	SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask);
+	SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask);
 	virtual ~SetAllianceOrder(void) { }
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 12; }
+	int getDataLength(void) { return 20; }
 	Sint32 checkSum() { return ORDER_SET_ALLIANCE; }
 
 	Uint32 teamNumber;
 	Uint32 allianceMask;
-	Uint32 visionMask;
+	Uint32 visionExchangeMask;
+	Uint32 visionFoodMask;
+	Uint32 visionOtherMask;
 
  protected:
-	Uint8 data[12];
+	Uint8 data[20];
 };
 
 class SubmitCheckSumOrder:public MiscOrder

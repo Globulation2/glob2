@@ -30,6 +30,7 @@ protected:
 		BASECLASS(RectangularWidget)
 	MEMBERS
 		ITEM(Uint32, count)
+		ITEM(Uint32, size)
 		ITEM(Uint32, value)
 		ITEM(Sint32, id)
 		ITEM(std::string, sprite)
@@ -40,7 +41,7 @@ protected:
 
 public:
 	Selector() { count=0; value=0; id=0; archPtr=NULL; }
-	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned defaultValue=0, unsigned const char *sprite=NULL, Sint32 id=0);
+	Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned count, unsigned size=16, unsigned defaultValue=0, const char *sprite=NULL, Sint32 id=0);
 	virtual ~Selector() { }
 
 	virtual void onSDLEvent(SDL_Event *event);

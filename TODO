@@ -4,6 +4,7 @@ Gameplay :
 - Unites tirent une pierre.
 - Dans les batiments de nourriture, recolter ce dont il y a le moins (en valeur absolue)
 
+
 Bug:
 - Les drapeaux de guerrières sont mal gérés et des guerrières marchent sur le même GID.
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
@@ -12,6 +13,7 @@ Net:
 - Vérifier que les "wishedLatency" ne soient pas modiffés pendant qu'un joueur est temporairement inaccessible.
 
 Technique :
+- Cleaner le rendu de la minimap, integrer toutes les ressources.
 - Il faut beaucoup de boulets pour une pierre déposée dans une tourelle.
 - Modiffier le comportement-gui des drapeaux d'interdiction pour ne tenir compte des mouvements lorsque l'on lache le drapeau.
 - Terminer le pathfindig: grouper les gradients globaux

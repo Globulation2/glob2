@@ -342,10 +342,9 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Uint32 team=((SetAllianceOrder *)order)->teamNumber;
 			teams[team]->allies=((SetAllianceOrder *)order)->allianceMask;
 			teams[team]->enemies=~teams[team]->allies;
-			// TODO : pass 3 masks through network
-			teams[team]->sharedVisionExchange=((SetAllianceOrder *)order)->visionMask;
-			teams[team]->sharedVisionFood=((SetAllianceOrder *)order)->visionMask;
-			teams[team]->sharedVisionOther=((SetAllianceOrder *)order)->visionMask;
+			teams[team]->sharedVisionExchange=((SetAllianceOrder *)order)->visionExchangeMask;
+			teams[team]->sharedVisionFood=((SetAllianceOrder *)order)->visionFoodMask;
+			teams[team]->sharedVisionOther=((SetAllianceOrder *)order)->visionOtherMask;
 			setAIAlliance();
 		}
 		break;
@@ -1197,9 +1196,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					sprite=globalContainer->ressources;
 					id-=272;
 				}
-				
+
 				globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
-				
+
 			}
 
 	for (int y=top; y<=bot; y++)
@@ -1251,7 +1250,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", (x+viewportX+map.getW())&(map.getMaskW()));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", (y+viewportY+map.getH())&(map.getMaskH()));
 				}
-	
+
 	// We draw debug area:
 	if (false)
 	{
@@ -1293,7 +1292,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		}
 	}
-	
+
 	// We draw ground units:
 	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
@@ -1303,7 +1302,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (gid!=NOGUID)
 				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
 		}
-	
+
 	// We draw ground buildings:
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
@@ -1499,7 +1498,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				{
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
 				}*/
-				
+
 				// first draw black
 				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
 				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
@@ -1510,7 +1509,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
 				else if (blackValue)
 					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainBlack, blackValue);
-				
+
 				// then if it isn't full black, draw shade
 				if (blackValue!=15)
 				{

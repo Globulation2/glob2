@@ -734,23 +734,27 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength)
 SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength)
 :MiscOrder()
 {
-	assert(dataLength==12);
+	assert(dataLength==20);
 	bool good=setData(data, dataLength);
 	assert(good);
 }
 
-SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionMask)
+SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 allianceMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask)
 {
 	this->teamNumber=teamNumber;
 	this->allianceMask=allianceMask;
-	this->visionMask=visionMask;
+	this->visionExchangeMask=visionExchangeMask;
+	this->visionFoodMask=visionFoodMask;
+	this->visionOtherMask=visionOtherMask;
 }
 
 Uint8 *SetAllianceOrder::getData(void)
 {
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->allianceMask, 4);
-	addUint32(data, this->visionMask, 8);
+	addUint32(data, this->visionExchangeMask, 8);
+	addUint32(data, this->visionFoodMask, 12);
+	addUint32(data, this->visionOtherMask, 16);
 	return data;
 }
 
@@ -761,7 +765,9 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 
 	this->teamNumber=getUint32(data, 0);
 	this->allianceMask=getUint32(data, 4);
-	this->visionMask=getUint32(data, 8);
+	this->visionExchangeMask=getUint32(data, 8);
+	this->visionFoodMask=getUint32(data, 12);
+	this->visionOtherMask=getUint32(data, 16);
 
 	memcpy(this->data,data,dataLength);
 

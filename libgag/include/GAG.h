@@ -37,5 +37,6 @@
 #include "GUINumber.h"
 #include "GUIRatio.h"
 #include "GUIMessageBox.h"
+#include "GUISelector.h"
 
 #endif

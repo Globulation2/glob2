@@ -152,14 +152,14 @@ OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	this->vAlignFlag=vAlign;
 
 	this->state=startState;
-	this->returnCode=returnCode;
-	highlighted=false;
 }
 
 void OnOffButton::onSDLEvent(SDL_Event *event)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
+
+	HighlightableWidget::onSDLEvent(event);
 
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
@@ -179,11 +179,8 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void OnOffButton::internalPaint(void)
+void OnOffButton::internalRepaint(int x, int y, int w, int h)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
 	if (highlighted)
 	{
 		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -200,24 +197,6 @@ void OnOffButton::internalPaint(void)
 	}
 }
 
-void OnOffButton::paint(void)
-{
-	highlighted=false;
-	if (visible)
-		internalPaint();
-}
-
-void OnOffButton::repaint(void)
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
-	parent->paint(x, y, w, h);
-	if (visible)
-		internalPaint();
-	parent->addUpdateRect(x, y, w, h);
-}
-
 void OnOffButton::setState(bool newState)
 {
 	if (newState!=state)
@@ -228,6 +207,7 @@ void OnOffButton::setState(bool newState)
 }
 
 ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode)
+:HighlightableWidget(returnCode)
 {
 	this->x=x;
 	this->y=y;
@@ -235,9 +215,7 @@ ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	this->h=h;
 	this->hAlignFlag=hAlign;
 	this->vAlignFlag=vAlign;
-	
-	this->returnCode=returnCode;
-	highlighted=false;
+
 	selColor=0;
 }
 
@@ -246,28 +224,9 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 
-	if (event->type==SDL_MOUSEMOTION)
-	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
-		{
-			if (!highlighted)
-			{
-				highlighted=true;
-				repaint();
-				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
-			}
-		}
-		else
-		{
-			if (highlighted)
-			{
-				highlighted=false;
-				repaint();
-				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
-			}
-		}
-	}
-	else if (event->type==SDL_MOUSEBUTTONDOWN)
+	HighlightableWidget::onSDLEvent(event);
+
+	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h) && v.size())
 		{
@@ -303,11 +262,8 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 	}
 }
 
-void ColorButton::internalPaint(void)
+void ColorButton::internalRepaint(int x, int y, int w, int h)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
 	if (highlighted)
 	{
 		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -321,22 +277,4 @@ void ColorButton::internalPaint(void)
 		if (v.size())
 			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
 	}
-}
-
-void ColorButton::paint(void)
-{
-	highlighted=false;
-	if (visible)
-		internalPaint();
-}
-
-void ColorButton::repaint(void)
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-
-	parent->paint(x, y, w, h);
-	if (visible)
-		internalPaint();
-	parent->addUpdateRect(x, y, w, h);
 }
