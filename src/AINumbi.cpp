@@ -383,7 +383,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 
 			printf("AI: (%d) ratioLocal changed.\n", b->gid);
 
-			return new OrderModifySwarms(&(b->gid), b->ratioLocal, 1);
+			return new OrderModifySwarm(b->gid, b->ratioLocal);
 		}
 
 		int f=estimateFood(b);
@@ -399,7 +399,7 @@ Order *AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersF
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;
-			return new OrderModifyBuildings(&b->gid, &numberRequestedTemp, 1);
+			return new OrderModifyBuilding(b->gid, numberRequestedTemp);
 		}
 	}
 	if (ss<minSwarmNumbers)
@@ -794,8 +794,8 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 
 				if (b->maxUnitWorking!=numberRequested)
 				{
-					printf("AI: OrderModifyBuildings(%d, %d)\n", b->gid, numberRequested);
-					return new OrderModifyBuildings(&b->gid, &numberRequested, 1);
+					printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
+					return new OrderModifyBuilding(b->gid, numberRequested);
 				}
 			}
 
@@ -879,7 +879,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 			fb++;
 			int w=workers;
 			if ((b->maxUnitWorking!=w)&&(b->type->maxUnitWorking))
-				return new OrderModifyBuildings(&b->gid, &w, 1);
+				return new OrderModifyBuilding(b->gid, w);
 		}
 	}
 	

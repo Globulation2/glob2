@@ -777,7 +777,7 @@ Order *NetGame::getOrder(int playerNumber)
 			for (int pi=0; pi<numberOfPlayer; pi++)
 				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])
 				{
-					printf("Player %d dropped for checksum\n", pi);
+					fprintf(logFile, "Player %d dropped for checksum\n", pi);
 					players[pi]->type=Player::P_LOST_FINAL;
 				}
 		}

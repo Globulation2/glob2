@@ -243,22 +243,19 @@ public:
 
 	bool isRessource(int x, int y)
 	{
-		return getRessource(x, y) != NORESID;
-	}
-
-	bool isRemovableRessource(int x, int y)
-	{
-		Ressource r=getRessource(x, y);
-		if (r==NORESID)
-			return false;
-		Uint8 t=r.type;
-		return (t<BASIC_COUNT && t!=STONE);
+		return (*(cases+w*(y&hMask)+(x&wMask))).ressource.type!=NO_RES_TYPE;
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
 	{
 		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 		return (ressource->type == ressourceType &&  ressource->amount>0);
+	}
+
+	bool isRessource(int x, int y, bool ressourceTypes[BASIC_COUNT])
+	{
+		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
+		return (ressource->type!=NO_RES_TYPE && ressource->amount>0 && ressourceTypes[ressource->type]);
 	}
 
 	bool isRessource(int x, int y, int *ressourceType)
@@ -298,7 +295,6 @@ public:
 	
 	//! Return true if unit has contact with ressource of any ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
-	bool doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy);
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
 	bool doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy);
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
@@ -355,12 +351,6 @@ public:
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
 	bool ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
-	/*Uint8 distToRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
-	{
-		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
-		assert(gradient);
-		return 254-*(gradient+(x&wMask)+(y&hMask)*w);
-	}*/
 	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{
 		Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];

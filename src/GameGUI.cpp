@@ -200,15 +200,15 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	int posX, posY;
 	Building* selBuild=selection.building;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY)||drop)
+	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY)||(drop && selBuild->posX!=posX && selBuild->posY!=posY))
 	{
 		Uint16 gid=selBuild->gid;
-		OrderMoveFlags *oms=new OrderMoveFlags(&gid, &posX, &posY, &drop, 1);
+		OrderMoveFlag *oms=new OrderMoveFlag(gid, posX, posY, drop);
 		// First, we check if anoter move of the same flag is already in the "orderQueue".
 		bool found=false;
 		for (std::list<Order *>::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
-			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( *((OrderMoveFlags *)(*it))->gid==gid) )
+			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG) && ( ((OrderMoveFlag *)(*it))->gid==gid) )
 			{
 				delete (*it);
 				(*it)=oms;
@@ -728,14 +728,14 @@ void GameGUI::processEvent(SDL_Event *event)
 							!(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal+=1);
-							orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
 						}
 					}
 				}
@@ -753,14 +753,14 @@ void GameGUI::processEvent(SDL_Event *event)
 							!(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 						}
 						else if ((selBuild->type->defaultUnitStayRange) &&
 							(selBuild->unitStayRangeLocal>0) &&
 							(SDL_GetModState()&KMOD_SHIFT))
 						{
 							int nbReq=(selBuild->unitStayRangeLocal-=1);
-							orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
 						}
 					}
 				}
@@ -879,7 +879,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal+=1);
-							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 						}
 					}
 				}
@@ -893,7 +893,7 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
 						{
 							int nbReq=(selBuild->maxUnitWorkingLocal-=1);
-							orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+							orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
 						}
 					}
 				}
@@ -1238,36 +1238,106 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (selBuild->owner->teamNumber!=localTeamNo)
 			return;
 		int ypos = YPOS_BASE_BUILDING +  YOFFSET_NAME + YOFFSET_ICON + YOFFSET_B_SEP;
-		if ((my>ypos+YOFFSET_TEXT_BAR) && (my<ypos+YOFFSET_TEXT_BAR+16)  && (selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE))
+		BuildingType *buildingType = selBuild->type;
+	
+		// working bar
+		if (selBuild->type->maxUnitWorking)
 		{
-			int nbReq;
-			if (mx<18)
+			if (((selBuild->owner->allies)&(1<<localTeamNo))
+				&& my>ypos+YOFFSET_TEXT_BAR
+				&& my<ypos+YOFFSET_TEXT_BAR+16
+				&& selBuild->buildingState==Building::ALIVE)
 			{
-				if(selBuild->maxUnitWorkingLocal>0)
+				int nbReq;
+				if (mx<18)
 				{
-					nbReq=(selBuild->maxUnitWorkingLocal-=1);
-					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
+					if(selBuild->maxUnitWorkingLocal>0)
+					{
+						nbReq=(selBuild->maxUnitWorkingLocal-=1);
+						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+					}
+				}
+				else if (mx<128-18)
+				{
+					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
+					orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+				}
+				else
+				{
+					if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
+					{
+						nbReq=(selBuild->maxUnitWorkingLocal+=1);
+						orderQueue.push_back(new OrderModifyBuilding(selBuild->gid, nbReq));
+					}
 				}
 			}
-			else if (mx<128-18)
-			{
-				nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
-				orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
-			}
-			else
-			{
-				if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
-				{
-					nbReq=(selBuild->maxUnitWorkingLocal+=1);
-					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
-				}
-			}
+			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
-		ypos += YOFFSET_BAR + YOFFSET_B_SEP;
-
-		if (selBuild->type->canExchange)
+		
+		// flag range bar
+		if (buildingType->defaultUnitStayRange)
 		{
-			int startY = ypos+YOFFSET_INFOS+YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
+			if (((selBuild->owner->allies)&(1<<localTeamNo))
+				&& (my>ypos+YOFFSET_TEXT_BAR)
+				&& (my<ypos+YOFFSET_TEXT_BAR+16))
+			{
+				int nbReq;
+				if (mx<18)
+				{
+					if(selBuild->unitStayRangeLocal>0)
+					{
+						nbReq=(selBuild->unitStayRangeLocal-=1);
+						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+					}
+				}
+				else if (mx<128-18)
+				{
+					nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
+					orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+				}
+				else
+				{
+					// TODO : check in orderQueue to avoid useless orders.
+					if (selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange)
+					{
+						nbReq=(selBuild->unitStayRangeLocal+=1);
+						orderQueue.push_back(new OrderModifyFlag(selBuild->gid, nbReq));
+					}
+				}
+			}
+			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
+		}
+		
+		// cleared ressources fo clearing flags:
+		if (buildingType->type==BuildingType::CLEARING_FLAG
+			&& ((selBuild->owner->allies)&(1<<localTeamNo))
+			&& mx>10
+			&& mx<22)
+		{
+			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
+			int j=0;
+			for (int i=0; i<BASIC_COUNT; i++)
+				if (i!=STONE)
+				{
+					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+					{
+						selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
+						orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+					}
+					
+					ypos+=YOFFSET_TEXT_PARA;
+					j++;
+				}
+		}
+		
+		ypos += YOFFSET_INFOS;
+		if (buildingType->shootDamage)
+			ypos += YOFFSET_TOWER;
+		ypos += YOFFSET_B_SEP;
+
+		if (selBuild->type->canExchange && ((selBuild->owner->allies)&(1<<localTeamNo)))
+		{
+			int startY = ypos+YOFFSET_TEXT_PARA;
 			int endY = startY+HAPPYNESS_COUNT*YOFFSET_TEXT_PARA;
 			if ((my>startY) && (my<endY))
 			{
@@ -1283,7 +1353,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal |= (1<<r);
 						selBuild->sendRessourceMaskLocal &= ~(1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(&selBuild->gid, &selBuild->receiveRessourceMaskLocal, &selBuild->sendRessourceMaskLocal, 1));
+					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
 				}
 
 				if ((mx>110) && (mx<122))
@@ -1297,39 +1367,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						selBuild->receiveRessourceMaskLocal &= ~(1<<r);
 						selBuild->sendRessourceMaskLocal |= (1<<r);
 					}
-					orderQueue.push_back(new OrderModifyExchange(&selBuild->gid, &selBuild->receiveRessourceMaskLocal, &selBuild->sendRessourceMaskLocal, 1));
+					orderQueue.push_back(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal));
 				}
 			}
 		}
-
-		if ((selBuild->type->defaultUnitStayRange) && (my>ypos+YOFFSET_TEXT_BAR) && (my<ypos+YOFFSET_TEXT_BAR+16))
-		{
-			int nbReq;
-			if (mx<18)
-			{
-				if(selBuild->unitStayRangeLocal>0)
-				{
-					nbReq=(selBuild->unitStayRangeLocal-=1);
-					orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
-				}
-			}
-			else if (mx<128-18)
-			{
-				nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
-				orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
-			}
-			else
-			{
-				// TODO : check in orderQueue to avoid useless orders.
-				if (selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange)
-				{
-					nbReq=(selBuild->unitStayRangeLocal+=1);
-					orderQueue.push_back(new OrderModifyFlags(&(selBuild->gid), &(nbReq), 1));
-				}
-			}
-		}
-
-
 
 		if (selBuild->type->unitProductionTime)
 		{
@@ -1342,20 +1383,20 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						if (selBuild->ratioLocal[i]>0)
 						{
 							selBuild->ratioLocal[i]--;
-							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
+							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
 						}
 					}
 					else if (mx<128-18)
 					{
 						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
-						orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
+						orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
 					}
 					else
 					{
 						if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
 						{
 							selBuild->ratioLocal[i]++;
-							orderQueue.push_back(new OrderModifySwarms(&(selBuild->gid), selBuild->ratioLocal, 1));
+							orderQueue.push_back(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal));
 						}
 					}
 					//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
@@ -1849,7 +1890,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 
 	// inside
-	if ((buildingType->maxUnitInside) && ((selBuild->owner->allies) &(1<<localTeamNo)))
+	if (buildingType->maxUnitInside && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		globalContainer->littleFont->pushColor(185, 195, 21);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
@@ -1875,7 +1916,7 @@ void GameGUI::drawBuildingInfos(void)
 	}
 
 	// it is a unit ranged attractor (aka flag)
-	if (buildingType->defaultUnitStayRange)
+	if (buildingType->defaultUnitStayRange && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		// get flag stat
 		int goingTo, onSpot;
@@ -1893,10 +1934,10 @@ void GameGUI::drawBuildingInfos(void)
 
 	ypos += YOFFSET_ICON+YOFFSET_B_SEP;
 
-	// working and flag bar
-	if ((selBuild->owner->allies) &(1<<localTeamNo))
+	// working bar
+	if (buildingType->maxUnitWorking)
 	{
-		if (buildingType->maxUnitWorking)
+		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
 			if (selBuild->buildingState==Building::ALIVE)
 			{
@@ -1923,12 +1964,14 @@ void GameGUI::drawBuildingInfos(void)
 						Toolkit::getStringTable()->getString("[still one unit working]") );
 				}
 			}
-
-			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
-
-		// display range box
-		if (buildingType->defaultUnitStayRange)
+		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
+	}
+	
+	// flag range bar
+	if (buildingType->defaultUnitStayRange)
+	{
+		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
 			const char *range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
@@ -1937,11 +1980,35 @@ void GameGUI::drawBuildingInfos(void)
 			globalContainer->littleFont->popColor();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+len, ypos, globalContainer->littleFont, GAG::nsprintf("%d", selBuild->unitStayRange).c_str());
 			drawScrollBox(globalContainer->gfx->getW()-128, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
-
-			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
+		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
-
+	
+	// cleared ressources fo clearing flags:
+	if (buildingType->type==BuildingType::CLEARING_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	{
+		ypos+=YOFFSET_B_SEP;
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
+			Toolkit::getStringTable()->getString("[Clearing:]"));
+		ypos+=YOFFSET_TEXT_PARA;
+		int j=0;
+		for (int i=0; i<BASIC_COUNT; i++)
+			if (i!=STONE)
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
+					Toolkit::getStringTable()->getString("[ressources]", i));
+				bool clearing=selBuild->clearingRessourcesLocal[i];
+				int spriteId;
+				if (clearing)
+					spriteId=20;
+				else
+					spriteId=19;
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
+				
+				ypos+=YOFFSET_TEXT_PARA;
+				j++;
+			}
+	}
 
 	// other infos
 	if (buildingType->armor)
@@ -1956,35 +2023,31 @@ void GameGUI::drawBuildingInfos(void)
 
 	ypos += YOFFSET_B_SEP;
 
-
-	if ((selBuild->owner->sharedVisionExchange) & (1<<localTeamNo))
+	// exchange building
+	if (buildingType->canExchange && ((selBuild->owner->sharedVisionExchange)&(1<<localTeamNo)))
 	{
-		// exchange building
-		if (buildingType->canExchange)
+		globalContainer->littleFont->pushColor(185, 195, 21);
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
+		globalContainer->littleFont->popColor();
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
+		ypos += YOFFSET_TEXT_PARA;
+		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->littleFont->pushColor(185, 195, 21);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[exchange]"));
-			globalContainer->littleFont->popColor();
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+
+			int inId, outId;
+			if (selBuild->receiveRessourceMaskLocal & (1<<i))
+				inId = 20;
+			else
+				inId = 19;
+			if (selBuild->sendRessourceMaskLocal & (1<<i))
+				outId = 20;
+			else
+				outId = 19;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36, ypos+2, globalContainer->gamegui, inId);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-18, ypos+2, globalContainer->gamegui, outId);
+
 			ypos += YOFFSET_TEXT_PARA;
-			for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
-			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, GAG::nsprintf("%s (%d/%d)", Toolkit::getStringTable()->getString("[ressources]", i+HAPPYNESS_BASE), selBuild->ressources[i+HAPPYNESS_BASE], buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
-
-				int inId, outId;
-				if (selBuild->receiveRessourceMaskLocal & (1<<i))
-					inId = 20;
-				else
-					inId = 19;
-				if (selBuild->sendRessourceMaskLocal & (1<<i))
-					outId = 20;
-				else
-					outId = 19;
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36, ypos+2, globalContainer->gamegui, inId);
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-18, ypos+2, globalContainer->gamegui, outId);
-
-				ypos += YOFFSET_TEXT_PARA;
-			}
 		}
 	}
 
@@ -2007,6 +2070,7 @@ void GameGUI::drawBuildingInfos(void)
 				}
 			}
 
+			// ressources in
 			unsigned j = 0;
 			for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
 			{
@@ -2134,8 +2198,7 @@ void GameGUI::drawRessourceInfos(void)
 {
 	const Ressource &r = game.map.getRessource(selection.ressource);
 	int ypos = YPOS_BASE_RESSOURCE;
-	
-	if (static_cast<Uint32>(r) !=NORESID)
+	if (r.type!=NO_RES_TYPE)
 	{
 		// Draw ressource name
 		const std::string &ressourceName = Toolkit::getStringTable()->getString("[ressources]", r.type);

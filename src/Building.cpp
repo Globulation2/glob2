@@ -81,7 +81,11 @@ Building::Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsT
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
 	unitStayRangeLocal=unitStayRange;
-
+	for(int i=0; i<BASIC_COUNT; i++)
+		clearingRessources[i]=true;
+	clearingRessources[STONE]=false;
+	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressources[i]=0;
@@ -157,7 +161,20 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	// Flag specific
 	unitStayRange=SDL_ReadBE32(stream);
 	unitStayRangeLocal=unitStayRange;
-
+	if (versionMinor>=27)
+	{
+		for(int i=0; i<BASIC_COUNT; i++)
+			clearingRessources[i]=(bool)SDL_ReadBE32(stream);
+		assert(clearingRessources[STONE]==false);
+	}
+	else
+	{
+		for(int i=0; i<BASIC_COUNT; i++)
+			clearingRessources[i]=true;
+		clearingRessources[STONE]=false;
+	}
+	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressources[i]=SDL_ReadBE32(stream);
@@ -242,6 +259,8 @@ void Building::save(SDL_RWops *stream)
 
 	// Flag specific
 	SDL_WriteBE32(stream, unitStayRange);
+	for(int i=0; i<BASIC_COUNT; i++)
+		SDL_WriteBE32(stream, (Sint32)clearingRessources[i]);
 
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)

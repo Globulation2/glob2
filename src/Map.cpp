@@ -746,7 +746,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	Case initCase;
 	initCase.terrain=0; // default, not really meaningfull.
 	initCase.building=NOGBID;
-	initCase.ressource=NORESID;
+	initCase.ressource.clear();
 	initCase.groundUnit=NOGUID;
 	initCase.airUnit=NOGUID;
 	initCase.forbidden=0;
@@ -972,7 +972,7 @@ void Map::growRessources(void)
 		{
 			//int y=syncRand()&hMask;
 			Ressource r=getRessource(x, y);
-			if (r != NORESID)
+			if (r.type!=NO_RES_TYPE)
 			{
 				// we look around to see if there is any water :
 				// TODO: uses UnderMap.
@@ -1105,7 +1105,7 @@ void Map::decRessource(int x, int y)
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource r=*rp;
 
-	if (r==NORESID)
+	if (r.type==NO_RES_TYPE)
 		return;
 
 	int type=r.type;
@@ -1123,7 +1123,7 @@ void Map::decRessource(int x, int y)
 	else
 	{
 		if (!fulltype->granular || amount==1)
-			*rp=NORESID;
+			rp->clear();
 		else
 			rp->amount=amount-1;
 	}
@@ -1140,8 +1140,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
 	Ressource &r=*rp;
 	const RessourceType *fulltype;
-
-	if (r==NORESID)
+	if (r.type==NO_RES_TYPE)
 	{
 		if (getBuilding(x, y)!=NOGBID)
 			return false;
@@ -1355,22 +1354,6 @@ bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	
-	for (int tdx=-1; tdx<=1; tdx++)
-		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRemovableRessource(x+tdx, y+tdy))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
-}
-
 bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy)
 {
 	int x=unit->posX;
@@ -1541,7 +1524,7 @@ void Map::setNoRessource(int x, int y, int size)
 	assert(size<h);
 	for (int dx=x-(size>>1); dx<x+(size>>1); dx++)
 		for (int dy=y-(size>>1); dy<y+(size>>1); dy++)
-			(cases+w*(dy&hMask)+(dx&wMask))->ressource=NORESID;
+			(cases+w*(dy&hMask)+(dx&wMask))->ressource.clear();
 }
 
 void Map::setRessource(int x, int y, int type, int size)
@@ -2162,7 +2145,7 @@ void Map::updateGradient(int teamNumber, Uint8 ressourceType, bool canSwim, bool
 			for (int x=0; x<w; x++)
 			{
 				Case c=cases[wy+x];
-				if (c.ressource==NORESID)
+				if (c.ressource.type==NO_RES_TYPE)
 				{
 					if (c.building!=NOGBID)
 						gradient[wy+x]=0;
@@ -2586,7 +2569,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			int addrl=wyl+xl;
 			if (gradient[addrl]!=255)
 			{
-				if (c.ressource!=NORESID)
+				if (c.ressource.type!=NO_RES_TYPE)
 					gradient[addrl]=0;
 				else if (c.building!=NOGBID && c.building!=bgid)
 					gradient[addrl]=0;
@@ -2862,7 +2845,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			Case c=cases[wyx];
 			if (c.building==NOGBID)
 			{
-				if (c.ressource!=NORESID)
+				if (c.ressource.type!=NO_RES_TYPE)
 					gradient[wyx]=0;
 				else if (c.forbidden&teamMask)
 					gradient[wyx]=0;
@@ -3210,7 +3193,9 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 		building->localRessources[canSwim]=gradient;
 	}
 	assert(gradient);
-
+	
+	bool *clearingRessources=building->clearingRessources;
+	
 	memset(gradient, 1, 1024);
 	int range=building->unitStayRange;
 	assert(range<=15);
@@ -3231,10 +3216,10 @@ void Map::updateLocalRessources(Building *building, bool canSwim)
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
 			{
-				if (c.ressource!=NORESID)
+				if (c.ressource.type!=NO_RES_TYPE)
 				{
 					Sint8 t=c.ressource.type;
-					if (t<BASIC_COUNT && t!=STONE)
+					if (t<BASIC_COUNT && clearingRessources[t])
 						gradient[addrl]=255;
 					else
 						gradient[addrl]=0;
@@ -4049,7 +4034,7 @@ Sint32 Map::checkSum(bool heavy)
 			{
 				cs+=(cases+w*(y&hMask)+(x&wMask))->terrain;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->building;
-				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource.getUint32();
 				cs+=(cases+w*(y&hMask)+(x&wMask))->groundUnit;
 				cs+=(cases+w*(y&hMask)+(x&wMask))->airUnit;
 				cs=(cs<<1)|(cs>>31);
