@@ -591,7 +591,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
 		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
-		if (serverIP.host)
+		if (serverIP.host && (serverIP.host!=SDL_SwapBE32(0x7F000001)))
 		{
 			if (serverIP.host!=newHost)
 			{

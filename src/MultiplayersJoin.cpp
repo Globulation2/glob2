@@ -710,7 +710,7 @@ void MultiplayersJoin::joinerBroadcastResponse(char *data, int size, IPaddress i
 	if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
 	{
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-			if (strncmp(sessionInfo.players[j].name, name, 32)==0)
+			if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
 			{
 				sessionInfo.players[j].waitForNatResolution=false;
 				sessionInfo.players[j].ipFromNAT=true;

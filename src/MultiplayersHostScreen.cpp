@@ -150,7 +150,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->serverIP.host=SDL_SwapBE32(0x7F000001);
 		multiplayersJoin->serverIP.port=SDL_SwapBE16(GAME_SERVER_PORT);
 		
-		multiplayersJoin->tryConnection(false);
+		multiplayersJoin->tryConnection(true);
 	}
 
 	if ((multiplayersJoin)&&(!multiplayersJoin->kicked))
