@@ -69,6 +69,8 @@ manpage.1: manpage.sgml
       <arg><option>-s<replaceable>640x480</replaceable></option></arg>
       <arg><option>-a </option></arg>
       <arg><option>-b </option></arg>
+      <arg><option>-l </option></arg>
+      <arg><option>-t <replaceable>[01]</replaceable></option></arg>
       <arg><option>-d <replaceable>/home/foo/bar</replaceable></option></arg>
       <arg><option>-u <replaceable>jack</replaceable></option></arg>
       <arg><option>-host <replaceable>MapName</replaceable></option></arg>
@@ -134,6 +136,20 @@ manpage.1: manpage.sgml
         </term>
         <listitem>
           <para>Disable double buffering (useful on OS X on fullscreen).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-l</option>
+        </term>
+        <listitem>
+          <para>low speed graphics : disable some transparency effects</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-t <replaceable>0/1</replaceable></option>
+        </term>
+        <listitem>
+          <para>type of gfx renderer : 0 = SDL, 1 = OpenGL</para>
         </listitem>
       </varlistentry>
       <varlistentry>

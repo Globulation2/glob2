@@ -58,7 +58,7 @@
 glob2 \(em Real Time Strategy Game 
 .SH "SYNOPSIS" 
 .PP 
-\fBglob2\fP [\fB-h \fP]  [\fB-f \fP]  [\fB-r \fP]  [\fB-s\fI640x480\fP\fP]  [\fB-a \fP]  [\fB-b \fP]  [\fB-d \fI/home/foo/bar\fP\fP]  [\fB-u \fIjack\fP\fP]  [\fB-host \fIMapName\fP\fP]  
+\fBglob2\fP [\fB-h \fP]  [\fB-f \fP]  [\fB-r \fP]  [\fB-s\fI640x480\fP\fP]  [\fB-a \fP]  [\fB-b \fP]  [\fB-l \fP]  [\fB-t \fI[01]\fP\fP]  [\fB-d \fI/home/foo/bar\fP\fP]  [\fB-u \fIjack\fP\fP]  [\fB-host \fIMapName\fP\fP]  
 .SH "DESCRIPTION" 
 .PP 
 This manual page documents briefly the 
@@ -84,6 +84,10 @@ Set specified resolution.
 Set hardware accelerated gfx. 
 .IP "\fB-b\fP         " 10 
 Disable double buffering (useful on OS X on fullscreen). 
+.IP "\fB-l\fP         " 10 
+low speed graphics : disable some transparency effects 
+.IP "\fB-t \fI0/1\fP\fP         " 10 
+type of gfx renderer : 0 = SDL, 1 = OpenGL 
 .IP "\fB-d \fIdirectory\fP\fP         " 10 
 Add a directory to the directory search list. 
 .IP "\fB-u \fIusername\fP\fP         " 10 
@@ -99,4 +103,4 @@ the terms of the GNU Free Documentation
 License, Version 1.1 as published by the Free 
 Software Foundation; with no Invariant Sections, no Front-Cover 
 Texts and no Back-Cover Texts. 
-...\" created by instant / docbook-to-man, Sun 27 Apr 2003, 20:03 
+...\" created by instant / docbook-to-man, Mon 12 May 2003, 10:14 
