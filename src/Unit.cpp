@@ -1527,6 +1527,7 @@ void Unit::handleMovement(void)
 			//{
 				int quality=INT_MAX; // Smaller is better.
 				movement=MOV_RANDOM_GROUND;
+				targetBuilding=NULL;
 				if (verbose)
 					printf("guid=(%d) selecting movement\n", gid);
 				
@@ -1547,7 +1548,8 @@ void Unit::handleMovement(void)
 								{
 									int id=Building::GIDtoID(gid);
 									int newQuality=((x*x+y*y)<<8);
-									BuildingType *bt=owner->game->teams[team]->myBuildings[id]->type;
+									Building *b=owner->game->teams[team]->myBuildings[id];
+									BuildingType *bt=b->type;
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
 									if (verbose)
@@ -1561,7 +1563,10 @@ void Unit::handleMovement(void)
 											dy=y;
 										}
 										else
+										{
 											movement=MOV_GOING_TARGET;
+											targetBuilding=b;
+										}
 										targetX=posX+x;
 										targetY=posY+y;
 										quality=newQuality;
@@ -1592,7 +1597,10 @@ void Unit::handleMovement(void)
 												dy=y;
 											}
 											else
+											{
 												movement=MOV_GOING_TARGET;
+												targetBuilding=NULL;
+											}
 											targetX=posX+x;
 											targetY=posY+y;
 											quality=newQuality;
@@ -1601,6 +1609,22 @@ void Unit::handleMovement(void)
 								}
 							}
 						}
+				if (movement==MOV_GOING_TARGET && targetBuilding!=NULL)
+				{
+					if (owner->map->pathfindBuilding(targetBuilding, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
+					{
+						if (verbose)
+							printf("guid=(%d) Warrior found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, targetBuilding->gid, dx, dy);
+						movement=MOV_GOING_DXDY;
+					}
+					else
+					{
+						if (verbose)
+							printf("guid=(%d) Warrior failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, targetBuilding->gid, dx, dy);
+						stopAttachedForBuilding(true);
+						movement=MOV_RANDOM_GROUND;
+					}
+				}
 			//}
 		}
 		break;

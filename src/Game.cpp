@@ -1416,7 +1416,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 		if (unit->displacement==Unit::DIS_GOING_TO_FLAG
 			|| unit->displacement==Unit::DIS_GOING_TO_RESSOURCE
-			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING)
+			|| unit->displacement==Unit::DIS_GOING_TO_BUILDING
+			|| (unit->displacement==Unit::DIS_ATTACKING_AROUND
+				&& (unit->movement==Unit::MOV_GOING_DXDY
+					|| unit->movement==Unit::MOV_ATTACKING_TARGET)))
 		{
 			int lsx, lsy, ldx, ldy;
 			lsx=px+16;
@@ -1950,7 +1953,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					if (players[pi] && players[pi]->ai && players[pi]->ai->implementitionID==AI::CASTOR)
 					{
 						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
-						Uint8 *gradient=ai->wheatCareMap[0];
+						Uint8 *gradient=ai->enemyWarriorsMap;
 						//Uint8 *gradient=map.forbiddenGradient[1][0];
 						//Uint8 *gradient=map.ressourcesGradient[0][CORN][0];
 						
