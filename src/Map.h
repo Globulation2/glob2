@@ -183,12 +183,14 @@ public:
 	Uint16 getTerrain(int x, int y) { return (*(cases+w*(y&hMask)+(x&wMask))).terrain; }
 	//! Set the terrain type at position (x,y).
 	void setTerrain(int x, int y, Uint16 t) { (*(cases+w*(y&hMask)+(x&wMask))).terrain=t; }
+	//! Return true if there is water or alga at position (x,y).
+	bool isWaterOrAlga(int x, int y);
 	//! Return true if there is water at position (x,y).
 	bool isWater(int x, int y);
 	//! Return true if there is grass at position (x,y).
 	bool isGrass(int x, int y);
 	//! Return true if there is sand at position (x,y).
-	bool isSand(int x, int y) { return ((!isWater(x,y)) && (!isGrass(x,y))); }
+	bool isSand(int x, int y);
 	//! Return true if there is a ressource that can grow at position (x,y).
 	bool isGrowableRessource(int x, int y);
 	//! Return true if there is a ressource at position (x,y).

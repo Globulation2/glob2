@@ -226,6 +226,12 @@ Map::~Map(void)
 		delete[] undermap;
 }
 
+bool Map::isWaterOrAlga(int x, int y)
+{
+	int t=getTerrain(x, y);
+	return ((t>=256)&&(t<256+16)) || ((t>=302)&&(t<312));
+}
+
 bool Map::isWater(int x, int y)
 {
 	int t=getTerrain(x, y);
@@ -235,6 +241,12 @@ bool Map::isWater(int x, int y)
 bool Map::isGrass(int x, int y)
 {
 	return (getTerrain(x, y)<16);
+}
+
+bool Map::isSand(int x, int y)
+{
+	int t=getTerrain(x, y);
+	return ((t>=16)&&(t<32));
 }
 
 bool Map::isGrowableRessource(int x, int y)
@@ -642,17 +654,42 @@ void Map::save(SDL_RWops *stream)
 }
 void Map::growRessources(void)
 {
+	for (int y=0; y<h; y++)
 	{
 		for (int x=(syncRand()&0x7); x<w; x+=(syncRand()&0xF))
+		//for (int x=0; x<w; x++)
 		{
-			int y=syncRand()&hMask;
+			//int y=syncRand()&hMask;
 
 			int d=getTerrain(x, y)-272;
 			int r=d/10;
 			int l=d%5;
 			if ((d>=0)&&(d<40))
 			{
-				if((r==WOOD)||(r==CORN)||(r==ALGA))
+				// we look around to see if there is any water :
+				// TODO: uses UnderMap.
+				static const int waterDist=0x7;
+				int dwax=(syncRand()&waterDist)-(syncRand()&waterDist);
+				int dway=(syncRand()&waterDist)-(syncRand()&waterDist);
+				int wax1=x+dwax*2;
+				int way1=y+dway*2;
+				int wax2=x+dwax;
+				int way2=y+dway;
+				int wax3=x-dwax;
+				int way3=y-dway;
+				bool expand=false;
+				if (r==ALGA)
+				{
+					if ((!isWaterOrAlga(wax1, way1))&&(isWater(wax2, way2))&&(isWater(wax3, way3)))
+						expand=true;
+				}
+				else if ((r==WOOD)||(r==CORN))
+				{
+					if (isWaterOrAlga(wax1, way1)&&(isGrass(wax2, way2))&&(isGrass(wax3, way3)))
+						expand=true;
+				}
+				
+				if (expand)
 				{
 					//if (l<4)
 					if (l<=(int)(syncRand()&3))
@@ -666,25 +703,7 @@ void Map::growRessources(void)
 						int ny=y+dy;
 						if (getUnit(nx, ny)==NOUID)
 						if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-						{
 							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
-							
-							/*int rrx=x-(dx<<1);
-							int rry=y-(dy<<1);
-							
-							int d=getTerrain(rrx, rry)-272;
-							if ((d<0)||(d>=40))
-								continue;
-							int r=d/10;
-							if (r!=STONE)
-							{
-								if (r==ALGA)
-									setTerrain(rrx, rry, 256+(syncRand()&0xF));
-								else
-									setTerrain(rrx, rry, syncRand()&0xF);
-							}*/
-						}
-						
 					}
 				}
 			}
