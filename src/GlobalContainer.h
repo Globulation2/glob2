@@ -63,6 +63,7 @@ public:
 	Sprite *buildings;
 	Font *menuFont;
 	Font *standardFont;
+	Font *littleFontGreen;
 
 	StringTable texts;
 
