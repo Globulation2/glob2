@@ -257,7 +257,8 @@ public:
 
 	bool isRessource(int x, int y, int ressourceType)
 	{
-		return getRessource(x, y).type == ressourceType;
+		Ressource *ressource=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
+		return (ressource->type == ressourceType &&  ressource->amount>0);
 	}
 
 	bool isRessource(int x, int y, int *ressourceType)
@@ -270,9 +271,9 @@ public:
 	}
 
 	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
-	bool decRessource(int x, int y);
+	void decRessource(int x, int y);
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	bool decRessource(int x, int y, int ressourceType);
+	void decRessource(int x, int y, int ressourceType);
 	bool incRessource(int x, int y, int ressourceType, int variety);
 	
 	//! Return true if unit can go to position (x,y)
