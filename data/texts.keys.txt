@@ -319,3 +319,6 @@
 [customcur]
 [choose campaign]
 [nick taken]
+[mute]
+[shortcut explanation enter]
+[shortcut explanation v]

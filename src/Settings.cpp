@@ -47,6 +47,7 @@ Settings::Settings()
 	optionFlags = 0;
 	defaultLanguage = 0;
 	musicVolume = 255;
+	mute = 0;
 }
 
 #define READ_PARSED_STRING(var) \
@@ -97,6 +98,7 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(graphicType);
 		READ_PARSED_INT(defaultLanguage);
 		READ_PARSED_INT(musicVolume);
+		READ_PARSED_INT(mute);
 	}
 	delete stream;
 }
@@ -120,6 +122,7 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
+		Utilities::streamprintf(stream, "mute=%d\n", mute);
 	}
 	delete stream;
 }

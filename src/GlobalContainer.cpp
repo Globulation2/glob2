@@ -249,7 +249,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		if (strcmp(argv[i], "-m")==0)
 		{
-			settings.musicVolume=0;
+			settings.mute = 1;
+			continue;
+		}
+		if (strcmp(argv[i], "-M")==0)
+		{
+			settings.mute = 0;
 			continue;
 		}
 
@@ -267,7 +272,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
 			printf("-h\thigh speed graphics: max of transparency effects\n");
 			printf("-v\tset the music volume\n");
-			printf("-m\tmute the music\n");
+			printf("-m/-M\tmute/unmute the sound (both music and speach)\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
@@ -412,7 +417,7 @@ void GlobalContainer::load(void)
 		initProgressBar();
 		
 		// create mixer
-		mix = new SoundMixer(settings.musicVolume);
+		mix = new SoundMixer(settings.musicVolume, settings.mute);
 		mix->loadTrack("data/zik/intro.ogg");
 		mix->loadTrack("data/zik/menu.ogg");
 		mix->loadTrack("data/zik/a1.ogg");

@@ -282,6 +282,6 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->mix->setVolume(musicVol->getValue());
+		globalContainer->mix->setVolume(musicVol->getValue(), globalContainer->settings.mute);
 	}
 }

@@ -256,19 +256,19 @@ void SoundMixer::openAudio(void)
 	voiceSubIndex = 0;
 }
 
-SoundMixer::SoundMixer(unsigned volume)
+SoundMixer::SoundMixer(unsigned volume, bool mute)
 {
 	actTrack = -1;
 	nextTrack = -1;
 	this->volume = volume;
 	mode = MODE_STOPPED;
+	speexDecoderState = NULL;
 	
 	initInterpolationTable();
 	
-	if (volume == 0)
+	if (mute)
 	{
 		soundEnabled = false;
-		speexDecoderState = NULL;
 		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
 		return;
 	}
@@ -320,7 +320,7 @@ int SoundMixer::loadTrack(const char *name)
 
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
-	if ((soundEnabled) && (volume) && (i<tracks.size()))
+	if ((soundEnabled) && (i<tracks.size()))
 	{
 		SDL_LockAudio();
 		
@@ -345,25 +345,24 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	}
 }
 
-void SoundMixer::setVolume(unsigned volume)
+void SoundMixer::setVolume(unsigned volume, bool mute)
 {
-	unsigned lastVolume = this->volume;
-	this->volume = volume;
-	if (lastVolume != volume)
+	if (!soundEnabled)
 	{
-		if (lastVolume == 0)
+		if (!mute)
 		{
-			if (!soundEnabled)
-				openAudio();
-			if (actTrack>=0)
-			{
-				SDL_PauseAudio(0);
-				mode = MODE_START;
-			}
+			openAudio();
+			this->volume = volume;
 		}
-		if (volume == 0)
-			stopMusic();
+		else
+			return;
 	}
+	else if (mute)
+	{
+		this->volume = 0;
+	}
+	else
+		this->volume = volume;
 }
 
 void SoundMixer::stopMusic(void)

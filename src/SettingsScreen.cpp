@@ -120,7 +120,11 @@ SettingsScreen::SettingsScreen()
 	addWidget(musicVol);
 	musicVolText=new Text(200, 100, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
-
+	audioMute=new OnOffButton(150, 130, 20, 20, ALIGN_RIGHT, ALIGN_BOTTOM, globalContainer->settings.mute, MUTE);
+	addWidget(audioMute);
+	audioMuteText=new Text(100, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[mute]"));
+	addWidget(audioMuteText);
+	
 	// Screen entry/quit part
 	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -137,6 +141,7 @@ SettingsScreen::SettingsScreen()
 	oldGraphicType = globalContainer->settings.graphicType;
 	oldOptionFlags = globalContainer->settings.optionFlags;
 	oldMusicVol = globalContainer->settings.musicVolume;
+	oldMute = globalContainer->settings.mute;
 
 	gfxAltered = false;
 }
@@ -159,9 +164,6 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			Toolkit::getStringTable()->setLang(oldLanguage);
 
-			globalContainer->settings.musicVolume = oldMusicVol;
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
-
 			globalContainer->settings.screenWidth = oldScreenW;
 			globalContainer->settings.screenHeight = oldScreenH;
 			globalContainer->settings.screenDepth = oldScreenDepth;
@@ -173,7 +175,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.optionFlags = oldOptionFlags;
 			
 			globalContainer->settings.musicVolume = oldMusicVol;
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
+			globalContainer->settings.mute = oldMute;
+			globalContainer->mix->setVolume(oldMusicVol, oldMute);
 
 			endExecute(par1);
 		}
@@ -199,6 +202,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
+			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
 			
 			rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 		}
@@ -227,7 +231,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==VALUE_CHANGED)
 	{
 		globalContainer->settings.musicVolume = musicVol->getValue();
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
@@ -284,6 +288,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 				globalContainer->settings.screenFlags&=~(DrawableSurface::CUSTOMCURSOR);
 			}
 			updateGfxCtx();
+		}
+		else if (source==audioMute)
+		{
+			globalContainer->settings.mute = audioMute->getState();
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
 		}
 	}
 }

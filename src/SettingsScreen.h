@@ -46,6 +46,7 @@ public:
 		DBLBUFF = 5,
 		LOWQUALITY = 6,
 		CUSTOMCUR = 7,
+		MUTE = 8,
 	};
 private:
 	List *languageList;
@@ -53,13 +54,14 @@ private:
 	List *rendererList;
 	List *depthList;
 	TextInput *userName;
-	int oldLanguage, oldScreenW, oldScreenH, oldScreenDepth, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol;
+	int oldLanguage, oldScreenW, oldScreenH, oldScreenDepth, oldScreenFlags, oldGraphicType, oldOptionFlags, oldMusicVol, oldMute;
 	
 	TextButton *ok, *cancel;
 	OnOffButton *fullscreen, *hwaccel, *dblbuff, *lowquality, *customcur;
 	Selector *musicVol;
+	OnOffButton *audioMute;
 	Text *title, *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *customcurText, *musicVolText;
+	Text *fullscreenText, *hwaccelText, *dblbuffText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
