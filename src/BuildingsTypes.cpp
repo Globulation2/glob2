@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charriï¿½e
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -90,6 +90,21 @@ void BuildingsTypes::load(const char *filename)
 			assert((*it)->hpInc>0);
 		else
 			assert((*it)->hpInc==0);
+		
+		//hpInc consistency:
+		if ((*it)->isBuildingSite)
+		{
+			int resSum=0;
+			for (int i=0; i<MAX_RESSOURCES; i++)
+				resSum+=(*it)->maxRessource[i];
+			int hpSum=(*it)->hpInit+resSum*(*it)->hpInc;
+			if (hpSum<(*it)->hpMax)
+			{
+				printf("Warning, building type %d with hpInc=%d, resSum=%d, hpSum=%d, hpMax=%d. (make hpInc>=%d)\n",
+					(*it)->type, (*it)->hpInc, resSum, hpSum, (*it)->hpMax, ((*it)->hpMax-(*it)->hpInit+resSum-1)/resSum);
+			}
+		}
+		
 		
 		//flag integrity:
 		if ((*it)->isVirtual)

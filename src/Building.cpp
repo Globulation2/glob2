@@ -967,7 +967,8 @@ void Building::updateBuildingSite(void)
 		assert(unitsInside.size()==0);
 		maxUnitInside=type->maxUnitInside;
 
-		hp=type->hpInit;
+		if (hp>=type->hpInit)
+			hp=type->hpInit;
 
 		productionTimeout=type->unitProductionTime;
 		if (type->unitProductionTime)
