@@ -47,4 +47,6 @@ public:
 	SDLBitmapFont menuFont;
 };
 
+extern GlobalContainer *globalContainer;
+
 #endif 

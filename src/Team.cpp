@@ -9,7 +9,7 @@
 #include "Game.h"
 #include "Utilities.h"
 
-extern GlobalContainer globalContainer;
+
 
 BaseTeam::BaseTeam()
 {
@@ -140,7 +140,7 @@ void Team::init(void)
 			myBullets[i]=NULL;
 		}
 	}
-	palette=globalContainer.macPal;
+	palette=globalContainer->macPal;
 	freeUnits=0;
 	startPosX=startPosY=0;
 	
@@ -170,7 +170,7 @@ void Team::setCorrectMasks(void)
 void Team::setCorrectColor(Sint32 color)
 {
 	this->color=color;
-	this->palette=globalContainer.macPal;
+	this->palette=globalContainer->macPal;
 	this->palette.decHue((float)(this->color-120));
 }
 
@@ -316,7 +316,7 @@ void Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes)
 	BaseTeam::load(stream);
 
 	// loading team
-	palette=globalContainer.macPal;
+	palette=globalContainer->macPal;
 	palette.decHue((float)(color-120));
 	
 	// normal load
