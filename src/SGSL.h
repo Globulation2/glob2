@@ -123,7 +123,8 @@ public:
 	bool hasWon, hasLost;
 	
 private:
-	bool conditionTester();
+	bool conditionTesterBuildings();
+	bool conditionTesterGlobules();
 	bool testCondition();
 	int valueOfVariable(Token nameOfVariable,int numberOfPlayer, int level);
 	int lineSelector;
@@ -144,6 +145,7 @@ public:
 	void step();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
+	bool errorInScriptExecution;
 	int getMainTimer(void) { return mainTimer; }
 	
 	bool isTextShown;
