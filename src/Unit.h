@@ -47,7 +47,22 @@ public:
 	void directionFromDxDy(void);
 	void dxdyfromDirection(void);
 	static int directionFromDxDy(int dx, int dy);
-	static void dxdyfromDirection(int direction, int *dx, int *dy);
+	inline static void dxdyfromDirection(int direction, int *dx, int *dy)
+	{
+	const int tab[9][2]={	{ -1, -1},
+							{ 0, -1},
+							{ 1, -1},
+							{ 1, 0},
+							{ 1, 1},
+							{ 0, 1},
+							{ -1, 1},
+							{ -1, 0},
+							{ 0, 0} };
+	assert(direction>=0);
+	assert(direction<=8);
+	*dx=tab[direction][0];
+	*dy=tab[direction][1];
+	}
 	
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);

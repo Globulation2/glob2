@@ -179,7 +179,7 @@ public:
 #endif
 	}
 
-	Uint16 getTerrain(int x, int y)
+	inline Uint16 getTerrain(int x, int y)
 	{
 		return (*(cases+w*(y&hMask)+(x&wMask))).terrain;
 	}
@@ -221,10 +221,10 @@ public:
 	void clearForbiddenArea(int x, int y, int r, Uint32 me);
 	void clearForbiddenArea(Uint32 me);
 
-	bool isWater(int x, int y)
+	inline bool isWater(int x, int y)
 	{
-		int t=getTerrain(x, y);
-		return ((t>=256) && (t<256+16));
+		int t=getTerrain(x, y)-256;
+		return ((t>=0) && (t<16));
 	}
 
 	bool isGrass(int x, int y)
@@ -274,7 +274,7 @@ public:
 	
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
-	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim, Uint32 teamMask);
+	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim);
 	bool isFreeForAirUnit(int x, int y) {return (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y);
 	bool isFreeForBuilding(int x, int y, int w, int h);

@@ -1332,13 +1332,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 		}
 	
 	// We draw debug area:
-	if (false)
-		//if (selectedUnit && selectedUnit->verbose)
+	//if (false)
+		if (selectedUnit && selectedUnit->verbose)
 		{
-			//Building *b=selectedUnit->attachedBuilding;
+			Building *b=selectedUnit->attachedBuilding;
 			
-			assert(teams[0]);
-			Building *b=teams[0]->myBuildings[113];
+			//assert(teams[0]);
+			//Building *b=teams[0]->myBuildings[0];
 			//if (teams[0]->virtualBuildings.size())
 			//	b=*teams[0]->virtualBuildings.begin();
 
