@@ -34,6 +34,7 @@
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUILoadSave.h"
+#include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -2442,7 +2443,7 @@ void GameGUI::drawOverlayInfos(void)
 			int x, y;
 
 			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
-			Utilities::globalCoordToLocalView(&game, localTeamNo, it->x, it->y, &x, &y);
+			GameUtilities::globalCoordToLocalView(&game, localTeamNo, it->x, it->y, &x, &y);
 			x = (x*100)/mMax;
 			y = (y*100)/mMax;
 			x += globalContainer->gfx->getW()-128+14+decX;
