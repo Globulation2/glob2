@@ -342,7 +342,10 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Uint32 team=((SetAllianceOrder *)order)->teamNumber;
 			teams[team]->allies=((SetAllianceOrder *)order)->allianceMask;
 			teams[team]->enemies=~teams[team]->allies;
-			teams[team]->sharedVision=((SetAllianceOrder *)order)->visionMask;
+			// TODO : pass 3 masks through network
+			teams[team]->sharedVisionExchange=((SetAllianceOrder *)order)->visionMask;
+			teams[team]->sharedVisionFood=((SetAllianceOrder *)order)->visionMask;
+			teams[team]->sharedVisionOther=((SetAllianceOrder *)order)->visionMask;
 			setAIAlliance();
 		}
 		break;
@@ -680,8 +683,7 @@ void Game::step(Sint32 localTeam)
 						assert(b->owner==teams[t]);
 					if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 					{
-						int vr=b->type->viewingRange;
-						map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, teams[t]->sharedVision);
+						b->setMapDiscovered();
 					}
 				}
 		}
@@ -765,7 +767,7 @@ void Game::regenerateDiscoveryMap(void)
 			Unit *u=teams[t]->myUnits[i];
 			if (u)
 			{
-				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVision);
+				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVisionOther);
 			}
 		}
 		for (int i=0; i<1024; i++)
@@ -773,8 +775,7 @@ void Game::regenerateDiscoveryMap(void)
 			Building *b=teams[t]->myBuildings[i];
 			if (b)
 			{
-				int vr=b->type->viewingRange;
-				map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, teams[t]->sharedVision);
+				b->setMapDiscovered();
 			}
 		}
 	}
@@ -1139,7 +1140,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 	}
-	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVision & teams[localTeam]->me))
+	if ((drawPathLines) && (unit->movement==Unit::MOV_GOING_TARGET) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
 	{
 		int lsx, lsy, ldx, ldy;
 		lsx=px+16;
@@ -1390,7 +1391,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 		}
 
-		if (drawHealthFoodBar && (building->owner->sharedVision & teams[localTeam]->me))
+		if (drawHealthFoodBar && (building->owner->sharedVisionOther & teams[localTeam]->me))
 		{
 			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 			// TODO : find better color for this

@@ -199,7 +199,9 @@ void Team::setCorrectMasks(void)
 	me=teamNumberToMask(teamNumber);
 	allies=me;
 	enemies=~allies;
-	sharedVision=me;
+	sharedVisionExchange=me;
+	sharedVisionFood=me;
+	sharedVisionOther=me;
 }
 
 void Team::setCorrectColor(Uint8 r, Uint8 g, Uint8 b)
@@ -485,8 +487,9 @@ bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versio
 
 	allies=SDL_ReadBE32(stream);
 	enemies=SDL_ReadBE32(stream);
-	assert(allies==~enemies);
-	sharedVision=SDL_ReadBE32(stream);
+	sharedVisionExchange=SDL_ReadBE32(stream);
+	sharedVisionFood=SDL_ReadBE32(stream);
+	sharedVisionOther=SDL_ReadBE32(stream);
 	me=SDL_ReadBE32(stream);
 	startPosX=SDL_ReadBE32(stream);
 	startPosY=SDL_ReadBE32(stream);
@@ -558,7 +561,9 @@ void Team::save(SDL_RWops *stream)
 
 	SDL_WriteBE32(stream, allies);
 	SDL_WriteBE32(stream, enemies);
-	SDL_WriteBE32(stream, sharedVision);
+	SDL_WriteBE32(stream, sharedVisionExchange);
+	SDL_WriteBE32(stream, sharedVisionFood);
+	SDL_WriteBE32(stream, sharedVisionOther);
 	SDL_WriteBE32(stream, me);
 	SDL_WriteBE32(stream, startPosX);
 	SDL_WriteBE32(stream, startPosY);
@@ -841,7 +846,9 @@ Sint32 Team::checkSum()
 
 	cs^=allies;
 	cs^=enemies;
-	cs^=sharedVision;
+	cs^=sharedVisionExchange;
+	cs^=sharedVisionFood;
+	cs^=sharedVisionOther;
 	cs^=me;
 
 	return cs;

@@ -357,13 +357,13 @@ void Unit::step(void)
 		endOfAction();
 		if (performance[FLY])
 		{
-			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
-			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
+			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
 		}
 		else
 		{
-			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
-			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
+			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
 		}
 	}
 }
@@ -1006,7 +1006,7 @@ void Unit::handleMovement(void)
 
 				dx=-cdy;
 				dy=cdx;
-				if (!owner->map->isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVision))
+				if (!owner->map->isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVisionOther))
 				{
 					dx=cdx;
 					dy=cdy;
@@ -1025,7 +1025,7 @@ void Unit::handleMovement(void)
 					{
 						int dx, dy;
 						dxdyfromDirection(j, &dx, &dy);
-						if (!owner->map->isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVision))
+						if (!owner->map->isMapDiscovered(posX+i*dx, posY+j*dy, owner->sharedVisionOther))
 						{
 							dist[j]=i;
 							break;
@@ -1101,7 +1101,7 @@ void Unit::handleMovement(void)
 				
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
-						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVision))
+						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
 						{
 							if (attachedBuilding&&
 								owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)

@@ -490,8 +490,18 @@ void Building::cancelConstruction(void)
 		percentUsed[i]=0;
 	}
 
+	setMapDiscovered();
+}
+
+void Building::setMapDiscovered(void)
+{
 	int vr=type->viewingRange;
-	owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
+	if (type->canExchange)
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionExchange);
+	else if (type->canFeedUnit)
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionFood);
+	else
+		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionOther);
 }
 
 void Building::launchDelete(void)
@@ -771,9 +781,7 @@ void Building::updateBuildingSite(void)
 		if (type->shootingRange)
 			owner->turrets.push_front(this);
 
-		// TODO: DUNNO : when do we update closestRessourceXY[] ?
-		int vr=type->viewingRange;
-		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVision);
+		setMapDiscovered();
 		owner->setEvent(getMidX(), getMidY(), Team::BUILDING_FINISHED_EVENT, gid);
 
 		// we need to do an update again

@@ -213,7 +213,7 @@ isBuildingSite = 1
 // food building, level 1
 startImage = 8
 
-fillable = 1
+foodable = 1
 canFeedUnit = 1
 timeToFeedUnit = 5
 
