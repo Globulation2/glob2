@@ -54,23 +54,24 @@ private:
 	void choosePhase();
 	
 	Order *phaseAlpha();
+	Order *phaseBeta();
 
 	void computeCanSwim();
 	
 	void computeObstacleUnitMap();
 	void computeObstacleBuildingMap();
 	void computeSpaceForBuildingMap(int max);
-	void computeBuildingNeighbourMap();
+	void computeBuildingNeighbourMap(int dw, int dh);
 	void computeTwoSpaceNeighbourMap();
 	
 	void computeWorkPowerMap();
 	void computeWorkRangeMap();
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
-	void computeWheatGrowthMap();
+	void computeWheatGrowthMap(int dw, int dh);
 	
-	Order *findGoodFoodBuilding();
-	Order *findBestFoodBuilding();
+	Order *findGoodFoodBuilding(Sint32 typeNum);
+	Order *findBestFoodBuilding(Sint32 typeNum);
 	
 	void computeRessourcesCluster();
 	
@@ -82,6 +83,7 @@ private:
 	{
 		P_NONE=0,
 		P_ALPHA=1,
+		P_BETA=2,
 		P_END
 	};
 	
@@ -90,6 +92,8 @@ private:
 	int scheduler;
 	
 	Uint32 timer;
+	
+	
 	bool hydratationMapComputed;
 	
 public:
@@ -98,8 +102,9 @@ public:
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
 	Uint8 *obstacleBuildingMap; // where buildings can be built. included in {0, 1}
 	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
-	Uint8 *buildingNeighbourMap; // where you can build with exactly one neighbour. Bit 0 means bad place. Bit 1 to 7 is the sum of the neighbours.
-	Uint8 *twoSpaceNeighbourMap; // where you can build at a distance of 2 of another obstacle for building.
+	Uint8 *buildingNeighbourMap; // bit 0: dirty flag, bit [1, 2]: direct neighbours count, bit 4: zero, bit [5, 7]; far neighbours count.
+	
+	Uint8 *twoSpaceNeighbourMap; // TODO: remove.
 	
 	Uint8 *workPowerMap;
 	Uint8 *workRangeMap;
