@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001, 2002, 2003 Stephane Magnenat, Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat, Luc-Olivier de Charrière
   and Martin S. Nyffenegger
   for any question or comment contact us at nct@ysagoon.com, nuage@ysagoon.com
   or barock@ysagoon.com
