@@ -54,7 +54,7 @@ void YOGServer::send(IPaddress ip, Uint8 *data, int size)
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to alocate packet!\n");
+		fprintf(logServer, "Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=size;
@@ -77,7 +77,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v)
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to alocate packet!\n");
+		fprintf(logServer, "Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=4;
@@ -100,7 +100,7 @@ void YOGServer::send(IPaddress ip, YOGMessageType v, Uint8 id)
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 	if (packet==NULL)
 	{
-		fprintf(logServer, "Failed to alocate packet!\n");
+		fprintf(logServer, "Failed to allocate packet!\n");
 		return;
 	}
 	packet->len=4;
