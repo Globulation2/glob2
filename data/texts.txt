@@ -1,4 +1,7 @@
 2
+[language]
+Francais
+English
 [hp]
 HP
 HP

@@ -75,6 +75,8 @@ FileManager.h \
 FileManager.cpp \
 YOGScreen.h \
 YOGScreen.cpp \
+SettingsScreen.h \
+SettingsScreen.cpp \
 NonANSICStdWrapper.h
 
 glob2_LDADD= -lSDL_net -lSDL_image @SDL_LIBS@ 
