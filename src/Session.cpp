@@ -25,6 +25,9 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 
 SessionGame::SessionGame()
 {

@@ -22,6 +22,11 @@
 
 #include "SessionConnection.h"
 #include "MultiplayersJoin.h"
+#include <GUIBase.h>
+
+class Text;
+class TextInput;
+class List;
 
 class MultiplayersJoinScreen:public Screen
 {

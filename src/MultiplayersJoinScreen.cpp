@@ -18,10 +18,16 @@
 */
 
 #include "MultiplayersJoinScreen.h"
-#include "GAG.h"
 #include "MultiplayersConnectedScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include <GUIText.h>
+#include <GUITextInput.h>
+#include <GUIList.h>
+#include <GUIButton.h>
+#include <Toolkit.h>
+#include <StringTable.h>
+#include <GraphicContext.h>
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {

@@ -26,6 +26,8 @@
 #include "GlobalContainer.h"
 #include <float.h>
 #include "LogFileManager.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 
 BaseTeam::BaseTeam()
 {
