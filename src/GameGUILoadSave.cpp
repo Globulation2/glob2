@@ -41,6 +41,7 @@ InGameLoadSaveScreen::InGameLoadSaveScreen(const char *directory, const char *ex
 			fileList->addText(mapTempName);
 			delete[] mapTempName;
 		}
+		fileList->sort();
 	}
 	addWidget(fileList);
 

@@ -177,7 +177,7 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
 		Building *b=*it;
-		if ((b->ratioLocal[UnitType::WORKER]!=workers)||(b->ratioLocal[UnitType::EXPLORER]!=explorers)||(b->ratioLocal[UnitType::WARRIOR]!=warriors))
+		if ((b->ratio[UnitType::WORKER]!=workers)||(b->ratio[UnitType::EXPLORER]!=explorers)||(b->ratio[UnitType::WARRIOR]!=warriors))
 		{
 			b->ratioLocal[UnitType::WORKER]=workers;
 			b->ratioLocal[UnitType::EXPLORER]=explorers;
@@ -192,7 +192,7 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 
 		int f=estimateFood(b->posX, b->posY);
 		int numberRequestedTemp=numberRequested;
-		int numberRequestedLoca=b->maxUnitWorkingLocal;
+		int numberRequestedLoca=b->maxUnitWorking;
 		if (f<(nbu*3-1))
 			numberRequestedTemp=0;
 		else if (numberRequestedLoca==0)
@@ -201,7 +201,7 @@ Order *AI::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator,
 		
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
-			printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
+			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;
 			return new OrderModifyBuildings(&b->UID, &numberRequestedTemp, 1);
 		}
@@ -654,8 +654,11 @@ Order *AI::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberReque
 					if ((uid==NOUID)||(uid>=0)||(Building::UIDtoTeam(uid)==teamNumber))
 						return new OrderDelete(b->UID);
 						
-					if (b->maxUnitWorkingLocal!=numberRequested)
+					if (b->maxUnitWorking!=numberRequested)
+					{
+						printf("AI: OrderModifyBuildings(%d, %d)", b->UID, numberRequested);
 						return new OrderModifyBuildings(&b->UID, &numberRequested, 1);
+					}
 				}
 			}
 		}
@@ -737,7 +740,7 @@ Order *AI::adjustBuildings(const int numbers, const int numbersInc, const int wo
 		{
 			fb++;
 			int w=workers;
-			if ((b->maxUnitWorkingLocal!=w)&&(b->type->maxUnitWorking))
+			if ((b->maxUnitWorking!=w)&&(b->type->maxUnitWorking))
 			{
 
 				//printf("AI: (%d) (%d) numberRequested changed.\n", buildingType, b->UID);

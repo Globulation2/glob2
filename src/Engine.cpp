@@ -311,6 +311,7 @@ int Engine::run(void)
 	{
 		//int ticknb=0;
 		Uint32 startTick, endTick, deltaTick;
+		bool isNowWaiting=false;
 		while (gui.isRunning)
 		{
 			//printf ("Engine::begin:%d\n", globalContainer->safe());
@@ -328,17 +329,19 @@ int Engine::run(void)
 				net->pushOrder(gui.getOrder(), gui.localPlayer);
 
 				// we get and push ai orders
-				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
-				{
-					if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
+				if (!isNowWaiting)
+					for (int i=0; i<gui.game.session.numberOfPlayer; ++i)
 					{
-						net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+						if (gui.game.players[i]->ai /*&& gui.game.players[i]->team->isAlive*/)
+						{
+							net->pushOrder(gui.game.players[i]->ai->getOrder(), i);
+						}
 					}
-				}
 				//printf ("Engine::bns:%d\n", globalContainer->safe());
 
 				// we proceed network
 				net->step();
+				isNowWaiting=net->isNowWaiting();
 
 				//printf ("Engine::bge:%d\n", globalContainer->safe());
 				for (int i=0; i<gui.game.session.numberOfPlayer; ++i)

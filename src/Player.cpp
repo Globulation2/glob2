@@ -323,13 +323,15 @@ bool BasePlayer::send(char *data, int size)
 	packet->len=size;
 			
 	memcpy((char *)packet->data, data, size);
-	
+
 	bool sucess;
-	//if (abs(rand()%100)<70)
+
+
 	
 	packet->address=ip;
 	packet->channel=channel;
 	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+	//if (abs(rand()%100)<90)
 	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
 	// Notice that we can choose between giving a "channel", or the ip.
 	// Here we do both. Then "channel" could be -1.
@@ -338,11 +340,11 @@ bool BasePlayer::send(char *data, int size)
 	
 	//else
 	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
-	if (sucess)
-		;//printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
-	else
-		printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
-			
+	//if (sucess)
+		//printf("suceeded to send packet to player %d (channel=%d).\n", number, channel);
+	//else
+		//printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
+
 	SDLNet_FreePacket(packet);
 	
 	return sucess;
@@ -388,7 +390,7 @@ void BasePlayer::printNetState(char s[32])
 			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SILENT]"));
 		}
 		break;
-		
+
 		case PNS_PLAYER_SEND_ONE_REQUEST:
 		{
 			snprintf(t, 32, globalContainer->texts.getString("[PNS_PLAYER_SEND_ONE_REQUEST]"));

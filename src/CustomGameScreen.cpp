@@ -64,6 +64,7 @@ CustomGameScreen::CustomGameScreen()
 			newText[textLength]=0;
 			fileList->addText(newText);
 		}
+		fileList->sort();
 	}
 	addWidget(fileList);
 

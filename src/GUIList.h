@@ -41,6 +41,7 @@ public:
 	char *getText(int pos) const;
 	//! Call this after all add has been done
 	void commit(void) { repaint(); }
+	void sort(void);
 
 protected:
 	virtual void repaint(void);
