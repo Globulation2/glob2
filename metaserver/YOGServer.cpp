@@ -1049,7 +1049,19 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		int id=data[1];
 		if (size!=8 || data[4]!=0x12 || data[5]!=(0x23&id) || data[6]!=(0x34|id) || data[7]!=0x45)
 		{
-			lprintf("Warning closing temptative (%d)\n", size);
+			lprintf("Warning closing temptative (size=%d), from ip=(%s)\n", size, Utilities::stringIP(ip));
+			break;
+		}
+		bool good=false;
+		for (std::list<YOGClient *>::iterator sender=authentifiedClients.begin(); sender!=authentifiedClients.end(); ++sender)
+			if ((*sender)->hasip(ip))
+			{
+				good=(*sender==admin);
+				break;
+			}
+		if (!good)
+		{
+			lprintf("Warning closing temptative not by admin, from ip=(%s)\n", Utilities::stringIP(ip));
 			break;
 		}
 		if (id)
