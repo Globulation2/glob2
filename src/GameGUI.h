@@ -130,6 +130,7 @@ private:
 	{
 		IGM_NONE=0,
 		IGM_MAIN,
+		IGM_LOAD,
 		IGM_SAVE,
 		IGM_ALLIANCE8
 	} inGameMenu;

@@ -38,6 +38,7 @@ public:
 	void addText(const char *text);
 	void removeText(int pos);
 	void clear(void);
+	const char *getText(int pos);
 
 protected:
 	virtual void internalPaint(void);

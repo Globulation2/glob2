@@ -63,23 +63,6 @@ void InGameScreen::paint(int x, int y, int w, int h)
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 255);
 }
 
-//! Save screen
-InGameSaveScreen::InGameSaveScreen()
-:InGameScreen(300, 275)
-{
-	filename=NULL;
-}
-
-void InGameSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-
-}
-
-void InGameSaveScreen::onSDLEvent(SDL_Event *event)
-{
-
-}
-
 
 //! Main menu screen
 InGameMainScreen::InGameMainScreen()

@@ -30,6 +30,8 @@ GameGUI.cpp\
 GameGUI.h\
 GameGUIDialog.cpp\
 GameGUIDialog.h\
+GameGUILoadSave.cpp\
+GameGUILoadSave.h\
 Glob2.cpp\
 Glob2.h\
 GlobalContainer.cpp\

@@ -28,19 +28,44 @@
 #define DIR_SEPARATOR '/'
 #endif
 
-class FileManager 
+//! File Manager (filesystem abstraction)
+class FileManager
 {
 private:
-	std::vector<const char *> dirList;		
+	//! List of directory where to search for requested file
+	std::vector<const char *> dirList;
+	//! List of file relative to virtual base address after call to initDirectoryListing
+	std::vector<const char *> fileList;
+	//! Index in the dirFileList vector
+	int fileListIndex;
+
+private:
+	//! clear the list of directory
+	void clearDirList(void);
+	//! clear the list of file for directory listing
+	void clearFileList(void);
+	//! internal function that does the real listing job
+	bool addListingForDir(const char *realDir, const char *extension);
 
 public:
+	//! FileManager constructor
 	FileManager();
+	//! FileManager destructor
 	virtual ~FileManager();
 
+	//! Add a directory to the search list
 	void addDir(const char *dir);
 
+	//! Open a file in the SDL_RWops format
 	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=true);
+	//! Open a file in the FILE* format
 	FILE *openFP(const char *filename, const char *mode, bool verboseIfNotFound=true);
+
+	// FIXME : the following functions are not thread-safe :
+	//! must be call before directory listening, return true if success
+	bool initDirectoryListing(const char *virtualDir, const char *extension);
+	//! get the next name, return NULL if none
+	const char *getNextDirectoryEntry(void);
 };
 
 #endif

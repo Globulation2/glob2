@@ -161,6 +161,9 @@ Quit the game
 [ok]
 Accepter
 Ok
+[cancel]
+Annuler
+Cancel
 [you have lost]
 Vous avez perdu !
 You have lost !
