@@ -731,6 +731,11 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 			playerFileTra[p].totalSent=0;
 			playerFileTra[p].totalLost=0;
 			playerFileTra[p].totalReceived=0;
+			
+			// we prevently decreases the other players'brandwidth:
+			for (int pi=0; pi<32; pi++)
+				if (pi!=p && playerFileTra[p].brandwidth>1)
+					playerFileTra[p].brandwidth--;
 		}
 		else
 		{
