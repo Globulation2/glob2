@@ -826,6 +826,7 @@ void Building::subscribeForConstructionStep()
 				}
 			
 			if (choosen==NULL)
+			{
 				for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
@@ -840,6 +841,7 @@ void Building::subscribeForConstructionStep()
 						choosen=unit;
 					}
 				}
+			}
 
 			if (choosen)
 			{
@@ -1152,7 +1154,7 @@ void Building::turretStep(void)
 	int targetY;
 	unsigned i;
 
-	for (unsigned i=0; i<=range && !targetFound; i++)
+	for (i=0; i<=range && !targetFound; i++)
 	{
 		for (int k=0; k<2 && !targetFound; k++)
 		{

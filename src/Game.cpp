@@ -133,12 +133,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	bool isPlayerAlive=players[order->sender]->team->isAlive;
-	if (!isPlayerAlive)
-		return;
 	switch (order->getOrderType())
 	{
 		case ORDER_CREATE:
 		{
+			if (!isPlayerAlive)
+				break;
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
 			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
