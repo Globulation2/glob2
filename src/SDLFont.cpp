@@ -46,6 +46,13 @@ int SDLBitmapFont::getStringWidth(const char *string) const
 	return textWidth(string);
 }
 
+int SDLBitmapFont::getStringWidth(const int i) const
+{
+	char temp[32];
+	snprintf(temp, 32, "%d", i);
+	return getStringWidth(temp);
+}
+
 int SDLBitmapFont::getStringHeight(const char *string) const
 {
 	return height;
