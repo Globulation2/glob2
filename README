@@ -10,7 +10,8 @@ This game is still in heavy development, so consider that:
 
 If you get a crash, submit a bug report with the last lines of the output as
 well as the log files (in ${HOME}/.glob2/log) as attachement.
-Please use Savannah(http://savannah.gnu.org/projects/glob2) for bug reports.
+Please use Savannah (http://savannah.gnu.org/projects/glob2) for bug reports.
+
 If you got the source from CVS, read README.cvs first.
 
 
