@@ -565,6 +565,9 @@ bool MultiplayersJoin::sendSessionInfoRequest()
 	strncpy((char *)(packet->data+4), playerName, 16);
 
 	memset(packet->data+20, 0, 8);
+
+	printf("host=%x, port=%x, sHost=%x, sPort=%x.\n", serverIP.host, serverIP.port, SDL_SwapBE32((Uint32)serverIP.host), SDL_SwapBE32((Uint32)serverIP.port));
+	printf("16sHost=%x.\n", SDL_SwapBE16(serverIP.port));
 	addUint32(packet->data, SDL_SwapBE32((Uint32)serverIP.host), 20);
 	addUint32(packet->data, SDL_SwapBE32((Uint32)serverIP.port), 24);
 
