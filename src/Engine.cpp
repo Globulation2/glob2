@@ -72,7 +72,7 @@ int Engine::initCampain(void)
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
 
-	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE);
+	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
 
 	return NO_ERROR;
 }
@@ -98,7 +98,7 @@ void Engine::startMultiplayer(SessionScreen *screen)
 	// we create the net game
 	net=new NetGame(screen->socket, gui.game.session.numberOfPlayer, gui.game.players);
 
-	globalContainer.gfx.setRes(640, 480, 32, SDL_ANYFORMAT|SDL_SWSURFACE/*|SDL_FULLSCREEN*/);
+	globalContainer.gfx.setRes(640, 480, 32, globalContainer.graphicFlags);
 
 	printf("localPlayer=%d, localTeam=%d\n", gui.localPlayer, gui.localTeam);
 }

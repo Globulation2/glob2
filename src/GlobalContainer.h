@@ -14,8 +14,11 @@ class GlobalContainer
 {
 public:
 	GlobalContainer(void);
+
+	void parseArgs(int argc, char *argv[]);
 	
 	char safer0[1024];
+	Uint32 graphicFlags;
 	char safer1[1024];
 	
 	void load(void);

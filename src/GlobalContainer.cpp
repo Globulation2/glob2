@@ -5,6 +5,7 @@
  */
 
 #include "GlobalContainer.h"
+#include "SDL.h"
 
 GlobalContainer::GlobalContainer(void)
 {
@@ -18,7 +19,17 @@ GlobalContainer::GlobalContainer(void)
 	memset(safer7, 7, 1024);
 	memset(safer8, 7, 1024);
 	memset(safer9, 7, 1024);
+	graphicFlags=SDL_ANYFORMAT|SDL_SWSURFACE;
 };
+
+void GlobalContainer::parseArgs(int argc, char *argv[])
+{
+	for (int  i=1; i<argc; i++)
+	{
+		if (strcmp(argv[i], "-f")==0)
+			graphicFlags|=SDL_FULLSCREEN;
+	}
+}
 
 void GlobalContainer::load(void)
 {
