@@ -337,6 +337,45 @@ void YOG::quitChannel(const char *channel)
 	sendString(command);
 }
 
+bool YOG::resetGameLister(void)
+{
+	gameInfoIt=gameInfos.begin();
+	return (gameInfos.size()!=0);
+}
+
+const char *YOG::getGameSource(void)
+{
+	return (*gameInfoIt).source;
+}
+
+const char *YOG::getGameIdentifier(void)
+{
+	return (*gameInfoIt).identifier;
+}
+
+const char *YOG::getGameVersion(void)
+{
+	return (*gameInfoIt).version;
+}
+
+const char *YOG::getGameComment(void)
+{
+	return (*gameInfoIt).comment;
+}
+
+bool YOG::getNextGame(void)
+{
+	if (gameInfoIt!=gameInfos.end())
+	{
+		gameInfoIt++;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool YOG::getString(char data[IRC_MESSAGE_SIZE])
 {
 	if (socket)

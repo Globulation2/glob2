@@ -23,6 +23,7 @@
 
 #include "Header.h"
 #include <deque>
+#include <vector>
 
 #define DEFAULT_CHAT_CHAN "#debian"
 #define DEFAULT_GAME_CHAN "#yog-games"
@@ -32,6 +33,7 @@ class YOG
 {
 public:
 	enum { IRC_CHANNEL_SIZE = 200, IRC_MESSAGE_SIZE=512, IRC_NICK_SIZE=9 };
+	enum { YOG_GAMEINFO_ID_SIZE = 32, YOG_GAMEINFO_VERSION_SIZE=8, YOG_GAMEINFO_COMMENT_SIZE=60 };
 	enum InfoMessageType
 	{
 		IRC_MSG_NONE=0,
@@ -57,7 +59,9 @@ public:
 	struct GameInfo
 	{
 		char source[IRC_NICK_SIZE+1];
-		char infos[IRC_MESSAGE_SIZE+1];
+		char identifier[YOG_GAMEINFO_ID_SIZE+1];
+		char version[YOG_GAMEINFO_VERSION_SIZE+1];
+		char comment[YOG_GAMEINFO_COMMENT_SIZE+1];
 		Uint32 updatedTick;
 	};
 
@@ -72,6 +76,12 @@ protected:
 
 	//! pending info message
 	std::deque<InfoMessage> infoMessages;
+	
+	//! games infos
+	std::vector<GameInfo> gameInfos;
+
+	//! iterator for get function from user
+	std::vector<GameInfo>::iterator gameInfoIt;
 
 protected:
 	//! Interprete a message from IRC; do parsing etc
@@ -126,20 +136,43 @@ public:
 	//! Quit a given channel
 	void quitChannel(const char *channel=DEFAULT_CHAT_CHAN);
 
-	// GAME
+	// GAME creation
 	//! Create a new game and start the login room
 	void createGame(void);
 	//! Start the game
 	void startGame(void);
 	//! Set the game parameters
-	void setGameParameters(const char *gameIdentifier, const char *gameInfo);
+	void setGameParameters(const char *id, const char *version, const char *comment);
 
-	//! Request all game for software gameIdentifier in YOG
-	void getFirstYOGGame(const char *gameIdentifier);
-	//! Get parameters from pending game
-	const char *getNextYOGGame(void);
-	//! Return true if there is games pending
-	bool isNextYOGGame(void);
+	// GAME joining
+	/*
+		Typical use :
+		if (yog.resetGameLister())
+		{
+			do
+			{
+				...=yog.getGameSource();
+				...=yog.getGameIndetifier();
+				...=yog.getGameVersion();
+				...=yog.getGameComment();
+
+				// user code that do something usefull with game infos.
+			}
+			while (yog.getNextGame());
+		}
+	*/
+	//! Request all game for software gameIdentifier in YOG, return true if there is any game
+	bool resetGameLister(void);
+	//! Get source nickname from pending game, return NULL when last
+	const char *getGameSource(void);
+	//! Get program name from pending game, return NULL when last
+	const char *getGameIdentifier(void);
+	//! Get program version from pending game, return NULL when last
+	const char *getGameVersion(void);
+	//! Get comment from pending game, return NULL when last
+	const char *getGameComment(void);
+	//! Returns true and get next game if there is another game in list, false otherwise
+	bool getNextGame(void);
 
 private:
 	//! Send a string in IRC format
