@@ -910,12 +910,12 @@ SDLGraphicContext::SDLGraphicContext(void)
 	// Load the SDL library
 	if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO)<0 )
 	{
-		fprintf(stderr, "SDL : Initialisation Error : %s\n", SDL_GetError());
+		fprintf(stderr, "GAG : Initialisation Error : %s\n", SDL_GetError());
 		exit(1);
 	}
 	else
 	{
-		fprintf(stderr, "SDL : Initialized : Graphic Context created\n");
+		fprintf(stderr, "GAG : Initialized : Graphic Context created\n");
 	}
 
 	atexit(SDL_Quit);
@@ -929,7 +929,7 @@ SDLGraphicContext::SDLGraphicContext(void)
 
 SDLGraphicContext::~SDLGraphicContext(void)
 {
-	fprintf(stderr, "SDL : Graphic Context destroyed\n");
+	fprintf(stderr, "GAG : Graphic Context destroyed\n");
 	
 	TTF_Quit();
 }
@@ -951,16 +951,16 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 
 	if (!surface)
 	{
-		fprintf(stderr, "VID : %s\n", SDL_GetError());
+		fprintf(stderr, "GAG : %s\n", SDL_GetError());
 		return false;
 	}
 	else
 	{
 		setClipRect();
 		if (flags&FULLSCREEN)
-			fprintf(stderr, "VID : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
+			fprintf(stderr, "GAG : Screen set to %dx%d with %d bpp in fullscreen\n", w, h, depth);
 		else
-			fprintf(stderr, "VID : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
+			fprintf(stderr, "GAG : Screen set to %dx%d with %d bpp in window\n", w, h, depth);
 		return true;
 	}
 }
@@ -969,7 +969,7 @@ void SDLGraphicContext::dbgprintf(const char *msg, ...)
 {
 	va_list arglist;
 
-	fprintf(stderr,"DBG : ");
+	fprintf(stderr,"GAG : DBG : ");
 
 	va_start(arglist, msg);
     vfprintf(stderr, msg, arglist );
@@ -1222,7 +1222,7 @@ Font *SDLGraphicContext::loadFont(const char *name, unsigned size)
 	else
 		delete font;
 		
-	fprintf(stderr, "VID : Can't load font %s\n", name);
+	fprintf(stderr, "GAG : Can't load font %s\n", name);
 	return NULL;
 }
 

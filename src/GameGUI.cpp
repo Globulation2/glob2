@@ -1680,7 +1680,7 @@ void GameGUI::drawOverlayInfos(void)
 			ymesg+=32;
 		
 		// display messages
-		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end();)
+		for (std::list <Message>::iterator it=messagesList.end(); it!=messagesList.begin();)
 		{
 			/*globalContainer->standardFont->pushColor(0, 0, 0);
 			globalContainer->gfx->drawString(32+1, ymesg+1, globalContainer->standardFont, "%s", it->text);
@@ -1697,15 +1697,17 @@ void GameGUI::drawOverlayInfos(void)
 			if (!(--it->showTicks))
 			{
 				it=messagesList.erase(it);
+				--it;
 			}
 			else
 			{
-				++it;
+				--it;
 			}
 			
 		}
 		
 		// display map mark
+		globalContainer->gfx->setClipRect();
 		for (std::list <Mark>::iterator it=markList.begin(); it!=markList.end();)
 		{
 			

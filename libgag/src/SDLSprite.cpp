@@ -316,6 +316,8 @@ SDL_Surface *SDLSprite::getGlobalContainerGfxSurface(void)
 
 void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)
 {
+	if ((index<0) || (index>=(int)images.size()))
+		fprintf(stderr, "GAG : Can load index %d of %u\n", index, images.size());
 	assert(index>=0);
 	assert(index<(int)images.size());
 
