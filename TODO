@@ -4,15 +4,12 @@ To First release :
 - network screen must be easy to understand. (nct)
 - write a quick start guide. (nct)
 - fix probable unit's FSA (Finite State Automaton) bug which makes units turn around themself forever. (nct)
-- AI do upgrades. (nct)
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considèrer le FOW, et pas uniquement le noir. (nuage)
 - Clicking on a game on YOG whould to to this game. (nct)
 
 To Next version :
 
-- War flag have some info about attached units. (max)
-- GUI button free unit must be smoothed from newStat. (nct)
 - allies can put mark on the map. (nct)
 - units working to a building are highlight when building is selected. (nct)
 - more precise ressource handling. (nct)
@@ -22,5 +19,5 @@ To Next version :
 - building finished message must contain building type. Select building when doing this. (nct)
 - do icons for buildings. (nct)
 - message when team is defeated. (nct)
-- makes a player loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
+- makes a team loose if all swarm with food is completly surrounded by ressources and no more units. (nct)
 - map and map icon must have correct aspect ratio. (nct)

@@ -135,6 +135,7 @@ private:
 	Sint32 selectionUID;
 	bool needRedraw;
 	int typeToBuild;
+	bool showUnitWorkingToBuilding;
 
 	//TeamStat stats[128];
 	//int statsPtr;
