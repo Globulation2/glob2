@@ -88,6 +88,7 @@ public:
 	int getWorkersNeeded();
 	int getWorkersBalance();
 	int getWorkersLevel(int level);
+	int getStarvingUnits();
 
 private:
 	enum {
