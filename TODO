@@ -2,7 +2,6 @@ To First release :
 
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - balance unit allocation by demand. (nct)
-- load/save during game. (nct)
 - custom game should have a map choosing screen. (nct)
 - network must work correctly, and screen must be easy to understand. (nct)
 - stupid graphic bug in game menu must be fixed. (nct)

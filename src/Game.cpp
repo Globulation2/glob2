@@ -327,7 +327,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 bool Game::load(SDL_RWops *stream)
 {
 	assert(stream);
-
+	
 	// delete existing teams
 	int i;
 	for (i=0; i<session.numberOfTeam; ++i)

@@ -266,11 +266,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
 						if (stream)
 						{
-							if (game.load(stream)==false)
-								fprintf(stderr, "GGU : Warning, Error during map load\n");
-							else
-								this->load(stream);
+							this->load(stream);
 							SDL_RWclose(stream);
+							printf("game is loaded\n");
 						}
 						else
 							printf("GGU : Can't load map\n");
@@ -280,7 +278,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 						if (stream)
 						{
-							game.save(stream);
 							this->save(stream);
 							SDL_RWclose(stream);
 						}

@@ -362,6 +362,8 @@ void Player::load(SDL_RWops *stream, Team *teams[32])
 	team=teams[teamNumber];
 	if (type==P_AI)
 		ai=new AI(stream, this);
+	else
+		ai=NULL;
 }
 
 void Player::save(SDL_RWops *stream)
