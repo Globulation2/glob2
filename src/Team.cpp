@@ -495,7 +495,7 @@ Building *Team::findBestFoodable(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	int r=unit->caryedRessource;
-	int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
 	bool canSwim=unit->performance[SWIM];
 	
 	if (r!=-1)
@@ -566,7 +566,7 @@ Building *Team::findBestFillable(Unit *unit)
 	int actLevel=unit->level[HARVEST];
 	assert(!unit->performance[FLY]);
 	bool canSwim=unit->performance[SWIM];
-	int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
 	
 	if (r!=-1)
 	{
@@ -703,7 +703,8 @@ Building *Team::findBestFillable(Unit *unit)
 						int foreignBuildingDist;
 						if ((sendRessourceMask & foreignReceiveRessourceMask)
 							&& (receiveRessourceMask & foreignSendRessourceMask)
-							&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist) && (foreignBuildingDist<timeLeft))
+							&& map->buildingAviable(*fbi, canSwim, x, y, &foreignBuildingDist)
+							&& (buildingDist+foreignBuildingDist)<(timeLeft>>1))
 						{
 							double newScore=(double)(buildingDist+foreignBuildingDist)/(double)((*bi)->maxUnitWorking-(*bi)->unitsWorking.size());
 							if (newScore<score)
@@ -732,7 +733,7 @@ Building *Team::findBestZonable(Unit *unit)
 	int y=unit->posY;
 	std::list<Building *> bl=zonable[unit->typeNum];
 	bool canSwim=unit->performance[SWIM];
-	int timeLeft=unit->hungry/race.unitTypes[0][0].hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/race.unitTypes[0][0].hungryness;
 	
 	if (unit->performance[FLY])
 	{
