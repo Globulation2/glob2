@@ -272,9 +272,9 @@ void MapEdit::handleMapClick()
 {
 	int mx=savedMx;
 	int my=savedMy;
-	int x, y;
 	int winX, winW, winY, winH;
-	static int ax, ay, atype;
+	static int ax=0, ay=0, atype=0;
+	int x=ax, y=ay;
 	bool needRedraw=false;
 
 	if (editMode==EM_TERRAIN)
@@ -299,6 +299,8 @@ void MapEdit::handleMapClick()
 					dec=1;
 
 				int delX, delY, delW, delH;
+				delX=0;
+				delY=0;
 				delW=0;
 				delH=0;
 
