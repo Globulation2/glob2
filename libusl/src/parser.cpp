@@ -7,7 +7,7 @@ const Token::Type Parser::tokenTypes[TOKENTYPES] = {
 	Token::Type(NUM,     "a number",                "[[:digit:]]+|(0x|0X)[[:xdigit:]]+"),
 	Token::Type(SBEG,    "a beginning of sequence", "\\(|\\[|\\{"),
 	Token::Type(SEND,    "an end of sequence",      "\\)|\\]|\\}"),
-	Token::Type(SSEP,    "a separator",             "[,;]"),
+	Token::Type(SSEP,    "a separator",             "[,;\\.]"),
 	Token::Type(SPACE,   "a space",                 "[[:space:]]+"),
 	Token::Type(COMMENT, "a comment",               "\\([\"\'])(\\\\|[^\\])*\\([\"\'])"),
 	Token::Type(END,     "the end of the text",     "$"),
@@ -24,6 +24,18 @@ Tree* Parser::Parse() {
 }
 
 Tree* Parser::Next() {
+	Tree* tree = Next2();
+	while(next.type->id == ID
+	   || next.type->id == OP
+	   || next.type->id == STR
+	   || next.type->id == NUM
+	   || next.type->id == SBEG) {
+		tree = new Trees::Apply(next.position, tree, Next2());
+	}
+	return tree;
+}
+
+Tree* Parser::Next2() {
 	Tree* tree;
 	switch(next.type->id) {
 		case ID:
@@ -34,11 +46,11 @@ Tree* Parser::Next() {
 			tree = new Trees::Strings::Operator(next.position, std::string(next.text, next.length));
 			NextToken();
 			break;
-		case STR:
+		case STR: // TODO: parse strings correctly (remove escape chars)
 			tree = new Trees::String(next.position, std::string(next.text, next.length));
 			NextToken();
 			break;
-		case NUM:
+		case NUM: // TODO: parse numbers correctly and put the value in the tree
 			tree = new Trees::Number(next.position);
 			NextToken();
 			break;
@@ -85,13 +97,6 @@ Tree* Parser::Next() {
 		default:
 			Fail(next.type->desc + " was found while expecting " + tokenTypes[ID].desc + ", " + tokenTypes[OP].desc + ", " + tokenTypes[STR].desc + ", " + tokenTypes[NUM].desc + " or " + tokenTypes[SBEG].desc);
 	}
-	while(next.type->id == ID
-		|| next.type->id == OP
-		|| next.type->id == STR
-		|| next.type->id == NUM
-		|| next.type->id == SBEG) {
-		tree = new Trees::Apply(next.position, tree, Next());
-	}
 	return tree;
 }
 
@@ -110,14 +115,35 @@ const char* LoadFile(const char* name) {
 }
 
 struct Printer: Tree::ConstVisitor {
+	std::string ident;
+	Printer() {
+		ident = "";
+	}
 	void Print(const Tree* tree) {
 		tree->Accept(self);
 	}
 	void Visit(const Trees::String& str) {
-		std::cout << str.content << std::endl;
+		std::cout << ident << str.content << std::endl;
 	}
 	void Visit(const Trees::Number& num) {
-		std::cout << "" << std::endl;
+		std::cout << ident << "..." << std::endl;
+	}
+	void Visit(const Trees::Apply& apply) {
+		std::string ident = this->ident;
+		this->ident = ident + ' ';
+		Tree::ConstVisitor::Visit(apply);
+		this->ident = ident;
+	}
+	void Visit(const Trees::Sequence& sequence) {
+		std::cout << ident << "{" << std::endl;
+		std::string ident = this->ident;
+		this->ident = ident + ' ';
+		/*foreach(iterator, sequence.elements.begin(), sequence.elements.end()) {
+			(*iterator)->Accept(self);
+		}*/
+		Tree::ConstVisitor::Visit(sequence);
+		this->ident = ident;
+		std::cout << ident << "}" << std::endl;
 	}
 };
 
