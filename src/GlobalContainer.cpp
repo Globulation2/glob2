@@ -85,15 +85,13 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
+	// close sound
+	if (mix)
+		delete mix;
+	
 	// release ressources
 	Toolkit::close();
 	
-	// close screen and sound
-	if (gfx)
-		delete gfx;
-	if (mix)
-		delete mix;
-		
 	// close virtual filesystem
 	delete logFileManager;
 }
@@ -357,10 +355,12 @@ void GlobalContainer::load(void)
 	if (!runNoX)
 	{
 		// create graphic context
-		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
+		Toolkit::initGraphic();
+		// and set res
+		gfx = Toolkit::getGraphicContext();
 		gfx->setMinRes(640, 480);
-		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags);
-		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
+		gfx->setRes(settings.screenWidth, settings.screenHeight, 32, settings.screenFlags, (DrawableSurface::GraphicContextType)settings.graphicType);
+		gfx->setCaption("Globulation 2", "glob 2");
 	}
 	
 	// load buildings types
@@ -385,17 +385,12 @@ void GlobalContainer::load(void)
 
 		updateLoadProgressBar(10);
 		// load fonts
-		gfx->loadFont("data/fonts/sans.ttf", 22, "menu");
-		menuFont=Toolkit::getFont("menu");
-		menuFont->setColor(255, 255, 255);
-
-		gfx->loadFont("data/fonts/sans.ttf", 14, "standard");
-		standardFont=Toolkit::getFont("standard");
-		standardFont->setColor(255, 255, 255);
-
-		gfx->loadFont("data/fonts/sans.ttf", 10, "little");
-		littleFont=Toolkit::getFont("little");
-		littleFont->setColor(255, 255, 255);
+		Toolkit::loadFont("data/fonts/sans.ttf", 22, "menu");
+		Toolkit::loadFont("data/fonts/sans.ttf", 14, "standard");
+		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
+		menuFont = Toolkit::getFont("menu");
+		standardFont = Toolkit::getFont("standard");
+		littleFont = Toolkit::getFont("little");
 
 		updateLoadProgressBar(30);
 		// load terrain data

@@ -45,7 +45,7 @@ protected:
 
 protected:
 	int textHeight;
-	const Font *fontPtr;
+	Font *fontPtr;
 
 	//! This is the wheight of the scrool bar
 	int size;

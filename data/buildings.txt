@@ -870,7 +870,8 @@ isBuildingSite 1
 
 type school
 
-gameSpriteImage 13
+gameSprite data/gfx/school1b
+gameSpriteImage 0
 miniSpriteImage 13
 
 upgradeBuild 1
@@ -1028,7 +1029,8 @@ viewingRange 5
 
 type defencetower
 
-gameSpriteImage 14
+gameSprite data/gfx/defencetower1b
+gameSpriteImage 0
 miniSpriteImage 14
 
 fillable 1

@@ -37,7 +37,10 @@
 	#undef min
 #endif
 
-#include <SDL.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#include "glSDL.h"
 
 // usefull macros
 #ifndef MAX

@@ -27,42 +27,41 @@ class Sprite;
 class Font;
 class FileManager;
 class StringTable;
+class GraphicContext;
 
 //! Toolkit is a ressource server
 class Toolkit
 {
 private:
-	//ü Private constructor, we do not want the user to create a Tookit, it is a static thing
+	// Private constructor, we do not want the user to create a Tookit, it is a static thing
 	Toolkit() { }
 	
 public:
 	//! Initialize gag, must be called before any call to GAG
 	static void init(const char *gameName);
+	//! Initialize the graphic part
+	static void initGraphic(void);
 
 	//! Close gag, must be called after any call to GAG
 	static void close(void);
 
-	static FileManager *getFileManager(void) { return fileManager; }
-	
 	static Sprite *getSprite(const char *name);
 	static void releaseSprite(const char *name);
 	
+	static void loadFont(const char *filename, unsigned size, const char *name);
 	static Font *getFont(const char *name);
 	static void releaseFont(const char *name);
 	
+	static FileManager *getFileManager(void) { return fileManager; }
 	static StringTable *const getStringTable(void) { return strings; }
+	static GraphicContext *getGraphicContext(void) { return gc; }
 
 protected:
-	friend class GraphicContext;
-	friend class SDLGraphicContext;
-	friend class GLGraphicContext;
 	friend class Sprite;
 	
 	typedef std::map<std::string, Sprite *> SpriteMap;
 	typedef std::map<std::string, Font *> FontMap;
 	
-	//! The current graphic context, must be set from outside
-	static GraphicContext *gc;
 	//! All loaded sprites
 	static SpriteMap spriteMap;
 	//! All loaded fonts
@@ -71,6 +70,8 @@ protected:
 	static FileManager *fileManager;
 	//! The table of strings
 	static StringTable *strings;
+	//! The actual graphic context
+	static GraphicContext *gc;
 };
 
 #endif
