@@ -117,23 +117,6 @@ int Glob2::run(int argc, char *argv[])
 			case 2:
 			{
 				mutiplayerYOG();
-				
-				/*YOGScreen yogScreen;
-				drawYOGSplashScreen();
-				yogScreen.createConnection();
-				if (yogScreen.socket!=NULL)
-				{
-					int yogReturnCode=yogScreen.execute(globalContainer->gfx, 20);
-					yogScreen.closeConnection();
-					if (yogReturnCode==1)
-					{
-						// TODO : join game in joyScreen.ip;
-					}
-					else if (yogReturnCode==2)
-					{
-						// TODO : create game
-					}
-				}*/
 			}
 			break;
 			case 3:

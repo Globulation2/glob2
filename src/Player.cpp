@@ -408,9 +408,11 @@ void BasePlayer::printNetState(char s[32])
 		break;
 		default:
 		{
-			snprintf(s, 32, "error %d", netState);
+			snprintf(s, 32, "error", netState);
 		}
 	}
+	
+	snprintf(s, 32, "%s-%d", s, netState);
 }
 
 Player::Player()
