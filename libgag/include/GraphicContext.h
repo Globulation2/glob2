@@ -38,6 +38,7 @@ public:
 
 	enum Alpha
 	{
+		ALPHA_TRANSPARENT=0,
 		ALPHA_OPAQUE=255
 	};
 
@@ -193,7 +194,7 @@ public:
 	virtual void drawGL(const SDL_Rect *clip, int x, int y, int index);
 
 	//! Set the (r,g,b) color to a sprite's base color
-	virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, b, b); }
+	virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor=Color32(r, g, b); }
 
 	//! Return the width of index frame of the sprite
 	virtual int getW(int index);
