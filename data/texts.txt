@@ -431,6 +431,10 @@ unter Angriff !
 terminé
 finished
 vertig
+[attacked(f)]
+attaquée
+attacked
+unter Angriff !
 [ai]
 IA
 AI
