@@ -34,16 +34,17 @@ class Bullet
 {
 public:
 	Bullet(GAGCore::InputStream *stream);
-	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY);
+	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY, Sint32 revealX, Sint32 revealY, Sint32 revealW, Sint32 revealH);
 	bool load(GAGCore::InputStream *stream);
 	void save(GAGCore::OutputStream *stream);
 public:
-	Sint32 px, py; // pixel precision point of x,y
-	Sint32 speedX, speedY; //pixel precision speed.
+	Sint32 px, py; //!< pixel precision point of x,y
+	Sint32 speedX, speedY; //!< pixel precision speed.
 	Sint32 ticksInitial;
 	Sint32 ticksLeft;
 	Sint32 shootDamage;
 	Sint32 targetX, targetY;
+	Sint32 revealX, revealY, revealW, revealH; //!< area of source of the bullet
 public:
 	void step(void);
 };

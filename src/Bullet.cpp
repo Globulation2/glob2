@@ -32,7 +32,7 @@ Bullet::Bullet(GAGCore::InputStream *stream)
 	assert(good);
 }
 
-Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY)
+Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY, Sint32 revealX, Sint32 revealY, Sint32 revealW, Sint32 revealH)
 {
 	this->px = px;
 	this->py = py;
@@ -43,6 +43,10 @@ Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksL
 	this->shootDamage = shootDamage;
 	this->targetX = targetX;
 	this->targetY = targetY;
+	this->revealX = revealX;
+	this->revealY = revealY;
+	this->revealW = revealW;
+	this->revealH = revealH;
 }
 
 bool Bullet::load(GAGCore::InputStream *stream)

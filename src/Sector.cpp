@@ -100,54 +100,62 @@ void Sector::step(void)
 	
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
-		if ( (*it)->ticksLeft > 0 )
+		Bullet *bullet = (*it);
+		if ( bullet->ticksLeft > 0 )
 		{
-			(*it)->step();
+			bullet->step();
 		}
 		else
 		{
-			Uint16 gid=map->getGroundUnit((*it)->targetX, (*it)->targetY);
-			if (gid!=NOGUID)
+			Uint16 gid = map->getGroundUnit(bullet->targetX, bullet->targetY);
+			if (gid != NOGUID)
 			{
-				int team=Unit::GIDtoTeam(gid);
-				int id=Unit::GIDtoID(gid);
-
-				game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid);
-				game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
+				// we have hit a unit
+				int team = Unit::GIDtoTeam(gid);
+				int id = Unit::GIDtoID(gid);
+				
+				game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::UNIT_UNDER_ATTACK_EVENT, gid);
+				game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
+				
+				game->teams[team]->myUnits[id]->hp -= bullet->shootDamage;
 			}
 			else
 			{
-				Uint16 gid=map->getBuilding((*it)->targetX, (*it)->targetY);
-				if (gid!=NOGBID)
+				Uint16 gid = map->getBuilding(bullet->targetX, bullet->targetY);
+				if (gid != NOGBID)
 				{
-					int team=Building::GIDtoTeam(gid);
-					int id=Building::GIDtoID(gid);
+					// we have hit a building
+					int team = Building::GIDtoTeam(gid);
+					int id = Building::GIDtoID(gid);
 
-					game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid);
-					Building *b=game->teams[team]->myBuildings[id];
-					int damage=(*it)->shootDamage-b->type->armor; 
-					if (damage>0)
-						b->hp-=damage;
+					game->teams[team]->setEvent(bullet->targetX, bullet->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, gid);
+					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
+					
+					Building *building = game->teams[team]->myBuildings[id];
+					int damage = bullet->shootDamage-building->type->armor; 
+					if (damage > 0)
+						building->hp -= damage;
 					else
-						b->hp--;
-					if (b->hp<=0)
-						b->kill();
+						building->hp--;
+					if (building->hp <= 0)
+						building->kill();
 				}
 			}
 			
 			// create new explosion
 			BulletExplosion *explosion = new BulletExplosion();
-			explosion->x = (*it)->targetX;
-			explosion->y = (*it)->targetY;
+			explosion->x = bullet->targetX;
+			explosion->y = bullet->targetY;
 			explosion->ticksLeft = globalContainer->bulletExplosion->getFrameCount();
 			explosions.push_front(explosion);
 
 			// remove bullet
-			delete *it;
+			delete bullet;
 			it = bullets.erase(it);
 		}
 	}
 	
+	// handle explosions timeout
 	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();++it)
 	{
 		if ( (*it)->ticksLeft > 0 )
