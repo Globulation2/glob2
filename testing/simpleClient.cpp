@@ -25,10 +25,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <string.h>
-
-#define YOG_PORT 7008
-#define YOG_HOST "192.168.1.5"
-#define ANY_PORT 0
+#include "../src/YOGConsts.h"
 
 namespace simpleClient
 {
@@ -61,7 +58,7 @@ namespace simpleClient
 			return false;
 		}
 
-		int rv=SDLNet_ResolveHost(&serverIP, YOG_HOST, YOG_PORT);
+		int rv=SDLNet_ResolveHost(&serverIP, YOG_SERVER_IP, YOG_SERVER_PORT);
 		if (rv==-1)
 		{
 			printf("failed to resolve YOG host name!\n");

@@ -23,36 +23,19 @@
 #include <SDL/SDL_net.h>
 #include <stdio.h>
 #include <assert.h>
-
-#define YOG_PORT 7008
+#include "../src/YOGConsts.h"
 
 namespace YOG
 {
-	enum TO_YOG_DATA_TYPE
-	{
-		TOY_BAD=0,
-		TOY_CONNECTION_REQUEST=1,
-		TOY_DECONNECTION_REQUEST=2,
-		TOY_CLOSE_YOG=3
-	};
-
-	enum FROM_YOG_DATA_TYPE
-	{
-		FOY_BAD=0,
-		FOY_CONNECTED=1,
-		FOY_DECONNECTED=2
-	};
-
 	UDPsocket socket;
-	char s[65536];
 	bool running;
-
+	
 	bool init()
 	{
-		socket=SDLNet_UDP_Open(7008);
+		socket=SDLNet_UDP_Open(YOG_SERVER_PORT);
 		if (!socket)
 		{
-			printf("failed to open sockat at port %d.\n", 7008);
+			printf("failed to open sockat at port %d.\n", YOG_SERVER_PORT);
 			return false;
 		}
 		return true;
@@ -105,22 +88,23 @@ namespace YOG
 		}
 		switch (data[0])
 		{
-		case TOY_BAD:
+		case YMT_BAD:
 			printf("bad packet.\n");
 		break;
-		case TOY_CONNECTION_REQUEST:
-			send(ip, port, FOY_CONNECTED);
+		case YMT_CONNECTING:
+			send(ip, port, YMT_CONNECTING);
 		break;
-		case TOY_DECONNECTION_REQUEST:
-			send(ip, port, FOY_DECONNECTED);
+		case YMT_DECONNECTING:
+			send(ip, port, YMT_DECONNECTING);
 		break;
-		case TOY_CLOSE_YOG:
+		case YMT_CLOSE_YOG:
+			send(ip, port, YMT_CLOSE_YOG);
+		
 			running=false;
 		break;
 		}
 
 	}
-
 	void run()
 	{
 		running=true;
