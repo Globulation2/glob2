@@ -2152,6 +2152,33 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		}
 	}
 	
+	if (building->type->zonable[WORKER])
+	{
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=yi*yi;
+			for (int xi=-r; xi<=r; xi++)
+			{
+				if (yi2+(xi*xi)<=r2)
+				{
+					int xxi=15+xi;
+					int yyi=15+yi;
+					if (xxi<0)
+						xxi=0;
+					else if (xxi>31)
+						xxi=31;
+					if (yyi<0)
+						yyi=0;
+					else if (yyi>31)
+						xxi=31;
+					gradient[xxi+(yyi<<5)]=255;
+				}
+			}
+		}
+	}
+	
 	if (!building->type->isVirtual)
 	{
 		building->locked[canSwim]=true;
@@ -2403,6 +2430,20 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 				else
 					gradient[wyx]=0;
 			}
+		}
+	}
+	
+	if (building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<=r2)
+					gradient[((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask))]=255;
 		}
 	}
 	
