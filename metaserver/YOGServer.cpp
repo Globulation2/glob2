@@ -984,7 +984,6 @@ void YOGServer::lprintf(const char *msg, ...)
 	
 	if (logServer)
 		fputs(output, logServer);
-	printf(output);
 	
 	int i;
 	for (i=0; i<256; i++)

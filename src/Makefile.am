@@ -94,8 +94,6 @@ YOG.h \
 YOG.cpp  \
 MapGenerationDescriptor.h \
 MapGenerationDescriptor.cpp \
-LANBroadcast.h \
-LANBroadcast.cpp \
 LogFileManager.h \
 LogFileManager.cpp \
 YOGPreScreen.cpp \
