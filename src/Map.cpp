@@ -453,11 +453,6 @@ void Map::clear()
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
-		fprintf(logFile, "|-   buildingAviableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
-			buildingAviableCountFarNewSuccess,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountTot,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFar,
-			100.*(double)buildingAviableCountFarNewSuccess/(double)buildingAviableCountFarNew);
 		fprintf(logFile, "|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewFailure,
 			100.*(double)buildingAviableCountFarNewFailure/(double)buildingAviableCountTot,

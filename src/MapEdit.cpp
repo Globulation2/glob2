@@ -461,7 +461,7 @@ void MapEdit::handleMapClick(int mx, int my)
 void MapEdit::paintCoordodinates(void)
 {
 	// FIXME : do it right
-	/*int mx=savedMx;
+	int mx=savedMx;
 	int my=savedMy;
 
 	int px, py;
@@ -470,12 +470,12 @@ void MapEdit::paintCoordodinates(void)
 	else
 		game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);
 
-	int x=globalContainer->gfx->getW()-128;
-	int y=460;
-	globalContainer->gfx->drawFilledRect(x, y, 128, 20, 0, 255, 0);
-	globalContainer->gfx->drawString(x, y, font, "(%d, %d)", px, py);
-	//printf("p=(%d, %d).\n", px, py);
-	globalContainer->gfx->updateRect(x, y, 128, 20);*/
+	int x=0;
+	int y=globalContainer->gfx->getH()-16;
+	//int w=font->getStringWidth(GAG::nsprintf("(%d, %d)", px, py).c_str());
+	globalContainer->gfx->drawFilledRect(x, y, 64, 16, 128, 128, 128);
+	globalContainer->gfx->drawString(x, y, font, GAG::nsprintf("(%d, %d)", px, py).c_str());
+	globalContainer->gfx->updateRect(x, y, 64, 16);
 }
 
 void MapEdit::paintCoordodinates(int mx, int my)
