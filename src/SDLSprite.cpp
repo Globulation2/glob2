@@ -57,7 +57,7 @@ struct StaticPalContainer
 	unsigned allocatedCount;
 	unsigned rotatedCount;
 	
-	//! Creator
+	//! Constructor
 	StaticPalContainer();
 	
 	//! Allocate a color, return the index
