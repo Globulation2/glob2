@@ -2495,6 +2495,10 @@ void GameGUI::drawOverlayInfos(void)
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
+				
+				globalContainer->littleFont->pushColor(255, 0, 0, 127);
+				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, GAG::nsprintf("%d.%d", localTeam->noMoreBuildingSitesCountdown/40, (localTeam->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->littleFont->popColor();
 			}
 			else
 			{
@@ -2506,7 +2510,7 @@ void GameGUI::drawOverlayInfos(void)
 				if (isRoom&&isExtendedRoom)
 					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
 				else
-					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 127, 0, 0, 127);
+					globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
 			}
 		}
 
