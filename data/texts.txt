@@ -6,7 +6,7 @@ Deutsch
 [hp]
 Pt vie
 HP
-
+Leben
 [heal]
 Sante
 Heal
@@ -34,7 +34,7 @@ Drinnen
 [ressources]
 Ressources
 Ressources
-
+Ressourcen
 [wood]
 Bois
 Wood
@@ -58,7 +58,7 @@ Reichweite
 [destroy]
 Detruire
 Destroy
-Zertoeren
+Zerstoeren
 [wait destroy]
 Attente destruction
 Waiting destruction
@@ -70,11 +70,11 @@ Verbessern
 [cancel upgrade]
 Annuler amelio.
 Cancel upgrade
-Verbes. wiederrufen
+Verb. wiederrufen
 [unit type]
 Type d'unite
 Unit type
-Art der Eineit
+Art der Einheit
 [worker]
 Ouvriere
 Worker
@@ -92,9 +92,9 @@ Encore
 Still
 Noch
 [units working]
- unites travaillent
- units work
- Einheiten arbeiten
+  unites travaillent
+  units work
+  Einheiten arbeiten
 [still one unit working]
 Une unite travaille
 Still one unit working
@@ -104,17 +104,17 @@ Encore
 Still
 Noch
 [units inside]
- unites dedans
- units inside
- Einheiten drinnen
+  unites dedans
+  units inside
+  Einheiten drinnen
 [still one unit inside]
 Une unite dedans
 Still one unit inside
-Noch eine Einheit drinnen
+Noch eine E. drinnen
 [building name]
 Nom du batiment
 Building name
-Namen des Gebaeude
+Namen des Gebaeudes
 [swarm building]
 Ruche
 Swarm
@@ -122,7 +122,7 @@ Ruesche
 [food building]
 Grenier
 Food building
-
+Speicher
 [health building]
 Hopital
 Health building
@@ -142,11 +142,11 @@ Kampfgebaeude
 [science building]
 Ecole
 Research center
-Schuhle
+Schule
 [defense building]
 Tourelle
 Defence Tower
-
+Panzerturm
 [exploration flag]
 Drapeau d'exploration
 Exporation flag
@@ -168,17 +168,17 @@ Steinmauer
 
  
 [r units free]
- u. libres
- idle workers
- freie Arbeiter
+  u. libres
+  idle workers
+  freie A.
 [one unit free]
 Une u. libre
 One idle worker
-Ein freier Arbeiter
+Ein freier A.
 [no unit free]
 Pas d'u. libres
 No idle worker
-Kein freier Arbeiter
+Kein freier A.
 [l waiting for player]
 Attente du joueur
 Waiting for player
@@ -192,9 +192,9 @@ Warten auf Spieler
 
  
 [r has left the game]
- a quitte la partie
- has quited the game
- hat des Spiel verlassen
+  a quitte la partie
+  has quited the game
+  hat das Spiel verlassen
 [load game]
 Charger jeu
 Load Game
@@ -202,7 +202,7 @@ Spiel laden
 [save game]
 Sauvegarder jeu
 Save Game
-Speil Speichern
+Spiel Speichern
 [options]
 Options
 Options
@@ -222,15 +222,15 @@ Spiel Beenden
 [ok]
 Accepter
 Ok
-Ok
+Annehmen
 [cancel]
 Annuler
 Cancel
-Wiederrufen
+Widerrufen
 [you have lost]
 Vous avez perdu !
 You have lost !
-Sie haben verlohren !
+Sie haben verloren !
 [you have won]
 Vous avez gagne !!!
 You have won !!!
@@ -238,7 +238,7 @@ Sie haben gewonnen !!!
 [campagn]
 Campagne
 Campaign
-Kampagne
+Feldzug
 [custom game]
 Jeu libre
 Custom game
@@ -282,7 +282,7 @@ Verbinden
 [disconnect]
 Deconnecter
 Disonnect
-Verbindung unterbrechen
+V. unterbrechen
 [please wait]
 Attendre SVP
 Please wait
@@ -302,7 +302,7 @@ Anschliessen an ein Spiel
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
-Zurueck zum Haubtmenu
+Zurueck zum Hauptmenu
 [player name]
 Nom du joueur
 Player name
@@ -314,7 +314,7 @@ Beherberger Name
 [hp%d]
 Point de vie : %d
 HitPoint : %d
-
+Leben: %d
 [carry]
 Transporte :
 Carry :
@@ -326,7 +326,7 @@ Transportiert nichts
 [level]
 Niveau
 Level
-Niveau
+Stufe
 [building site]
 Chantier
 Building site
@@ -346,7 +346,7 @@ Groesse auf y
 [default terrain]
 Terrain par defaut
 Default terrain
-Start Terrain
+Start Gelaende
 [water]
 Eau
 Water
@@ -360,9 +360,9 @@ Herbe
 Grass
 Grass
 [teams]
- equipes
- teams
- Mannschaften
+  equipes
+  teams
+  Mannschaften
 [choose map]
 Choisir une carte
 Choose a map
@@ -382,7 +382,7 @@ Nahrung
 [your units are under attack]
 Vos unites sont attaquees !
 Your unites are under attack !
-Die Einheiten werden angegriffen !
+Einheiten unter Angriff !
 [your buildings are under attack]
 Vos batiments sont attaquees !
 Your buildings are under attack !
@@ -390,7 +390,7 @@ Gebaeude unter Angriff !
 [building has been finished]
 Le batiment est termine
 The building is finished
-Das Gebauede ist vertig
+Das Gebauede ist fertig
 [ai]
 IA
 AI
@@ -406,11 +406,11 @@ Spieler
 [PNS_BAD]
 Inconnu
 Unknow
-unbekannt
+Unbekannt
 [PNS_BINDED]
 Connu
 Know
-bekannt
+Bekannt
 [PNS_SENDING_FIRST_PACKET]
 Connecte
 Connected
@@ -502,19 +502,19 @@ sind verletzt
 [Walk]
 Marche
 Walk
-Gehe
+Gehend
 [Swim]
 Nage
 Swim
-Schwimmt
+Schwimend
 [Build]
 Constr.
 Build
-Baut
+Bauend
 [Harvest]
 Recolte
 Harvest
-
+Erntend
 [At. speed]
 Vitesse at.
 At. speed
@@ -538,7 +538,7 @@ unterwegs
 [on the spot]
 sur place
 on the spot
-Vorort
+vorort
 [Version]
 Version
 Version

@@ -87,6 +87,8 @@ YOGScreen.h \
 YOGScreen.cpp \
 YOGConnector.h \
 YOGConnector.cpp \
+YOG.h \
+YOG.cpp \
 SettingsScreen.h \
 SettingsScreen.cpp \
 MultiplayersHostScreen.h \

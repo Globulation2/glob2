@@ -51,29 +51,26 @@ bool BaseMap::load(SDL_RWops *stream)
 	return true;
 }
 
-/*const*/void BaseMap::setMapName(/*const*/ char *s)
+void BaseMap::setMapName(const char *s)
 {
 	strncpy(mapName, s, MAP_NAME_MAX_SIZE);
 	mapName[MAP_NAME_MAX_SIZE-1]=0;
 	char *c=strrchr(mapName, '.');
 	if (c)
 		*c=0;
+	// set filename from mapname
+	snprintf(mapFileName, MAP_NAME_MAX_SIZE+4, "%s.map", mapName);
 	//printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
 }
 
-/*const*/char *BaseMap::getMapName()
+const char *BaseMap::getMapName() const
 {
 	//printf("(get)mapName=(%s).\n", mapName);
 	return mapName;
 }
 
-/*const*/char *BaseMap::getMapFileName()
+const char *BaseMap::getMapFileName() const
 {
-	strncpy(mapFileName, mapName, MAP_NAME_MAX_SIZE);
-	mapFileName[MAP_NAME_MAX_SIZE-1]=0;
-	int l=strlen(mapName);
-	strncpy(&mapFileName[l], ".map", 5);
-	mapFileName[MAP_NAME_MAX_SIZE+4-1]=0;
 	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
 	return mapFileName;
 }
@@ -497,11 +494,11 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 			}
 		}
 	}
-			
+
 	return false;
 }
 
-void Map::setBaseMap(/*const*/ BaseMap *initial)
+void Map::setBaseMap(const BaseMap *initial)
 {
 	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }

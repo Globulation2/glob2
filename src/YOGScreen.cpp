@@ -51,6 +51,7 @@ YOGScreen::~YOGScreen()
 
 TCPsocket YOGScreen::socket = NULL;
 SDLNet_SocketSet YOGScreen::socketSet = NULL;
+YOG YOGScreen::yog;
 
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
@@ -78,6 +79,8 @@ void YOGScreen::openYOG(void)
 	}
 
 	SDLNet_TCP_AddSocket(socketSet, socket);
+
+	yog.connect("irc.debian.org", 6667, "nct");
 }
 
 void YOGScreen::closeYOG(void)
@@ -87,6 +90,7 @@ void YOGScreen::closeYOG(void)
 		SDLNet_TCP_Close(socket);
 		socket=NULL;
 		SDLNet_FreeSocketSet(socketSet);
+		yog.forceDisconnect();
 	}
 }
 
@@ -221,6 +225,7 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		char data[GAME_INFO_MAX_SIZE];
 		snprintf(data, GAME_INFO_MAX_SIZE, "say <%s> %s", globalContainer->settings.userName, textInput->text);
 		sendString(socket, data);
+		yog.sendChatMessage(textInput->text);
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
@@ -261,6 +266,7 @@ void YOGScreen::paint(int x, int y, int w, int h)
 
 void YOGScreen::onTimer(Uint32 tick)
 {
+	yog.step();
 	// the game connection part:
 	multiplayersJoin->onTimer(tick);
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
