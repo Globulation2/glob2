@@ -39,8 +39,10 @@ namespace GAGCore
 		virtual ~TrueTypeFont();
 		bool load(const char *filename, unsigned size);
 		
-		int getStringWidth(const char *string, Shape shape) const;
-		int getStringHeight(const char *string, Shape shape) const;
+		//! Get the width of string with shape. Update cache
+		int getStringWidth(const char *string, Shape shape);
+		//! Get the height of string with shape. If string is NULL, return base value, else update cache
+		int getStringHeight(const char *string, Shape shape);
 		
 		// Style and color
 		virtual void setStyle(Style style);
@@ -50,6 +52,11 @@ namespace GAGCore
 		virtual void drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL);
 		virtual void pushStyle(Style style);
 		virtual void popStyle(void);
+		
+		//! If text is cached, returns its surface. If it is not, create, cache and return surface
+		SDL_Surface *getStringCached(const char *text);
+		//! If cache is too big, remove old entry
+		void cleanupCache(void);
 		
 	protected:
 		TTF_Font *font;
