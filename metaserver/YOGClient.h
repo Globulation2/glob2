@@ -34,8 +34,8 @@ struct Message
 	char text[256];
 	int textLength;
 	bool received;
-	char userName[32];
-	int userNameLength;
+	char username[32];
+	int usernameLength;
 	YOGMessageType messageType;
 	Uint8 messageID;
 };
@@ -116,8 +116,8 @@ public:
 	IPaddress joinGameip;
 	UDPsocket socket;
 	Uint8 lastSentMessageID; // The last message id that client has sent to YOG. Used to ignore doubles.
-	char userName[32];
-	unsigned char passWord[32];
+	char username[32];
+	unsigned char password[32];
 	unsigned char xorpassw[32];
 	std::list<Message> messages; // messages to send
 	Uint8 lastMessageID; // The last message id sent by YOG to client. Used to give new messages an unique id.
