@@ -158,7 +158,7 @@ Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSi
 			return i;
 	}
 	
-	std::cerr << "BuildingsTypes::getTypeNum(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
+	//std::cerr << "BuildingsTypes::getTypeNum(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
 	// we can reach this point if we request a flag
 	return -1;
 }
@@ -171,7 +171,7 @@ BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuil
 			return entries[i];
 	}
 	
-	std::cerr << "BuildingsTypes::getByType(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
+	//std::cerr << "BuildingsTypes::getByType(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
 	// we can reach this point if we request a flag
 	return NULL;
 }

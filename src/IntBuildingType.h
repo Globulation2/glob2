@@ -36,6 +36,7 @@ struct IntBuildingType
 	static std::string null;
 	
 	static int shortNumberFromType(const char *type);
+	static int shortNumberFromType(const std::string &s);
 	static const std::string & typeFromShortNumber(int number);
 	
 	static void init(void);
