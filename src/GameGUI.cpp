@@ -620,6 +620,11 @@ void GameGUI::processEvent(SDL_Event *event)
 	if (inGameMenu)
 	{
 		processGameMenu(event);
+		// It is usefull to be able to print screen even here
+		if ((event->type == SDL_KEYDOWN) && (event->key.keysym.sym == SDLK_PRINT))
+		{
+			globalContainer->gfx->printScreen("screenshot.bmp");
+		}
 	}
 	else
 	{
@@ -950,15 +955,16 @@ void GameGUI::handleKey(SDLKey key, bool pressed)
 				if (pressed)
 					paused=!paused;
 				break;
-			case SDLK_PRINT:
-				globalContainer->gfx->printScreen("screenshot.bmp");
-				break;
 			default:
-
 			break;
 		}
 	}
+	if ((key == SDLK_PRINT) && (pressed))
+	{
+		globalContainer->gfx->printScreen("screenshot.bmp");
+	}
 }
+
 void GameGUI::handleKeyAlways(void)
 {
 	SDL_PumpEvents();
