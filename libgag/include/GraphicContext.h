@@ -200,8 +200,8 @@ public:
 	virtual void drawString(int x, int y, Font *font, const char *msg);
 	virtual void drawString(int x, int y, int w, Font *font, const char *msg);
 	virtual void drawSurface(int x, int y, DrawableSurface *surface);
-	virtual void updateRects(SDL_Rect *rects, int size) { }
-	virtual void updateRect(int x, int y, int w, int h) { }
+	virtual void updateRects(SDL_Rect * /*rects*/, int /*size*/) { }
+	virtual void updateRect(int /*x*/, int /*y*/, int /*w*/, int /*h*/) { }
 	virtual void *getPixelPointer(void)  { return surface->pixels; }
 };
 

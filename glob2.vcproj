@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
@@ -80,14 +80,14 @@
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static.lib vorbisfile_static.lib"
+				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib freetype.lib sdlmain.lib ws2_32.lib ogg.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="C:\Stuff\Repository\Lib"
@@ -198,6 +198,9 @@
 			</File>
 			<File
 				RelativePath="src\GUIMapPreview.cpp">
+			</File>
+			<File
+				RelativePath=".\src\IntBuildingType.cpp">
 			</File>
 			<File
 				RelativePath="src\LoadGameScreen.cpp">
@@ -317,7 +320,7 @@
 					RelativePath=".\libgag\src\FileManager.cpp">
 				</File>
 				<File
-					RelativePath=".\libgag\src\GLGraphicContext.cpp">
+					RelativePath=".\libgag\src\glSDL.c">
 				</File>
 				<File
 					RelativePath=".\libgag\src\GraphicContext.cpp">
@@ -359,10 +362,7 @@
 					RelativePath=".\libgag\src\GUITextInput.cpp">
 				</File>
 				<File
-					RelativePath=".\libgag\src\SDLFont.cpp">
-				</File>
-				<File
-					RelativePath=".\libgag\src\SDLGraphicContext.cpp">
+					RelativePath=".\libgag\src\SDL_ttf.c">
 				</File>
 				<File
 					RelativePath=".\libgag\src\Sprite.cpp">
@@ -375,6 +375,9 @@
 				</File>
 				<File
 					RelativePath=".\libgag\src\Toolkit.cpp">
+				</File>
+				<File
+					RelativePath=".\libgag\src\TrueTypeFont.cpp">
 				</File>
 				<File
 					RelativePath=".\libgag\src\win32_dirent.cpp">
@@ -437,6 +440,9 @@
 			</File>
 			<File
 				RelativePath="src\Header.h">
+			</File>
+			<File
+				RelativePath=".\src\IntBuildingType.h">
 			</File>
 			<File
 				RelativePath="src\LoadGameScreen.h">
@@ -569,6 +575,9 @@
 				</File>
 				<File
 					RelativePath="libgag\include\GAGSys.h">
+				</File>
+				<File
+					RelativePath=".\libgag\include\glSDL.h">
 				</File>
 				<File
 					RelativePath="libgag\include\GraphicContext.h">

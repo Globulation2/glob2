@@ -11,6 +11,10 @@
 #define	_GLSDL_NO_REDEFINES_
 #include "glSDL.h"
 
+#ifndef M_PI
+#define M_PI 3.1415926535
+#endif
+
 #ifdef HAVE_OPENGL
 
 #define LEAK_TRACKING

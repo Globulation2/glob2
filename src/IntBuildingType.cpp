@@ -5,7 +5,7 @@
 std::map<std::string, int> IntBuildingType::conversionMap;
 std::vector<std::string> IntBuildingType::reverseConversionMap;
 
-std::string null = "null";
+std::string IntBuildingType::null = "null";
 
 void IntBuildingType::init(void)
 {
