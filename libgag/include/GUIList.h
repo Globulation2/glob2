@@ -56,6 +56,10 @@ protected:
 	std::vector<char *> strings;
 	int nth;
 	unsigned disp;
+	//! Length of the scroll box, this is a cache
+	unsigned blockLength;
+	//! Pos of the scroll box
+	unsigned blockPos;
 };
 
 #endif
