@@ -205,7 +205,7 @@ void Game::executeOrder(Order *order, int localPlayer)
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber);
 				if (b)
 				{
-					fprintf(logFile, "ORDER_CREATE (%d, %d)", posX, posY);
+					fprintf(logFile, "ORDER_CREATE (%d, %d, %d)", posX, posY, bt->shortTypeNum);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
 				}

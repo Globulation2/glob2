@@ -1,13 +1,23 @@
+CFLAGS = -g -Wall `sdl-config --cflags`
+CXXFLAGS = -g -Wall `sdl-config --cflags`
+LINKFLAGS = -g `sdl-config --libs` -lSDL_net
+#CC = gcc
+#CXX = g++
+#LINKER = g++
+CC = gcc-3.0
+CXX = g++-3.0
+LINKER = g++-3.0
+
 all: YOGServer
-	
+
 YOGClient.o: YOGClient.cpp
-	g++ `sdl-config --cflags` -g -Wall -c YOGClient.cpp -o YOGClient.o
+	$(CXX) $(CXXFLAGS) -c YOGClient.cpp -o YOGClient.o
 
 YOGServer.o: YOGServer.cpp
-	g++ `sdl-config --cflags` -g -Wall -c YOGServer.cpp -o YOGServer.o
+	$(CXX) $(CXXFLAGS) -c YOGServer.cpp -o YOGServer.o
 
 YOGServer: YOGClient.o YOGServer.o ../src/Utilities.o
-	g++ -g `sdl-config --libs` -lSDL_net YOGServer.o YOGClient.o ../src/Utilities.o -o YOGServer
+	$(LINKER) $(LINKFLAGS) YOGServer.o YOGClient.o ../src/Utilities.o -o YOGServer
 	
 clean:
 	rm -f core YOGServer.o YOGClient.o YOGServer

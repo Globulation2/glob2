@@ -36,6 +36,7 @@ class Building;
 class AICastor : public AIImplementation
 {
 public:
+	static const int NB_HARD_BUILDING=8;
 	class Project
 	{
 	public:
