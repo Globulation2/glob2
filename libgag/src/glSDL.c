@@ -11,10 +11,6 @@
 #define	_GLSDL_NO_REDEFINES_
 #include "glSDL.h"
 
-#ifndef M_PI
-#define M_PI 3.1415926535
-#endif
-
 #ifdef HAVE_OPENGL
 
 #define LEAK_TRACKING
@@ -31,6 +27,7 @@
 /* Keep this on for now! Makes large surfaces faster. */
 #define	FAKE_MAXTEXSIZE	256
 
+#define _USE_MATH_DEFINES 
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
