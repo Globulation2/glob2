@@ -27,8 +27,9 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	multiplayersJoin=new MultiplayersJoin(false);
 
 	serverName=new TextInput(20, 170, 280, 30, globalContainer->standardFont, "localhost", true);
-	strncpy(multiplayersJoin->serverName, serverName->text, 128);
-	multiplayersJoin->serverName[127]=0;
+	strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
+	multiplayersJoin->serverNameMemory[127]=0;
+	multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
 	addWidget(serverName);
 
 	playerName=new TextInput(20, 270, 280, 30, globalContainer->standardFont, globalContainer->userName, false);
@@ -136,8 +137,9 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (source==serverName)
 		{
-			strncpy(multiplayersJoin->serverName, serverName->text, 128);
-			multiplayersJoin->serverName[127]=0;
+			strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
+			multiplayersJoin->serverNameMemory[127]=0;
+			multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
 		}
 		else if (source==playerName)
 		{
@@ -187,8 +189,9 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 					Uint32 netHost=SDL_SwapBE32(it->ip);
 					snprintf(s, 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
 					serverName->setText(s);
-					strncpy(multiplayersJoin->serverName, serverName->text, 128);
-					multiplayersJoin->serverName[127]=0;
+					strncpy(multiplayersJoin->serverNameMemory, serverName->text, 128);
+					multiplayersJoin->serverNameMemory[127]=0;
+					multiplayersJoin->serverName=multiplayersJoin->serverNameMemory;
 					break;
 				}
 				else

@@ -100,7 +100,7 @@ private:
 
 public:
 	char serverNameMemory[128];
-	char *serverName;
+	const char *serverName;
 	char playerName[32];
 	char serverNickName[32];
 
