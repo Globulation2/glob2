@@ -100,15 +100,17 @@ Token::TokenType Token::getTypeByName(const char *name)
 {
 	int i = 0;
 	TokenType type=NIL;
-	while (table[i].type != NIL)
-	{
-		if (strcasecmp(name, table[i].name)==0)
+	
+	if (name != NULL)
+		while (table[i].type != NIL)
 		{
-			type = table[i].type;
-			break;
+			if (strcasecmp(name, table[i].name)==0)
+			{
+				type = table[i].type;
+				break;
+			}
+			i++;
 		}
-		i++;
-	}
 	return type;
 }
 
@@ -116,15 +118,17 @@ const char *Token::getNameByType(Token::TokenType type)
 {
 	int i = 0;
 	const char *name=NULL;
-	while (table[i].name != NULL)
-	{
-		if (type == table[i].type)
+	
+	if (type != NIL)
+		while (table[i].name != NULL)
 		{
-			name = table[i].name;
-			break;
+			if (type == table[i].type)
+			{
+				name = table[i].name;
+				break;
+			}
+			i++;
 		}
-		i++;
-	}
 	return name;
 }
 
@@ -172,7 +176,7 @@ int Story::valueOfVariable(Token nameOfVariable,int numberOfPlayer,int level)
 			return latestStat->numberBuildingPerTypePerLevel[7][level]; 
 		default:
 			return 0;
-		}
+	}
 }
 
 
