@@ -79,6 +79,8 @@ public:
 	void dispatchPaint(DrawableSurface *gfx);
 	void repaint(DrawableSurface *gfx);
 	DrawableSurface *getSurface(void) { return gfxCtx; }
+	int getW(void) { if (gfxCtx) return gfxCtx->getW(); else return 0; }
+	int getH(void) { if (gfxCtx) return gfxCtx->getH(); else return 0; }
 
 protected:
 	bool run;
