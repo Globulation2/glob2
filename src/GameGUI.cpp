@@ -1582,6 +1582,11 @@ void GameGUI::drawOverlayInfos(void)
 	else
 	{
 		int ymesg=32;
+		if (game.script.isTextShown)
+		{
+			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", game.script.textShown.c_str());
+			ymesg+=32;
+		}
 		for (std::list <Message>::iterator it=messagesList.begin(); it!=messagesList.end(); ++it)
 		{
 			globalContainer->gfx->drawString(32, ymesg, globalContainer->standardFont, "%s", it->text);

@@ -133,7 +133,6 @@ bool Story::testCondition()
 				mapscript->isTextShown = true;
 				lineSelector++;
 				mapscript->textShown = line[lineSelector].msg;
-				cout << line[lineSelector].msg << endl;
 				return true;
 			}
 			
@@ -151,7 +150,7 @@ bool Story::testCondition()
 			
 			case (Token::S_TIMER):
 			{
-				lineSelector ++;
+				lineSelector++;
 				mapscript->mainTimer=line[lineSelector].value;
 				return true;
 			}
@@ -164,6 +163,7 @@ bool Story::testCondition()
 					{
 						lineSelector++;
 						internTimer=line[lineSelector].value;
+						return false;
 					}
 					case (Token::S_DEAD):
 					{
@@ -237,7 +237,11 @@ bool Story::testCondition()
 			}
 			
 			case (Token::S_HIDE):
+			{
 				mapscript->isTextShown = false;
+				return true;
+			}
+			
 			default:
 				return false;
 		}
