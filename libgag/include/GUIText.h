@@ -46,7 +46,7 @@ public:
 	Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0);
 	virtual ~Text() { }
 	virtual const char *getText() const { return text.c_str();}
-	virtual void setText(const char *newText, ...);
+	virtual void setText(const char *newText);
 	virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
 
 protected:

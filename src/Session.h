@@ -24,8 +24,6 @@
 #include "Player.h"
 #include "MapGenerationDescriptor.h"
 
-class DrawableSurface;
-
 //! Save in stream at offset the actual file pos
 #define SAVE_OFFSET(stream, offset) \
 	{ \
@@ -145,8 +143,6 @@ public:
 	int getTeamNumber(char playerName[BasePlayer::MAX_NAME_LENGTH], int team);
 	int getAITeamNumber(SessionInfo *currentSessionInfo, int team);
 
-	//! draw a list of players
-	void draw(DrawableSurface *gfx);
 	//! get information on player in a nice string
 	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen);
 

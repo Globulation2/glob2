@@ -27,23 +27,73 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
+// Sutpid widget for color rectangles
+class ColorRect: public RectangularWidget
+{
+protected:
+	Uint8 r,g,b,a;
+
+public:
+	ColorRect(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign)
+	{
+		this->x=x;
+		this->y=y;
+		this->w=w;
+		this->h=h;
+	
+		this->hAlignFlag=hAlign;
+		this->vAlignFlag=vAlign;
+		
+		r=g=b=0;
+		a=DrawableSurface::ALPHA_OPAQUE;
+	}
+	
+	void internalRepaint(int x, int y, int w, int h)
+	{
+		assert(parent);
+		parent->getSurface()->drawFilledRect(x, y, w, h, r, g, b);
+	}
+	
+	void setColor(Uint8 nr, Uint8 ng, Uint8 nb, Uint8 na=DrawableSurface::ALPHA_OPAQUE)
+	{
+		if ((nr!=r) || (ng!=g) || (nb!=b) || (na!=a))
+		{
+			r=nr;
+			g=ng;
+			b=nb;
+			repaint();
+		}
+	}
+};
 //MultiplayersConnectedScreen pannel part !!
 
 MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multiplayersJoin)
 {
 	this->multiplayersJoin=multiplayersJoin;
 	
-	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Disconnect]"), DISCONNECT));
+	addWidget(new TextButton(20, 435, 180, 30, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Disconnect]"), DISCONNECT));
 
-	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
-
-	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
+	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
+	
+	startTimer=new Text(20, 210, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
 	addWidget(startTimer);
 
-	chatWindow=new TextArea(20, 210, 400, 205, ALIGN_LEFT, ALIGN_LEFT, "standard");
+	chatWindow=new TextArea(20, 210, 220, 65, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
+	textInput=new TextInput(20, 20, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
+	
+	for (unsigned i=0; i<16; i++)
+	{
+		int dx=320*(i/8);
+		int dy=20*(i%8);
+		text[i] = new Text(42+dx, 40+dy, ALIGN_SCREEN_CENTERED, ALIGN_TOP, "standard");
+		text[i]->visible = false;
+		addWidget(text[i]);
+		color[i] = new ColorRect(22+dx, 42+dy, 16, 16, ALIGN_SCREEN_CENTERED, ALIGN_TOP);
+		color[i]->visible = false;
+		addWidget(color[i]);
+	}
 	
 	timeCounter=0;
 	progress=0;
@@ -70,9 +120,20 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 
 	if ((timeCounter++ % 10)==0)
 	{
-		gfxCtx->drawFilledRect(0, 40, gfxCtx->getW(), 170, 0, 0, 0);
-		multiplayersJoin->sessionInfo.draw(gfxCtx);
-		addUpdateRect(0, 40, gfxCtx->getW(), 170);
+		int i=0;
+		for (;i<multiplayersJoin->sessionInfo.numberOfPlayer; i++)
+		{
+			text[i]->setText(multiplayersJoin->sessionInfo.players[i].name);
+			text[i]->show();
+			const BaseTeam &t = multiplayersJoin->sessionInfo.team[multiplayersJoin->sessionInfo.players[i].teamNumber];
+			color[i]->setColor(t.colorR, t.colorG, t.colorB);
+			color[i]->show();
+		}
+		for (;i<16;i++)
+		{
+			text[i]->hide();
+			color[i]->hide();
+		}
 		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
 		{
 			char s[128];
