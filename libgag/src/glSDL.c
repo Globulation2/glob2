@@ -2468,11 +2468,12 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 	fy = y;
 	fray = ray;
 
-	gl.Begin(GL_POINTS);
+	gl.Begin(GL_POLYGON);
 	if (a < 255)
 		gl.Color4ub(r, g, b, a);
 	else
 		gl.Color3ub(r, g, b);
+	//for (i=tot; i>=0; i--)
 	for (i=0; i<tot; i++)
 	{
 		double angle = (2*M_PI*(double)i)/((double)tot);
