@@ -1315,6 +1315,9 @@ void GameGUI::draw(void)
 				int decY=0;
 
 				globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
+				if (i==typeToBuild)
+					globalContainer->gfx->drawFilledRect(x+6, y+2, 52, 42, 52, 1, 165);
+					
 				Sprite *buildingSprite=globalContainer->buildings;
 
 				if (buildingSprite->getW(imgid)<=32)
@@ -1335,8 +1338,9 @@ void GameGUI::draw(void)
 			{
 				int x=((typeToBuild&0x1)*64)+globalContainer->gfx->getW()-128;
 				int y=((typeToBuild>>1)*46)+128+32;
-				globalContainer->gfx->drawRect(x+6, y+3, 52, 42, 255, 0, 0);
-				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
+				globalContainer->gfx->drawSprite(x+4, y+1, globalContainer->gamegui, 8);
+				/*globalContainer->gfx->drawRect(x+6, y+3, 52, 42, 255, 0, 0);
+				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);*/
 			}
 			
 			// draw building infos

@@ -1316,7 +1316,7 @@ void Building::turretStep(void)
 	assert(map);
 
 	int targetX, targetY;
-	int bestTargetX, bestTargetY;
+	int bestTargetX=0, bestTargetY=0;
 	for (int i=0; i<=range && !targetFound; i++)
 		for (int j=0; j<=i && !targetFound; j++)
 			//for (int k=0; k<8; k++)
@@ -1577,7 +1577,7 @@ bool Building::findExit(int *posX, int *posY, int *dx, int *dy, bool canFly)
 	int testX, testY;
 	int exitQuality=0;
 	int oldQuality;
-	int exitX, exitY;
+	int exitX=0, exitY=0;
 	
 	//if (exitQuality<4)
 	{
