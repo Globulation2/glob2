@@ -190,7 +190,8 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 					int realX = x + realXMin;
 					int arrayX = realX - dim->minX;
 					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
-					array->set(arrayPos, BrushTool::getBrushValue(applications[i].figure, x, y));
+					if (BrushTool::getBrushValue(applications[i].figure, x, y))
+						array->set(arrayPos, true);
 				}
 			}
 		}
