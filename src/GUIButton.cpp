@@ -37,6 +37,7 @@ Button::Button(int x, int y, int w, int h, Sprite *arch, int standardId, int hig
 
 void Button::onSDLEvent(SDL_Event *event)
 {
+	assert(parent);
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -44,8 +45,7 @@ void Button::onSDLEvent(SDL_Event *event)
 			if (!highlighted)
 			{
 				highlighted=true;
-				assert(gfx);
-    			repaint();
+				repaint();
 				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
 			}
 		}
@@ -54,7 +54,6 @@ void Button::onSDLEvent(SDL_Event *event)
 			if (highlighted)
 			{
 				highlighted=false;
-				assert(gfx);
 				repaint();
 				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 			}
@@ -80,19 +79,21 @@ void Button::onSDLEvent(SDL_Event *event)
 
 void Button::repaint(void)
 {
+	assert(parent);
+	assert(parent->getSurface());
 	if (visible)
 	{
 		if (highlighted)
 		{
 			if (highlightID>=0)
-				gfx->drawSprite(x, y, arch, highlightID);
+				parent->getSurface()->drawSprite(x, y, arch, highlightID);
 			else
 				parent->paint(x, y, w, h);
 		}
 		else
 		{
 			if (standardId>=0)
-				gfx->drawSprite(x, y, arch, standardId);
+				parent->getSurface()->drawSprite(x, y, arch, standardId);
 			else
 				parent->paint(x, y, w, h);
 		}
@@ -100,17 +101,13 @@ void Button::repaint(void)
 	parent->addUpdateRect(x, y, w, h);
 }
 
-void Button::paint(DrawableSurface *gfx)
+void Button::paint(void)
 {
-	this->gfx=gfx;
+	assert(parent);
+	assert(parent->getSurface());
 	if ((visible)&&(standardId>=0))
-		gfx->drawSprite(x, y, arch, standardId);
+		parent->getSurface()->drawSprite(x, y, arch, standardId);
 	highlighted=false;
-}
-
-void Button::setDrawableSurface(DrawableSurface *gfx)
-{
-	this->gfx=gfx;
 }
 
 TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode)
@@ -118,21 +115,24 @@ TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId,
 {
 	this->text=NULL;
 	this->font=font;
-	setText(text);
+	internalSetText(text);
 }
 
-void TextButton::paint(DrawableSurface *gfx)
+void TextButton::paint(void)
 {
-	Button::paint(gfx);
+	assert(parent);
+	assert(parent->getSurface());
+	Button::paint();
 	if (visible)
 	{
-		gfx->drawString(x+decX, y+decY, font, text);
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawString(x+decX, y+decY, font, text);
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	}
 }
 
-void TextButton::setText(const char *text)
+void TextButton::internalSetText(const char *text)
 {
+	assert(font);
 	int textLength=strlen(text);
 	if (this->text)
 		delete[] this->text;
@@ -142,20 +142,28 @@ void TextButton::setText(const char *text)
 	decY=(h-font->getStringHeight(text))>>1;
 }
 
+void TextButton::setText(const char *text)
+{
+	internalSetText(text);
+	repaint();
+}
+
 void TextButton::repaint(void)
 {
+	assert(parent);
+	assert(parent->getSurface());
 	Button::repaint();
 	parent->paint(x, y, w, h);
 	if (visible)
 	{
-		gfx->drawString(x+decX, y+decY, font, text);
+		parent->getSurface()->drawString(x+decX, y+decY, font, text);
 		if (highlighted)
 		{
-			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			gfx->drawRect(x, y, w, h, 255, 255, 255);
+			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
 		}
 		else
-			gfx->drawRect(x, y, w, h, 180, 180, 180);
+			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	}
 	parent->addUpdateRect(x, y, w, h);
 }
@@ -175,6 +183,7 @@ OnOffButton::OnOffButton(int x, int y, int w, int h, bool startState, int return
 
 void OnOffButton::onSDLEvent(SDL_Event *event)
 {
+	assert(parent);
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
@@ -182,8 +191,7 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 			if (!highlighted)
 			{
 				highlighted=true;
-				assert(gfx);
-    			repaint();
+				repaint();
 				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
 			}
 		}
@@ -192,7 +200,6 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 			if (highlighted)
 			{
 				highlighted=false;
-				assert(gfx);
 				repaint();
 				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 			}
@@ -217,25 +224,26 @@ void OnOffButton::onSDLEvent(SDL_Event *event)
 
 void OnOffButton::internalPaint(void)
 {
+	assert(parent);
+	assert(parent->getSurface());
 	if (highlighted)
 	{
-		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-		gfx->drawRect(x, y, w, h, 255, 255, 255);
+		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+		parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
 	}
 	else
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 	if (state)
 	{
-		gfx->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-		gfx->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-		gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-		gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
+		parent->getSurface()->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
+		parent->getSurface()->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
+		parent->getSurface()->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
+		parent->getSurface()->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
 	}
 }
 
-void OnOffButton::paint(DrawableSurface *gfx)
+void OnOffButton::paint(void)
 {
-	this->gfx=gfx;
 	highlighted=false;
 	if (visible)
 		internalPaint();
@@ -244,7 +252,8 @@ void OnOffButton::paint(DrawableSurface *gfx)
 void OnOffButton::repaint(void)
 {
 	parent->paint(x, y, w, h);
-	internalPaint();
+	if (visible)
+		internalPaint();
 	parent->addUpdateRect(x, y, w, h);
 }
 
@@ -278,8 +287,7 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 			if (!highlighted)
 			{
 				highlighted=true;
-				assert(gfx);
-    			repaint();
+				repaint();
 				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
 			}
 		}
@@ -288,7 +296,6 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 			if (highlighted)
 			{
 				highlighted=false;
-				assert(gfx);
 				repaint();
 				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 			}
@@ -315,33 +322,28 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 
 void ColorButton::internalPaint(void)
 {
-	assert(gfx);
+	assert(parent);
+	assert(parent->getSurface());
 	if (highlighted)
 	{
-		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-		gfx->drawRect(x, y, w, h, 255, 255, 255);
+		parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+		parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
 		if (vr.size())
-			gfx->drawFilledRect(x+2, y+2, w-4, h-4, vr[selColor], vg[selColor], vb[selColor]);
+			parent->getSurface()->drawFilledRect(x+2, y+2, w-4, h-4, vr[selColor], vg[selColor], vb[selColor]);
 	}
 	else
 	{
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
 		if (vr.size())
-			gfx->drawFilledRect(x+1, y+1, w-2, h-2, vr[selColor], vg[selColor], vb[selColor]);
+			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, vr[selColor], vg[selColor], vb[selColor]);
 	}
 }
 
-void ColorButton::paint(DrawableSurface *gfx)
+void ColorButton::paint(void)
 {
-	this->gfx=gfx;
 	highlighted=false;
 	if (visible)
 		internalPaint();
-}
-
-void ColorButton::setDrawableSurface(DrawableSurface *gfx)
-{
-	this->gfx=gfx;
 }
 
 void ColorButton::repaint(void)

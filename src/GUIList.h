@@ -24,7 +24,7 @@
 #include "GUIBase.h"
 #include <vector>
 
-class List: public Widget
+class List: public RectangularWidget
 {
 public:
 	List(int x, int y, int w, int h, const Font *font);
@@ -32,22 +32,21 @@ public:
 
 	virtual void onTimer(Uint32 tick) { }
 	virtual void onSDLEvent(SDL_Event *event);
-	virtual void paint(DrawableSurface *gfx);
-	virtual void setDrawableSurface(DrawableSurface *gfx);
+	virtual void paint(void);
 
 	void addText(const char *text, int pos);
 	void addText(const char *text);
 	void removeText(int pos);
 	void clear(void);
 	char *getText(int pos) const;
-	virtual void repaint(void);
+	//! Call this after all add has been done
+	void commit(void) { repaint(); }
 
 protected:
+	virtual void repaint(void);
 	virtual void internalPaint(void);
 
 protected:
-	DrawableSurface *gfx;
-	int x, y, w, h;
 	int textHeight;
 	const Font *font;
 	std::vector<char *> strings;

@@ -28,7 +28,6 @@ Text::Text(int x, int y, const Font *font, const char *text, int w, int h)
 	this->text=NULL;
 	this->w=w;
 	this->h=h;
-	this->gfx=NULL;	
 	if (text)
 	{
 		int textLength=strlen(text);
@@ -43,7 +42,7 @@ void Text::setText(const char *newText)
 {
 	int upW, upH, nW, nH;
 
-	assert(gfx);
+	assert(parent);
 	assert(font);
 	assert(newText);
 	
@@ -72,20 +71,18 @@ void Text::setText(const char *newText)
 	strncpy(this->text, newText, textLength+1);
 
 	// draw new
-	paint(gfx);
+	paint();
 	parent->addUpdateRect(x, y, MAX(nW, upW), MAX(nH, upH));
 	parent->onAction(this, TEXT_SET, 0, 0);
 }
 
-void Text::paint(DrawableSurface *gfx)
+void Text::paint(void)
 {
+	assert(parent);
+	assert(parent->getSurface());
 	if (visible)
 	{
 		int wDec, hDec;
-
-		assert(gfx);
-
-		this->gfx=gfx;
 
 		if (w)
 			wDec=(w-font->getStringWidth(text))>>1;
@@ -97,13 +94,8 @@ void Text::paint(DrawableSurface *gfx)
 		else
 			hDec=0;
 
-		gfx->drawString(x+wDec, y+hDec, font, text);
+		parent->getSurface()->drawString(x+wDec, y+hDec, font, text);
 	}
-}
-
-void Text::setDrawableSurface(DrawableSurface *gfx)
-{
-	this->gfx=gfx;
 }
 
 void Text::repaint(void)
@@ -125,6 +117,6 @@ void Text::repaint(void)
 		upH=font->getStringHeight(text);
 	}
 	parent->paint(x-1, y, upW, upH);
-	paint(gfx);
+	paint();
 	parent->addUpdateRect(x-1, y, upW, upH);
 }
