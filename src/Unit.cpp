@@ -1433,18 +1433,26 @@ void Unit::pathFind(void)
 	{
 		if ((displacement==DIS_GOING_TO_RESSOURCE)&&(!owner->map->isRessource(targetX, targetY, (RessourceType)destinationPurprose)))
 		{
-			owner->map->nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			bool aviable=owner->map->nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
+			if (!aviable)
+			{
+				// We can't see the needed ressource one the map!
+				needToRecheckMedical=true;
+				dx=0;
+				dy=0;
+				direction=8;
+				return;
+			}
 			if (verbose)
 				printf("(%d), no ressouces here! pos=(%d, %d), target=(%d, %d).\n", gid, posX, posY, targetX, targetY);
 		}
 		// Now we first try the 3 simplest directions:
 		int ldx=targetX-posX;
 		int ldy=targetY-posY;
-		int cdx, cdy;
-		
 		if (verbose)
 			printf("(%d), pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", gid, posX, posY, targetX, targetY, ldx, ldy);
 		
+		int cdx, cdy;
 		simplifyDirection(ldx, ldy, &cdx, &cdy);
 		
 		dx=cdx;
@@ -1457,17 +1465,18 @@ void Unit::pathFind(void)
 			return;
 		
 		if (valid(posX+dx, posY+dy))
-			return;	
+			return;
 		
 		direction=(cDirection+1)&7;
 		dxdyfromDirection();
 		if (valid(posX+dx, posY+dy))
-			return;	
+			return;
 		
 		direction=(cDirection+7)&7;
 		dxdyfromDirection();
 		if (valid(posX+dx, posY+dy))
-			return;	
+			return;
+		
 		
 		if (areOnlyUnitsInFront(cdx, cdy))
 		{
@@ -1483,7 +1492,6 @@ void Unit::pathFind(void)
 			gotoTarget(targetX, targetY);
 			return;
 		}
-		
 		
 		if (verbose)
 			printf("0x%lX no simple direction found pos=(%d, %d) cd=(%d, %d)!\n", (unsigned long)this, posX, posY, cdx, cdy);
@@ -2074,22 +2082,19 @@ bool Unit::areOnlyUnitsAround(void)
 	{
 		int dx, dy;
 		dxdyfromDirection(i, &dx, &dy);
-		//printf("p=(%d, %d), p+d=(%d, %d), i=%d\n", posX, posY, posX+dx, posY+dy, i);
 		if (!validHard(posX+dx, posY+dy))
-		{
 			return false;
-		}
 	}
 	return true;
 }
 
 bool Unit::areOnlyUnitsInFront(int dx, int dy)
 {
-	int ldx, ldy;
-	int dir=directionFromDxDy(dx, dy);
-	
 	if (!validHard(posX+dx, posY+dy))
 		return false;
+		
+	int dir=directionFromDxDy(dx, dy);
+	int ldx, ldy;
 	
 	dxdyfromDirection((dir+1)&7, &ldx, &ldy);
 	

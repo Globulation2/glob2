@@ -489,7 +489,6 @@ bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim)
 		return false;
 	if (getBuilding(x, y)!=NOGBID)
 		return false;
-		return false;
 	if (!canSwim && isWater(x, y))
 		return false;
 	return true;
