@@ -38,7 +38,7 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags = DrawableSurface::RESIZABLE | DrawableSurface::DOUBLEBUF | DrawableSurface::HWACCELERATED;
+	screenFlags = DrawableSurface::RESIZABLE | DrawableSurface::DOUBLEBUF | DrawableSurface::HWACCELERATED | DrawableSurface::CUSTOMCURSOR;
 	screenWidth = 640;
 	screenHeight = 480;
 	screenDepth = 0;

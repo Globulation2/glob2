@@ -634,3 +634,5 @@ Audio
 Volume (musique)
 [Happyness]
 Satisfaction
+[customcur]
+Curseur personalisé

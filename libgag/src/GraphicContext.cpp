@@ -1180,9 +1180,15 @@ namespace GAGCore
 		else
 		{
 			setClipRect();
-			SDL_ShowCursor(SDL_DISABLE);
-			// load cursors
-			cursorManager.load();
+			if (flags & CUSTOMCURSOR)
+			{
+				// disable system cursor
+				SDL_ShowCursor(SDL_DISABLE);
+				// load custom cursors
+				cursorManager.load();
+			}
+			else
+				SDL_ShowCursor(SDL_ENABLE);
 			if (flags&FULLSCREEN)
 				fprintf(stderr, "Toolkit : Screen set to %dx%d at %d bpp in fullscreen\n", w, h, depth);
 			else
@@ -1205,11 +1211,14 @@ namespace GAGCore
 	{
 		if (surface)
 		{
-			int mx, my;
-			unsigned b = SDL_GetMouseState(&mx, &my);
-			cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-			setClipRect();
-			cursorManager.draw(this, mx, my);
+			if (flags & CUSTOMCURSOR)
+			{
+				int mx, my;
+				unsigned b = SDL_GetMouseState(&mx, &my);
+				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
+				setClipRect();
+				cursorManager.draw(this, mx, my);
+			}
 			SDL_Flip(surface);
 		}
 	}
