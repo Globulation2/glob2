@@ -85,7 +85,7 @@ public:
 	struct LANHost
 	{
 		IPaddress ip;
-		char gameName[32];
+		char gameName[64];
 		char serverNickName[32];
 		int timeout;
 	};
