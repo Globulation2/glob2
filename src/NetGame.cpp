@@ -712,14 +712,14 @@ void NetGame::computeMyLocalWishedLatency()
 			}
 			orderMarginTimeMin[p]=min;
 			orderMarginTimeMax[p]=max;
-			//printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
+			printf("orderMarginTime[%d]=(%d, %d), ", p, orderMarginTimeMin[p], orderMarginTimeMax[p]);
 		}
 	
 	
 	Uint8 latency=pushStep-executeStep;
 	//printf("latency=%d, ", latency);
 	
-	/*int minTicksToWait=255;
+	int minTicksToWait=255;
 	int n=0;
 	for (int p=0; p<numberOfPlayer; p++)
 		if (players[p]->type==Player::P_IP)
@@ -732,12 +732,8 @@ void NetGame::computeMyLocalWishedLatency()
 				minTicksToWait=ticksToWait;
 		}
 	if (n==0)
-	{
-		myLocalWishedLatency=1;
-		printf("myLocalWishedLatency=1.\n");
-		return 0;
-	}
-	printf("minTicksToWait=%d, ", minTicksToWait);*/
+		minTicksToWait=0;
+	printf("minTicksToWait=%d, ", minTicksToWait);
 	
 	int maxPingPong=0;
 	for (int p=0; p<numberOfPlayer; p++)
@@ -752,8 +748,8 @@ void NetGame::computeMyLocalWishedLatency()
 	int goodLatency=(ordersByPackets-1)+((maxPingPong+1)>>1);
 	if (goodLatency<1)
 		goodLatency=1;
-	/*if (minTicksToWait>0)
-		goodLatency+=((minTicksToWait+1)>>1);*/
+	if (minTicksToWait>0)
+		goodLatency+=((minTicksToWait+1)>>1);
 	//printf("goodLatency=%d, ", goodLatency);
 	
 	if (goodLatency<latency)
@@ -1364,16 +1360,48 @@ void NetGame::stepExecuted(void)
 
 int NetGame::ticksToDelay(void)
 {
-	//We simply compute the max of wished delays:
-	int maxWishedDelay=0;
+	//We look for the slowest player, and get his average delay:
+	int minAverageWishedDelay=255;
 	for (int p=0; p<numberOfPlayer; p++)
+	{
+		int averageWishedDelay=0;
 		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
 			for (int i=0; i<64; i++)
-				if (maxWishedDelay<recentsWishedDelay[p][i])
-					maxWishedDelay=recentsWishedDelay[p][i];
-	printf(logFile, "maxWishedDelay=%d\n", maxWishedDelay);
+				averageWishedDelay+=recentsWishedDelay[p][i];
+		averageWishedDelay/=64;
+		if (minAverageWishedDelay>averageWishedDelay)
+			minAverageWishedDelay=averageWishedDelay;
+	}
 	
-	return maxWishedDelay;
+	fprintf(logFile, "minAverageWishedDelay=%d\n", minAverageWishedDelay);
+	
+	Uint8 latency=pushStep-executeStep;
+	
+	//We compute a delay, which has to be used to improve global timing synchronisation between distant computers:
+	//If we compute
+	int minTicksToWait=255;
+	int n=0;
+	for (int p=0; p<numberOfPlayer; p++)
+		if (players[p]->type==Player::P_IP)
+		{
+			n++;
+			int goodOrderMarginTime=latency-((pingPongMax[p]+1)>>1);
+			int realOrderMarginTime=orderMarginTimeMin[p]-1;
+			int ticksToWait=goodOrderMarginTime-realOrderMarginTime;
+			if (ticksToWait<minTicksToWait)
+				minTicksToWait=ticksToWait;
+		}
+	if (n==0 || minTicksToWait<0)
+		minTicksToWait=0;
+	else
+		minTicksToWait*=10; //Because "Ticks" are 40ms in NetGame and "Ticks" are 1ms int SDL.
+	
+	printf("minTicksToWait=%d, minAverageWishedDelay=%d\n", minTicksToWait, minAverageWishedDelay);
+	
+	if (minAverageWishedDelay>minTicksToWait)
+		return minAverageWishedDelay;
+	else
+		return minTicksToWait;
 }
 
 void NetGame::setWishedDelay(int delay)
