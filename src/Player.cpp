@@ -335,15 +335,15 @@ bool BasePlayer::send(Uint8 *data, int size)
 	packet->address=ip;
 	packet->channel=channel;
 	//sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
-	//if (abs(rand()%100)<90)
+	if (abs(rand()%100)<90)
 		sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
 	// Notice that we can choose between giving a "channel", or the ip.
 	// Here we do both. Then "channel" could be -1.
 	// This is interesting because getFreeChannel() may return -1.
 	// We have no real use of "channel".
 	
-	//else
-	//	sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
+	else
+		sucess=true; // WARNING : TODO : remove this artificial 30% lost of packets!
 	//if (sucess)
 	//	fprintf(logFile, "suceeded to send packet to player %d (channel=%d).\n", number, channel);
 	//else
