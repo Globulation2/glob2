@@ -427,6 +427,14 @@ namespace Utilities
 				return i;
 		return max;
 	}
+	
+	int strmlen(const char *s, int max)
+	{
+		for (int i=0; i<max; i++)
+			if (*(s+i)==0)
+				return i+1;
+		return max;
+	}
 }
 
 

@@ -32,8 +32,6 @@
 
 //#include <vector>
 
-FILE *logServer;
-
 class YOGServer
 {
 public:
@@ -46,10 +44,7 @@ public:
 	void send(IPaddress ip, YOGMessageType v, Uint8 id);
 	void treatPacket(IPaddress ip, Uint8 *data, int size);
 	void run();
-	void sendGameList(YOGClient *client);
-	
 	void lprintf(const char *msg, ...);
-	YOGClient *admin;
 	
 	std::list<YOGClient *> clients;
 	
@@ -57,6 +52,7 @@ public:
 	bool running;
 	
 	std::list<Game *> games;
+	Uint32 gameUID;
 };
 
 #endif

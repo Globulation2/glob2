@@ -39,6 +39,7 @@
 // 32 char max userName size.
 
 //Max size is defined by games lists. ((128+32+6+4)*16)=2720
+//or unshare 256*4+4=1028
 #define YOG_MAX_PACKET_SIZE ((128+32+6+4)*16)
 
 enum YOGMessageType
@@ -57,9 +58,13 @@ enum YOGMessageType
 	
 	YMT_GAME_SOCKET=8,
 	
-	YMT_REQUEST_SHARED_GAMES_LIST=9,
+	YMT_GAMES_LIST=9,
+	YMT_UNSHARED_LIST=10,
 	
-	YMT_CONNECTION_PRESENCE=10,
+	YMT_CLIENTS_LIST=11,
+	YMT_LEFT_CLIENTS_LIST=12,
+	
+	YMT_CONNECTION_PRESENCE=64,
 	
 	YMT_FLUSH_FILES=126,
 	YMT_CLOSE_YOG=127
