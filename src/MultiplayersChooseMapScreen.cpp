@@ -78,18 +78,17 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=static_cast<List *>(source)->getText(par1);
+		const char *mapSelectedName=static_cast<Glob2FileList *>(source)->getText(par1);
 		std::string mapFileName;
 		if (mapMode)
 		{
 			mapFileName = glob2NameToFilename("maps", mapSelectedName, "map");
-			printf("PGU : Loading map '%s' ...\n", mapFileName);
+			std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 		}
 		else
 		{
 			mapFileName = glob2NameToFilename("games", mapSelectedName, "game");
-			printf("PGU : Loading game '%s' ...\n", mapFileName);
-
+			std::cout << "MultiplayersChooseMapScreen::onAction : loading game " << mapFileName << std::endl;
 		}
 		mapPreview->setMapThumbnail(mapFileName.c_str());
 
