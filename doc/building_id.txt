@@ -54,3 +54,4 @@ Misc
 
 34 : petit drapeau
 35 : boulet
+36 : marche
