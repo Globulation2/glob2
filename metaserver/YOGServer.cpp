@@ -560,7 +560,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		
 		connectedClients.erase(cci);
 		
-		if (data[1]==3 && strncmp(client->userName, "admin", 32))
+		if ((data[1]&1==1) && strncmp(client->userName, "admin", 32))
 		{
 			admin=client;
 			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
