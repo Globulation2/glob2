@@ -24,8 +24,6 @@
 
 //MultiplayersJoinScreen pannel part !!
 
-// this is the screen where you choose between :
-// -Cancel
 
 MultiplayersJoinScreen::MultiplayersJoinScreen()
 {
@@ -48,6 +46,8 @@ MultiplayersJoinScreen::MultiplayersJoinScreen()
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT));
 
 	globalContainer->gfx->setClipRect();
+	
+	wasVisible=false;
 }
 
 MultiplayersJoinScreen::~MultiplayersJoinScreen()
@@ -75,7 +75,6 @@ void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 
 void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
-	static bool wasVisible=false;
 	// TODO : call SessionInfo.draw()
 	multiplayersJoin.onTimer(tick);
 
