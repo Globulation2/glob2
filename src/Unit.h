@@ -55,6 +55,7 @@ public:
 	static Sint32 UIDfrom(Sint32 id, Sint32 team);
 	
 	void selectPreferedMovement(void);
+	bool isUnitHungry(void);
 	
 public:
 

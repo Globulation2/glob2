@@ -372,7 +372,7 @@ bool Unit::step(void)
 			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
 			owner->game->map.setMapBuldingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
 		}
-		
+
 		return b;
 	}
 	return false;
@@ -390,6 +390,17 @@ void Unit::selectPreferedMovement(void)
 		assert(false);
 }
 
+bool Unit::isUnitHungry(void)
+{
+	int realTrigHungry;
+	if (caryedRessource==-1)
+		realTrigHungry=trigHungry;
+	else
+		realTrigHungry=trigHungryCarying;
+
+	return (hungry<=realTrigHungry);
+}
+
 void Unit::handleMedical(void)
 {
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
@@ -404,13 +415,7 @@ void Unit::handleMedical(void)
 		medical=MED_DAMAGED;
 	}
 
-	int realTrigHungry;
-	if (caryedRessource==-1)
-		realTrigHungry=trigHungry;
-	else
-		realTrigHungry=trigHungryCarying;
-
-	if (hungry<=realTrigHungry)
+	if (isUnitHungry())
 		medical=MED_HUNGRY;
 
 	if (hungry<=0)

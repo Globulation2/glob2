@@ -1437,13 +1437,7 @@ void GameGUI::draw(void)
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
 			globalContainer->littleFont->popColor();
 
-			int realTrigHungry;
-			if (selUnit->caryedRessource==-1)
-				realTrigHungry=selUnit->trigHungry;
-			else
-				realTrigHungry=selUnit->trigHungryCarying;
-
-			if (selUnit->hungry<=realTrigHungry)
+			if (selUnit->isUnitHungry())
 				{ r=255; g=0; b=0; }
 			else
 				{ r=0; g=255; b=0; }
