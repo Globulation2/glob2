@@ -27,11 +27,11 @@
 // 1s-4s-7.5s-14.5s-22s
 #ifndef SECOND_TIMEOUT
 
-#define SECOND_TIMEOUT 20
-#define SHORT_NETWORK_TIMEOUT 80
-#define DEFAULT_NETWORK_TIMEOUT 150
-#define LONG_NETWORK_TIMEOUT 290
-#define MAX_NETWORK_TIMEOUT 440
+#define SECOND_TIMEOUT 25
+#define SHORT_NETWORK_TIMEOUT 75
+#define DEFAULT_NETWORK_TIMEOUT 175
+#define LONG_NETWORK_TIMEOUT 350
+#define MAX_NETWORK_TIMEOUT 550
 
 #define DEFAULT_NETWORK_TOTL 3
 #endif
@@ -44,9 +44,9 @@
 //  64 char max map name size,
 //  32 char max userName size.
 
-//Max size is defined by games lists. ((128+32+6+4)*16)=2720
-//or unshare 256*4+4=1028
-#define YOG_MAX_PACKET_SIZE ((128+32+6+4)*16)
+//Max size is defined by games lists. (4+2+4+2+4+4+64)*16+4=1348
+//or clients (4+32+2)*32+1=1217
+#define YOG_MAX_PACKET_SIZE 1348
 #define YOG_PROTOCOL_VERSION 4
 
 enum clientUpdateChange

@@ -1126,17 +1126,27 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 	{
 		if (--startGameTimeCounter<0)
 		{
-			send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
 			fprintf(logFile, "Lets quit this screen and start game!\n");
 			if (hostGlobalState<=HGS_GAME_START_SENDED)
 			{
+				fprintf(logFile, "But, we didn\'t received the start game from all players!!\n");
 				// done in game: drop player.
 			}
 		}
-		else if (startGameTimeCounter%20==0)
-		{
-			send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
-		}
+		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+			if ((startGameTimeCounter%10)==(i%10))
+			{
+				char data[8];
+				data[0]=SERVER_ASK_FOR_GAME_BEGINNING;
+				data[1]=0;
+				data[2]=0;
+				data[3]=0;
+				data[4]=startGameTimeCounter;
+				data[5]=0;
+				data[6]=0;
+				data[7]=0;
+				sessionInfo.players[i].send(data, 8);
+			}
 	}
 	else
 		sendingTime();
@@ -1640,13 +1650,8 @@ void MultiplayersHost::startGame(void)
 	{
 		fprintf(logFile, "Lets tell all players to start game.\n");
 		startGameTimeCounter=SECOND_TIMEOUT*SECONDS_BEFORE_START_GAME;
-		{
-			for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-			{
-				sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
-				sessionInfo.players[i].send(SERVER_ASK_FOR_GAME_BEGINNING, startGameTimeCounter);
-			}
-		}
+		for (int i=0; i<sessionInfo.numberOfPlayer; i++)
+			sessionInfo.players[i].netState=BasePlayer::PNS_SERVER_SEND_START_GAME;
 		hostGlobalState=HGS_GAME_START_SENDED;
 
 		// let's check if all players are playing
