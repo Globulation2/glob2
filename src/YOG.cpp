@@ -644,7 +644,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 					Message message;
 					message.gameGuiPainted=false;
 					message.messageType=YCMT_EVENT_MESSAGE;
-					snprintf(message.text, 256, globalContainer->texts.getString("[The player %s has joined YOG]"), client.userName);
+					snprintf(message.text, 256, Toolkit::getStringTable()->getString("[The player %s has joined YOG]"), client.userName);
 					receivedMessages.push_back(message);
 				}
 				
@@ -695,7 +695,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 						Message message;
 						message.gameGuiPainted=false;
 						message.messageType=YCMT_EVENT_MESSAGE;
-						snprintf(message.text, 256, globalContainer->texts.getString("[The player %s has left YOG]"), client->userName);
+						snprintf(message.text, 256, Toolkit::getStringTable()->getString("[The player %s has left YOG]"), client->userName);
 						receivedMessages.push_back(message);
 						clients.erase(client);
 					}
@@ -719,7 +719,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 								Message message;
 								message.gameGuiPainted=false;
 								message.messageType=YCMT_EVENT_MESSAGE;
-								snprintf(message.text, 256, "%s", globalContainer->texts.getString("[You are now marked as away]"));
+								snprintf(message.text, 256, "%s", Toolkit::getStringTable()->getString("[You are now marked as away]"));
 								receivedMessages.push_back(message);
 							}
 							client->away=true;
@@ -732,7 +732,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 								Message message;
 								message.gameGuiPainted=false;
 								message.messageType=YCMT_EVENT_MESSAGE;
-								snprintf(message.text, 256, "%s", globalContainer->texts.getString("[You are no more marked as away]"));
+								snprintf(message.text, 256, "%s", Toolkit::getStringTable()->getString("[You are no more marked as away]"));
 								receivedMessages.push_back(message);
 							}
 							client->away=false;
@@ -1491,32 +1491,32 @@ char *YOG::getStatusString(ExternalStatusState externalStatusState)
 	switch (externalStatusState)
 	{
 	case YESTS_BAD:
-		s=globalContainer->texts.getString("[YESTS_BAD]");
+		s=Toolkit::getStringTable()->getString("[YESTS_BAD]");
 	break;
 	case YESTS_UNABLE_TO_CONNECT:
-		s=globalContainer->texts.getString("[YESTS_UNABLE_TO_CONNECT]");
+		s=Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]");
 	break;
 	case YESTS_DECONNECTED:
 	case YESTS_CREATED:
-		s=globalContainer->texts.getString("[YESTS_CREATED]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CREATED]");
 	break;
 	case YESTS_CONNECTING:
-		s=globalContainer->texts.getString("[YESTS_CONNECTING]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTING]");
 	break;
 	case YESTS_YOG_KILLED:
-		s=globalContainer->texts.getString("[YESTS_YOG_KILLED]");
+		s=Toolkit::getStringTable()->getString("[YESTS_YOG_KILLED]");
 	break;
 	case YESTS_CONNECTION_LOST:
-		s=globalContainer->texts.getString("[YESTS_CONNECTION_LOST]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]");
 	break;
 	case YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD:
-		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]");
 	break;
 	case YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED:
-		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]");
 	break;
 	case YESTS_CONNECTION_REFUSED_UNEXPLAINED:
-		s=globalContainer->texts.getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]");
+		s=Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]");
 	break;
 	default:
 		assert(false);
@@ -1547,11 +1547,11 @@ bool YOG::handleLocalMessageTreatment(const char *message)
 {
 	const char *s=NULL;
 	if (strncmp("/help", message, 6)==0 || strncmp("/h", message, 3)==0)
-		s=globalContainer->texts.getString("[YOG_HELP]");
+		s=Toolkit::getStringTable()->getString("[YOG_HELP]");
 	else if (strncmp("/help away", message, 11)==0 || strncmp("/h a", message, 5)==0)
-		s=globalContainer->texts.getString("[YOG_HELP_AWAY]");
+		s=Toolkit::getStringTable()->getString("[YOG_HELP_AWAY]");
 	else if (strncmp("/help msg", message, 10)==0 || strncmp("/h m", message, 5)==0)
-		s=globalContainer->texts.getString("[YOG_HELP_MSG]");
+		s=Toolkit::getStringTable()->getString("[YOG_HELP_MSG]");
 	if (s)
 	{
 		Message m;

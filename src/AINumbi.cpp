@@ -20,7 +20,6 @@
 #include "AINumbi.h"
 #include "Player.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #include "Game.h"
 
 

@@ -23,18 +23,18 @@
 
 MainMenuScreen::MainMenuScreen()
 {
-	addWidget(new TextButton( 20,  20, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[campagn]"), CAMPAIN));
+	addWidget(new TextButton( 20,  20, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[campagn]"), CAMPAIN));
 	
-	addWidget(new TextButton( 20, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(340, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[custom game]"), CUSTOM));
+	addWidget(new TextButton( 20, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+	addWidget(new TextButton(340, 100, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[custom game]"), CUSTOM));
 	
-	addWidget(new TextButton( 20, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[yog]"), MULTIPLAYERS_YOG));
-	addWidget(new TextButton(340, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[lan]"), MULTIPLAYERS_LAN));
+	addWidget(new TextButton( 20, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[yog]"), MULTIPLAYERS_YOG));
+	addWidget(new TextButton(340, 180, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[lan]"), MULTIPLAYERS_LAN));
 	
-	addWidget(new TextButton( 20, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[settings]"), GAME_SETUP));
-	addWidget(new TextButton(340, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[editor]"), EDITOR));
+	addWidget(new TextButton( 20, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[settings]"), GAME_SETUP));
+	addWidget(new TextButton(340, 340, 280,  40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[editor]"), EDITOR));
 	
-	addWidget(new TextButton(340, 420, 20,  40, ALIGN_FILL, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), QUIT, 27));
+	addWidget(new TextButton(340, 420, 20,  40, ALIGN_FILL, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 
 	globalContainer->gfx->setClipRect();
 	

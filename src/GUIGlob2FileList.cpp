@@ -18,7 +18,6 @@
 */
 
 #include "GUIGlob2FileList.h"
-#include "GlobalContainer.h"
 #include "Game.h"
 
 Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,

@@ -26,7 +26,6 @@
 #include "MultiplayersOfferScreen.h"
 #include "MapEdit.h"
 #include "Engine.h"
-#include "GlobalContainer.h"
 #include "YOGPreScreen.h"
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
@@ -54,9 +53,9 @@ void Glob2::drawYOGSplashScreen(void)
 	h=globalContainer->gfx->getH();
 	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
 	const char *text[3];
-	text[0]=globalContainer->texts.getString("[connecting to]");
-	text[1]=globalContainer->texts.getString("[yog]");
-	text[2]=globalContainer->texts.getString("[please wait]");
+	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
+	text[1]=Toolkit::getStringTable()->getString("[yog]");
+	text[2]=Toolkit::getStringTable()->getString("[please wait]");
 	for (int i=0; i<3; ++i)
 	{
 		int size=globalContainer->menuFont->getStringWidth(text[i]);
@@ -118,7 +117,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 			return 0;
 		}
 	}
-	
+
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
 	// TODO : let the user choose the name of the shared game
@@ -176,27 +175,27 @@ int Glob2::runHostServer(int argc, char *argv[])
 			printf("Glob2::runHostServer():state high enough.\n");
 			running=false;
 		}
-		
+
 		frameWaitTime=SDL_GetTicks()-frameStartTime;
 		frameWaitTime=stepLength-frameWaitTime;
 		if (frameWaitTime>0)
 			SDL_Delay(frameWaitTime);
 	}
-	
+
 	yog->unshareGame();
-	
-	
+
+
 	delete multiplayersHost;
-	
+
 	printf("Glob2::runHostServer(): disconnecting YOG.\n");
-	
+
 	yog->deconnect();
 	while(yog->yogGlobalState==YOG::YGS_DECONNECTING)
 	{
 		yog->step();
 		SDL_Delay(50);
 	}
-	
+
 	printf("Glob2::runHostServer():end.\n");
 
 	return 0;

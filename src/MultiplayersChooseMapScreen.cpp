@@ -19,7 +19,6 @@
 
 #include "MultiplayersChooseMapScreen.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #include "YOG.h"
 #include "Game.h"
 
@@ -27,11 +26,11 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
 	this->shareOnYOG=shareOnYOG;
 
-	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
-	toogleButton=new TextButton(240, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[the games]"), TOOGLE);
+	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
+	toogleButton=new TextButton(240, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[the games]"), TOOGLE);
 	mapPreview=new MapPreview(240, 60, "net.map");
-	title=new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose map]"));
+	title=new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose map]"));
 
 	addWidget(ok);
 	addWidget(cancel);
@@ -123,9 +122,9 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				// update map name & info
 				mapName->setText(sessionInfo.getMapName());
 				char textTemp[256];
-				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
+				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, Toolkit::getStringTable()->getString("[teams]"));
 				mapInfo->setText(textTemp);
-				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
+				snprintf(textTemp, 256, "%s %d.%d", Toolkit::getStringTable()->getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
 				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
 				mapSize->setText(textTemp);
@@ -156,15 +155,15 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 			{
 				gameFileList->visible=false;
 				mapFileList->setVisible(true);
-				title->setText(globalContainer->texts.getString("[choose map]"));
-				toogleButton->setText(globalContainer->texts.getString("[the games]"));
+				title->setText(Toolkit::getStringTable()->getString("[choose map]"));
+				toogleButton->setText(Toolkit::getStringTable()->getString("[the games]"));
 			}
 			else
 			{
 				mapFileList->visible=false;
 				gameFileList->setVisible(true);
-				title->setText(globalContainer->texts.getString("[choose game]"));
-				toogleButton->setText(globalContainer->texts.getString("[the maps]"));
+				title->setText(Toolkit::getStringTable()->getString("[choose game]"));
+				toogleButton->setText(Toolkit::getStringTable()->getString("[the maps]"));
 			}
 		}
 		else

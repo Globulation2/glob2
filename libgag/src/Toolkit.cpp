@@ -18,6 +18,7 @@
 */
 
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <assert.h>
@@ -25,12 +26,14 @@
 Toolkit::SpriteMap Toolkit::spriteMap;
 Toolkit::FontMap Toolkit::fontMap;
 FileManager *Toolkit::fileManager=NULL;
+StringTable *Toolkit::strings=NULL;
 
 void Toolkit::init(const char *gameName)
 {
 	if (!fileManager)
 	{
 		fileManager = new FileManager(gameName);
+		strings = new StringTable();
 	}
 	else
 		assert(false);
@@ -42,6 +45,8 @@ void Toolkit::close(void)
 	{
 		delete fileManager;
 		fileManager=NULL;
+		delete strings;
+		strings=NULL;
 	}
 	for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 		delete (*it).second;

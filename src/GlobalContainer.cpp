@@ -79,7 +79,7 @@ GlobalContainer::GlobalContainer(void)
 GlobalContainer::~GlobalContainer(void)
 {
 	// save user preference
-	settings->defaultLanguage = texts.getLang();
+	settings->defaultLanguage = Toolkit::getStringTable()->getLang();
 	base::XMLFileWriter xt("preferences.xml");
 	base::TextOutputStream<base::XMLFileWriter> tos(&xt);
 	tos.write(settings);
@@ -292,13 +292,13 @@ void GlobalContainer::initProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// load texts
-	if (!texts.load("data/texts.txt"))
+	if (!Toolkit::getStringTable()->load("data/texts.txt"))
 	{
 		fprintf(stderr, "Fatal error : the file \"data/texts.txt\" can't be found !");
 		assert(false);
 		exit(-1);
 	}
-	texts.setLang(settings->defaultLanguage);
+	Toolkit::getStringTable()->setLang(settings->defaultLanguage);
 
 	if (!hostServer)
 	{

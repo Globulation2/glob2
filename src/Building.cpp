@@ -23,7 +23,6 @@
 #include "Game.h"
 #include "Utilities.h"
 #include <list>
-#include "GlobalContainer.h"
 
 Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {

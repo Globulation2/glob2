@@ -18,7 +18,6 @@
 */
 
 #include "Engine.h"
-#include "GlobalContainer.h"
 #include "MultiplayersHostScreen.h"
 #include "MultiplayersJoinScreen.h"
 #include "MultiplayersChooseMapScreen.h"
@@ -144,7 +143,7 @@ int Engine::initCustom(void)
 			}
 			else
 			{
-				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", globalContainer->texts.getString("[ai]"), nbPlayer-1);
+				snprintf(name, BasePlayer::MAX_NAME_LENGTH, "%s %d", Toolkit::getStringTable()->getString("[ai]"), nbPlayer-1);
 				gui.game.players[nbPlayer]=new Player(i, name, gui.game.teams[teamColor], BasePlayer::P_AI);
 			}
 			gui.game.teams[teamColor]->numberOfPlayer++;

@@ -43,9 +43,9 @@ public:
 	int getLang(void) { return actlang; }
 	int getNumberOfLanguage(void) { return numberoflanguages; }
 	bool load(char *filename);
-	const char *getString(const char *stringname);
-	const char *getString(const char *stringname, int index);
-	const char *getStringInLang(const char *stringname, int lang);
+	const char *getString(const char *stringname) const;
+	const char *getString(const char *stringname, int index) const;
+	const char *getStringInLang(const char *stringname, int lang) const;
 	void print();
 
 private:

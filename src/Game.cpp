@@ -21,7 +21,6 @@
 #include "BuildingType.h"
 #include <assert.h>
 #include <string.h>
-#include "GlobalContainer.h"
 #include "Utilities.h"
 #include "LogFileManager.h"
 #include <set>

@@ -19,7 +19,6 @@
 
 #include "MultiplayersConnectedScreen.h"
 #include "MultiplayersJoin.h"
-#include "GlobalContainer.h"
 #include "GAG.h"
 
 //MultiplayersConnectedScreen pannel part !!
@@ -28,9 +27,9 @@ MultiplayersConnectedScreen::MultiplayersConnectedScreen(MultiplayersJoin *multi
 {
 	this->multiplayersJoin=multiplayersJoin;
 	
-	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Disconnect]"), DISCONNECT));
+	addWidget(new TextButton(440, 435, 180, 25, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Disconnect]"), DISCONNECT));
 	
-	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[awaiting players]"), 600, 0));
+	addWidget(new Text(20, 5, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[awaiting players]"), 600, 0));
 
 	startTimer=new Text(440, 300, ALIGN_LEFT, ALIGN_LEFT, "standard", "");
 	addWidget(startTimer);
@@ -79,7 +78,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		if ((multiplayersJoin->waitingState>=MultiplayersJoin::WS_SERVER_START_GAME))
 		{
 			char s[128];
-			snprintf(s, 128, "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
+			snprintf(s, 128, "%s%d", Toolkit::getStringTable()->getString("[STARTING GAME ...]"), multiplayersJoin->startGameTimeCounter/20);
 			printf("s=%s.\n", s);
 			startTimer->setText(s);
 		}
@@ -92,10 +91,10 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 		if (isFileMapDownload)
 		{
 			int percent=(int)(100.0*progress);
-			snprintf(s, 128, "%s%d%s", globalContainer->texts.getString("[downloaded at]"), percent, globalContainer->texts.getString("[percent]"));
+			snprintf(s, 128, "%s%d%s", Toolkit::getStringTable()->getString("[downloaded at]"), percent, Toolkit::getStringTable()->getString("[percent]"));
 		}
 		else
-			snprintf(s, 128, "%s", globalContainer->texts.getString("[download finished]"));
+			snprintf(s, 128, "%s", Toolkit::getStringTable()->getString("[download finished]"));
 		startTimer->setText(s);
 	}
 
@@ -124,7 +123,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				break;
 				case MessageOrder::PRIVATE_MESSAGE_TYPE:
 					chatWindow->addText("<");
-					chatWindow->addText(globalContainer->texts.getString("[from:]"));
+					chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
 					chatWindow->addText(mit->userName);
 					chatWindow->addText("> ");
 					chatWindow->addText(mit->text);
@@ -133,7 +132,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				break;
 				case MessageOrder::PRIVATE_RECEIPT_TYPE:
 					chatWindow->addText("<");
-					chatWindow->addText(globalContainer->texts.getString("[to:]"));
+					chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
 					chatWindow->addText(mit->userName);
 					chatWindow->addText("> ");
 					chatWindow->addText(mit->text);
@@ -157,7 +156,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				break;
 				case YCMT_PRIVATE_MESSAGE:
 					chatWindow->addText("<");
-					chatWindow->addText(globalContainer->texts.getString("[from:]"));
+					chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
 					chatWindow->addText(mit->userName);
 					chatWindow->addText("> ");
 					chatWindow->addText(mit->text);
@@ -174,7 +173,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				break;
 				case YCMT_PRIVATE_RECEIPT:
 					chatWindow->addText("<");
-					chatWindow->addText(globalContainer->texts.getString("[to:]"));
+					chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
 					chatWindow->addText(mit->userName);
 					chatWindow->addText("> ");
 					chatWindow->addText(mit->text);
@@ -183,7 +182,7 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 				break;
 				case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
 					chatWindow->addText("<");
-					chatWindow->addText(globalContainer->texts.getString("[away:]"));
+					chatWindow->addText(Toolkit::getStringTable()->getString("[away:]"));
 					chatWindow->addText(mit->userName);
 					chatWindow->addText("> ");
 					chatWindow->addText(mit->text);

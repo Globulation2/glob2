@@ -18,18 +18,17 @@
 */
 
 #include "LoadGameScreen.h"
-#include "GlobalContainer.h"
 #include "Utilities.h"
 #include "Game.h"
 
 LoadGameScreen::LoadGameScreen()
 {
-	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27);
+	ok=new TextButton(440, 360, 180, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
+	cancel=new TextButton(440, 420, 180, 40, ALIGN_LEFT, ALIGN_LEFT, NULL, -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	fileList=new List(20, 60, 180, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
 	mapPreview=new MapPreview(640-20-26-128, 70, NULL);
 
-	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", globalContainer->texts.getString("[choose game]"), 600));
+	addWidget(new Text(20, 18, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[choose game]"), 600));
 	mapName=new Text(440, 60+128+30, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(mapName);
 	mapInfo=new Text(440, 60+128+60, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
@@ -86,9 +85,9 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				// update map name & info
 				mapName->setText(sessionInfo.getMapName());
 				char textTemp[256];
-				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, globalContainer->texts.getString("[teams]"));
+				snprintf(textTemp, 256, "%d%s", sessionInfo.numberOfTeam, Toolkit::getStringTable()->getString("[teams]"));
 				mapInfo->setText(textTemp);
-				snprintf(textTemp, 256, "%s %d.%d", globalContainer->texts.getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
+				snprintf(textTemp, 256, "%s %d.%d", Toolkit::getStringTable()->getString("[Version]"), sessionInfo.versionMajor, sessionInfo.versionMinor);
 				mapVersion->setText(textTemp);
 				snprintf(textTemp, 256, "%d x %d", mapPreview->getLastWidth(), mapPreview->getLastHeight());
 				mapSize->setText(textTemp);

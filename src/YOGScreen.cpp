@@ -20,28 +20,26 @@
 #include <string.h>
 #include <stdio.h>
 #include "YOGScreen.h"
-#include "GlobalContainer.h"
 #include "MultiplayersConnectedScreen.h"
 #include "Engine.h"
 
 // TODO: is it anyway to do this cleaner ?
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
-// win32 uses thoses define :
 
 YOGScreen::YOGScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(true);
 
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", globalContainer->texts.getString("[yog]")));
+	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[yog]")));
 
-	addWidget(new TextButton(20, 65, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[create game]"), CREATE_GAME));
-	addWidget(new TextButton(20, 20, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", globalContainer->texts.getString("[quit]"), CANCEL, 27));
+	addWidget(new TextButton(20, 65, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(20, 20, 180, 25, ALIGN_RIGHT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[quit]"), CANCEL, 27));
 
 	gameList=new List(20, 50, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
 	addWidget(gameList);
 	gameInfo=new TextArea(20, 50, 180, 95, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	addWidget(gameInfo);
-	joinButton=new TextButton(20, 165, 180, 25, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", globalContainer->texts.getString("[join]"), JOIN);
+	joinButton=new TextButton(20, 165, 180, 25, ALIGN_RIGHT, ALIGN_TOP, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
 	addWidget(joinButton);
 
 	playerList=new List(20, 210, 180, 110, ALIGN_RIGHT, ALIGN_FILL, "standard");
@@ -189,7 +187,7 @@ void YOGScreen::paint(int x, int y, int w, int h)
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 	/*if (y<40)
 	{
-		const char *text= globalContainer->texts.getString("[yog]");
+		const char *text= Toolkit::getStringTable()->getString("[yog]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, "%s", text);
 	}*/
 	addUpdateRect();
@@ -218,7 +216,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		break;
 		case YCMT_PRIVATE_MESSAGE:
 			chatWindow->addText("<");
-			chatWindow->addText(globalContainer->texts.getString("[from:]"));
+			chatWindow->addText(Toolkit::getStringTable()->getString("[from:]"));
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
@@ -227,7 +225,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		break;
 		case YCMT_PRIVATE_RECEIPT:
 			chatWindow->addText("<");
-			chatWindow->addText(globalContainer->texts.getString("[to:]"));
+			chatWindow->addText(Toolkit::getStringTable()->getString("[to:]"));
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
@@ -236,7 +234,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		break;
 		case YCMT_PRIVATE_RECEIPT_BUT_AWAY:
 			chatWindow->addText("<");
-			chatWindow->addText(globalContainer->texts.getString("[away:]"));
+			chatWindow->addText(Toolkit::getStringTable()->getString("[away:]"));
 			chatWindow->addText(m->userName);
 			chatWindow->addText("> ");
 			chatWindow->addText(m->text);
@@ -319,30 +317,30 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
 			char s[128];
-			sprintf(s, globalContainer->texts.getString("[Map name: %s]"), yogGameInfo->mapName);
+			sprintf(s, Toolkit::getStringTable()->getString("[Map name: %s]"), yogGameInfo->mapName);
 			gameInfo->setText(s);
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->numberOfPlayer==1)
 			{
-				sprintf(s, "%s", globalContainer->texts.getString("[one player]")),
+				sprintf(s, "%s", Toolkit::getStringTable()->getString("[one player]")),
 				gameInfo->addText(s);
 			}
 			else
 			{
-				sprintf(s, globalContainer->texts.getString("[number of players: %d]"), yogGameInfo->numberOfPlayer);
+				sprintf(s, Toolkit::getStringTable()->getString("[number of players: %d]"), yogGameInfo->numberOfPlayer);
 				gameInfo->addText(s);
 			}
 			gameInfo->addChar('\n');
 			
-			sprintf(s, globalContainer->texts.getString("[number of teams: %d]"), yogGameInfo->numberOfTeam);
+			sprintf(s, Toolkit::getStringTable()->getString("[number of teams: %d]"), yogGameInfo->numberOfTeam);
 			gameInfo->addText(s);
 			gameInfo->addChar('\n');
 			
 			if (yogGameInfo->mapGenerationMethode==MapGenerationDescriptor::eNONE)
-				sprintf(s, "%s\n", globalContainer->texts.getString("[handmade map]"));
+				sprintf(s, "%s\n", Toolkit::getStringTable()->getString("[handmade map]"));
 			else
-				sprintf(s, "%s\n", globalContainer->texts.getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
+				sprintf(s, "%s\n", Toolkit::getStringTable()->getString("[mapGenerationDescriptor Methodes]", yogGameInfo->mapGenerationMethode));
 			gameInfo->addText(s);
 			
 			//TODO: display info about yogGameInfo->fileIsAMap

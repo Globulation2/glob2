@@ -18,13 +18,12 @@
 */
 
 #include "NewMapScreen.h"
-#include "GlobalContainer.h"
 
 HowNewMapScreen::HowNewMapScreen()
 {
-	addWidget(new TextButton( 20, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[new]"), NEW, 13));
-	addWidget(new TextButton(340, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[load]"), LOAD));
-	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton( 20, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[new]"), NEW, 13));
+	addWidget(new TextButton(340, 340, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[load]"), LOAD));
+	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 }
 
 void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -62,18 +61,18 @@ NewMapScreen::NewMapScreen()
 	addWidget(mapSizeY);
 	
 	methodes=new List(20, 100, 280, 300, ALIGN_LEFT, ALIGN_LEFT, "menu");
-	methodes->addText(globalContainer->texts.getString("[uniform terrain]"));
-	methodes->addText(globalContainer->texts.getString("[random terrain]"));
-	methodes->addText(globalContainer->texts.getString("[islands terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[random terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
 	methodes->setNth(0);
 	addWidget(methodes);
 	
 	// eUNIFORM
 
 	terrains=new List(340, 100, 280, 300, ALIGN_LEFT, ALIGN_LEFT, "menu");
-	terrains->addText(globalContainer->texts.getString("[water]"));
-	terrains->addText(globalContainer->texts.getString("[sand]"));
-	terrains->addText(globalContainer->texts.getString("[grass]"));
+	terrains->addText(Toolkit::getStringTable()->getString("[water]"));
+	terrains->addText(Toolkit::getStringTable()->getString("[sand]"));
+	terrains->addText(Toolkit::getStringTable()->getString("[grass]"));
 	terrains->setNth(descriptor.terrainType);
 	addWidget(terrains);
 	
@@ -105,10 +104,10 @@ NewMapScreen::NewMapScreen()
 	nbWorkers->visible=false;
 	addWidget(nbWorkers);
 	
-	numberOfTeamText=new Text(430, 100, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[number of teams]"));
+	numberOfTeamText=new Text(430, 100, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[number of teams]"));
 	numberOfTeamText->visible=false;
 	addWidget(numberOfTeamText);
-	numberOfWorkerText=new Text (430, 120, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[workers]"));
+	numberOfWorkerText=new Text (430, 120, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[workers]"));
 	numberOfWorkerText->visible=false;
 	addWidget(numberOfWorkerText);
 	
@@ -139,19 +138,19 @@ NewMapScreen::NewMapScreen()
 	smooth->visible=false;
 	addWidget(smooth);
 	
-	ratioText=new Text(310, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[ratios]"));
+	ratioText=new Text(310, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[ratios]"));
 	ratioText->visible=false;
 	addWidget(ratioText);
-	waterText=new Text(480, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[water]"));
+	waterText=new Text(480, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[water]"));
 	waterText->visible=false;
 	addWidget(waterText);
-	sandText=new Text(480, 180, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[sand]"));
+	sandText=new Text(480, 180, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[sand]"));
 	sandText->visible=false;
 	addWidget(sandText);
-	grassText=new Text(480, 200, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[grass]"));
+	grassText=new Text(480, 200, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[grass]"));
 	grassText->visible=false;
 	addWidget(grassText);
-	smoothingText=new Text(480, 220, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[smoothing]"));
+	smoothingText=new Text(480, 220, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
 
@@ -172,23 +171,23 @@ NewMapScreen::NewMapScreen()
 	beach->visible=false;
 	addWidget(beach);
 	
-	islandSizeText=new Text(430, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[islands size]"));
+	islandSizeText=new Text(430, 140, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[islands size]"));
 	islandSizeText->visible=false;
 	addWidget(islandSizeText);
-	beachSizeText=new Text(430, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[beach size]"));
+	beachSizeText=new Text(430, 160, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[beach size]"));
 	beachSizeText->visible=false;
 	addWidget(beachSizeText);
 	
 	
 	// all
 	
-	addWidget(new TextButton( 20, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[ok]"), OK, 13));
-	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", globalContainer->texts.getString("[Cancel]"), CANCEL, 27));
+	addWidget(new TextButton( 20, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
+	addWidget(new TextButton(340, 420, 280, 40, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
-	const char *text= globalContainer->texts.getString("[create map]");
+	const char *text= Toolkit::getStringTable()->getString("[create map]");
 	addWidget(new Text(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, ALIGN_LEFT, ALIGN_LEFT, "menu", text));
-	addWidget(new Text(130, 50, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[map size x]")));
-	addWidget(new Text(130, 75, ALIGN_LEFT, ALIGN_LEFT, "standard", globalContainer->texts.getString("[map size y]")));
+	addWidget(new Text(130, 50, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size x]")));
+	addWidget(new Text(130, 75, ALIGN_LEFT, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[map size y]")));
 }
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)

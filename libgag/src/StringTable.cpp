@@ -18,7 +18,8 @@
 */
 
 #include "StringTable.h"
-#include "GlobalContainer.h"
+#include "Toolkit.h"
+#include "FileManager.h"
 #include "assert.h"
 
 #include <stdio.h>
@@ -106,7 +107,7 @@ bool StringTable::load(char *filename)
 	char temp[1024];
 	unsigned line=0;
 
-	if ((fp=globalContainer->fileManager->openFP(filename, "r"))==NULL)
+	if ((fp=Toolkit::getFileManager()->openFP(filename, "r"))==NULL)
 	{
 		return false;
 	}
@@ -229,11 +230,11 @@ void StringTable::print()
 	}
 }
 
-const char *StringTable::getString(const char *stringname)
+const char *StringTable::getString(const char *stringname) const
 {
 	if (actlang<numberoflanguages)
 	{
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		for (std::vector<OneStringToken *>::const_iterator it=strings.begin(); it!=strings.end(); it++)
 		{
 			if (strcmp(stringname, (*it)->name)==0)
 			{
@@ -254,11 +255,11 @@ const char *StringTable::getString(const char *stringname)
 	}
 }
 
-const char *StringTable::getStringInLang(const char *stringname, int lang)
+const char *StringTable::getStringInLang(const char *stringname, int lang) const
 {
 	if ((lang<numberoflanguages) && (lang>=0))
 	{
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		for (std::vector<OneStringToken *>::const_iterator it=strings.begin(); it!=strings.end(); it++)
 		{
 			if (strcmp(stringname, (*it)->name)==0)
 			{
@@ -273,7 +274,7 @@ const char *StringTable::getStringInLang(const char *stringname, int lang)
 	}
 }
 
-const char *StringTable::getString(const char *stringname, int index)
+const char *StringTable::getString(const char *stringname, int index) const
 {
 	if (actlang<numberoflanguages)
 	{

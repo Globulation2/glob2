@@ -21,7 +21,6 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "MapGenerationDescriptor.h"
-#include "GlobalContainer.h"
 #include <math.h>
 #include <float.h>
 
