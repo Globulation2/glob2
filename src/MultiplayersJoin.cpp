@@ -844,7 +844,7 @@ void MultiplayersJoin::joinerBroadcastRequest(Uint8 *data, int size, IPaddress i
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	packet->data[4]=0;
+	packet->data[4]=myPlayerNumber;
 	memcpy(packet->data+5, playerName, l);
 	
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
@@ -863,14 +863,13 @@ void MultiplayersJoin::joinerBroadcastResponse(Uint8 *data, int size, IPaddress 
 	}
 	
 	char name[32];
-	Uint8 playerNumber=data[4];
 	memcpy(name, data+5, size-5);
 	name[size-6]=0;
 	
 	if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
 	{
 		//for (int j=0; j<sessionInfo.numberOfPlayer; j++)
-		int j=playerNumber;
+		int j=data[4];
 		if (strncmp(sessionInfo.players[j].name, name, 32)==0 && !sessionInfo.players[j].sameip(ip))
 		{
 			sessionInfo.players[j].waitForNatResolution=false;
