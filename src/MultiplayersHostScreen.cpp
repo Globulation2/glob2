@@ -170,7 +170,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->tryConnection(true);
 	}
 
-	if ((multiplayersJoin)&&(!multiplayersJoin->kicked))
+	if (multiplayersJoin && !multiplayersJoin->kicked)
 		multiplayersJoin->onTimer(tick);
 
 	if (((timeCounter++ % 10)==0)&&(multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER))
@@ -295,8 +295,11 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
 	
-	if (shareOnYOG && yog->unjoiningConfirmed)
+	if (shareOnYOG && yog->yogSharingState==YOG::YSS_NOT_SHARING_GAME && true)
+	{
+		printf("MultiplayersHostScreen::onTimer(), endExecute(executionMode=%d);\n", executionMode);//zzz
 		endExecute(executionMode);
+	}
 }
 
 void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, int par2)

@@ -18,6 +18,7 @@
 */
 
 #include "MultiplayersHost.h"
+#include "MultiplayersJoin.h"
 #include "GAG.h"
 #include "NetDefine.h"
 #include "YOG.h"
@@ -1194,7 +1195,7 @@ void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
 void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 {
 	// call yog step
-	if (shareOnYOG && multiplayersJoin==NULL)
+	if (shareOnYOG && multiplayersJoin && multiplayersJoin->kicked)
 		yog->step(); // YOG cares about firewall and NAT
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
