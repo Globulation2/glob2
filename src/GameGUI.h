@@ -97,6 +97,12 @@ private:
 
 	int mouseX, mouseY;
 	int viewportSpeedX[8], viewportSpeedY[8];
+	
+	// statistics related:
+	
+	const static int nbRecentFreeUnits=32;
+	int recentFreeUnits[nbRecentFreeUnits];
+	int recentFreeUnitsIt;
 
 	// menu related functions
 	enum

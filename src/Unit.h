@@ -101,6 +101,8 @@ public:
 		DIR_RIGHT=2
 	};
 	
+	static const int HUNGRY_MAX=120000;
+	
 protected:
 	void handleMedical(void);
 	void handleActivity(void);
@@ -171,6 +173,7 @@ public:
 	Building *attachedBuilding;
 	int destinationPurprose;
 	bool subscribed;
+	int caryedRessource;
 
 public:
 	Sint32 checkSum();

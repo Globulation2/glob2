@@ -40,6 +40,12 @@ GameGUI::GameGUI()
 	typingMessage=false;
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
+	
+	recentFreeUnitsIt=0;
+	{
+		for (int i=0; i<nbRecentFreeUnits; i++)
+			recentFreeUnits[i]=0;
+	}
 }
 
 GameGUI::~GameGUI()
@@ -868,14 +874,23 @@ void GameGUI::draw(void)
 				globalContainer->gfx.drawRect(x+5, y+5, 54, 54, 255, 0, 0);
 			}
 
-			int fu=game.teams[localTeam]->freeUnits;
+			int nowFu=game.teams[localTeam]->freeUnits;
+			// we have to smooth the free units function for visual conveniance.
+			recentFreeUnits[recentFreeUnitsIt]=nowFu;
+			recentFreeUnitsIt=(recentFreeUnitsIt+1)%nbRecentFreeUnits;
+			int viewFu=0;
+			for (int i=0; i<nbRecentFreeUnits; i++)
+				if (viewFu<recentFreeUnits[i])
+					viewFu=recentFreeUnits[i];
+			
+			
 			globalContainer->gfx.setClipRect(globalContainer->gfx.getW()-128, 460, 128, 20);
-			if (fu<=0)
+			if (viewFu<=0)
 				globalContainer->gfx.drawString(globalContainer->gfx.getW()-120, 460, font,"%s",globalContainer->texts.getString("[no unit free]"));
-			else if (fu==1)
+			else if (viewFu==1)
 				globalContainer->gfx.drawString(globalContainer->gfx.getW()-120, 460, font,"%s",globalContainer->texts.getString("[one unit free]"));
 			else
-				globalContainer->gfx.drawString(globalContainer->gfx.getW()-120, 460, font,"%s%d%s",globalContainer->texts.getString("[l units free]"), fu, globalContainer->texts.getString("[r units free]"));
+				globalContainer->gfx.drawString(globalContainer->gfx.getW()-120, 460, font,"%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
 		}
 		else if (displayMode==BUILDING_SELECTION_VIEW)
 		{
