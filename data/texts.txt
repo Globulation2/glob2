@@ -566,7 +566,7 @@ ernte
 [At. speed]
 Vitesse at.
 At. speed
-Geschwindigkeit 
+Geschwindigkeit
 [At. strength]
 Force at.
 At. strength
@@ -889,9 +889,9 @@ The player
  
 [You are now marked as away]
 Vous êtes désormais considéré comme étant absent.
-You are now marked as away.
+You are marked as being away.
 
 [You are no more marked as away]
 Vous êtes désormais considéré comme étant présent.
-You are no more marked as away.
+You are no longer marked as away.
 
