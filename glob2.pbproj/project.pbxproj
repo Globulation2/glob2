@@ -31,7 +31,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = G4;
-				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = HAVE_OPENGL;
 				ZERO_LINK = NO;
 			};
@@ -59,7 +59,6 @@
 				5B3C22E7062D38710067E393,
 				5B605CA505C32624001CDF00,
 				5B605CAB05C3264B001CDF00,
-				5B605CA805C32630001CDF00,
 				5B605CA205C32612001CDF00,
 				5B5E032E03FD37FD0000000D,
 				5BF4D28903ED33F20000000D,
@@ -1603,14 +1602,6 @@
 			lastKnownFileType = archive.ar;
 			name = libSDL_net.a;
 			path = /usr/local/lib/libSDL_net.a;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		5B605CA805C32630001CDF00 = {
-			isa = PBXFileReference;
-			lastKnownFileType = archive.ar;
-			name = libSDL_mixer.a;
-			path = /usr/local/lib/libSDL_mixer.a;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
@@ -5713,7 +5704,6 @@
 				7639D3A5078450E500E94B91,
 				597E4E05070781FB00F5C629,
 				5B8FAE55044855050000000D,
-				763D76B206C3CF5D00D31024,
 				5B8FAE59044855050000000D,
 				5BC8F0CE0531F12F0000000D,
 				5B8FAE5B044855050000000D,
@@ -6329,7 +6319,6 @@
 				5BA6951705F9E4330031CC2F,
 				5BA6951805F9E4330031CC2F,
 				5BA6951905F9E4330031CC2F,
-				763D76B306C3CF5D00D31024,
 				763D76B606C3CF6B00D31024,
 				5957A9CA06FE271500CAD5B0,
 				597E4E06070781FB00F5C629,
@@ -10047,20 +10036,6 @@
 		};
 		7639D3A6078450E500E94B91 = {
 			fileRef = 7639D3A5078450E500E94B91;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		763D76B206C3CF5D00D31024 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			path = glSDL.c;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		763D76B306C3CF5D00D31024 = {
-			fileRef = 763D76B206C3CF5D00D31024;
 			isa = PBXBuildFile;
 			settings = {
 			};
