@@ -1329,7 +1329,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					thisone.line.push_back(*donnees->getToken());
 
 					// team 2
-					CHECK_PAROPEN;
+					CHECK_SEMICOL;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
@@ -1345,7 +1345,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					thisone.line.push_back(*donnees->getToken());
 
 					// level
-					CHECK_PAROPEN;
+					CHECK_SEMICOL;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
 					if (donnees->getToken()->type != Token::INT)
@@ -1359,6 +1359,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
+					
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
 				}
 				break;
 
