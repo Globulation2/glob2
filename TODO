@@ -10,6 +10,7 @@ To First release :
 - map must have version, and little backward compatibility should be keeped. (nct)
 - upgrade key must be inactive if no units have enough high level to build it. (nct)
 - AI do upgrades. (nct)
+- must have a working win32 build with the same feature-set that the linux one. (nct)
 
 To Next version :
 
