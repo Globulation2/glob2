@@ -148,6 +148,8 @@ void MultiplayersJoin::init(bool shareOnYOG)
 	if (!socket)
 		socket=SDLNet_UDP_Open(GAME_JOINER_PORT_2);
 	if (!socket)
+		socket=SDLNet_UDP_Open(GAME_JOINER_PORT_3);
+	if (!socket)
 		socket=SDLNet_UDP_Open(ANY_PORT);
 	if (socket)
 	{
@@ -629,12 +631,12 @@ void MultiplayersJoin::serverAskForBeginning(char *data, int size, IPaddress ip)
 
 void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress ip)
 {
+	int v=data[0];
 	if (size!=68)
 	{
-		fprintf(logFile, "Warning, bad size for a gameHostBroadcastResponse (%d).\n", size);
+		fprintf(logFile, "Warning, bad size for a gameHostBroadcastResponse (size=%d, v=%d).\n", size, v);
 		return;
 	}
-	int v=data[0];
 	LANHost lanhost;
 	strncpy(lanhost.gameName, &data[4], 32);
 	strncpy(lanhost.serverNickName, &data[36], 32);
@@ -644,27 +646,50 @@ void MultiplayersJoin::serverBroadcastResponse(char *data, int size, IPaddress i
 	
 	if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
 		|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
-		{
-			lanhost.ip=ip;
-			lanhost.timeout=2*DEFAULT_NETWORK_TIMEOUT;
-			//We ckeck if this host is already in the list:
-			bool already=false;
-			for (std::list<LANHost>::iterator it=lanHosts.begin(); it!=lanHosts.end(); ++it)
-				if (strncmp(lanhost.gameName, it->gameName, 32)==0)
-				{
-					already=true;
-					it->timeout=2*DEFAULT_NETWORK_TIMEOUT;
-					break;
-				}
-			if (!already)
+	{
+		lanhost.ip=ip;
+		lanhost.timeout=2*DEFAULT_NETWORK_TIMEOUT;
+		//We ckeck if this host is already in the list:
+		bool already=false;
+		for (std::list<LANHost>::iterator it=lanHosts.begin(); it!=lanHosts.end(); ++it)
+			if (strncmp(lanhost.gameName, it->gameName, 32)==0)
 			{
-				fprintf(logFile, "added (%s) lanHosts\n", Utilities::stringIP(lanhost.ip));
-				lanHosts.push_front(lanhost);
-				listHasChanged=true;
+				already=true;
+				it->timeout=2*DEFAULT_NETWORK_TIMEOUT;
+				break;
 			}
+		if (!already)
+		{
+			fprintf(logFile, "added (%s) lanHosts\n", Utilities::stringIP(lanhost.ip));
+			lanHosts.push_front(lanhost);
+			listHasChanged=true;
 		}
-		else
-			fprintf(logFile, "bad state to remember broadcasting\n");
+	}
+	else
+		fprintf(logFile, "bad state to remember broadcasting (broadcastState=%d, c=%d)\n", broadcastState, v);
+}
+
+void MultiplayersJoin::serverBroadcastStopHosting(char *data, int size, IPaddress ip)
+{
+	if (size!=4)
+	{
+		fprintf(logFile, "Warning, bad size for a serverBroadcastStopHosting (size=%d).\n", size);
+		return;
+	}
+	
+	if (broadcastState==BS_ENABLE_LAN)
+	{
+		for (std::list<LANHost>::iterator it=lanHosts.begin(); it!=lanHosts.end(); ++it)
+			if (ip.host==it->ip.host && ip.port==it->ip.port)
+			{
+				fprintf(logFile, "removed (%s) lanHosts\n", Utilities::stringIP(it->ip));
+				lanHosts.erase(it);
+				listHasChanged=true;
+				break;
+			}
+	}
+	else
+		fprintf(logFile, "bad state to remember serverBroadcastStopHosting (broadcastState=%d)\n", broadcastState);
 }
 
 void MultiplayersJoin::joinerBroadcastRequest(char *data, int size, IPaddress ip)
@@ -726,7 +751,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 {
 	if (data[0]!=FULL_FILE_DATA)
 		fprintf(logFile, "\nMultiplayersJoin::treatData (%d)\n", data[0]);
-	if ((data[1]!=0)||(data[2]!=0)||(data[3]!=0))
+	if ((data[2]!=0)||(data[3]!=0))
 	{
 		fprintf(logFile, "Bad packet recieved (%d,%d,%d,%d)!\n", data[0], data[1], data[2], data[3]);
 		return;
@@ -809,6 +834,16 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 		
 		case BROADCAST_REQUEST:
 			joinerBroadcastRequest(data, size, ip);
+		break;
+		
+		case BROADCAST_LAN_GAME_HOSTING:
+			if (!shareOnYOG)
+			{
+				if (data[1])
+					sendBroadcastRequest(ip);
+				else
+					serverBroadcastStopHosting(data, size, ip);
+			}
 		break;
 		
 		case BROADCAST_RESPONSE_LAN:
@@ -1000,11 +1035,14 @@ void MultiplayersJoin::sendingTime()
 	if (socket&&(broadcastState==BS_ENABLE_LAN || broadcastState==BS_ENABLE_YOG)&&(--broadcastTimeout<0))
 	{
 		if (waitingState>=WS_WAITING_FOR_PRESENCE || !shareOnYOG)
-			sendBroadcast(GAME_SERVER_PORT);
+			sendBroadcastRequest(GAME_SERVER_PORT);
 		if (waitingState>=WS_WAITING_FOR_CHECKSUM_CONFIRMATION)
 		{
-			sendBroadcast(GAME_JOINER_PORT_1);
-			sendBroadcast(GAME_JOINER_PORT_2);
+			sendBroadcastRequest(GAME_JOINER_PORT_1);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_2);
+			SDL_Delay(10);
+			sendBroadcastRequest(GAME_JOINER_PORT_3);
 		}
 	}
 	
@@ -1384,15 +1422,14 @@ bool MultiplayersJoin::send(const int u, const int v)
 	return true;
 }
 
-void MultiplayersJoin::sendBroadcast(Uint16 port)
+void MultiplayersJoin::sendBroadcastRequest(IPaddress ip)
 {
 	UDPpacket *packet=SDLNet_AllocPacket(4);
 
 	assert(packet);
 
 	packet->channel=-1;
-	packet->address.host=INADDR_BROADCAST;
-	packet->address.port=SDL_SwapBE16(port);
+	packet->address=ip;
 	packet->len=4;
 	packet->data[0]=BROADCAST_REQUEST;
 	packet->data[1]=0;
@@ -1400,16 +1437,24 @@ void MultiplayersJoin::sendBroadcast(Uint16 port)
 	packet->data[3]=0;
 	if (SDLNet_UDP_Send(socket, -1, packet)==1)
 	{
-		fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet to port=(%d).\n", port);
+		fprintf(logFile, "Successed to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
 		broadcastTimeout=DEFAULT_NETWORK_TIMEOUT;
 	}
 	else
 	{
 		broadcastState=BS_BAD;
-		fprintf(logFile, "failed to send a BROADCAST_REQUEST packet to port=(%d)!\n", port);
+		fprintf(logFile, "failed to send a BROADCAST_REQUEST packet to (%s)\n", Utilities::stringIP(packet->address));
 	}
 
 	SDLNet_FreePacket(packet);
+}
+
+void MultiplayersJoin::sendBroadcastRequest(Uint16 port)
+{
+	IPaddress ip;
+	ip.host=INADDR_BROADCAST;
+	ip.port=SDL_SwapBE16(port);
+	sendBroadcastRequest(ip);
 }
 
 bool MultiplayersJoin::tryConnection(bool isHostToo)
@@ -1530,7 +1575,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 {
 	Uint16 localPort=0;
-	for (int tempPort=7010; tempPort<7012+10010; tempPort+=1001) // we try 10 ports, strategically separated
+	for (int tempPort=GAME_JOINER_FIND_LOCAL_PORT_BASE; tempPort<GAME_JOINER_FIND_LOCAL_PORT_BASE+10010; tempPort+=1001) // we try 10 ports, strategically separated
 	{
 		// First, we create a temporaty local server (tempServer):
 		UDPsocket tempSocket;
@@ -1555,10 +1600,7 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 			localAdress.port=SDL_SwapBE16(tempPort);
 			packet->address=localAdress;
 			packet->len=4;
-			packet->data[0]=LOOP_BACK_PACKET_TYPE;
-			packet->data[1]=0;
-			packet->data[2]=0;
-			packet->data[3]=0;
+			memcpy(packet->data, "PABO", 4);
 			if (SDLNet_UDP_Send(socket, -1, packet)==1)
 			{
 				fprintf(logFile, "findLocalPort:: suceeded to send packet\n");
@@ -1594,10 +1636,13 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 				SDLNet_UDP_Close(tempSocket);
 				continue; // We try with another port
 			}
-			fprintf(logFile, "findLocalPort::Packet received.\n");
-			fprintf(logFile, "findLocalPort::packet->address=%s\n", Utilities::stringIP(packet->address));
-			localPort=packet->address.port;
-
+			if (memcmp(packet->data, "PABO", 4)==0)
+			{
+				fprintf(logFile, "findLocalPort::Packet received.\n");
+				fprintf(logFile, "findLocalPort::packet->address=%s\n", Utilities::stringIP(packet->address));
+				localPort=packet->address.port;
+			}
+			
 			SDLNet_FreePacket(packet);
 		}
 		

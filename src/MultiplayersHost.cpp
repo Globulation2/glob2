@@ -124,6 +124,15 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 			playerFileTra[p].window[i].packetSize=256;
 		}
 	}
+	
+	if (!shareOnYOG)
+	{
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_1, true);
+		SDL_Delay(10);
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_2, true);
+		SDL_Delay(10);
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_3, true);
+	}
 }
 
 MultiplayersHost::~MultiplayersHost()
@@ -132,6 +141,14 @@ MultiplayersHost::~MultiplayersHost()
 	if (shareOnYOG)
 	{
 		globalContainer->yog->unshareGame();
+	}
+	else
+	{
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_1, false);
+		SDL_Delay(10);
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_2, false);
+		SDL_Delay(10);
+		sendBroadcastLanGameHosting(GAME_JOINER_PORT_3, false);
 	}
 	
 	if (destroyNet)
@@ -1219,6 +1236,25 @@ bool MultiplayersHost::send(const int u, const int v)
 		sessionInfo.players[i].send(data, 8);
 
 	return true;
+}
+
+void MultiplayersHost::sendBroadcastLanGameHosting(Uint16 port, bool create)
+{
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	assert(packet);
+	packet->channel=-1;
+	packet->address.host=INADDR_BROADCAST;
+	packet->address.port=SDL_SwapBE16(port);
+	packet->len=4;
+	packet->data[0]=BROADCAST_LAN_GAME_HOSTING;
+	packet->data[1]=create;
+	packet->data[2]=0;
+	packet->data[3]=0;
+	if (SDLNet_UDP_Send(socket, -1, packet)==1)
+		fprintf(logFile, "Successed to send a BROADCAST_LAN_GAME_HOSTING(%d) packet to port=(%d).\n", create, port);
+	else
+		fprintf(logFile, "failed to send a BROADCAST_LAN_GAME_HOSTING(%d) packet to port=(%d)!\n", create, port);
+	SDLNet_FreePacket(packet);
 }
 
 void MultiplayersHost::sendingTime()
