@@ -3224,18 +3224,18 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		bool gradientUsable=false;
 		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 		Uint8 max=0;
-		if (building->locked)
+		if (building->locked[canSwim])
 		{
 			pathToBuildingCountFarOldFailureLocked++;
-			//printf("a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			fprintf(logFile, "a- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			//printf("b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			fprintf(logFile, "b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 		else if (currentg==1)
 		{
 			pathToBuildingCountFarOldFailureBad++;
-			//printf("b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			fprintf(logFile, "b- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			//printf("c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			fprintf(logFile, "c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
 		else
@@ -3268,8 +3268,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			else
 			{
 				pathToBuildingCountFarOldFailureBad++;
-				//printf("c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-				fprintf(logFile, "c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+				//printf("d- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+				fprintf(logFile, "d- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 				return false;
 			}
 		}
@@ -3281,8 +3281,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	if (building->locked[canSwim])
 	{
 		pathToBuildingCountFarUpdateFailureLocked++;
-		//printf("d- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
-		fprintf(logFile, "d- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
+		//printf("e- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
+		fprintf(logFile, "e- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		return false;
 	}
 	
@@ -3343,8 +3343,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	}
 	
 	pathToBuildingCountFarUpdateFailureBad++;
-	printf("e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-	fprintf(logFile, "e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	printf("f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	fprintf(logFile, "f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 	return false;
 }
 

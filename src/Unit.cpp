@@ -240,6 +240,8 @@ void Unit::saveCrossRef(SDL_RWops *stream)
 
 void Unit::subscriptionSuccess(void)
 {
+	if (verbose)
+		printf("guid=(%d), subscriptionSuccess()\n", gid);
 	subscribed=false;
 	switch(medical)
 	{
@@ -396,6 +398,8 @@ bool Unit::isUnitHungry(void)
 
 void Unit::stopAttachedForBuilding(bool goingInside)
 {
+	if (verbose)
+		printf("guid=(%d) stopAttachedForBuilding()\n", gid);
 	assert(attachedBuilding);
 	
 	if (goingInside)
@@ -911,7 +915,7 @@ void Unit::handleDisplacement(void)
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
 			if (verbose)
-				printf("guid=%d, distance=%d, range=%d\n", gid, distance, range);
+				printf("guid=(%d) ACT_FLAG distance=%d, range=%d\n", gid, distance, range);
 			if (distance<=range)
 			{
 				if (typeNum==WORKER)
@@ -944,7 +948,7 @@ void Unit::handleMovement(void)
 		{
 			assert(performance[FLY]);
 			if (verbose)
-				printf("DIS_REMOVING_BLACK_AROUND\n");
+				printf("guid=(%d) DIS_REMOVING_BLACK_AROUND\n", gid);
 			if (attachedBuilding)
 			{
 				movement=MOV_GOING_DXDY;
@@ -995,7 +999,7 @@ void Unit::handleMovement(void)
 				if (minDist==32)
 				{
 					if (verbose)
-						printf("I can''t see black.\n");
+						printf("guid=(%d) I can''t see black.\n", gid);
 					if ((syncRand()&0xFF)<0xEF)
 					{
 						movement=MOV_GOING_DXDY;
@@ -1016,7 +1020,7 @@ void Unit::handleMovement(void)
 				{
 					int decj=syncRand()&7;
 					if (verbose)
-						printf("minDist=%d, minDistj=%d.\n", minDist, minDistj);
+						printf("guid=(%d) minDist=%d, minDistj=%d.\n", gid, minDist, minDistj);
 					for (int j=0; j<8; j++)
 					{
 						int d=(decj+j)&7;
@@ -1048,7 +1052,7 @@ void Unit::handleMovement(void)
 				int quality=256; // Smaller is better.
 				movement=MOV_RANDOM_GROUND;
 				if (verbose)
-					printf("%d selecting movement\n", gid);
+					printf("guid=(%d) selecting movement\n", gid);
 				
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
@@ -1072,7 +1076,7 @@ void Unit::handleMovement(void)
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
 									if (verbose)
-										printf("warrior %d found building with newQuality=%d\n", this->gid, newQuality);
+										printf("guid=(%d) warrior found building with newQuality=%d\n", this->gid, newQuality);
 									if (newQuality<quality)
 									{
 										if (abs(x)<=1 && abs(y)<=1)
@@ -1101,7 +1105,7 @@ void Unit::handleMovement(void)
 									int strength=u->performance[ATTACK_STRENGTH];
 									int newQuality=(x*x+y*y)/(1+strength);
 									if (verbose)
-										printf("warrior %d found unit with newQuality=%d\n", this->gid, newQuality);
+										printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
 									if (newQuality<quality)
 									{
 										if (abs(x)<=1 && abs(y)<=1)
@@ -1205,13 +1209,13 @@ void Unit::handleMovement(void)
 			else if (map->pathfindBuilding(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 			{
 				if (verbose)
-					printf("Unit gid=%d found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+					printf("guid=(%d) Unit found path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				movement=MOV_GOING_DXDY;
 			}
 			else
 			{
 				if (verbose)
-					printf("Unit gid=%d failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
+					printf("guid=(%d) Unit failed path pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				stopAttachedForBuilding(true);
 				movement=MOV_RANDOM_GROUND;
 			}
@@ -1241,7 +1245,7 @@ void Unit::handleMovement(void)
 			{
 				activity=ACT_RANDOM;
 				movement=MOV_EXITING_BUILDING;
-				fprintf(logFile, "guid=%d exiting gbid=%d\n", gid, attachedBuilding->gid);
+				fprintf(logFile, "guid=(%d) exiting gbid=%d\n", gid, attachedBuilding->gid);
 				attachedBuilding->unitsInside.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->updateCallLists();
@@ -1252,7 +1256,7 @@ void Unit::handleMovement(void)
 			}
 			else
 			{
-				fprintf(logFile, "guid=%d, can't find exit, gbid=%d\n", gid, attachedBuilding->gid);
+				fprintf(logFile, "guid=(%d) can't find exit, gbid=%d\n", gid, attachedBuilding->gid);
 				movement=MOV_INSIDE;
 			}
 		}
@@ -1267,14 +1271,14 @@ void Unit::handleMovement(void)
 			if (map->pathfindRessource(teamNumber, destinationPurprose, canSwim, posX, posY, &dx, &dy, &stopWork))
 			{
 				if (verbose)
-					printf("Unit gid=%d found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
+					printf("guid=(%d) Unit found path pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurprose, dx, dy);
 				directionFromDxDy();
 				movement=MOV_GOING_DXDY;
 			}
 			else
 			{
 				if (verbose)
-					printf("Unit gid=%d failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
+					printf("guid=(%d) Unit failed path pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurprose);
 
 				if (stopWork)
 					stopAttachedForBuilding(false);
@@ -1435,7 +1439,7 @@ void Unit::handleAction(void)
 			}
 			
 			if (verbose)
-				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
+				printf("guid=(%d) MOV_GOING_DXDY d=(%d, %d; %d).\n", gid, direction, dx, dy);
 			break;
 		}
 		
@@ -1621,7 +1625,7 @@ void Unit::flytoTarget()
 	dy=0;
 	direction=8;
 	if (verbose)
-		printf("0x%lX: flyto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
+		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
 }
 
 void Unit::gotoGroundTarget()
@@ -1630,8 +1634,6 @@ void Unit::gotoGroundTarget()
 	int ldy=targetY-posY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
-	if (verbose)
-		printf("gotoTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
 	int cDirection=direction;
 	if (valid(posX+dx, posY+dy))
 		return;
@@ -1672,8 +1674,6 @@ void Unit::escapeGroundTarget()
 	int ldy=posY-targetY;
 	simplifyDirection(ldx, ldy, &dx, &dy);
 	directionFromDxDy();
-	if (verbose)
-		printf("escapeTarget pos=(%d, %d) target=(%d, %d) ld=(%d, %d) d=(%d, %d) \n", posX, posY, targetX, targetY, ldx, ldy, dx, dy);
 	int cDirection=direction;
 	if (valid(posX+dx, posY+dy))
 		return;
@@ -1710,7 +1710,7 @@ void Unit::escapeGroundTarget()
 	dy=0;
 	direction=8;
 	if (verbose)
-		printf("0x%lX: goto failed pos=(%d, %d) \n", (unsigned long)this, posX, posY);
+		printf("guid=(%d) escapeGroundTarget failed pos=(%d, %d) \n", gid, posX, posY);
 }
 
 void Unit::endOfAction(void)
