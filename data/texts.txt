@@ -737,6 +737,18 @@ A part of the wall is finished
 Ein Mauerteil ist fertig
 Kus hradby hotov ...
 
+[the wood wall is finished]
+Un élément de mur est terminé
+A part of the wall is finished
+Ein Mauerteil ist fertig
+Kus hradby hotov ...
+
+[the market is finished]
+Le marché est terminé
+The market is finished
+
+
+
 [the building is under attack]
 Le batiment est attaqué
 The building is under attack
@@ -820,6 +832,18 @@ L'ennemi est à vos murs
 The ennemi is at your walls
 Der Feind steht vor Ihren Mauern
 Nepřítel utočí na hradby
+
+[the wood wall is under attack]
+L'ennemi est à vos murs
+The ennemi is at your walls
+Der Feind steht vor Ihren Mauern
+Nepřítel utočí na hradby
+
+[the market is under attack]
+Le marché est attaqué
+The market is under attack
+
+
 
 [Your]
 Vos
