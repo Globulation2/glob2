@@ -63,9 +63,6 @@
 //! if defined, enable vPath listing
 //#define DBG_VPATH_LIST
 
-//! if defined, enable fow and map invisible
-//#define DBG_ALL_MAP_DISCOVERED
-
 #ifndef VARARRAY
 #ifdef _MSC_VER
 #include <malloc.h>
