@@ -1429,7 +1429,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 bool Mapscript::hasTeamWon(unsigned teamNumber)
 {
-	// Can make win or loose only player 0
+	// Can make win or loose only team 0
 	if (testMainTimer())
 	{
 		if (teamNumber==0)
@@ -1446,7 +1446,7 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 
 bool Mapscript::hasTeamLost(unsigned teamNumber)
 {
-	// Can make win or loose only player 0
+	// Can make win or loose only team 0
 	if (teamNumber==0)
 	{
 		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
