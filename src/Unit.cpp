@@ -1788,10 +1788,7 @@ void Unit::handleAction(void)
 		{
 			assert(!performance[FLY]);
 			owner->map->setGroundUnit(posX, posY, NOGUID);
-			dx=-1+syncRand()%3;
-			dy=-1+syncRand()%3;
-			directionFromDxDy();
-			setNewValidDirectionGround();
+			owner->map->pathfindRandom(this, verbose);
 			posX=(posX+dx)&(owner->map->getMaskW());
 			posY=(posY+dy)&(owner->map->getMaskH());
 			selectPreferedGroundMovement();
@@ -1952,7 +1949,7 @@ void Unit::setNewValidDirectionGround(void)
 {
 	assert(!performance[FLY]);
 	int i=0;
-	bool swim=performance[SWIM];
+	bool swim=(performance[SWIM]>0);
 	Uint32 me=owner->me;
 	while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
 	{
