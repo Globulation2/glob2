@@ -755,6 +755,33 @@ void MapEdit::scriptEditor(void)
 	draw();
 }
 
+void MapEdit::askConfirmationToQuit()
+{
+	if (hasMapBeenModiffied)
+	{
+		const char *reallyquit = globalContainer->texts.getString("[really quit without saving?]");
+		const char *yes = globalContainer->texts.getString("[Yes]");
+		const char *no = globalContainer->texts.getString("[No]");
+		const char *save = globalContainer->texts.getString("[Save]");
+		int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
+
+		if (res==0) // yes, do quit
+			isRunning=false;
+		else if (res==1) // no, don't quit
+			draw();
+		else if (res==2) // save if needed 
+		{
+			loadSave(false);
+			if (!hasMapBeenModiffied)
+				isRunning=false;
+		}
+		else
+			assert(false);
+	}
+	else
+		isRunning=false;
+}
+
 void MapEdit::handleMenuClick(int mx, int my, int button)
 {
 	mx-=globalContainer->gfx->getW()-128;
@@ -766,32 +793,8 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 			loadSave(false);
 		else if (mx<96)
 			editMode=EM_DELETE;
-		else 
-		{
-			if (hasMapBeenModiffied)
-			{
-				const char *reallyquit = globalContainer->texts.getString("[really quit without saving?]");
-				const char *yes = globalContainer->texts.getString("[Yes]");
-				const char *no = globalContainer->texts.getString("[No]");
-				const char *save = globalContainer->texts.getString("[Save]");
-				int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
-
-				if (res==0) // yes, do quit
-					isRunning=false;
-				else if (res==1) // no, don't quit
-					draw();
-				else if (res==2) // save if needed 
-				{
-					loadSave(false);
-					if (!hasMapBeenModiffied)
-						isRunning=false;
-				}
-				else
-					assert(false);
-			}
-			else
-				isRunning=false;
-		}
+		else
+			askConfirmationToQuit();
 	}
 	else if ((my>173) && (my<205))
 	{
@@ -979,7 +982,7 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 	switch (key)
 	{
 		case SDLK_ESCAPE:
-			isRunning=false;
+			askConfirmationToQuit();
 			break;
 		case SDLK_UP:
 			if (pressed)
@@ -1097,6 +1100,11 @@ void MapEdit::handleKeyPressed(SDLKey key, bool pressed)
 				if (numberOfTeam>0)
 				{
 					centeredTeam=centeredTeam%numberOfTeam;
+					if (SDL_GetModState()&KMOD_SHIFT)
+						centeredTeam=team;
+					else
+						team=centeredTeam;
+						
 					Team *t=game.teams[centeredTeam];
 					if (t)
 					{

@@ -40,6 +40,7 @@ private:
 	void draw(void);
 
 	int processEvent(const SDL_Event *event);
+	void askConfirmationToQuit(void);
 	void handleMenuClick(int mx, int my, int button);
 	void handleMapClick(int mx, int my);
 	void handleMapClick(void);
