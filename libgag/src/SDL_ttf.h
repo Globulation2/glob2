@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.h,v 1.1 2003/01/30 13:01:07 nct Exp $ */
+/* $Id: SDL_ttf.h,v 1.2 2003/07/17 15:25:08 jdm Exp $ */
 
 /* This library is a wrapper around the excellent FreeType 2.0 library,
    available at:
@@ -30,8 +30,8 @@
 #ifndef _SDLttf_h
 #define _SDLttf_h
 
-#include "SDL.h"
-#include "begin_code.h"
+#include <SDL/SDL.h>
+#include <SDL/begin_code.h>
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -211,6 +211,6 @@ extern DECLSPEC int SDLCALL TTF_WasInit(void);
 #ifdef __cplusplus
 }
 #endif
-#include "close_code.h"
+#include <SDL/close_code.h>
 
 #endif /* _SDLttf_h */

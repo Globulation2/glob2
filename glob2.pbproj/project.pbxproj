@@ -102,7 +102,7 @@
 				FRAMEWORK_SEARCH_PATHS = /Users/martin/Library/Frameworks/SDL_net.framework;
 				GCC_VERSION = 2.x;
 				HEADER_SEARCH_PATHS = "/usr/lib/gcc/darwin/2.95.2 /Users/martin/Library/freetype-2.1.3/include /usr/local/include/SDL /usr/local/include";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/local/lib /usr/lib/gcc/darwin/2.95.2 /Users/martin/glob2/libgag/src";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/local/lib /usr/lib/gcc/darwin/2.95.2 /Users/martin/glob2/libgag/src /sw/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-DHAVE_CONFIG_H -I. -I. -I.. -I/usr/local/include/SDL -D_THREAD_SAFE -Wall";
 				OTHER_LDFLAGS = "-lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng";
@@ -339,7 +339,7 @@
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			name = InfoPlist.strings;
-			path = Resources/InfoPlist.strings;
+			path = English.lproj/InfoPlist.strings;
 			refType = 4;
 		};
 		5B5E043F03FD45FD0000000D = {
@@ -482,7 +482,6 @@
 		5B5E044203FD45FD0000000D = {
 			buildActionMask = 2147483647;
 			files = (
-				5BE9CEFB03FFA3690000000D,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -505,11 +504,11 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "\"$(HOME)/Library/Frameworks\"";
 				GCC_VERSION = 2.x;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/2.95.2";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/2.95.2 /sw/lib /sw/include /sw/include/SDL";
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_LDFLAGS = "$(HOME)/glob2/build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng";
+				OTHER_LDFLAGS = "build/libgag.a -lSDL -lSDLmain -lSDL_net -lSDL_image   -framework Cocoa  -L/usr/X11R6/lib -lfreetype -framework Cocoa -lpng";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = Globulation2;
 				REZ_EXECUTABLE = YES;
@@ -667,9 +666,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_VERSION = 2.x;
-				HEADER_SEARCH_PATHS = /usr/X11R6/include/freetype2;
-				LIBRARY_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include";
+				LIBRARY_SEARCH_PATHS = "/sw/lib /sw/include";
 				LIBRARY_STYLE = STATIC;
+				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-Ilibgag/include -DDPS_NO_SOCKLEN_T";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -6163,12 +6163,6 @@
 			isa = PBXFileReference;
 			path = units.txt;
 			refType = 4;
-		};
-		5BE9CEFB03FFA3690000000D = {
-			fileRef = 5B5E033003FD391B0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5BED19C703E85D620000000D = {
 			buildActionMask = 2147483647;

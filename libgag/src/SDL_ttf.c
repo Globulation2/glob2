@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.c,v 1.1 2003/01/30 12:43:52 nct Exp $ */
+/* $Id: SDL_ttf.c,v 1.2 2003/07/17 15:25:08 jdm Exp $ */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,7 +33,7 @@
 #include <freetype/ttnameid.h>
 #include <freetype/internal/ftobjs.h>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 #include "SDL_ttf.h"
 
 /* Macro to convert a character to a Unicode value -- assume already Unicode */
