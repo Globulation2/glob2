@@ -37,6 +37,7 @@ public:
 	void sendMessage(const char *s);
 	
 public:
+	bool isServer;
 	IPaddress serverIP;
 	char serverNickName[32];
 	

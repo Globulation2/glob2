@@ -35,6 +35,8 @@ MultiplayersCrossConnectable::MultiplayersCrossConnectable()
 	messageID=0;
 	
 	serverNickName[0]=0;
+	
+	isServer=false;
 }
 
 void MultiplayersCrossConnectable::tryCrossConnections(void)
@@ -84,6 +86,7 @@ bool MultiplayersCrossConnectable::sameip(IPaddress ip)
 
 bool MultiplayersCrossConnectable::send(Uint8 *data, int size)
 {
+	assert(!isServer);
 	UDPpacket *packet=SDLNet_AllocPacket(size);
 	assert(packet);
 	memcpy(packet->data, data, size);
@@ -138,12 +141,32 @@ void MultiplayersCrossConnectable::sendingTime()
 				if (!mit->received[j])
 				{
 					sessionInfo.players[j].send(data, size);
+					fprintf(logFile, "messageID=(%d) sent to player (%d), ip (%s)\n", mit->messageID, j, Utilities::stringIP(sessionInfo.players[j].ip));
 					stillSomeone=true;
 				}
+			
 			if (!mit->received[32])
 			{
-				send(data, size);
-				stillSomeone=true;
+				if (isServer)
+				{
+					Message m;
+					m.messageID=mit->messageID;
+					m.messageType=MessageOrder::NORMAL_MESSAGE_TYPE;
+					strncpy(m.userName, mit->userName, 32);
+					strncpy(m.text, mit->text, 256);
+					m.timeout=0;
+					m.TOTL=3;
+					m.guiPainted=false;
+					receivedMessages.push_back(m);
+					fprintf(logFile, "messageID=(%d) copied directly to local queue.\n", mit->messageID);
+					mit->received[32]=true;
+				}
+				else 
+				{
+					send(data, size);
+					fprintf(logFile, "messageID=(%d) sent to host ip (%s)\n", mit->messageID, Utilities::stringIP(serverIP));
+					stillSomeone=true;
+				}
 			}
 			
 			if (stillSomeone)
@@ -153,7 +176,7 @@ void MultiplayersCrossConnectable::sendingTime()
 			}
 			else
 			{
-				fprintf(logFile, "messageID=(%d) fully transmited\n", messageID);
+				fprintf(logFile, "messageID=(%d) fully transmited\n", mit->messageID);
 				sendingMessages.erase(mit);
 				break;
 			}
@@ -161,7 +184,7 @@ void MultiplayersCrossConnectable::sendingTime()
 	for (std::list<Message>::iterator mit=sendingMessages.begin(); mit!=sendingMessages.end(); ++mit)
 		if (mit->TOTL<=0)
 		{
-			fprintf(logFile, "messageID=(%d) erased!\n", messageID);
+			fprintf(logFile, "messageID=(%d) erased!\n", mit->messageID);
 			sendingMessages.erase(mit);
 			break;
 		}
@@ -217,7 +240,6 @@ void MultiplayersCrossConnectable::confirmedMessage(Uint8 *data, int size, IPadd
 				}
 				mit->received[32]=true;
 			}
-	
 }
 
 void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddress ip)
@@ -260,7 +282,6 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 			sessionInfo.players[j].send(ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
 	if (sameip(ip))
 		send(ORDER_TEXT_MESSAGE_CONFIRMATION, m.messageID);
-		
 	
 	bool allready=false;
 	for (std::list<Message>::iterator mit=receivedMessages.begin(); mit!=receivedMessages.end(); ++mit)
@@ -271,7 +292,7 @@ void MultiplayersCrossConnectable::receivedMessage(Uint8 *data, int size, IPaddr
 		}
 	if (!allready)
 	{
-		fprintf(logFile, "new messageID=%d received from ip=(%s) (%s) (%s)\n", messageID, Utilities::stringIP(ip), m.userName, m.text);
+		fprintf(logFile, "new messageID=%d received from ip=(%s) (%s) (%s)\n", m.messageID, Utilities::stringIP(ip), m.userName, m.text);
 		receivedMessages.push_back(m);
 		if (receivedMessages.size()>64)
 			receivedMessages.pop_front();
@@ -359,7 +380,7 @@ void MultiplayersCrossConnectable::sendMessage(const char *s)
 		for (int i=0; i<33; i++)
 			m.received[i]=false;
 
-		fprintf(logFile, " pushing new messageID=%d (%s) (%s)\n", messageID, m.userName, m.text);
+		fprintf(logFile, " pushing new messageID=%d (%s) (%s)\n", m.messageID, m.userName, m.text);
 		sendingMessages.push_back(m);
 	}
 }
