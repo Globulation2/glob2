@@ -1276,6 +1276,9 @@ bool Unit::validMed(int x, int y)
 
 void Unit::pathFind(void)
 {
+	int odx=dx;
+	int ody=dy;
+	bool broken=false;
 	int mapw=owner->game->map.w;
 	int maph=owner->game->map.h;
 	
@@ -1560,30 +1563,27 @@ void Unit::pathFind(void)
 			int bDirection;
 			int odx;
 			int ody;
-			assert(validHard(borderX, borderY));// TODO : avoid this assertion, because it may fail.
 			
-			if (validHard(obstacleX, obstacleY))
+			if (validHard(obstacleX, obstacleY) || (!validHard(borderX, borderY)))
 			{
 				if (verbose)
 					printf("l obstacle not hard! .n");
 				printf("l(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
-				/*int ctpx=posX-tempTargetX;
-				int ctpy=posY-tempTargetY;
+				int ctpx=tempTargetX-posX;
+				int ctpy=tempTargetY-posY;
 				
 				int dctpx, dctpy;
 				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
 
-				obstacleX+=dctpx;
-				obstacleY+=dctpy;
+				obstacleX=posX;
+				obstacleY=posY;
 				while(validHard(obstacleX, obstacleY))
 				{
 					obstacleX+=dctpx;
 					obstacleY+=dctpy;
 				}
-
 				borderX=obstacleX-dctpx;
-				borderY=obstacleY-dctpy;*/
-				assert(false);// TODO : remove assert and put the above code out of comment when ground moves.
+				borderY=obstacleY-dctpy;
 			}
 			
 			bdx=obstacleX-borderX;
@@ -1615,21 +1615,15 @@ void Unit::pathFind(void)
 			if (((bapdx!=0)||(bapdy!=0))&&(!validHard(posX+bapdx, posY+bapdy)))
 			{
 				int bapDir=directionFromDxDy(bapdx, bapdy);
+				
 				int bapdxr, bapdyr, bapdxl, bapdyl;
 				dxdyfromDirection((bapDir+1)&7, &bapdxr, &bapdyr);
 				dxdyfromDirection((bapDir+7)&7, &bapdxl, &bapdyl);
 				if (verbose)
 					printf("bapDir=%d, bapd=(%d, %d), bapdr=(%d, %d), bapdl=(%d, %d)\n", bapDir, bapdx, bapdy, bapdxr, bapdyr, bapdxl, bapdyl); 
-
+					
 				if ((!validHard(posX+bapdxr, posY+bapdyr)) && (!validHard(posX+bapdxl, posY+bapdyl)))
-				{
-					// border-obstacle is broken:
-					if (verbose)
-						printf("r ob:bad state, gotoTarget now\n");
-					gotoTarget(targetX, targetY);
-					bypassDirection=DIR_UNSET;
-					return;
-				}
+					broken=true;
 				maxDist=0;
 			}
 			else if (!validHard(borderX-bapdx, borderY-bapdy))
@@ -1728,21 +1722,20 @@ void Unit::pathFind(void)
 			int bDirection;
 			int odx;
 			int ody;
-			assert(validHard(borderX, borderY)); // TODO : avoid this assertion, because it may fail.
 			
-			if (validHard(obstacleX, obstacleY))
+			if (validHard(obstacleX, obstacleY) || (!validHard(borderX, borderY)))
 			{
 				if (verbose)
 					printf("r obstacle not hard! .n");
 				printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
-				/*int ctpx=posX-tempTargetX;
-				int ctpy=posY-tempTargetY;
+				int ctpx=tempTargetX-posX;
+				int ctpy=tempTargetY-posY;
 				
 				int dctpx, dctpy;
 				simplifyDirection(ctpx, ctpy, &dctpx, &dctpy);
 
-				obstacleX+=dctpx;
-				obstacleY+=dctpy;
+				obstacleX=posX;
+				obstacleY=posY;
 				while(validHard(obstacleX, obstacleY))
 				{
 					obstacleX+=dctpx;
@@ -1750,8 +1743,7 @@ void Unit::pathFind(void)
 				}
 
 				borderX=obstacleX-dctpx;
-				borderY=obstacleY-dctpy;*/
-				assert(false);// TODO : remove assert and put the above code out of comment when ground moves.
+				borderY=obstacleY-dctpy;
 			}
 			
 			bdx=obstacleX-borderX;
@@ -1790,14 +1782,7 @@ void Unit::pathFind(void)
 					printf("bapDir=%d, bapd=(%d, %d), bapdr=(%d, %d), bapdl=(%d, %d)\n", bapDir, bapdx, bapdy, bapdxr, bapdyr, bapdxl, bapdyl); 
 
 				if ((!validHard(posX+bapdxr, posY+bapdyr)) && (!validHard(posX+bapdxl, posY+bapdyl)))
-				{
-					// border-obstacle is broken:
-					if (verbose)
-						printf("r ob:bad state, gotoTarget now\n");
-					gotoTarget(targetX, targetY);
-					bypassDirection=DIR_UNSET;
-					return;
-				}
+					broken=true;
 				maxDist=0;
 			}
 			else if (!validHard(borderX-bapdx, borderY-bapdy))
@@ -1888,17 +1873,26 @@ void Unit::pathFind(void)
 		}
 		else
 			assert(false);
-		
-		int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
-		int currentDistSquare=owner->game->map.warpDistSquare(posX, posY, targetX, targetY);
-		
-		if (currentDistSquare<=centerSquareDist)
+			
+		if ((broken)&&(dx==-odx)&&(dy==-ody))
 		{
 			if (verbose)
-				printf("close enough(%d<%d) to change mode=%d\n", currentDistSquare, centerSquareDist, bypassDirection);
-			tempTargetX=targetX;
-			tempTargetY=targetY;
+				printf("(%d) path is broken\n", UID);
 			bypassDirection=DIR_UNSET;
+		}
+		else
+		{
+			int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+			int currentDistSquare=owner->game->map.warpDistSquare(posX, posY, targetX, targetY);
+
+			if (currentDistSquare<=centerSquareDist)
+			{
+				if (verbose)
+					printf("close enough(%d<%d) to change mode=%d\n", currentDistSquare, centerSquareDist, bypassDirection);
+				tempTargetX=targetX;
+				tempTargetY=targetY;
+				bypassDirection=DIR_UNSET;
+			}
 		}
 
 	}
@@ -2095,47 +2089,60 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 		
 	if (abs(ldx)>(2*abs(ldy)))
 	{
-		if ( abs(ldx)>((owner->game->map.getW())>>1) )
-			*cdx=-sign(ldx);
-		else
-			*cdx=sign(ldx);
+		*cdx=sign(ldx);
 		*cdy=0;
 	}
 	else if (abs(ldy)>(2*abs(ldx)))
 	{
 		*cdx=0;
-		if ( abs(ldy)>((owner->game->map.getH())>>1) )
-			*cdy=-sign(ldy);
-		else
-			*cdy=sign(ldy);
+		*cdy=sign(ldy);
 	}
 	else
 	{
-		if ( abs(ldx)>((owner->game->map.getW())>>1) )
-			*cdx=-sign(ldx);
-		else
-			*cdx=sign(ldx);
-		
-		if ( abs(ldy)>((owner->game->map.getH())>>1) )
-			*cdy=-sign(ldy);
-		else
-			*cdy=sign(ldy);
+		*cdx=sign(ldx);
+		*cdy=sign(ldy);
 	}
 }
 
-/*void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
+
+void Unit::secondaryDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
-	if ( abs(ldx)>((owner->game->map.getW())>>1) )
-		*cdx=-sign(ldx);
-	else
-		*cdx=sign(ldx);
+	int mapw=owner->game->map.w;
+	int maph=owner->game->map.h;
+	if (ldx>(mapw>>1))
+		ldx-=mapw;
+	else if (ldx<-(mapw>>1))
+		ldx+=mapw;
+	if (ldy>(maph>>1))
+		ldy-=maph;
+	else if (ldy<-(maph>>1))
+		ldy+=maph;
 		
-	if ( abs(ldy)>((owner->game->map.getH())>>1) )
-		*cdy=-sign(ldy);
+	if ((abs(ldx)>(2*abs(ldy)))||(abs(ldy)>(2*abs(ldx))))
+	{
+		if (ldy>0)
+			*cdy= 1;
+		else
+			*cdy=-1;
+		if (ldx>0)
+			*cdx= 1;
+		else
+			*cdx=-1;
+	}
 	else
-		*cdy=sign(ldy);
-}*/
-		
+	{
+		if (abs(ldx)>abs(ldy))
+		{
+			*cdx=sign(ldx);
+			*cdy=0;
+		}
+		else
+		{
+			*cdx=0,
+			*cdy=sign(ldy);
+		}
+	}
+}
 
 Sint32 Unit::UIDtoID(Sint32 uid)
 {

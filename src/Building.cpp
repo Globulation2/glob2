@@ -734,7 +734,6 @@ void Building::subscribeForInsideStep()
 	
 	if (lastInsideSubscribe>32)
 	{
-		printf("(%d) Building::subscribeForInsideStep(). s=%d\n", UID, unitsInsideSubscribe.size());
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
 			int mindist=owner->game->map.getW()*owner->game->map.getW();
