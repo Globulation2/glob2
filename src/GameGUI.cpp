@@ -67,6 +67,7 @@ void GameGUI::init()
 	displayMode=BUILDING_AND_FLAG;
 	typeToBuild=-1;
 	selBuild=NULL;
+	selectionPushed=false;
 	showUnitWorkingToBuilding=false;
 	selectionUID=0;
 	chatMask=0xFFFFFFFF;
@@ -100,6 +101,21 @@ void GameGUI::adjustInitialViewport()
 	viewportY=(viewportY+game.map.getH())%game.map.getH();
 }
 
+void GameGUI::moveFlag(int mx, int my)
+{
+	int posX, posY;
+	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
+	if ((selBuild->posXLocal!=posX)||(selBuild->posYLocal!=posY))
+	{
+		Sint32 UID=selBuild->UID;
+		// TODO : find all orderQueue for the same building in OrderMoveFlags, and remove them.
+		
+		orderQueue.push(new OrderMoveFlags(&UID, &posX, &posY, 1));
+		selBuild->posXLocal=posX;
+		selBuild->posYLocal=posY;
+	}
+}
+
 void GameGUI::flagSelectedStep(void)
 {
 	// update flag
@@ -107,11 +123,9 @@ void GameGUI::flagSelectedStep(void)
 	Uint8 button=SDL_GetMouseState(&mx, &my);
 	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-128))
 	{
-		if (selBuild && (selBuild->type->isVirtual))
+		if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 		{
-			int posX, posY;
-			game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-			orderQueue.push(new OrderMoveFlags(&(selBuild->UID), &posX, &posY, 1));
+			moveFlag(mx, my);
 		}
 	}
 }
@@ -419,6 +433,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
+			selectionPushed=false;
 			showUnitWorkingToBuilding=false;
 		}
 	}
@@ -470,6 +485,7 @@ void GameGUI::handleRightClick(void)
 	{
 		displayMode=BUILDING_AND_FLAG;
 		selBuild=NULL;
+		selectionPushed=false;
 		selUnit=NULL;
 		selectionUID=0;
 		typeToBuild=-1;
@@ -725,11 +741,9 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		}
 		else
 		{
-			if (selBuild && (selBuild->type->isVirtual))
+			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 			{
-				int posX, posY;
-				game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-				orderQueue.push(new OrderMoveFlags(&(selBuild->UID), &posX, &posY, 1));
+				moveFlag(mx, my);
 			}
 		}
 	}
@@ -776,6 +790,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				{
 					displayMode=BUILDING_SELECTION_VIEW;
 					game.selectedUnit=NULL;
+					selectionPushed=true;
 					selectionUID=b->UID;
 					checkValidSelection();
 					return;
@@ -786,6 +801,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		{
 			selUnit=game.mouseUnit;
 			selBuild=NULL;
+			selectionPushed=true;
 			// an unit is selected:
 			displayMode=UNIT_SELECTION_VIEW;
 			selectionUID=selUnit->UID;
@@ -806,6 +822,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					{
 						displayMode=BUILDING_SELECTION_VIEW;
 						game.selectedUnit=NULL;
+						selectionPushed=true;
 						selectionUID=UID;
 						checkValidSelection();
 						showUnitWorkingToBuilding=true;
@@ -993,7 +1010,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 		if ((my>256+172) && (my<256+172+16))
 		{
-			orderQueue.push(new OrderDelete(selBuild->UID));
+			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
+			{
+				orderQueue.push(new OrderCancelDelete(selBuild->UID));
+			}
+			else if (selBuild->buildingState==Building::ALIVE)
+			{
+				orderQueue.push(new OrderDelete(selBuild->UID));
+			}
 		}
 
 		if ((my>256+172+16+8) && (my<256+172+16+8+16))
@@ -1011,7 +1035,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				orderQueue.push(new OrderCancelUpgrade(selBuild->UID));
 			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 			{
 				orderQueue.push(new OrderUpgrade(selBuild->UID));
 			}
@@ -1250,7 +1274,7 @@ void GameGUI::draw(void)
 
 				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 				{
-					drawTextCenter(globalContainer->gfx->getW()-128, 256+172, "[wait destroy]");
+					drawButton(globalContainer->gfx->getW()-128+16, 256+172, "[cancel destroy]");
 				}
 				else if (selBuild->buildingState==Building::ALIVE)
 				{
@@ -1270,7 +1294,7 @@ void GameGUI::draw(void)
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 				}
-				else if ((selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+				else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 				}
@@ -1423,7 +1447,7 @@ void GameGUI::drawOverlayInfos(void)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		int centerX, centerY;
-		game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
+		game.map.buildingPosToCursor(selBuild->posXLocal, selBuild->posYLocal,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
 		if (selBuild->owner->teamNumber==localTeam)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
 		else if ((game.teams[localTeam]->allies) & (selBuild->owner->me))

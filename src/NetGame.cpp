@@ -480,8 +480,10 @@ void NetGame::pushOrder(Order *order, Sint32 playerNumber)
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
 	assert(players[playerNumber]->type!=Player::P_IP);//method only for local & ai.
 	
+	
 	// will be used [latency] steps later
 	int pushStep=(currentStep+latency)%queueSize;
+	//printf("NetGame::pushOrder playerNumber=(%d), pushStep=(%d), getOrderType=(%d).\n", playerNumber, pushStep, order->getOrderType());
 	if (playersNetQueue[playerNumber][pushStep].order)
 	{
 		if (((order->getOrderType()==ORDER_NULL)||(order->getOrderType()==ORDER_SUBMIT_CHECK_SUM)))

@@ -1600,13 +1600,13 @@ void Unit::pathFind(void)
 		while (borderY<0)
 			borderY+=maph;
 		
-		while (obstacleX>mapw)
+		while (obstacleX>=mapw)
 			obstacleX-=mapw;
-		while (obstacleY>maph)
+		while (obstacleY>=maph)
 			obstacleY-=maph;
-		while (borderX>mapw)
+		while (borderX>=mapw)
 			borderX-=mapw;
-		while (borderY>maph)
+		while (borderY>=maph)
 			borderY-=maph;
 		
 		if (verbose)

@@ -70,6 +70,7 @@ public:
 
 	// position
 	Sint32 posX, posY; // (Uint16)
+	Sint32 posXLocal, posYLocal;
 
 	// UID Buildings and flags = -1 .. -16384 = - 1 - team * 512 - ID
 
@@ -111,7 +112,10 @@ public:
 	bool isRessourceFull(void);
 	int neededRessource(void);
 	int neededRessource(int r);
+	void launchUpgrade(void);
 	void cancelUpgrade(void);
+	void launchDelete(void);
+	void cancelDelete(void);
 	void update(void);
 	bool tryToUpgradeRoom(void);
 	bool isHardSpace(void);

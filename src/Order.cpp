@@ -36,6 +36,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new OrderDelete(netData+4,netDataLength-4);
 	}
+	case ORDER_CANCEL_DELETE:
+	{
+		return new OrderCancelDelete(netData+4,netDataLength-4);
+	}
 	case ORDER_UPGRADE:
 	{
 		return new OrderUpgrade(netData+4,netDataLength-4);
@@ -179,6 +183,38 @@ char *OrderDelete::getData(void)
 }
 
 bool OrderDelete::setData(const char *data, int dataLength)
+{
+	if(dataLength!=getDataLength())
+		return false;
+	
+	this->UID=getSint32(data, 0);
+
+	memcpy(this->data,data,dataLength);
+	
+	return true;
+}
+
+// OrderCancelDelete's code
+
+OrderCancelDelete::OrderCancelDelete(const char *data, int dataLength)
+{
+	assert(dataLength==4);
+
+	setData(data, dataLength);
+}
+
+OrderCancelDelete::OrderCancelDelete(Sint32 UID)
+{
+	this->UID=UID;
+}
+
+char *OrderCancelDelete::getData(void)
+{
+	addSint32(data, this->UID, 0);
+	return data;
+}
+
+bool OrderCancelDelete::setData(const char *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
