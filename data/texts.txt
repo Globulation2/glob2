@@ -66,7 +66,7 @@ Explorer
 Guerriere
 Warrior
 [still (w)]
- .
+Encore
 Still
 [units working]
   unites travaillent
@@ -75,7 +75,7 @@ Still
 Une unite travaille
 Still one unit working
 [still (i)]
- .
+Encore 
 Still
 [units inside]
   unites dedans
@@ -117,11 +117,11 @@ Exporation flag
 Drapeau de guerre
 War flag
 [l units free]
- .
- .
+ 
+ 
 [r units free]
-  unites libres
-  units free
+ unites libres
+ units free
 [one unit free]
 Une unite libre
 One unit free
@@ -132,11 +132,11 @@ No unit free
 Attente du joueur
 Waiting for player
 [r waiting for player]
- .
- .
+ 
+ 
 [l has left the game]
- .
- .
+ 
+ 
 [r has left the game]
   a quite la partie
   has quited the game
@@ -224,3 +224,12 @@ Player name
 [svr hostname]
 Nom du serveur hote
 Server hostname
+[hp%d]
+Point de vie : %d
+HitPoint : %d
+[carry]
+Transporte :
+Carry :
+[don't carry anything]
+Ne transporte rien
+Don't carry anything

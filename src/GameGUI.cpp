@@ -1167,6 +1167,18 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, font, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
+			if (selUnit->caryedRessource>=0)
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, font, globalContainer->texts.getString("[carry]"));
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+20, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
+			}
+			else
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+28, font, globalContainer->texts.getString("[don't carry anything]"));
+			}
+
+			/* NOTE : I have comment this debug code that isn't used anymore
 			Sint32 UID=selUnit->UID;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, font, "hp=%d", selUnit->hp);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, font, "UID=%d", UID);
@@ -1190,7 +1202,7 @@ void GameGUI::draw(void)
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+285, font, "verbose=%d", selUnit->verbose);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+300, font, "subscribed=%d", selUnit->subscribed);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, font, "ndToRckMed=%d", selUnit->needToRecheckMedical);
-
+			*/
 		}
 		else if (displayMode==STAT_VIEW)
 		{
