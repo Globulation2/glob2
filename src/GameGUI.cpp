@@ -1248,8 +1248,23 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
+		assert(selUnit);
 		selUnit->verbose=!selUnit->verbose;
-		printf("unit %d verbose %d\n", selUnit->gid, selUnit->verbose);
+		printf("unit gid=(%d) verbose %d\n", selUnit->gid, selUnit->verbose);
+		printf(" needToRecheckMedical=%d\n", selUnit->needToRecheckMedical);
+		printf(" medical=%d\n", selUnit->medical);
+		printf(" activity=%d\n", selUnit->activity);
+		printf(" displacement=%d\n", selUnit->displacement);
+		printf(" movement=%d\n", selUnit->movement);
+		printf(" action=%d\n", selUnit->action);
+		
+		if (selUnit->attachedBuilding)
+			printf(" attachedBuilding bgid=%d\n", selUnit->attachedBuilding->gid);
+		else
+			printf(" attachedBuilding NULL\n");
+		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
+		printf(" subscribed=%d\n", selUnit->subscribed);
+		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
 }
 

@@ -1369,6 +1369,7 @@ int NetGame::ticksToDelay(void)
 		if (players[p]->type==Player::P_IP || players[p]->type==Player::P_LOCAL)
 			for (int i=0; i<64; i++)
 				averageWishedDelay+=recentsWishedDelay[p][i];
+		averageWishedDelay+=63;
 		averageWishedDelay/=64;
 		if (minAverageWishedDelay>averageWishedDelay)
 			minAverageWishedDelay=averageWishedDelay;
