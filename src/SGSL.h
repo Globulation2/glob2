@@ -59,13 +59,15 @@ struct Token
 		S_ALLIANCE,
 		S_GUIENABLE,
 		S_GUIDISABLE,
-		S_SUMMON,
+		S_SUMMONUNITS,
+		S_SUMMONFLAG,
+		S_DESTROYFLAG,
 		S_WIN,
 		S_LOOSE,
 		S_LABEL,
 		S_JUMP,
-		S_SETFLAG,
-		S_FLAG,
+		S_SETAREA,
+		S_AREA,
 		S_ISDEAD,
 		S_ALLY,
 		S_ENEMY,
@@ -133,8 +135,8 @@ struct ErrorReport
 		ET_SYNTAX_ERROR,
 		ET_INVALID_TEAM,
 		ET_NO_SUCH_FILE,
-		ET_UNDEFINED_FLAG_NAME,
-		ET_DUPLICATED_FLAG_NAME,
+		ET_UNDEFINED_AREA_NAME,
+		ET_DUPLICATED_AREA_NAME,
 		ET_UNDEFINED_LABEL,
 		ET_MISSING_PAROPEN,
 		ET_MISSING_PARCLOSE,
@@ -237,12 +239,15 @@ private:
 	int internTimer;
 };
 
-struct Flag
+struct Area
 {
 	int x, y, r;
 };
 
-typedef std::map<std::string, Flag> FlagMap;
+class Building;
+
+typedef std::map<std::string, Area> AreaMap;
+typedef std::map<std::string, Building *> BuildingMap;
 
 class Mapscript
 {
@@ -281,7 +286,9 @@ private:
 
 	std::deque<Story> stories;
 
-	FlagMap flags;
+	AreaMap areas;
+
+	BuildingMap flags;
 
 	char *sourceCode;
 };
