@@ -1322,8 +1322,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
 					assert(type<(int)globalContainer->ressourcesTypes.size());
-					assert(amount>=0);
-					assert(amount<rt->sizesCount);
+					assert(amount>0);
+					assert(amount<=rt->sizesCount);
 					assert(variety>=0);
 					assert(variety<rt->varietiesCount);
 					globalContainer->gfx->drawSprite((x<<5)+dx, (y<<5)+dy, sprite, imgid);

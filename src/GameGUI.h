@@ -129,6 +129,8 @@ private:
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
 	void drawBuildingInfos(void);
+	//! Draw the infos about a ressource on map (type and number left)
+	void drawRessourceInfos(void);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
@@ -159,6 +161,7 @@ private:
 		NO_SELECTION=0,
 		BUILDING_SELECTION,
 		UNIT_SELECTION,
+		RESSOURCE_SELECTION,
 		TOOL_SELECTION,
 	} selectionMode;
 	union
@@ -166,6 +169,7 @@ private:
 		Building* building;
 		Unit* unit;
 		unsigned build;
+		int ressource;
 	} selection;
 
 	void setSelection(SelectionMode newSelMode, void* newSelection=NULL);
