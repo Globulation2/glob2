@@ -25,6 +25,7 @@ libgag_a_SOURCES = \
 	GUISelector.cpp\
 	GUIAnimation.cpp\
 	GUIMessageBox.cpp\
+	StreamBackend.cpp\
 	StreamBackend.h\
 	BinaryStream.h\
 	TextStream.h\
