@@ -92,6 +92,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 void MapEdit::drawMiniMap(void)
 {
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY);
+	paintCoordinates();
 	globalContainer->gfx->updateRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 }
 
@@ -305,10 +306,13 @@ void MapEdit::draw(void)
 	drawMenu();
 }
 
-void MapEdit::handleMapClick()
+void MapEdit::handleMapClick(void)
 {
-	int mx=savedMx;
-	int my=savedMy;
+	handleMapClick(savedMx, savedMy);
+}
+
+void MapEdit::handleMapClick(int mx, int my)
+{
 	int winX, winW, winY, winH;
 	static int ax=0, ay=0, atype=0;
 	int x=ax, y=ay;
@@ -451,48 +455,56 @@ void MapEdit::handleMapClick()
 	ay=y;
 }
 
-void MapEdit::handleMapClick(int mx, int my)
-{
-	savedMx=mx;
-	savedMy=my;
-	handleMapClick();
-}
-
-void MapEdit::paintCoordinates()
+void MapEdit::paintCoordinates(void)
 {
 	return this->paintCoordinates(savedMx, savedMy);
 }
 
 void MapEdit::paintCoordinates(int mx, int my)
 {
-	if (mx<globalContainer->gfx->getW()-128)
+	int baseX = globalContainer->gfx->getW()-128;
+	int h=font->getStringHeight("(888,888)");
+	int y=128-h;
+	globalContainer->gfx->drawFilledRect(baseX, y, 128, h, 0, 0, 0);
+	bool coord = minimapPushed || (mx < baseX) || (my < 128);
+	if (coord)
 	{
 		int px, py;
-		if (editMode==EM_TERRAIN)
-			game.map.displayToMapCaseUnaligned(mx, my, &px, &py, viewportX, viewportY);
+		bool minimapCoord = minimapPushed || ((mx > baseX) && (my < 128));
+		if (minimapCoord) // display coordinates according to minimap
+		{
+			int mMax;
+			int szX, szY;
+			int decX, decY;
+			Utilities::computeMinimapData(100, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
+			mx-=baseX+14+decX;
+			my-=14+decY;
+			px=((mx*game.map.getW())/szX)&game.map.getMaskW();
+			py=((my*game.map.getH())/szY)&game.map.getMaskH();
+		}
 		else
-			game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);	
-	
-		std::string s = GAG::nsprintf("(%d, %d)", px, py);
+		{
+			if (editMode==EM_TERRAIN)
+				game.map.displayToMapCaseUnaligned(mx, my, &px, &py, viewportX, viewportY);
+			else
+				game.map.displayToMapCaseAligned(mx, my, &px, &py, viewportX, viewportY);
+
+		}
+		std::string s(GAG::nsprintf("(%d,%d)", px, py));
 		int w=font->getStringWidth(s.c_str());
-	        int h=font->getStringHeight(s.c_str());
-		int x=mx-w;
-		int y=my-h;
-		int dx=x>?0;
-		int dy=y>?0;
-		int dw=x+w-dx;
-		int dh=y+h-dy;
-	
-		globalContainer->gfx->drawFilledRect(x, y, w, h, 0, 0, 0, 128);
+		int x=baseX+64-w/2;
 		globalContainer->gfx->drawString(x, y, font, s.c_str());
-		globalContainer->gfx->updateRect(dx, dy, dw, dh);
 	}
+	globalContainer->gfx->updateRect(baseX, y, 128, h);
 }
 
 void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 {
-	int mx=savedMx;
-	int my=savedMy;
+	paintEditMode(savedMx, savedMy, clearOld, mayUpdate);
+}
+
+void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
+{
 	
 	// We show the case coordodinates
 	const int maxNbRefreshZones=2;
@@ -701,13 +713,6 @@ void MapEdit::paintEditMode(bool clearOld, bool mayUpdate)
 	assert(nbRefreshZones<=maxNbRefreshZones);
 	if (nbRefreshZones>0 && mayUpdate)
 		globalContainer->gfx->updateRects(refreshZones, nbRefreshZones);
-}
-
-void MapEdit::paintEditMode(int mx, int my, bool clearOld, bool mayUpdate)
-{
-	savedMx=mx;
-	savedMy=my;
-	paintEditMode(clearOld, mayUpdate);
 }
 
 void MapEdit::mapHasBeenModiffied(void)
@@ -1308,6 +1313,8 @@ int MapEdit::processEvent(const SDL_Event *event)
 	{
 		int mx=event->motion.x;
 		int my=event->motion.y;
+		savedMx=mx;
+		savedMy=my;
 		
 		if (minimapPushed)
 		{
@@ -1339,6 +1346,8 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 			paintEditMode(mx, my, true, true);
 		}
+
+		paintCoordinates(mx, my);
 
 	}
 	else if (event->type==SDL_KEYDOWN)
@@ -1514,7 +1523,7 @@ int MapEdit::run(void)
 			returnCode=(processEvent(&windowEvent) == -1) ? -1 : returnCode;
 
 		// redraw on scroll
-		bool doRedraw=wasMouseMotion;
+		bool doRedraw=false;
 		viewportX+=game.map.getW();
 		viewportY+=game.map.getH();
 		for (int i=0; i<9; i++)
@@ -1534,7 +1543,6 @@ int MapEdit::run(void)
 		if (doRedraw)
 		{
 			drawMap(screenClip.x, screenClip.y, screenClip.w-128, screenClip.h, true, true);
-			paintCoordinates();
 			drawMiniMap();
 		}
 
