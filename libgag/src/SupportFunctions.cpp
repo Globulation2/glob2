@@ -255,7 +255,7 @@ namespace GAG
 		vasprintf(&str, f, arglist);
 #else
 		str = (char*)malloc(256);
-                vsnprintf(str, 256, f, arglist);
+		vsnprintf(str, 256, f, arglist);
 #endif
 		std::string ret(str);
 		free(str);
