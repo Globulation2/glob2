@@ -21,7 +21,6 @@
 #define __MULTIPLAYERJOIN_H
 
 #include "MultiplayersCrossConnectable.h"
-#include "LANBroadcast.h"
 #include "YOG.h"
 #include <list>
 
@@ -63,7 +62,6 @@ public:
 	int duplicatePacketFile;
 	
 private:
-	LANBroadcast lan;
 	enum BroadcastState
 	{
 		BS_BAD=0,
@@ -85,22 +83,21 @@ public:
 	bool listHasChanged;
 	struct LANHost
 	{
-		Uint32 ip; // This is in network endianess
+		IPaddress ip;
 		char gameName[32];
 		char serverNickName[32];
 		int timeout;
 	};
 	
-	std::list<LANHost> LANHosts;
-	//char gameName[32];
+	std::list<LANHost> lanHosts;
 	
 private:
 	bool shareOnYOG;
 	const YOG::GameInfo *yogGameInfo;
 
 public:
-	char serverNameMemory[128];
-	const char *serverName;
+	char serverName[256];
+
 	char playerName[32];
 	char serverNickName[32];
 
@@ -135,9 +132,11 @@ public:
 	void crossConnectionsAchievedConfirmation(IPaddress ip);
 
 	void serverAskForBeginning(char *data, int size, IPaddress ip);
+	
+	void serverBroadcastResponse(char *data, int size, IPaddress ip);
+	
 	void treatData(char *data, int size, IPaddress ip);
 
-	void receiveTime();
 	void onTimer(Uint32 tick);
 	char *getStatusString();
 
