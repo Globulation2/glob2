@@ -173,7 +173,7 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_MOUSEMOTION)
 	{
-		handleMouseMotion(event->motion.x, event->motion.y);
+		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
 	}
 	else if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
@@ -433,7 +433,7 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 		viewportY+=game.map.getH();
 }
 
-void GameGUI::handleMouseMotion(int mx, int my)
+void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
 	const int scrollZoneWidth=8;
 	game.mouseX=mouseX=mx;
@@ -453,9 +453,18 @@ void GameGUI::handleMouseMotion(int mx, int my)
 	else
 		viewportSpeedY[0]=0;
 
-	if ((mx>globalContainer->gfx.getW()-128) && (my<128) && (SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(1)))
+	if (button&SDL_BUTTON(1))
 	{
-		viewportFromMxMY(mx, my);
+		if (mx>globalContainer->gfx.getW()-128)
+		{
+			if (my<128)
+				viewportFromMxMY(mx, my);
+		}
+		else
+		{
+			if (selBuild && (selBuild->type->isVirtual))
+				game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &(selBuild->posX), &(selBuild->posY), viewportX, viewportY);
+		}
 	}
 }
 
@@ -903,7 +912,7 @@ void GameGUI::draw(void)
 					}
 				}
 			}
-			
+
 			if (selBuild->type->unitProductionTime)
 			{
 				int Left=(selBuild->productionTimeout*128)/selBuild->type->unitProductionTime;

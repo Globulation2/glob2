@@ -850,11 +850,13 @@ void Unit::handleDisplacement(void)
 				displacement=DIS_RANDOM;
 			break;
 		}
-		
+
 		case ACT_FLAG:
 		{
 			assert(attachedBuilding);
 
+			targetX=attachedBuilding->posX;
+			targetY=attachedBuilding->posY;
 			int distance=owner->game->map.warpDistSquare(targetX, targetY, posX, posY);
 			int range=(Sint32)((attachedBuilding->unitStayRange)*(attachedBuilding->unitStayRange));
 			//printf("%d <? %d :-)\n", dist1, dist2);
@@ -870,6 +872,7 @@ void Unit::handleDisplacement(void)
 			}
 			else if (attachedBuilding->unitsWorking.size()>(unsigned)attachedBuilding->maxUnitWorking)
 			{
+				// FIXME : this code is often used, we should do a methode with it !!
 				activity=ACT_RANDOM;
 				displacement=DIS_RANDOM;
 				attachedBuilding->unitsWorking.remove(this);
@@ -1048,19 +1051,19 @@ void Unit::handleMovement(void)
 			}
 			break;
 		}
-		
+
 		case DIS_ENTERING_BUILDING:
 		{
 			movement=MOV_ENTERING_BUILDING;
 			break;
 		}
-		
+
 		case DIS_INSIDE:
 		{
 			movement=MOV_INSIDE;
 			break;
 		}
-		
+
 		case DIS_EXITING_BUILDING:
 		{
 #			ifdef WIN32
@@ -1076,7 +1079,7 @@ void Unit::handleMovement(void)
 				activity=ACT_RANDOM;
 				displacement=DIS_RANDOM;
 				movement=MOV_EXITING_BUILDING;
-				
+
 				attachedBuilding->unitsInside.remove(this);
 				attachedBuilding->unitsInsideSubscribe.remove(this);
 				attachedBuilding->update();

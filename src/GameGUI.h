@@ -40,7 +40,7 @@ public:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_keysym keySym, bool pressed);
-	void handleMouseMotion(int mx, int my);
+	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
 
