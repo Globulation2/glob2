@@ -1,24 +1,24 @@
 Game design, core programming and project management
 
-Stéphane Magnenat <nct@ysagoon.com>
-Luc-Olivier de Charrière <nuage@ysagoon.com>
+Stéphane Magnenat <nct[no-spam]ysagoon.com>
+Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com>
 
 
 Additional programming
 
-Martin Nyffenegger <barock@ysagoon.com> (SGSL)
-Martin Voelkle <martin.voelkle@epfl.ch> (GUI, bug fix and more)
+Martin Nyffenegger <barock[no-spam]ysagoon.com> (SGSL)
+Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (GUI, bug fix and more)
 
 
 Graphics
 
-Luc-Olivier de Charrière <nuage@ysagoon.com> (temporary buildings, swarm, units and land)
-Cyrille Dunant <cyrille.dunant@epfl.ch> (coloring)
-Emmanuel Eckard <emmanuel.eckard@epfl.ch> (drawing)
-Joey <JoeyMarshall@ml1.net> (additional drawing and coloring)
-Matthew Marshall <mmarshall@myrealbox.com> (units)
-Stéphane Magnenat <nct@ysagoon.com> (GUI and bug fix)
-Gabriel Walt <disney@ysagoon.com> (GUI)
+Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (land, swarm, old buildings, old units)
+Emmanuel Eckard <emmanuel.eckard[no-spam]epfl.ch> (drawing new buildings)
+Cyrille Dunant <cyrille.dunant[no-spam]epfl.ch> (coloring new buildings)
+Joey Marshall <JoeyMarshall[no-spam]ml1.net> (additional drawing, coloring)
+Matthew Marshall <mmarshall[no-spam]myrealbox.com> (new units)
+Stéphane Magnenat <nct[no-spam]ysagoon.com> (GUI, bug fix)
+Gabriel Walt <diz[no-spam]ysagoon.com> (GUI)
 
 
 Music
@@ -26,31 +26,44 @@ Music
 Jacques-Paul Grivaz <>
 
 
-Translations
+Game Translations
 
-Michal Turek <bastard.user.from.hell@seznam.cz> (game, Czech)
-Przemyslaw "Daemon42" Kaminski <daemon42(no-spam)gazeta.pl> (game, Polish)
-Martin Nyffenegger <barock@ysagoon.com> (game, Deutsch)
-Matthias Warkus <mawarkus@gnome.org> (game, Deutsch)
-Ghislain Leveque <court-jus@court-jus.net> (manual, French, English)
-Denis Lianda <lianda@nm.ru> (Russian)
+Michal Turek <bastard.user.from.hell[no-spam]seznam.cz> (Czech)
+Przemyslaw Kaminski <daemon42[no-spam]gazeta.pl> (Polish)
+Martin Nyffenegger <barock[no-spam]ysagoon.com> (Deutsch)
+Matthias Warkus <mawarkus[no-spam]gnome.org> (Deutsch)
+Denis Lianda <lianda[no-spam]nm.ru> (Russian)
+Munteanu Olimpiu Andrei <moa3333[no-spam]fastmail.fm> (Romanian)
+Vakvarju <vakvarju[no-spam]spektrum-3d.hu> (Hungarian)
 David Morán <> (Spanish)
-Vakvarju <vakvarju@spektrum-3d.hu> (Hungarian)
 samaritan <> (Serbian)
-MOA333 <moa3333@fastmail.fm> (Romanian)
 
 
-Packaging
+Game Packaging
 
-Vincent Deffontaines <vincent@gryzor.com> (Debian)
-Sebastian Gerlach <minas@calodox.org> (Win32)
-Jens Reimann <ctron@dentrassi.de> (Fedora)
+Vincent Deffontaines <vincent[no-spam]gryzor.com> (Debian)
+Sebastian Gerlach <minas[no-spam]calodox.org> (Win32)
+Dejan Lekic <dejan[no-spam]nu6.org> (Win32, Fedora)
+Jens Reimann <ctron[no-spam]dentrassi.de> (Fedora)
 
 
-Web Site
+Internet
 
-Gabriel Walt <disney@ysagoon.com> (Olaf CMS)
-Stéphane Magnenat <nct@ysagoon.com> (content)
-Martin Voelkle <martin.voelkle@epfl.ch> (wiki)
+Gabriel Walt <disney[no-spam]ysagoon.com> (hosting, CMS, forum)
+Luc-Olivier de Charrière <nuage[no-spam]ysagoon.com> (yog server)
+Stéphane Magnenat <nct[no-spam]ysagoon.com> (yog, savannah)
+Martin Voelkle <martin.voelkle[no-spam]epfl.ch> (wiki)
+Loki Azgorodin <> (#glob2)
+Dejan Lekic <dejan[no-spam]nu6.org> (#globulation2)
+
+
+Documentation
+
+Stéphane Magnenat <nct[no-spam]ysagoon.com>
+Munteanu Olimpiu Andrei <moa3333[no-spam]fastmail.fm>
+Gabriel Walt <diz[no-spam]ysagoon.com>
+Ghislain Leveque <court-jus[no-spam]court-jus.net>
+Martin Voelkle <martin.voelkle[no-spam]epfl.ch>
+
 
 
