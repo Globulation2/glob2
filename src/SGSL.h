@@ -64,10 +64,7 @@ public:
 	virtual ~Aquisition(void);
 
 public:
-	Token getToken()
-	{
-		return token;
-	}
+	Token getToken() { return token; }
 	void nextToken();
 	bool newFile(const char*);
 
@@ -76,38 +73,41 @@ private:
 	FILE *fp;
 };
 
+
 class Story
 {
 public:
-	Story()
-	{ }
-	virtual ~Story()
-	{ }
+	Story();
+	virtual ~Story() { }
+
 public:
 	void step();
-	bool hasWon();
 	std::deque<Token> line;
+	bool hasWon, hasLost;
+	
 private:
-	bool testcondition();
+	bool testCondition();
 };
 
-
+class Game;
 
 class Mapscript
 {
 public:
-	Mapscript()
-	{}
-	;
+	Mapscript();
 	~Mapscript();
+	
 public:
-	bool loadscript(const char*);
+	bool loadScript(const char *filename, Game *game);
 	void step();
-	bool hasWon();
+	bool hasTeamWon(unsigned teamNumber);
+	bool hasTeamLost(unsigned teamNumber);
+	
 private:
+	void reset(void);
 	std::deque<Story> stories;
 	Aquisition donnees;
-
+	Game *game;
 };
 
 

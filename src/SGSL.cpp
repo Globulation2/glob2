@@ -52,41 +52,60 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include <string>
 #include <deque>
 #include "SGSL.h"
+#include "Game.h"
 
-bool Story::testcondition()
+Story::Story()
+{
+	hasWon=false;
+	hasLost=false;
+}
+
+bool Story::testCondition()
 {
 	/*TODO for Steph, lˆ je peux que te faire la structure de base si tu veux,
 	d'ailleurs pour les test ( wait(x > y) ) il faudrai rajouter tous les noms de variables ˆ Token non ?
 	*/
 
-	switch (line.front().type)
-	{
-		case (Token::S_TIMER):
-						/* Il faut entrer le code pour le timer*/
-						return true;
-		case (Token::S_SHOW):
-						line.pop_front();
-			cout<< line.front().msg;
-			return true;
+	if (line.size())
+		switch (line.front().type)
+		{
+			case (Token::S_TIMER):
+							/* Il faut entrer le code pour le timer*/
+							return true;
 			
-		default:
-			return false;
-	}
+			case (Token::S_SHOW):
+			{
+				line.pop_front();
+				cout<< line.front().msg;
+				return true;
+			}
+			
+			case (Token::S_WIN):
+			{
+				hasWon=true;
+				return true;
+			}
+			
+			case (Token::S_LOOSE):
+			{
+				hasLost=true;
+				return true;
+			}
+
+			default:
+				return false;
+		}
 
 	return false;
 }
 
 void Story::step()
 {
-	if (testcondition())
+	printf("story step\n");
+	if (testCondition())
 	{
 		line.pop_front();
 	}
-}
-
-bool Story::hasWon()
-{
-	return (line.front().type==Token::S_WIN);
 }
 
 //Aquisition du texte par le parseur
@@ -96,7 +115,6 @@ Aquisition::~Aquisition(void)
 {
 	if (fp)
 		fclose(fp);
-	return;
 }
 
 Aquisition::Aquisition(void)
@@ -111,7 +129,7 @@ bool Aquisition::newFile(const char *filename)
 		fclose(fp);
 	if ((fp = fopen(filename,"r")) == NULL)
 	{
-		fprintf(stderr,"SGSL : Impossible d'ouvrir le fichier donnŽes en lecture\n");
+		fprintf(stderr,"SGSL : Impossible d'ouvrir le fichier %s en lecture\n", filename);
 		return false;
 	}
 	return true;
@@ -271,8 +289,19 @@ void Aquisition::nextToken()
 
 // Mapscript creation
 
+Mapscript::Mapscript()
+{
+	reset();
+}
+
 Mapscript::~Mapscript(void)
 {}
+
+void Mapscript::reset(void)
+{
+	game=NULL;
+	stories.clear();
+}
 
 void Mapscript::step()
 {
@@ -282,21 +311,15 @@ void Mapscript::step()
 	}
 }
 
-bool Mapscript::hasWon()
-{
-	bool test = false;
-	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
-	{
-		test=test | ((*it).hasWon());
-	}
-	return test;
-}
 
-bool Mapscript::loadscript(const char *filename)
+bool Mapscript::loadScript(const char *filename, Game *game)
 {
 	if (donnees.newFile(filename))
 	{
-		stories.clear();
+		printf("SGSL : script file opened\n");
+		reset();
+		this->game=game;
+		
 		donnees.nextToken();
 		while (donnees.getToken().type != Token::S_EOF)
 		{
@@ -309,6 +332,7 @@ bool Mapscript::loadscript(const char *filename)
 			if (donnees.getToken().type == Token::S_EOF)
 				break;
 			stories.push_back(thisone);
+			printf("SGSL : story loaded\n");
 			donnees.nextToken();
 		}
 		return true;
@@ -317,4 +341,32 @@ bool Mapscript::loadscript(const char *filename)
 	{
 		return false;
 	}
+}
+
+bool Mapscript::hasTeamWon(unsigned teamNumber)
+{
+	// Can make win or loose only player 0
+	if (teamNumber==0)
+	{
+		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+		{
+			if ((*it).hasWon)
+				return true;
+		}
+	}
+	return false;
+}
+
+bool Mapscript::hasTeamLost(unsigned teamNumber)
+{
+	// Can make win or loose only player 0
+	if (teamNumber==0)
+	{
+		for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
+		{
+			if ((*it).hasLost)
+				return true;
+		}
+	}
+	return false;
 }

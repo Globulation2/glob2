@@ -168,6 +168,8 @@ private:
 
 public:
 	bool isAlive;
+	//! called by game, set to true if all others team has won or if script has forced
+	bool hasWon;
 };
 
 #endif

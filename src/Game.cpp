@@ -426,6 +426,11 @@ bool Game::load(SDL_RWops *stream)
 		if (memcmp(signature,"GLO2",4)!=0)
 			return false;
 	}
+	
+	// load script the script
+	// TODO : for now it's from file, but..
+	script.loadScript("testscript.txt", this);
+	
 	return true;
 }
 
@@ -493,6 +498,42 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, char* name)
 	}
 }
 
+void Game::wonStep(void)
+{
+	// TODO : handle alliance here
+	int i,j;
+	for (i=0; i<session.numberOfTeam; i++)
+	{
+		bool isOtherAlive=false;
+		for (j=0; j<session.numberOfTeam; j++)
+		{
+			if ((j!=i) && (teams[j]->isAlive))
+				isOtherAlive=true;
+		}
+		teams[i]->hasWon=!isOtherAlive;
+	}
+}
+
+void Game::scriptStep(void)
+{
+	int i;
+	
+	// do a script step
+	script.step();
+	
+	// alter win/loose conditions
+	for (i=0; i<session.numberOfTeam; i++)
+	{
+		if (teams[i]->isAlive)
+		{
+			if (script.hasTeamWon(i))
+				teams[i]->hasWon=true;
+			if (script.hasTeamLost(i))
+				teams[i]->isAlive=false;
+		}
+	}
+}
+
 void Game::step(Sint32 localTeam)
 {
 	if (anyPlayerWaited)
@@ -507,23 +548,21 @@ void Game::step(Sint32 localTeam)
 		}
 		map.step();
 		
-		// NOTE : checkWinCondition();
 		syncRand();
 
 		if ((stepCounter&31)==0)
 		{
+			int i, t;
 			map.switchFogOfWar();
+			for (t=0; t<session.numberOfTeam; t++)
 			{
-				for (int t=0; t<session.numberOfTeam; t++)
+				for (i=0; i<512; i++)
 				{
-					for (int i=0; i<512; i++)
+					Building *b=teams[t]->myBuildings[i];
+					if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 					{
-						Building *b=teams[t]->myBuildings[i];
-						if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
-						{
-							int vr=b->type->viewingRange;
-							map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, t);
-						}
+						int vr=b->type->viewingRange;
+						map.setMapDiscovered(b->posX-vr, b->posY-vr, b->type->width+vr*2, b->type->height+vr*2, t);
 					}
 				}
 			}
@@ -534,6 +573,11 @@ void Game::step(Sint32 localTeam)
 			renderMiniMap(localTeam, true);
 		}
 		stepCounter++;
+		if (((stepCounter+16)&31)==0)
+		{
+			wonStep();
+			scriptStep();
+		}
 	}
 }
 

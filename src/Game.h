@@ -22,6 +22,7 @@
 
 #include "GAG.h"
 #include "Session.h"
+#include "SGSL.h"
 
 #define BULLET_IMGID 52
 
@@ -63,6 +64,11 @@ public:
 	bool load(SDL_RWops *stream);
     void save(SDL_RWops *stream, bool fileIsAMap, char *name);
 
+	//! look for each team if it has won or not
+	void wonStep(void);
+	//! call script.step(), then check conditions and updates internal variables if needed
+	void scriptStep(void);
+
 	void step(Sint32 localTeam);
 
 	// Editor stuff
@@ -87,13 +93,14 @@ public:
 	void drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected=-1);
 	void renderMiniMap(int teamSelected, bool showUnitsAndBuildings=false);
 	Sint32 checkSum();
-
+	
 public:
 	SessionGame session;
 	Team *teams[32];
 	Player *players[32];
 	Map map;
 	DrawableSurface *minimap;
+	Mapscript script;
 	
 	/* <leto> I moved this to globalContainer.
 	static BuildingsTypes buildingsTypes;

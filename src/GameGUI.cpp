@@ -1545,7 +1545,7 @@ void GameGUI::drawOverlayInfos(void)
 	{
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFontGreen, globalContainer->texts.getString("[you have lost]"));
 	}
-	else if (hasLocalTeamWon()==true)
+	else if (game.teams[localTeam]->hasWon==true)
 	{
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFontGreen, globalContainer->texts.getString("[you have won]"));
 	}
@@ -1597,17 +1597,6 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
-}
-
-bool GameGUI::hasLocalTeamWon(void)
-{
-	bool isOtherAlive=false;
-	for (int i=0; i<game.session.numberOfTeam; i++)
-	{
-		if ((game.teams[i]->teamNumber!=localTeam) && (game.teams[i]->isAlive))
-			isOtherAlive=true;
-	}
-	return !isOtherAlive;
 }
 
 void GameGUI::drawInGameMenu(void)
