@@ -106,25 +106,6 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 {
 	// call parent
 	ChooseMapScreen::onAction(source, action, par1, par2);
-/*		{
-			// Reset
-			mapPreview->setMapThumbnail(NULL);
-			mapName->setText("");
-			mapInfo->setText("");
-			mapVersion->setText("");
-			mapSize->setText("");
-			isAI[0]->setState(true);
-			color[0]->setSelectedColor();
-			
-			for (int i=1;i<16; i++)
-			{
-				isAI[i]->setState(true);
-				color[i]->setSelectedColor();
-				closedText[i]->show();
-				aiSelector[i]->hide();
-			}
-		}
-	}*/
 	if (action==BUTTON_STATE_CHANGED)
 	{
 		if (par1==100)
