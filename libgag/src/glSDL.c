@@ -82,12 +82,16 @@ static struct
 			GLenum format, GLenum type, const GLvoid *pixels);
 	void	(APIENTRY*Translatef)(GLfloat x, GLfloat y, GLfloat z);
 	void	(APIENTRY*Vertex2i)(GLint x, GLint y);
+	void	(APIENTRY*Vertex2d)(GLdouble x, GLdouble y);
 	void	(APIENTRY*Viewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
 	void	(APIENTRY*Rotated)(GLdouble, GLdouble, GLdouble, GLdouble);
 	void	(APIENTRY*Scalef)(GLfloat, GLfloat, GLfloat);
 	void	(APIENTRY*PushMatrix)(void);
 	void	(APIENTRY*PopMatrix)(void);
+	
+	void	(APIENTRY*LineWidth)(GLfloat w);
+	void	(APIENTRY*LineStipple)(GLint factor, GLuint pattern);
 } gl;
 
 
@@ -123,12 +127,16 @@ static int GetGL(void)
 		{"glTexSubImage2D", (void *)&gl.TexSubImage2D },
 		{"glTranslatef", (void *)&gl.Translatef },
 		{"glVertex2i", (void *)&gl.Vertex2i },
+		{"glVertex2d", (void *)&gl.Vertex2d },
 		{"glViewport", (void *)&gl.Viewport },
 
 		{"glRotated", (void *)&gl.Rotated },
 		{"glScalef", (void *)&gl.Scalef },
 		{"glPushMatrix", (void *)&gl.PushMatrix },
 		{"glPopMatrix", (void *)&gl.PopMatrix },
+		
+		{"glLineWidth", (void *)&gl.LineWidth },
+		{"glLineStipple", (void *)&gl.LineStipple },
 		{NULL, NULL }
 	};
 	for(i = 0; glfuncs[i].name; ++i)
@@ -1504,15 +1512,15 @@ void glSDL_SetBltAlpha(int alpha)
 }
 void glSDL_SetLineWidth(float width)
 {
-	glLineWidth(width);
+	gl.LineWidth(width);
 }
 void glSDL_SetLineStipple(int factor, Uint16 pattern)
 {
 	if (factor == 0)
-		glDisable(GL_LINE_STIPPLE);
+		gl.Disable(GL_LINE_STIPPLE);
 	else
 	{
-		glEnable(GL_LINE_STIPPLE);
+		gl.Enable(GL_LINE_STIPPLE);
 		glLineStipple(factor, pattern);
 	}
 }
@@ -2435,8 +2443,8 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 	double fx, fy, fray;
 	
 	x1 = x-ray;
-	x2 = x+ray;
 	y1 = y-ray;
+	x2 = x+ray;
 	y2 = y+ray;
 		
 	if (dst == fake_screen)
@@ -2463,24 +2471,26 @@ int glSDL_DrawCircle(SDL_Surface *dst, Sint16 x, Sint16 y, Sint16 ray, Uint32 co
 		gl_do_blend(0);
 	gl_do_texture(0);
 
-	tot = ray;
+	tot = ray>>1;
 	fx = x;
 	fy = y;
 	fray = ray;
 
-	gl.Begin(GL_POLYGON);
+	gl.Begin(GL_LINES);
 	if (a < 255)
 		gl.Color4ub(r, g, b, a);
 	else
 		gl.Color3ub(r, g, b);
-	//for (i=tot; i>=0; i--)
+	glLineWidth(2.5);
 	for (i=0; i<tot; i++)
 	{
-		double angle = (2*M_PI*(double)i)/((double)tot);
-		glVertex2d(fx+fray*sin(angle), fy+fray*cos(angle));
+		double angle0 = (2*M_PI*(double)i)/((double)tot);
+		double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
+		gl.Vertex2d(fx+fray*sin(angle0), fy+fray*cos(angle0));
+		gl.Vertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 	}
 	gl.End();
-
+	
 	return 0;
 }
 
