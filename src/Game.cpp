@@ -388,7 +388,7 @@ void Game::step(Sint32 localTeam)
 		if ((stepCounter&63)==0)
 		{
 			// TODO : allow visual alliances.
-			renderMiniMap(localTeam);
+			renderMiniMap(localTeam, true);
 		}
 		stepCounter++;
 	}
@@ -1091,13 +1091,15 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 
 }
 
-void Game::renderMiniMap(int teamSelected)
+void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 {
 	float dMx, dMy;
 	int dx, dy;
 	float minidx, minidy;
 	int r, g, b;
 	int nCount;
+	Sint16 u;
+	bool isUnitOrBuilding;
 
 	int H[3]= { 0, 255, 0 };
 	int E[3]= { 0, 0, 255 };
@@ -1107,7 +1109,7 @@ void Game::renderMiniMap(int teamSelected)
 	dMx=(float)map.getW()/128.0f;
 	dMy=(float)map.getH()/128.0f;
 
-	// WARNING : ugly copy past,has someone better idea ?
+	// FIXME : ugly copy past,has someone better idea ?
 	if (globalContainer.gfx.screen->format->BitsPerPixel==16)
 	{
 		Uint16 *ptr;
@@ -1120,21 +1122,49 @@ void Game::renderMiniMap(int teamSelected)
 				pcol[1]=0;
 				pcol[2]=0;
 				nCount=0;
+				isUnitOrBuilding=false;
 
 				// compute
 				for (minidx=(dMx*dx);minidx<=(dMx*(dx+1));minidx++)
 				{
 					for (minidy=(dMy*dy);minidy<=(dMy*(dy+1));minidy++)
 					{
+						// FIXME : handle this in a better way
+						if (showUnitsAndBuildings)
+						{
+							u=map.getUnit(minidx, minidy);
+							if (u!=NOUID)
+							{
+								if (u>=0)
+								{
+									if (Unit::UIDtoTeam(u)==teamSelected)
+										isUnitOrBuilding=true;
+								}
+								else
+								{
+									if (Building::UIDtoTeam(u)==teamSelected)
+										isUnitOrBuilding=true;
+								}
+							}
+						}
 						if ((teamSelected<0)||(map.isMapDiscovered(minidx, minidy, teamSelected)))
 							pcol[map.getUMTerrain((int)minidx,(int)minidy)]++;
 						nCount++;
 					}
 				}
 
-				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+				if (isUnitOrBuilding)
+				{
+					r=255;
+					g=0;
+					b=0;
+				}
+				else
+				{
+					r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
+					g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
+					b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+				}
 				*ptr=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
 				ptr++;
 			}
@@ -1152,21 +1182,49 @@ void Game::renderMiniMap(int teamSelected)
 				pcol[1]=0;
 				pcol[2]=0;
 				nCount=0;
+				isUnitOrBuilding=false;
 
 				// compute
 				for (minidx=(dMx*dx);minidx<=(dMx*(dx+1));minidx++)
 				{
 					for (minidy=(dMy*dy);minidy<=(dMy*(dy+1));minidy++)
 					{
+						// FIXME : handle this in a better way
+						if (showUnitsAndBuildings)
+						{
+							u=map.getUnit(minidx, minidy);
+							if (u!=NOUID)
+							{
+								if (u>=0)
+								{
+									if (Unit::UIDtoTeam(u)==teamSelected)
+										isUnitOrBuilding=true;
+								}
+								else
+								{
+									if (Building::UIDtoTeam(u)==teamSelected)
+										isUnitOrBuilding=true;
+								}
+							}
+						}
 						if ((teamSelected<0)||(map.isMapDiscovered(minidx, minidy, teamSelected)))
 							pcol[map.getUMTerrain((int)minidx,(int)minidy)]++;
 						nCount++;
 					}
 				}
 
-				r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
-				g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
-				b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+				if (isUnitOrBuilding)
+				{
+					r=255;
+					g=0;
+					b=0;
+				}
+				else
+				{
+					r=(int)((H[0]*pcol[Map::GRASS]+E[0]*pcol[Map::WATER]+S[0]*pcol[Map::SAND])/(nCount));
+					g=(int)((H[1]*pcol[Map::GRASS]+E[1]*pcol[Map::WATER]+S[1]*pcol[Map::SAND])/(nCount));
+					b=(int)((H[2]*pcol[Map::GRASS]+E[2]*pcol[Map::WATER]+S[2]*pcol[Map::SAND])/(nCount));
+				}
 				*ptr=SDL_MapRGB(globalContainer.gfx.screen->format,r,g,b);
 				ptr++;
 			}
