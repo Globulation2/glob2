@@ -198,7 +198,7 @@ int Engine::initMutiplayerHost(void)
 
 	printf("Engine::the game is sharing ...\n");
 
-	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );//This line do trash YOGScreen::socketSet 
+	MultiplayersHostScreen multiplayersHostScreen( &(multiplayersChooseMapScreen.sessionInfo) );
 	int rc=multiplayersHostScreen.execute(globalContainer->gfx, 20);
 	if (rc==MultiplayersHostScreen::STARTED)
 	{
