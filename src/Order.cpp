@@ -522,7 +522,7 @@ bool OrderModifySwarms::setData(const Uint8 *data, int dataLength)
 OrderModifyFlags::OrderModifyFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert((dataLength%8)==0);
+	assert((dataLength%6)==0);
 	bool good=setData(data, dataLength);
 	assert(good);
 }
@@ -552,7 +552,7 @@ Uint8 *OrderModifyFlags::getData(void)
 	for (int i=0; i<(this->length); i++)
 	{
 		addUint16(data, (this->gid)[i], 6*i+0);
-		addSint32(data, (this->range )[i], 6*i+2);
+		addSint32(data, (this->range)[i], 6*i+2);
 	}
 	return data;
 }
@@ -571,8 +571,8 @@ bool OrderModifyFlags::setData(const Uint8 *data, int dataLength)
 
 	for (int i=0; i<length; i++)
 	{
-		(this->gid )[i]=getUint16(data, 8*i+0);
-		(this->range )[i]=getSint32(data, 8*i+2);
+		(this->gid)[i]=getUint16(data, 6*i+0);
+		(this->range)[i]=getSint32(data, 6*i+2);
    	}
 
 	memcpy(this->data, data, dataLength);
