@@ -33,7 +33,7 @@ story: starts another parallel storyline, so multiple endings for a map are poss
 #include <string.h>
 #include <math.h>
 #include "SGSL.h"
-#include "Game.h"
+#include "GameGUI.h"
 #include "Utilities.h"
 
 
@@ -68,6 +68,7 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ S_SCIENCE_B, "School" },
 	{ S_DEFENCE_B, "Tower" },
 	{ S_MARKET_B, "Market"},
+	{ S_WOODWALL_B, "WoodWall"},
 	{ S_WALL_B, "Wall"},
 	{ S_EXPLOR_F, "ExplorationFlag"},
 	{ S_FIGHT_F, "WarFlag"},
@@ -147,9 +148,9 @@ Story::~Story()
 }
 
 //get values from the game
-int Story::valueOfVariable(Token::TokenType type, int playerNumber, int level)
+int Story::valueOfVariable(const Game *game, Token::TokenType type, int playerNumber, int level)
 {
-	TeamStat *latestStat=mapscript->game->teams[playerNumber]->stats.getLatestStat();
+	TeamStat *latestStat=game->teams[playerNumber]->stats.getLatestStat();
 	switch(type)
 	{
 		case(Token::S_WORKER):
@@ -181,7 +182,7 @@ int Story::valueOfVariable(Token::TokenType type, int playerNumber, int level)
 }
 
 //code for testing conditions
-bool Story::conditionTester(int pc, bool l)
+bool Story::conditionTester(const Game *game, int pc, bool l)
 {
 	Token::TokenType type, operation;
 	int level, playerNumber, amount;
@@ -197,15 +198,15 @@ bool Story::conditionTester(int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
-			return (valueOfVariable(type, playerNumber, level) > amount);
+			return (valueOfVariable(game, type, playerNumber, level) > amount);
 		}
 		case (Token::S_LOWER):
 		{
-			return (valueOfVariable(type, playerNumber, level) < amount);
+			return (valueOfVariable(game, type, playerNumber, level) < amount);
 		}
 		case (Token::S_EQUAL):
 		{
-			return (valueOfVariable(type, playerNumber, level) == amount);
+			return (valueOfVariable(game, type, playerNumber, level) == amount);
 		}
 		default:
 			return false;
@@ -214,8 +215,10 @@ bool Story::conditionTester(int pc, bool l)
 
 
 //main step-by-step machine
-bool Story::testCondition()
+bool Story::testCondition(GameGUI *gui)
 {
+	Game *game = &gui->game;
+
 	/* Not up-to date */
 	if (line.size())
 		switch (line[lineSelector].type)
@@ -269,7 +272,7 @@ bool Story::testCondition()
 					case (Token::S_ISDEAD):
 					{
 						execLine++;
-						if (!mapscript->game->teams[line[execLine].value]->isAlive)
+						if (!game->teams[line[execLine].value]->isAlive)
 						{
 							lineSelector = execLine;
 							return true;
@@ -293,11 +296,11 @@ bool Story::testCondition()
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
 								{
-									Uint16 gid=mapscript->game->map.getGroundUnit(dx, dy);
+									Uint16 gid=game->map.getGroundUnit(dx, dy);
 									if (gid!=NOGUID)
 									{
 										int team=Unit::GIDtoTeam(gid);
-										if (mapscript->game->teams[0]->teamNumber==team)//TODO XOR
+										if (game->teams[0]->teamNumber==team)//TODO XOR
 										{
 											lineSelector +=3+negate;
 											return true;
@@ -312,12 +315,12 @@ bool Story::testCondition()
 							for (dy=y-5; dy<y+5; dy++)
 								for (dx=x-5; dx<x+5; dx++)
 								{
-									Uint16 gid=mapscript->game->map.getGroundUnit(dx, dy);
+									Uint16 gid=game->map.getGroundUnit(dx, dy);
 									if (gid!=NOGUID)
 									{
 										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->allies & tm) //TODO XOR
+										if (game->teams[0]->allies & tm) //TODO XOR
 										{
 											lineSelector +=3+negate;
 											return true;
@@ -334,20 +337,20 @@ bool Story::testCondition()
 								for (dx=x-5; dx<x+5; dx++)
 								{
 									Uint16 gid;
-									gid=mapscript->game->map.getGroundUnit(dx, dy);
+									gid=game->map.getGroundUnit(dx, dy);
 									if (gid!=NOGUID)
 									{
 										int team=Unit::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->enemies & tm)//TODO XOR
+										if (game->teams[0]->enemies & tm)//TODO XOR
 											return false;
 									}
-									gid=mapscript->game->map.getBuilding(dx, dy);
+									gid=game->map.getBuilding(dx, dy);
 									if (gid!=NOGBID)
 									{
 										int team=Building::GIDtoTeam(gid);
 										Uint32 tm=1<<team;
-										if (mapscript->game->teams[0]->enemies & tm)//TODO XOR
+										if (game->teams[0]->enemies & tm)//TODO XOR
 											return false;
 									}
 								}
@@ -363,7 +366,7 @@ bool Story::testCondition()
 					case (Token::S_EXPLORER):
 					case (Token::S_WARRIOR):
 					{
-						if (conditionTester(execLine, false))
+						if (conditionTester(game, execLine, false))
 						{
 							lineSelector += execLine + 3;
 							mapscript->isTextShown=false;
@@ -375,7 +378,7 @@ bool Story::testCondition()
 					break;
 					default: //Test conditions
 					{
-						if (conditionTester(execLine, true))
+						if (conditionTester(game, execLine, true))
 						{
 							lineSelector += execLine + 4;
 							mapscript->isTextShown=false;
@@ -414,21 +417,63 @@ bool Story::testCondition()
 			}
 			case (Token::S_FRIEND):
 			{
-				mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
+				/*mapscript->game->teams[line[lineSelector+1].value]->allies |= mapscript->game->teams[line[lineSelector+2].value]->me;
 				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
 				mapscript->game->teams[line[lineSelector+2].value]->allies |= mapscript->game->teams[line[lineSelector+1].value]->me;
 				mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
-				lineSelector +=2;
+				lineSelector +=2;*/
 				return true;
 			}
 			case (Token::S_ENEMY):
 			{
 
-				mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
+				/*mapscript->game->teams[line[lineSelector+1].value]->allies &= ~ mapscript->game->teams[line[lineSelector+2].value]->me;
 				mapscript->game->teams[line[lineSelector+1].value]->enemies = ~ mapscript->game->teams[line[lineSelector+1].value]->allies;
 				mapscript->game->teams[line[lineSelector+2].value]->allies &= ~ mapscript->game->teams[line[lineSelector+1].value]->me;
 				mapscript->game->teams[line[lineSelector+2].value]->enemies = ~ mapscript->game->teams[line[lineSelector+2].value]->allies;
-				lineSelector +=2;
+				lineSelector +=2;*/
+				return true;
+			}
+			case (Token::S_GUIENABLE):
+			{
+				Token::TokenType object = line[++lineSelector].type;
+				if (object <= Token::S_WARRIOR)
+				{
+					// Units : TODO
+				}
+				else if (object <= Token::S_WALL_B)
+				{
+					gui->enableBuildingsChoice(object - Token::S_SWARM_B);
+				}
+				else if (object <= Token::S_FORBIDDEN_F)
+				{
+					gui->enableFlagsChoice(object - Token::S_EXPLOR_F);
+				}
+				else if (object <= Token::S_ALLIANCESCREEN)
+				{
+					gui->enableGUIElement(object - Token::S_BUILDINGTAB);
+				}
+				return true;
+			}
+			case (Token::S_GUIDISABLE):
+			{
+				Token::TokenType object = line[++lineSelector].type;
+				if (object <= Token::S_WARRIOR)
+				{
+					// Units : TODO
+				}
+				else if (object <= Token::S_WALL_B)
+				{
+					gui->disableBuildingsChoice(object - Token::S_SWARM_B);
+				}
+				else if (object <= Token::S_FORBIDDEN_F)
+				{
+					gui->disableFlagsChoice(object - Token::S_EXPLOR_F);
+				}
+				else if (object <= Token::S_ALLIANCESCREEN)
+				{
+					gui->disableGUIElement(object - Token::S_BUILDINGTAB);
+				}
 				return true;
 			}
 			case (Token::S_SUMMON):
@@ -454,7 +499,7 @@ bool Story::testCondition()
 
 						if (dx*dx+dy*dy<r*r)
 						{
-							if (mapscript->game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
+							if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
 							{
 								number --;
 							}
@@ -499,9 +544,9 @@ bool Story::testCondition()
 	return false;
 }
 
-void Story::step()
+void Story::step(GameGUI *gui)
 {
-	while (testCondition())
+	while (testCondition(gui))
 	{
 		lineSelector ++;
 	}
@@ -794,7 +839,6 @@ void Mapscript::reset(void)
 {
 	isTextShown = false;
 	mainTimer=0;
-	game=NULL;
 	stories.clear();
 	flags.clear();
 }
@@ -804,13 +848,13 @@ bool Mapscript::testMainTimer()
 	return (mainTimer <= 0);
 }
 
-void Mapscript::step()
+void Mapscript::step(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
 	for (std::deque<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
-		it->step();
+		it->step(gui);
 	}
 }
 
@@ -906,7 +950,6 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	er.type=ErrorReport::ET_OK;
 
 	reset();
-	this->game=game;
 
 	NEXT_TOKEN;
 	while (donnees->getToken()->type != Token::S_EOF)

@@ -1409,7 +1409,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int yNum=(my-YPOS_BASE_BUILDING)/46;
 		int id=yNum*2+xNum;
 		if (id<(int)buildingsChoice.size())
-			setSelection(TOOL_SELECTION, buildingsChoice[id]);
+			if (buildingsChoice[id]>=0)
+				setSelection(TOOL_SELECTION, buildingsChoice[id]);
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
@@ -1417,7 +1418,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int yNum=(my-YPOS_BASE_FLAG)/46;
 		int id=yNum*2+xNum;
 		if (id<(int)flagsChoice.size())
-			setSelection(TOOL_SELECTION, flagsChoice[id]);
+			if (flagsChoice[id]>=0)
+				setSelection(TOOL_SELECTION, flagsChoice[id]);
 	}
 }
 
@@ -1488,34 +1490,37 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 		if ((selectionMode==TOOL_SELECTION) && (i==int(selection.build)))
 			sel=v;
 
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-		assert(bt);
-		int imgid=bt->miniImage;
-		int x, y;
-
-		x=((v&0x1)*64)+globalContainer->gfx->getW()-128;
-		y=((v>>1)*46)+128+32;
-		globalContainer->gfx->setClipRect(x, y, 64, 46);
-
-		Sprite *buildingSprite;
-		int decX, decY;
-		if (imgid>=0)
+		if (i>=0)
 		{
-			buildingSprite=globalContainer->buildingmini;
-			decX=4;
-			decY=0;
-		}
-		else
-		{
-			buildingSprite=globalContainer->buildings;
-			imgid=bt->startImage;
-			decX=(64-buildingSprite->getW(imgid))>>1;
-			decY=(46-buildingSprite->getW(imgid))>>1;
-		}
+			int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
+			BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+			assert(bt);
+			int imgid=bt->miniImage;
+			int x, y;
 
-		buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
-		globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
+			x=((v&0x1)*64)+globalContainer->gfx->getW()-128;
+			y=((v>>1)*46)+128+32;
+			globalContainer->gfx->setClipRect(x, y, 64, 46);
+
+			Sprite *buildingSprite;
+			int decX, decY;
+			if (imgid>=0)
+			{
+				buildingSprite=globalContainer->buildingmini;
+				decX=4;
+				decY=0;
+			}
+			else
+			{
+				buildingSprite=globalContainer->buildings;
+				imgid=bt->startImage;
+				decX=(64-buildingSprite->getW(imgid))>>1;
+				decY=(46-buildingSprite->getW(imgid))>>1;
+			}
+
+			buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+			globalContainer->gfx->drawSprite(x+decX, y+decY, buildingSprite, imgid);
+		}
 
 		++it;
 		v++;
@@ -1544,25 +1549,28 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 			if (id<count)
 			{
 				int typeId=types[id];
-				int buildingInfoStart=globalContainer->gfx->getH()-50;
-
-				drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[building name]", typeId);
-				int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
-				if (typeNum!=-1)
+				if (typeId >= 0)
 				{
-					BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
-						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
-						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
+					int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
-						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
-						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart-8, "[building name]", typeId);
+					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
+					if (typeNum!=-1)
+					{
+						BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+6, globalContainer->littleFont,
+							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+17, globalContainer->littleFont,
+							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[3]).c_str());
 
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
-						GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+6, globalContainer->littleFont,
+							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[4]).c_str());
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+17, globalContainer->littleFont,
+							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
+
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont,
+							GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
+					}
 				}
 			}
 		}
@@ -2691,14 +2699,14 @@ bool GameGUI::load(SDL_RWops *stream)
 			int id=buildingsChoice[i];
 			assert(i>=0);
 			if ((1<<id) & buildingsChoiceMask)
-				buildingsChoice[i]=-id;
+				buildingsChoice[i]=-id-1;
 		}
 		for (unsigned i=0; i<flagsChoice.size(); ++i)
 		{
 			int id=flagsChoice[i];
 			assert(i>=0);
 			if ((1<<id) & flagsChoiceMask)
-				flagsChoice[i]=-id;
+				flagsChoice[i]=-id-1;
 		}
 	}
 
@@ -2727,13 +2735,13 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 	{
 		int id=buildingsChoice[i];
 		if (id<0)
-			buildingsChoiceMask |= (1<<(-id));
+			buildingsChoiceMask |= (1<<(-id-1));
 	}
 	for (unsigned i=0; i<flagsChoice.size(); ++i)
 	{
 		int id=buildingsChoice[i];
 		if (id<0)
-			flagsChoiceMask |= (1<<(-id));
+			flagsChoiceMask |= (1<<(-id-1));
 	}
 	SDL_WriteBE32(stream, buildingsChoiceMask);
 	SDL_WriteBE32(stream, flagsChoiceMask);
@@ -2957,6 +2965,62 @@ void GameGUI::centerViewportOnSelection(void)
 		viewportX=(viewportX+game.map.getW())&game.map.getMaskW();
 		viewportY=(viewportY+game.map.getH())&game.map.getMaskH();
 	}
+}
+
+void GameGUI::enableBuildingsChoice(int id)
+{
+	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	{
+		int idl=buildingsChoice[i];
+		assert(i<0);
+		if (-idl-1 == id)
+			buildingsChoice[i]=-idl-1;
+	}
+}
+
+void GameGUI::disableBuildingsChoice(int id)
+{
+	for (unsigned i=0; i<buildingsChoice.size(); ++i)
+	{
+		int idl=buildingsChoice[i];
+		assert(i>=0);
+		if (idl == id)
+			buildingsChoice[i]=-id-1;
+	}
+}
+
+void GameGUI::enableFlagsChoice(int id)
+{
+	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	{
+		int idl=flagsChoice[i];
+		assert(i<0);
+		if (-idl-1 == id)
+			flagsChoice[i]=-idl-1;
+	}
+}
+
+void GameGUI::disableFlagsChoice(int id)
+{
+	for (unsigned i=0; i<flagsChoice.size(); ++i)
+	{
+		int idl=flagsChoice[i];
+		assert(i>=0);
+		if (idl == id)
+			flagsChoice[i]=-id-1;
+	}
+}
+
+void GameGUI::enableGUIElement(int id)
+{
+	hiddenGUIElements &= ~(1<<id);
+}
+
+void GameGUI::disableGUIElement(int id)
+{
+	hiddenGUIElements |= (1<<id);
+	if (displayMode==id)
+		nextDisplayMode();
 }
 
 void GameGUI::addMessage(Uint8 r, Uint8 g, Uint8 b, const char *msgText, ...)

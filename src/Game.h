@@ -25,6 +25,7 @@
 #include "SGSL.h"
 
 class MapGenerationDescriptor;
+class GameGUI;
 
 class Game
 {
@@ -73,9 +74,9 @@ public:
 	//! look for each team if it has won or not
 	void wonStep(void);
 	//! call script.step(), then check conditions and updates internal variables if needed
-	void scriptStep(void);
-
-	void step(Sint32 localTeam);
+	void scriptStep(GameGUI *gui);
+	//! called by gui, execute a step for this game. The gui parameter is for the script
+	void step(GameGUI *gui, Sint32 localTeam);
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator

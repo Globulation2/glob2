@@ -408,7 +408,7 @@ int Engine::run(void)
 				// here we do the real work
 				
 				if (!gui.paused)
-					gui.game.step(gui.localTeamNo);
+					gui.game.step(&gui, gui.localTeamNo);
 			}
 
 			// we draw

@@ -85,6 +85,15 @@ public:
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
+	// Script interface
+	void enableBuildingsChoice(int id);
+	void disableBuildingsChoice(int id);
+	void enableFlagsChoice(int id);
+	void disableFlagsChoice(int id);
+	void enableGUIElement(int id);
+	void disableGUIElement(int id);
+
+
 private:
 	bool processGameMenu(SDL_Event *event);
 	void handleRightClick(void);
