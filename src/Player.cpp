@@ -195,7 +195,11 @@ Sint32 BasePlayer::checkSum()
 	cs^=teamNumberMask;
 	Uint32 netHost=SDL_SwapBE32(ip.host);
 	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
-	cs^=netHost;
+	//cs^=netHost;
+	// IP adress can't stay in checksum, because:
+	// We now support NAT or IP may simply be differents between computers
+	// And we uses checkSum in network.
+	// (we could uses two differents check sums, but the framework would be heavier)
 	cs^=netPort;
 
 	{
