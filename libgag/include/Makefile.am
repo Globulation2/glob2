@@ -6,6 +6,7 @@ Stream.h \
 BinaryStream.h \
 TextStream.h \
 StreamBackend.h \
+StreamFilter.h \
 GAG.h \
 GAGSys.h \
 GUIBase.h \
