@@ -21,6 +21,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <assert.h>
+#include <iostream>
 
 TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text)
 {
@@ -34,26 +35,22 @@ TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, con
 	this->readOnly=readOnly;
 	this->font=Toolkit::getFont(font);
 	assert(this->font);
-	textBuffer=NULL;
 	assert(font);
 	charHeight=this->font->getStringHeight((const char *)NULL);
 	assert(charHeight);
 	areaHeight=(h-8)/charHeight;
 	areaPos=0;
-	textBufferLength=0;
-
+	
 	cursorPos=0;
 	cursorPosY=0;
 	cursorScreenPosY=0;
 
-	// TODO : this is not clean because this pointer can disappear
-	initialText = text;
+	this->text = text;
 }
 
 TextArea::~TextArea(void)
 {
-	if (textBuffer)
-		free(textBuffer);
+	
 }
 
 void TextArea::internalPaint(void)
@@ -64,20 +61,22 @@ void TextArea::internalPaint(void)
 	areaHeight=(h-8)/charHeight;
 	parent->getSurface()->setClipRect(x, y, w, h);
 	parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-	if (textBuffer)
+	
+	for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 	{
-		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
+		assert(i+areaPos<lines.size());
+		if (i+areaPos<lines.size()-1)
 		{
-			assert(i+areaPos<lines.size());
-			if (i+areaPos<lines.size()-1)
-			{
-				std::string temp(textBuffer+lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, temp.c_str());
-			}
-			else
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, (textBuffer+lines[i+areaPos]));
+			const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
+			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+		}
+		else
+		{
+			const std::string &substr = text.substr(lines[i+areaPos]);
+			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
 		}
 	}
+
 	if (!readOnly)
 	{
 		parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
@@ -87,7 +86,7 @@ void TextArea::internalPaint(void)
 
 void TextArea::paint(void)
 {
-	internalSetText(initialText);
+	layout();
 	internalPaint();
 }
 
@@ -116,9 +115,9 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			case SDLK_DELETE:
 			if (!readOnly)
 			{
-				if (cursorPos<textBufferLength)
+				if (cursorPos < text.length())
 				{
-					unsigned len=getNextUTF8Char(textBuffer, cursorPos);
+					unsigned len=getNextUTF8Char(text.c_str(), cursorPos);
 					remText(cursorPos, len-cursorPos);
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
@@ -130,7 +129,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if (cursorPos)
 				{
-					unsigned newPos=getPrevUTF8Char(textBuffer, cursorPos);
+					unsigned newPos=getPrevUTF8Char(text.c_str(), cursorPos);
 					unsigned len=cursorPos-newPos;
 					cursorPos=newPos;
 					remText(newPos, len);
@@ -158,14 +157,14 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			{
 				if (SDL_GetModState() & KMOD_CTRL)
 				{
-					cursorPos=textBufferLength;
+					cursorPos=text.length();
 				}
 				else
 				{
 					if (cursorPosY<lines.size()-1)
 						cursorPos=lines[cursorPosY+1]-1;
 					else
-						cursorPos=textBufferLength;
+						cursorPos=text.length();
 				}
 				computeAndRepaint();
 				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
@@ -229,7 +228,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 								unsigned int newLineLen;
 								if (newPosY==lines.size()-1)
 								{
-									newLineLen=textBufferLength-lines[newPosY];
+									newLineLen=text.length()-lines[newPosY];
 								}
 								else
 								{
@@ -288,7 +287,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					
 					if (cursorPosY==lines.size()-2)
 					{
-						newLineLen=textBufferLength-lines[cursorPosY+1];
+						newLineLen=text.length()-lines[cursorPosY+1];
 					}
 					else
 					{
@@ -318,14 +317,16 @@ void TextArea::onSDLEvent(SDL_Event *event)
 					bool cont=true;
 					while ((cursorPos>0) && cont)
 					{
-						cursorPos=getPrevUTF8Char(textBuffer, cursorPos);
-						switch (textBuffer[cursorPos])
+						cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
+						switch (text[cursorPos])
 						{
 							case '.':
 							case ' ':
 							case '\t':
 							case ',':
 							case '\'':
+							case '\r':
+							case '\n':
 							cont=false;
 							default:
 							break;
@@ -338,7 +339,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 				{
 					if (cursorPos>0)
 					{
-						cursorPos=getPrevUTF8Char(textBuffer, cursorPos);
+						cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
 						computeAndRepaint();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
@@ -349,32 +350,40 @@ void TextArea::onSDLEvent(SDL_Event *event)
 			case SDLK_RIGHT:
 			if (!readOnly)
 			{
-				if (mod&KMOD_CTRL)
+				if (cursorPos<text.length())
 				{
-					bool cont=true;
-					while ((cursorPos<textBufferLength) && cont)
+					if (mod&KMOD_CTRL)
 					{
-						cursorPos=getNextUTF8Char(textBuffer, cursorPos);
-						switch (textBuffer[cursorPos])
+						bool cont=true;
+						while (cont)
 						{
-							case '.':
-							case ' ':
-							case '\t':
-							case ',':
-							case '\'':
-							cont=false;
-							default:
-							break;
+							assert(cursorPos < text.length());
+							cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
+							if (cursorPos < text.length())
+							{
+								switch (text[cursorPos])
+								{
+									case '.':
+									case ' ':
+									case '\t':
+									case ',':
+									case '\'':
+									case '\r':
+									case '\n':
+									cont = false;
+									default:
+									break;
+								}
+							}
+							else
+								cont = false;
 						}
+						computeAndRepaint();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
-					computeAndRepaint();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-				}
-				else
-				{
-					if (cursorPos<textBufferLength)
-					{
-						cursorPos=getNextUTF8Char(textBuffer, cursorPos);
+					else
+					{	
+						cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
 						computeAndRepaint();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
@@ -452,9 +461,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 
 void TextArea::setCursorPos(unsigned pos)
 {
-	if (pos>textBufferLength)
-		pos=textBufferLength;
-	cursorPos=pos;
+	cursorPos = std::min(pos, text.length());
 	computeAndRepaint();
 }
 
@@ -467,7 +474,7 @@ void TextArea::computeAndRepaint(void)
 	assert(cursorPosY >= 0);
 	assert(cursorPosY < lines.size());
 	assert(cursorPos >= 0);
-	assert(cursorPos <= textBufferLength);
+	assert(cursorPos <= text.length());
 	
 	if (!readOnly)
 	{
@@ -504,162 +511,129 @@ void TextArea::computeAndRepaint(void)
 		// TODO : UTF8 clean cursor displacement in text should lead to the removal of this code !!
 		// we need to assert cursorPos will point on the beginning of a valid UTF8 char
 		unsigned utf8CleanCursorPos = lines[cursorPosY];
-		while (utf8CleanCursorPos + getNextUTF8Char(textBuffer[utf8CleanCursorPos]) <= cursorPos)
+		while ((utf8CleanCursorPos < text.length())
+			&& (utf8CleanCursorPos + getNextUTF8Char(text[utf8CleanCursorPos]) <= cursorPos))
 		{
-			utf8CleanCursorPos += getNextUTF8Char(textBuffer[utf8CleanCursorPos]);
+			assert(utf8CleanCursorPos < text.length());
+			utf8CleanCursorPos += getNextUTF8Char(text[utf8CleanCursorPos]);
 		}
 		cursorPos = utf8CleanCursorPos;
 
 		// compute displayable cursor Pos
-		char temp[1024];
 		unsigned cursorPosX = cursorPos-lines[cursorPosY];
-		assert(cursorPosX < 1024);
-		memcpy(temp, textBuffer+lines[cursorPosY], cursorPosX);
-		temp[cursorPosX]=0;
-		cursorScreenPosY=font->getStringWidth(temp);
+		const std::string &temp = text.substr(lines[cursorPosY], cursorPosX);
+		cursorScreenPosY=font->getStringWidth(temp.c_str());
 	}
 
 	// repaint
 	repaint();
 }
 
-
-void TextArea::internalSetText(const char *text)
+void TextArea::layout(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
-	assert(text);
-	if (text)
+	
+	unsigned pos = 0;
+	int length = w-4-font->getStringWidth("W");
+	
+	lines.clear();
+	lines.push_back(0);
+	std::string lastWord;
+	std::string lastLine;
+	int spaceLength = font->getStringWidth(" ");
+	
+	while (pos<text.length())
 	{
-		if (textBuffer)
+		switch (text[pos])
 		{
-			free(textBuffer);
-			lines.clear();
-		}
-		textBufferLength=strlen(text);
-		textBuffer=(char *)malloc(textBufferLength+1);
-		unsigned pos=0;
-
-		char temp[1024];
-		int temppos;
-		int lastWhite=-1;
-		lines.push_back(0);
-		
-		temppos=0;
-		temp[temppos]=0;
-		
-		// TODO : add getStringWidth with a number of char paramater to get ride of temp
-		while (pos<textBufferLength)
-		{
-			while ((font->getStringWidth(temp)<w-4-font->getStringWidth("W"))&&(pos<textBufferLength)&&(text[pos]!='\n'))
+			case ' ':
+			case '\t':
 			{
-				if (text[pos]==' ')
-					lastWhite=pos;
-				textBuffer[pos]=text[pos];
-				temp[temppos]=text[pos];
-				temppos++;
-				pos++;
-				assert(temppos < 1024);
-				temp[temppos]=0;
-			}
-			if (pos<textBufferLength)
-			{
-				if (text[pos]=='\n')
+				int actLineLength = font->getStringWidth(lastLine.c_str());
+				int actWordLength = font->getStringWidth(lastWord.c_str());
+				if (actWordLength+actLineLength+spaceLength < length)
 				{
-					textBuffer[pos]='\n';
-					pos++;
-					lines.push_back(pos);
-					temppos=0;
-					assert(temppos < 1024);
-					temp[temppos]=0;
+					if (lastLine.length())
+						lastLine += " ";
+					lastLine += lastWord;
+					lastWord.clear();
 				}
-				else // line overflow
+				else
 				{
-					if ((lastWhite!=-1) && (lastWhite>(int)lines[lines.size()-1]))
-					{
-						pos=lastWhite;
-						//textBuffer[pos]='\n';
-						pos++;
-					}
-					lines.push_back(pos);
-					temppos=0;
-					assert(temppos < 1024);
-					temp[temppos]=0;
+					lines.push_back(pos-lastWord.size());
+					lastLine = lastWord;
+					lastWord.clear();
 				}
 			}
-			else
+			break;
+			
+			case '\n':
+			case '\r':
 			{
-				textBuffer[pos]=0;
+				lines.push_back(pos+1);
+				lastWord.clear();
+				lastLine.clear();
+			}
+			break;
+			
+			default:
+			{
+				lastWord += text[pos];
 			}
 		}
-		if (pos==textBufferLength)
-			textBuffer[pos]=0;
+		pos++;
 	}
+	
+	int actLineLength = font->getStringWidth(lastLine.c_str());
+	int actWordLength = font->getStringWidth(lastWord.c_str());
+	if (actWordLength+actLineLength+spaceLength >= length)
+	{
+		lines.push_back(pos-lastWord.size());
+	}
+	
+	if (cursorPosY >= lines.size())
+		cursorPosY = lines.size()-1;
 }
 
 void TextArea::setText(const char *text)
 {
-	internalSetText(text);
+	this->text = text;
+	layout();
 	computeAndRepaint();
 }
 
 void TextArea::addText(const char *text)
 {
 	assert(text);
-	assert(cursorPos <= textBufferLength);
+	assert(cursorPos <= this->text.length());
 	assert(cursorPos >= 0);
 
 	if (text)
 	{
-		int ts=strlen(text);
-
-		char *temp=(char *)malloc(textBufferLength+ts+1);
-
 		if (readOnly)
 		{
-			memcpy(temp, textBuffer, textBufferLength);
-			memcpy(temp+textBufferLength, text, ts);
+			this->text += text;
 		}
 		else
 		{
-			memcpy(temp, textBuffer, cursorPos);
-			memcpy(temp+cursorPos, text, ts);
-			memcpy(temp+cursorPos+ts, textBuffer+cursorPos, textBufferLength-cursorPos);
-			cursorPos+=ts;
+			this->text.insert(cursorPos, text);
+			cursorPos += strlen(text);
 		}
-
-		temp[textBufferLength+ts]=0;
 		
-		setText(temp);
-
-		free(temp);
+		layout();
+		computeAndRepaint();
 	}
 }
 
 void TextArea::remText(unsigned pos, unsigned len)
 {
-	if (pos < textBufferLength)
+	if (pos < text.length())
 	{
-		// if we wanna delete past the end
-		if (pos + len >= textBufferLength)
-			len = textBufferLength - pos;
+		text.erase(pos, len);
 		
-		unsigned newLen = textBufferLength-len;
-		char *temp=(char *)malloc(newLen+1);
-		
-		memcpy(temp, textBuffer, pos);
-		memcpy(temp+pos, textBuffer+pos+len, textBufferLength-len-pos);
-		temp[newLen] = 0;
-		
-		// make sure the cursor isn't past the end now
-		if (cursorPos > newLen)
-			cursorPos = newLen;
-		// because we can decrease line count, let's zero the Y offset
-		cursorPosY = 0;
-		
-		setText(temp);
-		
-		free(temp);
+		layout();
+		computeAndRepaint();
 	}
 }
 
