@@ -619,7 +619,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
 						}
-						else if ((donnees.getToken().type > 100) and (donnees.getToken().type < 300))
+						else if ((donnees.getToken().type > 100) && (donnees.getToken().type < 300))
 						{
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
@@ -627,7 +627,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							{
 								thisone.line.push_back(donnees.getToken());
 								donnees.nextToken();
-								if ((donnees.getToken().type > 300) and (donnees.getToken().type < 304))
+								if ((donnees.getToken().type > 300) && (donnees.getToken().type < 304))
 								{
 									thisone.line.push_back(donnees.getToken());
 									donnees.nextToken();
