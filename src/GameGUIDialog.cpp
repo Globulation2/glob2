@@ -85,7 +85,7 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		else
 			assert(false);
 
-		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, defaultAlliance);
+		alliance[i]=new Selector(200, 40+i*25, ALIGN_LEFT, ALIGN_LEFT, 4, 1, defaultAlliance);
 		addWidget(alliance[i]);
 
 		bool chatState = (gameGUI->chatMask)&(1<<i);
