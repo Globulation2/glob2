@@ -25,6 +25,7 @@
 
 class TextInput;
 class TexTArea;
+class Animation;
 
 class YOGPreScreen:public Screen
 {
@@ -49,6 +50,7 @@ public:
 	int endExecutionValue;
 	TextInput *login;
 	TextArea *statusText;
+	Animation *animation;
 	YOG::ExternalStatusState oldYOGExternalStatusState;
 	
 	bool connectOnNextTimer;
