@@ -411,7 +411,7 @@ char *SessionInfo::getData()
 
 	for (i=0; i<32; ++i)
 	{
-		assert(players[i].getDataLength()==60);
+		assert(players[i].getDataLength()==64);
 		memcpy(l+data, players[i].getData(), players[i].getDataLength() );
 		l+=players[i].getDataLength();
 	}

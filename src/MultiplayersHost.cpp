@@ -117,7 +117,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 			playerFileTra[p].window[i].index=0;
 			playerFileTra[p].window[i].sent=false;
 			playerFileTra[p].window[i].received=false;
-			playerFileTra[p].window[i].time=0;
+			playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
 			playerFileTra[p].window[i].packetSize=64;
 		}
 	}
@@ -442,9 +442,9 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 {
 	fprintf(logFile, "MultiplayersHost::newPlayerPresence().\n");
-	if (size!=36)
+	if (size!=40)
 	{
-		fprintf(logFile, "Bad size(%d) for an Presence request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an Presence request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
 	int p=sessionInfo.numberOfPlayer;
@@ -453,7 +453,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	if (savedSessionInfo)
 	{
 		char playerName[BasePlayer::MAX_NAME_LENGTH];
-		memcpy(playerName, (char *)(data+4), 32);
+		memcpy(playerName, (char *)(data+8), 32);
 		t=savedSessionInfo->getTeamNumber(playerName, t);
 	}
 	
@@ -471,7 +471,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 		playerFileTra[p].window[i].index=0;
 		playerFileTra[p].window[i].sent=false;
 		playerFileTra[p].window[i].received=false;
-		playerFileTra[p].window[i].time=0;
+		playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
 		playerFileTra[p].window[i].packetSize=64;
 	}
 	
@@ -479,8 +479,10 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].type=BasePlayer::P_IP;
 	sessionInfo.players[p].setNumber(p);
 	sessionInfo.players[p].setTeamNumber(t);
-	memcpy(sessionInfo.players[p].name, (char *)(data+4), 32);
+	memcpy(sessionInfo.players[p].name, (char *)(data+8), 32);
 	sessionInfo.players[p].setip(ip);
+	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data+4, 28);
+	fprintf(logFile, "this ip(%s) has ipFromNAT=%d!\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
 	// we check if this player has already a connection:
 
@@ -501,7 +503,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	int freeChannel=getFreeChannel();
 	if (!sessionInfo.players[p].bind(socket, freeChannel))
 	{
-		fprintf(logFile, "this ip(%x:%d) is not bindable\n", ip.host, ip.host);
+		fprintf(logFile, "this ip(%s) is not bindable\n", Utilities::stringIP(ip));
 		return;
 	}
 
@@ -522,7 +524,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 {
 	if (size!=12)
 	{
-		fprintf(logFile, "Bad size(%d) for an Session request from ip %x.\n", size, ip.host);
+		fprintf(logFile, "Bad size(%d) for an Session request from ip %s.\n", size, Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -532,7 +534,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 			break;
 	if (p>=sessionInfo.numberOfPlayer)
 	{
-		fprintf(logFile, "An unknow player (%x, %d) has sended a Session request !!!\n", ip.host, ip.port);
+		fprintf(logFile, "An unknow player (%s) has sended a Session request !!!\n", Utilities::stringIP(ip));
 		return;
 	}
 	
@@ -604,7 +606,7 @@ void MultiplayersHost::playerWantsFile(char *data, int size, IPaddress ip)
 				playerFileTra[p].window[i].index=0;
 				playerFileTra[p].window[i].sent=false;
 				playerFileTra[p].window[i].received=false;
-				playerFileTra[p].window[i].time=0;
+				playerFileTra[p].window[i].time=i%SHORT_NETWORK_TIMEOUT;
 				playerFileTra[p].window[i].packetSize=64;
 			}
 
@@ -1209,7 +1211,7 @@ void MultiplayersHost::sendingTime()
 			Uint32 smallestIndexTimeout=0xFFFFFFFF;
 			int wisit=-1;
 			for (int i=0; i<NET_WINDOW_SIZE; i++)
-				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>SHORT_NETWORK_TIMEOUT)
+				if (playerFileTra[p].window[i].sent && !playerFileTra[p].window[i].received && playerFileTra[p].window[i].time>MAX_NETWORK_TIMEOUT)
 				{
 					Uint32 index=playerFileTra[p].window[i].index;
 					if (index<smallestIndexTimeout)

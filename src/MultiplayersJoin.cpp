@@ -166,7 +166,14 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		fprintf(logFile, "Bad content, or bad size for a sessionInfo packet recieved!\n");
 		return;
 	}
-
+	
+	if (ipFromNAT)
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+			assert(!sessionInfo.players[j].waitForNatResolution);
+	else
+		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
+			sessionInfo.players[j].waitForNatResolution=sessionInfo.players[j].ipFromNAT;
+	
 	validSessionInfo=true;
 	waitingState=WS_WAITING_FOR_CHECKSUM_CONFIRMATION;
 	waitingTimeout=0; //Timeout at one to (not-re) send. (hack but nice)
@@ -406,7 +413,15 @@ void MultiplayersJoin::crossConnectionFirstMessage(char *data, int size, IPaddre
 	{
 		if (sessionInfo.players[p].ip.host!=ip.host)
 		{
-			fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%s), but should be ip(%s)!\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
+			if (sessionInfo.players[p].waitForNatResolution)
+			{
+				fprintf(logFile, "player p=%d, with old nat ip(%s), has been solved by the new ip(%s)!\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
+				sessionInfo.players[p].ip=ip;
+				sessionInfo.players[p].ipFromNAT=false;
+				sessionInfo.players[p].waitForNatResolution=false;
+			}
+			else
+				fprintf(logFile, "Warning: crossConnectionFirstMessage packet recieved(p=%d), but from ip(%s), but should be ip(%s)! (ip spoofing danger)\n", p, Utilities::stringIP(ip), Utilities::stringIP(sessionInfo.players[p].ip));
 		}
 		else if ((sessionInfo.players[p].netState>=BasePlayer::PNS_BINDED))
 		{
@@ -903,15 +918,6 @@ void MultiplayersJoin::sendingTime()
 		{
 			if (sendPresenceRequest())
 			{
-				/*
-				TODO: is it still any reason to do something like this ?
-				if (yogGameInfo)
-				{
-					assert(shareOnYOG);
-					fprintf(logFile, "requesting sending water to firewall. (%s) (%d)\n", yogGameInfo->source, localPort);
-					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, localPort);
-				}*/
-				
 				if (shareOnYOG)
 				{
 					if (broadcastState==BS_DISABLE_YOG)
@@ -1023,19 +1029,20 @@ void MultiplayersJoin::sendingTime()
 bool MultiplayersJoin::sendPresenceRequest()
 {
 	assert(BasePlayer::MAX_NAME_LENGTH==32);
-	UDPpacket *packet=SDLNet_AllocPacket(36);
+	UDPpacket *packet=SDLNet_AllocPacket(40);
 
 	assert(packet);
 
 	packet->channel=channel;
 	packet->address=serverIP;
-	packet->len=36;
+	packet->len=40;
 	packet->data[0]=NEW_PLAYER_WANTS_PRESENCE;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	memset(packet->data+4, 0, 32);
-	strncpy((char *)(packet->data+4), playerName, 32);
+	addSint32(packet->data, (Sint32)ipFromNAT, 4);
+	memset(packet->data+8, 0, 32);
+	strncpy((char *)(packet->data+8), playerName, 32);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 		fprintf(logFile, "succeded to send presence request packet to host=(%s)(%s)\n", Utilities::stringIP(serverIP), serverName);

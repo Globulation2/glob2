@@ -51,6 +51,8 @@ public:
 	IPaddress ip;
 	UDPsocket socket;
 	int channel;
+	bool ipFromNAT;
+	bool waitForNatResolution;
 	
 	bool quitting; // forNetGame: true while the player is fairly quitting.
 	int quitStep;
@@ -95,7 +97,7 @@ public:
 	int netTOTL; // Number of timeout allowed. TimeOut To Live
 
 private:
-	char data[28+MAX_NAME_LENGTH];
+	char data[32+MAX_NAME_LENGTH];
 	
 public:
 	

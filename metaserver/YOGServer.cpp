@@ -552,7 +552,12 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			for (int i=0; i<nbClients; i++)
 			{
 				std::list<YOGClient *>::iterator c=client->clients.begin();
-				assert(c!=client->clients.end());
+				//TODO: add a system which prevents assert(c!=client->clients.end());
+				if (c==client->clients.end())
+				{
+					lprintf("critical error, i=%d, userName=%s nbClients=%d.\n", i, client->userName, nbClients);
+					break;
+				}
 				client->clients.erase(c);
 			}
 		}

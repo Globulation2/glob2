@@ -58,6 +58,8 @@ void BasePlayer::init()
 	ip.port=0;
 	socket=NULL;
 	channel=-1;
+	ipFromNAT=false;
+	waitForNatResolution=false;
 
 	netState=PNS_BAD;
 	netTimeout=0;
@@ -157,8 +159,9 @@ char *BasePlayer::getData()
 	Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
 	addUint32(data, netHost, 20);
 	addUint32(data, netPort, 24);
+	addSint32(data, (Sint32)ipFromNAT, 28);
 	
-	memcpy(data+28, name, MAX_NAME_LENGTH);
+	memcpy(data+32, name, MAX_NAME_LENGTH);
 	return data;
 }
 
@@ -176,15 +179,16 @@ bool BasePlayer::setData(const char *data, int dataLength)
 	Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 24));
 	ip.host=newHost;
 	ip.port=newPort;
+	ipFromNAT=(bool)getSint32(data, 28);
 	
-	memcpy(name, data+28, MAX_NAME_LENGTH);
+	memcpy(name, data+32, MAX_NAME_LENGTH);
 	
 	return true;
 }
 
 int BasePlayer::getDataLength()
 {
-	return (28+MAX_NAME_LENGTH);
+	return (32+MAX_NAME_LENGTH);
 }
 
 Sint32 BasePlayer::checkSum()
