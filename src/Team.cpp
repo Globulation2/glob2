@@ -668,6 +668,12 @@ void Team::integrity(void)
 		if (b)
 			b->integrity();
 	}
+	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		assert((*it)->type->isVirtual);
+	}
 	
 	for (int i=0; i<1024; i++)
 	{
@@ -731,7 +737,7 @@ void Team::step(void)
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
-		fprintf(logFile, "building guid=%d deleted", building->gid);
+		fprintf(logFile, "building guid=%d deleted\n", building->gid);
 		
 		if (building->type->unitProductionTime)
 			swarms.remove(building);
@@ -751,10 +757,8 @@ void Team::step(void)
 		subscribeToBringRessources.remove(building);
 		subscribeForFlaging.remove(building);
 		
-		delete building;
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
-		
-		fprintf(logFile, "\n");
+		delete building;
 	}
 	
 	if (buildingsToBeDestroyed.size())
