@@ -27,6 +27,14 @@
 #include "IRC.h"
 #include <iostream>
 
+// version related stuff
+#ifdef HAVE_CONFIG_H
+	#include <config.h>
+#else
+	#define PACKAGE_TARNAME "glob2"
+	#define PACKAGE_VERSION "undef"
+#endif
+
 IRC::IRC()
 {
 	socket = NULL;
@@ -66,7 +74,7 @@ bool IRC::connect(const char *serverName, int serverPort, const char *nick)
 	this->nick[IRC_NICK_SIZE] = 0;
 
 	char command[IRC_MESSAGE_SIZE];
-	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef Glob2_User", this->nick);
+	snprintf(command, IRC_MESSAGE_SIZE, "USER %9s undef undef %s-%s", this->nick, PACKAGE_TARNAME, PACKAGE_VERSION);
 	sendString(command);
 	snprintf(command, IRC_MESSAGE_SIZE, "NICK %9s", this->nick);
 	sendString(command);
