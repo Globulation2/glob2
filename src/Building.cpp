@@ -1107,7 +1107,7 @@ void Building::subscribeToBringRessourcesStep()
 							{
 								int rx, ry;
 								int distUnitRessource;
-								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
+								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
 								{
 									/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
 										for (int d=0; d<8; d++)
@@ -1161,7 +1161,7 @@ void Building::subscribeToBringRessourcesStep()
 								{
 									int rx, ry;
 									int distUnitRessource;
-									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource))
+									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
 									{
 										/*if (!map->isHardSpaceForGroundUnit(rx, ry, canSwim, teamMask))
 											for (int d=0; d<8; d++)
@@ -1218,7 +1218,7 @@ void Building::subscribeToBringRessourcesStep()
 				else
 				{
 					//We set targetX and targetY for gameplay purpose:
-					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL);
+					map->ressourceAviable(owner->teamNumber, choosen->destinationPurprose, choosen->performance[SWIM], choosen->posX, choosen->posY, &choosen->targetX, &choosen->targetY, NULL, 255);
 					
 					unitsWorking.push_back(choosen);
 					choosen->unsubscribed();

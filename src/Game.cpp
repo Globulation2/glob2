@@ -1263,8 +1263,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
 					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
 					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
-					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, map.getGradient(0, WOOD, 1, x+viewportX, y+viewportY));
+					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, CORN, 1, x+viewportX, y+viewportY));
+					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, map.getGradient(0, WOOD, 1, x+viewportX, y+viewportY));
 					
 					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX+map.getW())&(map.getMaskW())));
 					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, ((y+viewportY+map.getH())&(map.getMaskH())));
@@ -1274,7 +1274,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[20];
+		Building *b=teams[0]->myBuildings[5];
 		if (b)
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
@@ -1297,7 +1297,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if (false)
 	{
 		assert(teams[0]);
-		Building *b=teams[0]->myBuildings[20];
+		Building *b=teams[0]->myBuildings[5];
 		int w=map.getW();
 		if (b && b->globalGradient[1])
 		{

@@ -41,7 +41,7 @@ public:
 	void loadCrossRef(SDL_RWops *stream, Team *owner);
 	void saveCrossRef(SDL_RWops *stream);
 	
-	void unsubscribed(void);
+	void unsubscribed(void); //used by buidings to units they have choosed.
 	void step(void);
 	
 	void directionFromDxDy(void);
@@ -197,6 +197,7 @@ public:
 	int caryedRessource;
 
 public:
+	void integrity();
 	Sint32 checkSum();
 	bool verbose;
 	

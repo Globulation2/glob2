@@ -14,11 +14,13 @@ ingameGUI:
 Net:
 - Vérifier que les "wishedLatency" ne soient pas modiffés pendant qu'un joueur est temporairement inaccessible.
 
-Technique :
-- Cleaner le rendu de la minimap, integrer toutes les ressources.
-- Les drapeaux doivent pathfinder à 255 dans tout leut périmètre!
+Pathfindig:
 - Terminer le pathfindig: grouper les gradients globaux
 - Statistiques sur les gradients et le pathfinding pour optimiser.
+- Les drapeaux doivent pathfinder à 255 dans tout leut périmètre!
+
+Technique :
+- Cleaner le rendu de la minimap, integrer toutes les ressources.
 - Minimiser les #includes
 - Nettoyer les dependances inutiles pour gagner en temps de compillation !
 - optimiser l'affichage des boulets
