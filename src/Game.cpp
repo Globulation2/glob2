@@ -1525,6 +1525,7 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 50, 50, 50);
 	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 50, 50, 50);
 	globalContainer->gfx->drawRect(globalContainer->gfx->getW()-115, 13, 102, 102, 200, 200, 200);
+	assert(minimap);
 	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-114, 14, minimap);
 
 	// draw screen lines

@@ -344,8 +344,13 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_SHARING_GAME:
 	{
 		selectedGame=getUint32(data, 4);
-		fprintf(logFile, "game %s is shared (selectedGame=%d)\n", sharingGameName, selectedGame);
-		yogSharingState=YSS_SHARED_GAME;
+		if (yogSharingState==YSS_SHARING_GAME)
+		{
+			fprintf(logFile, "game %s is shared (selectedGame=%d)\n", sharingGameName, selectedGame);
+			yogSharingState=YSS_SHARED_GAME;
+		}
+		else
+			fprintf(logFile, "Warning, YMT_SHARING_GAME message (selectedGame=%d), while in a bad state (yss=%d)\n", selectedGame, yogSharingState);
 	}
 	break;
 	case YMT_STOP_SHARING_GAME:
