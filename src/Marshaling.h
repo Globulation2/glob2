@@ -20,7 +20,7 @@
 #ifndef __MARSHALING_H
 #define __MARSHALING_H
 
-#include <SDL.h>
+#include <glSDL.h>
 #include <SDL_endian.h>
 #include <string.h>
 

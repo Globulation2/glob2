@@ -20,7 +20,7 @@
 #ifndef __SOUNDMIXER_H
 #define __SOUNDMIXER_H
 
-#include <SDL.h>
+#include <glSDL.h>
 #include <SDL_audio.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
