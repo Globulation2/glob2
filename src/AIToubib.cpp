@@ -19,6 +19,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <Stream.h>
+
 #include "AIToubib.h"
 #include "Order.h"
 #include "Player.h"
@@ -28,7 +30,7 @@ AIToubib::AIToubib(Player *player)
 	init(player);
 }
 
-AIToubib::AIToubib(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+AIToubib::AIToubib(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
 	
@@ -63,7 +65,7 @@ void AIToubib::init(Player *player)
 	
 }
 
-bool AIToubib::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	if (versionMinor< 35)
 	{
@@ -77,7 +79,7 @@ bool AIToubib::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 	return true;
 }
 
-void AIToubib::save(SDL_RWops *stream)
+void AIToubib::save(GAGCore::OutputStream *stream)
 {
 	// loading state variables
 	//SDL_WriteBE16(stream, <#Uint16 value#>);

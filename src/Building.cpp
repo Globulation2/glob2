@@ -19,6 +19,7 @@
 
 #include <list>
 #include <math.h>
+#include <Stream.h>
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -29,7 +30,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-Building::Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
+Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
 	{
@@ -151,270 +152,330 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	verbose=false;
 }
 
-void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
+void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
+	stream->readEnterSection("Building");
+	
 	// construction state
-	buildingState=(BuildingState)SDL_ReadBE32(stream);
-	constructionResultState=(ConstructionResultState)SDL_ReadBE32(stream);
+	buildingState = (BuildingState)stream->readUint32("buildingState");
+	constructionResultState = (ConstructionResultState)stream->readUint32("constructionResultState");
 
 	// identity
-	gid=SDL_ReadBE16(stream);
-	this->owner=owner;
+	gid = stream->readUint16("gid");
+	this->owner = owner;
 
 	// position
-	posX=SDL_ReadBE32(stream);
-	posY=SDL_ReadBE32(stream);
-	posXLocal=posX;
-	posYLocal=posY;
+	posX = stream->readSint32("posX");
+	posY = stream->readSint32("posY");
+	posXLocal = posX;
+	posYLocal = posY;
 
 	// Flag specific
-	unitStayRange=SDL_ReadBE32(stream);
-	unitStayRangeLocal=unitStayRange;
-	if (versionMinor>=27)
+	unitStayRange = stream->readUint32("unitStayRange");
+	unitStayRangeLocal = unitStayRange;
+	if (versionMinor >= 27)
 	{
-		for(int i=0; i<BASIC_COUNT; i++)
-			clearingRessources[i]=(bool)SDL_ReadBE32(stream);
-		assert(clearingRessources[STONE]==false);
+		for (int i=0; i<BASIC_COUNT; i++)
+		{
+			std::ostringstream oss;
+			oss << "clearingRessources[" << i << "]";
+			clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
+		}
+		assert(clearingRessources[STONE] == false);
 	}
 	else
 	{
-		for(int i=0; i<BASIC_COUNT; i++)
-			clearingRessources[i]=true;
-		clearingRessources[STONE]=false;
+		for( int i=0; i<BASIC_COUNT; i++)
+			clearingRessources[i] = true;
+		clearingRessources[STONE] = false;
 	}
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	
-	if (versionMinor>=33)
-		minLevelToFlag=(Sint32)SDL_ReadBE32(stream);
+	if (versionMinor >= 33)
+		minLevelToFlag = stream->readSint32("minLevelToFlag");
 	else
-		minLevelToFlag=0;
-	minLevelToFlagLocal=minLevelToFlag;
+		minLevelToFlag = 0;
+	minLevelToFlagLocal = minLevelToFlag;
 	
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-		ressources[i]=SDL_ReadBE32(stream);
-
-	// quality parameters
-	hp=SDL_ReadBE32(stream);
-
-	// prefered parameters
-	productionTimeout=SDL_ReadBE32(stream);
-	totalRatio=SDL_ReadBE32(stream);
-	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		ratioLocal[i]=ratio[i]=SDL_ReadBE32(stream);
-		percentUsed[i]=SDL_ReadBE32(stream);
+		std::ostringstream oss;
+		oss << "ressources[" << i << "]";
+		ressources[i] = stream->readSint32(oss.str().c_str());
 	}
 
-	receiveRessourceMask=SDL_ReadBE32(stream);
-	sendRessourceMask=SDL_ReadBE32(stream);
-	receiveRessourceMaskLocal=receiveRessourceMask;
-	sendRessourceMaskLocal=sendRessourceMask;
+	// quality parameters
+	hp = stream->readSint32("hp");
 
-	shootingStep=SDL_ReadBE32(stream);
-	shootingCooldown=SDL_ReadBE32(stream);
-	if (versionMinor>=24)
-		bullets=SDL_ReadBE32(stream);
+	// prefered parameters
+	productionTimeout = stream->readSint32("productionTimeout");
+	totalRatio = stream->readSint32("totalRatio");
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+	{
+		std::ostringstream oss;
+		oss << "ratio[" << i << "]";
+		ratioLocal[i] = ratio[i] = stream->readSint32(oss.str().c_str());
+		oss.clear();
+		oss << "percentUsed[" << i << "]";
+		percentUsed[i] = stream->readSint32(oss.str().c_str());
+	}
+
+	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
+	sendRessourceMask = stream->readUint32("sendRessourceMask");
+	receiveRessourceMaskLocal = receiveRessourceMask;
+	sendRessourceMaskLocal = sendRessourceMask;
+
+	shootingStep = stream->readUint32("shootingStep");
+	shootingCooldown = stream->readSint32("shootingCooldown");
+	if (versionMinor >= 24)
+		bullets = stream->readSint32("bullets");
 	else
-		bullets=0;
+		bullets = 0;
 
 	// type
-	typeNum=SDL_ReadBE32(stream);
-	type=types->get(typeNum);
+	// FIXME : do not save typenum but name/isBuildingSite/level
+	typeNum = stream->readSint32("typeNum");
+	type = types->get(typeNum);
 	assert(type);
-	owner->prestige+=type->prestige;
+	owner->prestige += type->prestige;
 	
-	seenByMask=SDL_ReadBE32(stream);
+	seenByMask = stream->readUint32("seenByMaskk");
 	
-	subscribeForInside=0;
-	subscribeToBringRessources=0;
-	subscribeForFlaging=0;
-	canFeedUnit=0;
-	canHealUnit=0;
-	foodable=0;
-	fillable=0;
+	subscribeForInside = 0;
+	subscribeToBringRessources = 0;
+	subscribeForFlaging = 0;
+	canFeedUnit = 0;
+	canHealUnit = 0;
+	foodable = 0;
+	fillable = 0;
 	
-	zonableWorkers[0]=0; 
-	zonableWorkers[1]=0; 
-	zonableExplorer=0; 
-	zonableWarrior=0;
+	zonableWorkers[0] = 0; 
+	zonableWorkers[1] = 0; 
+	zonableExplorer = 0; 
+	zonableWarrior = 0;
 	for (int i=0; i<NB_ABILITY; i++)
-		upgrade[i]=0;
+		upgrade[i] = 0;
 	
 	for (int i=0; i<2; i++)
 	{
 		if (globalGradient[i])
 		{
 			delete[] globalGradient[i];
-			globalGradient[i]=NULL;
+			globalGradient[i] = NULL;
 		}
 		if (localRessources[i])
 		{
 			delete[] localRessources[i];
-			localRessources[i]=NULL;
+			localRessources[i] = NULL;
 		}
-		dirtyLocalGradient[i]=true;
-		locked[i]=false;
-		lastGlobalGradientUpdateStepCounter[i]=0;
+		dirtyLocalGradient[i] = true;
+		locked[i] = false;
+		lastGlobalGradientUpdateStepCounter[i] = 0;
 		
-		localRessourcesCleanTime[i]=0;
-		anyRessourceToClear[i]=0;
+		localRessourcesCleanTime[i] = 0;
+		anyRessourceToClear[i] = 0;
 	}
 	
-	verbose=false;
+	verbose = false;
+	stream->readLeaveSection();
 }
 
-void Building::save(SDL_RWops *stream)
+void Building::save(GAGCore::OutputStream *stream)
 {
+	stream->writeEnterSection("Building");
+	
 	// construction state
-	SDL_WriteBE32(stream, (Uint32)buildingState);
-	SDL_WriteBE32(stream, (Uint32)constructionResultState);
+	stream->writeUint32((Uint32)buildingState, "buildingState");
+	stream->writeUint32((Uint32)constructionResultState, "constructionResultState");
 
 	// identity
-	SDL_WriteBE16(stream, gid);
+	stream->writeUint16(gid, "gid");
 	// we drop team
 
 	// position
-	SDL_WriteBE32(stream, posX);
-	SDL_WriteBE32(stream, posY);
+	stream->writeSint32(posX, "posX");
+	stream->writeSint32(posY, "posY");
 
 	// Flag specific
-	SDL_WriteBE32(stream, unitStayRange);
+	stream->writeUint32(unitStayRange, "unitStayRange");
 	for(int i=0; i<BASIC_COUNT; i++)
-		SDL_WriteBE32(stream, (Sint32)clearingRessources[i]);
-	SDL_WriteBE32(stream, minLevelToFlag);
+	{
+		std::ostringstream oss;
+		oss << "clearingRessources[" << i << "]";
+		stream->writeSint32(clearingRessources[i], oss.str().c_str());
+	}
+	stream->writeSint32(minLevelToFlag, "minLevelToFlag");
 	
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-		SDL_WriteBE32(stream, ressources[i]);
-
-	// quality parameters
-	SDL_WriteBE32(stream, hp);
-
-	// prefered parameters
-	SDL_WriteBE32(stream, productionTimeout);
-	SDL_WriteBE32(stream, totalRatio);
-	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		SDL_WriteBE32(stream, ratio[i]);
-		SDL_WriteBE32(stream, percentUsed[i]);
+		std::ostringstream oss;
+		oss << "ressources[" << i << "]";
+		stream->writeSint32(ressources[i], oss.str().c_str());
 	}
 
-	SDL_WriteBE32(stream, receiveRessourceMask);
-	SDL_WriteBE32(stream, sendRessourceMask);
+	// quality parameters
+	stream->writeSint32(hp, "hp");
 
-	SDL_WriteBE32(stream, shootingStep);
-	SDL_WriteBE32(stream, shootingCooldown);
-	SDL_WriteBE32(stream, bullets);
+	// prefered parameters
+	stream->writeSint32(productionTimeout, "productionTimeout");
+	stream->writeSint32(totalRatio, "totalRatio");
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+	{
+		std::ostringstream oss;
+		oss << "ratio[" << i << "]";
+		stream->writeSint32(ratio[i], oss.str().c_str());
+		oss.clear();
+		oss << "percentUsed[" << i << "]";
+		stream->writeSint32(percentUsed[i], oss.str().c_str());
+	}
+
+	stream->writeUint32(receiveRessourceMask, "receiveRessourceMask");
+	stream->writeUint32(sendRessourceMask, "sendRessourceMask");
+
+	stream->writeUint32(shootingStep, "shootingStep");
+	stream->writeSint32(shootingCooldown, "shootingCooldown");
+	stream->writeSint32(bullets, "bullets");
 
 	// type
-	SDL_WriteBE32(stream, typeNum);
+	stream->writeUint32(typeNum, "typeNum");
 	// we drop type
 	
-	SDL_WriteBE32(stream, seenByMask);
+	stream->writeUint32(seenByMask, "seenByMask");
+	
+	stream->writeLeaveSection();
 }
 
-void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
+void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner)
 {
+	stream->readEnterSection("Building");
 	fprintf(logFile, "loadCrossRef (%d)\n", gid);
 	
 	// units
-	maxUnitInside=SDL_ReadBE32(stream);
-	assert(maxUnitInside<65536);
+	maxUnitInside = stream->readSint32("maxUnitInside");
+	assert(maxUnitInside < 65536);
 	
-	int nbWorking=SDL_ReadBE32(stream);
+	unsigned nbWorking = stream->readUint32("nbWorking");
 	fprintf(logFile, " nbWorking=%d\n", nbWorking);
 	unitsWorking.clear();
-	for (int i=0; i<nbWorking; i++)
+	for (unsigned i=0; i<nbWorking; i++)
 	{
-		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		std::ostringstream oss;
+		oss << "unitsWorking[" << i << "]";
+		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsWorking.push_front(unit);
 	}
 
-	int nbWorkingSubscribe=SDL_ReadBE32(stream);
+	unsigned nbWorkingSubscribe = stream->readUint32("nbWorkingSubscribe");
 	fprintf(logFile, " nbWorkingSubscribe=%d\n", nbWorkingSubscribe);
 	unitsWorkingSubscribe.clear();
-	for (int i=0; i<nbWorkingSubscribe; i++)
+	for (unsigned i=0; i<nbWorkingSubscribe; i++)
 	{
-		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		std::ostringstream oss;
+		oss << "unitsWorkingSubscribe[" << i << "]";
+		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsWorkingSubscribe.push_front(unit);
 	}
 
-	lastWorkingSubscribe=SDL_ReadBE32(stream);
-
-	maxUnitWorking=SDL_ReadBE32(stream);
-	maxUnitWorkingPreferred=SDL_ReadBE32(stream);
-	maxUnitWorkingLocal=maxUnitWorking;
-	int nbInside=SDL_ReadBE32(stream);
+	lastWorkingSubscribe = stream->readSint32("lastWorkingSubscribe");
+	maxUnitWorking = stream->readSint32("maxUnitWorking");
+	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
+	maxUnitWorkingLocal = maxUnitWorking;
+	
+	unsigned nbInside = stream->readUint32("nbInside");
 	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
-	for (int i=0; i<nbInside; i++)
+	for (unsigned i=0; i<nbInside; i++)
 	{
-		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		std::ostringstream oss;
+		oss << "unitsInside[" << i << "]";
+		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsInside.push_front(unit);
 	}
 
-	int nbInsideSubscribe=SDL_ReadBE32(stream);
+	unsigned nbInsideSubscribe = stream->readUint32("nbInsideSubscribe");
 	fprintf(logFile, " nbInsideSubscribe=%d\n", nbInsideSubscribe);
 	unitsInsideSubscribe.clear();
-	for (int i=0; i<nbInsideSubscribe; i++)
+	for (unsigned i=0; i<nbInsideSubscribe; i++)
 	{
-		Unit *unit=owner->myUnits[Unit::GIDtoID(SDL_ReadBE16(stream))];
+		std::ostringstream oss;
+		oss << "unitsInsideSubscribe[" << i << "]";
+		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
 		unitsInsideSubscribe.push_front(unit);
 	}
-	lastInsideSubscribe=SDL_ReadBE32(stream);
+	lastInsideSubscribe = stream->readSint32("lastInsideSubscribe");
+	
+	stream->readLeaveSection();
 }
 
-void Building::saveCrossRef(SDL_RWops *stream)
+void Building::saveCrossRef(GAGCore::OutputStream *stream)
 {
+	unsigned i;
+	
+	stream->writeEnterSection("Building");
 	fprintf(logFile, "saveCrossRef (%d)\n", gid);
 	
 	// units
-	SDL_WriteBE32(stream, maxUnitInside);
-	SDL_WriteBE32(stream, unitsWorking.size());
+	stream->writeSint32(maxUnitInside, "maxUnitInside");
+	stream->writeUint32(unitsWorking.size(), "nbWorking");
 	fprintf(logFile, " nbWorking=%d\n", unitsWorking.size());
-	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	i = 0;
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		SDL_WriteBE16(stream, (*it)->gid);
+		std::ostringstream oss;
+		oss << "unitsWorking[" << i++ << "]";
+		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 
-	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
+	stream->writeUint32(unitsWorkingSubscribe.size(), "nbWorkingSubscribe");
 	fprintf(logFile, " nbWorkingSubscribe=%d\n", unitsWorkingSubscribe.size());
-	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+	i = 0;
+	for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		SDL_WriteBE16(stream, (*it)->gid);
+		std::ostringstream oss;
+		oss << "unitsWorkingSubscribe[" << i++ << "]";
+		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 	
-	SDL_WriteBE32(stream, lastWorkingSubscribe);
-
-	SDL_WriteBE32(stream, maxUnitWorking);
-	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
-	SDL_WriteBE32(stream, unitsInside.size());
+	stream->writeSint32(lastWorkingSubscribe, "lastWorkingSubscribe");
+	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
+	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
+	
+	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%d\n", unitsInside.size());
+	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		SDL_WriteBE16(stream, (*it)->gid);
+		std::ostringstream oss;
+		oss << "unitsInside[" << i++ << "]";
+		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 
-	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
+	stream->writeUint32(unitsInsideSubscribe.size(), "nbInsideSubscribe");
 	fprintf(logFile, " nbInsideSubscribe=%d\n", unitsInsideSubscribe.size());
+	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 	{
 		assert(*it);
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		SDL_WriteBE16(stream, (*it)->gid);
+		std::ostringstream oss;
+		oss << "unitsInsideSubscribe[" << i++ << "]";
+		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
-	SDL_WriteBE32(stream, lastInsideSubscribe);
+	stream->writeSint32(lastInsideSubscribe, "lastInsideSubscribe");
+	
+	stream->writeLeaveSection();
 }
 
 bool Building::isRessourceFull(void)

@@ -38,7 +38,7 @@ public:
 
 public:
 	UnitType() { init(); }
-	UnitType(SDL_RWops *stream) { load(stream); }
+	UnitType(GAGCore::InputStream *stream) { load(stream); }
 	virtual ~UnitType() {}
 	virtual const char **getVars(size_t *size, Uint32 **data)
 	{

@@ -35,7 +35,7 @@ class AIToubib : public AIImplementation
 {
 public:
 	AIToubib(Player *player);
-	AIToubib(SDL_RWops *stream, Player *player, Sint32 versionMinor);
+	AIToubib(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	virtual ~AIToubib();
 	
 	Player *player;
@@ -43,11 +43,10 @@ public:
 	Game *game;
 	Map *map;
 	
-
-	//! Load saved AI state from a stream
-	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	//! Save AI state to a stream
-	void save(SDL_RWops *stream);
+	//! Load AI saved from a stream
+	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	//! Save AI to a save stream
+	void save(GAGCore::OutputStream *stream);
 	
 	//! return a new order in response to last events
 	Order *getOrder(void);

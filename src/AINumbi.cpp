@@ -17,6 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <Stream.h>
+
 #include "AINumbi.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -30,7 +32,7 @@ AINumbi::AINumbi(Player *player)
 	init(player);
 }
 
-AINumbi::AINumbi(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+AINumbi::AINumbi(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	bool goodLoad=load(stream, player, versionMinor);
 	assert(goodLoad);
@@ -64,16 +66,18 @@ AINumbi::~AINumbi()
 {
 }
 
-bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
 	
-	phase            =SDL_ReadBE32(stream);
-	attackPhase      =SDL_ReadBE32(stream);
-	phaseTime        =SDL_ReadBE32(stream);
-	critticalWarriors=SDL_ReadBE32(stream);
-	critticalTime    =SDL_ReadBE32(stream);
-	attackTimer      =SDL_ReadBE32(stream);
+	stream->readEnterSection("AINumbi");
+	
+	phase            = stream->readSint32("phase");
+	attackPhase      = stream->readSint32("attackPhase");
+	phaseTime        = stream->readSint32("phaseTime");
+	critticalWarriors= stream->readSint32("critticalWarriors");
+	critticalTime    = stream->readSint32("critticalTime");
+	attackTimer      = stream->readSint32("attackTimer");
 
 	if (versionMinor<=32)
 	{
@@ -82,27 +86,42 @@ bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 	}
 	else if (versionMinor<35)
 	{
-		SDL_RWread(stream, mainBuilding, 13, 4); // IntBuildingType::NB_BUILDING==13
+		stream->read(mainBuilding, 13*4, "mainBuilding"); // IntBuildingType::NB_BUILDING==13
 	}
 	else
 	{
 		for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-			mainBuilding[bi]=SDL_ReadBE32(stream);
+		{
+			std::ostringstream oss;
+			oss << "mainBuilding[" << bi << "]";
+			mainBuilding[bi] = stream->readSint32(oss.str().c_str());
+		}
 	}
+	
+	stream->readLeaveSection();
+	
 	return true;
 }
 
-void AINumbi::save(SDL_RWops *stream)
+void AINumbi::save(GAGCore::OutputStream *stream)
 {
-	SDL_WriteBE32(stream, phase);
-	SDL_WriteBE32(stream, attackPhase);
-	SDL_WriteBE32(stream, phaseTime);
-	SDL_WriteBE32(stream, critticalWarriors);
-	SDL_WriteBE32(stream, critticalTime);
-	SDL_WriteBE32(stream, attackTimer);
+	stream->writeEnterSection("AINumbi");
+	
+	stream->writeSint32(phase, "phase");
+	stream->writeSint32(attackPhase, "attackPhase");
+	stream->writeSint32(phaseTime, "phaseTime");
+	stream->writeSint32(critticalWarriors, "critticalWarriors");
+	stream->writeSint32(critticalTime, "critticalTime");
+	stream->writeSint32(attackTimer, "attackTimer");
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-		SDL_WriteBE32(stream, mainBuilding[bi]);
+	{
+		std::ostringstream oss;
+		oss << "mainBuilding[" << bi << "]";
+		stream->writeSint32(mainBuilding[bi], oss.str().c_str());
+	}
+	
+	stream->writeLeaveSection();
 }
 
 

@@ -97,7 +97,8 @@ public:
 	int getStarvingUnits();
 
 private:
-	enum {
+	enum
+	{
 		STATS_SMOOTH_SIZE=32,
 		STATS_SIZE=128
 	};
@@ -113,14 +114,14 @@ private:
 	
 	enum { END_OF_GAME_STATS_SIZE=128 };
 	
-	//! Thoses stats are used when player has ned the game
+	//! Thoses stats are used when player has ended the game
 	friend class Team;
 	
 	int endOfGameStatIndex;
 	EndOfGameStat endOfGameStats[END_OF_GAME_STATS_SIZE];
 	
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }

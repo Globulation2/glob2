@@ -28,12 +28,24 @@ namespace GAGCore
 	// Endian safe read and write
 	// ==========================
 	
-	class OutputStream
+	class Stream
+	{
+	public:
+		virtual ~Stream() { }
+		virtual bool canSeek(void) = 0;
+		virtual void seekFromStart(int displacement) = 0;
+		virtual void seekFromEnd(int displacement) = 0;
+		virtual void seekRelative(int displacement) = 0;
+		virtual size_t getPosition(void) = 0;
+		virtual bool isEndOfStream(void) = 0;
+	};
+	
+	class OutputStream : public Stream
 	{
 	public:
 		virtual ~OutputStream() { }
 		
-		virtual void write(const void *data, const size_t size, const char *name) = 0;
+		virtual void write(const void *data, const size_t size, const char *name = NULL) = 0;
 		virtual void writeSint8(const Sint8 v, const char *name = NULL) = 0;
 		virtual void writeUint8(const Uint8 v, const char *name = NULL) = 0;
 		virtual void writeSint16(const Sint16 v, const char *name = NULL) = 0;
@@ -47,15 +59,15 @@ namespace GAGCore
 		
 		virtual void writeEnterSection(const char *name) = 0;
 		virtual void writeEnterSection(unsigned id) = 0;
-		virtual void writeLeaveSection(void) = 0;
+		virtual void writeLeaveSection(size_t count = 1) = 0;
 	};
 	
-	class InputStream
+	class InputStream : public Stream
 	{
 	public:
 		virtual ~InputStream() { }
 	
-		virtual void read(void *data, size_t size, const char *name) = 0;
+		virtual void read(void *data, size_t size, const char *name = NULL) = 0;
 		virtual Sint8 readSint8(const char *name = NULL) = 0;
 		virtual Uint8 readUint8(const char *name = NULL) = 0;
 		virtual Sint16 readSint16(const char *name = NULL) = 0;
@@ -67,7 +79,7 @@ namespace GAGCore
 		
 		virtual void readEnterSection(const char *name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
-		virtual void readLeaveSection(void) = 0;
+		virtual void readLeaveSection(size_t count = 1) = 0;
 	};
 }
 

@@ -29,6 +29,7 @@
 
 #include <FileManager.h>
 #include <GraphicContext.h>
+#include <Stream.h>
 
 #include "BuildingType.h"
 #include "Game.h"
@@ -660,9 +661,10 @@ void Game::setAIAlliance(void)
 	}
 }
 
-bool Game::load(SDL_RWops *stream)
+bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
+	stream->readEnterSection("Game");
 	
 	// delete existing teams
 	for (int i=0; i<session.numberOfTeam; ++i)
@@ -691,6 +693,7 @@ bool Game::load(SDL_RWops *stream)
 	if (!tempSessionInfo.load(stream))
 	{
 		fprintf(logFile, "Game::load::tempSessionInfo.load\n");
+		stream->readLeaveSection();
 		return false;
 	}
 
@@ -700,6 +703,7 @@ bool Game::load(SDL_RWops *stream)
 		if (!generateMap(*tempSessionInfo.mapGenerationDescriptor))
 		{
 			fprintf(logFile, "Game::load::generateMap\n");
+			stream->readLeaveSection();
 			return false;
 		}
 	}
@@ -707,98 +711,122 @@ bool Game::load(SDL_RWops *stream)
 	{
 		session=(SessionGame)tempSessionInfo;
 
-		SDL_RWseek(stream, tempSessionInfo.gameOffset, SEEK_SET);
+		if (stream->canSeek())
+			stream->seekFromStart(tempSessionInfo.gameOffset);
 
 		char signature[4];
-		SDL_RWread(stream, signature, 4, 1);
-		if (session.versionMinor>=31)
+		stream->read(signature, 4, "signatureStart");
+		if (session.versionMinor >= 31)
 		{
 			if (memcmp(signature,"GaBe", 4)!=0)
 			{
 				fprintf(logFile, "Signature missmatch at begin\n");
+				stream->readLeaveSection();
 				return false;
 			}
 		}
 		else if (memcmp(signature, "GAMb",4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch at begin\n");
+			stream->readLeaveSection();
 			return false;
 		}
 		
 		if (session.versionMinor>=31)
-			stepCounter=SDL_ReadBE32(stream);
-		setSyncRandSeedA(SDL_ReadBE32(stream));
-		setSyncRandSeedB(SDL_ReadBE32(stream));
-		setSyncRandSeedC(SDL_ReadBE32(stream));
+			stepCounter = stream->readUint32("stepCounter");
+		setSyncRandSeedA(stream->readUint32("SyncRandSeedA"));
+		setSyncRandSeedB(stream->readUint32("SyncRandSeedB"));
+		setSyncRandSeedC(stream->readUint32("SyncRandSeedC"));
 
-		SDL_RWread(stream, signature, 4, 1);
-		
+		stream->read(signature, 4, "signatureAfterSyncRand");
 		if (session.versionMinor>=31)
 		{
 			if (memcmp(signature,"GaSy", 4)!=0)
 			{
 				fprintf(logFile, "Signature missmatch after sync rand\n");
+				stream->readLeaveSection();
 				return false;
 			}
 		}
 		else if (memcmp(signature, "GAMm", 4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch after sync rand\n");
+			stream->readLeaveSection();
 			return false;
 		}
 
 		// we load teams
-		SDL_RWseek(stream, tempSessionInfo.teamsOffset, SEEK_SET);
+		if (stream->canSeek())
+			stream->seekFromStart(tempSessionInfo.teamsOffset);
+		stream->readEnterSection("teams");
 		for (int i=0; i<session.numberOfTeam; ++i)
+		{
+			stream->readEnterSection(i);
 			teams[i]=new Team(stream, this, session.versionMinor);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
 		if (session.versionMinor>=31)
 		{
-			SDL_RWread(stream, signature, 4, 1);
+			stream->read(signature, 4, "signatureAfterTeams");
 			if (memcmp(signature,"GaTe", 4)!=0)
 			{
 				fprintf(logFile, "Signature missmatch after teams\n");
+				stream->readLeaveSection();
 				return false;
 			}
 		}
 		
 		// we have to load team before map
-		SDL_RWseek(stream, tempSessionInfo.mapOffset, SEEK_SET);
+		if (stream->canSeek())
+			stream->seekFromStart(tempSessionInfo.mapOffset);
 		if(!map.load(stream, &session, this))
 		{
 			fprintf(logFile, "Signature missmatch in map\n");
+			stream->readLeaveSection();
 			return false;
 		}
-		SDL_RWread(stream, signature, 4, 1);
+		stream->read(signature, 4, "signatureAfterMap");
 		if (session.versionMinor>=31)
 		{
 			if (memcmp(signature,"GaMa", 4)!=0)
 			{
 				fprintf(logFile, "Signature missmatch after map\n");
+				stream->readLeaveSection();
 				return false;
 			}
 		}
 		else if (memcmp(signature,"GAMe", 4)!=0)
 		{
 			fprintf(logFile, "Signature missmatch after map\n");
+			stream->readLeaveSection();
 			return false;
 		}
 
 		// we have to load map and team before players
-		SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
+		if (stream->canSeek())
+			stream->seekFromStart(tempSessionInfo.playersOffset);
+		stream->readEnterSection("players");
 		for (int i=0; i<session.numberOfPlayer; ++i)
+		{
+			stream->readEnterSection(i);
 			players[i]=new Player(stream, teams, session.versionMinor);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
 		
 		if (session.versionMinor>=31)
 		{
-			SDL_RWread(stream, signature, 4, 1);
+			stream->read(signature, 4, "signatureAfterPlayers");
 			if (memcmp(signature,"GaPl", 4)!=0)
 			{
 				fprintf(logFile, "Signature missmatch after players\n");
+				stream->readLeaveSection();
 				return false;
 			}
 		}
 		else
-			stepCounter=SDL_ReadBE32(stream);
+			stepCounter = stream->readUint32("stepCounter");
 
 		// we have to finish Team's loading:
 		for (int i=0; i<session.numberOfTeam; i++)
@@ -809,7 +837,8 @@ bool Game::load(SDL_RWops *stream)
 		
 		// then script
 		ErrorReport er;
-		SDL_RWseek(stream, tempSessionInfo.mapScriptOffset , SEEK_SET);
+		if (stream->canSeek())
+			stream->seekFromStart(tempSessionInfo.mapScriptOffset);
 		script.load(stream);
 		er=script.compileScript(this);
 		
@@ -822,6 +851,7 @@ bool Game::load(SDL_RWops *stream)
 			else
 			{
 				printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+				stream->readLeaveSection();
 				return false;
 			}
 		}
@@ -830,12 +860,14 @@ bool Game::load(SDL_RWops *stream)
 	// Compute new max prestige
 	prestigeToReach = std::max(MIN_MAX_PRESIGE, session.numberOfTeam*TEAM_MAX_PRESTIGE);
 
+	stream->readLeaveSection();
 	return true;
 }
 
-void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const char* name)
 {
 	assert(stream);
+	stream->writeEnterSection("Game");
 
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
@@ -867,32 +899,44 @@ void Game::save(SDL_RWops *stream, bool fileIsAMap, const char* name)
 	else
 	{
 		SAVE_OFFSET(stream, 16);
-		SDL_RWwrite(stream, "GaBe", 4, 1);
+		stream->write("GaBe", 4, "signatureStart");
 
-		SDL_WriteBE32(stream, stepCounter);
-		SDL_WriteBE32(stream, getSyncRandSeedA());
-		SDL_WriteBE32(stream, getSyncRandSeedB());
-		SDL_WriteBE32(stream, getSyncRandSeedC());
-		SDL_RWwrite(stream, "GaSy", 4, 1);
+		stream->writeUint32(stepCounter, "stepCounter");
+		stream->writeUint32(getSyncRandSeedA(), "SyncRandSeedA");
+		stream->writeUint32(getSyncRandSeedB(), "SyncRandSeedB");
+		stream->writeUint32(getSyncRandSeedC(), "SyncRandSeedC");
+		stream->write("GaSy", 4, "signatureAfterSyncRand");
 
 		SAVE_OFFSET(stream, 20);
+		stream->writeEnterSection("teams");
 		for (int i=0; i<session.numberOfTeam; ++i)
+		{
+			stream->writeEnterSection(i);
 			teams[i]->save(stream);
-		SDL_RWwrite(stream, "GaTe", 4, 1);
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+		stream->write("GaTe", 4, "signatureAfterTeams");
 
 		SAVE_OFFSET(stream, 28);
 		map.save(stream);
-		SDL_RWwrite(stream, "GaMa", 4, 1);
+		stream->write("GaMa", 4, "signatureAfterMap");
 		
 		SAVE_OFFSET(stream, 24);
+		stream->writeEnterSection("players");
 		for (int i=0; i<session.numberOfPlayer; ++i)
+		{
+			stream->writeEnterSection(i);
 			players[i]->save(stream);
-		SDL_RWwrite(stream, "GaPl", 4, 1);
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+		stream->write("GaPl", 4, "signatureAfterPlayers");
 
 		SAVE_OFFSET(stream, 32);
 		script.save(stream);
 	}
-
+	stream->writeLeaveSection();
 }
 
 void Game::buildProjectSyncStep(Sint32 localTeam)
@@ -2506,17 +2550,17 @@ Team *Game::getTeamWithMostPrestige(void)
 const char *glob2FilenameToName(const char *filename)
 {
 	SessionInfo tempSession;
-	SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
 	if (stream)
 	{
 		if (tempSession.load(stream))
 		{
-			SDL_RWclose(stream);
+			delete stream;
 			return Utilities::strdup(tempSession.getMapName());
 		}
 		else
 		{
-			SDL_RWclose(stream);
+			delete stream;
 		}
 	}
 	return NULL;

@@ -22,15 +22,21 @@
 
 #define SHOOTING_COOLDOWN_MAX 65536
 
-#include <SDL_rwops.h>
+#include <GAGSys.h>
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 
 class Bullet
 {
 public:
-	Bullet(SDL_RWops *stream);
+	Bullet(GAGCore::InputStream *stream);
 	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY);
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream);
+	void save(GAGCore::OutputStream *stream);
 public:
 	Sint32 px, py; // pixel precision point of x,y
 	Sint32 speedX, speedY; //pixel precision speed.

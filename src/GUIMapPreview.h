@@ -35,7 +35,7 @@ class MapPreview: public RectangularWidget
 {
 public:
 	//! Constructor, takes position, alignement and initial map name
-	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *mapName=NULL);
+	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign);
 	//! Destructor
 	virtual ~MapPreview() { }
 	virtual void paint(void);
@@ -48,10 +48,10 @@ public:
 	const char *getMethode(void);
 	
 protected:
-	//! internal name, is a pointer to a char* somewhere.
-	std::string mapName;
 	//! map last size
 	int lastW, lastH;
+	//! map thumbnail (128x128)
+	DrawableSurface *mapThumbnail;
 	bool randomGenerated;
 	MapGenerationDescriptor::Methode lastRandomGenerationMethode;
 };

@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <FileManager.h>
+#include <Stream.h>
 
 #include "GlobalContainer.h"
 #include "Race.h"
@@ -43,29 +44,29 @@ void Race::create(CreationType creationType)
 	UnitType evolvable;
 	UnitType costs[3];//[worker, explorer, warrior]
 	
-	SDL_RWops *stream=globalContainer->fileManager->open("data/units.txt","rb");	
-		
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream("data/units.txt");
+	
 	baseUnit[0].loadText(stream);
-	baseUnit[1]=baseUnit[0];
+	baseUnit[1] = baseUnit[0];
 	baseUnit[1].loadText(stream);
 
 	for (int i=0; i<2; i++)
 		for (int j=0; j<3; j++)
-			limits[i][j]=baseUnit[i];
+			limits[i][j] = baseUnit[i];
 	
 	baseCost.loadText(stream);
 	
 	for (int j=0; j<3; j++)
-		costs[j]=baseCost;
+		costs[j] = baseCost;
 	
 	evolvable.loadText(stream);
 
 	for (int j=0; j<3; j++)
 	{
-		int offset=SDL_RWtell(stream);
+		int offset = stream->getPosition();
 		limits[0][j].loadText(stream);
 
-		SDL_RWseek(stream, offset, SEEK_SET);
+		stream->seekFromStart(offset);
 		limits[1][j].loadText(stream);
 		//limits[1][j] = limits[0][j]; // TODO : seek !! zzz
 
@@ -73,7 +74,7 @@ void Race::create(CreationType creationType)
 		costs[j].loadText(stream);	
 	}
 	
-	SDL_RWclose(stream);
+	delete stream;
 	
 	// Now we custom our race, by a minLevel and a maxLevel.
 	UnitType choosed[2][3];
@@ -152,26 +153,26 @@ UnitType *Race::getUnitType(int type, int level)
 	return &(unitTypes[type][level]);
 }
 
-void Race::save(SDL_RWops *stream)
+void Race::save(GAGCore::OutputStream *stream)
 {
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].save(stream);
 	
-	SDL_WriteBE32(stream, hungryness);
+	stream->writeSint32(hungryness, "hungryness");
 }
 
-bool Race::load(SDL_RWops *stream, Sint32 versionMinor)
+bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	//printf("loading race\n");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].load(stream);
 	
-	if (versionMinor>=34)
-		hungryness=(Sint32)SDL_ReadBE32(stream);
+	if (versionMinor >= 34)
+		hungryness = (Sint32)stream->readSint32("hungryness");
 	else
-		hungryness=unitTypes[0][0].hungryness;
+		hungryness = unitTypes[0][0].hungryness;
 	
 	return true;
 }

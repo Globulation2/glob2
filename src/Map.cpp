@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <valarray>
+#include <Stream.h>
 
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
@@ -917,15 +918,17 @@ void Map::setGame(Game *game)
 		sectors[i].setGame(game);
 }
 
-bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
+bool Map::load(GAGCore::InputStream *stream, SessionGame *sessionGame, Game *game)
 {
 	assert(sessionGame);
 	assert(sessionGame->versionMinor>=16);
 
 	clear();
+	
+	stream->readEnterSection("Map");
 
 	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature, "MapB", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the beginning of Map.\n");
@@ -933,38 +936,38 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	}
 
 	// We load and compute size:
-	wDec=SDL_ReadBE32(stream);
-	hDec=SDL_ReadBE32(stream);
-	w=1<<wDec;
-	h=1<<hDec;
-	wMask=w-1;
-	hMask=h-1;
-	size=w*h;
+	wDec = stream->readSint32("wDec");
+	hDec = stream->readSint32("hDec");
+	w = 1<<wDec;
+	h = 1<<hDec;
+	wMask = w-1;
+	hMask = h-1;
+	size = w*h;
 
 	// We allocate memory:
-	mapDiscovered=new Uint32[size];
-	fogOfWarA=new Uint32[size];
-	fogOfWarB=new Uint32[size];
-	fogOfWar=fogOfWarA;
+	mapDiscovered = new Uint32[size];
+	fogOfWarA = new Uint32[size];
+	fogOfWarB = new Uint32[size];
+	fogOfWar = fogOfWarA;
 	memset(fogOfWarA, 0, size*sizeof(Uint32));
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	localForbiddenMap.resize(size, false);
-
-	cases=new Case[size];
-
-	undermap=new Uint8[size];
+	cases = new Case[size];
+	undermap = new Uint8[size];
 
 	// We read what's inside the map:
-	SDL_RWread(stream, undermap, size, 1);
+	stream->read(undermap, size, "undermap");
+	stream->readEnterSection("cases");
 	for (size_t i=0; i<size; i++)
 	{
-		mapDiscovered[i]=SDL_ReadBE32(stream);
+		stream->readEnterSection(i);
+		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		cases[i].terrain=SDL_ReadBE16(stream);
-		cases[i].building=SDL_ReadBE16(stream);
+		cases[i].terrain = stream->readUint16("terrain");
+		cases[i].building = stream->readUint16("building");
 
 		//cases[i].ressource=SDL_ReadBE32(stream);
-		SDL_RWread(stream, &(cases[i].ressource), 1, 4);
+		stream->read(&(cases[i].ressource), 4, "ressource");
 		if (sessionGame->versionMinor<28)
 		{
 			Ressource &r=cases[i].ressource;
@@ -975,11 +978,13 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 					r.amount=rt->sizesCount;
 			}
 		}
-		cases[i].groundUnit=SDL_ReadBE16(stream);
-		cases[i].airUnit=SDL_ReadBE16(stream);
+		cases[i].groundUnit = stream->readUint16("groundUnit");
+		cases[i].airUnit = stream->readUint16("airUnit");
 
-		cases[i].forbidden=SDL_ReadBE32(stream);
+		cases[i].forbidden = stream->readUint32("forbidden");
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 
 	if (game)
 	{
@@ -1008,18 +1013,29 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	}
 
 	// We load sectors:
-	wSector=SDL_ReadBE32(stream);
-	hSector=SDL_ReadBE32(stream);
-	sizeSector=wSector*hSector;
-	assert(sectors==NULL);
-	sectors=new Sector[sizeSector];
-	arraysBuilt=true;
+	wSector = stream->readSint32("wSector");
+	hSector = stream->readSint32("hSector");
+	sizeSector = wSector*hSector;
+	assert(sectors == NULL);
+	sectors = new Sector[sizeSector];
+	arraysBuilt = true;
 
+	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
+	{
+		stream->readEnterSection(i);
 		if (!sectors[i].load(stream, this->game))
+		{
+			stream->readLeaveSection(3);
 			return false;
+		}
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureEnd");
+	stream->readLeaveSection();
+	
 	if (memcmp(signature, "MapE", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
@@ -1029,38 +1045,50 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 	return true;
 }
 
-void Map::save(SDL_RWops *stream)
+void Map::save(GAGCore::OutputStream *stream)
 {
-	SDL_RWwrite(stream, "MapB", 4, 1);
+	stream->writeEnterSection("Map");
+	stream->write("MapB", 4, "signatureStart");
 	
 	// We save size:
-	SDL_WriteBE32(stream, wDec);
-	SDL_WriteBE32(stream, hDec);
+	stream->writeSint32(wDec, "wDec");
+	stream->writeSint32(hDec, "hDec");
 
 	// We write what's inside the map:
-	SDL_RWwrite(stream, undermap, size, 1);
+	stream->write(undermap, size, "undermap");
+	stream->writeEnterSection("cases");
 	for (size_t i=0; i<size ;i++)
 	{
-		SDL_WriteBE32(stream, mapDiscovered[i]);
+		stream->writeEnterSection(i);
+		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
-		SDL_WriteBE16(stream, cases[i].terrain);
-		SDL_WriteBE16(stream, cases[i].building);
+		stream->writeUint16(cases[i].terrain, "terrain");
+		stream->writeUint16(cases[i].building, "building");
 		
 		//SDL_WriteBE32(stream, cases[i].ressource.id);
-		SDL_RWwrite(stream, &(cases[i].ressource), 1, 4);
+		stream->write(&(cases[i].ressource), 4, "ressource");
 		
-		SDL_WriteBE16(stream, cases[i].groundUnit);
-		SDL_WriteBE16(stream, cases[i].airUnit);
-		SDL_WriteBE32(stream, cases[i].forbidden);
+		stream->writeUint16(cases[i].groundUnit, "groundUnit");
+		stream->writeUint16(cases[i].airUnit, "airUnit");
+		stream->writeUint32(cases[i].forbidden, "forbidden");
+		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 
 	// We save sectors:
-	SDL_WriteBE32(stream, wSector);
-	SDL_WriteBE32(stream, hSector);
+	stream->writeSint32(wSector, "wSector");
+	stream->writeSint32(hSector, "hSector");
+	stream->writeEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
+	{
+		stream->writeEnterSection(i);
 		sectors[i].save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 
-	SDL_RWwrite(stream, "MapE", 4, 1);
+	stream->write("MapE", 4, "signatureEnd");
+	stream->writeLeaveSection();
 }
 
 void Map::addTeam(void)

@@ -27,10 +27,13 @@
 //! Save in stream at offset the actual file pos
 #define SAVE_OFFSET(stream, offset) \
 	{ \
-		Uint32 pos=SDL_RWtell(stream); \
-		SDL_RWseek(stream, offset, SEEK_SET); \
-		SDL_WriteBE32(stream, pos); \
-		SDL_RWseek(stream, pos, SEEK_SET); \
+		if (stream->canSeek()) \
+		{ \
+			Uint32 pos = stream->getPosition(); \
+			stream->seekFromStart(offset); \
+			stream->writeUint32(pos); \
+			stream->seekFromStart(pos); \
+		} \
 	}
 
 //! This is named SessionGame but in fact it is Glob2's map headers.
@@ -42,8 +45,8 @@ public:
 	SessionGame(const SessionGame &sessionGame);
 	SessionGame& operator=(const SessionGame& sessionGame);
 	virtual ~SessionGame(void);
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream);
+	void save(GAGCore::OutputStream *stream);
 
 	virtual Uint8 getOrderType();
 
@@ -121,8 +124,8 @@ public:
 	SessionInfo();
 	SessionInfo(const SessionGame &sessionGame);
 	virtual ~SessionInfo(void) { }
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream);
+	void save(GAGCore::OutputStream *stream);
 
 	Uint8 getOrderType();
 

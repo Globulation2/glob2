@@ -41,7 +41,7 @@ namespace GAGCore
 	public:
 		virtual ~BinaryOutputStream() { }
 	
-		virtual void write(const void *data, const size_t size, const char *name) = 0;
+		virtual void write(const void *data, const size_t size, const char *name = NULL) = 0;
 	
 		virtual void writeEndianIndependant(const void *v, const size_t size, const char *name)
 		{
@@ -74,7 +74,7 @@ namespace GAGCore
 		
 		virtual void writeEnterSection(const char *name) { }
 		virtual void writeEnterSection(unsigned id) { }
-		virtual void writeLeaveSection(void) { }
+		virtual void writeLeaveSection(size_t count = 1) { }
 	};
 	
 	class BinaryInputStream : public InputStream
@@ -82,7 +82,7 @@ namespace GAGCore
 	public:
 		virtual ~BinaryInputStream() { }
 	
-		virtual void read(void *data, size_t size, const char *name) = 0;
+		virtual void read(void *data, size_t size, const char *name = NULL) = 0;
 	
 		virtual void readEndianIndependant(void *v, size_t size, const char *name)
 		{
@@ -113,7 +113,7 @@ namespace GAGCore
 		
 		virtual void readEnterSection(const char *name) { }
 		virtual void readEnterSection(unsigned id) { }
-		virtual void readLeaveSection(void) { }
+		virtual void readLeaveSection(size_t count = 1) { }
 	};
 	
 	class BinaryFileStream : public BinaryOutputStream, public BinaryInputStream
@@ -126,6 +126,12 @@ namespace GAGCore
 		virtual void write(const void *data, const size_t size, const char *name) { fwrite(data, size, 1 ,fp); }
 		virtual void flush(void) { fflush(fp); }
 		virtual void read(void *data, size_t size, const char *name) { fread(data, size, 1, fp); }
+		virtual bool canSeek(void) { return true; }
+		virtual void seekFromStart(int displacement) { fseek(fp, displacement, SEEK_SET); }
+		virtual void seekFromEnd(int displacement) { fseek(fp, displacement, SEEK_END); }
+		virtual void seekRelative(int displacement) { fseek(fp, displacement, SEEK_CUR); }
+		virtual size_t getPosition(void) { return ftell(fp); }
+		virtual bool isEndOfStream(void) { return feof(fp) != 0; }
 	};
 }
 

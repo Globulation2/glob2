@@ -20,6 +20,7 @@
 #include <StringTable.h>
 #include <SupportFunctions.h>
 #include <Toolkit.h>
+#include <Stream.h>
 
 #include "AICastor.h"
 #include "Game.h"
@@ -154,7 +155,7 @@ AICastor::AICastor(Player *player)
 	init(player);
 }
 
-AICastor::AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+AICastor::AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	logFile=globalContainer->logFileManager->getFile("AICastor.log");
 	
@@ -358,11 +359,13 @@ AICastor::~AICastor()
 		delete[] ressourcesCluster;
 }
 
-bool AICastor::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	fprintf(logFile, "load(%d)\n", versionMinor);
 	init(player);
 	assert(game);
+	
+	stream->readEnterSection("AICastor");
 	
 	if (versionMinor<29)
 	{
@@ -370,26 +373,31 @@ bool AICastor::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 		return true;
 	}
 	
-	Sint32 aiFileVersion=SDL_ReadBE32(stream);
+	Sint32 aiFileVersion = stream->readSint32("aiFileVersion");
 	if (aiFileVersion<AI_FILE_MIN_VERSION)
 	{
 		fprintf(stderr, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
 		fprintf(logFile, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
+		stream->readLeaveSection();
 		return false;
 	}
 	if (aiFileVersion>=1)
-		timer=SDL_ReadBE32(stream);
+		timer = stream->readUint32("timer");
 	else
 		timer=0;
+		
+	stream->readLeaveSection();
 	
 	fprintf(logFile, "load success\n");
 	return true;
 }
 
-void AICastor::save(SDL_RWops *stream)
+void AICastor::save(GAGCore::OutputStream *stream)
 {
-	SDL_WriteBE32(stream, AI_FILE_VERSION);
-	SDL_WriteBE32(stream, timer);
+	stream->writeEnterSection("AICastor");
+	stream->writeSint32(AI_FILE_VERSION, "aiFileVersion");
+	stream->writeUint32(timer, "timer");
+	stream->writeLeaveSection();
 }
 
 Order *AICastor::getOrder()

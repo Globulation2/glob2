@@ -20,19 +20,25 @@
 #ifndef __ENTITY_TYPE_H
 #define __ENTITY_TYPE_H
 
-#include <SDL_rwops.h>
+#include <GAGSys.h>
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 
 class EntityType
 {
 public:
 	EntityType();
-	EntityType(SDL_RWops *stream);
+	EntityType(GAGCore::InputStream *stream);
 	virtual ~EntityType() { }
-	virtual const char **getVars(size_t *size, Uint32 **data)=0;
-	virtual void init(void);	
-	virtual void load(SDL_RWops *stream);
-	virtual bool loadText(SDL_RWops *stream);
-	virtual void save(SDL_RWops *stream);
+	virtual const char **getVars(size_t *size, Uint32 **data) = 0;
+	virtual void init(void);
+	virtual void load(GAGCore::InputStream *stream);
+	virtual bool loadText(GAGCore::InputStream *stream);
+	virtual void save(GAGCore::OutputStream *stream);
 	virtual void dump(void);
 };
 

@@ -40,7 +40,7 @@ public:
 
 public:
 	RessourceType() { init(); }
-	RessourceType(SDL_RWops *stream) { load(stream); }
+	RessourceType(GAGCore::InputStream *stream) { load(stream); }
 	virtual ~RessourceType() { }
 	virtual const char **getVars(size_t *size, Uint32 **data)
 	{

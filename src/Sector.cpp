@@ -24,6 +24,7 @@
 #include "BuildingType.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
+#include <Stream.h>
 
 Sector::Sector(Game *game)
 {
@@ -57,29 +58,35 @@ void Sector::free(void)
 	map=NULL;
 }
 
-void Sector::save(SDL_RWops *stream)
+void Sector::save(GAGCore::OutputStream *stream)
 {
-	// write the number of bullets
-	SDL_WriteBE32(stream, (Uint32)bullets.size());
-	// write all the bullets
+	stream->writeUint32((Uint32)bullets.size(), "bulletCount");
+	stream->writeEnterSection("bullets");
+	unsigned i = 0;
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
+	{
+		stream->writeEnterSection(i++);
 		(*it)->save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 }
 
-bool Sector::load(SDL_RWops *stream, Game *game)
+bool Sector::load(GAGCore::InputStream *stream, Game *game)
 {
-	Uint32 nbUsed;
-
 	// destroy all actual bullets
 	free();
-	
 	// read the number of bullets
-	nbUsed=SDL_ReadBE32(stream);
+	Uint32 bulletCount = stream->readUint32("bulletCount");
 	// read all the bullets
-	for (Uint32 i=0; i<nbUsed; i++)
+	stream->readEnterSection("bullets");
+	for (Uint32 i=0; i<bulletCount; i++)
 	{
+		stream->readEnterSection(i);
 		bullets.push_front(new Bullet(stream));
+		stream->readLeaveSection();
 	}
+	stream->readLeaveSection();
 	
 	this->game=game;
 	this->map=&(game->map);

@@ -22,6 +22,11 @@
 
 #include <SDL_rwops.h>
 
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 class Player;
 class Order;
 class AIImplementation;
@@ -42,7 +47,7 @@ public:
 public:
 	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
 	AI(ImplementitionID implementitionID, Player *player);
-	AI(SDL_RWops *stream, Player *player, Sint32 versionMinor);
+	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
 	//void init(ImplementitionID ImplementitionID, Player *player);
 	
@@ -51,8 +56,8 @@ public:
 	
 	Player *player;
 	
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	Order *getOrder(bool paused);
 	

@@ -28,6 +28,10 @@ The main methode is Order *getOrder() which return the order to be used by the A
 
 #include "BuildingType.h"
 
+namespace GAGCore
+{
+	class InputStream;
+}
 class Player;
 class Order;
 
@@ -69,8 +73,8 @@ public:
 	AIImplementation(){}
 	virtual ~AIImplementation(){}
 	
-	virtual bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor)=0;
-	virtual void save(SDL_RWops *stream)=0;
+	virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
+	virtual void save(GAGCore::OutputStream *stream)=0;
 	
 	virtual Order *getOrder(void)=0;
 };

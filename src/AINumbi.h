@@ -34,7 +34,7 @@ class AINumbi : public AIImplementation
 {
 public:
 	AINumbi(Player *player);
-	AINumbi(SDL_RWops *stream, Player *player, Sint32 versionMinor);
+	AINumbi(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AINumbi();
 
 	Player *player;
@@ -42,8 +42,8 @@ public:
 	Game *game;
 	Map *map;
 	
-	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
-	void save(SDL_RWops *stream);
+	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	void save(GAGCore::OutputStream *stream);
 	
 	Order *getOrder(void);
 	

@@ -92,8 +92,8 @@ public:
 	//! This methode will overide currents values of *this by the values of *initial.
 	void setBase(const SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream, bool fileIsAMap, const char *name);
+	bool load(GAGCore::InputStream *stream);
+	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const char *name);
 
 	void buildProjectSyncStep(Sint32 localTeam);
 	//! look for each team if it has won or not

@@ -23,6 +23,7 @@
 #include "Game.h"
 #include "Order.h"
 #include <assert.h>
+#include <Stream.h>
 
 #include "AINull.h"
 #include "AINumbi.h"
@@ -64,7 +65,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 	step=0;
 }
 
-AI::AI(SDL_RWops *stream, Player *player, Sint32 versionMinor)
+AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	aiImplementation=NULL;
 	implementitionID=NONE;
@@ -91,7 +92,7 @@ Order *AI::getOrder(bool paused)
 	return aiImplementation->getOrder();
 }
 
-bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
+bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	assert(player);
 	
@@ -100,14 +101,17 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 	aiImplementation=NULL;
 
 	char signature[4];
-	SDL_RWread(stream, signature, 4, 1);
+	
+	stream->readEnterSection("AI");
+	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"AI b", 4)!=0)
 	{
 		fprintf(stderr, "AI::bad begining signature\n");
+		stream->readLeaveSection();
 		return false;
 	}
 
-	implementitionID=(ImplementitionID)SDL_ReadBE32(stream);
+	implementitionID=(ImplementitionID)stream->readUint32("implementitionID");
 
 	switch (implementitionID)
 	{
@@ -128,7 +132,8 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 		break;
 	}
 
-	SDL_RWread(stream, signature, 4, 1);
+	stream->read(signature, 4, "signatureEnd");
+	stream->readLeaveSection();
 	if (memcmp(signature,"AI e", 4)!=0)
 	{
 		fprintf(stderr, "AI::bad end signature\n");
@@ -138,14 +143,16 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 	return true;
 }
 
-void AI::save(SDL_RWops *stream)
+void AI::save(GAGCore::OutputStream *stream)
 {
-	SDL_RWwrite(stream, "AI b", 4, 1);
+	stream->writeEnterSection("AI");
+	stream->write("AI b", 4, "signatureStart");
 	
-	SDL_WriteBE32(stream, (Uint32)implementitionID);
+	stream->writeUint32(static_cast<Uint32>(implementitionID), "implementitionID");
 	
 	assert(aiImplementation);
 	aiImplementation->save(stream);
 	
-	SDL_RWwrite(stream, "AI e", 4, 1);
+	stream->write( "AI e",  4, "signatureEnd");
+	stream->writeLeaveSection();
 }

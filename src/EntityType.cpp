@@ -20,6 +20,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <sstream>
+#include <iostream>
+#include <Stream.h>
 
 #include "EntityType.h"
 #include "Utilities.h"
@@ -28,7 +31,7 @@ EntityType::EntityType()
 {
 }
 
-EntityType::EntityType(SDL_RWops *stream)
+EntityType::EntityType(GAGCore::InputStream *stream)
 {
 	load(stream);
 }
@@ -41,16 +44,20 @@ void EntityType::init(void)
 	memset(startData,0,varSize*sizeof(Uint32));
 }
 
-void EntityType::load(SDL_RWops *stream)
+void EntityType::load(GAGCore::InputStream *stream)
 {
 	size_t size;
 	Uint32 *startData;
 	getVars(&size, &startData);
 	for (size_t i=0;i<size;i++)
-		startData[i]=SDL_ReadBE32(stream);
+	{
+		std::ostringstream oss;
+		oss << "entitytype" << i;
+		startData[i] = stream->readUint32(oss.str().c_str());
+	}
 }
 
-bool EntityType::loadText(SDL_RWops *stream)
+bool EntityType::loadText(GAGCore::InputStream *stream)
 {
 	char temp[256];
 	char *token;
@@ -64,7 +71,7 @@ bool EntityType::loadText(SDL_RWops *stream)
 	assert(stream);
 	while (true)
 	{
-		if (!Utilities::gets(temp,256,stream))
+		if (!Utilities::gets(temp, 256, stream))
 			return false;
 		if (temp[0]=='*')
 			return true;
@@ -87,13 +94,17 @@ bool EntityType::loadText(SDL_RWops *stream)
 	}
 }
 
-void EntityType::save(SDL_RWops *stream)
+void EntityType::save(GAGCore::OutputStream *stream)
 {
 	size_t size;
 	Uint32 *startData;
 	getVars(&size, &startData);
-	for (size_t i=0;i<size;i++)
-		SDL_WriteBE32(stream, startData[i]);
+	for (size_t i=0; i<size; i++)
+	{
+		std::ostringstream oss;
+		oss << "entitytype" << i;
+		stream->writeUint32(startData[i], oss.str().c_str());
+	}
 }
 
 void EntityType::dump(void)
