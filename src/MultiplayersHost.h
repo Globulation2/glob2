@@ -76,6 +76,7 @@ public:
 	//! A stream to the map (or saved game) file.
 	SDL_RWops *stream;
 	Uint32 fileSize;
+	Uint32 mapFileCheckSum;
 
 public:
 	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo);
