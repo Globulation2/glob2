@@ -32,6 +32,7 @@ protected:
 		ITEM(std::string, text)
 		ITEM(bool, activated)
 		ITEM(Uint32, cursPos)
+		ITEM(Uint32, maxLength)
 	CLASSEND;
 
 	// cache, recomputed at least on paint
@@ -41,7 +42,7 @@ protected:
 
 public:
 	TextInput();
-	TextInput(int x, int y, int w, int h, const char *font, const char *text="", bool activated=false, unsigned textLength=512);
+	TextInput(int x, int y, int w, int h, const char *font, const char *text="", bool activated=false, unsigned maxLength=0);
 	virtual ~TextInput() { }
 
 	virtual void onTimer(Uint32 tick);

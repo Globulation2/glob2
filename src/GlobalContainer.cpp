@@ -277,11 +277,11 @@ void GlobalContainer::load(void)
 		menuFont->setColor(255, 255, 255);
 
 		gfx->loadFont("data/fonts/sans.ttf", 14, "standard");
-		standardFont=Toolkit::getFont("menu");
+		standardFont=Toolkit::getFont("standard");
 		standardFont->setColor(255, 255, 255);
 
 		gfx->loadFont("data/fonts/sans.ttf", 10, "little");
-		littleFont=Toolkit::getFont("menu");
+		littleFont=Toolkit::getFont("little");
 		littleFont->setColor(255, 255, 255);
 
 		initProgressBar();
