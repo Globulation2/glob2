@@ -176,6 +176,7 @@ private:
 		IGM_MAIN,
 		IGM_LOAD,
 		IGM_SAVE,
+		IGM_OPTION,
 		IGM_ALLIANCE8
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;

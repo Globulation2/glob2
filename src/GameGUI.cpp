@@ -331,6 +331,15 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					return true;
 				}
 				break;
+				case InGameMainScreen::OPTIONS:
+				{
+					delete gameMenuScreen;
+					inGameMenu=IGM_OPTION;
+					gameMenuScreen=new InGameOptionScreen(this);
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+					return true;
+				}
+				break;
 				case InGameMainScreen::RETURN_GAME:
 				{
 					inGameMenu=IGM_NONE;
@@ -390,6 +399,20 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			}
 		}
 
+		case IGM_OPTION:
+		{
+			if (gameMenuScreen->endValue == InGameOptionScreen::OK)
+			{
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				printf("!! NOT CODED YET !! Use option\n");
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
 		case IGM_LOAD:
 		case IGM_SAVE:
