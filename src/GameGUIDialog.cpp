@@ -40,9 +40,19 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 		endValue=par1;
 }
 
-void InGameMainScreen::onSDLEvent(SDL_Event *event)
+InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
+:OverlayScreen(globalContainer->gfx, 300, canContinue ? 140 : 100)
 {
+	addWidget(new Text(10, 10, globalContainer->menuFont, title, 280));
+	addWidget(new TextButton(10, 50, 280, 35, NULL, -1, -1, globalContainer->menuFont,  globalContainer->texts.getString("[ok]"), QUIT, 13));
+	if (canContinue)
+		addWidget(new TextButton(10, 90, 280, 35, NULL, -1, -1, globalContainer->menuFont,  globalContainer->texts.getString("[Continue playing]"), CONTINUE, 27));
+}
 
+void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+		endValue=par1;
 }
 
 //! Alliance screen

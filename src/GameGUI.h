@@ -118,6 +118,8 @@ private:
 	void moveFlag(int mx, int my);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
+	//! on each step, check if we have won or lost
+	void checkWonConditions(void);
 	
 public:
 	Game game;
@@ -181,9 +183,12 @@ private:
 		IGM_LOAD,
 		IGM_SAVE,
 		IGM_OPTION,
-		IGM_ALLIANCE8
+		IGM_ALLIANCE8,
+		IGM_END_OF_GAME
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
+	
+	bool hasEndOfGameDialogBeenShown;
 
 private :
 
