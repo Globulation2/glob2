@@ -90,6 +90,8 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 435, 400, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
 	addWidget(textInput);
+	
+	executionMode=START;
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
@@ -293,6 +295,9 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 	
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))
 		endExecute(STARTED);
+	
+	if (shareOnYOG && yog->unjoiningConfirmed)
+		endExecute(executionMode);
 }
 
 void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -306,7 +311,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		break;
 		case CANCEL :
 			multiplayersHost->stopHosting();
-			endExecute(par1);
+			if (shareOnYOG)
+				executionMode=par1;
+			else
+				endExecute(par1);
 		break;
 		case ADD_AI :
 			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
@@ -322,7 +330,10 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		break;
 		case -1:
 			multiplayersHost->stopHosting();
-			endExecute(par1);
+			if (shareOnYOG)
+				executionMode=par1;
+			else
+				endExecute(par1);
 		break;
 		default:
 		{

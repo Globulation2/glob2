@@ -51,6 +51,7 @@ public:
 
 private:
 	int timeCounter;
+	int executionMode;
 
 public:
 	MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG);

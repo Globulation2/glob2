@@ -73,6 +73,7 @@ YOG::YOG()
 	
 	enableLan=true;
 	unjoining=false;
+	unjoiningConfirmed=true;
 	
 	connectionLost=false;
 	
@@ -484,6 +485,7 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	{
 		fprintf(logFile, "game is unjoined\n");
 		unjoining=false;
+		unjoiningConfirmed=true;
 	}
 	break;
 	case YMT_GAMES_LIST:
@@ -1275,6 +1277,7 @@ void YOG::shareGame(const char *gameName)
 	sharingGameTimeout=0;
 	sharingGameTOTL=3;
 	fprintf(logFile, "shareGame(%s)\n", gameName);
+	unjoiningConfirmed=false;
 }
 
 void YOG::unshareGame()
@@ -1289,6 +1292,7 @@ void YOG::unshareGame()
 	
 	unjoinTimeout=0;
 	unjoining=true;
+	unjoiningConfirmed=false;
 	fprintf(logFile, "unshareGame()\n");
 }
 
@@ -1297,6 +1301,7 @@ void YOG::joinGame()
 	fprintf(logFile, "joinGame() was=%d\n", joinedGame);
 	assert(!unjoining);
 	joinedGame=true;
+	unjoiningConfirmed=false;
 }
 
 void YOG::unjoinGame()
@@ -1308,6 +1313,7 @@ void YOG::unjoinGame()
 	
 	unjoinTimeout=0;
 	unjoining=true;
+	unjoiningConfirmed=false;
 	fprintf(logFile, "unjoinGame()\n");
 }
 
@@ -1425,6 +1431,7 @@ void YOG::setHostGameSocket(UDPsocket socket)
 	hostGameSocketTimeout=0;
 	hostGameSocketTOTL=3;
 	unjoining=false;
+	unjoiningConfirmed=false;
 }
 
 bool YOG::hostGameSocketSet()
@@ -1441,6 +1448,7 @@ void YOG::setJoinGameSocket(UDPsocket socket)
 	joinGameSocketTimeout=0;
 	joinGameSocketTOTL=3;
 	unjoining=false;
+	unjoiningConfirmed=false;
 	joinGameSocketReceived=false;
 }
 
