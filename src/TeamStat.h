@@ -60,8 +60,10 @@ public:
 	int getFreeUnits();
 
 private:
-	static const int STATS_SMOOTH_SIZE=32;
-	static const int STATS_SIZE=128;
+	enum {
+		STATS_SMOOTH_SIZE=32,
+		STATS_SIZE=128
+	};
 	
 	int statsIndex;
 	TeamStat stats[STATS_SIZE];

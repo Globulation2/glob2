@@ -45,7 +45,7 @@ public:
 	virtual ~SDLBitmapFont();
 	bool load(const char *filename);
 	int getStringWidth(const char *string) const;
-	int getStringWidth(int i) const;
+	int getStringWidth(const int i) const; // angel > was decalred as const int not as int :)
 	int getStringHeight(const char *string) const;
 	bool printable(char c) const;
 

@@ -42,10 +42,10 @@ public:
 
 	enum EngineError
 	{
-		NO_ERROR=1,
-		CANCEL=2,
-		CANT_LOAD_MAP=3,
-		CANT_FIND_PLAYER=4
+		EE_NO_ERROR=1,
+		EE_CANCEL=2,
+		EE_CANT_LOAD_MAP=3,
+		EE_CANT_FIND_PLAYER=4
 	};
 
 public:

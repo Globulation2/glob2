@@ -44,7 +44,8 @@ MapEdit::MapEdit()
 	terrainSize=1; // terrain size 1
 	level=0;
 	type=Map::WATER; // water
-	editMode=TERRAIN; // terrain
+
+	editMode= EM_TERRAIN; // terrain
 	wasClickInMap=false;
 
 	// load menu
@@ -164,18 +165,18 @@ void MapEdit::drawMenu(void)
 	// draw selections
 	drawSelRect(menuStartW+((terrainSize-1)*16), 237, 32, 32);
 	drawSelRect(menuStartW+(level*32), 423, 32, 32);
-	if (editMode==TERRAIN)
+	if (editMode==EM_TERRAIN)
 		drawSelRect(menuStartW+(type*32), 173, 32, 32);
-	else if (editMode==RESSOURCE)
+	else if (editMode==EM_RESSOURCE)
 		drawSelRect(menuStartW+(type*32), 205, 32, 32);
-	else if (editMode==UNIT)
+	else if (editMode==EM_UNIT)
 		drawSelRect(menuStartW+(type*32), 275, 32, 32);
-	else if (editMode==BUILDING)
+	else if (editMode==EM_BUILDING)
 		if (type<4)
 			drawSelRect(menuStartW+(type*32), 307, 32, 32);
 		else
 			drawSelRect(menuStartW+((type-4)*32), 339, 32, 32);
-	else if (editMode==DELETE)
+	else if (editMode==EM_DELETE)
 		drawSelRect(menuStartW+64, 135, 32, 32);
 
 	// draw teams
@@ -259,7 +260,7 @@ void MapEdit::handleMapClick(int mx, int my)
 	static int ax, ay, atype;
 	bool needRedraw=false;
 
-	if (editMode==TERRAIN)
+	if (editMode==EM_TERRAIN)
 	{
 		game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
 		if ((ax!=x)||(ay!=y)||(atype!=type))
@@ -294,7 +295,7 @@ void MapEdit::handleMapClick(int mx, int my)
 			updateUnits(x-(terrainSize>>1)-2, y-(terrainSize>>1)-2, terrainSize+3, terrainSize+3);
 		}
 	}
-	else if (editMode==RESSOURCE)
+	else if (editMode==EM_RESSOURCE)
 	{
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
  		if ((ax!=x)||(ay!=y)||(atype!=type))
@@ -321,7 +322,7 @@ void MapEdit::handleMapClick(int mx, int my)
 			Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
 		}
 	}
-	else if (editMode==UNIT)
+	else if (editMode==EM_UNIT)
 	{
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
 
@@ -334,7 +335,7 @@ void MapEdit::handleMapClick(int mx, int my)
 		winH=32;
 		needRedraw=true;
 	}
-	else if (editMode==BUILDING)
+	else if (editMode==EM_BUILDING)
 	{
 		//game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(type, level, false);
@@ -359,7 +360,7 @@ void MapEdit::handleMapClick(int mx, int my)
 			needRedraw=true;
 		}
 	}
-	else if (editMode==DELETE)
+	else if (editMode==EM_DELETE)
 	{
 		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
 		SDL_Rect r;
@@ -456,7 +457,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 		else if (mx<64)
 			loadSave(false);
 		else if (mx<96)
-			editMode=DELETE;
+			editMode=EM_DELETE;
 		else
 			isRunning=false;
 	}
@@ -464,12 +465,12 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	{
 		if (mx>=96)
 			return;
-		editMode=TERRAIN;
+		editMode=EM_TERRAIN;
 		type=mx/32;
 	}
 	else if ((my>205) && (my<237))
 	{
-		editMode=RESSOURCE;
+		editMode=EM_RESSOURCE;
 		type=mx/32;
 	}
 	else if ((my>237) && (my<269))
@@ -479,14 +480,14 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	}
 	else if ((my>275) && (my<307))
 	{
-		editMode=UNIT;
+		editMode=EM_UNIT;
 		type=mx/32;
 		if (type>2)// we have only 3 units.
 			type=2;
 	}
 	else if ((my>307) && (my<339))
 	{
-		editMode=BUILDING;
+		editMode=EM_BUILDING;
 		type=mx/32;
 		if (type==0)
 			level=0;
@@ -495,7 +496,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	}
 	else if ((my>339) && (my<371))
 	{
-		editMode=BUILDING;
+		editMode=EM_BUILDING;
 		type=4+(mx/32);
 		if (level>2)
 			level=2;
@@ -570,7 +571,7 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 	else if ((my>423) && (my<455))
 	{
 		level=mx/32;
-		if (editMode==BUILDING)
+		if (editMode==EM_BUILDING)
 		{
 			if (type==0)
 				level=0;
@@ -596,7 +597,7 @@ void MapEdit::load(const char *name)
 		terrainSize=1; // terrain size 1
 		level=0;
 		type=0; // water
-		editMode=TERRAIN; // terrain
+		editMode=EM_TERRAIN; // terrain
 	}
 
 	draw();
@@ -856,13 +857,13 @@ int MapEdit::processEvent(const SDL_Event *event)
 		globalContainer->gfx->drawString(x, y, font, "(%d, %d)", mx, my);
 		globalContainer->gfx->updateRect(x, y, 128, 20);
 
-		static int oldBrush=NONE;
+		static int oldBrush=EM_NONE;
 		static int orX=0, orY=0, orW=0, orH=0;
 		const int maxNbRefreshZones=2;
 		SDL_Rect refreshZones[maxNbRefreshZones];
 		int nbRefreshZones=0;
 
-		if ( (oldBrush==BUILDING) || (oldBrush==UNIT) || (oldBrush==TERRAIN) || (oldBrush==RESSOURCE) || (editMode==DELETE) )
+		if ( (oldBrush==EM_BUILDING) || (oldBrush==EM_UNIT) || (oldBrush==EM_TERRAIN) || (oldBrush==EM_RESSOURCE) || (editMode==EM_DELETE) )
 		{
 			drawMap(orX, orY, orW, orH, false);
 
@@ -872,7 +873,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 			refreshZones[nbRefreshZones].h=orH;
 			nbRefreshZones++;
 
-			oldBrush=NONE;
+			oldBrush=EM_NONE;
 		}
 
 		if (Utilities::ptInRect(mx, my, &mapClip))
@@ -882,11 +883,11 @@ int MapEdit::processEvent(const SDL_Event *event)
 				wasClickInMap=true;
 				handleMapClick(mx, my);
 			}
-			if ( (editMode==TERRAIN) || (editMode==RESSOURCE) || (editMode==DELETE) )
+			if ( (editMode==EM_TERRAIN) || (editMode==EM_RESSOURCE) || (editMode==EM_DELETE) )
 			{
 				//terrainSize
 				int x, y, w, h;
-				if (editMode==TERRAIN)
+				if (editMode==EM_TERRAIN)
 				{
 					x=((mx+16)&0xFFFFFFE0)-((terrainSize>>1)<<5)-16;
 					w=(terrainSize)<<5;
@@ -918,7 +919,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 
 				oldBrush=editMode;
 			}
-			else if (editMode==UNIT)
+			else if (editMode==EM_UNIT)
 			{
 
 				int cx=(mx>>5)+viewportX;
@@ -964,9 +965,9 @@ int MapEdit::processEvent(const SDL_Event *event)
 				orY=py;
 				orW=pw;
 				orH=ph;
-				oldBrush=UNIT;
+				oldBrush=EM_UNIT;
 			}
-			else if (editMode==BUILDING)
+			else if (editMode==EM_BUILDING)
 			{
 				int mapX, mapY;
 				int batX, batY, batW, batH;
@@ -1054,7 +1055,7 @@ int MapEdit::processEvent(const SDL_Event *event)
 				orH=batH;
 
 				globalContainer->gfx->setClipRect(screenClip.x, screenClip.y, screenClip.w, screenClip.h);
-				oldBrush=BUILDING;
+				oldBrush=EM_BUILDING;
 			}
 		}
 

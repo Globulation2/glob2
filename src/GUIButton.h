@@ -114,7 +114,7 @@ protected:
 protected:
 	int x, y, w, h;
 	int selColor;
-	vector<int> vr, vg, vb;
+	std::vector<int> vr, vg, vb;
 	int returnCode;
 	bool highlighted;
 	DrawableSurface *gfx;

@@ -24,11 +24,14 @@
 #define MAX_SINT32 0x7FFFFFFF
 
 #ifdef WIN32
-	#include <SDL.h>
-	#include <SDL_endian.h>
-	#include <SDL_image.h>
-	#include <SDL_net.h>
-	#include <assert.h>
+#	include <windows.h>
+#	include <SDL.h>
+#	include <SDL_endian.h>
+#	include <SDL_image.h>
+#	include <SDL_net.h>
+#	include <assert.h>
+#	define snprintf _snprintf
+#	define vsnprintf _vsnprintf
 #	pragma warning (disable : 4786)
 #	pragma warning (disable : 4250)
 #elif macintosh

@@ -51,12 +51,12 @@ private:
 
 	enum EditMode
 	{
-		NONE,
-		TERRAIN,
-		RESSOURCE,
-		BUILDING,
-		UNIT,
-		DELETE
+		EM_NONE,
+		EM_TERRAIN,
+		EM_RESSOURCE,
+		EM_BUILDING,
+		EM_UNIT,
+		EM_DELETE
 	};
 
 private:
