@@ -4,6 +4,7 @@ To First release :
 -Le texte inGame des messages, le dernier mot peut dépasser la zone de jeu.
 -Avec des explo seulement, on n'a pas perdu.
 -Pourqoi ça marche mal sans ruche ?
+-Arrêter de travailler pour un drapeau de défrichage vide.
 
 NetGame:
 - Est-ce que le réseau est floodé en cas de packets perdus ? (deux vitesses de packets ?)
@@ -53,7 +54,6 @@ YOG:
 -Ajouter des chambres
 -Ajouter des info de temps dans les .logs.
 -Annoncer à l'utilisateur si il essaie de donner un password à un utilisateur avec password NULL.
--Sauvegarder les passwords d'une version à l'autre.
 
 Tutorial:
 -Moins vite.
