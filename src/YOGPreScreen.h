@@ -48,6 +48,8 @@ public:
 	TextInput *textInput;
 	TextArea *statusText;
 	YOG::ExternalStatusState oldYOGExternalStatusState;
+	
+	bool connectOnNextTimer;
 };
 
 #endif

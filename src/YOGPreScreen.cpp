@@ -34,6 +34,7 @@ YOGPreScreen::YOGPreScreen()
 	oldYOGExternalStatusState=YOG::YESTS_BAD;
 	
 	endExecutionValue=EXECUTING;
+	connectOnNextTimer=false;
 }
 
 YOGPreScreen::~YOGPreScreen()
@@ -51,7 +52,11 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==LOGIN)
 		{
-			yog->enableConnection(textInput->text);
+			char *s=yog->getStatusString(YOG::YESTS_CONNECTING);//This is a small "hack" to looks more user-friendly.
+			statusText->setText(s);
+			delete[] s;
+			oldYOGExternalStatusState=YOG::YESTS_CONNECTING;
+			connectOnNextTimer=true;
 		}
 		else if (par1==-1)
 		{
@@ -102,7 +107,12 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		printf("YOGPreScreen:: YOGScreen has ended ...\n");
 		dispatchPaint(gfxCtx);
 	}
-	if (yog->externalStatusState!=oldYOGExternalStatusState)
+	if (connectOnNextTimer)
+	{
+		yog->enableConnection(textInput->text);
+		connectOnNextTimer=false;
+	}
+	else if (yog->externalStatusState!=oldYOGExternalStatusState)
 	{
 		char *s=yog->getStatusString();
 		statusText->setText(s);

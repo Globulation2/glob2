@@ -351,6 +351,10 @@ Transportiert nichts
 Niveau
 Level
 Niveau
+[levels]
+Niveaux
+Levels
+
 [building site]
 Chantier
 Building site
@@ -659,6 +663,10 @@ hat verlassen
 Vitesse
 Speed
 Geschwindigkeit
+[current speed]
+Vitesse actuelle
+Current speed
+
 [attack speed]
 Vit. attaque
 Attack speed

@@ -1461,30 +1461,48 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, "%s : %2.0f %%", globalContainer->texts.getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, globalContainer->texts.getString("[unit type]", selUnit->typeNum));
+			
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+20, globalContainer->littleFont, globalContainer->texts.getString("[hp%d]"), selUnit->hp);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+36, globalContainer->littleFont, "%s : %2.0f %%", globalContainer->texts.getString("[food left]"), ((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX);
 			if (selUnit->performance[HARVEST])
 			{
 				if (selUnit->caryedRessource>=0)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+48, globalContainer->littleFont, globalContainer->texts.getString("[carry]"));
-					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+40, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, globalContainer->texts.getString("[carry]"));
+					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8, 128+56, globalContainer->ressources, (selUnit->caryedRessource*10)+9);
 				}
 				else
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+48, globalContainer->littleFont, globalContainer->texts.getString("[don't carry anything]"));
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+64, globalContainer->littleFont, globalContainer->texts.getString("[don't carry anything]"));
 				}
 			}
 			
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+80, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[speed]"), selUnit->speed);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+96, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[current speed]"), selUnit->speed);
 			
+			if (selUnit->typeNum!=UnitType::EXPLORER)
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+156, globalContainer->littleFont, "%s:", globalContainer->texts.getString("[levels]"), selUnit->speed);
+			
+			//if (selUnit->performance[ATTACK_SPEED])
+			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+112, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[attack speed]"), selUnit->performance[ATTACK_SPEED]);
+			//
+			//if (selUnit->performance[ATTACK_STRENGTH])
+			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+128, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selUnit->performance[ATTACK_STRENGTH]);
+			
+			if (selUnit->performance[WALK])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+172, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]);
+			if (selUnit->performance[SWIM])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]);
+			if (selUnit->performance[BUILD])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+196, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]);
+			if (selUnit->performance[HARVEST])
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+208, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]);
 			if (selUnit->performance[ATTACK_SPEED])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+96, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[attack speed]"), selUnit->performance[ATTACK_SPEED]);
-			
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+220, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]);
 			if (selUnit->performance[ATTACK_STRENGTH])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+112, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selUnit->performance[ATTACK_STRENGTH]);
-			
-			/* NOTE : I have comment this debug code that isn't used anymore
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+232, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]);
+
+	/* NOTE : I have comment this debug code that isn't used anymore
 			Sint32 UID=selUnit->UID;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+  0, globalContainer->littleFont, "hp=%d", selUnit->hp);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+ 15, globalContainer->littleFont, "UID=%d", UID);
