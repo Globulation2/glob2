@@ -78,7 +78,7 @@ NetGame::~NetGame()
 	for (int i=0; i<40; i++)
 		sum+=delayInsideStats[i];
 	fprintf(logFile, "delayInsideStats: (sum=%d)\n", sum);
-	for (int i=0; i<10; i++)
+	for (int i=0; i<40; i++)
 		fprintf(logFile, "delayInsideStats[%2d]=%5d (%4f%%)\n", i, delayInsideStats[i], (float)(100.*delayInsideStats[i])/(float)sum);
 	fprintf(logFile, "\n");
 	

@@ -91,7 +91,26 @@ void BuildingsTypes::load(const char *filename)
 		else
 			assert((*it)->hpInc==0);
 		
-		//hpInc consistency:
+		//mpMax/hpInit integrity:
+		if ((*it)->isBuildingSite)
+		{
+			BuildingType *bt1=*it;
+			assert(bt1);
+			if (bt1->level)
+			{
+				assert(bt1->lastLevelTypeNum!=-1);
+				BuildingType *bt2=entitiesTypes.at(bt1->lastLevelTypeNum);
+				assert(bt2);
+				if (bt1->hpInit!=bt2->hpMax)
+				{
+					printf("Warning, with building type %d==%d. Building site (tn%d) has has hpInit=%d, but building (tn%d) has hpMax=%d\n",
+						bt1->type, bt2->type, bt1->typeNum, bt1->hpInit, bt2->typeNum, bt2->hpMax);
+				}
+			}
+		}
+		
+		
+		//hpInit/hpInc integrity:
 		if ((*it)->isBuildingSite)
 		{
 			int resSum=0;
