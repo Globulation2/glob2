@@ -72,7 +72,6 @@ namespace GAGGUI
 				int dx=event->button.x-x-3;
 				int v=(dx+(iSize>>1))/iSize;
 				clipValue(v);
-				repaint();
 				parent->onAction(this, VALUE_CHANGED, value, 0);
 			}
 		}
@@ -84,13 +83,12 @@ namespace GAGGUI
 				int dx=event->motion.x-x-3;
 				int v=(dx+(iSize>>1))/iSize;
 				clipValue(v);
-				repaint();
 				parent->onAction(this, VALUE_CHANGED, value, 0);
 			}
 		}
 	}
 	
-	void Selector::internalInit(int x, int y, int w, int h)
+	void Selector::init(void)
 	{
 		if (id>=0)
 		{
@@ -98,9 +96,13 @@ namespace GAGGUI
 			assert(archPtr);
 		}
 	}
-	
-	void Selector::internalRepaint(int x, int y, int w, int h)
+ 
+ 
+	void Selector::paint(GAGCore::DrawableSurface *gfx)
 	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		unsigned l=(count-1)*size-2;
 		unsigned hSize = std::max(size, 10u);
 	

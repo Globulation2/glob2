@@ -77,7 +77,6 @@ void YOGScreen::updateGameList(void)
 	gameList->clear();
 	for (std::list<YOG::GameInfo>::iterator game=yog->games.begin(); game!=yog->games.end(); ++game)
 		gameList->addText(game->name);
-	gameList->commit();
 }
 
 void YOGScreen::updatePlayerList(void)
@@ -109,7 +108,6 @@ void YOGScreen::updatePlayerList(void)
 		else
 			playerList->addText(client->userName);
 	}
-	playerList->commit();
 }
 
 void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -142,7 +140,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 				updateGameList();
 			if (yog->newPlayerList(true))
 				updatePlayerList();
-			dispatchPaint(gfxCtx);
 			yog->unshareGame();
 		}
 		else if (par1==JOIN)
@@ -190,17 +187,6 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else
 			;//TODO: a better communication system between YOG and YOGScreen!
 	}
-}
-
-void YOGScreen::paint(int x, int y, int w, int h)
-{
-	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	/*if (y<40)
-	{
-		const char *text= Toolkit::getStringTable()->getString("[yog]");
-		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 10, globalContainer->menuFont, "%s", text);
-	}*/
-	addUpdateRect();
 }
 
 void YOGScreen::onTimer(Uint32 tick)
@@ -322,7 +308,6 @@ void YOGScreen::onTimer(Uint32 tick)
 			updateGameList();
 		if (yog->newPlayerList(true))
 			updatePlayerList();
-		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}
 	

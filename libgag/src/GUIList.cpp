@@ -37,6 +37,7 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 	
+		assert(font);
 		this->font=font;
 		nth=-1;
 		disp=0;
@@ -72,7 +73,6 @@ namespace GAGGUI
 					if (disp)
 					{
 						disp--;
-						repaint();
 					}
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21, 21, blockPos))
@@ -82,7 +82,6 @@ namespace GAGGUI
 						disp=0;
 					else
 						disp-=count;
-					repaint();
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+21+blockPos+blockLength, 21, h-42-blockPos-blockLength))
 				{
@@ -90,7 +89,6 @@ namespace GAGGUI
 					disp+=count;
 					if (disp>strings.size()-count)
 						disp=strings.size()-count;
-					repaint();
 				}
 				else if (isPtInRect(event->button.x, event->button.y, x+w-21, y+h-21, 21, 21))
 				{
@@ -98,7 +96,6 @@ namespace GAGGUI
 					if (disp<strings.size()-count)
 					{
 						disp++;
-						repaint();
 					}
 				}
 				wSel = w-20;
@@ -119,7 +116,6 @@ namespace GAGGUI
 						{
 							nth=id;
 							this->selectionChanged();
-							repaint();
 						}
 					}
 				}
@@ -132,7 +128,6 @@ namespace GAGGUI
 					if (disp)
 					{
 						disp--;
-						repaint();
 					}
 				}
 				else if (event->button.button == 5)
@@ -141,7 +136,6 @@ namespace GAGGUI
 					if (disp<strings.size()-count)
 					{
 						disp++;
-						repaint();
 					}
 				}
 			}
@@ -153,30 +147,33 @@ namespace GAGGUI
 		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 	}
 	
-	
-	void List::internalPaint(void)
+	void List::init(void)
 	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
 		textHeight = fontPtr->getStringHeight((const char *)NULL);
+		assert(textHeight > 0);
+	}
+	
+	void List::paint(GAGCore::DrawableSurface *gfx)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
 	
 		int nextSize=textHeight;
 		int yPos=y+2;
 		int i=0;
 		unsigned elementLength;
 	
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
 	
 		unsigned count = (h-4) / textHeight;
 		if (strings.size() > count)
 		{
 			// draw line and arrows
-			parent->getSurface()->drawVertLine(x+w-21, y, h, 180, 180, 180);
-			parent->getSurface()->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
-			parent->getSurface()->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
+			gfx->drawVertLine(x+w-21, y, h, 180, 180, 180);
+			gfx->drawHorzLine(x+w-20, y+21, 19, 180, 180, 180);
+			gfx->drawHorzLine(x+w-20, y+h-21, 19, 180, 180, 180);
 	
 			unsigned j;
 			int baseX = x+w-11;
@@ -184,12 +181,12 @@ namespace GAGGUI
 			int baseY2 = y+h-11;
 			for (j=7; j>4; j--)
 			{
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
-				parent->getSurface()->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
+				gfx->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, 255, 255, 255);
+				gfx->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, 255, 255, 255);
+				gfx->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, 255, 255, 255);
+				gfx->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, 255, 255, 255);
+				gfx->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, 255, 255, 255);
+				gfx->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, 255, 255, 255);
 			}
 	
 			// draw slider
@@ -198,7 +195,7 @@ namespace GAGGUI
 			{
 				blockLength = (count * leftSpace) / strings.size();
 				blockPos = (disp * (leftSpace - blockLength)) / (strings.size() - count);
-				parent->getSurface()->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
+				gfx->drawRect(x+w-20, y+22+blockPos, 19, blockLength, 255, 255, 255);
 			}
 			else
 			{
@@ -207,44 +204,27 @@ namespace GAGGUI
 			}
 	
 			elementLength = w-22;
-			parent->getSurface()->setClipRect(x+1, y+1, w-22, h-2);
+			gfx->setClipRect(x+1, y+1, w-22, h-2);
 		}
 		else
 		{
 			disp = 0;
 	
 			elementLength = w-2;
-			parent->getSurface()->setClipRect(x+1, y+1, w-2, h-2);
+			gfx->setClipRect(x+1, y+1, w-2, h-2);
 		}
 	
 		while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 		{
-			parent->getSurface()->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
+			gfx->drawString(x+2, yPos, fontPtr, (strings[i+disp]).c_str());
 			if (i+(int)disp==nth)
-				parent->getSurface()->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
+				gfx->drawRect(x+1, yPos-1, elementLength, textHeight, 170, 170, 240);
 			nextSize+=textHeight;
 			i++;
 			yPos+=textHeight;
 		}
 		
-		parent->getSurface()->setClipRect();
-	}
-	
-	void List::paint(void)
-	{
-		if (visible)
-			internalPaint();
-	}
-	
-	void List::repaint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		
-		parent->paint(x, y, w, h);
-		if (visible)
-			internalPaint();
-		parent->addUpdateRect(x, y, w, h);
+		gfx->setClipRect();
 	}
 	
 	void List::addText(const char *text, int pos)

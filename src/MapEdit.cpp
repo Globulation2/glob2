@@ -772,7 +772,7 @@ void MapEdit::loadSave(bool isLoad)
 {
 	// create dialog box
 	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("maps", "map", isLoad, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
-	loadSaveScreen->dispatchPaint(loadSaveScreen->getSurface());
+	loadSaveScreen->dispatchPaint();
 
 	// save screen
 	globalContainer->gfx->setClipRect();
@@ -811,7 +811,7 @@ void MapEdit::scriptEditor(void)
 {
 	// create dialog box
 	ScriptEditorScreen *scriptEditorScreen=new ScriptEditorScreen(&(game.script), &game);
-	scriptEditorScreen->dispatchPaint(scriptEditorScreen->getSurface());
+	scriptEditorScreen->dispatchPaint();
 
 	// save screen
 	globalContainer->gfx->setClipRect();

@@ -23,6 +23,7 @@
 #include <GUIBase.h>
 using namespace GAGGUI;
 #include "MapGenerationDescriptor.h"
+#include <string>
 
 //! Widget to preview map
 /*!
@@ -37,6 +38,7 @@ public:
 	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *mapName=NULL);
 	//! Destructor
 	virtual ~MapPreview() { }
+	virtual void paint(GAGCore::DrawableSurface *gfx);
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const char *mapName=NULL);
 	//! Returns last map width
@@ -46,10 +48,8 @@ public:
 	const char *getMethode(void);
 	
 protected:
-	virtual void internalRepaint(int x, int y, int w, int h);
-
 	//! internal name, is a pointer to a char* somewhere.
-	const char *mapName;
+	std::string mapName;
 	//! map last size
 	int lastW, lastH;
 	bool randomGenerated;

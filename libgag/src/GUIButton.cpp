@@ -73,7 +73,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void Button::internalInit(int x, int y, int w, int h)
+	void Button::init(void)
 	{
 		if ((standardId>=0)||(highlightID>=0))
 		{
@@ -82,17 +82,20 @@ namespace GAGGUI
 		}
 	}
 	
-	void Button::internalRepaint(int x, int y, int w, int h)
+	void Button::paint(GAGCore::DrawableSurface *gfx)
 	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		if (highlighted)
 		{
 			if (highlightID>=0)
-				parent->getSurface()->drawSprite(x, y, archPtr, highlightID);
+				gfx->drawSprite(x, y, archPtr, highlightID);
 		}
 		else
 		{
 			if (standardId>=0)
-				parent->getSurface()->drawSprite(x, y, archPtr, standardId);
+				gfx->drawSprite(x, y, archPtr, standardId);
 		}
 	}
 	
@@ -107,29 +110,32 @@ namespace GAGGUI
 		fontPtr=NULL;
 	}
 	
-	void TextButton::internalInit(int x, int y, int w, int h)
+	void TextButton::init(void)
 	{
-		Button::internalInit(x, y, w, h);
-		fontPtr=Toolkit::getFont(font.c_str());
+		Button::init();
+		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
 	}
 	
-	void TextButton::internalRepaint(int x, int y, int w, int h)
+	void TextButton::paint(GAGCore::DrawableSurface *gfx)
 	{
-		Button::internalRepaint(x, y, w, h);
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
+		Button::paint(gfx);
 	
 		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
 		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
 	
-		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
+		gfx->drawString(x+decX, y+decY, fontPtr, text.c_str());
 		if (highlighted)
 		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
+			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			gfx->drawRect(x, y, w, h, 255, 255, 255);
 		}
 		else
 		{
-			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+			gfx->drawRect(x, y, w, h, 180, 180, 180);
 		}
 	}
 	
@@ -137,7 +143,6 @@ namespace GAGGUI
 	{
 		assert(text);
 		this->text=text;
-		repaint();
 	}
 	
 	
@@ -167,7 +172,6 @@ namespace GAGGUI
 				(event->button.button == SDL_BUTTON_LEFT))
 			{
 				state=!state;
-				repaint();
 				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, state == true ? 1 : 0);
 			}
@@ -179,21 +183,24 @@ namespace GAGGUI
 		}
 	}
 	
-	void OnOffButton::internalRepaint(int x, int y, int w, int h)
+	void OnOffButton::paint(GAGCore::DrawableSurface *gfx)
 	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		if (highlighted)
 		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
+			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			gfx->drawRect(x, y, w, h, 255, 255, 255);
 		}
 		else
-			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+			gfx->drawRect(x, y, w, h, 180, 180, 180);
 		if (state)
 		{
-			parent->getSurface()->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-			parent->getSurface()->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
+			gfx->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
+			gfx->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
+			gfx->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
+			gfx->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
 		}
 	}
 	
@@ -202,7 +209,6 @@ namespace GAGGUI
 		if (newState!=state)
 		{
 			state=newState;
-			repaint();
 		}
 	}
 	
@@ -235,7 +241,6 @@ namespace GAGGUI
 					selColor++;
 					if (selColor>=(signed)v.size())
 						selColor=0;
-					repaint();
 	
 					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
 					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
@@ -245,7 +250,6 @@ namespace GAGGUI
 					selColor--;
 					if (selColor<0)
 						selColor=(signed)v.size()-1;
-					repaint();
 					
 					parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
 					parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
@@ -262,20 +266,23 @@ namespace GAGGUI
 		}
 	}
 	
-	void ColorButton::internalRepaint(int x, int y, int w, int h)
+	void ColorButton::paint(GAGCore::DrawableSurface *gfx)
 	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		if (highlighted)
 		{
-			parent->getSurface()->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-			parent->getSurface()->drawRect(x, y, w, h, 255, 255, 255);
+			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			gfx->drawRect(x, y, w, h, 255, 255, 255);
 			if (v.size())
-				parent->getSurface()->drawFilledRect(x+2, y+2, w-4, h-4, v[selColor].r, v[selColor].g, v[selColor].b);
+				gfx->drawFilledRect(x+2, y+2, w-4, h-4, v[selColor].r, v[selColor].g, v[selColor].b);
 		}
 		else
 		{
-			parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
+			gfx->drawRect(x, y, w, h, 180, 180, 180);
 			if (v.size())
-				parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
+				gfx->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor].r, v[selColor].g, v[selColor].b);
 		}
 	}
 	

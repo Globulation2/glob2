@@ -38,6 +38,7 @@ namespace GAGGUI
 		this->vAlignFlag=vAlign;
 	
 		this->readOnly=readOnly;
+		// TODO : clean this and store text font
 		this->font=Toolkit::getFont(font);
 		assert(this->font);
 		assert(font);
@@ -56,53 +57,6 @@ namespace GAGGUI
 	TextArea::~TextArea(void)
 	{
 		
-	}
-	
-	void TextArea::internalPaint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		areaHeight=(h-8)/charHeight;
-		parent->getSurface()->setClipRect(x, y, w, h);
-		parent->getSurface()->drawRect(x, y, w, h, 180, 180, 180);
-		
-		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
-		{
-			assert(i+areaPos<lines.size());
-			if (i+areaPos<lines.size()-1)
-			{
-				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
-			}
-			else
-			{
-				const std::string &substr = text.substr(lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
-			}
-		}
-	
-		if (!readOnly)
-		{
-			parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
-		}
-		parent->getSurface()->setClipRect();
-	}
-	
-	void TextArea::paint(void)
-	{
-		layout();
-		internalPaint();
-	}
-	
-	void TextArea::repaint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		parent->paint(x, y, w, h);
-		internalPaint();
-		parent->addUpdateRect(x, y, w, h);
 	}
 	
 	void TextArea::onSDLEvent(SDL_Event *event)
@@ -153,7 +107,7 @@ namespace GAGGUI
 					{
 						cursorPos=lines[cursorPosY];
 					}
-					computeAndRepaint();
+					compute();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
@@ -171,7 +125,7 @@ namespace GAGGUI
 						else
 							cursorPos=text.length();
 					}
-					computeAndRepaint();
+					compute();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
@@ -208,7 +162,7 @@ namespace GAGGUI
 							}
 						}
 	
-						computeAndRepaint();
+						compute();
 					}
 				}
 				break;
@@ -253,7 +207,7 @@ namespace GAGGUI
 								}
 							}
 							
-							computeAndRepaint();
+							compute();
 						}
 					}
 				}
@@ -276,7 +230,7 @@ namespace GAGGUI
 							cursorPos=lines[cursorPosY]-1;
 						}
 						
-						computeAndRepaint();
+						compute();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
@@ -308,7 +262,7 @@ namespace GAGGUI
 							cursorPos=lines[cursorPosY+1]+newLineLen;
 						}
 	
-						computeAndRepaint();
+						compute();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
@@ -337,7 +291,7 @@ namespace GAGGUI
 								break;
 							}
 						}
-						computeAndRepaint();
+						compute();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 					else
@@ -345,7 +299,7 @@ namespace GAGGUI
 						if (cursorPos>0)
 						{
 							cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
-							computeAndRepaint();
+							compute();
 							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 						}
 					}
@@ -383,13 +337,13 @@ namespace GAGGUI
 								else
 									cont = false;
 							}
-							computeAndRepaint();
+							compute();
 							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 						}
 						else
 						{	
 							cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
-							computeAndRepaint();
+							compute();
 							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 						}
 					}
@@ -467,10 +421,46 @@ namespace GAGGUI
 	void TextArea::setCursorPos(unsigned pos)
 	{
 		cursorPos = std::min(pos, (unsigned int)text.length());
-		computeAndRepaint();
+		compute();
 	}
 	
-	void TextArea::computeAndRepaint(void)
+	void TextArea::init(void)
+	{
+		layout();
+	}
+	
+	void TextArea::paint(GAGCore::DrawableSurface *gfx)
+	{
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+	
+		areaHeight=(h-8)/charHeight;
+		gfx->setClipRect(x, y, w, h);
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
+		
+		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
+		{
+			assert(i+areaPos<lines.size());
+			if (i+areaPos<lines.size()-1)
+			{
+				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
+				gfx->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+			}
+			else
+			{
+				const std::string &substr = text.substr(lines[i+areaPos]);
+				gfx->drawString(x+4, y+4+(charHeight*i), w-8, font, substr.c_str());
+			}
+		}
+	
+		if (!readOnly)
+		{
+			gfx->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
+		}
+		gfx->setClipRect();
+	}
+	
+	void TextArea::compute(void)
 	{
 		// The only variable which is always valid is cursorPos,
 		// so now we recompute cursorPosY from it.
@@ -529,9 +519,6 @@ namespace GAGGUI
 			const std::string &temp = text.substr(lines[cursorPosY], cursorPosX);
 			cursorScreenPosY=font->getStringWidth(temp.c_str());
 		}
-	
-		// repaint
-		repaint();
 	}
 	
 	void TextArea::layout(void)
@@ -611,7 +598,7 @@ namespace GAGGUI
 		if (cursorPos>this->text.length())
 			cursorPos = this->text.length();
 		layout();
-		computeAndRepaint();
+		compute();
 	}
 	
 	void TextArea::addText(const char *text)
@@ -633,7 +620,7 @@ namespace GAGGUI
 			}
 			
 			layout();
-			computeAndRepaint();
+			compute();
 		}
 	}
 	
@@ -644,7 +631,7 @@ namespace GAGGUI
 			text.erase(pos, len);
 			
 			layout();
-			computeAndRepaint();
+			compute();
 		}
 	}
 	
@@ -663,7 +650,7 @@ namespace GAGGUI
 			if (areaPos<lines.size()-areaHeight-1)
 			{
 				areaPos++;
-				repaint();
+				compute();
 			}
 		}
 	}
@@ -675,7 +662,7 @@ namespace GAGGUI
 			if (areaPos>0)
 			{
 				areaPos--;
-				repaint();
+				compute();
 			}
 		}
 	}
@@ -686,6 +673,6 @@ namespace GAGGUI
 		{
 			areaPos++;
 		}
-		repaint();
+		compute();
 	}
 }

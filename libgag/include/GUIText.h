@@ -43,13 +43,11 @@ namespace GAGGUI
 		Text() { fontPtr=NULL; }
 		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0);
 		virtual ~Text() { }
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 		virtual const char *getText() const { return text.c_str();}
 		virtual void setText(const char *newText);
 		virtual void setStyle(GAGCore::Font::Style style);
-	
-	protected:
-		virtual void internalInit(int x, int y, int w, int h);
-		virtual void internalRepaint(int x, int y, int w, int h);
 	};
 }
 

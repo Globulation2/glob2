@@ -58,7 +58,7 @@ namespace GAGGUI
 		cursPos=0;
 		textDep=0;
 		cursorScreenPos=0;
-		repaint();
+		recomputeTextInfos();
 		parent->onAction(this, TEXT_SET, 0, 0);
 	}
 	
@@ -80,13 +80,13 @@ namespace GAGGUI
 					while((cursPos>0) && (fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep)>dx))
 						--cursPos;
 	
-					repaint();
+					recomputeTextInfos();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				else
 				{
 					activated=true;
-					repaint();
+					recomputeTextInfos();
 					parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 				}
 			}
@@ -120,7 +120,7 @@ namespace GAGGUI
 								break;
 							}
 						}
-						repaint();
+						recomputeTextInfos();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 					else
@@ -128,7 +128,7 @@ namespace GAGGUI
 						if (cursPos<l)
 						{
 							cursPos=getNextUTF8Char(text.c_str(), cursPos);
-							repaint();
+							recomputeTextInfos();
 							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 						}
 					}
@@ -155,7 +155,7 @@ namespace GAGGUI
 								break;
 							}
 						}
-						repaint();
+						recomputeTextInfos();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 					else
@@ -163,7 +163,7 @@ namespace GAGGUI
 						if (cursPos>0)
 						{
 							cursPos=getPrevUTF8Char(text.c_str(), cursPos);
-							repaint();
+							recomputeTextInfos();
 							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 						}
 					}
@@ -180,7 +180,7 @@ namespace GAGGUI
 		
 						cursPos=last;
 		
-						repaint();
+						recomputeTextInfos();
 						parent->onAction(this, TEXT_MODIFIED, 0, 0);
 					}
 				}
@@ -194,7 +194,7 @@ namespace GAGGUI
 		
 						text.erase(cursPos, utf8l);
 		
-						repaint();
+						recomputeTextInfos();
 						parent->onAction(this, TEXT_MODIFIED, 0, 0);
 					}
 				}
@@ -203,7 +203,7 @@ namespace GAGGUI
 				case SDLK_HOME:
 				{
 					cursPos=0;
-					repaint();
+					recomputeTextInfos();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
@@ -211,7 +211,7 @@ namespace GAGGUI
 				case SDLK_END:
 				{
 					cursPos=text.length();
-					repaint();
+					recomputeTextInfos();
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
@@ -242,13 +242,51 @@ namespace GAGGUI
 							text.insert(cursPos, utf8text);
 							cursPos+=lutf8;
 		
-							repaint();
+							recomputeTextInfos();
 		
 							parent->onAction(this, TEXT_MODIFIED, 0, 0);
 						}
 					}
 				}
 			}
+		}
+	}
+	
+	void TextInput::init(void)
+	{
+		fontPtr = Toolkit::getFont(font.c_str());
+		assert(fontPtr);
+	}
+	
+	void TextInput::paint(GAGCore::DrawableSurface *gfx)
+	{
+		static const int r= 180;
+		static const int g= 180;
+		static const int b= 180;
+	
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+	
+		recomputeTextInfos();
+	
+		assert(parent);
+		assert(parent->getSurface());
+		parent->getSurface()->drawRect(x, y, w, h, r, g, b);
+		
+		if (password)
+		{
+			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, pwd.c_str());
+		}
+		else
+		{
+			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, text.c_str()+textDep);
+		}
+	
+		// we draw the cursor:
+		if(activated)
+		{
+			int hbc=fontPtr->getStringHeight(text.c_str());
+			parent->getSurface()->drawVertLine(x+2+cursorScreenPos, y+3 , hbc, r, g, b);
 		}
 	}
 	
@@ -302,50 +340,6 @@ namespace GAGGUI
 				cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
 			}
 		}
-	}
-	
-	void TextInput::paint(void)
-	{
-		static const int r= 180;
-		static const int g= 180;
-		static const int b= 180;
-	
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		fontPtr = Toolkit::getFont(font.c_str());
-		assert(fontPtr);
-		recomputeTextInfos();
-	
-		assert(parent);
-		assert(parent->getSurface());
-		parent->getSurface()->drawRect(x, y, w, h, r, g, b);
-		
-		if (password)
-		{
-			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, pwd.c_str());
-		}
-		else
-		{
-			parent->getSurface()->drawString(x+2, y+3, w-6, fontPtr, text.c_str()+textDep);
-		}
-	
-		// we draw the cursor:
-		if(activated)
-		{
-			int hbc=fontPtr->getStringHeight(text.c_str());
-			parent->getSurface()->drawVertLine(x+2+cursorScreenPos, y+3 , hbc, r, g, b);
-		}
-	}
-	
-	void TextInput::repaint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		parent->paint(x, y, w, h);
-		paint();
-		parent->addUpdateRect(x, y, w, h);
 	}
 }
 

@@ -43,11 +43,13 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 void EndGameStat::setStatType(EndOfGameStat::Type type)
 {
 	this->type=type;
-	repaint();
 }
 
-void EndGameStat::internalRepaint(int x, int y, int w, int h)
+void EndGameStat::paint(GAGCore::DrawableSurface *gfx)
 {
+	int x, y, w, h;
+	getScreenPos(&x, &y, &w, &h);
+		
 	assert(parent);
 	assert(parent->getSurface());
 	

@@ -39,10 +39,10 @@ public:
 	virtual ~EndGameStat() { }
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
+	//! paint routine
+	virtual void paint(GAGCore::DrawableSurface *gfx);
 
 protected:
-	//! internal paint routine
-	void internalRepaint(int x, int y, int w, int h);
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing

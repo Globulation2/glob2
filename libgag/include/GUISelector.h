@@ -49,13 +49,13 @@ namespace GAGGUI
 		virtual ~Selector() { }
 	
 		virtual void onSDLEvent(SDL_Event *event);
+		virtual void init(void);
+		virtual void paint(GAGCore::DrawableSurface *gfx);
 		virtual Uint32 getValue(void) { return value; }
-		virtual void setValue(Uint32 v) { this->value=v; repaint(); }
+		virtual void setValue(Uint32 v) { this->value=v; }
 		virtual Uint32 getCount(void) { return count; }
 	
 	protected:
-		virtual void internalInit(int x, int y, int w, int h);
-		virtual void internalRepaint(int x, int y, int w, int h);
 		void clipValue(int v);
 	};
 }

@@ -104,6 +104,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 		addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]")));
 
 	generateFileName();
+	dispatchInit();
 }
 
 LoadSaveScreen::~LoadSaveScreen()

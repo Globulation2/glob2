@@ -282,6 +282,7 @@ namespace GAGCore
 		virtual void drawSurface(int x, int y, DrawableSurface *surface);
 		virtual void pushFontStyle(Font *font, Font::Style style);
 		virtual void popFontStyle(Font *font);
+		virtual void nextFrame(void) { }
 		virtual void updateRects(SDL_Rect * /*rects*/, int /*size*/) { }
 		virtual void updateRect(int /*x*/, int /*y*/, int /*w*/, int /*h*/) { }
 		virtual void *getPixelPointer(void)  { return surface->pixels; }

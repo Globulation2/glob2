@@ -120,36 +120,12 @@ namespace GAGGUI
 	
 	void RectangularWidget::show(void)
 	{
-		if (!visible)
-			parent->toShow.push_back(this);
+		visible = true;
 	}
 	
 	void RectangularWidget::hide(void)
 	{
-		if (visible)
-			parent->toHide.push_back(this);
-	}
-	
-	void RectangularWidget::doHide(void)
-	{
-		assert(parent);
-		visible=false;
-	
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		parent->paint(x, y, w, h);
-		parent->addUpdateRect(x, y, w, h);
-	}
-	
-	void RectangularWidget::doShow(void)
-	{
-		assert(parent);
-		visible=true;
-	
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		paint();
-		parent->addUpdateRect(x, y, w, h);
+		visible = false;
 	}
 	
 	void RectangularWidget::setVisible(bool newState)
@@ -158,28 +134,6 @@ namespace GAGGUI
 			show();
 		else
 			hide();
-	}
-	
-	void RectangularWidget::paint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-	
-		internalInit(x, y, w, h);
-		internalRepaint(x, y, w, h);
-	}
-	
-	void RectangularWidget::repaint(void)
-	{
-		if (visible)
-		{
-			int x, y, w, h;
-			getScreenPos(&x, &y, &w, &h);
-	
-			parent->paint(x, y, w, h);
-			internalRepaint(x, y, w, h);
-			parent->addUpdateRect(x, y, w, h);
-		}
 	}
 	
 	void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
@@ -259,7 +213,6 @@ namespace GAGGUI
 				if (!highlighted)
 				{
 					highlighted=true;
-					repaint();
 					parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
 				}
 			}
@@ -268,7 +221,6 @@ namespace GAGGUI
 				if (highlighted)
 				{
 					highlighted=false;
-					repaint();
 					parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
 				}
 			}
@@ -277,7 +229,7 @@ namespace GAGGUI
 	
 	Screen::Screen()
 	{
-		gfxCtx = NULL;
+		gfx = NULL;
 		returnCode = 0;
 		run = false;
 	}
@@ -290,28 +242,28 @@ namespace GAGGUI
 		}
 	}
 	
-	void Screen::paint()
-	{
-		assert(gfxCtx);
-		paint(0, 0, gfxCtx->getW(), gfxCtx->getH());
-	}
-	
 	int Screen::execute(DrawableSurface *gfx, int stepLength)
 	{
 		Uint32 frameStartTime;
 		Sint32 frameWaitTime;
+		
+		this->gfx = gfx;
 	
-		dispatchPaint(gfx);
-		addUpdateRect();
-		repaint(gfx);
-		run=true;
+		// init widgets
+		dispatchInit();
+		
+		// create screen event
 		onAction(NULL, SCREEN_CREATED, 0, 0);
+		
+		// draw screen
+		dispatchPaint();
+		run=true;
 		
 		while (run)
 		{
 			// get first timer
 			frameStartTime=SDL_GetTicks();
-	
+			
 			// send timer
 			dispatchTimer(frameStartTime);
 	
@@ -345,9 +297,6 @@ namespace GAGGUI
 					case SDL_VIDEORESIZE:
 					{
 						gfx->setRes(event.resize.w, event.resize.h, gfx->getDepth(), gfx->getFlags());
-						dispatchPaint(gfx);
-						addUpdateRect();
-						repaint(gfx);
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
@@ -363,17 +312,8 @@ namespace GAGGUI
 			if (wasWindowEvent)
 				dispatchEvents(&windowEvent);
 				
-			// process to hide/ to show requests
-			for (unsigned i=0; i<toHide.size(); i++)
-				toHide[i]->doHide();
-			toHide.clear();
-				
-			for (unsigned i=0; i<toShow.size(); i++)
-				toShow[i]->doShow();
-			toShow.clear();
-	
-			// redraw
-			repaint(gfx);
+			// draw
+			dispatchPaint();
 	
 			// wait timer
 			frameWaitTime=SDL_GetTicks()-frameStartTime;
@@ -381,6 +321,8 @@ namespace GAGGUI
 			if (frameWaitTime>0)
 				SDL_Delay(frameWaitTime);
 		}
+		
+		// destroy screen event
 		onAction(NULL, SCREEN_DESTROYED, 0, 0);
 	
 		return returnCode;
@@ -390,23 +332,6 @@ namespace GAGGUI
 	{
 		run=false;
 		this->returnCode=returnCode;
-	}
-	
-	void Screen::addUpdateRect()
-	{
-		assert(gfxCtx);
-		updateRects.clear();
-		addUpdateRect(0, 0, gfxCtx->getW(), gfxCtx->getH());
-	}
-	
-	void Screen::addUpdateRect(int x, int y, int w, int h)
-	{
-		SDL_Rect r;
-		r.x=static_cast<Sint16>(x);
-		r.y=static_cast<Sint16>(y);
-		r.w=static_cast<Uint16>(w);
-		r.h=static_cast<Uint16>(h);
-		updateRects.push_back(r);
 	}
 	
 	void Screen::addWidget(Widget* widget)
@@ -444,44 +369,36 @@ namespace GAGGUI
 		}
 	}
 	
-	void Screen::dispatchPaint(DrawableSurface *gfx)
+	void Screen::dispatchInit(void)
+	{
+		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+		{
+			(*it)->init();
+		}
+	}
+	
+	void Screen::dispatchPaint(void)
 	{
 		assert(gfx);
-		gfxCtx=gfx;
-		gfxCtx->setClipRect();
+		gfx->setClipRect();
 		paint();
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			if ((*it)->visible)
-				(*it)->paint();
+				(*it)->paint(gfx);
 		}
+		gfx->nextFrame();
 	}
 	
-	void Screen::repaint(DrawableSurface *gfx)
+	void Screen::paint(void)
 	{
-		if (updateRects.size()>0)
-		{
-			SDL_Rect *rects=new SDL_Rect[updateRects.size()];
-			
-			for (size_t i=0; i<updateRects.size(); i++)
-				rects[i]=updateRects[i];
-				
-			gfx->updateRects(rects, updateRects.size());
-			
-			delete[] rects;
-			updateRects.clear();
-		}
-	}
-	
-	void Screen::paint(int x, int y, int w, int h)
-	{
-		gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+		gfx->drawFilledRect(0, 0, getW(), getH(), 0, 0, 0);
 	}
 	
 	int Screen::getW(void)
 	{
-		if (gfxCtx)
-			return gfxCtx->getW();
+		if (gfx)
+			return gfx->getW();
 		else
 			return 0;
 	
@@ -489,8 +406,8 @@ namespace GAGGUI
 	
 	int Screen::getH(void)
 	{
-		if (gfxCtx)
-			return gfxCtx->getH();
+		if (gfx)
+			return gfx->getH();
 		else
 			return 0;
 	}
@@ -499,9 +416,9 @@ namespace GAGGUI
 	
 	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
 	{
-		gfxCtx=new DrawableSurface();
-		gfxCtx->setRes(w, h);
-		gfxCtx->setAlpha(false, 180);
+		gfx=new DrawableSurface();
+		gfx->setRes(w, h);
+		gfx->setAlpha(false, 180);
 		decX=(parentCtx->getW()-w)>>1;
 		decY=(parentCtx->getH()-h)>>1;
 		endValue=-1;
@@ -509,7 +426,12 @@ namespace GAGGUI
 	
 	OverlayScreen::~OverlayScreen()
 	{
-		delete gfxCtx;
+		delete gfx;
+	}
+	
+	int OverlayScreen::execute(DrawableSurface *gfx, int stepLength)
+	{
+		return Screen::execute(this->gfx, stepLength);
 	}
 	
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
@@ -532,9 +454,8 @@ namespace GAGGUI
 		dispatchEvents(&ev);
 	}
 	
-	void OverlayScreen::paint(int x, int y, int w, int h)
+	void OverlayScreen::paint(void)
 	{
-		//gfxCtx->drawFilledRect(x, y, w, h, 15, 44, 79);
-		gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 40);
+		gfx->drawFilledRect(0, 0, getW(), getH(), 0, 0, 40);
 	}
 }
