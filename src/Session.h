@@ -43,8 +43,17 @@ public:
 	virtual Sint32 checkSum();
 	
 public:
+	//! Major map version. Change only with structural modification
 	Sint32 versionMajor;
+	//! Minor map version. Change each time something has been changed in serialized version.
 	Sint32 versionMinor;
+
+	//! Offset of array of players from beginning of file
+	Uint32 playersOffset;
+	//! Offset of array of teams from beginning of file
+	Uint32 teamsOffset;
+	//! Offset of map (terrain) data from beginning of file
+	Uint32 mapOffset;
 
 	Sint32 numberOfPlayer;
 	Sint32 numberOfTeam;

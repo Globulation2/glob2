@@ -26,6 +26,10 @@ SessionGame::SessionGame()
 {
 	versionMajor=0;
 	versionMinor=1;
+	playersOffset=0;
+	teamsOffset=0;
+	mapOffset=0;
+
 	numberOfPlayer=0;
 	numberOfTeam=0;
 	gameTPF=40;
