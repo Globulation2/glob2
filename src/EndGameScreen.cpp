@@ -19,6 +19,7 @@
 
 #include "EndGameScreen.h"
 #include "GlobalContainer.h"
+#include <algorithm>
 
 EndGameStat::EndGameStat(int x, int y, Game *game)
 {
@@ -45,6 +46,7 @@ void EndGameStat::repaint(void)
 	assert(parent->getSurface());
 	
 	// draw background
+	parent->paint(x, y, 128*3, 256);
 	parent->getSurface()->drawRect(x, y, 128*3, 256, 180, 180, 180);
 	
 	// find maximum
@@ -91,10 +93,16 @@ void EndGameStat::repaint(void)
 }
 
 
+//! This function is used to sort the player array
+struct LessScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
+{
+	EndOfGameStat::Type type;
+	bool operator()(const TeamEntry& t1, const TeamEntry& t2) { return t1.endVal[type]<t1.endVal[type]; }
+};
+
+
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
-	this->gui=gui;
-	
 	// title & graph
 	char *titleText;
 	bool allocatedText=false;
@@ -139,24 +147,49 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(new Text(20, 18, globalContainer->menuFont, titleText, 600));
 	if (allocatedText)
 		delete[] titleText;
-	statWidget=new EndGameStat(208, 80, &(gui->game));
+	statWidget=new EndGameStat(38, 80, &(gui->game));
 	addWidget(statWidget);
 	
 	// add buttons
-	addWidget(new TextButton(260, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(360, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(460, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(90, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 350, 80, 20, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Prestige]"), 2, '3'));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), 3, 13));
 	
 	// add players name
 	Text *text;
 	int inc = (gui->game.session.numberOfTeam < 16) ? 20 : 10;
 	Font *font = (gui->game.session.numberOfTeam < 16) ? globalContainer->standardFont : globalContainer->littleFont;
+
+	// set teams entries for later sort
 	for (int i=0; i<gui->game.session.numberOfTeam; i++)
 	{
 		Team *t=gui->game.teams[i];
-		text=new Text(30, 80+(i*inc), font, t->getFirstPlayerName());
-		text->setColor(t->colorR, t->colorG, t->colorB);
+		int statsIndex = t->stats.endOfGameStatIndex;
+		int endIndex=(statsIndex+(TeamStats::END_OF_GAME_STATS_SIZE-1))&0x7F;
+
+		struct TeamEntry entry;
+		entry.name=t->getFirstPlayerName();
+		entry.r=t->colorR;
+		entry.g=t->colorG;
+		entry.b=t->colorB;
+		entry.a=0;
+		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
+			entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
+		teams.push_back(entry);	
+	}
+
+	// sort
+	LessScore lessScore;
+	lessScore.type=EndOfGameStat::TYPE_UNITS;
+	std::sort(teams.begin(), teams.end(), lessScore);
+	
+	// add widgets
+	for (unsigned i=0; i<teams.size(); i++)
+	{
+		text=new Text(60+128*3, 80+(i*inc), font, teams[i].name.c_str());
+		text->setColor(teams[i].r, teams[i].g, teams[i].b);
+		names.push_back(text);
 		addWidget(text);
 	}
 }
@@ -166,8 +199,25 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1<3)
-			statWidget->setStatType((EndOfGameStat::Type)par1);
+		{
+			EndOfGameStat::Type type = (EndOfGameStat::Type)par1;
+			statWidget->setStatType(type);
+			sortAndSet(type);
+		}
 		else
 			endExecute(par1);
+	}
+}
+
+
+void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
+{
+	LessScore lessScore;
+	lessScore.type=type;
+	std::sort(teams.begin(), teams.end(), lessScore);
+	for (unsigned i=0; i<names.size(); i++)
+	{
+		names[i]->setText(teams[i].name.c_str());
+		names[i]->setColor(teams[i].r, teams[i].g, teams[i].b);
 	}
 }
