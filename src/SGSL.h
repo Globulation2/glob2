@@ -125,7 +125,7 @@ public:
 private:
 	bool conditionTester();
 	bool testCondition();
-	int valueOfVariable(Token nameOfVariable,int numberOfPlayer);
+	int valueOfVariable(Token nameOfVariable,int numberOfPlayer, int level);
 	int lineSelector;
 	Mapscript *mapscript;
 	int internTimer;
