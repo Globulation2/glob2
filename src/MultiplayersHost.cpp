@@ -26,6 +26,10 @@
 #include "Utilities.h"
 #include "LogFileManager.h"
 
+#ifndef INADDR_BROADCAST
+#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
+#endif
+
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
 :MultiplayersCrossConnectable()
 {
