@@ -51,11 +51,19 @@ public:
 	Order *getOrder(void);
 	
 private:
+	void computeCanSwim();
+	
 	void computeObstacleUnitMap();
+	void computeObstacleBuildingMap();
+	void computeSpaceForBuildingMap();
+	void computeFoodBuildingNeighbourMap();
+	
 	void computeWorkPowerMap();
 	void computeWorkRangeMap();
 	void computeWorkAbilityMap();
 	void computeHydratationMap();
+	void computeWheatGrowthMap();
+	Order *computeGoodFoodBuildingMap(Uint8 minWork, Uint8 minWheat);
 	
 	void computeRessourcesCluster();
 	
@@ -67,12 +75,20 @@ private:
 	bool hydratationMapComputed;
 	
 public:
+	bool canSwim;
 	
 	Uint8 *obstacleUnitMap;
+	Uint8 *obstacleBuildingMap;
+	Uint8 *spaceForBuildingMap;
+	Uint8 *foodBuildingNeighbourMap;
+	
 	Uint8 *workPowerMap;
 	Uint8 *workRangeMap;
 	Uint8 *workAbilityMap;
 	Uint8 *hydratationMap;
+	Uint8 *wheatGrowthMap;
+	
+	Uint8 *goodFoodBuildingMap;
 	
 	Uint16 *ressourcesCluster;
 	
