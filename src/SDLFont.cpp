@@ -415,6 +415,8 @@ unsigned SDLTTFont::getStyle(void) const
 void SDLTTFont::drawString(SDL_Surface *Surface, int x, int y, int w, const char *text, SDL_Rect *clip=NULL) const
 {
 	assert(text);
+	assert(font);
+	assert(colorStack.size()>0);
 	
 	SDL_Color c = colorStack.top();
 	SDL_Surface *s=TTF_RenderText_Blended(font, text, c);

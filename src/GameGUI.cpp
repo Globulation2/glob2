@@ -1247,8 +1247,10 @@ void GameGUI::draw(void)
 			if (selBuild->type->armor)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+12, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[armor]"), selBuild->type->armor);
 			if (selBuild->type->shootDamage)
+			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+22, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selBuild->type->shootDamage);
-
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+32, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->type->shootingRange);
+			}
 			if ((selBuild->owner->allies) &(1<<localTeam))
 			{
 				if (selBuild->type->maxUnitWorking)
