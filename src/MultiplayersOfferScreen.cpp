@@ -23,7 +23,7 @@
 MultiplayersOfferScreen::MultiplayersOfferScreen()
 {
 	addWidget(new TextButton(150,  25, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[host]"), HOST));
-	addWidget(new TextButton(150,  90, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN));
+	addWidget(new TextButton(150,  90, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join a game]"), JOIN));
 	addWidget(new TextButton(150, 415, 340, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[goto main menu]"), QUIT, 27));
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());

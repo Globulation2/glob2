@@ -37,15 +37,20 @@ YOGScreen::YOGScreen()
 {
 	multiplayersJoin=new MultiplayersJoin(true);
 
-	addWidget(new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
-	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
+	addWidget(new TextButton(440, 380, 180, 30, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[create game]"), CREATE_GAME));
+	addWidget(new TextButton(440, 430, 180, 30, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[quit]"), CANCEL, 27));
 	
-	gameList=new List(20, 40, 400, 180, globalContainer->standardFont);
+	gameList=new List(20, 40, 400, 150, globalContainer->standardFont);
 	addWidget(gameList);
-	playerList=new List(440, 40, 180, 300, globalContainer->standardFont);
+	gameInfo=new TextArea(440, 40, 180, 100, globalContainer->standardFont);
+	addWidget(gameInfo);
+	joinButton=new TextButton(440, 160, 180, 30, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[join]"), JOIN);
+	addWidget(joinButton);
+	
+	playerList=new List(440, 210, 180, 150, globalContainer->standardFont);
 	addWidget(playerList);
 	
-	chatWindow=new TextArea(20, 240, 400, 175, globalContainer->standardFont);
+	chatWindow=new TextArea(20, 210, 400, 205, globalContainer->standardFont);
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 435, 400, 25, globalContainer->standardFont, "", true);
 	addWidget(textInput);
@@ -111,6 +116,15 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			dispatchPaint(gfxCtx);
 			globalContainer->yog->unshareGame(); // zzz Don't we stop sharing game when it start ?
 		}
+		else if (par1==JOIN)
+		{
+			assert(source==joinButton);
+			if (globalContainer->yog->isSelectedGame)
+			{
+				selectedGameInfo=new YOG::GameInfo(*globalContainer->yog->getSelectedGameInfo());
+				multiplayersJoin->tryConnection(selectedGameInfo);
+			}
+		}
 		else if (par1==-1)
 		{
 			multiplayersJoin->quitThisGame();
@@ -136,11 +150,8 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 				if (i==par1)
 				{
 					printf("i=%d\n", i);
+					globalContainer->yog->selectGame(game->uid);
 					assert(game!=globalContainer->yog->games.end());
-					
-					selectedGameInfo=new YOG::GameInfo(*game);
-					multiplayersJoin->tryConnection(selectedGameInfo);
-					
 					break;
 				}
 				else
@@ -264,5 +275,20 @@ void YOGScreen::onTimer(Uint32 tick)
 			updatePlayerList();
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
+	}
+	
+	if (globalContainer->yog->selectedGameinfoUpdated(true))
+	{
+		YOG::GameInfo *yogGameInfo=globalContainer->yog->getSelectedGameInfo();
+		if (yogGameInfo)
+		{
+			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->description);
+			gameInfo->setText(yogGameInfo->description);
+		}
+		else
+		{
+			printf("selectedGameinfoUpdated cleaned\n");
+			gameInfo->setText("");
+		}
 	}
 }

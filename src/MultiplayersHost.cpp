@@ -442,19 +442,44 @@ void MultiplayersHost::removePlayer(char *data, int size, IPaddress ip)
 
 void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddress ip)
 {
-	fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
-	if (rsize!=8)
+	/*if (ip.host==0)
 		return;
+	UDPpacket *packet=SDLNet_AllocPacket(4);
+	if (packet==NULL)
+		return;
+	packet->len=4;
+	char data[4];
+	data[0]=YMT_GAME_INFO_FROM_HOST;
+	data[1]=0;
+	data[2]=0;
+	data[3]=0;
+	memcpy(packet->data, data, 4);
+	packet->address=ip;
+	packet->channel=-1;
+	bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+	if (!sucess)
+		fprintf(logFile, "YOG::failed to send packet!\n");
+	else
+		printf("MultiplayersHost::yogClientRequestsGameInfo to ip=%s\n",  Utilities::stringIP(ip));
+	SDLNet_FreePacket(packet);*/
 	
-	char *sdata="aaaabbbbTODO yogGameInfo";
-	int ssize=strlen(sdata)+1;
+	if (rsize!=8)
+	{
+		fprintf(logFile, "bad size for a yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
+		return;
+	}
+	else
+		fprintf(logFile, "yogClientRequestsGameInfo from ip %s size=%d\n", Utilities::stringIP(ip), rsize);
+	
+	char sdata[128+8];
 	sdata[0]=YMT_GAME_INFO_FROM_HOST;
 	sdata[1]=0;
 	sdata[2]=0;
 	sdata[3]=0;
 	memcpy(sdata+4, rdata+4, 4); // we copy game's uid
-
-	assert(sdata);
+	snprintf(sdata+8, 128, "%s is a %d teams map", sessionInfo.map.getMapName(), sessionInfo.numberOfTeam); // TODO: customise this once it works
+	int ssize=Utilities::strmlen(sdata+8, 128)+8;
+	assert(ssize<128+8);
 	UDPpacket *packet=SDLNet_AllocPacket(ssize);
 	if (packet==NULL)
 		return;
@@ -468,13 +493,11 @@ void MultiplayersHost::yogClientRequestsGameInfo(char *rdata, int rsize, IPaddre
 
 	packet->address=ip;
 	packet->channel=-1;
-	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
+	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
 	if (!sucess)
 		fprintf(logFile, "failed to send yogGameInfo packet!\n");
 
 	SDLNet_FreePacket(packet);
-	
-	return;
 }
 
 void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)

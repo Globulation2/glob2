@@ -23,6 +23,7 @@
 #include "Header.h"
 #include "YOGConsts.h"
 #include <list>
+#include "LANBroadcast.h"
 
 class YOG
 {
@@ -56,6 +57,8 @@ public:
 		char userName[32];
 		char name[128];
 		Uint32 uid;
+		char description[128];
+		bool natSolved;
 	};
 	
 	struct Message
@@ -94,6 +97,8 @@ public:
 	
 	bool enableConnection(const char *userName);
 	void step();
+	
+	void sendGameinfoRequest();
 	
 	void shareGame(const char *gameName);
 	void unshareGame();
@@ -142,7 +147,10 @@ public:
 	
 	Uint32 selectedGame;
 	bool isSelectedGame;
+	bool selectedGameinfoValid;
 	bool newSelectedGameinfoAviable;
+	int selectedGameinfoTimeout;
+	int selectedGameinfoTOTL;
 	
 	int presenceTimeout;
 	int presenceTOTL;
@@ -153,6 +161,10 @@ public:
 	
 	std::list<Client> clients;
 	bool newClientListAviable;
+	
+private:
+	bool enableLan;
+	LANBroadcast lan;
 	
 public:
 	FILE *logFile;

@@ -32,6 +32,7 @@
 #include "Marshaling.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "NetConsts.h"
 
 YOG::YOG()
 {
@@ -49,6 +50,12 @@ YOG::YOG()
 	
 	isSelectedGame=false;
 	newSelectedGameinfoAviable=false;
+	selectedGameinfoValid=false;
+	selectedGameinfoTimeout=0;
+	selectedGameinfoTOTL=0;
+	
+	enableLan=lan.enable(SERVER_PORT);
+	printf("YOG::enableLan=%d.\n", enableLan);
 	
 	// Funny, LogFileManager is not initialised !
 	//logFile=globalContainer->logFileManager.getFile("YOG.log");
@@ -187,18 +194,24 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 	case YMT_BAD:
 		fprintf(logFile, "YOG::bad packet.\n");
 	break;
-	/*case YMT_GAME_INFO_FROM_HOST:
+	case YMT_GAME_INFO_FROM_HOST:
 	{
 		Uint32 uid=getUint32(data, 4);
 		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
 			if (game->uid==uid)
 			{
-				memcpy(game->zzz, data+8, size-8);
+				assert(size-8<128); // TODO: have a secure test.
+				memcpy(game->description, data+8, size-8);
+				game->description[127]=0;
 				if (isSelectedGame && selectedGame==uid)
+				{
 					newSelectedGameinfoAviable=true;
+					selectedGameinfoValid=true;
+				}
+				printf("YMT_GAME_INFO_FROM_HOST (%s)\n", game->description);
 			}
 	}
-	break;*/
+	break;
 	case YMT_MESSAGE:
 	case YMT_PRIVATE_MESSAGE:
 	case YMT_ADMIN_MESSAGE:
@@ -322,6 +335,8 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			game.name[l-1]=0;
 			index+=l;
 			assert(index<=size);
+			memset(game.description, 0, 128);
+			game.natSolved=false;
 			games.push_back(game);
 			fprintf(logFile, "index=%d.\n", index);
 			fprintf(logFile, "YOG::game no=%d uid=%d name=%s host=%s\n", i, game.uid, game.name, game.userName);
@@ -348,6 +363,11 @@ void YOG::treatPacket(IPaddress ip, Uint8 *data, int size)
 			for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
 				if (game->uid==uid)
 				{
+					if (isSelectedGame && uid==selectedGame)
+					{
+						isSelectedGame=false;
+						newSelectedGameinfoAviable=selectedGameinfoValid;
+					}
 					games.erase(game);
 					break;
 				}
@@ -663,6 +683,36 @@ void YOG::step()
 			}
 		}
 		
+		if (isSelectedGame && !newSelectedGameinfoAviable && selectedGameinfoTimeout--<0 && selectedGameinfoTOTL-->0)
+		{
+			sendGameinfoRequest();
+			selectedGameinfoTimeout=DEFAULT_NETWORK_TIMEOUT;
+		}
+		if (isSelectedGame)
+		{
+			int v;
+			char gameName[128];
+			char serverNickName[32];
+			if (lan.receive(&v, gameName, serverNickName))
+			{
+				fprintf(logFile, "YOG::received broadcast response v=(%d), gameName=(%s), serverNickName=(%s).\n", v, gameName, serverNickName);
+				for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+					if ((strncmp(gameName, game->name, 128)==0)
+						&& (strncmp(serverNickName, game->userName, 32)==0))
+					{
+						fprintf(logFile, "Solved a NAT from %s to %s.\n", Utilities::stringIP(game->ip), Utilities::stringIP(lan.getSenderIP()));
+						game->ip.host=lan.getSenderIP();
+						game->ip.port=SDL_SwapBE16(SERVER_PORT);
+						game->natSolved=true;
+						if (game->uid==selectedGame)
+						{
+							selectedGameinfoTOTL++;
+							selectedGameinfoTimeout=2;
+						}
+					}
+			}
+		}
+		
 		UDPpacket *packet=NULL;
 		packet=SDLNet_AllocPacket(YOG_MAX_PACKET_SIZE);
 		assert(packet);
@@ -681,6 +731,47 @@ void YOG::step()
 		}
 		SDLNet_FreePacket(packet);
 	}
+}
+
+void YOG::sendGameinfoRequest()
+{
+	assert(isSelectedGame);
+	
+	for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+		if (game->uid==selectedGame)
+		{
+			if (game->ip.host==0)
+				return;
+			UDPpacket *packet=SDLNet_AllocPacket(8);
+			if (packet==NULL)
+				return;
+			packet->len=8;
+			char data[8];
+			data[0]=YOG_CLIENT_REQUESTS_GAME_INFO;
+			data[1]=0;
+			data[2]=0;
+			data[3]=0;
+			addSint32(data, game->uid, 4);
+			memcpy(packet->data, data, 8);
+			packet->address=game->ip;
+			packet->channel=-1;
+			bool sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
+			if (!sucess)
+				fprintf(logFile, "YOG::failed to send packet!\n");
+			else
+				printf("YOG::sendGameinfoRequest() to ip=%s\n",  Utilities::stringIP(game->ip));
+			SDLNet_FreePacket(packet);
+			
+			
+			if (!game->natSolved && enableLan)
+			{
+				lan.send(BROADCAST_REQUEST);
+				printf("YOG::BROADCAST_REQUEST\n");
+			}
+			break;
+		}
+	
+	
 }
 
 void YOG::shareGame(const char *gameName)
@@ -761,25 +852,33 @@ bool YOG::selectGame(Uint32 uid)
 			selectedGame=uid;
 			isSelectedGame=true;
 			newSelectedGameinfoAviable=false;
+			selectedGameinfoValid=false;
+			selectedGameinfoTimeout=2;
+			selectedGameinfoTOTL=3;
 			return true;
 		}
 	
 	selectedGame=uid;
 	isSelectedGame=false;
 	newSelectedGameinfoAviable=false;
+	selectedGameinfoValid=false;
 	return false;
 }
 
 bool YOG::selectedGameinfoUpdated(bool reset)
 {
-	return isSelectedGame && newSelectedGameinfoAviable;
+	bool rv=newSelectedGameinfoAviable;
+	if (reset)
+		newSelectedGameinfoAviable=false;
+	return rv;
 }
 
 YOG::GameInfo *YOG::getSelectedGameInfo()
 {
-	for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
-		if (game->uid==selectedGame)
-			return &*game;
+	if (isSelectedGame)
+		for (std::list<GameInfo>::iterator game=games.begin(); game!=games.end(); ++game)
+			if (game->uid==selectedGame)
+				return &*game;
 	return NULL;
 }
 
