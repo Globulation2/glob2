@@ -524,7 +524,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -532,7 +532,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapNameC(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;

@@ -83,8 +83,10 @@ namespace GAGCore
 		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
 		void addWriteSubdir(const char *subdir);
 	
-		//! Remove a file or a directory in the virtual filesystem
+		//! Remove a file or a directory in the virtual filesystem, const char *version
 		void remove(const char *filename);
+		//! Remove a file or a directory in the virtual filesystem, std::string version
+		void remove(const std::string &filename) { return remove(filename.c_str()); }
 		//! Returns true if filename is a directory
 		bool isDir(const char *filename);
 	
@@ -98,8 +100,10 @@ namespace GAGCore
 		//! Open an input stream backend, use it to construct specific input streams, std::string version
 		StreamBackend *openInputStreamBackend(const std::string &filename) { return openInputStreamBackend(filename.c_str()); }
 		
-		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
+		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, const char *version
 		SDL_RWops *open(const char *filename, const char *mode="rb");
+		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, std::string version
+		SDL_RWops *open(const std::string &filename, const char *mode="rb") { return open(filename.c_str()); }
 		//! Open a file in the FILE* format
 		FILE *openFP(const char *filename, const char *mode="rb");
 		//! Open a file in the c++ stream format for reading

@@ -45,7 +45,6 @@ MultiplayersJoin::MultiplayersJoin(bool shareOnYog)
 	fprintf(logFile, "INADDR_BROADCAST=%s\n", Utilities::stringIP(INADDR_BROADCAST));
 	assert(logFile);
 	duplicatePacketFile=0;
-	filename=NULL;
 	init(shareOnYog);
 }
 
@@ -159,11 +158,10 @@ void MultiplayersJoin::closeDownload()
 	{
 		fprintf(logFile, " download not finished.\n");
 		SDL_RWclose(downloadStream);
-		assert(filename);
-		assert(filename[0]);
+		assert(filename.length() > 0);
 		globalContainer->fileManager->remove(filename);
+		filename.erase();
 		downloadStream=NULL;
-		filename=NULL;
 	}
 	for (int i=0; i<PACKET_SLOTS; i++)
 	{
@@ -301,22 +299,18 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		fprintf(logFile, " no need for download, we have a random map.\n");
 		closeDownload();
 	}
-	else if (downloadStream && strncmp(filename, sessionInfo.getFileName().c_str(), 64)==0)
+	else if (downloadStream && (filename == sessionInfo.getFileName()))
 	{
 		fprintf(logFile, " we are already downloading the map.\n");
 		fprintf(logFileDownload, " we are already downloading the map.\n");
 	}
 	else
 	{
-		filename=NULL;
-		
 		fprintf(logFile, " we may need to download, we don't have a random map.\n");
-		std::string filenameString = sessionInfo.getFileName();
-		const char *filename = filenameString.c_str();
+		filename = sessionInfo.getFileName();
 		
-		assert(filename);
-		assert(filename[0]);
-		fprintf(logFile, " filename=%s.\n", filename);
+		assert(filename.length() > 0);
+		fprintf(logFile, " filename=%s.\n", filename.c_str());
 		SDL_RWops *stream=globalContainer->fileManager->open(filename, "rb");
 		if (stream)
 		{
@@ -326,7 +320,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 			{
 				fprintf(logFile, "  we don't need to download, we have the correct file! checksum (%x)\n", serverFileCheckSum);
 				SDL_RWclose(stream);
-				filename=NULL;
+				filename.erase();
 			}
 			else
 				fprintf(logFile, "  we need to download, we have an outdated file! %x!=%x\n", myFileCheckSum, serverFileCheckSum);
@@ -334,7 +328,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		else
 			fprintf(logFile, " we need to download, we don't have the file!\n");
 		
-		if (filename)
+		if (filename.length() > 0)
 		{
 			if (downloadStream)
 			{
