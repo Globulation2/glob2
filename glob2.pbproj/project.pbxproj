@@ -78,7 +78,6 @@
 			mainGroup = 08FB7794FE84155DC02AAC07;
 			projectDirPath = "";
 			targets = (
-				5B5E057D03FD4BF30000000D,
 				5BA694EA05F9E4330031CC2F,
 				5B63D43D05BAE2670092D38A,
 			);
@@ -1226,7 +1225,6 @@
 				5BE9C98403FFA23E0000000D,
 				5BE9C98203FFA1DE0000000D,
 				5B5E037003FD43F70000000D,
-				5B5E057E03FD4BF30000000D,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -1241,120 +1239,6 @@
 			path = Resources/InfoPlist.strings;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		5B5E057903FD4BF30000000D = {
-			buildActionMask = 2147483647;
-			files = (
-				5B8FAE99044855050000000D,
-				5B8FAE9C044855050000000D,
-				5B8FAE9F044855050000000D,
-				5B8FAEBA044855640000000D,
-				5B8FAEBB044855640000000D,
-				5B8FAEBC044855640000000D,
-				5B8FAEBD044855640000000D,
-				5B8FAEBE044855640000000D,
-				5B8FAEBF044855640000000D,
-				5B8FAEC0044855640000000D,
-				5B8FAEC1044855640000000D,
-				5B8FAEC2044855640000000D,
-				5B8FAEC3044855640000000D,
-				5B8FAEC4044855640000000D,
-				5B8FAEC5044855640000000D,
-				5B8FAEC6044855640000000D,
-				5B8FAEC7044855640000000D,
-				5BC2127C04ADF1EB0000000D,
-				5BC2127E04ADF1FD0000000D,
-				5BB5C72A04C400D90000000D,
-				5BC8F0C90531F0E30000000D,
-				5BC8F0CA0531F0E30000000D,
-				5BC8F0CB0531F0E30000000D,
-			);
-			isa = PBXHeadersBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5B5E057A03FD4BF30000000D = {
-			buildActionMask = 2147483647;
-			files = (
-				5B8FAE7F044855050000000D,
-				5B8FAE83044855050000000D,
-				5B8FAE85044855050000000D,
-				5B8FAE87044855050000000D,
-				5B8FAE89044855050000000D,
-				5B8FAE8B044855050000000D,
-				5B8FAE8D044855050000000D,
-				5B8FAE8F044855050000000D,
-				5B8FAE91044855050000000D,
-				5B8FAE93044855050000000D,
-				5B8FAE95044855050000000D,
-				5B8FAE98044855050000000D,
-				5B8FAE9B044855050000000D,
-				5B8FAE9E044855050000000D,
-				5B8FAEA4044855050000000D,
-				5BC2127B04ADF1EB0000000D,
-				5B8C469204B84F200000000D,
-				5BB5C74904C401490000000D,
-				5BC8F0D10531F12F0000000D,
-				5BC8F0D20531F12F0000000D,
-				5BC8F0D30531F12F0000000D,
-				5B8039DC057BB1A60017B7CB,
-			);
-			isa = PBXSourcesBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5B5E057B03FD4BF30000000D = {
-			buildActionMask = 2147483647;
-			files = (
-			);
-			isa = PBXFrameworksBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5B5E057C03FD4BF30000000D = {
-			buildActionMask = 2147483647;
-			files = (
-			);
-			isa = PBXRezBuildPhase;
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5B5E057D03FD4BF30000000D = {
-			buildPhases = (
-				5B5E057903FD4BF30000000D,
-				5B5E057A03FD4BF30000000D,
-				5B5E057B03FD4BF30000000D,
-				5B5E057C03FD4BF30000000D,
-			);
-			buildSettings = {
-				DEBUGGING_SYMBOLS = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = 3.X;
-				HEADER_SEARCH_PATHS = "/usr/X11R6/include/freetype2 /sw/include";
-				LIBRARY_SEARCH_PATHS = "/usr/lib/gcc/darwin/3.3 /sw/lib /sw/include";
-				LIBRARY_STYLE = STATIC;
-				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-Ilibgag/include -DDPS_NO_SOCKLEN_T -I/sw/include/SDL";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = libgag.a;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wall";
-			};
-			dependencies = (
-			);
-			isa = PBXLibraryTarget;
-			name = libgag.a;
-			productInstallPath = /usr/local/lib;
-			productName = libgag;
-			productReference = 5B5E057E03FD4BF30000000D;
-		};
-		5B5E057E03FD4BF30000000D = {
-			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
-			path = libgag.a;
-			refType = 3;
-			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		5B605CA205C32612001CDF00 = {
 			isa = PBXFileReference;
@@ -1945,7 +1829,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B63D48305BAE2670092D38A,
-				5B63D48405BAE2670092D38A,
 				5B63D48505BAE2670092D38A,
 			);
 			isa = PBXResourcesBuildPhase;
@@ -1953,12 +1836,6 @@
 		};
 		5B63D48305BAE2670092D38A = {
 			fileRef = 5B5E037003FD43F70000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B63D48405BAE2670092D38A = {
-			fileRef = 5B5E057E03FD4BF30000000D;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -5330,12 +5207,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		5B8039DC057BB1A60017B7CB = {
-			fileRef = 5B8039DB057BB1A60017B7CB;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B8C469004B84F200000000D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -5344,12 +5215,6 @@
 			path = libgag/src/GUIFileList.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		5B8C469204B84F200000000D = {
-			fileRef = 5B8C469004B84F200000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5B8C469304B84F600000000D = {
 			fileEncoding = 4;
@@ -5678,114 +5543,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5B8FAE7F044855050000000D = {
-			fileRef = 5B8FAE55044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE83044855050000000D = {
-			fileRef = 5B8FAE59044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE85044855050000000D = {
-			fileRef = 5B8FAE5B044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE87044855050000000D = {
-			fileRef = 5B8FAE5D044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE89044855050000000D = {
-			fileRef = 5B8FAE5F044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE8B044855050000000D = {
-			fileRef = 5B8FAE61044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE8D044855050000000D = {
-			fileRef = 5B8FAE63044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE8F044855050000000D = {
-			fileRef = 5B8FAE65044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE91044855050000000D = {
-			fileRef = 5B8FAE67044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE93044855050000000D = {
-			fileRef = 5B8FAE69044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE95044855050000000D = {
-			fileRef = 5B8FAE6B044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE98044855050000000D = {
-			fileRef = 5B8FAE71044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE99044855050000000D = {
-			fileRef = 5B8FAE72044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE9B044855050000000D = {
-			fileRef = 5B8FAE74044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE9C044855050000000D = {
-			fileRef = 5B8FAE75044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE9E044855050000000D = {
-			fileRef = 5B8FAE77044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAE9F044855050000000D = {
-			fileRef = 5B8FAE78044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEA4044855050000000D = {
-			fileRef = 5B8FAE7D044855050000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5B8FAEA6044855640000000D = {
 			children = (
 				5B8FAEA8044855640000000D,
@@ -5927,90 +5684,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5B8FAEBA044855640000000D = {
-			fileRef = 5B8FAEA8044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEBB044855640000000D = {
-			fileRef = 5B8FAEA9044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEBC044855640000000D = {
-			fileRef = 5B8FAEAA044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEBD044855640000000D = {
-			fileRef = 5B8FAEAB044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEBE044855640000000D = {
-			fileRef = 5B8FAEAC044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEBF044855640000000D = {
-			fileRef = 5B8FAEAD044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC0044855640000000D = {
-			fileRef = 5B8FAEAE044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC1044855640000000D = {
-			fileRef = 5B8FAEAF044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC2044855640000000D = {
-			fileRef = 5B8FAEB0044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC3044855640000000D = {
-			fileRef = 5B8FAEB1044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC4044855640000000D = {
-			fileRef = 5B8FAEB2044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC5044855640000000D = {
-			fileRef = 5B8FAEB3044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC6044855640000000D = {
-			fileRef = 5B8FAEB4044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B8FAEC7044855640000000D = {
-			fileRef = 5B8FAEB8044855640000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BA694EA05F9E4330031CC2F = {
 			buildPhases = (
 				5BA694EB05F9E4330031CC2F,
@@ -6041,7 +5714,7 @@
 			dependencies = (
 			);
 			isa = PBXNativeTarget;
-			name = "libgag.a (Upgraded)";
+			name = libgag.a;
 			productInstallPath = /usr/local/lib;
 			productName = libgag;
 			productReference = 5BA6951D05F9E4330031CC2F;
@@ -6418,12 +6091,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5BB5C72A04C400D90000000D = {
-			fileRef = 5BB5C72804C400D90000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BB5C74704C401490000000D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -6431,12 +6098,6 @@
 			path = Toolkit.cpp;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		5BB5C74904C401490000000D = {
-			fileRef = 5BB5C74704C401490000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5BC2127904ADF1EB0000000D = {
 			fileEncoding = 4;
@@ -6455,18 +6116,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		5BC2127B04ADF1EB0000000D = {
-			fileRef = 5BC2127904ADF1EB0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BC2127C04ADF1EB0000000D = {
-			fileRef = 5BC2127A04ADF1EB0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BC2127D04ADF1FD0000000D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -6474,12 +6123,6 @@
 			path = GUIFileList.h;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		5BC2127E04ADF1FD0000000D = {
-			fileRef = 5BC2127D04ADF1FD0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5BC8F0C60531F0E30000000D = {
 			fileEncoding = 4;
@@ -6508,24 +6151,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		5BC8F0C90531F0E30000000D = {
-			fileRef = 5BC8F0C60531F0E30000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BC8F0CA0531F0E30000000D = {
-			fileRef = 5BC8F0C70531F0E30000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BC8F0CB0531F0E30000000D = {
-			fileRef = 5BC8F0C80531F0E30000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		5BC8F0CE0531F12F0000000D = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -6552,24 +6177,6 @@
 			path = libgag/src/StringTable.cpp;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		5BC8F0D10531F12F0000000D = {
-			fileRef = 5BC8F0CE0531F12F0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BC8F0D20531F12F0000000D = {
-			fileRef = 5BC8F0CF0531F12F0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5BC8F0D30531F12F0000000D = {
-			fileRef = 5BC8F0D00531F12F0000000D;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		5BE9C98203FFA1DE0000000D = {
 			isa = PBXFileReference;
