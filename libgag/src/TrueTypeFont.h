@@ -27,7 +27,7 @@
 #include <map>
 #include <string>
 
-class SDL_Surface;
+struct SDL_Surface;
 
 class TrueTypeFont:public Font
 {
