@@ -47,7 +47,7 @@ void SDLDrawableSurface::loadImage(const char *name)
 	if (name)
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=Toolkit::getFileManager()->open(name, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(name, "rb")) != NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
@@ -1088,7 +1088,7 @@ void SDLGraphicContext::loadImage(const char *name)
 	if ((name) && (surface))
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=Toolkit::getFileManager()->open(name, "rb", false))!=NULL)
+		if ((imageStream=Toolkit::getFileManager()->open(name, "rb")) != NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);

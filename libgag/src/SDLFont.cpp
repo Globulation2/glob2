@@ -81,20 +81,20 @@ void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, int w, const 
 	{
 		if (text[i]==' ')
 		{
-			x+=spacew;
+			x += spacew;
 			i++;
 		}
 		else if ((text[i]>=startChar)&&(text[i]<=lastChar))
 		{
-			ofs=2*(text[i]-startChar);
+			ofs = 2*(text[i]-startChar);
 			srcrect.w = dstrect.w = (Uint16) ( (CharPos[ofs+3]+CharPos[ofs+2])/2-(CharPos[ofs+1]+CharPos[ofs+0])/2 );
 			srcrect.h = dstrect.h = (Uint16) height;
 			srcrect.x = (Sint16) ( (CharPos[ofs+1]+CharPos[ofs+0])/2 );
 			srcrect.y = 1;
 			dstrect.x = (Sint16) ( x-(CharPos[ofs+1]-CharPos[ofs+0])/2 );
 			dstrect.y = (Sint16) y;
-			x+=CharPos[ofs+2]-CharPos[ofs+1];
-			if ((w!=0) && (x-bx>=w))
+			x += CharPos[ofs+2]-CharPos[ofs+1];
+			if ((w != 0) && (x-bx >= w))
 				return;
 			if (clip)
 				GAG::sdcRects(&srcrect, &dstrect, *clip);
@@ -319,7 +319,7 @@ SDLTTFont::~SDLTTFont()
 
 bool SDLTTFont::load(const char *filename, unsigned size)
 {
-	SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb", false);
+	SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
 	if (fontStream)
 	{
 		font = TTF_OpenFontRW(fontStream, 1, size);

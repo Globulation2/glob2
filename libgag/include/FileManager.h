@@ -33,30 +33,19 @@
 #define DIR_SEPARATOR_S "/"
 #endif
 
-//! define this to true to have a verbose vPath error by default and to false otherwise
-#ifndef DBG_VPATH_OPEN
-#define DBG_VPATH_OPEN false
-#endif
-
 
 //! File Manager (filesystem abstraction)
 class FileManager
 {
 private:
 	//! List of directory where to search for requested file
-	std::vector<const char *> dirList;
+	std::vector<std::string> dirList;
 	//! List of file relative to virtual base address after call to initDirectoryListing
-	std::vector<const char *> fileList;
+	std::vector<std::string> fileList;
 	//! Index in the dirFileList vector
 	int fileListIndex;
-	//! Last index in dir list, accelerate loading
-	int dirListIndexCache;
-
-	//int totTest, cMiss, cHit;
 
 private:
-	//! clear the list of directory
-	void clearDirList(void);
 	//! clear the list of file for directory listing
 	void clearFileList(void);
 	//! internal function that does the real listing job
@@ -83,9 +72,9 @@ public:
 	bool isDir(const char *filename);
 
 	//! Open a file in the SDL_RWops format
-	SDL_RWops *open(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
+	SDL_RWops *open(const char *filename, const char *mode="rb");
 	//! Open a file in the FILE* format
-	FILE *openFP(const char *filename, const char *mode="rb", bool verboseIfNotFound=DBG_VPATH_OPEN);
+	FILE *openFP(const char *filename, const char *mode="rb");
 	//! Open a file in the c++ stream format for reading
 	std::ifstream *openIFStream(const std::string &fileName);
 	//! Return the checksum of a file

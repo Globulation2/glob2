@@ -19,11 +19,11 @@
 
 #include <FileManager.h>
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <SDL_endian.h>
+#include <iostream>
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
@@ -50,80 +50,57 @@
 #	include <sys/stat.h>
 #endif
 
+//! define this to have a verbose vPath error
+//#define DBG_VPATH_OPEN
+//#define DBG_VPATH_LIST
+
+
 FileManager::FileManager(const char *gameName)
 {
-#ifndef WIN32
-	char gameLocal[256];
-	snprintf(gameLocal, sizeof(gameLocal), "%s/.%s", getenv("HOME"), gameName);
-	mkdir(gameLocal, S_IRWXU);
-	addDir(gameLocal);
-#endif
+	#ifndef WIN32
+	std::string gameLocal(getenv("HOME"));
+	gameLocal += "/.";
+	gameLocal += gameName;
+	mkdir(gameLocal.c_str(), S_IRWXU);
+	addDir(gameLocal.c_str());
+	#endif
 	addDir(".");
 	addDir(PACKAGE_DATA_DIR);
 	addDir(PACKAGE_SOURCE_DIR);
-	fileListIndex=-1;
-	dirListIndexCache=-1;
-	/*totTest=0;
-	cMiss=0;
-	cHit=0;*/
+	fileListIndex = -1;
 }
 
 FileManager::~FileManager()
 {
-	clearDirList();
-	clearFileList();
-	//printf("FileManager : did %d open, cache efficiency %2.1f %\n", totTest, (float)cHit*100.0f/(float)(cHit+cMiss));
-}
-
-void FileManager::clearDirList(void)
-{
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-	{
-		delete[] const_cast<char*>(*dirListIterator);
-	}
 	dirList.clear();
+	clearFileList();
 }
 
 void FileManager::clearFileList(void)
 {
-	for (std::vector<const char *>::iterator fileListIterator=fileList.begin(); fileListIterator!=fileList.end(); ++fileListIterator)
-	{
-		delete[] const_cast<char*>(*fileListIterator);
-	}
 	fileList.clear();
-	fileListIndex=-1;
+	fileListIndex = -1;
 }
 
 void FileManager::addDir(const char *dir)
 {
-	size_t len=strlen(dir);
-	char *newDir=new char[len+1];
-	strncpy(newDir, dir, len+1);
-	dirList.push_back(newDir);
-	dirListIndexCache=-1;
+	dirList.push_back(dir);
 }
 
 void FileManager::addWriteSubdir(const char *subdir)
 {
-	size_t subdirLen=strlen(subdir);
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	for (size_t i = 0; i < dirList.size(); i++)
 	{
-		const char *baseDir=*dirListIterator;
-		size_t dirLen=strlen(baseDir);
-		char *toCreate=new char[subdirLen+dirLen+2];
-		
-		strncpy(toCreate, baseDir, dirLen);
-		toCreate[dirLen]='/';
-		strncpy(toCreate+dirLen+1, subdir, subdirLen+1);
-		
-#ifdef WIN32
-		int result=_mkdir(toCreate);
-#else
-		int result=mkdir(toCreate, S_IRWXU);
-#endif
-		
-		delete[] toCreate;
-		if (result==0)
+		std::string toCreate(dirList[i]);
+		toCreate += '/';
+		toCreate += subdir;
+		#ifdef WIN32
+		int result = _mkdir(toCreate.c_str());
+		#else
+		int result = mkdir(toCreate.c_str(), S_IRWXU);
+		#endif
+		// NOTE : We only want to create the subdir for the first index
+// 		if (result==0)
 			break;
 		if ((result==-1) && (errno==EEXIST))
 			break;
@@ -134,9 +111,9 @@ SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		char backupText[512];
-		snprintf(backupText, sizeof(backupText), "%s~", filename);
-		rename(filename, backupText);
+		std::string backupName(filename);
+		backupName += '~';
+		rename(filename, backupName.c_str());
 	}
 	return SDL_RWFromFile(filename, mode);
 }
@@ -145,153 +122,84 @@ FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
 {
 	if (strchr(mode, 'w'))
 	{
-		char backupText[512];
-		snprintf(backupText, sizeof(backupText), "%s~", filename);
-		rename(filename, backupText);
+		std::string backupName(filename);
+		backupName += '~';
+		rename(filename, backupName.c_str());
 	}
 	return fopen(filename, mode);
 }
 
-SDL_RWops *FileManager::open(const char *filename, const char *mode, bool verboseIfNotFound)
+SDL_RWops *FileManager::open(const char *filename, const char *mode)
 {
-	std::vector<const char *>::iterator dirListIterator;
-
-	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
-	
-	// try cache
-	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
+	for (size_t i = 0; i < dirList.size(); ++i)
 	{
-		size_t allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
-		SDL_RWops *fp = openWithbackup(fn, mode);
-		delete[] fn;
-		//totTest++;
+		std::string path(dirList[i]);
+		path += DIR_SEPARATOR;
+		path += filename;
 
+		SDL_RWops *fp =  openWithbackup(path.c_str(), mode);
 		if (fp)
 			return fp;
 	}
-	*/
 
-	// other wise search
-	int index=0;
-	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-	{
-		size_t allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
-
-		SDL_RWops *fp =  openWithbackup(fn, mode);
-		//totTest++;
-		delete[] fn;
-		if (fp)
-		{
-			dirListIndexCache=index;
-			return fp;
-		}
-		index++;
-	}
-
-	if (verboseIfNotFound)
-	{
-		fprintf(stderr, "GAG : FILE %s not found in mode %s.\n", filename, mode);
-		fprintf(stderr, "Searched path :\n");
-		for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-		{
-			printf("%s\n", *dirListIterator);
-		}
-	}
+	#ifdef DBG_VPATH_OPEN
+	std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+	std::cerr << "Searched path :\n";
+	for (size_t i = 0; i < dirList.size(); ++i)
+		std::cerr << dirList[i] << "\n";
+	std::cerr << std::endl;
+	#endif
 
 	return NULL;
 }
 
 
-FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIfNotFound)
+FILE *FileManager::openFP(const char *filename, const char *mode)
 {
-	std::vector<const char *>::iterator dirListIterator;
-
-	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
-	// try cache
-	if ((strchr(mode, 'w')==NULL) && (dirListIndexCache>=0))
+	for (size_t i = 0; i < dirList.size(); ++i)
 	{
-		size_t allocatedLength=strlen(filename) + strlen(dirList[dirListIndexCache]) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", dirList[dirListIndexCache], DIR_SEPARATOR ,filename);
-		FILE *fp =  openWithbackupFP(fn, mode);
-		//totTest++;
-		delete[] fn;
+		std::string path(dirList[i]);
+		path += DIR_SEPARATOR;
+		path += filename;
+		
+		FILE *fp =  openWithbackupFP(path.c_str(), mode);
 		if (fp)
 			return fp;
-	}*/
-
-	// other wise search
-	int index=0;
-	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-	{
-		size_t allocatedLength=strlen(filename) + strlen(dirList[index]) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR ,filename);
-
-		FILE *fp =  openWithbackupFP(fn, mode);
-		//totTest++;
-		delete[] fn;
-		if (fp)
-		{
-			dirListIndexCache=index;
-			return fp;
-		}
-		index++;
 	}
 
-	if (verboseIfNotFound)
-	{
-		fprintf(stderr, "GAG : FILE %s not found in mode %s.\n", filename, mode);
-		fprintf(stderr, "Searched path :\n");
-		for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
-		{
-			printf("%s\n", *dirListIterator);
-		}
-	}
+	#ifdef DBG_VPATH_OPEN
+	std::cerr << "GAG : File " << filename << " not found in mode " << mode << "\n";
+	std::cerr << "Searched path :\n";
+	for (size_t i = 0; i < dirList.size(); ++i)
+		std::cerr << dirList[i] << "\n";
+	std::cerr << std::endl;
+	#endif
 
 	return NULL;
 }
 
 std::ifstream *FileManager::openIFStream(const std::string &fileName)
 {
-	std::ifstream *fp = new std::ifstream();
-	
-	/* FIXME : cache removed due to unpredictable file to be opened causing checksum problems 
-	// try cache
-	if (dirListIndexCache>=0)
+	for (size_t i = 0; i < dirList.size(); ++i)
 	{
-		std::string path(dirList[dirListIndexCache]);
-		path += DIR_SEPARATOR;
-		path += fileName;
-		
-		fp->open(path.c_str());
-		
-		if (fp->good())
-			return fp;
-	}
-	*/
-	
-	// otherwise search
-	int index=0;
-	for (size_t i=0; i<dirList.size(); ++i)
-	{
-		std::string path(dirList[index]);
+		std::string path(dirList[i]);
 		path += DIR_SEPARATOR;
 		path += fileName;
 
-		fp->open(path.c_str());
-		
+		std::ifstream *fp = new std::ifstream(path.c_str());
 		if (fp->good())
-		{
-			dirListIndexCache = index;
 			return fp;
-		}
-		index++;
+		else
+			delete fp;
 	}
+	
+	#ifdef DBG_VPATH_OPEN
+	std::cerr << "GAG : File " << fileName << " not found by std::ifstream\n";
+	std::cerr << "Searched path :\n";
+	for (size_t i = 0; i < dirList.size(); ++i)
+		std::cerr << dirList[i] << "\n";
+	std::cerr << std::endl;
+	#endif
 	
 	return NULL;
 }
@@ -325,63 +233,57 @@ Uint32 FileManager::checksum(const char *filename)
 
 void FileManager::remove(const char *filename)
 {
-	std::vector<const char *>::iterator dirListIterator;
-
-	// other wise search
-	for (dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	for (size_t i = 0; i < dirList.size(); ++i)
 	{
-		size_t allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
-		std::remove(fn);
-		delete[] fn;
+		std::string path(dirList[i]);
+		path += DIR_SEPARATOR;
+		path += filename;
+		std::remove(path.c_str());
 	}
 }
 
 bool FileManager::isDir(const char *filename)
 {
-	std::vector<const char *>::iterator dirListIterator = dirList.begin();
-#ifdef WIN32
+	#ifdef WIN32
 	struct _stat s;
-#else
+	#else
 	struct stat s;
-#endif
+	#endif
 
 	int serr = 1;
-	while ((serr) && (dirListIterator != dirList.end()))
+	for (size_t i = 0; (serr != 0) && (i < dirList.size()); ++i)
 	{
-		size_t allocatedLength=strlen(filename) + strlen(*dirListIterator) + 2;
-		char *fn = new char[allocatedLength];
-		snprintf(fn, allocatedLength, "%s%c%s", *dirListIterator, DIR_SEPARATOR, filename);
-#ifdef WIN32
-		serr = ::_stat(fn, &s);
-#else
-		serr = stat(fn, &s);
-#endif
-		delete[] fn;
-		dirListIterator++;
+		std::string path(dirList[i]);
+		path += DIR_SEPARATOR;
+		path += filename;
+		#ifdef WIN32
+		serr = ::_stat(path.c_str(), &s);
+		#else
+		serr = stat(path.c_str(), &s);
+		#endif
 	}
-	return (s.st_mode&S_IFDIR)!=0;
+	return (s.st_mode & S_IFDIR) != 0;
 }
 
 bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
 {
-	DIR *dir=opendir(realDir);
+	DIR *dir = opendir(realDir);
 	struct dirent *dirEntry;
 
 	if (!dir)
 	{
-#ifdef DBG_VPATH_LIST
-		fprintf(stderr, "GAG : Open dir failed for dir %s\n", realDir);
-#endif
+		#ifdef DBG_VPATH_LIST
+		std::cerr << "GAG : Open dir failed for dir " << realDir << std::endl;
+		#endif
 		return false;
 	}
 
-	while ((dirEntry=readdir(dir))!=NULL)
+	while ((dirEntry = readdir(dir))!=NULL)
 	{
-#ifdef DBG_VPATH_LIST
-		fprintf(stderr, "%s\n", dirEntry->d_name);
-#endif
+		#ifdef DBG_VPATH_LIST
+		std::cerr << realDir << std::endl;
+		#endif
+		
 		// there might be a way to optimize the decision of the ok
 		bool ok = true;
 		// hide hidden stuff
@@ -407,18 +309,18 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension, c
 		if (ok)
 		{
 			// test if name already exists in vector
-			bool alreadyIn=false;
-			for (std::vector<const char *>::iterator fileListIterator=fileList.begin(); (fileListIterator!=fileList.end())&&(alreadyIn==false); ++fileListIterator)
+			bool alreadyIn = false;
+			for (size_t i = 0; i < fileList.size(); ++i)
 			{
-				if (strcmp(dirEntry->d_name, *fileListIterator)==0)
-					alreadyIn=true;
+				if (fileList[i] == dirEntry->d_name)
+				{
+					alreadyIn = true;
+					break;
+				}
 			}
 			if (!alreadyIn)
 			{
-				size_t len=strlen(dirEntry->d_name)+1;
-				char *fileName=new char[len];
-				strncpy(fileName, dirEntry->d_name, len);
-				fileList.push_back(fileName);
+				fileList.push_back(dirEntry->d_name);
 			}
 		}
 	}
@@ -429,18 +331,17 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension, c
 
 bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension, const bool dirs)
 {
-	bool result=false;
+	bool result = false;
 	clearFileList();
-	for (std::vector<const char *>::iterator dirListIterator=dirList.begin(); dirListIterator!=dirList.end(); ++dirListIterator)
+	for (size_t i = 0; i < dirList.size(); ++i)
 	{
-		size_t allocatedLength=strlen(virtualDir) + strlen(*dirListIterator) + 2;
-		char *dn = new char[allocatedLength];
-		snprintf(dn, allocatedLength,  "%s%c%s", *dirListIterator, DIR_SEPARATOR ,virtualDir);
-#ifdef DBG_VPATH_LIST
-		fprintf(stderr, "GAG : Listing from dir %s :\n", dn);
-#endif
-		result=addListingForDir(dn, extension, dirs) || result;
-		delete[] dn;
+		std::string path(dirList[i]);
+		path += DIR_SEPARATOR;
+		path += virtualDir;
+		#ifdef DBG_VPATH_LIST
+		std::cerr << "GAG : Listing from dir " << path << std::endl;
+		#endif
+		result = addListingForDir(path.c_str(), extension, dirs) || result;
 	}
 	if (result)
 		fileListIndex=0;
@@ -451,9 +352,9 @@ bool FileManager::initDirectoryListing(const char *virtualDir, const char *exten
 
 const char *FileManager::getNextDirectoryEntry(void)
 {
-	if ((fileListIndex>=0) && (fileListIndex<(signed)fileList.size()))
+	if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))
 	{
-		return fileList[fileListIndex++];
+		return fileList[fileListIndex++].c_str();
 	}
 	return NULL;
 }

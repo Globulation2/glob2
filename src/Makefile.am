@@ -128,6 +128,7 @@ Version.h \
 RessourceType.h \
 TerrainType.h \
 UnitConsts.h \
+ConfigFiles.h \
 EntitiesTypes.h \
 BuildingsTypes.h \
 BuildingsTypes.cpp \

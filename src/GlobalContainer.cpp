@@ -366,14 +366,12 @@ void GlobalContainer::load(void)
 	}
 	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
 
-	if (runNoX)
-	{
-		// load buildings types
-		buildingsTypes.load("data/buildings.txt");
-		// load ressources types
-		ressourcesTypes.load("data/ressources.txt");
-	}
-	else
+	// load buildings types
+	buildingsTypes.load();
+	// load ressources types
+	ressourcesTypes.load("data/ressources.txt");
+	
+	if (!runNoX)
 	{
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);
@@ -444,11 +442,6 @@ void GlobalContainer::load(void)
 		gfx->loadSprite("data/gfx/brush", "brush");
 		brush=Toolkit::getSprite("brush");
 
-		updateLoadProgressBar(95);
-		// load buildings types
-		buildingsTypes.load("data/buildings.txt");
-		// load ressources types
-		ressourcesTypes.load("data/ressources.txt");
 		updateLoadProgressBar(100);
 	}
 };
