@@ -1,409 +1,545 @@
-2
+3
 [language]
 Francais
 English
+Deutsch
 [hp]
 Pt vie
 HP
+
 [heal]
 Sante
 Heal
+Gesundheit
 [armor]
 Armure
 Armor
+Ruestung
 [damage]
 Dommages
 Damage
+Schaden
 [food]
 Nouriture
 Food
+Nahrung
 [working]
 Travaillant
 Working
+Arbeiter
 [inside]
 Dedans
 Inside
+Drinnen
 [ressources]
 Ressources
 Ressources
+
 [wood]
 Bois
 Wood
+Holz
 [corn]
 Ble
 Corn
+Weizen
 [stone]
 Pierre
 stone
+Stein
 [Alga]
 Algue
 Alga
+Alge
 [range]
 Portee
 Range
+Reichweite
 [destroy]
 Detruire
 Destroy
+Zertoeren
 [wait destroy]
 Attente destruction
 Waiting destruction
+Warten auf Zerstoerung
 [upgrade]
 Ameliorer
 Upgrade
+Verbessern
 [cancel upgrade]
 Annuler amelio.
 Cancel upgrade
+Verbes. wiederrufen
 [unit type]
 Type d'unite
 Unit type
+Art der Eineit
 [worker]
 Ouvriere
 Worker
+Arbeiter
 [Explorer]
 Exploratrice
 Explorer
+Entdecker
 [Warrior]
 Guerriere
 Warrior
+Krieger
 [still (w)]
 Encore
 Still
+Noch
 [units working]
-  unites travaillent
-  units work
+ unites travaillent
+ units work
+ Einheiten arbeiten
 [still one unit working]
 Une unite travaille
 Still one unit working
+Eine Einheit arbeitet
 [still (i)]
 Encore 
 Still
+Noch
 [units inside]
-  unites dedans
-  units inside
+ unites dedans
+ units inside
+ Einheiten drinnen
 [still one unit inside]
 Une unite dedans
 Still one unit inside
+Noch eine Einheit drinnen
 [building name]
 Nom du batiment
 Building name
+Namen des Gebaeude
 [swarm building]
 Ruche
 Swarm
+Ruesche
 [food building]
 Grenier
 Food building
+
 [health building]
 Hopital
 Health building
+Spital
 [walkspeed building]
 Piste de course
 Walk building
+Rennbahn
 [swimspeed building]
 Piscine
 Swim building
+Schwimmbecken
 [attack building]
 Batiment de combat
 Fighting building
+Kampfgebaeude
 [science building]
 Ecole
 Research center
+Schuhle
 [defense building]
 Tourelle
 Defence Tower
+
 [exploration flag]
 Drapeau d'exploration
 Exporation flag
+Entdecker Fahne
 [war flag]
 Drapeau de guerre
 War flag
+Kampf Fahne
 [wood wall]
 Mur de bois
 Wood wall
+Holzmauer
 [stone wall]
 Mur de pierre
 Stone wall
+Steinmauer
 [l units free]
  
+
  
 [r units free]
-  u. libres
-  idle workers
+ u. libres
+ idle workers
+ freie Arbeiter
 [one unit free]
 Une u. libre
 One idle worker
+Ein freier Arbeiter
 [no unit free]
 Pas d'u. libres
 No idle worker
+Kein freier Arbeiter
 [l waiting for player]
 Attente du joueur
 Waiting for player
+Warten auf Spieler
 [r waiting for player]
  
+
  
 [l has left the game]
  
+
  
 [r has left the game]
-  a quitte la partie
-  has quited the game
+ a quitte la partie
+ has quited the game
+ hat des Spiel verlassen
 [load game]
 Charger jeu
 Load Game
+Spiel laden
 [save game]
 Sauvegarder jeu
 Save Game
+Speil Speichern
 [options]
 Options
 Options
+Einstellungen
 [alliances]
 Alliances
 Alliances
+Allianzen
 [return to game]
 Retour au jeu
 Return to game
+Zurueck zum Spiel
 [quit the game]
 Quitter le jeu
 Quit the game
+Spiel Beenden
 [ok]
 Accepter
+Ok
 Ok
 [cancel]
 Annuler
 Cancel
+Wiederrufen
 [you have lost]
 Vous avez perdu !
 You have lost !
+Sie haben verlohren !
 [you have won]
 Vous avez gagne !!!
 You have won !!!
+Sie haben gewonnen !!!
 [campagn]
 Campagne
 Campaign
+Kampagne
 [custom game]
 Jeu libre
 Custom game
+Freies Spiel
 [yog]
 Jeu en ligne Ysagoon
 Ysagoon Online Gaming
+Ysagoon Olnine Spiel
 [lan]
 Jeu en reseau local
 LAN Game
+Lokalnetz Spiel
 [settings]
 Parametres
 Settings
+Einstellungen
 [editor]
 Editeur
+Editor
 Editor
 [quit]
 Quitter
 Quit
+Beenden
 [create game]
 Creer partie
 Create game
+Spiel kreieren
 [update list]
 Mettre a jour
 Update list
+Wiederaufbau
 [connecting to]
 Connection a
 Connecting to
+Verbinden an
 [connect]
 Connecter
 Connect
+Verbinden
 [disconnect]
 Deconnecter
 Disonnect
+Verbindung unterbrechen
 [please wait]
 Attendre SVP
 Please wait
+Warten bitte
 [loading glob2]
 Chargement de Globulation 2
 Loading Globulation 2
+Globulation 2 Laden
 [host]
 Heberger une partie
 Host a game
+Spiel unterbringen
 [join]
 Joindre une partie
 Join a game
+Anschliessen an ein Spiel
 [goto main menu]
 Retourner au menu principal
 Go back to main menu
+Zurueck zum Haubtmenu
 [player name]
 Nom du joueur
 Player name
+Name
 [svr hostname]
 Nom du serveur hote
 Server hostname
+Beherberger Name
 [hp%d]
 Point de vie : %d
 HitPoint : %d
+
 [carry]
 Transporte :
 Carry :
+Transportiert :
 [don't carry anything]
 Ne transporte rien
 Don't carry anything
+Transportiert nichts
 [level]
 Niveau
 Level
+Niveau
 [building site]
 Chantier
 Building site
+Baustelle
 [create map]
 Creer carte
 Create map
+Karte kreieren
 [map size x]
 Taille de la carte sur x
 Map size on x
+Groesse auf x
 [map size y]
 Taille de la carte sur y
 Map size on y
+Groesse auf y
 [default terrain]
 Terrain par defaut
 Default terrain
+Start Terrain
 [water]
 Eau
 Water
+Wasser
 [sand]
 Sable
+Sand
 Sand
 [grass]
 Herbe
 Grass
+Grass
 [teams]
-  equipes
-  teams
+ equipes
+ teams
+ Mannschaften
 [choose map]
 Choisir une carte
 Choose a map
+Karte auswaelen
 [awaiting players]
 Attente des joueurs
 Awaiting players
+Warten auf Spieler
 [stat]
 Statistiques
 Statistic
+Statistiken
 [food left]
 Nourriture
 Food left
+Nahrung
 [your units are under attack]
 Vos unites sont attaquees !
 Your unites are under attack !
+Die Einheiten werden angegriffen !
 [your buildings are under attack]
 Vos batiments sont attaquees !
 Your buildings are under attack !
+Gebaeude unter Angriff !
 [building has been finished]
 Le batiment est termine
 The building is finished
+Das Gebauede ist vertig
 [ai]
 IA
+AI
 AI
 [closed]
 Ferme
 Closed
+Geschlossen
 [player]
 Joueur
 Player
+Spieler
 [PNS_BAD]
 Inconnu
 Unknow
+unbekannt
 [PNS_BINDED]
 Connu
 Know
+bekannt
 [PNS_SENDING_FIRST_PACKET]
 Connecte
 Connected
+Verbindet
 [PNS_HOST]
+PNS_HOST
 PNS_HOST
 PNS_HOST
 [PNS_PLAYER_SILENT]
 Joueur silencieux
 Silent player
+Stiller Spieler
 [PNS_PLAYER_SEND_ONE_REQUEST]
 Une requete recue
 One request received
+Eine Anfrage bekommen
 [PNS_SERVER_SEND_SESSION_INFO]
 Informations envoyee
 Informations sended
+Information gesendet
 [PNS_PLAYER_SEND_CHECK_SUM]
 Verification recue
 Check received
+Pruefung bekommen
 [PNS_OK]
+OK
 OK
 OK
 [PNS_SERVER_SEND_CROSS_CONNECTION_START]
 Debut d'interconnection
 Begin of interconnection
+Begin der Verbindung
 [PNS_PLAYER_CONFIRMED_CROSS_CONNECTION_START]
 Interconnection confirmee
 Interconnection confirmed
+Verbindung bestaetigt
 [PNS_PLAYER_FINISHED_CROSS_CONNECTION]
 Interconnection terminee
 Interconnection finished
+Verbindung beendet
 [PNS_CROSS_CONNECTED]
 Interconnecte
 Interconnected
+Verbunden
 [PNS_SERVER_SEND_START_GAME]
 Debut de partie envoye
 Begin of the game sended
+Begin des Spiels gesendet
 [PNS_PLAYER_CONFIRMED_START_GAME]
 Debut de partie confirme
 Begin of the game confirmed
+Begin des Spiels bestaetigt
 [PNS_PLAYER_PLAYS]
 Joue
 Plays
+Spielt
 [STARTING GAME ...]
 Departe du jeu...
 Starting gaem...
+Begins des Spiels...
 [Statistics]
 Statistiques
 Statistics
+Statistiken
 [Units]
 Unites
 Units
+Einheiten
 [free]
 libres
 free
+frei
 [of which]
 dont
 of which
+davon
 [are ok]
 sont ok
 are ok
+sind ok
 [are hungry]
 ont faim
 are hungry
+sind hungrig
 [are wonded]
 blessees
 are wonded
+sind verletzt
 [Walk]
 Marche
 Walk
+Gehe
 [Swim]
 Nage
 Swim
+Schwimmt
 [Build]
 Constr.
 Build
+Baut
 [Harvest]
 Recolte
 Harvest
+
 [At. speed]
 Vitesse at.
 At. speed
+Geschwindigkeit 
 [At. strength]
 Force at.
 At. strength
+Staerke
 [Free/total]
 Total/libres
 Total/free
+Total/Frei
 [Ok/hungry/wounded]
 Ok/faim/blessees
 Ok/hungry/wounded
+Ok/Hungrig/Verletzt
 [in way]
 en chemin
 in way
+unterwegs
 [on the spot]
 sur place
 on the spot
+Vorort
 [Version]
+Version
 Version
 Version

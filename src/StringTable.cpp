@@ -22,8 +22,6 @@
 #include "StringTable.h"
 #include "GlobalContainer.h"
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,8 +29,6 @@
 #ifdef win32
 #include <malloc.h>
 #endif
-
-
 
 OneStringToken::OneStringToken(const char *name)
 {
@@ -65,10 +61,8 @@ StringTable::StringTable()
 
 StringTable::~StringTable()
 {
-	{
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
-			delete (*it);
-	}
+	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		delete (*it);
 }
 
 
@@ -81,7 +75,7 @@ StringTable::~StringTable()
 		.
 		.
 		string lang n
-	
+
 	
 	And fist space of each line is removed, to allow emptih strings.
 
@@ -131,14 +125,9 @@ bool StringTable::load(char *filename)
 				}
 				tempp=strtok(temp,"\r\n");
 				if (tempp==NULL)
-				{
-					fclose(fp);
-					delete myString;
-					return true;
-				}
-				if (tempp[0]==' ')
-					tempp++;
-				myString->addData(tempp);
+					myString->addData("");
+				else
+					myString->addData(tempp);
 			}
 			strings.push_back(myString);
 		}
@@ -150,14 +139,12 @@ bool StringTable::load(char *filename)
 
 void StringTable::print()
 {
+	for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 	{
-		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+		printf("name=%s\n", (*it)->name);
+		for (int i=0; i<(int)((*it)->data.size()); i++)
 		{
-			printf("name=%s\n", (*it)->name);
-			for (int i=0; i<(int)((*it)->data.size()); i++)
-			{
-				printf("trad[%d]=%s\n", i, (*it)->data[i]);
-			}
+			printf("trad[%d]=%s\n", i, (*it)->data[i]);
 		}
 	}
 }
@@ -166,13 +153,11 @@ char *StringTable::getString(const char *stringname)
 {
 	if (actlang<numberoflanguages)
 	{
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
-			for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+			if (strcmp(stringname, (*it)->name)==0)
 			{
-				if (strcmp(stringname, (*it)->name)==0)
-				{
-					return ((*it)->data[actlang]);
-				}
+				return ((*it)->data[actlang]);
 			}
 		}
 		return "ERROR : NO STRING";
@@ -187,13 +172,11 @@ char *StringTable::getStringInLang(const char *stringname, int lang)
 {
 	if ((lang<numberoflanguages) && (lang>=0))
 	{
+		for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
 		{
-			for (std::vector<OneStringToken *>::iterator it=strings.begin(); it!=strings.end(); it++)
+			if (strcmp(stringname, (*it)->name)==0)
 			{
-				if (strcmp(stringname, (*it)->name)==0)
-				{
-					return ((*it)->data[lang]);
-				}
+				return ((*it)->data[lang]);
 			}
 		}
 		return "ERROR : NO STRING";
@@ -208,13 +191,11 @@ char *StringTable::getString(const char *stringname, int index)
 {
 	if (actlang<numberoflanguages)
 	{
+		for (int i=0; i<(int)(strings.size()); i++)
 		{
-			for (int i=0; i<(int)(strings.size()); i++)
+			if (strcmp(stringname, strings[i]->name)==0)
 			{
-				if (strcmp(stringname, strings[i]->name)==0)
-				{
-					return (strings[i+index+1]->data[actlang]);
-				}
+				return (strings[i+index+1]->data[actlang]);
 			}
 		}
 		return "ERROR : NO STRING";
