@@ -25,6 +25,8 @@
 #define YOG_SERVER_PORT 7007
 
 // 1s-4s-7.5s-14.5s-40s
+#ifndef SECOND_TIMEOUT
+
 #define SECOND_TIMEOUT 20
 #define SHORT_NETWORK_TIMEOUT 80
 #define DEFAULT_NETWORK_TIMEOUT 150
@@ -32,6 +34,8 @@
 #define MAX_NETWORK_TIMEOUT 800
 
 #define DEFAULT_NETWORK_TOTL 3
+#endif
+
 
 //We allways have:
 // 256 char max messages size,
