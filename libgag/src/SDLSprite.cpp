@@ -63,6 +63,8 @@ struct StaticPalContainer
 	unsigned allocatedCount;
 	//! the number of palette allocated (0..COLOR_ROTATION_COUNT)
 	unsigned rotatedCount;
+	//! the position of the next free entry, wrap
+	unsigned rotatedNextFree;
 	//! The active pallette (0..rotatedCount)
 	unsigned activePalette;
 	
@@ -86,6 +88,7 @@ StaticPalContainer::StaticPalContainer()
 {
 	allocatedCount = 0;
 	rotatedCount = 0;
+	rotatedNextFree = 0;
 	activePalette = 0;
 	minDist = 
 	minDistIdx1 = minDistIdx2 = 0;
@@ -191,15 +194,12 @@ void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
 		}
 	}
 	
-	// we have not found a previous one
-	if (rotatedCount == COLOR_ROTATION_COUNT-1)
-	{
-		// we wrap, round robin
-		rotatedCount=0;
-	}
-		
+	// we have not found a previous one, we need to allocate a new one
+	if (rotatedCount < COLOR_ROTATION_COUNT)
+		rotatedCount++;
+	
 	// activate the palette
-	activePalette = rotatedCount;
+	activePalette = rotatedNextFree;
 
 	// do the transformation
 	float hue, lum, sat;
@@ -213,19 +213,26 @@ void StaticPalContainer::setColor(Uint8 r, Uint8 g, Uint8 b)
 	{
 		GAG::RGBtoHSV( ((float)originalPal.r[i])/255, ((float)originalPal.g[i])/255, ((float)originalPal.b[i])/255, &hue, &sat, &lum);
 		GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
-		rotatedPal[rotatedCount].colors[i].r=(Uint32)(255*nR);
-		rotatedPal[rotatedCount].colors[i].g=(Uint32)(255*nG);
-		rotatedPal[rotatedCount].colors[i].b=(Uint32)(255*nB);
-		rotatedPal[rotatedCount].colors[i].pad=0;
+		rotatedPal[rotatedNextFree].colors[i].r=(Uint32)(255*nR);
+		rotatedPal[rotatedNextFree].colors[i].g=(Uint32)(255*nG);
+		rotatedPal[rotatedNextFree].colors[i].b=(Uint32)(255*nB);
+		rotatedPal[rotatedNextFree].colors[i].pad=0;
 	}
 
 	// save the color
-	rotatedPal[rotatedCount].rotr=r;
-	rotatedPal[rotatedCount].rotg=g;
-	rotatedPal[rotatedCount].rotb=b;
+	rotatedPal[rotatedNextFree].rotr=r;
+	rotatedPal[rotatedNextFree].rotg=g;
+	rotatedPal[rotatedNextFree].rotb=b;
 
-	// increment the used palette counter
-	rotatedCount++;
+	// round robin on next free pointer, wrap
+	if (rotatedNextFree != COLOR_ROTATION_COUNT-1)
+	{
+		rotatedNextFree++;
+	}
+	else
+	{
+		rotatedNextFree=0;
+	}
 }
 
 
