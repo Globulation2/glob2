@@ -43,9 +43,20 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 {
+	init();
+}
+
+GameGUI::~GameGUI()
+{
+
+}
+
+void GameGUI::init()
+{
 	int i;
 	isRunning=true;
 	exitGlobCompletely=false;
+	toLoadGameFileName[0]=0;
 	needRedraw=true;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
@@ -71,11 +82,22 @@ GameGUI::GameGUI()
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
 	typingInputScreenPos=0;
+	
+	messagesList.clear();
 }
 
-GameGUI::~GameGUI()
+void GameGUI::adjustInitialViewport()
 {
-
+	assert(localTeam>=0);
+	assert(localTeam<32);
+	assert(game.session.numberOfPlayer>0);
+	assert(game.session.numberOfPlayer<32);
+	assert(localTeam<game.session.numberOfPlayer);
+	
+	viewportX=game.teams[localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=game.teams[localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
+	viewportX=(viewportX+game.map.getW())%game.map.getW();
+	viewportY=(viewportY+game.map.getH())%game.map.getH();
 }
 
 void GameGUI::flagSelectedStep(void)
@@ -298,7 +320,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					/*const*/ char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
 					{
-						SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
+						strncpy(toLoadGameFileName, name, Map::MAP_NAME_MAX_SIZE+5);
+						toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+4]=0;
+						orderQueue.push(new PlayerQuitsGameOrder(localPlayer));
+						/*SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
 						if (stream)
 						{
 							this->load(stream);
@@ -306,7 +331,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 							printf("game is loaded\n");
 						}
 						else
-							printf("GGU : Can't load map\n");
+							printf("GGU : Can't load map\n"); zzz*/
 					}
 					else
 					{
@@ -1601,10 +1626,12 @@ void GameGUI::executeOrder(Order *order)
 }
 void GameGUI::load(SDL_RWops *stream)
 {
+	init();
+	
 	bool result=game.load(stream);
 	chatMask=SDL_ReadBE32(stream);
 	if (result==false)
-		printf("ENG : Critical : Wrong map format, signature missmatch\n");
+		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
 }
 
 void GameGUI::save(SDL_RWops *stream)

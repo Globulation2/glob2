@@ -365,9 +365,9 @@ bool Game::load(SDL_RWops *stream)
 	SessionInfo tempSessionInfo;
 	tempSessionInfo.load(stream);
 
-	memcpy(&session.versionMajor, &tempSessionInfo.versionMajor, 11*4);
+	session=(SessionGame)tempSessionInfo;
+	
 	map.setMapName(tempSessionInfo.map.getMapName());
-	// other informations are dropped, are they used somewhere ????
 
 	char signature[4];
 
@@ -420,19 +420,7 @@ void Game::save(SDL_RWops *stream)
 	assert(stream);
 
 	// first we save a session info
-	SessionInfo tempSessionInfo;
-	/*
-	*((SessionGame *)(&tempSessionInfo))=session;
-	tempSessionInfo.map= *((BaseMap *)(&map));
-	for (int i=0; i<session.numberOfTeam; i++)
-		tempSessionInfo.team[i]= *((BaseTeam *)teams[i]);
-	for (int i=0; i<session.numberOfPlayer; i++)
-		tempSessionInfo.players[i]= *((BasePlayer *)players[i]);
-	*/
-	tempSessionInfo.numberOfPlayer=session.numberOfPlayer;
-	tempSessionInfo.numberOfTeam=session.numberOfTeam;
-	tempSessionInfo.gameTPF=session.gameTPF;
-	tempSessionInfo.gameLatency=session.gameLatency;
+	SessionInfo tempSessionInfo(session);
 	
 	tempSessionInfo.map=map;
 
@@ -485,13 +473,13 @@ void Game::step(Sint32 localTeam)
 	}
 	else
 	{
+		for (int i=0; i<session.numberOfTeam; i++)
 		{
-			for (int i=0; i<session.numberOfTeam; i++)
-			{
-				teams[i]->step();
-			}
+			teams[i]->step();
 		}
+		
 		map.step();
+		
 		// NOTE : checkWinCondition();
 		syncRand();
 

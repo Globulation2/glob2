@@ -62,6 +62,9 @@ class GameGUI
 public:
 	GameGUI();
 	~GameGUI();
+	
+	void init();
+	void adjustInitialViewport();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
@@ -110,6 +113,8 @@ public:
 	bool isRunning;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
+	//! if this is not emptih, then Engine should load the map with this filename.
+	char toLoadGameFileName[Map::MAP_NAME_MAX_SIZE+5];
 	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines;
 	int localPlayer, localTeam;

@@ -34,6 +34,7 @@ public:
 	~Engine();
 	int initCampain(void);
 	int initCustom(void);
+	int initCustom(char *gameName);
 	void startMultiplayer(SessionConnection *screen);
 	int initMutiplayerHost(bool shareOnYOG);
 	int initMutiplayerJoin(void);

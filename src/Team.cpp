@@ -682,6 +682,7 @@ void Team::step(void)
 				myUnits[i]=NULL;
 			}
 		}
+	
 	}
 
 	/*for (int i=0; i<512; i++)
@@ -692,79 +693,70 @@ void Team::step(void)
 			myBullets[i]->step();
 
 	// this is roughly equivalent to building.step()
+	
+	for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
-		for (std::list<int>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
-		{
-			if ( myBuildings[*it]->type->unitProductionTime )
-				swarms.remove(myBuildings[*it]);
-			if ( myBuildings[*it]->type->shootingRange )
-				turrets.remove(myBuildings[*it]);
-			if ( myBuildings[*it]->type->isVirtual )
-				virtualBuildings.remove(myBuildings[*it]);
-			subscribeForInsideStep.remove(myBuildings[*it]);
-			subscribeForWorkingStep.remove(myBuildings[*it]);
-			delete myBuildings[*it];
-			myBuildings[*it]=NULL;
-		}
+		if ( myBuildings[*it]->type->unitProductionTime )
+			swarms.remove(myBuildings[*it]);
+		if ( myBuildings[*it]->type->shootingRange )
+			turrets.remove(myBuildings[*it]);
+		if ( myBuildings[*it]->type->isVirtual )
+			virtualBuildings.remove(myBuildings[*it]);
+		subscribeForInsideStep.remove(myBuildings[*it]);
+		subscribeForWorkingStep.remove(myBuildings[*it]);
+		delete myBuildings[*it];
+		myBuildings[*it]=NULL;
 	}
+	
 	buildingsToBeDestroyed.clear();
-
+	
+	for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
 	{
-		for (std::list<Building *>::iterator it=buildingsToBeUpgraded.begin(); it!=buildingsToBeUpgraded.end(); ++it)
+		if ( (*it)->tryToUpgradeRoom() )
 		{
-			if ( (*it)->tryToUpgradeRoom() )
-			{
-				std::list<Building *>::iterator ittemp=it;
-				it=buildingsToBeUpgraded.erase(ittemp);
-			}
+			std::list<Building *>::iterator ittemp=it;
+			it=buildingsToBeUpgraded.erase(ittemp);
 		}
 	}
 
+	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+		if ((*it)->unitsInsideSubscribe.size()>0)
+			(*it)->subscribeForInsideStep();
+
+	for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
 	{
-		for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
-			if ((*it)->unitsInsideSubscribe.size()>0)
-				(*it)->subscribeForInsideStep();
-	}
-	{
-		for (std::list<Building *>::iterator it=subscribeForInsideStep.begin(); it!=subscribeForInsideStep.end(); ++it)
+		if ( /*((*it)->fullInside()) ||*/ ((*it)->unitsInsideSubscribe.size()==0) )
 		{
-			if ( /*((*it)->fullInside()) ||*/ ((*it)->unitsInsideSubscribe.size()==0) )
-			{
-				std::list<Building *>::iterator ittemp=it;
-				it=subscribeForInsideStep.erase(ittemp);
-			}
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForInsideStep.erase(ittemp);
 		}
 	}
+
+	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+		if ((*it)->unitsWorkingSubscribe.size()>0)
+			(*it)->subscribeForWorkingStep();
+
+	for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
 	{
-		for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
-			if ((*it)->unitsWorkingSubscribe.size()>0)
-				(*it)->subscribeForWorkingStep();
-	}
-	{
-		for (std::list<Building *>::iterator it=subscribeForWorkingStep.begin(); it!=subscribeForWorkingStep.end(); ++it)
+		if ( /*((*it)->fullWorking()) ||*/ ((*it)->unitsWorkingSubscribe.size()==0) )
 		{
-			if ( /*((*it)->fullWorking()) ||*/ ((*it)->unitsWorkingSubscribe.size()==0) )
-			{
-				std::list<Building *>::iterator ittemp=it;
-				it=subscribeForWorkingStep.erase(ittemp);
-			}
+			std::list<Building *>::iterator ittemp=it;
+			it=subscribeForWorkingStep.erase(ittemp);
 		}
 	}
+	
 	bool isEnoughFoodInSwarm=false;
+	
+	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
-		for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
-		{
-			if ((*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
-				isEnoughFoodInSwarm=true;
-			(*it)->swarmStep();
-		}
+		if ((*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+			isEnoughFoodInSwarm=true;
+		(*it)->swarmStep();
 	}
-
+	
+	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 	{
-		for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
-		{
-			(*it)->turretStep();
-		}
+		(*it)->turretStep();
 	}
 
 	isAlive=isEnoughFoodInSwarm || (nbUnits!=0);

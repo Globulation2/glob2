@@ -38,6 +38,11 @@ SessionGame::SessionGame()
 	gameLatency=5;
 }
 
+SessionGame::SessionGame(const SessionGame &sessionGame)
+{
+	*this=sessionGame;
+}
+
 void SessionGame::save(SDL_RWops *stream)
 {
 	versionMajor=0;
@@ -157,6 +162,12 @@ Sint32 SessionGame::checkSum()
 
 SessionInfo::SessionInfo()
 :SessionGame()
+{
+
+}
+
+SessionInfo::SessionInfo(const SessionGame &sessionGame)
+:SessionGame(sessionGame)
 {
 
 }

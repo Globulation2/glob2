@@ -42,6 +42,7 @@ class SessionGame:public Order
 {
 public:
 	SessionGame();
+	SessionGame(const SessionGame &sessionGame);
 	virtual ~SessionGame(void) { }
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
@@ -88,6 +89,7 @@ class SessionInfo:public SessionGame
 {
 public:
 	SessionInfo();
+	SessionInfo(const SessionGame &sessionGame);
 	virtual ~SessionInfo(void) { }
 	bool load(SDL_RWops *stream);
 	void save(SDL_RWops *stream);
