@@ -53,6 +53,7 @@ YOG:
 -Ajouter des chambres
 -Ajouter des info de temps dans les .logs.
 -Annoncer à l'utilisateur si il essaie de donner un password à un utilisateur avec password NULL.
+-Sauvegarder les passwords d'une version à l'autre.
 
 Tutorial:
 -Moins vite.

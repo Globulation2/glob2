@@ -829,7 +829,16 @@ bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 
 		//cases[i].ressource=SDL_ReadBE32(stream);
 		SDL_RWread(stream, &(cases[i].ressource), 1, 4);
-
+		if (sessionGame->versionMinor<28)
+		{
+			Ressource &r=cases[i].ressource;
+			if (r.type!=NO_RES_TYPE)
+			{
+			RessourceType *rt=globalContainer->ressourcesTypes.get(r.type);
+			if (r.amount>rt->sizesCount)
+				r.amount=rt->sizesCount;
+			}
+		}
 		cases[i].groundUnit=SDL_ReadBE16(stream);
 		cases[i].airUnit=SDL_ReadBE16(stream);
 
@@ -1122,7 +1131,7 @@ void Map::decRessource(int x, int y)
 	}
 	else
 	{
-		if (!fulltype->granular || amount==1)
+		if (!fulltype->granular || amount<=1)
 			rp->clear();
 		else
 			rp->amount=amount-1;
