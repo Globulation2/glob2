@@ -730,10 +730,10 @@ void Game::wonStep(void)
 	}
 }
 
-void Game::scriptStep(void)
+void Game::scriptStep(GameGUI *gui)
 {
 	// do a script step
-	script.step();
+	script.step(gui);
 
 	// alter win/loose conditions
 	for (int i=0; i<session.numberOfTeam; i++)
@@ -748,7 +748,7 @@ void Game::scriptStep(void)
 	}
 }
 
-void Game::step(Sint32 localTeam)
+void Game::step(GameGUI *gui, Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
@@ -781,7 +781,7 @@ void Game::step(Sint32 localTeam)
 		if ((stepCounter&31)==0)
 		{
 			wonStep();
-			scriptStep();
+			script.step(gui);
 		}
 		
 		Sint32 endTick=SDL_GetTicks();

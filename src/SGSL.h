@@ -61,13 +61,16 @@ struct Token
 		S_SUMMON,
 		S_WIN,
 		S_LOOSE,
+		S_LABEL,
+		S_JUMP,
+		S_SETFLAG,
 
 		// Constants
 		// Units
 		S_WORKER=100,
 		S_EXPLORER,
 		S_WARRIOR,
-		// Buildings
+		// Buildings & Flags
 		S_SWARM_B,
 		S_FOOD_B,
 		S_HEALTH_B,
@@ -76,13 +79,16 @@ struct Token
 		S_ATTACK_B,
 		S_SCIENCE_B,
 		S_DEFENCE_B,
-		S_MARKET_B,
-		S_WALL_B,
-		// Flags
+
 		S_EXPLOR_F,
 		S_FIGHT_F,
 		S_CLEARING_F,
 		S_FORBIDDEN_F,
+
+		S_WALL_B,
+		S_WOODWALL_B,
+		S_MARKET_B,
+
 		// GUI elements that can be disabled or enabled
 		S_BUILDINGTAB,
 		S_FLAGTAB,
@@ -93,14 +99,10 @@ struct Token
 		//SGSL
 		S_FRIEND=310,
 		S_YOU=315,
-
 		S_ENEMY=311,
 		S_ISDEAD=312,
 		S_FLAG=314,
 		S_NOENEMY=316,
-		S_LABEL=321,
-		S_JUMP=322,
-		S_SETFLAG=323,
 		S_ALLY=324,
 	} type;
 
@@ -211,6 +213,8 @@ private:
 };
 
 class Mapscript;
+class GameGUI;
+class Game;
 
 //Independant story line
 class Story
@@ -223,19 +227,17 @@ public:
 	std::deque<Token> line;
 	bool hasWon, hasLost;
 
-	void step();
+	void step(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
 
 private:
-	bool conditionTester(int pc, bool l);
-	bool testCondition();
-	int valueOfVariable(Token::TokenType type, int playerNumber, int level);
+	bool conditionTester(const Game *game, int pc, bool l);
+	bool testCondition(GameGUI *gui);
+	int valueOfVariable(const Game *game, Token::TokenType type, int playerNumber, int level);
 	int lineSelector;
 	Mapscript *mapscript;
 	int internTimer;
 };
-
-class Game;
 
 struct Flag
 {
@@ -248,7 +250,7 @@ class Mapscript
 public:
 	Mapscript();
 	~Mapscript();
-	
+
 public:
 	ErrorReport compileScript(Game *game, const char *script);
 	ErrorReport compileScript(Game *game);
@@ -258,8 +260,8 @@ public:
 	void save(SDL_RWops *stream);
 	void setSourceCode(const char *sourceCode);
 	const char *getSourceCode(void) { return sourceCode; }
-	
-	void step();
+
+	void step(GameGUI *gui);
 	Sint32 checkSum();
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
@@ -276,11 +278,10 @@ private:
 	bool testMainTimer(void);
 	bool doesFlagExist(std::string name);
 	bool getFlagPos(std::string name, int *x, int *y, int *r);
-	
+
 	int mainTimer;
 	std::deque<Story> stories;
 	std::vector<Flag> flags;
-	Game *game;
 	char *sourceCode;
 };
 
