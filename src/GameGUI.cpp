@@ -1260,7 +1260,7 @@ void GameGUI::draw(void)
 			}
 
 			char buttonText[64];
-			int viewFu=teamStats->getFreeUnits()-teamStats->getUnitsNeeded();
+			int viewFu=teamStats->getFreeUnits(UnitType::WORKER)-teamStats->getUnitsNeeded();
 			if (viewFu<-1)
 				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units needed]"), -viewFu, globalContainer->texts.getString("[r units needed]"));
 			else if (viewFu==-1)
@@ -1745,8 +1745,8 @@ void GameGUI::drawOverlayInfos(void)
 			pm=pm<<1;
 		}
 
-		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 127, 255);
-		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 255, 127);
+		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 0, 0, 140, 127);
+		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-128-64, 22+nbap*20, 255, 255, 255);
 		pm=1;
 		int pnb=0;
 		for(int pi2=0; pi2<game.session.numberOfPlayer; pi2++)
@@ -1754,7 +1754,7 @@ void GameGUI::drawOverlayInfos(void)
 			if (pm&apm)
 			{
 
-				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->littleFont,"%s%d%s", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
+				globalContainer->gfx->drawString(48, 48+pnb*20, globalContainer->standardFont,"%s%d%s", globalContainer->texts.getString("[l waiting for player]"), pi2, globalContainer->texts.getString("[r waiting for player]"));
 				pnb++;
 			}
 			pm=pm<<1;
@@ -1848,7 +1848,39 @@ void GameGUI::drawOverlayInfos(void)
 				++it;
 			}
 		}
+	}
+	
+	// info bar
+	globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 0, 127);
+	
+	Uint8 redC[]={200, 0, 0};
+	Uint8 greenC[]={0, 200, 0};
+	Uint8 whiteC[]={200, 200, 200};
+	Uint8 actC[3];
+	int free, tot, i;
+	
+	int dec=(globalContainer->gfx->getW()-640)>>2;
+	dec += 32;
+	
+	for (i=0; i<3; i++)
+	{
+		free = teamStats->getFreeUnits(UnitType::TypeNum(i));
+		// worker is a special case
+		if (i==0)
+			free -= teamStats->getUnitsNeeded();
+		tot = teamStats->getTotalUnits(UnitType::TypeNum(i));
+		if (free<0)
+			memcpy(actC, redC, sizeof(redC));
+		else if (free>0)
+			memcpy(actC, greenC, sizeof(greenC));
+		else
+			memcpy(actC, whiteC, sizeof(whiteC));
 		
+		globalContainer->littleFont->pushColor(actC[0], actC[1], actC[2]);
+		globalContainer->gfx->drawString(dec, 3, globalContainer->littleFont, "%d / %d", free, tot);
+		globalContainer->littleFont->popColor();
+		
+		dec += 148;
 	}
 }
 

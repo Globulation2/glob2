@@ -65,7 +65,8 @@ public:
 	void step(Team *team);
 	void drawText();
 	void drawStat();
-	int getFreeUnits();
+	int getFreeUnits(UnitType::TypeNum type);
+	int getTotalUnits(UnitType::TypeNum type);
 	int getUnitsNeeded();
 
 private:
