@@ -87,8 +87,6 @@ ChooseMapScreen.h \
 ChooseMapScreen.cpp \
 CustomGameScreen.h \
 CustomGameScreen.cpp \
-LoadGameScreen.h \
-LoadGameScreen.cpp \
 MainMenuScreen.h \
 MainMenuScreen.cpp \
 CreditScreen.h \
