@@ -932,6 +932,18 @@ void Map::setResAtPos(int x, int y, int type, int size)
 
 Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
 {
+	/*
+		Value of vertice's order in square :
+
+		3 -- 2
+		|    |
+		|    |
+		1 -- 0
+
+		The index in the following table is :
+		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
+		where k is the number of different possibilites.
+	*/
 	const Uint16 terrainLookupTable[81][2] =
 	{
 		{ 0, 16 },		// H, H, H, H
