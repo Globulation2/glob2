@@ -376,6 +376,30 @@ void Map::switchFogOfWar(void)
 		fogOfWar=fogOfWarA;
 }
 
+void Map::setForbiddenArea(int x, int y, int r, Uint32 me)
+{
+	int r2=r*r;
+	for (int yi=-r; yi<=r; yi++)
+	{
+		int yi2=yi*yi;
+		for (int xi=-r; xi<=r; xi++)
+			if (yi2+xi*xi<=r2)
+				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden|=me;
+	}
+}
+
+void Map::clearForbiddenArea(int x, int y, int r, Uint32 me)
+{
+	int r2=r*r;
+	for (int yi=-r; yi<=r; yi++)
+	{
+		int yi2=yi*yi;
+		for (int xi=-r; xi<=r; xi++)
+			if (yi2+xi*xi<=r2)
+				(*(cases+w*((y+yi)&hMask)+((x+xi)&wMask))).forbidden&=~me;
+	}
+}
+
 bool Map::decRessource(int x, int y)
 {
 	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;

@@ -132,11 +132,13 @@ void Game::executeOrder(Order *order, int localPlayer)
 				break;
 			// TODO : is it really safe to check fog of war localy to know if we can execute this order ?
 			// if not really safe, we have to put -1 instead of team.
-			if (globalContainer->buildingsTypes.buildingsTypes[((OrderCreate *)order)->typeNumber]->isVirtual
-				|| checkRoomForBuilding( ((OrderCreate *)order)->posX, ((OrderCreate *)order)->posY, ((OrderCreate *)order)->typeNumber, ((OrderCreate *)order)->team))
+			
+			int posX=((OrderCreate *)order)->posX;
+			int posY=((OrderCreate *)order)->posY;
+			int team=((OrderCreate *)order)->team;
+			int typeNumber=((OrderCreate *)order)->typeNumber;
+			if (globalContainer->buildingsTypes.buildingsTypes[typeNumber]->isVirtual || checkRoomForBuilding(posX, posY, typeNumber, team))
 			{
-				int posX=((OrderCreate *)order)->posX;
-				int posY=((OrderCreate *)order)->posY;
 				if(posX<0)
 					posX+=map.getW();
 				if(posY<0)
@@ -144,13 +146,15 @@ void Game::executeOrder(Order *order, int localPlayer)
 				posX&=map.getMaskW();
 				posY&=map.getMaskH();
 				
-				Building *b=addBuilding( posX, posY, ((OrderCreate *)order)->team, ((OrderCreate *)order)->typeNumber );
+				Building *b=addBuilding(posX, posY, team, typeNumber);
 				if (b)
 				{
 					if (b->type->unitProductionTime)
 						b->owner->swarms.push_back(b);
 					if (b->type->shootingRange)
 						b->owner->turrets.push_back(b);
+					if (b->type->zonableForbidden)
+						map.setForbiddenArea(posX, posY, b->unitStayRange, teams[team]->me);
 					b->update();
 				}
 			}
@@ -191,9 +195,17 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 				{
-					b->unitStayRange=((OrderModifyFlags *)order)->range[i];
+					int oldRange=b->unitStayRange;
+					int newRange=((OrderModifyFlags *)order)->range[i];
+					if (b->type->zonableForbidden)
+					{
+						if (newRange<oldRange)
+							map.clearForbiddenArea(b->posX, b->posY, oldRange, teams[team]->me);
+						map.setForbiddenArea(b->posX, b->posY, newRange, teams[team]->me);
+					}
+					b->unitStayRange=newRange;
 					if (order->sender!=localPlayer)
-						b->unitStayRangeLocal=b->unitStayRange;
+						b->unitStayRangeLocal=newRange;
 					b->update();
 				}
 			}
@@ -212,8 +224,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 				assert(b);
 				if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 				{
+					if (b->type->zonableForbidden)
+						map.clearForbiddenArea(b->posX, b->posY, b->unitStayRange, teams[team]->me);
 					b->posX=((OrderMoveFlags *)order)->x[i];
 					b->posY=((OrderMoveFlags *)order)->y[i];
+					if (b->type->zonableForbidden)
+						map.setForbiddenArea(b->posX, b->posY, b->unitStayRange, teams[team]->me);
 					if (order->sender!=localPlayer)
 					{
 						b->posXLocal=b->posX;
@@ -255,7 +271,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			assert(b);
 			if (b)
+			{
 				b->launchDelete();
+				assert(b->type);
+				if (b->type->zonableForbidden)
+					map.clearForbiddenArea(b->posX, b->posY, b->unitStayRange, teams[team]->me);
+			}
 		}
 		break;
 		case ORDER_CANCEL_DELETE:
@@ -806,7 +827,9 @@ Building *Game::addBuilding(int x, int y, int team, int typeNum)
 	Building *b=new Building(x, y, gid, typeNum, teams[team], &globalContainer->buildingsTypes);
 
 	if (b->type->isVirtual)
+	{
 		teams[team]->virtualBuildings.push_front(b);
+	}
 	else
 		map.setBuilding(x, y, w, h, gid);
 	teams[team]->myBuildings[id]=b;
@@ -1184,6 +1207,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				}
 			}
 
+	// We draw forbidden area:
+	//for (int y=top-1; y<=bot; y++)
+	//	for (int x=left-1; x<=right; x++)
+	//		if (map.getForbidden(x+viewportX, y+viewportY))
+	//		{
+	//			globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
+	//			globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
+	//		}
+	
 	// We draw ground units:
 	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
