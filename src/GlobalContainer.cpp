@@ -21,7 +21,6 @@ GlobalContainer::GlobalContainer(void)
 	memset(safer9, 7, 1024);
 	graphicFlags=SDL_ANYFORMAT|SDL_SWSURFACE;
 
-	buildingsTypes.load("data/buildings.txt");
 };
 
 void GlobalContainer::parseArgs(int argc, char *argv[])

@@ -17,6 +17,7 @@ GlobalContainer *globalContainer=0;
 int main(int argc, char *argv[])
 {
 	globalContainer = new GlobalContainer();
+	globalContainer->buildingsTypes.load("data/buildings.txt");
 
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->gfx.setRes(640, 480, 32, globalContainer->graphicFlags);
