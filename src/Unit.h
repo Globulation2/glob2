@@ -181,6 +181,7 @@ public:
 	Sint32 hungry; // (Uint16)
 	Sint32 trigHungry; // (Uint16)
 	Sint32 trigHungryCarying;
+	Uint32 fruitMask;
 	
 	// quality parameters
 	Sint32 performance[NB_ABILITY];

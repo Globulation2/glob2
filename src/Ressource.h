@@ -65,6 +65,8 @@ protected:
 		ITEM(bool, granular)
 		//! We given to a building, the buildings get multiplicator amount of ressource
 		ITEM(Sint32, multiplicator)
+		//! If yes, the ressource need to be visible NOW to be able to be collected
+		ITEM(bool, visibleToBeCollected)
 	CLASSEND;
 public:
 	RessourceType();
