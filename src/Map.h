@@ -421,9 +421,7 @@ protected:
 	int pathToBuildingCountClose;
 	int pathToBuildingCountCloseSuccessStand;
 	int pathToBuildingCountCloseSuccessBase;
-	int pathToBuildingCountCloseSuccessAround;//-
 	int pathToBuildingCountCloseSuccessUpdated;
-	int pathToBuildingCountCloseSuccessUpdatedAround;//-
 	int pathToBuildingCountCloseFailureLocked;
 	int pathToBuildingCountCloseFailureEnd;
 	
