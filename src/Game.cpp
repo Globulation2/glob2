@@ -1497,19 +1497,6 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 				drawUnit(x, y, gid, viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, useMapDiscovered);
 		}
 	
-	if (false)
-		for (int y=top-1; y<=bot; y++)
-			for (int x=left-1; x<=right; x++)
-				if (players[1] && players[1]->ai)
-				{
-					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
-					Uint8 *gradient=ai->buildingNeighbourMap;
-					assert(gradient);
-					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
-					
-					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
-				}
-	
 	// We draw debug area:
 	if (false)
 		for (int y=top-1; y<=bot; y++)
@@ -1902,6 +1889,19 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 		}
 	}
+	
+	if (false)
+		for (int y=top-1; y<=bot; y++)
+			for (int x=left-1; x<=right; x++)
+				if (players[1] && players[1]->ai)
+				{
+					AICastor *ai=(AICastor *)players[1]->ai->aiImplementation;
+					Uint8 *gradient=ai->goodBuildingMap;
+					assert(gradient);
+					size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);
+					
+					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, gradient[addr]);
+				}
 }
 
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam)
