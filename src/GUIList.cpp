@@ -19,6 +19,8 @@
 */
 
 #include "GUIList.h"
+#include <functional>
+#include <algorithm>
 
 List::List(int x, int y, int w, int h, const Font *font)
 {
@@ -103,12 +105,18 @@ void List::addText(const char *text, int pos)
 	}
 }
 
+struct strcasecmp_functor : public std::binary_function<char *, char *, bool>
+{
+	bool operator()(char * x, char * y) { return (strcasecmp(x, y)<0); }
+};
+
 void List::addText(const char *text)
 {
 	int textLength=strlen(text);
 	char *newText=new char[textLength+1];
 	strncpy(newText, text, textLength+1);
 	strings.push_back(newText);
+	std::sort(strings.begin(), strings.end(), strcasecmp_functor());
 }
 
 void List::removeText(int pos)

@@ -152,11 +152,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		if (!showsReady)
 		{
 			notReadyText->visible=false;
-			startButton->visible=true;
-			notReadyText->setDrawableSurface(gfxCtx);
-			startButton->setDrawableSurface(gfxCtx);
-			notReadyText->repaint();
-			startButton->repaint();
+			startButton->show();
 			showsReady=true;
 		}
 	}
@@ -165,11 +161,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		if (showsReady)
 		{
 			startButton->visible=false;
-			notReadyText->visible=true;
-			startButton->setDrawableSurface(gfxCtx);
-			notReadyText->setDrawableSurface(gfxCtx);
-			startButton->repaint();
-			notReadyText->repaint();
+			notReadyText->show();
 			showsReady=false;
 		}
 	}
