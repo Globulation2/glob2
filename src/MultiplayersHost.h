@@ -74,7 +74,7 @@ public:
 	SessionInfo *savedSessionInfo;
 	
 	//! A stream to the map (or saved game) file.
-	SDL_RWops *stream;
+	GAGCore::InputStream *stream;
 	Uint32 fileSize;
 	Uint32 mapFileCheckSum;
 

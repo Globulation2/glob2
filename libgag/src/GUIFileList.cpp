@@ -60,7 +60,7 @@ namespace GAGGUI
 		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
 		{
 			const char* fileName;
-			while ((fileName=(Toolkit::getFileManager()->getNextDirectoryEntry()))!=NULL)
+			while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
 			{
 				std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 				if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
@@ -70,12 +70,9 @@ namespace GAGGUI
 				}
 				else
 				{
-					const char* listName = this->fileToList(fileName);
-					if (listName)
-					{
-						this->addText(listName);
-						delete[] listName;
-					}
+					std::string listName = this->fileToList(fileName);
+					if (listName.length())
+						this->addText(listName.c_str());
 				}
 			}
 			this->sort();
@@ -100,7 +97,8 @@ namespace GAGGUI
 				this->current.erase(lastDirSep, this->current.length());
 			}
 			// child directory, stack selection
-			else {
+			else
+			{
 				if (! current.empty())
 					this->current += DIR_SEPARATOR;
 				this->current += selName;
@@ -111,44 +109,42 @@ namespace GAGGUI
 		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 	}
 	
-	const char* FileList::fileToList(const char* fileName) const
+	std::string FileList::fileToList(const char* fileName) const
 	{
 		// this default behaviour is probably not what you want
-		std::cout << "FileList::fileToList !!!" << std::endl;
+		std::cout << "FileList::fileToList(\"" << fileName << "\") !" << std::endl;
 		std::string listName(fileName);
 		if (! extension.empty())
 			listName.resize(listName.size() - (extension.size() + 1));
-		return newstrdup(listName.c_str());
+		return listName;
 	}
 	
-	const char* FileList::listToFile(const char* listName) const
+	std::string FileList::listToFile(const char* listName) const
 	{
 		// this default behaviour is probably not what you want
-		std::cout << "FileList::listToFile !!!" << std::endl;
+		std::cout << "FileList::listToFile(\"" << listName << "\") !" << std::endl;
 		std::string fileName(listName);
 		if (! this->extension.empty())
 		{
 			fileName += "." + extension;
 		}
-		return newstrdup(fileName.c_str());
+		return fileName;
 	}
 	
-	const char* FileList::fullDir() const
+	std::string FileList::fullDir() const
 	{
 		std::string fullDir = this->dir;
 		if (! this->current.empty())
 			fullDir += DIR_SEPARATOR + this->current;
-		return newstrdup(fullDir.c_str());
+		return fullDir.c_str();
 	}
 	
-	const char* FileList::fullName(const char* fileName) const
+	std::string FileList::fullName(const char* fileName) const
 	{
-		const char* fullDir = this->fullDir();
-		std::string fullName = fullDir;
+		std::string fullName = fullDir();
 		fullName += DIR_SEPARATOR;
 		fullName += fileName;
-		delete[] fullDir;
-		return newstrdup(fullName.c_str());
+		return fullName;
 	}
 	
 	struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>

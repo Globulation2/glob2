@@ -65,9 +65,9 @@ public:
 	//! Set the user-friendly name of the map
 	void setMapName(const char *s);
 	//! Return the user-friendly name of the map
-	const char *getMapName() const;
-	//! Return the filename of the map, including std directories. Return string must be freed by caller using delete[]
-	const char *getFileName(void) const;
+	std::string getMapName() const;
+	//! Return the filename of the map, including std directories.
+	std::string getFileName(void) const;
 
 public:
 	//! Major map version. Change only with structural modification

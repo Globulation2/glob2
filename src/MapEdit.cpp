@@ -701,7 +701,7 @@ void MapEdit::drawSelRect(int x, int y, int w, int h)
 void MapEdit::loadSave(bool isLoad)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("maps", "map", isLoad, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen("maps", "map", isLoad, game.session.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint();
 
 	// save screen

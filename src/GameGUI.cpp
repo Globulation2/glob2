@@ -492,10 +492,10 @@ void GameGUI::syncStep(void)
 	assert(localTeam);
 	assert(teamStats);
 
-	if ((game.stepCounter&255)==79)
+	if ((game.stepCounter&255) == 79)
 	{
 		const char *name = Toolkit::getStringTable()->getString("[auto save]");
-		const char *fileName = glob2NameToFilename("games", name, "game");
+		std::string fileName = glob2NameToFilename("games", name, "game");
 		GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(fileName);
 		if (stream)
 		{
@@ -503,8 +503,7 @@ void GameGUI::syncStep(void)
 			delete stream;
 		}
 		else
-			printf("GameGUI::syncStep: Can't auto save map\n");
-		delete[] fileName;
+			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
 	}
 }
 
@@ -521,7 +520,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen=new LoadSaveScreen("games", "game", true, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", true, game.session.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -529,7 +528,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen=new LoadSaveScreen("games", "game", false, game.session.getMapName(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen = new LoadSaveScreen("games", "game", false, game.session.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -538,7 +537,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					gameMenuScreen=NULL;
 					inGameMenu=IGM_ALLIANCE;
-					gameMenuScreen=new InGameAllianceScreen(this);
+					gameMenuScreen = new InGameAllianceScreen(this);
 					return true;
 				}
 				break;
@@ -546,7 +545,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_OPTION;
-					gameMenuScreen=new InGameOptionScreen(this);
+					gameMenuScreen = new InGameOptionScreen(this);
 					return true;
 				}
 				break;
@@ -3181,15 +3180,11 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 	}
 	else
 	{
-		const char *s=initial->getFileName();
-		assert(s);
-		assert(s[0]);
-		printf("GameGUI::loadBase::s=%s.\n", s);
-		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(s);
-		delete[] s;
-		if (!load(stream))
-			return false;
+		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(initial->getFileName());
+		bool res = load(stream);
 		delete stream;
+		if (!res)
+			return false;
 		game.setBase(initial);
 	}
 
@@ -3200,11 +3195,11 @@ bool GameGUI::load(GAGCore::InputStream *stream)
 {
 	init();
 
-	bool result=game.load(stream);
+	bool result = game.load(stream);
 
-	if (result==false)
+	if (result == false)
 	{
-		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
+		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
 

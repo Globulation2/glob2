@@ -301,7 +301,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		fprintf(logFile, " no need for download, we have a random map.\n");
 		closeDownload();
 	}
-	else if (downloadStream && strncmp(filename, sessionInfo.getFileName(), 64)==0)
+	else if (downloadStream && strncmp(filename, sessionInfo.getFileName().c_str(), 64)==0)
 	{
 		fprintf(logFile, " we are already downloading the map.\n");
 		fprintf(logFileDownload, " we are already downloading the map.\n");
@@ -311,7 +311,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(Uint8 *data, int size, IPaddress 
 		filename=NULL;
 		
 		fprintf(logFile, " we may need to download, we don't have a random map.\n");
-		filename=sessionInfo.getFileName();
+		filename=sessionInfo.getFileName().c_str();
 		
 		assert(filename);
 		assert(filename[0]);

@@ -31,18 +31,12 @@ Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 Glob2FileList::~Glob2FileList()
 {}
 
-const char* Glob2FileList::fileToList(const char* fileName) const
+std::string Glob2FileList::fileToList(const char* fileName) const
 {
-	const char* fullName = this->fullName(fileName);
-	const char* listName = glob2FilenameToName(fullName);
-	delete[] fullName;
-	return listName;
+	return glob2FilenameToName(fullName(fileName).c_str());
 }
 
-const char* Glob2FileList::listToFile(const char* listName) const
+std::string Glob2FileList::listToFile(const char* listName) const
 {
-	const char* fullDir = this->fullDir();
-	const char* fullName = glob2NameToFilename(fullDir, listName, this->extension.c_str());
-	delete[] fullDir;
-	return fullName;
+	return glob2NameToFilename(fullDir().c_str(), listName, extension.c_str());
 }

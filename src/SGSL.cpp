@@ -104,7 +104,7 @@ Token::TokenType Token::getTypeByName(const char *name)
 	int i = 0;
 	TokenType type=NIL;
 
-	std::cout << "Getting token for " << name << std::endl;
+	//std::cout << "Getting token for " << name << std::endl;
 
 	if (name != NULL)
 		while (table[i].type != NIL)
@@ -203,7 +203,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
-			std::cout << "SGSL thread " << this << " testing "
+			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " >? " << amount << std::endl;
@@ -211,7 +211,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_LOWER):
 		{
-			std::cout << "SGSL thread " << this << " testing "
+			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " <? " << amount << std::endl;
@@ -219,7 +219,7 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_EQUAL):
 		{
-			std::cout << "SGSL thread " << this << " testing "
+			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
 				<< Token::getNameByType(type) << " ("
 				<< teamNumber << ", " << level << ") : "
 				<< val << " =? " << amount << std::endl;
@@ -619,17 +619,17 @@ void Story::syncStep(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
-	std::cout << "SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+	std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
 		
-		std::cout << "SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+		std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	}
 
 	if (!cycleLeft)
-		std::cout << "SGSL : Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
+		std::cout << "Story::syncStep : SGSL : Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
 }
 
 using namespace std;
@@ -1713,9 +1713,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		thisone.line.push_back(Token(Token::S_STORY));
 		stories.push_back(thisone);
 		// Debug code
-		printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
+		/*printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 		for (unsigned  i=0; i<thisone.line.size(); i++)
-			cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;
+			cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;*/
 		NEXT_TOKEN;
 	}
 	return er;

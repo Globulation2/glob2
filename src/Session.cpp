@@ -399,16 +399,16 @@ void SessionGame::setMapName(const char *s)
 	mapName[MAP_NAME_MAX_SIZE-1]=0;
 }
 
-const char *SessionGame::getMapName() const
+std::string SessionGame::getMapName() const
 {
 	//printf("(get)mapName=(%s).\n", mapName);
-	return mapName;
+	return std::string(mapName);
 }
 
-const char *SessionGame::getFileName(void) const
+std::string SessionGame::getFileName(void) const
 {
 	if (fileIsAMap)
-		return glob2NameToFilename("maps", mapName, "map");
+		return glob2NameToFilename("maps", mapName, "map").c_str();
 	else
 		return glob2NameToFilename("games", mapName, "game");
 }
