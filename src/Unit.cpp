@@ -632,10 +632,10 @@ void Unit::handleActivity(void)
 			{
 				Team *currentTeam=owner;
 				Team *targetTeam=b->owner;
-				currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum);
-				targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum);
 				if (currentTeam!=targetTeam)
 				{
+					currentTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_LOST, typeNum);
+					targetTeam->setEvent(posX, posY, Team::UNIT_CONVERTED_ACQUIERED, typeNum);
 					int targetID=-1;
 					for (int i=0; i<1024; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
