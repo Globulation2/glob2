@@ -40,6 +40,9 @@ typedef short Sint16;
 typedef int Sint32;
 typedef __int64 Sint64;
 
+#define SDL_SwapBE32 htonl
+#define SDL_SwapBE16 htons
+
 struct SDL_RWops { };
 struct IPaddress { };
 struct UDPsocket { };

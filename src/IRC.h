@@ -100,7 +100,7 @@ protected:
 	//! iterator after the last channel user
 	std::set<std::string>::const_iterator endChannelUser;
 	//! iterator to the next channel user
-	std::set<std::string>::iterator nextChannelUser;
+	std::set<std::string>::const_iterator nextChannelUser;
 	
 	//! The chat where default chat will go
 	char chatChan[IRC_CHANNEL_SIZE+1];
