@@ -19,6 +19,7 @@
 
 #include "StringTable.h"
 #include "GlobalContainer.h"
+#include "assert.h"
 
 #include <stdio.h>
 #include <stdlib.h>
