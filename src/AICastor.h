@@ -32,6 +32,8 @@ class Building;
 
 class AICastor : public AIImplementation
 {
+private:
+	void firstInit();
 public:
 	AICastor(Player *player);
 	AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor);
@@ -43,19 +45,38 @@ public:
 	Game *game;
 	Map *map;
 
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
+	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	Order *getOrder(void);
 	
 private:
+	void computeObstacleUnitMap();
+	void computeWorkPowerMap();
+	void computeWorkRangeMap();
+	void computeWorkAbilityMap();
+	void computeHydratationMap();
+	
 	void computeRessourcesCluster();
+	
+public:
+	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 	
 private:
 	Uint32 timer;
+	bool hydratationMapComputed;
+	
+public:
+	
+	Uint8 *obstacleUnitMap;
+	Uint8 *workPowerMap;
+	Uint8 *workRangeMap;
+	Uint8 *workAbilityMap;
+	Uint8 *hydratationMap;
 	
 	Uint16 *ressourcesCluster;
 	
+private:
 	FILE *logFile;
 };
 

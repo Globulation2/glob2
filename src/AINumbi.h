@@ -43,7 +43,7 @@ public:
 	Game *game;
 	Map *map;
 	
-	bool load(SDL_RWops *stream, Sint32 versionMinor);
+	bool load(SDL_RWops *stream, Player *player, Sint32 versionMinor);
 	void save(SDL_RWops *stream);
 	
 	Order *getOrder(void);

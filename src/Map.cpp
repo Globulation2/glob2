@@ -2066,7 +2066,6 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 				for (int i=0; i<4; i++)
 					if (side[i]>max)
 						max=side[i];
-
 				if (max==1)
 					gradient[wy+x]=1;
 				else

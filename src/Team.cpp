@@ -208,6 +208,305 @@ void Team::setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase)
 	}
 }
 
+bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
+{
+	assert(stream);
+	assert(buildingsToBeDestroyed.size()==0);
+	buildingsTryToBuildingSiteRoom.clear();
+	
+	// loading baseteam
+	if(!BaseTeam::load(stream, versionMinor))
+		return false;
+
+	// normal load
+	for (int i=0; i<1024; i++)
+	{
+		if (myUnits[i])
+			delete myUnits[i];
+
+		Uint32 isUsed=SDL_ReadBE32(stream);
+		if (isUsed)
+			myUnits[i]=new Unit(stream, this);
+		else
+			myUnits[i]=NULL;
+	}
+
+	swarms.clear();
+	turrets.clear();
+	canExchange.clear();
+	virtualBuildings.clear();
+	clearingFlags.clear();
+	zonableForbidden.clear();
+	
+	prestige=0;
+	for (int i=0; i<1024; i++)
+	{
+		if (myBuildings[i])
+			delete myBuildings[i];
+
+		Uint32 isUsed=SDL_ReadBE32(stream);
+		if (isUsed)
+		{
+			myBuildings[i]=new Building(stream, buildingstypes, this, versionMinor);
+			if (myBuildings[i]->type->unitProductionTime)
+				swarms.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->shootingRange)
+				turrets.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->canExchange)
+				canExchange.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->isVirtual)
+				virtualBuildings.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonable[WORKER])
+				clearingFlags.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonableForbidden)
+				zonableForbidden.push_back(myBuildings[i]);
+		}
+		else
+			myBuildings[i]=NULL;
+	}
+
+	subscribeForInside.clear();
+	subscribeToBringRessources.clear();
+	subscribeForFlaging.clear();
+
+	// resolve cross reference
+	for (int i=0; i<1024; i++)
+		if (myUnits[i])
+			myUnits[i]->loadCrossRef(stream, this);
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+		{
+			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
+			if (myBuildings[i]->unitsInsideSubscribe.size())
+			{
+				subscribeForInside.push_back(myBuildings[i]);
+				myBuildings[i]->subscribeForInside=1;
+			}
+			if (myBuildings[i]->unitsWorkingSubscribe.size())
+			{
+				if (myBuildings[i]->type->defaultUnitStayRange)
+				{
+					subscribeForFlaging.push_back(myBuildings[i]);
+					myBuildings[i]->subscribeForFlaging=1;
+				}
+				else
+				{
+					subscribeToBringRessources.push_back(myBuildings[i]);
+					myBuildings[i]->subscribeToBringRessources=1;
+				}
+			}
+			if (myBuildings[i]->type->canExchange)
+				canExchange.push_back(myBuildings[i]);
+		}
+
+	allies=SDL_ReadBE32(stream);
+	enemies=SDL_ReadBE32(stream);
+	sharedVisionExchange=SDL_ReadBE32(stream);
+	sharedVisionFood=SDL_ReadBE32(stream);
+	sharedVisionOther=SDL_ReadBE32(stream);
+	me=SDL_ReadBE32(stream);
+	startPosX=SDL_ReadBE32(stream);
+	startPosY=SDL_ReadBE32(stream);
+	if (versionMinor>=29)
+		startPosSet=SDL_ReadBE32(stream);
+	else
+		startPosSet=0;
+
+	// load stats
+	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
+	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	{
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
+		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
+	}
+
+	for (int i=0; i<EVENT_TYPE_SIZE; i++)
+	{
+		isEvent[i]=false;
+		eventCooldown[i]=0;
+	}
+	eventPosX=startPosX;
+	eventPosY=startPosY;
+	isAlive=true;
+
+	return true;
+}
+
+void Team::save(SDL_RWops *stream)
+{
+	// saving baseteam
+	BaseTeam::save(stream);
+
+	// saving team
+	for (int i=0; i<1024; i++)
+		if (myUnits[i])
+		{
+			SDL_WriteBE32(stream, true);
+			myUnits[i]->save(stream);
+		}
+		else
+		{
+			SDL_WriteBE32(stream, false);
+		}
+
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+		{
+			SDL_WriteBE32(stream, true);
+			myBuildings[i]->save(stream);
+		}
+		else
+		{
+			SDL_WriteBE32(stream, false);
+		}
+	
+	// save cross reference
+	for (int i=0; i<1024; i++)
+		if (myUnits[i])
+			myUnits[i]->saveCrossRef(stream);
+	
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+			myBuildings[i]->saveCrossRef(stream);
+
+	SDL_WriteBE32(stream, allies);
+	SDL_WriteBE32(stream, enemies);
+	SDL_WriteBE32(stream, sharedVisionExchange);
+	SDL_WriteBE32(stream, sharedVisionFood);
+	SDL_WriteBE32(stream, sharedVisionOther);
+	SDL_WriteBE32(stream, me);
+	SDL_WriteBE32(stream, startPosX);
+	SDL_WriteBE32(stream, startPosY);
+	SDL_WriteBE32(stream, startPosSet);
+	
+	// save stats
+	SDL_WriteBE32(stream, stats.endOfGameStatIndex);
+	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
+	{
+		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]);
+		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]);
+		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]);
+	}
+}
+
+void Team::createLists(void)
+{
+	assert(swarms.size()==0);
+	assert(turrets.size()==0);
+	assert(virtualBuildings.size()==0);
+
+	swarms.clear();
+	turrets.clear();
+	virtualBuildings.clear();
+	
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+		{
+			if (myBuildings[i]->type->unitProductionTime)
+				swarms.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->shootingRange)
+				turrets.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->isVirtual)
+				virtualBuildings.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonable[WORKER])
+				clearingFlags.push_back(myBuildings[i]);
+			if (myBuildings[i]->type->zonableForbidden)
+				zonableForbidden.push_back(myBuildings[i]);
+			myBuildings[i]->update();
+		}
+}
+
+void Team::clearLists(void)
+{
+	foodable.clear();
+	fillable.clear();
+	zonableWorkers[0].clear(); 
+	zonableWorkers[1].clear(); 
+	zonableExplorer.clear(); 
+	zonableWarrior.clear();
+	for (int i=0; i<NB_ABILITY; i++)
+		upgrade[i].clear();
+	canFeedUnit.clear();
+	canHealUnit.clear();
+	canExchange.clear();
+	subscribeForInside.clear();
+	subscribeToBringRessources.clear();
+	subscribeForFlaging.clear();
+	buildingsWaitingForDestruction.clear();
+	buildingsToBeDestroyed.clear();
+	buildingsTryToBuildingSiteRoom.clear();
+	swarms.clear();
+	turrets.clear();
+	virtualBuildings.clear();
+}
+
+void Team::clearMap(void)
+{
+	assert(map);
+
+	for (int i=0; i<1024; ++i)
+		if (myUnits[i])
+			if (myUnits[i]->performance[FLY])
+				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			else
+				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+
+	for (int i=0; i<1024; ++i)
+		if (myBuildings[i])
+			if (!myBuildings[i]->type->isVirtual)
+				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
+
+}
+
+void Team::clearMem(void)
+{
+	for (int i=0; i<1024; ++i)
+		if (myUnits[i])
+		{
+			delete myUnits[i];
+			myUnits[i] = NULL;
+		}
+	for (int i=0; i<1024; ++i)
+		if (myBuildings[i])
+		{
+			delete myBuildings[i];
+			myBuildings[i] = NULL;
+		}
+}
+
+void Team::integrity(void)
+{
+	assert(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
+	for (int id=0; id<1024; id++)
+	{
+		Building *b=myBuildings[id];
+		if (b)
+			b->integrity();
+	}
+	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		assert((*it)->type->isVirtual);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+	}
+	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->type);
+		assert((*it)->type->isVirtual);
+		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+	}
+
+	for (int i=0; i<1024; i++)
+	{
+		Unit *u=myUnits[i];
+		if (u)
+			u->integrity();
+	}
+}
+
 void Team::setCorrectMasks(void)
 {
 	me=teamNumberToMask(teamNumber);
@@ -232,6 +531,13 @@ void Team::setCorrectColor(float value)
 	this->colorR=(Uint8)(255.0f*r);
 	this->colorG=(Uint8)(255.0f*g);
 	this->colorB=(Uint8)(255.0f*b);
+}
+
+void Team::update()
+{
+	for (int i=0; i<1024; i++)
+		if (myBuildings[i])
+			myBuildings[i]->update();
 }
 
 bool Team::openMarket()
@@ -844,312 +1150,6 @@ int Team::maxBuildLevel(void)
 		}
 	}
 	return maxLevel;
-}
-
-bool Team::load(SDL_RWops *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
-{
-	assert(stream);
-	assert(buildingsToBeDestroyed.size()==0);
-	buildingsTryToBuildingSiteRoom.clear();
-	
-	// loading baseteam
-	if(!BaseTeam::load(stream, versionMinor))
-		return false;
-
-	// normal load
-	for (int i=0; i<1024; i++)
-	{
-		if (myUnits[i])
-			delete myUnits[i];
-
-		Uint32 isUsed=SDL_ReadBE32(stream);
-		if (isUsed)
-			myUnits[i]=new Unit(stream, this);
-		else
-			myUnits[i]=NULL;
-	}
-
-	swarms.clear();
-	turrets.clear();
-	canExchange.clear();
-	virtualBuildings.clear();
-	clearingFlags.clear();
-	zonableForbidden.clear();
-		
-	prestige=0;
-	for (int i=0; i<1024; i++)
-	{
-		if (myBuildings[i])
-			delete myBuildings[i];
-
-		Uint32 isUsed=SDL_ReadBE32(stream);
-		if (isUsed)
-		{
-			myBuildings[i]=new Building(stream, buildingstypes, this, versionMinor);
-			if (myBuildings[i]->type->unitProductionTime)
-				swarms.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->shootingRange)
-				turrets.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->canExchange)
-				canExchange.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonable[WORKER])
-				clearingFlags.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonableForbidden)
-				zonableForbidden.push_back(myBuildings[i]);
-		}
-		else
-			myBuildings[i]=NULL;
-	}
-
-	subscribeForInside.clear();
-	subscribeToBringRessources.clear();
-	subscribeForFlaging.clear();
-
-	// resolve cross reference
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
-			myUnits[i]->loadCrossRef(stream, this);
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-		{
-			myBuildings[i]->loadCrossRef(stream, buildingstypes, this);
-			if (myBuildings[i]->unitsInsideSubscribe.size())
-			{
-				subscribeForInside.push_back(myBuildings[i]);
-				myBuildings[i]->subscribeForInside=1;
-			}
-			if (myBuildings[i]->unitsWorkingSubscribe.size())
-			{
-				if (myBuildings[i]->type->defaultUnitStayRange)
-				{
-					subscribeForFlaging.push_back(myBuildings[i]);
-					myBuildings[i]->subscribeForFlaging=1;
-				}
-				else
-				{
-					subscribeToBringRessources.push_back(myBuildings[i]);
-					myBuildings[i]->subscribeToBringRessources=1;
-				}
-			}
-			if (myBuildings[i]->type->canExchange)
-				canExchange.push_back(myBuildings[i]);
-		}
-
-	allies=SDL_ReadBE32(stream);
-	enemies=SDL_ReadBE32(stream);
-	sharedVisionExchange=SDL_ReadBE32(stream);
-	sharedVisionFood=SDL_ReadBE32(stream);
-	sharedVisionOther=SDL_ReadBE32(stream);
-	me=SDL_ReadBE32(stream);
-	startPosX=SDL_ReadBE32(stream);
-	startPosY=SDL_ReadBE32(stream);
-	if (versionMinor>=29)
-		startPosSet=SDL_ReadBE32(stream);
-	else
-		startPosSet=0;
-
-	// load stats
-	stats.endOfGameStatIndex=SDL_ReadBE32(stream);
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
-	{
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]=SDL_ReadBE32(stream);
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]=SDL_ReadBE32(stream);
-		stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]=SDL_ReadBE32(stream);
-	}
-
-	for (int i=0; i<EVENT_TYPE_SIZE; i++)
-	{
-		isEvent[i]=false;
-		eventCooldown[i]=0;
-	}
-	eventPosX=startPosX;
-	eventPosY=startPosY;
-	isAlive=true;
-
-	return true;
-}
-
-void Team::update()
-{
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-			myBuildings[i]->update();
-}
-
-void Team::save(SDL_RWops *stream)
-{
-	// saving baseteam
-	BaseTeam::save(stream);
-
-	// saving team
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
-		{
-			SDL_WriteBE32(stream, true);
-			myUnits[i]->save(stream);
-		}
-		else
-		{
-			SDL_WriteBE32(stream, false);
-		}
-
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-		{
-			SDL_WriteBE32(stream, true);
-			myBuildings[i]->save(stream);
-		}
-		else
-		{
-			SDL_WriteBE32(stream, false);
-		}
-	
-	// save cross reference
-	for (int i=0; i<1024; i++)
-		if (myUnits[i])
-			myUnits[i]->saveCrossRef(stream);
-	
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-			myBuildings[i]->saveCrossRef(stream);
-
-	SDL_WriteBE32(stream, allies);
-	SDL_WriteBE32(stream, enemies);
-	SDL_WriteBE32(stream, sharedVisionExchange);
-	SDL_WriteBE32(stream, sharedVisionFood);
-	SDL_WriteBE32(stream, sharedVisionOther);
-	SDL_WriteBE32(stream, me);
-	SDL_WriteBE32(stream, startPosX);
-	SDL_WriteBE32(stream, startPosY);
-	SDL_WriteBE32(stream, startPosSet);
-	
-	// save stats
-	SDL_WriteBE32(stream, stats.endOfGameStatIndex);
-	for (int i=0; i<TeamStats::END_OF_GAME_STATS_SIZE; i++)
-	{
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_UNITS]);
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_BUILDINGS]);
-		SDL_WriteBE32(stream, stats.endOfGameStats[i].value[EndOfGameStat::TYPE_PRESTIGE]);
-	}
-}
-
-void Team::createLists(void)
-{
-	assert(swarms.size()==0);
-	assert(turrets.size()==0);
-	assert(virtualBuildings.size()==0);
-
-	swarms.clear();
-	turrets.clear();
-	virtualBuildings.clear();
-	
-	for (int i=0; i<1024; i++)
-		if (myBuildings[i])
-		{
-			if (myBuildings[i]->type->unitProductionTime)
-				swarms.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->shootingRange)
-				turrets.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonable[WORKER])
-				clearingFlags.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonableForbidden)
-				zonableForbidden.push_back(myBuildings[i]);
-			myBuildings[i]->update();
-		}
-}
-
-void Team::clearLists(void)
-{
-	foodable.clear();
-	fillable.clear();
-	zonableWorkers[0].clear(); 
-	zonableWorkers[1].clear(); 
-	zonableExplorer.clear(); 
-	zonableWarrior.clear();
-	for (int i=0; i<NB_ABILITY; i++)
-		upgrade[i].clear();
-	canFeedUnit.clear();
-	canHealUnit.clear();
-	canExchange.clear();
-	subscribeForInside.clear();
-	subscribeToBringRessources.clear();
-	subscribeForFlaging.clear();
-	buildingsWaitingForDestruction.clear();
-	buildingsToBeDestroyed.clear();
-	buildingsTryToBuildingSiteRoom.clear();
-	swarms.clear();
-	turrets.clear();
-	virtualBuildings.clear();
-}
-
-void Team::clearMap(void)
-{
-	assert(map);
-
-	for (int i=0; i<1024; ++i)
-		if (myUnits[i])
-			if (myUnits[i]->performance[FLY])
-				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-			else
-				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-
-	for (int i=0; i<1024; ++i)
-		if (myBuildings[i])
-			if (!myBuildings[i]->type->isVirtual)
-				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
-
-}
-
-void Team::clearMem(void)
-{
-	for (int i=0; i<1024; ++i)
-		if (myUnits[i])
-		{
-			delete myUnits[i];
-			myUnits[i] = NULL;
-		}
-	for (int i=0; i<1024; ++i)
-		if (myBuildings[i])
-		{
-			delete myBuildings[i];
-			myBuildings[i] = NULL;
-		}
-}
-
-void Team::integrity(void)
-{
-	assert(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
-	for (int id=0; id<1024; id++)
-	{
-		Building *b=myBuildings[id];
-		if (b)
-			b->integrity();
-	}
-	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
-	{
-		assert(*it);
-		assert((*it)->type);
-		assert((*it)->type->isVirtual);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
-	}
-	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
-	{
-		assert(*it);
-		assert((*it)->type);
-		assert((*it)->type->isVirtual);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
-	}
-
-	for (int i=0; i<1024; i++)
-	{
-		Unit *u=myUnits[i];
-		if (u)
-			u->integrity();
-	}
 }
 
 void Team::syncStep(void)
