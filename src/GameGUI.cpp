@@ -93,8 +93,7 @@ void GameGUI::init()
 	viewportY=0;
 	mouseX=0;
 	mouseY=0;
-	selectMode=NO_SELECTION;
-	displayMode=BUILDING_AND_FLAG_VIEW;
+	displayMode=BUILDING_VIEW;
 	typeToBuild=-1;
 	selBuild=NULL;
 	selectionPushed=false;
@@ -610,7 +609,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			}
 			else if (button==SDL_BUTTON_MIDDLE)
 			{
-				if (selectMode==BUILDING_SELECTION && (globalContainer->gfx->getW()-event->button.x<128))
+				if (displayMode==BUILDING_SELECTION_VIEW && (globalContainer->gfx->getW()-event->button.x<128))
 				{
 					assert (selBuild);
 					selBuild->verbose=!selBuild->verbose;
@@ -729,9 +728,9 @@ void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 void GameGUI::handleRightClick(void)
 {
 	// We cycle between views:
-	if ((selectMode==NO_SELECTION) && (typeToBuild<0))
+	if ((displayMode<4) && (typeToBuild<0))
 	{
-		displayMode=DisplayMode((displayMode + 1) % NB_VIEWS);
+		displayMode=DisplayMode((displayMode + 1) % 4);
 	}
 	// We deselect all, we want no tools activated:
 	else
@@ -773,7 +772,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_PLUS:
 			case SDLK_KP_PLUS:
 			    {
-					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selectMode==BUILDING_SELECTION) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
@@ -783,7 +782,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_MINUS:
 			case SDLK_KP_MINUS:
 				{
-					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selectMode==BUILDING_SELECTION) && (selBuild->maxUnitWorkingLocal>0))
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->gid), &(nbReq), 1));
@@ -1019,7 +1018,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				Building *b=*virtualIt;
 				if ((b->posX==mapX) && (b->posY==mapY))
 				{
-					selectMode=BUILDING_SELECTION;
+					displayMode=BUILDING_SELECTION_VIEW;
 					game.selectedUnit=NULL;
 					selectionPushed=true;
 					selectionGUID=NOGUID;
@@ -1035,7 +1034,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			selBuild=NULL;
 			selectionPushed=true;
 			// an unit is selected:
-			selectMode=UNIT_SELECTION;
+			displayMode=UNIT_SELECTION_VIEW;
 			selectionGUID=selUnit->gid;
 			selectionGBID=NOGBID;
 			game.selectedUnit=selUnit;
@@ -1052,7 +1051,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				if ((game.map.isMapDiscovered(mapX, mapY, localTeam->sharedVisionOther))
 					&& ( (game.teams[buildingTeam]->allies&(1<<localTeamNo)) || game.map.isFOWDiscovered(mapX, mapY, localTeam->sharedVisionOther)))
 				{
-					selectMode=BUILDING_SELECTION;
+					displayMode=BUILDING_SELECTION_VIEW;
 					game.selectedUnit=NULL;
 					selectionPushed=true;
 					selectionGUID=NOGUID;
@@ -1088,7 +1087,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
 		}
 	}
-	else if (selectMode==BUILDING_SELECTION)
+	else if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		assert (selBuild);
 		// TODO : handle this in a nice way
@@ -1231,7 +1230,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 		}
 	}
-	else if (selectMode==UNIT_SELECTION)
+	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
 		assert(selUnit);
 		selUnit->verbose=!selUnit->verbose;
@@ -1256,7 +1255,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		if (mx<32)
 		{
-			displayMode=BUILDING_AND_FLAG_VIEW;
+			displayMode=BUILDING_VIEW;
 		}
 		else if (mx<64)
 		{
@@ -1267,7 +1266,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			displayMode=STAT_GRAPH_VIEW;
 		}
 	}
-	else if (displayMode==BUILDING_AND_FLAG_VIEW)
+	else if (displayMode==BUILDING_VIEW)
 	{
 		// NOTE : here 6 is 12 /2. 12 is the number of buildings in menu
 		if (my<128+32+(8>>1)*46)
@@ -1304,10 +1303,11 @@ Order *GameGUI::getOrder(void)
 	}
 }
 
-void GameGUI::draw(void)
+void GameGUI::drawPanel(void)
 {
 	checkValidSelection();
 
+	// set the clipping rectangle
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128);
 
 	// draw menu background, black if low speed graphics, transparent otherwise
@@ -1317,7 +1317,7 @@ void GameGUI::draw(void)
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 
-	if (selectMode==BUILDING_SELECTION)
+	if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		assert(selBuild);
 		Uint8 r, g, b;
@@ -1541,7 +1541,7 @@ void GameGUI::draw(void)
 			//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFont, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
 		}
 	}
-	else if (selectMode==UNIT_SELECTION)
+	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
 		Uint8 r, g, b;
 
@@ -1640,7 +1640,7 @@ void GameGUI::draw(void)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+315, globalContainer->littleFont, "ndToRckMed=%d", selUnit->needToRecheckMedical);
 		*/
 	}
-	else if (displayMode==BUILDING_AND_FLAG_VIEW)
+	else if (displayMode==BUILDING_VIEW)
 	{
 		// draw button bar
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 1);
@@ -1758,6 +1758,9 @@ void GameGUI::draw(void)
 				}
 			}
 		}
+	}
+	else if (displayMode==FLAG_VIEW)
+	{
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
 	{
@@ -2106,11 +2109,7 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawAll(int team)
 {
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
-	else
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
-	
+	// draw the map
 	static const bool useMapDiscovered=false;
 	bool drawBuildingRects=(typeToBuild>=0);
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
@@ -2124,21 +2123,26 @@ void GameGUI::drawAll(int team)
 		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, useMapDiscovered);
 	}
 
+	// draw the panel
+	globalContainer->gfx->setClipRect();
+	drawPanel();
+
+	// draw the minimap
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
 
-	globalContainer->gfx->setClipRect();
-	draw();
-
+	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
+	// draw menu if any
 	if (inGameMenu)
 	{
 		globalContainer->gfx->setClipRect();
 		drawInGameMenu();
 	}
 
+	// draw input box if any
 	if (typingInputScreen)
 	{
 		globalContainer->gfx->setClipRect();
@@ -2426,7 +2430,7 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 
 void GameGUI::checkValidSelection(void)
 {
-	if (selectMode==BUILDING_SELECTION)
+	if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		if (selectionGBID!=NOGBID)
 		{
@@ -2435,7 +2439,7 @@ void GameGUI::checkValidSelection(void)
 			selBuild=game.teams[team]->myBuildings[id];
 		}
 		else
-			selectMode=NO_SELECTION;
+			displayMode=BUILDING_VIEW;
 			//selBuild=NULL;
 		game.selectedBuilding=selBuild;
 		if (selBuild==NULL)
@@ -2444,10 +2448,10 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			selectMode=NO_SELECTION;
+			displayMode=BUILDING_VIEW;
 		}
 	}
-	else if (selectMode==UNIT_SELECTION)
+	else if (displayMode==UNIT_SELECTION_VIEW)
 	{
 		if (selectionGUID!=NOGUID)
 		{
@@ -2456,7 +2460,7 @@ void GameGUI::checkValidSelection(void)
 			selUnit=game.teams[team]->myUnits[id];
 		}
 		else
-			selectMode=NO_SELECTION;
+			displayMode=BUILDING_VIEW;
 			//selUnit=NULL;
 		game.selectedUnit=selUnit;
 		if (selUnit==NULL)
@@ -2465,7 +2469,7 @@ void GameGUI::checkValidSelection(void)
 			game.selectedBuilding=NULL;
 			selectionGUID=NOGUID;
 			selectionGBID=NOGBID;
-			selectMode=NO_SELECTION;
+			displayMode=BUILDING_VIEW;
 		}
 	}
 	else
@@ -2476,13 +2480,12 @@ void GameGUI::checkValidSelection(void)
 		selectionGBID=NOGBID;
 		game.selectedUnit=NULL;
 		game.selectedBuilding=NULL;
-		selectMode=NO_SELECTION;
 	}
 }
 
 void GameGUI::iterateSelection(void)
 {
-	if (selectMode==BUILDING_SELECTION)
+	if (displayMode==BUILDING_SELECTION_VIEW)
 	{
 		assert(selBuild);
 		assert(selectionGBID!=NOGBID);
