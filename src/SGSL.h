@@ -70,7 +70,7 @@ struct Token
 		S_GOBACKTO=322,
 		S_SETFLAG=323,
 		S_ALLY=324,
-		S_SUMMON 
+		S_SUMMON=345
 	} type;
 	
 	struct TokenSymbolLookupTable

@@ -389,12 +389,14 @@ bool Story::testCondition()
 			case (Token::S_GOBACKTO):
 			{
 				int newEmplacement;
-				for (newEmplacement = lineSelector; newEmplacement > 0; newEmplacement--)
+				for (newEmplacement =lineSelector; newEmplacement > 0; newEmplacement--)
 				{
-					if (line[lineSelector+1].msg == line[newEmplacement].msg)
+					if ((line[lineSelector+1].msg == line[newEmplacement].msg) && (line[newEmplacement-1].type=Token::S_MARK))
+					{
 						break;
+					}
 				}
-				lineSelector = newEmplacement;
+				lineSelector = --newEmplacement;
 				return true;
 			}
 			case (Token::INT):
