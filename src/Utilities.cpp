@@ -135,6 +135,10 @@ namespace Utilities
 			w=r.x+r.w-x;
 		if (h+y>r.y+r.h)
 			h=r.y+r.h-y;
+		if (w<0)
+			w=0;
+		if (h<0)
+			h=0;
 	}
 
 	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd)
