@@ -26,6 +26,7 @@
 #include "BuildingType.h"
 #include "Player.h"
 #include "YOG.h"
+#include "LogFileManager.h"
 
 struct Settings
 {
@@ -56,6 +57,7 @@ public:
 	Settings settings;
 
 	FileManager fileManager;
+	LogFileManager logFileManager;
 	
 	//! Ysagoon Online Game connector and session handler
 	YOG yog;

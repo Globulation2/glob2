@@ -66,6 +66,9 @@ void BasePlayer::init()
 	quitStep=-1;
 	
 	disableRecursiveDestruction=false;
+	
+	logFile=globalContainer->logFileManager.getFile("Player.log");
+	assert(logFile);
 }
 
 BasePlayer::~BasePlayer(void)
@@ -348,6 +351,9 @@ bool BasePlayer::send(char *data, int size)
 	//else
 		//printf("failed to send packet to player %d. ip=(%x, %d)  (channel=%d).\n", number, ip.host, ip.port, channel);
 
+	if (!sucess)
+		printf("failed to send packet!\n");
+	
 	SDLNet_FreePacket(packet);
 	
 	return sucess;

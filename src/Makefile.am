@@ -122,7 +122,9 @@ YOG.cpp  \
 MapGenerationDescriptor.h \
 MapGenerationDescriptor.cpp \
 LANBroadcast.h \
-LANBroadcast.cpp
+LANBroadcast.cpp \
+LogFileManager.h \
+LogFileManager.cpp
 
 
 glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
