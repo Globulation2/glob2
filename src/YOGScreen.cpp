@@ -216,8 +216,10 @@ void YOGScreen::onTimer(Uint32 tick)
 	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
 		printf("YOG::joining because state=%d.\n", multiplayersJoin->waitingState);
+		globalContainer->yog->joinGame();
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
 		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 50);
+		globalContainer->yog->unjoinGame();
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			printf("YOG::unable to join DISCONNECT returned.\n");

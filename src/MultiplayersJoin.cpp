@@ -704,9 +704,13 @@ void MultiplayersJoin::receiveTime()
 
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
+	// call yog step TODO: avoit Host AND Join to call yog.step()
+	if (shareOnYOG)
+		globalContainer->yog->step(); // YOG cares about firewall and NAT
+	
 	sendingTime();
 	receiveTime();
-
+	
 	if ((waitingState!=WS_TYPING_SERVER_NAME) && socket)
 	{
 		UDPpacket *packet=NULL;

@@ -205,6 +205,12 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			if ((*client)->hasip(ip))
 			{
 				fprintf(logServer, "client \"%s\" deconnected.\n", (*client)->userName);
+				if ((*client)->sharingGame)
+				{
+					games.remove((*client)->sharingGame);
+					delete (*client)->sharingGame;
+				}
+					(*client)->sharingGame=NULL;
 				delete (*client);
 				clients.erase(client);
 				break;
@@ -542,8 +548,10 @@ void YOGServer::run()
 
 int main(int argc, char *argv[])
 {
-	logClient=fopen("YOGClient.log", "w");
-	logServer=fopen("YOGServer.log", "w");
+	//logClient=fopen("YOGClient.log", "w");
+	//logServer=fopen("YOGServer.log", "w");
+	logClient=stdout;
+	logServer=stdout;
 	
 	YOGServer yogServer;
 	if (yogServer.init())
