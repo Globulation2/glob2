@@ -20,7 +20,7 @@
 // deafault building
 startImage = 0
 hueImage = 0
-flagImage = 33
+flagImage = 34
 
 upgradeStopWalk = 0
 upgradeStopSwim = 0

@@ -29,6 +29,8 @@
 #include <functional>
 #include <algorithm>
 
+#define BULLET_IMGID 35
+
 Game::Game()
 {
 	init();

@@ -48,7 +48,9 @@ Flag
 30 : Exploration
 31 : Guerre
 32 : Defrichage
+33 : Interdiction
 
 Misc
 
-33 : petit drapeau
+34 : petit drapeau
+35 : boulet
