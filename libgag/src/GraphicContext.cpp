@@ -103,7 +103,10 @@ void DrawableSurface::loadImage(const char *name)
 bool DrawableSurface::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 {
 	if (surface)
+	{
+		unlock();
 		SDL_FreeSurface(surface);
+	}
 
 	this->flags=flags;
 	Uint32 sdlFlags=0;
@@ -113,8 +116,9 @@ bool DrawableSurface::setRes(int w, int h, int depth, Uint32 flags, Uint32 type)
 		sdlFlags|=SDL_SWSURFACE;
 
 	SDL_Surface *tempScreen = SDL_CreateRGBSurface(sdlFlags, w, h, depth, 0xFF, 0xFF00, 0xFF0000, 0xFF000000);
-
+	assert(tempScreen);
 	surface = SDL_DisplayFormat(tempScreen);
+	assert(surface);
 	SDL_FreeSurface(tempScreen);
 	setClipRect();
 	return true;
@@ -1134,6 +1138,7 @@ void DrawableSurface::drawSurface(int x, int y, DrawableSurface *osurface)
 	r.h=static_cast<Uint16>(osurface->getH());
 
 	unlock();
+	osurface->unlock();
 	SDL_BlitSurface(osurface->surface, NULL, this->surface, &r);
 }
 
