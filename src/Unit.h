@@ -54,6 +54,7 @@ public:
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	void selectPreferedMovement(void);
+	void selectPreferedGroundMovement(void);
 	bool isUnitHungry(void);
 	
 public:
@@ -96,16 +97,18 @@ public:
 	
 	enum Movement
 	{
-		MOV_RANDOM=0,
-		MOV_GOING_TARGET=1,
-		MOV_FLYING_TARGET=2,
-		MOV_GOING_DXDY=3,
-		MOV_HARVESTING=4,
-		MOV_FILLING=5,
-		MOV_ENTERING_BUILDING=6,
-		MOV_INSIDE=7,
-		MOV_EXITING_BUILDING=8,
-		MOV_ATTACKING_TARGET=9
+		MOV_RANDOM_GROUND=0,
+		MOV_RANDOM_FLY=1,
+		MOV_GOING_TARGET=2,
+		MOV_FLYING_TARGET=3,
+		MOV_GOING_DXDY=4,
+		MOV_HARVESTING=5,
+		MOV_FILLING=6,
+		MOV_ENTERING_BUILDING=7,
+		MOV_INSIDE=8,
+		MOV_EXITING_BUILDING=9,
+		MOV_ESCAPING_FORBIDDEN=10,
+		MOV_ATTACKING_TARGET=11
 	};
 
 	enum BypassDirection
@@ -130,12 +133,15 @@ protected:
 	
 	void endOfAction(void);
 	
-	void setNewValidDirection(void);
+	void setNewValidDirectionGround(void);
+	void setNewValidDirectionAir(void);
 	bool valid(int x, int y);
 	bool validHard(int x, int y);
 	bool areOnlyUnitsInFront(int dx, int dy);
 	void flytoTarget();
-	void gotoTarget();
+	void closestGroundValidDxDy();
+	void gotoGroundTarget();
+	void escapeGroundTarget();
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 	
 public:
