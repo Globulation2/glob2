@@ -26,7 +26,6 @@
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include <Stream.h>
-#include <valgrind/memcheck.h>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner)
 {
