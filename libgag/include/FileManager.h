@@ -91,14 +91,25 @@ namespace GAGCore
 		//! Returns true if filename is a directory
 		bool isDir(const char *filename);
 	
-		//! Open an output stream, use it to write structured datas
+		//! Open an output stream, use it to write structured datas, const char *version
 		OutputStream *openOutputStream(const char *filename, StreamType type = STREAM_BINARY);
-		//! Open an input stream, use it to read structured datas
+		//! Open an output stream, use it to write structured datas, std::string version
+		OutputStream *openOutputStream(const std::string &filename, StreamType type = STREAM_BINARY) { return openOutputStream(filename.c_str(), type); }
+		
+		//! Open an input stream, use it to read structured datas, const char *version
 		InputStream *openInputStream(const char *filename, StreamType type = STREAM_BINARY);
-		//! Open an output line stream, use it to write line-oriented files
+		//! Open an input stream, use it to read structured datas, std::string version
+		InputStream *openInputStream(const std::string &filename, StreamType type = STREAM_BINARY) { return openInputStream(filename.c_str(), type); }
+		
+		//! Open an output line stream, use it to write line-oriented files, const char *version
 		OutputLineStream *openOutputLineStream(const char *filename);
-		//! Open an input line stream, use it to read line-oriented files
+		//! Open an output line stream, use it to write line-oriented files, std::string version
+		OutputLineStream *openOutputLineStream(const std::string &filename) { return openOutputLineStream(filename.c_str()); }
+		
+		//! Open an input line stream, use it to read line-oriented files, const char *version
 		InputLineStream *openInputLineStream(const char *filename);
+		//! Open an input line stream, use it to read line-oriented files, std::string version
+		InputLineStream *openInputLineStream(const std::string &filename) { return openInputLineStream(filename.c_str()); }
 		
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const char *filename, const char *mode="rb");
@@ -106,8 +117,10 @@ namespace GAGCore
 		FILE *openFP(const char *filename, const char *mode="rb");
 		//! Open a file in the c++ stream format for reading
 		std::ifstream *openIFStream(const std::string &fileName);
-		//! Return the checksum of a file
+		//! Return the checksum of a file, const char *version
 		Uint32 checksum(const char *filename);
+		//! Return the checksum of a file, std::string version
+		Uint32 checksum(const std::string &filename) { return checksum(filename.c_str()); }
 	
 		// FIXME : the following functions are not thread-safe :
 		//! must be call before directory listening, return true if success

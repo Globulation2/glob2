@@ -92,15 +92,17 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		const char *mapSelectedName=fileList->getText(par1);
 		if (mapSelectedName)
 		{
-			const char *mapFileName=fileList->listToFile(mapSelectedName);
+			std::string mapFileName = fileList->listToFile(fileList->getText(par1));
 
-			mapPreview->setMapThumbnail(mapFileName);
-			printf("CGS : Loading map '%s' ...\n", mapFileName);
+			mapPreview->setMapThumbnail(mapFileName.c_str());
 			GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
 			if (stream == NULL)
-				printf("Map '%s' not found!\n", mapFileName);
+			{
+				std::cerr << "CustomGameScreen::onAction : can't open file " << mapFileName << std::endl;
+			}
 			else
 			{
+				std::cout << "CustomGameScreen::onAction : loading map " << mapFileName << std::endl;
 				validSessionInfo = sessionInfo.load(stream);
 				delete stream;
 				if (validSessionInfo)
@@ -153,9 +155,8 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 					}
 				}
 				else
-					printf("CGS : Warning, Error during map load\n");
+					std::cerr << "CustomGameScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 			}
-			delete[] mapFileName;
 		}
 		else
 		{

@@ -79,25 +79,28 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 	if (action==LIST_ELEMENT_SELECTED)
 	{
 		const char *mapSelectedName=static_cast<List *>(source)->getText(par1);
-		const char *mapFileName;
+		std::string mapFileName;
 		if (mapMode)
 		{
-			mapFileName=glob2NameToFilename("maps", mapSelectedName, "map");
+			mapFileName = glob2NameToFilename("maps", mapSelectedName, "map");
 			printf("PGU : Loading map '%s' ...\n", mapFileName);
 		}
 		else
 		{
-			mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
+			mapFileName = glob2NameToFilename("games", mapSelectedName, "game");
 			printf("PGU : Loading game '%s' ...\n", mapFileName);
 
 		}
-		mapPreview->setMapThumbnail(mapFileName);
+		mapPreview->setMapThumbnail(mapFileName.c_str());
 
 		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
 		if (stream == NULL)
-			printf("File '%s' not found!\n", mapFileName);
+		{
+			std::cerr << "MultiplayersChooseMapScreen::onAction : can't open file " << mapFileName << std::endl;
+		}
 		else
 		{
+			std::cout << "MultiplayersChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 			validSessionInfo = sessionInfo.load(stream);
 			delete stream;
 			if (validSessionInfo)
@@ -113,12 +116,10 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 				mapSize->setText(textTemp);
 				
 				methode->setText(mapPreview->getMethode());
-				//printf("PGU:sessionInfo.fileIsAMap=%d.\n", sessionInfo.fileIsAMap);
 			}
 			else
-				printf("PGU : Warning, Error during map load\n");
+				std::cerr << "MultiplayersChooseMapScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
-		delete[] mapFileName;
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{

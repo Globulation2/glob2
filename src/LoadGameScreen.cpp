@@ -63,16 +63,18 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=fileList->getText(par1);
-		const char *mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
+		std::string mapFileName = glob2NameToFilename("games", fileList->getText(par1), "game");
 
-		mapPreview->setMapThumbnail(mapFileName);
-		printf("CGS : Loading map '%s' ...\n", mapFileName);
+		mapPreview->setMapThumbnail(mapFileName.c_str());
+		
 		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapFileName);
 		if (stream == NULL)
-			printf("Map '%s' not found!\n", mapFileName);
+		{
+			std::cerr << "LoadGameScreen::onAction : can't open file " << mapFileName << std::endl;
+		}
 		else
 		{
+			std::cout << "LoadGameScreen::onAction : loading map " << mapFileName << std::endl;
 			validSessionInfo = sessionInfo.load(stream);
 			delete stream;
 			if (validSessionInfo)
@@ -88,9 +90,8 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				mapSize->setText(textTemp);
 			}
 			else
-				printf("CGS : Warning, Error during map load\n");
+				std::cerr << "LoadGameScreen::onAction : invalid Session info for map " << mapFileName << std::endl;
 		}
-		delete[] mapFileName; 
 	}
 	else if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
@@ -99,7 +100,7 @@ void LoadGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (validSessionInfo)
 				endExecute(OK);
 			else
-				printf("CGS : This is not a valid map!\n");
+				std::cerr << "LoadGameScreen::onAction : No valid map is selected" << std::endl;
 		}
 		else if (source==cancel)
 		{

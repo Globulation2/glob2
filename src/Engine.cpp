@@ -41,6 +41,7 @@
 #include "Utilities.h"
 #include "YOGScreen.h"
 #include "SoundMixer.h"
+#include <iostream>
 
 
 Engine::Engine()
@@ -78,17 +79,10 @@ Engine::~Engine()
 	}
 }
 
-int Engine::initCampain(const char *mapName)
+int Engine::initCampain(const std::string &mapName)
 {
-	// we load map
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
-	if (gui.load(stream) == false)
-	{
-		fprintf(stderr, "ENG : Error during map load\n");
-		delete stream;
+	if (!loadGame(mapName))
 		return EE_CANT_LOAD_MAP;
-	}
-	delete stream;
 
 	// we make a player for each team
 	int playerNumber=0;
@@ -126,19 +120,20 @@ int Engine::initCampain(const char *mapName)
 	
 	if (!wasHuman)
 	{
-		fprintf(stderr, "ENG : Error, can't find any human player\n");
+		std::cerr << " Engine::initCampain(\"" << mapName << "\") : error, can't find any human player" << std::endl;
 		return EE_CANT_FIND_PLAYER;
 	}
 
 	gui.game.session.numberOfPlayer=playerNumber;
 	
-	// We do some cosmetic fix
-	gui.adjustLocalTeam();
-	if (!globalContainer->runNoX)
+	// if this is a campaign, show a screen
+	if (gui.game.campaignText.length() > 0)
 	{
-		gui.game.renderMiniMap(gui.localTeamNo);
-		gui.adjustInitialViewport();
+		std::cout << "Campaign : " << gui.game.campaignText << std::endl;
 	}
+	
+	// We do some cosmetic fix
+	finalAdjustements();
 
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -201,12 +196,7 @@ int Engine::initCustom(void)
 	gui.game.setAIAlliance();
 
 	// We do some cosmetic fix
-	gui.adjustLocalTeam();
-	if (!globalContainer->runNoX)
-	{
-		gui.game.renderMiniMap(gui.localTeamNo);
-		gui.adjustInitialViewport();
-	}
+	finalAdjustements();
 
 	// we create the net game
 	net=new NetGame(NULL, gui.game.session.numberOfPlayer, gui.game.players);
@@ -214,32 +204,10 @@ int Engine::initCustom(void)
 	return EE_NO_ERROR;
 }
 
-int Engine::initCustom(const char *gameName)
+int Engine::initCustom(const std::string &gameName)
 {
-	assert(gameName);
-	assert(gameName[0]);
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(gameName);
-	if (stream)
-	{
-		if (gui.load(stream))
-		{
-			printf("Engine : game is loaded\n");
-			delete stream;
-		}
-		else
-		{
-			printf("Engine : Error during load of %s\n", gameName);
-			delete stream;
-			return EE_CANCEL;
-		}
-	}
-	else
-	{
-		printf("Engine : Can't load map %s\n", gameName);
-		return EE_CANCEL;
-	}
-
-	printf("Engine::initCustom:: numberOfPlayer=%d numberOfTeam=%d.\n", gui.game.session.numberOfTeam, gui.game.session.numberOfPlayer);
+	if (!loadGame(gameName))
+		return EE_CANT_LOAD_MAP;
 
 	// If the game is a network saved game, we need to toogle net players to ai players:
 	for (int p=0; p<gui.game.session.numberOfPlayer; p++)
@@ -303,12 +271,7 @@ void Engine::startMultiplayer(MultiplayersJoin *multiplayersJoin)
 	gui.game.setAIAlliance();
 
 	// We do some cosmetic fix
-	gui.adjustLocalTeam();
-	if (!globalContainer->runNoX)
-	{
-		gui.game.renderMiniMap(gui.localTeamNo);
-		gui.adjustInitialViewport();
-	}
+	finalAdjustements();
 
 	// we create the net game
 	net=new NetGame(multiplayersJoin->socket, gui.game.session.numberOfPlayer, gui.game.players);
@@ -374,7 +337,7 @@ int Engine::run(void)
 {
 	bool doRunOnceAggain=true;
 	
-	// Stop music for now, next load music game
+	// Stop menu musi, load game music
 	if (globalContainer->runNoX)
 		assert(globalContainer->mix==NULL);
 	else
@@ -384,7 +347,6 @@ int Engine::run(void)
 	
 	while (doRunOnceAggain)
 	{
-		//int ticknb=0;
 		Uint32 startTick, endTick;
 		bool networkReadyToExecute=true;
 		Sint32 ticksSpentInComputation=40;
@@ -465,12 +427,9 @@ int Engine::run(void)
 			{
 				// we draw
 				gui.drawAll(gui.localTeamNo);
-
-				//globalContainer->gfx->drawLine(ticknb, 0, ticknb, 480, 255, 0 ,0);
-				//ticknb=(ticknb+1)%(640-128);
-	
 				globalContainer->gfx->nextFrame();
 	
+				// we compute timing
 				endTick=SDL_GetTicks();
 				Sint32 spentTicks=endTick-startTick;
 				ticksSpentInComputation=spentTicks-ticksDelayedInside;
@@ -480,6 +439,7 @@ int Engine::run(void)
 					SDL_Delay(ticksToWait);
 				startTick=SDL_GetTicks();
 				
+				// we set CPU stats
 				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
 				gui.setCpuLoad(ticksSpentInComputation);
 				if (networkReadyToExecute && !gui.gamePaused)
@@ -509,6 +469,15 @@ int Engine::run(void)
 				doRunOnceAggain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
+		else if (gui.game.nextMap.length() > 0)
+		{
+			// if we have won, managed to load next map, we do it again
+			if (gui.game.isGameEnded && gui.getLocalTeam()->isAlive)
+			{
+				std::string filename = glob2NameToFilename("maps", gui.game.nextMap.c_str(), "map");
+				doRunOnceAggain = (initCampain(filename.c_str()) == EE_NO_ERROR);
+			}
+		}
 	}
 	
 	if (globalContainer->runNoX)
@@ -525,5 +494,38 @@ int Engine::run(void)
 		
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
+	}
+}
+
+bool Engine::loadGame(const std::string &filename)
+{
+	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
+	if (stream)
+	{
+		bool res = gui.load(stream);
+		delete stream;
+		if (!res)
+		{
+			std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't load game." << std::endl;
+			return false;
+		}
+	}
+	else
+	{
+		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;
+		return false;
+	}
+
+	std::cout << "Engine::loadGame(\"" << filename << "\") : game successfully loaded." << std::endl;
+	return true;
+}
+
+void Engine::finalAdjustements(void)
+{
+	gui.adjustLocalTeam();
+	if (!globalContainer->runNoX)
+	{
+		gui.game.renderMiniMap(gui.localTeamNo);
+		gui.adjustInitialViewport();
 	}
 }

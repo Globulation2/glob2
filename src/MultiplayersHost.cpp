@@ -75,11 +75,11 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		fprintf(logFile, "sharing on YOG\n");
-		yog->shareGame(sessionInfo->getMapName());
+		yog->shareGame(sessionInfo->getMapName().c_str());
 		yog->setHostGameSocket(socket);
 	}
 	
-	stream=NULL;
+	stream = NULL;
 	mapFileCheckSum=0;
 	if (sessionInfo->mapGenerationDescriptor && sessionInfo->fileIsAMap)
 	{
@@ -87,19 +87,16 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	}
 	else
 	{
-		const char *mapFileName=sessionInfo->getFileName();
-		assert(mapFileName);
-		assert(mapFileName[0]);
-		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", mapFileName);
-		stream=globalContainer->fileManager->open(mapFileName, "rb");
-		mapFileCheckSum=globalContainer->fileManager->checksum(mapFileName);
+		fprintf(logFile, "MultiplayersHost() mapFileName=%s.\n", sessionInfo->getFileName().c_str());
+		stream = globalContainer->fileManager->openInputStream(sessionInfo->getFileName());
+		mapFileCheckSum = globalContainer->fileManager->checksum(sessionInfo->getFileName());
 	}
 	
 	fileSize=0;
 	if (stream)
 	{
-		SDL_RWseek(stream, 0, SEEK_END);
-		fileSize=SDL_RWtell(stream);
+		stream->seekFromEnd(0);
+		fileSize = stream->getPosition();
 	}
 	
 	for (int p=0; p<32; p++)
@@ -180,7 +177,7 @@ MultiplayersHost::~MultiplayersHost()
 		delete savedSessionInfo;
 		
 	if (stream)
-		SDL_RWclose(stream);
+		delete stream;
 	
 	if (logFileDownload && logFileDownload!=stdout)
 		for (int p=0; p<32; p++)
@@ -497,7 +494,7 @@ void MultiplayersHost::yogClientRequestsGameInfo(Uint8 *rdata, int rsize, IPaddr
 	sdata[13]=0; // pad and trick to show a pseudo game name
 	sdata[14]=0; // pad
 	sdata[15]=NET_PROTOCOL_VERSION;
-	strncpy((char *)(sdata+16), sessionInfo.getMapName(), 64);
+	strncpy((char *)(sdata+16), sessionInfo.getMapName().c_str(), 64);
 	int ssize=Utilities::strmlen((char *)(sdata+16), 64)+16;
 	assert(ssize<64+16);
 	UDPpacket *packet=SDLNet_AllocPacket(64+16);
@@ -1100,7 +1097,7 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	sdata[2]=0;
 	sdata[3]=0;
 	memset(sdata+4, 0, 64);
-	memcpy(sdata+4, sessionInfo.getMapName(), 64);
+	memcpy(sdata+4, sessionInfo.getMapName().c_str(), 64);
 	memset(sdata+4+64, 0, 32);
 	memcpy(sdata+4+64, globalContainer->getUsername(), 32);
 	
@@ -1495,8 +1492,8 @@ void MultiplayersHost::sendingTime()
 				else
 					addSint32(data, brandwidth, 4);
 				addUint32(data, sendingIndex, 8);
-				SDL_RWseek(stream, sendingIndex, SEEK_SET);
-				SDL_RWread(stream, data+12, size, 1);
+				stream->seekFromStart(sendingIndex);
+				stream->read(data+12, size);
 				bool success=sessionInfo.players[p].send(data, 12+size);
 				if (!success)
 				{

@@ -149,7 +149,7 @@ int Glob2::runHostServer()
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
 	// TODO : let the user choose the name of the shared game
-	yog->shareGame(sessionInfo.getMapName());
+	yog->shareGame(sessionInfo.getMapName().c_str());
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
@@ -268,46 +268,36 @@ int Glob2::run(int argc, char *argv[])
 		{
 			case -1:
 			{
-				isRunning=false;
+				isRunning = false;
 			}
 			break;
 			case MainMenuScreen::CAMPAIN:
 			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, "Campaign not available", "Ok");
-				/*Engine engine;
-				if (engine.initCampain("maps/default.map")==Engine::EE_NO_ERROR)
-					if (engine.run()==-1)
-						isRunning=false;*/
+				//MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, "Campaign not available", "Ok");
+				Engine engine;
+				if (engine.initCampain("maps/test.map") == Engine::EE_NO_ERROR)
+					isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::TUTORIAL:
 			{
 				Engine engine;
-				int rv=engine.initCampain("maps/tutorial.map");
-				if (rv==Engine::EE_NO_ERROR)
-					rv=engine.run();
-				if (rv==-1)
-					isRunning=false;
+				if (engine.initCampain("maps/tutorial.map") == Engine::EE_NO_ERROR)
+					isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:
 			{
 				Engine engine;
-				int rv=engine.initLoadGame();
-				if (rv==Engine::EE_NO_ERROR)
-					rv=engine.run();
-				if (rv==-1)
-					isRunning=false;
+				if (engine.initLoadGame() == Engine::EE_NO_ERROR)
+					isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::CUSTOM:
 			{
 				Engine engine;
-				int rv=engine.initCustom();
-				if (rv==Engine::EE_NO_ERROR)
-					rv=engine.run();
-				if (rv==-1)
-					isRunning=false;
+				if (engine.initCustom() ==  Engine::EE_NO_ERROR)
+					isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
@@ -322,22 +312,16 @@ int Glob2::run(int argc, char *argv[])
 					case MultiplayersOfferScreen::HOST:
 					{
 						Engine engine;
-						int rv=engine.initMutiplayerHost(false);
-						if (rv==Engine::EE_NO_ERROR)
-							rv=engine.run();
-						if (rv==-1)
-							isRunning=false;
+						if (engine.initMutiplayerHost(false) == Engine::EE_NO_ERROR)
+							isRunning = (engine.run() != -1);
 					}
 					break;
 
 					case MultiplayersOfferScreen::JOIN:
 					{
 						Engine engine;
-						int rv=engine.initMutiplayerJoin();
-						if (rv==Engine::EE_NO_ERROR)
-							rv=engine.run();
-						if (rv==-1)
-							isRunning=false;
+						if (engine.initMutiplayerJoin() == Engine::EE_NO_ERROR)
+							isRunning = (engine.run() != -1);
 					}
 					break;
 					case MultiplayersOfferScreen::QUIT:
@@ -397,7 +381,7 @@ int Glob2::run(int argc, char *argv[])
 					if (rc==MultiplayersChooseMapScreen::OK)
 					{
 						MapEdit mapEdit;
-						mapEdit.load(multiplayersChooseMapScreen.sessionInfo.getFileName());
+						mapEdit.load(multiplayersChooseMapScreen.sessionInfo.getFileName().c_str());
 						if (mapEdit.run()==-1)
 							isRunning=false;
 					}

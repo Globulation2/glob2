@@ -2584,23 +2584,18 @@ Team *Game::getTeamWithMostPrestige(void)
 	return maxPrestigeTeam;
 }
 
-const char *glob2FilenameToName(const char *filename)
+std::string glob2FilenameToName(const char *filename)
 {
-	SessionInfo tempSession;
 	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
 	if (stream)
 	{
-		if (tempSession.load(stream))
-		{
-			delete stream;
-			return Utilities::strdup(tempSession.getMapName());
-		}
-		else
-		{
-			delete stream;
-		}
+		SessionInfo tempSession;
+		bool res = tempSession.load(stream);
+		delete stream;
+		if (res)
+			return tempSession.getMapName();
 	}
-	return NULL;
+	return "";
 }
 
 template<typename It, typename T>
@@ -2614,13 +2609,11 @@ private:
 	const It to;
 };
 
-const char *glob2NameToFilename(const char *dir, const char *name, const char *extension)
+std::string glob2NameToFilename(const char *dir, const char *name, const char *extension)
 {
 	const char* pattern = " \t";
 	const char* endPattern = strchr(pattern, '\0');
 	std::string fileName = name;
-	//std::replace(fileName.begin(), fileName.end(), ' ', '_');
-	//std::replace(fileName.begin(), fileName.end(), '\t', '_');
 	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
 	std::string fullFileName = dir;
 	fullFileName += DIR_SEPARATOR + fileName;
@@ -2629,5 +2622,5 @@ const char *glob2NameToFilename(const char *dir, const char *name, const char *e
 		fullFileName += '.';
 		fullFileName += extension;
 	}
-	return Utilities::strdup(fullFileName.c_str());
+	return fullFileName;
 }

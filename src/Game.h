@@ -23,6 +23,7 @@
 #include "Map.h"
 #include "Session.h"
 #include "SGSL.h"
+#include <string>
 
 namespace GAGCore
 {
@@ -170,10 +171,10 @@ protected:
 	int ticksGameSum[32];
 };
 
-//! extract the user-visible name from a glob2 map filename, return NULL if filename is an invalid glob2 map
-const char *glob2FilenameToName(const char *filename);
+//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
+std::string glob2FilenameToName(const char *filename);
 //! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
-const char *glob2NameToFilename(const char *dir, const char *name, const char *extension=NULL);
+std::string glob2NameToFilename(const char *dir, const char *name, const char *extension=NULL);
 
 
 #endif 

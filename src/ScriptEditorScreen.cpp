@@ -163,20 +163,19 @@ void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 
 }
 
-const char* filenameToName(const char *fullfilename)
+std::string filenameToName(const char *fullfilename)
 {
 	const char* filename = strrchr(fullfilename, DIR_SEPARATOR) + 1;
 	const char* filenameend = strrchr(filename, '.');
-	size_t len = filenameend - filename;
-	char* name = new char[len + 1];
-	*std::replace_copy(filename, filenameend, name, '_', ' ') = '\0';
+	std::string name;
+	*std::replace_copy(filename, filenameend, std::back_inserter(name), '_', ' ') = '\0';
 	return name;
 }
 
 void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, game->session.getMapName(), filenameToName, glob2NameToFilename);
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, game->session.getMapName().c_str(), filenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint();
 
 	// save screen

@@ -33,8 +33,8 @@ class FuncFileList: public FileList
 public:
 	FuncFileList::FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
 		const char *dir, const char *extension, const bool recurse, 
-		const char*(*filenameToNameFunc)(const char *filename),
-		const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
+		std::string (*filenameToNameFunc)(const char *filename),
+		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
 		: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse), 
 			filenameToNameFunc(filenameToNameFunc), nameToFilenameFunc(nameToFilenameFunc)
 	{
@@ -45,47 +45,41 @@ public:
 	{}
 
 private:
-	const char* FuncFileList::fileToList(const char* fileName) const
+	std::string FuncFileList::fileToList(const char* fileName) const
 	{
-		const char* fullName = this->fullName(fileName);
-		const char* listName = filenameToNameFunc(fullName);
-		delete[] fullName;
-		return listName;
+		return filenameToNameFunc(fullName(fileName).c_str());
 	}
 	
-	const char* FuncFileList::listToFile(const char* listName) const
+	std::string FuncFileList::listToFile(const char* listName) const
 	{
-		const char* fullDir = this->fullDir();
-		const char* fullName = nameToFilenameFunc(fullDir, listName, this->extension.c_str());
-		delete[] fullDir;
-		return fullName;
+		return nameToFilenameFunc(fullDir().c_str(), listName, extension.c_str());
 	}
 
 private:
-	const char*(*filenameToNameFunc)(const char *filename);
-	const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
+	std::string (*filenameToNameFunc)(const char *filename);
+	std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension);
 
 };
 
 //! Load/Save screen
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
-		const char*(*filenameToNameFunc)(const char *filename),
-		const char*(*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
+		std::string (*filenameToNameFunc)(const char *filename),
+		std::string (*nameToFilenameFunc)(const char *dir, const char *name, const char *extension))
 :OverlayScreen(globalContainer->gfx, 300, 275)
 {
-	this->isLoad=isLoad;
+	this->isLoad = isLoad;
 	if (nameToFilenameFunc)
 	{
-		this->extension=Utilities::strdup(extension);
-		this->directory=Utilities::strdup(directory);
+		this->extension = extension;
+		this->directory = directory;
 	}
 	else
 	{
-		this->extension=Utilities::concat(".", extension);
-		this->directory=Utilities::concat(directory, "/");
+		this->extension = std::string(".") + extension;
+		this->directory = std::string(directory) + "/";
 	}
-	this->filenameToNameFunc=filenameToNameFunc;
-	this->nameToFilenameFunc=nameToFilenameFunc;
+	this->filenameToNameFunc = filenameToNameFunc;
+	this->nameToFilenameFunc = nameToFilenameFunc;
 
 	fileList=new FuncFileList(10, 40, 280, 145, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true, filenameToNameFunc, nameToFilenameFunc);
 	addWidget(fileList);
@@ -109,40 +103,28 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 
 LoadSaveScreen::~LoadSaveScreen()
 {
-	assert(fileName);
-	delete[] fileName;
-	assert(extension);
-	delete[] extension;
-	assert(directory);
-	delete[] directory;
+	
 }
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if (par1==OK)
+		if (par1 == OK)
 		{
-			char *mapName=Utilities::dencat(fileName, extension);
-			if (mapName[0])
-				endValue=OK;
-			delete[] mapName;
+			if (fileName.length() > 0)
+				endValue = OK;
 		}
 		else
-			endValue=par1;
+			endValue = par1;
 	}
-	else if (action==LIST_ELEMENT_SELECTED)
+	else if (action == LIST_ELEMENT_SELECTED)
 	{
-		const char *s=fileList->getText(par1);
-		assert(fileName);
-		delete[] fileName;
-		fileNameEntry->setText(s);
+		fileNameEntry->setText(fileList->getText(par1));
 		generateFileName();
 	}
-	else if (action==TEXT_MODIFIED)
+	else if (action == TEXT_MODIFIED)
 	{
-		assert(fileName);
-		delete[] fileName;
 		generateFileName();
 	}
 }
@@ -150,9 +132,9 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 void LoadSaveScreen::generateFileName(void)
 {
 	if (nameToFilenameFunc)
-		fileName=nameToFilenameFunc(this->directory, fileNameEntry->getText(), this->extension);
+		fileName = nameToFilenameFunc(directory.c_str(), fileNameEntry->getText(), extension.c_str());
 	else
-		fileName=Utilities::concat(this->directory, fileNameEntry->getText(), this->extension);
+		fileName = Utilities::concat(directory.c_str(), fileNameEntry->getText(), extension.c_str());
 }
 
 void LoadSaveScreen::onSDLEvent(SDL_Event *event)
@@ -162,7 +144,7 @@ void LoadSaveScreen::onSDLEvent(SDL_Event *event)
 
 const char *LoadSaveScreen::getFileName(void)
 {
-	return fileName;
+	return fileName.c_str();
 }
 
 const char *LoadSaveScreen::getName(void)

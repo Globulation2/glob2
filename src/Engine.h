@@ -22,18 +22,21 @@
 
 #include "Header.h"
 #include "GameGUI.h"
+#include <string>
 
 class MultiplayersJoin;
 class NetGame;
 
+//! Engine is responsible for loading games and setting up players
 class Engine
 {
 public:
 	Engine();
 	~Engine();
-	int initCampain(const char *mapName);
+	
+	int initCampain(const std::string &mapName);
 	int initCustom();
-	int initCustom(const char *gameName);
+	int initCustom(const std::string &gameName);
 	int initLoadGame();
 	void startMultiplayer(MultiplayersJoin *multiplayersJoin);
 	int initMutiplayerHost(bool shareOnYOG);
@@ -52,6 +55,12 @@ public:
 public:
 	GameGUI gui;
 	NetGame *net;
+	
+protected:
+	//! Load a game. Return true on success
+	bool loadGame(const std::string &filename);
+	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
+	void finalAdjustements(void);
 
 protected:
 	int cpuStats[41];

@@ -32,9 +32,9 @@ public:
 	virtual ~Glob2FileList();
 
 	//! converts glob2 file name to displayed name
-	virtual const char* fileToList(const char* fileName) const;
+	virtual std::string fileToList(const char* fileName) const;
 	//! converts displayed name to glob2 file name
-	virtual const char* listToFile(const char* listName) const;
+	virtual std::string listToFile(const char* listName) const;
 
 };
 
