@@ -383,7 +383,8 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::CREDITS:
 			{
 				CreditScreen creditScreen;
-				creditScreen.execute(globalContainer->gfx, 40);
+				if (creditScreen.execute(globalContainer->gfx, 40)==-1)
+					isRunning=false;
 			}
 			break;
 			case MainMenuScreen::QUIT:
