@@ -319,15 +319,29 @@ int Glob2::run(int argc, char *argv[])
 				int rc=howNewMapScreen.execute(globalContainer->gfx, 50);
 				if (rc==HowNewMapScreen::NEW)
 				{
-					NewMapScreen newMapScreen;
-					if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+					bool retryNewMapScreen=true;
+					while (retryNewMapScreen)
 					{
-						MapEdit mapEdit;
-						//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
-						setRandomSyncRandSeed();
-						mapEdit.game.generateMap(newMapScreen.descriptor);
-						if (mapEdit.run()==-1)
-							isRunning=false;
+						NewMapScreen newMapScreen;
+						if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+						{
+							MapEdit mapEdit;
+							//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
+							setRandomSyncRandSeed();
+							if (mapEdit.game.generateMap(newMapScreen.descriptor))
+							{
+								if (mapEdit.run()==-1)
+									isRunning=false;
+								retryNewMapScreen=false;
+							}
+							else
+							{
+								//TODO: popup a widow to explain that the generateMap() has failed.
+								retryNewMapScreen=true;
+							}
+						}
+						else
+							retryNewMapScreen=false;
 					}
 				}
 				else if (rc==HowNewMapScreen::LOAD)

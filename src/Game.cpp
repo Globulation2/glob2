@@ -437,7 +437,8 @@ bool Game::load(SDL_RWops *stream)
 	if (tempSessionInfo.mapGenerationDescriptor && tempSessionInfo.fileIsAMap)
 	{
 		tempSessionInfo.mapGenerationDescriptor->synchronizeNow();
-		generateMap(*tempSessionInfo.mapGenerationDescriptor);
+		if (!generateMap(*tempSessionInfo.mapGenerationDescriptor))
+			return false;
 	}
 	else
 	{

@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "NewMapScreen.h"
@@ -238,30 +238,31 @@ void NewMapScreen::paint(int x, int y, int w, int h)
 		char *text= globalContainer->texts.getString("[create map]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
 
-		gfxCtx->drawString(140, 50, globalContainer->menuFont, globalContainer->texts.getString("[map size x]"));
-		gfxCtx->drawString(140, 75, globalContainer->menuFont, globalContainer->texts.getString("[map size y]"));
+		gfxCtx->drawString(130, 50, globalContainer->standardFont, globalContainer->texts.getString("[map size x]"));
+		gfxCtx->drawString(130, 75, globalContainer->standardFont, globalContainer->texts.getString("[map size y]"));
 		
-		firstPaint=false;
+		//firstPaint=false;
 	}
 	
 	if (descriptor.methode!=MapGenerationDescriptor::eUNIFORM)
 	{
-		gfxCtx->drawString(440, 100, globalContainer->menuFont, globalContainer->texts.getString("[number of teams]"));
-		gfxCtx->drawString(440, 120, globalContainer->menuFont, globalContainer->texts.getString("[workers]"));
+		gfxCtx->drawString(430, 100, globalContainer->standardFont, globalContainer->texts.getString("[number of teams]"));
+		gfxCtx->drawString(430, 120, globalContainer->standardFont, globalContainer->texts.getString("[workers]"));
 	}
 	
 	if (descriptor.methode==MapGenerationDescriptor::eRANDOM)
 	{
-		gfxCtx->drawString(310, 140, globalContainer->menuFont, globalContainer->texts.getString("[ratios]"));
-		gfxCtx->drawString(490, 160, globalContainer->menuFont, globalContainer->texts.getString("[water]"));
-		gfxCtx->drawString(490, 180, globalContainer->menuFont, globalContainer->texts.getString("[sand]"));
-		gfxCtx->drawString(490, 200, globalContainer->menuFont, globalContainer->texts.getString("[grass]"));
-		gfxCtx->drawString(490, 220, globalContainer->menuFont, globalContainer->texts.getString("[smoothing]"));
+		gfxCtx->drawString(310, 140, globalContainer->standardFont, globalContainer->texts.getString("[ratios]"));
+		gfxCtx->drawString(480, 160, globalContainer->standardFont, globalContainer->texts.getString("[water]"));
+		gfxCtx->drawString(480, 180, globalContainer->standardFont, globalContainer->texts.getString("[sand]"));
+		gfxCtx->drawString(480, 200, globalContainer->standardFont, globalContainer->texts.getString("[grass]"));
+		gfxCtx->drawString(480, 220, globalContainer->standardFont, globalContainer->texts.getString("[smoothing]"));
 	}
 	
 	if (descriptor.methode==MapGenerationDescriptor::eISLANDS)
 	{
-		gfxCtx->drawString(440, 140, globalContainer->menuFont, globalContainer->texts.getString("[islands size]"));
-		gfxCtx->drawString(440, 160, globalContainer->menuFont, globalContainer->texts.getString("[beach size]"));
+		gfxCtx->drawString(430, 140, globalContainer->standardFont, globalContainer->texts.getString("[islands size]"));
+		gfxCtx->drawString(430, 160, globalContainer->standardFont, globalContainer->texts.getString("[beach size]"));
 	}
+	addUpdateRect();
 }

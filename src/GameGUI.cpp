@@ -1901,7 +1901,8 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 	if (initial->mapGenerationDescriptor && initial->fileIsAMap)
 	{
 		initial->mapGenerationDescriptor->synchronizeNow();
-		game.generateMap(*initial->mapGenerationDescriptor);
+		if (!game.generateMap(*initial->mapGenerationDescriptor))
+			return false;
 		game.setBase(initial);
 	}
 	else if (initial->fileIsAMap)
