@@ -188,6 +188,8 @@ SoundMixer::~SoundMixer()
 			ov_clear(tracks[i]);
 			delete tracks[i];
 		}
+		
+		SDL_CloseAudio();
 	}
 }
 

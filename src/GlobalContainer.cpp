@@ -77,6 +77,9 @@ GlobalContainer::~GlobalContainer(void)
 		delete gfx;
 	if (mix)
 		delete mix;
+		
+	// close virtual filesystem
+	delete logFileManager;
 }
 
 void GlobalContainer::setUserName(const char *name)

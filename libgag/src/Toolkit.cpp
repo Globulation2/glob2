@@ -50,8 +50,10 @@ void Toolkit::close(void)
 	}
 	for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 		delete (*it).second;
+	spriteMap.clear();
 	for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
 		delete (*it).second;
+	fontMap.clear();
 }
 
 Sprite *Toolkit::getSprite(const char *name)
