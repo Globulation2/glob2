@@ -402,11 +402,8 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			connectedClients.push_back(client);
 		}
 		client->reconnected(ip);
-		if (data[1]==1)
-		{
-			admin=client;
+		if (data[1]==1 && strncmp(userName, "admin", 32))
 			lprintf("admin (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
-		}
 		else
 			lprintf("client (%s) uid=%d connected from (%s). Authenticating.\n", client->userName, client->uid, Utilities::stringIP(ip));
 		Uint8 data[36];
@@ -479,7 +476,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			Uint8 passWord[32];
 			for (int i=0; i<32; i++)
 				passWord[i]=xored[i]^client->xorpassw[i];
-			printf("newYogPassword (%s) for client (%s) \n", passWord, client->userName);
+			//printf("newYogPassword (%s) for client (%s) \n", passWord, client->userName);
 			if (client->passWord[0]==0)
 				memcpy(client->passWord, passWord, 32);
 			else
@@ -574,7 +571,7 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 		for (std::list<YOGClient *>::iterator aci=authentifiedClients.begin(); aci!=authentifiedClients.end(); ++aci)
 			(*aci)->addClient(client);
 		
-		if (data[1]==1)
+		if (data[1]==1 && strncmp(client->userName, "admin", 32))
 		{
 			admin=client;
 			lprintf("new admin authentified as (%s), from (%s), uid=(%d)\n", client->userName, Utilities::stringIP(ip), client->uid);
