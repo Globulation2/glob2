@@ -1332,13 +1332,13 @@ void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewpo
 
 	for (n=0; n<rw+1; n++)
 	{
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100)+decX, 14+(ry%100)+decY, 255, 255, 255);
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%100)+decX, 14+((ry+rh)%100)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%szX)+decX, 14+(ry%szY)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+n)%szX)+decX, 14+((ry+rh)%szY)+decY, 255, 255, 255);
 	}
 	for (n=0; n<rh+1; n++)
 	{
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%100)+decX, 14+((ry+n)%100)+decY, 255, 255, 255);
-		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%100)+decX, 14+((ry+n)%100)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+(rx%szX)+decX, 14+((ry+n)%szY)+decY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(globalContainer->gfx->getW()-114+((rx+rw)%szX)+decX, 14+((ry+n)%szY)+decY, 255, 255, 255);
 	}
 }
 
