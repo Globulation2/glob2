@@ -1312,6 +1312,7 @@ void GameGUI::draw(void)
 		else if (displayMode==BUILDING_SELECTION_VIEW)
 		{
 			assert(selBuild);
+			Uint8 r, g, b;
 
 			// building icon
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, 128);
@@ -1324,13 +1325,26 @@ void GameGUI::draw(void)
 				buildingSprite, buildingType->startImage);
 
 			// building text
-			drawTextCenter(globalContainer->gfx->getW()-128, 128+8, "[building name]", buildingType->type);
+			drawTextCenter(globalContainer->gfx->getW()-128, 128+4, "[building name]", buildingType->type);
 			if (buildingType->isBuildingSite)
 				drawTextCenter(globalContainer->gfx->getW()-128, 128+64+24, "[building site]");
-			// FIXME : find a clean way here
-			char *textT=globalContainer->texts.getString("[level]");
+			const char *textT=globalContainer->texts.getString("[level]");
 			int decT=(128-globalContainer->littleFont->getStringWidth(textT)-globalContainer->littleFont->getStringWidth(" : ")-globalContainer->littleFont->getStringWidth(buildingType->level+1))>>1;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+96+8, globalContainer->littleFont, "%s : %d", textT, buildingType->level+1);
+
+			// display unit's owner
+			if (localTeam->teamNumber == selBuild->owner->teamNumber)
+				{ r=100; g=100; b=255; }
+			else if (localTeam->allies & selBuild->owner->me)
+				{ r=255; g=210; b=20; }
+			else
+				{ r=255; g=50; b=50; }
+				
+			globalContainer->littleFont->pushColor(r, g, b);
+			textT=selBuild->owner->getFirstPlayerName();
+			decT=(128-globalContainer->littleFont->getStringWidth(textT)>>1);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+decT, 128+16, globalContainer->littleFont, "%s", textT);
+			globalContainer->littleFont->popColor();
 
 
 			// building Infos
@@ -1519,17 +1533,23 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==UNIT_SELECTION_VIEW)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", selUnit->typeNum));
-			
-			/*
-			const char *teamOfUnitName = 
-			me = 0, 0, 190
-			allied = 255, 196, 0
-			enemy = 190, 0, 0
-			*/
-			
 			Uint8 r, g, b;
 
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+4, globalContainer->littleFont, "%s", globalContainer->texts.getString("[unit type]", selUnit->typeNum));
+			
+			// display unit's owner
+			if (localTeam->teamNumber == selUnit->owner->teamNumber)
+				{ r=100; g=100; b=255; }
+			else if (localTeam->allies & selUnit->owner->me)
+				{ r=255; g=210; b=20; }
+			else
+				{ r=255; g=50; b=50; }
+				
+			globalContainer->littleFont->pushColor(r, g, b);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124+64, 128+4, globalContainer->littleFont, "%s", selUnit->owner->getFirstPlayerName());
+			globalContainer->littleFont->popColor();
+			
+			
 			if (selUnit->hp<=selUnit->trigHP)
 				{ r=255; g=0; b=0; }
 			else

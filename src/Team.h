@@ -123,6 +123,9 @@ public:
 
 	//! Compute team checksum
 	Sint32 checkSum();
+	
+	//! Return the name of the first player in the team
+	const char *getFirstPlayerName(void);
 
 private:
 	void init(void);

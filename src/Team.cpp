@@ -805,3 +805,13 @@ Sint32 Team::checkSum()
 	
 	return cs;
 }
+
+const char *Team::getFirstPlayerName(void)
+{
+	for (int i=0; i<game->session.numberOfPlayer; i++)
+	{
+		if (game->players[i]->team == this)
+			return game->players[i]->name;
+	}
+	return NULL;
+}
