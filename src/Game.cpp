@@ -1757,7 +1757,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			}
 		}
 	
-	for (std::set <Building *>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
+	for (std::set <Building *, BuildingPosComp>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
 	{
 		Building *building = *it;
 		assert(building);

@@ -80,7 +80,7 @@
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
+				WarningLevel="4"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
@@ -135,6 +135,12 @@
 			</File>
 			<File
 				RelativePath="src\AINumbi.cpp">
+			</File>
+			<File
+				RelativePath=".\src\BitArray.cpp">
+			</File>
+			<File
+				RelativePath=".\src\Brush.cpp">
 			</File>
 			<File
 				RelativePath="src\Building.cpp">
