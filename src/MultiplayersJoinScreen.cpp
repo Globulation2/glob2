@@ -117,6 +117,10 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 		{
 			dispatchPaint(gfxCtx);
 		}
+		else if (rv==MultiplayersConnectedScreen::DISCONNECTED)
+		{
+			dispatchPaint(gfxCtx);
+		}
 		else if (rv==MultiplayersConnectedScreen::STARTED)
 		{
 			endExecute(STARTED);
