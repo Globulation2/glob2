@@ -63,6 +63,10 @@ public:
 	std::list<Unit *> unitsInsideSubscribe;
 	Sint32 lastInsideSubscribe;
 	
+	// optimisation / consistency
+	bool job[NB_ABILITY]; // If true, then is allready in owner->job[i]
+	bool attract[NB_ABILITY]; // If true, then is allready in owner->attract[i]
+	
 	// identity
 	Sint32 UID; // Sint16, for reservation see below
 	Team *owner; // if < 0, not allocated
