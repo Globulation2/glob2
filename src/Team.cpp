@@ -1419,7 +1419,7 @@ void Team::syncStep(void)
 			(*it)->subscribeForInsideStep();
 
 	for (std::list<Building *>::iterator it=subscribeForInside.begin(); it!=subscribeForInside.end(); ++it)
-		if ((*it)->unitsInsideSubscribe.size()==0)
+		if ((*it)->unitsInsideSubscribe.empty())
 		{
 			(*it)->subscribeForInside=2;
 			std::list<Building *>::iterator ittemp=it;

@@ -74,11 +74,11 @@ public:
 	Sint32 maxUnitWorkingPreferred;
 	std::list<Unit *> unitsWorking;
 	std::list<Unit *> unitsWorkingSubscribe;
-	Sint32 subscriptionTimer; // replacing the old lastWorkingSubscribe. 
+	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
 	std::list<Unit *> unitsInside;
 	std::list<Unit *> unitsInsideSubscribe;
-	Sint32 lastInsideSubscribe;
+	Sint32 subscriptionInsideTimer;
 	
 	// optimisation and consistency
 	// Included in {0: unknow, 1:allready in owner-><same name>, 2:not in owner-><same name>
