@@ -189,7 +189,9 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			multiplayersJoin->quitThisGame();
 			
 			Engine engine;
+			printf("YOGScreen::(1)socketSet=%x\n", socketSet);
 			int rc=engine.initMutiplayerHost();
+			printf("YOGScreen::(2)socketSet=%x\n", socketSet);
 			if (rc==Engine::NO_ERROR)
 			{
 				if (engine.run()==-1)
