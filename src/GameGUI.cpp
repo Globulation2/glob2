@@ -25,6 +25,7 @@
 
 #include <FileManager.h>
 #include <GUITextInput.h>
+#include <GUIList.h>
 #include <GraphicContext.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
@@ -123,6 +124,34 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
+//! The screen that contains the message history In Game 
+class InGameScrollableText:public OverlayScreen
+{
+protected:
+	//! The textarea widget
+	List *messageList;
+	
+public:
+	//! InGameScrollableText constructor
+	InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory);
+	//! InGameScrollableText destructor
+	virtual ~InGameScrollableText() { };
+	virtual void onAction(Widget *source, Action action, int par1, int par2) { };
+};
+
+InGameScrollableText::InGameScrollableText(GraphicContext *parentCtx, std::vector<std::string> messageHistory)
+:OverlayScreen(parentCtx, (globalContainer->gfx->getW()-152), 100)
+{
+	messageList=new List(0, 0, (globalContainer->gfx->getW()-152), 100, 0, 0, "standard");
+	addWidget(messageList);
+	if (messageHistory.capacity() > 0){
+		for (int i = messageHistory.size() -1; i>=0; i--){
+			messageList->addText(messageHistory[i]);
+		}
+	}
+	dispatchInit();
+}
+
 GameGUI::GameGUI()
 :game(this)
 {
@@ -164,6 +193,7 @@ void GameGUI::init()
 	inGameMenu=IGM_NONE;
 	gameMenuScreen=NULL;
 	typingInputScreen=NULL;
+	scrollableText=NULL;
 	typingInputScreenPos=0;
 
 	messagesList.clear();
@@ -551,6 +581,12 @@ void GameGUI::syncStep(void)
 	}
 }
 
+bool GameGUI::processScrollableWidget(SDL_Event *event)
+{
+	scrollableText->translateAndProcessEvent(event);
+	return true;
+}
+
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
 	gameMenuScreen->translateAndProcessEvent(event);
@@ -800,6 +836,10 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else
 	{
+		if (scrollableText)
+		{
+			processScrollableWidget(event);
+		}
 		if (event->type==SDL_KEYDOWN)
 		{
 			handleKey(event->key.keysym.sym, true, (event->key.keysym.mod & KMOD_SHIFT) != 0);
@@ -1180,6 +1220,16 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 			case SDLK_SCROLLOCK:
 				if (pressed)
 					hardPause=!hardPause;
+				break;
+			case SDLK_h:
+				if (pressed)
+					if ( ! scrollableText)
+						scrollableText=new InGameScrollableText(globalContainer->gfx, messageHistory);
+					else 
+					{
+						delete scrollableText;
+						scrollableText=NULL;
+					}
 				break;
 			default:
 			break;
@@ -2985,6 +3035,7 @@ void GameGUI::drawOverlayInfos(void)
 			// delete old messages
 			if (!(--(it->showTicks)))
 			{
+				messageHistory.push_back(it->text.c_str());
 				it=messagesList.erase(it);
 			}
 			else
@@ -3102,6 +3153,13 @@ void GameGUI::drawInGameTextInput(void)
 	}
 }
 
+void GameGUI::drawInGameScrollableText(void)
+{
+	scrollableText->decX=10;
+	scrollableText->decY=32;
+	scrollableText->dispatchPaint();
+	globalContainer->gfx->drawSurface(scrollableText->decX, scrollableText->decY, scrollableText->getSurface());
+}
 
 void GameGUI::drawAll(int team)
 {
@@ -3156,6 +3214,8 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->setClipRect();
 		drawInGameTextInput();
 	}
+	if (scrollableText)
+		drawInGameScrollableText();
 }
 
 void GameGUI::checkWonConditions(void)
