@@ -329,9 +329,8 @@ void MapEdit::handleMapClick()
 				game.map.mapCaseToDisplayable(r.x, r.y, &delX, &delY, viewportX, viewportY);
 				delW=r.w<<5;
 				delH=r.h<<5;
+				Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
 			}
-
-			Utilities::rectExtendRect(delX, delY, delW, delH,  &winX, &winY, &winW, &winH);
 		}
 	}
 	else if (editMode==EM_UNIT)

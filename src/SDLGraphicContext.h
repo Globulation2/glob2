@@ -32,7 +32,7 @@ protected:
 	SDL_Rect clipRect;
 	
 public:
-	SDLDrawableSurface() { surface=NULL; }
+	SDLDrawableSurface();
 	virtual ~SDLDrawableSurface() { if (surface) SDL_FreeSurface(surface); }
 	virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT);
 	virtual void setAlpha(bool usePerPixelAlpha=false, Uint8 alphaValue=ALPHA_OPAQUE);

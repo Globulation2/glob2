@@ -491,7 +491,6 @@ void Game::step(Sint32 localTeam)
 		{
 			teams[i]->step();
 		}
-		
 		map.step();
 		
 		// NOTE : checkWinCondition();

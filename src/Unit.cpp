@@ -348,12 +348,17 @@ bool Unit::step(void)
 				enemy->kill();
 		}
 	}
-
+	
+//#define BURST_UNIT_MODE
+#ifdef BURST_UNIT_MODE
+	delta=0;
+#else
 	if (delta<=255-speed)
 	{
 		delta+=speed;
 	}
 	else
+#endif
 	{
 		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
 		delta+=(speed-256);

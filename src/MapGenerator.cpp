@@ -1115,6 +1115,7 @@ void Game::generateMap(MapGenerationDescriptor &descriptor)
 {
 	descriptor.synchronizeNow();
 	map.setSize(descriptor.wDec, descriptor.hDec);
+	map.setGame(this);
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eUNIFORM:

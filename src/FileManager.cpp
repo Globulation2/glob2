@@ -224,7 +224,6 @@ FILE *FileManager::openFP(const char *filename, const char *mode, bool verboseIf
 
 bool FileManager::addListingForDir(const char *realDir, const char *extension)
 {
-	// angel > ca fait un peu chier votre system de flat directory mais bon...
 #ifdef WIN32 
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind = NULL;
@@ -302,7 +301,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 		b = FindNextFile(hFind, &wfd);
 	}
 	
-#else // angel > plus Win32 (unix et autres system primates...)
+#else // angel > plus Win32 (system primate)
 	DIR *dir=opendir(realDir);
 	struct dirent *dirEntry;
 
@@ -344,7 +343,7 @@ bool FileManager::addListingForDir(const char *realDir, const char *extension)
 	}
 
 	closedir(dir);
-#endif // angel > end of bordel
+#endif // angel > end of comentaire primate
 	return true;
 }
 
