@@ -211,7 +211,10 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 		}
 		case (Token::S_EQUAL):
 		{
-			return (valueOfVariable(game, type, teamNumber, level) == amount);
+			int val = valueOfVariable(game, type, teamNumber, level);
+			printf("SGSL::conditionTester : val = %d\n", val);
+			return (val == amount);
+			//return (valueOfVariable(game, type, teamNumber, level) == amount);
 		}
 		default:
 			return false;
@@ -230,7 +233,7 @@ bool Story::testCondition(GameGUI *gui)
 			case (Token::S_SHOW):
 			{
 				unsigned lsInc=0;
-				if ((line[lineSelector+2].type >= Token::S_LANG_0) ||
+				if ((line[lineSelector+2].type >= Token::S_LANG_0) &&
 					(line[lineSelector+2].type <= Token::S_LANG_4))
 				{
 					unsigned langId = line[lineSelector+2].type - Token::S_LANG_0;
@@ -561,7 +564,7 @@ bool Story::testCondition(GameGUI *gui)
 					{
 						if (conditionTester(game, execLine, false))
 						{
-							lineSelector += execLine + 3;
+							lineSelector += 4+negate;
 							mapscript->isTextShown=false;
 							return true;
 						}
@@ -573,8 +576,10 @@ bool Story::testCondition(GameGUI *gui)
 					{
 						if (conditionTester(game, execLine, true))
 						{
-							lineSelector += execLine + 4;
+							lineSelector += 5+negate;
+							printf("Next Type is %d\n", (int)line[lineSelector+1].type);
 							mapscript->isTextShown=false;
+							printf("SGSL : condition true\n");
 							return true;
 						}
 						else
@@ -593,10 +598,12 @@ void Story::step(GameGUI *gui)
 {
 	int cycleLeft = 256;
 
+	std::cout << "SGSL PC : " << lineSelector << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
+		std::cout << "SGSL PC : " << lineSelector << std::endl;
 	}
 
 	if (!cycleLeft)
