@@ -1,0 +1,62 @@
+/*
+	Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charrière
+	for any question or comment contact us at
+	nct@ysagoon.com or nuage@ysagoon.com
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include <GUIAnimation.h>
+#include <Toolkit.h>
+#include <assert.h>
+
+Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count, Sint32 duration)
+{
+	this->x=x;
+	this->y=y;
+	this->hAlignFlag=hAlign;
+	this->vAlignFlag=vAlign;
+	this->start=start;
+	this->count=count;
+	this->duration=duration;
+	pos=start;
+	durationLeft=duration;
+
+	assert(sprite);
+	this->sprite=sprite;
+	archPtr=Toolkit::getSprite(sprite);
+	assert(archPtr);
+
+	this->w=archPtr->getW(start);
+	this->h=archPtr->getH(start);
+}
+
+void Animation::internalInit(int x, int y, int w, int h)
+{
+	archPtr=Toolkit::getSprite(sprite.c_str());
+	assert(archPtr);
+	pos=start;
+	durationLeft=duration;
+}
+
+void Animation::internalRepaint(int x, int y, int w, int h)
+{
+	parent->getSurface()->drawSprite(x, y, archPtr, pos);
+}
+
+void Animation::onTimer(Uint32 tick)
+{
+	// TODO : add animation support here
+}

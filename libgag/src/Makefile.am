@@ -18,6 +18,7 @@ libgag_a_SOURCES = base.cpp\
 	GUIText.cpp\
 	GUITextInput.cpp\
 	GUISelector.cpp\
+	GUIAnimation.cpp\
 	SDLFont.cpp\
 	SDLSprite.cpp\
 	GUIMessageBox.cpp \
