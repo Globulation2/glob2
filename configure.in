@@ -1,6 +1,6 @@
 AC_INIT(src/Game.cpp)
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(glob2, 0.8.0)
+AM_INIT_AUTOMAKE(glob2, 0.8.1)
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
@@ -20,15 +20,15 @@ AC_PROG_RANLIB
 
 
 dnl Languages
+AC_LANG_C
 
-
-dnl Libraries
 
 dnl Header files
 AC_STDC_HEADERS
 AC_HAVE_HEADERS(string.h sys/time.h assert.h)
 
-AC_LANG_C
+
+dnl Libraries
 
 dnl Check for SDL
 SDL_VERSION=1.2.0
@@ -36,6 +36,9 @@ AM_PATH_SDL($SDL_VERSION,
 :,
 AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
+
+AC_CHECK_LIB(SDL_image, IMG_Load_RW)
+AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open)
 
 dnl Check for FT2
 AC_CHECK_FT2
