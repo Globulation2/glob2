@@ -22,6 +22,7 @@
 
 #include "MultiplayersCrossConnectable.h"
 #include "LANBroadcast.h"
+#include "YOG.h"
 #include <list>
 
 class MultiplayersJoin:public MultiplayersCrossConnectable
@@ -67,18 +68,21 @@ public:
 	{
 		Uint32 ip;
 		char gameName[32];
+		char serverNickName[32];
 		int timeout;
 	};
 	
 	std::list<LANHost> LANHosts;
-	char gameName[32];
+	//char gameName[32];
 	
 private:
 	bool shareOnYOG;
 
 public:
-	char serverName[128];
+	char serverNameMemory[128];
+	char *serverName;
 	char playerName[128];
+	char serverNickName[32];
 
 	WaitingState waitingState;
 	int waitingTimeout;
@@ -124,6 +128,7 @@ public:
 	bool send(const int u, const int v);
 
 	bool tryConnection();
+	bool tryConnection(const YOG::GameInfo *yogGameInfo);
 	
 	void quitThisGame();
 };

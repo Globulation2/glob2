@@ -56,6 +56,7 @@ void MultiplayersJoin::init(bool shareOnYOG)
 
 	startGameTimeCounter=0;
 
+	serverName=serverNameMemory;
 	serverName[0]=0;
 	playerName[0]=0;
 	
@@ -449,7 +450,7 @@ void MultiplayersJoin::receiveTime()
 		int v;
 		LANHost lanhost;
 		//printf("broadcastState=%d.\n", broadcastState);
-		if (lan.receive(&v, lanhost.gameName))
+		if (lan.receive(&v, lanhost.gameName, lanhost.serverNickName))
 		{
 			if ((broadcastState==BS_ENABLE_LAN && v==BROADCAST_RESPONSE_LAN)
 				|| (broadcastState==BS_ENABLE_YOG && v==BROADCAST_RESPONSE_YOG))
@@ -486,12 +487,34 @@ void MultiplayersJoin::receiveTime()
 		
 		if (broadcastState==BS_ENABLE_YOG)
 			for (it=LANHosts.begin(); it!=LANHosts.end(); ++it)
-				if (strncmp(it->gameName, gameName, 32)==0)
-					if (serverIP.host!=SDL_SwapBE32(it->ip))
+				if (strncmp(it->serverNickName, serverNickName, 32)==0)
+					if (serverIP.host!=SDL_SwapLE32(it->ip))
 					{
-						serverIP.host=SDL_SwapBE32(it->ip);
+						serverIP.host=SDL_SwapLE32(it->ip);
 						serverIP.port=SDL_SwapBE16(SERVER_PORT);
-						printf("Found a local game with same name. Trying NAT.\n");
+						NETPRINTF("Found a local game with same serverNickName=(%s).\n", serverNickName);
+						char *s=SDLNet_ResolveIP(&serverIP);
+						NETPRINTF("Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
+						
+						if ((socket)&&(channel!=-1))
+						{
+							NETPRINTF("MultiplayersJoin:NAT:Unbinding socket.\n");
+							send(CLIENT_QUIT_NEW_GAME);
+							SDLNet_UDP_Unbind(socket, channel);
+							NETPRINTF("MultiplayersJoin:NAT:Socket unbinded.\n");
+						}
+						
+						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
+						if (channel != -1)
+						{
+							NETPRINTF("MultiplayersJoin:NAT:suceeded to bind socket (socket=%x) (channel=%d)\n", (int)socket, channel);
+							NETPRINTF("MultiplayersJoin:NAT:serverIP.port=%x(%d)\n", serverIP.port, serverIP.port);
+						}
+						else
+						{
+							NETPRINTF("MultiplayersJoin:NAT:failed to bind socket\n");
+							waitingState=WS_TYPING_SERVER_NAME;
+						}
 					}
 	}
 }
@@ -507,7 +530,7 @@ void MultiplayersJoin::onTimer(Uint32 tick)
 		packet=SDLNet_AllocPacket(MAX_PACKET_SIZE);
 		assert(packet);
 
-		if (SDLNet_UDP_Recv(socket, packet)==1)
+		while (SDLNet_UDP_Recv(socket, packet)==1)
 		{
 			NETPRINTF("recieved packet (%d)\n", packet->data[0]);
 			//NETPRINTF("packet=%d\n", (int)packet);
@@ -609,6 +632,10 @@ void MultiplayersJoin::sendingTime()
 		{
 			NETPRINTF("Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
+			
+			NETPRINTF("disabling NAT detection too.\n");
+			if (broadcastState==BS_ENABLE_YOG)
+				broadcastState=BS_DISABLE_YOG;
 		}
 		else
 			NETPRINTF("TOTL %d\n", waitingTOTL);
@@ -626,12 +653,12 @@ void MultiplayersJoin::sendingTime()
 			{
 				if (shareOnYOG)
 				{
-					printf("sending water to firewall. (%s) (%d)\n", serverName, SERVER_PORT);
+					NETPRINTF("sending water to firewall. (%s) (%d)\n", serverName, SERVER_PORT);
 					globalContainer->yog.sendFirewallActivation(serverName, SERVER_PORT);
 					
-					printf("enabling NAT detection too.\n");
 					if (broadcastState==BS_DISABLE_YOG)
 						broadcastState=BS_ENABLE_YOG;
+					NETPRINTF("enabling NAT detection too. bs=(%d)\n", broadcastState);
 				}
 			}
 			else
@@ -754,7 +781,8 @@ bool MultiplayersJoin::sendPresenceRequest()
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
-		printf("succeded to send presence request packet to host=(%x) port=(%d)\n", serverIP.host, serverIP.port);
+		char *s=SDLNet_ResolveIP(&serverIP);
+		NETPRINTF("succeded to send presence request packet to host=(%x)(%s) port=(%d)\n", serverIP.host, s, serverIP.port);
 	}
 	else
 	{
@@ -944,7 +972,7 @@ bool MultiplayersJoin::tryConnection()
 	if (socket)
 	{
 		IPaddress *localAddress=SDLNet_UDP_GetPeerAddress(socket, -1);
-		printf("Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
+		NETPRINTF("Socket opened at ip(%x) port(%d)\n", localAddress->host, localAddress->port);
 	}
 	else
 	{
@@ -955,6 +983,7 @@ bool MultiplayersJoin::tryConnection()
 
 	if (SDLNet_ResolveHost(&serverIP, serverName, SERVER_PORT)==0)
 	{
+		NETPRINTF("serverName=(%s)\n", serverName);
 		NETPRINTF("found serverIP.host=%x(%d)\n", serverIP.host, serverIP.host);
 	}
 	else
@@ -979,7 +1008,7 @@ bool MultiplayersJoin::tryConnection()
 		return false;
 	}
 
-	waitingTOTL=DEFAULT_NETWORK_TOTL-1;
+	waitingTOTL=DEFAULT_NETWORK_TOTL+1;
 	return sendPresenceRequest();
 }
 
@@ -1006,4 +1035,18 @@ void MultiplayersJoin::quitThisGame()
 	waitingState=WS_TYPING_SERVER_NAME;
 	if (broadcastState==BS_ENABLE_YOG)
 		broadcastState=BS_DISABLE_YOG;
+}
+
+bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)
+{
+	serverName=serverNameMemory;
+	strncpy(serverName, yogGameInfo->hostname, 128);
+	serverName[127]=0;
+	strncpy(playerName, globalContainer->settings.userName, 128);
+	playerName[127]=0;
+	//strncpy(gameName, "ilesAleatoires", 32); //TODO: add gameName in YOG
+	//gameName[32]=0;
+	strncpy(serverNickName, yogGameInfo->source, 32);
+	serverNickName[32]=0;
+	return tryConnection();
 }

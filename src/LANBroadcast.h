@@ -45,7 +45,8 @@ public:
 	bool enable(Uint16 port);
 	bool send(int v);
 	bool socketReady(void);
-	bool receive(int *v, char gameName[32]);
+	//! fill v, gameName, and serverNickName, if not NULL, with last received broadcast response.
+	bool receive(int *v, char gameName[32], char serverNickName[32]);
 	Uint32 getSenderIP();
 
 private:

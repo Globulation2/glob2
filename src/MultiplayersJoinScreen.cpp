@@ -191,6 +191,7 @@ void MultiplayersJoinScreen::onAction(Widget *source, Action action, int par1, i
 					Uint32 netHost=SDL_SwapBE32(it->ip);
 					snprintf(s, 16, "%d.%d.%d.%d", (netHost>>24)&0xFF, (netHost>>16)&0xFF, (netHost>>8)&0xFF, netHost&0xFF);
 					serverName->setText(s);
+					strncpy(multiplayersJoin->serverName, serverName->text, 128);
 					break;
 				}
 				else

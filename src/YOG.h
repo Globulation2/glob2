@@ -195,6 +195,8 @@ public:
 	const char *getGameComment(void);
 	//! Get hostname where game is
 	const char *getGameHostname(void);
+	//! Guess what this returns
+	const GameInfo *getGameInfo(void);
 	//! Returns true and get next game if there is another game in list, false otherwise
 	bool getNextGame(void);
 
