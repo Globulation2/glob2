@@ -1435,7 +1435,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	this->yogGameInfo=yogGameInfo;
 	
 	serverName=serverNameMemory;
-	char *s=SDLNet_ResolveIP(&yogGameInfo->hostip);
+	const char *s=SDLNet_ResolveIP(&yogGameInfo->hostip);
 	if (s)
 	{
 		strncpy(serverName, s, 128);
