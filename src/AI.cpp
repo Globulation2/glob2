@@ -97,8 +97,11 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"AI b",4)!=0)
+	if (memcmp(signature,"AI b", 4)!=0)
+	{
+		fprintf(stderr, "AI::bad begining signature\n");
 		return false;
+	}
 
 	implementitionID=(ImplementitionID)SDL_ReadBE32(stream);
 
@@ -119,8 +122,11 @@ bool AI::load(SDL_RWops *stream, Sint32 versionMinor)
 	}
 
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"AI e",4)!=0)
+	if (memcmp(signature,"AI e", 4)!=0)
+	{
+		fprintf(stderr, "AI::bad end signature\n");
 		return false;
+	}
 	
 	return true;
 }

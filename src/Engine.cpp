@@ -217,7 +217,7 @@ int Engine::initCustom(const char *gameName)
 {
 	assert(gameName);
 	assert(gameName[0]);
-	SDL_RWops *stream=globalContainer->fileManager->open(gameName,"rb");
+	SDL_RWops *stream=globalContainer->fileManager->open(gameName, "rb");
 	if (stream)
 	{
 		if (gui.load(stream))

@@ -10,6 +10,7 @@ To First release :
 - Balancer clearing attack.
 - disonnect /disconnect
 
+-Mettre un petit texte d'info pour chaque batiment.
 -Faire un gradient dand les "forbiddeanMask".
 -Tenir compte des unités qui apportent déja quelquechose.
 -Enlever la latence des informations des drapeaux.

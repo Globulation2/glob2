@@ -75,8 +75,19 @@ bool AINumbi::load(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 	critticalTime    =SDL_ReadBE32(stream);
 	attackTimer      =SDL_ReadBE32(stream);
 
-	SDL_RWread(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
-
+	if (versionMinor<=32)
+	{
+		SDL_RWread(stream, mainBuilding, 15, 4); // BuildingType::NB_BUILDING==15, warning, explicit dirty hack...
+	}
+	else if (versionMinor<=35)
+	{
+		SDL_RWread(stream, mainBuilding, 13, 4); // BuildingType::NB_BUILDING==13
+	}
+	else
+	{
+		for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+			mainBuilding[bi]=SDL_ReadBE32(stream);
+	}
 	return true;
 }
 
@@ -89,7 +100,9 @@ void AINumbi::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, critticalTime);
 	SDL_WriteBE32(stream, attackTimer);
 
-	SDL_RWwrite(stream, mainBuilding, BuildingType::NB_BUILDING, 4);
+	for (int bi=0; bi<BuildingType::NB_BUILDING; bi++)
+		SDL_WriteBE32(stream, mainBuilding[bi]);
+	
 }
 
 

@@ -791,7 +791,7 @@ bool Game::load(SDL_RWops *stream)
 		SDL_RWseek(stream, tempSessionInfo.playersOffset, SEEK_SET);
 		for (int i=0; i<session.numberOfPlayer; ++i)
 			players[i]=new Player(stream, teams, session.versionMinor);
-			
+		
 		if (session.versionMinor>=31)
 		{
 			SDL_RWread(stream, signature, 4, 1);
