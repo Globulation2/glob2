@@ -314,6 +314,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				case InGameMainScreen::ALLIANCES:
 				{
 					delete gameMenuScreen;
+					gameMenuScreen=NULL;
 					if (game.session.numberOfPlayer<=8)
 					{
 						inGameMenu=IGM_ALLIANCE8;
@@ -340,6 +341,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
+					gameMenuScreen=NULL;
 					return true;
 				}
 				break;
@@ -348,6 +350,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					orderQueue.push_back(new PlayerQuitsGameOrder(localPlayer));
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
+					gameMenuScreen=NULL;
 					return true;
 				}
 				break;
@@ -387,6 +390,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
+					gameMenuScreen=NULL;
 				}
 				return true;
 
@@ -401,6 +405,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
+				gameMenuScreen=NULL;
 				printf("!! NOT CODED YET !! Use option\n");
 				return true;
 			}
@@ -440,6 +445,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				case LoadSaveScreen::CANCEL:
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
+				gameMenuScreen=NULL;
 				return true;
 
 				default:
@@ -543,7 +549,6 @@ void GameGUI::processEvent(SDL_Event *event)
 						(selBuild->unitStayRangeLocal<(unsigned)selBuild->type->maxUnitStayRange) &&
 						(SDL_GetModState()&KMOD_SHIFT))
 					{
-						// zzz
 						int nbReq=(selBuild->unitStayRangeLocal+=1);
 						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 					}
@@ -565,7 +570,6 @@ void GameGUI::processEvent(SDL_Event *event)
 						(selBuild->unitStayRangeLocal>0) &&
 						(SDL_GetModState()&KMOD_SHIFT))
 					{
-						// zzz
 						int nbReq=(selBuild->unitStayRangeLocal-=1);
 						orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 					}
@@ -1024,20 +1028,52 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			coordinateFromMxMY(mx, my, &viewportX, &viewportY);
 		}
 	}
+	else if (my<128+32)
+	{
+		if ((displayMode==BUILDING_AND_FLAG) || (displayMode==STAT_VIEW))
+		{
+			if (mx<32)
+			{
+				displayMode=BUILDING_AND_FLAG;
+			}
+			else if (mx<64)
+			{
+				displayMode=STAT_VIEW;
+				statMode = STAT_TEXT;
+			}
+			else if (mx<96)
+			{
+				displayMode=STAT_VIEW;
+				statMode = STAT_GRAPH;
+			}
+			else
+			{
+				if (inGameMenu==IGM_NONE)
+				{
+					gameMenuScreen=new InGameMainScreen();
+					gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
+					inGameMenu=IGM_MAIN;
+				}
+				// the following is commented becase we don't get click event while in menu.
+				// if this change uncomment the following code :
+				/*else
+				{
+					delete gameMenuScreen;
+					gameMenuScreen=NULL;
+					inGameMenu=IGM_NONE;
+				}*/
+			}
+			needRedraw=true;
+		}
+	}
 	else if (displayMode==BUILDING_AND_FLAG)
 	{
-		if (my<128+20)
-		{
-			handleRightClick();
-			displayMode=STAT_VIEW;
-			needRedraw=true;	
-		}
 		// NOTE : here 6 is 12 /2. 12 is the number of buildings in menu
-		else if (my<128+20+6*48)
+		if (my<128+32+6*46)
 		{
 			
 			int xNum=mx>>6;
-			int yNum=(my-128-20)/48;
+			int yNum=(my-128-32)/46;
 			typeToBuild=yNum*2+xNum;
 			needRedraw=true;
 		}
@@ -1243,6 +1279,15 @@ void GameGUI::draw(void)
 
 		if (displayMode==BUILDING_AND_FLAG)
 		{
+			// draw button bar
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 1);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
+			if (gameMenuScreen)
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
+			else
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);
+			
 			int i;
 			for (i=0; i<12; i++)
 			{
@@ -1250,11 +1295,11 @@ void GameGUI::draw(void)
 				BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
 				int imgid=bt->startImage;
 				int x=((i&0x1)*64)+globalContainer->gfx->getW()-128;
-				int y=((i>>1)*48)+128+20;
+				int y=((i>>1)*46)+128+32;
 				int decX=0;
 				int decY=0;
 
-				globalContainer->gfx->setClipRect(x+6, y+3, 52, 42);
+				globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
 				Sprite *buildingSprite=globalContainer->buildings;
 
 				if (buildingSprite->getW(imgid)<=32)
@@ -1274,49 +1319,32 @@ void GameGUI::draw(void)
 			if (typeToBuild>=0)
 			{
 				int x=((typeToBuild&0x1)*64)+globalContainer->gfx->getW()-128;
-				int y=((typeToBuild>>1)*48)+128+20;
+				int y=((typeToBuild>>1)*46)+128+32;
 				globalContainer->gfx->drawRect(x+6, y+3, 52, 42, 255, 0, 0);
 				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
 			}
-
-			char buttonText[64];
-			int viewFu=teamStats->getFreeUnits(UnitType::WORKER)-teamStats->getUnitsNeeded();
-			if (viewFu<-1)
-				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units needed]"), -viewFu, globalContainer->texts.getString("[r units needed]"));
-			else if (viewFu==-1)
-				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[one unit needed]"));
-			else if (viewFu==0)
-				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[no unit needed]"));
-			//else if (viewFu==0)
-			//	snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[no unit free]"));
-			else if (viewFu==1)
-				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[one unit free]"));
-			else
-				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
 			
-			// draw button, for stat
-			drawButton(globalContainer->gfx->getW()-128+12, 128+4, buttonText, false);
-
 			// draw building infos
 			if (mouseX>globalContainer->gfx->getW()-128)
 			{
-				if ((mouseY>128+20) && (mouseY<128+20+6*48))
+				if ((mouseY>128+32) && (mouseY<128+20+6*46))
 				{
 					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
-					int yNum=(mouseY-128-20)/48;
+					int yNum=(mouseY-128-32)/46;
 					int typeId=yNum*2+xNum;
-					drawTextCenter(globalContainer->gfx->getW()-128, 128+22+6*48, "[building name]", typeId);
+					int buildingInfoStart=128+32+6*46;
+					drawTextCenter(globalContainer->gfx->getW()-128, buildingInfoStart+2, "[building name]", typeId);
 					int typeNum=globalContainer->buildingsTypes.getTypeNum(typeId, 0, true);
 					if (typeNum!=-1)
 					{
 						BuildingType *bt=globalContainer->buildingsTypes.getBuildingType(typeNum);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 128+36+6*48, globalContainer->littleFont, 
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+16, globalContainer->littleFont, 
 							"%s: %d", globalContainer->texts.getString("[wood]"), bt->maxRessource[0]);								
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+36+6*48, globalContainer->littleFont, 
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+16, globalContainer->littleFont, 
 							"%s: %d", globalContainer->texts.getString("[corn]"), bt->maxRessource[1]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 128+48+6*48, globalContainer->littleFont, 
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, buildingInfoStart+28, globalContainer->littleFont, 
 							"%s: %d", globalContainer->texts.getString("[stone]"), bt->maxRessource[2]);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 128+48+6*48, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, buildingInfoStart+28, globalContainer->littleFont,
 							"%s: %d", globalContainer->texts.getString("[Alga]"), bt->maxRessource[3]);
 					}
 				}
@@ -1638,10 +1666,28 @@ void GameGUI::draw(void)
 		}
 		else if (displayMode==STAT_VIEW)
 		{
-			if (statMode==STAT_TEXT)
-				teamStats->drawText();
+			// draw menu button
+			if (gameMenuScreen)
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 7);
 			else
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, 128, globalContainer->gamegui, 6);
+
+			if (statMode==STAT_TEXT)
+			{
+				// draw button bar
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 3);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 4);
+				teamStats->drawText();
+			}
+			else
+			{
+				// draw button bar
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, 128, globalContainer->gamegui, 0);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, 128, globalContainer->gamegui, 2);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, 128, globalContainer->gamegui, 5);
 				teamStats->drawStat();
+			}
 		}
 	}
 }

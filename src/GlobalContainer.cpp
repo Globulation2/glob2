@@ -241,7 +241,12 @@ void GlobalContainer::initProgressBar(void)
 void GlobalContainer::load(void)
 {
 	// load texts
-	if (!texts.load("data/texts.txt")) printf("Le fichier \"data/texts.txt\" n'est pas present !");
+	if (!texts.load("data/texts.txt"))
+	{
+		fprintf(stderr, "Fatal error : the file \"data/texts.txt\" can't be found !");
+		assert(false);
+		exit(-1);
+	}
 	
 	if (!hostServer)
 	{
@@ -275,7 +280,6 @@ void GlobalContainer::load(void)
 
 		updateLoadProgressBar(40);
 		// load units
-		unitmini=gfx->loadSprite("data/gfx/unitmini");
 		units=gfx->loadSprite("data/gfx/unit");
 
 		updateLoadProgressBar(70);
@@ -283,6 +287,11 @@ void GlobalContainer::load(void)
 		buildings=gfx->loadSprite("data/gfx/building");
 
 		updateLoadProgressBar(90);
+		// load graphics for gui
+		unitmini=gfx->loadSprite("data/gfx/unitmini");
+		gamegui=gfx->loadSprite("data/gfx/gamegui");
+		
+		updateLoadProgressBar(95);
 		// load buildings types
 		buildingsTypes.load("data/buildings.txt");
 		updateLoadProgressBar(100);
