@@ -23,10 +23,7 @@
 #include "GAG.h"
 #include "SDL_net.h"
 #include "NetConsts.h"
-
-
-
-
+#include "YOGScreen.h"
 
 
 // MainMenuScreen pannel part !!
@@ -365,11 +362,23 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo)
 		printf("failed to open a socket.\n");
 		return;
 	}
+
+	// tell YOG to open the game
+	YOGScreen::openYOG();
+	char newGameText[YOGScreen::GAME_INFO_MAX_SIZE];
+	snprintf(newGameText, YOGScreen::GAME_INFO_MAX_SIZE, "newgame %s", sessionInfo->map.mapName);
+	YOGScreen::sendString(YOGScreen::socket, newGameText);
+	YOGScreen::closeYOG();
 }
 
 MultiplayersHostScreen::~MultiplayersHostScreen()
 {
 	delete arch;
+
+	// tell YOG to remove the game
+	YOGScreen::openYOG();
+	YOGScreen::sendString(YOGScreen::socket, "deletegame");
+	YOGScreen::closeYOG();
 
 	if (destroyNet)
 	{

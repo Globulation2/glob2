@@ -39,19 +39,11 @@ YOGScreen::YOGScreen()
 
 YOGScreen::~YOGScreen()
 {
-	if (socket)
-		SDLNet_TCP_Close(socket);
-	SDLNet_FreeSocketSet(socketSet);
+	closeYOG();
 }
 
-void YOGScreen::closeConnection(void)
-{
-	if (socket)
-	{
-		SDLNet_TCP_Close(socket);
-		socket=NULL;
-	}
-}
+TCPsocket YOGScreen::socket;
+SDLNet_SocketSet YOGScreen::socketSet;
 
 // NOTE : I have removed the -ansi flag that prevented strcasecmp and snprintf to link
 // win32 uses thoses define :
@@ -61,14 +53,9 @@ void YOGScreen::closeConnection(void)
 #	define snprintf _snprintf
 #endif
 
-void YOGScreen::createConnection(void)
+void YOGScreen::openYOG(void)
 {
-	IPs.clear();
-	gameList->clear();
-
-	char data[GAME_INFO_MAX_SIZE];
 	IPaddress ip;
-
 	socketSet=SDLNet_AllocSocketSet(1);
 	if(SDLNet_ResolveHost(&ip, globalContainer->metaServerName, globalContainer->metaServerPort)==-1)
 	{
@@ -84,18 +71,52 @@ void YOGScreen::createConnection(void)
 	}
 
 	SDLNet_TCP_AddSocket(socketSet, socket);
+}
 
+void YOGScreen::closeYOG(void)
+{
+	if (socket)
+	{
+		SDLNet_TCP_Close(socket);
+		socket=NULL;
+		SDLNet_FreeSocketSet(socketSet);
+	}
+}
+
+void YOGScreen::createConnection(void)
+{
+	openYOG();
+	updateList();
+}
+
+void YOGScreen::updateList(void)
+{
+	IPs.clear();
+	gameList->clear();
+
+	char data[GAME_INFO_MAX_SIZE];
+	data[0]=0;
+
+	//sendString(socket, "listenoff");
 	sendString(socket, "listgames");
 	while (strcasecmp(data, "end")!=0)
 	{
 		bool res=getString(socket, data);
+		//if (!res)
+		//	printf("WARNING : error in receive list for %s", data);
 		if ((!res) || (strcasecmp(data, "end")==0))
 			break;
 		if (data[0]!=0)
 			gameList->addText(data);
 		else
-			printf("We got null string through network during list reception, why ?\n");
+			printf("YOG : We got null string through network during list reception, why ?\n");
 	}
+	//sendString(socket, "listenon");
+}
+
+void YOGScreen::closeConnection(void)
+{
+	closeYOG();
 }
 
 bool YOGScreen::getString(TCPsocket socket, char data[GAME_INFO_MAX_SIZE])
@@ -140,7 +161,8 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 		if (par1 ==3)
 		{
 			// TODO : some update here
-			//updateList();
+			updateList();
+			gameList->repaint();
 		}
 		else
 			endExecute(par1);
@@ -173,7 +195,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		char data[GAME_INFO_MAX_SIZE];
 		getString(socket, data);
 		if (data[0]==0)
-			printf("We got null string through network, why ?\n");
+			printf("YOG : We got null string through network, why ?\n");
 		else
 		{
 			chatWindow->addText(data);
