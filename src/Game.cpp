@@ -1505,11 +1505,22 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected)
 {
-	// draw the prerendered minimap
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 50, 50, 50);
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 50, 50, 50);
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 50, 50, 50);
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 50, 50, 50);
+	// draw the prerendered minimap, decide if we use low speed graphics or nor
+	if (globalContainer->optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	{
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 0, 0, 0);
+	}
+	else
+	{
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 0, 0, 0, 155);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 0, 0, 0, 155);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 14, 14, 100, 0, 0, 0, 155);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-14, 14, 14, 100, 0, 0, 0, 155);
+	}
+	
 	globalContainer->gfx->drawRect(globalContainer->gfx->getW()-115, 13, 102, 102, 200, 200, 200);
 	assert(minimap);
 	globalContainer->gfx->drawSurface(globalContainer->gfx->getW()-114, 14, minimap);
