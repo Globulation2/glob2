@@ -9,8 +9,3 @@ Globulation 2
 deplacement par drapeaux
 click sur batiment pour choix du nombre d'unites associees
 
-
-TODO pour nouvelle version
-==========================
-
-Signal pour allie
