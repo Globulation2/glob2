@@ -172,17 +172,33 @@ Holzmauer
 
  
 [r units free]
- u. libres
- idle workers
+ travailleurs libres
+ free worker
  freie Arbeiter
 [one unit free]
-Une u. libre
-One idle worker
+Une travailleur libre
+One free worker
 Ein freier Arbeiter
 [no unit free]
-Pas d'u. libres
-No idle worker
+Pas de travailleur libres
+No free worker
 Kein freier Arbeiter
+[l units needed]
+Il manque 
+
+Es fehlt 
+[r units needed]
+ travailleur
+ worker needed
+ Arbeiter
+[one unit needed]
+Il manque un travailleur
+One worker needed
+Ein Arbeiter fehlt
+[no unit needed]
+Equilibre du travail
+Work balanced  
+  
 [l waiting for player]
 Attente du joueur
 Waiting for player

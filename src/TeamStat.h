@@ -29,6 +29,7 @@ struct TeamStat
 	int numberUnitPerType[UnitType::NB_UNIT_TYPE];
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
+	int totalNeeded;
 	
 	int totalBuilding;
 	int numberBuildingPerType[BuildingType::NB_BUILDING];
@@ -49,6 +50,7 @@ struct TeamSmoothedStat
 {
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
+	int totalNeeded;
 };
 
 class Team;
@@ -63,6 +65,7 @@ public:
 	void drawText();
 	void drawStat();
 	int getFreeUnits();
+	int getUnitsNeeded();
 
 private:
 	enum {

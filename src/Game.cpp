@@ -837,11 +837,13 @@ bool Game::checkRoomForBuilding(int x, int y, int typeNum, Sint32 team)
 	bool isRoom=true;
 	if (bt->isVirtual)
 	{
-		for (int dy=y; dy<y+h; dy++)
-			for (int dx=x; dx<x+w; dx++)
-				if (map.getUnit(dx, dy)!=NOUID)
-					isRoom=false;
-		return isRoom;
+		for (std::list<Building *>::iterator vb=teams[team]->virtualBuildings.begin(); vb!=teams[team]->virtualBuildings.end(); ++vb)
+		{
+			Building *b=*vb;
+			if (b->posX==x && b->posY==y)
+				return false;
+		}
+		return true;
 	}
 	else
 	{

@@ -87,18 +87,24 @@ void GameGUI::init()
 	typingInputScreenPos=0;
 	
 	messagesList.clear();
+	localTeam=NULL;
+	teamStats=NULL;
 }
 
 void GameGUI::adjustInitialViewport()
 {
-	assert(localTeam>=0);
-	assert(localTeam<32);
+	assert(localTeamNo>=0);
+	assert(localTeamNo<32);
 	assert(game.session.numberOfPlayer>0);
 	assert(game.session.numberOfPlayer<32);
-	assert(localTeam<game.session.numberOfPlayer);
+	assert(localTeamNo<game.session.numberOfPlayer);
 	
-	viewportX=game.teams[localTeam]->startPosX-((globalContainer->gfx->getW()-128)>>6);
-	viewportY=game.teams[localTeam]->startPosY-(globalContainer->gfx->getH()>>6);
+	localTeam=game.teams[localTeamNo];
+	assert(localTeam);
+	teamStats=&localTeam->stats;
+	
+	viewportX=localTeam->startPosX-((globalContainer->gfx->getW()-128)>>6);
+	viewportY=localTeam->startPosY-(globalContainer->gfx->getH()>>6);
 	viewportX=(viewportX+game.map.getW())%game.map.getW();
 	viewportY=(viewportY+game.map.getH())%game.map.getH();
 }
@@ -189,11 +195,11 @@ void GameGUI::step(void)
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 		flagSelectedStep();
 	
-	if (game.teams[localTeam]->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
+	if (localTeam->wasEvent(Team::UNIT_UNDER_ATTACK_EVENT))
 		addMessage(globalContainer->texts.getString("[your units are under attack]"), 200, 30, 30);
-	if (game.teams[localTeam]->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
+	if (localTeam->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT))
 		addMessage(globalContainer->texts.getString("[your buildings are under attack]"), 255, 0, 0);
-	if (game.teams[localTeam]->wasEvent(Team::BUILDING_FINISHED_EVENT))
+	if (localTeam->wasEvent(Team::BUILDING_FINISHED_EVENT))
 		addMessage(globalContainer->texts.getString("[building has been finished]"), 30, 255, 30);
 		
 	// do a yog step
@@ -226,7 +232,8 @@ void GameGUI::step(void)
 
 void GameGUI::synchroneStep(void)
 {
-	teamStats.step(game.teams[localTeam]);
+	assert(localTeam);
+	assert(teamStats);
 }
 
 bool GameGUI::processGameMenu(SDL_Event *event)
@@ -275,8 +282,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 						// set correct values to choice boxes
 						OnOffButton *button;
-						Team *teamPtr=game.teams[localTeam];
-						assert(teamPtr);
 
 						for (i=0; i<game.session.numberOfPlayer; i++)
 						{
@@ -288,11 +293,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 #							ifdef WIN32
 #							pragma warning (disable : 4800)
 #							endif
-							button->setState((teamPtr->allies)&(1<<otherTeam));
+							button->setState((localTeam->allies)&(1<<otherTeam));
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->vision[i];
 							assert(button);
-							bool state=(otherTeamPtr->sharedVision)&(1<<localTeam);
+							bool state=(otherTeamPtr->sharedVision)&(1<<localTeamNo);
 							button->setState(state);
 
 							button=((InGameAlliance8Screen *)gameMenuScreen)->chat[i];
@@ -359,7 +364,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 							teamVisionMask|=(1<<otherTeam);
 						}
 					}
-					orderQueue.push_back(new SetAllianceOrder(localTeam, teamAllianceMask, teamVisionMask));
+					orderQueue.push_back(new SetAllianceOrder(localTeamNo, teamAllianceMask, teamVisionMask));
 					chatMask=((InGameAlliance8Screen *)gameMenuScreen)->getChatMask();
 					inGameMenu=IGM_NONE;
 					delete gameMenuScreen;
@@ -667,7 +672,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_PLUS:
 			case SDLK_KP_PLUS:
 			    {
-					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal+=1);
 						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
@@ -677,7 +682,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_MINUS:
 			case SDLK_KP_MINUS:
 				{
-					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (displayMode==BUILDING_SELECTION_VIEW) && (selBuild->maxUnitWorkingLocal>0))
 					{
 						int nbReq=(selBuild->maxUnitWorkingLocal-=1);
 						orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
@@ -686,7 +691,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				break;
 			case SDLK_d:
 				{
-					if ((pressed) && selBuild && (selBuild->owner->teamNumber==localTeam))
+					if ((pressed) && selBuild && (selBuild->owner->teamNumber==localTeamNo))
 					{
 						orderQueue.push_back(new OrderDelete(selBuild->UID));
 					}
@@ -695,7 +700,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_u:
 			case SDLK_a:
 				{
-					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeam) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
+					if ((pressed) && (selBuild) && (selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->nextLevelTypeNum!=-1) && (!selBuild->type->isBuildingSite))
 					{
 						orderQueue.push_back(new OrderUpgrade(selBuild->UID));
 					}
@@ -728,7 +733,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 				{
 				    int evX, evY; 
 				    int sw, sh;
-					game.teams[localTeam]->getEventPos(&evX, &evY);
+					localTeam->getEventPos(&evX, &evY);
 					sw=globalContainer->gfx->getW();
 					sh=globalContainer->gfx->getH();
 					viewportX=evX-((sw-128)>>6);
@@ -758,8 +763,8 @@ void GameGUI::viewportFromMxMY(int mx, int my)
 	my-=14+decY;
 	viewportX=((mx*game.map.getW())/szX)-((globalContainer->gfx->getW()-128)>>6);
 	viewportY=((my*game.map.getH())/szY)-((globalContainer->gfx->getH())>>6);
-	viewportX+=game.teams[localTeam]->startPosX+(game.map.getW()>>1);
-	viewportY+=game.teams[localTeam]->startPosY+(game.map.getH()>>1);
+	viewportX+=localTeam->startPosX+(game.map.getW()>>1);
+	viewportY+=localTeam->startPosY+(game.map.getH()>>1);
 	
 	viewportX&=game.map.getMaskW();
 	viewportY&=game.map.getMaskH();
@@ -822,12 +827,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
+		bool isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
-		if (isRoom || bt->isVirtual)
-		{
-			orderQueue.push_back(new OrderCreate(localTeam, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
-		}
+		if (isRoom)
+			orderQueue.push_back(new OrderCreate(localTeamNo, mapX, mapY, (BuildingType::BuildingTypeNumber)typeNum));
 	}
 	else
 	{
@@ -836,8 +839,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
 		UID=game.map.getUnit(mapX, mapY);
 		// check for flag first
-		for (std::list<Building *>::iterator virtualIt=game.teams[localTeam]->virtualBuildings.begin();
-				virtualIt!=game.teams[localTeam]->virtualBuildings.end(); ++virtualIt)
+		for (std::list<Building *>::iterator virtualIt=localTeam->virtualBuildings.begin();
+				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)
 			{
 				Building *b=*virtualIt;
 				if ((b->posX==mapX) && (b->posY==mapY))
@@ -871,8 +874,8 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				{
 					int buildingTeam=Building::UIDtoTeam(UID);
 					// we can select for view buildings that are in shared vision
-					if ((game.map.isMapDiscovered(mapX, mapY, game.teams[localTeam]->sharedVision))
-						&& ( (game.teams[buildingTeam]->allies&(1<<localTeam)) || game.map.isFOW(mapX, mapY, game.teams[localTeam]->sharedVision)))
+					if ((game.map.isMapDiscovered(mapX, mapY, localTeam->sharedVision))
+						&& ( (game.teams[buildingTeam]->allies&(1<<localTeamNo)) || game.map.isFOW(mapX, mapY, localTeam->sharedVision)))
 					{
 						displayMode=BUILDING_SELECTION_VIEW;
 						game.selectedUnit=NULL;
@@ -949,7 +952,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		assert (selBuild);
 		// TODO : handle this in a nice way
-		if (selBuild->owner->teamNumber!=localTeam)
+		if (selBuild->owner->teamNumber!=localTeamNo)
 			return;
 		if ((my>256+35+12) && (my<256+35+16+12)  && (selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE))
 		{
@@ -1101,7 +1104,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				orderQueue.push_back(new OrderCancelUpgrade(selBuild->UID));
 			}
-			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+			else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
 			{
 				orderQueue.push_back(new OrderUpgrade(selBuild->UID));
 			}
@@ -1165,7 +1168,7 @@ void GameGUI::draw(void)
 				else if (buildingSprite->getH(imgid)>64)
 					decY=26;
 
-				buildingSprite->enableBaseColor(game.teams[localTeam]->colorR, game.teams[localTeam]->colorG, game.teams[localTeam]->colorB);
+				buildingSprite->enableBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 				globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
 			}
 
@@ -1178,17 +1181,25 @@ void GameGUI::draw(void)
 				globalContainer->gfx->drawRect(x+5, y+2, 54, 44, 255, 0, 0);
 			}
 
-			int viewFu=teamStats.getFreeUnits();
-
 			char buttonText[64];
-			if (viewFu<=0)
-				snprintf(buttonText, 64, "%s",globalContainer->texts.getString("[no unit free]"));
-			else if (viewFu==1)
-				snprintf(buttonText, 64, "%s",globalContainer->texts.getString("[one unit free]"));
-			else
-				snprintf(buttonText, 64, "%s%d%s",globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
 			
-			// draw button, for stat			
+			int viewFu=teamStats->getFreeUnits()-teamStats->getUnitsNeeded();
+			
+			char freeUnitsText[64];
+			if (viewFu<-1)
+				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units needed]"), -viewFu, globalContainer->texts.getString("[r units needed]"));
+			else if (viewFu==-1)
+				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[one unit needed]"));
+			else if (viewFu==0)
+				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[no unit needed]"));
+			//else if (viewFu==0)
+			//	snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[no unit free]"));
+			else if (viewFu==1)
+				snprintf(buttonText, 64, "%s", globalContainer->texts.getString("[one unit free]"));
+			else
+				snprintf(buttonText, 64, "%s%d%s", globalContainer->texts.getString("[l units free]"), viewFu, globalContainer->texts.getString("[r units free]"));
+			
+			// draw button, for stat
 			drawButton(globalContainer->gfx->getW()-128+16, 128+4, buttonText, false);
 
 			// draw building infos
@@ -1251,7 +1262,7 @@ void GameGUI::draw(void)
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+22, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selBuild->type->shootDamage);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+32, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[range]"), selBuild->type->shootingRange);
 			}
-			if ((selBuild->owner->allies) &(1<<localTeam))
+			if ((selBuild->owner->allies) &(1<<localTeamNo))
 			{
 				if (selBuild->type->maxUnitWorking)
 				{
@@ -1363,7 +1374,7 @@ void GameGUI::draw(void)
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[cancel upgrade]");
 				}
-				else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(game.teams[localTeam]->maxBuildLevel()>selBuild->type->level))
+				else if ((selBuild->type->nextLevelTypeNum!=-1) && (selBuild->buildingState==Building::ALIVE) && (!selBuild->type->isBuildingSite) && (selBuild->isHardSpace())&&(localTeam->maxBuildLevel()>selBuild->type->level))
 				{
 					drawButton(globalContainer->gfx->getW()-128+16, 256+172+16+8, "[upgrade]");
 				}
@@ -1424,9 +1435,9 @@ void GameGUI::draw(void)
 		else if (displayMode==STAT_VIEW)
 		{
 			if (statMode==STAT_TEXT)
-				teamStats.drawText();
+				teamStats->drawText();
 			else
-				teamStats.drawStat();
+				teamStats->drawStat();
 		}
 	}
 }
@@ -1459,13 +1470,7 @@ void GameGUI::drawOverlayInfos(void)
 		else
 			tempY=((mouseY+16)>>5)+viewportY;
 
-		if (bt->isVirtual)
-		{
-			game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
-			isRoom=true;
-		}
-		else
-			isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeam);
+		isRoom=game.checkRoomForBuilding(tempX, tempY, typeNum, &mapX, &mapY, localTeamNo);
 
 		// we find last's leve type num:
 		BuildingType *lastbt=globalContainer->buildingsTypes.getBuildingType(typeNum);
@@ -1487,11 +1492,11 @@ void GameGUI::drawOverlayInfos(void)
 		if (bt->isVirtual)
 			isExtendedRoom=true;
 		else
-			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeam);
+			isExtendedRoom=game.checkHardRoomForBuilding(tempX, tempY, lastTypeNum, &exMapX, &exMapY, localTeamNo);
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings;
-		sprite->enableBaseColor(game.teams[localTeam]->colorR, game.teams[localTeam]->colorG, game.teams[localTeam]->colorB);
+		sprite->enableBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 
 		batX=(mapX-viewportX)<<5;
 		batY=(mapY-viewportY)<<5;
@@ -1525,16 +1530,16 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		int centerX, centerY;
 		game.map.buildingPosToCursor(selBuild->posXLocal, selBuild->posYLocal,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-		if (selBuild->owner->teamNumber==localTeam)
+		if (selBuild->owner->teamNumber==localTeamNo)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
-		else if ((game.teams[localTeam]->allies) & (selBuild->owner->me))
+		else if ((localTeam->allies) & (selBuild->owner->me))
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 255, 196, 0);
 		else if (!selBuild->type->isVirtual)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
 
 		// draw a white circle around units that are working at building
 		if ((showUnitWorkingToBuilding)
-			&& ((selBuild->owner->allies) &(1<<localTeam)))
+			&& ((selBuild->owner->allies) &(1<<localTeamNo)))
 		{
 			for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
 			{
@@ -1551,11 +1556,11 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
-	if (game.teams[localTeam]->isAlive==false)
+	if (localTeam->isAlive==false)
 	{
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, globalContainer->texts.getString("[you have lost]"));
 	}
-	else if (game.teams[localTeam]->hasWon==true)
+	else if (localTeam->hasWon==true)
 	{
 		globalContainer->gfx->drawString(20, globalContainer->gfx->getH()>>1, globalContainer->littleFont, globalContainer->texts.getString("[you have won]"));
 	}
@@ -1665,7 +1670,7 @@ void GameGUI::drawAll(int team)
 {
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 	bool drawBuildingRects=(typeToBuild>=0);
-	game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeam, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
+	game.drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawHealthFoodBar, drawPathLines, drawBuildingRects, true);
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 0, 128, 128);
 	game.drawMiniMap(globalContainer->gfx->getW()-128, 0, 128, 128, viewportX, viewportY, team);
@@ -1742,7 +1747,6 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		initial->mapGenerationDescriptor->synchronizeNow();
 		game.generateMap(*initial->mapGenerationDescriptor);
 		game.setBase(initial);
-		return true;
 	}
 	else if (initial->fileIsAMap)
 	{
@@ -1755,7 +1759,6 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 			return false;
 		SDL_RWclose(stream);
 		game.setBase(initial);
-		return true;
 	}
 	else
 	{
@@ -1768,8 +1771,9 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 			return false;
 		SDL_RWclose(stream);
 		game.setBase(initial);
-		return true;
 	}
+
+	return true;
 }
 
 bool GameGUI::load(SDL_RWops *stream)
@@ -1782,11 +1786,10 @@ bool GameGUI::load(SDL_RWops *stream)
 	if (game.session.versionMinor>3)
 	{
 		localPlayer=SDL_ReadBE32(stream);
-		localTeam=SDL_ReadBE32(stream);
+		localTeamNo=SDL_ReadBE32(stream);
 	}
 	if (game.session.versionMinor>4)
 		assert(!game.session.fileIsAMap);
-	
 	if (result==false)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");
 	return result;
@@ -1797,7 +1800,7 @@ void GameGUI::save(SDL_RWops *stream, char *name)
 	game.save(stream, false, name);
 	SDL_WriteBE32(stream, chatMask);
 	SDL_WriteBE32(stream, localPlayer);
-	SDL_WriteBE32(stream, localTeam);
+	SDL_WriteBE32(stream, localTeamNo);
 }
 
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
@@ -1908,7 +1911,7 @@ void GameGUI::iterateSelection(void)
 		int pos=Building::UIDtoID(selectionUID);
 		int team=Building::UIDtoTeam(selectionUID);
 		int i=pos;
-		if (team==localTeam)
+		if (team==localTeamNo)
 		{
 			while (i<pos+512)
 			{

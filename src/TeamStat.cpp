@@ -49,6 +49,12 @@ void TeamStats::step(Team *team)
 			smoothedStat.totalFree++;
 		}
 	}
+	for (i=0; i<512; i++)
+	{
+		Building *b=team->myBuildings[i];
+		if (b)
+			smoothedStat.totalNeeded+=b->maxUnitWorking-b->unitsWorking.size();
+	}
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
@@ -65,6 +71,8 @@ void TeamStats::step(Team *team)
 		for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
 			if (smoothedStat.isFree[j]>maxStat.isFree[j])
 				maxStat.isFree[j]=smoothedStat.isFree[j];
+		if (smoothedStat.totalNeeded>maxStat.totalNeeded)
+			maxStat.totalNeeded=smoothedStat.totalNeeded;
 	}
 	
 	// We change current stats:
@@ -118,6 +126,7 @@ void TeamStats::step(Team *team)
 	stat.totalFree=maxStat.totalFree;
 	for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
 		stat.isFree[j]=maxStat.isFree[j];
+	stat.totalNeeded=maxStat.totalNeeded;
 }
 
 void TeamStats::drawText()
@@ -187,9 +196,8 @@ void TeamStats::drawStat()
 	// graph
 	for (i=0; i<128; i++)
 	{
-		//int index=(statsPtr+i+1)&0x7F;
 		int index=(statsIndex+i+1)&0x7F;
-		int nbFree=(stats[index].totalFree*64)/maxUnit;
+		int nbFree=((stats[index].totalFree)*64)/maxUnit;
 		int nbTotal=(stats[index].totalUnit*64)/maxUnit;
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbTotal, nbTotal-nbFree, 0, 0, 255);
 		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, 128+ 36 +64-nbFree, nbFree, 0, 255, 0);
@@ -228,4 +236,9 @@ void TeamStats::drawStat()
 int TeamStats::getFreeUnits()
 {
 	return (stats[statsIndex].isFree[UnitType::WORKER]);
+}
+
+int TeamStats::getUnitsNeeded()
+{
+	return (stats[statsIndex].totalNeeded);
 }
