@@ -181,16 +181,19 @@ void YOGServer::removeGame(YOGClient *host)
 	assert(good); // This is a database consistency.
 	assert(host->sharingGame==game);
 	if (host->joinedGame)
-		assert(host->joinedGame==game);
+		if (host->joinedGame!=game)
+			lprintf("Warning! A game-host has not joined his own game!\n");
 	
 	Uint32 uid=game->uid;
 	std::list<YOGClient *> &joiners=game->joiners;
 	for (std::list<YOGClient *>::iterator c=joiners.begin(); c!=joiners.end(); ++c)
-	{
-		assert((*c)->joinedGame==game);
-		(*c)->joinedGame=NULL;
-		lprintf("removed (%s) from game (%s).\n", (*c)->userName, game->name);
-	}
+		if ((*c)->joinedGame!=game)
+			lprintf("Warning! Critical error! We have a (game->joiners->joinedGame!=game) inconstancy!\n");
+		else
+		{
+			(*c)->joinedGame=NULL;
+			lprintf("removed (%s) from game (%s).\n", (*c)->userName, game->name);
+		}
 	
 	for (std::list<YOGClient *>::iterator c=clients.begin(); c!=clients.end(); ++c)
 	{
@@ -801,7 +804,10 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 				(*sender)->hostGameip=ip;
 				(*sender)->playing=true;
 				lprintf("Client %s has a hostGameip (%s)\n", (*sender)->userName, Utilities::stringIP(ip));
-				
+				if ((*sender)->joinedGame && (*sender)->joinedGame->host!=*sender)
+				{
+					Warning!
+				}
 				(*sender)->send(YMT_HOST_GAME_SOCKET);
 				break;
 			}
