@@ -2089,6 +2089,10 @@ const char *glob2FilenameToName(const char *filename)
 			SDL_RWclose(stream);
 			return Utilities::strdup(tempSession.getMapName());
 		}
+		else
+		{
+			SDL_RWclose(stream);
+		}
 	}
 	return NULL;
 }
