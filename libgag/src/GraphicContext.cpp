@@ -17,7 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "GraphicContext.h"
+#include <GraphicContext.h>
 #include "SDLGraphicContext.h"
 #include "GLGraphicContext.h"
 #include <assert.h>
@@ -78,3 +78,4 @@ int Font::getStringHeight(const int i) const
 	snprintf(temp, 32, "%d", i);
 	return getStringHeight(temp);
 }
+

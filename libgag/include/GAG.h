@@ -21,6 +21,7 @@
 #define __GAG_H
 
 #include "GAGSys.h"
+#include "xmlserializer.h"
 #include "FileManager.h"
 #include "GraphicContext.h"
 #include "SupportFunctions.h"

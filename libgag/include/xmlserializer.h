@@ -34,7 +34,8 @@
 #define DPS_NAMED_SERIALIZATION
 
 #include <dps/base.h>
-#include <Toolkit.h>
+#include "Toolkit.h"
+#include "FileManager.h"
 
 namespace base
 {
@@ -58,7 +59,7 @@ namespace base
 		virtual void writeUInt32(const UInt32& item) { char t[12]; sprintf(t,"%u",item); writer->write(t); }
 		virtual void writeInt64(const Int64& item)   { char t[24]; sprintf(t,I64F,item); writer->write(t); }
 		virtual void writeUInt64(const UInt64& item) { char t[24]; sprintf(t,U64F,item); writer->write(t); }
-		virtual void writedpsFloat(const Float& item)   { char t[32]; sprintf(t,"%g",item); writer->write(t); }
+		virtual void writeFloat(const Float& item)   { char t[32]; sprintf(t,"%g",item); writer->write(t); }
 		virtual void writeDouble(const Double& item) { char t[32]; sprintf(t,"%lg",item); writer->write(t); }
 		virtual void writeBool(const Bool& item) { writer->write(item ? "true" : "false"); }
 		virtual void writeString(const std::string& item) { writer->write(item.c_str()); }
@@ -95,7 +96,7 @@ namespace base
 			{
 				enter("item");			
 				refs.elementAt(i)->writeV(this);
-				leave("item");			
+				leave("item");
 			}
 
 			return writer->flush(refs);
@@ -202,8 +203,8 @@ namespace base
 		}
 
 		//! Write string to target
-		void write(const char *str) 
-		{ 
+		void write(const char *str)
+		{
 			fprintf(fptr,str);
 		}
 
@@ -222,27 +223,38 @@ namespace base
 		FILE *fptr;
 		//! Next character in stream
 		char nextChar;
-		
+
 	public:
 		//! Constructor
 		XMLInputStream(const char *fname)
 		{
 			fptr=Toolkit::getFileManager()->openFP(fname,"r");
 
-			nextChar=0;
-			nextChar=fgetc(fptr);
+			if (fptr)
+			{
+				nextChar=0;
+				nextChar=fgetc(fptr);
+			}
 		}
 		//! Destructor
 		~XMLInputStream()
 		{
-			fclose(fptr);
+			if (fptr)
+			{
+				fclose(fptr);
+			}
 		}
 		
 		char getNextChar()
 		{
-			char b=nextChar;
-			nextChar=fgetc(fptr);
-			return b;
+			if (fptr)
+			{
+				char b=nextChar;
+				nextChar=fgetc(fptr);
+				return b;
+			}
+			else
+				return 0;
 		}
 		
 		char peekNextChar()
@@ -326,7 +338,8 @@ namespace base
 			
 			return std::string(tmp);
 		}
-		
+
+		bool valid() { return fptr!=NULL; }
 		bool eof() { return feof(fptr)!=0; }
 	};
 
@@ -458,6 +471,8 @@ namespace base
 		XMLFileReader(const char *fname)
 		{
 			root=readXML(fname);
+			if (root==NULL)
+				current.valid=false;
 		}
 		//! Read a string from document
 		const char *read();
@@ -467,6 +482,8 @@ namespace base
 		void leave(const char *str);
 		//! Initialize reference vector
 		bool init(base::RefVector& refs);
+		//! Return if reader is in valid state
+		bool valid() { return current.valid; }
 	};
 
 	//! Serialization target for binary files
@@ -522,7 +539,7 @@ namespace base
 		Bool readBytes(void *buf, Size len) 
 		{ 
 			fread(buf,len,1,fptr);
-			return true; 
+			return true;
 		}
 
 		//! Initialize references

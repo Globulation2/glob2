@@ -28,7 +28,7 @@ SettingsScreen::SettingsScreen()
 	for (int i=0; i<globalContainer->texts.getNumberOfLanguage(); i++)
 		languageList->addText(globalContainer->texts.getStringInLang("[language]", i));
 	addWidget(languageList);
-	userName=new TextInput(120, 280, 400, 30, "standard", globalContainer->userName, true, 32);
+	userName=new TextInput(120, 280, 400, 30, "standard", globalContainer->getUsername(), true, 32);
 	addWidget(userName);
 
 	ok=new TextButton( 60, 330, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);

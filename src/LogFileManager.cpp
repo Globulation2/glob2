@@ -42,11 +42,11 @@ FILE *LogFileManager::getFile(const char *fileName)
 	//printf("getFile(%s).\n", name);
 	int logPrefixSize=strlen("logs/");
 	int fileNameSize=strlen(fileName);
-	int userNameSize=strlen(globalContainer->userName);
+	int userNameSize=strlen(globalContainer->getUsername());
 	int fullSize=logPrefixSize+fileNameSize+userNameSize+1;
 	char *fullName=new char[fullSize];
 	assert(fullName);
-	snprintf(fullName, fullSize, "logs/%s%s", globalContainer->userName, fileName);
+	snprintf(fullName, fullSize, "logs/%s%s", globalContainer->getUsername(), fileName);
 		
 	for (std::vector<LogFMF>::iterator logFileIt=logFileList.begin(); logFileIt!=logFileList.end(); ++logFileIt)
 		if (logFileIt->name==fullName)

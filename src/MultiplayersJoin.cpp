@@ -1679,7 +1679,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	printf("tryConnection::serverName=%s\n", serverName);
 	//TODO: is the serverName string usefull ? If it is, the port needs to be passed too !
 	
-	strncpy(playerName, globalContainer->userName, 32);
+	strncpy(playerName, globalContainer->getUsername(), 32);
 	playerName[31]=0;
 	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;

@@ -20,10 +20,10 @@
 #ifndef __GUIFILELIST_H
 #define __GUIFILELIST_H
 
-#include <FileManager.h>
-#include <GUIList.h>
+#include "FileManager.h"
+#include "GUIList.h"
 #include <string>
-#include "dps/base.h"
+#include "xmlserializer.h"
 
 class FileList: public List
 {

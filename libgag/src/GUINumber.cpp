@@ -106,7 +106,7 @@ void Number::paint(void)
 {
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
-	textHeight = fontPtr->getStringHeight(NULL);
+	textHeight = fontPtr->getStringHeight((const char*)NULL);
 		if (h<1)
 		h=textHeight;
 

@@ -138,7 +138,7 @@ int Engine::initCustom(void)
 			int teamColor=customGameScreen.getSelectedColor(i);
 			if (i==0)
 			{
-				gui.game.players[nbPlayer]=new Player(0, globalContainer->userName, gui.game.teams[teamColor], BasePlayer::P_LOCAL);
+				gui.game.players[nbPlayer]=new Player(0, globalContainer->getUsername(), gui.game.teams[teamColor], BasePlayer::P_LOCAL);
 				gui.localPlayer=nbPlayer;
 				gui.localTeamNo=teamColor;
 			}

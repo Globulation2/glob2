@@ -23,8 +23,7 @@
 #include "GAGSys.h"
 #include "GraphicContext.h"
 #include <vector>
-#include "dps/base.h"
-#include "dps/basecont.h"
+#include "xmlserializer.h"
 
 //! if defined, widget added twice are handeld correctly
 #define ENABLE_MULTIPLE_ADD_WIDGET

@@ -1518,7 +1518,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 void Game::drawMiniMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam)
 {
 	// draw the prerendered minimap, decide if we use low speed graphics or nor
-	if (globalContainer->optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (globalContainer->getOptionFlags() & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 0, 128, 14, 0, 0, 0);
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 114, 128, 14, 0, 0, 0);

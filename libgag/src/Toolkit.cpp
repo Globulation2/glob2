@@ -19,6 +19,7 @@
 
 #include <Toolkit.h>
 #include <FileManager.h>
+#include <GraphicContext.h>
 #include <assert.h>
 
 Toolkit::SpriteMap Toolkit::spriteMap;
