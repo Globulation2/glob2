@@ -43,7 +43,7 @@ private:
 
 public:
 	InGameLoadSaveScreen(const char *directory, const char *extension, bool isLoad=true, const char *defaultFileName=NULL);
-	virtual ~InGameLoadSaveScreen() { }
+	virtual ~InGameLoadSaveScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void paint(int x, int y, int w, int h);

@@ -22,6 +22,29 @@
 #define __NEWMAPSCREEN_H
 
 #include "Map.h"
+#include "MapGenerationDescriptor.h"
+
+//! This screen allows to choose how to make a new map
+class HowNewMapScreen:public Screen
+{
+public:
+	enum
+	{
+		NEW = 1,
+		LOAD = 2,
+		CANCEL = 3
+	};
+
+public:
+	//! Constructor
+	HowNewMapScreen();
+	//! Destructor
+	virtual ~HowNewMapScreen() { }
+	//! Action handler
+	void onAction(Widget *source, Action action, int par1, int par2);
+	//! Paint handler
+	void paint(int x, int y, int w, int h);
+};
 
 //! This screen allows to choose the size of the map and the default background
 class NewMapScreen:public Screen
@@ -37,16 +60,14 @@ public:
 	int sizeX;
 	//! Size in bit of the map (6=64, 7=128, 8=256, 9=512) on y
 	int sizeY;
-	//! Type of default terrain (WATER, GRASS, SAND)
-	Map::TerrainType defaultTerrainType;
+	
+	MapGenerationDescriptor descriptor;
 
 private:
-	//! 4 size choices on x
-	OnOffButton *sizeXButton[4];
-	//! 4 size choices on y
-	OnOffButton *sizeYButton[4];
-	//! 3 default terrain choices
-	OnOffButton *defaultTerrainTypeButton[3];
+	Number *mapSizeX, *mapSizeY;
+	List *methodes, *terrains;
+	Ratio *waterRatio, *sandRatio, *grassRatio;
+	Number *smooth;
 	//! is true if first paint
 	bool firstPaint;
 

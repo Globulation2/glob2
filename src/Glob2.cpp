@@ -33,6 +33,8 @@
 #include "SettingsScreen.h"
 #include "NewMapScreen.h"
 #include "MultiplayersHost.h"
+#include "MultiplayersChooseMapScreen.h"
+#include "Utilities.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -295,13 +297,41 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::EDITOR:
 			{
-				NewMapScreen newMapScreen;
-				if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+				HowNewMapScreen howNewMapScreen;
+				int rc=howNewMapScreen.execute(globalContainer->gfx, 20);
+				if (rc==HowNewMapScreen::NEW)
 				{
-					MapEdit mapEdit;
-					if (mapEdit.run(newMapScreen.sizeX, newMapScreen.sizeY, newMapScreen.defaultTerrainType))
+					NewMapScreen newMapScreen;
+					if (newMapScreen.execute(globalContainer->gfx, 20)==NewMapScreen::OK)
+					{
+						MapEdit mapEdit;
+						mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
+						//setRandomSyncRandSeed();
+						mapEdit.game.generateMap(newMapScreen.descriptor);
+						if (mapEdit.run()==-1)
+							isRunning=false;
+					}
+				}
+				else if (rc==HowNewMapScreen::LOAD)
+				{
+					MultiplayersChooseMapScreen multiplayersChooseMapScreen;
+					int rc=multiplayersChooseMapScreen.execute(globalContainer->gfx, 20);
+					if (rc==MultiplayersChooseMapScreen::OK)
+					{
+						MapEdit mapEdit;
+						mapEdit.load(multiplayersChooseMapScreen.sessionInfo.getFileName());
+						if (mapEdit.run()==-1)
+							isRunning=false;
+					}
+					else if (rc==-1)
 						isRunning=false;
 				}
+				else if (rc==HowNewMapScreen::CANCEL)
+				{
+					// Let's sing.
+				}
+				else
+					assert(false);
 			}
 			break;
 			case MainMenuScreen::QUIT:

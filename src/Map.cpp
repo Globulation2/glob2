@@ -135,6 +135,12 @@ Sector::~Sector(void)
 	free();
 }
 
+void Sector::setGame(Game *game)
+{
+	this->game=game;
+	this->map=&(game->map);
+}
+
 void Sector::free(void)
 {
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
@@ -510,7 +516,7 @@ void Map::setBaseMap(const BaseMap *initial)
 	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }
 
-void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType)
+void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
 	if (mapDiscovered)
 		delete mapDiscovered;
@@ -556,25 +562,22 @@ void Map::setSize(int wDec, int hDec, Game *game, TerrainType terrainType)
 	initCase.unit=NOUID;
 	for (int i=0; i<size; i++)
 		cases[i]=initCase;
-	regenerateMap(0,0,w,h);
+	regenerateMap(0, 0, w, h);
 
 	// now sectors
 	wSector=w>>4;
 	hSector=h>>4;
 	size=wSector*hSector;
-	// pas standard!!!
-#	ifndef WIN32
-		sectors=new Sector[size](game);
-#	else
-		sectors=new Sector[size];
-		{
-			for (int i=0; i < size; ++i) 
-			{
-				sectors[i].~Sector();
-				new (&sectors[i])Sector(game);
-			}
-		}
-#	endif
+	
+	sectors=new Sector[size];
+}
+
+void Map::setGame(Game *game)
+{
+	int size=wSector*hSector;
+	assert(size);
+	for (int i=0; i<size; i++)
+		sectors[i].setGame(game);
 }
 
 bool Map::load(SDL_RWops *stream, Game *game)

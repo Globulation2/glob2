@@ -631,3 +631,27 @@ Speed
 Vit. attaque
 Attack speed
 
+[new]
+Nouveau
+New
+Neu
+[load]
+Charger
+Load
+
+[uniform terrain]
+Terrain uniforme
+Uniform terrain
+
+[random terrain]
+Terrain aleatoire
+Random terrain
+
+[Ratios]
+Proportions
+Rations
+
+[Uniformity]
+Uniformite
+Uniformity
+

@@ -18,22 +18,40 @@
 
 */
 
-#ifndef __GAG_H
-#define __GAG_H
+#ifndef __GUI_NUMBER_H
+#define __GUI_NUMBER_H
 
-#include "Header.h"
-#include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
 #include "GUIBase.h"
-#include "GUIButton.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
-#include "GUIList.h"
-#include "GUINumber.h"
-#include "GUIRatio.h"
+#include <vector>
+
+class Number: public RectangularWidget
+{
+public:
+	Number(int x, int y, int w, int h, int m, const Font *font);
+	virtual ~Number();
+
+	virtual void onTimer(Uint32 tick) { }
+	virtual void onSDLEvent(SDL_Event *event);
+	virtual void paint(void);
+
+	void add(int number);
+	void clear(void);
+	void setNth(int nth);
+	void set(int number);
+	int getNth(void);
+	int get(void);
+
+protected:
+	virtual void repaint(void);
+	virtual void internalPaint(void);
+
+protected:
+	int textHeight;
+	const Font *font;
+	std::vector<int> numbers;
+	int nth;
+	int m;
+};
 
 #endif
- 
+

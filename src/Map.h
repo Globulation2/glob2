@@ -31,6 +31,7 @@
 #define NOUID (Sint16)0x8000
 class Map;
 class Game;
+class MapGenerationDescriptor;
 
 // a 1x1 piece of map
 struct Case
@@ -57,6 +58,8 @@ public:
 	Sector() {}
 	Sector(Game *);
 	virtual ~Sector(void);
+	// !This call is needed to use the Sector!
+	void setGame(Game *game);
 
 	void free(void);
 	
@@ -66,7 +69,7 @@ public:
 	bool load(SDL_RWops *stream, Game *game);
 	
 	void step(void);
-	
+private:
 	Map *map;
 	Game *game;
 };
@@ -131,7 +134,9 @@ public:
 	//! Set the base map (name and initial infos)
 	void setBaseMap(const BaseMap *initial);
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
-	void setSize(int wDec, int hDec, Game *game, TerrainType terrainType=WATER);
+	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
+	// !This call is needed to use the Map!
+	void setGame(Game *game);
 	//! Save a map
 	void save(SDL_RWops *stream);
 	//! Load a map from a stream and relink with associated game
@@ -292,6 +297,11 @@ public:
 protected:
 	Sint32 stepCounter;
 	int sizeOfFogOfWar;
+
+public:
+	void makeHomogenMap(Map::TerrainType terrainType);
+	void controlSand(void);
+	void makeRandomMap(MapGenerationDescriptor &descriptor);
 };
 
 #endif

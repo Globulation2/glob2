@@ -21,78 +21,139 @@
 #include "NewMapScreen.h"
 #include "GlobalContainer.h"
 
+HowNewMapScreen::HowNewMapScreen()
+{
+	addWidget(new TextButton( 20, 340, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[new]"), NEW, 13));
+	addWidget(new TextButton(340, 340, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[load]"), LOAD));
+	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+}
+
+void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		if ((par1==NEW)||(par1==LOAD)||(par1==CANCEL))
+			endExecute(par1);
+	}
+}
+
+void HowNewMapScreen::paint(int x, int y, int w, int h)
+{
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
+}
+
 NewMapScreen::NewMapScreen()
 {
-	int i;
 	firstPaint=true;
 	sizeX=7;
 	sizeY=7;
-	defaultTerrainType=Map::WATER;
 
-	sizeXButton[0]=new OnOffButton(400, 60, 20, 20, false, 10);
-	sizeXButton[1]=new OnOffButton(400, 85, 20, 20, true, 11);
-	sizeXButton[2]=new OnOffButton(400, 110, 20, 20, false, 12);
-	sizeXButton[3]=new OnOffButton(400, 135, 20, 20, false, 13);
-	for (i=0; i<4; i++)
-		addWidget(sizeXButton[i]);
-
-	sizeYButton[0]=new OnOffButton(400, 185, 20, 20, false, 20);
-	sizeYButton[1]=new OnOffButton(400, 210, 20, 20, true, 21);
-	sizeYButton[2]=new OnOffButton(400, 235, 20, 20, false, 22);
-	sizeYButton[3]=new OnOffButton(400, 260, 20, 20, false, 23);
-	for (i=0; i<4; i++)
-		addWidget(sizeYButton[i]);
-
-	defaultTerrainTypeButton[0]=new OnOffButton(400, 310, 20, 20, true, 30);
-	defaultTerrainTypeButton[1]=new OnOffButton(400, 335, 20, 20, false, 31);
-	defaultTerrainTypeButton[2]=new OnOffButton(400, 360, 20, 20, false, 32);
-	for (i=0; i<3; i++)
-		addWidget(defaultTerrainTypeButton[i]);
-
-	addWidget(new TextButton( 60, 415, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
-	addWidget(new TextButton(380, 415, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
+	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
+	
+	mapSizeX=new Number(20, 50, 100, 20, 20, globalContainer->menuFont);
+	mapSizeX->add(64);
+	mapSizeX->add(128);
+	mapSizeX->add(256);
+	mapSizeX->add(512);
+	mapSizeX->setNth(1);
+	addWidget(mapSizeX);
+	
+	mapSizeY=new Number(20, 75, 100, 20, 20, globalContainer->menuFont);
+	mapSizeY->add(64);
+	mapSizeY->add(128);
+	mapSizeY->add(256);
+	mapSizeY->add(512);
+	mapSizeY->setNth(1);
+	addWidget(mapSizeY);
+	
+	methodes=new List(20, 100, 280, 300, globalContainer->menuFont);
+	methodes->addText(globalContainer->texts.getString("[uniform terrain]"));
+	methodes->addText(globalContainer->texts.getString("[random terrain]"));
+	methodes->setNth(0);
+	addWidget(methodes);
+	
+	terrains=new List(320, 100, 280, 300, globalContainer->menuFont);
+	terrains->addText(globalContainer->texts.getString("[water]"));
+	terrains->addText(globalContainer->texts.getString("[sand]"));
+	terrains->addText(globalContainer->texts.getString("[grass]"));
+	terrains->setNth(0);
+	addWidget(terrains);
+	
+	waterRatio=new Ratio(320, 120, 164, 18, 40, descriptor.waterRatio);
+	waterRatio->visible=false;
+	addWidget(waterRatio);
+	
+	sandRatio=new Ratio(320, 140, 164, 18, 40, descriptor.sandRatio);
+	sandRatio->visible=false;
+	addWidget(sandRatio);
+	
+	grassRatio=new Ratio(320, 160, 164, 18, 40, descriptor.grassRatio);
+	grassRatio->visible=false;
+	addWidget(grassRatio);
+	
+	smooth=new Number(320, 180, 164, 18, 18, globalContainer->menuFont);
+	smooth->add(1);
+	smooth->add(2);
+	smooth->add(3);
+	smooth->add(4);
+	smooth->add(5);
+	smooth->add(6);
+	smooth->add(7);
+	smooth->setNth(descriptor.smooth-1);
+	smooth->visible=false;
+	addWidget(smooth);
+	
+	addWidget(new TextButton( 20, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13));
+	addWidget(new TextButton(340, 420, 280, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27));
 }
 
 void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
-	int i, id;
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if ((par1==OK)||(par1==CANCEL))
 			endExecute(par1);
 	}
+	else if (action==NUMBER_ELEMENT_SELECTED)
+	{
+		sizeX=mapSizeX->getNth()+6;
+		sizeY=mapSizeY->getNth()+6;
+		
+		descriptor.smooth=smooth->getNth()+1;
+	}
+	else if (action==LIST_ELEMENT_SELECTED)
+	{
+		if (source==terrains)
+			descriptor.terrainType=(Map::TerrainType)terrains->getNth();
+		
+		if (source==methodes)
+		{
+			MapGenerationDescriptor::Methode old=descriptor.methode;
+			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getNth();
+			
+			if (old!=descriptor.methode)
+			{
+				terrains->visible=(descriptor.methode==MapGenerationDescriptor::eUNIFORM);
+				
+				waterRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				sandRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				grassRatio->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				smooth->visible=(descriptor.methode==MapGenerationDescriptor::eRANDOM);
+				
+				dispatchPaint(gfxCtx);
+				addUpdateRect(320, 100, 280, 300);
+			}
+		}
+	}
+	else if (action==RATIO_CHANGED)
+	{
+		descriptor.waterRatio=waterRatio->get();
+		descriptor.sandRatio=sandRatio->get();
+		descriptor.grassRatio=grassRatio->get();
+	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
-		if ((par1>=10) && (par1<20))
-		{
-			id=par1-10;
-			for (i=0; i<4; i++)
-				if (i==id)
-					sizeXButton[i]->setState(true);
-				else
-					sizeXButton[i]->setState(false);
-			sizeX=id+6;
-		}
-		else if ((par1>=20) && (par1<30))
-		{
-			id=par1-20;
-			for (i=0; i<4; i++)
-				if (i==id)
-					sizeYButton[i]->setState(true);
-				else
-					sizeYButton[i]->setState(false);
-			sizeY=id+6;
-		}
-		else if ((par1>=30) && (par1<40))
-		{
-			id=par1-30;
-			for (i=0; i<3; i++)
-				if (i==id)
-					defaultTerrainTypeButton[i]->setState(true);
-				else
-					defaultTerrainTypeButton[i]->setState(false);
-			defaultTerrainType=(Map::TerrainType)id;
-		}
+		
 	}
 }
 
@@ -104,23 +165,18 @@ void NewMapScreen::paint(int x, int y, int w, int h)
 		char *text= globalContainer->texts.getString("[create map]");
 		gfxCtx->drawString(20+((600-globalContainer->menuFont->getStringWidth(text))>>1), 18, globalContainer->menuFont, text);
 
-		gfxCtx->drawString(20, 90, globalContainer->menuFont, globalContainer->texts.getString("[map size x]"));
-		gfxCtx->drawString(20, 215, globalContainer->menuFont, globalContainer->texts.getString("[map size y]"));
-		gfxCtx->drawString(20, 330, globalContainer->menuFont, globalContainer->texts.getString("[default terrain]"));
-
-		gfxCtx->drawString(440, 60, globalContainer->menuFont, "64");
-		gfxCtx->drawString(440, 85, globalContainer->menuFont, "128");
-		gfxCtx->drawString(440, 110, globalContainer->menuFont, "256");
-		gfxCtx->drawString(440, 135, globalContainer->menuFont, "512");
-
-		gfxCtx->drawString(440, 185, globalContainer->menuFont, "64");
-		gfxCtx->drawString(440, 210, globalContainer->menuFont, "128");
-		gfxCtx->drawString(440, 235, globalContainer->menuFont, "256");
-		gfxCtx->drawString(440, 260, globalContainer->menuFont, "512");
-
-		gfxCtx->drawString(440, 310, globalContainer->menuFont, globalContainer->texts.getString("[water]"));
-		gfxCtx->drawString(440, 335, globalContainer->menuFont, globalContainer->texts.getString("[sand]"));
-		gfxCtx->drawString(440, 360, globalContainer->menuFont, globalContainer->texts.getString("[grass]"));
+		gfxCtx->drawString(140, 50, globalContainer->menuFont, globalContainer->texts.getString("[map size x]"));
+		gfxCtx->drawString(140, 75, globalContainer->menuFont, globalContainer->texts.getString("[map size y]"));
+		
 		firstPaint=false;
+	}
+	
+	if (descriptor.methode==MapGenerationDescriptor::eRANDOM)
+	{
+		gfxCtx->drawString(320, 100, globalContainer->menuFont, globalContainer->texts.getString("[Ratios]"));
+		gfxCtx->drawString(500, 120, globalContainer->menuFont, globalContainer->texts.getString("[water]"));
+		gfxCtx->drawString(500, 140, globalContainer->menuFont, globalContainer->texts.getString("[sand]"));
+		gfxCtx->drawString(500, 160, globalContainer->menuFont, globalContainer->texts.getString("[grass]"));
+		gfxCtx->drawString(400, 180, globalContainer->menuFont, globalContainer->texts.getString("[Uniformity]"));
 	}
 }

@@ -25,7 +25,7 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen()
 {
 	ok=new TextButton(440, 360, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), OK, 13);
 	cancel=new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL, 27);
-	toogleButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[the games]"), TOOGLE, 13);
+	toogleButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[the games]"), TOOGLE);
 	mapPreview=new MapPreview(240, 60, "net.map");
 	title=new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[choose map]"), 600);
 	

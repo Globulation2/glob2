@@ -57,12 +57,12 @@ void TextInput::onSDLEvent(SDL_Event *event)
 {
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
 			if (activated)
 			{
 				// we move cursor:
-				int dx=event->motion.x-x-1;
+				int dx=event->button.x-x-1;
 				
 				char textBeforeCurs[MAX_TEXT_SIZE];
 				strncpy(textBeforeCurs, text, MAX_TEXT_SIZE);

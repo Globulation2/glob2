@@ -18,22 +18,37 @@
 
 */
 
-#ifndef __GAG_H
-#define __GAG_H
+#include "MapGenerationDescriptor.h"
 
-#include "Header.h"
-#include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
-#include "GUIBase.h"
-#include "GUIButton.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
-#include "GUIList.h"
-#include "GUINumber.h"
-#include "GUIRatio.h"
+MapGenerationDescriptor::MapGenerationDescriptor()
+{
+	terrainType=Map::GRASS;
+	methode=eUNIFORM;
+	waterRatio=50;
+	sandRatio=50;
+	grassRatio=50;
+	smooth=4;
+}
 
-#endif
- 
+
+MapGenerationDescriptor::~MapGenerationDescriptor()
+{
+}
+
+char *MapGenerationDescriptor::getData()
+{
+	data[0]=0;
+	return data;
+}
+
+bool MapGenerationDescriptor::setData(const char *data, int dataLength)
+{
+	assert(getDataLength()==dataLength);
+	memcpy(this->data, data, dataLength);
+	return (getDataLength()==dataLength);
+}
+
+Sint32 MapGenerationDescriptor::checkSum()
+{
+	return 0;
+}

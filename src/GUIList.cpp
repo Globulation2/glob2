@@ -30,6 +30,7 @@ List::List(int x, int y, int w, int h, const Font *font)
 	this->h=h;
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
+	nth=-1;
 }
 
 List::~List()
@@ -47,18 +48,23 @@ void List::clear(void)
 		delete[] (*it);
 	}
 	strings.clear();
+	nth=-1;
 }
 
 void List::onSDLEvent(SDL_Event *event)
 {
 	if (event->type==SDL_MOUSEBUTTONDOWN)
 	{
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
+		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
 			int id=event->button.y-y-2;
 			id/=textHeight;
 			if ((id>=0) &&(id<(int)strings.size()))
+			{
+				nth=id;
+				repaint();
 				parent->onAction(this, LIST_ELEMENT_SELECTED, id, 0);
+			}
 		}
 	}
 }
@@ -74,6 +80,8 @@ void List::internalPaint(void)
 	while ((nextSize<h-4) && ((unsigned)i<strings.size()))
 	{
 		parent->getSurface()->drawString(x+2, yPos, font, strings[i]);
+		if (i==nth)
+			parent->getSurface()->drawRect(x+1, yPos-1, w-2, textHeight, 170, 170, 240);
 		nextSize+=textHeight;
 		i++;
 		yPos+=textHeight;
@@ -88,6 +96,7 @@ void List::paint(void)
 
 void List::repaint(void)
 {
+	assert(parent);
 	parent->paint(x, y, w, h);
 	if (visible)
 		internalPaint();
@@ -130,6 +139,8 @@ void List::removeText(int pos)
 		char *text=strings[pos];
 		delete[] text;
 		strings.erase(strings.begin()+pos);
+		if (pos<nth)
+			nth--;
 	}
 }
 
@@ -141,4 +152,21 @@ char *List::getText(int pos) const
 	}
 	else
 		return NULL;
+}
+
+char *List::get(void) const
+{
+	return getText(nth);
+}
+
+int List::getNth(void) const
+{
+	return nth;
+}
+
+void List::setNth(int nth)
+{
+	assert((nth>=0)&&(nth<(int)strings.size()));
+	if ((nth>=0)&&(nth<(int)strings.size()))
+		this->nth=nth;
 }
