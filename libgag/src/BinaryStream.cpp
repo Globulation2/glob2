@@ -26,6 +26,7 @@
 	#include <netinet/in.h>
 #endif
 #include <valarray>
+#include <assert.h>
 
 namespace GAGCore
 {
@@ -44,6 +45,8 @@ namespace GAGCore
 			*(Uint32 *)v = htonl(*(Uint32 *)v);
 			*((Uint32 *)v+1) = htonl(*((Uint32 *)v+1));
 		}
+		else
+			assert(false);
 		backend->write(v, size);
 	}
 	
@@ -69,6 +72,8 @@ namespace GAGCore
 			*(Uint32 *)v = ntohl(*(Uint32 *)v);
 			*((Uint32 *)v+1) = ntohl(*((Uint32 *)v+1));
 		}
+		else
+			assert(false);
 	}
 	
 	std::string BinaryInputStream::readText(const char *name)
