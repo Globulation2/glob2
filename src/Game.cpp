@@ -463,11 +463,8 @@ void Game::step(Sint32 localTeam)
 						Building *b=teams[t]->myBuildings[i];
 						if ((b)&&(!b->type->isBuildingSite || (b->type->level>0))&&(!b->type->isVirtual))
 						{
-							int sr=b->type->shootingRange;
-							if(sr)
-								map.setMapDiscovered(b->posX-sr, b->posY-sr, b->type->width+sr*2, b->type->height+sr*2, t);
-							else
-								map.setMapDiscovered(b->posX-1, b->posY-1, b->type->width+2, b->type->height+2, t);
+							int sr=1+b->type->shootingRange;
+							map.setMapDiscovered(b->posX-sr, b->posY-sr, b->type->width+sr*2, b->type->height+sr*2, t);
 						}
 					}
 				}

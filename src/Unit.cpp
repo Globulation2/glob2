@@ -58,8 +58,8 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	hp=0;
 	trigHP=10;
 
-	hungry=100000;
-	trigHungry=10000;
+	hungry=HUNGRY_MAX;
+	trigHungry=(hungry*3)/10;
 
 	// quality parameters
 	{
@@ -77,6 +77,7 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	attachedBuilding=NULL;
 	destinationPurprose=-1;
 	subscribed=false;
+	caryedRessource=-1;
 	
 	// debug vars:
 	verbose=false;
@@ -153,6 +154,8 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 #	ifdef WIN32
 #		pragma warning (default : 4800)
 #	endif
+	
+	caryedRessource=(Sint32)SDL_ReadBE32(stream);
 	verbose=false;
 }
 
@@ -212,6 +215,7 @@ void Unit::save(SDL_RWops *stream)
 
 	SDL_WriteBE32(stream, (Uint32)destinationPurprose);
 	SDL_WriteBE32(stream, (Uint32)subscribed);
+	SDL_WriteBE32(stream, (Uint32)caryedRessource);
 }
 
 void Unit::loadCrossRef(SDL_RWops *stream, Team *owner)
@@ -249,11 +253,6 @@ void Unit::unsubscribed(void)
 		{
 			switch(activity)
 			{
-				case ACT_BUILDING:
-				{
-					displacement=DIS_GOING_TO_RESSOURCE;
-				}
-				break;
 				case ACT_FLAG :
 				{
 					displacement=DIS_GOING_TO_FLAG;
@@ -264,9 +263,18 @@ void Unit::unsubscribed(void)
 					displacement=DIS_GOING_TO_BUILDING;
 				}
 				break;
+				case ACT_BUILDING:
 				case ACT_HARVESTING :
 				{
-					displacement=DIS_GOING_TO_RESSOURCE;
+					if (caryedRessource==destinationPurprose)
+					{
+						displacement=DIS_GOING_TO_BUILDING;
+						targetX=attachedBuilding->getMidX();
+						targetY=attachedBuilding->getMidY();
+						newTargetWasSet();
+					}
+					else
+						displacement=DIS_GOING_TO_RESSOURCE;
 				}
 				break;
 				case ACT_RANDOM :
@@ -423,19 +431,15 @@ void Unit::handleActivity(void)
 					{
 						activity=ACT_HARVESTING;
 						displacement=DIS_GOING_TO_RESSOURCE;
-						destinationPurprose=(int)CORN;
-						newTargetWasSet();
-
 						if (verbose)
 							printf("(%d)Going to harvest for filling building\n", UID);
-
+						destinationPurprose=(int)CORN;
 						attachedBuilding=b;
 						b->unitsWorkingSubscribe.push_front(this);
 						b->lastWorkingSubscribe=0;
 						subscribed=true;
 						owner->subscribeForWorkingStep.push_front(b);
 						//b->update();
-
 						return;
 					}
 				}
@@ -481,7 +485,7 @@ void Unit::handleActivity(void)
 				if ( b != NULL)
 				{
 					destinationPurprose=b->neededRessource();
-					assert(destinationPurprose>=0);
+					assert(destinationPurprose>=0); // zzz this does fail !
 					jobFound=owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY);
 					if (jobFound)
 					{
@@ -653,14 +657,15 @@ void Unit::handleDisplacement(void)
 	{
 		case ACT_RANDOM:
 		{
-			if ((medical==MED_FREE)&&(displacement==DIS_RANDOM))
+			if ((medical==MED_FREE)&&((displacement==DIS_RANDOM)||(displacement==DIS_REMOVING_BLACK_AROUND)||(displacement==DIS_ATTACKING_AROUND)))
 			{
 				if (performance[FLY])
 					displacement=DIS_REMOVING_BLACK_AROUND;
 				else if (performance[ATTACK_SPEED])
 					displacement=DIS_ATTACKING_AROUND;
 			}
-			displacement=DIS_RANDOM;
+			else
+				displacement=DIS_RANDOM;
 			break;
 		}
 		
@@ -678,6 +683,8 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
+				// we got the ressource.
+				caryedRessource=destinationPurprose;
 				if (owner->game->map.doesUnitTouchUID(this, attachedBuilding->UID, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
@@ -709,11 +716,13 @@ void Unit::handleDisplacement(void)
 			}
 			else if ( (displacement==DIS_GIVING_TO_BUILDING) || (displacement==DIS_BUILDING))
 			{
-				if (attachedBuilding->ressources[(int)destinationPurprose] < attachedBuilding->type->maxRessource[(int)destinationPurprose])
+				if (attachedBuilding->ressources[caryedRessource] < attachedBuilding->type->maxRessource[caryedRessource])
 				{
+					
 					assert(attachedBuilding);
 					//printf("Giving ressource to building : res : %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
-					attachedBuilding->ressources[(int)destinationPurprose]++;
+					attachedBuilding->ressources[caryedRessource]++;
+					caryedRessource=-1;
 					if (displacement==DIS_BUILDING)
 						attachedBuilding->hp+=attachedBuilding->type->hpInc;
 
@@ -725,52 +734,35 @@ void Unit::handleDisplacement(void)
 					if (!attachedBuilding)
 					{
 						//printf("The building doesn't need me any more.\n");
-						return;
-					}
-					
-					if ((attachedBuilding->ressources[(int)destinationPurprose] >= attachedBuilding->type->maxRessource[(int)destinationPurprose])
-						|| (attachedBuilding->unitsWorking.size()>(unsigned)attachedBuilding->maxUnitWorking) )
-					{
-						//printf("Building full, stop working %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
-						attachedBuilding->unitsWorking.remove(this);
-						attachedBuilding->unitsWorkingSubscribe.remove(this);
-						attachedBuilding->update();
-						attachedBuilding=NULL;
 						subscribed=false;
+						return;
 					}
-					else if (owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY))
+				}
+				destinationPurprose=attachedBuilding->neededRessource();
+				if (verbose)
+				{
+					printf("(%d) destinationPurprose=%d.\n", UID, destinationPurprose);
+				}
+				if ((destinationPurprose>=0)&&(owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
+				{
+					newTargetWasSet();
+					if (owner->game->map.doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
 					{
-						newTargetWasSet();
-						if (owner->game->map.doesUnitTouchRessource(this, (RessourceType)destinationPurprose, &dx, &dy))
-						{
-							displacement=DIS_HARVESTING;
-							//printf("I found ressource\n");
-						}
-						else
-						{
-							//activity=ACT_HARVESTING;
-							displacement=DIS_GOING_TO_RESSOURCE;
-						}
-						//printf("Keep going to harvest for filling building\n");
+						displacement=DIS_HARVESTING;
+						//printf("I found ressource\n");
 					}
 					else
 					{
-						//printf("Don't find any ressource !!!!\n");
-						activity=ACT_RANDOM;
-						displacement=DIS_RANDOM;
-						attachedBuilding->unitsWorking.remove(this);
-						attachedBuilding->unitsWorkingSubscribe.remove(this);
-						attachedBuilding->update();
-						attachedBuilding=NULL;
-						subscribed=false;
-						
+						//activity=ACT_HARVESTING;
+						displacement=DIS_GOING_TO_RESSOURCE;
 					}
+					//printf("Keep going to harvest for filling building\n");
 				}
 				else
 				{
-					//printf("Dropping ressource %d\n", attachedBuilding->ressources[(int)destinationPurprose]);
+					//printf("Don't find any ressource !!!!\n");
 					activity=ACT_RANDOM;
 					displacement=DIS_RANDOM;
 					attachedBuilding->unitsWorking.remove(this);
@@ -778,6 +770,7 @@ void Unit::handleDisplacement(void)
 					attachedBuilding->update();
 					attachedBuilding=NULL;
 					subscribed=false;
+
 				}
 			}
 			else
@@ -829,7 +822,7 @@ void Unit::handleDisplacement(void)
 
 					if (destinationPurprose==FEED)
 					{
-						hungry=100000;
+						hungry=HUNGRY_MAX;
 						attachedBuilding->ressources[CORN]--;
 						assert(attachedBuilding->ressources[CORN]>=0);
 						//printf("I'm not hungry any more :-)\n");
@@ -917,6 +910,8 @@ void Unit::handleMovement(void)
 	{
 		case DIS_REMOVING_BLACK_AROUND:
 		{
+			if (verbose)
+				printf("DIS_REMOVING_BLACK_AROUND\n");
 			if (attachedBuilding)
 			{
 				movement=MOV_GOING_DXDY;
@@ -939,63 +934,50 @@ void Unit::handleMovement(void)
 			}
 			else if ((movement!=MOV_GOING_DXDY)||(syncRand()<0x8FFFFFFF))
 			{
+				int dist[8];
+				int minDist=17;
+				int minDistj=8;
+				for (int j=0; j<8; j++)
 				{
-					for (int i=4; i<16; i++)
+					dist[j]=32;
+					// WARNING : the i=4 is linked to the sight range of the explorer.
+					for (int i=4; i<32; i+=4)
 					{
-						if ((syncRand()<0xBFFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY, owner->teamNumber)))
+						int dx, dy;
+						dxdyfromDirection(j, &dx, &dy);
+						if (!owner->game->map.isMapDiscovered(posX+i*dx, posY+j*dy, owner->teamNumber))
 						{
-							movement=MOV_GOING_DXDY;
-							dx=1;
-							dy=0;
+							dist[j]=i;
+							break;
 						}
-						if ((syncRand()<0x7FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=-1;
-							dy=0;
-						}
-						if ((syncRand()<0x3FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY+i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=0;
-							dy=1;
-						}
-						if ((syncRand()<0x1FFFFFFF)&&(!owner->game->map.isMapDiscovered(posX, posY-i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=0;
-							dy=-1;
-						}
-
-						if ((syncRand()<0x0BFFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY+i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=1;
-							dy=1;
-						}
-						if ((syncRand()<0x07FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY+i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=-1;
-							dy=1;
-						}
-						if ((syncRand()<0x03FFFFFF)&&(!owner->game->map.isMapDiscovered(posX-i, posY-i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=-1;
-							dy=-1;
-						}
-						if ((syncRand()<0x01FFFFFF)&&(!owner->game->map.isMapDiscovered(posX+i, posY-i, owner->teamNumber)))
-						{
-							movement=MOV_GOING_DXDY;
-							dx=1;
-							dy=-1;
-						}
+					}
+					if (dist[j]<minDist)
+					{
+						minDist=dist[j];
+						minDistj=j;
+					}
+					if (verbose)
+						printf("dist[%d]=%d.\n", j, dist[j]);
+				}
+				int decj=syncRand()&7;
+				if (verbose)
+					printf("minDist=%d, minDistj=%d.\n", minDist, minDistj);
+				for (int j=0; j<8; j++)
+				{
+					int d=(decj+j)&7;
+					
+					if (dist[d]<=minDist)
+					{
+						movement=MOV_GOING_DXDY;
+						dxdyfromDirection(d, &dx, &dy);
+						break;
 					}
 				}
 			}
 			if ((movement!=MOV_GOING_DXDY)||(owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID))
+			{
 				movement=MOV_RANDOM;
+			}
 			break;
 		}
 
@@ -1191,6 +1173,12 @@ void Unit::handleAction(void)
 			speed=performance[action];
 			
 			owner->game->map.setUnit(posX, posY, UID);
+			
+			if (verbose)
+			{
+				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
+			}
+			
 			break;
 		}
 		
@@ -1740,7 +1728,11 @@ void Unit::pathFind(void)
 					if (verbose)
 						printf("l testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
-					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
+					
+					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+					int currentDistSquare=owner->game->map.warpDistSquare(borderX, borderY, targetX, targetY);
+					
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist) && (centerSquareDist<currentDistSquare))
 					{
 						if (verbose)
 							printf("l o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);
@@ -1901,7 +1893,10 @@ void Unit::pathFind(void)
 					if (verbose)
 						printf("r testBorder-bapd=(%d, %d).\n", testBorderX-bapdx, testBorderY-bapdy);
 					c=0;
-					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist))
+					int centerSquareDist=owner->game->map.warpDistSquare(tempTargetX, tempTargetY, targetX, targetY);
+					int currentDistSquare=owner->game->map.warpDistSquare(borderX, borderY, targetX, targetY);
+					
+					if(validHard(testBorderX-bapdx, testBorderY-bapdy) && (distSq<maxDist) && (centerSquareDist<currentDistSquare))
 					{
 						if (verbose)
 							printf("r o=(%d, %d), b=(%d, %d).\n", obstacleX, obstacleY, borderX, borderY);

@@ -288,14 +288,24 @@ bool Building::isRessourceFull(void)
 
 int Building::neededRessource(void)
 {
+	float minProportion=1.0;
+	int minType=-1;
+	int deci=syncRand()%NB_RESSOURCES;
+	for (int ib=0; ib<NB_RESSOURCES; ib++)
 	{
-		for (int i=0; i<NB_RESSOURCES; i++)
+		int i=(ib+deci)%NB_RESSOURCES;
+		int maxr=type->maxRessource[i];
+		if (maxr)
 		{
-			if (ressources[i]<type->maxRessource[i])
-				return i;
+			float proportion=((float)ressources[i])/((float)maxr);
+			if (proportion<minProportion)
+			{
+				minProportion=proportion;
+				minType=i;
+			}
 		}
 	}
-	return -1;
+	return minType;
 }
 
 void Building::cancelUpgrade(void)
