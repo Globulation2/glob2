@@ -23,7 +23,7 @@
 
 //! Load/Save screen
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName)
-:OverlayScreen(300, 275)
+:OverlayScreen(globalContainer->gfx, 300, 275)
 {
 	this->isLoad=isLoad;
 	this->extension=Utilities::concat(".", extension);

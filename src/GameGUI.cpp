@@ -30,8 +30,8 @@
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
 
-InGameTextInput::InGameTextInput()
-:OverlayScreen(492, 34)
+InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
+:OverlayScreen(parentCtx, 492, 34)
 {
 	textInput=new TextInput(5, 5, 482, 24, globalContainer->standardFont, "", true, 256);
 	addWidget(textInput);
@@ -753,7 +753,7 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 			case SDLK_RETURN :
 				if (pressed)
 				{
-					typingInputScreen=new InGameTextInput();
+					typingInputScreen=new InGameTextInput(globalContainer->gfx);
 					typingInputScreen->dispatchPaint(typingInputScreen->getSurface());
 					typingInputScreenInc=TYPING_INPUT_BASE_INC;
 					typingInputScreenPos=0;

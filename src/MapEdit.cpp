@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002, 2003 Stephane Magnenat & Luc-Olivier de CharriÃ¨re
   for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
   This program is free software; you can redistribute it and/or modify
@@ -761,7 +761,23 @@ void MapEdit::handleMenuClick(int mx, int my, int button)
 		else if (mx<96)
 			editMode=EM_DELETE;
 		else
-			isRunning=false;
+		{
+			const char *reallyquit = globalContainer->texts.getString("[really quit ?]");
+			const char *yes = globalContainer->texts.getString("[Yes]");
+			const char *no = globalContainer->texts.getString("[No]");
+			const char *save = globalContainer->texts.getString("[Save]");
+			int res=(int)MessageBox(globalContainer->gfx, globalContainer->standardFont, MB_THREEBUTTONS, reallyquit, yes, no, save);
+
+			// save if needed
+			if (res==2)
+				loadSave(false);
+
+			// if yes or save is clicked, quit
+			if (res!=1)
+				isRunning=false;
+			else
+				draw();
+		}
 	}
 	else if ((my>173) && (my<205))
 	{

@@ -312,3 +312,46 @@ void Screen::repaint(DrawableSurface *gfx)
 	}
 }
 
+// Overlay screen, used for non full frame dialog
+
+OverlayScreen::OverlayScreen(GraphicContext *parentCtx, int w, int h)
+{
+	gfxCtx=parentCtx->createDrawableSurface();
+	gfxCtx->setRes(w, h);
+	gfxCtx->setAlpha(false, 128);
+	decX=(parentCtx->getW()-w)>>1;
+	decY=(parentCtx->getH()-h)>>1;
+	endValue=-1;
+}
+
+OverlayScreen::~OverlayScreen()
+{
+	delete gfxCtx;
+}
+
+void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
+{
+	SDL_Event ev=*event;
+	switch (ev.type)
+	{
+		case SDL_MOUSEMOTION:
+			ev.motion.x-=decX;
+			ev.motion.y-=decY;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			ev.button.x-=decX;
+			ev.button.y-=decY;
+			break;
+		default:
+			break;
+	}
+	dispatchEvents(&ev);
+}
+
+void OverlayScreen::paint(int x, int y, int w, int h)
+{
+	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 255);
+}
+
+

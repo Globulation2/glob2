@@ -23,20 +23,6 @@
 #include "GAG.h"
 #include "Player.h"
 
-class OverlayScreen:public Screen
-{
-public:
-	int endValue;
-	int decX, decY;
-
-public:
-	OverlayScreen(int w, int h);
-	virtual ~OverlayScreen();
-
-	virtual void translateAndProcessEvent(SDL_Event *event);
-	virtual void paint(int x, int y, int w, int h);
-};
-
 class InGameMainScreen:public OverlayScreen
 {
 public:

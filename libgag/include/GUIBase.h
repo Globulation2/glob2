@@ -177,4 +177,27 @@ protected:
 	DrawableSurface *gfxCtx;
 };
 
+
+//! Base class used for screen that don't take full frame and/or are non-blocking
+class OverlayScreen:public Screen
+{
+public:
+	//! Int to say when we have finished
+	int endValue;
+	//! Displacement from top-left corner of screen
+	int decX, decY;
+
+public:
+	//! Constructor, take the context in which the overlay must be create and it's size in x and y
+	OverlayScreen(GraphicContext *parentCtx, int w, int h);
+	//! Destructor
+	virtual ~OverlayScreen();
+
+	//! Call thisinstead of dispatch event
+	virtual void translateAndProcessEvent(SDL_Event *event);
+	//! Paint a part of the background of screen
+	virtual void paint(int x, int y, int w, int h);
+};
+
+
 #endif 

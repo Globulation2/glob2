@@ -42,7 +42,7 @@ protected:
 
 public:
 	//! InGameTextInput constructor
-	InGameTextInput();
+	InGameTextInput(GraphicContext *parentCtx);
 	//! InGameTextInput destructor
 	virtual ~InGameTextInput() { }
 	//! React on action from any widget (but there is only one anyway)
