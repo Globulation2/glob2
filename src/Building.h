@@ -153,6 +153,8 @@ public:
 
 	void setMapDiscovered(void);
 
+	void getRessourceCountToRepair(int ressources[BASIC_COUNT]);
+
 	bool tryToBuildingSiteRoom(void); //Returns true if room is found.
 	
 	bool isHardSpaceForBuildingSite(void);

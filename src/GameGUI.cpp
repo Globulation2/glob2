@@ -1312,13 +1312,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			BuildingType *buildingType=selBuild->type;
 			if (selBuild->constructionResultState==Building::REPAIR)
 			{
-				assert(buildingType->nextLevelTypeNum!=-1);
 				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
-				assert(buildingType->nextLevelTypeNum!=-1);
-				assert(buildingType->lastLevelTypeNum!=-1);
 				orderQueue.push_back(new OrderCancelConstruction(selBuild->gid));
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
@@ -1671,6 +1668,17 @@ void GameGUI::drawValueAlignedRight(int y, int v)
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
 
+void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
+{
+	for (int i=0; i<BASIC_COUNT; i++)
+	{
+		int y = i>>1;
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+(i&0x1)*64, 256+172-42+y*12,
+			font,
+			GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[ressources]", i), ressources[i]).c_str());
+	}
+}
+
 void GameGUI::drawBuildingInfos(void)
 {
 	Building* selBuild = selection.building;
@@ -1957,7 +1965,18 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				// repair
 				if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
+				{
 					drawBlueButton(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-48, "[repair]");
+					if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
+						&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
+						{
+							globalContainer->littleFont->pushColor(200, 200, 255);
+							int ressources[BASIC_COUNT];
+							selBuild->getRessourceCountToRepair(ressources);
+							drawCosts(ressources, globalContainer->littleFont);
+							globalContainer->littleFont->popColor();
+						}
+				}
 			}
 			else if (buildingType->nextLevelTypeNum!=-1)
 			{
@@ -1973,18 +1992,7 @@ void GameGUI::drawBuildingInfos(void)
 							// We draw the ressources cost.
 							int typeNum=buildingType->nextLevelTypeNum;
 							BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-42, globalContainer->littleFont,
-								GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Wood]"), bt->maxRessource[0]).c_str());
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-30, globalContainer->littleFont,
-								GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Stone]"), bt->maxRessource[2]).c_str());
-
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-42, globalContainer->littleFont,
-								GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Alga]"), bt->maxRessource[3]).c_str());
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4+64, 256+172-30, globalContainer->littleFont,
-								GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Corn]"), bt->maxRessource[1]).c_str());
-
-							globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 256+172-18, globalContainer->littleFont,
-								GAG::nsprintf("%s: %d", Toolkit::getStringTable()->getString("[Papyrus]"), bt->maxRessource[2]).c_str());
+							drawCosts(bt->maxRessource, globalContainer->littleFont);
 
 							// We draw the new abilities:
 							int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
