@@ -20,7 +20,7 @@
 #ifndef __GRAPHICCONTEXT_H
 #define __GRAPHICCONTEXT_H
 
-#include "Header.h"
+#include "GAGSys.h"
 
 class Font;
 class Sprite;

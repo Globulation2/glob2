@@ -20,7 +20,7 @@
 #ifndef __GUIBASE_H
 #define __GUIBASE_H
 
-#include "Header.h"
+#include "GAGSys.h"
 #include "GraphicContext.h"
 #include <vector>
 

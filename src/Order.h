@@ -20,7 +20,7 @@
 #ifndef __ORDER_H
 #define __ORDER_H
 
-#include "GAG.h"
+#include <GAG.h>
 #include "Building.h"
 #include "BuildingType.h"
 #include "NetConsts.h"

@@ -20,7 +20,7 @@
 
 
 #include "Glob2.h"
-#include "GAG.h"
+#include <GAG.h>
 #include "Game.h"
 #include "PreparationGui.h"
 #include "MainMenuScreen.h"
@@ -204,6 +204,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 
 int Glob2::run(int argc, char *argv[])
 {
+	GAG::init();
 	globalContainer = new GlobalContainer();
 
 	globalContainer->parseArgs(argc, argv);
@@ -362,6 +363,7 @@ int Glob2::run(int argc, char *argv[])
 	}
 
 	delete globalContainer;
+	GAG::close();
 	return 0;
 }
 

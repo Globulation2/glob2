@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "GUITextInput.h"
+#include <GUITextInput.h>
 
 TextInput::TextInput(int x, int y, int w, int h, const Font *font, const char *text, bool activated)
 {

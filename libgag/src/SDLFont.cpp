@@ -18,8 +18,8 @@
 */
 
 #include "SDLFont.h"
-#include "GlobalContainer.h"
-#include "Utilities.h"
+#include <Environment.h>
+#include <SupportFunctions.h>
 
 SDLBitmapFont::SDLBitmapFont()
 {
@@ -56,7 +56,7 @@ bool SDLBitmapFont::load(const char *filename)
 	init();
 
 	SDL_Surface *temp, *sprite;
-	SDL_RWops *stream=globalContainer->fileManager.open(filename, "rb");
+	SDL_RWops *stream=GAG::fileManager->open(filename, "rb");
 	temp=IMG_Load_RW(stream, 0);
 	SDL_RWclose(stream);
 	sprite=SDL_DisplayFormatAlpha(temp);
@@ -91,7 +91,7 @@ void SDLBitmapFont::drawString(SDL_Surface *Surface, int x, int y, int w, const 
 			if ((w!=0) && (x-bx>=w))
 				return;
 			if (clip)
-				Utilities::sdcRects(&srcrect, &dstrect, *clip);
+				GAG::sdcRects(&srcrect, &dstrect, *clip);
 			SDL_BlitSurface( picture, &srcrect, Surface, &dstrect);
 			i++;
 		}
@@ -313,7 +313,7 @@ SDLTTFont::~SDLTTFont()
 
 bool SDLTTFont::load(const char *filename, unsigned size)
 {
-	SDL_RWops *fontStream = globalContainer->fileManager.open(filename, "rb", false);
+	SDL_RWops *fontStream = GAG::fileManager->open(filename, "rb", false);
 	if (fontStream)
 	{
 		font = TTF_OpenFontRW(fontStream, 1, size);

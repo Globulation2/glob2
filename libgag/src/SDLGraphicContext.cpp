@@ -18,14 +18,16 @@
 */
 
 #include "SDLGraphicContext.h"
-#include "Utilities.h"
-#include "GlobalContainer.h"
+#include "SDLSprite.h"
+#include "SDLFont.h"
+#include <SupportFunctions.h>
+#include <Environment.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>
 
 // here begin the SDL Drawable Surface part
-
+SDLGraphicContext *screen=NULL;
 
 SDLDrawableSurface::SDLDrawableSurface()
 {
@@ -41,7 +43,7 @@ void SDLDrawableSurface::loadImage(const char *name)
 	if (name)
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(name, "rb", false))!=NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
@@ -63,7 +65,7 @@ bool SDLDrawableSurface::setRes(int w, int h, int depth, Uint32 flags)
 		SDL_FreeSurface(surface);
 
 	Uint32 sdlFlags=0;
-	if (globalContainer->graphicFlags&HWACCELERATED)
+	if (flags&HWACCELERATED)
 		sdlFlags|=SDL_HWSURFACE;
 	else
 		sdlFlags|=SDL_SWSURFACE;
@@ -917,6 +919,7 @@ SDLGraphicContext::SDLGraphicContext(void)
 	}
 
 	atexit(SDL_Quit);
+	screen=this;
 
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
@@ -941,7 +944,7 @@ bool SDLGraphicContext::setRes(int w, int h, int depth, Uint32 flags)
 		sdlFlags|=SDL_FULLSCREEN;
 	if (flags&HWACCELERATED)
 		sdlFlags|=SDL_HWSURFACE;
-	if (globalContainer->graphicFlags&RESIZABLE)
+	if (flags&RESIZABLE)
 		sdlFlags|=SDL_RESIZABLE;
 
 	surface = SDL_SetVideoMode(w, h, depth, sdlFlags);
@@ -998,7 +1001,7 @@ void SDLGraphicContext::loadImage(const char *name)
 	if ((name) && (surface))
 	{
 		SDL_RWops *imageStream;
-		if ((imageStream=globalContainer->fileManager.open(name, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(name, "rb", false))!=NULL)
 		{
 			SDL_Surface *temp;
 			temp=IMG_Load_RW(imageStream, 0);
@@ -1025,105 +1028,105 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageTy
 	if (type==OVERLAY)
 	{
 		snprintf(temp, 1024,"%s%dm.png", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%dm.bmp", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.jpg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.jpeg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.pnm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.xpm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.lbm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.pcx", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.gif", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dm.tga", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else if (type==NORMAL)
 	{
 		snprintf(temp, 1024,"%s%d.png", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%d.bmp", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.jpg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.jpeg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.pnm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.xpm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.lbm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.pcx", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.gif", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%d.tga", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}
 	else
 	{
 		snprintf(temp, 1024,"%s%dp.png", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #ifdef LOAD_ALL_IMAGE_TYPE
 		snprintf(temp, 1024,"%s%dp.bmp", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.jpg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.jpeg", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.pnm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.xpm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.lbm", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.pcx", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.gif", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 		snprintf(temp, 1024,"%s%dp.tga", name, number);
-		if ((imageStream=globalContainer->fileManager.open(temp, "rb", false))!=NULL)
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
 			return imageStream;
 #endif
 	}

@@ -20,11 +20,11 @@
 #ifndef __GAG_H
 #define __GAG_H
 
-#include "Header.h"
+#include "GAGSys.h"
+#include "FileManager.h"
 #include "GraphicContext.h"
-#include "SDLGraphicContext.h"
-#include "SDLSprite.h"
-#include "SDLFont.h"
+#include "SupportFunctions.h"
+#include "Environment.h"
 #include "GUIBase.h"
 #include "GUIButton.h"
 #include "GUIText.h"
@@ -35,4 +35,3 @@
 #include "GUIRatio.h"
 
 #endif
- 

@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "GUIBase.h"
+#include <GUIBase.h>
 
 // this function support base unicode (UCS16)
 void UCS16toUTF8(Uint16 ucs16, char utf8[4])

@@ -20,12 +20,19 @@
 #ifndef __FILEMANAGER_H
 #define __FILEMANAGER_H
 
-#include "Header.h"
+#include "GAGSys.h"
 #include <vector>
 
+//! this is the host filesystem directory separator
 #ifndef DIR_SEPARATOR
 #define DIR_SEPARATOR '/'
 #endif
+
+//! define this to true to have a verbose vPath error by default and to false otherwise
+#ifndef DBG_VPATH_OPEN
+#define DBG_VPATH_OPEN false
+#endif
+
 
 //! File Manager (filesystem abstraction)
 class FileManager
