@@ -771,7 +771,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							
 							thisone.line.push_back(donnees.getToken());
 							donnees.nextToken();
-							if ((donnees.getToken().type != Token::S_YOU) || (donnees.getToken().type != Token::S_NOENEMY) || (donnees.getToken().type != Token::S_ALLY))
+							if ((donnees.getToken().type != Token::S_YOU) && (donnees.getToken().type != Token::S_NOENEMY) & (donnees.getToken().type != Token::S_ALLY))
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
