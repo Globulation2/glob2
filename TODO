@@ -2,6 +2,9 @@ To First release :
 
 -les guerrières ne sont toujours pas intelligentes.
 
+NetGame:
+-Il faut augmenter un peu la latence en fonction des tests pour que le jeu soit aussi agréable que possible.
+
 IngameGUI:
 -On ne sait pas qui est mort.
 
