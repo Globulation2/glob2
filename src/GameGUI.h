@@ -159,6 +159,13 @@ private:
 	bool miniMapPushed;
 	//! True if we try to put a mark in the minimap
 	bool putMark;
+	//! True if we are panning
+	bool panPushed;
+	//! Coordinate of mouse when began panning
+	int panMouseX, panMouseY;
+	//! Coordinate of viewport when began panning
+	int panViewX, panViewY;
+	
 	Unit *selUnit;
 	Sint32 selectionUID;
 	int typeToBuild;

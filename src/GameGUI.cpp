@@ -569,6 +569,14 @@ void GameGUI::processEvent(SDL_Event *event)
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
 			}
+			else if (button==SDL_BUTTON_MIDDLE)
+			{
+				panPushed=true;
+				panMouseX=event->button.x;
+				panMouseY=event->button.y;
+				panViewX=viewportX;
+				panViewY=viewportY;
+			}
 			else if (button==4)
 			{
 				if ((selBuild) && (selBuild->owner->teamNumber==localTeamNo) && 
@@ -614,9 +622,9 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		else if (event->type==SDL_MOUSEBUTTONUP)
 		{
-			if (event->button.button==SDL_BUTTON_LEFT)
-				miniMapPushed=false,
+			miniMapPushed=false;
 			selectionPushed=false;
+			panPushed=false;
 			showUnitWorkingToBuilding=false;
 		}
 	}
@@ -942,6 +950,15 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 			viewportSpeedY[0]=1;
 		else
 			viewportSpeedY[0]=0;
+	}
+	
+	if (panPushed)
+	{
+		// handle panning
+		int dx=mx-panMouseX;
+		int dy=my-panMouseY;
+		viewportX=(panViewX+dx)&game.map.getMaskW();
+		viewportY=(panViewY+dy)&game.map.getMaskH();
 	}
 
 	if (button&SDL_BUTTON(1))
