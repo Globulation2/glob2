@@ -1489,7 +1489,7 @@ void GameGUI::draw(void)
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+96, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[current speed]"), selUnit->speed);
 			
 			if (selUnit->typeNum!=UnitType::EXPLORER)
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+156, globalContainer->littleFont, "%s:", globalContainer->texts.getString("[levels]"), selUnit->speed);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+168, globalContainer->littleFont, "%s:", globalContainer->texts.getString("[levels]"), selUnit->speed);
 			
 			//if (selUnit->performance[ATTACK_SPEED])
 			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+112, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[attack speed]"), selUnit->performance[ATTACK_SPEED]);
@@ -1498,17 +1498,17 @@ void GameGUI::draw(void)
 			//	globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 128+128, globalContainer->littleFont, "%s : %d", globalContainer->texts.getString("[damage]"), selUnit->performance[ATTACK_STRENGTH]);
 			
 			if (selUnit->performance[WALK])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+172, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Walk]"), 1+selUnit->level[WALK], selUnit->performance[WALK]);
 			if (selUnit->performance[SWIM])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+184, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+196, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Swim]"), 1+selUnit->level[SWIM], selUnit->performance[SWIM]);
 			if (selUnit->performance[BUILD])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+196, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+208, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Build]"), 1+selUnit->level[BUILD], selUnit->performance[BUILD]);
 			if (selUnit->performance[HARVEST])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+208, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+220, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[Harvest]"), 1+selUnit->level[HARVEST], selUnit->performance[HARVEST]);
 			if (selUnit->performance[ATTACK_SPEED])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+220, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+232, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. speed]"), 1+selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]);
 			if (selUnit->performance[ATTACK_STRENGTH])
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+232, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-124, 132+244, globalContainer->littleFont, "%s (%d) : %d", globalContainer->texts.getString("[At. strength]"), 1+selUnit->level[ATTACK_STRENGTH], selUnit->performance[ATTACK_STRENGTH]);
 
 	/* NOTE : I have comment this debug code that isn't used anymore
 			Sint32 UID=selUnit->UID;
