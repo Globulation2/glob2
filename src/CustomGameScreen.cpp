@@ -213,3 +213,4 @@ int CustomGameScreen::getSelectedColor(int i)
 {
 	return color[i]->getSelectedColor();
 }
+

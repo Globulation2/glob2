@@ -41,6 +41,19 @@ class InGameTextInput;
 class GameGUI
 {
 public:
+	Game game;
+	bool paused;
+	bool isRunning;
+	//! true if user close the glob2 window.
+	bool exitGlobCompletely;
+	//! if this is not empty, then Engine should load the map with this filename.
+	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
+	//bool showExtendedInformation;
+	bool drawHealthFoodBar, drawPathLines;
+	int localPlayer, localTeamNo;
+	int viewportX, viewportY;
+
+public:
 	GameGUI();
 	~GameGUI();
 
@@ -55,7 +68,6 @@ public:
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
-	void draw(void);
 	void drawAll(int team);
 	void executeOrder(Order *order);
 
@@ -66,6 +78,11 @@ public:
 	void save(SDL_RWops *stream, const char *name);
 
 	void processEvent(SDL_Event *event);
+
+	// Engine has to call this every "real" steps. (or game steps)
+	void synchroneStep(void);
+	//! return the local team of the player who is running glob2
+	Team *getLocalTeam(void) { return localTeam; }
 
 private:
 	bool processGameMenu(SDL_Event *event);
@@ -84,58 +101,41 @@ private:
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 
-public:
-	// Engine has to call this every "real" steps. (or game steps)
-	void synchroneStep(void);
-	//! return the local team of the player who is running glob2
-	Team *getLocalTeam(void) { return localTeam; }
-	
-private:
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
 	void drawOverlayInfos(void);
+
+	//! Draw the panel
+	void drawPanel(void);
+	//! Draw the buttons associated to the panel
+	void drawPanelButtons(void);
+
 	//! Draw the menu during game
 	void drawInGameMenu(void);
 	//! Draw the message input field
 	void drawInGameTextInput(void);
+
 	void moveFlag(int mx, int my, bool drop);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
-	
-public:
-	Game game;
-	bool paused;
-	bool isRunning;
-	//! true if user close the glob2 window.
-	bool exitGlobCompletely;
-	//! if this is not empty, then Engine should load the map with this filename.
-	char toLoadGameFileName[SessionGame::MAP_NAME_MAX_SIZE+5];
-	//bool showExtendedInformation;
-	bool drawHealthFoodBar, drawPathLines;
-	int localPlayer, localTeamNo;
-	int viewportX, viewportY;
 
-private:
 	friend class InGameAlliance8Screen;
-	enum SelectMode
-	{
-		NO_SELECTION,
-		BUILDING_SELECTION,
-		UNIT_SELECTION,
-	};
 	enum DisplayMode
 	{
-		BUILDING_AND_FLAG_VIEW,
+		BUILDING_VIEW=0,
+		FLAG_VIEW,
 		STAT_TEXT_VIEW,
 		STAT_GRAPH_VIEW,
+		BUILDING_SELECTION_VIEW,
+		UNIT_SELECTION_VIEW,
 		NB_VIEWS,
 	};
 
-	SelectMode selectMode;
-	//! Display mode when no selection
+	//! Display mode including selection
 	DisplayMode displayMode;
+
 	Building *selBuild;
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
@@ -181,8 +181,6 @@ private:
 	OverlayScreen *gameMenuScreen;
 	
 	bool hasEndOfGameDialogBeenShown;
-
-private :
 
 	// On screen message handling
 	// --------------------------
