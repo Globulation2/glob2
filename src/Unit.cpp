@@ -308,6 +308,7 @@ void Unit::step(void)
 			int enemyID=GIDtoID(enemyGUID);
 			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
+			
 			int degats=performance[ATTACK_STRENGTH]-enemy->performance[ARMOR];
 			if (degats<=0)
 				degats=1;
@@ -647,9 +648,19 @@ void Unit::handleActivity(void)
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;
 						targetTeam->myUnits[targetID]=this;
-						
-						gid=(GIDfrom(targetID, targetTeam->teamNumber));
-						owner->map->setGroundUnit(posX, posY, gid);
+						Uint16 targetGID=(GIDfrom(targetID, targetTeam->teamNumber));
+						printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));
+						if (performance[FLY])
+						{
+							assert(owner->map->getAirUnit(posX, posY)==gid);
+							owner->map->setAirUnit(posX, posY, targetGID);
+						}
+						else
+						{
+							assert(owner->map->getGroundUnit(posX, posY)==gid);
+							owner->map->setGroundUnit(posX, posY, targetGID);
+						}
+						gid=targetGID;
 						owner=targetTeam;
 					}
 				}

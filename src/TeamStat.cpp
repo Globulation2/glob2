@@ -205,7 +205,7 @@ void TeamStats::drawText(int pos)
 
 		// upgrade state
 		gfx->drawString(textStartPosX, textStartPosY+184, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[Walk]"), newStats.upgradeState[WALK][0], newStats.upgradeState[WALK][1], newStats.upgradeState[WALK][2], newStats.upgradeState[WALK][3]).c_str());
-		gfx->drawString(textStartPosX, textStartPosY+196, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][0], newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+196, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d", strings->getString("[Swim]"), newStats.upgradeState[SWIM][1], newStats.upgradeState[SWIM][2], newStats.upgradeState[SWIM][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+208, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[Build]"), newStats.upgradeState[BUILD][0], newStats.upgradeState[BUILD][1], newStats.upgradeState[BUILD][2], newStats.upgradeState[BUILD][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+220, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[Harvest]"), newStats.upgradeState[HARVEST][0], newStats.upgradeState[HARVEST][1], newStats.upgradeState[HARVEST][2], newStats.upgradeState[HARVEST][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+232, globalContainer->littleFont, GAG::nsprintf("%s %d/%d/%d/%d", strings->getString("[At. speed]"), newStats.upgradeState[ATTACK_SPEED][0], newStats.upgradeState[ATTACK_SPEED][1], newStats.upgradeState[ATTACK_SPEED][2], newStats.upgradeState[ATTACK_SPEED][3]).c_str());
