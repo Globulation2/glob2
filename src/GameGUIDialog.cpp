@@ -115,8 +115,10 @@ InGameAlliance8Screen::InGameAlliance8Screen(GameGUI *gameGUI)
 		chat[i]=NULL;
 	}
 
-	// add static text
-	addWidget(new Text(272, 10, ALIGN_LEFT, ALIGN_LEFT, "menu", "C"));
+	// add static text and images
+	addWidget(new Animation(200, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 13));
+	addWidget(new Animation(233, 13, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 14));
+	addWidget(new Animation(271, 16, ALIGN_LEFT, ALIGN_LEFT, "gamegui", 15));
 
 	// add ok button
 	addWidget(new TextButton(10, 250, 280, 35, ALIGN_LEFT, ALIGN_LEFT, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));

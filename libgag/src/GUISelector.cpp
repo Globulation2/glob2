@@ -82,8 +82,8 @@ void Selector::internalInit(int x, int y, int w, int h)
 void Selector::internalRepaint(int x, int y, int w, int h)
 {
 	unsigned l=(count-1)*size-2;
+	parent->getSurface()->drawHorzLine(x+4, y+(size>>1)+1, l, 180, 180, 180);
 	parent->getSurface()->drawHorzLine(x+4, y+(size>>1)+2, l, 180, 180, 180);
-	parent->getSurface()->drawHorzLine(x+4, y+(size>>1)+3, l, 180, 180, 180);
 	for (unsigned i=0; i<count; i++)
 	{
 		parent->getSurface()->drawVertLine(x+2+i*size, y+2, size, 180, 180, 180);
