@@ -1904,7 +1904,7 @@ void AICastor::computeSpaceForBuildingMap(int max)
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
-	//int hMask=map->hMask;
+	int hMask=map->hMask;
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
@@ -1916,15 +1916,15 @@ void AICastor::computeSpaceForBuildingMap(int max)
 		for (int y=0; y<h; y++)
 		{
 			int wy0=w*y;
-			int wy1=w*((y+1)&wMask);
+			int wy1=w*((y+1)&hMask);
 			
 			for (int x=0; x<w; x++)
 			{
 				int wyx[4];
 				wyx[0]=wy0+x+0;
-				wyx[1]=wy0+x+1;
+				wyx[1]=wy0+((x+1)&wMask);
 				wyx[2]=wy1+x+0;
-				wyx[3]=wy1+x+1;
+				wyx[3]=wy1+((x+1)&wMask);
 				Uint8 obs[4];
 				for (int i=0; i<4; i++)
 					obs[i]=spaceForBuildingMap[wyx[i]];
