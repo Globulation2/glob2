@@ -3,8 +3,9 @@ AM_INIT_AUTOMAKE(glob2, 0.1)
 AM_CONFIG_HEADER(config.h)
 
 CXXFLAGS="-g -Wall $CXXFLAGS"
-CFLAGS="`freetype-config --cflags` $CFLAGS"
-LIBS="-lpng $LIBS `freetype-config --libs`"
+#CFLAGS="`freetype-config --cflags` $CFLAGS"
+#LIBS="-lpng $LIBS `freetype-config --libs`"
+LIBS="-lpng"
 
 dnl CXXFLAGS="-g -Wall $CXXFLAGS"
 dnl LIBS="-lpng $LIBS"
@@ -29,28 +30,28 @@ AM_PATH_SDL($SDL_VERSION,
 :,
 AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
-dnl CFLAGS="$CFLAGS $SDL_CFLAGS"
-dnl LIBS="$LIBS $SDL_LIBS"
+
+dnl Check for FT2
+AC_CHECK_FT2
 
 AC_LANG_CPLUSPLUS
-
 
 AC_CHECK_HEADERS(vector,,AC_MSG_WARN(STL classes missing ?))
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [data directory])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [data directory])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [data directory])
 fi
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [source directory])
 
 AC_OUTPUT([Makefile src/Makefile doc/Makefile tools/Makefile  data/Makefile 
 data/gfx/Makefile
