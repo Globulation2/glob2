@@ -31,7 +31,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	compilationResult=new Text(10, 335, globalContainer->standardFont);
 	addWidget(compilationResult);
 	addWidget(new TextButton(10, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[ok]"), OK));
-	addWidget(new TextButton(100, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	addWidget(new TextButton(100, 360, 80, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[Cancel]"), CANCEL));
 	addWidget(new TextButton(190, 360, 400, 30, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[compile]"), COMPILE));
 }
 
