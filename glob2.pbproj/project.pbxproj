@@ -1109,14 +1109,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		59C5D63105F38CED00DE80AB = {
-			explicitFileType = text;
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			path = guiscr.txt;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		59C5D63A05F38D3C00DE80AB = {
 			children = (
 				59C5D63B05F38D3C00DE80AB,
@@ -1272,7 +1264,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = archive.ar;
 			name = "libstdc++.a";
-			path = "/usr/lib/gcc/darwin/2.95.2/libstdc++.a";
+			path = "/usr/lib/gcc/darwin/3.3/libstdc++.a";
 			refType = 0;
 			sourceTree = "<absolute>";
 		};
@@ -1374,10 +1366,10 @@
 				HEADER_SEARCH_PATHS = "/sw/include /sw/include/SDL libgag/include /usr/local/include /usr/local/include/SDL";
 				INFOPLIST_FILE = "Info-Globulation2.plist";
 				INSTALL_PATH = "$(HOME)/Applications/Globulation2";
-				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL /usr/lib/gcc/darwin/2.95.2 /Users/martin/Library/zlib-1.1.4";
+				LIBRARY_SEARCH_PATHS = "/usr/X11R6/lib /usr/lib/gcc/darwin/default /sw/lib /sw/include /sw/include/SDL /usr/lib/gcc/darwin/2.95.2";
 				LIBRARY_STYLE = STATIC;
 				OTHER_CFLAGS = "-ffast-math";
-				OTHER_LDFLAGS = "-g -lstdc++ -Wall build/libgag.a  -L/usr/X11R6/lib  /usr/local/lib/libz.a -framework Cocoa -lpthread  /usr/local/lib/libfreetype.a /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDLmain.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /sw/lib/libjpeg.a /sw/lib/libogg.a /sw/lib/libvorbis.a /sw/lib/libvorbisfile.a";
+				OTHER_LDFLAGS = "-g -lstdc++ -Wall build/libgag.a  -L/usr/X11R6/lib  /usr/local/lib/libz.a -framework Cocoa -lpthread /usr/local/lib/libSDL.a /usr/local/lib/libSDL_image.a /usr/local/lib/libSDLmain.a /usr/local/lib/libSDL_net.a /usr/local/lib/libpng12.a /usr/local/lib/libfreetype.a /usr/local/lib/libz.a /usr/local/lib/libjpeg.a /usr/local/lib/libogg.a /usr/local/lib/libvorbis.a /usr/local/lib/libvorbisfile.a";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Globulation2 static";
 				REZ_EXECUTABLE = YES;
@@ -1463,7 +1455,6 @@
 				5B63D47F05BAE2670092D38A,
 				5B63D48005BAE2670092D38A,
 				5B63D48105BAE2670092D38A,
-				5B981DE6060AC70800C1AE77,
 				5B981DEA060AC8CD00C1AE77,
 				5B981DF0060AC8E900C1AE77,
 				5B981DF2060AC8E900C1AE77,
@@ -5705,7 +5696,6 @@
 		5B981DE2060AC70800C1AE77 = {
 			children = (
 				5B981DE3060AC70800C1AE77,
-				5B981DE4060AC70800C1AE77,
 			);
 			isa = PBXGroup;
 			path = gnupg;
@@ -5720,22 +5710,8 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		5B981DE4060AC70800C1AE77 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = utils.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		5B981DE5060AC70800C1AE77 = {
 			fileRef = 5B981DE3060AC70800C1AE77;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		5B981DE6060AC70800C1AE77 = {
-			fileRef = 5B981DE4060AC70800C1AE77;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -6353,7 +6329,6 @@
 				59C5D62E05F38CED00DE80AB,
 				59C5D62F05F38CED00DE80AB,
 				59C5D63005F38CED00DE80AB,
-				59C5D63105F38CED00DE80AB,
 				5BE9C98703FFA23E0000000D,
 				5BE9C98F03FFA23E0000000D,
 				5BE9CEBA03FFA2400000000D,
