@@ -167,9 +167,6 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	for (int i=0; i<NB_ABILITY; i++)
 		upgrade[i]=0;
 	
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-		assert(ressources[i]<=type->maxRessource[i]);
-	
 	for (int i=0; i<2; i++)
 	{
 		if (globalGradient[i])
@@ -258,16 +255,14 @@ void Building::loadCrossRef(SDL_RWops *stream, BuildingsTypes *types, Team *owne
 
 void Building::saveCrossRef(SDL_RWops *stream)
 {
-	std::list<Unit *>::iterator it;
-
 	// units
 	SDL_WriteBE32(stream, maxUnitInside);
 	SDL_WriteBE32(stream, unitsWorking.size());
-	for (it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, unitsWorkingSubscribe.size());
-	for (it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, lastWorkingSubscribe);
@@ -275,11 +270,11 @@ void Building::saveCrossRef(SDL_RWops *stream)
 	SDL_WriteBE32(stream, maxUnitWorking);
 	SDL_WriteBE32(stream, maxUnitWorkingPreferred);
 	SDL_WriteBE32(stream, unitsInside.size());
-	for (it=unitsInside.begin(); it!=unitsInside.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 		SDL_WriteBE16(stream, (*it)->gid);
 
 	SDL_WriteBE32(stream, unitsInsideSubscribe.size());
-	for (it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
+	for (std::list<Unit *>::iterator  it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); ++it)
 		SDL_WriteBE16(stream, (*it)->gid);
 	SDL_WriteBE32(stream, lastInsideSubscribe);
 }
@@ -320,8 +315,10 @@ void Building::neededRessources(Uint8 needs[MAX_NB_RESSOURCES])
 	{
 		int max=type->maxRessource[r];
 		int cur=ressources[r];
-		assert(cur<=max);
-		needs[r]=max-cur;
+		if (max>cur)
+			needs[r]=max-cur;
+		else
+			needs[r]=0;
 	}
 }
 
