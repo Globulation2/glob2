@@ -27,7 +27,7 @@
 #include "LogFileManager.h"
 
 #ifndef INADDR_BROADCAST
-#define INADDR_BROADCAST 0x7F000001
+#define INADDR_BROADCAST (SDL_SwapBE32(0x7F000001))
 #endif
 
 MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, SessionInfo *savedSessionInfo)
@@ -616,7 +616,7 @@ void MultiplayersHost::playerWantsSession(char *data, int size, IPaddress ip)
 	{
 		Uint32 newHost=SDL_SwapBE32(getUint32(data, 4));
 		Uint32 newPort=(Uint32)SDL_SwapBE16((Uint16)getUint32(data, 8));
-		if (serverIP.host && (serverIP.host!=0x7F000001))
+		if (serverIP.host && (serverIP.host!=SDL_SwapBE32(0x7F000001)))
 		{
 			if (serverIP.host!=newHost)
 			{
@@ -1599,13 +1599,11 @@ void MultiplayersHost::sendingTime()
 				if (!sessionInfo.players[i].ipFromNAT)
 				{
 					for (int p=0; p<sessionInfo.numberOfPlayer; p++)
-						if (sessionInfo.players[p].ip.host==0x7F000001)
+						if (sessionInfo.players[p].ip.host==SDL_SwapBE32(0x7F000001))
 							sessionInfo.players[p].ip.host=serverIP.host;
 				
 					if (shareOnYOG)
 						for (int i=0; i<sessionInfo.numberOfPlayer; i++)
-						{
-							backupPlayer[i]=(BasePlayer *)malloc(sizeof(BasePlayer));
 							if (sessionInfo.players[i].ipFromNAT)
 							{
 								IPaddress newip=yog->ipFromUserName(sessionInfo.players[i].name);
@@ -1616,7 +1614,6 @@ void MultiplayersHost::sendingTime()
 									sessionInfo.players[i].ipFromNAT=false;
 								}
 							}
-						}
 				}
 				
 				char *data=NULL;
