@@ -38,7 +38,7 @@ public:
 	void addText(const char *text);
 	void removeText(int pos);
 	void clear(void);
-	const char *getText(int pos);
+	/*const*/ char *getText(int pos);
 	virtual void repaint(void);
 
 protected:

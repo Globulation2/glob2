@@ -519,7 +519,7 @@ void Unit::handleActivity(void)
 				Building *b;
 				
 				// if we have a ressource
-				b=owner->findBestJob(posX, posY, HARVEST, level[HARVEST]);
+				b=owner->findBestConstruction(this);
 				if ( b != NULL)
 				{
 					destinationPurprose=b->neededRessource();
@@ -531,7 +531,7 @@ void Unit::handleActivity(void)
 						displacement=DIS_GOING_TO_RESSOURCE;
 						newTargetWasSet();
 						
-						//printf("Going to harvest to build building\n");
+						//printf("(%x)Going to harvest to build building\n", (int)this);
 						
 						attachedBuilding=b;
 						b->unitsWorkingSubscribe.push_front(this);

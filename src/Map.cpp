@@ -51,20 +51,31 @@ bool BaseMap::load(SDL_RWops *stream)
 	return true;
 }
 
-void BaseMap::setMapName(const char *s)
+/*const*/void BaseMap::setMapName(/*const*/ char *s)
 {
 	strncpy(mapName, s, MAP_NAME_MAX_SIZE);
 	mapName[MAP_NAME_MAX_SIZE-1]=0;
 	char *c=strrchr(mapName, '.');
 	if (c)
 		*c=0;
-	printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
+	//printf("(set)mapName=(%s), s=(%s).\n", mapName, s);
 }
 
-const char *BaseMap::getMapName() const
+/*const*/char *BaseMap::getMapName()
 {
-	printf("(get)mapName=(%s).\n", mapName);
+	//printf("(get)mapName=(%s).\n", mapName);
 	return mapName;
+}
+
+/*const*/char *BaseMap::getMapFileName()
+{
+	strncpy(mapFileName, mapName, MAP_NAME_MAX_SIZE);
+	mapFileName[MAP_NAME_MAX_SIZE-1]=0;
+	int l=strlen(mapName);
+	strncpy(&mapFileName[l], ".map", 5);
+	mapFileName[MAP_NAME_MAX_SIZE+4-1]=0;
+	//printf("mapFileName=(%s), mapName=(%s).\n", mapFileName, mapName);
+	return mapFileName;
 }
 
 Uint8 BaseMap::getOrderType()
@@ -491,7 +502,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-void Map::setBaseMap(const BaseMap *initial)
+void Map::setBaseMap(/*const*/ BaseMap *initial)
 {
 	memcpy(mapName, initial->getMapName(), MAP_NAME_MAX_SIZE);
 }

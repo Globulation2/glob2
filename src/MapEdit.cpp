@@ -412,7 +412,7 @@ void MapEdit::loadSave(bool isLoad)
 	//DrawableSurface *backBuffer=globalContainer->gfx->createDrawableSurface();
 
 	// create dialog box
-	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen("", "map", isLoad, "default.map");
+	InGameLoadSaveScreen *gameMenuScreen=new InGameLoadSaveScreen("", "map", isLoad, game.map.getMapFileName());
 	gameMenuScreen->dispatchPaint(gameMenuScreen->getSurface());
 	//backBuffer->setRes(gameMenuScreen->getW(), gameMenuScreen->getH());
 
@@ -603,7 +603,7 @@ void MapEdit::load(const char *name)
 	draw();
 }
 
-void MapEdit::save(const char *name)
+void MapEdit::save(/*const*/ char *name)
 {
 	SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 	if (stream)

@@ -295,7 +295,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case 0:
 				{
-					const char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
+					/*const*/ char *name=((InGameLoadSaveScreen *)gameMenuScreen)->fileName;
 					if (inGameMenu==IGM_LOAD)
 					{
 						SDL_RWops *stream=globalContainer->fileManager.open(name,"rb");
