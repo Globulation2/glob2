@@ -537,7 +537,7 @@ void SDLDrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8
 
 void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	#ifndef M_PI
+	/*#ifndef M_PI
 	#define M_PI 3.1415927
 	#endif
 	float pos=0.0f;
@@ -554,7 +554,7 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 		drawLine((int)lpx, (int)lpy, (int)px, (int)py, r, g, b, a);
 		lpx=px;
 		lpy=py;
-	}
+	}*/
 }
 
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg, ...)
