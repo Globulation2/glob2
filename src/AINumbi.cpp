@@ -135,7 +135,7 @@ Order *AINumbi::getOrder(void)
 			case 1:
 				return adjustBuildings(4, 1, 1, BuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(44, 1, 1, BuildingType::HEALTH_BUILDING);
+				return adjustBuildings(44, 1, 1, BuildingType::HEAL_BUILDING);
 			case 3:
 				return adjustBuildings(40, 1, 2, BuildingType::SCIENCE_BUILDING);
 			case 4:
@@ -156,7 +156,7 @@ Order *AINumbi::getOrder(void)
 			case 1:
 				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 1, 1, BuildingType::HEALTH_BUILDING);
+				return adjustBuildings(37, 1, 1, BuildingType::HEAL_BUILDING);
 			case 3:
 				return adjustBuildings(32, 1, 2, BuildingType::SCIENCE_BUILDING);
 			case 4:
@@ -175,7 +175,7 @@ Order *AINumbi::getOrder(void)
 			case 1:
 				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(34, 2, 1, BuildingType::HEALTH_BUILDING);
+				return adjustBuildings(34, 2, 1, BuildingType::HEAL_BUILDING);
 			case 3:
 				return adjustBuildings(32, 2, 4, BuildingType::SCIENCE_BUILDING);
 			case 4:
@@ -192,7 +192,7 @@ Order *AINumbi::getOrder(void)
 			case 1:
 				return adjustBuildings(5, 1, 1, BuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(32, 2, 1, BuildingType::HEALTH_BUILDING);
+				return adjustBuildings(32, 2, 1, BuildingType::HEAL_BUILDING);
 			case 3:
 				return adjustBuildings(40, 2, 3, BuildingType::SCIENCE_BUILDING);
 			case 4:
@@ -217,7 +217,7 @@ Order *AINumbi::getOrder(void)
 			case 1:
 				return adjustBuildings(6, 2, 1, BuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 2, 1, BuildingType::HEALTH_BUILDING);
+				return adjustBuildings(37, 2, 1, BuildingType::HEAL_BUILDING);
 			case 3:
 				return adjustBuildings(38, 2, 2, BuildingType::SCIENCE_BUILDING);
 			case 4:
@@ -426,7 +426,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 	if (b==NULL)
 	{
 		for (int i=1; i<1024; i++)
-			if ((myBuildings[i])/*&&((myBuildings[i]->type->type==buildingType)||(myBuildings[i]->type->type==0))*/)
+			if ((myBuildings[i])/*&&((myBuildings[i]->type->shortTypeNum==buildingType)||(myBuildings[i]->type->shortTypeNum==0))*/)
 			{
 				b=myBuildings[i];
 				break;
@@ -444,7 +444,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 		//printf("AI: nextMainBuilding uid=%d\n", b->UID);
 		int id=Building::GIDtoID(b->gid);
 		for (int i=1; i<1024; i++)
-			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->type==buildingType)||(myBuildings[(i+id)&0xFF]->type->type==0))*/)
+			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->shortTypeNum==buildingType)||(myBuildings[(i+id)&0xFF]->type->shortTypeNum==0))*/)
 			{
 				b=myBuildings[(i+id)&0xFF];
 				break;
@@ -660,7 +660,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	if (valid>299)
 	{
 		int maxr;
-		if (b->type->type==0)
+		if (b->type->shortTypeNum==0)
 			maxr=64;
 		else
 			maxr=16;
@@ -669,7 +669,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 
 		int dx, dy, sx, sy, px, py, mx, my;
 		int margin;
-		if (b->type->type)
+		if (b->type->shortTypeNum)
 			margin=0;
 		else
 			margin=2;
@@ -720,7 +720,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 								*posX=px;
 								*posY=py;
 								bestValid=valid;
-								if ((b->type->type==0)||(parseBuildingType(buildingType)))
+								if ((b->type->shortTypeNum==0)||(parseBuildingType(buildingType)))
 									nextMainBuilding(buildingType);
 							}
 						}
@@ -733,7 +733,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 							*posX=px;
 							*posY=py;
 							bestValid=valid;
-							if ((b->type->type==0)||(parseBuildingType(buildingType)))
+							if ((b->type->shortTypeNum==0)||(parseBuildingType(buildingType)))
 								nextMainBuilding(buildingType);
 						}
 					}
@@ -785,7 +785,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 		int teamNumber=player->team->teamNumber;
 
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->type==BuildingType::WAR_FLAG)
+			if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
 			{
 				Building *b=*bit;
 				int gbid=map->getBuilding(b->posX, b->posY);
@@ -821,7 +821,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 				{
 					bool already=false;
 					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-						if ((*bit)->type->type==BuildingType::WAR_FLAG)
+						if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
 							if ((*bit)->posX==ex &&(*bit)->posX==ex)
 							{
 								already=true;
@@ -850,7 +850,7 @@ Order *AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 number
 	else if (attackPhase==3)
 	{
 		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->type==BuildingType::WAR_FLAG)
+			if ((*bit)->type->shortTypeNum==BuildingType::WAR_FLAG)
 				return new OrderDelete((*bit)->gid);
 		attackPhase=0;
 		critticalWarriors*=2;
@@ -874,7 +874,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
-		if ((b)&&(b->type->type==buildingType))
+		if ((b)&&(b->type->shortTypeNum==buildingType))
 		{
 			fb++;
 			int w=workers;
@@ -887,7 +887,7 @@ Order *AINumbi::adjustBuildings(const int numbers, const int numbersInc, const i
 	
 	if (buildingType==BuildingType::FOOD_BUILDING)
 		wr+=2*countUnits(Unit::MED_HUNGRY);
-	else if (buildingType==BuildingType::HEALTH_BUILDING)
+	else if (buildingType==BuildingType::HEAL_BUILDING)
 		wr+=4*countUnits(Unit::MED_DAMAGED);
 	
 	if (fb<((wr/numbers)+numbersInc))
@@ -917,7 +917,7 @@ Order *AINumbi::checkoutExpands(const int numbers, const int workers)
 	for (int i=0; i<1024; i++)
 	{
 		Building *b=myBuildings[i];
-		if ((b)&&(b->type->type==0))
+		if ((b)&&(b->type->shortTypeNum==0))
 			ss++;
 	}
 	
@@ -969,7 +969,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			BuildingType *bt=b->type;
 			int l=bt->level;
-			if (bt->type==BuildingType::FOOD_BUILDING)
+			if (bt->shortTypeNum==BuildingType::FOOD_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingFood[l]++;
@@ -980,7 +980,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						foodBuilding[l]=b;
 				}
 			}
-			else if (bt->type==BuildingType::HEALTH_BUILDING)
+			else if (bt->shortTypeNum==BuildingType::HEAL_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingHealth[l]++;
@@ -991,7 +991,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						healthBuilding[l]=b;
 				}
 			}
-			else if (bt->type==BuildingType::ATTACK_BUILDING)
+			else if (bt->shortTypeNum==BuildingType::ATTACK_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingAttack[l]++;
@@ -1002,7 +1002,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						attackBuilding[l]=b;
 				}
 			}
-			else if (bt->type==BuildingType::SCIENCE_BUILDING)
+			else if (bt->shortTypeNum==BuildingType::SCIENCE_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingScience[l]++;
@@ -1013,7 +1013,7 @@ Order *AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 						scienceBuilding[l]=b;
 				}
 			}
-			else if (bt->type==BuildingType::DEFENSE_BUILDING)
+			else if (bt->shortTypeNum==BuildingType::DEFENSE_BUILDING)
 			{
 				if (bt->isBuildingSite)
 					numberUpgradingDefense[l]++;

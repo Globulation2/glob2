@@ -26,7 +26,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
 
@@ -91,12 +90,13 @@ void AICastor::init(Player *player)
 	// Logical :
 	timer=0;
 	canSwim=false;
-	needPool=false;
-	computeNeedPoolTimer=0;
+	needSwim=false;
+	computeNeedSwimTimer=0;
 	controlSwarmsTimer=0;
 	expandFoodTimer=0;
 	hydratationMapComputed=false;
-	onCritical=true;
+	war=false;
+	strategy.defined=false;
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		delete *pi;
@@ -243,35 +243,62 @@ void AICastor::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, timer);
 }
 
-Order *AICastor::getOrder(void)
+Order *AICastor::getOrder()
 {
 	timer++;
 	
 	if (!hydratationMapComputed)
 		computeHydratationMap();
 	
+	if (!strategy.defined)
+	{
+		strategy.defined=true;
+		strategy.speed=1+(syncRand()%2);
+		strategy.attack=1+(syncRand()%4);
+		strategy.heal=1+(syncRand()%8);
+		strategy.defense=1+(syncRand()%8);
+		strategy.science=1+(syncRand()%4);
+		strategy.swim=1+(syncRand()%2);
+		
+		strategy.warLevelTriger=1+(syncRand()%2);
+		strategy.warTimeTriger=8192+(syncRand()%8192);
+		
+		printf("strategy defined:\n");
+		printf(" speed=%d\n", strategy.speed);
+		printf(" attack=%d\n", strategy.attack);
+		printf(" heal=%d\n", strategy.heal);
+		printf(" defense=%d\n", strategy.defense);
+		printf(" science=%d\n", strategy.science);
+		printf(" swim=%d\n", strategy.swim);
+		
+		printf(" warLevelTriger=%d\n", strategy.warLevelTriger);
+		printf(" warTimeTriger=%d\n", strategy.warTimeTriger);
+	}
+	
 	//printf("getOrder(), %d projects\n", projects.size());
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->finished)
 		{
-			printf("deleting project %s\n", (*pi)->debugName);
+			printf("deleting project (%s)\n", (*pi)->debugName);
 			delete *pi;
 			pi=projects.erase(pi);
 		}
 	bool blocking=false;
-	bool critical=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->blocking)
 			blocking=true;
 	
+	computeBuildingSum();
+	
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
 	
+	Sint32 priority=0x7FFFFFFF;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
-		if ((*pi)->critical)
-			critical=true;
+		if (priority>(*pi)->priority && (*pi)->critical)
+			priority=(*pi)->priority;
 	
-	if (timer>controlSwarmsTimer)
+	if (priority>=0 && timer>controlSwarmsTimer)
 	{
 		controlSwarmsTimer=timer+256; // each 10s
 		Order *order=controlSwarms();
@@ -279,17 +306,20 @@ Order *AICastor::getOrder(void)
 			return order;
 	}
 	
+	//bool critical=false;
+	//for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
+	//	if ((*pi)->critical)
+	//		critical=true;
+	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
-	{
-		Order *order=continueProject(*pi);
-		if (order)
-			return order;
-	}
+		if ((*pi)->priority<=priority)
+		{
+			Order *order=continueProject(*pi);
+			if (order)
+				return order;
+		}
 	
-	if (onCritical && !critical)
-		assert(false);
-	
-	if (!onCritical && !critical && timer>expandFoodTimer)
+	if (priority>0 && timer>expandFoodTimer)
 	{
 		expandFoodTimer=timer+128; // each 5s
 		Order *order=expandFood();
@@ -300,7 +330,7 @@ Order *AICastor::getOrder(void)
 	return new NullOrder();
 }
 
-Order *AICastor::controlSwarms(void)
+Order *AICastor::controlSwarms()
 {
 	int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -365,12 +395,14 @@ Order *AICastor::controlSwarms(void)
 	if (unitSum[WORKER]<4)
 		explorerGoal=0;
 	else if (unitSum[EXPLORER]==0)
-		explorerGoal=1;
+		explorerGoal=2;
+	else if (unitSum[EXPLORER]<3 && (unitSum[EXPLORER]<<2)<unitSum[WORKER] && (discovered+seeable<((int)size<<2)))
+		explorerGoal=3;
 	else if ((unitSum[EXPLORER]<<4)<unitSum[WORKER])
 		explorerGoal=1;
 	else
 		explorerGoal=0;
-	Sint32 workerGoal=3;
+	Sint32 workerGoal=4;
 	
 	printf("discovered=%d, seeable=%d, size=%d, explorerGoal=%d\n", discovered, seeable, size, explorerGoal);
 	
@@ -409,7 +441,7 @@ Order *AICastor::controlSwarms(void)
 	return NULL;
 }
 
-Order *AICastor::expandFood(void)
+Order *AICastor::expandFood()
 {
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::FOOD_BUILDING, 0, true);
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
@@ -429,68 +461,43 @@ Order *AICastor::expandFood(void)
 	return findGoodBuilding(typeNum, true, false);
 }
 
-void AICastor::addProjects(void)
+bool AICastor::addProject(Project *project)
 {
-	Sint32 poolSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWIMSPEED_BUILDING, 0, true);
-	Sint32 attackSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::ATTACK_BUILDING, 0, true);
-	Sint32 speedSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::WALKSPEED_BUILDING, 0, true);
-	Sint32 healSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::HEALTH_BUILDING, 0, true);
-	
-	int canFeedUnit=0;
-	int swarms=0;
-	int pool=0;
-	int poolSite=0;
-	int attaque=0;
-	int attaqueSite=0;
-	int speed=0;
-	int speedSite=0;
-	int heal=0;
-	int healSite=0;
-	
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
-	{
-		Building *b=myBuildings[i];
-		if (b)
+	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
+		if (project->shortTypeNum==(*pi)->shortTypeNum)
 		{
-			//printf("unitProductionTime[%d]=%d\n", i, b->type->unitProductionTime);
-			if (b->type->canFeedUnit)
-				canFeedUnit++;
-			if (b->type->unitProductionTime)
-				swarms++;
-			
-			if (b->type->upgrade[SWIM])
-				pool++;
-			if (b->typeNum==poolSiteTypeNum)
-				poolSite++;
-			
-			if (b->type->upgrade[ATTACK_SPEED])
-				attaque++;
-			if (b->typeNum==attackSiteTypeNum)
-				attaqueSite++;
-			
-			if (b->type->upgrade[WALK])
-				speed++;
-			if (b->typeNum==speedSiteTypeNum)
-				speedSite++;
-			
-			if (b->type->canHealUnit)
-				heal++;
-			if (b->typeNum==healSiteTypeNum)
-				healSite++;
+			if (project->amount<=(*pi)->amount)
+			{
+				printf("will not add project (%sx%d) as project (%sx%d) has shortTypeNum (%d) too\n",
+					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
+				delete project;
+				return false;
+			}
+			else
+			{
+				printf("adding project (%sx%d) as project (%sx%d) has shortTypeNum (%d) too will replace it\n",
+					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
+				delete (*pi);
+				projects.erase(pi);
+				projects.push_back(project);
+				return true;
+			}
 		}
-	}
-	
+	projects.push_back(project);
+	return true;
+}
+
+void AICastor::addProjects()
+{
 	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
 	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
 	
-	onCritical=true;
-	if (canFeedUnit==0)
+	if (buildingSum[BuildingType::FOOD_BUILDING][0]==0)
 	{
-		Project *project=new Project(BuildingType::FOOD_BUILDING, "food");
-		projects.push_back(project);
+		Project *project=new Project(BuildingType::FOOD_BUILDING, "food-boot");
 		
 		project->critical=true;
+		project->priority=0;
 		project->food=true;
 		
 		project->mainWorkers=3;
@@ -501,14 +508,15 @@ void AICastor::addProjects(void)
 		project->waitFinished=true;
 		project->finalWorkers=1;
 		
-		return;
+		if (addProject(project))
+			return;
 	}
-	if (swarms==0)
+	if (buildingSum[BuildingType::SWARM_BUILDING][0]+buildingSum[BuildingType::SWARM_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::SWARM_BUILDING, "swarm");
-		projects.push_back(project);
+		Project *project=new Project(BuildingType::SWARM_BUILDING, "swarm-boot");
 		
 		project->critical=true;
+		project->priority=0;
 		project->food=true;
 		
 		project->mainWorkers=20;
@@ -519,46 +527,87 @@ void AICastor::addProjects(void)
 		project->waitFinished=true;
 		project->finalWorkers=2;
 		
-		return;
-	}
-	if (pool+poolSite==0)
-	{
-		if (timer>computeNeedPoolTimer)
-		{
-			computeNeedPoolTimer=timer+1024;// every 41s
-			computeNeedPool();
-		}
-		if (needPool)
-		{
-			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, "pool");
-			projects.push_back(project);
-			project->critical=true;
+		if (addProject(project))
 			return;
+	}
+	if (buildingSum[BuildingType::SWIMSPEED_BUILDING][0]+buildingSum[BuildingType::SWIMSPEED_BUILDING][1]==0)
+	{
+		if (timer>computeNeedSwimTimer)
+		{
+			computeNeedSwimTimer=timer+1024;// every 41s
+			computeNeedSwim();
+		}
+		if (needSwim)
+		{
+			Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, 1, 1, "swim-boot");
+			project->critical=true;
+			project->priority=0;
+			if (addProject(project))
+				return;
 		}
 	}
-	if (attaque+attaqueSite==0)
+	if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, "attack");
-		projects.push_back(project);
+		Project *project=new Project(BuildingType::ATTACK_BUILDING, 1, 1, "attack-boot");
 		project->critical=true;
-		return;
+		project->priority=0;
+		if (addProject(project))
+			return;
 	}
-	if (speed+speedSite==0)
+	if (buildingSum[BuildingType::WALKSPEED_BUILDING][0]+buildingSum[BuildingType::WALKSPEED_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, 1, "speed");
-		projects.push_back(project);
+		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, 1, 1, "walk-boot");
 		project->critical=true;
-		return;
+		project->priority=0;
+		if (addProject(project))
+			return;
 	}
-	if (heal+healSite==0)
+	if (buildingSum[BuildingType::HEAL_BUILDING][0]+buildingSum[BuildingType::HEAL_BUILDING][1]==0)
 	{
-		Project *project=new Project(BuildingType::HEALTH_BUILDING, 1, "heal");
-		projects.push_back(project);
+		Project *project=new Project(BuildingType::HEAL_BUILDING, 1, 1, "heal-boot");
 		project->critical=true;
-		return;
+		project->priority=0;
+		if (addProject(project))
+			return;
 	}
 	// all critical projects succeded.
-	onCritical=false;
+	
+	if (buildingSum[BuildingType::WALKSPEED_BUILDING][0]+buildingSum[BuildingType::WALKSPEED_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::WALKSPEED_BUILDING, strategy.speed, 4, "walk-base");
+		if (addProject(project))
+			return;
+	}
+	if (buildingSum[BuildingType::ATTACK_BUILDING][0]+buildingSum[BuildingType::ATTACK_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::ATTACK_BUILDING, strategy.attack, 4, "attack-base");
+		if (addProject(project))
+			return;
+	}
+	if (buildingSum[BuildingType::HEAL_BUILDING][0]+buildingSum[BuildingType::HEAL_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::HEAL_BUILDING, strategy.heal, 1, "heal-base");
+		if (addProject(project))
+			return;
+	}
+	if (buildingSum[BuildingType::DEFENSE_BUILDING][0]+buildingSum[BuildingType::DEFENSE_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::DEFENSE_BUILDING, strategy.defense, 1, "defense-base");
+		if (addProject(project))
+			return;
+	}
+	if (buildingSum[BuildingType::SCIENCE_BUILDING][0]+buildingSum[BuildingType::SCIENCE_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::SCIENCE_BUILDING, strategy.science, 5, "science-base");
+		if (addProject(project))
+			return;
+	}
+	if (buildingSum[BuildingType::SWIMSPEED_BUILDING][0]+buildingSum[BuildingType::SWIMSPEED_BUILDING][1]==0)
+	{
+		Project *project=new Project(BuildingType::SWIMSPEED_BUILDING, strategy.swim, 3, "swim-base");
+		if (addProject(project))
+			return;
+	}
 }
 
 Order *AICastor::continueProject(Project *project)
@@ -577,7 +626,7 @@ Order *AICastor::continueProject(Project *project)
 	{
 		// boot phase
 		project->subPhase=2;
-		printf("%s (boot), switching to subphase 2.\n", project->debugName);
+		printf("(%s) (boot) (switching to subphase 2)\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -598,75 +647,70 @@ Order *AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		Order *gfbm=findGoodBuilding(typeNum, project->food, true);
+		Order *gfbm=findGoodBuilding(typeNum, project->food, project->critical);
 		project->timer=timer;
 		if (gfbm)
 		{
 			project->subPhase=2;
-			printf("%s (building site placed), switching to next subphase 2.\n", project->debugName);
+			printf("(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
 			return gfbm;
 		}
 	}
 	else if (project->subPhase==2)
 	{
-		// Checking of any real building site:
+		// do we have enough building sites ?
 		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
-		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-		int count=0;
-		int siteCount=0;
+		int real=buildingSum[project->shortTypeNum][0];
+		int site=buildingSum[project->shortTypeNum][1];
+		int sum=real+site;
 		
-		Building **myBuildings=team->myBuildings;
-		for (int i=0; i<1024; i++)
-		{
-			Building *b=myBuildings[i];
-			if (b)
-			{
-				if (b->typeNum==typeNum)
-					count++;
-				if (b->typeNum==siteTypeNum)
-					siteCount++;
-			}
-		}
-		
-		if (count>0)
+		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			printf("%s (building finished), switching to subphase 6.\n", project->debugName);
+			printf("(%s) ([%d>=%d] building finished) (switching to subphase 6).\n", project->debugName, real, project->amount);
 		}
-		else if (siteCount==0)
+		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			printf("%s (no real building site found), switching back to subphase 1.\n", project->debugName);
+			printf("(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+				project->debugName, real, site, project->amount);
 		}
 		else
 		{
 			project->subPhase=3;
-			printf("%s (real building site found), switching to next subphase 3.\n", project->debugName);
+			printf("(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
+				project->debugName, real, site, project->amount);
 			if (!project->waitFinished)
 			{
+				printf("(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
-				printf("%s (deblocking)\n", project->debugName);
 			}
 		}
 	}
 	else if (project->subPhase==3)
 	{
 		// balance workers:
+		
 		int isFree=getFreeWorkers();
 		Sint32 mainWorkers=project->mainWorkers;
+		Sint32 finalWorkers=project->finalWorkers;
 		if (isFree<=3)
 		{
 			if (mainWorkers>3)
 				mainWorkers=3;
+			if (finalWorkers>3)
+				finalWorkers=3;
 		}
-		else if (project->mainWorkers>isFree)
-			mainWorkers=isFree;
-		
+		else
+		{
+			if (mainWorkers>isFree)
+				mainWorkers=isFree;
+			if (finalWorkers>isFree)
+				finalWorkers=isFree;
+		}
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
 		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-		int count=0;
 		
 		Sint32 swarmTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, false);
 		Sint32 swarmSiteTypeNum=globalContainer->buildingsTypes.getTypeNum(BuildingType::SWARM_BUILDING, 0, true);
@@ -680,10 +724,20 @@ Order *AICastor::continueProject(Project *project)
 			if (b)
 			{
 				if (b->typeNum==typeNum)
-					count++;
-				if (b->typeNum==siteTypeNum)
 				{
-					// main building
+					// a main building site
+					if (finalWorkers>=0 && b->maxUnitWorking!=finalWorkers)
+					{
+						b->maxUnitWorking=finalWorkers;
+						b->maxUnitWorkingLocal=finalWorkers;
+						b->update();
+						project->timer=timer;
+						return new OrderModifyBuilding(b->gid, finalWorkers);
+					}
+				}
+				else if (b->typeNum==siteTypeNum)
+				{
+					// a main building
 					if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
 					{
 						b->maxUnitWorking=mainWorkers;
@@ -723,87 +777,65 @@ Order *AICastor::continueProject(Project *project)
 			}
 		}
 		
-		if (count==0)
+		int real=buildingSum[project->shortTypeNum][0];
+		int site=buildingSum[project->shortTypeNum][1];
+		int sum=real+site;
+		
+		printf("(%s) (all maxUnitWorking set)\n", project->debugName);
+		
+		if (real>=project->amount)
 		{
-			if (project->multipleStart)
+			project->subPhase=6;
+			printf("(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+				project->debugName, real, site, project->amount);
+		}
+		else if (sum<project->amount)
+		{
+			project->subPhase=1;
+			printf("(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+				project->debugName, real, site, project->amount);
+		}
+		else if (project->multipleStart)
+		{
+			printf("(%s) (want more construction site [%d+%d>=%d])\n",
+				project->debugName, real, site, project->amount);
+			int isFree=getFreeWorkers();
+			if (isFree>0)
 			{
-				project->subPhase=4;
-				printf("%s (all max-unit-working set), switching to next subphase 4.\n", project->debugName);
+				project->subPhase=1;
+				printf("(%s) (enough free workers) (switching back to subphase 1)\n", project->debugName);
 			}
 			else
 			{
 				project->subPhase=5;
-				printf("%s (all max-unit-working set), switching to next subphase 5.\n", project->debugName);
+				printf("(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
 			}
 		}
 		else
 		{
-			project->subPhase=6;
-			printf("%s (building finished), switching to subphase 6.\n", project->debugName);
+			project->subPhase=5;
+			printf("(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
+				project->debugName, real, site, project->amount);
 		}
-	}
-	else if (project->subPhase==4)
-	{
-		// If enough workers are free, we start another building.
-		int isFree=getFreeWorkers();
-		
-		if (isFree>0)
-		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-			int bw=globalContainer->buildingsTypes.get(typeNum)->width;
-			int bh=globalContainer->buildingsTypes.get(typeNum)->height;
-			assert(bw==bh);
-			
-			computeCanSwim();
-			computeObstacleBuildingMap();
-			computeSpaceForBuildingMap(bw);
-			computeBuildingNeighbourMap(bw, bh);
-			computeWheatGrowthMap(bw, bh);
-			computeObstacleUnitMap();
-			computeWorkPowerMap();
-			computeWorkRangeMap();
-			computeWorkAbilityMap();
-			
-			Order *gfbm=findGoodBuilding(typeNum, project->food, false);
-			project->timer=timer;
-			if (gfbm)
-			{
-				project->subPhase=3;
-				printf("%s (enough free workers and site placed), switching back to subphase 3.\n", project->debugName);
-				return gfbm;
-			}
-		}
-		
-		project->subPhase=5;
-		printf("%s (no more free workers), switching to next subphase 5.\n", project->debugName);
 	}
 	else if (project->subPhase==5)
 	{
 		// We simply wait for the food building to be finished,
 		// and add free workers if aviable and project.waitFinished:
 		
-		int isFree=getFreeWorkers();
-		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
-		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-		int count=0;
-		int siteCount=0;
-		
-		Building **myBuildings=team->myBuildings;
-		for (int i=0; i<1024; i++)
+		if (project->waitFinished)
 		{
-			Building *b=myBuildings[i];
-			if (b)
+			int isFree=getFreeWorkers();
+			if (isFree>0)
 			{
-				if (b->typeNum==typeNum)
-					count++;
-				else if (b->typeNum==siteTypeNum)
+				Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
+				Building **myBuildings=team->myBuildings;
+				for (int i=0; i<1024; i++)
 				{
-					siteCount++;
-					if (project->waitFinished && isFree>0 && b->maxUnitWorking<project->mainWorkers)
+					Building *b=myBuildings[i];
+					if (b && b->typeNum==siteTypeNum && b->maxUnitWorking<project->mainWorkers)
 					{
-						printf("%s (incrementing workers) isFree=%d, current=%d\n",
-							project->debugName, isFree, b->maxUnitWorking);
+						printf("(%s) (incrementing workers) isFree=%d, current=%d\n", project->debugName, isFree, b->maxUnitWorking);
 						b->maxUnitWorking++;
 						b->maxUnitWorkingLocal=b->maxUnitWorking;
 						b->update();
@@ -813,15 +845,22 @@ Order *AICastor::continueProject(Project *project)
 				}
 			}
 		}
-		if (count>0)
+		
+		int real=buildingSum[project->shortTypeNum][0];
+		int site=buildingSum[project->shortTypeNum][1];
+		int sum=real+site;
+		
+		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			printf("%s (building finished), switching to next subphase 6.\n", project->debugName);
+			printf("(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+				project->debugName, real, site, project->amount);
 		}
-		else if (siteCount==0)
+		else if (sum<project->amount)
 		{
 			project->subPhase=2;
-			printf("%s (building site destroyed), switching back to subphase 2.\n", project->debugName);
+			printf("(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
+				project->debugName, real, site, project->amount);
 		}
 	}
 	else if (project->subPhase==6)
@@ -830,36 +869,33 @@ Order *AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
+			printf("(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
-			printf("%s (deblocking)\n", project->debugName);
 		}
 		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
-		Sint32 siteTypeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, true);
-		int siteCount=0;
-		
-		int isFree=getFreeWorkers();
-		Sint32 finalWorkers=project->finalWorkers;
-		if (isFree<=3)
+		if (project->finalWorkers>=0)
 		{
-			if (finalWorkers>3)
-				finalWorkers=3;
-		}
-		else if (finalWorkers>isFree)
-			finalWorkers=isFree;
-		
-		Building **myBuildings=team->myBuildings;
-		for (int i=0; i<1024; i++)
-		{
-			Building *b=myBuildings[i];
-			if (b)
+			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(project->shortTypeNum, 0, false);
+			
+			int isFree=getFreeWorkers();
+			Sint32 finalWorkers=project->finalWorkers;
+			if (isFree<=3)
 			{
-				if (b->typeNum==siteTypeNum)
-					siteCount++;
-				else if (project->finalWorkers>=0 && b->typeNum==typeNum && b->maxUnitWorking!=finalWorkers)
+				if (finalWorkers>3)
+					finalWorkers=3;
+			}
+			else if (finalWorkers>isFree)
+				finalWorkers=isFree;
+			
+			Building **myBuildings=team->myBuildings;
+			for (int i=0; i<1024; i++)
+			{
+				Building *b=myBuildings[i];
+				if (b && b->typeNum==typeNum && b->maxUnitWorking!=finalWorkers)
 				{
 					assert(b->type->maxUnitWorking!=0);
+					printf("(%s) (set finalWorkers [isFree=%d, current=%d])\n", project->debugName, isFree, b->maxUnitWorking);
 					b->maxUnitWorking=finalWorkers;
 					b->maxUnitWorkingLocal=finalWorkers;
 					b->update();
@@ -868,11 +904,10 @@ Order *AICastor::continueProject(Project *project)
 				}
 			}
 		}
-		
-		if (siteCount==0)
+		if (buildingSum[project->shortTypeNum][1]==0)
 		{
 			project->finished=true;
-			printf("%s succeded. (all finalWorkers set)\n", project->debugName);
+			printf("(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
 		}
 	}
 	else
@@ -918,7 +953,7 @@ void AICastor::computeCanSwim()
 	//printf("...computeCanSwim() done\n");
 }
 
-void AICastor::computeNeedPool()
+void AICastor::computeNeedSwim()
 {
 	int w=map->w;
 	int h=map->h;
@@ -942,10 +977,24 @@ void AICastor::computeNeedPool()
 		if (workRangeMap[i]!=0)
 			extendedCount++;
 	
-	needPool=((baseCount<<4)>(7*extendedCount));
-	printf("needPool=%d\n", needPool);
+	needSwim=((baseCount<<4)>(7*extendedCount));
+	printf("needSwim=%d\n", needSwim);
 	
 	computeCanSwim();
+}
+
+void AICastor::computeBuildingSum()
+{
+	for (int i=0; i<BuildingType::NB_BUILDING; i++)
+		for (int j=0; j<2; j++)
+			buildingSum[i][j]=0;
+	Building **myBuildings=team->myBuildings;
+	for (int i=0; i<1024; i++)
+	{
+		Building *b=myBuildings[i];
+		if (b)
+			buildingSum[b->type->shortTypeNum][b->type->isBuildingSite]++;
+	}
 }
 
 void AICastor::computeObstacleUnitMap()
@@ -1449,25 +1498,27 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	printf("findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
 	
 	// first, we auto calibrate minWork:
-	Uint32 minWork;
+	Uint8 bestWorkScore=2;
+	for (size_t i=0; i<size; i++)
+	{
+		if ((mapDiscovered[i]&me)==0)
+			continue;
+		Uint8 work=workAbilityMap[i];
+		if (bestWorkScore<work)
+			bestWorkScore=work;
+	}
+	Uint32 minWork=bestWorkScore/2;
 	if (critical)
-		minWork=1;
+	{
+		if (minWork>15)
+			minWork=15;
+	}
 	else
 	{
-		Uint8 bestWorkScore=2;
-		for (size_t i=0; i<size; i++)
-		{
-			if ((mapDiscovered[i]&me)==0)
-				continue;
-			Uint8 work=workAbilityMap[i];
-			if (bestWorkScore<work)
-				bestWorkScore=work;
-		}
-		minWork=bestWorkScore/2;
 		if (minWork>30)
 			minWork=30;
-		printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
 	}
+	printf(" bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork);
 	
 	// second, we auto calibrate wheatLimit:
 	Uint16 wheatLimit;
@@ -1517,7 +1568,7 @@ Order *AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool critical)
 	Sint32 bestScore=0;
 	minWork=(minWork<<2);
 	wheatLimit=(wheatLimit<<2);
-	printf(" minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
+	printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
 	memset(goodBuildingMap, 0, size);
 	
 	for (int y=0; y<h; y++)

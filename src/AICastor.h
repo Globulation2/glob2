@@ -44,21 +44,26 @@ public:
 			this->debugName=debugName;
 			init();
 		}
-		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 mainWorkers, const char* debugName)
+		Project(BuildingType::BuildingTypeShortNumber shortTypeNum, Sint32 amount, Sint32 mainWorkers, const char* debugName)
 		{
 			this->shortTypeNum=shortTypeNum;
 			this->debugName=debugName;
 			init();
+			this->amount=amount;
 			this->mainWorkers=mainWorkers;
 		}
 		void init()
 		{
+			amount=1;
+			food=false;
+			
 			printf("new project(%s)\n", debugName);
+			
 			subPhase=0;;
 			
 			blocking=true;
 			critical=false;
-			food=false;
+			priority=1;
 			
 			mainWorkers=-1;
 			foodWorkers=-1;
@@ -74,13 +79,16 @@ public:
 		}
 		
 		BuildingType::BuildingTypeShortNumber shortTypeNum;
+		Sint32 amount; // number of buildings wanted
+		bool food; // place closer to wheat of further
+		
 		const char *debugName;
 		
 		int subPhase;
 		
-		bool blocking;
-		bool critical;
-		bool food;
+		bool blocking; // if true, no other project can be added..
+		bool critical; // if true, place building at any cost.
+		Sint32 priority; // the lower is the number, the higher is the priority
 		
 		Sint32 mainWorkers;
 		Sint32 foodWorkers;
@@ -93,6 +101,21 @@ public:
 		bool finished;
 		
 		Uint32 timer;
+	};
+	
+	struct Strategy
+	{
+		bool defined;
+		
+		Sint32 speed;
+		Sint32 attack;
+		Sint32 heal;
+		Sint32 defense;
+		Sint32 science;
+		Sint32 swim;
+		
+		Sint32 warLevelTriger;
+		Sint32 warTimeTriger;
 	};
 	
 private:
@@ -114,10 +137,11 @@ public:
 	Order *getOrder(void);
 	
 private:
-	Order *controlSwarms(void);
-	Order *expandFood(void);
+	Order *controlSwarms();
+	Order *expandFood();
 	
-	void addProjects(void);
+	bool addProject(Project *project);
+	void addProjects();
 	
 	void choosePhase();
 	
@@ -126,7 +150,8 @@ private:
 	int getFreeWorkers();
 	
 	void computeCanSwim();
-	void computeNeedPool();
+	void computeNeedSwim();
+	void computeBuildingSum();
 	
 	void computeObstacleUnitMap();
 	void computeObstacleBuildingMap();
@@ -151,12 +176,15 @@ public:
 	
 	Uint32 timer;
 	bool canSwim;
-	bool needPool;
-	bool onCritical;
+	bool needSwim;
+	int buildingSum[BuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
+	bool war;
 	Uint32 lastNeedPoolComputed;
-	Uint32 computeNeedPoolTimer;
+	Uint32 computeNeedSwimTimer;
 	Uint32 controlSwarmsTimer;
 	Uint32 expandFoodTimer;
+	
+	Strategy strategy;
 	
 	bool hydratationMapComputed;
 	

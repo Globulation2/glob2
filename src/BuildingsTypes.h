@@ -29,7 +29,7 @@ public:
 	virtual void load(const char *filename);
 	virtual ~BuildingsTypes() { }
 
-	Sint32 getTypeNum(int type, int level, bool isBuildingSite);
+	Sint32 getTypeNum(int shortTypeNum, int level, bool isBuildingSite);
 };
 
 #endif

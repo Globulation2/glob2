@@ -154,11 +154,11 @@ void TeamStats::step(Team *team)
 		if (team->myBuildings[i])
 		{
 			stat.totalBuilding++;
-			stat.numberBuildingPerType[team->myBuildings[i]->type->type]++;
+			stat.numberBuildingPerType[team->myBuildings[i]->type->shortTypeNum]++;
 			int tabLevel=((team->myBuildings[i]->type->level)<<1)+1-team->myBuildings[i]->type->isBuildingSite;
 			assert(tabLevel>=0);
 			assert(tabLevel<=5);
-			stat.numberBuildingPerTypePerLevel[team->myBuildings[i]->type->type][tabLevel]++;
+			stat.numberBuildingPerTypePerLevel[team->myBuildings[i]->type->shortTypeNum][tabLevel]++;
 		}
 	}
 	
