@@ -407,6 +407,10 @@ AI
 Ferme
 Closed
 Geschlossen
+[close]
+Fermer
+Close
+
 [player]
 Joueur
 Player
@@ -570,12 +574,32 @@ Schlecht man
 [AI name 2]
 Destructeur
 Destroyer
--
+
 [AI name 3]
 Born to pete la geule
 Ne pour beak your neck
--
+
 [AI name 4]
-Cascouille
+Cassecouille
 Agressman
--
+
+[the games]
+les parties
+the games
+
+[the maps]
+les cartes
+the maps
+
+[was]
+auparavent
+was
+
+[was AI]
+auparavant IA
+was AI
+
+[state]
+etat
+state
+

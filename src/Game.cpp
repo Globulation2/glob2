@@ -30,7 +30,7 @@ Game::Game()
 {
 	init();
 }
-
+/*
 Game::Game(const SessionInfo *initial)
 {
 	loadBase(initial);
@@ -39,17 +39,21 @@ Game::Game(const SessionInfo *initial)
 bool Game::loadBase(const SessionInfo *initial)
 {
 	init();
-	printf("initial->map.getMapFileName()=%s.\n", initial->map.getMapFileName());
-	const char *s=initial->map.getMapFileName();
+	const char *s=NULL;
+	if (initial->fileIsAMap)
+		s=initial->map.getMapFileName();
+	else
+		s=initial->map.getGameFileName();
 	assert(s);
 	assert(s[0]);
-	SDL_RWops *stream=globalContainer->fileManager.open(initial->map.getMapFileName(),"rb");
+	printf("Game::loadBase::s=%s.\n", s);
+	SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
 	if (!load(stream))
 		return false;
 	SDL_RWclose(stream);
 	setBase(initial);
 	return true;
-}
+}*/
 
 Game::~Game()
 {
@@ -426,6 +430,7 @@ void Game::save(SDL_RWops *stream)
 	// first we save a session info
 	SessionInfo tempSessionInfo(session);
 	
+	tempSessionInfo.fileIsAMap=(Sint32)false;
 	tempSessionInfo.map=map;
 
 	for (i=0; i<session.numberOfTeam; ++i)

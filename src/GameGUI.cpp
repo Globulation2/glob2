@@ -54,6 +54,7 @@ GameGUI::~GameGUI()
 void GameGUI::init()
 {
 	int i;
+	paused=false;
 	isRunning=true;
 	exitGlobCompletely=false;
 	toLoadGameFileName[0]=0;
@@ -685,6 +686,10 @@ void GameGUI::handleKey(SDL_keysym keySym, bool pressed)
 					viewportX=evX-((sw-128)>>6);
 					viewportY=evY-(sh>>6);
 				}
+				break;
+			case SDLK_w:
+				if (pressed)
+					paused=!paused;
 				break;
 			default:
 
@@ -1649,6 +1654,37 @@ void GameGUI::executeOrder(Order *order)
 		}
 	}
 }
+
+bool GameGUI::loadBase(const SessionInfo *initial)
+{
+	if (initial->fileIsAMap)
+	{
+		const char *s=initial->map.getMapFileName();
+		assert(s);
+		assert(s[0]);
+		printf("GameGUI::loadBase[map]::s=%s.\n", s);
+		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
+		if (!load(stream))
+			return false;
+		SDL_RWclose(stream);
+		game.setBase(initial);
+		return true;
+	}
+	else
+	{
+		const char *s=initial->map.getGameFileName();
+		assert(s);
+		assert(s[0]);
+		printf("GameGUI::loadBase[game]::s=%s.\n", s);
+		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
+		if (!game.load(stream))
+			return false;
+		SDL_RWclose(stream);
+		game.setBase(initial);
+		return true;
+	}
+}
+
 bool GameGUI::load(SDL_RWops *stream)
 {
 	init();
@@ -1661,6 +1697,8 @@ bool GameGUI::load(SDL_RWops *stream)
 		localPlayer=SDL_ReadBE32(stream);
 		localTeam=SDL_ReadBE32(stream);
 	}
+	if (game.session.versionMinor>4)
+		assert(!game.session.fileIsAMap);
 	
 	if (result==false)
 		printf("GameGUI : Critical : Wrong map format, signature missmatch\n");

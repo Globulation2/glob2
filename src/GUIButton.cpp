@@ -80,19 +80,22 @@ void Button::onSDLEvent(SDL_Event *event)
 
 void Button::repaint(void)
 {
-	if (highlighted)
+	if (visible)
 	{
-		if (highlightID>=0)
-			gfx->drawSprite(x, y, arch, highlightID);
+		if (highlighted)
+		{
+			if (highlightID>=0)
+				gfx->drawSprite(x, y, arch, highlightID);
+			else
+				parent->paint(x, y, w, h);
+		}
 		else
-			parent->paint(x, y, w, h);
-	}
-	else
-	{
-		if (standardId>=0)
-			gfx->drawSprite(x, y, arch, standardId);
-		else
-			parent->paint(x, y, w, h);
+		{
+			if (standardId>=0)
+				gfx->drawSprite(x, y, arch, standardId);
+			else
+				parent->paint(x, y, w, h);
+		}
 	}
 	parent->addUpdateRect(x, y, w, h);
 }
@@ -100,12 +103,15 @@ void Button::repaint(void)
 void Button::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
-	if (standardId>=0)
+	if ((visible)&&(standardId>=0))
 		gfx->drawSprite(x, y, arch, standardId);
 	highlighted=false;
 }
 
-
+void Button::setDrawableSurface(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
+}
 
 TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId, int highlightID, const Font *font, const char *text, int returnCode, Uint16 unicode)
 :Button(x, y, w, h, arch, standardId, highlightID, returnCode, unicode)
@@ -118,8 +124,11 @@ TextButton::TextButton(int x, int y, int w, int h, Sprite *arch, int standardId,
 void TextButton::paint(DrawableSurface *gfx)
 {
 	Button::paint(gfx);
-	gfx->drawString(x+decX, y+decY, font, text);
-	gfx->drawRect(x, y, w, h, 180, 180, 180);
+	if (visible)
+	{
+		gfx->drawString(x+decX, y+decY, font, text);
+		gfx->drawRect(x, y, w, h, 180, 180, 180);
+	}
 }
 
 void TextButton::setText(const char *text)
@@ -137,16 +146,19 @@ void TextButton::repaint(void)
 {
 	Button::repaint();
 	parent->paint(x, y, w, h);
-	gfx->drawString(x+decX, y+decY, font, text);
-	if (highlighted)
+	if (visible)
 	{
-		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
-		gfx->drawRect(x, y, w, h, 255, 255, 255);
+		gfx->drawString(x+decX, y+decY, font, text);
+		if (highlighted)
+		{
+			gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
+			gfx->drawRect(x, y, w, h, 255, 255, 255);
+		}
+		else
+			gfx->drawRect(x, y, w, h, 180, 180, 180);
 	}
-	else
-		gfx->drawRect(x, y, w, h, 180, 180, 180);
+	parent->addUpdateRect(x, y, w, h);
 }
-
 
 // FIXME : use intermediate class for highlight handling
 
@@ -225,7 +237,8 @@ void OnOffButton::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
 	highlighted=false;
-	internalPaint();
+	if (visible)
+		internalPaint();
 }
 
 void OnOffButton::repaint(void)
@@ -302,6 +315,7 @@ void ColorButton::onSDLEvent(SDL_Event *event)
 
 void ColorButton::internalPaint(void)
 {
+	assert(gfx);
 	if (highlighted)
 	{
 		gfx->drawRect(x+1, y+1, w-2, h-2, 255, 255, 255);
@@ -321,12 +335,19 @@ void ColorButton::paint(DrawableSurface *gfx)
 {
 	this->gfx=gfx;
 	highlighted=false;
-	internalPaint();
+	if (visible)
+		internalPaint();
+}
+
+void ColorButton::setDrawableSurface(DrawableSurface *gfx)
+{
+	this->gfx=gfx;
 }
 
 void ColorButton::repaint(void)
 {
 	parent->paint(x, y, w, h);
-	internalPaint();
+	if (visible)
+		internalPaint();
 	parent->addUpdateRect(x, y, w, h);
 }

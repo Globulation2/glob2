@@ -36,10 +36,12 @@ protected:
 	DrawableSurface *gfx;
 
 public:
-	Text(int x, int y,const Font *font, const char *text, int w=0, int h=0);
+	Text(int x, int y, const Font *font, const char *text, int w=0, int h=0);
 	virtual ~Text() { if (this->text) delete[] this->text; }
 	virtual void setText(const char *newText);
 	virtual void paint(DrawableSurface *gfx);
+	virtual void setDrawableSurface(DrawableSurface *gfx);
+	virtual void repaint(void);
 };
 
 #endif

@@ -32,13 +32,18 @@ public:
 	enum
 	{
 		OK = 1,
-		CANCEL = 2
+		CANCEL = 2, 
+		TOOGLE = 8
 	};
 	SessionInfo sessionInfo;
 
 private:
 	Button *ok, *cancel;
-	List *fileList;
+	List *mapFileList;
+	List *gameFileList;
+	bool mapMode;
+	Text *title;
+	TextButton *toogleButton;
 	MapPreview *mapPreview;
 	Text *mapName, *mapInfo, *mapVersion, *mapSize;
 	bool validSessionInfo;

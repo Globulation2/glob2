@@ -78,9 +78,12 @@ public:
 	Sint32 gameTPF;
 	//! Number of tick between order issue and order commit. This is the maximum lag during a game
 	Sint32 gameLatency;
-private:
+	
+	Sint32 fileIsAMap;
+protected:
 	//! Serialized form of SessionGame
-	char data[24];
+	enum {S_GAME_DATA_SIZE=28};
+	char data[S_GAME_DATA_SIZE];
 };
 
 //! The session that indirectly derive from Order.
@@ -105,17 +108,17 @@ public:
 	//! draw a list of players
 	void draw(DrawableSurface *gfx);
 	//! get information on player in a nice string
-	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, int stringLen);
+	void getPlayerInfo(int playerNumber, int *teamNumber, char *infoString, SessionInfo *savedSessionInfo, int stringLen);
 
 public:
 	BaseMap map;
 	BasePlayer players[32];
 	BaseTeam team[32];
 
-private:
+protected:
 	//! Serialized form of SessionInfo
-	enum {DATA_SIZE=2488};
-	char data[DATA_SIZE];
+	enum {S_INFO_DATA_SIZE=2464+S_GAME_DATA_SIZE};
+	char data[S_INFO_DATA_SIZE];
 };
 
 #endif 

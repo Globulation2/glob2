@@ -18,24 +18,26 @@
 
 */
 
-//MultiplayersHostScreen pannel part !!
-
-// This is the screen that add Players to sessionInfo.
-// There are two buttons:
-// -Start
-// -Cancel
-
 #include "MultiplayersHostScreen.h"
 #include "GlobalContainer.h"
 #include "GAG.h"
 #include "YOGScreen.h"
-//#include "NetConsts.h"
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
 	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI));
 	addWidget(new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	
+	if (!sessionInfo->fileIsAMap)
+	{
+		// We remember the sessionInfo at saving time.
+		// This may be used to match player's current's names with old player's names.
+		savedSessionInfo=*sessionInfo;
+		// We erase players info.
+		sessionInfo->numberOfPlayer=0;
+	}
+	printf("MultiplayersHostScreen::sessionInfo->fileIsAMap=%d.\n", sessionInfo->fileIsAMap);
 	
 	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
 	multiplayersJoin=NULL;
@@ -51,7 +53,14 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 		addWidget(color[i]);
 		text[i]=new Text(42, 62+i*20, globalContainer->standardFont,  globalContainer->texts.getString("[open]"));
 		addWidget(text[i]);
+		kickButton[i]=new TextButton(520, 62+i*20, 100, 18, NULL, -1, -1, globalContainer->standardFont, globalContainer->texts.getString("[close]"), CLOSE_BUTTONS+i);
+		addWidget(kickButton[i]);
+		
 		wasSlotUsed[i]=false;
+		
+		text[i]->visible=false;
+		color[i]->visible=false;
+		kickButton[i]->visible=false;
 	}
 	startTimer=new Text(20, 400, globalContainer->standardFont, "");
 	addWidget(startTimer);
@@ -73,22 +82,42 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		{
 			int teamNumber;
 			char playerInfo[128];
-			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, sizeof(playerInfo));
+			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, &savedSessionInfo, 128);
+			text[i]->setDrawableSurface(gfxCtx);
 			text[i]->setText(playerInfo);
+			color[i]->setDrawableSurface(gfxCtx);
 			color[i]->setSelectedColor(teamNumber);
+			kickButton[i]->setDrawableSurface(gfxCtx);
+			if (!wasSlotUsed[i])
+			{
+				text[i]->visible=true;
+				color[i]->visible=true;
+				kickButton[i]->visible=true;
+				kickButton[i]->repaint();
+			}
 			wasSlotUsed[i]=true;
 		}
 		else
 		{
 			if (wasSlotUsed[i])
 			{
-				text[i]->setText(globalContainer->texts.getString("[open]"));
-				color[i]->setSelectedColor(0);
+				
+				text[i]->visible=false;
+				color[i]->visible=false;
+				kickButton[i]->visible=false;
+				
 				wasSlotUsed[i]=false;
+				
+				//text[i]->setText(globalContainer->texts.getString("[open]"));
+				//color[i]->setSelectedColor(0);
+				
+				text[i]->repaint();
+				color[i]->repaint();
+				kickButton[i]->repaint();
+				
 			}
 		}
 	}
-	//addUpdateRect(20, 20, gfxCtx->getW()-40, 400);
 
 	if ((multiplayersHost->serverIP.host!=0) && (multiplayersJoin==NULL))
 	{
@@ -136,8 +165,9 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 			endExecute(par1);
 		break;
 		case ADD_AI :
-			multiplayersHost->addAI();
-			printf("added ai.\n");
+			if ((multiplayersHost->hostGlobalState<MultiplayersHost::HGS_GAME_START_SENDED)
+				&&(multiplayersHost->sessionInfo.numberOfPlayer<MAX_NUMBER_OF_PLAYERS))
+				multiplayersHost->addAI();
 		break;
 		case -1:
 			multiplayersHost->stopHosting();
@@ -147,6 +177,8 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 		{
 			if ((par1>=COLOR_BUTTONS)&&(par1<COLOR_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 				multiplayersHost->switchPlayerTeam(par1-COLOR_BUTTONS);
+			if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+				multiplayersHost->kickPlayer(par1-CLOSE_BUTTONS);
 		}
 		break;
 		}
@@ -155,5 +187,6 @@ void MultiplayersHostScreen::onAction(Widget *source, Action action, int par1, i
 
 void MultiplayersHostScreen::paint(int x, int y, int w, int h)
 {
+	assert(gfxCtx);
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
 }
