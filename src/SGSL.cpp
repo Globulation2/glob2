@@ -1550,7 +1550,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							break;
 						}
 						thisone.line.push_back(*donnees->getToken());
-						NEXT_TOKEN;
+						/*NEXT_TOKEN;
 						//Optional "areaName"
 						if (donnees->getToken()->type != Token::S_PARCLOSE)
 						{
@@ -1571,7 +1571,9 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 						else
 						{ // there was no flag name but a closing parenthesis
-						}
+						}*/
+						CHECK_PARCLOSE;
+
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
 						if ((donnees->getToken()->type < Token::S_EQUAL) || (donnees->getToken()->type > Token::S_LOWER))
