@@ -574,6 +574,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 				break;
 			while ((donnees.getToken().type != Token::S_STORY) && (donnees.getToken().type !=Token::S_EOF))
 			{
+				if (er.type != ErrorReport::ET_OK)
+					break;
 				// Grammar check
 				er.line=donnees.getLine();
 				er.col=donnees.getCol();
@@ -588,6 +590,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::STRING)
 						{
+							er.line=donnees.getLine();
+							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -606,6 +610,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if (donnees.getToken().type != Token::INT)
 							{
+								er.line=donnees.getLine();
+								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -618,6 +624,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if (donnees.getToken().type != Token::INT)
 							{
+								er.line=donnees.getLine();
+								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -626,6 +634,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							donnees.nextToken();
 							if ((donnees.getToken().type != Token::S_YOU) || (donnees.getToken().type != Token::S_NOENEMY))
 							{
+								er.line=donnees.getLine();
+								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
@@ -657,24 +667,32 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 									}
 									else
 									{
+										er.line=donnees.getLine();
+										er.col=donnees.getCol();
 										er.type=ErrorReport::ET_SYNTAX_ERROR;
 										break;
 									}
 								}
 								else
 								{
+									er.line=donnees.getLine();
+									er.col=donnees.getCol();
 									er.type=ErrorReport::ET_SYNTAX_ERROR;
 									break;
 								}
 							}
 							else
 							{
+								er.line=donnees.getLine();
+								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
 						}
 						else
 						{
+							er.line=donnees.getLine();
+							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -702,12 +720,16 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 							}
 							else
 							{
+								er.line=donnees.getLine();
+								er.col=donnees.getCol();
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
 						}
 						else
 						{
+							er.line=donnees.getLine();
+							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -721,6 +743,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 						donnees.nextToken();
 						if (donnees.getToken().type != Token::INT)
 						{
+							er.line=donnees.getLine();
+							er.col=donnees.getCol();
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
 						}
@@ -745,7 +769,8 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 					}
 					break;
 					default:
-						cout << donnees.getToken().type << endl;
+						er.line=donnees.getLine();
+						er.col=donnees.getCol();
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 				}
