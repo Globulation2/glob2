@@ -1310,7 +1310,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 	
 	// We draw debug area:
-	//if (false)
+	if (false)
 	{
 		assert(teams[0]);
 		Building *b=NULL;
@@ -1329,27 +1329,25 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	}
 	
 	// We draw debug area:
-	if (false)
+	if (selectedUnit && selectedUnit->verbose)
 	{
-		assert(teams[0]);
-		Building *b=NULL;
-		//b=teams[0]->myBuildings[0];
-		if (teams[0]->virtualBuildings.size())
-			b=*teams[0]->virtualBuildings.begin();
-		
+		//assert(teams[0]);
+		Building *b=selectedUnit->attachedBuilding;
+		//b=teams[0]->myBuildings[21];
+		//if (teams[0]->virtualBuildings.size())
+		//	b=*teams[0]->virtualBuildings.begin();
+
 		int w=map.getW();
 		if (b && b->globalGradient[1])
-		{
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
 				{
 					globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[1][x+viewportX+(y+viewportY)*w]);
-					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", (x+viewportX+map.getW())&(map.getMaskW()));
-					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", (y+viewportY+map.getH())&(map.getMaskH()));
+					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
+					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
 				}
-
-		}
 	}
+	
 
 	// We draw ground units:
 	mouseUnit=NULL;

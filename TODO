@@ -7,6 +7,7 @@ Bug:
 - La destruction d'un batiment n'altère pas les gradients des autre équipes.
 - Les viewportX/Y ils n'ont pas l'air de se charger correctement dans l'éditeur (la touche "tab" bug),
 	et lorsque on sauve une partie, on ne se retrouve pas centré sur le premier batiment.
+- Réparer un batiment de dernier niveau assert(false); (fixed)
 
 ingameGUI:
 - Les info en bleu pour upgrader un batiment de nouriture viennent pas dessus les fruits.
@@ -20,7 +21,7 @@ Pathfindig:
 - est-ce que les targetX/Y peuvent-être doublé de précision, puisque ils ne sont utilitsés que pour le gameplay ?
 - Enlever toutes les méthodes inutiles.
 - Aller chercher la ressource qui est aussi proche du batiment.
-- Ajouters des stats sur le CPU.
+- si un batiment est enfermé, il faut gérer!
 
 Technique :
 - Cleaner le rendu de la minimap, integrer toutes les ressources.

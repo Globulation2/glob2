@@ -52,6 +52,10 @@ public:
 public:
 	GameGUI gui;
 	NetGame *net;
+
+protected:
+	int cpuStats[40];
+	FILE *logFile;
 };
 
 #endif
