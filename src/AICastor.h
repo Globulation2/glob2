@@ -102,13 +102,13 @@ public:
 		
 		Build build[IntBuildingType::NB_BUILDING];
 		
-		Uint32 warTimeTriger;
-		Sint32 warLevelTriger;
-		Sint32 warAmountTriger;
+		Uint32 warTime;
+		Sint32 warLevel;
+		Sint32 warAmount;
 		
-		Uint32 strikeTimeTriger;
-		Sint32 strikeWarPowerTrigerUp;
-		Sint32 strikeWarPowerTrigerDown;
+		Uint32 strikeTime;
+		Sint32 strikeWarPowerUp;
+		Sint32 strikeWarPowerDown;
 		
 		Sint32 maxAmountGoal;
 	};
@@ -187,12 +187,12 @@ public:
 	int buildingSum[IntBuildingType::NB_BUILDING][2]; // [shortTypeNum][isBuildingSite]
 	int buildingLevels[IntBuildingType::NB_BUILDING][2][4]; // [shortTypeNum][isBuildingSite][level]
 	int warLevel; // 0: no war
-	int warTimeTrigerLevel;
-	int warLevelTrigerLevel;
-	int warAmountTrigerLevel;
+	int warTimeLevel;
+	int warLevelLevel;
+	int warAmountLevel;
 	
 	bool onStrike;
-	Uint32 strikeTimeTriger;
+	Uint32 strikeTime;
 	bool strikeTeamSelected;
 	int strikeTeam;
 	
