@@ -89,7 +89,7 @@ private:
 	void handleActivation(Uint8 state, Uint8 gain);
 	void viewportFromMxMY(int mx, int my);
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
-	void drawButton(int x, int y, const char *caption);
+	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption, int i=-1);
 	void checkValidSelection(void);
 	void statStep(void);
