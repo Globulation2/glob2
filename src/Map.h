@@ -21,6 +21,7 @@
 #define __MAP_H
 
 #include <list>
+#include <valarray>
 #include <assert.h>
 
 #include "Building.h"
@@ -171,6 +172,12 @@ public:
 	bool isFOWDiscovered(int x, int y, int visionMask)
 	{
 		return ((*(fogOfWar+w*(y&hMask)+(x&wMask)))&visionMask)!=0;
+	}
+	
+	//! Return true if the position (x,y) is not a forbidden area set by the user
+	bool isNotForbiddenLocal(int x, int y, int teamMask)
+	{
+		return ((*(cases+w*(y&hMask)+(x&wMask))).forbidden&teamMask) != 0;
 	}
 
 	inline Uint16 getTerrain(int x, int y)
@@ -471,6 +478,9 @@ public:
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
 	Uint32 *mapDiscovered;
 	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
+	//! Array of mask, same as in Case::forbidden : one bit by team, 0=forbidden case, 1=allowed case.
+	std::valarray<Uint32> localForbiddenMap;
+	
 public:
 	//[int team][int ressourceNumber][bool unitCanSwim][int mapX][int mapY]
 	//255=ressource, 0=obstacle, the higher it is, the closest it is from the ressouce.
