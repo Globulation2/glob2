@@ -63,8 +63,6 @@
 #define YOFFSET_TEXT_PARA 14
 #define YOFFSET_TEXT_LINE 12
 
-#define SMOOTH_CPU_LOAD_WINDOW_LENGTH 32
-
 enum GameGUIGfxId
 {
 	EXCHANGE_BUILDING_ICONS = 21
@@ -106,7 +104,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 }
 
 GameGUI::GameGUI()
-:smoothedStepTimeToWait(0, SMOOTH_CPU_LOAD_WINDOW_LENGTH)
+:game(this)
 {
 }
 
@@ -126,7 +124,6 @@ void GameGUI::init()
 	drawPathLines=false;
 	viewportX=0;
 	viewportY=0;
-	smoothedStepTimeToWaitPos=0;
 	mouseX=0;
 	mouseY=0;
 	displayMode=BUILDING_VIEW;
@@ -175,6 +172,10 @@ void GameGUI::init()
 	flagsChoice.push_back(11);
 
 	hiddenGUIElements=0;
+	
+	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+		smoothedCpuLoad[i]=0;
+	smoothedCpuLoadPos=0;
 }
 
 void GameGUI::adjustInitialViewport()
@@ -2581,27 +2582,20 @@ void GameGUI::drawOverlayInfos(void)
 	
 	// draw network latency
 	dec += 110;
-	int stepTimeToWaitLength = static_cast<int>(smoothedStepTimeToWait.size());
-	int stepTimeToWaitMean=smoothedStepTimeToWait.sum() / stepTimeToWaitLength;
-	if (stepTimeToWaitMean>8)
+	int cpuLoadMax=0;
+	for (int i=0; i<SMOOTH_CPU_LOAD_WINDOW_LENGTH; i++)
+		if (cpuLoadMax<smoothedCpuLoad[i])
+			cpuLoadMax=smoothedCpuLoad[i];
+	if (cpuLoadMax<game.session.gameTPF-8)
 		memcpy(actC, greenC, sizeof(greenC));
-	else if (stepTimeToWaitMean>0)
+	else if (cpuLoadMax<game.session.gameTPF)
 		memcpy(actC, yellowC, sizeof(yellowC));
 	else
 		memcpy(actC, redC, sizeof(redC));
 	
-	globalContainer->gfx->drawFilledRect(dec, 4, 40-stepTimeToWaitMean, 8, actC[0], actC[1], actC[2]);
+	globalContainer->gfx->drawFilledRect(dec, 4, cpuLoadMax, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
-	
-	// compute variance
-	std::valarray<int> varArray = smoothedStepTimeToWait - stepTimeToWaitMean;
-	varArray.apply(intSquare);
-	int squareSum = varArray.sum();
-	int squareVar = squareSum/(stepTimeToWaitLength-1);
-	int var = static_cast<int>(sqrt(static_cast<double>(squareVar)));
-	globalContainer->gfx->drawVertLine(dec+40-stepTimeToWaitMean+var, 3, 10, 180, 180, 180);
-	globalContainer->gfx->drawVertLine(dec+40-stepTimeToWaitMean-var, 3, 10, 180, 180, 180);
 	
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-128-32;
@@ -3210,11 +3204,10 @@ void GameGUI::disableGUIElement(int id)
 		nextDisplayMode();
 }
 
-void GameGUI::setLastStepTimeToWait(int s)
+void GameGUI::setCpuLoad(int s)
 {
-	smoothedStepTimeToWait[smoothedStepTimeToWaitPos] = s;
-	smoothedStepTimeToWaitPos++;
-	smoothedStepTimeToWaitPos %= smoothedStepTimeToWait.size();
+	smoothedCpuLoad[smoothedCpuLoadPos]=s;
+	smoothedCpuLoadPos=(smoothedCpuLoadPos+1)%SMOOTH_CPU_LOAD_WINDOW_LENGTH;
 }
 
 void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *output)

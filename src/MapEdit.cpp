@@ -30,6 +30,7 @@
 #include "Utilities.h"
 
 MapEdit::MapEdit()
+:game(NULL)
 {
 	// default value;
 	viewportX=0;

@@ -40,10 +40,10 @@ Options:
 
 Propreté du code:
 - Est-ce que on veux remettre une interface "Serialisable", après avoir enlevé "Order" dans certins objets ?
+- (Traduction) Regarder si il y a des %s/%d à rajouter au lieu de deux traductions. GameGUI::addMessage()
 
 MapEditor:
 -http://ysagoon.com/phpBB2/viewtopic.php?t=32&sid=d676d2a022afe27b03140af75b07706a
--La génération automatique est de nouveau cassée!
 
 YOG:
 -Ajouter des chambres

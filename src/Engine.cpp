@@ -410,7 +410,7 @@ int Engine::run(void)
 				// here we do the real work
 				
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
-					gui.game.syncStep(&gui, gui.localTeamNo);
+					gui.game.syncStep(gui.localTeamNo);
 			}
 
 			// we draw
@@ -431,7 +431,7 @@ int Engine::run(void)
 			startTick=SDL_GetTicks();
 			
 			net->setLeftTicks(computationAviableTicks);//We may have to tell others IP players to wait for our slow computer.
-			gui.setLastStepTimeToWait(computationAviableTicks);
+			gui.setCpuLoad(ticksSpentInComputation);
 			if (networkReadyToExecute && !gui.gamePaused)
 			{
 				Sint32 i=computationAviableTicks;

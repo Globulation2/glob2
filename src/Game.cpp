@@ -42,10 +42,10 @@
 #define MIN_MAX_PRESIGE 500
 #define TEAM_MAX_PRESTIGE 230
 
-Game::Game()
+Game::Game(GameGUI *gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
-	init();
+	init(gui);
 }
 
 Game::~Game()
@@ -87,8 +87,10 @@ Game::~Game()
 	minimap=NULL;
 }
 
-void Game::init()
+void Game::init(GameGUI *gui)
 {
+	this->gui=gui;
+	
 	// init minimap
 	minimap=globalContainer->gfx->createDrawableSurface();
 	minimap->setRes(100, 100);
@@ -801,7 +803,7 @@ void Game::wonSyncStep(void)
 	}
 }
 
-void Game::scriptSyncStep(GameGUI *gui)
+void Game::scriptSyncStep()
 {
 	// do a script step
 	script.syncStep(gui);
@@ -819,7 +821,7 @@ void Game::scriptSyncStep(GameGUI *gui)
 	}
 }
 
-void Game::syncStep(GameGUI *gui, Sint32 localTeam)
+void Game::syncStep(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
@@ -854,7 +856,7 @@ void Game::syncStep(GameGUI *gui, Sint32 localTeam)
 
 		if ((stepCounter&31)==0)
 		{
-			scriptSyncStep(gui);
+			scriptSyncStep();
 			wonSyncStep();
 		}
 
