@@ -24,6 +24,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text)
 {
 	this->x=x;
@@ -462,7 +463,7 @@ void TextArea::onSDLEvent(SDL_Event *event)
 
 void TextArea::setCursorPos(unsigned pos)
 {
-	cursorPos = std::min(pos, text.length());
+	cursorPos = std::min(pos, (unsigned int)text.length());
 	computeAndRepaint();
 }
 
