@@ -33,8 +33,14 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
+# include <openGL/gl.h>
+# include <openGL/glu.h>
+# include <glut/glut.h>
+#else
+# include <GL/gl.h>
+# include <GL/glut.h>
+#endif
 #include <sstream>
 
 // Internal support functions
