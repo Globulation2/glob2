@@ -46,16 +46,16 @@ void YOGPreScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==CANCEL)
 		{
-			globalContainer->yog->deconnect();
+			yog->deconnect();
 			endExecutionValue=CANCEL;
 		}
 		else if (par1==LOGIN)
 		{
-			globalContainer->yog->enableConnection(textInput->text);
+			yog->enableConnection(textInput->text);
 		}
 		else if (par1==-1)
 		{
-			globalContainer->yog->deconnect();
+			yog->deconnect();
 			endExecutionValue=-1;
 		}
 		else
@@ -76,25 +76,25 @@ void YOGPreScreen::paint(int x, int y, int w, int h)
 
 void YOGPreScreen::onTimer(Uint32 tick)
 {
-	globalContainer->yog->step();
+	yog->step();
 	if (endExecutionValue!=EXECUTING)
 	{
-		if (globalContainer->yog->yogGlobalState<=YOG::YGS_NOT_CONNECTING)
+		if (yog->yogGlobalState<=YOG::YGS_NOT_CONNECTING)
 			endExecute(endExecutionValue);
 	}
-	else if (globalContainer->yog->yogGlobalState>=YOG::YGS_CONNECTED)
+	else if (yog->yogGlobalState>=YOG::YGS_CONNECTED)
 	{
 		printf("YOGPreScreen:: starting YOGScreen...\n");
 		YOGScreen yogScreen;
 		int yogReturnCode=yogScreen.execute(globalContainer->gfx, 50);
 		if (yogReturnCode==YOGScreen::CANCEL)
 		{
-			globalContainer->yog->deconnect();
+			yog->deconnect();
 			//endExecutionValue=CANCEL;
 		}
 		else if (yogReturnCode==-1)
 		{
-			globalContainer->yog->deconnect();
+			yog->deconnect();
 			endExecutionValue=-1;
 		}
 		else
@@ -102,12 +102,12 @@ void YOGPreScreen::onTimer(Uint32 tick)
 		printf("YOGPreScreen:: YOGScreen has ended ...\n");
 		dispatchPaint(gfxCtx);
 	}
-	if (globalContainer->yog->externalStatusState!=oldYOGExternalStatusState)
+	if (yog->externalStatusState!=oldYOGExternalStatusState)
 	{
-		char *s=globalContainer->yog->getStatusString();
+		char *s=yog->getStatusString();
 		statusText->setText(s);
 		delete[] s;
-		oldYOGExternalStatusState=globalContainer->yog->externalStatusState;
+		oldYOGExternalStatusState=yog->externalStatusState;
 	}
 	
 }

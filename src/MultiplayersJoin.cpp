@@ -777,14 +777,14 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 				waitingTimeout=0;
 				waitingTimeoutSize=SHORT_NETWORK_TIMEOUT;
 				waitingTOTL=DEFAULT_NETWORK_TOTL;
-				globalContainer->yog->connectedToGameHost();
+				yog->connectedToGameHost();
 			}
 		break;
 		
 		case SERVER_PRESENCE :
 			dataPresenceRecieved(data, size, ip);
 			if (waitingState>=WS_WAITING_FOR_PRESENCE)
-				globalContainer->yog->connectedToGameHost();
+				yog->connectedToGameHost();
 		break;
 		
 		case DATA_SESSION_INFO :
@@ -870,7 +870,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 void MultiplayersJoin::onTimer(Uint32 tick)
 {
 	if (shareOnYOG)
-		globalContainer->yog->step(); // YOG cares about firewall and NATipFromNAT
+		yog->step(); // YOG cares about firewall and NATipFromNAT
 	
 	sendingTime();
 	
@@ -1508,7 +1508,7 @@ bool MultiplayersJoin::tryConnection(bool isHostToo)
 	
 	if (shareOnYOG)
 	{
-		globalContainer->yog->setJoinGameSocket(socket);
+		yog->setJoinGameSocket(socket);
 		waitingTOTL=DEFAULT_NETWORK_TOTL+1; //because the first try is lost if there is a firewall or NAT.
 		if (!localPort)
 			localPort=findLocalPort(socket);

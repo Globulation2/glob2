@@ -43,7 +43,8 @@
 #	include <sys/time.h>
 #endif
 
-GlobalContainer *globalContainer=0;
+GlobalContainer *globalContainer=NULL;
+YOG *yog=NULL;
 
 
 void Glob2::drawYOGSplashScreen(void)
@@ -85,14 +86,14 @@ int Glob2::runHostServer(int argc, char *argv[])
 	//TODO: test runHostServer !!! zzz
 	
 	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->userName);
-	globalContainer->yog->enableConnection(globalContainer->userName);
+	yog->enableConnection(globalContainer->userName);
 	
-	while(globalContainer->yog->yogGlobalState==YOG::YGS_CONNECTING)
+	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
 	{
-		globalContainer->yog->step();
+		yog->step();
 		SDL_Delay(50);
 	}
-	if (globalContainer->yog->yogGlobalState<YOG::YGS_CONNECTED)
+	if (yog->yogGlobalState<YOG::YGS_CONNECTED)
 	{
 		printf("Glob2::failed to connect to YOG!.\n");
 		return 0;
@@ -122,7 +123,7 @@ int Glob2::runHostServer(int argc, char *argv[])
 	
 	printf("Glob2::runHostServer():sharing the game...\n");
 	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
-	globalContainer->yog->shareGame(sessionInfo.map.getMapName());
+	yog->shareGame(sessionInfo.map.getMapName());
 	
 	Uint32 frameStartTime;
 	Sint32 frameWaitTime;
@@ -183,17 +184,17 @@ int Glob2::runHostServer(int argc, char *argv[])
 			SDL_Delay(frameWaitTime);
 	}
 	
-	globalContainer->yog->unshareGame();
+	yog->unshareGame();
 	
 	
 	delete multiplayersHost;
 	
 	printf("Glob2::runHostServer(): disconnecting YOG.\n");
 	
-	globalContainer->yog->deconnect();
-	while(globalContainer->yog->yogGlobalState==YOG::YGS_DECONNECTING)
+	yog->deconnect();
+	while(yog->yogGlobalState==YOG::YGS_DECONNECTING)
 	{
-		globalContainer->yog->step();
+		yog->step();
 		SDL_Delay(50);
 	}
 	
@@ -205,7 +206,8 @@ int Glob2::runHostServer(int argc, char *argv[])
 int Glob2::run(int argc, char *argv[])
 {
 	GAG::init();
-	globalContainer = new GlobalContainer();
+	globalContainer=new GlobalContainer();
+	yog=new YOG();
 
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
@@ -376,6 +378,7 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
+	delete yog;
 	delete globalContainer;
 	GAG::close();
 	return 0;

@@ -72,8 +72,8 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	if (shareOnYOG)
 	{
 		fprintf(logFile, "sharing on YOG\n");
-		globalContainer->yog->shareGame(sessionInfo->map.getMapName());
-		globalContainer->yog->setHostGameSocket(socket);
+		yog->shareGame(sessionInfo->map.getMapName());
+		yog->setHostGameSocket(socket);
 	}
 	
 	stream=NULL;
@@ -147,7 +147,7 @@ MultiplayersHost::~MultiplayersHost()
 	
 	if (shareOnYOG)
 	{
-		globalContainer->yog->unshareGame();
+		yog->unshareGame();
 	}
 	else
 	{
@@ -556,7 +556,7 @@ void MultiplayersHost::newPlayerPresence(char *data, int size, IPaddress ip)
 	sessionInfo.players[p].ipFromNAT=(bool)getSint32(data, 4);
 	fprintf(logFile, "this ip(%s) has ipFromNAT=(%d)\n", Utilities::stringIP(ip), sessionInfo.players[p].ipFromNAT);
 
-	globalContainer->yog->joinerConnected(ip);
+	yog->joinerConnected(ip);
 	// we check if this player has already a connection:
 
 	for (int i=0; i<p; i++)
@@ -1166,7 +1166,7 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 {
 	// call yog step
 	if (shareOnYOG && multiplayersJoin==NULL)
-		globalContainer->yog->step(); // YOG cares about firewall and NAT
+		yog->step(); // YOG cares about firewall and NAT
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
 	{
@@ -1599,7 +1599,7 @@ void MultiplayersHost::sendingTime()
 						*backupPlayer[i]=sessionInfo.players[i];
 						if (sessionInfo.players[i].ipFromNAT)
 						{
-							IPaddress newip=globalContainer->yog->ipFromUserName(sessionInfo.players[i].name);
+							IPaddress newip=yog->ipFromUserName(sessionInfo.players[i].name);
 							fprintf(logFile, "for player (%d) name (%s), may replace ip(%s) by ip(%s)\n", i, sessionInfo.players[i].name, Utilities::stringIP(sessionInfo.players[i].ip), Utilities::stringIP(newip));
 							if (newip.host)
 							{
@@ -1742,7 +1742,7 @@ void MultiplayersHost::stopHosting(void)
 	
 	if (shareOnYOG)
 	{
-		globalContainer->yog->unshareGame();
+		yog->unshareGame();
 	}
 }
 

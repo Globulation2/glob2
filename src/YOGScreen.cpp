@@ -69,7 +69,7 @@ YOGScreen::~YOGScreen()
 void YOGScreen::updateGameList(void)
 {
 	gameList->clear();
-	for (std::list<YOG::GameInfo>::iterator game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
+	for (std::list<YOG::GameInfo>::iterator game=yog->games.begin(); game!=yog->games.end(); ++game)
 		gameList->addText(game->name);
 	gameList->commit();
 }
@@ -77,7 +77,7 @@ void YOGScreen::updateGameList(void)
 void YOGScreen::updatePlayerList(void)
 {
 	playerList->clear();
-	for (std::list<YOG::Client>::iterator client=globalContainer->yog->clients.begin(); client!=globalContainer->yog->clients.end(); ++client)
+	for (std::list<YOG::Client>::iterator client=yog->clients.begin(); client!=yog->clients.end(); ++client)
 	{
 		if (client->playing)
 		{
@@ -124,28 +124,28 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 			// execute game
 			if (rc==Engine::EE_NO_ERROR)
 			{
-				globalContainer->yog->gameStarted();
+				yog->gameStarted();
 				if (engine.run()==-1)
 					endExecute(EXIT);
 					//run=false;
-				globalContainer->yog->gameEnded();
+				yog->gameEnded();
 			}
 			else if (rc==-1)
 				endExecute(-1);
 			// redraw all stuff
-			if (globalContainer->yog->newGameList(true))
+			if (yog->newGameList(true))
 				updateGameList();
-			if (globalContainer->yog->newPlayerList(true))
+			if (yog->newPlayerList(true))
 				updatePlayerList();
 			dispatchPaint(gfxCtx);
-			globalContainer->yog->unshareGame();
+			yog->unshareGame();
 		}
 		else if (par1==JOIN)
 		{
 			assert(source==joinButton);
-			if (globalContainer->yog->isSelectedGame)
+			if (yog->isSelectedGame)
 			{
-				selectedGameInfo=new YOG::GameInfo(*globalContainer->yog->getSelectedGameInfo());
+				selectedGameInfo=new YOG::GameInfo(*yog->getSelectedGameInfo());
 				multiplayersJoin->tryConnection(selectedGameInfo);
 			}
 		}
@@ -160,22 +160,22 @@ void YOGScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==TEXT_VALIDATED)
 	{
-		globalContainer->yog->sendMessage(textInput->text);
+		yog->sendMessage(textInput->text);
 		textInput->setText("");
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		//printf("YOG : LIST_ELEMENT_SELECTED\n");
-		if (!globalContainer->yog->newGameList(false))
+		if (!yog->newGameList(false))
 		{
 			std::list<YOG::GameInfo>::iterator game;
 			int i=0;
-			for (game=globalContainer->yog->games.begin(); game!=globalContainer->yog->games.end(); ++game)
+			for (game=yog->games.begin(); game!=yog->games.end(); ++game)
 				if (i==par1)
 				{
 					//printf("i=%d\n", i);
-					globalContainer->yog->selectGame(game->uid);
-					assert(game!=globalContainer->yog->games.end());
+					yog->selectGame(game->uid);
+					assert(game!=yog->games.end());
 					break;
 				}
 				else
@@ -200,15 +200,15 @@ void YOGScreen::paint(int x, int y, int w, int h)
 
 void YOGScreen::onTimer(Uint32 tick)
 {
-	if (globalContainer->yog->newGameList(true))
+	if (yog->newGameList(true))
 		updateGameList();	
-	if (globalContainer->yog->newPlayerList(true))
+	if (yog->newPlayerList(true))
 		updatePlayerList();
 	
-	//globalContainer->yog->step(); this yog->step() is allready done in multiplayersJoin instance.
-	while (globalContainer->yog->receivedMessages.size()>0)
+	//yog->step(); this yog->step() is allready done in multiplayersJoin instance.
+	while (yog->receivedMessages.size()>0)
 	{
-		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
+		std::list<YOG::Message>::iterator m=yog->receivedMessages.begin();
 		switch(m->messageType)//set the text color
 		{
 		case YCMT_MESSAGE:
@@ -264,18 +264,18 @@ void YOGScreen::onTimer(Uint32 tick)
 		break;
 		}
 		
-		globalContainer->yog->receivedMessages.erase(m);
+		yog->receivedMessages.erase(m);
 	}
 
 	// the game connection part:
 	multiplayersJoin->onTimer(tick);
-	if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)/* && (globalContainer->yog->unjoining==false)*/)
+	if ((multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)/* && (yog->unjoining==false)*/)
 	{
 		printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
-		globalContainer->yog->joinGame();
+		yog->joinGame();
 		MultiplayersConnectedScreen *multiplayersConnectedScreen=new MultiplayersConnectedScreen(multiplayersJoin);
 		int rv=multiplayersConnectedScreen->execute(globalContainer->gfx, 50);
-		globalContainer->yog->unjoinGame();
+		yog->unjoinGame();
 		if (rv==MultiplayersConnectedScreen::DISCONNECT)
 		{
 			printf("YOGScreen::yog game finished DISCONNECT returned.\n");
@@ -288,9 +288,9 @@ void YOGScreen::onTimer(Uint32 tick)
 		{
 			Engine engine;
 			engine.startMultiplayer(multiplayersJoin);
-			globalContainer->yog->gameStarted();
+			yog->gameStarted();
 			int rc=engine.run();
-			globalContainer->yog->gameEnded();
+			yog->gameEnded();
 			delete multiplayersJoin;
 			multiplayersJoin=new MultiplayersJoin(true);
 			assert(multiplayersJoin);
@@ -307,17 +307,17 @@ void YOGScreen::onTimer(Uint32 tick)
 			printf("YOGScreen::critical rv=%d\n", rv);
 			assert(false);
 		}
-		if (globalContainer->yog->newGameList(true))
+		if (yog->newGameList(true))
 			updateGameList();
-		if (globalContainer->yog->newPlayerList(true))
+		if (yog->newPlayerList(true))
 			updatePlayerList();
 		dispatchPaint(gfxCtx);
 		delete multiplayersConnectedScreen;
 	}
 	
-	if (globalContainer->yog->selectedGameinfoUpdated(true))
+	if (yog->selectedGameinfoUpdated(true))
 	{
-		YOG::GameInfo *yogGameInfo=globalContainer->yog->getSelectedGameInfo();
+		YOG::GameInfo *yogGameInfo=yog->getSelectedGameInfo();
 		if (yogGameInfo)
 		{
 			printf("selectedGameinfoUpdated (%s)\n", yogGameInfo->mapName);
@@ -359,7 +359,7 @@ void YOGScreen::onTimer(Uint32 tick)
 		}
 	}
 	
-	if (globalContainer->yog->connectionLost)
+	if (yog->connectionLost)
 	{
 		multiplayersJoin->quitThisGame();
 		endExecute(CANCEL);

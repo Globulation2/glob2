@@ -23,7 +23,6 @@
 #include "GAG.h"
 #include "StringTable.h"
 #include "BuildingType.h"
-class YOG;
 class FileManager;
 class LogFileManager;
 
@@ -58,9 +57,6 @@ public:
 	FileManager *fileManager;
 	LogFileManager *logFileManager;
 	
-	//! Ysagoon Online Game connector and session handler
-	YOG *yog;
-
 	GraphicContext *gfx;
 	Sprite *terrain;
 	Sprite *terrainShader;

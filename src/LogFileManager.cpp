@@ -37,21 +37,29 @@ LogFileManager::~LogFileManager()
 			fclose(logFileIt->file);
 }
 
-FILE *LogFileManager::getFile(char *name)
+FILE *LogFileManager::getFile(const char *fileName)
 {
 	//printf("getFile(%s).\n", name);
+	int fileNameSize=strlen(fileName);
+	int userNameSize=strlen(globalContainer->userName);
+	int fullSize=fileNameSize+userNameSize+1;
+	char *fullName=(char *)malloc(fullSize);
+	assert(fullName);
+	memcpy(fullName, globalContainer->userName, userNameSize);
+	memcpy(fullName+userNameSize, fileName, fileNameSize+1);
+	
 	for (std::vector<LogFMF>::iterator logFileIt=logFileList.begin(); logFileIt!=logFileList.end(); ++logFileIt)
-		if (logFileIt->name==name)
+		if (logFileIt->name==fullName)
 			return logFileIt->file;
 	
 	assert(fileManager);
-	FILE *file=fileManager->openFP(name, "w");
+	FILE *file=fileManager->openFP(fullName, "w");
 	
 	if (file==NULL)
 		file=stdout;
 	
 	LogFMF logFMF;
-	logFMF.name=name;
+	logFMF.name=fullName;
 	logFMF.file=file;
 	
 	logFileList.push_back(logFMF);
