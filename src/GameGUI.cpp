@@ -205,26 +205,41 @@ void GameGUI::step(void)
 	// do a yog step
 	globalContainer->yog->step();
 
-	// display chat messages
+	// display yog chat messages
 	while (globalContainer->yog->receivedMessages.size()>0)
 	{
 		std::list<YOG::Message>::iterator m=globalContainer->yog->receivedMessages.begin();
+		Uint8 r=255, g=255, b=255;
+		
 		switch(m->messageType)//set the text color
 		{
-		case YMT_MESSAGE:
-		break;
-		case YMT_PRIVATE_MESSAGE:
-		break;
-		case YMT_ADMIN_MESSAGE:
-		break;
-		default:
-			assert(false);
-		break;
+			case YMT_MESSAGE:
+				r = 99;
+				g = 143;
+				b = 255;
+			break;
+			
+			case YMT_PRIVATE_MESSAGE:
+				r = 99;
+				g = 255;
+				b = 242;
+			break;
+			
+			case YMT_ADMIN_MESSAGE:
+				r = 138;
+				g = 99;
+				b = 255;
+			break;
+			
+			default:
+				assert(false);
+			break;
 		}
+		
 		char msg[YOG::MAX_MESSAGE_SIZE];
-		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "<%s>%s", m->userName, m->text);
+		snprintf(msg, YOG::MAX_MESSAGE_SIZE, "<%s> %s", m->userName, m->text);
 		msg[YOG::MAX_MESSAGE_SIZE-1]=0;
-		addMessage(msg);
+		addMessage(msg, r, g, b);
 		globalContainer->yog->receivedMessages.erase(m);
 	}
 
