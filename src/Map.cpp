@@ -18,447 +18,112 @@
 */
 
 #include "Map.h"
-#include "Unit.h"
 #include "Game.h"
 #include "Utilities.h"
 
-Sector::Sector(Game *game)
-{
-	this->game=game;
-	this->map=&(game->map);
-}
-
-Sector::~Sector(void)
-{
-	free();
-}
-
-void Sector::setGame(Game *game)
-{
-	this->game=game;
-	this->map=&(game->map);
-	bullets.clear();
-}
-
-void Sector::free(void)
-{
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-		delete (*it);
-	
-	bullets.clear();
-	game=NULL;
-	map=NULL;
-}
-
-void Sector::save(SDL_RWops *stream)
-{
-	SDL_WriteBE32(stream, bullets.size());
-	// we write the number of bullets here
-	
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
-		(*it)->save(stream);
-	
-}
-
-bool Sector::load(SDL_RWops *stream, Game *game)
-{
-	int nbUsed;
-
-	free();
-	nbUsed=SDL_ReadBE32(stream);
-	for (int i=0; i<nbUsed; i++)
-	{
-		bullets.push_front(new Bullet(stream));
-	}
-	
-	this->game=game;
-	this->map=&(game->map);
-	return true;
-}
-
-void Sector::step(void)
-{
-	std::list<Bullet*>::iterator ittemp;
-	assert(map);
-	assert(game);
-	
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
-	{
-		if ( (*it)->ticksLeft > 0 )
-		{
-			(*it)->step();
-		}
-		else
-		{
-			int UID=map->getUnit((*it)->targetX, (*it)->targetY);
-			if (UID>=0)
-			{
-				int team=Unit::UIDtoTeam(UID);
-				int id=Unit::UIDtoID(UID);
-
-				game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::UNIT_UNDER_ATTACK_EVENT, UID);
-				game->teams[team]->myUnits[id]->hp-=(*it)->shootDamage;
-			}
-			else if (UID!=NOUID)
-			{
-				int team=Building::UIDtoTeam(UID);
-				int id=Building::UIDtoID(UID);
-
-				game->teams[team]->setEvent((*it)->targetX, (*it)->targetY, Team::BUILDING_UNDER_ATTACK_EVENT, UID);
-				Building *b=game->teams[team]->myBuildings[id];
-				int damage=(*it)->shootDamage-b->type->armor; 
-				if (damage>0)
-					b->hp-=damage;
-				else
-					b->hp--;
-				if (b->hp<=0)
-					b->kill();
-
-				//printf("bullet hitted building %d \n", (int)b);
-			}
-
-			ittemp=it;
-			it=bullets.erase(ittemp);
-		}
-	}
-}
 
 Map::Map()
-//:BaseMap()
 {
+	game=NULL;
+	
+	arraysBuilt=false;
+	
 	mapDiscovered=NULL;
+	fogOfWar=NULL;
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
-	fogOfWar=NULL;
-	sizeOfFogOfWar=0;
-	stepCounter=0;
 	cases=NULL;
-	sectors=NULL;
 	undermap=NULL;
-	game=NULL;
+	sectors=NULL;
+	
 	w=0;
 	h=0;
+	size=0;
 	wMask=0;
 	hMask=0;
 	wDec=0;
 	hDec=0;
 	wSector=0;
 	hSector=0;
+	sizeSector=0;
+	
+	stepCounter=0;
 }
 
 Map::~Map(void)
 {
-	if (mapDiscovered)
+	clear();
+}
+
+void Map::clear()
+{
+	if (arraysBuilt)
+	{
+		assert(mapDiscovered);
 		delete[] mapDiscovered;
-	if (fogOfWarA)
+		mapDiscovered=NULL;
+
+		fogOfWar=NULL;
+		
+		assert(fogOfWarA);
 		delete[] fogOfWarA;
-	if (fogOfWarB)
+		fogOfWarA=NULL;
+
+		assert(fogOfWarB);
 		delete[] fogOfWarB;
-	fogOfWar=NULL;
-	stepCounter=0;
-	sizeOfFogOfWar=0;
-	if (cases)
+		fogOfWarB=NULL;
+
+		assert(cases);
 		delete[] cases;
-	if (sectors)
-		delete[] sectors;
-	if (undermap)
+		cases=NULL;
+		
+		assert(undermap);
 		delete[] undermap;
-}
+		undermap=NULL;
+		
+		assert(sectors);
+		delete[] sectors;
+		sectors=NULL;
 
-bool Map::isWaterOrAlga(int x, int y)
-{
-	int t=getTerrain(x, y);
-	return ((t>=256)&&(t<256+16)) || ((t>=302)&&(t<312));
-}
-
-bool Map::isWater(int x, int y)
-{
-	int t=getTerrain(x, y);
-	return ((t>=256) && (t<256+16));
-}
-
-bool Map::isGrass(int x, int y)
-{
-	return (getTerrain(x, y)<16);
-}
-
-bool Map::isSand(int x, int y)
-{
-	int t=getTerrain(x, y);
-	return ((t>=128)&&(t<128+16));
-}
-
-bool Map::isGrowableRessource(int x, int y)
-{
-	int d=getTerrain(x, y)-272;
-	int r=d/10;
-	if ((d<0)||(d>=40))
-		return false;
-	return (r!=STONE);
-}
-
-bool Map::isRessource(int x, int y)
-{
-	return (getTerrain(x, y)>=272);
-}
-
-bool Map::isRemovableRessource(int x, int y)
-{
-	int resId = getTerrain(x, y)-272;
-	return ((resId>=0) && !((resId>=20) && (resId<=29)));
-}
-
-bool Map::isRessource(int x, int y, RessourceType ressourceType)
-{
-	// TODO : avoid the division !
-	int d=getTerrain(x, y)-272;
-	if (d<0)
-		return false;
-	else
-		return ( (d/10) == ressourceType );
-}
-
-bool Map::isRessource(int x, int y, RessourceType *ressourceType)
-{
-	int d=getTerrain(x, y)-272;
-	if ((d<0) || (d>=40))
-		return false;
+		arraysBuilt=false;
+	}
 	else
 	{
-		*ressourceType=(RessourceType)(d/10);
-		return true;
-	}
-}
-
-void Map::decRessource(int x, int y)
-{
-	int d=getTerrain(x, y)-272;
-	if ((d<0)||(d>=40))
-		return;
-	int r=d/10;
-	int l=d%5;
-	if (r==CORN) // those are the slow-consuming ressources.
-	{
-		if (l>0)
-			setTerrain(x, y, d+271);
-		else if (l==0)
-			setTerrain(x, y, syncRand()&0xF);
-	}
-	else if (r==STONE)
-		return;
-	else if (r==WOOD)
-		setTerrain(x, y, syncRand()&0xF);
-	else if (r==ALGA)
-		setTerrain(x, y, 256+(syncRand()&0xF));
-	else
-		assert(false);
-}
-
-void Map::decRessource(int x, int y, RessourceType ressourceType)
-{
-	if (isRessource(x, y, ressourceType))
-		decRessource(x, y);
-}
-
-bool Map::isFreeForUnit(int x, int y, bool canFly)
-{
-	return ( ( (!isRessource(x, y)) || canFly) && (getUnit(x, y)==NOUID));
-}
-
-bool Map::doesUnitTouchUID(Unit *unit, Sint16 otherUID, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (getUnit(x+tdx, y+tdy)==otherUID)
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-			
-	return false;
-}
-
-bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID)
-{
-	int tdx, tdy;
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (getUnit(x+tdx, y+tdy)==otherUID)
-				return true;
-	return false;
-}
-
-bool Map::doesPosTouchUID(int x, int y, Sint16 otherUID, int *dx, int *dy)
-{
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-	{
-		for (tdy=-1; tdy<=1; tdy++)
-		{
-			if (getUnit(x+tdx, y+tdy)==otherUID)
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-		}
-	}
-			
-	return false;
-}
-
-bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-			
-	return false;
-}
-
-bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (isRemovableRessource(x+tdx, y+tdy))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-			
-	return false;
-}
-
-bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy,ressourceType))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-			
-	return false;
-}
-
-bool Map::doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
-{
-	int tdx, tdy;
-	
-	for (tdx=-1; tdx<=1; tdx++)
-		for (tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy,ressourceType))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-			
-	return false;
-}
-
-bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
-{
-	int x=unit->posX;
-	int y=unit->posY;
-	int bestTime=256;//Shorter is better
-	int bdx=0, bdy=0;
-	Uint32 enemies;
-
-	enemies=unit->owner->enemies;
-	for (int tdx=-1; tdx<=1; tdx++)
-	{
-		for (int tdy=-1; tdy<=1; tdy++)
-		{
-			Sint32 UID=getUnit(x+tdx, y+tdy);
-			if (UID>=0)
-			{
-				int otherTeam=Unit::UIDtoTeam(UID);
-				Uint32 otherTeamMask=1<<otherTeam;
-				int otherID=Unit::UIDtoID(UID);
-				assert(game);
-				Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
-				if (enemies&otherTeamMask)
-				{
-					int time=(256-otherUnit->delta)/otherUnit->speed;
-					if (time<bestTime)
-					{
-						bestTime=time;
-						bdx=tdx;
-						bdy=tdy;
-					}
-				}
-			}
-			else if(UID!=NOUID && bestTime==256)
-			{
-				int otherTeam=Building::UIDtoTeam(UID);
-				int otherID=Building::UIDtoID(UID);
-				Uint32 otherTeamMask=1<<otherTeam;
-				assert(game);
-				Building *b=game->teams[otherTeam]->myBuildings[otherID];
-				if ((!b->type->defaultUnitStayRange) && (enemies&otherTeamMask))
-				{
-					bestTime=255;
-					bdx=tdx;
-					bdy=tdy;
-				}
-			}
-		}
+		assert(mapDiscovered==NULL);
+		assert(fogOfWar==NULL);
+		assert(fogOfWarA==NULL);
+		assert(fogOfWarB==NULL);
+		assert(cases==NULL);
+		assert(undermap==NULL);
+		assert(sectors==NULL);
+		
+		assert(w==0);
+		assert(h==0);
+		assert(size==0);
+		assert(wMask==0);
+		assert(hMask==0);
+		assert(wDec==0);
+		assert(hDec==0);
+		assert(wSector==0);
+		assert(hSector==0);
+		assert(sizeSector==0);
+		
+		assert(stepCounter==0);
 	}
 	
-	if (bestTime<256)
-	{
-		*dx=bdx;
-		*dy=bdy;
-		return true;
-	}
-
-	return false;
+	w=h=0;
+	size=0;
+	wMask=hMask=0;
+	wDec=hDec=0;
+	wSector=hSector=0;
+	sizeSector=0;
+	
+	stepCounter=0;
 }
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
-	if (mapDiscovered)
-		delete[] mapDiscovered;
-	if (fogOfWarA)
-		delete[] fogOfWarA;
-	if (fogOfWarB)
-		delete[] fogOfWarB;
-	fogOfWar=NULL;
-	stepCounter=0;
-	sizeOfFogOfWar=0;
-	if (cases)
-		delete[] cases;
-	if (sectors)
-		delete[] sectors;
-	if (undermap)
-		delete[] undermap;
+	clear();
 
 	assert(wDec<32);
 	assert(hDec<32);
@@ -468,7 +133,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	h=1<<hDec;
 	wMask=w-1;
 	hMask=h-1;
-	int size=w*h;
+	size=w*h;
 
 	mapDiscovered=new Uint32[size];
 	memset(mapDiscovered, 0, size*sizeof(Uint32));
@@ -478,158 +143,159 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWarB=new Uint32[size];
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	fogOfWar=fogOfWarA;
-	stepCounter=0;
-	sizeOfFogOfWar=size;
-
+	
+	cases=new Case[size];
+	
+	/*Ressource initRessource;
+	initRessource.field.type=0;
+	initRessource.field.variety=0;
+	initRessource.field.amount=0;
+	initRessource.field.animation=0;*/
+	Case initCase;
+	initCase.terrain=0; // default, not really meanfull.
+	initCase.building=NOGBID;
+	initCase.ressource.id=NORESID;
+	initCase.groundUnit=NOGUID;
+	initCase.airUnit=NOGUID;
+	
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
-
-	cases=new Case[size];
-	Case initCase;
-	initCase.terrain=0;
-	initCase.unit=NOUID;
+	
 	for (int i=0; i<size; i++)
 		cases[i]=initCase;
 	regenerateMap(0, 0, w, h);
+	
+	stepCounter=0;
 
-	// now sectors
 	wSector=w>>4;
 	hSector=h>>4;
-	size=wSector*hSector;
-
-	sectors=new Sector[size];
+	sizeSector=wSector*hSector;
+	
+	sectors=new Sector[sizeSector];
+	
+	arraysBuilt=true;
 }
+
 
 void Map::setGame(Game *game)
 {
 	assert(game);
 	printf("Map::setGame(%p)\n", game);
 	this->game=game;
-	int size=wSector*hSector;
-	assert(size);
-	for (int i=0; i<size; i++)
+	assert(arraysBuilt);
+	assert(sectors);
+	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
 }
 
 bool Map::load(SDL_RWops *stream, SessionGame *sessionGame, Game *game)
 {
-	//if (!BaseMap::load(stream))
-	//	return false;
 	assert(sessionGame);
-	if (sessionGame->versionMinor<12)
-	{
-		// bypass the name of game in BaseMap for older version
-		SDL_RWseek(stream, 32+8, SEEK_CUR);
-	}
-
+	assert(sessionGame->versionMinor>=15);
+	
+	clear();
+	
 	char signature[4];
 	SDL_RWread(stream, signature, 4, 1);
-	if (memcmp(signature,"GLO2",4)!=0)
+	if (memcmp(signature, "MapB", 4)!=0)
+	{
+		fprintf(stderr, "Map:: Failed to find signature at the beginning of Map.\n");
 		return false;
+	}
 	
-	// then map
-	// recompute size
+	// We load and compute size:
 	wDec=SDL_ReadBE32(stream);
 	hDec=SDL_ReadBE32(stream);
 	w=1<<wDec;
 	h=1<<hDec;
 	wMask=w-1;
 	hMask=h-1;
-	int size=w*h;
-
-	// regenerate
-	if (mapDiscovered)
-		delete[] mapDiscovered;
-	if (fogOfWarA)
-		delete[] fogOfWarA;
-	if (fogOfWarB)
-		delete[] fogOfWarB;
-	fogOfWar=NULL;
-	sizeOfFogOfWar=0;
-	if (cases)
-		delete[] cases;
-	if (undermap)
-		delete[] undermap;
+	size=w*h;
+	
+	// We alocate memory:
 	mapDiscovered=new Uint32[size];
 	fogOfWarA=new Uint32[size];
 	fogOfWarB=new Uint32[size];
 	fogOfWar=fogOfWarA;
-	sizeOfFogOfWar=size;
-	stepCounter=0;
 	cases=new Case[size];
-	for (int i=0;i<size;++i)
+	undermap=new Uint8[size];
+	
+	// We read what's inside the map:
+	SDL_RWread(stream, undermap, size, 1);
+	for (int i=0; i<size; i++)
 	{
 		mapDiscovered[i]=SDL_ReadBE32(stream);
-		cases[i].setInteger(SDL_ReadBE32(stream));
-	}
-
-	undermap=new Uint8[size];
-	SDL_RWread(stream, undermap, size, 1);
-
-	// Only if we load a game, (not a map preview, load all stuff)
-	if (game)
-	{
-		this->game=game;
 		
-		memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
-		memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
-
-		// now sectors
-		wSector=SDL_ReadBE32(stream);
-		hSector=SDL_ReadBE32(stream);
-		size=wSector*hSector;
-		if (sectors)
-			delete[] sectors;
-
-		sectors=new Sector[size];
-		for (int i = 0; i < size; ++i)
-		{
-			sectors[i].~Sector();
-			new (&sectors[i])Sector(game);
-		}
-
-		for (int i=0;i<size;++i)
-			if (!sectors[i].load(stream, game))
-				return false;
-
-		SDL_RWread(stream, signature, 4, 1);
-		if (memcmp(signature,"GLO2",4)!=0)
-			return false;
+		cases[i].terrain=SDL_ReadBE16(stream);
+		cases[i].building=SDL_ReadBE16(stream);
+		
+		cases[i].ressource.id=SDL_ReadBE32(stream);
+		
+		cases[i].groundUnit=SDL_ReadBE16(stream);
+		cases[i].airUnit=SDL_ReadBE16(stream);
 	}
+
+	memset(fogOfWarA, 0, size*sizeof(Uint32));
+	memset(fogOfWarB, 0, size*sizeof(Uint32));
+	
+	if (game)
+		this->game=game;
+	
+	// We load sectors:
+	wSector=SDL_ReadBE32(stream);
+	hSector=SDL_ReadBE32(stream);
+	sizeSector=wSector*hSector;
+	assert(sectors==NULL);
+	sectors=new Sector[sizeSector];
+	arraysBuilt=true;
+
+	for (int i=0; i<sizeSector; i++)
+		if (!sectors[i].load(stream, this->game))
+			return false;
+
+	SDL_RWread(stream, signature, 4, 1);
+	if (memcmp(signature, "MapE", 4)!=0)
+	{
+		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
+		return false;
+	}
+	
 	return true;
 }
 
 void Map::save(SDL_RWops *stream)
 {
-	//BaseMap::save(stream);
+	SDL_RWwrite(stream, "MapB", 4, 1);
 	
-	SDL_RWwrite(stream, "GLO2", 4, 1);
-	
-	// then map
+	// We save size:
 	SDL_WriteBE32(stream, wDec);
 	SDL_WriteBE32(stream, hDec);
-	int size=w*h;
-	{
-		for (int i=0;i<size;i++)
-		{
-			SDL_WriteBE32(stream, mapDiscovered[i]);
-			SDL_WriteBE32(stream, cases[i].getInteger());
-		}
-	}
+	
+	// We write what's inside the map:
 	SDL_RWwrite(stream, undermap, size, 1);
-
-	SDL_WriteBE32(stream, wSector);
-	SDL_WriteBE32(stream, hSector);
-	size=wSector*hSector;
+	for (int i=0; i<size ;i++)
 	{
-		for (int i=0; i<size; ++i)
-		{
-			sectors[i].save(stream);
-		}
+		SDL_WriteBE32(stream, mapDiscovered[i]);
+		
+		SDL_WriteBE16(stream, cases[i].terrain);
+		SDL_WriteBE16(stream, cases[i].building);
+		
+		SDL_WriteBE32(stream, cases[i].ressource.id);
+		
+		SDL_WriteBE16(stream, cases[i].groundUnit);
+		SDL_WriteBE16(stream, cases[i].airUnit);
 	}
 	
-	SDL_RWwrite(stream, "GLO2", 4, 1);
+	// We save sectors:
+	SDL_WriteBE32(stream, wSector);
+	SDL_WriteBE32(stream, hSector);
+	for (int i=0; i<sizeSector; i++)
+		sectors[i].save(stream);
+
+	SDL_RWwrite(stream, "MapE", 4, 1);
 }
+
+// TODO: completely recreate:
 void Map::growRessources(void)
 {
 	int dy=syncRand()&0x3;
@@ -652,10 +318,10 @@ void Map::growRessources(void)
 				int dway=(syncRand()&waterDist)-(syncRand()&waterDist);
 				int wax1=x+dwax;
 				int way1=y+dway;
-				
+
 				int wax2=x+dway*2;
 				int way2=y+dwax*2;
-				
+
 				int wax3=x-dwax;
 				int way3=y-dway;
 
@@ -664,33 +330,27 @@ void Map::growRessources(void)
 
 				bool expand=false;
 				if (r==ALGA)
-				{
 					expand=isWater(wax1, way1)&&isSand(wax2, way2);
-				}
 				else if (r==WOOD)
-				{
-					expand=isWaterOrAlga(wax1, way1)&&(!isSand(wax3, way3));
-				}
+					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
 				else if (r==CORN)
-				{
-					expand=isWaterOrAlga(wax1, way1)&&(!isSand(wax3, way3));
-				}
-				
+					expand=isWater(wax1, way1)&&(!isSand(wax3, way3));
+
 				if (expand)
 				{
 					//if (l<4)
 					if (l<=(int)(syncRand()&3))
 						setTerrain(x, y, d+273);
-					else 
+					else
 					{
 						// we extand ressource:
 						int dx, dy;
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						if (getUnit(nx, ny)==NOUID)
-						if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+						if (getGroundUnit(nx, ny)==NOGUID)
+							if (((r==WOOD||r==CORN)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+								setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
 					}
 				}
 			}
@@ -701,7 +361,7 @@ void Map::growRessources(void)
 void Map::step(void)
 {
 	growRessources();
-	for (int i=0; i<(wSector*hSector); i++)
+	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	
 	stepCounter++;
@@ -709,31 +369,283 @@ void Map::step(void)
 
 void Map::switchFogOfWar(void)
 {
+	memset(fogOfWar, 0, size*sizeof(Uint32));
 	if (fogOfWar==fogOfWarA)
-	{
 		fogOfWar=fogOfWarB;
-		memset(fogOfWarA, 0, sizeOfFogOfWar*sizeof(Uint32));
-	}
 	else
-	{
 		fogOfWar=fogOfWarA;
-		memset(fogOfWarB, 0, sizeOfFogOfWar*sizeof(Uint32));
-	}
 }
 
-void Map::setBuilding(int x, int y, int w, int h, Sint16 u)
+void Map::decRessource(int x, int y)
 {
-	for (int bx=x; bx<x+w; bx++)
-		for (int by=y; by<y+h; by++)
-			setUnit(bx, by, u);
+	Ressource *rp=&(*(cases+w*(y&hMask)+(x&wMask))).ressource;
+	Ressource r=*rp;
+	
+	if (r.id==NORESID)
+		return;
+	
+	RessourceType type=(RessourceType)r.field.type;
+	unsigned amount=r.field.amount;
+	assert(amount);
+	if (type==WOOD || amount==1)
+		rp->id=NORESID;
+	else if (type==CORN || type==ALGA || type==FUNGUS)
+		rp->field.amount=amount-1;
+	else if (type!=STONE)
+		assert(false);
+}
+
+void Map::decRessource(int x, int y, RessourceType ressourceType)
+{
+	if (isRessource(x, y, ressourceType))
+		decRessource(x, y);
+}
+
+bool Map::isFreeForGroundUnit(int x, int y, bool canSwim)
+{
+	if (isRessource(x, y))
+		return false;
+	if (getBuilding(x, y)!=NOGBID)
+		return false;
+	if (getGroundUnit(x, y)!=NOGUID)
+		return false;
+	if (!canSwim && isWater(x, y))
+		return false;
+	return true;
+}
+
+bool Map::isFreeForAirUnit(int x, int y)
+{
+	return (getAirUnit(x, y)==NOGUID);
+}
+
+bool Map::isFreeForBuilding(int x, int y)
+{
+	if (isRessource(x, y))
+		return false;
+	if (getBuilding(x, y)!=NOGBID)
+		return false;
+	if (getGroundUnit(x, y)!=NOGUID)
+		return false;
+	if (isGrass(x, y))
+		return true;
+	else
+		return false;
+}
+
+bool Map::isFreeForBuilding(int x, int y, int w, int h)
+{
+	for (int yi=y; yi<y+h; yi++)
+		for (int xi=x; xi<x+w; xi++)
+			if (!isFreeForBuilding(xi, yi))
+				return false;
+	return true;
+}
+
+bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim)
+{
+	if (isRessource(x, y))
+		return false;
+	if (getBuilding(x, y)!=NOGBID)
+		return false;
+		return false;
+	if (!canSwim && isWater(x, y))
+		return false;
+	return true;
+}
+
+bool Map::isHardSpaceForBuilding(int x, int y)
+{
+	if (isRessource(x, y))
+		return false;
+	if (getBuilding(x, y)!=NOGBID)
+		return false;
+	if (isGrass(x, y))
+		return true;
+	else
+		return false;
+}
+
+bool Map::isHardSpaceForBuilding(int x, int y, int w, int h)
+{
+	for (int yi=y; yi<y+h; yi++)
+		for (int xi=x; xi<x+w; xi++)
+			if (!isHardSpaceForBuilding(xi, yi))
+				return false;
+	return true;
+}
+
+bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (getBuilding(x+tdx, y+tdy)==gbid)
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid)
+{
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (getBuilding(x+tdx, y+tdy)==gbid)
+				return true;
+	return false;
+}
+
+bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy)
+{
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (getBuilding(x+tdx, y+tdy)==gbid)
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (isRessource(x+tdx, y+tdy))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+bool Map::doesUnitTouchRemovableRessource(Unit *unit, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (isRemovableRessource(x+tdx, y+tdy))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+bool Map::doesUnitTouchRessource(Unit *unit, RessourceType ressourceType, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (isRessource(x+tdx, y+tdy, ressourceType))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+bool Map::doesPosTouchRessource(int x, int y, RessourceType ressourceType, int *dx, int *dy)
+{
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+			if (isRessource(x+tdx, y+tdy,ressourceType))
+			{
+				*dx=tdx;
+				*dy=tdy;
+				return true;
+			}
+	return false;
+}
+
+//! This method gives a good direction to hit for a warrior, and return fase is nothing was found.
+//! Currently, it chooses to hit any turret if aviable, then units, then other buildings.
+bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
+{
+	int x=unit->posX;
+	int y=unit->posY;
+	int bestTime=256;//Shorter is better
+	int bdx=0, bdy=0;
+
+	Uint32 enemies=unit->owner->enemies;
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+		{
+			Sint32 gbid=getBuilding(x+tdx, y+tdy);
+			if (gbid!=NOGBID)
+			{
+				int otherTeam=Building::GIDtoTeam(gbid);
+				Uint32 otherTeamMask=1<<otherTeam;
+				if (enemies & otherTeamMask)
+				{
+					assert(game);
+					assert(game->teams[otherTeam]);
+					int otherID=Building::GIDtoID(gbid);
+					Building *b=game->teams[otherTeam]->myBuildings[otherID];
+					if (!b->type->defaultUnitStayRange)
+					{
+						if (b->type->shootingRange)
+							bestTime=0;
+						else
+							bestTime=255;
+						bdx=tdx;
+						bdy=tdy;
+					}
+				}
+			}
+			Sint32 guid=getGroundUnit(x+tdx, y+tdy);
+			if (guid!=NOGUID)
+			{
+				int otherTeam=Unit::GIDtoTeam(guid);
+				Uint32 otherTeamMask=1<<otherTeam;
+				if (enemies & otherTeamMask)
+				{
+					assert(game);
+					assert(game->teams[otherTeam]);
+					int otherID=Unit::GIDtoID(guid);
+					Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
+					int time=(256-otherUnit->delta)/otherUnit->speed;
+					if (time<bestTime)
+					{
+						bestTime=time;
+						bdx=tdx;
+						bdy=tdy;
+					}
+				}
+			}
+			//TODO: can ground WARRIOR hit flying EXPLORER ?
+		}
+	
+	if (bestTime<256)
+	{
+		*dx=bdx;
+		*dy=bdy;
+		return true;
+	}
+
+	return false;
 }
 
 void Map::setUMatPos(int x, int y, TerrainType t, int size)
 {
-	int dx, dy;
-	for (dx=x-(size>>1);dx<x+(size>>1)+1;dx++)
-	{
-		for (dy=y-(size>>1);dy<y+(size>>1)+1;dy++)
+	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
+		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
 		{
 			if (t==GRASS)
 			{
@@ -781,169 +693,27 @@ void Map::setUMatPos(int x, int y, TerrainType t, int size)
 			}
 			setUMTerrain(dx,dy,t);
 		}
-	}
-	//regenerateMap(x-(size>>1)-3,y-(size>>1)-3,size+5,size+5);
 	if (t==SAND)
 		regenerateMap(x-(size>>1)-1,y-(size>>1)-1,size+1,size+1);
 	else
 		regenerateMap(x-(size>>1)-2,y-(size>>1)-2,size+3,size+3);
 }
 
-void Map::regenerateMap(int x, int y, int w, int h)
-{
-	int dx,dy;
-
-	for (dx=x;dx<x+w;dx++)
-	{
-		for (dy=y;dy<y+h;dy++)
-		{
-			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
-		}
-	}
-}
-
-void Map::setResAtPos(int x, int y, int type, int size)
+void Map::setRessource(int x, int y, int type, int size)
 {
 	assert(size>=0);
-	int dx, dy;
-	if (type<3)
-	{
-		for (dx=x-(size>>1);dx<x+(size>>1)+1;dx++)
+	assert(size<w);
+	assert(size<h);
+	
+	for (int dx=x-(size>>1); dx<x+(size>>1)+1; dx++)
+		for (int dy=y-(size>>1); dy<y+(size>>1)+1; dy++)
 		{
-			for (dy=y-(size>>1);dy<y+(size>>1)+1;dy++)
-			{
-			if ( (getUMTerrain(dx,dy)==GRASS) &&
-				(getUMTerrain(dx+1,dy)==GRASS) &&
-				(getUMTerrain(dx,dy+1)==GRASS) &&
-				(getUMTerrain(dx+1,dy+1)==GRASS) )
-				setTerrain(dx,dy,272+type*10+syncRand()%10);
-			}
+			Ressource *rp=&((cases+w*(y&hMask)+(x&wMask))->ressource);
+			rp->field.type=type;
+			rp->field.variety=0; // TODO: syncRand()%sizeOfVariety
+			rp->field.amount=1; // TODO: syncRand()%maxAmount
+			rp->field.animation=0;
 		}
-	}
-	else
-	{
-		for (dx=x-(size>>1);dx<x+(size>>1)+1;dx++)
-		{
-			for (dy=y-(size>>1);dy<y+(size>>1)+1;dy++)
-			{
-				if ( (getUMTerrain(dx,dy)==WATER) &&
-					(getUMTerrain(dx+1,dy)==WATER) &&
-					(getUMTerrain(dx,dy+1)==WATER) &&
-					(getUMTerrain(dx+1,dy+1)==WATER) )
-				setTerrain(dx,dy,302+syncRand()%10);
-			}
-		}
-	}
-}
-
-Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
-{
-	/*
-		Value of vertice's order in square :
-
-		3 -- 2
-		|    |
-		|    |
-		1 -- 0
-
-		The index in the following table is :
-		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
-		where k is the number of different possibilites.
-	*/
-	const Uint16 terrainLookupTable[81][2] =
-	{
-		{ 0, 16 },		// H, H, H, H
-		{ 80, 8 },		// H, H, H, S
-		{ 0, 16 },		// H, H, H, E
-		{ 88, 8 },		// H, H, S, H
-		{ 48, 8 },		// H, H, S, S
-		{ 0, 16 },		// H, H, S, E
-		{ 0, 16 },		// H, H, E, H
-		{ 0, 16 },		// H, H, E, S
-		{ 0, 16 },		// H, H, E, E
-		{ 104, 8 },		// H, S, H, H
-		{ 64, 8 },		// H, S, H, S
-		{ 0, 16 },		// H, S, H, E
-		{ 120, 8 },		// H, S, S, H
-		{ 32, 8 },		// H, S, S, S
-		{ 0, 16 },		// H, S, S, E
-		{ 0, 16 },		// H, S, E, H
-		{ 0, 16 },		// H, S, E, S
-		{ 0, 16 },		// H, S, E, E
-		{ 0, 16 },		// H, E, H, H
-		{ 0, 16 },		// H, E, H, S
-		{ 0, 16 },		// H, E, H, E
-		{ 0, 16 },		// H, E, S, H
-		{ 0, 16 },		// H, E, S, S
-		{ 0, 16 },		// H, E, S, E
-		{ 0, 16 },		// H, E, E, H
-		{ 0, 16 },		// H, E, E, S
-		{ 0, 16 },		// H, E, E, E
-
-		{ 96, 8 },		// S, H, H, H
-		{ 112, 8 },		// S, H, H, S
-		{ 0, 16 },		// S, H, H, E
-		{ 72, 8 },		// S, H, S, H
-		{ 40, 8 },		// S, H, S, S
-		{ 0, 16 },		// S, H, S, E
-		{ 0, 16 },		// S, H, E, H
-		{ 0, 16 },		// S, H, E, S
-		{ 0, 16 },		// S, H, E, E
-		{ 56, 8 },		// S, S, H, H
-		{ 24, 8 },		// S, S, H, S
-		{ 0, 16 },		// S, S, H, E
-		{ 16, 8 },		// S, S, S, H
-		{ 128, 16 },	// S, S, S, S
-		{ 208, 8 },		// S, S, S, E
-		{ 0, 16 },		// S, S, E, H
-		{ 216, 8 },		// S, S, E, S
-		{ 176, 8 },		// S, S, E, E
-		{ 0, 16 },		// S, E, H, H
-		{ 0, 16 },		// S, E, H, S
-		{ 0, 16 },		// S, E, H, E
-		{ 0, 16 },		// S, E, S, H
-		{ 232, 8 },		// S, E, S, S
-		{ 192, 8 },		// S, E, S, E
-		{ 0, 16 },		// S, E, E, H
-		{ 240, 8 },		// S, E, E, S
-		{ 160, 8 },		// S, E, E, E
-
-		{ 0, 16 },		// E, H, H, H
-		{ 0, 16 },		// E, H, H, S
-		{ 0, 16 },		// E, H, H, E
-		{ 0, 16 },		// E, H, S, H
-		{ 0, 16 },		// E, H, S, S
-		{ 0, 16 },		// E, H, S, E
-		{ 0, 16 },		// E, H, E, H
-		{ 0, 16 },		// E, H, E, S
-		{ 0, 16 },		// E, H, E, E
-		{ 0, 16 },		// E, S, H, H
-		{ 0, 16 },		// E, S, H, S
-		{ 0, 16 },		// E, S, H, E
-		{ 0, 16 },		// E, S, S, H
-		{ 224, 8 },		// E, S, S, S
-		{ 248, 8 },		// E, S, S, E
-		{ 0, 16 },		// E, S, E, H
-		{ 200, 8 },		// E, S, E, S
-		{ 168, 8 },		// E, S, E, E
-		{ 0, 16 },		// E, E, H, H
-		{ 0, 16 },		// E, E, H, S
-		{ 0, 16 },		// E, E, H, E
-		{ 0, 16 },		// E, E, S, H
-		{ 184, 8 },		// E, E, S, S
-		{ 152, 8 },		// E, E, S, E
-		{ 0, 16 },		// E, E, E, H
-		{ 144, 8 },		// E, E, E, S
-		{ 256, 16 },	// E, E, E, E
-	};
-
-	tl=2-tl;
-	tr=2-tr;
-	bl=2-bl;
-	br=2-br;
-	int index=tl*27+tr*9+bl*3+br;
-
-	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
 }
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
@@ -951,13 +721,13 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 	int x=mx-viewportX;
 	int y=my-viewportY;
 	
-	if (x>(getW()/2))
-		x-=getW();
-	if (y>(getH()/2))
-		y-=getH();
-	if ((x)<-(getW()/2))
-		x+=getW();
-	if ((y)<-(getH()/2))
+	if (x>(w/2))
+		x-=w;
+	if (y>(h/2))
+		y-=h;
+	if ((x)<-(w/2))
+		x+=w;
+	if ((y)<-(h/2))
 		y+=getH();
 	*px=x<<5;
 	*py=y<<5;
@@ -977,7 +747,6 @@ void Map::displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewpo
 
 void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY)
 {
-	// we check for room
 	int tempX, tempY;
 	if (buildingWidth&0x1)
 		tempX=((mx)>>5)+viewportX;
@@ -1104,15 +873,137 @@ bool Map::nearestRessourceInCircle(int x, int y, int fx, int fy, int fsr, int *d
     return false;
 }
 
+
+void Map::regenerateMap(int x, int y, int w, int h)
+{
+	for (int dx=x; dx<x+w; dx++)
+		for (int dy=y; dy<y+h; dy++)
+			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
+}
+
+Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
+{
+	/*
+		Value of vertice's order in square :
+
+		3 -- 2
+		|    |
+		|    |
+		1 -- 0
+
+		The index in the following table is :
+		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
+		where k is the number of different possibilites.
+	*/
+	const Uint16 terrainLookupTable[81][2] =
+	{
+		{ 0, 16 },		// H, H, H, H
+		{ 80, 8 },		// H, H, H, S
+		{ 0, 16 },		// H, H, H, E
+		{ 88, 8 },		// H, H, S, H
+		{ 48, 8 },		// H, H, S, S
+		{ 0, 16 },		// H, H, S, E
+		{ 0, 16 },		// H, H, E, H
+		{ 0, 16 },		// H, H, E, S
+		{ 0, 16 },		// H, H, E, E
+		{ 104, 8 },		// H, S, H, H
+		{ 64, 8 },		// H, S, H, S
+		{ 0, 16 },		// H, S, H, E
+		{ 120, 8 },		// H, S, S, H
+		{ 32, 8 },		// H, S, S, S
+		{ 0, 16 },		// H, S, S, E
+		{ 0, 16 },		// H, S, E, H
+		{ 0, 16 },		// H, S, E, S
+		{ 0, 16 },		// H, S, E, E
+		{ 0, 16 },		// H, E, H, H
+		{ 0, 16 },		// H, E, H, S
+		{ 0, 16 },		// H, E, H, E
+		{ 0, 16 },		// H, E, S, H
+		{ 0, 16 },		// H, E, S, S
+		{ 0, 16 },		// H, E, S, E
+		{ 0, 16 },		// H, E, E, H
+		{ 0, 16 },		// H, E, E, S
+		{ 0, 16 },		// H, E, E, E
+
+		{ 96, 8 },		// S, H, H, H
+		{ 112, 8 },		// S, H, H, S
+		{ 0, 16 },		// S, H, H, E
+		{ 72, 8 },		// S, H, S, H
+		{ 40, 8 },		// S, H, S, S
+		{ 0, 16 },		// S, H, S, E
+		{ 0, 16 },		// S, H, E, H
+		{ 0, 16 },		// S, H, E, S
+		{ 0, 16 },		// S, H, E, E
+		{ 56, 8 },		// S, S, H, H
+		{ 24, 8 },		// S, S, H, S
+		{ 0, 16 },		// S, S, H, E
+		{ 16, 8 },		// S, S, S, H
+		{ 128, 16 },	// S, S, S, S
+		{ 208, 8 },		// S, S, S, E
+		{ 0, 16 },		// S, S, E, H
+		{ 216, 8 },		// S, S, E, S
+		{ 176, 8 },		// S, S, E, E
+		{ 0, 16 },		// S, E, H, H
+		{ 0, 16 },		// S, E, H, S
+		{ 0, 16 },		// S, E, H, E
+		{ 0, 16 },		// S, E, S, H
+		{ 232, 8 },		// S, E, S, S
+		{ 192, 8 },		// S, E, S, E
+		{ 0, 16 },		// S, E, E, H
+		{ 240, 8 },		// S, E, E, S
+		{ 160, 8 },		// S, E, E, E
+
+		{ 0, 16 },		// E, H, H, H
+		{ 0, 16 },		// E, H, H, S
+		{ 0, 16 },		// E, H, H, E
+		{ 0, 16 },		// E, H, S, H
+		{ 0, 16 },		// E, H, S, S
+		{ 0, 16 },		// E, H, S, E
+		{ 0, 16 },		// E, H, E, H
+		{ 0, 16 },		// E, H, E, S
+		{ 0, 16 },		// E, H, E, E
+		{ 0, 16 },		// E, S, H, H
+		{ 0, 16 },		// E, S, H, S
+		{ 0, 16 },		// E, S, H, E
+		{ 0, 16 },		// E, S, S, H
+		{ 224, 8 },		// E, S, S, S
+		{ 248, 8 },		// E, S, S, E
+		{ 0, 16 },		// E, S, E, H
+		{ 200, 8 },		// E, S, E, S
+		{ 168, 8 },		// E, S, E, E
+		{ 0, 16 },		// E, E, H, H
+		{ 0, 16 },		// E, E, H, S
+		{ 0, 16 },		// E, E, H, E
+		{ 0, 16 },		// E, E, S, H
+		{ 184, 8 },		// E, E, S, S
+		{ 152, 8 },		// E, E, S, E
+		{ 0, 16 },		// E, E, E, H
+		{ 144, 8 },		// E, E, E, S
+		{ 256, 16 },	// E, E, E, E
+	};
+
+	tl=2-tl;
+	tr=2-tr;
+	bl=2-bl;
+	br=2-br;
+	int index=tl*27+tr*9+bl*3+br;
+
+	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
+}
+
 Sint32 Map::checkSum(bool heavy)
 {
-	Sint32 cs=0;
+	Sint32 cs=size;
 	if (heavy)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)
 			{
-				cs^=getTerrain(x, y)-272;
-				cs=(cs<<31)|(cs>>1);
+				cs+=(cases+w*(y&hMask)+(x&wMask))->terrain;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->building;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->ressource.id;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->groundUnit;
+				cs+=(cases+w*(y&hMask)+(x&wMask))->airUnit;
+				cs=(cs<<1)|(cs>>31);
 			}
 	return cs;
 }

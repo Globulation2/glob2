@@ -17,16 +17,38 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#ifndef __SECTOR_H
+#define __SECTOR_H
 
-// This is the version of map and savegame format.
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 15
-// version 10 adds script saved in game
-// version 11 the gamesfiles do saves which building has been seen under fog of war.
-// version 12 saves map name into SessionGame instead of BaseMap.
-// version 13 adds construction state into buildings
-// version 14 adds the save of the end of game stats in Team
+#include <list>
+#include "Header.h"
+
+class Map;
+class Game;
+class Bullet;
+
+// a 16x16 piece of Map
+class Sector
+{
+public:
+	Sector() {}
+	Sector(Game *);
+	virtual ~Sector(void);
+	// !This call is needed to use the Sector!
+	void setGame(Game *game);
+
+	void free(void);
+
+	std::list<Bullet *> bullets;
+
+	void save(SDL_RWops *stream);
+	bool load(SDL_RWops *stream, Game *game);
+
+	void step(void);
+private:
+	Map *map;
+	Game *game;
+};
 
 #endif
+ 

@@ -22,15 +22,6 @@
 
 #include "EntityType.h"
 
-enum RessourceType
-{
-	WOOD=0,
-	CORN=1,
-	STONE=2,
-	ALGA=3,
-	NB_RESSOURCES
-};
-
 enum Abilities
 {
 	STOP_WALK=0,
@@ -54,6 +45,14 @@ enum Abilities
 const int NB_MOVE=9;
 const int NB_ABILITY=12;
 
+
+const int WORKER=0;
+const int EXPLORER=1;
+const int WARRIOR=2;
+const int NB_UNIT_TYPE=3;
+
+const int NB_UNIT_LEVELS=4;
+
 class UnitType: public EntityType
 {
 public:
@@ -68,7 +67,7 @@ public:
 
 	Sint32 performance[NB_ABILITY];
 	
-	enum TypeNum
+	/*enum TypeNum
 	{
 		WORKER=0,
 		EXPLORER=1,
@@ -79,7 +78,7 @@ public:
 	enum
 	{
 		NB_UNIT_LEVELS=4
-	};
+	};*/
 
 	
 

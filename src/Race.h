@@ -33,13 +33,13 @@ public:
 		USE_AI
 	};
 
-	UnitType unitTypes[UnitType::NB_UNIT_TYPE][UnitType::NB_UNIT_LEVELS];
+	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
 
 public:
 	virtual ~Race();
 	
 	void create(CreationType creationType);
-	UnitType *getUnitType(UnitType::TypeNum type, int level);
+	UnitType *getUnitType(int type, int level);
 	
 	void save(SDL_RWops *stream);
 	bool load(SDL_RWops *stream);

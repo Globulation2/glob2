@@ -29,18 +29,16 @@ Unit::Unit(SDL_RWops *stream, Team *owner)
 	load(stream, owner);
 }
 
-Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int level)
+Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
-	int i;
-
 	// unit specification
-	typeNum=type;
+	this->typeNum=typeNum;
 
 	assert(team);
 	race=&(team->race);
 
 	// identity
-	UID=uid;
+	this->gid=gid;
 	owner=team;
 	isDead=false;
 
@@ -71,7 +69,7 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 	borderY=0;
 
 	// quality parameters
-	for (i=0; i<NB_ABILITY; i++)
+	for (int i=0; i<NB_ABILITY; i++)
 	{
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
 		this->level[i]=level;
@@ -110,14 +108,12 @@ Unit::Unit(int x, int y, Sint16 uid, UnitType::TypeNum type, Team *team, int lev
 
 void Unit::load(SDL_RWops *stream, Team *owner)
 {
-	int i;
-
 	// unit specification
-	typeNum=(UnitType::TypeNum)SDL_ReadBE32(stream);
+	typeNum=SDL_ReadBE32(stream);
 	race=&(owner->race);
 	
 	// identity
-	UID=SDL_ReadBE32(stream);
+	gid=SDL_ReadBE16(stream);
 	this->owner=owner;
 	isDead=SDL_ReadBE32(stream);
 
@@ -132,13 +128,7 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	speed=SDL_ReadBE32(stream);
 
 	// states
-#	ifdef WIN32
-#		pragma warning (disable : 4800)
-#	endif
 	needToRecheckMedical=(bool)SDL_ReadBE32(stream);
-#	ifdef WIN32
-#		pragma warning (default : 4800)
-#	endif
 	medical=(Medical)SDL_ReadBE32(stream);
 	activity=(Activity)SDL_ReadBE32(stream);
 	displacement=(Displacement)SDL_ReadBE32(stream);
@@ -166,20 +156,14 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 	// quality parameters
 	
 	// quality parameters
-	for (i=0; i<NB_ABILITY; i++)
+	for (int i=0; i<NB_ABILITY; i++)
 	{
 		performance[i]=SDL_ReadBE32(stream);
 		level[i]=SDL_ReadBE32(stream);
 	}
 
 	destinationPurprose=(Abilities)SDL_ReadBE32(stream);
-#	ifdef WIN32
-#		pragma warning (disable : 4800)
-#	endif
 	subscribed=(bool)SDL_ReadBE32(stream);
-#	ifdef WIN32
-#		pragma warning (default : 4800)
-#	endif
 	
 	caryedRessource=(Sint32)SDL_ReadBE32(stream);
 	verbose=false;
@@ -187,14 +171,12 @@ void Unit::load(SDL_RWops *stream, Team *owner)
 
 void Unit::save(SDL_RWops *stream)
 {
-	int i;
-
 	// unit specification
 	// we drop the unittype pointer, we save only the number
 	SDL_WriteBE32(stream, (Uint32)typeNum);
 
 	// identity
-	SDL_WriteBE32(stream, UID);
+	SDL_WriteBE16(stream, gid);
 	SDL_WriteBE32(stream, isDead);
 
 	// position
@@ -233,7 +215,7 @@ void Unit::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, trigHungry);
 
 	// quality parameters
-	for (i=0; i<NB_ABILITY; i++)
+	for (int i=0; i<NB_ABILITY; i++)
 	{
 		SDL_WriteBE32(stream, performance[i]);
 		SDL_WriteBE32(stream, level[i]);
@@ -246,19 +228,19 @@ void Unit::save(SDL_RWops *stream)
 
 void Unit::loadCrossRef(SDL_RWops *stream, Team *owner)
 {
-	Sint32 UID=SDL_ReadBE32(stream);
-	if (UID==NOUID)
+	Uint16 gbid=SDL_ReadBE16(stream);
+	if (gbid==NOGBID)
 		attachedBuilding=NULL;
 	else
-		attachedBuilding=owner->myBuildings[Building::UIDtoID(UID)];
+		attachedBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
 }
 
 void Unit::saveCrossRef(SDL_RWops *stream)
 {
 	if (attachedBuilding)
-		SDL_WriteBE32(stream, attachedBuilding->UID);
+		SDL_WriteBE16(stream, attachedBuilding->gid);
 	else
-		SDL_WriteBE32(stream, NOUID);
+		SDL_WriteBE16(stream, NOGBID);
 }
 
 void Unit::unsubscribed(void)
@@ -321,30 +303,34 @@ bool Unit::step(void)
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
 	{
-		Sint32 enemyUID=owner->game->map.getUnit(posX+dx, posY+dy);
-		if (enemyUID>=0)
+		Uint16 enemyGUID=owner->game->map.getGroundUnit(posX+dx, posY+dy);
+		if (enemyGUID!=NOGUID)
 		{
-			int enemyID=UIDtoID(enemyUID);
-			int enemyTeam=UIDtoTeam(enemyUID);
+			int enemyID=GIDtoID(enemyGUID);
+			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 			int degats=performance[ATTACK_STRENGTH]-enemy->performance[ARMOR];
 			if (degats<=0)
 				degats=1;
 			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyUID);
+			enemy->owner->setEvent(posX+dx, posY+dy, Team::UNIT_UNDER_ATTACK_EVENT, enemyGUID);
 		}
-		else  if (enemyUID!=NOUID)
+		else 
 		{
-			int enemyID=Building::UIDtoID(enemyUID);
-			int enemyTeam=Building::UIDtoTeam(enemyUID);
-			Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
-			int degats=performance[ATTACK_STRENGTH]-enemy->type->armor;
-			if (degats<=0)
-				degats=1;
-			enemy->hp-=degats;
-			enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyUID);
-			if (enemy->hp<0)
-				enemy->kill();
+			Uint16 enemyGBID=owner->game->map.getBuilding(posX+dx, posY+dy);
+			if (enemyGBID!=NOGBID)
+			{
+				int enemyID=Building::GIDtoID(enemyGBID);
+				int enemyTeam=Building::GIDtoTeam(enemyGBID);
+				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
+				int degats=performance[ATTACK_STRENGTH]-enemy->type->armor;
+				if (degats<=0)
+					degats=1;
+				enemy->hp-=degats;
+				enemy->owner->setEvent(posX+dx, posY+dy, Team::BUILDING_UNDER_ATTACK_EVENT, enemyGBID);
+				if (enemy->hp<0)
+					enemy->kill();
+			}
 		}
 	}
 	
@@ -365,12 +351,12 @@ bool Unit::step(void)
 		if (performance[FLY])
 		{
 			owner->game->map.setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision);
-			owner->game->map.setMapBuldingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
+			owner->game->map.setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVision, owner->game->teams);
 		}
 		else
 		{
 			owner->game->map.setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision);
-			owner->game->map.setMapBuldingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
+			owner->game->map.setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVision, owner->game->teams);
 		}
 
 		return b;
@@ -442,7 +428,10 @@ void Unit::handleMedical(void)
 			activity=ACT_RANDOM;
 			displacement=DIS_RANDOM;
 			
-			owner->game->map.setUnit(posX, posY, NOUID);
+			if (performance[FLY])
+				owner->game->map.setAirUnit(posX, posY, NOGUID);
+			else
+				owner->game->map.setGroundUnit(posX, posY, NOGUID);
 		}
 		else
 		{
@@ -484,7 +473,7 @@ void Unit::handleActivity(void)
 						activity=ACT_HARVESTING;
 						displacement=DIS_GOING_TO_RESSOURCE;
 						if (verbose)
-							printf("(%d)Going to harvest for filling building\n", UID);
+							printf("(%d)Going to harvest for filling building\n", gid);
 						destinationPurprose=(Sint32)CORN;
 						attachedBuilding=b;
 						//printf("g(%x) unitsWorkingSubscribe dp=(%d), UID=(%d), B(%x)UID=(%d)\n", (int)this, destinationPurprose, UID, (int)b, b->UID);
@@ -668,7 +657,7 @@ void Unit::handleActivity(void)
 				subscribed=true;
 				owner->subscribeForInside.push_front(b);
 				if (verbose)
-					printf("Subscribed to food building %d\n", b->UID);
+					printf("Subscribed to food building %d\n", b->gid);
 				//b->update();
 			}
 			else
@@ -681,7 +670,7 @@ void Unit::handleActivity(void)
 			if ( b != NULL)
 			{
 				if (verbose)
-					printf("Subscribed to heal building %d\n", b->UID);
+					printf("Subscribed to heal building %d\n", b->gid);
 				activity=ACT_UPGRADING;
 				displacement=DIS_GOING_TO_BUILDING;
 				destinationPurprose=HEAL;
@@ -743,7 +732,7 @@ void Unit::handleDisplacement(void)
 				caryedRessource=destinationPurprose;
 				owner->game->map.decRessource(posX+dx, posY+dy, (RessourceType)caryedRessource);
 				
-				if (owner->game->map.doesUnitTouchUID(this, attachedBuilding->UID, &dx, &dy))
+				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
 						displacement=DIS_GIVING_TO_BUILDING;
@@ -762,7 +751,7 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->game->map.doesUnitTouchUID(this, attachedBuilding->UID, &dx, &dy))
+				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					if (activity==ACT_HARVESTING)
 						displacement=DIS_GIVING_TO_BUILDING;
@@ -811,7 +800,7 @@ void Unit::handleDisplacement(void)
 				destinationPurprose=attachedBuilding->neededRessource();
 				if (verbose)
 				{
-					printf("(%d) destinationPurprose=%d.\n", UID, destinationPurprose);
+					printf("(%d) destinationPurprose=%d.\n", gid, destinationPurprose);
 				}
 				if ((destinationPurprose>=0)&&(owner->game->map.nearestRessource(posX, posY, (RessourceType)destinationPurprose, &targetX, &targetY)))
 				{
@@ -853,7 +842,7 @@ void Unit::handleDisplacement(void)
 			
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->game->map.doesUnitTouchUID(this, attachedBuilding->UID, &dx, &dy))
+				if (owner->game->map.doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_ENTERING_BUILDING;
 				}
@@ -863,7 +852,10 @@ void Unit::handleDisplacement(void)
 				// The unit has already its room in the building,
 				// then we are sure that the unit can enter.
 				
-				owner->game->map.setUnit(posX-dx, posY-dy, NOUID);
+				if (performance[FLY])
+					owner->game->map.setAirUnit(posX-dx, posY-dy, NOGUID);
+				else
+					owner->game->map.setGroundUnit(posX-dx, posY-dy, NOGUID);
 				displacement=DIS_INSIDE;
 				
 				if (destinationPurprose==FEED)
@@ -1068,7 +1060,9 @@ void Unit::handleMovement(void)
 					}
 				}
 			}
-			if ((movement!=MOV_GOING_DXDY)||(owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID))
+			
+			assert(performance[FLY]);
+			if (movement!=MOV_GOING_DXDY || owner->game->map.getAirUnit(posX+dx, posY+dy)!=NOGUID)
 			{
 				movement=MOV_RANDOM;
 			}
@@ -1083,41 +1077,59 @@ void Unit::handleMovement(void)
 			}
 			else
 			{
+				int quality=256; // Smaller is better.
 				movement=MOV_RANDOM;
 				for (int x=-8; x<=8; x++)
 					for (int y=-8; y<=8; y++)
-						if (owner->game->map.isFOW(posX+x, posY+y, owner->sharedVision))
+						if (owner->game->map.isFOWDiscovered(posX+x, posY+y, owner->sharedVision))
 						{
 							if (attachedBuilding&&
 								owner->game->map.warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
 									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
 								continue;
-							int uid=owner->game->map.getUnit(posX+x, posY+y);
-							if (uid!=NOUID)
+							Uint16 gid;
+							gid=owner->game->map.getBuilding(posX+x, posY+y);
+							if (gid!=NOGBID)
 							{
-								int team, id;
-								if (uid<0)
-								{
-									team=Building::UIDtoTeam(uid);
-									id=Building::UIDtoID(uid);
-									if (owner->game->teams[team]->myBuildings[id]->type->isVirtual)
-										continue;
-								}
-								else
-								{
-									team=Unit::UIDtoTeam(uid);
-								}
+								int team=Building::GIDtoTeam(gid);
 								Uint32 tm=1<<team;
 								if (owner->enemies & tm)
 								{
-									movement=MOV_GOING_TARGET;
-									targetX=posX+x;
-									targetY=posY+y;
-									break;
+									int id=Building::GIDtoID(gid);
+									int newQuality=(x*x+y*y);
+									BuildingType *bt=owner->game->teams[team]->myBuildings[id]->type;
+									int shootDamage=bt->shootDamage;
+									newQuality/=(1+shootDamage);
+									if (newQuality<quality)
+									{
+										movement=MOV_GOING_TARGET;
+										targetX=posX+x;
+										targetY=posY+y;
+										quality=newQuality;
+									}
+								}
+							}
+							gid=owner->game->map.getGroundUnit(posX+x, posY+y);
+							if (gid!=NOGUID)
+							{
+								int team=Unit::GIDtoTeam(gid);
+								Uint32 tm=1<<team;
+								if (owner->enemies & tm)
+								{
+									int id=Building::GIDtoID(gid);
+									Unit *u=owner->game->teams[team]->myUnits[id];
+									int strength=u->performance[ATTACK_STRENGTH];
+									int newQuality=(x*x+y*y)/(1+strength);
+									if (newQuality<quality)
+									{
+										movement=MOV_GOING_TARGET;
+										targetX=posX+x;
+										targetY=posY+y;
+										quality=newQuality;
+									}
 								}
 							}
 						}
-					
 			}
 			break;
 		}
@@ -1190,13 +1202,12 @@ void Unit::handleMovement(void)
 
 		case DIS_EXITING_BUILDING:
 		{
-#			ifdef WIN32
-#				pragma warning (disable : 4800)
-#			endif
-			if (attachedBuilding->findExit(&posX, &posY, &dx, &dy, performance[FLY]))
-#			ifdef WIN32
-#				pragma warning (default : 4800)
-#			endif
+			bool exitFound;
+			if (performance[FLY])
+				exitFound=attachedBuilding->findAirExit(&posX, &posY, &dx, &dy);
+			else
+				exitFound=attachedBuilding->findGroundExit(&posX, &posY, &dx, &dy, performance[SWIM]);
+			if (exitFound)
 			{
 				//printf("Exit found : (%d,%d) delta (%d,%d)\n", posX, posY, dx, dy);
 				// OK, we have finished the ACT_BUILDING displacement.
@@ -1258,7 +1269,11 @@ void Unit::handleAction(void)
 	{
 		case MOV_RANDOM:
 		{
-			owner->game->map.setUnit(posX, posY, NOUID);
+			bool fly=performance[FLY];
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, NOGUID);
+			else
+				owner->game->map.setGroundUnit(posX, posY, NOGUID);
 			dx=-1+syncRand()%3;
 			dy=-1+syncRand()%3;
 			directionFromDxDy();
@@ -1267,13 +1282,20 @@ void Unit::handleAction(void)
 			posY=(posY+dy)&(owner->game->map.getMaskH());
 			selectPreferedMovement();
 			speed=performance[action];
-			owner->game->map.setUnit(posX, posY, UID);
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, gid);
+			else
+				owner->game->map.setGroundUnit(posX, posY, gid);
 			break;
 		}
 		
 		case MOV_GOING_TARGET:
 		{
-			owner->game->map.setUnit(posX, posY, NOUID);
+			bool fly=performance[FLY];
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, NOGUID);
+			else
+				owner->game->map.setGroundUnit(posX, posY, NOGUID);
 			
 			pathFind();
 			//printf("%d d=(%d, %d)!\n", (int)this, dx, dy);
@@ -1283,13 +1305,20 @@ void Unit::handleAction(void)
 			selectPreferedMovement();
 			speed=performance[action];
 			
-			owner->game->map.setUnit(posX, posY, UID);
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, gid);
+			else
+				owner->game->map.setGroundUnit(posX, posY, gid);
 			break;
 		}
 
 		case MOV_GOING_DXDY:
 		{
-			owner->game->map.setUnit(posX, posY, NOUID);
+			bool fly=performance[FLY];
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, NOGUID);
+			else
+				owner->game->map.setGroundUnit(posX, posY, NOGUID);
 			
 			directionFromDxDy();
 			posX=(posX+dx)&(owner->game->map.getMaskW());
@@ -1298,12 +1327,13 @@ void Unit::handleAction(void)
 			selectPreferedMovement();
 			speed=performance[action];
 			
-			owner->game->map.setUnit(posX, posY, UID);
+			if (fly)
+				owner->game->map.setAirUnit(posX, posY, gid);
+			else
+				owner->game->map.setGroundUnit(posX, posY, gid);
 			
 			if (verbose)
-			{
 				printf("MOV_GOING_DXDY d=(%d, %d; %d).\n", direction, dx, dy);
-			}
 			
 			break;
 		}
@@ -1326,7 +1356,11 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			selectPreferedMovement();
 			speed=performance[action];
-			owner->game->map.setUnit(posX, posY, UID);
+			
+			if (performance[FLY])
+				owner->game->map.setAirUnit(posX, posY, gid);
+			else
+				owner->game->map.setGroundUnit(posX, posY, gid);
 			break;
 		}
 		
@@ -1370,61 +1404,54 @@ void Unit::handleAction(void)
 
 void Unit::setNewValidDirection(void)
 {
-	int i=0;
-	while (	(i<8) &&
-			((owner->game->map.getUnit(posX+dx, posY+dy)!=NOUID) ||
-			( (!performance[FLY]) && (owner->game->map.isRessource(posX+dx, posY+dy)) )) )
+	if (performance[FLY])
 	{
-		direction=(direction+1)&7;
-		dxdyfromDirection();
-		i++;
+		int i=0;
+		while ( i<8 && owner->game->map.isFreeForAirUnit(posX+dx, posY+dy))
+		{
+			direction=(direction+1)&7;
+			dxdyfromDirection();
+			i++;
+		}
+		if (i==8)
+		{
+			direction=8;
+			dxdyfromDirection();
+		}
 	}
-	if (i==8)
+	else
 	{
-		direction=8;
-		dxdyfromDirection();
-	}		
+		int i=0;
+		bool swim=performance[SWIM];
+		while ( i<8 && owner->game->map.isFreeForGroundUnit(posX+dx, posY+dy, swim))
+		{
+			direction=(direction+1)&7;
+			dxdyfromDirection();
+			i++;
+		}
+		if (i==8)
+		{
+			direction=8;
+			dxdyfromDirection();
+		}
+	}
+	
 }
 
 bool Unit::valid(int x, int y)
 {
 	// Is there anythig that could block an unit?
-	return ((owner->game->map.getUnit(x, y)==NOUID) &&
-		( (performance[FLY]) || (!owner->game->map.isRessource(x, y)) ));
+	if (performance[FLY])
+		return owner->game->map.isFreeForAirUnit(x, y);
+	else
+		return owner->game->map.isFreeForGroundUnit(x, y, performance[SWIM]);
 }
 
 bool Unit::validHard(int x, int y)
 {
 	// Is there anythig that could block an unit? (except other units)
-	Sint32 u=owner->game->map.getUnit(x, y);
-	return (((u>=0) || (u==NOUID)) &&
-		( (performance[FLY]) || (!owner->game->map.isRessource(x, y)) ));
-}
-
-bool Unit::validMed(int x, int y)
-{
-	// Is it reasonabely free ?
-	
-	if ((!performance[FLY]) && (owner->game->map.isRessource(x, y)))
-		return false;
-	
-	Sint32 u=owner->game->map.getUnit(x, y);
-	if (u==NOUID)
-		return true;
-	else if (u<0)
-		return false;
-	else
-	{
-		int c=0;
-		for (int i=0; i<8; i++)
-		{
-			int dx, dy;
-			dxdyfromDirection(i, &dx, &dy);
-			if (valid(x+dx, x+dy))
-				c++;
-		}
-		return (c>=4);
-	}
+	assert(!performance[FLY]);
+	return owner->game->map.isHardSpaceForGroundUnit(x, y, performance[SWIM]);
 }
 
 void Unit::pathFind(void)
@@ -1442,7 +1469,7 @@ void Unit::pathFind(void)
 		{
 			owner->game->map.nearestRessource(targetX, targetY, (RessourceType)destinationPurprose, &targetX, &targetY);
 			if (verbose)
-				printf("(%d), no ressouces here! pos=(%d, %d), target=(%d, %d).\n", UID, posX, posY, targetX, targetY);
+				printf("(%d), no ressouces here! pos=(%d, %d), target=(%d, %d).\n", gid, posX, posY, targetX, targetY);
 		}
 		// Now we first try the 3 simplest directions:
 		int ldx=targetX-posX;
@@ -1450,7 +1477,7 @@ void Unit::pathFind(void)
 		int cdx, cdy;
 		
 		if (verbose)
-			printf("(%d), pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", UID, posX, posY, targetX, targetY, ldx, ldy);
+			printf("(%d), pos=(%d, %d), target=(%d, %d), ld=(%d, %d).\n", gid, posX, posY, targetX, targetY, ldx, ldy);
 		
 		simplifyDirection(ldx, ldy, &cdx, &cdy);
 		
@@ -1609,7 +1636,7 @@ void Unit::pathFind(void)
 				printf("0x%lX pl=(%d, %d) lD=%d, pr=(%d, %d) rD=%d\n", (unsigned long)this, ptlx, ptly, lDist, ptrx, ptry, rDist);
 			if ((lDist<=centerSquareDist)
 				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptlx, ptly, (RessourceType)destinationPurprose, &dx, &dy)))
-				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchUID(ptlx, ptly, attachedBuilding->UID)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchBuilding(ptlx, ptly, attachedBuilding->gid)))
 				)
 			{
 				bypassDirection=DIR_LEFT;
@@ -1624,7 +1651,7 @@ void Unit::pathFind(void)
 			}
 			if ((rDist<=centerSquareDist)
 				||((displacement==DIS_GOING_TO_RESSOURCE)&&(owner->game->map.doesPosTouchRessource(ptrx, ptry, (RessourceType)destinationPurprose, &dx, &dy)))
-				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchUID(ptrx, ptry, attachedBuilding->UID)))
+				||((displacement==DIS_GOING_TO_BUILDING)&&(owner->game->map.doesPosTouchBuilding(ptrx, ptry, attachedBuilding->gid)))
 				|| ((ptlx==ptrx)&&(ptly==ptry))
 				|| ((count++)>1024)
 				)
@@ -1685,7 +1712,7 @@ void Unit::pathFind(void)
 				if (verbose)
 				{
 					printf("l obstacle not hard! .n");
-					printf("l(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+					printf("l(%d) o=(%d, %d) b=(%d, %d) \n", gid, obstacleX, obstacleY, borderX, borderY);
 				}
 				int ctpx=tempTargetX-posX;
 				int ctpy=tempTargetY-posY;
@@ -1714,7 +1741,7 @@ void Unit::pathFind(void)
 					obstacleY+=dctpy;
 					if (ci++>8)
 					{
-						printf("(%d) The obstacle suddenly disappeared\n", UID);
+						printf("(%d) The obstacle suddenly disappeared\n", gid);
 						gotoTarget(targetX, targetY);
 						bypassDirection=DIR_UNSET;
 						return;
@@ -1874,7 +1901,7 @@ void Unit::pathFind(void)
 				if (verbose)
 				{
 					printf("r obstacle not hard! \n");
-					printf("r(%d) o=(%d, %d) b=(%d, %d) \n", UID, obstacleX, obstacleY, borderX, borderY);
+					printf("r(%d) o=(%d, %d) b=(%d, %d) \n", gid, obstacleX, obstacleY, borderX, borderY);
 				}
 				int ctpx=tempTargetX-posX;
 				int ctpy=tempTargetY-posY;
@@ -1903,7 +1930,7 @@ void Unit::pathFind(void)
 					obstacleY+=dctpy;
 					if (ci++>8)
 					{
-						printf("(%d) The obstacle suddenly disappeared\n", UID);
+						printf("(%d) The obstacle suddenly disappeared\n", gid);
 						gotoTarget(targetX, targetY);
 						bypassDirection=DIR_UNSET;
 						return;
@@ -2053,7 +2080,7 @@ void Unit::pathFind(void)
 		if ((broken)&&(dx==-odx)&&(dy==-ody))
 		{
 			if (verbose)
-				printf("(%d) path is broken\n", UID);
+				printf("(%d) path is broken\n", gid);
 			bypassDirection=DIR_UNSET;
 		}
 		else
@@ -2320,17 +2347,17 @@ void Unit::secondaryDirection(int ldx, int ldy, int *cdx, int *cdy)
 	}
 }
 
-Sint32 Unit::UIDtoID(Sint32 uid)
+Sint32 Unit::GIDtoID(Uint16 gid)
 {
-	return (uid%1024);
+	return (gid%1024);
 }
 
-Sint32 Unit::UIDtoTeam(Sint32 uid)
+Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
-	return (uid/1024);
+	return (gid/1024);
 }
 
-Sint32 Unit::UIDfrom(Sint32 id, Sint32 team)
+Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
 	return id+team*1024;
 }
@@ -2341,7 +2368,7 @@ Sint32 Unit::checkSum()
 	
 	cs^=typeNum;
 	
-	cs^=UID;
+	cs^=gid;
 	cs^=isDead;
 
 	cs^=posX;
@@ -2353,32 +2380,32 @@ Sint32 Unit::checkSum()
 	cs^=insideTimeout;
 	cs^=speed;
 	cs=(cs<<1)|(cs>>31);
-	//printf("%d,1,%x\n", UID, cs);
+	//printf("%d,1,%x\n", gid, cs);
 
 	cs^=(int)needToRecheckMedical;
-	//printf("%d,1a,%x\n", UID, cs);
+	//printf("%d,1a,%x\n", gid, cs);
 	cs^=medical;
 	cs^=activity;
 	cs^=displacement;
 	cs^=movement;
-	//printf("%d,1b,%x\n", UID, cs);
+	//printf("%d,1b,%x\n", gid, cs);
 	cs^=action;
-	//printf("%d,1c,%x\n", UID, cs);
+	//printf("%d,1c,%x\n", gid, cs);
 	cs^=targetX;
 	cs^=targetY;
-	//printf("%d,1d,%x\n", UID, cs);
+	//printf("%d,1d,%x\n", gid, cs);
 	cs^=tempTargetX;
 	cs^=tempTargetY;
-	//printf("%d,1e,%x\n", UID, cs);
+	//printf("%d,1e,%x\n", gid, cs);
 	cs^=bypassDirection;
-	//printf("%d,1f,%x\n", UID, cs);
+	//printf("%d,1f,%x\n", gid, cs);
 	cs^=obstacleX;
 	cs^=obstacleY;
-	//printf("%d,1g,%x\n", UID, cs);
+	//printf("%d,1g,%x\n", gid, cs);
 	cs^=borderX;
 	cs^=borderY;
 	cs=(cs<<1)|(cs>>31);
-	//printf("%d,2,%x\n", UID, cs);
+	//printf("%d,2,%x\n", gid, cs);
 
 	cs^=hp;
 	cs^=trigHP;
@@ -2397,7 +2424,7 @@ Sint32 Unit::checkSum()
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);
 	cs^=destinationPurprose;
-	//printf("%d,3,%x***\n", UID, cs);
+	//printf("%d,3,%x***\n", gid, cs);
 	
 	return cs;
 }

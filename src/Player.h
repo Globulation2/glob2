@@ -155,6 +155,7 @@ public:
 	Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type);
 	virtual ~Player(void);
 
+	void setTeam(Team *team);
 	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
 	
 	void makeItAI();
@@ -165,7 +166,11 @@ public:
 public:
 	Sint32 startPositionX, startPositionY;
 
+	// team is the basic (structural) pointer. The others are directs access.
 	Team *team;
+	Game *game;
+	Map *map;
+	
 	AI *ai;
 
 public:

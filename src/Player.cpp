@@ -515,7 +515,7 @@ Player::Player()
 {
 	startPositionX=0;
 	startPositionY=0;
-	team=NULL;
+	setTeam(NULL);
 	ai=NULL;
 }
 
@@ -529,7 +529,7 @@ Player::Player(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, PlayerType type)
 :BasePlayer(number, name, team->teamNumber, type)
 {
-	this->team=team;
+	setTeam(team);
 	if (type==P_AI)
 	{
 		ai=new AI(this);
@@ -544,9 +544,23 @@ Player::Player(Sint32 number, const char name[MAX_NAME_LENGTH], Team *team, Play
 Player::~Player()
 {
 	if (!disableRecursiveDestruction)
-	{
 		if (ai)
 			delete ai;
+}
+
+void Player::setTeam(Team *team)
+{
+	if (team)
+	{
+		this->team=team;
+		this->game=team->game;
+		this->map=team->map;
+	}
+	else
+	{
+		this->team=NULL;
+		this->game=NULL;
+		this->map=NULL;
 	}
 }
 
@@ -561,7 +575,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	memcpy(this->name, initial->name, MAX_NAME_LENGTH);
 
 	type=initial->type;
-	team=teams[this->teamNumber];
+	setTeam(teams[this->teamNumber]);
 
 	if (type==P_AI)
 	{
@@ -618,7 +632,7 @@ bool Player::load(SDL_RWops *stream, Team *teams[32], Sint32 versionMinor)
 	// player
 	startPositionX=SDL_ReadBE32(stream);
 	startPositionY=SDL_ReadBE32(stream);
-	team=teams[teamNumber];
+	setTeam(teams[teamNumber]);
 	if (type==P_AI)
 	{
 		ai=new AI(stream, this);

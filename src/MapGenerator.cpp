@@ -89,9 +89,9 @@ void Map::smoothRessources(int times)
 						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						if (getUnit(nx, ny)==NOUID)
-						if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
-							setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
+						if (getGroundUnit(nx, ny)==NOGUID)
+							if (((r==WOOD||r==CORN||r==STONE)&&isGrass(nx, ny))||((r==ALGA)&&isWater(nx, ny)))
+								setTerrain(nx, ny, 272+(r*10)+((syncRand()&1)*5));
 					}
 				}
 			}
@@ -836,7 +836,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", ress, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[ress];
 			if (amount>0)
-				setResAtPos(bootX[team]+dx, bootY[team]+dy, (RessourceType)ress, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourceType)ress, amount);
 		}
 
 		if (smallestWidth<limiteDist)
@@ -875,7 +875,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			//printf("ress=%d, maxDir=%d, maxDist=%d, d=(%d, %d), pos=(%d, %d).\n", smallestRessource, maxDir, maxDist, dx, dy, bootX[team]+dx, bootY[team]+dy);
 			int amount=descriptor.ressource[smallestRessource];
 			if (amount>0)
-				setResAtPos(bootX[team]+dx, bootY[team]+dy, (RessourceType)smallestRessource, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, (RessourceType)smallestRessource, amount);
 		}
 		
 		int maxDir=0;
@@ -910,7 +910,7 @@ void Map::addRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		//printf("ALGA, maxDir=%d, maxWidth=%d, d=(%d, %d), pos=(%d, %d).\n", maxDir, maxWidth, dx, dy, bootX[team]+dx, bootY[team]+dy);
 		int amount=descriptor.ressource[ALGA];
 		if (amount>0)
-			setResAtPos(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
+			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
 	}
 	
 	// Let's smooth ressources...
@@ -1312,7 +1312,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s], bootY[s]-p, WOOD, amount);
+			setRessource(bootX[s], bootY[s]-p, WOOD, amount);
 		smallestAmount=amount;
 		smallestRessource=WOOD;
 		
@@ -1326,7 +1326,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s]-p, bootY[s], CORN, amount);
+			setRessource(bootX[s]-p, bootY[s], CORN, amount);
 		if (amount<smallestAmount)
 		{
 			smallestAmount=amount;
@@ -1343,7 +1343,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s], bootY[s]+p, STONE, amount);
+			setRessource(bootX[s], bootY[s]+p, STONE, amount);
 		if (amount<smallestAmount)
 		{
 			smallestAmount=amount;
@@ -1361,7 +1361,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
+			setRessource(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
 		
 		//ALGA
 		for (d=0; d<2*islandsSize; d++)
@@ -1371,7 +1371,7 @@ void Map::addRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		amount=smoothRessources;
 		p=d+smoothRessources-1+amount/2;
 		if (amount>0)
-			setResAtPos(bootX[s]+p, bootY[s], ALGA, amount);
+			setRessource(bootX[s]+p, bootY[s], ALGA, amount);
 	}
 	
 	// Let's smooth ressources...
@@ -1397,7 +1397,7 @@ bool Game::makeIslandsMap(MapGenerationDescriptor &descriptor)
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
 		{
-			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0);
 			if (u==NULL)
 				return false;
 			assert(u);
@@ -1428,7 +1428,7 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		assert(b);
 		for (int i=0; i<descriptor.nbWorkers; i++)
 		{
-			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, UnitType::WORKER, 0, 0, 0, 0);
+			Unit *u=addUnit(descriptor.bootX[s]+(i%4), descriptor.bootY[s]-1-(i/4), s, WORKER, 0, 0, 0, 0);
 			if (u==NULL)
 				return false;
 			assert(u);

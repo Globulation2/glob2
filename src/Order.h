@@ -79,36 +79,36 @@ class OrderDelete:public Order
 {
 public:
 	OrderDelete(const Uint8 *data, int dataLength);
-	OrderDelete(Sint32 UID);
+	OrderDelete(Uint16 gid);
 	virtual ~OrderDelete(void) { }
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 2; }
 	Sint32 checkSum() { return ORDER_DELETE; }
 
-	Sint32 UID;
+	Uint16 gid;
 
 protected:
-	Uint8 data[4];
+	Uint8 data[2];
 };
 
 class OrderCancelDelete:public Order
 {
 public:
 	OrderCancelDelete(const Uint8 *data, int dataLength);
-	OrderCancelDelete(Sint32 UID);
+	OrderCancelDelete(Uint16 gid);
 	virtual ~OrderCancelDelete(void) { }
 	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 2; }
 	Sint32 checkSum() { return ORDER_CANCEL_DELETE; }
 
-	Sint32 UID;
+	Uint16 gid;
 
 protected:
-	Uint8 data[4];
+	Uint8 data[2];
 };
 
 
@@ -116,36 +116,36 @@ class OrderConstruction:public Order
 {
 public:
 	OrderConstruction(const Uint8 *data, int dataLength);
-	OrderConstruction(Sint32 UID);
+	OrderConstruction(Uint16 gid);
 	virtual ~OrderConstruction(void) { }
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 2; }
 	Sint32 checkSum() { return ORDER_CONSTRUCTION; }
 
-	Sint32 UID;
+	Uint16 gid;
 
 protected:
-	Uint8 data[4];
+	Uint8 data[2];
 };
 
 class OrderCancelConstruction:public Order
 {
 public:
 	OrderCancelConstruction(const Uint8 *data, int dataLength);
-	OrderCancelConstruction(Sint32 UID);
+	OrderCancelConstruction(Uint16 gid);
 	virtual ~OrderCancelConstruction(void) { }
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 2; }
 	Sint32 checkSum() { return ORDER_CANCEL_CONSTRUCTION; }
 
-	Sint32 UID;
+	Uint16 gid;
 
 protected:
-	Uint8 data[4];
+	Uint8 data[2];
 };
 
 
@@ -167,7 +167,7 @@ class OrderModifyUnits:public OrderModify
 {
 public:
 	OrderModifyUnits(const Uint8 *data, int dataLength);
-	OrderModifyUnits(Sint32 *UID, Sint32 *trigHP, Sint32 *trigHungry, int length);
+	OrderModifyUnits(Uint16 *gid, Sint32 *trigHP, Sint32 *trigHungry, int length);
 	virtual ~OrderModifyUnits(void);
 	
 	Uint8 *getData(void);
@@ -177,7 +177,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_UNIT; }
 	Sint32 checkSum() { return ORDER_MODIFY_UNIT; }
 
-	Sint32 *UID;
+	Uint16 *gid;
 	Sint32 *trigHP;
 	Sint32 *trigHungry;
 };
@@ -186,7 +186,7 @@ class OrderModifyBuildings:public OrderModify
 {
 public:
 	OrderModifyBuildings(const Uint8 *data, int dataLength);
-	OrderModifyBuildings(Sint32 *UID, Sint32 *numberRequested, int length);
+	OrderModifyBuildings(Uint16 *gid, Sint32 *numberRequested, int length);
 	virtual ~OrderModifyBuildings(void);
 
 	Uint8 *getData(void);
@@ -196,7 +196,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_BUILDING; }
 	Sint32 checkSum() { return ORDER_MODIFY_BUILDING; }
 
-	Sint32 *UID;
+	Uint16 *gid;
 	Sint32 *numberRequested;
 };
 
@@ -204,15 +204,15 @@ class OrderModifySwarms:public OrderModify
 {
 public:
 	OrderModifySwarms(const Uint8 *data, int dataLength);
-	OrderModifySwarms(Sint32 *UID, Sint32 ratio[][UnitType::NB_UNIT_TYPE], int length);
+	OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], int length);
 	virtual ~OrderModifySwarms(void);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { assert(UnitType::NB_UNIT_TYPE==3); return length*16; }
+	int getDataLength(void) { assert(NB_UNIT_TYPE==3); return length*16; }
 	int getNumberOfSwarm(void) { return length; }
 
-	Sint32 *UID;
+	Uint16 *gid;
 	Sint32 *ratio;
 
 	Uint8 getOrderType(void) { return ORDER_MODIFY_SWARM; }
@@ -224,7 +224,7 @@ class OrderModifyFlags:public OrderModify
 {
 public:
 	OrderModifyFlags(const Uint8 *data, int dataLength);
-	OrderModifyFlags(Sint32 *UID, Sint32 *range, int length);
+	OrderModifyFlags(Uint16 *gid, Sint32 *range, int length);
 	virtual ~OrderModifyFlags(void);
 
 	Uint8 *getData(void);
@@ -232,7 +232,7 @@ public:
 	int getDataLength(void) { return length*8; }
 	int getNumberOfBuilding(void) { return length; }
 
-	Sint32 *UID;
+	Uint16 *gid;
 	Sint32 *range;
 
 	Uint8 getOrderType(void) { return ORDER_MODIFY_FLAG; }
@@ -243,7 +243,7 @@ class OrderMoveFlags:public OrderModify
 {
 public:
 	OrderMoveFlags(const Uint8 *data, int dataLength);
-	OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length);
+	OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, int length);
 	virtual ~OrderMoveFlags(void);
 
 	Uint8 *getData(void);
@@ -251,7 +251,7 @@ public:
 	int getDataLength(void) { return length*12; }
 	int getNumberOfBuilding(void) { return length; }
 
-	Sint32 *UID;
+	Uint16 *gid;
 	Sint32 *x;
 	Sint32 *y;
 

@@ -21,12 +21,14 @@
 #define __TEAM_H
 
 #include "GAG.h"
-#include "Unit.h"
 #include "Race.h"
-#include "Building.h"
 #include <list>
 #include "Order.h"
 #include "TeamStat.h"
+
+class Building;
+class Map;
+class Unit;
 
 class BaseTeam: public Order
 {
@@ -131,10 +133,13 @@ private:
 	void init(void);
 
 public:
+	// game is the basic (structural) pointer. Map is used for direct access.
 	Game *game;
+	Map *map;
+	
 	Unit *myUnits[1024];
 	
-	Building *myBuildings[512];
+	Building *myBuildings[1024];
 	
 	Bullet *myBullets[256];
 	

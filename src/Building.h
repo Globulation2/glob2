@@ -20,11 +20,11 @@
 #ifndef __BUILDING_H
 #define __BUILDING_H
 
-#include "UnitType.h"
 #include <list>
 #include <vector>
-
-#define SHOOTING_COOLDOWN_MAX 65536
+#include "Ressource.h"
+#include "UnitType.h"
+#include "Bullet.h"
 
 class Unit;
 class Team;
@@ -80,14 +80,12 @@ public:
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	
 	// identity
-	Sint32 UID; // Sint16, for reservation see below
+	Uint16 gid; // Sint16, for reservation see below TODO
 	Team *owner; // if < 0, not allocated
 
 	// position
 	Sint32 posX, posY; // (Uint16)
 	Sint32 posXLocal, posYLocal;
-
-	// UID Buildings and flags = -1 .. -16384 = - 1 - team * 512 - ID
 
 	// 256 flags
 	// Flag usefull :
@@ -104,9 +102,9 @@ public:
 	// prefered parameters
 	Sint32 productionTimeout;
 	Sint32 totalRatio;
-	Sint32 ratio[UnitType::NB_UNIT_TYPE];
-	Sint32 ratioLocal[UnitType::NB_UNIT_TYPE];
-	Sint32 percentUsed[UnitType::NB_UNIT_TYPE];
+	Sint32 ratio[NB_UNIT_TYPE];
+	Sint32 ratioLocal[NB_UNIT_TYPE];
+	Sint32 percentUsed[NB_UNIT_TYPE];
 	
 	Uint32 shootingStep;
 	Sint32 shootingCooldown;
@@ -118,7 +116,7 @@ public:
 
 public:
 	Building(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
-	Building(int x, int y, int uid, int typeNum, Team *team, BuildingsTypes *types);
+	Building(int x, int y, Uint16 gid, int typeNum, Team *team, BuildingsTypes *types);
 	virtual ~Building(void) { }
 	
 	void load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
@@ -151,33 +149,19 @@ public:
 	int getMidX(void);
 	int getMidY(void);
 	int getMaxUnitStayRange(void);
-	bool findExit(int *posX, int *posY, int *dx, int *dy, bool canFly);
+	bool findGroundExit(int *posX, int *posY, int *dx, int *dy);
+	bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
+	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
 
 	//! get flag from units attached to flag
 	void computeFlagStat(int *goingTo, int *onSpot);
 
-	static Sint32 UIDtoID(Sint32 uid);
-	static Sint32 UIDtoTeam(Sint32 uid);
-	static Sint32 UIDfrom(Sint32 id, Sint32 team);
+	
+	static Sint32 GIDtoID(Uint16 gid);
+	static Sint32 GIDtoTeam(Uint16 gid);
+	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	Sint32 checkSum();
-};
-
-class Bullet
-{
-public:
-	Bullet(SDL_RWops *stream);
-	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY);
-	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
-public:
-	Sint32 px, py; // pixel precision point of x,y
-	Sint32 speedX, speedY; //pixel precision speed.
-	Sint32 ticksLeft;
-	Sint32 shootDamage;
-	Sint32 targetX, targetY;
-public:
-	void step(void);
 };
 
 #endif

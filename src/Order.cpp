@@ -182,19 +182,18 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 OrderDelete::OrderDelete(const Uint8 *data, int dataLength)
 :Order()
 {
-	assert(dataLength==4);
-
+	assert(dataLength==2);
 	setData(data, dataLength);
 }
 
-OrderDelete::OrderDelete(Sint32 UID)
+OrderDelete::OrderDelete(Uint16 gid)
 {
-	this->UID=UID;
+	this->gid=gid;
 }
 
 Uint8 *OrderDelete::getData(void)
 {
-	addSint32(data, this->UID, 0);
+	addUint16(data, this->gid, 0);
 	return data;
 }
 
@@ -202,11 +201,8 @@ bool OrderDelete::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-	
-	this->UID=getSint32(data, 0);
-
-	memcpy(this->data,data,dataLength);
-	
+	this->gid=getUint16(data, 0);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -214,19 +210,18 @@ bool OrderDelete::setData(const Uint8 *data, int dataLength)
 
 OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength)
 {
-	assert(dataLength==4);
-
+	assert(dataLength==2);
 	setData(data, dataLength);
 }
 
-OrderCancelDelete::OrderCancelDelete(Sint32 UID)
+OrderCancelDelete::OrderCancelDelete(Uint16 gid)
 {
-	this->UID=UID;
+	this->gid=gid;
 }
 
 Uint8 *OrderCancelDelete::getData(void)
 {
-	addSint32(data, this->UID, 0);
+	addUint16(data, this->gid, 0);
 	return data;
 }
 
@@ -234,11 +229,8 @@ bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-	
-	this->UID=getSint32(data, 0);
-
-	memcpy(this->data,data,dataLength);
-	
+	this->gid=getUint16(data, 0);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -247,20 +239,18 @@ bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
 OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
-	assert(dataLength==4);
-	
+	assert(dataLength==2);
 	setData(data, dataLength);
-
 }
 
-OrderConstruction::OrderConstruction(Sint32 UID)
+OrderConstruction::OrderConstruction(Uint16 gid)
 {
-	this->UID=UID;
+	this->gid=gid;
 }
 
 Uint8 *OrderConstruction::getData(void)
 {
-	addSint32(data, this->UID, 0);
+	addUint16(data, this->gid, 0);
 	return data;
 }
 
@@ -268,11 +258,8 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-	
-	this->UID=getSint32(data, 0);
-	
-	memcpy(this->data,data,dataLength);
-	
+	this->gid=getUint16(data, 0);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -281,20 +268,18 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength)
 :Order()
 {
-	assert(dataLength==4);
-	
+	assert(dataLength==2);
 	setData(data, dataLength);
-
 }
 
-OrderCancelConstruction::OrderCancelConstruction(Sint32 UID)
+OrderCancelConstruction::OrderCancelConstruction(Uint16 gid)
 {
-	this->UID=UID;
+	this->gid=gid;
 }
 
 Uint8 *OrderCancelConstruction::getData(void)
 {
-	addSint32(data, this->UID, 0);
+	addUint16(data, this->gid, 0);
 	return data;
 }
 
@@ -302,11 +287,8 @@ bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
-
-	this->UID=getSint32(data, 0);
-	
-	memcpy(this->data,data,dataLength);
-	
+	this->gid=getUint16(data, 0);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -322,69 +304,65 @@ OrderModify::OrderModify()
 OrderModifyUnits::OrderModifyUnits(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert((dataLength%12)==0);
-	
+	assert((dataLength%10)==0);
 	setData(data, dataLength);
 }
 
-OrderModifyUnits::OrderModifyUnits(Sint32 *UID, Sint32 *trigHP, Sint32 *trigHungry, int length)
+OrderModifyUnits::OrderModifyUnits(Uint16 *gid, Sint32 *trigHP, Sint32 *trigHungry, int length)
 {
 	this->length=length;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->trigHP=(Sint32 *)malloc(length*4);
 	this->trigHungry=(Sint32 *)malloc(length*4);
 
-	this->data=(Uint8 *)malloc(12*length);
+	this->data=(Uint8 *)malloc(10*length);
 
-	memcpy(this->UID,UID,length);
-	memcpy(this->trigHP,trigHP,length);
-	memcpy(this->trigHungry,trigHungry,length);
+	memcpy(this->gid, gid, length);
+	memcpy(this->trigHP, trigHP, length);
+	memcpy(this->trigHungry, trigHungry, length);
 }
 
 OrderModifyUnits::~OrderModifyUnits()
 {
 	free(data);
-	free(UID);
+	free(gid);
 	free(trigHP);
 	free(trigHungry);
 }
 
 Uint8 *OrderModifyUnits::getData(void)
 {
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		addSint32(data, (this->UID )[i], 12*i+0);
-		addUint32(data, (this->trigHP)[i], 12*i+4);
-		addUint32(data, (this->trigHungry)[i], 12*i+8);
+		addUint16(data, (this->gid)[i], 10*i+0);
+		addSint32(data, (this->trigHP)[i], 10*i+2);
+		addSint32(data, (this->trigHungry)[i], 10*i+6);
 	}
 	return data;
 }
 
 bool OrderModifyUnits::setData(const Uint8 *data, int dataLength)
 {
-	if ((dataLength%12)!=0)
+	if ((dataLength%10)!=0)
 		return false;
 	
-	this->length=dataLength/12;
+	this->length=dataLength/10;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->trigHP=(Sint32 *)malloc(length*4);
 	this->trigHungry=(Sint32 *)malloc(length*4);
 
 	this->data=(Uint8 *)malloc(12*length);
 
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		(this->UID)[i]=getSint32(data, 12*i+0);
-		(this->trigHP)[i]=getUint32(data, 12*i+4);
-		(this->trigHungry)[i]=getUint32(data, 12*i+8);
+		(this->gid)[i]=getUint16(data, 12*i+0);
+		(this->trigHP)[i]=getSint32(data, 12*i+2);
+		(this->trigHungry)[i]=getSint32(data, 12*i+6);
 	}
 
-	memcpy(this->data,data,dataLength);
-	
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -394,77 +372,69 @@ bool OrderModifyUnits::setData(const Uint8 *data, int dataLength)
 OrderModifyBuildings::OrderModifyBuildings(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert((dataLength%8)==0);
+	assert((dataLength%6)==0);
 
-	this->length=dataLength/8;
+	this->length=dataLength/6;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->numberRequested=(Sint32 *)malloc(length*4);
-	this->data=(Uint8 *)malloc(8*length);
+	this->data=(Uint8 *)malloc(6*length);
 	
 	setData(data, dataLength);
 }
 
-OrderModifyBuildings::OrderModifyBuildings(Sint32 *UID, Sint32 *numberRequested, int length)
+OrderModifyBuildings::OrderModifyBuildings(Uint16 *gid, Sint32 *numberRequested, int length)
 {
 	this->length=length;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->numberRequested=(Sint32 *)malloc(length*4);
-	this->data=(Uint8 *)malloc(8*length);
+	this->data=(Uint8 *)malloc(6*length);
 
-	memcpy(this->UID,UID,length*4);
+	memcpy(this->gid,gid,length*2);
 	memcpy(this->numberRequested,numberRequested,length*4);
-	memset(data, 0, length*8);
+	memset(data, 0, length*6);
 }
 
 OrderModifyBuildings::~OrderModifyBuildings()
 {
 	free(data);
-	free(UID);
+	free(gid);
 	free(numberRequested);
 }
 
 Uint8 *OrderModifyBuildings::getData(void)
 {
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		addSint32(data, (this->UID )[i], 8*i+0);
-		addUint32(data, (this->numberRequested)[i], 8*i+4);
+		addUint16(data, (this->gid)[i], 6*i+0);
+		addSint32(data, (this->numberRequested)[i], 6*i+2);
 	}
 	return data;
 }
 
 bool OrderModifyBuildings::setData(const Uint8 *data, int dataLength)
 {
-	if ((dataLength%8)!=0)
+	if ((dataLength%6)!=0)
 		return false;
 	
-	if (this->length!=dataLength/8)
-	{
-		this->length=dataLength/8;
-		
-		free(this->UID);
-		free(this->numberRequested);
-		free(this->data);
+	this->length=dataLength/6;
 
-		this->UID=(Sint32 *)malloc(length*4);
-		this->numberRequested=(Sint32 *)malloc(length*4);
-		this->data=(Uint8 *)malloc(8*length);
-		
-		assert(false);//remove this assert when you wants to use more than one building modification.
-	}
-	
-	int i;
-	for (i=0; i<(this->length); i++)
+	free(this->gid);
+	free(this->numberRequested);
+	free(this->data);
+
+	this->gid=(Uint16 *)malloc(length*2);
+	this->numberRequested=(Sint32 *)malloc(length*4);
+	this->data=(Uint8 *)malloc(6*length);
+
+	for (int i=0; i<length; i++)
 	{
-		(this->UID)[i]=getSint32(data, 8*i+0);
-		(this->numberRequested)[i]=getUint32(data, 8*i+4);
+		(this->gid)[i]=getUint16(data, 6*i+0);
+		(this->numberRequested)[i]=getSint32(data, 6*i+2);
 	}
 	
-	memcpy(this->data,data,dataLength);
-	
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -473,69 +443,65 @@ bool OrderModifyBuildings::setData(const Uint8 *data, int dataLength)
 OrderModifySwarms::OrderModifySwarms(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert(UnitType::NB_UNIT_TYPE==3);
-	assert((dataLength%16)==0);
-	
+	assert(NB_UNIT_TYPE==3);
+	assert((dataLength%14)==0);
 	setData(data, dataLength);
 }
 
-OrderModifySwarms::OrderModifySwarms(Sint32 *UID, Sint32 ratio[][UnitType::NB_UNIT_TYPE], int length)
+OrderModifySwarms::OrderModifySwarms(Uint16 *gid, Sint32 ratio[][NB_UNIT_TYPE], int length)
 {
-	assert(UnitType::NB_UNIT_TYPE==3);
+	assert(NB_UNIT_TYPE==3);
 	this->length=length;
 
-	this->UID=(Sint32 *)malloc(length*4);
-	this->ratio=(Sint32 *)malloc(UnitType::NB_UNIT_TYPE*length*4);
-	this->data=(Uint8 *)malloc(16*length);
+	this->gid=(Uint16 *)malloc(length*2);
+	this->ratio=(Sint32 *)malloc(NB_UNIT_TYPE*length*4);
+	this->data=(Uint8 *)malloc(14*length);
 
-	memcpy(this->UID, UID, length*4);
-	memcpy(this->ratio, ratio, UnitType::NB_UNIT_TYPE*length*4);
+	memcpy(this->gid, gid, length*2);
+	memcpy(this->ratio, ratio, NB_UNIT_TYPE*length*4);
 }
 
 OrderModifySwarms::~OrderModifySwarms()
 {
-	free(UID);
+	free(gid);
 	free(ratio);
 	free(data);
 }
 
 Uint8 *OrderModifySwarms::getData(void)
 {
-	assert(UnitType::NB_UNIT_TYPE==3);
+	assert(NB_UNIT_TYPE==3);
 	
-	int i;
-	for (i=0; i<(length); i++)
+	for (int i=0; i<length; i++)
 	{
-		addSint32(data, (UID)[i], 16*i+0);
-		for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
-			addSint32(data, ratio[i*3+j], (16*i)+(4*j)+4);
+		addUint16(data, gid[i], 14*i+0);
+		for (int j=0; j<NB_UNIT_TYPE; j++)
+			addSint32(data, ratio[i*3+j], (14*i)+(4*j)+2);
 	}
 	return data;
 }
 
 bool OrderModifySwarms::setData(const Uint8 *data, int dataLength)
 {
-	if (UnitType::NB_UNIT_TYPE!=3)
+	if (NB_UNIT_TYPE!=3)
 		return false;
-	if ((dataLength%16)!=0)
+	if ((dataLength%14)!=0)
 		return false;
 
-	this->length=dataLength/16;
+	this->length=dataLength/14;
 
-	this->UID=(Sint32 *)malloc(length*4);
-	this->ratio=(Sint32 *)malloc(UnitType::NB_UNIT_TYPE*length*4);
-	this->data=(Uint8 *)malloc(16*length);
+	this->gid=(Uint16 *)malloc(length*2);
+	this->ratio=(Sint32 *)malloc(NB_UNIT_TYPE*length*4);
+	this->data=(Uint8 *)malloc(14*length);
 
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		this->UID[i]=getSint32(data, 16*i+0);
-		for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)
-			this->ratio[i*3+j]=getSint32(data, (16*i)+(4*j)+4);
+		this->gid[i]=getUint16(data, 14*i+0);
+		for (int j=0; j<NB_UNIT_TYPE; j++)
+			this->ratio[i*3+j]=getSint32(data, (14*i)+(4*j)+2);
 	}
 
-	memcpy(this->data, data, 16*length);
-	
+	memcpy(this->data, data, 14*length);
 	return true;
 }
 
@@ -545,62 +511,58 @@ OrderModifyFlags::OrderModifyFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
 	assert((dataLength%8)==0);
-	
 	setData(data, dataLength);
 }
 
-OrderModifyFlags::OrderModifyFlags(Sint32 *UID, Sint32 *range, int length)
+OrderModifyFlags::OrderModifyFlags(Uint16 *gid, Sint32 *range, int length)
 {
 	this->length=length;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->range=(Sint32 *)malloc(length*4);
 
-	this->data=(Uint8 *)malloc(8*length);
+	this->data=(Uint8 *)malloc(6*length);
 
-	memcpy(this->UID,UID,length*4);
-	memcpy(this->range,range,length*4);
+	memcpy(this->gid, gid, length*2);
+	memcpy(this->range, range, length*4);
 }
 
 OrderModifyFlags::~OrderModifyFlags()
 {
-	free(UID);
+	free(gid);
 	free(range);
 	free(data);
 }
 
 Uint8 *OrderModifyFlags::getData(void)
 {
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<(this->length); i++)
 	{
-		addSint32(data, (this->UID )[i], 8*i+0);
-		addSint32(data, (this->range )[i], 8*i+4);
+		addUint16(data, (this->gid)[i], 6*i+0);
+		addSint32(data, (this->range )[i], 6*i+2);
 	}
 	return data;
 }
 
 bool OrderModifyFlags::setData(const Uint8 *data, int dataLength)
 {
-	if((dataLength%8)!=0)
+	if((dataLength%6)!=0)
 		return false;
 	
-	this->length=dataLength/8;
+	this->length=dataLength/6;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->range=(Sint32 *)malloc(length*4);
 
-	this->data=(Uint8 *)malloc(8*length);
+	this->data=(Uint8 *)malloc(6*length);
 
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		(this->UID )[i]=getSint32(data, 8*i+0);
-		(this->range )[i]=getSint32(data, 8*i+4);
+		(this->gid )[i]=getUint16(data, 8*i+0);
+		(this->range )[i]=getSint32(data, 8*i+2);
    	}
 
-	memcpy(this->data,data,dataLength);
-
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 
@@ -609,29 +571,29 @@ bool OrderModifyFlags::setData(const Uint8 *data, int dataLength)
 OrderMoveFlags::OrderMoveFlags(const Uint8 *data, int dataLength)
 :OrderModify()
 {
-	assert((dataLength%12)==0);
+	assert((dataLength%10)==0);
 	
 	setData(data, dataLength);
 }
 
-OrderMoveFlags::OrderMoveFlags(Sint32 *UID, Sint32 *x, Sint32 *y, int length)
+OrderMoveFlags::OrderMoveFlags(Uint16 *gid, Sint32 *x, Sint32 *y, int length)
 {
 	this->length=length;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
 
-	this->data=(Uint8 *)malloc(12*length);
+	this->data=(Uint8 *)malloc(10*length);
 
-	memcpy(this->UID,UID,length*4);
+	memcpy(this->gid,gid,length*2);
 	memcpy(this->x,x,length*4);
 	memcpy(this->y,y,length*4);
 }
 
 OrderMoveFlags::~OrderMoveFlags()
 {
-	free(UID);
+	free(gid);
 	free(x);
 	free(y);
 	free(data);
@@ -642,32 +604,31 @@ Uint8 *OrderMoveFlags::getData(void)
 	int i;
 	for (i=0; i<(this->length); i++)
 	{
-		addSint32(data, (this->UID )[i], 12*i+0);
-		addSint32(data, (this->x )[i], 12*i+4);
-		addSint32(data, (this->y )[i], 12*i+8);
+		addUint16(data, (this->gid)[i], 10*i+0);
+		addSint32(data, (this->x )[i], 10*i+2);
+		addSint32(data, (this->y )[i], 10*i+6);
 	}
 	return data;
 }
 
 bool OrderMoveFlags::setData(const Uint8 *data, int dataLength)
 {
-	if((dataLength%12)!=0)
+	if((dataLength%10)!=0)
 		return false;
 	
-	this->length=dataLength/12;
+	this->length=dataLength/10;
 
-	this->UID=(Sint32 *)malloc(length*4);
+	this->gid=(Uint16 *)malloc(length*2);
 	this->x=(Sint32 *)malloc(length*4);
 	this->y=(Sint32 *)malloc(length*4);
 
-	this->data=(Uint8 *)malloc(12*length);
+	this->data=(Uint8 *)malloc(10*length);
 
-	int i;
-	for (i=0; i<(this->length); i++)
+	for (int i=0; i<length; i++)
 	{
-		(this->UID )[i]=getSint32(data, 12*i+0);
-		(this->x )[i]=getSint32(data, 12*i+4);
-		(this->y )[i]=getSint32(data, 12*i+8);
+		(this->gid )[i]=getUint16(data, 10*i+0);
+		(this->x )[i]=getSint32(data, 12*i+2);
+		(this->y )[i]=getSint32(data, 12*i+6);
    	}
 
 	memcpy(this->data,data,dataLength);
