@@ -588,15 +588,15 @@ Cassecouille
 Agressman
 Agressivum
 [the games]
-les parties
-the games
-die Spiele
+Parties
+Games
+Spiele
 [the maps]
-les cartes
-the maps
-die Karten
+Cartes
+Maps
+Karten
 [was]
-auparavent
+auparavant
 was
 vorher
 [was AI]
