@@ -246,7 +246,7 @@ void IRC::interpreteIRCMessage(const char *message)
 	{
 		char *diffusion = strtok(NULL, " :");
 		char *message = strtok(NULL, "\0");
-		
+	
 		if ((diffusion != NULL) && (message != NULL))
 		{
 			InfoMessage msg(IRC_MSG_NOTICE);
@@ -255,13 +255,14 @@ void IRC::interpreteIRCMessage(const char *message)
 			{
 				strncpy(msg.source,  source, IRC_NICK_SIZE );
 				msg.source[IRC_NICK_SIZE] = 0;
-			}
-			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-			msg.diffusion[IRC_CHANNEL_SIZE] = 0;
-			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-			msg.message[IRC_MESSAGE_SIZE] = 0;
 			
-			infoMessages.push_back(msg);
+				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+				msg.diffusion[IRC_CHANNEL_SIZE] = 0;
+				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+				msg.message[IRC_MESSAGE_SIZE] = 0;
+				
+				infoMessages.push_back(msg);
+			}
 		}
 	}
 	else if (strcasecmp(cmd, "353")==0)
