@@ -1462,7 +1462,7 @@ void GameGUI::drawPanelButtons(int pos)
 	// draw buttons
 	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
 	{
-		if (displayMode==BUILDING_VIEW)
+		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==BUILDING_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 1);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128, pos, globalContainer->gamegui, 0);
@@ -1470,7 +1470,7 @@ void GameGUI::drawPanelButtons(int pos)
 
 	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 	{
-		if (displayMode==FLAG_VIEW)
+		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==FLAG_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 1);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-96, pos, globalContainer->gamegui, 0);
@@ -1478,7 +1478,7 @@ void GameGUI::drawPanelButtons(int pos)
 
 	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
 	{
-		if (displayMode==STAT_TEXT_VIEW)
+		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 3);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-64, pos, globalContainer->gamegui, 2);
@@ -1486,7 +1486,7 @@ void GameGUI::drawPanelButtons(int pos)
 
 	if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
 	{
-		if (displayMode==STAT_GRAPH_VIEW)
+		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 5);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32, pos, globalContainer->gamegui, 4);
