@@ -42,6 +42,19 @@ Settings::Settings()
 	graphicType=DrawableSurface::GC_SDL;
 	optionFlags=0;
 	defaultLanguage=0;
+	musicVolume=255;
+}
+
+#define READ_PARSED_STRING(var) \
+{ \
+	if (parsed.find(#var) != parsed.end()) \
+		var = parsed[#var]; \
+}
+
+#define READ_PARSED_INT(var) \
+{ \
+	if (parsed.find(#var) != parsed.end()) \
+		var = atoi(parsed[#var].c_str()); \
 }
 
 void Settings::load(const char *filename)
@@ -62,18 +75,19 @@ void Settings::load(const char *filename)
 			varname=token;
 			token=strtok(NULL,"\t\n\r=");
 			if (token)
-				parsed.insert(std::pair<std::string, std::string>(varname, token));
+				parsed[varname] = token;
 		}
 		SDL_RWclose(stream);
 
 		// read values
-		username=parsed["username"];
-		screenWidth=atoi(parsed["screenWidth"].c_str());
-		screenHeight=atoi(parsed["screenHeight"].c_str());
-		screenFlags=atoi(parsed["screenFlags"].c_str());
-		optionFlags=atoi(parsed["optionFlags"].c_str());
-		graphicType=atoi(parsed["graphicType"].c_str());
-		defaultLanguage=atoi(parsed["defaultLanguage"].c_str());
+		READ_PARSED_STRING(username);
+		READ_PARSED_INT(screenWidth);
+		READ_PARSED_INT(screenHeight);
+		READ_PARSED_INT(screenFlags);
+		READ_PARSED_INT(optionFlags);
+		READ_PARSED_INT(graphicType);
+		READ_PARSED_INT(defaultLanguage);
+		READ_PARSED_INT(musicVolume);
 	}
 }
 
@@ -89,5 +103,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
+		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 	}
 }

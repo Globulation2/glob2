@@ -288,7 +288,7 @@ void GlobalContainer::load(void)
 		globalContainer->gfx->setCaption("Globulation 2", "glob 2");
 
 		// create mixer
-		mix = new SoundMixer;
+		mix = new SoundMixer(settings.musicVolume);
 		mix->loadTrack("data/zik/intro.ogg");
 		mix->loadTrack("data/zik/menu.ogg");
 		mix->setNextTrack(0);
@@ -317,7 +317,7 @@ void GlobalContainer::load(void)
 		// load shader for unvisible terrain
 		gfx->loadSprite("data/gfx/shade", "shading");
 		terrainShader=Toolkit::getSprite("shading");
-		
+
 		// black for unexplored terrain
 		gfx->loadSprite("data/gfx/black", "black");
 		terrainBlack=Toolkit::getSprite("black");

@@ -25,9 +25,11 @@
 #include <GUITextInput.h>
 #include <GUIList.h>
 #include <GUIButton.h>
+#include <GUISelector.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <GraphicContext.h>
+#include <SoundMixer.h>
 
 SettingsScreen::SettingsScreen()
 {
@@ -40,7 +42,7 @@ SettingsScreen::SettingsScreen()
 	addWidget(languageList);
 
 	// graphics part
-	display=new Text(345, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
+	display=new Text(245, 60, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[display]"));
 	addWidget(display);
 	modeList=new List(245, 90, 100, 160, ALIGN_RIGHT, ALIGN_TOP, "standard");
 	globalContainer->gfx->beginVideoModeListing();
@@ -80,6 +82,14 @@ SettingsScreen::SettingsScreen()
 	usernameText=new Text(20, 130, ALIGN_LEFT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[username]"));
 	addWidget(usernameText);
 
+	// Audio part
+	audio=new Text(245, 130, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[audio]"));
+	addWidget(audio);
+	musicVol=new Selector(20, 80, ALIGN_RIGHT, ALIGN_BOTTOM, 256, 8, globalContainer->settings.musicVolume, 1);
+	addWidget(musicVol);
+	musicVolText=new Text(200, 100, ALIGN_RIGHT, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
+	addWidget(musicVolText);
+
 	// Screen entry/quit part
 	ok=new TextButton( 60, 20, 200, 40, ALIGN_LEFT, ALIGN_BOTTOM, "", -1, -1, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -100,14 +110,15 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		if (par1==OK)
 		{
 			globalContainer->setUserName(userName->getText());
+
 			globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
 			globalContainer->settings.screenFlags=DrawableSurface::DEFAULT;
 			globalContainer->settings.screenFlags|=fullscreen->getState() ? DrawableSurface::FULLSCREEN : DrawableSurface::RESIZABLE;
 			globalContainer->settings.screenFlags|=hwaccel->getState() ? DrawableSurface::HWACCELERATED : 0;
 			globalContainer->settings.screenFlags|=dblbuff->getState() ? DrawableSurface::DOUBLEBUF : 0;
-
-			// save user preference
+			globalContainer->settings.musicVolume=musicVol->getValue();
 			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
+
 			globalContainer->settings.save("preferences.txt");
 
 			endExecute(par1);
@@ -115,6 +126,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (par1==CANCEL)
 		{
 			Toolkit::getStringTable()->setLang(oldLanguage);
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume);
 			globalContainer->settings.screenWidth=oldScreenW;
 			globalContainer->settings.screenHeight=oldScreenH;
 			endExecute(par1);
@@ -132,11 +144,14 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
 			display->setText(Toolkit::getStringTable()->getString("[display]"));
 			usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
+			audio->setText(Toolkit::getStringTable()->getString("[audio]"));
 
 			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
 			hwaccelText->setText(Toolkit::getStringTable()->getString("[hwaccel]"));
 			dblbuffText->setText(Toolkit::getStringTable()->getString("[dblbuff]"));
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
+
+			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 		}
 		else if (source==modeList)
 		{
@@ -145,6 +160,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
 		}
+	}
+	else if (action==VALUE_CHANGED)
+	{
+		globalContainer->mix->setVolume(musicVol->getValue());
 	}
 }
 

@@ -33,6 +33,7 @@ public:
 	Uint32 optionFlags;
 	Uint32 graphicType;
 	Uint32 defaultLanguage;
+	Uint32 musicVolume;
 
 public:
 	void load(const char *filename);

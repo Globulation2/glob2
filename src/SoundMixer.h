@@ -34,15 +34,18 @@ public:
 	int actTrack, nextTrack;
 	bool earlyChange;
 	bool soundEnabled;
+	unsigned volume;
 
 public:
-	SoundMixer();
+	SoundMixer(unsigned volume = 255);
 
 	~SoundMixer();
 
 	int loadTrack(const char *name);
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
+
+	void setVolume(unsigned volume);
 };
 
 #endif

@@ -28,6 +28,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	SoundMixer *mixer = static_cast<SoundMixer *>(voidMixer);
 	unsigned nsamples = static_cast<unsigned>(len) >> 1;
 	Sint16 *mix = reinterpret_cast<Sint16 *>(stream);
+	int vol = static_cast<int>(mixer->volume);
 
 	assert(mixer->actTrack >= 0);
 
@@ -86,7 +87,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		for (unsigned i=0; i<nsamples; i++)
 		{
 			int intI = interpolationTable[i];
-			mix[i] = (intI*track0[i]+(65535-intI*track1[1]))>>16;
+			int val = (intI*track0[i]+(65535-intI*track1[1]))>>16;
+			mix[i] = (val * vol)>>8;
 		}
 
 		// clear change
@@ -116,10 +118,16 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				p += ret;
 			}
 		}
+
+		// volume
+		for (unsigned i=0; i<nsamples; i++)
+		{
+			mix[i] = (mix[i] * vol)>>8;
+		}
 	}
 }
 
-SoundMixer::SoundMixer()
+SoundMixer::SoundMixer(unsigned volume)
 {
 	SDL_AudioSpec as;
 	// Set 16-bit stereo audio at 44Khz
@@ -133,6 +141,7 @@ SoundMixer::SoundMixer()
 	actTrack = -1;
 	nextTrack = -1;
 	earlyChange = false;
+	this->volume = volume;
 
 	// Open the audio device and start playing sound!
 	if (SDL_OpenAudio(&as, NULL) < 0)
@@ -198,7 +207,20 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 
 		this->earlyChange = earlyChange;
 
-		if (SDL_GetAudioStatus() != SDL_AUDIO_PLAYING)
+		if ((SDL_GetAudioStatus() != SDL_AUDIO_PLAYING) && (volume))
 			SDL_PauseAudio(0);
+	}
+}
+
+void SoundMixer::setVolume(unsigned volume)
+{
+	unsigned lastVolume = this->volume;
+	this->volume = volume;
+	if (lastVolume != volume)
+	{
+		if (lastVolume == 0)
+			SDL_PauseAudio(0);
+		if (volume == 0)
+			SDL_PauseAudio(1);
 	}
 }
