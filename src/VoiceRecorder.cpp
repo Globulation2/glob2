@@ -35,7 +35,7 @@
 	#define STOP_RECORDING_TIMEOUT 3000
 #endif
 
-#ifdef macintosh
+#ifdef __APPLE__
 	// Mac OS X stuff here
 	#undef AUDIO_RECORDER_OSS
 	#define STOP_RECORDING_TIMEOUT 3000
@@ -82,7 +82,7 @@ int record(void *pointer)
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Win32 yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : windows code
 		#endif
-		#ifdef macintosh
+		#ifdef __APPLE__
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Mac yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : Mac OS X code
 		#endif
@@ -110,7 +110,7 @@ int record(void *pointer)
 		ioctl(dsp, SOUND_PCM_READ_RATE , &rate);
 		ioctl(dsp, SNDCTL_DSP_SETFMT , &format);
 		#endif
-		#if !defined(AUDIO_RECORDER_OSS) && !defined(WIN32) && !defined(macintosh)
+		#if !defined(AUDIO_RECORDER_OSS) && !defined(WIN32) && !defined(__APPLE__)
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for your system and system unknown. Voice chat will be disabled.\n");
 		break;
 		#endif
@@ -124,7 +124,7 @@ int record(void *pointer)
 			#ifdef WIN32
 			// TODO : windows code
 			#endif
-			#ifdef macintosh
+			#ifdef __APPLE__
 			// TODO : Mac OS X code
 			#endif
 			#ifdef AUDIO_RECORDER_OSS
@@ -181,7 +181,7 @@ int record(void *pointer)
 		#ifdef WIN32
 		// TODO : windows code
 		#endif
-		#ifdef macintosh
+		#ifdef __APPLE__
 		// TODO : Mac OS X code
 		#endif
 		#ifdef AUDIO_RECORDER_OSS

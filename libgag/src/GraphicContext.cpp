@@ -36,8 +36,16 @@
 #endif
 
 #ifdef HAVE_OPENGL
-#include <GL/gl.h>
-#include <GL/glu.h>
+# ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glext.h>
+#  include <OpenGL/glu.h>
+//TODO clean this ! chez apple ???
+#  define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
+# else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+# endif
 #endif
 
 #ifdef WIN32
@@ -52,22 +60,13 @@ namespace GAGCore
 	// Color
 	Uint32 Color::pack() const
 	{
-		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-		return SDL_MapRGB(_gc->sdlsurface->format, r, g, b) | (a);
-		#else
 		return SDL_MapRGB(_gc->sdlsurface->format, r, g, b) | (a << 24);
-		#endif
 	}
 	
 	void  Color::unpack(const Uint32 packedValue)
 	{
-		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-		SDL_GetRGB(packedValue, _gc->sdlsurface->format, &r, &g, &b);
-		a = packedValue & 0xFF;
-		#else
 		SDL_GetRGB(packedValue, _gc->sdlsurface->format, &r, &g, &b);
 		a = packedValue >> 24;
-		#endif
 	}
 	
 	void Color::getHSV(float *hue, float *sat, float *lum)
@@ -248,7 +247,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			glGenTextures(1, &texture);
+			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			initTextureSize();
 		}
 		#endif
@@ -291,13 +290,29 @@ namespace GAGCore
 		{
 			glState.setTexture(texture);
 			
+			void *pixelsPtr;
+			GLenum pixelFormat;
+			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			std::valarray<Uint32> tempPixels(sdlsurface->w * sdlsurface->h);
+			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlsurface->pixels);
+			for (size_t i=0; i<tempPixels.size(); i++)
+			{
+				tempPixels[i] = ((*sourcePtr) << 8) | ((*sourcePtr) >> 24);
+				sourcePtr++;
+			}
+			pixelsPtr = &tempPixels[0];
+			pixelFormat = GL_RGBA;
+			#else
+			pixelsPtr = sdlsurface->pixels;
+			pixelFormat = GL_BGRA;
+			#endif
 			if (glState.isTextureRectangle)
 			{
-				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
+				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 			else
 			{
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, sdlsurface->pixels);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 		}
 		#endif
@@ -308,7 +323,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
-			glDeleteTextures(1, &texture);
+			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 		#endif
 	}
 	
@@ -320,11 +335,7 @@ namespace GAGCore
 		Uint32 rmask = _gc->sdlsurface->format->Rmask;
 		Uint32 gmask = _gc->sdlsurface->format->Gmask;
 		Uint32 bmask = _gc->sdlsurface->format->Bmask;
-		#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-		Uint32 amask = 0x000000ff;
-		#else
 		Uint32 amask = 0xff000000;
-		#endif
 		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, rmask, gmask, bmask, amask);
 		assert(sdlsurface);
 		setClipRect();

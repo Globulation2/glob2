@@ -361,7 +361,8 @@ void GlobalContainer::updateLoadProgressBar(int value)
 
 void GlobalContainer::initProgressBar(void)
 {
-	progress.s = new DrawableSurface("data/gfx/IntroMN.png");;
+	progress.s = new DrawableSurface("data/gfx/IntroMN.png");
+	gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
 	progress.s->drawRect((progress.s->getW()-402)>>1, (progress.s->getH()>>1)+10+180, 402, 22, 180, 180, 180);
 	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
 	gfx->nextFrame();

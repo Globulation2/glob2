@@ -21,6 +21,7 @@
 #include <math.h>
 #include <Stream.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #include "Building.h"
 #include "BuildingType.h"
@@ -1634,7 +1635,7 @@ void Building::subscribeForInsideStep()
 	{
 		Sint32 maxRealUnitInside=maxUnitInside;
 		if (type->canFeedUnit)
-			maxRealUnitInside=std::min((Uint32)maxUnitInside, ressources[CORN]-unitsInside.size());
+			maxRealUnitInside=std::min((Uint32)maxUnitInside,(Uint32)(ressources[CORN]-unitsInside.size()));
 		else
 			maxRealUnitInside=maxUnitInside;
 		while (((Sint32)unitsInside.size()<maxRealUnitInside) && !unitsInsideSubscribe.empty())
