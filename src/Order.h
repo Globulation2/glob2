@@ -206,6 +206,19 @@ class NullOrder:public MiscOrder
 	
 };
 
+class QuitedOrder:public MiscOrder
+{
+ public:
+	
+	virtual ~QuitedOrder(void) { }
+
+	char *getData(void) { return NULL; }
+	bool setData(const char *data, int dataLength) { return (dataLength==0);}
+	int getDataLength(void) { return 0; }
+	Uint8 getOrderType(void) { return ORDER_QUITED; }
+	Sint32 checkSum() { return ORDER_QUITED; }
+};
+
 class MessageOrder:public MiscOrder
 {
  public:

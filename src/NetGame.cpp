@@ -322,6 +322,9 @@ void NetGame::confirmNewStepRecievedFromHim(Sint32 receivedStep, Sint32 received
 
 void NetGame::sendMyOrderThroughUDP(Order *order, Sint32 orderStep, Sint32 targetPlayer, Sint32 confirmedStep)
 {
+	if (targetPlayer==localPlayerNumber)
+		return;
+	
 	char *data=(char *)malloc(order->getDataLength()+16);
 	
 	addSint32(data, orderStep, 0);
@@ -362,15 +365,24 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 	checkSumsRemote[(currentStep-1-latency)%queueSize]=0;// in case a checkSumPacket arrived very late!
 	
 	// do we have orders from every player now?
-	if (isWaitingForPlayer)
+	if ((players[playerNumber]->quitting)&&(players[playerNumber]->type==Player::P_LOST_B))
+	{
+		Order *order=new QuitedOrder();
+		order->sender=playerNumber;
+		return order;
+	}
+	else if (isWaitingForPlayer)
 	{
 		Order *order=new WaitingForPlayerOrder(whoMaskAreWeWaitingFor((currentStep+1)%queueSize));
+		order->sender=playerNumber;
 		return order;
 	}
 	else if (players[playerNumber]->type==Player::P_LOST_B)
 	{
 		//printf ("NullOrder\n");
-		return new NullOrder();
+		Order *order=new NullOrder();
+		order->sender=playerNumber;
+		return order;
 	}
 	else
 	{
@@ -379,14 +391,16 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 		// Game will free the object and step will delete its reference from list
 		assert(order);
 		
-		
 		switch(order->getOrderType())
 		{
 			case ORDER_PLAYER_QUIT_GAME :
 			{
 				PlayerQuitsGameOrder *pqgo=(PlayerQuitsGameOrder *)order;
 				int ap=pqgo->player;
-				players[ap]->type=Player::P_LOST_B;
+				//players[ap]->type=Player::P_LOST_B; only when all order are cross recieved.
+				printf("players %d quitting\n", ap);
+				players[ap]->quitting=true;
+				players[ap]->quitStep=currentStep;
 				int s=lastReceivedFromHim[ap];
 				for (int si=0; si<=(2*latency); si++)
 				{
@@ -394,6 +408,7 @@ Order *NetGame::getOrder(Sint32 playerNumber)
 					checkSumsRemote[s]=0;
 					s=(s+1)%queueSize;
 				}
+				
 			}
 			break;
 			default :
@@ -797,7 +812,14 @@ void NetGame::step(void)
 
 	nextStep=(currentStep+1)%queueSize;
 	//printf("nextStep=%d, dropState=%d\n", nextStep, dropState);
-
+	
+	for (eachPlayer=0; eachPlayer<numberOfPlayer; eachPlayer++)
+			if ((players[eachPlayer]->quitting)&&(players[eachPlayer]->type!=Player::P_LOST_B))
+			{ 
+				printf("(%d) quitStep=%d, lastReceivedFromMe=%d .\n", eachPlayer, players[eachPlayer]->quitStep, lastReceivedFromMe[eachPlayer]);
+				if (!smaller(lastReceivedFromMe[eachPlayer], players[eachPlayer]->quitStep))
+					players[eachPlayer]->type=Player::P_LOST_B;
+			}
 	if (isStepReady(nextStep))
 	{
 		//printf("nextStep=%d\n", nextStep);

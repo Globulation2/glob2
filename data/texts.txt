@@ -137,4 +137,9 @@ Waiting for player
 [r waiting for player]
   
   
-
+[l has left the game]
+ 
+ 
+[r has left the game]
+  a quite la partie
+  has quited the game

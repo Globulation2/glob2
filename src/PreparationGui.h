@@ -72,7 +72,8 @@ protected:
 	int startGameTimeCounter;
 protected:
 	void paintSessionInfo(int state);
-	
+	static const int hostiphost=0;
+	static const int hostipport=0;
 public:
 	
 	SessionInfo sessionInfo;
@@ -147,6 +148,7 @@ public:
 	void removePlayer(int p);
 	void removePlayer(char *data, int size, IPaddress ip);
 	void newPlayer(char *data, int size, IPaddress ip);
+	void newHostPlayer(void);
 	void confirmPlayer(char *data, int size, IPaddress ip);
 	void confirmStartCrossConnection(char *data, int size, IPaddress ip);
 	void confirmStillCrossConnecting(char *data, int size, IPaddress ip);
@@ -231,6 +233,7 @@ public:
 
 public:
 	IPaddress serverIP;
+	int hostPlayer;
 };
 
 

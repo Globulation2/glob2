@@ -55,6 +55,10 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 		assert(false);
 		//return new MiscOrder(netData+4,netDataLength-4);
 	}
+	case ORDER_QUITED:
+	{
+		return new QuitedOrder();
+	}
 	case ORDER_NULL:
 	{
 		return new NullOrder();
