@@ -120,8 +120,11 @@ Sint32 BaseTeam::checkSum()
 	Sint32 cs=0;
 
 	cs^=teamNumber;
+	cs=(cs<<31)|(cs>>1);
 	cs^=numberOfPlayer;
+	cs=(cs<<31)|(cs>>1);
 	cs^=playersMask;
+	cs=(cs<<31)|(cs>>1);
 
 	return cs;
 }
@@ -1282,83 +1285,91 @@ void Team::dirtyGlobalGradient()
 	}
 }
 
-Sint32 Team::checkSum()
+Sint32 Team::checkSum(std::list<Uint32> *checkSumsList)
 {
 	Sint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
-
 	cs=(cs<<31)|(cs>>1);
-
-	cs^=teamNumber;
-	cs^=numberOfPlayer;
-	cs^=playersMask;
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
-	// Let's avoid to have too much calculation
-	cs=(cs<<31)|(cs>>1);
-	//printf("t(%d)1cs=%x\n", teamNumber, cs);
 	for (int i=0; i<1024; i++)
-	{
 		if (myUnits[i])
 		{
 			cs^=myUnits[i]->checkSum();
 			cs=(cs<<31)|(cs>>1);
 		}
-	}
-	
-	cs=(cs<<31)|(cs>>1);
-	//printf("t(%d)2cs=%x\n", teamNumber, cs);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
+		
 	for (int i=0; i<1024; i++)
-	{
 		if (myBuildings[i])
 		{
 			cs^=myBuildings[i]->checkSum();
 			cs=(cs<<31)|(cs>>1);
 		}
-	}
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
-	cs=(cs<<31)|(cs>>1);
-	//printf("t(%d)3cs=%x\n", teamNumber, cs);
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		cs^=upgrade[i].size();
 		cs=(cs<<31)|(cs>>1);
 	}
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
+	
 	cs^=foodable.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=fillable.size();
 	cs=(cs<<31)|(cs>>1);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
+	
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
 		cs^=zonable[i].size();
 		cs=(cs<<31)|(cs>>1);
 	}
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
-	cs=(cs<<31)|(cs>>1);
-	//printf("t(%d)4cs=%x\n", teamNumber, cs);
 	cs^=canExchange.size();
-	cs=(cs<<31)|(cs>>1);
 	cs^=canFeedUnit.size();
-	cs=(cs<<31)|(cs>>1);
 	cs^=canHealUnit.size();
 	cs=(cs<<31)|(cs>>1);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
 	cs^=buildingsToBeDestroyed.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=buildingsTryToBuildingSiteRoom.size();
 	cs=(cs<<31)|(cs>>1);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 	
 	cs^=swarms.size();
 	cs=(cs<<31)|(cs>>1);
 	cs^=turrets.size();
 	cs=(cs<<31)|(cs>>1);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 
 	cs^=allies;
+	cs=(cs<<31)|(cs>>1);
 	cs^=enemies;
+	cs=(cs<<31)|(cs>>1);
 	cs^=sharedVisionExchange;
+	cs=(cs<<31)|(cs>>1);
 	cs^=sharedVisionFood;
+	cs=(cs<<31)|(cs>>1);
 	cs^=sharedVisionOther;
+	cs=(cs<<31)|(cs>>1);
 	cs^=me;
+	cs=(cs<<31)|(cs>>1);
+	if (checkSumsList)
+		checkSumsList->push_back(cs);
 
 	return cs;
 }

@@ -56,6 +56,7 @@ NetGame::NetGame(UDPsocket socket, int numberOfPlayer, Player *players[32])
 	this->socket=socket;
 	
 	logFile=globalContainer->logFileManager->getFile("NetGame.log");
+	
 	//logFile=stdout;
 	assert(logFile);
 	
@@ -244,18 +245,6 @@ Uint32 NetGame::whoMaskCountedOut(void)
 	return countedOutMask;
 };
 
-/*Uint32 NetGame::lastUStepReceivedFromHim(int player)
-{
-	Uint32 lastUStep=0;
-	for (int stepi=0; stepi<256; stepi++)
-	{
-		Uint32 s=ordersQueue[player][stepi]->ustep;
-		if (lastUStep<s)
-			lastUStep=s;
-	}
-	return lastUStep;
-}*/
-
 Uint32 NetGame::lastUsableUStepReceivedFromHim(int player)
 {
 	Uint32 usi=executeUStep;
@@ -340,7 +329,7 @@ void NetGame::sendPushOrder(int targetPlayer)
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%2d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	fprintf(logFile, " %d orders, totalSize=%d.\n", n, totalSize);
@@ -414,7 +403,7 @@ void NetGame::sendWaitingForPlayerOrder(int targetPlayer)
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%2d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	fprintf(logFile, " totalSize=%d.\n", totalSize);
@@ -474,7 +463,7 @@ void NetGame::sendDroppingPlayersMask(int targetPlayer, bool askForReply)
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%2d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	players[targetPlayer]->send(data, totalSize);
@@ -512,7 +501,7 @@ void NetGame::sendRequestingDeadAwayOrder(int missingPlayer, int targetPlayer, U
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<28; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	players[targetPlayer]->send(data, 28);
@@ -581,7 +570,7 @@ void NetGame::sendDeadAwayOrder(int missingPlayer, int targetPlayer, Uint32 rese
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<totalSize; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	fprintf(logFile, "%d totalSize=%d.\n", nbp, totalSize);
@@ -594,7 +583,12 @@ void NetGame::pushOrder(Order *order, int playerNumber)
 {
 	assert(order);
 	assert((playerNumber>=0) && (playerNumber<numberOfPlayer));
-	assert(players[playerNumber]->type>=Player::P_AI || players[playerNumber]->type==Player::P_LOCAL);
+	if (players[playerNumber]->type<Player::P_AI && players[playerNumber]->type!=Player::P_LOCAL)
+	{
+		printf("Error, can't push order of player %s, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
+		fprintf(logFile, "Error, can't push order of player %s, as he's type %d, neither P_AI nor P_LOCAL\n", playerNumber, players[playerNumber]->type);
+		assert(false);
+	}
 	
 	if (order->getOrderType()!=ORDER_NULL)
 	{
@@ -692,6 +686,7 @@ Order *NetGame::getOrder(int playerNumber)
 	else if (players[playerNumber]->quitting)
 	{
 		Uint8 latency=pushUStep-executeUStep;
+		assert(players[playerNumber]->quitUStep);
 		if (executeUStep>=players[playerNumber]->quitUStep+latency)
 		{
 			players[playerNumber]->type=Player::P_LOST_FINAL;
@@ -747,14 +742,22 @@ Order *NetGame::getOrder(int playerNumber)
 					}
 		if (!good)
 		{
+			std::list<Uint32> checkSumsList=checkSumsListsStorage[executeUStep&255];
+			int ci=0;
+			printf("my checkSum at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+				printf("[%3d] %x\n", ci++, *csi);
+			fprintf(logFile, "my checkSum at ustep=%d is:\n", executeUStep);
+			for (std::list<Uint32>::iterator csi=checkSumsList.begin(); csi!=checkSumsList.end(); csi++)
+				fprintf(logFile, "[%3d] %x\n", ci++, *csi);
 			fflush(logFile);
-			//assert(false);
-			for (int pi=0; pi<numberOfPlayer; pi++)
+			assert(false);
+			/*for (int pi=0; pi<numberOfPlayer; pi++)
 				if (gameCheckSums[localPlayerNumber]!=gameCheckSums[pi])
 				{
 					printf("Player %d dropped for checksum\n", pi);
 					players[pi]->type=Player::P_LOST_FINAL;
-				}
+				}*/
 		}
 		
 		if (order->getOrderType()==ORDER_PLAYER_QUIT_GAME)
@@ -854,7 +857,12 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	}
 	int player=data[2];
 	fprintf(logFile, " player=%d\n", player);
-	if (player<0 || player>=32 || player>=numberOfPlayer)
+	if (player<0
+		|| player>=32
+		|| player>=numberOfPlayer
+		|| (players[player]->type!=Player::P_IP
+			&& players[player]->type!=Player::P_LOST_FINAL
+			&& players[player]->type!=Player::P_LOST_DROPPING))
 	{
 		fprintf(logFile, " Error, bad player number (%d) received from %s, v4\n", player, Utilities::stringIP(ip));
 		return;
@@ -862,7 +870,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	Uint32 receivedUStep=getUint32(data, 4);
 	if (receivedUStep)
 	{
-		if (lastUStepReceivedFromMe[player]>receivedUStep)
+		if (lastUStepReceivedFromMe[player]>receivedUStep && players[player]->type==Player::P_IP)
 		{
 			fprintf(logFile, " Error, bad receivedUStep=%d while lastUStepReceivedFromMe[%d]=%d received from %s, v5\n",
 				receivedUStep, player, lastUStepReceivedFromMe[player], Utilities::stringIP(ip));
@@ -870,7 +878,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 		}
 		lastUStepReceivedFromMe[player]=receivedUStep;
 	}
-	fprintf(logFile, " receivedUStep=%d\n", player, receivedUStep);
+	fprintf(logFile, " receivedUStep=%d\n", receivedUStep);
 	Uint32 sdlTicksStart=getUint32(data, 8);
 	if (sdlTicksStart)
 	{
@@ -882,7 +890,7 @@ void NetGame::treatData(Uint8 *data, int size, IPaddress ip)
 	
 	fprintf(logFile, " data ");
 	for (int i=0; i<size; i++)
-		fprintf(logFile, "[%d]%d ", i, data[i]);
+		fprintf(logFile, "[%3d]%3d ", i, data[i]);
 	fprintf(logFile, "\n");
 	
 	int l=16;
@@ -1440,4 +1448,9 @@ void NetGame::setLeftTicks(int leftTicks)
 	else if (myLocalWishedDelay>39)
 		myLocalWishedDelay=39;
 	wishedDelayStats[myLocalWishedDelay]++;
+}
+
+std::list<Uint32> *NetGame::getCheckSumsListsStorage()
+{
+	return &checkSumsListsStorage[pushUStep&255];
 }
