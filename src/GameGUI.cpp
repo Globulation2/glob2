@@ -220,7 +220,6 @@ void GameGUI::step(void)
 				r = 99;
 				g = 143;
 				b = 255;
-				
 				addMessage(r, g, b, "<%s> %s", m->userName, m->text);
 			break;
 			
@@ -479,23 +478,32 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (typingInputScreen->endValue==0)
 		{
 			const char *inputText=typingInputScreen->getText();
-			switch (inputText[0])
+			if (inputText[0])
 			{
-				case 0:
-				break;
-				
-				case '/':
-				globalContainer->yog->sendMessage(inputText);
-				break;
-				
-				default:
-				orderQueue.push_back(new MessageOrder(chatMask, inputText));
+				bool foundLocal=false;
+				if (strncmp(inputText, "/m ", 3)==0)
+				{
+					for (int i=0; i<game.session.numberOfPlayer; i++)
+						if (game.players[i])
+						{
+							char *name=game.players[i]->name;
+							int l=Utilities::strnlen(name, BasePlayer::MAX_NAME_LENGTH);
+							if ((strncmp(name, inputText+3, l)==0)&&(inputText[3+l]==' '))
+							{
+								orderQueue.push_back(new MessageOrder(game.players[i]->numberMask, MessageOrder::PRIVATE_MESSAGE_TYPE, inputText+4+l));
+								foundLocal=true;
+							}
+						}
+					if (!foundLocal)
+						globalContainer->yog->sendMessage(inputText);
+				}
+				else if (inputText[0]=='/')
+					globalContainer->yog->sendMessage(inputText);
+				else
+					orderQueue.push_back(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, inputText));
 				typingInputScreen->setText("");
-				break;
 			}
 			typingInputScreenInc=-10;
-			//delete typingInputScreen;
-			//typingInputScreen=NULL;
 			typingInputScreen->endValue=1;
 			return;
 		}
@@ -1839,11 +1847,35 @@ void GameGUI::executeOrder(Order *order)
 		{
 			MessageOrder *mo=(MessageOrder *)order;
 			int sp=mo->sender;
-
-			if (mo->recepientsMask &(1<<localPlayer))
+			Uint32 messageOrderType=mo->messageOrderType;
+			
+			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				addMessage(230, 230, 230, "%s : %s", game.players[sp]->name, mo->getText());
+				if (mo->recepientsMask &(1<<localPlayer))
+					addMessage(230, 230, 230, "%s : %s", game.players[sp]->name, mo->getText());
 			}
+			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
+			{
+				if (mo->recepientsMask &(1<<localPlayer))
+					addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[from:]"), game.players[sp]->name, mo->getText());
+				else if (sp==localPlayer)
+				{
+					Uint32 rm=mo->recepientsMask;
+					int k;
+					for (k=0; k<32; k++)
+						if (rm==1)
+						{
+							addMessage(99, 255, 242, "<%s%s> %s", globalContainer->texts.getString("[to:]"), game.players[k]->name, mo->getText());
+							break;
+						}
+						else
+							rm=rm>>1;
+					assert(k<32);
+				}
+			}
+			else
+				assert(false);
+			
 			game.executeOrder(order, localPlayer);
 		}
 		break;

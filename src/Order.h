@@ -298,17 +298,24 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder(const char *data, int dataLength);
-	MessageOrder(Uint32 recepientsMask, const char *text);
+	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text);
 	virtual ~MessageOrder(void);
 
 	char *getData(void);
 	bool setData(const char *data, int dataLength);
 	int getDataLength(void) { return length; }
-	char *getText(void) { return (data+4); }
+	char *getText(void) { return (data+8); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
 	Sint32 checkSum() { return ORDER_TEXT_MESSAGE; }
 
 	Uint32 recepientsMask;
+	enum MessageOrderType
+	{
+		BAD_MESSAGE_TYPE=0,
+		NORMAL_MESSAGE_TYPE=1,
+		PRIVATE_MESSAGE_TYPE=2
+	};
+	Uint32 messageOrderType;
 
  protected:
 	char *data;

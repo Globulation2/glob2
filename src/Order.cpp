@@ -701,14 +701,16 @@ MessageOrder::MessageOrder(const char *data, int dataLength)
 	setData(data, dataLength);
 }
 
-MessageOrder::MessageOrder(Uint32 recepientsMask, const char *text)
+MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text)
 {
-	this->length=strlen(text)+5;
+	this->length=strlen(text)+9;
 	this->data=(char *)malloc(length);
-	memcpy(data+4,text,length-5);
+	memcpy(data+8, text, length-9);
 	this->data[length-1]=0;
 	addUint32(data, recepientsMask, 0);
+	addUint32(data, messageOrderType, 4);
 	this->recepientsMask=recepientsMask;
+	this->messageOrderType=messageOrderType;
 }
 
 MessageOrder::~MessageOrder()
@@ -728,6 +730,7 @@ bool MessageOrder::setData(const char *data, int dataLength)
 
 	this->length=dataLength;
 	this->recepientsMask=getUint32(data, 0);
+	this->messageOrderType=getUint32(data, 4);
 
 	this->data=(char *)malloc(dataLength);
 	memcpy(this->data, data, dataLength);

@@ -190,14 +190,14 @@ void YOGClient::send(const Message &m)
 		return;
 	}
 	packet->len=size;
-	{
-		Uint8 data[4];
-		data[0]=m.messageType;
-		data[1]=m.messageID;
-		data[2]=0;
-		data[3]=0;
-		memcpy((char *)packet->data, data, 4);
-	}
+	
+	Uint8 sdata[4];
+	sdata[0]=m.messageType;
+	sdata[1]=m.messageID;
+	sdata[2]=0;
+	sdata[3]=0;
+	memcpy((char *)packet->data, sdata, 4);
+	
 	memcpy((char *)packet->data+4, m.text, m.textLength);
 	memcpy((char *)packet->data+4+m.textLength, m.userName, m.userNameLength);
 	packet->address=ip;
