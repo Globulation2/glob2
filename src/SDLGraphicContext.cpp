@@ -722,6 +722,9 @@ void SDLDrawableSurface::drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uin
 	}
 }
 
+// usefull macro to replace some char (like newline) with \0 in string
+#define FILTER_OUT_CHAR(s, c) { char *_c; if ( (_c=(strchr(s, c)))!=NULL) *_c=0; }
+
 void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *msg, ...)
 {
 	if (!surface)
@@ -734,6 +737,9 @@ void SDLDrawableSurface::drawString(int x, int y, const Font *font, const char *
 	vsnprintf(output, 1024, msg, arglist);
 	va_end(arglist);
 
+	FILTER_OUT_CHAR(output, '\n');
+	FILTER_OUT_CHAR(output, '\r');
+	
 	// passing 0 to width means infinite width
 	((const SDLFont *)font)->drawString(surface, x, y, 0, output, &clipRect);
 }
@@ -750,6 +756,8 @@ void SDLDrawableSurface::drawString(int x, int y, int w, const Font *font, const
 	vsnprintf(output, 1024, msg, arglist);
 	va_end(arglist);
 
+	FILTER_OUT_CHAR(output, '\n');
+	FILTER_OUT_CHAR(output, '\r');
 	((const SDLFont *)font)->drawString(surface, x, y, w, output, &clipRect);
 }
 
