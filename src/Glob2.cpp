@@ -58,8 +58,6 @@ int main(int argc, char *argv[])
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
 	globalContainer->gfx->setCaption("Globulation 2", "glob 2");
-	
-	globalContainer->buildingsTypes.load("data/buildings.txt");
 
 	if ( SDLNet_Init() < 0 )
 	{
