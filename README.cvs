@@ -1,0 +1,28 @@
+Globulation 2
+http://www.ysagoon.com/glob2
+
+
+!! WARNING !!
+The gfx are not included in the CVS.
+To get them, run the getgfx script.
+
+
+GNU and UNIX
+------------
+
+If you have taken this from CVS and you want to build the package, run the
+bootstrap script first (or autoreconf).
+
+If SDL is not installed system wide but rather in ${prefix}, add the
+following flags to aclocal:
+-I${prefix}/share/aclocal
+i.e. for MacOS X, replace 'aclocal' in the bootstrap script with:
+aclocal -I/usr/local/share/aclocal
+
+If you want do be able to install the game using a build directory different
+from the source directory, use automake version 1.7 instead of version 1.4
+(replace 'automake' with 'automake-1.7' and 'aclocal' with 'aclocal-1.7' in the
+bootstrap script).
+
+You now have a ready-to-configure source.
+Read then the README file.
