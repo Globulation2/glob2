@@ -2157,7 +2157,7 @@ void GameGUI::drawBuildingInfos(void)
 	{
 		// get flag stat
 		int goingTo, onSpot;
-		selBuild->computeFlagStat(&goingTo, &onSpot);
+		selBuild->computeFlagStatLocal(&goingTo, &onSpot);
 		// display flag stat
 		globalContainer->gfx->pushFontStyle(globalContainer->littleFont, Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-68, ypos, globalContainer->littleFont, GAGCore::nsprintf("%s", Toolkit::getStringTable()->getString("[In way]")).c_str());

@@ -200,7 +200,7 @@ public:
 	int getLongLevel(void);
 
 	//! get flag from units attached to flag
-	void computeFlagStat(int *goingTo, int *onSpot);
+	void computeFlagStatLocal(int *goingTo, int *onSpot);
 
 	//! return the number of differents fruits in this building. If mask is non-null, return the mask as well
 	Uint32 eatOnce(Uint32 *mask=NULL);
