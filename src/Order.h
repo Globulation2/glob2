@@ -88,6 +88,24 @@ protected:
 	char data[4];
 };
 
+class OrderCancelDelete:public Order
+{
+ public:
+	OrderCancelDelete(const char *data, int dataLength);
+	OrderCancelDelete(Sint32 UID);
+	virtual ~OrderCancelDelete(void) { }
+	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
+	char *getData(void);
+	bool setData(const char *data, int dataLength);
+	int getDataLength(void) { return 4; }
+	Sint32 checkSum() { return ORDER_CANCEL_DELETE; }
+
+	Sint32 UID;
+
+protected:
+	char data[4];
+};
+
 class OrderUpgrade:public Order
 {
  public:

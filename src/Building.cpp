@@ -56,6 +56,8 @@ Building::Building(int x, int y, int uid, int typeNum, Team *team, BuildingsType
 	// position
 	posX=x;
 	posY=y;
+	posXLocal=posX;
+	posYLocal=posY;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
@@ -105,6 +107,8 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner)
 	// position
 	posX=SDL_ReadBE32(stream);
 	posY=SDL_ReadBE32(stream);
+	posXLocal=posX;
+	posYLocal=posY;
 
 	// Flag specific
 	unitStayRange=SDL_ReadBE32(stream);
@@ -313,19 +317,63 @@ int Building::neededRessource(void)
 
 int Building::neededRessource(int r)
 {
-	return type->maxRessource[r]-ressources[r];
+	return (type->maxRessource[r]>ressources[r]);
+}
+
+void Building::launchUpgrade(void)
+{
+	if ((buildingState==ALIVE) && (!type->isBuildingSite) && (type->nextLevelTypeNum!=-1) && (isHardSpace()))
+	{
+		if (type->unitProductionTime)
+			owner->swarms.remove(this);
+		if (type->shootingRange)
+			owner->turrets.remove(this);
+		
+		removeSubscribers();
+		
+		// We remove all units who are going to the building:
+		// Notice that the algotithme is not fast but clean.
+		std::list<Unit *> unitsToRemove;
+		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); it++)
+		{
+			Unit *u=*it;
+			int d=u->displacement;
+			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING))
+			{
+				u->attachedBuilding=NULL;
+				u->activity=Unit::ACT_RANDOM;
+				u->displacement=Unit::DIS_RANDOM;
+				u->needToRecheckMedical=true;
+				unitsToRemove.push_front(u);
+			}
+		}
+		for (std::list<Unit *>::iterator it=unitsToRemove.begin(); it!=unitsToRemove.end(); it++)
+		{
+			Unit *u=*it;
+			unitsInside.remove(u);
+		}
+		
+		buildingState=Building::WAITING_FOR_UPGRADE;
+		maxUnitWorkingLocal=0;
+		maxUnitWorking=0;
+		maxUnitInside=0;
+		update();
+	}
 }
 
 void Building::cancelUpgrade(void)
 {
+	Uint32 recoverTypeNum=typeNum;
+	BuildingType *recoverType=type;
+	
 	if (type->isBuildingSite)
 	{
 		int lastLevelTypeNum=type->lastLevelTypeNum;
 		
 		if (lastLevelTypeNum!=-1)
 		{
-			typeNum=lastLevelTypeNum;
-			type=globalContainer->buildingsTypes.getBuildingType(lastLevelTypeNum);
+			recoverTypeNum=lastLevelTypeNum;
+			recoverType=globalContainer->buildingsTypes.getBuildingType(lastLevelTypeNum);
 		}
 		else
 			assert(false);
@@ -351,6 +399,9 @@ void Building::cancelUpgrade(void)
 		owner->game->map.setBuilding(posX, posY, type->width, type->height, NOUID);
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
+	
+	typeNum=recoverTypeNum;
+	type=recoverType;
 	
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -387,6 +438,31 @@ void Building::cancelUpgrade(void)
 	int vr=type->viewingRange;
 	owner->game->map.setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 	
+	update();
+}
+
+void Building::launchDelete(void)
+{
+	if (buildingState==ALIVE)
+	{
+		removeSubscribers();
+		buildingState=WAITING_FOR_DESTRUCTION;
+		maxUnitWorking=0;
+		maxUnitWorkingLocal=0;
+		maxUnitInside=0;
+		update();
+	}
+}
+
+void Building::cancelDelete(void)
+{
+	buildingState=ALIVE;
+	if (type->maxUnitWorking)
+		maxUnitWorking=maxUnitWorkingPreferred;
+	else
+		maxUnitWorking=0;
+	maxUnitWorkingLocal=maxUnitWorking;
+	maxUnitInside=type->maxUnitInside;
 	update();
 }
 
@@ -680,6 +756,8 @@ bool Building::tryToUpgradeRoom(void)
 		// position
 		posX=newPosX;
 		posY=newPosY;
+		posXLocal=posX;
+		posYLocal=posY;
 
 		// flag usefull :
 		unitStayRange=type->defaultUnitStayRange;
@@ -895,7 +973,7 @@ void Building::subscribeForConstructionStep()
 				{
 					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
 					
-					printf("B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
+					printf("C-B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
 					// This unit may no more be needed here.
 					// Let's remove it from this subscribing list.
 					lastWorkingSubscribe=0;
@@ -985,28 +1063,9 @@ void Building::subscribeForFightingStep()
 			{
 				//printf("f(%x) choosen.\n", (int)choosen);
 				unitsWorkingSubscribe.remove(choosen);
-				if (!neededRessource(choosen->destinationPurprose))
-				{
-					//this does works but is less efficient: choosen->destinationPurprose=neededRessource();
-
-					printf("B(%x)UID=(%d), choosen=(%x) UUID=(%d), dp=(%d), nr=(%d, %d, %d, %d).\n", (int)this, UID, (int)choosen, (int)choosen->UID, choosen->destinationPurprose, neededRessource(0), neededRessource(1), neededRessource(2), neededRessource(3));
-					// This unit may no more be needed here.
-					// Let's remove it from this subscribing list.
-					lastWorkingSubscribe=0;
-
-					choosen->attachedBuilding=NULL;
-					choosen->subscribed=false;
-					choosen->activity=Unit::ACT_RANDOM;
-					choosen->needToRecheckMedical=true;
-
-					return;
-				}
-				else
-				{
-					unitsWorking.push_back(choosen);
-					choosen->unsubscribed();
-					update();
-				}
+				unitsWorking.push_back(choosen);
+				choosen->unsubscribed();
+				update();
 			}
 		}
 	}

@@ -105,6 +105,7 @@ private:
 	//! Draw the message input field
 	void drawInGameTextInput(void);
 	bool hasLocalTeamWon(void);
+	void moveFlag(int mx, int my);
 	//! Of viewport have moved and a flag is selected, update it's position
 	void flagSelectedStep(void);
 
@@ -138,6 +139,8 @@ private:
 
 	DisplayMode displayMode;
 	Building *selBuild;
+	//! True if the mouse's button way never relased since selection.
+	bool selectionPushed;
 	Unit *selUnit;
 	Sint32 selectionUID;
 	bool needRedraw;

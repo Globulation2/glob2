@@ -231,7 +231,12 @@ void Game::executeOrder(Order *order, int localPlayer)
 					if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 					{
 						b->posX=((OrderMoveFlags *)order)->x[i];
-						b->posY=((OrderMoveFlags *)order)->y[i];	
+						b->posY=((OrderMoveFlags *)order)->y[i];
+						if (order->sender!=localPlayer)
+						{
+							b->posXLocal=b->posX;
+							b->posYLocal=b->posY;
+						}
 					}
 				}
 			}
@@ -266,41 +271,32 @@ void Game::executeOrder(Order *order, int localPlayer)
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);
 			Building *b=teams[team]->myBuildings[id];
-			if ((b) && (b->buildingState==Building::ALIVE))
-			{
-				b->removeSubscribers();
-				b->buildingState=Building::WAITING_FOR_DESTRUCTION;
-				b->maxUnitWorking=0;
-				b->maxUnitInside=0;
-				b->update();
-			}
+			if (b)
+				b->launchDelete();
+		}
+		break;
+		case ORDER_CANCEL_DELETE:
+		{
+			Sint32 UID=((OrderCancelDelete *)order)->UID;
+			int team=Building::UIDtoTeam(UID);
+			int id=Building::UIDtoID(UID);
+			Building *b=teams[team]->myBuildings[id];
+			if (b)
+				b->cancelDelete();
 		}
 		break;
 		case ORDER_UPGRADE:
 		{
 			if (!isPlayerAlive)
 				break;
-			Sint32 UID=((OrderDelete *)order)->UID;
+			Sint32 UID=((OrderUpgrade *)order)->UID;
 			int team=Building::UIDtoTeam(UID);
 			int id=Building::UIDtoID(UID);
 			Team *t=teams[team];
 			Building *b=t->myBuildings[id];
 			
-			if ((b) && (b->buildingState==Building::ALIVE) && (!b->type->isBuildingSite) && (b->type->nextLevelTypeNum!=-1) && (b->isHardSpace()))
-			{
-				if (b->type->unitProductionTime)
-					t->swarms.remove(b);
-				if (b->type->shootingRange)
-					t->turrets.remove(b);
-
-				b->removeSubscribers();
-				b->buildingState=Building::WAITING_FOR_UPGRADE;
-				b->maxUnitWorkingLocal=0;
-				b->maxUnitWorking=0;
-				b->maxUnitInside=0;
-				b->update();
-				//printf("order upgrade %d, w=%d\n", (int)b, b->type->width);
-			}
+			if (b)
+				b->launchUpgrade();
 		}
 		break;
 		case ORDER_CANCEL_UPGRADE :
@@ -1070,6 +1066,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			int team = Building::UIDtoTeam(uid);
 
 			Building *building=teams[team]->myBuildings[id];
+			assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 			BuildingType *type=building->type;
 
 			if ((type->isCloacked) && (!(teams[teamSelected]->me & building->owner->allies)))
@@ -1077,7 +1074,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			int imgid=type->startImage;
 
-			map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
+			map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 			// select buildings and set the team colors
 			Sprite *buildingSprite=globalContainer->buildings;
@@ -1252,7 +1249,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			int imgid=type->startImage;
 
-			map.mapCaseToDisplayable(building->posX, building->posY, &x, &y, viewportX, viewportY);
+			map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 			// all flags are hued:
 			Sprite *buildingSprite=globalContainer->buildings;
@@ -1516,9 +1513,9 @@ void Game::renderMiniMap(int teamSelected, bool showUnitsAndBuildings)
 				virtualIt!=teams[teamSelected]->virtualBuildings.end(); ++virtualIt)
 		{
 			int fx, fy;
-			fx=(*virtualIt)->posX-decSPX+map.getW();
+			fx=(*virtualIt)->posXLocal-decSPX+map.getW();
 			fx&=map.getMaskW();
-			fy=(*virtualIt)->posY-decSPY+map.getH();
+			fy=(*virtualIt)->posYLocal-decSPY+map.getH();
 			fy&=map.getMaskH();
 			r=200;
 			g=255;
