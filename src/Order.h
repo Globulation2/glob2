@@ -44,6 +44,7 @@ public:
 	int sender; // sender player number, setby NetGame in getOrder() only
 	bool inQueue; // False if it has to be freed by NetGame::orderHasBeenExecuted() instead of NetGame::freeingStep.
 	Uint8 wishedLatency;
+	Uint8 wishedDelay;
 	bool latencyPadding; // True if this order has been added to increase latency.
 };
 
@@ -190,7 +191,7 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength(void) { return length*8; }
+	int getDataLength(void) { return length*6; }
 	int getNumberOfBuilding(void) { return length; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_BUILDING; }
 	Sint32 checkSum() { return ORDER_MODIFY_BUILDING; }

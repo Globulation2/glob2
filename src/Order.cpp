@@ -25,6 +25,7 @@ Order::Order(void)
 	sender=-1;
 	inQueue=true;
 	wishedLatency=0;
+	wishedDelay=0;
 	latencyPadding=false;
 }
 
