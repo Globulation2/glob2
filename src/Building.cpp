@@ -880,8 +880,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 
 	if (bt->isVirtual)
 		return true;
-	
-	return owner->map->isHardSpaceForBuilding(x, y, w, h);
+	return owner->map->isHardSpaceForBuilding(x, y, w, h, gid);
 }
 
 

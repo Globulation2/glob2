@@ -245,6 +245,7 @@ public:
 	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim);
 	bool isHardSpaceForBuilding(int x, int y);
 	bool isHardSpaceForBuilding(int x, int y, int w, int h);
+	bool isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid);
 	
 	//! Return true if unit has contact with building gbid. If true, put contact direction in dx, dy
 	bool doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy);
