@@ -1779,7 +1779,7 @@ bool Map::ressourceAviable(int teamNumber, int ressourceType, bool canSwim, int 
 					{ -1, 0}};
 				int ddx=tab[d][0];
 				int ddy=tab[d][1];
-				Uint8 g=*(gradient+((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec));
+				Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
 				if (g>max)
 				{
 					max=g;
