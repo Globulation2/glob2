@@ -128,8 +128,29 @@ void Screen::addUpdateRect(int x, int y, int w, int h)
 
 void Screen::addWidget(Widget *widget)
 {
+	assert(widget);
 	widget->parent=this;
-	widgets.push_back(widget);
+	bool already=false;
+	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+		if ((*it)==widget)
+		{
+			already=true;
+			break;
+		}
+	if (!already)
+		widgets.push_back(widget);
+}
+
+void Screen::removeWidget(Widget *widget)
+{
+	assert(widget);
+	assert(widget->parent==this);
+	for (std::vector<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); it++)
+		if ((*it)==widget)
+		{
+			widgets.erase(it);
+			break;
+		}
 }
 
 void Screen::dispatchEvents(SDL_Event *event)
@@ -154,6 +175,7 @@ void Screen::dispatchTimer(Uint32 tick)
 
 void Screen::dispatchPaint(DrawableSurface *gfx)
 {
+	assert(gfx);
 	gfxCtx=gfx;
 	gfxCtx->setClipRect();
 	paint();

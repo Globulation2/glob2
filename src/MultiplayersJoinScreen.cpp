@@ -51,11 +51,18 @@ MultiplayersJoinScreen::~MultiplayersJoinScreen()
 void MultiplayersJoinScreen::paint(int x, int y, int w, int h)
 {
 	gfxCtx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	gfxCtx->drawString(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
-	gfxCtx->drawString(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
-
-	if ((multiplayersJoin.validSessionInfo)&&(multiplayersJoin.waitingState!=MultiplayersJoin::WS_TYPING_SERVER_NAME))
-		;//paintSessionInfo(multiplayersJoin.waitingState);
+	
+	if (multiplayersJoin.waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	{
+		multiplayersJoin.sessionInfo.draw(gfxCtx);
+		//addUpdateRect(20, 20, gfxCtx->getW()-40, 200);
+	}
+	else
+	{
+		gfxCtx->drawString(150, 140, globalContainer->menuFont, globalContainer->texts.getString("[svr hostname]"));
+		gfxCtx->drawString(150, 240, globalContainer->menuFont, globalContainer->texts.getString("[player name]"));
+	}
+	addUpdateRect();
 }
 
 
@@ -63,13 +70,20 @@ void MultiplayersJoinScreen::onTimer(Uint32 tick)
 {
 	// TODO : call SessionInfo.draw()
 	multiplayersJoin.onTimer(tick);
-
-	if ((multiplayersJoin.waitingState!=MultiplayersJoin::WS_TYPING_SERVER_NAME) && multiplayersJoin.validSessionInfo)
+	
+	if (multiplayersJoin.waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
 	{
-		//paintSessionInfo(multiplayersJoin.waitingState);
-		//addUpdateRect();
+		removeWidget(serverName);
+		removeWidget(playerName);
+		dispatchPaint(gfxCtx);
 	}
-
+	else
+	{
+		addWidget(serverName);
+		addWidget(playerName);
+		dispatchPaint(gfxCtx);
+	}
+	
 	if (multiplayersJoin.waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
 	{
 		if (multiplayersJoin.startGameTimeCounter<0)

@@ -45,11 +45,12 @@ public:
 public:
 
 	bool firstDraw;
+	bool shareOnYOG;
 
 	HostGlobalState hostGlobalState;
 
 public:
-	MultiplayersHost(SessionInfo *sessionInfo);
+	MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG);
 	virtual ~MultiplayersHost();
 	void initHostGlobalState(void);
 	void stepHostGlobalState(void);
