@@ -2840,6 +2840,20 @@ void GameGUI::iterateSelection(void)
 			}
 		}
 	}
+	else if (selectionMode==TOOL_SELECTION)
+	{
+                unsigned typeNum=globalContainer->buildingsTypes.getTypeNum(selection.build, 0, false);
+		for (int i=0; i<1024; i++)
+		{
+			Building *b=game.teams[localTeamNo]->myBuildings[i];
+			if (b && b->typeNum==typeNum)
+			{
+				setSelection(BUILDING_SELECTION, b);
+				centerViewportOnSelection();
+				break;
+			}
+		}
+	}
 }
 
 void GameGUI::centerViewportOnSelection(void)
