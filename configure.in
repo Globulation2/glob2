@@ -37,6 +37,7 @@ AM_PATH_SDL($SDL_VERSION,
 AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
+dnl Check for SDL_image and SDL_net
 AC_CHECK_LIB(SDL_image, IMG_Load_RW)
 AC_CHECK_LIB(SDL_net, SDLNet_UDP_Open)
 
@@ -53,10 +54,17 @@ if test "x$enable_opengl" = "xyes"; then
 	AC_CHECK_LIB(GLU, gluOrtho2D)
 fi
 
-dnl C++ check
+
+dnl C & C++ check
+AC_LANG_C
 AC_LANG_CPLUSPLUS
 
+
+dnl Check for header files
+AC_FUNC_ALLOCA
+AC_HEADER_DIRENT
 AC_CHECK_HEADERS(vector,,AC_MSG_WARN(STL classes missing ?))
+
 
 dnl Packaging
 dnl Set PACKAGE_DATA_DIR in config.h.
