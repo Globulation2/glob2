@@ -20,9 +20,9 @@
 #ifndef __BULLET_H
 #define __BULLET_H
 
-#include "Header.h"
-
 #define SHOOTING_COOLDOWN_MAX 65536
+
+#include <SDL/SDL_rwops.h>
 
 class Bullet
 {

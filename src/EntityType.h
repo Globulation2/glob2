@@ -20,7 +20,6 @@
 #ifndef __ENTITYTYPE_H
 #define __ENTITYTYPE_H
 
-#include "Header.h"
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <vector>

@@ -20,7 +20,6 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#include "Header.h"
 #include "EntityType.h"
 #include <assert.h>
 

@@ -20,17 +20,15 @@
 #ifndef __TEAM_H
 #define __TEAM_H
 
-#include "Header.h"
 #include "Race.h"
 #include <list>
-#include "Order.h"
 #include "TeamStat.h"
 
 class Building;
 class Map;
 class Unit;
 
-class BaseTeam: public Order
+class BaseTeam
 {
 public:
 	enum TeamType

@@ -20,7 +20,6 @@
 #ifndef __GAME_H
 #define __GAME_H
 
-#include "Header.h"
 #include "Session.h"
 #include "SGSL.h"
 

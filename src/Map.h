@@ -20,11 +20,9 @@
 #ifndef __MAP_H
 #define __MAP_H
 
-#include "Header.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Team.h"
-#include "Header.h"
 #include "Ressource.h"
 #include <list>
 #include "Sector.h"

@@ -20,13 +20,15 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
-#include "Header.h"
 #include "AI.h"
-#include "Team.h"
 #include <queue>
 #include <SDL/SDL_net.h>
 
-class BasePlayer: public Order
+class Game;
+class Map;
+class Team;
+
+class BasePlayer
 {
 public:
  	enum PlayerType
@@ -123,10 +125,6 @@ public:
 	Uint8 *getData(bool compressed);
 	bool setData(const Uint8 *data, int dataLength, bool compressed);
 	int getDataLength(bool compressed);
-	
-	Uint8 *getData() { return getData(false); }
-	bool setData(const Uint8 *data, int dataLength) { return setData(data, dataLength, false); }
-	int getDataLength() { return getDataLength(false); }
 	
 	virtual Sint32 checkSum();
 	

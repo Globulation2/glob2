@@ -17,12 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Player.h"
-#include "NetConsts.h"
-#include "GlobalContainer.h"
-#include "Marshaling.h"
-#include "LogFileManager.h"
 #include <StringTable.h>
+
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Marshaling.h"
+#include "NetConsts.h"
+#include "Player.h"
+#include "Team.h"
 #include "Utilities.h"
 
 BasePlayer::BasePlayer()

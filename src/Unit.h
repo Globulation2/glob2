@@ -20,7 +20,6 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-#include "Header.h"
 #include "UnitType.h"
 #include <string.h>
 

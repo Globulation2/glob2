@@ -497,9 +497,9 @@ Uint8 *SessionInfo::getData(bool compressed)
 
 		for (int i=0; i<32; ++i)
 		{
-			assert(players[i].getDataLength()==64);
-			memcpy(l+data, players[i].getData(), players[i].getDataLength());
-			l+=players[i].getDataLength();
+			assert(players[i].getDataLength(false)==64);
+			memcpy(l+data, players[i].getData(false), players[i].getDataLength(false));
+			l+=players[i].getDataLength(false);
 		}
 
 		for (int i=0; i<32; ++i)
@@ -552,8 +552,8 @@ bool SessionInfo::setData(const Uint8 *data, int dataLength, bool compressed)
 
 		for (int i=0; i<32; ++i)
 		{
-			players[i].setData(l+data, players[i].getDataLength());
-			l+=players[i].getDataLength();
+			players[i].setData(l+data, players[i].getDataLength(false), false);
+			l+=players[i].getDataLength(false);
 		}
 
 		for (int i=0; i<32; ++i)
