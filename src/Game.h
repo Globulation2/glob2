@@ -52,7 +52,8 @@ public:
 		DRAW_PATH_LINE = 0x2,
 		DRAW_BUILDING_RECT = 0x4,
 		DRAW_AREA = 0x8,
-		DRAW_WHOLE_MAP = 0x10
+		DRAW_WHOLE_MAP = 0x10,
+		DRAW_ACCESSIBILITY = 0x20,
 	};
 	
 	struct BuildProject

@@ -180,6 +180,7 @@ void GameGUI::init()
 	toLoadGameFileName[0]=0;
 	drawHealthFoodBar=true;
 	drawPathLines=false;
+	drawAccessibilityAids=false;
 	viewportX=0;
 	viewportY=0;
 	mouseX=0;
@@ -1172,6 +1173,12 @@ void GameGUI::handleKey(SDLKey key, bool pressed, bool shift)
 			case SDLK_i :
 				if (pressed)
 					drawHealthFoodBar=!drawHealthFoodBar;
+				break;
+			case SDLK_a :
+				if (pressed)
+					drawAccessibilityAids = true;
+				else
+					drawAccessibilityAids = false;
 				break;
 			case SDLK_m :
 				if (pressed)
@@ -3183,6 +3190,7 @@ void GameGUI::drawAll(int team)
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
+								(drawAccessibilityAids ? Game::DRAW_ACCESSIBILITY : 0 ) |
 								((selectionMode==TOOL_SELECTION) ? Game::DRAW_BUILDING_RECT : 0) |
 								Game::DRAW_AREA;
 	
