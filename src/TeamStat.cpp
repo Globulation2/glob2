@@ -53,10 +53,9 @@ void TeamStats::step(Team *team)
 	}
 	
 	// handle in game stat step
-	int i;
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	memset(&smoothedStat, 0, sizeof(TeamSmoothedStat));
-	for (i=0; i<1024; i++)
+	for (int i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
@@ -85,7 +84,7 @@ void TeamStats::step(Team *team)
 	
 	TeamSmoothedStat maxStat;
 	memset(&maxStat, 0, sizeof(TeamSmoothedStat));
-	for (i=0; i<STATS_SMOOTH_SIZE; i++)
+	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
 
@@ -103,7 +102,7 @@ void TeamStats::step(Team *team)
 	statsIndex%=STATS_SIZE;
 	TeamStat &stat=stats[statsIndex];
 	memset(&stat, 0, sizeof(TeamStat));
-	for (i=0; i<1024; i++)
+	for (int i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if (u)
@@ -135,7 +134,7 @@ void TeamStats::step(Team *team)
 		}
 	}
 
-	for (i=0; i<512; i++)
+	for (int i=0; i<1024; i++)
 	{
 		if (team->myBuildings[i])
 		{

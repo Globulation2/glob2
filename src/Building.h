@@ -92,7 +92,7 @@ public:
 	Uint32 unitStayRange; // (Uint8)
 	Uint32 unitStayRangeLocal;
 
-	// 512 buldings
+	// 1024 buldings
 	// Building specific :
 	Sint32 ressources[NB_RESSOURCES]; // Ammount stocked, or used for building building.
 
