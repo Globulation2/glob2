@@ -6,7 +6,7 @@ export CFLAGS=-O2
 export CXX=g++
 export CC=gcc
 export G2VER=0.8.5
-./configure --with-sdl-prefix=/usr/local --disable-opengl
+./configure --disable-opengl
 echo "Making glob2"
 make 
 #>& /dev/null
