@@ -1373,25 +1373,41 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
 		
-		// cleared ressources fo clearing flags:
-		if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG
-			&& ((selBuild->owner->allies)&(1<<localTeamNo))
+		// flags specific options:
+		if (((selBuild->owner->allies)&(1<<localTeamNo))
 			&& mx>10
 			&& mx<22)
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
-			int j=0;
-			for (int i=0; i<BASIC_COUNT; i++)
-				if (i!=STONE)
+			
+			// cleared ressources for clearing flags:
+			if (buildingType->shortTypeNum==BuildingType::CLEARING_FLAG)
+			{
+				int j=0;
+				for (int i=0; i<BASIC_COUNT; i++)
+					if (i!=STONE)
+					{
+						if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+						{
+							selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
+							orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+						}
+						
+						ypos+=YOFFSET_TEXT_PARA;
+						j++;
+					}
+			}
+			
+			if (buildingType->shortTypeNum==BuildingType::WAR_FLAG)
+				for (int i=0; i<4; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
-						selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
-						orderQueue.push_back(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal));
+						selBuild->minLevelToFlagLocal=i;
+						orderQueue.push_back(new OrderModifyWarFlag(selBuild->gid, selBuild->minLevelToFlagLocal));
 					}
 					
 					ypos+=YOFFSET_TEXT_PARA;
-					j++;
 				}
 		}
 		
@@ -2078,9 +2094,8 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont,
 					Toolkit::getStringTable()->getString("[ressources]", i));
-				bool clearing=selBuild->clearingRessourcesLocal[i];
 				int spriteId;
-				if (clearing)
+				if (selBuild->clearingRessourcesLocal[i])
 					spriteId=20;
 				else
 					spriteId=19;
@@ -2089,6 +2104,27 @@ void GameGUI::drawBuildingInfos(void)
 				ypos+=YOFFSET_TEXT_PARA;
 				j++;
 			}
+	}
+	
+	// min war level for war flags:
+	if (buildingType->shortTypeNum==BuildingType::WAR_FLAG && ((selBuild->owner->allies)&(1<<localTeamNo)))
+	{
+		ypos += YOFFSET_B_SEP;
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont,
+			Toolkit::getStringTable()->getString("[Min required level:]"));
+		ypos += YOFFSET_TEXT_PARA;
+		for (int i=0; i<4; i++)
+		{
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+28, ypos, globalContainer->littleFont, 1+i);
+			int spriteId;
+			if (i==selBuild->minLevelToFlag)
+				spriteId=20;
+			else
+				spriteId=19;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
+			
+			ypos+=YOFFSET_TEXT_PARA;
+		}
 	}
 
 	// other infos

@@ -85,6 +85,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		clearingRessources[i]=true;
 	clearingRessources[STONE]=false;
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	minLevelToFlag=0;
+	minLevelToFlagLocal=0;
 	
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)
@@ -182,6 +184,12 @@ void Building::load(SDL_RWops *stream, BuildingsTypes *types, Team *owner, Sint3
 	}
 	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	
+	if (versionMinor>=33)
+		minLevelToFlag=(Sint32)SDL_ReadBE32(stream);
+	else
+		minLevelToFlag=0;
+	minLevelToFlagLocal=minLevelToFlag;
+	
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressources[i]=SDL_ReadBE32(stream);
@@ -274,7 +282,8 @@ void Building::save(SDL_RWops *stream)
 	SDL_WriteBE32(stream, unitStayRange);
 	for(int i=0; i<BASIC_COUNT; i++)
 		SDL_WriteBE32(stream, (Sint32)clearingRessources[i]);
-
+	SDL_WriteBE32(stream, minLevelToFlag);
+	
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		SDL_WriteBE32(stream, ressources[i]);
@@ -1245,7 +1254,7 @@ void Building::subscribeToBringRessourcesStep()
 			{
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
-				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 				if ((r>=0)&& neededRessource(r))
 				{
 					int dist;
@@ -1277,7 +1286,7 @@ void Building::subscribeToBringRessourcesStep()
 						int x=unit->posX;
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
 							int need=needs[r];
@@ -1346,7 +1355,7 @@ void Building::subscribeToBringRessourcesStep()
 						int x=unit->posX;
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 						int buildingDist;
 						if (map->buildingAvailable(this, canSwim, x, y, &buildingDist)
 							&& (buildingDist<timeLeft))
@@ -1401,7 +1410,7 @@ void Building::subscribeToBringRessourcesStep()
 						int x=unit->posX;
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
 							int need=needs[r];
@@ -1502,7 +1511,7 @@ void Building::subscribeForFlagingStep()
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
-					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
 					hp*=hp;
@@ -1523,7 +1532,7 @@ void Building::subscribeForFlagingStep()
 				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
 					Unit *unit=(*it);
-					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist;
 					bool canSwim=unit->performance[SWIM];

@@ -2237,7 +2237,7 @@ void AICastor::computeWorkPowerMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->unitTypes[0][0].hungryness;
+			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
@@ -2312,7 +2312,7 @@ void AICastor::computeWorkRangeMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->unitTypes[0][0].hungryness;
+			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);

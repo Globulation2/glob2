@@ -33,6 +33,7 @@ public:
 	};
 
 	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
+	Sint32 hungryness;
 
 public:
 	virtual ~Race();
@@ -41,7 +42,7 @@ public:
 	UnitType *getUnitType(int type, int level);
 	
 	void save(SDL_RWops *stream);
-	bool load(SDL_RWops *stream);
+	bool load(SDL_RWops *stream, Sint32 versionMinor);
 };
 
 #endif

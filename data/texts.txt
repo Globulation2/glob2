@@ -159,6 +159,14 @@ Clearing:
 
 
 
+[Min required level:]
+Niveau minimum requis:
+Minimum required level:
+
+
+
+
+
 [Bullets]
 Boulets
 Bullets

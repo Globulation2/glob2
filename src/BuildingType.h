@@ -20,8 +20,9 @@
 #ifndef __BULDING_TYPE_H
 #define __BULDING_TYPE_H
 
-#include "EntityType.h"
 #include <vector>
+
+#include "EntityType.h"
 #include "UnitConsts.h"
 #include "Ressource.h"
 
