@@ -155,7 +155,7 @@ Prugna
 Défrichage de:
 Clearing:
 
-
+Vyčištění:
 
 
 
@@ -163,7 +163,7 @@ Clearing:
 Niveau minimum requis:
 Minimum required level:
 
-
+Min. úroveň bojovníků:
 
 
 
@@ -467,7 +467,7 @@ Cambio
 Courte explication du batiment  (24 caractères max)
 Building short explaination (24 chars max)
 
-
+Krátké vysvětlení (24 znaků max)
 
 
 
@@ -475,7 +475,7 @@ Building short explaination (24 chars max)
 Crée de nouvelles unités
 Creates new units
 
-
+Vytvoř nové jednotky
 
 
 
@@ -483,7 +483,7 @@ Creates new units
 Nourit vos unités
 Foods your units
 
-
+Potrava tvých jednotek
 
 
 
@@ -491,7 +491,7 @@ Foods your units
 Soigne vos unités
 Heals your units
 
-
+Zdravý tvých jednotek
 
 
 
@@ -499,7 +499,7 @@ Heals your units
 Améliore la vitesse de
 Improves the walking
 
-
+Zlepši chůzi
 
 
 
@@ -507,7 +507,7 @@ Improves the walking
 Améliore le niveau de
 Improves the swimming
 
-
+Zlepši plavání
 
 
 
@@ -515,7 +515,7 @@ Improves the swimming
 Améliore le niveau
 Improves fighting level
 
-
+Zlepši bojeschopnost
 
 
 
@@ -523,15 +523,15 @@ Improves fighting level
 Améliore le niveau de
 Improve the building level
 
-
+Zlepši uroveň stavitelství
 
 
 
 [defense building explaination]
 Attaque les unité ennmies
-Attacks neraby enemy
+Attacks nearby enemy
 
-
+Zaútoč na blízkého nepřítele
 
 
 
@@ -539,7 +539,7 @@ Attacks neraby enemy
 Attire des exploratrices
 Attracts explorers
 
-
+Přilákáno průzkumníků
 
 
 
@@ -547,7 +547,7 @@ Attracts explorers
 Attire des guerrières
 Attracts warriors
 
-
+Přilákáno válečníků
 
 
 
@@ -555,7 +555,7 @@ Attracts warriors
 Enlève les ressources
 Clear ressources
 
-
+Čistící prostředky
 
 
 
@@ -563,7 +563,7 @@ Clear ressources
 Elément passif de défense
 Passive defense element
 
-
+Pasivní ochraná část
 
 
 
@@ -571,7 +571,7 @@ Passive defense element
 Permet d'échanger des
 Allows to exchange fruits
 
-
+Povolení vyměnit ovoce
 
 
 
@@ -579,7 +579,7 @@ Allows to exchange fruits
 Courte explication 2 du batiment  (24 caractères max)
 Building short explaination 2 (24 chars max)
 
-
+Krátké vysvětlení 2 (24 znaků max)
 
 
 
@@ -827,7 +827,7 @@ Ysagoon-игра в Интернете
 Entrez votre pseudo :
 Enter your nickname :
 
-
+Zadej přezdívku :
 
 Inserisci il tuo soprannome :
 Введите Ваше прозвище :
@@ -835,7 +835,7 @@ Inserisci il tuo soprannome :
 Entrez votre mot de passe :
 Enter your password :
 
-
+Zadej heslo:
 
 Inserisci la tua password :
 Введите Ваш пароль :
@@ -1467,7 +1467,7 @@ Unità
 Attaque
 Attack
 
-
+Útok
 
 
 
@@ -1475,7 +1475,7 @@ Attack
 Défense
 Defense
 
-
+Obrana
 
 
 
@@ -2155,7 +2155,7 @@ Pausa
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 Register a new YOG user with a password. (insecure)
 
-
+Registrace nového YOG uživatele s heslem. (nejisté)
 
 Registra un nuovo utente YOG con una passord. (non sicuro)
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
@@ -2163,7 +2163,7 @@ Registra un nuovo utente YOG con una passord. (non sicuro)
 Mémoriser le mot de passe localement. (non sécurisé)
 Remember the password locally. (insecure)
 
-
+Zapamatovat si heslo lokálně? (nejisté)
 
 Ricordati la password localmente. (non sicuro)
 Запомнить пароль локально. (небезопасно)
@@ -2243,7 +2243,7 @@ Il metaserver YOG ha rifiutato la tua connessione perch�il tuo username �gi�
 Le metaserveur YOG a refusé la connection car le mot de passe est faux.
 The YOG metaserver has refused connection because the supplied password was incorrect.
 
-
+YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 
 
 Метасервер YOG отказал в соединении, потому что вы указали неверный пароль.
@@ -2251,7 +2251,7 @@ The YOG metaserver has refused connection because the supplied password was inco
 Le metaserveur YOG a refusé la connection car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregister votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
 
-
+YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přidělené heslo. Pro registraci přezdívky s tímto heslem zaškrtni políčko "Registrace nového YOG uživatele s heslem" před připojením. Budeš potřebovat zaškrtnout toto políčko pouze jednou.
 
 Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password errata
 
@@ -2259,7 +2259,7 @@ Il metaserver YOG ha rifiutato la connessione perchè hai digitato una password 
 Le metaserveur YOG a refusé la connection car ce nom d'utilisateur a déja été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
 
-
+YOG metaserver odmítnul spojení, protože tato přezdívka je už zaregistovaná. Jestliže přezdívka je tvá, nezaškrtávej políčko "Registrace nového YOG uživatele s heslem".
 
 Il metaserver YOG ha respinto la connessione questo username è già stato registrato con una password. Se tu hai registrato questo utente, disattiva l'opzione "Registra un nuovo utente YOG con una password" qui sotto.
 Метасервер YOG отказал в соединении, потому что это имя уже было зарегистрировано с паролем. Если Вы регистрировали этого пользователя, деактивируйте опцию "Регистрировать нового пользователя YOG с паролем" внизу.
@@ -2267,7 +2267,7 @@ Il metaserver YOG ha respinto la connessione questo username è già stato regis
 Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déja authetifié. Réessayez dans 45 secondes.
 The YOG metaserver has refused connection because because a protocol error occured:  you are already authenticated.  Try again in 45 seconds.
 
-
+YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: už jsi byl autentizovaný. Zkus to znovu za 45 sekund.
 
 Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel protocollo: sei già autenticato. Riprova tra 45 secondi.
 Метасервер YOG отказал в соединении, из-за ошибки протокола: Вы уже аутентифицированы. Попробуйте снова через 45 секунд.
@@ -2275,7 +2275,7 @@ Il metaserver YOG ha rifiutato la connessione perchè è avvenuto un errore nel 
 Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
 The YOG metaserver has refused the connection because because an internal protocol error occured: you are not connected yet while authenticating. Please report this bug.
 
-
+YOG metaserver odmítnul spojení, protože nastala chyba v protokolu: nejsi ještě připojen během ověřování. Prosím reportuj tuto chybu.
 
 Il metaserver YOG ha respinto la connessione perchè è avvenuto un errore nel protocollo interno: non sei connesso durante l'autenticazione. Per favore, segnala questo bug.
 Метасервер YOG отказал в соединении из-за внутренней ошибки протокола: Вы не подключены при аутентификации. Пожалуйста, сообщите об этой ошибке.
@@ -2515,7 +2515,7 @@ Volume (musica)
 Satisfaction
 Happiness
 
-
+Zadostiučinění
 Satysfakcja
 Soddisfazione
 Счастье
