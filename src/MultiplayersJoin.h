@@ -116,6 +116,7 @@ public:
 	virtual ~MultiplayersJoin();
 private:
 	void init(bool shareOnYog);
+	void closeDownload();
 
 public:
 	void dataPresenceRecieved(Uint8 *data, int size, IPaddress ip);

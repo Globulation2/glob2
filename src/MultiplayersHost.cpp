@@ -745,6 +745,7 @@ void MultiplayersHost::playerWantsFile(Uint8 *data, int size, IPaddress ip)
 		{
 			fprintf(logFile, "Bad FileRequest packet received !!!\n");
 			fprintf(logFileDownload, "Bad FileRequest packet received !!!\n");
+			fprintf(logFileDownload, " (player %d unreceivedIndex=%d (%dk), fileSize=%d (%dk))\n", p, unreceivedIndex, unreceivedIndex/1024, fileSize, fileSize/1024);
 			return;
 		}
 		playerFileTra[p].unreceivedIndex=unreceivedIndex;
@@ -1487,7 +1488,11 @@ void MultiplayersHost::sendingTime()
 				SDL_RWread(stream, data+12, size, 1);
 				bool success=sessionInfo.players[p].send(data, 12+size);
 				if (!success)
+				{
+					fflush(logFile);
+					fflush(logFileDownload);
 					printf("Error, p=%d, size=%d\n", p, size);
+				}
 				assert(success);
 				free(data);
 				playerFileTra[p].totalSent++;
