@@ -20,6 +20,7 @@
 #ifndef __CUSTOM_GAME_SCREEN_H
 #define __CUSTOM_GAME_SCREEN_H
 
+#include "AI.h"
 #include "Session.h"
 #include <GUIBase.h>
 
@@ -27,6 +28,7 @@ class Button;
 class MapPreview;
 class OnOffButton;
 class ColorButton;
+class MultiTextButton;
 class Text;
 class Glob2FileList;
 
@@ -46,7 +48,8 @@ private:
 	MapPreview *mapPreview;
 	OnOffButton *isAI[16];
 	ColorButton *color[16];
-	Text *isAItext[16];
+	Text *closedText[16];
+	MultiTextButton *aiSelector[16];
 	Text *mapName, *mapInfo, *mapVersion, *mapSize;
 	bool validSessionInfo;
 
@@ -55,6 +58,7 @@ public:
 	virtual ~CustomGameScreen();
 	void onAction(Widget *source, Action action, int par1, int par2);
 	bool isAIactive(int i);
+	AI::ImplementitionID getAiImplementation(int i);
 	int getSelectedColor(int i);
 };
 

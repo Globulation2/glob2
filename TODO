@@ -7,6 +7,7 @@ To First release :
 - Un joueur qui quite doit perdre!
 - Difficile de downloader à plus que 1 joiner.
 - Mettre une touche pour affichier la liste des messages qui ont disparu.
+- Balancer clearing attack.
 
 Wishlists:
 http://ysagoon.com/phpBB2/viewtopic.php?t=42&sid=755083a5e3af8f0caf75558feb7e0e15
@@ -59,6 +60,8 @@ YOG:
 - Ajouter des chambres
 - Mettre yog1 get yog2 si yog1 est down.
 - Il y a des userName qui ne passent pas toujours!
+- stats
+- ladder
 
 Tutorial:
 - Moins vite.

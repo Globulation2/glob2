@@ -34,8 +34,9 @@ public:
 		NONE=0,
 		NUMBI=1,
 		CASTOR=2,
+		SIZE=3
 	};
-	static const ImplementitionID toggleAI = CASTOR;
+	static const ImplementitionID toggleAI=CASTOR;
 	
 public:
 	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.

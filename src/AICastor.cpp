@@ -18,12 +18,14 @@
 */
 
 #include "AICastor.h"
+#include "Game.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Order.h"
 #include "Player.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "Game.h"
-#include "GlobalContainer.h"
-#include "Order.h"
+
 
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
@@ -47,11 +49,19 @@ assert(direction<=8);
 
 AICastor::AICastor(Player *player)
 {
+	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	
+	ressourcesCluster=NULL;
+	
 	init(player);
 }
 
 AICastor::AICastor(SDL_RWops *stream, Player *player, Sint32 versionMinor)
 {
+	logFile=globalContainer->logFileManager->getFile("AICastor.log");
+	
+	ressourcesCluster=NULL;
+	
 	init(player);
 	bool goodLoad=load(stream, versionMinor);
 	assert(goodLoad);
@@ -73,10 +83,21 @@ void AICastor::init(Player *player)
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
+	
+	size_t size=map->getW()*map->getH();
+	
+	if (ressourcesCluster!=NULL)
+		delete[] ressourcesCluster;
+	ressourcesCluster=new Uint16[size];
+	
+	
 }
 
 AICastor::~AICastor()
 {
+	if (ressourcesCluster!=NULL)
+		delete[] ressourcesCluster;
+	
 }
 
 bool AICastor::load(SDL_RWops *stream, Sint32 versionMinor)
@@ -110,169 +131,89 @@ Order *AICastor::getOrder(void)
 {
 	timer++;
 	
-	// We compute simples state vars:
-	
-	bool bootTime=(timer<25*60);
-	bool lateTime=(timer>25*60*10);
-	
-	int swarms=0;
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
-	{
-		Building *b=myBuildings[i];
-		if (b!=NULL && b->type->typeNum==BuildingType::SWARM_BUILDING)
-			swarms++;
-	}
-	
-	int workers=0;
-	int explorers=0;
-	int warriors=0;
-	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
-	{
-		Unit *u=myUnits[i];
-		if (u)
-		{
-			if (u->typeNum==WORKER)
-				workers++;
-			else if (u->typeNum==EXPLORER)
-				explorers++;
-			else if (u->typeNum==WARRIOR)
-				warriors++;
-		}
-	}
-	
-	if (swarms==0)
-	{
-		if (bootTime)
-			return getStartSwarmOrder();
-	}
-	
-	
+	computeRessourcesCluster();
 	
 	return new NullOrder();
 }
 
-Order *AICastor::getStartSwarmOrder(void)
+void AICastor::computeRessourcesCluster()
 {
+	printf("computeRessourcesCluster()\n");
+	int w=map->w;
+	int h=map->w;
+	int wMask=map->wMask;
+	int hMask=map->hMask;
+	size_t size=w*h;
 	
-}
-
-int AICastor::getFoodPlace(int x, int y, int *fx, int *fy, int *score)
-{
-	int bestScore=0;
-	int bestScoreDirection=-1;
-	int bestX=0;
-	int bestY=0;
-	for (int d=0; d<8; d++)
+	memset(ressourcesCluster, 0, size*2);
+	
+	//int i=0;
+	Uint8 old=0xFF;
+	Uint16 id=0;
+	bool usedid[65536];
+	memset(usedid, 0, 65536);
+	for (int y=0; y<h; y++)
 	{
-		int dx, dy;
-		dxdyfromDirection(d, &dx, &dy);
-		int px=x;
-		int py=y;
-		int state=0;
-		int sand=0;
-		int water=0;
-		int corn=0;
-		int continuousCorn=0;
-		bool isFood=false;
-		int ffx=x; // first food
-		int ffy=y;
-		int lfx=x;
-		int lfy=y;
-		for (int r=0; r<32; r++)
+		for (int x=0; x<w; x++)
 		{
-			bool wasFood=false;
-			int tt=map->getTerrainType(px, py);
-			if (tt==SAND)
-				sand++;
-			else if (tt==WATER)
-				water++;
+			Case *c=map->cases+w*(y&hMask)+(x&wMask); // case
+			Ressource r=c->ressource; // ressource
+			Uint8 rt=r.type; // ressources type
+			
+			int rci=x+y*w; // ressource cluster index
+			Uint16 *rcp=&ressourcesCluster[rci]; // ressource cluster pointer
+			Uint16 rc=*rcp; // ressource cluster
+			
+			if (rt==0xFF)
+			{
+				*rcp=0;
+				old=0xFF;
+			}
 			else
 			{
-				Ressource r=map->getRessource(px, py);
-				if (r.type==CORN)
+				printf("ressource rt=%d, at (%d, %d)\n", rt, x, y);
+				if (rt!=old)
 				{
-					if (!isFood)
+					printf(" rt!=old\n");
+					id=1;
+					while (usedid[id])
+						id++;
+					if (id)
+						usedid[id]=true;
+					old=rt;
+					printf("  id=%d\n", id);
+				}
+				if (rc!=id)
+				{
+					if (rc==0)
 					{
-						ffx=px;
-						ffy=py;
-						isFood=true;
+						*rcp=id;
+						printf(" wrote.\n");
 					}
-					lfx=px;
-					lfy=py;
-					corn++;
-					if (wasFood)
-						continuousCorn++;
-					wasFood=true;
+					else
+					{
+						Uint16 oldid=id;
+						usedid[oldid]=false;
+						id=rc; // newid
+						printf(" cleaning oldid=%d to id=%d.\n", oldid, id);
+						// We have to correct last ressourcesCluster values:
+						*rcp=id;
+						while (*rcp==oldid)
+						{
+							*rcp=id;
+							rcp--;
+						}
+					}
 				}
 			}
-			px+=dx;
-			py+=dy;
 		}
-		int width=1;
-		if (isFood)
-		{
-			int pdx=dy;
-			int pdy=-dx;
-			int wpx=(ffx-lfx)/2;
-			int wpy=(ffy-lfy)/2;
-			for (int r=0; r<32; r++)
-			{
-				wpx+=pdx;
-				wpy+=pdy;
-				Ressource r=map->getRessource(wpx, wpy);
-				if (r.type==CORN)
-					width++;
-				else
-					break;
-			}
-			pdx=-pdx;
-			pdy=-pdy;
-			wpx=(ffx-lfx)/2;
-			wpy=(ffy-lfy)/2;
-			for (int r=0; r<32; r++)
-			{
-				wpx+=pdx;
-				wpy+=pdy;
-				Ressource r=map->getRessource(wpx, wpy);
-				if (r.type==CORN)
-					width++;
-				else
-					break;
-			}
-		}
-		
-		int score=((continuousCorn+corn)*width*water)/(1+sand);
-		printf("score[%d]=%d\n", d, score);
-		if (score>bestScore)
-		{
-			score=bestScore;
-			bestScoreDirection=d;
-			bestX=ffx;
-			bestY=ffy;
-		}
+		memcpy(ressourcesCluster+((y+1)&hMask)*w, ressourcesCluster+y*w, w*2);
 	}
-	if (bestScoreDirection==-1)
-	{
-		*fx=x;
-		*fy=y;
-		*score=0;
-	}
-	else
-	{
-		*fx=bestX;
-		*fy=bestY;
-		*score=bestScore;
-	}
+	
+	int used=0;
+	for (int id=1; id<65536; id++)
+		if (usedid[id])
+			used++;
+	printf("computeRessourcesCluster(), used=%d\n", used);
 }
-
-
-
-
-
-
-
-
-
 
