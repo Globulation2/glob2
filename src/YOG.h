@@ -139,7 +139,7 @@ public:
 	const char *getMessageDiffusion(void);
 	//! Free last message
 	void freeChatMessage(void);
-	//! Send a message (or a command)
+	//! Send a message (or a command), return true if command has been sent
 	void sendCommand(const char *message);
 	//! Set the chat channel
 	void setChatChannel(const char *chan);

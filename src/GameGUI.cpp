@@ -195,7 +195,26 @@ void GameGUI::step(void)
 		addMessage(globalContainer->texts.getString("[your buildings are under attack]"));
 	if (game.teams[localTeam]->wasEvent(Team::BUILDING_FINISHED_EVENT))
 		addMessage(globalContainer->texts.getString("[building has been finished]"));
+		
+	// do a yog step
+	globalContainer->yog.step();
 
+	// display chat messages
+	while (globalContainer->yog.isChatMessage())
+	{
+		char msg[YOG::IRC_MESSAGE_SIZE+1];
+		snprintf(msg, YOG::IRC_MESSAGE_SIZE, "<%s @ %s> %s", 
+			globalContainer->yog.getChatMessageSource(),
+			globalContainer->yog.getMessageDiffusion(),
+			globalContainer->yog.getChatMessage());
+		msg[YOG::IRC_MESSAGE_SIZE]=0;
+		addMessage(msg);
+		globalContainer->yog.freeChatMessage();
+	}
+	
+	// discard chat infos
+	while(globalContainer->yog.isInfoMessage())
+		globalContainer->yog.freeInfoMessage();
 }
 
 void GameGUI::synchroneStep(void)
@@ -398,10 +417,20 @@ void GameGUI::processEvent(SDL_Event *event)
 
 		if (typingInputScreen->endValue==0)
 		{
-			if (typingInputScreen->getText()[0])
+			const char *inputText=typingInputScreen->getText();
+			switch (inputText[0])
 			{
-				orderQueue.push_back(new MessageOrder(chatMask, typingInputScreen->getText()));
+				case 0:
+				break;
+				
+				case '/':
+				globalContainer->yog.sendCommand(inputText);
+				break;
+				
+				default:
+				orderQueue.push_back(new MessageOrder(chatMask, inputText));
 				typingInputScreen->setText("");
+				break;
 			}
 			typingInputScreenInc=-10;
 			//delete typingInputScreen;

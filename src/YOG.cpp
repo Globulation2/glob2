@@ -234,18 +234,22 @@ void YOG::interpreteIRCMessage(const char *message)
 			// normal chat message
 			ChatMessage msg;
 
-			char *message=strtok(NULL, ":\0");
+			char *message=strtok(NULL, "\0");
+			message=strchr(message, ':');
 
-			strncpy(msg.source,  source, IRC_NICK_SIZE);
-			msg.source[IRC_NICK_SIZE]=0;
+			if (message && (*(++message)))
+			{
+				strncpy(msg.source,  source, IRC_NICK_SIZE);
+				msg.source[IRC_NICK_SIZE]=0;
 
-			strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
-			msg.diffusion[IRC_CHANNEL_SIZE]=0;
+				strncpy(msg.diffusion,  diffusion, IRC_CHANNEL_SIZE);
+				msg.diffusion[IRC_CHANNEL_SIZE]=0;
 
-			strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
-			msg.message[IRC_MESSAGE_SIZE]=0;
+				strncpy(msg.message,  message, IRC_MESSAGE_SIZE);
+				msg.message[IRC_MESSAGE_SIZE]=0;
 
-			messages.push_back(msg);
+				messages.push_back(msg);
+			}
 		}
 	}
 	else if (strcasecmp(cmd, "JOIN")==0)
