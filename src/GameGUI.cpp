@@ -1436,7 +1436,7 @@ void GameGUI::drawChoice(int pos, std::vector<int> &types)
 	{
 		int i = *it;
 
-		if (i==int(selection.build))
+		if ((selectionMode==TOOL_SELECTION) && (i==int(selection.build)))
 			sel=v;
 
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(i, 0, false);
