@@ -102,6 +102,8 @@ private:
 	enum { END_OF_GAME_STATS_SIZE=128 };
 	
 	//! Thoses stats are used when player has ned the game
+	friend class Team;
+	
 	int endOfGameStatIndex;
 	EndOfGameStat endOfGameStats[END_OF_GAME_STATS_SIZE];
 
