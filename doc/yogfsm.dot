@@ -1,0 +1,16 @@
+digraph yog_finite_state_machine
+{
+	size="6,6";
+	
+	node [shape = doublecircle]; idle;
+	node [shape = circle]; downloading_map player_setup game;
+	downloading_map [ label = "downloading\nmap" ];
+	player_setup [ label = "player\nsetup" ];
+	
+	idle -> player_setup [ label = "on map click,\n has map,\n host answers" ];
+	idle -> downloading_map [ label = "on map click,\n has not map" ];
+	downloading_map -> player_setup [ label = "map download completed,\n host answers" ];
+	downloading_map -> idle [ label = "map download completed,\n host does not answer" ];
+	player_setup -> game [ label = "UDP cross-connection success,\n all players ready" ];
+	game -> idle [ label = "end of game" ];
+}
