@@ -56,7 +56,14 @@ GlobalContainer::GlobalContainer(void)
 	settings.load();
 	userName=settings.username.c_str();
 
+	runNoX=false;
+	runNoXGameName[0]=0;
+	
 	hostServer=false;
+	hostServerMapName[0]=0;
+	hostServerUserName[0]=0;
+	hostServerPassWord[0]=0;
+	
 	gfx=NULL;
 	mix=NULL;
 	terrain=NULL;
@@ -75,7 +82,7 @@ GlobalContainer::GlobalContainer(void)
 
 GlobalContainer::~GlobalContainer(void)
 {
-	if (!hostServer)
+	if (!runNoX)
 	{
 		// releasing ressources
 		Toolkit::releaseSprite("terrain");
@@ -121,6 +128,22 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
+		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
+		{
+			if (i+1<argc)
+			{
+				strncpy(runNoXGameName, argv[i+1], 32);
+				runNoX=true;
+				i++;
+			}
+			else
+			{
+				printf("usage:\n");
+				printf("--nox <game file name>\n\n");
+				exit(0);
+			}
+			continue;
+		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
 		{
 			if (i+3<argc)
@@ -128,6 +151,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				strncpy(hostServerMapName, argv[i+1], 32);
 				strncpy(hostServerUserName, argv[i+2], 32);
 				strncpy(hostServerPassWord, argv[i+3], 32);
+				runNoX=true;
 				hostServer=true;
 				pushUserName(argv[i+2]);
 				i+=3;
@@ -136,7 +160,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else
 			{
 				printf("usage:\n");
-				printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
+				printf("--host <map file name> <YOG username> <YOG password>\n\n");
 				exit(0);
 			}
 			continue;
@@ -231,8 +255,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-t\ttype of gfx rendere: 0 = SDL, 1 = OpenGL\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
-			printf("-host MapName\t runs Globulation 2 as a game host text-only server\n\n");
-			printf("-host <map file name> <YOG username> <YOG password>\t runs Globulation 2 as a YOG game host text-only server\n\n");
+			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
+			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}
@@ -340,7 +364,14 @@ void GlobalContainer::load(void)
 	}
 	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
 
-	if (!hostServer)
+	if (runNoX)
+	{
+		// load buildings types
+		buildingsTypes.load("data/buildings.txt");
+		// load ressources types
+		ressourcesTypes.load("data/ressources.txt");
+	}
+	else
 	{
 		// create graphic context
 		gfx=GraphicContext::createGraphicContext((DrawableSurface::GraphicContextType)settings.graphicType);

@@ -95,10 +95,15 @@ void Game::init(GameGUI *gui)
 {
 	this->gui=gui;
 	
-	// init minimap
-	minimap=globalContainer->gfx->createDrawableSurface();
-	minimap->setRes(100, 100);
-	minimap->drawFilledRect(0, 0, 100, 100, 0, 0, 0);
+	if (globalContainer->runNoX)
+		minimap=NULL;
+	else
+	{
+		// init minimap
+		minimap=globalContainer->gfx->createDrawableSurface();
+		minimap->setRes(100, 100);
+		minimap->drawFilledRect(0, 0, 100, 100, 0, 0, 0);
+	}
 
 	session.numberOfTeam=0;
 	session.numberOfPlayer=0;
@@ -946,7 +951,8 @@ void Game::syncStep(Sint32 localTeam)
 				}
 		}
 		
-		renderMiniMap(localTeam, false, stepCounter%25, 25);
+		if (!globalContainer->runNoX)
+			renderMiniMap(localTeam, false, stepCounter%25, 25);
 
 		if ((stepCounter&31)==0)
 		{

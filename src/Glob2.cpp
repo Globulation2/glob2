@@ -95,6 +95,18 @@ void Glob2::mutiplayerYOG(void)
 	printf("Glob2::YOGPreScreen has ended ...\n");
 }
 
+int Glob2::runNoX()
+{
+	Engine engine;
+	if (engine.initCustom(globalContainer->runNoXGameName)==Engine::EE_NO_ERROR)
+	{
+		engine.run();
+		return 0;
+	}
+	else
+		return 1;
+}
+
 int Glob2::runHostServer()
 {
 	printf("Glob2::runHostServer():connecting to YOG as %s\n", globalContainer->getUsername());
@@ -108,7 +120,7 @@ int Glob2::runHostServer()
 	if (yog->yogGlobalState<YOG::YGS_CONNECTED)
 	{
 		printf("Glob2::failed to connect to YOG!.\n");
-		return 0;
+		return 1;
 	}
 	
 	SessionInfo sessionInfo;
@@ -120,7 +132,7 @@ int Glob2::runHostServer()
 	if (stream==NULL)
 	{
 		printf("Map '%s' not found!\n", mapName);
-		return 0;
+		return 1;
 	}
 	else
 	{
@@ -129,7 +141,7 @@ int Glob2::runHostServer()
 		if (!validSessionInfo)
 		{
 			printf("Glob2::runHostServer():Warning, Error during map load.\n");
-			return 0;
+			return 1;
 		}
 	}
 
@@ -241,6 +253,12 @@ int Glob2::run(int argc, char *argv[])
 		delete yog;
 		delete globalContainer;
 		Toolkit::close();
+		return ret;
+	}
+	else if (globalContainer->runNoX)
+	{
+		int ret=runNoX();
+		delete globalContainer;
 		return ret;
 	}
 
