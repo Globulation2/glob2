@@ -26,6 +26,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <Stream.h>
+#include <BinaryStream.h>
 
 #include "EntityType.h"
 
@@ -42,8 +43,14 @@ public:
 
 	virtual void load(const char *filename)
 	{
-		GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-
+		GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename));
+		if (stream->isEndOfStream())
+		{
+			std::cerr << "EntitiesTypes::load(\"" << filename << "\") : error, can't open file." << std::endl;
+			delete stream;
+			return;
+		}
+		
 		bool result = true;
 
 		T defaultEntityType;
@@ -92,4 +99,3 @@ protected:
 };
 
 #endif
-

@@ -22,6 +22,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
+#include <BinaryStream.h>
 using namespace GAGCore;
 
 #include "GUIMapPreview.h"
@@ -62,9 +63,13 @@ void MapPreview::setMapThumbnail(const char *mapName)
 		delete mapThumbnail;
 		mapThumbnail = NULL;
 	}
-	
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(mapName);
-	if (stream)
+
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	if (stream->isEndOfStream())
+	{
+		delete stream;
+	}
+	else
 	{
 		// read session
 		SessionGame session;

@@ -983,26 +983,32 @@ bool MapEdit::load(const char *filename)
 {
 	assert(filename);
 
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-	if (!stream)
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "MapEdit::load(\"" << filename << "\") : error, can't open file." << std::endl;
+		delete stream;
 		return false;
+	}
+	else
+	{
+		bool rv = game.load(stream);
+		
+		delete stream;
+		if (!rv)
+			return false;
+		regenerateClipRect();
+		
+		// set the editor default values
+		team = 0;
+		terrainSize = 1; // terrain size 1
+		level = 0;
+		type = 0; // water
+		editMode = EM_TERRAIN; // terrain
 	
-	bool rv = game.load(stream);
-	
-	delete stream;
-	if (!rv)
-		return false;
-	regenerateClipRect();
-	
-	// set the editor default values
-	team = 0;
-	terrainSize = 1; // terrain size 1
-	level = 0;
-	type = 0; // water
-	editMode = EM_TERRAIN; // terrain
-
-	renderMiniMap();
-	return true;
+		renderMiniMap();
+		return true;
+	}
 }
 
 bool MapEdit::save(const char *filename, const char *name)
@@ -1010,15 +1016,19 @@ bool MapEdit::save(const char *filename, const char *name)
 	assert(filename);
 	assert(name);
 
-	GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
-	if (stream)
+	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "MapEdit::save(\"" << filename << "\",\"" << name << "\") : error, can't open file." << std::endl;
+		delete stream;
+		return false;
+	}
+	else
 	{
 		game.save(stream, true, name);
 		delete stream;
 		return true;
 	}
-	else
-		return false;
 }
 
 

@@ -4,6 +4,9 @@ StringTable.h \
 FileManager.h \
 Types.h \
 Stream.h \
+BinaryStream.h \
+TextStream.h \
+StreamBackend.h \
 GAG.h \
 GAGSys.h \
 GUIBase.h \

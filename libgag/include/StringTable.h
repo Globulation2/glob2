@@ -41,7 +41,7 @@ namespace GAGCore
 		void setDefaultLang(int l) { defaultLang = l; }
 		int getLang(void) { return actLang; }
 		int getNumberOfLanguage(void) { return languageCount; }
-		bool load(char *filename);
+		bool load(const char *filename);
 		const char *getString(const char *stringname, int index = -1) const;
 		const char *getStringInLang(const char *stringname, int lang) const;
 		void print();

@@ -21,23 +21,13 @@
 #define __BINARYSTREAM_H
 
 #include <Stream.h>
-#include "StreamBackend.h"
-
-// For htons/htonl
-#ifdef WIN32
-	#include <windows.h>
-#else
-	#include <netinet/in.h>
-#endif
-#include <stdio.h>
-#include <string>
-#include <valarray>
+#include <StreamBackend.h>
 
 namespace GAGCore
 {
 	class BinaryOutputStream : public OutputStream
 	{
-	private:
+	protected:
 		StreamBackend *backend;
 		
 	public:
@@ -46,23 +36,7 @@ namespace GAGCore
 	
 		virtual void write(const void *data, const size_t size, const char *name = NULL) { backend->write(data, size); }
 	
-		virtual void writeEndianIndependant(const void *v, const size_t size, const char *name)
-		{
-			if (size==2)
-			{
-				*(Uint16 *)v = htons(*(Uint16 *)v);
-			}
-			else if (size==4)
-			{
-				*(Uint32 *)v = htonl(*(Uint32 *)v);
-			}
-			else if (size==8)
-			{
-				*(Uint32 *)v = htonl(*(Uint32 *)v);
-				*((Uint32 *)v+1) = htonl(*((Uint32 *)v+1));
-			}
-			backend->write(v, size);
-		}
+		virtual void writeEndianIndependant(const void *v, const size_t size, const char *name);
 	
 		virtual void writeSint8(const Sint8 v, const char *name = NULL) { this->write(&v, 1, name); }
 		virtual void writeUint8(const Uint8 v, const char *name = NULL) { this->write(&v, 1, name); }
@@ -72,11 +46,7 @@ namespace GAGCore
 		virtual void writeUint32(const Uint32 v, const char *name = NULL) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeFloat(const float v, const char *name = NULL) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeDouble(const double v, const char *name = NULL) { this->writeEndianIndependant(&v, 8, name); }
-		virtual void writeText(const std::string &v, const char *name = NULL)
-		{
-			writeUint32(v.size());
-			write(v.c_str(), v.size()); 
-		}
+		virtual void writeText(const std::string &v, const char *name = NULL);
 		
 		virtual void flush(void) { backend->flush(); }
 		
@@ -103,23 +73,7 @@ namespace GAGCore
 	
 		virtual void read(void *data, size_t size, const char *name = NULL) { backend->read(data, size); }
 	
-		virtual void readEndianIndependant(void *v, size_t size, const char *name)
-		{
-			backend->read(v, size);
-			if (size==2)
-			{
-				*(Uint16 *)v = ntohs(*(Uint16 *)v);
-			}
-			else if (size==4)
-			{
-				*(Uint32 *)v = ntohl(*(Uint32 *)v);
-			}
-			else if (size==8)
-			{
-				*(Uint32 *)v = ntohl(*(Uint32 *)v);
-				*((Uint32 *)v+1) = ntohl(*((Uint32 *)v+1));
-			}
-		}
+		virtual void readEndianIndependant(void *v, size_t size, const char *name);
 	
 		virtual Sint8 readSint8(const char *name = NULL) { Sint8 i; this->read(&i, 1, name); return i; }
 		virtual Uint8 readUint8(const char *name = NULL) { Uint8 i; this->read(&i, 1, name); return i; }
@@ -129,14 +83,7 @@ namespace GAGCore
 		virtual Uint32 readUint32(const char *name = NULL) { Uint32 i; this->readEndianIndependant(&i, 4, name); return i; }
 		virtual float readFloat(const char *name = NULL) { float f; this->readEndianIndependant(&f, 4, name); return f; }
 		virtual double readDouble(const char *name = NULL) { double d; this->readEndianIndependant(&d, 8, name); return d; }
-		virtual std::string readText(const char *name = NULL)
-		{
-			size_t len = readUint32();
-			std::valarray<char> buffer(len+1);
-			read(&buffer[0], len);
-			buffer[len] = 0;
-			return std::string(&buffer[0]);
-		}
+		virtual std::string readText(const char *name = NULL);
 		
 		virtual void readEnterSection(const char *name) { }
 		virtual void readEnterSection(unsigned id) { }

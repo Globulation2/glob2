@@ -20,6 +20,7 @@
 #include "Settings.h"
 #include "Utilities.h"
 #include <Stream.h>
+#include <BinaryStream.h>
 #include <stdlib.h>
 #include <GAG.h>
 using namespace GAGCore;
@@ -64,8 +65,12 @@ void Settings::load(const char *filename)
 {
 	std::map<std::string, std::string> parsed;
 
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-	if (stream)
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Settings::load(\"" << filename << "\") : error, can't open file." << std::endl;
+	}
+	else
 	{
 		// load and parse file
 		char *dest, *varname, *token;
@@ -80,7 +85,6 @@ void Settings::load(const char *filename)
 			if (token)
 				parsed[varname] = token;
 		}
-		delete stream;
 
 		// read values
 		READ_PARSED_STRING(username);
@@ -94,12 +98,17 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(defaultLanguage);
 		READ_PARSED_INT(musicVolume);
 	}
+	delete stream;
 }
 
 void Settings::save(const char *filename)
 {
-	GAGCore::OutputStream *stream = Toolkit::getFileManager()->openOutputStream(filename);
-	if (stream)
+	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Settings::save(\"" << filename << "\") : error, can't open file." << std::endl;
+	}
+	else
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
@@ -111,6 +120,6 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "graphicType=%d\n", graphicType);
 		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
-		delete stream;
 	}
+	delete stream;
 }

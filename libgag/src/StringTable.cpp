@@ -47,15 +47,17 @@ namespace GAGCore
 		A translation file contains pair of key-value for the given translation
 	*/
 	
-	bool StringTable::load(char *filename)
+	bool StringTable::load(const char *filename)
 	{
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
 		InputLineStream *inputLineStream;
-	
+		 
 		// Read index file
-		if ((inputLineStream = Toolkit::getFileManager()->openInputLineStream(filename)) == NULL)
+		inputLineStream= new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+		if (inputLineStream->isEndOfStream())
 		{
+			delete inputLineStream;
 			return false;
 		}
 		else
@@ -80,8 +82,10 @@ namespace GAGCore
 		std::vector<std::map<std::string, std::string> > translations(translationFiles.size());
 		
 		// Load keys
-		if ((inputLineStream = Toolkit::getFileManager()->openInputLineStream(keyFile.c_str())) == NULL)
+		inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(keyFile));
+		if (inputLineStream->isEndOfStream())
 		{
+			delete inputLineStream;
 			return false;
 		}
 		else
@@ -96,8 +100,10 @@ namespace GAGCore
 		// Load translations
 		for (size_t i=0; i<translationFiles.size(); i++)
 		{
-			if ((inputLineStream = Toolkit::getFileManager()->openInputLineStream(translationFiles[i].c_str())) == NULL)
+			inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(translationFiles[i]));
+			if (inputLineStream->isEndOfStream())
 			{
+				delete inputLineStream;
 				return false;
 			}
 			else

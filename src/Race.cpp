@@ -49,7 +49,14 @@ void Race::create(CreationType creationType)
 	UnitType evolvable;
 	UnitType costs[3];//[worker, explorer, warrior]
 	
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream("data/units.txt");
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("data/units.txt"));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "Race::create : error, can't open file data/units.txt." << std::endl;
+		delete stream;
+		assert(false);
+		return;
+	}
 	
 	baseUnit[0].loadText(stream);
 	baseUnit[1] = baseUnit[0];

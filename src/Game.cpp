@@ -30,6 +30,7 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Stream.h>
+#include <BinaryStream.h>
 
 #include "BuildingType.h"
 #include "Game.h"
@@ -2583,8 +2584,12 @@ Team *Game::getTeamWithMostPrestige(void)
 
 std::string glob2FilenameToName(const char *filename)
 {
-	GAGCore::InputStream *stream = Toolkit::getFileManager()->openInputStream(filename);
-	if (stream)
+	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream->isEndOfStream())
+	{
+		delete stream;
+	}
+	else
 	{
 		SessionInfo tempSession;
 		bool res = tempSession.load(stream);

@@ -148,74 +148,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	OutputStream *FileManager::openOutputStream(const char *filename, StreamType type)
-	{
-		for (size_t i = 0; i < dirList.size(); ++i)
-		{
-			std::string path(dirList[i]);
-			path += DIR_SEPARATOR;
-			path += filename;
-			
-			switch (type)
-			{
-				case STREAM_BINARY:
-				{
-					FILE *fp = openWithbackupFP(path.c_str(), "wb");
-					if (fp)
-						return new BinaryOutputStream(new FileStreamBackend(fp));
-				}
-				break;
-				
-				case STREAM_TEXT:
-				{
-					std::ofstream *ofs = openWithbackupOFS(path.c_str(), std::ios_base::out);
-					if (ofs)
-						return new TextOutputStream(ofs);
-				}
-				break;
-				
-				default:
-				assert(false);
-			}
-		}
-	
-		return NULL;
-	}
-	
-	InputStream *FileManager::openInputStream(const char *filename, StreamType type)
-	{
-		for (size_t i = 0; i < dirList.size(); ++i)
-		{
-			std::string path(dirList[i]);
-			path += DIR_SEPARATOR;
-			path += filename;
-			
-			switch (type)
-			{
-				case STREAM_BINARY:
-				{
-					FILE *fp = fopen(path.c_str(), "rb");
-					if (fp)
-						return new BinaryInputStream(new FileStreamBackend(fp));
-				}
-				break;
-				
-				/*case STREAM_TEXT:
-				std::ofstream *ofs = new strd::ofstream(path.c_str(), "rb");
-				FILE *fp = fopen(path.c_str(), "rb");
-				if (fp)
-					return new TextOutputStream(fp);
-				break;*/
-				
-				default:
-				assert(false);
-			}
-		}
-	
-		return NULL;
-	}
-	
-	OutputLineStream *FileManager::openOutputLineStream(const char *filename)
+	StreamBackend *FileManager::openOutputStreamBackend(const char *filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -225,12 +158,13 @@ namespace GAGCore
 			
 			FILE *fp = fopen(path.c_str(), "wb");
 			if (fp)
-				return new OutputLineStream(new FileStreamBackend(fp));
+				return new FileStreamBackend(fp);
 		}
+	
 		return NULL;
 	}
 	
-	InputLineStream *FileManager::openInputLineStream(const char *filename)
+	StreamBackend *FileManager::openInputStreamBackend(const char *filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -240,8 +174,9 @@ namespace GAGCore
 			
 			FILE *fp = fopen(path.c_str(), "rb");
 			if (fp)
-				return new InputLineStream(new FileStreamBackend(fp));
+				return new FileStreamBackend(fp);
 		}
+	
 		return NULL;
 	}
 	
