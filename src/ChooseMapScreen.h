@@ -43,7 +43,7 @@ public:
 		//! Value returned upon screen execution completion when the map/game selection is canceled
 		CANCEL = 2,
 		//! Value returned if screen is for games and delete button has been pressed
-		DELETE = 3,
+		DELETEGAME = 3,
 	};
 	
 	//! Session info, will be used by caller upen screen execution completion
