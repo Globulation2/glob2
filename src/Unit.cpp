@@ -2306,65 +2306,89 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=posX;
+	if (checkSumsList)
+		checkSumsList->push_back(posX);// [4]
 	cs=(cs<<1)|(cs>>31);
 	cs^=posY;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [3]
+		checkSumsList->push_back(posY);// [5]
 	cs=(cs<<1)|(cs>>31);
 	cs^=delta;
 	if (checkSumsList)
-		checkSumsList->push_back(delta);// [4]
+		checkSumsList->push_back(delta);// [6]
 	cs=(cs<<1)|(cs>>31);
 	cs^=dx;
+	if (checkSumsList)
+		checkSumsList->push_back(dx);// [7]
 	cs^=dy;
+	if (checkSumsList)
+		checkSumsList->push_back(dy);// [8]
 	cs^=direction;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [5]
+		checkSumsList->push_back(direction);// [9]
 	cs=(cs<<1)|(cs>>31);
 	cs^=insideTimeout;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [6]
+		checkSumsList->push_back(insideTimeout);// [10]
 	cs=(cs<<1)|(cs>>31);
 	cs^=speed;
 	if (checkSumsList)
-		checkSumsList->push_back(speed);// [7]
+		checkSumsList->push_back(speed);// [11]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=(int)needToRecheckMedical;
 	if (checkSumsList)
-		checkSumsList->push_back(needToRecheckMedical);// [8]
+		checkSumsList->push_back(needToRecheckMedical);// [12]
 	cs=(cs<<1)|(cs>>31);
 	cs^=medical;
+	if (checkSumsList)
+		checkSumsList->push_back(medical);// [13]
 	cs^=activity;
+	if (checkSumsList)
+		checkSumsList->push_back(activity);// [14]
 	cs^=displacement;
+	if (checkSumsList)
+		checkSumsList->push_back(displacement);// [15]
 	cs^=movement;
+	if (checkSumsList)
+		checkSumsList->push_back(movement);// [16]
 	cs^=action;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [9]
+		checkSumsList->push_back(action);// [17]
 	cs=(cs<<1)|(cs>>31);
 	cs^=targetX;
+	if (checkSumsList)
+		checkSumsList->push_back(targetX);// [18]
 	cs^=targetY;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [10]
+		checkSumsList->push_back(targetY);// [19]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hp;
+	if (checkSumsList)
+		checkSumsList->push_back(hp);// [20]
 	cs^=trigHP;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [11]
+		checkSumsList->push_back(trigHP);// [21]
 	cs=(cs<<1)|(cs>>31);
 
 	cs^=hungry;
+	if (checkSumsList)
+		checkSumsList->push_back(hungry);// [22]
 	cs^=trigHungry;
+	if (checkSumsList)
+		checkSumsList->push_back(trigHungry);// [23]
 	cs^=trigHungryCarying;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [12]
+		checkSumsList->push_back(trigHungryCarying);// [24]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=fruitMask;
+	if (checkSumsList)
+		checkSumsList->push_back(fruitMask);// [25]
 	cs^=fruitCount;
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [13]
+		checkSumsList->push_back(fruitCount);// [26]
 	cs=(cs<<1)|(cs>>31);
 
 	for (int i=0; i<NB_ABILITY; i++)
@@ -2377,29 +2401,44 @@ Uint32 Unit::checkSum(std::list<Uint32> *checkSumsList)
 		cs=(cs<<1)|(cs>>31);
 	}
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [14]
+		checkSumsList->push_back(cs);// [27]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=(attachedBuilding!=NULL ? 1:0);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [15]
+		checkSumsList->push_back((attachedBuilding!=NULL ? 1:0));// [28]
 	cs=(cs<<1)|(cs>>31);
 	cs^=(targetBuilding!=NULL ? 1:0);
+	if (checkSumsList)
+		checkSumsList->push_back((targetBuilding!=NULL ? 1:0));// [29]
 	cs^=(ownExchangeBuilding!=NULL ? 2:0);
+	if (checkSumsList)
+		checkSumsList->push_back((ownExchangeBuilding!=NULL ? 1:0));// [30]
 	cs^=(foreingExchangeBuilding!=NULL ? 4:0);
 	if (checkSumsList)
-		checkSumsList->push_back(cs);// [16]
+		checkSumsList->push_back((foreingExchangeBuilding!=NULL ? 1:0));// [31]
 	cs=(cs<<1)|(cs>>31);
 	
 	cs^=destinationPurprose;
 	if (checkSumsList)
-		checkSumsList->push_back(destinationPurprose);// [17]
+		checkSumsList->push_back(destinationPurprose);// [32]
 	cs^=(Uint32)subscribed;
 	if (checkSumsList)
-		checkSumsList->push_back(subscribed);// [18]
+		checkSumsList->push_back(subscribed);// [33]
 	cs^=caryedRessource;
 	if (checkSumsList)
-		checkSumsList->push_back(caryedRessource);// [19]
+		checkSumsList->push_back(caryedRessource);// [34]
+	
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [35]
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [36]
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [37]
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [38]
+	if (checkSumsList)
+		checkSumsList->push_back(0);// [39]
 	
 	return cs;
 }
