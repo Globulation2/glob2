@@ -646,7 +646,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (newH<480)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->graphicFlags);
+		globalContainer->gfx->setRes(newW, newH, 32, globalContainer->getGfxFlag());
 	}
 }
 
@@ -1146,7 +1146,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if ((my>256+45+12) && (my<256+45+16+12)  && (selBuild->type->maxUnitWorking) && (selBuild->buildingState==Building::ALIVE))
 		{
 			int nbReq;
-			if (mx<16)
+			if (mx<18)
 			{
 				if(selBuild->maxUnitWorkingLocal>0)
 				{
@@ -1154,9 +1154,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 				}
 			}
-			else if (mx<128-16)
+			else if (mx<128-18)
 			{
-				nbReq=selBuild->maxUnitWorkingLocal=((mx-16)*MAX_UNIT_WORKING)/94;
+				nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/92;
 				orderQueue.push_back(new OrderModifyBuildings(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
@@ -1172,7 +1172,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if ((selBuild->type->defaultUnitStayRange) && (my>256+144) && (my<256+144+16))
 		{
 			int nbReq;
-			if (mx<16)
+			if (mx<18)
 			{
 				if(selBuild->unitStayRangeLocal>0)
 				{
@@ -1180,9 +1180,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 				}
 			}
-			else if (mx<128-16)
+			else if (mx<128-18)
 			{
-				nbReq=selBuild->unitStayRangeLocal=((mx-16)*(unsigned)selBuild->type->maxUnitStayRange)/94;
+				nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/92;
 				orderQueue.push_back(new OrderModifyFlags(&(selBuild->UID), &(nbReq), 1));
 			}
 			else
@@ -1202,7 +1202,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			{
 				if ((my>256+90+(i*20)+12)&&(my<256+90+(i*20)+16+12))
 				{
-					if (mx<16)
+					if (mx<18)
 					{
 						if (selBuild->ratioLocal[i]>0)
 						{
@@ -1213,9 +1213,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 							orderQueue.push_back(new OrderModifySwarms(&(selBuild->UID), rdyPtr, 1));
 						}
 					}
-					else if (mx<128-16)
+					else if (mx<128-18)
 					{
-						selBuild->ratioLocal[i]=((mx-16)*MAX_RATIO_RANGE)/94;
+						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/92;
 
 						Sint32 rdyPtr[1][UnitType::NB_UNIT_TYPE];
 						memcpy(rdyPtr, selBuild->ratioLocal, UnitType::NB_UNIT_TYPE*sizeof(Sint32));
@@ -1312,7 +1312,7 @@ void GameGUI::draw(void)
 		if (globalContainer->optionFlags&GlobalContainer::OPTION_LOW_SPEED_GFX)
 			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 0);
 		else
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 0, 155);
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 		if (displayMode==BUILDING_AND_FLAG)
 		{
@@ -1338,7 +1338,7 @@ void GameGUI::draw(void)
 
 				globalContainer->gfx->setClipRect(x+6, y+2, 52, 42);
 				if (i==typeToBuild)
-					globalContainer->gfx->drawFilledRect(x+6, y+2, 52, 42, 52, 1, 165);
+					globalContainer->gfx->drawFilledRect(x+6, y+2, 52, 42, 0, 0, 40);
 					
 				Sprite *buildingSprite=globalContainer->buildings;
 
@@ -1475,11 +1475,13 @@ void GameGUI::draw(void)
 					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 256+65+12, Elapsed, 7, 100, 100, 255);
 					globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128+Elapsed, 256+65+12, Left, 7, 128, 128, 128);
 
+					//globalContainer->littleFont->pushColor(80, 80, 80);
 					for (int i=0; i<UnitType::NB_UNIT_TYPE; i++)
 					{
 						drawScrollBox(globalContainer->gfx->getW()-128, 256+90+(i*20)+12, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+93+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[Unit type]", i));
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+24, 256+90+(i*20)+12, globalContainer->littleFont, "%s", globalContainer->texts.getString("[Unit type]", i));
 					}
+					//globalContainer->littleFont->popColor();
 				}
 
 				if (buildingType->maxUnitInside)
@@ -1528,13 +1530,13 @@ void GameGUI::draw(void)
 				if (selBuild->constructionResultState==Building::REPAIR)
 				{
 					assert(buildingType->nextLevelTypeNum!=-1);
-					drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel repair]");
+					drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[cancel repair]");
 				}
 				else if (selBuild->constructionResultState==Building::UPGRADE)
 				{
 					assert(buildingType->nextLevelTypeNum!=-1);
 					assert(buildingType->lastLevelTypeNum!=-1);
-					drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[cancel upgrade]");
+					drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[cancel upgrade]");
 				}
 				else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 				{
@@ -1542,14 +1544,14 @@ void GameGUI::draw(void)
 					{
 						// repair
 						if (selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && (localTeam->maxBuildLevel()>=buildingType->level))
-							drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[repair]");
+							drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[repair]");
 					}
 					else if (buildingType->nextLevelTypeNum!=-1)
 					{
 						// upgrade
 						if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
 						{
-							drawBlueButton(globalContainer->gfx->getW()-128+12, 256+172, "[upgrade]");
+							drawBlueButton(globalContainer->gfx->getW()-128, 256+172, "[upgrade]");
 							if ( mouseX>globalContainer->gfx->getW()-128+12 && mouseX<globalContainer->gfx->getW()-12
 								&& mouseY>256+172 && mouseY<256+172+16 )
 								{
@@ -1598,11 +1600,11 @@ void GameGUI::draw(void)
 				// building destruction
 				if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 				{
-					drawRedButton(globalContainer->gfx->getW()-128+12, 256+172+16+8, "[cancel destroy]");
+					drawRedButton(globalContainer->gfx->getW()-128, 256+172+16+8, "[cancel destroy]");
 				}
 				else if (selBuild->buildingState==Building::ALIVE)
 				{
-					drawRedButton(globalContainer->gfx->getW()-128+12, 256+172+16+8, "[destroy]");
+					drawRedButton(globalContainer->gfx->getW()-128, 256+172+16+8, "[destroy]");
 				}
 				//globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, 470, globalContainer->littleFont, "UID%d;bs%d;ws%d;is%d", selBuild->UID, selBuild->buildingState, selBuild->unitsWorkingSubscribe.size(), selBuild->unitsInsideSubscribe.size());
 			}
@@ -1968,7 +1970,7 @@ void GameGUI::drawOverlayInfos(void)
 	if (globalContainer->optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 0, 155);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 20, 0, 0, 40, 180);
 	
 	Uint8 redC[]={200, 0, 0};
 	Uint8 greenC[]={0, 200, 0};
@@ -2038,7 +2040,7 @@ void GameGUI::drawInGameTextInput(void)
 void GameGUI::drawAll(int team)
 {
 	if (globalContainer->optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 0, 155);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-128, 128, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 	else
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		
@@ -2258,11 +2260,9 @@ void GameGUI::save(SDL_RWops *stream, const char *name)
 
 void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 128, 128, 128);
-	globalContainer->gfx->drawHorzLine(x, y, 104, 200, 200, 200);
-	globalContainer->gfx->drawHorzLine(x, y+15, 104, 28, 28, 28);
-	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(x+103, y, 16, 200, 200, 200);
+	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
+	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 128, 128, 128);
+
 	const char *textToDraw;
 	if (doLanguageLookup)
 		textToDraw=globalContainer->texts.getString(caption);
@@ -2270,16 +2270,14 @@ void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLooku
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
+	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 128, 128, 192);
-	globalContainer->gfx->drawHorzLine(x, y, 104, 200, 200, 255);
-	globalContainer->gfx->drawHorzLine(x, y+15, 104, 28, 28, 92);
-	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 255);
-	globalContainer->gfx->drawVertLine(x+103, y, 16, 200, 200, 255);
+	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
+	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 128, 128, 192);
+
 	const char *textToDraw;
 	if (doLanguageLookup)
 		textToDraw=globalContainer->texts.getString(caption);
@@ -2287,16 +2285,14 @@ void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageL
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
+	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawFilledRect(x, y, 104, 16, 192, 128, 128);
-	globalContainer->gfx->drawHorzLine(x, y, 104, 255, 200, 200);
-	globalContainer->gfx->drawHorzLine(x, y+15, 104, 92, 28, 28);
-	globalContainer->gfx->drawVertLine(x, y, 16, 255, 200, 200);
-	globalContainer->gfx->drawVertLine(x+103, y, 16, 255, 200, 200);
+	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
+	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 192, 128, 128);
+
 	const char *textToDraw;
 	if (doLanguageLookup)
 		textToDraw=globalContainer->texts.getString(caption);
@@ -2304,7 +2300,7 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 		textToDraw=caption;
 	int len=globalContainer->littleFont->getStringWidth(textToDraw);
 	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+((104-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
+	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, "%s", textToDraw);
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
@@ -2322,7 +2318,19 @@ void GameGUI::drawTextCenter(int x, int y, const char *caption, int i)
 
 void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, int max)
 {
-	globalContainer->gfx->drawFilledRect(x, y, 128, 16, 128, 128, 128);
+	globalContainer->gfx->setClipRect(x+8, y, 112, 16);
+	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 9);
+	
+	int size=(valueLocal*92)/max;
+	globalContainer->gfx->setClipRect(x+18, y, size, 16);
+	globalContainer->gfx->drawSprite(x+18, y+3, globalContainer->gamegui, 10);
+	
+	size=(act*92)/max;
+	globalContainer->gfx->setClipRect(x+18, y, size, 16);
+	globalContainer->gfx->drawSprite(x+18, y+4, globalContainer->gamegui, 11);
+	
+	globalContainer->gfx->setClipRect();
+	/*globalContainer->gfx->drawFilledRect(x, y, 128, 16, 128, 128, 128);
 	globalContainer->gfx->drawHorzLine(x, y, 128, 200, 200, 200);
 	globalContainer->gfx->drawHorzLine(x, y+16, 128, 28, 28, 28);
 	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
@@ -2338,7 +2346,7 @@ void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, in
 	size=(value*94)/max;
 	globalContainer->gfx->drawFilledRect(x+16+1, y+3, size, 10, 28, 28, 200);
 	size=(act*94)/max;
-	globalContainer->gfx->drawFilledRect(x+16+1, y+5, size, 6, 28, 200, 28);
+	globalContainer->gfx->drawFilledRect(x+16+1, y+5, size, 6, 28, 200, 28);*/
 }
 
 void GameGUI::checkValidSelection(void)
