@@ -12,7 +12,6 @@ To First release :
 - must have a working win32 build with the same feature-set that the linux one. (nct)
 - Les exploratrices doivent considerer le FOW, et pas uniquement le noir. (nuage)
 - Mapeditor should let the user edit walls and flags. (nct)
-- Revoir l'allocation des unités aux batiments, le moteur du jeu. (nuage)
 
 To Next version :
 

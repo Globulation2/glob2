@@ -919,31 +919,31 @@ Order *AI::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberHealth[0]>numberUpgradingHealth[1])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberAttack[0]>numberUpgradingAttack[1])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberScience[0]>numberUpgradingScience[1]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberDefense[0]>numberUpgradingDefense[1])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 	}
 	
@@ -956,31 +956,31 @@ Order *AI::mayUpgrade(const int ptrigger, const int ntrigger)
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberHealth[1]>numberUpgradingHealth[2])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberAttack[1]>numberUpgradingAttack[2])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberScience[1]>numberUpgradingScience[2]+1)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 		if (numberDefense[1]>numberUpgradingDefense[2])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return new OrderUpgrade(b->UID);
+				return new OrderConstruction(b->UID);
 		}
 	}
 	

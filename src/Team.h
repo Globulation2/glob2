@@ -144,7 +144,7 @@ public:
 	std::list<Building *> subscribeForFlaging;
 
 	std::list<int> buildingsToBeDestroyed;
-	std::list<Building *> buildingsToBeUpgraded;
+	std::list<Building *> buildingsTryToBuildingSiteRoom;
 
 	std::list<Building *> swarms;
 	std::list<Building *> turrets;

@@ -38,10 +38,18 @@ public:
 	enum BuildingState
 	{
 		DEAD=0,
-		ALIVE,
-		WAITING_FOR_DESTRUCTION,
-		WAITING_FOR_UPGRADE,
-		WAITING_FOR_UPGRADE_ROOM,
+		ALIVE=1,
+		WAITING_FOR_DESTRUCTION=2,
+		WAITING_FOR_CONSTRUCTION=3,
+		WAITING_FOR_CONSTRUCTION_ROOM=4
+	};
+	
+	enum ConstructionResultState
+	{
+		NO_CONSTRUCTION=0,
+		NEW_BUILDING=1,
+		UPGRADE=2,
+		REPAIR=3
 	};
 
 	// type
@@ -50,6 +58,7 @@ public:
 
 	// construction state
 	BuildingState buildingState;
+	ConstructionResultState constructionResultState;
 
 	// units
 	Sint32 maxUnitWorkingLocal;
@@ -118,13 +127,14 @@ public:
 	bool isRessourceFull(void);
 	int neededRessource(void);
 	int neededRessource(int r);
-	void launchUpgrade(void);
-	void cancelUpgrade(void);
+	void launchConstruction(void);
+	void cancelConstruction(void);
 	void launchDelete(void);
 	void cancelDelete(void);
 	void update(void);
-	bool tryToUpgradeRoom(void);
-	bool isHardSpace(void);
+	bool tryToBuildingSiteRoom(void);
+	bool isHardSpaceForBuildingSite(void);
+	bool isHardSpaceForBuildingSite(ConstructionResultState constructionResultState);
 	void step(void);
 	void removeSubscribers(void);
 	bool fullWorking(void);

@@ -45,13 +45,13 @@ Order *Order::getOrder(const char *netData, int netDataLength)
 	{
 		return new OrderCancelDelete(netData+4,netDataLength-4);
 	}
-	case ORDER_UPGRADE:
+	case ORDER_CONSTRUCTION:
 	{
-		return new OrderUpgrade(netData+4,netDataLength-4);
+		return new OrderConstruction(netData+4,netDataLength-4);
 	}
-	case ORDER_CANCEL_UPGRADE:
+	case ORDER_CANCEL_CONSTRUCTION:
 	{
-		return new OrderCancelUpgrade(netData+4,netDataLength-4);
+		return new OrderCancelConstruction(netData+4,netDataLength-4);
 	}
 	case PLAYER_EXPLAINS_HOST_IP:
 	{
@@ -237,9 +237,9 @@ bool OrderCancelDelete::setData(const char *data, int dataLength)
 	return true;
 }
 
-// OrderUpgrade's code
+// OrderConstruction's code
 
-OrderUpgrade::OrderUpgrade(const char *data, int dataLength)
+OrderConstruction::OrderConstruction(const char *data, int dataLength)
 :Order()
 {
 	assert(dataLength==4);
@@ -248,18 +248,18 @@ OrderUpgrade::OrderUpgrade(const char *data, int dataLength)
 
 }
 
-OrderUpgrade::OrderUpgrade(Sint32 UID)
+OrderConstruction::OrderConstruction(Sint32 UID)
 {
 	this->UID=UID;
 }
 
-char *OrderUpgrade::getData(void)
+char *OrderConstruction::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderUpgrade::setData(const char *data, int dataLength)
+bool OrderConstruction::setData(const char *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -271,9 +271,9 @@ bool OrderUpgrade::setData(const char *data, int dataLength)
 	return true;
 }
 
-// OrderCancelUpgrade's code
+// OrderCancelConstruction's code
 
-OrderCancelUpgrade::OrderCancelUpgrade(const char *data, int dataLength)
+OrderCancelConstruction::OrderCancelConstruction(const char *data, int dataLength)
 :Order()
 {
 	assert(dataLength==4);
@@ -282,18 +282,18 @@ OrderCancelUpgrade::OrderCancelUpgrade(const char *data, int dataLength)
 
 }
 
-OrderCancelUpgrade::OrderCancelUpgrade(Sint32 UID)
+OrderCancelConstruction::OrderCancelConstruction(Sint32 UID)
 {
 	this->UID=UID;
 }
 
-char *OrderCancelUpgrade::getData(void)
+char *OrderCancelConstruction::getData(void)
 {
 	addSint32(data, this->UID, 0);
 	return data;
 }
 
-bool OrderCancelUpgrade::setData(const char *data, int dataLength)
+bool OrderCancelConstruction::setData(const char *data, int dataLength)
 {
 	if(dataLength!=getDataLength())
 		return false;

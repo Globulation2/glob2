@@ -107,17 +107,18 @@ protected:
 	char data[4];
 };
 
-class OrderUpgrade:public Order
+
+class OrderConstruction:public Order
 {
 public:
-	OrderUpgrade(const char *data, int dataLength);
-	OrderUpgrade(Sint32 UID);
-	virtual ~OrderUpgrade(void) { }
-	Uint8 getOrderType(void) { return ORDER_UPGRADE; }
+	OrderConstruction(const char *data, int dataLength);
+	OrderConstruction(Sint32 UID);
+	virtual ~OrderConstruction(void) { }
+	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	char *getData(void);
 	bool setData(const char *data, int dataLength);
 	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_UPGRADE; }
+	Sint32 checkSum() { return ORDER_CONSTRUCTION; }
 
 	Sint32 UID;
 
@@ -125,17 +126,17 @@ protected:
 	char data[4];
 };
 
-class OrderCancelUpgrade:public Order
+class OrderCancelConstruction:public Order
 {
 public:
-	OrderCancelUpgrade(const char *data, int dataLength);
-	OrderCancelUpgrade(Sint32 UID);
-	virtual ~OrderCancelUpgrade(void) { }
-	Uint8 getOrderType(void) { return ORDER_CANCEL_UPGRADE; }
+	OrderCancelConstruction(const char *data, int dataLength);
+	OrderCancelConstruction(Sint32 UID);
+	virtual ~OrderCancelConstruction(void) { }
+	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	char *getData(void);
 	bool setData(const char *data, int dataLength);
 	int getDataLength(void) { return 4; }
-	Sint32 checkSum() { return ORDER_CANCEL_UPGRADE; }
+	Sint32 checkSum() { return ORDER_CANCEL_CONSTRUCTION; }
 
 	Sint32 UID;
 
