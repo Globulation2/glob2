@@ -33,5 +33,6 @@
 // version 18 adds fruit mask for unit happyness.
 // version 19 removed optimisation parameters
 // version 20 removed useless variable in Unit, used by old pathfinding. And added new Units-states.
+// version 21 added real support for ClearingFlags with the gradient system.
 
 #endif

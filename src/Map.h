@@ -245,7 +245,7 @@ public:
 
 	bool isRemovableRessource(int x, int y)
 	{
-		return isRessource(x, y) && (getRessource(x, y).field.type != STONE);
+		return isRessource(x, y) && (getRessource(x, y).field.type!=STONE);
 	}
 
 	bool isRessource(int x, int y, int ressourceType)
@@ -371,9 +371,12 @@ public:
 	
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
+	void updateLocalRessources(Building *building, bool canSwim); //A special gradient for clearing flags
+	void expandLocalGradient(Uint8 *gradient);
 	
 	bool buildingAviable(Building *building, bool canSwim, int x, int y, int *dist);
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
 	
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 	
@@ -384,10 +387,19 @@ protected:
 	int pathToRessourceCountSuccessFar;
 	int pathToRessourceCountFailure;
 	
+	int localRessourcesUpdateCount;
+	int pathfindLocalRessourceCount;
+	int pathfindLocalRessourceCountSuccess;
+	int pathfindLocalRessourceCountFailure;
+	
 	int pathToBuildingCountTot;
 	
 	int pathToBuildingCountClose;
-	int pathToBuildingCountCloseSuccess;
+	int pathToBuildingCountCloseSuccessStand;
+	int pathToBuildingCountCloseSuccessBase;
+	int pathToBuildingCountCloseSuccessAround;
+	int pathToBuildingCountCloseSuccessUpdated;
+	int pathToBuildingCountCloseSuccessUpdatedAround;
 	int pathToBuildingCountCloseFailure;
 	
 	int pathToBuildingCountIsFar;
