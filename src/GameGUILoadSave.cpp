@@ -26,6 +26,7 @@
 #include <GUITextInput.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "GUIGlob2FileList.h"
 
 //! Load/Save screen
 LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, bool isLoad, const char *defaultFileName,
@@ -47,33 +48,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	this->filenameToNameFunc=filenameToNameFunc;
 	this->nameToFilenameFunc=nameToFilenameFunc;
 
-	fileList=new List(10, 40, 280, 145, ALIGN_LEFT, ALIGN_LEFT, "standard");
-
-	if (globalContainer->fileManager->initDirectoryListing(directory, extension))
-	{
-		const char *fileName;
-		while ((fileName=globalContainer->fileManager->getNextDirectoryEntry())!=NULL)
-		{
-			const char *mapTempName;
-			if (filenameToNameFunc && nameToFilenameFunc)
-			{
-				const char *tempFileName=Utilities::concat(directory, "/", fileName);
-				mapTempName=filenameToNameFunc(tempFileName);
-				delete[] tempFileName;
-			}
-			else
-			{
-				mapTempName=Utilities::dencat(fileName, this->extension);
-			}
-
-			if (mapTempName)
-			{
-				fileList->addText(mapTempName);
-				delete[] mapTempName;
-			}
-		}
-		fileList->sort();
-	}
+	fileList=new Glob2FileList(10, 40, 280, 145, ALIGN_LEFT, ALIGN_LEFT, "standard", directory, extension, true);
 	addWidget(fileList);
 
 	if (!defaultFileName)

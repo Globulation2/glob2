@@ -28,6 +28,7 @@
 #include <GUIList.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include "GUIGlob2FileList.h"
 
 MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 {
@@ -56,34 +57,11 @@ MultiplayersChooseMapScreen::MultiplayersChooseMapScreen(bool shareOnYOG)
 	methode=new Text(440, 60+128+150, ALIGN_LEFT, ALIGN_LEFT, "standard", "", 180);
 	addWidget(methode);
 
-	mapFileList=new List(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
-	if (Toolkit::getFileManager()->initDirectoryListing("maps", "map"))
-	{
-		const char *fileName;
-		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
-		{
-			const char *tempFileName=Utilities::concat("maps/", fileName);
-			const char *mapTempName=glob2FilenameToName(tempFileName);
-			delete[] tempFileName;
-			mapFileList->addText(mapTempName);
-			delete[] mapTempName;
-		}
-		mapFileList->sort();
-	}
+
+	mapFileList=new Glob2FileList(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "maps", "map", true);
 	addWidget(mapFileList);
 
-	gameFileList=new List(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard");
-	if (Toolkit::getFileManager()->initDirectoryListing("games", "game"))
-	{
-		const char *fileName;
-		while ((fileName=Toolkit::getFileManager()->getNextDirectoryEntry())!=NULL)
-		{
-			char *newText=Utilities::dencat(fileName, ".game");
-			gameFileList->addText(newText);
-			delete[] newText;
-		}
-		gameFileList->sort();
-	}
+	gameFileList=new Glob2FileList(20, 60, 200, 400, ALIGN_LEFT, ALIGN_LEFT, "standard", "games", "game", true);
 	addWidget(gameFileList);
 	
 	mapMode=true;
@@ -100,7 +78,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 {
 	if (action==LIST_ELEMENT_SELECTED)
 	{
-		const char *mapSelectedName=mapFileList->getText(par1);
+		const char *mapSelectedName=static_cast<List *>(source)->getText(par1);
 		const char *mapFileName;
 		if (mapMode)
 		{
@@ -111,7 +89,7 @@ void MultiplayersChooseMapScreen::onAction(Widget *source, Action action, int pa
 		{
 			mapFileName=glob2NameToFilename("games", mapSelectedName, "game");
 			printf("PGU : Loading game '%s' ...\n", mapFileName);
-		
+
 		}
 		mapPreview->setMapThumbnail(mapFileName);
 
