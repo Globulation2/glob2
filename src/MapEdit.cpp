@@ -609,7 +609,7 @@ void MapEdit::save(/*const*/ char *name)
 	if (stream)
 	{
 		game.map.setMapName(name);
-		game.save(stream);
+		game.save(stream, true, NULL);
 		SDL_RWclose(stream);
 	}
 }

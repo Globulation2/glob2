@@ -63,6 +63,15 @@ class GameGUI;
 class InGameAlliance8Screen:public InGameScreen
 {
 public:
+	enum
+	{
+		OK = 0,
+		ALLIED = 32,
+		VISION = 64,
+		CHAT= 96
+	};
+
+public:
 	OnOffButton *allied[8];
 	OnOffButton *vision[8];
 	OnOffButton *chat[8];

@@ -57,13 +57,16 @@ public:
 	MultiplayersHost *multiplayersHost;
 	MultiplayersJoin *multiplayersJoin;
 
+	TextButton *startButton;
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *startTimer;
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
+	bool showsReady;
+	Text *notReadyText;
 	
-	SessionInfo savedSessionInfo;
+	SessionInfo *savedSessionInfo;
 };
 
 #endif

@@ -299,7 +299,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (gameMenuScreen->endValue)
 			{
-				case 40:
+				case InGameAlliance8Screen::OK :
 				{
 					// mask are for players, we need to convert them to team.
 					Uint32 playerAllianceMask=((InGameAlliance8Screen *)gameMenuScreen)->getAllianceMask();
@@ -354,8 +354,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						SDL_RWops *stream=globalContainer->fileManager.open(name,"wb");
 						if (stream)
 						{
-							game.map.setMapName(name);
-							this->save(stream);
+							save(stream, name);
 							SDL_RWclose(stream);
 						}
 						else
@@ -1664,7 +1663,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s[0]);
 		printf("GameGUI::loadBase[map]::s=%s.\n", s);
 		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
-		if (!load(stream))
+		if (!game.load(stream))
 			return false;
 		SDL_RWclose(stream);
 		game.setBase(initial);
@@ -1677,7 +1676,7 @@ bool GameGUI::loadBase(const SessionInfo *initial)
 		assert(s[0]);
 		printf("GameGUI::loadBase[game]::s=%s.\n", s);
 		SDL_RWops *stream=globalContainer->fileManager.open(s,"rb");
-		if (!game.load(stream))
+		if (!load(stream))
 			return false;
 		SDL_RWclose(stream);
 		game.setBase(initial);
@@ -1705,9 +1704,9 @@ bool GameGUI::load(SDL_RWops *stream)
 	return result;
 }
 
-void GameGUI::save(SDL_RWops *stream)
+void GameGUI::save(SDL_RWops *stream, char *name)
 {
-	game.save(stream);
+	game.save(stream, false, name);
 	SDL_WriteBE32(stream, chatMask);
 	SDL_WriteBE32(stream, localPlayer);
 	SDL_WriteBE32(stream, localTeam);

@@ -25,21 +25,29 @@
 
 MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool shareOnYOG)
 {
-	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI));
-	addWidget(new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[ok]"), START));
 	addWidget(new TextButton(440, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[cancel]"), CANCEL));
+	addWidget(new TextButton( 20, 420, 200, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[add AI]"), ADD_AI));
+	
+	showsReady=false;
+	startButton=new TextButton(240, 420, 180, 40, NULL, -1, -1, globalContainer->menuFont, globalContainer->texts.getString("[start]"), START);
+	startButton->visible=false;
+	addWidget(startButton);
+	notReadyText=new Text(240, 420, globalContainer->standardFont, globalContainer->texts.getString("[not ready]"), 180, 40);
+	notReadyText->visible=true;
+	addWidget(notReadyText);
+	savedSessionInfo=NULL;
 	
 	if (!sessionInfo->fileIsAMap)
 	{
 		// We remember the sessionInfo at saving time.
 		// This may be used to match player's current's names with old player's names.
-		savedSessionInfo=*sessionInfo;
+		savedSessionInfo=new SessionInfo(*sessionInfo);
 		// We erase players info.
 		sessionInfo->numberOfPlayer=0;
 	}
 	printf("MultiplayersHostScreen::sessionInfo->fileIsAMap=%d.\n", sessionInfo->fileIsAMap);
 	
-	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG);
+	multiplayersHost=new MultiplayersHost(sessionInfo, shareOnYOG, savedSessionInfo);
 	multiplayersJoin=NULL;
 
 	addWidget(new Text(20, 18, globalContainer->menuFont, globalContainer->texts.getString("[awaiting players]"), 600, 0));
@@ -69,6 +77,8 @@ MultiplayersHostScreen::MultiplayersHostScreen(SessionInfo *sessionInfo, bool sh
 MultiplayersHostScreen::~MultiplayersHostScreen()
 {
 	delete multiplayersHost;
+	if (savedSessionInfo)
+		delete savedSessionInfo;
 }
 
 void MultiplayersHostScreen::onTimer(Uint32 tick)
@@ -82,7 +92,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		{
 			int teamNumber;
 			char playerInfo[128];
-			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, &savedSessionInfo, 128);
+			multiplayersHost->sessionInfo.getPlayerInfo(i, &teamNumber, playerInfo, savedSessionInfo, 128);
 			text[i]->setText(playerInfo);
 			color[i]->setSelectedColor(teamNumber);
 			if (!wasSlotUsed[i])
@@ -126,7 +136,7 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		multiplayersJoin->tryConnection();
 	}
 
-	if (multiplayersJoin)
+	if ((multiplayersJoin)&&(!multiplayersJoin->kicked))
 		multiplayersJoin->onTimer(tick);
 
 	if (((timeCounter++ % 10)==0)&&(multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER))
@@ -135,6 +145,33 @@ void MultiplayersHostScreen::onTimer(Uint32 tick)
 		snprintf(s, sizeof(s), "%s%d", globalContainer->texts.getString("[STARTING GAME ...]"), multiplayersHost->startGameTimeCounter/20);
 		printf("s=%s.\n", s);
 		startTimer->setText(s);
+	}
+	
+	if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_ALL_PLAYERS_CROSS_CONNECTED)
+	{
+		if (!showsReady)
+		{
+			notReadyText->visible=false;
+			startButton->visible=true;
+			notReadyText->setDrawableSurface(gfxCtx);
+			startButton->setDrawableSurface(gfxCtx);
+			notReadyText->repaint();
+			startButton->repaint();
+			showsReady=true;
+		}
+	}
+	else
+	{
+		if (showsReady)
+		{
+			startButton->visible=false;
+			notReadyText->visible=true;
+			startButton->setDrawableSurface(gfxCtx);
+			notReadyText->setDrawableSurface(gfxCtx);
+			startButton->repaint();
+			notReadyText->repaint();
+			showsReady=false;
+		}
 	}
 
 	if ((multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_GAME_START_SENDED)&&(multiplayersHost->startGameTimeCounter<0))

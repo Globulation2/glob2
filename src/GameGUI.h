@@ -80,7 +80,7 @@ public:
 
 	bool loadBase(const SessionInfo *initial);
 	bool load(SDL_RWops *stream);
-	void save(SDL_RWops *stream);
+	void save(SDL_RWops *stream, char *name);
 
 	void processEvent(SDL_Event *event);
 

@@ -59,8 +59,8 @@ public:
 
 	void setBase(const SessionInfo *initial);
 	void executeOrder(Order *order, int localPlayer);
-	bool load(SDL_RWops *stream); // load a saved game
-    void save(SDL_RWops *stream);
+	bool load(SDL_RWops *stream);
+    void save(SDL_RWops *stream, bool fileIsAMap, char *name);
 
 	void step(Sint32 localTeam);
 

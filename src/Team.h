@@ -82,7 +82,7 @@ public:
 
 	virtual ~Team(void);
 
-	void setBaseTeam(const BaseTeam *initial);
+	void setBaseTeam(const BaseTeam *initial, bool overwriteAfterbase);
 	bool load(SDL_RWops *stream, BuildingsTypes *buildingstypes);
 	void save(SDL_RWops *stream);
 

@@ -104,7 +104,10 @@ public:
 	Sint32 checkSum();
 	
 	bool setLocal(int p);
-
+	
+	int getTeamNumber(char playerName[BasePlayer::MAX_NAME_LENGTH], int team);
+	int getAITeamNumber(SessionInfo *currentSessionInfo, int team);
+	
 	//! draw a list of players
 	void draw(DrawableSurface *gfx);
 	//! get information on player in a nice string

@@ -41,6 +41,8 @@ void MultiplayersJoin::init()
 
 	serverName[0]=0;
 	playerName[0]=0;
+	
+	kicked=false;
 }
 
 MultiplayersJoin::~MultiplayersJoin()
@@ -370,6 +372,7 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 				printf("Server kicked you.\n");
 				myPlayerNumber=-1;
 				waitingState=WS_TYPING_SERVER_NAME;
+				kicked=true;
 			}
 		break;
 		case SERVER_QUIT_NEW_GAME :
@@ -566,27 +569,28 @@ void MultiplayersJoin::sendingTime()
 
 bool MultiplayersJoin::sendSessionInfoRequest()
 {
-	UDPpacket *packet=SDLNet_AllocPacket(28);
+	assert(BasePlayer::MAX_NAME_LENGTH==32);
+	UDPpacket *packet=SDLNet_AllocPacket(44);
 
 	assert(packet);
 
 	packet->channel=channel;
 	packet->address=serverIP;
-	packet->len=28;
+	packet->len=44;
 	packet->data[0]=NEW_PLAYER_WANTS_SESSION_INFO;
 	packet->data[1]=0;
 	packet->data[2]=0;
 	packet->data[3]=0;
-	memset(packet->data+4, 0, 16);
-	strncpy((char *)(packet->data+4), playerName, 16);
+	memset(packet->data+4, 0, 32);
+	strncpy((char *)(packet->data+4), playerName, 32);
 
-	memset(packet->data+20, 0, 8);
+	memset(packet->data+36, 0, 8);
 
 	Uint32 netHost=SDL_SwapBE32((Uint32)serverIP.host);
 	Uint32 netPort=(Uint32)SDL_SwapBE16(serverIP.port);
 	printf("sendSessionInfoRequest() host=%x, port=%x, netHost=%x netPort=%x\n", serverIP.host, serverIP.port, netHost, netPort);
-	addUint32(packet->data, netHost, 20);
-	addUint32(packet->data, netPort, 24);
+	addUint32(packet->data, netHost, 36);
+	addUint32(packet->data, netPort, 40);
 
 	if (SDLNet_UDP_Send(socket, channel, packet)==1)
 	{
