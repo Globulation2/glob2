@@ -9,6 +9,7 @@ To First release :
 - Balancer clearing attack.
 - disonnect /disconnect
 
+-Optimiser les boulets.
 -La sortie du gradient d'interdiction est parfois bugé!
 -Mettre un petit texte d'info pour chaque batiment.
 -Tenir compte des unités qui apportent déja quelquechose.

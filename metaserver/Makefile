@@ -1,12 +1,12 @@
 CFLAGS = -g -Wall `sdl-config --cflags`
 CXXFLAGS = -g -Wall `sdl-config --cflags`
 LINKFLAGS = -g `sdl-config --libs` -lSDL_net
-#CC = gcc
-#CXX = g++
-#LINKER = g++
-CC = gcc-3.0
-CXX = g++-3.0
-LINKER = g++-3.0
+C = gcc
+XX = g++
+LINKER = g++
+#CC = gcc-3.0
+#CXX = g++-3.0
+#LINKER = g++-3.0
 
 all: YOGServer
 

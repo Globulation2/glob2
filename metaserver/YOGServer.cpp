@@ -963,7 +963,11 @@ void YOGServer::treatPacket(IPaddress ip, Uint8 *data, int size)
 			for (int i=0; i<nbUnshared; i++)
 			{
 				std::list<Uint32>::iterator uid=c->unshared.begin();
-				assert(uid!=c->unshared.end());
+				if (uid==c->unshared.end())
+				{
+					lprintf(" Warning! Critical error!, too many unshared confirmed!\n");
+					break;
+				}
 				c->unshared.erase(uid);
 			}
 		}
