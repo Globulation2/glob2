@@ -10,7 +10,6 @@ Bug:
 
 ingameGUI:
 - Les info en bleu pour upgrader un batiment de nouriture viennent pas dessus les fruits.
-- Parfois, les drapeau se posent alors qu'on les a déja lachés. C'est très désagréable.
 
 Net:
 - Vérifier que les "wishedLatency" ne soient pas modiffés pendant qu'un joueur est temporairement inaccessible.

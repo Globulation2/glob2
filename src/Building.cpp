@@ -1067,7 +1067,7 @@ void Building::subscribeToBringRessourcesStep()
 		//is it usefull? lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
-			int minValue=owner->map->getW()*owner->map->getW();
+			int minValue=INT_MAX;
 			Unit *choosen=NULL;
 			Map *map=owner->map;
 			/* To choose a good unit, we get a composition of things:
@@ -1084,13 +1084,10 @@ void Building::subscribeToBringRessourcesStep()
 				Unit *unit=(*it);
 				int r=unit->caryedRessource;
 				int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
-				int x=unit->posX;
-				int y=unit->posY;
-				bool canSwim=unit->performance[SWIM];
 				if ((r>=0)&& neededRessource(r))
 				{
 					int dist;
-					if (map->buildingAviable(this, canSwim, x, y, &dist) && dist<timeLeft)
+					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
 					{
 						int value=dist-timeLeft;
 						unit->destinationPurprose=r;
@@ -1118,23 +1115,18 @@ void Building::subscribeToBringRessourcesStep()
 						int y=unit->posY;
 						bool canSwim=unit->performance[SWIM];
 						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
-
 						for (int r=0; r<MAX_RESSOURCES; r++)
 						{
 							int need=needs[r];
 							if (need)
 							{
-								int rx, ry;
 								int distUnitRessource;
-								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
+								if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 								{
-									int distBuildingRessource;
-									if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
+									int distUnitBuilding;
+									if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 									{
-										int dist=distBuildingRessource+distUnitRessource;
-										if (dist>=timeLeft)
-											continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
-										int value=dist/need;
+										int value=(distUnitRessource+distUnitBuilding)/need;
 										if (value<minValue)
 										{
 											unit->destinationPurprose=r;
@@ -1153,29 +1145,24 @@ void Building::subscribeToBringRessourcesStep()
 					for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); ++it)
 					{
 						Unit *unit=(*it);
-						if (unit->caryedRessource<0)
+						if (unit->caryedRessource>=0)
 						{
 							int x=unit->posX;
 							int y=unit->posY;
 							bool canSwim=unit->performance[SWIM];
 							int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->unitTypes[0][0].hungryness;
-
 							for (int r=0; r<MAX_RESSOURCES; r++)
 							{
 								int need=needs[r];
 								if (need)
 								{
-									int rx, ry;
 									int distUnitRessource;
-									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &rx, &ry, &distUnitRessource, 250))
+									if (map->ressourceAviable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
 									{
-										int distBuildingRessource;
-										if (map->buildingAviable(this, canSwim, rx, ry, &distBuildingRessource))
+										int distUnitBuilding;
+										if (map->buildingAviable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
 										{
-											int dist=distBuildingRessource+distUnitRessource;
-											if (dist>=timeLeft)
-												continue; //We don't choose this unit, because it won't have time to bring the ressource to the building.
-											int value=dist/need;
+											int value=(distUnitRessource+distUnitBuilding)/need;
 											if (value<minValue)
 											{
 												unit->destinationPurprose=r;
@@ -1262,33 +1249,54 @@ void Building::subscribeForFlagingStep()
 		lastWorkingSubscribe=0;
 		if ((signed)unitsWorking.size()<maxUnitWorking)
 		{
-			int minValue=owner->map->getW()*owner->map->getW();
+			int minValue=INT_MAX;
 			Unit *choosen=NULL;
+			Map *map=owner->map;
 			
 			/* To choose a good unit, we get a composition of things:
 			1-the closest the unit is, the better it is.
 			2-the less the unit is hungry, the better it is.
 			2-the more hp the unit has, the better it is.
 			*/
-			for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+			if (zonable[EXPLORER])
 			{
-				Unit *unit=(*it);
-				// The following "10" is totaly arbitrary between [2..100]
-				int hungry=unit->hungry/(10*unit->race->unitTypes[0][0].hungryness);
-				int hp=(10*unit->hp)/unit->race->unitTypes[0][0].performance[HP];
-				int x=unit->posX;
-				int y=unit->posY;
-				hungry*=hungry;
-				hp*=hp;
-				int dist=owner->map->warpDistSquare(x, y, posX, posY);
-				int value=dist-hungry+hp;
-				//printf("d(%x) dist=%d, hungry=%d, hp=%d, value=%d\n", (int)unit, dist, hungry, hp, value);
-				if (value<minValue)
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
 				{
-					minValue=value;
-					choosen=unit;
+					Unit *unit=(*it);
+					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
+					timeLeft*=timeLeft;
+					hp*=hp;
+					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
+					if (dist<timeLeft)
+					{
+						int value=dist-timeLeft-hp;
+						if (value<minValue)
+						{
+							minValue=value;
+							choosen=unit;
+						}
+					}
 				}
-				
+			}
+			else
+			{
+				for (std::list<Unit *>::iterator it=unitsWorkingSubscribe.begin(); it!=unitsWorkingSubscribe.end(); it++)
+				{
+					Unit *unit=(*it);
+					int timeLeft=unit->hungry/unit->race->unitTypes[0][0].hungryness;
+					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
+					int dist;
+					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					{
+						int value=dist-timeLeft-hp;
+						if (value<minValue)
+						{
+							minValue=value;
+							choosen=unit;
+						}
+					}
+				}
 			}
 			
 			if (choosen)
@@ -1323,15 +1331,29 @@ void Building::subscribeForInsideStep()
 	{
 		if ((signed)unitsInside.size()<maxUnitInside)
 		{
-			int mindist=owner->map->getW()*owner->map->getW();
+			int mindist=INT_MAX;
 			Unit *u=NULL;
+			Map *map=owner->map;
 			for (std::list<Unit *>::iterator it=unitsInsideSubscribe.begin(); it!=unitsInsideSubscribe.end(); it++)
 			{
-				int dist=owner->map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
-				if (dist<mindist)
+				Unit *unit=*it;
+				if (unit->performance[FLY])
 				{
-					mindist=dist;
-					u=*it;
+					int dist=map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (dist<mindist)
+					{
+						mindist=dist;
+						u=*it;
+					}
+				}
+				else
+				{
+					int dist=map->warpDistSquare((*it)->posX, (*it)->posY, posX, posY);
+					if (map->buildingAviable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && (dist<mindist))
+					{
+						mindist=dist;
+						u=*it;
+					}
 				}
 			}
 			if (u)

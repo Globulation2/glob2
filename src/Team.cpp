@@ -353,19 +353,17 @@ Building *Team::findBestFoodable(Unit *unit)
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 		if (ri==CORN || ri>=HAPPYNESS_BASE)
 		{
-			Sint32 rx, ry;
 			int ressourceDist;
-			if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft)
-				&& map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250))
+			if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 				for (std::list<Building *>::iterator bi=foodable.begin(); bi!=foodable.end(); ++bi)
 				{
 					Building *b=(*bi);
 					if (b->neededRessource(ri))
 					{
 						int buildingDist;
-						if (map->buildingAviable(b, canSwim, rx, ry, &buildingDist) && (ressourceDist+buildingDist<timeLeft))
+						if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 						{
-							double newScore=(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
+							double newScore=(double)(ressourceDist+buildingDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
 							if (newScore<score)
 							{
 								choosen=b;
@@ -424,17 +422,15 @@ Building *Team::findBestFillable(Unit *unit)
 	double score=DBL_MAX;
 	for (unsigned ri=0; ri<MAX_RESSOURCES; ri++)
 	{
-		Sint32 rx, ry;
 		int ressourceDist;
-		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft)
-			&& map->ressourceAviable(teamNumber, ri, canSwim, x, y, &rx, &ry, &ressourceDist, 250))
+		if (map->ressourceAviable(teamNumber, ri, canSwim, x, y, &ressourceDist) && (ressourceDist<timeLeft))
 			for (std::list<Building *>::iterator bi=fillable.begin(); bi!=fillable.end(); ++bi)
 			{
 				Building *b=(*bi);
 				if (b->type->level<=actLevel && b->neededRessource(ri))
 				{
 					int buildingDist;
-					if (map->buildingAviable(b, canSwim, rx, ry, &buildingDist) && (buildingDist+ressourceDist<timeLeft))
+					if (map->buildingAviable(b, canSwim, x, y, &buildingDist) && (buildingDist<timeLeft))
 					{
 						double newScore=(double)(buildingDist+ressourceDist)/(double)(b->maxUnitWorking-b->unitsWorking.size());
 						if (newScore<score)
