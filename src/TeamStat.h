@@ -20,7 +20,7 @@
 #ifndef __TEAM_STAT_H
 #define __TEAM_STAT_H
 
-#include "UnitType.h"
+#include "UnitConsts.h"
 #include "BuildingType.h"
 
 struct TeamStat
