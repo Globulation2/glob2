@@ -185,6 +185,7 @@ public:
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
 	Sint32 level[NB_ABILITY];
+	bool canLearn[NB_ABILITY];
 	
 	// building attraction handling
 	// FIXME : should we duplicate this

@@ -364,23 +364,24 @@ Building *Team::findBestUpgrade(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
-	{
-		int actLevel=unit->level[ability];
-		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); bi++)
+		if (unit->canLearn[ability])
 		{
-			Building *b=(*bi);
-			if (b->type->level>=actLevel)
+			int actLevel=unit->level[ability];
+			for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); bi++)
 			{
-				float newScore=(float)map->warpDistSquare(b->posX, b->posY, x, y)/(float)(b->maxUnitWorking-b->unitsWorking.size());
-				if (newScore<score)
+				Building *b=(*bi);
+				if (b->type->level>=actLevel)
 				{
-					unit->destinationPurprose=(Sint32)ability;
-					choosen=b;
-					score=newScore;
+					float newScore=(float)map->warpDistSquare(b->posX, b->posY, x, y)/(float)(b->maxUnitInside-b->unitsInside.size());
+					if (newScore<score)
+					{
+						unit->destinationPurprose=(Sint32)ability;
+						choosen=b;
+						score=newScore;
+					}
 				}
 			}
 		}
-	}
 	return choosen;
 }
 

@@ -16,7 +16,9 @@ Technique :
 	changer le nom de: teamSelected
 	optimiser les boulets
 - Reconsidérer le comportement des exploratrices pour les drapeaux dans les scripts SGSL, actuellement ignorées.
-- Refaire le pathfinding.
+- Refaire le pathfinding, essayer d'utilisre des cibles avec double précision, et d'améliorer
+ le goToTarget simple par exploration locale.
+- La minimap ne tient pas compte des batiment que l'on voit sous le FOW.
 - check all TODO, FIXME, DUNNO and solve what can be solved. (nct)
 - traduction des raccourcis claviers de la GUI. (nct)
 - write a quick start guide. (nct)
