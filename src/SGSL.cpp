@@ -204,17 +204,26 @@ bool Story::conditionTester(const Game *game, int pc, bool l)
 	{
 		case (Token::S_HIGHER):
 		{
-			std::cout << "SGSL : conditionTester : testing " << val << " > " << amount << std::endl;
+			std::cout << "SGSL : conditionTester : testing "
+				<< Token::getNameByType(type) << " ("
+				<< teamNumber << ", " << level << ") : "
+				<< val << " >? " << amount << std::endl;
 			return (val > amount);
 		}
 		case (Token::S_LOWER):
 		{
-			std::cout << "SGSL : conditionTester : testing " << val << " < " << amount << std::endl;
+			std::cout << "SGSL : conditionTester : testing "
+				<< Token::getNameByType(type) << " ("
+				<< teamNumber << ", " << level << ") : "
+				<< val << " <? " << amount << std::endl;
 			return (val < amount);
 		}
 		case (Token::S_EQUAL):
 		{
-			std::cout << "SGSL : conditionTester : testing " << val << " = " << amount << std::endl;
+			std::cout << "SGSL : conditionTester : testing "
+				<< Token::getNameByType(type) << " ("
+				<< teamNumber << ", " << level << ") : "
+				<< val << " =? " << amount << std::endl;
 			return (val == amount);
 		}
 		default:
