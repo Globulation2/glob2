@@ -587,6 +587,9 @@ void MultiplayersHostScreen::treatData(char *data, int size, IPaddress ip)
 
 void MultiplayersHostScreen::onTimer(Uint32 tick)
 {
+	// TODO : call SessionInfo.draw()
+	sessionInfo.draw(gfxCtx);
+	addUpdateRect(20, 20, gfxCtx->getW()-40, 200);
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
 	{
 		if (--startGameTimeCounter<0)
