@@ -98,7 +98,7 @@ public:
 	bool computeNumberOfStepsToEat(void); //Return false if failed
 	void stepExecuted(void);
 	int ticksToDelay(void);
-	void setWishedDelay(int delay);
+	void setLeftTicks(int leftTicks);
 	
 private:
 	int numberOfPlayer;
@@ -173,6 +173,8 @@ private:
 	FILE *logFile;
 protected:
 	int latencyStats[10];
+	int wishedDelayStats[40];
+	int maxMedianWishedDelayStats[40];
 };
 
 #endif
