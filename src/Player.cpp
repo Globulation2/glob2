@@ -269,15 +269,6 @@ bool BasePlayer::bind(UDPsocket socket)
 	
 	assert(socket);
 	
-	if (socket==NULL)
-	{
-		socket=SDLNet_UDP_Open(ANY_PORT);
-		if (socket!=NULL)
-			fprintf(logFile, "Socket opened at port to player %d.\n", number);
-		else
-			fprintf(logFile, "failed to open a socket to player %d.\n", number);
-	}
-	
 	if ((socket==NULL) || (ip.host==0))
 	{
 		fprintf(logFile, "no socket, or no ip to bind socket to player %d\n", number);

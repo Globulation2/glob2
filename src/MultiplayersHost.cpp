@@ -1071,23 +1071,13 @@ void MultiplayersHost::broadcastRequest(Uint8 *data, int size, IPaddress ip)
 	bool sucess;
 
 	packet->address=ip;
-	//packet->channel=channel;
 	packet->channel=-1;
 
-	sucess=SDLNet_UDP_Send(socket, channel, packet)==1;
-	// Notice that we can choose between giving a "channel", or the ip.
-	// Here we do both. Then "channel" could be -1.
-	// This is interesting because getFreeChannel() may return -1.
-	// We have no real use of "channel".
+	sucess=SDLNet_UDP_Send(socket, -1, packet)==1;
 	if (sucess)
 		fprintf(logFile, "broad:sucedded to response. shareOnYOG=(%d)\n", shareOnYOG);
 
-
 	SDLNet_FreePacket(packet);
-
-	fprintf(logFile, "broad:Unbinding (socket=%x)(channel=%d).\n", (int)socket, channel);
-	SDLNet_UDP_Unbind(socket, channel);
-	channel=-1;
 }
 
 void MultiplayersHost::treatData(Uint8 *data, int size, IPaddress ip)
@@ -1216,21 +1206,7 @@ void MultiplayersHost::onTimer(Uint32 tick, MultiplayersJoin *multiplayersJoin)
 		assert(packet);
 
 		while (SDLNet_UDP_Recv(socket, packet)==1)
-		{
-			//fprintf(logFile, "packet=%d\n", (int)packet);
-			//fprintf(logFile, "packet->channel=%d\n", packet->channel);
-			//fprintf(logFile, "packet->len=%d\n", packet->len);
-			//fprintf(logFile, "packet->maxlen=%d\n", packet->maxlen);
-			//fprintf(logFile, "packet->status=%d\n", packet->status);
-			//fprintf(logFile, "packet->address=%x,%d\n", packet->address.host, packet->address.port);
-
-			//fprintf(logFile, "packet->data=%s\n", packet->data);
-
 			treatData(packet->data, packet->len, packet->address);
-
-			//paintSessionInfo(hostGlobalState);
-			//addUpdateRect();
-		}
 
 		SDLNet_FreePacket(packet);
 	}
