@@ -65,7 +65,11 @@ void YOG::forceDisconnect(void)
 	{
 		SDLNet_TCP_Close(socket);
 		socket=NULL;
+	}
+	if (socketSet)
+	{
 		SDLNet_FreeSocketSet(socketSet);
+		socketSet=NULL;
 	}
 }
 
