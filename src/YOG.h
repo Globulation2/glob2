@@ -46,7 +46,8 @@ public:
 		YSS_NOT_SHARING_GAME=1,
 		YSS_STOP_SHARING_GAME=2,
 		YSS_SHARING_GAME=3,
-		YSS_SHARED_GAME=4
+		YSS_SHARED_GAME=4,
+		YSS_HAS_GAME_SOCKET=5
 	};
 	
 	struct GameInfo
@@ -78,6 +79,7 @@ public:
 	void send(YOGMessageType v, Uint8 *data, int size);
 	void send(YOGMessageType v, Uint8 id, Uint8 *data, int size);
 	void send(YOGMessageType v);
+	void send(YOGMessageType v, UDPsocket socket);
 	void send(YOGMessageType v, Uint8 id);
 	
 	void treatPacket(Uint32 ip, Uint16 port, Uint8 *data, int size);
@@ -99,11 +101,15 @@ public:
 	void gameStarted();
 	void gameEnded();
 	
+	void setGameSocket(UDPsocket socket);
+	bool gameSocketSet();
+	
 	YOGGlobalState yogGlobalState;
 	int connectionTimeout;
 	int connectionTOTL;
 	
 	UDPsocket socket;
+	UDPsocket gameSocket;
 	IPaddress serverIP;
 	Uint8 lastMessageID;
 	
@@ -125,6 +131,10 @@ public:
 	
 	int presenceTimeout;
 	int presenceTOTL;
+	
+	int gameSocketTimeout;
+	int gameSocketTOTL;
+	bool gameSocketReceived;
 };
 
 #endif

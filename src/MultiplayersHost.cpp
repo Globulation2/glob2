@@ -63,6 +63,7 @@ MultiplayersHost::MultiplayersHost(SessionInfo *sessionInfo, bool shareOnYOG, Se
 	{
 		fprintf(logFile, "sharing on YOG\n");
 		globalContainer->yog->shareGame(sessionInfo->map.getMapName());
+		globalContainer->yog->setGameSocket(socket);
 	}
 	
 	stream=NULL;
@@ -1057,48 +1058,7 @@ void MultiplayersHost::onTimer(Uint32 tick)
 {
 	// call yog step
 	if (shareOnYOG)
-	{
-		globalContainer->yog->step();
-		
-		/*
-		TODO:isFirewallActivation !! zzz
-		if (globalContainer->yog->isFirewallActivation())
-		{
-			bool isNext=true;
-			while(isNext)
-			{
-				Uint16 port=globalContainer->yog->getFirewallActivationPort();
-				char *hostName=globalContainer->yog->getFirewallActivationHostname();
-				fprintf(logFile, "have to send water to firewall. port=(%d)\n", port);
-				IPaddress ip;
-				if(SDLNet_ResolveHost(&ip, hostName, SDL_SwapBE16(port))!=0)
-				{
-					fprintf(logFile, "failed to resolve host (%s).\n", hostName);
-					continue;
-				}
-				UDPpacket *packet=SDLNet_AllocPacket(4);
-				if (packet==NULL)
-					continue;
-				packet->len=4;
-				char data[4];
-				data[0]=SERVER_WATER;
-				data[1]=0;
-				data[2]=0;
-				data[3]=0;
-				memcpy((char *)packet->data, data, 4);
-				bool success;
-				packet->address=ip;
-				success=(SDLNet_UDP_Send(socket, -1, packet)==1);
-				SDLNet_FreePacket(packet);
-				if (!success)
-					fprintf(logFile, "MultiplayersHost::failed to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
-				else
-					fprintf(logFile, "MultiplayersHost::sucess to send water to ip=(%x), port=(%d)\n", ip.host, ip.port);
-				
-				isNext=globalContainer->yog->getNextFirewallActivation();
-			}
-		}*/
-	}
+		globalContainer->yog->step(); // YOG cares about firewall and NAT
 	
 	if (hostGlobalState>=HGS_GAME_START_SENDED)
 	{

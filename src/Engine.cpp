@@ -25,6 +25,7 @@
 #include "CustomGameScreen.h"
 #include "LoadGameScreen.h"
 #include "YOGScreen.h"
+#include "Utilities.h"
 
 Engine::Engine()
 {
@@ -216,7 +217,7 @@ int Engine::initLoadGame()
 	
 	return EE_NO_ERROR;
 }
-#include "Utilities.h"
+
 void Engine::startMultiplayer(SessionConnection *sessionConnection)
 {
 	int p=sessionConnection->myPlayerNumber;
