@@ -133,11 +133,11 @@ private:
 public:
 	Game *game;
 	Unit *myUnits[1024];
-
+	
 	Building *myBuildings[512];
-
+	
 	Bullet *myBullets[256];
-
+	
 	// thoses are the Call Lists :
 	std::list<Building *> upgrade[NB_ABILITY];
 	std::list<Building *> job[NB_ABILITY];
