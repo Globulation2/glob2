@@ -431,6 +431,7 @@ protected:
 	int pathToBuildingCountFarUpdateSuccess;
 	int pathToBuildingCountFarUpdateSuccessAround;
 	int pathToBuildingCountFarUpdateFailureLocked;
+	int pathToBuildingCountFarUpdateFailureVirtual;
 	int pathToBuildingCountFarUpdateFailureBad;
 	
 	int localBuildingGradientUpdate;
@@ -454,6 +455,7 @@ protected:
 	int buildingAviableCountFarNewSuccess;
 	int buildingAviableCountFarNewSuccessClosely;
 	int buildingAviableCountFarNewFailureLocked;
+	int buildingAviableCountFarNewFailureVirtual;
 	int buildingAviableCountFarNewFailureEnd;
 	int buildingAviableCountFarOld;
 	int buildingAviableCountFarOldSuccess;

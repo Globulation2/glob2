@@ -103,6 +103,7 @@ Map::Map()
 	pathToBuildingCountFarUpdateSuccess=0;
 	pathToBuildingCountFarUpdateSuccessAround=0;
 	pathToBuildingCountFarUpdateFailureLocked=0;
+	pathToBuildingCountFarUpdateFailureVirtual=0;
 	pathToBuildingCountFarUpdateFailureBad=0;
 	
 	localBuildingGradientUpdate=0;
@@ -125,6 +126,7 @@ Map::Map()
 	buildingAviableCountFarNewSuccess=0;
 	buildingAviableCountFarNewSuccessClosely=0;
 	buildingAviableCountFarNewFailureLocked=0;
+	buildingAviableCountFarNewFailureVirtual=0;
 	buildingAviableCountFarNewFailureEnd=0;
 	buildingAviableCountFarOld=0;
 	buildingAviableCountFarOldSuccess=0;
@@ -235,7 +237,7 @@ void Map::clear()
 					fprintf(logFile, "| ressourceAviableCountFast[%d][%d]=%d (%f %%)\n", t, r,
 						ressourceAviableCountFast[t][r],
 						100.*(double)ressourceAviableCountFast[t][r]/(double)ressourceAviableCount[t][r]);
-					fprintf(logFile, "| ressourceAviableCountFar[%d][%d]=%d (%f %%)\n", t, r,
+					fprintf(logFile, "+ ressourceAviableCountFar[%d][%d]=%d (%f %%)\n", t, r,
 						ressourceAviableCountFar[t][r],
 						100.*(double)ressourceAviableCountFar[t][r]/(double)ressourceAviableCount[t][r]);
 					fprintf(logFile, "| ressourceAviableCountSuccess[%d][%d]=%d (%f %%)\n", t, r,
@@ -431,6 +433,7 @@ void Map::clear()
 			+pathToBuildingCountFarUpdateSuccess
 			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
+			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad);
 		fprintf(logFile, "|- pathToBuildingCountFar=%d (%f %% of tot)\n",
 			pathToBuildingCountFar,
@@ -488,6 +491,7 @@ void Map::clear()
 			+pathToBuildingCountFarUpdateSuccess
 			+pathToBuildingCountFarUpdateSuccessAround
 			+pathToBuildingCountFarUpdateFailureLocked
+			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad;
 		fprintf(logFile, "|-  pathToBuildingCountFarUpdate=%d (%f %% of tot) (%f %% of far))\n",
 			pathToBuildingCountFarUpdate,
@@ -506,6 +510,7 @@ void Map::clear()
 		
 		int pathToBuildingCountFarUpdateFailure=
 			+pathToBuildingCountFarUpdateFailureLocked
+			+pathToBuildingCountFarUpdateFailureVirtual
 			+pathToBuildingCountFarUpdateFailureBad;
 		fprintf(logFile, "|-   pathToBuildingCountFarUpdateFailure=%d (%f %% of tot) (%f %% of far) (%f %% of update))\n",
 			pathToBuildingCountFarUpdateFailure,
@@ -518,6 +523,12 @@ void Map::clear()
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdateFailureLocked/(double)pathToBuildingCountFarUpdateFailure);
+		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure))\n",
+			pathToBuildingCountFarUpdateFailureVirtual,
+			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountTot,
+			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFar,
+			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFarUpdate,
+			100.*(double)pathToBuildingCountFarUpdateFailureVirtual/(double)pathToBuildingCountFarUpdateFailure);
 		fprintf(logFile, "|-    pathToBuildingCountFarUpdateFailureBad=%d (%f %% of tot) (%f %% of far) (%f %% of update) (%f %% of failure))\n",
 			pathToBuildingCountFarUpdateFailureBad,
 			100.*(double)pathToBuildingCountFarUpdateFailureBad/(double)pathToBuildingCountTot,
@@ -565,7 +576,7 @@ void Map::clear()
 		fprintf(logFile, "|- globalBuildingGradientUpdate=%d (%f %%)\n",
 			globalBuildingGradientUpdate,
 			100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
-		fprintf(logFile, "|-   globalBuildingGradientUpdateLocked=%d (%f %%) (%f %% of local)\n",
+		fprintf(logFile, "|-   globalBuildingGradientUpdateLocked=%d (%f %%) (%f %% of global)\n",
 			globalBuildingGradientUpdateLocked,
 			100.*(double)globalBuildingGradientUpdateLocked/(double)buildingGradientUpdate,
 			100.*(double)globalBuildingGradientUpdateLocked/(double)globalBuildingGradientUpdate);
@@ -679,6 +690,7 @@ void Map::clear()
 		
 		int buildingAviableCountFarNewFailure=
 			+buildingAviableCountFarNewFailureLocked
+			+buildingAviableCountFarNewFailureVirtual
 			+buildingAviableCountFarNewFailureEnd;
 		fprintf(logFile, "|-   buildingAviableCountFarNewFailure=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAviableCountFarNewFailure,
@@ -691,6 +703,12 @@ void Map::clear()
 			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFar,
 			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFarNew,
 			100.*(double)buildingAviableCountFarNewFailureLocked/(double)buildingAviableCountFarNewFailure);
+		fprintf(logFile, "|-    buildingAviableCountFarNewFailureVirtual=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
+			buildingAviableCountFarNewFailureVirtual,
+			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountTot,
+			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFar,
+			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFarNew,
+			100.*(double)buildingAviableCountFarNewFailureVirtual/(double)buildingAviableCountFarNewFailure);
 		fprintf(logFile, "|-    buildingAviableCountFarNewFailureEnd=%d (%f %% of tot) (%f %% of far) (%f %% of new) (%f %% of failure)\n",
 			buildingAviableCountFarNewFailureEnd,
 			100.*(double)buildingAviableCountFarNewFailureEnd/(double)buildingAviableCountTot,
@@ -715,6 +733,7 @@ void Map::clear()
 	buildingAviableCountFarNewSuccess=0;
 	buildingAviableCountFarNewSuccessClosely=0;
 	buildingAviableCountFarNewFailureLocked=0;
+	buildingAviableCountFarNewFailureVirtual=0;
 	buildingAviableCountFarNewFailureEnd=0;
 	buildingAviableCountFarOld=0;
 	buildingAviableCountFarOldSuccess=0;
@@ -3151,7 +3170,7 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 		{
 			buildingAviableCountCloseFailureLocked++;
 			//printf("ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			fprintf(logFile, "ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			//fprintf(logFile, "ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			
 			return false;
 		}
@@ -3273,9 +3292,18 @@ bool Map::buildingAviable(Building *building, bool canSwim, int x, int y, int *d
 				return true;
 			}
 		}
-		buildingAviableCountFarNewFailureEnd++;
-		printf("ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-		fprintf(logFile, "ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		if (building->type->isVirtual)
+		{
+			//printf("ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			//fprintf(logFile, "ba-e- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			buildingAviableCountFarNewFailureVirtual++;
+		}
+		else
+		{
+			printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			fprintf(logFile, "ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+			buildingAviableCountFarNewFailureEnd++;
+		}
 		return false;
 	}
 }
@@ -3562,9 +3590,18 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		}
 	}
 	
-	pathToBuildingCountFarUpdateFailureBad++;
-	printf("f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-	fprintf(logFile, "f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	if (building->type->isVirtual)
+	{
+		pathToBuildingCountFarUpdateFailureVirtual++;
+		//printf("f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		//fprintf(logFile, "f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	}
+	else
+	{
+		pathToBuildingCountFarUpdateFailureBad++;
+		printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		fprintf(logFile, "g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	}
 	return false;
 }
 

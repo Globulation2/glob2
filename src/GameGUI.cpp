@@ -1024,7 +1024,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					selectionGUID=NOGUID;
 					selectionGBID=b->gid;
-					//checkValidSelection();
+					checkValidSelection();
 					return;
 				}
 			}
@@ -1039,7 +1039,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			selectionGUID=selUnit->gid;
 			selectionGBID=NOGBID;
 			game.selectedUnit=selUnit;
-			//checkValidSelection();
+			checkValidSelection();
 		}
 		else
 		{
@@ -1057,7 +1057,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					selectionGUID=NOGUID;
 					selectionGBID=gbid;
-					//checkValidSelection();
+					checkValidSelection();
 					showUnitWorkingToBuilding=true;
 				}
 				
@@ -1719,7 +1719,7 @@ void GameGUI::draw(void)
 		{
 			if ((mouseY>128+32) && (mouseY<128+20+6*46))
 			{
-				int typeId;
+				int typeId=14;
 				if (mouseY<128+32+(8>>1)*46)
 				{
 					int xNum=(mouseX-globalContainer->gfx->getW()+128)>>6;
