@@ -137,15 +137,22 @@ public:
 
 private:
 	friend class InGameAlliance8Screen;
+	enum SelectMode
+	{
+		NO_SELECTION,
+		BUILDING_SELECTION,
+		UNIT_SELECTION,
+	};
 	enum DisplayMode
 	{
-		BUILDING_SELECTION_VIEW,
-		UNIT_SELECTION_VIEW,
 		BUILDING_AND_FLAG_VIEW,
 		STAT_TEXT_VIEW,
 		STAT_GRAPH_VIEW,
+		NB_VIEWS,
 	};
 
+	SelectMode selectMode;
+	//! Display mode when no selection
 	DisplayMode displayMode;
 	Building *selBuild;
 	//! True if the mouse's button way never relased since selection.
