@@ -37,6 +37,7 @@ TextArea::TextArea(int x, int y, int w, int h, const Font *font, bool readOnly=t
 	
 	cursorPos=0;
 	cursorPosY=0;
+	cursorScreenPosY=0;
 }
 
 TextArea::~TextArea(void)
@@ -57,6 +58,10 @@ void TextArea::internalPaint(void)
 			assert(i+areaPos<lines.size());
 			parent->getSurface()->drawString(x+4, y+4+(charHeight*i), w-8, font, (textBuffer+lines[i+areaPos]));
 		}
+	}
+	if (!readOnly)
+	{
+		parent->getSurface()->drawVertLine(x+4+cursorScreenPosY, y+4+(charHeight*(cursorPosY-areaPos)), charHeight, 255, 255, 255);
 	}
 	/*if (areaPos>0)
 	{
@@ -265,7 +270,13 @@ void TextArea::computeAndRepaint(void)
 				areaPos++;
 		}
 
-		// todo : compute displayable cursor Pos
+		// compute displayable cursor Pos
+		char temp[1024];
+		unsigned cursorPosX = cursorPos-lines[cursorPosY];
+		assert(cursorPosX < 1024);
+		memcpy(temp, textBuffer+lines[cursorPosY], cursorPosX);
+		temp[cursorPosX]=0;
+		cursorScreenPosY=font->getStringWidth(temp);
 	}
 	
 	// repaint
@@ -307,6 +318,7 @@ void TextArea::setText(const char *text)
 				temp[temppos]=text[pos];
 				temppos++;
 				pos++;
+				assert(temppos < 1024);
 				temp[temppos]=0;
 			}
 			if (pos<textBufferLength)
@@ -317,6 +329,7 @@ void TextArea::setText(const char *text)
 					pos++;
 					lines.push_back(pos);
 					temppos=0;
+					assert(temppos < 1024);
 					temp[temppos]=0;
 				}
 				else // line overflow
@@ -329,6 +342,7 @@ void TextArea::setText(const char *text)
 					}
 					lines.push_back(pos);
 					temppos=0;
+					assert(temppos < 1024);
 					temp[temppos]=0;
 				}
 			}
