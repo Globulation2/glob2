@@ -357,6 +357,10 @@ void MultiplayersJoin::treatData(char *data, int size, IPaddress ip)
 	}
 	switch (data[0])
 	{
+		case SERVER_WATER:
+			printf("water received from ip(%x,%d)!\n", ip.host, ip.port);
+		break;
+		
 		case SERVER_PRESENCE :
 			dataPresenceRecieved(data, size, ip);
 		break;
@@ -469,19 +473,21 @@ void MultiplayersJoin::receiveTime()
 				if (strncmp(it->serverNickName, serverNickName, 32)==0)
 					if (serverIP.host!=it->ip)
 					{
+						if ((socket)&&(channel!=-1))
+						{
+							NETPRINTF("MultiplayersJoin:NAT:Unbinding socket.\n");
+							// In improbable case that the target ip really hosted a game,
+							// we send him a quit game message
+							send(CLIENT_QUIT_NEW_GAME);
+							SDLNet_UDP_Unbind(socket, channel);
+							NETPRINTF("MultiplayersJoin:NAT:Socket unbinded.\n");
+						}
+						
 						serverIP.host=it->ip;
 						//serverIP.port=SDL_SwapBE16(SERVER_PORT);
 						NETPRINTF("Found a local game with same serverNickName=(%s).\n", serverNickName);
 						char *s=SDLNet_ResolveIP(&serverIP);
 						NETPRINTF("Trying NAT. serverIP.host=(%x)(%s)\n", it->ip, s);
-						
-						if ((socket)&&(channel!=-1))
-						{
-							NETPRINTF("MultiplayersJoin:NAT:Unbinding socket.\n");
-							send(CLIENT_QUIT_NEW_GAME);
-							SDLNet_UDP_Unbind(socket, channel);
-							NETPRINTF("MultiplayersJoin:NAT:Socket unbinded.\n");
-						}
 						
 						channel=SDLNet_UDP_Bind(socket, -1, &serverIP);
 						if (channel != -1)
@@ -612,9 +618,9 @@ void MultiplayersJoin::sendingTime()
 			NETPRINTF("Last TOTL spent, server has left\n");
 			waitingState=WS_TYPING_SERVER_NAME;
 			
-			NETPRINTF("disabling NAT detection too.\n");
-			if (broadcastState==BS_ENABLE_YOG)
+			if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
 				broadcastState=BS_DISABLE_YOG;
+			NETPRINTF("disabling NAT detection too. bs=(%d)\n", broadcastState);
 		}
 		else
 			NETPRINTF("TOTL %d\n", waitingTOTL);
@@ -633,9 +639,8 @@ void MultiplayersJoin::sendingTime()
 				if (yogGameInfo)
 				{
 					assert(shareOnYOG);
-					Uint16 port=SERVER_PORT;
-					NETPRINTF("sending water to firewall. (%s) (%d)\n", yogGameInfo->source, port);
-					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, port);
+					NETPRINTF("requesting sending water to firewall. (%s) (%d)\n", yogGameInfo->source, localPort);
+					globalContainer->yog.sendFirewallActivation(yogGameInfo->source, localPort);
 				}
 				
 				if (shareOnYOG)
@@ -949,7 +954,7 @@ bool MultiplayersJoin::send(const int u, const int v)
 Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 {
 	Uint16 localPort=0;
-	for (int tempPort=7008; tempPort<7009; tempPort++)
+	for (int tempPort=7008; tempPort<7008+10; tempPort++) // we try 10 ports
 	{
 		// First, we create a temporaty local server (tempServer):
 		UDPsocket tempSocket;
@@ -959,9 +964,10 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 		else
 		{
 			NETPRINTF("findLocalPort:: failed to open a socket.\n");
-			return 0;
+			continue; // We try to open another port
 		}
 
+		// Second, we send a packet to this tempServer with loopback adress:
 		{
 			UDPpacket *packet=SDLNet_AllocPacket(4);
 
@@ -985,7 +991,8 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 			{
 				NETPRINTF("findLocalPort:: failed to send packet\n");
 				SDLNet_FreePacket(packet);
-				return 0;
+				SDLNet_UDP_Close(tempSocket);
+				continue; // We try with another port
 			}
 			SDLNet_FreePacket(packet);
 		}
@@ -996,14 +1003,24 @@ Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
 			UDPpacket *packet=NULL;
 			packet=SDLNet_AllocPacket(4);
 			assert(packet);
-			if (SDLNet_UDP_Recv(tempSocket, packet)==1)
+			int count=0;
+			while (SDLNet_UDP_Recv(tempSocket, packet)!=1)
 			{
-				NETPRINTF("findLocalPort::Packet received.\n");
-				NETPRINTF("findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
-				localPort=packet->address.port;
+				if (count++>=3)
+					break;
+				SDL_Delay(100);
+				NETPRINTF("findLocalPort::delay 100ms to wait for the loop-back packet\n");
 			}
-			else
-				NETPRINTF("findLocalPort::no Packet received!!!!\n");
+			if (count>=3)
+			{
+				NETPRINTF("findLocalPort::no Packet received !!!!\n");
+				SDLNet_FreePacket(packet);
+				SDLNet_UDP_Close(tempSocket);
+				continue; // We try with another port
+			}
+			NETPRINTF("findLocalPort::Packet received.\n");
+			NETPRINTF("findLocalPort::packet->address=%x,%d\n", packet->address.host, packet->address.port);
+			localPort=packet->address.port;
 
 			SDLNet_FreePacket(packet);
 		}
@@ -1100,8 +1117,9 @@ void MultiplayersJoin::quitThisGame()
 	}
 	
 	waitingState=WS_TYPING_SERVER_NAME;
-	if (broadcastState==BS_ENABLE_YOG)
+	if (broadcastState==BS_ENABLE_YOG || broadcastState==BS_ENABLE_YOG)
 		broadcastState=BS_DISABLE_YOG;
+	NETPRINTF("disabling NAT detection too. bs=(%d)\n", broadcastState);
 }
 
 bool MultiplayersJoin::tryConnection(const YOG::GameInfo *yogGameInfo)

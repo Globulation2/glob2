@@ -29,8 +29,8 @@
 
 #else
 #	if defined(__WIN32__) || defined(WIN32)
-#		define Win32_Winsock
-#		include <windows.h>
+//#		define Win32_Winsock
+//#		include <windows.h>
 #	else /* UNIX */
 #			include <sys/types.h>
 #			include <sys/socket.h>
