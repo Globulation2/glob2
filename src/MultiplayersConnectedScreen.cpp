@@ -76,21 +76,20 @@ void MultiplayersConnectedScreen::onTimer(Uint32 tick)
 			printf("s=%s.\n", s);
 			startTimer->setText(s);
 		}
-		
-		bool isFileMapDownload=multiplayersJoin->isFileMapDownload(progress);
-		if (lastProgress!=progress)
+	}
+	bool isFileMapDownload=multiplayersJoin->isFileMapDownload(progress);
+	if (lastProgress!=progress)
+	{
+		lastProgress=progress;
+		char s[128];
+		if (isFileMapDownload)
 		{
-			lastProgress=progress;
-			char s[128];
-			if (isFileMapDownload)
-			{
-				int percent=(int)(100.0*progress);
-				snprintf(s, 128, "%s%d%s", globalContainer->texts.getString("[downloaded at]"), percent, globalContainer->texts.getString("[percent]"));
-			}
-			else
-				snprintf(s, 128, "%s", globalContainer->texts.getString("[download finished]"));
-			startTimer->setText(s);
+			int percent=(int)(100.0*progress);
+			snprintf(s, 128, "%s%d%s", globalContainer->texts.getString("[downloaded at]"), percent, globalContainer->texts.getString("[percent]"));
 		}
+		else
+			snprintf(s, 128, "%s", globalContainer->texts.getString("[download finished]"));
+		startTimer->setText(s);
 	}
 	
 	if (multiplayersJoin->waitingState==MultiplayersJoin::WS_SERVER_START_GAME)
