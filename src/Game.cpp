@@ -1761,17 +1761,17 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 	assert(localTeam>=-1);
 	assert(localTeam<32);
 
-	int H[3]= { 0, 90, 0 };
-	int E[3]= { 0, 40, 120 };
-	int S[3]= { 170, 170, 0 };
-	int wood[3]= { 0, 60, 0 };
-	int corn[3]= { 211, 207, 167 };
-	int stone[3]= { 104, 112, 124 };
-	int alga[3]= { 41, 157, 165 };
+	int terrainColor[3][3] = {
+		{ 0, 40, 120 }, // Water
+		{ 170, 170, 0 }, // Sand
+		{ 0, 90, 0 }, // Grass
+	};
+
 	int Player[3]= { 10, 240, 20 };
 	int Enemy[3]={ 220, 25, 30 };
 	int Ally[3]={ 255, 196, 0 };
-	int pcol[7];
+
+	int pcol[3+MAX_RESSOURCES];
 	int pcolIndex, pcolAddValue;
 	int teamId;
 
@@ -1802,8 +1802,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 	{
 		for (dx=0; dx<szX; dx++)
 		{
-			for (int i=0; i<7; i++)
-				pcol[i]=0;
+			memset(pcol, 0, sizeof(pcol));
 			nCount=0;
 			isMeUnitOrBuilding=false;
 			isEnemyUnitOrBuilding=false;
@@ -1826,29 +1825,32 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 						{
 							teamId=gid/1024;
 							if (teamId==localTeam)
+							{
 								isMeUnitOrBuilding=true;
+								goto unitOrBuildingFound;
+							}
 							else if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							{
 								if ((teams[localTeam]->allies) & (teams[teamId]->me))
 									isAllyUnitOrBuilding=true;
 								else
 									isEnemyUnitOrBuilding=true;
+								goto unitOrBuildingFound;
 							}
 						}
 					}
 					if (localTeam<0)
 					{
 						// get color to add
-						if (map.isRessource((int)minidx, (int)minidy, WOOD))
-							pcolIndex=3;
-						else if (map.isRessource((int)minidx, (int)minidy, CORN))
-							pcolIndex=4;
-						else if (map.isRessource((int)minidx, (int)minidy, STONE))
-							pcolIndex=5;
-						else if (map.isRessource((int)minidx, (int)minidy, ALGA))
-							pcolIndex=6;
+						Ressource r = map.getRessource((int)minidx, (int)minidy);
+						if (r.id != NORESID)
+						{
+							pcolIndex = r.field.type + 3;
+						}
 						else
-							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
+						{
+							pcolIndex = map.getUMTerrain((int)minidx,(int)minidy);
+						}
 
 						// get weight to add
 						pcolAddValue=5;
@@ -1858,9 +1860,16 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 					else if (map.isMapDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 					{
 						// get color to add
-						if (map.isRessource((int)minidx, (int)minidy, WOOD))
-							pcolIndex=3;
-						else if (map.isRessource((int)minidx, (int)minidy, CORN))
+						Ressource r = map.getRessource((int)minidx, (int)minidy);
+						if (r.id != NORESID)
+						{
+							pcolIndex = r.field.type + 3;
+						}
+						else
+						{
+							pcolIndex = map.getUMTerrain((int)minidx,(int)minidy);
+						}
+						/*else if (map.isRessource((int)minidx, (int)minidy, CORN))
 							pcolIndex=4;
 						else if (map.isRessource((int)minidx, (int)minidy, STONE))
 							pcolIndex=5;
@@ -1868,7 +1877,7 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 							pcolIndex=6;
 						else
 							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
-
+*/
 						// get weight to add
 						if (map.isFOWDiscovered((int)minidx, (int)minidy, teams[localTeam]->me))
 							pcolAddValue=5;
@@ -1881,6 +1890,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 					nCount++;
 				}
 			}
+
+			// Yes I know, this is *ugly*, but this piece of code *needs* speedup
+			unitOrBuildingFound:
 
 			if (isMeUnitOrBuilding)
 			{
@@ -1903,9 +1915,26 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 			else
 			{
 				nCount*=5;
-				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
-				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
-				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+
+				int lr, lg, lb;
+				lr = lg = lb = 0;
+				for (int i=0; i<3; i++)
+				{
+					lr += pcol[i]*terrainColor[i][0];
+					lg += pcol[i]*terrainColor[i][1];
+					lb += pcol[i]*terrainColor[i][2];
+				}
+				for (int i=0; i<MAX_RESSOURCES; i++)
+				{
+					RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+					lr += pcol[i+3]*(rt->minimapR);
+					lg += pcol[i+3]*(rt->minimapG);
+					lb += pcol[i+3]*(rt->minimapB);
+				}
+
+				r = lr/nCount;
+				g = lg/nCount;
+				b = lb/nCount;
 			}
 			minimap->drawPixel(dx+decX, dy+decY, r, g, b);
 		}
@@ -1921,9 +1950,9 @@ void Game::renderMiniMap(int localTeam, bool showUnitsAndBuildings)
 			fx&=map.getMaskW();
 			fy=(*virtualIt)->posYLocal-decSPY+map.getH();
 			fy&=map.getMaskH();
-			r=200;
+			r=210;
 			g=255;
-			b=200;
+			b=210;
 			minimap->drawPixel(((fx*100)/mMax)+decX, ((fy*100)/mMax)+decY, r, g, b);
 		}
 }
