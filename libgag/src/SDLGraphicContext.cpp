@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001, 2002 Stephane Magnenat & Luc-Olivier de Charriï¿½e
     for any question or comment contact us at nct@ysagoon.com or nuage@ysagoon.com
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
 #include "SDLGraphicContext.h"
@@ -1095,7 +1095,7 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageTy
 			return imageStream;
 #endif
 	}
-	else
+	else if (type==PALETTE)
 	{
 		snprintf(temp, 1024,"%s%dp.png", name, number);
 		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
@@ -1130,6 +1130,45 @@ SDL_RWops *SDLGraphicContext::tryOpenImage(const char *name, int number, ImageTy
 			return imageStream;
 #endif
 	}
+	else if (type==ROTATED)
+	{
+		snprintf(temp, 1024,"%s%dr.png", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+#ifdef LOAD_ALL_IMAGE_TYPE
+		snprintf(temp, 1024,"%s%dr.bmp", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.jpg", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.jpeg", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.pnm", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.xpm", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.lbm", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.pcx", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.gif", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+		snprintf(temp, 1024,"%s%dr.tga", name, number);
+		if ((imageStream=GAG::fileManager->open(temp, "rb", false))!=NULL)
+			return imageStream;
+#endif
+	}
+	else
+	{
+		fprintf(stderr, "GAG : Passing wrong image type to SDLGraphicContext::tryOpenImage\n");
+	}
 	return NULL;
 }
 
@@ -1138,6 +1177,7 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 	SDL_RWops *frameStream;
 	SDL_RWops *overlayStream;
 	SDL_RWops *paletizedStream;
+	SDL_RWops *rotatedStream;
 	int i=0;
 
 	SDLSprite *sprite=new SDLSprite;
@@ -1147,11 +1187,12 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 		frameStream=tryOpenImage(name, i, NORMAL);
 		overlayStream=tryOpenImage(name, i, OVERLAY);
 		paletizedStream=tryOpenImage(name, i, PALETTE);
+		rotatedStream=tryOpenImage(name, i, ROTATED);
 
-		if (!((frameStream) || (overlayStream) || (paletizedStream)))
+		if (!((frameStream) || (overlayStream) || (paletizedStream) || (rotatedStream)))
 			break;
 
-		sprite->loadFrame(frameStream, overlayStream, paletizedStream);
+		sprite->loadFrame(frameStream, overlayStream, paletizedStream, rotatedStream);
 
 		if (frameStream)
 			SDL_RWclose(frameStream);
@@ -1159,6 +1200,8 @@ Sprite *SDLGraphicContext::loadSprite(const char *name)
 			SDL_RWclose(overlayStream);
 		if (paletizedStream)
 			SDL_RWclose(paletizedStream);
+		if (rotatedStream)
+			SDL_RWclose(rotatedStream);
 		i++;
 	}
 

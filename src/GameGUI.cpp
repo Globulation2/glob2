@@ -1201,7 +1201,7 @@ void GameGUI::draw(void)
 				else if (buildingSprite->getH(imgid)>64)
 					decY=26;
 
-				buildingSprite->enableBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+				buildingSprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 				globalContainer->gfx->drawSprite(x-decX, y-decY, buildingSprite, imgid);
 			}
 
@@ -1264,7 +1264,7 @@ void GameGUI::draw(void)
 			// building icon
 			globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-128, 128, 128, 128);
 			Sprite *buildingSprite=globalContainer->buildings;
-			buildingSprite->enableBaseColor(game.teams[selBuild->owner->teamNumber]->colorR, game.teams[selBuild->owner->teamNumber]->colorG, game.teams[selBuild->owner->teamNumber]->colorB);
+			buildingSprite->setBaseColor(game.teams[selBuild->owner->teamNumber]->colorR, game.teams[selBuild->owner->teamNumber]->colorG, game.teams[selBuild->owner->teamNumber]->colorB);
 			globalContainer->gfx->drawSprite(
 				globalContainer->gfx->getW()-128+64-selBuild->type->width*16,
 				128+64-selBuild->type->height*16,
@@ -1542,7 +1542,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		// we get the datas
 		Sprite *sprite=globalContainer->buildings;
-		sprite->enableBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
+		sprite->setBaseColor(localTeam->colorR, localTeam->colorG, localTeam->colorB);
 
 		batX=(mapX-viewportX)<<5;
 		batY=(mapY-viewportY)<<5;

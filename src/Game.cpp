@@ -1112,7 +1112,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 					}
 
 					Sprite *unitSprite=globalContainer->units;
-					unitSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+					unitSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 
 					globalContainer->gfx->drawSprite(px, py, unitSprite, imgid);
 					if (unit==selectedUnit)
@@ -1198,7 +1198,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			// select buildings and set the team colors
 			Sprite *buildingSprite=globalContainer->buildings;
-			buildingSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+			buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 
 			// draw building
 			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
@@ -1397,7 +1397,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 			// all flags are hued:
 			Sprite *buildingSprite=globalContainer->buildings;
-			buildingSprite->enableBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
+			buildingSprite->setBaseColor(teams[team]->colorR, teams[team]->colorG, teams[team]->colorB);
 			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 			// flag circle:
