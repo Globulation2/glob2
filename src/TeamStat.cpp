@@ -19,7 +19,7 @@
 
 #include "TeamStat.h"
 #include "GlobalContainer.h"
-
+#include "Team.h"
 
 TeamStats::TeamStats()
 {
@@ -37,10 +37,10 @@ TeamStats::~TeamStats()
 
 void TeamStats::step(Team *team)
 {
+	int i;
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	memset(&smoothedStat, 0, sizeof(TeamSmoothedStat));
-	{
-	for (int i=0; i<1024; i++)
+	for (i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
@@ -49,7 +49,6 @@ void TeamStats::step(Team *team)
 			smoothedStat.totalFree++;
 		}
 	}
-	}
 	smoothedIndex++;
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
@@ -57,8 +56,7 @@ void TeamStats::step(Team *team)
 	
 	TeamSmoothedStat maxStat;
 	memset(&maxStat, 0, sizeof(TeamSmoothedStat));
-	{
-	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
+	for (i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
 		
@@ -68,14 +66,13 @@ void TeamStats::step(Team *team)
 			if (smoothedStat.isFree[j]>maxStat.isFree[j])
 				maxStat.isFree[j]=smoothedStat.isFree[j];
 	}
-	}
+	
 	// We change current stats:
 	statsIndex++;
 	statsIndex%=STATS_SIZE;
 	TeamStat &stat=stats[statsIndex];
 	memset(&stat, 0, sizeof(TeamStat));
-	{
-	for (int i=0; i<1024; i++)
+	for (i=0; i<1024; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if (u)
@@ -103,7 +100,7 @@ void TeamStats::step(Team *team)
 			}
 		}
 	}
-	}
+	
 	// We override unsmoothed stats:
 	stat.totalFree=maxStat.totalFree;
 	for (int j=0; j<UnitType::NB_UNIT_TYPE; j++)

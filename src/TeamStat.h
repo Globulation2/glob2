@@ -20,7 +20,6 @@
 #ifndef __TEAM_STAT_H
 #define __TEAM_STAT_H
 
-#include "Team.h"
 #include "UnitType.h"
 
 struct TeamStat
@@ -46,6 +45,8 @@ struct TeamSmoothedStat
 	int totalFree;
 	int isFree[UnitType::NB_UNIT_TYPE];
 };
+
+class Team;
 
 class TeamStats
 {
