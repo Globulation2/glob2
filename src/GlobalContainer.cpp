@@ -65,6 +65,7 @@ void GlobalContainer::setMetaServerName(char *name)
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
 {
+	graphicFlags|=DrawableSurface::RESIZABLE;
 	for (int  i=1; i<argc; i++)
 	{
 		if (strcmp(argv[i], "-f")==0)
