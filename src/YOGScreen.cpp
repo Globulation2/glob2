@@ -240,7 +240,7 @@ void YOGScreen::onTimer(Uint32 tick)
 
 	// the game connection part:
 	multiplayersJoin->onTimer(tick);
-	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO)
+	if (multiplayersJoin->waitingState>MultiplayersJoin::WS_WAITING_FOR_SESSION_INFO && !globalContainer->yog->unjoining)
 	{
 		printf("YOGScreen::joining because state=%d.\n", multiplayersJoin->waitingState);
 		globalContainer->yog->joinGame();

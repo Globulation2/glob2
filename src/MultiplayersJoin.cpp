@@ -204,7 +204,7 @@ void MultiplayersJoin::dataSessionInfoRecieved(char *data, int size, IPaddress i
 		return;
 	}
 	
-	fprintf(logFile, "sessionInfo.numberOfPlayer=%d, numberOfTeam=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam);
+	fprintf(logFile, "sessionInfo.numberOfPlayer=%d, numberOfTeam=%d, ipFromNAT=%d\n", sessionInfo.numberOfPlayer, sessionInfo.numberOfTeam, ipFromNAT);
 	
 	if (ipFromNAT || !shareOnYOG)
 		for (int j=0; j<sessionInfo.numberOfPlayer; j++)
@@ -715,6 +715,7 @@ void MultiplayersJoin::joinerBroadcastResponse(char *data, int size, IPaddress i
 				sessionInfo.players[j].waitForNatResolution=false;
 				sessionInfo.players[j].ipFromNAT=true;
 				sessionInfo.players[j].setip(ip);
+				fprintf(logFile, "joinerBroadcastResponse, The player (%s) has a new ip(%s)\n", name, Utilities::stringIP(ip));
 			}
 	}
 	else
@@ -1414,7 +1415,7 @@ void MultiplayersJoin::sendBroadcast(Uint16 port)
 bool MultiplayersJoin::tryConnection(bool isHostToo)
 {
 	quitThisGame();
-	fprintf(logFile, "\ntryConnection()\n");
+	fprintf(logFile, "\ntryConnection(%d)\n", isHostToo);
 
 	if (!socket)
 	{
@@ -1523,7 +1524,7 @@ bool MultiplayersJoin::tryConnection(YOG::GameInfo *yogGameInfo)
 	playerName[31]=0;
 	strncpy(serverNickName, yogGameInfo->userName, 32);
 	serverNickName[31]=0;
-	return tryConnection(true);
+	return tryConnection(false);
 }
 
 Uint16 MultiplayersJoin::findLocalPort(UDPsocket socket)
