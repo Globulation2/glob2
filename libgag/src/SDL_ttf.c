@@ -20,7 +20,7 @@
     slouken@libsdl.org
 */
 
-/* $Id: SDL_ttf.c,v 1.2 2002/12/10 22:03:36 nuage Exp $ */
+/* $Id: SDL_ttf.c,v 1.1 2003/01/30 12:43:52 nct Exp $ */
 
 #include <math.h>
 #include <stdio.h>

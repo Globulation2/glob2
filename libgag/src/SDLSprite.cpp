@@ -18,9 +18,12 @@
 */
 
 #include "SDLSprite.h"
+#include "SDLGraphicContext.h"
 #include <math.h>
-#include "GlobalContainer.h"
-#include "Utilities.h"
+#include <Environment.h>
+#include <SupportFunctions.h>
+
+extern SDLGraphicContext *screen;
 
 #define STATIC_PALETTE_SIZE 256
 #define COLOR_ROTATION_COUNT 32
@@ -113,7 +116,7 @@ unsigned StaticPalContainer::allocate(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 SDLSprite::Palette::Palette()
 {
-	FILE *palFP=globalContainer->fileManager.openFP("data/pal.txt", "rb");
+	FILE *palFP=GAG::fileManager->openFP("data/pal.txt", "rb");
 	assert (palFP);
 	if (palFP)
 	{
@@ -151,13 +154,13 @@ void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
 		float hueDec;
 		float nR, nG, nB;
 		int i;
-		Utilities::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
-		Utilities::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
+		GAG::RGBtoHSV(51.0f/255.0f, 255.0f/255.0f, 153.0f/255.0f, &baseHue, &sat, &lum);
+		GAG::RGBtoHSV( ((float)r)/255, ((float)g)/255, ((float)b)/255, &hue, &sat, &lum);
 		hueDec=hue-baseHue;
 		for (i=0; i<256; i++)
 		{
-			Utilities::RGBtoHSV( ((float)origR[i])/255, ((float)origG[i])/255, ((float)origB[i])/255, &hue, &sat, &lum);
-			Utilities::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
+			GAG::RGBtoHSV( ((float)origR[i])/255, ((float)origG[i])/255, ((float)origB[i])/255, &hue, &sat, &lum);
+			GAG::HSVtoRGB(&nR, &nG, &nB, hue+hueDec, sat, lum);
 			colors[i]=SDL_MapRGB(SDLSprite::getGlobalContainerGfxSurface()->format, (Uint32)(255*nR), (Uint32)(255*nG), (Uint32)(255*nB));
 		}
 		rTransformed=r;
@@ -168,8 +171,10 @@ void SDLSprite::Palette::setColor(Uint8 r, Uint8 g, Uint8 b)
 
 SDL_Surface *SDLSprite::getGlobalContainerGfxSurface(void)
 {
-	SDLGraphicContext *SDLgc=dynamic_cast<SDLGraphicContext *>(globalContainer->gfx);
-	return SDLgc->surface;
+	assert(screen);
+/*	SDLGraphicContext *SDLgc=dynamic_cast<SDLGraphicContext *>(screen);
+	return SDLgc->surface;*/
+	return screen->surface;
 }
 
 void SDLSprite::draw(SDL_Surface *dest, const SDL_Rect *clip, int x, int y, int index)

@@ -13,25 +13,8 @@ EntityType.cpp\
 EntityType.h\
 Fatal.cpp\
 Fatal.h\
-GAG.h\
-GUIBase.cpp\
-GUIBase.h\
-GUIButton.cpp\
-GUIButton.h\
-GUIList.cpp\
-GUIList.h\
-GUINumber.cpp\
-GUINumber.h\
-GUIText.h \
-GUIText.cpp \
-GUITextInput.cpp\
-GUITextInput.h\
-GUITextArea.cpp \
-GUITextArea.h \
 GUIMapPreview.h \
 GUIMapPreview.cpp \
-GUIRatio.h \
-GUIRatio.cpp \
 Game.cpp\
 Game.h\
 GameGUI.cpp\
@@ -44,8 +27,6 @@ Glob2.cpp\
 Glob2.h\
 GlobalContainer.cpp\
 GlobalContainer.h\
-GraphicContext.cpp\
-GraphicContext.h\
 Header.h\
 Makefile.am\
 Map.cpp\
@@ -66,12 +47,6 @@ Race.cpp\
 Race.h\
 Session.cpp\
 Session.h\
-SDLSprite.cpp\
-SDLSprite.h\
-SDLFont.h\
-SDLFont.cpp\
-SDLGraphicContext.h\
-SDLGraphicContext.cpp\
 StringTable.cpp\
 StringTable.h\
 SGSL.cpp \
@@ -86,8 +61,6 @@ UnitType.cpp\
 UnitType.h\
 Utilities.cpp\
 Utilities.h \
-FileManager.h \
-FileManager.cpp \
 CustomGameScreen.h \
 CustomGameScreen.cpp \
 LoadGameScreen.h \
@@ -127,9 +100,7 @@ LogFileManager.h \
 LogFileManager.cpp \
 YOGPreScreen.cpp \
 ScriptEditorScreen.h \
-ScriptEditorScreen.cpp \
-SDL_ttf.c \
-SDL_ttf.h 
+ScriptEditorScreen.cpp
 
-glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ 
-INCLUDES = @SDL_CFLAGS@
+glob2_LDADD=-lSDL_net -lSDL_image @SDL_LIBS@ ../libgag/src/libgag.a
+INCLUDES = @SDL_CFLAGS@ -I@srcdir@/../libgag/include

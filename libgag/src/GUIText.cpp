@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "GUIText.h"
+#include <GUIText.h>
 #include <stdarg.h>
 
 Text::Text(int x, int y, Font *font, const char *text, int w, int h)

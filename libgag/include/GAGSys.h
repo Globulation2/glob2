@@ -17,8 +17,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __HEADER_H
-#define __HEADER_H
+#ifndef __GAGSYS_H
+#define __GAGSYS_H
 
 #ifndef MAX_SINT32
 #define MAX_SINT32 0x7FFFFFFF
@@ -29,7 +29,6 @@
 #	include <SDL.h>
 #	include <SDL_endian.h>
 #	include <SDL_image.h>
-#	include <SDL_net.h>
 #	include <assert.h>
 #	define snprintf _snprintf
 #	define vsnprintf _vsnprintf
@@ -39,7 +38,6 @@
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_endian.h>
 	#include <SDL/SDL_image.h>
-	#include <SDL/SDL_net.h>
 #endif
 
 // usefull macros
@@ -50,18 +48,5 @@
 #ifndef MIN
 #define MIN(a, b) ((a)<(b) ? (a) : (b))
 #endif
-
-//! if defined, enable UID debug code
-//#define DBG_UID
-
-//! if defined, enable pathfinding debug code
-#define DBG_PATHFINDING
-
-//! if defined, enable vPath listing
-//#define DBG_VPATH_LIST
-
-//! if defined, enable fow and map invisible
-//#define DBG_ALL_MAP_DISCOVERED
-
 
 #endif 

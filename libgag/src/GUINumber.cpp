@@ -17,13 +17,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "GUINumber.h"
-#include "GlobalContainer.h"
+#include <GUINumber.h>
 
 Number::Number(int x, int y, int w, int h, int m, const Font *font)
 {
-	if (!font)
-		font=globalContainer->littleFont;
+	assert(font);
 	this->font=font;
 	textHeight=font->getStringHeight(NULL);
 	
